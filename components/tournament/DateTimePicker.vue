@@ -11,13 +11,17 @@ import {
 </script>
 
 <template>
+  <!-- Date and time are two controls over one value, so `disabled` has to reach
+       both: locking only the calendar leaves a live time input that can still
+       move the very timestamp the lock exists to pin. -->
   <div class="flex">
     <Popover>
-      <PopoverTrigger as-child>
+      <PopoverTrigger as-child :disabled="disabled">
         <Button
           variant="outline"
           class="w-[280px] justify-start text-left font-normal"
           :class="{ ['text-muted-foreground']: !startDate }"
+          :disabled="disabled"
         >
           <CalendarIcon class="mr-2 h-4 w-4" />
           {{ startDate || $t("common.pick_date") }}
@@ -32,7 +36,12 @@ import {
       </PopoverContent>
     </Popover>
 
-    <Input type="time" v-model="startTime" style="color-scheme: dark" />
+    <Input
+      type="time"
+      v-model="startTime"
+      :disabled="disabled"
+      style="color-scheme: dark"
+    />
   </div>
 </template>
 
@@ -48,6 +57,11 @@ export default {
     },
     // Create disables past days; editing an existing start must allow them.
     disablePastDates: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    disabled: {
       type: Boolean,
       required: false,
       default: false,

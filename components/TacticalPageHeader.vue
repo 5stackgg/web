@@ -9,7 +9,6 @@ import {
 } from "~/utilities/tacticalClasses";
 
 defineProps<{
-  corners?: "both" | "tl" | "br" | "none";
   inlineActions?: boolean;
   stackActions?: boolean;
 }>();
@@ -28,15 +27,6 @@ const tacticalTabs = {
   <header
     class="relative overflow-hidden rounded-lg border border-border bg-[linear-gradient(180deg,hsl(var(--card)/0.55)_0%,hsl(var(--card)/0.25)_100%)] px-4 py-4 sm:px-6 sm:py-5 [backdrop-filter:blur(6px)]"
   >
-    <span
-      aria-hidden="true"
-      class="pointer-events-none absolute left-2 top-2 h-[14px] w-[14px] border-l-2 border-t-2 border-[hsl(var(--tac-amber))]"
-    ></span>
-    <span
-      aria-hidden="true"
-      class="pointer-events-none absolute bottom-2 right-2 h-[14px] w-[14px] border-b-2 border-r-2 border-[hsl(var(--tac-amber))]"
-    ></span>
-
     <div
       class="flex gap-3"
       :class="

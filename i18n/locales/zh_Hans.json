@@ -1229,6 +1229,10 @@
     },
     "system_telemetry": {
       "title": "集群遥测",
+      "filter": {
+        "all": "全部集群",
+        "self_hosted": "仅自托管"
+      },
       "no_data": "尚未上报任何数据",
       "installs": {
         "title": "面板",
@@ -1810,6 +1814,10 @@
           "MatchChatMessage": {
             "title": "比赛聊天消息",
             "description": "比赛房间中的新消息。"
+          },
+          "TournamentInvite": {
+            "title": "赛事报名邀请",
+            "description": "主办方邀请你报名参加一个赛事。"
           }
         },
         "quiet_hours": {
@@ -2617,6 +2625,72 @@
           "server_default": "服务器默认值",
           "invalid_number": "请输入 0 或更大的整数。",
           "updated": "道具设置已更新"
+        },
+        "sanctions": {
+          "title": "处罚",
+          "section": "自动处罚",
+          "description": "5stack 如何处理它能自行检测到的行为。每个来源统计一个时间窗口内的违规次数，并套用处罚阶梯中对应的一档。",
+          "defaults_note": "下面的值就是 5stack 一直在用的值。只看这个页面不会改变任何设置，只有编辑才会。",
+          "unavailable": "没有可用的处罚来源。API 可能还没有执行处罚相关的迁移。",
+          "load_failed": "无法加载处罚策略",
+          "reset": "恢复默认",
+          "permanent": "永久",
+          "platform_ban_narrowed": "在“两者都禁止”以外的任何范围下，此来源不再写入全平台封禁，只会下发范围受限的冷却——被 VAC 封禁的账号仍可使用 5stack 的另一半功能。",
+          "threshold": {
+            "label": "达到多少次后处罚",
+            "first_offence": "第一次违规就会被处罚。",
+            "free_passes": "前 {count} 次违规不予处罚。",
+            "free_passes_one": "第一次违规不予处罚。"
+          },
+          "window": {
+            "label": "计数窗口（天）",
+            "never": "永不衰减——每一条曾经记录过的违规都仍然计入。",
+            "decays": "超过 {count} 天的违规不再计入。",
+            "decays_one": "超过一天的违规不再计入。"
+          },
+          "ladder": {
+            "label": "处罚阶梯",
+            "add": "添加一档",
+            "remove": "删除该档",
+            "clamp_hint": "最后一档会一直重复下去。把某一档设为 0，该处罚即为永久。",
+            "occurrence": "第 {count} 次违规",
+            "occurrence_and_after": "第 {count} 次违规起",
+            "unit": {
+              "minutes": "分钟",
+              "hours": "小时",
+              "days": "天"
+            },
+            "unit_value": {
+              "minutes": "{count} 分钟",
+              "hours": "{count} 小时",
+              "days": "{count} 天",
+              "minutes_one": "1 分钟",
+              "hours_one": "1 小时",
+              "days_one": "1 天"
+            }
+          },
+          "scope": {
+            "label": "禁止的范围"
+          },
+          "scopes": {
+            "matchmaking": "禁止匹配",
+            "tournaments": "禁止赛事",
+            "both": "两者都禁止"
+          },
+          "sources": {
+            "match_abandon": {
+              "title": "弃赛",
+              "description": "玩家离开了自己在阵容中的比赛，或者从未连接。计时从最后一次弃赛开始，而不是从现在开始。"
+            },
+            "vac_ban": {
+              "title": "VAC / 游戏封禁",
+              "description": "Steam 报告该玩家账号存在 VAC 或游戏封禁。计数窗口按 Steam 自己提供的“距上次封禁天数”来衡量。"
+            },
+            "tournament_no_show": {
+              "title": "赛事缺席",
+              "description": "队伍错过了赛事的必需签到。仅在进入时检查，因此已经在进行中的对阵表里的玩家会保留位置。"
+            }
+          }
         }
       },
       "language": {
@@ -3967,7 +4041,9 @@
       },
       "picker": {
         "search": "查找地图",
-        "none": "没有带雷达图的地图"
+        "none": "没有带雷达图的地图",
+        "count_public": "本图的公开阵型",
+        "count_private": "非公开但你可以看到的 — 你的、战队的，或待审核的。已归档的不计入。"
       },
       "back_to_map": "返回地图",
       "empty": {
@@ -4937,7 +5013,9 @@
         "actor_host": "房主",
         "actor_teammate": "一位队友",
         "actor_organizer": "一位主办方",
-        "actor_player": "一位玩家"
+        "actor_player": "一位玩家",
+        "tournament_registration_invite": "赛事报名",
+        "invited_you_register": "邀请您报名参加"
       },
       "season_rebuild": {
         "title": "第 {number} 赛季需要重新计算 ELO",
@@ -5606,6 +5684,9 @@
       "title": "添加队伍",
       "description": "为此赛事邀请现有队伍或创建新队伍。"
     },
+    "organizer_panel": {
+      "title": "组织者工具"
+    },
     "form": {
       "create": "创建赛事",
       "name": "赛事名称",
@@ -5946,13 +6027,30 @@
       "teams": "战队",
       "format": "赛制",
       "starts": "开始时间",
-      "location": "地点"
+      "location": "地点",
+      "title": "数据",
+      "leaderboard_title": "选手排行榜",
+      "matches": "比赛",
+      "rounds": "回合",
+      "players": "玩家",
+      "top_rating": "最高评分",
+      "col_team": "队伍",
+      "col_rating": "评分",
+      "col_adr": "ADR",
+      "col_kills": "K",
+      "col_deaths": "D",
+      "col_assists": "A",
+      "col_kd": "K/D",
+      "col_hs": "爆头率",
+      "empty_title": "暂无数据",
+      "empty_description": "随着赛事比赛陆续结束，排行榜会逐步填充。"
     },
     "wizard": {
       "information": "信息",
       "location": "地点",
       "match_options": "比赛选项",
-      "prizes": "奖金"
+      "prizes": "奖金",
+      "registration": "报名"
     },
     "banner": {
       "label": "横幅",
@@ -6006,6 +6104,290 @@
       "expand": "展开",
       "collapse_all": "全部收起",
       "expand_all": "全部展开"
+    },
+    "registration": {
+      "section": "报名",
+      "who": {
+        "label": "谁可以报名？",
+        "teams": {
+          "label": "仅限队伍",
+          "description": "由队长以现有队伍报名。默认选项。"
+        },
+        "free_agents": {
+          "label": "自由选手",
+          "description": "选手单独报名，报名截止时会被选入实力均衡的队伍。"
+        },
+        "both": {
+          "label": "队伍 + 自由选手",
+          "description": "两者皆可。剩余的自由选手会在已报名队伍之外，另行组成新队伍。"
+        }
+      },
+      "min_role": {
+        "label": "最低角色",
+        "none": "不限制",
+        "description": "以被添加的选手为准进行校验，而不只是看点击的人——这样队长就无法把不符合条件的选手放进阵容。"
+      },
+      "rank": {
+        "label": "ELO 范围",
+        "min": "最低 ELO",
+        "max": "最高 ELO",
+        "description": "任一项留空即表示该侧不设限制。两项都留空则对所有段位开放。",
+        "invalid_range": "最高 ELO 不能低于最低 ELO。"
+      },
+      "regions": {
+        "label": "首选地区",
+        "description": "本赛事的比赛在哪里开服。这不是对选手的限制——5stack 没有按选手记录的地区数据。",
+        "empty": "目前没有可用地区。"
+      },
+      "invite_only": {
+        "label": "仅限邀请",
+        "description": "报名不对外开放。由主办方直接邀请队伍和玩家，或分享邀请链接。"
+      }
+    },
+    "check_in": {
+      "section": "签到",
+      "required": {
+        "label": "要求签到",
+        "description": "在生成对阵表之前，队伍需确认参赛。签到窗口按计划开启，确认需手动操作。"
+      },
+      "who": {
+        "label": "由谁签到？",
+        "Captains": {
+          "label": "队长",
+          "description": "由队长代表全队确认。一次点击，搞定一支队伍。"
+        },
+        "Players": {
+          "label": "每位选手",
+          "description": "阵容中的每位选手各自确认。有 {count} 人签到后队伍即算参赛——替补无需签到。"
+        },
+        "Admin": {
+          "label": "仅主办方",
+          "description": "选手无法自行签到，由你把队伍标记为已到场。"
+        }
+      },
+      "opens": {
+        "label": "窗口开启"
+      },
+      "closes": {
+        "label": "窗口关闭"
+      },
+      "minutes_before_start": "开赛前分钟数",
+      "window_too_short": "窗口至少需要保持开启 5 分钟。",
+      "timeline": {
+        "opens": "窗口开启",
+        "closes": "窗口关闭",
+        "start": "赛事开始"
+      },
+      "lock_note": "窗口一旦开启，开始时间和两个偏移量都会锁定。各队伍已经在按这个时间表行动，中途改动会挪走一个正在倒计时的截止时间。",
+      "late_registration_note": "在窗口期间报名的队伍会自动完成签到——不能因为错过一条从未向它显示过的提示而受罚。",
+      "no_show_note": "缺席的队伍不会被删除。错过签到的队伍会保留完整阵容，只是不进入对阵表——在赛事正式开始前，你随时可以重新接纳它。",
+      "frozen": "签到已经开始，因此开始时间和两个偏移量均已锁定。请改为延长签到窗口。",
+      "required_title": "本赛事需要签到。",
+      "required_window": "你的队伍必须在当天 {opens} 至 {closes} 之间确认，否则不会进入对阵表。",
+      "register_heading": "为队伍报名",
+      "register_hint": "签到开启时你会收到通知，关闭前还会收到提醒。",
+      "register_cta": "队伍报名",
+      "chip_required": "需要签到",
+      "opens_at_heading": "签到于 {time} 开启",
+      "opens_at_hint": "你的队伍已报名。窗口开启时我们会通知你。",
+      "opens_in": "距开启",
+      "closes_in": "距关闭",
+      "starts_in": "距开始",
+      "chip_action_needed": "需要处理",
+      "chip_open": "签到进行中",
+      "observer_heading": "签到已开启",
+      "observer_hint": "在生成对阵表之前，队伍需确认参赛。任何在 {time} 前未签到的队伍都会让赛事暂停，等你处理。",
+      "confirm_heading": "确认你的队伍参赛",
+      "confirm_hint": "在 {time} 前未签到的队伍不会进入对阵表。",
+      "players_progress": "{required} 人中已有 {checked} 人签到",
+      "players_heading": "所有选手都需要签到",
+      "players_hint": "有 {count} 位选手确认后，你的队伍即算参赛。替补无需签到。",
+      "admin_heading": "标记已到场的队伍",
+      "admin_hint": "本赛事中选手无法自行签到。请在窗口关闭前把每支队伍标记为已到场。",
+      "check_in": "签到",
+      "mark_present": "标记为已到场",
+      "checked_in": "已签到",
+      "checked_in_at": "已签到 · {time}",
+      "waiting": "等待中",
+      "not_needed": "无需签到",
+      "role_captain": "队长",
+      "role_starter": "首发",
+      "role_sub": "替补",
+      "field_status": "参赛队伍状态",
+      "field_count": "{total} 支队伍中已有 {checked} 支签到",
+      "done_heading": "你们已入围。对阵表将于 {time} 生成。",
+      "done_hint": "已于 {time} 代表 {team} 确认。",
+      "chip_removed": "已移除",
+      "missed_heading": "你的队伍错过了签到",
+      "missed_hint": "签到已于 {time} 关闭，对阵表将不包含你的队伍。",
+      "missed_contact": "如果你认为这有误，请联系主办方——在赛事正式开始前，他们随时可以重新接纳队伍。",
+      "failed": "签到失败",
+      "free_agent_opens_at_hint": "你已在自由选手池中。窗口开启时我们会通知你。",
+      "free_agent_heading": "确认你仍然有空",
+      "free_agent_hint": "在 {time} 前未确认的自由选手会被移入候补，不会被选入任何队伍。",
+      "free_agent_done_heading": "你已入围。队伍将于 {time} 选人组建。",
+      "free_agent_done_hint": "已于 {time} 确认。签到关闭后你会被选入一支队伍。",
+      "free_agent_chip_waitlisted": "候补",
+      "free_agent_missed_heading": "你错过了签到",
+      "free_agent_missed_hint": "签到已于 {time} 关闭，你被移入候补。现在只有出现空位时才会被选入队伍。",
+      "free_agent_missed_contact": "如果你认为这有误，请联系主办方——延长签到会把你放回选人池。",
+      "a11y_opens_in": "距签到开启",
+      "a11y_opens_help": "签到尚未开启。开启之前没有需要确认的内容。",
+      "a11y_closes_in": "距签到关闭",
+      "a11y_closes_help": "届时仍未签到的一律不会进入对阵表。",
+      "a11y_starts_in": "距赛事开始"
+    },
+    "check_in_review": {
+      "heading": "{count} 支队伍错过了签到",
+      "subheading": "赛事已暂停。对阵表尚未生成，也没有删除任何内容——每支队伍都保留着完整阵容。",
+      "chip_held_at": "暂停 · {time} 自动继续",
+      "chip_held": "暂停",
+      "roster_size": "{count} 名选手",
+      "partial_roster": "{required} 人中已有 {checked} 人签到 · 还差 {short} 人",
+      "registered": "已报名",
+      "chip_no_check_in": "未签到",
+      "chip_incomplete": "人数不足",
+      "readmit": "重新接纳",
+      "readmit_failed": "重新接纳队伍失败",
+      "continue": "不带他们继续",
+      "continue_failed": "继续赛事失败",
+      "extend": "延长签到",
+      "extend_by": "+{minutes} 分钟",
+      "extend_failed": "延长签到失败",
+      "extend_hint": "延长会重新开放报名，并再次通知缺席的 {count} 支队伍。",
+      "auto_continue": "如果没有人处理，赛事会在 {time} 带着已签到的队伍自动继续。暂停中的赛事绝不会因为主办方睡着了就悄无声息地夭折。",
+      "auto_continue_no_time": "如果没有人处理，赛事会在其开始时间带着已签到的队伍自动继续。",
+      "reseed_warning": "重新接纳队伍会重新生成对阵表。开赛前这样做是安全的，但种子排位会被打乱。"
+    },
+    "free_agents": {
+      "title": "自由选手",
+      "signed_up": "已报名 {count} 人",
+      "filter_all": "全部",
+      "filter_drafted": "已选入",
+      "filter_waitlist": "候补",
+      "sign_up": "报名",
+      "leave": "退出选手池",
+      "sign_up_alone": "单人报名",
+      "sign_up_with_lobby": "{count} 人一起报名",
+      "lobby_title": "带上你的大厅",
+      "lobby_size": "{count} / {size}",
+      "lobby_hint": "用大厅报名会把你们 {count} 人立刻放进选手池，分队时也会把你们留在同一支队伍。这里的队伍是 {size} 人。",
+      "lobby_too_big": "你的大厅有 {count} 人，超过 {size} 人的队伍，所以无法作为一个整体被选入。请单人报名，或者减到 {size} 人后再试。",
+      "lobby_not_captain": "只有 {name} 能给大厅报名，就像只有小队队长能带它去排队一样。",
+      "lobby_already_signed_up": "其中 {count} 人已经单人报名了；他们保留原有的排队顺序，并加入你的小队。",
+      "status_drafted": "已选入",
+      "status_waitlisted": "候补",
+      "status_registered": "已报名",
+      "empty_title": "暂无自由选手",
+      "empty_description": "单独报名的选手会显示在这里，并在报名截止时被选入实力均衡的队伍。",
+      "waitlist_explainer": "{name} 是评分最高的参赛者，却仍在候补——因为报名时名额已满。名额由报名先后决定，ELO 只决定进哪支队伍。这是规则在正常生效，不是 bug。",
+      "party_of": "{count} 人小队",
+      "party_status_drafted": "一起选入",
+      "party_status_waitlisted": "一起候补",
+      "party_kept_together": "{count} 人一起报名",
+      "party_waitlist_explainer": "一个小队要么整队被选入，要么完全不被选入。装不进剩余空位的小队会被整体跳过，一起进入候补，因此后报名的更小一组反而可能先被选入。",
+      "party_deadlock": "已有 {count} 名玩家报名，但这些报名的任何组合都凑不满 {size} 人的队伍，而小队绝不会为了凑数被拆开。现在分队什么也建不出来。更多报名，尤其是单人报名，能打破这个僵局。",
+      "organizer": "主办方",
+      "draft_summary": "{agents} 名自由选手 → {teams} 支 {size} 人队伍，{waitlisted} 人候补。",
+      "regenerate": "选人分队",
+      "regenerated": "已组成 {count} 支队伍",
+      "regenerate_failed": "分队失败",
+      "join_failed": "加入自由选手池失败",
+      "join_with_lobby_failed": "大厅报名失败",
+      "leave_failed": "退出自由选手池失败",
+      "already_drafted": "队伍已经分好了。再分一次不会有任何变化——请先移除已组成的队伍。",
+      "draft_locked": "对阵表已经开打，选手池无法再分队。",
+      "nothing_drafted": "没有组成任何队伍",
+      "nothing_drafted_hint": "剩下的自由选手不足以凑满一支 {size} 人的队伍，或者对阵表已没有空位。",
+      "nothing_drafted_parties": "选手池中报名的任何组合都凑不满 {size} 人的队伍，而小队绝不会为了凑数被拆开。"
+    },
+    "entry": {
+      "title": "参赛条件",
+      "requirements_hint": "对每一位被添加的选手进行校验，而不只是看点击的人。只要有一人不符合，报名就会被拒绝。",
+      "locked_title": "本赛事仅限邀请",
+      "min_role": "最低角色：{role}",
+      "elo_between": "ELO 介于 {min} 与 {max} 之间",
+      "elo_min": "ELO {min} 及以上",
+      "elo_max": "ELO {max} 及以下",
+      "elo_yours": "你的：{elo}",
+      "requirement_met": "已满足",
+      "requirement_failed": "未满足",
+      "ok_chip": "可参赛",
+      "locked_chip": "已锁定",
+      "blocked_chip": "不可参赛",
+      "invite_hint": "请联系主办方邀请你的队伍，或向你发送邀请链接。"
+    },
+    "invites": {
+      "title": "邀请",
+      "description": "直接邀请队伍或玩家，即使本赛事仅限邀请，他们也能报名。",
+      "add": "邀请玩家",
+      "pending": "待处理",
+      "invited_by": "{name} 邀请",
+      "revoke": "撤销",
+      "confirm_revoke": "要撤销这个邀请吗？",
+      "revoke_description": "除非仍持有有效的邀请链接，{name} 将失去访问权限。",
+      "empty": "还没有发出任何邀请。",
+      "sent": "邀请已发送",
+      "send_failed": "无法发送该邀请",
+      "already_invited": "已邀请",
+      "revoked": "邀请已撤销",
+      "hint_open": "本赛事对所有人开放，邀请只是捷径，并非必需。",
+      "add_team": "邀请队伍",
+      "team_label": "队伍邀请",
+      "registration_closed": "报名已关闭，无法发送新的邀请。重新开放报名后才能邀请更多队伍或玩家。"
+    },
+    "invite_links": {
+      "title": "邀请链接",
+      "tab": "链接",
+      "registration_closed": "报名已关闭，无法创建新的邀请链接。重新开放报名后才能分发更多链接。",
+      "hint": "任何拿到链接的人都能报名。链接会过期、可限制使用次数，并且随时可以撤销。",
+      "expires_after": "有效期",
+      "max_uses": "最大使用次数",
+      "expiry_never": "永不过期",
+      "expiry_minutes": "{count} 分钟",
+      "expiry_hour": "1 小时",
+      "expiry_hours": "{count} 小时",
+      "expiry_day": "1 天",
+      "expiry_days": "{count} 天",
+      "uses_one": "1 次",
+      "uses_limit": "{count} 次",
+      "uses_unlimited": "不限次数",
+      "create": "生成链接",
+      "created": "已创建邀请链接并复制",
+      "create_failed": "无法创建该邀请链接",
+      "share": "分享",
+      "revoke": "撤销",
+      "revoked": "邀请链接已撤销",
+      "revoke_failed": "无法撤销该邀请链接",
+      "confirm_revoke": "要撤销这个邀请链接吗？",
+      "revoke_description": "仍持有该链接的人将立即失去访问权限。已通过它报名的队伍会保留名额。",
+      "expires": "过期时间",
+      "expired": "已过期",
+      "exhausted": "已用完",
+      "never_expires": "永不过期",
+      "uses_count": "已使用 {count} 次",
+      "who_used": "使用记录",
+      "uses_empty": "还没有人使用过这个链接。",
+      "empty": "还没有邀请链接。"
+    },
+    "invite_accept": {
+      "title": "你收到一个邀请",
+      "hint": "接受后即可报名参加本赛事。",
+      "guest_hint": "登录后即可接受该邀请并开始报名。",
+      "accept": "接受邀请",
+      "sign_in": "登录后接受",
+      "dismiss": "暂不",
+      "accepted": "已接受邀请",
+      "failed": "该邀请无法使用：{reason}",
+      "errors": {
+        "invite_not_found": "该邀请链接对本赛事无效。",
+        "invite_revoked": "主办方已撤销该邀请链接。",
+        "invite_expired": "该邀请链接已过期。",
+        "invite_used_up": "该邀请链接的可用次数已经用完。",
+        "invite_registration_closed": "本赛事的报名已关闭。",
+        "invite_rate_limited": "邀请尝试次数过多。请一分钟后再试。",
+        "invite_not_allowed": "该账户无法接受此邀请。"
+      }
     }
   },
   "team": {
@@ -6058,7 +6440,11 @@
       "team_message": "您被邀请加入一个队伍",
       "invited_by": "邀请人",
       "deny": "拒绝",
-      "accept": "接受"
+      "accept": "接受",
+      "tournament_registration_title": "赛事报名邀请",
+      "tournament_registration_message": "您受邀报名参加一个赛事",
+      "tournament_team_registration_title": "队伍报名邀请",
+      "tournament_team_registration_message": "{team} 受邀报名参加赛事"
     },
     "roles": {
       "captain": "队长"
@@ -7570,7 +7956,9 @@
       "requirement": "请以 {half} 人或更少，或正好 {full} 人排队"
     },
     "temp_banned_until": "你被暂时禁止使用匹配，直到 {time}",
-    "new_invites_count": "新邀请（{count}）"
+    "new_invites_count": "新邀请（{count}）",
+    "tournament_banned": "你被禁止加入赛事阵容和自由选手池。",
+    "tournament_banned_until": "你被禁止加入赛事阵容和自由选手池，直到 {time}。"
   },
   "game_server": {
     "lan_ip": "LAN IP",

@@ -185,78 +185,59 @@ export const utilityLineupQuery = generateQuery({
 });
 
 /**
- * The four scope tabs, counted together. Same reasoning as the map counts: one
- * round trip with aliases, rather than four queries fired on every filter
- * change just to put a number on a tab.
+ * One scope tab's tally, live.
+ *
+ * Deliberately one root field: Hasura rejects a subscription that selects more
+ * than one ("subscriptions must select one top level field"), so the aliased
+ * six-in-one shape the map counts use for queries silently left every tab
+ * reading 0. The page opens one of these per counted scope instead.
+ *
+ * Live rather than one-shot because the counts are what a player reads to find
+ * out whether the thing they just did registered -- submitting for review,
+ * saving a lineup -- and as a query they only moved when something else
+ * happened to refetch them.
  */
-export function utilityScopeCountsQuery(scopes: string[]) {
-  const aliases: Record<string, unknown> = {};
-  for (const scope of scopes) {
-    aliases[`scope_${scope}`] = {
-      utility_lineups_aggregate: [
-        {
-          where: $(`where_${scope}`, "utility_lineups_bool_exp!"),
-        },
-        {
-          aggregate: {
-            count: true,
-          },
-        },
-      ],
-    };
-  }
-  return generateQuery({
-    __alias: aliases,
-  } as any);
-}
+export const utilityScopeCountSubscription = generateSubscription({
+  utility_lineups_aggregate: [
+    {
+      where: $("where", "utility_lineups_bool_exp!"),
+    },
+    {
+      aggregate: {
+        count: true,
+      },
+    },
+  ],
+});
 
 /**
- * The same tallies, live. The counts are what a player reads to find out
- * whether the thing they just did registered -- submitting for review, saving a
- * lineup -- and as a one-shot query they only moved when something else
- * happened to refetch them, so the answer was "switch tabs and look again".
- */
-export function utilityScopeCountsSubscription(scopes: string[]) {
-  const aliases: Record<string, unknown> = {};
-  for (const scope of scopes) {
-    aliases[`scope_${scope}`] = {
-      utility_lineups_aggregate: [
-        {
-          where: $(`where_${scope}`, "utility_lineups_bool_exp!"),
-        },
-        {
-          aggregate: {
-            count: true,
-          },
-        },
-      ],
-    };
-  }
-  return generateSubscription({
-    __alias: aliases,
-  } as any);
-}
-
-/**
- * One aggregate per map in a single round trip. Hasura has no GROUP BY, and
+ * Two aggregates per map in a single round trip. Hasura has no GROUP BY, and
  * ten aliased counts beat ten queries or pulling every row down to tally them
- * in the browser.
+ * in the browser. (Aliased multi-root is a *query* privilege -- a subscription
+ * may only select one top level field.)
+ *
+ * Two because one number cannot answer both questions a map tile is asked. The
+ * shared library is the public count; what you personally have on that map is
+ * the other, and adding them together produced a total that matched no tab on
+ * the page it leads to.
  */
 export function utilityMapCountsQuery(mapNames: string[]) {
   const aliases: Record<string, unknown> = {};
   for (const name of mapNames) {
-    aliases[mapCountAlias(name)] = {
-      utility_lineups_aggregate: [
-        {
-          where: $(`where_${name}`, "utility_lineups_bool_exp!"),
-        },
-        {
-          aggregate: {
-            count: true,
+    for (const alias of [mapCountAlias(name), mapPrivateCountAlias(name)]) {
+      aliases[alias] = {
+        utility_lineups_aggregate: [
+          {
+            where: $(`where_${alias}`, "utility_lineups_bool_exp!"),
           },
-        },
-      ],
-    };
+          {
+            aggregate: {
+              count: true,
+            },
+          },
+        ],
+      };
+    }
   }
   return generateQuery({
     __alias: aliases,
@@ -267,8 +248,16 @@ export function mapCountAlias(mapName: string) {
   return `count_${mapName}`;
 }
 
+export function mapPrivateCountAlias(mapName: string) {
+  return `private_${mapName}`;
+}
+
 export function mapCountVariable(mapName: string) {
-  return `where_${mapName}`;
+  return `where_${mapCountAlias(mapName)}`;
+}
+
+export function mapPrivateCountVariable(mapName: string) {
+  return `where_${mapPrivateCountAlias(mapName)}`;
 }
 
 /**

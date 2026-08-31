@@ -1229,6 +1229,10 @@
     },
     "system_telemetry": {
       "title": "Telemetria da Frota",
+      "filter": {
+        "all": "Toda a frota",
+        "self_hosted": "Somente auto-hospedados"
+      },
       "no_data": "Nenhum dado reportado ainda",
       "installs": {
         "title": "Painéis",
@@ -1810,6 +1814,10 @@
           "MatchChatMessage": {
             "title": "Mensagens do chat da partida",
             "description": "Uma nova mensagem na sala de uma partida."
+          },
+          "TournamentInvite": {
+            "title": "Convites de inscrição em torneio",
+            "description": "Um organizador convidou você para se inscrever em um torneio."
           }
         },
         "quiet_hours": {
@@ -2617,6 +2625,72 @@
           "server_default": "Padrão do servidor",
           "invalid_number": "Digite um número inteiro de 0 ou mais.",
           "updated": "Configurações de utilitário atualizadas"
+        },
+        "sanctions": {
+          "title": "Sanções",
+          "section": "Sanções automáticas",
+          "description": "Como a 5stack pune o que ela mesma consegue detectar. Cada fonte conta infrações dentro de uma janela e aplica o degrau correspondente de uma escala de sanções.",
+          "defaults_note": "Os valores abaixo são os que a 5stack sempre usou. Ler esta página não muda nada — só uma edição muda.",
+          "unavailable": "Nenhuma fonte de sanção disponível. Pode ser que a API ainda não tenha rodado a migração de sanções.",
+          "load_failed": "Não foi possível carregar a política de sanções",
+          "reset": "Restaurar o padrão",
+          "permanent": "Permanente",
+          "platform_ban_narrowed": "Em qualquer escopo que não seja “Bloqueia ambos”, esta fonte deixa de gravar um banimento em toda a plataforma e só aplica um bloqueio limitado — uma conta banida pelo VAC mantém a outra metade da 5stack.",
+          "threshold": {
+            "label": "Sancionar a partir de",
+            "first_offence": "A primeira infração já é punida.",
+            "free_passes": "As primeiras {count} infrações não são punidas.",
+            "free_passes_one": "A primeira infração não é punida."
+          },
+          "window": {
+            "label": "Janela de contagem (dias)",
+            "never": "Nunca expira — toda infração já registrada continua contando.",
+            "decays": "Infrações com mais de {count} dias deixam de contar.",
+            "decays_one": "Infrações com mais de um dia deixam de contar."
+          },
+          "ladder": {
+            "label": "Escala de sanções",
+            "add": "Adicionar degrau",
+            "remove": "Remover degrau",
+            "clamp_hint": "O último degrau se repete para sempre. Coloque um degrau em 0 para tornar a sanção permanente.",
+            "occurrence": "Infração {count}",
+            "occurrence_and_after": "Infração {count}+",
+            "unit": {
+              "minutes": "Minutos",
+              "hours": "Horas",
+              "days": "Dias"
+            },
+            "unit_value": {
+              "minutes": "{count} minutos",
+              "hours": "{count} horas",
+              "days": "{count} dias",
+              "minutes_one": "1 minuto",
+              "hours_one": "1 hora",
+              "days_one": "1 dia"
+            }
+          },
+          "scope": {
+            "label": "O que ela bloqueia"
+          },
+          "scopes": {
+            "matchmaking": "Bloqueia o matchmaking",
+            "tournaments": "Bloqueia os torneios",
+            "both": "Bloqueia ambos"
+          },
+          "sources": {
+            "match_abandon": {
+              "title": "Abandono de partida",
+              "description": "Um jogador saiu de uma partida em que estava escalado ou nunca se conectou. O prazo conta a partir do último abandono, não de agora."
+            },
+            "vac_ban": {
+              "title": "Ban VAC / de jogo",
+              "description": "A Steam informa um ban VAC ou de jogo na conta do jogador. A janela de contagem é medida pelos dias desde o último ban informados pela própria Steam."
+            },
+            "tournament_no_show": {
+              "title": "Ausência em torneio",
+              "description": "Uma equipe perdeu um check-in obrigatório do torneio. Verificado só na entrada, então um jogador que já está numa chave em andamento mantém a vaga."
+            }
+          }
         }
       },
       "language": {
@@ -3967,7 +4041,9 @@
       },
       "picker": {
         "search": "Encontrar um mapa",
-        "none": "Nenhum mapa com radar"
+        "none": "Nenhum mapa com radar",
+        "count_public": "Lineups públicas neste mapa",
+        "count_private": "Não públicas, mas visíveis para você: suas, do seu time ou aguardando revisão. As arquivadas não são contadas."
       },
       "back_to_map": "Voltar ao mapa",
       "empty": {
@@ -4937,7 +5013,9 @@
         "actor_host": "O anfitrião",
         "actor_teammate": "Um companheiro de equipe",
         "actor_organizer": "Um organizador",
-        "actor_player": "Um jogador"
+        "actor_player": "Um jogador",
+        "tournament_registration_invite": "Inscrição em Torneio",
+        "invited_you_register": "convidou você para se inscrever em"
       },
       "season_rebuild": {
         "title": "É preciso reconstruir o ELO da temporada {number}",
@@ -5606,6 +5684,9 @@
       "title": "Adicionar Equipe",
       "description": "Convidar uma equipe existente ou criar uma nova para este torneio."
     },
+    "organizer_panel": {
+      "title": "Ferramentas do organizador"
+    },
     "form": {
       "create": "Criar Torneio",
       "name": "Nome do Torneio",
@@ -5946,13 +6027,30 @@
       "teams": "Equipes",
       "format": "Formato",
       "starts": "Início",
-      "location": "Local"
+      "location": "Local",
+      "title": "Estatísticas",
+      "leaderboard_title": "Ranking de jogadores",
+      "matches": "Partidas",
+      "rounds": "Rodadas",
+      "players": "Jogadores",
+      "top_rating": "Melhor rating",
+      "col_team": "Equipe",
+      "col_rating": "Rating",
+      "col_adr": "ADR",
+      "col_kills": "K",
+      "col_deaths": "D",
+      "col_assists": "A",
+      "col_kd": "K/D",
+      "col_hs": "HS%",
+      "empty_title": "Ainda não há estatísticas",
+      "empty_description": "O ranking vai sendo preenchido conforme as partidas do torneio terminam."
     },
     "wizard": {
       "information": "Informações",
       "location": "Local",
       "match_options": "Opções de Partida",
-      "prizes": "Premiação"
+      "prizes": "Premiação",
+      "registration": "Inscrições"
     },
     "banner": {
       "label": "Banner",
@@ -6006,6 +6104,290 @@
       "expand": "Expandir",
       "collapse_all": "Recolher todos",
       "expand_all": "Expandir todos"
+    },
+    "registration": {
+      "section": "Inscrições",
+      "who": {
+        "label": "Quem pode se inscrever?",
+        "teams": {
+          "label": "Somente equipes",
+          "description": "Os capitães inscrevem uma equipe já existente. É o padrão."
+        },
+        "free_agents": {
+          "label": "Agentes livres",
+          "description": "Os jogadores se inscrevem sozinhos e são draftados em equipes equilibradas quando as inscrições fecham."
+        },
+        "both": {
+          "label": "Equipes + agentes livres",
+          "description": "Os dois. Os agentes livres restantes são draftados em equipes extras, junto com as já inscritas."
+        }
+      },
+      "min_role": {
+        "label": "Cargo mínimo",
+        "none": "Sem restrição",
+        "description": "Verificado no jogador que está sendo adicionado, não só em quem clica — assim um capitão não consegue escalar jogadores inelegíveis."
+      },
+      "rank": {
+        "label": "Faixa de ELO",
+        "min": "ELO mín.",
+        "max": "ELO máx.",
+        "description": "Deixe qualquer um em branco para não ter limite. Os dois em branco: aberto a qualquer rank.",
+        "invalid_range": "O ELO máx. precisa ser pelo menos igual ao ELO mín."
+      },
+      "regions": {
+        "label": "Regiões/Locais preferidos",
+        "description": "Onde as partidas deste torneio são hospedadas. Não é um filtro de jogador — a 5stack não tem dados de região por jogador.",
+        "empty": "Nenhuma região/local disponível no momento."
+      },
+      "invite_only": {
+        "label": "Somente por convite",
+        "description": "As inscrições não são públicas. Os organizadores convidam equipes e jogadores diretamente ou compartilham um link de convite."
+      }
+    },
+    "check_in": {
+      "section": "Check-In",
+      "required": {
+        "label": "Exigir check-in",
+        "description": "As equipes confirmam presença antes de a chave ser montada. A janela abre conforme o cronograma; confirmar é manual."
+      },
+      "who": {
+        "label": "Quem faz o check-in?",
+        "Captains": {
+          "label": "Capitães",
+          "description": "O capitão confirma pela equipe inteira. Um clique, uma equipe."
+        },
+        "Players": {
+          "label": "Todos os jogadores",
+          "description": "Cada jogador escalado confirma individualmente. A equipe entra assim que {count} fizerem check-in — os reservas não precisam."
+        },
+        "Admin": {
+          "label": "Somente o organizador",
+          "description": "Os jogadores não podem fazer o próprio check-in; você marca as equipes como presentes."
+        }
+      },
+      "opens": {
+        "label": "A janela abre"
+      },
+      "closes": {
+        "label": "A janela fecha"
+      },
+      "minutes_before_start": "minutos antes do início",
+      "window_too_short": "A janela precisa ficar aberta por pelo menos 5 minutos.",
+      "timeline": {
+        "opens": "A janela abre",
+        "closes": "A janela fecha",
+        "start": "O torneio começa"
+      },
+      "lock_note": "Assim que a janela abre, o horário de início e os dois intervalos ficam travados. As equipes já estão se guiando por esse cronograma, então mudá-lo no meio da janela deslocaria um prazo que já está correndo.",
+      "late_registration_note": "Uma equipe que se inscreve durante a janela entra com o check-in feito automaticamente — ela não pode ser penalizada por um aviso que nunca viu.",
+      "no_show_note": "Ausentes nunca são excluídos. Uma equipe que perde o check-in mantém sua escalação e apenas não entra na chave — você pode readmiti-la a qualquer momento antes de o torneio começar.",
+      "frozen": "O check-in já abriu, então o horário de início e os dois intervalos estão travados. Estenda a janela de check-in em vez disso.",
+      "required_title": "Este torneio exige check-in.",
+      "required_window": "Sua equipe precisa confirmar entre {opens} e {closes} no dia, senão não entrará na chave.",
+      "register_heading": "Inscreva sua equipe",
+      "register_hint": "Você receberá uma notificação quando o check-in abrir e um lembrete antes de ele fechar.",
+      "register_cta": "Inscrever equipe",
+      "chip_required": "check-in obrigatório",
+      "opens_at_heading": "O check-in abre às {time}",
+      "opens_at_hint": "Sua equipe está inscrita. Avisaremos quando a janela abrir.",
+      "opens_in": "abre em",
+      "closes_in": "fecha em",
+      "starts_in": "começa em",
+      "chip_action_needed": "ação necessária",
+      "chip_open": "check-in aberto",
+      "observer_heading": "O check-in está aberto",
+      "observer_hint": "As equipes confirmam presença antes de a chave ser montada. Qualquer equipe que não tiver feito check-in até {time} deixa o torneio parado para a sua análise.",
+      "confirm_heading": "Confirme a presença da sua equipe",
+      "confirm_hint": "Equipes que não fizerem check-in até {time} não entram na chave.",
+      "players_progress": "{checked} de {required} com check-in",
+      "players_heading": "Todos os jogadores precisam fazer check-in",
+      "players_hint": "Sua equipe entra assim que {count} jogadores confirmarem. Os reservas não precisam.",
+      "admin_heading": "Marque as equipes presentes",
+      "admin_hint": "Neste torneio os jogadores não podem fazer o próprio check-in. Marque cada equipe como presente antes de a janela fechar.",
+      "check_in": "Fazer check-in",
+      "mark_present": "Marcar presente",
+      "checked_in": "check-in feito",
+      "checked_in_at": "check-in feito · {time}",
+      "waiting": "aguardando",
+      "not_needed": "não precisa",
+      "role_captain": "capitão",
+      "role_starter": "titular",
+      "role_sub": "reserva",
+      "field_status": "Situação dos participantes",
+      "field_count": "{checked} de {total} com check-in",
+      "done_heading": "Vocês estão dentro. A chave é montada às {time}.",
+      "done_hint": "Confirmado pela {team} às {time}.",
+      "chip_removed": "removida",
+      "missed_heading": "Sua equipe perdeu o check-in",
+      "missed_hint": "O check-in fechou às {time} e a chave é montada sem a sua equipe.",
+      "missed_contact": "Fale com um organizador se achar que isso está errado — ele pode readmitir uma equipe a qualquer momento antes de o torneio começar.",
+      "failed": "Falha no check-in",
+      "free_agent_opens_at_hint": "Você está no grupo de agentes livres. Avisaremos quando a janela abrir.",
+      "free_agent_heading": "Confirme que você ainda está disponível",
+      "free_agent_hint": "Agentes livres que não confirmarem até {time} vão para a lista de espera e não são draftados em nenhuma equipe.",
+      "free_agent_done_heading": "Você está dentro. As equipes são draftadas às {time}.",
+      "free_agent_done_hint": "Confirmado às {time}. Você será draftado em uma equipe quando o check-in fechar.",
+      "free_agent_chip_waitlisted": "lista de espera",
+      "free_agent_missed_heading": "Você perdeu o check-in",
+      "free_agent_missed_hint": "O check-in fechou às {time} e você foi para a lista de espera. Agora você só é draftado se abrir uma vaga.",
+      "free_agent_missed_contact": "Fale com um organizador se achar que isso está errado — estender o check-in coloca você de volta no grupo do draft.",
+      "a11y_opens_in": "O check-in abre em",
+      "a11y_opens_help": "O check-in ainda não abriu. Até lá não há nada a confirmar.",
+      "a11y_closes_in": "O check-in fecha em",
+      "a11y_closes_help": "Quem não tiver feito check-in até lá não entra na chave.",
+      "a11y_starts_in": "O torneio começa em"
+    },
+    "check_in_review": {
+      "heading": "{count} equipes perderam o check-in",
+      "subheading": "O torneio está parado. Nada foi montado e nada foi excluído — cada equipe mantém sua escalação completa.",
+      "chip_held_at": "parado · continua sozinho às {time}",
+      "chip_held": "parado",
+      "roster_size": "{count} jogadores",
+      "partial_roster": "{checked} de {required} com check-in · faltam {short}",
+      "registered": "inscrita",
+      "chip_no_check_in": "sem check-in",
+      "chip_incomplete": "incompleta",
+      "readmit": "Readmitir",
+      "readmit_failed": "Falha ao readmitir a equipe",
+      "continue": "Continuar sem elas",
+      "continue_failed": "Falha ao continuar o torneio",
+      "extend": "Estender o check-in",
+      "extend_by": "+{minutes} minutos",
+      "extend_failed": "Falha ao estender o check-in",
+      "extend_hint": "Estender reabre as inscrições e avisa de novo as {count} equipes que faltam.",
+      "auto_continue": "Se ninguém agir, o torneio continua sozinho às {time} com quem fez check-in. Um torneio parado nunca morre em silêncio porque o organizador estava dormindo.",
+      "auto_continue_no_time": "Se ninguém agir, o torneio continua sozinho no horário de início com quem fez check-in.",
+      "reseed_warning": "Readmitir uma equipe monta a chave de novo. Antes do início isso é seguro, mas embaralha os cabeças de chave."
+    },
+    "free_agents": {
+      "title": "Agentes livres",
+      "signed_up": "{count} inscritos",
+      "filter_all": "Todos",
+      "filter_drafted": "Draftados",
+      "filter_waitlist": "Lista de espera",
+      "sign_up": "Inscrever-se",
+      "leave": "Sair do grupo",
+      "sign_up_alone": "Inscrever-se sozinho",
+      "sign_up_with_lobby": "Inscrever os {count}",
+      "lobby_title": "Traga seu lobby",
+      "lobby_size": "{count} de {size}",
+      "lobby_hint": "Inscrever-se com seu lobby coloca vocês {count} de uma vez, e o draft mantém vocês na mesma equipe. Aqui as equipes são de {size} jogadores.",
+      "lobby_too_big": "Seu lobby de {count} é maior que uma equipe de {size}, então não dá para draftar junto. Inscreva-se sozinho, ou reduza para {size} e tente de novo.",
+      "lobby_not_captain": "Só {name} pode inscrever o lobby, do mesmo jeito que só o líder do grupo coloca ele na fila.",
+      "lobby_already_signed_up": "{count} deles já se inscreveram sozinhos; eles mantêm o lugar na fila e entram no seu grupo.",
+      "status_drafted": "draftado",
+      "status_waitlisted": "lista de espera",
+      "status_registered": "inscrito",
+      "empty_title": "Ainda não há agentes livres",
+      "empty_description": "Os jogadores que se inscrevem sozinhos aparecem aqui e são draftados em equipes equilibradas quando as inscrições fecham.",
+      "waitlist_explainer": "{name} tem o melhor rating e ainda está na lista de espera — se inscreveu depois que as vagas encheram. O horário da inscrição decide quem pega vaga; o ELO decide só em qual equipe. É a regra funcionando, não um bug.",
+      "party_of": "Grupo de {count}",
+      "party_status_drafted": "draftados juntos",
+      "party_status_waitlisted": "na lista de espera juntos",
+      "party_kept_together": "{count} inscritos juntos",
+      "party_waitlist_explainer": "Um grupo é draftado inteiro ou não é draftado. O que não couber nas vagas restantes é pulado como um bloco e vai para a lista de espera junto, então uma inscrição menor que chegou depois pode ser draftada na frente dele.",
+      "party_deadlock": "Há {count} jogadores inscritos, mas nenhuma combinação dessas inscrições fecha uma equipe de {size}, e um grupo nunca é dividido para caber. Draftar agora não criaria nada. Mais inscrições, principalmente sozinhas, destravam a situação.",
+      "organizer": "Organizador",
+      "draft_summary": "{agents} agentes livres → {teams} equipes de {size}, {waitlisted} na lista de espera.",
+      "regenerate": "Draftar equipes",
+      "regenerated": "{count} equipes draftadas",
+      "regenerate_failed": "Falha ao draftar as equipes",
+      "join_failed": "Falha ao entrar no grupo de agentes livres",
+      "join_with_lobby_failed": "Falha ao inscrever seu lobby",
+      "leave_failed": "Falha ao sair do grupo de agentes livres",
+      "already_drafted": "As equipes já foram draftadas. Draftar de novo não faria nada — remova antes as equipes draftadas.",
+      "draft_locked": "A chave já está em andamento, então o grupo não pode mais ser draftado.",
+      "nothing_drafted": "Nenhuma equipe foi draftada",
+      "nothing_drafted_hint": "Não sobraram agentes livres suficientes para completar uma equipe de {size}, ou a chave não tem espaço.",
+      "nothing_drafted_parties": "Nenhuma combinação das inscrições fecha uma equipe de {size}, e um grupo nunca é dividido para caber."
+    },
+    "entry": {
+      "title": "Requisitos de participação",
+      "requirements_hint": "Verificado em cada jogador que está sendo adicionado, não só em quem clica. A inscrição é recusada se algum deles não atender.",
+      "locked_title": "Este torneio é somente por convite",
+      "min_role": "Cargo mínimo: {role}",
+      "elo_between": "ELO entre {min} e {max}",
+      "elo_min": "ELO {min} ou mais",
+      "elo_max": "ELO {max} ou menos",
+      "elo_yours": "o seu: {elo}",
+      "requirement_met": "atendido",
+      "requirement_failed": "não atendido",
+      "ok_chip": "pode participar",
+      "locked_chip": "bloqueado",
+      "blocked_chip": "não pode participar",
+      "invite_hint": "Peça a um organizador para convidar sua equipe ou para te enviar um link de convite."
+    },
+    "invites": {
+      "title": "Convites",
+      "description": "Convide uma equipe ou um jogador diretamente e eles poderão se inscrever mesmo com o torneio somente por convite.",
+      "add": "Convidar um jogador",
+      "pending": "Pendente",
+      "invited_by": "Convidado por {name}",
+      "revoke": "Revogar",
+      "confirm_revoke": "Revogar este convite?",
+      "revoke_description": "{name} perde o acesso, a menos que ainda tenha um link de convite válido.",
+      "empty": "Ninguém foi convidado ainda.",
+      "sent": "Convite enviado",
+      "send_failed": "Não foi possível enviar esse convite",
+      "already_invited": "Já convidado",
+      "revoked": "Convite revogado",
+      "hint_open": "Este torneio é aberto a todos, então um convite é um atalho, não um requisito.",
+      "add_team": "Convidar uma equipe",
+      "team_label": "Equipe",
+      "registration_closed": "As inscrições estão fechadas, então novos convites não podem ser enviados. Reabra as inscrições para convidar mais equipes ou jogadores."
+    },
+    "invite_links": {
+      "title": "Links de convite",
+      "tab": "Links",
+      "registration_closed": "As inscrições estão fechadas, então novos links de convite não podem ser gerados. Reabra as inscrições para distribuir mais links.",
+      "hint": "Qualquer um com o link pode se inscrever. Um link expira, limita quantas vezes pode ser usado e pode ser revogado a qualquer momento.",
+      "expires_after": "Expira após",
+      "max_uses": "Máx. de usos",
+      "expiry_never": "Nunca",
+      "expiry_minutes": "{count} minutos",
+      "expiry_hour": "1 hora",
+      "expiry_hours": "{count} horas",
+      "expiry_day": "1 dia",
+      "expiry_days": "{count} dias",
+      "uses_one": "1 uso",
+      "uses_limit": "{count} usos",
+      "uses_unlimited": "Sem limite",
+      "create": "Gerar um link",
+      "created": "Link de convite criado e copiado",
+      "create_failed": "Não foi possível criar esse link de convite",
+      "share": "Compartilhar",
+      "revoke": "Revogar",
+      "revoked": "Link de convite revogado",
+      "revoke_failed": "Não foi possível revogar esse link de convite",
+      "confirm_revoke": "Revogar este link de convite?",
+      "revoke_description": "Quem ainda tiver o link perde o acesso na hora. As equipes que já se inscreveram por ele mantêm sua vaga.",
+      "expires": "Expira",
+      "expired": "Expirado",
+      "exhausted": "Esgotado",
+      "never_expires": "Não expira",
+      "uses_count": "usos: {count}",
+      "who_used": "Quem usou",
+      "uses_empty": "Ninguém usou este link ainda.",
+      "empty": "Ainda não há links de convite."
+    },
+    "invite_accept": {
+      "title": "Você tem um convite",
+      "hint": "Aceite para liberar a inscrição neste torneio.",
+      "guest_hint": "Entre para aceitar este convite e liberar a inscrição.",
+      "accept": "Aceitar convite",
+      "sign_in": "Entrar para aceitar",
+      "dismiss": "Agora não",
+      "accepted": "Convite aceito",
+      "failed": "Não foi possível usar esse convite: {reason}",
+      "errors": {
+        "invite_not_found": "Esse link de convite não é válido para este torneio.",
+        "invite_revoked": "O organizador revogou este link de convite.",
+        "invite_expired": "Este link de convite expirou.",
+        "invite_used_up": "Este link de convite já foi usado todas as vezes que permite.",
+        "invite_registration_closed": "As inscrições para este torneio estão fechadas.",
+        "invite_rate_limited": "Tentativas de convite demais. Tente de novo daqui a um minuto.",
+        "invite_not_allowed": "Esta conta não pode aceitar este convite."
+      }
     }
   },
   "team": {
@@ -6058,7 +6440,11 @@
       "team_message": "Você foi convidado para entrar em uma Equipe",
       "invited_by": "Convidado por",
       "deny": "Recusar",
-      "accept": "Aceitar"
+      "accept": "Aceitar",
+      "tournament_registration_title": "Convite para Inscrição no Torneio",
+      "tournament_registration_message": "Você foi convidado para se inscrever em um torneio",
+      "tournament_team_registration_title": "Convite de Torneio para a Equipe",
+      "tournament_team_registration_message": "{team} foi convidada para se inscrever em um torneio"
     },
     "roles": {
       "captain": "Capitão"
@@ -7570,7 +7956,9 @@
       "requirement": "Entre na fila com {half} ou menos, ou exatamente {full} jogadores"
     },
     "temp_banned_until": "Você está temporariamente banido do matchmaking até {time}",
-    "new_invites_count": "Novos convites ({count})"
+    "new_invites_count": "Novos convites ({count})",
+    "tournament_banned": "Você está impedido de entrar em escalações de torneio e no grupo de agentes livres.",
+    "tournament_banned_until": "Você está impedido de entrar em escalações de torneio e no grupo de agentes livres até {time}."
   },
   "game_server": {
     "lan_ip": "LAN IP",

@@ -14,8 +14,25 @@ export interface LineupLike {
 
 export interface MatchLike {
   id?: string | null;
+  status?: string | null;
   lineup_1?: LineupLike | null;
   lineup_2?: LineupLike | null;
+}
+
+// The same list VoiceService.ENDED_MATCH_STATUSES holds: the API stops
+// admitting a match voice channel a few minutes after the match reaches one of
+// these, so a surface that kept offering it would draw a control that answers
+// 403.
+const ENDED_STATUSES = [
+  "Finished",
+  "Canceled",
+  "Forfeit",
+  "Surrendered",
+  "Tie",
+];
+
+export function matchHasEnded(match: MatchLike | null | undefined) {
+  return !!match?.status && ENDED_STATUSES.includes(match.status);
 }
 
 // The lineup this viewer plays for, or coaches. Organizers and spectators get
@@ -51,4 +68,20 @@ export function matchTeamLobbyId(
   }
 
   return `${match.id}:${lineupId}`;
+}
+
+// The lineup whose *voice* channel this viewer belongs to.
+//
+// Deliberately not myLineupId's rule: team chat outlives the match, because
+// talking about a game you have just played is the normal thing to do, while
+// the call closes itself once everyone has said gg.
+export function myVoiceLineupId(
+  match: MatchLike | null | undefined,
+  steamId?: string | null,
+): string | null {
+  if (matchHasEnded(match)) {
+    return null;
+  }
+
+  return myLineupId(match, steamId);
 }

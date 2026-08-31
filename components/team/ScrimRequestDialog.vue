@@ -359,7 +359,7 @@ export default {
       </DialogHeader>
 
       <div
-        class="relative overflow-hidden rounded-lg border border-[hsl(var(--tac-amber)/0.3)] [background:linear-gradient(110deg,hsl(var(--tac-amber)/0.12)_0%,hsl(var(--card)/0.4)_55%)] p-4 before:pointer-events-none before:absolute before:left-2 before:top-2 before:h-3 before:w-3 before:border-l-2 before:border-t-2 before:border-[hsl(var(--tac-amber))] before:content-[''] after:pointer-events-none after:absolute after:bottom-2 after:right-2 after:h-3 after:w-3 after:border-b-2 after:border-r-2 after:border-[hsl(var(--tac-amber))] after:content-['']"
+        class="relative overflow-hidden rounded-lg border border-[hsl(var(--tac-amber)/0.3)] [background:linear-gradient(110deg,hsl(var(--tac-amber)/0.12)_0%,hsl(var(--card)/0.4)_55%)] p-4"
       >
         <span
           class="inline-flex items-center gap-2 font-sans text-[0.6rem] uppercase tracking-[0.28em] text-[hsl(var(--tac-amber))]"

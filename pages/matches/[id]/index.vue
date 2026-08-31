@@ -128,7 +128,7 @@ watch(
 onUnmounted(() => rankSub?.unsubscribe());
 
 const heroClasses =
-  "relative min-w-0 max-w-full px-6 pt-5 pb-6 max-sm:p-4 border border-border [background:linear-gradient(180deg,hsl(var(--card)/0.2)_0%,hsl(var(--card)/0.04)_100%)] before:content-[''] before:absolute before:w-[14px] before:h-[14px] before:border-[hsl(var(--tac-amber))] before:border-solid before:top-2 before:left-2 before:border-t-2 before:border-l-2 after:content-[''] after:absolute after:w-[14px] after:h-[14px] after:border-[hsl(var(--tac-amber))] after:border-solid after:bottom-2 after:right-2 after:border-b-2 after:border-r-2";
+  "relative min-w-0 max-w-full px-6 pt-5 pb-6 max-sm:p-4 border border-border [background:linear-gradient(180deg,hsl(var(--card)/0.2)_0%,hsl(var(--card)/0.04)_100%)]";
 
 const statusBaseClasses =
   "inline-flex items-center gap-2 px-[0.7rem] py-[0.3rem] font-mono text-[0.68rem] font-bold tracking-[0.2em] uppercase border rounded";
@@ -572,11 +572,11 @@ const vsBaseClasses =
                this section appeared -- which left the same three controls on
                screen twice as soon as it had. -->
           <VoiceChannelCard
-            v-if="myLineupId"
+            v-if="myVoiceLineupId"
             show-empty
             class="mt-1"
             kind="match"
-            :channel-id="myLineupId"
+            :channel-id="myVoiceLineupId"
             :label="$t('layouts.voice_panel.team_comms')"
           />
 
@@ -766,7 +766,11 @@ import { useMatchContext } from "~/composables/useMatchContext";
 // module, so a module-scope import wins over a computed of the same name when
 // the template resolves it -- the template rendered the function's source into
 // the team lobby id, which reached Postgres as a uuid and killed chat.
-import { myLineupId as resolveMyLineupId } from "~/utilities/matchTeamLobby";
+import {
+  myLineupId as resolveMyLineupId,
+  myVoiceLineupId as resolveMyVoiceLineupId,
+} from "~/utilities/matchTeamLobby";
+import { useActiveVoiceChannel } from "~/composables/useActiveVoiceChannel";
 import { setPageChatFocus } from "~/composables/useChatPresence";
 import { chatThreadKey } from "~/utilities/chatThread";
 import socket from "~/web-sockets/Socket";
@@ -1204,6 +1208,28 @@ export default {
     // Shared with the sidebar and the pop-out, which offer the same team room.
     myLineupId() {
       return resolveMyLineupId(this.match, useAuthStore().me?.steam_id);
+    },
+    // Null once the match is over: the API closes the channel a few minutes
+    // after that and stops admitting it, so a card here would offer a call that
+    // cannot be joined -- and asking it for a roster is what used to make every
+    // visit to a finished match log a membership failure.
+    //
+    // A call that is actually running is the exception. It outlives the match by
+    // that same grace window, and taking its controls off the page the instant
+    // the last round lands would leave people talking with no way to hang up.
+    myVoiceLineupId() {
+      const live = resolveMyVoiceLineupId(
+        this.match,
+        useAuthStore().me?.steam_id,
+      );
+
+      if (live) {
+        return live;
+      }
+
+      return useActiveVoiceChannel().session.value?.id === this.myLineupId
+        ? this.myLineupId
+        : null;
     },
     // Null unless the inline chat is actually on screen, so neither being on
     // the page nor merely being allowed into the room is mistaken for reading

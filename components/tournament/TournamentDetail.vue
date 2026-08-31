@@ -14,6 +14,14 @@ import TournamentNotifications from "~/components/tournament/TournamentNotificat
 import TournamentResults from "~/components/tournament/TournamentResults.vue";
 import TournamentAwardsConfig from "~/components/tournament/TournamentAwardsConfig.vue";
 import TournamentAwardsManage from "~/components/tournament/TournamentAwardsManage.vue";
+import TournamentCheckInPanel from "~/components/tournament/TournamentCheckInPanel.vue";
+import TournamentCheckInReview from "~/components/tournament/TournamentCheckInReview.vue";
+import TournamentEntryGate from "~/components/tournament/TournamentEntryGate.vue";
+import TournamentFreeAgents from "~/components/tournament/TournamentFreeAgents.vue";
+import TournamentInvites from "~/components/tournament/TournamentInvites.vue";
+import TournamentInviteLinks from "~/components/tournament/TournamentInviteLinks.vue";
+import TournamentInviteAccept from "~/components/tournament/TournamentInviteAccept.vue";
+import TournamentStats from "~/components/tournament/TournamentStats.vue";
 import Separator from "~/components/ui/separator/Separator.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import MatchOptionsDisplay from "~/components/match/MatchOptionsDisplay.vue";
@@ -80,6 +88,7 @@ import {
 } from "~/components/ui/table";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import HeightMorph from "~/components/ui/transitions/HeightMorph.vue";
 import {
   tacticalCtaButtonClasses,
   tacticalSectionDescriptionClasses,
@@ -90,7 +99,7 @@ import {
 } from "~/utilities/tacticalClasses";
 
 const tournamentHeroClasses =
-  "relative isolate overflow-hidden rounded-lg border border-border px-7 py-6 [background:linear-gradient(180deg,hsl(var(--card)_/_0.55)_0%,hsl(var(--card)_/_0.25)_100%)] [backdrop-filter:blur(6px)] before:pointer-events-none before:absolute before:left-2 before:top-2 before:h-[14px] before:w-[14px] before:border-l-2 before:border-t-2 before:border-[hsl(var(--tac-amber))] before:content-[''] after:pointer-events-none after:absolute after:bottom-2 after:right-2 after:h-[14px] after:w-[14px] after:border-b-2 after:border-r-2 after:border-[hsl(var(--tac-amber))] after:content-[''] max-md:px-4 max-md:py-5";
+  "relative isolate overflow-hidden rounded-lg border border-border px-7 py-6 [background:linear-gradient(180deg,hsl(var(--card)_/_0.55)_0%,hsl(var(--card)_/_0.25)_100%)] [backdrop-filter:blur(6px)] max-md:px-4 max-md:py-5";
 const tournamentHeroToplineClasses =
   "order-2 flex shrink-0 flex-wrap items-start gap-2 max-sm:w-full";
 const tournamentHeroBodyClasses =
@@ -149,17 +158,19 @@ const myTeamHeaderClasses = "mb-4 flex flex-col gap-[0.35rem]";
 const myTeamLabelClasses =
   "inline-flex items-center gap-2 font-mono text-[0.72rem] uppercase tracking-[0.24em] text-muted-foreground";
 const myTeamHintClasses = "text-[0.8rem] text-muted-foreground/80";
-const tacticalCornerCardClasses =
-  "relative rounded-lg border border-border px-6 py-5 [background:linear-gradient(180deg,hsl(var(--card)_/_0.65)_0%,hsl(var(--card)_/_0.35)_100%)] [backdrop-filter:blur(6px)] before:pointer-events-none before:absolute before:-left-px before:-top-px before:h-3 before:w-3 before:border-l-2 before:border-t-2 before:border-[hsl(var(--tac-amber))] before:content-[''] after:pointer-events-none after:absolute after:-bottom-px after:-right-px after:h-3 after:w-3 after:border-b-2 after:border-r-2 after:border-[hsl(var(--tac-amber))] after:content-['']";
+// Follows ManageSection's rule: a section is a tick-and-label plus a hairline,
+// never a card. The rule has to flip axis because the column does — stacked
+// under `lg` it is a top border like tac-section-sep, and side by side with the
+// roster it becomes the left border that keeps the two columns legibly apart
+// (the grid's own gap alone reads as one undivided field at 360px).
 const tournamentAdminPanelClasses =
-  "relative border border-border p-5 [background:linear-gradient(180deg,hsl(var(--card)_/_0.65)_0%,hsl(var(--card)_/_0.35)_100%)] [backdrop-filter:blur(6px)]";
-const tournamentAdminCornerClasses =
-  "pointer-events-none absolute h-3 w-3 border-[hsl(var(--tac-amber))]";
-const tournamentAdminTitleClasses =
-  "mb-[0.35rem] font-sans text-[1.1rem] font-bold uppercase tracking-[0.05em] text-foreground";
-const tournamentAdminDescClasses =
-  "mb-4 text-[0.8rem] leading-[1.4] text-muted-foreground";
-const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
+  "relative border-t border-border/60 pt-8 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0";
+// The aside holds one tool now — Add Team. The invite and link lists moved to
+// the wide column, which is what stopped this 360px frame growing without bound
+// the moment a tournament had more than a couple of invites out.
+const tournamentAdminSectionClasses = "grid gap-3";
+const tournamentAdminSectionHintClasses =
+  "text-[0.75rem] leading-snug text-muted-foreground/80";
 
 function setTeamEnterDelay(el: Element) {
   const step = Number((el as HTMLElement).dataset.stagger ?? 0);
@@ -495,11 +506,25 @@ function clearTeamEnterDelay(el: Element) {
                 {{ $t("tournament.page.match_settings") }}
               </TabsTrigger>
               <TabsTrigger
+                v-if="freeAgentsTabVisible"
+                value="free-agents"
+                :class="tacticalTabsTriggerClasses"
+              >
+                {{ $t("tournament.free_agents.title") }}
+              </TabsTrigger>
+              <TabsTrigger
                 v-if="standingsTabVisible"
                 value="standings"
                 :class="tacticalTabsTriggerClasses"
               >
                 {{ $t("tournament.standings.title") }}
+              </TabsTrigger>
+              <TabsTrigger
+                v-if="statsTabVisible"
+                value="stats"
+                :class="tacticalTabsTriggerClasses"
+              >
+                {{ $t("tournament.stats.title") }}
               </TabsTrigger>
               <TabsTrigger
                 v-if="
@@ -557,6 +582,40 @@ function clearTeamEnterDelay(el: Element) {
           </div>
         </header>
       </PageTransition>
+
+      <!-- Ahead of the entry gate, because accepting is what answers it: a
+           visitor who arrived on an invite link sees the tournament first and
+           accepts explicitly. -->
+      <TournamentInviteAccept
+        :tournament="tournament"
+        :registration="tournamentRegistration"
+      />
+
+      <!-- Before the check-in panel invites them to register: whether they can
+           enter at all, and which gate stops them if not. -->
+      <TournamentEntryGate
+        :tournament="tournament"
+        :registration="tournamentRegistration"
+        :already-entered="!!myTeam || !!myFreeAgent"
+      />
+
+      <!-- Directly under the hero, above every tab: a check-in deadline the
+           reader scrolls past is a team that misses the bracket. -->
+      <TournamentCheckInPanel
+        :tournament="tournament"
+        :registration="tournamentRegistration"
+        :teams="checkInTeams"
+        :my-team-id="myTeamId"
+        :my-free-agent="myFreeAgent"
+        @register="handleJoinTournament"
+      />
+
+      <TournamentCheckInReview
+        v-if="checkInReviewVisible"
+        :tournament="tournament"
+        :registration="tournamentRegistration"
+        :teams="checkInTeams"
+      />
 
       <div
         v-if="tournament.status === e_tournament_status_enum.Paused"
@@ -641,12 +700,10 @@ function clearTeamEnterDelay(el: Element) {
                 </div>
               </div>
 
-              <div :class="tacticalCornerCardClasses">
-                <TournamentTeam
-                  :tournament="tournament"
-                  :team="myTeam"
-                ></TournamentTeam>
-              </div>
+              <TournamentTeam
+                :tournament="tournament"
+                :team="myTeam"
+              ></TournamentTeam>
             </div>
           </PageTransition>
         </TabsContent>
@@ -664,7 +721,28 @@ function clearTeamEnterDelay(el: Element) {
                 <div
                   class="mb-[0.85rem] flex flex-wrap items-center justify-between gap-3"
                 >
-                  <div :class="tacticalSectionLabelClasses">
+                  <!-- The organizer's tools live in the WIDE column, not the
+                       360px aside. An invite list and a link list are rows of
+                       names, URLs and timestamps; rows need width, and the aside
+                       is the one place on this page that has none. The strip
+                       stands exactly where the ROSTER label stood so the tab
+                       itself is the heading — the count rides on it rather than
+                       in a second label nobody would read twice.
+                       size="lg" is load-bearing, not decoration: the team filter
+                       to its right is another amber-indicator segmented strip,
+                       and two identical ones in a single row read as one broken
+                       control. Taller and bolder makes the hierarchy obvious. -->
+                  <AnimatedFilters
+                    v-if="tournament.is_organizer"
+                    v-model="teamsPanel"
+                    :options="teamsPanelTabs"
+                    square
+                    size="lg"
+                  />
+
+                  <!-- No tabs for a viewer: there is nothing to switch to, so
+                       the page keeps the plain label it has always had. -->
+                  <div v-else :class="tacticalSectionLabelClasses">
                     <span :class="tacticalSectionTickClasses"></span>
                     {{ $t("tournament.page.roster_section") }}
                     <span :class="tacticalSectionCountClasses">
@@ -672,7 +750,13 @@ function clearTeamEnterDelay(el: Element) {
                     </span>
                   </div>
 
-                  <div class="flex flex-wrap items-center gap-2">
+                  <!-- Filtering and expand-all are roster verbs. On the Invites
+                       or Links pane they would filter nothing and collapse
+                       nothing, so they leave with the list they act on. -->
+                  <div
+                    v-if="teamsPanel === 'roster'"
+                    class="flex flex-wrap items-center gap-2"
+                  >
                     <AnimatedFilters
                       v-if="visibleTeams.length > 1"
                       v-model="teamFilter"
@@ -740,86 +824,117 @@ function clearTeamEnterDelay(el: Element) {
                   </div>
                 </div>
 
-                <FadeSwap>
-                  <div
-                    v-if="visibleTeams.length === 0"
-                    key="no-teams"
-                    class="rounded-lg border border-dashed border-border p-10 text-center text-muted-foreground"
-                  >
-                    {{ $t("tournament.page.no_teams_yet") }}
+                <!-- Panes are v-show, never v-if: each invite pane owns a live
+                     subscription whose row count is the badge on its own tab,
+                     and TournamentInviteLinks holds the organizer's unsubmitted
+                     expiry/max-uses choice. Unmounting would zero both — the
+                     badge would only ever be right for the tab you are already
+                     looking at, which is the one tab that does not need it.
+                     HeightMorph exists for exactly this: it tweens the frame
+                     across a swap it does not control. -->
+                <HeightMorph :state="teamsPanel">
+                  <div v-show="teamsPanel === 'roster'">
+                    <FadeSwap>
+                      <div
+                        v-if="visibleTeams.length === 0"
+                        key="no-teams"
+                        class="rounded-lg border border-dashed border-border p-10 text-center text-muted-foreground"
+                      >
+                        {{ $t("tournament.page.no_teams_yet") }}
+                      </div>
+
+                      <div
+                        v-else-if="filteredTeams.length === 0"
+                        key="no-matches"
+                        class="rounded-lg border border-dashed border-border p-10 text-center text-muted-foreground"
+                      >
+                        {{ $t("tournament.teams_filter.no_matches") }}
+                      </div>
+
+                      <TransitionGroup
+                        v-else
+                        key="teams"
+                        tag="div"
+                        class="flex flex-col gap-4"
+                        enter-active-class="transition-[opacity,transform] [transition-duration:420ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] will-change-[opacity,transform] motion-reduce:![transition-duration:1ms] motion-reduce:![transition-delay:0ms]"
+                        enter-from-class="opacity-0 translate-y-3 motion-reduce:translate-y-0"
+                        leave-active-class="absolute w-full transition-[opacity,transform] duration-200 ease-in motion-reduce:![transition-duration:1ms]"
+                        leave-to-class="opacity-0 -translate-y-2 motion-reduce:translate-y-0"
+                        move-class="transition-transform duration-300 ease-out motion-reduce:!transition-none"
+                        @before-enter="setTeamEnterDelay"
+                        @after-enter="clearTeamEnterDelay"
+                        @enter-cancelled="clearTeamEnterDelay"
+                      >
+                        <div
+                          v-for="(team, index) of filteredTeams"
+                          :key="team.id"
+                          :data-stagger="Math.min(index, 12)"
+                          :class="tournamentTeamCardClasses"
+                        >
+                          <TournamentTeam
+                            :tournament="tournament"
+                            :team="team"
+                            :collapsible="true"
+                            :collapsed="collapsedTeams.has(team.id)"
+                            @toggle-collapsed="toggleTeamCollapsed(team.id)"
+                          ></TournamentTeam>
+                        </div>
+                      </TransitionGroup>
+                    </FadeSwap>
                   </div>
 
-                  <div
-                    v-else-if="filteredTeams.length === 0"
-                    key="no-matches"
-                    class="rounded-lg border border-dashed border-border p-10 text-center text-muted-foreground"
-                  >
-                    {{ $t("tournament.teams_filter.no_matches") }}
-                  </div>
-
-                  <TransitionGroup
-                    v-else
-                    key="teams"
-                    tag="div"
-                    class="flex flex-col gap-4"
-                    enter-active-class="transition-[opacity,transform] [transition-duration:420ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] will-change-[opacity,transform] motion-reduce:![transition-duration:1ms] motion-reduce:![transition-delay:0ms]"
-                    enter-from-class="opacity-0 translate-y-3 motion-reduce:translate-y-0"
-                    leave-active-class="absolute w-full transition-[opacity,transform] duration-200 ease-in motion-reduce:![transition-duration:1ms]"
-                    leave-to-class="opacity-0 -translate-y-2 motion-reduce:translate-y-0"
-                    move-class="transition-transform duration-300 ease-out motion-reduce:!transition-none"
-                    @before-enter="setTeamEnterDelay"
-                    @after-enter="clearTeamEnterDelay"
-                    @enter-cancelled="clearTeamEnterDelay"
-                  >
-                    <div
-                      v-for="(team, index) of filteredTeams"
-                      :key="team.id"
-                      :data-stagger="Math.min(index, 12)"
-                      :class="tournamentTeamCardClasses"
-                    >
-                      <TournamentTeam
+                  <!-- v-if on the ROLE, v-show on the TAB. A viewer must never
+                       mount these at all (they are organizer-only
+                       subscriptions); an organizer must never unmount them. -->
+                  <template v-if="tournament.is_organizer">
+                    <div v-show="teamsPanel === 'invites'">
+                      <TournamentInvites
                         :tournament="tournament"
-                        :team="team"
-                        :collapsible="true"
-                        :collapsed="collapsedTeams.has(team.id)"
-                        @toggle-collapsed="toggleTeamCollapsed(team.id)"
-                      ></TournamentTeam>
+                        :registration="tournamentRegistration"
+                        @count="adminInviteCount = $event"
+                      />
                     </div>
-                  </TransitionGroup>
-                </FadeSwap>
+
+                    <div v-show="teamsPanel === 'links'">
+                      <TournamentInviteLinks
+                        :tournament="tournament"
+                        @count="adminLinkCount = $event"
+                      />
+                    </div>
+                  </template>
+                </HeightMorph>
               </div>
 
+              <!-- The aside is back to its one job: put a team in the bracket.
+                   `sticky` is kept precisely because the panel is short again —
+                   a column taller than the viewport cannot follow anyone
+                   anywhere, which is why it was wrong while three tools were
+                   stacked here. Beside a roster of thirty teams, a short Add
+                   Team frame that stays in reach is the whole point. -->
               <div v-if="tournament.is_organizer" class="lg:sticky lg:top-6">
                 <PageTransition :delay="150">
                   <aside :class="tournamentAdminPanelClasses">
-                    <div
-                      :class="[
-                        tournamentAdminCornerClasses,
-                        '-left-px -top-px border-l-2 border-t-2',
-                      ]"
-                    ></div>
-                    <div
-                      :class="[
-                        tournamentAdminCornerClasses,
-                        '-bottom-px -right-px border-b-2 border-r-2',
-                      ]"
-                    ></div>
-
-                    <h3 :class="tournamentAdminTitleClasses">
-                      {{ $t("tournament.add_team.title") }}
-                    </h3>
-                    <p :class="tournamentAdminDescClasses">
-                      {{ $t("tournament.add_team.description") }}
-                    </p>
-                    <div :class="tournamentAdminBodyClasses">
+                    <section :class="tournamentAdminSectionClasses">
+                      <div :class="[tacticalSectionLabelClasses, 'mb-0']">
+                        <span :class="tacticalSectionTickClasses"></span>
+                        {{ $t("tournament.add_team.title") }}
+                      </div>
+                      <p :class="tournamentAdminSectionHintClasses">
+                        {{ $t("tournament.add_team.description") }}
+                      </p>
                       <TournamentJoinForm
                         :tournament="tournament"
                       ></TournamentJoinForm>
-                    </div>
+                    </section>
                   </aside>
                 </PageTransition>
               </div>
             </div>
+          </PageTransition>
+        </TabsContent>
+        <TabsContent v-if="freeAgentsTabVisible" value="free-agents">
+          <PageTransition>
+            <TournamentFreeAgents :tournament="tournament" />
           </PageTransition>
         </TabsContent>
         <TabsContent v-if="standingsTabVisible" value="standings">
@@ -829,6 +944,11 @@ function clearTeamEnterDelay(el: Element) {
               :show-standings="true"
               :show-matches="false"
             />
+          </PageTransition>
+        </TabsContent>
+        <TabsContent v-if="statsTabVisible" value="stats">
+          <PageTransition>
+            <TournamentStats :tournament="tournament" />
           </PageTransition>
         </TabsContent>
         <TabsContent
@@ -994,7 +1114,11 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { useAuthStore } from "~/stores/AuthStore";
 import tournamentTeamFields from "~/graphql/tournamentTeamFields";
 import { playerFields } from "~/graphql/playerFields";
-import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
+import {
+  generateMutation,
+  generateQuery,
+  generateSubscription,
+} from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 import { formatPrizePool } from "~/utilities/prizePool";
@@ -1009,7 +1133,13 @@ export default {
   data() {
     return {
       myTeam: undefined,
-      tournament: undefined,
+      // Typed rather than left to infer `undefined`: a bare `undefined` narrows
+      // to `never`, and every `tournament.x` in this file's 1000-line template
+      // then type-errors on a value that is plainly an object at runtime.
+      tournament: undefined as Record<string, any> | undefined,
+      tournamentRegistration: null as Record<string, any> | null,
+      checkInTeams: [] as Array<Record<string, any>>,
+      myFreeAgent: null as Record<string, any> | null,
       tournamentDialog: false,
       teamSearchQuery: undefined,
       settingsDialogOpen: false,
@@ -1021,6 +1151,15 @@ export default {
       resumeDialogOpen: false,
       organizerPopoversOpen: {},
       activeTab: "overview",
+      // Which pane the wide column of the Teams tab is showing. Organizer-only
+      // in the UI, but always "roster" for everyone else, so every v-show below
+      // reads true for a viewer without a second code path.
+      teamsPanel: "roster",
+      // Reported up by the two panels rather than counted here: they already
+      // hold the live subscriptions, and a second aggregate subscription just
+      // to badge a tab would be a socket paying for a number we already have.
+      adminInviteCount: 0,
+      adminLinkCount: 0,
       teamFilter: "all",
       collapsedTeams: new Set(),
       myTeamLoaded: false,
@@ -1414,6 +1553,158 @@ export default {
           }
         },
       },
+      // Deliberately separate from the main tournament subscription: these
+      // columns only exist after the registration/check-in migration, and a
+      // field the server has never heard of fails the whole document. Kept
+      // apart, a stack that has not migrated yet loses the check-in surfaces
+      // and nothing else.
+      tournamentRegistration: {
+        query: generateSubscription({
+          tournaments_by_pk: [
+            {
+              id: $("tournamentId", "uuid!"),
+            },
+            {
+              id: true,
+              registration_type: true,
+              invite_only: true,
+              min_role: true,
+              min_elo: true,
+              max_elo: true,
+              // The two gates a would-be entrant hits: the role floor (server
+              // truth, session-scoped) and whether invite-only has been
+              // unlocked for them. Without both, "Join" is offered and then
+              // fails with a raw Hasura error.
+              meets_min_role: true,
+              registration_unlocked: true,
+              check_in_required: true,
+              check_in_setting: true,
+              check_in_opens_before_minutes: true,
+              check_in_closes_before_minutes: true,
+              check_in_ends_at: true,
+              check_in_open: true,
+              check_in_started: true,
+              can_review_check_in: true,
+              missed_check_in_count: true,
+            },
+          ],
+          // Zeus types for the new columns land with `yarn codegen`; until
+          // then the selection is asserted rather than inferred.
+        } as any),
+        variables: function (this: any) {
+          return {
+            tournamentId: this.$route.params.tournamentId,
+          };
+        },
+        result: function (this: any, { data }: { data: any }) {
+          this.tournamentRegistration = data?.tournaments_by_pk ?? null;
+        },
+      },
+      // Only ever opened for a tournament that actually requires check-in —
+      // it duplicates the roster the main subscription already carries, and
+      // the 99% of tournaments with check-in off should not pay for it.
+      checkInTeams: {
+        query: generateSubscription({
+          tournament_teams: [
+            {
+              where: {
+                tournament_id: {
+                  _eq: $("tournamentId", "uuid!"),
+                },
+              },
+              order_by: [
+                {
+                  created_at: order_by.asc,
+                },
+              ],
+            },
+            {
+              id: true,
+              name: true,
+              short_name: true,
+              created_at: true,
+              checked_in_at: true,
+              owner_steam_id: true,
+              captain_steam_id: true,
+              // can_manage_tournament_team: the exact predicate the check-in
+              // action accepts. Re-deriving it from captain/owner locks out a
+              // roster Admin the API would have let through.
+              can_manage: true,
+              team: {
+                id: true,
+                name: true,
+                short_name: true,
+                avatar_url: true,
+              },
+              roster: [
+                {},
+                {
+                  player_steam_id: true,
+                  role: true,
+                  checked_in_at: true,
+                  player: playerFields,
+                },
+              ],
+              roster_aggregate: [
+                {},
+                {
+                  aggregate: {
+                    count: true,
+                  },
+                },
+              ],
+            },
+          ],
+        } as any),
+        variables: function (this: any) {
+          return {
+            tournamentId: this.$route.params.tournamentId,
+          };
+        },
+        skip: function (this: any): boolean {
+          return this.tournamentRegistration?.check_in_required !== true;
+        },
+        result: function (this: any, { data }: { data: any }) {
+          this.checkInTeams = data?.tournament_teams ?? [];
+        },
+      },
+      // An undrafted free agent has no tournament_teams row at all, so every
+      // team-shaped check-in surface misses them — while the check-in job
+      // still pushes them "confirm your spot". This row is what lets them.
+      myFreeAgent: {
+        query: generateSubscription({
+          tournament_free_agents: [
+            {
+              where: {
+                tournament_id: {
+                  _eq: $("tournamentId", "uuid!"),
+                },
+                player_steam_id: {
+                  _eq: $("steamId", "bigint!"),
+                },
+              },
+            },
+            {
+              id: true,
+              status: true,
+              checked_in_at: true,
+              tournament_team_id: true,
+            },
+          ],
+        }),
+        variables: function (this: any) {
+          return {
+            tournamentId: this.$route.params.tournamentId,
+            steamId: this.me?.steam_id,
+          };
+        },
+        skip: function (this: any): boolean {
+          return !this.me?.steam_id || !this.freeAgentsTabVisible;
+        },
+        result: function (this: any, { data }: { data: any }) {
+          this.myFreeAgent = data?.tournament_free_agents?.[0] ?? null;
+        },
+      },
       tournament_teams: {
         query: typedGql("subscription")({
           tournament_teams: [
@@ -1611,6 +1902,12 @@ export default {
         e_tournament_status_enum.Setup,
         e_tournament_status_enum.RegistrationOpen,
         e_tournament_status_enum.RegistrationClosed,
+        // Nothing is seeded while the tournament is held for review, but
+        // re-admitting one team re-runs assign_seeds_to_teams, which nulls
+        // eligible_at for every team still missing a check-in. Treating the
+        // hold as "started" would filter those teams off the Teams tab even
+        // though they are still registered with a full roster.
+        e_tournament_status_enum.CheckInReview,
       ].includes(status);
     },
     visibleTeams() {
@@ -1630,7 +1927,10 @@ export default {
     incompleteTeams() {
       return this.visibleTeams.filter((team) => !team.eligible_at);
     },
-    filteredTeams() {
+    // Return type spelled out because `tournament.teams` is `any`: without it
+    // the v-for index below widens to `string | number` (the object-iteration
+    // signature) and every numeric use of it fails to type-check.
+    filteredTeams(): Array<Record<string, any>> {
       if (this.teamFilter === "incomplete") return this.incompleteTeams;
       if (this.teamFilter === "ready") {
         return this.visibleTeams.filter((team) => !!team.eligible_at);
@@ -1657,6 +1957,29 @@ export default {
         },
       ];
     },
+    // Every badge counts exactly what its own pane lists, which is why Roster
+    // carries the FILTERED total rather than the registered one: the number on
+    // the tab and the number of cards under it can then never disagree, and the
+    // per-filter breakdown is already on the chip strip beside it.
+    teamsPanelTabs() {
+      return [
+        {
+          key: "roster",
+          label: this.$t("tournament.page.roster_section"),
+          count: this.filteredTeams.length,
+        },
+        {
+          key: "invites",
+          label: this.$t("tournament.invites.title"),
+          count: this.adminInviteCount,
+        },
+        {
+          key: "links",
+          label: this.$t("tournament.invite_links.tab"),
+          count: this.adminLinkCount,
+        },
+      ];
+    },
     allTeamsCollapsed() {
       const teams = this.filteredTeams;
       if (teams.length === 0) return false;
@@ -1673,6 +1996,9 @@ export default {
         return "pending";
       }
       if (s === e_tournament_status_enum.Paused) return "paused";
+      // Held for an organizer, not running and not cancelled — the warning
+      // tier is the one that reads as "this needs a decision".
+      if (s === e_tournament_status_enum.CheckInReview) return "paused";
       if (s === e_tournament_status_enum.Finished) return "finished";
       if (
         s === e_tournament_status_enum.Cancelled ||
@@ -1695,8 +2021,16 @@ export default {
         tabs.push("match-settings");
       }
 
+      if (this.freeAgentsTabVisible) {
+        tabs.push("free-agents");
+      }
+
       if (this.standingsTabVisible) {
         tabs.push("standings");
+      }
+
+      if (this.statsTabVisible) {
+        tabs.push("stats");
       }
 
       if (
@@ -1726,6 +2060,28 @@ export default {
         status === e_tournament_status_enum.Paused ||
         status === e_tournament_status_enum.Finished
       );
+    },
+    freeAgentsTabVisible() {
+      const type = this.tournamentRegistration?.registration_type;
+      return type === "free_agents" || type === "both";
+    },
+    // The leaderboard has nothing in it until maps have been played, which is
+    // exactly when standings become meaningful too.
+    statsTabVisible() {
+      return this.standingsTabVisible;
+    },
+    // can_review_check_in already answers "is this session allowed to act on
+    // the hold"; the status check keeps the panel off every other screen.
+    checkInReviewVisible() {
+      const tournament = this.tournament as Record<string, any> | undefined;
+      return (
+        tournament?.status === e_tournament_status_enum.CheckInReview &&
+        (this.tournamentRegistration?.can_review_check_in === true ||
+          tournament?.is_organizer === true)
+      );
+    },
+    myTeamId() {
+      return (this.myTeam as Record<string, any> | undefined)?.id ?? null;
     },
   },
   methods: {

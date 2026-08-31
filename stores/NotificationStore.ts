@@ -7,6 +7,10 @@ import { generateMutation } from "~/graphql/graphqlGen";
 import { playerFields } from "~/graphql/playerFields";
 import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
 import { MY_SCHEDULE_TASKS_SUBSCRIPTION } from "~/graphql/leagues";
+import {
+  MY_TOURNAMENT_INVITES_SUBSCRIPTION,
+  MY_TOURNAMENT_TEAM_INVITES_SUBSCRIPTION,
+} from "~/graphql/tournamentInvites";
 
 export type LeagueScheduleTask = {
   id: string;
@@ -82,6 +86,26 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
 
   const team_invites = ref<any[]>([]);
   const tournament_team_invites = ref<any[]>([]);
+  // An invite to REGISTER for a tournament, which is a different thing from
+  // `tournament_team_invites` (an invite to join a team already registered for
+  // one). They are separate tables, separate notifications and separate
+  // acceptInvite type strings — see graphql/tournamentInvites.ts.
+  //
+  // One table, two documents: a registration invite addresses either a player
+  // or a team, and the two are matched by different predicates (a steam id vs a
+  // team's owner/captain). Merged into one `_or` the player half would have to
+  // widen to every member of every team the viewer belongs to.
+  const tournament_player_invites = ref<any[]>([]);
+  const tournament_team_registration_invites = ref<any[]>([]);
+  const tournament_invites = computed(() =>
+    [
+      ...tournament_player_invites.value,
+      ...tournament_team_registration_invites.value,
+    ].sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+    ),
+  );
   const draft_invites = ref<any[]>([]);
   const notifications = ref<Notification[]>([]);
   const seasonRebuilds = ref<Array<{ id: any; number: number | null }>>([]);
@@ -294,6 +318,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
       !!unreadNewsArticle.value ||
       team_invites.value.length > 0 ||
       tournament_team_invites.value.length > 0 ||
+      tournament_invites.value.length > 0 ||
       draft_invites.value.length > 0 ||
       scheduleTasks.value.length > 0 ||
       personalUnread.value > 0,
@@ -306,6 +331,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
       (unreadNewsArticle.value ? 1 : 0) +
       team_invites.value.length +
       tournament_team_invites.value.length +
+      tournament_invites.value.length +
       draft_invites.value.length +
       scheduleTasks.value.length +
       personalUnread.value +
@@ -412,6 +438,44 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
         .subscribe({
           next: ({ data }) => {
             tournament_team_invites.value = data.tournament_team_invites;
+          },
+        }),
+    );
+
+    // Two documents rather than one `_or`: the player half is addressed to a
+    // steam id and the team half to a team's owner/captain, so merging them
+    // would have to widen the player half to every member of every team.
+    subscribe(
+      "notifications:tournament_invites",
+      getGraphqlClient()
+        .subscribe({
+          query: MY_TOURNAMENT_INVITES_SUBSCRIPTION,
+          variables: { steamId: steam_id },
+        })
+        .subscribe({
+          next: ({ data }: { data?: any }) => {
+            tournament_player_invites.value = data?.tournament_invites ?? [];
+          },
+          error: () => {
+            tournament_player_invites.value = [];
+          },
+        }),
+    );
+
+    subscribe(
+      "notifications:tournament_team_registration_invites",
+      getGraphqlClient()
+        .subscribe({
+          query: MY_TOURNAMENT_TEAM_INVITES_SUBSCRIPTION,
+          variables: { steamId: steam_id },
+        })
+        .subscribe({
+          next: ({ data }: { data?: any }) => {
+            tournament_team_registration_invites.value =
+              data?.tournament_invites ?? [];
+          },
+          error: () => {
+            tournament_team_registration_invites.value = [];
           },
         }),
     );
@@ -590,7 +654,8 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
         })
         .subscribe({
           next: ({ data }) => {
-            lastReadNewsAt.value = data.players_by_pk?.last_read_news_at ?? null;
+            lastReadNewsAt.value =
+              data.players_by_pk?.last_read_news_at ?? null;
           },
         }),
     );
@@ -609,6 +674,8 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
         const { unsubscribe } = useSubscriptionManager();
         unsubscribe("notifications:team_invites");
         unsubscribe("notifications:tournament_team_invites");
+        unsubscribe("notifications:tournament_invites");
+        unsubscribe("notifications:tournament_team_registration_invites");
         unsubscribe("notifications:draft_invites");
         unsubscribe("notifications:notifications");
         unsubscribe("notifications:schedule_tasks");
@@ -617,6 +684,8 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
         unsubscribe("notifications:news_read_state");
         seasonRebuilds.value = [];
         scheduleTaskSeasons.value = [];
+        tournament_player_invites.value = [];
+        tournament_team_registration_invites.value = [];
         lastReadNewsAt.value = null;
       }
     },
@@ -626,6 +695,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
   return {
     team_invites,
     tournament_team_invites,
+    tournament_invites,
     draft_invites,
     notifications: visibleNotifications,
     seasonRebuildCount,

@@ -1229,6 +1229,10 @@
     },
     "system_telemetry": {
       "title": "Flottelemetri",
+      "filter": {
+        "all": "Hela flottan",
+        "self_hosted": "Endast egenhostade"
+      },
       "no_data": "Inga data rapporterade än",
       "installs": {
         "title": "Paneler",
@@ -1810,6 +1814,10 @@
           "MatchChatMessage": {
             "title": "Meddelanden i matchchatt",
             "description": "Ett nytt meddelande i en matchs rum."
+          },
+          "TournamentInvite": {
+            "title": "Inbjudningar till turneringsanmälan",
+            "description": "En arrangör har bjudit in dig att anmäla dig till en turnering."
           }
         },
         "quiet_hours": {
@@ -2617,6 +2625,72 @@
           "server_default": "Serverns standard",
           "invalid_number": "Ange ett heltal som är 0 eller större.",
           "updated": "Utility-inställningarna uppdaterade"
+        },
+        "sanctions": {
+          "title": "Sanktioner",
+          "section": "Automatiska sanktioner",
+          "description": "Hur 5stack bestraffar det som den själv kan upptäcka. Varje källa räknar förseelser inom en period och tillämpar motsvarande steg i en upptrappningsskala.",
+          "defaults_note": "Värdena nedan är de som 5stack alltid har använt. Att läsa den här sidan ändrar ingenting — bara en redigering gör det.",
+          "unavailable": "Inga sanktionskällor tillgängliga. API:et kanske inte har kört sanktionsmigreringen än.",
+          "load_failed": "Kunde inte läsa in sanktionspolicyn",
+          "reset": "Återställ till standard",
+          "permanent": "Permanent",
+          "platform_ban_narrowed": "Vid varje omfattning utom ”Blockerar båda” skriver den här källan inte längre en plattformsomfattande avstängning, utan bara en avgränsad karantän — ett VAC-bannat konto behåller den andra halvan av 5stack.",
+          "threshold": {
+            "label": "Sanktionera från",
+            "first_offence": "Redan den första förseelsen bestraffas.",
+            "free_passes": "De första {count} förseelserna är gratis.",
+            "free_passes_one": "Den första förseelsen är gratis."
+          },
+          "window": {
+            "label": "Räkningsperiod (dagar)",
+            "never": "Förfaller aldrig — varje registrerad förseelse räknas fortfarande.",
+            "decays": "Förseelser äldre än {count} dagar slutar räknas.",
+            "decays_one": "Förseelser äldre än en dag slutar räknas."
+          },
+          "ladder": {
+            "label": "Upptrappningssteg",
+            "add": "Lägg till steg",
+            "remove": "Ta bort steg",
+            "clamp_hint": "Det sista steget upprepas för alltid. Sätt ett steg till 0 för att göra sanktionen permanent.",
+            "occurrence": "Förseelse {count}",
+            "occurrence_and_after": "Förseelse {count}+",
+            "unit": {
+              "minutes": "Minuter",
+              "hours": "Timmar",
+              "days": "Dagar"
+            },
+            "unit_value": {
+              "minutes": "{count} minuter",
+              "hours": "{count} timmar",
+              "days": "{count} dagar",
+              "minutes_one": "1 minut",
+              "hours_one": "1 timme",
+              "days_one": "1 dag"
+            }
+          },
+          "scope": {
+            "label": "Vad den blockerar"
+          },
+          "scopes": {
+            "matchmaking": "Blockerar matchmaking",
+            "tournaments": "Blockerar turneringar",
+            "both": "Blockerar båda"
+          },
+          "sources": {
+            "match_abandon": {
+              "title": "Övergiven match",
+              "description": "En spelare lämnade en match hen stod i truppen för, eller anslöt aldrig. Tiden räknas från den senaste övergivna matchen, inte från nu."
+            },
+            "vac_ban": {
+              "title": "VAC-/spelavstängning",
+              "description": "Steam rapporterar en VAC- eller spelavstängning på spelarens konto. Räkningsperioden mäts mot Steams eget antal dagar sedan senaste avstängning."
+            },
+            "tournament_no_show": {
+              "title": "Utebliven i turnering",
+              "description": "Ett lag missade en obligatorisk turneringsincheckning. Kontrolleras bara vid ingången, så en spelare som redan är i ett pågående slutspelsträd behåller sin plats."
+            }
+          }
         }
       },
       "language": {
@@ -3967,7 +4041,9 @@
       },
       "picker": {
         "search": "Hitta en karta",
-        "none": "Inga kartor med radar"
+        "none": "Inga kartor med radar",
+        "count_public": "Offentliga lineups på den här kartan",
+        "count_private": "Inte offentliga, men synliga för dig — dina, ditt lags eller under granskning. Arkiverade räknas inte."
       },
       "back_to_map": "Tillbaka till kartan",
       "empty": {
@@ -4937,7 +5013,9 @@
         "actor_host": "Värden",
         "actor_teammate": "En lagkamrat",
         "actor_organizer": "En arrangör",
-        "actor_player": "En spelare"
+        "actor_player": "En spelare",
+        "tournament_registration_invite": "Turneringsanmälan",
+        "invited_you_register": "bjöd in dig att anmäla dig till"
       },
       "season_rebuild": {
         "title": "ELO för säsong {number} behöver räknas om",
@@ -5606,6 +5684,9 @@
       "title": "Lägg till lag",
       "description": "Bjud in ett befintligt lag eller skapa ett nytt för denna turnering."
     },
+    "organizer_panel": {
+      "title": "Arrangörsverktyg"
+    },
     "form": {
       "create": "Skapa turnering",
       "name": "Turneringsnamn",
@@ -5946,13 +6027,30 @@
       "teams": "Lag",
       "format": "Format",
       "starts": "Startar",
-      "location": "Plats"
+      "location": "Plats",
+      "title": "Statistik",
+      "leaderboard_title": "Spelartopplista",
+      "matches": "Matcher",
+      "rounds": "Ronder",
+      "players": "Spelare",
+      "top_rating": "Bästa rating",
+      "col_team": "Lag",
+      "col_rating": "Rating",
+      "col_adr": "ADR",
+      "col_kills": "K",
+      "col_deaths": "D",
+      "col_assists": "A",
+      "col_kd": "K/D",
+      "col_hs": "HS%",
+      "empty_title": "Ingen statistik än",
+      "empty_description": "Topplistan fylls på efterhand som turneringens matcher spelas klart."
     },
     "wizard": {
       "information": "Information",
       "location": "Plats",
       "match_options": "Matchalternativ",
-      "prizes": "Priser"
+      "prizes": "Priser",
+      "registration": "Anmälan"
     },
     "banner": {
       "label": "Banner",
@@ -6006,6 +6104,290 @@
       "expand": "Fäll ut",
       "collapse_all": "Fäll ihop alla",
       "expand_all": "Fäll ut alla"
+    },
+    "registration": {
+      "section": "Anmälan",
+      "who": {
+        "label": "Vem får anmäla sig?",
+        "teams": {
+          "label": "Endast lag",
+          "description": "Lagkaptener anmäler ett befintligt lag. Standardvalet."
+        },
+        "free_agents": {
+          "label": "Free agents",
+          "description": "Spelare anmäler sig ensamma och draftas in i jämna lag när anmälan stänger."
+        },
+        "both": {
+          "label": "Lag + free agents",
+          "description": "Båda. Free agents som blir över draftas in i extra lag vid sidan av de anmälda."
+        }
+      },
+      "min_role": {
+        "label": "Lägsta roll",
+        "none": "Ingen begränsning",
+        "description": "Kontrolleras mot spelaren som läggs till, inte bara mot den som klickar — så att en lagkapten inte kan ta in spelare som inte får delta."
+      },
+      "rank": {
+        "label": "ELO-intervall",
+        "min": "Elo min",
+        "max": "Elo max",
+        "description": "Lämna något av fälten tomt för ingen gräns. Båda tomma är öppet för alla ranks.",
+        "invalid_range": "Elo max måste vara minst lika högt som Elo min."
+      },
+      "regions": {
+        "label": "Föredragna regioner",
+        "description": "Var turneringens matcher hostas. Det är inget spelarfilter — 5stack har ingen regionsdata per spelare.",
+        "empty": "Inga regioner tillgängliga just nu."
+      },
+      "invite_only": {
+        "label": "Endast med inbjudan",
+        "description": "Anmälan är stängd för allmänheten. Arrangörerna bjuder in lag och spelare direkt, eller delar en inbjudningslänk."
+      }
+    },
+    "check_in": {
+      "section": "Incheckning",
+      "required": {
+        "label": "Kräv incheckning",
+        "description": "Lagen bekräftar att de deltar innan slutspelsträdet sätts. Fönstret öppnar enligt schemat; att bekräfta är manuellt."
+      },
+      "who": {
+        "label": "Vem checkar in?",
+        "Captains": {
+          "label": "Lagkaptener",
+          "description": "Lagkaptenen bekräftar för hela laget. Ett klick, ett lag."
+        },
+        "Players": {
+          "label": "Varje spelare",
+          "description": "Varje spelare i truppen bekräftar själv. Laget är med så snart {count} har checkat in — reserver behöver inte."
+        },
+        "Admin": {
+          "label": "Endast arrangören",
+          "description": "Spelarna kan inte checka in sig själva; du markerar lagen som närvarande."
+        }
+      },
+      "opens": {
+        "label": "Fönstret öppnar"
+      },
+      "closes": {
+        "label": "Fönstret stänger"
+      },
+      "minutes_before_start": "minuter före start",
+      "window_too_short": "Fönstret måste vara öppet i minst 5 minuter.",
+      "timeline": {
+        "opens": "Fönstret öppnar",
+        "closes": "Fönstret stänger",
+        "start": "Turneringen startar"
+      },
+      "lock_note": "När fönstret väl har öppnat låses starttiden och båda förskjutningarna. Lagen planerar redan efter det här schemat, så att flytta det mitt i fönstret skulle rubba en deadline som redan löper.",
+      "late_registration_note": "Ett lag som anmäler sig under fönstret checkas in automatiskt — det kan inte straffas för en uppmaning det aldrig fick se.",
+      "no_show_note": "Lag som uteblir raderas aldrig. Ett lag som missar incheckningen behåller sin trupp och hamnar bara inte i slutspelsträdet — du kan återinsätta det när som helst innan turneringen drar igång.",
+      "frozen": "Incheckningen har redan öppnat, så starttiden och båda förskjutningarna är låsta. Förläng incheckningsfönstret i stället.",
+      "required_title": "Den här turneringen kräver incheckning.",
+      "required_window": "Ditt lag måste bekräfta mellan {opens} och {closes} på dagen, annars placeras det inte i slutspelsträdet.",
+      "register_heading": "Anmäl ditt lag",
+      "register_hint": "Du får en avisering när incheckningen öppnar och en påminnelse innan den stänger.",
+      "register_cta": "Anmäl lag",
+      "chip_required": "incheckning krävs",
+      "opens_at_heading": "Incheckningen öppnar {time}",
+      "opens_at_hint": "Ditt lag är anmält. Vi hör av oss när fönstret öppnar.",
+      "opens_in": "öppnar om",
+      "closes_in": "stänger om",
+      "starts_in": "startar om",
+      "chip_action_needed": "åtgärd krävs",
+      "chip_open": "incheckning öppen",
+      "observer_heading": "Incheckningen är öppen",
+      "observer_hint": "Lagen bekräftar att de deltar innan slutspelsträdet sätts. Varje lag som inte har checkat in {time} pausar turneringen för din granskning.",
+      "confirm_heading": "Bekräfta att ditt lag deltar",
+      "confirm_hint": "Lag som inte har checkat in {time} placeras inte i slutspelsträdet.",
+      "players_progress": "{checked} av {required} incheckade",
+      "players_heading": "Alla spelare måste checka in",
+      "players_hint": "Ditt lag är med så snart {count} spelare bekräftar. Reserver behöver inte.",
+      "admin_heading": "Markera lag som närvarande",
+      "admin_hint": "Spelarna kan inte checka in sig själva i den här turneringen. Markera varje lag som närvarande innan fönstret stänger.",
+      "check_in": "Checka in",
+      "mark_present": "Markera närvarande",
+      "checked_in": "incheckad",
+      "checked_in_at": "incheckad · {time}",
+      "waiting": "väntar",
+      "not_needed": "behövs inte",
+      "role_captain": "lagkapten",
+      "role_starter": "startspelare",
+      "role_sub": "reserv",
+      "field_status": "Deltagarstatus",
+      "field_count": "{checked} av {total} incheckade",
+      "done_heading": "Ni är med. Slutspelsträdet sätts {time}.",
+      "done_hint": "Bekräftat för {team} {time}.",
+      "chip_removed": "borttaget",
+      "missed_heading": "Ditt lag missade incheckningen",
+      "missed_hint": "Incheckningen stängde {time} och slutspelsträdet sätts utan ditt lag.",
+      "missed_contact": "Kontakta en arrangör om du tycker att det blivit fel — hen kan återinsätta ett lag när som helst innan turneringen drar igång.",
+      "failed": "Incheckningen misslyckades",
+      "free_agent_opens_at_hint": "Du är i free agent-poolen. Vi hör av oss när fönstret öppnar.",
+      "free_agent_heading": "Bekräfta att du fortfarande är tillgänglig",
+      "free_agent_hint": "Free agents som inte har bekräftat {time} flyttas till väntelistan och draftas inte in i något lag.",
+      "free_agent_done_heading": "Du är med. Lagen draftas {time}.",
+      "free_agent_done_hint": "Bekräftat {time}. Du draftas in i ett lag när incheckningen stänger.",
+      "free_agent_chip_waitlisted": "väntelista",
+      "free_agent_missed_heading": "Du missade incheckningen",
+      "free_agent_missed_hint": "Incheckningen stängde {time} och du flyttades till väntelistan. Nu draftas du bara om en plats blir ledig.",
+      "free_agent_missed_contact": "Kontakta en arrangör om du tycker att det blivit fel — en förlängd incheckning sätter tillbaka dig i draftpoolen.",
+      "a11y_opens_in": "Incheckningen öppnar om",
+      "a11y_opens_help": "Incheckningen har inte öppnat än. Det finns inget att bekräfta förrän den gör det.",
+      "a11y_closes_in": "Incheckningen stänger om",
+      "a11y_closes_help": "Alla som inte har checkat in till dess placeras inte i slutspelsträdet.",
+      "a11y_starts_in": "Turneringen startar om"
+    },
+    "check_in_review": {
+      "heading": "{count} lag missade incheckningen",
+      "subheading": "Turneringen är pausad. Ingenting har satts och ingenting har raderats — varje lag behåller hela sin trupp.",
+      "chip_held_at": "pausad · fortsätter {time}",
+      "chip_held": "pausad",
+      "roster_size": "{count} spelare",
+      "partial_roster": "{checked} av {required} incheckade · saknar {short}",
+      "registered": "anmält",
+      "chip_no_check_in": "ingen incheckning",
+      "chip_incomplete": "ofullständigt",
+      "readmit": "Återinsätt",
+      "readmit_failed": "Kunde inte återinsätta laget",
+      "continue": "Fortsätt utan dem",
+      "continue_failed": "Kunde inte fortsätta turneringen",
+      "extend": "Förläng incheckningen",
+      "extend_by": "+{minutes} minuter",
+      "extend_failed": "Kunde inte förlänga incheckningen",
+      "extend_hint": "En förlängning öppnar anmälan igen och aviserar de {count} lag som saknas på nytt.",
+      "auto_continue": "Om ingen gör något fortsätter turneringen av sig själv {time} med dem som checkade in. En pausad turnering kan aldrig dö i tysthet för att en arrangör sov.",
+      "auto_continue_no_time": "Om ingen gör något fortsätter turneringen av sig själv vid sin starttid med dem som checkade in.",
+      "reseed_warning": "Att återinsätta ett lag sätter om slutspelsträdet. Det är riskfritt före start, men det blandar om seedningen."
+    },
+    "free_agents": {
+      "title": "Free agents",
+      "signed_up": "{count} anmälda",
+      "filter_all": "Alla",
+      "filter_drafted": "Draftade",
+      "filter_waitlist": "Väntelista",
+      "sign_up": "Anmäl dig",
+      "leave": "Lämna poolen",
+      "sign_up_alone": "Anmäl dig själv",
+      "sign_up_with_lobby": "Anmäl alla {count}",
+      "lobby_title": "Ta med ditt lobby",
+      "lobby_size": "{count} av {size}",
+      "lobby_hint": "Anmäler du dig med ditt lobby hamnar alla {count} i poolen direkt, och draften håller er i samma lag. Lag här är på {size} spelare.",
+      "lobby_too_big": "Ditt lobby på {count} är större än ett lag på {size}, så det kan inte draftas ihop. Anmäl dig själv, eller gå ner till {size} och försök igen.",
+      "lobby_not_captain": "Bara {name} kan anmäla lobbyt — precis som bara partyledaren köar det.",
+      "lobby_already_signed_up": "{count} av dem har redan anmält sig själva; de behåller sin plats i kön och går med i ditt party.",
+      "status_drafted": "draftad",
+      "status_waitlisted": "väntelista",
+      "status_registered": "anmäld",
+      "empty_title": "Inga free agents än",
+      "empty_description": "Spelare som anmäler sig ensamma dyker upp här och draftas in i jämna lag när anmälan stänger.",
+      "waitlist_explainer": "{name} har högst rating och står ändå på väntelistan — anmälan kom efter att platserna fyllts. Anmälningstiden avgör vem som får en plats; ELO avgör bara vilket lag. Det är regeln som fungerar, inte en bugg.",
+      "party_of": "Party på {count}",
+      "party_status_drafted": "draftade tillsammans",
+      "party_status_waitlisted": "på väntelista tillsammans",
+      "party_kept_together": "{count} anmälda tillsammans",
+      "party_waitlist_explainer": "Ett party draftas helt eller inte alls. Ett som inte får plats på de platser som är kvar hoppas över som en enhet och hamnar på väntelistan tillsammans, så att en mindre anmälan som kom senare kan draftas före det.",
+      "party_deadlock": "{count} spelare är anmälda, men ingen kombination av dessa anmälningar blir ett lag på {size}, och ett party delas aldrig upp för att det ska gå ihop. Att drafta nu skulle inte skapa något. Fler anmälningar, särskilt ensamma, löser upp låsningen.",
+      "organizer": "Arrangör",
+      "draft_summary": "{agents} free agents → {teams} lag på {size}, {waitlisted} på väntelista.",
+      "regenerate": "Drafta lagen",
+      "regenerated": "{count} lag draftade",
+      "regenerate_failed": "Kunde inte drafta lagen",
+      "join_failed": "Kunde inte gå med i free agent-poolen",
+      "join_with_lobby_failed": "Kunde inte anmäla ditt lobby",
+      "leave_failed": "Kunde inte lämna free agent-poolen",
+      "already_drafted": "Lagen är redan draftade. Att drafta igen skulle inte göra något — ta bort de draftade lagen först.",
+      "draft_locked": "Slutspelsträdet är i gång, så poolen kan inte längre draftas.",
+      "nothing_drafted": "Inga lag draftades",
+      "nothing_drafted_hint": "Det finns inte tillräckligt många free agents kvar för att fylla ett lag på {size}, eller så finns det ingen plats i slutspelsträdet.",
+      "nothing_drafted_parties": "Ingen kombination av anmälningarna i poolen blir ett lag på {size}, och ett party delas aldrig upp för att det ska gå ihop."
+    },
+    "entry": {
+      "title": "Deltagarkrav",
+      "requirements_hint": "Kontrolleras mot varje spelare som läggs till, inte bara mot den som klickar. Anmälan nekas om någon av dem inte uppfyller kraven.",
+      "locked_title": "Den här turneringen är endast med inbjudan",
+      "min_role": "Lägsta roll: {role}",
+      "elo_between": "Elo mellan {min} och {max}",
+      "elo_min": "Elo {min} eller högre",
+      "elo_max": "Elo {max} eller lägre",
+      "elo_yours": "din: {elo}",
+      "requirement_met": "uppfyllt",
+      "requirement_failed": "ej uppfyllt",
+      "ok_chip": "får delta",
+      "locked_chip": "låst",
+      "blocked_chip": "får inte delta",
+      "invite_hint": "Be en arrangör bjuda in ditt lag eller skicka dig en inbjudningslänk."
+    },
+    "invites": {
+      "title": "Inbjudningar",
+      "description": "Bjud in ett lag eller en spelare direkt, så kan de anmäla sig även när den här turneringen bara är med inbjudan.",
+      "add": "Bjud in en spelare",
+      "pending": "Väntande",
+      "invited_by": "Inbjuden av {name}",
+      "revoke": "Återkalla",
+      "confirm_revoke": "Återkalla den här inbjudan?",
+      "revoke_description": "{name} förlorar åtkomsten om hen inte fortfarande har en giltig inbjudningslänk.",
+      "empty": "Ingen har bjudits in än.",
+      "sent": "Inbjudan skickad",
+      "send_failed": "Kunde inte skicka den inbjudan",
+      "already_invited": "Redan inbjuden",
+      "revoked": "Inbjudan återkallad",
+      "hint_open": "Den här turneringen är öppen för alla, så en inbjudan är en genväg snarare än ett krav.",
+      "add_team": "Bjud in ett lag",
+      "team_label": "Laginbjudan",
+      "registration_closed": "Anmälan är stängd, så inga nya inbjudningar kan skickas. Öppna anmälan igen för att bjuda in fler lag eller spelare."
+    },
+    "invite_links": {
+      "title": "Inbjudningslänkar",
+      "tab": "Länkar",
+      "registration_closed": "Anmälan är stängd, så inga nya inbjudningslänkar kan skapas. Öppna anmälan igen för att dela ut fler länkar.",
+      "hint": "Alla som har länken kan anmäla sig. En länk går ut, har ett tak för hur många gånger den kan användas och kan återkallas när som helst.",
+      "expires_after": "Går ut efter",
+      "max_uses": "Max antal användningar",
+      "expiry_never": "Aldrig",
+      "expiry_minutes": "{count} minuter",
+      "expiry_hour": "1 timme",
+      "expiry_hours": "{count} timmar",
+      "expiry_day": "1 dag",
+      "expiry_days": "{count} dagar",
+      "uses_one": "1 användning",
+      "uses_limit": "{count} användningar",
+      "uses_unlimited": "Ingen gräns",
+      "create": "Generera en länk",
+      "created": "Inbjudningslänk skapad och kopierad",
+      "create_failed": "Kunde inte skapa den inbjudningslänken",
+      "share": "Dela",
+      "revoke": "Återkalla",
+      "revoked": "Inbjudningslänk återkallad",
+      "revoke_failed": "Kunde inte återkalla den inbjudningslänken",
+      "confirm_revoke": "Återkalla den här inbjudningslänken?",
+      "revoke_description": "Alla som fortfarande har länken förlorar åtkomsten direkt. Lag som redan har anmält sig via den behåller sin plats.",
+      "expires": "Går ut",
+      "expired": "Utgången",
+      "exhausted": "Förbrukad",
+      "never_expires": "Går aldrig ut",
+      "uses_count": "Använd {count} gånger",
+      "who_used": "Vilka har använt den",
+      "uses_empty": "Ingen har använt den här länken än.",
+      "empty": "Inga inbjudningslänkar än."
+    },
+    "invite_accept": {
+      "title": "Du har en inbjudan",
+      "hint": "Acceptera den för att låsa upp anmälan till den här turneringen.",
+      "guest_hint": "Logga in för att acceptera inbjudan och låsa upp anmälan.",
+      "accept": "Acceptera inbjudan",
+      "sign_in": "Logga in för att acceptera",
+      "dismiss": "Inte nu",
+      "accepted": "Inbjudan accepterad",
+      "failed": "Inbjudan kunde inte användas: {reason}",
+      "errors": {
+        "invite_not_found": "Den inbjudningslänken är inte giltig för den här turneringen.",
+        "invite_revoked": "Arrangören har återkallat den här inbjudningslänken.",
+        "invite_expired": "Den här inbjudningslänken har gått ut.",
+        "invite_used_up": "Den här inbjudningslänken har redan använts så många gånger som den tillåter.",
+        "invite_registration_closed": "Anmälan till den här turneringen är stängd.",
+        "invite_rate_limited": "För många inbjudningsförsök. Försök igen om en minut.",
+        "invite_not_allowed": "Det här kontot kan inte acceptera den här inbjudan."
+      }
     }
   },
   "team": {
@@ -6058,7 +6440,11 @@
       "team_message": "Du har blivit inbjuden att gå med i ett lag",
       "invited_by": "Inbjuden av",
       "deny": "Neka",
-      "accept": "Acceptera"
+      "accept": "Acceptera",
+      "tournament_registration_title": "Inbjudan till turneringsanmälan",
+      "tournament_registration_message": "Du har blivit inbjuden att anmäla dig till en turnering",
+      "tournament_team_registration_title": "Laginbjudan till turneringsanmälan",
+      "tournament_team_registration_message": "{team} har bjudits in att anmäla sig till en turnering"
     },
     "roles": {
       "captain": "Lagkapten"
@@ -7570,7 +7956,9 @@
       "requirement": "Köa med {half} eller färre, eller exakt {full} spelare"
     },
     "temp_banned_until": "Du är tillfälligt avstängd från matchmaking till {time}",
-    "new_invites_count": "Nya inbjudningar ({count})"
+    "new_invites_count": "Nya inbjudningar ({count})",
+    "tournament_banned": "Du får inte gå med i turneringstrupper eller free agent-poolen.",
+    "tournament_banned_until": "Du får inte gå med i turneringstrupper eller free agent-poolen förrän {time}."
   },
   "game_server": {
     "lan_ip": "LAN-IP",

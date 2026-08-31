@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { ChevronDown, Search } from "lucide-vue-next";
+import { ChevronDown, Lock, Search } from "lucide-vue-next";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import { Popover, PopoverContent, PopoverTrigger } from "~/components/ui/popover";
 import { Input } from "~/components/ui/input";
 import { Skeleton } from "~/components/ui/skeleton";
@@ -11,6 +12,8 @@ import {
   utilityMapCountsQuery,
   mapCountAlias,
   mapCountVariable,
+  mapPrivateCountAlias,
+  mapPrivateCountVariable,
 } from "~/graphql/utilityGraphql";
 import { order_by } from "~/generated/zeus";
 import { loadRadarMaps, normalizeMapName } from "~/utilities/mapAssets";
@@ -40,6 +43,7 @@ const open = ref(false);
 const search = ref("");
 const tiles = ref<MapTile[]>([]);
 const counts = ref<Record<string, number>>({});
+const privateCounts = ref<Record<string, number>>({});
 const countsReady = ref(false);
 
 const mapsQuery = generateQuery({
@@ -118,7 +122,23 @@ function loadCounts(): Promise<void> {
         const client = getGraphqlClient();
         const variables: Record<string, unknown> = {};
         for (const name of names) {
-          variables[mapCountVariable(name)] = { map_name: { _eq: name } };
+          // Archived is a bin, not a shelf, so neither number counts it -- a
+          // map you archived two throws on used to read "2" and open on
+          // nothing. The pair splits the rest the way the tabs do: the shared
+          // library, and everything else you happen to be allowed to see.
+          const visible = {
+            map_name: { _eq: name },
+            can_view: { _eq: true },
+            archived_at: { _is_null: true },
+          };
+          variables[mapCountVariable(name)] = {
+            ...visible,
+            visibility: { _eq: "Public" },
+          };
+          variables[mapPrivateCountVariable(name)] = {
+            ...visible,
+            visibility: { _neq: "Public" },
+          };
         }
         const { data } = await client.query({
           query: utilityMapCountsQuery(names),
@@ -126,10 +146,15 @@ function loadCounts(): Promise<void> {
           fetchPolicy: "network-only",
         });
         const next: Record<string, number> = {};
+        const nextPrivate: Record<string, number> = {};
         for (const name of names) {
-          next[name] = (data as any)?.[mapCountAlias(name)]?.aggregate?.count ?? 0;
+          next[name] =
+            (data as any)?.[mapCountAlias(name)]?.aggregate?.count ?? 0;
+          nextPrivate[name] =
+            (data as any)?.[mapPrivateCountAlias(name)]?.aggregate?.count ?? 0;
         }
         counts.value = next;
+        privateCounts.value = nextPrivate;
         countsReady.value = true;
       } catch (error) {
         console.error("[utility] map picker count error:", error);
@@ -346,14 +371,45 @@ function pick(name: string) {
             >
               {{ tile.label }}
             </span>
+            <!-- The public library is the number, because Public is the tab
+                 this tile opens on. What only you can see rides behind a lock
+                 rather than being folded into the total: one map reading "4"
+                 that opened on an empty Public tab is what sent us looking.
+
+                 A tooltip each, because they are two different questions and
+                 one bubble over both of them answers neither on its own. -->
             <span
               v-if="countsReady"
-              class="shrink-0 font-mono text-[0.6rem] tabular-nums"
-              :class="
-                counts[tile.name] ? 'text-[hsl(var(--tac-amber))]' : 'text-white/40'
-              "
+              class="flex shrink-0 items-center gap-1 font-mono text-[0.6rem] tabular-nums"
             >
-              {{ counts[tile.name] ?? 0 }}
+              <FiveStackToolTip as-child :delay-duration="120">
+                <template #trigger>
+                  <span
+                    :class="
+                      counts[tile.name]
+                        ? 'text-[hsl(var(--tac-amber))]'
+                        : 'text-white/40'
+                    "
+                  >
+                    {{ counts[tile.name] ?? 0 }}
+                  </span>
+                </template>
+                {{ $t("pages.utility.picker.count_public") }}
+              </FiveStackToolTip>
+
+              <FiveStackToolTip
+                v-if="privateCounts[tile.name]"
+                as-child
+                :delay-duration="120"
+              >
+                <template #trigger>
+                  <span class="flex items-center gap-0.5 text-white/40">
+                    <Lock class="h-2.5 w-2.5" />
+                    {{ privateCounts[tile.name] }}
+                  </span>
+                </template>
+                {{ $t("pages.utility.picker.count_private") }}
+              </FiveStackToolTip>
             </span>
           </span>
         </button>

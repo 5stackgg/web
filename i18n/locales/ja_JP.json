@@ -1229,6 +1229,10 @@
     },
     "system_telemetry": {
       "title": "フリート テレメトリ",
+      "filter": {
+        "all": "フリート全体",
+        "self_hosted": "セルフホストのみ"
+      },
       "no_data": "まだデータが報告されていません",
       "installs": {
         "title": "パネル",
@@ -1810,6 +1814,10 @@
           "MatchChatMessage": {
             "title": "試合チャットのメッセージ",
             "description": "試合ルームの新着メッセージ。"
+          },
+          "TournamentInvite": {
+            "title": "トーナメント参加登録への招待",
+            "description": "主催者からトーナメントへの参加登録に招待されました。"
           }
         },
         "quiet_hours": {
@@ -2617,6 +2625,72 @@
           "server_default": "サーバー既定値",
           "invalid_number": "0 以上の整数を入力してください。",
           "updated": "ユーティリティ設定を更新しました"
+        },
+        "sanctions": {
+          "title": "処分",
+          "section": "自動処分",
+          "description": "5stack が自力で検知できるものにどう対処するかです。各ソースは一定期間内の違反回数を数え、段階的な処分の該当する段を適用します。",
+          "defaults_note": "以下の値は 5stack がこれまでずっと使ってきたものです。このページを開くだけでは何も変わりません。変わるのは編集したときだけです。",
+          "unavailable": "利用できる処分ソースがありません。API がまだ処分のマイグレーションを実行していない可能性があります。",
+          "load_failed": "処分ポリシーを読み込めませんでした",
+          "reset": "デフォルトに戻す",
+          "permanent": "無期限",
+          "platform_ban_narrowed": "「両方を禁止」以外の範囲では、このソースはプラットフォーム全体の BAN を書き込まなくなり、範囲を限定したクールダウンのみを適用します。VAC BAN を受けたアカウントも 5stack のもう半分は使えます。",
+          "threshold": {
+            "label": "処分を開始する回数",
+            "first_offence": "1 回目の違反から処分されます。",
+            "free_passes": "最初の {count} 回の違反は処分されません。",
+            "free_passes_one": "最初の 1 回の違反は処分されません。"
+          },
+          "window": {
+            "label": "カウント期間（日）",
+            "never": "失効しません。記録されたすべての違反が引き続きカウントされます。",
+            "decays": "{count} 日より古い違反はカウントされなくなります。",
+            "decays_one": "1 日より古い違反はカウントされなくなります。"
+          },
+          "ladder": {
+            "label": "段階的な処分",
+            "add": "段を追加",
+            "remove": "段を削除",
+            "clamp_hint": "最後の段はそれ以降ずっと繰り返されます。段を 0 にすると処分は無期限になります。",
+            "occurrence": "{count} 回目",
+            "occurrence_and_after": "{count} 回目以降",
+            "unit": {
+              "minutes": "分",
+              "hours": "時間",
+              "days": "日"
+            },
+            "unit_value": {
+              "minutes": "{count} 分",
+              "hours": "{count} 時間",
+              "days": "{count} 日",
+              "minutes_one": "1 分",
+              "hours_one": "1 時間",
+              "days_one": "1 日"
+            }
+          },
+          "scope": {
+            "label": "何を禁止するか"
+          },
+          "scopes": {
+            "matchmaking": "マッチメイキングを禁止",
+            "tournaments": "トーナメントを禁止",
+            "both": "両方を禁止"
+          },
+          "sources": {
+            "match_abandon": {
+              "title": "試合放棄",
+              "description": "ロスターに入っていた試合をプレイヤーが離脱した、または一度も接続しませんでした。期間は現在からではなく、最後の放棄からカウントされます。"
+            },
+            "vac_ban": {
+              "title": "VAC / ゲーム BAN",
+              "description": "Steam がプレイヤーのアカウントに VAC またはゲーム BAN を報告しています。カウント期間は Steam 自身の「最終 BAN からの日数」を基準に測定されます。"
+            },
+            "tournament_no_show": {
+              "title": "トーナメント不参加",
+              "description": "チームが必須のトーナメントチェックインを逃しました。参加時にのみ判定されるため、進行中のブラケットにいるプレイヤーはその場所を保持します。"
+            }
+          }
         }
       },
       "language": {
@@ -3967,7 +4041,9 @@
       },
       "picker": {
         "search": "マップを探す",
-        "none": "レーダーのあるマップがありません"
+        "none": "レーダーのあるマップがありません",
+        "count_public": "このマップの公開ラインナップ",
+        "count_private": "非公開だがあなたには見えるもの — 自分のもの、チームのもの、審査中のもの。アーカイブ済みは含みません。"
       },
       "back_to_map": "マップに戻る",
       "empty": {
@@ -4937,7 +5013,9 @@
         "actor_host": "ホスト",
         "actor_teammate": "チームメイト",
         "actor_organizer": "主催者",
-        "actor_player": "プレイヤー"
+        "actor_player": "プレイヤー",
+        "tournament_registration_invite": "トーナメント参加登録",
+        "invited_you_register": "があなたを参加登録に招待しました"
       },
       "season_rebuild": {
         "title": "シーズン {number} のELO再計算が必要です",
@@ -5606,6 +5684,9 @@
       "title": "チームを追加",
       "description": "既存のチームを招待するか、このトーナメント用に新しいチームを作成します。"
     },
+    "organizer_panel": {
+      "title": "主催者ツール"
+    },
     "form": {
       "create": "トーナメントを作成",
       "name": "トーナメント名",
@@ -5946,13 +6027,30 @@
       "teams": "チーム数",
       "format": "形式",
       "starts": "開始",
-      "location": "開催地"
+      "location": "開催地",
+      "title": "スタッツ",
+      "leaderboard_title": "プレイヤーランキング",
+      "matches": "試合",
+      "rounds": "ラウンド",
+      "players": "プレイヤー",
+      "top_rating": "最高レーティング",
+      "col_team": "チーム",
+      "col_rating": "レーティング",
+      "col_adr": "ADR",
+      "col_kills": "K",
+      "col_deaths": "D",
+      "col_assists": "A",
+      "col_kd": "K/D",
+      "col_hs": "HS%",
+      "empty_title": "スタッツはまだありません",
+      "empty_description": "トーナメントの試合が終わるにつれてランキングが埋まります。"
     },
     "wizard": {
       "information": "基本情報",
       "location": "開催地",
       "match_options": "試合設定",
-      "prizes": "賞金"
+      "prizes": "賞金",
+      "registration": "参加登録"
     },
     "banner": {
       "label": "バナー",
@@ -6006,6 +6104,290 @@
       "expand": "展開",
       "collapse_all": "すべて折りたたむ",
       "expand_all": "すべて展開"
+    },
+    "registration": {
+      "section": "参加登録",
+      "who": {
+        "label": "誰が参加登録できますか？",
+        "teams": {
+          "label": "チームのみ",
+          "description": "キャプテンが既存のチームを登録します。標準の設定です。"
+        },
+        "free_agents": {
+          "label": "フリーエージェント",
+          "description": "プレイヤーが個人で登録し、参加登録の締切時に均等なチームへドラフトされます。"
+        },
+        "both": {
+          "label": "チーム + フリーエージェント",
+          "description": "両方です。余ったフリーエージェントは、登録済みチームに加えて追加チームへドラフトされます。"
+        }
+      },
+      "min_role": {
+        "label": "最低ロール",
+        "none": "制限なし",
+        "description": "クリックした人だけでなく、追加される側のプレイヤーで判定します。これによりキャプテンが参加資格のないプレイヤーをロスターに入れられません。"
+      },
+      "rank": {
+        "label": "ELO範囲",
+        "min": "ELO 下限",
+        "max": "ELO 上限",
+        "description": "空欄にすればその側の制限はありません。両方空欄ならどのランクでも参加できます。",
+        "invalid_range": "ELO 上限は ELO 下限以上にしてください。"
+      },
+      "regions": {
+        "label": "希望リージョン",
+        "description": "このトーナメントの試合をどこでホストするかです。プレイヤーの制限ではありません — 5stack にプレイヤーごとのリージョン情報はありません。",
+        "empty": "現在利用可能なリージョンはありません。"
+      },
+      "invite_only": {
+        "label": "招待制",
+        "description": "参加登録は一般公開されません。主催者がチームやプレイヤーを直接招待するか、招待リンクを共有します。"
+      }
+    },
+    "check_in": {
+      "section": "チェックイン",
+      "required": {
+        "label": "チェックインを必須にする",
+        "description": "ブラケットを組む前にチームが参加を確認します。受付時間はスケジュールどおりに開き、確認は手動です。"
+      },
+      "who": {
+        "label": "誰がチェックインしますか？",
+        "Captains": {
+          "label": "キャプテン",
+          "description": "キャプテンがチーム全員分を確認します。1クリックで1チーム。"
+        },
+        "Players": {
+          "label": "全プレイヤー",
+          "description": "ロスターの各プレイヤーが個別に確認します。{count}人がチェックインすればチームは参加確定です。控えは不要です。"
+        },
+        "Admin": {
+          "label": "主催者のみ",
+          "description": "プレイヤーは自分でチェックインできません。あなたがチームを出席として記録します。"
+        }
+      },
+      "opens": {
+        "label": "受付開始"
+      },
+      "closes": {
+        "label": "受付終了"
+      },
+      "minutes_before_start": "開始前の分数",
+      "window_too_short": "受付時間は最低5分間は開いている必要があります。",
+      "timeline": {
+        "opens": "受付開始",
+        "closes": "受付終了",
+        "start": "トーナメント開始"
+      },
+      "lock_note": "受付が始まると、開始時刻と両方のオフセットはロックされます。チームはすでにこのスケジュールで動いているため、受付中に変更すると進行中の締切がずれてしまいます。",
+      "late_registration_note": "受付時間中に登録したチームは自動でチェックイン済みになります。表示されたことのない案内を見逃したとして不利益を受けることはありません。",
+      "no_show_note": "不参加のチームが削除されることはありません。チェックインを逃したチームはロスターをそのまま保持し、ブラケットに入らないだけです。トーナメント開始前ならいつでも再承認できます。",
+      "frozen": "チェックインはすでに開始しているため、開始時刻と両方のオフセットはロックされています。代わりにチェックイン受付時間を延長してください。",
+      "required_title": "このトーナメントはチェックインが必要です。",
+      "required_window": "当日 {opens} から {closes} の間にチームが確認しないと、ブラケットに入れません。",
+      "register_heading": "チームを登録",
+      "register_hint": "チェックイン開始時に通知が届き、終了前にはリマインダーが届きます。",
+      "register_cta": "チームを登録",
+      "chip_required": "チェックイン必須",
+      "opens_at_heading": "チェックインは {time} に開始します",
+      "opens_at_hint": "チームは登録済みです。受付が始まったらお知らせします。",
+      "opens_in": "開始まで",
+      "closes_in": "終了まで",
+      "starts_in": "開始まで",
+      "chip_action_needed": "要対応",
+      "chip_open": "チェックイン受付中",
+      "observer_heading": "チェックイン受付中",
+      "observer_hint": "ブラケットを組む前にチームが参加を確認します。{time} までにチェックインしていないチームがあると、トーナメントはあなたの確認待ちで保留されます。",
+      "confirm_heading": "チームの参加を確認してください",
+      "confirm_hint": "{time} までにチェックインしていないチームはブラケットに入りません。",
+      "players_progress": "{required}人中{checked}人がチェックイン済み",
+      "players_heading": "全プレイヤーのチェックインが必要です",
+      "players_hint": "{count}人のプレイヤーが確認すればチームは参加確定です。控えは不要です。",
+      "admin_heading": "チームを出席として記録",
+      "admin_hint": "このトーナメントではプレイヤーが自分でチェックインできません。受付終了までに各チームを出席として記録してください。",
+      "check_in": "チェックイン",
+      "mark_present": "出席にする",
+      "checked_in": "チェックイン済み",
+      "checked_in_at": "チェックイン済み · {time}",
+      "waiting": "待機中",
+      "not_needed": "不要",
+      "role_captain": "キャプテン",
+      "role_starter": "スターター",
+      "role_sub": "控え",
+      "field_status": "参加チームの状況",
+      "field_count": "{total}チーム中{checked}チームがチェックイン済み",
+      "done_heading": "参加確定です。ブラケットは {time} に組まれます。",
+      "done_hint": "{team} として {time} に確認済み。",
+      "chip_removed": "除外",
+      "missed_heading": "チームはチェックインを逃しました",
+      "missed_hint": "チェックインは {time} に終了し、ブラケットはあなたのチーム抜きで組まれます。",
+      "missed_contact": "間違いだと思う場合は主催者に連絡してください。トーナメント開始前ならいつでもチームを再承認できます。",
+      "failed": "チェックインに失敗しました",
+      "free_agent_opens_at_hint": "あなたはフリーエージェントプールに登録済みです。受付が始まったらお知らせします。",
+      "free_agent_heading": "参加可能かどうか確認してください",
+      "free_agent_hint": "{time} までに確認しなかったフリーエージェントは補欠に移され、チームへドラフトされません。",
+      "free_agent_done_heading": "参加確定です。チームは {time} にドラフトされます。",
+      "free_agent_done_hint": "{time} に確認済み。チェックインが終了するとチームへドラフトされます。",
+      "free_agent_chip_waitlisted": "補欠",
+      "free_agent_missed_heading": "チェックインを逃しました",
+      "free_agent_missed_hint": "チェックインは {time} に終了し、あなたは補欠に移されました。今後は空きが出た場合のみドラフトされます。",
+      "free_agent_missed_contact": "間違いだと思う場合は主催者に連絡してください。チェックインを延長すればドラフト対象に戻ります。",
+      "a11y_opens_in": "チェックイン開始まで",
+      "a11y_opens_help": "チェックインはまだ始まっていません。始まるまで確認することはありません。",
+      "a11y_closes_in": "チェックイン終了まで",
+      "a11y_closes_help": "その時点でチェックインしていない場合、ブラケットには入りません。",
+      "a11y_starts_in": "トーナメント開始まで"
+    },
+    "check_in_review": {
+      "heading": "{count}チームがチェックインを逃しました",
+      "subheading": "トーナメントは保留中です。ブラケットは組まれておらず、何も削除されていません。各チームはロスターをそのまま保持しています。",
+      "chip_held_at": "保留中 · {time} に自動再開",
+      "chip_held": "保留中",
+      "roster_size": "{count}人",
+      "partial_roster": "{required}人中{checked}人がチェックイン済み · {short}人不足",
+      "registered": "登録済み",
+      "chip_no_check_in": "チェックインなし",
+      "chip_incomplete": "人数不足",
+      "readmit": "再承認",
+      "readmit_failed": "チームを再承認できませんでした",
+      "continue": "このまま続行",
+      "continue_failed": "トーナメントを続行できませんでした",
+      "extend": "チェックインを延長",
+      "extend_by": "+{minutes}分",
+      "extend_failed": "チェックインを延長できませんでした",
+      "extend_hint": "延長すると参加登録が再開し、未チェックインの{count}チームに再通知されます。",
+      "auto_continue": "誰も操作しなければ、トーナメントは {time} にチェックイン済みのチームだけで自動的に再開します。保留中のトーナメントが、主催者が寝ていたせいで静かに消えることはありません。",
+      "auto_continue_no_time": "誰も操作しなければ、トーナメントは開始時刻にチェックイン済みのチームだけで自動的に再開します。",
+      "reseed_warning": "チームを再承認するとブラケットが組み直されます。開始前なら安全ですが、シードは入れ替わります。"
+    },
+    "free_agents": {
+      "title": "フリーエージェント",
+      "signed_up": "{count}人が登録済み",
+      "filter_all": "すべて",
+      "filter_drafted": "ドラフト済み",
+      "filter_waitlist": "補欠",
+      "sign_up": "登録する",
+      "leave": "プールから抜ける",
+      "sign_up_alone": "ソロで登録",
+      "sign_up_with_lobby": "{count}人全員を登録",
+      "lobby_title": "ロビーごと参加",
+      "lobby_size": "{count} / {size}",
+      "lobby_hint": "ロビーごと登録すると、{count}人全員がすぐにプールに入り、ドラフトでも同じチームのままです。ここでのチームは{size}人編成です。",
+      "lobby_too_big": "あなたのロビーは{count}人で、{size}人のチームより大きいため、まとめてドラフトできません。ソロで登録するか、{size}人に減らしてもう一度お試しください。",
+      "lobby_not_captain": "ロビーを登録できるのは {name} だけです。キューに入れられるのがパーティーリーダーだけなのと同じです。",
+      "lobby_already_signed_up": "そのうち{count}人はすでにソロで登録済みです。並び順はそのままで、あなたのパーティーに合流します。",
+      "status_drafted": "ドラフト済み",
+      "status_waitlisted": "補欠",
+      "status_registered": "登録済み",
+      "empty_title": "フリーエージェントはまだいません",
+      "empty_description": "個人で登録したプレイヤーがここに表示され、参加登録の締切時に均等なチームへドラフトされます。",
+      "waitlist_explainer": "{name} はレーティング最上位ですが、まだ補欠です。枠が埋まった後に登録したためです。枠を得られるかは登録の早さで決まり、ELO はどのチームになるかだけを決めます。これはルールどおりの動作であり、不具合ではありません。",
+      "party_of": "{count}人パーティー",
+      "party_status_drafted": "一緒にドラフト済み",
+      "party_status_waitlisted": "一緒に補欠",
+      "party_kept_together": "{count}人が一緒に登録",
+      "party_waitlist_explainer": "パーティーは全員まとめてドラフトされるか、まったくされないかのどちらかです。残りの枠に収まらないパーティーはひとまとまりとして飛ばされ、全員そろって補欠になります。そのため、あとから登録した少人数のほうが先にドラフトされることがあります。",
+      "party_deadlock": "{count}人が登録済みですが、これらの登録をどう組み合わせても{size}人のチームにならず、パーティーが枠に合わせて分割されることはありません。今ドラフトしても何も作られません。登録が増えれば、特にソロの登録が増えれば、この行き詰まりは解消します。",
+      "organizer": "主催者",
+      "draft_summary": "フリーエージェント{agents}人 → {size}人編成のチーム{teams}組、補欠{waitlisted}人。",
+      "regenerate": "チームをドラフト",
+      "regenerated": "{count}チームを編成しました",
+      "regenerate_failed": "チームをドラフトできませんでした",
+      "join_failed": "フリーエージェントプールに参加できませんでした",
+      "join_with_lobby_failed": "ロビーを登録できませんでした",
+      "leave_failed": "フリーエージェントプールから抜けられませんでした",
+      "already_drafted": "チームはすでにドラフト済みです。もう一度実行しても何も変わりません。まず作成済みのチームを削除してください。",
+      "draft_locked": "ブラケットが進行中のため、プールはもうドラフトできません。",
+      "nothing_drafted": "チームは作成されませんでした",
+      "nothing_drafted_hint": "{size}人編成のチームを組むだけのフリーエージェントが残っていないか、ブラケットに空きがありません。",
+      "nothing_drafted_parties": "プール内の登録をどう組み合わせても{size}人のチームにならず、パーティーが枠に合わせて分割されることはありません。"
+    },
+    "entry": {
+      "title": "参加条件",
+      "requirements_hint": "クリックした人だけでなく、追加されるすべてのプレイヤーで判定します。1人でも条件を満たさない場合、参加登録は拒否されます。",
+      "locked_title": "このトーナメントは招待制です",
+      "min_role": "最低ロール: {role}",
+      "elo_between": "ELO {min} 〜 {max}",
+      "elo_min": "ELO {min} 以上",
+      "elo_max": "ELO {max} 以下",
+      "elo_yours": "あなた: {elo}",
+      "requirement_met": "条件を満たしています",
+      "requirement_failed": "条件を満たしていません",
+      "ok_chip": "参加可能",
+      "locked_chip": "ロック中",
+      "blocked_chip": "参加不可",
+      "invite_hint": "主催者にチームの招待、または招待リンクの送付を依頼してください。"
+    },
+    "invites": {
+      "title": "招待",
+      "description": "チームやプレイヤーを直接招待すれば、このトーナメントが招待制でも参加登録できます。",
+      "add": "プレイヤーを招待",
+      "pending": "保留中",
+      "invited_by": "{name} が招待",
+      "revoke": "取り消し",
+      "confirm_revoke": "この招待を取り消しますか？",
+      "revoke_description": "有効な招待リンクを持っていない限り、{name} はアクセスできなくなります。",
+      "empty": "まだ招待は送られていません。",
+      "sent": "招待を送信しました",
+      "send_failed": "この招待を送信できませんでした",
+      "already_invited": "招待済み",
+      "revoked": "招待を取り消しました",
+      "hint_open": "このトーナメントは誰でも参加できるため、招待は必須ではなく近道にすぎません。",
+      "add_team": "チームを招待",
+      "team_label": "チーム招待",
+      "registration_closed": "参加登録が締め切られているため、新しい招待は送信できません。さらにチームやプレイヤーを招待するには、参加登録を再開してください。"
+    },
+    "invite_links": {
+      "title": "招待リンク",
+      "tab": "リンク",
+      "registration_closed": "参加登録が締め切られているため、新しい招待リンクは作成できません。さらにリンクを配るには、参加登録を再開してください。",
+      "hint": "リンクを持っている人は誰でも参加登録できます。リンクには有効期限と使用回数の上限があり、いつでも取り消せます。",
+      "expires_after": "有効期限",
+      "max_uses": "使用回数の上限",
+      "expiry_never": "無期限",
+      "expiry_minutes": "{count}分",
+      "expiry_hour": "1時間",
+      "expiry_hours": "{count}時間",
+      "expiry_day": "1日",
+      "expiry_days": "{count}日",
+      "uses_one": "1回",
+      "uses_limit": "{count}回",
+      "uses_unlimited": "無制限",
+      "create": "リンクを生成",
+      "created": "招待リンクを作成してコピーしました",
+      "create_failed": "この招待リンクを作成できませんでした",
+      "share": "共有",
+      "revoke": "取り消し",
+      "revoked": "招待リンクを取り消しました",
+      "revoke_failed": "この招待リンクを取り消せませんでした",
+      "confirm_revoke": "この招待リンクを取り消しますか？",
+      "revoke_description": "リンクをまだ持っている人は、直ちにアクセスできなくなります。すでにこのリンクから参加登録したチームの枠はそのまま残ります。",
+      "expires": "期限",
+      "expired": "期限切れ",
+      "exhausted": "上限に達しました",
+      "never_expires": "有効期限なし",
+      "uses_count": "{count}回使用",
+      "who_used": "使用履歴",
+      "uses_empty": "このリンクはまだ誰も使用していません。",
+      "empty": "招待リンクはまだありません。"
+    },
+    "invite_accept": {
+      "title": "招待が届いています",
+      "hint": "承諾すると、このトーナメントへの参加登録が可能になります。",
+      "guest_hint": "ログインするとこの招待を承諾し、参加登録できるようになります。",
+      "accept": "招待を承諾",
+      "sign_in": "ログインして承諾",
+      "dismiss": "後で",
+      "accepted": "招待を承諾しました",
+      "failed": "この招待は使用できませんでした: {reason}",
+      "errors": {
+        "invite_not_found": "この招待リンクは、このトーナメントでは無効です。",
+        "invite_revoked": "主催者がこの招待リンクを取り消しました。",
+        "invite_expired": "この招待リンクは期限切れです。",
+        "invite_used_up": "この招待リンクは、使用できる回数をすでに使い切っています。",
+        "invite_registration_closed": "このトーナメントの参加登録は締め切られています。",
+        "invite_rate_limited": "招待の試行回数が多すぎます。1分後にもう一度お試しください。",
+        "invite_not_allowed": "このアカウントではこの招待を承諾できません。"
+      }
     }
   },
   "team": {
@@ -6058,7 +6440,11 @@
       "team_message": "チームへの参加に招待されました",
       "invited_by": "招待者",
       "deny": "拒否",
-      "accept": "承諾"
+      "accept": "承諾",
+      "tournament_registration_title": "トーナメント参加登録の招待",
+      "tournament_registration_message": "トーナメントへの参加登録に招待されました",
+      "tournament_team_registration_title": "チームへの参加登録の招待",
+      "tournament_team_registration_message": "{team} がトーナメントへの参加登録に招待されました"
     },
     "roles": {
       "captain": "キャプテン"
@@ -7570,7 +7956,9 @@
       "requirement": "{half}人以下、または{full}人ちょうどでキューしてください"
     },
     "temp_banned_until": "{time} まで一時的にマッチメイキングを利用できません",
-    "new_invites_count": "新しい招待（{count}）"
+    "new_invites_count": "新しい招待（{count}）",
+    "tournament_banned": "トーナメントのロスターとフリーエージェントプールへの参加が禁止されています。",
+    "tournament_banned_until": "{time} までトーナメントのロスターとフリーエージェントプールへの参加が禁止されています。"
   },
   "game_server": {
     "lan_ip": "LAN IP",

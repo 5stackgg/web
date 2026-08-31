@@ -1229,6 +1229,10 @@
     },
     "system_telemetry": {
       "title": "Fleet Telemetry",
+      "filter": {
+        "all": "Whole Fleet",
+        "self_hosted": "Self-Hosted Only"
+      },
       "no_data": "No data reported yet",
       "installs": {
         "title": "Panels",
@@ -1244,11 +1248,11 @@
         "recency_hint": "Every panel ever seen, cut into disjoint bands by how recently it last checked in. The bands do not overlap, so they add up to the all-time total.",
         "seen_24h": "Today",
         "dormant": "Dormant",
-        "reporting": "In Totals",
-        "reporting_hint": "Panels whose latest report is detailed enough to count toward the fleet totals below. Panels quiet for over 30 days are left out, so the totals do not keep counting servers that were torn down."
+        "reporting": "Current State",
+        "reporting_hint": "Panels whose latest report is recent enough and detailed enough to count toward infrastructure and the rolling windows below. The all-time counts are not held to this — they are summed over every panel that ever reported, All Time above."
       },
       "totals": {
-        "self_reported": "Summed across the latest report of every panel active in the last 30 days — In Totals above is how many that is. Panels are self-hosted and report these counts themselves; values are validated on arrival but cannot be independently verified. Infrastructure is a point-in-time count, not a running total.",
+        "self_reported": "All-time counts — matches, maps, players, competition — are summed across the latest report of every panel that ever sent one, including panels that have since gone quiet: a panel going dark does not un-play its matches. Infrastructure and the rolling windows count only panels heard from in the last 30 days — Current State above is how many that is — because a node torn down a year ago is not capacity, and a quiet panel's last 7 days ended whenever it stopped reporting. Panels are self-hosted and report these counts themselves; values are validated on arrival but cannot be independently verified.",
         "game_server_nodes": "Game Server Nodes",
         "nodes_online": "Nodes Online",
         "nodes_offline": "Offline",
@@ -1810,6 +1814,10 @@
           "MatchChatMessage": {
             "title": "Match chat messages",
             "description": "A new message in a match's room."
+          },
+          "TournamentInvite": {
+            "title": "Tournament registration invites",
+            "description": "An organizer invited you to register for a tournament."
           }
         },
         "quiet_hours": {
@@ -2617,6 +2625,72 @@
           "server_default": "Server default",
           "invalid_number": "Enter a whole number of 0 or more.",
           "updated": "Utility settings updated"
+        },
+        "sanctions": {
+          "title": "Sanctions",
+          "section": "Automatic Sanctions",
+          "description": "How 5stack punishes the things it can detect on its own. Each source counts occurrences inside a window and applies the matching step of an escalation ladder.",
+          "defaults_note": "The values below are the ones 5stack has always used. Reading this page changes nothing — only an edit does.",
+          "unavailable": "No sanction sources are available. The API may not have run the sanctions migration yet.",
+          "load_failed": "Could not load the sanctions policy",
+          "reset": "Reset to default",
+          "permanent": "Permanent",
+          "platform_ban_narrowed": "At any scope other than “Bars everything” this source stops writing a platform-wide ban and only issues a scoped cooldown — a VAC-banned account keeps the other half of 5stack.",
+          "threshold": {
+            "label": "Sanction after",
+            "first_offence": "The first occurrence is punished.",
+            "free_passes": "The first {count} occurrences are free.",
+            "free_passes_one": "The first occurrence is free."
+          },
+          "window": {
+            "label": "Counting window (days)",
+            "never": "Never decays — every occurrence ever recorded still counts.",
+            "decays": "Occurrences older than {count} days stop counting.",
+            "decays_one": "Occurrences older than a day stop counting."
+          },
+          "ladder": {
+            "label": "Escalation ladder",
+            "add": "Add step",
+            "remove": "Remove step",
+            "clamp_hint": "The last step repeats forever. Set a step to 0 to make the sanction permanent.",
+            "occurrence": "Occurrence {count}",
+            "occurrence_and_after": "Occurrence {count}+",
+            "unit": {
+              "minutes": "Minutes",
+              "hours": "Hours",
+              "days": "Days"
+            },
+            "unit_value": {
+              "minutes": "{count} minutes",
+              "hours": "{count} hours",
+              "days": "{count} days",
+              "minutes_one": "1 minute",
+              "hours_one": "1 hour",
+              "days_one": "1 day"
+            }
+          },
+          "scope": {
+            "label": "What it bars"
+          },
+          "scopes": {
+            "matchmaking": "Bars matchmaking",
+            "tournaments": "Bars tournaments",
+            "both": "Bars both"
+          },
+          "sources": {
+            "match_abandon": {
+              "title": "Match Abandon",
+              "description": "A player left or never connected to a match they were rostered for. The clock runs from the last abandon, not from now."
+            },
+            "vac_ban": {
+              "title": "VAC / Game Ban",
+              "description": "Steam reports a VAC or game ban on the player's account. The counting window is measured against Steam's own days-since-last-ban."
+            },
+            "tournament_no_show": {
+              "title": "Tournament No-Show",
+              "description": "A team missed a required tournament check-in. Checked on the way in only, so a player already in a running bracket keeps their place."
+            }
+          }
         }
       },
       "language": {
@@ -3967,7 +4041,9 @@
       },
       "picker": {
         "search": "Find a map",
-        "none": "No maps with radars"
+        "none": "No maps with radars",
+        "count_public": "Public lineups on this map",
+        "count_private": "Not public, but visible to you — yours, your team's, or waiting on review. Archived is not counted."
       },
       "back_to_map": "Back to Map",
       "empty": {
@@ -4937,7 +5013,9 @@
         "actor_host": "The host",
         "actor_teammate": "A teammate",
         "actor_organizer": "An organizer",
-        "actor_player": "A player"
+        "actor_player": "A player",
+        "tournament_registration_invite": "Tournament Registration",
+        "invited_you_register": "invited you to register for"
       },
       "season_rebuild": {
         "title": "Season {number} ELO rebuild required",
@@ -5606,6 +5684,9 @@
       "title": "Add Team",
       "description": "Invite an existing team or create a new one for this tournament."
     },
+    "organizer_panel": {
+      "title": "Organizer Tools"
+    },
     "form": {
       "create": "Create Tournament",
       "name": "Tournament Name",
@@ -5946,13 +6027,30 @@
       "teams": "Teams",
       "format": "Format",
       "starts": "Starts",
-      "location": "Location"
+      "location": "Location",
+      "title": "Stats",
+      "leaderboard_title": "Player leaderboard",
+      "matches": "Matches",
+      "rounds": "Rounds",
+      "players": "Players",
+      "top_rating": "Top rating",
+      "col_team": "Team",
+      "col_rating": "Rating",
+      "col_adr": "ADR",
+      "col_kills": "K",
+      "col_deaths": "D",
+      "col_assists": "A",
+      "col_kd": "K/D",
+      "col_hs": "HS%",
+      "empty_title": "No stats yet",
+      "empty_description": "The leaderboard fills in as tournament matches finish."
     },
     "wizard": {
       "information": "Information",
       "location": "Location",
       "match_options": "Match Options",
-      "prizes": "Prizes"
+      "prizes": "Prizes",
+      "registration": "Registration"
     },
     "banner": {
       "label": "Banner",
@@ -6006,6 +6104,290 @@
       "expand": "Expand",
       "collapse_all": "Collapse All",
       "expand_all": "Expand All"
+    },
+    "registration": {
+      "section": "Registration",
+      "who": {
+        "label": "Who can register?",
+        "teams": {
+          "label": "Teams only",
+          "description": "Captains register an existing team. The default."
+        },
+        "free_agents": {
+          "label": "Free Agents",
+          "description": "Players sign up alone and are drafted into balanced teams when registration closes."
+        },
+        "both": {
+          "label": "Teams + Free Agents",
+          "description": "Both. Leftover free agents are drafted into extra teams alongside the registered ones."
+        }
+      },
+      "min_role": {
+        "label": "Minimum role",
+        "none": "No restriction",
+        "description": "Checked against the player being added, not just whoever clicks — so a captain can't roster ineligible players."
+      },
+      "rank": {
+        "label": "Rank range",
+        "min": "Min ELO",
+        "max": "Max ELO",
+        "description": "Leave either blank for no bound. Blank on both is open to any rank.",
+        "invalid_range": "Max ELO must be at least the min ELO."
+      },
+      "regions": {
+        "label": "Preferred regions",
+        "description": "Where this tournament's matches are hosted. Not a player gate — 5stack has no per-player region data.",
+        "empty": "No regions are currently available."
+      },
+      "invite_only": {
+        "label": "Invite only",
+        "description": "Registration is closed to the public. Organizers invite teams and players directly, or share an invite link."
+      }
+    },
+    "check_in": {
+      "section": "Check-In",
+      "required": {
+        "label": "Require check-in",
+        "description": "Teams confirm they're attending before the bracket is seeded. The window opens on a schedule; confirming is manual."
+      },
+      "who": {
+        "label": "Who checks in?",
+        "Captains": {
+          "label": "Captains",
+          "description": "The captain confirms for the whole team. One click, one team."
+        },
+        "Players": {
+          "label": "Every player",
+          "description": "Each rostered player confirms individually. The team is in once {count} have checked in — substitutes don't have to."
+        },
+        "Admin": {
+          "label": "Organizer only",
+          "description": "Players can't check themselves in; you mark teams present."
+        }
+      },
+      "opens": {
+        "label": "Window opens"
+      },
+      "closes": {
+        "label": "Window closes"
+      },
+      "minutes_before_start": "minutes before start",
+      "window_too_short": "The window must stay open for at least 5 minutes.",
+      "timeline": {
+        "opens": "Window opens",
+        "closes": "Window closes",
+        "start": "Tournament starts"
+      },
+      "lock_note": "Once the window opens, the start time and both offsets lock. Teams are already acting on this schedule, so moving it mid-window would shift a live deadline.",
+      "late_registration_note": "A team that registers during the window is checked in automatically — it can't be penalised for missing a prompt it was never shown.",
+      "no_show_note": "No-shows are never deleted. A team that misses check-in keeps its roster and simply isn't seeded — you can re-admit it any time before the tournament goes live.",
+      "frozen": "Check-in has already opened, so the start time and both offsets are locked. Extend the check-in window instead.",
+      "required_title": "This tournament requires check-in.",
+      "required_window": "Your team must confirm between {opens} and {closes} on the day, or it won't be placed in the bracket.",
+      "register_heading": "Register your team",
+      "register_hint": "You'll get a notification when check-in opens, and a reminder before it closes.",
+      "register_cta": "Register team",
+      "chip_required": "check-in required",
+      "opens_at_heading": "Check-in opens at {time}",
+      "opens_at_hint": "Your team is registered. We'll notify you when the window opens.",
+      "opens_in": "opens in",
+      "closes_in": "closes in",
+      "starts_in": "starts in",
+      "chip_action_needed": "action needed",
+      "chip_open": "check-in open",
+      "observer_heading": "Check-in is open",
+      "observer_hint": "Teams confirm they're attending before the bracket is seeded. Any team that hasn't checked in by {time} holds the tournament for your review.",
+      "confirm_heading": "Confirm your team is attending",
+      "confirm_hint": "Teams that haven't checked in by {time} are not seeded into the bracket.",
+      "players_progress": "{checked} of {required} checked in",
+      "players_heading": "Every player must check in",
+      "players_hint": "Your team is in once {count} players confirm. Substitutes don't need to.",
+      "admin_heading": "Mark teams present",
+      "admin_hint": "Players can't check themselves in for this tournament. Mark each team present before the window closes.",
+      "check_in": "Check in",
+      "mark_present": "Mark present",
+      "checked_in": "checked in",
+      "checked_in_at": "checked in · {time}",
+      "waiting": "waiting",
+      "not_needed": "not needed",
+      "role_captain": "captain",
+      "role_starter": "starter",
+      "role_sub": "sub",
+      "field_status": "Field status",
+      "field_count": "{checked} of {total} checked in",
+      "done_heading": "You're in. The bracket is seeded at {time}.",
+      "done_hint": "Confirmed for {team} at {time}.",
+      "chip_removed": "removed",
+      "missed_heading": "Your team missed check-in",
+      "missed_hint": "Check-in closed at {time} and the bracket is seeded without your team.",
+      "missed_contact": "Contact an organizer if you think this is wrong — they can re-admit a team any time before the tournament goes live.",
+      "failed": "Check-in failed",
+      "free_agent_opens_at_hint": "You're in the free agent pool. We'll notify you when the window opens.",
+      "free_agent_heading": "Confirm you're still available",
+      "free_agent_hint": "Free agents who haven't confirmed by {time} are moved to the waitlist and are not drafted into a team.",
+      "free_agent_done_heading": "You're in. Teams are drafted at {time}.",
+      "free_agent_done_hint": "Confirmed at {time}. You'll be drafted into a team when check-in closes.",
+      "free_agent_chip_waitlisted": "waitlisted",
+      "free_agent_missed_heading": "You missed check-in",
+      "free_agent_missed_hint": "Check-in closed at {time} and you were moved to the waitlist. You are only drafted now if a slot opens up.",
+      "free_agent_missed_contact": "Contact an organizer if you think this is wrong — extending check-in puts you back in the draft pool.",
+      "a11y_opens_in": "Check-in opens in",
+      "a11y_opens_help": "Check-in has not opened yet. There is nothing to confirm until it does.",
+      "a11y_closes_in": "Check-in closes in",
+      "a11y_closes_help": "Anyone who has not checked in by then is not seeded into the bracket.",
+      "a11y_starts_in": "Tournament starts in"
+    },
+    "check_in_review": {
+      "heading": "{count} teams missed check-in",
+      "subheading": "The tournament is held. Nothing has been seeded and nothing has been deleted — every team keeps its full roster.",
+      "chip_held_at": "held · auto-continues {time}",
+      "chip_held": "held",
+      "roster_size": "{count} players",
+      "partial_roster": "{checked} of {required} checked in · short by {short}",
+      "registered": "registered",
+      "chip_no_check_in": "no check-in",
+      "chip_incomplete": "incomplete",
+      "readmit": "Re-admit",
+      "readmit_failed": "Failed to re-admit team",
+      "continue": "Continue without them",
+      "continue_failed": "Failed to continue the tournament",
+      "extend": "Extend check-in",
+      "extend_by": "+{minutes} minutes",
+      "extend_failed": "Failed to extend check-in",
+      "extend_hint": "Extending reopens registration and re-notifies the {count} missing teams.",
+      "auto_continue": "If nobody acts, the tournament continues on its own at {time} with whoever checked in. A held tournament can never quietly die because an organizer was asleep.",
+      "auto_continue_no_time": "If nobody acts, the tournament continues on its own at its start time with whoever checked in.",
+      "reseed_warning": "Re-admitting a team re-seeds the bracket. That is safe before kickoff, but it reshuffles the seeds."
+    },
+    "free_agents": {
+      "title": "Free Agents",
+      "signed_up": "{count} signed up",
+      "filter_all": "All",
+      "filter_drafted": "Drafted",
+      "filter_waitlist": "Waitlist",
+      "sign_up": "Sign up",
+      "leave": "Leave pool",
+      "sign_up_alone": "Sign up alone",
+      "sign_up_with_lobby": "Sign up all {count}",
+      "lobby_title": "Bring your lobby",
+      "lobby_size": "{count} of {size}",
+      "lobby_hint": "Signing up with your lobby puts all {count} of you in the pool now, and the draft keeps you on the same team. Teams here are {size} players.",
+      "lobby_too_big": "Your lobby of {count} is larger than a team of {size}, so it cannot be drafted together. Sign up alone, or drop to {size} and try again.",
+      "lobby_not_captain": "Only {name} can sign the lobby up, the same way only the party leader queues it.",
+      "lobby_already_signed_up": "{count} of them already signed up alone; they keep their place in line and join your party.",
+      "status_drafted": "drafted",
+      "status_waitlisted": "waitlist",
+      "status_registered": "registered",
+      "empty_title": "No free agents yet",
+      "empty_description": "Players who sign up alone appear here, and are drafted into balanced teams when registration closes.",
+      "waitlist_explainer": "{name} is the highest-rated entrant and still waitlisted — they signed up after the slots filled. Sign-up time decides who gets a slot; ELO only decides which team. That is the rule working, not a bug.",
+      "party_of": "Party of {count}",
+      "party_status_drafted": "drafted together",
+      "party_status_waitlisted": "waitlisted together",
+      "party_kept_together": "{count} signed up together",
+      "party_waitlist_explainer": "A party is drafted whole or not at all. One that does not fit the slots left over is skipped as a unit and waitlisted together, so a smaller sign-up that arrived later can be drafted ahead of it.",
+      "party_deadlock": "{count} players are signed up, but no combination of these sign-ups adds up to a team of {size}, and a party is never split to make one fit. Drafting now would create nothing. More sign-ups, especially solo ones, break the deadlock.",
+      "organizer": "Organizer",
+      "draft_summary": "{agents} free agents → {teams} teams of {size}, {waitlisted} waitlisted.",
+      "regenerate": "Draft teams",
+      "regenerated": "Drafted {count} teams",
+      "regenerate_failed": "Failed to draft teams",
+      "join_failed": "Failed to join the free agent pool",
+      "join_with_lobby_failed": "Failed to sign up your lobby",
+      "leave_failed": "Failed to leave the free agent pool",
+      "already_drafted": "Teams are already drafted. Drafting again would do nothing — remove the drafted teams first.",
+      "draft_locked": "The bracket is in play, so the pool can no longer be drafted.",
+      "nothing_drafted": "No teams were drafted",
+      "nothing_drafted_hint": "There are not enough free agents left to fill a team of {size}, or the bracket has no room.",
+      "nothing_drafted_parties": "No combination of the sign-ups in the pool adds up to a team of {size}, and a party is never split to make one fit."
+    },
+    "entry": {
+      "title": "Entry requirements",
+      "requirements_hint": "Checked against every player being added, not just whoever clicks. Registration is refused if any of them fails.",
+      "locked_title": "This tournament is invite only",
+      "min_role": "Minimum role: {role}",
+      "elo_between": "ELO between {min} and {max}",
+      "elo_min": "ELO {min} or higher",
+      "elo_max": "ELO {max} or lower",
+      "elo_yours": "yours: {elo}",
+      "requirement_met": "met",
+      "requirement_failed": "not met",
+      "ok_chip": "eligible",
+      "locked_chip": "locked",
+      "blocked_chip": "not eligible",
+      "invite_hint": "Ask an organizer to invite your team, or to send you an invite link."
+    },
+    "invites": {
+      "title": "Invites",
+      "description": "Invite a team or a player directly and they can register even while this tournament is invite only.",
+      "add": "Invite a player",
+      "pending": "Pending",
+      "invited_by": "Invited by {name}",
+      "revoke": "Revoke",
+      "confirm_revoke": "Revoke this invite?",
+      "revoke_description": "{name} loses access unless they still hold a valid invite link.",
+      "empty": "Nobody has been invited yet.",
+      "sent": "Invite sent",
+      "send_failed": "Could not send that invite",
+      "already_invited": "Already invited",
+      "revoked": "Invite revoked",
+      "hint_open": "This tournament is open to everyone, so an invite is a shortcut rather than a requirement.",
+      "add_team": "Invite a team",
+      "team_label": "Team invite",
+      "registration_closed": "Registration is closed, so new invites cannot be sent. Reopen registration to invite more teams or players."
+    },
+    "invite_links": {
+      "title": "Invite Links",
+      "tab": "Links",
+      "registration_closed": "Registration is closed, so new invite links cannot be generated. Reopen registration to hand out more links.",
+      "hint": "Anyone holding the link can register. A link expires, caps how many times it can be used, and can be revoked at any time.",
+      "expires_after": "Expire after",
+      "max_uses": "Max uses",
+      "expiry_never": "Never",
+      "expiry_minutes": "{count} minutes",
+      "expiry_hour": "1 hour",
+      "expiry_hours": "{count} hours",
+      "expiry_day": "1 day",
+      "expiry_days": "{count} days",
+      "uses_one": "1 use",
+      "uses_limit": "{count} uses",
+      "uses_unlimited": "No limit",
+      "create": "Generate a link",
+      "created": "Invite link created and copied",
+      "create_failed": "Could not create that invite link",
+      "share": "Share",
+      "revoke": "Revoke",
+      "revoked": "Invite link revoked",
+      "revoke_failed": "Could not revoke that invite link",
+      "confirm_revoke": "Revoke this invite link?",
+      "revoke_description": "Anyone still holding the link loses access immediately. Teams that already registered through it keep their place.",
+      "expires": "Expires",
+      "expired": "Expired",
+      "exhausted": "Used up",
+      "never_expires": "Never expires",
+      "uses_count": "{count} used",
+      "who_used": "Who used it",
+      "uses_empty": "Nobody has used this link yet.",
+      "empty": "No invite links yet."
+    },
+    "invite_accept": {
+      "title": "You have an invite",
+      "hint": "Accept it to unlock registration for this tournament.",
+      "guest_hint": "Sign in to accept this invite and unlock registration.",
+      "accept": "Accept invite",
+      "sign_in": "Sign in to accept",
+      "dismiss": "Not now",
+      "accepted": "Invite accepted",
+      "failed": "That invite could not be used: {reason}",
+      "errors": {
+        "invite_not_found": "That invite link is not valid for this tournament.",
+        "invite_revoked": "The organizer revoked this invite link.",
+        "invite_expired": "This invite link has expired.",
+        "invite_used_up": "This invite link has already been used as many times as it allows.",
+        "invite_registration_closed": "Registration for this tournament is closed.",
+        "invite_rate_limited": "Too many invite attempts. Try again in a minute.",
+        "invite_not_allowed": "This account cannot accept this invite."
+      }
     }
   },
   "team": {
@@ -6058,7 +6440,11 @@
       "team_message": "You have been invited to join a team",
       "invited_by": "Invited by",
       "deny": "Deny",
-      "accept": "Accept"
+      "accept": "Accept",
+      "tournament_registration_title": "Tournament Registration Invite",
+      "tournament_registration_message": "You have been invited to register for a tournament",
+      "tournament_team_registration_title": "Tournament Team Invite",
+      "tournament_team_registration_message": "{team} has been invited to register for a tournament"
     },
     "roles": {
       "captain": "Captain"
@@ -7570,7 +7956,9 @@
       "requirement": "Queue with {half} or fewer, or exactly {full} players"
     },
     "temp_banned_until": "You are temporarily banned from matchmaking until {time}",
-    "new_invites_count": "New Invites ({count})"
+    "new_invites_count": "New Invites ({count})",
+    "tournament_banned": "You are barred from joining tournament rosters and the free agent pool.",
+    "tournament_banned_until": "You are barred from joining tournament rosters and the free agent pool until {time}."
   },
   "game_server": {
     "lan_ip": "LAN IP",

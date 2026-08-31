@@ -7,8 +7,9 @@ import ImageUploadTile from "~/components/ImageUploadTile.vue";
 import AddressSearch from "~/components/AddressSearch.vue";
 import CategorySelect from "~/components/tournament/CategorySelect.vue";
 import DateTimePicker from "~/components/tournament/DateTimePicker.vue";
-import { ExternalLink } from "lucide-vue-next";
+import { ExternalLink, Lock } from "lucide-vue-next";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
+import TournamentRegistrationForm from "~/components/tournament/TournamentRegistrationForm.vue";
 
 import {
   tacticalSectionLabelClasses as sectionLabelClasses,
@@ -115,10 +116,20 @@ import {
           <FormLabel>{{ $t("tournament.form.start") }}</FormLabel>
           <FormControl>
             <DateTimePicker
+              :disabled="scheduleFrozen"
               :model-value="value"
               @update:model-value="(date) => form.setFieldValue('start', date)"
             />
           </FormControl>
+          <p
+            v-if="scheduleFrozen"
+            class="flex items-start gap-2.5 border-l-2 border-[hsl(var(--warning))] bg-[hsl(var(--warning)/0.07)] px-3.5 py-2.5 text-[0.82rem] leading-snug"
+          >
+            <Lock
+              class="mt-0.5 h-3.5 w-3.5 shrink-0 text-[hsl(var(--warning))]"
+            />
+            <span>{{ $t("tournament.check_in.frozen") }}</span>
+          </p>
           <FormMessage />
         </FormItem>
       </FormField>
@@ -162,6 +173,18 @@ import {
       </FormField>
     </section>
 
+    <!-- The same panel the create wizard's Registration step renders, so the
+         rules an organizer set at creation are edited in exactly one UI.
+         Held back until the subscription lands: rendering the column defaults
+         first would show "check-in off" on a tournament that requires it, and
+         a toggle flipped in that window would be overwritten a tick later. -->
+    <TournamentRegistrationForm
+      v-if="registrationSettings"
+      :form="form"
+      :tournament="registrationSettings"
+      :min-players-per-lineup="tournament.min_players_per_lineup ?? null"
+    />
+
     <div class="pb-24"></div>
 
     <SettingsSaveBar
@@ -176,9 +199,16 @@ import {
 <script lang="ts">
 import * as z from "zod";
 import { useForm } from "vee-validate";
-import { generateMutation } from "~/graphql/graphqlGen";
+import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
 import { $ } from "~/generated/zeus";
+import { tournamentRegistrationFields } from "~/graphql/simpleTournamentFields";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
+import { isTournamentScheduleFrozen } from "~/utilities/tournamentCheckIn";
+import {
+  registrationColumns,
+  registrationFormValues,
+  registrationSchemaShape,
+} from "~/utilities/tournamentRegistration";
 import { toast } from "@/components/ui/toast";
 
 export default {
@@ -193,6 +223,8 @@ export default {
       submitting: false,
       baseline: null as string | null,
       isDirty: false,
+      registrationSettings: null as Record<string, any> | null,
+      registrationSeeded: false,
       form: useForm({
         keepValuesOnUnmount: true,
         validationSchema: toTypedSchema(
@@ -205,10 +237,47 @@ export default {
             latitude: z.number().nullable().default(null),
             longitude: z.number().nullable().default(null),
             categories: z.string().array().default([]),
+            ...registrationSchemaShape(this),
           }),
         ),
       }),
     };
+  },
+  apollo: {
+    $subscribe: {
+      tournaments_by_pk: {
+        // The registration columns are not part of the selection the tournament
+        // page hands down as `tournament`, and `check_in_started` has to stay
+        // live: the freeze must engage while an organizer has this form open.
+        query: generateSubscription({
+          tournaments_by_pk: [
+            { id: $("tournamentId", "uuid!") },
+            {
+              id: true,
+              start: true,
+              ...tournamentRegistrationFields,
+            } as any,
+          ],
+        }),
+        variables: function (this: any) {
+          return { tournamentId: this.tournament.id };
+        },
+        result: function (this: any, { data }: { data: any }) {
+          this.registrationSettings = data?.tournaments_by_pk ?? null;
+          if (this.baseline === null || !this.isDirty) {
+            this.populate();
+            return;
+          }
+          // Dirty already (the organizer started typing before this landed):
+          // repopulating would throw their edit away, but the registration half
+          // has never been seeded, so patch just that in — including into the
+          // dirty baseline, or the untouched panel counts as a change.
+          if (!this.registrationSeeded) {
+            this.seedRegistration();
+          }
+        },
+      },
+    },
   },
   watch: {
     tournament: {
@@ -229,6 +298,12 @@ export default {
     },
   },
   computed: {
+    // Only the live subscription carries `check_in_started`; the page's own
+    // tournament object never selects it, and a missing field would read as
+    // "not frozen" and quietly drop the lock explanation.
+    scheduleFrozen(): boolean {
+      return isTournamentScheduleFrozen(this.registrationSettings);
+    },
     apiDomain() {
       return useRuntimeConfig().public.apiDomain;
     },
@@ -266,10 +341,30 @@ export default {
         categories: (this.tournament.categories ?? []).map(
           (category: any) => category.category,
         ),
+        ...registrationFormValues(this.registrationSettings ?? {}),
       });
+      this.registrationSeeded = this.registrationSettings !== null;
       this.$nextTick(() => {
         this.baseline = JSON.stringify(this.form.values);
         this.isDirty = false;
+      });
+    },
+    // Seeds only the registration half, leaving the organizer's in-flight edits
+    // to the other sections alone. The baseline is patched in the same shape so
+    // JSON.stringify's key order still matches — a re-serialised baseline built
+    // from scratch would compare unequal and pin the form permanently dirty.
+    seedRegistration() {
+      const values = registrationFormValues(this.registrationSettings ?? {});
+      this.form.setValues(values);
+      this.registrationSeeded = true;
+      this.$nextTick(() => {
+        if (this.baseline === null) {
+          return;
+        }
+        const baseline = JSON.parse(this.baseline);
+        Object.assign(baseline, values);
+        this.baseline = JSON.stringify(baseline);
+        this.isDirty = JSON.stringify(this.form.values) !== this.baseline;
       });
     },
     discardChanges() {
@@ -358,29 +453,85 @@ export default {
 
       this.submitting = true;
       try {
+        const variables: Record<string, any> = {
+          name: this.form.values.name,
+          start: this.form.values.start,
+          description: this.form.values.description,
+          homepage: this.form.values.homepage || null,
+          location: this.form.values.location || null,
+          latitude: this.form.values.latitude ?? null,
+          longitude: this.form.values.longitude ?? null,
+        };
+        const set: Record<string, any> = {
+          name: $("name", "String!"),
+          description: $("description", "String"),
+          homepage: $("homepage", "String"),
+          location: $("location", "String"),
+          latitude: $("latitude", "float8"),
+          longitude: $("longitude", "float8"),
+        };
+
+        // `start` is dropped rather than resent unchanged while frozen: the
+        // trigger rejects the whole statement on any distinct value, and a
+        // Date rebuilt in JS loses the column's sub-millisecond precision, so
+        // "the same time" is not guaranteed to compare equal.
+        if (!this.scheduleFrozen) {
+          set.start = $("start", "timestamptz!");
+        } else {
+          delete variables.start;
+        }
+
+        // Omitted entirely until the registration subscription has landed —
+        // writing the panel's fallback defaults over a tournament whose real
+        // settings were never loaded would silently switch check-in off.
+        if (this.registrationSettings) {
+          const columns = registrationColumns(this.form.values);
+          Object.assign(variables, columns);
+          Object.assign(set, {
+            // Cast: the enum type only enters Zeus's GraphQLVariableType union
+            // once codegen has run against the migrated schema.
+            registration_type: $(
+              "registration_type",
+              "e_tournament_registration_types_enum!" as any,
+            ),
+            min_role: $("min_role", "e_player_roles_enum"),
+            min_elo: $("min_elo", "Int"),
+            max_elo: $("max_elo", "Int"),
+            invite_only: $("invite_only", "Boolean!"),
+            regions: $("regions", "[String!]!"),
+            check_in_required: $("check_in_required", "Boolean!"),
+            check_in_setting: $(
+              "check_in_setting",
+              "e_check_in_settings_enum!",
+            ),
+          });
+          // Frozen along with `start`, and for the same reason.
+          if (!this.scheduleFrozen) {
+            Object.assign(set, {
+              check_in_opens_before_minutes: $(
+                "check_in_opens_before_minutes",
+                "Int!",
+              ),
+              check_in_closes_before_minutes: $(
+                "check_in_closes_before_minutes",
+                "Int!",
+              ),
+            });
+          } else {
+            delete variables.check_in_opens_before_minutes;
+            delete variables.check_in_closes_before_minutes;
+          }
+        }
+
         await this.$apollo.mutate({
-          variables: {
-            name: this.form.values.name,
-            start: this.form.values.start,
-            description: this.form.values.description,
-            homepage: this.form.values.homepage || null,
-            location: this.form.values.location || null,
-            latitude: this.form.values.latitude ?? null,
-            longitude: this.form.values.longitude ?? null,
-          },
+          variables,
           mutation: generateMutation({
             update_tournaments_by_pk: [
               {
                 pk_columns: { id: this.tournament.id },
-                _set: {
-                  name: $("name", "String!"),
-                  start: $("start", "timestamptz!"),
-                  description: $("description", "String"),
-                  homepage: $("homepage", "String"),
-                  location: $("location", "String"),
-                  latitude: $("latitude", "float8"),
-                  longitude: $("longitude", "float8"),
-                },
+                // Cast: the registration columns arrive with the API migration
+                // and the generated Zeus types only learn them after codegen.
+                _set: set as any,
               },
               { __typename: true },
             ],

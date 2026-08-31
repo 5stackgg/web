@@ -163,6 +163,32 @@ const items = computed<ToastItem[]>(() => {
     });
   }
 
+  // Invites to REGISTER for a tournament, not to join a team already in one.
+  // The type string is deliberately not "tournament": that key already means
+  // the tournament-team invite directly above and is what every deployed client
+  // sends, so repointing it would break accept/deny mid-upgrade.
+  for (const invite of notificationStore.tournament_invites) {
+    list.push({
+      id: `tournament-registration:${invite.id}`,
+      kind: t("layouts.notifications.toast.tournament_registration_invite"),
+      who:
+        invite.invited_by?.name ||
+        t("layouts.notifications.toast.actor_organizer"),
+      action: t("layouts.notifications.toast.invited_you_register"),
+      // A team-addressed row is the same invite pointed at a roster rather than
+      // a person; naming the team is the only thing that tells the two apart in
+      // a one-line toast.
+      detail: invite.team?.name
+        ? `${invite.team.name} · ${invite.tournament?.name ?? ""}`
+        : (invite.tournament?.name ?? ""),
+      accept: async () => {
+        await inviteAction("tournament-registration", invite.id, true);
+        navigateTo(`/tournaments/${invite.tournament?.id}`);
+      },
+      decline: () => inviteAction("tournament-registration", invite.id, false),
+    });
+  }
+
   for (const lobby of lobbyInvites.value ?? []) {
     const captain = (lobby.players || []).find((p: any) => p.captain);
     list.push({

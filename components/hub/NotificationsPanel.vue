@@ -60,6 +60,7 @@ import LeagueScheduleStack from "~/components/notification/LeagueScheduleStack.v
                 v-if="
                   team_invites.length > 0 ||
                   tournament_team_invites.length > 0 ||
+                  tournament_invites.length > 0 ||
                   notifications.length > 0
                 "
               />
@@ -106,6 +107,30 @@ import LeagueScheduleStack from "~/components/notification/LeagueScheduleStack.v
                 :invite="invite"
                 :key="invite.id"
                 v-for="invite of tournament_team_invites"
+              />
+              <Separator v-if="notifications.length > 0" />
+            </div>
+          </div>
+        </div>
+      </Transition>
+
+      <!-- Its own block rather than folded into the one above: a registration
+           invite and a team invite are separate tables with separate accept
+           types, and stacking them would hide which one the player is answering. -->
+      <Transition
+        enter-active-class="notif-fold"
+        enter-from-class="notif-fold-collapsed"
+        leave-active-class="notif-fold"
+        leave-to-class="notif-fold-collapsed"
+      >
+        <div v-if="tournament_invites.length > 0" class="grid grid-rows-[1fr]">
+          <div class="min-h-0">
+            <div class="mb-3 p-3 bg-card/60 border border-border rounded-md">
+              <TeamInviteNotification
+                type="tournament-registration"
+                :invite="invite"
+                :key="invite.id"
+                v-for="invite of tournament_invites"
               />
               <Separator v-if="notifications.length > 0" />
             </div>
@@ -244,6 +269,9 @@ export default {
     tournament_team_invites() {
       return useNotificationStore().tournament_team_invites;
     },
+    tournament_invites() {
+      return useNotificationStore().tournament_invites;
+    },
     draft_invites() {
       return useNotificationStore().draft_invites;
     },
@@ -264,6 +292,7 @@ export default {
         this.scheduleTasks.length > 0 ||
         this.team_invites.length > 0 ||
         this.tournament_team_invites.length > 0 ||
+        this.tournament_invites.length > 0 ||
         this.draft_invites.length > 0 ||
         this.notifications.length > 0
       );

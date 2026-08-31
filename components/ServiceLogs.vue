@@ -71,15 +71,6 @@ async function downloadFullLogs(service: string) {
       class="flex flex-col overflow-hidden border border-border bg-[linear-gradient(180deg,hsl(var(--card)/0.6)_0%,hsl(var(--card)/0.25)_100%)] [backdrop-filter:blur(6px)]"
       :class="maximized ? 'fixed inset-0 z-50 bg-background' : 'relative'"
     >
-      <span
-        aria-hidden="true"
-        class="pointer-events-none absolute left-2 top-2 h-3 w-3 border-l-2 border-t-2 border-[hsl(var(--tac-amber))]"
-      />
-      <span
-        aria-hidden="true"
-        class="pointer-events-none absolute bottom-2 right-2 h-3 w-3 border-b-2 border-r-2 border-[hsl(var(--tac-amber))]"
-      />
-
       <header
         class="flex flex-wrap items-center gap-1.5 border-b border-border/70 px-3 py-2 sm:gap-2 sm:px-4 sm:py-3"
       >

@@ -30,6 +30,7 @@ import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import mapLabel from "~/utilities/mapLabel";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
 import VoiceChannelCard from "~/components/voice/VoiceChannelCard.vue";
+import { matchHasEnded } from "~/utilities/matchTeamLobby";
 import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import CheckIntoMatch from "~/components/match/CheckIntoMatch.vue";
 import MatchRegionVeto from "~/components/match/MatchRegionVeto.vue";
@@ -150,6 +151,12 @@ const myMatchLineupId = computed(() => {
     ? props.match?.lineup_1_id
     : props.match?.lineup_2_id;
 });
+// Voice closes a few minutes after the match reaches a terminal status and the
+// API stops admitting the channel with it; team chat keeps working, which is why
+// this is not simply myMatchLineupId.
+const myVoiceLineupId = computed(() =>
+  matchHasEnded(props.match) ? null : myMatchLineupId.value,
+);
 const teamChatLobbyId = computed(() =>
   myMatchLineupId.value ? `${props.match.id}:${myMatchLineupId.value}` : null,
 );
@@ -1825,10 +1832,11 @@ const start = () => {
                    section appeared -- which left the same three controls on
                    screen twice as soon as it had. -->
               <VoiceChannelCard
+                v-if="myVoiceLineupId"
                 show-empty
                 class="mt-3"
                 kind="match"
-                :channel-id="myMatchLineupId"
+                :channel-id="myVoiceLineupId"
                 :label="$t('layouts.voice_panel.team_comms')"
               />
             </div>

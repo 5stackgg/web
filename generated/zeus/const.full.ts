@@ -3925,6 +3925,116 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"e_ready_settings_set_input",
 		where:"e_ready_settings_bool_exp"
 	},
+	e_sanction_scopes_aggregate_fields:{
+		count:{
+			columns:"e_sanction_scopes_select_column"
+		}
+	},
+	e_sanction_scopes_bool_exp:{
+		_and:"e_sanction_scopes_bool_exp",
+		_not:"e_sanction_scopes_bool_exp",
+		_or:"e_sanction_scopes_bool_exp",
+		description:"String_comparison_exp",
+		value:"String_comparison_exp"
+	},
+	e_sanction_scopes_constraint: "enum" as const,
+	e_sanction_scopes_insert_input:{
+
+	},
+	e_sanction_scopes_obj_rel_insert_input:{
+		data:"e_sanction_scopes_insert_input",
+		on_conflict:"e_sanction_scopes_on_conflict"
+	},
+	e_sanction_scopes_on_conflict:{
+		constraint:"e_sanction_scopes_constraint",
+		update_columns:"e_sanction_scopes_update_column",
+		where:"e_sanction_scopes_bool_exp"
+	},
+	e_sanction_scopes_order_by:{
+		description:"order_by",
+		value:"order_by"
+	},
+	e_sanction_scopes_pk_columns_input:{
+
+	},
+	e_sanction_scopes_select_column: "enum" as const,
+	e_sanction_scopes_set_input:{
+
+	},
+	e_sanction_scopes_stream_cursor_input:{
+		initial_value:"e_sanction_scopes_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	e_sanction_scopes_stream_cursor_value_input:{
+
+	},
+	e_sanction_scopes_update_column: "enum" as const,
+	e_sanction_scopes_updates:{
+		_set:"e_sanction_scopes_set_input",
+		where:"e_sanction_scopes_bool_exp"
+	},
+	e_sanction_sources_aggregate_fields:{
+		count:{
+			columns:"e_sanction_sources_select_column"
+		}
+	},
+	e_sanction_sources_bool_exp:{
+		_and:"e_sanction_sources_bool_exp",
+		_not:"e_sanction_sources_bool_exp",
+		_or:"e_sanction_sources_bool_exp",
+		default_durations:"String_comparison_exp",
+		default_enabled:"Boolean_comparison_exp",
+		default_scope:"String_comparison_exp",
+		default_threshold:"Int_comparison_exp",
+		default_window_days:"Int_comparison_exp",
+		description:"String_comparison_exp",
+		e_sanction_scope:"e_sanction_scopes_bool_exp",
+		value:"String_comparison_exp",
+		writes_platform_ban:"Boolean_comparison_exp"
+	},
+	e_sanction_sources_constraint: "enum" as const,
+	e_sanction_sources_inc_input:{
+
+	},
+	e_sanction_sources_insert_input:{
+		e_sanction_scope:"e_sanction_scopes_obj_rel_insert_input"
+	},
+	e_sanction_sources_on_conflict:{
+		constraint:"e_sanction_sources_constraint",
+		update_columns:"e_sanction_sources_update_column",
+		where:"e_sanction_sources_bool_exp"
+	},
+	e_sanction_sources_order_by:{
+		default_durations:"order_by",
+		default_enabled:"order_by",
+		default_scope:"order_by",
+		default_threshold:"order_by",
+		default_window_days:"order_by",
+		description:"order_by",
+		e_sanction_scope:"e_sanction_scopes_order_by",
+		value:"order_by",
+		writes_platform_ban:"order_by"
+	},
+	e_sanction_sources_pk_columns_input:{
+
+	},
+	e_sanction_sources_select_column: "enum" as const,
+	e_sanction_sources_set_input:{
+
+	},
+	e_sanction_sources_stream_cursor_input:{
+		initial_value:"e_sanction_sources_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	e_sanction_sources_stream_cursor_value_input:{
+
+	},
+	e_sanction_sources_update_column: "enum" as const,
+	e_sanction_sources_updates:{
+		_inc:"e_sanction_sources_inc_input",
+		_set:"e_sanction_sources_set_input",
+		where:"e_sanction_sources_bool_exp"
+	},
 	e_sanction_types_aggregate_fields:{
 		count:{
 			columns:"e_sanction_types_select_column"
@@ -4498,6 +4608,142 @@ export const AllTypesProps: Record<string,any> = {
 	e_tournament_categories_updates:{
 		_set:"e_tournament_categories_set_input",
 		where:"e_tournament_categories_bool_exp"
+	},
+	e_tournament_free_agent_statuses:{
+		tournament_free_agents:{
+			distinct_on:"tournament_free_agents_select_column",
+			order_by:"tournament_free_agents_order_by",
+			where:"tournament_free_agents_bool_exp"
+		},
+		tournament_free_agents_aggregate:{
+			distinct_on:"tournament_free_agents_select_column",
+			order_by:"tournament_free_agents_order_by",
+			where:"tournament_free_agents_bool_exp"
+		}
+	},
+	e_tournament_free_agent_statuses_aggregate_fields:{
+		count:{
+			columns:"e_tournament_free_agent_statuses_select_column"
+		}
+	},
+	e_tournament_free_agent_statuses_bool_exp:{
+		_and:"e_tournament_free_agent_statuses_bool_exp",
+		_not:"e_tournament_free_agent_statuses_bool_exp",
+		_or:"e_tournament_free_agent_statuses_bool_exp",
+		description:"String_comparison_exp",
+		tournament_free_agents:"tournament_free_agents_bool_exp",
+		tournament_free_agents_aggregate:"tournament_free_agents_aggregate_bool_exp",
+		value:"String_comparison_exp"
+	},
+	e_tournament_free_agent_statuses_constraint: "enum" as const,
+	e_tournament_free_agent_statuses_enum: "enum" as const,
+	e_tournament_free_agent_statuses_enum_comparison_exp:{
+		_eq:"e_tournament_free_agent_statuses_enum",
+		_in:"e_tournament_free_agent_statuses_enum",
+		_neq:"e_tournament_free_agent_statuses_enum",
+		_nin:"e_tournament_free_agent_statuses_enum"
+	},
+	e_tournament_free_agent_statuses_insert_input:{
+		tournament_free_agents:"tournament_free_agents_arr_rel_insert_input"
+	},
+	e_tournament_free_agent_statuses_obj_rel_insert_input:{
+		data:"e_tournament_free_agent_statuses_insert_input",
+		on_conflict:"e_tournament_free_agent_statuses_on_conflict"
+	},
+	e_tournament_free_agent_statuses_on_conflict:{
+		constraint:"e_tournament_free_agent_statuses_constraint",
+		update_columns:"e_tournament_free_agent_statuses_update_column",
+		where:"e_tournament_free_agent_statuses_bool_exp"
+	},
+	e_tournament_free_agent_statuses_order_by:{
+		description:"order_by",
+		tournament_free_agents_aggregate:"tournament_free_agents_aggregate_order_by",
+		value:"order_by"
+	},
+	e_tournament_free_agent_statuses_pk_columns_input:{
+
+	},
+	e_tournament_free_agent_statuses_select_column: "enum" as const,
+	e_tournament_free_agent_statuses_set_input:{
+
+	},
+	e_tournament_free_agent_statuses_stream_cursor_input:{
+		initial_value:"e_tournament_free_agent_statuses_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	e_tournament_free_agent_statuses_stream_cursor_value_input:{
+
+	},
+	e_tournament_free_agent_statuses_update_column: "enum" as const,
+	e_tournament_free_agent_statuses_updates:{
+		_set:"e_tournament_free_agent_statuses_set_input",
+		where:"e_tournament_free_agent_statuses_bool_exp"
+	},
+	e_tournament_registration_types:{
+		tournaments:{
+			distinct_on:"tournaments_select_column",
+			order_by:"tournaments_order_by",
+			where:"tournaments_bool_exp"
+		},
+		tournaments_aggregate:{
+			distinct_on:"tournaments_select_column",
+			order_by:"tournaments_order_by",
+			where:"tournaments_bool_exp"
+		}
+	},
+	e_tournament_registration_types_aggregate_fields:{
+		count:{
+			columns:"e_tournament_registration_types_select_column"
+		}
+	},
+	e_tournament_registration_types_bool_exp:{
+		_and:"e_tournament_registration_types_bool_exp",
+		_not:"e_tournament_registration_types_bool_exp",
+		_or:"e_tournament_registration_types_bool_exp",
+		description:"String_comparison_exp",
+		tournaments:"tournaments_bool_exp",
+		tournaments_aggregate:"tournaments_aggregate_bool_exp",
+		value:"String_comparison_exp"
+	},
+	e_tournament_registration_types_constraint: "enum" as const,
+	e_tournament_registration_types_enum: "enum" as const,
+	e_tournament_registration_types_enum_comparison_exp:{
+		_eq:"e_tournament_registration_types_enum",
+		_in:"e_tournament_registration_types_enum",
+		_neq:"e_tournament_registration_types_enum",
+		_nin:"e_tournament_registration_types_enum"
+	},
+	e_tournament_registration_types_insert_input:{
+		tournaments:"tournaments_arr_rel_insert_input"
+	},
+	e_tournament_registration_types_on_conflict:{
+		constraint:"e_tournament_registration_types_constraint",
+		update_columns:"e_tournament_registration_types_update_column",
+		where:"e_tournament_registration_types_bool_exp"
+	},
+	e_tournament_registration_types_order_by:{
+		description:"order_by",
+		tournaments_aggregate:"tournaments_aggregate_order_by",
+		value:"order_by"
+	},
+	e_tournament_registration_types_pk_columns_input:{
+
+	},
+	e_tournament_registration_types_select_column: "enum" as const,
+	e_tournament_registration_types_set_input:{
+
+	},
+	e_tournament_registration_types_stream_cursor_input:{
+		initial_value:"e_tournament_registration_types_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	e_tournament_registration_types_stream_cursor_value_input:{
+
+	},
+	e_tournament_registration_types_update_column: "enum" as const,
+	e_tournament_registration_types_updates:{
+		_set:"e_tournament_registration_types_set_input",
+		where:"e_tournament_registration_types_bool_exp"
 	},
 	e_tournament_stage_types:{
 		tournament_stages:{
@@ -7776,6 +8022,9 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	get_player_leaderboard_rank_args:{
 		_season_id:"uuid"
+	},
+	get_tournament_leaderboard_args:{
+		_tournament_id:"uuid"
 	},
 	inet: `scalar.inet` as const,
 	inet_comparison_exp:{
@@ -13404,6 +13653,10 @@ export const AllTypesProps: Record<string,any> = {
 		checkIntoMatch:{
 			match_id:"uuid"
 		},
+		checkIntoTournament:{
+			tournament_id:"uuid",
+			tournament_team_id:"uuid"
+		},
 		clearClipRenderBatch:{
 			match_map_id:"uuid"
 		},
@@ -13415,6 +13668,9 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"league_seasons_select_column",
 			order_by:"league_seasons_order_by",
 			where:"league_seasons_bool_exp"
+		},
+		continueTournamentCheckIn:{
+			tournament_id:"uuid"
 		},
 		counterScrimRequest:{
 			proposed_scheduled_at:"timestamptz",
@@ -13442,6 +13698,9 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		createServerDirectory:{
 
+		},
+		createTournamentInviteCode:{
+			tournament_id:"uuid"
 		},
 		deleteAward:{
 			id:"uuid"
@@ -13760,6 +14019,18 @@ export const AllTypesProps: Record<string,any> = {
 		delete_e_ready_settings_by_pk:{
 
 		},
+		delete_e_sanction_scopes:{
+			where:"e_sanction_scopes_bool_exp"
+		},
+		delete_e_sanction_scopes_by_pk:{
+
+		},
+		delete_e_sanction_sources:{
+			where:"e_sanction_sources_bool_exp"
+		},
+		delete_e_sanction_sources_by_pk:{
+
+		},
 		delete_e_sanction_types:{
 			where:"e_sanction_types_bool_exp"
 		},
@@ -13812,6 +14083,18 @@ export const AllTypesProps: Record<string,any> = {
 			where:"e_tournament_categories_bool_exp"
 		},
 		delete_e_tournament_categories_by_pk:{
+
+		},
+		delete_e_tournament_free_agent_statuses:{
+			where:"e_tournament_free_agent_statuses_bool_exp"
+		},
+		delete_e_tournament_free_agent_statuses_by_pk:{
+
+		},
+		delete_e_tournament_registration_types:{
+			where:"e_tournament_registration_types_bool_exp"
+		},
+		delete_e_tournament_registration_types_by_pk:{
 
 		},
 		delete_e_tournament_stage_types:{
@@ -14485,6 +14768,40 @@ export const AllTypesProps: Record<string,any> = {
 			category:"e_tournament_categories_enum",
 			tournament_id:"uuid"
 		},
+		delete_tournament_free_agents:{
+			where:"tournament_free_agents_bool_exp"
+		},
+		delete_tournament_free_agents_by_pk:{
+			id:"uuid"
+		},
+		delete_tournament_invite_code_uses:{
+			where:"tournament_invite_code_uses_bool_exp"
+		},
+		delete_tournament_invite_code_uses_by_pk:{
+			invite_code_id:"uuid",
+			player_steam_id:"bigint"
+		},
+		delete_tournament_invite_codes:{
+			where:"tournament_invite_codes_bool_exp"
+		},
+		delete_tournament_invite_codes_by_pk:{
+			id:"uuid"
+		},
+		delete_tournament_invites:{
+			where:"tournament_invites_bool_exp"
+		},
+		delete_tournament_invites_by_pk:{
+			id:"uuid"
+		},
+		delete_tournament_leaderboard_entries:{
+			where:"tournament_leaderboard_entries_bool_exp"
+		},
+		delete_tournament_no_shows:{
+			where:"tournament_no_shows_bool_exp"
+		},
+		delete_tournament_no_shows_by_pk:{
+			id:"uuid"
+		},
 		delete_tournament_organizer_teams:{
 			where:"tournament_organizer_teams_bool_exp"
 		},
@@ -14504,6 +14821,9 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		delete_tournament_prizes_by_pk:{
 			id:"uuid"
+		},
+		delete_tournament_registration_unlocks:{
+			where:"tournament_registration_unlocks_bool_exp"
 		},
 		delete_tournament_stage_windows:{
 			where:"tournament_stage_windows_bool_exp"
@@ -14674,6 +14994,12 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		denyNameChange:{
 			steam_id:"bigint"
+		},
+		draftTournamentTeams:{
+			tournament_id:"uuid"
+		},
+		extendTournamentCheckIn:{
+			tournament_id:"uuid"
 		},
 		forfeitMatch:{
 			match_id:"uuid",
@@ -15084,6 +15410,22 @@ export const AllTypesProps: Record<string,any> = {
 			object:"e_ready_settings_insert_input",
 			on_conflict:"e_ready_settings_on_conflict"
 		},
+		insert_e_sanction_scopes:{
+			objects:"e_sanction_scopes_insert_input",
+			on_conflict:"e_sanction_scopes_on_conflict"
+		},
+		insert_e_sanction_scopes_one:{
+			object:"e_sanction_scopes_insert_input",
+			on_conflict:"e_sanction_scopes_on_conflict"
+		},
+		insert_e_sanction_sources:{
+			objects:"e_sanction_sources_insert_input",
+			on_conflict:"e_sanction_sources_on_conflict"
+		},
+		insert_e_sanction_sources_one:{
+			object:"e_sanction_sources_insert_input",
+			on_conflict:"e_sanction_sources_on_conflict"
+		},
 		insert_e_sanction_types:{
 			objects:"e_sanction_types_insert_input",
 			on_conflict:"e_sanction_types_on_conflict"
@@ -15155,6 +15497,22 @@ export const AllTypesProps: Record<string,any> = {
 		insert_e_tournament_categories_one:{
 			object:"e_tournament_categories_insert_input",
 			on_conflict:"e_tournament_categories_on_conflict"
+		},
+		insert_e_tournament_free_agent_statuses:{
+			objects:"e_tournament_free_agent_statuses_insert_input",
+			on_conflict:"e_tournament_free_agent_statuses_on_conflict"
+		},
+		insert_e_tournament_free_agent_statuses_one:{
+			object:"e_tournament_free_agent_statuses_insert_input",
+			on_conflict:"e_tournament_free_agent_statuses_on_conflict"
+		},
+		insert_e_tournament_registration_types:{
+			objects:"e_tournament_registration_types_insert_input",
+			on_conflict:"e_tournament_registration_types_on_conflict"
+		},
+		insert_e_tournament_registration_types_one:{
+			object:"e_tournament_registration_types_insert_input",
+			on_conflict:"e_tournament_registration_types_on_conflict"
 		},
 		insert_e_tournament_stage_types:{
 			objects:"e_tournament_stage_types_insert_input",
@@ -16012,6 +16370,52 @@ export const AllTypesProps: Record<string,any> = {
 			object:"tournament_categories_insert_input",
 			on_conflict:"tournament_categories_on_conflict"
 		},
+		insert_tournament_free_agents:{
+			objects:"tournament_free_agents_insert_input",
+			on_conflict:"tournament_free_agents_on_conflict"
+		},
+		insert_tournament_free_agents_one:{
+			object:"tournament_free_agents_insert_input",
+			on_conflict:"tournament_free_agents_on_conflict"
+		},
+		insert_tournament_invite_code_uses:{
+			objects:"tournament_invite_code_uses_insert_input",
+			on_conflict:"tournament_invite_code_uses_on_conflict"
+		},
+		insert_tournament_invite_code_uses_one:{
+			object:"tournament_invite_code_uses_insert_input",
+			on_conflict:"tournament_invite_code_uses_on_conflict"
+		},
+		insert_tournament_invite_codes:{
+			objects:"tournament_invite_codes_insert_input",
+			on_conflict:"tournament_invite_codes_on_conflict"
+		},
+		insert_tournament_invite_codes_one:{
+			object:"tournament_invite_codes_insert_input",
+			on_conflict:"tournament_invite_codes_on_conflict"
+		},
+		insert_tournament_invites:{
+			objects:"tournament_invites_insert_input",
+			on_conflict:"tournament_invites_on_conflict"
+		},
+		insert_tournament_invites_one:{
+			object:"tournament_invites_insert_input",
+			on_conflict:"tournament_invites_on_conflict"
+		},
+		insert_tournament_leaderboard_entries:{
+			objects:"tournament_leaderboard_entries_insert_input"
+		},
+		insert_tournament_leaderboard_entries_one:{
+			object:"tournament_leaderboard_entries_insert_input"
+		},
+		insert_tournament_no_shows:{
+			objects:"tournament_no_shows_insert_input",
+			on_conflict:"tournament_no_shows_on_conflict"
+		},
+		insert_tournament_no_shows_one:{
+			object:"tournament_no_shows_insert_input",
+			on_conflict:"tournament_no_shows_on_conflict"
+		},
 		insert_tournament_organizer_teams:{
 			objects:"tournament_organizer_teams_insert_input",
 			on_conflict:"tournament_organizer_teams_on_conflict"
@@ -16035,6 +16439,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_tournament_prizes_one:{
 			object:"tournament_prizes_insert_input",
 			on_conflict:"tournament_prizes_on_conflict"
+		},
+		insert_tournament_registration_unlocks:{
+			objects:"tournament_registration_unlocks_insert_input",
+			on_conflict:"tournament_registration_unlocks_on_conflict"
+		},
+		insert_tournament_registration_unlocks_one:{
+			object:"tournament_registration_unlocks_insert_input",
+			on_conflict:"tournament_registration_unlocks_on_conflict"
 		},
 		insert_tournament_stage_windows:{
 			objects:"tournament_stage_windows_insert_input",
@@ -16264,6 +16676,9 @@ export const AllTypesProps: Record<string,any> = {
 		joinDraftGameAsParty:{
 			draftGameId:"uuid"
 		},
+		joinTournamentAsFreeAgent:{
+			tournament_id:"uuid"
+		},
 		joinUtilityPractice:{
 			session_id:"uuid"
 		},
@@ -16278,6 +16693,9 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		leaveLineup:{
 
+		},
+		leaveTournamentAsFreeAgent:{
+			tournament_id:"uuid"
 		},
 		leaveUtilityPractice:{
 			session_id:"uuid"
@@ -16310,6 +16728,10 @@ export const AllTypesProps: Record<string,any> = {
 		randomizeTeams:{
 			match_id:"uuid"
 		},
+		readmitTournamentTeam:{
+			tournament_id:"uuid",
+			tournament_team_id:"uuid"
+		},
 		rebootMatchServer:{
 			match_id:"uuid"
 		},
@@ -16324,6 +16746,9 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		reconnectLive:{
 			match_id:"uuid"
+		},
+		redeemTournamentInviteCode:{
+			tournament_id:"uuid"
 		},
 		refreshFaceitRank:{
 
@@ -16397,6 +16822,9 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		revokeAward:{
 			id:"uuid"
+		},
+		revokeTournamentInviteCode:{
+			invite_code_id:"uuid"
 		},
 		sanctionServerPlayer:{
 
@@ -17137,6 +17565,30 @@ export const AllTypesProps: Record<string,any> = {
 		update_e_ready_settings_many:{
 			updates:"e_ready_settings_updates"
 		},
+		update_e_sanction_scopes:{
+			_set:"e_sanction_scopes_set_input",
+			where:"e_sanction_scopes_bool_exp"
+		},
+		update_e_sanction_scopes_by_pk:{
+			_set:"e_sanction_scopes_set_input",
+			pk_columns:"e_sanction_scopes_pk_columns_input"
+		},
+		update_e_sanction_scopes_many:{
+			updates:"e_sanction_scopes_updates"
+		},
+		update_e_sanction_sources:{
+			_inc:"e_sanction_sources_inc_input",
+			_set:"e_sanction_sources_set_input",
+			where:"e_sanction_sources_bool_exp"
+		},
+		update_e_sanction_sources_by_pk:{
+			_inc:"e_sanction_sources_inc_input",
+			_set:"e_sanction_sources_set_input",
+			pk_columns:"e_sanction_sources_pk_columns_input"
+		},
+		update_e_sanction_sources_many:{
+			updates:"e_sanction_sources_updates"
+		},
 		update_e_sanction_types:{
 			_set:"e_sanction_types_set_input",
 			where:"e_sanction_types_bool_exp"
@@ -17235,6 +17687,28 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_e_tournament_categories_many:{
 			updates:"e_tournament_categories_updates"
+		},
+		update_e_tournament_free_agent_statuses:{
+			_set:"e_tournament_free_agent_statuses_set_input",
+			where:"e_tournament_free_agent_statuses_bool_exp"
+		},
+		update_e_tournament_free_agent_statuses_by_pk:{
+			_set:"e_tournament_free_agent_statuses_set_input",
+			pk_columns:"e_tournament_free_agent_statuses_pk_columns_input"
+		},
+		update_e_tournament_free_agent_statuses_many:{
+			updates:"e_tournament_free_agent_statuses_updates"
+		},
+		update_e_tournament_registration_types:{
+			_set:"e_tournament_registration_types_set_input",
+			where:"e_tournament_registration_types_bool_exp"
+		},
+		update_e_tournament_registration_types_by_pk:{
+			_set:"e_tournament_registration_types_set_input",
+			pk_columns:"e_tournament_registration_types_pk_columns_input"
+		},
+		update_e_tournament_registration_types_many:{
+			updates:"e_tournament_registration_types_updates"
 		},
 		update_e_tournament_stage_types:{
 			_set:"e_tournament_stage_types_set_input",
@@ -18688,6 +19162,79 @@ export const AllTypesProps: Record<string,any> = {
 		update_tournament_categories_many:{
 			updates:"tournament_categories_updates"
 		},
+		update_tournament_free_agents:{
+			_inc:"tournament_free_agents_inc_input",
+			_set:"tournament_free_agents_set_input",
+			where:"tournament_free_agents_bool_exp"
+		},
+		update_tournament_free_agents_by_pk:{
+			_inc:"tournament_free_agents_inc_input",
+			_set:"tournament_free_agents_set_input",
+			pk_columns:"tournament_free_agents_pk_columns_input"
+		},
+		update_tournament_free_agents_many:{
+			updates:"tournament_free_agents_updates"
+		},
+		update_tournament_invite_code_uses:{
+			_inc:"tournament_invite_code_uses_inc_input",
+			_set:"tournament_invite_code_uses_set_input",
+			where:"tournament_invite_code_uses_bool_exp"
+		},
+		update_tournament_invite_code_uses_by_pk:{
+			_inc:"tournament_invite_code_uses_inc_input",
+			_set:"tournament_invite_code_uses_set_input",
+			pk_columns:"tournament_invite_code_uses_pk_columns_input"
+		},
+		update_tournament_invite_code_uses_many:{
+			updates:"tournament_invite_code_uses_updates"
+		},
+		update_tournament_invite_codes:{
+			_inc:"tournament_invite_codes_inc_input",
+			_set:"tournament_invite_codes_set_input",
+			where:"tournament_invite_codes_bool_exp"
+		},
+		update_tournament_invite_codes_by_pk:{
+			_inc:"tournament_invite_codes_inc_input",
+			_set:"tournament_invite_codes_set_input",
+			pk_columns:"tournament_invite_codes_pk_columns_input"
+		},
+		update_tournament_invite_codes_many:{
+			updates:"tournament_invite_codes_updates"
+		},
+		update_tournament_invites:{
+			_inc:"tournament_invites_inc_input",
+			_set:"tournament_invites_set_input",
+			where:"tournament_invites_bool_exp"
+		},
+		update_tournament_invites_by_pk:{
+			_inc:"tournament_invites_inc_input",
+			_set:"tournament_invites_set_input",
+			pk_columns:"tournament_invites_pk_columns_input"
+		},
+		update_tournament_invites_many:{
+			updates:"tournament_invites_updates"
+		},
+		update_tournament_leaderboard_entries:{
+			_inc:"tournament_leaderboard_entries_inc_input",
+			_set:"tournament_leaderboard_entries_set_input",
+			where:"tournament_leaderboard_entries_bool_exp"
+		},
+		update_tournament_leaderboard_entries_many:{
+			updates:"tournament_leaderboard_entries_updates"
+		},
+		update_tournament_no_shows:{
+			_inc:"tournament_no_shows_inc_input",
+			_set:"tournament_no_shows_set_input",
+			where:"tournament_no_shows_bool_exp"
+		},
+		update_tournament_no_shows_by_pk:{
+			_inc:"tournament_no_shows_inc_input",
+			_set:"tournament_no_shows_set_input",
+			pk_columns:"tournament_no_shows_pk_columns_input"
+		},
+		update_tournament_no_shows_many:{
+			updates:"tournament_no_shows_updates"
+		},
 		update_tournament_organizer_teams:{
 			_set:"tournament_organizer_teams_set_input",
 			where:"tournament_organizer_teams_bool_exp"
@@ -18724,6 +19271,14 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_tournament_prizes_many:{
 			updates:"tournament_prizes_updates"
+		},
+		update_tournament_registration_unlocks:{
+			_inc:"tournament_registration_unlocks_inc_input",
+			_set:"tournament_registration_unlocks_set_input",
+			where:"tournament_registration_unlocks_bool_exp"
+		},
+		update_tournament_registration_unlocks_many:{
+			updates:"tournament_registration_unlocks_updates"
 		},
 		update_tournament_stage_windows:{
 			_inc:"tournament_stage_windows_inc_input",
@@ -25869,6 +26424,7 @@ export const AllTypesProps: Record<string,any> = {
 		team_members_aggregate:"team_roster_aggregate_bool_exp",
 		teams:"teams_bool_exp",
 		total_matches:"Int_comparison_exp",
+		tournament_cooldown:"timestamptz_comparison_exp",
 		tournament_organizers:"tournament_organizers_bool_exp",
 		tournament_organizers_aggregate:"tournament_organizers_aggregate_bool_exp",
 		tournament_rosters:"tournament_team_roster_bool_exp",
@@ -26036,6 +26592,7 @@ export const AllTypesProps: Record<string,any> = {
 		team_members_aggregate:"team_roster_aggregate_order_by",
 		teams_aggregate:"teams_aggregate_order_by",
 		total_matches:"order_by",
+		tournament_cooldown:"order_by",
 		tournament_organizers_aggregate:"tournament_organizers_aggregate_order_by",
 		tournament_rosters_aggregate:"tournament_team_roster_aggregate_order_by",
 		tournaments_aggregate:"tournaments_aggregate_order_by",
@@ -26849,6 +27406,32 @@ export const AllTypesProps: Record<string,any> = {
 		e_ready_settings_by_pk:{
 
 		},
+		e_sanction_scopes:{
+			distinct_on:"e_sanction_scopes_select_column",
+			order_by:"e_sanction_scopes_order_by",
+			where:"e_sanction_scopes_bool_exp"
+		},
+		e_sanction_scopes_aggregate:{
+			distinct_on:"e_sanction_scopes_select_column",
+			order_by:"e_sanction_scopes_order_by",
+			where:"e_sanction_scopes_bool_exp"
+		},
+		e_sanction_scopes_by_pk:{
+
+		},
+		e_sanction_sources:{
+			distinct_on:"e_sanction_sources_select_column",
+			order_by:"e_sanction_sources_order_by",
+			where:"e_sanction_sources_bool_exp"
+		},
+		e_sanction_sources_aggregate:{
+			distinct_on:"e_sanction_sources_select_column",
+			order_by:"e_sanction_sources_order_by",
+			where:"e_sanction_sources_bool_exp"
+		},
+		e_sanction_sources_by_pk:{
+
+		},
 		e_sanction_types:{
 			distinct_on:"e_sanction_types_select_column",
 			order_by:"e_sanction_types_order_by",
@@ -26964,6 +27547,32 @@ export const AllTypesProps: Record<string,any> = {
 			where:"e_tournament_categories_bool_exp"
 		},
 		e_tournament_categories_by_pk:{
+
+		},
+		e_tournament_free_agent_statuses:{
+			distinct_on:"e_tournament_free_agent_statuses_select_column",
+			order_by:"e_tournament_free_agent_statuses_order_by",
+			where:"e_tournament_free_agent_statuses_bool_exp"
+		},
+		e_tournament_free_agent_statuses_aggregate:{
+			distinct_on:"e_tournament_free_agent_statuses_select_column",
+			order_by:"e_tournament_free_agent_statuses_order_by",
+			where:"e_tournament_free_agent_statuses_bool_exp"
+		},
+		e_tournament_free_agent_statuses_by_pk:{
+
+		},
+		e_tournament_registration_types:{
+			distinct_on:"e_tournament_registration_types_select_column",
+			order_by:"e_tournament_registration_types_order_by",
+			where:"e_tournament_registration_types_bool_exp"
+		},
+		e_tournament_registration_types_aggregate:{
+			distinct_on:"e_tournament_registration_types_select_column",
+			order_by:"e_tournament_registration_types_order_by",
+			where:"e_tournament_registration_types_bool_exp"
+		},
+		e_tournament_registration_types_by_pk:{
 
 		},
 		e_tournament_stage_types:{
@@ -27427,6 +28036,18 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"player_leaderboard_rank_select_column",
 			order_by:"player_leaderboard_rank_order_by",
 			where:"player_leaderboard_rank_bool_exp"
+		},
+		get_tournament_leaderboard:{
+			args:"get_tournament_leaderboard_args",
+			distinct_on:"tournament_leaderboard_entries_select_column",
+			order_by:"tournament_leaderboard_entries_order_by",
+			where:"tournament_leaderboard_entries_bool_exp"
+		},
+		get_tournament_leaderboard_aggregate:{
+			args:"get_tournament_leaderboard_args",
+			distinct_on:"tournament_leaderboard_entries_select_column",
+			order_by:"tournament_leaderboard_entries_order_by",
+			where:"tournament_leaderboard_entries_bool_exp"
 		},
 		leaderboard_entries:{
 			distinct_on:"leaderboard_entries_select_column",
@@ -28493,6 +29114,9 @@ export const AllTypesProps: Record<string,any> = {
 		teams_by_pk:{
 			id:"uuid"
 		},
+		telemetryStats:{
+
+		},
 		tournament_awards:{
 			distinct_on:"tournament_awards_select_column",
 			order_by:"tournament_awards_order_by",
@@ -28532,6 +29156,82 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_categories_by_pk:{
 			category:"e_tournament_categories_enum",
 			tournament_id:"uuid"
+		},
+		tournament_free_agents:{
+			distinct_on:"tournament_free_agents_select_column",
+			order_by:"tournament_free_agents_order_by",
+			where:"tournament_free_agents_bool_exp"
+		},
+		tournament_free_agents_aggregate:{
+			distinct_on:"tournament_free_agents_select_column",
+			order_by:"tournament_free_agents_order_by",
+			where:"tournament_free_agents_bool_exp"
+		},
+		tournament_free_agents_by_pk:{
+			id:"uuid"
+		},
+		tournament_invite_code_uses:{
+			distinct_on:"tournament_invite_code_uses_select_column",
+			order_by:"tournament_invite_code_uses_order_by",
+			where:"tournament_invite_code_uses_bool_exp"
+		},
+		tournament_invite_code_uses_aggregate:{
+			distinct_on:"tournament_invite_code_uses_select_column",
+			order_by:"tournament_invite_code_uses_order_by",
+			where:"tournament_invite_code_uses_bool_exp"
+		},
+		tournament_invite_code_uses_by_pk:{
+			invite_code_id:"uuid",
+			player_steam_id:"bigint"
+		},
+		tournament_invite_codes:{
+			distinct_on:"tournament_invite_codes_select_column",
+			order_by:"tournament_invite_codes_order_by",
+			where:"tournament_invite_codes_bool_exp"
+		},
+		tournament_invite_codes_aggregate:{
+			distinct_on:"tournament_invite_codes_select_column",
+			order_by:"tournament_invite_codes_order_by",
+			where:"tournament_invite_codes_bool_exp"
+		},
+		tournament_invite_codes_by_pk:{
+			id:"uuid"
+		},
+		tournament_invites:{
+			distinct_on:"tournament_invites_select_column",
+			order_by:"tournament_invites_order_by",
+			where:"tournament_invites_bool_exp"
+		},
+		tournament_invites_aggregate:{
+			distinct_on:"tournament_invites_select_column",
+			order_by:"tournament_invites_order_by",
+			where:"tournament_invites_bool_exp"
+		},
+		tournament_invites_by_pk:{
+			id:"uuid"
+		},
+		tournament_leaderboard_entries:{
+			distinct_on:"tournament_leaderboard_entries_select_column",
+			order_by:"tournament_leaderboard_entries_order_by",
+			where:"tournament_leaderboard_entries_bool_exp"
+		},
+		tournament_leaderboard_entries_aggregate:{
+			distinct_on:"tournament_leaderboard_entries_select_column",
+			order_by:"tournament_leaderboard_entries_order_by",
+			where:"tournament_leaderboard_entries_bool_exp"
+		},
+		tournament_no_shows:{
+			distinct_on:"tournament_no_shows_select_column",
+			order_by:"tournament_no_shows_order_by",
+			where:"tournament_no_shows_bool_exp"
+		},
+		tournament_no_shows_aggregate:{
+			distinct_on:"tournament_no_shows_select_column",
+			order_by:"tournament_no_shows_order_by",
+			where:"tournament_no_shows_bool_exp"
+		},
+		tournament_no_shows_by_pk:{
+			id:"uuid"
 		},
 		tournament_organizer_teams:{
 			distinct_on:"tournament_organizer_teams_select_column",
@@ -28573,6 +29273,16 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		tournament_prizes_by_pk:{
 			id:"uuid"
+		},
+		tournament_registration_unlocks:{
+			distinct_on:"tournament_registration_unlocks_select_column",
+			order_by:"tournament_registration_unlocks_order_by",
+			where:"tournament_registration_unlocks_bool_exp"
+		},
+		tournament_registration_unlocks_aggregate:{
+			distinct_on:"tournament_registration_unlocks_select_column",
+			order_by:"tournament_registration_unlocks_order_by",
+			where:"tournament_registration_unlocks_bool_exp"
 		},
 		tournament_stage_windows:{
 			distinct_on:"tournament_stage_windows_select_column",
@@ -30835,6 +31545,40 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"e_ready_settings_stream_cursor_input",
 			where:"e_ready_settings_bool_exp"
 		},
+		e_sanction_scopes:{
+			distinct_on:"e_sanction_scopes_select_column",
+			order_by:"e_sanction_scopes_order_by",
+			where:"e_sanction_scopes_bool_exp"
+		},
+		e_sanction_scopes_aggregate:{
+			distinct_on:"e_sanction_scopes_select_column",
+			order_by:"e_sanction_scopes_order_by",
+			where:"e_sanction_scopes_bool_exp"
+		},
+		e_sanction_scopes_by_pk:{
+
+		},
+		e_sanction_scopes_stream:{
+			cursor:"e_sanction_scopes_stream_cursor_input",
+			where:"e_sanction_scopes_bool_exp"
+		},
+		e_sanction_sources:{
+			distinct_on:"e_sanction_sources_select_column",
+			order_by:"e_sanction_sources_order_by",
+			where:"e_sanction_sources_bool_exp"
+		},
+		e_sanction_sources_aggregate:{
+			distinct_on:"e_sanction_sources_select_column",
+			order_by:"e_sanction_sources_order_by",
+			where:"e_sanction_sources_bool_exp"
+		},
+		e_sanction_sources_by_pk:{
+
+		},
+		e_sanction_sources_stream:{
+			cursor:"e_sanction_sources_stream_cursor_input",
+			where:"e_sanction_sources_bool_exp"
+		},
 		e_sanction_types:{
 			distinct_on:"e_sanction_types_select_column",
 			order_by:"e_sanction_types_order_by",
@@ -30987,6 +31731,40 @@ export const AllTypesProps: Record<string,any> = {
 		e_tournament_categories_stream:{
 			cursor:"e_tournament_categories_stream_cursor_input",
 			where:"e_tournament_categories_bool_exp"
+		},
+		e_tournament_free_agent_statuses:{
+			distinct_on:"e_tournament_free_agent_statuses_select_column",
+			order_by:"e_tournament_free_agent_statuses_order_by",
+			where:"e_tournament_free_agent_statuses_bool_exp"
+		},
+		e_tournament_free_agent_statuses_aggregate:{
+			distinct_on:"e_tournament_free_agent_statuses_select_column",
+			order_by:"e_tournament_free_agent_statuses_order_by",
+			where:"e_tournament_free_agent_statuses_bool_exp"
+		},
+		e_tournament_free_agent_statuses_by_pk:{
+
+		},
+		e_tournament_free_agent_statuses_stream:{
+			cursor:"e_tournament_free_agent_statuses_stream_cursor_input",
+			where:"e_tournament_free_agent_statuses_bool_exp"
+		},
+		e_tournament_registration_types:{
+			distinct_on:"e_tournament_registration_types_select_column",
+			order_by:"e_tournament_registration_types_order_by",
+			where:"e_tournament_registration_types_bool_exp"
+		},
+		e_tournament_registration_types_aggregate:{
+			distinct_on:"e_tournament_registration_types_select_column",
+			order_by:"e_tournament_registration_types_order_by",
+			where:"e_tournament_registration_types_bool_exp"
+		},
+		e_tournament_registration_types_by_pk:{
+
+		},
+		e_tournament_registration_types_stream:{
+			cursor:"e_tournament_registration_types_stream_cursor_input",
+			where:"e_tournament_registration_types_bool_exp"
 		},
 		e_tournament_stage_types:{
 			distinct_on:"e_tournament_stage_types_select_column",
@@ -31535,6 +32313,18 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"player_leaderboard_rank_select_column",
 			order_by:"player_leaderboard_rank_order_by",
 			where:"player_leaderboard_rank_bool_exp"
+		},
+		get_tournament_leaderboard:{
+			args:"get_tournament_leaderboard_args",
+			distinct_on:"tournament_leaderboard_entries_select_column",
+			order_by:"tournament_leaderboard_entries_order_by",
+			where:"tournament_leaderboard_entries_bool_exp"
+		},
+		get_tournament_leaderboard_aggregate:{
+			args:"get_tournament_leaderboard_args",
+			distinct_on:"tournament_leaderboard_entries_select_column",
+			order_by:"tournament_leaderboard_entries_order_by",
+			where:"tournament_leaderboard_entries_bool_exp"
 		},
 		leaderboard_entries:{
 			distinct_on:"leaderboard_entries_select_column",
@@ -32965,6 +33755,106 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"tournament_categories_stream_cursor_input",
 			where:"tournament_categories_bool_exp"
 		},
+		tournament_free_agents:{
+			distinct_on:"tournament_free_agents_select_column",
+			order_by:"tournament_free_agents_order_by",
+			where:"tournament_free_agents_bool_exp"
+		},
+		tournament_free_agents_aggregate:{
+			distinct_on:"tournament_free_agents_select_column",
+			order_by:"tournament_free_agents_order_by",
+			where:"tournament_free_agents_bool_exp"
+		},
+		tournament_free_agents_by_pk:{
+			id:"uuid"
+		},
+		tournament_free_agents_stream:{
+			cursor:"tournament_free_agents_stream_cursor_input",
+			where:"tournament_free_agents_bool_exp"
+		},
+		tournament_invite_code_uses:{
+			distinct_on:"tournament_invite_code_uses_select_column",
+			order_by:"tournament_invite_code_uses_order_by",
+			where:"tournament_invite_code_uses_bool_exp"
+		},
+		tournament_invite_code_uses_aggregate:{
+			distinct_on:"tournament_invite_code_uses_select_column",
+			order_by:"tournament_invite_code_uses_order_by",
+			where:"tournament_invite_code_uses_bool_exp"
+		},
+		tournament_invite_code_uses_by_pk:{
+			invite_code_id:"uuid",
+			player_steam_id:"bigint"
+		},
+		tournament_invite_code_uses_stream:{
+			cursor:"tournament_invite_code_uses_stream_cursor_input",
+			where:"tournament_invite_code_uses_bool_exp"
+		},
+		tournament_invite_codes:{
+			distinct_on:"tournament_invite_codes_select_column",
+			order_by:"tournament_invite_codes_order_by",
+			where:"tournament_invite_codes_bool_exp"
+		},
+		tournament_invite_codes_aggregate:{
+			distinct_on:"tournament_invite_codes_select_column",
+			order_by:"tournament_invite_codes_order_by",
+			where:"tournament_invite_codes_bool_exp"
+		},
+		tournament_invite_codes_by_pk:{
+			id:"uuid"
+		},
+		tournament_invite_codes_stream:{
+			cursor:"tournament_invite_codes_stream_cursor_input",
+			where:"tournament_invite_codes_bool_exp"
+		},
+		tournament_invites:{
+			distinct_on:"tournament_invites_select_column",
+			order_by:"tournament_invites_order_by",
+			where:"tournament_invites_bool_exp"
+		},
+		tournament_invites_aggregate:{
+			distinct_on:"tournament_invites_select_column",
+			order_by:"tournament_invites_order_by",
+			where:"tournament_invites_bool_exp"
+		},
+		tournament_invites_by_pk:{
+			id:"uuid"
+		},
+		tournament_invites_stream:{
+			cursor:"tournament_invites_stream_cursor_input",
+			where:"tournament_invites_bool_exp"
+		},
+		tournament_leaderboard_entries:{
+			distinct_on:"tournament_leaderboard_entries_select_column",
+			order_by:"tournament_leaderboard_entries_order_by",
+			where:"tournament_leaderboard_entries_bool_exp"
+		},
+		tournament_leaderboard_entries_aggregate:{
+			distinct_on:"tournament_leaderboard_entries_select_column",
+			order_by:"tournament_leaderboard_entries_order_by",
+			where:"tournament_leaderboard_entries_bool_exp"
+		},
+		tournament_leaderboard_entries_stream:{
+			cursor:"tournament_leaderboard_entries_stream_cursor_input",
+			where:"tournament_leaderboard_entries_bool_exp"
+		},
+		tournament_no_shows:{
+			distinct_on:"tournament_no_shows_select_column",
+			order_by:"tournament_no_shows_order_by",
+			where:"tournament_no_shows_bool_exp"
+		},
+		tournament_no_shows_aggregate:{
+			distinct_on:"tournament_no_shows_select_column",
+			order_by:"tournament_no_shows_order_by",
+			where:"tournament_no_shows_bool_exp"
+		},
+		tournament_no_shows_by_pk:{
+			id:"uuid"
+		},
+		tournament_no_shows_stream:{
+			cursor:"tournament_no_shows_stream_cursor_input",
+			where:"tournament_no_shows_bool_exp"
+		},
 		tournament_organizer_teams:{
 			distinct_on:"tournament_organizer_teams_select_column",
 			order_by:"tournament_organizer_teams_order_by",
@@ -33017,6 +33907,20 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_prizes_stream:{
 			cursor:"tournament_prizes_stream_cursor_input",
 			where:"tournament_prizes_bool_exp"
+		},
+		tournament_registration_unlocks:{
+			distinct_on:"tournament_registration_unlocks_select_column",
+			order_by:"tournament_registration_unlocks_order_by",
+			where:"tournament_registration_unlocks_bool_exp"
+		},
+		tournament_registration_unlocks_aggregate:{
+			distinct_on:"tournament_registration_unlocks_select_column",
+			order_by:"tournament_registration_unlocks_order_by",
+			where:"tournament_registration_unlocks_bool_exp"
+		},
+		tournament_registration_unlocks_stream:{
+			cursor:"tournament_registration_unlocks_stream_cursor_input",
+			where:"tournament_registration_unlocks_bool_exp"
 		},
 		tournament_stage_windows:{
 			distinct_on:"tournament_stage_windows_select_column",
@@ -35819,6 +36723,641 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"tournament_categories_set_input",
 		where:"tournament_categories_bool_exp"
 	},
+	tournament_free_agents_aggregate_bool_exp:{
+		count:"tournament_free_agents_aggregate_bool_exp_count"
+	},
+	tournament_free_agents_aggregate_bool_exp_count:{
+		arguments:"tournament_free_agents_select_column",
+		filter:"tournament_free_agents_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	tournament_free_agents_aggregate_fields:{
+		count:{
+			columns:"tournament_free_agents_select_column"
+		}
+	},
+	tournament_free_agents_aggregate_order_by:{
+		avg:"tournament_free_agents_avg_order_by",
+		count:"order_by",
+		max:"tournament_free_agents_max_order_by",
+		min:"tournament_free_agents_min_order_by",
+		stddev:"tournament_free_agents_stddev_order_by",
+		stddev_pop:"tournament_free_agents_stddev_pop_order_by",
+		stddev_samp:"tournament_free_agents_stddev_samp_order_by",
+		sum:"tournament_free_agents_sum_order_by",
+		var_pop:"tournament_free_agents_var_pop_order_by",
+		var_samp:"tournament_free_agents_var_samp_order_by",
+		variance:"tournament_free_agents_variance_order_by"
+	},
+	tournament_free_agents_arr_rel_insert_input:{
+		data:"tournament_free_agents_insert_input",
+		on_conflict:"tournament_free_agents_on_conflict"
+	},
+	tournament_free_agents_avg_order_by:{
+		player_steam_id:"order_by"
+	},
+	tournament_free_agents_bool_exp:{
+		_and:"tournament_free_agents_bool_exp",
+		_not:"tournament_free_agents_bool_exp",
+		_or:"tournament_free_agents_bool_exp",
+		checked_in_at:"timestamptz_comparison_exp",
+		created_at:"timestamptz_comparison_exp",
+		e_tournament_free_agent_status:"e_tournament_free_agent_statuses_bool_exp",
+		id:"uuid_comparison_exp",
+		party_id:"uuid_comparison_exp",
+		player:"players_bool_exp",
+		player_steam_id:"bigint_comparison_exp",
+		status:"e_tournament_free_agent_statuses_enum_comparison_exp",
+		tournament:"tournaments_bool_exp",
+		tournament_id:"uuid_comparison_exp",
+		tournament_team:"tournament_teams_bool_exp",
+		tournament_team_id:"uuid_comparison_exp"
+	},
+	tournament_free_agents_constraint: "enum" as const,
+	tournament_free_agents_inc_input:{
+		player_steam_id:"bigint"
+	},
+	tournament_free_agents_insert_input:{
+		checked_in_at:"timestamptz",
+		created_at:"timestamptz",
+		e_tournament_free_agent_status:"e_tournament_free_agent_statuses_obj_rel_insert_input",
+		id:"uuid",
+		party_id:"uuid",
+		player:"players_obj_rel_insert_input",
+		player_steam_id:"bigint",
+		status:"e_tournament_free_agent_statuses_enum",
+		tournament:"tournaments_obj_rel_insert_input",
+		tournament_id:"uuid",
+		tournament_team:"tournament_teams_obj_rel_insert_input",
+		tournament_team_id:"uuid"
+	},
+	tournament_free_agents_max_order_by:{
+		checked_in_at:"order_by",
+		created_at:"order_by",
+		id:"order_by",
+		party_id:"order_by",
+		player_steam_id:"order_by",
+		tournament_id:"order_by",
+		tournament_team_id:"order_by"
+	},
+	tournament_free_agents_min_order_by:{
+		checked_in_at:"order_by",
+		created_at:"order_by",
+		id:"order_by",
+		party_id:"order_by",
+		player_steam_id:"order_by",
+		tournament_id:"order_by",
+		tournament_team_id:"order_by"
+	},
+	tournament_free_agents_on_conflict:{
+		constraint:"tournament_free_agents_constraint",
+		update_columns:"tournament_free_agents_update_column",
+		where:"tournament_free_agents_bool_exp"
+	},
+	tournament_free_agents_order_by:{
+		checked_in_at:"order_by",
+		created_at:"order_by",
+		e_tournament_free_agent_status:"e_tournament_free_agent_statuses_order_by",
+		id:"order_by",
+		party_id:"order_by",
+		player:"players_order_by",
+		player_steam_id:"order_by",
+		status:"order_by",
+		tournament:"tournaments_order_by",
+		tournament_id:"order_by",
+		tournament_team:"tournament_teams_order_by",
+		tournament_team_id:"order_by"
+	},
+	tournament_free_agents_pk_columns_input:{
+		id:"uuid"
+	},
+	tournament_free_agents_select_column: "enum" as const,
+	tournament_free_agents_set_input:{
+		checked_in_at:"timestamptz",
+		created_at:"timestamptz",
+		id:"uuid",
+		party_id:"uuid",
+		player_steam_id:"bigint",
+		status:"e_tournament_free_agent_statuses_enum",
+		tournament_id:"uuid",
+		tournament_team_id:"uuid"
+	},
+	tournament_free_agents_stddev_order_by:{
+		player_steam_id:"order_by"
+	},
+	tournament_free_agents_stddev_pop_order_by:{
+		player_steam_id:"order_by"
+	},
+	tournament_free_agents_stddev_samp_order_by:{
+		player_steam_id:"order_by"
+	},
+	tournament_free_agents_stream_cursor_input:{
+		initial_value:"tournament_free_agents_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	tournament_free_agents_stream_cursor_value_input:{
+		checked_in_at:"timestamptz",
+		created_at:"timestamptz",
+		id:"uuid",
+		party_id:"uuid",
+		player_steam_id:"bigint",
+		status:"e_tournament_free_agent_statuses_enum",
+		tournament_id:"uuid",
+		tournament_team_id:"uuid"
+	},
+	tournament_free_agents_sum_order_by:{
+		player_steam_id:"order_by"
+	},
+	tournament_free_agents_update_column: "enum" as const,
+	tournament_free_agents_updates:{
+		_inc:"tournament_free_agents_inc_input",
+		_set:"tournament_free_agents_set_input",
+		where:"tournament_free_agents_bool_exp"
+	},
+	tournament_free_agents_var_pop_order_by:{
+		player_steam_id:"order_by"
+	},
+	tournament_free_agents_var_samp_order_by:{
+		player_steam_id:"order_by"
+	},
+	tournament_free_agents_variance_order_by:{
+		player_steam_id:"order_by"
+	},
+	tournament_invite_code_uses_aggregate_bool_exp:{
+		count:"tournament_invite_code_uses_aggregate_bool_exp_count"
+	},
+	tournament_invite_code_uses_aggregate_bool_exp_count:{
+		arguments:"tournament_invite_code_uses_select_column",
+		filter:"tournament_invite_code_uses_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	tournament_invite_code_uses_aggregate_fields:{
+		count:{
+			columns:"tournament_invite_code_uses_select_column"
+		}
+	},
+	tournament_invite_code_uses_aggregate_order_by:{
+		avg:"tournament_invite_code_uses_avg_order_by",
+		count:"order_by",
+		max:"tournament_invite_code_uses_max_order_by",
+		min:"tournament_invite_code_uses_min_order_by",
+		stddev:"tournament_invite_code_uses_stddev_order_by",
+		stddev_pop:"tournament_invite_code_uses_stddev_pop_order_by",
+		stddev_samp:"tournament_invite_code_uses_stddev_samp_order_by",
+		sum:"tournament_invite_code_uses_sum_order_by",
+		var_pop:"tournament_invite_code_uses_var_pop_order_by",
+		var_samp:"tournament_invite_code_uses_var_samp_order_by",
+		variance:"tournament_invite_code_uses_variance_order_by"
+	},
+	tournament_invite_code_uses_arr_rel_insert_input:{
+		data:"tournament_invite_code_uses_insert_input",
+		on_conflict:"tournament_invite_code_uses_on_conflict"
+	},
+	tournament_invite_code_uses_avg_order_by:{
+		player_steam_id:"order_by"
+	},
+	tournament_invite_code_uses_bool_exp:{
+		_and:"tournament_invite_code_uses_bool_exp",
+		_not:"tournament_invite_code_uses_bool_exp",
+		_or:"tournament_invite_code_uses_bool_exp",
+		invite_code:"tournament_invite_codes_bool_exp",
+		invite_code_id:"uuid_comparison_exp",
+		player:"players_bool_exp",
+		player_steam_id:"bigint_comparison_exp",
+		team:"teams_bool_exp",
+		team_id:"uuid_comparison_exp",
+		used_at:"timestamptz_comparison_exp"
+	},
+	tournament_invite_code_uses_constraint: "enum" as const,
+	tournament_invite_code_uses_inc_input:{
+		player_steam_id:"bigint"
+	},
+	tournament_invite_code_uses_insert_input:{
+		invite_code:"tournament_invite_codes_obj_rel_insert_input",
+		invite_code_id:"uuid",
+		player:"players_obj_rel_insert_input",
+		player_steam_id:"bigint",
+		team:"teams_obj_rel_insert_input",
+		team_id:"uuid",
+		used_at:"timestamptz"
+	},
+	tournament_invite_code_uses_max_order_by:{
+		invite_code_id:"order_by",
+		player_steam_id:"order_by",
+		team_id:"order_by",
+		used_at:"order_by"
+	},
+	tournament_invite_code_uses_min_order_by:{
+		invite_code_id:"order_by",
+		player_steam_id:"order_by",
+		team_id:"order_by",
+		used_at:"order_by"
+	},
+	tournament_invite_code_uses_on_conflict:{
+		constraint:"tournament_invite_code_uses_constraint",
+		update_columns:"tournament_invite_code_uses_update_column",
+		where:"tournament_invite_code_uses_bool_exp"
+	},
+	tournament_invite_code_uses_order_by:{
+		invite_code:"tournament_invite_codes_order_by",
+		invite_code_id:"order_by",
+		player:"players_order_by",
+		player_steam_id:"order_by",
+		team:"teams_order_by",
+		team_id:"order_by",
+		used_at:"order_by"
+	},
+	tournament_invite_code_uses_pk_columns_input:{
+		invite_code_id:"uuid",
+		player_steam_id:"bigint"
+	},
+	tournament_invite_code_uses_select_column: "enum" as const,
+	tournament_invite_code_uses_set_input:{
+		invite_code_id:"uuid",
+		player_steam_id:"bigint",
+		team_id:"uuid",
+		used_at:"timestamptz"
+	},
+	tournament_invite_code_uses_stddev_order_by:{
+		player_steam_id:"order_by"
+	},
+	tournament_invite_code_uses_stddev_pop_order_by:{
+		player_steam_id:"order_by"
+	},
+	tournament_invite_code_uses_stddev_samp_order_by:{
+		player_steam_id:"order_by"
+	},
+	tournament_invite_code_uses_stream_cursor_input:{
+		initial_value:"tournament_invite_code_uses_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	tournament_invite_code_uses_stream_cursor_value_input:{
+		invite_code_id:"uuid",
+		player_steam_id:"bigint",
+		team_id:"uuid",
+		used_at:"timestamptz"
+	},
+	tournament_invite_code_uses_sum_order_by:{
+		player_steam_id:"order_by"
+	},
+	tournament_invite_code_uses_update_column: "enum" as const,
+	tournament_invite_code_uses_updates:{
+		_inc:"tournament_invite_code_uses_inc_input",
+		_set:"tournament_invite_code_uses_set_input",
+		where:"tournament_invite_code_uses_bool_exp"
+	},
+	tournament_invite_code_uses_var_pop_order_by:{
+		player_steam_id:"order_by"
+	},
+	tournament_invite_code_uses_var_samp_order_by:{
+		player_steam_id:"order_by"
+	},
+	tournament_invite_code_uses_variance_order_by:{
+		player_steam_id:"order_by"
+	},
+	tournament_invite_codes:{
+		used_by:{
+			distinct_on:"tournament_invite_code_uses_select_column",
+			order_by:"tournament_invite_code_uses_order_by",
+			where:"tournament_invite_code_uses_bool_exp"
+		},
+		used_by_aggregate:{
+			distinct_on:"tournament_invite_code_uses_select_column",
+			order_by:"tournament_invite_code_uses_order_by",
+			where:"tournament_invite_code_uses_bool_exp"
+		}
+	},
+	tournament_invite_codes_aggregate_fields:{
+		count:{
+			columns:"tournament_invite_codes_select_column"
+		}
+	},
+	tournament_invite_codes_bool_exp:{
+		_and:"tournament_invite_codes_bool_exp",
+		_not:"tournament_invite_codes_bool_exp",
+		_or:"tournament_invite_codes_bool_exp",
+		code:"String_comparison_exp",
+		created_at:"timestamptz_comparison_exp",
+		created_by:"players_bool_exp",
+		created_by_player_steam_id:"bigint_comparison_exp",
+		expires_at:"timestamptz_comparison_exp",
+		id:"uuid_comparison_exp",
+		max_uses:"Int_comparison_exp",
+		revoked_at:"timestamptz_comparison_exp",
+		tournament:"tournaments_bool_exp",
+		tournament_id:"uuid_comparison_exp",
+		used_by:"tournament_invite_code_uses_bool_exp",
+		used_by_aggregate:"tournament_invite_code_uses_aggregate_bool_exp",
+		uses:"Int_comparison_exp"
+	},
+	tournament_invite_codes_constraint: "enum" as const,
+	tournament_invite_codes_inc_input:{
+		created_by_player_steam_id:"bigint"
+	},
+	tournament_invite_codes_insert_input:{
+		created_at:"timestamptz",
+		created_by:"players_obj_rel_insert_input",
+		created_by_player_steam_id:"bigint",
+		expires_at:"timestamptz",
+		id:"uuid",
+		revoked_at:"timestamptz",
+		tournament:"tournaments_obj_rel_insert_input",
+		tournament_id:"uuid",
+		used_by:"tournament_invite_code_uses_arr_rel_insert_input"
+	},
+	tournament_invite_codes_obj_rel_insert_input:{
+		data:"tournament_invite_codes_insert_input",
+		on_conflict:"tournament_invite_codes_on_conflict"
+	},
+	tournament_invite_codes_on_conflict:{
+		constraint:"tournament_invite_codes_constraint",
+		update_columns:"tournament_invite_codes_update_column",
+		where:"tournament_invite_codes_bool_exp"
+	},
+	tournament_invite_codes_order_by:{
+		code:"order_by",
+		created_at:"order_by",
+		created_by:"players_order_by",
+		created_by_player_steam_id:"order_by",
+		expires_at:"order_by",
+		id:"order_by",
+		max_uses:"order_by",
+		revoked_at:"order_by",
+		tournament:"tournaments_order_by",
+		tournament_id:"order_by",
+		used_by_aggregate:"tournament_invite_code_uses_aggregate_order_by",
+		uses:"order_by"
+	},
+	tournament_invite_codes_pk_columns_input:{
+		id:"uuid"
+	},
+	tournament_invite_codes_select_column: "enum" as const,
+	tournament_invite_codes_set_input:{
+		created_at:"timestamptz",
+		created_by_player_steam_id:"bigint",
+		expires_at:"timestamptz",
+		id:"uuid",
+		revoked_at:"timestamptz",
+		tournament_id:"uuid"
+	},
+	tournament_invite_codes_stream_cursor_input:{
+		initial_value:"tournament_invite_codes_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	tournament_invite_codes_stream_cursor_value_input:{
+		created_at:"timestamptz",
+		created_by_player_steam_id:"bigint",
+		expires_at:"timestamptz",
+		id:"uuid",
+		revoked_at:"timestamptz",
+		tournament_id:"uuid"
+	},
+	tournament_invite_codes_update_column: "enum" as const,
+	tournament_invite_codes_updates:{
+		_inc:"tournament_invite_codes_inc_input",
+		_set:"tournament_invite_codes_set_input",
+		where:"tournament_invite_codes_bool_exp"
+	},
+	tournament_invites_aggregate_fields:{
+		count:{
+			columns:"tournament_invites_select_column"
+		}
+	},
+	tournament_invites_bool_exp:{
+		_and:"tournament_invites_bool_exp",
+		_not:"tournament_invites_bool_exp",
+		_or:"tournament_invites_bool_exp",
+		created_at:"timestamptz_comparison_exp",
+		id:"uuid_comparison_exp",
+		invited_by:"players_bool_exp",
+		invited_by_player_steam_id:"bigint_comparison_exp",
+		player:"players_bool_exp",
+		steam_id:"bigint_comparison_exp",
+		team:"teams_bool_exp",
+		team_id:"uuid_comparison_exp",
+		tournament:"tournaments_bool_exp",
+		tournament_id:"uuid_comparison_exp"
+	},
+	tournament_invites_constraint: "enum" as const,
+	tournament_invites_inc_input:{
+		invited_by_player_steam_id:"bigint",
+		steam_id:"bigint"
+	},
+	tournament_invites_insert_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		invited_by:"players_obj_rel_insert_input",
+		invited_by_player_steam_id:"bigint",
+		player:"players_obj_rel_insert_input",
+		steam_id:"bigint",
+		team:"teams_obj_rel_insert_input",
+		team_id:"uuid",
+		tournament:"tournaments_obj_rel_insert_input",
+		tournament_id:"uuid"
+	},
+	tournament_invites_on_conflict:{
+		constraint:"tournament_invites_constraint",
+		update_columns:"tournament_invites_update_column",
+		where:"tournament_invites_bool_exp"
+	},
+	tournament_invites_order_by:{
+		created_at:"order_by",
+		id:"order_by",
+		invited_by:"players_order_by",
+		invited_by_player_steam_id:"order_by",
+		player:"players_order_by",
+		steam_id:"order_by",
+		team:"teams_order_by",
+		team_id:"order_by",
+		tournament:"tournaments_order_by",
+		tournament_id:"order_by"
+	},
+	tournament_invites_pk_columns_input:{
+		id:"uuid"
+	},
+	tournament_invites_select_column: "enum" as const,
+	tournament_invites_set_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		invited_by_player_steam_id:"bigint",
+		steam_id:"bigint",
+		team_id:"uuid",
+		tournament_id:"uuid"
+	},
+	tournament_invites_stream_cursor_input:{
+		initial_value:"tournament_invites_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	tournament_invites_stream_cursor_value_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		invited_by_player_steam_id:"bigint",
+		steam_id:"bigint",
+		team_id:"uuid",
+		tournament_id:"uuid"
+	},
+	tournament_invites_update_column: "enum" as const,
+	tournament_invites_updates:{
+		_inc:"tournament_invites_inc_input",
+		_set:"tournament_invites_set_input",
+		where:"tournament_invites_bool_exp"
+	},
+	tournament_leaderboard_entries_aggregate_fields:{
+		count:{
+			columns:"tournament_leaderboard_entries_select_column"
+		}
+	},
+	tournament_leaderboard_entries_bool_exp:{
+		_and:"tournament_leaderboard_entries_bool_exp",
+		_not:"tournament_leaderboard_entries_bool_exp",
+		_or:"tournament_leaderboard_entries_bool_exp",
+		adr:"float8_comparison_exp",
+		assists:"Int_comparison_exp",
+		deaths:"Int_comparison_exp",
+		headshot_percentage:"float8_comparison_exp",
+		kdr:"float8_comparison_exp",
+		kills:"Int_comparison_exp",
+		matches_played:"Int_comparison_exp",
+		player_avatar_url:"String_comparison_exp",
+		player_country:"String_comparison_exp",
+		player_custom_avatar_url:"String_comparison_exp",
+		player_name:"String_comparison_exp",
+		player_steam_id:"String_comparison_exp",
+		rating:"float8_comparison_exp",
+		rounds_played:"Int_comparison_exp",
+		team_name:"String_comparison_exp",
+		tournament_team_id:"uuid_comparison_exp"
+	},
+	tournament_leaderboard_entries_inc_input:{
+		adr:"float8",
+		headshot_percentage:"float8",
+		kdr:"float8",
+		rating:"float8"
+	},
+	tournament_leaderboard_entries_insert_input:{
+		adr:"float8",
+		headshot_percentage:"float8",
+		kdr:"float8",
+		rating:"float8",
+		tournament_team_id:"uuid"
+	},
+	tournament_leaderboard_entries_order_by:{
+		adr:"order_by",
+		assists:"order_by",
+		deaths:"order_by",
+		headshot_percentage:"order_by",
+		kdr:"order_by",
+		kills:"order_by",
+		matches_played:"order_by",
+		player_avatar_url:"order_by",
+		player_country:"order_by",
+		player_custom_avatar_url:"order_by",
+		player_name:"order_by",
+		player_steam_id:"order_by",
+		rating:"order_by",
+		rounds_played:"order_by",
+		team_name:"order_by",
+		tournament_team_id:"order_by"
+	},
+	tournament_leaderboard_entries_select_column: "enum" as const,
+	tournament_leaderboard_entries_set_input:{
+		adr:"float8",
+		headshot_percentage:"float8",
+		kdr:"float8",
+		rating:"float8",
+		tournament_team_id:"uuid"
+	},
+	tournament_leaderboard_entries_stream_cursor_input:{
+		initial_value:"tournament_leaderboard_entries_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	tournament_leaderboard_entries_stream_cursor_value_input:{
+		adr:"float8",
+		headshot_percentage:"float8",
+		kdr:"float8",
+		rating:"float8",
+		tournament_team_id:"uuid"
+	},
+	tournament_leaderboard_entries_updates:{
+		_inc:"tournament_leaderboard_entries_inc_input",
+		_set:"tournament_leaderboard_entries_set_input",
+		where:"tournament_leaderboard_entries_bool_exp"
+	},
+	tournament_no_shows_aggregate_fields:{
+		count:{
+			columns:"tournament_no_shows_select_column"
+		}
+	},
+	tournament_no_shows_bool_exp:{
+		_and:"tournament_no_shows_bool_exp",
+		_not:"tournament_no_shows_bool_exp",
+		_or:"tournament_no_shows_bool_exp",
+		id:"uuid_comparison_exp",
+		occurred_at:"timestamptz_comparison_exp",
+		player:"players_bool_exp",
+		player_steam_id:"bigint_comparison_exp",
+		tournament:"tournaments_bool_exp",
+		tournament_id:"uuid_comparison_exp",
+		tournament_team:"tournament_teams_bool_exp",
+		tournament_team_id:"uuid_comparison_exp"
+	},
+	tournament_no_shows_constraint: "enum" as const,
+	tournament_no_shows_inc_input:{
+		player_steam_id:"bigint"
+	},
+	tournament_no_shows_insert_input:{
+		id:"uuid",
+		occurred_at:"timestamptz",
+		player:"players_obj_rel_insert_input",
+		player_steam_id:"bigint",
+		tournament:"tournaments_obj_rel_insert_input",
+		tournament_id:"uuid",
+		tournament_team:"tournament_teams_obj_rel_insert_input",
+		tournament_team_id:"uuid"
+	},
+	tournament_no_shows_on_conflict:{
+		constraint:"tournament_no_shows_constraint",
+		update_columns:"tournament_no_shows_update_column",
+		where:"tournament_no_shows_bool_exp"
+	},
+	tournament_no_shows_order_by:{
+		id:"order_by",
+		occurred_at:"order_by",
+		player:"players_order_by",
+		player_steam_id:"order_by",
+		tournament:"tournaments_order_by",
+		tournament_id:"order_by",
+		tournament_team:"tournament_teams_order_by",
+		tournament_team_id:"order_by"
+	},
+	tournament_no_shows_pk_columns_input:{
+		id:"uuid"
+	},
+	tournament_no_shows_select_column: "enum" as const,
+	tournament_no_shows_set_input:{
+		id:"uuid",
+		occurred_at:"timestamptz",
+		player_steam_id:"bigint",
+		tournament_id:"uuid",
+		tournament_team_id:"uuid"
+	},
+	tournament_no_shows_stream_cursor_input:{
+		initial_value:"tournament_no_shows_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	tournament_no_shows_stream_cursor_value_input:{
+		id:"uuid",
+		occurred_at:"timestamptz",
+		player_steam_id:"bigint",
+		tournament_id:"uuid",
+		tournament_team_id:"uuid"
+	},
+	tournament_no_shows_update_column: "enum" as const,
+	tournament_no_shows_updates:{
+		_inc:"tournament_no_shows_inc_input",
+		_set:"tournament_no_shows_set_input",
+		where:"tournament_no_shows_bool_exp"
+	},
 	tournament_organizer_teams_aggregate_bool_exp:{
 		count:"tournament_organizer_teams_aggregate_bool_exp_count"
 	},
@@ -36159,6 +37698,73 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	tournament_prizes_variance_order_by:{
 		order:"order_by"
+	},
+	tournament_registration_unlocks_aggregate_fields:{
+		count:{
+			columns:"tournament_registration_unlocks_select_column"
+		}
+	},
+	tournament_registration_unlocks_bool_exp:{
+		_and:"tournament_registration_unlocks_bool_exp",
+		_not:"tournament_registration_unlocks_bool_exp",
+		_or:"tournament_registration_unlocks_bool_exp",
+		created_at:"timestamptz_comparison_exp",
+		player:"players_bool_exp",
+		player_steam_id:"bigint_comparison_exp",
+		team:"teams_bool_exp",
+		team_id:"uuid_comparison_exp",
+		tournament:"tournaments_bool_exp",
+		tournament_id:"uuid_comparison_exp"
+	},
+	tournament_registration_unlocks_constraint: "enum" as const,
+	tournament_registration_unlocks_inc_input:{
+		player_steam_id:"bigint"
+	},
+	tournament_registration_unlocks_insert_input:{
+		created_at:"timestamptz",
+		player:"players_obj_rel_insert_input",
+		player_steam_id:"bigint",
+		team:"teams_obj_rel_insert_input",
+		team_id:"uuid",
+		tournament:"tournaments_obj_rel_insert_input",
+		tournament_id:"uuid"
+	},
+	tournament_registration_unlocks_on_conflict:{
+		constraint:"tournament_registration_unlocks_constraint",
+		update_columns:"tournament_registration_unlocks_update_column",
+		where:"tournament_registration_unlocks_bool_exp"
+	},
+	tournament_registration_unlocks_order_by:{
+		created_at:"order_by",
+		player:"players_order_by",
+		player_steam_id:"order_by",
+		team:"teams_order_by",
+		team_id:"order_by",
+		tournament:"tournaments_order_by",
+		tournament_id:"order_by"
+	},
+	tournament_registration_unlocks_select_column: "enum" as const,
+	tournament_registration_unlocks_set_input:{
+		created_at:"timestamptz",
+		player_steam_id:"bigint",
+		team_id:"uuid",
+		tournament_id:"uuid"
+	},
+	tournament_registration_unlocks_stream_cursor_input:{
+		initial_value:"tournament_registration_unlocks_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	tournament_registration_unlocks_stream_cursor_value_input:{
+		created_at:"timestamptz",
+		player_steam_id:"bigint",
+		team_id:"uuid",
+		tournament_id:"uuid"
+	},
+	tournament_registration_unlocks_update_column: "enum" as const,
+	tournament_registration_unlocks_updates:{
+		_inc:"tournament_registration_unlocks_inc_input",
+		_set:"tournament_registration_unlocks_set_input",
+		where:"tournament_registration_unlocks_bool_exp"
 	},
 	tournament_stage_windows_aggregate_bool_exp:{
 		count:"tournament_stage_windows_aggregate_bool_exp_count"
@@ -36798,10 +38404,12 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"tournament_team_roster_bool_exp",
 		_not:"tournament_team_roster_bool_exp",
 		_or:"tournament_team_roster_bool_exp",
+		checked_in_at:"timestamptz_comparison_exp",
 		e_team_role:"e_team_roles_bool_exp",
 		player:"players_bool_exp",
 		player_steam_id:"bigint_comparison_exp",
 		role:"e_team_roles_enum_comparison_exp",
+		target_eligible:"Boolean_comparison_exp",
 		tournament:"tournaments_bool_exp",
 		tournament_id:"uuid_comparison_exp",
 		tournament_team:"tournament_teams_bool_exp",
@@ -36812,6 +38420,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_steam_id:"bigint"
 	},
 	tournament_team_roster_insert_input:{
+		checked_in_at:"timestamptz",
 		e_team_role:"e_team_roles_obj_rel_insert_input",
 		player:"players_obj_rel_insert_input",
 		player_steam_id:"bigint",
@@ -36822,11 +38431,13 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_team_id:"uuid"
 	},
 	tournament_team_roster_max_order_by:{
+		checked_in_at:"order_by",
 		player_steam_id:"order_by",
 		tournament_id:"order_by",
 		tournament_team_id:"order_by"
 	},
 	tournament_team_roster_min_order_by:{
+		checked_in_at:"order_by",
 		player_steam_id:"order_by",
 		tournament_id:"order_by",
 		tournament_team_id:"order_by"
@@ -36837,10 +38448,12 @@ export const AllTypesProps: Record<string,any> = {
 		where:"tournament_team_roster_bool_exp"
 	},
 	tournament_team_roster_order_by:{
+		checked_in_at:"order_by",
 		e_team_role:"e_team_roles_order_by",
 		player:"players_order_by",
 		player_steam_id:"order_by",
 		role:"order_by",
+		target_eligible:"order_by",
 		tournament:"tournaments_order_by",
 		tournament_id:"order_by",
 		tournament_team:"tournament_teams_order_by",
@@ -36852,6 +38465,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	tournament_team_roster_select_column: "enum" as const,
 	tournament_team_roster_set_input:{
+		checked_in_at:"timestamptz",
 		player_steam_id:"bigint",
 		role:"e_team_roles_enum",
 		tournament_id:"uuid",
@@ -36871,6 +38485,7 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	tournament_team_roster_stream_cursor_value_input:{
+		checked_in_at:"timestamptz",
 		player_steam_id:"bigint",
 		role:"e_team_roles_enum",
 		tournament_id:"uuid",
@@ -36895,6 +38510,16 @@ export const AllTypesProps: Record<string,any> = {
 		player_steam_id:"order_by"
 	},
 	tournament_teams:{
+		free_agents:{
+			distinct_on:"tournament_free_agents_select_column",
+			order_by:"tournament_free_agents_order_by",
+			where:"tournament_free_agents_bool_exp"
+		},
+		free_agents_aggregate:{
+			distinct_on:"tournament_free_agents_select_column",
+			order_by:"tournament_free_agents_order_by",
+			where:"tournament_free_agents_bool_exp"
+		},
 		invites:{
 			distinct_on:"tournament_team_invites_select_column",
 			order_by:"tournament_team_invites_order_by",
@@ -36917,7 +38542,19 @@ export const AllTypesProps: Record<string,any> = {
 		}
 	},
 	tournament_teams_aggregate_bool_exp:{
+		bool_and:"tournament_teams_aggregate_bool_exp_bool_and",
+		bool_or:"tournament_teams_aggregate_bool_exp_bool_or",
 		count:"tournament_teams_aggregate_bool_exp_count"
+	},
+	tournament_teams_aggregate_bool_exp_bool_and:{
+		arguments:"tournament_teams_select_column_tournament_teams_aggregate_bool_exp_bool_and_arguments_columns",
+		filter:"tournament_teams_bool_exp",
+		predicate:"Boolean_comparison_exp"
+	},
+	tournament_teams_aggregate_bool_exp_bool_or:{
+		arguments:"tournament_teams_select_column_tournament_teams_aggregate_bool_exp_bool_or_arguments_columns",
+		filter:"tournament_teams_bool_exp",
+		predicate:"Boolean_comparison_exp"
 	},
 	tournament_teams_aggregate_bool_exp_count:{
 		arguments:"tournament_teams_select_column",
@@ -36958,12 +38595,17 @@ export const AllTypesProps: Record<string,any> = {
 		can_manage:"Boolean_comparison_exp",
 		captain:"players_bool_exp",
 		captain_steam_id:"bigint_comparison_exp",
+		checked_in:"Boolean_comparison_exp",
+		checked_in_at:"timestamptz_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
 		creator:"players_bool_exp",
 		eligible_at:"timestamptz_comparison_exp",
+		free_agents:"tournament_free_agents_bool_exp",
+		free_agents_aggregate:"tournament_free_agents_aggregate_bool_exp",
 		id:"uuid_comparison_exp",
 		invites:"tournament_team_invites_bool_exp",
 		invites_aggregate:"tournament_team_invites_aggregate_bool_exp",
+		is_drafted:"Boolean_comparison_exp",
 		name:"String_comparison_exp",
 		owner_steam_id:"bigint_comparison_exp",
 		results:"v_team_stage_results_bool_exp",
@@ -36984,9 +38626,11 @@ export const AllTypesProps: Record<string,any> = {
 	tournament_teams_insert_input:{
 		captain:"players_obj_rel_insert_input",
 		captain_steam_id:"bigint",
+		checked_in_at:"timestamptz",
 		created_at:"timestamptz",
 		creator:"players_obj_rel_insert_input",
 		eligible_at:"timestamptz",
+		free_agents:"tournament_free_agents_arr_rel_insert_input",
 		id:"uuid",
 		invites:"tournament_team_invites_arr_rel_insert_input",
 		owner_steam_id:"bigint",
@@ -36999,6 +38643,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	tournament_teams_max_order_by:{
 		captain_steam_id:"order_by",
+		checked_in_at:"order_by",
 		created_at:"order_by",
 		eligible_at:"order_by",
 		id:"order_by",
@@ -37011,6 +38656,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	tournament_teams_min_order_by:{
 		captain_steam_id:"order_by",
+		checked_in_at:"order_by",
 		created_at:"order_by",
 		eligible_at:"order_by",
 		id:"order_by",
@@ -37034,11 +38680,15 @@ export const AllTypesProps: Record<string,any> = {
 		can_manage:"order_by",
 		captain:"players_order_by",
 		captain_steam_id:"order_by",
+		checked_in:"order_by",
+		checked_in_at:"order_by",
 		created_at:"order_by",
 		creator:"players_order_by",
 		eligible_at:"order_by",
+		free_agents_aggregate:"tournament_free_agents_aggregate_order_by",
 		id:"order_by",
 		invites_aggregate:"tournament_team_invites_aggregate_order_by",
+		is_drafted:"order_by",
 		name:"order_by",
 		owner_steam_id:"order_by",
 		results:"v_team_stage_results_order_by",
@@ -37054,8 +38704,11 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid"
 	},
 	tournament_teams_select_column: "enum" as const,
+	tournament_teams_select_column_tournament_teams_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
+	tournament_teams_select_column_tournament_teams_aggregate_bool_exp_bool_or_arguments_columns: "enum" as const,
 	tournament_teams_set_input:{
 		captain_steam_id:"bigint",
+		checked_in_at:"timestamptz",
 		created_at:"timestamptz",
 		eligible_at:"timestamptz",
 		id:"uuid",
@@ -37084,6 +38737,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	tournament_teams_stream_cursor_value_input:{
 		captain_steam_id:"bigint",
+		checked_in_at:"timestamptz",
 		created_at:"timestamptz",
 		eligible_at:"timestamptz",
 		id:"uuid",
@@ -37147,6 +38801,16 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"tournament_categories_select_column",
 			order_by:"tournament_categories_order_by",
 			where:"tournament_categories_bool_exp"
+		},
+		free_agents:{
+			distinct_on:"tournament_free_agents_select_column",
+			order_by:"tournament_free_agents_order_by",
+			where:"tournament_free_agents_bool_exp"
+		},
+		free_agents_aggregate:{
+			distinct_on:"tournament_free_agents_select_column",
+			order_by:"tournament_free_agents_order_by",
+			where:"tournament_free_agents_bool_exp"
 		},
 		organizer_teams:{
 			distinct_on:"tournament_organizer_teams_select_column",
@@ -37328,8 +38992,12 @@ export const AllTypesProps: Record<string,any> = {
 		on_conflict:"tournaments_on_conflict"
 	},
 	tournaments_avg_order_by:{
+		check_in_closes_before_minutes:"order_by",
+		check_in_opens_before_minutes:"order_by",
 		latitude:"order_by",
 		longitude:"order_by",
+		max_elo:"order_by",
+		min_elo:"order_by",
 		organizer_steam_id:"order_by"
 	},
 	tournaments_bool_exp:{
@@ -37350,10 +39018,20 @@ export const AllTypesProps: Record<string,any> = {
 		can_open_registration:"Boolean_comparison_exp",
 		can_pause:"Boolean_comparison_exp",
 		can_resume:"Boolean_comparison_exp",
+		can_review_check_in:"Boolean_comparison_exp",
 		can_setup:"Boolean_comparison_exp",
 		can_start:"Boolean_comparison_exp",
 		categories:"tournament_categories_bool_exp",
 		categories_aggregate:"tournament_categories_aggregate_bool_exp",
+		check_in_closed_for:"timestamptz_comparison_exp",
+		check_in_closes_before_minutes:"Int_comparison_exp",
+		check_in_closing_notified_for:"timestamptz_comparison_exp",
+		check_in_ends_at:"timestamptz_comparison_exp",
+		check_in_open:"Boolean_comparison_exp",
+		check_in_opens_before_minutes:"Int_comparison_exp",
+		check_in_required:"Boolean_comparison_exp",
+		check_in_setting:"e_check_in_settings_enum_comparison_exp",
+		check_in_started:"Boolean_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
 		description:"String_comparison_exp",
 		discord_guild_id:"String_comparison_exp",
@@ -37374,9 +39052,12 @@ export const AllTypesProps: Record<string,any> = {
 		discord_voice_enabled:"Boolean_comparison_exp",
 		discord_webhook:"String_comparison_exp",
 		e_tournament_status:"e_tournament_status_bool_exp",
+		free_agents:"tournament_free_agents_bool_exp",
+		free_agents_aggregate:"tournament_free_agents_aggregate_bool_exp",
 		has_min_teams:"Boolean_comparison_exp",
 		homepage:"String_comparison_exp",
 		id:"uuid_comparison_exp",
+		invite_only:"Boolean_comparison_exp",
 		is_league:"Boolean_comparison_exp",
 		is_organizer:"Boolean_comparison_exp",
 		joined_tournament:"Boolean_comparison_exp",
@@ -37386,8 +39067,13 @@ export const AllTypesProps: Record<string,any> = {
 		logo:"String_comparison_exp",
 		longitude:"float8_comparison_exp",
 		match_options_id:"uuid_comparison_exp",
+		max_elo:"Int_comparison_exp",
 		max_players_per_lineup:"Int_comparison_exp",
+		meets_min_role:"Boolean_comparison_exp",
+		min_elo:"Int_comparison_exp",
 		min_players_per_lineup:"Int_comparison_exp",
+		min_role:"e_player_roles_enum_comparison_exp",
+		missed_check_in_count:"Int_comparison_exp",
 		name:"String_comparison_exp",
 		options:"match_options_bool_exp",
 		organizer_steam_id:"bigint_comparison_exp",
@@ -37399,6 +39085,9 @@ export const AllTypesProps: Record<string,any> = {
 		player_stats_aggregate:"v_tournament_player_stats_aggregate_bool_exp",
 		prizes:"tournament_prizes_bool_exp",
 		prizes_aggregate:"tournament_prizes_aggregate_bool_exp",
+		regions:"String_array_comparison_exp",
+		registration_type:"e_tournament_registration_types_enum_comparison_exp",
+		registration_unlocked:"Boolean_comparison_exp",
 		results:"v_team_tournament_results_bool_exp",
 		results_aggregate:"v_team_tournament_results_aggregate_bool_exp",
 		rosters:"tournament_team_roster_bool_exp",
@@ -37422,19 +39111,26 @@ export const AllTypesProps: Record<string,any> = {
 		award_configs:"tournament_awards_arr_rel_insert_input",
 		awards:"award_recipients_arr_rel_insert_input",
 		categories:"tournament_categories_arr_rel_insert_input",
+		check_in_closed_for:"timestamptz",
+		check_in_closing_notified_for:"timestamptz",
+		check_in_ends_at:"timestamptz",
+		check_in_setting:"e_check_in_settings_enum",
 		created_at:"timestamptz",
 		e_tournament_status:"e_tournament_status_obj_rel_insert_input",
+		free_agents:"tournament_free_agents_arr_rel_insert_input",
 		id:"uuid",
 		latitude:"float8",
 		league_season_division:"league_season_divisions_obj_rel_insert_input",
 		longitude:"float8",
 		match_options_id:"uuid",
+		min_role:"e_player_roles_enum",
 		options:"match_options_obj_rel_insert_input",
 		organizer_steam_id:"bigint",
 		organizer_teams:"tournament_organizer_teams_arr_rel_insert_input",
 		organizers:"tournament_organizers_arr_rel_insert_input",
 		player_stats:"v_tournament_player_stats_arr_rel_insert_input",
 		prizes:"tournament_prizes_arr_rel_insert_input",
+		registration_type:"e_tournament_registration_types_enum",
 		results:"v_team_tournament_results_arr_rel_insert_input",
 		rosters:"tournament_team_roster_arr_rel_insert_input",
 		stages:"tournament_stages_arr_rel_insert_input",
@@ -37444,6 +39140,11 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	tournaments_max_order_by:{
 		banner:"order_by",
+		check_in_closed_for:"order_by",
+		check_in_closes_before_minutes:"order_by",
+		check_in_closing_notified_for:"order_by",
+		check_in_ends_at:"order_by",
+		check_in_opens_before_minutes:"order_by",
 		created_at:"order_by",
 		description:"order_by",
 		discord_guild_id:"order_by",
@@ -37456,13 +39157,21 @@ export const AllTypesProps: Record<string,any> = {
 		logo:"order_by",
 		longitude:"order_by",
 		match_options_id:"order_by",
+		max_elo:"order_by",
+		min_elo:"order_by",
 		name:"order_by",
 		organizer_steam_id:"order_by",
+		regions:"order_by",
 		scheduling_mode:"order_by",
 		start:"order_by"
 	},
 	tournaments_min_order_by:{
 		banner:"order_by",
+		check_in_closed_for:"order_by",
+		check_in_closes_before_minutes:"order_by",
+		check_in_closing_notified_for:"order_by",
+		check_in_ends_at:"order_by",
+		check_in_opens_before_minutes:"order_by",
 		created_at:"order_by",
 		description:"order_by",
 		discord_guild_id:"order_by",
@@ -37475,8 +39184,11 @@ export const AllTypesProps: Record<string,any> = {
 		logo:"order_by",
 		longitude:"order_by",
 		match_options_id:"order_by",
+		max_elo:"order_by",
+		min_elo:"order_by",
 		name:"order_by",
 		organizer_steam_id:"order_by",
+		regions:"order_by",
 		scheduling_mode:"order_by",
 		start:"order_by"
 	},
@@ -37502,9 +39214,19 @@ export const AllTypesProps: Record<string,any> = {
 		can_open_registration:"order_by",
 		can_pause:"order_by",
 		can_resume:"order_by",
+		can_review_check_in:"order_by",
 		can_setup:"order_by",
 		can_start:"order_by",
 		categories_aggregate:"tournament_categories_aggregate_order_by",
+		check_in_closed_for:"order_by",
+		check_in_closes_before_minutes:"order_by",
+		check_in_closing_notified_for:"order_by",
+		check_in_ends_at:"order_by",
+		check_in_open:"order_by",
+		check_in_opens_before_minutes:"order_by",
+		check_in_required:"order_by",
+		check_in_setting:"order_by",
+		check_in_started:"order_by",
 		created_at:"order_by",
 		description:"order_by",
 		discord_guild_id:"order_by",
@@ -37525,9 +39247,11 @@ export const AllTypesProps: Record<string,any> = {
 		discord_voice_enabled:"order_by",
 		discord_webhook:"order_by",
 		e_tournament_status:"e_tournament_status_order_by",
+		free_agents_aggregate:"tournament_free_agents_aggregate_order_by",
 		has_min_teams:"order_by",
 		homepage:"order_by",
 		id:"order_by",
+		invite_only:"order_by",
 		is_league:"order_by",
 		is_organizer:"order_by",
 		joined_tournament:"order_by",
@@ -37537,8 +39261,13 @@ export const AllTypesProps: Record<string,any> = {
 		logo:"order_by",
 		longitude:"order_by",
 		match_options_id:"order_by",
+		max_elo:"order_by",
 		max_players_per_lineup:"order_by",
+		meets_min_role:"order_by",
+		min_elo:"order_by",
 		min_players_per_lineup:"order_by",
+		min_role:"order_by",
+		missed_check_in_count:"order_by",
 		name:"order_by",
 		options:"match_options_order_by",
 		organizer_steam_id:"order_by",
@@ -37546,6 +39275,9 @@ export const AllTypesProps: Record<string,any> = {
 		organizers_aggregate:"tournament_organizers_aggregate_order_by",
 		player_stats_aggregate:"v_tournament_player_stats_aggregate_order_by",
 		prizes_aggregate:"tournament_prizes_aggregate_order_by",
+		regions:"order_by",
+		registration_type:"order_by",
+		registration_unlocked:"order_by",
 		results_aggregate:"v_team_tournament_results_aggregate_order_by",
 		rosters_aggregate:"tournament_team_roster_aggregate_order_by",
 		scheduling_mode:"order_by",
@@ -37569,28 +39301,46 @@ export const AllTypesProps: Record<string,any> = {
 	tournaments_select_column_tournaments_aggregate_bool_exp_sum_arguments_columns: "enum" as const,
 	tournaments_select_column_tournaments_aggregate_bool_exp_var_samp_arguments_columns: "enum" as const,
 	tournaments_set_input:{
+		check_in_closed_for:"timestamptz",
+		check_in_closing_notified_for:"timestamptz",
+		check_in_ends_at:"timestamptz",
+		check_in_setting:"e_check_in_settings_enum",
 		created_at:"timestamptz",
 		id:"uuid",
 		latitude:"float8",
 		longitude:"float8",
 		match_options_id:"uuid",
+		min_role:"e_player_roles_enum",
 		organizer_steam_id:"bigint",
+		registration_type:"e_tournament_registration_types_enum",
 		start:"timestamptz",
 		status:"e_tournament_status_enum"
 	},
 	tournaments_stddev_order_by:{
+		check_in_closes_before_minutes:"order_by",
+		check_in_opens_before_minutes:"order_by",
 		latitude:"order_by",
 		longitude:"order_by",
+		max_elo:"order_by",
+		min_elo:"order_by",
 		organizer_steam_id:"order_by"
 	},
 	tournaments_stddev_pop_order_by:{
+		check_in_closes_before_minutes:"order_by",
+		check_in_opens_before_minutes:"order_by",
 		latitude:"order_by",
 		longitude:"order_by",
+		max_elo:"order_by",
+		min_elo:"order_by",
 		organizer_steam_id:"order_by"
 	},
 	tournaments_stddev_samp_order_by:{
+		check_in_closes_before_minutes:"order_by",
+		check_in_opens_before_minutes:"order_by",
 		latitude:"order_by",
 		longitude:"order_by",
+		max_elo:"order_by",
+		min_elo:"order_by",
 		organizer_steam_id:"order_by"
 	},
 	tournaments_stream_cursor_input:{
@@ -37598,18 +39348,28 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	tournaments_stream_cursor_value_input:{
+		check_in_closed_for:"timestamptz",
+		check_in_closing_notified_for:"timestamptz",
+		check_in_ends_at:"timestamptz",
+		check_in_setting:"e_check_in_settings_enum",
 		created_at:"timestamptz",
 		id:"uuid",
 		latitude:"float8",
 		longitude:"float8",
 		match_options_id:"uuid",
+		min_role:"e_player_roles_enum",
 		organizer_steam_id:"bigint",
+		registration_type:"e_tournament_registration_types_enum",
 		start:"timestamptz",
 		status:"e_tournament_status_enum"
 	},
 	tournaments_sum_order_by:{
+		check_in_closes_before_minutes:"order_by",
+		check_in_opens_before_minutes:"order_by",
 		latitude:"order_by",
 		longitude:"order_by",
+		max_elo:"order_by",
+		min_elo:"order_by",
 		organizer_steam_id:"order_by"
 	},
 	tournaments_update_column: "enum" as const,
@@ -37619,18 +39379,30 @@ export const AllTypesProps: Record<string,any> = {
 		where:"tournaments_bool_exp"
 	},
 	tournaments_var_pop_order_by:{
+		check_in_closes_before_minutes:"order_by",
+		check_in_opens_before_minutes:"order_by",
 		latitude:"order_by",
 		longitude:"order_by",
+		max_elo:"order_by",
+		min_elo:"order_by",
 		organizer_steam_id:"order_by"
 	},
 	tournaments_var_samp_order_by:{
+		check_in_closes_before_minutes:"order_by",
+		check_in_opens_before_minutes:"order_by",
 		latitude:"order_by",
 		longitude:"order_by",
+		max_elo:"order_by",
+		min_elo:"order_by",
 		organizer_steam_id:"order_by"
 	},
 	tournaments_variance_order_by:{
+		check_in_closes_before_minutes:"order_by",
+		check_in_opens_before_minutes:"order_by",
 		latitude:"order_by",
 		longitude:"order_by",
+		max_elo:"order_by",
+		min_elo:"order_by",
 		organizer_steam_id:"order_by"
 	},
 	utility_collection_items_aggregate_bool_exp:{
@@ -45884,6 +47656,13 @@ export const ReturnTypes: Record<string,any> = {
 		silhouette:"Int",
 		tournament_id:"uuid"
 	},
+	TournamentDraftOutput:{
+		teams_created:"Int"
+	},
+	TournamentInviteCodeOutput:{
+		code:"String",
+		id:"uuid"
+	},
 	TournamentMatchResetImpact:{
 		bracket_id:"uuid",
 		depth:"Int",
@@ -48206,6 +49985,111 @@ export const ReturnTypes: Record<string,any> = {
 		affected_rows:"Int",
 		returning:"e_ready_settings"
 	},
+	e_sanction_scopes:{
+		description:"String",
+		value:"String"
+	},
+	e_sanction_scopes_aggregate:{
+		aggregate:"e_sanction_scopes_aggregate_fields",
+		nodes:"e_sanction_scopes"
+	},
+	e_sanction_scopes_aggregate_fields:{
+		count:"Int",
+		max:"e_sanction_scopes_max_fields",
+		min:"e_sanction_scopes_min_fields"
+	},
+	e_sanction_scopes_max_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_sanction_scopes_min_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_sanction_scopes_mutation_response:{
+		affected_rows:"Int",
+		returning:"e_sanction_scopes"
+	},
+	e_sanction_sources:{
+		default_durations:"String",
+		default_enabled:"Boolean",
+		default_scope:"String",
+		default_threshold:"Int",
+		default_window_days:"Int",
+		description:"String",
+		e_sanction_scope:"e_sanction_scopes",
+		value:"String",
+		writes_platform_ban:"Boolean"
+	},
+	e_sanction_sources_aggregate:{
+		aggregate:"e_sanction_sources_aggregate_fields",
+		nodes:"e_sanction_sources"
+	},
+	e_sanction_sources_aggregate_fields:{
+		avg:"e_sanction_sources_avg_fields",
+		count:"Int",
+		max:"e_sanction_sources_max_fields",
+		min:"e_sanction_sources_min_fields",
+		stddev:"e_sanction_sources_stddev_fields",
+		stddev_pop:"e_sanction_sources_stddev_pop_fields",
+		stddev_samp:"e_sanction_sources_stddev_samp_fields",
+		sum:"e_sanction_sources_sum_fields",
+		var_pop:"e_sanction_sources_var_pop_fields",
+		var_samp:"e_sanction_sources_var_samp_fields",
+		variance:"e_sanction_sources_variance_fields"
+	},
+	e_sanction_sources_avg_fields:{
+		default_threshold:"Float",
+		default_window_days:"Float"
+	},
+	e_sanction_sources_max_fields:{
+		default_durations:"String",
+		default_scope:"String",
+		default_threshold:"Int",
+		default_window_days:"Int",
+		description:"String",
+		value:"String"
+	},
+	e_sanction_sources_min_fields:{
+		default_durations:"String",
+		default_scope:"String",
+		default_threshold:"Int",
+		default_window_days:"Int",
+		description:"String",
+		value:"String"
+	},
+	e_sanction_sources_mutation_response:{
+		affected_rows:"Int",
+		returning:"e_sanction_sources"
+	},
+	e_sanction_sources_stddev_fields:{
+		default_threshold:"Float",
+		default_window_days:"Float"
+	},
+	e_sanction_sources_stddev_pop_fields:{
+		default_threshold:"Float",
+		default_window_days:"Float"
+	},
+	e_sanction_sources_stddev_samp_fields:{
+		default_threshold:"Float",
+		default_window_days:"Float"
+	},
+	e_sanction_sources_sum_fields:{
+		default_threshold:"Int",
+		default_window_days:"Int"
+	},
+	e_sanction_sources_var_pop_fields:{
+		default_threshold:"Float",
+		default_window_days:"Float"
+	},
+	e_sanction_sources_var_samp_fields:{
+		default_threshold:"Float",
+		default_window_days:"Float"
+	},
+	e_sanction_sources_variance_fields:{
+		default_threshold:"Float",
+		default_window_days:"Float"
+	},
 	e_sanction_types:{
 		description:"String",
 		value:"String"
@@ -48444,6 +50328,60 @@ export const ReturnTypes: Record<string,any> = {
 	e_tournament_categories_mutation_response:{
 		affected_rows:"Int",
 		returning:"e_tournament_categories"
+	},
+	e_tournament_free_agent_statuses:{
+		description:"String",
+		tournament_free_agents:"tournament_free_agents",
+		tournament_free_agents_aggregate:"tournament_free_agents_aggregate",
+		value:"String"
+	},
+	e_tournament_free_agent_statuses_aggregate:{
+		aggregate:"e_tournament_free_agent_statuses_aggregate_fields",
+		nodes:"e_tournament_free_agent_statuses"
+	},
+	e_tournament_free_agent_statuses_aggregate_fields:{
+		count:"Int",
+		max:"e_tournament_free_agent_statuses_max_fields",
+		min:"e_tournament_free_agent_statuses_min_fields"
+	},
+	e_tournament_free_agent_statuses_max_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_tournament_free_agent_statuses_min_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_tournament_free_agent_statuses_mutation_response:{
+		affected_rows:"Int",
+		returning:"e_tournament_free_agent_statuses"
+	},
+	e_tournament_registration_types:{
+		description:"String",
+		tournaments:"tournaments",
+		tournaments_aggregate:"tournaments_aggregate",
+		value:"String"
+	},
+	e_tournament_registration_types_aggregate:{
+		aggregate:"e_tournament_registration_types_aggregate_fields",
+		nodes:"e_tournament_registration_types"
+	},
+	e_tournament_registration_types_aggregate_fields:{
+		count:"Int",
+		max:"e_tournament_registration_types_max_fields",
+		min:"e_tournament_registration_types_min_fields"
+	},
+	e_tournament_registration_types_max_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_tournament_registration_types_min_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_tournament_registration_types_mutation_response:{
+		affected_rows:"Int",
+		returning:"e_tournament_registration_types"
 	},
 	e_tournament_stage_types:{
 		description:"String",
@@ -52887,11 +54825,13 @@ export const ReturnTypes: Record<string,any> = {
 		cancelUtilityLineupRender:"SuccessOutput",
 		changeUtilityPracticeMap:"UtilityPracticeMapChangeOutput",
 		checkIntoMatch:"SuccessOutput",
+		checkIntoTournament:"SuccessOutput",
 		clearClipRenderBatch:"SuccessOutput",
 		clearFinishedClipRenders:"SuccessOutput",
 		clearFinishedUtilityLineupRenders:"UtilityRenderClearOutput",
 		clearPendingMatchImport:"PendingMatchImportActionOutput",
 		clone_league_season:"league_seasons",
+		continueTournamentCheckIn:"SuccessOutput",
 		counterScrimRequest:"SuccessOutput",
 		createApiKey:"ApiKeyResponse",
 		createClipFromPreset:"CreateClipRenderOutput",
@@ -52900,6 +54840,7 @@ export const ReturnTypes: Record<string,any> = {
 		createDraftGame:"CreateDraftGameOutput",
 		createScheduledMatch:"CreateScheduledMatchOutput",
 		createServerDirectory:"SuccessOutput",
+		createTournamentInviteCode:"TournamentInviteCodeOutput",
 		deleteAward:"SuccessOutput",
 		deleteClip:"SuccessOutput",
 		deleteMatch:"SuccessOutput",
@@ -53005,6 +54946,10 @@ export const ReturnTypes: Record<string,any> = {
 		delete_e_plugin_runtimes_by_pk:"e_plugin_runtimes",
 		delete_e_ready_settings:"e_ready_settings_mutation_response",
 		delete_e_ready_settings_by_pk:"e_ready_settings",
+		delete_e_sanction_scopes:"e_sanction_scopes_mutation_response",
+		delete_e_sanction_scopes_by_pk:"e_sanction_scopes",
+		delete_e_sanction_sources:"e_sanction_sources_mutation_response",
+		delete_e_sanction_sources_by_pk:"e_sanction_sources",
 		delete_e_sanction_types:"e_sanction_types_mutation_response",
 		delete_e_sanction_types_by_pk:"e_sanction_types",
 		delete_e_scrim_request_statuses:"e_scrim_request_statuses_mutation_response",
@@ -53023,6 +54968,10 @@ export const ReturnTypes: Record<string,any> = {
 		delete_e_timeout_settings_by_pk:"e_timeout_settings",
 		delete_e_tournament_categories:"e_tournament_categories_mutation_response",
 		delete_e_tournament_categories_by_pk:"e_tournament_categories",
+		delete_e_tournament_free_agent_statuses:"e_tournament_free_agent_statuses_mutation_response",
+		delete_e_tournament_free_agent_statuses_by_pk:"e_tournament_free_agent_statuses",
+		delete_e_tournament_registration_types:"e_tournament_registration_types_mutation_response",
+		delete_e_tournament_registration_types_by_pk:"e_tournament_registration_types",
 		delete_e_tournament_stage_types:"e_tournament_stage_types_mutation_response",
 		delete_e_tournament_stage_types_by_pk:"e_tournament_stage_types",
 		delete_e_tournament_status:"e_tournament_status_mutation_response",
@@ -53235,12 +55184,24 @@ export const ReturnTypes: Record<string,any> = {
 		delete_tournament_brackets_by_pk:"tournament_brackets",
 		delete_tournament_categories:"tournament_categories_mutation_response",
 		delete_tournament_categories_by_pk:"tournament_categories",
+		delete_tournament_free_agents:"tournament_free_agents_mutation_response",
+		delete_tournament_free_agents_by_pk:"tournament_free_agents",
+		delete_tournament_invite_code_uses:"tournament_invite_code_uses_mutation_response",
+		delete_tournament_invite_code_uses_by_pk:"tournament_invite_code_uses",
+		delete_tournament_invite_codes:"tournament_invite_codes_mutation_response",
+		delete_tournament_invite_codes_by_pk:"tournament_invite_codes",
+		delete_tournament_invites:"tournament_invites_mutation_response",
+		delete_tournament_invites_by_pk:"tournament_invites",
+		delete_tournament_leaderboard_entries:"tournament_leaderboard_entries_mutation_response",
+		delete_tournament_no_shows:"tournament_no_shows_mutation_response",
+		delete_tournament_no_shows_by_pk:"tournament_no_shows",
 		delete_tournament_organizer_teams:"tournament_organizer_teams_mutation_response",
 		delete_tournament_organizer_teams_by_pk:"tournament_organizer_teams",
 		delete_tournament_organizers:"tournament_organizers_mutation_response",
 		delete_tournament_organizers_by_pk:"tournament_organizers",
 		delete_tournament_prizes:"tournament_prizes_mutation_response",
 		delete_tournament_prizes_by_pk:"tournament_prizes",
+		delete_tournament_registration_unlocks:"tournament_registration_unlocks_mutation_response",
 		delete_tournament_stage_windows:"tournament_stage_windows_mutation_response",
 		delete_tournament_stage_windows_by_pk:"tournament_stage_windows",
 		delete_tournament_stages:"tournament_stages_mutation_response",
@@ -53295,6 +55256,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_v_team_stage_results_by_pk:"v_team_stage_results",
 		denyInvite:"SuccessOutput",
 		denyNameChange:"SuccessOutput",
+		draftTournamentTeams:"TournamentDraftOutput",
+		extendTournamentCheckIn:"SuccessOutput",
 		forfeitMatch:"SuccessOutput",
 		forkUtilityLineup:"UtilityLineupOutput",
 		getLiveStreamSpecState:"LiveStreamSpecState",
@@ -53398,6 +55361,10 @@ export const ReturnTypes: Record<string,any> = {
 		insert_e_plugin_runtimes_one:"e_plugin_runtimes",
 		insert_e_ready_settings:"e_ready_settings_mutation_response",
 		insert_e_ready_settings_one:"e_ready_settings",
+		insert_e_sanction_scopes:"e_sanction_scopes_mutation_response",
+		insert_e_sanction_scopes_one:"e_sanction_scopes",
+		insert_e_sanction_sources:"e_sanction_sources_mutation_response",
+		insert_e_sanction_sources_one:"e_sanction_sources",
 		insert_e_sanction_types:"e_sanction_types_mutation_response",
 		insert_e_sanction_types_one:"e_sanction_types",
 		insert_e_scrim_request_statuses:"e_scrim_request_statuses_mutation_response",
@@ -53416,6 +55383,10 @@ export const ReturnTypes: Record<string,any> = {
 		insert_e_timeout_settings_one:"e_timeout_settings",
 		insert_e_tournament_categories:"e_tournament_categories_mutation_response",
 		insert_e_tournament_categories_one:"e_tournament_categories",
+		insert_e_tournament_free_agent_statuses:"e_tournament_free_agent_statuses_mutation_response",
+		insert_e_tournament_free_agent_statuses_one:"e_tournament_free_agent_statuses",
+		insert_e_tournament_registration_types:"e_tournament_registration_types_mutation_response",
+		insert_e_tournament_registration_types_one:"e_tournament_registration_types",
 		insert_e_tournament_stage_types:"e_tournament_stage_types_mutation_response",
 		insert_e_tournament_stage_types_one:"e_tournament_stage_types",
 		insert_e_tournament_status:"e_tournament_status_mutation_response",
@@ -53632,12 +55603,26 @@ export const ReturnTypes: Record<string,any> = {
 		insert_tournament_brackets_one:"tournament_brackets",
 		insert_tournament_categories:"tournament_categories_mutation_response",
 		insert_tournament_categories_one:"tournament_categories",
+		insert_tournament_free_agents:"tournament_free_agents_mutation_response",
+		insert_tournament_free_agents_one:"tournament_free_agents",
+		insert_tournament_invite_code_uses:"tournament_invite_code_uses_mutation_response",
+		insert_tournament_invite_code_uses_one:"tournament_invite_code_uses",
+		insert_tournament_invite_codes:"tournament_invite_codes_mutation_response",
+		insert_tournament_invite_codes_one:"tournament_invite_codes",
+		insert_tournament_invites:"tournament_invites_mutation_response",
+		insert_tournament_invites_one:"tournament_invites",
+		insert_tournament_leaderboard_entries:"tournament_leaderboard_entries_mutation_response",
+		insert_tournament_leaderboard_entries_one:"tournament_leaderboard_entries",
+		insert_tournament_no_shows:"tournament_no_shows_mutation_response",
+		insert_tournament_no_shows_one:"tournament_no_shows",
 		insert_tournament_organizer_teams:"tournament_organizer_teams_mutation_response",
 		insert_tournament_organizer_teams_one:"tournament_organizer_teams",
 		insert_tournament_organizers:"tournament_organizers_mutation_response",
 		insert_tournament_organizers_one:"tournament_organizers",
 		insert_tournament_prizes:"tournament_prizes_mutation_response",
 		insert_tournament_prizes_one:"tournament_prizes",
+		insert_tournament_registration_unlocks:"tournament_registration_unlocks_mutation_response",
+		insert_tournament_registration_unlocks_one:"tournament_registration_unlocks",
 		insert_tournament_stage_windows:"tournament_stage_windows_mutation_response",
 		insert_tournament_stage_windows_one:"tournament_stage_windows",
 		insert_tournament_stages:"tournament_stages_mutation_response",
@@ -53698,10 +55683,12 @@ export const ReturnTypes: Record<string,any> = {
 		inviteToUtilityPractice:"SuccessOutput",
 		joinDraftGame:"SuccessOutput",
 		joinDraftGameAsParty:"SuccessOutput",
+		joinTournamentAsFreeAgent:"SuccessOutput",
 		joinUtilityPractice:"UtilityPracticeSessionOutput",
 		kickServerPlayer:"KickResult",
 		league_award_forfeit:"matches",
 		leaveLineup:"SuccessOutput",
+		leaveTournamentAsFreeAgent:"SuccessOutput",
 		leaveUtilityPractice:"SuccessOutput",
 		linkSteamMatchHistory:"SteamMatchHistoryLinkOutput",
 		loadFixtures:"SuccessOutput",
@@ -53716,12 +55703,14 @@ export const ReturnTypes: Record<string,any> = {
 		purgeUtilityLineupSource:"UtilityPurgeOutput",
 		queueClipFromPreset:"CreateClipRenderOutput",
 		randomizeTeams:"SuccessOutput",
+		readmitTournamentTeam:"SuccessOutput",
 		rebootMatchServer:"SuccessOutput",
 		recalculate_tournament_awards:"award_recipients",
 		recomputePlayerElo:"RecomputeEloStartedOutput",
 		recomputePlayerEloStatus:"RecomputeEloStatusOutput",
 		reconcileNodePlugins:"ReconcileNodePluginsOutput",
 		reconnectLive:"SuccessOutput",
+		redeemTournamentInviteCode:"SuccessOutput",
 		refreshAllPlayers:"ReindexStartedOutput",
 		refreshAllPlayersStatus:"ReindexStatusOutput",
 		refreshFaceitRank:"SuccessOutput",
@@ -53749,6 +55738,7 @@ export const ReturnTypes: Record<string,any> = {
 		retryClipRenderBatch:"SuccessOutput",
 		retryPendingMatchImport:"PendingMatchImportActionOutput",
 		revokeAward:"SuccessOutput",
+		revokeTournamentInviteCode:"SuccessOutput",
 		sanctionServerPlayer:"SanctionResult",
 		saveAward:"Award",
 		saveNewsPost:"NewsPost",
@@ -53951,6 +55941,12 @@ export const ReturnTypes: Record<string,any> = {
 		update_e_ready_settings:"e_ready_settings_mutation_response",
 		update_e_ready_settings_by_pk:"e_ready_settings",
 		update_e_ready_settings_many:"e_ready_settings_mutation_response",
+		update_e_sanction_scopes:"e_sanction_scopes_mutation_response",
+		update_e_sanction_scopes_by_pk:"e_sanction_scopes",
+		update_e_sanction_scopes_many:"e_sanction_scopes_mutation_response",
+		update_e_sanction_sources:"e_sanction_sources_mutation_response",
+		update_e_sanction_sources_by_pk:"e_sanction_sources",
+		update_e_sanction_sources_many:"e_sanction_sources_mutation_response",
 		update_e_sanction_types:"e_sanction_types_mutation_response",
 		update_e_sanction_types_by_pk:"e_sanction_types",
 		update_e_sanction_types_many:"e_sanction_types_mutation_response",
@@ -53978,6 +55974,12 @@ export const ReturnTypes: Record<string,any> = {
 		update_e_tournament_categories:"e_tournament_categories_mutation_response",
 		update_e_tournament_categories_by_pk:"e_tournament_categories",
 		update_e_tournament_categories_many:"e_tournament_categories_mutation_response",
+		update_e_tournament_free_agent_statuses:"e_tournament_free_agent_statuses_mutation_response",
+		update_e_tournament_free_agent_statuses_by_pk:"e_tournament_free_agent_statuses",
+		update_e_tournament_free_agent_statuses_many:"e_tournament_free_agent_statuses_mutation_response",
+		update_e_tournament_registration_types:"e_tournament_registration_types_mutation_response",
+		update_e_tournament_registration_types_by_pk:"e_tournament_registration_types",
+		update_e_tournament_registration_types_many:"e_tournament_registration_types_mutation_response",
 		update_e_tournament_stage_types:"e_tournament_stage_types_mutation_response",
 		update_e_tournament_stage_types_by_pk:"e_tournament_stage_types",
 		update_e_tournament_stage_types_many:"e_tournament_stage_types_mutation_response",
@@ -54298,6 +56300,23 @@ export const ReturnTypes: Record<string,any> = {
 		update_tournament_categories:"tournament_categories_mutation_response",
 		update_tournament_categories_by_pk:"tournament_categories",
 		update_tournament_categories_many:"tournament_categories_mutation_response",
+		update_tournament_free_agents:"tournament_free_agents_mutation_response",
+		update_tournament_free_agents_by_pk:"tournament_free_agents",
+		update_tournament_free_agents_many:"tournament_free_agents_mutation_response",
+		update_tournament_invite_code_uses:"tournament_invite_code_uses_mutation_response",
+		update_tournament_invite_code_uses_by_pk:"tournament_invite_code_uses",
+		update_tournament_invite_code_uses_many:"tournament_invite_code_uses_mutation_response",
+		update_tournament_invite_codes:"tournament_invite_codes_mutation_response",
+		update_tournament_invite_codes_by_pk:"tournament_invite_codes",
+		update_tournament_invite_codes_many:"tournament_invite_codes_mutation_response",
+		update_tournament_invites:"tournament_invites_mutation_response",
+		update_tournament_invites_by_pk:"tournament_invites",
+		update_tournament_invites_many:"tournament_invites_mutation_response",
+		update_tournament_leaderboard_entries:"tournament_leaderboard_entries_mutation_response",
+		update_tournament_leaderboard_entries_many:"tournament_leaderboard_entries_mutation_response",
+		update_tournament_no_shows:"tournament_no_shows_mutation_response",
+		update_tournament_no_shows_by_pk:"tournament_no_shows",
+		update_tournament_no_shows_many:"tournament_no_shows_mutation_response",
 		update_tournament_organizer_teams:"tournament_organizer_teams_mutation_response",
 		update_tournament_organizer_teams_by_pk:"tournament_organizer_teams",
 		update_tournament_organizer_teams_many:"tournament_organizer_teams_mutation_response",
@@ -54307,6 +56326,8 @@ export const ReturnTypes: Record<string,any> = {
 		update_tournament_prizes:"tournament_prizes_mutation_response",
 		update_tournament_prizes_by_pk:"tournament_prizes",
 		update_tournament_prizes_many:"tournament_prizes_mutation_response",
+		update_tournament_registration_unlocks:"tournament_registration_unlocks_mutation_response",
+		update_tournament_registration_unlocks_many:"tournament_registration_unlocks_mutation_response",
 		update_tournament_stage_windows:"tournament_stage_windows_mutation_response",
 		update_tournament_stage_windows_by_pk:"tournament_stage_windows",
 		update_tournament_stage_windows_many:"tournament_stage_windows_mutation_response",
@@ -59797,6 +61818,7 @@ export const ReturnTypes: Record<string,any> = {
 		team_members_aggregate:"team_roster_aggregate",
 		teams:"teams",
 		total_matches:"Int",
+		tournament_cooldown:"timestamptz",
 		tournament_organizers:"tournament_organizers",
 		tournament_organizers_aggregate:"tournament_organizers_aggregate",
 		tournament_rosters:"tournament_team_roster",
@@ -59882,6 +61904,7 @@ export const ReturnTypes: Record<string,any> = {
 		steam_bans_checked_at:"timestamptz",
 		steam_id:"bigint",
 		total_matches:"Int",
+		tournament_cooldown:"timestamptz",
 		vac_ban_count:"Int",
 		wins:"Int",
 		wins_competitive:"Int",
@@ -59921,6 +61944,7 @@ export const ReturnTypes: Record<string,any> = {
 		steam_bans_checked_at:"timestamptz",
 		steam_id:"bigint",
 		total_matches:"Int",
+		tournament_cooldown:"timestamptz",
 		vac_ban_count:"Int",
 		wins:"Int",
 		wins_competitive:"Int",
@@ -60342,6 +62366,12 @@ export const ReturnTypes: Record<string,any> = {
 		e_ready_settings:"e_ready_settings",
 		e_ready_settings_aggregate:"e_ready_settings_aggregate",
 		e_ready_settings_by_pk:"e_ready_settings",
+		e_sanction_scopes:"e_sanction_scopes",
+		e_sanction_scopes_aggregate:"e_sanction_scopes_aggregate",
+		e_sanction_scopes_by_pk:"e_sanction_scopes",
+		e_sanction_sources:"e_sanction_sources",
+		e_sanction_sources_aggregate:"e_sanction_sources_aggregate",
+		e_sanction_sources_by_pk:"e_sanction_sources",
 		e_sanction_types:"e_sanction_types",
 		e_sanction_types_aggregate:"e_sanction_types_aggregate",
 		e_sanction_types_by_pk:"e_sanction_types",
@@ -60369,6 +62399,12 @@ export const ReturnTypes: Record<string,any> = {
 		e_tournament_categories:"e_tournament_categories",
 		e_tournament_categories_aggregate:"e_tournament_categories_aggregate",
 		e_tournament_categories_by_pk:"e_tournament_categories",
+		e_tournament_free_agent_statuses:"e_tournament_free_agent_statuses",
+		e_tournament_free_agent_statuses_aggregate:"e_tournament_free_agent_statuses_aggregate",
+		e_tournament_free_agent_statuses_by_pk:"e_tournament_free_agent_statuses",
+		e_tournament_registration_types:"e_tournament_registration_types",
+		e_tournament_registration_types_aggregate:"e_tournament_registration_types_aggregate",
+		e_tournament_registration_types_by_pk:"e_tournament_registration_types",
 		e_tournament_stage_types:"e_tournament_stage_types",
 		e_tournament_stage_types_aggregate:"e_tournament_stage_types_aggregate",
 		e_tournament_stage_types_by_pk:"e_tournament_stage_types",
@@ -60484,6 +62520,8 @@ export const ReturnTypes: Record<string,any> = {
 		get_league_season_leaderboard_aggregate:"leaderboard_entries_aggregate",
 		get_player_leaderboard_rank:"player_leaderboard_rank",
 		get_player_leaderboard_rank_aggregate:"player_leaderboard_rank_aggregate",
+		get_tournament_leaderboard:"tournament_leaderboard_entries",
+		get_tournament_leaderboard_aggregate:"tournament_leaderboard_entries_aggregate",
 		leaderboard_entries:"leaderboard_entries",
 		leaderboard_entries_aggregate:"leaderboard_entries_aggregate",
 		league_divisions:"league_divisions",
@@ -60735,6 +62773,23 @@ export const ReturnTypes: Record<string,any> = {
 		tournament_categories:"tournament_categories",
 		tournament_categories_aggregate:"tournament_categories_aggregate",
 		tournament_categories_by_pk:"tournament_categories",
+		tournament_free_agents:"tournament_free_agents",
+		tournament_free_agents_aggregate:"tournament_free_agents_aggregate",
+		tournament_free_agents_by_pk:"tournament_free_agents",
+		tournament_invite_code_uses:"tournament_invite_code_uses",
+		tournament_invite_code_uses_aggregate:"tournament_invite_code_uses_aggregate",
+		tournament_invite_code_uses_by_pk:"tournament_invite_code_uses",
+		tournament_invite_codes:"tournament_invite_codes",
+		tournament_invite_codes_aggregate:"tournament_invite_codes_aggregate",
+		tournament_invite_codes_by_pk:"tournament_invite_codes",
+		tournament_invites:"tournament_invites",
+		tournament_invites_aggregate:"tournament_invites_aggregate",
+		tournament_invites_by_pk:"tournament_invites",
+		tournament_leaderboard_entries:"tournament_leaderboard_entries",
+		tournament_leaderboard_entries_aggregate:"tournament_leaderboard_entries_aggregate",
+		tournament_no_shows:"tournament_no_shows",
+		tournament_no_shows_aggregate:"tournament_no_shows_aggregate",
+		tournament_no_shows_by_pk:"tournament_no_shows",
 		tournament_organizer_teams:"tournament_organizer_teams",
 		tournament_organizer_teams_aggregate:"tournament_organizer_teams_aggregate",
 		tournament_organizer_teams_by_pk:"tournament_organizer_teams",
@@ -60744,6 +62799,8 @@ export const ReturnTypes: Record<string,any> = {
 		tournament_prizes:"tournament_prizes",
 		tournament_prizes_aggregate:"tournament_prizes_aggregate",
 		tournament_prizes_by_pk:"tournament_prizes",
+		tournament_registration_unlocks:"tournament_registration_unlocks",
+		tournament_registration_unlocks_aggregate:"tournament_registration_unlocks_aggregate",
 		tournament_stage_windows:"tournament_stage_windows",
 		tournament_stage_windows_aggregate:"tournament_stage_windows_aggregate",
 		tournament_stage_windows_by_pk:"tournament_stage_windows",
@@ -61572,6 +63629,14 @@ export const ReturnTypes: Record<string,any> = {
 		e_ready_settings_aggregate:"e_ready_settings_aggregate",
 		e_ready_settings_by_pk:"e_ready_settings",
 		e_ready_settings_stream:"e_ready_settings",
+		e_sanction_scopes:"e_sanction_scopes",
+		e_sanction_scopes_aggregate:"e_sanction_scopes_aggregate",
+		e_sanction_scopes_by_pk:"e_sanction_scopes",
+		e_sanction_scopes_stream:"e_sanction_scopes",
+		e_sanction_sources:"e_sanction_sources",
+		e_sanction_sources_aggregate:"e_sanction_sources_aggregate",
+		e_sanction_sources_by_pk:"e_sanction_sources",
+		e_sanction_sources_stream:"e_sanction_sources",
 		e_sanction_types:"e_sanction_types",
 		e_sanction_types_aggregate:"e_sanction_types_aggregate",
 		e_sanction_types_by_pk:"e_sanction_types",
@@ -61608,6 +63673,14 @@ export const ReturnTypes: Record<string,any> = {
 		e_tournament_categories_aggregate:"e_tournament_categories_aggregate",
 		e_tournament_categories_by_pk:"e_tournament_categories",
 		e_tournament_categories_stream:"e_tournament_categories",
+		e_tournament_free_agent_statuses:"e_tournament_free_agent_statuses",
+		e_tournament_free_agent_statuses_aggregate:"e_tournament_free_agent_statuses_aggregate",
+		e_tournament_free_agent_statuses_by_pk:"e_tournament_free_agent_statuses",
+		e_tournament_free_agent_statuses_stream:"e_tournament_free_agent_statuses",
+		e_tournament_registration_types:"e_tournament_registration_types",
+		e_tournament_registration_types_aggregate:"e_tournament_registration_types_aggregate",
+		e_tournament_registration_types_by_pk:"e_tournament_registration_types",
+		e_tournament_registration_types_stream:"e_tournament_registration_types",
 		e_tournament_stage_types:"e_tournament_stage_types",
 		e_tournament_stage_types_aggregate:"e_tournament_stage_types_aggregate",
 		e_tournament_stage_types_by_pk:"e_tournament_stage_types",
@@ -61732,6 +63805,8 @@ export const ReturnTypes: Record<string,any> = {
 		get_league_season_leaderboard_aggregate:"leaderboard_entries_aggregate",
 		get_player_leaderboard_rank:"player_leaderboard_rank",
 		get_player_leaderboard_rank_aggregate:"player_leaderboard_rank_aggregate",
+		get_tournament_leaderboard:"tournament_leaderboard_entries",
+		get_tournament_leaderboard_aggregate:"tournament_leaderboard_entries_aggregate",
 		leaderboard_entries:"leaderboard_entries",
 		leaderboard_entries_aggregate:"leaderboard_entries_aggregate",
 		leaderboard_entries_stream:"leaderboard_entries",
@@ -62059,6 +64134,29 @@ export const ReturnTypes: Record<string,any> = {
 		tournament_categories_aggregate:"tournament_categories_aggregate",
 		tournament_categories_by_pk:"tournament_categories",
 		tournament_categories_stream:"tournament_categories",
+		tournament_free_agents:"tournament_free_agents",
+		tournament_free_agents_aggregate:"tournament_free_agents_aggregate",
+		tournament_free_agents_by_pk:"tournament_free_agents",
+		tournament_free_agents_stream:"tournament_free_agents",
+		tournament_invite_code_uses:"tournament_invite_code_uses",
+		tournament_invite_code_uses_aggregate:"tournament_invite_code_uses_aggregate",
+		tournament_invite_code_uses_by_pk:"tournament_invite_code_uses",
+		tournament_invite_code_uses_stream:"tournament_invite_code_uses",
+		tournament_invite_codes:"tournament_invite_codes",
+		tournament_invite_codes_aggregate:"tournament_invite_codes_aggregate",
+		tournament_invite_codes_by_pk:"tournament_invite_codes",
+		tournament_invite_codes_stream:"tournament_invite_codes",
+		tournament_invites:"tournament_invites",
+		tournament_invites_aggregate:"tournament_invites_aggregate",
+		tournament_invites_by_pk:"tournament_invites",
+		tournament_invites_stream:"tournament_invites",
+		tournament_leaderboard_entries:"tournament_leaderboard_entries",
+		tournament_leaderboard_entries_aggregate:"tournament_leaderboard_entries_aggregate",
+		tournament_leaderboard_entries_stream:"tournament_leaderboard_entries",
+		tournament_no_shows:"tournament_no_shows",
+		tournament_no_shows_aggregate:"tournament_no_shows_aggregate",
+		tournament_no_shows_by_pk:"tournament_no_shows",
+		tournament_no_shows_stream:"tournament_no_shows",
 		tournament_organizer_teams:"tournament_organizer_teams",
 		tournament_organizer_teams_aggregate:"tournament_organizer_teams_aggregate",
 		tournament_organizer_teams_by_pk:"tournament_organizer_teams",
@@ -62071,6 +64169,9 @@ export const ReturnTypes: Record<string,any> = {
 		tournament_prizes_aggregate:"tournament_prizes_aggregate",
 		tournament_prizes_by_pk:"tournament_prizes",
 		tournament_prizes_stream:"tournament_prizes",
+		tournament_registration_unlocks:"tournament_registration_unlocks",
+		tournament_registration_unlocks_aggregate:"tournament_registration_unlocks_aggregate",
+		tournament_registration_unlocks_stream:"tournament_registration_unlocks",
 		tournament_stage_windows:"tournament_stage_windows",
 		tournament_stage_windows_aggregate:"tournament_stage_windows_aggregate",
 		tournament_stage_windows_by_pk:"tournament_stage_windows",
@@ -63303,6 +65404,560 @@ export const ReturnTypes: Record<string,any> = {
 		affected_rows:"Int",
 		returning:"tournament_categories"
 	},
+	tournament_free_agents:{
+		checked_in_at:"timestamptz",
+		created_at:"timestamptz",
+		e_tournament_free_agent_status:"e_tournament_free_agent_statuses",
+		id:"uuid",
+		party_id:"uuid",
+		player:"players",
+		player_steam_id:"bigint",
+		status:"e_tournament_free_agent_statuses_enum",
+		tournament:"tournaments",
+		tournament_id:"uuid",
+		tournament_team:"tournament_teams",
+		tournament_team_id:"uuid"
+	},
+	tournament_free_agents_aggregate:{
+		aggregate:"tournament_free_agents_aggregate_fields",
+		nodes:"tournament_free_agents"
+	},
+	tournament_free_agents_aggregate_fields:{
+		avg:"tournament_free_agents_avg_fields",
+		count:"Int",
+		max:"tournament_free_agents_max_fields",
+		min:"tournament_free_agents_min_fields",
+		stddev:"tournament_free_agents_stddev_fields",
+		stddev_pop:"tournament_free_agents_stddev_pop_fields",
+		stddev_samp:"tournament_free_agents_stddev_samp_fields",
+		sum:"tournament_free_agents_sum_fields",
+		var_pop:"tournament_free_agents_var_pop_fields",
+		var_samp:"tournament_free_agents_var_samp_fields",
+		variance:"tournament_free_agents_variance_fields"
+	},
+	tournament_free_agents_avg_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_free_agents_max_fields:{
+		checked_in_at:"timestamptz",
+		created_at:"timestamptz",
+		id:"uuid",
+		party_id:"uuid",
+		player_steam_id:"bigint",
+		tournament_id:"uuid",
+		tournament_team_id:"uuid"
+	},
+	tournament_free_agents_min_fields:{
+		checked_in_at:"timestamptz",
+		created_at:"timestamptz",
+		id:"uuid",
+		party_id:"uuid",
+		player_steam_id:"bigint",
+		tournament_id:"uuid",
+		tournament_team_id:"uuid"
+	},
+	tournament_free_agents_mutation_response:{
+		affected_rows:"Int",
+		returning:"tournament_free_agents"
+	},
+	tournament_free_agents_stddev_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_free_agents_stddev_pop_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_free_agents_stddev_samp_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_free_agents_sum_fields:{
+		player_steam_id:"bigint"
+	},
+	tournament_free_agents_var_pop_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_free_agents_var_samp_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_free_agents_variance_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_invite_code_uses:{
+		invite_code:"tournament_invite_codes",
+		invite_code_id:"uuid",
+		player:"players",
+		player_steam_id:"bigint",
+		team:"teams",
+		team_id:"uuid",
+		used_at:"timestamptz"
+	},
+	tournament_invite_code_uses_aggregate:{
+		aggregate:"tournament_invite_code_uses_aggregate_fields",
+		nodes:"tournament_invite_code_uses"
+	},
+	tournament_invite_code_uses_aggregate_fields:{
+		avg:"tournament_invite_code_uses_avg_fields",
+		count:"Int",
+		max:"tournament_invite_code_uses_max_fields",
+		min:"tournament_invite_code_uses_min_fields",
+		stddev:"tournament_invite_code_uses_stddev_fields",
+		stddev_pop:"tournament_invite_code_uses_stddev_pop_fields",
+		stddev_samp:"tournament_invite_code_uses_stddev_samp_fields",
+		sum:"tournament_invite_code_uses_sum_fields",
+		var_pop:"tournament_invite_code_uses_var_pop_fields",
+		var_samp:"tournament_invite_code_uses_var_samp_fields",
+		variance:"tournament_invite_code_uses_variance_fields"
+	},
+	tournament_invite_code_uses_avg_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_invite_code_uses_max_fields:{
+		invite_code_id:"uuid",
+		player_steam_id:"bigint",
+		team_id:"uuid",
+		used_at:"timestamptz"
+	},
+	tournament_invite_code_uses_min_fields:{
+		invite_code_id:"uuid",
+		player_steam_id:"bigint",
+		team_id:"uuid",
+		used_at:"timestamptz"
+	},
+	tournament_invite_code_uses_mutation_response:{
+		affected_rows:"Int",
+		returning:"tournament_invite_code_uses"
+	},
+	tournament_invite_code_uses_stddev_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_invite_code_uses_stddev_pop_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_invite_code_uses_stddev_samp_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_invite_code_uses_sum_fields:{
+		player_steam_id:"bigint"
+	},
+	tournament_invite_code_uses_var_pop_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_invite_code_uses_var_samp_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_invite_code_uses_variance_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_invite_codes:{
+		code:"String",
+		created_at:"timestamptz",
+		created_by:"players",
+		created_by_player_steam_id:"bigint",
+		expires_at:"timestamptz",
+		id:"uuid",
+		max_uses:"Int",
+		revoked_at:"timestamptz",
+		tournament:"tournaments",
+		tournament_id:"uuid",
+		used_by:"tournament_invite_code_uses",
+		used_by_aggregate:"tournament_invite_code_uses_aggregate",
+		uses:"Int"
+	},
+	tournament_invite_codes_aggregate:{
+		aggregate:"tournament_invite_codes_aggregate_fields",
+		nodes:"tournament_invite_codes"
+	},
+	tournament_invite_codes_aggregate_fields:{
+		avg:"tournament_invite_codes_avg_fields",
+		count:"Int",
+		max:"tournament_invite_codes_max_fields",
+		min:"tournament_invite_codes_min_fields",
+		stddev:"tournament_invite_codes_stddev_fields",
+		stddev_pop:"tournament_invite_codes_stddev_pop_fields",
+		stddev_samp:"tournament_invite_codes_stddev_samp_fields",
+		sum:"tournament_invite_codes_sum_fields",
+		var_pop:"tournament_invite_codes_var_pop_fields",
+		var_samp:"tournament_invite_codes_var_samp_fields",
+		variance:"tournament_invite_codes_variance_fields"
+	},
+	tournament_invite_codes_avg_fields:{
+		created_by_player_steam_id:"Float",
+		max_uses:"Float",
+		uses:"Float"
+	},
+	tournament_invite_codes_max_fields:{
+		code:"String",
+		created_at:"timestamptz",
+		created_by_player_steam_id:"bigint",
+		expires_at:"timestamptz",
+		id:"uuid",
+		max_uses:"Int",
+		revoked_at:"timestamptz",
+		tournament_id:"uuid",
+		uses:"Int"
+	},
+	tournament_invite_codes_min_fields:{
+		code:"String",
+		created_at:"timestamptz",
+		created_by_player_steam_id:"bigint",
+		expires_at:"timestamptz",
+		id:"uuid",
+		max_uses:"Int",
+		revoked_at:"timestamptz",
+		tournament_id:"uuid",
+		uses:"Int"
+	},
+	tournament_invite_codes_mutation_response:{
+		affected_rows:"Int",
+		returning:"tournament_invite_codes"
+	},
+	tournament_invite_codes_stddev_fields:{
+		created_by_player_steam_id:"Float",
+		max_uses:"Float",
+		uses:"Float"
+	},
+	tournament_invite_codes_stddev_pop_fields:{
+		created_by_player_steam_id:"Float",
+		max_uses:"Float",
+		uses:"Float"
+	},
+	tournament_invite_codes_stddev_samp_fields:{
+		created_by_player_steam_id:"Float",
+		max_uses:"Float",
+		uses:"Float"
+	},
+	tournament_invite_codes_sum_fields:{
+		created_by_player_steam_id:"bigint",
+		max_uses:"Int",
+		uses:"Int"
+	},
+	tournament_invite_codes_var_pop_fields:{
+		created_by_player_steam_id:"Float",
+		max_uses:"Float",
+		uses:"Float"
+	},
+	tournament_invite_codes_var_samp_fields:{
+		created_by_player_steam_id:"Float",
+		max_uses:"Float",
+		uses:"Float"
+	},
+	tournament_invite_codes_variance_fields:{
+		created_by_player_steam_id:"Float",
+		max_uses:"Float",
+		uses:"Float"
+	},
+	tournament_invites:{
+		created_at:"timestamptz",
+		id:"uuid",
+		invited_by:"players",
+		invited_by_player_steam_id:"bigint",
+		player:"players",
+		steam_id:"bigint",
+		team:"teams",
+		team_id:"uuid",
+		tournament:"tournaments",
+		tournament_id:"uuid"
+	},
+	tournament_invites_aggregate:{
+		aggregate:"tournament_invites_aggregate_fields",
+		nodes:"tournament_invites"
+	},
+	tournament_invites_aggregate_fields:{
+		avg:"tournament_invites_avg_fields",
+		count:"Int",
+		max:"tournament_invites_max_fields",
+		min:"tournament_invites_min_fields",
+		stddev:"tournament_invites_stddev_fields",
+		stddev_pop:"tournament_invites_stddev_pop_fields",
+		stddev_samp:"tournament_invites_stddev_samp_fields",
+		sum:"tournament_invites_sum_fields",
+		var_pop:"tournament_invites_var_pop_fields",
+		var_samp:"tournament_invites_var_samp_fields",
+		variance:"tournament_invites_variance_fields"
+	},
+	tournament_invites_avg_fields:{
+		invited_by_player_steam_id:"Float",
+		steam_id:"Float"
+	},
+	tournament_invites_max_fields:{
+		created_at:"timestamptz",
+		id:"uuid",
+		invited_by_player_steam_id:"bigint",
+		steam_id:"bigint",
+		team_id:"uuid",
+		tournament_id:"uuid"
+	},
+	tournament_invites_min_fields:{
+		created_at:"timestamptz",
+		id:"uuid",
+		invited_by_player_steam_id:"bigint",
+		steam_id:"bigint",
+		team_id:"uuid",
+		tournament_id:"uuid"
+	},
+	tournament_invites_mutation_response:{
+		affected_rows:"Int",
+		returning:"tournament_invites"
+	},
+	tournament_invites_stddev_fields:{
+		invited_by_player_steam_id:"Float",
+		steam_id:"Float"
+	},
+	tournament_invites_stddev_pop_fields:{
+		invited_by_player_steam_id:"Float",
+		steam_id:"Float"
+	},
+	tournament_invites_stddev_samp_fields:{
+		invited_by_player_steam_id:"Float",
+		steam_id:"Float"
+	},
+	tournament_invites_sum_fields:{
+		invited_by_player_steam_id:"bigint",
+		steam_id:"bigint"
+	},
+	tournament_invites_var_pop_fields:{
+		invited_by_player_steam_id:"Float",
+		steam_id:"Float"
+	},
+	tournament_invites_var_samp_fields:{
+		invited_by_player_steam_id:"Float",
+		steam_id:"Float"
+	},
+	tournament_invites_variance_fields:{
+		invited_by_player_steam_id:"Float",
+		steam_id:"Float"
+	},
+	tournament_leaderboard_entries:{
+		adr:"float8",
+		assists:"Int",
+		deaths:"Int",
+		headshot_percentage:"float8",
+		kdr:"float8",
+		kills:"Int",
+		matches_played:"Int",
+		player_avatar_url:"String",
+		player_country:"String",
+		player_custom_avatar_url:"String",
+		player_name:"String",
+		player_steam_id:"String",
+		rating:"float8",
+		rounds_played:"Int",
+		team_name:"String",
+		tournament_team_id:"uuid"
+	},
+	tournament_leaderboard_entries_aggregate:{
+		aggregate:"tournament_leaderboard_entries_aggregate_fields",
+		nodes:"tournament_leaderboard_entries"
+	},
+	tournament_leaderboard_entries_aggregate_fields:{
+		avg:"tournament_leaderboard_entries_avg_fields",
+		count:"Int",
+		max:"tournament_leaderboard_entries_max_fields",
+		min:"tournament_leaderboard_entries_min_fields",
+		stddev:"tournament_leaderboard_entries_stddev_fields",
+		stddev_pop:"tournament_leaderboard_entries_stddev_pop_fields",
+		stddev_samp:"tournament_leaderboard_entries_stddev_samp_fields",
+		sum:"tournament_leaderboard_entries_sum_fields",
+		var_pop:"tournament_leaderboard_entries_var_pop_fields",
+		var_samp:"tournament_leaderboard_entries_var_samp_fields",
+		variance:"tournament_leaderboard_entries_variance_fields"
+	},
+	tournament_leaderboard_entries_avg_fields:{
+		adr:"Float",
+		assists:"Float",
+		deaths:"Float",
+		headshot_percentage:"Float",
+		kdr:"Float",
+		kills:"Float",
+		matches_played:"Float",
+		rating:"Float",
+		rounds_played:"Float"
+	},
+	tournament_leaderboard_entries_max_fields:{
+		adr:"float8",
+		assists:"Int",
+		deaths:"Int",
+		headshot_percentage:"float8",
+		kdr:"float8",
+		kills:"Int",
+		matches_played:"Int",
+		player_avatar_url:"String",
+		player_country:"String",
+		player_custom_avatar_url:"String",
+		player_name:"String",
+		player_steam_id:"String",
+		rating:"float8",
+		rounds_played:"Int",
+		team_name:"String",
+		tournament_team_id:"uuid"
+	},
+	tournament_leaderboard_entries_min_fields:{
+		adr:"float8",
+		assists:"Int",
+		deaths:"Int",
+		headshot_percentage:"float8",
+		kdr:"float8",
+		kills:"Int",
+		matches_played:"Int",
+		player_avatar_url:"String",
+		player_country:"String",
+		player_custom_avatar_url:"String",
+		player_name:"String",
+		player_steam_id:"String",
+		rating:"float8",
+		rounds_played:"Int",
+		team_name:"String",
+		tournament_team_id:"uuid"
+	},
+	tournament_leaderboard_entries_mutation_response:{
+		affected_rows:"Int",
+		returning:"tournament_leaderboard_entries"
+	},
+	tournament_leaderboard_entries_stddev_fields:{
+		adr:"Float",
+		assists:"Float",
+		deaths:"Float",
+		headshot_percentage:"Float",
+		kdr:"Float",
+		kills:"Float",
+		matches_played:"Float",
+		rating:"Float",
+		rounds_played:"Float"
+	},
+	tournament_leaderboard_entries_stddev_pop_fields:{
+		adr:"Float",
+		assists:"Float",
+		deaths:"Float",
+		headshot_percentage:"Float",
+		kdr:"Float",
+		kills:"Float",
+		matches_played:"Float",
+		rating:"Float",
+		rounds_played:"Float"
+	},
+	tournament_leaderboard_entries_stddev_samp_fields:{
+		adr:"Float",
+		assists:"Float",
+		deaths:"Float",
+		headshot_percentage:"Float",
+		kdr:"Float",
+		kills:"Float",
+		matches_played:"Float",
+		rating:"Float",
+		rounds_played:"Float"
+	},
+	tournament_leaderboard_entries_sum_fields:{
+		adr:"float8",
+		assists:"Int",
+		deaths:"Int",
+		headshot_percentage:"float8",
+		kdr:"float8",
+		kills:"Int",
+		matches_played:"Int",
+		rating:"float8",
+		rounds_played:"Int"
+	},
+	tournament_leaderboard_entries_var_pop_fields:{
+		adr:"Float",
+		assists:"Float",
+		deaths:"Float",
+		headshot_percentage:"Float",
+		kdr:"Float",
+		kills:"Float",
+		matches_played:"Float",
+		rating:"Float",
+		rounds_played:"Float"
+	},
+	tournament_leaderboard_entries_var_samp_fields:{
+		adr:"Float",
+		assists:"Float",
+		deaths:"Float",
+		headshot_percentage:"Float",
+		kdr:"Float",
+		kills:"Float",
+		matches_played:"Float",
+		rating:"Float",
+		rounds_played:"Float"
+	},
+	tournament_leaderboard_entries_variance_fields:{
+		adr:"Float",
+		assists:"Float",
+		deaths:"Float",
+		headshot_percentage:"Float",
+		kdr:"Float",
+		kills:"Float",
+		matches_played:"Float",
+		rating:"Float",
+		rounds_played:"Float"
+	},
+	tournament_no_shows:{
+		id:"uuid",
+		occurred_at:"timestamptz",
+		player:"players",
+		player_steam_id:"bigint",
+		tournament:"tournaments",
+		tournament_id:"uuid",
+		tournament_team:"tournament_teams",
+		tournament_team_id:"uuid"
+	},
+	tournament_no_shows_aggregate:{
+		aggregate:"tournament_no_shows_aggregate_fields",
+		nodes:"tournament_no_shows"
+	},
+	tournament_no_shows_aggregate_fields:{
+		avg:"tournament_no_shows_avg_fields",
+		count:"Int",
+		max:"tournament_no_shows_max_fields",
+		min:"tournament_no_shows_min_fields",
+		stddev:"tournament_no_shows_stddev_fields",
+		stddev_pop:"tournament_no_shows_stddev_pop_fields",
+		stddev_samp:"tournament_no_shows_stddev_samp_fields",
+		sum:"tournament_no_shows_sum_fields",
+		var_pop:"tournament_no_shows_var_pop_fields",
+		var_samp:"tournament_no_shows_var_samp_fields",
+		variance:"tournament_no_shows_variance_fields"
+	},
+	tournament_no_shows_avg_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_no_shows_max_fields:{
+		id:"uuid",
+		occurred_at:"timestamptz",
+		player_steam_id:"bigint",
+		tournament_id:"uuid",
+		tournament_team_id:"uuid"
+	},
+	tournament_no_shows_min_fields:{
+		id:"uuid",
+		occurred_at:"timestamptz",
+		player_steam_id:"bigint",
+		tournament_id:"uuid",
+		tournament_team_id:"uuid"
+	},
+	tournament_no_shows_mutation_response:{
+		affected_rows:"Int",
+		returning:"tournament_no_shows"
+	},
+	tournament_no_shows_stddev_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_no_shows_stddev_pop_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_no_shows_stddev_samp_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_no_shows_sum_fields:{
+		player_steam_id:"bigint"
+	},
+	tournament_no_shows_var_pop_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_no_shows_var_samp_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_no_shows_variance_fields:{
+		player_steam_id:"Float"
+	},
 	tournament_organizer_teams:{
 		created_at:"timestamptz",
 		team:"teams",
@@ -63465,6 +66120,72 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	tournament_prizes_variance_fields:{
 		order:"Float"
+	},
+	tournament_registration_unlocks:{
+		created_at:"timestamptz",
+		player:"players",
+		player_steam_id:"bigint",
+		team:"teams",
+		team_id:"uuid",
+		tournament:"tournaments",
+		tournament_id:"uuid"
+	},
+	tournament_registration_unlocks_aggregate:{
+		aggregate:"tournament_registration_unlocks_aggregate_fields",
+		nodes:"tournament_registration_unlocks"
+	},
+	tournament_registration_unlocks_aggregate_fields:{
+		avg:"tournament_registration_unlocks_avg_fields",
+		count:"Int",
+		max:"tournament_registration_unlocks_max_fields",
+		min:"tournament_registration_unlocks_min_fields",
+		stddev:"tournament_registration_unlocks_stddev_fields",
+		stddev_pop:"tournament_registration_unlocks_stddev_pop_fields",
+		stddev_samp:"tournament_registration_unlocks_stddev_samp_fields",
+		sum:"tournament_registration_unlocks_sum_fields",
+		var_pop:"tournament_registration_unlocks_var_pop_fields",
+		var_samp:"tournament_registration_unlocks_var_samp_fields",
+		variance:"tournament_registration_unlocks_variance_fields"
+	},
+	tournament_registration_unlocks_avg_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_registration_unlocks_max_fields:{
+		created_at:"timestamptz",
+		player_steam_id:"bigint",
+		team_id:"uuid",
+		tournament_id:"uuid"
+	},
+	tournament_registration_unlocks_min_fields:{
+		created_at:"timestamptz",
+		player_steam_id:"bigint",
+		team_id:"uuid",
+		tournament_id:"uuid"
+	},
+	tournament_registration_unlocks_mutation_response:{
+		affected_rows:"Int",
+		returning:"tournament_registration_unlocks"
+	},
+	tournament_registration_unlocks_stddev_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_registration_unlocks_stddev_pop_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_registration_unlocks_stddev_samp_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_registration_unlocks_sum_fields:{
+		player_steam_id:"bigint"
+	},
+	tournament_registration_unlocks_var_pop_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_registration_unlocks_var_samp_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_registration_unlocks_variance_fields:{
+		player_steam_id:"Float"
 	},
 	tournament_stage_windows:{
 		closes_at:"timestamptz",
@@ -63770,10 +66491,12 @@ export const ReturnTypes: Record<string,any> = {
 		steam_id:"Float"
 	},
 	tournament_team_roster:{
+		checked_in_at:"timestamptz",
 		e_team_role:"e_team_roles",
 		player:"players",
 		player_steam_id:"bigint",
 		role:"e_team_roles_enum",
+		target_eligible:"Boolean",
 		tournament:"tournaments",
 		tournament_id:"uuid",
 		tournament_team:"tournament_teams",
@@ -63800,11 +66523,13 @@ export const ReturnTypes: Record<string,any> = {
 		player_steam_id:"Float"
 	},
 	tournament_team_roster_max_fields:{
+		checked_in_at:"timestamptz",
 		player_steam_id:"bigint",
 		tournament_id:"uuid",
 		tournament_team_id:"uuid"
 	},
 	tournament_team_roster_min_fields:{
+		checked_in_at:"timestamptz",
 		player_steam_id:"bigint",
 		tournament_id:"uuid",
 		tournament_team_id:"uuid"
@@ -63838,12 +66563,17 @@ export const ReturnTypes: Record<string,any> = {
 		can_manage:"Boolean",
 		captain:"players",
 		captain_steam_id:"bigint",
+		checked_in:"Boolean",
+		checked_in_at:"timestamptz",
 		created_at:"timestamptz",
 		creator:"players",
 		eligible_at:"timestamptz",
+		free_agents:"tournament_free_agents",
+		free_agents_aggregate:"tournament_free_agents_aggregate",
 		id:"uuid",
 		invites:"tournament_team_invites",
 		invites_aggregate:"tournament_team_invites_aggregate",
+		is_drafted:"Boolean",
 		name:"String",
 		owner_steam_id:"bigint",
 		results:"v_team_stage_results",
@@ -63880,6 +66610,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	tournament_teams_max_fields:{
 		captain_steam_id:"bigint",
+		checked_in_at:"timestamptz",
 		created_at:"timestamptz",
 		eligible_at:"timestamptz",
 		id:"uuid",
@@ -63892,6 +66623,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	tournament_teams_min_fields:{
 		captain_steam_id:"bigint",
+		checked_in_at:"timestamptz",
 		created_at:"timestamptz",
 		eligible_at:"timestamptz",
 		id:"uuid",
@@ -63956,10 +66688,20 @@ export const ReturnTypes: Record<string,any> = {
 		can_open_registration:"Boolean",
 		can_pause:"Boolean",
 		can_resume:"Boolean",
+		can_review_check_in:"Boolean",
 		can_setup:"Boolean",
 		can_start:"Boolean",
 		categories:"tournament_categories",
 		categories_aggregate:"tournament_categories_aggregate",
+		check_in_closed_for:"timestamptz",
+		check_in_closes_before_minutes:"Int",
+		check_in_closing_notified_for:"timestamptz",
+		check_in_ends_at:"timestamptz",
+		check_in_open:"Boolean",
+		check_in_opens_before_minutes:"Int",
+		check_in_required:"Boolean",
+		check_in_setting:"e_check_in_settings_enum",
+		check_in_started:"Boolean",
 		created_at:"timestamptz",
 		description:"String",
 		discord_guild_id:"String",
@@ -63980,9 +66722,12 @@ export const ReturnTypes: Record<string,any> = {
 		discord_voice_enabled:"Boolean",
 		discord_webhook:"String",
 		e_tournament_status:"e_tournament_status",
+		free_agents:"tournament_free_agents",
+		free_agents_aggregate:"tournament_free_agents_aggregate",
 		has_min_teams:"Boolean",
 		homepage:"String",
 		id:"uuid",
+		invite_only:"Boolean",
 		is_league:"Boolean",
 		is_organizer:"Boolean",
 		joined_tournament:"Boolean",
@@ -63992,8 +66737,13 @@ export const ReturnTypes: Record<string,any> = {
 		logo:"String",
 		longitude:"float8",
 		match_options_id:"uuid",
+		max_elo:"Int",
 		max_players_per_lineup:"Int",
+		meets_min_role:"Boolean",
+		min_elo:"Int",
 		min_players_per_lineup:"Int",
+		min_role:"e_player_roles_enum",
+		missed_check_in_count:"Int",
 		name:"String",
 		options:"match_options",
 		organizer_steam_id:"bigint",
@@ -64005,6 +66755,9 @@ export const ReturnTypes: Record<string,any> = {
 		player_stats_aggregate:"v_tournament_player_stats_aggregate",
 		prizes:"tournament_prizes",
 		prizes_aggregate:"tournament_prizes_aggregate",
+		regions:"String",
+		registration_type:"e_tournament_registration_types_enum",
+		registration_unlocked:"Boolean",
 		results:"v_team_tournament_results",
 		results_aggregate:"v_team_tournament_results_aggregate",
 		rosters:"tournament_team_roster",
@@ -64035,14 +66788,24 @@ export const ReturnTypes: Record<string,any> = {
 		variance:"tournaments_variance_fields"
 	},
 	tournaments_avg_fields:{
+		check_in_closes_before_minutes:"Float",
+		check_in_opens_before_minutes:"Float",
 		latitude:"Float",
 		longitude:"Float",
+		max_elo:"Float",
 		max_players_per_lineup:"Int",
+		min_elo:"Float",
 		min_players_per_lineup:"Int",
+		missed_check_in_count:"Int",
 		organizer_steam_id:"Float"
 	},
 	tournaments_max_fields:{
 		banner:"String",
+		check_in_closed_for:"timestamptz",
+		check_in_closes_before_minutes:"Int",
+		check_in_closing_notified_for:"timestamptz",
+		check_in_ends_at:"timestamptz",
+		check_in_opens_before_minutes:"Int",
 		created_at:"timestamptz",
 		description:"String",
 		discord_guild_id:"String",
@@ -64055,15 +66818,24 @@ export const ReturnTypes: Record<string,any> = {
 		logo:"String",
 		longitude:"float8",
 		match_options_id:"uuid",
+		max_elo:"Int",
 		max_players_per_lineup:"Int",
+		min_elo:"Int",
 		min_players_per_lineup:"Int",
+		missed_check_in_count:"Int",
 		name:"String",
 		organizer_steam_id:"bigint",
+		regions:"String",
 		scheduling_mode:"String",
 		start:"timestamptz"
 	},
 	tournaments_min_fields:{
 		banner:"String",
+		check_in_closed_for:"timestamptz",
+		check_in_closes_before_minutes:"Int",
+		check_in_closing_notified_for:"timestamptz",
+		check_in_ends_at:"timestamptz",
+		check_in_opens_before_minutes:"Int",
 		created_at:"timestamptz",
 		description:"String",
 		discord_guild_id:"String",
@@ -64076,10 +66848,14 @@ export const ReturnTypes: Record<string,any> = {
 		logo:"String",
 		longitude:"float8",
 		match_options_id:"uuid",
+		max_elo:"Int",
 		max_players_per_lineup:"Int",
+		min_elo:"Int",
 		min_players_per_lineup:"Int",
+		missed_check_in_count:"Int",
 		name:"String",
 		organizer_steam_id:"bigint",
+		regions:"String",
 		scheduling_mode:"String",
 		start:"timestamptz"
 	},
@@ -64088,52 +66864,87 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"tournaments"
 	},
 	tournaments_stddev_fields:{
+		check_in_closes_before_minutes:"Float",
+		check_in_opens_before_minutes:"Float",
 		latitude:"Float",
 		longitude:"Float",
+		max_elo:"Float",
 		max_players_per_lineup:"Int",
+		min_elo:"Float",
 		min_players_per_lineup:"Int",
+		missed_check_in_count:"Int",
 		organizer_steam_id:"Float"
 	},
 	tournaments_stddev_pop_fields:{
+		check_in_closes_before_minutes:"Float",
+		check_in_opens_before_minutes:"Float",
 		latitude:"Float",
 		longitude:"Float",
+		max_elo:"Float",
 		max_players_per_lineup:"Int",
+		min_elo:"Float",
 		min_players_per_lineup:"Int",
+		missed_check_in_count:"Int",
 		organizer_steam_id:"Float"
 	},
 	tournaments_stddev_samp_fields:{
+		check_in_closes_before_minutes:"Float",
+		check_in_opens_before_minutes:"Float",
 		latitude:"Float",
 		longitude:"Float",
+		max_elo:"Float",
 		max_players_per_lineup:"Int",
+		min_elo:"Float",
 		min_players_per_lineup:"Int",
+		missed_check_in_count:"Int",
 		organizer_steam_id:"Float"
 	},
 	tournaments_sum_fields:{
+		check_in_closes_before_minutes:"Int",
+		check_in_opens_before_minutes:"Int",
 		latitude:"float8",
 		longitude:"float8",
+		max_elo:"Int",
 		max_players_per_lineup:"Int",
+		min_elo:"Int",
 		min_players_per_lineup:"Int",
+		missed_check_in_count:"Int",
 		organizer_steam_id:"bigint"
 	},
 	tournaments_var_pop_fields:{
+		check_in_closes_before_minutes:"Float",
+		check_in_opens_before_minutes:"Float",
 		latitude:"Float",
 		longitude:"Float",
+		max_elo:"Float",
 		max_players_per_lineup:"Int",
+		min_elo:"Float",
 		min_players_per_lineup:"Int",
+		missed_check_in_count:"Int",
 		organizer_steam_id:"Float"
 	},
 	tournaments_var_samp_fields:{
+		check_in_closes_before_minutes:"Float",
+		check_in_opens_before_minutes:"Float",
 		latitude:"Float",
 		longitude:"Float",
+		max_elo:"Float",
 		max_players_per_lineup:"Int",
+		min_elo:"Float",
 		min_players_per_lineup:"Int",
+		missed_check_in_count:"Int",
 		organizer_steam_id:"Float"
 	},
 	tournaments_variance_fields:{
+		check_in_closes_before_minutes:"Float",
+		check_in_opens_before_minutes:"Float",
 		latitude:"Float",
 		longitude:"Float",
+		max_elo:"Float",
 		max_players_per_lineup:"Int",
+		min_elo:"Float",
 		min_players_per_lineup:"Int",
+		missed_check_in_count:"Int",
 		organizer_steam_id:"Float"
 	},
 	utility_collection_items:{

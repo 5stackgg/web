@@ -6,6 +6,7 @@ import FleetVersions from "./FleetVersions.vue";
 import FleetMeter from "./FleetMeter.vue";
 import FleetShares from "./FleetShares.vue";
 import FleetReadout from "./FleetReadout.vue";
+import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import {
   tacticalSectionLabelClasses,
@@ -23,6 +24,17 @@ import {
     </div>
 
     <template v-else>
+      <!-- 5stack.gg reports like any other panel, and it is the largest install
+           on the page. Setting it aside is the only view that answers what
+           everybody else is running. -->
+      <div class="flex justify-end">
+        <AnimatedFilters
+          v-model="fleetFilter"
+          square
+          :options="fleetFilterOptions"
+        />
+      </div>
+
       <!-- One number leads the page, with its own 90-day shape beside it.
            Everything below is detail hung off these two. -->
       <section
@@ -37,18 +49,28 @@ import {
           <div class="flex flex-col justify-between gap-5">
             <div>
               <div
-                class="font-sans text-[0.66rem] uppercase tracking-[0.22em] text-muted-foreground"
+                class="flex items-center gap-1.5 font-sans text-[0.66rem] uppercase tracking-[0.22em] text-muted-foreground"
               >
-                {{ $t("pages.system_telemetry.totals.matches") }}
+                {{ $t("pages.system_telemetry.totals.maps_played") }}
+                <FiveStackToolTip>
+                  {{ $t("pages.system_telemetry.totals.hosted_hint") }}
+                </FiveStackToolTip>
               </div>
               <div class="mt-2 text-5xl font-semibold leading-none sm:text-6xl">
-                {{ format(totals?.matches ?? 0) }}
+                {{ format(totals?.mapsPlayed ?? 0) }}
               </div>
               <div class="mt-2.5 flex flex-wrap items-center gap-x-2 text-sm">
-                <span class="font-mono text-[hsl(var(--tac-amber))]">
-                  +{{ format(totals?.matchesWeek ?? 0) }}
+                <span class="font-mono">
+                  {{ format(totals?.matches ?? 0) }}
                 </span>
                 <span class="text-muted-foreground">
+                  {{ $t("pages.system_telemetry.activity.matches_unit") }}
+                </span>
+                <span class="flex items-center gap-2 text-muted-foreground">
+                  <span class="text-border">·</span>
+                  <span class="font-mono text-[hsl(var(--tac-amber))]">
+                    +{{ format(totals?.matchesWeek ?? 0) }}
+                  </span>
                   {{ $t("pages.system_telemetry.totals.last_7d") }}
                 </span>
                 <span
@@ -258,12 +280,7 @@ import {
               </div>
             </div>
 
-            <div class="grid grid-cols-3 gap-3 border-t border-border/60 pt-4">
-              <FleetReadout
-                :label="$t('pages.system_telemetry.totals.maps_played')"
-                :value="totals?.mapsPlayed ?? 0"
-                :caption="$t('pages.system_telemetry.totals.all_time')"
-              />
+            <div class="grid grid-cols-2 gap-3 border-t border-border/60 pt-4">
               <FleetReadout
                 :label="$t('pages.system_telemetry.totals.matches_created')"
                 :value="totals?.matchesCreated ?? 0"
@@ -953,6 +970,7 @@ import {
 
 <script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";
+import { $ } from "~/generated/zeus";
 import {
   FLEET_MATCHES_CHART_COLORS,
   FLEET_INSTALLS_CHART_COLORS,
@@ -967,6 +985,9 @@ export default {
     telemetryStats: {
       query: generateQuery({
         telemetryStats: {
+          __args: {
+            includeSelf: $("includeSelf", "Boolean"),
+          },
           online: true,
           installs: {
             total: true,
@@ -1107,12 +1128,18 @@ export default {
           },
         },
       }),
+      variables() {
+        return {
+          includeSelf: this.fleetFilter === "all",
+        };
+      },
       pollInterval: 60 * 1000,
     },
   },
   data() {
     return {
       NO_METRIC,
+      fleetFilter: "all",
     };
   },
   methods: {
@@ -1395,6 +1422,15 @@ export default {
             },
           ]).reverse(),
         },
+      ];
+    },
+    fleetFilterOptions() {
+      const t = (key: string) =>
+        this.$t(`pages.system_telemetry.filter.${key}`);
+
+      return [
+        { key: "all", label: t("all") },
+        { key: "self_hosted", label: t("self_hosted") },
       ];
     },
     matchWindows() {

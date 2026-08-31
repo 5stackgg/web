@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { dateLocale } from "~/utilities/dateLocale";
 import { useMediaQuery } from "@vueuse/core";
+import { useSubscription } from "@vue/apollo-composable";
 import { AlertTriangle } from "lucide-vue-next";
+import { TOURNAMENT_COOLDOWN_SUBSCRIPTION } from "~/graphql/tournamentCooldown";
 import QuickMatchConnect from "~/components/match/QuickMatchConnect.vue";
 import { Button } from "~/components/ui/button";
 import { Spinner } from "~/components/ui/spinner";
@@ -26,6 +28,36 @@ const formatBanExpiry = (value: unknown) => {
     timeStyle: "short",
   });
 };
+
+// A scoped sanction whose ladder rung is 0 resolves to 'infinity'::timestamptz
+// and arrives here as the literal string "infinity". new Date() turns that into
+// an Invalid Date, which formatBanExpiry reports as "" -- indistinguishable
+// from a missing expiry. It has to be caught first and read as permanent.
+const isPermanentExpiry = (value: unknown) => String(value) === "infinity";
+
+// Deliberately NOT part of `me`. api and web ship as separate images on
+// separate release channels, so web can reach a stack whose api has not run the
+// sanctions migration; inside the `me` document that rejection took sign-in down
+// with it. Here the same rejection costs only the readout: `optional` keeps it
+// out of the global error toast (plugins/apollo.client.ts), useSubscription
+// parks the failure on its own `error` ref rather than throwing, and `result`
+// simply stays undefined -- which renders as no cooldown.
+const meSteamId = computed(() => useAuthStore().me?.steam_id);
+
+const { result: tournamentCooldownResult } = useSubscription(
+  TOURNAMENT_COOLDOWN_SUBSCRIPTION,
+  () => ({ steamId: meSteamId.value }),
+  () => ({
+    enabled: !!meSteamId.value,
+    context: { optional: true },
+  }),
+);
+
+const tournamentCooldown = computed(
+  () =>
+    (tournamentCooldownResult.value as Record<string, any> | undefined)
+      ?.players_by_pk?.tournament_cooldown,
+);
 
 const mmCardBase =
   "group/mmc relative flex flex-col flex-1 min-h-[120px] px-[1.1rem] pt-4 pb-5 text-left cursor-pointer overflow-hidden isolate border border-border text-foreground [background:linear-gradient(135deg,hsl(var(--card)/0.7)_0%,hsl(var(--card)/0.35)_60%,hsl(var(--tac-amber)/0.05)_100%)] [transition:border-color_180ms_ease,background_220ms_ease,box-shadow_220ms_ease] hover:border-[hsl(var(--tac-amber)/0.55)] hover:[background:linear-gradient(135deg,hsl(var(--card)/0.8)_0%,hsl(var(--card)/0.45)_55%,hsl(var(--tac-amber)/0.12)_100%)] hover:shadow-[0_0_24px_hsl(var(--tac-amber)/0.12)] focus-visible:outline-none focus-visible:border-[hsl(var(--tac-amber))] focus-visible:shadow-[0_0_0_2px_hsl(var(--tac-amber)/0.35)]";
@@ -66,6 +98,23 @@ function releaseSwapHeight(el: Element): void {
 
 <template>
   <div v-if="matchmakingAllowed || (isGuest && matchmakingEnabled)">
+    <!-- Deliberately outside the ban/cooldown chain below rather than another
+         branch of it: a tournament cooldown bars tournament rosters and the
+         free-agent pool and NEVER the queue, so it is reported alongside
+         matchmaking instead of standing in for it. -->
+    <Alert v-if="tournamentCooldown" class="my-3">
+      <AlertDescription class="flex items-center gap-2">
+        <AlertTriangle class="h-4 w-4" />
+        {{
+          isPermanentExpiry(tournamentCooldown) ||
+          !formatBanExpiry(tournamentCooldown)
+            ? $t("matchmaking.tournament_banned")
+            : $t("matchmaking.tournament_banned_until", {
+                time: formatBanExpiry(tournamentCooldown),
+              })
+        }}
+      </AlertDescription>
+    </Alert>
     <template v-if="me?.is_banned">
       <Alert class="my-3">
         <AlertDescription class="flex items-center gap-2">
@@ -160,14 +209,6 @@ function releaseSwapHeight(el: Element): void {
             key="queue"
             class="relative overflow-hidden rounded-lg border border-border px-6 py-10 sm:px-10 sm:py-12 [backdrop-filter:blur(6px)] [background:linear-gradient(180deg,hsl(var(--card)/0.7)_0%,hsl(var(--card)/0.3)_100%)]"
           >
-            <span
-              aria-hidden="true"
-              class="pointer-events-none absolute left-2 top-2 h-[14px] w-[14px] border-l-2 border-t-2 border-[hsl(var(--tac-amber))]"
-            ></span>
-            <span
-              aria-hidden="true"
-              class="pointer-events-none absolute bottom-2 right-2 h-[14px] w-[14px] border-b-2 border-r-2 border-[hsl(var(--tac-amber))]"
-            ></span>
 
             <span
               aria-hidden="true"

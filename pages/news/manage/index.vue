@@ -107,7 +107,7 @@ onMounted(() => {
 
 <template>
   <PageTransition>
-    <TacticalPageHeader corners="both">
+    <TacticalPageHeader>
       <template #title>{{ $t("pages.news.manage.title") }}</template>
       <template #actions>
         <NuxtLink to="/news">

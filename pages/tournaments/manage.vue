@@ -343,6 +343,12 @@ export default {
       e_tournament_status_enum.RegistrationOpen,
       e_tournament_status_enum.RegistrationClosed,
       e_tournament_status_enum.Setup,
+      // A tournament held at the check-in cutoff is waiting on an organizer
+      // decision -- it must not be missing from the organizer's default view.
+      // `CheckInReview` only joins e_tournament_status_enum once codegen has run
+      // against the check-in migration; until then the enum member is undefined and
+      // would poison this filter array. The raw column value is what the row carries.
+      ("CheckInReview" as e_tournament_status_enum),
     ];
 
     return {

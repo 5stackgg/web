@@ -20,14 +20,6 @@ const compactClasses =
     :class="[baseClasses, compact ? compactClasses : fullClasses]"
   >
     <span
-      class="absolute top-2 left-2 w-[14px] h-[14px] border-0 border-solid border-[hsl(var(--tac-amber))] border-t-2 border-l-2 pointer-events-none z-[2] [transition:border-color_180ms_ease]"
-      aria-hidden="true"
-    ></span>
-    <span
-      class="absolute bottom-2 right-2 w-[14px] h-[14px] border-0 border-solid border-[hsl(var(--tac-amber))] border-b-2 border-r-2 pointer-events-none z-[2] [transition:border-color_180ms_ease]"
-      aria-hidden="true"
-    ></span>
-    <span
       class="absolute inset-0 z-0 pointer-events-none opacity-0 [background-image:repeating-linear-gradient(180deg,transparent_0,transparent_3px,hsl(var(--tac-amber)/0.03)_3px,hsl(var(--tac-amber)/0.03)_4px)] transition-opacity [transition-duration:220ms] group-hover/cm:opacity-100"
       aria-hidden="true"
     ></span>

@@ -116,7 +116,15 @@ export default defineNuxtConfig({
     },
   },
 
+  // NOTE: the watcher exclusion that keeps `nuxt dev` from EMFILE-looping lives
+  // in .nuxtignore, not here — nuxt.config's `ignore` array is a no-op in Nuxt
+  // 3.17.2 (see the comment in .nuxtignore for the upstream bug).
+
   experimental: {
+    // Watch the project tree via @parcel/watcher (FSEvents) instead of one
+    // registration per path, which keeps Nuxt's own watcher off the same cap.
+    watcher: "parcel",
+
     defaults: {
       nuxtLink: {
         prefetchOn: {

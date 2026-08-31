@@ -17,14 +17,6 @@ const { manuallyOpened } = useMatchReadyModal();
       >
         <span
           aria-hidden="true"
-          class="pointer-events-none absolute left-2 top-2 h-[14px] w-[14px] border-l-2 border-t-2 border-[hsl(var(--tac-amber))]"
-        ></span>
-        <span
-          aria-hidden="true"
-          class="pointer-events-none absolute bottom-2 right-2 h-[14px] w-[14px] border-b-2 border-r-2 border-[hsl(var(--tac-amber))]"
-        ></span>
-        <span
-          aria-hidden="true"
           class="pointer-events-none absolute inset-0 opacity-30 [background-image:repeating-linear-gradient(180deg,transparent_0,transparent_3px,hsl(var(--tac-amber)/0.04)_3px,hsl(var(--tac-amber)/0.04)_4px)]"
         ></span>
 

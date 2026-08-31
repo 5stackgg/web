@@ -997,6 +997,21 @@ export function useVoiceChat(
         reconcileSubscriptions();
       },
     ),
+    // The channel itself has gone -- the match it belonged to ended. MediaMTX
+    // has already dropped the publish, but a kicked peer connection sits in
+    // "connected" until ICE consent freshness gives up, so without this the
+    // call reads as live for another half minute. No leave request: there is
+    // nothing left to leave, and the API stops admitting the channel with it.
+    socket.listen("voice:closed", (data: { channelId: string }) => {
+      const id = lobbyId();
+
+      if (!id || data?.channelId !== id) {
+        return;
+      }
+
+      teardown();
+      registry.unregister(id);
+    }),
     socket.listen(
       "voice:device-claim",
       (data: { channelId: string; kind: "mic" | "cam"; claimed: boolean }) => {

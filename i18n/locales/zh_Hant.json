@@ -1229,6 +1229,10 @@
     },
     "system_telemetry": {
       "title": "機群遙測",
+      "filter": {
+        "all": "全部機群",
+        "self_hosted": "僅自架"
+      },
       "no_data": "尚未回報任何資料",
       "installs": {
         "title": "面板",
@@ -1810,6 +1814,10 @@
           "MatchChatMessage": {
             "title": "比賽聊天訊息",
             "description": "比賽房間中的新訊息。"
+          },
+          "TournamentInvite": {
+            "title": "賽事報名邀請",
+            "description": "主辦方邀請你報名參加一個賽事。"
           }
         },
         "quiet_hours": {
@@ -2617,6 +2625,72 @@
           "server_default": "伺服器預設值",
           "invalid_number": "請輸入 0 或更大的整數。",
           "updated": "道具設定已更新"
+        },
+        "sanctions": {
+          "title": "處罰",
+          "section": "自動處罰",
+          "description": "5stack 如何處理它能自行偵測到的行為。每個來源統計一個時間範圍內的違規次數，並套用處罰階梯中對應的一階。",
+          "defaults_note": "下面的值就是 5stack 一直在用的值。只看這個頁面不會改變任何設定，只有編輯才會。",
+          "unavailable": "沒有可用的處罰來源。API 可能還沒有執行處罰相關的遷移。",
+          "load_failed": "無法載入處罰政策",
+          "reset": "恢復預設",
+          "permanent": "永久",
+          "platform_ban_narrowed": "在「兩者都禁止」以外的任何範圍下，此來源不再寫入全平台封鎖，只會下發範圍受限的冷卻——被 VAC 封鎖的帳號仍可使用 5stack 的另一半功能。",
+          "threshold": {
+            "label": "達到多少次後處罰",
+            "first_offence": "第一次違規就會被處罰。",
+            "free_passes": "前 {count} 次違規不予處罰。",
+            "free_passes_one": "第一次違規不予處罰。"
+          },
+          "window": {
+            "label": "計數期間（天）",
+            "never": "永不衰減——每一筆曾經記錄過的違規都仍然計入。",
+            "decays": "超過 {count} 天的違規不再計入。",
+            "decays_one": "超過一天的違規不再計入。"
+          },
+          "ladder": {
+            "label": "處罰階梯",
+            "add": "新增一階",
+            "remove": "刪除該階",
+            "clamp_hint": "最後一階會一直重複下去。把某一階設為 0，該處罰即為永久。",
+            "occurrence": "第 {count} 次違規",
+            "occurrence_and_after": "第 {count} 次違規起",
+            "unit": {
+              "minutes": "分鐘",
+              "hours": "小時",
+              "days": "天"
+            },
+            "unit_value": {
+              "minutes": "{count} 分鐘",
+              "hours": "{count} 小時",
+              "days": "{count} 天",
+              "minutes_one": "1 分鐘",
+              "hours_one": "1 小時",
+              "days_one": "1 天"
+            }
+          },
+          "scope": {
+            "label": "禁止的範圍"
+          },
+          "scopes": {
+            "matchmaking": "禁止配對",
+            "tournaments": "禁止賽事",
+            "both": "兩者都禁止"
+          },
+          "sources": {
+            "match_abandon": {
+              "title": "棄賽",
+              "description": "玩家離開了自己在陣容中的比賽，或者從未連線。計時從最後一次棄賽開始，而不是從現在開始。"
+            },
+            "vac_ban": {
+              "title": "VAC / 遊戲封鎖",
+              "description": "Steam 回報該玩家帳號存在 VAC 或遊戲封鎖。計數期間依 Steam 自己提供的「距上次封鎖天數」來衡量。"
+            },
+            "tournament_no_show": {
+              "title": "賽事缺席",
+              "description": "隊伍錯過了賽事的必要報到。僅在進入時檢查，因此已經在進行中的對戰表裡的玩家會保留位置。"
+            }
+          }
         }
       },
       "language": {
@@ -3967,7 +4041,9 @@
       },
       "picker": {
         "search": "尋找地圖",
-        "none": "沒有附雷達圖的地圖"
+        "none": "沒有附雷達圖的地圖",
+        "count_public": "本圖的公開陣型",
+        "count_private": "非公開但你看得到的 — 你的、戰隊的，或待審核的。已封存的不計入。"
       },
       "back_to_map": "返回地圖",
       "empty": {
@@ -4937,7 +5013,9 @@
         "actor_host": "房主",
         "actor_teammate": "一位隊友",
         "actor_organizer": "一位主辦方",
-        "actor_player": "一位玩家"
+        "actor_player": "一位玩家",
+        "tournament_registration_invite": "賽事報名",
+        "invited_you_register": "邀請您報名參加"
       },
       "season_rebuild": {
         "title": "第 {number} 賽季需要重新計算 ELO",
@@ -5606,6 +5684,9 @@
       "title": "新增隊伍",
       "description": "為此賽事邀請現有隊伍或建立新隊伍。"
     },
+    "organizer_panel": {
+      "title": "主辦方工具"
+    },
     "form": {
       "create": "建立賽事",
       "name": "賽事名稱",
@@ -5946,13 +6027,30 @@
       "teams": "隊伍",
       "format": "賽制",
       "starts": "開始時間",
-      "location": "地點"
+      "location": "地點",
+      "title": "數據",
+      "leaderboard_title": "選手排行榜",
+      "matches": "比賽",
+      "rounds": "回合",
+      "players": "玩家",
+      "top_rating": "最高評分",
+      "col_team": "隊伍",
+      "col_rating": "評分",
+      "col_adr": "ADR",
+      "col_kills": "K",
+      "col_deaths": "D",
+      "col_assists": "A",
+      "col_kd": "K/D",
+      "col_hs": "HS%",
+      "empty_title": "尚無數據",
+      "empty_description": "隨著賽事比賽陸續結束，排行榜會逐步填入。"
     },
     "wizard": {
       "information": "資訊",
       "location": "地點",
       "match_options": "比賽選項",
-      "prizes": "獎金"
+      "prizes": "獎金",
+      "registration": "報名"
     },
     "banner": {
       "label": "橫幅",
@@ -6006,6 +6104,290 @@
       "expand": "展開",
       "collapse_all": "全部收合",
       "expand_all": "全部展開"
+    },
+    "registration": {
+      "section": "報名",
+      "who": {
+        "label": "誰可以報名？",
+        "teams": {
+          "label": "僅限隊伍",
+          "description": "由隊長以現有隊伍報名。預設選項。"
+        },
+        "free_agents": {
+          "label": "自由選手",
+          "description": "選手單獨報名，報名截止時會被選入實力平均的隊伍。"
+        },
+        "both": {
+          "label": "隊伍 + 自由選手",
+          "description": "兩者皆可。剩下的自由選手會在已報名隊伍之外，另行組成新隊伍。"
+        }
+      },
+      "min_role": {
+        "label": "最低角色",
+        "none": "不限制",
+        "description": "以被加入的選手為準檢查，而不只是看點擊的人——這樣隊長就無法把不符資格的選手放進陣容。"
+      },
+      "rank": {
+        "label": "ELO 範圍",
+        "min": "最低 ELO",
+        "max": "最高 ELO",
+        "description": "任一欄留空即代表該側不設限制。兩欄都留空則對所有段位開放。",
+        "invalid_range": "最高 ELO 不能低於最低 ELO。"
+      },
+      "regions": {
+        "label": "偏好地區",
+        "description": "本賽事的比賽在哪裡開伺服器。這不是對選手的限制——5stack 沒有依選手記錄的地區資料。",
+        "empty": "目前沒有可用地區。"
+      },
+      "invite_only": {
+        "label": "僅限邀請",
+        "description": "報名不對外開放。由主辦方直接邀請隊伍和玩家，或分享邀請連結。"
+      }
+    },
+    "check_in": {
+      "section": "報到",
+      "required": {
+        "label": "要求報到",
+        "description": "在產生對戰表之前，隊伍須確認參賽。報到時段會依排程開啟，確認則是手動操作。"
+      },
+      "who": {
+        "label": "由誰報到？",
+        "Captains": {
+          "label": "隊長",
+          "description": "由隊長代表全隊確認。點一次，搞定一支隊伍。"
+        },
+        "Players": {
+          "label": "每位選手",
+          "description": "陣容中的每位選手各自確認。有 {count} 人報到後隊伍即算參賽——替補不用報到。"
+        },
+        "Admin": {
+          "label": "僅主辦方",
+          "description": "選手無法自行報到，由你把隊伍標記為已到場。"
+        }
+      },
+      "opens": {
+        "label": "時段開啟"
+      },
+      "closes": {
+        "label": "時段關閉"
+      },
+      "minutes_before_start": "開賽前分鐘數",
+      "window_too_short": "時段至少須保持開啟 5 分鐘。",
+      "timeline": {
+        "opens": "時段開啟",
+        "closes": "時段關閉",
+        "start": "賽事開始"
+      },
+      "lock_note": "時段一旦開啟，開始時間與兩個偏移值都會鎖定。各隊伍已經照這個時間表在行動，中途更動會挪走一個正在倒數的截止時間。",
+      "late_registration_note": "在時段期間報名的隊伍會自動完成報到——不能因為錯過一則從未向它顯示過的提示而受罰。",
+      "no_show_note": "缺席的隊伍不會被刪除。錯過報到的隊伍會保留完整陣容，只是不進入對戰表——在賽事正式開始前，你隨時可以重新接納它。",
+      "frozen": "報到已經開始，因此開始時間與兩個偏移值均已鎖定。請改為延長報到時段。",
+      "required_title": "本賽事需要報到。",
+      "required_window": "你的隊伍必須在當天 {opens} 至 {closes} 之間確認，否則不會進入對戰表。",
+      "register_heading": "為隊伍報名",
+      "register_hint": "報到開啟時你會收到通知，關閉前還會再收到提醒。",
+      "register_cta": "隊伍報名",
+      "chip_required": "需要報到",
+      "opens_at_heading": "報到於 {time} 開啟",
+      "opens_at_hint": "你的隊伍已報名。時段開啟時我們會通知你。",
+      "opens_in": "距開啟",
+      "closes_in": "距關閉",
+      "starts_in": "距開始",
+      "chip_action_needed": "需要處理",
+      "chip_open": "報到進行中",
+      "observer_heading": "報到已開啟",
+      "observer_hint": "在產生對戰表之前，隊伍須確認參賽。任何在 {time} 前未報到的隊伍都會讓賽事暫停，等你處理。",
+      "confirm_heading": "確認你的隊伍參賽",
+      "confirm_hint": "在 {time} 前未報到的隊伍不會進入對戰表。",
+      "players_progress": "{required} 人中已有 {checked} 人報到",
+      "players_heading": "所有選手都需要報到",
+      "players_hint": "有 {count} 位選手確認後，你的隊伍即算參賽。替補不用報到。",
+      "admin_heading": "標記已到場的隊伍",
+      "admin_hint": "本賽事中選手無法自行報到。請在時段關閉前把每支隊伍標記為已到場。",
+      "check_in": "報到",
+      "mark_present": "標記為已到場",
+      "checked_in": "已報到",
+      "checked_in_at": "已報到 · {time}",
+      "waiting": "等待中",
+      "not_needed": "無須報到",
+      "role_captain": "隊長",
+      "role_starter": "先發",
+      "role_sub": "替補",
+      "field_status": "參賽隊伍狀態",
+      "field_count": "{total} 支隊伍中已有 {checked} 支報到",
+      "done_heading": "你們已入圍。對戰表將於 {time} 產生。",
+      "done_hint": "已於 {time} 代表 {team} 確認。",
+      "chip_removed": "已移除",
+      "missed_heading": "你的隊伍錯過了報到",
+      "missed_hint": "報到已於 {time} 關閉，對戰表將不包含你的隊伍。",
+      "missed_contact": "如果你認為這有誤，請聯絡主辦方——在賽事正式開始前，他們隨時可以重新接納隊伍。",
+      "failed": "報到失敗",
+      "free_agent_opens_at_hint": "你已在自由選手池中。時段開啟時我們會通知你。",
+      "free_agent_heading": "確認你仍然有空",
+      "free_agent_hint": "在 {time} 前未確認的自由選手會被移入候補，不會被選入任何隊伍。",
+      "free_agent_done_heading": "你已入圍。隊伍將於 {time} 選人組成。",
+      "free_agent_done_hint": "已於 {time} 確認。報到關閉後你會被選入一支隊伍。",
+      "free_agent_chip_waitlisted": "候補",
+      "free_agent_missed_heading": "你錯過了報到",
+      "free_agent_missed_hint": "報到已於 {time} 關閉，你被移入候補。現在只有出現空位時才會被選入隊伍。",
+      "free_agent_missed_contact": "如果你認為這有誤，請聯絡主辦方——延長報到會把你放回選人池。",
+      "a11y_opens_in": "距報到開啟",
+      "a11y_opens_help": "報到尚未開啟。開啟之前沒有需要確認的內容。",
+      "a11y_closes_in": "距報到關閉",
+      "a11y_closes_help": "屆時仍未報到的一律不會進入對戰表。",
+      "a11y_starts_in": "距賽事開始"
+    },
+    "check_in_review": {
+      "heading": "{count} 支隊伍錯過了報到",
+      "subheading": "賽事已暫停。對戰表尚未產生，也沒有刪除任何內容——每支隊伍都保有完整陣容。",
+      "chip_held_at": "暫停 · {time} 自動繼續",
+      "chip_held": "暫停",
+      "roster_size": "{count} 名選手",
+      "partial_roster": "{required} 人中已有 {checked} 人報到 · 還差 {short} 人",
+      "registered": "已報名",
+      "chip_no_check_in": "未報到",
+      "chip_incomplete": "人數不足",
+      "readmit": "重新接納",
+      "readmit_failed": "重新接納隊伍失敗",
+      "continue": "不帶他們繼續",
+      "continue_failed": "繼續賽事失敗",
+      "extend": "延長報到",
+      "extend_by": "+{minutes} 分鐘",
+      "extend_failed": "延長報到失敗",
+      "extend_hint": "延長會重新開放報名，並再次通知缺席的 {count} 支隊伍。",
+      "auto_continue": "如果沒有人處理，賽事會在 {time} 帶著已報到的隊伍自動繼續。暫停中的賽事絕不會因為主辦方睡著了就悄悄夭折。",
+      "auto_continue_no_time": "如果沒有人處理，賽事會在其開始時間帶著已報到的隊伍自動繼續。",
+      "reseed_warning": "重新接納隊伍會重新產生對戰表。開賽前這麼做是安全的，但種子排序會被打亂。"
+    },
+    "free_agents": {
+      "title": "自由選手",
+      "signed_up": "已報名 {count} 人",
+      "filter_all": "全部",
+      "filter_drafted": "已選入",
+      "filter_waitlist": "候補",
+      "sign_up": "報名",
+      "leave": "退出選手池",
+      "sign_up_alone": "單人報名",
+      "sign_up_with_lobby": "{count} 人一起報名",
+      "lobby_title": "帶上你的大廳",
+      "lobby_size": "{count} / {size}",
+      "lobby_hint": "用大廳報名會把你們 {count} 人立刻放進選手池，分隊時也會把你們留在同一支隊伍。這裡的隊伍是 {size} 人。",
+      "lobby_too_big": "你的大廳有 {count} 人，超過 {size} 人的隊伍，所以無法整組被選入。請單人報名，或者減到 {size} 人後再試。",
+      "lobby_not_captain": "只有 {name} 能為大廳報名，就像只有小隊隊長能帶它去排隊一樣。",
+      "lobby_already_signed_up": "其中 {count} 人已經單人報名了；他們保留原有的排隊順序，並加入你的小隊。",
+      "status_drafted": "已選入",
+      "status_waitlisted": "候補",
+      "status_registered": "已報名",
+      "empty_title": "尚無自由選手",
+      "empty_description": "單獨報名的選手會顯示在這裡，並在報名截止時被選入實力平均的隊伍。",
+      "waitlist_explainer": "{name} 是評分最高的參賽者，卻仍在候補——因為報名時名額已滿。名額由報名先後決定，ELO 只決定進哪支隊伍。這是規則正常運作，不是 bug。",
+      "party_of": "{count} 人小隊",
+      "party_status_drafted": "一起選入",
+      "party_status_waitlisted": "一起候補",
+      "party_kept_together": "{count} 人一起報名",
+      "party_waitlist_explainer": "一個小隊要麼整隊被選入，要麼完全不被選入。裝不進剩餘空位的小隊會被整體跳過，一起進入候補，因此較晚報名的更小一組反而可能先被選入。",
+      "party_deadlock": "已有 {count} 名玩家報名，但這些報名的任何組合都湊不滿 {size} 人的隊伍，而小隊絕不會為了湊數被拆開。現在分隊什麼也建不出來。更多報名，尤其是單人報名，能打破這個僵局。",
+      "organizer": "主辦方",
+      "draft_summary": "{agents} 名自由選手 → {teams} 支 {size} 人隊伍，{waitlisted} 人候補。",
+      "regenerate": "選人分隊",
+      "regenerated": "已組成 {count} 支隊伍",
+      "regenerate_failed": "分隊失敗",
+      "join_failed": "加入自由選手池失敗",
+      "join_with_lobby_failed": "大廳報名失敗",
+      "leave_failed": "退出自由選手池失敗",
+      "already_drafted": "隊伍已經分好了。再分一次不會有任何變化——請先移除已組成的隊伍。",
+      "draft_locked": "對戰表已經開打，選手池無法再分隊。",
+      "nothing_drafted": "沒有組成任何隊伍",
+      "nothing_drafted_hint": "剩下的自由選手不足以湊滿一支 {size} 人的隊伍，或者對戰表已沒有空位。",
+      "nothing_drafted_parties": "選手池中報名的任何組合都湊不滿 {size} 人的隊伍，而小隊絕不會為了湊數被拆開。"
+    },
+    "entry": {
+      "title": "參賽條件",
+      "requirements_hint": "對每一位被加入的選手進行檢查，而不只是看點擊的人。只要有一人不符合，報名就會被拒絕。",
+      "locked_title": "本賽事僅限邀請",
+      "min_role": "最低角色：{role}",
+      "elo_between": "ELO 介於 {min} 與 {max} 之間",
+      "elo_min": "ELO {min} 以上",
+      "elo_max": "ELO {max} 以下",
+      "elo_yours": "你的：{elo}",
+      "requirement_met": "已符合",
+      "requirement_failed": "未符合",
+      "ok_chip": "可參賽",
+      "locked_chip": "已鎖定",
+      "blocked_chip": "不可參賽",
+      "invite_hint": "請聯絡主辦方邀請你的隊伍，或向你發送邀請連結。"
+    },
+    "invites": {
+      "title": "邀請",
+      "description": "直接邀請隊伍或玩家，即使本賽事僅限邀請，他們也能報名。",
+      "add": "邀請玩家",
+      "pending": "待處理",
+      "invited_by": "{name} 邀請",
+      "revoke": "撤銷",
+      "confirm_revoke": "要撤銷這個邀請嗎？",
+      "revoke_description": "除非仍持有有效的邀請連結，{name} 將失去存取權限。",
+      "empty": "還沒有發出任何邀請。",
+      "sent": "邀請已送出",
+      "send_failed": "無法傳送該邀請",
+      "already_invited": "已邀請",
+      "revoked": "邀請已撤銷",
+      "hint_open": "本賽事對所有人開放，邀請只是捷徑，並非必需。",
+      "add_team": "邀請隊伍",
+      "team_label": "隊伍邀請",
+      "registration_closed": "報名已關閉，無法送出新的邀請。重新開放報名後才能邀請更多隊伍或玩家。"
+    },
+    "invite_links": {
+      "title": "邀請連結",
+      "tab": "連結",
+      "registration_closed": "報名已關閉，無法建立新的邀請連結。重新開放報名後才能發放更多連結。",
+      "hint": "任何拿到連結的人都能報名。連結會過期、可限制使用次數，並且隨時可以撤銷。",
+      "expires_after": "有效期",
+      "max_uses": "最大使用次數",
+      "expiry_never": "永不過期",
+      "expiry_minutes": "{count} 分鐘",
+      "expiry_hour": "1 小時",
+      "expiry_hours": "{count} 小時",
+      "expiry_day": "1 天",
+      "expiry_days": "{count} 天",
+      "uses_one": "1 次",
+      "uses_limit": "{count} 次",
+      "uses_unlimited": "不限次數",
+      "create": "產生連結",
+      "created": "已建立邀請連結並複製",
+      "create_failed": "無法建立該邀請連結",
+      "share": "分享",
+      "revoke": "撤銷",
+      "revoked": "邀請連結已撤銷",
+      "revoke_failed": "無法撤銷該邀請連結",
+      "confirm_revoke": "要撤銷這個邀請連結嗎？",
+      "revoke_description": "仍持有該連結的人將立即失去存取權限。已透過它報名的隊伍會保留名額。",
+      "expires": "到期時間",
+      "expired": "已過期",
+      "exhausted": "已用完",
+      "never_expires": "永不過期",
+      "uses_count": "已使用 {count} 次",
+      "who_used": "使用紀錄",
+      "uses_empty": "還沒有人使用過這個連結。",
+      "empty": "還沒有邀請連結。"
+    },
+    "invite_accept": {
+      "title": "你收到一個邀請",
+      "hint": "接受後即可報名參加本賽事。",
+      "guest_hint": "登入後即可接受該邀請並開始報名。",
+      "accept": "接受邀請",
+      "sign_in": "登入後接受",
+      "dismiss": "暫不",
+      "accepted": "已接受邀請",
+      "failed": "該邀請無法使用：{reason}",
+      "errors": {
+        "invite_not_found": "該邀請連結對本賽事無效。",
+        "invite_revoked": "主辦方已撤銷該邀請連結。",
+        "invite_expired": "該邀請連結已過期。",
+        "invite_used_up": "該邀請連結的可用次數已經用完。",
+        "invite_registration_closed": "本賽事的報名已關閉。",
+        "invite_rate_limited": "邀請嘗試次數過多。請一分鐘後再試。",
+        "invite_not_allowed": "該帳戶無法接受此邀請。"
+      }
     }
   },
   "team": {
@@ -6058,7 +6440,11 @@
       "team_message": "您受邀加入一個隊伍",
       "invited_by": "邀請人",
       "deny": "拒絕",
-      "accept": "接受"
+      "accept": "接受",
+      "tournament_registration_title": "賽事報名邀請",
+      "tournament_registration_message": "您受邀報名參加一個賽事",
+      "tournament_team_registration_title": "隊伍報名邀請",
+      "tournament_team_registration_message": "{team} 受邀報名參加賽事"
     },
     "roles": {
       "captain": "隊長"
@@ -7570,7 +7956,9 @@
       "requirement": "請以 {half} 人以下，或剛好 {full} 人進行配對"
     },
     "temp_banned_until": "你被暫時禁止使用配對，直到 {time}",
-    "new_invites_count": "新邀請（{count}）"
+    "new_invites_count": "新邀請（{count}）",
+    "tournament_banned": "你被禁止加入賽事陣容和自由選手池。",
+    "tournament_banned_until": "你被禁止加入賽事陣容和自由選手池，直到 {time}。"
   },
   "game_server": {
     "lan_ip": "LAN IP",

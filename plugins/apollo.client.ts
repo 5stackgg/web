@@ -15,6 +15,7 @@ import type {
 } from "@apollo/client/cache";
 import { toast } from "@/components/ui/toast";
 import { isAuthErrorMessage } from "~/graphql/isAuthError";
+import { tournamentInviteErrorKey } from "~/utilities/tournamentInvites";
 
 const mergeObjectFields = (
   existing: Record<string, unknown> | undefined,
@@ -95,6 +96,14 @@ export default defineNuxtPlugin((nuxtApp) => {
   });
 
   const errorLink = onError((error) => {
+    // `context: { optional: true }` marks a document the caller expects may be
+    // rejected outright — a field or table that only exists once the api has run
+    // a migration web is allowed to ship ahead of. Those callers already degrade
+    // to showing nothing, so the global toast would report a failure the viewer
+    // can neither act on nor even see the consequence of.
+    if (error.operation.getContext().optional) {
+      return;
+    }
     nuxtApp.callHook("apollo:error", error);
   });
 
@@ -171,10 +180,18 @@ export default defineNuxtPlugin((nuxtApp) => {
           continue;
         }
 
+        // Accepting or declining an invite fails through this toast as well as
+        // through the panel that asked for it, so the refusal codes have to be
+        // spelled out in both places or the same refusal reads as a slug here
+        // and as a sentence there.
+        const inviteErrorKey = tournamentInviteErrorKey(graphqlError.message);
+
         toast({
           variant: "destructive",
           title: $i18n.t("common.error"),
-          description: graphqlError.message,
+          description: inviteErrorKey
+            ? $i18n.t(inviteErrorKey)
+            : graphqlError.message,
         });
       }
     }

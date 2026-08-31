@@ -52,6 +52,11 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
             labelKey: "pages.settings.application.chat.title",
             order: 2,
           },
+          {
+            path: "/settings/application/sanctions",
+            labelKey: "pages.settings.application.sanctions.title",
+            order: 3,
+          },
         ],
       },
       {

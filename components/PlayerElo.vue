@@ -44,23 +44,6 @@ const isMobile = useMediaQuery("(max-width: 768px)");
       :collision-padding="12"
       :class="cardClasses"
     >
-      <span
-        :class="[cornerTickClasses, '-left-px -top-px border-l border-t']"
-        aria-hidden="true"
-      ></span>
-      <span
-        :class="[cornerTickClasses, '-right-px -top-px border-r border-t']"
-        aria-hidden="true"
-      ></span>
-      <span
-        :class="[cornerTickClasses, '-left-px -bottom-px border-l border-b']"
-        aria-hidden="true"
-      ></span>
-      <span
-        :class="[cornerTickClasses, '-right-px -bottom-px border-r border-b']"
-        aria-hidden="true"
-      ></span>
-
       <span :class="scanlineClasses" aria-hidden="true"></span>
 
       <header :class="headerClasses">
@@ -414,9 +397,6 @@ export default {
         "[background-image:radial-gradient(circle_at_top_right,hsl(var(--tac-amber)/0.10)_0%,transparent_55%),linear-gradient(180deg,hsl(0_0%_100%/0.02)_0%,transparent_60%)]",
         "animate-[playerelo-in_180ms_cubic-bezier(0.2,0.8,0.2,1)]",
       ].join(" ");
-    },
-    cornerTickClasses(): string {
-      return "absolute h-[8px] w-[8px] border-[hsl(var(--tac-amber))] pointer-events-none";
     },
     scanlineClasses(): string {
       return "pointer-events-none absolute inset-0 mix-blend-overlay opacity-60 [background-image:repeating-linear-gradient(0deg,transparent_0,transparent_3px,hsl(0_0%_100%/0.02)_3px,hsl(0_0%_100%/0.02)_4px)]";

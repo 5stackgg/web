@@ -11,6 +11,19 @@ import {
 } from "~/generated/zeus";
 import socket from "~/web-sockets/Socket";
 
+// Exported so anything gating on a role order uses THIS one. A second copy of
+// the ladder is how a "minimum role" gate ends up admitting a role the server
+// ranks below the floor. Mirrors public.is_above_role's ordering on the API.
+export const roleOrder = [
+  e_player_roles_enum.user,
+  e_player_roles_enum.verified_user,
+  e_player_roles_enum.streamer,
+  e_player_roles_enum.moderator,
+  e_player_roles_enum.match_organizer,
+  e_player_roles_enum.tournament_organizer,
+  e_player_roles_enum.administrator,
+];
+
 type AuthMe = InputType<GraphQLTypes["players"], typeof meFields>;
 
 type AuthStoreSetup = {
@@ -68,16 +81,6 @@ export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
   useMatchmakingStore();
   useNotificationStore();
   useApplicationSettingsStore();
-
-  const roleOrder = [
-    e_player_roles_enum.user,
-    e_player_roles_enum.verified_user,
-    e_player_roles_enum.streamer,
-    e_player_roles_enum.moderator,
-    e_player_roles_enum.match_organizer,
-    e_player_roles_enum.tournament_organizer,
-    e_player_roles_enum.administrator,
-  ];
 
   function isRoleAbove(role: e_player_roles_enum) {
     if (!me.value) {

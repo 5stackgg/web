@@ -1050,7 +1050,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
           v-if="telemetryStats?.online > 0 && (isMobile || sideBarOpen)"
         >
           <NuxtLink
-            :to="{ name: 'system-telemetry' }"
+            :to="{ name: 'fleet-telemetry' }"
             :title="$t('pages.system_telemetry.title')"
           >
             <Badge

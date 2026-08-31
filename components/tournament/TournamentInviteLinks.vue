@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
 import {
@@ -45,15 +45,9 @@ import {
   tournamentInviteUrl,
 } from "~/utilities/tournamentInvites";
 
-/**
- * Shareable invite links — the replacement for the typed registration
- * passcode, which was a static bearer secret that never expired, could not be
- * revoked, and left no record of who had used it.
- *
- * A link is only ever a shortcut past the invite-only gate; it grants nothing
- * else. Redemption is an explicit act on the tournament page (see the accept
- * prompt in TournamentDetail), never something the link performs on arrival.
- */
+// A link is only ever a shortcut past the invite-only gate; it grants nothing
+// else, and redeeming it is an explicit act on the tournament page rather than
+// something the link performs on arrival.
 const props = defineProps<{
   tournament: Record<string, any>;
 }>();
@@ -96,6 +90,27 @@ const MAX_USES_OPTIONS = [
 // a Discord channel should stop working on its own if they forget about it.
 const expiry = ref("1440");
 const maxUses = ref(UNLIMITED);
+
+// A link lapsing is a clock event, not a row change: the subscription pushes
+// nothing when one simply expires, so without a tick of its own the panel keeps
+// rendering a dead link as live and the organizer keeps handing it out. Coarse
+// on purpose -- the deadline shown beside it is a "in 2 hours", not a second
+// hand.
+const now = ref(Date.now());
+let clock: ReturnType<typeof setInterval> | null = null;
+
+onMounted(() => {
+  clock = setInterval(() => {
+    now.value = Date.now();
+  }, 30_000);
+});
+
+onBeforeUnmount(() => {
+  if (clock) {
+    clearInterval(clock);
+    clock = null;
+  }
+});
 
 const codes = ref<any[]>([]);
 const expanded = ref<Record<string, boolean>>({});
@@ -187,7 +202,7 @@ function linkFor(code: Record<string, any>) {
 }
 
 function isExpired(code: Record<string, any>): boolean {
-  return !!code.expires_at && new Date(code.expires_at).getTime() <= Date.now();
+  return !!code.expires_at && new Date(code.expires_at).getTime() <= now.value;
 }
 
 function isExhausted(code: Record<string, any>): boolean {

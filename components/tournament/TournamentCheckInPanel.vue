@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
 import { CheckCircle2, ShieldAlert } from "lucide-vue-next";
@@ -37,27 +37,48 @@ const { client } = useApolloClient();
 // The window boundaries are wall-clock, not row changes: nothing in the
 // database moves at the moment check-in opens or closes, so a panel driven
 // only by the subscription would sit on a stale state until some unrelated
-// write woke it. One second, and only while check-in is actually required.
+// write woke it. One second, and only while check-in is actually required --
+// most tournaments do not require it at all, and there the panel renders
+// nothing while every computed below it is invalidated sixty times a minute.
 const now = ref(Date.now());
 let ticker: ReturnType<typeof setInterval> | null = null;
 
-onMounted(() => {
-  ticker = setInterval(() => {
-    now.value = Date.now();
-  }, 1000);
-});
-
-onBeforeUnmount(() => {
+function stopTicker() {
   if (ticker) {
     clearInterval(ticker);
+    ticker = null;
   }
-});
+}
 
 const me = computed(() => useAuthStore().me);
 
 const checkInRequired = computed(
   () => props.registration?.check_in_required === true,
 );
+
+// onMounted, so the interval is never started during SSR, and watched rather
+// than read once: `registration` is fetched separately and arrives after the
+// first render.
+onMounted(() => {
+  watch(
+    checkInRequired,
+    (required) => {
+      stopTicker();
+
+      if (!required) {
+        return;
+      }
+
+      now.value = Date.now();
+      ticker = setInterval(() => {
+        now.value = Date.now();
+      }, 1000);
+    },
+    { immediate: true },
+  );
+});
+
+onBeforeUnmount(stopTicker);
 
 const checkInSetting = computed<string>(
   () => props.registration?.check_in_setting ?? "Captains",

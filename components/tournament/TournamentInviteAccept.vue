@@ -15,16 +15,10 @@ import {
 import { getQueryString } from "~/composables/useRouteTab";
 import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
 
-/**
- * `/tournaments/{id}?invite={code}` — the landing half of a shared invite link.
- *
- * The link NEVER redeems itself on arrival. The visitor sees the tournament
- * first and then chooses, for the same reason the draft room refuses to
- * auto-join from its own invite links: a URL that mutates state the moment it
- * is opened is a URL that a preview crawler, a chat unfurler or a mis-click can
- * spend. Redeeming is also recorded against the code's use count, so an
- * accidental one is a use the organizer cannot get back.
- */
+// `/tournaments/{id}?invite={code}` — the landing half of a shared invite link.
+// It NEVER redeems itself on arrival: a URL that mutates state when it is
+// opened is one a preview crawler or a chat unfurler can spend, and a spent use
+// is one the organizer cannot get back.
 const props = defineProps<{
   tournament: Record<string, any>;
   // The registration columns, fetched separately by TournamentDetail.
@@ -41,22 +35,37 @@ const { client } = useApolloClient();
 // take its own success/failure state with it.
 const code = ref<string | null>(getQueryString(route.query, "invite"));
 
-watch(
-  () => route.query.invite,
-  (value) => {
-    const next = getQueryString({ invite: value }, "invite");
-    if (next) {
-      code.value = next;
-    }
-  },
-);
-
 const me = computed(() => useAuthStore().me);
 const accepted = ref(false);
 
 // The api's own words for the refusal, kept raw so the sentence the visitor
 // reads is derived and re-derives itself if they switch language.
 const failure = ref<string | null>(null);
+
+// Accepting or dismissing answers for ONE link on ONE tournament, and the page
+// component survives a change of either. Without clearing the answer, the
+// second link a visitor opens in the same session renders nothing at all and
+// the first one's refusal is shown against it. Keyed rather than watched
+// straight off the query, because stripping `?invite=` on the way out is itself
+// a query change and must not reset the panel out from under the request.
+let answeredFor = `${props.tournament?.id}:${code.value}`;
+
+watch(
+  () => [props.tournament?.id, route.query.invite],
+  () => {
+    const next = getQueryString(route.query, "invite");
+    const key = `${props.tournament?.id}:${next}`;
+
+    if (key === answeredFor) {
+      return;
+    }
+
+    answeredFor = key;
+    code.value = next;
+    accepted.value = false;
+    failure.value = null;
+  },
+);
 
 // The api names a refusal it anticipated with a code, and the whole sentence is
 // written here. One it did not is English prose from further up the api

@@ -399,16 +399,18 @@ const canSignUp = computed(
     !myEntry.value,
 );
 
-// Leaving after the draft would tear a hole in a seeded team, and the API's
-// delete rule stops at RegistrationOpen anyway.
+// The same window leaveTournamentAsFreeAgent enforces, drafted included: an
+// organizer can regenerate the teams while registration is still open, and
+// gating on that would strand everyone the draft touched with no way out of a
+// tournament they can still be removed from. The action drops the roster row,
+// promotes the first waitlisted agent into it and reseeds.
 const canLeave = computed(
   () =>
     !!myEntry.value &&
     [
       e_tournament_status_enum.Setup,
       e_tournament_status_enum.RegistrationOpen,
-    ].includes(props.tournament?.status) &&
-    myEntry.value.status !== "drafted",
+    ].includes(props.tournament?.status),
 );
 
 // The party IS the matchmaking lobby — there is no separate invite to accept,

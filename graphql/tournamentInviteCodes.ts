@@ -42,12 +42,6 @@ export const TOURNAMENT_INVITE_CODES_SUBSCRIPTION = generateSubscription({
   ],
 });
 
-/**
- * "Who used this link", opened one code at a time.
- *
- * A query rather than a subscription: an organizer expands a row to read it
- * once, and a live socket per expanded code buys nothing.
- */
 export const TOURNAMENT_INVITE_CODE_USES_QUERY = generateQuery({
   tournament_invite_code_uses: [
     {

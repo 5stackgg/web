@@ -6378,7 +6378,16 @@
       "sign_in": "Sign in to accept",
       "dismiss": "Not now",
       "accepted": "Invite accepted",
-      "failed": "That invite could not be used: {reason}"
+      "failed": "That invite could not be used: {reason}",
+      "errors": {
+        "invite_not_found": "That invite link is not valid for this tournament.",
+        "invite_revoked": "The organizer revoked this invite link.",
+        "invite_expired": "This invite link has expired.",
+        "invite_used_up": "This invite link has already been used as many times as it allows.",
+        "invite_registration_closed": "Registration for this tournament is closed.",
+        "invite_rate_limited": "Too many invite attempts. Try again in a minute.",
+        "invite_not_allowed": "This account cannot accept this invite."
+      }
     }
   },
   "team": {

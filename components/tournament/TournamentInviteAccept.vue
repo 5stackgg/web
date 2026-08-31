@@ -8,6 +8,10 @@ import { Button } from "~/components/ui/button";
 import { toast } from "~/components/ui/toast";
 import { useAuthStore } from "~/stores/AuthStore";
 import { REDEEM_TOURNAMENT_INVITE_CODE_MUTATION } from "~/graphql/tournamentInviteCodes";
+import {
+  tournamentInviteErrorKey,
+  tournamentInviteErrorMessage,
+} from "~/utilities/tournamentInvites";
 import { getQueryString } from "~/composables/useRouteTab";
 import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
 
@@ -49,7 +53,27 @@ watch(
 
 const me = computed(() => useAuthStore().me);
 const accepted = ref(false);
+
+// The api's own words for the refusal, kept raw so the sentence the visitor
+// reads is derived and re-derives itself if they switch language.
 const failure = ref<string | null>(null);
+
+// The api names a refusal it anticipated with a code, and the whole sentence is
+// written here. One it did not is English prose from further up the api
+// ("tournament not found"), and gets the translated frame around it instead:
+// untranslated innards inside a translated sentence is the price of saying
+// anything at all, and is worth paying only for the cases nobody planned for.
+const failureMessage = computed(() => {
+  if (!failure.value) {
+    return null;
+  }
+
+  const key = tournamentInviteErrorKey(failure.value);
+
+  return key
+    ? t(key)
+    : t("tournament.invite_accept.failed", { reason: failure.value });
+});
 
 // An invite-only tournament that already reads as unlocked for this viewer has
 // nothing left to grant, and prompting anyway invites them to burn a second use
@@ -105,7 +129,8 @@ async function accept() {
     // Rendered in place rather than only toasted: "expired", "revoked" and
     // "already used up" are the answers to a question the visitor is actively
     // asking, and a toast is gone before they finish reading the page.
-    failure.value = error instanceof Error ? error.message : String(error);
+    //
+    failure.value = tournamentInviteErrorMessage(error);
   }
 }
 
@@ -138,10 +163,10 @@ async function dismiss() {
           }}
         </p>
         <p
-          v-if="failure"
+          v-if="failureMessage"
           class="mt-2 max-w-[70ch] text-[0.8rem] leading-relaxed text-destructive"
         >
-          {{ $t("tournament.invite_accept.failed", { reason: failure }) }}
+          {{ failureMessage }}
         </p>
       </div>
 

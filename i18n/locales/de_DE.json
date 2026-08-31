@@ -5988,8 +5988,8 @@
       "my_teams": "Mein Team"
     },
     "actions": {
-      "open_registration": "Registrierung öffnen",
-      "close_registration": "Registrierung schließen",
+      "open_registration": "Anmeldung öffnen",
+      "close_registration": "Anmeldung schließen",
       "start": "Turnier starten",
       "cancel": "Turnier abbrechen",
       "delete": "Turnier löschen",
@@ -6334,12 +6334,12 @@
       "hint_open": "Dieses Turnier steht allen offen – eine Einladung ist also eine Abkürzung und keine Voraussetzung.",
       "add_team": "Team einladen",
       "team_label": "Team-Einladung",
-      "registration_closed": "Die Registrierung ist geschlossen, daher können keine neuen Einladungen gesendet werden. Öffne die Registrierung erneut, um weitere Teams oder Spieler einzuladen."
+      "registration_closed": "Die Anmeldung ist geschlossen, daher können keine neuen Einladungen gesendet werden. Öffne die Anmeldung erneut, um weitere Teams oder Spieler einzuladen."
     },
     "invite_links": {
       "title": "Einladungslinks",
       "tab": "Links",
-      "registration_closed": "Die Registrierung ist geschlossen, daher können keine neuen Einladungslinks erstellt werden. Öffne die Registrierung erneut, um weitere Links zu verteilen.",
+      "registration_closed": "Die Anmeldung ist geschlossen, daher können keine neuen Einladungslinks erstellt werden. Öffne die Anmeldung erneut, um weitere Links zu verteilen.",
       "hint": "Jeder mit dem Link kann sich anmelden. Ein Link läuft ab, begrenzt die Zahl der Verwendungen und kann jederzeit widerrufen werden.",
       "expires_after": "Ablauf nach",
       "max_uses": "Max. Verwendungen",

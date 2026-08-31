@@ -5684,6 +5684,9 @@
       "title": "Dodaj drużynę",
       "description": "Zaproś istniejącą drużynę lub utwórz nową dla tego turnieju."
     },
+    "organizer_panel": {
+      "title": "Narzędzia organizatora"
+    },
     "form": {
       "create": "Utwórz turniej",
       "name": "Nazwa turnieju",
@@ -6330,10 +6333,13 @@
       "revoked": "Zaproszenie cofnięte",
       "hint_open": "Ten turniej jest otwarty dla wszystkich, więc zaproszenie to skrót, a nie wymóg.",
       "add_team": "Zaproś drużynę",
-      "team_label": "Drużyna"
+      "team_label": "Drużyna",
+      "registration_closed": "Rejestracja jest zamknięta, więc nie można wysyłać nowych zaproszeń. Otwórz rejestrację ponownie, aby zaprosić kolejne drużyny lub graczy."
     },
     "invite_links": {
       "title": "Linki z zaproszeniem",
+      "tab": "Linki",
+      "registration_closed": "Rejestracja jest zamknięta, więc nie można generować nowych linków z zaproszeniem. Otwórz rejestrację ponownie, aby rozdać kolejne linki.",
       "hint": "Zarejestrować się może każdy, kto ma link. Link wygasa, ogranicza liczbę użyć i można go cofnąć w dowolnej chwili.",
       "expires_after": "Wygasa po",
       "max_uses": "Maks. użyć",

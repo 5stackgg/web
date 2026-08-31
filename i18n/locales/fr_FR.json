@@ -5684,6 +5684,9 @@
       "title": "Ajouter une équipe",
       "description": "Invite une équipe existante ou crées-en une pour ce tournoi."
     },
+    "organizer_panel": {
+      "title": "Outils d'organisateur"
+    },
     "form": {
       "create": "Créer un tournoi",
       "name": "Nom du tournoi",
@@ -6330,10 +6333,13 @@
       "revoked": "Invitation révoquée",
       "hint_open": "Ce tournoi est ouvert à tous : une invitation est donc un raccourci, pas une condition.",
       "add_team": "Inviter une équipe",
-      "team_label": "Invitation équipe"
+      "team_label": "Invitation équipe",
+      "registration_closed": "Les inscriptions sont fermées, donc aucune nouvelle invitation ne peut être envoyée. Rouvre les inscriptions pour inviter d'autres équipes ou joueurs."
     },
     "invite_links": {
       "title": "Liens d'invitation",
+      "tab": "Liens",
+      "registration_closed": "Les inscriptions sont fermées, donc aucun nouveau lien d'invitation ne peut être généré. Rouvre les inscriptions pour distribuer d'autres liens.",
       "hint": "Toute personne ayant le lien peut s'inscrire. Un lien expire, limite le nombre d'utilisations et peut être révoqué à tout moment.",
       "expires_after": "Expire après",
       "max_uses": "Utilisations max.",

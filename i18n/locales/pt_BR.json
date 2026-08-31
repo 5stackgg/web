@@ -5684,6 +5684,9 @@
       "title": "Adicionar Equipe",
       "description": "Convidar uma equipe existente ou criar uma nova para este torneio."
     },
+    "organizer_panel": {
+      "title": "Ferramentas do organizador"
+    },
     "form": {
       "create": "Criar Torneio",
       "name": "Nome do Torneio",
@@ -6330,10 +6333,13 @@
       "revoked": "Convite revogado",
       "hint_open": "Este torneio é aberto a todos, então um convite é um atalho, não um requisito.",
       "add_team": "Convidar uma equipe",
-      "team_label": "Equipe"
+      "team_label": "Equipe",
+      "registration_closed": "As inscrições estão fechadas, então novos convites não podem ser enviados. Reabra as inscrições para convidar mais equipes ou jogadores."
     },
     "invite_links": {
       "title": "Links de convite",
+      "tab": "Links",
+      "registration_closed": "As inscrições estão fechadas, então novos links de convite não podem ser gerados. Reabra as inscrições para distribuir mais links.",
       "hint": "Qualquer um com o link pode se inscrever. Um link expira, limita quantas vezes pode ser usado e pode ser revogado a qualquer momento.",
       "expires_after": "Expira após",
       "max_uses": "Máx. de usos",

@@ -5684,6 +5684,9 @@
       "title": "Takım Ekle",
       "description": "Bu turnuva için mevcut bir takımı davet et ya da yeni bir takım oluştur."
     },
+    "organizer_panel": {
+      "title": "Organizatör araçları"
+    },
     "form": {
       "create": "Turnuva Oluştur",
       "name": "Turnuva Adı",
@@ -6330,10 +6333,13 @@
       "revoked": "Davet geri alındı",
       "hint_open": "Bu turnuva herkese açık, bu yüzden davet bir zorunluluk değil, kısayoldur.",
       "add_team": "Takım davet et",
-      "team_label": "Takım daveti"
+      "team_label": "Takım daveti",
+      "registration_closed": "Kayıtlar kapalı, bu yüzden yeni davet gönderilemez. Daha fazla takım ya da oyuncu davet etmek için kayıtları yeniden aç."
     },
     "invite_links": {
       "title": "Davet Bağlantıları",
+      "tab": "Bağlantılar",
+      "registration_closed": "Kayıtlar kapalı, bu yüzden yeni davet bağlantısı oluşturulamaz. Daha fazla bağlantı dağıtmak için kayıtları yeniden aç.",
       "hint": "Bağlantıya sahip olan herkes kaydolabilir. Bir bağlantının süresi dolar, kaç kez kullanılabileceği sınırlanır ve istediğin zaman geri alınabilir.",
       "expires_after": "Geçerlilik süresi",
       "max_uses": "Maksimum kullanım",

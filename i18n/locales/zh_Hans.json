@@ -5684,6 +5684,9 @@
       "title": "添加队伍",
       "description": "为此赛事邀请现有队伍或创建新队伍。"
     },
+    "organizer_panel": {
+      "title": "组织者工具"
+    },
     "form": {
       "create": "创建赛事",
       "name": "赛事名称",
@@ -6330,10 +6333,13 @@
       "revoked": "邀请已撤销",
       "hint_open": "本赛事对所有人开放，邀请只是捷径，并非必需。",
       "add_team": "邀请队伍",
-      "team_label": "队伍邀请"
+      "team_label": "队伍邀请",
+      "registration_closed": "报名已关闭，无法发送新的邀请。重新开放报名后才能邀请更多队伍或玩家。"
     },
     "invite_links": {
       "title": "邀请链接",
+      "tab": "链接",
+      "registration_closed": "报名已关闭，无法创建新的邀请链接。重新开放报名后才能分发更多链接。",
       "hint": "任何拿到链接的人都能报名。链接会过期、可限制使用次数，并且随时可以撤销。",
       "expires_after": "有效期",
       "max_uses": "最大使用次数",

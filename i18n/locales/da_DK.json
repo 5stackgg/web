@@ -5684,6 +5684,9 @@
       "title": "Tilføj hold",
       "description": "Inviter et eksisterende hold, eller opret et nyt til denne turnering."
     },
+    "organizer_panel": {
+      "title": "Arrangørværktøjer"
+    },
     "form": {
       "create": "Opret turnering",
       "name": "Turneringsnavn",
@@ -6330,10 +6333,13 @@
       "revoked": "Invitation tilbagekaldt",
       "hint_open": "Denne turnering er åben for alle, så en invitation er en genvej og ikke et krav.",
       "add_team": "Inviter et hold",
-      "team_label": "Holdinvitation"
+      "team_label": "Holdinvitation",
+      "registration_closed": "Tilmeldingen er lukket, så der kan ikke sendes nye invitationer. Åbn tilmeldingen igen for at invitere flere hold eller spillere."
     },
     "invite_links": {
       "title": "Invitationslinks",
+      "tab": "Links",
+      "registration_closed": "Tilmeldingen er lukket, så der kan ikke oprettes nye invitationslinks. Åbn tilmeldingen igen for at dele flere links ud.",
       "hint": "Alle med linket kan tilmelde sig. Et link udløber, har et loft over antal anvendelser og kan tilbagekaldes når som helst.",
       "expires_after": "Udløber efter",
       "max_uses": "Maks. antal anvendelser",

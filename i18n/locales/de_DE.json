@@ -5684,6 +5684,9 @@
       "title": "Team hinzufügen",
       "description": "Lade ein bestehendes Team ein oder erstelle ein neues für dieses Turnier."
     },
+    "organizer_panel": {
+      "title": "Veranstalter-Tools"
+    },
     "form": {
       "create": "Turnier erstellen",
       "name": "Turniername",
@@ -6330,10 +6333,13 @@
       "revoked": "Einladung widerrufen",
       "hint_open": "Dieses Turnier steht allen offen – eine Einladung ist also eine Abkürzung und keine Voraussetzung.",
       "add_team": "Team einladen",
-      "team_label": "Team-Einladung"
+      "team_label": "Team-Einladung",
+      "registration_closed": "Die Registrierung ist geschlossen, daher können keine neuen Einladungen gesendet werden. Öffne die Registrierung erneut, um weitere Teams oder Spieler einzuladen."
     },
     "invite_links": {
       "title": "Einladungslinks",
+      "tab": "Links",
+      "registration_closed": "Die Registrierung ist geschlossen, daher können keine neuen Einladungslinks erstellt werden. Öffne die Registrierung erneut, um weitere Links zu verteilen.",
       "hint": "Jeder mit dem Link kann sich anmelden. Ein Link läuft ab, begrenzt die Zahl der Verwendungen und kann jederzeit widerrufen werden.",
       "expires_after": "Ablauf nach",
       "max_uses": "Max. Verwendungen",

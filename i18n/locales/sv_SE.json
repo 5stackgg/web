@@ -5684,6 +5684,9 @@
       "title": "Lägg till lag",
       "description": "Bjud in ett befintligt lag eller skapa ett nytt för denna turnering."
     },
+    "organizer_panel": {
+      "title": "Arrangörsverktyg"
+    },
     "form": {
       "create": "Skapa turnering",
       "name": "Turneringsnamn",
@@ -6330,10 +6333,13 @@
       "revoked": "Inbjudan återkallad",
       "hint_open": "Den här turneringen är öppen för alla, så en inbjudan är en genväg snarare än ett krav.",
       "add_team": "Bjud in ett lag",
-      "team_label": "Laginbjudan"
+      "team_label": "Laginbjudan",
+      "registration_closed": "Anmälan är stängd, så inga nya inbjudningar kan skickas. Öppna anmälan igen för att bjuda in fler lag eller spelare."
     },
     "invite_links": {
       "title": "Inbjudningslänkar",
+      "tab": "Länkar",
+      "registration_closed": "Anmälan är stängd, så inga nya inbjudningslänkar kan skapas. Öppna anmälan igen för att dela ut fler länkar.",
       "hint": "Alla som har länken kan anmäla sig. En länk går ut, har ett tak för hur många gånger den kan användas och kan återkallas när som helst.",
       "expires_after": "Går ut efter",
       "max_uses": "Max antal användningar",

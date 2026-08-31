@@ -5684,6 +5684,9 @@
       "title": "Aggiungi team",
       "description": "Invita un team esistente o creane uno nuovo per questo torneo."
     },
+    "organizer_panel": {
+      "title": "Strumenti organizzatore"
+    },
     "form": {
       "create": "Crea torneo",
       "name": "Nome del torneo",
@@ -6330,10 +6333,13 @@
       "revoked": "Invito revocato",
       "hint_open": "Questo torneo è aperto a tutti, quindi un invito è una scorciatoia e non un requisito.",
       "add_team": "Invita un team",
-      "team_label": "Invito team"
+      "team_label": "Invito team",
+      "registration_closed": "Le iscrizioni sono chiuse, quindi non si possono inviare nuovi inviti. Riapri le iscrizioni per invitare altri team o giocatori."
     },
     "invite_links": {
       "title": "Link d'invito",
+      "tab": "Link",
+      "registration_closed": "Le iscrizioni sono chiuse, quindi non si possono creare nuovi link d'invito. Riapri le iscrizioni per distribuire altri link.",
       "hint": "Chiunque abbia il link può iscriversi. Un link scade, limita quante volte può essere usato e può essere revocato in qualsiasi momento.",
       "expires_after": "Scade dopo",
       "max_uses": "Utilizzi max.",

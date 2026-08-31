@@ -5684,6 +5684,9 @@
       "title": "新增隊伍",
       "description": "為此賽事邀請現有隊伍或建立新隊伍。"
     },
+    "organizer_panel": {
+      "title": "主辦方工具"
+    },
     "form": {
       "create": "建立賽事",
       "name": "賽事名稱",
@@ -6330,10 +6333,13 @@
       "revoked": "邀請已撤銷",
       "hint_open": "本賽事對所有人開放，邀請只是捷徑，並非必需。",
       "add_team": "邀請隊伍",
-      "team_label": "隊伍邀請"
+      "team_label": "隊伍邀請",
+      "registration_closed": "報名已關閉，無法送出新的邀請。重新開放報名後才能邀請更多隊伍或玩家。"
     },
     "invite_links": {
       "title": "邀請連結",
+      "tab": "連結",
+      "registration_closed": "報名已關閉，無法建立新的邀請連結。重新開放報名後才能發放更多連結。",
       "hint": "任何拿到連結的人都能報名。連結會過期、可限制使用次數，並且隨時可以撤銷。",
       "expires_after": "有效期",
       "max_uses": "最大使用次數",

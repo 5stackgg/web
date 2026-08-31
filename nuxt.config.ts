@@ -117,6 +117,12 @@ export default defineNuxtConfig({
   },
 
   experimental: {
+    // chokidar 4 (what Nuxt 3.17 watches with) dropped fsevents, so on macOS it
+    // registers one kqueue fd per *file* — ~8.7k descriptors for this tree alone,
+    // which trips EMFILE and puts the dev server in a restart loop. @parcel/watcher
+    // uses FSEvents natively and costs 0 extra descriptors.
+    watcher: "parcel",
+
     defaults: {
       nuxtLink: {
         prefetchOn: {

@@ -65315,7 +65315,11 @@ categories_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["tournament_categories_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["tournament_categories_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_categories_aggregate"]],
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?:boolean | `@${string}`,
 	check_in_closes_before_minutes?:boolean | `@${string}`,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?:boolean | `@${string}`,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?:boolean | `@${string}`,
 	/** A computed field, executes function "tournament_check_in_open" */
@@ -65676,7 +65680,9 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	can_start?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	categories?: ValueTypes["tournament_categories_bool_exp"] | undefined | null | Variable<any, string>,
 	categories_aggregate?: ValueTypes["tournament_categories_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	check_in_closed_for?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	check_in_closes_before_minutes?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	check_in_closing_notified_for?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	check_in_ends_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	check_in_open?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	check_in_opens_before_minutes?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -65772,7 +65778,11 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	awards_enabled?: boolean | undefined | null | Variable<any, string>,
 	banner?: string | undefined | null | Variable<any, string>,
 	categories?: ValueTypes["tournament_categories_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	check_in_closes_before_minutes?: number | undefined | null | Variable<any, string>,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	check_in_opens_before_minutes?: number | undefined | null | Variable<any, string>,
@@ -65834,7 +65844,11 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	/** aggregate max on columns */
 ["tournaments_max_fields"]: AliasType<{
 	banner?:boolean | `@${string}`,
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?:boolean | `@${string}`,
 	check_in_closes_before_minutes?:boolean | `@${string}`,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?:boolean | `@${string}`,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?:boolean | `@${string}`,
 	check_in_opens_before_minutes?:boolean | `@${string}`,
@@ -65869,7 +65883,11 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	/** order by max() on columns of table "tournaments" */
 ["tournaments_max_order_by"]: {
 	banner?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	check_in_closes_before_minutes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	check_in_opens_before_minutes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -65897,7 +65915,11 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	/** aggregate min on columns */
 ["tournaments_min_fields"]: AliasType<{
 	banner?:boolean | `@${string}`,
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?:boolean | `@${string}`,
 	check_in_closes_before_minutes?:boolean | `@${string}`,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?:boolean | `@${string}`,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?:boolean | `@${string}`,
 	check_in_opens_before_minutes?:boolean | `@${string}`,
@@ -65932,7 +65954,11 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	/** order by min() on columns of table "tournaments" */
 ["tournaments_min_order_by"]: {
 	banner?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	check_in_closes_before_minutes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	check_in_opens_before_minutes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -65995,7 +66021,9 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	can_setup?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	can_start?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	categories_aggregate?: ValueTypes["tournament_categories_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	check_in_closed_for?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	check_in_closes_before_minutes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	check_in_closing_notified_for?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	check_in_ends_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	check_in_open?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	check_in_opens_before_minutes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -66092,7 +66120,11 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	auto_start?: boolean | undefined | null | Variable<any, string>,
 	awards_enabled?: boolean | undefined | null | Variable<any, string>,
 	banner?: string | undefined | null | Variable<any, string>,
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	check_in_closes_before_minutes?: number | undefined | null | Variable<any, string>,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	check_in_opens_before_minutes?: number | undefined | null | Variable<any, string>,
@@ -66232,7 +66264,11 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	auto_start?: boolean | undefined | null | Variable<any, string>,
 	awards_enabled?: boolean | undefined | null | Variable<any, string>,
 	banner?: string | undefined | null | Variable<any, string>,
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	check_in_closes_before_minutes?: number | undefined | null | Variable<any, string>,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	check_in_opens_before_minutes?: number | undefined | null | Variable<any, string>,
@@ -147540,7 +147576,11 @@ categories_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["tournament_categories_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["tournament_categories_bool_exp"] | undefined | null},ResolverInputTypes["tournament_categories_aggregate"]],
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?:boolean | `@${string}`,
 	check_in_closes_before_minutes?:boolean | `@${string}`,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?:boolean | `@${string}`,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?:boolean | `@${string}`,
 	/** A computed field, executes function "tournament_check_in_open" */
@@ -147901,7 +147941,9 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	can_start?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	categories?: ResolverInputTypes["tournament_categories_bool_exp"] | undefined | null,
 	categories_aggregate?: ResolverInputTypes["tournament_categories_aggregate_bool_exp"] | undefined | null,
+	check_in_closed_for?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	check_in_closes_before_minutes?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	check_in_closing_notified_for?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	check_in_ends_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	check_in_open?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	check_in_opens_before_minutes?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
@@ -147997,7 +148039,11 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	awards_enabled?: boolean | undefined | null,
 	banner?: string | undefined | null,
 	categories?: ResolverInputTypes["tournament_categories_arr_rel_insert_input"] | undefined | null,
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?: ResolverInputTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes?: number | undefined | null,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?: ResolverInputTypes["timestamptz"] | undefined | null,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	check_in_opens_before_minutes?: number | undefined | null,
@@ -148059,7 +148105,11 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	/** aggregate max on columns */
 ["tournaments_max_fields"]: AliasType<{
 	banner?:boolean | `@${string}`,
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?:boolean | `@${string}`,
 	check_in_closes_before_minutes?:boolean | `@${string}`,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?:boolean | `@${string}`,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?:boolean | `@${string}`,
 	check_in_opens_before_minutes?:boolean | `@${string}`,
@@ -148094,7 +148144,11 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	/** order by max() on columns of table "tournaments" */
 ["tournaments_max_order_by"]: {
 	banner?: ResolverInputTypes["order_by"] | undefined | null,
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?: ResolverInputTypes["order_by"] | undefined | null,
 	check_in_closes_before_minutes?: ResolverInputTypes["order_by"] | undefined | null,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?: ResolverInputTypes["order_by"] | undefined | null,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ResolverInputTypes["order_by"] | undefined | null,
 	check_in_opens_before_minutes?: ResolverInputTypes["order_by"] | undefined | null,
@@ -148122,7 +148176,11 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	/** aggregate min on columns */
 ["tournaments_min_fields"]: AliasType<{
 	banner?:boolean | `@${string}`,
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?:boolean | `@${string}`,
 	check_in_closes_before_minutes?:boolean | `@${string}`,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?:boolean | `@${string}`,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?:boolean | `@${string}`,
 	check_in_opens_before_minutes?:boolean | `@${string}`,
@@ -148157,7 +148215,11 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	/** order by min() on columns of table "tournaments" */
 ["tournaments_min_order_by"]: {
 	banner?: ResolverInputTypes["order_by"] | undefined | null,
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?: ResolverInputTypes["order_by"] | undefined | null,
 	check_in_closes_before_minutes?: ResolverInputTypes["order_by"] | undefined | null,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?: ResolverInputTypes["order_by"] | undefined | null,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ResolverInputTypes["order_by"] | undefined | null,
 	check_in_opens_before_minutes?: ResolverInputTypes["order_by"] | undefined | null,
@@ -148220,7 +148282,9 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	can_setup?: ResolverInputTypes["order_by"] | undefined | null,
 	can_start?: ResolverInputTypes["order_by"] | undefined | null,
 	categories_aggregate?: ResolverInputTypes["tournament_categories_aggregate_order_by"] | undefined | null,
+	check_in_closed_for?: ResolverInputTypes["order_by"] | undefined | null,
 	check_in_closes_before_minutes?: ResolverInputTypes["order_by"] | undefined | null,
+	check_in_closing_notified_for?: ResolverInputTypes["order_by"] | undefined | null,
 	check_in_ends_at?: ResolverInputTypes["order_by"] | undefined | null,
 	check_in_open?: ResolverInputTypes["order_by"] | undefined | null,
 	check_in_opens_before_minutes?: ResolverInputTypes["order_by"] | undefined | null,
@@ -148317,7 +148381,11 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	auto_start?: boolean | undefined | null,
 	awards_enabled?: boolean | undefined | null,
 	banner?: string | undefined | null,
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?: ResolverInputTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes?: number | undefined | null,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?: ResolverInputTypes["timestamptz"] | undefined | null,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	check_in_opens_before_minutes?: number | undefined | null,
@@ -148457,7 +148525,11 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	auto_start?: boolean | undefined | null,
 	awards_enabled?: boolean | undefined | null,
 	banner?: string | undefined | null,
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?: ResolverInputTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes?: number | undefined | null,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?: ResolverInputTypes["timestamptz"] | undefined | null,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	check_in_opens_before_minutes?: number | undefined | null,
@@ -220885,7 +220957,11 @@ export type ModelTypes = {
 	categories: Array<ModelTypes["tournament_categories"]>,
 	/** An aggregate relationship */
 	categories_aggregate: ModelTypes["tournament_categories_aggregate"],
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?: ModelTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes: number,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?: ModelTypes["timestamptz"] | undefined | null,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ModelTypes["timestamptz"] | undefined | null,
 	/** A computed field, executes function "tournament_check_in_open" */
@@ -221170,7 +221246,9 @@ export type ModelTypes = {
 	can_start?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	categories?: ModelTypes["tournament_categories_bool_exp"] | undefined | null,
 	categories_aggregate?: ModelTypes["tournament_categories_aggregate_bool_exp"] | undefined | null,
+	check_in_closed_for?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	check_in_closes_before_minutes?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	check_in_closing_notified_for?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	check_in_ends_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	check_in_open?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	check_in_opens_before_minutes?: ModelTypes["Int_comparison_exp"] | undefined | null,
@@ -221265,7 +221343,11 @@ export type ModelTypes = {
 	awards_enabled?: boolean | undefined | null,
 	banner?: string | undefined | null,
 	categories?: ModelTypes["tournament_categories_arr_rel_insert_input"] | undefined | null,
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?: ModelTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes?: number | undefined | null,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?: ModelTypes["timestamptz"] | undefined | null,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ModelTypes["timestamptz"] | undefined | null,
 	check_in_opens_before_minutes?: number | undefined | null,
@@ -221327,7 +221409,11 @@ export type ModelTypes = {
 	/** aggregate max on columns */
 ["tournaments_max_fields"]: {
 		banner?: string | undefined | null,
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?: ModelTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes?: number | undefined | null,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?: ModelTypes["timestamptz"] | undefined | null,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ModelTypes["timestamptz"] | undefined | null,
 	check_in_opens_before_minutes?: number | undefined | null,
@@ -221361,7 +221447,11 @@ export type ModelTypes = {
 	/** order by max() on columns of table "tournaments" */
 ["tournaments_max_order_by"]: {
 	banner?: ModelTypes["order_by"] | undefined | null,
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?: ModelTypes["order_by"] | undefined | null,
 	check_in_closes_before_minutes?: ModelTypes["order_by"] | undefined | null,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?: ModelTypes["order_by"] | undefined | null,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ModelTypes["order_by"] | undefined | null,
 	check_in_opens_before_minutes?: ModelTypes["order_by"] | undefined | null,
@@ -221389,7 +221479,11 @@ export type ModelTypes = {
 	/** aggregate min on columns */
 ["tournaments_min_fields"]: {
 		banner?: string | undefined | null,
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?: ModelTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes?: number | undefined | null,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?: ModelTypes["timestamptz"] | undefined | null,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ModelTypes["timestamptz"] | undefined | null,
 	check_in_opens_before_minutes?: number | undefined | null,
@@ -221423,7 +221517,11 @@ export type ModelTypes = {
 	/** order by min() on columns of table "tournaments" */
 ["tournaments_min_order_by"]: {
 	banner?: ModelTypes["order_by"] | undefined | null,
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?: ModelTypes["order_by"] | undefined | null,
 	check_in_closes_before_minutes?: ModelTypes["order_by"] | undefined | null,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?: ModelTypes["order_by"] | undefined | null,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ModelTypes["order_by"] | undefined | null,
 	check_in_opens_before_minutes?: ModelTypes["order_by"] | undefined | null,
@@ -221485,7 +221583,9 @@ export type ModelTypes = {
 	can_setup?: ModelTypes["order_by"] | undefined | null,
 	can_start?: ModelTypes["order_by"] | undefined | null,
 	categories_aggregate?: ModelTypes["tournament_categories_aggregate_order_by"] | undefined | null,
+	check_in_closed_for?: ModelTypes["order_by"] | undefined | null,
 	check_in_closes_before_minutes?: ModelTypes["order_by"] | undefined | null,
+	check_in_closing_notified_for?: ModelTypes["order_by"] | undefined | null,
 	check_in_ends_at?: ModelTypes["order_by"] | undefined | null,
 	check_in_open?: ModelTypes["order_by"] | undefined | null,
 	check_in_opens_before_minutes?: ModelTypes["order_by"] | undefined | null,
@@ -221571,7 +221671,11 @@ export type ModelTypes = {
 	auto_start?: boolean | undefined | null,
 	awards_enabled?: boolean | undefined | null,
 	banner?: string | undefined | null,
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?: ModelTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes?: number | undefined | null,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?: ModelTypes["timestamptz"] | undefined | null,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ModelTypes["timestamptz"] | undefined | null,
 	check_in_opens_before_minutes?: number | undefined | null,
@@ -221708,7 +221812,11 @@ export type ModelTypes = {
 	auto_start?: boolean | undefined | null,
 	awards_enabled?: boolean | undefined | null,
 	banner?: string | undefined | null,
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?: ModelTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes?: number | undefined | null,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?: ModelTypes["timestamptz"] | undefined | null,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ModelTypes["timestamptz"] | undefined | null,
 	check_in_opens_before_minutes?: number | undefined | null,
@@ -295964,7 +296072,11 @@ export type GraphQLTypes = {
 	categories: Array<GraphQLTypes["tournament_categories"]>,
 	/** An aggregate relationship */
 	categories_aggregate: GraphQLTypes["tournament_categories_aggregate"],
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?: GraphQLTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes: number,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?: GraphQLTypes["timestamptz"] | undefined | null,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	/** A computed field, executes function "tournament_check_in_open" */
@@ -296252,7 +296364,9 @@ export type GraphQLTypes = {
 	can_start?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	categories?: GraphQLTypes["tournament_categories_bool_exp"] | undefined | null,
 	categories_aggregate?: GraphQLTypes["tournament_categories_aggregate_bool_exp"] | undefined | null,
+	check_in_closed_for?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	check_in_closes_before_minutes?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	check_in_closing_notified_for?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	check_in_ends_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	check_in_open?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	check_in_opens_before_minutes?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
@@ -296348,7 +296462,11 @@ export type GraphQLTypes = {
 	awards_enabled?: boolean | undefined | null,
 	banner?: string | undefined | null,
 	categories?: GraphQLTypes["tournament_categories_arr_rel_insert_input"] | undefined | null,
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?: GraphQLTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes?: number | undefined | null,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?: GraphQLTypes["timestamptz"] | undefined | null,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	check_in_opens_before_minutes?: number | undefined | null,
@@ -296411,7 +296529,11 @@ export type GraphQLTypes = {
 ["tournaments_max_fields"]: {
 	__typename: "tournaments_max_fields",
 	banner?: string | undefined | null,
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?: GraphQLTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes?: number | undefined | null,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?: GraphQLTypes["timestamptz"] | undefined | null,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	check_in_opens_before_minutes?: number | undefined | null,
@@ -296445,7 +296567,11 @@ export type GraphQLTypes = {
 	/** order by max() on columns of table "tournaments" */
 ["tournaments_max_order_by"]: {
 		banner?: GraphQLTypes["order_by"] | undefined | null,
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?: GraphQLTypes["order_by"] | undefined | null,
 	check_in_closes_before_minutes?: GraphQLTypes["order_by"] | undefined | null,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?: GraphQLTypes["order_by"] | undefined | null,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: GraphQLTypes["order_by"] | undefined | null,
 	check_in_opens_before_minutes?: GraphQLTypes["order_by"] | undefined | null,
@@ -296474,7 +296600,11 @@ export type GraphQLTypes = {
 ["tournaments_min_fields"]: {
 	__typename: "tournaments_min_fields",
 	banner?: string | undefined | null,
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?: GraphQLTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes?: number | undefined | null,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?: GraphQLTypes["timestamptz"] | undefined | null,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	check_in_opens_before_minutes?: number | undefined | null,
@@ -296508,7 +296638,11 @@ export type GraphQLTypes = {
 	/** order by min() on columns of table "tournaments" */
 ["tournaments_min_order_by"]: {
 		banner?: GraphQLTypes["order_by"] | undefined | null,
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?: GraphQLTypes["order_by"] | undefined | null,
 	check_in_closes_before_minutes?: GraphQLTypes["order_by"] | undefined | null,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?: GraphQLTypes["order_by"] | undefined | null,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: GraphQLTypes["order_by"] | undefined | null,
 	check_in_opens_before_minutes?: GraphQLTypes["order_by"] | undefined | null,
@@ -296571,7 +296705,9 @@ export type GraphQLTypes = {
 	can_setup?: GraphQLTypes["order_by"] | undefined | null,
 	can_start?: GraphQLTypes["order_by"] | undefined | null,
 	categories_aggregate?: GraphQLTypes["tournament_categories_aggregate_order_by"] | undefined | null,
+	check_in_closed_for?: GraphQLTypes["order_by"] | undefined | null,
 	check_in_closes_before_minutes?: GraphQLTypes["order_by"] | undefined | null,
+	check_in_closing_notified_for?: GraphQLTypes["order_by"] | undefined | null,
 	check_in_ends_at?: GraphQLTypes["order_by"] | undefined | null,
 	check_in_open?: GraphQLTypes["order_by"] | undefined | null,
 	check_in_opens_before_minutes?: GraphQLTypes["order_by"] | undefined | null,
@@ -296668,7 +296804,11 @@ export type GraphQLTypes = {
 		auto_start?: boolean | undefined | null,
 	awards_enabled?: boolean | undefined | null,
 	banner?: string | undefined | null,
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?: GraphQLTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes?: number | undefined | null,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?: GraphQLTypes["timestamptz"] | undefined | null,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	check_in_opens_before_minutes?: number | undefined | null,
@@ -296808,7 +296948,11 @@ export type GraphQLTypes = {
 		auto_start?: boolean | undefined | null,
 	awards_enabled?: boolean | undefined | null,
 	banner?: string | undefined | null,
+	/** The check_in_ends_at the close pass has already acted on */
+	check_in_closed_for?: GraphQLTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes?: number | undefined | null,
+	/** The check_in_ends_at the closing reminder was sent for */
+	check_in_closing_notified_for?: GraphQLTypes["timestamptz"] | undefined | null,
 	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	check_in_opens_before_minutes?: number | undefined | null,
@@ -319221,7 +319365,9 @@ export enum tournaments_select_column {
 	auto_start = "auto_start",
 	awards_enabled = "awards_enabled",
 	banner = "banner",
+	check_in_closed_for = "check_in_closed_for",
 	check_in_closes_before_minutes = "check_in_closes_before_minutes",
+	check_in_closing_notified_for = "check_in_closing_notified_for",
 	check_in_ends_at = "check_in_ends_at",
 	check_in_opens_before_minutes = "check_in_opens_before_minutes",
 	check_in_required = "check_in_required",
@@ -319354,7 +319500,9 @@ export enum tournaments_update_column {
 	auto_start = "auto_start",
 	awards_enabled = "awards_enabled",
 	banner = "banner",
+	check_in_closed_for = "check_in_closed_for",
 	check_in_closes_before_minutes = "check_in_closes_before_minutes",
+	check_in_closing_notified_for = "check_in_closing_notified_for",
 	check_in_ends_at = "check_in_ends_at",
 	check_in_opens_before_minutes = "check_in_opens_before_minutes",
 	check_in_required = "check_in_required",

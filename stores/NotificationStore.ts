@@ -7,7 +7,10 @@ import { generateMutation } from "~/graphql/graphqlGen";
 import { playerFields } from "~/graphql/playerFields";
 import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
 import { MY_SCHEDULE_TASKS_SUBSCRIPTION } from "~/graphql/leagues";
-import { MY_TOURNAMENT_INVITES_SUBSCRIPTION } from "~/graphql/tournamentInvites";
+import {
+  MY_TOURNAMENT_INVITES_SUBSCRIPTION,
+  MY_TOURNAMENT_TEAM_INVITES_SUBSCRIPTION,
+} from "~/graphql/tournamentInvites";
 
 export type LeagueScheduleTask = {
   id: string;
@@ -87,7 +90,22 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
   // `tournament_team_invites` (an invite to join a team already registered for
   // one). They are separate tables, separate notifications and separate
   // acceptInvite type strings — see graphql/tournamentInvites.ts.
-  const tournament_invites = ref<any[]>([]);
+  //
+  // One table, two documents: a registration invite addresses either a player
+  // or a team, and the team half names columns Zeus has not seen yet. Split,
+  // an unmigrated stack loses team invites from the tray and keeps player ones
+  // working; merged into one document it would lose both.
+  const tournament_player_invites = ref<any[]>([]);
+  const tournament_team_registration_invites = ref<any[]>([]);
+  const tournament_invites = computed(() =>
+    [
+      ...tournament_player_invites.value,
+      ...tournament_team_registration_invites.value,
+    ].sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+    ),
+  );
   const draft_invites = ref<any[]>([]);
   const notifications = ref<Notification[]>([]);
   const seasonRebuilds = ref<Array<{ id: any; number: number | null }>>([]);
@@ -424,9 +442,10 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
         }),
     );
 
-    // Raw document rather than a Zeus selector — `tournament_invites` lands
-    // with the API migration and Zeus has not seen the table yet. Delete
-    // graphql/tournamentInvites.ts and inline this once codegen has run.
+    // Raw documents rather than Zeus selectors — team addressing on
+    // `tournament_invites` lands with the API migration and Zeus has not seen
+    // the new columns yet. Delete graphql/tournamentInvites.ts and inline these
+    // once codegen has run.
     subscribe(
       "notifications:tournament_invites",
       getGraphqlClient()
@@ -436,10 +455,28 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
         })
         .subscribe({
           next: ({ data }: { data?: any }) => {
-            tournament_invites.value = data?.tournament_invites ?? [];
+            tournament_player_invites.value = data?.tournament_invites ?? [];
           },
           error: () => {
-            tournament_invites.value = [];
+            tournament_player_invites.value = [];
+          },
+        }),
+    );
+
+    subscribe(
+      "notifications:tournament_team_registration_invites",
+      getGraphqlClient()
+        .subscribe({
+          query: MY_TOURNAMENT_TEAM_INVITES_SUBSCRIPTION,
+          variables: { steamId: steam_id },
+        })
+        .subscribe({
+          next: ({ data }: { data?: any }) => {
+            tournament_team_registration_invites.value =
+              data?.tournament_invites ?? [];
+          },
+          error: () => {
+            tournament_team_registration_invites.value = [];
           },
         }),
     );
@@ -638,6 +675,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
         unsubscribe("notifications:team_invites");
         unsubscribe("notifications:tournament_team_invites");
         unsubscribe("notifications:tournament_invites");
+        unsubscribe("notifications:tournament_team_registration_invites");
         unsubscribe("notifications:draft_invites");
         unsubscribe("notifications:notifications");
         unsubscribe("notifications:schedule_tasks");
@@ -646,7 +684,8 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
         unsubscribe("notifications:news_read_state");
         seasonRebuilds.value = [];
         scheduleTaskSeasons.value = [];
-        tournament_invites.value = [];
+        tournament_player_invites.value = [];
+        tournament_team_registration_invites.value = [];
         lastReadNewsAt.value = null;
       }
     },

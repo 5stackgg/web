@@ -28,20 +28,6 @@ export const tournamentRegistrationFields: Record<string, boolean> = {
   check_in_open: true,
 };
 
-/**
- * The passcode as an organizer reads it back.
- *
- * The raw `registration_passcode` column is selectable by tournament_organizer
- * alone — granting it to `user` would hand every logged-in player the passcode
- * of every public tournament, which is the gate itself. This computed field is
- * row-scoped instead: granted to `user`, and NULL unless the viewer organizes
- * that specific tournament. Still never guest, so it stays out of the shared
- * selector the public surfaces reuse.
- */
-export const tournamentOrganizerPasscodeField: Record<string, boolean> = {
-  organizer_registration_passcode: true,
-};
-
 export const simpleTournamentFields = Selector("tournaments")({
   id: true,
   name: true,

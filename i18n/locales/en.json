@@ -6138,12 +6138,7 @@
       },
       "invite_only": {
         "label": "Invite only",
-        "description": "Registration is closed to the public. Organizers invite teams directly, or entrants supply a passcode."
-      },
-      "passcode": {
-        "label": "Passcode",
-        "optional": "(optional)",
-        "description": "Anyone with the code can enter without an invite. Organizers only."
+        "description": "Registration is closed to the public. Organizers invite teams and players directly, or share an invite link."
       }
     },
     "check_in": {
@@ -6307,12 +6302,6 @@
       "title": "Entry requirements",
       "requirements_hint": "Checked against every player being added, not just whoever clicks. Registration is refused if any of them fails.",
       "locked_title": "This tournament is invite only",
-      "locked_hint": "Enter the organizer's passcode to unlock registration, or ask them to invite your team directly.",
-      "passcode_label": "Passcode",
-      "passcode_placeholder": "Enter passcode",
-      "unlock": "Unlock",
-      "unlocked": "Registration unlocked",
-      "unlock_failed": "Could not unlock registration",
       "min_role": "Minimum role: {role}",
       "elo_between": "ELO between {min} and {max}",
       "elo_min": "ELO {min} or higher",
@@ -6322,22 +6311,68 @@
       "requirement_failed": "not met",
       "ok_chip": "eligible",
       "locked_chip": "locked",
-      "blocked_chip": "not eligible"
+      "blocked_chip": "not eligible",
+      "invite_hint": "Ask an organizer to invite your team, or to send you an invite link."
     },
     "invites": {
-      "title": "Invited Players",
-      "description": "This tournament is invite only. Invite a player directly and they can register without the passcode.",
+      "title": "Invites",
+      "description": "Invite a team or a player directly and they can register even while this tournament is invite only.",
       "add": "Invite a player",
       "pending": "Pending",
       "invited_by": "Invited by {name}",
       "revoke": "Revoke",
       "confirm_revoke": "Revoke this invite?",
-      "revoke_description": "{name} will no longer be able to register unless they have the passcode.",
+      "revoke_description": "{name} loses access unless they still hold a valid invite link.",
       "empty": "Nobody has been invited yet.",
       "sent": "Invite sent",
       "send_failed": "Could not send that invite",
       "already_invited": "Already invited",
-      "revoked": "Invite revoked"
+      "revoked": "Invite revoked",
+      "hint_open": "This tournament is open to everyone, so an invite is a shortcut rather than a requirement.",
+      "add_team": "Invite a team",
+      "team_label": "Team invite"
+    },
+    "invite_links": {
+      "title": "Invite Links",
+      "hint": "Anyone holding the link can register. A link expires, caps how many times it can be used, and can be revoked at any time.",
+      "expires_after": "Expire after",
+      "max_uses": "Max uses",
+      "expiry_never": "Never",
+      "expiry_minutes": "{count} minutes",
+      "expiry_hour": "1 hour",
+      "expiry_hours": "{count} hours",
+      "expiry_day": "1 day",
+      "expiry_days": "{count} days",
+      "uses_one": "1 use",
+      "uses_limit": "{count} uses",
+      "uses_unlimited": "No limit",
+      "create": "Generate a link",
+      "created": "Invite link created and copied",
+      "create_failed": "Could not create that invite link",
+      "share": "Share",
+      "revoke": "Revoke",
+      "revoked": "Invite link revoked",
+      "revoke_failed": "Could not revoke that invite link",
+      "confirm_revoke": "Revoke this invite link?",
+      "revoke_description": "Anyone still holding the link loses access immediately. Teams that already registered through it keep their place.",
+      "expires": "Expires",
+      "expired": "Expired",
+      "exhausted": "Used up",
+      "never_expires": "Never expires",
+      "uses_count": "{count} used",
+      "who_used": "Who used it",
+      "uses_empty": "Nobody has used this link yet.",
+      "empty": "No invite links yet."
+    },
+    "invite_accept": {
+      "title": "You have an invite",
+      "hint": "Accept it to unlock registration for this tournament.",
+      "guest_hint": "Sign in to accept this invite and unlock registration.",
+      "accept": "Accept invite",
+      "sign_in": "Sign in to accept",
+      "dismiss": "Not now",
+      "accepted": "Invite accepted",
+      "failed": "That invite could not be used: {reason}"
     }
   },
   "team": {
@@ -6392,7 +6427,9 @@
       "deny": "Deny",
       "accept": "Accept",
       "tournament_registration_title": "Tournament Registration Invite",
-      "tournament_registration_message": "You have been invited to register for a tournament"
+      "tournament_registration_message": "You have been invited to register for a tournament",
+      "tournament_team_registration_title": "Tournament Team Invite",
+      "tournament_team_registration_message": "{team} has been invited to register for a tournament"
     },
     "roles": {
       "captain": "Captain"

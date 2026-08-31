@@ -1,5 +1,4 @@
 import * as z from "zod";
-import { useAuthStore } from "~/stores/AuthStore";
 import {
   CHECK_IN_CLOSES_DEFAULT_MINUTES,
   CHECK_IN_CLOSES_MAX_MINUTES,
@@ -29,28 +28,11 @@ export const REGISTRATION_FIELD = {
   max_elo: "max_elo",
   regions: "registration_regions",
   invite_only: "invite_only",
-  registration_passcode: "registration_passcode",
   check_in_required: "check_in_required",
   check_in_setting: "team_check_in_setting",
   check_in_opens_before_minutes: "check_in_opens_before_minutes",
   check_in_closes_before_minutes: "check_in_closes_before_minutes",
 } as const;
-
-/**
- * Hasura grants `tournaments.registration_passcode` on INSERT and UPDATE to the
- * `user` role — and so to every role that inherits it — because a plain `user`
- * with can_create_tournaments still owns tournaments. Only SELECT is restricted
- * to tournament_organizer; the passcode is read back through the row-level
- * `organizer_registration_passcode` computed field instead (granted to `user`,
- * NULL for anyone who is not an organizer of that row).
- *
- * Gating this on tournament_organizer is what let an organizer turn on Invite
- * only with no passcode input and save `invite_only = true, passcode = NULL` —
- * a tournament nobody can ever enter, with no UI path back out.
- */
-export function canManageRegistrationPasscode(): boolean {
-  return !!useAuthStore().me;
-}
 
 // A blank ELO input arrives as "", null or NaN; every one of them means "no
 // bound", and none of them may collapse to 0 — 0 is a real floor.
@@ -96,10 +78,6 @@ export function registrationSchemaShape(component: any) {
     ),
     [REGISTRATION_FIELD.regions]: z.string().array().default([]),
     [REGISTRATION_FIELD.invite_only]: z.boolean().default(false),
-    [REGISTRATION_FIELD.registration_passcode]: z
-      .string()
-      .nullable()
-      .default(null),
     [REGISTRATION_FIELD.check_in_required]: z.boolean().default(false),
     [REGISTRATION_FIELD.check_in_setting]: z
       .string()
@@ -139,32 +117,18 @@ export function registrationSchemaShape(component: any) {
  * form keys become real column names; both the insert and the update go
  * through it so they cannot disagree.
  *
- * `registration_passcode` is only meaningful while `invite_only` is on — a
- * stale code left behind by toggling the switch off would keep letting people
- * in through a door the organizer believes is shut. It is also the one column
- * Hasura grants to the tournament_organizer role alone, and a plain `user` may
- * still own a tournament: naming it at all in their mutation fails the whole
- * statement, so `includePasscode` omits the key rather than sending null.
+ * There is no passcode column any more: invite-only access is granted by an
+ * addressed invite or by a revocable, expiring invite link, neither of which is
+ * a column on `tournaments`.
  */
-export function registrationColumns(
-  values: Record<string, any>,
-  { includePasscode = false }: { includePasscode?: boolean } = {},
-) {
-  const inviteOnly = !!values[REGISTRATION_FIELD.invite_only];
-  const passcode = (
-    values[REGISTRATION_FIELD.registration_passcode] ?? ""
-  ).trim();
-
+export function registrationColumns(values: Record<string, any>) {
   return {
     registration_type: values[REGISTRATION_FIELD.registration_type] ?? "teams",
     min_role: values[REGISTRATION_FIELD.min_role] || null,
     min_elo: values[REGISTRATION_FIELD.min_elo] ?? null,
     max_elo: values[REGISTRATION_FIELD.max_elo] ?? null,
     regions: values[REGISTRATION_FIELD.regions] ?? [],
-    invite_only: inviteOnly,
-    ...(includePasscode
-      ? { registration_passcode: inviteOnly && passcode ? passcode : null }
-      : {}),
+    invite_only: !!values[REGISTRATION_FIELD.invite_only],
     check_in_required: !!values[REGISTRATION_FIELD.check_in_required],
     check_in_setting:
       values[REGISTRATION_FIELD.check_in_setting] || CHECK_IN_SETTING_DEFAULT,
@@ -191,12 +155,6 @@ export function registrationFormValues(tournament: Record<string, any>) {
       tournament.max_elo != null ? Number(tournament.max_elo) : null,
     [REGISTRATION_FIELD.regions]: [...(tournament.regions ?? [])],
     [REGISTRATION_FIELD.invite_only]: !!tournament.invite_only,
-    // Whichever of the two the session was allowed to select: the raw column
-    // for tournament_organizer, the computed field for everyone else.
-    [REGISTRATION_FIELD.registration_passcode]:
-      tournament.registration_passcode ??
-      tournament.organizer_registration_passcode ??
-      null,
     [REGISTRATION_FIELD.check_in_required]: !!tournament.check_in_required,
     [REGISTRATION_FIELD.check_in_setting]:
       tournament.check_in_setting ?? CHECK_IN_SETTING_DEFAULT,

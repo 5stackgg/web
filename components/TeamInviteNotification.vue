@@ -10,7 +10,15 @@ import TimeAgo from "./TimeAgo.vue";
     <h3 class="text-lg font-semibold mb-2">{{ title }}</h3>
 
     <template v-if="isRegistration">
-      {{ $t("team.invite.tournament_registration_message") }}
+      <!-- Same table, same accept type, two addressings: a row carrying a team
+           is an invite for that team to register, not for you personally. -->
+      {{
+        isTeamRegistration
+          ? $t("team.invite.tournament_team_registration_message", {
+              team: invite.team.name,
+            })
+          : $t("team.invite.tournament_registration_message")
+      }}
       <p class="text-sm text-muted-foreground mb-2">
         <NuxtLink
           :to="`/tournaments/${invite.tournament.id}`"
@@ -85,12 +93,19 @@ export default {
     isRegistration(): boolean {
       return this.type === "tournament-registration";
     },
+    isTeamRegistration(): boolean {
+      return this.isRegistration && !!this.invite.team_id;
+    },
     isTournamentTeam(): boolean {
       return this.type === "tournament" || this.type === "tournament-team";
     },
     title(): string {
       if (this.isRegistration) {
-        return this.$t("team.invite.tournament_registration_title") as string;
+        return this.$t(
+          this.isTeamRegistration
+            ? "team.invite.tournament_team_registration_title"
+            : "team.invite.tournament_registration_title",
+        ) as string;
       }
       if (this.isTournamentTeam) {
         return this.$t("team.invite.tournament_title") as string;
@@ -115,8 +130,8 @@ export default {
       });
 
       // Accepting a registration invite writes the same
-      // tournament_registration_unlocks row the passcode writes, so the
-      // tournament page's existing entry gate is already satisfied when we
+      // tournament_registration_unlocks row a redeemed invite link writes, so
+      // the tournament page's existing entry gate is already satisfied when we
       // land on it — there is nothing extra to do here.
       if (this.isRegistration) {
         return this.$router.push(`/tournaments/${this.invite.tournament.id}`);

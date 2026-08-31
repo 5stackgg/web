@@ -168,7 +168,7 @@ import {
         </FormItem>
       </FormField>
 
-      <div class="grid gap-3 border-t border-border pt-5">
+      <div class="border-t border-border pt-5">
         <FormField v-slot="{ value, handleChange }" :name="field.invite_only">
           <FormItem>
             <div
@@ -193,29 +193,6 @@ import {
             </div>
           </FormItem>
         </FormField>
-
-        <Fold :open="!!form.values[field.invite_only] && canSetPasscode">
-          <FormField
-            v-slot="{ componentField }"
-            :name="field.registration_passcode"
-          >
-            <FormItem class="max-w-xs pt-1">
-              <FormLabel>
-                {{ $t("tournament.registration.passcode.label") }}
-                <span class="opacity-60">{{
-                  $t("tournament.registration.passcode.optional")
-                }}</span>
-              </FormLabel>
-              <FormControl>
-                <Input v-bind="componentField" />
-              </FormControl>
-              <FormDescription>{{
-                $t("tournament.registration.passcode.description")
-              }}</FormDescription>
-              <FormMessage />
-            </FormItem>
-          </FormField>
-        </Fold>
       </div>
     </section>
 
@@ -452,7 +429,6 @@ import { dateLocale } from "~/utilities/dateLocale";
 import {
   REGISTRATION_TYPES,
   REGISTRATION_FIELD,
-  canManageRegistrationPasscode,
 } from "~/utilities/tournamentRegistration";
 import {
   CHECK_IN_CLOSES_DEFAULT_MINUTES,
@@ -506,13 +482,6 @@ export default {
   computed: {
     frozen(): boolean {
       return isTournamentScheduleFrozen(this.tournament);
-    },
-    // Hidden rather than disabled for a session that cannot write the column:
-    // an input whose value is silently dropped from every mutation is worse
-    // than no input. In practice that is only a signed-out session, which
-    // never reaches this form.
-    canSetPasscode(): boolean {
-      return canManageRegistrationPasscode();
     },
     roles(): e_player_roles_enum[] {
       return roleOrder;

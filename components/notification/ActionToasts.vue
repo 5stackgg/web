@@ -175,7 +175,12 @@ const items = computed<ToastItem[]>(() => {
         invite.invited_by?.name ||
         t("layouts.notifications.toast.actor_organizer"),
       action: t("layouts.notifications.toast.invited_you_register"),
-      detail: invite.tournament?.name ?? "",
+      // A team-addressed row is the same invite pointed at a roster rather than
+      // a person; naming the team is the only thing that tells the two apart in
+      // a one-line toast.
+      detail: invite.team?.name
+        ? `${invite.team.name} · ${invite.tournament?.name ?? ""}`
+        : (invite.tournament?.name ?? ""),
       accept: async () => {
         await inviteAction("tournament-registration", invite.id, true);
         navigateTo(`/tournaments/${invite.tournament?.id}`);

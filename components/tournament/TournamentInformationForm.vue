@@ -201,14 +201,10 @@ import * as z from "zod";
 import { useForm } from "vee-validate";
 import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
 import { $ } from "~/generated/zeus";
-import {
-  tournamentOrganizerPasscodeField,
-  tournamentRegistrationFields,
-} from "~/graphql/simpleTournamentFields";
+import { tournamentRegistrationFields } from "~/graphql/simpleTournamentFields";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { isTournamentScheduleFrozen } from "~/utilities/tournamentCheckIn";
 import {
-  canManageRegistrationPasscode,
   registrationColumns,
   registrationFormValues,
   registrationSchemaShape,
@@ -253,21 +249,16 @@ export default {
         // The registration columns are not part of the selection the tournament
         // page hands down as `tournament`, and `check_in_started` has to stay
         // live: the freeze must engage while an organizer has this form open.
-        query: function (this: any) {
-          return generateSubscription({
-            tournaments_by_pk: [
-              { id: $("tournamentId", "uuid!") },
-              {
-                id: true,
-                start: true,
-                ...tournamentRegistrationFields,
-                ...(this.canReadPasscode
-                  ? tournamentOrganizerPasscodeField
-                  : {}),
-              } as any,
-            ],
-          });
-        },
+        query: generateSubscription({
+          tournaments_by_pk: [
+            { id: $("tournamentId", "uuid!") },
+            {
+              id: true,
+              start: true,
+              ...tournamentRegistrationFields,
+            } as any,
+          ],
+        }),
         variables: function (this: any) {
           return { tournamentId: this.tournament.id };
         },
@@ -307,14 +298,6 @@ export default {
     },
   },
   computed: {
-    // A computed, not a data() snapshot: `me` is undefined at data() time on a
-    // first login, a cleared cache, or a private window where localStorage
-    // throws. Snapshotting `false` there rendered the passcode input while
-    // silently dropping the column from every mutation — a success toast over
-    // a write that never happened.
-    canReadPasscode(): boolean {
-      return canManageRegistrationPasscode();
-    },
     // Only the live subscription carries `check_in_started`; the page's own
     // tournament object never selects it, and a missing field would read as
     // "not frozen" and quietly drop the lock explanation.
@@ -502,9 +485,7 @@ export default {
         // writing the panel's fallback defaults over a tournament whose real
         // settings were never loaded would silently switch check-in off.
         if (this.registrationSettings) {
-          const columns = registrationColumns(this.form.values, {
-            includePasscode: this.canReadPasscode,
-          });
+          const columns = registrationColumns(this.form.values);
           Object.assign(variables, columns);
           Object.assign(set, {
             // Cast: the enum type only enters Zeus's GraphQLVariableType union
@@ -539,9 +520,6 @@ export default {
           } else {
             delete variables.check_in_opens_before_minutes;
             delete variables.check_in_closes_before_minutes;
-          }
-          if (this.canReadPasscode) {
-            set.registration_passcode = $("registration_passcode", "String");
           }
         }
 

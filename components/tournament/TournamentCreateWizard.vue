@@ -324,7 +324,6 @@ import matchOptionsValidator from "~/utilities/match-options-validator";
 import { EXPECTED_PLAYERS } from "~/utilities/matchmakingPartySize";
 import {
   REGISTRATION_FIELD,
-  canManageRegistrationPasscode,
   registrationColumns,
   registrationSchemaShape,
 } from "~/utilities/tournamentRegistration";
@@ -538,7 +537,6 @@ export default {
           this.form.setFieldValue("match_mode", "admin");
         }
         const form = this.form.values;
-        const canSetPasscode = canManageRegistrationPasscode();
 
         const { data } = await this.$apollo.mutate({
           variables: setupOptionsVariables(form),
@@ -563,9 +561,7 @@ export default {
                   scheduling_mode: form.negotiated_scheduling
                     ? "negotiated"
                     : "auto",
-                  ...registrationColumns(form, {
-                    includePasscode: canSetPasscode,
-                  }),
+                  ...registrationColumns(form),
                   options: {
                     data: setupOptionsSetMutation(!!form.map_pool_id),
                   },

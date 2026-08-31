@@ -2,10 +2,12 @@
 import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
-import ManageSection from "~/components/common/ManageSection.vue";
+import { Trash2 } from "lucide-vue-next";
 import PlayerSearch from "~/components/PlayerSearch.vue";
+import TeamSearch from "~/components/teams/TeamSearch.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import {
   AlertDialog,
@@ -21,27 +23,40 @@ import {
 import { toast } from "~/components/ui/toast";
 import {
   CREATE_TOURNAMENT_INVITE_MUTATION,
+  CREATE_TOURNAMENT_TEAM_INVITE_MUTATION,
   DELETE_TOURNAMENT_INVITE_MUTATION,
   TOURNAMENT_INVITES_SUBSCRIPTION,
 } from "~/graphql/tournamentInvites";
 
 /**
- * The organizer half of invite-only registration.
+ * The organizer's direct-invite list: address a specific team or a specific
+ * player, as opposed to the shareable links in TournamentInviteLinks.
  *
- * An invite and the passcode are two doors onto ONE grant: accepting writes the
- * same `tournament_registration_unlocks` row `unlockTournamentRegistration`
- * writes, so nothing downstream — the entry gate, the join button, the free
- * agent pool — has to learn that invites exist. This component only creates and
- * revokes rows; it never touches registration itself.
+ * An invite and a redeemed link are two doors onto ONE grant — accepting writes
+ * the same `tournament_registration_unlocks` row — so nothing downstream (the
+ * entry gate, the join button, the free agent pool) has to learn that either
+ * exists. This component only creates and revokes rows.
+ *
+ * Deliberately NOT gated on `invite_only`. Invite-only governs who may ENTER,
+ * not whether an organizer may invite, exactly as a lobby works; gating the UI
+ * on the saved flag is what made invites look impossible to generate. On an
+ * open tournament an invite is a shortcut, and the hint below says so.
  */
 const props = defineProps<{
   tournament: Record<string, any>;
+  // The registration columns, fetched separately by TournamentDetail. Only read
+  // to decide which hint to show — never to decide whether to render.
+  registration?: Record<string, any> | null;
 }>();
 
 const { t } = useI18n();
 const { client: apolloClient } = useApolloClient();
 
 const invites = ref<any[]>([]);
+
+const apiDomain = computed(() => useRuntimeConfig().public.apiDomain);
+
+const inviteOnly = computed(() => props.registration?.invite_only === true);
 
 let subscription: { unsubscribe: () => void } | null = null;
 
@@ -80,27 +95,52 @@ onBeforeUnmount(() => {
 // the answer the organizer is looking for when they search someone a second
 // time, and a player who silently vanishes from the results reads as "no such
 // player".
-const ineligible = computed(() => {
+const ineligiblePlayers = computed(() => {
   const map: Record<string, string> = {};
   for (const invite of invites.value) {
-    map[String(invite.steam_id)] = t("tournament.invites.already_invited");
+    if (invite.steam_id) {
+      map[String(invite.steam_id)] = t("tournament.invites.already_invited");
+    }
   }
   return map;
 });
 
-async function invitePlayer(player: { steam_id: string }) {
+// Two reasons, most specific last so it wins: a team already registered is a
+// stronger answer than "already invited", and inviting it again does nothing.
+const ineligibleTeams = computed(() => {
+  const map: Record<string, string> = {};
+  for (const invite of invites.value) {
+    if (invite.team_id) {
+      map[String(invite.team_id)] = t("tournament.invites.already_invited");
+    }
+  }
+  for (const team of props.tournament?.teams ?? []) {
+    if (team.team_id) {
+      map[String(team.team_id)] = t("team.search.ineligible.in_tournament");
+    }
+  }
+  return map;
+});
+
+function teamAvatarSrc(team: { avatar_url?: string | null }): string | null {
+  if (!team?.avatar_url) {
+    return null;
+  }
+  return `https://${apiDomain.value}/${team.avatar_url}`;
+}
+
+function inviteName(invite: Record<string, any>): string {
+  return invite.team?.name ?? invite.player?.name ?? "";
+}
+
+// UNIQUE (tournament_id, steam_id) / (tournament_id, team_id) — inviting the
+// same recipient twice is the same state as inviting them once, so it is
+// reported as a no-op rather than surfaced as a failure.
+async function sendInvite(mutation: any, variables: Record<string, any>) {
   try {
-    await apolloClient.mutate({
-      mutation: CREATE_TOURNAMENT_INVITE_MUTATION,
-      variables: {
-        tournamentId: props.tournament.id,
-        steamId: player.steam_id,
-      },
-    });
+    await apolloClient.mutate({ mutation, variables });
     toast({ title: t("tournament.invites.sent") });
   } catch (error: unknown) {
-    // UNIQUE (tournament_id, steam_id) — inviting someone twice is the same
-    // state as inviting them once, so it is reported as a no-op, not a failure.
     const message = error instanceof Error ? error.message : String(error);
     if (/uniqueness violation|already exists/i.test(message)) {
       toast({ title: t("tournament.invites.already_invited") });
@@ -114,6 +154,23 @@ async function invitePlayer(player: { steam_id: string }) {
   }
 }
 
+function invitePlayer(player: { steam_id: string }) {
+  return sendInvite(CREATE_TOURNAMENT_INVITE_MUTATION, {
+    tournamentId: props.tournament.id,
+    steamId: player.steam_id,
+  });
+}
+
+function inviteTeam(team: { id: string }) {
+  if (!team?.id) {
+    return;
+  }
+  return sendInvite(CREATE_TOURNAMENT_TEAM_INVITE_MUTATION, {
+    tournamentId: props.tournament.id,
+    teamId: team.id,
+  });
+}
+
 async function revoke(inviteId: string) {
   await apolloClient.mutate({
     mutation: DELETE_TOURNAMENT_INVITE_MUTATION,
@@ -124,46 +181,68 @@ async function revoke(inviteId: string) {
 </script>
 
 <template>
-  <ManageSection
-    id="tournament-invites"
-    :label="$t('tournament.invites.title')"
-    :hint="$t('tournament.invites.description')"
-  >
+  <div class="grid gap-3">
+    <p class="text-[0.75rem] leading-snug text-muted-foreground/80">
+      {{
+        inviteOnly
+          ? $t("tournament.invites.description")
+          : $t("tournament.invites.hint_open")
+      }}
+    </p>
+
+    <!-- No v-model on either search: an invite is an action, not a selection,
+         so the control must fall back to its own label after each one rather
+         than sitting on the last recipient. TeamSearch would otherwise pin the
+         chosen team in the trigger (it reads `modelValue`, where PlayerSearch
+         reads `selected`). -->
+    <TeamSearch
+      :label="$t('tournament.invites.add_team')"
+      :ineligible="ineligibleTeams"
+      @selected="inviteTeam"
+    />
+
     <PlayerSearch
       :label="$t('tournament.invites.add')"
-      :ineligible="ineligible"
+      :ineligible="ineligiblePlayers"
       @selected="invitePlayer"
     />
 
-    <div v-if="invites.length > 0" class="grid gap-2">
-      <div
+    <ul v-if="invites.length > 0" class="grid gap-1.5">
+      <li
         v-for="invite in invites"
         :key="invite.id"
-        class="flex flex-wrap items-center justify-between gap-3 rounded-md border border-dashed border-border bg-muted/15 px-[0.85rem] py-[0.65rem]"
+        class="grid gap-1.5 rounded-md border border-dashed border-border bg-muted/15 px-3 py-2.5"
       >
-        <div class="flex min-w-0 items-center gap-[0.65rem]">
-          <PlayerDisplay :player="invite.player" />
-          <span
-            class="rounded-full bg-muted/40 px-[0.45rem] py-[0.1rem] font-mono text-[0.6rem] font-bold uppercase tracking-[0.2em] text-muted-foreground"
-          >
-            {{ $t("tournament.invites.pending") }}
-          </span>
-        </div>
-
-        <div class="flex items-center gap-3">
-          <span class="text-xs text-muted-foreground">
-            {{
-              $t("tournament.invites.invited_by", {
-                name: invite.invited_by?.name ?? "",
-              })
-            }}
-            <TimeAgo :date="invite.created_at" hide-icon />
-          </span>
+        <div class="flex min-w-0 items-center justify-between gap-2">
+          <PlayerDisplay v-if="invite.player" :player="invite.player" />
+          <div v-else class="flex min-w-0 items-center gap-2">
+            <Avatar class="h-5 w-5 shrink-0 rounded">
+              <AvatarImage
+                v-if="teamAvatarSrc(invite.team)"
+                :src="teamAvatarSrc(invite.team)!"
+                :alt="invite.team?.name"
+              />
+              <AvatarFallback class="rounded text-[0.55rem]">
+                {{
+                  (invite.team?.short_name || invite.team?.name || "").slice(
+                    0,
+                    2,
+                  )
+                }}
+              </AvatarFallback>
+            </Avatar>
+            <span class="truncate text-sm">{{ invite.team?.name }}</span>
+          </div>
 
           <AlertDialog>
             <AlertDialogTrigger as-child>
-              <Button variant="outline" size="sm">
-                {{ $t("tournament.invites.revoke") }}
+              <Button
+                variant="ghost"
+                size="icon"
+                class="h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive"
+                :title="$t('tournament.invites.revoke')"
+              >
+                <Trash2 class="h-3.5 w-3.5" />
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -174,28 +253,53 @@ async function revoke(inviteId: string) {
                 <AlertDialogDescription>
                   {{
                     $t("tournament.invites.revoke_description", {
-                      name: invite.player?.name ?? "",
+                      name: inviteName(invite),
                     })
                   }}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
-                <AlertDialogAction @click="revoke(invite.id)">
-                  {{ $t("common.confirm") }}
+                <AlertDialogAction
+                  variant="destructive"
+                  @click="revoke(invite.id)"
+                >
+                  {{ $t("tournament.invites.revoke") }}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
         </div>
-      </div>
-    </div>
+
+        <div
+          class="flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.68rem] text-muted-foreground"
+        >
+          <span
+            class="rounded-full bg-muted/40 px-[0.4rem] py-[0.05rem] font-mono text-[0.55rem] font-bold uppercase tracking-[0.18em]"
+          >
+            {{
+              invite.team_id
+                ? $t("tournament.invites.team_label")
+                : $t("tournament.invites.pending")
+            }}
+          </span>
+          <span>
+            {{
+              $t("tournament.invites.invited_by", {
+                name: invite.invited_by?.name ?? "",
+              })
+            }}
+          </span>
+          <TimeAgo :date="invite.created_at" hide-icon />
+        </div>
+      </li>
+    </ul>
 
     <div
       v-else
-      class="rounded-sm border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground"
+      class="rounded-sm border border-dashed border-border px-3 py-4 text-center text-[0.75rem] text-muted-foreground"
     >
       {{ $t("tournament.invites.empty") }}
     </div>
-  </ManageSection>
+  </div>
 </template>

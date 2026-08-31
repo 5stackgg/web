@@ -19,6 +19,8 @@ import TournamentCheckInReview from "~/components/tournament/TournamentCheckInRe
 import TournamentEntryGate from "~/components/tournament/TournamentEntryGate.vue";
 import TournamentFreeAgents from "~/components/tournament/TournamentFreeAgents.vue";
 import TournamentInvites from "~/components/tournament/TournamentInvites.vue";
+import TournamentInviteLinks from "~/components/tournament/TournamentInviteLinks.vue";
+import TournamentInviteAccept from "~/components/tournament/TournamentInviteAccept.vue";
 import TournamentStats from "~/components/tournament/TournamentStats.vue";
 import Separator from "~/components/ui/separator/Separator.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
@@ -161,11 +163,13 @@ const tournamentAdminPanelClasses =
   "relative border border-border p-5 [background:linear-gradient(180deg,hsl(var(--card)_/_0.65)_0%,hsl(var(--card)_/_0.35)_100%)] [backdrop-filter:blur(6px)]";
 const tournamentAdminCornerClasses =
   "pointer-events-none absolute h-3 w-3 border-[hsl(var(--tac-amber))]";
-const tournamentAdminTitleClasses =
-  "mb-[0.35rem] font-sans text-[1.1rem] font-bold uppercase tracking-[0.05em] text-foreground";
-const tournamentAdminDescClasses =
-  "mb-4 text-[0.8rem] leading-[1.4] text-muted-foreground";
-const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
+// Three stacked tools in one 360px frame. `tac-section-sep`'s 2rem gap is built
+// for a full-width settings page and is far too loose here, so the hairline rule
+// between siblings is spelled out at panel scale instead.
+const tournamentAdminSectionClasses =
+  "grid gap-3 [&:not(:first-of-type)]:mt-5 [&:not(:first-of-type)]:border-t [&:not(:first-of-type)]:border-border [&:not(:first-of-type)]:pt-5";
+const tournamentAdminSectionHintClasses =
+  "text-[0.75rem] leading-snug text-muted-foreground/80";
 
 function setTeamEnterDelay(el: Element) {
   const step = Number((el as HTMLElement).dataset.stagger ?? 0);
@@ -578,6 +582,14 @@ function clearTeamEnterDelay(el: Element) {
         </header>
       </PageTransition>
 
+      <!-- Ahead of the entry gate, because accepting is what answers it: a
+           visitor who arrived on an invite link sees the tournament first and
+           accepts explicitly. -->
+      <TournamentInviteAccept
+        :tournament="tournament"
+        :registration="tournamentRegistration"
+      />
+
       <!-- Before the check-in panel invites them to register: whether they can
            enter at all, and which gate stops them if not. -->
       <TournamentEntryGate
@@ -837,6 +849,10 @@ function clearTeamEnterDelay(el: Element) {
 
               <div v-if="tournament.is_organizer" class="lg:sticky lg:top-6">
                 <PageTransition :delay="150">
+                  <!-- Everything an organizer does to fill the bracket lives in
+                       this one column: add a team, invite one directly, or hand
+                       out a link. The invite panels used to sit at the bottom of
+                       the Information settings tab, where nobody found them. -->
                   <aside :class="tournamentAdminPanelClasses">
                     <div
                       :class="[
@@ -851,17 +867,37 @@ function clearTeamEnterDelay(el: Element) {
                       ]"
                     ></div>
 
-                    <h3 :class="tournamentAdminTitleClasses">
-                      {{ $t("tournament.add_team.title") }}
-                    </h3>
-                    <p :class="tournamentAdminDescClasses">
-                      {{ $t("tournament.add_team.description") }}
-                    </p>
-                    <div :class="tournamentAdminBodyClasses">
+                    <section :class="tournamentAdminSectionClasses">
+                      <div :class="[tacticalSectionLabelClasses, 'mb-0']">
+                        <span :class="tacticalSectionTickClasses"></span>
+                        {{ $t("tournament.add_team.title") }}
+                      </div>
+                      <p :class="tournamentAdminSectionHintClasses">
+                        {{ $t("tournament.add_team.description") }}
+                      </p>
                       <TournamentJoinForm
                         :tournament="tournament"
                       ></TournamentJoinForm>
-                    </div>
+                    </section>
+
+                    <section :class="tournamentAdminSectionClasses">
+                      <div :class="[tacticalSectionLabelClasses, 'mb-0']">
+                        <span :class="tacticalSectionTickClasses"></span>
+                        {{ $t("tournament.invites.title") }}
+                      </div>
+                      <TournamentInvites
+                        :tournament="tournament"
+                        :registration="tournamentRegistration"
+                      />
+                    </section>
+
+                    <section :class="tournamentAdminSectionClasses">
+                      <div :class="[tacticalSectionLabelClasses, 'mb-0']">
+                        <span :class="tacticalSectionTickClasses"></span>
+                        {{ $t("tournament.invite_links.title") }}
+                      </div>
+                      <TournamentInviteLinks :tournament="tournament" />
+                    </section>
                   </aside>
                 </PageTransition>
               </div>
@@ -904,20 +940,7 @@ function clearTeamEnterDelay(el: Element) {
         </TabsContent>
         <TabsContent value="information" v-if="tournament?.is_organizer">
           <PageTransition>
-            <div class="grid gap-8">
-              <TournamentInformationForm :tournament="tournament" />
-              <!-- A sibling of the form, never nested inside it: the invite
-                   list writes immediately and carries its own buttons, and any
-                   button inside a <form> defaults to type="submit". Invite-only
-                   is read from the registration subscription rather than the
-                   form's live value so the panel follows what is SAVED — an
-                   invite against a tournament that is still open to everyone
-                   would be meaningless. -->
-              <TournamentInvites
-                v-if="tournamentRegistration?.invite_only"
-                :tournament="tournament"
-              />
-            </div>
+            <TournamentInformationForm :tournament="tournament" />
           </PageTransition>
         </TabsContent>
         <TabsContent value="match-options" v-if="tournament?.is_organizer">

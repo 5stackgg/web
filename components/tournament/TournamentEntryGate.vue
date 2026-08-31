@@ -1,16 +1,10 @@
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { useApolloClient } from "@vue/apollo-composable";
-import { KeyRound, ShieldCheck, ShieldX } from "lucide-vue-next";
-import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
+import { ShieldCheck, ShieldX } from "lucide-vue-next";
 import TournamentChip from "~/components/tournament/TournamentChip.vue";
-import { toast } from "~/components/ui/toast";
 import { e_tournament_status_enum } from "~/generated/zeus";
-import { generateMutation } from "~/graphql/graphqlGen";
 import { useAuthStore } from "~/stores/AuthStore";
-import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
 
 const props = defineProps<{
   tournament: Record<string, any>;
@@ -22,16 +16,13 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
-const { client } = useApolloClient();
 
 const me = computed(() => useAuthStore().me);
-
-const passcode = ref("");
 
 const inviteOnly = computed(() => props.registration?.invite_only === true);
 
 // A row-level computed field: true when the tournament is not invite-only, the
-// viewer organizes it, or they have already redeemed the passcode.
+// viewer organizes it, or an invite / invite link has already unlocked them.
 const unlocked = computed(
   () => props.registration?.registration_unlocked !== false,
 );
@@ -120,7 +111,10 @@ const requirements = computed(() => {
   return rows;
 });
 
-const needsPasscode = computed(() => inviteOnly.value && !unlocked.value);
+// There is no longer anything to type in: entry is granted by an invite the
+// organizer addresses to you or by an invite link they share, both of which
+// arrive from outside this panel. All it can do is say so.
+const needsInvite = computed(() => inviteOnly.value && !unlocked.value);
 
 const blocked = computed(() => roleBlocked.value || eloBlocked.value);
 
@@ -128,14 +122,14 @@ const chipTone = computed(() => {
   if (blocked.value) {
     return "bad";
   }
-  return needsPasscode.value ? "warn" : "ok";
+  return needsInvite.value ? "warn" : "ok";
 });
 
 const chipLabel = computed(() => {
   if (blocked.value) {
     return t("tournament.entry.blocked_chip");
   }
-  return needsPasscode.value
+  return needsInvite.value
     ? t("tournament.entry.locked_chip")
     : t("tournament.entry.ok_chip");
 });
@@ -149,38 +143,8 @@ const visible = computed(() => {
   if (props.tournament?.status !== e_tournament_status_enum.RegistrationOpen) {
     return false;
   }
-  return needsPasscode.value || requirements.value.length > 0;
+  return needsInvite.value || requirements.value.length > 0;
 });
-
-async function unlock() {
-  const code = passcode.value.trim();
-  if (!code) {
-    return;
-  }
-  try {
-    await client.mutate({
-      mutation: generateMutation({
-        unlockTournamentRegistration: [
-          {
-            tournament_id: props.tournament.id,
-            passcode: code,
-          },
-          {
-            success: true,
-          },
-        ],
-      }),
-    });
-    passcode.value = "";
-    toast({ title: t("tournament.entry.unlocked") });
-  } catch (error: unknown) {
-    toast({
-      title: t("tournament.entry.unlock_failed"),
-      description: error instanceof Error ? error.message : String(error),
-      variant: "destructive",
-    });
-  }
-}
 </script>
 
 <template>
@@ -197,7 +161,7 @@ async function unlock() {
           class="m-0 font-sans text-[1.05rem] font-bold tracking-[0.01em] text-foreground"
         >
           {{
-            needsPasscode
+            needsInvite
               ? $t("tournament.entry.locked_title")
               : $t("tournament.entry.title")
           }}
@@ -206,8 +170,8 @@ async function unlock() {
           class="mt-1 max-w-[70ch] text-[0.8rem] leading-relaxed text-muted-foreground"
         >
           {{
-            needsPasscode
-              ? $t("tournament.entry.locked_hint")
+            needsInvite
+              ? $t("tournament.entry.invite_hint")
               : $t("tournament.entry.requirements_hint")
           }}
         </p>
@@ -239,38 +203,5 @@ async function unlock() {
         </TournamentChip>
       </div>
     </div>
-
-    <!-- Button, not a bare <button>: it tracks the returned promise, so a
-         second click while the unlock is in flight is impossible. -->
-    <form
-      v-if="needsPasscode"
-      class="mt-4 flex flex-wrap items-end gap-2.5"
-      @submit.prevent="unlock"
-    >
-      <div class="min-w-[12rem] flex-1">
-        <label
-          for="tournament-entry-passcode"
-          class="mb-1.5 block font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
-        >
-          {{ $t("tournament.entry.passcode_label") }}
-        </label>
-        <Input
-          id="tournament-entry-passcode"
-          v-model="passcode"
-          :placeholder="$t('tournament.entry.passcode_placeholder')"
-        />
-      </div>
-      <!-- type="button" so a click goes through the Button's own promise
-           tracking; Enter in the field still reaches the form's submit. -->
-      <Button
-        type="button"
-        :disabled="passcode.trim().length === 0"
-        :class="[tacticalCtaButtonClasses, 'shrink-0']"
-        @click="unlock"
-      >
-        <KeyRound class="h-4 w-4" />
-        {{ $t("tournament.entry.unlock") }}
-      </Button>
-    </form>
   </section>
 </template>

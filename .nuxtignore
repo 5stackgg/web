@@ -1,0 +1,12 @@
+# Git worktrees live here (Claude Code creates them at .claude/worktrees/*), and
+# at least one symlinks its node_modules back to ../../../node_modules. Nitro's
+# dev storage watches rootDir with followSymlinks:true, so chokidar walks that
+# link and registers a watch for every node_modules file — ~28.7k registrations
+# per process, past the point where macOS starts throwing
+# "EMFILE: too many open files, watch" and Nuxt restart-loops.
+#
+# This lives in .nuxtignore rather than nuxt.config's `ignore` because the
+# `ignore` option is broken in Nuxt 3.17.2: @nuxt/schema's $resolve uses
+# `for (const pattern in val)` over the array, so it adds the index ("0")
+# instead of your pattern. .nuxtignore is read directly by resolveIgnorePatterns.
+.claude

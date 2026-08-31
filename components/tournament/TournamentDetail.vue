@@ -158,8 +158,6 @@ const myTeamHeaderClasses = "mb-4 flex flex-col gap-[0.35rem]";
 const myTeamLabelClasses =
   "inline-flex items-center gap-2 font-mono text-[0.72rem] uppercase tracking-[0.24em] text-muted-foreground";
 const myTeamHintClasses = "text-[0.8rem] text-muted-foreground/80";
-const tournamentPanelCardClasses =
-  "relative rounded-lg border border-border px-6 py-5 [background:linear-gradient(180deg,hsl(var(--card)_/_0.65)_0%,hsl(var(--card)_/_0.35)_100%)] [backdrop-filter:blur(6px)]";
 // Follows ManageSection's rule: a section is a tick-and-label plus a hairline,
 // never a card. The rule has to flip axis because the column does — stacked
 // under `lg` it is a top border like tac-section-sep, and side by side with the
@@ -702,12 +700,10 @@ function clearTeamEnterDelay(el: Element) {
                 </div>
               </div>
 
-              <div :class="tournamentPanelCardClasses">
-                <TournamentTeam
-                  :tournament="tournament"
-                  :team="myTeam"
-                ></TournamentTeam>
-              </div>
+              <TournamentTeam
+                :tournament="tournament"
+                :team="myTeam"
+              ></TournamentTeam>
             </div>
           </PageTransition>
         </TabsContent>
@@ -891,10 +887,7 @@ function clearTeamEnterDelay(el: Element) {
                        mount these at all (they are organizer-only
                        subscriptions); an organizer must never unmount them. -->
                   <template v-if="tournament.is_organizer">
-                    <div
-                      v-show="teamsPanel === 'invites'"
-                      :class="tournamentPanelCardClasses"
-                    >
+                    <div v-show="teamsPanel === 'invites'">
                       <TournamentInvites
                         :tournament="tournament"
                         :registration="tournamentRegistration"
@@ -902,10 +895,7 @@ function clearTeamEnterDelay(el: Element) {
                       />
                     </div>
 
-                    <div
-                      v-show="teamsPanel === 'links'"
-                      :class="tournamentPanelCardClasses"
-                    >
+                    <div v-show="teamsPanel === 'links'">
                       <TournamentInviteLinks
                         :tournament="tournament"
                         @count="adminLinkCount = $event"

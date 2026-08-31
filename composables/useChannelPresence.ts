@@ -43,6 +43,7 @@ const EMPTY: Array<VoiceParticipant> = [];
 // One listener for every channel, not one per channel: the socket delivers a
 // channel id with each push, so routing is a map lookup.
 let listener: { stop: () => void } | null = null;
+let closedListener: { stop: () => void } | null = null;
 
 function listen() {
   if (listener) {
@@ -59,6 +60,23 @@ function listen() {
       }
 
       entry.participants.value = data.participants ?? [];
+      entry.loaded.value = true;
+    },
+  );
+
+  // The channel is gone, not merely empty. Same end state either way for a
+  // surface drawing it from outside, and there will be no further participant
+  // push to arrive at.
+  closedListener = socket.listen(
+    "voice:closed",
+    (data: { channelId: string }) => {
+      const entry = data?.channelId ? entries.get(data.channelId) : null;
+
+      if (!entry) {
+        return;
+      }
+
+      entry.participants.value = [];
       entry.loaded.value = true;
     },
   );
@@ -126,6 +144,8 @@ function release(id: string) {
   if (entries.size === 0) {
     listener?.stop();
     listener = null;
+    closedListener?.stop();
+    closedListener = null;
   }
 }
 

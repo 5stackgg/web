@@ -572,11 +572,11 @@ const vsBaseClasses =
                this section appeared -- which left the same three controls on
                screen twice as soon as it had. -->
           <VoiceChannelCard
-            v-if="myLineupId"
+            v-if="myVoiceLineupId"
             show-empty
             class="mt-1"
             kind="match"
-            :channel-id="myLineupId"
+            :channel-id="myVoiceLineupId"
             :label="$t('layouts.voice_panel.team_comms')"
           />
 
@@ -766,7 +766,11 @@ import { useMatchContext } from "~/composables/useMatchContext";
 // module, so a module-scope import wins over a computed of the same name when
 // the template resolves it -- the template rendered the function's source into
 // the team lobby id, which reached Postgres as a uuid and killed chat.
-import { myLineupId as resolveMyLineupId } from "~/utilities/matchTeamLobby";
+import {
+  myLineupId as resolveMyLineupId,
+  myVoiceLineupId as resolveMyVoiceLineupId,
+} from "~/utilities/matchTeamLobby";
+import { useActiveVoiceChannel } from "~/composables/useActiveVoiceChannel";
 import { setPageChatFocus } from "~/composables/useChatPresence";
 import { chatThreadKey } from "~/utilities/chatThread";
 import socket from "~/web-sockets/Socket";
@@ -1204,6 +1208,28 @@ export default {
     // Shared with the sidebar and the pop-out, which offer the same team room.
     myLineupId() {
       return resolveMyLineupId(this.match, useAuthStore().me?.steam_id);
+    },
+    // Null once the match is over: the API closes the channel a few minutes
+    // after that and stops admitting it, so a card here would offer a call that
+    // cannot be joined -- and asking it for a roster is what used to make every
+    // visit to a finished match log a membership failure.
+    //
+    // A call that is actually running is the exception. It outlives the match by
+    // that same grace window, and taking its controls off the page the instant
+    // the last round lands would leave people talking with no way to hang up.
+    myVoiceLineupId() {
+      const live = resolveMyVoiceLineupId(
+        this.match,
+        useAuthStore().me?.steam_id,
+      );
+
+      if (live) {
+        return live;
+      }
+
+      return useActiveVoiceChannel().session.value?.id === this.myLineupId
+        ? this.myLineupId
+        : null;
     },
     // Null unless the inline chat is actually on screen, so neither being on
     // the page nor merely being allowed into the room is mistaken for reading

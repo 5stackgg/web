@@ -1,5 +1,6 @@
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
+import { matchHasEnded } from "~/utilities/matchTeamLobby";
 
 // Every voice channel this player is entitled to, resolved once.
 //
@@ -73,6 +74,12 @@ export function useVoiceChannels() {
         const lineup = myLineup(match);
 
         if (!lineup?.id) {
+          continue;
+        }
+
+        // The call closes itself shortly after the match ends, so offering it
+        // here is offering a room that is about to refuse the join.
+        if (matchHasEnded(match)) {
           continue;
         }
 

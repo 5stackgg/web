@@ -13699,6 +13699,9 @@ export const AllTypesProps: Record<string,any> = {
 		createServerDirectory:{
 
 		},
+		createTournamentInviteCode:{
+			tournament_id:"uuid"
+		},
 		deleteAward:{
 			id:"uuid"
 		},
@@ -14771,6 +14774,19 @@ export const AllTypesProps: Record<string,any> = {
 		delete_tournament_free_agents_by_pk:{
 			id:"uuid"
 		},
+		delete_tournament_invite_code_uses:{
+			where:"tournament_invite_code_uses_bool_exp"
+		},
+		delete_tournament_invite_code_uses_by_pk:{
+			invite_code_id:"uuid",
+			player_steam_id:"bigint"
+		},
+		delete_tournament_invite_codes:{
+			where:"tournament_invite_codes_bool_exp"
+		},
+		delete_tournament_invite_codes_by_pk:{
+			id:"uuid"
+		},
 		delete_tournament_invites:{
 			where:"tournament_invites_bool_exp"
 		},
@@ -14808,10 +14824,6 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		delete_tournament_registration_unlocks:{
 			where:"tournament_registration_unlocks_bool_exp"
-		},
-		delete_tournament_registration_unlocks_by_pk:{
-			player_steam_id:"bigint",
-			tournament_id:"uuid"
 		},
 		delete_tournament_stage_windows:{
 			where:"tournament_stage_windows_bool_exp"
@@ -16366,6 +16378,22 @@ export const AllTypesProps: Record<string,any> = {
 			object:"tournament_free_agents_insert_input",
 			on_conflict:"tournament_free_agents_on_conflict"
 		},
+		insert_tournament_invite_code_uses:{
+			objects:"tournament_invite_code_uses_insert_input",
+			on_conflict:"tournament_invite_code_uses_on_conflict"
+		},
+		insert_tournament_invite_code_uses_one:{
+			object:"tournament_invite_code_uses_insert_input",
+			on_conflict:"tournament_invite_code_uses_on_conflict"
+		},
+		insert_tournament_invite_codes:{
+			objects:"tournament_invite_codes_insert_input",
+			on_conflict:"tournament_invite_codes_on_conflict"
+		},
+		insert_tournament_invite_codes_one:{
+			object:"tournament_invite_codes_insert_input",
+			on_conflict:"tournament_invite_codes_on_conflict"
+		},
 		insert_tournament_invites:{
 			objects:"tournament_invites_insert_input",
 			on_conflict:"tournament_invites_on_conflict"
@@ -16719,6 +16747,9 @@ export const AllTypesProps: Record<string,any> = {
 		reconnectLive:{
 			match_id:"uuid"
 		},
+		redeemTournamentInviteCode:{
+			tournament_id:"uuid"
+		},
 		refreshFaceitRank:{
 
 		},
@@ -16791,6 +16822,9 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		revokeAward:{
 			id:"uuid"
+		},
+		revokeTournamentInviteCode:{
+			invite_code_id:"uuid"
 		},
 		sanctionServerPlayer:{
 
@@ -16943,9 +16977,6 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		uninstallGamePlugin:{
 
-		},
-		unlockTournamentRegistration:{
-			tournament_id:"uuid"
 		},
 		unsanctionServerPlayer:{
 
@@ -19144,6 +19175,32 @@ export const AllTypesProps: Record<string,any> = {
 		update_tournament_free_agents_many:{
 			updates:"tournament_free_agents_updates"
 		},
+		update_tournament_invite_code_uses:{
+			_inc:"tournament_invite_code_uses_inc_input",
+			_set:"tournament_invite_code_uses_set_input",
+			where:"tournament_invite_code_uses_bool_exp"
+		},
+		update_tournament_invite_code_uses_by_pk:{
+			_inc:"tournament_invite_code_uses_inc_input",
+			_set:"tournament_invite_code_uses_set_input",
+			pk_columns:"tournament_invite_code_uses_pk_columns_input"
+		},
+		update_tournament_invite_code_uses_many:{
+			updates:"tournament_invite_code_uses_updates"
+		},
+		update_tournament_invite_codes:{
+			_inc:"tournament_invite_codes_inc_input",
+			_set:"tournament_invite_codes_set_input",
+			where:"tournament_invite_codes_bool_exp"
+		},
+		update_tournament_invite_codes_by_pk:{
+			_inc:"tournament_invite_codes_inc_input",
+			_set:"tournament_invite_codes_set_input",
+			pk_columns:"tournament_invite_codes_pk_columns_input"
+		},
+		update_tournament_invite_codes_many:{
+			updates:"tournament_invite_codes_updates"
+		},
 		update_tournament_invites:{
 			_inc:"tournament_invites_inc_input",
 			_set:"tournament_invites_set_input",
@@ -19219,11 +19276,6 @@ export const AllTypesProps: Record<string,any> = {
 			_inc:"tournament_registration_unlocks_inc_input",
 			_set:"tournament_registration_unlocks_set_input",
 			where:"tournament_registration_unlocks_bool_exp"
-		},
-		update_tournament_registration_unlocks_by_pk:{
-			_inc:"tournament_registration_unlocks_inc_input",
-			_set:"tournament_registration_unlocks_set_input",
-			pk_columns:"tournament_registration_unlocks_pk_columns_input"
 		},
 		update_tournament_registration_unlocks_many:{
 			updates:"tournament_registration_unlocks_updates"
@@ -29118,6 +29170,33 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_free_agents_by_pk:{
 			id:"uuid"
 		},
+		tournament_invite_code_uses:{
+			distinct_on:"tournament_invite_code_uses_select_column",
+			order_by:"tournament_invite_code_uses_order_by",
+			where:"tournament_invite_code_uses_bool_exp"
+		},
+		tournament_invite_code_uses_aggregate:{
+			distinct_on:"tournament_invite_code_uses_select_column",
+			order_by:"tournament_invite_code_uses_order_by",
+			where:"tournament_invite_code_uses_bool_exp"
+		},
+		tournament_invite_code_uses_by_pk:{
+			invite_code_id:"uuid",
+			player_steam_id:"bigint"
+		},
+		tournament_invite_codes:{
+			distinct_on:"tournament_invite_codes_select_column",
+			order_by:"tournament_invite_codes_order_by",
+			where:"tournament_invite_codes_bool_exp"
+		},
+		tournament_invite_codes_aggregate:{
+			distinct_on:"tournament_invite_codes_select_column",
+			order_by:"tournament_invite_codes_order_by",
+			where:"tournament_invite_codes_bool_exp"
+		},
+		tournament_invite_codes_by_pk:{
+			id:"uuid"
+		},
 		tournament_invites:{
 			distinct_on:"tournament_invites_select_column",
 			order_by:"tournament_invites_order_by",
@@ -29204,10 +29283,6 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"tournament_registration_unlocks_select_column",
 			order_by:"tournament_registration_unlocks_order_by",
 			where:"tournament_registration_unlocks_bool_exp"
-		},
-		tournament_registration_unlocks_by_pk:{
-			player_steam_id:"bigint",
-			tournament_id:"uuid"
 		},
 		tournament_stage_windows:{
 			distinct_on:"tournament_stage_windows_select_column",
@@ -33697,6 +33772,41 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"tournament_free_agents_stream_cursor_input",
 			where:"tournament_free_agents_bool_exp"
 		},
+		tournament_invite_code_uses:{
+			distinct_on:"tournament_invite_code_uses_select_column",
+			order_by:"tournament_invite_code_uses_order_by",
+			where:"tournament_invite_code_uses_bool_exp"
+		},
+		tournament_invite_code_uses_aggregate:{
+			distinct_on:"tournament_invite_code_uses_select_column",
+			order_by:"tournament_invite_code_uses_order_by",
+			where:"tournament_invite_code_uses_bool_exp"
+		},
+		tournament_invite_code_uses_by_pk:{
+			invite_code_id:"uuid",
+			player_steam_id:"bigint"
+		},
+		tournament_invite_code_uses_stream:{
+			cursor:"tournament_invite_code_uses_stream_cursor_input",
+			where:"tournament_invite_code_uses_bool_exp"
+		},
+		tournament_invite_codes:{
+			distinct_on:"tournament_invite_codes_select_column",
+			order_by:"tournament_invite_codes_order_by",
+			where:"tournament_invite_codes_bool_exp"
+		},
+		tournament_invite_codes_aggregate:{
+			distinct_on:"tournament_invite_codes_select_column",
+			order_by:"tournament_invite_codes_order_by",
+			where:"tournament_invite_codes_bool_exp"
+		},
+		tournament_invite_codes_by_pk:{
+			id:"uuid"
+		},
+		tournament_invite_codes_stream:{
+			cursor:"tournament_invite_codes_stream_cursor_input",
+			where:"tournament_invite_codes_bool_exp"
+		},
 		tournament_invites:{
 			distinct_on:"tournament_invites_select_column",
 			order_by:"tournament_invites_order_by",
@@ -33807,10 +33917,6 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"tournament_registration_unlocks_select_column",
 			order_by:"tournament_registration_unlocks_order_by",
 			where:"tournament_registration_unlocks_bool_exp"
-		},
-		tournament_registration_unlocks_by_pk:{
-			player_steam_id:"bigint",
-			tournament_id:"uuid"
 		},
 		tournament_registration_unlocks_stream:{
 			cursor:"tournament_registration_unlocks_stream_cursor_input",
@@ -36777,6 +36883,241 @@ export const AllTypesProps: Record<string,any> = {
 	tournament_free_agents_variance_order_by:{
 		player_steam_id:"order_by"
 	},
+	tournament_invite_code_uses_aggregate_bool_exp:{
+		count:"tournament_invite_code_uses_aggregate_bool_exp_count"
+	},
+	tournament_invite_code_uses_aggregate_bool_exp_count:{
+		arguments:"tournament_invite_code_uses_select_column",
+		filter:"tournament_invite_code_uses_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	tournament_invite_code_uses_aggregate_fields:{
+		count:{
+			columns:"tournament_invite_code_uses_select_column"
+		}
+	},
+	tournament_invite_code_uses_aggregate_order_by:{
+		avg:"tournament_invite_code_uses_avg_order_by",
+		count:"order_by",
+		max:"tournament_invite_code_uses_max_order_by",
+		min:"tournament_invite_code_uses_min_order_by",
+		stddev:"tournament_invite_code_uses_stddev_order_by",
+		stddev_pop:"tournament_invite_code_uses_stddev_pop_order_by",
+		stddev_samp:"tournament_invite_code_uses_stddev_samp_order_by",
+		sum:"tournament_invite_code_uses_sum_order_by",
+		var_pop:"tournament_invite_code_uses_var_pop_order_by",
+		var_samp:"tournament_invite_code_uses_var_samp_order_by",
+		variance:"tournament_invite_code_uses_variance_order_by"
+	},
+	tournament_invite_code_uses_arr_rel_insert_input:{
+		data:"tournament_invite_code_uses_insert_input",
+		on_conflict:"tournament_invite_code_uses_on_conflict"
+	},
+	tournament_invite_code_uses_avg_order_by:{
+		player_steam_id:"order_by"
+	},
+	tournament_invite_code_uses_bool_exp:{
+		_and:"tournament_invite_code_uses_bool_exp",
+		_not:"tournament_invite_code_uses_bool_exp",
+		_or:"tournament_invite_code_uses_bool_exp",
+		invite_code:"tournament_invite_codes_bool_exp",
+		invite_code_id:"uuid_comparison_exp",
+		player:"players_bool_exp",
+		player_steam_id:"bigint_comparison_exp",
+		team:"teams_bool_exp",
+		team_id:"uuid_comparison_exp",
+		used_at:"timestamptz_comparison_exp"
+	},
+	tournament_invite_code_uses_constraint: "enum" as const,
+	tournament_invite_code_uses_inc_input:{
+		player_steam_id:"bigint"
+	},
+	tournament_invite_code_uses_insert_input:{
+		invite_code:"tournament_invite_codes_obj_rel_insert_input",
+		invite_code_id:"uuid",
+		player:"players_obj_rel_insert_input",
+		player_steam_id:"bigint",
+		team:"teams_obj_rel_insert_input",
+		team_id:"uuid",
+		used_at:"timestamptz"
+	},
+	tournament_invite_code_uses_max_order_by:{
+		invite_code_id:"order_by",
+		player_steam_id:"order_by",
+		team_id:"order_by",
+		used_at:"order_by"
+	},
+	tournament_invite_code_uses_min_order_by:{
+		invite_code_id:"order_by",
+		player_steam_id:"order_by",
+		team_id:"order_by",
+		used_at:"order_by"
+	},
+	tournament_invite_code_uses_on_conflict:{
+		constraint:"tournament_invite_code_uses_constraint",
+		update_columns:"tournament_invite_code_uses_update_column",
+		where:"tournament_invite_code_uses_bool_exp"
+	},
+	tournament_invite_code_uses_order_by:{
+		invite_code:"tournament_invite_codes_order_by",
+		invite_code_id:"order_by",
+		player:"players_order_by",
+		player_steam_id:"order_by",
+		team:"teams_order_by",
+		team_id:"order_by",
+		used_at:"order_by"
+	},
+	tournament_invite_code_uses_pk_columns_input:{
+		invite_code_id:"uuid",
+		player_steam_id:"bigint"
+	},
+	tournament_invite_code_uses_select_column: "enum" as const,
+	tournament_invite_code_uses_set_input:{
+		invite_code_id:"uuid",
+		player_steam_id:"bigint",
+		team_id:"uuid",
+		used_at:"timestamptz"
+	},
+	tournament_invite_code_uses_stddev_order_by:{
+		player_steam_id:"order_by"
+	},
+	tournament_invite_code_uses_stddev_pop_order_by:{
+		player_steam_id:"order_by"
+	},
+	tournament_invite_code_uses_stddev_samp_order_by:{
+		player_steam_id:"order_by"
+	},
+	tournament_invite_code_uses_stream_cursor_input:{
+		initial_value:"tournament_invite_code_uses_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	tournament_invite_code_uses_stream_cursor_value_input:{
+		invite_code_id:"uuid",
+		player_steam_id:"bigint",
+		team_id:"uuid",
+		used_at:"timestamptz"
+	},
+	tournament_invite_code_uses_sum_order_by:{
+		player_steam_id:"order_by"
+	},
+	tournament_invite_code_uses_update_column: "enum" as const,
+	tournament_invite_code_uses_updates:{
+		_inc:"tournament_invite_code_uses_inc_input",
+		_set:"tournament_invite_code_uses_set_input",
+		where:"tournament_invite_code_uses_bool_exp"
+	},
+	tournament_invite_code_uses_var_pop_order_by:{
+		player_steam_id:"order_by"
+	},
+	tournament_invite_code_uses_var_samp_order_by:{
+		player_steam_id:"order_by"
+	},
+	tournament_invite_code_uses_variance_order_by:{
+		player_steam_id:"order_by"
+	},
+	tournament_invite_codes:{
+		used_by:{
+			distinct_on:"tournament_invite_code_uses_select_column",
+			order_by:"tournament_invite_code_uses_order_by",
+			where:"tournament_invite_code_uses_bool_exp"
+		},
+		used_by_aggregate:{
+			distinct_on:"tournament_invite_code_uses_select_column",
+			order_by:"tournament_invite_code_uses_order_by",
+			where:"tournament_invite_code_uses_bool_exp"
+		}
+	},
+	tournament_invite_codes_aggregate_fields:{
+		count:{
+			columns:"tournament_invite_codes_select_column"
+		}
+	},
+	tournament_invite_codes_bool_exp:{
+		_and:"tournament_invite_codes_bool_exp",
+		_not:"tournament_invite_codes_bool_exp",
+		_or:"tournament_invite_codes_bool_exp",
+		code:"String_comparison_exp",
+		created_at:"timestamptz_comparison_exp",
+		created_by:"players_bool_exp",
+		created_by_player_steam_id:"bigint_comparison_exp",
+		expires_at:"timestamptz_comparison_exp",
+		id:"uuid_comparison_exp",
+		max_uses:"Int_comparison_exp",
+		revoked_at:"timestamptz_comparison_exp",
+		tournament:"tournaments_bool_exp",
+		tournament_id:"uuid_comparison_exp",
+		used_by:"tournament_invite_code_uses_bool_exp",
+		used_by_aggregate:"tournament_invite_code_uses_aggregate_bool_exp",
+		uses:"Int_comparison_exp"
+	},
+	tournament_invite_codes_constraint: "enum" as const,
+	tournament_invite_codes_inc_input:{
+		created_by_player_steam_id:"bigint"
+	},
+	tournament_invite_codes_insert_input:{
+		created_at:"timestamptz",
+		created_by:"players_obj_rel_insert_input",
+		created_by_player_steam_id:"bigint",
+		expires_at:"timestamptz",
+		id:"uuid",
+		revoked_at:"timestamptz",
+		tournament:"tournaments_obj_rel_insert_input",
+		tournament_id:"uuid",
+		used_by:"tournament_invite_code_uses_arr_rel_insert_input"
+	},
+	tournament_invite_codes_obj_rel_insert_input:{
+		data:"tournament_invite_codes_insert_input",
+		on_conflict:"tournament_invite_codes_on_conflict"
+	},
+	tournament_invite_codes_on_conflict:{
+		constraint:"tournament_invite_codes_constraint",
+		update_columns:"tournament_invite_codes_update_column",
+		where:"tournament_invite_codes_bool_exp"
+	},
+	tournament_invite_codes_order_by:{
+		code:"order_by",
+		created_at:"order_by",
+		created_by:"players_order_by",
+		created_by_player_steam_id:"order_by",
+		expires_at:"order_by",
+		id:"order_by",
+		max_uses:"order_by",
+		revoked_at:"order_by",
+		tournament:"tournaments_order_by",
+		tournament_id:"order_by",
+		used_by_aggregate:"tournament_invite_code_uses_aggregate_order_by",
+		uses:"order_by"
+	},
+	tournament_invite_codes_pk_columns_input:{
+		id:"uuid"
+	},
+	tournament_invite_codes_select_column: "enum" as const,
+	tournament_invite_codes_set_input:{
+		created_at:"timestamptz",
+		created_by_player_steam_id:"bigint",
+		expires_at:"timestamptz",
+		id:"uuid",
+		revoked_at:"timestamptz",
+		tournament_id:"uuid"
+	},
+	tournament_invite_codes_stream_cursor_input:{
+		initial_value:"tournament_invite_codes_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	tournament_invite_codes_stream_cursor_value_input:{
+		created_at:"timestamptz",
+		created_by_player_steam_id:"bigint",
+		expires_at:"timestamptz",
+		id:"uuid",
+		revoked_at:"timestamptz",
+		tournament_id:"uuid"
+	},
+	tournament_invite_codes_update_column: "enum" as const,
+	tournament_invite_codes_updates:{
+		_inc:"tournament_invite_codes_inc_input",
+		_set:"tournament_invite_codes_set_input",
+		where:"tournament_invite_codes_bool_exp"
+	},
 	tournament_invites_aggregate_fields:{
 		count:{
 			columns:"tournament_invites_select_column"
@@ -36792,6 +37133,8 @@ export const AllTypesProps: Record<string,any> = {
 		invited_by_player_steam_id:"bigint_comparison_exp",
 		player:"players_bool_exp",
 		steam_id:"bigint_comparison_exp",
+		team:"teams_bool_exp",
+		team_id:"uuid_comparison_exp",
 		tournament:"tournaments_bool_exp",
 		tournament_id:"uuid_comparison_exp"
 	},
@@ -36807,6 +37150,8 @@ export const AllTypesProps: Record<string,any> = {
 		invited_by_player_steam_id:"bigint",
 		player:"players_obj_rel_insert_input",
 		steam_id:"bigint",
+		team:"teams_obj_rel_insert_input",
+		team_id:"uuid",
 		tournament:"tournaments_obj_rel_insert_input",
 		tournament_id:"uuid"
 	},
@@ -36822,6 +37167,8 @@ export const AllTypesProps: Record<string,any> = {
 		invited_by_player_steam_id:"order_by",
 		player:"players_order_by",
 		steam_id:"order_by",
+		team:"teams_order_by",
+		team_id:"order_by",
 		tournament:"tournaments_order_by",
 		tournament_id:"order_by"
 	},
@@ -36834,6 +37181,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		invited_by_player_steam_id:"bigint",
 		steam_id:"bigint",
+		team_id:"uuid",
 		tournament_id:"uuid"
 	},
 	tournament_invites_stream_cursor_input:{
@@ -36845,6 +37193,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		invited_by_player_steam_id:"bigint",
 		steam_id:"bigint",
+		team_id:"uuid",
 		tournament_id:"uuid"
 	},
 	tournament_invites_update_column: "enum" as const,
@@ -37362,6 +37711,8 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"timestamptz_comparison_exp",
 		player:"players_bool_exp",
 		player_steam_id:"bigint_comparison_exp",
+		team:"teams_bool_exp",
+		team_id:"uuid_comparison_exp",
 		tournament:"tournaments_bool_exp",
 		tournament_id:"uuid_comparison_exp"
 	},
@@ -37373,6 +37724,8 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"timestamptz",
 		player:"players_obj_rel_insert_input",
 		player_steam_id:"bigint",
+		team:"teams_obj_rel_insert_input",
+		team_id:"uuid",
 		tournament:"tournaments_obj_rel_insert_input",
 		tournament_id:"uuid"
 	},
@@ -37385,17 +37738,16 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"order_by",
 		player:"players_order_by",
 		player_steam_id:"order_by",
+		team:"teams_order_by",
+		team_id:"order_by",
 		tournament:"tournaments_order_by",
 		tournament_id:"order_by"
-	},
-	tournament_registration_unlocks_pk_columns_input:{
-		player_steam_id:"bigint",
-		tournament_id:"uuid"
 	},
 	tournament_registration_unlocks_select_column: "enum" as const,
 	tournament_registration_unlocks_set_input:{
 		created_at:"timestamptz",
 		player_steam_id:"bigint",
+		team_id:"uuid",
 		tournament_id:"uuid"
 	},
 	tournament_registration_unlocks_stream_cursor_input:{
@@ -37405,6 +37757,7 @@ export const AllTypesProps: Record<string,any> = {
 	tournament_registration_unlocks_stream_cursor_value_input:{
 		created_at:"timestamptz",
 		player_steam_id:"bigint",
+		team_id:"uuid",
 		tournament_id:"uuid"
 	},
 	tournament_registration_unlocks_update_column: "enum" as const,
@@ -38721,7 +39074,6 @@ export const AllTypesProps: Record<string,any> = {
 		missed_check_in_count:"Int_comparison_exp",
 		name:"String_comparison_exp",
 		options:"match_options_bool_exp",
-		organizer_registration_passcode:"String_comparison_exp",
 		organizer_steam_id:"bigint_comparison_exp",
 		organizer_teams:"tournament_organizer_teams_bool_exp",
 		organizer_teams_aggregate:"tournament_organizer_teams_aggregate_bool_exp",
@@ -38732,7 +39084,6 @@ export const AllTypesProps: Record<string,any> = {
 		prizes:"tournament_prizes_bool_exp",
 		prizes_aggregate:"tournament_prizes_aggregate_bool_exp",
 		regions:"String_array_comparison_exp",
-		registration_passcode:"String_comparison_exp",
 		registration_type:"e_tournament_registration_types_enum_comparison_exp",
 		registration_unlocked:"Boolean_comparison_exp",
 		results:"v_team_tournament_results_bool_exp",
@@ -38805,7 +39156,6 @@ export const AllTypesProps: Record<string,any> = {
 		name:"order_by",
 		organizer_steam_id:"order_by",
 		regions:"order_by",
-		registration_passcode:"order_by",
 		scheduling_mode:"order_by",
 		start:"order_by"
 	},
@@ -38831,7 +39181,6 @@ export const AllTypesProps: Record<string,any> = {
 		name:"order_by",
 		organizer_steam_id:"order_by",
 		regions:"order_by",
-		registration_passcode:"order_by",
 		scheduling_mode:"order_by",
 		start:"order_by"
 	},
@@ -38911,14 +39260,12 @@ export const AllTypesProps: Record<string,any> = {
 		missed_check_in_count:"order_by",
 		name:"order_by",
 		options:"match_options_order_by",
-		organizer_registration_passcode:"order_by",
 		organizer_steam_id:"order_by",
 		organizer_teams_aggregate:"tournament_organizer_teams_aggregate_order_by",
 		organizers_aggregate:"tournament_organizers_aggregate_order_by",
 		player_stats_aggregate:"v_tournament_player_stats_aggregate_order_by",
 		prizes_aggregate:"tournament_prizes_aggregate_order_by",
 		regions:"order_by",
-		registration_passcode:"order_by",
 		registration_type:"order_by",
 		registration_unlocked:"order_by",
 		results_aggregate:"v_team_tournament_results_aggregate_order_by",
@@ -47298,6 +47645,10 @@ export const ReturnTypes: Record<string,any> = {
 	TournamentDraftOutput:{
 		teams_created:"Int"
 	},
+	TournamentInviteCodeOutput:{
+		code:"String",
+		id:"uuid"
+	},
 	TournamentMatchResetImpact:{
 		bracket_id:"uuid",
 		depth:"Int",
@@ -54475,6 +54826,7 @@ export const ReturnTypes: Record<string,any> = {
 		createDraftGame:"CreateDraftGameOutput",
 		createScheduledMatch:"CreateScheduledMatchOutput",
 		createServerDirectory:"SuccessOutput",
+		createTournamentInviteCode:"TournamentInviteCodeOutput",
 		deleteAward:"SuccessOutput",
 		deleteClip:"SuccessOutput",
 		deleteMatch:"SuccessOutput",
@@ -54820,6 +55172,10 @@ export const ReturnTypes: Record<string,any> = {
 		delete_tournament_categories_by_pk:"tournament_categories",
 		delete_tournament_free_agents:"tournament_free_agents_mutation_response",
 		delete_tournament_free_agents_by_pk:"tournament_free_agents",
+		delete_tournament_invite_code_uses:"tournament_invite_code_uses_mutation_response",
+		delete_tournament_invite_code_uses_by_pk:"tournament_invite_code_uses",
+		delete_tournament_invite_codes:"tournament_invite_codes_mutation_response",
+		delete_tournament_invite_codes_by_pk:"tournament_invite_codes",
 		delete_tournament_invites:"tournament_invites_mutation_response",
 		delete_tournament_invites_by_pk:"tournament_invites",
 		delete_tournament_leaderboard_entries:"tournament_leaderboard_entries_mutation_response",
@@ -54832,7 +55188,6 @@ export const ReturnTypes: Record<string,any> = {
 		delete_tournament_prizes:"tournament_prizes_mutation_response",
 		delete_tournament_prizes_by_pk:"tournament_prizes",
 		delete_tournament_registration_unlocks:"tournament_registration_unlocks_mutation_response",
-		delete_tournament_registration_unlocks_by_pk:"tournament_registration_unlocks",
 		delete_tournament_stage_windows:"tournament_stage_windows_mutation_response",
 		delete_tournament_stage_windows_by_pk:"tournament_stage_windows",
 		delete_tournament_stages:"tournament_stages_mutation_response",
@@ -55236,6 +55591,10 @@ export const ReturnTypes: Record<string,any> = {
 		insert_tournament_categories_one:"tournament_categories",
 		insert_tournament_free_agents:"tournament_free_agents_mutation_response",
 		insert_tournament_free_agents_one:"tournament_free_agents",
+		insert_tournament_invite_code_uses:"tournament_invite_code_uses_mutation_response",
+		insert_tournament_invite_code_uses_one:"tournament_invite_code_uses",
+		insert_tournament_invite_codes:"tournament_invite_codes_mutation_response",
+		insert_tournament_invite_codes_one:"tournament_invite_codes",
 		insert_tournament_invites:"tournament_invites_mutation_response",
 		insert_tournament_invites_one:"tournament_invites",
 		insert_tournament_leaderboard_entries:"tournament_leaderboard_entries_mutation_response",
@@ -55337,6 +55696,7 @@ export const ReturnTypes: Record<string,any> = {
 		recomputePlayerEloStatus:"RecomputeEloStatusOutput",
 		reconcileNodePlugins:"ReconcileNodePluginsOutput",
 		reconnectLive:"SuccessOutput",
+		redeemTournamentInviteCode:"SuccessOutput",
 		refreshAllPlayers:"ReindexStartedOutput",
 		refreshAllPlayersStatus:"ReindexStatusOutput",
 		refreshFaceitRank:"SuccessOutput",
@@ -55364,6 +55724,7 @@ export const ReturnTypes: Record<string,any> = {
 		retryClipRenderBatch:"SuccessOutput",
 		retryPendingMatchImport:"PendingMatchImportActionOutput",
 		revokeAward:"SuccessOutput",
+		revokeTournamentInviteCode:"SuccessOutput",
 		sanctionServerPlayer:"SanctionResult",
 		saveAward:"Award",
 		saveNewsPost:"NewsPost",
@@ -55417,7 +55778,6 @@ export const ReturnTypes: Record<string,any> = {
 		uninstallGamePlugin:"SuccessOutput",
 		unlinkDiscord:"SuccessOutput",
 		unlinkSteamMatchHistory:"SuccessOutput",
-		unlockTournamentRegistration:"SuccessOutput",
 		unsanctionServerPlayer:"SanctionResult",
 		updateClip:"SuccessOutput",
 		updateCs:"SuccessOutput",
@@ -55929,6 +56289,12 @@ export const ReturnTypes: Record<string,any> = {
 		update_tournament_free_agents:"tournament_free_agents_mutation_response",
 		update_tournament_free_agents_by_pk:"tournament_free_agents",
 		update_tournament_free_agents_many:"tournament_free_agents_mutation_response",
+		update_tournament_invite_code_uses:"tournament_invite_code_uses_mutation_response",
+		update_tournament_invite_code_uses_by_pk:"tournament_invite_code_uses",
+		update_tournament_invite_code_uses_many:"tournament_invite_code_uses_mutation_response",
+		update_tournament_invite_codes:"tournament_invite_codes_mutation_response",
+		update_tournament_invite_codes_by_pk:"tournament_invite_codes",
+		update_tournament_invite_codes_many:"tournament_invite_codes_mutation_response",
 		update_tournament_invites:"tournament_invites_mutation_response",
 		update_tournament_invites_by_pk:"tournament_invites",
 		update_tournament_invites_many:"tournament_invites_mutation_response",
@@ -55947,7 +56313,6 @@ export const ReturnTypes: Record<string,any> = {
 		update_tournament_prizes_by_pk:"tournament_prizes",
 		update_tournament_prizes_many:"tournament_prizes_mutation_response",
 		update_tournament_registration_unlocks:"tournament_registration_unlocks_mutation_response",
-		update_tournament_registration_unlocks_by_pk:"tournament_registration_unlocks",
 		update_tournament_registration_unlocks_many:"tournament_registration_unlocks_mutation_response",
 		update_tournament_stage_windows:"tournament_stage_windows_mutation_response",
 		update_tournament_stage_windows_by_pk:"tournament_stage_windows",
@@ -62397,6 +62762,12 @@ export const ReturnTypes: Record<string,any> = {
 		tournament_free_agents:"tournament_free_agents",
 		tournament_free_agents_aggregate:"tournament_free_agents_aggregate",
 		tournament_free_agents_by_pk:"tournament_free_agents",
+		tournament_invite_code_uses:"tournament_invite_code_uses",
+		tournament_invite_code_uses_aggregate:"tournament_invite_code_uses_aggregate",
+		tournament_invite_code_uses_by_pk:"tournament_invite_code_uses",
+		tournament_invite_codes:"tournament_invite_codes",
+		tournament_invite_codes_aggregate:"tournament_invite_codes_aggregate",
+		tournament_invite_codes_by_pk:"tournament_invite_codes",
 		tournament_invites:"tournament_invites",
 		tournament_invites_aggregate:"tournament_invites_aggregate",
 		tournament_invites_by_pk:"tournament_invites",
@@ -62416,7 +62787,6 @@ export const ReturnTypes: Record<string,any> = {
 		tournament_prizes_by_pk:"tournament_prizes",
 		tournament_registration_unlocks:"tournament_registration_unlocks",
 		tournament_registration_unlocks_aggregate:"tournament_registration_unlocks_aggregate",
-		tournament_registration_unlocks_by_pk:"tournament_registration_unlocks",
 		tournament_stage_windows:"tournament_stage_windows",
 		tournament_stage_windows_aggregate:"tournament_stage_windows_aggregate",
 		tournament_stage_windows_by_pk:"tournament_stage_windows",
@@ -63754,6 +64124,14 @@ export const ReturnTypes: Record<string,any> = {
 		tournament_free_agents_aggregate:"tournament_free_agents_aggregate",
 		tournament_free_agents_by_pk:"tournament_free_agents",
 		tournament_free_agents_stream:"tournament_free_agents",
+		tournament_invite_code_uses:"tournament_invite_code_uses",
+		tournament_invite_code_uses_aggregate:"tournament_invite_code_uses_aggregate",
+		tournament_invite_code_uses_by_pk:"tournament_invite_code_uses",
+		tournament_invite_code_uses_stream:"tournament_invite_code_uses",
+		tournament_invite_codes:"tournament_invite_codes",
+		tournament_invite_codes_aggregate:"tournament_invite_codes_aggregate",
+		tournament_invite_codes_by_pk:"tournament_invite_codes",
+		tournament_invite_codes_stream:"tournament_invite_codes",
 		tournament_invites:"tournament_invites",
 		tournament_invites_aggregate:"tournament_invites_aggregate",
 		tournament_invites_by_pk:"tournament_invites",
@@ -63779,7 +64157,6 @@ export const ReturnTypes: Record<string,any> = {
 		tournament_prizes_stream:"tournament_prizes",
 		tournament_registration_unlocks:"tournament_registration_unlocks",
 		tournament_registration_unlocks_aggregate:"tournament_registration_unlocks_aggregate",
-		tournament_registration_unlocks_by_pk:"tournament_registration_unlocks",
 		tournament_registration_unlocks_stream:"tournament_registration_unlocks",
 		tournament_stage_windows:"tournament_stage_windows",
 		tournament_stage_windows_aggregate:"tournament_stage_windows_aggregate",
@@ -65090,6 +65467,170 @@ export const ReturnTypes: Record<string,any> = {
 	tournament_free_agents_variance_fields:{
 		player_steam_id:"Float"
 	},
+	tournament_invite_code_uses:{
+		invite_code:"tournament_invite_codes",
+		invite_code_id:"uuid",
+		player:"players",
+		player_steam_id:"bigint",
+		team:"teams",
+		team_id:"uuid",
+		used_at:"timestamptz"
+	},
+	tournament_invite_code_uses_aggregate:{
+		aggregate:"tournament_invite_code_uses_aggregate_fields",
+		nodes:"tournament_invite_code_uses"
+	},
+	tournament_invite_code_uses_aggregate_fields:{
+		avg:"tournament_invite_code_uses_avg_fields",
+		count:"Int",
+		max:"tournament_invite_code_uses_max_fields",
+		min:"tournament_invite_code_uses_min_fields",
+		stddev:"tournament_invite_code_uses_stddev_fields",
+		stddev_pop:"tournament_invite_code_uses_stddev_pop_fields",
+		stddev_samp:"tournament_invite_code_uses_stddev_samp_fields",
+		sum:"tournament_invite_code_uses_sum_fields",
+		var_pop:"tournament_invite_code_uses_var_pop_fields",
+		var_samp:"tournament_invite_code_uses_var_samp_fields",
+		variance:"tournament_invite_code_uses_variance_fields"
+	},
+	tournament_invite_code_uses_avg_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_invite_code_uses_max_fields:{
+		invite_code_id:"uuid",
+		player_steam_id:"bigint",
+		team_id:"uuid",
+		used_at:"timestamptz"
+	},
+	tournament_invite_code_uses_min_fields:{
+		invite_code_id:"uuid",
+		player_steam_id:"bigint",
+		team_id:"uuid",
+		used_at:"timestamptz"
+	},
+	tournament_invite_code_uses_mutation_response:{
+		affected_rows:"Int",
+		returning:"tournament_invite_code_uses"
+	},
+	tournament_invite_code_uses_stddev_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_invite_code_uses_stddev_pop_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_invite_code_uses_stddev_samp_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_invite_code_uses_sum_fields:{
+		player_steam_id:"bigint"
+	},
+	tournament_invite_code_uses_var_pop_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_invite_code_uses_var_samp_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_invite_code_uses_variance_fields:{
+		player_steam_id:"Float"
+	},
+	tournament_invite_codes:{
+		code:"String",
+		created_at:"timestamptz",
+		created_by:"players",
+		created_by_player_steam_id:"bigint",
+		expires_at:"timestamptz",
+		id:"uuid",
+		max_uses:"Int",
+		revoked_at:"timestamptz",
+		tournament:"tournaments",
+		tournament_id:"uuid",
+		used_by:"tournament_invite_code_uses",
+		used_by_aggregate:"tournament_invite_code_uses_aggregate",
+		uses:"Int"
+	},
+	tournament_invite_codes_aggregate:{
+		aggregate:"tournament_invite_codes_aggregate_fields",
+		nodes:"tournament_invite_codes"
+	},
+	tournament_invite_codes_aggregate_fields:{
+		avg:"tournament_invite_codes_avg_fields",
+		count:"Int",
+		max:"tournament_invite_codes_max_fields",
+		min:"tournament_invite_codes_min_fields",
+		stddev:"tournament_invite_codes_stddev_fields",
+		stddev_pop:"tournament_invite_codes_stddev_pop_fields",
+		stddev_samp:"tournament_invite_codes_stddev_samp_fields",
+		sum:"tournament_invite_codes_sum_fields",
+		var_pop:"tournament_invite_codes_var_pop_fields",
+		var_samp:"tournament_invite_codes_var_samp_fields",
+		variance:"tournament_invite_codes_variance_fields"
+	},
+	tournament_invite_codes_avg_fields:{
+		created_by_player_steam_id:"Float",
+		max_uses:"Float",
+		uses:"Float"
+	},
+	tournament_invite_codes_max_fields:{
+		code:"String",
+		created_at:"timestamptz",
+		created_by_player_steam_id:"bigint",
+		expires_at:"timestamptz",
+		id:"uuid",
+		max_uses:"Int",
+		revoked_at:"timestamptz",
+		tournament_id:"uuid",
+		uses:"Int"
+	},
+	tournament_invite_codes_min_fields:{
+		code:"String",
+		created_at:"timestamptz",
+		created_by_player_steam_id:"bigint",
+		expires_at:"timestamptz",
+		id:"uuid",
+		max_uses:"Int",
+		revoked_at:"timestamptz",
+		tournament_id:"uuid",
+		uses:"Int"
+	},
+	tournament_invite_codes_mutation_response:{
+		affected_rows:"Int",
+		returning:"tournament_invite_codes"
+	},
+	tournament_invite_codes_stddev_fields:{
+		created_by_player_steam_id:"Float",
+		max_uses:"Float",
+		uses:"Float"
+	},
+	tournament_invite_codes_stddev_pop_fields:{
+		created_by_player_steam_id:"Float",
+		max_uses:"Float",
+		uses:"Float"
+	},
+	tournament_invite_codes_stddev_samp_fields:{
+		created_by_player_steam_id:"Float",
+		max_uses:"Float",
+		uses:"Float"
+	},
+	tournament_invite_codes_sum_fields:{
+		created_by_player_steam_id:"bigint",
+		max_uses:"Int",
+		uses:"Int"
+	},
+	tournament_invite_codes_var_pop_fields:{
+		created_by_player_steam_id:"Float",
+		max_uses:"Float",
+		uses:"Float"
+	},
+	tournament_invite_codes_var_samp_fields:{
+		created_by_player_steam_id:"Float",
+		max_uses:"Float",
+		uses:"Float"
+	},
+	tournament_invite_codes_variance_fields:{
+		created_by_player_steam_id:"Float",
+		max_uses:"Float",
+		uses:"Float"
+	},
 	tournament_invites:{
 		created_at:"timestamptz",
 		id:"uuid",
@@ -65097,6 +65638,8 @@ export const ReturnTypes: Record<string,any> = {
 		invited_by_player_steam_id:"bigint",
 		player:"players",
 		steam_id:"bigint",
+		team:"teams",
+		team_id:"uuid",
 		tournament:"tournaments",
 		tournament_id:"uuid"
 	},
@@ -65126,6 +65669,7 @@ export const ReturnTypes: Record<string,any> = {
 		id:"uuid",
 		invited_by_player_steam_id:"bigint",
 		steam_id:"bigint",
+		team_id:"uuid",
 		tournament_id:"uuid"
 	},
 	tournament_invites_min_fields:{
@@ -65133,6 +65677,7 @@ export const ReturnTypes: Record<string,any> = {
 		id:"uuid",
 		invited_by_player_steam_id:"bigint",
 		steam_id:"bigint",
+		team_id:"uuid",
 		tournament_id:"uuid"
 	},
 	tournament_invites_mutation_response:{
@@ -65566,6 +66111,8 @@ export const ReturnTypes: Record<string,any> = {
 		created_at:"timestamptz",
 		player:"players",
 		player_steam_id:"bigint",
+		team:"teams",
+		team_id:"uuid",
 		tournament:"tournaments",
 		tournament_id:"uuid"
 	},
@@ -65592,11 +66139,13 @@ export const ReturnTypes: Record<string,any> = {
 	tournament_registration_unlocks_max_fields:{
 		created_at:"timestamptz",
 		player_steam_id:"bigint",
+		team_id:"uuid",
 		tournament_id:"uuid"
 	},
 	tournament_registration_unlocks_min_fields:{
 		created_at:"timestamptz",
 		player_steam_id:"bigint",
+		team_id:"uuid",
 		tournament_id:"uuid"
 	},
 	tournament_registration_unlocks_mutation_response:{
@@ -66181,7 +66730,6 @@ export const ReturnTypes: Record<string,any> = {
 		missed_check_in_count:"Int",
 		name:"String",
 		options:"match_options",
-		organizer_registration_passcode:"String",
 		organizer_steam_id:"bigint",
 		organizer_teams:"tournament_organizer_teams",
 		organizer_teams_aggregate:"tournament_organizer_teams_aggregate",
@@ -66192,7 +66740,6 @@ export const ReturnTypes: Record<string,any> = {
 		prizes:"tournament_prizes",
 		prizes_aggregate:"tournament_prizes_aggregate",
 		regions:"String",
-		registration_passcode:"String",
 		registration_type:"e_tournament_registration_types_enum",
 		registration_unlocked:"Boolean",
 		results:"v_team_tournament_results",
@@ -66259,10 +66806,8 @@ export const ReturnTypes: Record<string,any> = {
 		min_players_per_lineup:"Int",
 		missed_check_in_count:"Int",
 		name:"String",
-		organizer_registration_passcode:"String",
 		organizer_steam_id:"bigint",
 		regions:"String",
-		registration_passcode:"String",
 		scheduling_mode:"String",
 		start:"timestamptz"
 	},
@@ -66289,10 +66834,8 @@ export const ReturnTypes: Record<string,any> = {
 		min_players_per_lineup:"Int",
 		missed_check_in_count:"Int",
 		name:"String",
-		organizer_registration_passcode:"String",
 		organizer_steam_id:"bigint",
 		regions:"String",
-		registration_passcode:"String",
 		scheduling_mode:"String",
 		start:"timestamptz"
 	},

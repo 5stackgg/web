@@ -115,11 +115,6 @@ const rebuildCta =
       <section
         class="relative overflow-hidden rounded-lg border border-border bg-[linear-gradient(180deg,hsl(var(--card)/0.55)_0%,hsl(var(--card)/0.2)_100%)] p-5 sm:p-6 [backdrop-filter:blur(6px)]"
       >
-        <span
-          aria-hidden="true"
-          class="pointer-events-none absolute left-2 top-2 h-[12px] w-[12px] border-l-2 border-t-2 border-[hsl(var(--tac-amber))]"
-        ></span>
-
         <div class="mb-5 flex items-start justify-between gap-4">
           <span :class="tacticalSectionLabelClasses" class="!mb-0">
             <span :class="tacticalSectionTickClasses"></span>
@@ -307,15 +302,6 @@ const rebuildCta =
             <RotateCcw class="h-3.5 w-3.5" />
           </button>
         </div>
-
-        <span
-          aria-hidden="true"
-          class="pointer-events-none absolute left-2 top-2 h-[14px] w-[14px] border-l-2 border-t-2 border-[hsl(var(--tac-amber))]"
-        ></span>
-        <span
-          aria-hidden="true"
-          class="pointer-events-none absolute bottom-2 right-2 h-[14px] w-[14px] border-b-2 border-r-2 border-[hsl(var(--tac-amber))]"
-        ></span>
 
         <div class="flex flex-col gap-5 sm:flex-row sm:items-start">
           <div

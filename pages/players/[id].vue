@@ -1683,8 +1683,6 @@ const playerHeroAvatarFrameClasses =
   "relative h-[156px] w-[156px] border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] p-1 max-md:h-24 max-md:w-24";
 const playerHeroAvatarClasses = "block h-full w-full object-cover";
 const playerHeroAvatarPlaceholderClasses = `${playerHeroAvatarClasses} flex items-center justify-center bg-muted/20 font-sans text-[3.5rem] font-bold text-[hsl(var(--tac-amber))]`;
-const playerHeroAvatarCornerClasses =
-  "absolute h-3 w-3 border-[hsl(var(--tac-amber))]";
 const playerHeroIdentityClasses = "flex min-w-0 flex-1 flex-col gap-2";
 const playerHeroNameClasses =
   "relative m-0 min-w-0 font-sans font-bold uppercase leading-[0.9] tracking-[0.02em] [overflow-wrap:anywhere] [font-stretch:80%]";
@@ -1738,18 +1736,6 @@ const playerHeroTeamChipDotClasses =
                 <div v-else :class="playerHeroAvatarPlaceholderClasses">
                   {{ (player.name || "?").charAt(0).toUpperCase() }}
                 </div>
-                <div
-                  :class="[
-                    playerHeroAvatarCornerClasses,
-                    '-left-[2px] -top-[2px] border-l-2 border-t-2',
-                  ]"
-                ></div>
-                <div
-                  :class="[
-                    playerHeroAvatarCornerClasses,
-                    '-bottom-[2px] -right-[2px] border-b-2 border-r-2',
-                  ]"
-                ></div>
                 <SanctionStatusBadge
                   v-if="activeSanctionType"
                   :type="activeSanctionType"

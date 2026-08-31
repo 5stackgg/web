@@ -57,14 +57,12 @@ import {
 
 const teamMenu = ref(false);
 const teamHeroClasses =
-  "relative rounded-lg border border-border px-5 py-4 sm:px-6 sm:py-5 [background:linear-gradient(180deg,hsl(var(--card)_/_0.55)_0%,hsl(var(--card)_/_0.25)_100%)] [backdrop-filter:blur(6px)] before:pointer-events-none before:absolute before:left-2 before:top-2 before:h-[14px] before:w-[14px] before:border-l-2 before:border-t-2 before:border-[hsl(var(--tac-amber))] before:content-[''] after:pointer-events-none after:absolute after:bottom-2 after:right-2 after:h-[14px] after:w-[14px] after:border-b-2 after:border-r-2 after:border-[hsl(var(--tac-amber))] after:content-['']";
+  "relative rounded-lg border border-border px-5 py-4 sm:px-6 sm:py-5 [background:linear-gradient(180deg,hsl(var(--card)_/_0.55)_0%,hsl(var(--card)_/_0.25)_100%)] [backdrop-filter:blur(6px)]";
 const teamHeroBodyClasses = "flex flex-wrap items-center gap-7 max-md:gap-4";
 const teamHeroEmblemFrameClasses =
   "relative flex h-[140px] w-[140px] items-center justify-center border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] p-1 max-md:h-24 max-md:w-24";
 const teamHeroEmblemClasses =
   "font-sans font-bold uppercase tracking-[0.05em] text-[hsl(var(--tac-amber))] text-[2.5rem] max-md:text-[1.75rem] leading-none";
-const teamHeroEmblemCornerClasses =
-  "absolute h-3 w-3 border-[hsl(var(--tac-amber))]";
 const teamHeroIdentityClasses = "flex min-w-0 flex-1 flex-col gap-3";
 const teamHeroNameRowClasses = "flex min-w-0 flex-wrap items-center gap-3";
 const teamHeroNameClasses =
@@ -99,18 +97,6 @@ const teamHeroActionsClasses =
           <span v-else :class="teamHeroEmblemClasses">
             {{ team.short_name || team.name }}
           </span>
-          <div
-            :class="[
-              teamHeroEmblemCornerClasses,
-              '-left-[2px] -top-[2px] border-l-2 border-t-2',
-            ]"
-          ></div>
-          <div
-            :class="[
-              teamHeroEmblemCornerClasses,
-              '-bottom-[2px] -right-[2px] border-b-2 border-r-2',
-            ]"
-          ></div>
         </div>
 
         <div :class="teamHeroIdentityClasses">

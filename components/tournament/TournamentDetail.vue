@@ -99,7 +99,7 @@ import {
 } from "~/utilities/tacticalClasses";
 
 const tournamentHeroClasses =
-  "relative isolate overflow-hidden rounded-lg border border-border px-7 py-6 [background:linear-gradient(180deg,hsl(var(--card)_/_0.55)_0%,hsl(var(--card)_/_0.25)_100%)] [backdrop-filter:blur(6px)] before:pointer-events-none before:absolute before:left-2 before:top-2 before:h-[14px] before:w-[14px] before:border-l-2 before:border-t-2 before:border-[hsl(var(--tac-amber))] before:content-[''] after:pointer-events-none after:absolute after:bottom-2 after:right-2 after:h-[14px] after:w-[14px] after:border-b-2 after:border-r-2 after:border-[hsl(var(--tac-amber))] after:content-[''] max-md:px-4 max-md:py-5";
+  "relative isolate overflow-hidden rounded-lg border border-border px-7 py-6 [background:linear-gradient(180deg,hsl(var(--card)_/_0.55)_0%,hsl(var(--card)_/_0.25)_100%)] [backdrop-filter:blur(6px)] max-md:px-4 max-md:py-5";
 const tournamentHeroToplineClasses =
   "order-2 flex shrink-0 flex-wrap items-start gap-2 max-sm:w-full";
 const tournamentHeroBodyClasses =
@@ -158,12 +158,15 @@ const myTeamHeaderClasses = "mb-4 flex flex-col gap-[0.35rem]";
 const myTeamLabelClasses =
   "inline-flex items-center gap-2 font-mono text-[0.72rem] uppercase tracking-[0.24em] text-muted-foreground";
 const myTeamHintClasses = "text-[0.8rem] text-muted-foreground/80";
-const tacticalCornerCardClasses =
-  "relative rounded-lg border border-border px-6 py-5 [background:linear-gradient(180deg,hsl(var(--card)_/_0.65)_0%,hsl(var(--card)_/_0.35)_100%)] [backdrop-filter:blur(6px)] before:pointer-events-none before:absolute before:-left-px before:-top-px before:h-3 before:w-3 before:border-l-2 before:border-t-2 before:border-[hsl(var(--tac-amber))] before:content-[''] after:pointer-events-none after:absolute after:-bottom-px after:-right-px after:h-3 after:w-3 after:border-b-2 after:border-r-2 after:border-[hsl(var(--tac-amber))] after:content-['']";
+const tournamentPanelCardClasses =
+  "relative rounded-lg border border-border px-6 py-5 [background:linear-gradient(180deg,hsl(var(--card)_/_0.65)_0%,hsl(var(--card)_/_0.35)_100%)] [backdrop-filter:blur(6px)]";
+// Follows ManageSection's rule: a section is a tick-and-label plus a hairline,
+// never a card. The rule has to flip axis because the column does — stacked
+// under `lg` it is a top border like tac-section-sep, and side by side with the
+// roster it becomes the left border that keeps the two columns legibly apart
+// (the grid's own gap alone reads as one undivided field at 360px).
 const tournamentAdminPanelClasses =
-  "relative border border-border p-5 [background:linear-gradient(180deg,hsl(var(--card)_/_0.65)_0%,hsl(var(--card)_/_0.35)_100%)] [backdrop-filter:blur(6px)]";
-const tournamentAdminCornerClasses =
-  "pointer-events-none absolute h-3 w-3 border-[hsl(var(--tac-amber))]";
+  "relative border-t border-border/60 pt-8 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0";
 // The aside holds one tool now — Add Team. The invite and link lists moved to
 // the wide column, which is what stopped this 360px frame growing without bound
 // the moment a tournament had more than a couple of invites out.
@@ -699,7 +702,7 @@ function clearTeamEnterDelay(el: Element) {
                 </div>
               </div>
 
-              <div :class="tacticalCornerCardClasses">
+              <div :class="tournamentPanelCardClasses">
                 <TournamentTeam
                   :tournament="tournament"
                   :team="myTeam"
@@ -890,7 +893,7 @@ function clearTeamEnterDelay(el: Element) {
                   <template v-if="tournament.is_organizer">
                     <div
                       v-show="teamsPanel === 'invites'"
-                      :class="tacticalCornerCardClasses"
+                      :class="tournamentPanelCardClasses"
                     >
                       <TournamentInvites
                         :tournament="tournament"
@@ -901,7 +904,7 @@ function clearTeamEnterDelay(el: Element) {
 
                     <div
                       v-show="teamsPanel === 'links'"
-                      :class="tacticalCornerCardClasses"
+                      :class="tournamentPanelCardClasses"
                     >
                       <TournamentInviteLinks
                         :tournament="tournament"
@@ -921,19 +924,6 @@ function clearTeamEnterDelay(el: Element) {
               <div v-if="tournament.is_organizer" class="lg:sticky lg:top-6">
                 <PageTransition :delay="150">
                   <aside :class="tournamentAdminPanelClasses">
-                    <div
-                      :class="[
-                        tournamentAdminCornerClasses,
-                        '-left-px -top-px border-l-2 border-t-2',
-                      ]"
-                    ></div>
-                    <div
-                      :class="[
-                        tournamentAdminCornerClasses,
-                        '-bottom-px -right-px border-b-2 border-r-2',
-                      ]"
-                    ></div>
-
                     <section :class="tournamentAdminSectionClasses">
                       <div :class="[tacticalSectionLabelClasses, 'mb-0']">
                         <span :class="tacticalSectionTickClasses"></span>

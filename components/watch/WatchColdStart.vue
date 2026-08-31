@@ -17,18 +17,6 @@ function signIn() {
   <section
     class="cold-start relative isolate overflow-hidden rounded-lg border border-border bg-[linear-gradient(180deg,hsl(var(--card)/0.6)_0%,hsl(var(--card)/0.15)_100%)] px-6 py-7 sm:px-8 sm:py-8 [backdrop-filter:blur(6px)]"
   >
-    <!-- Corner brackets — same framing motif as TacticalPageHeader, so the
-         empty state reads as part of the page chrome rather than a dropped-in
-         placeholder card. -->
-    <span
-      aria-hidden="true"
-      class="pointer-events-none absolute left-2 top-2 h-[14px] w-[14px] border-l-2 border-t-2 border-[hsl(var(--tac-amber))]"
-    ></span>
-    <span
-      aria-hidden="true"
-      class="pointer-events-none absolute bottom-2 right-2 h-[14px] w-[14px] border-b-2 border-r-2 border-[hsl(var(--tac-amber))]"
-    ></span>
-
     <span
       aria-hidden="true"
       class="tac-scanlines pointer-events-none absolute inset-0 -z-10"

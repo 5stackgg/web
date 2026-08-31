@@ -209,14 +209,6 @@ function releaseSwapHeight(el: Element): void {
             key="queue"
             class="relative overflow-hidden rounded-lg border border-border px-6 py-10 sm:px-10 sm:py-12 [backdrop-filter:blur(6px)] [background:linear-gradient(180deg,hsl(var(--card)/0.7)_0%,hsl(var(--card)/0.3)_100%)]"
           >
-            <span
-              aria-hidden="true"
-              class="pointer-events-none absolute left-2 top-2 h-[14px] w-[14px] border-l-2 border-t-2 border-[hsl(var(--tac-amber))]"
-            ></span>
-            <span
-              aria-hidden="true"
-              class="pointer-events-none absolute bottom-2 right-2 h-[14px] w-[14px] border-b-2 border-r-2 border-[hsl(var(--tac-amber))]"
-            ></span>
 
             <span
               aria-hidden="true"

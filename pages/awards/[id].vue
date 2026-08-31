@@ -36,10 +36,9 @@ useHead({
   title: () => awardContext.value?.name || undefined,
 });
 
-// Same hero shell as the event/tournament pages: gradient card with corner
-// brackets.
+// Same hero shell as the event/tournament pages: gradient card.
 const heroCardClasses =
-  "relative overflow-hidden rounded-lg border border-border px-4 py-4 sm:px-6 sm:py-5 [background:linear-gradient(180deg,hsl(var(--card)/0.82)_0%,hsl(var(--card)/0.6)_100%)] [backdrop-filter:blur(10px)] before:pointer-events-none before:absolute before:left-2 before:top-2 before:h-[14px] before:w-[14px] before:border-l-2 before:border-t-2 before:border-[hsl(var(--tac-amber))] before:content-[''] after:pointer-events-none after:absolute after:bottom-2 after:right-2 after:h-[14px] after:w-[14px] after:border-b-2 after:border-r-2 after:border-[hsl(var(--tac-amber))] after:content-['']";
+  "relative overflow-hidden rounded-lg border border-border px-4 py-4 sm:px-6 sm:py-5 [background:linear-gradient(180deg,hsl(var(--card)/0.82)_0%,hsl(var(--card)/0.6)_100%)] [backdrop-filter:blur(10px)]";
 const heroTitleClasses =
   "relative m-0 min-w-0 font-sans text-[clamp(1.6rem,4vw,2.8rem)] font-bold uppercase leading-[0.95] tracking-[0.02em] [font-stretch:80%]";
 

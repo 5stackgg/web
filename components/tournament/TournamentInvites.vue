@@ -2,7 +2,7 @@
 import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
-import { Trash2 } from "lucide-vue-next";
+import { Lock, Trash2 } from "lucide-vue-next";
 import PlayerSearch from "~/components/PlayerSearch.vue";
 import TeamSearch from "~/components/teams/TeamSearch.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
@@ -27,6 +27,7 @@ import {
   DELETE_TOURNAMENT_INVITE_MUTATION,
   TOURNAMENT_INVITES_SUBSCRIPTION,
 } from "~/graphql/tournamentInvites";
+import { canSendTournamentInvites } from "~/utilities/tournamentInvites";
 
 /**
  * The organizer's direct-invite list: address a specific team or a specific
@@ -49,14 +50,34 @@ const props = defineProps<{
   registration?: Record<string, any> | null;
 }>();
 
+// The organizer panel's tab strip renders this as a live badge, which is the
+// whole reason the sub-tabs beat the old stack: "there are 3 people waiting"
+// has to be readable without opening the tab. The panel keeps every pane
+// mounted (v-show) precisely so this stays live while another tab is showing.
+const emit = defineEmits<{ count: [number] }>();
+
 const { t } = useI18n();
 const { client: apolloClient } = useApolloClient();
 
 const invites = ref<any[]>([]);
 
+watch(
+  () => invites.value.length,
+  (count) => emit("count", count),
+  { immediate: true },
+);
+
 const apiDomain = computed(() => useRuntimeConfig().public.apiDomain);
 
 const inviteOnly = computed(() => props.registration?.invite_only === true);
+
+// The API rejects every invite past registration, so the search controls are
+// replaced with the reason rather than left offering an action that bounces.
+// Existing invites stay listed and revocable — closing registration does not
+// make an already-sent invite the organizer's problem to keep.
+const canInvite = computed(() =>
+  canSendTournamentInvites(props.tournament?.status),
+);
 
 let subscription: { unsubscribe: () => void } | null = null;
 
@@ -182,7 +203,10 @@ async function revoke(inviteId: string) {
 
 <template>
   <div class="grid gap-3">
-    <p class="text-[0.75rem] leading-snug text-muted-foreground/80">
+    <p
+      v-if="canInvite"
+      class="text-[0.75rem] leading-snug text-muted-foreground/80"
+    >
       {{
         inviteOnly
           ? $t("tournament.invites.description")
@@ -190,22 +214,32 @@ async function revoke(inviteId: string) {
       }}
     </p>
 
+    <div
+      v-else
+      class="flex items-start gap-2 rounded-md border border-warning/40 bg-warning/10 px-3 py-2 text-[0.72rem] leading-snug text-warning"
+    >
+      <Lock class="mt-px h-3.5 w-3.5 shrink-0" />
+      <span>{{ $t("tournament.invites.registration_closed") }}</span>
+    </div>
+
     <!-- No v-model on either search: an invite is an action, not a selection,
          so the control must fall back to its own label after each one rather
          than sitting on the last recipient. TeamSearch would otherwise pin the
          chosen team in the trigger (it reads `modelValue`, where PlayerSearch
          reads `selected`). -->
-    <TeamSearch
-      :label="$t('tournament.invites.add_team')"
-      :ineligible="ineligibleTeams"
-      @selected="inviteTeam"
-    />
+    <template v-if="canInvite">
+      <TeamSearch
+        :label="$t('tournament.invites.add_team')"
+        :ineligible="ineligibleTeams"
+        @selected="inviteTeam"
+      />
 
-    <PlayerSearch
-      :label="$t('tournament.invites.add')"
-      :ineligible="ineligiblePlayers"
-      @selected="invitePlayer"
-    />
+      <PlayerSearch
+        :label="$t('tournament.invites.add')"
+        :ineligible="ineligiblePlayers"
+        @selected="invitePlayer"
+      />
+    </template>
 
     <ul v-if="invites.length > 0" class="grid gap-1.5">
       <li

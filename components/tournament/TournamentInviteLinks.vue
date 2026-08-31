@@ -2,7 +2,14 @@
 import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
-import { ChevronDown, Copy, Link2, Share2, Trash2 } from "lucide-vue-next";
+import {
+  ChevronDown,
+  Copy,
+  Link2,
+  Lock,
+  Share2,
+  Trash2,
+} from "lucide-vue-next";
 import ClipBoard from "~/components/ClipBoard.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { Button } from "~/components/ui/button";
@@ -32,8 +39,11 @@ import {
   REVOKE_TOURNAMENT_INVITE_CODE_MUTATION,
   TOURNAMENT_INVITE_CODES_SUBSCRIPTION,
   TOURNAMENT_INVITE_CODE_USES_QUERY,
-  tournamentInviteUrl,
 } from "~/graphql/tournamentInviteCodes";
+import {
+  canSendTournamentInvites,
+  tournamentInviteUrl,
+} from "~/utilities/tournamentInvites";
 
 /**
  * Shareable invite links — the replacement for the typed registration
@@ -47,6 +57,11 @@ import {
 const props = defineProps<{
   tournament: Record<string, any>;
 }>();
+
+// Live badge on the organizer panel's Links tab. Counts exactly what the list
+// below shows (every non-revoked link), so the two can never disagree — a dead
+// link is still a link the organizer handed out and may be asked about.
+const emit = defineEmits<{ count: [number] }>();
 
 const { t } = useI18n();
 const { client: apolloClient } = useApolloClient();
@@ -85,6 +100,20 @@ const maxUses = ref(UNLIMITED);
 const codes = ref<any[]>([]);
 const expanded = ref<Record<string, boolean>>({});
 const usesByCode = ref<Record<string, any[]>>({});
+
+watch(
+  () => codes.value.length,
+  (count) => emit("count", count),
+  { immediate: true },
+);
+
+// Minting a link is an invite, and the API refuses one past registration. The
+// generator is replaced with the reason; revoking stays available, because
+// killing a link that is already out there is the one thing an organizer still
+// needs to be able to do after registration shuts.
+const canInvite = computed(() =>
+  canSendTournamentInvites(props.tournament?.status),
+);
 
 let subscription: { unsubscribe: () => void } | null = null;
 
@@ -288,11 +317,22 @@ async function toggleUses(code: Record<string, any>) {
 
 <template>
   <div class="grid gap-3">
-    <p class="text-[0.75rem] leading-snug text-muted-foreground/80">
+    <p
+      v-if="canInvite"
+      class="text-[0.75rem] leading-snug text-muted-foreground/80"
+    >
       {{ $t("tournament.invite_links.hint") }}
     </p>
 
-    <div class="grid grid-cols-2 gap-2">
+    <div
+      v-else
+      class="flex items-start gap-2 rounded-md border border-warning/40 bg-warning/10 px-3 py-2 text-[0.72rem] leading-snug text-warning"
+    >
+      <Lock class="mt-px h-3.5 w-3.5 shrink-0" />
+      <span>{{ $t("tournament.invite_links.registration_closed") }}</span>
+    </div>
+
+    <div v-if="canInvite" class="grid grid-cols-2 gap-2">
       <label class="grid gap-1">
         <span
           class="font-mono text-[0.55rem] uppercase tracking-[0.2em] text-muted-foreground"
@@ -344,7 +384,12 @@ async function toggleUses(code: Record<string, any>) {
 
     <!-- Button, not a bare <button>: it tracks the returned promise, so a
          double click cannot mint two links. -->
-    <Button variant="tactical" class="w-full" @click="createLink">
+    <Button
+      v-if="canInvite"
+      variant="tactical"
+      class="w-full"
+      @click="createLink"
+    >
       <Link2 class="h-4 w-4" />
       {{ $t("tournament.invite_links.create") }}
     </Button>

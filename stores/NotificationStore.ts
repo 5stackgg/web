@@ -92,9 +92,9 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
   // acceptInvite type strings — see graphql/tournamentInvites.ts.
   //
   // One table, two documents: a registration invite addresses either a player
-  // or a team, and the team half names columns Zeus has not seen yet. Split,
-  // an unmigrated stack loses team invites from the tray and keeps player ones
-  // working; merged into one document it would lose both.
+  // or a team, and the two are matched by different predicates (a steam id vs a
+  // team's owner/captain). Merged into one `_or` the player half would have to
+  // widen to every member of every team the viewer belongs to.
   const tournament_player_invites = ref<any[]>([]);
   const tournament_team_registration_invites = ref<any[]>([]);
   const tournament_invites = computed(() =>
@@ -442,10 +442,9 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
         }),
     );
 
-    // Raw documents rather than Zeus selectors — team addressing on
-    // `tournament_invites` lands with the API migration and Zeus has not seen
-    // the new columns yet. Delete graphql/tournamentInvites.ts and inline these
-    // once codegen has run.
+    // Two documents rather than one `_or`: the player half is addressed to a
+    // steam id and the team half to a team's owner/captain, so merging them
+    // would have to widen the player half to every member of every team.
     subscribe(
       "notifications:tournament_invites",
       getGraphqlClient()
@@ -655,7 +654,8 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
         })
         .subscribe({
           next: ({ data }) => {
-            lastReadNewsAt.value = data.players_by_pk?.last_read_news_at ?? null;
+            lastReadNewsAt.value =
+              data.players_by_pk?.last_read_news_at ?? null;
           },
         }),
     );

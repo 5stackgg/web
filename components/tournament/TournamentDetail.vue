@@ -88,6 +88,7 @@ import {
 } from "~/components/ui/table";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import HeightMorph from "~/components/ui/transitions/HeightMorph.vue";
 import {
   tacticalCtaButtonClasses,
   tacticalSectionDescriptionClasses,
@@ -163,11 +164,10 @@ const tournamentAdminPanelClasses =
   "relative border border-border p-5 [background:linear-gradient(180deg,hsl(var(--card)_/_0.65)_0%,hsl(var(--card)_/_0.35)_100%)] [backdrop-filter:blur(6px)]";
 const tournamentAdminCornerClasses =
   "pointer-events-none absolute h-3 w-3 border-[hsl(var(--tac-amber))]";
-// Three stacked tools in one 360px frame. `tac-section-sep`'s 2rem gap is built
-// for a full-width settings page and is far too loose here, so the hairline rule
-// between siblings is spelled out at panel scale instead.
-const tournamentAdminSectionClasses =
-  "grid gap-3 [&:not(:first-of-type)]:mt-5 [&:not(:first-of-type)]:border-t [&:not(:first-of-type)]:border-border [&:not(:first-of-type)]:pt-5";
+// One tool at a time in a 360px frame. The three used to be stacked behind
+// hairline rules, which made the column grow without bound the moment a
+// tournament had more than a couple of invites out.
+const tournamentAdminSectionClasses = "grid gap-3";
 const tournamentAdminSectionHintClasses =
   "text-[0.75rem] leading-snug text-muted-foreground/80";
 
@@ -847,6 +847,10 @@ function clearTeamEnterDelay(el: Element) {
                 </FadeSwap>
               </div>
 
+              <!-- Sticky is worth keeping now and was not before: split across
+                   sub-tabs the panel is finally short enough to fit a viewport,
+                   which is the only condition under which a sticky element
+                   actually follows the reader down a long team list. -->
               <div v-if="tournament.is_organizer" class="lg:sticky lg:top-6">
                 <PageTransition :delay="150">
                   <!-- Everything an organizer does to fill the bracket lives in
@@ -867,37 +871,62 @@ function clearTeamEnterDelay(el: Element) {
                       ]"
                     ></div>
 
-                    <section :class="tournamentAdminSectionClasses">
-                      <div :class="[tacticalSectionLabelClasses, 'mb-0']">
-                        <span :class="tacticalSectionTickClasses"></span>
-                        {{ $t("tournament.add_team.title") }}
-                      </div>
-                      <p :class="tournamentAdminSectionHintClasses">
-                        {{ $t("tournament.add_team.description") }}
-                      </p>
-                      <TournamentJoinForm
-                        :tournament="tournament"
-                      ></TournamentJoinForm>
-                    </section>
+                    <div :class="tacticalSectionLabelClasses">
+                      <span :class="tacticalSectionTickClasses"></span>
+                      {{ $t("tournament.organizer_panel.title") }}
+                    </div>
 
-                    <section :class="tournamentAdminSectionClasses">
-                      <div :class="[tacticalSectionLabelClasses, 'mb-0']">
-                        <span :class="tacticalSectionTickClasses"></span>
-                        {{ $t("tournament.invites.title") }}
-                      </div>
-                      <TournamentInvites
-                        :tournament="tournament"
-                        :registration="tournamentRegistration"
-                      />
-                    </section>
+                    <!-- Not `block`: at 320px of usable width three equal
+                         columns would wrap a translated label inside a
+                         1.375rem-tall pill and spill it out of the amber
+                         indicator. Content-width lets the strip take a second
+                         row instead, which the indicator already tracks. -->
+                    <AnimatedFilters
+                      v-model="adminTab"
+                      :options="adminPanelTabs"
+                      square
+                    />
 
-                    <section :class="tournamentAdminSectionClasses">
-                      <div :class="[tacticalSectionLabelClasses, 'mb-0']">
-                        <span :class="tacticalSectionTickClasses"></span>
-                        {{ $t("tournament.invite_links.title") }}
-                      </div>
-                      <TournamentInviteLinks :tournament="tournament" />
-                    </section>
+                    <!-- Panes are v-show, never v-if: each owns a live
+                         subscription whose row count is the badge on its own
+                         tab, and TournamentInviteLinks holds the organizer's
+                         unsubmitted expiry/max-uses choice. Unmounting would
+                         zero both. HeightMorph exists for exactly this — it
+                         tweens the frame across a swap it does not control. -->
+                    <HeightMorph :state="adminTab" class="mt-4">
+                      <section
+                        v-show="adminTab === 'roster'"
+                        :class="tournamentAdminSectionClasses"
+                      >
+                        <p :class="tournamentAdminSectionHintClasses">
+                          {{ $t("tournament.add_team.description") }}
+                        </p>
+                        <TournamentJoinForm
+                          :tournament="tournament"
+                        ></TournamentJoinForm>
+                      </section>
+
+                      <section
+                        v-show="adminTab === 'invites'"
+                        :class="tournamentAdminSectionClasses"
+                      >
+                        <TournamentInvites
+                          :tournament="tournament"
+                          :registration="tournamentRegistration"
+                          @count="adminInviteCount = $event"
+                        />
+                      </section>
+
+                      <section
+                        v-show="adminTab === 'links'"
+                        :class="tournamentAdminSectionClasses"
+                      >
+                        <TournamentInviteLinks
+                          :tournament="tournament"
+                          @count="adminLinkCount = $event"
+                        />
+                      </section>
+                    </HeightMorph>
                   </aside>
                 </PageTransition>
               </div>
@@ -1120,6 +1149,12 @@ export default {
       resumeDialogOpen: false,
       organizerPopoversOpen: {},
       activeTab: "overview",
+      adminTab: "roster",
+      // Reported up by the two panels rather than counted here: they already
+      // hold the live subscriptions, and a second aggregate subscription just
+      // to badge a tab would be a socket paying for a number we already have.
+      adminInviteCount: 0,
+      adminLinkCount: 0,
       teamFilter: "all",
       collapsedTeams: new Set(),
       myTeamLoaded: false,
@@ -1911,6 +1946,26 @@ export default {
           key: "incomplete",
           label: this.$t("tournament.teams_filter.incomplete"),
           count: incomplete,
+        },
+      ];
+    },
+    // Add Team carries no badge on purpose: it is a form, and a count there
+    // would read as "teams", which is what the column to the left already says.
+    adminPanelTabs() {
+      return [
+        {
+          key: "roster",
+          label: this.$t("tournament.add_team.title"),
+        },
+        {
+          key: "invites",
+          label: this.$t("tournament.invites.title"),
+          count: this.adminInviteCount,
+        },
+        {
+          key: "links",
+          label: this.$t("tournament.invite_links.tab"),
+          count: this.adminLinkCount,
         },
       ];
     },

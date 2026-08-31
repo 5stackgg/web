@@ -6378,7 +6378,16 @@
       "sign_in": "Zum Annehmen anmelden",
       "dismiss": "Jetzt nicht",
       "accepted": "Einladung angenommen",
-      "failed": "Diese Einladung konnte nicht verwendet werden: {reason}"
+      "failed": "Diese Einladung konnte nicht verwendet werden: {reason}",
+      "errors": {
+        "invite_not_found": "Dieser Einladungslink ist für dieses Turnier nicht gültig.",
+        "invite_revoked": "Der Veranstalter hat diesen Einladungslink widerrufen.",
+        "invite_expired": "Dieser Einladungslink ist abgelaufen.",
+        "invite_used_up": "Dieser Einladungslink wurde bereits so oft verwendet, wie er es zulässt.",
+        "invite_registration_closed": "Die Anmeldung für dieses Turnier ist geschlossen.",
+        "invite_rate_limited": "Zu viele Einladungsversuche. Versuch es in einer Minute noch einmal.",
+        "invite_not_allowed": "Dieses Konto kann diese Einladung nicht annehmen."
+      }
     }
   },
   "team": {

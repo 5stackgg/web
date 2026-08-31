@@ -6378,7 +6378,16 @@
       "sign_in": "로그인하고 수락",
       "dismiss": "나중에",
       "accepted": "초대를 수락했습니다",
-      "failed": "이 초대를 사용할 수 없습니다: {reason}"
+      "failed": "이 초대를 사용할 수 없습니다: {reason}",
+      "errors": {
+        "invite_not_found": "이 초대 링크는 이 토너먼트에 유효하지 않습니다.",
+        "invite_revoked": "주최자가 이 초대 링크를 취소했습니다.",
+        "invite_expired": "이 초대 링크는 만료되었습니다.",
+        "invite_used_up": "이 초대 링크는 허용된 횟수만큼 이미 모두 사용되었습니다.",
+        "invite_registration_closed": "이 토너먼트의 참가 신청이 마감되었습니다.",
+        "invite_rate_limited": "초대 시도가 너무 많습니다. 1분 후에 다시 시도하세요.",
+        "invite_not_allowed": "이 계정으로는 이 초대를 수락할 수 없습니다."
+      }
     }
   },
   "team": {

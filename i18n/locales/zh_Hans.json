@@ -6378,7 +6378,16 @@
       "sign_in": "登录后接受",
       "dismiss": "暂不",
       "accepted": "已接受邀请",
-      "failed": "该邀请无法使用：{reason}"
+      "failed": "该邀请无法使用：{reason}",
+      "errors": {
+        "invite_not_found": "该邀请链接对本赛事无效。",
+        "invite_revoked": "主办方已撤销该邀请链接。",
+        "invite_expired": "该邀请链接已过期。",
+        "invite_used_up": "该邀请链接的可用次数已经用完。",
+        "invite_registration_closed": "本赛事的报名已关闭。",
+        "invite_rate_limited": "邀请尝试次数过多。请一分钟后再试。",
+        "invite_not_allowed": "该账户无法接受此邀请。"
+      }
     }
   },
   "team": {

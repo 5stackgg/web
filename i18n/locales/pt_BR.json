@@ -6378,7 +6378,16 @@
       "sign_in": "Entrar para aceitar",
       "dismiss": "Agora não",
       "accepted": "Convite aceito",
-      "failed": "Não foi possível usar esse convite: {reason}"
+      "failed": "Não foi possível usar esse convite: {reason}",
+      "errors": {
+        "invite_not_found": "Esse link de convite não é válido para este torneio.",
+        "invite_revoked": "O organizador revogou este link de convite.",
+        "invite_expired": "Este link de convite expirou.",
+        "invite_used_up": "Este link de convite já foi usado todas as vezes que permite.",
+        "invite_registration_closed": "As inscrições para este torneio estão fechadas.",
+        "invite_rate_limited": "Tentativas de convite demais. Tente de novo daqui a um minuto.",
+        "invite_not_allowed": "Esta conta não pode aceitar este convite."
+      }
     }
   },
   "team": {

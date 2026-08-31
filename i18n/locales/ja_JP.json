@@ -6378,7 +6378,16 @@
       "sign_in": "ログインして承諾",
       "dismiss": "後で",
       "accepted": "招待を承諾しました",
-      "failed": "この招待は使用できませんでした: {reason}"
+      "failed": "この招待は使用できませんでした: {reason}",
+      "errors": {
+        "invite_not_found": "この招待リンクは、このトーナメントでは無効です。",
+        "invite_revoked": "主催者がこの招待リンクを取り消しました。",
+        "invite_expired": "この招待リンクは期限切れです。",
+        "invite_used_up": "この招待リンクは、使用できる回数をすでに使い切っています。",
+        "invite_registration_closed": "このトーナメントの参加登録は締め切られています。",
+        "invite_rate_limited": "招待の試行回数が多すぎます。1分後にもう一度お試しください。",
+        "invite_not_allowed": "このアカウントではこの招待を承諾できません。"
+      }
     }
   },
   "team": {

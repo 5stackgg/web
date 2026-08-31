@@ -6378,7 +6378,16 @@
       "sign_in": "Log ind for at acceptere",
       "dismiss": "Ikke nu",
       "accepted": "Invitation accepteret",
-      "failed": "Invitationen kunne ikke bruges: {reason}"
+      "failed": "Invitationen kunne ikke bruges: {reason}",
+      "errors": {
+        "invite_not_found": "Det invitationslink er ikke gyldigt til denne turnering.",
+        "invite_revoked": "Arrangøren har tilbagekaldt dette invitationslink.",
+        "invite_expired": "Dette invitationslink er udløbet.",
+        "invite_used_up": "Dette invitationslink er allerede brugt det maksimale antal gange, det tillader.",
+        "invite_registration_closed": "Tilmeldingen til denne turnering er lukket.",
+        "invite_rate_limited": "For mange invitationsforsøg. Prøv igen om et minut.",
+        "invite_not_allowed": "Denne konto kan ikke acceptere denne invitation."
+      }
     }
   },
   "team": {

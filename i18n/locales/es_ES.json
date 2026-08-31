@@ -6378,7 +6378,16 @@
       "sign_in": "Inicia sesión para aceptar",
       "dismiss": "Ahora no",
       "accepted": "Invitación aceptada",
-      "failed": "No se ha podido usar esa invitación: {reason}"
+      "failed": "No se ha podido usar esa invitación: {reason}",
+      "errors": {
+        "invite_not_found": "Ese enlace de invitación no es válido para este torneo.",
+        "invite_revoked": "El organizador ha revocado este enlace de invitación.",
+        "invite_expired": "Este enlace de invitación ha caducado.",
+        "invite_used_up": "Este enlace de invitación ya se ha usado todas las veces que permite.",
+        "invite_registration_closed": "La inscripción a este torneo está cerrada.",
+        "invite_rate_limited": "Demasiados intentos de invitación. Inténtalo de nuevo en un minuto.",
+        "invite_not_allowed": "Esta cuenta no puede aceptar esta invitación."
+      }
     }
   },
   "team": {

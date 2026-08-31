@@ -6378,7 +6378,16 @@
       "sign_in": "Logga in för att acceptera",
       "dismiss": "Inte nu",
       "accepted": "Inbjudan accepterad",
-      "failed": "Inbjudan kunde inte användas: {reason}"
+      "failed": "Inbjudan kunde inte användas: {reason}",
+      "errors": {
+        "invite_not_found": "Den inbjudningslänken är inte giltig för den här turneringen.",
+        "invite_revoked": "Arrangören har återkallat den här inbjudningslänken.",
+        "invite_expired": "Den här inbjudningslänken har gått ut.",
+        "invite_used_up": "Den här inbjudningslänken har redan använts så många gånger som den tillåter.",
+        "invite_registration_closed": "Anmälan till den här turneringen är stängd.",
+        "invite_rate_limited": "För många inbjudningsförsök. Försök igen om en minut.",
+        "invite_not_allowed": "Det här kontot kan inte acceptera den här inbjudan."
+      }
     }
   },
   "team": {

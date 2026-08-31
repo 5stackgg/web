@@ -6378,7 +6378,16 @@
       "sign_in": "Kabul etmek için giriş yap",
       "dismiss": "Şimdi değil",
       "accepted": "Davet kabul edildi",
-      "failed": "Bu davet kullanılamadı: {reason}"
+      "failed": "Bu davet kullanılamadı: {reason}",
+      "errors": {
+        "invite_not_found": "Bu davet bağlantısı bu turnuva için geçerli değil.",
+        "invite_revoked": "Organizatör bu davet bağlantısını geri aldı.",
+        "invite_expired": "Bu davet bağlantısının süresi doldu.",
+        "invite_used_up": "Bu davet bağlantısı, izin verdiği sayıda kez zaten kullanıldı.",
+        "invite_registration_closed": "Bu turnuvanın kayıtları kapalı.",
+        "invite_rate_limited": "Çok fazla davet denemesi. Bir dakika sonra tekrar dene.",
+        "invite_not_allowed": "Bu hesap bu daveti kabul edemez."
+      }
     }
   },
   "team": {

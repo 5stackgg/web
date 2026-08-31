@@ -6378,7 +6378,16 @@
       "sign_in": "Zaloguj się, aby zaakceptować",
       "dismiss": "Nie teraz",
       "accepted": "Zaproszenie zaakceptowane",
-      "failed": "Nie udało się użyć tego zaproszenia: {reason}"
+      "failed": "Nie udało się użyć tego zaproszenia: {reason}",
+      "errors": {
+        "invite_not_found": "Ten link z zaproszeniem nie jest ważny dla tego turnieju.",
+        "invite_revoked": "Organizator cofnął ten link z zaproszeniem.",
+        "invite_expired": "Ten link z zaproszeniem wygasł.",
+        "invite_used_up": "Ten link z zaproszeniem został już wykorzystany maksymalną dozwoloną liczbę razy.",
+        "invite_registration_closed": "Rejestracja na ten turniej jest zamknięta.",
+        "invite_rate_limited": "Zbyt wiele prób użycia zaproszenia. Spróbuj ponownie za minutę.",
+        "invite_not_allowed": "To konto nie może zaakceptować tego zaproszenia."
+      }
     }
   },
   "team": {

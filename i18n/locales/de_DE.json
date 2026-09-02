@@ -5664,6 +5664,10 @@
     "settings": "Einstellungen",
     "join": {
       "title": "Turnier beitreten",
+      "mode": {
+        "team": "Als Team",
+        "free_agent": "Als Free Agent"
+      },
       "add_self_to_lineup": "Mich zum Lineup hinzufügen",
       "team_owner": "Team-Owner",
       "requirements": "Du brauchst mindestens {count} Spieler, um diesem Turnier beizutreten",
@@ -6266,7 +6270,10 @@
       "filter_drafted": "Gedraftet",
       "filter_waitlist": "Warteliste",
       "sign_up": "Anmelden",
+      "sign_up_hint": "Kein Team? Melde dich allein an, und beim Anmeldeschluss setzt dich der Draft in ein Team aus {size} Spielern.",
+      "joined": "Du bist im Free-Agent-Pool",
       "leave": "Pool verlassen",
+      "already_in_pool": "Du bist für dieses Turnier bereits als Free Agent angemeldet.",
       "sign_up_alone": "Allein anmelden",
       "sign_up_with_lobby": "Alle {count} anmelden",
       "lobby_title": "Nimm deine Lobby mit",

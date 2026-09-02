@@ -9,8 +9,10 @@ import {
   FormSection,
 } from "~/components/ui/form";
 import { Switch } from "~/components/ui/switch";
-import { MessageCircleWarning } from "lucide-vue-next";
+import { MessageCircleWarning, UserPlus, Users } from "lucide-vue-next";
+import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import PlayerSearch from "~/components/PlayerSearch.vue";
+import TournamentFreeAgentSignUp from "~/components/tournament/TournamentFreeAgentSignUp.vue";
 import TeamSearch from "~/components/teams/TeamSearch.vue";
 import { Card } from "~/components/ui/card";
 import { Checkbox } from "~/components/ui/checkbox";
@@ -18,44 +20,31 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 </script>
 
 <template>
-  <form @submit.prevent="joinTournament" class="grid gap-4">
-    <h1 class="flex gap-2" v-if="!tournament.is_organizer">
-      <MessageCircleWarning />
-      {{
-        $t("tournament.join.requirements", {
-          count: tournament.min_players_per_lineup,
-        })
-      }}
-    </h1>
+  <div class="grid gap-4">
+    <AnimatedFilters
+      v-if="showEntryModes"
+      v-model="entryMode"
+      :options="entryModeOptions"
+      block
+      square
+      size="lg"
+    />
 
-    <FormField v-slot="{ value, handleChange }" name="new_team">
-      <FormItem>
-        <Card
-          class="h-9 rounded-md bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 cursor-pointer"
-          @click="handleChange(!value)"
-        >
-          <div class="flex h-full flex-row items-center justify-between px-4">
-            <div class="space-y-0.5">
-              <FormLabel>{{ $t("tournament.team.new") }}</FormLabel>
-            </div>
-            <FormControl>
-              <Switch
-                class="pointer-events-none"
-                :model-value="value"
-                @update:model-value="handleChange"
-              />
-            </FormControl>
-          </div>
-        </Card>
-      </FormItem>
-    </FormField>
+    <form
+      v-if="entryMode === 'team'"
+      @submit.prevent="joinTournament"
+      class="grid gap-4"
+    >
+      <h1 class="flex gap-2" v-if="!tournament.is_organizer">
+        <MessageCircleWarning />
+        {{
+          $t("tournament.join.requirements", {
+            count: tournament.min_players_per_lineup,
+          })
+        }}
+      </h1>
 
-    <template v-if="tournament.is_organizer && form.values.new_team">
-      <FormField
-        v-if="tournament.can_join"
-        v-slot="{ value, handleChange }"
-        name="add_self_to_lineup"
-      >
+      <FormField v-slot="{ value, handleChange }" name="new_team">
         <FormItem>
           <Card
             class="h-9 rounded-md bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 cursor-pointer"
@@ -63,9 +52,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
           >
             <div class="flex h-full flex-row items-center justify-between px-4">
               <div class="space-y-0.5">
-                <FormLabel>{{
-                  $t("tournament.join.add_self_to_lineup")
-                }}</FormLabel>
+                <FormLabel>{{ $t("tournament.team.new") }}</FormLabel>
               </div>
               <FormControl>
                 <Switch
@@ -79,130 +66,188 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
         </FormItem>
       </FormField>
 
-      <PlayerSearch
-        :label="$t('tournament.join.team_owner')"
-        @selected="setOwnerTeamOwner"
-        :selected="teamOwner"
-        :ineligible="ineligibleTournamentPlayers"
-        v-if="!form.values.add_self_to_lineup && form.values.new_team"
-      ></PlayerSearch>
-    </template>
-
-    <template v-if="!form.values.new_team">
-      <FormField v-slot="{ handleChange, componentField, meta }" name="team_id">
-        <FormItem>
-          <TeamSearch
-            :label="$t('tournament.team.select')"
-            :my-teams="canSelectAnyTeam ? false : true"
-            :is-admin="canSelectAnyTeam ? false : true"
-            :tournament-join-selector="!canSelectAnyTeam"
-            :ineligible="ineligibleTeams"
-            @selected="
-              async (team) => {
-                handleChange(String(team.id));
-                form.setFieldTouched('team_id', true);
-              }
-            "
-            v-model="componentField.modelValue"
-          ></TeamSearch>
-          <FormMessage v-if="meta.touched" />
-        </FormItem>
-      </FormField>
-
-      <div v-if="form.values.team_id && rosterGroups.length" class="space-y-2">
-        <label
-          class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground"
+      <template v-if="tournament.is_organizer && form.values.new_team">
+        <FormField
+          v-if="tournament.can_join"
+          v-slot="{ value, handleChange }"
+          name="add_self_to_lineup"
         >
-          {{
-            $t("tournament.join.roster_range", {
-              selected: selectedPlayers.size,
-              max: maxLineup,
-            })
-          }}
-        </label>
-        <div v-for="group in rosterGroups" :key="group.key" class="space-y-1.5">
-          <div
-            class="font-mono text-[0.58rem] uppercase tracking-[0.18em] text-muted-foreground"
-          >
-            {{ $t(`tournament.join.group.${group.key}`) }} ·
-            {{ group.members.length }}
-          </div>
-          <ul class="grid gap-1.5 sm:grid-cols-2">
-            <li
-              v-for="member in group.members"
-              :key="member.player_steam_id"
-              class="flex items-center gap-2.5 rounded-md border border-border/60 bg-muted/20 px-3 py-2"
-              :class="rosterItemClass(member)"
-              @click="togglePlayer(member)"
+          <FormItem>
+            <Card
+              class="h-9 rounded-md bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 cursor-pointer"
+              @click="handleChange(!value)"
             >
-              <Checkbox
-                :model-value="selectedPlayers.has(member.player_steam_id)"
-                :disabled="
-                  isTaken(member) ||
-                  (!selectedPlayers.has(member.player_steam_id) && atLineupCap)
-                "
-                @click.stop="togglePlayer(member)"
-              />
-              <PlayerDisplay :player="member.player" />
-              <span
-                v-if="isTaken(member)"
-                class="ml-auto text-[0.62rem] uppercase tracking-[0.12em] text-muted-foreground"
+              <div
+                class="flex h-full flex-row items-center justify-between px-4"
               >
-                {{ $t("tournament.join.already_rostered") }}
-              </span>
-            </li>
-          </ul>
+                <div class="space-y-0.5">
+                  <FormLabel>{{
+                    $t("tournament.join.add_self_to_lineup")
+                  }}</FormLabel>
+                </div>
+                <FormControl>
+                  <Switch
+                    class="pointer-events-none"
+                    :model-value="value"
+                    @update:model-value="handleChange"
+                  />
+                </FormControl>
+              </div>
+            </Card>
+          </FormItem>
+        </FormField>
+
+        <PlayerSearch
+          :label="$t('tournament.join.team_owner')"
+          @selected="setOwnerTeamOwner"
+          :selected="teamOwner"
+          :ineligible="ineligibleTournamentPlayers"
+          v-if="!form.values.add_self_to_lineup && form.values.new_team"
+        ></PlayerSearch>
+      </template>
+
+      <template v-if="!form.values.new_team">
+        <FormField
+          v-slot="{ handleChange, componentField, meta }"
+          name="team_id"
+        >
+          <FormItem>
+            <TeamSearch
+              :label="$t('tournament.team.select')"
+              :my-teams="canSelectAnyTeam ? false : true"
+              :is-admin="canSelectAnyTeam ? false : true"
+              :tournament-join-selector="!canSelectAnyTeam"
+              :ineligible="ineligibleTeams"
+              @selected="
+                async (team) => {
+                  handleChange(String(team.id));
+                  form.setFieldTouched('team_id', true);
+                }
+              "
+              v-model="componentField.modelValue"
+            ></TeamSearch>
+            <FormMessage v-if="meta.touched" />
+          </FormItem>
+        </FormField>
+
+        <div
+          v-if="form.values.team_id && rosterGroups.length"
+          class="space-y-2"
+        >
+          <label
+            class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground"
+          >
+            {{
+              $t("tournament.join.roster_range", {
+                selected: selectedPlayers.size,
+                max: maxLineup,
+              })
+            }}
+          </label>
+          <div
+            v-for="group in rosterGroups"
+            :key="group.key"
+            class="space-y-1.5"
+          >
+            <div
+              class="font-mono text-[0.58rem] uppercase tracking-[0.18em] text-muted-foreground"
+            >
+              {{ $t(`tournament.join.group.${group.key}`) }} ·
+              {{ group.members.length }}
+            </div>
+            <ul class="grid gap-1.5 sm:grid-cols-2">
+              <li
+                v-for="member in group.members"
+                :key="member.player_steam_id"
+                class="flex items-center gap-2.5 rounded-md border border-border/60 bg-muted/20 px-3 py-2"
+                :class="rosterItemClass(member)"
+                @click="togglePlayer(member)"
+              >
+                <Checkbox
+                  :model-value="selectedPlayers.has(member.player_steam_id)"
+                  :disabled="
+                    isTaken(member) ||
+                    (!selectedPlayers.has(member.player_steam_id) &&
+                      atLineupCap)
+                  "
+                  @click.stop="togglePlayer(member)"
+                />
+                <PlayerDisplay :player="member.player" />
+                <span
+                  v-if="isTaken(member)"
+                  class="ml-auto text-[0.62rem] uppercase tracking-[0.12em] text-muted-foreground"
+                >
+                  {{ $t("tournament.join.already_rostered") }}
+                </span>
+              </li>
+            </ul>
+          </div>
         </div>
-      </div>
-    </template>
+      </template>
+      <template v-else>
+        <FormSection :title="$t('team.form.identity')">
+          <div class="space-y-5">
+            <FormField v-slot="{ componentField, meta }" name="team_name">
+              <FormItem>
+                <FormLabel>{{ $t("common.team_name") }}</FormLabel>
+                <Input v-bind="componentField"></Input>
+                <FormMessage v-if="meta.touched" />
+              </FormItem>
+            </FormField>
+
+            <FormField v-slot="{ componentField, meta }" name="short_name">
+              <FormItem>
+                <FormLabel>{{ $t("team.form.short_name") }}</FormLabel>
+                <Input
+                  v-bind="componentField"
+                  :placeholder="$t('team.form.short_name_placeholder')"
+                  maxlength="5"
+                  class="uppercase tracking-[0.15em] font-mono"
+                  @input="autoShortName = false"
+                ></Input>
+                <FormMessage v-if="meta.touched" />
+              </FormItem>
+            </FormField>
+          </div>
+        </FormSection>
+      </template>
+
+      <Button
+        variant="tactical"
+        type="submit"
+        :loading="submitting"
+        :disabled="
+          (!form.values.new_team && !form.values.team_id) ||
+          (!form.values.new_team &&
+            !!form.values.team_id &&
+            selectedPlayers.size === 0) ||
+          (form.values.new_team && !form.values.team_name) ||
+          (form.values.new_team && !form.values.short_name) ||
+          (form.values.new_team &&
+            tournament.is_organizer &&
+            !form.values.add_self_to_lineup &&
+            !form.values.owner_steam_id)
+        "
+      >
+        {{ $t("tournament.join.title") }}
+      </Button>
+    </form>
+
     <template v-else>
-      <FormSection :title="$t('team.form.identity')">
-        <div class="space-y-5">
-          <FormField v-slot="{ componentField, meta }" name="team_name">
-            <FormItem>
-              <FormLabel>{{ $t("common.team_name") }}</FormLabel>
-              <Input v-bind="componentField"></Input>
-              <FormMessage v-if="meta.touched" />
-            </FormItem>
-          </FormField>
-
-          <FormField v-slot="{ componentField, meta }" name="short_name">
-            <FormItem>
-              <FormLabel>{{ $t("team.form.short_name") }}</FormLabel>
-              <Input
-                v-bind="componentField"
-                :placeholder="$t('team.form.short_name_placeholder')"
-                maxlength="5"
-                class="uppercase tracking-[0.15em] font-mono"
-                @input="autoShortName = false"
-              ></Input>
-              <FormMessage v-if="meta.touched" />
-            </FormItem>
-          </FormField>
-        </div>
-      </FormSection>
+      <p
+        v-if="myFreeAgent"
+        class="rounded-md border border-border bg-card/45 p-3.5 text-[0.8rem] leading-relaxed text-muted-foreground"
+      >
+        {{ $t("tournament.free_agents.already_in_pool") }}
+      </p>
+      <TournamentFreeAgentSignUp
+        v-else
+        :tournament="tournament"
+        :my-entry="myFreeAgent"
+        @joined="$emit('close')"
+      />
     </template>
-
-    <Button
-      variant="tactical"
-      type="submit"
-      :loading="submitting"
-      :disabled="
-        (!form.values.new_team && !form.values.team_id) ||
-        (!form.values.new_team &&
-          !!form.values.team_id &&
-          selectedPlayers.size === 0) ||
-        (form.values.new_team && !form.values.team_name) ||
-        (form.values.new_team && !form.values.short_name) ||
-        (form.values.new_team &&
-          tournament.is_organizer &&
-          !form.values.add_self_to_lineup &&
-          !form.values.owner_steam_id)
-      "
-    >
-      {{ $t("tournament.join.title") }}
-    </Button>
-  </form>
+  </div>
 </template>
 
 <script lang="ts">
@@ -221,9 +266,23 @@ export default {
       type: Object,
       required: true,
     },
+    // The registration columns, fetched separately by TournamentDetail. Absent
+    // from the organizer's Add Team panel, which only ever registers a team.
+    registration: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+    // The viewer's own free agent row, if they already have one.
+    myFreeAgent: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
+      entryModeOverride: null as string | null,
       submitting: false,
       teamOwner: null,
       autoShortName: true,
@@ -301,6 +360,57 @@ export default {
     },
     canSelectAnyTeam() {
       return this.tournament.is_organizer || useAuthStore().isAdmin;
+    },
+    registrationType() {
+      return this.registration?.registration_type ?? "teams";
+    },
+    freeAgentsAllowed() {
+      return ["free_agents", "both"].includes(this.registrationType);
+    },
+    // A free-agents-only tournament has no team entry to offer -- the pool is
+    // drafted into teams. The organizer keeps it: they can still seat a team
+    // the draft did not build.
+    teamsAllowed() {
+      return (
+        this.registrationType !== "free_agents" ||
+        !!this.tournament.is_organizer
+      );
+    },
+    showEntryModes() {
+      return this.freeAgentsAllowed && this.teamsAllowed;
+    },
+    entryModeOptions() {
+      return [
+        {
+          key: "team",
+          label: this.$t("tournament.join.mode.team"),
+          icon: Users,
+        },
+        {
+          key: "free_agent",
+          label: this.$t("tournament.join.mode.free_agent"),
+          icon: UserPlus,
+        },
+      ];
+    },
+    // `registration` arrives on its own subscription, so the sheet can open
+    // before the answer to "does this tournament take free agents" does -- the
+    // mode has to follow it rather than be latched once on mount.
+    entryMode: {
+      get() {
+        const mode =
+          this.entryModeOverride ?? (this.teamsAllowed ? "team" : "free_agent");
+        if (mode === "free_agent" && !this.freeAgentsAllowed) {
+          return "team";
+        }
+        if (mode === "team" && !this.teamsAllowed) {
+          return "free_agent";
+        }
+        return mode;
+      },
+      set(value: string) {
+        this.entryModeOverride = value;
+      },
     },
     ineligibleTeams(): Record<string, string> {
       const map: Record<string, string> = {};

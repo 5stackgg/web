@@ -5664,6 +5664,10 @@
     "settings": "設定",
     "join": {
       "title": "加入賽事",
+      "mode": {
+        "team": "以隊伍身分",
+        "free_agent": "以自由選手身分"
+      },
       "add_self_to_lineup": "將自己加入陣容",
       "team_owner": "隊伍擁有者",
       "requirements": "您需要至少 {count} 名選手才能加入此賽事",
@@ -6266,7 +6270,10 @@
       "filter_drafted": "已選入",
       "filter_waitlist": "候補",
       "sign_up": "報名",
+      "sign_up_hint": "沒有隊伍？單人報名即可，報名截止時分隊會把你分到一支 {size} 人的隊伍。",
+      "joined": "你已加入自由選手池",
       "leave": "退出選手池",
+      "already_in_pool": "你已經以自由選手身分報名本賽事。",
       "sign_up_alone": "單人報名",
       "sign_up_with_lobby": "{count} 人一起報名",
       "lobby_title": "帶上你的大廳",

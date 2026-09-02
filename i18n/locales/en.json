@@ -5664,6 +5664,10 @@
     "settings": "Settings",
     "join": {
       "title": "Join Tournament",
+      "mode": {
+        "team": "As a team",
+        "free_agent": "As a free agent"
+      },
       "add_self_to_lineup": "Add Self to Lineup",
       "team_owner": "Team Owner",
       "requirements": "You need at least {count} players to join this tournament",
@@ -6266,7 +6270,10 @@
       "filter_drafted": "Drafted",
       "filter_waitlist": "Waitlist",
       "sign_up": "Sign up",
+      "sign_up_hint": "No team? Sign up on your own and the draft places you on a team of {size} when registration closes.",
+      "joined": "You are in the free agent pool",
       "leave": "Leave pool",
+      "already_in_pool": "You are already signed up as a free agent for this tournament.",
       "sign_up_alone": "Sign up alone",
       "sign_up_with_lobby": "Sign up all {count}",
       "lobby_title": "Bring your lobby",

@@ -2,7 +2,7 @@
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useApolloClient, useSubscription } from "@vue/apollo-composable";
-import { Info, RefreshCw, UserMinus, UserPlus, Users } from "lucide-vue-next";
+import { Info, RefreshCw, UserMinus, Users } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import {
   Empty,
@@ -11,18 +11,24 @@ import {
 } from "~/components/ui/empty";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import PlayerElo from "~/components/PlayerElo.vue";
 import TournamentChip from "~/components/tournament/TournamentChip.vue";
+import TournamentFreeAgentSignUp from "~/components/tournament/TournamentFreeAgentSignUp.vue";
 import { toast } from "~/components/ui/toast";
 import { $, e_tournament_status_enum } from "~/generated/zeus";
-import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
+import { generateSubscription } from "~/graphql/graphqlGen";
 import { playerFields } from "~/graphql/playerFields";
 import { useAuthStore } from "~/stores/AuthStore";
-import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import { dateLocale } from "~/utilities/dateLocale";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
+import { runTournamentAction } from "~/utilities/tournamentActions";
+import {
+  tournamentEloLadder,
+  tournamentPlayerElo,
+} from "~/utilities/tournamentElo";
 
 const props = defineProps<{
   tournament: Record<string, any>;
@@ -199,6 +205,14 @@ const teamSize = computed(
     0,
 );
 
+// The ladder the DRAFT rates on, not the one the player looks best on:
+// draft_tournament_free_agent_teams orders the pool by get_tournament_player_elo.
+const eloLadder = computed(() => tournamentEloLadder(props.tournament));
+
+function playerElo(agent: Agent) {
+  return tournamentPlayerElo(props.tournament, agent?.player);
+}
+
 // Only the first stage caps the field; later stages are fed by results.
 const stageMaxTeams = computed(() => {
   const max = props.tournament?.stages?.[0]?.max_teams;
@@ -329,13 +343,11 @@ const draftedTeams = computed(() => {
   return [...groups.values()]
     .map((group) => {
       const elos = group.members
-        .map((member) => Number(member.player?.elo))
-        .filter((elo) => Number.isFinite(elo));
+        .map((member) => playerElo(member))
+        .filter((elo): elo is number => elo !== null);
       const byElo = group.members
         .slice()
-        .sort(
-          (a, b) => Number(b.player?.elo ?? 0) - Number(a.player?.elo ?? 0),
-        );
+        .sort((a, b) => (playerElo(b) ?? 0) - (playerElo(a) ?? 0));
       return {
         ...group,
         // Grouped off an ELO-sorted list, so each unit keeps its members in
@@ -374,7 +386,7 @@ const topRatedWaitlisted = computed(() => {
     return null;
   }
   const best = pool.value.reduce((top, row) =>
-    Number(row.player?.elo ?? 0) > Number(top.player?.elo ?? 0) ? row : top,
+    (playerElo(row) ?? 0) > (playerElo(top) ?? 0) ? row : top,
   );
   return best.status === "waitlisted" ? best : null;
 });
@@ -389,16 +401,6 @@ const myEntry = computed(() => {
   );
 });
 
-// joinTournamentAsFreeAgent requires exactly RegistrationOpen, while the leave
-// rule also allows Setup. Offering Sign up during Setup produces a button that
-// can only ever fail, so the two windows are kept apart.
-const canSignUp = computed(
-  () =>
-    !!me.value &&
-    props.tournament?.status === e_tournament_status_enum.RegistrationOpen &&
-    !myEntry.value,
-);
-
 // The same window leaveTournamentAsFreeAgent enforces, drafted included: an
 // organizer can regenerate the teams while registration is still open, and
 // gating on that would strand everyone the draft touched with no way out of a
@@ -411,56 +413,6 @@ const canLeave = computed(
       e_tournament_status_enum.Setup,
       e_tournament_status_enum.RegistrationOpen,
     ].includes(props.tournament?.status),
-);
-
-// The party IS the matchmaking lobby — there is no separate invite to accept,
-// because a captain who can already queue the whole lobby into a live match is
-// making a strictly smaller commitment by entering it in a draft. Read straight
-// off the store that owns lobby state; a second derivation of "who is in my
-// lobby" is how the two answers drift apart.
-const lobbyMembers = computed<Agent[]>(() => {
-  const lobby = useMatchmakingStore().currentLobby as Agent | undefined;
-  // Only accepted members count — a pending invite is not consent, and the API
-  // sizes the party the same way.
-  return ((lobby?.players ?? []) as Agent[]).filter(
-    (member) => member.status === "Accepted",
-  );
-});
-
-const lobbyCaptain = computed(
-  () => lobbyMembers.value.find((member) => member.captain) ?? null,
-);
-
-const isLobbyCaptain = computed(() => {
-  const steamId = String(me.value?.steam_id ?? "");
-  return (
-    !!steamId && String(lobbyCaptain.value?.player?.steam_id ?? "") === steamId
-  );
-});
-
-// A party of more than a full team can never be drafted, so the API refuses the
-// signup outright. Signing up alone is the intended escape hatch. Mirrors
-// tournament_free_agent_party_fits, which passes a format with no lineup size
-// rather than measuring against a zero.
-const lobbyFitsTeam = computed(
-  () => teamSize.value < 1 || lobbyMembers.value.length <= teamSize.value,
-);
-
-const lobbyMembersAlreadyInPool = computed(() => {
-  const steamIds = new Set(
-    pool.value.map((row) => String(row.player?.steam_id)),
-  );
-  return lobbyMembers.value.filter((member) =>
-    steamIds.has(String(member.player?.steam_id)),
-  ).length;
-});
-
-const showLobbySignUp = computed(
-  () => canSignUp.value && lobbyMembers.value.length > 1,
-);
-
-const canSignUpWithLobby = computed(
-  () => showLobbySignUp.value && isLobbyCaptain.value && lobbyFitsTeam.value,
 );
 
 function signUpTime(createdAt: string) {
@@ -506,52 +458,9 @@ function statusLabel(status: string) {
   return t("tournament.free_agents.status_registered");
 }
 
-async function runAction(
-  mutation: Record<string, any>,
-  failureTitle: string,
-): Promise<Record<string, any> | null> {
-  try {
-    const { data } = await client.mutate({
-      // Free-agent actions ship with the registration migration; zeus types
-      // for them only exist once `yarn codegen` has run against that schema.
-      mutation: generateMutation(mutation as any),
-    });
-    return (data as Record<string, any>) ?? null;
-  } catch (error: unknown) {
-    toast({
-      title: failureTitle,
-      description: error instanceof Error ? error.message : String(error),
-      variant: "destructive",
-    });
-    return null;
-  }
-}
-
-async function joinPool(withParty = false) {
-  await runAction(
-    {
-      joinTournamentAsFreeAgent: [
-        {
-          tournament_id: props.tournament.id,
-          // PRE-CODEGEN ESCAPE HATCH — `with_party` is a new action argument
-          // Zeus has not generated, so it rides the `as any` in runAction.
-          // Omitted entirely when false: that is byte-for-byte the old solo
-          // signup, which every unmigrated API still accepts.
-          ...(withParty ? { with_party: true } : {}),
-        },
-        {
-          success: true,
-        },
-      ],
-    },
-    withParty
-      ? t("tournament.free_agents.join_with_lobby_failed")
-      : t("tournament.free_agents.join_failed"),
-  );
-}
-
 async function leavePool() {
-  await runAction(
+  await runTournamentAction(
+    client,
     {
       leaveTournamentAsFreeAgent: [
         {
@@ -567,7 +476,8 @@ async function leavePool() {
 }
 
 async function draftTeams() {
-  const data = await runAction(
+  const data = await runTournamentAction(
+    client,
     {
       draftTournamentTeams: [
         {
@@ -628,16 +538,7 @@ async function draftTeams() {
           square
         />
         <Button
-          v-if="canSignUp && !showLobbySignUp"
-          size="sm"
-          class="h-8"
-          @click="joinPool()"
-        >
-          <UserPlus class="mr-1.5 h-3.5 w-3.5" />
-          {{ $t("tournament.free_agents.sign_up") }}
-        </Button>
-        <Button
-          v-else-if="canLeave"
+          v-if="canLeave"
           variant="outline"
           size="sm"
           class="h-8"
@@ -649,104 +550,11 @@ async function draftTeams() {
       </div>
     </div>
 
-    <!-- The whole lobby, or nobody: the consequence has to be readable before
-         the click, because there is no confirmation step and no invite for the
-         other members to accept. -->
-    <div
-      v-if="showLobbySignUp"
-      class="rounded-md border border-l-2 border-border border-l-[hsl(var(--tac-amber))] bg-card/45 p-3.5"
-    >
-      <div class="mb-2.5 flex flex-wrap items-center gap-2">
-        <Users class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]" />
-        <span
-          class="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))]"
-        >
-          {{ $t("tournament.free_agents.lobby_title") }}
-        </span>
-        <TournamentChip :tone="lobbyFitsTeam ? 'amber' : 'warn'">
-          {{
-            $t("tournament.free_agents.lobby_size", {
-              count: lobbyMembers.length,
-              size: teamSize,
-            })
-          }}
-        </TournamentChip>
-      </div>
-
-      <div class="mb-2.5 flex flex-wrap items-center gap-x-4 gap-y-1">
-        <PlayerDisplay
-          v-for="member in lobbyMembers"
-          :key="member.player?.steam_id"
-          :player="member.player"
-          size="xs"
-          :linkable="true"
-          :show-elo="false"
-          :show-online="false"
-          :show-role="false"
-        />
-      </div>
-
-      <p class="text-[0.78rem] leading-relaxed text-muted-foreground">
-        {{
-          lobbyFitsTeam
-            ? $t("tournament.free_agents.lobby_hint", {
-                count: lobbyMembers.length,
-                size: teamSize,
-              })
-            : $t("tournament.free_agents.lobby_too_big", {
-                count: lobbyMembers.length,
-                size: teamSize,
-              })
-        }}
-      </p>
-
-      <p
-        v-if="lobbyFitsTeam && !isLobbyCaptain && lobbyCaptain"
-        class="mt-1.5 text-[0.78rem] leading-relaxed text-muted-foreground"
-      >
-        {{
-          $t("tournament.free_agents.lobby_not_captain", {
-            name: lobbyCaptain.player?.name,
-          })
-        }}
-      </p>
-
-      <p
-        v-if="canSignUpWithLobby && lobbyMembersAlreadyInPool > 0"
-        class="mt-1.5 text-[0.78rem] leading-relaxed text-muted-foreground"
-      >
-        {{
-          $t("tournament.free_agents.lobby_already_signed_up", {
-            count: lobbyMembersAlreadyInPool,
-          })
-        }}
-      </p>
-
-      <div class="mt-3 flex flex-wrap items-center gap-2">
-        <Button
-          v-if="canSignUpWithLobby"
-          size="sm"
-          class="h-8"
-          @click="joinPool(true)"
-        >
-          <Users class="mr-1.5 h-3.5 w-3.5" />
-          {{
-            $t("tournament.free_agents.sign_up_with_lobby", {
-              count: lobbyMembers.length,
-            })
-          }}
-        </Button>
-        <Button
-          :variant="canSignUpWithLobby ? 'outline' : 'default'"
-          size="sm"
-          class="h-8"
-          @click="joinPool()"
-        >
-          <UserPlus class="mr-1.5 h-3.5 w-3.5" />
-          {{ $t("tournament.free_agents.sign_up_alone") }}
-        </Button>
-      </div>
-    </div>
+    <TournamentFreeAgentSignUp
+      :tournament="tournament"
+      :pool="pool"
+      :my-entry="myEntry"
+    />
 
     <Empty v-if="pool.length === 0" class="min-h-[180px]">
       <EmptyTitle>{{ $t("tournament.free_agents.empty_title") }}</EmptyTitle>
@@ -826,15 +634,18 @@ async function draftTeams() {
                   :show-role="false"
                 />
               </div>
-              <span
-                class="w-14 shrink-0 text-right font-mono text-[0.78rem] font-semibold tabular-nums"
-                :class="
-                  row.position === 1 && filter === 'all'
-                    ? 'text-[hsl(var(--tac-amber))]'
-                    : 'text-foreground'
-                "
-              >
-                {{ row.agent.player?.elo ?? "—" }}
+              <span class="flex w-14 shrink-0 justify-end">
+                <PlayerElo
+                  v-if="playerElo(row.agent) !== null"
+                  :elo="row.agent.player?.elo"
+                  :type="eloLadder"
+                />
+                <span
+                  v-else
+                  class="font-mono text-[0.78rem] text-muted-foreground"
+                >
+                  &mdash;
+                </span>
               </span>
               <span
                 class="w-14 shrink-0 text-right font-mono text-[0.72rem] tabular-nums text-muted-foreground"
@@ -990,10 +801,18 @@ async function draftTeams() {
                     :show-online="false"
                     :show-role="false"
                   />
-                  <span
-                    class="shrink-0 font-mono text-[0.7rem] tabular-nums text-muted-foreground"
-                  >
-                    {{ member.player?.elo ?? "—" }}
+                  <span class="flex shrink-0 justify-end">
+                    <PlayerElo
+                      v-if="playerElo(member) !== null"
+                      :elo="member.player?.elo"
+                      :type="eloLadder"
+                    />
+                    <span
+                      v-else
+                      class="font-mono text-[0.7rem] text-muted-foreground"
+                    >
+                      &mdash;
+                    </span>
                   </span>
                 </div>
               </div>

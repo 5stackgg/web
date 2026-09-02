@@ -1016,7 +1016,10 @@ function clearTeamEnterDelay(el: Element) {
           <SheetTitle class="text-2xl">
             {{ $t("tournament.join.title") }}
           </SheetTitle>
-          <SheetDescription>
+          <!-- A free agent enters alone, so the lineup minimum is not the
+               sheet's headline any more -- the team half of the form still
+               states it where it applies. -->
+          <SheetDescription v-if="!freeAgentsTabVisible">
             {{
               $t("tournament.join.requirements", {
                 count: tournament.min_players_per_lineup,
@@ -1028,6 +1031,8 @@ function clearTeamEnterDelay(el: Element) {
         <div class="mt-6">
           <TournamentJoinForm
             :tournament="tournament"
+            :registration="tournamentRegistration"
+            :my-free-agent="myFreeAgent"
             @close="joinSheetOpen = false"
           />
         </div>

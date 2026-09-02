@@ -5664,6 +5664,10 @@
     "settings": "Indstillinger",
     "join": {
       "title": "Tilmeld turnering",
+      "mode": {
+        "team": "Som hold",
+        "free_agent": "Som free agent"
+      },
       "add_self_to_lineup": "Tilføj dig selv til opstillingen",
       "team_owner": "Holdejer",
       "requirements": "Du skal have mindst {count} spillere for at tilmelde denne turnering",
@@ -6266,7 +6270,10 @@
       "filter_drafted": "Draftet",
       "filter_waitlist": "Venteliste",
       "sign_up": "Tilmeld dig",
+      "sign_up_hint": "Intet hold? Tilmeld dig alene, så placerer draften dig på et hold på {size}, når tilmeldingen lukker.",
+      "joined": "Du er i free agent-puljen",
       "leave": "Forlad puljen",
+      "already_in_pool": "Du er allerede tilmeldt som free agent til denne turnering.",
       "sign_up_alone": "Tilmeld dig alene",
       "sign_up_with_lobby": "Tilmeld alle {count}",
       "lobby_title": "Tag din lobby med",

@@ -5664,6 +5664,10 @@
     "settings": "Ustawienia",
     "join": {
       "title": "Dołącz do turnieju",
+      "mode": {
+        "team": "Jako drużyna",
+        "free_agent": "Jako wolny zawodnik"
+      },
       "add_self_to_lineup": "Dodaj siebie do ustawienia",
       "team_owner": "Właściciel drużyny",
       "requirements": "Potrzebujesz co najmniej {count} graczy, aby dołączyć do tego turnieju",
@@ -6266,7 +6270,10 @@
       "filter_drafted": "Wybrani w drafcie",
       "filter_waitlist": "Lista rezerwowa",
       "sign_up": "Zapisz się",
+      "sign_up_hint": "Nie masz drużyny? Zapisz się sam, a po zamknięciu zapisów draft przydzieli cię do {size}-osobowej drużyny.",
+      "joined": "Jesteś w puli wolnych zawodników",
       "leave": "Opuść pulę",
+      "already_in_pool": "Jesteś już zapisany do tego turnieju jako wolny zawodnik.",
       "sign_up_alone": "Zapisz się sam",
       "sign_up_with_lobby": "Zapisz wszystkich {count}",
       "lobby_title": "Weź swoje lobby",

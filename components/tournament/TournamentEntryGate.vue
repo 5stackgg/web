@@ -5,6 +5,7 @@ import { ShieldCheck, ShieldX } from "lucide-vue-next";
 import TournamentChip from "~/components/tournament/TournamentChip.vue";
 import { e_tournament_status_enum } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
+import { tournamentPlayerElo } from "~/utilities/tournamentElo";
 
 const props = defineProps<{
   tournament: Record<string, any>;
@@ -47,17 +48,12 @@ const roleBlocked = computed(
   () => !!minRole.value && props.registration?.meets_min_role === false,
 );
 
-// get_tournament_player_elo reads the WINGMAN ladder when the lineup minimum is
-// 2 and the Competitive one otherwise, while `players.elo` is only ever the
-// latter. Rather than announce a verdict off the wrong ladder, a 2v2 tournament
-// gets the requirement without the comparison.
-const myElo = computed(() => {
-  if (Number(props.tournament?.min_players_per_lineup) === 2) {
-    return null;
-  }
-  const elo = Number(me.value?.elo);
-  return Number.isFinite(elo) ? elo : null;
-});
+// The verdict has to come off the ladder get_tournament_player_elo gates on --
+// Wingman when the lineup minimum is 2, Competitive otherwise -- or the panel
+// announces a pass the insert trigger is about to refuse.
+const myElo = computed(() =>
+  tournamentPlayerElo(props.tournament, me.value),
+);
 
 const eloBlocked = computed(() => {
   if (myElo.value === null) {

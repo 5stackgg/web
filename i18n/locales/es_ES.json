@@ -5664,6 +5664,10 @@
     "settings": "Ajustes",
     "join": {
       "title": "Unirse al torneo",
+      "mode": {
+        "team": "Como equipo",
+        "free_agent": "Como agente libre"
+      },
       "add_self_to_lineup": "Añadirme a la alineación",
       "team_owner": "Propietario del equipo",
       "requirements": "Necesitas al menos {count} jugadores para unirte a este torneo",
@@ -6266,7 +6270,10 @@
       "filter_drafted": "Drafteados",
       "filter_waitlist": "Lista de espera",
       "sign_up": "Apuntarse",
+      "sign_up_hint": "¿Sin equipo? Apúntate solo y el draft te colocará en un equipo de {size} cuando se cierren las inscripciones.",
+      "joined": "Estás en el grupo de agentes libres",
       "leave": "Salir del grupo",
+      "already_in_pool": "Ya estás apuntado como agente libre en este torneo.",
       "sign_up_alone": "Apuntarse solo",
       "sign_up_with_lobby": "Apuntar a los {count}",
       "lobby_title": "Trae tu lobby",

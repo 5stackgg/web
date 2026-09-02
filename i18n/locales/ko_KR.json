@@ -5664,6 +5664,10 @@
     "settings": "설정",
     "join": {
       "title": "토너먼트 참가",
+      "mode": {
+        "team": "팀으로 참가",
+        "free_agent": "프리 에이전트로 참가"
+      },
       "add_self_to_lineup": "본인을 라인업에 추가",
       "team_owner": "팀 소유자",
       "requirements": "이 토너먼트에 참가하려면 최소 {count}명의 플레이어가 필요합니다",
@@ -6266,7 +6270,10 @@
       "filter_drafted": "드래프트됨",
       "filter_waitlist": "대기 명단",
       "sign_up": "신청하기",
+      "sign_up_hint": "팀이 없나요? 혼자 신청하면 등록이 마감될 때 드래프트가 {size}인 팀에 배정합니다.",
+      "joined": "프리 에이전트 풀에 등록되었습니다",
       "leave": "풀에서 나가기",
+      "already_in_pool": "이미 이 토너먼트에 프리 에이전트로 신청되어 있습니다.",
       "sign_up_alone": "혼자 신청",
       "sign_up_with_lobby": "{count}명 모두 신청",
       "lobby_title": "로비째로 신청하기",

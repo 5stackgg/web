@@ -5664,6 +5664,10 @@
     "settings": "Ayarlar",
     "join": {
       "title": "Turnuvaya Katıl",
+      "mode": {
+        "team": "Takım olarak",
+        "free_agent": "Serbest oyuncu olarak"
+      },
       "add_self_to_lineup": "Kendini Dizilişe Ekle",
       "team_owner": "Takım Sahibi",
       "requirements": "Bu turnuvaya katılmak için en az {count} oyuncuya ihtiyacın var",
@@ -6266,7 +6270,10 @@
       "filter_drafted": "Seçilenler",
       "filter_waitlist": "Yedek listesi",
       "sign_up": "Kaydol",
+      "sign_up_hint": "Takımın yok mu? Tek başına kaydol; kayıtlar kapandığında draft seni {size} kişilik bir takıma yerleştirir.",
+      "joined": "Serbest oyuncu havuzundasın",
       "leave": "Havuzdan ayrıl",
+      "already_in_pool": "Bu turnuvaya zaten serbest oyuncu olarak kaydoldun.",
       "sign_up_alone": "Tek başına kaydol",
       "sign_up_with_lobby": "{count} kişinin hepsini kaydet",
       "lobby_title": "Lobini de getir",

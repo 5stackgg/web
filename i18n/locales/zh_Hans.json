@@ -5664,6 +5664,10 @@
     "settings": "设置",
     "join": {
       "title": "加入赛事",
+      "mode": {
+        "team": "以队伍身份",
+        "free_agent": "以自由选手身份"
+      },
       "add_self_to_lineup": "将自己加入阵容",
       "team_owner": "队伍拥有者",
       "requirements": "您需要至少 {count} 名玩家才能加入此赛事",
@@ -6266,7 +6270,10 @@
       "filter_drafted": "已选入",
       "filter_waitlist": "候补",
       "sign_up": "报名",
+      "sign_up_hint": "没有队伍？单人报名即可，报名截止时分队会把你分到一支 {size} 人的队伍。",
+      "joined": "你已加入自由选手池",
       "leave": "退出选手池",
+      "already_in_pool": "你已经以自由选手身份报名了本赛事。",
       "sign_up_alone": "单人报名",
       "sign_up_with_lobby": "{count} 人一起报名",
       "lobby_title": "带上你的大厅",

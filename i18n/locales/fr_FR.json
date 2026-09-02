@@ -5664,6 +5664,10 @@
     "settings": "Paramètres",
     "join": {
       "title": "Rejoindre le tournoi",
+      "mode": {
+        "team": "En équipe",
+        "free_agent": "En agent libre"
+      },
       "add_self_to_lineup": "M'ajouter à la composition",
       "team_owner": "Propriétaire de l'équipe",
       "requirements": "Il te faut au moins {count} joueurs pour rejoindre ce tournoi",
@@ -6266,7 +6270,10 @@
       "filter_drafted": "Draftés",
       "filter_waitlist": "Liste d'attente",
       "sign_up": "S'inscrire",
+      "sign_up_hint": "Pas d'équipe ? Inscris-toi seul et le draft te placera dans une équipe de {size} à la clôture des inscriptions.",
+      "joined": "Tu es dans le pool d'agents libres",
       "leave": "Quitter le pool",
+      "already_in_pool": "Tu es déjà inscrit comme agent libre à ce tournoi.",
       "sign_up_alone": "S'inscrire seul",
       "sign_up_with_lobby": "Inscrire les {count}",
       "lobby_title": "Emmène ton lobby",

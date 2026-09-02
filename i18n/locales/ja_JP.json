@@ -5664,6 +5664,10 @@
     "settings": "設定",
     "join": {
       "title": "トーナメントに参加",
+      "mode": {
+        "team": "チームで参加",
+        "free_agent": "フリーエージェントで参加"
+      },
       "add_self_to_lineup": "自分を出場メンバーに追加",
       "team_owner": "チームオーナー",
       "requirements": "このトーナメントに参加するには最低 {count} 人のプレイヤーが必要です",
@@ -6266,7 +6270,10 @@
       "filter_drafted": "ドラフト済み",
       "filter_waitlist": "補欠",
       "sign_up": "登録する",
+      "sign_up_hint": "チームがなくてもソロで登録できます。登録が締め切られると、ドラフトで{size}人チームに振り分けられます。",
+      "joined": "フリーエージェントプールに登録しました",
       "leave": "プールから抜ける",
+      "already_in_pool": "このトーナメントにはすでにフリーエージェントとして登録済みです。",
       "sign_up_alone": "ソロで登録",
       "sign_up_with_lobby": "{count}人全員を登録",
       "lobby_title": "ロビーごと参加",

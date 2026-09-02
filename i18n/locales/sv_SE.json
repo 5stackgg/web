@@ -5664,6 +5664,10 @@
     "settings": "Inställningar",
     "join": {
       "title": "Gå med i turnering",
+      "mode": {
+        "team": "Som lag",
+        "free_agent": "Som free agent"
+      },
       "add_self_to_lineup": "Lägg till dig själv i laguppställningen",
       "team_owner": "Lagägare",
       "requirements": "Du behöver minst {count} spelare för att gå med i denna turnering",
@@ -6266,7 +6270,10 @@
       "filter_drafted": "Draftade",
       "filter_waitlist": "Väntelista",
       "sign_up": "Anmäl dig",
+      "sign_up_hint": "Inget lag? Anmäl dig själv, så placerar draften dig i ett lag på {size} när anmälan stänger.",
+      "joined": "Du är med i free agent-poolen",
       "leave": "Lämna poolen",
+      "already_in_pool": "Du är redan anmäld som free agent till den här turneringen.",
       "sign_up_alone": "Anmäl dig själv",
       "sign_up_with_lobby": "Anmäl alla {count}",
       "lobby_title": "Ta med ditt lobby",

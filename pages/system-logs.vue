@@ -19,7 +19,7 @@ const SYSTEM_LOG_SERVICES = [
   "typesense",
   "timescaledb",
   "redis",
-  "minio",
+  "rustfs",
   "mediamtx",
 ];
 

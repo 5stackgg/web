@@ -8705,7 +8705,8 @@
       "step_mode": "Mode",
       "mode_description": "How the match plays. Leave it on Competitive for a normal match, or pick a mode to load its plugins on the server. Custom modes never count toward ELO.",
       "mode_none": "Competitive",
-      "mode_none_hint": "Standard rules. Counts toward ELO and leaderboards."
+      "mode_none_hint": "Standard rules. Counts toward ELO and leaderboards.",
+      "mode_short_handed": "Can start short"
     },
     "host": "The host",
     "invite": {
@@ -8819,6 +8820,9 @@
       "no_regions_available_description": "No game server regions have servers available. The draft cannot start until a server comes online — contact an administrator.",
       "assign_all": "Assign All Players",
       "need_full": "Waiting For Players",
+      "need_even": "Need An Even Number Of Players",
+      "force_start": "Start Short-Handed",
+      "force_start_confirm": "Confirm — Start With {count}",
       "search_requests": "Search requests",
       "sort_elo_high": "Rank: High",
       "sort_elo_low": "Rank: Low",
@@ -9867,6 +9871,11 @@
       "enabled_description": "Disabled modes are kept but cannot be picked for a match, server or draft room.",
       "competitive_safe": "Offer in draft lobbies",
       "competitive_safe_description": "Lobby hosts can pick this mode when creating a draft room. Matches with any custom mode never count toward ELO or the leaderboards.",
+      "players_per_team": "Players Per Team",
+      "players_per_team_description": "How many players a side this mode is built for. Leave it empty to use the match type's own count (5v5, 2v2, 1v1).",
+      "players_per_team_inherit": "Auto",
+      "allow_short_handed_start": "Allow starting short-handed",
+      "allow_short_handed_start_description": "Lets a lobby host start before both sides are full. Only the players seated are sent to the match server.",
       "plugins": "Plugins",
       "plugins_description": "Loaded in the order shown, after anything placed in custom-plugins by hand.",
       "no_plugins": "No game plugins in the catalog yet. Sync the registry and install one first.",

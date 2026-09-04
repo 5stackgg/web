@@ -97,6 +97,8 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
       game_mode: {
         id: true,
         name: true,
+        players_per_team: true,
+        allow_short_handed_start: true,
       },
       map_pool: {
         id: true,
@@ -497,19 +499,19 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
       },
     });
 
-  const start = (draftGameId: string) =>
+  // Goes through the API rather than setting status directly: a short-handed
+  // start has to narrow the lobby to the players who turned up before the DB
+  // trigger and the draft pick pattern read its capacity.
+  const start = (draftGameId: string, force = false) =>
     getGraphqlClient().mutate({
       mutation: gql`
-        mutation StartDraftGame($draftGameId: uuid!) {
-          update_draft_games_by_pk(
-            pk_columns: { id: $draftGameId }
-            _set: { status: Filled }
-          ) {
-            id
+        mutation StartDraftGame($draftGameId: uuid!, $force: Boolean) {
+          startDraftGame(draftGameId: $draftGameId, force: $force) {
+            success
           }
         }
       `,
-      variables: { draftGameId },
+      variables: { draftGameId, force },
     });
 
   const pick = (draftGameId: string, steamId: string) =>

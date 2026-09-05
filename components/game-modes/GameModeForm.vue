@@ -99,6 +99,57 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
       </div>
     </div>
 
+    <!-- Team size lives on the mode rather than on each lobby: a mode is a set
+         of plugins and cvars built for a particular shape of match, and a host
+         picking "Retakes" should not also have to know it is a 3v3. -->
+    <div class="space-y-3 rounded-md border p-4">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <p class="font-medium">
+            {{ $t("game_modes.form.players_per_team") }}
+          </p>
+          <p class="text-sm text-muted-foreground">
+            {{ $t("game_modes.form.players_per_team_description") }}
+          </p>
+        </div>
+        <FormField v-slot="{ componentField }" name="players_per_team">
+          <FormItem class="w-28 shrink-0">
+            <FormControl>
+              <Input
+                type="number"
+                min="1"
+                max="5"
+                :placeholder="$t('game_modes.form.players_per_team_inherit')"
+                v-bind="componentField"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+      </div>
+
+      <div class="flex items-start justify-between gap-4 border-t pt-3">
+        <div>
+          <p class="font-medium">
+            {{ $t("game_modes.form.allow_short_handed_start") }}
+          </p>
+          <p class="text-sm text-muted-foreground">
+            {{ $t("game_modes.form.allow_short_handed_start_description") }}
+          </p>
+        </div>
+        <FormField
+          v-slot="{ value, handleChange }"
+          name="allow_short_handed_start"
+        >
+          <FormItem>
+            <FormControl>
+              <Switch :model-value="value" @update:model-value="handleChange" />
+            </FormControl>
+          </FormItem>
+        </FormField>
+      </div>
+    </div>
+
     <!-- Compatibility is derived from the plugins below, not declared here: a
          mode runs where every plugin in it publishes a build. -->
     <div
@@ -295,6 +346,13 @@ export default {
             description: z.string().optional().default(""),
             enabled: z.boolean().default(true),
             competitive_safe: z.boolean().default(false),
+            // An empty box means "inherit the match type's count", so it has to
+            // survive as null rather than coercing to 0.
+            players_per_team: z
+              .union([z.coerce.number().int().min(1).max(5), z.literal("")])
+              .optional()
+              .default(""),
+            allow_short_handed_start: z.boolean().default(false),
             cfg: z.string().optional().default(""),
             extra_game_params: z.string().optional().default(""),
           }),
@@ -365,6 +423,8 @@ export default {
           description: mode.description ?? "",
           enabled: mode.enabled,
           competitive_safe: mode.competitive_safe,
+          players_per_team: mode.players_per_team ?? "",
+          allow_short_handed_start: mode.allow_short_handed_start ?? false,
           cfg: mode.cfg ?? "",
           extra_game_params: mode.extra_game_params ?? "",
         });
@@ -429,6 +489,10 @@ export default {
           description: values.description || null,
           ...(this.gameMode?.archived_at ? {} : { enabled: values.enabled }),
           competitive_safe: values.competitive_safe,
+          players_per_team: values.players_per_team
+            ? Number(values.players_per_team)
+            : null,
+          allow_short_handed_start: values.allow_short_handed_start,
           cfg: values.cfg || null,
           extra_game_params: values.extra_game_params || null,
         };

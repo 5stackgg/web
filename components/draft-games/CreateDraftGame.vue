@@ -145,6 +145,8 @@ const { result: gameModesResult } = useQuery(
         description: true,
         enabled: true,
         competitive_safe: true,
+        players_per_team: true,
+        allow_short_handed_start: true,
         supported_runtimes: [{}, true],
       },
     ],
@@ -450,7 +452,22 @@ const PER_TEAM: Record<string, number> = {
   Premier: 5,
   Faceit: 5,
 };
-const perTeam = computed(() => PER_TEAM[matchType.value] || 5);
+
+const selectedGameMode = computed<Record<string, any> | undefined>(() =>
+  draftEligibleModes.value.find(
+    (gameMode) => gameMode.id === form.values.game_mode_id,
+  ),
+);
+
+// A custom mode sizes its own teams; the match type is what everything else
+// falls back to. Mirrors resolvePlayersPerTeam on the API, which is what the
+// lobby is actually created with.
+const perTeam = computed(
+  () =>
+    selectedGameMode.value?.players_per_team ||
+    PER_TEAM[matchType.value] ||
+    5,
+);
 
 // A team lobby only seats `perTeam` players a side, so anyone the host benched
 // in the roster picker can only reach the match through a substitute slot.

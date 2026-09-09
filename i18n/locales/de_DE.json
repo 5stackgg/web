@@ -2337,10 +2337,6 @@
           "auto_clip_min_kills_ace": "Nur Aces (5K)",
           "visibility_private": "Privat",
           "visibility_public": "Öffentlich",
-          "default_hud_mode": "Standard-HUD-Stil",
-          "default_hud_mode_description": "Welches Layout des JTs Hud Managers der Game-Streamer-Pod beim Start für Live-Streams, Demo-Wiedergabe und Batch-Highlights lädt. Streamer können den Stil pro Stream weiterhin über die Player-Steuerung wechseln.",
-          "hud_mode_horizontal": "Horizontal",
-          "hud_mode_vertical": "Vertikal",
           "playback_section": "Wiedergabe",
           "reparse_warning_title": "Das parst jede Demo neu — es kann sehr lange dauern.",
           "reparse_warning_body": "Demos werden nacheinander neu verarbeitet, was je nach Menge Stunden oder Tage laufen kann. Mach das nur, wenn du weißt, was du tust, oder nachdem ein größeres Update das Demo-Parsing geändert hat. Neue Stats aus Updates werden ohnehin automatisch neu geparst, sobald Matches angesehen werden — das hier erzwingt nur alles auf einmal.",
@@ -2387,7 +2383,8 @@
           "orphaned_scanning_short": "Scan läuft…",
           "orphaned_demos_count": "{count} Demos",
           "orphaned_highlights_count": "{count} Highlights",
-          "orphaned_object_count": "{count} Dateien"
+          "orphaned_object_count": "{count} Dateien",
+          "hud_moved": "The broadcast HUD is now a library of importable bundles, managed in"
         },
         "update_map_pools": {
           "title": "Map-Pools automatisch aktualisieren",
@@ -2691,6 +2688,21 @@
               "description": "Ein Team hat einen erforderlichen Turnier-Check-in verpasst. Wird nur beim Eintritt geprüft, ein Spieler in einem laufenden Bracket behält also seinen Platz."
             }
           }
+        },
+        "broadcast_huds": {
+          "title": "Broadcast HUDs",
+          "description": "The HUD burned into live streams, demo playback and batch highlights. Import a JTs Hud Manager or Lexogrine bundle as a .zip and pick which one the game-streamer pod loads; streamers can still switch per-stream from the player controls.",
+          "import": "Import HUD",
+          "import_hint": "A .zip with hud.json at its root or in a single top-level folder.",
+          "imported": "HUD imported",
+          "import_failed": "Could not import that HUD",
+          "make_default": "Make default",
+          "is_default": "Default",
+          "default_set": "Default HUD updated",
+          "default_failed": "Could not set the default HUD",
+          "removed": "HUD removed",
+          "remove_failed": "Could not remove that HUD",
+          "signed": "Signed bundle"
         }
       },
       "language": {

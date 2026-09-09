@@ -2337,10 +2337,6 @@
           "auto_clip_min_kills_ace": "僅限五殺（5K）",
           "visibility_private": "私人",
           "visibility_public": "公開",
-          "default_hud_mode": "預設 HUD 樣式",
-          "default_hud_mode_description": "遊戲串流 Pod 啟動時為直播、Demo 回放與批次精華載入的 JTs Hud Manager 版面。實況主仍可在直播中從播放控制切換樣式。",
-          "hud_mode_horizontal": "水平",
-          "hud_mode_vertical": "垂直",
           "playback_section": "回放",
           "reparse_warning_title": "這會重新解析每一份 Demo——可能需要非常久的時間。",
           "reparse_warning_body": "Demo 會逐一重新處理，依你擁有的數量可能需要數小時或數天。請僅在你清楚自己在做什麼，或在重大更新改變 Demo 解析方式後執行。更新帶來的新數據會在比賽被檢視時自動重新解析——此操作僅用於一次強制處理全部。",
@@ -2387,7 +2383,8 @@
           "orphaned_scanning_short": "掃描中……",
           "orphaned_demos_count": "{count} 份 Demo",
           "orphaned_highlights_count": "{count} 個精華",
-          "orphaned_object_count": "{count} 個檔案"
+          "orphaned_object_count": "{count} 個檔案",
+          "hud_moved": "The broadcast HUD is now a library of importable bundles, managed in"
         },
         "update_map_pools": {
           "title": "自動更新地圖池",
@@ -2691,6 +2688,21 @@
               "description": "隊伍錯過了賽事的必要報到。僅在進入時檢查，因此已經在進行中的對戰表裡的玩家會保留位置。"
             }
           }
+        },
+        "broadcast_huds": {
+          "title": "Broadcast HUDs",
+          "description": "The HUD burned into live streams, demo playback and batch highlights. Import a JTs Hud Manager or Lexogrine bundle as a .zip and pick which one the game-streamer pod loads; streamers can still switch per-stream from the player controls.",
+          "import": "Import HUD",
+          "import_hint": "A .zip with hud.json at its root or in a single top-level folder.",
+          "imported": "HUD imported",
+          "import_failed": "Could not import that HUD",
+          "make_default": "Make default",
+          "is_default": "Default",
+          "default_set": "Default HUD updated",
+          "default_failed": "Could not set the default HUD",
+          "removed": "HUD removed",
+          "remove_failed": "Could not remove that HUD",
+          "signed": "Signed bundle"
         }
       },
       "language": {

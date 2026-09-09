@@ -2337,10 +2337,6 @@
           "auto_clip_min_kills_ace": "Endast ace (5K)",
           "visibility_private": "Privat",
           "visibility_public": "Publik",
-          "default_hud_mode": "Standard-HUD-stil",
-          "default_hud_mode_description": "Vilken JTs Hud Manager-layout streamerpoden laddar vid start för livesändningar, demouppspelning och batchhöjdpunkter. Streamers kan fortfarande byta stil per sändning från spelarkontrollerna.",
-          "hud_mode_horizontal": "Horisontell",
-          "hud_mode_vertical": "Vertikal",
           "playback_section": "Uppspelning",
           "reparse_warning_title": "Detta tolkar om varje demo — det kan ta väldigt lång tid.",
           "reparse_warning_body": "Demos bearbetas en i taget, vilket kan pågå i timmar eller dagar beroende på hur många du har. Gör bara detta om du vet vad du gör, eller efter en större uppdatering som ändrar hur demos tolkas. Ny statistik från uppdateringar tolkas om automatiskt när matcher visas — detta är bara för att tvinga fram allt på en gång.",
@@ -2387,7 +2383,8 @@
           "orphaned_scanning_short": "Skannar…",
           "orphaned_demos_count": "{count} demos",
           "orphaned_highlights_count": "{count} höjdpunkter",
-          "orphaned_object_count": "{count} filer"
+          "orphaned_object_count": "{count} filer",
+          "hud_moved": "The broadcast HUD is now a library of importable bundles, managed in"
         },
         "update_map_pools": {
           "title": "Automatisk uppdatering av kartpooler",
@@ -2691,6 +2688,21 @@
               "description": "Ett lag missade en obligatorisk turneringsincheckning. Kontrolleras bara vid ingången, så en spelare som redan är i ett pågående slutspelsträd behåller sin plats."
             }
           }
+        },
+        "broadcast_huds": {
+          "title": "Broadcast HUDs",
+          "description": "The HUD burned into live streams, demo playback and batch highlights. Import a JTs Hud Manager or Lexogrine bundle as a .zip and pick which one the game-streamer pod loads; streamers can still switch per-stream from the player controls.",
+          "import": "Import HUD",
+          "import_hint": "A .zip with hud.json at its root or in a single top-level folder.",
+          "imported": "HUD imported",
+          "import_failed": "Could not import that HUD",
+          "make_default": "Make default",
+          "is_default": "Default",
+          "default_set": "Default HUD updated",
+          "default_failed": "Could not set the default HUD",
+          "removed": "HUD removed",
+          "remove_failed": "Could not remove that HUD",
+          "signed": "Signed bundle"
         }
       },
       "language": {

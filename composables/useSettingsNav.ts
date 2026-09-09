@@ -87,6 +87,11 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
             labelKey: "pages.settings.application.highlights.title",
             order: 4,
           },
+          {
+            path: "/settings/application/broadcast-huds",
+            labelKey: "pages.settings.application.broadcast_huds.title",
+            order: 5,
+          },
         ],
       },
       {

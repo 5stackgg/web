@@ -38,6 +38,8 @@ import ShortcutOverlay from "~/components/match/ShortcutOverlay.vue";
 import SpectatorGrid from "~/components/stream-deck/SpectatorGrid.vue";
 import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
 import { Kbd } from "~/components/ui/kbd";
+import { useBroadcastHuds } from "~/composables/useBroadcastHuds";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import TopoBackground from "~/layouts/components/TopoBackground.vue";
 import { announceFocusWindow } from "~/composables/useStreamerPopout";
 import { useStreamerGsi } from "~/composables/useStreamerGsi";
@@ -265,28 +267,36 @@ async function setAutodirector(enabled: boolean) {
   }));
 }
 
-// `default` and `horizontal` render identically in JTs Hud's bundle;
-// the picker only exposes the two distinct layouts. Legacy `default`
-// values from earlier sessions get folded into `horizontal`.
-const HUD_MODES = ["horizontal", "vertical"] as const;
-type HudMode = (typeof HUD_MODES)[number];
-const HUD_MODE_LABELS: Record<HudMode, string> = {
-  horizontal: "pages.settings.application.demo_settings.hud_mode_horizontal",
-  vertical: "pages.settings.application.demo_settings.hud_mode_vertical",
-};
-const hudMode = ref<HudMode>("horizontal");
+// The panel's HUD library. This was a hardcoded horizontal/vertical pair,
+// because those were the only two things the pod could load — they were never
+// separate HUDs, only layouts of the one bundled HUD, and they are now the two
+// seeded builtin rows alongside anything an administrator has imported.
+const { huds: broadcastHuds, fetch: fetchBroadcastHuds } = useBroadcastHuds();
+onMounted(() => {
+  void fetchBroadcastHuds();
+});
+
+const hudLabel = (hud: { name?: string | null; slug: string }) =>
+  hud.name?.trim() || hud.slug;
+
+const hudSlug = ref<string>(
+  useApplicationSettingsStore().defaultBroadcastHud,
+);
 const xrayEnabled = ref(false);
 const hudVisible = ref(true);
 
-async function setHudMode(mode: HudMode) {
-  // Picking a layout while the overlay is hidden also brings it back
-  // — the picker doubles as the visibility control, so selecting a
-  // mode is the natural way to leave the "hide" state.
+async function setHud(slug: string) {
+  // Picking a HUD while the overlay is hidden also brings it back — the picker
+  // doubles as the visibility control, so selecting one is the natural way to
+  // leave the "hide" state.
   const needsShow = !hudVisible.value;
-  if (hudMode.value === mode && !needsShow) return;
-  hudMode.value = mode;
+  if (hudSlug.value === slug && !needsShow) return;
+  hudSlug.value = slug;
+  // The action argument is still named `mode` so its signature is unchanged;
+  // it carries a broadcast_huds slug now, which the api resolves into the
+  // hudId + variant the pod needs.
   await runMutation("set_hud_mode", () => ({
-    setHudMode: [{ match_id: matchId.value, mode }, { success: true }],
+    setHudMode: [{ match_id: matchId.value, mode: slug }, { success: true }],
   }));
   if (needsShow) await setHudVisible(true);
 }
@@ -805,30 +815,32 @@ watch(spectatedSteamId, (sid) => {
             {{ $t("stream_deck.scoreboard") }}
           </button>
 
-          <!-- HUD bundle picker — calls setHudMode → hud-manager
-               POST /api/overlay/start which rebuilds the BrowserWindow
-               against /huds/default/index.html?variant=<mode>. The
-               trailing Eye toggle absorbs the former standalone HUD
-               button so visibility reads as a third HUD state. -->
+          <!-- HUD picker, listing the panel's HUD library — calls setHud →
+               hud-manager POST /api/overlay/start, which rebuilds the
+               BrowserWindow against /huds/<hudId>/index.html?variant=<v>;
+               an imported HUD is installed into the pod on first use. The
+               trailing Eye toggle absorbs the former standalone HUD button
+               so visibility reads as another HUD state. -->
           <div
             v-if="isLive()"
             class="inline-flex rounded-md border border-border/60 bg-card/40 p-0.5"
             :title="$t('replay_extras.hud_layout')"
           >
             <button
-              v-for="m in HUD_MODES"
-              :key="m"
+              v-for="hud in broadcastHuds"
+              :key="hud.slug"
               type="button"
               :disabled="busy"
+              :title="hud.description || hudLabel(hud)"
               :class="[
-                'px-2 h-6 font-mono text-[0.55rem] uppercase tracking-[0.16em] rounded-sm cursor-pointer transition-colors disabled:cursor-not-allowed disabled:opacity-50',
-                hudVisible && hudMode === m
+                'px-2 h-6 font-mono text-[0.55rem] uppercase tracking-[0.16em] rounded-sm cursor-pointer transition-colors whitespace-nowrap disabled:cursor-not-allowed disabled:opacity-50',
+                hudVisible && hudSlug === hud.slug
                   ? 'bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
                   : 'text-muted-foreground hover:text-foreground',
               ]"
-              @click="setHudMode(m)"
+              @click="setHud(hud.slug)"
             >
-              {{ $t(HUD_MODE_LABELS[m]) }}
+              {{ hudLabel(hud) }}
             </button>
             <button
               type="button"

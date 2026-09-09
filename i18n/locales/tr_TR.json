@@ -2337,10 +2337,6 @@
           "auto_clip_min_kills_ace": "Yalnızca ace (5K)",
           "visibility_private": "Özel",
           "visibility_public": "Herkese açık",
-          "default_hud_mode": "Varsayılan HUD stili",
-          "default_hud_mode_description": "Canlı yayınlar, demo oynatma ve toplu öne çıkan anlar için oyun-streamer pod'unun açılışta yükleyeceği JTs Hud Manager düzeni. Streamer'lar yayın başına stili yine oynatıcı kontrollerinden değiştirebilir.",
-          "hud_mode_horizontal": "Yatay",
-          "hud_mode_vertical": "Dikey",
           "playback_section": "Oynatma",
           "reparse_warning_title": "Bu, her demoyu yeniden ayrıştırır — çok uzun sürebilir.",
           "reparse_warning_body": "Demolar teker teker yeniden işlenir; kaç tane demon olduğuna bağlı olarak saatler ya da günler sürebilir. Bunu yalnızca ne yaptığını biliyorsan ya da büyük bir güncelleme demoların ayrıştırılma şeklini değiştirdiyse yap. Güncellemelerden gelen yeni istatistikler maçlar görüntülendikçe zaten otomatik yeniden ayrıştırılır — bu yalnızca hepsini tek seferde zorlamak içindir.",
@@ -2387,7 +2383,8 @@
           "orphaned_scanning_short": "Taranıyor…",
           "orphaned_demos_count": "{count} demo",
           "orphaned_highlights_count": "{count} öne çıkan an",
-          "orphaned_object_count": "{count} dosya"
+          "orphaned_object_count": "{count} dosya",
+          "hud_moved": "The broadcast HUD is now a library of importable bundles, managed in"
         },
         "update_map_pools": {
           "title": "Harita Havuzlarını Otomatik Güncelle",
@@ -2691,6 +2688,21 @@
               "description": "Bir takım zorunlu turnuva katılım onayını kaçırdı. Yalnızca girişte kontrol edilir, dolayısıyla devam eden bir eşleşme tablosundaki oyuncu yerini korur."
             }
           }
+        },
+        "broadcast_huds": {
+          "title": "Broadcast HUDs",
+          "description": "The HUD burned into live streams, demo playback and batch highlights. Import a JTs Hud Manager or Lexogrine bundle as a .zip and pick which one the game-streamer pod loads; streamers can still switch per-stream from the player controls.",
+          "import": "Import HUD",
+          "import_hint": "A .zip with hud.json at its root or in a single top-level folder.",
+          "imported": "HUD imported",
+          "import_failed": "Could not import that HUD",
+          "make_default": "Make default",
+          "is_default": "Default",
+          "default_set": "Default HUD updated",
+          "default_failed": "Could not set the default HUD",
+          "removed": "HUD removed",
+          "remove_failed": "Could not remove that HUD",
+          "signed": "Signed bundle"
         }
       },
       "language": {

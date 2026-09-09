@@ -2337,10 +2337,6 @@
           "auto_clip_min_kills_ace": "Apenas aces (5K)",
           "visibility_private": "Privado",
           "visibility_public": "Público",
-          "default_hud_mode": "Modo HUD Padrão",
-          "default_hud_mode_description": "Qual layout do JTs Hud Manager o pod do game-streamer carrega na inicialização para transmissões ao vivo, reprodução de demos e destaques em lote? Os streamers ainda podem alternar entre os estilos a cada transmissão nos controles do player.",
-          "hud_mode_horizontal": "Horizontal",
-          "hud_mode_vertical": "Vertical",
           "playback_section": "Reprodução",
           "reparse_warning_title": "Isso reprocessa todas as demos — pode levar muito tempo.",
           "reparse_warning_body": "As demos são reprocessadas uma de cada vez, o que pode durar horas ou dias dependendo da quantidade. Só faça isso se souber o que está fazendo ou após uma grande atualização que altere como as demos são processadas. Novas estatísticas de atualizações são reprocessadas automaticamente conforme as partidas são visualizadas — isso serve apenas para forçar tudo de uma vez.",
@@ -2387,7 +2383,8 @@
           "orphaned_scanning_short": "Escaneando…",
           "orphaned_demos_count": "{count} demos",
           "orphaned_highlights_count": "{count} highlights",
-          "orphaned_object_count": "{count} arquivos"
+          "orphaned_object_count": "{count} arquivos",
+          "hud_moved": "The broadcast HUD is now a library of importable bundles, managed in"
         },
         "update_map_pools": {
           "title": "Atualizar Automaticamente o Map Pool",
@@ -2691,6 +2688,21 @@
               "description": "Uma equipe perdeu um check-in obrigatório do torneio. Verificado só na entrada, então um jogador que já está numa chave em andamento mantém a vaga."
             }
           }
+        },
+        "broadcast_huds": {
+          "title": "Broadcast HUDs",
+          "description": "The HUD burned into live streams, demo playback and batch highlights. Import a JTs Hud Manager or Lexogrine bundle as a .zip and pick which one the game-streamer pod loads; streamers can still switch per-stream from the player controls.",
+          "import": "Import HUD",
+          "import_hint": "A .zip with hud.json at its root or in a single top-level folder.",
+          "imported": "HUD imported",
+          "import_failed": "Could not import that HUD",
+          "make_default": "Make default",
+          "is_default": "Default",
+          "default_set": "Default HUD updated",
+          "default_failed": "Could not set the default HUD",
+          "removed": "HUD removed",
+          "remove_failed": "Could not remove that HUD",
+          "signed": "Signed bundle"
         }
       },
       "language": {

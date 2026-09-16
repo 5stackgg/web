@@ -3794,7 +3794,8 @@
       "no_events_description": "Det finns inga evenemang att visa just nu. Kom tillbaka snart.",
       "live_now": "Live nu",
       "upcoming": "Kommande",
-      "past_events": "Tidigare evenemang"
+      "past_events": "Tidigare evenemang",
+      "show_more": "Visa fler"
     },
     "manage_events": {
       "title": "Hantera evenemang",
@@ -5305,7 +5306,17 @@
       "step1": "Tryck på knappen 'Dela'",
       "step2": "Välj 'Lägg till på hemskärmen'",
       "tooltip": "Installera app",
-      "button": "Installera app"
+      "button": "Installera app",
+      "android": {
+        "step1": "Öppna webbläsarens meny (⋮)",
+        "step2": "Välj 'Installera app' eller 'Lägg till på hemskärmen'",
+        "already_installed": "Redan installerad? Öppna den från hemskärmen i stället."
+      },
+      "in_app": {
+        "description": "Appar kan inte installeras inifrån en annan app. Öppna först den här sidan i din webbläsare.",
+        "step1": "Öppna den här sidan i din webbläsare via den här appens meny",
+        "step2": "I webbläsarens meny (⋮), välj 'Installera app' eller 'Lägg till på hemskärmen'"
+      }
     }
   },
   "roster_picker": {
@@ -5711,6 +5722,10 @@
       "negotiated_scheduling": {
         "label": "Förhandlad schemaläggning",
         "description": "Lagkaptener föreslår och kommer överens om matchtider (med valfria tidsfönster per fas), istället för att matcher startar automatiskt."
+      },
+      "substitutes_enabled": {
+        "label": "Tillåt reserver",
+        "description": "Lag kan ha reserver i truppen och ställa upp dem utöver startuppställningen. När det är avstängt begränsas trupper och matcher till startuppställningen."
       },
       "logo": {
         "label": "Logotyp"
@@ -7622,6 +7637,7 @@
     "hold_to_show_scoreboard": "Håll för att visa resultattavla",
     "close_popout": "Stäng utfällt fönster",
     "click_to_view_tournament": "Klicka för att visa turnering",
+    "click_to_view_award": "Klicka för att visa utmärkelse",
     "auto_clip": "Autoklipp",
     "create_clip": "Skapa klipp",
     "reload_demo": "Ladda om demo"
@@ -8225,7 +8241,10 @@
     "min_teams_number": "min antal lag måste vara ett nummer",
     "max_teams_number": "max antal lag måste vara ett nummer",
     "max_teams_gt_min": "max antal lag måste vara större än min antal lag",
-    "min_max_teams_min_value": "min och max antal lag måste vara minst 3 för round robin, 4 annars",
+    "min_teams_min_value": "den här fasen behöver minst {count} lag",
+    "max_teams_previous_stage": "fas {stage} kan skicka vidare högst {count} lag",
+    "max_teams_next_stage": "den här fasen måste rymma minst {count} lag för att fylla fas {stage}",
+    "groups_next_stage_min": "minsta antal lag i fas {stage} måste kunna delas jämnt i {groups} grupper",
     "team_owner_required": "lagägare krävs",
     "team_name_required": "lagnamn krävs",
     "short_name_required": "kortnamn krävs",

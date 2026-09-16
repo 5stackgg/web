@@ -3794,7 +3794,8 @@
       "no_events_description": "There are no events to show right now. Check back soon.",
       "live_now": "Live now",
       "upcoming": "Upcoming",
-      "past_events": "Past events"
+      "past_events": "Past events",
+      "show_more": "Show more"
     },
     "manage_events": {
       "title": "Manage Events",
@@ -5305,7 +5306,17 @@
       "step1": "Press the 'Share' button",
       "step2": "Select 'Add to Home Screen'",
       "tooltip": "Install App",
-      "button": "Install App"
+      "button": "Install App",
+      "android": {
+        "step1": "Open your browser's menu (⋮)",
+        "step2": "Select 'Install app' or 'Add to Home screen'",
+        "already_installed": "Already installed? Open it from your home screen instead."
+      },
+      "in_app": {
+        "description": "Apps can't be installed from inside another app. Open this page in your browser first.",
+        "step1": "Open this page in your browser from this app's menu",
+        "step2": "In your browser's menu (⋮), select 'Install app' or 'Add to Home screen'"
+      }
     }
   },
   "roster_picker": {
@@ -5711,6 +5722,10 @@
       "negotiated_scheduling": {
         "label": "Negotiated Scheduling",
         "description": "Team captains propose and agree on match times (with optional per-stage windows), instead of matches starting automatically."
+      },
+      "substitutes_enabled": {
+        "label": "Allow Substitutes",
+        "description": "Teams can roster and field substitutes beyond the starting lineup. When disabled, rosters and matches are limited to the starting lineup."
       },
       "logo": {
         "label": "Logo"
@@ -7622,6 +7637,7 @@
     "hold_to_show_scoreboard": "Hold to show scoreboard",
     "close_popout": "Close popout",
     "click_to_view_tournament": "Click to view tournament",
+    "click_to_view_award": "Click to view award",
     "auto_clip": "Auto clip",
     "create_clip": "Create clip",
     "reload_demo": "Reload demo"
@@ -8225,7 +8241,10 @@
     "min_teams_number": "min teams must be a number",
     "max_teams_number": "max teams must be a number",
     "max_teams_gt_min": "max teams must be greater than min teams",
-    "min_max_teams_min_value": "min and max teams must be at least 3 for Round Robin, 4 otherwise",
+    "min_teams_min_value": "this stage needs at least {count} teams",
+    "max_teams_previous_stage": "stage {stage} can advance at most {count} teams",
+    "max_teams_next_stage": "this stage must hold at least {count} teams to fill stage {stage}",
+    "groups_next_stage_min": "stage {stage}'s min teams must split evenly into {groups} groups",
     "team_owner_required": "team owner is required",
     "team_name_required": "team name is required",
     "short_name_required": "short name is required",

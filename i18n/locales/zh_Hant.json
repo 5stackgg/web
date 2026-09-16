@@ -3794,7 +3794,8 @@
       "no_events_description": "目前沒有可顯示的活動。請稍後再查看。",
       "live_now": "正在進行",
       "upcoming": "即將開始",
-      "past_events": "已結束活動"
+      "past_events": "已結束活動",
+      "show_more": "顯示更多"
     },
     "manage_events": {
       "title": "管理活動",
@@ -5305,7 +5306,17 @@
       "step1": "按下「分享」按鈕",
       "step2": "選擇「加入主畫面」",
       "tooltip": "安裝應用程式",
-      "button": "安裝應用程式"
+      "button": "安裝應用程式",
+      "android": {
+        "step1": "開啟瀏覽器選單（⋮）",
+        "step2": "選擇「安裝應用程式」或「加入主畫面」",
+        "already_installed": "已經安裝？請直接從主畫面開啟。"
+      },
+      "in_app": {
+        "description": "無法在其他應用程式內安裝應用程式。請先在瀏覽器中開啟此頁面。",
+        "step1": "透過此應用程式的選單在瀏覽器中開啟此頁面",
+        "step2": "在瀏覽器選單（⋮）中選擇「安裝應用程式」或「加入主畫面」"
+      }
     }
   },
   "roster_picker": {
@@ -5711,6 +5722,10 @@
       "negotiated_scheduling": {
         "label": "協商排程",
         "description": "由隊長提議並商定比賽時間（可設定各階段的時間窗），而非比賽自動開始。"
+      },
+      "substitutes_enabled": {
+        "label": "允許替補",
+        "description": "隊伍可以在先發陣容之外登記並派出替補。關閉後，名單與比賽僅限先發陣容。"
       },
       "logo": {
         "label": "標誌"
@@ -7622,6 +7637,7 @@
     "hold_to_show_scoreboard": "按住以顯示記分板",
     "close_popout": "關閉彈出視窗",
     "click_to_view_tournament": "點擊查看賽事",
+    "click_to_view_award": "點擊查看獎項",
     "auto_clip": "自動產生精華片段",
     "create_clip": "建立精華片段",
     "reload_demo": "重新載入 Demo"
@@ -8225,7 +8241,10 @@
     "min_teams_number": "最少隊伍數必須為數字",
     "max_teams_number": "最多隊伍數必須為數字",
     "max_teams_gt_min": "最多隊伍數必須大於最少隊伍數",
-    "min_max_teams_min_value": "循環賽的最少與最多隊伍數至少為 3，其他賽制至少為 4",
+    "min_teams_min_value": "此階段至少需要 {count} 支隊伍",
+    "max_teams_previous_stage": "第 {stage} 階段最多只能晉級 {count} 支隊伍",
+    "max_teams_next_stage": "此階段至少需要容納 {count} 支隊伍才能填滿第 {stage} 階段",
+    "groups_next_stage_min": "第 {stage} 階段的最少隊伍數必須能平均分成 {groups} 個小組",
     "team_owner_required": "需要隊伍擁有者",
     "team_name_required": "需要隊伍名稱",
     "short_name_required": "需要簡稱",

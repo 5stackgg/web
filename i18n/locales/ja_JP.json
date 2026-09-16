@@ -3794,7 +3794,8 @@
       "no_events_description": "現在表示できるイベントはありません。しばらくしてから確認してください。",
       "live_now": "配信中",
       "upcoming": "開催予定",
-      "past_events": "過去のイベント"
+      "past_events": "過去のイベント",
+      "show_more": "さらに表示"
     },
     "manage_events": {
       "title": "イベント管理",
@@ -5305,7 +5306,17 @@
       "step1": "「共有」ボタンを押します",
       "step2": "「ホーム画面に追加」を選択します",
       "tooltip": "アプリをインストール",
-      "button": "アプリをインストール"
+      "button": "アプリをインストール",
+      "android": {
+        "step1": "ブラウザのメニュー（⋮）を開きます",
+        "step2": "「アプリをインストール」または「ホーム画面に追加」を選択します",
+        "already_installed": "インストール済みですか？ホーム画面から開いてください。"
+      },
+      "in_app": {
+        "description": "ほかのアプリ内からはアプリをインストールできません。まずこのページをブラウザで開いてください。",
+        "step1": "このアプリのメニューから、このページをブラウザで開きます",
+        "step2": "ブラウザのメニュー（⋮）で「アプリをインストール」または「ホーム画面に追加」を選択します"
+      }
     }
   },
   "roster_picker": {
@@ -5711,6 +5722,10 @@
       "negotiated_scheduling": {
         "label": "日程調整制",
         "description": "試合が自動で始まる代わりに、チームのキャプテンが試合時間を提案して合意します（ステージごとの期間設定も可能）。"
+      },
+      "substitutes_enabled": {
+        "label": "控えを許可",
+        "description": "チームはスタメン以外に控えをロスターに登録し、出場させることができます。無効にすると、ロスターと試合はスタメンのみに制限されます。"
       },
       "logo": {
         "label": "ロゴ"
@@ -7622,6 +7637,7 @@
     "hold_to_show_scoreboard": "長押しでスコアボード表示",
     "close_popout": "ポップアウトを閉じる",
     "click_to_view_tournament": "クリックでトーナメントを表示",
+    "click_to_view_award": "クリックでアワードを表示",
     "auto_clip": "自動クリップ",
     "create_clip": "クリップを作成",
     "reload_demo": "デモを再読み込み"
@@ -8225,7 +8241,10 @@
     "min_teams_number": "最小チーム数は数値で入力してください",
     "max_teams_number": "最大チーム数は数値で入力してください",
     "max_teams_gt_min": "最大チーム数は最小チーム数より大きくしてください",
-    "min_max_teams_min_value": "最小・最大チーム数は総当たりでは3以上、それ以外では4以上にしてください",
+    "min_teams_min_value": "このステージには{count}チーム以上が必要です",
+    "max_teams_previous_stage": "ステージ {stage} から進出できるのは最大{count}チームです",
+    "max_teams_next_stage": "ステージ {stage} を埋めるには、このステージに{count}チーム以上が必要です",
+    "groups_next_stage_min": "ステージ {stage} の最小チーム数は {groups} グループに均等に分けられる必要があります",
     "team_owner_required": "チームオーナーは必須です",
     "team_name_required": "チーム名は必須です",
     "short_name_required": "略称は必須です",

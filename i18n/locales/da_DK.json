@@ -3794,7 +3794,8 @@
       "no_events_description": "Der er ingen events at vise lige nu. Kig forbi igen snart.",
       "live_now": "Live nu",
       "upcoming": "Kommende",
-      "past_events": "Tidligere events"
+      "past_events": "Tidligere events",
+      "show_more": "Vis flere"
     },
     "manage_events": {
       "title": "Administrer events",
@@ -5305,7 +5306,17 @@
       "step1": "Tryk på \"Del\"-knappen",
       "step2": "Vælg \"Føj til hjemmeskærm\"",
       "tooltip": "Installer app",
-      "button": "Installer app"
+      "button": "Installer app",
+      "android": {
+        "step1": "Åbn browserens menu (⋮)",
+        "step2": "Vælg \"Installer app\" eller \"Føj til hjemmeskærm\"",
+        "already_installed": "Allerede installeret? Åbn den fra din hjemmeskærm i stedet."
+      },
+      "in_app": {
+        "description": "Apps kan ikke installeres inde fra en anden app. Åbn først denne side i din browser.",
+        "step1": "Åbn denne side i din browser via denne apps menu",
+        "step2": "Vælg \"Installer app\" eller \"Føj til hjemmeskærm\" i browserens menu (⋮)"
+      }
     }
   },
   "roster_picker": {
@@ -5711,6 +5722,10 @@
       "negotiated_scheduling": {
         "label": "Aftalt planlægning",
         "description": "Anførerne foreslår og aftaler kamptidspunkter (med valgfri vinduer pr. fase), i stedet for at kampene starter automatisk."
+      },
+      "substitutes_enabled": {
+        "label": "Tillad reserver",
+        "description": "Hold kan have reserver i truppen og stille med dem ud over startopstillingen. Når det er slået fra, er trupper og kampe begrænset til startopstillingen."
       },
       "logo": {
         "label": "Logo"
@@ -7622,6 +7637,7 @@
     "hold_to_show_scoreboard": "Hold nede for at vise scoreboard",
     "close_popout": "Luk vinduet",
     "click_to_view_tournament": "Klik for at se turneringen",
+    "click_to_view_award": "Klik for at se prisen",
     "auto_clip": "Auto-klip",
     "create_clip": "Opret klip",
     "reload_demo": "Genindlæs demo"
@@ -8225,7 +8241,10 @@
     "min_teams_number": "min. hold skal være et tal",
     "max_teams_number": "maks. hold skal være et tal",
     "max_teams_gt_min": "maks. hold skal være større end min. hold",
-    "min_max_teams_min_value": "min. og maks. hold skal være mindst 3 ved round robin, ellers 4",
+    "min_teams_min_value": "denne fase skal have mindst {count} hold",
+    "max_teams_previous_stage": "fase {stage} kan højst sende {count} hold videre",
+    "max_teams_next_stage": "denne fase skal rumme mindst {count} hold for at fylde fase {stage}",
+    "groups_next_stage_min": "min. antal hold i fase {stage} skal kunne fordeles ligeligt i {groups} grupper",
     "team_owner_required": "holdejer er påkrævet",
     "team_name_required": "holdnavn er påkrævet",
     "short_name_required": "kort navn er påkrævet",

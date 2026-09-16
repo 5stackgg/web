@@ -3794,7 +3794,8 @@
       "no_events_description": "Aktuell gibt es keine Events. Schau bald wieder vorbei.",
       "live_now": "Jetzt live",
       "upcoming": "Anstehend",
-      "past_events": "Vergangene Events"
+      "past_events": "Vergangene Events",
+      "show_more": "Mehr anzeigen"
     },
     "manage_events": {
       "title": "Events verwalten",
@@ -5305,7 +5306,17 @@
       "step1": "Tippe auf „Teilen“",
       "step2": "Wähle „Zum Home-Bildschirm“",
       "tooltip": "App installieren",
-      "button": "App installieren"
+      "button": "App installieren",
+      "android": {
+        "step1": "Öffne das Menü deines Browsers (⋮)",
+        "step2": "Wähle „App installieren“ oder „Zum Startbildschirm hinzufügen“",
+        "already_installed": "Bereits installiert? Öffne die App stattdessen über deinen Home-Bildschirm."
+      },
+      "in_app": {
+        "description": "Apps können nicht aus einer anderen App heraus installiert werden. Öffne diese Seite zuerst in deinem Browser.",
+        "step1": "Öffne diese Seite über das Menü dieser App in deinem Browser",
+        "step2": "Wähle im Menü deines Browsers (⋮) „App installieren“ oder „Zum Startbildschirm hinzufügen“"
+      }
     }
   },
   "roster_picker": {
@@ -5711,6 +5722,10 @@
       "negotiated_scheduling": {
         "label": "Abgestimmte Terminierung",
         "description": "Team-Captains schlagen Match-Zeiten vor und einigen sich darauf (optional mit Zeitfenstern pro Stage), statt dass Matches automatisch starten."
+      },
+      "substitutes_enabled": {
+        "label": "Ersatzspieler erlauben",
+        "description": "Teams können Ersatzspieler über die Startaufstellung hinaus ins Roster aufnehmen und einsetzen. Wenn deaktiviert, sind Roster und Matches auf die Startaufstellung beschränkt."
       },
       "logo": {
         "label": "Logo"
@@ -7622,6 +7637,7 @@
     "hold_to_show_scoreboard": "Halten, um das Scoreboard zu zeigen",
     "close_popout": "Fenster schließen",
     "click_to_view_tournament": "Klicken, um das Turnier anzusehen",
+    "click_to_view_award": "Klicken, um die Auszeichnung anzusehen",
     "auto_clip": "Auto-Clip",
     "create_clip": "Clip erstellen",
     "reload_demo": "Demo neu laden"
@@ -8225,7 +8241,10 @@
     "min_teams_number": "Min. Teams muss eine Zahl sein",
     "max_teams_number": "Max. Teams muss eine Zahl sein",
     "max_teams_gt_min": "Max. Teams muss größer als min. Teams sein",
-    "min_max_teams_min_value": "Min. und max. Teams müssen bei Round Robin mindestens 3 betragen, sonst 4",
+    "min_teams_min_value": "diese Stage braucht mindestens {count} Teams",
+    "max_teams_previous_stage": "Stage {stage} kann höchstens {count} Teams weiterschicken",
+    "max_teams_next_stage": "diese Stage muss mindestens {count} Teams fassen, um Stage {stage} zu füllen",
+    "groups_next_stage_min": "die Mindestanzahl an Teams in Stage {stage} muss sich gleichmäßig auf {groups} Gruppen aufteilen lassen",
     "team_owner_required": "Team-Owner ist erforderlich",
     "team_name_required": "Team-Name ist erforderlich",
     "short_name_required": "Kurzname ist erforderlich",

@@ -3794,7 +3794,8 @@
       "no_events_description": "目前没有可显示的活动。请稍后再查看。",
       "live_now": "正在进行",
       "upcoming": "即将开始",
-      "past_events": "已结束活动"
+      "past_events": "已结束活动",
+      "show_more": "显示更多"
     },
     "manage_events": {
       "title": "管理活动",
@@ -5305,7 +5306,17 @@
       "step1": "按“分享”按钮",
       "step2": "选择“添加到主屏幕”",
       "tooltip": "安装应用",
-      "button": "安装应用"
+      "button": "安装应用",
+      "android": {
+        "step1": "打开浏览器菜单（⋮）",
+        "step2": "选择“安装应用”或“添加到主屏幕”",
+        "already_installed": "已经安装？请直接从主屏幕打开。"
+      },
+      "in_app": {
+        "description": "无法在其他应用内安装应用。请先在浏览器中打开此页面。",
+        "step1": "通过此应用的菜单在浏览器中打开此页面",
+        "step2": "在浏览器菜单（⋮）中选择“安装应用”或“添加到主屏幕”"
+      }
     }
   },
   "roster_picker": {
@@ -5711,6 +5722,10 @@
       "negotiated_scheduling": {
         "label": "协商安排",
         "description": "队伍队长提议并商定比赛时间（带有可选的按阶段窗口），而不是比赛自动开始。"
+      },
+      "substitutes_enabled": {
+        "label": "允许替补",
+        "description": "队伍可以在首发阵容之外登记并派出替补。关闭后，阵容和比赛仅限首发阵容。"
       },
       "logo": {
         "label": "标志"
@@ -7622,6 +7637,7 @@
     "hold_to_show_scoreboard": "按住显示记分板",
     "close_popout": "关闭弹出窗口",
     "click_to_view_tournament": "点击查看赛事",
+    "click_to_view_award": "点击查看奖项",
     "auto_clip": "自动生成精彩集锦",
     "create_clip": "创建精彩集锦",
     "reload_demo": "重新加载 Demo"
@@ -8225,7 +8241,10 @@
     "min_teams_number": "最少队伍数必须为数字",
     "max_teams_number": "最多队伍数必须为数字",
     "max_teams_gt_min": "最多队伍数必须大于最少队伍数",
-    "min_max_teams_min_value": "循环赛最少和最多队伍数至少为 3，否则至少为 4",
+    "min_teams_min_value": "此阶段至少需要 {count} 支队伍",
+    "max_teams_previous_stage": "第 {stage} 阶段最多只能晋级 {count} 支队伍",
+    "max_teams_next_stage": "此阶段至少需要容纳 {count} 支队伍才能填满第 {stage} 阶段",
+    "groups_next_stage_min": "第 {stage} 阶段的最少队伍数必须能平均分成 {groups} 个小组",
     "team_owner_required": "需要队伍拥有者",
     "team_name_required": "需要队伍名称",
     "short_name_required": "需要简称",

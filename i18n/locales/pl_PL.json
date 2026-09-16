@@ -3794,7 +3794,8 @@
       "no_events_description": "Obecnie nie ma żadnych wydarzeń do wyświetlenia. Zajrzyj tu wkrótce.",
       "live_now": "Na żywo",
       "upcoming": "Nadchodzące",
-      "past_events": "Minione wydarzenia"
+      "past_events": "Minione wydarzenia",
+      "show_more": "Pokaż więcej"
     },
     "manage_events": {
       "title": "Zarządzaj wydarzeniami",
@@ -5305,7 +5306,17 @@
       "step1": "Naciśnij przycisk „Udostępnij”",
       "step2": "Wybierz „Dodaj do ekranu głównego”",
       "tooltip": "Zainstaluj aplikację",
-      "button": "Zainstaluj aplikację"
+      "button": "Zainstaluj aplikację",
+      "android": {
+        "step1": "Otwórz menu przeglądarki (⋮)",
+        "step2": "Wybierz „Zainstaluj aplikację” lub „Dodaj do ekranu głównego”",
+        "already_installed": "Masz już zainstalowaną? Otwórz ją z ekranu głównego."
+      },
+      "in_app": {
+        "description": "Aplikacji nie można zainstalować z poziomu innej aplikacji. Najpierw otwórz tę stronę w przeglądarce.",
+        "step1": "Otwórz tę stronę w przeglądarce z menu tej aplikacji",
+        "step2": "W menu przeglądarki (⋮) wybierz „Zainstaluj aplikację” lub „Dodaj do ekranu głównego”"
+      }
     }
   },
   "roster_picker": {
@@ -5711,6 +5722,10 @@
       "negotiated_scheduling": {
         "label": "Negocjowane planowanie",
         "description": "Kapitanowie drużyn proponują i uzgadniają terminy meczów (z opcjonalnymi oknami czasowymi dla każdego etapu), zamiast automatycznego rozpoczynania meczów."
+      },
+      "substitutes_enabled": {
+        "label": "Zezwalaj na rezerwowych",
+        "description": "Drużyny mogą dodawać do składu i wystawiać rezerwowych poza podstawowym składem. Po wyłączeniu składy i mecze są ograniczone do składu podstawowego."
       },
       "logo": {
         "label": "Logo"
@@ -7622,6 +7637,7 @@
     "hold_to_show_scoreboard": "Przytrzymaj, aby pokazać tabelę wyników",
     "close_popout": "Zamknij wysunięte okno",
     "click_to_view_tournament": "Kliknij, aby zobaczyć turniej",
+    "click_to_view_award": "Kliknij, aby zobaczyć nagrodę",
     "auto_clip": "Automatyczny klip",
     "create_clip": "Utwórz klip",
     "reload_demo": "Wczytaj demo ponownie"
@@ -8225,7 +8241,10 @@
     "min_teams_number": "minimalna liczba drużyn musi być liczbą",
     "max_teams_number": "maksymalna liczba drużyn musi być liczbą",
     "max_teams_gt_min": "maksymalna liczba drużyn musi być większa od minimalnej",
-    "min_max_teams_min_value": "minimalna i maksymalna liczba drużyn musi wynosić co najmniej 3 dla trybu każdy z każdym, w innym przypadku 4",
+    "min_teams_min_value": "ten etap wymaga co najmniej {count} drużyn",
+    "max_teams_previous_stage": "z etapu {stage} może awansować najwyżej {count} drużyn",
+    "max_teams_next_stage": "ten etap musi mieścić co najmniej {count} drużyn, aby zapełnić etap {stage}",
+    "groups_next_stage_min": "minimalna liczba drużyn etapu {stage} musi dzielić się równo na {groups} grup",
     "team_owner_required": "właściciel drużyny jest wymagany",
     "team_name_required": "nazwa drużyny jest wymagana",
     "short_name_required": "skrócona nazwa jest wymagana",

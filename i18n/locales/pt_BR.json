@@ -3794,7 +3794,8 @@
       "no_events_description": "Não há eventos para mostrar no momento. Volte em breve.",
       "live_now": "Ao vivo agora",
       "upcoming": "Em breve",
-      "past_events": "Eventos passados"
+      "past_events": "Eventos passados",
+      "show_more": "Mostrar mais"
     },
     "manage_events": {
       "title": "Gerenciar Eventos",
@@ -5305,7 +5306,17 @@
       "step1": "Aperte o botão 'Compartilhar'",
       "step2": "Selecione 'Adicionar à Tela de Início'",
       "tooltip": "Instalar",
-      "button": "Instalar"
+      "button": "Instalar",
+      "android": {
+        "step1": "Abra o menu do navegador (⋮)",
+        "step2": "Selecione 'Instalar app' ou 'Adicionar à tela inicial'",
+        "already_installed": "Já instalou? Abra pela sua tela de início."
+      },
+      "in_app": {
+        "description": "Não é possível instalar apps de dentro de outro app. Abra esta página no seu navegador primeiro.",
+        "step1": "Abra esta página no seu navegador pelo menu deste app",
+        "step2": "No menu do navegador (⋮), selecione 'Instalar app' ou 'Adicionar à tela inicial'"
+      }
     }
   },
   "roster_picker": {
@@ -5711,6 +5722,10 @@
       "negotiated_scheduling": {
         "label": "Agendamento Negociado",
         "description": "Os capitães das equipes propõem e acordam os horários das partidas (com janelas opcionais por fase), em vez de as partidas começarem automaticamente."
+      },
+      "substitutes_enabled": {
+        "label": "Permitir reservas",
+        "description": "As equipes podem inscrever e escalar reservas além dos titulares. Quando desativado, elencos e partidas ficam limitados aos titulares."
       },
       "logo": {
         "label": "Logo"
@@ -7622,6 +7637,7 @@
     "hold_to_show_scoreboard": "Segure para mostrar o placar",
     "close_popout": "Fechar janela destacada",
     "click_to_view_tournament": "Clique para ver o torneio",
+    "click_to_view_award": "Clique para ver a premiação",
     "auto_clip": "Clipe automático",
     "create_clip": "Criar clipe",
     "reload_demo": "Recarregar demo"
@@ -8225,7 +8241,10 @@
     "min_teams_number": "mínimo de equipes deve ser um número",
     "max_teams_number": "máximo de equipes deve ser um número",
     "max_teams_gt_min": "máximo de equipes deve ser maior que o mínimo",
-    "min_max_teams_min_value": "mínimo e máximo de equipes devem ser pelo menos 3 para Round Robin, 4 nos demais casos",
+    "min_teams_min_value": "esta fase precisa de pelo menos {count} equipes",
+    "max_teams_previous_stage": "a fase {stage} pode classificar no máximo {count} equipes",
+    "max_teams_next_stage": "esta fase deve comportar pelo menos {count} equipes para preencher a fase {stage}",
+    "groups_next_stage_min": "o mínimo de equipes da fase {stage} deve se dividir igualmente em {groups} grupos",
     "team_owner_required": "proprietário da equipe é obrigatório",
     "team_name_required": "nome da equipe é obrigatório",
     "short_name_required": "nome curto é obrigatório",

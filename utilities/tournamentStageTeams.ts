@@ -1,11 +1,13 @@
 // Mirrors the team-count rules of the api's validate_tournament_stage and the
 // groups check in taiu_tournament_stages; change them together. The form is
 // only stricter where the database accepts a degenerate count: elimination
-// stages under 4 (except a final after a ranked stage) and Swiss outside 10-64
-// or odd.
+// stages under 4 (except a final after a ranked stage), Swiss outside 10-64
+// or odd, and round robin groups over 32 (every pairing is a bracket row,
+// rebuilt on each stage edit).
 import { e_tournament_stage_types_enum } from "~/generated/zeus";
 
 const MAX_TEAMS = 256;
+const MAX_ROUND_ROBIN_GROUP_TEAMS = 32;
 
 export interface AdjacentStage {
   type: string;
@@ -90,6 +92,7 @@ export function stageTeamLimits({
   switch (type) {
     case e_tournament_stage_types_enum.RoundRobin:
       min = 3 * groupCount;
+      max = Math.min(MAX_TEAMS, MAX_ROUND_ROBIN_GROUP_TEAMS * groupCount);
       break;
     case e_tournament_stage_types_enum.Swiss:
       min = 10;

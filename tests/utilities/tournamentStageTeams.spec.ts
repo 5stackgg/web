@@ -21,10 +21,16 @@ describe("stageTeamLimits", () => {
     ).toBe(3);
   });
 
-  it("round robin isn't capped at 32 teams", () => {
+  it("round robin caps each group at 32 teams", () => {
     expect(
-      stageTeamLimits({ type: "RoundRobin", order: 1, groups: 8 }).max,
-    ).toBeGreaterThan(32);
+      stageTeamLimits({ type: "RoundRobin", order: 1, groups: 1 }).max,
+    ).toBe(32);
+    expect(
+      stageTeamLimits({ type: "RoundRobin", order: 1, groups: 4 }).max,
+    ).toBe(128);
+    expect(
+      stageTeamLimits({ type: "RoundRobin", order: 1, groups: 16 }).max,
+    ).toBe(256);
   });
 
   it("a first elimination stage still needs four teams per group", () => {

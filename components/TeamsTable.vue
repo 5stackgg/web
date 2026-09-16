@@ -139,7 +139,7 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
                   type="button"
                   class="rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
                   :aria-label="awardAriaLabel(grant)"
-                  @click.stop.prevent="goToTournament(grant.tournament_id)"
+                  @click.stop.prevent="openAward(grant)"
                 >
                   <AwardBadge
                     :award="grant.award"
@@ -159,11 +159,7 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
               <TooltipContent side="top" class="max-w-[16rem]">
                 <div class="flex flex-col gap-0.5">
                   <div class="font-semibold leading-tight">
-                    {{
-                      grant.tournament_award?.custom_name ||
-                      grant.tournament?.name ||
-                      "Tournament"
-                    }}
+                    {{ awardName(grant) }}
                   </div>
                   <div
                     class="flex items-center gap-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
@@ -171,17 +167,19 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
                     <span :style="{ color: placementColor(grant.placement) }">
                       {{ placementLabel(grant.placement) }}
                     </span>
-                    <span v-if="grant.tournament?.start" class="opacity-50"
-                      >·</span
-                    >
-                    <span v-if="grant.tournament?.start">
-                      {{ formatAwardDate(grant.tournament.start) }}
+                    <span v-if="awardDate(grant)" class="opacity-50">·</span>
+                    <span v-if="awardDate(grant)">
+                      {{ formatAwardDate(awardDate(grant)) }}
                     </span>
                   </div>
                   <div
                     class="mt-0.5 text-[0.6rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
                   >
-                    {{ $t("ui.click_to_view_tournament") }}
+                    {{
+                      linksToTournament(grant)
+                        ? $t("ui.click_to_view_tournament")
+                        : $t("ui.click_to_view_award")
+                    }}
                   </div>
                 </div>
               </TooltipContent>
@@ -224,6 +222,7 @@ interface AwardEntry {
   id: string;
   placement?: number | null;
   placement_tier?: string | null;
+  source?: string | null;
   tournament_id?: string | null;
   created_at?: string | null;
   award?: {
@@ -289,12 +288,8 @@ export default {
     recentAwards(team: { id: string }): AwardEntry[] {
       return [...this.teamAwards(team)]
         .sort((a, b) => {
-          const da = a.tournament?.start
-            ? new Date(a.tournament.start).getTime()
-            : 0;
-          const db = b.tournament?.start
-            ? new Date(b.tournament.start).getTime()
-            : 0;
+          const da = new Date(this.awardDate(a) || 0).getTime();
+          const db = new Date(this.awardDate(b) || 0).getTime();
           return db - da;
         })
         .slice(0, 5);
@@ -302,14 +297,17 @@ export default {
     extraAwards(team: { id: string }): number {
       return Math.max(0, this.teamAwards(team).length - 5);
     },
-    placementLabel(placement: number): string {
+    placementLabel(placement?: number | null): string {
+      if (placement === null || placement === undefined) {
+        return this.$t("awards.granted");
+      }
       if (placement === 0) return "MVP";
       if (placement === 1) return "1st Place";
       if (placement === 2) return "2nd Place";
       if (placement === 3) return "3rd Place";
       return `#${placement}`;
     },
-    placementColor(placement: number): string {
+    placementColor(placement?: number | null): string {
       if (placement === 0) return "hsl(195 85% 60%)";
       if (placement === 1) return "hsl(45 95% 60%)";
       if (placement === 2) return "hsl(0 0% 78%)";
@@ -328,16 +326,45 @@ export default {
         })
         .toUpperCase();
     },
-    awardAriaLabel(grant: AwardEntry): string {
-      const name =
+    isManual(grant: AwardEntry): boolean {
+      return grant.source === "manual";
+    },
+    linksToTournament(grant: AwardEntry): boolean {
+      return !!grant.tournament_id && !this.isManual(grant);
+    },
+    awardName(grant: AwardEntry): string {
+      if (this.isManual(grant)) {
+        return (
+          grant.tournament_award?.custom_name ||
+          grant.award?.name ||
+          grant.tournament?.name ||
+          ""
+        );
+      }
+      return (
         grant.tournament_award?.custom_name ||
         grant.tournament?.name ||
-        "tournament";
-      return `${this.placementLabel(grant.placement)} — ${name}`;
+        grant.award?.name ||
+        ""
+      );
     },
-    goToTournament(tournamentId?: string | null) {
-      if (!tournamentId) return;
-      this.$router.push(`/tournaments/${tournamentId}`);
+    awardDate(grant: AwardEntry): string | null {
+      if (this.isManual(grant)) {
+        return grant.created_at || null;
+      }
+      return grant.tournament?.start || grant.created_at || null;
+    },
+    awardAriaLabel(grant: AwardEntry): string {
+      return `${this.placementLabel(grant.placement)} — ${this.awardName(grant)}`;
+    },
+    openAward(grant: AwardEntry) {
+      if (this.linksToTournament(grant)) {
+        this.$router.push(`/tournaments/${grant.tournament_id}`);
+        return;
+      }
+      if (grant.award?.id) {
+        this.$router.push(`/awards/${grant.award.id}`);
+      }
     },
     topStarters(team: { roster?: RosterEntry[] }): RosterEntry[] {
       const roster = team.roster ?? [];

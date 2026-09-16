@@ -9,6 +9,7 @@ interface AwardGrant {
   id: string;
   placement?: number | null;
   placement_tier?: string | null;
+  source?: string | null;
   tournament_id?: string | null;
   team_id?: string | null;
   note?: string | null;
@@ -67,12 +68,27 @@ function grantTier(grant: AwardGrant): AwardTier {
 }
 
 function grantName(grant: AwardGrant): string {
+  if (grant.source === "manual") {
+    return (
+      grant.tournament_award?.custom_name ||
+      grant.award?.name ||
+      grant.tournament?.name ||
+      ""
+    );
+  }
   return (
     grant.tournament_award?.custom_name ||
     grant.tournament?.name ||
     grant.award?.name ||
     ""
   );
+}
+
+function grantDate(grant: AwardGrant): string | null {
+  if (grant.source === "manual") {
+    return grant.created_at || null;
+  }
+  return grant.tournament?.start || grant.created_at || null;
 }
 
 // Placement medals lead, ordered mvp -> bronze; standalone awards trail them
@@ -91,8 +107,8 @@ const sorted = computed(() => {
     const ta = TIER_ORDER[grantTier(a)];
     const tb = TIER_ORDER[grantTier(b)];
     if (ta !== tb) return ta - tb;
-    const da = new Date(a.tournament?.start || a.created_at || 0).getTime();
-    const db = new Date(b.tournament?.start || b.created_at || 0).getTime();
+    const da = new Date(grantDate(a) || 0).getTime();
+    const db = new Date(grantDate(b) || 0).getTime();
     return db - da;
   });
 });
@@ -291,11 +307,11 @@ const tierRack = computed(() => {
             {{ grantName(grant) }}
           </div>
           <div
-            v-if="grant.tournament?.start || grant.created_at"
+            v-if="grantDate(grant)"
             class="mt-0.5 flex items-center justify-center gap-1.5 font-mono text-[0.58rem] uppercase tracking-[0.2em] text-muted-foreground/80"
           >
             <span class="h-[1px] w-2 bg-border"></span>
-            {{ formatAwardDate(grant.tournament?.start || grant.created_at) }}
+            {{ formatAwardDate(grantDate(grant)) }}
             <span class="h-[1px] w-2 bg-border"></span>
           </div>
         </NuxtLink>

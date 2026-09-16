@@ -595,10 +595,8 @@ export default {
                 player_steam_id: {
                   _is_null: true,
                 },
-                tournament_team: {
-                  team_id: {
-                    _eq: $("teamId", "uuid!"),
-                  },
+                team_id: {
+                  _eq: $("teamId", "uuid!"),
                 },
               },
             },

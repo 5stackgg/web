@@ -229,14 +229,21 @@ export default {
     awardsByTeamId(): Record<string, any[]> {
       const map: Record<string, any[]> = {};
       for (const t of this.teamAwards) {
-        const teamId = t.tournament_team?.team_id;
-        if (!teamId) continue;
-        (map[teamId] ??= []).push(t);
+        if (!t.team_id) {
+          continue;
+        }
+        (map[t.team_id] ??= []).push(t);
       }
       return map;
     },
     winnerTeamIds(): string[] {
-      return Object.keys(this.awardsByTeamId);
+      return [
+        ...new Set(
+          this.teamAwards
+            .filter((t) => t.team_id && t.source === "tournament")
+            .map((t) => t.team_id as string),
+        ),
+      ];
     },
     teamsFilterCount(): number {
       let n = 0;
@@ -364,9 +371,12 @@ export default {
               },
               {
                 id: true,
+                team_id: true,
+                source: true,
                 placement: true,
                 placement_tier: true,
                 tournament_id: true,
+                created_at: true,
                 award: {
                   id: true,
                   name: true,
@@ -390,9 +400,6 @@ export default {
                   custom_name: true,
                   silhouette: true,
                   image_url: true,
-                },
-                tournament_team: {
-                  team_id: true,
                 },
               },
             ],

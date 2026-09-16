@@ -251,7 +251,7 @@ const BooleanPill = defineComponent({
                   $t("match.options.substitutes")
                 }}</dt>
                 <dd class="settings-row__value tabular-nums">{{
-                  options.number_of_substitutes
+                  substitutes ?? options.number_of_substitutes
                 }}</dd>
               </div>
             </dl>
@@ -306,6 +306,11 @@ export default {
     showDetailsByDefault: {
       type: Boolean,
       default: false,
+    },
+    // Tournaments can override options.number_of_substitutes (Duel has none).
+    substitutes: {
+      type: Number,
+      default: null,
     },
   },
   data() {

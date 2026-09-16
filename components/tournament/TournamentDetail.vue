@@ -683,6 +683,10 @@ function clearTeamEnterDelay(el: Element) {
               <MatchOptionsDisplay
                 :show-details-by-default="false"
                 :options="tournament.options"
+                :substitutes="
+                  tournament.max_players_per_lineup -
+                  tournament.min_players_per_lineup
+                "
               ></MatchOptionsDisplay>
             </ManageSection>
           </PageTransition>
@@ -1209,6 +1213,7 @@ export default {
               auto_start: true,
               scheduling_mode: true,
               awards_enabled: true,
+              substitutes_enabled: true,
               e_tournament_status: {
                 description: true,
               },

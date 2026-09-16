@@ -678,6 +678,9 @@ provide("commander", commander);
       <MatchOptionsDisplay
         :options="match.options"
         :show-details-by-default="true"
+        :substitutes="
+          match.max_players_per_lineup - match.min_players_per_lineup
+        "
       ></MatchOptionsDisplay>
 
       <section v-if="displayServerInformation" class="server-info-panel">

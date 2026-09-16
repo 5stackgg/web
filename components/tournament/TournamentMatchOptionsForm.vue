@@ -75,21 +75,25 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
       >
         <FormItem>
           <div
-            class="flex flex-row items-center justify-between cursor-pointer"
-            @click="handleChange(!value)"
+            class="flex flex-row items-center justify-between"
+            :class="substitutesLocked ? 'cursor-not-allowed' : 'cursor-pointer'"
+            @click="!substitutesLocked && handleChange(!value)"
           >
             <div class="space-y-0.5">
               <SettingHeader>{{
                 $t("tournament.form.substitutes_enabled.label")
               }}</SettingHeader>
               <FormDescription>{{
-                $t("tournament.form.substitutes_enabled.description")
+                substitutesLocked
+                  ? $t("tournament.form.substitutes_enabled.locked")
+                  : $t("tournament.form.substitutes_enabled.description")
               }}</FormDescription>
             </div>
             <FormControl>
               <Switch
                 class="pointer-events-none"
                 :model-value="value"
+                :disabled="substitutesLocked"
                 @update:model-value="handleChange"
               />
             </FormControl>
@@ -113,7 +117,11 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 import { useForm } from "vee-validate";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import { mapFields } from "~/graphql/mapGraphql";
-import { $, e_map_pool_types_enum } from "~/generated/zeus";
+import {
+  $,
+  e_map_pool_types_enum,
+  e_tournament_status_enum,
+} from "~/generated/zeus";
 import matchOptionsValidator from "~/utilities/match-options-validator";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { toast } from "@/components/ui/toast";
@@ -208,6 +216,15 @@ export default {
     },
   },
   computed: {
+    substitutesLocked() {
+      return (
+        this.tournament.substitutes_enabled &&
+        ![
+          e_tournament_status_enum.Setup,
+          e_tournament_status_enum.RegistrationOpen,
+        ].includes(this.tournament.status)
+      );
+    },
     defaultMapPool() {
       return this.map_pools?.find((pool) => {
         return pool.type === this.form.values.type;

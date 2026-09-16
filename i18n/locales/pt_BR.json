@@ -5725,7 +5725,8 @@
       },
       "substitutes_enabled": {
         "label": "Permitir reservas",
-        "description": "As equipes podem inscrever e escalar reservas além dos titulares. Quando desativado, elencos e partidas ficam limitados aos titulares."
+        "description": "As equipes podem inscrever e escalar reservas além dos titulares. Quando desativado, elencos e partidas ficam limitados aos titulares.",
+        "locked": "As reservas não podem ser desativadas depois que as inscrições forem encerradas."
       },
       "logo": {
         "label": "Logo"

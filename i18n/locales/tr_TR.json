@@ -5725,7 +5725,8 @@
       },
       "substitutes_enabled": {
         "label": "Yedeklere izin ver",
-        "description": "Takımlar başlangıç kadrosunun ötesinde yedekleri kadroya ekleyip oynatabilir. Kapalıyken kadrolar ve maçlar başlangıç kadrosuyla sınırlıdır."
+        "description": "Takımlar başlangıç kadrosunun ötesinde yedekleri kadroya ekleyip oynatabilir. Kapalıyken kadrolar ve maçlar başlangıç kadrosuyla sınırlıdır.",
+        "locked": "Kayıtlar kapandıktan sonra yedekler kapatılamaz."
       },
       "logo": {
         "label": "Logo"

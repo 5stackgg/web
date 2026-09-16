@@ -5725,7 +5725,8 @@
       },
       "substitutes_enabled": {
         "label": "Autoriser les remplaçants",
-        "description": "Les équipes peuvent inscrire et aligner des remplaçants en plus des titulaires. Désactivé, les rosters et les matchs sont limités aux titulaires."
+        "description": "Les équipes peuvent inscrire et aligner des remplaçants en plus des titulaires. Désactivé, les rosters et les matchs sont limités aux titulaires.",
+        "locked": "Les remplaçants ne peuvent plus être désactivés une fois les inscriptions closes."
       },
       "logo": {
         "label": "Logo"

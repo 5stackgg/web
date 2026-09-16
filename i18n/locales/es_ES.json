@@ -5725,7 +5725,8 @@
       },
       "substitutes_enabled": {
         "label": "Permitir suplentes",
-        "description": "Los equipos pueden incluir suplentes en su roster y alinearlos además de los titulares. Si se desactiva, los rosters y las partidas se limitan a la alineación titular."
+        "description": "Los equipos pueden incluir suplentes en su roster y alinearlos además de los titulares. Si se desactiva, los rosters y las partidas se limitan a la alineación titular.",
+        "locked": "Los suplentes no se pueden desactivar una vez cerradas las inscripciones."
       },
       "logo": {
         "label": "Logo"

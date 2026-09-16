@@ -5725,7 +5725,8 @@
       },
       "substitutes_enabled": {
         "label": "Tillad reserver",
-        "description": "Hold kan have reserver i truppen og stille med dem ud over startopstillingen. Når det er slået fra, er trupper og kampe begrænset til startopstillingen."
+        "description": "Hold kan have reserver i truppen og stille med dem ud over startopstillingen. Når det er slået fra, er trupper og kampe begrænset til startopstillingen.",
+        "locked": "Reserver kan ikke slås fra, når tilmeldingen er lukket."
       },
       "logo": {
         "label": "Logo"

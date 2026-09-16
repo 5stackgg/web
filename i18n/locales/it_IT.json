@@ -5725,7 +5725,8 @@
       },
       "substitutes_enabled": {
         "label": "Consenti riserve",
-        "description": "I team possono inserire nel roster e schierare riserve oltre ai titolari. Se disattivato, roster e match sono limitati ai titolari."
+        "description": "I team possono inserire nel roster e schierare riserve oltre ai titolari. Se disattivato, roster e match sono limitati ai titolari.",
+        "locked": "Le riserve non possono essere disattivate dopo la chiusura delle iscrizioni."
       },
       "logo": {
         "label": "Logo"

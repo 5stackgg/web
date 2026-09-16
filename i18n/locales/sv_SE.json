@@ -5725,7 +5725,8 @@
       },
       "substitutes_enabled": {
         "label": "Tillåt reserver",
-        "description": "Lag kan ha reserver i truppen och ställa upp dem utöver startuppställningen. När det är avstängt begränsas trupper och matcher till startuppställningen."
+        "description": "Lag kan ha reserver i truppen och ställa upp dem utöver startuppställningen. När det är avstängt begränsas trupper och matcher till startuppställningen.",
+        "locked": "Reserver kan inte stängas av när anmälan har stängt."
       },
       "logo": {
         "label": "Logotyp"

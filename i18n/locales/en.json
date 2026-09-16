@@ -5725,7 +5725,8 @@
       },
       "substitutes_enabled": {
         "label": "Allow Substitutes",
-        "description": "Teams can roster and field substitutes beyond the starting lineup. When disabled, rosters and matches are limited to the starting lineup."
+        "description": "Teams can roster and field substitutes beyond the starting lineup. When disabled, rosters and matches are limited to the starting lineup.",
+        "locked": "Substitutes can't be turned off once registration has closed."
       },
       "logo": {
         "label": "Logo"

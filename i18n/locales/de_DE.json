@@ -5725,7 +5725,8 @@
       },
       "substitutes_enabled": {
         "label": "Ersatzspieler erlauben",
-        "description": "Teams können Ersatzspieler über die Startaufstellung hinaus ins Roster aufnehmen und einsetzen. Wenn deaktiviert, sind Roster und Matches auf die Startaufstellung beschränkt."
+        "description": "Teams können Ersatzspieler über die Startaufstellung hinaus ins Roster aufnehmen und einsetzen. Wenn deaktiviert, sind Roster und Matches auf die Startaufstellung beschränkt.",
+        "locked": "Ersatzspieler können nach Ende der Anmeldung nicht mehr deaktiviert werden."
       },
       "logo": {
         "label": "Logo"

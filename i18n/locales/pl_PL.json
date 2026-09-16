@@ -5725,7 +5725,8 @@
       },
       "substitutes_enabled": {
         "label": "Zezwalaj na rezerwowych",
-        "description": "Drużyny mogą dodawać do składu i wystawiać rezerwowych poza podstawowym składem. Po wyłączeniu składy i mecze są ograniczone do składu podstawowego."
+        "description": "Drużyny mogą dodawać do składu i wystawiać rezerwowych poza podstawowym składem. Po wyłączeniu składy i mecze są ograniczone do składu podstawowego.",
+        "locked": "Po zamknięciu zapisów nie można wyłączyć rezerwowych."
       },
       "logo": {
         "label": "Logo"

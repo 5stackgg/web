@@ -7,7 +7,6 @@ import {
   phaseLabelKey,
 } from "~/utilities/eventDisplay";
 
-// Small banner card used for Upcoming events in the index rail.
 const props = defineProps<{ event: any }>();
 
 const phase = computed(() => eventPhase(props.event));
@@ -59,7 +58,14 @@ const fallbackGradient = computed(() => {
         class="pointer-events-none absolute inset-0 flex flex-col justify-between bg-[linear-gradient(180deg,transparent_45%,hsl(0_0%_0%/0.75))] p-2"
       >
         <span
-          class="self-start rounded-full bg-[hsl(var(--tac-amber)/0.9)] px-2 py-0.5 font-mono text-[0.54rem] uppercase tracking-[0.14em] text-black"
+          class="self-start rounded-full px-2 py-0.5 font-mono text-[0.54rem] uppercase tracking-[0.14em] backdrop-blur-sm"
+          :class="
+            phase === 'live'
+              ? 'bg-destructive/25 text-[hsl(var(--destructive))]'
+              : phase === 'upcoming'
+                ? 'bg-[hsl(var(--tac-amber)/0.22)] text-[hsl(var(--tac-amber))]'
+                : 'bg-success/20 text-success'
+          "
         >
           {{ $t(phaseLabelKey(phase)) }}
         </span>
@@ -75,6 +81,9 @@ const fallbackGradient = computed(() => {
         class="font-mono text-[0.62rem] tracking-[0.06em] text-muted-foreground"
       >
         {{ formatEventDate(event.starts_at) || $t("pages.events.date_tbd") }}
+        <template v-if="formatEventDate(event.ends_at)">
+          – {{ formatEventDate(event.ends_at) }}
+        </template>
       </p>
     </div>
   </NuxtLink>

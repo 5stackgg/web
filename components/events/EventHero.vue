@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { Images } from "lucide-vue-next";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { eventMediaUrl } from "~/composables/useEventMediaUpload";
@@ -9,9 +9,6 @@ import {
   phaseLabelKey,
 } from "~/utilities/eventDisplay";
 
-// Full-width banner hero used for Live and Finished events. Uses the event's
-// banner as a blur-filled backdrop; falls back to a generated gradient keyed
-// on the event id when there is no banner.
 const props = defineProps<{ event: any }>();
 
 const phase = computed(() => eventPhase(props.event));
@@ -23,6 +20,30 @@ const bannerSrc = computed(() =>
 const isVideo = computed(() =>
   props.event.banner?.mime_type?.startsWith("video/"),
 );
+
+const videoEl = ref<HTMLVideoElement | null>(null);
+let videoObserver: IntersectionObserver | null = null;
+
+watch(videoEl, (video) => {
+  videoObserver?.disconnect();
+  videoObserver = null;
+  if (!video || typeof IntersectionObserver === "undefined") {
+    return;
+  }
+
+  videoObserver = new IntersectionObserver(([entry]) => {
+    if (entry?.isIntersecting) {
+      video.play().catch(() => {});
+    } else {
+      video.pause();
+    }
+  });
+  videoObserver.observe(video);
+});
+
+onBeforeUnmount(() => {
+  videoObserver?.disconnect();
+});
 
 // Deterministic gradient fallback so bannerless events still look intentional.
 const fallbackGradient = computed(() => {
@@ -77,14 +98,16 @@ const bottomStats = computed(() =>
       v-if="bannerSrc && !isVideo"
       :src="bannerSrc"
       aria-hidden="true"
+      loading="lazy"
       class="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-500 group-hover/event:scale-105"
     />
     <video
       v-else-if="bannerSrc && isVideo"
+      ref="videoEl"
       :src="bannerSrc"
       aria-hidden="true"
       class="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-500 group-hover/event:scale-105"
-      autoplay
+      preload="none"
       muted
       loop
       playsinline

@@ -959,6 +959,12 @@ import { useAuthStore } from "~/stores/AuthStore";
 // name when the template resolves it. This returns a boolean, so the template
 // was reading a function -- always truthy, and a v-if that never hid anything.
 import { canSetVetoPickTimeout as allowsVetoPickTimeout } from "~/utilities/setupOptions";
+import {
+  advancingTeams,
+  groupsSplitNextStage,
+  stageTeamLimits,
+  teamCountOptions,
+} from "~/utilities/tournamentStageTeams";
 import { toast } from "@/components/ui/toast";
 
 interface Region {
@@ -1070,18 +1076,64 @@ export default {
             )
             .refine(
               (data) => {
-                const min =
-                  data.stage_type === e_tournament_stage_types_enum.RoundRobin
-                    ? 3
-                    : 4;
+                const { min } = this.teamLimitsFor(data);
                 return (
                   parseInt(data.min_teams) >= min &&
                   parseInt(data.max_teams) >= min
                 );
               },
               {
-                message: this.$t("validation_extras.min_max_teams_min_value"),
+                error: () =>
+                  this.$t("validation_extras.min_teams_min_value", {
+                    count: this.teamLimits.min,
+                  }),
                 path: ["min_teams"],
+              },
+            )
+            .refine(
+              (data) => {
+                const advancing = advancingTeams(this.previousStage);
+                return (
+                  advancing === null || parseInt(data.max_teams) <= advancing
+                );
+              },
+              {
+                error: () =>
+                  this.$t("validation_extras.max_teams_previous_stage", {
+                    stage: this.order - 1,
+                    count: advancingTeams(this.previousStage),
+                  }),
+                path: ["max_teams"],
+              },
+            )
+            .refine(
+              (data) =>
+                parseInt(data.max_teams) >=
+                this.teamLimitsFor(data).maxTeamsFloor,
+              {
+                error: () =>
+                  this.$t("validation_extras.max_teams_next_stage", {
+                    stage: this.order + 1,
+                    count: this.teamLimits.maxTeamsFloor,
+                  }),
+                path: ["max_teams"],
+              },
+            )
+            .refine(
+              (data) =>
+                groupsSplitNextStage({
+                  type: data.stage_type,
+                  groups: data.groups,
+                  minTeams: data.min_teams,
+                  nextStage: this.nextStage,
+                }),
+              {
+                error: () =>
+                  this.$t("validation_extras.groups_next_stage_min", {
+                    stage: this.order + 1,
+                    groups: this.form.values.groups,
+                  }),
+                path: ["groups"],
               },
             ),
         ),
@@ -1176,53 +1228,43 @@ export default {
         (a, b) => order.indexOf(a.value as any) - order.indexOf(b.value as any),
       );
     },
+    previousStage() {
+      return (
+        this.tournament?.stages?.find(
+          (stage: any) => stage.order === this.order - 1,
+        ) ?? null
+      );
+    },
+    nextStage() {
+      return (
+        this.tournament?.stages?.find(
+          (stage: any) => stage.order === this.order + 1,
+        ) ?? null
+      );
+    },
+    teamLimits() {
+      return this.teamLimitsFor(this.form.values);
+    },
     minTeamOptions() {
-      return this.baseNumberOfTeamsOptions;
+      return teamCountOptions(this.teamLimits).map((count) => ({
+        value: count.toString(),
+        display: count,
+      }));
     },
     maxTeamOptions() {
       if (!this.form.values.min_teams) {
         return;
       }
-      return this.baseNumberOfTeamsOptions.filter((option) => {
-        return parseInt(option.value) >= parseInt(this.form.values.min_teams);
-      });
-    },
-    baseNumberOfTeamsOptions() {
-      let max = 256;
-      let options = [];
-
-      switch (this.form.values.stage_type) {
-        case e_tournament_stage_types_enum.SingleElimination:
-        case e_tournament_stage_types_enum.DoubleElimination:
-          while (max > 3) {
-            options.push({
-              value: max.toString(),
-              display: max,
-            });
-
-            max--;
-          }
-
-          break;
-        case e_tournament_stage_types_enum.RoundRobin:
-          for (let i = 32; i >= 3; i--) {
-            options.push({
-              value: i.toString(),
-              display: i,
-            });
-          }
-          break;
-        case e_tournament_stage_types_enum.Swiss:
-          for (let i = 64; i >= 10; i -= 2) {
-            options.push({
-              value: i.toString(),
-              display: i,
-            });
-          }
-          break;
-      }
-
-      return options.reverse();
+      return teamCountOptions(
+        this.teamLimits,
+        Math.max(
+          parseInt(this.form.values.min_teams),
+          this.teamLimits.maxTeamsFloor,
+        ),
+      ).map((count) => ({
+        value: count.toString(),
+        display: count,
+      }));
     },
     availableRegions(): Region[] {
       return useApplicationSettingsStore().availableRegions;
@@ -1330,6 +1372,16 @@ export default {
     },
   },
   methods: {
+    teamLimitsFor(values: any) {
+      return stageTeamLimits({
+        type: values.stage_type,
+        order: this.order,
+        groups: values.groups,
+        swissNoElimination: !!values.swiss_no_elimination,
+        previousStage: this.previousStage,
+        nextStage: this.nextStage,
+      });
+    },
     toggleVetoTimer(enabled: boolean) {
       if (!enabled) {
         const current = this.form.values.veto_pick_timeout;

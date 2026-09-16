@@ -11,12 +11,15 @@
     "postinstall": "nuxt prepare",
     "codegen": "bash -c '. ./.env && zeus https://$NUXT_PUBLIC_API_DOMAIN/v1/graphql ./generated --ts --td --header=x-hasura-admin-secret:$HASURA_GRAPHQL_ADMIN_SECRET && ./scripts/patch-zeus-codegen.sh'",
     "check-translations": "node scripts/check-translations.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "wrangler": "wrangler --config cloudflare-workers/backblaze-proxy/wrangler.toml"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250508.0",
     "@nuxt/devtools": "^2.4.0",
     "@nuxt/image": "^1.10.0",
+    "@nuxt/test-utils": "^3.23.0",
     "@nuxtjs/apollo": "5.0.0-alpha.16",
     "@nuxtjs/i18n": "^9.5.4",
     "@nuxtjs/tailwindcss": "^6.14.0",
@@ -25,8 +28,10 @@
     "@types/simple-peer": "^9.11.8",
     "@types/three": "^0.184.1",
     "@vite-pwa/nuxt": "^1.0.0",
+    "@vue/test-utils": "^2.4.6",
     "autoprefixer": "^10.4.21",
     "glob": "^11.0.2",
+    "happy-dom": "^20.0.11",
     "nuxt": "^3.17.2",
     "postcss": "^8.5.3",
     "postcss-nesting": "^13.0.1",
@@ -34,6 +39,7 @@
     "shadcn-nuxt": "^2.1.0",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.8.3",
+    "vitest": "^3.2.7",
     "vue": "^3.5.34",
     "vue-router": "^4.5.1",
     "workbox-core": "^7.3.0",
@@ -91,6 +97,9 @@
     "vee-validate": "^4.15.1",
     "vue-chartjs": "^5.3.2",
     "zod": "^4.3.6"
+  },
+  "resolutions": {
+    "vitest-environment-nuxt/@nuxt/test-utils": "^3.23.0"
   },
   "packageManager": "yarn@4.11.0"
 }

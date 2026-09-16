@@ -1,0 +1,45 @@
+name: tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - "main"
+      - "beta"
+  workflow_dispatch:
+
+concurrency:
+  group: tests-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  vitest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v5
+
+      # setup-node runs twice: its yarn cache probe needs Corepack first (see i18n.yml).
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+
+      - name: Enable Corepack
+        run: |
+          corepack enable
+          corepack prepare --activate
+
+      - name: Restore the yarn cache
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Run tests
+        run: yarn test

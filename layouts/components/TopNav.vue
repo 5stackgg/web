@@ -668,6 +668,7 @@ const loginArrowClasses =
             v-model:open="profileMenuOpen"
             side="bottom"
             align="end"
+            :show-install="isMobile"
             @logout="showLogoutModal = true"
           >
             <template #trigger>

@@ -4,6 +4,7 @@ import { computed, markRaw, onUnmounted, provide, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
 import gql from "graphql-tag";
+import { NuxtLink } from "#components";
 import { useMatchClips } from "~/composables/useMatchClips";
 import MatchTabs from "~/components/match/MatchTabs.vue";
 import AnimatedStat from "~/components/AnimatedStat.vue";
@@ -294,7 +295,7 @@ const vsBaseClasses =
               class="flex items-center gap-3 min-w-0 justify-center text-center lg:justify-start lg:text-left"
             >
               <component
-                :is="lineup1TeamId ? 'NuxtLink' : 'div'"
+                :is="lineup1TeamId ? NuxtLink : 'div'"
                 :to="lineup1TeamId ? `/teams/${lineup1TeamId}` : undefined"
                 class="shrink-0 h-12 w-12 border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.1)] flex items-center justify-center overflow-hidden"
                 :class="
@@ -458,7 +459,7 @@ const vsBaseClasses =
                 </div>
               </div>
               <component
-                :is="lineup2TeamId ? 'NuxtLink' : 'div'"
+                :is="lineup2TeamId ? NuxtLink : 'div'"
                 :to="lineup2TeamId ? `/teams/${lineup2TeamId}` : undefined"
                 class="shrink-0 h-12 w-12 border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.1)] flex items-center justify-center overflow-hidden"
                 :class="

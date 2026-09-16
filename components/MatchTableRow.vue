@@ -10,6 +10,7 @@ import {
   UsersIcon,
   X,
 } from "lucide-vue-next";
+import { NuxtLink } from "#components";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { e_match_status_enum } from "~/generated/zeus";
 import mapLabel from "~/utilities/mapLabel";
@@ -270,7 +271,7 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
             :title="match.lineup_1.name"
           >
             <component
-              :is="match.lineup_1.team_id ? 'NuxtLink' : 'span'"
+              :is="match.lineup_1.team_id ? NuxtLink : 'span'"
               :to="
                 match.lineup_1.team_id
                   ? `/teams/${match.lineup_1.team_id}`
@@ -315,7 +316,7 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
             :title="match.lineup_2.name"
           >
             <component
-              :is="match.lineup_2.team_id ? 'NuxtLink' : 'span'"
+              :is="match.lineup_2.team_id ? NuxtLink : 'span'"
               :to="
                 match.lineup_2.team_id
                   ? `/teams/${match.lineup_2.team_id}`
@@ -366,7 +367,7 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
               }"
             >
               <component
-                :is="match.lineup_1.team_id ? 'NuxtLink' : 'span'"
+                :is="match.lineup_1.team_id ? NuxtLink : 'span'"
                 :to="
                   match.lineup_1.team_id
                     ? `/teams/${match.lineup_1.team_id}`
@@ -430,7 +431,7 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
               }"
             >
               <component
-                :is="match.lineup_2.team_id ? 'NuxtLink' : 'span'"
+                :is="match.lineup_2.team_id ? NuxtLink : 'span'"
                 :to="
                   match.lineup_2.team_id
                     ? `/teams/${match.lineup_2.team_id}`

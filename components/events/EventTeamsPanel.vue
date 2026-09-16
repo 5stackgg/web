@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { NuxtLink } from "#components";
 import { Avatar, AvatarImage, AvatarFallback } from "~/components/ui/avatar";
 import Empty from "~/components/ui/empty/Empty.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
@@ -53,7 +54,7 @@ function initials(team: { name: string; short_name?: string | null }): string {
         class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
       >
         <component
-          :is="team.id ? 'NuxtLink' : 'div'"
+          :is="team.id ? NuxtLink : 'div'"
           v-for="team in teams"
           :key="team.id || team.name"
           :to="

@@ -41,9 +41,10 @@ export function advancingTeams(stage?: AdjacentStage | null): number | null {
   if (ranksWholeField(stage)) {
     return stage.max_teams;
   }
-  // A Valve Swiss advances only its 3-0, 3-1 and 3-2 teams: half the field.
+  // A Valve Swiss advances only its 3-0, 3-1 and 3-2 teams: half the field,
+  // rounded up because an odd field's bye is a free win.
   if (stage.type === e_tournament_stage_types_enum.Swiss) {
-    return Math.floor(stage.max_teams / 2);
+    return Math.ceil(stage.max_teams / 2);
   }
   return null;
 }

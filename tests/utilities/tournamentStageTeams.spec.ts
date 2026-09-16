@@ -68,6 +68,14 @@ describe("stageTeamLimits", () => {
         previousStage: { type: "Swiss", max_teams: 16 },
       }).max,
     ).toBe(8);
+    expect(
+      stageTeamLimits({
+        type: "SingleElimination",
+        order: 2,
+        groups: 1,
+        previousStage: { type: "Swiss", max_teams: 15 },
+      }).max,
+    ).toBe(8);
   });
 
   it("a Valve Swiss must hold twice the teams the next stage takes", () => {

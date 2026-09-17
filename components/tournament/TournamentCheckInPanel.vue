@@ -209,7 +209,33 @@ function formatClock(iso: string | null) {
   });
 }
 
+// The window's shape ("between 4:00 PM and 4:15 PM") is a clock, but the
+// headline announcing when it opens is a date: check-in on a tournament two
+// months out opens on a specific day, and "opens at 4:00 PM" next to a
+// multi-week countdown reads as today.
+function formatWhen(iso: string | null) {
+  if (!iso) {
+    return "--:--";
+  }
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) {
+    return "--:--";
+  }
+  const today = new Date();
+  if (date.toDateString() === today.toDateString()) {
+    return formatClock(iso);
+  }
+  return date.toLocaleString(dateLocale(), {
+    month: "short",
+    day: "numeric",
+    year: date.getFullYear() === today.getFullYear() ? undefined : "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 const opensAtLabel = computed(() => formatClock(opensAtIso.value));
+const opensAtWhen = computed(() => formatWhen(opensAtIso.value));
 const closesAtLabel = computed(() => formatClock(closesAtIso.value));
 
 const checkedInTeamCount = computed(
@@ -254,7 +280,10 @@ const myRosterCheckedInCount = computed(
 // tail of the un-confirmed players, recomputed as people check in, rather than
 // a fixed starter/substitute split the schema does not actually have.
 const myRosterRows = computed(() => {
-  let stillNeeded = Math.max(0, minPlayers.value - myRosterCheckedInCount.value);
+  let stillNeeded = Math.max(
+    0,
+    minPlayers.value - myRosterCheckedInCount.value,
+  );
   return myRoster.value.map((member) => {
     const checkedIn = !!member.checked_in_at;
     let state: "checked_in" | "waiting" | "not_needed";
@@ -320,8 +349,7 @@ const canCheckInSelf = computed(() => {
 });
 
 const registrationOpen = computed(
-  () =>
-    props.tournament?.status === e_tournament_status_enum.RegistrationOpen,
+  () => props.tournament?.status === e_tournament_status_enum.RegistrationOpen,
 );
 
 // An organizer watching a Captains-mode window is reading the field, not being
@@ -352,7 +380,9 @@ const openHint = computed(() => {
     });
   }
   if (isObserver.value && !isAdminMode.value) {
-    return t("tournament.check_in.observer_hint", { time: closesAtLabel.value });
+    return t("tournament.check_in.observer_hint", {
+      time: closesAtLabel.value,
+    });
   }
   if (isPlayersMode.value) {
     return t("tournament.check_in.players_hint", { count: minPlayers.value });
@@ -597,7 +627,7 @@ async function checkIn(teamId?: string | null) {
             class="mb-1 mt-[0.6rem] font-sans text-[1.05rem] font-bold tracking-[0.01em] text-foreground"
           >
             {{
-              $t("tournament.check_in.opens_at_heading", { time: opensAtLabel })
+              $t("tournament.check_in.opens_at_heading", { time: opensAtWhen })
             }}
           </h3>
           <p class="text-[0.8rem] text-muted-foreground">
@@ -624,7 +654,9 @@ async function checkIn(teamId?: string | null) {
     <template v-else-if="state === 'open'">
       <div class="flex flex-wrap items-center justify-between gap-5">
         <div class="min-w-0">
-          <TournamentChip :tone="isObserver && !isAdminMode ? 'muted' : 'amber'">
+          <TournamentChip
+            :tone="isObserver && !isAdminMode ? 'muted' : 'amber'"
+          >
             {{ openChip }}
           </TournamentChip>
           <h3

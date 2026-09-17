@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
+import { dateLocale } from "~/utilities/dateLocale";
 
 const props = withDefaults(
   defineProps<{
@@ -33,10 +34,19 @@ const now = ref(Date.now());
 let ticker: ReturnType<typeof setInterval> | null = null;
 let rollTimer: ReturnType<typeof setTimeout> | null = null;
 
-onMounted(() => {
+const DAY_SECONDS = 86400;
+
+function startTicker(intervalMs: number) {
+  if (ticker) {
+    clearInterval(ticker);
+  }
   ticker = setInterval(() => {
     now.value = Date.now();
-  }, 1000);
+  }, intervalMs);
+}
+
+onMounted(() => {
+  startTicker(coarse.value ? 60_000 : 1000);
 });
 
 onBeforeUnmount(() => {
@@ -65,9 +75,38 @@ const remaining = computed(() => {
   return Math.max(0, Math.floor((at - now.value) / 1000));
 });
 
+// A match check-in is fifteen minutes, so H:MM:SS always reads as a clock. The
+// same readout is reused for a tournament check-in window that can open weeks
+// out, where the clock degenerates into an unreadable "1390:29:38". Past a day
+// the countdown stops being a clock and becomes a distance: days and hours,
+// and no seconds -- nothing about a two-month wait is per-second news.
+const coarse = computed(
+  () => remaining.value !== null && remaining.value >= DAY_SECONDS,
+);
+
+// Intl carries the unit suffix per locale ("57d", "57 j", "57天"), which keeps
+// this out of the translation files entirely.
+function formatUnit(value: number, unit: "day" | "hour") {
+  try {
+    return new Intl.NumberFormat(dateLocale(), {
+      style: "unit",
+      unit,
+      unitDisplay: "narrow",
+    }).format(value);
+  } catch {
+    return `${value}${unit === "day" ? "d" : "h"}`;
+  }
+}
+
 const label = computed(() => {
   if (remaining.value === null) {
     return null;
+  }
+
+  if (coarse.value) {
+    const days = Math.floor(remaining.value / DAY_SECONDS);
+    const hours = Math.floor((remaining.value % DAY_SECONDS) / 3600);
+    return `${formatUnit(days, "day")} ${formatUnit(hours, "hour")}`;
   }
 
   const hours = Math.floor(remaining.value / 3600);
@@ -77,6 +116,15 @@ const label = computed(() => {
   return hours > 0
     ? `${hours}:${minutes.toString().padStart(2, "0")}:${seconds}`
     : `${minutes}:${seconds}`;
+});
+
+// Crossing back under a day swaps the readout from hourly to per-second, so
+// the ticker has to follow it -- otherwise the last day of the countdown ticks
+// once a minute, and the final seconds never move.
+watch(coarse, (isCoarse) => {
+  if (ticker) {
+    startTicker(isCoarse ? 60_000 : 1000);
+  }
 });
 
 // Strictly under a minute: at exactly 60 the readout still says "1:00", and an
@@ -93,7 +141,12 @@ const critical = computed(
 const rolling = ref(false);
 
 watch(
-  () => (remaining.value === null ? null : Math.floor(remaining.value / 60)),
+  () =>
+    remaining.value === null
+      ? null
+      : // In coarse mode the smallest digit on screen is the hour, so a
+        // per-minute roll would animate a value that never changed.
+        Math.floor(remaining.value / (coarse.value ? 3600 : 60)),
   (minute, previous) => {
     if (minute === null || previous === null || previous === undefined) {
       return;

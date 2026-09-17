@@ -611,14 +611,31 @@ import { $ } from "~/generated/zeus";
           <Fold :open="availableRegions.length > 1">
           <Card>
             <div class="p-6 space-y-6">
-              <SettingHeader>
-                {{ $t("match.options.advanced.region.title") }}
-              </SettingHeader>
+              <div class="flex justify-between items-center">
+                <SettingHeader>
+                  {{ $t("match.options.advanced.region.title") }}
+                </SettingHeader>
+                <div class="flex items-center gap-4" v-if="canSetLan">
+                  <span>{{
+                    $t("match.options.advanced.region.lan_match")
+                  }}</span>
+                  <Switch
+                    :model-value="form.values.lan"
+                    @update:model-value="
+                      (checked) => form.setFieldValue('lan', checked)
+                    "
+                  />
+                </div>
+              </div>
 
               <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <FormField v-slot="{ value, handleChange }" name="region_veto">
                   <FormItem>
-                    <Card class="cursor-pointer" @click="handleChange(!value)">
+                    <Card
+                      class="cursor-pointer"
+                      :class="{ 'cursor-not-allowed': form.values.lan }"
+                      @click="!form.values.lan && handleChange(!value)"
+                    >
                       <div class="flex flex-col space-y-3 p-4">
                         <div class="flex justify-between items-center">
                           <SettingHeader>{{
@@ -629,6 +646,7 @@ import { $ } from "~/generated/zeus";
                               class="pointer-events-none"
                               :model-value="value"
                               @update:model-value="handleChange"
+                              :disabled="form.values.lan"
                             />
                           </FormControl>
                         </div>
@@ -654,7 +672,9 @@ import { $ } from "~/generated/zeus";
                     </FormLabel>
 
                     <FormControl>
-                      <template v-if="!form.values.region_veto">
+                      <template
+                        v-if="form.values.lan || !form.values.region_veto"
+                      >
                         <Select v-model="select_single_region">
                           <FormControl>
                             <SelectTrigger>
@@ -664,7 +684,14 @@ import { $ } from "~/generated/zeus";
                                     'match.options.advanced.region.placeholder',
                                   )
                                 "
-                              />
+                              >
+                                <span v-if="selectedRegionDetails">
+                                  {{
+                                    selectedRegionDetails.description ||
+                                    selectedRegionDetails.value
+                                  }}
+                                </span>
+                              </SelectValue>
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
@@ -1056,6 +1083,7 @@ export default {
               // Advanced settings (5 overridable fields)
               tv_delay: z.number().min(0).max(120).default(115),
               veto_pick_timeout: z.number().min(0).max(600).default(60),
+              lan: z.boolean().default(false),
               region_veto: z.boolean().default(true),
               regions: z.string().array().default([]),
               check_in_setting: z
@@ -1177,9 +1205,27 @@ export default {
     },
     select_single_region: {
       handler(select_single_region) {
-        if (!this.form.values.region_veto) {
+        if (this.form.values.lan || !this.form.values.region_veto) {
           this.form.setFieldValue("regions", [select_single_region]);
         }
+      },
+    },
+    ["form.values.lan"]: {
+      handler(lan: boolean) {
+        this.form.setFieldValue("region_veto", !lan);
+        this.setDefaultRegion();
+      },
+    },
+    ["form.values.regions"]: {
+      immediate: true,
+      handler() {
+        this.syncLanFromRegions();
+      },
+    },
+    availableRegions: {
+      immediate: true,
+      handler() {
+        this.syncLanFromRegions();
       },
     },
     ["form.values.third_place_match"]: {
@@ -1269,10 +1315,32 @@ export default {
     availableRegions(): Region[] {
       return useApplicationSettingsStore().availableRegions;
     },
+    lanRegions(): Region[] {
+      return this.availableRegions.filter((region: Region) => {
+        return region.is_lan === true;
+      });
+    },
     regions(): Region[] {
       return this.availableRegions.filter((region: Region) => {
-        return region.is_lan === false;
+        return this.form.values.lan
+          ? region.is_lan === true
+          : region.is_lan === false;
       });
+    },
+    selectedRegionDetails(): Region | undefined {
+      if (!this.select_single_region) {
+        return undefined;
+      }
+      return this.availableRegions.find(
+        (region: Region) => region.value === this.select_single_region,
+      );
+    },
+    canSetLan(): boolean {
+      if (this.lanRegions.length === 0) {
+        return false;
+      }
+
+      return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
     },
     canSetCheckInSettings() {
       return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
@@ -1545,15 +1613,52 @@ export default {
       });
     },
     setDefaultRegion() {
-      const { region_veto } = this.form.values;
+      if (this.availableRegions.length === 0) {
+        return;
+      }
 
-      if (!region_veto && this.regions.length > 0) {
-        this.select_single_region = this.regions[0]?.value || null;
+      const { lan, region_veto } = this.form.values;
+
+      if ((lan || !region_veto) && this.regions.length > 0) {
+        const existing = this.form.values.regions?.[0];
+        const existingMatch = this.regions.find(
+          (region: Region) => region.value === existing,
+        );
+
+        this.select_single_region =
+          existingMatch?.value || this.regions[0]?.value || null;
+
         return;
       }
 
       this.select_single_region = null;
       this.form.setFieldValue("regions", []);
+    },
+    syncLanFromRegions() {
+      if (this.availableRegions.length === 0) {
+        return;
+      }
+
+      const selectedRegions = this.form.values.regions || [];
+      if (selectedRegions.length === 0) {
+        return;
+      }
+
+      const hasLan = selectedRegions.some((value: string) =>
+        this.lanRegions.some((lanRegion: Region) => lanRegion.value === value),
+      );
+
+      if (hasLan && !this.form.values.lan) {
+        this.form.setFieldValue("lan", true);
+        return;
+      }
+
+      if (
+        (this.form.values.lan || !this.form.values.region_veto) &&
+        !this.select_single_region
+      ) {
+        this.select_single_region = selectedRegions[0];
+      }
     },
     hasAdvancedSettingsChanged() {
       if (!this.tournament) {

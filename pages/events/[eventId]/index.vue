@@ -32,6 +32,8 @@ import EventTeamsPanel from "~/components/events/EventTeamsPanel.vue";
 import EventOverview from "~/components/events/EventOverview.vue";
 import EventBannerUpload from "~/components/events/EventBannerUpload.vue";
 import ManageSection from "~/components/common/ManageSection.vue";
+import TournamentCard from "~/components/tournament/TournamentCard.vue";
+import { tournamentStatusVariant } from "~/components/tournament/tournamentCard";
 import { useEventMatches } from "~/composables/useEventMatches";
 import {
   tacticalSectionLabelClasses,
@@ -111,14 +113,6 @@ const {
   setPerPage: setMatchesPerPage,
   refetch: refetchEventMatches,
 } = useEventMatches(eventIdRef);
-
-// Tournament status enum values are readable identifiers (e.g. "Live",
-// "RegistrationOpen") without a dedicated i18n table for this trimmed card
-// list, so just space out the PascalCase for display.
-function formatTournamentStatus(status?: string | null): string {
-  if (!status) return "";
-  return status.replace(/([a-z])([A-Z])/g, "$1 $2");
-}
 </script>
 
 <template>
@@ -405,33 +399,16 @@ function formatTournamentStatus(status?: string | null): string {
                 </p>
               </Empty>
 
-              <div v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                <NuxtLink
-                  v-for="entry in eventTournamentEntries"
+              <div v-else class="space-y-4">
+                <TournamentCard
+                  v-for="(entry, index) in eventTournamentEntries"
                   :key="entry.tournament_id"
-                  :to="{
-                    name: 'tournaments-tournamentId',
-                    params: { tournamentId: entry.tournament.id },
-                  }"
-                  class="block rounded-md border border-border/70 bg-card/40 p-4 transition-colors duration-150 hover:border-[hsl(var(--tac-amber)/0.4)] hover:bg-card/60"
-                >
-                  <div class="flex items-center justify-between gap-2">
-                    <Badge variant="outline">
-                      {{ formatTournamentStatus(entry.tournament.status) }}
-                    </Badge>
-                    <span
-                      v-if="formatEventDate(entry.tournament.start)"
-                      class="text-xs text-muted-foreground"
-                    >
-                      {{ formatEventDate(entry.tournament.start) }}
-                    </span>
-                  </div>
-                  <h3
-                    class="mt-2 truncate font-sans text-base font-bold text-foreground"
-                  >
-                    {{ entry.tournament.name }}
-                  </h3>
-                </NuxtLink>
+                  :tournament="entry.tournament"
+                  :status-variant="
+                    tournamentStatusVariant(entry.tournament.status)
+                  "
+                  :priority="index === 0"
+                />
               </div>
             </div>
           </PageTransition>
@@ -540,6 +517,7 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, order_by, e_player_roles_enum } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { simpleEventFields } from "~/graphql/simpleEventFields";
+import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
 import { eventMediaUrl } from "~/composables/useEventMediaUpload";
 import { toast } from "@/components/ui/toast";
 
@@ -563,11 +541,11 @@ const eventSubscription = typedGql("subscription")({
         {},
         {
           tournament_id: true,
+          // The full card field set: the event's tournaments render with the
+          // same TournamentCard the /tournaments and /watch lists use.
           tournament: {
-            id: true,
-            name: true,
+            ...simpleTournamentFields,
             status: true,
-            start: true,
             teams: [
               {},
               {

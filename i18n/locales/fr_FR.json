@@ -6530,6 +6530,7 @@
       "loading_more": "Chargement…",
       "ineligible": {
         "in_tournament": "Déjà inscrite à ce tournoi.",
+        "owner_in_tournament": "Son propriétaire a déjà une équipe dans ce tournoi.",
         "in_season": "Déjà inscrite pour cette saison.",
         "tournament_organizer": "Déjà organisatrice de ce tournoi.",
         "in_event": "Déjà rattachée à cet événement.",

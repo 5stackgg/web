@@ -6530,6 +6530,7 @@
       "loading_more": "Weitere werden geladen …",
       "ineligible": {
         "in_tournament": "Bereits in diesem Turnier gemeldet.",
+        "owner_in_tournament": "Der Besitzer hat bereits ein Team in diesem Turnier.",
         "in_season": "Bereits für diese Saison registriert.",
         "tournament_organizer": "Bereits Organisator dieses Turniers.",
         "in_event": "Bereits diesem Event zugeordnet.",

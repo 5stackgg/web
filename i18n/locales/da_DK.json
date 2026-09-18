@@ -6530,6 +6530,7 @@
       "loading_more": "Indlæser flere…",
       "ineligible": {
         "in_tournament": "Allerede tilmeldt denne turnering.",
+        "owner_in_tournament": "Ejeren har allerede et hold i denne turnering.",
         "in_season": "Allerede tilmeldt denne sæson.",
         "tournament_organizer": "Allerede arrangør af denne turnering.",
         "in_event": "Allerede knyttet til denne begivenhed.",

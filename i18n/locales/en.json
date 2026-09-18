@@ -6530,6 +6530,7 @@
       "loading_more": "Loading more...",
       "ineligible": {
         "in_tournament": "Already entered in this tournament.",
+        "owner_in_tournament": "Its owner already has a team in this tournament.",
         "in_season": "Already registered for this season.",
         "tournament_organizer": "Already an organizer for this tournament.",
         "in_event": "Already attached to this event.",

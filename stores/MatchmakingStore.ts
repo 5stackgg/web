@@ -13,6 +13,7 @@ import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { playerFields } from "~/graphql/playerFields";
 import { isInCs2 } from "~/utilities/cs2Presence";
+import type { RegionStats } from "~/utilities/matchmakingPartySize";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { setActiveHub } from "~/composables/useHubState";
 
@@ -63,9 +64,7 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     confirmation: undefined,
   });
 
-  const regionStats = ref<
-    Partial<Record<string, Partial<Record<e_match_types_enum, number[]>>>>
-  >({});
+  const regionStats = ref<RegionStats>({});
 
   const queryPlayers = async () => {
     const steamIds = onlinePlayerSteamIds.value;

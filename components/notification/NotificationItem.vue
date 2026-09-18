@@ -132,32 +132,17 @@ onBeforeUnmount(() => {
       {{ notification.title }}
     </h3>
 
-    <template v-if="notification.type !== 'NameChangeRequest'">
-      <p
-        class="[&_a]:text-[hsl(var(--tac-amber))] [&_a]:underline [&_a:hover]:text-[hsl(var(--tac-amber)/0.8)]"
-        :class="[
-          'text-sm mb-2',
-          notification.is_read
-            ? 'text-muted-foreground/70'
-            : 'text-muted-foreground',
-        ]"
-      >
-        <NotificationMessage :html="notification.message" />
-      </p>
-    </template>
-    <template v-else>
-      <p
-        class="[&_a]:text-[hsl(var(--tac-amber))] [&_a]:underline [&_a:hover]:text-[hsl(var(--tac-amber)/0.8)]"
-        :class="[
-          'text-sm mb-2',
-          notification.is_read
-            ? 'text-muted-foreground/70'
-            : 'text-muted-foreground',
-        ]"
-      >
-        {{ notification.message }}
-      </p>
-    </template>
+    <p
+      class="[&_a]:text-[hsl(var(--tac-amber))] [&_a]:underline [&_a:hover]:text-[hsl(var(--tac-amber)/0.8)]"
+      :class="[
+        'text-sm mb-2',
+        notification.is_read
+          ? 'text-muted-foreground/70'
+          : 'text-muted-foreground',
+      ]"
+    >
+      <NotificationMessage :html="notification.message" />
+    </p>
 
     <NotificationContext
       v-if="

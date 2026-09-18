@@ -3794,7 +3794,8 @@
       "no_events_description": "Ahora mismo no hay eventos que mostrar. Vuelve pronto.",
       "live_now": "En directo",
       "upcoming": "Próximos",
-      "past_events": "Eventos pasados"
+      "past_events": "Eventos pasados",
+      "show_more": "Ver más"
     },
     "manage_events": {
       "title": "Gestionar eventos",
@@ -5305,7 +5306,17 @@
       "step1": "Pulsa el botón «Compartir»",
       "step2": "Selecciona «Añadir a pantalla de inicio»",
       "tooltip": "Instalar app",
-      "button": "Instalar app"
+      "button": "Instalar app",
+      "android": {
+        "step1": "Abre el menú de tu navegador (⋮)",
+        "step2": "Selecciona «Instalar aplicación» o «Añadir a pantalla de inicio»",
+        "already_installed": "¿Ya la tienes instalada? Ábrela desde tu pantalla de inicio."
+      },
+      "in_app": {
+        "description": "Las apps no se pueden instalar desde dentro de otra app. Abre primero esta página en tu navegador.",
+        "step1": "Abre esta página en tu navegador desde el menú de esta app",
+        "step2": "En el menú de tu navegador (⋮), selecciona «Instalar aplicación» o «Añadir a pantalla de inicio»"
+      }
     }
   },
   "roster_picker": {
@@ -5711,6 +5722,11 @@
       "negotiated_scheduling": {
         "label": "Programación negociada",
         "description": "Los capitanes proponen y acuerdan los horarios de las partidas (con ventanas por fase opcionales), en lugar de que las partidas empiecen automáticamente."
+      },
+      "substitutes_enabled": {
+        "label": "Permitir suplentes",
+        "description": "Los equipos pueden incluir suplentes en su roster y alinearlos además de los titulares. Si se desactiva, los rosters y las partidas se limitan a la alineación titular.",
+        "locked": "Los suplentes no se pueden desactivar una vez cerradas las inscripciones."
       },
       "logo": {
         "label": "Logo"
@@ -7622,6 +7638,7 @@
     "hold_to_show_scoreboard": "Mantén pulsado para ver el marcador",
     "close_popout": "Cerrar ventana aparte",
     "click_to_view_tournament": "Haz clic para ver el torneo",
+    "click_to_view_award": "Haz clic para ver el premio",
     "auto_clip": "Clip automático",
     "create_clip": "Crear clip",
     "reload_demo": "Recargar demo"
@@ -8225,7 +8242,10 @@
     "min_teams_number": "el mínimo de equipos debe ser un número",
     "max_teams_number": "el máximo de equipos debe ser un número",
     "max_teams_gt_min": "el máximo de equipos debe ser mayor que el mínimo",
-    "min_max_teams_min_value": "el mínimo y el máximo de equipos deben ser al menos 3 en todos contra todos, y 4 en el resto",
+    "min_teams_min_value": "esta fase necesita al menos {count} equipos",
+    "max_teams_previous_stage": "la fase {stage} puede clasificar como máximo {count} equipos",
+    "max_teams_next_stage": "esta fase debe tener al menos {count} equipos para llenar la fase {stage}",
+    "groups_next_stage_min": "el mínimo de equipos de la fase {stage} debe repartirse por igual en {groups} grupos",
     "team_owner_required": "el propietario del equipo es obligatorio",
     "team_name_required": "el nombre del equipo es obligatorio",
     "short_name_required": "el nombre corto es obligatorio",

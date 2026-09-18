@@ -3794,7 +3794,8 @@
       "no_events_description": "Al momento non ci sono eventi da mostrare. Torna a controllare più avanti.",
       "live_now": "Live ora",
       "upcoming": "In arrivo",
-      "past_events": "Eventi passati"
+      "past_events": "Eventi passati",
+      "show_more": "Mostra altri"
     },
     "manage_events": {
       "title": "Gestisci eventi",
@@ -5305,7 +5306,17 @@
       "step1": "Premi il pulsante \"Condividi\"",
       "step2": "Seleziona \"Aggiungi a Home\"",
       "tooltip": "Installa app",
-      "button": "Installa app"
+      "button": "Installa app",
+      "android": {
+        "step1": "Apri il menu del browser (⋮)",
+        "step2": "Seleziona \"Installa app\" o \"Aggiungi a schermata Home\"",
+        "already_installed": "Già installata? Aprila invece dalla schermata Home."
+      },
+      "in_app": {
+        "description": "Le app non possono essere installate dall'interno di un'altra app. Apri prima questa pagina nel tuo browser.",
+        "step1": "Apri questa pagina nel tuo browser dal menu di questa app",
+        "step2": "Nel menu del browser (⋮), seleziona \"Installa app\" o \"Aggiungi a schermata Home\""
+      }
     }
   },
   "roster_picker": {
@@ -5711,6 +5722,11 @@
       "negotiated_scheduling": {
         "label": "Pianificazione concordata",
         "description": "I capitani dei team propongono e concordano gli orari dei match (con finestre opzionali per fase), invece di far partire i match automaticamente."
+      },
+      "substitutes_enabled": {
+        "label": "Consenti riserve",
+        "description": "I team possono inserire nel roster e schierare riserve oltre ai titolari. Se disattivato, roster e match sono limitati ai titolari.",
+        "locked": "Le riserve non possono essere disattivate dopo la chiusura delle iscrizioni."
       },
       "logo": {
         "label": "Logo"
@@ -7622,6 +7638,7 @@
     "hold_to_show_scoreboard": "Tieni premuto per mostrare il tabellone",
     "close_popout": "Chiudi finestra separata",
     "click_to_view_tournament": "Clicca per vedere il torneo",
+    "click_to_view_award": "Clicca per vedere il premio",
     "auto_clip": "Clip automatica",
     "create_clip": "Crea clip",
     "reload_demo": "Ricarica demo"
@@ -8225,7 +8242,10 @@
     "min_teams_number": "il numero minimo di team deve essere un numero",
     "max_teams_number": "il numero massimo di team deve essere un numero",
     "max_teams_gt_min": "il numero massimo di team deve essere maggiore del minimo",
-    "min_max_teams_min_value": "il numero minimo e massimo di team deve essere almeno 3 per il girone all'italiana, 4 negli altri casi",
+    "min_teams_min_value": "questa fase richiede almeno {count} team",
+    "max_teams_previous_stage": "la fase {stage} può qualificare al massimo {count} team",
+    "max_teams_next_stage": "questa fase deve contenere almeno {count} team per riempire la fase {stage}",
+    "groups_next_stage_min": "il numero minimo di team della fase {stage} deve dividersi equamente in {groups} gironi",
     "team_owner_required": "il proprietario del team è obbligatorio",
     "team_name_required": "il nome del team è obbligatorio",
     "short_name_required": "il nome breve è obbligatorio",

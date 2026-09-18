@@ -3794,7 +3794,8 @@
       "no_events_description": "현재 표시할 이벤트가 없습니다. 나중에 다시 확인해 주세요.",
       "live_now": "진행 중",
       "upcoming": "예정",
-      "past_events": "지난 이벤트"
+      "past_events": "지난 이벤트",
+      "show_more": "더 보기"
     },
     "manage_events": {
       "title": "이벤트 관리",
@@ -5305,7 +5306,17 @@
       "step1": "'공유' 버튼을 누르세요",
       "step2": "'홈 화면에 추가'를 선택하세요",
       "tooltip": "앱 설치",
-      "button": "앱 설치"
+      "button": "앱 설치",
+      "android": {
+        "step1": "브라우저 메뉴(⋮)를 여세요",
+        "step2": "'앱 설치' 또는 '홈 화면에 추가'를 선택하세요",
+        "already_installed": "이미 설치하셨나요? 홈 화면에서 여세요."
+      },
+      "in_app": {
+        "description": "다른 앱 안에서는 앱을 설치할 수 없습니다. 먼저 브라우저에서 이 페이지를 여세요.",
+        "step1": "이 앱의 메뉴에서 브라우저로 이 페이지를 여세요",
+        "step2": "브라우저 메뉴(⋮)에서 '앱 설치' 또는 '홈 화면에 추가'를 선택하세요"
+      }
     }
   },
   "roster_picker": {
@@ -5711,6 +5722,11 @@
       "negotiated_scheduling": {
         "label": "협의 일정 조율",
         "description": "매치가 자동으로 시작되는 대신, 팀장들이 매치 시간을 제안하고 합의합니다(스테이지별 기간 설정 가능)."
+      },
+      "substitutes_enabled": {
+        "label": "교체 선수 허용",
+        "description": "팀이 주전 외에 교체 선수를 로스터에 등록하고 출전시킬 수 있습니다. 비활성화하면 로스터와 경기가 주전 라인업으로 제한됩니다.",
+        "locked": "등록이 마감된 후에는 교체 선수를 끌 수 없습니다."
       },
       "logo": {
         "label": "로고"
@@ -7622,6 +7638,7 @@
     "hold_to_show_scoreboard": "누르고 있으면 스코어보드 표시",
     "close_popout": "팝아웃 닫기",
     "click_to_view_tournament": "클릭하여 토너먼트 보기",
+    "click_to_view_award": "클릭하여 어워드 보기",
     "auto_clip": "자동 클립",
     "create_clip": "클립 생성",
     "reload_demo": "데모 다시 불러오기"
@@ -8225,7 +8242,10 @@
     "min_teams_number": "최소 팀 수는 숫자여야 합니다",
     "max_teams_number": "최대 팀 수는 숫자여야 합니다",
     "max_teams_gt_min": "최대 팀 수는 최소 팀 수보다 커야 합니다",
-    "min_max_teams_min_value": "최소/최대 팀 수는 라운드 로빈은 3, 그 외에는 4 이상이어야 합니다",
+    "min_teams_min_value": "이 스테이지에는 최소 {count}개 팀이 필요합니다",
+    "max_teams_previous_stage": "스테이지 {stage}에서는 최대 {count}개 팀만 진출할 수 있습니다",
+    "max_teams_next_stage": "스테이지 {stage}를 채우려면 이 스테이지에 최소 {count}개 팀이 있어야 합니다",
+    "groups_next_stage_min": "스테이지 {stage}의 최소 팀 수는 {groups}개 그룹으로 균등하게 나뉘어야 합니다",
     "team_owner_required": "팀 소유자는 필수입니다",
     "team_name_required": "팀 이름은 필수입니다",
     "short_name_required": "짧은 이름은 필수입니다",

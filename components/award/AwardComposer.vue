@@ -681,6 +681,7 @@ async function submit() {
               <PlayerSearch
                 v-else
                 :label="$t('ui_extras.select_player_placeholder')"
+                :self="true"
                 :selected="recipient.player"
                 @selected="(p) => (recipient.player = p)"
               />

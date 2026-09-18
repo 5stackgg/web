@@ -3,6 +3,7 @@ import gql from "graphql-tag";
 import { computed, ref, watch, onMounted } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { Users } from "lucide-vue-next";
+import { NuxtLink } from "#components";
 import AwardBadge from "~/components/award/AwardBadge.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { Skeleton } from "~/components/ui/skeleton";
@@ -343,7 +344,7 @@ const medalTable = computed<MedalRow[]>(() => {
                     size="sm"
                   />
                   <component
-                    :is="entityLinkTo(award) ? 'NuxtLink' : 'span'"
+                    :is="entityLinkTo(award) ? NuxtLink : 'span'"
                     :to="entityLinkTo(award) ?? undefined"
                     class="max-w-[6rem] truncate text-xs font-medium text-foreground"
                     :class="{
@@ -405,7 +406,7 @@ const medalTable = computed<MedalRow[]>(() => {
                   linkable
                 />
                 <component
-                  :is="row.teamId ? 'NuxtLink' : 'span'"
+                  :is="row.teamId ? NuxtLink : 'span'"
                   v-else
                   :to="
                     row.teamId

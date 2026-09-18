@@ -31,6 +31,21 @@ export function eventPhase(event: {
   return "upcoming";
 }
 
+// Must classify events exactly like eventPhase; change the two together.
+export function eventPhaseWhere<Now>(phase: EventPhase, now: Now) {
+  if (phase === "finished") {
+    return { ends_at: { _lt: now } };
+  }
+
+  const notEnded = {
+    _or: [{ ends_at: { _is_null: true } }, { ends_at: { _gte: now } }],
+  };
+  if (phase === "live") {
+    return { _and: [notEnded, { starts_at: { _lte: now } }] };
+  }
+  return { _and: [notEnded, { starts_at: { _gt: now } }] };
+}
+
 export function phaseBadgeVariant(
   phase: EventPhase,
 ): "default" | "secondary" | "destructive" | "outline" {

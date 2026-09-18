@@ -272,6 +272,36 @@ import { HeightMorph, Fold } from "~/components/ui/transitions";
           </FormItem>
         </FormField>
         </Fold>
+
+        <Fold :open="form.values.type !== 'Duel'">
+        <FormField
+          v-slot="{ value, handleChange }"
+          name="substitutes_enabled"
+        >
+          <FormItem>
+            <div
+              class="flex flex-row items-center justify-between cursor-pointer"
+              @click="handleChange(!value)"
+            >
+              <div class="space-y-0.5">
+                <SettingHeader>{{
+                  $t("tournament.form.substitutes_enabled.label")
+                }}</SettingHeader>
+                <FormDescription>{{
+                  $t("tournament.form.substitutes_enabled.description")
+                }}</FormDescription>
+              </div>
+              <FormControl>
+                <Switch
+                  class="pointer-events-none"
+                  :model-value="value"
+                  @update:model-value="handleChange"
+                />
+              </FormControl>
+            </div>
+          </FormItem>
+        </FormField>
+        </Fold>
       </MatchOptions>
     </div>
     </Transition>
@@ -365,6 +395,7 @@ export default {
               categories: z.string().array().default([]),
               auto_start: z.boolean().default(true),
               negotiated_scheduling: z.boolean().default(false),
+              substitutes_enabled: z.boolean().default(true),
               ...registrationSchemaShape(this),
             },
             useApplicationSettingsStore().settings,
@@ -561,6 +592,7 @@ export default {
                   scheduling_mode: form.negotiated_scheduling
                     ? "negotiated"
                     : "auto",
+                  substitutes_enabled: form.substitutes_enabled,
                   ...registrationColumns(form),
                   options: {
                     data: setupOptionsSetMutation(!!form.map_pool_id),

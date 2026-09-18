@@ -2,16 +2,16 @@
 import { computed, ref, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { ArrowRight } from "lucide-vue-next";
-import { Badge } from "@/components/ui/badge";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import HighlightCard from "~/components/clips/HighlightCard.vue";
 import EventPlayerProfile from "~/components/events/EventPlayerProfile.vue";
 import EventMediaRail from "~/components/events/EventMediaRail.vue";
+import TournamentCard from "~/components/tournament/TournamentCard.vue";
+import { tournamentStatusVariant } from "~/components/tournament/tournamentCard";
 import type { Clip } from "~/types/clip";
 import { $, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { matchClipFields } from "~/graphql/matchClip";
-import { formatEventDate } from "~/utilities/eventDisplay";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
@@ -211,11 +211,6 @@ const tournamentEntries = computed(() =>
 function formatDecimal(value: unknown, digits: number): string {
   const num = Number(value);
   return Number.isFinite(num) ? num.toFixed(digits) : "-";
-}
-
-function formatTournamentStatus(status?: string | null): string {
-  if (!status) return "";
-  return status.replace(/([a-z])([A-Z])/g, "$1 $2");
 }
 
 const RANK_STYLES = [
@@ -418,33 +413,13 @@ const RANK_TEXT = [
         {{ $t("event.tabs.tournaments") }}
       </div>
 
-      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <NuxtLink
+      <div class="space-y-4">
+        <TournamentCard
           v-for="entry in tournamentEntries"
           :key="entry.tournament_id"
-          :to="{
-            name: 'tournaments-tournamentId',
-            params: { tournamentId: entry.tournament.id },
-          }"
-          class="block rounded-md border border-border/70 bg-card/40 p-4 transition-colors duration-150 hover:border-[hsl(var(--tac-amber)/0.4)] hover:bg-card/60"
-        >
-          <div class="flex items-center justify-between gap-2">
-            <Badge variant="outline">
-              {{ formatTournamentStatus(entry.tournament.status) }}
-            </Badge>
-            <span
-              v-if="formatEventDate(entry.tournament.start)"
-              class="text-xs text-muted-foreground"
-            >
-              {{ formatEventDate(entry.tournament.start) }}
-            </span>
-          </div>
-          <h3
-            class="mt-2 truncate font-sans text-base font-bold text-foreground"
-          >
-            {{ entry.tournament.name }}
-          </h3>
-        </NuxtLink>
+          :tournament="entry.tournament"
+          :status-variant="tournamentStatusVariant(entry.tournament.status)"
+        />
       </div>
     </section>
   </div>

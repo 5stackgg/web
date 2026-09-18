@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { Settings, CircleHelp, LogOut, ChevronRight } from "lucide-vue-next";
+import {
+  Settings,
+  CircleHelp,
+  LogOut,
+  ChevronRight,
+  MonitorDown,
+} from "lucide-vue-next";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,6 +14,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import InstallPWADrawer from "~/components/InstallPWADrawer.vue";
+import { usePwaInstall } from "~/composables/usePwaInstall";
 import { useAuthStore } from "~/stores/AuthStore";
 
 // One menu, both shells. TopNav (players) and LeftNav (organizers) used to
@@ -18,11 +26,14 @@ withDefaults(
     side?: "top" | "right" | "bottom" | "left";
     align?: "start" | "center" | "end";
     sideOffset?: number;
+    // Off by default: LeftNav already has its own install button.
+    showInstall?: boolean;
   }>(),
   {
     side: "bottom",
     align: "end",
     sideOffset: 8,
+    showInstall: false,
   },
 );
 
@@ -31,6 +42,9 @@ const open = defineModel<boolean>("open", { default: false });
 const emit = defineEmits<{ logout: [] }>();
 
 const me = computed(() => useAuthStore().me);
+
+const { canInstall, manualInstall, showInstructions, install } =
+  usePwaInstall();
 
 const route = useRoute();
 
@@ -137,6 +151,16 @@ const chevronClasses =
         </NuxtLink>
       </DropdownMenuItem>
 
+      <DropdownMenuItem
+        v-if="showInstall && canInstall"
+        :class="rowClasses"
+        @click="install"
+      >
+        <MonitorDown :class="iconClasses" />
+        {{ $t("pwa.install.button") }}
+        <ChevronRight :class="chevronClasses" />
+      </DropdownMenuItem>
+
       <div class="mx-3 mt-1 h-px bg-border/60"></div>
 
       <DropdownMenuItem :class="logoutClasses" @click="emit('logout')">
@@ -146,4 +170,11 @@ const chevronClasses =
       </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
+
+  <!-- Outside the menu, which closes on select and would unmount the drawer. -->
+  <InstallPWADrawer
+    v-if="showInstall"
+    v-model:open="showInstructions"
+    :platform="manualInstall"
+  />
 </template>

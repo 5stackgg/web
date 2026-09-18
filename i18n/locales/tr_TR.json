@@ -3794,7 +3794,8 @@
       "no_events_description": "Şu anda gösterilecek etkinlik yok. Daha sonra tekrar kontrol et.",
       "live_now": "Şu anda canlı",
       "upcoming": "Yaklaşan",
-      "past_events": "Geçmiş etkinlikler"
+      "past_events": "Geçmiş etkinlikler",
+      "show_more": "Daha fazla göster"
     },
     "manage_events": {
       "title": "Etkinlikleri yönet",
@@ -5305,7 +5306,17 @@
       "step1": "\"Paylaş\" düğmesine bas",
       "step2": "\"Ana Ekrana Ekle\"yi seç",
       "tooltip": "Uygulamayı yükle",
-      "button": "Uygulamayı yükle"
+      "button": "Uygulamayı yükle",
+      "android": {
+        "step1": "Tarayıcının menüsünü aç (⋮)",
+        "step2": "\"Uygulamayı yükle\" veya \"Ana ekrana ekle\"yi seç",
+        "already_installed": "Zaten yüklü mü? Bunun yerine ana ekrandan aç."
+      },
+      "in_app": {
+        "description": "Uygulamalar başka bir uygulamanın içinden yüklenemez. Önce bu sayfayı tarayıcında aç.",
+        "step1": "Bu uygulamanın menüsünden bu sayfayı tarayıcında aç",
+        "step2": "Tarayıcının menüsünde (⋮) \"Uygulamayı yükle\" veya \"Ana ekrana ekle\"yi seç"
+      }
     }
   },
   "roster_picker": {
@@ -5711,6 +5722,11 @@
       "negotiated_scheduling": {
         "label": "Anlaşmalı Planlama",
         "description": "Maçların otomatik başlaması yerine, takım kaptanları maç saatlerini önerip üzerinde anlaşır (etap bazlı isteğe bağlı pencerelerle)."
+      },
+      "substitutes_enabled": {
+        "label": "Yedeklere izin ver",
+        "description": "Takımlar başlangıç kadrosunun ötesinde yedekleri kadroya ekleyip oynatabilir. Kapalıyken kadrolar ve maçlar başlangıç kadrosuyla sınırlıdır.",
+        "locked": "Kayıtlar kapandıktan sonra yedekler kapatılamaz."
       },
       "logo": {
         "label": "Logo"
@@ -7622,6 +7638,7 @@
     "hold_to_show_scoreboard": "Skor tablosunu göstermek için basılı tut",
     "close_popout": "Ayrı pencereyi kapat",
     "click_to_view_tournament": "Turnuvayı görüntülemek için tıkla",
+    "click_to_view_award": "Ödülü görüntülemek için tıkla",
     "auto_clip": "Otomatik klip",
     "create_clip": "Klip oluştur",
     "reload_demo": "Demoyu yeniden yükle"
@@ -8225,7 +8242,10 @@
     "min_teams_number": "minimum takım sayısı bir sayı olmalı",
     "max_teams_number": "maksimum takım sayısı bir sayı olmalı",
     "max_teams_gt_min": "maksimum takım sayısı minimumdan fazla olmalı",
-    "min_max_teams_min_value": "minimum ve maksimum takım sayısı Lig Usulü için en az 3, diğer formatlarda en az 4 olmalı",
+    "min_teams_min_value": "bu etap en az {count} takım gerektirir",
+    "max_teams_previous_stage": "etap {stage} en fazla {count} takım çıkarabilir",
+    "max_teams_next_stage": "etap {stage}'i doldurmak için bu etap en az {count} takım almalı",
+    "groups_next_stage_min": "etap {stage}'in minimum takım sayısı {groups} gruba eşit bölünebilmeli",
     "team_owner_required": "takım sahibi gerekli",
     "team_name_required": "takım adı gerekli",
     "short_name_required": "kısa ad gerekli",

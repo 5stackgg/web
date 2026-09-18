@@ -112,8 +112,12 @@ const tournamentHeroNameRowClasses = "flex min-w-0 items-center";
 const tournamentHeroNameClasses =
   "relative m-0 min-w-0 font-sans text-[clamp(1.75rem,4vw,3rem)] font-bold uppercase leading-[0.95] tracking-[0.02em] [font-stretch:80%]";
 const tournamentHeroNameMainClasses = "relative text-foreground";
+// The echo is the same text, offset and outlined, so it has to break exactly
+// where the title does -- `left-5/right-[-5px]` hands it the title's own width
+// for that. Held to one line it stopped wrapping with the title and ran out
+// across the banner instead.
 const tournamentHeroNameGhostClasses =
-  "pointer-events-none absolute left-[5px] top-[5px] right-[-5px] overflow-hidden whitespace-nowrap text-transparent select-none [-webkit-text-stroke:1px_hsl(var(--tac-amber)_/_0.35)]";
+  "pointer-events-none absolute left-[5px] top-[5px] right-[-5px] text-transparent select-none [-webkit-text-stroke:1px_hsl(var(--tac-amber)_/_0.35)]";
 const tournamentHeroBadgesClasses = "flex flex-wrap gap-1.5";
 const tournamentHeroTagClasses =
   "inline-flex items-center rounded border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] px-[0.55rem] py-[0.2rem] font-mono text-[0.65rem] font-bold uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]";
@@ -683,6 +687,10 @@ function clearTeamEnterDelay(el: Element) {
               <MatchOptionsDisplay
                 :show-details-by-default="false"
                 :options="tournament.options"
+                :substitutes="
+                  tournament.max_players_per_lineup -
+                  tournament.min_players_per_lineup
+                "
               ></MatchOptionsDisplay>
             </ManageSection>
           </PageTransition>
@@ -1209,6 +1217,7 @@ export default {
               auto_start: true,
               scheduling_mode: true,
               awards_enabled: true,
+              substitutes_enabled: true,
               e_tournament_status: {
                 description: true,
               },

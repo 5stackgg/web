@@ -19,6 +19,7 @@ interface AwardGrant {
   id: string;
   placement?: number | null;
   placement_tier?: string | null;
+  source?: string | null;
   tournament_id?: string | null;
   team_id?: string | null;
   note?: string | null;
@@ -91,8 +92,12 @@ const placementLabelKey = computed(() => {
 
 const tierColor = computed(() => TIER_COLORS[tier.value]);
 
+const manual = computed(() => props.award.source === "manual");
+
 const formattedDate = computed(() => {
-  const iso = props.award.tournament?.start || props.award.created_at;
+  const iso = manual.value
+    ? props.award.created_at
+    : props.award.tournament?.start || props.award.created_at;
   if (!iso) return null;
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return null;
@@ -110,13 +115,22 @@ const tournamentType = computed(
   () => props.award.tournament?.stages?.[0]?.type || null,
 );
 
-const title = computed(
-  () =>
+const title = computed(() => {
+  if (manual.value) {
+    return (
+      props.award.tournament_award?.custom_name ||
+      props.award.award?.name ||
+      tournamentName.value ||
+      ""
+    );
+  }
+  return (
     props.award.tournament_award?.custom_name ||
     tournamentName.value ||
     props.award.award?.name ||
-    "",
-);
+    ""
+  );
+});
 
 const awardTeam = computed(() => {
   const team = props.award.team || props.award.tournament_team?.team || null;

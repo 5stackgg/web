@@ -67,6 +67,39 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
           </div>
         </FormItem>
       </FormField>
+
+      <FormField
+        v-if="form.values.type !== 'Duel'"
+        v-slot="{ value, handleChange }"
+        name="substitutes_enabled"
+      >
+        <FormItem>
+          <div
+            class="flex flex-row items-center justify-between"
+            :class="substitutesLocked ? 'cursor-not-allowed' : 'cursor-pointer'"
+            @click="!substitutesLocked && handleChange(!value)"
+          >
+            <div class="space-y-0.5">
+              <SettingHeader>{{
+                $t("tournament.form.substitutes_enabled.label")
+              }}</SettingHeader>
+              <FormDescription>{{
+                substitutesLocked
+                  ? $t("tournament.form.substitutes_enabled.locked")
+                  : $t("tournament.form.substitutes_enabled.description")
+              }}</FormDescription>
+            </div>
+            <FormControl>
+              <Switch
+                class="pointer-events-none"
+                :model-value="value"
+                :disabled="substitutesLocked"
+                @update:model-value="handleChange"
+              />
+            </FormControl>
+          </div>
+        </FormItem>
+      </FormField>
     </MatchOptions>
 
     <div class="pb-24"></div>
@@ -84,7 +117,11 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 import { useForm } from "vee-validate";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import { mapFields } from "~/graphql/mapGraphql";
-import { $, e_map_pool_types_enum } from "~/generated/zeus";
+import {
+  $,
+  e_map_pool_types_enum,
+  e_tournament_status_enum,
+} from "~/generated/zeus";
 import matchOptionsValidator from "~/utilities/match-options-validator";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { toast } from "@/components/ui/toast";
@@ -134,6 +171,7 @@ export default {
             {
               auto_start: z.boolean().default(true),
               negotiated_scheduling: z.boolean().default(false),
+              substitutes_enabled: z.boolean().default(true),
             },
             useApplicationSettingsStore().settings,
           ),
@@ -178,6 +216,15 @@ export default {
     },
   },
   computed: {
+    substitutesLocked() {
+      return (
+        this.tournament.substitutes_enabled &&
+        ![
+          e_tournament_status_enum.Setup,
+          e_tournament_status_enum.RegistrationOpen,
+        ].includes(this.tournament.status)
+      );
+    },
     defaultMapPool() {
       return this.map_pools?.find((pool) => {
         return pool.type === this.form.values.type;
@@ -196,6 +243,7 @@ export default {
         map_veto: true,
         auto_start: this.tournament.auto_start,
         negotiated_scheduling: this.tournament.scheduling_mode === "negotiated",
+        substitutes_enabled: this.tournament.substitutes_enabled,
       });
 
       setupOptions(this.form, this.tournament.options);
@@ -255,6 +303,7 @@ export default {
           variables: {
             auto_start: form.negotiated_scheduling ? false : form.auto_start,
             scheduling_mode: form.negotiated_scheduling ? "negotiated" : "auto",
+            substitutes_enabled: form.substitutes_enabled,
           },
           mutation: generateMutation({
             update_tournaments_by_pk: [
@@ -263,6 +312,7 @@ export default {
                 _set: {
                   auto_start: $("auto_start", "Boolean!"),
                   scheduling_mode: $("scheduling_mode", "String!"),
+                  substitutes_enabled: $("substitutes_enabled", "Boolean!"),
                 },
               },
               { __typename: true },

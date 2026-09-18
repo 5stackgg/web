@@ -108,22 +108,23 @@ const fieldName = `chat-message-${Math.random().toString(36).slice(2, 10)}`;
                   : 'flex items-center gap-2 p-2'
               "
             >
-              <Input
+              <Textarea
                 ref="inputRef"
+                rows="1"
                 :placeholder="activePlaceholder"
                 v-bind="componentField"
-                type="text"
                 autocomplete="off"
                 :name="fieldName"
                 data-1p-ignore="true"
                 data-lpignore="true"
                 data-bwignore="true"
                 data-form-type="other"
-                :class="
+                :class="[
+                  'min-h-0 resize-none py-1.5 leading-snug',
                   variant === 'global'
-                    ? 'flex-1 transition-all duration-200 focus:scale-[1.02]'
-                    : 'flex-1 resize-none border-0 shadow-none focus-visible:ring-0'
-                "
+                    ? 'flex-1 transition-[border-color,box-shadow] duration-200'
+                    : 'flex-1 border-0 shadow-none focus-visible:ring-0',
+                ]"
                 @keydown.enter="onEnter"
               />
               <Button
@@ -153,6 +154,7 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
 import * as z from "zod";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
+import { chatEnterAction } from "~/utilities/chatInputKeys";
 
 export interface ChatInputChannel {
   value: string;
@@ -184,6 +186,14 @@ export default {
     },
   },
   emits: ["sendMessage", "update:destination"],
+  watch: {
+    // Not @input: v-bind="componentField" already binds one, and a second
+    // would replace vee-validate's. Watching the value also covers a paste and
+    // the reset after sending.
+    "form.values.message"() {
+      void this.$nextTick(() => this.growToFit());
+    },
+  },
   data() {
     return {
       sending: false,
@@ -279,20 +289,33 @@ export default {
     // the other room without moving them -- the common case is a single team
     // callout in the middle of talking to everyone.
     onEnter(event: KeyboardEvent) {
-      if (!event.metaKey && !event.ctrlKey) {
+      const action = chatEnterAction(event);
+
+      if (action === "newline") {
         return;
       }
 
-      if (!this.otherChannelValue) {
-        return;
-      }
-
+      // The box is a textarea now, so nothing submits the form on its own.
       event.preventDefault();
-      this.sendMessage(this.otherChannelValue);
+
+      this.sendMessage(
+        action === "send-other" ? this.otherChannelValue : undefined,
+      );
+    },
+    // One line until the message needs more, then up to five.
+    growToFit() {
+      const field = this.$refs.inputRef?.$el ?? this.$refs.inputRef;
+
+      if (!field) {
+        return;
+      }
+
+      field.style.height = "auto";
+      field.style.height = `${Math.min(field.scrollHeight, 120)}px`;
     },
     sendMessage(destination?: string) {
-      const { message } = this.form.values;
-      if (!message || message?.length === 0) {
+      const message = this.form.values.message?.trim();
+      if (!message) {
         return;
       }
       this.$emit(

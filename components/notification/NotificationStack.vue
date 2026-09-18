@@ -190,22 +190,12 @@ function handleTopClick(event: MouseEvent) {
         </h3>
 
         <p
-          v-if="top.type !== 'NameChangeRequest'"
           class="[&_a]:text-[hsl(var(--tac-amber))] [&_a]:underline [&_a:hover]:text-[hsl(var(--tac-amber)/0.8)] text-sm mt-1 line-clamp-2"
           :class="
             top.is_read ? 'text-muted-foreground/70' : 'text-muted-foreground'
           "
         >
           <NotificationMessage :html="top.message" />
-        </p>
-        <p
-          v-else
-          class="text-sm mt-1 line-clamp-2"
-          :class="
-            top.is_read ? 'text-muted-foreground/70' : 'text-muted-foreground'
-          "
-        >
-          {{ top.message }}
         </p>
 
         <NotificationContext

@@ -1956,14 +1956,31 @@ const playerHeroTeamChipDotClasses =
                   v-if="canAddFriend"
                   type="button"
                   :class="[playerHeroAddFriendClasses, 'flex-1']"
-                  :disabled="addFriendPending"
+                  :disabled="friendActionPending"
                   @click="addAsFriend"
                 >
                   <UserPlus class="h-4 w-4" />
                   <span>{{ $t("player.status.add_friend") }}</span>
                 </button>
+                <button
+                  v-else-if="friendRelationship === 'incoming'"
+                  type="button"
+                  :class="[playerHeroAddFriendClasses, 'flex-1']"
+                  :disabled="friendActionPending"
+                  @click="acceptFriendRequest"
+                >
+                  <UserCheck class="h-4 w-4" />
+                  <span>{{ $t("matchmaking.friends.accept") }}</span>
+                </button>
                 <span
-                  v-else-if="isFriend"
+                  v-else-if="friendRelationship === 'outgoing'"
+                  :class="[playerHeroFriendBadgeClasses, 'flex-1']"
+                >
+                  <UserPlus class="h-3.5 w-3.5" />
+                  <span>{{ $t("matchmaking.friends.requested") }}</span>
+                </span>
+                <span
+                  v-else-if="friendRelationship === 'friend'"
                   :class="[playerHeroFriendBadgeClasses, 'flex-1']"
                 >
                   <UserCheck class="h-3.5 w-3.5" />
@@ -3257,7 +3274,6 @@ export default {
         };
       }>,
       editPlayerSheet: false,
-      addFriendPending: false,
     };
   },
   computed: {
@@ -3365,33 +3381,39 @@ export default {
         this.player.steam_id === this.me.steam_id
       );
     },
-    isFriend() {
-      if (!this.player) {
-        return false;
+    // none / outgoing / incoming / friend. A my_friends row on its own only
+    // means somebody asked, which is why this is not a boolean.
+    friendRelationship() {
+      if (!this.player?.steam_id) {
+        return "none";
       }
-      return !!useMatchmakingStore().friends.find((friend: any) => {
-        return friend.steam_id == this.player.steam_id;
-      });
+      return useFriendActions().relationship(this.player.steam_id);
+    },
+    friendActionPending() {
+      return (
+        !!this.player?.steam_id &&
+        useFriendActions().isBusy(this.player.steam_id)
+      );
     },
     canAddFriend() {
       return !!(
         this.me &&
         this.player?.steam_id &&
         !this.isSelfProfile &&
-        !this.isFriend
+        this.friendRelationship === "none"
       );
     },
     hasRightColumn() {
       return (
         this.isSelfProfile ||
         this.canAddFriend ||
-        this.isFriend ||
+        this.friendRelationship !== "none" ||
         this.canMessage
       );
     },
-    // Deliberately not `isFriend`, which matches any my_friends row including a
-    // still-pending request. The server only opens a conversation between
-    // accepted friends, so anything looser renders a button that fails.
+    // Deliberately not a plain my_friends lookup, which matches a still-pending
+    // request too. The server only opens a conversation between accepted
+    // friends, so anything looser renders a button that fails.
     canMessage() {
       return (
         !!this.player && useDirectMessages().canMessage(this.player.steam_id)
@@ -3503,20 +3525,12 @@ export default {
       });
     },
     async addAsFriend() {
-      if (!this.player?.steam_id || this.addFriendPending) return;
-      this.addFriendPending = true;
-      try {
-        await this.$apollo.mutate({
-          mutation: typedGql("mutation")({
-            insert_my_friends_one: [
-              { object: { steam_id: this.player.steam_id } },
-              { steam_id: true },
-            ],
-          }),
-        });
-      } finally {
-        this.addFriendPending = false;
-      }
+      if (!this.player?.steam_id || this.friendActionPending) return;
+      await useFriendActions().addFriend(this.player.steam_id);
+    },
+    async acceptFriendRequest() {
+      if (!this.player?.steam_id || this.friendActionPending) return;
+      await useFriendActions().acceptFriend(this.player.steam_id);
     },
     handleImageError(event) {
       const img = event.target;

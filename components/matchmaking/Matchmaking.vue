@@ -302,7 +302,7 @@ function releaseSwapHeight(el: Element): void {
                 </span>
                 <span
                   v-if="
-                    distinctInQueue(
+                    playersInQueue(
                       matchMakingQueueDetails.type,
                       matchMakingQueueDetails.regions,
                     ) > 0
@@ -310,7 +310,7 @@ function releaseSwapHeight(el: Element): void {
                   class="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/30 px-2.5 py-0.5 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground"
                 >
                   {{
-                    distinctInQueue(
+                    playersInQueue(
                       matchMakingQueueDetails.type,
                       matchMakingQueueDetails.regions,
                     )
@@ -378,14 +378,14 @@ function releaseSwapHeight(el: Element): void {
                   variant="secondary"
                   class="absolute top-2 right-2 px-2 py-0.5 text-[0.65rem] tracking-[0.12em] uppercase transition-opacity duration-200"
                   v-if="
-                    distinctInQueue(
+                    playersInQueue(
                       type.value,
                       preferredRegions.map((region) => region.value),
                     ) > 0
                   "
                 >
                   {{
-                    distinctInQueue(
+                    playersInQueue(
                       type.value,
                       preferredRegions.map((region) => region.value),
                     )
@@ -450,6 +450,7 @@ import { e_match_types_enum, e_match_status_enum } from "~/generated/zeus";
 import { toast } from "@/components/ui/toast";
 import {
   EXPECTED_PLAYERS,
+  playersInQueue as countPlayersInQueue,
   canPartyQueue,
 } from "~/utilities/matchmakingPartySize";
 
@@ -572,18 +573,8 @@ export default {
     canQueueType(type: e_match_types_enum): boolean {
       return canPartyQueue(type, this.partySize);
     },
-    distinctInQueue(type: e_match_types_enum, regionValues: string[]): number {
-      const lobbyIndexes = new Set<number>();
-      for (const regionValue of regionValues) {
-        const indexes = this.regionStats[regionValue]?.[type];
-        if (!indexes) {
-          continue;
-        }
-        for (const index of indexes) {
-          lobbyIndexes.add(index);
-        }
-      }
-      return lobbyIndexes.size;
+    playersInQueue(type: e_match_types_enum, regionValues: string[]): number {
+      return countPlayersInQueue(this.regionStats, type, regionValues);
     },
     getRegionlatencyResult(region: string):
       | {

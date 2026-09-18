@@ -14,7 +14,9 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 const MATCH_TYPES = ["MatchStatusChange", "MatchSupport", "MatchAbandoned"];
 const SERVER_TYPES = ["DedicatedServerStatus", "DedicatedServerRconStatus"];
 const NODE_TYPES = ["GameNodeStatus"];
-const PLAYER_TYPES = ["PlayerSanctioned"];
+// NameChangeRequest carries the requesting player's steam id, so an admin can
+// see who is asking without leaving the bell.
+const PLAYER_TYPES = ["PlayerSanctioned", "NameChangeRequest"];
 const SCRIM_TYPES = [
   "ScrimRequestReceived",
   "ScrimRequestCountered",

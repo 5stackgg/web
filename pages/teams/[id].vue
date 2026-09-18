@@ -180,7 +180,7 @@ const teamHeroActionsClasses =
                     {{ $t("common.actions.delete") }}
                   </DropdownMenuItem>
                 </template>
-                <template v-if="isOnTeam">
+                <template v-if="isOnTeam && !isTeamOwner">
                   <DropdownMenuItem
                     class="text-destructive focus:text-destructive"
                     @click="leaveTeamAlertDialog = true"
@@ -697,6 +697,15 @@ export default {
       return !!this.team?.roster.some(({ player }) => {
         return player.steam_id === this.me?.steam_id;
       });
+    },
+    // The owner has to hand the team over before they can walk away from it,
+    // otherwise nobody left on the roster can manage it. The database enforces
+    // the same rule.
+    isTeamOwner() {
+      return (
+        !!this.me?.steam_id &&
+        String(this.team?.owner_steam_id) === String(this.me.steam_id)
+      );
     },
     isAdmin() {
       return useAuthStore().isAdmin;

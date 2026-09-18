@@ -29,3 +29,39 @@ export function canPartyQueue(
 
   return partySize <= expected / 2 || partySize === expected;
 }
+
+/**
+ * One lobby waiting in a region's queue, as the api broadcasts it. A lobby that
+ * queued for several regions carries the same `lobby` index in each of them.
+ */
+export interface QueuedLobbyStat {
+  lobby: number;
+  players: number;
+}
+
+export type RegionStats = Partial<
+  Record<string, Partial<Record<e_match_types_enum, QueuedLobbyStat[]>>>
+>;
+
+/**
+ * How many players are waiting for a match type across the given regions.
+ *
+ * Counts people, not parties: a queued trio is three players waiting. Lobbies
+ * are deduplicated by index, so a lobby queued in three regions is counted
+ * once rather than three times.
+ */
+export function playersInQueue(
+  regionStats: RegionStats,
+  type: e_match_types_enum,
+  regionValues: string[],
+): number {
+  const counted = new Map<number, number>();
+
+  for (const regionValue of regionValues) {
+    for (const queued of regionStats[regionValue]?.[type] ?? []) {
+      counted.set(queued.lobby, queued.players);
+    }
+  }
+
+  return [...counted.values()].reduce((total, players) => total + players, 0);
+}

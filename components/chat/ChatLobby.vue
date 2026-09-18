@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ChatHeader from "~/components/chat/ChatHeader.vue";
+import ChatParticipants from "~/components/chat/ChatParticipants.vue";
 import ChatMessages from "~/components/chat/ChatMessages.vue";
 import ChatInput from "~/components/chat/ChatInput.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
@@ -90,23 +91,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
         >
           {{ $t("chat.no_participants", "No one else is in this chat yet.") }}
         </div>
-        <ul v-else class="space-y-1.5">
-          <li
-            v-for="user in participants"
-            :key="(user as any).steam_id"
-            class="flex items-center gap-2"
-          >
-            <img
-              v-if="(user as any).avatar_url"
-              :src="(user as any).avatar_url"
-              alt=""
-              class="h-5 w-5 rounded-full"
-            />
-            <span class="truncate text-[11px]">
-              {{ (user as any).name }}
-            </span>
-          </li>
-        </ul>
+        <ChatParticipants v-else :participants="participants as any" />
       </div>
       <div
         v-if="!isMinimized"
@@ -272,23 +257,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
       >
         {{ $t("chat.no_participants", "No one else is in this chat yet.") }}
       </div>
-      <ul v-else class="space-y-1.5">
-        <li
-          v-for="user in participants"
-          :key="(user as any).steam_id"
-          class="flex items-center gap-2"
-        >
-          <img
-            v-if="(user as any).avatar_url"
-            :src="(user as any).avatar_url"
-            alt=""
-            class="h-5 w-5 rounded-full"
-          />
-          <span class="truncate text-[11px]">
-            {{ (user as any).name }}
-          </span>
-        </li>
-      </ul>
+      <ChatParticipants v-else :participants="participants as any" />
     </div>
     <div class="relative flex flex-1 min-h-0 flex-col gap-2">
       <!-- First message in an empty room dissolves the empty copy under the

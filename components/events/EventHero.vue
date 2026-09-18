@@ -45,17 +45,6 @@ onBeforeUnmount(() => {
   videoObserver?.disconnect();
 });
 
-// Deterministic gradient fallback so bannerless events still look intentional.
-const fallbackGradient = computed(() => {
-  const id = String(props.event.id);
-  let h = 0;
-  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) % 360;
-  const a = h;
-  const b = (h + 70) % 360;
-  const c = (h + 200) % 360;
-  return `radial-gradient(ellipse 55% 90% at 22% 40%, hsl(${a} 60% 40% / 0.85), transparent 60%), radial-gradient(ellipse 45% 80% at 70% 60%, hsl(${b} 55% 42% / 0.7), transparent 55%), radial-gradient(ellipse 40% 70% at 90% 25%, hsl(${c} 60% 45% / 0.6), transparent 55%), repeating-linear-gradient(-35deg, rgba(0,0,0,0.32) 0 20px, transparent 20px 40px), #14171c`;
-});
-
 // Mirror the event page's "Organized by" precedence: the creator (unless
 // hidden) followed by the co-organizers, deduped against the creator.
 const organizers = computed(() => {
@@ -112,11 +101,7 @@ const bottomStats = computed(() =>
       loop
       playsinline
     />
-    <div
-      v-else
-      class="absolute inset-0"
-      :style="{ background: fallbackGradient }"
-    ></div>
+    <div v-else aria-hidden="true" class="event-plate absolute inset-0"></div>
 
     <!-- Same treatment as the tournament card: a modest global tint pushes the
          banner into the background, then the text zones get their own scrims. -->
@@ -223,3 +208,35 @@ const bottomStats = computed(() =>
     </div>
   </NuxtLink>
 </template>
+<style scoped>
+/* The plate stays dark in both themes: the scrims, chips and title above it are
+   built for a dark backdrop, the same as a banner photo would be. */
+.event-plate {
+  background-color: hsl(220 13% 10%);
+  background-image:
+    radial-gradient(
+      130% 100% at 14% -15%,
+      hsl(220 16% 27% / 0.85) 0%,
+      transparent 62%
+    ),
+    linear-gradient(hsl(0 0% 100% / 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(0 0% 100% / 0.03) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    46px 46px,
+    46px 46px;
+}
+
+.event-plate::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    hsl(var(--tac-amber) / 0.45) 50%,
+    transparent 100%
+  );
+}
+</style>

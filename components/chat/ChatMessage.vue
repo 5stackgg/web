@@ -73,7 +73,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
           {{ $t("chat.team_tag") }}
         </span>
       </div>
-      <p class="text-[11px] leading-snug break-words">
+      <p class="text-[11px] leading-snug break-words whitespace-pre-wrap">
         {{ message.message }}
       </p>
     </div>

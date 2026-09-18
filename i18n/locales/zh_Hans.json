@@ -3547,7 +3547,9 @@
         "best_kdr": "KDR",
         "best_win_rate": "胜率",
         "highest_hs_pct": "爆头率",
-        "awards": "奖杯"
+        "awards": "奖杯",
+        "faceit_elo": "Faceit",
+        "premier_rank": "Premier"
       },
       "time_periods": {
         "last_7_days": "最近 7 天",
@@ -3602,7 +3604,10 @@
         "kast": "KAST",
         "udr": "UDR",
         "util_damage": "道具伤害",
-        "rounds": "回合"
+        "rounds": "回合",
+        "faceit_elo": "Faceit ELO",
+        "faceit_level": "等级",
+        "premier_rank": "Premier 排名"
       },
       "exclude_tournaments": "排除赛事"
     },

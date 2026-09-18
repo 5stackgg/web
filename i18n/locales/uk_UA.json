@@ -3547,7 +3547,9 @@
         "best_kdr": "KDR",
         "best_win_rate": "Відсоток перемог",
         "highest_hs_pct": "HS%",
-        "awards": "Нагороди"
+        "awards": "Нагороди",
+        "faceit_elo": "Faceit",
+        "premier_rank": "Premier"
       },
       "time_periods": {
         "last_7_days": "Останні 7 днів",
@@ -3602,7 +3604,10 @@
         "kast": "KAST",
         "udr": "UDR",
         "util_damage": "Шкода гранат",
-        "rounds": "Раунди"
+        "rounds": "Раунди",
+        "faceit_elo": "Faceit ELO",
+        "faceit_level": "Рівень",
+        "premier_rank": "Premier Ранг"
       },
       "exclude_tournaments": "Виключити турніри"
     },

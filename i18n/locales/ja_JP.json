@@ -3547,7 +3547,9 @@
         "best_kdr": "KDR",
         "best_win_rate": "勝率",
         "highest_hs_pct": "HS%",
-        "awards": "アワード"
+        "awards": "アワード",
+        "faceit_elo": "Faceit",
+        "premier_rank": "Premier"
       },
       "time_periods": {
         "last_7_days": "過去7日間",
@@ -3602,7 +3604,10 @@
         "kast": "KAST",
         "udr": "UDR",
         "util_damage": "util与ダメ",
-        "rounds": "ラウンド"
+        "rounds": "ラウンド",
+        "faceit_elo": "Faceit ELO",
+        "faceit_level": "レベル",
+        "premier_rank": "Premier ランク"
       },
       "exclude_tournaments": "トーナメントを除外"
     },

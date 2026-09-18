@@ -3547,7 +3547,9 @@
         "best_kdr": "KDR",
         "best_win_rate": "Siegrate",
         "highest_hs_pct": "HS%",
-        "awards": "Auszeichnungen"
+        "awards": "Auszeichnungen",
+        "faceit_elo": "Faceit",
+        "premier_rank": "Premier"
       },
       "time_periods": {
         "last_7_days": "Letzte 7 Tage",
@@ -3602,7 +3604,10 @@
         "kast": "KAST",
         "udr": "UDR",
         "util_damage": "Util-Dmg",
-        "rounds": "Runden"
+        "rounds": "Runden",
+        "faceit_elo": "Faceit ELO",
+        "faceit_level": "Level",
+        "premier_rank": "Premier Rang"
       },
       "exclude_tournaments": "Turniere ausschließen"
     },

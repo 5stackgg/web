@@ -3547,7 +3547,9 @@
         "best_kdr": "KDR",
         "best_win_rate": "승률",
         "highest_hs_pct": "HS%",
-        "awards": "어워드"
+        "awards": "어워드",
+        "faceit_elo": "Faceit",
+        "premier_rank": "Premier"
       },
       "time_periods": {
         "last_7_days": "최근 7일",
@@ -3602,7 +3604,10 @@
         "kast": "KAST",
         "udr": "UDR",
         "util_damage": "유틸 데미지",
-        "rounds": "라운드"
+        "rounds": "라운드",
+        "faceit_elo": "Faceit ELO",
+        "faceit_level": "레벨",
+        "premier_rank": "Premier 랭크"
       },
       "exclude_tournaments": "토너먼트 제외"
     },

@@ -3547,7 +3547,9 @@
         "best_kdr": "KDR",
         "best_win_rate": "نسبة الفوز",
         "highest_hs_pct": "HS%",
-        "awards": "الكؤوس"
+        "awards": "الكؤوس",
+        "faceit_elo": "Faceit",
+        "premier_rank": "Premier"
       },
       "time_periods": {
         "last_7_days": "آخر 7 أيام",
@@ -3602,7 +3604,10 @@
         "kast": "KAST",
         "udr": "UDR",
         "util_damage": "ضرر العتاد",
-        "rounds": "جولات"
+        "rounds": "جولات",
+        "faceit_elo": "Faceit ELO",
+        "faceit_level": "المستوى",
+        "premier_rank": "Premier الرتبة"
       },
       "exclude_tournaments": "استثناء البطولات"
     },

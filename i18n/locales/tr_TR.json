@@ -3547,7 +3547,9 @@
         "best_kdr": "KDR",
         "best_win_rate": "Galibiyet oranı",
         "highest_hs_pct": "HS%",
-        "awards": "Ödüller"
+        "awards": "Ödüller",
+        "faceit_elo": "Faceit",
+        "premier_rank": "Premier"
       },
       "time_periods": {
         "last_7_days": "Son 7 gün",
@@ -3602,7 +3604,10 @@
         "kast": "KAST",
         "udr": "UDR",
         "util_damage": "Ekipman hasarı",
-        "rounds": "Raunt"
+        "rounds": "Raunt",
+        "faceit_elo": "Faceit ELO",
+        "faceit_level": "Seviye",
+        "premier_rank": "Premier Rank"
       },
       "exclude_tournaments": "Turnuvaları hariç tut"
     },

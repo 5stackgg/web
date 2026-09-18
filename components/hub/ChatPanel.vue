@@ -12,6 +12,7 @@ import {
 } from "lucide-vue-next";
 import { useRouter } from "#app";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
+import ChatParticipants from "~/components/chat/ChatParticipants.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import { useChatTabs, type ChatTab } from "~/composables/useChatTabs";
 import { cancelChatTabRestore } from "~/composables/useChatTabPersistence";
@@ -878,25 +879,11 @@ function handlePopOut() {
             class="shrink-0 grid grid-rows-[1fr]"
           >
             <div class="min-h-0">
-              <div
-                class="px-3 py-2 border-b border-zinc-800/60 bg-zinc-950/80 text-[11px] text-zinc-200 flex gap-2 overflow-x-auto"
-              >
-                <div
-                  v-for="p in activeParticipants"
-                  :key="p.steam_id"
-                  class="flex items-center gap-1.5 bg-zinc-900/70 rounded-full px-2 py-0.5"
-                >
-                  <img
-                    v-if="p.avatar_url"
-                    :src="p.avatar_url"
-                    alt=""
-                    class="w-4 h-4 rounded-full object-cover"
-                  />
-                  <span class="truncate max-w-[8rem]">
-                    {{ p.name }}
-                  </span>
-                </div>
-              </div>
+              <ChatParticipants
+                :participants="activeParticipants"
+                variant="pills"
+                class="px-3 py-2 border-b border-zinc-800/60 bg-zinc-950/80 text-[11px] text-zinc-200"
+              />
             </div>
           </div>
         </Transition>

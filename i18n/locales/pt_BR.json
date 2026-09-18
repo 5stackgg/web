@@ -3547,7 +3547,9 @@
         "best_kdr": "KDR",
         "best_win_rate": "Taxa de Vitória",
         "highest_hs_pct": "% HS",
-        "awards": "Troféus"
+        "awards": "Troféus",
+        "faceit_elo": "Faceit",
+        "premier_rank": "Premier"
       },
       "time_periods": {
         "last_7_days": "Ultimos 7 dias",
@@ -3602,7 +3604,10 @@
         "kast": "KAST",
         "udr": "UDR",
         "util_damage": "Dano de Util",
-        "rounds": "Rodadas"
+        "rounds": "Rodadas",
+        "faceit_elo": "Faceit ELO",
+        "faceit_level": "Nível",
+        "premier_rank": "Premier Rank"
       },
       "exclude_tournaments": "Excluir Torneios"
     },

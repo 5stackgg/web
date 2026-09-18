@@ -3547,7 +3547,9 @@
         "best_kdr": "KDR",
         "best_win_rate": "Vinstandel",
         "highest_hs_pct": "HS%",
-        "awards": "Utmärkelser"
+        "awards": "Utmärkelser",
+        "faceit_elo": "Faceit",
+        "premier_rank": "Premier"
       },
       "time_periods": {
         "last_7_days": "Senaste 7 dagarna",
@@ -3602,7 +3604,10 @@
         "kast": "KAST",
         "udr": "UDR",
         "util_damage": "Utility-skada",
-        "rounds": "Ronder"
+        "rounds": "Ronder",
+        "faceit_elo": "Faceit ELO",
+        "faceit_level": "Nivå",
+        "premier_rank": "Premier Rank"
       },
       "exclude_tournaments": "Exkludera turneringar"
     },

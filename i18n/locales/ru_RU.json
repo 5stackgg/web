@@ -3547,7 +3547,9 @@
         "best_kdr": "KDR",
         "best_win_rate": "Процент побед",
         "highest_hs_pct": "HS%",
-        "awards": "Награды"
+        "awards": "Награды",
+        "faceit_elo": "Faceit",
+        "premier_rank": "Premier"
       },
       "time_periods": {
         "last_7_days": "Последние 7 дней",
@@ -3602,7 +3604,10 @@
         "kast": "KAST",
         "udr": "UDR",
         "util_damage": "Урон гранатами",
-        "rounds": "Раунды"
+        "rounds": "Раунды",
+        "faceit_elo": "Faceit ELO",
+        "faceit_level": "Уровень",
+        "premier_rank": "Premier Ранг"
       },
       "exclude_tournaments": "Исключить турниры"
     },

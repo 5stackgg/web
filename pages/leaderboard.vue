@@ -97,6 +97,19 @@ const CATEGORY_CONFIG: Record<
     sortable: SortField[];
   }
 > = {
+  faceit_elo: {
+    columns: {
+      value: "pages.leaderboard.col.faceit_elo",
+      secondary_value: "pages.leaderboard.col.faceit_level",
+    },
+    sortable: ["value", "secondary_value"],
+  },
+  premier_rank: {
+    columns: {
+      value: "pages.leaderboard.col.premier_rank",
+    },
+    sortable: ["value"],
+  },
   elo: {
     columns: {
       value: "pages.leaderboard.col.elo",
@@ -344,6 +357,8 @@ type Season = {
   starts_at: string;
   ends_at: string | null;
 };
+const appSettings = useApplicationSettingsStore();
+
 const seasonsEnabled = computed(
   () => useApplicationSettingsStore().seasonsEnabled,
 );
@@ -377,7 +392,17 @@ const roleFilter = ref<string>(readQueryParam("role", ROLE_OPTIONS, "all"));
 const sourceFilter = ref<string>(
   readQueryParam("source", SOURCE_OPTIONS, "overall"),
 );
-const supportsRole = computed(() => ROLE_CATEGORIES.has(category.value));
+const supportsRole = computed(
+  () => ROLE_CATEGORIES.has(category.value) && !isExternalRank.value,
+);
+
+// FACEIT ratings and Premier ranks are snapshots we cache from elsewhere, not
+// anything derived from matches played here, so none of the match filters mean
+// anything for them - showing a scope of "last 7 days" would read as applied.
+const EXTERNAL_RANK_CATEGORIES = new Set(["faceit_elo", "premier_rank"]);
+const isExternalRank = computed(() =>
+  EXTERNAL_RANK_CATEGORIES.has(category.value),
+);
 
 // Default to the current season when seasons are on and one is active; otherwise
 // fall back to All Time (systems without a current season).
@@ -454,7 +479,10 @@ const highlightedSteamId = computed(() => {
 });
 let fetchGeneration = 0;
 
-const categories = [
+// The two external ratings are only offered where the platform actually
+// collects them: FACEIT needs the import turned on, Premier ranks come out of
+// imported Valve demos.
+const categories = computed(() => [
   { value: "elo" },
   { value: "best_rating" },
   { value: "best_adr" },
@@ -465,7 +493,9 @@ const categories = [
   { value: "best_win_rate" },
   { value: "highest_hs_pct" },
   { value: "awards" },
-];
+  ...(appSettings.faceitEnabled ? [{ value: "faceit_elo" }] : []),
+  ...(appSettings.linkedAccountsEnabled ? [{ value: "premier_rank" }] : []),
+]);
 
 const config = computed(() => CATEGORY_CONFIG[category.value]);
 
@@ -683,6 +713,8 @@ function formatValue(value: number): string {
     case "best_kast":
       return value.toFixed(1) + "%";
     case "awards":
+    case "faceit_elo":
+    case "premier_rank":
       return Math.round(value).toLocaleString();
     default:
       return String(value);
@@ -861,8 +893,9 @@ onMounted(async () => {
     </TacticalPageHeader>
   </PageTransition>
 
-  <!-- Compact filter bar -->
-  <PageTransition :delay="100" class="mt-6">
+  <!-- Compact filter bar. Every control on it narrows matches played here, so
+       it has nothing to say about a cached FACEIT or Premier rating. -->
+  <PageTransition v-if="!isExternalRank" :delay="100" class="mt-6">
     <div
       class="rounded-md border border-border bg-card/40 px-3 py-2.5 [backdrop-filter:blur(6px)]"
     >

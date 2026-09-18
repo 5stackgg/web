@@ -6530,6 +6530,7 @@
       "loading_more": "加载更多…",
       "ineligible": {
         "in_tournament": "已报名这场锦标赛。",
+        "owner_in_tournament": "其所有者已在这场锦标赛中拥有战队。",
         "in_season": "已注册这个赛季。",
         "tournament_organizer": "已是这场锦标赛的主办方。",
         "in_event": "已与这个活动关联。",

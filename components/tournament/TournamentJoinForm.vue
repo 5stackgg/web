@@ -44,7 +44,11 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
         }}
       </h1>
 
-      <FormField v-slot="{ value, handleChange }" name="new_team">
+      <FormField
+        v-if="!ownsTeamHere"
+        v-slot="{ value, handleChange }"
+        name="new_team"
+      >
         <FormItem>
           <Card
             class="h-9 rounded-md bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 cursor-pointer"
@@ -361,6 +365,20 @@ export default {
     canSelectAnyTeam() {
       return this.tournament.is_organizer || useAuthStore().isAdmin;
     },
+    // Only organizers may own more than one team in a tournament.
+    ownersInTournament() {
+      return new Set(
+        (this.tournament.teams || [])
+          .filter((team) => team.owner_steam_id)
+          .map((team) => String(team.owner_steam_id)),
+      );
+    },
+    ownsTeamHere() {
+      return (
+        !this.canSelectAnyTeam &&
+        this.ownersInTournament.has(String(this.me.steam_id))
+      );
+    },
     registrationType() {
       return this.registration?.registration_type ?? "teams";
     },
@@ -419,6 +437,18 @@ export default {
           map[String(team.team_id)] = this.$t(
             "team.search.ineligible.in_tournament",
           );
+        }
+      }
+      if (!this.canSelectAnyTeam) {
+        for (const team of this.teams || []) {
+          if (
+            !map[String(team.id)] &&
+            this.ownersInTournament.has(String(team.owner_steam_id))
+          ) {
+            map[String(team.id)] = this.$t(
+              "team.search.ineligible.owner_in_tournament",
+            );
+          }
         }
       }
       return map;

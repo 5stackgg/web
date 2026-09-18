@@ -6530,6 +6530,7 @@
       "loading_more": "더 불러오는 중…",
       "ineligible": {
         "in_tournament": "이미 이 토너먼트에 등록되어 있습니다.",
+        "owner_in_tournament": "소유자가 이미 이 토너먼트에 팀을 등록했습니다.",
         "in_season": "이미 이 시즌에 등록되어 있습니다.",
         "tournament_organizer": "이미 이 토너먼트의 주최자입니다.",
         "in_event": "이미 이 이벤트에 연결되어 있습니다.",

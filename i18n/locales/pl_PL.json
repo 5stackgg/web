@@ -6530,6 +6530,7 @@
       "loading_more": "Wczytywanie…",
       "ineligible": {
         "in_tournament": "Już zgłoszona do tego turnieju.",
+        "owner_in_tournament": "Jej właściciel ma już drużynę w tym turnieju.",
         "in_season": "Już zarejestrowana na ten sezon.",
         "tournament_organizer": "Już jest organizatorem tego turnieju.",
         "in_event": "Już przypisana do tego wydarzenia.",

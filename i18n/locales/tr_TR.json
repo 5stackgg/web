@@ -6530,6 +6530,7 @@
       "loading_more": "Daha fazlası yükleniyor…",
       "ineligible": {
         "in_tournament": "Bu turnuvaya zaten kayıtlı.",
+        "owner_in_tournament": "Sahibinin bu turnuvada zaten bir takımı var.",
         "in_season": "Bu sezona zaten kayıtlı.",
         "tournament_organizer": "Zaten bu turnuvanın organizatörü.",
         "in_event": "Zaten bu etkinliğe bağlı.",

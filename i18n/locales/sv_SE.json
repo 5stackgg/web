@@ -6530,6 +6530,7 @@
       "loading_more": "Läser in fler…",
       "ineligible": {
         "in_tournament": "Redan anmält till den här turneringen.",
+        "owner_in_tournament": "Ägaren har redan ett lag i den här turneringen.",
         "in_season": "Redan registrerat för den här säsongen.",
         "tournament_organizer": "Redan arrangör för den här turneringen.",
         "in_event": "Redan kopplat till det här evenemanget.",

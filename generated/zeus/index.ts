@@ -65449,8 +65449,6 @@ prizes_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["tournament_prizes_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["tournament_prizes_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_prizes_aggregate"]],
-	/** Preferred server regions for hosted matches */
-	regions?:boolean | `@${string}`,
 	registration_type?:boolean | `@${string}`,
 	/** A computed field, executes function "tournament_registration_unlocked_for_session" */
 	registration_unlocked?:boolean | `@${string}`,
@@ -65753,7 +65751,6 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	player_stats_aggregate?: ValueTypes["v_tournament_player_stats_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	prizes?: ValueTypes["tournament_prizes_bool_exp"] | undefined | null | Variable<any, string>,
 	prizes_aggregate?: ValueTypes["tournament_prizes_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
-	regions?: ValueTypes["String_array_comparison_exp"] | undefined | null | Variable<any, string>,
 	registration_type?: ValueTypes["e_tournament_registration_types_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	registration_unlocked?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	results?: ValueTypes["v_team_tournament_results_bool_exp"] | undefined | null | Variable<any, string>,
@@ -65842,8 +65839,6 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	organizers?: ValueTypes["tournament_organizers_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	player_stats?: ValueTypes["v_tournament_player_stats_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	prizes?: ValueTypes["tournament_prizes_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
-	/** Preferred server regions for hosted matches */
-	regions?: Array<string> | undefined | null | Variable<any, string>,
 	registration_type?: ValueTypes["e_tournament_registration_types_enum"] | undefined | null | Variable<any, string>,
 	results?: ValueTypes["v_team_tournament_results_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	rosters?: ValueTypes["tournament_team_roster_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -65890,8 +65885,6 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	missed_check_in_count?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
-	/** Preferred server regions for hosted matches */
-	regions?:boolean | `@${string}`,
 	scheduling_mode?:boolean | `@${string}`,
 	start?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -65923,8 +65916,6 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	min_elo?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	/** Preferred server regions for hosted matches */
-	regions?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	scheduling_mode?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	start?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
@@ -65963,8 +65954,6 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	missed_check_in_count?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
-	/** Preferred server regions for hosted matches */
-	regions?:boolean | `@${string}`,
 	scheduling_mode?:boolean | `@${string}`,
 	start?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -65996,8 +65985,6 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	min_elo?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	/** Preferred server regions for hosted matches */
-	regions?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	scheduling_mode?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	start?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
@@ -66097,7 +66084,6 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	organizers_aggregate?: ValueTypes["tournament_organizers_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	player_stats_aggregate?: ValueTypes["v_tournament_player_stats_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	prizes_aggregate?: ValueTypes["tournament_prizes_aggregate_order_by"] | undefined | null | Variable<any, string>,
-	regions?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	registration_type?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	registration_unlocked?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	results_aggregate?: ValueTypes["v_team_tournament_results_aggregate_order_by"] | undefined | null | Variable<any, string>,
@@ -66184,8 +66170,6 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	min_role?: ValueTypes["e_player_roles_enum"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
-	/** Preferred server regions for hosted matches */
-	regions?: Array<string> | undefined | null | Variable<any, string>,
 	registration_type?: ValueTypes["e_tournament_registration_types_enum"] | undefined | null | Variable<any, string>,
 	scheduling_mode?: string | undefined | null | Variable<any, string>,
 	start?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -66336,8 +66320,6 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	min_role?: ValueTypes["e_player_roles_enum"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
-	/** Preferred server regions for hosted matches */
-	regions?: Array<string> | undefined | null | Variable<any, string>,
 	registration_type?: ValueTypes["e_tournament_registration_types_enum"] | undefined | null | Variable<any, string>,
 	scheduling_mode?: string | undefined | null | Variable<any, string>,
 	start?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -147748,8 +147730,6 @@ prizes_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["tournament_prizes_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["tournament_prizes_bool_exp"] | undefined | null},ResolverInputTypes["tournament_prizes_aggregate"]],
-	/** Preferred server regions for hosted matches */
-	regions?:boolean | `@${string}`,
 	registration_type?:boolean | `@${string}`,
 	/** A computed field, executes function "tournament_registration_unlocked_for_session" */
 	registration_unlocked?:boolean | `@${string}`,
@@ -148052,7 +148032,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	player_stats_aggregate?: ResolverInputTypes["v_tournament_player_stats_aggregate_bool_exp"] | undefined | null,
 	prizes?: ResolverInputTypes["tournament_prizes_bool_exp"] | undefined | null,
 	prizes_aggregate?: ResolverInputTypes["tournament_prizes_aggregate_bool_exp"] | undefined | null,
-	regions?: ResolverInputTypes["String_array_comparison_exp"] | undefined | null,
 	registration_type?: ResolverInputTypes["e_tournament_registration_types_enum_comparison_exp"] | undefined | null,
 	registration_unlocked?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	results?: ResolverInputTypes["v_team_tournament_results_bool_exp"] | undefined | null,
@@ -148141,8 +148120,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	organizers?: ResolverInputTypes["tournament_organizers_arr_rel_insert_input"] | undefined | null,
 	player_stats?: ResolverInputTypes["v_tournament_player_stats_arr_rel_insert_input"] | undefined | null,
 	prizes?: ResolverInputTypes["tournament_prizes_arr_rel_insert_input"] | undefined | null,
-	/** Preferred server regions for hosted matches */
-	regions?: Array<string> | undefined | null,
 	registration_type?: ResolverInputTypes["e_tournament_registration_types_enum"] | undefined | null,
 	results?: ResolverInputTypes["v_team_tournament_results_arr_rel_insert_input"] | undefined | null,
 	rosters?: ResolverInputTypes["tournament_team_roster_arr_rel_insert_input"] | undefined | null,
@@ -148189,8 +148166,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	missed_check_in_count?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
-	/** Preferred server regions for hosted matches */
-	regions?:boolean | `@${string}`,
 	scheduling_mode?:boolean | `@${string}`,
 	start?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -148222,8 +148197,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	min_elo?: ResolverInputTypes["order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
-	/** Preferred server regions for hosted matches */
-	regions?: ResolverInputTypes["order_by"] | undefined | null,
 	scheduling_mode?: ResolverInputTypes["order_by"] | undefined | null,
 	start?: ResolverInputTypes["order_by"] | undefined | null
 };
@@ -148262,8 +148235,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	missed_check_in_count?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
-	/** Preferred server regions for hosted matches */
-	regions?:boolean | `@${string}`,
 	scheduling_mode?:boolean | `@${string}`,
 	start?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -148295,8 +148266,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	min_elo?: ResolverInputTypes["order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
-	/** Preferred server regions for hosted matches */
-	regions?: ResolverInputTypes["order_by"] | undefined | null,
 	scheduling_mode?: ResolverInputTypes["order_by"] | undefined | null,
 	start?: ResolverInputTypes["order_by"] | undefined | null
 };
@@ -148396,7 +148365,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	organizers_aggregate?: ResolverInputTypes["tournament_organizers_aggregate_order_by"] | undefined | null,
 	player_stats_aggregate?: ResolverInputTypes["v_tournament_player_stats_aggregate_order_by"] | undefined | null,
 	prizes_aggregate?: ResolverInputTypes["tournament_prizes_aggregate_order_by"] | undefined | null,
-	regions?: ResolverInputTypes["order_by"] | undefined | null,
 	registration_type?: ResolverInputTypes["order_by"] | undefined | null,
 	registration_unlocked?: ResolverInputTypes["order_by"] | undefined | null,
 	results_aggregate?: ResolverInputTypes["v_team_tournament_results_aggregate_order_by"] | undefined | null,
@@ -148483,8 +148451,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	min_role?: ResolverInputTypes["e_player_roles_enum"] | undefined | null,
 	name?: string | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
-	/** Preferred server regions for hosted matches */
-	regions?: Array<string> | undefined | null,
 	registration_type?: ResolverInputTypes["e_tournament_registration_types_enum"] | undefined | null,
 	scheduling_mode?: string | undefined | null,
 	start?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -148635,8 +148601,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	min_role?: ResolverInputTypes["e_player_roles_enum"] | undefined | null,
 	name?: string | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
-	/** Preferred server regions for hosted matches */
-	regions?: Array<string> | undefined | null,
 	registration_type?: ResolverInputTypes["e_tournament_registration_types_enum"] | undefined | null,
 	scheduling_mode?: string | undefined | null,
 	start?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -221127,8 +221091,6 @@ export type ModelTypes = {
 	prizes: Array<ModelTypes["tournament_prizes"]>,
 	/** An aggregate relationship */
 	prizes_aggregate: ModelTypes["tournament_prizes_aggregate"],
-	/** Preferred server regions for hosted matches */
-	regions: Array<string>,
 	registration_type: ModelTypes["e_tournament_registration_types_enum"],
 	/** A computed field, executes function "tournament_registration_unlocked_for_session" */
 	registration_unlocked?: boolean | undefined | null,
@@ -221395,7 +221357,6 @@ export type ModelTypes = {
 	player_stats_aggregate?: ModelTypes["v_tournament_player_stats_aggregate_bool_exp"] | undefined | null,
 	prizes?: ModelTypes["tournament_prizes_bool_exp"] | undefined | null,
 	prizes_aggregate?: ModelTypes["tournament_prizes_aggregate_bool_exp"] | undefined | null,
-	regions?: ModelTypes["String_array_comparison_exp"] | undefined | null,
 	registration_type?: ModelTypes["e_tournament_registration_types_enum_comparison_exp"] | undefined | null,
 	registration_unlocked?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	results?: ModelTypes["v_team_tournament_results_bool_exp"] | undefined | null,
@@ -221483,8 +221444,6 @@ export type ModelTypes = {
 	organizers?: ModelTypes["tournament_organizers_arr_rel_insert_input"] | undefined | null,
 	player_stats?: ModelTypes["v_tournament_player_stats_arr_rel_insert_input"] | undefined | null,
 	prizes?: ModelTypes["tournament_prizes_arr_rel_insert_input"] | undefined | null,
-	/** Preferred server regions for hosted matches */
-	regions?: Array<string> | undefined | null,
 	registration_type?: ModelTypes["e_tournament_registration_types_enum"] | undefined | null,
 	results?: ModelTypes["v_team_tournament_results_arr_rel_insert_input"] | undefined | null,
 	rosters?: ModelTypes["tournament_team_roster_arr_rel_insert_input"] | undefined | null,
@@ -221531,8 +221490,6 @@ export type ModelTypes = {
 	missed_check_in_count?: number | undefined | null,
 	name?: string | undefined | null,
 	organizer_steam_id?: ModelTypes["bigint"] | undefined | null,
-	/** Preferred server regions for hosted matches */
-	regions?: Array<string> | undefined | null,
 	scheduling_mode?: string | undefined | null,
 	start?: ModelTypes["timestamptz"] | undefined | null
 };
@@ -221563,8 +221520,6 @@ export type ModelTypes = {
 	min_elo?: ModelTypes["order_by"] | undefined | null,
 	name?: ModelTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ModelTypes["order_by"] | undefined | null,
-	/** Preferred server regions for hosted matches */
-	regions?: ModelTypes["order_by"] | undefined | null,
 	scheduling_mode?: ModelTypes["order_by"] | undefined | null,
 	start?: ModelTypes["order_by"] | undefined | null
 };
@@ -221603,8 +221558,6 @@ export type ModelTypes = {
 	missed_check_in_count?: number | undefined | null,
 	name?: string | undefined | null,
 	organizer_steam_id?: ModelTypes["bigint"] | undefined | null,
-	/** Preferred server regions for hosted matches */
-	regions?: Array<string> | undefined | null,
 	scheduling_mode?: string | undefined | null,
 	start?: ModelTypes["timestamptz"] | undefined | null
 };
@@ -221635,8 +221588,6 @@ export type ModelTypes = {
 	min_elo?: ModelTypes["order_by"] | undefined | null,
 	name?: ModelTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ModelTypes["order_by"] | undefined | null,
-	/** Preferred server regions for hosted matches */
-	regions?: ModelTypes["order_by"] | undefined | null,
 	scheduling_mode?: ModelTypes["order_by"] | undefined | null,
 	start?: ModelTypes["order_by"] | undefined | null
 };
@@ -221735,7 +221686,6 @@ export type ModelTypes = {
 	organizers_aggregate?: ModelTypes["tournament_organizers_aggregate_order_by"] | undefined | null,
 	player_stats_aggregate?: ModelTypes["v_tournament_player_stats_aggregate_order_by"] | undefined | null,
 	prizes_aggregate?: ModelTypes["tournament_prizes_aggregate_order_by"] | undefined | null,
-	regions?: ModelTypes["order_by"] | undefined | null,
 	registration_type?: ModelTypes["order_by"] | undefined | null,
 	registration_unlocked?: ModelTypes["order_by"] | undefined | null,
 	results_aggregate?: ModelTypes["v_team_tournament_results_aggregate_order_by"] | undefined | null,
@@ -221811,8 +221761,6 @@ export type ModelTypes = {
 	min_role?: ModelTypes["e_player_roles_enum"] | undefined | null,
 	name?: string | undefined | null,
 	organizer_steam_id?: ModelTypes["bigint"] | undefined | null,
-	/** Preferred server regions for hosted matches */
-	regions?: Array<string> | undefined | null,
 	registration_type?: ModelTypes["e_tournament_registration_types_enum"] | undefined | null,
 	scheduling_mode?: string | undefined | null,
 	start?: ModelTypes["timestamptz"] | undefined | null,
@@ -221960,8 +221908,6 @@ export type ModelTypes = {
 	min_role?: ModelTypes["e_player_roles_enum"] | undefined | null,
 	name?: string | undefined | null,
 	organizer_steam_id?: ModelTypes["bigint"] | undefined | null,
-	/** Preferred server regions for hosted matches */
-	regions?: Array<string> | undefined | null,
 	registration_type?: ModelTypes["e_tournament_registration_types_enum"] | undefined | null,
 	scheduling_mode?: string | undefined | null,
 	start?: ModelTypes["timestamptz"] | undefined | null,
@@ -296280,8 +296226,6 @@ export type GraphQLTypes = {
 	prizes: Array<GraphQLTypes["tournament_prizes"]>,
 	/** An aggregate relationship */
 	prizes_aggregate: GraphQLTypes["tournament_prizes_aggregate"],
-	/** Preferred server regions for hosted matches */
-	regions: Array<string>,
 	registration_type: GraphQLTypes["e_tournament_registration_types_enum"],
 	/** A computed field, executes function "tournament_registration_unlocked_for_session" */
 	registration_unlocked?: boolean | undefined | null,
@@ -296551,7 +296495,6 @@ export type GraphQLTypes = {
 	player_stats_aggregate?: GraphQLTypes["v_tournament_player_stats_aggregate_bool_exp"] | undefined | null,
 	prizes?: GraphQLTypes["tournament_prizes_bool_exp"] | undefined | null,
 	prizes_aggregate?: GraphQLTypes["tournament_prizes_aggregate_bool_exp"] | undefined | null,
-	regions?: GraphQLTypes["String_array_comparison_exp"] | undefined | null,
 	registration_type?: GraphQLTypes["e_tournament_registration_types_enum_comparison_exp"] | undefined | null,
 	registration_unlocked?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	results?: GraphQLTypes["v_team_tournament_results_bool_exp"] | undefined | null,
@@ -296640,8 +296583,6 @@ export type GraphQLTypes = {
 	organizers?: GraphQLTypes["tournament_organizers_arr_rel_insert_input"] | undefined | null,
 	player_stats?: GraphQLTypes["v_tournament_player_stats_arr_rel_insert_input"] | undefined | null,
 	prizes?: GraphQLTypes["tournament_prizes_arr_rel_insert_input"] | undefined | null,
-	/** Preferred server regions for hosted matches */
-	regions?: Array<string> | undefined | null,
 	registration_type?: GraphQLTypes["e_tournament_registration_types_enum"] | undefined | null,
 	results?: GraphQLTypes["v_team_tournament_results_arr_rel_insert_input"] | undefined | null,
 	rosters?: GraphQLTypes["tournament_team_roster_arr_rel_insert_input"] | undefined | null,
@@ -296689,8 +296630,6 @@ export type GraphQLTypes = {
 	missed_check_in_count?: number | undefined | null,
 	name?: string | undefined | null,
 	organizer_steam_id?: GraphQLTypes["bigint"] | undefined | null,
-	/** Preferred server regions for hosted matches */
-	regions?: Array<string> | undefined | null,
 	scheduling_mode?: string | undefined | null,
 	start?: GraphQLTypes["timestamptz"] | undefined | null
 };
@@ -296721,8 +296660,6 @@ export type GraphQLTypes = {
 	min_elo?: GraphQLTypes["order_by"] | undefined | null,
 	name?: GraphQLTypes["order_by"] | undefined | null,
 	organizer_steam_id?: GraphQLTypes["order_by"] | undefined | null,
-	/** Preferred server regions for hosted matches */
-	regions?: GraphQLTypes["order_by"] | undefined | null,
 	scheduling_mode?: GraphQLTypes["order_by"] | undefined | null,
 	start?: GraphQLTypes["order_by"] | undefined | null
 };
@@ -296762,8 +296699,6 @@ export type GraphQLTypes = {
 	missed_check_in_count?: number | undefined | null,
 	name?: string | undefined | null,
 	organizer_steam_id?: GraphQLTypes["bigint"] | undefined | null,
-	/** Preferred server regions for hosted matches */
-	regions?: Array<string> | undefined | null,
 	scheduling_mode?: string | undefined | null,
 	start?: GraphQLTypes["timestamptz"] | undefined | null
 };
@@ -296794,8 +296729,6 @@ export type GraphQLTypes = {
 	min_elo?: GraphQLTypes["order_by"] | undefined | null,
 	name?: GraphQLTypes["order_by"] | undefined | null,
 	organizer_steam_id?: GraphQLTypes["order_by"] | undefined | null,
-	/** Preferred server regions for hosted matches */
-	regions?: GraphQLTypes["order_by"] | undefined | null,
 	scheduling_mode?: GraphQLTypes["order_by"] | undefined | null,
 	start?: GraphQLTypes["order_by"] | undefined | null
 };
@@ -296895,7 +296828,6 @@ export type GraphQLTypes = {
 	organizers_aggregate?: GraphQLTypes["tournament_organizers_aggregate_order_by"] | undefined | null,
 	player_stats_aggregate?: GraphQLTypes["v_tournament_player_stats_aggregate_order_by"] | undefined | null,
 	prizes_aggregate?: GraphQLTypes["tournament_prizes_aggregate_order_by"] | undefined | null,
-	regions?: GraphQLTypes["order_by"] | undefined | null,
 	registration_type?: GraphQLTypes["order_by"] | undefined | null,
 	registration_unlocked?: GraphQLTypes["order_by"] | undefined | null,
 	results_aggregate?: GraphQLTypes["v_team_tournament_results_aggregate_order_by"] | undefined | null,
@@ -296982,8 +296914,6 @@ export type GraphQLTypes = {
 	min_role?: GraphQLTypes["e_player_roles_enum"] | undefined | null,
 	name?: string | undefined | null,
 	organizer_steam_id?: GraphQLTypes["bigint"] | undefined | null,
-	/** Preferred server regions for hosted matches */
-	regions?: Array<string> | undefined | null,
 	registration_type?: GraphQLTypes["e_tournament_registration_types_enum"] | undefined | null,
 	scheduling_mode?: string | undefined | null,
 	start?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -297134,8 +297064,6 @@ export type GraphQLTypes = {
 	min_role?: GraphQLTypes["e_player_roles_enum"] | undefined | null,
 	name?: string | undefined | null,
 	organizer_steam_id?: GraphQLTypes["bigint"] | undefined | null,
-	/** Preferred server regions for hosted matches */
-	regions?: Array<string> | undefined | null,
 	registration_type?: GraphQLTypes["e_tournament_registration_types_enum"] | undefined | null,
 	scheduling_mode?: string | undefined | null,
 	start?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -319557,7 +319485,6 @@ export enum tournaments_select_column {
 	min_role = "min_role",
 	name = "name",
 	organizer_steam_id = "organizer_steam_id",
-	regions = "regions",
 	registration_type = "registration_type",
 	scheduling_mode = "scheduling_mode",
 	start = "start",
@@ -319695,7 +319622,6 @@ export enum tournaments_update_column {
 	min_role = "min_role",
 	name = "name",
 	organizer_steam_id = "organizer_steam_id",
-	regions = "regions",
 	registration_type = "registration_type",
 	scheduling_mode = "scheduling_mode",
 	start = "start",

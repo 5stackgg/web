@@ -6159,11 +6159,6 @@
         "description": "Leave either blank for no bound. Blank on both is open to any rank.",
         "invalid_range": "Max ELO must be at least the min ELO."
       },
-      "regions": {
-        "label": "Preferred regions",
-        "description": "Where this tournament's matches are hosted. Not a player gate — 5stack has no per-player region data.",
-        "empty": "No regions are currently available."
-      },
       "invite_only": {
         "label": "Invite only",
         "description": "Registration is closed to the public. Organizers invite teams and players directly, or share an invite link."

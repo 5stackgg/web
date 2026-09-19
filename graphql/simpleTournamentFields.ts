@@ -17,7 +17,6 @@ export const tournamentRegistrationFields: Record<string, boolean> = {
   min_elo: true,
   max_elo: true,
   invite_only: true,
-  regions: true,
   check_in_required: true,
   check_in_setting: true,
   check_in_opens_before_minutes: true,

@@ -5,6 +5,7 @@ import {
   ArrowUp,
   Swords,
   Play,
+  TriangleAlert,
   X,
   MessagesSquare,
   Inbox,
@@ -659,6 +660,12 @@ const regionsAvailable = computed(
   () => appSettings.availableRegions.length > 0,
 );
 
+// Only a custom mode may run a match smaller than its declared size, and only
+// when the admin who defined that mode said so.
+const shortHandedAllowed = computed(
+  () => props.room.options?.game_mode?.allow_short_handed_start === true,
+);
+
 const startReady = computed(() => {
   if (props.room.mode === "Teams") {
     // The match lineups are exactly what the lobby assigned now, so starting
@@ -682,6 +689,29 @@ const startReady = computed(() => {
   return accepted.value.length === props.room.capacity;
 });
 
+// What a short-handed mode will accept: a real match on both sides, and -- for a
+// captains draft, whose pick order is built on capacity / 2 -- an even pool.
+const forceReady = computed(() => {
+  if (!shortHandedAllowed.value || startReady.value) {
+    return false;
+  }
+  if (props.room.mode === "Teams") {
+    return !!props.room.team_1_id && team1Count.value > 0 && team2Count.value > 0;
+  }
+  if (props.room.mode === "Host") {
+    return team1Count.value > 0 && team2Count.value > 0;
+  }
+  if (isManualCaptains.value && !manualCaptainsReady.value) {
+    return false;
+  }
+  if (props.room.mode === "Captains") {
+    return accepted.value.length >= 2 && accepted.value.length % 2 === 0;
+  }
+  return accepted.value.length >= 2;
+});
+
+const canStart = computed(() => startReady.value || forceReady.value);
+
 const startHint = computed(() => {
   if (props.room.mode === "Teams") {
     return props.room.team_1_id
@@ -694,11 +724,35 @@ const startHint = computed(() => {
   if (isManualCaptains.value && !manualCaptainsReady.value) {
     return "draft_games.room.pick_captains";
   }
+  if (shortHandedAllowed.value && props.room.mode === "Captains") {
+    return "draft_games.room.need_even";
+  }
   return "draft_games.room.need_full";
 });
 
+// Starting short is a decision the room cannot walk back -- everyone still on
+// their way in loses the seat -- so it asks once.
+const confirmingForce = ref(false);
+
+// Someone joining while the confirm is armed turns this back into an ordinary
+// full start; leaving it armed would keep offering to start short.
+watch(forceReady, (short) => {
+  if (!short) {
+    confirmingForce.value = false;
+  }
+});
+
 const start = () => {
-  return runGuarded("start", () => useDraftGamesStore().start(props.room.id));
+  if (forceReady.value && !confirmingForce.value) {
+    confirmingForce.value = true;
+    return;
+  }
+
+  confirmingForce.value = false;
+
+  return runGuarded("start", () =>
+    useDraftGamesStore().start(props.room.id, forceReady.value),
+  );
 };
 </script>
 
@@ -892,7 +946,7 @@ const start = () => {
                     </div>
 
                     <Button
-                      v-else-if="startReady"
+                      v-else-if="canStart"
                       key="start"
                       variant="tactical"
                       type="button"
@@ -904,11 +958,21 @@ const start = () => {
                       @click="start"
                     >
                       <Spinner v-if="isPending('start')" class="h-5 w-5" />
+                      <TriangleAlert
+                        v-else-if="confirmingForce"
+                        class="h-5 w-5"
+                      />
                       <Play v-else class="h-5 w-5" />
                       {{
                         isPending("start")
                           ? $t("draft_games.room.starting")
-                          : $t("draft_games.room.start_match")
+                          : confirmingForce
+                            ? $t("draft_games.room.force_start_confirm", {
+                                count: accepted.length,
+                              })
+                            : forceReady
+                              ? $t("draft_games.room.force_start")
+                              : $t("draft_games.room.start_match")
                       }}
                     </Button>
 
@@ -1139,7 +1203,7 @@ const start = () => {
                appearing under the cursor mid-assignment. -->
               <Transition name="collapse">
                 <div
-                  v-if="isAssembling || isDrafting || (showStart && startReady)"
+                  v-if="isAssembling || isDrafting || (showStart && canStart)"
                   class="grid grid-rows-[1fr]"
                 >
                   <div class="collapse-clip">
@@ -1241,7 +1305,7 @@ const start = () => {
 
                       <Transition name="cta">
                         <Button
-                          v-if="showStart && startReady"
+                          v-if="showStart && canStart"
                           variant="tactical"
                           type="button"
                           :disabled="isPending('start') || !regionsAvailable"
@@ -1252,11 +1316,21 @@ const start = () => {
                           @click="start"
                         >
                           <Spinner v-if="isPending('start')" class="h-5 w-5" />
+                          <TriangleAlert
+                            v-else-if="confirmingForce"
+                            class="h-5 w-5"
+                          />
                           <Play v-else class="h-5 w-5" />
                           {{
                             isPending("start")
                               ? $t("draft_games.room.starting")
-                              : $t("draft_games.room.start_match")
+                              : confirmingForce
+                                ? $t("draft_games.room.force_start_confirm", {
+                                    count: accepted.length,
+                                  })
+                                : forceReady
+                                  ? $t("draft_games.room.force_start")
+                                  : $t("draft_games.room.start_match")
                           }}
                         </Button>
                       </Transition>

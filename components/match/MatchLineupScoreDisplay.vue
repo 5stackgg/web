@@ -22,7 +22,7 @@
       </template>
     </span>
 
-    <small v-if="matchMap && halves">
+    <small v-if="matchMap && halves && hasSideWins">
       [<span class="text-yellow-500">{{ tWins }}</span
       >:<span class="text-blue-400">{{ ctWins }}</span
       >]
@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import { e_sides_enum } from "~/generated/zeus";
+import { matchSideWins } from "~/utilities/matchSideWins";
 
 export default {
   props: {
@@ -172,32 +172,18 @@ export default {
       return this.match.lineup_1_id === this.lineup.id;
     },
     sideWins() {
-      if (!this.matchMap?.rounds) {
+      if (!this.matchMap) {
         return { ct: 0, t: 0 };
       }
-      const chronological = [...this.matchMap.rounds].reverse();
-      let ct = 0;
-      let t = 0;
-      let prev1 = 0;
-      let prev2 = 0;
-      for (const round of chronological) {
-        const lineupWon = this.isLineup1
-          ? round.lineup_1_score > prev1
-          : round.lineup_2_score > prev2;
-        const lineupSide = this.isLineup1
-          ? round.lineup_1_side
-          : round.lineup_2_side;
-        if (lineupWon) {
-          if (lineupSide === e_sides_enum.CT) {
-            ct++;
-          } else if (lineupSide === e_sides_enum.TERRORIST) {
-            t++;
-          }
-        }
-        prev1 = round.lineup_1_score;
-        prev2 = round.lineup_2_score;
-      }
-      return { ct, t };
+      return matchSideWins(this.matchMap.rounds, this.isLineup1, {
+        currentSide: this.isLineup1
+          ? this.matchMap.lineup_1_side
+          : this.matchMap.lineup_2_side,
+        mr: this.match.options?.mr,
+      });
+    },
+    hasSideWins() {
+      return this.sideWins.ct + this.sideWins.t > 0;
     },
     ctWins() {
       return this.matchMap ? this.sideWins.ct : undefined;

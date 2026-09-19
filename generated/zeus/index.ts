@@ -18202,6 +18202,10 @@ count?: [{	columns?: Array<ValueTypes["gamedata_signature_validations_select_col
 	_has_keys_any?: Array<string> | undefined | null | Variable<any, string>,
 	_in?: Array<ValueTypes["jsonb"]> | undefined | null | Variable<any, string>,
 	_is_null?: boolean | undefined | null | Variable<any, string>,
+	/** does the jsonpath return any item for the specified JSON value */
+	_jsonb_path_exists?: string | undefined | null | Variable<any, string>,
+	/** does the jsonpath predicate check return true for the specified JSON value */
+	_jsonb_path_match?: string | undefined | null | Variable<any, string>,
 	_lt?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	_lte?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	_neq?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
@@ -100497,6 +100501,10 @@ count?: [{	columns?: Array<ResolverInputTypes["gamedata_signature_validations_se
 	_has_keys_any?: Array<string> | undefined | null,
 	_in?: Array<ResolverInputTypes["jsonb"]> | undefined | null,
 	_is_null?: boolean | undefined | null,
+	/** does the jsonpath return any item for the specified JSON value */
+	_jsonb_path_exists?: string | undefined | null,
+	/** does the jsonpath predicate check return true for the specified JSON value */
+	_jsonb_path_match?: string | undefined | null,
 	_lt?: ResolverInputTypes["jsonb"] | undefined | null,
 	_lte?: ResolverInputTypes["jsonb"] | undefined | null,
 	_neq?: ResolverInputTypes["jsonb"] | undefined | null,
@@ -181251,6 +181259,10 @@ export type ModelTypes = {
 	_has_keys_any?: Array<string> | undefined | null,
 	_in?: Array<ModelTypes["jsonb"]> | undefined | null,
 	_is_null?: boolean | undefined | null,
+	/** does the jsonpath return any item for the specified JSON value */
+	_jsonb_path_exists?: string | undefined | null,
+	/** does the jsonpath predicate check return true for the specified JSON value */
+	_jsonb_path_match?: string | undefined | null,
 	_lt?: ModelTypes["jsonb"] | undefined | null,
 	_lte?: ModelTypes["jsonb"] | undefined | null,
 	_neq?: ModelTypes["jsonb"] | undefined | null,
@@ -254813,6 +254825,10 @@ export type GraphQLTypes = {
 	_has_keys_any?: Array<string> | undefined | null,
 	_in?: Array<GraphQLTypes["jsonb"]> | undefined | null,
 	_is_null?: boolean | undefined | null,
+	/** does the jsonpath return any item for the specified JSON value */
+	_jsonb_path_exists?: string | undefined | null,
+	/** does the jsonpath predicate check return true for the specified JSON value */
+	_jsonb_path_match?: string | undefined | null,
 	_lt?: GraphQLTypes["jsonb"] | undefined | null,
 	_lte?: GraphQLTypes["jsonb"] | undefined | null,
 	_neq?: GraphQLTypes["jsonb"] | undefined | null,

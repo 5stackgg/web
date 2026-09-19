@@ -8,40 +8,47 @@ const { active: clipRenderActive } = useClipRenderActive();
 // Bare WHEP playback over RTCPeerConnection (no whep.js / adapter).
 // Latency: ~100–500ms vs ~2s LL-HLS, ~6–30s plain HLS.
 
-const props = defineProps<{
-  whepUrl: string;
-  iceServers?: RTCIceServer[];
-  muted?: boolean;
-  fallbackUrl?: string | null;
-  // When the parent owns page-level fullscreen (eg. the broadcast
-  // deck focus page), suppress the in-player "F" key so a single
-  // press doesn't fire both handlers and race two requestFullscreen
-  // calls against each other.
-  disableFullscreenShortcut?: boolean;
-  // For hosts that mount several players at once (the camera grid): a window
-  // level shortcut would hit every instance, so those surfaces provide their
-  // own per-player controls instead. Also suppresses the built-in unmute pill,
-  // which would otherwise sit next to the host's own mute button.
-  disableShortcuts?: boolean;
-  // Opt-in to native Picture-in-Picture. Only enabled for live game
-  // streams on mobile — demo playback and highlights stay PIP-locked.
-  enablePip?: boolean;
-  // Fill the container instead of letterboxing. Only for webcam tiles, which
-  // are small and want the height: a game stream must never be cropped.
-  cover?: boolean;
-  // Whether to negotiate the audio track at all. A grid of ten camera tiles
-  // that are all muted still pays for ten opus streams -- decoded, jitter
-  // buffered and paid for in bandwidth -- for audio nobody can hear. Hosts
-  // that start muted pass false and flip it when the viewer asks to listen,
-  // which costs one reconnect on that tile and nothing anywhere else.
-  audio?: boolean;
-}>();
+const props = withDefaults(
+  defineProps<{
+    whepUrl: string;
+    iceServers?: RTCIceServer[];
+    muted?: boolean;
+    fallbackUrl?: string | null;
+    // When the parent owns page-level fullscreen (eg. the broadcast
+    // deck focus page), suppress the in-player "F" key so a single
+    // press doesn't fire both handlers and race two requestFullscreen
+    // calls against each other.
+    disableFullscreenShortcut?: boolean;
+    // For hosts that mount several players at once (the camera grid): a window
+    // level shortcut would hit every instance, so those surfaces provide their
+    // own per-player controls instead. Also suppresses the built-in unmute pill,
+    // which would otherwise sit next to the host's own mute button.
+    disableShortcuts?: boolean;
+    // Opt-in to native Picture-in-Picture. Only enabled for live game
+    // streams on mobile — demo playback and highlights stay PIP-locked.
+    enablePip?: boolean;
+    // Fill the container instead of letterboxing. Only for webcam tiles, which
+    // are small and want the height: a game stream must never be cropped.
+    cover?: boolean;
+    // Whether to negotiate the audio track at all. A grid of ten camera tiles
+    // that are all muted still pays for ten opus streams -- decoded, jitter
+    // buffered and paid for in bandwidth -- for audio nobody can hear. Hosts
+    // that start muted pass false and flip it when the viewer asks to listen,
+    // which costs one reconnect on that tile and nothing anywhere else.
+    audio?: boolean;
+  }>(),
+  {
+    // Vue casts an absent boolean prop to false, so "on unless a host opts out"
+    // must be an explicit default or every host that omits it gets no audio.
+    audio: true,
+  },
+);
 
 // The negotiated stream, for hosts that need to do something with it besides
 // play it. Null when the connection goes away.
 const emit = defineEmits<{ (e: "stream", stream: MediaStream | null): void }>();
 
-const wantsAudio = computed(() => props.audio !== false);
+const wantsAudio = computed(() => props.audio);
 
 const videoRef = ref<HTMLVideoElement | null>(null);
 const status = ref<
@@ -263,6 +270,7 @@ function tryPlay() {
   return el.play().catch((err) => {
     console.debug("[whep] autoplay blocked:", err?.name ?? err);
     el.muted = true;
+    isMuted.value = true;
     return el.play().catch((retryErr) => {
       console.warn(
         "[whep] autoplay blocked after retry:",

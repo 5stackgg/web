@@ -6159,11 +6159,6 @@
         "description": "Lascia vuoto uno dei due per non porre limiti. Entrambi vuoti: aperto a qualsiasi rank.",
         "invalid_range": "L'ELO max deve essere almeno pari all'ELO min."
       },
-      "regions": {
-        "label": "Regioni preferite",
-        "description": "Dove vengono ospitati i match di questo torneo. Non è un filtro sui giocatori: 5stack non ha dati di regione per singolo giocatore.",
-        "empty": "Nessuna regione al momento disponibile."
-      },
       "invite_only": {
         "label": "Solo su invito",
         "description": "Le iscrizioni non sono pubbliche. Gli organizzatori invitano direttamente team e giocatori, oppure condividono un link d'invito."

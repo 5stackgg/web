@@ -14,19 +14,18 @@ export const REGISTRATION_TYPES = ["teams", "free_agents", "both"] as const;
 export type RegistrationType = (typeof REGISTRATION_TYPES)[number];
 
 /**
- * Two of the tournament columns share a name with a match_options field that
- * lives on the SAME vee-validate form in the create wizard — `regions` (server
- * region veto) and `check_in_setting` (who readies up for a match). Binding the
- * tournament value to either name silently overwrites the match option, so the
- * form keys are namespaced and translated back to real column names in
- * `registrationColumns()`. Never bind a tournament control to the bare name.
+ * `check_in_setting` shares its name with a match_options field (who readies up
+ * for a match) that lives on the SAME vee-validate form in the create wizard.
+ * Binding the tournament value to that name silently overwrites the match
+ * option, so the form keys are namespaced and translated back to real column
+ * names in `registrationColumns()`. Never bind a tournament control to the bare
+ * name.
  */
 export const REGISTRATION_FIELD = {
   registration_type: "registration_type",
   min_role: "min_role",
   min_elo: "min_elo",
   max_elo: "max_elo",
-  regions: "registration_regions",
   invite_only: "invite_only",
   check_in_required: "check_in_required",
   check_in_setting: "team_check_in_setting",
@@ -76,7 +75,6 @@ export function registrationSchemaShape(component: any) {
       },
       { message: component.$t("tournament.registration.rank.invalid_range") },
     ),
-    [REGISTRATION_FIELD.regions]: z.string().array().default([]),
     [REGISTRATION_FIELD.invite_only]: z.boolean().default(false),
     [REGISTRATION_FIELD.check_in_required]: z.boolean().default(false),
     [REGISTRATION_FIELD.check_in_setting]: z
@@ -127,7 +125,6 @@ export function registrationColumns(values: Record<string, any>) {
     min_role: values[REGISTRATION_FIELD.min_role] || null,
     min_elo: values[REGISTRATION_FIELD.min_elo] ?? null,
     max_elo: values[REGISTRATION_FIELD.max_elo] ?? null,
-    regions: values[REGISTRATION_FIELD.regions] ?? [],
     invite_only: !!values[REGISTRATION_FIELD.invite_only],
     check_in_required: !!values[REGISTRATION_FIELD.check_in_required],
     check_in_setting:
@@ -153,7 +150,6 @@ export function registrationFormValues(tournament: Record<string, any>) {
       tournament.min_elo != null ? Number(tournament.min_elo) : null,
     [REGISTRATION_FIELD.max_elo]:
       tournament.max_elo != null ? Number(tournament.max_elo) : null,
-    [REGISTRATION_FIELD.regions]: [...(tournament.regions ?? [])],
     [REGISTRATION_FIELD.invite_only]: !!tournament.invite_only,
     [REGISTRATION_FIELD.check_in_required]: !!tournament.check_in_required,
     [REGISTRATION_FIELD.check_in_setting]:

@@ -6159,11 +6159,6 @@
         "description": "Lad et af felterne stå tomt for ingen grænse. Begge tomme betyder åbent for alle ranks.",
         "invalid_range": "ELO maks. skal mindst være lig med ELO min."
       },
-      "regions": {
-        "label": "Foretrukne regioner",
-        "description": "Hvor kampene i denne turnering hostes. Det er ikke et spillerfilter — 5stack har ingen regionsdata pr. spiller.",
-        "empty": "Ingen regioner er tilgængelige lige nu."
-      },
       "invite_only": {
         "label": "Kun med invitation",
         "description": "Tilmeldingen er lukket for offentligheden. Arrangørerne inviterer hold og spillere direkte eller deler et invitationslink."

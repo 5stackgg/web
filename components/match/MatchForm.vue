@@ -196,6 +196,11 @@ import {
 } from "~/utilities/setupOptions";
 
 export default {
+  inject: {
+    refetchMatchStatic: {
+      default: () => () => {},
+    },
+  },
   props: {
     match: {
       type: Object,
@@ -477,6 +482,10 @@ export default {
             ],
           }),
         });
+
+        // The lineup size limits and the veto type are derived from these
+        // options, and the match page holds them outside its subscription.
+        await this.refetchMatchStatic();
 
         toast({
           title: this.$t("pages.matches.match_updated"),

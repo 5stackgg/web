@@ -1214,6 +1214,9 @@ export default {
               name: true,
               start: true,
               status: true,
+              // Cast: current_stage is a new computed field; drop it once
+              // `yarn codegen` has run against a migrated stack.
+              ...({ current_stage: true } as {}),
               auto_start: true,
               scheduling_mode: true,
               awards_enabled: true,

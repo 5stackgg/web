@@ -28,10 +28,16 @@ export const tournamentRegistrationFields: Record<string, boolean> = {
   check_in_open: true,
 };
 
+// Computed by the API; merged in for the same pre-codegen reason as above.
+export const tournamentProgressFields: Record<string, boolean> = {
+  current_stage: true,
+};
+
 export const simpleTournamentFields = Selector("tournaments")({
   id: true,
   name: true,
   start: true,
+  status: true,
   description: true,
   logo: true,
   banner: true,
@@ -132,4 +138,8 @@ export const simpleTournamentFields = Selector("tournaments")({
   ],
 });
 
-Object.assign(simpleTournamentFields, tournamentRegistrationFields);
+Object.assign(
+  simpleTournamentFields,
+  tournamentRegistrationFields,
+  tournamentProgressFields,
+);

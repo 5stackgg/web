@@ -118,6 +118,7 @@ import {
         v-if="shouldShowTabs"
         v-model="activeTab"
         default-value="stage-1"
+        @update:model-value="stagePicked = true"
         class="w-full"
       >
         <!-- The stage strip scrolls horizontally rather than wrapping, so the
@@ -698,6 +699,7 @@ export default {
       editStageDialogs: {} as Record<number, boolean>,
       deleteAlertDialogs: {} as Record<number, boolean>,
       activeTab: "stage-1",
+      stagePicked: false,
     };
   },
   computed: {
@@ -748,6 +750,22 @@ export default {
         if (!stageNumbers.includes(this.activeStageNumber)) {
           this.activeTab = `stage-${stageNumbers[0]}`;
         }
+      },
+    },
+    // Land on the stage being played, and keep following it until the viewer
+    // picks a tab themselves.
+    "tournament.current_stage": {
+      immediate: true,
+      handler(stage: number | null) {
+        if (
+          this.stagePicked ||
+          this.activeTab === "add-stage" ||
+          stage == null ||
+          !this.stageNumbers.includes(stage)
+        ) {
+          return;
+        }
+        this.activeTab = `stage-${stage}`;
       },
     },
   },

@@ -39033,6 +39033,7 @@ export const AllTypesProps: Record<string,any> = {
 		check_in_setting:"e_check_in_settings_enum_comparison_exp",
 		check_in_started:"Boolean_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
+		current_stage:"Int_comparison_exp",
 		description:"String_comparison_exp",
 		discord_guild_id:"String_comparison_exp",
 		discord_notifications_enabled:"Boolean_comparison_exp",
@@ -39097,6 +39098,7 @@ export const AllTypesProps: Record<string,any> = {
 		stages_aggregate:"tournament_stages_aggregate_bool_exp",
 		start:"timestamptz_comparison_exp",
 		status:"e_tournament_status_enum_comparison_exp",
+		substitutes_enabled:"Boolean_comparison_exp",
 		teams:"tournament_teams_bool_exp",
 		teams_aggregate:"tournament_teams_aggregate_bool_exp"
 	},
@@ -39228,6 +39230,7 @@ export const AllTypesProps: Record<string,any> = {
 		check_in_setting:"order_by",
 		check_in_started:"order_by",
 		created_at:"order_by",
+		current_stage:"order_by",
 		description:"order_by",
 		discord_guild_id:"order_by",
 		discord_notifications_enabled:"order_by",
@@ -39284,6 +39287,7 @@ export const AllTypesProps: Record<string,any> = {
 		stages_aggregate:"tournament_stages_aggregate_order_by",
 		start:"order_by",
 		status:"order_by",
+		substitutes_enabled:"order_by",
 		teams_aggregate:"tournament_teams_aggregate_order_by"
 	},
 	tournaments_pk_columns_input:{
@@ -66703,6 +66707,7 @@ export const ReturnTypes: Record<string,any> = {
 		check_in_setting:"e_check_in_settings_enum",
 		check_in_started:"Boolean",
 		created_at:"timestamptz",
+		current_stage:"Int",
 		description:"String",
 		discord_guild_id:"String",
 		discord_notifications_enabled:"Boolean",
@@ -66767,6 +66772,7 @@ export const ReturnTypes: Record<string,any> = {
 		stages_aggregate:"tournament_stages_aggregate",
 		start:"timestamptz",
 		status:"e_tournament_status_enum",
+		substitutes_enabled:"Boolean",
 		teams:"tournament_teams",
 		teams_aggregate:"tournament_teams_aggregate"
 	},
@@ -66790,6 +66796,7 @@ export const ReturnTypes: Record<string,any> = {
 	tournaments_avg_fields:{
 		check_in_closes_before_minutes:"Float",
 		check_in_opens_before_minutes:"Float",
+		current_stage:"Int",
 		latitude:"Float",
 		longitude:"Float",
 		max_elo:"Float",
@@ -66807,6 +66814,7 @@ export const ReturnTypes: Record<string,any> = {
 		check_in_ends_at:"timestamptz",
 		check_in_opens_before_minutes:"Int",
 		created_at:"timestamptz",
+		current_stage:"Int",
 		description:"String",
 		discord_guild_id:"String",
 		discord_role_id:"String",
@@ -66837,6 +66845,7 @@ export const ReturnTypes: Record<string,any> = {
 		check_in_ends_at:"timestamptz",
 		check_in_opens_before_minutes:"Int",
 		created_at:"timestamptz",
+		current_stage:"Int",
 		description:"String",
 		discord_guild_id:"String",
 		discord_role_id:"String",
@@ -66866,6 +66875,7 @@ export const ReturnTypes: Record<string,any> = {
 	tournaments_stddev_fields:{
 		check_in_closes_before_minutes:"Float",
 		check_in_opens_before_minutes:"Float",
+		current_stage:"Int",
 		latitude:"Float",
 		longitude:"Float",
 		max_elo:"Float",
@@ -66878,6 +66888,7 @@ export const ReturnTypes: Record<string,any> = {
 	tournaments_stddev_pop_fields:{
 		check_in_closes_before_minutes:"Float",
 		check_in_opens_before_minutes:"Float",
+		current_stage:"Int",
 		latitude:"Float",
 		longitude:"Float",
 		max_elo:"Float",
@@ -66890,6 +66901,7 @@ export const ReturnTypes: Record<string,any> = {
 	tournaments_stddev_samp_fields:{
 		check_in_closes_before_minutes:"Float",
 		check_in_opens_before_minutes:"Float",
+		current_stage:"Int",
 		latitude:"Float",
 		longitude:"Float",
 		max_elo:"Float",
@@ -66902,6 +66914,7 @@ export const ReturnTypes: Record<string,any> = {
 	tournaments_sum_fields:{
 		check_in_closes_before_minutes:"Int",
 		check_in_opens_before_minutes:"Int",
+		current_stage:"Int",
 		latitude:"float8",
 		longitude:"float8",
 		max_elo:"Int",
@@ -66914,6 +66927,7 @@ export const ReturnTypes: Record<string,any> = {
 	tournaments_var_pop_fields:{
 		check_in_closes_before_minutes:"Float",
 		check_in_opens_before_minutes:"Float",
+		current_stage:"Int",
 		latitude:"Float",
 		longitude:"Float",
 		max_elo:"Float",
@@ -66926,6 +66940,7 @@ export const ReturnTypes: Record<string,any> = {
 	tournaments_var_samp_fields:{
 		check_in_closes_before_minutes:"Float",
 		check_in_opens_before_minutes:"Float",
+		current_stage:"Int",
 		latitude:"Float",
 		longitude:"Float",
 		max_elo:"Float",
@@ -66938,6 +66953,7 @@ export const ReturnTypes: Record<string,any> = {
 	tournaments_variance_fields:{
 		check_in_closes_before_minutes:"Float",
 		check_in_opens_before_minutes:"Float",
+		current_stage:"Int",
 		latitude:"Float",
 		longitude:"Float",
 		max_elo:"Float",

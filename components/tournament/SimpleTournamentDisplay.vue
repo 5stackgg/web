@@ -66,7 +66,14 @@ import MapDisplay from "~/components/MapDisplay.vue";
             variant="outline"
             class="text-xs bg-black/70 text-white border-white/30 backdrop-blur-sm"
           >
-            {{ stageCount }} {{ $t("tournament.stage.stages") }}
+            <template v-if="currentStage">
+              {{
+                $t("tournament.stage.stage_tab", { stage: currentStage.order })
+              }}
+            </template>
+            <template v-else>
+              {{ stageCount }} {{ $t("tournament.stage.stages") }}
+            </template>
           </Badge>
           <Badge
             v-if="singleStageType"
@@ -108,6 +115,7 @@ import MapDisplay from "~/components/MapDisplay.vue";
 <script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";
 import { tournamentPlayerRankLabel } from "~/utilities/tournamentPlayerRank";
+import { tournamentCurrentStage } from "~/utilities/tournamentCurrentStage";
 
 export default {
   props: {
@@ -148,6 +156,9 @@ export default {
     },
     stageCount() {
       return this.tournament?.stages?.length || 0;
+    },
+    currentStage() {
+      return tournamentCurrentStage(this.tournament);
     },
     singleStageType() {
       if (

@@ -139,6 +139,11 @@ export default {
       required: true,
     },
   },
+  inject: {
+    refetchTournamentStatic: {
+      default: () => () => {},
+    },
+  },
   apollo: {
     map_pools: {
       query: generateQuery({
@@ -357,6 +362,8 @@ export default {
             ],
           }),
         });
+
+        await this.refetchTournamentStatic();
 
         toast({ title: this.$t("tournament.updated") as string });
 

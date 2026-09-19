@@ -107,6 +107,11 @@ export default {
       required: true,
     },
   },
+  inject: {
+    refetchTournamentStatic: {
+      default: () => () => {},
+    },
+  },
   computed: {
     linkedTeams() {
       return this.tournament.organizer_teams ?? [];
@@ -140,6 +145,8 @@ export default {
           ],
         }),
       });
+
+      await this.refetchTournamentStatic();
     },
     async removeTeam(teamId: string) {
       await this.$apollo.mutate({
@@ -157,6 +164,8 @@ export default {
           ],
         }),
       });
+
+      await this.refetchTournamentStatic();
     },
   },
 };

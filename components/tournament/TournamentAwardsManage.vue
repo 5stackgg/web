@@ -26,6 +26,11 @@ export default {
   props: {
     tournament: { type: Object, required: true },
   },
+  inject: {
+    refetchTournamentStatic: {
+      default: () => () => {},
+    },
+  },
   data() {
     return {
       awards: [] as any[],
@@ -115,6 +120,10 @@ export default {
     startAdd() {
       this.adding = true;
     },
+    async onGranted() {
+      this.adding = false;
+      await this.refetchTournamentStatic();
+    },
     async remove(recipientId: string) {
       try {
         await this.$apollo.mutate({
@@ -123,6 +132,7 @@ export default {
           }),
           variables: { id: recipientId },
         });
+        await this.refetchTournamentStatic();
       } catch (err) {
         console.error("Failed to revoke award", err);
       }
@@ -196,7 +206,7 @@ export default {
         :tournament-id="tournament.id"
         :player-options="rosterGroups"
         :team-options="teamOptions"
-        @saved="adding = false"
+        @saved="onGranted"
       />
 
       <div

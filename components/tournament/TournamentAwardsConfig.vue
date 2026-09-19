@@ -56,6 +56,11 @@ export default {
       required: true,
     },
   },
+  inject: {
+    refetchTournamentStatic: {
+      default: () => () => {},
+    },
+  },
   data() {
     return {
       awards: [] as any[],
@@ -224,6 +229,7 @@ export default {
                 : null,
           },
         });
+        await this.refetchTournamentStatic();
       } catch (error) {
         console.error("Failed to save tournament award", error);
       } finally {
@@ -509,6 +515,8 @@ export default {
                 :delete-url="uploadUrl(uploadFor)"
                 :has-custom="hasOverrideImage(uploadFor)"
                 :current-src="overrideImage(uploadFor)"
+                @uploaded="refetchTournamentStatic"
+                @removed="refetchTournamentStatic"
               />
             </div>
           </div>

@@ -39086,7 +39086,6 @@ export const AllTypesProps: Record<string,any> = {
 		player_stats_aggregate:"v_tournament_player_stats_aggregate_bool_exp",
 		prizes:"tournament_prizes_bool_exp",
 		prizes_aggregate:"tournament_prizes_aggregate_bool_exp",
-		regions:"String_array_comparison_exp",
 		registration_type:"e_tournament_registration_types_enum_comparison_exp",
 		registration_unlocked:"Boolean_comparison_exp",
 		results:"v_team_tournament_results_bool_exp",
@@ -39163,7 +39162,6 @@ export const AllTypesProps: Record<string,any> = {
 		min_elo:"order_by",
 		name:"order_by",
 		organizer_steam_id:"order_by",
-		regions:"order_by",
 		scheduling_mode:"order_by",
 		start:"order_by"
 	},
@@ -39190,7 +39188,6 @@ export const AllTypesProps: Record<string,any> = {
 		min_elo:"order_by",
 		name:"order_by",
 		organizer_steam_id:"order_by",
-		regions:"order_by",
 		scheduling_mode:"order_by",
 		start:"order_by"
 	},
@@ -39278,7 +39275,6 @@ export const AllTypesProps: Record<string,any> = {
 		organizers_aggregate:"tournament_organizers_aggregate_order_by",
 		player_stats_aggregate:"v_tournament_player_stats_aggregate_order_by",
 		prizes_aggregate:"tournament_prizes_aggregate_order_by",
-		regions:"order_by",
 		registration_type:"order_by",
 		registration_unlocked:"order_by",
 		results_aggregate:"v_team_tournament_results_aggregate_order_by",
@@ -66760,7 +66756,6 @@ export const ReturnTypes: Record<string,any> = {
 		player_stats_aggregate:"v_tournament_player_stats_aggregate",
 		prizes:"tournament_prizes",
 		prizes_aggregate:"tournament_prizes_aggregate",
-		regions:"String",
 		registration_type:"e_tournament_registration_types_enum",
 		registration_unlocked:"Boolean",
 		results:"v_team_tournament_results",
@@ -66833,7 +66828,6 @@ export const ReturnTypes: Record<string,any> = {
 		missed_check_in_count:"Int",
 		name:"String",
 		organizer_steam_id:"bigint",
-		regions:"String",
 		scheduling_mode:"String",
 		start:"timestamptz"
 	},
@@ -66864,7 +66858,6 @@ export const ReturnTypes: Record<string,any> = {
 		missed_check_in_count:"Int",
 		name:"String",
 		organizer_steam_id:"bigint",
-		regions:"String",
 		scheduling_mode:"String",
 		start:"timestamptz"
 	},

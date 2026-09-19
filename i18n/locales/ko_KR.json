@@ -2337,10 +2337,6 @@
           "auto_clip_min_kills_ace": "에이스만 (5K)",
           "visibility_private": "비공개",
           "visibility_public": "공개",
-          "default_hud_mode": "기본 HUD 스타일",
-          "default_hud_mode_description": "게임 스트리머 파드가 부팅 시 라이브 스트림, 데모 재생, 배치 하이라이트에 불러오는 JTs Hud Manager 레이아웃입니다. 스트리머는 플레이어 컨트롤에서 스트림별로 스타일을 전환할 수 있습니다.",
-          "hud_mode_horizontal": "가로형",
-          "hud_mode_vertical": "세로형",
           "playback_section": "재생",
           "reparse_warning_title": "모든 데모를 다시 파싱합니다 — 매우 오래 걸릴 수 있습니다.",
           "reparse_warning_body": "데모는 한 번에 하나씩 재처리되며, 보유량에 따라 몇 시간에서 며칠까지 걸릴 수 있습니다. 정확히 이해하고 있을 때만, 또는 주요 업데이트로 데모 파싱 방식이 바뀐 이후에만 실행하세요. 업데이트로 추가된 새 통계는 매치를 조회할 때 자동으로 재파싱되므로, 이 기능은 전체를 한 번에 강제 실행할 때만 필요합니다.",
@@ -2387,7 +2383,8 @@
           "orphaned_scanning_short": "스캔 중…",
           "orphaned_demos_count": "데모 {count}개",
           "orphaned_highlights_count": "하이라이트 {count}개",
-          "orphaned_object_count": "파일 {count}개"
+          "orphaned_object_count": "파일 {count}개",
+          "hud_moved": "The broadcast HUD is now a library of importable bundles, managed in"
         },
         "update_map_pools": {
           "title": "맵 풀 자동 업데이트",
@@ -2691,6 +2688,21 @@
               "description": "팀이 필수 토너먼트 체크인을 놓쳤습니다. 진입할 때만 확인하므로 이미 진행 중인 대진표에 있는 플레이어는 자리를 유지합니다."
             }
           }
+        },
+        "broadcast_huds": {
+          "title": "Broadcast HUDs",
+          "description": "The HUD burned into live streams, demo playback and batch highlights. Import a JTs Hud Manager or Lexogrine bundle as a .zip and pick which one the game-streamer pod loads; streamers can still switch per-stream from the player controls.",
+          "import": "Import HUD",
+          "import_hint": "A .zip with hud.json at its root or in a single top-level folder.",
+          "imported": "HUD imported",
+          "import_failed": "Could not import that HUD",
+          "make_default": "Make default",
+          "is_default": "Default",
+          "default_set": "Default HUD updated",
+          "default_failed": "Could not set the default HUD",
+          "removed": "HUD removed",
+          "remove_failed": "Could not remove that HUD",
+          "signed": "Signed bundle"
         }
       },
       "language": {

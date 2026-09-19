@@ -547,14 +547,22 @@ export const useApplicationSettingsStore = defineStore(
       );
     });
 
-    // HUD layout the game-streamer pod boots (and the demo player should show
-    // as active). Legacy "default" folds into "horizontal"; anything but
-    // "vertical" is horizontal. Mirrors the api's resolveHudMode default.
-    const defaultHudMode = computed<"horizontal" | "vertical">(() => {
-      const v = settings.value?.find(
+    // Which broadcast_huds row the game-streamer pod boots (and the HUD pickers
+    // should show as active). Mirrors the api's resolveBroadcastHud: the new
+    // `public.` setting wins, and the legacy default_hud_mode is still read as
+    // the fallback so an instance that has never opened the HUD library keeps
+    // the layout it had. Those two legacy values are the seeded builtin slugs.
+    const defaultBroadcastHud = computed<string>(() => {
+      const preferred = settings.value?.find(
+        (setting) => setting.name === "public.default_broadcast_hud",
+      )?.value;
+      if (preferred) {
+        return preferred;
+      }
+      const legacy = settings.value?.find(
         (setting) => setting.name === "default_hud_mode",
       )?.value;
-      return v === "vertical" ? "vertical" : "horizontal";
+      return legacy === "vertical" ? "default-vertical" : "default-horizontal";
     });
 
     const availableRegions = ref<Region[]>([]);
@@ -725,7 +733,7 @@ export const useApplicationSettingsStore = defineStore(
       scrimFinderEnabled,
       pluginsEnabled,
       gamePluginsEnabled,
-      defaultHudMode,
+      defaultBroadcastHud,
       canCreateMatch,
       currentPluginVersion,
       gameServerPluginRuntime,

@@ -47,6 +47,7 @@ import {
 } from "~/components/ui/tooltip";
 import { useDemoPlayback } from "~/composables/useDemoPlayback";
 import { useClipEditor } from "~/composables/useClipEditor";
+import { useBroadcastHuds } from "~/composables/useBroadcastHuds";
 import RoundSelector from "~/components/match/RoundSelector.vue";
 import SpectatorSlots from "~/components/stream-deck/SpectatorSlots.vue";
 import { resolveKeyToRealSlot } from "~/utilities/streamerSpecSlots";
@@ -87,22 +88,28 @@ const {
   reloadDemo,
   toggleXray,
   toggleHud,
-  setHudMode,
+  setHud,
   toggleHudSides,
   toggleDemoUI,
   toggleAutodirector,
   setScoreboard,
 } = useDemoPlayback();
 
-// JTs Hud's default bundle declares variants ["default","horizontal",
-// "vertical"] in hud.json — but `default` and `horizontal` render the
-// same layout, so we only expose the two distinct ones. Legacy
-// `default` payloads are folded into `horizontal` at the boundary.
-const HUD_MODES: Array<"horizontal" | "vertical"> = ["horizontal", "vertical"];
-const HUD_MODE_LABELS: Record<(typeof HUD_MODES)[number], string> = {
-  horizontal: "Horizontal",
-  vertical: "Vertical",
-};
+// The HUD library, imports included. This used to be a hardcoded pair, because
+// horizontal/vertical were the only two things the pod could load — they were
+// never separate HUDs, only layouts of the one bundled HUD, and they are now
+// the two seeded builtin rows alongside whatever an administrator has imported.
+const { huds: broadcastHuds, fetch: fetchBroadcastHuds } = useBroadcastHuds();
+onMounted(() => {
+  void fetchBroadcastHuds();
+});
+
+// The picker sits in a toolbar, so a long library has to stay usable: the
+// builtins and the active HUD are always shown, and the rest ride behind the
+// same row. Label falls back to the slug so a row with a blank name is still
+// selectable rather than invisible.
+const hudLabel = (hud: { name?: string | null; slug: string }) =>
+  hud.name?.trim() || hud.slug;
 
 // Slot identity is GSI — survives a demo attached to the wrong match_map.
 const ctSlots = computed(() =>
@@ -1188,31 +1195,33 @@ const killMarkers = computed<Marker[]>(() => {
             }}</TooltipContent>
           </Tooltip>
 
-          <!-- HUD bundle picker. Hot-swaps the active JTs Hud Manager
-               BrowserWindow in the streamer pod via /spec/hud-mode →
-               POST /api/overlay/start. Ephemeral; reset by a pod
-               restart to whatever HUD_MODE the api stamped. The
-               trailing Eye toggle lives inside the picker (where the
-               legacy "Default" segment used to sit) so visibility is
-               framed as a third HUD state alongside the two layouts. -->
+          <!-- HUD picker, listing the panel's HUD library. Hot-swaps the
+               active JTs Hud Manager BrowserWindow in the streamer pod via
+               /spec/hud-mode → POST /api/overlay/start; an imported HUD is
+               installed into the pod on first use. Ephemeral; reset by a pod
+               restart to whatever the api stamped. The trailing Eye toggle
+               lives inside the picker (where the legacy "Default" segment
+               used to sit) so visibility is framed as another HUD state
+               alongside the bundles. -->
           <Tooltip>
             <TooltipTrigger as-child>
               <div
                 class="inline-flex rounded-md border border-border/60 bg-card/40 p-0.5"
               >
                 <button
-                  v-for="m in HUD_MODES"
-                  :key="m"
+                  v-for="hud in broadcastHuds"
+                  :key="hud.slug"
                   type="button"
-                  class="px-2 h-8 font-mono text-[0.6rem] uppercase tracking-[0.18em] rounded-sm cursor-pointer transition-colors"
+                  class="px-2 h-8 font-mono text-[0.6rem] uppercase tracking-[0.18em] rounded-sm cursor-pointer transition-colors whitespace-nowrap"
                   :class="
-                    store.hudVisible && store.hudMode === m
+                    store.hudVisible && store.hudSlug === hud.slug
                       ? 'bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
                       : 'text-muted-foreground hover:text-foreground'
                   "
-                  @click="setHudMode(m)"
+                  :title="hud.description || hudLabel(hud)"
+                  @click="setHud(hud.slug)"
                 >
-                  {{ HUD_MODE_LABELS[m] }}
+                  {{ hudLabel(hud) }}
                 </button>
                 <button
                   type="button"

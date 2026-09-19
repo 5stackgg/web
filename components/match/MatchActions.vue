@@ -390,6 +390,11 @@ import {
   effectivePluginRuntime,
 } from "~/constants/rconCommands";
 export default {
+  inject: {
+    refetchMatchStatic: {
+      default: () => () => {},
+    },
+  },
   props: {
     match: {
       type: Object,
@@ -737,6 +742,10 @@ export default {
           callForOrganizer: [{ match_id: this.match.id }, { success: true }],
         }),
       });
+
+      // requested_organizer is what disables this item, and it is read from
+      // the match's static half rather than the subscription.
+      await this.refetchMatchStatic();
 
       toast({
         title: this.$t("match.actions.requested_organizer"),

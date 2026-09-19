@@ -785,7 +785,32 @@ export default {
     this.inlineChatObserver?.disconnect();
     this.inlineChatObserver = null;
   },
+  provide() {
+    return {
+      refetchMatchStatic: () => this.refetchMatchStatic(),
+    };
+  },
   watch: {
+    matchContext: {
+      immediate: true,
+      handler(context) {
+        useMatchContext().value = context;
+      },
+    },
+    // A status change is what turns most of the static half over: who may
+    // cancel, check in or assign a server all follow from it.
+    "matchLive.status"(status, previousStatus) {
+      if (previousStatus !== undefined && status !== previousStatus) {
+        void this.refetchMatchStatic();
+      }
+    },
+    // Assigning a server does not move the status, but it does decide whether
+    // this viewer is offered the server controls.
+    "matchLive.server_id"(serverId, previousServerId) {
+      if (previousServerId !== undefined && serverId !== previousServerId) {
+        void this.refetchMatchStatic();
+      }
+    },
     // The inline chat on this page is a real room being read, and until now it
     // told the server nothing -- so reading a match chat here left the badge up
     // everywhere else and kept the phone buzzing for messages already on
@@ -811,7 +836,8 @@ export default {
   },
   data() {
     return {
-      match: undefined,
+      matchLive: undefined,
+      matchStatic: undefined,
       vetoPickCount: undefined,
       cameraReady: false,
       cameraOverlayDismissed: false,
@@ -848,21 +874,19 @@ export default {
               e_region: {
                 description: true,
               },
-              is_coach: true,
-              is_captain: true,
-              is_in_lineup: true,
-              is_organizer: true,
+              // The permission and membership fields moved to `matchStatic`.
+              // Each is a function call the database re-runs for this row on
+              // every tick, and none of them change without either a status
+              // change or an organizer action -- both of which refetch that
+              // half explicitly.
+              //
+              // can_start and can_check_in stay here: they read lineup
+              // readiness, which is live. can_start is only costly in the
+              // pre-match states anyway, since it returns on its first status
+              // check once a match is Live or over.
               can_start: true,
-              can_schedule: true,
               can_check_in: true,
-              requested_organizer: true,
-              is_tournament_match: true,
               label: true,
-              can_cancel: true,
-              can_assign_server: true,
-              can_stream_live: true,
-              min_players_per_lineup: true,
-              max_players_per_lineup: true,
               server_id: true,
               server_type: true,
               server_region: true,
@@ -871,7 +895,6 @@ export default {
               lineup_1_id: true,
               lineup_2_id: true,
               winning_lineup_id: true,
-              map_veto_type: true,
               map_veto_picking_lineup_id: true,
               region_veto_picking_lineup_id: true,
               veto_pick_expires_at: true,
@@ -883,21 +906,9 @@ export default {
               scheduled_at: true,
               ended_at: true,
               server_error: true,
-              organizer: playerFields,
               options: {
                 ...matchOptionsFields,
               },
-              tournament_brackets: [
-                { limit: 1 },
-                {
-                  stage: {
-                    tournament: {
-                      id: true,
-                      name: true,
-                    },
-                  },
-                },
-              ],
               region_veto_picks: {
                 type: true,
                 region: true,
@@ -1019,8 +1030,8 @@ export default {
 
           if (!match) {
             // Deleted/gone — leave. Canceling keeps the row, so we stay.
-            if (this.match !== null) {
-              this.match = null;
+            if (this.matchLive !== null) {
+              this.matchLive = null;
               useMatchContext().value = null;
               navigateTo("/watch");
             }
@@ -1041,25 +1052,87 @@ export default {
             return;
           }
 
-          this.match = match;
-
-          const mc = useMatchContext();
-          const displayText =
-            match.label ||
-            `${match.lineup_1?.name ?? this.$t("common.tbd")} vs ${match.lineup_2?.name ?? this.$t("common.tbd")}`;
-          const tournament = match.tournament_brackets?.[0]?.stage?.tournament;
-          mc.value = {
-            id: match.id,
-            displayText,
-            ...(tournament
-              ? { tournament: { id: tournament.id, name: tournament.name } }
-              : {}),
-          };
+          this.matchLive = match;
         },
       },
     },
+    // The half of the match that only an organizer action or a status change
+    // can move. Fetched once instead of on every tick of the subscription
+    // above; see the note on the permission fields there.
+    matchStatic: {
+      variables: function () {
+        return {
+          matchId: this.$route.params.id,
+        };
+      },
+      fetchPolicy: "cache-and-network",
+      query: typedGql("query")({
+        matches_by_pk: [
+          {
+            id: $("matchId", "uuid!"),
+          },
+          {
+            id: true,
+            is_coach: true,
+            is_captain: true,
+            is_in_lineup: true,
+            is_organizer: true,
+            can_schedule: true,
+            can_cancel: true,
+            can_assign_server: true,
+            can_stream_live: true,
+            requested_organizer: true,
+            is_tournament_match: true,
+            min_players_per_lineup: true,
+            max_players_per_lineup: true,
+            map_veto_type: true,
+            organizer: playerFields,
+            tournament_brackets: [
+              { limit: 1 },
+              {
+                stage: {
+                  tournament: {
+                    id: true,
+                    name: true,
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      }),
+      update: (data: any) => data.matches_by_pk,
+    },
   },
   computed: {
+    // Both halves presented as the single object the rest of the page (and
+    // every child it feeds) already expects, so the split stops here.
+    // `matchLive` gates it: until the subscription has said the match exists
+    // there is nothing to show, and a null from it means the row is gone.
+    match(): Record<string, any> | null | undefined {
+      if (!this.matchLive) {
+        return this.matchLive;
+      }
+      return { ...this.matchStatic, ...this.matchLive };
+    },
+    // Assigned on every tick before the split as well -- this keeps that
+    // behaviour and simply picks the title back up once the static half,
+    // which owns `label` and the tournament, has landed.
+    matchContext(): Record<string, any> | null {
+      if (!this.match) {
+        return null;
+      }
+      const tournament = this.match.tournament_brackets?.[0]?.stage?.tournament;
+      return {
+        id: this.match.id,
+        displayText:
+          this.match.label ||
+          `${this.match.lineup_1?.name ?? this.$t("common.tbd")} vs ${this.match.lineup_2?.name ?? this.$t("common.tbd")}`,
+        ...(tournament
+          ? { tournament: { id: tournament.id, name: tournament.name } }
+          : {}),
+      };
+    },
     apiDomain() {
       return useRuntimeConfig().public.apiDomain;
     },
@@ -1347,6 +1420,11 @@ export default {
     },
   },
   methods: {
+    // Injected by the organizer controls, which change fields this half owns
+    // and would otherwise not see their own edit until the next status change.
+    refetchMatchStatic() {
+      return this.$apollo?.queries?.matchStatic?.refetch();
+    },
     // Tracks the camera both ways. It used to be a one-way latch -- the overlay
     // only ever announced going live -- so a player who closed their camera mid
     // match was left with no gate, no banner and no way back to the QR code.

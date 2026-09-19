@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import {
@@ -12,10 +12,12 @@ import {
   SlidersHorizontal,
   X,
 } from "lucide-vue-next";
+import { useSubscription } from "@vue/apollo-composable";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
 import { excludeLeagueTournaments } from "~/graphql/tournamentFilters";
+import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, order_by, e_tournament_status_enum } from "~/generated/zeus";
 import {
   InputGroup,
@@ -357,6 +359,118 @@ const curatedSectionsEmpty = computed(
   () => upcomingCount.value === 0 && recentCount.value === 0,
 );
 
+// Live and registration-open are pushed over a subscription so a bracket going
+// live shows up without a refresh. Paused while a filter is active — the
+// drilldown query below owns the list then.
+const curatedSubscriptionsEnabled = computed(() => !hasActiveFilter.value);
+
+function curatedStatusSubscription(status: e_tournament_status_enum) {
+  const { result } = useSubscription(
+    typedGql("subscription")({
+      tournaments: [
+        {
+          where: {
+            status: {
+              _eq: $("status", "e_tournament_status_enum"),
+            },
+            // Hide league-internal tournaments.
+            ...({ _not: { league_season_division: {} } } as any),
+          },
+          order_by: [{}, { start: order_by.asc }],
+        },
+        simpleTournamentFields,
+      ],
+    }),
+    { status },
+    () => ({ enabled: curatedSubscriptionsEnabled.value }),
+  );
+
+  return result;
+}
+
+const liveResult = curatedStatusSubscription(e_tournament_status_enum.Live);
+const registrationOpenResult = curatedStatusSubscription(
+  e_tournament_status_enum.RegistrationOpen,
+);
+
+const liveTournaments = computed<any[]>(
+  () => (liveResult.value as any)?.tournaments ?? [],
+);
+const registrationOpenTournaments = computed<any[]>(
+  () => (registrationOpenResult.value as any)?.tournaments ?? [],
+);
+
+// An empty push is still an answer, so "has a result object" is the test —
+// not "has rows".
+const curatedLoading = computed(
+  () =>
+    liveResult.value === undefined || registrationOpenResult.value === undefined,
+);
+
+const canCreateTournament = computed(() => {
+  const authStore = useAuthStore();
+  if (!authStore.me) {
+    return false;
+  }
+  return authStore.isRoleAbove(
+    useApplicationSettingsStore().tournamentCreateRole,
+  );
+});
+
+// Live and registration arrive over the websocket; the two RecentTournaments
+// rows fetch over HTTP. The websocket loses that race by a wide margin, and if
+// it never connects at all it never loses it — so a gate that only waits would
+// leave the page skeleton sitting above sections that already painted their
+// real cards. Reveal after this long regardless and let the stragglers fade in
+// on their own.
+const CURATED_REVEAL_TIMEOUT = 2500;
+
+const curatedRevealTimedOut = ref(false);
+let curatedRevealTimer: ReturnType<typeof setTimeout> | null = null;
+
+function startCuratedRevealTimer() {
+  if (curatedRevealTimer) clearTimeout(curatedRevealTimer);
+  curatedRevealTimedOut.value = false;
+  curatedRevealTimer = setTimeout(() => {
+    curatedRevealTimedOut.value = true;
+  }, CURATED_REVEAL_TIMEOUT);
+}
+
+onMounted(startCuratedRevealTimer);
+
+// Filtering unmounts the curated sections, so coming back is a fresh load for
+// them: the counts they reported are stale and the deadline from page load has
+// long since fired. Reset both, or the sections pop in one by one on the way
+// back.
+watch(hasActiveFilter, (filtered) => {
+  if (filtered) {
+    upcomingCount.value = null;
+    recentCount.value = null;
+    return;
+  }
+  startCuratedRevealTimer();
+});
+
+onBeforeUnmount(() => {
+  if (curatedRevealTimer) clearTimeout(curatedRevealTimer);
+});
+
+// One gate for the whole curated view. Every section is revealed on the same
+// tick so the page lands at its final height once, instead of growing a section
+// at a time as four independent sources report in.
+const curatedReady = computed(() => {
+  if (curatedRevealTimedOut.value) {
+    return true;
+  }
+  return !curatedLoading.value && curatedSectionsSettled.value;
+});
+
+// Placeholders stand in for TournamentFeatureCard, so they carry its exact
+// height and radius — a skeleton of the wrong size just moves the jump from
+// "content appears" to "content resizes".
+const featureCardSkeletonClasses =
+  "h-[220px] w-full rounded-xl sm:h-[250px] lg:h-[290px]";
+
 const seeAllRegistration = {
   path: "/tournaments",
   query: { status: "registration" },
@@ -504,18 +618,18 @@ const seeAllFinished = { path: "/tournaments", query: { status: "finished" } };
       </div>
     </PageTransition>
 
-    <PageTransition v-if="filteredLoading" :delay="120" class="mt-3">
-      <div class="space-y-4">
-        <Skeleton v-for="i in 4" :key="i" class="h-40 w-full rounded-md" />
+    <!-- All three states share one transition so re-filtering cross-fades in
+         place instead of the outgoing list sliding up past the incoming one. -->
+    <PageTransition :delay="120" class="mt-3" swap>
+      <div v-if="filteredLoading" key="loading" class="space-y-4">
+        <Skeleton v-for="i in 4" :key="i" :class="featureCardSkeletonClasses" />
       </div>
-    </PageTransition>
 
-    <PageTransition
-      v-else-if="filteredTournaments.length > 0"
-      :delay="120"
-      class="mt-3"
-    >
-      <div class="space-y-4">
+      <div
+        v-else-if="filteredTournaments.length > 0"
+        key="results"
+        class="space-y-4"
+      >
         <TournamentFeatureCard
           v-for="tournament in filteredTournaments"
           :key="tournament.id"
@@ -524,10 +638,8 @@ const seeAllFinished = { path: "/tournaments", query: { status: "finished" } };
           :status-label="drilldownLabel"
         />
       </div>
-    </PageTransition>
 
-    <PageTransition v-else :delay="120" class="mt-3">
-      <Empty class="min-h-[200px]">
+      <Empty v-else key="empty" class="min-h-[200px]">
         <EmptyTitle>{{
           $t("pages.tournaments.filter.no_results_title")
         }}</EmptyTitle>
@@ -549,90 +661,109 @@ const seeAllFinished = { path: "/tournaments", query: { status: "finished" } };
 
   <!-- Curated section view (no active filters) -->
   <template v-else>
-    <PageTransition
-      v-if="curatedLoading || !curatedSectionsSettled"
-      :delay="100"
-      class="mt-6"
-    >
-      <div class="space-y-4">
-        <Skeleton v-for="i in 3" :key="i" class="h-40 w-full rounded-md" />
+    <PageTransition v-if="!curatedReady" :delay="100" class="mt-6" swap>
+      <div class="space-y-6">
+        <div v-for="i in 2" :key="i">
+          <Skeleton class="mb-3 h-3 w-40 rounded-sm" />
+          <Skeleton :class="featureCardSkeletonClasses" />
+        </div>
       </div>
     </PageTransition>
 
-    <PageTransition
-      v-else-if="
-        liveTournaments.length === 0 &&
-        registrationOpenTournaments.length === 0 &&
-        curatedSectionsEmpty
-      "
-      :delay="100"
-      class="mt-6"
+    <!-- The sections stay mounted behind the skeleton: RecentTournaments only
+         fetches once it is mounted, and it is one of the things being waited
+         on. Clipped to zero height rather than display:none so its cards keep
+         their layout and have their banners decoded before they are shown. -->
+    <div
+      :class="[
+        'transition-opacity duration-300 ease-out motion-reduce:transition-none',
+        curatedReady ? 'opacity-100' : 'h-0 overflow-hidden opacity-0',
+      ]"
+      :inert="!curatedReady || undefined"
+      :aria-hidden="curatedReady ? undefined : 'true'"
     >
-      <Empty class="min-h-[180px]">
-        <EmptyTitle>{{
-          $t("pages.tournaments.no_tournaments_title")
-        }}</EmptyTitle>
-        <EmptyDescription>{{
-          $t("pages.tournaments.no_tournaments_description")
-        }}</EmptyDescription>
-      </Empty>
-    </PageTransition>
+      <PageTransition
+        v-if="
+          liveTournaments.length === 0 &&
+          registrationOpenTournaments.length === 0 &&
+          curatedSectionsEmpty
+        "
+        :delay="100"
+        class="mt-6"
+      >
+        <Empty class="min-h-[180px]">
+          <EmptyTitle>{{
+            $t("pages.tournaments.no_tournaments_title")
+          }}</EmptyTitle>
+          <EmptyDescription>{{
+            $t("pages.tournaments.no_tournaments_description")
+          }}</EmptyDescription>
+        </Empty>
+      </PageTransition>
 
-    <PageTransition v-if="liveTournaments.length > 0" :delay="100" class="mt-6">
-      <section class="space-y-4">
-        <div :class="tacticalSectionLabelClasses">
-          <span :class="tacticalSectionTickClasses"></span>
-          {{ $t("pages.tournaments.section_live") }}
-        </div>
-        <div class="space-y-4">
-          <TournamentFeatureCard
-            v-for="tournament in liveTournaments"
-            :key="tournament.id"
-            :tournament="tournament"
-            status-variant="live"
-            :status-label="$t('common.live')"
-          />
-        </div>
-      </section>
-    </PageTransition>
-
-    <PageTransition
-      v-if="registrationOpenTournaments.length > 0"
-      :delay="125"
-      class="mt-6"
-    >
-      <section class="space-y-4">
-        <div
-          :class="[
-            tacticalSectionLabelClasses,
-            '!flex w-full items-center justify-between',
-          ]"
-        >
-          <span class="inline-flex items-center gap-2">
+      <PageTransition
+        v-if="liveTournaments.length > 0"
+        :delay="100"
+        class="mt-6"
+      >
+        <section class="space-y-4">
+          <div :class="tacticalSectionLabelClasses">
             <span :class="tacticalSectionTickClasses"></span>
-            {{ $t("pages.tournaments.section_registration") }}
-          </span>
-          <NuxtLink
-            :to="seeAllRegistration"
-            class="inline-flex items-center gap-1 font-mono text-[0.65rem] tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors normal-case"
-          >
-            {{ $t("tournament.recent.see_all") }}
-          </NuxtLink>
-        </div>
-        <div class="space-y-4">
-          <TournamentFeatureCard
-            v-for="tournament in registrationOpenTournaments"
-            :key="tournament.id"
-            :tournament="tournament"
-            status-variant="registration"
-            :status-label="$t('pages.tournaments.open_for_registration')"
-          />
-        </div>
-      </section>
-    </PageTransition>
+            {{ $t("pages.tournaments.section_live") }}
+          </div>
+          <div class="space-y-4">
+            <TournamentFeatureCard
+              v-for="tournament in liveTournaments"
+              :key="tournament.id"
+              :tournament="tournament"
+              status-variant="live"
+              :status-label="$t('common.live')"
+            />
+          </div>
+        </section>
+      </PageTransition>
 
-    <PageTransition :delay="150" class="mt-6">
+      <PageTransition
+        v-if="registrationOpenTournaments.length > 0"
+        :delay="125"
+        class="mt-6"
+      >
+        <section class="space-y-4">
+          <div
+            :class="[
+              tacticalSectionLabelClasses,
+              '!flex w-full items-center justify-between',
+            ]"
+          >
+            <span class="inline-flex items-center gap-2">
+              <span :class="tacticalSectionTickClasses"></span>
+              {{ $t("pages.tournaments.section_registration") }}
+            </span>
+            <NuxtLink
+              :to="seeAllRegistration"
+              class="inline-flex items-center gap-1 font-mono text-[0.65rem] tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors normal-case"
+            >
+              {{ $t("tournament.recent.see_all") }}
+            </NuxtLink>
+          </div>
+          <div class="space-y-4">
+            <TournamentFeatureCard
+              v-for="tournament in registrationOpenTournaments"
+              :key="tournament.id"
+              :tournament="tournament"
+              status-variant="registration"
+              :status-label="$t('pages.tournaments.open_for_registration')"
+            />
+          </div>
+        </section>
+      </PageTransition>
+
+      <!-- No PageTransition here: these mount behind the skeleton, so an
+           appear animation would play out unseen. The margin goes on the
+           component so it collapses away with the section when it self-hides
+           for having nothing to show. -->
       <RecentTournaments
+        class="mt-6"
         :section-label="$t('pages.tournaments.section_upcoming')"
         :statuses="statusGroups.upcoming"
         status-variant="registration"
@@ -643,10 +774,9 @@ const seeAllFinished = { path: "/tournaments", query: { status: "finished" } };
         :see-all-to="seeAllUpcoming"
         @loaded="(count) => (upcomingCount = count)"
       />
-    </PageTransition>
 
-    <PageTransition :delay="175" class="mt-6">
       <RecentTournaments
+        class="mt-6"
         :section-label="$t('pages.tournaments.section_recent')"
         :statuses="[
           e_tournament_status_enum.Finished,
@@ -662,114 +792,9 @@ const seeAllFinished = { path: "/tournaments", query: { status: "finished" } };
         :see-all-to="seeAllFinished"
         @loaded="(count) => (recentCount = count)"
       />
-    </PageTransition>
+    </div>
   </template>
 </template>
-
-<script lang="ts">
-import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { $, order_by, e_tournament_status_enum } from "~/generated/zeus";
-import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
-
-export default {
-  data() {
-    return {
-      liveTournaments: [] as any[],
-      registrationOpenTournaments: [] as any[],
-      loadingLive: true,
-      loadingRegistrationOpen: true,
-    };
-  },
-  apollo: {
-    $subscribe: {
-      liveTournaments: {
-        query: typedGql("subscription")({
-          tournaments: [
-            {
-              where: {
-                status: {
-                  _eq: $("status", "e_tournament_status_enum"),
-                },
-                // Hide league-internal tournaments.
-                ...({ _not: { league_season_division: {} } } as any),
-              },
-              order_by: [
-                {},
-                {
-                  start: order_by.asc,
-                },
-              ],
-            },
-            simpleTournamentFields,
-          ],
-        }),
-        variables: function () {
-          return {
-            status: e_tournament_status_enum.Live,
-          };
-        },
-        skip(this: any) {
-          const q = this.$route?.query || {};
-          return !!(q.status || q.q || q.since);
-        },
-        result: function ({ data }: { data: any }) {
-          this.liveTournaments = data?.tournaments || [];
-          this.loadingLive = false;
-        },
-      },
-      registrationOpenTournaments: {
-        query: typedGql("subscription")({
-          tournaments: [
-            {
-              where: {
-                status: {
-                  _eq: $("status", "e_tournament_status_enum"),
-                },
-                // Hide league-internal tournaments.
-                ...({ _not: { league_season_division: {} } } as any),
-              },
-              order_by: [
-                {},
-                {
-                  start: order_by.asc,
-                },
-              ],
-            },
-            simpleTournamentFields,
-          ],
-        }),
-        variables: function () {
-          return {
-            status: e_tournament_status_enum.RegistrationOpen,
-          };
-        },
-        skip(this: any) {
-          const q = this.$route?.query || {};
-          return !!(q.status || q.q || q.since);
-        },
-        result: function ({ data }: { data: any }) {
-          this.registrationOpenTournaments = data?.tournaments || [];
-          this.loadingRegistrationOpen = false;
-        },
-      },
-    },
-  },
-  computed: {
-    curatedLoading() {
-      return this.loadingLive || this.loadingRegistrationOpen;
-    },
-    canCreateTournament() {
-      const me = useAuthStore().me;
-      if (!me) {
-        return false;
-      }
-      return useAuthStore().isRoleAbove(
-        useApplicationSettingsStore().tournamentCreateRole,
-      );
-    },
-  },
-};
-</script>
 
 <style scoped>
 /* Soft amber chip — no border, fill-only. */

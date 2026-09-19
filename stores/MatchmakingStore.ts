@@ -12,6 +12,7 @@ import {
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { playerFields } from "~/graphql/playerFields";
+import debounce from "~/utilities/debounce";
 import { isInCs2 } from "~/utilities/cs2Presence";
 import type { RegionStats } from "~/utilities/matchmakingPartySize";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
@@ -66,11 +67,42 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
 
   const regionStats = ref<RegionStats>({});
 
+  // Presence arrives as a full roster on every change, so asking for the whole
+  // roster each time meant one player connecting re-ran elo and the three
+  // sanction checks for everyone online, in every open tab. A profile doesn't
+  // change while its player sits in the list, so keep the ones already
+  // fetched and only ask the API for steam ids never seen before.
+  const profiles = new Map<string, any>();
+
+  const rebuildPlayersOnline = () => {
+    playersOnline.value = onlinePlayerSteamIds.value
+      .map((steamId) => profiles.get(String(steamId)))
+      .filter(Boolean) as any;
+  };
+
   const queryPlayers = async () => {
     const steamIds = onlinePlayerSteamIds.value;
-    if (steamIds.length === 0) {
+    const online = new Set(steamIds.map(String));
+
+    // Bound the cache to who is actually online; otherwise a long-lived tab
+    // accumulates every player who has ever connected during its session.
+    for (const steamId of profiles.keys()) {
+      if (!online.has(steamId)) {
+        profiles.delete(steamId);
+      }
+    }
+
+    const missing = steamIds.filter(
+      (steamId) => !profiles.has(String(steamId)),
+    );
+
+    // Players only left, or they are all already known -- no round trip, but
+    // the list still has to drop whoever went offline.
+    if (missing.length === 0) {
+      rebuildPlayersOnline();
       return;
     }
+
     const { data } = await getGraphqlClient().query({
       query: generateQuery({
         players: [
@@ -85,12 +117,22 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
         ],
       }),
       variables: {
-        steam_ids: steamIds,
+        steam_ids: missing,
       },
     });
 
-    playersOnline.value = data.players;
+    for (const player of data.players) {
+      profiles.set(String(player.steam_id), player);
+    }
+
+    rebuildPlayersOnline();
   };
+
+  // Presence churns in bursts -- a match ending drops ten players at once, and
+  // each drop is its own roster push.
+  const queryPlayersDebounced = debounce(() => {
+    void queryPlayers();
+  }, 250);
 
   const friends = ref([]);
   const lobbies = ref([]);
@@ -350,7 +392,7 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
       newSteamIds.length !== oldSteamIds.length ||
       !newSteamIds.every((id, index) => id === oldSteamIds[index])
     ) {
-      queryPlayers();
+      queryPlayersDebounced();
     }
   });
 

@@ -1126,7 +1126,7 @@ import { $, e_tournament_status_enum, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { useAuthStore } from "~/stores/AuthStore";
 import tournamentTeamFields from "~/graphql/tournamentTeamFields";
-import { playerFields } from "~/graphql/playerFields";
+import { playerFields, playerFieldsWithoutElo } from "~/graphql/playerFields";
 import {
   generateMutation,
   generateQuery,
@@ -1146,10 +1146,14 @@ export default {
   data() {
     return {
       myTeam: undefined,
+      // The two halves the `tournament` computed merges: the live subscription
+      // and the static query. Nothing should read these directly.
+      //
       // Typed rather than left to infer `undefined`: a bare `undefined` narrows
       // to `never`, and every `tournament.x` in this file's 1000-line template
       // then type-errors on a value that is plainly an object at runtime.
-      tournament: undefined as Record<string, any> | undefined,
+      tournamentLive: undefined as Record<string, any> | undefined,
+      tournamentStatic: undefined as Record<string, any> | undefined,
       tournamentRegistration: null as Record<string, any> | null,
       checkInTeams: [] as Array<Record<string, any>>,
       myFreeAgent: null as Record<string, any> | null,
@@ -1179,6 +1183,15 @@ export default {
       e_match_types: [],
     };
   },
+  // Organizer edit surfaces (information, prizes, organizers, organizer teams,
+  // match options, award configs) mutate data that now lives in the static
+  // query rather than the live subscription, so it no longer refreshes itself.
+  // They inject this and call it once their mutation resolves.
+  provide() {
+    return {
+      refetchTournamentStatic: () => this.refetchTournamentStatic(),
+    };
+  },
   unmounted() {
     useTournamentContext().value = null;
   },
@@ -1200,6 +1213,153 @@ export default {
         data: { e_match_types: Array<{ value: string; description: string }> };
       }) {
         this.e_match_types = data.e_match_types;
+      },
+    },
+    // The half of the tournament that does not change second to second:
+    // branding, organizers, prizes, categories, match options and the awards
+    // podium. Deliberately a query rather than part of the live subscription --
+    // as subscription fields these were re-selected every poll, and the awards
+    // branch alone drags a nested tournament_team -> roster -> player join
+    // whose player rows each cost an elo and three sanction lookups.
+    //
+    // Kept fresh by `refetchTournamentStatic`: the status watcher below (so a
+    // podium appears the moment a tournament finishes) and the organizer edit
+    // surfaces, which inject it and call it after they mutate.
+    tournamentStatic: {
+      fetchPolicy: "cache-and-network",
+      query: typedGql("query")({
+        tournaments_by_pk: [
+          {
+            id: $("tournamentId", "uuid!"),
+          },
+          {
+            id: true,
+            description: true,
+            logo: true,
+            banner: true,
+            homepage: true,
+            location: true,
+            latitude: true,
+            longitude: true,
+            admin: playerFields,
+            options: matchOptionsFields,
+            organizers: [
+              {},
+              {
+                organizer: playerFields,
+              },
+            ],
+            organizer_teams: [
+              {},
+              {
+                team_id: true,
+                team: {
+                  id: true,
+                  name: true,
+                  short_name: true,
+                  avatar_url: true,
+                },
+              },
+            ],
+            categories: [
+              {},
+              {
+                category: true,
+                e_tournament_category: {
+                  value: true,
+                  description: true,
+                },
+              },
+            ],
+            prizes: [
+              {
+                order_by: [
+                  {
+                    order: order_by.asc,
+                  },
+                ],
+              },
+              {
+                id: true,
+                place: true,
+                prize: true,
+                order: true,
+              },
+            ],
+            awards: [
+              {},
+              {
+                id: true,
+                placement: true,
+                placement_tier: true,
+                tournament_team_id: true,
+                player_steam_id: true,
+                team_id: true,
+                source: true,
+                note: true,
+                award_id: true,
+                award: {
+                  id: true,
+                  name: true,
+                  tier: true,
+                  silhouette: true,
+                  image_url: true,
+                },
+                player: playerFields,
+                team: {
+                  id: true,
+                  name: true,
+                  short_name: true,
+                },
+                tournament_team: {
+                  id: true,
+                  name: true,
+                  team: {
+                    id: true,
+                    name: true,
+                  },
+                  roster: [
+                    {},
+                    {
+                      player_steam_id: true,
+                      // Podium only: TournamentResults renders these with
+                      // :show-elo="false", so the elo computed field would
+                      // be fetched per player and thrown away.
+                      player: playerFieldsWithoutElo,
+                    },
+                  ],
+                },
+              },
+            ],
+            award_configs: [
+              {},
+              {
+                id: true,
+                tournament_id: true,
+                placement: true,
+                award_id: true,
+                custom_name: true,
+                silhouette: true,
+                image_url: true,
+                award: {
+                  id: true,
+                  name: true,
+                  tier: true,
+                  silhouette: true,
+                  image_url: true,
+                },
+              },
+            ],
+          },
+        ],
+      }),
+      variables: function () {
+        return {
+          tournamentId: this.$route.params.tournamentId,
+        };
+      },
+      result: function ({ data }) {
+        this.tournamentStatic = data?.tournaments_by_pk ?? undefined;
       },
     },
     $subscribe: {
@@ -1224,13 +1384,6 @@ export default {
               e_tournament_status: {
                 description: true,
               },
-              description: true,
-              logo: true,
-              banner: true,
-              homepage: true,
-              location: true,
-              latitude: true,
-              longitude: true,
               is_organizer: true,
               can_join: true,
               can_start: true,
@@ -1242,51 +1395,6 @@ export default {
               can_setup: true,
               min_players_per_lineup: true,
               max_players_per_lineup: true,
-              admin: playerFields,
-              options: matchOptionsFields,
-              organizers: [
-                {},
-                {
-                  organizer: playerFields,
-                },
-              ],
-              organizer_teams: [
-                {},
-                {
-                  team_id: true,
-                  team: {
-                    id: true,
-                    name: true,
-                    short_name: true,
-                    avatar_url: true,
-                  },
-                },
-              ],
-              categories: [
-                {},
-                {
-                  category: true,
-                  e_tournament_category: {
-                    value: true,
-                    description: true,
-                  },
-                },
-              ],
-              prizes: [
-                {
-                  order_by: [
-                    {
-                      order: order_by.asc,
-                    },
-                  ],
-                },
-                {
-                  id: true,
-                  place: true,
-                  prize: true,
-                  order: true,
-                },
-              ],
               teams: [
                 {
                   order_by: [
@@ -1308,67 +1416,6 @@ export default {
                 {
                   aggregate: {
                     count: true,
-                  },
-                },
-              ],
-              awards: [
-                {},
-                {
-                  id: true,
-                  placement: true,
-                  placement_tier: true,
-                  tournament_team_id: true,
-                  player_steam_id: true,
-                  team_id: true,
-                  source: true,
-                  note: true,
-                  award_id: true,
-                  award: {
-                    id: true,
-                    name: true,
-                    tier: true,
-                    silhouette: true,
-                    image_url: true,
-                  },
-                  player: playerFields,
-                  team: {
-                    id: true,
-                    name: true,
-                    short_name: true,
-                  },
-                  tournament_team: {
-                    id: true,
-                    name: true,
-                    team: {
-                      id: true,
-                      name: true,
-                    },
-                    roster: [
-                      {},
-                      {
-                        player_steam_id: true,
-                        player: playerFields,
-                      },
-                    ],
-                  },
-                },
-              ],
-              award_configs: [
-                {},
-                {
-                  id: true,
-                  tournament_id: true,
-                  placement: true,
-                  award_id: true,
-                  custom_name: true,
-                  silhouette: true,
-                  image_url: true,
-                  award: {
-                    id: true,
-                    name: true,
-                    tier: true,
-                    silhouette: true,
-                    image_url: true,
                   },
                 },
               ],
@@ -1554,7 +1601,7 @@ export default {
           };
         },
         result: function ({ data }) {
-          this.tournament = data.tournaments_by_pk;
+          this.tournamentLive = data.tournaments_by_pk;
           const ctx = useTournamentContext();
           if (this.tournament) {
             const existing = ctx.value;
@@ -1785,6 +1832,21 @@ export default {
     },
   },
   computed: {
+    /**
+     * The tournament as this page and its ~20 child components see it: the
+     * static query merged under the live subscription.
+     *
+     * Gated on the live half rather than on either, so nothing ever renders
+     * against a tournament that has branding but no status or permission
+     * flags. That is the same moment the page began rendering when this was a
+     * single subscription, so the split is invisible to everything downstream.
+     */
+    tournament(): Record<string, any> | undefined {
+      if (!this.tournamentLive) {
+        return undefined;
+      }
+      return { ...this.tournamentStatic, ...this.tournamentLive };
+    },
     leagueSeasonId() {
       return this.$route.params.seasonId ?? null;
     },
@@ -2102,6 +2164,9 @@ export default {
     },
   },
   methods: {
+    refetchTournamentStatic() {
+      return this.$apollo?.queries?.tournamentStatic?.refetch();
+    },
     toggleTeamCollapsed(teamId) {
       if (this.collapsedTeams.has(teamId)) {
         this.collapsedTeams.delete(teamId);
@@ -2246,6 +2311,14 @@ export default {
     },
   },
   watch: {
+    // Awards are granted server-side when a tournament finishes, and they now
+    // arrive on the static query. Without this the podium would not appear
+    // until the page was reloaded.
+    "tournamentLive.status"(status, previousStatus) {
+      if (previousStatus !== undefined && status !== previousStatus) {
+        void this.refetchTournamentStatic();
+      }
+    },
     activeTab(newTab) {
       if (!this.tournament || !this.availableTournamentTabs.includes(newTab)) {
         return;

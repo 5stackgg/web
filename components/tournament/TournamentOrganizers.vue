@@ -62,6 +62,11 @@ export default {
       required: true,
     },
   },
+  inject: {
+    refetchTournamentStatic: {
+      default: () => () => {},
+    },
+  },
   methods: {
     async addOrganizer(member) {
       await this.$apollo.mutate({
@@ -79,6 +84,8 @@ export default {
           ],
         }),
       });
+
+      await this.refetchTournamentStatic();
     },
   },
   computed: {

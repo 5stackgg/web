@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch, onBeforeUnmount } from "vue";
+import { computed, inject, ref, watch, onBeforeUnmount } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $ } from "~/generated/zeus";
@@ -14,6 +14,10 @@ const props = defineProps<{ tournament: Record<string, any> }>();
 
 const { t } = useI18n();
 const { client: apolloClient } = useApolloClient();
+const refetchTournamentStatic = inject<() => void>(
+  "refetchTournamentStatic",
+  () => {},
+);
 
 const isOrganizer = computed(() => !!props.tournament.is_organizer);
 
@@ -154,6 +158,7 @@ async function commitRow(row: PrizeRowDraft) {
     });
     row.prize = prize;
     markSaved(row.id);
+    refetchTournamentStatic();
   } catch (error) {
     onError(error);
   } finally {
@@ -188,13 +193,14 @@ async function persistOrder() {
   }
 }
 
-function onMove(from: number, to: number) {
+async function onMove(from: number, to: number) {
   const next = [...drafts.value];
   const [moved] = next.splice(from, 1);
   next.splice(to, 0, moved);
   drafts.value = next;
   reordering.value = true;
-  void persistOrder();
+  await persistOrder();
+  refetchTournamentStatic();
 }
 
 async function onRemove(row: PrizeRowDraft) {
@@ -211,6 +217,7 @@ async function onRemove(row: PrizeRowDraft) {
     });
     drafts.value = drafts.value.filter((entry) => entry.id !== row.id);
     await persistOrder();
+    refetchTournamentStatic();
   } catch (error) {
     onError(error);
   } finally {
@@ -243,6 +250,7 @@ async function onAdd(prize: string, place: string) {
         order: index,
       },
     });
+    refetchTournamentStatic();
   } catch (error) {
     onError(error);
   } finally {

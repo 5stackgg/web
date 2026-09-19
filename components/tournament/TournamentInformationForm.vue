@@ -35,6 +35,8 @@ import {
             :delete-url="`https://${apiDomain}/avatars/tournaments/${tournament.id}`"
             :has-custom="!!tournament.logo"
             :current-src="tournamentLogoSrc"
+            @uploaded="refetchTournamentStatic"
+            @removed="refetchTournamentStatic"
           />
         </div>
         <div class="grid gap-1.5">
@@ -49,6 +51,8 @@ import {
             :delete-url="`https://${apiDomain}/avatars/tournaments/${tournament.id}/banner`"
             :has-custom="!!tournament.banner"
             :current-src="tournamentBannerSrc"
+            @uploaded="refetchTournamentStatic"
+            @removed="refetchTournamentStatic"
           />
         </div>
       </div>
@@ -216,6 +220,11 @@ export default {
     tournament: {
       type: Object,
       required: true,
+    },
+  },
+  inject: {
+    refetchTournamentStatic: {
+      default: () => () => {},
     },
   },
   data() {
@@ -539,6 +548,7 @@ export default {
         });
 
         await this.syncCategories();
+        await this.refetchTournamentStatic();
 
         toast({ title: this.$t("tournament.updated") as string });
 

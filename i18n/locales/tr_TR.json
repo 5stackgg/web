@@ -6159,11 +6159,6 @@
         "description": "Sınır koymamak için birini boş bırak. İkisi de boşsa her rank'a açıktır.",
         "invalid_range": "Maks ELO en az min ELO kadar olmalı."
       },
-      "regions": {
-        "label": "Tercih edilen bölgeler",
-        "description": "Bu turnuvanın maçlarının hangi bölgede barındırılacağı. Oyuncu filtresi değildir — 5stack'te oyuncu bazlı bölge verisi yok.",
-        "empty": "Şu anda kullanılabilir bölge yok."
-      },
       "invite_only": {
         "label": "Sadece davetle",
         "description": "Kayıtlar herkese kapalı. Organizatörler takımları ve oyuncuları doğrudan davet eder ya da bir davet bağlantısı paylaşır."

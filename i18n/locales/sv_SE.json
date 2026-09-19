@@ -6159,11 +6159,6 @@
         "description": "Lämna något av fälten tomt för ingen gräns. Båda tomma är öppet för alla ranks.",
         "invalid_range": "Elo max måste vara minst lika högt som Elo min."
       },
-      "regions": {
-        "label": "Föredragna regioner",
-        "description": "Var turneringens matcher hostas. Det är inget spelarfilter — 5stack har ingen regionsdata per spelare.",
-        "empty": "Inga regioner tillgängliga just nu."
-      },
       "invite_only": {
         "label": "Endast med inbjudan",
         "description": "Anmälan är stängd för allmänheten. Arrangörerna bjuder in lag och spelare direkt, eller delar en inbjudningslänk."

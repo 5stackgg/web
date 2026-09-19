@@ -6159,11 +6159,6 @@
         "description": "任一项留空即表示该侧不设限制。两项都留空则对所有段位开放。",
         "invalid_range": "最高 ELO 不能低于最低 ELO。"
       },
-      "regions": {
-        "label": "首选地区",
-        "description": "本赛事的比赛在哪里开服。这不是对选手的限制——5stack 没有按选手记录的地区数据。",
-        "empty": "目前没有可用地区。"
-      },
       "invite_only": {
         "label": "仅限邀请",
         "description": "报名不对外开放。由主办方直接邀请队伍和玩家，或分享邀请链接。"

@@ -27,7 +27,6 @@ import {
 } from "~/components/ui/number-field";
 import { Lock } from "lucide-vue-next";
 import SettingHeader from "~/components/match/SettingHeader.vue";
-import ScrimRegionPicker from "~/components/team/ScrimRegionPicker.vue";
 import { Fold } from "~/components/ui/transitions";
 import { SELECT_NONE } from "~/utilities/selectNone";
 import {
@@ -149,24 +148,6 @@ import {
           </p>
         </div>
       </div>
-
-      <FormField v-slot="{ value }" :name="field.regions">
-        <FormItem>
-          <FormLabel>{{
-            $t("tournament.registration.regions.label")
-          }}</FormLabel>
-          <ScrimRegionPicker
-            :regions="value ?? []"
-            :empty-text="$t('tournament.registration.regions.empty')"
-            @update:regions="
-              (regions) => form.setFieldValue(field.regions, regions)
-            "
-          />
-          <FormDescription>{{
-            $t("tournament.registration.regions.description")
-          }}</FormDescription>
-        </FormItem>
-      </FormField>
 
       <div class="border-t border-border pt-5">
         <FormField v-slot="{ value, handleChange }" :name="field.invite_only">

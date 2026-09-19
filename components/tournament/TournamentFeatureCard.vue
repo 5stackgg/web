@@ -7,6 +7,7 @@ import TournamentMapMosaic from "~/components/tournament/TournamentMapMosaic.vue
 import { formatPrizePool } from "~/utilities/prizePool";
 import { tournamentMapPosters } from "~/utilities/tournamentMapPosters";
 import { tournamentPlayerRankLabel } from "~/utilities/tournamentPlayerRank";
+import { tournamentCurrentStage } from "~/utilities/tournamentCurrentStage";
 
 type TournamentStatusVariant = "default" | "finished" | "live" | "registration";
 
@@ -83,8 +84,10 @@ const primaryStage = computed(() => {
   )[0];
 });
 
+const currentStage = computed(() => tournamentCurrentStage(props.tournament));
+
 const stageLabel = computed(() => {
-  const stage = primaryStage.value;
+  const stage = currentStage.value ?? primaryStage.value;
   const stageType =
     stage?.e_tournament_stage_type?.description ||
     stage?.type ||
@@ -93,7 +96,10 @@ const stageLabel = computed(() => {
     stage?.options?.best_of ||
     stage?.default_best_of ||
     props.tournament?.options?.best_of;
-  return bestOf ? `${stageType} · BO${bestOf}` : stageType;
+  const label = bestOf ? `${stageType} · BO${bestOf}` : stageType;
+  return currentStage.value
+    ? `${t("tournament.stage.stage_tab", { stage: stage.order })} · ${label}`
+    : label;
 });
 
 const playerRankLabel = computed(() =>

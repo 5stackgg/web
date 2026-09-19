@@ -258,7 +258,10 @@ const teamHeroActionsClasses =
         <TeamCareerStats :team-id="String($route.params.id)" />
         <TeamVetoStats :team-id="String($route.params.id)" />
         <TeamVetoSimulator :team-id="String($route.params.id)" />
-        <TeamUtilityUtility :team-id="String($route.params.id)" />
+        <TeamUtilityUtility
+          v-if="isOnTeam || isTeamOwner || isAdmin"
+          :team-id="String($route.params.id)"
+        />
       </div>
 
       <div v-else-if="tab === 'highlights'">

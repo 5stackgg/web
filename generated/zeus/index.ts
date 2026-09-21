@@ -13058,6 +13058,15 @@ count?: [{	columns?: Array<ValueTypes["e_winning_reasons_select_column"]> | unde
 	nodes?:ValueTypes["event_match_links"],
 		__typename?: boolean | `@${string}`
 }>;
+	["event_match_links_aggregate_bool_exp"]: {
+	count?: ValueTypes["event_match_links_aggregate_bool_exp_count"] | undefined | null | Variable<any, string>
+};
+	["event_match_links_aggregate_bool_exp_count"]: {
+	arguments?: Array<ValueTypes["event_match_links_select_column"]> | undefined | null | Variable<any, string>,
+	distinct?: boolean | undefined | null | Variable<any, string>,
+	filter?: ValueTypes["event_match_links_bool_exp"] | undefined | null | Variable<any, string>,
+	predicate: ValueTypes["Int_comparison_exp"] | Variable<any, string>
+};
 	/** aggregate fields of "event_match_links" */
 ["event_match_links_aggregate_fields"]: AliasType<{
 count?: [{	columns?: Array<ValueTypes["event_match_links_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
@@ -13065,6 +13074,18 @@ count?: [{	columns?: Array<ValueTypes["event_match_links_select_column"]> | unde
 	min?:ValueTypes["event_match_links_min_fields"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by aggregate values of table "event_match_links" */
+["event_match_links_aggregate_order_by"]: {
+	count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	max?: ValueTypes["event_match_links_max_order_by"] | undefined | null | Variable<any, string>,
+	min?: ValueTypes["event_match_links_min_order_by"] | undefined | null | Variable<any, string>
+};
+	/** input type for inserting array relation for remote table "event_match_links" */
+["event_match_links_arr_rel_insert_input"]: {
+	data: Array<ValueTypes["event_match_links_insert_input"]> | Variable<any, string>,
+	/** upsert condition */
+	on_conflict?: ValueTypes["event_match_links_on_conflict"] | undefined | null | Variable<any, string>
+};
 	/** Boolean expression to filter rows from the table "event_match_links". All fields are combined with a logical 'AND'. */
 ["event_match_links_bool_exp"]: {
 	_and?: Array<ValueTypes["event_match_links_bool_exp"]> | undefined | null | Variable<any, string>,
@@ -13093,6 +13114,12 @@ count?: [{	columns?: Array<ValueTypes["event_match_links_select_column"]> | unde
 	match_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by max() on columns of table "event_match_links" */
+["event_match_links_max_order_by"]: {
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	event_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
 	/** aggregate min on columns */
 ["event_match_links_min_fields"]: AliasType<{
 	created_at?:boolean | `@${string}`,
@@ -13100,6 +13127,12 @@ count?: [{	columns?: Array<ValueTypes["event_match_links_select_column"]> | unde
 	match_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by min() on columns of table "event_match_links" */
+["event_match_links_min_order_by"]: {
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	event_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
 	/** response of any mutation on the table "event_match_links" */
 ["event_match_links_mutation_response"]: AliasType<{
 	/** number of rows affected by the mutation */
@@ -27586,6 +27619,18 @@ elo_changes_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["v_player_elo_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["v_player_elo_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_elo_aggregate"]],
 	ended_at?:boolean | `@${string}`,
+event_links?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["event_match_links_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["event_match_links_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["event_match_links_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["event_match_links"]],
+event_links_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["event_match_links_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["event_match_links_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["event_match_links_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["event_match_links_aggregate"]],
 	external_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	/** A computed field, executes function "match_invite_code" */
@@ -27928,6 +27973,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	elo_changes?: ValueTypes["v_player_elo_bool_exp"] | undefined | null | Variable<any, string>,
 	elo_changes_aggregate?: ValueTypes["v_player_elo_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	ended_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	event_links?: ValueTypes["event_match_links_bool_exp"] | undefined | null | Variable<any, string>,
+	event_links_aggregate?: ValueTypes["event_match_links_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	external_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	invite_code?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -28018,6 +28065,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	e_region?: ValueTypes["server_regions_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	elo_changes?: ValueTypes["v_player_elo_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	ended_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	event_links?: ValueTypes["event_match_links_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	external_id?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	label?: string | undefined | null | Variable<any, string>,
@@ -28250,6 +28298,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	effective_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	elo_changes_aggregate?: ValueTypes["v_player_elo_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	ended_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	event_links_aggregate?: ValueTypes["event_match_links_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	external_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	invite_code?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -29065,7 +29114,7 @@ delete_player_premier_rank_history?: [{	/** filter the rows which have to be del
 delete_player_premier_rank_history_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["player_premier_rank_history"]],
 delete_player_sanctions?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["player_sanctions_bool_exp"] | Variable<any, string>},ValueTypes["player_sanctions_mutation_response"]],
-delete_player_sanctions_by_pk?: [{	created_at: ValueTypes["timestamptz"] | Variable<any, string>,	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["player_sanctions"]],
+delete_player_sanctions_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["player_sanctions"]],
 delete_player_season_stats?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["player_season_stats_bool_exp"] | Variable<any, string>},ValueTypes["player_season_stats_mutation_response"]],
 delete_player_season_stats_by_pk?: [{	player_steam_id: ValueTypes["bigint"] | Variable<any, string>,	season_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["player_season_stats"]],
@@ -44285,7 +44334,6 @@ count?: [{	columns?: Array<ValueTypes["player_sanctions_select_column"]> | undef
 };
 	/** primary key columns input for table: player_sanctions */
 ["player_sanctions_pk_columns_input"]: {
-	created_at: ValueTypes["timestamptz"] | Variable<any, string>,
 	id: ValueTypes["uuid"] | Variable<any, string>
 };
 	/** select columns of table "player_sanctions" */
@@ -50187,7 +50235,7 @@ player_sanctions_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["player_sanctions_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["player_sanctions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_sanctions_aggregate"]],
-player_sanctions_by_pk?: [{	created_at: ValueTypes["timestamptz"] | Variable<any, string>,	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["player_sanctions"]],
+player_sanctions_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["player_sanctions"]],
 player_season_stats?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["player_season_stats_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -55619,7 +55667,7 @@ player_sanctions_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["player_sanctions_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["player_sanctions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_sanctions_aggregate"]],
-player_sanctions_by_pk?: [{	created_at: ValueTypes["timestamptz"] | Variable<any, string>,	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["player_sanctions"]],
+player_sanctions_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["player_sanctions"]],
 player_sanctions_stream?: [{	/** maximum number of rows returned in a single batch */
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["player_sanctions_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
@@ -95339,6 +95387,15 @@ count?: [{	columns?: Array<ResolverInputTypes["e_winning_reasons_select_column"]
 	nodes?:ResolverInputTypes["event_match_links"],
 		__typename?: boolean | `@${string}`
 }>;
+	["event_match_links_aggregate_bool_exp"]: {
+	count?: ResolverInputTypes["event_match_links_aggregate_bool_exp_count"] | undefined | null
+};
+	["event_match_links_aggregate_bool_exp_count"]: {
+	arguments?: Array<ResolverInputTypes["event_match_links_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: ResolverInputTypes["event_match_links_bool_exp"] | undefined | null,
+	predicate: ResolverInputTypes["Int_comparison_exp"]
+};
 	/** aggregate fields of "event_match_links" */
 ["event_match_links_aggregate_fields"]: AliasType<{
 count?: [{	columns?: Array<ResolverInputTypes["event_match_links_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
@@ -95346,6 +95403,18 @@ count?: [{	columns?: Array<ResolverInputTypes["event_match_links_select_column"]
 	min?:ResolverInputTypes["event_match_links_min_fields"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by aggregate values of table "event_match_links" */
+["event_match_links_aggregate_order_by"]: {
+	count?: ResolverInputTypes["order_by"] | undefined | null,
+	max?: ResolverInputTypes["event_match_links_max_order_by"] | undefined | null,
+	min?: ResolverInputTypes["event_match_links_min_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "event_match_links" */
+["event_match_links_arr_rel_insert_input"]: {
+	data: Array<ResolverInputTypes["event_match_links_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ResolverInputTypes["event_match_links_on_conflict"] | undefined | null
+};
 	/** Boolean expression to filter rows from the table "event_match_links". All fields are combined with a logical 'AND'. */
 ["event_match_links_bool_exp"]: {
 	_and?: Array<ResolverInputTypes["event_match_links_bool_exp"]> | undefined | null,
@@ -95374,6 +95443,12 @@ count?: [{	columns?: Array<ResolverInputTypes["event_match_links_select_column"]
 	match_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by max() on columns of table "event_match_links" */
+["event_match_links_max_order_by"]: {
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
+	event_id?: ResolverInputTypes["order_by"] | undefined | null,
+	match_id?: ResolverInputTypes["order_by"] | undefined | null
+};
 	/** aggregate min on columns */
 ["event_match_links_min_fields"]: AliasType<{
 	created_at?:boolean | `@${string}`,
@@ -95381,6 +95456,12 @@ count?: [{	columns?: Array<ResolverInputTypes["event_match_links_select_column"]
 	match_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by min() on columns of table "event_match_links" */
+["event_match_links_min_order_by"]: {
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
+	event_id?: ResolverInputTypes["order_by"] | undefined | null,
+	match_id?: ResolverInputTypes["order_by"] | undefined | null
+};
 	/** response of any mutation on the table "event_match_links" */
 ["event_match_links_mutation_response"]: AliasType<{
 	/** number of rows affected by the mutation */
@@ -109867,6 +109948,18 @@ elo_changes_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["v_player_elo_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["v_player_elo_bool_exp"] | undefined | null},ResolverInputTypes["v_player_elo_aggregate"]],
 	ended_at?:boolean | `@${string}`,
+event_links?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["event_match_links_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["event_match_links_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["event_match_links_bool_exp"] | undefined | null},ResolverInputTypes["event_match_links"]],
+event_links_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["event_match_links_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["event_match_links_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["event_match_links_bool_exp"] | undefined | null},ResolverInputTypes["event_match_links_aggregate"]],
 	external_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	/** A computed field, executes function "match_invite_code" */
@@ -110209,6 +110302,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	elo_changes?: ResolverInputTypes["v_player_elo_bool_exp"] | undefined | null,
 	elo_changes_aggregate?: ResolverInputTypes["v_player_elo_aggregate_bool_exp"] | undefined | null,
 	ended_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	event_links?: ResolverInputTypes["event_match_links_bool_exp"] | undefined | null,
+	event_links_aggregate?: ResolverInputTypes["event_match_links_aggregate_bool_exp"] | undefined | null,
 	external_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	invite_code?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
@@ -110299,6 +110394,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	e_region?: ResolverInputTypes["server_regions_obj_rel_insert_input"] | undefined | null,
 	elo_changes?: ResolverInputTypes["v_player_elo_arr_rel_insert_input"] | undefined | null,
 	ended_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	event_links?: ResolverInputTypes["event_match_links_arr_rel_insert_input"] | undefined | null,
 	external_id?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	label?: string | undefined | null,
@@ -110531,6 +110627,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	effective_at?: ResolverInputTypes["order_by"] | undefined | null,
 	elo_changes_aggregate?: ResolverInputTypes["v_player_elo_aggregate_order_by"] | undefined | null,
 	ended_at?: ResolverInputTypes["order_by"] | undefined | null,
+	event_links_aggregate?: ResolverInputTypes["event_match_links_aggregate_order_by"] | undefined | null,
 	external_id?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	invite_code?: ResolverInputTypes["order_by"] | undefined | null,
@@ -111346,7 +111443,7 @@ delete_player_premier_rank_history?: [{	/** filter the rows which have to be del
 delete_player_premier_rank_history_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["player_premier_rank_history"]],
 delete_player_sanctions?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["player_sanctions_bool_exp"]},ResolverInputTypes["player_sanctions_mutation_response"]],
-delete_player_sanctions_by_pk?: [{	created_at: ResolverInputTypes["timestamptz"],	id: ResolverInputTypes["uuid"]},ResolverInputTypes["player_sanctions"]],
+delete_player_sanctions_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["player_sanctions"]],
 delete_player_season_stats?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["player_season_stats_bool_exp"]},ResolverInputTypes["player_season_stats_mutation_response"]],
 delete_player_season_stats_by_pk?: [{	player_steam_id: ResolverInputTypes["bigint"],	season_id: ResolverInputTypes["uuid"]},ResolverInputTypes["player_season_stats"]],
@@ -126566,7 +126663,6 @@ count?: [{	columns?: Array<ResolverInputTypes["player_sanctions_select_column"]>
 };
 	/** primary key columns input for table: player_sanctions */
 ["player_sanctions_pk_columns_input"]: {
-	created_at: ResolverInputTypes["timestamptz"],
 	id: ResolverInputTypes["uuid"]
 };
 	/** select columns of table "player_sanctions" */
@@ -132468,7 +132564,7 @@ player_sanctions_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["player_sanctions_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["player_sanctions_bool_exp"] | undefined | null},ResolverInputTypes["player_sanctions_aggregate"]],
-player_sanctions_by_pk?: [{	created_at: ResolverInputTypes["timestamptz"],	id: ResolverInputTypes["uuid"]},ResolverInputTypes["player_sanctions"]],
+player_sanctions_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["player_sanctions"]],
 player_season_stats?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["player_season_stats_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -137900,7 +137996,7 @@ player_sanctions_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["player_sanctions_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["player_sanctions_bool_exp"] | undefined | null},ResolverInputTypes["player_sanctions_aggregate"]],
-player_sanctions_by_pk?: [{	created_at: ResolverInputTypes["timestamptz"],	id: ResolverInputTypes["uuid"]},ResolverInputTypes["player_sanctions"]],
+player_sanctions_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["player_sanctions"]],
 player_sanctions_stream?: [{	/** maximum number of rows returned in a single batch */
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["player_sanctions_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
@@ -176476,11 +176572,32 @@ export type ModelTypes = {
 		aggregate?: ModelTypes["event_match_links_aggregate_fields"] | undefined | null,
 	nodes: Array<ModelTypes["event_match_links"]>
 };
+	["event_match_links_aggregate_bool_exp"]: {
+	count?: ModelTypes["event_match_links_aggregate_bool_exp_count"] | undefined | null
+};
+	["event_match_links_aggregate_bool_exp_count"]: {
+	arguments?: Array<ModelTypes["event_match_links_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: ModelTypes["event_match_links_bool_exp"] | undefined | null,
+	predicate: ModelTypes["Int_comparison_exp"]
+};
 	/** aggregate fields of "event_match_links" */
 ["event_match_links_aggregate_fields"]: {
 		count: number,
 	max?: ModelTypes["event_match_links_max_fields"] | undefined | null,
 	min?: ModelTypes["event_match_links_min_fields"] | undefined | null
+};
+	/** order by aggregate values of table "event_match_links" */
+["event_match_links_aggregate_order_by"]: {
+	count?: ModelTypes["order_by"] | undefined | null,
+	max?: ModelTypes["event_match_links_max_order_by"] | undefined | null,
+	min?: ModelTypes["event_match_links_min_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "event_match_links" */
+["event_match_links_arr_rel_insert_input"]: {
+	data: Array<ModelTypes["event_match_links_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ModelTypes["event_match_links_on_conflict"] | undefined | null
 };
 	/** Boolean expression to filter rows from the table "event_match_links". All fields are combined with a logical 'AND'. */
 ["event_match_links_bool_exp"]: {
@@ -176508,11 +176625,23 @@ export type ModelTypes = {
 	event_id?: ModelTypes["uuid"] | undefined | null,
 	match_id?: ModelTypes["uuid"] | undefined | null
 };
+	/** order by max() on columns of table "event_match_links" */
+["event_match_links_max_order_by"]: {
+	created_at?: ModelTypes["order_by"] | undefined | null,
+	event_id?: ModelTypes["order_by"] | undefined | null,
+	match_id?: ModelTypes["order_by"] | undefined | null
+};
 	/** aggregate min on columns */
 ["event_match_links_min_fields"]: {
 		created_at?: ModelTypes["timestamptz"] | undefined | null,
 	event_id?: ModelTypes["uuid"] | undefined | null,
 	match_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** order by min() on columns of table "event_match_links" */
+["event_match_links_min_order_by"]: {
+	created_at?: ModelTypes["order_by"] | undefined | null,
+	event_id?: ModelTypes["order_by"] | undefined | null,
+	match_id?: ModelTypes["order_by"] | undefined | null
 };
 	/** response of any mutation on the table "event_match_links" */
 ["event_match_links_mutation_response"]: {
@@ -189848,6 +189977,10 @@ export type ModelTypes = {
 	/** An aggregate relationship */
 	elo_changes_aggregate: ModelTypes["v_player_elo_aggregate"],
 	ended_at?: ModelTypes["timestamptz"] | undefined | null,
+	/** An array relationship */
+	event_links: Array<ModelTypes["event_match_links"]>,
+	/** An aggregate relationship */
+	event_links_aggregate: ModelTypes["event_match_links_aggregate"],
 	external_id?: string | undefined | null,
 	id: ModelTypes["uuid"],
 	/** A computed field, executes function "match_invite_code" */
@@ -190078,6 +190211,8 @@ export type ModelTypes = {
 	elo_changes?: ModelTypes["v_player_elo_bool_exp"] | undefined | null,
 	elo_changes_aggregate?: ModelTypes["v_player_elo_aggregate_bool_exp"] | undefined | null,
 	ended_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	event_links?: ModelTypes["event_match_links_bool_exp"] | undefined | null,
+	event_links_aggregate?: ModelTypes["event_match_links_aggregate_bool_exp"] | undefined | null,
 	external_id?: ModelTypes["String_comparison_exp"] | undefined | null,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
 	invite_code?: ModelTypes["String_comparison_exp"] | undefined | null,
@@ -190167,6 +190302,7 @@ export type ModelTypes = {
 	e_region?: ModelTypes["server_regions_obj_rel_insert_input"] | undefined | null,
 	elo_changes?: ModelTypes["v_player_elo_arr_rel_insert_input"] | undefined | null,
 	ended_at?: ModelTypes["timestamptz"] | undefined | null,
+	event_links?: ModelTypes["event_match_links_arr_rel_insert_input"] | undefined | null,
 	external_id?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	label?: string | undefined | null,
@@ -190396,6 +190532,7 @@ export type ModelTypes = {
 	effective_at?: ModelTypes["order_by"] | undefined | null,
 	elo_changes_aggregate?: ModelTypes["v_player_elo_aggregate_order_by"] | undefined | null,
 	ended_at?: ModelTypes["order_by"] | undefined | null,
+	event_links_aggregate?: ModelTypes["event_match_links_aggregate_order_by"] | undefined | null,
 	external_id?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
 	invite_code?: ModelTypes["order_by"] | undefined | null,
@@ -205233,7 +205370,6 @@ export type ModelTypes = {
 };
 	/** primary key columns input for table: player_sanctions */
 ["player_sanctions_pk_columns_input"]: {
-	created_at: ModelTypes["timestamptz"],
 	id: ModelTypes["uuid"]
 };
 	["player_sanctions_select_column"]:player_sanctions_select_column;
@@ -249760,12 +249896,33 @@ export type GraphQLTypes = {
 	aggregate?: GraphQLTypes["event_match_links_aggregate_fields"] | undefined | null,
 	nodes: Array<GraphQLTypes["event_match_links"]>
 };
+	["event_match_links_aggregate_bool_exp"]: {
+		count?: GraphQLTypes["event_match_links_aggregate_bool_exp_count"] | undefined | null
+};
+	["event_match_links_aggregate_bool_exp_count"]: {
+		arguments?: Array<GraphQLTypes["event_match_links_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: GraphQLTypes["event_match_links_bool_exp"] | undefined | null,
+	predicate: GraphQLTypes["Int_comparison_exp"]
+};
 	/** aggregate fields of "event_match_links" */
 ["event_match_links_aggregate_fields"]: {
 	__typename: "event_match_links_aggregate_fields",
 	count: number,
 	max?: GraphQLTypes["event_match_links_max_fields"] | undefined | null,
 	min?: GraphQLTypes["event_match_links_min_fields"] | undefined | null
+};
+	/** order by aggregate values of table "event_match_links" */
+["event_match_links_aggregate_order_by"]: {
+		count?: GraphQLTypes["order_by"] | undefined | null,
+	max?: GraphQLTypes["event_match_links_max_order_by"] | undefined | null,
+	min?: GraphQLTypes["event_match_links_min_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "event_match_links" */
+["event_match_links_arr_rel_insert_input"]: {
+		data: Array<GraphQLTypes["event_match_links_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: GraphQLTypes["event_match_links_on_conflict"] | undefined | null
 };
 	/** Boolean expression to filter rows from the table "event_match_links". All fields are combined with a logical 'AND'. */
 ["event_match_links_bool_exp"]: {
@@ -249795,12 +249952,24 @@ export type GraphQLTypes = {
 	event_id?: GraphQLTypes["uuid"] | undefined | null,
 	match_id?: GraphQLTypes["uuid"] | undefined | null
 };
+	/** order by max() on columns of table "event_match_links" */
+["event_match_links_max_order_by"]: {
+		created_at?: GraphQLTypes["order_by"] | undefined | null,
+	event_id?: GraphQLTypes["order_by"] | undefined | null,
+	match_id?: GraphQLTypes["order_by"] | undefined | null
+};
 	/** aggregate min on columns */
 ["event_match_links_min_fields"]: {
 	__typename: "event_match_links_min_fields",
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	event_id?: GraphQLTypes["uuid"] | undefined | null,
 	match_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** order by min() on columns of table "event_match_links" */
+["event_match_links_min_order_by"]: {
+		created_at?: GraphQLTypes["order_by"] | undefined | null,
+	event_id?: GraphQLTypes["order_by"] | undefined | null,
+	match_id?: GraphQLTypes["order_by"] | undefined | null
 };
 	/** response of any mutation on the table "event_match_links" */
 ["event_match_links_mutation_response"]: {
@@ -263815,6 +263984,10 @@ export type GraphQLTypes = {
 	/** An aggregate relationship */
 	elo_changes_aggregate: GraphQLTypes["v_player_elo_aggregate"],
 	ended_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	/** An array relationship */
+	event_links: Array<GraphQLTypes["event_match_links"]>,
+	/** An aggregate relationship */
+	event_links_aggregate: GraphQLTypes["event_match_links_aggregate"],
 	external_id?: string | undefined | null,
 	id: GraphQLTypes["uuid"],
 	/** A computed field, executes function "match_invite_code" */
@@ -264048,6 +264221,8 @@ export type GraphQLTypes = {
 	elo_changes?: GraphQLTypes["v_player_elo_bool_exp"] | undefined | null,
 	elo_changes_aggregate?: GraphQLTypes["v_player_elo_aggregate_bool_exp"] | undefined | null,
 	ended_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	event_links?: GraphQLTypes["event_match_links_bool_exp"] | undefined | null,
+	event_links_aggregate?: GraphQLTypes["event_match_links_aggregate_bool_exp"] | undefined | null,
 	external_id?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
 	invite_code?: GraphQLTypes["String_comparison_exp"] | undefined | null,
@@ -264138,6 +264313,7 @@ export type GraphQLTypes = {
 	e_region?: GraphQLTypes["server_regions_obj_rel_insert_input"] | undefined | null,
 	elo_changes?: GraphQLTypes["v_player_elo_arr_rel_insert_input"] | undefined | null,
 	ended_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	event_links?: GraphQLTypes["event_match_links_arr_rel_insert_input"] | undefined | null,
 	external_id?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	label?: string | undefined | null,
@@ -264370,6 +264546,7 @@ export type GraphQLTypes = {
 	effective_at?: GraphQLTypes["order_by"] | undefined | null,
 	elo_changes_aggregate?: GraphQLTypes["v_player_elo_aggregate_order_by"] | undefined | null,
 	ended_at?: GraphQLTypes["order_by"] | undefined | null,
+	event_links_aggregate?: GraphQLTypes["event_match_links_aggregate_order_by"] | undefined | null,
 	external_id?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
 	invite_code?: GraphQLTypes["order_by"] | undefined | null,
@@ -279622,8 +279799,7 @@ export type GraphQLTypes = {
 };
 	/** primary key columns input for table: player_sanctions */
 ["player_sanctions_pk_columns_input"]: {
-		created_at: GraphQLTypes["timestamptz"],
-	id: GraphQLTypes["uuid"]
+		id: GraphQLTypes["uuid"]
 };
 	/** select columns of table "player_sanctions" */
 ["player_sanctions_select_column"]: player_sanctions_select_column;
@@ -322511,9 +322687,15 @@ type ZEUS_VARIABLES = {
 	["e_winning_reasons_stream_cursor_value_input"]: ValueTypes["e_winning_reasons_stream_cursor_value_input"];
 	["e_winning_reasons_update_column"]: ValueTypes["e_winning_reasons_update_column"];
 	["e_winning_reasons_updates"]: ValueTypes["e_winning_reasons_updates"];
+	["event_match_links_aggregate_bool_exp"]: ValueTypes["event_match_links_aggregate_bool_exp"];
+	["event_match_links_aggregate_bool_exp_count"]: ValueTypes["event_match_links_aggregate_bool_exp_count"];
+	["event_match_links_aggregate_order_by"]: ValueTypes["event_match_links_aggregate_order_by"];
+	["event_match_links_arr_rel_insert_input"]: ValueTypes["event_match_links_arr_rel_insert_input"];
 	["event_match_links_bool_exp"]: ValueTypes["event_match_links_bool_exp"];
 	["event_match_links_constraint"]: ValueTypes["event_match_links_constraint"];
 	["event_match_links_insert_input"]: ValueTypes["event_match_links_insert_input"];
+	["event_match_links_max_order_by"]: ValueTypes["event_match_links_max_order_by"];
+	["event_match_links_min_order_by"]: ValueTypes["event_match_links_min_order_by"];
 	["event_match_links_on_conflict"]: ValueTypes["event_match_links_on_conflict"];
 	["event_match_links_order_by"]: ValueTypes["event_match_links_order_by"];
 	["event_match_links_pk_columns_input"]: ValueTypes["event_match_links_pk_columns_input"];

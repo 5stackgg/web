@@ -3,12 +3,11 @@ import { computed, ref } from "vue";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import Empty from "~/components/ui/empty/Empty.vue";
-import { Upload, FileCheck2, FileWarning, X, Plus } from "lucide-vue-next";
+import { Upload, FileCheck2, FileWarning, Plus } from "lucide-vue-next";
 import EventMediaCard from "~/components/events/EventMediaCard.vue";
 import EventMediaDropzone from "~/components/events/EventMediaDropzone.vue";
 import EventAddMediaDialog from "~/components/events/EventAddMediaDialog.vue";
-import EventPlayerPicker from "~/components/events/EventPlayerPicker.vue";
-import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import EventPlayerFilter from "~/components/events/EventPlayerFilter.vue";
 import { useEventMediaQueue } from "~/composables/useEventMediaQueue";
 
 type EventMedia = {
@@ -173,35 +172,10 @@ function formatBytes(bytes: number): string {
       <!-- Filter (left) + Add media (right) on one row. -->
       <div class="flex items-center justify-between gap-2">
         <div class="w-full max-w-xs">
-          <span
-            v-if="filterPlayer"
-            class="inline-flex items-center gap-1.5 rounded-md border border-border/70 bg-card/50 py-1 pl-1.5 pr-1"
-          >
-            <PlayerDisplay
-              :player="filterPlayer"
-              size="xs"
-              compact
-              :show-flag="false"
-              :show-role="false"
-              :show-elo="false"
-              :show-online="false"
-              :tooltip="false"
-              :linkable="false"
-            />
-            <button
-              type="button"
-              class="rounded p-0.5 text-muted-foreground transition-colors hover:bg-destructive/20 hover:text-destructive"
-              :aria-label="$t('common.remove')"
-              @click="filterPlayer = null"
-            >
-              <X class="h-3 w-3" />
-            </button>
-          </span>
-          <EventPlayerPicker
-            v-else
+          <EventPlayerFilter
+            v-model="filterPlayer"
             :event-id="event.id"
             :label="$t('event.media.filter_by_player')"
-            @selected="filterPlayer = $event"
           />
         </div>
         <Button

@@ -19,7 +19,7 @@ import {
 
 const props = defineProps<{
   event: any;
-  matches: any[];
+  refreshKey: string;
   myMatches: any[];
   matchesLoading: boolean;
   leaderboardRows: any[];
@@ -127,13 +127,16 @@ const myTiles = computed(() => [
   { key: "matches", value: fmt(myStats.value?.matches_played) },
 ]);
 
-// Top public highlights for the event's matches.
 const TOP_CLIPS_QUERY = typedGql("query")({
   match_clips: [
     {
       where: {
         visibility: { _eq: "public" },
-        match_map: { match_id: { _in: $("matchIds", "[uuid!]!") } },
+        match_map: {
+          match: {
+            event_links: { event_id: { _eq: $("eventId", "uuid!") } },
+          },
+        },
       },
       order_by: [{ views_count: order_by.desc_nulls_last }],
       limit: 6,
@@ -146,10 +149,9 @@ const clips = ref<Clip[]>([]);
 
 let clipsGeneration = 0;
 watch(
-  () => props.matches.map((match) => match.id).join(","),
-  async () => {
-    const matchIds = props.matches.map((match) => match.id);
-    if (matchIds.length === 0) {
+  [() => props.event?.id, () => props.refreshKey],
+  async ([eventId]) => {
+    if (!eventId) {
       clips.value = [];
       return;
     }
@@ -157,7 +159,7 @@ watch(
     try {
       const { data } = await apolloClient.query({
         query: TOP_CLIPS_QUERY,
-        variables: { matchIds },
+        variables: { eventId },
         fetchPolicy: "network-only",
       });
       if (gen !== clipsGeneration) return;
@@ -399,6 +401,13 @@ const RANK_TEXT = [
           <span :class="tacticalSectionTickClasses"></span>
           {{ $t("event.story.highlights") }}
         </span>
+        <button
+          class="inline-flex items-center gap-1 font-mono text-[0.65rem] normal-case tracking-[0.16em] text-muted-foreground transition-colors hover:text-foreground"
+          @click="emit('go', 'highlights')"
+        >
+          {{ $t("common.see_all") }}
+          <ArrowRight class="h-3 w-3" />
+        </button>
       </div>
 
       <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

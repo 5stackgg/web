@@ -28,6 +28,7 @@ import EventStandings from "~/components/events/EventStandings.vue";
 import EventMembershipPanel from "~/components/events/EventMembershipPanel.vue";
 import EventForm from "~/components/events/EventForm.vue";
 import EventMediaPanel from "~/components/events/EventMediaPanel.vue";
+import EventHighlights from "~/components/events/EventHighlights.vue";
 import EventTeamsPanel from "~/components/events/EventTeamsPanel.vue";
 import EventOverview from "~/components/events/EventOverview.vue";
 import EventBannerUpload from "~/components/events/EventBannerUpload.vue";
@@ -69,6 +70,7 @@ const activeTab = useRouteTab({
   tabs: [
     "overview",
     "media",
+    "highlights",
     "leaderboard",
     "teams",
     "tournaments",
@@ -102,7 +104,6 @@ const eventIdRef = computed<string | null>(() => {
 
 const {
   matches: eventMatches,
-  overviewMatches,
   myMatches,
   total: matchesTotal,
   page: matchesPage,
@@ -269,6 +270,13 @@ const {
                     ({{ galleryCount }})
                   </TabsTrigger>
                   <TabsTrigger
+                    value="highlights"
+                    :class="tacticalTabsTriggerClasses"
+                  >
+                    {{ $t("event.tabs.highlights") }}
+                    ({{ highlightsCount }})
+                  </TabsTrigger>
+                  <TabsTrigger
                     value="leaderboard"
                     :class="tacticalTabsTriggerClasses"
                   >
@@ -322,7 +330,7 @@ const {
           <PageTransition>
             <EventOverview
               :event="event"
-              :matches="overviewMatches"
+              :refresh-key="membershipKey"
               :my-matches="myMatches"
               :matches-loading="matchesLoading"
               :leaderboard-rows="leaderboardRows"
@@ -423,6 +431,12 @@ const {
         <TabsContent value="media">
           <PageTransition>
             <EventMediaPanel :event="event" />
+          </PageTransition>
+        </TabsContent>
+
+        <TabsContent value="highlights">
+          <PageTransition>
+            <EventHighlights :event-id="event.id" />
           </PageTransition>
         </TabsContent>
 
@@ -634,6 +648,22 @@ const EVENT_LEADERBOARD_ROWS = gql`
   }
 `;
 
+const EVENT_HIGHLIGHTS_COUNT = typedGql("query")({
+  match_clips_aggregate: [
+    {
+      where: {
+        visibility: { _eq: "public" },
+        match_map: {
+          match: {
+            event_links: { event_id: { _eq: $("eventId", "uuid!") } },
+          },
+        },
+      },
+    },
+    { aggregate: { count: true } },
+  ],
+});
+
 export default {
   data() {
     return {
@@ -641,6 +671,7 @@ export default {
       event: undefined as any,
       loading: true,
       leaderboardRows: [] as any[],
+      highlightsCount: 0,
       deleteEventDialog: false,
       deletingEvent: false,
     };
@@ -660,6 +691,19 @@ export default {
       },
       update(data: any) {
         return data?.get_event_leaderboard || [];
+      },
+    },
+    highlightsCount: {
+      query: EVENT_HIGHLIGHTS_COUNT,
+      fetchPolicy: "network-only",
+      variables(this: any) {
+        return { eventId: this.$route.params.eventId };
+      },
+      skip(this: any) {
+        return !this.event;
+      },
+      update(data: any) {
+        return Number(data?.match_clips_aggregate?.aggregate?.count) || 0;
       },
     },
     $subscribe: {
@@ -704,6 +748,7 @@ export default {
         return;
       }
       this.$apollo?.queries?.leaderboardRows?.refetch();
+      this.$apollo?.queries?.highlightsCount?.refetch();
       this.refetchEventMatches?.();
     },
   },

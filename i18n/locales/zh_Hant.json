@@ -9299,6 +9299,7 @@
       "teams": "隊伍與玩家",
       "settings": "設定",
       "media": "媒體",
+      "highlights": "精華時刻",
       "overview": "總覽",
       "story": "動態",
       "matches": "比賽"
@@ -9465,6 +9466,10 @@
       "link_add": "新增",
       "link_invalid": "請輸入有效的 http(s) URL",
       "link_added": "連結已新增"
+    },
+    "highlights": {
+      "none": "此活動的比賽尚無精華時刻。",
+      "none_for_player": "此玩家在此活動中尚無精華時刻。"
     },
     "phase": {
       "upcoming": "即將開始",

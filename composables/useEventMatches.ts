@@ -87,12 +87,7 @@ function rowsToMatches(rows: any[]): EventMatch[] {
 export function useEventMatches(eventId: Ref<string | null>) {
   const { client: apolloClient } = useApolloClient();
 
-  // `matches` holds the currently-viewed page (page-number pagination in the
-  // matches tab). `overviewMatches` is a stable first-page snapshot the
-  // overview uses for its highlight match-ids, so paging the tab never shifts
-  // what the overview shows.
   const matches = ref<EventMatch[]>([]);
-  const overviewMatches = ref<EventMatch[]>([]);
   const myMatches = ref<EventMatch[]>([]);
   const total = ref(0);
   const page = ref(1);
@@ -137,7 +132,6 @@ export function useEventMatches(eventId: Ref<string | null>) {
   async function refetch() {
     if (!eventId.value) {
       matches.value = [];
-      overviewMatches.value = [];
       myMatches.value = [];
       total.value = 0;
       page.value = 1;
@@ -148,15 +142,11 @@ export function useEventMatches(eventId: Ref<string | null>) {
     loading.value = true;
     page.value = 1;
     try {
-      const [firstPage] = await Promise.all([fetchPage(1), fetchMine()]);
-      if (gen === generation) {
-        overviewMatches.value = firstPage;
-      }
+      await Promise.all([fetchPage(1), fetchMine()]);
     } catch (error) {
       if (gen !== generation) return;
       console.error("Error fetching event matches:", error);
       matches.value = [];
-      overviewMatches.value = [];
       myMatches.value = [];
       total.value = 0;
     } finally {
@@ -207,7 +197,6 @@ export function useEventMatches(eventId: Ref<string | null>) {
 
   return {
     matches,
-    overviewMatches,
     myMatches,
     total,
     page,

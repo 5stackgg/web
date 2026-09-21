@@ -5468,10 +5468,27 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"e_winning_reasons_set_input",
 		where:"e_winning_reasons_bool_exp"
 	},
+	event_match_links_aggregate_bool_exp:{
+		count:"event_match_links_aggregate_bool_exp_count"
+	},
+	event_match_links_aggregate_bool_exp_count:{
+		arguments:"event_match_links_select_column",
+		filter:"event_match_links_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
 	event_match_links_aggregate_fields:{
 		count:{
 			columns:"event_match_links_select_column"
 		}
+	},
+	event_match_links_aggregate_order_by:{
+		count:"order_by",
+		max:"event_match_links_max_order_by",
+		min:"event_match_links_min_order_by"
+	},
+	event_match_links_arr_rel_insert_input:{
+		data:"event_match_links_insert_input",
+		on_conflict:"event_match_links_on_conflict"
 	},
 	event_match_links_bool_exp:{
 		_and:"event_match_links_bool_exp",
@@ -5490,6 +5507,16 @@ export const AllTypesProps: Record<string,any> = {
 		event_id:"uuid",
 		match:"matches_obj_rel_insert_input",
 		match_id:"uuid"
+	},
+	event_match_links_max_order_by:{
+		created_at:"order_by",
+		event_id:"order_by",
+		match_id:"order_by"
+	},
+	event_match_links_min_order_by:{
+		created_at:"order_by",
+		event_id:"order_by",
+		match_id:"order_by"
 	},
 	event_match_links_on_conflict:{
 		constraint:"event_match_links_constraint",
@@ -13002,6 +13029,16 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"v_player_elo_order_by",
 			where:"v_player_elo_bool_exp"
 		},
+		event_links:{
+			distinct_on:"event_match_links_select_column",
+			order_by:"event_match_links_order_by",
+			where:"event_match_links_bool_exp"
+		},
+		event_links_aggregate:{
+			distinct_on:"event_match_links_select_column",
+			order_by:"event_match_links_order_by",
+			where:"event_match_links_bool_exp"
+		},
 		lineup_counts:{
 
 		},
@@ -13216,6 +13253,8 @@ export const AllTypesProps: Record<string,any> = {
 		elo_changes:"v_player_elo_bool_exp",
 		elo_changes_aggregate:"v_player_elo_aggregate_bool_exp",
 		ended_at:"timestamptz_comparison_exp",
+		event_links:"event_match_links_bool_exp",
+		event_links_aggregate:"event_match_links_aggregate_bool_exp",
 		external_id:"String_comparison_exp",
 		id:"uuid_comparison_exp",
 		invite_code:"String_comparison_exp",
@@ -13302,6 +13341,7 @@ export const AllTypesProps: Record<string,any> = {
 		e_region:"server_regions_obj_rel_insert_input",
 		elo_changes:"v_player_elo_arr_rel_insert_input",
 		ended_at:"timestamptz",
+		event_links:"event_match_links_arr_rel_insert_input",
 		id:"uuid",
 		lineup_1:"match_lineups_obj_rel_insert_input",
 		lineup_1_id:"uuid",
@@ -13411,6 +13451,7 @@ export const AllTypesProps: Record<string,any> = {
 		effective_at:"order_by",
 		elo_changes_aggregate:"v_player_elo_aggregate_order_by",
 		ended_at:"order_by",
+		event_links_aggregate:"event_match_links_aggregate_order_by",
 		external_id:"order_by",
 		id:"order_by",
 		invite_code:"order_by",
@@ -14588,7 +14629,6 @@ export const AllTypesProps: Record<string,any> = {
 			where:"player_sanctions_bool_exp"
 		},
 		delete_player_sanctions_by_pk:{
-			created_at:"timestamptz",
 			id:"uuid"
 		},
 		delete_player_season_stats:{
@@ -24832,7 +24872,6 @@ export const AllTypesProps: Record<string,any> = {
 		type:"order_by"
 	},
 	player_sanctions_pk_columns_input:{
-		created_at:"timestamptz",
 		id:"uuid"
 	},
 	player_sanctions_select_column: "enum" as const,
@@ -28755,7 +28794,6 @@ export const AllTypesProps: Record<string,any> = {
 			where:"player_sanctions_bool_exp"
 		},
 		player_sanctions_by_pk:{
-			created_at:"timestamptz",
 			id:"uuid"
 		},
 		player_season_stats:{
@@ -33238,7 +33276,6 @@ export const AllTypesProps: Record<string,any> = {
 			where:"player_sanctions_bool_exp"
 		},
 		player_sanctions_by_pk:{
-			created_at:"timestamptz",
 			id:"uuid"
 		},
 		player_sanctions_stream:{
@@ -54567,6 +54604,8 @@ export const ReturnTypes: Record<string,any> = {
 		elo_changes:"v_player_elo",
 		elo_changes_aggregate:"v_player_elo_aggregate",
 		ended_at:"timestamptz",
+		event_links:"event_match_links",
+		event_links_aggregate:"event_match_links_aggregate",
 		external_id:"String",
 		id:"uuid",
 		invite_code:"String",

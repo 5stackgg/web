@@ -9467,10 +9467,6 @@
       "link_invalid": "Podaj prawidłowy adres URL http(s)",
       "link_added": "Link dodany"
     },
-    "highlights": {
-      "none": "Brak jeszcze highlightów z meczów tego wydarzenia",
-      "none_for_player": "Brak highlightów tego gracza w tym wydarzeniu"
-    },
     "phase": {
       "upcoming": "Nadchodzące",
       "live": "Na żywo",

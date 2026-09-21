@@ -9467,10 +9467,6 @@
       "link_invalid": "유효한 http(s) URL을 입력하세요",
       "link_added": "링크가 추가되었습니다"
     },
-    "highlights": {
-      "none": "아직 이 이벤트 경기의 하이라이트가 없습니다.",
-      "none_for_player": "이 이벤트에서 이 플레이어의 하이라이트가 없습니다."
-    },
     "phase": {
       "upcoming": "예정",
       "live": "진행 중",

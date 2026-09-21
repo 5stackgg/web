@@ -9467,10 +9467,6 @@
       "link_invalid": "Geçerli bir http(s) URL'si gir",
       "link_added": "Bağlantı eklendi"
     },
-    "highlights": {
-      "none": "Bu etkinliğin maçlarından henüz öne çıkan an yok.",
-      "none_for_player": "Bu oyuncunun bu etkinlikte öne çıkan anı yok."
-    },
     "phase": {
       "upcoming": "Yaklaşan",
       "live": "Canlı",

@@ -28,7 +28,7 @@ import EventStandings from "~/components/events/EventStandings.vue";
 import EventMembershipPanel from "~/components/events/EventMembershipPanel.vue";
 import EventForm from "~/components/events/EventForm.vue";
 import EventMediaPanel from "~/components/events/EventMediaPanel.vue";
-import EventHighlights from "~/components/events/EventHighlights.vue";
+import HighlightsBrowser from "~/components/clips/HighlightsBrowser.vue";
 import EventTeamsPanel from "~/components/events/EventTeamsPanel.vue";
 import EventOverview from "~/components/events/EventOverview.vue";
 import EventBannerUpload from "~/components/events/EventBannerUpload.vue";
@@ -49,6 +49,10 @@ import {
   phaseLabelKey,
 } from "~/utilities/eventDisplay";
 import { useEventContext } from "~/composables/useEventContext";
+
+definePageMeta({
+  persistQueryKeys: ["player", "since", "kills", "view", "sort"],
+});
 
 // Reflect the event name in the browser tab / in-app title (nuxt.config's
 // titleTemplate appends " | 5Stack"). The context is populated by the
@@ -436,7 +440,7 @@ const {
 
         <TabsContent value="highlights">
           <PageTransition>
-            <EventHighlights :event-id="event.id" />
+            <HighlightsBrowser :event-id="event.id" />
           </PageTransition>
         </TabsContent>
 

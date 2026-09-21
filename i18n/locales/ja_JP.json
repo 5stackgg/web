@@ -9467,10 +9467,6 @@
       "link_invalid": "有効な http(s) の URL を入力してください",
       "link_added": "リンクを追加しました"
     },
-    "highlights": {
-      "none": "このイベントの試合のハイライトはまだありません。",
-      "none_for_player": "このイベントでのこのプレイヤーのハイライトはありません。"
-    },
     "phase": {
       "upcoming": "開催予定",
       "live": "開催中",

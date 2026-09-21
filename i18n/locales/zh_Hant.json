@@ -9467,10 +9467,6 @@
       "link_invalid": "請輸入有效的 http(s) URL",
       "link_added": "連結已新增"
     },
-    "highlights": {
-      "none": "此活動的比賽尚無精華時刻。",
-      "none_for_player": "此玩家在此活動中尚無精華時刻。"
-    },
     "phase": {
       "upcoming": "即將開始",
       "live": "進行中",

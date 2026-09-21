@@ -118,17 +118,21 @@ function select(player: any) {
 <template>
   <Popover v-model:open="open">
     <PopoverTrigger as-child>
-      <button
-        type="button"
-        :aria-expanded="open"
-        class="flex h-9 w-full items-center justify-between rounded-md border border-input bg-background px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-      >
-        <div class="flex min-w-0 items-center gap-2">
-          <UserPlus class="h-4 w-4 shrink-0 text-muted-foreground" />
-          <span class="truncate">{{ labelText }}</span>
-        </div>
-        <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-      </button>
+      <div>
+        <slot>
+          <button
+            type="button"
+            :aria-expanded="open"
+            class="flex h-9 w-full items-center justify-between rounded-md border border-input bg-background px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          >
+            <div class="flex min-w-0 items-center gap-2">
+              <UserPlus class="h-4 w-4 shrink-0 text-muted-foreground" />
+              <span class="truncate">{{ labelText }}</span>
+            </div>
+            <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </button>
+        </slot>
+      </div>
     </PopoverTrigger>
     <PopoverContent class="w-[340px] p-0">
       <div class="flex flex-col">

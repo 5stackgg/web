@@ -9467,10 +9467,6 @@
       "link_invalid": "Gib eine gültige http(s)-URL ein",
       "link_added": "Link hinzugefügt"
     },
-    "highlights": {
-      "none": "Noch keine Highlights aus den Matches dieses Events.",
-      "none_for_player": "Keine Highlights dieses Spielers bei diesem Event."
-    },
     "phase": {
       "upcoming": "Anstehend",
       "live": "Live",

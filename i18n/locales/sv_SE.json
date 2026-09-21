@@ -9467,10 +9467,6 @@
       "link_invalid": "Ange en giltig http(s)-URL",
       "link_added": "Länk tillagd"
     },
-    "highlights": {
-      "none": "Inga höjdpunkter från detta events matcher än.",
-      "none_for_player": "Inga höjdpunkter med denna spelare från detta event."
-    },
     "phase": {
       "upcoming": "Kommande",
       "live": "Live",

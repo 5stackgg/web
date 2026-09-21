@@ -9299,6 +9299,7 @@
       "teams": "Drużyny i gracze",
       "settings": "Ustawienia",
       "media": "Media",
+      "highlights": "Highlighty",
       "overview": "Przegląd",
       "story": "Historia",
       "matches": "Mecze"
@@ -9465,6 +9466,10 @@
       "link_add": "Dodaj",
       "link_invalid": "Podaj prawidłowy adres URL http(s)",
       "link_added": "Link dodany"
+    },
+    "highlights": {
+      "none": "Brak jeszcze highlightów z meczów tego wydarzenia",
+      "none_for_player": "Brak highlightów tego gracza w tym wydarzeniu"
     },
     "phase": {
       "upcoming": "Nadchodzące",

@@ -9299,6 +9299,7 @@
       "teams": "队伍与玩家",
       "settings": "设置",
       "media": "媒体",
+      "highlights": "高光时刻",
       "overview": "概览",
       "story": "动态",
       "matches": "比赛"
@@ -9465,6 +9466,10 @@
       "link_add": "添加",
       "link_invalid": "请输入有效的 http(s) URL",
       "link_added": "链接已添加"
+    },
+    "highlights": {
+      "none": "此活动的比赛尚无高光时刻。",
+      "none_for_player": "此玩家在此活动中暂无高光时刻。"
     },
     "phase": {
       "upcoming": "即将开始",

@@ -9299,6 +9299,7 @@
       "teams": "Hold og spillere",
       "settings": "Indstillinger",
       "media": "Medier",
+      "highlights": "Highlights",
       "overview": "Overblik",
       "story": "Historie",
       "matches": "Kampe"
@@ -9465,6 +9466,10 @@
       "link_add": "Tilføj",
       "link_invalid": "Indtast en gyldig http(s)-URL",
       "link_added": "Link tilføjet"
+    },
+    "highlights": {
+      "none": "Ingen highlights fra dette events kampe endnu.",
+      "none_for_player": "Ingen highlights med denne spiller ved dette event."
     },
     "phase": {
       "upcoming": "Kommende",

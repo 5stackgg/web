@@ -151,6 +151,8 @@ export default {
             enabled: true,
             archived_at: true,
             competitive_safe: true,
+            players_per_team: true,
+            allow_short_handed_start: true,
             supported_runtimes: true,
             runtime_conflicts: true,
             cfg: true,

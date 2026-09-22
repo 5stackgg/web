@@ -2337,10 +2337,6 @@
           "auto_clip_min_kills_ace": "仅限五杀（5K）",
           "visibility_private": "私密",
           "visibility_public": "公开",
-          "default_hud_mode": "默认 HUD 样式",
-          "default_hud_mode_description": "游戏流媒体 Pod 在启动时为直播、Demo 回放和批量高光加载的 JTs Hud Manager 布局。主播仍可在直播中从播放控制切换样式。",
-          "hud_mode_horizontal": "水平",
-          "hud_mode_vertical": "垂直",
           "playback_section": "回放",
           "reparse_warning_title": "这将重新解析每个 Demo——可能需要很长时间。",
           "reparse_warning_body": "Demo 将逐一重新处理，根据您拥有的 Demo 数量，可能需要数小时或数天。仅在您清楚自己在做什么时执行此操作，或者在重大更新改变了 Demo 解析方式之后执行。更新的数据统计会在比赛被查看时自动重新解析——此操作仅用于一次性强制重新解析所有内容。",
@@ -2387,7 +2383,8 @@
           "orphaned_scanning_short": "扫描中……",
           "orphaned_demos_count": "{count} 个 Demo",
           "orphaned_highlights_count": "{count} 个高光时刻",
-          "orphaned_object_count": "{count} 个文件"
+          "orphaned_object_count": "{count} 个文件",
+          "hud_moved": "The broadcast HUD is now a library of importable bundles, managed in"
         },
         "update_map_pools": {
           "title": "自动更新地图池",
@@ -2691,6 +2688,21 @@
               "description": "队伍错过了赛事的必需签到。仅在进入时检查，因此已经在进行中的对阵表里的玩家会保留位置。"
             }
           }
+        },
+        "broadcast_huds": {
+          "title": "Broadcast HUDs",
+          "description": "The HUD burned into live streams, demo playback and batch highlights. Import a JTs Hud Manager or Lexogrine bundle as a .zip and pick which one the game-streamer pod loads; streamers can still switch per-stream from the player controls.",
+          "import": "Import HUD",
+          "import_hint": "A .zip with hud.json at its root or in a single top-level folder.",
+          "imported": "HUD imported",
+          "import_failed": "Could not import that HUD",
+          "make_default": "Make default",
+          "is_default": "Default",
+          "default_set": "Default HUD updated",
+          "default_failed": "Could not set the default HUD",
+          "removed": "HUD removed",
+          "remove_failed": "Could not remove that HUD",
+          "signed": "Signed bundle"
         }
       },
       "language": {

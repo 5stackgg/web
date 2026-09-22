@@ -1860,6 +1860,21 @@
         }
       },
       "application": {
+        "broadcast_huds": {
+          "title": "Broadcast HUDs",
+          "description": "The HUD burned into live streams, demo playback and batch highlights. Import a JTs Hud Manager or Lexogrine bundle as a .zip and pick which one the game-streamer pod loads; streamers can still switch per-stream from the player controls.",
+          "import": "Import HUD",
+          "import_hint": "A .zip with hud.json at its root or in a single top-level folder.",
+          "imported": "HUD imported",
+          "import_failed": "Could not import that HUD",
+          "make_default": "Make default",
+          "is_default": "Default",
+          "default_set": "Default HUD updated",
+          "default_failed": "Could not set the default HUD",
+          "removed": "HUD removed",
+          "remove_failed": "Could not remove that HUD",
+          "signed": "Signed bundle"
+        },
         "update_success": "Updated",
         "db_backups": {
           "name": "Name",
@@ -2337,10 +2352,6 @@
           "auto_clip_min_kills_ace": "Aces only (5K)",
           "visibility_private": "Private",
           "visibility_public": "Public",
-          "default_hud_mode": "Default HUD style",
-          "default_hud_mode_description": "Which JTs Hud Manager layout the game-streamer pod loads at boot for live streams, demo playback, and batch highlights. Streamers can still switch styles per-stream from the player controls.",
-          "hud_mode_horizontal": "Horizontal",
-          "hud_mode_vertical": "Vertical",
           "playback_section": "Playback",
           "reparse_warning_title": "This reparses every demo — it can take a very long time.",
           "reparse_warning_body": "Demos are reprocessed one at a time, which can run for hours or days depending on how many you have. Only do this if you know what you're doing, or after a major update changes how demos are parsed. New stats from updates are reparsed automatically as matches are viewed — this is only to force everything at once.",
@@ -2387,7 +2398,8 @@
           "orphaned_scanning_short": "Scanning…",
           "orphaned_demos_count": "{count} demos",
           "orphaned_highlights_count": "{count} highlights",
-          "orphaned_object_count": "{count} files"
+          "orphaned_object_count": "{count} files",
+          "hud_moved": "The broadcast HUD is now a library of importable bundles, managed in"
         },
         "update_map_pools": {
           "title": "Automatic Update Map Pools",

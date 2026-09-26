@@ -46,6 +46,7 @@ const {
   cancelRequest,
   removeFriend,
   inviteToLobby,
+  inviteToDraft: sendDraftInvite,
 } = useFriendActions();
 
 // Rendered inside the accepted-friend branch, so the friend-only rule the
@@ -123,14 +124,21 @@ onBeforeUnmount(() => {
   if (confirmRemove.value) useRightSidebar().resumeHoverClose();
 });
 
-// Invite to my draft lobby (right-click) — only when I'm organizing an open
-// draft and this player isn't already in it.
+// Invite to my draft lobby — the server only lets the host or an organizer add
+// players, and only while the draft is still taking them.
 const myDraftGame = computed(() => useDraftGamesStore().myDraftGame as any);
+
+const friendInMyDraft = computed(
+  () =>
+    !!joinableDraft.value && joinableDraft.value.id === myDraftGame.value?.id,
+);
 
 const canInviteToDraft = computed(() => {
   const dg = myDraftGame.value;
   if (!dg || dg.match_id) return false;
-  if (["Completed", "Canceled"].includes(dg.status)) return false;
+  if (["CreatingMatch", "Completed", "Canceled"].includes(dg.status)) {
+    return false;
+  }
 
   const meId = String(useAuthStore().me?.steam_id ?? "");
   const targetId = String(props.player.steam_id);
@@ -141,23 +149,38 @@ const canInviteToDraft = computed(() => {
     return false;
   }
 
-  // Host (or elevated organizer) can always invite.
-  if (String(dg.host_steam_id) === meId || dg.is_organizer) return true;
-
-  // Otherwise must be a participant AND the lobby access must allow it.
-  const meParticipant = (dg.players ?? []).some(
-    (p: any) => String(p.steam_id) === meId && p.status !== "Invited",
-  );
-  return meParticipant && ["Open", "Friends", "Invite"].includes(dg.access);
+  return String(dg.host_steam_id) === meId || !!dg.is_organizer;
 });
 
 async function inviteToDraft() {
   const dg = myDraftGame.value;
   if (!dg) return;
-  await useDraftGamesStore().add(dg.id, props.player.steam_id);
+  await sendDraftInvite(props.player.steam_id, dg.id);
   toast({
     title: t("draft_games.room.invite_sent", { name: props.player.name }),
   });
+}
+
+// While I'm running a draft, the row's invite button sends to the draft.
+const inviteTarget = computed<"draft" | "lobby" | null>(() => {
+  if (rel.value === "incoming") {
+    return null;
+  }
+  if (canInviteToDraft.value) {
+    return "draft";
+  }
+  return canInviteToLobby.value ? "lobby" : null;
+});
+
+const inviting = computed(() =>
+  loadingFor(inviteTarget.value === "draft" ? "invite_draft" : "invite"),
+);
+
+function invite() {
+  if (inviteTarget.value === "draft") {
+    return inviteToDraft();
+  }
+  return inviteToLobby(props.player.steam_id);
 }
 
 const STATUS_BANNER: Record<string, string> = {
@@ -202,34 +225,38 @@ const amberHover =
               :context-menu="false"
             />
             <div class="flex shrink-0 items-center gap-0.5">
-              <!-- Invite to lobby — any invitable player except incoming
-                   requests. Its column slides 0fr -> 1fr instead of popping in
-                   at the same instant the relationship swap is animating. -->
+              <!-- Invite to lobby (or to my draft while I'm drafting) — any
+                   invitable player except incoming requests. Its column slides
+                   0fr -> 1fr instead of popping in at the same instant the
+                   relationship swap is animating. -->
               <Transition
                 enter-active-class="friend-tool-reveal"
                 enter-from-class="friend-tool-reveal-collapsed"
                 leave-active-class="friend-tool-reveal"
                 leave-to-class="friend-tool-reveal-collapsed"
               >
-                <div
-                  v-if="canInviteToLobby && rel !== 'incoming'"
-                  class="grid min-w-0 grid-cols-[1fr]"
-                >
+                <div v-if="inviteTarget" class="grid min-w-0 grid-cols-[1fr]">
                   <div class="min-w-0 overflow-hidden">
                     <Tooltip>
                       <TooltipTrigger as-child>
                         <Button
                           variant="ghost"
                           :class="[actionBtn, amberHover]"
-                          :loading="loadingFor('invite')"
+                          :loading="inviting"
                           :disabled="busy"
-                          @click="inviteToLobby(player.steam_id)"
+                          @click="invite"
                         >
-                          <Tent class="h-4 w-4" />
+                          <Swords
+                            v-if="inviteTarget === 'draft'"
+                            class="h-4 w-4"
+                          />
+                          <Tent v-else class="h-4 w-4" />
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent>{{
-                        $t("matchmaking.friends.invite_to_lobby")
+                        inviteTarget === "draft"
+                          ? $t("draft_games.room.invite_to_draft")
+                          : $t("matchmaking.friends.invite_to_lobby")
                       }}</TooltipContent>
                     </Tooltip>
                   </div>
@@ -413,7 +440,7 @@ const amberHover =
 
               <!-- Mini join button — flush right — for a joinable draft -->
               <Button
-                v-if="joinableDraft && !joinableDraft.full"
+                v-if="joinableDraft && !joinableDraft.full && !friendInMyDraft"
                 size="sm"
                 :class="[
                   'ml-auto h-5 shrink-0 cursor-pointer gap-1 px-1.5 font-mono text-[0.55rem] font-bold uppercase tracking-[0.1em]',

@@ -1,6 +1,7 @@
 import { reactive } from "vue";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
+import { useDraftGamesStore } from "~/stores/DraftGamesStore";
 
 export type FriendRelationship = "none" | "friend" | "incoming" | "outgoing";
 export type FriendAction =
@@ -9,7 +10,8 @@ export type FriendAction =
   | "decline"
   | "cancel"
   | "remove"
-  | "invite";
+  | "invite"
+  | "invite_draft";
 
 // Module-level so every row shares the same in-flight map — the friends
 // subscription drives the relationship, this tracks which action is mid-flight.
@@ -110,6 +112,12 @@ export function useFriendActions() {
     );
   }
 
+  function inviteToDraft(steam_id: string | number, draftGameId: string) {
+    return run(steam_id, "invite_draft", () =>
+      useDraftGamesStore().add(draftGameId, sid(steam_id)),
+    );
+  }
+
   return {
     relationship,
     pendingAction,
@@ -120,5 +128,6 @@ export function useFriendActions() {
     cancelRequest,
     removeFriend,
     inviteToLobby,
+    inviteToDraft,
   };
 }

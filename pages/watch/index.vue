@@ -7,7 +7,7 @@ import {
 } from "~/generated/zeus";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
-import TournamentFeatureCard from "~/components/tournament/TournamentFeatureCard.vue";
+import TournamentCard from "~/components/tournament/TournamentCard.vue";
 import LiveStreamFeatureCard from "~/components/match/LiveStreamFeatureCard.vue";
 import RecentTournaments from "~/components/tournament/RecentTournaments.vue";
 import WatchColdStart from "~/components/watch/WatchColdStart.vue";
@@ -33,31 +33,8 @@ const CHECK_IN_REVIEW_STATUS = "CheckInReview" as e_tournament_status_enum;
   </PageTransition>
 
   <PageTransition
-    v-if="liveTournaments && liveTournaments.length > 0"
-    :delay="100"
-    class="mt-6"
-  >
-    <div>
-      <div :class="tacticalSectionLabelClasses">
-        <span :class="tacticalSectionTickClasses"></span>
-        {{ $t("pages.watch.section_live_tournaments") }}
-      </div>
-      <div class="space-y-3">
-        <TournamentFeatureCard
-          v-for="(tournament, index) in liveTournaments"
-          :key="tournament.id"
-          :tournament="tournament"
-          :priority="index === 0"
-          status-variant="live"
-          :status-label="$t('common.live')"
-        />
-      </div>
-    </div>
-  </PageTransition>
-
-  <PageTransition
     v-if="streamingMatches && streamingMatches.length > 0"
-    :delay="115"
+    :delay="100"
     class="mt-6"
   >
     <div>
@@ -65,7 +42,7 @@ const CHECK_IN_REVIEW_STATUS = "CheckInReview" as e_tournament_status_enum;
         <span :class="tacticalSectionTickClasses"></span>
         {{ $t("pages.watch.section_streaming_now") }}
       </div>
-      <div class="space-y-3">
+      <div class="grid gap-3 md:grid-cols-2">
         <LiveStreamFeatureCard
           v-for="match in streamingMatches"
           :key="match.id"
@@ -79,7 +56,7 @@ const CHECK_IN_REVIEW_STATUS = "CheckInReview" as e_tournament_status_enum;
     <WatchColdStart />
   </PageTransition>
 
-  <PageTransition :delay="125" class="mt-6">
+  <PageTransition :delay="115" class="mt-6">
     <OtherMatches
       :section-label="$t('pages.watch.section_live_matches')"
       :is-in-lineup="true"
@@ -98,7 +75,37 @@ const CHECK_IN_REVIEW_STATUS = "CheckInReview" as e_tournament_status_enum;
     />
   </PageTransition>
 
+  <PageTransition
+    v-if="liveTournaments && liveTournaments.length > 0"
+    :delay="125"
+    class="mt-6"
+  >
+    <div>
+      <div :class="tacticalSectionLabelClasses">
+        <span :class="tacticalSectionTickClasses"></span>
+        {{ $t("pages.watch.section_live_tournaments") }}
+      </div>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <TournamentCard
+          v-for="tournament in liveTournaments"
+          :key="tournament.id"
+          :tournament="tournament"
+          variant="compact"
+          status-variant="live"
+          :status-label="$t('common.live')"
+        />
+      </div>
+    </div>
+  </PageTransition>
+
   <PageTransition :delay="150" class="mt-6">
+    <RecentHighlights
+      :section-label="$t('pages.watch.section_recent_highlights')"
+      horizontal
+    />
+  </PageTransition>
+
+  <PageTransition :delay="175" class="mt-6">
     <RecentTournaments
       :section-label="$t('pages.watch.section_upcoming_tournaments')"
       :statuses="[
@@ -114,7 +121,7 @@ const CHECK_IN_REVIEW_STATUS = "CheckInReview" as e_tournament_status_enum;
     />
   </PageTransition>
 
-  <PageTransition :delay="175" class="mt-6">
+  <PageTransition :delay="200" class="mt-6">
     <OtherMatches
       :section-label="$t('pages.watch.section_upcoming_matches')"
       :is-in-lineup="true"
@@ -123,13 +130,6 @@ const CHECK_IN_REVIEW_STATUS = "CheckInReview" as e_tournament_status_enum;
       compact
       :limit="10"
       :statuses="[e_match_status_enum.Scheduled]"
-    />
-  </PageTransition>
-
-  <PageTransition :delay="200" class="mt-6">
-    <RecentHighlights
-      :section-label="$t('pages.watch.section_recent_highlights')"
-      horizontal
     />
   </PageTransition>
 

@@ -160,10 +160,10 @@ function onWatchClick(e: Event) {
 
 <template>
   <div
-    class="group/stream grid w-full max-w-[46rem] grid-cols-1 overflow-hidden rounded-lg border border-border bg-muted/30 transition-all duration-300 hover:border-primary/30 hover:bg-muted/20 hover:shadow-lg hover:shadow-primary/10 sm:grid-cols-[22rem_minmax(0,1fr)]"
+    class="group/stream flex w-full flex-col overflow-hidden rounded-lg border border-border bg-muted/30 transition-all duration-300 hover:border-primary/30 hover:bg-muted/20 hover:shadow-lg hover:shadow-primary/10"
   >
     <div
-      class="relative h-full w-full overflow-hidden bg-background/60 sm:border-r sm:border-border"
+      class="relative w-full overflow-hidden border-b border-border bg-background/60"
     >
       <div
         v-if="needsLogin"
@@ -235,7 +235,7 @@ function onWatchClick(e: Event) {
       always-show
       embedded
       hide-stream-button
-      class="h-full"
+      class="flex-1"
     />
   </div>
 </template>

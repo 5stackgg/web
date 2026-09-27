@@ -6609,6 +6609,7 @@
       "rendering_clip": "Rendu du clip",
       "acquiring_signal": "Acquisition du signal",
       "signal_lost": "Signal perdu",
+      "ended": "Stream terminé",
       "idle": "Inactif",
       "access_denied": "Stream indisponible",
       "access_denied_hint": "Tu n'as pas accès à ce stream live — les joueurs ne peuvent pas regarder un match auquel ils participent."

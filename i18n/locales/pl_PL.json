@@ -6609,6 +6609,7 @@
       "rendering_clip": "Renderowanie klipu",
       "acquiring_signal": "Wyszukiwanie sygnału",
       "signal_lost": "Utracono sygnał",
+      "ended": "Transmisja zakończona",
       "idle": "Bezczynny",
       "access_denied": "Transmisja niedostępna",
       "access_denied_hint": "Nie masz dostępu do tej transmisji na żywo — gracze nie mogą oglądać meczu, w którym biorą udział"

@@ -6609,6 +6609,7 @@
       "rendering_clip": "Renderer klip",
       "acquiring_signal": "Finder signal",
       "signal_lost": "Signal mistet",
+      "ended": "Streamen er slut",
       "idle": "Inaktiv",
       "access_denied": "Stream utilgængelig",
       "access_denied_hint": "Du har ikke adgang til denne livestream — spillere kan ikke se en kamp, de selv er med i."

@@ -6609,6 +6609,7 @@
       "rendering_clip": "クリップ生成中",
       "acquiring_signal": "信号取得中",
       "signal_lost": "信号ロスト",
+      "ended": "配信終了",
       "idle": "待機中",
       "access_denied": "配信を利用できません",
       "access_denied_hint": "このライブ配信への権限がありません — 出場選手は自分が出ている試合を視聴できません。"

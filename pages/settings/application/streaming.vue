@@ -6,6 +6,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
+import PlaycastEdgeRelay from "~/components/settings/PlaycastEdgeRelay.vue";
 </script>
 
 <template>
@@ -173,6 +174,8 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
             {{ $t("pages.settings.application.streaming.playcast_learn_more") }}
             <ExternalLink class="w-3.5 h-3.5" />
           </a>
+
+          <PlaycastEdgeRelay v-if="playcastEnabled" class="mt-4" />
         </SettingsSection>
 
         <SettingsSaveBar

@@ -6609,6 +6609,7 @@
       "rendering_clip": "Rendering clip",
       "acquiring_signal": "Acquiring signal",
       "signal_lost": "Signal lost",
+      "ended": "Stream ended",
       "idle": "Idle",
       "access_denied": "Stream unavailable",
       "access_denied_hint": "You don't have access to this live stream — players can't watch a match they're in."

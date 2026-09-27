@@ -6609,6 +6609,7 @@
       "rendering_clip": "渲染精彩集锦中",
       "acquiring_signal": "获取信号中",
       "signal_lost": "信号丢失",
+      "ended": "直播已结束",
       "idle": "空闲",
       "access_denied": "直播不可用",
       "access_denied_hint": "您没有权限观看此直播——玩家无法观看自己参与的比赛。"

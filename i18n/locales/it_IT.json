@@ -6609,6 +6609,7 @@
       "rendering_clip": "Rendering clip",
       "acquiring_signal": "Acquisizione segnale",
       "signal_lost": "Segnale perso",
+      "ended": "Diretta terminata",
       "idle": "Inattivo",
       "access_denied": "Diretta non disponibile",
       "access_denied_hint": "Non hai accesso a questa diretta — i giocatori non possono guardare un match a cui partecipano."

@@ -6609,6 +6609,7 @@
       "rendering_clip": "Klip oluşturuluyor",
       "acquiring_signal": "Sinyal alınıyor",
       "signal_lost": "Sinyal kayboldu",
+      "ended": "Yayın sona erdi",
       "idle": "Boşta",
       "access_denied": "Yayın kullanılamıyor",
       "access_denied_hint": "Bu canlı yayına erişimin yok — oyuncular içinde bulundukları maçı izleyemez."

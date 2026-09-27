@@ -242,14 +242,22 @@ export default {
       },
       // Live matches with at least one stream attached. Lifted into the
       // featured "Streaming Now" section above so we can show a
-      // thumbnail tile instead of a generic compact row.
+      // thumbnail tile instead of a generic compact row. A game-streamer
+      // row outlives the match by the TV delay and is removed when the
+      // stream stops, so it keeps a just-finished match listed while its
+      // stream is still playing out; embed rows are never removed.
       streamingMatches: {
         query: typedGql("subscription")({
           matches: [
             {
               where: {
-                status: { _eq: $("status", "e_match_status_enum") },
-                streams: {},
+                _or: [
+                  {
+                    status: { _eq: $("status", "e_match_status_enum") },
+                    streams: {},
+                  },
+                  { streams: { is_game_streamer: { _eq: true } } },
+                ],
               },
               order_by: [{}, { started_at: order_by.desc }],
               limit: 6,

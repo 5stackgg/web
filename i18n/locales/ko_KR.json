@@ -6609,6 +6609,7 @@
       "rendering_clip": "클립 렌더링 중",
       "acquiring_signal": "신호 수신 중",
       "signal_lost": "신호 끊김",
+      "ended": "스트림 종료",
       "idle": "대기 중",
       "access_denied": "스트림을 사용할 수 없습니다",
       "access_denied_hint": "이 라이브 스트림에 접근 권한이 없습니다 — 참가 중인 매치는 플레이어 본인이 시청할 수 없습니다."

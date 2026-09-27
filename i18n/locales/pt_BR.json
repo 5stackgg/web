@@ -6609,6 +6609,7 @@
       "rendering_clip": "Renderizando clipe",
       "acquiring_signal": "Adquirindo sinal",
       "signal_lost": "Sinal perdido",
+      "ended": "Transmissão encerrada",
       "idle": "Inativo",
       "access_denied": "Stream indisponível",
       "access_denied_hint": "Você não tem acesso a esta transmissão ao vivo — jogadores não podem assistir a uma partida em que estão."

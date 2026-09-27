@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
-import { ExternalLink, PictureInPicture } from "lucide-vue-next";
+import { ExternalLink, PictureInPicture, VideoOff } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import { loginLinks } from "~/utilities/loginLinks";
 import { generateSubscription } from "~/graphql/graphqlGen";
@@ -185,6 +185,10 @@ onBeforeUnmount(() => {
 
 const displayStream = computed(() => stream.value ?? lastGoodStream.value);
 const hasStream = computed(() => !!displayStream.value);
+// The row is removed when the stream is stopped, so having had one and no
+// longer having it means it ended. The popout and floating PiP stay mounted
+// past that point; without this they retry a publisher that is gone.
+const streamEnded = computed(() => !stream.value && !!lastGoodStream.value);
 // Once the stream has been live, treat it as live for display gating so a
 // mid-match pause (which flips is_live false server-side) doesn't tear
 // down the WhepPlayer and snap viewers back to the boot screen.
@@ -278,7 +282,20 @@ function focusPopoutWindow() {
 
 <template>
   <div
-    v-if="hasStream && canViewStream && !isPoppedOut && (isLive || canSeeBoot)"
+    v-if="streamEnded && canViewStream && !isPoppedOut"
+    class="flex items-center justify-center gap-3 rounded-lg border border-border/70 bg-black px-4 text-center text-sm text-white/80 shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.05),0_30px_60px_-30px_rgba(0,0,0,0.7)]"
+    :class="compact ? 'h-full w-full' : 'aspect-video'"
+  >
+    <div class="flex flex-col items-center gap-2">
+      <VideoOff class="size-5 text-white/50" />
+      <span>{{ $t("match.stream.ended") }}</span>
+    </div>
+  </div>
+
+  <div
+    v-else-if="
+      hasStream && canViewStream && !isPoppedOut && (isLive || canSeeBoot)
+    "
     class="overflow-hidden rounded-lg border border-border/70 bg-black shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.05),0_30px_60px_-30px_rgba(0,0,0,0.7)]"
     :class="compact ? 'flex h-full w-full flex-col' : ''"
   >

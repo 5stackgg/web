@@ -6609,6 +6609,7 @@
       "rendering_clip": "片段渲染中",
       "acquiring_signal": "取得訊號中",
       "signal_lost": "訊號中斷",
+      "ended": "直播已結束",
       "idle": "閒置",
       "access_denied": "無法觀看直播",
       "access_denied_hint": "您沒有權限觀看此直播——玩家無法觀看自己參與的比賽。"

@@ -6609,6 +6609,7 @@
       "rendering_clip": "Renderar klipp",
       "acquiring_signal": "Söker signal",
       "signal_lost": "Signal förlorad",
+      "ended": "Sändningen har avslutats",
       "idle": "Inaktiv",
       "access_denied": "Sändningen är inte tillgänglig",
       "access_denied_hint": "Du har inte tillgång till den här livesändningen — spelare kan inte titta på en match de själva spelar."

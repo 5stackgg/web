@@ -6609,6 +6609,7 @@
       "rendering_clip": "Renderizando clip",
       "acquiring_signal": "Buscando señal",
       "signal_lost": "Señal perdida",
+      "ended": "Directo finalizado",
       "idle": "Inactivo",
       "access_denied": "Directo no disponible",
       "access_denied_hint": "No tienes acceso a este directo: los jugadores no pueden ver una partida en la que juegan."

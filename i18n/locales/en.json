@@ -986,7 +986,8 @@
   "elo_change_badge": {
     "comp": "COMP",
     "wingman": "WINGMAN",
-    "duel": "DUEL"
+    "duel": "DUEL",
+    "rush": "RUSH"
   },
   "render_queue_status": {
     "queued": "Queued",
@@ -1968,7 +1969,7 @@
           "order_hint": "Each layer beats the one above it.",
           "layers": {
             "type": "Match type",
-            "type_note": "Competitive, Wingman, Duel",
+            "type_note": "Competitive, Wingman, Duel, Rush",
             "lan_note": "LAN regions only",
             "global_note": "every match",
             "plugin": "Plugin cvars",
@@ -3561,6 +3562,7 @@
         "competitive": "Competitive",
         "wingman": "Wingman",
         "duel": "Duel",
+        "rush": "Rush",
         "scrimmage": "Scrimmage",
         "premier": "Premier",
         "faceit": "Faceit"
@@ -4572,6 +4574,7 @@
         "duration": "{seconds}s",
         "requested_by": "Requested by",
         "capped": "Showing the first {shown} rows of {total}.",
+        "caveats": "Caveats ({count})",
         "count_broken": "{count} broken",
         "count_moved": "{count} moved",
         "count_unsimulatable": "{count} not simulatable",
@@ -6679,6 +6682,7 @@
           "description": "The number of rounds played before teams switch sides.",
           "placeholder": "Select max rounds"
         },
+        "rush_fixed_rules": "Rush is always played to 8 round wins, with no overtime and no knife round.",
         "region": {
           "title": "Region Settings",
           "lan_match": "LAN Match",
@@ -7429,7 +7433,7 @@
         "cam_chase": "CHASE",
         "cam_chase_tip": "Chase the followed player",
         "roof": "ROOF",
-        "roof_tip": "Roof cut — middle is auto (roofs off, action visible). Up = reveal more, down = cut more, max = full map.",
+        "roof_tip": "Roof cut — hides roofs and trims walls so the action stays visible. Down = cut lower (floor plan), up = taller walls, max = full map.",
         "play_by_play": "PLAY BY PLAY",
         "play_by_play_tip": "Show the round's play-by-play event log",
         "more": "More options",
@@ -7883,7 +7887,13 @@
     },
     "official": "Official Maps",
     "workshop": "Workshop Maps",
-    "active_duty": "Active Duty"
+    "active_duty": "Active Duty",
+    "radar_room": {
+      "label": "Room",
+      "auto": "Auto",
+      "room": "Room {name}",
+      "full_map": "Full map"
+    }
   },
   "region": {
     "form": {
@@ -7906,6 +7916,10 @@
       "duel": {
         "title": "Duel",
         "description": "A competitive 1 vs 1 experience, perfect for practicing individual skill"
+      },
+      "rush": {
+        "title": "Rush",
+        "description": "Fast-paced 3v3 matches fought room by room, where every round won pushes the fight forward"
       }
     },
     "cancel_matchmaking": "Cancel Matchmaking",
@@ -7997,6 +8011,7 @@
     "updating_to": "Updating to {version}",
     "update_to_version": "Update to {version}",
     "validate_gamedata": "Validate Gamedata",
+    "build_map_assets": "Build Map Assets",
     "note_label": "Note:",
     "one_cpu_core": "1 CPU core",
     "cpu_reservation_note": " {cores} is reserved for the system on each node to keep it responsive.",
@@ -8095,6 +8110,7 @@
       "cs_updating": "CS2 is being updated on the node",
       "csgo_installing": "CS:GO is being installed on the node",
       "validating_gamedata": "Validating gamedata signatures on the node",
+      "building_map_assets": "Building map meshes and callouts for this node's CS2 build",
       "ports_updated": "Node Ports Updated",
       "ports_removed": "Node Ports Removed",
       "made_gpu_only": "Node Set To GPU Only",

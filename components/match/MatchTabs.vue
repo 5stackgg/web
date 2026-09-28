@@ -1210,6 +1210,9 @@ export default {
       return this.backupRoundsTracker?.rounds.value ?? [];
     },
     restorableRounds() {
+      if (this.match.options?.type === e_match_types_enum.Rush) {
+        return [];
+      }
       return this.backupRounds.filter((r) => r.has_backup_file && r.round > 0);
     },
     availableCommands() {

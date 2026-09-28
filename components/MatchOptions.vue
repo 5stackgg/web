@@ -65,7 +65,7 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
         </FormField>
       </div>
 
-      <FormField name="map_pool" v-if="!stageBracketOverride">
+      <FormField name="map_pool" v-if="!stageBracketOverride && !isRush">
         <FormItem>
           <Card>
             <div class="p-6 space-y-6">
@@ -412,7 +412,14 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
             <Card>
               <div class="p-4 space-y-6">
                 <slot name="before-overtime"></slot>
-                <FormField v-slot="{ value, handleChange }" name="overtime">
+                <p v-if="isRush" class="text-sm text-muted-foreground">
+                  {{ $t("match.options.advanced.rush_fixed_rules") }}
+                </p>
+                <FormField
+                  v-if="!isRush"
+                  v-slot="{ value, handleChange }"
+                  name="overtime"
+                >
                   <FormItem>
                     <div
                       class="flex flex-row items-center justify-between cursor-pointer"
@@ -439,7 +446,11 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                   </FormItem>
                 </FormField>
 
-                <FormField v-slot="{ value, handleChange }" name="knife_round">
+                <FormField
+                  v-if="!isRush"
+                  v-slot="{ value, handleChange }"
+                  name="knife_round"
+                >
                   <FormItem>
                     <div
                       class="flex flex-row items-center justify-between cursor-pointer"
@@ -466,7 +477,7 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                   </FormItem>
                 </FormField>
 
-                <FormField v-slot="{ componentField }" name="mr">
+                <FormField v-if="!isRush" v-slot="{ componentField }" name="mr">
                   <FormItem>
                     <SettingHeader>{{
                       $t("match.options.advanced.max_rounds.label")
@@ -1603,7 +1614,7 @@ export default {
     forceVeto: {
       immediate: true,
       handler(forceVeto) {
-        if (forceVeto && this.form.values.map_veto !== true) {
+        if (forceVeto && !this.isRush && this.form.values.map_veto !== true) {
           this.form.setFieldValue("map_veto", true);
         }
       },
@@ -1671,13 +1682,29 @@ export default {
       },
     },
     ["form.values.type"]: {
-      handler(type) {
+      handler(type, previousType) {
         this.form.setFieldValue(
           "mr",
           type === e_match_types_enum.Competitive ? "12" : "8",
         );
 
         this.form.setFieldValue("map_pool", []);
+
+        if (type === e_match_types_enum.Rush) {
+          this.form.setFieldValue("best_of", "1");
+          this.form.setFieldValue("overtime", false);
+          this.form.setFieldValue("knife_round", false);
+          this.form.setFieldValue("map_veto", false);
+          this.form.setFieldValue("custom_map_pool", false);
+          this.form.setFieldValue("map_pool_id", this.defaultMapPool?.id);
+          return;
+        }
+
+        if (previousType === e_match_types_enum.Rush) {
+          this.form.setFieldValue("map_veto", true);
+          this.form.setFieldValue("custom_map_pool", false);
+        }
+
         if (this.form.values.map_veto) {
           this.form.setFieldValue("map_pool_id", this.defaultMapPool.id);
         }
@@ -1685,6 +1712,12 @@ export default {
     },
     ["form.values.custom_map_pool"]: {
       handler(custom_map_pool) {
+        // Rush has one map, so its seeded pool is the only pool it plays.
+        if (this.isRush) {
+          this.form.setFieldValue("map_pool_id", this.defaultMapPool?.id);
+          return;
+        }
+
         // only update if its a custom map pool and it matches the default
         // this helps the UI know wether to reset the map pool list or not
         if (
@@ -1706,6 +1739,11 @@ export default {
     },
     ["form.values.map_veto"]: {
       handler(mapVeto) {
+        if (this.isRush) {
+          this.form.setFieldValue("custom_map_pool", false);
+          return;
+        }
+
         if (mapVeto) {
           this.form.setFieldValue("custom_map_pool", false);
           return;
@@ -1766,8 +1804,11 @@ export default {
     isLive(): boolean {
       return !!this.match && this.match.status === e_match_status_enum.Live;
     },
+    isRush(): boolean {
+      return this.form.values.type === e_match_types_enum.Rush;
+    },
     bestOfOptions(): EnumSetting[] {
-      return [1, 3, 5].map((rounds) => {
+      return (this.isRush ? [1] : [1, 3, 5]).map((rounds) => {
         return {
           value: rounds.toString(),
           display: this.$t("match.options.best_of.option", { count: rounds }),
@@ -1884,6 +1925,8 @@ export default {
               return map.type === e_match_types_enum.Wingman;
             case e_match_types_enum.Duel:
               return map.type === e_match_types_enum.Duel;
+            case e_match_types_enum.Rush:
+              return map.type === e_match_types_enum.Rush;
           }
         })
         .sort((a: Map, b: Map) => {

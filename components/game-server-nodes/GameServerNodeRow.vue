@@ -59,6 +59,7 @@ import {
   ChevronUp,
   Settings2,
   ShieldCheck,
+  Box,
   Network,
   MoreVertical,
 } from "lucide-vue-next";
@@ -902,6 +903,18 @@ const isSectionExpanded = (section: string) => {
                 <span>{{ $t("game_server.validate_gamedata") }}</span>
               </DropdownMenuItem>
 
+              <DropdownMenuItem
+                v-if="isTestInstance && gameServerNode.build_id"
+                :disabled="
+                  gameServerNode.status !==
+                  e_game_server_node_statuses_enum.Online
+                "
+                @click="buildMapAssets"
+              >
+                <Box />
+                <span>{{ $t("game_server.build_map_assets") }}</span>
+              </DropdownMenuItem>
+
               <DropdownMenuSeparator />
             </template>
 
@@ -1152,6 +1165,18 @@ const isSectionExpanded = (section: string) => {
                 >
                   <ShieldCheck />
                   <span>{{ $t("game_server.validate_gamedata") }}</span>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem
+                  v-if="isTestInstance && gameServerNode.build_id"
+                  :disabled="
+                    gameServerNode.status !==
+                    e_game_server_node_statuses_enum.Online
+                  "
+                  @click="buildMapAssets"
+                >
+                  <Box />
+                  <span>{{ $t("game_server.build_map_assets") }}</span>
                 </DropdownMenuItem>
 
                 <DropdownMenuSeparator />
@@ -2187,6 +2212,19 @@ export default defineComponent({
         }),
       });
       toast({ title: this.$t("game_server.toast.validating_gamedata") });
+    },
+    async buildMapAssets() {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          buildMapAssets: [
+            {
+              game_server_node_id: this.gameServerNode.id,
+            },
+            { success: true },
+          ],
+        }),
+      });
+      toast({ title: this.$t("game_server.toast.building_map_assets") });
     },
     async pinBuildId(buildId: string | null) {
       await this.$apollo.mutate({

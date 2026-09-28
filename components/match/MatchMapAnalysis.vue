@@ -31,7 +31,9 @@ import { matchMovementMapQuery } from "~/graphql/matchMovementPathsGraphql";
 import RoundSelector from "~/components/match/RoundSelector.vue";
 import {
   RADAR_CANVAS,
+  radarVolumeLabel,
   useRadarProjection,
+  type RadarPoint,
 } from "~/composables/useRadarProjection";
 
 type DotCategory = "kills" | "deaths" | "utility" | "util_damage";
@@ -44,6 +46,7 @@ type Dot = {
   weight: number;
   x: number;
   y: number;
+  z: number;
 };
 
 type Position = {
@@ -235,7 +238,26 @@ const {
   radarSrc,
   hasCalibration: has2dRadar,
   projectCalibrated,
-} = useRadarProjection(() => activeMatchMap.value?.map?.name, { radarFailed });
+  volumes: radarVolumes,
+  activeVolume,
+  volumeOverride,
+} = useRadarProjection(() => activeMatchMap.value?.map?.name, {
+  radarFailed,
+  volumePoints: () => roomCandidates.value,
+});
+
+const AUTO_ROOM = "auto";
+
+function inRoom(point: { x: number; y: number }): boolean {
+  const room = activeVolume.value;
+  if (!room) {
+    return true;
+  }
+  const x = Number(point.x);
+  const y = Number(point.y);
+  const { minX, maxX, minY, maxY } = room.bounds;
+  return x >= minX && x <= maxX && y >= minY && y <= maxY;
+}
 
 const has3dMesh = ref(true);
 watch(
@@ -468,7 +490,7 @@ function passesHeatFilters(steamId: string, round: number): boolean {
 // demo download is needed. Old imported demos have empty coords and will
 // simply show nothing — we don't backfill.
 const killDots = computed<Dot[]>(() => {
-  if (!calibration.value || !activeMatchMap.value) {
+  if (!activeMatchMap.value) {
     return [];
   }
   const mapId = activeMatchMap.value.id;
@@ -482,33 +504,29 @@ const killDots = computed<Dot[]>(() => {
     const victim = String(k.attacked_steam_id ?? "");
     const aCoords = parseCoords(k.attacker_location_coordinates);
     if (aCoords && attacker) {
-      const px = projectRaw(aCoords);
-      if (px) {
-        out.push({
-          category: "kills",
-          steamId: attacker,
-          round,
-          utilityType: null,
-          weight: 1,
-          x: px.x,
-          y: px.y,
-        });
-      }
+      out.push({
+        category: "kills",
+        steamId: attacker,
+        round,
+        utilityType: null,
+        weight: 1,
+        x: aCoords.x,
+        y: aCoords.y,
+        z: aCoords.z,
+      });
     }
     const vCoords = parseCoords(k.attacked_location_coordinates);
     if (vCoords && victim) {
-      const px = projectRaw(vCoords);
-      if (px) {
-        out.push({
-          category: "deaths",
-          steamId: victim,
-          round,
-          utilityType: null,
-          weight: 1,
-          x: px.x,
-          y: px.y,
-        });
-      }
+      out.push({
+        category: "deaths",
+        steamId: victim,
+        round,
+        utilityType: null,
+        weight: 1,
+        x: vCoords.x,
+        y: vCoords.y,
+        z: vCoords.z,
+      });
     }
   }
   return out;
@@ -516,7 +534,7 @@ const killDots = computed<Dot[]>(() => {
 
 // Utility dots from the DB grenade coordinates (per throw).
 const utilityDots = computed<Dot[]>(() => {
-  if (!calibration.value || !activeMatchMap.value) {
+  if (!activeMatchMap.value) {
     return [];
   }
   const mapId = activeMatchMap.value.id;
@@ -529,18 +547,16 @@ const utilityDots = computed<Dot[]>(() => {
     const thrower = String(u.attacker_steam_id ?? "");
     const coords = parseCoords(u.attacker_location_coordinates);
     if (coords && thrower) {
-      const px = projectRaw(coords);
-      if (px) {
-        out.push({
-          category: "utility",
-          steamId: thrower,
-          round,
-          utilityType: u.type ?? null,
-          weight: 1,
-          x: px.x,
-          y: px.y,
-        });
-      }
+      out.push({
+        category: "utility",
+        steamId: thrower,
+        round,
+        utilityType: u.type ?? null,
+        weight: 1,
+        x: coords.x,
+        y: coords.y,
+        z: coords.z,
+      });
     }
   }
   return out;
@@ -550,7 +566,7 @@ const utilityDots = computed<Dot[]>(() => {
 // victim took the damage and weighted by the damage dealt — this is the
 // "utility impact" layer (where grenades actually do work, not just land).
 const utilDamageDots = computed<Dot[]>(() => {
-  if (!calibration.value || !activeMatchMap.value) {
+  if (!activeMatchMap.value) {
     return [];
   }
   const mapId = activeMatchMap.value.id;
@@ -565,18 +581,15 @@ const utilDamageDots = computed<Dot[]>(() => {
     if (!coords) {
       continue;
     }
-    const px = projectRaw(coords);
-    if (!px) {
-      continue;
-    }
     out.push({
       category: "util_damage",
       steamId: attacker,
       round,
       utilityType: GRENADE_TYPE_BY_WEAPON[String(d.with ?? "")] ?? null,
       weight: Math.max(1, Number(d.damage ?? 0)),
-      x: px.x,
-      y: px.y,
+      x: coords.x,
+      y: coords.y,
+      z: coords.z,
     });
   }
   return out;
@@ -653,6 +666,9 @@ const utilityLines = computed(() => {
     if (!passesHeatFilters(thrower, round)) {
       continue;
     }
+    if (!inRoom(t) || !inRoom(d)) {
+      continue;
+    }
     const p1 = projectRaw(t);
     const p2 = projectRaw(d);
     if (!p1 || !p2) {
@@ -670,7 +686,7 @@ const utilityLines = computed(() => {
   return out;
 });
 
-const visibleDots = computed<Dot[]>(() =>
+const plottedDots = computed<Dot[]>(() =>
   allDots.value.filter((dot) => {
     if (dot.category !== activeLayer.value) {
       return false;
@@ -685,6 +701,25 @@ const visibleDots = computed<Dot[]>(() =>
     return passesHeatFilters(dot.steamId, dot.round);
   }),
 );
+
+// Dots are kept in world units until here, so the room can be picked from what
+// the filters leave and the dots only then projected onto that room's radar.
+const visibleDots = computed<Dot[]>(() => {
+  if (!calibration.value) {
+    return [];
+  }
+  const out: Dot[] = [];
+  for (const dot of plottedDots.value) {
+    if (!inRoom(dot)) {
+      continue;
+    }
+    const px = projectRaw(dot);
+    if (px) {
+      out.push({ ...dot, x: px.x, y: px.y });
+    }
+  }
+  return out;
+});
 
 function dotColor(dot: Dot): string {
   if (dot.category === "kills") {
@@ -703,7 +738,9 @@ function dotColor(dot: Dot): string {
 function layerCount(category: DotCategory): number {
   return allDots.value.filter(
     (dot) =>
-      dot.category === category && passesHeatFilters(dot.steamId, dot.round),
+      dot.category === category &&
+      passesHeatFilters(dot.steamId, dot.round) &&
+      inRoom(dot),
   ).length;
 }
 
@@ -712,7 +749,8 @@ function utilityTypeCount(value: string): number {
     (dot) =>
       dot.category === "utility" &&
       dot.utilityType === value &&
-      passesHeatFilters(dot.steamId, dot.round),
+      passesHeatFilters(dot.steamId, dot.round) &&
+      inRoom(dot),
   ).length;
 }
 
@@ -793,6 +831,9 @@ const allPathsResult = computed<{ paths: Path[]; capped: boolean }>(() => {
     if (p.tick < window.start || p.tick > window.end) {
       continue;
     }
+    if (!inRoom(p)) {
+      continue;
+    }
     const sid = String(p.attacker_steam_id ?? "");
     if (!sid) {
       continue;
@@ -865,6 +906,35 @@ function passesPathFilters(path: Path): boolean {
 const visiblePaths = computed<Path[]>(() =>
   allPaths.value.filter(passesPathFilters),
 );
+
+// A Rush map plays every round in one room with its own radar. The room shown
+// by default is the one most of what the filters leave stands in, so picking a
+// round follows that round to its room.
+const roomCandidates = computed<RadarPoint[]>(() => {
+  if (!radarVolumes.value.length) {
+    return [];
+  }
+  if (mode.value === "heatmap") {
+    return plottedDots.value;
+  }
+  const out: RadarPoint[] = [];
+  for (const p of positions.value) {
+    const window = roundWindows.value.get(p.round);
+    if (!window || p.tick < window.start || p.tick > window.end) {
+      continue;
+    }
+    const passes = passesPathFilters({
+      round: p.round,
+      steamId: String(p.attacker_steam_id ?? ""),
+      side: String(p.attacker_team ?? "").toLowerCase(),
+      points: [],
+    });
+    if (passes) {
+      out.push(p);
+    }
+  }
+  return out;
+});
 
 function pathPoints(path: Path): string {
   return path.points.map((p) => `${p.x},${p.y}`).join(" ");
@@ -1075,6 +1145,47 @@ onUnmounted(() => window.removeEventListener("keydown", onKeyDown));
             >
               {{ mapLabel(activeMatchMap.map) }}
             </span>
+            <Select
+              v-if="radarVolumes.length"
+              :model-value="volumeOverride ?? AUTO_ROOM"
+              @update:model-value="
+                (value) =>
+                  (volumeOverride = value === AUTO_ROOM ? null : String(value))
+              "
+            >
+              <SelectTrigger
+                class="w-auto min-w-[150px] gap-2"
+                :aria-label="$t('maps.radar_room.label')"
+              >
+                <span>
+                  {{
+                    activeVolume
+                      ? radarVolumeLabel(activeVolume.name, t)
+                      : $t("maps.radar_room.full_map")
+                  }}
+                </span>
+                <span
+                  v-if="volumeOverride === null"
+                  class="text-muted-foreground"
+                >
+                  {{ $t("maps.radar_room.auto") }}
+                </span>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem :value="AUTO_ROOM">
+                    {{ $t("maps.radar_room.auto") }}
+                  </SelectItem>
+                  <SelectItem
+                    v-for="volume of radarVolumes"
+                    :key="volume.name"
+                    :value="volume.name"
+                  >
+                    {{ radarVolumeLabel(volume.name, t) }}
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
 
           <div class="flex items-center gap-3">

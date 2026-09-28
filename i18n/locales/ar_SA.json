@@ -986,7 +986,8 @@
   "elo_change_badge": {
     "comp": "COMP",
     "wingman": "WINGMAN",
-    "duel": "DUEL"
+    "duel": "DUEL",
+    "rush": "RUSH"
   },
   "render_queue_status": {
     "queued": "في الطابور",
@@ -1968,7 +1969,7 @@
           "order_hint": "كل طبقة تتقدم على التي فوقها.",
           "layers": {
             "type": "نوع المباراة",
-            "type_note": "Competitive وWingman وDuel",
+            "type_note": "Competitive وWingman وDuel وRush",
             "lan_note": "مناطق LAN فقط",
             "global_note": "كل مباراة",
             "plugin": "متغيرات الإضافة",
@@ -3561,6 +3562,7 @@
         "competitive": "تنافسي",
         "wingman": "Wingman",
         "duel": "مبارزة",
+        "rush": "Rush",
         "scrimmage": "Scrim",
         "premier": "Premier",
         "faceit": "Faceit"
@@ -4572,6 +4574,7 @@
         "duration": "{seconds}ث",
         "requested_by": "طلبها",
         "capped": "تُعرض أول {shown} صفوف من أصل {total}.",
+        "caveats": "تنبيهات ({count})",
         "count_broken": "{count} معطّلة",
         "count_moved": "{count} منزاحة",
         "count_unsimulatable": "{count} غير قابلة للمحاكاة",
@@ -6679,6 +6682,7 @@
           "description": "عدد الجولات التي تُلعب قبل تبديل الفرق للجهات.",
           "placeholder": "اختر أقصى عدد جولات"
         },
+        "rush_fixed_rules": "يُلعب وضع Rush دائمًا حتى الفوز بـ 8 جولات، بدون وقت إضافي ولا جولة سكين.",
         "region": {
           "title": "إعدادات المنطقة",
           "lan_match": "مباراة LAN",
@@ -7429,7 +7433,7 @@
         "cam_chase": "CHASE",
         "cam_chase_tip": "تتبع اللاعب المُتابع",
         "roof": "ROOF",
-        "roof_tip": "قص الأسقف — المنتصف تلقائي (الأسقف مخفية والحدث ظاهر). للأعلى = إظهار أكثر، للأسفل = قص أكثر، الحد الأقصى = الخريطة كاملة.",
+        "roof_tip": "قص الأسقف — يخفي الأسقف ويقصّ الجدران ليبقى الحدث ظاهرًا. للأسفل = قص أدنى (مخطط الأرضية)، للأعلى = جدران أطول، الحد الأقصى = الخريطة كاملة.",
         "play_by_play": "PLAY BY PLAY",
         "play_by_play_tip": "إظهار سجل أحداث الجولة لحظة بلحظة",
         "more": "خيارات إضافية",
@@ -7883,7 +7887,13 @@
     },
     "official": "الخرائط الرسمية",
     "workshop": "خرائط Workshop",
-    "active_duty": "Active Duty"
+    "active_duty": "Active Duty",
+    "radar_room": {
+      "label": "الغرفة",
+      "auto": "تلقائي",
+      "room": "الغرفة {name}",
+      "full_map": "الخريطة كاملة"
+    }
   },
   "region": {
     "form": {
@@ -7906,6 +7916,10 @@
       "duel": {
         "title": "مبارزة",
         "description": "تجربة تنافسية 1 ضد 1، مثالية لتطوير المهارة الفردية"
+      },
+      "rush": {
+        "title": "Rush",
+        "description": "مباريات 3v3 سريعة الإيقاع تُخاض غرفةً بغرفة، وكل جولة تفوز بها تدفع القتال إلى الأمام"
       }
     },
     "cancel_matchmaking": "ألغِ Matchmaking",
@@ -7997,6 +8011,7 @@
     "updating_to": "جارٍ التحديث إلى {version}",
     "update_to_version": "حدّث إلى {version}",
     "validate_gamedata": "تحقق من Gamedata",
+    "build_map_assets": "بناء أصول الخرائط",
     "note_label": "ملاحظة:",
     "one_cpu_core": "نواة CPU واحدة",
     "cpu_reservation_note": " {cores} محجوزة للنظام على كل عقدة للحفاظ على استجابتها.",
@@ -8095,6 +8110,7 @@
       "cs_updating": "يجري تحديث CS2 على العقدة",
       "csgo_installing": "يجري تثبيت CS:GO على العقدة",
       "validating_gamedata": "يجري التحقق من توقيعات Gamedata على العقدة",
+      "building_map_assets": "جارٍ بناء مجسمات الخرائط ونقاط التسمية لإصدار CS2 على هذه العقدة",
       "ports_updated": "تم تحديث منافذ العقدة",
       "ports_removed": "تم حذف منافذ العقدة",
       "made_gpu_only": "تم ضبط العقدة لـ GPU فقط",

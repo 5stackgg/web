@@ -440,6 +440,7 @@ import {
                     competitive: player.elo_competitive,
                     wingman: player.elo_wingman,
                     duel: player.elo_duel,
+                    rush: player.elo_rush,
                   }"
                 ></PlayerElo>
               </TableCell>

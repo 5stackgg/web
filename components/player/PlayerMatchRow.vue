@@ -940,6 +940,7 @@ export default {
         Premier: "Premier",
         Faceit: "Faceit",
         Duel: this.$t("pages.leaderboard.match_types.duel"),
+        Rush: this.$t("pages.leaderboard.match_types.rush"),
         Scrimmage: this.$t("pages.leaderboard.match_types.scrimmage"),
       };
       return full[t] ?? String(t);

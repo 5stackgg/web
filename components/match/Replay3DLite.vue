@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch } from "vue";
-import { fetchMeshBuffer } from "~/utilities/mapAssets";
+import {
+  VIEW_CUT_NONE,
+  buildFloorGrid,
+  fetchMeshBuffer,
+  fetchViewMeshUrl,
+  resolveMapAssets,
+  viewCutHeight,
+  type ViewMesh,
+} from "~/utilities/mapAssets";
 import { useI18n } from "vue-i18n";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
@@ -20,10 +28,11 @@ import {
   type SmokeVolume,
 } from "~/utils/smokeVolume";
 
-// "3D-lite" replay. Renders a lightweight collision mesh (awpy .tri triangle
-// soup, raw float32 in CS2 source units) as the world — real floors/walls — and
-// places players/utility/bomb in the SAME source units (zero calibration).
-// Falls back to the flat radar PNG when no mesh is staged.
+// "3D-lite" replay. Renders the map's view mesh (.view.bin: render geometry
+// with a per-vertex floor height) as the world, or on older builds the
+// collision mesh (awpy .tri triangle soup), and places players/utility/bomb in
+// the SAME source units (zero calibration). Falls back to the flat radar PNG
+// when no mesh is staged.
 //
 // All playback state lives in the parent ReplayViewer; this is a pure renderer
 // fed by props. UI chrome (camera modes, util filters, heat) is local.
@@ -110,9 +119,10 @@ const props = defineProps<{
   camMode?: "orbit" | "top" | "follow";
   heatOn?: boolean;
   typeFilter?: Record<string, boolean>;
-  // Roof cut slider: 0..100. 50 = the auto-detected playable ceiling
-  // (autoCeilingZ), 0 = floor, 100 = full map. Drag up to reveal more, down to
-  // cut more. Source-z height of the auto ceiling comes from ReplayViewer.
+  // Roof cut slider: 0..100, 100 = full map. With a view mesh it is a height
+  // above each surface's own floor (viewCutHeight). With only a .tri it is a
+  // single plane: 50 = the auto-detected playable ceiling (autoCeilingZ, from
+  // ReplayViewer), 0 = floor.
   ceiling?: number;
   autoCeilingZ?: number | null;
   // Per-smoke density fields measured against the map's collision mesh
@@ -168,7 +178,10 @@ const props = defineProps<{
     dy: number | null;
     dz: number | null;
   }>;
-  mapMeshUrl?: string | null;
+  // Normalized map name; the mesh is resolved from it (manifest, or the
+  // explicit meshCdn override). Without one the radar plane is drawn instead.
+  mapName?: string | null;
+  meshCdn?: string | null;
   radarSrc?: string | null;
   resolution?: number;
   project?: (p: { x: number; y: number; z?: number }) => {
@@ -176,7 +189,10 @@ const props = defineProps<{
     y: number;
   };
 }>();
-const emit = defineEmits<{ (e: "select-util", gid: number): void }>();
+const emit = defineEmits<{
+  (e: "select-util", gid: number): void;
+  (e: "mesh", kind: "view" | "tri" | "radar"): void;
+}>();
 const { t } = useI18n();
 
 const canvas = ref<HTMLCanvasElement | null>(null);
@@ -250,6 +266,36 @@ onMounted(() => {
   // Geometry whose lowest point is above (auto ceiling + this) is dropped at load
   // — kills sky buildings / super-tall boundary walls while keeping real rooms.
   const CEIL_CULL_MARGIN = 256;
+
+  // View mesh: the cut is per fragment, h = source z − the vertex's floor, so
+  // walls stop a set height above their own floor on every level and roofs over
+  // playable space vanish. Nothing is culled at load and no plane is used.
+  // A vertex with no floor gets one so far down that only "full map" shows it.
+  const VIEW_NO_FLOOR = -1e6;
+  // Level focus while following: geometry standing on a floor more than this
+  // above the followed player's is hidden where walkable floor at the player's
+  // level lies under it (the floor grid), and only near the camera→player sight
+  // line. So an upper storey opens over the player, while higher ground beside
+  // them, with nothing under it, stays rather than leaving a black hole.
+  const FOCUS_ABOVE = 64;
+  const FOCUS_RADIUS = 768;
+  const viewUniforms = {
+    uCut: { value: VIEW_CUT_NONE },
+    uFocusFloor: { value: VIEW_CUT_NONE },
+    uFocusPlayer: { value: new THREE.Vector3() },
+    uFocusCamera: { value: new THREE.Vector3() },
+    uLevels: { value: null as THREE.Texture | null },
+    uLevelGrid: { value: new THREE.Vector4() },
+  };
+  let viewLoaded = false;
+  let viewCut = VIEW_CUT_NONE;
+  let focusFloor: number | null = null;
+  let focusSid: string | null = null;
+  const mapGeometries: THREE.BufferGeometry[] = [];
+  let floorTexture: THREE.DataTexture | null = null;
+  let viewMaxDolly = 12000;
+  let disposed = false;
+  const meshFetch = new AbortController();
 
   const scene = new THREE.Scene();
 
@@ -333,7 +379,7 @@ onMounted(() => {
     for (let i = fxLightCursor; i < FX_LIGHTS; i++) fxLights[i].visible = false;
   };
 
-  const meshMode = !!props.mapMeshUrl;
+  const meshMode = !!props.mapName;
   // Black, to match the app rather than the navy this used to fade to, and set
   // as the scene background too so distance falls away into the same black
   // instead of revealing whatever sits behind the canvas.
@@ -399,14 +445,15 @@ onMounted(() => {
       downY = e.clientY;
     }
   });
-  addEventListener("pointerup", (e) => {
+  const onPointerUp = (e: PointerEvent) => {
     if ((e as PointerEvent).pointerType === "touch") return; // touch = OrbitControls
     el.style.cursor = "grab";
     if (e.button !== 0) return;
     rl = false;
     if (Math.hypot(e.clientX - downX, e.clientY - downY) < 5) pickUtilLine(e); // click, not drag
-  });
-  addEventListener("pointermove", (e) => {
+  };
+  addEventListener("pointerup", onPointerUp);
+  const onPointerMove = (e: PointerEvent) => {
     if (!rl) return;
     const dx = e.clientX - rlx,
       dy = e.clientY - rly;
@@ -441,7 +488,8 @@ onMounted(() => {
     const pitch = Math.atan2(newOff.y, Math.hypot(newOff.x, newOff.z));
     if (Math.abs(pitch) < 1.45) off.copy(newOff);
     controls.target.copy(camera.position).add(off);
-  });
+  };
+  addEventListener("pointermove", onPointerMove);
   let dollyAccum = 0;
   el.addEventListener(
     "wheel",
@@ -462,7 +510,7 @@ onMounted(() => {
       camera.position,
       controls.target,
     );
-    const lim = meshMode ? [50, 12000] : [60, 4000];
+    const lim = meshMode ? [50, viewMaxDolly] : [60, 4000];
     const nd = Math.max(lim[0], Math.min(lim[1], dir.length() * (1 + step)));
     camera.position.copy(controls.target).add(dir.setLength(nd));
   }
@@ -538,111 +586,371 @@ onMounted(() => {
   if (meshMode) {
     status.value = t("match.replay.loading_map");
     loading.value = true;
-    fetchMeshBuffer(props.mapMeshUrl!)
-      .then((buf) => {
-        // sanity cap: our decimated meshes are well under this; guards against a
-        // malformed/oversized file allocating a huge BufferGeometry and OOMing.
-        const MAX_MESH_BYTES = 96 * 1024 * 1024;
-        if (buf.byteLength > MAX_MESH_BYTES) throw new Error("mesh too large");
-        const raw = new Float32Array(
-          buf,
-          0,
-          Math.floor(buf.byteLength / 4 / 9) * 9,
-        );
-        // Cull geometry that sits ENTIRELY above the playable ceiling: roofs,
-        // ceilings, sky buildings, and the super-tall boundary/exterior walls
-        // that shoot up toward the skybox. Players never reach above
-        // autoCeilingZ, so anything wholly above it isn't part of play. (z is the
-        // 3rd float of each vertex; source-z = height.) A generous margin keeps
-        // real in-play structures; the live ROOF slider trims the rest.
-        const cullZ =
-          props.autoCeilingZ != null
-            ? props.autoCeilingZ + CEIL_CULL_MARGIN
-            : Infinity;
-        let pos = raw;
-        if (isFinite(cullZ)) {
-          // height cull: drop triangles wholly above the playable ceiling
-          // (roofs/ceilings/sky). Standalone boundary walls are removed offline
-          // in the .tri itself (glb-to-tri dropStandaloneWalls).
-          const out = new Float32Array(raw.length);
-          let n = 0;
-          for (let t = 0; t < raw.length; t += 9) {
-            if (Math.min(raw[t + 2], raw[t + 5], raw[t + 8]) > cullZ) continue;
-            out.set(raw.subarray(t, t + 9), n);
-            n += 9;
-          }
-          pos = out.slice(0, n);
+    loadMapMesh().catch((e) => {
+      if (disposed) {
+        return;
+      }
+      status.value = `mesh unavailable (${e.message}) — radar fallback`;
+      loading.value = false;
+      buildRadar();
+      emit("mesh", "radar");
+    });
+  } else {
+    buildRadar();
+    emit("mesh", "radar");
+  }
+
+  // Prefers the view mesh; builds without one (anything published before
+  // manifests) or a view that fails to load keep the collision .tri path.
+  async function loadMapMesh() {
+    const assets = await resolveMapAssets(props.mapName!, props.meshCdn ?? "");
+    if (disposed) {
+      return;
+    }
+    if (assets?.view) {
+      try {
+        const view = await fetchViewMeshUrl(assets.view, meshFetch.signal);
+        if (disposed) {
+          return;
         }
-        const geo = new THREE.BufferGeometry();
-        geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-        geo.computeVertexNormals();
-        geo.computeBoundingBox();
-        // flatShading keeps the nice faceted shading the user likes; the
-        // wireframe overlay (polygon lines) was distracting → removed.
-        const mat = new THREE.MeshStandardMaterial({
-          // Neutral grey, not the blue-grey this used to be — against a black
-          // background the blue read as a tint over the whole scene.
-          color: 0x3c3e42,
-          roughness: 0.95,
-          metalness: 0,
-          side: THREE.DoubleSide,
-          flatShading: true,
-          clippingPlanes: [ceilingPlane],
-        });
-        // Separate floors from walls by surface orientation. Without textures,
-        // lighting alone leaves a floor and the wall beside it nearly the same
-        // value from a top-down camera; lifting up-facing surfaces and dropping
-        // vertical ones makes the map's layout legible at a glance. Patched
-        // into the standard material so it still takes real lighting.
-        mat.onBeforeCompile = (shader) => {
-          shader.vertexShader = shader.vertexShader
-            .replace(
-              "#include <common>",
-              "#include <common>\nvarying float vUpness;",
-            )
-            .replace(
-              "#include <beginnormal_vertex>",
-              "#include <beginnormal_vertex>\nvUpness = abs(normalize(mat3(modelMatrix) * objectNormal).y);",
-            );
-          shader.fragmentShader = shader.fragmentShader
-            .replace(
-              "#include <common>",
-              "#include <common>\nvarying float vUpness;",
-            )
-            .replace(
-              "#include <dithering_fragment>",
-              [
-                "#include <dithering_fragment>",
-                "float floorLift = smoothstep(0.55, 0.98, vUpness);",
-                "float wallDrop = 1.0 - smoothstep(0.0, 0.32, vUpness);",
-                "gl_FragColor.rgb *= mix(1.0, 1.34, floorLift);",
-                "gl_FragColor.rgb *= mix(1.0, 0.72, wallDrop);",
-              ].join("\n"),
-            );
-        };
-        const mesh = new THREE.Mesh(geo, mat);
-        mesh.rotation.x = -Math.PI / 2;
-        scene.add(mesh);
-        const bb = geo.boundingBox!;
-        const cx = (bb.min.x + bb.max.x) / 2,
-          cy = (bb.min.y + bb.max.y) / 2,
-          cz = (bb.min.z + bb.max.z) / 2;
-        mapSpan = Math.max(bb.max.x - bb.min.x, bb.max.y - bb.min.y);
-        // world Y = source z (mesh is rotated -π/2 about X); used by the ceiling slider
-        meshMinY = bb.min.z;
-        meshMaxY = bb.max.z;
-        meshLoaded = true;
-        controls.target.set(cx, cz, -cy);
-        camera.position.set(cx, cz + mapSpan * 0.85, -cy + mapSpan * 0.85);
+        buildViewMesh(view);
         status.value = "";
         loading.value = false;
-      })
-      .catch((e) => {
-        status.value = `mesh unavailable (${e.message}) — radar fallback`;
-        loading.value = false;
-        buildRadar();
-      });
-  } else buildRadar();
+        emit("mesh", "view");
+        return;
+      } catch (err) {
+        if (disposed) {
+          return;
+        }
+        if (!assets.tri) {
+          throw err;
+        }
+        if (assets.listed.includes("view")) {
+          console.warn("[replay3d] view mesh unavailable, using .tri", err);
+        }
+      }
+    }
+    if (!assets?.tri) {
+      throw new Error("404");
+    }
+    const buf = await fetchMeshBuffer(assets.tri, meshFetch.signal);
+    if (disposed) {
+      return;
+    }
+    buildTriMesh(buf);
+    emit("mesh", "tri");
+  }
+
+  function buildTriMesh(buf: ArrayBuffer) {
+    // sanity cap: our decimated meshes are well under this; guards against a
+    // malformed/oversized file allocating a huge BufferGeometry and OOMing.
+    const MAX_MESH_BYTES = 96 * 1024 * 1024;
+    if (buf.byteLength > MAX_MESH_BYTES) throw new Error("mesh too large");
+    const raw = new Float32Array(
+      buf,
+      0,
+      Math.floor(buf.byteLength / 4 / 9) * 9,
+    );
+    // Cull geometry that sits ENTIRELY above the playable ceiling: roofs,
+    // ceilings, sky buildings, and the super-tall boundary/exterior walls
+    // that shoot up toward the skybox. Players never reach above
+    // autoCeilingZ, so anything wholly above it isn't part of play. (z is the
+    // 3rd float of each vertex; source-z = height.) A generous margin keeps
+    // real in-play structures; the live ROOF slider trims the rest.
+    const cullZ =
+      props.autoCeilingZ != null
+        ? props.autoCeilingZ + CEIL_CULL_MARGIN
+        : Infinity;
+    let pos = raw;
+    if (isFinite(cullZ)) {
+      // height cull: drop triangles wholly above the playable ceiling
+      // (roofs/ceilings/sky). Standalone boundary walls are removed offline
+      // in the .tri itself (glb-to-tri dropStandaloneWalls).
+      const out = new Float32Array(raw.length);
+      let n = 0;
+      for (let t = 0; t < raw.length; t += 9) {
+        if (Math.min(raw[t + 2], raw[t + 5], raw[t + 8]) > cullZ) continue;
+        out.set(raw.subarray(t, t + 9), n);
+        n += 9;
+      }
+      pos = out.slice(0, n);
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+    geo.computeVertexNormals();
+    geo.computeBoundingBox();
+    mapGeometries.push(geo);
+    // flatShading keeps the nice faceted shading the user likes; the
+    // wireframe overlay (polygon lines) was distracting → removed.
+    const mat = new THREE.MeshStandardMaterial({
+      // Neutral grey, not the blue-grey this used to be — against a black
+      // background the blue read as a tint over the whole scene.
+      color: 0x3c3e42,
+      roughness: 0.95,
+      metalness: 0,
+      side: THREE.DoubleSide,
+      flatShading: true,
+      clippingPlanes: [ceilingPlane],
+    });
+    // Separate floors from walls by surface orientation. Without textures,
+    // lighting alone leaves a floor and the wall beside it nearly the same
+    // value from a top-down camera; lifting up-facing surfaces and dropping
+    // vertical ones makes the map's layout legible at a glance. Patched
+    // into the standard material so it still takes real lighting.
+    mat.onBeforeCompile = (shader) => {
+      shader.vertexShader = shader.vertexShader
+        .replace(
+          "#include <common>",
+          "#include <common>\nvarying float vUpness;",
+        )
+        .replace(
+          "#include <beginnormal_vertex>",
+          "#include <beginnormal_vertex>\nvUpness = abs(normalize(mat3(modelMatrix) * objectNormal).y);",
+        );
+      shader.fragmentShader = shader.fragmentShader
+        .replace(
+          "#include <common>",
+          "#include <common>\nvarying float vUpness;",
+        )
+        .replace(
+          "#include <dithering_fragment>",
+          [
+            "#include <dithering_fragment>",
+            "float floorLift = smoothstep(0.55, 0.98, vUpness);",
+            "float wallDrop = 1.0 - smoothstep(0.0, 0.32, vUpness);",
+            "gl_FragColor.rgb *= mix(1.0, 1.34, floorLift);",
+            "gl_FragColor.rgb *= mix(1.0, 0.72, wallDrop);",
+          ].join("\n"),
+        );
+    };
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.rotation.x = -Math.PI / 2;
+    scene.add(mesh);
+    const bb = geo.boundingBox!;
+    const cx = (bb.min.x + bb.max.x) / 2,
+      cy = (bb.min.y + bb.max.y) / 2,
+      cz = (bb.min.z + bb.max.z) / 2;
+    mapSpan = Math.max(bb.max.x - bb.min.x, bb.max.y - bb.min.y);
+    // world Y = source z (mesh is rotated -π/2 about X); used by the ceiling slider
+    meshMinY = bb.min.z;
+    meshMaxY = bb.max.z;
+    meshLoaded = true;
+    controls.target.set(cx, cz, -cy);
+    camera.position.set(cx, cz + mapSpan * 0.85, -cy + mapSpan * 0.85);
+    status.value = "";
+    loading.value = false;
+  }
+
+  // Positions stay in source units under the same −π/2 X rotation as the .tri,
+  // so `position.z` in the shader is source height and actors line up as before.
+  // Rush maps arrive as one chunk per room; each is its own mesh so the camera
+  // frustum skips the rooms out of view.
+  function buildViewMesh(view: ViewMesh) {
+    const mat = makeViewMaterial();
+    const group = new THREE.Group();
+    group.rotation.x = -Math.PI / 2;
+    const bb = new THREE.Box3();
+    const geometries: THREE.BufferGeometry[] = [];
+    for (const chunk of view.chunks) {
+      if (!chunk.indices.length) {
+        continue;
+      }
+      const floorZ = chunk.floorZ;
+      for (let i = 0; i < floorZ.length; i++) {
+        if (floorZ[i] !== floorZ[i]) {
+          floorZ[i] = VIEW_NO_FLOOR;
+        }
+      }
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute(
+        "position",
+        new THREE.BufferAttribute(chunk.positions, 3),
+      );
+      geo.setAttribute("aFloorZ", new THREE.BufferAttribute(floorZ, 1));
+      geo.setAttribute("aFlags", new THREE.BufferAttribute(chunk.flags, 1));
+      geo.setIndex(new THREE.BufferAttribute(chunk.indices, 1));
+      geo.computeBoundingBox();
+      bb.union(geo.boundingBox!);
+      geometries.push(geo);
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.name = chunk.name;
+      group.add(mesh);
+    }
+    if (bb.isEmpty()) {
+      throw new Error("empty view mesh");
+    }
+    mapGeometries.push(...geometries);
+    const grid = buildFloorGrid(view);
+    floorTexture = new THREE.DataTexture(
+      grid.lowest,
+      grid.width,
+      grid.height,
+      THREE.RedFormat,
+      THREE.FloatType,
+    );
+    floorTexture.minFilter = THREE.NearestFilter;
+    floorTexture.magFilter = THREE.NearestFilter;
+    floorTexture.needsUpdate = true;
+    viewUniforms.uLevels.value = floorTexture;
+    viewUniforms.uLevelGrid.value.set(
+      grid.minX,
+      grid.minY,
+      1 / (grid.width * grid.cell),
+      1 / (grid.height * grid.cell),
+    );
+    scene.add(group);
+    const cx = (bb.min.x + bb.max.x) / 2;
+    const cy = (bb.min.y + bb.max.y) / 2;
+    const cz = (bb.min.z + bb.max.z) / 2;
+    mapSpan = Math.max(bb.max.x - bb.min.x, bb.max.y - bb.min.y);
+    controls.target.set(cx, cz, -cy);
+    camera.position.set(cx, cz + mapSpan * 0.85, -cy + mapSpan * 0.85);
+    // Fog and zoom-out were sized for one bomb-defusal map; Rush spans ~20k
+    // units and its overview came out black.
+    const fog = scene.fog as THREE.Fog;
+    fog.near = Math.max(fog.near, mapSpan * 0.6);
+    fog.far = Math.max(fog.far, mapSpan * 2);
+    viewMaxDolly = Math.max(viewMaxDolly, mapSpan * 1.6);
+    viewCut = viewCutHeight(props.ceiling ?? 50);
+    viewUniforms.uCut.value = viewCut;
+    viewLoaded = true;
+  }
+
+  // Same lit, flat-shaded grey as the .tri so the two paths read alike; the
+  // surface classes are stippled rather than blended so nothing needs sorting.
+  function makeViewMaterial() {
+    const mat = new THREE.MeshStandardMaterial({
+      color: 0x3c3e42,
+      roughness: 0.95,
+      metalness: 0,
+      side: THREE.DoubleSide,
+      flatShading: true,
+    });
+    const varyings = [
+      "varying vec3 vViewSrc;",
+      "varying float vViewFloor;",
+      "varying float vViewH;",
+      "varying float vViewFoliage;",
+      "varying float vViewSeeThrough;",
+      "varying float vViewOutside;",
+    ].join("\n");
+    mat.onBeforeCompile = (shader) => {
+      Object.assign(shader.uniforms, viewUniforms);
+      shader.vertexShader = shader.vertexShader
+        .replace(
+          "#include <common>",
+          [
+            "#include <common>",
+            "attribute float aFloorZ;",
+            "attribute float aFlags;",
+            varyings,
+          ].join("\n"),
+        )
+        .replace(
+          "#include <begin_vertex>",
+          [
+            "#include <begin_vertex>",
+            "vViewSrc = position;",
+            "vViewFloor = aFloorZ;",
+            "vViewH = position.z - aFloorZ;",
+            "float viewSurface = mod(aFlags, 4.0);",
+            "vViewFoliage = 1.0 - step(0.5, abs(viewSurface - 1.0));",
+            "vViewSeeThrough = 1.0 - step(0.5, abs(viewSurface - 2.0));",
+            "vViewOutside = step(4.0, mod(aFlags, 8.0));",
+          ].join("\n"),
+        );
+      shader.fragmentShader = shader.fragmentShader
+        .replace(
+          "#include <common>",
+          [
+            "#include <common>",
+            "uniform float uCut;",
+            "uniform float uFocusFloor;",
+            "uniform vec3 uFocusPlayer;",
+            "uniform vec3 uFocusCamera;",
+            "uniform sampler2D uLevels;",
+            "uniform vec4 uLevelGrid;",
+            varyings,
+          ].join("\n"),
+        )
+        .replace(
+          "#include <clipping_planes_fragment>",
+          [
+            "#include <clipping_planes_fragment>",
+            "if (vViewH > uCut) discard;",
+            "if (vViewFloor > uFocusFloor) {",
+            "  float focusSpan = uFocusCamera.z - uFocusPlayer.z;",
+            "  float focusAlong = focusSpan > 1.0 ? clamp((vViewSrc.z - uFocusPlayer.z) / focusSpan, 0.0, 1.0) : 0.0;",
+            "  vec2 focusSight = mix(uFocusPlayer.xy, uFocusCamera.xy, focusAlong);",
+            `  if (distance(vViewSrc.xy, focusSight) < ${FOCUS_RADIUS.toFixed(1)}) {`,
+            "    vec2 levelUv = (vViewSrc.xy - uLevelGrid.xy) * uLevelGrid.zw;",
+            "    if (texture2D(uLevels, levelUv).r <= uFocusFloor) discard;",
+            "  }",
+            "}",
+            "vec2 viewCell = mod(floor(gl_FragCoord.xy), 2.0);",
+            "float viewScreen = (mod(viewCell.x * 2.0 + viewCell.y * 3.0, 4.0) + 0.5) * 0.25;",
+            "if (vViewFoliage > 0.5 && viewScreen < 0.5) discard;",
+            "if (vViewSeeThrough > 0.5 && viewScreen < 0.75) discard;",
+          ].join("\n"),
+        )
+        .replace(
+          "#include <opaque_fragment>",
+          [
+            // Floors are up-facing AND near their own floor height, so a roof
+            // top shown at "full map" no longer reads as walkable ground.
+            "vec3 viewWorldN = (vec4(normal, 0.0) * viewMatrix).xyz;",
+            "float viewFloorness = smoothstep(0.55, 0.95, viewWorldN.y) * (1.0 - smoothstep(24.0, 72.0, vViewH));",
+            "float viewWallness = 1.0 - smoothstep(0.0, 0.35, abs(viewWorldN.y));",
+            "outgoingLight *= mix(1.0, 1.4, viewFloorness);",
+            "outgoingLight *= mix(1.0, 0.72, viewWallness);",
+            // A light rim where walls meet the cut draws each room's outline
+            // from above, where the walls themselves are edge-on.
+            "float viewRimWidth = max(2.0, fwidth(vViewH) * 1.5);",
+            "float viewRim = (1.0 - smoothstep(0.0, viewRimWidth, uCut - vViewH)) * step(uCut, 1e8);",
+            "outgoingLight = mix(outgoingLight, vec3(0.24), viewRim * 0.75);",
+            "outgoingLight = mix(outgoingLight, outgoingLight * vec3(1.05, 1.35, 1.0) + vec3(0.015, 0.03, 0.01), vViewFoliage);",
+            "outgoingLight *= mix(1.0, 0.55, vViewSeeThrough);",
+            "outgoingLight *= mix(1.0, 0.5, vViewOutside);",
+            "#include <opaque_fragment>",
+          ].join("\n"),
+        );
+    };
+    return mat;
+  }
+
+  // Walls and roofs past the slider's height are discarded per fragment; the
+  // followed player's floor is eased up slowly so a jump does not flicker the
+  // storey above, and dropped fast so falling to a lower level opens at once.
+  function updateViewCut() {
+    const target = viewCutHeight(props.ceiling ?? 50);
+    if (target >= VIEW_CUT_NONE || viewCut >= VIEW_CUT_NONE) {
+      viewCut = target;
+    } else {
+      viewCut += (target - viewCut) * 0.2;
+    }
+    viewUniforms.uCut.value = viewCut;
+
+    if (!camToken || viewCut >= VIEW_CUT_NONE) {
+      focusFloor = null;
+      focusSid = null;
+      viewUniforms.uFocusFloor.value = VIEW_CUT_NONE;
+      return;
+    }
+    const at = camToken.grp.position;
+    if (focusFloor === null || focusSid !== followSid.value) {
+      focusFloor = at.y;
+      focusSid = followSid.value;
+    } else {
+      focusFloor += (at.y - focusFloor) * (at.y < focusFloor ? 0.5 : 0.08);
+    }
+    viewUniforms.uFocusFloor.value = focusFloor + FOCUS_ABOVE;
+    viewUniforms.uFocusPlayer.value.set(at.x, -at.z, at.y);
+    viewUniforms.uFocusCamera.value.set(
+      camera.position.x,
+      -camera.position.z,
+      camera.position.y,
+    );
+  }
 
   function buildRadar() {
     if (!props.radarSrc) return;
@@ -2802,6 +3110,9 @@ onMounted(() => {
         (targetClip - clipY) * (Math.abs(targetClip - clipY) > 1e6 ? 1 : 0.2);
       ceilingPlane.constant = clipY;
     }
+    if (viewLoaded) {
+      updateViewCut();
+    }
     // grenade tumble (in-flight 3D models)
     for (const nm of projs) {
       if (nm.grp.visible) {
@@ -2839,13 +3150,21 @@ onMounted(() => {
   apply();
 
   cleanup = () => {
+    disposed = true;
+    meshFetch.abort();
     cancelAnimationFrame(raf);
     ro.disconnect();
     controls.dispose();
     for (const slot of smokeVolumeMeshes) slot.tex?.dispose();
+    for (const geo of mapGeometries) {
+      geo.dispose();
+    }
+    floorTexture?.dispose();
     flameGlowGeo.dispose();
     composer?.dispose();
     renderer.dispose();
+    removeEventListener("pointerup", onPointerUp);
+    removeEventListener("pointermove", onPointerMove);
     removeEventListener("keydown", onKeyDown);
     removeEventListener("keyup", onKeyUp);
     removeEventListener("blur", clearKeys);

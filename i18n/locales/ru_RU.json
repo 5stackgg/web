@@ -986,7 +986,8 @@
   "elo_change_badge": {
     "comp": "COMP",
     "wingman": "WINGMAN",
-    "duel": "DUEL"
+    "duel": "DUEL",
+    "rush": "RUSH"
   },
   "render_queue_status": {
     "queued": "В очереди",
@@ -1968,7 +1969,7 @@
           "order_hint": "Каждый слой имеет приоритет над предыдущим.",
           "layers": {
             "type": "Тип матча",
-            "type_note": "Competitive, Wingman, Duel",
+            "type_note": "Competitive, Wingman, Duel, Rush",
             "lan_note": "только LAN-регионы",
             "global_note": "все матчи",
             "plugin": "Cvar плагина",
@@ -3561,6 +3562,7 @@
         "competitive": "Соревновательный",
         "wingman": "Wingman",
         "duel": "Дуэль",
+        "rush": "Rush",
         "scrimmage": "Скрим",
         "premier": "Premier",
         "faceit": "Faceit"
@@ -4572,6 +4574,7 @@
         "duration": "{seconds}с",
         "requested_by": "Запросил",
         "capped": "Показаны первые {shown} строк из {total}.",
+        "caveats": "Оговорки ({count})",
         "count_broken": "сломано: {count}",
         "count_moved": "смещено: {count}",
         "count_unsimulatable": "не смоделировано: {count}",
@@ -6679,6 +6682,7 @@
           "description": "Количество раундов до смены сторон командами.",
           "placeholder": "Выбери максимум раундов"
         },
+        "rush_fixed_rules": "Rush всегда играется до 8 выигранных раундов, без овертайма и ножевого раунда.",
         "region": {
           "title": "Настройки региона",
           "lan_match": "LAN-матч",
@@ -7429,7 +7433,7 @@
         "cam_chase": "СЛЕЖЕНИЕ",
         "cam_chase_tip": "Следовать за выбранным игроком",
         "roof": "КРЫША",
-        "roof_tip": "Срез крыши — по центру авто (крыши убраны, действие видно). Вверх — показать больше, вниз — срезать больше, максимум — вся карта.",
+        "roof_tip": "Срез крыши — скрывает крыши и обрезает стены, чтобы действие было видно. Вниз — срез ниже (план этажа), вверх — стены выше, максимум — вся карта.",
         "play_by_play": "ХРОНИКА РАУНДА",
         "play_by_play_tip": "Показать журнал событий раунда по ходу игры",
         "more": "Ещё параметры",
@@ -7883,7 +7887,13 @@
     },
     "official": "Официальные карты",
     "workshop": "Карты мастерской",
-    "active_duty": "Активный пул"
+    "active_duty": "Активный пул",
+    "radar_room": {
+      "label": "Комната",
+      "auto": "Авто",
+      "room": "Комната {name}",
+      "full_map": "Вся карта"
+    }
   },
   "region": {
     "form": {
@@ -7906,6 +7916,10 @@
       "duel": {
         "title": "Дуэль",
         "description": "Соревновательный формат 1 на 1, идеален для отработки индивидуального навыка"
+      },
+      "rush": {
+        "title": "Rush",
+        "description": "Динамичные матчи 3 на 3 комната за комнатой: каждый выигранный раунд продвигает бой вперёд"
       }
     },
     "cancel_matchmaking": "Отменить подбор игры",
@@ -7997,6 +8011,7 @@
     "updating_to": "Обновление до {version}",
     "update_to_version": "Обновить до {version}",
     "validate_gamedata": "Проверить gamedata",
+    "build_map_assets": "Собрать ресурсы карт",
     "note_label": "Примечание:",
     "one_cpu_core": "1 ядро CPU",
     "cpu_reservation_note": " {cores} зарезервировано для системы на каждой ноде, чтобы она оставалась отзывчивой.",
@@ -8095,6 +8110,7 @@
       "cs_updating": "CS2 обновляется на ноде",
       "csgo_installing": "CS:GO устанавливается на ноде",
       "validating_gamedata": "Проверка подписей gamedata на ноде",
+      "building_map_assets": "Сборка мешей карт и коллаутов для сборки CS2 этого узла",
       "ports_updated": "Порты ноды обновлены",
       "ports_removed": "Порты ноды удалены",
       "made_gpu_only": "Нода переведена в режим только GPU",

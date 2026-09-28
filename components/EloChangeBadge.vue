@@ -121,6 +121,8 @@ const typeLabel = computed(() => {
       return t("elo_change_badge.wingman");
     case "Duel":
       return t("elo_change_badge.duel");
+    case "Rush":
+      return t("elo_change_badge.rush");
     default:
       return null;
   }

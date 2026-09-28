@@ -13,7 +13,7 @@ import DropdownMenuSeparator from "~/components/ui/dropdown-menu/DropdownMenuSep
 import DropdownMenuSub from "~/components/ui/dropdown-menu/DropdownMenuSub.vue";
 import DropdownMenuSubTrigger from "~/components/ui/dropdown-menu/DropdownMenuSubTrigger.vue";
 import DropdownMenuSubContent from "~/components/ui/dropdown-menu/DropdownMenuSubContent.vue";
-import { e_match_status_enum } from "~/generated/zeus";
+import { e_match_status_enum, e_match_types_enum } from "~/generated/zeus";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import {
   type MatchCommand,
@@ -149,9 +149,14 @@ const { backupRounds } = useMatchBackupRounds(
   computed(() => currentMap.value?.id),
 );
 
-const restorableRounds = computed(() =>
-  backupRounds.value.filter((r: any) => r.has_backup_file && r.round > 0),
-);
+const restorableRounds = computed(() => {
+  if (props.match.options?.type === e_match_types_enum.Rush) {
+    return [];
+  }
+  return backupRounds.value.filter(
+    (r: any) => r.has_backup_file && r.round > 0,
+  );
+});
 
 function runCommand(
   command: MatchCommand,

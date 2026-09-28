@@ -1,11 +1,12 @@
 // Spec-target layout per match type. CS2's `spec_player <n>` uses
 // absolute slot numbers tied to join order, so the numbering changes
 // with team size — for 5v5 competitive team 2 starts at slot 6, but
-// for Wingman it starts at slot 3, and for Duel at slot 2.
+// for Wingman it starts at slot 3, for Rush at slot 4, and for Duel at
+// slot 2.
 //
 // Keys map digit row keys to slots: slot 10 binds to "0" so the
-// number row is contiguous on the keyboard. For Wingman / Duel we
-// only ever produce slots 1..4 / 1..2, so the "0" mapping is unused.
+// number row is contiguous on the keyboard. For Wingman / Rush / Duel we
+// only ever produce slots 1..4 / 1..6 / 1..2, so the "0" mapping is unused.
 
 export type SpecSlot = {
   slot: number;
@@ -36,24 +37,39 @@ function buildSlots(perTeam: number): SpecSlot[] {
 
 const COMPETITIVE = buildSlots(5);
 const WINGMAN = buildSlots(2);
+const RUSH = buildSlots(3);
 const DUEL = buildSlots(1);
 
 // `type` comes from match_streams.match.options.type — matches the
-// e_match_types_enum values: "Competitive" | "Wingman" | "Duel".
+// e_match_types_enum values: "Competitive" | "Wingman" | "Rush" | "Duel".
 // Anything unrecognized falls through to Competitive so a misconfigured
 // row doesn't render an empty grid.
 export function specSlotsForMatchType(
   type: string | null | undefined,
 ): SpecSlot[] {
-  if (type === "Wingman") return WINGMAN;
-  if (type === "Duel") return DUEL;
+  if (type === "Wingman") {
+    return WINGMAN;
+  }
+  if (type === "Rush") {
+    return RUSH;
+  }
+  if (type === "Duel") {
+    return DUEL;
+  }
   return COMPETITIVE;
 }
 
-// Total players per team (1 / 2 / 5) — handy for grid-cols sizing.
+// Total players per team (1 / 2 / 3 / 5) — handy for grid-cols sizing.
 export function teamSizeForMatchType(type: string | null | undefined): number {
-  if (type === "Wingman") return 2;
-  if (type === "Duel") return 1;
+  if (type === "Wingman") {
+    return 2;
+  }
+  if (type === "Rush") {
+    return 3;
+  }
+  if (type === "Duel") {
+    return 1;
+  }
   return 5;
 }
 

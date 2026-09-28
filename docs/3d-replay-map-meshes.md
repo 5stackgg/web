@@ -1,314 +1,404 @@
-# Map assets: collision meshes (`.tri.gz`) and callouts (`.callouts.json`)
+# Map assets: collision, grenade clips, view meshes and callouts
 
-Both are built from the CS2 install the game-server nodes already run, and both
-are served by the panel's own Cloudflare worker
-(`cloudflare-workers/backblaze-proxy`) out of B2:
+Every map the game-server nodes run gets four files, built straight from the
+CS2 install and served by the panel's own Cloudflare worker
+(`cloudflare-workers/backblaze-proxy`) out of the B2 bucket `5stack`:
+
+| asset | file | read by |
+| --- | --- | --- |
+| collision | `<map>.tri.gz` | demo parser (line of sight, smoke flood fill, grenade sim), 3D viewer fallback |
+| grenade clips | `<map>.grenadeclip.tri.gz` (absent when the map has none) | demo parser grenade flight/drift sim |
+| view mesh | `<map>.view.bin.gz` | 3D viewer (`components/match/Replay3DLite.vue`) |
+| callouts | `<map>.callouts.json` | API (`public.map_callouts`), radar overlay, utility naming |
+
+Nothing is pinned by hand any more: a job rebuilds all of it when a new CS2
+build lands, and a pointer file tells every consumer where the newest files are.
+
+## Layout on B2
 
 ```
-https://demo-dl.5stack.gg/maps/<cs2 build>/<map>.tri.gz
-https://demo-dl.5stack.gg/maps/<cs2 build>/<map>.callouts.json
+https://demo-dl.5stack.gg/maps/latest.json                  mutable, cached 60 s
+https://demo-dl.5stack.gg/maps/<build>/manifest.json        immutable (revision 1)
+https://demo-dl.5stack.gg/maps/<build>/manifest.r<N>.json   immutable (a retry, N = 2, 3, …)
+https://demo-dl.5stack.gg/maps/<build>/<map>.tri.gz
+https://demo-dl.5stack.gg/maps/<build>/<map>.grenadeclip.tri.gz
+https://demo-dl.5stack.gg/maps/<build>/<map>.view.bin.gz
+https://demo-dl.5stack.gg/maps/<build>/<map>.callouts.json
+https://demo-dl.5stack.gg/maps/<build>/r<N>/<map>.…         files first published by revision N
 ```
 
-## Building them (in-cluster — nothing to install locally)
+`latest.json` is `{ "version": 1, "build": "<build>", "manifest": "<build>/manifest.json" }`
+(or `"<build>/manifest.r<N>.json"`). **Always follow its `manifest` field** —
+never assume `<build>/manifest.json` is the newest word on a build.
 
-The `inventory-backend` pod already mounts the dedicated-server install at
-`/cs2-game` and already has Source2Viewer-CLI and Node:
+The manifest names the key that holds each asset of each map — paths are
+relative to `maps/` — plus the sha256 of each file's **uncompressed** bytes, and
+which maps did not fully build:
+
+```json
+{ "version": 1, "build": "25537370", "revision": 2, "created_at": "...",
+  "pipeline": { "sha256": "…", "source_viewer": "20.0.6980+a06886f…", "meshoptimizer": "1.1.1" },
+  "failed": ["de_brand_new"],
+  "failed_view": ["rush_001"],
+  "maps": { "de_mirage": {
+    "tri": "25537370/de_mirage.tri.gz",
+    "grenadeclip": "25537370/de_mirage.grenadeclip.tri.gz",
+    "view": "24957633/de_mirage.view.bin.gz",
+    "callouts": "25537370/de_mirage.callouts.json",
+    "sha256": { "tri": "…", "grenadeclip": "…", "view": "…", "callouts": "…" },
+    "source": { "vpk_sha256": "…", "pipeline": "…" } } } }
+```
+
+- `revision` is only present from 2 up.
+- `source` is what the entry was built from (see *Unchanged maps are not
+  rebuilt* below); `pipeline` at the top is the run's own, with the versions
+  spelled out.
+- `failed`: maps whose collision or callouts failed to build. A map whose
+  collision failed keeps its previous build's entry (or has none at all); one
+  whose callouts failed ships new collision and its previous callouts.
+- `failed_view`: maps whose view mesh failed. They ship collision, grenade
+  clips and callouts as usual, with no `view` key, so the viewer falls back to
+  the collision `.tri` for them.
+- Both lists are left out when empty.
+
+A key can point at an **older** build: a map Valve did not touch keeps the
+entry it already has, and a rebuilt file identical to the one before keeps the
+old key. A map missing an asset simply has no key for it. A map that is no
+longer in the install is dropped from the next manifest.
+
+`<build>` is the CS2 build id (`buildid` in `steamapps/appmanifest_730.acf`).
+Everything under `maps/<build>/` — every manifest revision included — is
+immutable: the worker serves it with `Cache-Control: public, max-age=2592000,
+immutable` and caches it at the edge as long, and nothing ever overwrites it.
+Only `maps/latest.json` moves; the worker gives it `public, max-age=60`, at the
+edge and in the browser, and the publisher only ever moves it forwards.
+
+> **⚠ Deploy the worker BEFORE the first publish.** A worker from before this
+> change caches `latest.json` at the edge and in browsers as immutable for 30
+> days the first time anybody reads it, and every later build would be
+> invisible for a month. `yarn wrangler deploy` from `web/`, then publish.
+
+## How the consumers resolve a map
+
+All three — the web viewer (`utilities/mapAssets.ts`), the demo parser
+(`internal/geometry/load.go`) and the API (`utility-callouts.service.ts`) — do
+the same thing:
+
+1. **An explicit base wins.** `NUXT_PUBLIC_MAP_MESH_CDN` (web) / `MAP_MESH_CDN`
+   (parser, API), or a per-request revision, pins every map to
+   `<base>/<map>.tri.gz`, `<base>/<map>.callouts.json` etc., exactly as before
+   the manifest existed.
+2. **Otherwise** fetch `maps/latest.json` (cached ~10 minutes), then the
+   manifest it names (immutable, cached per key), and use its keys.
+3. **If `latest.json` is unreachable**, fall back to the last hand-published
+   build, `24957633`.
+
+Builds from before the manifest have no view mesh and no grenade clips, and a
+map listed in `failed_view` has no view mesh: the viewer then draws the
+collision `.tri` the old way and the parser simulates grenades without clips.
+
+## The automatic job
+
+`ghcr.io/5stackgg/map-assets` (built by `.github/workflows/map-assets.yml` from
+`docker/map-assets/Dockerfile`: Node 24, Source2Viewer-CLI **20.0** linux-x64
+pinned with its checksum, `scripts/`, and only `meshoptimizer` + `aws4fetch`).
+The API launches it as a node-pinned k8s Job with the server files mounted
+read-only when a new CS2 build lands (only on the `5stack.gg` install), records
+the run in `map_asset_builds`, and has a manual trigger for admins. The job is
+just:
+
+```bash
+node scripts/build-map-assets.mjs --cs2 /serverdata/serverfiles --build <id> --out /work --publish
+```
+
+with `S3_ACCESS_KEY` / `S3_SECRET` from the `s3-secrets` secret and emptyDirs at
+`/work` and `/tmp`. Everything the run writes goes to one of those two: the
+built files and manifest to `--out` (`MAP_ASSETS_OUT`, `/work` in the image),
+and every Source2Viewer export and scratch directory to `TMPDIR`
+(`os.tmpdir()`, `/tmp`) — the image runs with a read-only root filesystem.
+It needs about **6 GiB of memory**, **~3 GB in `/tmp`** (rush_001's render
+export alone is a 1.2 GB glb, deleted as soon as the map is done) and a few
+hundred MB in `/work`, and takes ~2 minutes for rush_001 and a few seconds to
+~15 s for a pool map.
+
+> **⚠ The B2 key needs `listFiles`** as well as `readFiles`/`writeFiles`. B2
+> answers a missing key with 403 rather than 404 when the key cannot list,
+> which is also what a transient denial looks like; the publisher settles a
+> 403 by listing the exact key, and if the listing is refused it aborts
+> rather than guess that a key is free.
+
+What `build-map-assets.mjs` does:
+
+1. Reads the install's build id and refuses a `--build` that does not match it.
+2. Reads the current `latest.json` + manifest **from B2 directly** (not through
+   the worker's cache) and finds the newest manifest of this build — the one
+   `latest.json` names if it is this build's, then any higher `manifest.r<N>`
+   that exists; otherwise `manifest.json`, `manifest.r2.json`, … probed in turn.
+3. Decides what to look at:
+   - **no manifest for this build** — every eligible map in `game/csgo/maps/`
+     (`de_`, `cs_`, `ar_`, `rush_`; never `_vanity` or `_night`), or `--maps`;
+   - **newest manifest lists no failures, nothing forced** — nothing: the
+     build is done. It only moves `latest.json` to that manifest if an earlier
+     run died before doing so, and exits 0;
+   - **newest manifest lists failures, or `--force`/`--force-maps` names
+     maps** — only those maps (intersected with `--maps`), as the next
+     revision.
+
+   Each of them is then fingerprinted, and one whose fingerprint matches
+   the base manifest's entry is carried over without any work (below).
+4. Per map: collision + grenade clips + view mesh (`extract-map-meshes.mjs`)
+   and callouts (`extract-map-callouts.mjs`, written without `generatedAt` so
+   the hash only changes when the callouts do). Only the collision can fail a
+   map; anything on the view side — no render export, a nav that does not
+   validate (then the floors come from collision, logged as `NAV REJECTED`),
+   a mesh over budget — lands the map in `failed_view` instead.
+5. Gzips each file and hashes the uncompressed bytes. A file whose hash matches
+   the base manifest's entry reuses that key; maps not built this run carry
+   over from the base, failure listings included.
+6. HEAD-checks every new key and the new manifest's own key. A file key that
+   exists is only accepted if its `x-amz-meta-sha256` (stored on every
+   upload, by both publishers) matches — an interrupted run of the same
+   revision — and anything B2 will not answer aborts before uploading.
+7. Uploads the files, then the manifest (`manifest.json` for revision 1,
+   `manifest.r<N>.json` for a retry, never over an existing one), then
+   re-reads `latest.json` and moves it **last**, and only forwards: never to
+   an older build, nor to an older revision of the same build.
+
+A retry (or forced rebuild of a published build) that changes nothing
+publishes nothing. A first run in which every map that needed building failed,
+and none was unchanged, publishes nothing either — that is the tooling, not
+the maps. A run in which every map is unchanged still publishes the build's
+(small) manifest and moves `latest.json`, so `maps/<build>/manifest.json`
+exists for every build the job has seen.
+
+### Unchanged maps are not rebuilt
+
+Before any Source2Viewer work, every map gets a fingerprint, stored in its
+manifest entry as `source`:
+
+- `vpk_sha256` — sha256 of `game/csgo/maps/<map>.vpk`. Geometry, nav and the
+  entity lump all live in the map's own VPK, so the same VPK means the same
+  inputs. Hashing is streamed and cheap: mirage, nuke and rush_001 (1 GB)
+  hash in 0.5 s.
+- `pipeline` — sha256 over the source of `build-map-assets.mjs` and every
+  local module it imports, transitively (`lib-fingerprint.mjs` follows the
+  imports, so a new `lib-*.mjs` is covered the moment it is imported), plus
+  the Source2Viewer-CLI version (`--version`'s `Version:` line) and the
+  meshoptimizer version. The macOS CLI and the linux image report the same
+  version and hash the same scripts, so a local run and the job agree.
+
+A map whose `source` equals the entry in the base manifest (the one
+`latest.json` points at) and which that manifest does not list in `failed` or
+`failed_view` is carried over verbatim — same keys, same sha256s, same
+`source` — with no export, no build and no upload, logged as
+
+```
+de_mirage          unchanged (vpk e66cdf1ae6a9, pipeline a6b5472a9b48) -- reused 25537370/
+```
+
+Anything else is built as before, and the content dedupe still applies: a new
+pipeline that produces identical files reuses the old keys and uploads
+nothing. A CS2 update that touches no map therefore costs well under a second
+and one manifest upload. `--force` rebuilds every map regardless, and
+`--force-maps a,b` just those; on a build that is already published they
+rebuild into the next revision (which is only published if something
+changed).
+
+**Exit codes** (the API records them):
+
+| code | meaning |
+| --- | --- |
+| 0 | every map fully published, unchanged ones included (or the build already was) |
+| 2 | published, but the manifest lists `failed` or `failed_view` maps — run it again to retry just those |
+| 1 | fatal: nothing new was published (or the manifest went up but `latest.json` could not be moved; a re-run finishes it) |
+
+## Running it by hand
+
+Anywhere with a CS2 install (Source2Viewer-CLI is downloaded into `.cache/s2v/`
+on first use; `CLI=<path>` overrides):
+
+```bash
+# build only -> .cache/map-assets/<build>/{raw,files}/ + manifest.json (or --out <dir>)
+node scripts/build-map-assets.mjs --cs2 "/path/to/Counter-Strike Global Offensive"
+node scripts/build-map-assets.mjs --cs2 <install> --maps de_mirage,rush_001
+
+# rebuild regardless of fingerprints
+node scripts/build-map-assets.mjs --cs2 <install> --force
+node scripts/build-map-assets.mjs --cs2 <install> --force-maps de_nuke,rush_001
+
+# every check a publish makes, uploading nothing
+S3_ACCESS_KEY=… S3_SECRET=… node scripts/build-map-assets.mjs --cs2 <install> --publish --dry-run
+
+# publish
+S3_ACCESS_KEY=… S3_SECRET=… node scripts/build-map-assets.mjs --cs2 <install> --publish
+```
+
+Or the image itself:
+
+```bash
+docker run --rm --read-only --tmpfs /tmp:rw,exec,size=4g -v "$PWD/work:/work" \
+  -v <install>:/serverdata/serverfiles:ro -e S3_ACCESS_KEY -e S3_SECRET \
+  ghcr.io/5stackgg/map-assets:latest --cs2 /serverdata/serverfiles --publish
+```
+
+The live B2 key is the k8s secret, not `web/.dev.vars` (that one is dead):
 
 ```bash
 export KUBECONFIG=~/.kube/5stackgg
-P=$(kubectl -n 5stack get pod -l app=inventory-backend -o name | head -1)
-kubectl -n 5stack cp scripts/ 5stack/${P#pod/}:/cs2-models/.work/callouts/scripts
-
-kubectl -n 5stack exec ${P#pod/} -- sh -c '
-  cd /cs2-models/.work/callouts
-  export CLI=/cs2-models/.work/cs2-model-extract/cli/Source2Viewer-CLI CS2_DIR=/cs2-game
-  node scripts/extract-map-meshes.mjs
-  node scripts/extract-map-callouts.mjs'
-```
-
-Stream the results back (`kubectl cp` truncates on directories this size — it
-gave a silent short read once already, so tar and verify):
-
-```bash
-kubectl -n 5stack exec ${P#pod/} -- tar cf - -C /cs2-models/.work/callouts/.cache/meshes . > /tmp/m.tar
-rm -rf .cache/meshes && mkdir -p .cache/meshes && tar xf /tmp/m.tar -C .cache/meshes
-```
-
-## Publishing
-
-```bash
 export S3_ACCESS_KEY=$(kubectl -n 5stack get secret s3-secrets -o jsonpath='{.data.S3_ACCESS_KEY}' | base64 -d)
 export S3_SECRET=$(kubectl -n 5stack get secret s3-secrets -o jsonpath='{.data.S3_SECRET}' | base64 -d)
-node scripts/publish-map-assets.mjs --build <cs2 build> --dry-run
-node scripts/publish-map-assets.mjs --build <cs2 build>
 ```
 
-The CS2 build id is `buildid` in `/cs2-game/steamapps/appmanifest_730.acf`. It is
-the cache-buster: every URL under a build is immutable, which is what the
-worker's `max-age=2592000, immutable` assumes. **Never overwrite a published
-build in place.** Then move all three pins together:
-
-- `web/nuxt.config.ts` → `runtimeConfig.public.mapMeshCdn`
-- `demo-parser/internal/geometry/load.go` → `defaultMeshHost` / `defaultMeshCDN`
-- `api/src/utility/utility-callouts.service.ts` → `DEFAULT_CDN`
-
-(or set `MAP_MESH_CDN` / `NUXT_PUBLIC_MAP_MESH_CDN` in the deployment — all three
-read it).
-
-## Two things that are easy to get wrong
-
-> **⚠ Meshes carry their own gzip; callouts do not.** A mesh is published as
-> `<map>.tri.gz` and decompressed by the consumer (`fetchMeshBuffer` in
-> `utilities/mapAssets.ts`, `compress/gzip` in the Go loader). Relying on
-> `Content-Encoding` does NOT survive the path: a Worker's `fetch`
-> auto-decompresses a gzip subresponse and strips the header, and Cloudflare's
-> edge only re-compresses MIME types on its compressible list, which
-> `application/octet-stream` is not — inferno came back 18.6 MB instead of
-> 2.4 MB. Callouts are `application/json`, which the edge *does* compress, so
-> they ship plain and gzip on the wire anyway (8,971 → 1,295 bytes).
-
-> **⚠ The size cap is the CONSUMER's, not the CDN's.** Moving off jsDelivr
-> removed the ~20MiB per-file limit, but the demo parser drops any mesh over
-> 1.5M triangles or 96 MB and the 3D viewer over 96 MB — both silently, and line
-> of sight then answers "visible" for everything. `MESH_MAX_MB` defaults to 40
-> (~1.1M triangles). At that budget most of the active pool needs no decimation
-> at all; full fidelity would be 1.4 GB across 27 maps and inferno alone would
-> be rejected.
-
----
-
-## What the files are
-
-- One file per map, served from the CDN (see Hosting below), e.g.
-  `https://cdn.jsdelivr.net/gh/5stackgg/replay-map-meshes@<tag>/<map>.tri`.
-- Format: a **raw, header-less buffer of `float32`** — 9 floats per triangle
-  (`p1.xyz, p2.xyz, p3.xyz`), i.e. a non-indexed triangle soup. 36 bytes/triangle.
-- Coordinate space: **raw CS2 source/Hammer units** — the *same* space as the
-  demo's player/grenade positions, so the mesh and the actors line up with **zero
-  calibration**. The viewer just loads the buffer straight into a three.js
-  `BufferGeometry` (`mesh.rotation.x = -π/2` to go source-Z-up → three-Y-up).
-- **Not** shipped in this repo or the container — built by the script and
-  published to the meshes repo (jsDelivr Brotli's them: inferno ~19 MB on disk →
-  ~2.5 MB on the wire).
-
-## Default: build from awpy
-
-[awpy](https://github.com/pnxenopoulos/awpy) publishes per-build collision packs.
-The script pulls + decimates them into `.cache/meshes/` (gitignored) — no CS2
-install needed:
+Lower-level pieces, for debugging one map:
 
 ```bash
-node scripts/fetch-map-meshes.mjs            # default Valve pool (+ cs_office)
-node scripts/fetch-map-meshes.mjs --all      # every map in the pack
-node scripts/fetch-map-meshes.mjs de_mirage  # specific map(s)
-MESH_MAX_MB=16 node scripts/fetch-map-meshes.mjs    # smaller meshes (more decimation)
-MESH_NO_DECIMATE=1 node scripts/fetch-map-meshes.mjs # skip oversized instead of shrinking
+node scripts/extract-map-meshes.mjs de_mirage --cs2 <install> --out /tmp/meshes   # .tri, .grenadeclip.tri, .view.bin
+node scripts/extract-map-callouts.mjs de_mirage --cs2 <install>                    # -> .cache/callouts/
+node scripts/glb-to-tri.mjs <world_physics_physics.glb> out.tri
+node scripts/publish-map-assets.mjs --build <id> [--dry-run]   # uploads .cache/meshes + .cache/callouts as-is,
+                                                              # with the same x-amz-meta-sha256; writes no
+                                                              # manifest and never moves latest.json
 ```
 
-> **⚠ jsDelivr 20 MiB limit (read this).** The CDN refuses to serve any single
-> file over ~20 MiB — it returns **403, not 404**. A 403 means the 3D viewer
-> silently falls back to the flat radar *and* `MeshAvailability` lists the map as
-> "missing", even though the `.tri` is committed and tagged. That's why the cap
-> defaults to **18** (decimal MB on disk). Do **not** raise `MESH_MAX_MB` past ~19
-> for anything you intend to publish. Verify a published tag with
-> `curl -sI <cdn>/<map>.tri` — expect `200`, never `403`.
+## Formats
 
-It downloads `https://awpycs.com/<build>/tris.zip` and writes the requested maps
-to `.cache/meshes/`. Add `--publish` to push + tag them to the CDN (see Hosting).
-Bump `AWPY_BUILD_ID` when awpy ships data for a newer CS2 patch.
+### `.tri` and `.grenadeclip.tri`
 
-**Auto-decimation:** maps over `MESH_MAX_MB` (default 18, under the jsDelivr limit
-above) are *not* dropped — the script snaps their vertices to a grid and dedups
-degenerate/duplicate triangles until they fit, so big active-duty maps still come
-through (e.g. anubis 24→~12 MB, overpass 49→~9 MB, train 55→~13 MB). This is the
-same idea as the "weld + simplify" step below, just built in and pure-JS.
+A raw, header-less `float32` triangle soup: 9 floats (`p1.xyz p2.xyz p3.xyz`)
+per triangle, 36 bytes each, in **CS2 source units, Z up** — the same space as
+demo positions, so nothing needs calibrating.
 
-Maps in the pack today: `de_ancient de_anubis de_basalt de_dust2 de_edin
-de_inferno de_mirage de_nuke de_overpass de_palais de_train de_vertigo
-de_whistle cs_italy cs_office ar_baggage ar_pool_day ar_shoots`.
+The collision `.tri` is the physics hull (`maps/<map>/world_physics.vmdl_c`,
+exported as `world_physics_physics.glb`) with every clip, sky and tool group
+dropped. Its semantics must not change: the parser raycasts it for line of
+sight, and every wall removed from it becomes a sightline and a smoke leak
+(standalone-wall removal, `MESH_DROP_WALLS=1`, stays off for that reason).
 
----
+`.grenadeclip.tri` is only the physics groups matching `grenadeclip`
+(`physics_csgo_grenadeclip`, `…_grenadeclip_wood`, `…_metal`, …). Player and NPC
+clips (`physics_npcclip_playerclip*`, `physics_playerclip`) let grenades
+through and are not in it.
 
-## Fallback: generate the meshes yourself (Source 2 Viewer)
+> **⚠ The physics export keeps mesh-local source units.** Its node matrices
+> carry a 0.0254 inch→metre scale and an axis swap for glTF viewers;
+> `glb-to-tri.mjs` skips them. A correct hull measures thousands of units.
+> The render world below is the opposite.
 
-If awpy stops publishing packs, or a brand-new map isn't covered yet, generate
-the `.tri` from the game's VPKs with Source 2 Viewer. You need **CS2 installed**.
+> **⚠ The size cap is the consumer's.** The parser drops any mesh over 1.5M
+> triangles or 96 MB and the viewer over 96 MB, silently — LOS then answers
+> "visible" for everything. `MESH_MAX_MB` (default 40, ~1.1M triangles) is the
+> budget; over it the soup is grid-snapped and deduped (`lib-mesh.mjs`).
+> rush_001 is the one map that needs it (4.4M triangles → 1.07M).
 
-[Source 2 Viewer / ValveResourceFormat](https://github.com/ValveResourceFormat/ValveResourceFormat)
-(also at https://s2v.app) browses VPKs and exports Source 2 assets to glTF 2.0.
+### `.view.bin` (version 1)
 
-1. Open Source 2 Viewer → **File ▸ Open** the CS2 VPK
-   (`.../Counter-Strike Global Offensive/game/csgo/pak01_dir.vpk`).
-2. Navigate to the map: `maps/<map>.vpk` (or the loose `maps/<map>/` tree).
-3. Find the **physics / collision** resource — `world_physics.vmdl_c`
-   (the physics hull), **not** the textured render `world.vmdl_c`. The collision
-   hull is far smaller and is what we want.
-4. Right-click ▸ **Export** as **glTF (.glb)**. (Textures don't matter — the
-   converter only reads positions — so the `*_world_physics_physics.glb` is what
-   gets used.)
-5. Convert + publish via the pipeline (`glb-to-tri.mjs` is called automatically by
-   the publisher; or run it standalone):
-   ```bash
-   # one map
-   node scripts/fetch-map-meshes.mjs --from ~/cs_exports de_cache --publish --tag <build>-1
-   # or just convert to .tri
-   node scripts/glb-to-tri.mjs ~/cs_exports/de_cache_world_physics_physics.glb ~/meshes/de_cache.tri
-   ```
-
-The converter reads only POSITIONs, drops clip/sky brushes by material name, and
-removes isolated "standalone walls" (thin/tall/vertical sheets that aren't
-connected to anything — see `dropStandaloneWalls` in `glb-to-tri.mjs`). Tune per
-run with env vars: `WALL_THIN` / `WALL_TALL` / `WALL_VERT` (thresholds), or
-`MESH_DROP_WALLS=1` to re-enable standalone-wall removal.
-
-> **⚠ Standalone-wall removal is off by default, deliberately.** The heuristic
-> deletes any disconnected component that is thin, tall and mostly vertical —
-> which describes a wall. The roof slider in the viewer handles sky-boxes and
-> stray boundary sheets properly, and meanwhile the deletions were doing real
-> harm: **the demo parser raycasts this same `.tri` for line of sight**, so every
-> wall dropped here became a wall smoke poured through, a sightline that should
-> not have existed, and occasionally a smoke whose detonation point landed in
-> the gap and collapsed to nothing. Leave it off unless you have a specific
-> reason and are not using the mesh for LOS.
-
-> **Coordinate gotcha:** the glb export bakes a `0.0254` inch→meter scale **and** a
-> Z-up→Y-up axis remap into every node's transform, purely for glTF viewers. The
-> underlying accessor data is already in **CS2 source units / source frame**, so
-> `glb-to-tri.mjs` deliberately emits the mesh-*local* positions and **skips the
-> node transforms**. Result bbox should read in the thousands (e.g. cache z
-> `1524..3331`), not tens — if you see tens, the meters transform leaked in.
-
-> **Tip:** export the `*_world_physics_physics.glb` (physics hull), never the
-> textured render mesh (`world.vmdl_c`, ~100 MB+). The export also embeds surface
-> textures into the glb (cache came out 175 MB) — we discard all of it, so the
-> final `.tri` is tiny (cache: 58 MB raw tris → 12.5 MB decimated → 1.6 MB wire).
-
----
-
-## Callouts (`<map>.callouts.json`)
-
-The same tagged snapshot also carries each map's **callouts** — the named areas
-CS2 defines as `env_cs_place` entities. The panel draws them on the radar behind
-a toggle, and names a utility throw from them ("Mid Smoke from T Spawn") so
-nobody has to type a name.
+The render world (`maps/<map>/world.vwrld_c`), simplified, with every vertex
+knowing the height of the floor it stands over. Little-endian, source units,
+Z up. Written by `scripts/lib-view-mesh.mjs` (`writeViewBin` / `readViewBin`).
 
 ```
-https://cdn.jsdelivr.net/gh/5stackgg/replay-map-meshes@<tag>/<map>.callouts.json
+Header (32 bytes)
+  0   char[4]  "5SVM"
+  4   u16      version = 1
+  6   u16      chunkCount
+  8   f32[3]   bboxMin
+  20  f32[3]   bboxMax
+Chunk table: chunkCount × 32 bytes
+  0   char[16] name, UTF-8, NUL-padded
+  16  u32      vertexCount
+  20  u32      indexCount   (triangles × 3)
+  24  u32      dataOffset   (from file start, 4-byte aligned)
+  28  u32      reserved (0)
+Chunk data at dataOffset, each section 4-byte aligned (zero padded):
+  f32[vertexCount*3]  position
+  f32[vertexCount]    floorZ   (NaN = no floor found)
+  u8[vertexCount]     flags    bits 0-1: 0 solid, 1 foliage, 2 see-through
+                               bit 2: floor found only in the wide search (outside playable space)
+  u32[indexCount]     indices  (triangle list; winding not guaranteed, render double-sided)
 ```
 
-Shape: `{ map, generatedAt, callouts: [{ name, boxes: [{ min: [x,y,z], max: [x,y,z] }] }] }`.
-One entry per **name** — a place is legitimately several disjoint volumes — in
-raw CS2 source units, the same space as the `.tri` meshes.
+Chunks: one `"world"` chunk on a normal map. A map with `cs_minimap_volume`
+brushes (rush_001) gets one chunk per volume — named by `minimap_name`,
+assigned by triangle centroid in the brush's XY box — plus `"world"` for
+everything outside them. Empty chunks are left out (rush_001's `roomparty`
+volume has no geometry in it). A name over 16 bytes keeps its first 11 bytes
+plus `~` and four hex digits of its sha256 (`a_very_long~1389`), so it never
+fails the write and always shortens the same way.
 
-### Extracting
+The viewer computes `h = z − floorZ` per fragment and discards `h > cut`: walls
+trim to a consistent height above their local floor, roofs over playable space
+vanish, and multi-level maps work because each vertex has its own floor.
 
-Needs CS2 installed. `Source2Viewer-CLI` is downloaded into `.cache/s2v/` on
-first run (override with `CLI=<path>`):
+How it is built:
 
-```bash
-node scripts/extract-map-callouts.mjs                 # every map in the CS2 maps dir
-node scripts/extract-map-callouts.mjs de_mirage       # specific map(s)
-node scripts/extract-map-callouts.mjs de_mirage --print
-CS2_DIR=/path/to/Counter-Strike\ Global\ Offensive node scripts/extract-map-callouts.mjs
-```
+- **Render export**: `Source2Viewer-CLI -i maps/<map>.vpk --vpk_filepath maps/<map>/world.vwrld_c -d --gltf_export_format glb`.
+  Positions are metres, and **source (x, y, z) = (gltf.z, gltf.x, gltf.y) / 0.0254**
+  after node matrices. Only positions are read, streamed per accessor
+  (`lib-glb.mjs`) — the file is mostly UVs and tangents.
+- **Classification by node name** (materials are not exported; aggregate names
+  carry the material, `n0_lr0_agg_merge_<material>_N`). Dropped: light
+  blockers (`blocklight`, `_bl_mesh`), decals and overlays, `additive`,
+  `blocker`, `fog_card`, tool textures, sky/skybox props, clips, game-mode
+  entity meshes (`^retake_`), and effect cards — `dust_<digits>` light shafts
+  (mirage's `nomerge<N>_dust_002` are 700–1700u slanted sheets), light shafts,
+  god rays, fog/haze/mist/smoke/steam. Foliage and see-through flags come from
+  the name too (`tree|branch|leaf|palm|…` minus `bark|trunk|blend|ground`;
+  `fence|grate|wire|glass|window|water|…` minus `shutter|sill|frame`).
+- **Cleanup**: weld by exact position (`generatePositionRemap`), drop triangles
+  farther than 2048u (XY) from every nav area, drop connected pieces under 12u.
+- **Simplify** with meshoptimizer at 3u absolute error, borders locked. Over
+  the 1M-triangle target (only rush_001 so far) it escalates: foliage is
+  vertex-clustered (leaf cards are two-triangle pieces edge collapse cannot
+  touch), then borders unlock except on vertices of walkable floors, then the
+  error doubles. Over 1.5M triangles or 64 MB it fails rather than ship — the
+  map then lands in `failed_view`, not in `failed`.
+- **Tessellate** every edge over 256u (shared midpoints, no T-junctions) so
+  `h` interpolates sanely along a wall spanning two floors.
+- **floorZ**: the highest nav area at or below `z + 8` within 48u (XY) of the
+  vertex; failing that the nearest one within 1024u, flagged outside; failing
+  that NaN. Nav is `maps/<map>.nav` (v36.1 on every official map), parsed by
+  `lib-nav.mjs`, which only accepts version 36 with exactly one area per
+  polygon, found within 4 KB after the polygons (every real nav: 138–144
+  bytes). Anything else — a truncated file "parses" to a one-area list by
+  shape alone — throws `NavError`, and the floors come from collision
+  instead: up-facing collision triangles no player clip covers. That trims
+  *less* than the nav would, never more; the run logs `NAV REJECTED` for it,
+  and a map with no nav at all takes the same path quietly.
 
-It decompiles `maps/<map>/entities/default_ents.vents_c`, keeps the
-`env_cs_place` blocks, and recovers each volume's box from the `.vmdl` its
-`model` points at — the vertex min/max under `position$0`, translated by the
-entity's `origin`. Output lands in `.cache/callouts/` (gitignored).
+Measured on build 25537370 (Apple M-series; the linux image produces
+byte-identical files):
 
-> **⚠ The same coordinate trap as the meshes.** The numbers in the lump and the
-> vmdl are already source units; nothing here should apply the glTF `0.0254`
-> inch→metre scale. The script asserts the map spans thousands of units and
-> fails loudly if it reads tens.
+| map | render triangles | view triangles | view.bin raw → gz | .tri | build |
+| --- | --- | --- | --- | --- | --- |
+| de_mirage | 1.22M | 256k (3u) | 7.5 → 3.2 MB | 124k tris, 0.8 MB gz | 4 s |
+| de_nuke | 3.56M | 649k (3u) | 17.1 → 5.4 MB | 175k tris, 1.0 MB gz | 13 s |
+| rush_001 | 14.45M | 723k (6u, 20 chunks) | 18.2 → 6.2 MB | 1.07M tris, 4.9 MB gz | 104 s |
 
-### Publishing
+The same three maps on a later build with unchanged VPKs: 0.66 s end to end
+(0.5 s of it hashing), no exports, one manifest upload.
 
-Callouts ride the mesh repo and the mesh tag, because they change on the same
-event a mesh does — Valve patched the map:
+### `.callouts.json`
 
-```bash
-node scripts/fetch-map-meshes.mjs --publish --with-callouts --tag <build>-6
-```
+`{ map, callouts: [{ name, boxes: [{ min: [x,y,z], max: [x,y,z] }] }] }` in
+source units: the map's `env_cs_place` volumes, one entry per name (a place
+can be several disjoint boxes). The standalone script also writes a
+`generatedAt`; the published file does not.
 
-Then bump the tag in **all three** consumers, which must stay in step or the
-browser, the raycaster and the API disagree about the same map:
+It is stored gzipped with `Content-Encoding: gzip` and served as
+`application/json`, which the edge re-compresses on its own. The meshes carry
+their gzip in the file instead (`.gz`), because a Worker's `fetch`
+decompresses a gzip subresponse and strips the header, and the edge does not
+re-compress `application/octet-stream` — inferno came back 18.6 MB instead of
+2.4 MB when that was tried.
 
-- `web/nuxt.config.ts` → `runtimeConfig.public.mapMeshCdn`
-- `demo-parser/internal/geometry/load.go` → `defaultMeshCDN`
-- `api/src/utility/utility-callouts.service.ts` → `DEFAULT_CDN` (or set
-  `MAP_MESH_CDN` in the deployment, which all three read)
+To check an extract against the engine: `player_kills.attacker_location` is
+the engine's own answer for the same entities, and `.callouts` in a practice
+server dumps what the running level defines.
 
-The API pulls the JSON into `public.map_callouts` on a daily job and at boot;
-force it from **Settings ▸ Application ▸ Utility ▸ Sync callouts**. A map the
-extract does not cover — anything from the workshop — is filled in instead by
-the practice plugin, which reports what it finds on map load. The published
-extract always wins where it exists.
+## Legacy
 
-### Checking a map's callouts
-
-The engine resolves the same entities itself, and writes the result into
-`player_kills.attacker_location` alongside `attacker_location_coordinates`.
-That is a few thousand labelled samples per hosted match, and it is the way to
-verify an extract before trusting anything named from it. In a practice server,
-`.callouts` dumps what the running level says its areas are.
-
----
-
-## Keeping it small
-
-- Use the **collision/physics** mesh, never the render mesh.
-- The big maps (inferno, train, edin) have dense collision soups. If size/perf
-  matters, run a **weld + simplify** pass (Blender, `meshoptimizer`,
-  `gltf-transform simplify`) before writing the `.tri`.
-- The wire is the real budget: serve `.tri` with gzip (≈5–6× smaller). Converting
-  to a Draco-compressed indexed glb is the long-term win if we outgrow `.tri`.
-
-## Hosting & distribution
-
-Meshes are **not** shipped in the app repo or the container. They live in a
-dedicated repo, [`5stackgg/replay-map-meshes`](https://github.com/5stackgg/replay-map-meshes),
-and are served over a CDN so every install fetches them once.
-
-- The app reads the CDN base from `runtimeConfig.public.mapMeshCdn`
-  (`nuxt.config.ts`), default
-  `https://cdn.jsdelivr.net/gh/5stackgg/replay-map-meshes@<build>`. Override with
-  `NUXT_PUBLIC_MAP_MESH_CDN` to point at `cdn.5stack.gg` (Cloudflare R2) later —
-  no code change.
-- jsDelivr serves `.tri` Brotli-compressed and immutable (tag-pinned): inferno is
-  18.9 MB on disk but ~2.5 MB on the wire. The browser decompresses transparently.
-- `ReplayViewer.vue` resolves `${mapMeshCdn}/<normalizedMap>.tri`
-  (`_night` stripped). If it 404s, the 3D viewer falls back to the flat radar.
-
-### Publish flow (new map or new awpy build)
-
-The script does build → decimate → commit → tag → push in one command. `--from`
-accepts ready `.tri` **or** Source 2 Viewer `.glb` exports (auto-converted,
-textures discarded); `--from-all` processes every file in the folder.
-
-```bash
-# new awpy build: rebuild everything, tag = build id
-AWPY_BUILD_ID=<new> node scripts/fetch-map-meshes.mjs --all --publish
-
-# batch ALL your Source 2 Viewer exports in one folder → one tag
-node scripts/fetch-map-meshes.mjs --from ~/cs_exports --from-all --publish --tag 17595823-2
-
-# a single map
-node scripts/fetch-map-meshes.mjs --from ~/cs_exports de_cache --publish --tag 17595823-2
-```
-
-Then bump the tag in `mapMeshCdn` (`nuxt.config.ts`) or via
-`NUXT_PUBLIC_MAP_MESH_CDN`. The immutable URL = instant cache bust, no asset
-redeploy. The publisher refuses to reuse an existing tag for this reason.
-
-### Recommended end-to-end for "regenerate everything"
-
-1. In **Source 2 Viewer**, export each map's `world_physics.vmdl_c` as glTF
-   (`.glb`) into one folder (e.g. `~/cs_exports/`). Materials don't matter — we
-   only read positions — so the `*_world_physics_physics.glb` is what's used.
-2. One command converts every glb → source-unit `.tri`, decimates oversized ones,
-   commits + tags + pushes them all:
-   ```bash
-   node scripts/fetch-map-meshes.mjs --from ~/cs_exports --from-all --publish --tag <new>
-   ```
-3. Bump `mapMeshCdn` to `<new>`. Done — every map updated in one shot.
+Before build 24957633 the meshes came from awpy's per-build packs and were
+served from jsDelivr (`cdn.jsdelivr.net/gh/5stackgg/replay-map-meshes@<tag>`),
+capped under its 20 MiB per-file limit. That path is retired;
+`scripts/fetch-map-meshes.mjs` is kept only for it, and the demo parser's tests
+still read their fixtures from the old `replay-map-meshes` repo.

@@ -986,7 +986,8 @@
   "elo_change_badge": {
     "comp": "COMP",
     "wingman": "WINGMAN",
-    "duel": "DUEL"
+    "duel": "DUEL",
+    "rush": "RUSH"
   },
   "render_queue_status": {
     "queued": "En cola",
@@ -1968,7 +1969,7 @@
           "order_hint": "Cada capa prevalece sobre la anterior.",
           "layers": {
             "type": "Tipo de partida",
-            "type_note": "Competitive, Wingman, Duel",
+            "type_note": "Competitive, Wingman, Duel, Rush",
             "lan_note": "solo regiones LAN",
             "global_note": "todas las partidas",
             "plugin": "Cvars del plugin",
@@ -3561,6 +3562,7 @@
         "competitive": "Competitivo",
         "wingman": "Wingman",
         "duel": "Duelo",
+        "rush": "Rush",
         "scrimmage": "Scrim",
         "premier": "Premier",
         "faceit": "Faceit"
@@ -4572,6 +4574,7 @@
         "duration": "{seconds}s",
         "requested_by": "Solicitado por",
         "capped": "Se muestran las primeras {shown} filas de {total}.",
+        "caveats": "Advertencias ({count})",
         "count_broken": "{count} rotos",
         "count_moved": "{count} movidos",
         "count_unsimulatable": "{count} no simulables",
@@ -6679,6 +6682,7 @@
           "description": "Número de rondas que se juegan antes de que los equipos cambien de bando.",
           "placeholder": "Selecciona las rondas máximas"
         },
+        "rush_fixed_rules": "Rush siempre se juega a 8 rondas ganadas, sin prórroga ni ronda a cuchillo.",
         "region": {
           "title": "Ajustes de región",
           "lan_match": "Partida LAN",
@@ -7429,7 +7433,7 @@
         "cam_chase": "SEGUIR",
         "cam_chase_tip": "Sigue al jugador seleccionado",
         "roof": "TECHOS",
-        "roof_tip": "Corte de techos: el centro es automático (techos fuera, acción visible). Arriba = mostrar más, abajo = cortar más, máximo = mapa completo.",
+        "roof_tip": "Corte de techos: oculta los techos y recorta las paredes para que la acción se vea. Abajo = corte más bajo (planta), arriba = paredes más altas, máximo = mapa completo.",
         "play_by_play": "JUGADA A JUGADA",
         "play_by_play_tip": "Muestra el registro de eventos jugada a jugada de la ronda",
         "more": "Más opciones",
@@ -7883,7 +7887,13 @@
     },
     "official": "Mapas oficiales",
     "workshop": "Mapas de Workshop",
-    "active_duty": "Active Duty"
+    "active_duty": "Active Duty",
+    "radar_room": {
+      "label": "Sala",
+      "auto": "Automático",
+      "room": "Sala {name}",
+      "full_map": "Mapa completo"
+    }
   },
   "region": {
     "form": {
@@ -7906,6 +7916,10 @@
       "duel": {
         "title": "Duelo",
         "description": "Una experiencia competitiva de 1 contra 1, perfecta para practicar la habilidad individual"
+      },
+      "rush": {
+        "title": "Rush",
+        "description": "Partidas 3v3 de ritmo rápido, sala a sala, donde cada ronda ganada hace avanzar el combate"
       }
     },
     "cancel_matchmaking": "Cancelar matchmaking",
@@ -7997,6 +8011,7 @@
     "updating_to": "Actualizando a {version}",
     "update_to_version": "Actualizar a {version}",
     "validate_gamedata": "Validar gamedata",
+    "build_map_assets": "Generar recursos de mapas",
     "note_label": "Nota:",
     "one_cpu_core": "1 núcleo de CPU",
     "cpu_reservation_note": " {cores} se reserva para el sistema en cada nodo para mantenerlo fluido.",
@@ -8095,6 +8110,7 @@
       "cs_updating": "Se está actualizando CS2 en el nodo",
       "csgo_installing": "Se está instalando CS:GO en el nodo",
       "validating_gamedata": "Validando las firmas de gamedata en el nodo",
+      "building_map_assets": "Generando mallas y callouts de mapas para la build de CS2 de este nodo",
       "ports_updated": "Puertos del nodo actualizados",
       "ports_removed": "Puertos del nodo eliminados",
       "made_gpu_only": "Nodo configurado como solo GPU",

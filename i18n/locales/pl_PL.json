@@ -986,7 +986,8 @@
   "elo_change_badge": {
     "comp": "COMP",
     "wingman": "WINGMAN",
-    "duel": "DUEL"
+    "duel": "DUEL",
+    "rush": "RUSH"
   },
   "render_queue_status": {
     "queued": "W kolejce",
@@ -1968,7 +1969,7 @@
           "order_hint": "Każda warstwa ma pierwszeństwo przed poprzednią.",
           "layers": {
             "type": "Typ meczu",
-            "type_note": "Competitive, Wingman, Duel",
+            "type_note": "Competitive, Wingman, Duel, Rush",
             "lan_note": "tylko regiony LAN",
             "global_note": "każdy mecz",
             "plugin": "Cvary wtyczki",
@@ -3561,6 +3562,7 @@
         "competitive": "Competitive",
         "wingman": "Wingman",
         "duel": "Duel",
+        "rush": "Rush",
         "scrimmage": "Scrim",
         "premier": "Premier",
         "faceit": "Faceit"
@@ -4572,6 +4574,7 @@
         "duration": "{seconds}s",
         "requested_by": "Zlecił",
         "capped": "Pokazano pierwsze {shown} wierszy z {total}.",
+        "caveats": "Zastrzeżenia ({count})",
         "count_broken": "zepsutych: {count}",
         "count_moved": "przesuniętych: {count}",
         "count_unsimulatable": "niesymulowalnych: {count}",
@@ -6679,6 +6682,7 @@
           "description": "Liczba rund rozegranych przed zamianą stron przez drużyny",
           "placeholder": "Wybierz maksymalną liczbę rund"
         },
+        "rush_fixed_rules": "Rush zawsze toczy się do 8 wygranych rund, bez dogrywki i bez knife roundu.",
         "region": {
           "title": "Ustawienia regionu",
           "lan_match": "Mecz LAN",
@@ -7429,7 +7433,7 @@
         "cam_chase": "POGOŃ",
         "cam_chase_tip": "Podążaj za śledzonym graczem",
         "roof": "DACH",
-        "roof_tip": "Przycięcie dachu — środek to tryb automatyczny (dachy wyłączone, akcja widoczna). W górę = odsłoń więcej, w dół = przytnij więcej, maks. = pełna mapa",
+        "roof_tip": "Przycięcie dachu — ukrywa dachy i skraca ściany, aby akcja była widoczna. W dół = niższe cięcie (rzut piętra), w górę = wyższe ściany, maks. = pełna mapa",
         "play_by_play": "PRZEBIEG RUNDY",
         "play_by_play_tip": "Pokaż dziennik zdarzeń rundy krok po kroku",
         "more": "Więcej opcji",
@@ -7883,7 +7887,13 @@
     },
     "official": "Mapy oficjalne",
     "workshop": "Mapy z Workshopu",
-    "active_duty": "Active Duty"
+    "active_duty": "Active Duty",
+    "radar_room": {
+      "label": "Pokój",
+      "auto": "Automatycznie",
+      "room": "Pokój {name}",
+      "full_map": "Cała mapa"
+    }
   },
   "region": {
     "form": {
@@ -7906,6 +7916,10 @@
       "duel": {
         "title": "Duel",
         "description": "Rywalizacyjne doświadczenie 1 na 1, idealne do trenowania indywidualnych umiejętności"
+      },
+      "rush": {
+        "title": "Rush",
+        "description": "Dynamiczne mecze 3v3 toczone pokój po pokoju – każda wygrana runda przesuwa walkę naprzód"
       }
     },
     "cancel_matchmaking": "Anuluj matchmaking",
@@ -7997,6 +8011,7 @@
     "updating_to": "Aktualizowanie do {version}",
     "update_to_version": "Zaktualizuj do {version}",
     "validate_gamedata": "Zweryfikuj gamedata",
+    "build_map_assets": "Zbuduj zasoby map",
     "note_label": "Uwaga:",
     "one_cpu_core": "1 rdzeń CPU",
     "cpu_reservation_note": " {cores} jest zarezerwowane dla systemu na każdym węźle, aby zachować jego responsywność",
@@ -8095,6 +8110,7 @@
       "cs_updating": "CS2 jest aktualizowane na węźle",
       "csgo_installing": "CS:GO jest instalowane na węźle",
       "validating_gamedata": "Weryfikowanie sygnatur gamedata na węźle",
+      "building_map_assets": "Budowanie siatek map i callouts dla buildu CS2 tego węzła",
       "ports_updated": "Porty węzła zaktualizowane",
       "ports_removed": "Porty węzła usunięte",
       "made_gpu_only": "Węzeł ustawiony jako tylko GPU",

@@ -73,7 +73,23 @@ export function resolveCli() {
  * `extra` carries export flags such as --gltf_export_format.
  */
 export function decompile(cli, vpk, filepath, out, extra = []) {
-  execFileSync(cli, ["-i", vpk, "--vpk_filepath", filepath, "-o", out, "-d", ...extra], {
-    stdio: "pipe",
-  });
+  // stdout is a line per written file -- rush_001's entities folder alone is
+  // enough to overflow execFileSync's 1 MB buffer (ENOBUFS) -- so only stderr
+  // is kept, for the error message.
+  try {
+    execFileSync(cli, ["-i", vpk, "--vpk_filepath", filepath, "-o", out, "-d", ...extra], {
+      stdio: ["ignore", "ignore", "pipe"],
+      maxBuffer: 64 * 1024 * 1024,
+    });
+  } catch (error) {
+    const stderr = String(error.stderr ?? "")
+      .trim()
+      .split("\n")
+      .slice(-3)
+      .join(" | ");
+    const how = error.status != null ? `exit ${error.status}` : (error.signal ?? error.code);
+    throw new Error(
+      `Source2Viewer-CLI failed on ${filepath} (${how})${stderr ? `: ${stderr}` : ""}`,
+    );
+  }
 }

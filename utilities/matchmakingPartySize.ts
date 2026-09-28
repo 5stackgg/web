@@ -7,6 +7,7 @@ import { e_match_types_enum } from "~/generated/zeus";
 export const EXPECTED_PLAYERS: Partial<Record<e_match_types_enum, number>> = {
   [e_match_types_enum.Duel]: 2,
   [e_match_types_enum.Wingman]: 4,
+  [e_match_types_enum.Rush]: 6,
   [e_match_types_enum.Competitive]: 10,
 };
 
@@ -15,7 +16,8 @@ export const EXPECTED_PLAYERS: Partial<Record<e_match_types_enum, number>> = {
  * (half the match, so the other half gets filled by matchmaking) or fills the
  * entire match on its own (both lineups, split in-house).
  *
- * Duel (2): 1 or 2 · Wingman (4): 1-2 or 4 · Competitive (10): 1-5 or 10
+ * Duel (2): 1 or 2 · Wingman (4): 1-2 or 4 · Rush (6): 1-3 or 6 ·
+ * Competitive (10): 1-5 or 10
  */
 export function canPartyQueue(
   type: e_match_types_enum,

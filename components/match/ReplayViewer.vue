@@ -1,5 +1,13 @@
 <script lang="ts" setup>
-import { computed, ref, watch, onMounted, onUnmounted, nextTick } from "vue";
+import {
+  computed,
+  ref,
+  shallowRef,
+  watch,
+  onMounted,
+  onUnmounted,
+  nextTick,
+} from "vue";
 import { useI18n } from "vue-i18n";
 import {
   weaponIconPath,
@@ -73,14 +81,23 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "~/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+} from "~/components/ui/select";
 import ReplayLineupTeam from "~/components/match/ReplayLineupTeam.vue";
 import RoundSelector from "~/components/match/RoundSelector.vue";
 import RadarCallouts from "~/components/common/RadarCallouts.vue";
-import { meshUrlForMap } from "~/utilities/mapAssets";
+import { hasMeshForMap, replaySceneKey } from "~/utilities/mapAssets";
 import { useMapCallouts } from "~/composables/useMapCallouts";
 import {
   RADAR_CANVAS,
+  pickRadarVolume,
+  radarVolumeLabel,
   useRadarProjection,
+  type RadarPoint,
 } from "~/composables/useRadarProjection";
 import Replay3DLite from "~/components/match/Replay3DLite.vue";
 import ReplayChrome from "~/components/match/ReplayChrome.vue";
@@ -291,17 +308,55 @@ const normalizedMap = computed(() =>
     .replace(/_night$/, ""),
 );
 
-const { calibration, radarSrc, projectCalibrated } = useRadarProjection(
-  normalizedMap,
-  { radarFailed },
-);
+// Rush plays each round in one room with a radar of its own. The room follows
+// the players still alive and holds while nobody is, so the board does not fall
+// back to the whole map between rounds.
+const roomPoints = shallowRef<RadarPoint[]>([]);
 
-// Lightweight collision mesh (awpy .tri) for 3D-lite, served from the CDN
-// (config.public.mapMeshCdn, build-tag pinned + Brotli'd). The 3D renderer
-// falls back to the flat radar plane when this 404s (map not yet generated).
-const meshCdn = useRuntimeConfig().public.mapMeshCdn;
-const mapMeshUrl = computed(() =>
-  meshUrlForMap(meshCdn as string, normalizedMap.value ?? ""),
+const {
+  calibration,
+  radarSrc,
+  projectCalibrated,
+  volumes: radarVolumes,
+  activeVolume,
+  volumeOverride,
+} = useRadarProjection(normalizedMap, {
+  radarFailed,
+  volumePoints: () => roomPoints.value,
+});
+
+watch(normalizedMap, () => {
+  roomPoints.value = [];
+});
+
+const AUTO_ROOM = "auto";
+
+// 3D-lite resolves the map's mesh from the published asset manifest (view mesh,
+// else the collision .tri); config.public.mapMeshCdn, when set, pins it to one
+// base URL instead. The renderer falls back to the flat radar plane when the
+// map has no mesh.
+const meshCdn = (useRuntimeConfig().public.mapMeshCdn as string) || "";
+
+// Replay3DLite reads the radar and its scale once, when it builds the scene, so
+// a room change has to rebuild it -- unless it is drawing the map mesh, which
+// never looks at the radar and would be fetched again by every rebuild.
+const meshAvailable = ref<boolean | null>(null);
+watch(
+  normalizedMap,
+  async (name) => {
+    meshAvailable.value = null;
+    if (!import.meta.client || !name) {
+      return;
+    }
+    const found = await hasMeshForMap(meshCdn, name);
+    if (name === normalizedMap.value) {
+      meshAvailable.value = found;
+    }
+  },
+  { immediate: true },
+);
+const replay3dKey = computed(() =>
+  replaySceneKey(normalizedMap.value, meshAvailable.value, radarSrc.value),
 );
 
 // Per-map ceiling boost (source-z units) added to the auto-detected ceiling, as
@@ -310,8 +365,9 @@ const mapMeshUrl = computed(() =>
 // table is usually empty.
 const CEILING_BOOST: Record<string, number> = {};
 
-// Auto-detect the playable ceiling for the 3D roof-cut. Source-z units; the 3D
-// viewer anchors the ROOF slider's midpoint here so it just works by default.
+// Auto-detect the playable ceiling for the 3D roof-cut on maps that only have a
+// collision .tri (a view mesh cuts per floor and ignores this). Source-z units;
+// the 3D viewer anchors the ROOF slider's midpoint here.
 //
 // A flat 99th-percentile of player heights breaks on multi-level maps: high but
 // low-traffic areas (overpass heaven/bridge, dust2 upper tunnels / A platform /
@@ -347,7 +403,10 @@ const autoCeilingZ = computed<number | null>(() => {
   }
 
   const ref = Math.max(p99, isFinite(bandMax) ? bandMax : p99);
-  const base = ref - 90; // below standing head — cuts walls lower
+  // `ref` is a FEET height, so this lands 90u under the highest floor rather
+  // than under a head. Left as is: the .tri cull margin and slider are tuned to
+  // it, and correcting it would reveal 160u more of every .tri-only map.
+  const base = ref - 90;
   return base + (CEILING_BOOST[normalizedMap.value] ?? 0);
 });
 
@@ -1043,6 +1102,20 @@ const interpolatedPlayers = computed(() => {
   }
   return result;
 });
+
+watch(
+  [interpolatedPlayers, () => radarVolumes.value.length],
+  ([players, rooms]) => {
+    if (!rooms) {
+      return;
+    }
+    const alive = players.filter((player) => player.alive);
+    if (pickRadarVolume({ volumes: radarVolumes.value }, alive)) {
+      roomPoints.value = alive;
+    }
+  },
+  { immediate: true },
+);
 
 // Firing tracers for the 3D view. A shot carries its exact muzzle origin
 // (eye_*) + view angles + outcome from the parser; we draw a brief line
@@ -3820,8 +3893,9 @@ function openReplayPopout() {
 // ONE identical chrome. Only the map underneath differs.
 // ===================================================================
 const camMode = ref<"orbit" | "top" | "follow">("orbit");
-// 3D roof cut (0..100). 50 = auto-detected playable ceiling (default), 0 = floor,
-// 100 = full map. Anchored to autoCeilingZ in the 3D viewer.
+// 3D roof cut (0..100), 100 = full map. On a view mesh it is a wall height
+// above each floor (50 ≈ just over head height); on a .tri-only build 50 is
+// autoCeilingZ and 0 the bottom of the map.
 const ceilingCut = ref(50);
 const heatOn = ref(false);
 const showPbpPanel = ref(true);
@@ -5494,9 +5568,11 @@ watch(overlayMode, (on) => {
              over it at higher z. -->
       <Transition name="mapfade">
         <Replay3DLite
-          v-if="viewMode === '3d' && radarSrc && calibration"
+          v-if="viewMode === '3d' && radarSrc && calibration && replay3dKey"
+          :key="replay3dKey"
           class="z-[1]"
-          :map-mesh-url="mapMeshUrl"
+          :map-name="meshAvailable ? normalizedMap : null"
+          :mesh-cdn="meshCdn"
           :radar-src="radarSrc"
           :resolution="calibration.resolution"
           :players="playersForRender"
@@ -5598,6 +5674,51 @@ watch(overlayMode, (on) => {
         :has-callouts="hasCallouts"
         :on-toggle-callouts="() => (showCallouts = !showCallouts)"
       />
+
+      <div
+        v-if="radarVolumes.length"
+        class="absolute left-1/2 z-[21] -translate-x-1/2"
+        :class="mobileChrome ? 'top-[60px]' : 'top-[78px]'"
+      >
+        <Select
+          :model-value="volumeOverride ?? AUTO_ROOM"
+          @update:model-value="
+            (value) =>
+              (volumeOverride = value === AUTO_ROOM ? null : String(value))
+          "
+        >
+          <SelectTrigger
+            class="h-7 w-auto gap-2 border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--card)/0.85)] px-2.5 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] backdrop-blur-sm"
+            :aria-label="t('maps.radar_room.label')"
+          >
+            <span>
+              {{
+                activeVolume
+                  ? radarVolumeLabel(activeVolume.name, t)
+                  : t("maps.radar_room.full_map")
+              }}
+            </span>
+            <span
+              v-if="volumeOverride === null"
+              class="text-muted-foreground"
+            >
+              {{ t("maps.radar_room.auto") }}
+            </span>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem :value="AUTO_ROOM">
+              {{ t("maps.radar_room.auto") }}
+            </SelectItem>
+            <SelectItem
+              v-for="volume of radarVolumes"
+              :key="volume.name"
+              :value="volume.name"
+            >
+              {{ radarVolumeLabel(volume.name, t) }}
+            </SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
 
       <!-- Rotate gate: the stage is unusable at phone-portrait widths, so we
            ask the user to turn the device sideways instead of cramming the

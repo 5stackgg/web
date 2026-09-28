@@ -13,7 +13,7 @@ const isMobile = useMediaQuery("(max-width: 768px)");
 
 <template>
   <HoverCard
-    v-if="snapshotElo || competitiveElo || wingmanElo || duelElo"
+    v-if="snapshotElo || competitiveElo || wingmanElo || duelElo || rushElo"
     :open-delay="80"
     :close-delay="140"
   >
@@ -53,7 +53,7 @@ const isMobile = useMediaQuery("(max-width: 768px)");
         </span>
         <span :class="headerCountClasses">
           <template v-if="snapshotElo">{{ $t("player.at_match_start") }}</template>
-          <template v-else>{{ activeCount }}/3</template>
+          <template v-else>{{ activeCount }}/{{ eloRows.length }}</template>
         </span>
       </header>
 
@@ -154,7 +154,7 @@ import {
   type RankTier,
 } from "~/utils/eloTier";
 
-type ModeKey = "competitive" | "wingman" | "duel";
+type ModeKey = "competitive" | "wingman" | "duel" | "rush";
 
 function bracketProgress(elo: number): number {
   if (elo < ELO_BASELINE) return 0;
@@ -187,6 +187,7 @@ export default {
         competitive?: number;
         wingman?: number;
         duel?: number;
+        rush?: number;
       },
       required: false,
     },
@@ -195,6 +196,7 @@ export default {
         competitive?: number;
         wingman?: number;
         duel?: number;
+        rush?: number;
       },
       required: false,
     },
@@ -227,9 +229,16 @@ export default {
     duelElo(): number | undefined {
       return this.elo?.duel;
     },
+    rushElo(): number | undefined {
+      return this.elo?.rush;
+    },
     modeKey(): ModeKey {
       const normalized = (this.type ?? "").toLowerCase();
-      if (normalized === "wingman" || normalized === "duel") {
+      if (
+        normalized === "wingman" ||
+        normalized === "duel" ||
+        normalized === "rush"
+      ) {
         return normalized;
       }
       // Premier / Faceit / unknown types rank on the competitive ladder.
@@ -240,7 +249,8 @@ export default {
         this.elo?.[this.modeKey] ??
         this.competitiveElo ??
         this.wingmanElo ??
-        this.duelElo
+        this.duelElo ??
+        this.rushElo
       );
     },
     snapshotElo(): number | null {
@@ -254,15 +264,19 @@ export default {
       return this.displayElo ? tierFor(this.displayElo) : RANK_TIERS.at(-1)!;
     },
     activeCount(): number {
-      return [this.competitiveElo, this.wingmanElo, this.duelElo].filter(
-        Boolean,
-      ).length;
+      return [
+        this.competitiveElo,
+        this.wingmanElo,
+        this.duelElo,
+        this.rushElo,
+      ].filter(Boolean).length;
     },
     modeLabels(): Record<ModeKey, string> {
       return {
         competitive: this.$t("pages.leaderboard.match_types.competitive"),
         wingman: this.$t("pages.leaderboard.match_types.wingman"),
         duel: this.$t("pages.leaderboard.match_types.duel"),
+        rush: this.$t("pages.leaderboard.match_types.rush"),
       };
     },
     // Snapshot mode swaps the all-time-peak footer for the player's live
@@ -320,6 +334,13 @@ export default {
           label: this.modeLabels.duel,
           value: this.duelElo,
           peak: this.peak?.duel,
+        },
+        {
+          key: "rush",
+          mode: this.modeLabels.rush,
+          label: this.modeLabels.rush,
+          value: this.rushElo,
+          peak: this.peak?.rush,
         },
       ];
 

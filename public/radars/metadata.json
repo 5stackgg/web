@@ -1,5 +1,5 @@
 {
-  "_comment": "Per-map radar calibration sourced from boltobserv (github.com/boltgolt/boltobserv) src/maps/<map>/meta.json5. Each entry: resolution = world units per pixel of the 1024px radar PNG. offset = world units from the radar's bottom-left corner to world origin (0,0). splits (optional) handle multi-level maps (Nuke/Vertigo) — when player Z falls within bounds, apply the percentage offset on the radar so they appear on the correct half. zRange is the playable Z range for the main level.",
+  "_comment": "Per-map radar calibration sourced from boltobserv (github.com/boltgolt/boltobserv) src/maps/<map>/meta.json5. Each entry: resolution = world units per pixel of the 1024px radar PNG. offset = world units from the radar's bottom-left corner to world origin (0,0). splits (optional) handle multi-level maps (Nuke/Vertigo) — when player Z falls within bounds, apply the percentage offset on the radar so they appear on the correct half. zRange is the playable Z range for the main level. volumes (optional, written by scripts/extract-map-radars.mjs from Valve's own overview) are per-room radars: each has its own resolution + offset for <map>_<name>.png and the world-space bounds of its cs_minimap_volume, and the viewer swaps to the room the players stand in.",
   "de_ancient": {
     "resolution": 4.26,
     "offset": { "x": 2590, "y": 2520 },
@@ -60,6 +60,147 @@
         "bounds": { "top": 11550, "bottom": 11000 },
         "offset": { "x": 0.2, "y": -42.6 },
         "zRange": { "min": 11550, "max": 11680 }
+      }
+    ]
+  },
+  "rush_001": {
+    "resolution": 18.910156,
+    "offset": { "x": 11240, "y": 9420 },
+    "volumes": [
+      {
+        "name": "convoy",
+        "resolution": 4.562499,
+        "offset": { "x": 6720, "y": 10623.999 },
+        "bounds": { "minX": -6720, "maxX": -2048, "minY": -9024, "maxY": -7552 }
+      },
+      {
+        "name": "room101",
+        "resolution": 1.78125,
+        "offset": { "x": -1376, "y": -1696 },
+        "bounds": { "minX": 1376, "maxX": 3200, "minY": 1888, "maxY": 3328 }
+      },
+      {
+        "name": "room102",
+        "resolution": 1.974121,
+        "offset": { "x": -1263, "y": 2862.5 },
+        "bounds": {
+          "minX": 1262.5,
+          "maxX": 3284,
+          "minY": -2675.5,
+          "maxY": -1028.5
+        }
+      },
+      {
+        "name": "room103",
+        "resolution": 2.369141,
+        "offset": { "x": -1263, "y": 6263 },
+        "bounds": {
+          "minX": 1262.5,
+          "maxX": 3688.5,
+          "minY": -5874,
+          "maxY": -4227
+        }
+      },
+      {
+        "name": "room104",
+        "resolution": 2.484375,
+        "offset": { "x": -1744, "y": -5292 },
+        "bounds": { "minX": 1744, "maxX": 4288, "minY": 5848, "maxY": 7280 }
+      },
+      {
+        "name": "room201",
+        "resolution": 2.15625,
+        "offset": { "x": 1748, "y": 6016 },
+        "bounds": { "minX": -1688, "maxX": 400, "minY": -6016, "maxY": -3808 }
+      },
+      {
+        "name": "room202",
+        "resolution": 1.59375,
+        "offset": { "x": 4656, "y": 5600 },
+        "bounds": { "minX": -4608, "maxX": -3072, "minY": -5600, "maxY": -3968 }
+      },
+      {
+        "name": "room203",
+        "resolution": 2.647462,
+        "offset": { "x": 9400, "y": -1167.999 },
+        "bounds": { "minX": -9400, "maxX": -6689, "minY": 1624, "maxY": 3424 }
+      },
+      {
+        "name": "room204",
+        "resolution": 2.90625,
+        "offset": { "x": 10880, "y": 6112 },
+        "bounds": {
+          "minX": -10880,
+          "maxX": -7904,
+          "minY": -5312,
+          "maxY": -3936
+        }
+      },
+      {
+        "name": "room205",
+        "resolution": 2.375,
+        "offset": { "x": 2336, "y": 2736 },
+        "bounds": { "minX": -2336, "maxX": 96, "minY": -2304, "maxY": -736 }
+      },
+      {
+        "name": "room206",
+        "resolution": 2.90625,
+        "offset": { "x": 6008, "y": 2968 },
+        "bounds": { "minX": -6008, "maxX": -3032, "minY": -2288, "maxY": -672 }
+      },
+      {
+        "name": "room207",
+        "resolution": 3.15625,
+        "offset": { "x": 10560, "y": 3456 },
+        "bounds": { "minX": -10560, "maxX": -7328, "minY": -2848, "maxY": -832 }
+      },
+      {
+        "name": "room208",
+        "resolution": 2.453125,
+        "offset": { "x": 2464, "y": -1092 },
+        "bounds": { "minX": -2464, "maxX": 48, "minY": 1640, "maxY": 3056 }
+      },
+      {
+        "name": "room209",
+        "resolution": 1.59375,
+        "offset": { "x": 5504, "y": -1664 },
+        "bounds": { "minX": -5504, "maxX": -3872, "minY": 1920, "maxY": 3040 }
+      },
+      {
+        "name": "room210",
+        "resolution": 3.859375,
+        "offset": { "x": 10088, "y": -3472 },
+        "bounds": { "minX": -9984, "maxX": -6240, "minY": 3472, "maxY": 7424 }
+      },
+      {
+        "name": "room211",
+        "resolution": 2.40625,
+        "offset": { "x": 3104, "y": -4624 },
+        "bounds": { "minX": -3104, "maxX": -640, "minY": 5184, "maxY": 6528 }
+      },
+      {
+        "name": "room212",
+        "resolution": 2.297851,
+        "offset": { "x": 6176, "y": -5243.001 },
+        "bounds": { "minX": -6176, "maxX": -3823, "minY": 5920, "maxY": 6920 }
+      },
+      {
+        "name": "room301",
+        "resolution": 2.59375,
+        "offset": { "x": -4608, "y": -3040 },
+        "bounds": { "minX": 4608, "maxX": 7264, "minY": 3456, "maxY": 5280 }
+      },
+      {
+        "name": "room401",
+        "resolution": 2.5,
+        "offset": { "x": -4544, "y": 3088 },
+        "bounds": { "minX": 4544, "maxX": 7104, "minY": -2976, "maxY": -640 }
+      },
+      {
+        "name": "roomparty",
+        "resolution": 1.585938,
+        "offset": { "x": -454, "y": 440.001 },
+        "bounds": { "minX": 624, "maxX": 1908.2, "minY": -440, "maxY": 1184 }
       }
     ]
   }

@@ -22,13 +22,18 @@
 // a DecompressionStream). Callouts stay plain `.json`, where `Content-Encoding`
 // DOES survive because the edge compresses JSON itself (8,971 -> 1,295 bytes).
 //
+// THIS IS THE MANUAL PATH. The automatic one is build-map-assets.mjs, which
+// also writes the manifest and moves maps/latest.json; this script only puts
+// files under maps/<build>/ and leaves both alone.
+//
 //   S3_ACCESS_KEY=... S3_SECRET=... node scripts/publish-map-assets.mjs --build 24957633
 //   ... --build 24957633 --dry-run
-import { AwsClient } from "aws4fetch";
+import { createHash } from "node:crypto";
 import { gzipSync } from "node:zlib";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { bucketFromEnv } from "./lib-bucket.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -41,17 +46,15 @@ const value = (flag, fallback) => {
 
 const BUILD = value("--build", process.env.CS2_BUILD ?? "");
 const DRY = has("--dry-run");
-const BUCKET = process.env.BUCKET_NAME || "5stack";
-const ENDPOINT = process.env.S3_ENDPOINT || "s3.us-east-005.backblazeb2.com";
-const ACCESS = process.env.S3_ACCESS_KEY;
-const SECRET = process.env.S3_SECRET;
 
 if (!BUILD || !/^\d+$/.test(BUILD)) {
   console.error("--build <cs2 build id> is required (digits only)");
   process.exit(1);
 }
 
-if (!DRY && (!ACCESS || !SECRET)) {
+const bucket = DRY ? null : bucketFromEnv();
+
+if (!DRY && !bucket) {
   console.error(
     "S3_ACCESS_KEY and S3_SECRET are required.\n" +
       "  Locally they are in web/.dev.vars; in prod they are worker secrets.",
@@ -59,14 +62,10 @@ if (!DRY && (!ACCESS || !SECRET)) {
   process.exit(1);
 }
 
-const client = DRY
-  ? null
-  : new AwsClient({ accessKeyId: ACCESS, secretAccessKey: SECRET, service: "s3" });
-
 const sources = [
   {
     dir: join(root, ".cache", "meshes"),
-    match: /\.tri$/,
+    match: /\.(tri|view\.bin)$/,
     // The gzip IS the artifact here, not a transfer encoding.
     suffix: ".gz",
     type: "application/gzip",
@@ -80,29 +79,6 @@ const sources = [
     encoding: "gzip",
   },
 ];
-
-async function put(key, body, contentType, encoding) {
-  const url = `https://${BUCKET}.${ENDPOINT}/${key}`;
-  const signed = await client.sign(url, {
-    method: "PUT",
-    headers: {
-      "Content-Type": contentType,
-      ...(encoding ? { "Content-Encoding": encoding } : {}),
-      "Content-Length": String(body.length),
-    },
-    body,
-  });
-
-  const response = await fetch(signed.url, {
-    method: "PUT",
-    headers: signed.headers,
-    body,
-  });
-
-  if (!response.ok) {
-    throw new Error(`${response.status} ${await response.text().catch(() => "")}`);
-  }
-}
 
 async function main() {
   let files = 0;
@@ -131,7 +107,25 @@ async function main() {
         continue;
       }
 
-      await put(key, packed, source.type, source.encoding);
+      // The same x-amz-meta-sha256 (of the uncompressed bytes) that
+      // build-map-assets.mjs writes, so either publisher recognises the
+      // other's file and neither ever overwrites one.
+      const sha256 = createHash("sha256").update(body).digest("hex");
+      const existing = await bucket.head(key);
+      if (existing && existing.sha256 === sha256) {
+        console.log(`  kept ${key} (already published, same sha256)`);
+        continue;
+      }
+      if (existing) {
+        throw new Error(
+          `${key} is already published -- builds are immutable, never overwritten`,
+        );
+      }
+      await bucket.put(key, packed, {
+        type: source.type,
+        encoding: source.encoding,
+        sha256,
+      });
       console.log(
         `  ${key.padEnd(46)} ${(body.length / 1e6).toFixed(1)} MB -> ${(packed.length / 1e6).toFixed(1)} MB`,
       );

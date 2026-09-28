@@ -7,6 +7,7 @@ const DEFAULT_CONFIGS: Record<string, string | null> = {
   competitive: "5stack.competitive.cfg",
   wingman: "5stack.wingman.cfg",
   duel: "5stack.duel.cfg",
+  rush: "5stack.rush.cfg",
   global: null,
 };
 

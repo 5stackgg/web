@@ -986,7 +986,8 @@
   "elo_change_badge": {
     "comp": "COMP",
     "wingman": "WINGMAN",
-    "duel": "DUEL"
+    "duel": "DUEL",
+    "rush": "RUSH"
   },
   "render_queue_status": {
     "queued": "У черзі",
@@ -1968,7 +1969,7 @@
           "order_hint": "Кожен шар має пріоритет над попереднім.",
           "layers": {
             "type": "Тип матчу",
-            "type_note": "Competitive, Wingman, Duel",
+            "type_note": "Competitive, Wingman, Duel, Rush",
             "lan_note": "лише LAN-регіони",
             "global_note": "усі матчі",
             "plugin": "Cvar плагіна",
@@ -3561,6 +3562,7 @@
         "competitive": "Рейтинговий",
         "wingman": "Wingman",
         "duel": "Дуель",
+        "rush": "Rush",
         "scrimmage": "Скрим",
         "premier": "Premier",
         "faceit": "Faceit"
@@ -4572,6 +4574,7 @@
         "duration": "{seconds}с",
         "requested_by": "Запитав",
         "capped": "Показано перші {shown} рядків із {total}.",
+        "caveats": "Застереження ({count})",
         "count_broken": "зламано: {count}",
         "count_moved": "зміщено: {count}",
         "count_unsimulatable": "не змодельовано: {count}",
@@ -6679,6 +6682,7 @@
           "description": "Кількість раундів до зміни сторін командами.",
           "placeholder": "Обери максимум раундів"
         },
+        "rush_fixed_rules": "Rush завжди грається до 8 виграних раундів, без овертайму та ножового раунду.",
         "region": {
           "title": "Налаштування регіону",
           "lan_match": "LAN-матч",
@@ -7429,7 +7433,7 @@
         "cam_chase": "ПОГОНЯ",
         "cam_chase_tip": "Слідкувати за обраним гравцем",
         "roof": "ДАХ",
-        "roof_tip": "Обрізка даху — середнє значення автоматичне (дахи вимкнені, дія видима). Вгору = показати більше, вниз = обрізати більше, максимум = вся карта.",
+        "roof_tip": "Обрізка даху — приховує дахи й обрізає стіни, щоб дію було видно. Вниз = нижчий зріз (план поверху), вгору = вищі стіни, максимум = вся карта.",
         "play_by_play": "ХІД ГРИ",
         "play_by_play_tip": "Показати журнал подій раунду",
         "more": "Більше опцій",
@@ -7883,7 +7887,13 @@
     },
     "official": "Офіційні карти",
     "workshop": "Карти майстерні",
-    "active_duty": "Активний пул"
+    "active_duty": "Активний пул",
+    "radar_room": {
+      "label": "Кімната",
+      "auto": "Авто",
+      "room": "Кімната {name}",
+      "full_map": "Уся мапа"
+    }
   },
   "region": {
     "form": {
@@ -7906,6 +7916,10 @@
       "duel": {
         "title": "Дуель",
         "description": "Змагальний формат 1 на 1, ідеальний для тренування індивідуальної майстерності"
+      },
+      "rush": {
+        "title": "Rush",
+        "description": "Динамічні матчі 3 на 3 кімната за кімнатою: кожен виграний раунд просуває бій уперед"
       }
     },
     "cancel_matchmaking": "Скасувати матчмейкінг",
@@ -7997,6 +8011,7 @@
     "updating_to": "Оновлення до {version}",
     "update_to_version": "Оновити до {version}",
     "validate_gamedata": "Перевірити gamedata",
+    "build_map_assets": "Зібрати ресурси мап",
     "note_label": "Примітка:",
     "one_cpu_core": "1 ядро CPU",
     "cpu_reservation_note": " {cores} зарезервовано для системи на кожній ноді, щоб вона залишалася відповідною.",
@@ -8095,6 +8110,7 @@
       "cs_updating": "CS2 оновлюється на ноді",
       "csgo_installing": "CS:GO встановлюється на ноді",
       "validating_gamedata": "Перевірка сигнатур gamedata на ноді",
+      "building_map_assets": "Збирання мешів мап і колаутів для збірки CS2 цього вузла",
       "ports_updated": "Порти ноди оновлено",
       "ports_removed": "Порти ноди видалено",
       "made_gpu_only": "Ноду переведено в режим лише GPU",

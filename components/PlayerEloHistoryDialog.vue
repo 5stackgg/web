@@ -31,7 +31,7 @@ import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 // buckets at wide ranges to surface the trend; this dialog stays raw
 // so every match is visible — that's the trade-off it exists for.
 
-type Mode = "all" | "Competitive" | "Wingman" | "Duel" | "Premier";
+type Mode = "all" | "Competitive" | "Wingman" | "Duel" | "Rush" | "Premier";
 type RangeKey = "7d" | "30d" | "90d" | "1y" | "all";
 
 interface EloEntry {
@@ -620,7 +620,7 @@ watch(
         selectedMode.value = "Premier";
       }
     } else if (
-      !(["all", "Competitive", "Wingman", "Duel"] as Mode[]).includes(
+      !(["all", "Competitive", "Wingman", "Duel", "Rush"] as Mode[]).includes(
         selectedMode.value,
       )
     ) {
@@ -698,6 +698,12 @@ const chartSeries = computed(() => {
         label: t("pages.leaderboard.match_types.duel"),
         history: groupBy("Duel"),
         focus: selectedMode.value === "Duel",
+      },
+      {
+        key: "Rush",
+        label: t("pages.leaderboard.match_types.rush"),
+        history: groupBy("Rush"),
+        focus: selectedMode.value === "Rush",
       },
     ];
     const visible =
@@ -844,6 +850,7 @@ const modeOptions = computed<{ key: Mode; label: string }[]>(() =>
         },
         { key: "Wingman", label: t("pages.leaderboard.match_types.wingman") },
         { key: "Duel", label: t("pages.leaderboard.match_types.duel") },
+        { key: "Rush", label: t("pages.leaderboard.match_types.rush") },
       ],
 );
 

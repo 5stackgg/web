@@ -19693,6 +19693,9 @@ export const AllTypesProps: Record<string,any> = {
 		update_v_team_stage_results_many:{
 			updates:"v_team_stage_results_updates"
 		},
+		buildMapAssets:{
+			game_server_node_id:"uuid"
+		},
 		validateGamedata:{
 			game_server_node_id:"uuid"
 		},
@@ -26413,6 +26416,7 @@ export const AllTypesProps: Record<string,any> = {
 		losses:"Int_comparison_exp",
 		losses_competitive:"Int_comparison_exp",
 		losses_duel:"Int_comparison_exp",
+		losses_rush:"Int_comparison_exp",
 		losses_wingman:"Int_comparison_exp",
 		match_map_hltv:"v_player_match_map_hltv_bool_exp",
 		match_map_hltv_aggregate:"v_player_match_map_hltv_aggregate_bool_exp",
@@ -26479,6 +26483,7 @@ export const AllTypesProps: Record<string,any> = {
 		wins:"Int_comparison_exp",
 		wins_competitive:"Int_comparison_exp",
 		wins_duel:"Int_comparison_exp",
+		wins_rush:"Int_comparison_exp",
 		wins_wingman:"Int_comparison_exp"
 	},
 	players_constraint: "enum" as const,
@@ -26596,6 +26601,7 @@ export const AllTypesProps: Record<string,any> = {
 		losses:"order_by",
 		losses_competitive:"order_by",
 		losses_duel:"order_by",
+		losses_rush:"order_by",
 		losses_wingman:"order_by",
 		match_map_hltv_aggregate:"v_player_match_map_hltv_aggregate_order_by",
 		match_map_stats_aggregate:"player_match_map_stats_aggregate_order_by",
@@ -26642,6 +26648,7 @@ export const AllTypesProps: Record<string,any> = {
 		wins:"order_by",
 		wins_competitive:"order_by",
 		wins_duel:"order_by",
+		wins_rush:"order_by",
 		wins_wingman:"order_by"
 	},
 	players_pk_columns_input:{
@@ -45933,6 +45940,7 @@ export const AllTypesProps: Record<string,any> = {
 		avg_faceit_elo:"Int_comparison_exp",
 		avg_faceit_level:"float8_comparison_exp",
 		avg_premier:"Int_comparison_exp",
+		avg_rush_elo:"Int_comparison_exp",
 		avg_wingman_elo:"Int_comparison_exp",
 		max_elo:"Int_comparison_exp",
 		min_elo:"Int_comparison_exp",
@@ -45955,6 +45963,7 @@ export const AllTypesProps: Record<string,any> = {
 		avg_faceit_elo:"order_by",
 		avg_faceit_level:"order_by",
 		avg_premier:"order_by",
+		avg_rush_elo:"order_by",
 		avg_wingman_elo:"order_by",
 		max_elo:"order_by",
 		min_elo:"order_by",
@@ -56447,6 +56456,7 @@ export const ReturnTypes: Record<string,any> = {
 		update_v_team_stage_results:"v_team_stage_results_mutation_response",
 		update_v_team_stage_results_by_pk:"v_team_stage_results",
 		update_v_team_stage_results_many:"v_team_stage_results_mutation_response",
+		buildMapAssets:"SuccessOutput",
 		validateGamedata:"SuccessOutput",
 		watchDemo:"WatchDemoOutput",
 		writeServerFile:"SuccessOutput"
@@ -61807,6 +61817,7 @@ export const ReturnTypes: Record<string,any> = {
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",
+		losses_rush:"Int",
 		losses_wingman:"Int",
 		match_map_hltv:"v_player_match_map_hltv",
 		match_map_hltv_aggregate:"v_player_match_map_hltv_aggregate",
@@ -61873,6 +61884,7 @@ export const ReturnTypes: Record<string,any> = {
 		wins:"Int",
 		wins_competitive:"Int",
 		wins_duel:"Int",
+		wins_rush:"Int",
 		wins_wingman:"Int"
 	},
 	players_aggregate:{
@@ -61900,6 +61912,7 @@ export const ReturnTypes: Record<string,any> = {
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",
+		losses_rush:"Int",
 		losses_wingman:"Int",
 		premier_rank:"Float",
 		steam_id:"Float",
@@ -61908,6 +61921,7 @@ export const ReturnTypes: Record<string,any> = {
 		wins:"Int",
 		wins_competitive:"Int",
 		wins_duel:"Int",
+		wins_rush:"Int",
 		wins_wingman:"Int"
 	},
 	players_max_fields:{
@@ -61932,6 +61946,7 @@ export const ReturnTypes: Record<string,any> = {
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",
+		losses_rush:"Int",
 		losses_wingman:"Int",
 		matchmaking_cooldown:"timestamptz",
 		name:"String",
@@ -61948,6 +61963,7 @@ export const ReturnTypes: Record<string,any> = {
 		wins:"Int",
 		wins_competitive:"Int",
 		wins_duel:"Int",
+		wins_rush:"Int",
 		wins_wingman:"Int"
 	},
 	players_min_fields:{
@@ -61972,6 +61988,7 @@ export const ReturnTypes: Record<string,any> = {
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",
+		losses_rush:"Int",
 		losses_wingman:"Int",
 		matchmaking_cooldown:"timestamptz",
 		name:"String",
@@ -61988,6 +62005,7 @@ export const ReturnTypes: Record<string,any> = {
 		wins:"Int",
 		wins_competitive:"Int",
 		wins_duel:"Int",
+		wins_rush:"Int",
 		wins_wingman:"Int"
 	},
 	players_mutation_response:{
@@ -62002,6 +62020,7 @@ export const ReturnTypes: Record<string,any> = {
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",
+		losses_rush:"Int",
 		losses_wingman:"Int",
 		premier_rank:"Float",
 		steam_id:"Float",
@@ -62010,6 +62029,7 @@ export const ReturnTypes: Record<string,any> = {
 		wins:"Int",
 		wins_competitive:"Int",
 		wins_duel:"Int",
+		wins_rush:"Int",
 		wins_wingman:"Int"
 	},
 	players_stddev_pop_fields:{
@@ -62020,6 +62040,7 @@ export const ReturnTypes: Record<string,any> = {
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",
+		losses_rush:"Int",
 		losses_wingman:"Int",
 		premier_rank:"Float",
 		steam_id:"Float",
@@ -62028,6 +62049,7 @@ export const ReturnTypes: Record<string,any> = {
 		wins:"Int",
 		wins_competitive:"Int",
 		wins_duel:"Int",
+		wins_rush:"Int",
 		wins_wingman:"Int"
 	},
 	players_stddev_samp_fields:{
@@ -62038,6 +62060,7 @@ export const ReturnTypes: Record<string,any> = {
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",
+		losses_rush:"Int",
 		losses_wingman:"Int",
 		premier_rank:"Float",
 		steam_id:"Float",
@@ -62046,6 +62069,7 @@ export const ReturnTypes: Record<string,any> = {
 		wins:"Int",
 		wins_competitive:"Int",
 		wins_duel:"Int",
+		wins_rush:"Int",
 		wins_wingman:"Int"
 	},
 	players_sum_fields:{
@@ -62056,6 +62080,7 @@ export const ReturnTypes: Record<string,any> = {
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",
+		losses_rush:"Int",
 		losses_wingman:"Int",
 		premier_rank:"Int",
 		steam_id:"bigint",
@@ -62064,6 +62089,7 @@ export const ReturnTypes: Record<string,any> = {
 		wins:"Int",
 		wins_competitive:"Int",
 		wins_duel:"Int",
+		wins_rush:"Int",
 		wins_wingman:"Int"
 	},
 	players_var_pop_fields:{
@@ -62074,6 +62100,7 @@ export const ReturnTypes: Record<string,any> = {
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",
+		losses_rush:"Int",
 		losses_wingman:"Int",
 		premier_rank:"Float",
 		steam_id:"Float",
@@ -62082,6 +62109,7 @@ export const ReturnTypes: Record<string,any> = {
 		wins:"Int",
 		wins_competitive:"Int",
 		wins_duel:"Int",
+		wins_rush:"Int",
 		wins_wingman:"Int"
 	},
 	players_var_samp_fields:{
@@ -62092,6 +62120,7 @@ export const ReturnTypes: Record<string,any> = {
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",
+		losses_rush:"Int",
 		losses_wingman:"Int",
 		premier_rank:"Float",
 		steam_id:"Float",
@@ -62100,6 +62129,7 @@ export const ReturnTypes: Record<string,any> = {
 		wins:"Int",
 		wins_competitive:"Int",
 		wins_duel:"Int",
+		wins_rush:"Int",
 		wins_wingman:"Int"
 	},
 	players_variance_fields:{
@@ -62110,6 +62140,7 @@ export const ReturnTypes: Record<string,any> = {
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",
+		losses_rush:"Int",
 		losses_wingman:"Int",
 		premier_rank:"Float",
 		steam_id:"Float",
@@ -62118,6 +62149,7 @@ export const ReturnTypes: Record<string,any> = {
 		wins:"Int",
 		wins_competitive:"Int",
 		wins_duel:"Int",
+		wins_rush:"Int",
 		wins_wingman:"Int"
 	},
 	plugin_versions:{
@@ -72526,6 +72558,7 @@ export const ReturnTypes: Record<string,any> = {
 		avg_faceit_elo:"Int",
 		avg_faceit_level:"float8",
 		avg_premier:"Int",
+		avg_rush_elo:"Int",
 		avg_wingman_elo:"Int",
 		max_elo:"Int",
 		min_elo:"Int",
@@ -72556,6 +72589,7 @@ export const ReturnTypes: Record<string,any> = {
 		avg_faceit_elo:"Float",
 		avg_faceit_level:"Float",
 		avg_premier:"Float",
+		avg_rush_elo:"Float",
 		avg_wingman_elo:"Float",
 		max_elo:"Float",
 		min_elo:"Float",
@@ -72567,6 +72601,7 @@ export const ReturnTypes: Record<string,any> = {
 		avg_faceit_elo:"Int",
 		avg_faceit_level:"float8",
 		avg_premier:"Int",
+		avg_rush_elo:"Int",
 		avg_wingman_elo:"Int",
 		max_elo:"Int",
 		min_elo:"Int",
@@ -72579,6 +72614,7 @@ export const ReturnTypes: Record<string,any> = {
 		avg_faceit_elo:"Int",
 		avg_faceit_level:"float8",
 		avg_premier:"Int",
+		avg_rush_elo:"Int",
 		avg_wingman_elo:"Int",
 		max_elo:"Int",
 		min_elo:"Int",
@@ -72591,6 +72627,7 @@ export const ReturnTypes: Record<string,any> = {
 		avg_faceit_elo:"Float",
 		avg_faceit_level:"Float",
 		avg_premier:"Float",
+		avg_rush_elo:"Float",
 		avg_wingman_elo:"Float",
 		max_elo:"Float",
 		min_elo:"Float",
@@ -72602,6 +72639,7 @@ export const ReturnTypes: Record<string,any> = {
 		avg_faceit_elo:"Float",
 		avg_faceit_level:"Float",
 		avg_premier:"Float",
+		avg_rush_elo:"Float",
 		avg_wingman_elo:"Float",
 		max_elo:"Float",
 		min_elo:"Float",
@@ -72613,6 +72651,7 @@ export const ReturnTypes: Record<string,any> = {
 		avg_faceit_elo:"Float",
 		avg_faceit_level:"Float",
 		avg_premier:"Float",
+		avg_rush_elo:"Float",
 		avg_wingman_elo:"Float",
 		max_elo:"Float",
 		min_elo:"Float",
@@ -72624,6 +72663,7 @@ export const ReturnTypes: Record<string,any> = {
 		avg_faceit_elo:"Int",
 		avg_faceit_level:"float8",
 		avg_premier:"Int",
+		avg_rush_elo:"Int",
 		avg_wingman_elo:"Int",
 		max_elo:"Int",
 		min_elo:"Int",
@@ -72635,6 +72675,7 @@ export const ReturnTypes: Record<string,any> = {
 		avg_faceit_elo:"Float",
 		avg_faceit_level:"Float",
 		avg_premier:"Float",
+		avg_rush_elo:"Float",
 		avg_wingman_elo:"Float",
 		max_elo:"Float",
 		min_elo:"Float",
@@ -72646,6 +72687,7 @@ export const ReturnTypes: Record<string,any> = {
 		avg_faceit_elo:"Float",
 		avg_faceit_level:"Float",
 		avg_premier:"Float",
+		avg_rush_elo:"Float",
 		avg_wingman_elo:"Float",
 		max_elo:"Float",
 		min_elo:"Float",
@@ -72657,6 +72699,7 @@ export const ReturnTypes: Record<string,any> = {
 		avg_faceit_elo:"Float",
 		avg_faceit_level:"Float",
 		avg_premier:"Float",
+		avg_rush_elo:"Float",
 		avg_wingman_elo:"Float",
 		max_elo:"Float",
 		min_elo:"Float",

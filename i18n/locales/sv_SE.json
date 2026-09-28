@@ -986,7 +986,8 @@
   "elo_change_badge": {
     "comp": "COMP",
     "wingman": "WINGMAN",
-    "duel": "DUEL"
+    "duel": "DUEL",
+    "rush": "RUSH"
   },
   "render_queue_status": {
     "queued": "Köad",
@@ -1968,7 +1969,7 @@
           "order_hint": "Varje lager går före det ovanför.",
           "layers": {
             "type": "Matchtyp",
-            "type_note": "Competitive, Wingman, Duel",
+            "type_note": "Competitive, Wingman, Duel, Rush",
             "lan_note": "endast LAN-regioner",
             "global_note": "alla matcher",
             "plugin": "Plugin-cvars",
@@ -3561,6 +3562,7 @@
         "competitive": "Competitive",
         "wingman": "Wingman",
         "duel": "Duell",
+        "rush": "Rush",
         "scrimmage": "Scrim",
         "premier": "Premier",
         "faceit": "Faceit"
@@ -4572,6 +4574,7 @@
         "duration": "{seconds}s",
         "requested_by": "Begärd av",
         "capped": "Visar de första {shown} raderna av {total}.",
+        "caveats": "Förbehåll ({count})",
         "count_broken": "{count} trasiga",
         "count_moved": "{count} flyttade",
         "count_unsimulatable": "{count} går inte att simulera",
@@ -6679,6 +6682,7 @@
           "description": "Antalet ronder som spelas innan lagen byter sida.",
           "placeholder": "Välj max antal ronder"
         },
+        "rush_fixed_rules": "Rush spelas alltid till 8 vunna ronder, utan overtime och utan knivrond.",
         "region": {
           "title": "Regioninställningar",
           "lan_match": "LAN-match",
@@ -7429,7 +7433,7 @@
         "cam_chase": "FÖLJ",
         "cam_chase_tip": "Följ den valda spelaren",
         "roof": "TAK",
-        "roof_tip": "Takavskärning — mitten är automatisk (tak av, action synlig). Upp = visa mer, ner = skär mer, max = hela kartan.",
+        "roof_tip": "Takavskärning — döljer tak och kortar av väggar så att action syns. Ner = lägre snitt (planritning), upp = högre väggar, max = hela kartan.",
         "play_by_play": "PLAY BY PLAY",
         "play_by_play_tip": "Visa rondens play-by-play-händelselogg",
         "more": "Fler alternativ",
@@ -7883,7 +7887,13 @@
     },
     "official": "Officiella kartor",
     "workshop": "Workshop-kartor",
-    "active_duty": "Active Duty"
+    "active_duty": "Active Duty",
+    "radar_room": {
+      "label": "Rum",
+      "auto": "Auto",
+      "room": "Rum {name}",
+      "full_map": "Hela kartan"
+    }
   },
   "region": {
     "form": {
@@ -7906,6 +7916,10 @@
       "duel": {
         "title": "Duell",
         "description": "En tävlingsupplevelse 1 mot 1, perfekt för att öva individuell skicklighet"
+      },
+      "rush": {
+        "title": "Rush",
+        "description": "Snabba 3v3-matcher rum för rum där varje vunnen rond driver striden framåt"
       }
     },
     "cancel_matchmaking": "Avbryt matchmaking",
@@ -7997,6 +8011,7 @@
     "updating_to": "Uppdaterar till {version}",
     "update_to_version": "Uppdatera till {version}",
     "validate_gamedata": "Validera gamedata",
+    "build_map_assets": "Bygg karttillgångar",
     "note_label": "Obs:",
     "one_cpu_core": "1 CPU-kärna",
     "cpu_reservation_note": " {cores} är reserverat för systemet på varje nod för att hålla den responsiv.",
@@ -8095,6 +8110,7 @@
       "cs_updating": "CS2 uppdateras på noden",
       "csgo_installing": "CS:GO installeras på noden",
       "validating_gamedata": "Validerar gamedata-signaturer på noden",
+      "building_map_assets": "Bygger kartmeshar och callouts för den här nodens CS2-build",
       "ports_updated": "Nodportar uppdaterade",
       "ports_removed": "Nodportar borttagna",
       "made_gpu_only": "Nod satt till endast GPU",

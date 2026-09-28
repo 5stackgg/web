@@ -348,6 +348,7 @@ interface Player {
     competitive?: number;
     wingman?: number;
     duel?: number;
+    rush?: number;
   };
 }
 
@@ -358,6 +359,7 @@ interface SearchResponse {
       elo_competitive?: number;
       elo_wingman?: number;
       elo_duel?: number;
+      elo_rush?: number;
     };
   }>;
 }
@@ -740,6 +742,7 @@ export default {
               competitive: document.elo_competitive,
               wingman: document.elo_wingman,
               duel: document.elo_duel,
+              rush: document.elo_rush,
             },
           } as Player;
         }),

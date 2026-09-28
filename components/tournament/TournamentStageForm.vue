@@ -316,12 +316,14 @@ import { $ } from "~/generated/zeus";
                   <SelectItem value="1">{{
                     $t("match.options.best_of.option", { count: 1 })
                   }}</SelectItem>
-                  <SelectItem value="3">{{
-                    $t("match.options.best_of.option", { count: 3 })
-                  }}</SelectItem>
-                  <SelectItem value="5">{{
-                    $t("match.options.best_of.option", { count: 5 })
-                  }}</SelectItem>
+                  <template v-if="!isRush">
+                    <SelectItem value="3">{{
+                      $t("match.options.best_of.option", { count: 3 })
+                    }}</SelectItem>
+                    <SelectItem value="5">{{
+                      $t("match.options.best_of.option", { count: 5 })
+                    }}</SelectItem>
+                  </template>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -389,12 +391,14 @@ import { $ } from "~/generated/zeus";
                   <SelectItem value="1">{{
                     $t("match.options.best_of.option", { count: 1 })
                   }}</SelectItem>
-                  <SelectItem value="3">{{
-                    $t("match.options.best_of.option", { count: 3 })
-                  }}</SelectItem>
-                  <SelectItem value="5">{{
-                    $t("match.options.best_of.option", { count: 5 })
-                  }}</SelectItem>
+                  <template v-if="!isRush">
+                    <SelectItem value="3">{{
+                      $t("match.options.best_of.option", { count: 3 })
+                    }}</SelectItem>
+                    <SelectItem value="5">{{
+                      $t("match.options.best_of.option", { count: 5 })
+                    }}</SelectItem>
+                  </template>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -492,6 +496,7 @@ import { $ } from "~/generated/zeus";
           <!-- Per-Round Best Of -->
           <Fold
             :open="
+              !isRush &&
               !!form.values.stage_type &&
               form.values.stage_type !== 'RoundRobin' &&
               !!form.values.max_teams
@@ -971,6 +976,7 @@ import * as z from "zod";
 import { useForm } from "vee-validate";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import {
+  e_match_types_enum,
   e_tournament_stage_types_enum,
   e_ready_settings_enum,
   e_timeout_settings_enum,
@@ -1260,6 +1266,9 @@ export default {
     },
   },
   computed: {
+    isRush(): boolean {
+      return this.tournament?.options?.type === e_match_types_enum.Rush;
+    },
     canSetVetoPickTimeout() {
       return allowsVetoPickTimeout();
     },

@@ -4,10 +4,11 @@ import { Play, RotateCcw } from "lucide-vue-next";
 import { Slider } from "~/components/ui/slider";
 import Replay3DLite from "~/components/match/Replay3DLite.vue";
 import { useRadarProjection } from "~/composables/useRadarProjection";
-import { meshUrlForMap, normalizeMapName } from "~/utilities/mapAssets";
+import { normalizeMapName } from "~/utilities/mapAssets";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import {
   utilityLanding,
+  utilityOrigin,
   normalizeTrajectory,
   replayUtilityType,
   replayTeamForSide,
@@ -28,17 +29,21 @@ const TICK_RATE = 64;
 const radarFailed = ref(false);
 const { radarSrc, calibration, projectCalibrated } = useRadarProjection(
   () => props.lineup.map_name,
-  { radarFailed },
+  {
+    radarFailed,
+    volumePoints: () => {
+      const landing = utilityLanding(props.lineup);
+      const origin = utilityOrigin(props.lineup);
+      return landing ? [origin, landing] : [origin];
+    },
+  },
 );
 
 const runtimeConfig = useRuntimeConfig();
-const meshCdn = runtimeConfig.public.mapMeshCdn as string;
+const meshCdn = (runtimeConfig.public.mapMeshCdn as string) || "";
 const apiDomain = runtimeConfig.public.apiDomain as string;
 
-const mapMeshUrl = computed(() => {
-  const name = normalizeMapName(props.lineup.map_name);
-  return meshUrlForMap(meshCdn, name ?? "");
-});
+const mapName = computed(() => normalizeMapName(props.lineup.map_name) || null);
 
 const replayType = computed(() => replayUtilityType(props.lineup.utility_type));
 const throwerTeam = computed(() => replayTeamForSide(props.lineup.side));
@@ -288,7 +293,18 @@ const autoCeilingZ = computed(() => {
   return highest + 400;
 });
 
-const ceiling = ref(70);
+// A view mesh cuts walls at a height above their own floor; ~160u keeps the
+// walls a throw has to clear while still opening interior ceilings. The .tri
+// fallback keeps its own plane-based default.
+const VIEW_CEILING = 58;
+const TRI_CEILING = 70;
+const meshKind = ref<"view" | "tri" | "radar" | null>(null);
+const ceilingChoice = ref<number | null>(null);
+const ceiling = computed(
+  () =>
+    ceilingChoice.value ??
+    (meshKind.value === "view" ? VIEW_CEILING : TRI_CEILING),
+);
 
 // Only reached if the mesh 404s mid-flight and the renderer drops back to the
 // flat radar plane; in mesh mode nothing calls this.
@@ -307,7 +323,8 @@ const tick = computed(() =>
     style="aspect-ratio: 16 / 10"
   >
     <Replay3DLite
-      :map-mesh-url="mapMeshUrl"
+      :map-name="mapName"
+      :mesh-cdn="meshCdn"
       :radar-src="radarSrc"
       :resolution="calibration?.resolution ?? 1"
       :project="project"
@@ -323,6 +340,7 @@ const tick = computed(() =>
       :ceiling="ceiling"
       :auto-ceiling-z="autoCeilingZ"
       cam-mode="orbit"
+      @mesh="(kind) => (meshKind = kind)"
     />
 
     <div
@@ -350,7 +368,9 @@ const tick = computed(() =>
           :min="0"
           :max="100"
           :step="1"
-          @update:model-value="(value) => (ceiling = value?.[0] ?? 70)"
+          @update:model-value="
+            (value) => (ceilingChoice = value?.[0] ?? ceiling)
+          "
         />
       </div>
     </div>

@@ -35,9 +35,14 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
                   $t(`pages.settings.application.matchmaking_type_description`)
                 }}
               </p>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
                 <template
-                  v-for="match_type in ['competitive', 'wingman', 'duel']"
+                  v-for="match_type in [
+                    'competitive',
+                    'wingman',
+                    'duel',
+                    'rush',
+                  ]"
                 >
                   <div
                     class="flex flex-row items-center justify-between gap-3 p-3 rounded-lg border cursor-pointer hover:bg-accent/40 transition-colors"

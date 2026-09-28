@@ -245,6 +245,12 @@ export default {
       return "competitive";
     },
     primaryElo(): number | undefined {
+      // Given a match type the badge is that ladder's rating; falling back to
+      // another mode would show, say, a Competitive rating on a Rush match.
+      if (this.type) {
+        return this.elo?.[this.modeKey];
+      }
+
       return (
         this.elo?.[this.modeKey] ??
         this.competitiveElo ??

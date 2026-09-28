@@ -146,16 +146,92 @@ describe("ActionToasts dismissals", () => {
     ]);
   });
 
-  it("does not show a stored dismissal while its source is still loading", async () => {
+  it("keeps a stored dismissal whose toast arrives with the first load", async () => {
     localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify(["friend:76561198000000003"]),
     );
-    const matchmaking = useMatchmakingStore();
-    matchmaking.friends = [pendingFriend("76561198000000003", "Kai")] as any;
 
     const wrapper = await mountToasts();
+    const matchmaking = useMatchmakingStore();
+    matchmaking.friends = [pendingFriend("76561198000000003", "Kai")] as any;
+    matchmaking.friendsLoaded = true;
+    await flushPromises();
+
     expect(wrapper.text()).not.toContain("Kai");
+    expect(stored()).toEqual(["friend:76561198000000003"]);
+  });
+
+  it("forgets a call invite dismissal once that call ends", async () => {
+    const invite = {
+      id: "voice:channel-1",
+      channelId: "channel-1",
+      channelLabel: "Lobby",
+      channelKind: "lobby" as const,
+      who: "Rory",
+      video: false,
+    };
+    useCallInvites().invites.value = [invite];
+
+    const wrapper = await mountToasts();
+    await dismissToast(wrapper, "Rory");
+    expect(wrapper.text()).not.toContain("Rory");
+
+    useCallInvites().invites.value = [];
+    await flushPromises();
+    useCallInvites().invites.value = [{ ...invite, who: "Sky" }];
+    await flushPromises();
+
+    expect(wrapper.text()).toContain("Sky");
+  });
+
+  it("picks up a dismissal made in another tab", async () => {
+    const matchmaking = useMatchmakingStore();
+    matchmaking.friends = [pendingFriend("76561198000000002", "Dana")] as any;
+    matchmaking.friendsLoaded = true;
+
+    const wrapper = await mountToasts();
+    expect(wrapper.text()).toContain("Dana");
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(["friend:76561198000000002"]),
+    );
+    window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY }));
+    await flushPromises();
+
+    expect(wrapper.text()).not.toContain("Dana");
+  });
+
+  it("keeps another tab's dismissal when this tab writes", async () => {
+    const matchmaking = useMatchmakingStore();
+    matchmaking.friends = [pendingFriend("76561198000000002", "Dana")] as any;
+    matchmaking.friendsLoaded = true;
+
+    const wrapper = await mountToasts();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(["team:invite-9"]));
+    await dismissToast(wrapper, "Dana");
+
+    expect(stored()).toEqual(["team:invite-9", "friend:76561198000000002"]);
+  });
+
+  it("switches to the new player's dismissals when the player changes", async () => {
+    const OTHER = "76561198000000009";
+    localStorage.setItem(
+      `5stack:dismissed-action-toasts:${OTHER}`,
+      JSON.stringify(["team:invite-1"]),
+    );
+    const notifications = useNotificationStore();
+    notifications.team_invites = [
+      { id: "invite-1", team: { id: "t", name: "Alpha" }, invited_by: null },
+    ];
+
+    const wrapper = await mountToasts();
+    expect(wrapper.text()).toContain("Alpha");
+
+    useAuthStore().me = { steam_id: OTHER, current_lobby_id: null } as any;
+    await flushPromises();
+    expect(wrapper.text()).not.toContain("Alpha");
   });
 
   it("prunes only the loaded sources' dismissals whose toast is gone", async () => {

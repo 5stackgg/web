@@ -31,3 +31,27 @@ export function fromEditFields(date: CalendarDay, time: string): Date {
   const [hours, minutes] = time.split(":").map(Number);
   return new Date(date.year, date.month - 1, date.day, hours, minutes);
 }
+
+/**
+ * Saving the fields exactly as they were shown keeps the stored instant: on a
+ * DST fall-back night the shown wall clock names two instants and `new Date`
+ * picks the first, and the fields carry no seconds.
+ */
+export function editedEndDate(
+  original: string | null | undefined,
+  date: CalendarDay,
+  time: string,
+): Date {
+  if (original) {
+    const shown = toEditFields(original);
+    if (
+      shown.time === time &&
+      shown.date.year === date.year &&
+      shown.date.month === date.month &&
+      shown.date.day === date.day
+    ) {
+      return new Date(original);
+    }
+  }
+  return fromEditFields(date, time);
+}

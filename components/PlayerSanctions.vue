@@ -66,7 +66,7 @@ import {
   tacticalTabsListClasses,
   tacticalTabsTriggerClasses,
 } from "~/utilities/tacticalClasses";
-import { fromEditFields, toEditFields } from "~/utilities/sanctionEndDate";
+import { editedEndDate, toEditFields } from "~/utilities/sanctionEndDate";
 
 const tabCountClasses =
   "inline-flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-[hsl(var(--tac-amber)/0.2)] px-1 font-sans text-[0.6rem] font-bold leading-none text-[hsl(var(--tac-amber))]";
@@ -542,7 +542,11 @@ const tabCountClasses =
           <Button variant="outline" @click="editDialogOpen = false">
             {{ $t("common.cancel") }}
           </Button>
-          <Button :loading="updatingSanction" @click="updateSanctionEndTime">
+          <Button
+            :loading="updatingSanction"
+            :disabled="!editEndDateComplete"
+            @click="updateSanctionEndTime"
+          >
             {{ $t("common.save") }}
           </Button>
         </DialogFooter>
@@ -795,6 +799,9 @@ export default {
     steamProfileUrl() {
       return `https://steamcommunity.com/profiles/${this.playerId}`;
     },
+    editEndDateComplete(): boolean {
+      return !!this.editDate === !!this.editTime;
+    },
     editDateDisplay() {
       if (!this.editDate) return "";
       return this.editDate.toString();
@@ -904,7 +911,7 @@ export default {
       if (this.updatingSanction) {
         return;
       }
-      if (!this.editingSanction) {
+      if (!this.editingSanction || !this.editEndDateComplete) {
         return;
       }
       this.updatingSanction = true;
@@ -912,7 +919,11 @@ export default {
       let remove_sanction_date: Date | null = null;
 
       if (this.editDate && this.editTime) {
-        remove_sanction_date = fromEditFields(this.editDate, this.editTime);
+        remove_sanction_date = editedEndDate(
+          this.editingSanction.remove_sanction_date,
+          this.editDate,
+          this.editTime,
+        );
       }
 
       try {

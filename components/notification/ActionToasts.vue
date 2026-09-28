@@ -223,15 +223,16 @@ const items = computed<ToastItem[]>(() => {
 const DISMISSED_STORAGE_LIMIT = 200;
 
 // A call invite is keyed by its channel, so a stored dismissal would silence
-// every later call in that channel.
+// every later call in that channel. It is only remembered for the current call.
 const EPHEMERAL_ID_PREFIX = "voice:";
 
-// These ids name the thing rather than the invite (a player, a lobby, a draft),
-// so the same id comes back when that thing invites again. Once its source has
-// loaded, a stored dismissal whose toast is gone is dropped so a fresh invite
-// still shows; pruning earlier would treat "not loaded yet" as "gone".
+// These ids name the thing rather than the invite (a channel, a player, a
+// lobby, a draft), so the same id comes back when that thing asks again. Once
+// its source has loaded, a dismissal whose toast is gone is dropped so a fresh
+// invite still shows; pruning earlier would treat "not loaded yet" as "gone".
 const matchmakingStore = useMatchmakingStore();
 const REUSABLE_ID_SOURCES = [
+  { prefix: EPHEMERAL_ID_PREFIX, loaded: () => true },
   { prefix: "friend:", loaded: () => matchmakingStore.friendsLoaded },
   { prefix: "lobby:", loaded: () => matchmakingStore.lobbiesLoaded },
   { prefix: "draft:", loaded: () => notificationStore.draftInvitesLoaded },
@@ -244,6 +245,8 @@ const dismissedStorageKey = computed(() => {
   return steamId ? `5stack:dismissed-action-toasts:${steamId}` : null;
 });
 
+const isPersistable = (id: string) => !id.startsWith(EPHEMERAL_ID_PREFIX);
+
 const readDismissed = (key: string): string[] => {
   try {
     const stored = JSON.parse(localStorage.getItem(key) ?? "[]");
@@ -251,22 +254,25 @@ const readDismissed = (key: string): string[] => {
       return [];
     }
     return stored.filter(
-      (id): id is string =>
-        typeof id === "string" && !id.startsWith(EPHEMERAL_ID_PREFIX),
+      (id): id is string => typeof id === "string" && isPersistable(id),
     );
   } catch {
     return [];
   }
 };
 
-const persistDismissed = () => {
+// Applied as a delta over what is stored now, so another tab's dismissals
+// written since this one loaded are kept rather than overwritten.
+const writeDismissed = (added: string[], removed: string[]) => {
   const key = dismissedStorageKey.value;
   if (!key) {
     return;
   }
-  const ids = [...dismissed.value]
-    .filter((id) => !id.startsWith(EPHEMERAL_ID_PREFIX))
-    .slice(-DISMISSED_STORAGE_LIMIT);
+  const changed = new Set([...added, ...removed]);
+  const ids = [
+    ...readDismissed(key).filter((id) => !changed.has(id)),
+    ...added.filter(isPersistable),
+  ].slice(-DISMISSED_STORAGE_LIMIT);
   try {
     localStorage.setItem(key, JSON.stringify(ids));
   } catch {}
@@ -277,7 +283,7 @@ const rememberDismissed = (ids: string[]) => {
     dismissed.value.delete(id);
     dismissed.value.add(id);
   }
-  persistDismissed();
+  writeDismissed(ids, []);
 };
 
 watch(
@@ -293,9 +299,7 @@ useEventListener("storage", (event: StorageEvent) => {
   if (!key || event.key !== key) {
     return;
   }
-  const ephemeral = [...dismissed.value].filter((id) =>
-    id.startsWith(EPHEMERAL_ID_PREFIX),
-  );
+  const ephemeral = [...dismissed.value].filter((id) => !isPersistable(id));
   dismissed.value = new Set([...readDismissed(key), ...ephemeral]);
 });
 
@@ -303,9 +307,6 @@ const pruneDismissed = () => {
   const loadedPrefixes = REUSABLE_ID_SOURCES.filter((source) =>
     source.loaded(),
   ).map((source) => source.prefix);
-  if (loadedPrefixes.length === 0) {
-    return;
-  }
   const live = new Set(items.value.map((item) => item.id));
   const gone = [...dismissed.value].filter(
     (id) =>
@@ -317,7 +318,7 @@ const pruneDismissed = () => {
   for (const id of gone) {
     dismissed.value.delete(id);
   }
-  persistDismissed();
+  writeDismissed([], gone);
 };
 
 watch(

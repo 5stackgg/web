@@ -68,7 +68,7 @@ const navMenuClasses =
   "ml-0 min-w-0 sm:ml-1 max-md:justify-start max-md:overflow-x-auto max-md:[scrollbar-width:none] max-md:[&::-webkit-scrollbar]:hidden";
 
 const navViewportClasses =
-  "mt-0 rounded-none border-0 bg-transparent shadow-none max-md:fixed max-md:inset-x-2 max-md:top-14 max-md:w-auto max-md:max-h-[calc(100dvh-4rem)] max-md:overflow-y-auto max-md:overscroll-contain max-md:transition-none sm:max-md:top-16 sm:max-md:max-h-[calc(100dvh-4.5rem)]";
+  "mt-0 rounded-none border-0 bg-transparent shadow-none max-md:fixed max-md:inset-x-2 max-md:top-14 max-md:w-auto max-md:origin-top max-md:transition-none sm:max-md:top-16";
 
 const navTickClasses =
   "nav-link-tick hidden h-[5px] w-[5px] shrink-0 rotate-45 bg-[hsl(var(--topnav-foreground)/0.3)] transition-colors duration-150 sm:block";
@@ -89,7 +89,7 @@ const navBadgeDotClasses =
   "h-[5px] w-[5px] rounded-full bg-current shadow-[0_0_6px_currentColor]";
 
 const navContentClasses =
-  "absolute mt-0 overflow-hidden md:min-w-[360px] md:max-w-[95vw] border border-topnav-border bg-[linear-gradient(180deg,hsl(var(--topnav-background)/0.98)_0%,hsl(var(--topnav-background)/0.92)_100%)] p-0 shadow-[inset_0_1px_0_hsl(var(--tac-amber)/0.12),0_20px_40px_-12px_hsl(0_0%_0%/0.55)] [backdrop-filter:blur(8px)] [-webkit-backdrop-filter:blur(8px)] before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-[linear-gradient(90deg,transparent,hsl(var(--tac-amber)/0.5),transparent)]";
+  "absolute mt-0 overflow-hidden max-md:max-h-[calc(100dvh-4rem)] max-md:overflow-y-auto max-md:overscroll-contain sm:max-md:max-h-[calc(100dvh-4.5rem)] md:min-w-[360px] md:max-w-[95vw] border border-topnav-border bg-[linear-gradient(180deg,hsl(var(--topnav-background)/0.98)_0%,hsl(var(--topnav-background)/0.92)_100%)] p-0 shadow-[inset_0_1px_0_hsl(var(--tac-amber)/0.12),0_20px_40px_-12px_hsl(0_0%_0%/0.55)] [backdrop-filter:blur(8px)] [-webkit-backdrop-filter:blur(8px)] before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-[linear-gradient(90deg,transparent,hsl(var(--tac-amber)/0.5),transparent)]";
 const playContentClasses = `${navContentClasses} md:min-w-[500px]`;
 const communityContentClasses = `${navContentClasses} md:min-w-[min(780px,calc(100vw-1.25rem))]`;
 

@@ -173,19 +173,49 @@ describe("TopNav menus on a phone", () => {
 
   it("pins the open panel under the bar, inside the screen", async () => {
     const wrapper = await mountTopNav();
-    await openMenu(wrapper, "Play");
+    const play = await openMenu(wrapper, "Play");
 
     expect(viewport(wrapper).classes()).toEqual(
       expect.arrayContaining([
         "max-md:fixed",
         "max-md:inset-x-2",
         "max-md:top-14",
-        "max-md:max-h-[calc(100dvh-4rem)]",
-        "max-md:overflow-y-auto",
-        "max-md:overscroll-contain",
+        "max-md:origin-top",
         "max-md:transition-none",
       ]),
     );
+    expect(play.classes()).toEqual(
+      expect.arrayContaining([
+        "max-md:max-h-[calc(100dvh-4rem)]",
+        "max-md:overflow-y-auto",
+        "max-md:overscroll-contain",
+      ]),
+    );
+  });
+
+  it("strips the popover chrome off the viewport", async () => {
+    const wrapper = await mountTopNav();
+    await openMenu(wrapper, "Play");
+
+    const classes = viewport(wrapper).classes();
+    expect(classes).toEqual(
+      expect.arrayContaining([
+        "mt-0",
+        "rounded-none",
+        "border-0",
+        "bg-transparent",
+        "shadow-none",
+      ]),
+    );
+    for (const popoverClass of [
+      "mt-1.5",
+      "rounded-md",
+      "border",
+      "bg-popover",
+      "shadow",
+    ]) {
+      expect(classes).not.toContain(popoverClass);
+    }
   });
 
   it("keeps the desktop panel widths and the Play hero off a phone", async () => {
@@ -196,7 +226,9 @@ describe("TopNav menus on a phone", () => {
     expect(play.classes().some((name) => name.startsWith("min-w-"))).toBe(
       false,
     );
-    expect(play.find(".max-md\\:hidden").text()).toContain("Play & Compete");
+    const hero = play.find("div.\\-my-5");
+    expect(hero.text()).toContain("Play & Compete");
+    expect(hero.classes()).toContain("max-md:hidden");
   });
 
   it("drops Community subtitles and keeps Watch in the bar only", async () => {

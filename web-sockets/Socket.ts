@@ -76,6 +76,7 @@ export class Socket extends EventEmitter {
   private connected = false;
   private heartBeat?: NodeJS.Timeout;
   private reconnectTimer?: ReturnType<typeof setTimeout>;
+  private resumeCheck?: ReturnType<typeof setTimeout>;
   private lifecycleBound = false;
   private pongSeen = false;
   private lastPongAt = 0;
@@ -143,6 +144,9 @@ export class Socket extends EventEmitter {
 
     clearTimeout(this.reconnectTimer);
     this.reconnectTimer = undefined;
+    clearTimeout(this.resumeCheck);
+    clearInterval(this.heartBeat);
+    this.connected = false;
 
     // Clean up any existing connection before creating a new one
     if (this.connection) {
@@ -198,11 +202,12 @@ export class Socket extends EventEmitter {
       }
 
       setTimeout(() => {
-        for (let i = 0; i < this.offlineQueue.length; i++) {
-          const { event, data } = this.offlineQueue[i];
+        if (this.connection !== webSocket || !this.connected) {
+          return;
+        }
+
+        for (const { event, data } of this.offlineQueue.splice(0)) {
           this.event(event, data);
-          this.offlineQueue.shift();
-          i--;
         }
       }, 100);
     });
@@ -249,7 +254,6 @@ export class Socket extends EventEmitter {
   private forceReconnect() {
     console.warn("[ws] no pong from the server, reconnecting");
 
-    clearInterval(this.heartBeat);
     this.connected = false;
     this.emit("offline");
     this.retryCount = 0;
@@ -279,17 +283,30 @@ export class Socket extends EventEmitter {
   }
 
   private resume() {
-    if (this.connected) {
-      this.heartbeat();
+    if (!this.connected) {
+      if (this.connection?.readyState === WebSocket.CONNECTING) {
+        return;
+      }
+
+      this.retryCount = 0;
+      this.connect();
       return;
     }
 
-    if (this.connection?.readyState === WebSocket.CONNECTING) {
+    this.heartbeat();
+
+    if (!this.connected) {
       return;
     }
 
-    this.retryCount = 0;
-    this.connect();
+    // A zombie only gives itself away by not answering, so look again as soon
+    // as this ping is overdue instead of waiting for the next heartbeat.
+    clearTimeout(this.resumeCheck);
+    this.resumeCheck = setTimeout(() => {
+      if (this.connected) {
+        this.heartbeat();
+      }
+    }, Socket.PONG_GRACE_MS + 1);
   }
 
   private getRoomKey(room: string, data: Record<string, unknown>) {

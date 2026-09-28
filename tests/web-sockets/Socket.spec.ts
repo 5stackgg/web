@@ -4,6 +4,7 @@ import { Socket } from "~/web-sockets/Socket";
 
 const HEARTBEAT_MS = 15_000;
 const PONG_TIMEOUT_MS = 45_000;
+const PONG_GRACE_MS = 10_000;
 
 type Listener = (event: any) => void;
 
@@ -233,6 +234,51 @@ describe("Socket pong watchdog", () => {
     expect(event).toHaveBeenCalledWith({ id: "live" });
   });
 
+  it("queues events while a replacement connection is still opening", () => {
+    socket.connect();
+    latest().open();
+
+    socket.connect();
+    const replacement = latest();
+
+    expect(() => {
+      socket.event("match:ready", { id: "match-1" });
+    }).not.toThrow();
+
+    vi.advanceTimersByTime(HEARTBEAT_MS * 2);
+    replacement.open();
+    vi.advanceTimersByTime(100);
+
+    expect(replacement.sent).toContainEqual({
+      event: "match:ready",
+      data: { id: "match-1" },
+    });
+  });
+
+  it("keeps queued events for the next connection when one closes before flushing", () => {
+    socket.event("match:ready", { id: "match-1" });
+    socket.connect();
+    const shortLived = latest();
+    shortLived.open();
+    shortLived.fail();
+
+    vi.advanceTimersByTime(100);
+
+    expect(shortLived.sent.map(({ event }) => event)).not.toContain(
+      "match:ready",
+    );
+
+    vi.advanceTimersByTime(1_000);
+    latest().open();
+    vi.advanceTimersByTime(100);
+
+    expect(latest()).not.toBe(shortLived);
+    expect(latest().sent).toContainEqual({
+      event: "match:ready",
+      data: { id: "match-1" },
+    });
+  });
+
   it("stops the heartbeat while the connection is down", () => {
     socket.connect();
     const dropped = latest();
@@ -342,13 +388,28 @@ describe("Socket lifecycle recovery", () => {
 
     vi.setSystemTime(Date.now() + 2 * 60 * 60_000);
     setVisibility("visible");
+    vi.advanceTimersByTime(PONG_GRACE_MS);
 
     expect(FakeWebSocket.instances).toHaveLength(1);
 
-    vi.advanceTimersByTime(HEARTBEAT_MS);
+    vi.advanceTimersByTime(1);
 
     expect(FakeWebSocket.instances).toHaveLength(2);
     expect(zombie.closeCalls).toBe(1);
+  });
+
+  it("keeps a connection that answers when the tab comes back", () => {
+    socket.connect();
+    const connection = latest();
+    connection.open();
+    connection.receive("pong");
+
+    vi.setSystemTime(Date.now() + 2 * 60 * 60_000);
+    setVisibility("visible");
+    connection.receive("pong");
+    vi.advanceTimersByTime(PONG_GRACE_MS + 1);
+
+    expect(FakeWebSocket.instances).toHaveLength(1);
   });
 
   it("binds the page listeners only once", () => {

@@ -170,22 +170,6 @@ import StorageCheck from "~/components/settings/StorageCheck.vue";
         </SettingsSection>
 
         <SettingsSection
-          id="cloudflare"
-          :title="
-            $t(
-              'pages.settings.application.demo_settings.cloudflare_worker_section',
-            )
-          "
-          :description="
-            $t(
-              'pages.settings.application.demo_settings.cloudflare_worker_description',
-            )
-          "
-        >
-          <BackblazeWorkerStatus />
-        </SettingsSection>
-
-        <SettingsSection
           id="storage-check"
           :title="
             $t(
@@ -199,6 +183,22 @@ import StorageCheck from "~/components/settings/StorageCheck.vue";
           "
         >
           <StorageCheck />
+        </SettingsSection>
+
+        <SettingsSection
+          id="cloudflare"
+          :title="
+            $t(
+              'pages.settings.application.demo_settings.cloudflare_worker_section',
+            )
+          "
+          :description="
+            $t(
+              'pages.settings.application.demo_settings.cloudflare_worker_description',
+            )
+          "
+        >
+          <BackblazeWorkerStatus />
         </SettingsSection>
 
         <SettingsSaveBar :form="form" @save="updateSettings" />

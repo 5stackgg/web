@@ -21,35 +21,29 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   open: [];
+  expired: [];
   edit: [];
 }>();
 
+const triggerRef = ref<{ $el?: HTMLElement } | null>(null);
+
+defineExpose({
+  focusTrigger() {
+    triggerRef.value?.$el?.focus();
+  },
+});
+
 const menuOpen = ref(false);
 const confirmDelete = ref(false);
-const editRequested = ref(false);
 
 // Before the menu renders, so the row re-checks the ten minute window against
 // the clock now rather than when the line first rendered.
 function setMenuOpen(open: boolean) {
   if (open) {
-    editRequested.value = false;
     emit("open");
   }
 
   menuOpen.value = open;
-}
-
-function startEdit() {
-  editRequested.value = true;
-  emit("edit");
-}
-
-// The editor takes focus as it mounts; handing it back to the trigger would
-// pull it straight out again.
-function onCloseAutoFocus(event: Event) {
-  if (editRequested.value) {
-    event.preventDefault();
-  }
 }
 
 // The menu and the confirm after it sit over the right hub, which closes itself
@@ -90,10 +84,13 @@ async function deleteMessage() {
   } catch (error) {
     toastChatError(error as ChatError);
 
-    if (
-      !chatErrorFailed(error as ChatError) ||
-      (error as ChatError)?.code === "window_closed"
-    ) {
+    if ((error as ChatError)?.code === "window_closed") {
+      confirmDelete.value = false;
+      emit("expired");
+      return;
+    }
+
+    if (!chatErrorFailed(error as ChatError)) {
       confirmDelete.value = false;
     }
   }
@@ -107,6 +104,7 @@ async function deleteMessage() {
     <DropdownMenu :open="menuOpen" :modal="false" @update:open="setMenuOpen">
       <DropdownMenuTrigger as-child>
         <Button
+          ref="triggerRef"
           variant="ghost"
           size="icon"
           class="h-6 w-6 text-muted-foreground hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))] [&_svg]:size-3.5"
@@ -119,9 +117,8 @@ async function deleteMessage() {
         align="end"
         class="w-48"
         data-right-hub-interactive
-        @close-auto-focus="onCloseAutoFocus"
       >
-        <DropdownMenuItem v-if="permissions.canEdit" @select="startEdit">
+        <DropdownMenuItem v-if="permissions.canEdit" @select="emit('edit')">
           <Pencil />
           <span>{{ $t("chat.edit_message") }}</span>
         </DropdownMenuItem>

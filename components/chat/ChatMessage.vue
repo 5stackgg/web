@@ -80,7 +80,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
         v-if="editing && room"
         :message="message"
         :room="room"
-        @close="$emit('edit-end')"
+        @close="endEdit"
       />
       <p
         v-else
@@ -95,7 +95,8 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
         >
           <template #trigger>
             <span
-              class="ml-1 whitespace-nowrap text-[9px] text-muted-foreground/70"
+              tabindex="0"
+              class="ml-1 whitespace-nowrap rounded-sm text-[9px] text-muted-foreground/70 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
               data-chat-edited
             >
               {{ $t("chat.edited") }}
@@ -110,6 +111,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
          taller than a line of chat. -->
     <ChatMessageActions
       v-if="hasActions && !editing"
+      ref="actions"
       class="absolute right-0 z-10"
       :style="{ top: `calc(${padTopRem}rem - 0.25rem)` }"
       :message="message"
@@ -117,6 +119,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
       :permissions="permissions"
       :own="isOwnMessage"
       @open="recheckPermissions"
+      @expired="permissionsCheckedAt = Date.now()"
       @edit="$emit('edit')"
     />
   </div>
@@ -178,6 +181,20 @@ export default {
         toast({ title: this.$t("chat.own_message_window_closed") });
       }
     },
+    // Focus goes back to the trigger the edit came from, if the window still
+    // leaves it anything to offer, rather than falling to the page.
+    endEdit() {
+      this.permissionsCheckedAt = Date.now();
+      this.$emit("edit-end");
+
+      void this.$nextTick(() => {
+        const actions = this.$refs.actions as
+          | { focusTrigger?: () => void }
+          | undefined;
+
+        actions?.focusTrigger?.();
+      });
+    },
   },
   computed: {
     viewerSteamId() {
@@ -190,6 +207,7 @@ export default {
       return chatMessagePermissions({
         message: this.message,
         viewerSteamId: this.viewerSteamId,
+        viewerGagged: !!useAuthStore().me?.is_gagged,
         canModerate: this.canModerate,
         roomType: this.room?.type ?? "",
         now: this.permissionsCheckedAt,

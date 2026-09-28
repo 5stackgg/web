@@ -529,6 +529,23 @@ describe("Socket lobby edits", () => {
     expect(lobby.messages[1].edited_at).toBe(EDITED_AT);
   });
 
+  it("keeps the server's edit time when the broadcast beats the ack", async () => {
+    const send = connect();
+    const pending = socket.editMessage("direct", "1:2", "b", "fixed");
+    const [{ requestId }] = sentEdits(send);
+
+    socket.emit("lobby:direct:1:2:edited", {
+      id: "b",
+      message: "fixed",
+      edited_at: EDITED_AT,
+    });
+    socket.emit("chat:ack", { requestId, messageId: "b", action: "edit" });
+    await pending;
+
+    expect(text()).toEqual(["line a", "fixed"]);
+    expect(lobby.messages[1].edited_at).toBe(EDITED_AT);
+  });
+
   it("drops the line when the api says it is already gone", async () => {
     const send = connect();
     const pending = socket.editMessage("direct", "1:2", "b", "fixed");

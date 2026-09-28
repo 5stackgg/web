@@ -271,6 +271,60 @@ describe("ChatMessage editing", () => {
     });
   });
 
+  it.each(["gagged", "not_allowed"])(
+    "closes on %s, which no retry can fix",
+    async (code) => {
+      vi.spyOn(socket, "editMessage").mockRejectedValue({
+        code,
+        action: "edit",
+      });
+      const wrapper = await mountMessage({ editing: true });
+
+      await wrapper.get("textarea").setValue("fixed");
+      await press(wrapper, "Enter");
+
+      expect(wrapper.emitted("edit-end")).toHaveLength(1);
+    },
+  );
+
+  it("won't cancel while a save is in flight", async () => {
+    let finish: () => void = () => {};
+    vi.spyOn(socket, "editMessage").mockReturnValue(
+      new Promise<void>((resolve) => {
+        finish = resolve;
+      }),
+    );
+    const wrapper = await mountMessage({ editing: true });
+
+    await wrapper.get("textarea").setValue("fixed");
+    await press(wrapper, "Enter");
+    await press(wrapper, "Escape");
+
+    expect(wrapper.emitted("edit-end")).toBeUndefined();
+    const cancel = wrapper
+      .findAll("button")
+      .find((button) => button.text() === "Cancel");
+    expect(cancel!.attributes("disabled")).toBeDefined();
+
+    finish();
+    await flushPromises();
+
+    expect(wrapper.emitted("edit-end")).toHaveLength(1);
+  });
+
+  it("offers no edit to a gagged author in a group room", async () => {
+    useAuthStore().me = { steam_id: ME, role: "user", is_gagged: true } as any;
+    const wrapper = await mountMessage();
+
+    await wrapper.get(TRIGGER).trigger("keydown", { key: "Enter" });
+    await flushPromises();
+
+    const items = Array.from(
+      document.body.querySelectorAll<HTMLElement>('[role="menuitem"]'),
+    ).map((item) => item.textContent?.trim());
+    expect(items).toEqual(["Delete Message"]);
+  });
+
   it("closes and explains when the window closed first", async () => {
     vi.spyOn(socket, "editMessage").mockRejectedValue({
       code: "window_closed",

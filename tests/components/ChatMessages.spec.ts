@@ -71,6 +71,48 @@ describe("ChatMessages editing", () => {
     expect(wrapper.findAll("textarea")).toHaveLength(0);
   });
 
+  it("hands focus to the editor picked from the menu, and keeps it", async () => {
+    const wrapper = await mountSuspended(ChatMessages, {
+      props: { messages: [own("a", 30)], messageRoom: () => ROOM },
+      attachTo: document.body,
+    });
+    unmount = () => wrapper.unmount();
+
+    const trigger = wrapper.get('button[aria-label="Message actions"]');
+    (trigger.element as HTMLElement).focus();
+    await trigger.trigger("keydown", { key: "Enter" });
+    await flushPromises();
+
+    const edit = Array.from(
+      document.body.querySelectorAll<HTMLElement>('[role="menuitem"]'),
+    ).find((item) => item.textContent?.trim() === "Edit Message");
+    edit!.click();
+    await flushPromises();
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    await flushPromises();
+
+    expect(document.activeElement).toBe(wrapper.get("textarea").element);
+  });
+
+  it("gives focus back to the trigger when the editor closes", async () => {
+    const wrapper = await mountSuspended(ChatMessages, {
+      props: { messages: [own("a", 30)], messageRoom: () => ROOM },
+      attachTo: document.body,
+    });
+    unmount = () => wrapper.unmount();
+
+    rows(wrapper)[0].vm.$emit("edit");
+    await flushPromises();
+
+    await wrapper.get("textarea").trigger("keydown", { key: "Escape" });
+    await flushPromises();
+
+    expect(wrapper.find("textarea").exists()).toBe(false);
+    expect(document.activeElement).toBe(
+      wrapper.get('button[aria-label="Message actions"]').element,
+    );
+  });
+
   it("forgets the editor when its message is deleted", async () => {
     const wrapper = await mountList();
 

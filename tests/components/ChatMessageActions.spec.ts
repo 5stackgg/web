@@ -314,7 +314,7 @@ describe("ChatMessageActions for the author", () => {
       action: "delete",
     });
 
-    await openMenu();
+    const wrapper = await openMenu();
 
     menuItem("Delete Message")!.click();
     await flushPromises();
@@ -327,5 +327,6 @@ describe("ChatMessageActions for the author", () => {
       variant: "destructive",
     });
     expect(dialog()).toBeNull();
+    expect(wrapper.emitted("expired")).toHaveLength(1);
   });
 });

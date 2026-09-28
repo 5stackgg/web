@@ -73,6 +73,7 @@ function onEnter(event: KeyboardEvent) {
   void save();
 }
 
+// Not while saving: closing would leave the edit to land, or fail, unseen.
 function onEscape(event: KeyboardEvent) {
   if (event.isComposing) {
     return;
@@ -80,7 +81,10 @@ function onEscape(event: KeyboardEvent) {
 
   event.preventDefault();
   event.stopPropagation();
-  emit("close");
+
+  if (!saving.value) {
+    emit("close");
+  }
 }
 
 async function save() {
@@ -117,7 +121,12 @@ async function save() {
 
     toastChatError(error as ChatError);
 
-    if (code === "window_closed" || code === "not_found") {
+    if (
+      code === "window_closed" ||
+      code === "not_found" ||
+      code === "not_allowed" ||
+      code === "gagged"
+    ) {
       emit("close");
     }
   } finally {
@@ -167,6 +176,7 @@ async function save() {
         variant="ghost"
         size="xs"
         class="h-6 px-2 text-[10px]"
+        :disabled="saving"
         @click="emit('close')"
       >
         {{ $t("common.cancel") }}

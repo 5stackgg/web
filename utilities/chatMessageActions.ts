@@ -11,6 +11,7 @@ export interface ChatMessagePermissions {
 export interface ChatMessagePermissionInput {
   message: LobbyMessage | null | undefined;
   viewerSteamId?: string | null;
+  viewerGagged?: boolean;
   canModerate: boolean;
   roomType: ChatType | string;
   now?: number;
@@ -32,10 +33,12 @@ export function isOwnChatMessage(
 // Mirrors the api's ChatService.canDelete and selfServiceRefusal, so the menu
 // never offers what the server would refuse. The api only addresses a message
 // by its id; lines from before it stamped one can't be targeted at all, and
-// lines stored before it recorded a source are nobody's to change.
+// lines stored before it recorded a source are nobody's to change. A gag stops
+// an edit in a group room, like a send, but never the author's own delete.
 export function chatMessagePermissions({
   message,
   viewerSteamId,
+  viewerGagged = false,
   canModerate,
   roomType,
   now = Date.now(),
@@ -54,7 +57,7 @@ export function chatMessagePermissions({
   return {
     canDelete:
       addressable && ((canModerate && roomType !== "direct") || selfService),
-    canEdit: selfService,
+    canEdit: selfService && !(viewerGagged && roomType !== "direct"),
   };
 }
 

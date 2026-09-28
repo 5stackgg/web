@@ -132,6 +132,32 @@ describe("chatMessagePermissions for the author", () => {
     ).toEqual({ canDelete: false, canEdit: false });
   });
 
+  it("keeps a gagged author's delete in a group room but not the edit", () => {
+    expect(
+      chatMessagePermissions({
+        message: own,
+        viewerSteamId,
+        viewerGagged: true,
+        canModerate: false,
+        roomType: "match",
+        now: sentAt,
+      }),
+    ).toEqual({ canDelete: true, canEdit: false });
+  });
+
+  it("lets a gagged author edit in a direct conversation", () => {
+    expect(
+      chatMessagePermissions({
+        message: own,
+        viewerSteamId,
+        viewerGagged: true,
+        canModerate: false,
+        roomType: "direct",
+        now: sentAt,
+      }),
+    ).toEqual({ canDelete: true, canEdit: true });
+  });
+
   it("never lets a moderator edit someone else's message", () => {
     expect(
       permissions(

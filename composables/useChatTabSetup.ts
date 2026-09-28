@@ -78,6 +78,16 @@ export function useChatTabSetup() {
       if (message?.id) {
         decrementUnread(tab.id, message.id);
       }
+
+      // The api forgets a conversation whose only message is deleted, so an
+      // empty tab left behind would still say something had been sent.
+      if (
+        tab.type === "direct" &&
+        lobby.messages.length === 0 &&
+        !isChatTabOnScreen(tab.id)
+      ) {
+        closeTab(tab.id);
+      }
     });
 
     // The room's history, which arrives on join and on every rejoin. Counting

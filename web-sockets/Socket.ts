@@ -437,9 +437,10 @@ export class Socket extends EventEmitter {
     );
   }
 
-  // The ack beats the room's `edited` broadcast, which goes round through
-  // redis, so the text is applied here rather than flashing back to the old
-  // one. The broadcast then settles the server's edited_at.
+  // The ack and the room's `edited` broadcast race: the broadcast goes round
+  // through redis, the ack waits on the notification update. Whichever lands
+  // first shows the text. The ack carries no edited_at, so it stamps this
+  // browser's clock only when the broadcast hasn't already set the server's.
   public editMessage(
     type: ChatType,
     id: string,
@@ -453,6 +454,14 @@ export class Socket extends EventEmitter {
       { id, type, messageId, message },
       {
         resolved: () => {
+          const held = this.lobbyMessages(type, id).find(
+            (lobbyMessage) => lobbyMessage?.id === messageId,
+          );
+
+          if (held?.edited_at && held.message === message) {
+            return;
+          }
+
           this.editMessageInLobby(lobbyId, {
             id: messageId,
             message,

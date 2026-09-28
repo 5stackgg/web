@@ -4,9 +4,7 @@ import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { useChatTabs } from "~/composables/useChatTabs";
 import { useChatTabSetup } from "~/composables/useChatTabSetup";
-import {
-  useIncomingDirectMessages,
-} from "~/composables/useIncomingDirectMessages";
+import { useIncomingDirectMessages } from "~/composables/useIncomingDirectMessages";
 import { useRightSidebar } from "~/composables/useRightSidebar";
 import { setActiveHub } from "~/composables/useHubState";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
@@ -168,7 +166,7 @@ describe("useChatTabSetup conversation deletes", () => {
     dmTab = `direct:${dmRoom}`;
   });
 
-  it("takes a deleted message off a conversation's badge", async () => {
+  function openConversationTab() {
     useChatTabs().openTab({
       id: dmTab,
       label: "Other",
@@ -177,6 +175,12 @@ describe("useChatTabSetup conversation deletes", () => {
       lobbyId: dmRoom,
       activate: false,
     });
+  }
+
+  const hasTab = () => useChatTabs().tabs.value.some((tab) => tab.id === dmTab);
+
+  it("takes a deleted message off a conversation's badge", async () => {
+    openConversationTab();
     useChatTabs().setUnread(dmTab, 2);
     await flushPromises();
 
@@ -189,6 +193,43 @@ describe("useChatTabSetup conversation deletes", () => {
 
     socket.emit(`lobby:direct:${dmRoom}:deleted`, { id: "dm-2" });
     expect(dmUnread()).toBe(1);
+  });
+
+  it("closes a conversation whose only message was deleted", async () => {
+    openConversationTab();
+    await flushPromises();
+
+    socket.emit(`lobby:direct:${dmRoom}:messages`, {
+      messages: [line("dm-only", 2)],
+    });
+    socket.emit(`lobby:direct:${dmRoom}:deleted`, { id: "dm-only" });
+
+    expect(hasTab()).toBe(false);
+  });
+
+  it("keeps a conversation that still has messages", async () => {
+    openConversationTab();
+    await flushPromises();
+
+    socket.emit(`lobby:direct:${dmRoom}:messages`, { messages: history() });
+    socket.emit(`lobby:direct:${dmRoom}:deleted`, { id: "dm-2" });
+
+    expect(hasTab()).toBe(true);
+  });
+
+  it("keeps an emptied conversation that is on screen", async () => {
+    openConversationTab();
+    useChatTabs().setActiveTab(dmTab);
+    useRightSidebar().setRightSidebarOpen(true);
+    setActiveHub("chat");
+    await flushPromises();
+
+    socket.emit(`lobby:direct:${dmRoom}:messages`, {
+      messages: [line("dm-only", 2)],
+    });
+    socket.emit(`lobby:direct:${dmRoom}:deleted`, { id: "dm-only" });
+
+    expect(hasTab()).toBe(true);
   });
 
   it("knows the ids behind a count that lands after the history", async () => {

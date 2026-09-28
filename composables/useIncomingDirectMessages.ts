@@ -1,6 +1,5 @@
 import { watch } from "vue";
 import socket from "~/web-sockets/Socket";
-import { currentHub } from "~/composables/useHubState";
 import {
   directTabId,
   peerSteamId,
@@ -15,9 +14,8 @@ import {
 // Mounted once, from the default layout.
 export function useIncomingDirectMessages() {
   const authStore = useAuthStore();
-  const { openTab, closeTab, setUnread, tabs, activeTabId } = useChatTabs();
+  const { openTab, closeTab, setUnread, tabs } = useChatTabs();
   const { topPosition } = useDirectConversationBar();
-  const { rightSidebarOpen } = useRightSidebar();
 
   function ensureTab(
     roomId: string,
@@ -109,13 +107,11 @@ export function useIncomingDirectMessages() {
       //
       // Only a tab this creates is counted here. An existing tab is already in
       // the room and its live lobby:chat handler counts the message, while the
-      // snapshot a new tab joins into is never counted for conversations.
+      // snapshot a new tab joins into is never counted for conversations. A new
+      // tab cannot be the one on screen; if ChatPanel selects it while visible,
+      // its on-screen watcher clears the badge.
       const tabId = directTabId(data.roomId);
       const isNew = !tabs.value.some((tab) => tab.id === tabId);
-      const isOnScreen =
-        activeTabId.value === tabId &&
-        rightSidebarOpen.value &&
-        currentHub() === "chat";
 
       ensureTab(
         data.roomId,
@@ -125,7 +121,7 @@ export function useIncomingDirectMessages() {
           name: data.from?.name,
           avatar_url: data.from?.avatar_url,
         },
-        isNew && !isOnScreen ? 1 : 0,
+        isNew ? 1 : 0,
       );
     },
   );

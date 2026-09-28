@@ -153,7 +153,12 @@ const tournamentHeroJoinButtonClasses = [
 ];
 const tournamentHeroSettingsButtonClasses =
   "h-9 w-9 border-[hsl(var(--tac-amber)_/_0.45)] bg-background/45 text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.12)] hover:text-[hsl(var(--tac-amber))]";
-const tournamentHeroTabsClasses = "mt-5 border-t border-border pt-4";
+const tournamentHeroTabsClasses =
+  "mt-5 flex flex-wrap items-start gap-2 border-t border-border pt-4";
+const tournamentChatRoomStripClasses = [
+  tacticalTabsListClasses,
+  "inline-flex items-center text-muted-foreground",
+];
 const tournamentChatRoomTabClasses =
   "relative z-[1] inline-flex items-center justify-center whitespace-nowrap rounded-md ring-offset-background hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
 const tournamentChatRoomUnreadClasses =
@@ -587,8 +592,12 @@ function clearTeamEnterDelay(el: Element) {
               >
                 {{ $t("tournament.notifications.title") }}
               </TabsTrigger>
+            </TabsList>
+            <div
+              v-if="chatRoomTournament"
+              :class="tournamentChatRoomStripClasses"
+            >
               <button
-                v-if="chatRoomTournament"
                 type="button"
                 :class="[
                   tournamentChatRoomTabClasses,
@@ -605,7 +614,7 @@ function clearTeamEnterDelay(el: Element) {
                   {{ chatRoomUnreadLabel }}
                 </span>
               </button>
-            </TabsList>
+            </div>
           </div>
         </header>
       </PageTransition>

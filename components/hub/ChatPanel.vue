@@ -181,7 +181,7 @@ watch(
   () => props.isTabActive,
   (active) => {
     if (active && !activeChatId.value && orderedTabs.value.length > 0) {
-      handleSelectRoom(requestedOrFirstRoom(orderedTabs.value));
+      selectRoom(requestedOrFirstRoom(orderedTabs.value));
     }
   },
 );
@@ -195,7 +195,7 @@ watch(
       activeChatId.value = next?.id ?? null;
     }
     if (!activeChatId.value && tabs.length > 0) {
-      handleSelectRoom(requestedOrFirstRoom(tabs));
+      selectRoom(requestedOrFirstRoom(tabs));
     }
   },
   { immediate: true },
@@ -532,9 +532,15 @@ function removeConversation(roomId: string) {
   }
 }
 
-function handleSelectRoom(tab: ChatTab) {
+// The auto-select watchers also run while the panel is mounted but hidden, so
+// they leave the badge to the on-screen watcher above; only a click clears it.
+function selectRoom(tab: ChatTab) {
   activeChatId.value = tab.id;
   setActiveTab(tab.id);
+}
+
+function handleSelectRoom(tab: ChatTab) {
+  selectRoom(tab);
   resetUnread(tab.id);
 }
 

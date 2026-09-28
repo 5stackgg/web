@@ -5,8 +5,6 @@ import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { useChatTabs } from "~/composables/useChatTabs";
 import { useIncomingDirectMessages } from "~/composables/useIncomingDirectMessages";
 import { directTabId } from "~/composables/useDirectMessages";
-import { setActiveHub } from "~/composables/useHubState";
-import { useRightSidebar } from "~/composables/useRightSidebar";
 
 const socketMock = vi.hoisted(() => {
   const handlers = new Map<string, Set<(data: any) => void>>();
@@ -78,8 +76,6 @@ afterEach(() => {
   unmount = undefined;
   useAuthStore().me = undefined;
   useChatTabs().clearAll();
-  useRightSidebar().setRightSidebarOpen(false);
-  localStorage.clear();
   vi.unstubAllGlobals();
 });
 
@@ -99,19 +95,9 @@ describe("useIncomingDirectMessages", () => {
     await mountIncoming();
 
     incoming();
+    useChatTabs().setUnread(TAB, 4);
     incoming();
 
-    expect(useChatTabs().unreadCounts.value[TAB]).toBe(1);
-  });
-
-  it("does not badge a conversation that is on screen", async () => {
-    await mountIncoming();
-    useChatTabs().setActiveTab(TAB);
-    setActiveHub("chat");
-    useRightSidebar().setRightSidebarOpen(true);
-
-    incoming();
-
-    expect(useChatTabs().unreadCounts.value[TAB] ?? 0).toBe(0);
+    expect(useChatTabs().unreadCounts.value[TAB]).toBe(4);
   });
 });

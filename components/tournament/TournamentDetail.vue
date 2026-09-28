@@ -155,9 +155,9 @@ const tournamentHeroJoinButtonClasses = [
 const tournamentHeroSettingsButtonClasses =
   "h-9 w-9 border-[hsl(var(--tac-amber)_/_0.45)] bg-background/45 text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.12)] hover:text-[hsl(var(--tac-amber))]";
 const tournamentHeroTabsClasses =
-  "mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4 md:flex-nowrap";
+  "mt-5 flex items-start gap-3 border-t border-border pt-4";
 const tournamentChatRoomButtonClasses =
-  "shrink-0 inline-flex items-center gap-2 font-sans text-[0.7rem] font-semibold uppercase leading-none tracking-[0.14em]";
+  "shrink-0 inline-flex items-center gap-2 font-sans text-[0.7rem] font-semibold uppercase leading-none tracking-[0.14em] max-sm:px-2";
 const tournamentChatRoomUnreadClasses =
   "inline-flex h-4 min-w-[1rem] origin-center items-center justify-center rounded-full bg-red-500 px-1 font-sans text-[0.6rem] font-bold leading-none tracking-normal text-white tabular-nums";
 const chatRoomUnreadPopTransition = {
@@ -498,7 +498,7 @@ function clearTeamEnterDelay(el: Element) {
           <div :class="tournamentHeroTabsClasses">
             <TabsList
               variant="underline"
-              :class="[tacticalTabsListClasses, 'h-auto min-w-0 flex-wrap']"
+              :class="[tacticalTabsListClasses, 'h-auto min-w-0 flex-1 flex-wrap']"
             >
               <TabsTrigger value="overview" :class="tacticalTabsTriggerClasses">
                 {{ $t("tournament.overview") }}
@@ -606,7 +606,7 @@ function clearTeamEnterDelay(el: Element) {
               @click="openChatRoom"
             >
               <MessageSquare class="h-4 w-4 shrink-0" />
-              <span class="leading-none">
+              <span class="sr-only leading-none sm:not-sr-only">
                 {{ $t("tournament.page.chat_room_tab") }}
               </span>
               <Transition v-bind="chatRoomUnreadPopTransition">

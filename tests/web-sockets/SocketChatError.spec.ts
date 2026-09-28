@@ -510,7 +510,28 @@ describe("Socket lobby edits", () => {
     expect(text()).toEqual(["line a", "fixed"]);
   });
 
-  it("shows the new text on the ack, before the room hears about it", async () => {
+  it("shows what the server stored on the ack, before the room hears about it", async () => {
+    const send = connect();
+    const pending = socket.editMessage("direct", "1:2", "b", "fixed");
+    const [{ requestId }] = sentEdits(send);
+
+    socket.emit("chat:ack", {
+      requestId,
+      messageId: "b",
+      action: "edit",
+      message: "fixed as stored",
+      edited_at: EDITED_AT,
+    });
+    await pending;
+
+    expect(text()).toEqual(["line a", "fixed as stored"]);
+    expect(lobby.messages[1].edited_at).toBe(EDITED_AT);
+    expect(lobby.messages[1].__edited_locally).toBeUndefined();
+  });
+
+  it("stamps this browser's clock on an ack from an older api, until the server's arrives", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-09-28T12:05:30.000Z"));
     const send = connect();
     const pending = socket.editMessage("direct", "1:2", "b", "fixed");
     const [{ requestId }] = sentEdits(send);
@@ -519,7 +540,7 @@ describe("Socket lobby edits", () => {
     await pending;
 
     expect(text()).toEqual(["line a", "fixed"]);
-    expect(lobby.messages[1].edited_at).toEqual(expect.any(String));
+    expect(lobby.messages[1].edited_at).toBe("2026-09-28T12:05:30.000Z");
 
     socket.emit("lobby:direct:1:2:edited", {
       id: "b",
@@ -527,6 +548,53 @@ describe("Socket lobby edits", () => {
       edited_at: EDITED_AT,
     });
     expect(lobby.messages[1].edited_at).toBe(EDITED_AT);
+    expect(lobby.messages[1].__edited_locally).toBeUndefined();
+  });
+
+  it("ignores an older edit's ack that lands after a newer edit's broadcast", async () => {
+    const send = connect();
+    const pending = socket.editMessage("direct", "1:2", "b", "mine");
+    const [{ requestId }] = sentEdits(send);
+
+    socket.emit("lobby:direct:1:2:edited", {
+      id: "b",
+      message: "other tab",
+      edited_at: "2026-09-28T12:06:00.000Z",
+    });
+    socket.emit("chat:ack", {
+      requestId,
+      messageId: "b",
+      action: "edit",
+      message: "mine",
+      edited_at: EDITED_AT,
+    });
+    await pending;
+
+    expect(text()).toEqual(["line a", "other tab"]);
+    expect(lobby.messages[1].edited_at).toBe("2026-09-28T12:06:00.000Z");
+  });
+
+  it("ignores an older edit's broadcast that lands after a newer edit's ack", async () => {
+    const send = connect();
+    const pending = socket.editMessage("direct", "1:2", "b", "mine");
+    const [{ requestId }] = sentEdits(send);
+
+    socket.emit("chat:ack", {
+      requestId,
+      messageId: "b",
+      action: "edit",
+      message: "mine",
+      edited_at: "2026-09-28T12:06:00.000Z",
+    });
+    await pending;
+    socket.emit("lobby:direct:1:2:edited", {
+      id: "b",
+      message: "other tab",
+      edited_at: EDITED_AT,
+    });
+
+    expect(text()).toEqual(["line a", "mine"]);
+    expect(lobby.messages[1].edited_at).toBe("2026-09-28T12:06:00.000Z");
   });
 
   it("keeps the server's edit time when the broadcast beats the ack", async () => {

@@ -77,19 +77,41 @@ export function mergeChatSnapshot(
   return merged;
 }
 
-function editTime(message: LobbyMessage | undefined) {
-  return new Date(message?.edited_at ?? 0).getTime() || 0;
+function editTime(message: { edited_at?: string }) {
+  return new Date(message.edited_at ?? 0).getTime() || 0;
+}
+
+// Two tabs can edit one message, and each edit's ack and broadcast land in
+// any order, so an older server stamp never replaces a newer one. A stamp
+// taken from this browser's clock can't be ordered against the server's: the
+// server's stamp always replaces it.
+function isOlderEdit(edit: { edited_at?: string }, held: LobbyMessage) {
+  if (!edit.edited_at || held.__edited_locally) {
+    return false;
+  }
+
+  return editTime(edit) < editTime(held);
 }
 
 function keepNewerEdit(
   snapshot: LobbyMessage,
   held: LobbyMessage | undefined,
 ) {
-  if (!held || editTime(held) <= editTime(snapshot)) {
+  if (!held || (snapshot.edited_at && !isOlderEdit(snapshot, held))) {
     return snapshot;
   }
 
-  return { ...snapshot, message: held.message, edited_at: held.edited_at };
+  const kept: LobbyMessage = {
+    ...snapshot,
+    message: held.message,
+    edited_at: held.edited_at,
+  };
+
+  if (held.__edited_locally) {
+    kept.__edited_locally = true;
+  }
+
+  return kept;
 }
 
 export function insertChatMessage(
@@ -182,12 +204,24 @@ export function applyChatMessageEdit(
     return null;
   }
 
-  const messages = current.slice();
-  messages[index] = {
-    ...messages[index],
+  if (isOlderEdit(edit, current[index])) {
+    return null;
+  }
+
+  const edited: LobbyMessage = {
+    ...current[index],
     message: edit.message,
     edited_at: edit.edited_at ?? new Date().toISOString(),
   };
+
+  if (edit.edited_at) {
+    delete edited.__edited_locally;
+  } else {
+    edited.__edited_locally = true;
+  }
+
+  const messages = current.slice();
+  messages[index] = edited;
 
   return messages;
 }

@@ -40,6 +40,9 @@ export interface LobbyMessage {
   // client where two rooms are merged into one stream and a line has to say
   // which one it went to. See ChatLobby's merged `messages`.
   __channel?: "everyone" | "team";
+  // Never sent by the server either: set while `edited_at` is this browser's
+  // clock, stamped for an api that acked an edit without the server's time.
+  __edited_locally?: boolean;
 }
 
 export interface Lobby {
@@ -79,11 +82,13 @@ interface ChatAck {
   requestId?: string;
   messageId?: string;
   action?: ChatAction;
+  message?: string;
+  edited_at?: string;
 }
 
 interface PendingChatRequest {
   action: ChatAction;
-  resolve: () => void;
+  resolve: (ack: ChatAck) => void;
   reject: (error: ChatError) => void;
   timer: ReturnType<typeof setTimeout>;
 }
@@ -439,8 +444,10 @@ export class Socket extends EventEmitter {
 
   // The ack and the room's `edited` broadcast race: the broadcast goes round
   // through redis, the ack waits on the notification update. Whichever lands
-  // first shows the text. The ack carries no edited_at, so it stamps this
-  // browser's clock only when the broadcast hasn't already set the server's.
+  // first shows the text. Both carry the server's stored text and edited_at,
+  // except from an older api whose ack has neither: that ack stamps this
+  // browser's clock unless the broadcast already showed the same text, and
+  // the server's next stamp for the message replaces it.
   public editMessage(
     type: ChatType,
     id: string,
@@ -453,7 +460,16 @@ export class Socket extends EventEmitter {
       "edit",
       { id, type, messageId, message },
       {
-        resolved: () => {
+        resolved: (ack) => {
+          if (ack.edited_at) {
+            this.editMessageInLobby(lobbyId, {
+              id: messageId,
+              message: ack.message ?? message,
+              edited_at: ack.edited_at,
+            });
+            return;
+          }
+
           const held = this.lobbyMessages(type, id).find(
             (lobbyMessage) => lobbyMessage?.id === messageId,
           );
@@ -462,11 +478,7 @@ export class Socket extends EventEmitter {
             return;
           }
 
-          this.editMessageInLobby(lobbyId, {
-            id: messageId,
-            message,
-            edited_at: new Date().toISOString(),
-          });
+          this.editMessageInLobby(lobbyId, { id: messageId, message });
         },
         rejected: (error) => {
           if (error?.code === "not_found") {
@@ -483,7 +495,7 @@ export class Socket extends EventEmitter {
     action: Exclude<ChatAction, "send">,
     data: Record<string, unknown>,
     handlers: {
-      resolved: () => void;
+      resolved: (ack: ChatAck) => void;
       rejected: (error: ChatError) => void;
     },
   ): Promise<void> {
@@ -496,8 +508,8 @@ export class Socket extends EventEmitter {
     return new Promise<void>((resolve, reject) => {
       const pending: PendingChatRequest = {
         action,
-        resolve: () => {
-          handlers.resolved();
+        resolve: (ack) => {
+          handlers.resolved(ack);
           resolve();
         },
         reject: (error) => {
@@ -519,7 +531,7 @@ export class Socket extends EventEmitter {
   }
 
   public resolveChatRequest(ack: ChatAck) {
-    this.takeChatRequest(ack)?.resolve();
+    this.takeChatRequest(ack)?.resolve(ack);
   }
 
   public rejectChatRequest(error: ChatError) {

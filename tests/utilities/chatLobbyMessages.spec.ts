@@ -143,6 +143,50 @@ describe("mergeChatSnapshot", () => {
     expect(merged).toEqual([newer]);
   });
 
+  it("keeps a newer edit over an older one the snapshot carries", () => {
+    const held = {
+      ...line("a", 1),
+      message: "second",
+      edited_at: "2026-09-28T12:06:00.000Z",
+    };
+    const older = {
+      ...line("a", 1),
+      message: "first",
+      edited_at: "2026-09-28T12:05:00.000Z",
+    };
+
+    expect(mergeChatSnapshot([held], [older], new Set())).toEqual([held]);
+  });
+
+  it("keeps an edit stamped by this browser through a snapshot with no edit", () => {
+    const local = {
+      ...line("a", 1),
+      message: "fixed",
+      edited_at: "2026-09-28T12:05:00.000Z",
+      __edited_locally: true,
+    };
+
+    expect(mergeChatSnapshot([local], [line("a", 1)], new Set())).toEqual([
+      local,
+    ]);
+  });
+
+  it("takes the server's edit over one stamped by this browser, whatever the clocks say", () => {
+    const local = {
+      ...line("a", 1),
+      message: "fixed",
+      edited_at: "2026-09-28T12:07:00.000Z",
+      __edited_locally: true,
+    };
+    const server = {
+      ...line("a", 1),
+      message: "fixed",
+      edited_at: "2026-09-28T12:05:00.000Z",
+    };
+
+    expect(mergeChatSnapshot([local], [server], new Set())).toEqual([server]);
+  });
+
   it("treats a missing snapshot as an empty room", () => {
     expect(mergeChatSnapshot([line("a", 1)], null, new Set())).toEqual([
       line("a", 1),
@@ -192,6 +236,63 @@ describe("applyChatMessageEdit", () => {
     expect(
       applyChatMessageEdit([line("b", 1)], edit, new Set(["b"])),
     ).toBeNull();
+  });
+
+  it("ignores an edit older than the one the line already has", () => {
+    const newer = {
+      ...line("b", 1),
+      message: "newer",
+      edited_at: edit.edited_at,
+    };
+
+    expect(
+      applyChatMessageEdit(
+        [newer],
+        { ...edit, message: "older", edited_at: "2026-09-28T12:04:59.999Z" },
+        new Set(),
+      ),
+    ).toBeNull();
+  });
+
+  it("applies an edit stamped at the same time as the one held", () => {
+    const held = {
+      ...line("b", 1),
+      message: "held",
+      edited_at: edit.edited_at,
+    };
+
+    expect(applyChatMessageEdit([held], edit, new Set())![0].message).toBe(
+      "fixed",
+    );
+  });
+
+  it("stamps this browser's clock on an edit with no time, and marks it", () => {
+    const edited = applyChatMessageEdit(
+      [line("b", 1)],
+      { id: "b", message: "fixed" },
+      new Set(),
+    );
+
+    expect(edited![0].edited_at).toEqual(expect.any(String));
+    expect(edited![0].__edited_locally).toBe(true);
+  });
+
+  it("replaces an edit stamped by this browser with the server's, even an earlier one", () => {
+    const local = {
+      ...line("b", 1),
+      message: "fixed",
+      edited_at: "2026-09-28T12:07:00.000Z",
+      __edited_locally: true,
+    };
+
+    const edited = applyChatMessageEdit([local], edit, new Set());
+
+    expect(edited![0]).toEqual({
+      ...line("b", 1),
+      message: "fixed",
+      edited_at: edit.edited_at,
+    });
+    expect("__edited_locally" in edited![0]).toBe(false);
   });
 
   it.each([

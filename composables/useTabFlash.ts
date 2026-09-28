@@ -1,4 +1,10 @@
-import { reactive, readonly } from "vue";
+import {
+  getCurrentScope,
+  onScopeDispose,
+  reactive,
+  readonly,
+  watch,
+} from "vue";
 import { brandedFaviconHref, faviconOverride } from "~/composables/useBranding";
 import {
   isTabFlashEnabled,
@@ -12,8 +18,9 @@ const BLINK_MS = 1000;
 const SEEN_KEY_LIMIT = 500;
 const ICON_SIZE = 64;
 const ICON_LOAD_TIMEOUT_MS = 5000;
+const ICON_RETRY_MS = 60_000;
 const DEFAULT_FAVICON = "/favicon.ico";
-const FALLBACK_ICON = "/favicon/64.png";
+const BUNDLED_ICON = "/favicon/64.png";
 const COUNT_DOT_COLOR = "#ef4444";
 
 const counts = reactive<Record<TabFlashKind, number>>({
@@ -147,20 +154,12 @@ async function showAlertIcon(label: string) {
 
 function alertIcon(href: string, label: string) {
   const cacheKey = `${href}|${label}`;
-  let icon = alertIcons.get(cacheKey);
+  const cached = alertIcons.get(cacheKey);
 
-  if (!icon) {
-    icon = drawAlertIcon(href, label);
-    alertIcons.set(cacheKey, icon);
+  if (cached) {
+    return cached;
   }
 
-  return icon;
-}
-
-async function drawAlertIcon(
-  href: string,
-  label: string,
-): Promise<string | null> {
   const canvas = document.createElement("canvas");
   canvas.width = ICON_SIZE;
   canvas.height = ICON_SIZE;
@@ -173,30 +172,46 @@ async function drawAlertIcon(
   }
 
   if (!context) {
-    return null;
+    return Promise.resolve(null);
   }
 
+  const icon = drawAlertIcon(canvas, context, href, label);
+  alertIcons.set(cacheKey, icon);
+
+  // One failed load (an API blip) shouldn't leave every later flash
+  // title-only, but it shouldn't be retried on every signal either.
+  void icon.then((drawn) => {
+    if (!drawn) {
+      setTimeout(() => alertIcons.delete(cacheKey), ICON_RETRY_MS);
+    }
+  });
+
+  return icon;
+}
+
+async function drawAlertIcon(
+  canvas: HTMLCanvasElement,
+  context: CanvasRenderingContext2D,
+  href: string,
+  label: string,
+): Promise<string | null> {
   // The branded icon lives on the API's origin. The tab already fetched it
   // without CORS, and a cached copy of that response would taint the canvas,
-  // so the CORS request goes to a URL of its own.
-  const sources =
+  // so the CORS request goes to a URL of its own. If it still can't be drawn
+  // the flash stays title-only: the bundled icon is 5stack's, not the brand's.
+  const source =
     href === DEFAULT_FAVICON
-      ? [FALLBACK_ICON]
-      : [`${href}${href.includes("?") ? "&" : "?"}tab-flash=1`, FALLBACK_ICON];
+      ? BUNDLED_ICON
+      : `${href}${href.includes("?") ? "&" : "?"}tab-flash=1`;
 
-  for (const source of sources) {
-    try {
-      const image = await loadImage(source);
-      context.clearRect(0, 0, ICON_SIZE, ICON_SIZE);
-      context.drawImage(image, 0, 0, ICON_SIZE, ICON_SIZE);
-      drawCountDot(context, label);
-      return canvas.toDataURL("image/png");
-    } catch {
-      // A failed load or a tainted canvas moves on to the next source.
-    }
+  try {
+    const image = await loadImage(source);
+    context.drawImage(image, 0, 0, ICON_SIZE, ICON_SIZE);
+    drawCountDot(context, label);
+    return canvas.toDataURL("image/png");
+  } catch {
+    return null;
   }
-
-  return null;
 }
 
 function loadImage(src: string): Promise<HTMLImageElement> {
@@ -313,6 +328,66 @@ function onVisibilityChange() {
   }
 
   stop();
+}
+
+// Counts what arrives after the tab is hidden, never what was already there:
+// the baseline is taken on hide, or when the source first loads if the tab was
+// hidden before that. A drop (read elsewhere, preferences loading) never
+// flashes, and neither does climbing back to where it was.
+export function trackBellCount(
+  read: () => { loaded: boolean; count: number },
+) {
+  let baseline: number | null = null;
+  let signalled = 0;
+
+  const takeBaseline = () => {
+    const { loaded, count } = read();
+    baseline = loaded ? count : null;
+    signalled = 0;
+  };
+
+  const onVisibilityChange = () => {
+    if (isHidden()) {
+      takeBaseline();
+      return;
+    }
+
+    baseline = null;
+  };
+
+  if (isHidden()) {
+    takeBaseline();
+  }
+
+  document.addEventListener("visibilitychange", onVisibilityChange);
+
+  const stopWatching = watch(read, ({ loaded, count }) => {
+    if (!isHidden()) {
+      return;
+    }
+
+    if (!loaded) {
+      baseline = null;
+      return;
+    }
+
+    if (baseline === null) {
+      takeBaseline();
+      return;
+    }
+
+    while (signalled < count - baseline) {
+      signalled += 1;
+      signal("bell");
+    }
+  });
+
+  if (getCurrentScope()) {
+    onScopeDispose(() => {
+      stopWatching();
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    });
+  }
 }
 
 // Only the main window installs this. The chat pop-out is a document of its

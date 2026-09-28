@@ -47,9 +47,7 @@ export function useTabFlashSettings() {
 
     try {
       localStorage.setItem(STORAGE_KEYS[kind], String(value));
-    } catch {
-      // Kept in memory above.
-    }
+    } catch {}
   }
 
   return { enabled, setEnabled };

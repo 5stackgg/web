@@ -109,6 +109,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
   const draft_invites = ref<any[]>([]);
   const draftInvitesLoaded = ref(false);
   const notifications = ref<Notification[]>([]);
+  const notificationsLoaded = ref(false);
   const seasonRebuilds = ref<Array<{ id: any; number: number | null }>>([]);
   // Raw league seasons (with only the viewer's un-played brackets, filtered
   // server-side); actionability is derived below into `scheduleTasks` — a
@@ -357,10 +358,18 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
       .map((n) => n.entity_id),
   );
 
-  // The bell without its chat rows, which the chat tabs' unread already counts.
-  const unreadNonChatNotificationCount = computed(
+  // One per thing that happened to the player. Invites, news and league
+  // scheduling each insert a row too, so counting rows rather than the bell's
+  // own lists sees them once; chat rows are left to the chat tabs' unread.
+  const unreadPersonalAlertCount = computed(
     () =>
-      unreadNotificationCount.value - unreadChatNotificationRooms.value.length,
+      visibleNotifications.value.filter(
+        (n) =>
+          !n.is_read &&
+          n.role === "user" &&
+          n.type !== e_notification_types_enum.ChatMessage &&
+          n.type !== e_notification_types_enum.MatchChatMessage,
+      ).length,
   );
 
   const stackedNotifications = computed<NotificationStackItem[]>(() => {
@@ -589,6 +598,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
         .subscribe({
           next: ({ data }) => {
             notifications.value = data.notifications;
+            notificationsLoaded.value = true;
           },
         }),
     );
@@ -687,6 +697,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     () => useAuthStore().me?.steam_id,
     (steamId) => {
       draftInvitesLoaded.value = false;
+      notificationsLoaded.value = false;
       if (steamId) {
         subscribeToAll(steamId);
         // Loaded here rather than only on the settings page: the bell filters
@@ -728,7 +739,8 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     stackedNotifications,
     unreadNotificationCount,
     unreadChatNotificationRooms,
-    unreadNonChatNotificationCount,
+    unreadPersonalAlertCount,
+    notificationsLoaded,
     hasNotifications,
     hasPersonalNotifications,
     hasAdminNotifications,

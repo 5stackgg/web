@@ -96,7 +96,7 @@ export function useCameraTalkback(matchId: () => string) {
     if (ready && !talking.value) {
       await join();
 
-      if (talking.value) {
+      if (talking.value && !disposed) {
         useTabFlash().signal("admin_call");
       }
     } else if (!ready && talking.value) {

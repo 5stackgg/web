@@ -1,10 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { nextTick } from "vue";
-import { installTabFlash, useTabFlash } from "~/composables/useTabFlash";
+import { effectScope, nextTick, ref } from "vue";
+import {
+  installTabFlash,
+  trackBellCount,
+  useTabFlash,
+} from "~/composables/useTabFlash";
 import { faviconOverride } from "~/composables/useBranding";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
-import { useNotificationStore } from "~/stores/NotificationStore";
 
 const BASE_TITLE = "Matches | 5Stack";
 const SETTING_KEYS = ["match-found", "admin-call", "chat", "bell"];
@@ -242,25 +245,81 @@ describe("tab flash sources", () => {
     matchmaking.joinedMatchmakingQueues = {} as never;
   });
 
-  it("flashes only bell notifications that arrive after the tab is hidden", async () => {
-    const notifications = useNotificationStore();
-    notifications.team_invites = [{ id: "a" }, { id: "b" }];
-    await nextTick();
+});
+
+describe("trackBellCount", () => {
+  function trackFake(initial: { loaded: boolean; count: number }) {
+    const loaded = ref(initial.loaded);
+    const count = ref(initial.count);
+    const scope = effectScope();
+
+    scope.run(() =>
+      trackBellCount(() => ({ loaded: loaded.value, count: count.value })),
+    );
+
+    return { loaded, count, stop: () => scope.stop() };
+  }
+
+  it("flashes only what arrives after the tab is hidden", async () => {
+    const bell = trackFake({ loaded: true, count: 2 });
 
     setVisibility("hidden");
+    bell.count.value = 1;
     await nextTick();
-    vi.advanceTimersByTime(3000);
-    expect(document.title).toBe(BASE_TITLE);
-
-    notifications.team_invites = [{ id: "b" }];
+    bell.count.value = 2;
     await nextTick();
     expect(document.title).toBe(BASE_TITLE);
 
-    notifications.team_invites = [{ id: "b" }, { id: "c" }, { id: "d" }];
+    bell.count.value = 4;
+    await nextTick();
+    expect(document.title).toBe("(2) New notifications");
+
+    bell.stop();
+  });
+
+  it("never flashes what the first load delivers to a hidden tab", async () => {
+    setVisibility("hidden");
+    const bell = trackFake({ loaded: false, count: 0 });
+
+    bell.count.value = 3;
+    bell.loaded.value = true;
+    await nextTick();
+    expect(document.title).toBe(BASE_TITLE);
+
+    bell.count.value = 4;
     await nextTick();
     expect(document.title).toBe("(1) New notification");
 
-    notifications.team_invites = [];
+    bell.stop();
+  });
+
+  it("takes a fresh baseline every time the tab is hidden", async () => {
+    const bell = trackFake({ loaded: true, count: 0 });
+
+    setVisibility("hidden");
+    bell.count.value = 1;
+    await nextTick();
+    expect(document.title).toBe("(1) New notification");
+
+    setVisibility("visible");
+    setVisibility("hidden");
+    await nextTick();
+    expect(document.title).toBe(BASE_TITLE);
+
+    bell.stop();
+  });
+
+  it("ignores rises while the tab is visible", async () => {
+    const bell = trackFake({ loaded: true, count: 0 });
+
+    bell.count.value = 5;
+    await nextTick();
+    setVisibility("hidden");
+    await nextTick();
+
+    expect(document.title).toBe(BASE_TITLE);
+
+    bell.stop();
   });
 });
 
@@ -356,7 +415,7 @@ describe("tab flash icon", () => {
     expect(faviconOverride.value).toBeNull();
   });
 
-  it("falls back to the bundled icon when the branded one won't load", async () => {
+  it("stays title-only rather than show 5stack's icon on a brand", async () => {
     brandFavicon("cors-broken");
     fakeCanvas();
     const loaded = fakeImages((src) => src.includes("/branding/"));
@@ -367,8 +426,20 @@ describe("tab flash icon", () => {
 
     expect(loaded.map((image) => image.src)).toEqual([
       expect.stringContaining("/branding/favicon?v=cors-broken&tab-flash=1"),
-      "/favicon/64.png",
     ]);
+    expect(faviconOverride.value).toBeNull();
+    expect(document.title).toBe("(1) New message");
+  });
+
+  it("draws on the bundled icon when there is no branding", async () => {
+    fakeCanvas();
+    const loaded = fakeImages(() => false);
+    setVisibility("hidden");
+
+    useTabFlash().signal("chat", "unbranded-1");
+    await drainMicrotasks();
+
+    expect(loaded.map((image) => image.src)).toEqual(["/favicon/64.png"]);
     expect(faviconOverride.value).toBe("data:image/png;base64,ALERT");
   });
 

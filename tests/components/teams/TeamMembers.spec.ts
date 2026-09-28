@@ -7,6 +7,9 @@ import TeamMember from "~/components/teams/TeamMember.vue";
 
 const OWNER = "76561198000000002";
 const MEMBER = "76561198000000003";
+const SUBSTITUTE = "76561198000000004";
+const BENCHED = "76561198000000005";
+const COACH = "76561198000000006";
 
 let unmount: (() => void) | null = null;
 
@@ -15,11 +18,16 @@ afterEach(() => {
   unmount = null;
 });
 
-function rosterRow(steamId: string, role: string) {
+function rosterRow(
+  steamId: string,
+  role: string,
+  status = "Starter",
+  coach = false,
+) {
   return {
     role,
-    coach: false,
-    status: "Starter",
+    coach,
+    status,
     team_id: "team-1",
     roster_image_url: null,
     player: { steam_id: steamId, name: steamId, avatar_url: null },
@@ -33,7 +41,12 @@ describe("TeamMembers owner", () => {
     expect(print(subscription.query)).toMatch(/\bowner_steam_id\b/);
   });
 
-  it("marks only the owner's row as the owner", async () => {
+  it.each([
+    ["starter", "Starter", false],
+    ["substitute", "Substitute", false],
+    ["benched", "Benched", false],
+    ["coach", "Starter", true],
+  ])("flags only the owner when they are a %s", async (_, status, coach) => {
     const wrapper = await mountSuspended(TeamMembers, {
       props: { teamId: "team-1" },
       global: { stubs: { TeamMember: true, PlayerSearch: true } },
@@ -47,7 +60,13 @@ describe("TeamMembers owner", () => {
       can_invite: false,
       can_remove: true,
       can_change_role: true,
-      roster: [rosterRow(OWNER, "Admin"), rosterRow(MEMBER, "Admin")],
+      roster: [
+        rosterRow(OWNER, "Admin", status as string, coach as boolean),
+        rosterRow(MEMBER, "Admin"),
+        rosterRow(SUBSTITUTE, "Member", "Substitute"),
+        rosterRow(BENCHED, "Member", "Benched"),
+        rosterRow(COACH, "Member", "Starter", true),
+      ],
     };
     await flushPromises();
 
@@ -60,6 +79,12 @@ describe("TeamMembers owner", () => {
         ]),
     );
 
-    expect(owners).toEqual({ [OWNER]: true, [MEMBER]: false });
+    expect(owners).toEqual({
+      [OWNER]: true,
+      [MEMBER]: false,
+      [SUBSTITUTE]: false,
+      [BENCHED]: false,
+      [COACH]: false,
+    });
   });
 });

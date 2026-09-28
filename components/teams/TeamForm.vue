@@ -249,6 +249,14 @@ export default {
         useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer)
       );
     },
+    ownerChanged() {
+      const owner = this.form.values.owner_steam_id;
+      return (
+        this.canUpdateOwner &&
+        !!owner &&
+        String(owner) !== String(this.team.owner_steam_id)
+      );
+    },
     isOrganizationEditable() {
       return useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer);
     },
@@ -258,6 +266,7 @@ export default {
       this.form.setValues({
         team_name: team.name,
         short_name: team.short_name,
+        owner_steam_id: team.owner_steam_id,
         is_organization: team.is_organization ?? false,
       });
       this.takeSnapshot();
@@ -302,7 +311,9 @@ export default {
                   _set: {
                     name: this.form.values.team_name,
                     short_name: this.form.values.short_name,
-                    owner_steam_id: this.form.values.owner_steam_id,
+                    ...(this.ownerChanged
+                      ? { owner_steam_id: this.form.values.owner_steam_id }
+                      : {}),
                     ...(this.isOrganizationEditable
                       ? { is_organization: this.form.values.is_organization }
                       : {}),

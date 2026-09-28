@@ -55,6 +55,7 @@ import {
   UserPlus,
   UserCheck,
   X,
+  Clock,
   MessageSquare,
   Calendar as CalendarIcon,
   ChevronDown,
@@ -1687,7 +1688,8 @@ const playerHeroAddFriendClasses =
   "group/addfriend relative inline-flex items-center justify-center gap-[0.55rem] overflow-hidden rounded-md border border-[hsl(var(--tac-amber)_/_0.55)] bg-[hsl(var(--tac-amber)_/_0.12)] px-4 py-2.5 font-sans text-[0.8rem] font-bold uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))] transition-[transform,border-color,background-color,box-shadow] duration-150 hover:-translate-y-px hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.2)] hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.45),0_8px_24px_-8px_hsl(var(--tac-amber)/0.5)] disabled:cursor-not-allowed disabled:opacity-60 max-md:w-full";
 const playerHeroFriendBadgeClasses =
   "inline-flex items-center justify-center gap-[0.5rem] rounded-md border border-emerald-500/40 bg-emerald-500/15 px-3 py-2 font-mono text-[0.72rem] font-medium uppercase tracking-[0.16em] text-emerald-400 max-md:w-full";
-const playerHeroCancelRequestClasses = `group/cancelrequest ${playerHeroFriendBadgeClasses} transition-colors duration-150 hover:border-destructive/60 hover:bg-destructive/15 hover:text-destructive focus-visible:border-destructive/60 focus-visible:bg-destructive/15 focus-visible:text-destructive disabled:cursor-not-allowed disabled:opacity-60`;
+const playerHeroCancelRequestClasses =
+  "group/req inline-flex items-center justify-center rounded-md border border-border/70 bg-muted/30 px-3 py-2 font-mono text-[0.72rem] font-bold uppercase tracking-[0.16em] text-muted-foreground transition-colors duration-150 hover:border-destructive/50 hover:bg-destructive/15 hover:text-destructive focus-visible:border-destructive/50 focus-visible:bg-destructive/15 focus-visible:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-60 max-md:w-full";
 const playerHeroAvatarFrameClasses =
   "relative h-[156px] w-[156px] border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] p-1 max-md:h-24 max-md:w-24";
 const playerHeroAvatarClasses = "block h-full w-full object-cover";
@@ -1989,21 +1991,19 @@ const playerHeroTeamChipDotClasses =
                   :aria-label="$t('matchmaking.friends.cancel_request')"
                   @click="cancelFriendRequest"
                 >
-                  <UserPlus
-                    class="h-3.5 w-3.5 group-hover/cancelrequest:hidden group-focus-visible/cancelrequest:hidden"
-                  />
-                  <X
-                    class="hidden h-3.5 w-3.5 group-hover/cancelrequest:block group-focus-visible/cancelrequest:block"
-                  />
-                  <span class="grid">
+                  <span class="grid justify-items-center [&>*]:[grid-area:1/1]">
                     <span
-                      class="col-start-1 row-start-1 group-hover/cancelrequest:invisible group-focus-visible/cancelrequest:invisible"
-                      >{{ $t("matchmaking.friends.requested") }}</span
+                      class="inline-flex items-center gap-[0.5rem] transition-opacity duration-150 group-hover/req:opacity-0 group-focus-visible/req:opacity-0 [@media(hover:none)]:opacity-0"
                     >
+                      <Clock class="h-3.5 w-3.5" />
+                      {{ $t("matchmaking.friends.requested") }}
+                    </span>
                     <span
-                      class="invisible col-start-1 row-start-1 group-hover/cancelrequest:visible group-focus-visible/cancelrequest:visible"
-                      >{{ $t("matchmaking.friends.cancel_request") }}</span
+                      class="inline-flex items-center gap-[0.5rem] opacity-0 transition-opacity duration-150 group-hover/req:opacity-100 group-focus-visible/req:opacity-100 [@media(hover:none)]:opacity-100"
                     >
+                      <X class="h-3.5 w-3.5" />
+                      {{ $t("matchmaking.friends.cancel_request") }}
+                    </span>
                   </span>
                 </button>
                 <span

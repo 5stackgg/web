@@ -155,6 +155,25 @@ describe("CS2 build panels", () => {
     expect(wrapper.text()).toContain("A validation is already running");
   });
 
+  it("hides the last result while a re-run is in progress", async () => {
+    const wrapper = await mountSuspended(Cs2GamedataPanel, {
+      props: {
+        buildId: 25537370,
+        row: {
+          ...gamedata,
+          status: "running",
+          started_at: minutesAgo(1),
+          validated_at: null,
+        },
+        nodes,
+        canRun: true,
+      },
+    });
+
+    expect(wrapper.text()).not.toContain("ConnectClient");
+    expect(wrapper.text()).not.toContain("1 newly broken");
+  });
+
   it("lists every map, changed ones first", async () => {
     const wrapper = await mountSuspended(Cs2MapAssetsPanel, {
       props: { buildId: 25537370, row: mapAssets, nodes, canRun: true },

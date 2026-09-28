@@ -4,6 +4,7 @@ import {
   MAP_ASSETS_STALE_MS,
   formatDuration,
   gamedataChangeRows,
+  gamedataErrorReason,
   gamedataRunStatus,
   mapAssetChangeRows,
   mapAssetsRunStatus,
@@ -258,5 +259,26 @@ describe("formatDuration", () => {
     [7260, "2h 1m"],
   ])("formats %s as %s", (seconds, expected) => {
     expect(formatDuration(seconds)).toBe(expected);
+  });
+});
+
+describe("gamedataErrorReason", () => {
+  it("explains an error the validator reported without a message", () => {
+    expect(
+      gamedataErrorReason(
+        gamedata({
+          status: "error",
+          results: { swiftly: { error: "could not fetch SwiftlyS2 gamedata" } },
+        }),
+      ),
+    ).toBe("could not fetch SwiftlyS2 gamedata");
+    expect(
+      gamedataErrorReason(
+        gamedata({
+          status: "error",
+          results: { statuses: { fivestack: "pass", "upstream-ccs": "error" } },
+        }),
+      ),
+    ).toBe("could not verify upstream-ccs");
   });
 });

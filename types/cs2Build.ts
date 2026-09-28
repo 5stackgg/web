@@ -59,12 +59,36 @@ export type GamedataRunRow = Cs2BuildRunPerson & {
   results?: {
     status?: string;
     error?: string;
+    statuses?: Record<string, string | null>;
+    swiftly?: { error?: string | null } | null;
     broken?: Array<GamedataEntry>;
     warnings?: Array<GamedataEntry>;
     skipped?: Array<GamedataEntry>;
     results?: Array<GamedataEntry>;
   } | null;
 };
+
+// Mirrors GameServerNodeService.gamedataErrorReason.
+export function gamedataErrorReason(
+  row: GamedataRunRow | null | undefined,
+): string | null {
+  const results = row?.results;
+  if (!results) {
+    return null;
+  }
+  if (results.error) {
+    return results.error;
+  }
+  if (results.swiftly?.error) {
+    return results.swiftly.error;
+  }
+  const unverified = Object.entries(results.statuses ?? {})
+    .filter(([, status]) => status === "error")
+    .map(([set]) => set);
+  return unverified.length
+    ? `could not verify ${unverified.join(", ")}`
+    : null;
+}
 
 export type MapAssetKind = "tri" | "grenadeclip" | "view" | "callouts";
 

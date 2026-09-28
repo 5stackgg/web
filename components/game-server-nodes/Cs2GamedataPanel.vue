@@ -19,6 +19,7 @@ import {
   durationSeconds,
   formatDuration,
   gamedataChangeRows,
+  gamedataErrorReason,
   gamedataRunStatus,
   type Cs2BuildNode,
   type Cs2BuildTone,
@@ -50,7 +51,9 @@ const status = computed(() =>
   gamedataRunStatus(props.row, now.value.getTime()),
 );
 const tone = computed(() => TONE_BY_GAMEDATA_STATUS[status.value]);
-const rows = computed(() => gamedataChangeRows(props.row));
+const rows = computed(() =>
+  running.value ? [] : gamedataChangeRows(props.row),
+);
 const changes = computed(() => props.row?.changes ?? null);
 const counts = computed(() => changes.value?.counts ?? null);
 
@@ -61,7 +64,7 @@ const took = computed(() =>
 );
 
 const stats = computed(() => {
-  if (!counts.value) {
+  if (!counts.value || running.value) {
     return [];
   }
   return [
@@ -88,7 +91,7 @@ const stats = computed(() => {
 });
 
 const chips = computed(() => {
-  if (!changes.value?.comparable) {
+  if (!changes.value?.comparable || running.value) {
     return [];
   }
   return [
@@ -152,7 +155,7 @@ const blocked = computed(() =>
 
 const skipped = computed(() => props.row?.results?.skipped ?? []);
 const error = computed(() =>
-  status.value === "error" ? (props.row?.results?.error ?? null) : null,
+  status.value === "error" ? gamedataErrorReason(props.row) : null,
 );
 
 const node = computed(

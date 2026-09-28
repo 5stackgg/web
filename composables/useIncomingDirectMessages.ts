@@ -1,9 +1,5 @@
 import { watch } from "vue";
-import socket, {
-  chatMessageKey,
-  type LobbyMessage,
-} from "~/web-sockets/Socket";
-import { useTabFlash } from "~/composables/useTabFlash";
+import socket, { type LobbyMessage } from "~/web-sockets/Socket";
 import {
   directTabId,
   peerSteamId,
@@ -110,9 +106,7 @@ export function useIncomingDirectMessages() {
       }
 
       // The room's own `lobby:chat` carries the same id when its tab is open.
-      if (data.message) {
-        useTabFlash().signal("chat", chatMessageKey(data.message));
-      }
+      useTabFlash().signal("chat", data.message?.id);
 
       // Deliberately does not inject the message: opening the tab makes
       // useChatTabSetup join the room, and the join's history snapshot delivers

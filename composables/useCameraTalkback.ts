@@ -5,8 +5,8 @@ import {
   hangupPlayerTalk,
   negotiateWebRtc,
 } from "~/composables/useCameraApi";
-import { useIceServers } from "~/composables/useIceServers";
 import { useTabFlash } from "~/composables/useTabFlash";
+import { useIceServers } from "~/composables/useIceServers";
 
 // The other direction: an organizer talking to the player whose camera this is.
 // Nothing here starts until the player has connected, because the connect click
@@ -69,7 +69,6 @@ export function useCameraTalkback(matchId: () => string) {
 
       await negotiateWebRtc(pc, cameraPlayerTalkUrl(matchId()), "include");
       talking.value = true;
-      useTabFlash().signal("admin_call");
     } catch {
       end();
     }
@@ -96,6 +95,10 @@ export function useCameraTalkback(matchId: () => string) {
 
     if (ready && !talking.value) {
       await join();
+
+      if (talking.value) {
+        useTabFlash().signal("admin_call");
+      }
     } else if (!ready && talking.value) {
       end();
     }

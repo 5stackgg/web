@@ -34,6 +34,7 @@
       "title_placeholder": "計劃維護",
       "message": "訊息內容",
       "message_placeholder": "配對功能暫時無法使用，我們正在調查中。",
+      "message_link_hint": "使用 [label](https://example.com) 新增連結。指向本站的連結會在應用程式內開啟。",
       "is_active": "啟用",
       "is_active_hint": "立即向所有人顯示此橫幅。",
       "dismissible": "可關閉",
@@ -7821,6 +7822,7 @@
     "tooltips": {
       "fullscreen": "全螢幕",
       "toggle_right_sidebar": "切換右側邊欄",
+      "toggle_right_sidebar_unread": "切換右側邊欄（{count} 則未讀）",
       "view_steam_profile": "查看 Steam 個人檔案",
       "zoom_in": "放大",
       "zoom_in_scroll": "放大（Ctrl/Cmd + 滾輪）",

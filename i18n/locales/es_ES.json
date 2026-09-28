@@ -34,6 +34,7 @@
       "title_placeholder": "Mantenimiento programado",
       "message": "Mensaje",
       "message_placeholder": "El matchmaking está caído temporalmente mientras lo investigamos.",
+      "message_link_hint": "Añade un enlace con [label](https://example.com). Los enlaces a este sitio se abren en la aplicación.",
       "is_active": "Activo",
       "is_active_hint": "Mostrar este banner a todo el mundo ahora mismo.",
       "dismissible": "Descartable",
@@ -7821,6 +7822,7 @@
     "tooltips": {
       "fullscreen": "Pantalla completa",
       "toggle_right_sidebar": "Mostrar/ocultar barra derecha",
+      "toggle_right_sidebar_unread": "Mostrar/ocultar barra derecha ({count} sin leer)",
       "view_steam_profile": "Ver perfil de Steam",
       "zoom_in": "Acercar",
       "zoom_in_scroll": "Acercar (Ctrl/Cmd + rueda)",

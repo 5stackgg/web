@@ -26,6 +26,9 @@ export function useChatTabs() {
   const tabs = computed(() => tabsRef.value);
   const unreadCounts = computed(() => unreadCountsRef.value);
   const activeTabId = computed(() => activeTabIdRef.value);
+  const totalUnread = computed(() =>
+    Object.values(unreadCountsRef.value).reduce((sum, n) => sum + (n || 0), 0),
+  );
 
   function findTabIndex(id: string) {
     return tabsRef.value.findIndex((t) => t.id === id);
@@ -132,6 +135,7 @@ export function useChatTabs() {
   return {
     tabs,
     unreadCounts,
+    totalUnread,
     activeTabId,
     openTab,
     closeTab,

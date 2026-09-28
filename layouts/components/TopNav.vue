@@ -26,14 +26,11 @@ import DraftRoomNav from "./DraftRoomNav.vue";
 import SystemStatus from "./SystemStatus.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import { NuxtImg } from "#components";
-import { Button } from "@/components/ui/button";
-import { Grid } from "lucide-vue-next";
-import { useHubState } from "@/composables/useHubState";
+import MobileHubButton from "./MobileHubButton.vue";
 import SteamIcon from "~/components/icons/SteamIcon.vue";
 import { loginLinks } from "~/utilities/loginLinks";
 
 const { isMobile } = useSidebar();
-const { openLastOrDefaultHub } = useHubState();
 const { brandName, logoUrl } = useBranding();
 const matchmakingStore = useMatchmakingStore();
 const { openMatchReadyModal } = useMatchReadyModal();
@@ -173,6 +170,21 @@ const loginArrowClasses =
               {{ brandName || $t("layouts.app_nav.brand") }}
             </span>
           </span>
+        </NuxtLink>
+        <NuxtLink
+          v-else
+          :to="homePath"
+          class="inline-flex shrink-0 select-none items-center text-inherit no-underline"
+          :class="{ 'pointer-events-none cursor-default': isHome }"
+          :tabindex="isHome ? -1 : undefined"
+          :aria-label="brandName || $t('layouts.app_nav.brand')"
+          :aria-current="isHome ? 'page' : undefined"
+        >
+          <NuxtImg
+            class="h-7 w-7 shrink-0 object-contain"
+            :src="logoUrl || '/favicon/64.png'"
+            :alt="brandName || $t('layouts.app_nav.brand')"
+          />
         </NuxtLink>
 
         <span
@@ -652,17 +664,7 @@ const loginArrowClasses =
           </button>
           <DraftRoomNav v-if="!isMobile" />
           <MatchLobbies v-if="!isMobile" />
-          <Button
-            variant="ghost"
-            size="icon"
-            class="relative h-7 w-7 md:hidden"
-            @click="openLastOrDefaultHub()"
-          >
-            <Grid class="h-4 w-4" />
-            <span class="sr-only">{{
-              $t("ui.tooltips.toggle_right_sidebar")
-            }}</span>
-          </Button>
+          <MobileHubButton />
 
           <ProfileMenu
             v-model:open="profileMenuOpen"

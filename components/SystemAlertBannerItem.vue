@@ -1,8 +1,15 @@
 <script setup lang="ts">
-import type { Component } from "vue";
-import { Info, TriangleAlert, OctagonAlert, X } from "lucide-vue-next";
+import { computed, type Component } from "vue";
+import {
+  ExternalLink,
+  Info,
+  TriangleAlert,
+  OctagonAlert,
+  X,
+} from "lucide-vue-next";
+import { parseAlertMessage } from "~/utilities/alertMessageLinks";
 
-defineProps<{
+const props = defineProps<{
   type: "info" | "warning" | "critical";
   title?: string | null;
   message: string;
@@ -12,6 +19,42 @@ defineProps<{
 }>();
 
 const emit = defineEmits<{ (e: "dismiss"): void }>();
+
+const ownHosts = [
+  useRuntimeConfig().public.webDomain,
+  typeof window === "undefined" ? null : window.location.host,
+];
+
+const router = useRouter();
+
+// Some paths on this host (/discord-invite, /auth/*) are served by the api, not
+// the app: the router has no page for them, so they need a real page load.
+const segments = computed(() =>
+  parseAlertMessage(props.message, ownHosts).map((segment) => ({
+    ...segment,
+    routed:
+      segment.type === "internal" &&
+      router.resolve(segment.path).matched.length > 0,
+  })),
+);
+
+// pointer-events and tabindex stop the mouse and the keyboard, but a screen
+// reader still clicks the link, and leaving the editor loses the draft.
+function blockPreviewClick(event: MouseEvent) {
+  if (props.preview) {
+    event.preventDefault();
+  }
+}
+
+const linkAttrs = computed(() => ({
+  class: [
+    "text-[hsl(var(--tac-amber))] underline underline-offset-2 transition-colors duration-150 hover:text-[hsl(var(--tac-amber)/0.8)]",
+    { "pointer-events-none": props.preview },
+  ],
+  tabindex: props.preview ? -1 : undefined,
+  "aria-disabled": props.preview ? "true" : undefined,
+  onClickCapture: blockPreviewClick,
+}));
 
 const severity: Record<
   "info" | "warning" | "critical",
@@ -80,7 +123,31 @@ const severity: Record<
       <p
         class="whitespace-pre-line break-words text-sm leading-snug text-foreground/85"
       >
-        {{ message }}
+        <template v-for="(segment, index) in segments" :key="index">
+          <NuxtLink
+            v-if="segment.type === 'internal' && segment.routed"
+            :to="segment.path"
+            v-bind="linkAttrs"
+            >{{ segment.label }}</NuxtLink
+          >
+          <a
+            v-else-if="segment.type === 'internal'"
+            :href="segment.path"
+            v-bind="linkAttrs"
+            >{{ segment.label }}</a
+          >
+          <a
+            v-else-if="segment.type === 'external'"
+            :href="segment.href"
+            target="_blank"
+            rel="noopener noreferrer"
+            v-bind="linkAttrs"
+            >{{ segment.label }}<ExternalLink
+              class="ml-0.5 inline h-3 w-3"
+              aria-hidden="true"
+          /></a>
+          <template v-else>{{ segment.text }}</template>
+        </template>
       </p>
     </div>
     <!-- Absolutely positioned so toggling dismissible never changes row height. -->

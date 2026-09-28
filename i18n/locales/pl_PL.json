@@ -34,6 +34,7 @@
       "title_placeholder": "Planowana konserwacja",
       "message": "Treść",
       "message_placeholder": "Matchmaking jest tymczasowo wyłączony, trwa analiza problemu",
+      "message_link_hint": "Dodaj link w formacie [label](https://example.com). Linki do tej strony otwierają się w aplikacji.",
       "is_active": "Aktywny",
       "is_active_hint": "Pokaż ten baner wszystkim od razu",
       "dismissible": "Można zamknąć",
@@ -7821,6 +7822,7 @@
     "tooltips": {
       "fullscreen": "Pełny ekran",
       "toggle_right_sidebar": "Przełącz prawy panel boczny",
+      "toggle_right_sidebar_unread": "Przełącz prawy panel boczny (nieprzeczytane: {count})",
       "view_steam_profile": "Zobacz profil Steam",
       "zoom_in": "Powiększ",
       "zoom_in_scroll": "Powiększ (Ctrl/Cmd + scroll)",

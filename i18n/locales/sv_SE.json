@@ -34,6 +34,7 @@
       "title_placeholder": "Planerat underhåll",
       "message": "Meddelande",
       "message_placeholder": "Matchmaking är tillfälligt nere medan vi undersöker.",
+      "message_link_hint": "Lägg till en länk med [label](https://example.com). Länkar till den här webbplatsen öppnas i appen.",
       "is_active": "Aktiv",
       "is_active_hint": "Visa den här bannern för alla just nu.",
       "dismissible": "Kan stängas",
@@ -7821,6 +7822,7 @@
     "tooltips": {
       "fullscreen": "Helskärm",
       "toggle_right_sidebar": "Växla höger sidopanel",
+      "toggle_right_sidebar_unread": "Växla höger sidopanel ({count} olästa)",
       "view_steam_profile": "Visa Steam-profil",
       "zoom_in": "Zooma in",
       "zoom_in_scroll": "Zooma in (Ctrl/Cmd + scroll)",

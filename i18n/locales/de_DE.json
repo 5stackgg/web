@@ -34,6 +34,7 @@
       "title_placeholder": "Geplante Wartung",
       "message": "Nachricht",
       "message_placeholder": "Matchmaking ist vorübergehend offline, während wir das Problem untersuchen.",
+      "message_link_hint": "Füge einen Link mit [label](https://example.com) hinzu. Links zu dieser Seite öffnen sich in der App.",
       "is_active": "Aktiv",
       "is_active_hint": "Dieses Banner ab sofort für alle anzeigen.",
       "dismissible": "Ausblendbar",
@@ -7821,6 +7822,7 @@
     "tooltips": {
       "fullscreen": "Vollbild",
       "toggle_right_sidebar": "Rechte Seitenleiste umschalten",
+      "toggle_right_sidebar_unread": "Rechte Seitenleiste umschalten ({count} ungelesen)",
       "view_steam_profile": "Steam-Profil ansehen",
       "zoom_in": "Vergrößern",
       "zoom_in_scroll": "Vergrößern (Strg/Cmd + Scrollen)",

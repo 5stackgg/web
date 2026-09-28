@@ -34,6 +34,7 @@
       "title_placeholder": "Manutenzione programmata",
       "message": "Messaggio",
       "message_placeholder": "Il matchmaking è temporaneamente non disponibile mentre indaghiamo.",
+      "message_link_hint": "Aggiungi un link con [label](https://example.com). I link a questo sito si aprono nell'app.",
       "is_active": "Attivo",
       "is_active_hint": "Mostra subito questo banner a tutti.",
       "dismissible": "Chiudibile",
@@ -7821,6 +7822,7 @@
     "tooltips": {
       "fullscreen": "Schermo intero",
       "toggle_right_sidebar": "Attiva/disattiva sidebar destra",
+      "toggle_right_sidebar_unread": "Attiva/disattiva sidebar destra ({count} non letti)",
       "view_steam_profile": "Vedi profilo Steam",
       "zoom_in": "Zoom avanti",
       "zoom_in_scroll": "Zoom avanti (Ctrl/Cmd + Scroll)",

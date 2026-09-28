@@ -112,3 +112,34 @@ describe("TopNav install entry", () => {
     expect(menuInstallRow()).toBeUndefined();
   });
 });
+
+describe("TopNav brand logo", () => {
+  function brandLink(wrapper: Awaited<ReturnType<typeof mountTopNav>>) {
+    return wrapper.find('a[aria-label="5stack"]');
+  }
+
+  it("gives a phone a compact logo that links home", async () => {
+    emulateDevice({ userAgent: userAgents.androidChrome, width: 412 });
+
+    const wrapper = await mountTopNav();
+    const link = brandLink(wrapper);
+
+    expect(link.exists()).toBe(true);
+    expect(link.attributes("href")).toBe("/me");
+    expect(link.find("img").classes()).toEqual(
+      expect.arrayContaining(["h-7", "w-7"]),
+    );
+    expect(link.text()).toBe("");
+  });
+
+  it("keeps the full wordmark on desktop", async () => {
+    emulateDevice({ userAgent: userAgents.desktopChrome, width: 1280 });
+
+    const wrapper = await mountTopNav();
+    const link = brandLink(wrapper);
+
+    expect(link.exists()).toBe(true);
+    expect(link.find("img").classes()).toContain("h-[30px]");
+    expect(link.text()).toContain("5stack");
+  });
+});

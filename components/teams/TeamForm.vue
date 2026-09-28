@@ -241,9 +241,12 @@ export default {
       );
     },
     canUpdateOwner() {
+      if (!this.team || !this.me) {
+        return false;
+      }
       return (
-        this.team.owner_steam_id === this.me?.steam_id ||
-        this.me?.role === e_player_roles_enum.tournament_organizer
+        String(this.team.owner_steam_id) === String(this.me.steam_id) ||
+        useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer)
       );
     },
     isOrganizationEditable() {

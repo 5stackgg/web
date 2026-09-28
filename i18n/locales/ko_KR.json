@@ -929,6 +929,7 @@
     "user": "사용자",
     "verified_user": "인증된 사용자",
     "streamer": "스트리머",
+    "moderator": "모더레이터",
     "match_organizer": "매치 주최자",
     "tournament_organizer": "토너먼트 주최자",
     "administrator": "관리자"
@@ -3122,6 +3123,7 @@
         "recent_wins_and_losses": "최근 승/패",
         "elo_history": "ELO 기록",
         "no_elo_history": "매치를 플레이하면 ELO가 생성됩니다",
+        "no_elo_history_other": "아직 ELO 기록이 없습니다",
         "play_a_match": "플레이",
         "matches": "매치",
         "no_matches": "아직 매치 없음",

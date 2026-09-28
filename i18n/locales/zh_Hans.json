@@ -929,6 +929,7 @@
     "user": "用户",
     "verified_user": "认证用户",
     "streamer": "主播",
+    "moderator": "版主",
     "match_organizer": "比赛组织者",
     "tournament_organizer": "赛事组织者",
     "administrator": "管理员"
@@ -3122,6 +3123,7 @@
         "recent_wins_and_losses": "近期胜负",
         "elo_history": "ELO 历史",
         "no_elo_history": "参加比赛以生成 ELO",
+        "no_elo_history_other": "暂无 ELO 记录",
         "play_a_match": "开始比赛",
         "matches": "比赛",
         "no_matches": "暂无比赛",

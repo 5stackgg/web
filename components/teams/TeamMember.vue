@@ -136,7 +136,7 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" class="w-56">
           <DropdownMenuGroup v-if="team.can_change_role && roles?.length">
-            <DropdownMenuSub>
+            <DropdownMenuSub v-if="!isOwner">
               <DropdownMenuSubTrigger>
                 <span>{{ $t("team.members.role") }}</span>
                 <span class="ml-auto text-muted-foreground text-xs">{{
@@ -366,6 +366,11 @@ export default {
       required: false,
       default: false,
     },
+    isOwner: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     matchType: {
       type: String,
       required: false,
@@ -392,7 +397,7 @@ export default {
       return this.member.player.steam_id === this.me?.steam_id;
     },
     canRemoveMember(): boolean {
-      return !!this.team.can_remove && !this.isSelf;
+      return !!this.team.can_remove && !this.isSelf && !this.isOwner;
     },
     canEditRosterImage(): boolean {
       return !!this.team.can_change_role && !this.isInvite;

@@ -929,6 +929,7 @@
     "user": "Bruger",
     "verified_user": "Verificeret bruger",
     "streamer": "Streamer",
+    "moderator": "Moderator",
     "match_organizer": "Kamparrangør",
     "tournament_organizer": "Turneringsarrangør",
     "administrator": "Administrator"
@@ -3122,6 +3123,7 @@
         "recent_wins_and_losses": "Seneste sejre og nederlag",
         "elo_history": "ELO-historik",
         "no_elo_history": "Spil en kamp for at få ELO",
+        "no_elo_history_other": "Ingen ELO-historik endnu",
         "play_a_match": "Spil",
         "matches": "Kampe",
         "no_matches": "Ingen kampe endnu",

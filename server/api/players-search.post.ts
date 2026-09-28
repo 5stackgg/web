@@ -85,12 +85,7 @@ export default defineEventHandler(async (event) => {
   const sortField = rawSortField || "name";
   const sortDirection = rawSortDirection === "desc" ? "desc" : "asc";
 
-  // Unrated players always sink to the bottom, and ties fall back to name so
-  // the order is stable instead of arbitrary.
-  const sortBy =
-    sortField === "elo"
-      ? `${eloField}(missing_values: last):${sortDirection},name:asc`
-      : `${sortField}:${sortDirection}`;
+  const sortBy = playersSearchSortBy(sortField, sortDirection, eloField);
 
   if (body.registeredOnly || sortField === "last_sign_in_at") {
     // Both spellings, because `is_registered` is an optional field added with

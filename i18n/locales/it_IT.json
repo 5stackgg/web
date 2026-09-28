@@ -929,6 +929,7 @@
     "user": "Utente",
     "verified_user": "Utente verificato",
     "streamer": "Streamer",
+    "moderator": "Moderatore",
     "match_organizer": "Organizzatore match",
     "tournament_organizer": "Organizzatore tornei",
     "administrator": "Amministratore"
@@ -3122,6 +3123,7 @@
         "recent_wins_and_losses": "Vittorie e sconfitte recenti",
         "elo_history": "Storico ELO",
         "no_elo_history": "Gioca un match per generare ELO",
+        "no_elo_history_other": "Nessuno storico ELO",
         "play_a_match": "Gioca",
         "matches": "Match",
         "no_matches": "Ancora nessun match",

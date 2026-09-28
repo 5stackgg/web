@@ -107,6 +107,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     ),
   );
   const draft_invites = ref<any[]>([]);
+  const draftInvitesLoaded = ref(false);
   const notifications = ref<Notification[]>([]);
   const seasonRebuilds = ref<Array<{ id: any; number: number | null }>>([]);
   // Raw league seasons (with only the viewer's un-played brackets, filtered
@@ -513,6 +514,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
         .subscribe({
           next: ({ data }) => {
             draft_invites.value = data.draft_game_players;
+            draftInvitesLoaded.value = true;
           },
         }),
     );
@@ -664,6 +666,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
   watch(
     () => useAuthStore().me?.steam_id,
     (steamId) => {
+      draftInvitesLoaded.value = false;
       if (steamId) {
         subscribeToAll(steamId);
         // Loaded here rather than only on the settings page: the bell filters
@@ -697,6 +700,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     tournament_team_invites,
     tournament_invites,
     draft_invites,
+    draftInvitesLoaded,
     notifications: visibleNotifications,
     seasonRebuildCount,
     scheduleTasks,

@@ -24,11 +24,11 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
     >
       <span
         aria-hidden="true"
-        class="pointer-events-none absolute -left-[1px] -top-[1px] h-3 w-3 border-l-2 border-t-2 border-[hsl(var(--tac-amber)/0.55)] opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+        class="pointer-events-none absolute left-1 top-1 h-3 w-3 border-l-2 border-t-2 border-[hsl(var(--tac-amber)/0.55)] opacity-0 transition-opacity duration-200 group-hover:opacity-100"
       ></span>
       <span
         aria-hidden="true"
-        class="pointer-events-none absolute -bottom-[1px] -right-[1px] h-3 w-3 border-b-2 border-r-2 border-[hsl(var(--tac-amber)/0.55)] opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+        class="pointer-events-none absolute bottom-1 right-1 h-3 w-3 border-b-2 border-r-2 border-[hsl(var(--tac-amber)/0.55)] opacity-0 transition-opacity duration-200 group-hover:opacity-100"
       ></span>
 
       <!-- Header: avatar + name + stats -->

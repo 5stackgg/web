@@ -136,6 +136,8 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
 
   const friends = ref([]);
   const lobbies = ref([]);
+  const friendsLoaded = ref(false);
+  const lobbiesLoaded = ref(false);
 
   const viewingMatchId = ref<string | undefined>();
   const subscribeToFriends = async (mySteamId: bigint) => {
@@ -290,6 +292,7 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
       subscription.subscribe({
         next: ({ data }) => {
           friends.value = data.my_friends;
+          friendsLoaded.value = true;
         },
       }),
     );
@@ -367,6 +370,7 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
       subscription.subscribe({
         next: ({ data }) => {
           lobbies.value = data.lobbies;
+          lobbiesLoaded.value = true;
         },
       }),
     );
@@ -375,6 +379,8 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
   watch(
     () => useAuthStore().me?.steam_id,
     (steamId) => {
+      friendsLoaded.value = false;
+      lobbiesLoaded.value = false;
       if (steamId) {
         subscribeToFriends(steamId);
         subscribeToLobbies(steamId);
@@ -713,11 +719,13 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
 
   return {
     friends,
+    friendsLoaded,
     onlineFriends,
     offlineFriends,
     registeredFriendsOnly,
     isRegisteredFriend,
     lobbies,
+    lobbiesLoaded,
     currentLobby,
     regionStats,
     playersOnline,

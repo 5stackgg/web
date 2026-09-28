@@ -41,11 +41,8 @@ export function useChatTabSetup() {
         return;
       }
       // Ahead of the on-screen check, which counts an open room as read even
-      // while the browser tab is hidden. Match rooms relay in-game chat line
-      // by line, the same reason their push is off by default.
-      if (tab.type !== "match") {
-        useTabFlash().signal("chat", message?.id);
-      }
+      // while the browser tab is hidden.
+      useTabFlash().signalChat(tab.type, message);
 
       const isOnScreen =
         activeTabId.value === tab.id &&

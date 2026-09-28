@@ -191,6 +191,30 @@ describe("useTabFlash title", () => {
     expect(document.title).toBe(BASE_TITLE);
   });
 
+  it("never flashes for a line relayed from in-game, in any room", () => {
+    setVisibility("hidden");
+    const flash = useTabFlash();
+
+    flash.signalChat("match_team", { id: "relay-1", source: "game" });
+    flash.signalChat("direct", { id: "relay-2", source: "game" });
+    expect(document.title).toBe(BASE_TITLE);
+
+    flash.signalChat("match_team", { id: "relay-3", source: "web" });
+    expect(document.title).toBe("(1) New message");
+  });
+
+  it("leaves out match rooms even without a source, for older APIs", () => {
+    setVisibility("hidden");
+    const flash = useTabFlash();
+
+    flash.signalChat("match", { id: "legacy-1" });
+    flash.signalChat("match", { id: "legacy-2", source: "web" });
+    expect(document.title).toBe(BASE_TITLE);
+
+    flash.signalChat("tournament", { id: "legacy-3" });
+    expect(document.title).toBe("(1) New message");
+  });
+
   it("drops a cleared kind and stops once nothing is left", () => {
     setVisibility("hidden");
     const flash = useTabFlash();

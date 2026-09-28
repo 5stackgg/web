@@ -299,6 +299,21 @@ function signal(kind: TabFlashKind, key?: string) {
   safely(refresh);
 }
 
+// Lines typed in-game are relayed into the web rooms one by one, and the
+// player they reach is already reading them in the game -- the same reason the
+// match chat push is off by default. Match rooms are left out whatever the
+// source, which covers APIs that predate `source`.
+function signalChat(
+  roomType: string,
+  message?: { id?: string; source?: string } | null,
+) {
+  if (message?.source === "game" || roomType === "match") {
+    return;
+  }
+
+  signal("chat", message?.id);
+}
+
 function clear(kind: TabFlashKind) {
   if (counts[kind] === 0) {
     return;
@@ -405,6 +420,7 @@ export function useTabFlash() {
   return {
     counts: readonly(counts),
     signal,
+    signalChat,
     clear,
   };
 }

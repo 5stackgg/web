@@ -106,7 +106,7 @@ export function useIncomingDirectMessages() {
       }
 
       // The room's own `lobby:chat` carries the same id when its tab is open.
-      useTabFlash().signal("chat", data.message?.id);
+      useTabFlash().signalChat("direct", data.message);
 
       // Deliberately does not inject the message: opening the tab makes
       // useChatTabSetup join the room, and the join's history snapshot delivers

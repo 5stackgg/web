@@ -10,10 +10,14 @@ import { badgePopTransition, formatBadgeCount } from "~/utilities/badgeCount";
 
 const { openLastOrDefaultHub } = useHubState();
 const { totalUnread } = useChatTabs();
-const { unreadNotificationCount } = useNotificationBadge();
+const { unreadNotificationCount, unreadChatNotificationCount } =
+  useNotificationBadge();
 
+const otherNotificationCount = computed(
+  () => unreadNotificationCount.value - unreadChatNotificationCount.value,
+);
 const unreadCount = computed(
-  () => totalUnread.value + unreadNotificationCount.value,
+  () => totalUnread.value + otherNotificationCount.value,
 );
 const badgeLabel = computed(() => formatBadgeCount(unreadCount.value));
 </script>
@@ -38,7 +42,7 @@ const badgeLabel = computed(() => formatBadgeCount(unreadCount.value));
         class="absolute -top-1 -right-1 flex origin-center"
       >
         <span
-          v-if="unreadNotificationCount > 0"
+          v-if="otherNotificationCount > 0"
           class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75 motion-reduce:hidden"
         />
         <span

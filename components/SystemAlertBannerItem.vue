@@ -25,10 +25,36 @@ const ownHosts = [
   typeof window === "undefined" ? null : window.location.host,
 ];
 
-const segments = computed(() => parseAlertMessage(props.message, ownHosts));
+const router = useRouter();
 
-const linkClasses =
-  "text-[hsl(var(--tac-amber))] underline underline-offset-2 transition-colors duration-150 hover:text-[hsl(var(--tac-amber)/0.8)]";
+// Some paths on this host (/discord-invite, /auth/*) are served by the api, not
+// the app: the router has no page for them, so they need a real page load.
+const segments = computed(() =>
+  parseAlertMessage(props.message, ownHosts).map((segment) => ({
+    ...segment,
+    routed:
+      segment.type === "internal" &&
+      router.resolve(segment.path).matched.length > 0,
+  })),
+);
+
+// pointer-events and tabindex stop the mouse and the keyboard, but a screen
+// reader still clicks the link, and leaving the editor loses the draft.
+function blockPreviewClick(event: MouseEvent) {
+  if (props.preview) {
+    event.preventDefault();
+  }
+}
+
+const linkAttrs = computed(() => ({
+  class: [
+    "text-[hsl(var(--tac-amber))] underline underline-offset-2 transition-colors duration-150 hover:text-[hsl(var(--tac-amber)/0.8)]",
+    { "pointer-events-none": props.preview },
+  ],
+  tabindex: props.preview ? -1 : undefined,
+  "aria-disabled": props.preview ? "true" : undefined,
+  onClickCapture: blockPreviewClick,
+}));
 
 const severity: Record<
   "info" | "warning" | "critical",
@@ -99,19 +125,23 @@ const severity: Record<
       >
         <template v-for="(segment, index) in segments" :key="index">
           <NuxtLink
-            v-if="segment.type === 'internal'"
+            v-if="segment.type === 'internal' && segment.routed"
             :to="segment.path"
-            :class="[linkClasses, { 'pointer-events-none': preview }]"
-            :tabindex="preview ? -1 : undefined"
+            v-bind="linkAttrs"
             >{{ segment.label }}</NuxtLink
+          >
+          <a
+            v-else-if="segment.type === 'internal'"
+            :href="segment.path"
+            v-bind="linkAttrs"
+            >{{ segment.label }}</a
           >
           <a
             v-else-if="segment.type === 'external'"
             :href="segment.href"
             target="_blank"
             rel="noopener noreferrer"
-            :class="[linkClasses, { 'pointer-events-none': preview }]"
-            :tabindex="preview ? -1 : undefined"
+            v-bind="linkAttrs"
             >{{ segment.label }}<ExternalLink
               class="ml-0.5 inline h-3 w-3"
               aria-hidden="true"

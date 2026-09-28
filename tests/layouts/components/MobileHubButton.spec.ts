@@ -6,6 +6,7 @@ import { useChatTabs } from "~/composables/useChatTabs";
 
 const hub = vi.hoisted(() => ({
   notifications: 0,
+  chatNotifications: 0,
   openLastOrDefaultHub: () => {},
 }));
 
@@ -20,6 +21,7 @@ vi.mock("~/composables/useNotificationBadge", async () => {
   return {
     useNotificationBadge: () => ({
       unreadNotificationCount: computed(() => hub.notifications),
+      unreadChatNotificationCount: computed(() => hub.chatNotifications),
     }),
   };
 });
@@ -31,6 +33,7 @@ afterEach(() => {
   unmount = undefined;
   useChatTabs().clearAll();
   hub.notifications = 0;
+  hub.chatNotifications = 0;
   hub.openLastOrDefaultHub = () => {};
 });
 
@@ -67,6 +70,30 @@ describe("MobileHubButton", () => {
     expect(wrapper.find("button").attributes("aria-label")).toBe(
       "Toggle Right Sidebar (9 unread)",
     );
+  });
+
+  it("counts a chat message once, not again for its bell row", async () => {
+    const { setUnread } = useChatTabs();
+    setUnread("direct:1", 1);
+    setUnread("lobby", 4);
+    hub.notifications = 5;
+    hub.chatNotifications = 2;
+
+    const wrapper = await mountButton();
+
+    expect(badge(wrapper).text()).toBe("8");
+    expect(wrapper.find(".animate-ping").exists()).toBe(true);
+  });
+
+  it("does not ping for chat bell rows alone", async () => {
+    useChatTabs().setUnread("direct:1", 1);
+    hub.notifications = 1;
+    hub.chatNotifications = 1;
+
+    const wrapper = await mountButton();
+
+    expect(badge(wrapper).text()).toBe("1");
+    expect(wrapper.find(".animate-ping").exists()).toBe(false);
   });
 
   it("counts chat alone when there are no notifications", async () => {

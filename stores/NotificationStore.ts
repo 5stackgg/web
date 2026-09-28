@@ -1,7 +1,7 @@
 import { ref, computed, watch } from "vue";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { $, order_by } from "~/generated/zeus";
+import { $, order_by, e_notification_types_enum } from "~/generated/zeus";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { playerFields } from "~/graphql/playerFields";
@@ -340,6 +340,18 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
 
   const hasNotifications = computed(
     () => hasPersonalNotifications.value || hasAdminNotifications.value,
+  );
+
+  // Every chat message also leaves a bell row, and the chat tabs already count
+  // it, so a badge that adds chat to the bell has to take these back out.
+  const unreadChatNotificationCount = computed(
+    () =>
+      visibleNotifications.value.filter(
+        (n) =>
+          !n.is_read &&
+          (n.type === e_notification_types_enum.ChatMessage ||
+            n.type === e_notification_types_enum.MatchChatMessage),
+      ).length,
   );
 
   const stackedNotifications = computed<NotificationStackItem[]>(() => {
@@ -703,6 +715,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     scheduleTaskCount,
     stackedNotifications,
     unreadNotificationCount,
+    unreadChatNotificationCount,
     hasNotifications,
     hasPersonalNotifications,
     hasAdminNotifications,

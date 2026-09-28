@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
+import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import SystemAlertBannerItem from "~/components/SystemAlertBannerItem.vue";
 
@@ -43,6 +44,29 @@ describe("SystemAlertBannerItem message links", () => {
     );
   });
 
+  it("loads api-served paths on this site with a real page load", async () => {
+    const wrapper = await mountBanner(
+      `[Discord](/discord-invite) or https://${window.location.host}/auth/steam`,
+    );
+
+    const links = wrapper.findAll("a");
+    expect(links).toHaveLength(2);
+    for (const link of links) {
+      expect(link.attributes("target")).toBeUndefined();
+    }
+    expect(links[0].attributes("href")).toBe("/discord-invite");
+    expect(links[1].attributes("href")).toBe("/auth/steam");
+
+    const click = new MouseEvent("click", { bubbles: true, cancelable: true });
+    links[0].element.addEventListener("click", (event) =>
+      event.preventDefault(),
+    );
+    links[0].element.dispatchEvent(click);
+    await flushPromises();
+
+    expect(useRouter().currentRoute.value.path).not.toBe("/discord-invite");
+  });
+
   it("never renders the message as html", async () => {
     const message =
       '<img src=x onerror="alert(1)"> [x](javascript:alert(1))';
@@ -65,6 +89,27 @@ describe("SystemAlertBannerItem message links", () => {
       expect(link.attributes("tabindex")).toBe("-1");
       expect(link.classes()).toContain("pointer-events-none");
     }
+  });
+
+  it("does not follow a preview link a screen reader clicks", async () => {
+    const before = useRouter().currentRoute.value.fullPath;
+    const wrapper = await mountBanner(
+      "[a](/tournaments) [b](/discord-invite) [c](https://example.com)",
+      true,
+    );
+
+    for (const link of wrapper.findAll("a")) {
+      expect(link.attributes("aria-disabled")).toBe("true");
+      const click = new MouseEvent("click", {
+        bubbles: true,
+        cancelable: true,
+      });
+      link.element.dispatchEvent(click);
+      expect(click.defaultPrevented).toBe(true);
+    }
+    await flushPromises();
+
+    expect(useRouter().currentRoute.value.fullPath).toBe(before);
   });
 
   it("leaves live links focusable", async () => {

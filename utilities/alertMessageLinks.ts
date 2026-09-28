@@ -7,8 +7,10 @@ type LinkTarget =
   | { type: "internal"; path: string }
   | { type: "external"; href: string };
 
+// Chinese, Japanese and Korean run straight on from a url with no space, so a
+// bare url ends at the first CJK character or full-width punctuation mark.
 const LINK_PATTERN =
-  /\[([^\[\]\n]+)\]\(((?:[^\s()]|\([^\s()]*\))+)\)|https?:\/\/[^\s<>"'`]+/gi;
+  /\[([^\[\]\n]+)\]\(((?:[^\s()]|\([^\s()]*\))+)\)|https?:\/\/[^\s<>"'`\u2E80-\u9FFF\uAC00-\uD7AF\uF900-\uFAFF\uFE30-\uFE4F\uFF00-\uFFEF]+/gi;
 
 // Resolving a leading-slash target against a host that can never be real is how
 // `//evil.test` and `/\evil.test` get caught: the URL parser reads both as a
@@ -97,7 +99,7 @@ function trimTrailingPunctuation(url: string): string {
   while (end > 0) {
     const char = url[end - 1];
     const body = url.slice(0, end);
-    if (".,;:!?".includes(char)) {
+    if (".,;:!?*_".includes(char)) {
       end--;
       continue;
     }

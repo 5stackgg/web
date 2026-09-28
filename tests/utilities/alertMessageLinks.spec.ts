@@ -112,6 +112,53 @@ describe("parseAlertMessage", () => {
     ]);
   });
 
+  it("ends a bare url at CJK text and full-width punctuation", () => {
+    expect(
+      parseAlertMessage("请访问 https://5stack.gg/tournaments。谢谢", ownHosts),
+    ).toEqual([
+      { type: "text", text: "请访问 " },
+      {
+        type: "internal",
+        path: "/tournaments",
+        label: "https://5stack.gg/tournaments",
+      },
+      { type: "text", text: "。谢谢" },
+    ]);
+    expect(
+      parseAlertMessage("詳細は https://example.com/faq、または", []),
+    ).toEqual([
+      { type: "text", text: "詳細は " },
+      {
+        type: "external",
+        href: "https://example.com/faq",
+        label: "https://example.com/faq",
+      },
+      { type: "text", text: "、または" },
+    ]);
+    expect(
+      parseAlertMessage("https://example.com/faq에서 확인하세요", []),
+    ).toEqual([
+      {
+        type: "external",
+        href: "https://example.com/faq",
+        label: "https://example.com/faq",
+      },
+      { type: "text", text: "에서 확인하세요" },
+    ]);
+  });
+
+  it("leaves markdown emphasis around a bare url in the text", () => {
+    expect(parseAlertMessage("**https://example.com/faq**", [])).toEqual([
+      { type: "text", text: "**" },
+      {
+        type: "external",
+        href: "https://example.com/faq",
+        label: "https://example.com/faq",
+      },
+      { type: "text", text: "**" },
+    ]);
+  });
+
   it("makes a root-relative target an internal link", () => {
     expect(
       parseAlertMessage(

@@ -7,31 +7,29 @@ export interface ChatError {
   requestId?: string;
 }
 
-export interface ChatErrorMessage {
-  key: string;
-  params: Record<string, unknown>;
-}
+type Translate = (key: string, params?: Record<string, unknown>) => string;
 
-export function chatErrorMessage(error: ChatError): ChatErrorMessage {
+export function chatErrorMessage(error: ChatError, t: Translate): string {
   switch (error?.code) {
     case "too_long":
-      return {
-        key: "chat.message_too_long",
-        params: { max: error.max ?? CHAT_MESSAGE_MAX_LENGTH },
-      };
+      return t("chat.message_too_long", {
+        max: error.max ?? CHAT_MESSAGE_MAX_LENGTH,
+      });
     // Also sent when a send queued while offline reaches the server before the
     // lobby rejoin does, so it must not tell the user they are barred.
     case "not_allowed":
     default:
-      return { key: "chat.send_failed", params: {} };
+      return t("chat.send_failed");
   }
 }
 
 export function toastChatError(error: ChatError) {
-  const { key, params } = chatErrorMessage(error);
+  const { $i18n } = useNuxtApp();
 
   toast({
     variant: "destructive",
-    description: useNuxtApp().$i18n.t(key, params),
+    description: chatErrorMessage(error, (key, params) =>
+      $i18n.t(key, params ?? {}),
+    ),
   });
 }

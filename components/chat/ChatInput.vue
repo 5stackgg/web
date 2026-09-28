@@ -216,7 +216,7 @@ export default {
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
-            message: z.string().min(1).max(CHAT_MESSAGE_MAX_LENGTH),
+            message: z.string().trim().min(1).max(CHAT_MESSAGE_MAX_LENGTH),
           }),
         ),
       }),

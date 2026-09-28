@@ -83,12 +83,14 @@ describe("ChatInput", () => {
 
   it("refuses an over-length message sent with enter", async () => {
     const wrapper = await mountSuspended(ChatInput);
+    const message = "a".repeat(CHAT_MESSAGE_MAX_LENGTH + 1);
 
-    await type(wrapper, "a".repeat(CHAT_MESSAGE_MAX_LENGTH + 1));
+    await type(wrapper, message);
     await wrapper.get("textarea").trigger("keydown", { key: "Enter" });
     await flushPromises();
 
     expect(wrapper.emitted("sendMessage")).toBeUndefined();
+    expect(textarea(wrapper).value).toBe(message);
     expect(toast).toHaveBeenCalledTimes(1);
   });
 
@@ -105,5 +107,13 @@ describe("ChatInput", () => {
     await type(wrapper, "a".repeat(CHAT_MESSAGE_MAX_LENGTH + 5));
     expect(remaining(wrapper).text()).toBe("-5");
     expect(remaining(wrapper).classes()).toContain("text-destructive");
+  });
+
+  it("counts what will be sent, not surrounding whitespace", async () => {
+    const wrapper = await mountSuspended(ChatInput);
+
+    await type(wrapper, ` ${"a".repeat(CHAT_MESSAGE_MAX_LENGTH - 200)}\n  `);
+
+    expect(remaining(wrapper).text()).toBe("200");
   });
 });

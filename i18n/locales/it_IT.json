@@ -8494,6 +8494,17 @@
     "edit_failed": "Impossibile modificare il messaggio",
     "edit_timeout": "Il server non ha risposto. La modifica potrebbe comunque essere salvata.",
     "edit_window_closed": "Puoi modificare un messaggio solo per 10 minuti.",
+    "react": "Reagisci",
+    "add_reaction": "Aggiungi reazione",
+    "react_with": "Reagisci con {emoji}",
+    "react_with_count": "Reagisci con {emoji} ({count})",
+    "reacted_by": "Reazione {emoji} di {names}",
+    "reacted_by_count": "Reazione {emoji} di {count} giocatore | Reazione {emoji} di {count} giocatori",
+    "reacted_you": "te",
+    "reacted_others": "{count} altro | {count} altri",
+    "react_failed": "Impossibile reagire",
+    "react_rate_limited": "Stai reagendo troppo velocemente.",
+    "react_gagged": "Sei silenziato in chat e non puoi aggiungere reazioni.",
     "direct": {
       "message": "Messaggio",
       "empty": "Ancora nessun messaggio. Fatti sentire."

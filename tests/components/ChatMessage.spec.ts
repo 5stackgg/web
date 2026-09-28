@@ -415,3 +415,142 @@ describe("ChatMessage editing", () => {
     expect(wrapper.find("[data-chat-edited]").exists()).toBe(false);
   });
 });
+
+describe("ChatMessage reactions", () => {
+  const ME = "76561198000000001";
+  const ROOM = { type: "match_team", id: "match-1:lineup-1" };
+  const TRIGGER = 'button[aria-label="Message actions"]';
+
+  const theirs = (overrides: Record<string, unknown> = {}) => ({
+    id: "7f1d0c2e-8b1a-4c6e-9f00-000000000002",
+    message: "nice",
+    source: "game",
+    timestamp: new Date(Date.UTC(2026, 8, 28, 12, 0)).toISOString(),
+    from: { steam_id: "76561198000000002", name: "Dana" },
+    reactions: { thumbsup: ["76561198000000002"], heart: [ME] },
+    ...overrides,
+  });
+
+  let unmount: (() => void) | undefined;
+
+  beforeEach(() => {
+    useAuthStore().me = { steam_id: ME, role: "user" } as any;
+    while (useRightSidebar().hoverCloseSuspended.value) {
+      useRightSidebar().resumeHoverClose();
+    }
+  });
+
+  afterEach(() => {
+    unmount?.();
+    unmount = undefined;
+    useAuthStore().me = undefined;
+    vi.restoreAllMocks();
+    toast.mockClear();
+  });
+
+  async function mountMessage(props: Record<string, unknown> = {}) {
+    const wrapper = await mountSuspended(ChatMessage, {
+      props: { message: theirs(), room: ROOM, canPost: true, ...props },
+      attachTo: document.body,
+    });
+    unmount = () => wrapper.unmount();
+    await flushPromises();
+    return wrapper;
+  }
+
+  const pill = (
+    wrapper: Awaited<ReturnType<typeof mountMessage>>,
+    reaction: string,
+  ) => wrapper.get(`button[data-reaction="${reaction}"]`);
+
+  it("toggles a pill's reaction in the room the line lives in", async () => {
+    const react = vi.spyOn(socket, "react").mockResolvedValue(undefined);
+    const wrapper = await mountMessage();
+
+    await pill(wrapper, "thumbsup").trigger("click");
+    await pill(wrapper, "heart").trigger("click");
+
+    expect(react.mock.calls).toEqual([
+      ["match_team", "match-1:lineup-1", theirs().id, "thumbsup"],
+      ["match_team", "match-1:lineup-1", theirs().id, "heart"],
+    ]);
+  });
+
+  it("says why a reaction was refused", async () => {
+    vi.spyOn(socket, "react").mockRejectedValue({
+      code: "rate_limited",
+      action: "react",
+    });
+    const wrapper = await mountMessage();
+
+    await pill(wrapper, "thumbsup").trigger("click");
+    await flushPromises();
+
+    expect(toast).toHaveBeenCalledWith({
+      title: "Failed to react",
+      description: "You're reacting too fast.",
+      variant: "destructive",
+    });
+  });
+
+  it("reacts from the menu's picker", async () => {
+    const react = vi.spyOn(socket, "react").mockResolvedValue(undefined);
+    const wrapper = await mountMessage();
+
+    await wrapper.get(TRIGGER).trigger("keydown", { key: "Enter" });
+    await flushPromises();
+    Array.from(
+      document.body.querySelectorAll<HTMLElement>('[role="menuitem"]'),
+    )
+      .find((item) => item.textContent?.trim() === "Add Reaction")!
+      .click();
+    await flushPromises();
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    await flushPromises();
+
+    document.body
+      .querySelector<HTMLElement>('[role="dialog"] [data-reaction="laugh"]')!
+      .click();
+    await flushPromises();
+
+    expect(react).toHaveBeenCalledWith(
+      "match_team",
+      "match-1:lineup-1",
+      theirs().id,
+      "laugh",
+    );
+  });
+
+  it("keeps the trigger for reactions once the author's window has closed", async () => {
+    const wrapper = await mountMessage({
+      message: theirs({
+        source: "web",
+        timestamp: new Date(Date.now() - 60_000).toISOString(),
+        from: { steam_id: ME, name: "Me" },
+      }),
+    });
+    const now = Date.now;
+    vi.spyOn(Date, "now").mockImplementation(() => now() + 10 * 60_000);
+
+    await wrapper.get(TRIGGER).trigger("keydown", { key: "Enter" });
+    await flushPromises();
+
+    expect(
+      Array.from(
+        document.body.querySelectorAll<HTMLElement>('[role="menuitem"]'),
+      ).map((item) => item.textContent?.trim()),
+    ).toEqual(["Add Reaction"]);
+    expect(toast).not.toHaveBeenCalled();
+  });
+
+  it("shows the pills but offers no trigger where the viewer can't post", async () => {
+    const react = vi.spyOn(socket, "react");
+    const wrapper = await mountMessage({ canPost: false });
+
+    await pill(wrapper, "thumbsup").trigger("click");
+
+    expect(wrapper.find(TRIGGER).exists()).toBe(false);
+    expect(wrapper.findAll("button[data-reaction]")).toHaveLength(2);
+    expect(react).not.toHaveBeenCalled();
+  });
+});

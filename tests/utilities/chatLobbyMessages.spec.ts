@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   applyChatMessageEdit,
+  applyChatMessageReactions,
   chatMessageKey,
   insertChatMessage,
   isChatMessageDeleted,
@@ -187,6 +188,57 @@ describe("mergeChatSnapshot", () => {
     expect(mergeChatSnapshot([local], [server], new Set())).toEqual([server]);
   });
 
+  it("keeps reactions that changed live after the snapshot was asked for", () => {
+    const live = {
+      ...line("a", 1),
+      reactions: { fire: ["76561198000000003"] },
+    };
+
+    const merged = mergeChatSnapshot(
+      [live, line("b", 2)],
+      [
+        { ...line("a", 1), reactions: {} },
+        { ...line("b", 2), reactions: { sad: ["76561198000000003"] } },
+      ],
+      new Set(),
+      new Set(["a"]),
+    );
+
+    expect(merged.map((message) => message.reactions)).toEqual([
+      { fire: ["76561198000000003"] },
+      { sad: ["76561198000000003"] },
+    ]);
+  });
+
+  it("takes the snapshot's reactions for a message nothing changed live", () => {
+    const merged = mergeChatSnapshot(
+      [{ ...line("a", 1), reactions: { fire: ["76561198000000003"] } }],
+      [{ ...line("a", 1), reactions: {} }],
+      new Set(),
+      new Set(),
+    );
+
+    expect(merged[0].reactions).toEqual({});
+  });
+
+  it("keeps a live edit and live reactions on the same message", () => {
+    const held = {
+      ...line("a", 1),
+      message: "fixed",
+      edited_at: "2026-09-28T12:05:00.000Z",
+      reactions: { heart: ["76561198000000003"] },
+    };
+
+    const merged = mergeChatSnapshot(
+      [held],
+      [{ ...line("a", 1), reactions: {} }],
+      new Set(),
+      new Set(["a"]),
+    );
+
+    expect(merged).toEqual([held]);
+  });
+
   it("treats a missing snapshot as an empty room", () => {
     expect(mergeChatSnapshot([line("a", 1)], null, new Set())).toEqual([
       line("a", 1),
@@ -302,6 +354,63 @@ describe("applyChatMessageEdit", () => {
   ])("ignores an edit with %s", (_, malformed) => {
     expect(
       applyChatMessageEdit([line("b", 1)], malformed, new Set()),
+    ).toBeNull();
+  });
+});
+
+describe("applyChatMessageReactions", () => {
+  const update = {
+    id: "b",
+    reactions: { thumbsup: ["76561198000000003"], sad: ["76561198000000004"] },
+  };
+
+  it("replaces the message's reactions with the whole new state", () => {
+    const messages = [
+      line("a", 0),
+      { ...line("b", 1), reactions: { heart: ["76561198000000003"] } },
+    ];
+
+    const reacted = applyChatMessageReactions(messages, update, new Set());
+
+    expect(reacted).not.toBeNull();
+    expect(reacted![1]).toEqual({
+      ...line("b", 1),
+      reactions: update.reactions,
+    });
+    expect(reacted![0]).toBe(messages[0]);
+    expect(messages[1].reactions).toEqual({ heart: ["76561198000000003"] });
+  });
+
+  it("clears the reactions when nobody holds one any more", () => {
+    const reacted = applyChatMessageReactions(
+      [{ ...line("b", 1), reactions: { heart: ["76561198000000003"] } }],
+      { id: "b", reactions: {} },
+      new Set(),
+    );
+
+    expect(reacted![0].reactions).toEqual({});
+  });
+
+  it("ignores reactions for a line it doesn't hold rather than creating it", () => {
+    expect(
+      applyChatMessageReactions([line("a", 0)], update, new Set()),
+    ).toBeNull();
+  });
+
+  it("ignores reactions that land after the line was deleted", () => {
+    expect(
+      applyChatMessageReactions([line("b", 1)], update, new Set(["b"])),
+    ).toBeNull();
+  });
+
+  it.each([
+    ["no id", { reactions: {} }],
+    ["an empty id", { id: "", reactions: {} }],
+    ["no reactions", { id: "b" }],
+    ["reactions that aren't an object", { id: "b", reactions: [] as any }],
+  ])("ignores an update with %s", (_, malformed) => {
+    expect(
+      applyChatMessageReactions([line("b", 1)], malformed, new Set()),
     ).toBeNull();
   });
 });

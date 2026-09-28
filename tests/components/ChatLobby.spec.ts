@@ -123,7 +123,16 @@ describe("ChatLobby moderation", () => {
     expect(wrapper.find(TRIGGER).exists()).toBe(true);
   });
 
-  it("offers a moderator nothing in a direct conversation", async () => {
+  async function menuItems(wrapper: Awaited<ReturnType<typeof mountLobby>>) {
+    await wrapper.get(TRIGGER).trigger("keydown", { key: "Enter" });
+    await flushPromises();
+
+    return Array.from(
+      document.body.querySelectorAll<HTMLElement>('[role="menuitem"]'),
+    ).map((item) => item.textContent?.trim());
+  }
+
+  it("offers a moderator no delete in a direct conversation", async () => {
     signIn({ role: "administrator" });
 
     const wrapper = await mountWithHistory("direct", `${ME}:${OTHER}`, [
@@ -131,16 +140,30 @@ describe("ChatLobby moderation", () => {
     ]);
 
     expect(wrapper.text()).toContain("line a");
-    expect(wrapper.find(TRIGGER).exists()).toBe(false);
+    expect(await menuItems(wrapper)).toEqual(["Add Reaction"]);
   });
 
-  it("offers a streamer nothing", async () => {
+  it("offers a streamer a reaction and nothing else", async () => {
     signIn({ role: "streamer" });
 
     const wrapper = await mountWithHistory("match", "streamed-match", [
       line("a", 0),
     ]);
 
+    expect(await menuItems(wrapper)).toEqual(["Add Reaction"]);
+  });
+
+  it("offers nothing where the room is read-only", async () => {
+    signIn({ role: "user" });
+
+    const wrapper = await mountWithHistory(
+      "match",
+      "read-only-match",
+      [line("a", 0)],
+      { canSend: false },
+    );
+
+    expect(wrapper.text()).toContain("line a");
     expect(wrapper.find(TRIGGER).exists()).toBe(false);
   });
 

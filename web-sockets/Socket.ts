@@ -10,17 +10,22 @@ import {
 } from "~/utilities/chatErrors";
 import {
   applyChatMessageEdit,
+  applyChatMessageReactions,
   chatMessageKey,
   insertChatMessage,
   isChatMessageDeleted,
   mergeChatSnapshot,
   removeChatMessage,
   type ChatMessageEdit,
+  type ChatMessageReactionsUpdate,
   type RemovedChatMessage,
 } from "~/utilities/chatLobbyMessages";
+import type { ChatReaction } from "~/constants/chat";
 import guid from "~/utilities/uuid";
 
 export { chatMessageKey, chatMessageTime } from "~/utilities/chatLobbyMessages";
+
+export type ChatReactions = Record<string, string[]>;
 
 export interface LobbyMessage {
   id?: string;
@@ -28,6 +33,9 @@ export interface LobbyMessage {
   timestamp: string;
   source?: "web" | "game";
   edited_at?: string;
+  // Reaction id to the steam ids holding it, oldest first. Missing from an api
+  // that predates reactions.
+  reactions?: ChatReactions;
   from?: {
     role?: string;
     name?: string;
@@ -59,6 +67,9 @@ interface LobbyState {
   // Ids the room has deleted. A history snapshot built before the delete can
   // still arrive after it, and must not bring the message back.
   deleted: Set<string>;
+  // Ids whose reactions changed live since the room's history was last asked
+  // for. See mergeChatSnapshot.
+  reacted: Set<string>;
   instances: Set<string>;
   callbacks: Map<string, (data: any) => void>;
   listeners: ReturnType<typeof Socket.prototype.listen>[];
@@ -356,6 +367,10 @@ export class Socket extends EventEmitter {
 
     this.event(`${room}:join`, data);
 
+    if (room === "lobby") {
+      this.lobbies.get(`${data.type}:${data.id}`)?.reacted.clear();
+    }
+
     // Our lobbies expire server-side after 24 hours, so we need to
     // periodically re-join to ensure we stay in the room for long-lived sessions.
     const existingTimer = this.rejoinTimers.get(roomKey);
@@ -480,6 +495,30 @@ export class Socket extends EventEmitter {
 
           this.editMessageInLobby(lobbyId, { id: messageId, message });
         },
+        rejected: (error) => {
+          if (error?.code === "not_found") {
+            this.removeMessageFromLobby(lobbyId, messageId);
+          }
+        },
+      },
+    );
+  }
+
+  // Sending a reaction the player already holds takes it back. Nothing changes
+  // here until the room's `reaction` broadcast, which carries the whole state.
+  public react(
+    type: ChatType,
+    id: string,
+    messageId: string,
+    reaction: ChatReaction,
+  ): Promise<void> {
+    const lobbyId = `${type}:${id}`;
+
+    return this.chatRequest(
+      "react",
+      { id, type, messageId, reaction },
+      {
+        resolved: () => {},
         rejected: (error) => {
           if (error?.code === "not_found") {
             this.removeMessageFromLobby(lobbyId, messageId);
@@ -659,6 +698,7 @@ export class Socket extends EventEmitter {
       messages: shallowRef([]),
       seen: new Set(),
       deleted: new Set(),
+      reacted: new Set(),
       callbacks: new Map(),
       listeners: [],
     };
@@ -709,6 +749,15 @@ export class Socket extends EventEmitter {
       }),
     );
 
+    lobby.listeners.push(
+      this.listen(
+        `lobby:${lobbyId}:reaction`,
+        (update: ChatMessageReactionsUpdate) => {
+          this.reactLobbyMessage(lobby, update);
+        },
+      ),
+    );
+
     this.join(`lobby`, {
       id: _id,
       type,
@@ -722,6 +771,7 @@ export class Socket extends EventEmitter {
       lobby.messages.value,
       messages,
       lobby.deleted,
+      lobby.reacted,
     );
 
     lobby.seen.clear();
@@ -759,6 +809,22 @@ export class Socket extends EventEmitter {
     );
 
     if (messages) {
+      lobby.messages.value = messages;
+    }
+  }
+
+  private reactLobbyMessage(
+    lobby: LobbyState,
+    update: ChatMessageReactionsUpdate,
+  ) {
+    const messages = applyChatMessageReactions(
+      lobby.messages.value,
+      update,
+      lobby.deleted,
+    );
+
+    if (messages) {
+      lobby.reacted.add(update.id as string);
       lobby.messages.value = messages;
     }
   }

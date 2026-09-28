@@ -8494,6 +8494,17 @@
     "edit_failed": "Nachricht konnte nicht bearbeitet werden",
     "edit_timeout": "Der Server hat nicht geantwortet. Deine Änderung wird eventuell trotzdem gespeichert.",
     "edit_window_closed": "Du kannst eine Nachricht nur 10 Minuten lang bearbeiten.",
+    "react": "Reagieren",
+    "add_reaction": "Reaktion hinzufügen",
+    "react_with": "Mit {emoji} reagieren",
+    "react_with_count": "Mit {emoji} reagieren ({count})",
+    "reacted_by": "Reaktion {emoji} von {names}",
+    "reacted_by_count": "Reaktion {emoji} von {count} Spieler | Reaktion {emoji} von {count} Spielern",
+    "reacted_you": "dir",
+    "reacted_others": "{count} weiteren Person | {count} weiteren Personen",
+    "react_failed": "Reaktion fehlgeschlagen",
+    "react_rate_limited": "Du reagierst zu schnell.",
+    "react_gagged": "Du bist im Chat gesperrt und kannst keine Reaktionen hinzufügen.",
     "direct": {
       "message": "Nachricht",
       "empty": "Noch keine Nachrichten. Sag Hallo."

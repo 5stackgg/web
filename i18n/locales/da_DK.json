@@ -8494,6 +8494,17 @@
     "edit_failed": "Beskeden kunne ikke redigeres",
     "edit_timeout": "Serveren svarede ikke. Din ændring kan stadig blive gemt.",
     "edit_window_closed": "Du kan kun redigere en besked i 10 minutter.",
+    "react": "Reagér",
+    "add_reaction": "Tilføj reaktion",
+    "react_with": "Reagér med {emoji}",
+    "react_with_count": "Reagér med {emoji} ({count})",
+    "reacted_by": "{names} reagerede med {emoji}",
+    "reacted_by_count": "{count} spiller reagerede med {emoji} | {count} spillere reagerede med {emoji}",
+    "reacted_you": "Du",
+    "reacted_others": "{count} anden | {count} andre",
+    "react_failed": "Kunne ikke reagere",
+    "react_rate_limited": "Du reagerer for hurtigt.",
+    "react_gagged": "Din chat er lukket, så du kan ikke tilføje reaktioner.",
     "direct": {
       "message": "Besked",
       "empty": "Ingen beskeder endnu. Sig hej."

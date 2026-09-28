@@ -8494,6 +8494,17 @@
     "edit_failed": "Mesaj düzenlenemedi",
     "edit_timeout": "Sunucu yanıt vermedi. Düzenlemen yine de kaydedilebilir.",
     "edit_window_closed": "Bir mesajı yalnızca 10 dakika boyunca düzenleyebilirsin.",
+    "react": "Tepki ver",
+    "add_reaction": "Tepki ekle",
+    "react_with": "{emoji} ile tepki ver",
+    "react_with_count": "{emoji} ile tepki ver ({count})",
+    "reacted_by": "{emoji} tepkisi: {names}",
+    "reacted_by_count": "{emoji} tepkisi: {count} oyuncu | {emoji} tepkisi: {count} oyuncu",
+    "reacted_you": "Sen",
+    "reacted_others": "{count} kişi daha | {count} kişi daha",
+    "react_failed": "Tepki verilemedi",
+    "react_rate_limited": "Çok hızlı tepki veriyorsun.",
+    "react_gagged": "Sohbetin kapatıldı, tepki ekleyemezsin.",
     "direct": {
       "message": "Mesaj",
       "empty": "Henüz mesaj yok. Merhaba de."

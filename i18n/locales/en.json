@@ -8494,6 +8494,17 @@
     "edit_failed": "Failed to edit message",
     "edit_timeout": "The server didn't answer. Your edit may still be saved.",
     "edit_window_closed": "You can only edit a message for 10 minutes.",
+    "react": "React",
+    "add_reaction": "Add Reaction",
+    "react_with": "React with {emoji}",
+    "react_with_count": "React with {emoji} ({count})",
+    "reacted_by": "{names} reacted with {emoji}",
+    "reacted_by_count": "{count} player reacted with {emoji} | {count} players reacted with {emoji}",
+    "reacted_you": "You",
+    "reacted_others": "{count} other | {count} others",
+    "react_failed": "Failed to react",
+    "react_rate_limited": "You're reacting too fast.",
+    "react_gagged": "You're gagged and can't add reactions.",
     "direct": {
       "message": "Message",
       "empty": "No messages yet. Say hello."

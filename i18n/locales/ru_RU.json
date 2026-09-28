@@ -8494,6 +8494,17 @@
     "edit_failed": "Не удалось изменить сообщение",
     "edit_timeout": "Сервер не ответил. Изменение всё ещё может быть сохранено.",
     "edit_window_closed": "Изменить сообщение можно только в течение 10 минут.",
+    "react": "Реакция",
+    "add_reaction": "Добавить реакцию",
+    "react_with": "Реакция {emoji}",
+    "react_with_count": "Реакция {emoji} ({count})",
+    "reacted_by": "Реакция {emoji}: {names}",
+    "reacted_by_count": "Реакция {emoji}: игроков — {count} | Реакция {emoji}: игроков — {count}",
+    "reacted_you": "вы",
+    "reacted_others": "ещё {count} | ещё {count}",
+    "react_failed": "Не удалось поставить реакцию",
+    "react_rate_limited": "Вы ставите реакции слишком быстро.",
+    "react_gagged": "Вам отключили чат, и вы не можете добавлять реакции.",
     "direct": {
       "message": "Сообщение",
       "empty": "Сообщений пока нет. Поздоровайтесь."

@@ -8494,6 +8494,17 @@
     "edit_failed": "消息编辑失败",
     "edit_timeout": "服务器没有响应。你的修改仍可能被保存。",
     "edit_window_closed": "你只能在发送后 10 分钟内编辑消息。",
+    "react": "表情回应",
+    "add_reaction": "添加表情回应",
+    "react_with": "用 {emoji} 回应",
+    "react_with_count": "用 {emoji} 回应（{count}）",
+    "reacted_by": "{names} 用 {emoji} 回应了",
+    "reacted_by_count": "{count} 名玩家用 {emoji} 回应了 | {count} 名玩家用 {emoji} 回应了",
+    "reacted_you": "你",
+    "reacted_others": "其他 {count} 人 | 其他 {count} 人",
+    "react_failed": "回应失败",
+    "react_rate_limited": "你的回应操作过快。",
+    "react_gagged": "你已被禁言，无法添加表情回应。",
     "direct": {
       "message": "消息",
       "empty": "还没有消息，先打个招呼吧。"

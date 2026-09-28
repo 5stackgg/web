@@ -1998,7 +1998,6 @@
           "relay_check_again": "Verificar novamente",
           "relay_setup_proxied": "{domain} precisa passar pelo proxy da Cloudflare (nuvem laranja).",
           "relay_setup_deploy": "Na sua cópia do 5stack-panel, implante-o no domínio de relay:",
-          "relay_setup_fail_open": "Depois, no painel da Cloudflare, defina o modo de falha por limite de solicitações dessa rota como Fail open, para que as transmissões continuem chegando a este servidor se o limite diário dos Workers for atingido.",
           "relay_setup_guide": "Guia de configuração",
           "encoding_section": "Encodando",
           "live_video_codec": "Live Stream Codec",

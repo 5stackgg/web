@@ -1998,7 +1998,6 @@
           "relay_check_again": "Vérifier à nouveau",
           "relay_setup_proxied": "{domain} doit passer par le proxy de Cloudflare (nuage orange).",
           "relay_setup_deploy": "Depuis votre copie de 5stack-panel, déployez-le sur le domaine de relais :",
-          "relay_setup_fail_open": "Ensuite, dans le tableau de bord Cloudflare, réglez le mode d'échec en cas de limite de requêtes de cette route sur Fail open, afin que les diffusions continuent d'atteindre ce serveur si la limite quotidienne de Workers est atteinte.",
           "relay_setup_guide": "Guide de configuration",
           "encoding_section": "Encodage",
           "live_video_codec": "Codec du stream live",

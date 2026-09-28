@@ -1998,7 +1998,6 @@
           "relay_check_again": "再確認",
           "relay_setup_proxied": "{domain} は Cloudflare のプロキシ (オレンジの雲) を経由している必要があります。",
           "relay_setup_deploy": "5stack-panel のチェックアウトから、リレードメインにデプロイします:",
-          "relay_setup_fail_open": "その後、Cloudflare ダッシュボードでそのルートのリクエスト上限時の動作を Fail open に設定してください。Workers の 1 日の上限に達しても配信がこのサーバーに届き続けます。",
           "relay_setup_guide": "セットアップガイド",
           "encoding_section": "エンコード",
           "live_video_codec": "ライブ配信のコーデック",

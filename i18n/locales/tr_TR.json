@@ -1998,7 +1998,6 @@
           "relay_check_again": "Tekrar kontrol et",
           "relay_setup_proxied": "{domain} Cloudflare proxy'sinden geçmelidir (turuncu bulut).",
           "relay_setup_deploy": "5stack-panel kopyandan onu aktarıcı alan adına dağıt:",
-          "relay_setup_fail_open": "Ardından Cloudflare panelinde o rotanın istek sınırı hata modunu Fail open olarak ayarla; böylece Workers günlük sınırına ulaşılırsa yayınlar bu sunucuya ulaşmaya devam eder.",
           "relay_setup_guide": "Kurulum kılavuzu",
           "encoding_section": "Kodlama",
           "live_video_codec": "Canlı yayın kodeği",

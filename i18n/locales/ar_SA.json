@@ -1998,7 +1998,6 @@
           "relay_check_again": "افحص مجدداً",
           "relay_setup_proxied": "يجب أن يمر {domain} عبر وكيل Cloudflare (السحابة البرتقالية).",
           "relay_setup_deploy": "من نسخة 5stack-panel لديك، انشره على نطاق المرحّل:",
-          "relay_setup_fail_open": "ثم اضبط وضع الفشل عند حد الطلبات لذلك المسار على Fail open في لوحة تحكم Cloudflare، كي يستمر وصول البث إلى هذا الخادم إذا بلغت الحد اليومي لـ Workers.",
           "relay_setup_guide": "دليل الإعداد",
           "encoding_section": "الترميز",
           "live_video_codec": "ترميز البث المباشر",

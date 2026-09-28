@@ -1998,7 +1998,6 @@
           "relay_check_again": "Tjek igen",
           "relay_setup_proxied": "{domain} skal gå gennem Cloudflares proxy (orange sky).",
           "relay_setup_deploy": "Udrul den på relay-domænet fra din kopi af 5stack-panel:",
-          "relay_setup_fail_open": "Sæt derefter rutens fejltilstand ved anmodningsgrænse til Fail open i Cloudflare-dashboardet, så udsendelser fortsat når denne server, hvis Workers' daglige grænse nås.",
           "relay_setup_guide": "Opsætningsguide",
           "encoding_section": "Encoding",
           "live_video_codec": "Codec til livestream",

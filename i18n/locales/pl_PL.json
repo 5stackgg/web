@@ -1998,7 +1998,6 @@
           "relay_check_again": "Sprawdź ponownie",
           "relay_setup_proxied": "{domain} musi przechodzić przez proxy Cloudflare (pomarańczowa chmura).",
           "relay_setup_deploy": "W swojej kopii 5stack-panel wdróż go w domenie przekaźnika:",
-          "relay_setup_fail_open": "Następnie w panelu Cloudflare ustaw tryb awarii przy limicie żądań tej trasy na Fail open, aby transmisje nadal docierały do tego serwera po osiągnięciu dziennego limitu Workers.",
           "relay_setup_guide": "Przewodnik konfiguracji",
           "encoding_section": "Kodowanie",
           "live_video_codec": "Kodek transmisji na żywo",

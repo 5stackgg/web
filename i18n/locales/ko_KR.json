@@ -1998,7 +1998,6 @@
           "relay_check_again": "다시 확인",
           "relay_setup_proxied": "{domain}은(는) Cloudflare 프록시(주황색 구름)를 거쳐야 합니다.",
           "relay_setup_deploy": "5stack-panel 체크아웃에서 릴레이 도메인에 배포하세요:",
-          "relay_setup_fail_open": "그런 다음 Cloudflare 대시보드에서 해당 라우트의 요청 한도 실패 모드를 Fail open으로 설정하세요. Workers 일일 한도에 도달해도 방송이 계속 이 서버로 전달됩니다.",
           "relay_setup_guide": "설정 가이드",
           "encoding_section": "인코딩",
           "live_video_codec": "실시간 스트림 코덱",

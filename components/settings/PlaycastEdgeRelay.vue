@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { Cloud, RefreshCw, Server } from "lucide-vue-next";
+import { CheckCircle2, Cloud, RefreshCw, XCircle } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 
 const relayDomain = String(useRuntimeConfig().public.relayDomain || "");
@@ -45,14 +45,26 @@ onMounted(() => {
     </div>
 
     <div
-      class="flex flex-wrap items-center justify-between gap-3 rounded-md bg-muted/30 px-3 py-2 text-sm"
+      data-test="relay-status-row"
+      class="flex flex-wrap items-center justify-between gap-3 rounded-md border-l-2 px-3 py-2 text-sm"
+      :class="{
+        'border-green-500 bg-gradient-to-r from-green-500/15 to-transparent text-green-300':
+          status === 'active',
+        'border-red-500 bg-gradient-to-r from-red-500/15 to-transparent text-red-300':
+          status === 'inactive',
+        'border-transparent bg-muted/30': status === 'checking',
+      }"
     >
       <div class="flex min-w-0 items-center gap-2">
-        <Cloud
+        <CheckCircle2
           v-if="status === 'active'"
-          class="size-4 shrink-0 text-primary"
+          class="size-4 shrink-0 text-green-400"
         />
-        <Server v-else class="size-4 shrink-0 text-muted-foreground" />
+        <XCircle
+          v-else-if="status === 'inactive'"
+          class="size-4 shrink-0 text-red-400"
+        />
+        <Cloud v-else class="size-4 shrink-0 text-muted-foreground" />
         <span class="truncate" data-test="relay-status">
           {{
             $t(`pages.settings.application.streaming.relay_${status}`, {
@@ -87,9 +99,6 @@ onMounted(() => {
       <pre
         class="overflow-x-auto rounded-md bg-muted p-2"
       ><code>./playcast-relay.sh</code></pre>
-      <p class="text-muted-foreground">
-        {{ $t("pages.settings.application.streaming.relay_setup_fail_open") }}
-      </p>
       <a
         href="https://docs.5stack.gg/advanced/playcast-edge-relay"
         target="_blank"

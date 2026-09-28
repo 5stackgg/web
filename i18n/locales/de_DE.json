@@ -1998,7 +1998,6 @@
           "relay_check_again": "Erneut prüfen",
           "relay_setup_proxied": "{domain} muss über Cloudflare geleitet werden (orangene Wolke).",
           "relay_setup_deploy": "Stelle ihn aus deinem 5stack-panel-Checkout auf der Relay-Domain bereit:",
-          "relay_setup_fail_open": "Stelle danach im Cloudflare-Dashboard den Fehlermodus bei Anfragelimit dieser Route auf Fail open, damit Übertragungen diesen Server weiter erreichen, falls das tägliche Workers-Limit erreicht wird.",
           "relay_setup_guide": "Einrichtungsanleitung",
           "encoding_section": "Encoding",
           "live_video_codec": "Codec für Live-Streams",

@@ -1998,7 +1998,6 @@
           "relay_check_again": "重新检查",
           "relay_setup_proxied": "{domain} 必须通过 Cloudflare 代理（橙色云朵）。",
           "relay_setup_deploy": "在你的 5stack-panel 检出目录中，将其部署到中继域名：",
-          "relay_setup_fail_open": "然后在 Cloudflare 控制台中，将该路由的请求限额故障模式设为 Fail open，这样即使达到 Workers 每日限额，广播仍会继续到达本服务器。",
           "relay_setup_guide": "设置指南",
           "encoding_section": "编码",
           "live_video_codec": "直播视频编码",

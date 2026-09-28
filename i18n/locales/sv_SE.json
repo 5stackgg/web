@@ -1998,7 +1998,6 @@
           "relay_check_again": "Kontrollera igen",
           "relay_setup_proxied": "{domain} måste gå via Cloudflares proxy (orange moln).",
           "relay_setup_deploy": "Driftsätt den på relädomänen från din utcheckning av 5stack-panel:",
-          "relay_setup_fail_open": "Ställ sedan in routens felläge vid begäransgräns på Fail open i Cloudflare-instrumentpanelen, så att sändningar fortsätter nå den här servern om Workers dagliga gräns nås.",
           "relay_setup_guide": "Installationsguide",
           "encoding_section": "Kodning",
           "live_video_codec": "Codec för livesändning",

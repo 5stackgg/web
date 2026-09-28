@@ -9,6 +9,9 @@ const realFetch = globalThis.fetch;
 const status = (wrapper: any) =>
   wrapper.find('[data-test="relay-status"]').text();
 
+const statusRow = (wrapper: any) =>
+  wrapper.find('[data-test="relay-status-row"]').classes();
+
 async function mountRelay() {
   const wrapper = await mountSuspended(PlaycastEdgeRelay);
   await flushPromises();
@@ -39,6 +42,7 @@ describe("PlaycastEdgeRelay", () => {
 
     expect(status(wrapper)).toContain("Active");
     expect(status(wrapper)).toContain("tv.acme.gg");
+    expect(statusRow(wrapper)).toContain("border-green-500");
     expect(wrapper.find("pre").exists()).toBe(false);
   });
 
@@ -48,6 +52,7 @@ describe("PlaycastEdgeRelay", () => {
     const wrapper = await mountRelay();
 
     expect(status(wrapper)).toContain("Not active");
+    expect(statusRow(wrapper)).toContain("border-red-500");
     expect(wrapper.find("pre").text()).toBe("./playcast-relay.sh");
   });
 

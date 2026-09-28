@@ -237,7 +237,7 @@ watch(search, (term) => {
 });
 
 const docLinkClasses =
-  "inline-flex items-center gap-1.5 rounded border border-border/70 bg-background/40 px-2 py-1 font-mono text-[0.68rem] uppercase tracking-[0.1em] text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-[hsl(var(--tac-amber))]";
+  "inline-flex items-center gap-1.5 rounded-md border border-border/70 bg-background/40 px-2 py-1 font-mono text-[0.68rem] uppercase tracking-[0.1em] text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-[hsl(var(--tac-amber))]";
 
 const supportLinks = computed(() => [
   {
@@ -362,7 +362,7 @@ const supportLinks = computed(() => [
             :href="link.href"
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 rounded border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.1)] px-3 py-1.5 font-mono text-[0.7rem] uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)]"
+            class="inline-flex items-center gap-2 rounded-md border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.1)] px-3 py-1.5 font-mono text-[0.7rem] uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)]"
           >
             <component :is="link.icon" class="h-3.5 w-3.5" />
             {{ link.label }}

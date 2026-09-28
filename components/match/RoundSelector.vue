@@ -103,7 +103,7 @@ watch(
     >
       <span
         :class="[
-          'flex items-center justify-center h-7 px-2.5 whitespace-nowrap rounded-sm font-mono text-[12px] font-bold uppercase tracking-[0.14em] tabular-nums leading-none transition-colors border',
+          'flex items-center justify-center h-7 px-2.5 whitespace-nowrap rounded-md font-mono text-[12px] font-bold uppercase tracking-[0.14em] tabular-nums leading-none transition-colors border',
           modelValue == null
             ? 'bg-[hsl(var(--tac-amber)/0.18)] border-[hsl(var(--tac-amber)/0.7)] text-[hsl(var(--tac-amber))]'
             : 'bg-card/60 border-border/60 text-muted-foreground group-hover:text-foreground group-hover:border-border',
@@ -117,7 +117,7 @@ watch(
     <button
       v-if="nav"
       type="button"
-      class="shrink-0 self-start mt-1 flex h-7 w-8 items-center justify-center rounded-sm border border-border/60 bg-card/60 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.7)] hover:text-[hsl(var(--tac-amber))] disabled:pointer-events-none disabled:opacity-30"
+      class="shrink-0 self-start mt-1 flex h-7 w-8 items-center justify-center rounded-md border border-border/60 bg-card/60 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.7)] hover:text-[hsl(var(--tac-amber))] disabled:pointer-events-none disabled:opacity-30"
       :disabled="!canPrev"
       @click="step(-1)"
     >
@@ -144,7 +144,7 @@ watch(
           >
             <span
               :class="[
-                'flex items-center justify-center h-7 min-w-7 px-1.5 rounded-sm font-mono text-[12px] font-bold tabular-nums leading-none transition-colors border',
+                'flex items-center justify-center h-7 min-w-7 px-1.5 rounded-md font-mono text-[12px] font-bold tabular-nums leading-none transition-colors border',
                 isActive(entry.round)
                   ? 'bg-[hsl(var(--tac-amber)/0.18)] border-[hsl(var(--tac-amber)/0.7)] text-[hsl(var(--tac-amber))]'
                   : 'bg-transparent border-transparent text-muted-foreground group-hover:text-foreground',
@@ -168,7 +168,7 @@ watch(
     <button
       v-if="nav"
       type="button"
-      class="shrink-0 self-start mt-1 flex h-7 w-8 items-center justify-center rounded-sm border border-border/60 bg-card/60 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.7)] hover:text-[hsl(var(--tac-amber))] disabled:pointer-events-none disabled:opacity-30"
+      class="shrink-0 self-start mt-1 flex h-7 w-8 items-center justify-center rounded-md border border-border/60 bg-card/60 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.7)] hover:text-[hsl(var(--tac-amber))] disabled:pointer-events-none disabled:opacity-30"
       :disabled="!canNext"
       @click="step(1)"
     >

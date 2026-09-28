@@ -523,7 +523,7 @@ const seeAllFinished = { path: "/tournaments", query: { status: "finished" } };
               v-if="searchInput"
               type="button"
               @click="clearSearch"
-              class="rounded p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              class="rounded-sm p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               :aria-label="$t('common.reset_filters')"
             >
               <X class="h-3.5 w-3.5" />
@@ -563,7 +563,7 @@ const seeAllFinished = { path: "/tournaments", query: { status: "finished" } };
                 setStatus(opt.value);
                 statusOpen = false;
               "
-              class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
+              class="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
             >
               <span>{{ opt.label }}</span>
               <Check
@@ -597,7 +597,7 @@ const seeAllFinished = { path: "/tournaments", query: { status: "finished" } };
               setSince(opt.value);
               dateOpen = false;
             "
-            class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
+            class="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
           >
             <span>{{ opt.label }}</span>
             <Check
@@ -795,39 +795,3 @@ const seeAllFinished = { path: "/tournaments", query: { status: "finished" } };
     </div>
   </template>
 </template>
-
-<style scoped>
-/* Soft amber chip — no border, fill-only. */
-.tac-chip {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.2rem 0.45rem 0.2rem 0.55rem;
-  background: hsl(var(--tac-amber) / 0.08);
-  border-radius: 2px;
-  font-feature-settings:
-    "tnum" on,
-    "cv11" on;
-  transition: background 150ms ease;
-}
-.tac-chip:hover {
-  background: hsl(var(--tac-amber) / 0.14);
-}
-.tac-chip-x {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: hsl(var(--tac-amber) / 0.55);
-  margin-left: 0.1rem;
-  border-radius: 2px;
-  padding: 1px;
-  transition:
-    color 150ms ease,
-    background 150ms ease;
-}
-.tac-chip-x:hover {
-  color: hsl(var(--tac-amber));
-  background: hsl(var(--tac-amber) / 0.12);
-}
-</style>

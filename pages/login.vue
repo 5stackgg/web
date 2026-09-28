@@ -87,7 +87,7 @@ const loginFooterLinkClasses =
         type="button"
         @click="signIn"
         :aria-label="$t('layouts.top_nav.login_aria')"
-        class="group relative border border-border bg-[linear-gradient(180deg,hsl(var(--card)/0.6)_0%,hsl(var(--card)/0.35)_100%)] px-[1.1rem] py-[0.85rem] transition-[background-color,border-color,transform] duration-200 hover:border-[hsl(var(--tac-amber)/0.55)] hover:bg-[linear-gradient(180deg,hsl(var(--tac-amber)/0.15)_0%,hsl(var(--tac-amber)/0.05)_100%)] active:translate-y-px"
+        class="group relative rounded-md border border-border bg-[linear-gradient(180deg,hsl(var(--card)/0.6)_0%,hsl(var(--card)/0.35)_100%)] px-[1.1rem] py-[0.85rem] transition-[background-color,border-color,transform] duration-200 hover:border-[hsl(var(--tac-amber)/0.55)] hover:bg-[linear-gradient(180deg,hsl(var(--tac-amber)/0.15)_0%,hsl(var(--tac-amber)/0.05)_100%)] active:translate-y-px"
       >
         <span
           aria-hidden="true"

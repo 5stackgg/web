@@ -76,7 +76,7 @@ defineEmits<{ accept: []; decline: []; dismiss: [] }>();
       <Button
         size="sm"
         variant="tactical"
-        class="toast-accept-button h-7 flex-1 rounded-[0.4rem] px-2 text-[0.7rem] font-semibold normal-case tracking-normal"
+        class="toast-accept-button h-7 flex-1 px-2 text-[0.7rem] font-semibold normal-case tracking-normal"
         :loading="pending === 'accept'"
         :disabled="pending === 'decline'"
         @click="$emit('accept')"
@@ -87,7 +87,7 @@ defineEmits<{ accept: []; decline: []; dismiss: [] }>();
       <Button
         size="sm"
         variant="outline"
-        class="h-7 flex-1 rounded-[0.4rem] border-border bg-transparent px-2 text-[0.7rem] font-semibold text-muted-foreground hover:border-[hsl(var(--destructive)/0.5)] hover:text-[hsl(var(--destructive))]"
+        class="h-7 flex-1 border-border bg-transparent px-2 text-[0.7rem] font-semibold text-muted-foreground hover:border-[hsl(var(--destructive)/0.5)] hover:text-[hsl(var(--destructive))]"
         :loading="pending === 'decline'"
         :disabled="pending === 'accept'"
         @click="$emit('decline')"

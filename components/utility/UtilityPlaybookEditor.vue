@@ -735,7 +735,7 @@ async function destroy() {
     <div class="flex items-center gap-1.5">
       <button
         type="button"
-        class="-ml-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+        class="-ml-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
         :aria-label="$t('pages.utility.playbooks.back')"
         :title="$t('pages.utility.playbooks.back')"
         @click="emit('cancel')"
@@ -755,7 +755,7 @@ async function destroy() {
         <DropdownMenuTrigger as-child>
           <button
             type="button"
-            class="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+            class="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
             :aria-label="$t('common.more')"
           >
             <MoreHorizontal class="h-4 w-4" />
@@ -1151,7 +1151,7 @@ async function destroy() {
                   <div class="flex items-center gap-1 pt-0.5">
                     <button
                       type="button"
-                      class="flex h-6 w-6 items-center justify-center rounded-sm border border-border text-muted-foreground transition-colors hover:text-foreground disabled:opacity-25"
+                      class="flex h-6 w-6 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:text-foreground disabled:opacity-25"
                       :disabled="index === 0"
                       :aria-label="$t('pages.utility.playbooks.move_up')"
                       @click.stop="move(index, -1)"
@@ -1160,7 +1160,7 @@ async function destroy() {
                     </button>
                     <button
                       type="button"
-                      class="flex h-6 w-6 items-center justify-center rounded-sm border border-border text-muted-foreground transition-colors hover:text-foreground disabled:opacity-25"
+                      class="flex h-6 w-6 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:text-foreground disabled:opacity-25"
                       :disabled="index === rows.length - 1"
                       :aria-label="$t('pages.utility.playbooks.move_down')"
                       @click.stop="move(index, 1)"
@@ -1169,7 +1169,7 @@ async function destroy() {
                     </button>
                     <button
                       type="button"
-                      class="ml-auto flex h-6 items-center gap-1 rounded-sm px-1.5 font-mono text-[0.58rem] uppercase tracking-[0.1em] text-muted-foreground transition-colors hover:text-destructive"
+                      class="ml-auto flex h-6 items-center gap-1 rounded-md px-1.5 font-mono text-[0.58rem] uppercase tracking-[0.1em] text-muted-foreground transition-colors hover:text-destructive"
                       @click.stop="removeRow(beat.row.key)"
                     >
                       <Trash2 class="h-3.5 w-3.5" />

@@ -294,7 +294,7 @@ function statCell(lp: any, key: "kills" | "deaths" | "assists" | "damage") {
   <button
     v-if="canShow && !hideToggle"
     type="button"
-    class="absolute z-30 inline-flex h-[1.625rem] items-center gap-1.5 rounded-[3px] bg-background/85 px-2 text-xs font-medium text-foreground shadow-[0_6px_18px_-8px_rgba(0,0,0,0.7)] transition-opacity cursor-pointer opacity-80 hover:opacity-100"
+    class="absolute z-30 inline-flex h-[1.625rem] items-center gap-1.5 rounded-md bg-background/85 px-2 text-xs font-medium text-foreground shadow-[0_6px_18px_-8px_rgba(0,0,0,0.7)] transition-opacity cursor-pointer opacity-80 hover:opacity-100"
     :class="[
       open ? 'opacity-100' : '',
       compact ? 'top-2 left-8' : 'top-2 left-1/2 -translate-x-1/2',

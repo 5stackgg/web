@@ -24,7 +24,7 @@ const { visibility, toggle, reset } = useTableColumns(
     <PopoverTrigger as-child>
       <button
         type="button"
-        class="inline-flex items-center gap-2 h-7 px-2.5 border border-border bg-[hsl(var(--card)/0.5)] rounded-sm font-mono text-[0.65rem] font-bold tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground hover:border-[hsl(var(--tac-amber)/0.5)] transition-colors"
+        class="inline-flex items-center gap-2 h-7 px-2.5 border border-border bg-[hsl(var(--card)/0.5)] rounded-md font-mono text-[0.65rem] font-bold tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground hover:border-[hsl(var(--tac-amber)/0.5)] transition-colors"
       >
         <Columns3 class="w-3.5 h-3.5" />
         <span>{{ $t("common.columns") }}</span>

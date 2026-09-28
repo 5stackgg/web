@@ -934,7 +934,7 @@ watch(spectatedSteamId, (sid) => {
                     v-for="m in otherLiveMatches"
                     :key="m.id"
                     type="button"
-                    class="flex w-full items-center justify-between gap-2 rounded px-2 py-1.5 text-sm text-left hover:bg-muted/50"
+                    class="flex w-full items-center justify-between gap-2 rounded-sm px-2 py-1.5 text-sm text-left hover:bg-muted/50"
                     :disabled="!!switching"
                     @click="switchTo(m.id)"
                   >
@@ -1082,7 +1082,7 @@ watch(spectatedSteamId, (sid) => {
     </PageTransition>
     <button
       type="button"
-      class="fixed bottom-4 right-4 z-20 inline-flex items-center gap-2 rounded-full border border-border/60 bg-card/80 px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-muted-foreground/80 backdrop-blur-md cursor-pointer transition-all duration-150 hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground hover:scale-105 active:scale-95"
+      class="fixed bottom-4 right-4 z-20 inline-flex items-center gap-2 rounded-md border border-border/60 bg-card/80 px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-muted-foreground/80 backdrop-blur-md cursor-pointer transition-all duration-150 hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground hover:scale-105 active:scale-95"
       :title="$t('ui.show_keyboard_shortcuts')"
       @click="shortcutsOpen = true"
     >

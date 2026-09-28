@@ -81,7 +81,7 @@ import {
           <button
             v-if="form.values.teamQuery"
             type="button"
-            class="rounded p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            class="rounded-sm p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             @click="form.setFieldValue('teamQuery', '')"
           >
             <X class="h-3.5 w-3.5" />

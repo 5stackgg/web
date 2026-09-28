@@ -129,7 +129,7 @@ const metricValueClasses =
           target="_blank"
           rel="noopener noreferrer"
           aria-label="GitHub"
-          class="inline-flex items-center gap-2 border border-border bg-transparent px-3 py-[0.45rem] font-sans text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[hsl(var(--foreground)/0.78)] no-underline transition-[color,background-color,border-color] duration-150 hover:border-[hsl(var(--tac-amber)/0.55)] hover:bg-[hsl(var(--tac-amber)/0.1)] hover:text-foreground focus-visible:border-[hsl(var(--tac-amber)/0.55)] focus-visible:bg-[hsl(var(--tac-amber)/0.1)] focus-visible:text-foreground focus-visible:outline-none"
+          class="inline-flex items-center gap-2 rounded-md border border-border bg-transparent px-3 py-[0.45rem] font-sans text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[hsl(var(--foreground)/0.78)] no-underline transition-[color,background-color,border-color] duration-150 hover:border-[hsl(var(--tac-amber)/0.55)] hover:bg-[hsl(var(--tac-amber)/0.1)] hover:text-foreground focus-visible:border-[hsl(var(--tac-amber)/0.55)] focus-visible:bg-[hsl(var(--tac-amber)/0.1)] focus-visible:text-foreground focus-visible:outline-none"
         >
           <GithubLogoIcon class="h-[14px] w-[14px]" />
           <span class="hidden sm:inline">SOURCE</span>

@@ -50,7 +50,7 @@ export default {
       class="flex items-center gap-2 min-w-0"
       :class="[
         variant === 'pills'
-          ? 'shrink-0 rounded-full bg-zinc-900/70 px-2 py-0.5 gap-1.5'
+          ? 'shrink-0 rounded-md bg-zinc-900/70 px-2 py-0.5 gap-1.5'
           : '',
         profileRoute(participant)
           ? 'transition-colors hover:text-[hsl(var(--tac-amber))]'

@@ -233,7 +233,7 @@ async function setWorkload(
   width: 28px;
   height: 28px;
   border: 1px solid hsl(var(--border) / 0.6);
-  border-radius: 0.4rem;
+  border-radius: 0.375rem;
   background: hsl(var(--card) / 0.4);
   color: hsl(var(--muted-foreground));
   transition:

@@ -1226,7 +1226,7 @@ export default {
   align-items: center;
   padding: 0.35rem 0.6rem;
   border: 1px solid hsl(var(--border));
-  border-radius: 0.4rem;
+  border-radius: 0.375rem;
   background: hsl(var(--card) / 0.5);
   color: hsl(var(--muted-foreground));
   transition:
@@ -1481,7 +1481,7 @@ export default {
   width: 28px;
   height: 28px;
   border: 1px solid hsl(var(--border) / 0.6);
-  border-radius: 0.4rem;
+  border-radius: 0.375rem;
   background: hsl(var(--card) / 0.4);
   color: hsl(var(--muted-foreground));
   transition:
@@ -1500,7 +1500,7 @@ export default {
   height: 28px;
   padding: 0 0.6rem;
   border: 1px solid hsl(var(--border) / 0.6);
-  border-radius: 0.4rem;
+  border-radius: 0.375rem;
   background: hsl(var(--card) / 0.4);
   font-family: ui-monospace, monospace;
   font-size: 0.55rem;
@@ -1532,7 +1532,7 @@ export default {
   gap: 0.35rem;
   padding: 0.3rem 0.6rem;
   border: 1px solid hsl(var(--t-bad) / 0.5);
-  border-radius: 0.4rem;
+  border-radius: 0.375rem;
   background: transparent;
   font-family: ui-monospace, monospace;
   font-size: 0.6rem;

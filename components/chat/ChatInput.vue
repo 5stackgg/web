@@ -30,7 +30,7 @@ const fieldName = `chat-message-${Math.random().toString(36).slice(2, 10)}`;
         class="relative grid grid-cols-2 rounded-md border border-border/60 bg-background/50 p-[2px]"
       >
         <span
-          class="pointer-events-none absolute inset-y-[2px] left-[2px] w-[calc(50%-2px)] rounded-[3px] ring-1 ring-inset transition-[transform,background-color,box-shadow] duration-300 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]"
+          class="pointer-events-none absolute inset-y-[2px] left-[2px] w-[calc(50%-2px)] rounded-sm ring-1 ring-inset transition-[transform,background-color,box-shadow] duration-300 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]"
           :class="[
             activeChannelIndex === 1 ? 'translate-x-full' : 'translate-x-0',
             isAmber

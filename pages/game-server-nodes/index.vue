@@ -133,7 +133,7 @@ const fadeTransition = {
           <button
             v-if="form.values.name"
             type="button"
-            class="rounded p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            class="rounded-sm p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             @click="
               form.setFieldValue('name', '');
               onFilterChange();
@@ -176,7 +176,7 @@ const fadeTransition = {
             :key="region.value"
             type="button"
             @click="toggleRegion(region.value)"
-            class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs transition-colors hover:bg-muted/50"
+            class="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-xs transition-colors hover:bg-muted/50"
             :class="
               isRegionSelected(region.value)
                 ? 'text-[hsl(var(--tac-amber))]'

@@ -55,7 +55,7 @@
     >
       <button
         v-if="!isNearBottom"
-        class="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 whitespace-nowrap border border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.18)] px-3 py-1.5 font-mono text-[0.62rem] font-bold uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))] shadow-lg backdrop-blur transition-colors hover:bg-[hsl(var(--tac-amber)/0.3)]"
+        class="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-md border border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.18)] px-3 py-1.5 font-mono text-[0.62rem] font-bold uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))] shadow-lg backdrop-blur transition-colors hover:bg-[hsl(var(--tac-amber)/0.3)]"
         @click="jumpToLive"
       >
         <PlayIcon class="h-3 w-3" />

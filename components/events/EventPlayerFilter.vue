@@ -31,7 +31,7 @@ const player = defineModel<FilterPlayer | null>({ default: null });
     />
     <button
       type="button"
-      class="rounded p-0.5 text-muted-foreground transition-colors hover:bg-destructive/20 hover:text-destructive"
+      class="rounded-sm p-0.5 text-muted-foreground transition-colors hover:bg-destructive/20 hover:text-destructive"
       :aria-label="$t('common.remove')"
       @click="player = null"
     >

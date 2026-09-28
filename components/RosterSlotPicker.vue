@@ -121,7 +121,7 @@ function setOpen(key: string, open: boolean) {
           </div>
           <button
             type="button"
-            class="shrink-0 rounded p-1.5 text-muted-foreground transition-colors hover:text-destructive"
+            class="shrink-0 rounded-md p-1.5 text-muted-foreground transition-colors hover:text-destructive"
             :title="$t('common.remove')"
             @click="remove(member.steamId)"
           >
@@ -202,7 +202,7 @@ function setOpen(key: string, open: boolean) {
           </div>
           <button
             type="button"
-            class="shrink-0 rounded p-1.5 text-muted-foreground transition-colors hover:text-destructive"
+            class="shrink-0 rounded-md p-1.5 text-muted-foreground transition-colors hover:text-destructive"
             :title="$t('common.remove')"
             @click="remove(member.steamId)"
           >

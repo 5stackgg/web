@@ -103,7 +103,7 @@
             <span v-if="tab.isDirty" class="text-primary">●</span>
             <button
               @click.stop="handleCloseTab(tab.path, tab.isDirty)"
-              class="ml-1 p-0.5 hover:bg-accent rounded opacity-0 group-hover:opacity-100"
+              class="ml-1 p-0.5 hover:bg-accent rounded-sm opacity-0 group-hover:opacity-100"
             >
               <X class="w-3 h-3" />
             </button>

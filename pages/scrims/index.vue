@@ -514,7 +514,7 @@ import {
               <button
                 v-if="searchQuery"
                 type="button"
-                class="rounded p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                class="rounded-sm p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                 @click="searchQuery = ''"
               >
                 <X class="h-3.5 w-3.5" />
@@ -571,7 +571,7 @@ import {
                   v-for="region in filteredRegionOptions"
                   :key="region.key"
                   type="button"
-                  class="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm transition-colors hover:bg-muted/50"
+                  class="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm transition-colors hover:bg-muted/50"
                   @click="toggleRegion(region.key)"
                 >
                   <span
@@ -634,7 +634,7 @@ import {
                   v-for="map in mapOptions"
                   :key="map.id"
                   type="button"
-                  class="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm transition-colors hover:bg-muted/50"
+                  class="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm transition-colors hover:bg-muted/50"
                   @click="toggleMap(map.id)"
                 >
                   <span
@@ -721,7 +721,7 @@ import {
                 v-for="option in sortOptions"
                 :key="option.key"
                 type="button"
-                class="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm transition-colors hover:bg-muted/50"
+                class="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm transition-colors hover:bg-muted/50"
                 @click="toggleSort(option.key)"
               >
                 <span
@@ -746,7 +746,7 @@ import {
                 <button
                   v-if="sortRank(option.key)"
                   type="button"
-                  class="rounded p-0.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  class="rounded-sm p-0.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                   @click.stop="removeSort(option.key)"
                 >
                   <X class="h-3.5 w-3.5" />

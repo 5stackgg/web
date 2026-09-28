@@ -228,7 +228,7 @@ const deny = (steamId: string) => {
   height: 1.5rem;
   width: 1.5rem;
   padding: 0;
-  border-radius: 0.3rem;
+  border-radius: 0.375rem;
   border: 1px solid;
   transition: all 0.15s ease;
 }

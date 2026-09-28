@@ -335,7 +335,7 @@ function open() {
         <DropdownMenuTrigger as-child>
           <button
             type="button"
-            class="-mr-0.5 shrink-0 rounded p-1 text-muted-foreground transition-opacity duration-200 hover:bg-muted/50 hover:text-foreground focus-visible:opacity-100 data-[state=open]:bg-muted/50 data-[state=open]:text-foreground"
+            class="-mr-0.5 shrink-0 rounded-md p-1 text-muted-foreground transition-opacity duration-200 hover:bg-muted/50 hover:text-foreground focus-visible:opacity-100 data-[state=open]:bg-muted/50 data-[state=open]:text-foreground"
             :class="
               mode === 'card' || selected
                 ? 'opacity-100'

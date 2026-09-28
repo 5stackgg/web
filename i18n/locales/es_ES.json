@@ -5148,9 +5148,6 @@
       }
     }
   },
-  "custom_match": {
-    "description": "Crea tu propia partida con reglas, mapas y alineaciones personalizadas"
-  },
   "layouts": {
     "account_settings": {
       "title": "Ajustes de la cuenta",

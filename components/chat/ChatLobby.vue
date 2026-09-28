@@ -132,7 +132,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
               isAtBottom
             "
             type="button"
-            class="absolute top-1 left-1/2 -translate-x-1/2 z-10 rounded-full bg-zinc-900/95 border border-zinc-700 text-zinc-100 text-[11px] px-4 py-1 shadow-md hover:bg-zinc-800"
+            class="absolute top-1 left-1/2 -translate-x-1/2 z-10 rounded-md bg-zinc-900/95 border border-zinc-700 text-zinc-100 text-[11px] px-4 py-1 shadow-md hover:bg-zinc-800"
             @click.stop="handleJumpToNewLine"
           >
             ↑ {{ $t("chat.jump_to_new", "Jump to new") }}
@@ -140,7 +140,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
           <button
             v-if="lastReadMessageCount < messages.length && !isAtBottom"
             type="button"
-            class="absolute bottom-20 left-1/2 -translate-x-1/2 z-10 rounded-full bg-primary text-primary-foreground text-[11px] px-3 py-1 shadow-md hover:bg-primary/90"
+            class="absolute bottom-20 left-1/2 -translate-x-1/2 z-10 rounded-md bg-primary text-primary-foreground text-[11px] px-3 py-1 shadow-md hover:bg-primary/90"
             @click.stop="handleJumpToBottom"
           >
             {{ $t("chat.new_messages", "New messages") }} ↓
@@ -210,10 +210,10 @@ import Empty from "~/components/ui/empty/Empty.vue";
              other is busy. -->
         <div
           v-if="isMerged"
-          class="relative grid grid-cols-3 rounded-sm bg-background/60 p-[2px]"
+          class="relative grid grid-cols-3 rounded-md bg-background/60 p-[2px]"
         >
           <span
-            class="pointer-events-none absolute inset-y-[2px] left-[2px] w-[calc(33.333%-1.333px)] rounded-[2px] bg-muted/70 transition-transform duration-300 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]"
+            class="pointer-events-none absolute inset-y-[2px] left-[2px] w-[calc(33.333%-1.333px)] rounded-sm bg-muted/70 transition-transform duration-300 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]"
             :style="{ transform: `translateX(${viewFilterIndex * 100}%)` }"
           ></span>
           <button
@@ -312,7 +312,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
             isAtBottom
           "
           type="button"
-          class="absolute top-1 left-1/2 z-10 rounded-full bg-zinc-900/95 border border-zinc-700 text-zinc-100 text-[11px] px-4 py-1 shadow-md hover:bg-zinc-800"
+          class="absolute top-1 left-1/2 z-10 rounded-md bg-zinc-900/95 border border-zinc-700 text-zinc-100 text-[11px] px-4 py-1 shadow-md hover:bg-zinc-800"
           style="translate: -50% 0"
           @click.stop="handleJumpToNewLine"
         >
@@ -332,7 +332,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
             !isAtBottom
           "
           type="button"
-          class="absolute bottom-20 left-1/2 z-10 rounded-full bg-primary text-primary-foreground text-[11px] px-3 py-1 shadow-md hover:bg-primary/90"
+          class="absolute bottom-20 left-1/2 z-10 rounded-md bg-primary text-primary-foreground text-[11px] px-3 py-1 shadow-md hover:bg-primary/90"
           style="translate: -50% 0"
           @click.stop="handleJumpToBottom"
         >

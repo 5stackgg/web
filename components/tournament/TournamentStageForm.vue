@@ -73,7 +73,7 @@ import { $ } from "~/generated/zeus";
             :key="type.value"
             type="button"
             :class="[
-              'group/tile relative flex flex-col items-center justify-center gap-[0.55rem] min-h-[8.5rem] px-[0.85rem] py-4 border border-border [background:linear-gradient(180deg,hsl(var(--card)/0.5)_0%,hsl(var(--card)/0.2)_100%)] backdrop-blur-[6px] text-muted-foreground cursor-pointer [transition:color_160ms_ease,border-color_160ms_ease,background_160ms_ease,transform_160ms_ease] hover:border-[hsl(var(--tac-amber)/0.45)] hover:text-foreground hover:-translate-y-px',
+              'group/tile relative flex flex-col items-center justify-center gap-[0.55rem] min-h-[8.5rem] rounded-md px-[0.85rem] py-4 border border-border [background:linear-gradient(180deg,hsl(var(--card)/0.5)_0%,hsl(var(--card)/0.2)_100%)] backdrop-blur-[6px] text-muted-foreground cursor-pointer [transition:color_160ms_ease,border-color_160ms_ease,background_160ms_ease,transform_160ms_ease] hover:border-[hsl(var(--tac-amber)/0.45)] hover:text-foreground hover:-translate-y-px',
               value === type.value &&
                 '!border-[hsl(var(--tac-amber))] ![background:linear-gradient(180deg,hsl(var(--tac-amber)/0.12)_0%,hsl(var(--tac-amber)/0.04)_100%)] !text-foreground !shadow-[inset_0_1px_0_hsl(var(--tac-amber)/0.08)] hover:!translate-y-0',
             ]"

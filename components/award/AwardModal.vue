@@ -175,7 +175,7 @@ const awardTeam = computed(() => {
       <NuxtLink
         v-if="awardTeam"
         :to="`/teams/${awardTeam.id}`"
-        class="group/team relative flex items-center justify-between gap-3 overflow-hidden rounded-sm border border-[hsl(var(--tac-amber)_/_0.35)] bg-[hsl(var(--tac-amber)_/_0.07)] px-3 py-2.5 text-left transition-colors duration-150 hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.11)]"
+        class="group/team relative flex items-center justify-between gap-3 overflow-hidden rounded-md border border-[hsl(var(--tac-amber)_/_0.35)] bg-[hsl(var(--tac-amber)_/_0.07)] px-3 py-2.5 text-left transition-colors duration-150 hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.11)]"
       >
         <span
           class="pointer-events-none absolute inset-0 [background-image:repeating-linear-gradient(90deg,transparent_0,transparent_11px,hsl(var(--tac-amber)_/_0.04)_11px,hsl(var(--tac-amber)_/_0.04)_12px)]"
@@ -291,7 +291,7 @@ const awardTeam = computed(() => {
         <NuxtLink
           v-if="award.tournament_id"
           :to="`/tournaments/${award.tournament_id}`"
-          class="group/link inline-flex flex-1 items-center justify-center gap-2 rounded-sm border border-border px-4 py-2.5 font-mono text-[0.7rem] uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.08)] hover:text-[hsl(var(--tac-amber))]"
+          class="group/link inline-flex flex-1 items-center justify-center gap-2 rounded-md border border-border px-4 py-2.5 font-mono text-[0.7rem] uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.08)] hover:text-[hsl(var(--tac-amber))]"
           @click="emit('update:open', false)"
         >
           <span
@@ -308,7 +308,7 @@ const awardTeam = computed(() => {
         <NuxtLink
           v-if="award.award?.id"
           :to="`/awards/${award.award.id}`"
-          class="group/link inline-flex flex-1 items-center justify-center gap-2 rounded-sm border border-border px-4 py-2.5 font-mono text-[0.7rem] uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.08)] hover:text-[hsl(var(--tac-amber))]"
+          class="group/link inline-flex flex-1 items-center justify-center gap-2 rounded-md border border-border px-4 py-2.5 font-mono text-[0.7rem] uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.08)] hover:text-[hsl(var(--tac-amber))]"
           @click="emit('update:open', false)"
         >
           <span

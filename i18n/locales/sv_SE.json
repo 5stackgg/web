@@ -5148,9 +5148,6 @@
       }
     }
   },
-  "custom_match": {
-    "description": "Bygg din egen match med egna regler, kartor och laguppställningar"
-  },
   "layouts": {
     "account_settings": {
       "title": "Kontoinställningar",

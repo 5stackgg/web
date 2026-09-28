@@ -88,7 +88,7 @@ const severity: Record<
       v-if="dismissible"
       type="button"
       :class="[
-        'absolute right-3 top-2 rounded p-1 text-muted-foreground transition-colors',
+        'absolute right-3 top-2 rounded-md p-1 text-muted-foreground transition-colors',
         preview ? 'pointer-events-none' : 'hover:text-foreground',
       ]"
       :tabindex="preview ? -1 : 0"

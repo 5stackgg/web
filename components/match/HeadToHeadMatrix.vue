@@ -319,7 +319,7 @@ function damageWidth(v: number) {
             v-for="m of lineup1Players"
             :key="m.steam_id"
             type="button"
-            class="group flex flex-col items-center gap-1 pt-1.5 pb-2 px-1 border rounded-sm transition-all min-w-0"
+            class="group flex flex-col items-center gap-1 pt-1.5 pb-2 px-1 border rounded-md transition-all min-w-0"
             :class="
               selectedA === String(m.steam_id)
                 ? 'border-amber-400 bg-amber-400/15 shadow-[0_0_0_1px_rgb(251_191_36_/_0.4),inset_0_0_24px_-12px_rgb(251_191_36_/_0.5)]'
@@ -369,7 +369,7 @@ function damageWidth(v: number) {
             v-for="m of lineup2Players"
             :key="m.steam_id"
             type="button"
-            class="group flex flex-col items-center gap-1 pt-1.5 pb-2 px-1 border rounded-sm transition-all min-w-0"
+            class="group flex flex-col items-center gap-1 pt-1.5 pb-2 px-1 border rounded-md transition-all min-w-0"
             :class="
               selectedB === String(m.steam_id)
                 ? 'border-sky-400 bg-sky-400/15 shadow-[0_0_0_1px_rgb(56_189_248_/_0.4),inset_0_0_24px_-12px_rgb(56_189_248_/_0.5)]'

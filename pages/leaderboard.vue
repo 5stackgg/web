@@ -998,7 +998,7 @@ onMounted(async () => {
         </Select>
 
         <div
-          class="ml-auto flex h-8 cursor-pointer items-center gap-2 rounded-full border px-3 text-xs tracking-[0.06em] transition-colors duration-150"
+          class="ml-auto flex h-8 cursor-pointer items-center gap-2 rounded-md border px-3 text-xs tracking-[0.06em] transition-colors duration-150"
           :class="
             excludeTournaments
               ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
@@ -1185,7 +1185,7 @@ onMounted(async () => {
           <button
             v-if="scope && scope !== defaultScope"
             type="button"
-            class="inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-2.5 py-1 text-xs text-[hsl(var(--tac-amber))]"
+            class="inline-flex items-center gap-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-2.5 py-1 text-xs text-[hsl(var(--tac-amber))]"
             @click="scope = defaultScope"
           >
             {{ scopeLabel }}
@@ -1194,7 +1194,7 @@ onMounted(async () => {
           <button
             v-if="matchType !== 'Competitive'"
             type="button"
-            class="inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-2.5 py-1 text-xs text-[hsl(var(--tac-amber))]"
+            class="inline-flex items-center gap-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-2.5 py-1 text-xs text-[hsl(var(--tac-amber))]"
             @click="matchType = 'Competitive'"
           >
             {{ matchTypeLabel }}
@@ -1203,7 +1203,7 @@ onMounted(async () => {
           <button
             v-if="sourceFilter !== 'overall'"
             type="button"
-            class="inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-2.5 py-1 text-xs text-[hsl(var(--tac-amber))]"
+            class="inline-flex items-center gap-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-2.5 py-1 text-xs text-[hsl(var(--tac-amber))]"
             @click="sourceFilter = 'overall'"
           >
             {{ $t(`pages.leaderboard.sources.${sourceFilter}`) }}
@@ -1212,7 +1212,7 @@ onMounted(async () => {
           <button
             v-if="supportsRole && roleFilter !== 'all'"
             type="button"
-            class="inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-2.5 py-1 text-xs text-[hsl(var(--tac-amber))]"
+            class="inline-flex items-center gap-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-2.5 py-1 text-xs text-[hsl(var(--tac-amber))]"
             @click="roleFilter = 'all'"
           >
             {{ roleLabel }}
@@ -1221,7 +1221,7 @@ onMounted(async () => {
           <button
             v-if="excludeTournaments"
             type="button"
-            class="inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-2.5 py-1 text-xs text-[hsl(var(--tac-amber))]"
+            class="inline-flex items-center gap-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-2.5 py-1 text-xs text-[hsl(var(--tac-amber))]"
             @click="toggleExcludeTournaments"
           >
             <Trophy class="h-3 w-3" />

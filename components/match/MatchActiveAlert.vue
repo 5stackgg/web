@@ -75,7 +75,7 @@ const { manuallyOpened } = useMatchReadyModal();
 
         <button
           type="button"
-          class="absolute right-3 top-3 z-20 inline-flex h-6 w-6 items-center justify-center rounded text-muted-foreground transition-colors hover:text-foreground"
+          class="absolute right-3 top-3 z-20 inline-flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-foreground"
           :aria-label="$t('common.close')"
           @click="acknowledge"
         >

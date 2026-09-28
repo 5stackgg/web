@@ -55,7 +55,7 @@ const DASH = "—";
           <DropdownMenuTrigger as-child>
             <Button
               variant="ghost"
-              class="shrink-0 h-7 w-5 p-0 rounded text-muted-foreground hover:!text-[hsl(var(--tac-amber))] hover:!bg-[hsl(var(--tac-amber)/0.18)] [box-shadow:inset_0_0_0_1px_transparent] hover:[box-shadow:inset_0_0_0_1px_hsl(var(--tac-amber)/0.4)] transition-colors"
+              class="shrink-0 h-7 w-5 p-0 text-muted-foreground hover:!text-[hsl(var(--tac-amber))] hover:!bg-[hsl(var(--tac-amber)/0.18)] [box-shadow:inset_0_0_0_1px_transparent] hover:[box-shadow:inset_0_0_0_1px_hsl(var(--tac-amber)/0.4)] transition-colors"
             >
               <MoreVertical class="h-4 w-3" />
             </Button>
@@ -306,7 +306,7 @@ const DASH = "—";
                 :key="row.n"
                 type="button"
                 :disabled="!hasMultiKillsToShow(row.n)"
-                class="flex flex-col items-center gap-0.5 px-2 py-2 border border-border/60 rounded-sm bg-card/60 enabled:hover:border-[hsl(var(--tac-amber)/0.6)] enabled:hover:bg-[hsl(var(--tac-amber)/0.06)] disabled:opacity-50 disabled:cursor-default transition-colors"
+                class="flex flex-col items-center gap-0.5 px-2 py-2 border border-border/60 rounded-md bg-card/60 enabled:hover:border-[hsl(var(--tac-amber)/0.6)] enabled:hover:bg-[hsl(var(--tac-amber)/0.06)] disabled:opacity-50 disabled:cursor-default transition-colors"
                 @click="
                   hasMultiKillsToShow(row.n) && openMultiKillDrilldown(row.n)
                 "

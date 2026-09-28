@@ -485,7 +485,7 @@ function onPopoverSubmit(proposedTime: string, message: string) {
           v-for="mode in views"
           :key="mode"
           type="button"
-          class="rounded px-2.5 py-1 font-mono text-[0.6rem] uppercase tracking-[0.14em] transition-colors"
+          class="rounded-sm px-2.5 py-1 font-mono text-[0.6rem] uppercase tracking-[0.14em] transition-colors"
           :class="
             view === mode
               ? 'bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
@@ -610,7 +610,7 @@ function onPopoverSubmit(proposedTime: string, message: string) {
                   v-for="fixture in cell.events"
                   :key="fixture.bracket.id"
                   type="button"
-                  class="mt-1 block w-full min-w-0 rounded border-l-2 px-1.5 py-1 text-left transition-transform hover:translate-x-px"
+                  class="mt-1 block w-full min-w-0 rounded-sm border-l-2 px-1.5 py-1 text-left transition-transform hover:translate-x-px"
                   :class="eventClass(fixture)"
                   @click.stop="detailFor = fixture"
                 >

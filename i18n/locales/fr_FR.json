@@ -5148,9 +5148,6 @@
       }
     }
   },
-  "custom_match": {
-    "description": "Crée ton propre match avec des règles, des maps et des compositions personnalisées"
-  },
   "layouts": {
     "account_settings": {
       "title": "Paramètres du compte",

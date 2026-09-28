@@ -689,7 +689,7 @@ const leave = async () => {
   place-items: center;
   height: 2.1rem;
   width: 2.1rem;
-  border-radius: 0.45rem;
+  border-radius: 0.375rem;
   color: hsl(var(--muted-foreground));
   border: 1px solid hsl(var(--border));
   background: hsl(var(--card) / 0.6);

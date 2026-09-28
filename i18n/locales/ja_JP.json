@@ -5148,9 +5148,6 @@
       }
     }
   },
-  "custom_match": {
-    "description": "独自のルール・マップ・出場メンバーで試合を作成"
-  },
   "layouts": {
     "account_settings": {
       "title": "アカウント設定",

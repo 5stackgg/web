@@ -294,7 +294,7 @@ function isFrac(f?: Formula): boolean {
                 :href="GITHUB_URL"
                 target="_blank"
                 rel="noopener"
-                class="inline-flex items-center gap-2 w-fit px-3 py-1.5 rounded border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.1)] font-mono text-[0.7rem] tracking-[0.14em] uppercase text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)]"
+                class="inline-flex items-center gap-2 w-fit px-3 py-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.1)] font-mono text-[0.7rem] tracking-[0.14em] uppercase text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)]"
               >
                 <ExternalLink class="w-3.5 h-3.5" />
                 {{ $t("glossary.github_cta") }}

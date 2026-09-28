@@ -37,7 +37,7 @@ import { HeightMorph, Fold } from "~/components/ui/transitions";
       >
         <button
           type="button"
-          class="flex items-center gap-2 rounded-sm border px-3 py-1.5 font-mono text-[0.65rem] uppercase tracking-[0.16em] transition-colors"
+          class="flex items-center gap-2 rounded-md border px-3 py-1.5 font-mono text-[0.65rem] uppercase tracking-[0.16em] transition-colors"
           :class="
             index === currentStep
               ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)_/_0.12)] text-[hsl(var(--tac-amber))]'

@@ -134,7 +134,7 @@ const tournamentHeroOrganizerClasses =
 const tournamentHeroActionsClasses =
   "flex min-w-0 shrink-0 flex-wrap items-center justify-end gap-2 max-sm:w-full max-sm:justify-start";
 const tournamentHeroStatusClasses =
-  "inline-flex h-9 items-center gap-2 whitespace-nowrap rounded border border-border bg-muted/30 px-[0.7rem] py-[0.3rem] font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-muted-foreground max-sm:flex-1 max-sm:justify-center";
+  "inline-flex h-9 items-center gap-2 whitespace-nowrap rounded-md border border-border bg-muted/30 px-[0.7rem] py-[0.3rem] font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-muted-foreground max-sm:flex-1 max-sm:justify-center";
 const tournamentHeroStatusDotClasses = "h-1.5 w-1.5 rounded-full bg-current";
 const tournamentHeroStatusTierClasses: Record<string, string> = {
   live: "border-destructive/55 bg-destructive/15 text-destructive",

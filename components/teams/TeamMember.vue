@@ -168,7 +168,7 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
             <DropdownMenuSub>
               <DropdownMenuSubTrigger>
                 <span>{{ $t("common.status") }}</span>
-                <span class="ml-auto text-muted-foreground text-xs capitalize">
+                <span class="ml-auto text-muted-foreground text-xs">
                   {{ $t(`team.member.${statusKey}`) }}
                   <template v-if="member.coach">
                     · {{ $t("team.member.coach") }}

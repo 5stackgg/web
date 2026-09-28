@@ -522,6 +522,7 @@ const tabCountClasses =
                       type="button"
                       variant="ghost"
                       size="icon"
+                      :aria-label="$t('player.sanctions.clear_date')"
                       @click="clearEditDate"
                     >
                       <Trash2 class="h-4 w-4" />

@@ -76,7 +76,7 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
           </span>
           <span
             v-if="!isInvite && member.coach"
-            class="inline-flex items-center gap-1 rounded-full border border-border bg-muted/60 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.08em] text-muted-foreground"
+            class="inline-flex items-center gap-1 rounded-full border border-border bg-muted/40 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.08em] text-muted-foreground"
           >
             <GraduationCap class="h-3 w-3" />
             {{ $t("team.member.coach") }}

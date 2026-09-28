@@ -47678,6 +47678,9 @@ export const ReturnTypes: Record<string,any> = {
 		since:"String",
 		version:"String"
 	},
+	TestDownloadResponse:{
+		error:"String"
+	},
 	TestUploadResponse:{
 		error:"String"
 	},
@@ -55835,6 +55838,7 @@ export const ReturnTypes: Record<string,any> = {
 		syncMapCallouts:"MapCalloutSyncOutput",
 		syncPluginRegistry:"SyncPluginRegistryOutput",
 		syncSteamFriends:"SuccessOutput",
+		testDownload:"TestDownloadResponse",
 		testFaceitIntegration:"FaceitTestOutput",
 		testUpload:"TestUploadResponse",
 		uninstallGamePlugin:"SuccessOutput",

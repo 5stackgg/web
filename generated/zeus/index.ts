@@ -1856,6 +1856,10 @@ export type ValueTypes = {
 	version?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["TestDownloadResponse"]: AliasType<{
+	error?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["TestUploadResponse"]: AliasType<{
 	error?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -30697,6 +30701,7 @@ switchLiveMatch?: [{	from_match_id: ValueTypes["uuid"] | Variable<any, string>,	
 	/** Pull the game plugin registry into this panel's catalog */
 	syncPluginRegistry?:ValueTypes["SyncPluginRegistryOutput"],
 	syncSteamFriends?:ValueTypes["SuccessOutput"],
+	testDownload?:ValueTypes["TestDownloadResponse"],
 	/** Test FACEIT Data + Downloads API connectivity for the current admin */
 	testFaceitIntegration?:ValueTypes["FaceitTestOutput"],
 	testUpload?:ValueTypes["TestUploadResponse"],
@@ -84251,6 +84256,10 @@ export type ResolverInputTypes = {
 	version?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["TestDownloadResponse"]: AliasType<{
+	error?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["TestUploadResponse"]: AliasType<{
 	error?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -113092,6 +113101,7 @@ switchLiveMatch?: [{	from_match_id: ResolverInputTypes["uuid"],	mode: string,	to
 	/** Pull the game plugin registry into this panel's catalog */
 	syncPluginRegistry?:ResolverInputTypes["SyncPluginRegistryOutput"],
 	syncSteamFriends?:ResolverInputTypes["SuccessOutput"],
+	testDownload?:ResolverInputTypes["TestDownloadResponse"],
 	/** Test FACEIT Data + Downloads API connectivity for the current admin */
 	testFaceitIntegration?:ResolverInputTypes["FaceitTestOutput"],
 	testUpload?:ResolverInputTypes["TestUploadResponse"],
@@ -166552,6 +166562,9 @@ export type ModelTypes = {
 	since: string,
 	version: string
 };
+	["TestDownloadResponse"]: {
+		error?: string | undefined | null
+};
 	["TestUploadResponse"]: {
 		error?: string | undefined | null
 };
@@ -192898,6 +192911,7 @@ export type ModelTypes = {
 	/** Pull the game plugin registry into this panel's catalog */
 	syncPluginRegistry?: ModelTypes["SyncPluginRegistryOutput"] | undefined | null,
 	syncSteamFriends?: ModelTypes["SuccessOutput"] | undefined | null,
+	testDownload?: ModelTypes["TestDownloadResponse"] | undefined | null,
 	/** Test FACEIT Data + Downloads API connectivity for the current admin */
 	testFaceitIntegration?: ModelTypes["FaceitTestOutput"] | undefined | null,
 	testUpload?: ModelTypes["TestUploadResponse"] | undefined | null,
@@ -239126,6 +239140,10 @@ export type GraphQLTypes = {
 	since: string,
 	version: string
 };
+	["TestDownloadResponse"]: {
+	__typename: "TestDownloadResponse",
+	error?: string | undefined | null
+};
 	["TestUploadResponse"]: {
 	__typename: "TestUploadResponse",
 	error?: string | undefined | null
@@ -266998,6 +267016,7 @@ export type GraphQLTypes = {
 	/** Pull the game plugin registry into this panel's catalog */
 	syncPluginRegistry?: GraphQLTypes["SyncPluginRegistryOutput"] | undefined | null,
 	syncSteamFriends?: GraphQLTypes["SuccessOutput"] | undefined | null,
+	testDownload?: GraphQLTypes["TestDownloadResponse"] | undefined | null,
 	/** Test FACEIT Data + Downloads API connectivity for the current admin */
 	testFaceitIntegration?: GraphQLTypes["FaceitTestOutput"] | undefined | null,
 	testUpload?: GraphQLTypes["TestUploadResponse"] | undefined | null,

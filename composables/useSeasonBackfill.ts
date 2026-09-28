@@ -55,6 +55,11 @@ const loaded = ref(false);
 const status = ref<SeasonBackfillStatus | null>(null);
 
 const running = computed(() => !!status.value?.running);
+
+function isRebuilding(seasonId: string): boolean {
+  return running.value && status.value?.season_id === seasonId;
+}
+
 const progress = computed(() => {
   const s = status.value;
   if (!s || s.total === 0) {
@@ -123,7 +128,7 @@ function poll() {
 }
 
 async function startBackfill(seasonId: string) {
-  if (running.value || starting.value) {
+  if (starting.value || isRebuilding(seasonId)) {
     return;
   }
   starting.value = true;
@@ -191,6 +196,7 @@ export function useSeasonBackfill() {
   return {
     status,
     running,
+    isRebuilding,
     progress,
     starting,
     canceling,

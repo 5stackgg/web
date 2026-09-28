@@ -54,12 +54,7 @@ function openAwardComposer(seasonId: string) {
   awardComposerSeasonId.value = seasonId;
 }
 
-// True while THIS season is the one currently being rebuilt.
-function isRebuilding(seasonId: string): boolean {
-  return (
-    backfill.running.value && backfill.status.value?.season_id === seasonId
-  );
-}
+const { isRebuilding } = backfill;
 
 const actionBtn = [filterTriggerBase, filterTriggerIdle, "h-8"];
 const dangerBtn = [
@@ -295,7 +290,7 @@ const rebuildCta =
           <button
             type="button"
             :title="$t('pages.seasons.rebuild')"
-            :disabled="backfill.running.value"
+            :disabled="isRebuilding(activeSeason.id)"
             class="flex h-7 w-7 items-center justify-center rounded-md border border-border bg-muted/20 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))] disabled:opacity-40"
             @click="confirmRebuild(activeSeason.id)"
           >
@@ -364,7 +359,7 @@ const rebuildCta =
                 <button
                   type="button"
                   :class="rebuildCta"
-                  :disabled="backfill.running.value"
+                  :disabled="isRebuilding(activeSeason.id)"
                   @click="confirmRebuild(activeSeason.id)"
                 >
                   <RotateCcw class="h-3.5 w-3.5" />
@@ -568,7 +563,7 @@ const rebuildCta =
               <button
                 v-if="season.needs_rebuild"
                 type="button"
-                :disabled="backfill.running.value"
+                :disabled="isRebuilding(season.id)"
                 :class="rebuildCta"
                 class="!h-7 shrink-0 !px-2.5"
                 @click="confirmRebuild(season.id)"
@@ -580,7 +575,7 @@ const rebuildCta =
                 v-else
                 type="button"
                 :title="$t('pages.seasons.rebuild')"
-                :disabled="backfill.running.value"
+                :disabled="isRebuilding(season.id)"
                 class="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-border bg-muted/20 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))] disabled:opacity-40"
                 @click="confirmRebuild(season.id)"
               >

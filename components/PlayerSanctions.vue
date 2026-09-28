@@ -66,7 +66,7 @@ import {
   tacticalTabsListClasses,
   tacticalTabsTriggerClasses,
 } from "~/utilities/tacticalClasses";
-import { fromDate, toCalendarDate } from "@internationalized/date";
+import { editedEndDate, toEditFields } from "~/utilities/sanctionEndDate";
 
 const tabCountClasses =
   "inline-flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-[hsl(var(--tac-amber)/0.2)] px-1 font-sans text-[0.6rem] font-bold leading-none text-[hsl(var(--tac-amber))]";
@@ -522,6 +522,7 @@ const tabCountClasses =
                       type="button"
                       variant="ghost"
                       size="icon"
+                      :aria-label="$t('player.sanctions.clear_date')"
                       @click="clearEditDate"
                     >
                       <Trash2 class="h-4 w-4" />
@@ -542,7 +543,11 @@ const tabCountClasses =
           <Button variant="outline" @click="editDialogOpen = false">
             {{ $t("common.cancel") }}
           </Button>
-          <Button :loading="updatingSanction" @click="updateSanctionEndTime">
+          <Button
+            :loading="updatingSanction"
+            :disabled="!editEndDateComplete"
+            @click="updateSanctionEndTime"
+          >
             {{ $t("common.save") }}
           </Button>
         </DialogFooter>
@@ -795,6 +800,9 @@ export default {
     steamProfileUrl() {
       return `https://steamcommunity.com/profiles/${this.playerId}`;
     },
+    editEndDateComplete(): boolean {
+      return !!this.editDate === !!this.editTime;
+    },
     editDateDisplay() {
       if (!this.editDate) return "";
       return this.editDate.toString();
@@ -885,9 +893,9 @@ export default {
       this.editDialogOpen = true;
 
       if (sanction.remove_sanction_date) {
-        const date = new Date(sanction.remove_sanction_date);
-        this.editDate = toCalendarDate(fromDate(date, "UTC"));
-        this.editTime = `${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
+        const { date, time } = toEditFields(sanction.remove_sanction_date);
+        this.editDate = date;
+        this.editTime = time;
       } else {
         this.editDate = undefined;
         this.editTime = undefined;
@@ -904,7 +912,7 @@ export default {
       if (this.updatingSanction) {
         return;
       }
-      if (!this.editingSanction) {
+      if (!this.editingSanction || !this.editEndDateComplete) {
         return;
       }
       this.updatingSanction = true;
@@ -912,27 +920,20 @@ export default {
       let remove_sanction_date: Date | null = null;
 
       if (this.editDate && this.editTime) {
-        const [hours, minutes] = this.editTime.split(":").map(Number);
-        // this.editDate is already a CalendarDate object, so we can use it directly
-        remove_sanction_date = new Date(
-          Date.UTC(
-            this.editDate.year,
-            this.editDate.month - 1,
-            this.editDate.day,
-            hours,
-            minutes,
-          ),
+        remove_sanction_date = editedEndDate(
+          this.editingSanction.remove_sanction_date,
+          this.editDate,
+          this.editTime,
         );
       }
 
       try {
-        await (this as any).$apollo.mutate({
+        const { data } = await (this as any).$apollo.mutate({
           mutation: generateMutation({
             update_player_sanctions_by_pk: [
               {
                 pk_columns: {
                   id: this.editingSanction.id,
-                  created_at: this.editingSanction.created_at,
                 },
                 _set: {
                   remove_sanction_date,
@@ -945,6 +946,12 @@ export default {
             ],
           }),
         });
+
+        if (!data?.update_player_sanctions_by_pk) {
+          throw new Error(
+            `sanction ${this.editingSanction.id} no longer exists`,
+          );
+        }
 
         toast({
           title: this.$t("player.sanctions.updated"),

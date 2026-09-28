@@ -236,6 +236,10 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, e_team_roles_enum, order_by } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { playerFields } from "~/graphql/playerFields";
+import {
+  teamRosterBuckets,
+  type TeamRosterBuckets,
+} from "~/utilities/teamRosterBuckets";
 
 export default {
   props: {
@@ -377,23 +381,20 @@ export default {
         return (roleOrder[a.role] || 4) - (roleOrder[b.role] || 4);
       });
     },
+    rosterBuckets(): TeamRosterBuckets<any> {
+      return teamRosterBuckets(this.sortedRoster);
+    },
     starters(): any[] {
-      return this.sortedRoster.filter(
-        (m: any) => !m.coach && m.status === "Starter",
-      );
+      return this.rosterBuckets.starters;
     },
     bench(): any[] {
-      return this.sortedRoster.filter(
-        (m: any) => !m.coach && m.status === "Benched",
-      );
+      return this.rosterBuckets.bench;
     },
     substitutes(): any[] {
-      return this.sortedRoster.filter(
-        (m: any) => !m.coach && m.status === "Substitute",
-      );
+      return this.rosterBuckets.substitutes;
     },
     coaches(): any[] {
-      return this.sortedRoster.filter((m: any) => m.coach);
+      return this.rosterBuckets.coaches;
     },
   },
   methods: {

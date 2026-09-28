@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
+import { useEventListener } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import ToastCard from "~/components/notification/ToastCard.vue";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
@@ -8,6 +9,7 @@ import { useNotificationStore } from "~/stores/NotificationStore";
 import { useDraftGamesStore } from "~/stores/DraftGamesStore";
 import { useInvites } from "~/composables/useInvites";
 import { useAuthStore } from "~/stores/AuthStore";
+import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import { useRightSidebar } from "~/composables/useRightSidebar";
 import { useCallInvites } from "~/composables/useVoiceAnnouncements";
 import { useVoiceSession } from "~/composables/useVoiceSession";
@@ -218,7 +220,116 @@ const items = computed<ToastItem[]>(() => {
   return list;
 });
 
+const DISMISSED_STORAGE_LIMIT = 200;
+
+// A call invite is keyed by its channel, so a stored dismissal would silence
+// every later call in that channel. It is only remembered for the current call.
+const EPHEMERAL_ID_PREFIX = "voice:";
+
+// These ids name the thing rather than the invite (a channel, a player, a
+// lobby, a draft), so the same id comes back when that thing asks again. Once
+// its source has loaded, a dismissal whose toast is gone is dropped so a fresh
+// invite still shows; pruning earlier would treat "not loaded yet" as "gone".
+const matchmakingStore = useMatchmakingStore();
+const REUSABLE_ID_SOURCES = [
+  { prefix: EPHEMERAL_ID_PREFIX, loaded: () => true },
+  { prefix: "friend:", loaded: () => matchmakingStore.friendsLoaded },
+  { prefix: "lobby:", loaded: () => matchmakingStore.lobbiesLoaded },
+  { prefix: "draft:", loaded: () => notificationStore.draftInvitesLoaded },
+];
+
 const dismissed = ref<Set<string>>(new Set());
+
+const dismissedStorageKey = computed(() => {
+  const steamId = useAuthStore().me?.steam_id;
+  return steamId ? `5stack:dismissed-action-toasts:${steamId}` : null;
+});
+
+const isPersistable = (id: string) => !id.startsWith(EPHEMERAL_ID_PREFIX);
+
+const readDismissed = (key: string): string[] => {
+  try {
+    const stored = JSON.parse(localStorage.getItem(key) ?? "[]");
+    if (!Array.isArray(stored)) {
+      return [];
+    }
+    return stored.filter(
+      (id): id is string => typeof id === "string" && isPersistable(id),
+    );
+  } catch {
+    return [];
+  }
+};
+
+// Applied as a delta over what is stored now, so another tab's dismissals
+// written since this one loaded are kept rather than overwritten.
+const writeDismissed = (added: string[], removed: string[]) => {
+  const key = dismissedStorageKey.value;
+  if (!key) {
+    return;
+  }
+  const changed = new Set([...added, ...removed]);
+  const ids = [
+    ...readDismissed(key).filter((id) => !changed.has(id)),
+    ...added.filter(isPersistable),
+  ].slice(-DISMISSED_STORAGE_LIMIT);
+  try {
+    localStorage.setItem(key, JSON.stringify(ids));
+  } catch {}
+};
+
+const rememberDismissed = (ids: string[]) => {
+  for (const id of ids) {
+    dismissed.value.delete(id);
+    dismissed.value.add(id);
+  }
+  writeDismissed(ids, []);
+};
+
+watch(
+  dismissedStorageKey,
+  (key) => {
+    dismissed.value = new Set(key ? readDismissed(key) : []);
+  },
+  { immediate: true },
+);
+
+useEventListener("storage", (event: StorageEvent) => {
+  const key = dismissedStorageKey.value;
+  if (!key || event.key !== key) {
+    return;
+  }
+  const ephemeral = [...dismissed.value].filter((id) => !isPersistable(id));
+  dismissed.value = new Set([...readDismissed(key), ...ephemeral]);
+});
+
+const pruneDismissed = () => {
+  const loadedPrefixes = REUSABLE_ID_SOURCES.filter((source) =>
+    source.loaded(),
+  ).map((source) => source.prefix);
+  const live = new Set(items.value.map((item) => item.id));
+  const gone = [...dismissed.value].filter(
+    (id) =>
+      !live.has(id) && loadedPrefixes.some((prefix) => id.startsWith(prefix)),
+  );
+  if (gone.length === 0) {
+    return;
+  }
+  for (const id of gone) {
+    dismissed.value.delete(id);
+  }
+  writeDismissed([], gone);
+};
+
+watch(
+  [
+    dismissedStorageKey,
+    () => items.value.map((item) => item.id).join("\n"),
+    () => REUSABLE_ID_SOURCES.map((source) => source.loaded()).join(),
+  ],
+  pruneDismissed,
+  { immediate: true },
+);
 
 const hoveredGroup = ref<string | null>(null);
 
@@ -269,11 +380,11 @@ const run = async (item: ToastItem, accept: boolean) => {
 };
 
 const dismissGroup = (group: ToastItem[]) => {
-  group.forEach((item) => dismissed.value.add(item.id));
+  rememberDismissed(group.map((item) => item.id));
 };
 
 const dismissItem = (item: ToastItem) => {
-  dismissed.value.add(item.id);
+  rememberDismissed([item.id]);
 };
 </script>
 

@@ -2,10 +2,11 @@ import { watch, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { useChatTabs } from "~/composables/useChatTabs";
 import { useChatReadState } from "~/composables/useChatReadState";
+import { useTabFlash } from "~/composables/useTabFlash";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
-import socket, { type Lobby } from "~/web-sockets/Socket";
+import socket, { chatMessageKey, type Lobby } from "~/web-sockets/Socket";
 
 export function useChatTabSetup() {
   const { t } = useI18n();
@@ -39,6 +40,13 @@ export function useChatTabSetup() {
     lobby.on("lobby:chat", (message: any) => {
       if (String(message?.from?.steam_id) === String(authStore.me?.steam_id)) {
         return;
+      }
+
+      // Ahead of the on-screen check, which counts an open room as read even
+      // while the browser tab is hidden. Match rooms relay in-game chat line
+      // by line, the same reason their push is off by default.
+      if (tab.type !== "match") {
+        useTabFlash().signal("chat", chatMessageKey(message));
       }
 
       const isOnScreen =

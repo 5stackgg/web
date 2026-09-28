@@ -1829,6 +1829,26 @@
           "to": "A",
           "reset": "Reimposta",
           "incomplete": "Imposta sia un orario di inizio sia uno di fine per salvare le ore di silenzio."
+        },
+        "tab_flash": {
+          "title": "Scheda del browser",
+          "description": "Fa lampeggiare il titolo e l'icona di questa scheda quando qualcosa richiede la tua attenzione mentre è in background. Salvato su questo dispositivo.",
+          "match_found": {
+            "title": "Match trovato",
+            "description": "Una partita è pronta e aspetta che tu la accetti."
+          },
+          "admin_call": {
+            "title": "Chiamate dell'organizzatore",
+            "description": "Un organizzatore della partita inizia a parlarti dalla tua pagina della fotocamera."
+          },
+          "chat": {
+            "title": "Messaggi di chat",
+            "description": "Un nuovo messaggio in una conversazione, una lobby o una sala torneo. La chat di gioco delle partite è esclusa."
+          },
+          "bell": {
+            "title": "Notifiche",
+            "description": "Arriva qualcosa di nuovo nella tua campanella degli avvisi."
+          }
         }
       },
       "notifications": {
@@ -5512,6 +5532,12 @@
         "step2": "Nel menu del browser (⋮), seleziona \"Installa app\" o \"Aggiungi a schermata Home\""
       }
     }
+  },
+  "tab_flash": {
+    "match_found": "Match trovato",
+    "admin_call": "Un organizzatore ti sta chiamando",
+    "chat": "Nuovo messaggio | Nuovi messaggi",
+    "bell": "Nuova notifica | Nuove notifiche"
   },
   "roster_picker": {
     "add_starter": "Aggiungi titolare",

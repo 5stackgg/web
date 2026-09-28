@@ -1829,6 +1829,26 @@
           "to": "Do",
           "reset": "Resetuj",
           "incomplete": "Ustaw godzinę początku i końca, aby zapisać godziny ciszy."
+        },
+        "tab_flash": {
+          "title": "Karta przeglądarki",
+          "description": "Miga tytułem i ikoną tej karty, gdy coś wymaga twojej uwagi, a karta jest w tle. Zapisywane na tym urządzeniu.",
+          "match_found": {
+            "title": "Znaleziono mecz",
+            "description": "Mecz jest gotowy i czeka, aż go zaakceptujesz."
+          },
+          "admin_call": {
+            "title": "Rozmowy z organizatorem",
+            "description": "Organizator meczu zaczyna mówić do ciebie przez stronę kamery."
+          },
+          "chat": {
+            "title": "Wiadomości czatu",
+            "description": "Nowa wiadomość w rozmowie, lobby lub pokoju turniejowym. Czat z gry podczas meczu jest pomijany."
+          },
+          "bell": {
+            "title": "Powiadomienia",
+            "description": "W dzwonku powiadomień pojawia się coś nowego."
+          }
         }
       },
       "notifications": {
@@ -5512,6 +5532,12 @@
         "step2": "W menu przeglądarki (⋮) wybierz „Zainstaluj aplikację” lub „Dodaj do ekranu głównego”"
       }
     }
+  },
+  "tab_flash": {
+    "match_found": "Znaleziono mecz",
+    "admin_call": "Organizator do ciebie dzwoni",
+    "chat": "Nowa wiadomość | Nowe wiadomości",
+    "bell": "Nowe powiadomienie | Nowe powiadomienia"
   },
   "roster_picker": {
     "add_starter": "Dodaj podstawowego gracza",

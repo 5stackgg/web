@@ -1,5 +1,27 @@
-import { computed, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+
+// The browser falls back to this on its own when the page has no icon link.
+const DEFAULT_FAVICON = "/favicon.ico";
+
+// Something that has to own the tab's icon for a while (the tab flash's alert
+// icon) sets this instead of writing the link itself, so a branding change in
+// the meantime can't overwrite it and clearing it always lands on the current
+// branded icon rather than a stale copy.
+export const faviconOverride = ref<string | null>(null);
+
+export const brandedFaviconHref = computed(() => {
+  const setting = useApplicationSettingsStore().settings.find(
+    (s: { name: string }) => s.name === "public.favicon_url",
+  );
+
+  if (!setting?.value) {
+    return DEFAULT_FAVICON;
+  }
+
+  // The asset path is stable, so the setting value is the cache-busting token.
+  return `https://${useRuntimeConfig().public.apiDomain}/branding/favicon?v=${encodeURIComponent(setting.value)}`;
+});
 
 // The app is dark-only, so these are the only branding colors applied.
 const colorMap: Record<string, string> = {
@@ -104,6 +126,28 @@ export function useBranding() {
   // The PWA manifest link is set once in app.vue (host-aware), not here, so
   // Chrome never sees the static "5stack" manifest flip to the branded one.
   watch(
+    [faviconOverride, brandedFaviconHref],
+    ([override, branded]) => {
+      const href = override ?? branded;
+      let link = document.querySelector(
+        "link[rel='icon']",
+      ) as HTMLLinkElement | null;
+
+      if (!link) {
+        if (href === DEFAULT_FAVICON) {
+          return;
+        }
+        link = document.createElement("link");
+        link.rel = "icon";
+        document.head.appendChild(link);
+      }
+
+      link.href = href;
+    },
+    { immediate: true },
+  );
+
+  watch(
     () => store.settings,
     () => {
       const apiDomain = useRuntimeConfig().public.apiDomain;
@@ -117,27 +161,14 @@ export function useBranding() {
 
       // Asset paths are stable, so the setting values are used as cache-busting
       // version tokens. Favicon and logo/PWA icon are independent uploads now.
-      const faviconVersion = encodeURIComponent(faviconSetting?.value || "");
       const pwaVersion = encodeURIComponent(pwaIconSetting?.value || "");
-
-      if (faviconSetting?.value) {
-        let link = document.querySelector(
-          "link[rel='icon']",
-        ) as HTMLLinkElement | null;
-        if (!link) {
-          link = document.createElement("link");
-          link.rel = "icon";
-          document.head.appendChild(link);
-        }
-        link.href = `https://${apiDomain}/branding/favicon?v=${faviconVersion}`;
-      }
 
       // iOS "Add to Home Screen" uses apple-touch-icon, not the manifest icon.
       // Prefer the 512px PWA icon (a tiny .ico favicon makes a poor home icon).
       const appleHref = pwaIconSetting?.value
         ? `https://${apiDomain}/branding/pwa/512?v=${pwaVersion}`
         : faviconSetting?.value
-          ? `https://${apiDomain}/branding/favicon?v=${faviconVersion}`
+          ? brandedFaviconHref.value
           : null;
 
       if (appleHref) {

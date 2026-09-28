@@ -1829,6 +1829,26 @@
           "to": "Til",
           "reset": "Nulstil",
           "incomplete": "Angiv både et start- og et sluttidspunkt for at gemme stilletimer."
+        },
+        "tab_flash": {
+          "title": "Browserfane",
+          "description": "Få fanens titel og ikon til at blinke, når noget kræver din opmærksomhed, mens den er i baggrunden. Gemmes på denne enhed.",
+          "match_found": {
+            "title": "Kamp fundet",
+            "description": "En kamp er klar og venter på, at du accepterer."
+          },
+          "admin_call": {
+            "title": "Arrangøropkald",
+            "description": "En kamparrangør begynder at tale til dig på din kameraside."
+          },
+          "chat": {
+            "title": "Chatbeskeder",
+            "description": "En ny besked i en samtale, en lobby eller et turneringsrum. Chat fra selve kampen i spillet er udeladt."
+          },
+          "bell": {
+            "title": "Notifikationer",
+            "description": "Der kommer noget nyt i din notifikationsklokke."
+          }
         }
       },
       "notifications": {
@@ -5512,6 +5532,12 @@
         "step2": "Vælg \"Installer app\" eller \"Føj til hjemmeskærm\" i browserens menu (⋮)"
       }
     }
+  },
+  "tab_flash": {
+    "match_found": "Kamp fundet",
+    "admin_call": "En arrangør ringer",
+    "chat": "Ny besked | Nye beskeder",
+    "bell": "Ny notifikation | Nye notifikationer"
   },
   "roster_picker": {
     "add_starter": "Tilføj starter",

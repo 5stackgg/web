@@ -357,6 +357,12 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
       .map((n) => n.entity_id),
   );
 
+  // The bell without its chat rows, which the chat tabs' unread already counts.
+  const unreadNonChatNotificationCount = computed(
+    () =>
+      unreadNotificationCount.value - unreadChatNotificationRooms.value.length,
+  );
+
   const stackedNotifications = computed<NotificationStackItem[]>(() => {
     const groups = new Map<string, Notification[]>();
     const singles: Notification[] = [];
@@ -722,6 +728,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     stackedNotifications,
     unreadNotificationCount,
     unreadChatNotificationRooms,
+    unreadNonChatNotificationCount,
     hasNotifications,
     hasPersonalNotifications,
     hasAdminNotifications,

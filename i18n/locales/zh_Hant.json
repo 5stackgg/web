@@ -1829,6 +1829,26 @@
           "to": "結束",
           "reset": "重設",
           "incomplete": "請同時設定開始與結束時間才能儲存勿擾時段。"
+        },
+        "tab_flash": {
+          "title": "瀏覽器分頁",
+          "description": "當此分頁在背景且有事需要你處理時，閃爍分頁的標題和圖示。儲存在此裝置上。",
+          "match_found": {
+            "title": "已找到比賽",
+            "description": "比賽已就緒，正在等待你接受。"
+          },
+          "admin_call": {
+            "title": "主辦方通話",
+            "description": "比賽主辦方開始透過你的攝影機頁面與你通話時。"
+          },
+          "chat": {
+            "title": "聊天訊息",
+            "description": "對話、大廳或錦標賽房間中的新訊息。不包括比賽中的遊戲內聊天。"
+          },
+          "bell": {
+            "title": "通知",
+            "description": "通知鈴鐺中出現新內容時。"
+          }
         }
       },
       "notifications": {
@@ -5512,6 +5532,12 @@
         "step2": "在瀏覽器選單（⋮）中選擇「安裝應用程式」或「加入主畫面」"
       }
     }
+  },
+  "tab_flash": {
+    "match_found": "已找到比賽",
+    "admin_call": "主辦方正在呼叫你",
+    "chat": "新訊息 | 新訊息",
+    "bell": "新通知 | 新通知"
   },
   "roster_picker": {
     "add_starter": "新增先發",

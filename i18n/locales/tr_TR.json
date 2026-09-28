@@ -1829,6 +1829,26 @@
           "to": "Bitiş",
           "reset": "Sıfırla",
           "incomplete": "Sessiz saatleri kaydetmek için hem başlangıç hem bitiş saatini gir."
+        },
+        "tab_flash": {
+          "title": "Tarayıcı sekmesi",
+          "description": "Bu sekme arka plandayken seni bekleyen bir şey olduğunda sekmenin başlığını ve simgesini yanıp söndürür. Bu cihaza kaydedilir.",
+          "match_found": {
+            "title": "Maç bulundu",
+            "description": "Bir maç hazır ve kabul etmeni bekliyor."
+          },
+          "admin_call": {
+            "title": "Organizatör görüşmeleri",
+            "description": "Bir maç organizatörü kamera sayfan üzerinden seninle konuşmaya başladığında."
+          },
+          "chat": {
+            "title": "Sohbet mesajları",
+            "description": "Bir konuşmada, lobide veya turnuva odasında yeni bir mesaj. Maçın oyun içi sohbeti dahil değildir."
+          },
+          "bell": {
+            "title": "Bildirimler",
+            "description": "Bildirim ziline yeni bir şey geldiğinde."
+          }
         }
       },
       "notifications": {
@@ -5512,6 +5532,12 @@
         "step2": "Tarayıcının menüsünde (⋮) \"Uygulamayı yükle\" veya \"Ana ekrana ekle\"yi seç"
       }
     }
+  },
+  "tab_flash": {
+    "match_found": "Maç bulundu",
+    "admin_call": "Bir organizatör seni arıyor",
+    "chat": "Yeni mesaj | Yeni mesajlar",
+    "bell": "Yeni bildirim | Yeni bildirimler"
   },
   "roster_picker": {
     "add_starter": "İlk 5'e ekle",

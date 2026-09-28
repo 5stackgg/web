@@ -1,5 +1,9 @@
 import { watch } from "vue";
-import socket from "~/web-sockets/Socket";
+import socket, {
+  chatMessageKey,
+  type LobbyMessage,
+} from "~/web-sockets/Socket";
+import { useTabFlash } from "~/composables/useTabFlash";
 import {
   directTabId,
   peerSteamId,
@@ -94,11 +98,20 @@ export function useIncomingDirectMessages() {
 
   socket.listen(
     "direct:incoming",
-    (data: { roomId: string; from: DirectMessagePeer }) => {
+    (data: {
+      roomId: string;
+      from: DirectMessagePeer;
+      message?: LobbyMessage;
+    }) => {
       const steamId = authStore.me?.steam_id;
 
       if (!steamId || !data?.roomId) {
         return;
+      }
+
+      // The room's own `lobby:chat` carries the same id when its tab is open.
+      if (data.message) {
+        useTabFlash().signal("chat", chatMessageKey(data.message));
       }
 
       // Deliberately does not inject the message: opening the tab makes

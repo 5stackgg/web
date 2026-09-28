@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
-import { ExternalLink, PictureInPicture, VideoOff } from "lucide-vue-next";
+import { ExternalLink, PictureInPicture } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import { loginLinks } from "~/utilities/loginLinks";
 import { generateSubscription } from "~/graphql/graphqlGen";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
 import MatchScoreboardOverlay from "~/components/match/MatchScoreboardOverlay.vue";
 import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
+import StreamMatchCard from "~/components/match/StreamMatchCard.vue";
+import StreamStatusPanel from "~/components/match/StreamStatusPanel.vue";
+import StreamBootStatus from "~/components/match/StreamBootStatus.vue";
+import {
+  useWhepStatusCopy,
+  type WhepPhase,
+} from "~/composables/useWhepStatusCopy";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useStreamerStore } from "~/stores/StreamerStore";
@@ -261,6 +268,10 @@ function returnFromPip() {
 
 const compact = computed(() => props.inGlobal || props.inPopout);
 
+const { copyFor } = useWhepStatusCopy();
+// Non-null while the player has no picture (the caption covers the frame).
+const whepPhase = ref<WhepPhase | null>(null);
+
 function promoteToPip() {
   if (!stream.value) return;
   applicationSettings.setGlobalStream({
@@ -283,13 +294,12 @@ function focusPopoutWindow() {
 <template>
   <div
     v-if="streamEnded && canViewStream && !isPoppedOut"
-    class="flex items-center justify-center gap-3 rounded-lg border border-border/70 bg-black px-4 text-center text-sm text-white/80 shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.05),0_30px_60px_-30px_rgba(0,0,0,0.7)]"
+    class="relative overflow-hidden rounded-lg border border-border/70 bg-black shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.05),0_30px_60px_-30px_rgba(0,0,0,0.7)]"
     :class="compact ? 'h-full w-full' : 'aspect-video'"
   >
-    <div class="flex flex-col items-center gap-2">
-      <VideoOff class="size-5 text-white/50" />
-      <span>{{ $t("match.stream.ended") }}</span>
-    </div>
+    <StreamMatchCard :match-id="matchId" :compact="compact">
+      <StreamStatusPanel :title="$t('match.stream.ended')" />
+    </StreamMatchCard>
   </div>
 
   <div
@@ -303,12 +313,72 @@ function focusPopoutWindow() {
       :stream="displayStream"
       :is-live="isLive"
       mode="live"
-      :header-label="$t('live_stages.stream_boot')"
       :show-boot="true"
       :enable-pip="true"
       class="group"
       :class="compact ? 'min-h-0 flex-1' : 'aspect-video'"
+      @phase="whepPhase = $event"
     >
+      <template #status="{ phase, message, retry }">
+        <StreamMatchCard :match-id="matchId" :compact="compact">
+          <StreamStatusPanel
+            :title="copyFor(phase).title"
+            :hint="phase === 'failed' ? message : copyFor(phase).hint"
+            :tone="copyFor(phase).tone"
+            :progress="copyFor(phase).progress"
+          >
+            <template v-if="phase === 'failed'" #actions>
+              <Button size="sm" @click="retry">
+                {{ $t("match.stream.try_again") }}
+              </Button>
+            </template>
+          </StreamStatusPanel>
+        </StreamMatchCard>
+      </template>
+
+      <!-- Only streamer+ get here before the pod is publishing (see
+           canSeeBoot), so the caption names the boot stage. -->
+      <template #boot="{ status, errorMessage, lastStatusAt, statusHistory }">
+        <StreamMatchCard :match-id="matchId" :compact="compact">
+          <template #corner>
+            <span
+              class="absolute right-3 top-3 rounded-[3px] bg-background/80 px-1.5 py-1 text-[0.625rem] uppercase tracking-[0.08em] text-muted-foreground"
+            >
+              {{ $t("match.stream.staff_only") }}
+            </span>
+          </template>
+          <StreamBootStatus
+            mode="live"
+            :status="status"
+            :error-message="errorMessage"
+            :last-status-at="lastStatusAt"
+            :histories="[statusHistory]"
+            :title="$t('match.stream.starting')"
+            :failed-title="$t('match.stream.start_failed')"
+            show-stage
+          />
+        </StreamMatchCard>
+      </template>
+
+      <div
+        v-if="isLive && !compact"
+        class="pointer-events-none absolute left-3 top-3 z-10 flex overflow-hidden rounded-[2px] text-[0.7rem] leading-none shadow-[0_6px_18px_-8px_rgba(0,0,0,0.7)]"
+      >
+        <span
+          class="px-2 py-1.5 font-bold uppercase tracking-[0.12em] transition-colors"
+          :class="
+            whepPhase
+              ? 'bg-muted text-muted-foreground'
+              : 'bg-destructive text-destructive-foreground'
+          "
+        >
+          {{ $t("common.live") }}
+        </span>
+        <span class="bg-background/85 px-2 py-1.5 text-foreground">
+          <StreamViewerBadge :match-id="matchId" bare />
+        </span>
+      </div>
+
       <MatchScoreboardOverlay
         v-model:open="scoreboardOpen"
         :match-id="matchId"
@@ -317,7 +387,7 @@ function focusPopoutWindow() {
       />
 
       <div
-        v-if="isLive && !inPopout"
+        v-if="isLive && !inPopout && !whepPhase"
         class="absolute bottom-3 left-12 z-10 flex items-center gap-2 transition-opacity duration-150"
         :class="
           coarsePointer
@@ -345,7 +415,7 @@ function focusPopoutWindow() {
         >
           <ExternalLink class="size-3.5" />
         </button>
-        <StreamViewerBadge :match-id="matchId" size="md" />
+        <StreamViewerBadge v-if="compact" :match-id="matchId" size="md" />
       </div>
     </StreamCanvas>
   </div>

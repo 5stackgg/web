@@ -3,6 +3,7 @@ import { computed, ref, watch } from "vue";
 import WhepPlayer from "~/components/match/WhepPlayer.vue";
 import BootSequence from "~/components/match/BootSequence.vue";
 import type { BootMode } from "~/composables/useBootStages";
+import type { WhepPhase } from "~/composables/useWhepStatusCopy";
 
 const props = withDefaults(
   defineProps<{
@@ -84,6 +85,9 @@ const effectiveHistory = computed<any[]>(
   () => props.statusHistory ?? props.stream?.status_history ?? [],
 );
 
+// Relayed from WhepPlayer: non-null while there's no picture to show.
+const emit = defineEmits<{ (e: "phase", phase: WhepPhase | null): void }>();
+
 const rootEl = ref<HTMLDivElement | null>(null);
 defineExpose({ rootEl });
 </script>
@@ -101,7 +105,12 @@ defineExpose({ rootEl });
         :disable-fullscreen-shortcut="disableFullscreenShortcut"
         :enable-pip="enablePip"
         class="absolute inset-0"
-      />
+        @phase="emit('phase', $event)"
+      >
+        <template v-if="$slots.status" #status="statusProps">
+          <slot name="status" v-bind="statusProps" />
+        </template>
+      </WhepPlayer>
     </template>
     <Transition v-else name="boot-live" mode="out-in">
       <WhepPlayer
@@ -112,7 +121,12 @@ defineExpose({ rootEl });
         :disable-fullscreen-shortcut="disableFullscreenShortcut"
         :enable-pip="enablePip"
         class="absolute inset-0"
-      />
+        @phase="emit('phase', $event)"
+      >
+        <template v-if="$slots.status" #status="statusProps">
+          <slot name="status" v-bind="statusProps" />
+        </template>
+      </WhepPlayer>
       <div
         v-else
         key="boot"

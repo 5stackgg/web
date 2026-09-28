@@ -2,6 +2,12 @@
 import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
 import { Volume2, VolumeX, Maximize2, Minimize2, Lock } from "lucide-vue-next";
 import { useClipRenderActive } from "~/composables/useClipRenderActive";
+import StreamStatusPanel from "~/components/match/StreamStatusPanel.vue";
+import { Button } from "~/components/ui/button";
+import {
+  useWhepStatusCopy,
+  type WhepPhase,
+} from "~/composables/useWhepStatusCopy";
 
 const { active: clipRenderActive } = useClipRenderActive();
 
@@ -46,7 +52,10 @@ const props = withDefaults(
 
 // The negotiated stream, for hosts that need to do something with it besides
 // play it. Null when the connection goes away.
-const emit = defineEmits<{ (e: "stream", stream: MediaStream | null): void }>();
+const emit = defineEmits<{
+  (e: "stream", stream: MediaStream | null): void;
+  (e: "phase", phase: WhepPhase | null): void;
+}>();
 
 const wantsAudio = computed(() => props.audio);
 
@@ -63,6 +72,25 @@ const MAX_WHEP_FAILURES = 3;
 let hasEverPlayed = false;
 const errorMessage = ref<string | null>(null);
 const isRetrying = ref(false);
+// What the viewer is told while there's no picture. A failed attempt before
+// the first frame usually means the publisher isn't up yet, so later attempts
+// keep saying "waiting" instead of flipping back to "connecting".
+const everPlayed = ref(false);
+const failedBeforePlay = ref(false);
+const { copyFor } = useWhepStatusCopy();
+const phase = computed<WhepPhase | null>(() => {
+  if (useFallback.value) return null;
+  if (status.value === "connecting") {
+    if (everPlayed.value) return "reconnecting";
+    return failedBeforePlay.value ? "waiting" : "connecting";
+  }
+  if (status.value === "error") {
+    if (!isRetrying.value) return "failed";
+    return everPlayed.value ? "reconnecting" : "waiting";
+  }
+  return null;
+});
+watch(phase, (next) => emit("phase", next), { immediate: true });
 const isMuted = ref(true);
 const volume = ref(1);
 const isFullscreen = ref(false);
@@ -339,6 +367,8 @@ async function connect() {
       const state = pc?.connectionState;
       if (state === "connected") {
         status.value = "playing";
+        everPlayed.value = true;
+        failedBeforePlay.value = false;
       } else if (state === "failed" || state === "disconnected") {
         if (clipRenderActive.value) {
           status.value = "rendering";
@@ -348,6 +378,7 @@ async function connect() {
         }
         status.value = "error";
         errorMessage.value = `peer connection ${state}`;
+        if (!everPlayed.value) failedBeforePlay.value = true;
         retryDelay = INITIAL_RETRY_DELAY_MS;
         scheduleRetry();
       }
@@ -397,6 +428,7 @@ async function connect() {
     }
     status.value = "error";
     errorMessage.value = message;
+    if (!everPlayed.value) failedBeforePlay.value = true;
     await teardown();
     failureCount += 1;
     if (
@@ -410,6 +442,16 @@ async function connect() {
     }
     scheduleRetry();
   }
+}
+
+function retryNow() {
+  if (retryHandle) {
+    clearTimeout(retryHandle);
+    retryHandle = null;
+  }
+  retryDelay = INITIAL_RETRY_DELAY_MS;
+  failureCount = 0;
+  void connect();
 }
 
 function scheduleRetry() {
@@ -725,6 +767,8 @@ watch(
     retryDelay = INITIAL_RETRY_DELAY_MS;
     failureCount = 0;
     hasEverPlayed = false;
+    everPlayed.value = false;
+    failedBeforePlay.value = false;
     useFallback.value = false;
     if (retryHandle) {
       clearTimeout(retryHandle);
@@ -736,6 +780,7 @@ watch(
 );
 
 onBeforeUnmount(() => {
+  emit("phase", null);
   cancelRetries();
   stopStallWatch();
   void teardown();
@@ -808,11 +853,10 @@ defineExpose({ connect, teardown });
       "
     />
 
-    <!-- Prominent "click to unmute" affordance. Browsers force WHEP
-         playback to start muted (autoplay policy), so this pill stays
-         loud + visible until the viewer clicks it. Once unmuted the
-         control collapses to the slim icon-only treatment that hides
-         on mouse-out, matching twitch/youtube convention. -->
+    <!-- Browsers force WHEP playback to start muted (autoplay policy), so
+         this pill stays visible until the viewer clicks it. Once unmuted
+         the control collapses to the icon-only tray that hides on
+         mouse-out, matching twitch/youtube convention. -->
     <button
       v-if="
         status === 'playing' &&
@@ -823,27 +867,11 @@ defineExpose({ connect, teardown });
       "
       type="button"
       :aria-label="$t('ui.unmute')"
-      class="whep-unmute group/unmute absolute bottom-3 right-3 z-10 inline-flex items-center gap-2 rounded-full border border-[hsl(var(--tac-amber)/0.65)] bg-black/75 pl-2 pr-3 py-1.5 backdrop-blur-md cursor-pointer transition-[transform,box-shadow,border-color] duration-150 hover:scale-[1.03] hover:border-[hsl(var(--tac-amber))] [box-shadow:0_0_0_1px_hsl(var(--tac-amber)/0.15),0_0_22px_-4px_hsl(var(--tac-amber)/0.55)]"
+      class="whep-unmute absolute bottom-3 right-3 z-10 inline-flex h-8 items-center gap-2 rounded-full bg-foreground pl-2.5 pr-3.5 text-[0.8rem] font-medium text-background shadow-[0_8px_24px_-8px_rgba(0,0,0,0.7)] transition-colors duration-150 hover:bg-foreground/85 cursor-pointer"
       @click="toggleMute"
     >
-      <!-- Speaker glyph behind a ping halo so the pill reads as
-           "live audio waiting for you" rather than a static button. -->
-      <span class="relative inline-flex size-5 items-center justify-center">
-        <span
-          class="absolute inset-0 rounded-full bg-[hsl(var(--tac-amber)/0.35)] animate-ping"
-          aria-hidden="true"
-        />
-        <span
-          class="relative inline-flex size-5 items-center justify-center rounded-full bg-[hsl(var(--tac-amber))] text-black"
-        >
-          <VolumeX class="size-3" />
-        </span>
-      </span>
-      <span
-        class="font-mono text-[0.65rem] font-bold uppercase tracking-[0.22em] leading-none text-[hsl(var(--tac-amber))]"
-      >
-        {{ $t("match.tap_to_unmute") }}
-      </span>
+      <VolumeX class="size-4" />
+      {{ $t("match.tap_to_unmute") }}
     </button>
 
     <!-- Audio tray (right) — visible only when audio is on. -->
@@ -910,121 +938,51 @@ defineExpose({ connect, teardown });
          see the freeze frame instead of a black panel. -->
     <div
       v-if="status === 'rendering'"
-      class="absolute top-3 left-3 z-20 inline-flex items-center gap-2 rounded-full border border-[hsl(var(--tac-amber)/0.6)] bg-black/70 px-3 py-1.5 backdrop-blur-sm pointer-events-none"
+      class="pointer-events-none absolute left-3 top-3 z-20 inline-flex items-center gap-2 rounded-[3px] bg-background/85 px-2.5 py-1.5 text-xs text-foreground shadow-[0_6px_18px_-8px_rgba(0,0,0,0.7)]"
     >
-      <span
-        class="inline-flex size-2 rounded-full bg-[hsl(var(--tac-amber))] animate-pulse"
-      />
-      <span
-        class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
-      >
-        {{ $t("match.stream.rendering_clip") }}
-      </span>
+      <span class="size-1.5 rounded-full bg-[hsl(var(--tac-amber))]" />
+      {{ $t("match.stream.rendering_clip") }}
     </div>
 
     <!-- Permission block (WHEP 401/403). Replaces the raw nginx 401
          page that the iframe fallback would otherwise show. -->
     <div
       v-if="status === 'unauthorized'"
-      class="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black px-6 text-center"
+      class="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black px-6 text-center"
     >
-      <div
-        class="flex size-12 items-center justify-center rounded-full border border-white/15 bg-white/5"
-      >
-        <Lock class="size-5 text-muted-foreground" />
-      </div>
-      <p
-        class="font-mono text-[0.75rem] font-semibold uppercase tracking-[0.22em] text-white/90"
-      >
+      <Lock class="size-5 text-muted-foreground" />
+      <p class="text-sm font-semibold text-foreground">
         {{ $t("match.stream.access_denied") }}
       </p>
-      <p class="max-w-xs text-[0.7rem] leading-relaxed text-muted-foreground">
+      <p class="max-w-xs text-xs leading-relaxed text-muted-foreground">
         {{ $t("match.stream.access_denied_hint") }}
       </p>
     </div>
 
-    <div
-      v-if="
-        status !== 'playing' &&
-        status !== 'rendering' &&
-        status !== 'unauthorized' &&
-        !useFallback
-      "
-      class="absolute inset-0 overflow-hidden pointer-events-none"
+    <!-- No picture yet, or it dropped. Hosts that know the match render
+         the match caption here; everyone else gets the bare status bar. -->
+    <slot
+      v-if="phase"
+      name="status"
+      :phase="phase"
+      :message="errorMessage"
+      :retry="retryNow"
     >
-      <!-- Ambient color wash — amber while connecting, red on error -->
-      <div
-        :class="[
-          'absolute inset-0 transition-colors duration-300',
-          status === 'error'
-            ? 'bg-[radial-gradient(circle_at_center,hsl(var(--destructive)/0.18),transparent_70%)]'
-            : 'bg-[radial-gradient(circle_at_center,hsl(var(--tac-amber)/0.12),transparent_70%)]',
-        ]"
-      />
-
-      <!-- CRT-style horizontal grid lines for atmosphere. Subtle
-           enough to read as texture, not noise. -->
-      <div
-        class="absolute inset-0 opacity-[0.06]"
-        style="
-          background-image: repeating-linear-gradient(
-            0deg,
-            currentColor 0,
-            currentColor 1px,
-            transparent 1px,
-            transparent 4px
-          );
-        "
-      />
-
-      <!-- Center stack: spinner + status label -->
-      <div
-        class="absolute inset-0 flex flex-col items-center justify-center gap-3"
+      <StreamStatusPanel
+        standalone
+        class="absolute bottom-3 left-3 z-10 w-[min(22rem,calc(100%-1.5rem))]"
+        :title="copyFor(phase).title"
+        :hint="phase === 'failed' ? errorMessage : copyFor(phase).hint"
+        :tone="copyFor(phase).tone"
+        :progress="copyFor(phase).progress"
       >
-        <!-- Connecting: a single clean spinner (no rings/dots). -->
-        <div
-          v-if="status === 'connecting'"
-          class="size-12 rounded-full border-2 border-transparent border-t-[hsl(var(--tac-amber))] animate-spin"
-          style="animation-duration: 1.4s"
-        />
-
-        <!-- Error: blinking marker. -->
-        <div
-          v-else-if="status === 'error'"
-          class="size-3 bg-destructive shadow-[0_0_12px_hsl(var(--destructive)/0.8)] animate-pulse"
-        />
-
-        <p
-          v-if="status === 'connecting'"
-          class="font-mono text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-[hsl(var(--tac-amber))]"
-        >
-          {{ $t("match.stream.acquiring_signal") }}
-        </p>
-        <p
-          v-else-if="status === 'error' && isRetrying"
-          class="font-mono text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-[hsl(var(--tac-amber))]"
-        >
-          {{ $t("match.stream.acquiring_signal") }}
-        </p>
-        <p
-          v-else-if="status === 'error'"
-          class="max-w-[80%] text-center font-mono text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-destructive"
-        >
-          {{ $t("match.stream.signal_lost")
-          }}<span
-            class="block normal-case font-sans tracking-normal text-[0.65rem] mt-1 text-destructive/80"
-          >
-            {{ errorMessage }}
-          </span>
-        </p>
-        <p
-          v-else
-          class="font-mono text-[0.65rem] uppercase tracking-[0.22em] text-muted-foreground/70"
-        >
-          {{ $t("match.stream.idle") }}
-        </p>
-      </div>
-    </div>
+        <template v-if="phase === 'failed'" #actions>
+          <Button size="sm" @click="retryNow">
+            {{ $t("match.stream.try_again") }}
+          </Button>
+        </template>
+      </StreamStatusPanel>
+    </slot>
   </div>
 </template>
 

@@ -31,16 +31,17 @@ export function useChatTabs() {
     return tabsRef.value.findIndex((t) => t.id === id);
   }
 
-  // `activate` exists for incoming direct messages: a tab opened because
-  // someone messaged you must not yank you out of the room you are reading.
+  // `activate: false` opens a tab in the background -- an incoming direct
+  // message, or a room the session adds on its own -- so it does not yank you
+  // out of the room you are reading.
   function openTab(
     payload: Omit<ChatTab, "pinned"> & {
       pinned?: boolean;
       activate?: boolean;
     },
   ) {
-    const id = payload.id;
-    const activate = payload.activate ?? true;
+    const { activate = true, ...fields } = payload;
+    const id = fields.id;
     const existingIndex = findTabIndex(id);
 
     if (existingIndex !== -1) {
@@ -51,8 +52,8 @@ export function useChatTabs() {
     }
 
     const tab: ChatTab = {
-      ...payload,
-      pinned: payload.pinned ?? false,
+      ...fields,
+      pinned: fields.pinned ?? false,
     };
 
     tabsRef.value.push(tab);

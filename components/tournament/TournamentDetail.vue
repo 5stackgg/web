@@ -42,6 +42,7 @@ import {
   MapPin,
   Minimize,
   Maximize,
+  MessageSquare,
 } from "lucide-vue-next";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import { Button } from "@/components/ui/button";
@@ -153,6 +154,10 @@ const tournamentHeroJoinButtonClasses = [
 const tournamentHeroSettingsButtonClasses =
   "h-9 w-9 border-[hsl(var(--tac-amber)_/_0.45)] bg-background/45 text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.12)] hover:text-[hsl(var(--tac-amber))]";
 const tournamentHeroTabsClasses = "mt-5 border-t border-border pt-4";
+const tournamentChatRoomTabClasses =
+  "relative z-[1] inline-flex items-center justify-center whitespace-nowrap rounded-md ring-offset-background hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
+const tournamentChatRoomUnreadClasses =
+  "inline-flex h-4 min-w-[1.05rem] items-center justify-center rounded-full bg-red-500 px-1 text-[9px] leading-none tracking-normal text-white tabular-nums";
 const tacticalSectionCountClasses =
   "rounded-full border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] px-[0.45rem] py-[0.05rem] text-[0.62rem] tracking-[0.08em] text-[hsl(var(--tac-amber))]";
 const tournamentTeamCardClasses =
@@ -582,6 +587,24 @@ function clearTeamEnterDelay(el: Element) {
               >
                 {{ $t("tournament.notifications.title") }}
               </TabsTrigger>
+              <button
+                v-if="chatRoomTournament"
+                type="button"
+                :class="[
+                  tournamentChatRoomTabClasses,
+                  tacticalTabsTriggerClasses,
+                ]"
+                @click="openChatRoom"
+              >
+                <MessageSquare class="h-3.5 w-3.5" />
+                {{ $t("tournament.page.chat_room_tab") }}
+                <span
+                  v-if="chatRoomUnreadLabel"
+                  :class="tournamentChatRoomUnreadClasses"
+                >
+                  {{ chatRoomUnreadLabel }}
+                </span>
+              </button>
             </TabsList>
           </div>
         </header>
@@ -1141,6 +1164,12 @@ import {
   normalizeRouteTab,
   replaceRouteTab,
 } from "~/composables/useRouteTab";
+import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
+import { useChatTabs } from "~/composables/useChatTabs";
+import { tournamentChatTab } from "~/composables/useChatTabSetup";
+import { cancelChatTabRestore } from "~/composables/useChatTabPersistence";
+import { setActiveHub } from "~/composables/useHubState";
+import { useRightSidebar } from "~/composables/useRightSidebar";
 
 export default {
   data() {
@@ -1847,6 +1876,31 @@ export default {
       }
       return { ...this.tournamentStatic, ...this.tournamentLive };
     },
+    chatRoomTournament(): { id: string; name: string } | undefined {
+      const id = this.tournament?.id;
+      if (!id) {
+        return undefined;
+      }
+      return (
+        useMatchLobbyStore().chatTournaments as Array<{
+          id: string;
+          name: string;
+        }>
+      ).find((candidate) => candidate.id === id);
+    },
+    chatRoomUnreadLabel(): string {
+      if (!this.chatRoomTournament) {
+        return "";
+      }
+      const unread =
+        useChatTabs().unreadCounts.value[
+          tournamentChatTab(this.chatRoomTournament).id
+        ] ?? 0;
+      if (unread <= 0) {
+        return "";
+      }
+      return unread > 100 ? "100+" : String(unread);
+    },
     leagueSeasonId() {
       return this.$route.params.seasonId ?? null;
     },
@@ -2164,6 +2218,18 @@ export default {
     },
   },
   methods: {
+    openChatRoom() {
+      if (!this.chatRoomTournament) {
+        return;
+      }
+      cancelChatTabRestore();
+      useChatTabs().openTab({
+        ...tournamentChatTab(this.chatRoomTournament),
+        activate: true,
+      });
+      setActiveHub("chat");
+      useRightSidebar().setRightSidebarOpen(true);
+    },
     refetchTournamentStatic() {
       return this.$apollo?.queries?.tournamentStatic?.refetch();
     },

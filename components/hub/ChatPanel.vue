@@ -169,12 +169,19 @@ const showChatIndicator = computed(
   () => activeChatId.value && chatIndicatorHeight.value > 0,
 );
 
+// The room already asked for through useChatTabs wins over the first one: this
+// runs before the activeTabId watcher below, so on the panel's first mount
+// picking tabs[0] here would overwrite a Message button or a restored room.
+function requestedOrFirstRoom(tabs: ChatTab[]) {
+  return tabs.find((tab) => tab.id === activeTabId.value) ?? tabs[0];
+}
+
 // Default to first room when panel becomes active with no selection
 watch(
   () => props.isTabActive,
   (active) => {
     if (active && !activeChatId.value && orderedTabs.value.length > 0) {
-      handleSelectRoom(orderedTabs.value[0]);
+      handleSelectRoom(requestedOrFirstRoom(orderedTabs.value));
     }
   },
 );
@@ -188,7 +195,7 @@ watch(
       activeChatId.value = next?.id ?? null;
     }
     if (!activeChatId.value && tabs.length > 0) {
-      handleSelectRoom(tabs[0]);
+      handleSelectRoom(requestedOrFirstRoom(tabs));
     }
   },
   { immediate: true },

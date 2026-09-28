@@ -1,11 +1,25 @@
 import { watch, computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { useChatTabs } from "~/composables/useChatTabs";
+import { useChatTabs, type ChatTab } from "~/composables/useChatTabs";
 import { useChatReadState } from "~/composables/useChatReadState";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
 import socket, { type Lobby } from "~/web-sockets/Socket";
+
+export function tournamentChatTab(tournament: {
+  id: string;
+  name: string;
+}): ChatTab {
+  return {
+    id: `tournament:${tournament.id}`,
+    label: tournament.name,
+    instance: "tournament",
+    type: "tournament",
+    lobbyId: tournament.id,
+    pinned: true,
+  };
+}
 
 export function useChatTabSetup() {
   const { t } = useI18n();
@@ -14,7 +28,6 @@ export function useChatTabSetup() {
     activeTabId,
     openTab,
     closeTab,
-    setActiveTab,
     setPinned,
     incrementUnread,
     setUnread,
@@ -104,25 +117,18 @@ export function useChatTabSetup() {
 
     // Ensure a pinned chat tab for every chat-eligible tournament.
     for (const t of tournaments) {
-      const tabId = `tournament:${t.id}`;
-      const existing = tabs.value.find((tab) => tab.id === tabId);
+      const tab = tournamentChatTab(t);
+      const existing = tabs.value.find((candidate) => candidate.id === tab.id);
       if (!existing) {
-        openTab({
-          id: tabId,
-          label: t.name,
-          instance: "tournament",
-          type: "tournament",
-          lobbyId: t.id, // pass tournament ID as lobby id
-          pinned: true,
-        });
+        openTab({ ...tab, activate: false });
       } else if (!existing.pinned) {
-        setPinned(tabId, true);
+        setPinned(tab.id, true);
       }
     }
 
     // Remove tournament chat tabs that are no longer eligible.
     const activeIds = new Set(
-      tournaments.map((t: any) => `tournament:${t.id}`),
+      tournaments.map((t: any) => tournamentChatTab(t).id),
     );
     for (const tab of [...tabs.value]) {
       if (tab.type === "tournament" && !activeIds.has(tab.id)) {
@@ -132,8 +138,6 @@ export function useChatTabSetup() {
   }
 
   function ensureDefaultTabs() {
-    const previousActiveId = activeTabId.value;
-
     const me = authStore.me;
     if (me?.current_lobby_id) {
       const lobbyTabId = `matchmaking:${me.current_lobby_id}`;
@@ -146,6 +150,7 @@ export function useChatTabSetup() {
           type: "matchmaking",
           lobbyId: me.current_lobby_id,
           pinned: true,
+          activate: false,
         });
       }
     }
@@ -164,6 +169,7 @@ export function useChatTabSetup() {
           type: "match",
           lobbyId: currentMatch.id,
           pinned: true,
+          activate: false,
         });
       }
     }
@@ -180,20 +186,13 @@ export function useChatTabSetup() {
           type: "organizers",
           lobbyId: organizerId,
           pinned: true,
+          activate: false,
         });
       } else if (!existing.pinned) {
         setPinned(organizerId, true);
       }
     } else if (existingOrganizer) {
       closeTab(organizerId);
-    }
-
-    // Restore previously active tab so adding defaults doesn't steal focus.
-    if (previousActiveId) {
-      const stillExists = tabs.value.find((t) => t.id === previousActiveId);
-      if (stillExists) {
-        setActiveTab(previousActiveId);
-      }
     }
   }
 

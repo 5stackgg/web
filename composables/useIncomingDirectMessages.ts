@@ -1,5 +1,6 @@
 import { watch } from "vue";
 import socket from "~/web-sockets/Socket";
+import { currentHub } from "~/composables/useHubState";
 import {
   directTabId,
   peerSteamId,
@@ -14,8 +15,9 @@ import {
 // Mounted once, from the default layout.
 export function useIncomingDirectMessages() {
   const authStore = useAuthStore();
-  const { openTab, closeTab, setUnread, tabs } = useChatTabs();
+  const { openTab, closeTab, setUnread, tabs, activeTabId } = useChatTabs();
   const { topPosition } = useDirectConversationBar();
+  const { rightSidebarOpen } = useRightSidebar();
 
   function ensureTab(
     roomId: string,
@@ -104,12 +106,27 @@ export function useIncomingDirectMessages() {
       // Deliberately does not inject the message: opening the tab makes
       // useChatTabSetup join the room, and the join's history snapshot delivers
       // it (deduped by chatMessageKey either way).
-      ensureTab(data.roomId, {
-        steam_id:
-          data.from?.steam_id ?? peerSteamId(data.roomId, steamId) ?? "",
-        name: data.from?.name,
-        avatar_url: data.from?.avatar_url,
-      });
+      //
+      // Only a tab this creates is counted here. An existing tab is already in
+      // the room and its live lobby:chat handler counts the message, while the
+      // snapshot a new tab joins into is never counted for conversations.
+      const tabId = directTabId(data.roomId);
+      const isNew = !tabs.value.some((tab) => tab.id === tabId);
+      const isOnScreen =
+        activeTabId.value === tabId &&
+        rightSidebarOpen.value &&
+        currentHub() === "chat";
+
+      ensureTab(
+        data.roomId,
+        {
+          steam_id:
+            data.from?.steam_id ?? peerSteamId(data.roomId, steamId) ?? "",
+          name: data.from?.name,
+          avatar_url: data.from?.avatar_url,
+        },
+        isNew && !isOnScreen ? 1 : 0,
+      );
     },
   );
 

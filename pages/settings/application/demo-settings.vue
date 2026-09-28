@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { LucideDownload, LucideUpload } from "lucide-vue-next";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
@@ -7,6 +6,8 @@ import OrphanedUploadsButton from "~/components/settings/OrphanedUploadsButton.v
 import ReparseAllDemosButton from "~/components/settings/ReparseAllDemosButton.vue";
 import StorageBreakdown from "~/components/settings/StorageBreakdown.vue";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
+import BackblazeWorkerStatus from "~/components/settings/BackblazeWorkerStatus.vue";
+import StorageCheck from "~/components/settings/StorageCheck.vue";
 </script>
 
 <template>
@@ -166,77 +167,38 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
               <FormMessage />
             </FormItem>
           </FormField>
+        </SettingsSection>
 
-          <div class="space-y-2 text-sm">
-            <p class="font-medium">
-              {{
-                $t(
-                  "pages.settings.application.demo_settings.cloudflare_worker_url",
-                )
-              }}
-            </p>
-            <p v-if="cloudflareWorkerUrl" class="font-mono">
-              {{ cloudflareWorkerUrl }}
-            </p>
-            <p v-else class="text-muted-foreground">
-              {{
-                $t(
-                  "pages.settings.application.demo_settings.cloudflare_worker_url_not_set",
-                )
-              }}
-            </p>
-            <p class="text-muted-foreground">
-              {{
-                $t(
-                  "pages.settings.application.demo_settings.cloudflare_worker_url_description",
-                )
-              }}
-            </p>
-            <pre
-              class="overflow-x-auto rounded-md bg-muted p-2"
-            ><code>./backblaze-proxy.sh</code></pre>
-            <a
-              href="https://docs.5stack.gg/advanced/s3/backblaze#backblaze-cloudflare"
-              target="_blank"
-              class="text-primary hover:underline"
-            >
-              docs.5stack.gg/advanced/s3/backblaze
-            </a>
-          </div>
+        <SettingsSection
+          id="cloudflare"
+          :title="
+            $t(
+              'pages.settings.application.demo_settings.cloudflare_worker_section',
+            )
+          "
+          :description="
+            $t(
+              'pages.settings.application.demo_settings.cloudflare_worker_description',
+            )
+          "
+        >
+          <BackblazeWorkerStatus />
+        </SettingsSection>
 
-          <div class="space-y-2">
-            <p class="text-sm text-muted-foreground">
-              {{
-                $t(
-                  "pages.settings.application.demo_settings.test_s3_description",
-                )
-              }}
-            </p>
-            <div class="flex gap-3">
-              <Button
-                type="button"
-                size="sm"
-                variant="outline"
-                class="flex items-center gap-2"
-                @click="testUpload"
-              >
-                <LucideUpload class="w-4 h-4" />
-                {{ $t("pages.settings.application.demo_settings.test_upload") }}
-              </Button>
-              <Button
-                type="button"
-                size="sm"
-                variant="outline"
-                class="flex items-center gap-2"
-                @click="testDownload"
-              >
-                <LucideDownload class="w-4 h-4" />
-                {{
-                  $t("pages.settings.application.demo_settings.test_download")
-                }}
-              </Button>
-            </div>
-          </div>
+        <SettingsSection
+          id="storage-check"
+          :title="
+            $t(
+              'pages.settings.application.demo_settings.storage_check_section',
+            )
+          "
+          :description="
+            $t(
+              'pages.settings.application.demo_settings.storage_check_description',
+            )
+          "
+        >
+          <StorageCheck />
         </SettingsSection>
 
         <SettingsSaveBar :form="form" @save="updateSettings" />
@@ -305,57 +267,6 @@ export default {
     },
   },
   methods: {
-    async testUpload() {
-      const {
-        data: {
-          testUpload: { error },
-        },
-      } = await (this.$apollo as any).mutate({
-        mutation: generateMutation({
-          testUpload: {
-            error: true,
-          },
-        }),
-      });
-
-      if (!error) {
-        toast({
-          title: this.$t(
-            "pages.settings.application.demo_settings.test_upload_success",
-          ),
-        });
-        return;
-      }
-
-      toast({
-        title: `${this.$t("pages.settings.application.demo_settings.test_upload_failed")} ${error}`,
-        variant: "destructive",
-      });
-    },
-    async testDownload() {
-      const {
-        data: {
-          getTestUploadLink: { link, error },
-        },
-      } = await (this.$apollo as any).mutate({
-        mutation: generateMutation({
-          getTestUploadLink: {
-            link: true,
-            error: true,
-          },
-        }),
-      });
-
-      if (error) {
-        toast({
-          title: `${this.$t("pages.settings.application.demo_settings.test_download_failed")} ${error}`,
-          variant: "destructive",
-        });
-        return;
-      }
-
-      window.open(link, "_blank");
-    },
     async updateSettings() {
       await (this.$apollo as any).mutate({
         mutation: generateMutation({
@@ -401,11 +312,6 @@ export default {
   computed: {
     settings() {
       return useApplicationSettingsStore().settings;
-    },
-    cloudflareWorkerUrl() {
-      return this.settings.find(
-        (setting) => setting.name === "cloudflare_worker_url",
-      )?.value;
     },
   },
 };

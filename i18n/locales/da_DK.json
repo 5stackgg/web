@@ -8471,9 +8471,10 @@
     "message_actions": "Beskedhandlinger",
     "delete_message": "Slet besked",
     "delete_confirm_title": "Slet besked?",
-    "delete_confirm_description": "Beskeden bliver fjernet for alle i denne chat.",
+    "delete_confirm_description": "Beskeden fra {name} bliver fjernet for alle i denne chat.",
     "delete_failed": "Beskeden kunne ikke slettes",
-    "message_already_gone": "Beskeden er allerede blevet fjernet.",
+    "delete_timeout": "Serveren svarede ikke. Beskeden kan stadig blive fjernet.",
+    "message_already_gone": "Beskeden er allerede fjernet",
     "direct": {
       "message": "Besked",
       "empty": "Ingen beskeder endnu. Sig hej."

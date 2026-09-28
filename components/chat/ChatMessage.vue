@@ -129,7 +129,6 @@ export default {
     permissions() {
       return chatMessagePermissions({
         message: this.message,
-        viewerSteamId: useAuthStore().me?.steam_id,
         canModerate: this.canModerate,
         roomType: this.room?.type ?? "",
       });

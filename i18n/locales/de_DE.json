@@ -8467,13 +8467,14 @@
     "team_hint": "Nur dein Lineup — wird nicht im Spielchat angezeigt",
     "message_too_long": "Nachrichten dürfen höchstens {max} Zeichen lang sein.",
     "send_failed": "Deine Nachricht konnte nicht gesendet werden",
-    "gagged": "Du wurdest geknebelt und kannst keine Chatnachrichten senden.",
+    "gagged": "Du bist im Chat gesperrt und kannst keine Nachrichten senden.",
     "message_actions": "Nachrichtenaktionen",
     "delete_message": "Nachricht löschen",
     "delete_confirm_title": "Nachricht löschen?",
-    "delete_confirm_description": "Diese Nachricht wird für alle in diesem Chat entfernt.",
+    "delete_confirm_description": "Die Nachricht von {name} wird für alle in diesem Chat entfernt.",
     "delete_failed": "Nachricht konnte nicht gelöscht werden",
-    "message_already_gone": "Diese Nachricht wurde bereits entfernt.",
+    "delete_timeout": "Der Server hat nicht geantwortet. Die Nachricht wird eventuell trotzdem entfernt.",
+    "message_already_gone": "Nachricht wurde bereits entfernt",
     "direct": {
       "message": "Nachricht",
       "empty": "Noch keine Nachrichten. Sag Hallo."

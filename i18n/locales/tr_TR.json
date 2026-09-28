@@ -8469,11 +8469,12 @@
     "send_failed": "Mesajın gönderilemedi",
     "gagged": "Sohbetin kapatıldı, sohbet mesajı gönderemezsin.",
     "message_actions": "Mesaj işlemleri",
-    "delete_message": "Mesajı Sil",
+    "delete_message": "Mesajı sil",
     "delete_confirm_title": "Mesaj silinsin mi?",
-    "delete_confirm_description": "Bu mesaj, bu sohbetteki herkes için kaldırılacak.",
+    "delete_confirm_description": "{name} adlı oyuncunun mesajı bu sohbetteki herkes için kaldırılacak.",
     "delete_failed": "Mesaj silinemedi",
-    "message_already_gone": "Bu mesaj zaten kaldırılmış.",
+    "delete_timeout": "Sunucu yanıt vermedi. Mesaj yine de kaldırılabilir.",
+    "message_already_gone": "Mesaj zaten kaldırılmış",
     "direct": {
       "message": "Mesaj",
       "empty": "Henüz mesaj yok. Merhaba de."

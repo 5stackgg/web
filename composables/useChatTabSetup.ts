@@ -43,11 +43,7 @@ export function useChatTabSetup() {
     decrementUnread,
     setUnread,
   } = useChatTabs();
-  const {
-    hydrate: hydrateReadState,
-    isUnread,
-    unreadSince,
-  } = useChatReadState();
+  const { hydrate: hydrateReadState, isUnread } = useChatReadState();
 
   const matchLobbyStore = useMatchLobbyStore();
   const authStore = useAuthStore();
@@ -76,15 +72,9 @@ export function useChatTabSetup() {
       }
     });
 
-    // Only a line the badge was counting, which is one past the read cursor
-    // from someone else -- anything else was never in the number.
     lobby.on("lobby:deleted", ({ message }: LobbyMessageDeleted) => {
-      if (isChatTabOnScreen(tab.id)) {
-        return;
-      }
-
-      if (isUnread(tab.type, tab.lobbyId, message, authStore.me?.steam_id)) {
-        decrementUnread(tab.id);
+      if (message?.id) {
+        decrementUnread(tab.id, message.id);
       }
     });
 
@@ -101,9 +91,14 @@ export function useChatTabSetup() {
         return;
       }
 
+      const unread = (messages ?? []).filter((message) =>
+        isUnread(tab.type, tab.lobbyId, message, authStore.me?.steam_id),
+      );
+
       setUnread(
         tab.id,
-        unreadSince(tab.type, tab.lobbyId, messages ?? [], authStore.me?.steam_id),
+        unread.length,
+        unread.map((message) => message?.id).filter(Boolean),
       );
     });
   }

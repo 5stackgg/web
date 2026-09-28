@@ -8471,9 +8471,10 @@
     "message_actions": "消息操作",
     "delete_message": "删除消息",
     "delete_confirm_title": "要删除消息吗？",
-    "delete_confirm_description": "此消息将对本聊天中的所有人移除。",
+    "delete_confirm_description": "{name} 的这条消息将对本聊天中的所有人移除。",
     "delete_failed": "消息删除失败",
-    "message_already_gone": "该消息已被移除。",
+    "delete_timeout": "服务器没有响应。该消息仍可能被移除。",
+    "message_already_gone": "该消息已被移除",
     "direct": {
       "message": "消息",
       "empty": "还没有消息，先打个招呼吧。"

@@ -3,7 +3,11 @@ import { onBeforeUnmount, ref, watch } from "vue";
 import { MoreVertical, Trash2 } from "lucide-vue-next";
 import { useRightSidebar } from "~/composables/useRightSidebar";
 import socket, { type ChatType, type LobbyMessage } from "~/web-sockets/Socket";
-import { toastChatError, type ChatError } from "~/utilities/chatErrors";
+import {
+  chatErrorFailed,
+  toastChatError,
+  type ChatError,
+} from "~/utilities/chatErrors";
 import type { ChatMessagePermissions } from "~/utilities/chatMessageActions";
 
 const props = defineProps<{
@@ -54,6 +58,10 @@ async function deleteMessage() {
     confirmDelete.value = false;
   } catch (error) {
     toastChatError(error as ChatError);
+
+    if (!chatErrorFailed(error as ChatError)) {
+      confirmDelete.value = false;
+    }
   }
 }
 </script>
@@ -92,9 +100,20 @@ async function deleteMessage() {
             {{ $t("chat.delete_confirm_title") }}
           </AlertDialogTitle>
           <AlertDialogDescription>
-            {{ $t("chat.delete_confirm_description") }}
+            {{
+              $t("chat.delete_confirm_description", {
+                name: message.from?.name || $t("common.unknown"),
+              })
+            }}
           </AlertDialogDescription>
         </AlertDialogHeader>
+        <!-- The overlay hides the chat, so the line being removed is repeated
+             here rather than left to memory. -->
+        <blockquote
+          class="line-clamp-3 whitespace-pre-wrap break-words rounded-md border border-border/60 bg-card/40 px-3 py-2 text-xs text-muted-foreground"
+        >
+          {{ message.message }}
+        </blockquote>
         <AlertDialogFooter>
           <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
           <Button variant="destructive" @click="deleteMessage">

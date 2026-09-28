@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
+import ChatMessage from "~/components/chat/ChatMessage.vue";
 import { useAuthStore } from "~/stores/AuthStore";
 import socket, { type LobbyMessage } from "~/web-sockets/Socket";
 
@@ -158,17 +159,14 @@ describe("ChatLobby moderation", () => {
     });
     await flushPromises();
 
-    const lobby = wrapper.vm as any;
-    const [everyone, team] = lobby.messages;
+    const rows = wrapper.findAllComponents(ChatMessage);
 
-    expect(lobby.messageRoom(everyone)).toEqual({
-      type: "match",
-      id: "merged-match",
-    });
-    expect(lobby.messageRoom(team)).toEqual({
-      type: "match_team",
-      id: "merged-match:lineup-1",
-    });
+    expect(
+      rows.map((row) => [row.props("message").id, row.props("room")]),
+    ).toEqual([
+      ["everyone-line", { type: "match", id: "merged-match" }],
+      ["team-line", { type: "match_team", id: "merged-match:lineup-1" }],
+    ]);
     expect(wrapper.findAll(TRIGGER)).toHaveLength(2);
   });
 
@@ -201,6 +199,64 @@ describe("ChatLobby moderation", () => {
     await flushPromises();
 
     expect(lobby.lastReadMessageCount).toBe(3);
+  });
+
+  it("counts only what the filter shows when a merged line goes", async () => {
+    signIn({ role: "user" });
+
+    const wrapper = await mountLobby({
+      lobbyId: "filtered-divider",
+      teamLobbyId: "filtered-divider:lineup-1",
+    });
+    socket.emit("lobby:match:filtered-divider:messages", {
+      messages: [line("e1", 0), line("e2", 2), line("e3", 4)],
+    });
+    socket.emit("lobby:match_team:filtered-divider:lineup-1:messages", {
+      messages: [line("t1", 1), line("t2", 3)],
+    });
+    await flushPromises();
+
+    const lobby = wrapper.vm as any;
+    lobby.viewFilter = "everyone";
+    lobby.lastReadMessageCount = 2;
+    await flushPromises();
+
+    socket.emit("lobby:match_team:filtered-divider:lineup-1:deleted", {
+      id: "t1",
+    });
+    await flushPromises();
+
+    expect(lobby.lastReadMessageCount).toBe(2);
+
+    socket.emit("lobby:match:filtered-divider:deleted", { id: "e2" });
+    await flushPromises();
+
+    expect(lobby.lastReadMessageCount).toBe(1);
+  });
+
+  it("clears a hidden room's mark when the line it stood for goes", async () => {
+    signIn({ role: "user" });
+
+    const wrapper = await mountLobby({
+      lobbyId: "unseen-match",
+      teamLobbyId: "unseen-match:lineup-1",
+    });
+    const lobby = wrapper.vm as any;
+    lobby.viewFilter = "everyone";
+    await flushPromises();
+
+    socket.emit("lobby:match_team:unseen-match:lineup-1:chat", line("t1", 1));
+    await flushPromises();
+
+    expect(lobby.unseenFor("team")).toBe(1);
+
+    socket.emit("lobby:match_team:unseen-match:lineup-1:deleted", {
+      id: "t1",
+    });
+    await flushPromises();
+
+    expect(lobby.unseenFor("team")).toBe(0);
+    expect(lobby.unseenFor("all")).toBe(0);
   });
 
   it("keeps the New line on the same message when a read line above it goes", async () => {

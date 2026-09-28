@@ -735,7 +735,7 @@ function handlePopOut() {
                       <Transition v-bind="badgePopTransition">
                         <span
                           v-if="unreadCounts[tab.id] > 0 && !wiggling"
-                          class="absolute -top-1 -right-1 inline-flex h-4 min-w-[1rem] origin-center items-center justify-center rounded-full bg-red-500 px-1 font-sans text-[0.6rem] font-bold leading-none tabular-nums text-white shadow-sm ring-1 ring-background"
+                          class="absolute -top-1 -right-1 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-red-500 px-0.5 text-[0.55rem] font-bold leading-none text-white shadow-sm ring-1 ring-background origin-center"
                         >
                           <AnimatedStat
                             :value="formatBadgeCount(unreadCounts[tab.id])"

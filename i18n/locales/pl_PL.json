@@ -8471,9 +8471,10 @@
     "message_actions": "Akcje wiadomości",
     "delete_message": "Usuń wiadomość",
     "delete_confirm_title": "Usunąć wiadomość?",
-    "delete_confirm_description": "Ta wiadomość zostanie usunięta dla wszystkich na tym czacie.",
+    "delete_confirm_description": "Wiadomość od {name} zostanie usunięta dla wszystkich na tym czacie.",
     "delete_failed": "Nie udało się usunąć wiadomości",
-    "message_already_gone": "Ta wiadomość została już usunięta.",
+    "delete_timeout": "Serwer nie odpowiedział. Wiadomość może mimo to zostać usunięta.",
+    "message_already_gone": "Wiadomość została już usunięta",
     "direct": {
       "message": "Wiadomość",
       "empty": "Brak wiadomości. Przywitaj się."

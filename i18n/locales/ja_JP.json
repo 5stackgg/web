@@ -8471,9 +8471,10 @@
     "message_actions": "メッセージの操作",
     "delete_message": "メッセージを削除",
     "delete_confirm_title": "メッセージを削除しますか？",
-    "delete_confirm_description": "このメッセージはこのチャットの全員に対して削除されます。",
+    "delete_confirm_description": "{name} のメッセージは、このチャットの全員に対して削除されます。",
     "delete_failed": "メッセージを削除できませんでした",
-    "message_already_gone": "このメッセージはすでに削除されています。",
+    "delete_timeout": "サーバーから応答がありませんでした。メッセージは後で削除される可能性があります。",
+    "message_already_gone": "メッセージはすでに削除されています",
     "direct": {
       "message": "メッセージ",
       "empty": "まだメッセージはありません。あいさつしてみましょう。"

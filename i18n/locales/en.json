@@ -8471,9 +8471,10 @@
     "message_actions": "Message actions",
     "delete_message": "Delete Message",
     "delete_confirm_title": "Delete Message?",
-    "delete_confirm_description": "This message will be removed for everyone in this chat.",
+    "delete_confirm_description": "The message from {name} will be removed for everyone in this chat.",
     "delete_failed": "Failed to delete message",
-    "message_already_gone": "That message was already removed.",
+    "delete_timeout": "The server didn't answer. The message may still be removed.",
+    "message_already_gone": "Message already removed",
     "direct": {
       "message": "Message",
       "empty": "No messages yet. Say hello."

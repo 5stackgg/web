@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   chatErrorAction,
   chatErrorDescription,
+  chatErrorFailed,
   chatErrorTitle,
 } from "~/utilities/chatErrors";
 import { CHAT_MESSAGE_MAX_LENGTH } from "~/constants/chat";
@@ -57,13 +58,28 @@ describe("chat error actions", () => {
     );
   });
 
-  it("says a message someone else removed first is already gone", () => {
-    expect(
-      chatErrorDescription({ code: "not_found", action: "delete" }, t),
-    ).toBe("chat.message_already_gone");
+  it("reports a message someone else removed first as gone, not failed", () => {
+    const error = { code: "not_found", action: "delete" as const };
+
+    expect(chatErrorFailed(error)).toBe(false);
+    expect(chatErrorTitle(error, t)).toBe("chat.message_already_gone");
+    expect(chatErrorDescription(error, t)).toBeUndefined();
   });
 
-  it.each(["not_allowed", "timeout", "offline", "gagged", "too_long"])(
+  it("only treats not_found as gone for a delete", () => {
+    expect(chatErrorFailed({ code: "not_found" })).toBe(true);
+    expect(chatErrorFailed({ code: "not_allowed", action: "delete" })).toBe(
+      true,
+    );
+  });
+
+  it("says a delete the api never answered may still go through", () => {
+    expect(chatErrorDescription({ code: "timeout", action: "delete" }, t)).toBe(
+      "chat.delete_timeout",
+    );
+  });
+
+  it.each(["not_allowed", "offline", "gagged", "too_long"])(
     "adds nothing to a failed delete for %s",
     (code) => {
       expect(

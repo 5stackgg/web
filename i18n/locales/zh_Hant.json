@@ -8471,9 +8471,10 @@
     "message_actions": "訊息操作",
     "delete_message": "刪除訊息",
     "delete_confirm_title": "要刪除訊息嗎？",
-    "delete_confirm_description": "此訊息將對此聊天中的所有人移除。",
+    "delete_confirm_description": "{name} 的這則訊息將對此聊天中的所有人移除。",
     "delete_failed": "訊息刪除失敗",
-    "message_already_gone": "該訊息已被移除。",
+    "delete_timeout": "伺服器沒有回應。該訊息仍可能被移除。",
+    "message_already_gone": "該訊息已被移除",
     "direct": {
       "message": "訊息",
       "empty": "還沒有訊息，先打個招呼吧。"

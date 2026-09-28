@@ -18,9 +18,18 @@ export function chatErrorAction(error: ChatError): ChatAction {
   return error?.action ?? "send";
 }
 
+// A delete the api can't find a message for has still left the room without
+// it, which is all the moderator asked for.
+export function chatErrorFailed(error: ChatError) {
+  return !(chatErrorAction(error) === "delete" && error?.code === "not_found");
+}
+
 export function chatErrorTitle(error: ChatError, t: Translate): string {
   switch (chatErrorAction(error)) {
     case "delete":
+      if (!chatErrorFailed(error)) {
+        return t("chat.message_already_gone");
+      }
       return t("chat.delete_failed");
     case "send":
     default:
@@ -34,8 +43,8 @@ export function chatErrorDescription(
 ): string | undefined {
   if (chatErrorAction(error) === "delete") {
     switch (error?.code) {
-      case "not_found":
-        return t("chat.message_already_gone");
+      case "timeout":
+        return t("chat.delete_timeout");
       case "not_allowed":
       default:
         return undefined;
@@ -60,6 +69,11 @@ export function chatErrorDescription(
 export function toastChatError(error: ChatError) {
   const { $i18n } = useNuxtApp();
   const t: Translate = (key, params) => $i18n.t(key, params ?? {});
+
+  if (!chatErrorFailed(error)) {
+    toast({ title: chatErrorTitle(error, t) });
+    return;
+  }
 
   toast({
     title: chatErrorTitle(error, t),

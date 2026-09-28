@@ -8471,9 +8471,10 @@
     "message_actions": "إجراءات الرسالة",
     "delete_message": "حذف الرسالة",
     "delete_confirm_title": "حذف الرسالة؟",
-    "delete_confirm_description": "ستُزال هذه الرسالة لدى جميع من في هذه الدردشة.",
+    "delete_confirm_description": "ستُزال رسالة {name} لدى جميع من في هذه الدردشة.",
     "delete_failed": "تعذّر حذف الرسالة",
-    "message_already_gone": "تمت إزالة هذه الرسالة بالفعل.",
+    "delete_timeout": "لم يستجب الخادم. قد تتم إزالة الرسالة لاحقًا.",
+    "message_already_gone": "تمت إزالة الرسالة بالفعل",
     "direct": {
       "message": "رسالة",
       "empty": "لا رسائل بعد. ألقِ التحية."

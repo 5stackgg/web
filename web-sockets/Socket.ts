@@ -117,6 +117,9 @@ export class Socket extends EventEmitter {
   private pendingRequests: Map<string, PendingChatRequest> = new Map();
   // The api answers a request it failed to carry out with nothing at all.
   private static readonly REQUEST_TIMEOUT_MS = 8000;
+  // How long a request that timed out still recognises its answer, so a slow
+  // one is applied quietly instead of being reported a second time.
+  private static readonly LATE_ANSWER_MS = 60000;
   private rooms: Map<
     string,
     {
@@ -420,27 +423,30 @@ export class Socket extends EventEmitter {
     }
 
     const requestId = guid();
+    const lobbyId = `${type}:${id}`;
 
     return new Promise<void>((resolve, reject) => {
-      const timer = setTimeout(() => {
-        this.pendingRequests.delete(requestId);
-        reject({ code: "timeout", action: "delete", requestId });
-      }, Socket.REQUEST_TIMEOUT_MS);
-
-      this.pendingRequests.set(requestId, {
+      const pending: PendingChatRequest = {
         action: "delete",
-        timer,
         resolve: () => {
-          this.removeMessageFromLobby(`${type}:${id}`, messageId);
+          this.removeMessageFromLobby(lobbyId, messageId);
           resolve();
         },
         reject: (error) => {
           if (error?.code === "not_found") {
-            this.removeMessageFromLobby(`${type}:${id}`, messageId);
+            this.removeMessageFromLobby(lobbyId, messageId);
           }
           reject(error);
         },
-      });
+        timer: setTimeout(() => {
+          reject({ code: "timeout", action: "delete", requestId });
+          pending.timer = setTimeout(() => {
+            this.pendingRequests.delete(requestId);
+          }, Socket.LATE_ANSWER_MS);
+        }, Socket.REQUEST_TIMEOUT_MS),
+      };
+
+      this.pendingRequests.set(requestId, pending);
 
       this.event(`lobby:delete`, {
         id,

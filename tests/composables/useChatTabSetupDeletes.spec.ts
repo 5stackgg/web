@@ -108,7 +108,7 @@ describe("useChatTabSetup deletes", () => {
     expect(unread()).toBe(2);
   });
 
-  it("never takes the badge below zero", () => {
+  it("goes by the latest recount, not what it counted before", () => {
     useChatTabs().setUnread(tabId, 0);
 
     socket.emit(`${room}:deleted`, { id: "unread" });
@@ -116,13 +116,33 @@ describe("useChatTabSetup deletes", () => {
     expect(unread()).toBe(0);
   });
 
-  it("leaves the badge alone while the room is on screen", () => {
+  it("leaves the badge alone for a line read on screen and deleted later", () => {
+    useChatTabs().resetUnread(tabId);
     useChatTabs().setActiveTab(tabId);
     useRightSidebar().setRightSidebarOpen(true);
     setActiveHub("chat");
 
+    socket.emit(`${room}:chat`, line("spam", 5));
+    expect(unread()).toBe(0);
+
+    useRightSidebar().setRightSidebarOpen(false);
+    socket.emit(`${room}:chat`, line("teammate", 6));
+    expect(unread()).toBe(1);
+
+    socket.emit(`${room}:deleted`, { id: "spam" });
+    expect(unread()).toBe(1);
+
+    socket.emit(`${room}:deleted`, { id: "teammate" });
+    expect(unread()).toBe(0);
+  });
+
+  it("forgets what it counted once the room has been read", () => {
+    useChatTabs().resetUnread(tabId);
+    socket.emit(`${room}:chat`, line("after", 5));
+    expect(unread()).toBe(1);
+
     socket.emit(`${room}:deleted`, { id: "unread" });
 
-    expect(unread()).toBe(2);
+    expect(unread()).toBe(1);
   });
 });

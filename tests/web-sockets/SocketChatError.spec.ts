@@ -89,16 +89,22 @@ describe("Socket chat:error", () => {
 
   it("titles a delete nobody is waiting on as a failed delete", () => {
     socket.emit("chat:error", {
-      code: "not_found",
+      code: "not_allowed",
       action: "delete",
       requestId: "nobody-asked",
     });
 
     expect(toast).toHaveBeenCalledWith({
       title: "Failed to delete message",
-      description: "That message was already removed.",
+      description: undefined,
       variant: "destructive",
     });
+  });
+
+  it("reports a message that was already gone without calling it a failure", () => {
+    socket.emit("chat:error", { code: "not_found", action: "delete" });
+
+    expect(toast).toHaveBeenCalledWith({ title: "Message already removed" });
   });
 });
 
@@ -169,7 +175,6 @@ describe("Socket deleteMessage", () => {
   it("gives up when the api never answers", async () => {
     vi.useFakeTimers();
     const pending = socket.deleteMessage("match", "match-1", "message-1");
-    const [{ requestId }] = sentDeletes(send);
 
     vi.advanceTimersByTime(7999);
     expect(await settled(pending)).toBe("pending");
@@ -179,9 +184,39 @@ describe("Socket deleteMessage", () => {
       code: "timeout",
       action: "delete",
     });
+  });
 
-    socket.emit("chat:ack", { requestId, action: "delete" });
+  it("takes a late answer quietly instead of reporting it twice", async () => {
+    vi.useFakeTimers();
+    const pending = socket.deleteMessage("match", "match-1", "message-1");
+    const [{ requestId }] = sentDeletes(send);
+    pending.catch(() => {});
+
+    vi.advanceTimersByTime(8000);
+    socket.emit("chat:error", {
+      code: "not_allowed",
+      action: "delete",
+      requestId,
+    });
+
     expect(toast).not.toHaveBeenCalled();
+  });
+
+  it("stops recognising a late answer after a minute", async () => {
+    vi.useFakeTimers();
+    const pending = socket.deleteMessage("match", "match-1", "message-1");
+    const [{ requestId }] = sentDeletes(send);
+    pending.catch(() => {});
+
+    vi.advanceTimersByTime(8000 + 60000);
+    socket.emit("chat:error", {
+      code: "not_allowed",
+      action: "delete",
+      requestId,
+    });
+
+    expect(toast).toHaveBeenCalledTimes(1);
+    expect((socket as any).pendingRequests.has(requestId)).toBe(false);
   });
 
   it("refuses straight away while offline and sends nothing", async () => {
@@ -212,6 +247,7 @@ describe("Socket lobby deletes", () => {
   });
 
   afterEach(() => {
+    vi.useRealTimers();
     lobby.leave();
     disconnect();
     vi.restoreAllMocks();
@@ -261,6 +297,21 @@ describe("Socket lobby deletes", () => {
 
     socket.emit("lobby:match:match-1:deleted", { id: "b" });
     expect(deleted).toHaveBeenCalledTimes(1);
+  });
+
+  it("applies an ack that lands after the timeout", async () => {
+    vi.useFakeTimers();
+    const send = connect();
+    const pending = socket.deleteMessage("match", "match-1", "b");
+    const [{ requestId }] = sentDeletes(send);
+    pending.catch(() => {});
+
+    vi.advanceTimersByTime(8000);
+    await expect(pending).rejects.toMatchObject({ code: "timeout" });
+
+    socket.emit("chat:ack", { requestId, messageId: "b", action: "delete" });
+
+    expect(ids(lobby.messages)).toEqual(["a", "c"]);
   });
 
   it("removes a message the api says is already gone", async () => {

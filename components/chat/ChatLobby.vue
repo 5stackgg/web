@@ -516,9 +516,13 @@ export default {
       // how a team callout ends up in front of the other side.
       sendTo: "everyone" as "everyone" | "team",
       viewFilter: "all" as "all" | "everyone" | "team",
-      // Counted per room, but only while the filter is hiding that room --
+      // Held per room, but only while the filter is hiding that room --
       // everything on screen has by definition been offered to the reader.
-      unseen: { everyone: 0, team: 0 } as Record<string, number>,
+      // Kept as message keys so a deleted line takes its mark with it.
+      unseen: { everyone: [], team: [] } as Record<
+        "everyone" | "team",
+        string[]
+      >,
     };
   },
   computed: {
@@ -778,10 +782,10 @@ export default {
       }
 
       if (option === "all") {
-        return this.unseen.everyone + this.unseen.team;
+        return this.unseen.everyone.length + this.unseen.team.length;
       }
 
-      return this.unseen[option] ?? 0;
+      return this.unseen[option as "everyone" | "team"]?.length ?? 0;
     },
     channelTarget(channel: "everyone" | "team") {
       return channel === "team" && this.teamLobbyId
@@ -837,6 +841,11 @@ export default {
       if (position !== -1 && position < this.lastReadMessageCount) {
         this.lastReadMessageCount = Math.max(0, this.lastReadMessageCount - 1);
       }
+
+      const key = chatMessageKey(deleted.message);
+      this.unseen[channel] = this.unseen[channel].filter(
+        (unseenKey) => unseenKey !== key,
+      );
     },
     handleIncomingMessage(
       message: LobbyMessage,
@@ -856,7 +865,7 @@ export default {
       // Only what the filter is actively hiding. A message in a room that is
       // on screen has been shown, whether or not it was read.
       if (this.isMerged && !isOwnMessage && !this.channelVisible(channel)) {
-        this.unseen[channel]++;
+        this.unseen[channel].push(chatMessageKey(message));
       }
 
       // Auto-scroll only when already at the bottom.
@@ -955,7 +964,7 @@ export default {
       handler() {
         for (const channel of ["everyone", "team"] as const) {
           if (this.channelVisible(channel)) {
-            this.unseen[channel] = 0;
+            this.unseen[channel] = [];
           }
         }
       },

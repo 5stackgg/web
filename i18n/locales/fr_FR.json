@@ -8471,9 +8471,10 @@
     "message_actions": "Actions du message",
     "delete_message": "Supprimer le message",
     "delete_confirm_title": "Supprimer le message ?",
-    "delete_confirm_description": "Ce message sera supprimé pour tous les participants de ce chat.",
+    "delete_confirm_description": "Le message de {name} sera supprimé pour tous les participants de ce chat.",
     "delete_failed": "Impossible de supprimer le message",
-    "message_already_gone": "Ce message a déjà été supprimé.",
+    "delete_timeout": "Le serveur n'a pas répondu. Le message peut tout de même être supprimé.",
+    "message_already_gone": "Message déjà supprimé",
     "direct": {
       "message": "Message",
       "empty": "Aucun message pour l'instant. Dites bonjour."

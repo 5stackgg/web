@@ -8471,9 +8471,10 @@
     "message_actions": "Acciones del mensaje",
     "delete_message": "Eliminar mensaje",
     "delete_confirm_title": "¿Eliminar mensaje?",
-    "delete_confirm_description": "Este mensaje se eliminará para todos en este chat.",
+    "delete_confirm_description": "El mensaje de {name} se eliminará para todos en este chat.",
     "delete_failed": "No se ha podido eliminar el mensaje",
-    "message_already_gone": "Ese mensaje ya se había eliminado.",
+    "delete_timeout": "El servidor no ha respondido. Puede que el mensaje se elimine de todos modos.",
+    "message_already_gone": "El mensaje ya se había eliminado",
     "direct": {
       "message": "Mensaje",
       "empty": "Aún no hay mensajes. Saluda."

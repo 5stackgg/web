@@ -135,7 +135,10 @@ describe("ChatMessageActions", () => {
 
     expect(dialog()?.textContent).toContain("Delete Message?");
     expect(dialog()?.textContent).toContain(
-      "This message will be removed for everyone in this chat.",
+      "The message from Dana will be removed for everyone in this chat.",
+    );
+    expect(dialog()?.querySelector("blockquote")?.textContent?.trim()).toBe(
+      "gg",
     );
     expect(deleteMessage).not.toHaveBeenCalled();
     expect(hubHeld()).toBe(true);
@@ -171,6 +174,22 @@ describe("ChatMessageActions", () => {
     });
     expect(dialog()).not.toBeNull();
     expect(hubHeld()).toBe(true);
+  });
+
+  it("closes quietly when the message was already gone", async () => {
+    vi.spyOn(socket, "deleteMessage").mockRejectedValue({
+      code: "not_found",
+      action: "delete",
+    });
+
+    await openConfirm();
+
+    dialogButton("Delete")!.click();
+    await flushPromises();
+
+    expect(toast).toHaveBeenCalledWith({ title: "Message already removed" });
+    expect(dialog()).toBeNull();
+    expect(hubHeld()).toBe(false);
   });
 
   it("does nothing on cancel", async () => {

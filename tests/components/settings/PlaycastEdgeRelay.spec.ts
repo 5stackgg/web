@@ -48,7 +48,7 @@ describe("PlaycastEdgeRelay", () => {
     const wrapper = await mountRelay();
 
     expect(status(wrapper)).toContain("Not active");
-    expect(wrapper.find("pre").text()).toContain('--route "tv.acme.gg/*"');
+    expect(wrapper.find("pre").text()).toBe("./playcast-relay.sh");
   });
 
   it("treats an unreachable relay domain as not active", async () => {

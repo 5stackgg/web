@@ -4,7 +4,6 @@ import { Cloud, RefreshCw, Server } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 
 const relayDomain = String(useRuntimeConfig().public.relayDomain || "");
-const command = `npx wrangler deploy --config cloudflare-workers/playcast-relay/wrangler.toml --route "${relayDomain || "tv.example.com"}/*"`;
 
 const status = ref<"checking" | "active" | "inactive">("checking");
 
@@ -87,7 +86,7 @@ onMounted(() => {
       </p>
       <pre
         class="overflow-x-auto rounded-md bg-muted p-2"
-      ><code>{{ command }}</code></pre>
+      ><code>./playcast-relay.sh</code></pre>
       <p class="text-muted-foreground">
         {{ $t("pages.settings.application.streaming.relay_setup_fail_open") }}
       </p>

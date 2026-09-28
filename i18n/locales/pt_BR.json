@@ -1996,7 +1996,7 @@
           "relay_inactive": "Inativo: os espectadores do Playcast em {domain} são atendidos por este servidor",
           "relay_check_again": "Verificar novamente",
           "relay_setup_proxied": "{domain} precisa passar pelo proxy da Cloudflare (nuvem laranja).",
-          "relay_setup_deploy": "Em uma cópia do repositório api do 5stack, implante o worker nele:",
+          "relay_setup_deploy": "Na sua cópia do 5stack-panel, implante-o no domínio de relay:",
           "relay_setup_fail_open": "Depois, no painel da Cloudflare, defina o modo de falha por limite de solicitações dessa rota como Fail open, para que as transmissões continuem chegando a este servidor se o limite diário dos Workers for atingido.",
           "relay_setup_guide": "Guia de configuração",
           "encoding_section": "Encodando",

@@ -1996,7 +1996,7 @@
           "relay_inactive": "Not active: Playcast viewers on {domain} are served by this server",
           "relay_check_again": "Check again",
           "relay_setup_proxied": "{domain} must be proxied through Cloudflare (orange cloud).",
-          "relay_setup_deploy": "From a checkout of the 5stack api repository, deploy the worker onto it:",
+          "relay_setup_deploy": "From your 5stack-panel checkout, deploy it onto the relay domain:",
           "relay_setup_fail_open": "Then set that route's request limit failure mode to Fail open in the Cloudflare dashboard, so broadcasts keep reaching this server if the Workers daily limit is ever reached.",
           "relay_setup_guide": "Setup guide",
           "encoding_section": "Encoding",

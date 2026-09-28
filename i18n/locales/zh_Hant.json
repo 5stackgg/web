@@ -1996,7 +1996,7 @@
           "relay_inactive": "未啟用：{domain} 上的 Playcast 觀眾由本伺服器提供服務",
           "relay_check_again": "重新檢查",
           "relay_setup_proxied": "{domain} 必須經過 Cloudflare 代理（橘色雲朵）。",
-          "relay_setup_deploy": "在 5stack api 儲存庫的檢出目錄中，將 Worker 部署到該網域：",
+          "relay_setup_deploy": "在你的 5stack-panel 檢出目錄中，將其部署到中繼網域：",
           "relay_setup_fail_open": "接著在 Cloudflare 主控台中，將該路由的請求上限失敗模式設為 Fail open，這樣即使達到 Workers 每日上限，轉播仍會持續送達本伺服器。",
           "relay_setup_guide": "設定指南",
           "encoding_section": "編碼",

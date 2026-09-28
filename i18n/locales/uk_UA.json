@@ -1996,7 +1996,7 @@
           "relay_inactive": "Не активний: глядачів Playcast на {domain} обслуговує цей сервер",
           "relay_check_again": "Перевірити знову",
           "relay_setup_proxied": "{domain} має проходити через проксі Cloudflare (помаранчева хмара).",
-          "relay_setup_deploy": "У копії репозиторію api 5stack розгорніть на ньому worker:",
+          "relay_setup_deploy": "З вашої копії 5stack-panel розгорніть його на домені ретранслятора:",
           "relay_setup_fail_open": "Потім на панелі Cloudflare встановіть для цього маршруту режим відмови при перевищенні ліміту запитів Fail open, щоб трансляції й далі доходили до цього сервера, якщо денний ліміт Workers буде вичерпано.",
           "relay_setup_guide": "Посібник із налаштування",
           "encoding_section": "Кодування",

@@ -65,19 +65,22 @@ const isHome = computed(() => {
 });
 
 const navMenuClasses =
-  "ml-0 min-w-0 sm:ml-1 [&>div:last-child>*]:!mt-0 [&>div:last-child>*]:!rounded-none [&>div:last-child>*]:!border-0 [&>div:last-child>*]:!bg-transparent [&>div:last-child>*]:!shadow-none";
+  "ml-0 min-w-0 sm:ml-1 max-md:justify-start max-md:overflow-x-auto max-md:[scrollbar-width:none] max-md:[&::-webkit-scrollbar]:hidden";
+
+const navViewportClasses =
+  "mt-0 rounded-none border-0 bg-transparent shadow-none max-md:fixed max-md:inset-x-2 max-md:top-14 max-md:w-auto max-md:max-h-[calc(100dvh-4rem)] max-md:overflow-y-auto max-md:overscroll-contain max-md:transition-none sm:max-md:top-16 sm:max-md:max-h-[calc(100dvh-4.5rem)]";
 
 const navTickClasses =
   "nav-link-tick hidden h-[5px] w-[5px] shrink-0 rotate-45 bg-[hsl(var(--topnav-foreground)/0.3)] transition-colors duration-150 sm:block";
 
 const navLinkClasses =
-  "group relative inline-flex items-center gap-[0.35rem] rounded-none border-0 bg-transparent px-[0.4rem] py-2 font-sans text-[0.68rem] font-bold uppercase leading-none tracking-[0.08em] text-[hsl(var(--topnav-foreground)/0.78)] sm:gap-[0.55rem] sm:px-[0.85rem] sm:text-[0.78rem] sm:tracking-[0.18em] transition-[color,background-color,box-shadow] duration-150 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-topnav-foreground focus-visible:bg-[hsl(var(--tac-amber)/0.08)] focus-visible:text-topnav-foreground focus-visible:outline-none [&.router-link-active]:bg-[hsl(var(--tac-amber)/0.1)] [&.router-link-active]:text-topnav-foreground [&.router-link-active]:shadow-[inset_0_-2px_0_hsl(var(--tac-amber))] [&.router-link-exact-active]:bg-[hsl(var(--tac-amber)/0.1)] [&.router-link-exact-active]:text-topnav-foreground [&.router-link-exact-active]:shadow-[inset_0_-2px_0_hsl(var(--tac-amber))] hover:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] focus-visible:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] [&.router-link-active>.nav-link-tick]:bg-[hsl(var(--tac-amber))] [&.router-link-exact-active>.nav-link-tick]:bg-[hsl(var(--tac-amber))]";
+  "group relative inline-flex items-center gap-1 rounded-none border-0 bg-transparent px-[0.3rem] py-2 font-sans text-[0.68rem] font-bold uppercase leading-none tracking-[0.06em] text-[hsl(var(--topnav-foreground)/0.78)] sm:gap-[0.55rem] sm:px-[0.85rem] sm:text-[0.78rem] sm:tracking-[0.18em] transition-[color,background-color,box-shadow] duration-150 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-topnav-foreground focus-visible:bg-[hsl(var(--tac-amber)/0.08)] focus-visible:text-topnav-foreground focus-visible:outline-none [&.router-link-active]:bg-[hsl(var(--tac-amber)/0.1)] [&.router-link-active]:text-topnav-foreground [&.router-link-active]:shadow-[inset_0_-2px_0_hsl(var(--tac-amber))] [&.router-link-exact-active]:bg-[hsl(var(--tac-amber)/0.1)] [&.router-link-exact-active]:text-topnav-foreground [&.router-link-exact-active]:shadow-[inset_0_-2px_0_hsl(var(--tac-amber))] hover:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] focus-visible:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] [&.router-link-active>.nav-link-tick]:bg-[hsl(var(--tac-amber))] [&.router-link-exact-active>.nav-link-tick]:bg-[hsl(var(--tac-amber))]";
 
 const navTriggerClasses =
-  "nav-trigger-anchor group gap-[0.35rem] h-auto rounded-none border-0 bg-transparent px-[0.4rem] py-2 font-sans text-[0.68rem] font-bold uppercase leading-none tracking-[0.08em] text-[hsl(var(--topnav-foreground)/0.78)] sm:gap-[0.55rem] sm:px-[0.85rem] sm:text-[0.78rem] sm:tracking-[0.18em] transition-[color,background-color] duration-150 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-topnav-foreground focus:bg-[hsl(var(--tac-amber)/0.08)] focus:text-topnav-foreground focus-visible:outline-none data-[state=open]:bg-[hsl(var(--tac-amber)/0.08)] data-[state=open]:text-topnav-foreground hover:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] focus:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] data-[state=open]:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] [&>svg]:ml-[0.15rem] [&>svg]:h-3 [&>svg]:w-3 [&>svg]:opacity-60 data-[state=open]:[&>svg]:text-[hsl(var(--tac-amber))] data-[state=open]:[&>svg]:opacity-100";
+  "nav-trigger-anchor group gap-1 h-auto rounded-none border-0 bg-transparent px-[0.3rem] py-2 font-sans text-[0.68rem] font-bold uppercase leading-none tracking-[0.06em] text-[hsl(var(--topnav-foreground)/0.78)] sm:gap-[0.55rem] sm:px-[0.85rem] sm:text-[0.78rem] sm:tracking-[0.18em] transition-[color,background-color] duration-150 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-topnav-foreground focus:bg-[hsl(var(--tac-amber)/0.08)] focus:text-topnav-foreground focus-visible:outline-none data-[state=open]:bg-[hsl(var(--tac-amber)/0.08)] data-[state=open]:text-topnav-foreground hover:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] focus:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] data-[state=open]:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] [&>svg]:ml-[0.15rem] [&>svg]:h-3 [&>svg]:w-3 [&>svg]:opacity-60 max-sm:[&>svg]:hidden data-[state=open]:[&>svg]:text-[hsl(var(--tac-amber))] data-[state=open]:[&>svg]:opacity-100";
 
 const navBadgeClasses =
-  "inline-flex min-w-[1.3rem] items-center justify-center gap-[0.3rem] border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.14)] px-[0.4rem] py-[0.15rem] font-sans text-[0.62rem] font-bold leading-none tracking-[0.12em] text-[hsl(var(--tac-amber))] [font-variant-numeric:tabular-nums]";
+  "inline-flex min-w-[1.3rem] items-center justify-center gap-[0.3rem] border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.14)] px-[0.3rem] py-[0.15rem] sm:px-[0.4rem] font-sans text-[0.62rem] font-bold leading-none tracking-[0.12em] text-[hsl(var(--tac-amber))] [font-variant-numeric:tabular-nums]";
 
 const navBadgeInlineClasses = "ml-auto";
 const navBadgeLiveClasses =
@@ -86,9 +89,9 @@ const navBadgeDotClasses =
   "h-[5px] w-[5px] rounded-full bg-current shadow-[0_0_6px_currentColor]";
 
 const navContentClasses =
-  "relative mt-0 min-w-[360px] max-w-[95vw] overflow-hidden border border-topnav-border bg-[linear-gradient(180deg,hsl(var(--topnav-background)/0.98)_0%,hsl(var(--topnav-background)/0.92)_100%)] p-0 shadow-[inset_0_1px_0_hsl(var(--tac-amber)/0.12),0_20px_40px_-12px_hsl(0_0%_0%/0.55)] [backdrop-filter:blur(8px)] [-webkit-backdrop-filter:blur(8px)] before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-[linear-gradient(90deg,transparent,hsl(var(--tac-amber)/0.5),transparent)]";
-const playContentClasses = `${navContentClasses} min-w-[500px]`;
-const communityContentClasses = `${navContentClasses} min-w-[780px]`;
+  "absolute mt-0 overflow-hidden md:min-w-[360px] md:max-w-[95vw] border border-topnav-border bg-[linear-gradient(180deg,hsl(var(--topnav-background)/0.98)_0%,hsl(var(--topnav-background)/0.92)_100%)] p-0 shadow-[inset_0_1px_0_hsl(var(--tac-amber)/0.12),0_20px_40px_-12px_hsl(0_0%_0%/0.55)] [backdrop-filter:blur(8px)] [-webkit-backdrop-filter:blur(8px)] before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-[linear-gradient(90deg,transparent,hsl(var(--tac-amber)/0.5),transparent)]";
+const playContentClasses = `${navContentClasses} md:min-w-[500px]`;
+const communityContentClasses = `${navContentClasses} md:min-w-[min(780px,calc(100vw-1.25rem))]`;
 
 const navGroupLabelClasses =
   "mb-2 inline-flex list-none items-center gap-2 px-[0.2rem] font-sans text-[0.62rem] font-semibold uppercase tracking-[0.28em] text-[hsl(var(--topnav-foreground)/0.45)]";
@@ -96,7 +99,7 @@ const navGroupLabelTickClasses =
   "inline-block h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]";
 
 const navItemClasses =
-  "group relative flex items-center gap-[0.6rem] border border-transparent border-l-2 border-l-transparent px-[0.65rem] py-2 font-sans text-[0.78rem] font-semibold uppercase tracking-[0.1em] text-[hsl(var(--topnav-foreground)/0.82)] no-underline transition-[color,background-color,border-color] duration-150 hover:border-l-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-topnav-foreground focus-visible:border-l-[hsl(var(--tac-amber))] focus-visible:bg-[hsl(var(--tac-amber)/0.08)] focus-visible:text-topnav-foreground focus-visible:outline-none hover:[&>.nav-item-chevron]:translate-x-[2px] hover:[&>.nav-item-chevron]:text-[hsl(var(--tac-amber))] focus-visible:[&>.nav-item-chevron]:translate-x-[2px] focus-visible:[&>.nav-item-chevron]:text-[hsl(var(--tac-amber))]";
+  "group relative flex items-center gap-[0.6rem] max-md:min-h-10 border border-transparent border-l-2 border-l-transparent px-[0.65rem] py-2 font-sans text-[0.78rem] font-semibold uppercase tracking-[0.1em] text-[hsl(var(--topnav-foreground)/0.82)] no-underline transition-[color,background-color,border-color] duration-150 hover:border-l-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-topnav-foreground focus-visible:border-l-[hsl(var(--tac-amber))] focus-visible:bg-[hsl(var(--tac-amber)/0.08)] focus-visible:text-topnav-foreground focus-visible:outline-none hover:[&>.nav-item-chevron]:translate-x-[2px] hover:[&>.nav-item-chevron]:text-[hsl(var(--tac-amber))] focus-visible:[&>.nav-item-chevron]:translate-x-[2px] focus-visible:[&>.nav-item-chevron]:text-[hsl(var(--tac-amber))]";
 const navItemStackedClasses = "items-start py-[0.55rem]";
 const navItemChevronClasses =
   "nav-item-chevron shrink-0 translate-y-[-0.5px] text-[0.55rem] text-[hsl(var(--tac-amber)/0.65)] transition-[transform,color] duration-150";
@@ -104,7 +107,7 @@ const navItemLabelClasses = "inline-flex items-center gap-[0.45rem]";
 const navItemLabelIconClasses = "gap-2";
 const navItemContentClasses = "flex min-w-0 flex-1 flex-col gap-1";
 const navItemSubClasses =
-  "text-[0.64rem] font-medium normal-case tracking-[0.08em] text-[hsl(var(--topnav-foreground)/0.5)] [font-family:system-ui,sans-serif]";
+  "max-md:hidden text-[0.64rem] font-medium normal-case tracking-[0.08em] text-[hsl(var(--topnav-foreground)/0.5)] [font-family:system-ui,sans-serif]";
 
 const heroClasses =
   "relative flex min-w-[160px] max-w-[210px] flex-col items-start justify-center gap-[0.35rem] overflow-hidden border-l border-l-[hsl(var(--tac-amber)/0.3)] bg-[linear-gradient(135deg,hsl(var(--tac-amber)/0.18)_0%,hsl(var(--tac-amber)/0.04)_100%),hsl(var(--topnav-primary)/0.9)] px-[1.1rem] py-5";
@@ -171,21 +174,6 @@ const loginArrowClasses =
             </span>
           </span>
         </NuxtLink>
-        <NuxtLink
-          v-else
-          :to="homePath"
-          class="inline-flex shrink-0 select-none items-center text-inherit no-underline"
-          :class="{ 'pointer-events-none cursor-default': isHome }"
-          :tabindex="isHome ? -1 : undefined"
-          :aria-label="brandName || $t('layouts.app_nav.brand')"
-          :aria-current="isHome ? 'page' : undefined"
-        >
-          <NuxtImg
-            class="h-7 w-7 shrink-0 object-contain"
-            :src="logoUrl || '/favicon/64.png'"
-            :alt="brandName || $t('layouts.app_nav.brand')"
-          />
-        </NuxtLink>
 
         <span
           v-if="!isMobile"
@@ -195,7 +183,10 @@ const loginArrowClasses =
 
         <SystemStatus v-if="!isMobile" />
 
-        <NavigationMenu :class="navMenuClasses">
+        <NavigationMenu
+          :class="navMenuClasses"
+          :viewport-class="navViewportClasses"
+        >
           <NavigationMenuList class="flex items-center gap-0 sm:gap-1">
             <NavigationMenuItem v-if="me" class="hidden md:block">
               <NavigationMenuLink as-child>
@@ -245,7 +236,7 @@ const loginArrowClasses =
               </NavigationMenuTrigger>
 
               <NavigationMenuContent :class="playContentClasses">
-                <div class="flex w-full p-5">
+                <div class="flex w-full p-4 md:p-5">
                   <div class="min-w-[160px] flex-1">
                     <div :class="navGroupLabelClasses">
                       <span :class="navGroupLabelTickClasses"></span>
@@ -317,7 +308,7 @@ const loginArrowClasses =
                     </ul>
                   </div>
 
-                  <div :class="[heroClasses, '-my-5 -mr-5 ml-5']">
+                  <div :class="[heroClasses, '-my-5 -mr-5 ml-5 max-md:hidden']">
                     <div :class="heroGridClasses" aria-hidden="true"></div>
                     <div :class="heroLabelClasses">
                       <span class="text-[0.55rem] text-[hsl(var(--tac-amber))]"
@@ -343,45 +334,15 @@ const loginArrowClasses =
               </NavigationMenuTrigger>
 
               <NavigationMenuContent :class="communityContentClasses">
-                <div class="flex w-full flex-col gap-6 p-5 md:flex-row">
+                <div
+                  class="flex w-full flex-col gap-4 p-4 md:flex-row md:gap-6 md:p-5"
+                >
                   <div class="min-w-[160px] flex-1">
                     <div :class="navGroupLabelClasses">
                       <span :class="navGroupLabelTickClasses"></span>
                       {{ $t("layouts.top_nav.community.roster") }}
                     </div>
                     <ul class="flex flex-col gap-1">
-                      <li class="block md:hidden">
-                        <NavigationMenuLink as-child>
-                          <NuxtLink
-                            to="/watch"
-                            :class="[navItemClasses, navItemStackedClasses]"
-                          >
-                            <span :class="navItemChevronClasses">◢</span>
-                            <span :class="navItemContentClasses">
-                              <span :class="navItemLabelClasses">
-                                {{
-                                  $t("layouts.top_nav.community.watch.title")
-                                }}
-                                <span
-                                  v-if="liveMatchesCount > 0"
-                                  :class="[
-                                    navBadgeClasses,
-                                    navBadgeInlineClasses,
-                                    navBadgeLiveClasses,
-                                  ]"
-                                >
-                                  {{ liveMatchesCount }}
-                                </span>
-                              </span>
-                              <span :class="navItemSubClasses">
-                                {{
-                                  $t("layouts.top_nav.community.watch.subtitle")
-                                }}
-                              </span>
-                            </span>
-                          </NuxtLink>
-                        </NavigationMenuLink>
-                      </li>
                       <li>
                         <NavigationMenuLink as-child>
                           <NuxtLink
@@ -688,7 +649,7 @@ const loginArrowClasses =
                   v-if="pendingMatchImports.length > 0"
                   :imports="pendingMatchImports"
                 />
-                <ChevronsUpDown class="h-4 w-4" />
+                <ChevronsUpDown class="h-4 w-4 max-sm:hidden" />
               </button>
             </template>
           </ProfileMenu>

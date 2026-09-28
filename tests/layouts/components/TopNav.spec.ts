@@ -118,18 +118,12 @@ describe("TopNav brand logo", () => {
     return wrapper.find('a[aria-label="5stack"]');
   }
 
-  it("gives a phone a compact logo that links home", async () => {
+  it("leaves the logo off a phone so the menus fit", async () => {
     emulateDevice({ userAgent: userAgents.androidChrome, width: 412 });
 
     const wrapper = await mountTopNav();
-    const link = brandLink(wrapper);
 
-    expect(link.exists()).toBe(true);
-    expect(link.attributes("href")).toBe("/me");
-    expect(link.find("img").classes()).toEqual(
-      expect.arrayContaining(["h-7", "w-7"]),
-    );
-    expect(link.text()).toBe("");
+    expect(brandLink(wrapper).exists()).toBe(false);
   });
 
   it("keeps the full wordmark on desktop", async () => {
@@ -141,5 +135,81 @@ describe("TopNav brand logo", () => {
     expect(link.exists()).toBe(true);
     expect(link.find("img").classes()).toContain("h-[30px]");
     expect(link.text()).toContain("5stack");
+  });
+});
+
+describe("TopNav menus on a phone", () => {
+  function trigger(
+    wrapper: Awaited<ReturnType<typeof mountTopNav>>,
+    label: string,
+  ) {
+    const button = wrapper
+      .findAll("button")
+      .find((candidate) => candidate.text().startsWith(label));
+    expect(button).toBeDefined();
+    return button!;
+  }
+
+  async function openMenu(
+    wrapper: Awaited<ReturnType<typeof mountTopNav>>,
+    label: string,
+  ) {
+    await trigger(wrapper, label).trigger("click");
+    await flushPromises();
+    const content = wrapper.find(
+      '[data-reka-navigation-menu] [id*="-content-"]',
+    );
+    expect(content.exists()).toBe(true);
+    return content;
+  }
+
+  function viewport(wrapper: Awaited<ReturnType<typeof mountTopNav>>) {
+    return wrapper.find("[data-reka-navigation-menu] > div:last-child > *");
+  }
+
+  beforeEach(() => {
+    emulateDevice({ userAgent: userAgents.androidChrome, width: 390 });
+  });
+
+  it("pins the open panel under the bar, inside the screen", async () => {
+    const wrapper = await mountTopNav();
+    await openMenu(wrapper, "Play");
+
+    expect(viewport(wrapper).classes()).toEqual(
+      expect.arrayContaining([
+        "max-md:fixed",
+        "max-md:inset-x-2",
+        "max-md:top-14",
+        "max-md:max-h-[calc(100dvh-4rem)]",
+        "max-md:overflow-y-auto",
+        "max-md:overscroll-contain",
+        "max-md:transition-none",
+      ]),
+    );
+  });
+
+  it("keeps the desktop panel widths and the Play hero off a phone", async () => {
+    const wrapper = await mountTopNav();
+    const play = await openMenu(wrapper, "Play");
+
+    expect(play.classes()).toContain("md:min-w-[500px]");
+    expect(play.classes().some((name) => name.startsWith("min-w-"))).toBe(
+      false,
+    );
+    expect(play.find(".max-md\\:hidden").text()).toContain("Play & Compete");
+  });
+
+  it("drops Community subtitles and keeps Watch in the bar only", async () => {
+    const wrapper = await mountTopNav();
+    const community = await openMenu(wrapper, "Community");
+
+    expect(community.find('a[href="/players"]').exists()).toBe(true);
+    expect(community.find('a[href="/watch"]').exists()).toBe(false);
+    expect(wrapper.find('a[href="/watch"]').exists()).toBe(true);
+    const subtitle = community
+      .findAll("a span")
+      .filter((span) => span.text() === "Browse and search for players");
+    expect(subtitle).toHaveLength(1);
+    expect(subtitle[0].classes()).toContain("max-md:hidden");
   });
 });

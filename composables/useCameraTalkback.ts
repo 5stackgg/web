@@ -1,4 +1,6 @@
-import { ref, onScopeDispose } from "vue";
+import { ref, onScopeDispose, watch } from "vue";
+import { useDocumentVisibility } from "@vueuse/core";
+import socket from "~/web-sockets/Socket";
 import {
   cameraPlayerTalkUrl,
   fetchCameraTalkStatus,
@@ -6,6 +8,8 @@ import {
   negotiateWebRtc,
 } from "~/composables/useCameraApi";
 import { useIceServers } from "~/composables/useIceServers";
+import { closeNotifications } from "~/composables/usePushNotifications";
+import { notificationThreadKey } from "~/utilities/chatThread";
 
 // The other direction: an organizer talking to the player whose camera this is.
 // Nothing here starts until the player has connected, because the connect click
@@ -24,6 +28,19 @@ export function useCameraTalkback(matchId: () => string) {
   let disposed = false;
 
   const ice = useIceServers();
+  const visibility = useDocumentVisibility();
+
+  const callThread = () => notificationThreadKey("AdminCall", matchId());
+
+  // The camera page has no layout, so no chat presence reporter runs beside
+  // this one. While the call is playing here, reporting it as focused lets the
+  // server skip ringing the player again about a call they are already on.
+  watch([talking, visibility], ([isTalking, visible]) => {
+    socket.setPresence({
+      visible: visible !== "hidden",
+      focus: isTalking ? callThread() : null,
+    });
+  });
 
   // If autoplay refuses sound the promise rejects and nothing plays at all, so
   // fall back to a muted start -- a picture with a visible unmute beats a black
@@ -68,6 +85,7 @@ export function useCameraTalkback(matchId: () => string) {
 
       await negotiateWebRtc(pc, cameraPlayerTalkUrl(matchId()), "include");
       talking.value = true;
+      void closeNotifications(callThread());
     } catch {
       end();
     }

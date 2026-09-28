@@ -1701,6 +1701,14 @@
             "title": "Matchs",
             "description": "Changements de statut de match et matchs importés."
           },
+          "match_found": {
+            "title": "Match trouvé",
+            "description": "Le matchmaking a trouvé votre match et attend que vous acceptiez. Sonne même pendant les heures silencieuses."
+          },
+          "admin_call": {
+            "title": "Appels d'administrateurs",
+            "description": "Un administrateur veut vous parler via la caméra de votre match. Sonne même pendant les heures silencieuses."
+          },
           "chat": {
             "title": "Chat",
             "description": "Nouveaux messages dans une conversation, un lobby ou un salon de tournoi."
@@ -1824,7 +1832,7 @@
         },
         "quiet_hours": {
           "title": "Heures silencieuses",
-          "description": "Les notifications push restent silencieuses pendant cette plage. Elles apparaissent toujours dans votre cloche d'alertes.",
+          "description": "Les notifications push restent silencieuses pendant cette plage. Elles apparaissent toujours dans votre cloche d'alertes. Les matchs trouvés et les appels d'administrateurs sonnent quand même.",
           "from": "De",
           "to": "À",
           "reset": "Réinitialiser",

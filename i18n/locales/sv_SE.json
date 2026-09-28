@@ -1701,6 +1701,14 @@
             "title": "Matcher",
             "description": "Ändringar av matchstatus och importerade matcher."
           },
+          "match_found": {
+            "title": "Match hittad",
+            "description": "Matchmaking har hittat din match och väntar på att du accepterar. Ringer även under tysta timmar."
+          },
+          "admin_call": {
+            "title": "Samtal från admins",
+            "description": "En admin vill prata med dig via din matchkamera. Ringer även under tysta timmar."
+          },
           "chat": {
             "title": "Chatt",
             "description": "Nya meddelanden i en konversation, ett lobby eller ett turneringsrum."
@@ -1824,7 +1832,7 @@
         },
         "quiet_hours": {
           "title": "Tysta timmar",
-          "description": "Push-aviseringar förblir ljudlösa under det här intervallet. De visas fortfarande i din aviseringsklocka.",
+          "description": "Push-aviseringar förblir ljudlösa under det här intervallet. De visas fortfarande i din aviseringsklocka. Hittade matcher och samtal från admins ringer ändå.",
           "from": "Från",
           "to": "Till",
           "reset": "Återställ",

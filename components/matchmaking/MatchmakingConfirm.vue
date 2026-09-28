@@ -148,12 +148,15 @@ import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import { useMatchReadyModal } from "~/composables/useMatchReadyModal";
 import socket from "~/web-sockets/Socket";
 import { useSound } from "~/composables/useSound";
+import { closeNotifications } from "~/composables/usePushNotifications";
+import { notificationThreadKey } from "~/utilities/chatThread";
 
 export default {
   data() {
     return {
       remainingSeconds: 0,
       routedConfirmedId: undefined as string | undefined,
+      silencedRingId: undefined as string | undefined,
       countdownInterval: undefined as NodeJS.Timeout | undefined,
       playCountdownSound: useSound().playCountdownSound,
       playMatchFoundSound: useSound().playMatchFoundSound,
@@ -183,6 +186,17 @@ export default {
     confirmation: {
       immediate: true,
       handler(confirmation, oldConfirmation) {
+        if (
+          oldConfirmation &&
+          oldConfirmation.confirmationId !== confirmation?.confirmationId
+        ) {
+          this.silenceRing(oldConfirmation.confirmationId);
+        }
+
+        if (confirmation?.isReady || confirmation?.matchId) {
+          this.silenceRing(confirmation.confirmationId);
+        }
+
         if (!confirmation) {
           useMatchReadyModal().closeMatchReadyModal();
           return;
@@ -218,6 +232,16 @@ export default {
       socket.event("matchmaking:confirm", {
         confirmationId: this.confirmation.confirmationId,
       });
+    },
+    silenceRing(confirmationId: string) {
+      if (this.silencedRingId === confirmationId) {
+        return;
+      }
+
+      this.silencedRingId = confirmationId;
+      void closeNotifications(
+        notificationThreadKey("MatchFound", confirmationId),
+      );
     },
     updateCountdown() {
       if (

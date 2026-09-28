@@ -1701,6 +1701,14 @@
             "title": "Matches",
             "description": "Match status changes and imported matches."
           },
+          "match_found": {
+            "title": "Match found",
+            "description": "Matchmaking found your match and is waiting for you to accept. Rings even during quiet hours."
+          },
+          "admin_call": {
+            "title": "Admin calls",
+            "description": "An admin wants to talk to you over your match camera. Rings even during quiet hours."
+          },
           "chat": {
             "title": "Chat",
             "description": "New messages in a conversation, lobby or tournament room."
@@ -1824,7 +1832,7 @@
         },
         "quiet_hours": {
           "title": "Quiet Hours",
-          "description": "Push notifications stay silent during this window. They still appear in your alert bell.",
+          "description": "Push notifications stay silent during this window. They still appear in your alert bell. Match found and admin calls ring anyway.",
           "from": "From",
           "to": "To",
           "reset": "Reset",

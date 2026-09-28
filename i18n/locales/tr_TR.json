@@ -1701,6 +1701,14 @@
             "title": "Maçlar",
             "description": "Maç durumu değişiklikleri ve içe aktarılan maçlar."
           },
+          "match_found": {
+            "title": "Maç bulundu",
+            "description": "Eşleştirme maçını buldu ve kabul etmeni bekliyor. Sessiz saatlerde bile çalar."
+          },
+          "admin_call": {
+            "title": "Yönetici çağrıları",
+            "description": "Bir yönetici maç kameran üzerinden seninle konuşmak istiyor. Sessiz saatlerde bile çalar."
+          },
           "chat": {
             "title": "Sohbet",
             "description": "Bir konuşmada, lobide veya turnuva odasında yeni mesajlar."
@@ -1824,7 +1832,7 @@
         },
         "quiet_hours": {
           "title": "Sessiz saatler",
-          "description": "Bu aralıkta anlık bildirimler sessiz kalır. Bildirim zilinde yine de görünürler.",
+          "description": "Bu aralıkta anlık bildirimler sessiz kalır. Bildirim zilinde yine de görünürler. Maç bulundu bildirimleri ve yönetici çağrıları her durumda çalar.",
           "from": "Başlangıç",
           "to": "Bitiş",
           "reset": "Sıfırla",

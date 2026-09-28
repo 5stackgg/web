@@ -1701,6 +1701,14 @@
             "title": "Kampe",
             "description": "Ændringer i kampstatus og importerede kampe."
           },
+          "match_found": {
+            "title": "Kamp fundet",
+            "description": "Matchmaking har fundet din kamp og venter på, at du accepterer. Ringer også i stilletimer."
+          },
+          "admin_call": {
+            "title": "Opkald fra admins",
+            "description": "En admin vil tale med dig via dit kampkamera. Ringer også i stilletimer."
+          },
           "chat": {
             "title": "Chat",
             "description": "Nye beskeder i en samtale, en lobby eller et turneringsrum."
@@ -1824,7 +1832,7 @@
         },
         "quiet_hours": {
           "title": "Stilletimer",
-          "description": "Push-notifikationer forbliver lydløse i dette tidsrum. De vises stadig i din notifikationsklokke.",
+          "description": "Push-notifikationer forbliver lydløse i dette tidsrum. De vises stadig i din notifikationsklokke. Fundne kampe og opkald fra admins ringer alligevel.",
           "from": "Fra",
           "to": "Til",
           "reset": "Nulstil",

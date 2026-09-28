@@ -69,6 +69,48 @@ const setAppBadge = async (unread) => {
   }
 };
 
+const RING_VIBRATION = [300, 100, 300, 100, 300];
+
+// A device clock running behind the server's reads `expiresAt` as further away
+// than it is, so the wait is capped rather than trusted.
+const MAX_RING_MS = 60_000;
+
+const expiryDelayOf = (expiresAt) => {
+  if (typeof expiresAt !== "string") {
+    return null;
+  }
+
+  const at = Date.parse(expiresAt);
+
+  if (!Number.isFinite(at)) {
+    return null;
+  }
+
+  return Math.min(Math.max(0, at - Date.now()), MAX_RING_MS);
+};
+
+// Matched on `expiresAt` as well as the tag: a newer push with the same tag has
+// already replaced this one on screen, and it has its own expiry to keep.
+const closeAtExpiry = async (payload) => {
+  const delay = expiryDelayOf(payload.expiresAt);
+
+  if (delay === null) {
+    return;
+  }
+
+  await new Promise((resolve) => setTimeout(resolve, delay));
+
+  const notifications = await self.registration.getNotifications(
+    payload.tag ? { tag: payload.tag } : {},
+  );
+
+  for (const notification of notifications) {
+    if (notification.data?.expiresAt === payload.expiresAt) {
+      notification.close();
+    }
+  }
+};
+
 self.addEventListener("push", (event) => {
   let payload = {};
 
@@ -98,16 +140,20 @@ self.addEventListener("push", (event) => {
         // without this the summary that closes a burst arrives unannounced.
         // Ignored unless `tag` is set, and throws in Chrome without one.
         renotify: payload.renotify !== false && Boolean(payload.tag),
+        ...(payload.urgent
+          ? { requireInteraction: true, vibrate: RING_VIBRATION }
+          : {}),
         data: {
           url: payload.url || "/",
           threadKey: payload.threadKey || payload.tag,
           count: payload.count || 1,
           actions,
           graphqlUrl: trustedGraphqlUrl(payload.graphqlUrl),
+          expiresAt: payload.expiresAt,
         },
       }),
       setAppBadge(payload.unread),
-    ]),
+    ]).then(() => closeAtExpiry(payload)),
   );
 });
 

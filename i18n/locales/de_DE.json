@@ -1701,6 +1701,14 @@
             "title": "Matches",
             "description": "Änderungen des Matchstatus und importierte Matches."
           },
+          "match_found": {
+            "title": "Match gefunden",
+            "description": "Das Matchmaking hat dein Match gefunden und wartet darauf, dass du annimmst. Klingelt auch während der Ruhezeiten."
+          },
+          "admin_call": {
+            "title": "Admin-Anrufe",
+            "description": "Ein Admin möchte über deine Match-Kamera mit dir sprechen. Klingelt auch während der Ruhezeiten."
+          },
           "chat": {
             "title": "Chat",
             "description": "Neue Nachrichten in einer Unterhaltung, Lobby oder einem Turnierraum."
@@ -1824,7 +1832,7 @@
         },
         "quiet_hours": {
           "title": "Ruhezeiten",
-          "description": "Push-Benachrichtigungen bleiben in diesem Zeitfenster stumm. In deiner Benachrichtigungsglocke erscheinen sie weiterhin.",
+          "description": "Push-Benachrichtigungen bleiben in diesem Zeitfenster stumm. In deiner Benachrichtigungsglocke erscheinen sie weiterhin. Gefundene Matches und Admin-Anrufe klingeln trotzdem.",
           "from": "Von",
           "to": "Bis",
           "reset": "Zurücksetzen",

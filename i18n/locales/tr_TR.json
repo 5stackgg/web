@@ -2831,7 +2831,12 @@
         "upload_success_message": "Yüklendi — şimdi içe aktarılıyor. Maçın kısa süre içinde görünecek.",
         "toast_demo_uploaded": "Demo yüklendi",
         "toast_demo_uploaded_description": "Şimdi içe aktarılıyor — maçın kısa süre içinde görünecek.",
-        "toast_upload_failed": "Yükleme başarısız"
+        "toast_upload_failed": "Yükleme başarısız",
+        "import_share_code_title": "Paylaşım koduyla maç içe aktar",
+        "import_share_code_description": "Bağlı maç geçmişinin kaçırdığı bir eşleştirme maçını içe aktarmak için CS2'deki Watch → Your Matches bölümünden bir paylaşım kodu veya paylaşım bağlantısı yapıştır.",
+        "import_share_code_submit": "İçe aktar",
+        "toast_share_code_queued": "Maç içe aktarma sırasına alındı",
+        "toast_share_code_failed": "Maç içe aktarılamadı"
       }
     },
     "watch": {

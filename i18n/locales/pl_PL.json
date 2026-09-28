@@ -2831,7 +2831,12 @@
         "upload_success_message": "Przesłano — trwa import. Twój mecz pojawi się wkrótce.",
         "toast_demo_uploaded": "Przesłano demo",
         "toast_demo_uploaded_description": "Trwa import — twój mecz pojawi się wkrótce.",
-        "toast_upload_failed": "Przesyłanie nie powiodło się"
+        "toast_upload_failed": "Przesyłanie nie powiodło się",
+        "import_share_code_title": "Zaimportuj mecz kodem udostępniania",
+        "import_share_code_description": "Wklej kod lub link udostępniania z Watch → Your Matches w CS2, aby zaimportować mecz z matchmakingu, którego nie pobrała połączona historia meczów.",
+        "import_share_code_submit": "Importuj",
+        "toast_share_code_queued": "Mecz dodany do kolejki importu",
+        "toast_share_code_failed": "Nie udało się zaimportować meczu"
       }
     },
     "watch": {

@@ -2831,7 +2831,12 @@
         "upload_success_message": "Uploadet — importerer nu. Din kamp dukker op om lidt.",
         "toast_demo_uploaded": "Demo uploadet",
         "toast_demo_uploaded_description": "Importerer nu — din kamp dukker op om lidt.",
-        "toast_upload_failed": "Upload mislykkedes"
+        "toast_upload_failed": "Upload mislykkedes",
+        "import_share_code_title": "Importér en kamp med share-kode",
+        "import_share_code_description": "Indsæt en share-kode eller et share-link fra Watch → Your Matches i CS2 for at importere en matchmaking-kamp, som din forbundne kamphistorik ikke fik med.",
+        "import_share_code_submit": "Importér",
+        "toast_share_code_queued": "Kampen er sat i kø til import",
+        "toast_share_code_failed": "Kunne ikke importere kampen"
       }
     },
     "watch": {

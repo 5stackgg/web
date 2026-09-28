@@ -2831,7 +2831,12 @@
         "upload_success_message": "Завантажено — імпортуємо. Твій матч скоро з'явиться.",
         "toast_demo_uploaded": "Демку завантажено",
         "toast_demo_uploaded_description": "Імпортуємо — твій матч скоро з'явиться.",
-        "toast_upload_failed": "Завантаження не вдалося"
+        "toast_upload_failed": "Завантаження не вдалося",
+        "import_share_code_title": "Імпорт матчу за кодом обміну",
+        "import_share_code_description": "Встав код обміну або посилання з Watch → Your Matches у CS2, щоб імпортувати матч із матчмейкінгу, який не підтягнувся з прив'язаної історії матчів.",
+        "import_share_code_submit": "Імпортувати",
+        "toast_share_code_queued": "Матч додано в чергу на імпорт",
+        "toast_share_code_failed": "Не вдалося імпортувати матч"
       }
     },
     "watch": {

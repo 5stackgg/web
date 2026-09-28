@@ -2831,7 +2831,12 @@
         "upload_success_message": "アップロード完了 — インポート中です。まもなく試合が表示されます。",
         "toast_demo_uploaded": "デモをアップロードしました",
         "toast_demo_uploaded_description": "インポート中です — まもなく試合が表示されます。",
-        "toast_upload_failed": "アップロードに失敗しました"
+        "toast_upload_failed": "アップロードに失敗しました",
+        "import_share_code_title": "共有コードで試合をインポート",
+        "import_share_code_description": "CS2 の Watch → Your Matches から共有コードまたは共有リンクを貼り付けると、リンク済みの試合履歴で取り込まれなかったマッチメイキングの試合をインポートできます。",
+        "import_share_code_submit": "インポート",
+        "toast_share_code_queued": "試合をインポートの待機列に追加しました",
+        "toast_share_code_failed": "試合をインポートできませんでした"
       }
     },
     "watch": {

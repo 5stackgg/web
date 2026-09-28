@@ -2831,7 +2831,12 @@
         "upload_success_message": "Subido: importando ahora. Tu partida aparecerá en breve.",
         "toast_demo_uploaded": "Demo subida",
         "toast_demo_uploaded_description": "Importando ahora: tu partida aparecerá en breve.",
-        "toast_upload_failed": "Fallo al subir"
+        "toast_upload_failed": "Fallo al subir",
+        "import_share_code_title": "Importar una partida con un código para compartir",
+        "import_share_code_description": "Pega un código o enlace para compartir de Ver → Tus partidas en CS2 para importar una partida de matchmaking que tu historial vinculado no recogió.",
+        "import_share_code_submit": "Importar",
+        "toast_share_code_queued": "Partida en cola para importar",
+        "toast_share_code_failed": "No se ha podido importar la partida"
       }
     },
     "watch": {

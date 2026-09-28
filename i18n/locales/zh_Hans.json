@@ -2831,7 +2831,12 @@
         "upload_success_message": "已上传 — 正在导入，你的比赛稍后就会出现。",
         "toast_demo_uploaded": "demo 已上传",
         "toast_demo_uploaded_description": "正在导入 — 你的比赛稍后就会出现。",
-        "toast_upload_failed": "上传失败"
+        "toast_upload_failed": "上传失败",
+        "import_share_code_title": "通过分享码导入比赛",
+        "import_share_code_description": "粘贴 CS2 中 观看 → 你的比赛 里的分享码或分享链接，即可导入关联的比赛记录中遗漏的匹配比赛。",
+        "import_share_code_submit": "导入",
+        "toast_share_code_queued": "比赛已加入导入队列",
+        "toast_share_code_failed": "无法导入比赛"
       }
     },
     "watch": {

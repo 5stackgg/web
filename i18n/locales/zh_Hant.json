@@ -2831,7 +2831,12 @@
         "upload_success_message": "已上傳——正在匯入。您的比賽將很快顯示。",
         "toast_demo_uploaded": "Demo 已上傳",
         "toast_demo_uploaded_description": "正在匯入——您的比賽將很快顯示。",
-        "toast_upload_failed": "上傳失敗"
+        "toast_upload_failed": "上傳失敗",
+        "import_share_code_title": "透過分享碼匯入比賽",
+        "import_share_code_description": "貼上 CS2 中 觀戰 → 您的比賽 裡的分享碼或分享連結，即可匯入已連結的比賽紀錄中遺漏的配對比賽。",
+        "import_share_code_submit": "匯入",
+        "toast_share_code_queued": "比賽已加入匯入佇列",
+        "toast_share_code_failed": "無法匯入比賽"
       }
     },
     "watch": {

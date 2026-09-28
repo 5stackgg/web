@@ -2831,7 +2831,12 @@
         "upload_success_message": "Uploaded — importing now. Your match will appear shortly.",
         "toast_demo_uploaded": "Demo uploaded",
         "toast_demo_uploaded_description": "Importing now — your match will appear shortly.",
-        "toast_upload_failed": "Upload failed"
+        "toast_upload_failed": "Upload failed",
+        "import_share_code_title": "Import a match by share code",
+        "import_share_code_description": "Paste a share code or share link from Watch → Your Matches in CS2 to import a matchmaking match your linked history missed.",
+        "import_share_code_submit": "Import",
+        "toast_share_code_queued": "Match queued for import",
+        "toast_share_code_failed": "Could not import match"
       }
     },
     "watch": {

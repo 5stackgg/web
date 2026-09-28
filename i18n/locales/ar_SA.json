@@ -2831,7 +2831,12 @@
         "upload_success_message": "تم الرفع — جارٍ الاستيراد. ستظهر مباراتك قريبًا.",
         "toast_demo_uploaded": "تم رفع الـ Demo",
         "toast_demo_uploaded_description": "جارٍ الاستيراد — ستظهر مباراتك قريبًا.",
-        "toast_upload_failed": "تعذّر الرفع"
+        "toast_upload_failed": "تعذّر الرفع",
+        "import_share_code_title": "استيراد مباراة عبر رمز المشاركة",
+        "import_share_code_description": "الصق رمز المشاركة أو رابط المشاركة من Watch ← Your Matches في CS2 لاستيراد مباراة لم يلتقطها سجل مبارياتك المرتبط.",
+        "import_share_code_submit": "استيراد",
+        "toast_share_code_queued": "أُضيفت المباراة إلى قائمة الاستيراد",
+        "toast_share_code_failed": "تعذّر استيراد المباراة"
       }
     },
     "watch": {

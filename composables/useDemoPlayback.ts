@@ -350,9 +350,7 @@ export function useDemoPlayback() {
   ) {
     store.reset();
     store.localStatus = "starting";
-    // The pod boots the instance's configured HUD (api resolveHudEnv), so seed
-    // the player's active-HUD state to match — otherwise reset()'s
-    // "default-horizontal" mislabels the pod until the operator swaps.
+    // Seed from the instance default or reset() mislabels the HUD the pod booted.
     store.hudSlug = useApplicationSettingsStore().defaultBroadcastHud;
     try {
       if (opts?.attach) {
@@ -719,13 +717,6 @@ export function useDemoPlayback() {
   function toggleHud() {
     setHudVisible(!store.hudVisible);
   }
-  // Hot-swap the active HUD. `slug` names a broadcast_huds row; the api resolves
-  // it into the JTs Hud Manager hudId + variant (and, for an imported HUD, the
-  // bundle to install first) before proxying to /spec/hud-mode, which rebuilds
-  // the overlay BrowserWindow via POST /api/overlay/start. Ephemeral — a pod
-  // restart resets to whatever the api stamped at job creation. Picking a HUD
-  // also force-shows the overlay so the operator doesn't have to hunt for a
-  // separate visibility toggle after a hot-swap.
   function setHud(slug: string) {
     store.hudSlug = slug;
     control("hud-mode", { slug });

@@ -38,7 +38,10 @@ import ShortcutOverlay from "~/components/match/ShortcutOverlay.vue";
 import SpectatorGrid from "~/components/stream-deck/SpectatorGrid.vue";
 import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
 import { Kbd } from "~/components/ui/kbd";
-import { useBroadcastHuds } from "~/composables/useBroadcastHuds";
+import {
+  broadcastHudLabel,
+  useBroadcastHuds,
+} from "~/composables/useBroadcastHuds";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import TopoBackground from "~/layouts/components/TopoBackground.vue";
 import { announceFocusWindow } from "~/composables/useStreamerPopout";
@@ -267,17 +270,7 @@ async function setAutodirector(enabled: boolean) {
   }));
 }
 
-// The panel's HUD library. This was a hardcoded horizontal/vertical pair,
-// because those were the only two things the pod could load — they were never
-// separate HUDs, only layouts of the one bundled HUD, and they are now the two
-// seeded builtin rows alongside anything an administrator has imported.
-const { huds: broadcastHuds, fetch: fetchBroadcastHuds } = useBroadcastHuds();
-onMounted(() => {
-  void fetchBroadcastHuds();
-});
-
-const hudLabel = (hud: { name?: string | null; slug: string }) =>
-  hud.name?.trim() || hud.slug;
+const { huds: broadcastHuds } = useBroadcastHuds();
 
 const hudSlug = ref<string>(
   useApplicationSettingsStore().defaultBroadcastHud,
@@ -286,15 +279,11 @@ const xrayEnabled = ref(false);
 const hudVisible = ref(true);
 
 async function setHud(slug: string) {
-  // Picking a HUD while the overlay is hidden also brings it back — the picker
-  // doubles as the visibility control, so selecting one is the natural way to
-  // leave the "hide" state.
   const needsShow = !hudVisible.value;
-  if (hudSlug.value === slug && !needsShow) return;
+  if (hudSlug.value === slug && !needsShow) {
+    return;
+  }
   hudSlug.value = slug;
-  // The action argument is still named `mode` so its signature is unchanged;
-  // it carries a broadcast_huds slug now, which the api resolves into the
-  // hudId + variant the pod needs.
   await runMutation("set_hud_mode", () => ({
     setHudMode: [{ match_id: matchId.value, mode: slug }, { success: true }],
   }));
@@ -815,12 +804,6 @@ watch(spectatedSteamId, (sid) => {
             {{ $t("stream_deck.scoreboard") }}
           </button>
 
-          <!-- HUD picker, listing the panel's HUD library — calls setHud →
-               hud-manager POST /api/overlay/start, which rebuilds the
-               BrowserWindow against /huds/<hudId>/index.html?variant=<v>;
-               an imported HUD is installed into the pod on first use. The
-               trailing Eye toggle absorbs the former standalone HUD button
-               so visibility reads as another HUD state. -->
           <div
             v-if="isLive()"
             class="inline-flex rounded-md border border-border/60 bg-card/40 p-0.5"
@@ -831,7 +814,7 @@ watch(spectatedSteamId, (sid) => {
               :key="hud.slug"
               type="button"
               :disabled="busy"
-              :title="hud.description || hudLabel(hud)"
+              :title="hud.description || broadcastHudLabel(hud)"
               :class="[
                 'px-2 h-6 font-mono text-[0.55rem] uppercase tracking-[0.16em] rounded-sm cursor-pointer transition-colors whitespace-nowrap disabled:cursor-not-allowed disabled:opacity-50',
                 hudVisible && hudSlug === hud.slug
@@ -840,7 +823,7 @@ watch(spectatedSteamId, (sid) => {
               ]"
               @click="setHud(hud.slug)"
             >
-              {{ hudLabel(hud) }}
+              {{ broadcastHudLabel(hud) }}
             </button>
             <button
               type="button"

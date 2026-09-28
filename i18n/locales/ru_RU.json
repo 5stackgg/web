@@ -1861,6 +1861,24 @@
         }
       },
       "application": {
+        "broadcast_huds": {
+          "title": "HUD для трансляций",
+          "description": "HUD, накладываемый на прямые трансляции, воспроизведение демок и пакетные хайлайты. Импортируй пакет JTs Hud Manager или Lexogrine в виде .zip и выбери, какой загружает стриминг-под; стримеры по-прежнему могут переключать его для каждого стрима из панели управления плеером.",
+          "import": "Импортировать HUD",
+          "import_hint": "Архив .zip с hud.json в корне или в единственной папке верхнего уровня.",
+          "imported": "HUD импортирован",
+          "import_failed": "Не удалось импортировать этот HUD",
+          "make_default": "Сделать по умолчанию",
+          "is_default": "По умолчанию",
+          "default_set": "HUD по умолчанию обновлён",
+          "default_failed": "Не удалось установить HUD по умолчанию",
+          "removed": "HUD удалён",
+          "remove_failed": "Не удалось удалить этот HUD",
+          "delete_title": "Удалить этот HUD?",
+          "delete_description": "Это удалит «{name}» и загруженный архив. Действие нельзя отменить.",
+          "delete_confirm": "Удалить",
+          "signed": "Подписанный пакет"
+        },
         "update_success": "Обновлено",
         "db_backups": {
           "name": "Название",
@@ -2411,7 +2429,7 @@
           "orphaned_demos_count": "{count} демок",
           "orphaned_highlights_count": "{count} хайлайтов",
           "orphaned_object_count": "{count} файлов",
-          "hud_moved": "The broadcast HUD is now a library of importable bundles, managed in"
+          "hud_moved": "У HUD для трансляций есть собственная страница настроек:"
         },
         "update_map_pools": {
           "title": "Автоматическое обновление пулов карт",
@@ -2715,21 +2733,6 @@
               "description": "Команда пропустила обязательный турнирный чек-ин. Проверяется только на входе, поэтому игрок, уже находящийся в идущей сетке, сохраняет своё место."
             }
           }
-        },
-        "broadcast_huds": {
-          "title": "Broadcast HUDs",
-          "description": "The HUD burned into live streams, demo playback and batch highlights. Import a JTs Hud Manager or Lexogrine bundle as a .zip and pick which one the game-streamer pod loads; streamers can still switch per-stream from the player controls.",
-          "import": "Import HUD",
-          "import_hint": "A .zip with hud.json at its root or in a single top-level folder.",
-          "imported": "HUD imported",
-          "import_failed": "Could not import that HUD",
-          "make_default": "Make default",
-          "is_default": "Default",
-          "default_set": "Default HUD updated",
-          "default_failed": "Could not set the default HUD",
-          "removed": "HUD removed",
-          "remove_failed": "Could not remove that HUD",
-          "signed": "Signed bundle"
         }
       },
       "language": {

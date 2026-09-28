@@ -1861,6 +1861,24 @@
         }
       },
       "application": {
+        "broadcast_huds": {
+          "title": "配信用HUD",
+          "description": "ライブ配信・デモ再生・バッチハイライトに焼き込まれるHUDです。JTs Hud ManagerまたはLexogrineのバンドルを.zipでインポートし、ゲームストリーマーポッドが読み込むものを選択します。ストリーマーは配信ごとにプレイヤーコントロールから切り替えられます。",
+          "import": "HUDをインポート",
+          "import_hint": "ルート、または最上位の単一フォルダ内にhud.jsonがある.zipファイル。",
+          "imported": "HUDをインポートしました",
+          "import_failed": "HUDをインポートできませんでした",
+          "make_default": "デフォルトに設定",
+          "is_default": "デフォルト",
+          "default_set": "デフォルトHUDを更新しました",
+          "default_failed": "デフォルトHUDを設定できませんでした",
+          "removed": "HUDを削除しました",
+          "remove_failed": "HUDを削除できませんでした",
+          "delete_title": "このHUDを削除しますか？",
+          "delete_description": "「{name}」とアップロードされたアーカイブを削除します。この操作は取り消せません。",
+          "delete_confirm": "削除する",
+          "signed": "署名済みバンドル"
+        },
         "update_success": "更新しました",
         "db_backups": {
           "name": "名前",
@@ -2411,7 +2429,7 @@
           "orphaned_demos_count": "デモ{count}件",
           "orphaned_highlights_count": "ハイライト{count}件",
           "orphaned_object_count": "ファイル{count}件",
-          "hud_moved": "The broadcast HUD is now a library of importable bundles, managed in"
+          "hud_moved": "配信用HUDは専用の設定ページで管理します："
         },
         "update_map_pools": {
           "title": "マッププールの自動更新",
@@ -2715,21 +2733,6 @@
               "description": "チームが必須のトーナメントチェックインを逃しました。参加時にのみ判定されるため、進行中のブラケットにいるプレイヤーはその場所を保持します。"
             }
           }
-        },
-        "broadcast_huds": {
-          "title": "Broadcast HUDs",
-          "description": "The HUD burned into live streams, demo playback and batch highlights. Import a JTs Hud Manager or Lexogrine bundle as a .zip and pick which one the game-streamer pod loads; streamers can still switch per-stream from the player controls.",
-          "import": "Import HUD",
-          "import_hint": "A .zip with hud.json at its root or in a single top-level folder.",
-          "imported": "HUD imported",
-          "import_failed": "Could not import that HUD",
-          "make_default": "Make default",
-          "is_default": "Default",
-          "default_set": "Default HUD updated",
-          "default_failed": "Could not set the default HUD",
-          "removed": "HUD removed",
-          "remove_failed": "Could not remove that HUD",
-          "signed": "Signed bundle"
         }
       },
       "language": {

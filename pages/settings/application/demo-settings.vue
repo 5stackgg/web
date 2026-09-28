@@ -31,10 +31,6 @@ import StorageCheck from "~/components/settings/StorageCheck.vue";
             $t('pages.settings.application.demo_settings.playback_section')
           "
         >
-          <!-- The HUD moved out of this page. It used to be a two-value
-               layout setting, which fit here beside the other playback
-               toggles; it is a library of importable bundles now, with an
-               upload and a preview, so it has a page of its own. -->
           <p class="text-sm text-muted-foreground">
             {{ $t("pages.settings.application.demo_settings.hud_moved") }}
             <NuxtLink
@@ -219,11 +215,6 @@ export default {
             continue;
           }
 
-          // default_hud_mode is deliberately not loaded or written here any
-          // more. The HUD library owns it, and the api still reads the old row
-          // as its fallback -- so this page must not keep rewriting it, or an
-          // instance that has chosen a HUD would have that choice quietly
-          // reasserted every time these settings are saved.
           this.form.setFieldValue(setting.name, setting.value);
         }
         this.form.resetForm({ values: this.form.values });

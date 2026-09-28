@@ -547,11 +547,7 @@ export const useApplicationSettingsStore = defineStore(
       );
     });
 
-    // Which broadcast_huds row the game-streamer pod boots (and the HUD pickers
-    // should show as active). Mirrors the api's resolveBroadcastHud: the new
-    // `public.` setting wins, and the legacy default_hud_mode is still read as
-    // the fallback so an instance that has never opened the HUD library keeps
-    // the layout it had. Those two legacy values are the seeded builtin slugs.
+    // Must match the api's default-HUD fallback, legacy default_hud_mode included.
     const defaultBroadcastHud = computed<string>(() => {
       const preferred = settings.value?.find(
         (setting) => setting.name === "public.default_broadcast_hud",

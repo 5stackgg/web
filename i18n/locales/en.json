@@ -1874,6 +1874,9 @@
           "default_failed": "Could not set the default HUD",
           "removed": "HUD removed",
           "remove_failed": "Could not remove that HUD",
+          "delete_title": "Delete this HUD?",
+          "delete_description": "This removes \"{name}\" and its uploaded archive. This cannot be undone.",
+          "delete_confirm": "Delete",
           "signed": "Signed bundle"
         },
         "update_success": "Updated",
@@ -2426,7 +2429,7 @@
           "orphaned_demos_count": "{count} demos",
           "orphaned_highlights_count": "{count} highlights",
           "orphaned_object_count": "{count} files",
-          "hud_moved": "The broadcast HUD is now a library of importable bundles, managed in"
+          "hud_moved": "Broadcast HUDs have their own settings page:"
         },
         "update_map_pools": {
           "title": "Automatic Update Map Pools",

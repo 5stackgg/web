@@ -1861,6 +1861,24 @@
         }
       },
       "application": {
+        "broadcast_huds": {
+          "title": "直播 HUD",
+          "description": "叠加在直播、Demo 回放和批量高光中的 HUD。以 .zip 导入 JTs Hud Manager 或 Lexogrine 包，并选择游戏流媒体 Pod 加载哪一个；主播仍可在每场直播中从播放控制切换。",
+          "import": "导入 HUD",
+          "import_hint": "根目录或单个顶层文件夹中包含 hud.json 的 .zip 文件。",
+          "imported": "HUD 已导入",
+          "import_failed": "无法导入该 HUD",
+          "make_default": "设为默认",
+          "is_default": "默认",
+          "default_set": "默认 HUD 已更新",
+          "default_failed": "无法设置默认 HUD",
+          "removed": "HUD 已移除",
+          "remove_failed": "无法移除该 HUD",
+          "delete_title": "删除此 HUD？",
+          "delete_description": "这会移除「{name}」及其上传的压缩包。此操作无法撤销。",
+          "delete_confirm": "删除",
+          "signed": "已签名的包"
+        },
         "update_success": "已更新",
         "db_backups": {
           "name": "名称",
@@ -2411,7 +2429,7 @@
           "orphaned_demos_count": "{count} 个 Demo",
           "orphaned_highlights_count": "{count} 个高光时刻",
           "orphaned_object_count": "{count} 个文件",
-          "hud_moved": "The broadcast HUD is now a library of importable bundles, managed in"
+          "hud_moved": "直播 HUD 有单独的设置页面："
         },
         "update_map_pools": {
           "title": "自动更新地图池",
@@ -2715,21 +2733,6 @@
               "description": "队伍错过了赛事的必需签到。仅在进入时检查，因此已经在进行中的对阵表里的玩家会保留位置。"
             }
           }
-        },
-        "broadcast_huds": {
-          "title": "Broadcast HUDs",
-          "description": "The HUD burned into live streams, demo playback and batch highlights. Import a JTs Hud Manager or Lexogrine bundle as a .zip and pick which one the game-streamer pod loads; streamers can still switch per-stream from the player controls.",
-          "import": "Import HUD",
-          "import_hint": "A .zip with hud.json at its root or in a single top-level folder.",
-          "imported": "HUD imported",
-          "import_failed": "Could not import that HUD",
-          "make_default": "Make default",
-          "is_default": "Default",
-          "default_set": "Default HUD updated",
-          "default_failed": "Could not set the default HUD",
-          "removed": "HUD removed",
-          "remove_failed": "Could not remove that HUD",
-          "signed": "Signed bundle"
         }
       },
       "language": {

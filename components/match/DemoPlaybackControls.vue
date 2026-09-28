@@ -47,7 +47,10 @@ import {
 } from "~/components/ui/tooltip";
 import { useDemoPlayback } from "~/composables/useDemoPlayback";
 import { useClipEditor } from "~/composables/useClipEditor";
-import { useBroadcastHuds } from "~/composables/useBroadcastHuds";
+import {
+  broadcastHudLabel,
+  useBroadcastHuds,
+} from "~/composables/useBroadcastHuds";
 import RoundSelector from "~/components/match/RoundSelector.vue";
 import SpectatorSlots from "~/components/stream-deck/SpectatorSlots.vue";
 import { resolveKeyToRealSlot } from "~/utilities/streamerSpecSlots";
@@ -95,21 +98,7 @@ const {
   setScoreboard,
 } = useDemoPlayback();
 
-// The HUD library, imports included. This used to be a hardcoded pair, because
-// horizontal/vertical were the only two things the pod could load — they were
-// never separate HUDs, only layouts of the one bundled HUD, and they are now
-// the two seeded builtin rows alongside whatever an administrator has imported.
-const { huds: broadcastHuds, fetch: fetchBroadcastHuds } = useBroadcastHuds();
-onMounted(() => {
-  void fetchBroadcastHuds();
-});
-
-// The picker sits in a toolbar, so a long library has to stay usable: the
-// builtins and the active HUD are always shown, and the rest ride behind the
-// same row. Label falls back to the slug so a row with a blank name is still
-// selectable rather than invisible.
-const hudLabel = (hud: { name?: string | null; slug: string }) =>
-  hud.name?.trim() || hud.slug;
+const { huds: broadcastHuds } = useBroadcastHuds();
 
 // Slot identity is GSI — survives a demo attached to the wrong match_map.
 const ctSlots = computed(() =>
@@ -1195,14 +1184,7 @@ const killMarkers = computed<Marker[]>(() => {
             }}</TooltipContent>
           </Tooltip>
 
-          <!-- HUD picker, listing the panel's HUD library. Hot-swaps the
-               active JTs Hud Manager BrowserWindow in the streamer pod via
-               /spec/hud-mode → POST /api/overlay/start; an imported HUD is
-               installed into the pod on first use. Ephemeral; reset by a pod
-               restart to whatever the api stamped. The trailing Eye toggle
-               lives inside the picker (where the legacy "Default" segment
-               used to sit) so visibility is framed as another HUD state
-               alongside the bundles. -->
+          <!-- Hot-swap only: a pod restart reverts to the api's default HUD. -->
           <Tooltip>
             <TooltipTrigger as-child>
               <div
@@ -1218,10 +1200,10 @@ const killMarkers = computed<Marker[]>(() => {
                       ? 'bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
                       : 'text-muted-foreground hover:text-foreground'
                   "
-                  :title="hud.description || hudLabel(hud)"
+                  :title="hud.description || broadcastHudLabel(hud)"
                   @click="setHud(hud.slug)"
                 >
-                  {{ hudLabel(hud) }}
+                  {{ broadcastHudLabel(hud) }}
                 </button>
                 <button
                   type="button"

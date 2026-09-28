@@ -111,16 +111,6 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
   // spec_show_xray 1 for live spectating.
   const xrayEnabled = ref<boolean>(true);
   const hudVisible = ref<boolean>(true);
-  // Which broadcast_huds row is currently loaded in the streamer pod's Electron
-  // overlay. Initial value mirrors what the api stamped at job-create time from
-  // the `public.default_broadcast_hud` setting; the operator can hot-swap via
-  // the toolbar (control() → "hud-mode"), which the api resolves into a JTs Hud
-  // Manager hudId + variant and proxies to POST /api/overlay/start. Ephemeral;
-  // reset by a pod restart.
-  //
-  // A slug rather than the old "horizontal" | "vertical" union: those two were
-  // never separate HUDs, only layouts of the one bundled HUD, and they are now
-  // the two seeded builtin rows (`default-horizontal` / `default-vertical`).
   const hudSlug = ref<string>("default-horizontal");
   // cs2-better-autodirector daemon: default on (the streamer pod
   // starts it for both live + demo). Operator flips this off from the

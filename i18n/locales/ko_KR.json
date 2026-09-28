@@ -1861,6 +1861,24 @@
         }
       },
       "application": {
+        "broadcast_huds": {
+          "title": "방송용 HUD",
+          "description": "라이브 스트림, 데모 재생, 배치 하이라이트에 입혀지는 HUD입니다. JTs Hud Manager 또는 Lexogrine 번들을 .zip으로 가져와 게임 스트리머 파드가 불러올 HUD를 선택하세요. 스트리머는 플레이어 컨트롤에서 스트림별로 전환할 수 있습니다.",
+          "import": "HUD 가져오기",
+          "import_hint": "루트 또는 최상위 단일 폴더 안에 hud.json이 있는 .zip 파일.",
+          "imported": "HUD를 가져왔습니다",
+          "import_failed": "HUD를 가져올 수 없습니다",
+          "make_default": "기본값으로 설정",
+          "is_default": "기본값",
+          "default_set": "기본 HUD가 업데이트되었습니다",
+          "default_failed": "기본 HUD를 설정할 수 없습니다",
+          "removed": "HUD가 제거되었습니다",
+          "remove_failed": "HUD를 제거할 수 없습니다",
+          "delete_title": "이 HUD를 삭제할까요?",
+          "delete_description": "\"{name}\"와(과) 업로드된 아카이브가 제거됩니다. 이 작업은 되돌릴 수 없습니다.",
+          "delete_confirm": "삭제",
+          "signed": "서명된 번들"
+        },
         "update_success": "업데이트됨",
         "db_backups": {
           "name": "이름",
@@ -2411,7 +2429,7 @@
           "orphaned_demos_count": "데모 {count}개",
           "orphaned_highlights_count": "하이라이트 {count}개",
           "orphaned_object_count": "파일 {count}개",
-          "hud_moved": "The broadcast HUD is now a library of importable bundles, managed in"
+          "hud_moved": "방송용 HUD는 별도의 설정 페이지에서 관리합니다:"
         },
         "update_map_pools": {
           "title": "맵 풀 자동 업데이트",
@@ -2715,21 +2733,6 @@
               "description": "팀이 필수 토너먼트 체크인을 놓쳤습니다. 진입할 때만 확인하므로 이미 진행 중인 대진표에 있는 플레이어는 자리를 유지합니다."
             }
           }
-        },
-        "broadcast_huds": {
-          "title": "Broadcast HUDs",
-          "description": "The HUD burned into live streams, demo playback and batch highlights. Import a JTs Hud Manager or Lexogrine bundle as a .zip and pick which one the game-streamer pod loads; streamers can still switch per-stream from the player controls.",
-          "import": "Import HUD",
-          "import_hint": "A .zip with hud.json at its root or in a single top-level folder.",
-          "imported": "HUD imported",
-          "import_failed": "Could not import that HUD",
-          "make_default": "Make default",
-          "is_default": "Default",
-          "default_set": "Default HUD updated",
-          "default_failed": "Could not set the default HUD",
-          "removed": "HUD removed",
-          "remove_failed": "Could not remove that HUD",
-          "signed": "Signed bundle"
         }
       },
       "language": {

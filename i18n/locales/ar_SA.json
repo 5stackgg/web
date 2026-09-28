@@ -1861,6 +1861,24 @@
         }
       },
       "application": {
+        "broadcast_huds": {
+          "title": "واجهات HUD للبث",
+          "description": "واجهة HUD المدمجة في البث المباشر وتشغيل Demo واللقطات المجمّعة. استورد حزمة JTs Hud Manager أو Lexogrine كملف .zip واختر الحزمة التي تحمّلها وحدة البث؛ يظل بإمكان المشغّلين التبديل لكل بث من عناصر التحكم.",
+          "import": "استيراد HUD",
+          "import_hint": "ملف .zip يحتوي hud.json في جذره أو داخل مجلد واحد في المستوى الأعلى.",
+          "imported": "تم استيراد HUD",
+          "import_failed": "تعذّر استيراد هذه الواجهة",
+          "make_default": "تعيين كافتراضي",
+          "is_default": "افتراضي",
+          "default_set": "تم تحديث HUD الافتراضي",
+          "default_failed": "تعذّر تعيين HUD الافتراضي",
+          "removed": "تمت إزالة HUD",
+          "remove_failed": "تعذّرت إزالة هذه الواجهة",
+          "delete_title": "حذف هذه الواجهة؟",
+          "delete_description": "سيؤدي هذا إلى إزالة «{name}» والأرشيف المرفوع. لا يمكن التراجع عن هذا الإجراء.",
+          "delete_confirm": "احذف",
+          "signed": "حزمة موقّعة"
+        },
         "update_success": "تم التحديث",
         "db_backups": {
           "name": "الاسم",
@@ -2411,7 +2429,7 @@
           "orphaned_demos_count": "{count} demos",
           "orphaned_highlights_count": "{count} لقطة",
           "orphaned_object_count": "{count} ملف",
-          "hud_moved": "The broadcast HUD is now a library of importable bundles, managed in"
+          "hud_moved": "لواجهات HUD للبث صفحة إعدادات خاصة بها:"
         },
         "update_map_pools": {
           "title": "تحديث قوائم الخرائط تلقائيًا",
@@ -2715,21 +2733,6 @@
               "description": "فوّت فريق تأكيد حضور مطلوبًا في البطولة. يُفحص عند الدخول فقط، لذا يحتفظ اللاعب الموجود في شجرة جارية بمكانه."
             }
           }
-        },
-        "broadcast_huds": {
-          "title": "Broadcast HUDs",
-          "description": "The HUD burned into live streams, demo playback and batch highlights. Import a JTs Hud Manager or Lexogrine bundle as a .zip and pick which one the game-streamer pod loads; streamers can still switch per-stream from the player controls.",
-          "import": "Import HUD",
-          "import_hint": "A .zip with hud.json at its root or in a single top-level folder.",
-          "imported": "HUD imported",
-          "import_failed": "Could not import that HUD",
-          "make_default": "Make default",
-          "is_default": "Default",
-          "default_set": "Default HUD updated",
-          "default_failed": "Could not set the default HUD",
-          "removed": "HUD removed",
-          "remove_failed": "Could not remove that HUD",
-          "signed": "Signed bundle"
         }
       },
       "language": {

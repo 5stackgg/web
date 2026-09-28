@@ -34,6 +34,7 @@
       "title_placeholder": "Planlagt vedligeholdelse",
       "message": "Besked",
       "message_placeholder": "Matchmaking er midlertidigt nede, mens vi undersøger sagen.",
+      "message_link_hint": "Tilføj et link med [label](https://example.com). Links til dette site åbnes i appen.",
       "is_active": "Aktiv",
       "is_active_hint": "Vis banneret for alle med det samme.",
       "dismissible": "Kan lukkes",
@@ -7819,6 +7820,7 @@
     "tooltips": {
       "fullscreen": "Fuld skærm",
       "toggle_right_sidebar": "Slå højre sidebar til/fra",
+      "toggle_right_sidebar_unread": "Slå højre sidebar til/fra ({count} ulæste)",
       "view_steam_profile": "Se Steam-profil",
       "zoom_in": "Zoom ind",
       "zoom_in_scroll": "Zoom ind (Ctrl/Cmd + scroll)",

@@ -34,6 +34,7 @@
       "title_placeholder": "Planlı bakım",
       "message": "Mesaj",
       "message_placeholder": "İnceleme sürerken eşleştirme geçici olarak devre dışı.",
+      "message_link_hint": "[label](https://example.com) biçiminde bağlantı ekleyin. Bu sitenin bağlantıları uygulama içinde açılır.",
       "is_active": "Aktif",
       "is_active_hint": "Bu banner şu an herkese gösterilsin.",
       "dismissible": "Kapatılabilir",
@@ -7819,6 +7820,7 @@
     "tooltips": {
       "fullscreen": "Tam ekran",
       "toggle_right_sidebar": "Sağ kenar çubuğunu aç/kapat",
+      "toggle_right_sidebar_unread": "Sağ kenar çubuğunu aç/kapat ({count} okunmamış)",
       "view_steam_profile": "Steam profilini görüntüle",
       "zoom_in": "Yakınlaştır",
       "zoom_in_scroll": "Yakınlaştır (Ctrl/Cmd + Kaydırma)",

@@ -34,6 +34,7 @@
       "title_placeholder": "メンテナンス予定",
       "message": "本文",
       "message_placeholder": "調査中のため、マッチメイキングを一時停止しています。",
+      "message_link_hint": "[label](https://example.com) の形式でリンクを追加できます。このサイトへのリンクはアプリ内で開きます。",
       "is_active": "有効",
       "is_active_hint": "このバナーを今すぐ全ユーザーに表示します。",
       "dismissible": "閉じられる",
@@ -7819,6 +7820,7 @@
     "tooltips": {
       "fullscreen": "フルスクリーン",
       "toggle_right_sidebar": "右サイドバーの切り替え",
+      "toggle_right_sidebar_unread": "右サイドバーの切り替え（未読 {count} 件）",
       "view_steam_profile": "Steamプロフィールを見る",
       "zoom_in": "拡大",
       "zoom_in_scroll": "拡大（Ctrl/Cmd + スクロール）",

@@ -34,6 +34,7 @@
       "title_placeholder": "Плановые техработы",
       "message": "Сообщение",
       "message_placeholder": "Подбор игры временно недоступен, мы разбираемся.",
+      "message_link_hint": "Добавьте ссылку в формате [label](https://example.com). Ссылки на этот сайт открываются в приложении.",
       "is_active": "Активно",
       "is_active_hint": "Показать этот баннер всем прямо сейчас.",
       "dismissible": "Можно скрыть",
@@ -7819,6 +7820,7 @@
     "tooltips": {
       "fullscreen": "На весь экран",
       "toggle_right_sidebar": "Переключить правую панель",
+      "toggle_right_sidebar_unread": "Переключить правую панель (непрочитанных: {count})",
       "view_steam_profile": "Открыть профиль Steam",
       "zoom_in": "Увеличить",
       "zoom_in_scroll": "Увеличить (Ctrl/Cmd + прокрутка)",

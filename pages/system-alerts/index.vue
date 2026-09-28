@@ -563,6 +563,9 @@ onUnmounted(() => {
               :rows="4"
               :placeholder="$t('system_alerts.fields.message_placeholder')"
             />
+            <p class="text-xs text-muted-foreground">
+              {{ $t("system_alerts.fields.message_link_hint") }}
+            </p>
           </div>
 
           <div class="space-y-2">

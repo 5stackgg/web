@@ -34,6 +34,7 @@
       "title_placeholder": "Планові технічні роботи",
       "message": "Повідомлення",
       "message_placeholder": "Матчмейкінг тимчасово недоступний, ми розбираємось.",
+      "message_link_hint": "Додайте посилання у форматі [label](https://example.com). Посилання на цей сайт відкриваються в застосунку.",
       "is_active": "Активне",
       "is_active_hint": "Показати цей банер усім прямо зараз.",
       "dismissible": "Можна закрити",
@@ -7819,6 +7820,7 @@
     "tooltips": {
       "fullscreen": "На весь екран",
       "toggle_right_sidebar": "Перемкнути праву панель",
+      "toggle_right_sidebar_unread": "Перемкнути праву панель (непрочитаних: {count})",
       "view_steam_profile": "Переглянути профіль Steam",
       "zoom_in": "Наблизити",
       "zoom_in_scroll": "Наблизити (Ctrl/Cmd + прокрутка)",

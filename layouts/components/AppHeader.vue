@@ -9,11 +9,9 @@ import UtilityPracticeNav from "~/components/utility/UtilityPracticeNav.vue";
 import DraftRoomNav from "./DraftRoomNav.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import SpotlightPlayerSearch from "~/components/SpotlightPlayerSearch.vue";
-import { Grid } from "lucide-vue-next";
-import { useHubState } from "@/composables/useHubState";
+import MobileHubButton from "./MobileHubButton.vue";
 
 const { isMobile } = useSidebar();
-const { openLastOrDefaultHub } = useHubState();
 </script>
 
 <template>
@@ -40,17 +38,7 @@ const { openLastOrDefaultHub } = useHubState();
 
         <SystemStatus></SystemStatus>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          class="h-7 w-7 md:hidden relative"
-          @click="openLastOrDefaultHub()"
-        >
-          <Grid class="h-4 w-4" />
-          <span class="sr-only">{{
-            $t("ui.tooltips.toggle_right_sidebar")
-          }}</span>
-        </Button>
+        <MobileHubButton />
       </div>
     </div>
   </header>

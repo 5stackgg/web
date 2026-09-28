@@ -34,6 +34,7 @@
       "title_placeholder": "Scheduled maintenance",
       "message": "Message",
       "message_placeholder": "Matchmaking is temporarily down while we investigate.",
+      "message_link_hint": "Add a link with [label](https://example.com). Links to this site open in the app.",
       "is_active": "Active",
       "is_active_hint": "Show this banner to everyone right now.",
       "dismissible": "Dismissible",
@@ -7819,6 +7820,7 @@
     "tooltips": {
       "fullscreen": "Fullscreen",
       "toggle_right_sidebar": "Toggle Right Sidebar",
+      "toggle_right_sidebar_unread": "Toggle Right Sidebar ({count} unread)",
       "view_steam_profile": "View Steam Profile",
       "zoom_in": "Zoom In",
       "zoom_in_scroll": "Zoom In (Ctrl/Cmd + Scroll)",

@@ -34,6 +34,7 @@
       "title_placeholder": "예정된 점검",
       "message": "메시지",
       "message_placeholder": "원인을 확인하는 동안 매치메이킹이 일시적으로 중단됩니다.",
+      "message_link_hint": "[label](https://example.com) 형식으로 링크를 추가하세요. 이 사이트 링크는 앱 안에서 열립니다.",
       "is_active": "활성",
       "is_active_hint": "지금 즉시 모든 사용자에게 이 배너를 표시합니다.",
       "dismissible": "닫기 가능",
@@ -7819,6 +7820,7 @@
     "tooltips": {
       "fullscreen": "전체화면",
       "toggle_right_sidebar": "오른쪽 사이드바 전환",
+      "toggle_right_sidebar_unread": "오른쪽 사이드바 전환 (읽지 않음 {count}개)",
       "view_steam_profile": "Steam 프로필 보기",
       "zoom_in": "확대",
       "zoom_in_scroll": "확대 (Ctrl/Cmd + 스크롤)",

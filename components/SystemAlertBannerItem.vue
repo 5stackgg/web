@@ -1,8 +1,15 @@
 <script setup lang="ts">
-import type { Component } from "vue";
-import { Info, TriangleAlert, OctagonAlert, X } from "lucide-vue-next";
+import { computed, type Component } from "vue";
+import {
+  ExternalLink,
+  Info,
+  TriangleAlert,
+  OctagonAlert,
+  X,
+} from "lucide-vue-next";
+import { parseAlertMessage } from "~/utilities/alertMessageLinks";
 
-defineProps<{
+const props = defineProps<{
   type: "info" | "warning" | "critical";
   title?: string | null;
   message: string;
@@ -12,6 +19,16 @@ defineProps<{
 }>();
 
 const emit = defineEmits<{ (e: "dismiss"): void }>();
+
+const ownHosts = [
+  useRuntimeConfig().public.webDomain,
+  typeof window === "undefined" ? null : window.location.host,
+];
+
+const segments = computed(() => parseAlertMessage(props.message, ownHosts));
+
+const linkClasses =
+  "text-[hsl(var(--tac-amber))] underline underline-offset-2 transition-colors duration-150 hover:text-[hsl(var(--tac-amber)/0.8)]";
 
 const severity: Record<
   "info" | "warning" | "critical",
@@ -80,7 +97,27 @@ const severity: Record<
       <p
         class="whitespace-pre-line break-words text-sm leading-snug text-foreground/85"
       >
-        {{ message }}
+        <template v-for="(segment, index) in segments" :key="index">
+          <NuxtLink
+            v-if="segment.type === 'internal'"
+            :to="segment.path"
+            :class="[linkClasses, { 'pointer-events-none': preview }]"
+            :tabindex="preview ? -1 : undefined"
+            >{{ segment.label }}</NuxtLink
+          >
+          <a
+            v-else-if="segment.type === 'external'"
+            :href="segment.href"
+            target="_blank"
+            rel="noopener noreferrer"
+            :class="[linkClasses, { 'pointer-events-none': preview }]"
+            :tabindex="preview ? -1 : undefined"
+            >{{ segment.label }}<ExternalLink
+              class="ml-0.5 inline h-3 w-3"
+              aria-hidden="true"
+          /></a>
+          <template v-else>{{ segment.text }}</template>
+        </template>
       </p>
     </div>
     <!-- Absolutely positioned so toggling dismissible never changes row height. -->

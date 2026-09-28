@@ -34,6 +34,7 @@
       "title_placeholder": "计划维护",
       "message": "消息内容",
       "message_placeholder": "匹配功能暂时不可用，我们正在调查中。",
+      "message_link_hint": "使用 [label](https://example.com) 添加链接。指向本站的链接会在应用内打开。",
       "is_active": "激活",
       "is_active_hint": "立即向所有人显示此横幅。",
       "dismissible": "可关闭",
@@ -7819,6 +7820,7 @@
     "tooltips": {
       "fullscreen": "全屏",
       "toggle_right_sidebar": "切换右侧边栏",
+      "toggle_right_sidebar_unread": "切换右侧边栏（{count} 条未读）",
       "view_steam_profile": "查看 Steam 资料",
       "zoom_in": "放大",
       "zoom_in_scroll": "放大（Ctrl/Cmd + 滚轮）",

@@ -34,6 +34,7 @@
       "title_placeholder": "صيانة مجدولة",
       "message": "الرسالة",
       "message_placeholder": "Matchmaking متوقف مؤقتًا ريثما نحقق في المشكلة.",
+      "message_link_hint": "أضف رابطًا بصيغة [label](https://example.com). تُفتح روابط هذا الموقع داخل التطبيق.",
       "is_active": "مفعّل",
       "is_active_hint": "أظهر هذه اللافتة للجميع الآن.",
       "dismissible": "قابل للإخفاء",
@@ -7819,6 +7820,7 @@
     "tooltips": {
       "fullscreen": "ملء الشاشة",
       "toggle_right_sidebar": "إظهار/إخفاء الشريط الجانبي الأيمن",
+      "toggle_right_sidebar_unread": "إظهار/إخفاء الشريط الجانبي الأيمن ({count} غير مقروءة)",
       "view_steam_profile": "عرض ملف Steam",
       "zoom_in": "تقريب",
       "zoom_in_scroll": "تقريب (Ctrl/Cmd + تمرير)",

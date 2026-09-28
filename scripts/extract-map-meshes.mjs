@@ -44,7 +44,7 @@ import { glbToTri } from "./glb-to-tri.mjs";
 import { minimapVolumes } from "./lib-entities.mjs";
 import { fitToCap } from "./lib-mesh.mjs";
 import { distanceField, FloorIndex, walkableSurfaces } from "./lib-nav.mjs";
-import { decompile, resolveCli } from "./lib-s2v.mjs";
+import { decompile, describeOutput, missingOutput, resolveCli } from "./lib-s2v.mjs";
 import { buildViewMesh } from "./lib-view-mesh.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -85,6 +85,41 @@ function readNavBuffer(cli, vpk, map, tmp) {
 }
 
 /**
+ * The render world, as a .glb or failing that a .gltf; returns its path.
+ *
+ * A .glb is a single buffer, and Source2Viewer refuses to write one of 2 GiB
+ * or more: it logs a NotSupportedException, writes nothing and still exits 0.
+ * 20.0 also exports every LoD tier of an aggregate, not just the finest, so a
+ * big world gets there sooner than its geometry suggests. A .gltf splits its
+ * buffers into ~1 GB files beside it and has no cap, so a world that does not
+ * come out as a .glb gets one more export in that form.
+ */
+function exportRenderWorld(cli, vpk, map, dir) {
+  const tries = [];
+  for (const format of ["glb", "gltf"]) {
+    const path = join(dir, "maps", map, `world.${format}`);
+    try {
+      const run = decompile(cli, vpk, `maps/${map}/world.vwrld_c`, dir, [
+        "--gltf_export_format",
+        format,
+      ]);
+      if (existsSync(path)) {
+        if (tries.length) {
+          console.warn(`⚠ ${map}: render world exported as .gltf instead (${tries.join("; ")})`);
+        }
+        return path;
+      }
+      tries.push(`.${format}: ${describeOutput(run) || "the CLI printed nothing"}`);
+    } catch (error) {
+      tries.push(`.${format}: ${error.message}`);
+    }
+  }
+  throw new Error(
+    `no world.glb or world.gltf came out of the render world (${tries.join("; ")})`,
+  );
+}
+
+/**
  * Everything the view mesh needs from the VPK: the render world, the nav and
  * the minimap volumes.
  */
@@ -92,14 +127,7 @@ function exportViewInputs(cli, vpk, map, tmp, lap) {
   let start = performance.now();
   const worldDir = join(tmp, "world");
   mkdirSync(worldDir);
-  decompile(cli, vpk, `maps/${map}/world.vwrld_c`, worldDir, [
-    "--gltf_export_format",
-    "glb",
-  ]);
-  const worldGlb = join(worldDir, "maps", map, "world.glb");
-  if (!existsSync(worldGlb)) {
-    throw new Error("no world.glb came out of the render world");
-  }
+  const world = exportRenderWorld(cli, vpk, map, worldDir);
   lap("renderExport", start);
 
   start = performance.now();
@@ -116,7 +144,7 @@ function exportViewInputs(cli, vpk, map, tmp, lap) {
     ...box,
   }));
   lap("navAndEntities", start);
-  return { worldGlb, navBuffer, volumes };
+  return { world, navBuffer, volumes };
 }
 
 /**
@@ -158,7 +186,7 @@ export async function extractMap(
     mkdirSync(physDir);
     // The PHYSICS hull, never the textured render mesh: the hull is what a
     // raycast should hit and it is two orders of magnitude smaller.
-    decompile(cli, vpk, `maps/${map}/world_physics.vmdl_c`, physDir, [
+    const physRun = decompile(cli, vpk, `maps/${map}/world_physics.vmdl_c`, physDir, [
       "--gltf_export_format",
       "glb",
     ]);
@@ -167,7 +195,7 @@ export async function extractMap(
     // `world_physics_physics.glb`; only the latter has vertices.
     const physGlb = join(physDir, "maps", map, "world_physics_physics.glb");
     if (!existsSync(physGlb)) {
-      throw new Error("no world_physics_physics.glb came out");
+      throw missingOutput("world_physics_physics.glb", physRun);
     }
     lap("collisionExport", start);
 
@@ -254,7 +282,7 @@ export async function extractMap(
         }
         const floors = new FloorIndex(surfaces.polygons);
         const playable = distanceField(surfaces.polygons);
-        const built = await buildViewMesh(viewInputs.worldGlb, {
+        const built = await buildViewMesh(viewInputs.world, {
           floors,
           playable,
           volumes: viewInputs.volumes,

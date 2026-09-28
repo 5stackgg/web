@@ -288,7 +288,7 @@ async function buildMap(map, { mapsDir, rawDir, filesDir, cli, pak }) {
   const calloutNote = callouts.failed
     ? `FAILED ${callouts.failed}`
     : callouts.none
-      ? "none"
+      ? `none (${callouts.why})`
       : callouts.callouts.length;
   const stages = Object.entries(meshes.timings)
     .map(([k, v]) => `${k} ${seconds(v)}`)

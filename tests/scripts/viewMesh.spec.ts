@@ -15,7 +15,7 @@ import {
   SURFACE_SOLID,
   writeViewBin,
 } from "~/scripts/lib-view-mesh.mjs";
-import { buildGlb, quad, type Vec3 } from "../helpers/mapFixtures";
+import { buildGlb, glbToGltf, quad, type Vec3 } from "../helpers/mapFixtures";
 
 describe("view.bin", () => {
   it("round-trips chunks with aligned sections", () => {
@@ -205,5 +205,46 @@ describe("buildViewMesh", () => {
       }
     }
     expect(foliage).toBe(3);
+  });
+
+  it("builds the same mesh from a .gltf with its buffers in separate files", async () => {
+    const model = buildGlb([
+      {
+        name: "n0_lr0_agg_merge_concrete_floor_0",
+        triangles: quad([0, 0, 0], [512, 0, 0], [512, 512, 0], [0, 512, 0]),
+      },
+      {
+        name: "n0_lr0_agg_merge_concrete_wall_0",
+        triangles: quad([0, 0, 0], [512, 0, 0], [512, 0, 300], [0, 0, 300]),
+      },
+    ]);
+    const glb = join(dir, "same.glb");
+    writeFileSync(glb, model);
+    const split = glbToGltf(model, "same");
+    const gltf = join(dir, "same.gltf");
+    writeFileSync(gltf, split.gltf);
+    for (const [file, body] of Object.entries(split.files)) {
+      writeFileSync(join(dir, file), body);
+    }
+    expect(Object.keys(split.files)).toHaveLength(4);
+
+    const walkable: Vec3[][] = [
+      [
+        [0, 0, 0],
+        [512, 0, 0],
+        [512, 512, 0],
+        [0, 512, 0],
+      ],
+    ];
+    const build = (path: string) =>
+      buildViewMesh(path, {
+        floors: new FloorIndex(walkable),
+        playable: distanceField(walkable),
+        volumes: [],
+      });
+    const fromGlb = await build(glb);
+    const fromGltf = await build(gltf);
+    expect(fromGltf.stats.trianglesIn).toBe(4);
+    expect(Buffer.compare(fromGltf.buf, fromGlb.buf)).toBe(0);
   });
 });

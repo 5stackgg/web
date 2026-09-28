@@ -36,7 +36,7 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseDmx } from "./lib-dmx.mjs";
-import { decompile as runDecompile, resolveCli } from "./lib-s2v.mjs";
+import { decompile as runDecompile, missingOutput, resolveCli } from "./lib-s2v.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const stageDir = join(root, ".cache", "callouts");
@@ -92,6 +92,60 @@ function entities(text, classname) {
         model: str("model"),
       };
     });
+}
+
+/** How many entities of each class a decompiled lump holds. */
+function classCounts(text) {
+  const counts = new Map();
+  for (const block of text.split(/====\d+====/)) {
+    const name = /^\s*classname\s+"?([^"\s]+)"?\s*$/m.exec(block)?.[1];
+    if (name) {
+      counts.set(name, (counts.get(name) ?? 0) + 1);
+    }
+  }
+  return counts;
+}
+
+/**
+ * Every lump in a decompiled entities folder, default_ents.vents first. A
+ * point_template's child lump (`<n>#entitylumpname.vents`) is left out: its
+ * entities are placed relative to the template, not the world.
+ */
+function lumpFiles(entitiesDir) {
+  const others = readdirSync(entitiesDir, { recursive: true })
+    .map(String)
+    .filter(
+      (f) =>
+        f.endsWith(".vents") &&
+        f !== "default_ents.vents" &&
+        !/#entitylumpname\.vents$/i.test(f),
+    )
+    .sort();
+  return ["default_ents.vents", ...others];
+}
+
+/**
+ * Why a map came out with no callouts, for the build log: how much was read,
+ * and any class that sounds like it might be doing a place's job instead.
+ */
+function describeNoPlaces(lumps) {
+  const counts = new Map();
+  let total = 0;
+  for (const { text } of lumps) {
+    for (const [name, n] of classCounts(text)) {
+      counts.set(name, (counts.get(name) ?? 0) + n);
+      total += n;
+    }
+  }
+  const where =
+    lumps.length === 1 ? lumps[0].file : `${lumps[0].file} + ${lumps.length - 1} more lump(s)`;
+  const hints = [...counts]
+    .filter(([name]) => /place|region|callout|location/i.test(name))
+    .map(([name, n]) => `${name} x${n}`);
+  return (
+    `no env_cs_place among ${total} entities in ${where}` +
+    (hints.length ? `; place-like: ${hints.join(", ")}` : "")
+  );
 }
 
 /**
@@ -174,8 +228,8 @@ function round(v) {
 
 /**
  * One map's callouts, from its own VPK in `mapsDir` or, failing that, `pak`.
- * `{ map, callouts, skipped }`, or `{ none: true }` for a map that defines no
- * place entities at all.
+ * `{ map, callouts, skipped }`, or `{ none: true, why }` for a map that
+ * defines no place entities at all.
  */
 export function extractCallouts(map, { mapsDir, pak, cli }) {
   const own = join(mapsDir, `${map}.vpk`);
@@ -186,19 +240,32 @@ export function extractCallouts(map, { mapsDir, pak, cli }) {
     // One call for the whole entities folder: it writes the lump AND every
     // place volume's hull beside it, so a map costs one VPK open instead of one
     // per callout.
-    runDecompile(cli, vpk, `maps/${map}/entities/`, tmp);
+    const run = runDecompile(cli, vpk, `maps/${map}/entities/`, tmp);
 
     const entitiesDir = join(tmp, "maps", map, "entities");
-    const lump = readFileSync(join(entitiesDir, "default_ents.vents"), "utf8");
+    if (!existsSync(join(entitiesDir, "default_ents.vents"))) {
+      throw missingOutput(`maps/${map}/entities/default_ents.vents`, run);
+    }
 
     const byName = new Map();
     let skipped = 0;
-    const places = entities(lump, "env_cs_place");
+    const lumps = [];
+    let places = [];
+    // default_ents is where every map so far keeps its places; the other lumps
+    // are only read when it has none.
+    for (const file of lumpFiles(entitiesDir)) {
+      const text = readFileSync(join(entitiesDir, file), "utf8");
+      lumps.push({ file, text });
+      places = places.concat(entities(text, "env_cs_place"));
+      if (places.length && file === "default_ents.vents") {
+        break;
+      }
+    }
 
     // A map with no place entities is a fact about the map -- arms-race and
     // some community maps never define any -- not a failure of this script.
     if (places.length === 0) {
-      return { map, callouts: [], skipped: 0, none: true };
+      return { map, callouts: [], skipped: 0, none: true, why: describeNoPlaces(lumps) };
     }
 
     for (const place of places) {
@@ -306,7 +373,7 @@ function main() {
   const maps = only.length
     ? only
     : readdirSync(MAPS_DIR)
-        .filter((f) => /^(de|cs|ar)_[a-z0-9_]+\.vpk$/.test(f) && !f.includes("_vanity"))
+        .filter((f) => /^(de|cs|ar|rush)_[a-z0-9_]+\.vpk$/.test(f) && !f.includes("_vanity"))
         .map((f) => f.replace(/\.vpk$/, ""))
         .sort();
 
@@ -318,7 +385,7 @@ function main() {
       const result = extractCallouts(map, { mapsDir: MAPS_DIR, pak: PAK, cli });
 
       if (result.none) {
-        console.log(`${map.padEnd(16)} no callouts defined by this map`);
+        console.log(`${map.padEnd(16)} no callouts defined by this map (${result.why})`);
         continue;
       }
 

@@ -22,7 +22,7 @@
 //   only found in the wide search (outside playable space)
 import { createHash } from "node:crypto";
 import { MeshoptSimplifier } from "meshoptimizer";
-import { meshNodes, openGlb } from "./lib-glb.mjs";
+import { meshNodes, openGltf } from "./lib-glb.mjs";
 
 export const VIEW_MAGIC = "5SVM";
 export const VIEW_VERSION = 1;
@@ -646,7 +646,7 @@ function orderVolumes(volumes) {
 }
 
 /**
- * Build a map's view mesh from its render-world glb.
+ * Build a map's view mesh from its render-world export, .glb or .gltf.
  *
  *   floors    FloorIndex over the walkable surfaces (nav areas, or collision)
  *   playable  distanceField over the same surfaces; geometry farther than
@@ -655,7 +655,7 @@ function orderVolumes(volumes) {
  *             one chunk each, plus "world"
  */
 export async function buildViewMesh(
-  glbPath,
+  worldPath,
   {
     floors,
     playable = null,
@@ -687,7 +687,7 @@ export async function buildViewMesh(
   const far = (x, y) => playable !== null && playable.at(x, y) > ring;
   const coarseRing = ring + maxEdge;
 
-  const glb = openGlb(glbPath);
+  const glb = openGltf(worldPath);
   const meshes = [];
   try {
     for (const node of meshNodes(glb.gltf)) {

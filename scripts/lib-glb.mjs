@@ -1,13 +1,75 @@
-// A glTF-binary reader that never holds the whole file.
+// A glTF reader that never holds the whole file.
 //
 // A render-world export is big -- rush_001's world.glb is 1.2 GB, almost all of
-// it UVs, normals and tangents nothing here reads -- so only the JSON chunk is
+// it UVs, normals and tangents nothing here reads -- so only the JSON is
 // parsed up front and each accessor is read on demand from its own byte range.
-import { closeSync, openSync, readSync } from "node:fs";
+// A .glb carries one BIN chunk; a .gltf names its buffers as files beside it,
+// which is how a world over the .glb's 2 GiB cap comes out (see
+// extract-map-meshes.mjs).
+import { closeSync, openSync, readFileSync, readSync } from "node:fs";
+import { dirname, join } from "node:path";
 
 const COMPONENT_BYTES = { 5120: 1, 5121: 1, 5122: 2, 5123: 2, 5125: 4, 5126: 4 };
 const TYPE_WIDTH = { SCALAR: 1, VEC2: 2, VEC3: 3, VEC4: 4, MAT4: 16 };
 const IDENTITY = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+
+function readBytes(path, fd, position, length) {
+  const out = Buffer.allocUnsafe(length);
+  let done = 0;
+  while (done < length) {
+    const n = readSync(fd, out, done, length - done, position + done);
+    if (n <= 0) {
+      throw new Error(`${path}: short read at ${position + done}`);
+    }
+    done += n;
+  }
+  return out;
+}
+
+/**
+ * Float accessors come back as Float32Array, integer ones as Uint32Array,
+ * tightly packed whatever the bufferView's stride was. `locate(buffer, index)`
+ * says which file holds a buffer and at which byte of it the buffer starts.
+ */
+function accessorReader(gltf, locate) {
+  return (index) => {
+    const accessor = gltf.accessors[index];
+    const width = TYPE_WIDTH[accessor.type];
+    const size = COMPONENT_BYTES[accessor.componentType];
+    const isFloat = accessor.componentType === 5126;
+    const count = accessor.count * width;
+    const out = isFloat ? new Float32Array(count) : new Uint32Array(count);
+    if (accessor.bufferView == null || accessor.count === 0) {
+      return out;
+    }
+    const view = gltf.bufferViews[accessor.bufferView];
+    const { path, fd, origin } = locate(view.buffer ?? 0, index);
+    const element = size * width;
+    const stride = view.byteStride || element;
+    const start = origin + (view.byteOffset || 0) + (accessor.byteOffset || 0);
+    const bytes = readBytes(path, fd, start, stride * (accessor.count - 1) + element);
+    if (stride === element && size === 4) {
+      const packed = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + count * 4);
+      return isFloat ? new Float32Array(packed) : new Uint32Array(packed);
+    }
+    const dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+
+    for (let i = 0; i < accessor.count; i++) {
+      const base = i * stride;
+      for (let c = 0; c < width; c++) {
+        const o = base + c * size;
+        out[i * width + c] = isFloat
+          ? dv.getFloat32(o, true)
+          : size === 4
+            ? dv.getUint32(o, true)
+            : size === 2
+              ? dv.getUint16(o, true)
+              : dv.getUint8(o);
+      }
+    }
+    return out;
+  };
+}
 
 export function openGlb(path) {
   const fd = openSync(path, "r");
@@ -41,64 +103,46 @@ export function openGlb(path) {
     throw new Error(`${path} has no JSON chunk`);
   }
 
-  const readBytes = (position, length) => {
-    const out = Buffer.allocUnsafe(length);
-    let done = 0;
-    while (done < length) {
-      const n = readSync(fd, out, done, length - done, position + done);
-      if (n <= 0) {
-        throw new Error(`${path}: short read at ${position + done}`);
-      }
-      done += n;
-    }
-    return out;
-  };
-
-  /**
-   * Float accessors come back as Float32Array, integer ones as Uint32Array,
-   * tightly packed whatever the bufferView's stride was.
-   */
-  const read = (index) => {
-    const accessor = gltf.accessors[index];
-    const width = TYPE_WIDTH[accessor.type];
-    const size = COMPONENT_BYTES[accessor.componentType];
-    const isFloat = accessor.componentType === 5126;
-    const count = accessor.count * width;
-    const out = isFloat ? new Float32Array(count) : new Uint32Array(count);
-    if (accessor.bufferView == null || accessor.count === 0) {
-      return out;
-    }
+  const read = accessorReader(gltf, (_buffer, index) => {
     if (binOffset < 0) {
       throw new Error(`${path}: accessor ${index} points at a missing BIN chunk`);
     }
-    const view = gltf.bufferViews[accessor.bufferView];
-    const element = size * width;
-    const stride = view.byteStride || element;
-    const start = binOffset + (view.byteOffset || 0) + (accessor.byteOffset || 0);
-    const bytes = readBytes(start, stride * (accessor.count - 1) + element);
-    if (stride === element && size === 4) {
-      const packed = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + count * 4);
-      return isFloat ? new Float32Array(packed) : new Uint32Array(packed);
-    }
-    const dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-
-    for (let i = 0; i < accessor.count; i++) {
-      const base = i * stride;
-      for (let c = 0; c < width; c++) {
-        const o = base + c * size;
-        out[i * width + c] = isFloat
-          ? dv.getFloat32(o, true)
-          : size === 4
-            ? dv.getUint32(o, true)
-            : size === 2
-              ? dv.getUint16(o, true)
-              : dv.getUint8(o);
-      }
-    }
-    return out;
-  };
-
+    return { path, fd, origin: binOffset };
+  });
   return { gltf, read, close: () => closeSync(fd) };
+}
+
+/**
+ * A .glb, or a .gltf whose buffers are files beside it; either way the same
+ * `{ gltf, read, close }` as openGlb. A buffer file is only opened once an
+ * accessor in it is read.
+ */
+export function openGltf(path) {
+  if (!path.endsWith(".gltf")) {
+    return openGlb(path);
+  }
+  const gltf = JSON.parse(readFileSync(path, "utf8"));
+  const files = new Map();
+  const read = accessorReader(gltf, (buffer, index) => {
+    if (!files.has(buffer)) {
+      const uri = gltf.buffers?.[buffer]?.uri;
+      if (!uri || uri.startsWith("data:")) {
+        throw new Error(
+          `${path}: accessor ${index} points at buffer ${buffer}, which is not a file`,
+        );
+      }
+      const file = join(dirname(path), decodeURIComponent(uri));
+      files.set(buffer, { path: file, fd: openSync(file, "r"), origin: 0 });
+    }
+    return files.get(buffer);
+  });
+  const close = () => {
+    for (const { fd } of files.values()) {
+      closeSync(fd);
+    }
+    files.clear();
+  };
+  return { gltf, read, close };
 }
 
 function multiply(a, b) {

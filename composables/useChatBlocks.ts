@@ -3,7 +3,6 @@ import { useChatTabs } from "~/composables/useChatTabs";
 import { directRoomId, directTabId } from "~/composables/useDirectMessages";
 import { usePlayerBlocks } from "~/composables/usePlayerBlocks";
 import { useAuthStore } from "~/stores/AuthStore";
-import { blockedIdsChange } from "~/utilities/playerBlocks";
 import socket from "~/web-sockets/Socket";
 
 // The api sends no event on a block or an unblock, only changes what it sends
@@ -14,8 +13,6 @@ export function useChatBlocks() {
   const { closeTab } = useChatTabs();
   const authStore = useAuthStore();
 
-  let applied = new Set<string>();
-
   watch(
     () => (loaded.value ? blocks.value : null),
     (rows) => {
@@ -23,23 +20,17 @@ export function useChatBlocks() {
         return;
       }
 
-      const next = new Set(rows.map((row) => String(row.blocked_steam_id)));
-      const { added, removed } = blockedIdsChange(applied, next);
-      applied = next;
+      const { added } = socket.setHiddenAuthors(
+        rows.map((row) => String(row.blocked_steam_id)),
+      );
 
-      if (added.length > 0) {
-        socket.hideAuthors(added);
-
-        const mySteamId = authStore.me?.steam_id;
-        if (mySteamId) {
-          for (const steamId of added) {
-            closeTab(directTabId(directRoomId(mySteamId, steamId)));
-          }
-        }
+      const mySteamId = authStore.me?.steam_id;
+      if (!mySteamId) {
+        return;
       }
 
-      if (removed.length > 0) {
-        socket.showAuthors(removed);
+      for (const steamId of added) {
+        closeTab(directTabId(directRoomId(mySteamId, steamId)));
       }
     },
     { immediate: true },

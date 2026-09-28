@@ -7,6 +7,7 @@ import { useChatTabs } from "~/composables/useChatTabs";
 import { useChatTabSetup } from "~/composables/useChatTabSetup";
 import { directRoomId, directTabId } from "~/composables/useDirectMessages";
 import { useIncomingDirectMessages } from "~/composables/useIncomingDirectMessages";
+import { setActiveHub } from "~/composables/useHubState";
 import { useRightSidebar } from "~/composables/useRightSidebar";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
@@ -97,6 +98,19 @@ const hasTab = (tabId: string) =>
   useChatTabs().tabs.value.some((tab) => tab.id === tabId);
 const groupMessages = () => socket.lobbyMessages("matchmaking", lobbyId);
 
+async function mount(setup: () => void) {
+  const wrapper = await mountSuspended(
+    defineComponent({
+      setup() {
+        setup();
+        return () => h("div");
+      },
+    }),
+  );
+  unmount = () => wrapper.unmount();
+  await flushPromises();
+}
+
 beforeEach(async () => {
   lobbyId = `chat-blocks-${++counter}`;
   groupTab = `matchmaking:${lobbyId}`;
@@ -124,18 +138,11 @@ beforeEach(async () => {
     role: "user",
   } as any;
 
-  const wrapper = await mountSuspended(
-    defineComponent({
-      setup() {
-        useChatTabSetup();
-        useIncomingDirectMessages();
-        useChatBlocks();
-        return () => h("div");
-      },
-    }),
-  );
-  unmount = () => wrapper.unmount();
-  await flushPromises();
+  await mount(() => {
+    useChatTabSetup();
+    useIncomingDirectMessages();
+    useChatBlocks();
+  });
 
   setBlocks();
 
@@ -173,7 +180,7 @@ afterEach(async () => {
   unmount = undefined;
   useAuthStore().me = undefined;
   await flushPromises();
-  socket.showAuthors([DANA, EVAN]);
+  socket.setHiddenAuthors([]);
   disconnect();
   useChatTabs().clearAll();
   vi.unstubAllGlobals();
@@ -205,7 +212,7 @@ describe("useChatBlocks", () => {
     expect(unread(groupTab)).toBe(2);
   });
 
-  it("ignores a reaction to a line it hid", async () => {
+  it("ignores a reaction to a line it hid, and hides their reactions", async () => {
     setBlocks(DANA);
     await flushPromises();
 
@@ -213,9 +220,16 @@ describe("useChatBlocks", () => {
       id: "dana-1",
       reactions: { heart: [EVAN] },
     });
+    socket.emit(`${groupRoom}:reaction`, {
+      id: "evan",
+      reactions: { heart: [DANA], fire: [DANA, ME] },
+    });
 
     expect(ids(groupMessages())).toEqual(["read", "evan"]);
-    expect(groupMessages().some((message) => message.reactions)).toBe(false);
+    expect(groupMessages().map((message) => message.reactions)).toEqual([
+      undefined,
+      { fire: [ME] },
+    ]);
   });
 
   it("never reopens the conversation from a message already on its way", async () => {
@@ -262,6 +276,46 @@ describe("useChatBlocks", () => {
     expect(ids(groupMessages())).toEqual([]);
     expect(unread(groupTab)).toBe(0);
     expect(hasTab(dmTab)).toBe(false);
+  });
+
+  it("leaves the badge of the room on screen clear when an unblock brings lines back", async () => {
+    useChatTabs().setActiveTab(groupTab);
+    useRightSidebar().setRightSidebarOpen(true);
+    setActiveHub("chat");
+    await flushPromises();
+    useChatTabs().resetUnread(groupTab);
+
+    setBlocks(DANA);
+    await flushPromises();
+    setBlocks();
+    await flushPromises();
+
+    socket.emit(`${groupRoom}:messages`, {
+      messages: [
+        line("read", 0, EVAN),
+        line("dana-1", 2, DANA),
+        line("dana-2", 3, DANA),
+        line("evan", 4, EVAN),
+      ],
+    });
+
+    expect(unread(groupTab)).toBe(0);
+  });
+
+  it("still hears an unblock made while it was unmounted", async () => {
+    setBlocks(DANA);
+    await flushPromises();
+    unmount?.();
+
+    setBlocks();
+    await flushPromises();
+    expect(socket.hidesAuthor(DANA)).toBe(true);
+
+    await mount(() => {
+      useChatBlocks();
+    });
+
+    expect(socket.hidesAuthor(DANA)).toBe(false);
   });
 
   it("does not read signing out as unblocking everyone", async () => {

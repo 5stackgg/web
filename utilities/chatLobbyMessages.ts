@@ -188,23 +188,25 @@ export function isChatMessageFrom(
   return steamId != null && authors.has(String(steamId));
 }
 
-export interface RemovedChatAuthors {
+export interface HiddenChatAuthors {
   messages: LobbyMessage[];
   removed: Array<Omit<RemovedChatMessage, "messages">>;
 }
 
-// Each index is where the message sat once the ones before it were gone, as if
-// they had been deleted one at a time.
-export function removeChatMessagesFrom(
+// Their lines go, and so do their reactions on everyone else's. Each index is
+// where a line sat once the ones before it were gone, as if they had been
+// deleted one at a time.
+export function hideChatAuthors(
   current: LobbyMessage[],
   authors: ReadonlySet<string>,
-): RemovedChatAuthors | null {
+): HiddenChatAuthors | null {
   if (authors.size === 0) {
     return null;
   }
 
   const messages: LobbyMessage[] = [];
-  const removed: RemovedChatAuthors["removed"] = [];
+  const removed: HiddenChatAuthors["removed"] = [];
+  let changed = false;
 
   for (const message of current) {
     if (isChatMessageFrom(message, authors)) {
@@ -212,14 +214,54 @@ export function removeChatMessagesFrom(
       continue;
     }
 
-    messages.push(message);
+    const reactions = withoutChatReactors(message?.reactions, authors);
+    if (reactions === message?.reactions) {
+      messages.push(message);
+      continue;
+    }
+
+    changed = true;
+    messages.push({ ...message, reactions });
   }
 
-  if (removed.length === 0) {
+  if (removed.length === 0 && !changed) {
     return null;
   }
 
   return { messages, removed };
+}
+
+export function withoutChatReactors(
+  reactions: ChatReactions | undefined,
+  authors: ReadonlySet<string>,
+): ChatReactions | undefined {
+  if (!reactions || typeof reactions !== "object" || authors.size === 0) {
+    return reactions;
+  }
+
+  const kept: ChatReactions = {};
+  let changed = false;
+
+  for (const [reaction, steamIds] of Object.entries(reactions)) {
+    if (!Array.isArray(steamIds)) {
+      kept[reaction] = steamIds;
+      continue;
+    }
+
+    const remaining = steamIds.filter(
+      (steamId) => !authors.has(String(steamId)),
+    );
+
+    if (remaining.length !== steamIds.length) {
+      changed = true;
+    }
+
+    if (remaining.length > 0) {
+      kept[reaction] = remaining;
+    }
+  }
+
+  return changed ? kept : reactions;
 }
 
 // A conversation's unread count comes from the server, which counts every

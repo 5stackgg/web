@@ -323,7 +323,7 @@ describe("ChatLobby blocked authors", () => {
   const THIRD = "76561198000000003";
 
   afterEach(() => {
-    socket.showAuthors([OTHER]);
+    socket.setHiddenAuthors([]);
     playNotificationSound.mockClear();
   });
 
@@ -334,7 +334,7 @@ describe("ChatLobby blocked authors", () => {
       lobbyId: "blocked-live",
       playNotificationSound: true,
     });
-    socket.hideAuthors([OTHER]);
+    socket.setHiddenAuthors([OTHER]);
 
     socket.emit("lobby:match:blocked-live:chat", line("hidden", 0));
     await flushPromises();
@@ -372,11 +372,40 @@ describe("ChatLobby blocked authors", () => {
     const lobby = wrapper.vm as any;
     lobby.lastReadMessageCount = 4;
 
-    socket.hideAuthors([OTHER]);
+    socket.setHiddenAuthors([OTHER]);
     await flushPromises();
 
     expect(lobby.messages.map((m: LobbyMessage) => m.id)).toEqual(["b", "d"]);
     expect(lobby.lastReadMessageCount).toBe(2);
     expect(wrapper.text()).not.toContain("line a");
+  });
+
+  it("keeps the New line in place when both merged rooms lose their lines", async () => {
+    signIn({ role: "user" });
+
+    const wrapper = await mountLobby({
+      lobbyId: "blocked-merged",
+      teamLobbyId: "blocked-merged:lineup-1",
+    });
+    socket.emit("lobby:match:blocked-merged:messages", {
+      messages: [line("e1", 0), line("e2", 2, THIRD), line("e3", 4)],
+    });
+    socket.emit("lobby:match_team:blocked-merged:lineup-1:messages", {
+      messages: [line("t1", 1, THIRD), line("t2", 3), line("t3", 5, THIRD)],
+    });
+    await flushPromises();
+
+    const lobby = wrapper.vm as any;
+    lobby.lastReadMessageCount = 4;
+
+    socket.setHiddenAuthors([OTHER]);
+    await flushPromises();
+
+    expect(lobby.messages.map((m: LobbyMessage) => m.id)).toEqual([
+      "t1",
+      "e2",
+      "t3",
+    ]);
+    expect(lobby.lastReadMessageCount).toBe(2);
   });
 });

@@ -912,14 +912,46 @@ describe("Socket lobby reactions", () => {
   });
 });
 
+describe("Socket live order", () => {
+  let lobby: ReturnType<typeof socket.joinLobby>;
+
+  beforeEach(() => {
+    vi.spyOn(console, "info").mockImplementation(() => {});
+    lobby = socket.joinLobby("socket-spec", "match", "live-order");
+    socket.emit("lobby:match:live-order:messages", {
+      messages: [line("a", 0), line("b", 1)],
+    });
+  });
+
+  afterEach(() => {
+    lobby.leave();
+    vi.restoreAllMocks();
+  });
+
+  it("orders a late live line by its timestamp and keeps one copy", () => {
+    socket.emit("lobby:match:live-order:chat", line("d", 3));
+    socket.emit("lobby:match:live-order:chat", line("c", 2));
+    socket.emit("lobby:match:live-order:chat", line("d", 3));
+
+    expect(ids(lobby.messages)).toEqual(["a", "b", "c", "d"]);
+  });
+});
+
 describe("Socket hidden authors", () => {
   const DANA = "76561198000000003";
   const ELI = "76561198000000004";
+  const FAY = "76561198000000005";
 
   const by = (id: string, minute: number, steamId: string): LobbyMessage => ({
     ...line(id, minute),
     from: { steam_id: steamId },
   });
+
+  const matchHistory = () => [
+    by("m1", 0, DANA),
+    { ...line("m2", 1), reactions: { heart: [DANA, FAY], fire: [DANA] } },
+    by("m3", 2, DANA),
+  ];
 
   let match: ReturnType<typeof socket.joinLobby>;
   let lobby: ReturnType<typeof socket.joinLobby>;
@@ -929,7 +961,7 @@ describe("Socket hidden authors", () => {
     match = socket.joinLobby("socket-spec", "match", "hidden-match");
     lobby = socket.joinLobby("socket-spec", "matchmaking", "hidden-lobby");
     socket.emit("lobby:match:hidden-match:messages", {
-      messages: [by("m1", 0, DANA), line("m2", 1), by("m3", 2, DANA)],
+      messages: matchHistory(),
     });
     socket.emit("lobby:matchmaking:hidden-lobby:messages", {
       messages: [line("l1", 0), by("l2", 1, DANA), by("l3", 2, ELI)],
@@ -937,18 +969,25 @@ describe("Socket hidden authors", () => {
   });
 
   afterEach(() => {
-    socket.showAuthors([DANA, ELI]);
+    socket.setHiddenAuthors([]);
     match.leave();
     lobby.leave();
     disconnect();
     vi.restoreAllMocks();
   });
 
+  function sentJoins(send: ReturnType<typeof vi.fn>) {
+    return send.mock.calls
+      .map(([payload]) => JSON.parse(payload))
+      .filter(({ event }) => event === "lobby:join")
+      .map(({ data }) => `${data.type}:${data.id}`);
+  }
+
   it("takes their lines out of every open room", () => {
     const deleted = vi.fn();
     match.on("lobby:deleted", deleted);
 
-    socket.hideAuthors([DANA]);
+    socket.setHiddenAuthors([DANA]);
 
     expect(ids(match.messages)).toEqual(["m2"]);
     expect(ids(lobby.messages)).toEqual(["l1", "l3"]);
@@ -958,10 +997,23 @@ describe("Socket hidden authors", () => {
     ]);
   });
 
+  it("names only the players the set gained or lost", () => {
+    expect(socket.setHiddenAuthors([DANA, ELI])).toEqual({
+      added: [DANA, ELI],
+      removed: [],
+    });
+    expect(socket.setHiddenAuthors([ELI])).toEqual({
+      added: [],
+      removed: [DANA],
+    });
+    expect(socket.hidesAuthor(DANA)).toBe(false);
+    expect(socket.hidesAuthor(ELI)).toBe(true);
+  });
+
   it("drops their live lines without telling the room", () => {
     const chat = vi.fn();
     match.on("lobby:chat", chat);
-    socket.hideAuthors([DANA]);
+    socket.setHiddenAuthors([DANA]);
 
     socket.emit("lobby:match:hidden-match:chat", by("m4", 3, DANA));
     socket.emit("lobby:match:hidden-match:chat", line("m5", 4));
@@ -971,18 +1023,36 @@ describe("Socket hidden authors", () => {
     expect(chat).toHaveBeenCalledWith(line("m5", 4));
   });
 
-  it("keeps their lines out of a snapshot built before the block", () => {
-    socket.hideAuthors([DANA]);
+  it("keeps their lines and reactions out of a snapshot built before the block", () => {
+    socket.setHiddenAuthors([DANA]);
 
     socket.emit("lobby:match:hidden-match:messages", {
-      messages: [by("m1", 0, DANA), line("m2", 1), by("m3", 2, DANA)],
+      messages: matchHistory(),
     });
 
     expect(ids(match.messages)).toEqual(["m2"]);
+    expect(match.messages[0].reactions).toEqual({ heart: [FAY] });
+  });
+
+  it("takes their reactions off the lines still shown", () => {
+    socket.setHiddenAuthors([DANA]);
+
+    expect(match.messages[0].reactions).toEqual({ heart: [FAY] });
+
+    socket.emit("lobby:match:hidden-match:reaction", {
+      id: "m2",
+      reactions: { heart: [DANA, FAY], sad: [DANA] },
+    });
+    expect(match.messages[0].reactions).toEqual({ heart: [FAY] });
+
+    socket.emit("lobby:match:hidden-match:messages", {
+      messages: matchHistory(),
+    });
+    expect(match.messages[0].reactions).toEqual({ heart: [FAY] });
   });
 
   it("never brings a hidden line back through an edit or a reaction", () => {
-    socket.hideAuthors([DANA]);
+    socket.setHiddenAuthors([DANA]);
 
     socket.emit("lobby:match:hidden-match:edited", {
       id: "m1",
@@ -994,54 +1064,51 @@ describe("Socket hidden authors", () => {
       reactions: { heart: [ELI] },
     });
 
-    expect(match.messages).toEqual([line("m2", 1)]);
-  });
-
-  it("orders a late live line by its timestamp and keeps one copy", () => {
-    socket.emit("lobby:match:hidden-match:chat", line("m6", 6));
-    socket.emit("lobby:match:hidden-match:chat", line("m5", 5));
-    socket.emit("lobby:match:hidden-match:chat", line("m6", 6));
-
-    expect(ids(match.messages)).toEqual(["m1", "m2", "m3", "m5", "m6"]);
+    expect(ids(match.messages)).toEqual(["m2"]);
   });
 
   it("asks every open room for its history again on an unblock", () => {
-    socket.hideAuthors([DANA]);
+    socket.setHiddenAuthors([DANA]);
     const send = connect();
 
-    socket.showAuthors([DANA]);
+    socket.setHiddenAuthors([]);
 
-    const joins = send.mock.calls
-      .map(([payload]) => JSON.parse(payload))
-      .filter(({ event }) => event === "lobby:join")
-      .map(({ data }) => `${data.type}:${data.id}`);
-    expect(joins).toEqual(
-      expect.arrayContaining(["match:hidden-match", "matchmaking:hidden-lobby"]),
+    expect(sentJoins(send)).toEqual(
+      expect.arrayContaining([
+        "match:hidden-match",
+        "matchmaking:hidden-lobby",
+      ]),
     );
 
     socket.emit("lobby:match:hidden-match:messages", {
-      messages: [by("m1", 0, DANA), line("m2", 1), by("m3", 2, DANA)],
+      messages: matchHistory(),
     });
     expect(ids(match.messages)).toEqual(["m1", "m2", "m3"]);
+    expect(match.messages[1].reactions).toEqual({
+      heart: [DANA, FAY],
+      fire: [DANA],
+    });
   });
 
   it("keeps a line deleted while hidden out of the history that comes back", () => {
-    socket.hideAuthors([DANA]);
+    socket.setHiddenAuthors([DANA]);
     socket.emit("lobby:match:hidden-match:deleted", { id: "m3" });
-    socket.showAuthors([DANA]);
+    socket.setHiddenAuthors([]);
 
     socket.emit("lobby:match:hidden-match:messages", {
-      messages: [by("m1", 0, DANA), line("m2", 1), by("m3", 2, DANA)],
+      messages: matchHistory(),
     });
 
     expect(ids(match.messages)).toEqual(["m1", "m2"]);
   });
 
-  it("rejoins nothing for a player who was not hidden", () => {
+  it("rejoins nothing when nobody left the set", () => {
+    socket.setHiddenAuthors([DANA]);
     const send = connect();
 
-    socket.showAuthors([ELI]);
+    socket.setHiddenAuthors([DANA, ELI]);
+    socket.setHiddenAuthors([DANA, ELI]);
 
-    expect(send).not.toHaveBeenCalled();
+    expect(sentJoins(send)).toEqual([]);
   });
 });

@@ -1587,6 +1587,7 @@
         "my_account": "Hesabım",
         "api_keys": "API anahtarları",
         "linked_accounts": "Bağlı hesaplar",
+        "blocked_players": "Engellenen oyuncular",
         "voice": "Ses ve mikrofon",
         "api_keys_management": {
           "add_api_key": "API anahtarı ekle",
@@ -2838,6 +2839,13 @@
         "import_share_code_submit": "İçe aktar",
         "toast_share_code_queued": "Maç içe aktarma sırasına alındı",
         "toast_share_code_failed": "Maç içe aktarılamadı"
+      },
+      "blocked_players": {
+        "title": "Engellenen oyuncular",
+        "description": "Engellenen oyuncular sana mesaj, davet veya arkadaşlık isteği gönderemez. Birinin engelini kaldırmak arkadaşlığınızı geri getirmez.",
+        "empty_title": "Engellenen oyuncu yok",
+        "empty_description": "Profilinden veya oyuncu menüsünden engellediğin oyuncular burada görünür.",
+        "blocked_on": "Engellendi"
       }
     },
     "watch": {
@@ -8100,6 +8108,24 @@
     "current_elo": "ŞU AN",
     "faceit_level": "Seviye {level}",
     "elo_aria_label": "ELO, birincil {tier} {elo}"
+  },
+  "player_blocks": {
+    "block": "Engelle",
+    "unblock": "Engeli kaldır",
+    "blocked_badge": "Engellendi",
+    "confirm": {
+      "title": "{name} engellensin mi?",
+      "description": "{name} sana mesaj, davet veya arkadaşlık isteği gönderemeyecek. Arkadaşlığınız kaldırılacak ve engeli kaldırsan bile geri gelmeyecek.",
+      "action": "Engelle"
+    },
+    "toasts": {
+      "blocked": "{name} engellendi",
+      "unblocked": "{name} adlı oyuncunun engeli kaldırıldı"
+    },
+    "errors": {
+      "title": "İşlem kullanılamıyor",
+      "player_blocked": "Bu oyuncuyla bunu yapamazsın."
+    }
   },
   "maps": {
     "veto": {

@@ -1587,6 +1587,7 @@
         "my_account": "アカウント",
         "api_keys": "API キー",
         "linked_accounts": "連携アカウント",
+        "blocked_players": "ブロックしたプレイヤー",
         "voice": "音声とオーディオ",
         "api_keys_management": {
           "add_api_key": "API キーを追加",
@@ -2838,6 +2839,13 @@
         "import_share_code_submit": "インポート",
         "toast_share_code_queued": "試合をインポートの待機列に追加しました",
         "toast_share_code_failed": "試合をインポートできませんでした"
+      },
+      "blocked_players": {
+        "title": "ブロックしたプレイヤー",
+        "description": "ブロックしたプレイヤーは、あなたにメッセージ、招待、フレンド申請を送れません。ブロックを解除してもフレンド関係は元に戻りません。",
+        "empty_title": "ブロックしたプレイヤーはいません",
+        "empty_description": "プロフィールやプレイヤーメニューからブロックしたプレイヤーがここに表示されます。",
+        "blocked_on": "ブロック"
       }
     },
     "watch": {
@@ -8100,6 +8108,24 @@
     "current_elo": "現在",
     "faceit_level": "レベル {level}",
     "elo_aria_label": "ELO、主要 {tier} {elo}"
+  },
+  "player_blocks": {
+    "block": "ブロック",
+    "unblock": "ブロック解除",
+    "blocked_badge": "ブロック中",
+    "confirm": {
+      "title": "{name} をブロックしますか？",
+      "description": "{name} はあなたにメッセージ、招待、フレンド申請を送れなくなります。フレンド関係は解除され、ブロックを解除しても元に戻りません。",
+      "action": "ブロック"
+    },
+    "toasts": {
+      "blocked": "{name} をブロックしました",
+      "unblocked": "{name} のブロックを解除しました"
+    },
+    "errors": {
+      "title": "この操作は利用できません",
+      "player_blocked": "このプレイヤーに対してその操作はできません。"
+    }
   },
   "maps": {
     "veto": {

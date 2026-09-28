@@ -63,8 +63,10 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
+import BlockPlayerDialog from "~/components/player/BlockPlayerDialog.vue";
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import RadialStat from "~/components/charts/RadialStat.vue";
@@ -1682,10 +1684,14 @@ const playerHeroInlineRoleWrapClasses =
   "inline-flex [&_button]:inline-flex [&_button]:h-7 [&_button]:items-center [&_button]:gap-1.5 [&_button]:rounded-md [&_button]:border-[hsl(var(--tac-amber)_/_0.4)] [&_button]:bg-[hsl(var(--tac-amber)_/_0.08)] [&_button]:px-2.5 [&_button]:font-mono [&_button]:text-[0.6rem] [&_button]:font-semibold [&_button]:tracking-[0.14em] [&_button]:text-[hsl(var(--tac-amber))] [&_button]:hover:border-[hsl(var(--tac-amber))] [&_button]:hover:bg-[hsl(var(--tac-amber)_/_0.16)] [&_button>span]:uppercase [&_button>svg]:h-3 [&_button>svg]:w-3 [&_button>svg]:shrink-0";
 const playerHeroNameEditButtonClasses =
   "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-border bg-card/60 text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber)_/_0.6)] hover:bg-[hsl(var(--tac-amber)_/_0.1)] hover:text-[hsl(var(--tac-amber))] [&_svg]:h-4 [&_svg]:w-4";
+const playerHeroDangerActionButtonClasses =
+  "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-border bg-card/60 text-muted-foreground transition-colors duration-150 hover:border-destructive/50 hover:bg-destructive/15 hover:text-destructive [&_svg]:h-4 [&_svg]:w-4";
 const playerHeroAddFriendClasses =
   "group/addfriend relative inline-flex items-center justify-center gap-[0.55rem] overflow-hidden rounded-md border border-[hsl(var(--tac-amber)_/_0.55)] bg-[hsl(var(--tac-amber)_/_0.12)] px-4 py-2.5 font-sans text-[0.8rem] font-bold uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))] transition-[transform,border-color,background-color,box-shadow] duration-150 hover:-translate-y-px hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.2)] hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.45),0_8px_24px_-8px_hsl(var(--tac-amber)/0.5)] disabled:cursor-not-allowed disabled:opacity-60 max-md:w-full";
 const playerHeroFriendBadgeClasses =
   "inline-flex items-center justify-center gap-[0.5rem] rounded-md border border-emerald-500/40 bg-emerald-500/15 px-3 py-2 font-mono text-[0.72rem] font-medium uppercase tracking-[0.16em] text-emerald-400 max-md:w-full";
+const playerHeroBlockedBadgeClasses =
+  "inline-flex items-center justify-center gap-[0.5rem] rounded-md border border-border bg-muted/40 px-3 py-2 font-mono text-[0.72rem] font-medium uppercase tracking-[0.16em] text-muted-foreground max-md:w-full";
 const playerHeroAvatarFrameClasses =
   "relative h-[156px] w-[156px] border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] p-1 max-md:h-24 max-md:w-24";
 const playerHeroAvatarClasses = "block h-full w-full object-cover";
@@ -1767,7 +1773,11 @@ const playerHeroTeamChipDotClasses =
                   <button
                     v-if="heroActions.length === 1"
                     type="button"
-                    :class="playerHeroNameEditButtonClasses"
+                    :class="
+                      heroActions[0].destructive
+                        ? playerHeroDangerActionButtonClasses
+                        : playerHeroNameEditButtonClasses
+                    "
                     :title="heroActions[0].label"
                     :aria-label="heroActions[0].label"
                     @click="heroActions[0].run()"
@@ -1786,25 +1796,30 @@ const playerHeroTeamChipDotClasses =
                       </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" class="w-52">
-                      <DropdownMenuItem
-                        v-for="action in heroActions"
-                        :key="action.key"
-                        class="gap-2"
-                        @click="action.run()"
-                      >
-                        <component
-                          :is="action.icon"
-                          class="h-4 w-4"
-                          :class="{ 'text-destructive': action.danger }"
-                        />
-                        {{ action.label }}
-                        <span
-                          v-if="action.count"
-                          class="ml-auto font-mono text-xs tabular-nums text-muted-foreground"
+                      <template v-for="action in heroActions" :key="action.key">
+                        <DropdownMenuSeparator v-if="action.destructive" />
+                        <DropdownMenuItem
+                          class="gap-2"
+                          :class="{
+                            'text-destructive focus:text-destructive':
+                              action.destructive,
+                          }"
+                          @click="action.run()"
                         >
-                          {{ action.count }}
-                        </span>
-                      </DropdownMenuItem>
+                          <component
+                            :is="action.icon"
+                            class="h-4 w-4"
+                            :class="{ 'text-destructive': action.danger }"
+                          />
+                          {{ action.label }}
+                          <span
+                            v-if="action.count"
+                            class="ml-auto font-mono text-xs tabular-nums text-muted-foreground"
+                          >
+                            {{ action.count }}
+                          </span>
+                        </DropdownMenuItem>
+                      </template>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
@@ -1959,8 +1974,15 @@ const playerHeroTeamChipDotClasses =
                 ></span>
               </NuxtLink>
               <div v-else class="flex items-stretch gap-2">
+                <span
+                  v-if="isBlocked"
+                  :class="[playerHeroBlockedBadgeClasses, 'flex-1']"
+                >
+                  <Ban class="h-3.5 w-3.5" />
+                  <span>{{ $t("player_blocks.blocked_badge") }}</span>
+                </span>
                 <button
-                  v-if="canAddFriend"
+                  v-else-if="canAddFriend"
                   type="button"
                   :class="[playerHeroAddFriendClasses, 'flex-1']"
                   :disabled="friendActionPending"
@@ -2265,6 +2287,12 @@ const playerHeroTeamChipDotClasses =
       variant="external"
       v-model:open="sanctionsSheetOpen"
       @summary="sanctionsSummary = $event"
+    />
+
+    <BlockPlayerDialog
+      v-if="canBlock"
+      v-model:open="blockDialogOpen"
+      :player="player"
     />
 
     <PageTransition :delay="60" v-if="playerId">
@@ -3096,13 +3124,15 @@ const playerHeroTeamChipDotClasses =
 </template>
 
 <script lang="ts">
-import { Medal, Pencil, ShieldAlert } from "lucide-vue-next";
+import { Ban, Medal, Pencil, ShieldAlert } from "lucide-vue-next";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { e_team_roles_enum } from "~/generated/zeus";
 import { playerFields } from "~/graphql/playerFields";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 import { awardFields } from "~/graphql/awardFields";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
+import { usePlayerBlocks } from "~/composables/usePlayerBlocks";
+import { toast } from "~/components/ui/toast";
 
 export default {
   apollo: {
@@ -3283,6 +3313,7 @@ export default {
         };
       }>,
       editPlayerSheet: false,
+      blockDialogOpen: false,
     };
   },
   computed: {
@@ -3381,6 +3412,28 @@ export default {
         });
       }
 
+      if (this.canBlock) {
+        actions.push(
+          this.isBlocked
+            ? {
+                key: "unblock",
+                label: this.$t("player_blocks.unblock"),
+                icon: Ban,
+                run: () => this.unblockPlayer(),
+              }
+            : {
+                key: "block",
+                label: this.$t("player_blocks.block"),
+                icon: Ban,
+                danger: true,
+                destructive: true,
+                run: () => {
+                  this.blockDialogOpen = true;
+                },
+              },
+        );
+      }
+
       return actions;
     },
     isSelfProfile() {
@@ -3404,17 +3457,27 @@ export default {
         useFriendActions().isBusy(this.player.steam_id)
       );
     },
+    canBlock() {
+      return !!(this.me && this.player?.steam_id && !this.isSelfProfile);
+    },
+    isBlocked() {
+      return (
+        this.canBlock && usePlayerBlocks().isBlocked(this.player.steam_id)
+      );
+    },
     canAddFriend() {
       return !!(
         this.me &&
         this.player?.steam_id &&
         !this.isSelfProfile &&
+        !this.isBlocked &&
         this.friendRelationship === "none"
       );
     },
     hasRightColumn() {
       return (
         this.isSelfProfile ||
+        this.isBlocked ||
         this.canAddFriend ||
         this.friendRelationship !== "none" ||
         this.canMessage
@@ -3425,7 +3488,9 @@ export default {
     // friends, so anything looser renders a button that fails.
     canMessage() {
       return (
-        !!this.player && useDirectMessages().canMessage(this.player.steam_id)
+        !!this.player &&
+        !this.isBlocked &&
+        useDirectMessages().canMessage(this.player.steam_id)
       );
     },
     isAdmin() {
@@ -3540,6 +3605,21 @@ export default {
     async acceptFriendRequest() {
       if (!this.player?.steam_id || this.friendActionPending) return;
       await useFriendActions().acceptFriend(this.player.steam_id);
+    },
+    async unblockPlayer() {
+      if (!this.player?.steam_id) {
+        return;
+      }
+
+      const name = this.player.name;
+
+      try {
+        await usePlayerBlocks().unblock(this.player.steam_id);
+      } catch {
+        return;
+      }
+
+      toast({ title: this.$t("player_blocks.toasts.unblocked", { name }) });
     },
     handleImageError(event) {
       const img = event.target;

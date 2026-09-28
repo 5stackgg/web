@@ -1587,6 +1587,7 @@
         "my_account": "我的账户",
         "api_keys": "API 密钥",
         "linked_accounts": "已关联账号",
+        "blocked_players": "已屏蔽的玩家",
         "voice": "语音与音频",
         "api_keys_management": {
           "add_api_key": "添加 API 密钥",
@@ -2838,6 +2839,13 @@
         "import_share_code_submit": "导入",
         "toast_share_code_queued": "比赛已加入导入队列",
         "toast_share_code_failed": "无法导入比赛"
+      },
+      "blocked_players": {
+        "title": "已屏蔽的玩家",
+        "description": "被屏蔽的玩家无法向你发送消息、邀请或好友请求。取消屏蔽不会恢复你们的好友关系。",
+        "empty_title": "没有已屏蔽的玩家",
+        "empty_description": "你在玩家资料页或玩家菜单中屏蔽的玩家会显示在这里。",
+        "blocked_on": "屏蔽于"
       }
     },
     "watch": {
@@ -8100,6 +8108,24 @@
     "current_elo": "当前",
     "faceit_level": "等级 {level}",
     "elo_aria_label": "ELO，主要 {tier} {elo}"
+  },
+  "player_blocks": {
+    "block": "屏蔽",
+    "unblock": "取消屏蔽",
+    "blocked_badge": "已屏蔽",
+    "confirm": {
+      "title": "要屏蔽 {name} 吗？",
+      "description": "{name} 将无法再向你发送消息、邀请或好友请求。你们的好友关系将被移除，取消屏蔽后也不会恢复。",
+      "action": "屏蔽"
+    },
+    "toasts": {
+      "blocked": "已屏蔽 {name}",
+      "unblocked": "已取消屏蔽 {name}"
+    },
+    "errors": {
+      "title": "操作不可用",
+      "player_blocked": "无法对该玩家执行此操作。"
+    }
   },
   "maps": {
     "veto": {

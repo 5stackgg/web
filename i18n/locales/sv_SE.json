@@ -1587,6 +1587,7 @@
         "my_account": "Mitt konto",
         "api_keys": "API-nycklar",
         "linked_accounts": "Länkade konton",
+        "blocked_players": "Blockerade spelare",
         "voice": "Röst och ljud",
         "api_keys_management": {
           "add_api_key": "Lägg till API-nyckel",
@@ -2838,6 +2839,13 @@
         "import_share_code_submit": "Importera",
         "toast_share_code_queued": "Matchen har köats för import",
         "toast_share_code_failed": "Kunde inte importera matchen"
+      },
+      "blocked_players": {
+        "title": "Blockerade spelare",
+        "description": "Blockerade spelare kan inte skicka meddelanden, inbjudningar eller vänförfrågningar till dig. Att avblockera någon återställer inte er vänskap.",
+        "empty_title": "Inga blockerade spelare",
+        "empty_description": "Spelare som du blockerar från deras profil eller spelarmenyn visas här.",
+        "blocked_on": "Blockerad"
       }
     },
     "watch": {
@@ -8100,6 +8108,24 @@
     "current_elo": "NU",
     "faceit_level": "Nivå {level}",
     "elo_aria_label": "ELO, primär {tier} {elo}"
+  },
+  "player_blocks": {
+    "block": "Blockera",
+    "unblock": "Avblockera",
+    "blocked_badge": "Blockerad",
+    "confirm": {
+      "title": "Blockera {name}?",
+      "description": "{name} kommer inte att kunna skicka meddelanden, inbjudningar eller vänförfrågningar till dig. Er vänskap tas bort och återställs inte om du avblockerar.",
+      "action": "Blockera"
+    },
+    "toasts": {
+      "blocked": "{name} blockerad",
+      "unblocked": "{name} avblockerad"
+    },
+    "errors": {
+      "title": "Åtgärden är inte tillgänglig",
+      "player_blocked": "Det går inte att göra med den här spelaren."
+    }
   },
   "maps": {
     "veto": {

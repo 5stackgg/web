@@ -1587,6 +1587,7 @@
         "my_account": "Mi cuenta",
         "api_keys": "Claves API",
         "linked_accounts": "Cuentas vinculadas",
+        "blocked_players": "Jugadores bloqueados",
         "voice": "Voz y audio",
         "api_keys_management": {
           "add_api_key": "Añadir clave API",
@@ -2838,6 +2839,13 @@
         "import_share_code_submit": "Importar",
         "toast_share_code_queued": "Partida en cola para importar",
         "toast_share_code_failed": "No se ha podido importar la partida"
+      },
+      "blocked_players": {
+        "title": "Jugadores bloqueados",
+        "description": "Los jugadores bloqueados no pueden enviarte mensajes, invitaciones ni solicitudes de amistad. Desbloquear a alguien no restaura vuestra amistad.",
+        "empty_title": "No hay jugadores bloqueados",
+        "empty_description": "Los jugadores que bloquees desde su perfil o el menú del jugador aparecerán aquí.",
+        "blocked_on": "Bloqueado"
       }
     },
     "watch": {
@@ -8100,6 +8108,24 @@
     "current_elo": "ACTUAL",
     "faceit_level": "Nivel {level}",
     "elo_aria_label": "ELO, principal {tier} {elo}"
+  },
+  "player_blocks": {
+    "block": "Bloquear",
+    "unblock": "Desbloquear",
+    "blocked_badge": "Bloqueado",
+    "confirm": {
+      "title": "¿Bloquear a {name}?",
+      "description": "{name} no podrá enviarte mensajes, invitaciones ni solicitudes de amistad. Vuestra amistad se eliminará y no se restaurará si lo desbloqueas.",
+      "action": "Bloquear"
+    },
+    "toasts": {
+      "blocked": "{name} bloqueado",
+      "unblocked": "{name} desbloqueado"
+    },
+    "errors": {
+      "title": "Acción no disponible",
+      "player_blocked": "No puedes hacer eso con este jugador."
+    }
   },
   "maps": {
     "veto": {

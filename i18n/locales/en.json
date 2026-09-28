@@ -1587,6 +1587,7 @@
         "my_account": "My Account",
         "api_keys": "API Keys",
         "linked_accounts": "Linked Accounts",
+        "blocked_players": "Blocked Players",
         "voice": "Voice & Audio",
         "api_keys_management": {
           "add_api_key": "Add API Key",
@@ -2838,6 +2839,13 @@
         "import_share_code_submit": "Import",
         "toast_share_code_queued": "Match queued for import",
         "toast_share_code_failed": "Could not import match"
+      },
+      "blocked_players": {
+        "title": "Blocked Players",
+        "description": "Blocked players can't message you, invite you, or send you friend requests. Unblocking someone doesn't restore your friendship.",
+        "empty_title": "No blocked players",
+        "empty_description": "Players you block from their profile or the player menu will show up here.",
+        "blocked_on": "Blocked"
       }
     },
     "watch": {
@@ -8100,6 +8108,24 @@
     "current_elo": "CURRENT",
     "faceit_level": "Level {level}",
     "elo_aria_label": "ELO, primary {tier} {elo}"
+  },
+  "player_blocks": {
+    "block": "Block",
+    "unblock": "Unblock",
+    "blocked_badge": "Blocked",
+    "confirm": {
+      "title": "Block {name}?",
+      "description": "{name} won't be able to message you, invite you, or send you friend requests. Your friendship will be removed, and unblocking won't restore it.",
+      "action": "Block"
+    },
+    "toasts": {
+      "blocked": "{name} blocked",
+      "unblocked": "{name} unblocked"
+    },
+    "errors": {
+      "title": "Action unavailable",
+      "player_blocked": "You can't do that with this player."
+    }
   },
   "maps": {
     "veto": {

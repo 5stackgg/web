@@ -342,16 +342,18 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     () => hasPersonalNotifications.value || hasAdminNotifications.value,
   );
 
-  // Every chat message also leaves a bell row, and the chat tabs already count
-  // it, so a badge that adds chat to the bell has to take these back out.
-  const unreadChatNotificationCount = computed(
-    () =>
-      visibleNotifications.value.filter(
+  // Every chat message also leaves a bell row, keyed `${chatType}:${lobbyId}`,
+  // so a badge that adds the chat tabs' unread to the bell can tell which rows
+  // it has already counted.
+  const unreadChatNotificationRooms = computed(() =>
+    visibleNotifications.value
+      .filter(
         (n) =>
           !n.is_read &&
           (n.type === e_notification_types_enum.ChatMessage ||
             n.type === e_notification_types_enum.MatchChatMessage),
-      ).length,
+      )
+      .map((n) => n.entity_id),
   );
 
   const stackedNotifications = computed<NotificationStackItem[]>(() => {
@@ -715,7 +717,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     scheduleTaskCount,
     stackedNotifications,
     unreadNotificationCount,
-    unreadChatNotificationCount,
+    unreadChatNotificationRooms,
     hasNotifications,
     hasPersonalNotifications,
     hasAdminNotifications,

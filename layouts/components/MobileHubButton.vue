@@ -9,12 +9,24 @@ import { useNotificationBadge } from "~/composables/useNotificationBadge";
 import { badgePopTransition, formatBadgeCount } from "~/utilities/badgeCount";
 
 const { openLastOrDefaultHub } = useHubState();
-const { totalUnread } = useChatTabs();
-const { unreadNotificationCount, unreadChatNotificationCount } =
+const { tabs, unreadCounts, totalUnread } = useChatTabs();
+const { unreadNotificationCount, unreadChatNotificationRooms } =
   useNotificationBadge();
 
+const roomsCountedByTabs = computed(
+  () =>
+    new Set(
+      tabs.value
+        .filter((tab) => (unreadCounts.value[tab.id] ?? 0) > 0)
+        .map((tab) => `${tab.type}:${tab.lobbyId}`),
+    ),
+);
 const otherNotificationCount = computed(
-  () => unreadNotificationCount.value - unreadChatNotificationCount.value,
+  () =>
+    unreadNotificationCount.value -
+    unreadChatNotificationRooms.value.filter((room) =>
+      roomsCountedByTabs.value.has(room),
+    ).length,
 );
 const unreadCount = computed(
   () => totalUnread.value + otherNotificationCount.value,

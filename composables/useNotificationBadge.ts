@@ -13,14 +13,14 @@ export function useNotificationBadge() {
   const unreadNotificationCount = computed(
     () => useNotificationStore().unreadNotificationCount,
   );
-  const unreadChatNotificationCount = computed(
-    () => useNotificationStore().unreadChatNotificationCount,
+  const unreadChatNotificationRooms = computed(
+    () => useNotificationStore().unreadChatNotificationRooms,
   );
   return {
     hasNotifications,
     hasPersonalNotifications,
     hasAdminNotifications,
     unreadNotificationCount,
-    unreadChatNotificationCount,
+    unreadChatNotificationRooms,
   };
 }

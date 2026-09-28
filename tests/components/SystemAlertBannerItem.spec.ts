@@ -27,6 +27,8 @@ describe("SystemAlertBannerItem message links", () => {
     const links = wrapper.findAll("a");
     expect(links).toHaveLength(3);
 
+    expect(wrapper.findAllComponents({ name: "NuxtLink" })).toHaveLength(2);
+
     expect(links[0].text()).toBe("the cup");
     expect(links[0].attributes("href")).toBe("/tournaments/abc");
     expect(links[0].attributes("target")).toBeUndefined();
@@ -51,20 +53,12 @@ describe("SystemAlertBannerItem message links", () => {
 
     const links = wrapper.findAll("a");
     expect(links).toHaveLength(2);
+    expect(wrapper.findAllComponents({ name: "NuxtLink" })).toHaveLength(0);
     for (const link of links) {
       expect(link.attributes("target")).toBeUndefined();
     }
     expect(links[0].attributes("href")).toBe("/discord-invite");
     expect(links[1].attributes("href")).toBe("/auth/steam");
-
-    const click = new MouseEvent("click", { bubbles: true, cancelable: true });
-    links[0].element.addEventListener("click", (event) =>
-      event.preventDefault(),
-    );
-    links[0].element.dispatchEvent(click);
-    await flushPromises();
-
-    expect(useRouter().currentRoute.value.path).not.toBe("/discord-invite");
   });
 
   it("never renders the message as html", async () => {

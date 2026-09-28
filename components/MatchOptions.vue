@@ -65,7 +65,7 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
         </FormField>
       </div>
 
-      <FormField name="map_pool" v-if="!stageBracketOverride">
+      <FormField name="map_pool" v-if="!stageBracketOverride && !isRush">
         <FormItem>
           <Card>
             <div class="p-6 space-y-6">
@@ -1614,7 +1614,7 @@ export default {
     forceVeto: {
       immediate: true,
       handler(forceVeto) {
-        if (forceVeto && this.form.values.map_veto !== true) {
+        if (forceVeto && !this.isRush && this.form.values.map_veto !== true) {
           this.form.setFieldValue("map_veto", true);
         }
       },
@@ -1682,19 +1682,29 @@ export default {
       },
     },
     ["form.values.type"]: {
-      handler(type) {
+      handler(type, previousType) {
         this.form.setFieldValue(
           "mr",
           type === e_match_types_enum.Competitive ? "12" : "8",
         );
 
+        this.form.setFieldValue("map_pool", []);
+
         if (type === e_match_types_enum.Rush) {
           this.form.setFieldValue("best_of", "1");
           this.form.setFieldValue("overtime", false);
           this.form.setFieldValue("knife_round", false);
+          this.form.setFieldValue("map_veto", false);
+          this.form.setFieldValue("custom_map_pool", false);
+          this.form.setFieldValue("map_pool_id", this.defaultMapPool?.id);
+          return;
         }
 
-        this.form.setFieldValue("map_pool", []);
+        if (previousType === e_match_types_enum.Rush) {
+          this.form.setFieldValue("map_veto", true);
+          this.form.setFieldValue("custom_map_pool", false);
+        }
+
         if (this.form.values.map_veto) {
           this.form.setFieldValue("map_pool_id", this.defaultMapPool.id);
         }
@@ -1702,6 +1712,12 @@ export default {
     },
     ["form.values.custom_map_pool"]: {
       handler(custom_map_pool) {
+        // Rush has one map, so its seeded pool is the only pool it plays.
+        if (this.isRush) {
+          this.form.setFieldValue("map_pool_id", this.defaultMapPool?.id);
+          return;
+        }
+
         // only update if its a custom map pool and it matches the default
         // this helps the UI know wether to reset the map pool list or not
         if (
@@ -1723,6 +1739,11 @@ export default {
     },
     ["form.values.map_veto"]: {
       handler(mapVeto) {
+        if (this.isRush) {
+          this.form.setFieldValue("custom_map_pool", false);
+          return;
+        }
+
         if (mapVeto) {
           this.form.setFieldValue("custom_map_pool", false);
           return;

@@ -986,7 +986,8 @@
   "elo_change_badge": {
     "comp": "COMP",
     "wingman": "WINGMAN",
-    "duel": "DUEL"
+    "duel": "DUEL",
+    "rush": "RUSH"
   },
   "render_queue_status": {
     "queued": "En file",
@@ -1968,7 +1969,7 @@
           "order_hint": "Chaque couche l'emporte sur celle du dessus.",
           "layers": {
             "type": "Type de match",
-            "type_note": "Competitive, Wingman, Duel",
+            "type_note": "Competitive, Wingman, Duel, Rush",
             "lan_note": "régions LAN uniquement",
             "global_note": "tous les matchs",
             "plugin": "Cvars du plugin",
@@ -3561,6 +3562,7 @@
         "competitive": "Compétitif",
         "wingman": "Wingman",
         "duel": "Duel",
+        "rush": "Rush",
         "scrimmage": "Scrim",
         "premier": "Premier",
         "faceit": "Faceit"
@@ -4572,6 +4574,7 @@
         "duration": "{seconds}s",
         "requested_by": "Demandée par",
         "capped": "Affichage des {shown} premières lignes sur {total}.",
+        "caveats": "Réserves ({count})",
         "count_broken": "{count} cassés",
         "count_moved": "{count} déplacés",
         "count_unsimulatable": "{count} non simulables",
@@ -6679,6 +6682,7 @@
           "description": "Le nombre de rounds joués avant que les équipes changent de camp.",
           "placeholder": "Sélectionner les rounds max"
         },
+        "rush_fixed_rules": "Rush se joue toujours en 8 rounds gagnants, sans prolongation ni knife round.",
         "region": {
           "title": "Paramètres de région",
           "lan_match": "Match LAN",
@@ -7429,7 +7433,7 @@
         "cam_chase": "SUIVI",
         "cam_chase_tip": "Suivre le joueur ciblé",
         "roof": "TOITS",
-        "roof_tip": "Coupe des toits — le milieu est automatique (toits masqués, action visible). Vers le haut = révéler plus, vers le bas = couper plus, max = map complète.",
+        "roof_tip": "Coupe des toits — masque les toits et raccourcit les murs pour garder l'action visible. Vers le bas = coupe plus basse (plan au sol), vers le haut = murs plus hauts, max = map complète.",
         "play_by_play": "DÉROULÉ",
         "play_by_play_tip": "Afficher le journal des événements du round",
         "more": "Plus d'options",
@@ -7883,7 +7887,13 @@
     },
     "official": "Maps officielles",
     "workshop": "Maps workshop",
-    "active_duty": "Active Duty"
+    "active_duty": "Active Duty",
+    "radar_room": {
+      "label": "Salle",
+      "auto": "Auto",
+      "room": "Salle {name}",
+      "full_map": "Carte complète"
+    }
   },
   "region": {
     "form": {
@@ -7906,6 +7916,10 @@
       "duel": {
         "title": "Duel",
         "description": "Une expérience compétitive en 1 contre 1, parfaite pour travailler ton skill individuel"
+      },
+      "rush": {
+        "title": "Rush",
+        "description": "Des matchs 3v3 nerveux, salle par salle, où chaque round gagné fait avancer le combat"
       }
     },
     "cancel_matchmaking": "Annuler le matchmaking",

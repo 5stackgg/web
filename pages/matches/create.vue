@@ -48,6 +48,7 @@ const PER_TEAM: Record<string, number> = {
   Competitive: 5,
   Wingman: 2,
   Duel: 1,
+  Rush: 3,
 };
 const matchType = computed(() => (form.values as any).type);
 const perTeam = computed(() => PER_TEAM[matchType.value] || 5);

@@ -446,6 +446,7 @@ const isDuel = computed(() => matchType.value === "Duel");
 const PER_TEAM: Record<string, number> = {
   Duel: 1,
   Wingman: 2,
+  Rush: 3,
   Competitive: 5,
   Premier: 5,
   Faceit: 5,

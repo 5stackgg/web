@@ -3,7 +3,10 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { MapPinOff, Maximize2, Minus, Plus, Tags } from "lucide-vue-next";
 import RadarCallouts from "~/components/common/RadarCallouts.vue";
 import { useMapCallouts } from "~/composables/useMapCallouts";
-import { useRadarProjection } from "~/composables/useRadarProjection";
+import {
+  useRadarProjection,
+  type RadarPoint,
+} from "~/composables/useRadarProjection";
 import {
   UTILITY_TYPE_COLORS,
   utilityLanding,
@@ -90,13 +93,45 @@ watch(
  */
 const displaySrc = ref<string | null>(null);
 
+// A map with a radar per room shows the room the throws are in: the selected
+// lineup's, or else wherever most of what the board draws stands.
+function boardVolumePoints(): RadarPoint[] {
+  const selected = props.lineups.find(
+    (lineup) => lineup.id === props.selectedId,
+  );
+  const points: RadarPoint[] = [];
+  for (const lineup of selected ? [selected] : props.lineups) {
+    points.push(utilityOrigin(lineup));
+    const landing = utilityLanding(lineup);
+    if (landing) {
+      points.push(landing);
+    }
+  }
+  if (selected) {
+    return points;
+  }
+  for (const spot of props.metaSpots ?? []) {
+    points.push(spot.landing ?? spot.origin);
+  }
+  for (const marker of props.markers ?? []) {
+    points.push(marker.point);
+  }
+  for (const segment of props.segments ?? []) {
+    points.push(segment.from, segment.to);
+  }
+  return points;
+}
+
 const {
   radarSrc,
   hasCalibration,
   projectCalibrated,
   unprojectCalibrated,
   CANVAS,
-} = useRadarProjection(() => props.mapName, { radarFailed });
+} = useRadarProjection(() => props.mapName, {
+  radarFailed,
+  volumePoints: boardVolumePoints,
+});
 
 const { callouts, hasCallouts } = useMapCallouts(() => props.mapName);
 

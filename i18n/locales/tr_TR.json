@@ -986,7 +986,8 @@
   "elo_change_badge": {
     "comp": "COMP",
     "wingman": "WINGMAN",
-    "duel": "DUEL"
+    "duel": "DUEL",
+    "rush": "RUSH"
   },
   "render_queue_status": {
     "queued": "Sırada",
@@ -1968,7 +1969,7 @@
           "order_hint": "Her katman bir üstündekini geçersiz kılar.",
           "layers": {
             "type": "Maç türü",
-            "type_note": "Competitive, Wingman, Duel",
+            "type_note": "Competitive, Wingman, Duel, Rush",
             "lan_note": "yalnızca LAN bölgeleri",
             "global_note": "her maç",
             "plugin": "Eklenti cvar'ları",
@@ -3561,6 +3562,7 @@
         "competitive": "Rekabetçi",
         "wingman": "Wingman",
         "duel": "Düello",
+        "rush": "Rush",
         "scrimmage": "Scrim",
         "premier": "Premier",
         "faceit": "Faceit"
@@ -4572,6 +4574,7 @@
         "duration": "{seconds}sn",
         "requested_by": "İsteyen",
         "capped": "{total} satırdan ilk {shown} tanesi gösteriliyor.",
+        "caveats": "Uyarılar ({count})",
         "count_broken": "{count} bozuk",
         "count_moved": "{count} kaymış",
         "count_unsimulatable": "{count} simüle edilemez",
@@ -6679,6 +6682,7 @@
           "description": "Takımların taraf değiştirmeden önce oynadığı raunt sayısı.",
           "placeholder": "Maksimum raunt seç"
         },
+        "rush_fixed_rules": "Rush her zaman 8 raunt kazanılana kadar oynanır; uzatma ve bıçak raundu yoktur.",
         "region": {
           "title": "Bölge Ayarları",
           "lan_match": "LAN Maçı",
@@ -7429,7 +7433,7 @@
         "cam_chase": "TAKİP",
         "cam_chase_tip": "Takip edilen oyuncuyu izle",
         "roof": "ÇATI",
-        "roof_tip": "Çatı kesimi — orta ayar otomatik (çatılar kapalı, aksiyon görünür). Yukarı = daha çok göster, aşağı = daha çok kes, maksimum = tüm harita.",
+        "roof_tip": "Çatı kesimi — aksiyon görünür kalsın diye çatıları gizler ve duvarları kısaltır. Aşağı = daha alçak kesim (kat planı), yukarı = daha yüksek duvarlar, maksimum = tüm harita.",
         "play_by_play": "OLAY AKIŞI",
         "play_by_play_tip": "Raundun olay akışı günlüğünü göster",
         "more": "Diğer seçenekler",
@@ -7883,7 +7887,13 @@
     },
     "official": "Resmi haritalar",
     "workshop": "Atölye haritaları",
-    "active_duty": "Aktif havuz"
+    "active_duty": "Aktif havuz",
+    "radar_room": {
+      "label": "Oda",
+      "auto": "Otomatik",
+      "room": "Oda {name}",
+      "full_map": "Tüm harita"
+    }
   },
   "region": {
     "form": {
@@ -7906,6 +7916,10 @@
       "duel": {
         "title": "Düello",
         "description": "Bireysel becerini geliştirmek için ideal, rekabetçi 1v1 deneyim"
+      },
+      "rush": {
+        "title": "Rush",
+        "description": "Oda oda ilerleyen hızlı tempolu 3v3 maçlar; kazanılan her raunt mücadeleyi ileri taşır"
       }
     },
     "cancel_matchmaking": "Eşleştirmeyi iptal et",

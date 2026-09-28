@@ -142,7 +142,7 @@ export default {
               ? Array.isArray(this.match_type)
                 ? this.match_type
                 : [this.match_type]
-              : ["Competitive", "Wingman", "Duel"],
+              : ["Competitive", "Wingman", "Duel", "Rush"],
           },
         },
       };

@@ -986,7 +986,8 @@
   "elo_change_badge": {
     "comp": "COMP",
     "wingman": "WINGMAN",
-    "duel": "DUEL"
+    "duel": "DUEL",
+    "rush": "RUSH"
   },
   "render_queue_status": {
     "queued": "In coda",
@@ -1968,7 +1969,7 @@
           "order_hint": "Ogni livello prevale su quello sopra.",
           "layers": {
             "type": "Tipo di partita",
-            "type_note": "Competitive, Wingman, Duel",
+            "type_note": "Competitive, Wingman, Duel, Rush",
             "lan_note": "solo regioni LAN",
             "global_note": "ogni partita",
             "plugin": "Cvar del plugin",
@@ -3561,6 +3562,7 @@
         "competitive": "Competitiva",
         "wingman": "Wingman",
         "duel": "Duello",
+        "rush": "Rush",
         "scrimmage": "Scrim",
         "premier": "Premier",
         "faceit": "Faceit"
@@ -4572,6 +4574,7 @@
         "duration": "{seconds}s",
         "requested_by": "Richiesta da",
         "capped": "Mostrate le prime {shown} righe di {total}.",
+        "caveats": "Avvertenze ({count})",
         "count_broken": "{count} rotti",
         "count_moved": "{count} spostati",
         "count_unsimulatable": "{count} non simulabili",
@@ -6679,6 +6682,7 @@
           "description": "Il numero di round giocati prima che i team cambino lato.",
           "placeholder": "Seleziona i round massimi"
         },
+        "rush_fixed_rules": "Rush si gioca sempre a 8 round vinti, senza overtime né knife round.",
         "region": {
           "title": "Impostazioni regione",
           "lan_match": "Match LAN",
@@ -7429,7 +7433,7 @@
         "cam_chase": "INSEGUI",
         "cam_chase_tip": "Insegui il giocatore seguito",
         "roof": "TETTO",
-        "roof_tip": "Taglio tetti — al centro è automatico (tetti nascosti, azione visibile). Su = mostra di più, giù = taglia di più, max = mappa completa.",
+        "roof_tip": "Taglio tetti — nasconde i tetti e accorcia i muri per tenere visibile l'azione. Giù = taglio più basso (pianta), su = muri più alti, max = mappa completa.",
         "play_by_play": "PLAY BY PLAY",
         "play_by_play_tip": "Mostra il log degli eventi play-by-play del round",
         "more": "Altre opzioni",
@@ -7883,7 +7887,13 @@
     },
     "official": "Mappe ufficiali",
     "workshop": "Mappe workshop",
-    "active_duty": "Active Duty"
+    "active_duty": "Active Duty",
+    "radar_room": {
+      "label": "Stanza",
+      "auto": "Automatico",
+      "room": "Stanza {name}",
+      "full_map": "Mappa completa"
+    }
   },
   "region": {
     "form": {
@@ -7906,6 +7916,10 @@
       "duel": {
         "title": "Duello",
         "description": "Un'esperienza competitiva 1 contro 1, perfetta per allenare l'abilità individuale"
+      },
+      "rush": {
+        "title": "Rush",
+        "description": "Match 3v3 ad alta velocità, stanza dopo stanza, dove ogni round vinto spinge avanti lo scontro"
       }
     },
     "cancel_matchmaking": "Annulla matchmaking",

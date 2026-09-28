@@ -126,7 +126,7 @@ const squad = computed(() => roster.value.slice(1));
 
 const playerWithElo = (player: any, snapshot?: number) => {
   const e = player?.elo;
-  if (e && (e.competitive || e.wingman || e.duel)) {
+  if (e && (e.competitive || e.wingman || e.duel || e.rush)) {
     return player;
   }
   return { ...player, elo: snapshot ? { competitive: snapshot } : undefined };

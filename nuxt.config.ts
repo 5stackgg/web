@@ -216,12 +216,12 @@ export default defineNuxtConfig({
       deviceDomain: "",
       demosDomain: "",
       relayDomain: "",
-      // CDN base for 3D-replay collision meshes and map callouts.
-      // Served by the panel's own worker (cloudflare-workers/backblaze-proxy)
-      // out of B2, keyed maps/<cs2 build>/<map>.tri.gz. Off jsDelivr because its
-      // ~20MiB per-file cap forced heavy decimation; the build id keeps the URL
-      // immutable. Override with NUXT_PUBLIC_MAP_MESH_CDN.
-      mapMeshCdn: "https://demo-dl.5stack.gg/maps/24957633",
+      // Map meshes (3D replay) are resolved from the published asset manifest,
+      // https://demo-dl.5stack.gg/maps/latest.json → maps/<build>/manifest.json,
+      // falling back to the pinned pre-manifest build (utilities/mapAssets.ts).
+      // Setting NUXT_PUBLIC_MAP_MESH_CDN pins every map to <cdn>/<map>.tri.gz
+      // (and <cdn>/<map>.view.bin.gz when present) instead.
+      mapMeshCdn: "",
     },
   },
 

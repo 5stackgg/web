@@ -54,6 +54,7 @@ __metadata:
     javascript-time-ago: "npm:^2.5.11"
     lucide-vue-next: "npm:^0.508.0"
     marked: "npm:^18.0.5"
+    meshoptimizer: "npm:~1.1.1"
     minisearch: "npm:^7.1.2"
     monaco-editor: "npm:^0.55.1"
     node-fetch: "npm:^3.3.2"

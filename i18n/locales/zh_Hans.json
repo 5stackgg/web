@@ -986,7 +986,8 @@
   "elo_change_badge": {
     "comp": "竞技",
     "wingman": "搭档",
-    "duel": "单挑"
+    "duel": "单挑",
+    "rush": "冲锋"
   },
   "render_queue_status": {
     "queued": "排队中",
@@ -1968,7 +1969,7 @@
           "order_hint": "每一层都会覆盖上一层。",
           "layers": {
             "type": "比赛类型",
-            "type_note": "Competitive、Wingman、Duel",
+            "type_note": "Competitive、Wingman、Duel、Rush",
             "lan_note": "仅限 LAN 区域",
             "global_note": "所有比赛",
             "plugin": "插件 cvar",
@@ -3561,6 +3562,7 @@
         "competitive": "竞技",
         "wingman": "搭档",
         "duel": "单挑",
+        "rush": "冲锋",
         "scrimmage": "训练赛",
         "premier": "Premier",
         "faceit": "Faceit"
@@ -4572,6 +4574,7 @@
         "duration": "{seconds}秒",
         "requested_by": "发起人",
         "capped": "共 {total} 行，显示前 {shown} 行。",
+        "caveats": "注意事项（{count}）",
         "count_broken": "{count} 个已失效",
         "count_moved": "{count} 个已偏移",
         "count_unsimulatable": "{count} 个无法模拟",
@@ -6679,6 +6682,7 @@
           "description": "队伍换边前进行的回合数。",
           "placeholder": "选择最大回合数"
         },
+        "rush_fixed_rules": "冲锋模式始终以先赢 8 个回合决出胜负，没有加时赛和刀战局。",
         "region": {
           "title": "地区设置",
           "lan_match": "LAN 比赛",
@@ -7429,7 +7433,7 @@
         "cam_chase": "跟随",
         "cam_chase_tip": "跟随所选玩家",
         "roof": "屋顶",
-        "roof_tip": "屋顶裁剪——中间为自动（屋顶关闭，动作可见）。向上 = 显示更多，向下 = 裁剪更多，最大 = 全图。",
+        "roof_tip": "屋顶裁剪——隐藏屋顶并截短墙体，让动作保持可见。向下 = 裁得更低（平面图），向上 = 墙体更高，最大 = 全图。",
         "play_by_play": "逐回合回放",
         "play_by_play_tip": "显示回合的逐回合事件日志",
         "more": "更多选项",
@@ -7883,7 +7887,13 @@
     },
     "official": "官方地图",
     "workshop": "创意工坊地图",
-    "active_duty": "现役图池"
+    "active_duty": "现役图池",
+    "radar_room": {
+      "label": "房间",
+      "auto": "自动",
+      "room": "房间 {name}",
+      "full_map": "完整地图"
+    }
   },
   "region": {
     "form": {
@@ -7906,6 +7916,10 @@
       "duel": {
         "title": "单挑",
         "description": "1 vs 1 竞技体验，非常适合练习个人技术"
+      },
+      "rush": {
+        "title": "冲锋",
+        "description": "逐个房间交战的快节奏 3v3 比赛，每赢一个回合就把战线向前推进"
       }
     },
     "cancel_matchmaking": "取消匹配",

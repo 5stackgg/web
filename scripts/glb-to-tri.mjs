@@ -18,11 +18,10 @@
 // CLI:
 //   node scripts/glb-to-tri.mjs <input.glb> [output.tri]
 
-import { readFileSync, writeFileSync } from "node:fs";
+import { writeFileSync } from "node:fs";
 import { basename } from "node:path";
 import { fileURLToPath } from "node:url";
-
-const COMP = { 5120: 1, 5121: 1, 5122: 2, 5123: 2, 5125: 4, 5126: 4 };
+import { openGlb } from "./lib-glb.mjs";
 
 // Derive a map name from a VRF export filename, e.g.
 // "de_cache_world_physics_physics.glb" → "de_cache", "de_nuke.glb" → "de_nuke".
@@ -40,6 +39,12 @@ export function mapNameFromGlb(file) {
 // physics_csgo_grenadeclip_wood_material, physics_sky_material. Real surfaces are
 // physics_group_* / physics_passbullets_* / physics_window_* and pass through.
 const SKIP_MATERIAL = /clip|sky|nodraw|invisible|trigger|occluder|\bhint\b/i;
+
+// Grenade clips block grenades and nothing else, so they are the one clip the
+// grenade flight simulation needs back. Only these: a playerclip or npcclip
+// (`physics_npcclip_playerclip_*`, `physics_playerclip`) lets a grenade through.
+const GRENADE_CLIP = /grenadeclip/i;
+const PLAYER_CLIP = /playerclip|npcclip/i;
 
 // Remove "standalone walls": isolated, thin, tall, vertical sheets of geometry
 // that aren't connected to anything (no floor/roof) — the boundary/blocker walls
@@ -121,7 +126,8 @@ function dropStandaloneWalls(tris, opts = {}) {
   return { tris: out, dropped: n - keep, walls: drop.size };
 }
 
-// Parse a .glb and return { tris: Float32 buffer of source-unit triangles, count, bbox }.
+// Parse a .glb and return { buf: source-unit triangles, count, bbox }, plus the
+// grenade-clip and player-clip triangles on their own, in the same format.
 export function glbToTri(inPath, opts = {}) {
   const skipClips = opts.skipClips ?? true;
   // Standalone-wall removal is OFF by default.
@@ -134,73 +140,81 @@ export function glbToTri(inPath, opts = {}) {
   // dropped here became a wall smoke poured through and a sightline that should
   // not have existed. Set MESH_DROP_WALLS=1 to bring it back.
   const dropWalls = opts.dropWalls ?? process.env.MESH_DROP_WALLS === "1";
-  const buf = readFileSync(inPath);
-  const dv = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
-  const total = dv.getUint32(8, true);
-  let off = 12, gltf, binOff = 0;
-  while (off < total) {
-    const clen = dv.getUint32(off, true);
-    const ctype = dv.getUint32(off + 4, true);
-    const start = off + 8;
-    if (ctype === 0x4e4f534a)
-      gltf = JSON.parse(Buffer.from(buf.buffer, buf.byteOffset + start, clen).toString());
-    else if (ctype === 0x004e4942) binOff = buf.byteOffset + start;
-    off = start + clen + (clen % 4 ? 4 - (clen % 4) : 0);
+  const glb = openGlb(inPath);
+  const { gltf } = glb;
+
+  const solid = [];
+  const clips = [];
+  const playerClips = [];
+  let skipped = 0;
+  const skippedMats = new Set();
+  try {
+    for (const mesh of gltf.meshes) {
+      for (const prim of mesh.primitives) {
+        if (prim.attributes.POSITION == null) continue;
+        // The surface name has moved. Source2Viewer used to export these hulls
+        // with one MATERIAL per physics group; it now exports one MESH per group
+        // and no materials at all, so a material-only test silently matched
+        // nothing and every clip brush came through as world geometry. On mirage
+        // that was 9,576 triangles of invisible playerclip, grenadeclip and
+        // skybox -- the phantom walls and roofs this filter exists to remove.
+        // Both are read so either export shape keeps working.
+        const matName =
+          prim.material != null ? gltf.materials?.[prim.material]?.name || "" : "";
+        const groupName = mesh.name || "";
+        const drop =
+          skipClips && (SKIP_MATERIAL.test(matName) || SKIP_MATERIAL.test(groupName));
+        const grenadeClip = GRENADE_CLIP.test(matName) || GRENADE_CLIP.test(groupName);
+        const playerClip =
+          !grenadeClip && (PLAYER_CLIP.test(matName) || PLAYER_CLIP.test(groupName));
+        if (drop && !grenadeClip && !playerClip) {
+          const count =
+            prim.indices != null
+              ? gltf.accessors[prim.indices].count
+              : gltf.accessors[prim.attributes.POSITION].count;
+          skipped += count / 3;
+          skippedMats.add(matName || groupName);
+          continue;
+        }
+        const pos = glb.read(prim.attributes.POSITION);
+        const idx = prim.indices != null ? glb.read(prim.indices) : null;
+        const count = idx ? idx.length : pos.length / 3;
+        const soup = new Float32Array(count * 3);
+        for (let i = 0; i < count; i++) {
+          const vi = idx ? idx[i] : i;
+          soup[i * 3] = pos[vi * 3];
+          soup[i * 3 + 1] = pos[vi * 3 + 1];
+          soup[i * 3 + 2] = pos[vi * 3 + 2];
+        }
+        if (grenadeClip) {
+          clips.push(soup);
+        } else if (playerClip) {
+          playerClips.push(soup);
+        }
+        if (drop) {
+          skipped += count / 3;
+          skippedMats.add(matName || groupName);
+          continue;
+        }
+        solid.push(soup);
+      }
+    }
+  } finally {
+    glb.close();
   }
 
-  const readAccessor = (idx) => {
-    const acc = gltf.accessors[idx];
-    const bv = gltf.bufferViews[acc.bufferView];
-    const base = binOff + (bv.byteOffset || 0) + (acc.byteOffset || 0);
-    const ncomp = acc.type === "VEC3" ? 3 : acc.type === "VEC2" ? 2 : 1;
-    const stride = bv.byteStride || COMP[acc.componentType] * ncomp;
-    const out = new Array(acc.count * ncomp);
-    for (let i = 0; i < acc.count; i++) {
-      const p = base + i * stride;
-      for (let c = 0; c < ncomp; c++) {
-        const o = p + c * COMP[acc.componentType] - buf.byteOffset;
-        out[i * ncomp + c] =
-          acc.componentType === 5126 ? dv.getFloat32(o, true)
-          : acc.componentType === 5125 ? dv.getUint32(o, true)
-          : acc.componentType === 5123 ? dv.getUint16(o, true)
-          : dv.getUint8(o);
-      }
+  const concat = (parts) => {
+    const out = new Float32Array(parts.reduce((n, p) => n + p.length, 0));
+    let w = 0;
+    for (const p of parts) {
+      out.set(p, w);
+      w += p.length;
     }
     return out;
   };
-
-  const tris = [];
-  let skipped = 0;
-  const skippedMats = new Set();
-  for (const mesh of gltf.meshes) {
-    for (const prim of mesh.primitives) {
-      if (prim.attributes.POSITION == null) continue;
-      // The surface name has moved. Source2Viewer used to export these hulls
-      // with one MATERIAL per physics group; it now exports one MESH per group
-      // and no materials at all, so a material-only test silently matched
-      // nothing and every clip brush came through as world geometry. On mirage
-      // that was 9,576 triangles of invisible playerclip, grenadeclip and
-      // skybox -- the phantom walls and roofs this filter exists to remove.
-      // Both are read so either export shape keeps working.
-      const matName =
-        prim.material != null ? gltf.materials?.[prim.material]?.name || "" : "";
-      const groupName = mesh.name || "";
-      const drop =
-        skipClips && (SKIP_MATERIAL.test(matName) || SKIP_MATERIAL.test(groupName));
-      const pos = readAccessor(prim.attributes.POSITION);
-      const idx = prim.indices != null ? readAccessor(prim.indices) : null;
-      const count = idx ? idx.length : pos.length / 3;
-      if (drop) {
-        skipped += count / 3;
-        skippedMats.add(matName || groupName);
-        continue;
-      }
-      for (let i = 0; i < count; i++) {
-        const vi = idx ? idx[i] : i;
-        tris.push(pos[vi * 3], pos[vi * 3 + 1], pos[vi * 3 + 2]);
-      }
-    }
-  }
+  const tris = concat(solid);
+  const grenadeClip = concat(clips);
+  const playerClip = concat(playerClips);
 
   // drop isolated thin/tall/vertical "standalone walls". Thresholds are tunable
   // per run via WALL_THIN / WALL_TALL / WALL_VERT env vars.
@@ -222,9 +236,12 @@ export function glbToTri(inPath, opts = {}) {
       mn[c] = Math.min(mn[c], kept[i + c]);
       mx[c] = Math.max(mx[c], kept[i + c]);
     }
+  const soup = kept instanceof Float32Array ? kept : new Float32Array(kept);
   return {
-    buf: Buffer.from(new Float32Array(kept).buffer),
-    count: kept.length / 9,
+    buf: Buffer.from(soup.buffer, soup.byteOffset, soup.byteLength),
+    count: soup.length / 9,
+    grenadeClip: Buffer.from(grenadeClip.buffer, grenadeClip.byteOffset, grenadeClip.byteLength),
+    playerClip: Buffer.from(playerClip.buffer, playerClip.byteOffset, playerClip.byteLength),
     skipped,
     skippedMats: [...skippedMats],
     walls,

@@ -188,6 +188,7 @@ export default {
         e_game_cfg_types_enum.Competitive,
         e_game_cfg_types_enum.Wingman,
         e_game_cfg_types_enum.Duel,
+        e_game_cfg_types_enum.Rush,
         e_game_cfg_types_enum.Lan,
         e_game_cfg_types_enum.Global,
       ];
@@ -353,6 +354,9 @@ export default {
         ),
         [e_game_cfg_types_enum.Duel]: this.$t(
           "pages.leaderboard.match_types.duel",
+        ),
+        [e_game_cfg_types_enum.Rush]: this.$t(
+          "pages.leaderboard.match_types.rush",
         ),
       };
       return names[type] || type;

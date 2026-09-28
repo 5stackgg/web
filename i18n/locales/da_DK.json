@@ -986,7 +986,8 @@
   "elo_change_badge": {
     "comp": "COMP",
     "wingman": "WINGMAN",
-    "duel": "DUEL"
+    "duel": "DUEL",
+    "rush": "RUSH"
   },
   "render_queue_status": {
     "queued": "I kø",
@@ -1968,7 +1969,7 @@
           "order_hint": "Hvert lag går forud for det ovenfor.",
           "layers": {
             "type": "Kamptype",
-            "type_note": "Competitive, Wingman, Duel",
+            "type_note": "Competitive, Wingman, Duel, Rush",
             "lan_note": "kun LAN-regioner",
             "global_note": "alle kampe",
             "plugin": "Plugin-cvars",
@@ -3561,6 +3562,7 @@
         "competitive": "Competitive",
         "wingman": "Wingman",
         "duel": "Duel",
+        "rush": "Rush",
         "scrimmage": "Scrim",
         "premier": "Premier",
         "faceit": "Faceit"
@@ -4572,6 +4574,7 @@
         "duration": "{seconds}s",
         "requested_by": "Anmodet af",
         "capped": "Viser de første {shown} rækker af {total}.",
+        "caveats": "Forbehold ({count})",
         "count_broken": "{count} ødelagte",
         "count_moved": "{count} flyttede",
         "count_unsimulatable": "{count} kan ikke simuleres",
@@ -6679,6 +6682,7 @@
           "description": "Antal runder, der spilles, før holdene skifter side.",
           "placeholder": "Vælg maks. runder"
         },
+        "rush_fixed_rules": "Rush spilles altid til 8 vundne runder uden overtime og uden knivrunde.",
         "region": {
           "title": "Regionsindstillinger",
           "lan_match": "LAN-kamp",
@@ -7429,7 +7433,7 @@
         "cam_chase": "CHASE",
         "cam_chase_tip": "Følg den valgte spiller",
         "roof": "TAG",
-        "roof_tip": "Tagklip — midten er automatisk (tage fra, action synlig). Op = vis mere, ned = klip mere, maks = hele mappet.",
+        "roof_tip": "Tagklip — skjuler tage og afkorter vægge, så action forbliver synlig. Ned = klip lavere (plantegning), op = højere vægge, maks = hele mappet.",
         "play_by_play": "PLAY BY PLAY",
         "play_by_play_tip": "Vis rundens play by play-log",
         "more": "Flere valg",
@@ -7883,7 +7887,13 @@
     },
     "official": "Officielle maps",
     "workshop": "Workshop-maps",
-    "active_duty": "Active Duty"
+    "active_duty": "Active Duty",
+    "radar_room": {
+      "label": "Rum",
+      "auto": "Auto",
+      "room": "Rum {name}",
+      "full_map": "Hele kortet"
+    }
   },
   "region": {
     "form": {
@@ -7906,6 +7916,10 @@
       "duel": {
         "title": "Duel",
         "description": "En konkurrencepræget 1 mod 1-oplevelse, perfekt til at træne individuelle skills"
+      },
+      "rush": {
+        "title": "Rush",
+        "description": "Hurtige 3v3-kampe rum for rum, hvor hver vundet runde skubber kampen fremad"
       }
     },
     "cancel_matchmaking": "Afbryd matchmaking",

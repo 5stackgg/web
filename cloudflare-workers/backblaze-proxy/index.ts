@@ -6,6 +6,13 @@ import { AwsClient } from "aws4fetch";
 // because the failure is never cached and every cold request rolls again.
 const UPSTREAM_ATTEMPTS = 3;
 
+const IMMUTABLE_TTL = 2592000;
+
+// Every object is immutable except the map-asset pointer, which moves each
+// time a new CS2 build is published; the edge and the browser must both let
+// go of it within a minute.
+const MUTABLE_TTL: Record<string, number> = { "maps/latest.json": 60 };
+
 // Nothing from the client request is forwarded to B2. Every header we sign is
 // a header Cloudflare may rewrite between sign() and fetch() — which B2 then
 // reads as SignatureDoesNotMatch and answers 403. B2 needs none of them:
@@ -16,6 +23,7 @@ async function signedFetch(
   method: string,
   url: string,
   env: { S3_ACCESS_KEY: string; S3_SECRET: string },
+  ttl: number,
 ): Promise<Response> {
   const client = new AwsClient({
     accessKeyId: env.S3_ACCESS_KEY,
@@ -46,7 +54,7 @@ async function signedFetch(
         // 4xx must not be pinned: B2 has no ListBucket grant on our key, so a
         // transient denial and a genuinely missing object both arrive as 403,
         // and caching either one would outlive the condition that caused it.
-        cacheTtlByStatus: { "200-299": 2592000, "400-499": 0, "500-599": 0 },
+        cacheTtlByStatus: { "200-299": ttl, "400-499": 0, "500-599": 0 },
       },
     });
     if (response.status !== 403 && response.status < 500) {
@@ -298,10 +306,12 @@ export default {
     // B2 and cached, and every later range is served out of that one copy. This
     // is what keeps B2 egress and transactions flat no matter how many range
     // requests a player makes.
+    const ttl = MUTABLE_TTL[key] ?? IMMUTABLE_TTL;
     const upstream = await signedFetch(
       "GET",
       `https://${env.BUCKET_NAME}.${env.S3_ENDPOINT}/${key}`,
       env,
+      ttl,
     );
 
     const headers = new Headers(upstream.headers);
@@ -333,7 +343,12 @@ export default {
     }
     // Force long browser cache regardless of what B2 returned — second view
     // of a clip serves from the user's disk cache and never hits the Worker.
-    headers.set("Cache-Control", "public, max-age=2592000, immutable");
+    headers.set(
+      "Cache-Control",
+      ttl === IMMUTABLE_TTL
+        ? `public, max-age=${IMMUTABLE_TTL}, immutable`
+        : `public, max-age=${ttl}`,
+    );
     for (const [k, v] of Object.entries(corsHeaders(reqOrigin))) {
       headers.set(k, v);
     }

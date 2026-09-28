@@ -986,7 +986,8 @@
   "elo_change_badge": {
     "comp": "COMP",
     "wingman": "WINGMAN",
-    "duel": "DUEL"
+    "duel": "DUEL",
+    "rush": "RUSH"
   },
   "render_queue_status": {
     "queued": "キュー待ち",
@@ -1968,7 +1969,7 @@
           "order_hint": "下の層ほど優先されます。",
           "layers": {
             "type": "試合タイプ",
-            "type_note": "Competitive、Wingman、Duel",
+            "type_note": "Competitive、Wingman、Duel、Rush",
             "lan_note": "LAN リージョンのみ",
             "global_note": "すべての試合",
             "plugin": "プラグインの cvar",
@@ -3561,6 +3562,7 @@
         "competitive": "コンペティティブ",
         "wingman": "ウィングマン",
         "duel": "デュエル",
+        "rush": "ラッシュ",
         "scrimmage": "スクリム",
         "premier": "Premier",
         "faceit": "Faceit"
@@ -4572,6 +4574,7 @@
         "duration": "{seconds}秒",
         "requested_by": "依頼者",
         "capped": "{total} 行中、先頭 {shown} 行を表示しています。",
+        "caveats": "注意事項 ({count})",
         "count_broken": "使用不能 {count} 件",
         "count_moved": "ずれ {count} 件",
         "count_unsimulatable": "シミュレート不可 {count} 件",
@@ -6679,6 +6682,7 @@
           "description": "サイドが入れ替わるまでにプレイするラウンド数です。",
           "placeholder": "最大ラウンド数を選択"
         },
+        "rush_fixed_rules": "ラッシュは常に8ラウンド先取で、オーバータイムとナイフラウンドはありません。",
         "region": {
           "title": "リージョン設定",
           "lan_match": "LAN試合",
@@ -7429,7 +7433,7 @@
         "cam_chase": "CHASE",
         "cam_chase_tip": "追跡中のプレイヤーを追いかける",
         "roof": "ROOF",
-        "roof_tip": "屋根カット — 中央は自動（屋根なし、視界確保）。上で表示範囲拡大、下でカット拡大、最大でマップ全体表示。",
+        "roof_tip": "屋根カット — 屋根を隠し壁を短くして、状況を見やすくします。下げるとより低くカット（間取り図）、上げると壁が高くなり、最大でマップ全体を表示。",
         "play_by_play": "PLAY BY PLAY",
         "play_by_play_tip": "このラウンドのプレイバイプレイイベントログを表示",
         "more": "その他のオプション",
@@ -7883,7 +7887,13 @@
     },
     "official": "公式マップ",
     "workshop": "ワークショップマップ",
-    "active_duty": "アクティブデューティ"
+    "active_duty": "アクティブデューティ",
+    "radar_room": {
+      "label": "ルーム",
+      "auto": "自動",
+      "room": "ルーム {name}",
+      "full_map": "マップ全体"
+    }
   },
   "region": {
     "form": {
@@ -7906,6 +7916,10 @@
       "duel": {
         "title": "デュエル",
         "description": "個人スキルの練習に最適な1対1の競技体験"
+      },
+      "rush": {
+        "title": "ラッシュ",
+        "description": "部屋ごとに戦うテンポの速い3v3。ラウンドを取るたびに戦線を押し上げる"
       }
     },
     "cancel_matchmaking": "マッチメイキングをキャンセル",

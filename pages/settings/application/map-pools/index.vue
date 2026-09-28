@@ -241,6 +241,7 @@ export default {
         e_match_types_enum.Competitive,
         e_match_types_enum.Wingman,
         e_match_types_enum.Duel,
+        e_match_types_enum.Rush,
       ],
     };
   },

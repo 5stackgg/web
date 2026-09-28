@@ -1314,6 +1314,7 @@ export const utilityDriftScanFields = {
   map_name: true,
   status: true,
   failure_reason: true,
+  caveats: true,
   from_revision: true,
   to_revision: true,
   lineups: true,

@@ -986,7 +986,8 @@
   "elo_change_badge": {
     "comp": "COMP",
     "wingman": "BRAÇO DIREITO",
-    "duel": "X1"
+    "duel": "X1",
+    "rush": "RUSH"
   },
   "render_queue_status": {
     "queued": "Na fila",
@@ -1968,7 +1969,7 @@
           "order_hint": "Cada camada prevalece sobre a anterior.",
           "layers": {
             "type": "Tipo de partida",
-            "type_note": "Competitive, Wingman, Duel",
+            "type_note": "Competitive, Wingman, Duel, Rush",
             "lan_note": "apenas regiões LAN",
             "global_note": "todas as partidas",
             "plugin": "Cvars do plugin",
@@ -3561,6 +3562,7 @@
         "competitive": "Competitivo",
         "wingman": "Braço Direito",
         "duel": "X1",
+        "rush": "Rush",
         "scrimmage": "Modo Treino",
         "premier": "Premier",
         "faceit": "Faceit"
@@ -4572,6 +4574,7 @@
         "duration": "{seconds}s",
         "requested_by": "Solicitada por",
         "capped": "Mostrando as primeiras {shown} linhas de {total}.",
+        "caveats": "Ressalvas ({count})",
         "count_broken": "{count} quebrados",
         "count_moved": "{count} movidos",
         "count_unsimulatable": "{count} não simuláveis",
@@ -6679,6 +6682,7 @@
           "description": "O número de round antes que as equipes troquem de lado.",
           "placeholder": "Digite o máximo de rounds"
         },
+        "rush_fixed_rules": "O Rush é sempre disputado até 8 rounds vencidos, sem overtime e sem round faca.",
         "region": {
           "title": "Configuração de Regiões/Locais",
           "lan_match": "Partida LAN",
@@ -7429,7 +7433,7 @@
         "cam_chase": "CHASE",
         "cam_chase_tip": "Seguir o jogador acompanhado",
         "roof": "ROOF",
-        "roof_tip": "Corte de telhado — meio é automático (telhados off, ação visível). Para cima = revela mais, para baixo = corta mais, máximo = mapa completo.",
+        "roof_tip": "Corte de telhado — esconde telhados e corta paredes para a ação ficar visível. Para baixo = corte mais baixo (planta), para cima = paredes mais altas, máximo = mapa completo.",
         "play_by_play": "PLAY BY PLAY",
         "play_by_play_tip": "Mostrar log de eventos da rodada",
         "more": "Mais opções",
@@ -7883,7 +7887,13 @@
     },
     "official": "Mapas Oficiais",
     "workshop": "Mapas do Workshop",
-    "active_duty": "Campanha Ativa"
+    "active_duty": "Campanha Ativa",
+    "radar_room": {
+      "label": "Sala",
+      "auto": "Automático",
+      "room": "Sala {name}",
+      "full_map": "Mapa completo"
+    }
   },
   "region": {
     "form": {
@@ -7906,6 +7916,10 @@
       "duel": {
         "title": "X1",
         "description": "Modo 1v1 focado em habilidades individuais. Perfeito para treinar mira, posicionamento, reflexos e chamar seu amigo newba pra um X1 pra mostrar que você é fodão."
+      },
+      "rush": {
+        "title": "Rush",
+        "description": "Partidas 3v3 em ritmo acelerado, sala por sala, em que cada round vencido empurra o combate para frente"
       }
     },
     "cancel_matchmaking": "Sair da Fila",

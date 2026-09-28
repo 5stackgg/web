@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
-import { MESH_EXT } from "~/utilities/mapAssets";
+import {
+  mapAssetAvailability,
+  mapAssetsRevision,
+  normalizeMapName,
+} from "~/utilities/mapAssets";
 import { useApolloClient } from "@vue/apollo-composable";
 import gql from "graphql-tag";
 import { Boxes, Check, X } from "lucide-vue-next";
@@ -14,8 +18,6 @@ const loading = ref(true);
 const availableMaps = ref<string[]>([]);
 const missingMaps = ref<string[]>([]);
 
-const CACHE_KEY = `mesh-coverage:v1:${meshCdn}`;
-
 const MAPS_QUERY = gql`
   query MeshKnownMaps {
     maps(
@@ -26,62 +28,37 @@ const MAPS_QUERY = gql`
   }
 `;
 
-function meshName(name: string): string {
-  let n = name.toLowerCase().trim();
-  const slash = n.lastIndexOf("/");
-  if (slash >= 0) {
-    n = n.slice(slash + 1);
-  }
-  return n.replace(/_night$/, "");
+// Line-of-sight checks run against the collision .tri, so coverage is about
+// that asset alone, not the viewer's render mesh.
+function probe(name: string): Promise<boolean | null> {
+  return mapAssetAvailability(meshCdn, name, ["tri"]);
 }
 
-async function probe(name: string): Promise<boolean | null> {
-  if (!meshCdn) {
-    return null;
-  }
+function readCache(
+  cacheKey: string,
+): { available: string[]; missing: string[] } | null {
   try {
-    const res = await fetch(`${meshCdn}/${name}${MESH_EXT}`, { method: "HEAD" });
-    if (res.status === 404) {
-      return false;
-    }
-    if (res.ok) {
-      return true;
-    }
-    return null;
-  } catch {
-    return null;
-  }
-}
-
-async function probeRetry(name: string): Promise<boolean | null> {
-  for (let attempt = 0; attempt < 3; attempt++) {
-    const result = await probe(name);
-    if (result !== null) {
-      return result;
-    }
-  }
-  return null;
-}
-
-function readCache(): { available: string[]; missing: string[] } | null {
-  try {
-    const raw = localStorage.getItem(CACHE_KEY);
+    const raw = localStorage.getItem(cacheKey);
     return raw ? JSON.parse(raw) : null;
   } catch {
     return null;
   }
 }
 
-function writeCache(value: { available: string[]; missing: string[] }) {
+function writeCache(
+  cacheKey: string,
+  value: { available: string[]; missing: string[] },
+) {
   try {
-    localStorage.setItem(CACHE_KEY, JSON.stringify(value));
+    localStorage.setItem(cacheKey, JSON.stringify(value));
   } catch {
     loading.value = false;
   }
 }
 
 onMounted(async () => {
-  const cached = readCache();
+  const cacheKey = `mesh-coverage:v2:${await mapAssetsRevision(meshCdn)}`;
+  const cached = readCache(cacheKey);
   if (cached) {
     availableMaps.value = cached.available;
     missingMaps.value = cached.missing;
@@ -96,14 +73,14 @@ onMounted(async () => {
     });
     const names = new Set<string>();
     for (const m of ((data as any)?.maps ?? []) as MapRow[]) {
-      const key = meshName(m.name);
+      const key = normalizeMapName(m.name);
       if (key) {
         names.add(key);
       }
     }
     const unique = [...names].sort();
     const results = await Promise.all(
-      unique.map(async (name) => ({ name, has: await probeRetry(name) })),
+      unique.map(async (name) => ({ name, has: await probe(name) })),
     );
 
     availableMaps.value = results
@@ -114,7 +91,7 @@ onMounted(async () => {
       .map((r) => r.name);
 
     if (!results.some((r) => r.has === null)) {
-      writeCache({
+      writeCache(cacheKey, {
         available: availableMaps.value,
         missing: missingMaps.value,
       });

@@ -49,8 +49,9 @@ const roleBlocked = computed(
 );
 
 // The verdict has to come off the ladder get_tournament_player_elo gates on --
-// Wingman when the lineup minimum is 2, Competitive otherwise -- or the panel
-// announces a pass the insert trigger is about to refuse.
+// Wingman when the lineup minimum is 2, Rush when it is 3, Competitive
+// otherwise -- or the panel announces a pass the insert trigger is about to
+// refuse.
 const myElo = computed(() =>
   tournamentPlayerElo(props.tournament, me.value),
 );

@@ -317,7 +317,13 @@ const category = useRouteTab({
   tabs: Object.keys(CATEGORY_CONFIG),
 });
 
-const MATCH_TYPE_OPTIONS = ["all", "Competitive", "Wingman", "Duel"] as const;
+const MATCH_TYPE_OPTIONS = [
+  "all",
+  "Competitive",
+  "Wingman",
+  "Duel",
+  "Rush",
+] as const;
 const ROLE_OPTIONS = ["all", "Sniper", "Entry", "Support", "Rifler"] as const;
 const SOURCE_OPTIONS = [
   "overall",
@@ -961,6 +967,9 @@ onMounted(async () => {
             <SelectItem value="Duel">{{
               $t("pages.leaderboard.match_types.duel")
             }}</SelectItem>
+            <SelectItem value="Rush">{{
+              $t("pages.leaderboard.match_types.rush")
+            }}</SelectItem>
           </SelectContent>
         </Select>
 
@@ -1095,6 +1104,9 @@ onMounted(async () => {
                   }}</SelectItem>
                   <SelectItem value="Duel">{{
                     $t("pages.leaderboard.match_types.duel")
+                  }}</SelectItem>
+                  <SelectItem value="Rush">{{
+                    $t("pages.leaderboard.match_types.rush")
                   }}</SelectItem>
                 </SelectContent>
               </Select>

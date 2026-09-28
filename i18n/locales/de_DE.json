@@ -986,7 +986,8 @@
   "elo_change_badge": {
     "comp": "COMP",
     "wingman": "WINGMAN",
-    "duel": "DUEL"
+    "duel": "DUEL",
+    "rush": "RUSH"
   },
   "render_queue_status": {
     "queued": "In Warteschlange",
@@ -1968,7 +1969,7 @@
           "order_hint": "Jede Ebene überschreibt die darüber.",
           "layers": {
             "type": "Match-Typ",
-            "type_note": "Competitive, Wingman, Duel",
+            "type_note": "Competitive, Wingman, Duel, Rush",
             "lan_note": "nur LAN-Regionen",
             "global_note": "jedes Match",
             "plugin": "Plugin-Cvars",
@@ -3561,6 +3562,7 @@
         "competitive": "Competitive",
         "wingman": "Wingman",
         "duel": "Duell",
+        "rush": "Rush",
         "scrimmage": "Scrim",
         "premier": "Premier",
         "faceit": "Faceit"
@@ -4572,6 +4574,7 @@
         "duration": "{seconds}s",
         "requested_by": "Angefordert von",
         "capped": "Es werden die ersten {shown} von {total} Zeilen gezeigt.",
+        "caveats": "Hinweise ({count})",
         "count_broken": "{count} kaputt",
         "count_moved": "{count} verschoben",
         "count_unsimulatable": "{count} nicht simulierbar",
@@ -6679,6 +6682,7 @@
           "description": "Die Anzahl der Runden, bevor die Teams die Seiten wechseln.",
           "placeholder": "Max. Runden wählen"
         },
+        "rush_fixed_rules": "Rush wird immer bis 8 gewonnene Runden gespielt, ohne Overtime und ohne Knife-Runde.",
         "region": {
           "title": "Region-Einstellungen",
           "lan_match": "LAN-Match",
@@ -7429,7 +7433,7 @@
         "cam_chase": "CHASE",
         "cam_chase_tip": "Verfolgt den beobachteten Spieler",
         "roof": "ROOF",
-        "roof_tip": "Dach-Schnitt — Mitte ist automatisch (Dächer aus, Action sichtbar). Hoch = mehr zeigen, runter = mehr abschneiden, max = ganze Map.",
+        "roof_tip": "Dach-Schnitt — blendet Dächer aus und kürzt Wände, damit die Action sichtbar bleibt. Runter = tiefer schneiden (Grundriss), hoch = höhere Wände, max = ganze Map.",
         "play_by_play": "PLAY BY PLAY",
         "play_by_play_tip": "Zeigt das Ereignis-Log der Runde",
         "more": "Weitere Optionen",
@@ -7883,7 +7887,13 @@
     },
     "official": "Offizielle Maps",
     "workshop": "Workshop-Maps",
-    "active_duty": "Active Duty"
+    "active_duty": "Active Duty",
+    "radar_room": {
+      "label": "Raum",
+      "auto": "Automatisch",
+      "room": "Raum {name}",
+      "full_map": "Ganze Karte"
+    }
   },
   "region": {
     "form": {
@@ -7906,6 +7916,10 @@
       "duel": {
         "title": "Duell",
         "description": "Ein kompetitives 1-gegen-1-Erlebnis, perfekt zum Trainieren des individuellen Skills"
+      },
+      "rush": {
+        "title": "Rush",
+        "description": "Schnelle 3v3-Matches Raum für Raum – jede gewonnene Runde treibt den Kampf nach vorn"
       }
     },
     "cancel_matchmaking": "Matchmaking abbrechen",

@@ -46810,6 +46810,8 @@ lobby_players_aggregate?: [{	/** distinct select on columns */
 	losses_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?:boolean | `@${string}`,
 match_map_hltv?: [{	/** distinct select on columns */
@@ -47095,6 +47097,8 @@ weapon_stats_aggregate?: [{	/** distinct select on columns */
 	wins_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -47132,6 +47136,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	losses_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?:boolean | `@${string}`,
 	premier_rank?:boolean | `@${string}`,
@@ -47145,6 +47151,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	wins_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -47222,6 +47230,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	losses?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	losses_competitive?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	losses_duel?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	losses_rush?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	losses_wingman?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	match_map_hltv?: ValueTypes["v_player_match_map_hltv_bool_exp"] | undefined | null | Variable<any, string>,
 	match_map_hltv_aggregate?: ValueTypes["v_player_match_map_hltv_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
@@ -47288,6 +47297,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	wins?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	wins_competitive?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	wins_duel?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	wins_rush?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	wins_wingman?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>
 };
 	/** unique or primary key constraints on table "players" */
@@ -47404,6 +47414,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	losses_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?:boolean | `@${string}`,
 	/** A computed field, executes function "get_player_matchmaking_cooldown" */
@@ -47427,6 +47439,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	wins_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -47459,6 +47473,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	losses_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?:boolean | `@${string}`,
 	/** A computed field, executes function "get_player_matchmaking_cooldown" */
@@ -47482,6 +47498,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	wins_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -47557,6 +47575,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	losses?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	losses_competitive?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	losses_duel?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	losses_rush?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	losses_wingman?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_map_hltv_aggregate?: ValueTypes["v_player_match_map_hltv_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	match_map_stats_aggregate?: ValueTypes["player_match_map_stats_aggregate_order_by"] | undefined | null | Variable<any, string>,
@@ -47603,6 +47622,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	wins?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	wins_competitive?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	wins_duel?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	wins_rush?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	wins_wingman?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** primary key columns input for table: players */
@@ -47657,6 +47677,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	losses_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?:boolean | `@${string}`,
 	premier_rank?:boolean | `@${string}`,
@@ -47670,6 +47692,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	wins_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -47686,6 +47710,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	losses_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?:boolean | `@${string}`,
 	premier_rank?:boolean | `@${string}`,
@@ -47699,6 +47725,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	wins_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -47715,6 +47743,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	losses_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?:boolean | `@${string}`,
 	premier_rank?:boolean | `@${string}`,
@@ -47728,6 +47758,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	wins_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -47785,6 +47817,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	losses_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?:boolean | `@${string}`,
 	premier_rank?:boolean | `@${string}`,
@@ -47798,6 +47832,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	wins_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -47824,6 +47860,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	losses_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?:boolean | `@${string}`,
 	premier_rank?:boolean | `@${string}`,
@@ -47837,6 +47875,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	wins_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -47853,6 +47893,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	losses_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?:boolean | `@${string}`,
 	premier_rank?:boolean | `@${string}`,
@@ -47866,6 +47908,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	wins_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -47882,6 +47926,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	losses_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?:boolean | `@${string}`,
 	premier_rank?:boolean | `@${string}`,
@@ -47895,6 +47941,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	wins_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -68044,6 +68092,8 @@ count?: [{	columns?: Array<ValueTypes["utility_drift_results_select_column"]> | 
 	/** columns and relationships of "utility_drift_scans" */
 ["utility_drift_scans"]: AliasType<{
 	broken?:boolean | `@${string}`,
+caveats?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
 	created_at?:boolean | `@${string}`,
 	failure_reason?:boolean | `@${string}`,
 	finished_at?:boolean | `@${string}`,
@@ -81083,6 +81133,7 @@ count?: [{	columns?: Array<ValueTypes["v_steam_account_pool_status_select_column
 	avg_faceit_elo?:boolean | `@${string}`,
 	avg_faceit_level?:boolean | `@${string}`,
 	avg_premier?:boolean | `@${string}`,
+	avg_rush_elo?:boolean | `@${string}`,
 	avg_wingman_elo?:boolean | `@${string}`,
 	max_elo?:boolean | `@${string}`,
 	min_elo?:boolean | `@${string}`,
@@ -81120,6 +81171,7 @@ count?: [{	columns?: Array<ValueTypes["v_team_ranks_select_column"]> | undefined
 	avg_faceit_elo?:boolean | `@${string}`,
 	avg_faceit_level?:boolean | `@${string}`,
 	avg_premier?:boolean | `@${string}`,
+	avg_rush_elo?:boolean | `@${string}`,
 	avg_wingman_elo?:boolean | `@${string}`,
 	max_elo?:boolean | `@${string}`,
 	min_elo?:boolean | `@${string}`,
@@ -81136,6 +81188,7 @@ count?: [{	columns?: Array<ValueTypes["v_team_ranks_select_column"]> | undefined
 	avg_faceit_elo?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	avg_faceit_level?: ValueTypes["float8_comparison_exp"] | undefined | null | Variable<any, string>,
 	avg_premier?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	avg_rush_elo?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	avg_wingman_elo?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	max_elo?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	min_elo?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -81150,6 +81203,7 @@ count?: [{	columns?: Array<ValueTypes["v_team_ranks_select_column"]> | undefined
 	avg_faceit_elo?: number | undefined | null | Variable<any, string>,
 	avg_faceit_level?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
 	avg_premier?: number | undefined | null | Variable<any, string>,
+	avg_rush_elo?: number | undefined | null | Variable<any, string>,
 	avg_wingman_elo?: number | undefined | null | Variable<any, string>,
 	max_elo?: number | undefined | null | Variable<any, string>,
 	min_elo?: number | undefined | null | Variable<any, string>,
@@ -81164,6 +81218,7 @@ count?: [{	columns?: Array<ValueTypes["v_team_ranks_select_column"]> | undefined
 	avg_faceit_elo?:boolean | `@${string}`,
 	avg_faceit_level?:boolean | `@${string}`,
 	avg_premier?:boolean | `@${string}`,
+	avg_rush_elo?:boolean | `@${string}`,
 	avg_wingman_elo?:boolean | `@${string}`,
 	max_elo?:boolean | `@${string}`,
 	min_elo?:boolean | `@${string}`,
@@ -81178,6 +81233,7 @@ count?: [{	columns?: Array<ValueTypes["v_team_ranks_select_column"]> | undefined
 	avg_faceit_elo?:boolean | `@${string}`,
 	avg_faceit_level?:boolean | `@${string}`,
 	avg_premier?:boolean | `@${string}`,
+	avg_rush_elo?:boolean | `@${string}`,
 	avg_wingman_elo?:boolean | `@${string}`,
 	max_elo?:boolean | `@${string}`,
 	min_elo?:boolean | `@${string}`,
@@ -81196,6 +81252,7 @@ count?: [{	columns?: Array<ValueTypes["v_team_ranks_select_column"]> | undefined
 	avg_faceit_elo?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	avg_faceit_level?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	avg_premier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	avg_rush_elo?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	avg_wingman_elo?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	max_elo?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	min_elo?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -81212,6 +81269,7 @@ count?: [{	columns?: Array<ValueTypes["v_team_ranks_select_column"]> | undefined
 	avg_faceit_elo?:boolean | `@${string}`,
 	avg_faceit_level?:boolean | `@${string}`,
 	avg_premier?:boolean | `@${string}`,
+	avg_rush_elo?:boolean | `@${string}`,
 	avg_wingman_elo?:boolean | `@${string}`,
 	max_elo?:boolean | `@${string}`,
 	min_elo?:boolean | `@${string}`,
@@ -81225,6 +81283,7 @@ count?: [{	columns?: Array<ValueTypes["v_team_ranks_select_column"]> | undefined
 	avg_faceit_elo?:boolean | `@${string}`,
 	avg_faceit_level?:boolean | `@${string}`,
 	avg_premier?:boolean | `@${string}`,
+	avg_rush_elo?:boolean | `@${string}`,
 	avg_wingman_elo?:boolean | `@${string}`,
 	max_elo?:boolean | `@${string}`,
 	min_elo?:boolean | `@${string}`,
@@ -81238,6 +81297,7 @@ count?: [{	columns?: Array<ValueTypes["v_team_ranks_select_column"]> | undefined
 	avg_faceit_elo?:boolean | `@${string}`,
 	avg_faceit_level?:boolean | `@${string}`,
 	avg_premier?:boolean | `@${string}`,
+	avg_rush_elo?:boolean | `@${string}`,
 	avg_wingman_elo?:boolean | `@${string}`,
 	max_elo?:boolean | `@${string}`,
 	min_elo?:boolean | `@${string}`,
@@ -81258,6 +81318,7 @@ count?: [{	columns?: Array<ValueTypes["v_team_ranks_select_column"]> | undefined
 	avg_faceit_elo?: number | undefined | null | Variable<any, string>,
 	avg_faceit_level?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
 	avg_premier?: number | undefined | null | Variable<any, string>,
+	avg_rush_elo?: number | undefined | null | Variable<any, string>,
 	avg_wingman_elo?: number | undefined | null | Variable<any, string>,
 	max_elo?: number | undefined | null | Variable<any, string>,
 	min_elo?: number | undefined | null | Variable<any, string>,
@@ -81271,6 +81332,7 @@ count?: [{	columns?: Array<ValueTypes["v_team_ranks_select_column"]> | undefined
 	avg_faceit_elo?:boolean | `@${string}`,
 	avg_faceit_level?:boolean | `@${string}`,
 	avg_premier?:boolean | `@${string}`,
+	avg_rush_elo?:boolean | `@${string}`,
 	avg_wingman_elo?:boolean | `@${string}`,
 	max_elo?:boolean | `@${string}`,
 	min_elo?:boolean | `@${string}`,
@@ -81284,6 +81346,7 @@ count?: [{	columns?: Array<ValueTypes["v_team_ranks_select_column"]> | undefined
 	avg_faceit_elo?:boolean | `@${string}`,
 	avg_faceit_level?:boolean | `@${string}`,
 	avg_premier?:boolean | `@${string}`,
+	avg_rush_elo?:boolean | `@${string}`,
 	avg_wingman_elo?:boolean | `@${string}`,
 	max_elo?:boolean | `@${string}`,
 	min_elo?:boolean | `@${string}`,
@@ -81297,6 +81360,7 @@ count?: [{	columns?: Array<ValueTypes["v_team_ranks_select_column"]> | undefined
 	avg_faceit_elo?:boolean | `@${string}`,
 	avg_faceit_level?:boolean | `@${string}`,
 	avg_premier?:boolean | `@${string}`,
+	avg_rush_elo?:boolean | `@${string}`,
 	avg_wingman_elo?:boolean | `@${string}`,
 	max_elo?:boolean | `@${string}`,
 	min_elo?:boolean | `@${string}`,
@@ -81310,6 +81374,7 @@ count?: [{	columns?: Array<ValueTypes["v_team_ranks_select_column"]> | undefined
 	avg_faceit_elo?:boolean | `@${string}`,
 	avg_faceit_level?:boolean | `@${string}`,
 	avg_premier?:boolean | `@${string}`,
+	avg_rush_elo?:boolean | `@${string}`,
 	avg_wingman_elo?:boolean | `@${string}`,
 	max_elo?:boolean | `@${string}`,
 	min_elo?:boolean | `@${string}`,
@@ -129139,6 +129204,8 @@ lobby_players_aggregate?: [{	/** distinct select on columns */
 	losses_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?:boolean | `@${string}`,
 match_map_hltv?: [{	/** distinct select on columns */
@@ -129424,6 +129491,8 @@ weapon_stats_aggregate?: [{	/** distinct select on columns */
 	wins_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -129461,6 +129530,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	losses_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?:boolean | `@${string}`,
 	premier_rank?:boolean | `@${string}`,
@@ -129474,6 +129545,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	wins_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -129551,6 +129624,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	losses?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	losses_competitive?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	losses_duel?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	losses_rush?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	losses_wingman?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	match_map_hltv?: ResolverInputTypes["v_player_match_map_hltv_bool_exp"] | undefined | null,
 	match_map_hltv_aggregate?: ResolverInputTypes["v_player_match_map_hltv_aggregate_bool_exp"] | undefined | null,
@@ -129617,6 +129691,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	wins?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	wins_competitive?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	wins_duel?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	wins_rush?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	wins_wingman?: ResolverInputTypes["Int_comparison_exp"] | undefined | null
 };
 	/** unique or primary key constraints on table "players" */
@@ -129733,6 +129808,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	losses_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?:boolean | `@${string}`,
 	/** A computed field, executes function "get_player_matchmaking_cooldown" */
@@ -129756,6 +129833,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	wins_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -129788,6 +129867,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	losses_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?:boolean | `@${string}`,
 	/** A computed field, executes function "get_player_matchmaking_cooldown" */
@@ -129811,6 +129892,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	wins_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -129886,6 +129969,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	losses?: ResolverInputTypes["order_by"] | undefined | null,
 	losses_competitive?: ResolverInputTypes["order_by"] | undefined | null,
 	losses_duel?: ResolverInputTypes["order_by"] | undefined | null,
+	losses_rush?: ResolverInputTypes["order_by"] | undefined | null,
 	losses_wingman?: ResolverInputTypes["order_by"] | undefined | null,
 	match_map_hltv_aggregate?: ResolverInputTypes["v_player_match_map_hltv_aggregate_order_by"] | undefined | null,
 	match_map_stats_aggregate?: ResolverInputTypes["player_match_map_stats_aggregate_order_by"] | undefined | null,
@@ -129932,6 +130016,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	wins?: ResolverInputTypes["order_by"] | undefined | null,
 	wins_competitive?: ResolverInputTypes["order_by"] | undefined | null,
 	wins_duel?: ResolverInputTypes["order_by"] | undefined | null,
+	wins_rush?: ResolverInputTypes["order_by"] | undefined | null,
 	wins_wingman?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** primary key columns input for table: players */
@@ -129986,6 +130071,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	losses_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?:boolean | `@${string}`,
 	premier_rank?:boolean | `@${string}`,
@@ -129999,6 +130086,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	wins_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -130015,6 +130104,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	losses_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?:boolean | `@${string}`,
 	premier_rank?:boolean | `@${string}`,
@@ -130028,6 +130119,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	wins_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -130044,6 +130137,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	losses_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?:boolean | `@${string}`,
 	premier_rank?:boolean | `@${string}`,
@@ -130057,6 +130152,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	wins_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -130114,6 +130211,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	losses_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?:boolean | `@${string}`,
 	premier_rank?:boolean | `@${string}`,
@@ -130127,6 +130226,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	wins_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -130153,6 +130254,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	losses_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?:boolean | `@${string}`,
 	premier_rank?:boolean | `@${string}`,
@@ -130166,6 +130269,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	wins_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -130182,6 +130287,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	losses_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?:boolean | `@${string}`,
 	premier_rank?:boolean | `@${string}`,
@@ -130195,6 +130302,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	wins_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -130211,6 +130320,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	losses_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?:boolean | `@${string}`,
 	premier_rank?:boolean | `@${string}`,
@@ -130224,6 +130335,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	wins_competitive?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?:boolean | `@${string}`,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -150373,6 +150486,8 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_drift_results_select_colu
 	/** columns and relationships of "utility_drift_scans" */
 ["utility_drift_scans"]: AliasType<{
 	broken?:boolean | `@${string}`,
+caveats?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
 	created_at?:boolean | `@${string}`,
 	failure_reason?:boolean | `@${string}`,
 	finished_at?:boolean | `@${string}`,
@@ -163412,6 +163527,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_steam_account_pool_status_selec
 	avg_faceit_elo?:boolean | `@${string}`,
 	avg_faceit_level?:boolean | `@${string}`,
 	avg_premier?:boolean | `@${string}`,
+	avg_rush_elo?:boolean | `@${string}`,
 	avg_wingman_elo?:boolean | `@${string}`,
 	max_elo?:boolean | `@${string}`,
 	min_elo?:boolean | `@${string}`,
@@ -163449,6 +163565,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_team_ranks_select_column"]> | u
 	avg_faceit_elo?:boolean | `@${string}`,
 	avg_faceit_level?:boolean | `@${string}`,
 	avg_premier?:boolean | `@${string}`,
+	avg_rush_elo?:boolean | `@${string}`,
 	avg_wingman_elo?:boolean | `@${string}`,
 	max_elo?:boolean | `@${string}`,
 	min_elo?:boolean | `@${string}`,
@@ -163465,6 +163582,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_team_ranks_select_column"]> | u
 	avg_faceit_elo?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	avg_faceit_level?: ResolverInputTypes["float8_comparison_exp"] | undefined | null,
 	avg_premier?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	avg_rush_elo?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	avg_wingman_elo?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	max_elo?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	min_elo?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
@@ -163479,6 +163597,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_team_ranks_select_column"]> | u
 	avg_faceit_elo?: number | undefined | null,
 	avg_faceit_level?: ResolverInputTypes["float8"] | undefined | null,
 	avg_premier?: number | undefined | null,
+	avg_rush_elo?: number | undefined | null,
 	avg_wingman_elo?: number | undefined | null,
 	max_elo?: number | undefined | null,
 	min_elo?: number | undefined | null,
@@ -163493,6 +163612,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_team_ranks_select_column"]> | u
 	avg_faceit_elo?:boolean | `@${string}`,
 	avg_faceit_level?:boolean | `@${string}`,
 	avg_premier?:boolean | `@${string}`,
+	avg_rush_elo?:boolean | `@${string}`,
 	avg_wingman_elo?:boolean | `@${string}`,
 	max_elo?:boolean | `@${string}`,
 	min_elo?:boolean | `@${string}`,
@@ -163507,6 +163627,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_team_ranks_select_column"]> | u
 	avg_faceit_elo?:boolean | `@${string}`,
 	avg_faceit_level?:boolean | `@${string}`,
 	avg_premier?:boolean | `@${string}`,
+	avg_rush_elo?:boolean | `@${string}`,
 	avg_wingman_elo?:boolean | `@${string}`,
 	max_elo?:boolean | `@${string}`,
 	min_elo?:boolean | `@${string}`,
@@ -163525,6 +163646,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_team_ranks_select_column"]> | u
 	avg_faceit_elo?: ResolverInputTypes["order_by"] | undefined | null,
 	avg_faceit_level?: ResolverInputTypes["order_by"] | undefined | null,
 	avg_premier?: ResolverInputTypes["order_by"] | undefined | null,
+	avg_rush_elo?: ResolverInputTypes["order_by"] | undefined | null,
 	avg_wingman_elo?: ResolverInputTypes["order_by"] | undefined | null,
 	max_elo?: ResolverInputTypes["order_by"] | undefined | null,
 	min_elo?: ResolverInputTypes["order_by"] | undefined | null,
@@ -163541,6 +163663,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_team_ranks_select_column"]> | u
 	avg_faceit_elo?:boolean | `@${string}`,
 	avg_faceit_level?:boolean | `@${string}`,
 	avg_premier?:boolean | `@${string}`,
+	avg_rush_elo?:boolean | `@${string}`,
 	avg_wingman_elo?:boolean | `@${string}`,
 	max_elo?:boolean | `@${string}`,
 	min_elo?:boolean | `@${string}`,
@@ -163554,6 +163677,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_team_ranks_select_column"]> | u
 	avg_faceit_elo?:boolean | `@${string}`,
 	avg_faceit_level?:boolean | `@${string}`,
 	avg_premier?:boolean | `@${string}`,
+	avg_rush_elo?:boolean | `@${string}`,
 	avg_wingman_elo?:boolean | `@${string}`,
 	max_elo?:boolean | `@${string}`,
 	min_elo?:boolean | `@${string}`,
@@ -163567,6 +163691,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_team_ranks_select_column"]> | u
 	avg_faceit_elo?:boolean | `@${string}`,
 	avg_faceit_level?:boolean | `@${string}`,
 	avg_premier?:boolean | `@${string}`,
+	avg_rush_elo?:boolean | `@${string}`,
 	avg_wingman_elo?:boolean | `@${string}`,
 	max_elo?:boolean | `@${string}`,
 	min_elo?:boolean | `@${string}`,
@@ -163587,6 +163712,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_team_ranks_select_column"]> | u
 	avg_faceit_elo?: number | undefined | null,
 	avg_faceit_level?: ResolverInputTypes["float8"] | undefined | null,
 	avg_premier?: number | undefined | null,
+	avg_rush_elo?: number | undefined | null,
 	avg_wingman_elo?: number | undefined | null,
 	max_elo?: number | undefined | null,
 	min_elo?: number | undefined | null,
@@ -163600,6 +163726,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_team_ranks_select_column"]> | u
 	avg_faceit_elo?:boolean | `@${string}`,
 	avg_faceit_level?:boolean | `@${string}`,
 	avg_premier?:boolean | `@${string}`,
+	avg_rush_elo?:boolean | `@${string}`,
 	avg_wingman_elo?:boolean | `@${string}`,
 	max_elo?:boolean | `@${string}`,
 	min_elo?:boolean | `@${string}`,
@@ -163613,6 +163740,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_team_ranks_select_column"]> | u
 	avg_faceit_elo?:boolean | `@${string}`,
 	avg_faceit_level?:boolean | `@${string}`,
 	avg_premier?:boolean | `@${string}`,
+	avg_rush_elo?:boolean | `@${string}`,
 	avg_wingman_elo?:boolean | `@${string}`,
 	max_elo?:boolean | `@${string}`,
 	min_elo?:boolean | `@${string}`,
@@ -163626,6 +163754,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_team_ranks_select_column"]> | u
 	avg_faceit_elo?:boolean | `@${string}`,
 	avg_faceit_level?:boolean | `@${string}`,
 	avg_premier?:boolean | `@${string}`,
+	avg_rush_elo?:boolean | `@${string}`,
 	avg_wingman_elo?:boolean | `@${string}`,
 	max_elo?:boolean | `@${string}`,
 	min_elo?:boolean | `@${string}`,
@@ -163639,6 +163768,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_team_ranks_select_column"]> | u
 	avg_faceit_elo?:boolean | `@${string}`,
 	avg_faceit_level?:boolean | `@${string}`,
 	avg_premier?:boolean | `@${string}`,
+	avg_rush_elo?:boolean | `@${string}`,
 	avg_wingman_elo?:boolean | `@${string}`,
 	max_elo?:boolean | `@${string}`,
 	min_elo?:boolean | `@${string}`,
@@ -207560,6 +207690,8 @@ export type ModelTypes = {
 	losses_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?: number | undefined | null,
 	/** An array relationship */
@@ -207677,6 +207809,8 @@ export type ModelTypes = {
 	wins_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?: number | undefined | null
 };
@@ -207711,6 +207845,8 @@ export type ModelTypes = {
 	losses_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?: number | undefined | null,
 	premier_rank?: number | undefined | null,
@@ -207724,6 +207860,8 @@ export type ModelTypes = {
 	wins_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?: number | undefined | null
 };
@@ -207800,6 +207938,7 @@ export type ModelTypes = {
 	losses?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	losses_competitive?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	losses_duel?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	losses_rush?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	losses_wingman?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	match_map_hltv?: ModelTypes["v_player_match_map_hltv_bool_exp"] | undefined | null,
 	match_map_hltv_aggregate?: ModelTypes["v_player_match_map_hltv_aggregate_bool_exp"] | undefined | null,
@@ -207866,6 +208005,7 @@ export type ModelTypes = {
 	wins?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	wins_competitive?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	wins_duel?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	wins_rush?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	wins_wingman?: ModelTypes["Int_comparison_exp"] | undefined | null
 };
 	["players_constraint"]:players_constraint;
@@ -207981,6 +208121,8 @@ export type ModelTypes = {
 	losses_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?: number | undefined | null,
 	/** A computed field, executes function "get_player_matchmaking_cooldown" */
@@ -208004,6 +208146,8 @@ export type ModelTypes = {
 	wins_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?: number | undefined | null
 };
@@ -208035,6 +208179,8 @@ export type ModelTypes = {
 	losses_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?: number | undefined | null,
 	/** A computed field, executes function "get_player_matchmaking_cooldown" */
@@ -208058,6 +208204,8 @@ export type ModelTypes = {
 	wins_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?: number | undefined | null
 };
@@ -208131,6 +208279,7 @@ export type ModelTypes = {
 	losses?: ModelTypes["order_by"] | undefined | null,
 	losses_competitive?: ModelTypes["order_by"] | undefined | null,
 	losses_duel?: ModelTypes["order_by"] | undefined | null,
+	losses_rush?: ModelTypes["order_by"] | undefined | null,
 	losses_wingman?: ModelTypes["order_by"] | undefined | null,
 	match_map_hltv_aggregate?: ModelTypes["v_player_match_map_hltv_aggregate_order_by"] | undefined | null,
 	match_map_stats_aggregate?: ModelTypes["player_match_map_stats_aggregate_order_by"] | undefined | null,
@@ -208177,6 +208326,7 @@ export type ModelTypes = {
 	wins?: ModelTypes["order_by"] | undefined | null,
 	wins_competitive?: ModelTypes["order_by"] | undefined | null,
 	wins_duel?: ModelTypes["order_by"] | undefined | null,
+	wins_rush?: ModelTypes["order_by"] | undefined | null,
 	wins_wingman?: ModelTypes["order_by"] | undefined | null
 };
 	/** primary key columns input for table: players */
@@ -208230,6 +208380,8 @@ export type ModelTypes = {
 	losses_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?: number | undefined | null,
 	premier_rank?: number | undefined | null,
@@ -208243,6 +208395,8 @@ export type ModelTypes = {
 	wins_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?: number | undefined | null
 };
@@ -208258,6 +208412,8 @@ export type ModelTypes = {
 	losses_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?: number | undefined | null,
 	premier_rank?: number | undefined | null,
@@ -208271,6 +208427,8 @@ export type ModelTypes = {
 	wins_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?: number | undefined | null
 };
@@ -208286,6 +208444,8 @@ export type ModelTypes = {
 	losses_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?: number | undefined | null,
 	premier_rank?: number | undefined | null,
@@ -208299,6 +208459,8 @@ export type ModelTypes = {
 	wins_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?: number | undefined | null
 };
@@ -208355,6 +208517,8 @@ export type ModelTypes = {
 	losses_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?: number | undefined | null,
 	premier_rank?: number | undefined | null,
@@ -208368,6 +208532,8 @@ export type ModelTypes = {
 	wins_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?: number | undefined | null
 };
@@ -208392,6 +208558,8 @@ export type ModelTypes = {
 	losses_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?: number | undefined | null,
 	premier_rank?: number | undefined | null,
@@ -208405,6 +208573,8 @@ export type ModelTypes = {
 	wins_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?: number | undefined | null
 };
@@ -208420,6 +208590,8 @@ export type ModelTypes = {
 	losses_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?: number | undefined | null,
 	premier_rank?: number | undefined | null,
@@ -208433,6 +208605,8 @@ export type ModelTypes = {
 	wins_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?: number | undefined | null
 };
@@ -208448,6 +208622,8 @@ export type ModelTypes = {
 	losses_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?: number | undefined | null,
 	premier_rank?: number | undefined | null,
@@ -208461,6 +208637,8 @@ export type ModelTypes = {
 	wins_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?: number | undefined | null
 };
@@ -223614,6 +223792,7 @@ export type ModelTypes = {
 	/** columns and relationships of "utility_drift_scans" */
 ["utility_drift_scans"]: {
 		broken: number,
+	caveats?: ModelTypes["jsonb"] | undefined | null,
 	created_at: ModelTypes["timestamptz"],
 	failure_reason?: string | undefined | null,
 	finished_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -235930,6 +236109,7 @@ export type ModelTypes = {
 	avg_faceit_elo?: number | undefined | null,
 	avg_faceit_level?: ModelTypes["float8"] | undefined | null,
 	avg_premier?: number | undefined | null,
+	avg_rush_elo?: number | undefined | null,
 	avg_wingman_elo?: number | undefined | null,
 	max_elo?: number | undefined | null,
 	min_elo?: number | undefined | null,
@@ -235964,6 +236144,7 @@ export type ModelTypes = {
 	avg_faceit_elo?: number | undefined | null,
 	avg_faceit_level?: number | undefined | null,
 	avg_premier?: number | undefined | null,
+	avg_rush_elo?: number | undefined | null,
 	avg_wingman_elo?: number | undefined | null,
 	max_elo?: number | undefined | null,
 	min_elo?: number | undefined | null,
@@ -235979,6 +236160,7 @@ export type ModelTypes = {
 	avg_faceit_elo?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	avg_faceit_level?: ModelTypes["float8_comparison_exp"] | undefined | null,
 	avg_premier?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	avg_rush_elo?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	avg_wingman_elo?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	max_elo?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	min_elo?: ModelTypes["Int_comparison_exp"] | undefined | null,
@@ -235993,6 +236175,7 @@ export type ModelTypes = {
 	avg_faceit_elo?: number | undefined | null,
 	avg_faceit_level?: ModelTypes["float8"] | undefined | null,
 	avg_premier?: number | undefined | null,
+	avg_rush_elo?: number | undefined | null,
 	avg_wingman_elo?: number | undefined | null,
 	max_elo?: number | undefined | null,
 	min_elo?: number | undefined | null,
@@ -236007,6 +236190,7 @@ export type ModelTypes = {
 	avg_faceit_elo?: number | undefined | null,
 	avg_faceit_level?: ModelTypes["float8"] | undefined | null,
 	avg_premier?: number | undefined | null,
+	avg_rush_elo?: number | undefined | null,
 	avg_wingman_elo?: number | undefined | null,
 	max_elo?: number | undefined | null,
 	min_elo?: number | undefined | null,
@@ -236020,6 +236204,7 @@ export type ModelTypes = {
 	avg_faceit_elo?: number | undefined | null,
 	avg_faceit_level?: ModelTypes["float8"] | undefined | null,
 	avg_premier?: number | undefined | null,
+	avg_rush_elo?: number | undefined | null,
 	avg_wingman_elo?: number | undefined | null,
 	max_elo?: number | undefined | null,
 	min_elo?: number | undefined | null,
@@ -236037,6 +236222,7 @@ export type ModelTypes = {
 	avg_faceit_elo?: ModelTypes["order_by"] | undefined | null,
 	avg_faceit_level?: ModelTypes["order_by"] | undefined | null,
 	avg_premier?: ModelTypes["order_by"] | undefined | null,
+	avg_rush_elo?: ModelTypes["order_by"] | undefined | null,
 	avg_wingman_elo?: ModelTypes["order_by"] | undefined | null,
 	max_elo?: ModelTypes["order_by"] | undefined | null,
 	min_elo?: ModelTypes["order_by"] | undefined | null,
@@ -236052,6 +236238,7 @@ export type ModelTypes = {
 	avg_faceit_elo?: number | undefined | null,
 	avg_faceit_level?: number | undefined | null,
 	avg_premier?: number | undefined | null,
+	avg_rush_elo?: number | undefined | null,
 	avg_wingman_elo?: number | undefined | null,
 	max_elo?: number | undefined | null,
 	min_elo?: number | undefined | null,
@@ -236064,6 +236251,7 @@ export type ModelTypes = {
 	avg_faceit_elo?: number | undefined | null,
 	avg_faceit_level?: number | undefined | null,
 	avg_premier?: number | undefined | null,
+	avg_rush_elo?: number | undefined | null,
 	avg_wingman_elo?: number | undefined | null,
 	max_elo?: number | undefined | null,
 	min_elo?: number | undefined | null,
@@ -236076,6 +236264,7 @@ export type ModelTypes = {
 	avg_faceit_elo?: number | undefined | null,
 	avg_faceit_level?: number | undefined | null,
 	avg_premier?: number | undefined | null,
+	avg_rush_elo?: number | undefined | null,
 	avg_wingman_elo?: number | undefined | null,
 	max_elo?: number | undefined | null,
 	min_elo?: number | undefined | null,
@@ -236095,6 +236284,7 @@ export type ModelTypes = {
 	avg_faceit_elo?: number | undefined | null,
 	avg_faceit_level?: ModelTypes["float8"] | undefined | null,
 	avg_premier?: number | undefined | null,
+	avg_rush_elo?: number | undefined | null,
 	avg_wingman_elo?: number | undefined | null,
 	max_elo?: number | undefined | null,
 	min_elo?: number | undefined | null,
@@ -236108,6 +236298,7 @@ export type ModelTypes = {
 	avg_faceit_elo?: number | undefined | null,
 	avg_faceit_level?: ModelTypes["float8"] | undefined | null,
 	avg_premier?: number | undefined | null,
+	avg_rush_elo?: number | undefined | null,
 	avg_wingman_elo?: number | undefined | null,
 	max_elo?: number | undefined | null,
 	min_elo?: number | undefined | null,
@@ -236120,6 +236311,7 @@ export type ModelTypes = {
 	avg_faceit_elo?: number | undefined | null,
 	avg_faceit_level?: number | undefined | null,
 	avg_premier?: number | undefined | null,
+	avg_rush_elo?: number | undefined | null,
 	avg_wingman_elo?: number | undefined | null,
 	max_elo?: number | undefined | null,
 	min_elo?: number | undefined | null,
@@ -236132,6 +236324,7 @@ export type ModelTypes = {
 	avg_faceit_elo?: number | undefined | null,
 	avg_faceit_level?: number | undefined | null,
 	avg_premier?: number | undefined | null,
+	avg_rush_elo?: number | undefined | null,
 	avg_wingman_elo?: number | undefined | null,
 	max_elo?: number | undefined | null,
 	min_elo?: number | undefined | null,
@@ -236144,6 +236337,7 @@ export type ModelTypes = {
 	avg_faceit_elo?: number | undefined | null,
 	avg_faceit_level?: number | undefined | null,
 	avg_premier?: number | undefined | null,
+	avg_rush_elo?: number | undefined | null,
 	avg_wingman_elo?: number | undefined | null,
 	max_elo?: number | undefined | null,
 	min_elo?: number | undefined | null,
@@ -282123,6 +282317,8 @@ export type GraphQLTypes = {
 	losses_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?: number | undefined | null,
 	/** An array relationship */
@@ -282240,6 +282436,8 @@ export type GraphQLTypes = {
 	wins_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?: number | undefined | null
 };
@@ -282277,6 +282475,8 @@ export type GraphQLTypes = {
 	losses_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?: number | undefined | null,
 	premier_rank?: number | undefined | null,
@@ -282290,6 +282490,8 @@ export type GraphQLTypes = {
 	wins_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?: number | undefined | null
 };
@@ -282366,6 +282568,7 @@ export type GraphQLTypes = {
 	losses?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	losses_competitive?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	losses_duel?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	losses_rush?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	losses_wingman?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	match_map_hltv?: GraphQLTypes["v_player_match_map_hltv_bool_exp"] | undefined | null,
 	match_map_hltv_aggregate?: GraphQLTypes["v_player_match_map_hltv_aggregate_bool_exp"] | undefined | null,
@@ -282432,6 +282635,7 @@ export type GraphQLTypes = {
 	wins?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	wins_competitive?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	wins_duel?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	wins_rush?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	wins_wingman?: GraphQLTypes["Int_comparison_exp"] | undefined | null
 };
 	/** unique or primary key constraints on table "players" */
@@ -282549,6 +282753,8 @@ export type GraphQLTypes = {
 	losses_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?: number | undefined | null,
 	/** A computed field, executes function "get_player_matchmaking_cooldown" */
@@ -282572,6 +282778,8 @@ export type GraphQLTypes = {
 	wins_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?: number | undefined | null
 };
@@ -282604,6 +282812,8 @@ export type GraphQLTypes = {
 	losses_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?: number | undefined | null,
 	/** A computed field, executes function "get_player_matchmaking_cooldown" */
@@ -282627,6 +282837,8 @@ export type GraphQLTypes = {
 	wins_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?: number | undefined | null
 };
@@ -282701,6 +282913,7 @@ export type GraphQLTypes = {
 	losses?: GraphQLTypes["order_by"] | undefined | null,
 	losses_competitive?: GraphQLTypes["order_by"] | undefined | null,
 	losses_duel?: GraphQLTypes["order_by"] | undefined | null,
+	losses_rush?: GraphQLTypes["order_by"] | undefined | null,
 	losses_wingman?: GraphQLTypes["order_by"] | undefined | null,
 	match_map_hltv_aggregate?: GraphQLTypes["v_player_match_map_hltv_aggregate_order_by"] | undefined | null,
 	match_map_stats_aggregate?: GraphQLTypes["player_match_map_stats_aggregate_order_by"] | undefined | null,
@@ -282747,6 +282960,7 @@ export type GraphQLTypes = {
 	wins?: GraphQLTypes["order_by"] | undefined | null,
 	wins_competitive?: GraphQLTypes["order_by"] | undefined | null,
 	wins_duel?: GraphQLTypes["order_by"] | undefined | null,
+	wins_rush?: GraphQLTypes["order_by"] | undefined | null,
 	wins_wingman?: GraphQLTypes["order_by"] | undefined | null
 };
 	/** primary key columns input for table: players */
@@ -282802,6 +283016,8 @@ export type GraphQLTypes = {
 	losses_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?: number | undefined | null,
 	premier_rank?: number | undefined | null,
@@ -282815,6 +283031,8 @@ export type GraphQLTypes = {
 	wins_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?: number | undefined | null
 };
@@ -282831,6 +283049,8 @@ export type GraphQLTypes = {
 	losses_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?: number | undefined | null,
 	premier_rank?: number | undefined | null,
@@ -282844,6 +283064,8 @@ export type GraphQLTypes = {
 	wins_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?: number | undefined | null
 };
@@ -282860,6 +283082,8 @@ export type GraphQLTypes = {
 	losses_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?: number | undefined | null,
 	premier_rank?: number | undefined | null,
@@ -282873,6 +283097,8 @@ export type GraphQLTypes = {
 	wins_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?: number | undefined | null
 };
@@ -282930,6 +283156,8 @@ export type GraphQLTypes = {
 	losses_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?: number | undefined | null,
 	premier_rank?: number | undefined | null,
@@ -282943,6 +283171,8 @@ export type GraphQLTypes = {
 	wins_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?: number | undefined | null
 };
@@ -282969,6 +283199,8 @@ export type GraphQLTypes = {
 	losses_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?: number | undefined | null,
 	premier_rank?: number | undefined | null,
@@ -282982,6 +283214,8 @@ export type GraphQLTypes = {
 	wins_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?: number | undefined | null
 };
@@ -282998,6 +283232,8 @@ export type GraphQLTypes = {
 	losses_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?: number | undefined | null,
 	premier_rank?: number | undefined | null,
@@ -283011,6 +283247,8 @@ export type GraphQLTypes = {
 	wins_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?: number | undefined | null
 };
@@ -283027,6 +283265,8 @@ export type GraphQLTypes = {
 	losses_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_duel" */
 	losses_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_losses_rush" */
+	losses_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_wingman" */
 	losses_wingman?: number | undefined | null,
 	premier_rank?: number | undefined | null,
@@ -283040,6 +283280,8 @@ export type GraphQLTypes = {
 	wins_competitive?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_duel" */
 	wins_duel?: number | undefined | null,
+	/** A computed field, executes function "get_total_player_wins_rush" */
+	wins_rush?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_wins_wingman" */
 	wins_wingman?: number | undefined | null
 };
@@ -298909,6 +299151,7 @@ export type GraphQLTypes = {
 ["utility_drift_scans"]: {
 	__typename: "utility_drift_scans",
 	broken: number,
+	caveats?: GraphQLTypes["jsonb"] | undefined | null,
 	created_at: GraphQLTypes["timestamptz"],
 	failure_reason?: string | undefined | null,
 	finished_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -311873,6 +312116,7 @@ export type GraphQLTypes = {
 	avg_faceit_elo?: number | undefined | null,
 	avg_faceit_level?: GraphQLTypes["float8"] | undefined | null,
 	avg_premier?: number | undefined | null,
+	avg_rush_elo?: number | undefined | null,
 	avg_wingman_elo?: number | undefined | null,
 	max_elo?: number | undefined | null,
 	min_elo?: number | undefined | null,
@@ -311910,6 +312154,7 @@ export type GraphQLTypes = {
 	avg_faceit_elo?: number | undefined | null,
 	avg_faceit_level?: number | undefined | null,
 	avg_premier?: number | undefined | null,
+	avg_rush_elo?: number | undefined | null,
 	avg_wingman_elo?: number | undefined | null,
 	max_elo?: number | undefined | null,
 	min_elo?: number | undefined | null,
@@ -311925,6 +312170,7 @@ export type GraphQLTypes = {
 	avg_faceit_elo?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	avg_faceit_level?: GraphQLTypes["float8_comparison_exp"] | undefined | null,
 	avg_premier?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	avg_rush_elo?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	avg_wingman_elo?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	max_elo?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	min_elo?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
@@ -311939,6 +312185,7 @@ export type GraphQLTypes = {
 	avg_faceit_elo?: number | undefined | null,
 	avg_faceit_level?: GraphQLTypes["float8"] | undefined | null,
 	avg_premier?: number | undefined | null,
+	avg_rush_elo?: number | undefined | null,
 	avg_wingman_elo?: number | undefined | null,
 	max_elo?: number | undefined | null,
 	min_elo?: number | undefined | null,
@@ -311954,6 +312201,7 @@ export type GraphQLTypes = {
 	avg_faceit_elo?: number | undefined | null,
 	avg_faceit_level?: GraphQLTypes["float8"] | undefined | null,
 	avg_premier?: number | undefined | null,
+	avg_rush_elo?: number | undefined | null,
 	avg_wingman_elo?: number | undefined | null,
 	max_elo?: number | undefined | null,
 	min_elo?: number | undefined | null,
@@ -311968,6 +312216,7 @@ export type GraphQLTypes = {
 	avg_faceit_elo?: number | undefined | null,
 	avg_faceit_level?: GraphQLTypes["float8"] | undefined | null,
 	avg_premier?: number | undefined | null,
+	avg_rush_elo?: number | undefined | null,
 	avg_wingman_elo?: number | undefined | null,
 	max_elo?: number | undefined | null,
 	min_elo?: number | undefined | null,
@@ -311985,6 +312234,7 @@ export type GraphQLTypes = {
 	avg_faceit_elo?: GraphQLTypes["order_by"] | undefined | null,
 	avg_faceit_level?: GraphQLTypes["order_by"] | undefined | null,
 	avg_premier?: GraphQLTypes["order_by"] | undefined | null,
+	avg_rush_elo?: GraphQLTypes["order_by"] | undefined | null,
 	avg_wingman_elo?: GraphQLTypes["order_by"] | undefined | null,
 	max_elo?: GraphQLTypes["order_by"] | undefined | null,
 	min_elo?: GraphQLTypes["order_by"] | undefined | null,
@@ -312002,6 +312252,7 @@ export type GraphQLTypes = {
 	avg_faceit_elo?: number | undefined | null,
 	avg_faceit_level?: number | undefined | null,
 	avg_premier?: number | undefined | null,
+	avg_rush_elo?: number | undefined | null,
 	avg_wingman_elo?: number | undefined | null,
 	max_elo?: number | undefined | null,
 	min_elo?: number | undefined | null,
@@ -312015,6 +312266,7 @@ export type GraphQLTypes = {
 	avg_faceit_elo?: number | undefined | null,
 	avg_faceit_level?: number | undefined | null,
 	avg_premier?: number | undefined | null,
+	avg_rush_elo?: number | undefined | null,
 	avg_wingman_elo?: number | undefined | null,
 	max_elo?: number | undefined | null,
 	min_elo?: number | undefined | null,
@@ -312028,6 +312280,7 @@ export type GraphQLTypes = {
 	avg_faceit_elo?: number | undefined | null,
 	avg_faceit_level?: number | undefined | null,
 	avg_premier?: number | undefined | null,
+	avg_rush_elo?: number | undefined | null,
 	avg_wingman_elo?: number | undefined | null,
 	max_elo?: number | undefined | null,
 	min_elo?: number | undefined | null,
@@ -312047,6 +312300,7 @@ export type GraphQLTypes = {
 	avg_faceit_elo?: number | undefined | null,
 	avg_faceit_level?: GraphQLTypes["float8"] | undefined | null,
 	avg_premier?: number | undefined | null,
+	avg_rush_elo?: number | undefined | null,
 	avg_wingman_elo?: number | undefined | null,
 	max_elo?: number | undefined | null,
 	min_elo?: number | undefined | null,
@@ -312061,6 +312315,7 @@ export type GraphQLTypes = {
 	avg_faceit_elo?: number | undefined | null,
 	avg_faceit_level?: GraphQLTypes["float8"] | undefined | null,
 	avg_premier?: number | undefined | null,
+	avg_rush_elo?: number | undefined | null,
 	avg_wingman_elo?: number | undefined | null,
 	max_elo?: number | undefined | null,
 	min_elo?: number | undefined | null,
@@ -312074,6 +312329,7 @@ export type GraphQLTypes = {
 	avg_faceit_elo?: number | undefined | null,
 	avg_faceit_level?: number | undefined | null,
 	avg_premier?: number | undefined | null,
+	avg_rush_elo?: number | undefined | null,
 	avg_wingman_elo?: number | undefined | null,
 	max_elo?: number | undefined | null,
 	min_elo?: number | undefined | null,
@@ -312087,6 +312343,7 @@ export type GraphQLTypes = {
 	avg_faceit_elo?: number | undefined | null,
 	avg_faceit_level?: number | undefined | null,
 	avg_premier?: number | undefined | null,
+	avg_rush_elo?: number | undefined | null,
 	avg_wingman_elo?: number | undefined | null,
 	max_elo?: number | undefined | null,
 	min_elo?: number | undefined | null,
@@ -312100,6 +312357,7 @@ export type GraphQLTypes = {
 	avg_faceit_elo?: number | undefined | null,
 	avg_faceit_level?: number | undefined | null,
 	avg_premier?: number | undefined | null,
+	avg_rush_elo?: number | undefined | null,
 	avg_wingman_elo?: number | undefined | null,
 	max_elo?: number | undefined | null,
 	min_elo?: number | undefined | null,
@@ -314713,6 +314971,7 @@ export enum e_game_cfg_types_enum {
 	Global = "Global",
 	Lan = "Lan",
 	Live = "Live",
+	Rush = "Rush",
 	Wingman = "Wingman"
 }
 /** select columns of table "e_game_cfg_types" */
@@ -314940,6 +315199,7 @@ export enum e_map_pool_types_enum {
 	Competitive = "Competitive",
 	Custom = "Custom",
 	Duel = "Duel",
+	Rush = "Rush",
 	Wingman = "Wingman"
 }
 /** select columns of table "e_map_pool_types" */
@@ -315071,6 +315331,7 @@ export enum e_match_types_enum {
 	Duel = "Duel",
 	Faceit = "Faceit",
 	Premier = "Premier",
+	Rush = "Rush",
 	Wingman = "Wingman"
 }
 /** select columns of table "e_match_types" */
@@ -321342,6 +321603,7 @@ export enum v_team_ranks_select_column {
 	avg_faceit_elo = "avg_faceit_elo",
 	avg_faceit_level = "avg_faceit_level",
 	avg_premier = "avg_premier",
+	avg_rush_elo = "avg_rush_elo",
 	avg_wingman_elo = "avg_wingman_elo",
 	max_elo = "max_elo",
 	min_elo = "min_elo",

@@ -20,14 +20,15 @@
 //   node scripts/extract-map-callouts.mjs de_mirage        # specific map(s)
 //   CS2_DIR=~/Steam/steamapps/common/... node scripts/extract-map-callouts.mjs
 //
-// Publish with the meshes:
-//   node scripts/fetch-map-meshes.mjs --publish --with-callouts --tag <build>-6
+// Published with the meshes by build-map-assets.mjs (see
+// docs/3d-replay-map-meshes.md).
 import {
   existsSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
   readdirSync,
+  realpathSync,
   rmSync,
   writeFileSync,
 } from "node:fs";
@@ -40,37 +41,9 @@ import { decompile as runDecompile, resolveCli } from "./lib-s2v.mjs";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const stageDir = join(root, ".cache", "callouts");
 
-const args = process.argv.slice(2);
-const has = (flag) => args.includes(flag);
-const value = (flag, fallback) => {
-  const i = args.indexOf(flag);
-  return i >= 0 && args[i + 1] ? args[i + 1] : fallback;
-};
-// The token AFTER a value-taking flag is that flag's value, not a map name --
-// `--cs2 /opt/cs2` would otherwise be read as a request to extract a map called
-// "/opt/cs2", which skips the directory scan entirely and reports FAILED.
-const VALUE_FLAGS = new Set(["--cs2"]);
-const only = args.filter(
-  (a, i) => !a.startsWith("--") && !VALUE_FLAGS.has(args[i - 1]),
-);
-
-const CS2_DIR =
-  process.env.CS2_DIR ??
-  value(
-    "--cs2",
-    join(
-      process.env.HOME ?? "",
-      "Library/Application Support/Steam/steamapps/common/Counter-Strike Global Offensive",
-    ),
-  );
-const MAPS_DIR = join(CS2_DIR, "game", "csgo", "maps");
-const PAK = join(CS2_DIR, "game", "csgo", "pak01_dir.vpk");
-
 // A place volume that measures less than this on a side is a trigger somebody
 // tied to the class by accident, not a callout.
 const MIN_EXTENT = 8;
-
-const CLI = resolveCli();
 
 /**
  * Blocks of a decompiled entity lump that name the class asked for.
@@ -199,16 +172,21 @@ function round(v) {
   return Math.round(v * 100) / 100;
 }
 
-function extractMap(map) {
-  const own = join(MAPS_DIR, `${map}.vpk`);
-  const vpk = existsSync(own) ? own : PAK;
+/**
+ * One map's callouts, from its own VPK in `mapsDir` or, failing that, `pak`.
+ * `{ map, callouts, skipped }`, or `{ none: true }` for a map that defines no
+ * place entities at all.
+ */
+export function extractCallouts(map, { mapsDir, pak, cli }) {
+  const own = join(mapsDir, `${map}.vpk`);
+  const vpk = existsSync(own) ? own : pak;
   const tmp = mkdtempSync(join(tmpdir(), `callouts-${map}-`));
 
   try {
     // One call for the whole entities folder: it writes the lump AND every
     // place volume's hull beside it, so a map costs one VPK open instead of one
     // per callout.
-    runDecompile(CLI, vpk, `maps/${map}/entities/`, tmp);
+    runDecompile(cli, vpk, `maps/${map}/entities/`, tmp);
 
     const entitiesDir = join(tmp, "maps", map, "entities");
     const lump = readFileSync(join(entitiesDir, "default_ents.vents"), "utf8");
@@ -286,18 +264,45 @@ function extractMap(map) {
       );
     }
 
-    return { map, generatedAt: new Date().toISOString(), callouts, skipped };
+    return { map, callouts, skipped };
   } finally {
     rmSync(tmp, { recursive: true, force: true });
   }
 }
 
 function main() {
+  const args = process.argv.slice(2);
+  const has = (flag) => args.includes(flag);
+  const value = (flag, fallback) => {
+    const i = args.indexOf(flag);
+    return i >= 0 && args[i + 1] ? args[i + 1] : fallback;
+  };
+  // The token AFTER a value-taking flag is that flag's value, not a map name --
+  // `--cs2 /opt/cs2` would otherwise be read as a request to extract a map called
+  // "/opt/cs2", which skips the directory scan entirely and reports FAILED.
+  const VALUE_FLAGS = new Set(["--cs2"]);
+  const only = args.filter(
+    (a, i) => !a.startsWith("--") && !VALUE_FLAGS.has(args[i - 1]),
+  );
+
+  const CS2_DIR =
+    process.env.CS2_DIR ??
+    value(
+      "--cs2",
+      join(
+        process.env.HOME ?? "",
+        "Library/Application Support/Steam/steamapps/common/Counter-Strike Global Offensive",
+      ),
+    );
+  const MAPS_DIR = join(CS2_DIR, "game", "csgo", "maps");
+  const PAK = join(CS2_DIR, "game", "csgo", "pak01_dir.vpk");
+
   if (!existsSync(MAPS_DIR)) {
     console.error(`✗ no CS2 maps at ${MAPS_DIR}\n  set CS2_DIR or pass --cs2 <path>`);
     process.exit(1);
   }
 
+  const cli = resolveCli();
   const maps = only.length
     ? only
     : readdirSync(MAPS_DIR)
@@ -310,7 +315,7 @@ function main() {
   let ok = 0;
   for (const map of maps) {
     try {
-      const result = extractMap(map);
+      const result = extractCallouts(map, { mapsDir: MAPS_DIR, pak: PAK, cli });
 
       if (result.none) {
         console.log(`${map.padEnd(16)} no callouts defined by this map`);
@@ -320,7 +325,7 @@ function main() {
       const out = join(stageDir, `${map}.callouts.json`);
       writeFileSync(
         out,
-        `${JSON.stringify({ map: result.map, generatedAt: result.generatedAt, callouts: result.callouts }, null, 1)}\n`,
+        `${JSON.stringify({ map: result.map, generatedAt: new Date().toISOString(), callouts: result.callouts }, null, 1)}\n`,
       );
       ok += 1;
       const boxes = result.callouts.reduce((n, c) => n + c.boxes.length, 0);
@@ -340,7 +345,9 @@ function main() {
       console.log(`\n${data.map}: ${data.callouts.map((c) => c.name).join(", ")}`);
     }
   }
-  console.log("(publish with: node scripts/fetch-map-meshes.mjs --publish --with-callouts --tag <tag>)");
+  console.log("(publish with: node scripts/build-map-assets.mjs --publish)");
 }
 
-main();
+if (process.argv[1] && realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main();
+}

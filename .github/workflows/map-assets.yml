@@ -1,0 +1,91 @@
+name: map-assets
+
+on:
+  push:
+    branches:
+      - "main"
+      - "beta"
+    paths:
+      - "scripts/build-map-assets.mjs"
+      - "scripts/extract-map-meshes.mjs"
+      - "scripts/extract-map-callouts.mjs"
+      - "scripts/glb-to-tri.mjs"
+      - "scripts/lib-*.mjs"
+      - "docker/map-assets/**"
+      - ".github/workflows/map-assets.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: map-assets-${{ github.ref_name }}
+  cancel-in-progress: true
+
+env:
+  CHANNEL: ${{ github.ref_name == 'main' && 'latest' || 'beta' }}
+  TAG_PREFIX: ${{ github.ref_name != 'main' && 'beta-' || '' }}
+
+jobs:
+  build:
+    # amd64 only: the image carries Source2Viewer-CLI's linux-x64 build and runs
+    # on the game-server nodes.
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Log in to GitHub Docker Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push the map-assets image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./docker/map-assets/Dockerfile
+          push: true
+          platforms: linux/amd64
+          cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/map-assets:buildcache-${{ env.TAG_PREFIX }}amd64
+          cache-to: type=registry,ref=ghcr.io/${{ github.repository_owner }}/map-assets:buildcache-${{ env.TAG_PREFIX }}amd64,mode=max
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/map-assets:${{ env.CHANNEL }}
+            ghcr.io/${{ github.repository_owner }}/map-assets:${{ env.TAG_PREFIX }}${{ github.sha }}
+      - name: Prune old images for channel
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const channel = context.ref === 'refs/heads/main' ? 'main' : 'beta';
+            const keep = 9;
+            const owner = context.repo.owner;
+            const pkg = 'map-assets';
+            const isBuildcache = (t) => t.startsWith('buildcache');
+            const isBeta = (t) => t === 'beta' || t.startsWith('beta-');
+            const { data: ownerInfo } = await github.rest.users.getByUsername({ username: owner });
+            const isOrg = ownerInfo.type === 'Organization';
+            const listFn = isOrg
+              ? github.rest.packages.getAllPackageVersionsForPackageOwnedByOrg
+              : github.rest.packages.getAllPackageVersionsForPackageOwnedByUser;
+            const listArgs = isOrg
+              ? { package_type: 'container', package_name: pkg, org: owner, per_page: 100 }
+              : { package_type: 'container', package_name: pkg, username: owner, per_page: 100 };
+            const versions = await github.paginate(listFn, listArgs);
+            const inChannel = versions.filter((v) => {
+              const tags = v.metadata?.container?.tags || [];
+              if (tags.length === 0) return false;
+              if (tags.some(isBuildcache)) return false;
+              const beta = tags.some(isBeta);
+              return channel === 'beta' ? beta : !beta;
+            });
+            inChannel.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            const toDelete = inChannel.slice(keep);
+            for (const v of toDelete) {
+              await (isOrg
+                ? github.rest.packages.deletePackageVersionForOrg({ package_type: 'container', package_name: pkg, org: owner, package_version_id: v.id })
+                : github.rest.packages.deletePackageVersionForUser({ package_type: 'container', package_name: pkg, username: owner, package_version_id: v.id }));
+              core.info(`deleted ${pkg} ${v.id} [${(v.metadata?.container?.tags || []).join(', ')}]`);
+            }
+            core.info(`channel=${channel} candidates=${inChannel.length} deleted=${toDelete.length}`);

@@ -1,14 +1,22 @@
-import { computed, onMounted, ref, unref, type Ref } from "vue";
+import { computed, onMounted, ref, unref, watch, type Ref } from "vue";
 
 export type MapSplit = {
   bounds: { top: number; bottom: number };
   offset: { x: number; y: number };
 };
 
+export type RadarVolume = {
+  name: string;
+  resolution: number;
+  offset: { x: number; y: number };
+  bounds: { minX: number; maxX: number; minY: number; maxY: number };
+};
+
 export type RadarMeta = {
   resolution: number;
   offset: { x: number; y: number };
   splits?: MapSplit[];
+  volumes?: RadarVolume[];
 };
 
 export type RadarPoint = { x: number; y: number; z?: number };
@@ -36,6 +44,79 @@ export function applyRadarSplit(z: number, splits: MapSplit[] | undefined) {
     }
   }
   return { dx: 0, dy: 0 };
+}
+
+// A map that splits its radar into rooms (Rush) gets one radar per volume. The
+// room shown is the one MOST of the points stand in, not the first that holds
+// one: a player caught mid-teleport, or on a doorway where two rooms' bounds
+// meet, would otherwise flip the whole board.
+export function pickRadarVolume(
+  meta: Pick<RadarMeta, "volumes"> | null | undefined,
+  points: RadarPoint[],
+): RadarVolume | null {
+  const volumes = meta?.volumes;
+  if (!volumes?.length || !points.length) {
+    return null;
+  }
+
+  const counts = new Map<RadarVolume, number>();
+  let sumX = 0;
+  let sumY = 0;
+  let valid = 0;
+  for (const point of points) {
+    const x = Number(point.x);
+    const y = Number(point.y);
+    if (!Number.isFinite(x) || !Number.isFinite(y)) {
+      continue;
+    }
+    sumX += x;
+    sumY += y;
+    valid += 1;
+    for (const volume of volumes) {
+      const { minX, maxX, minY, maxY } = volume.bounds;
+      if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
+        counts.set(volume, (counts.get(volume) ?? 0) + 1);
+      }
+    }
+  }
+  if (!counts.size) {
+    return null;
+  }
+
+  const centroidX = sumX / valid;
+  const centroidY = sumY / valid;
+  let best: RadarVolume | null = null;
+  let bestCount = 0;
+  let bestDistance = Infinity;
+  for (const [volume, count] of counts) {
+    const { minX, maxX, minY, maxY } = volume.bounds;
+    const distance = Math.hypot(
+      (minX + maxX) / 2 - centroidX,
+      (minY + maxY) / 2 - centroidY,
+    );
+    if (count > bestCount || (count === bestCount && distance < bestDistance)) {
+      best = volume;
+      bestCount = count;
+      bestDistance = distance;
+    }
+  }
+  return best;
+}
+
+// Volume names are Valve's own -- "room101", "roomparty", "convoy".
+export function radarVolumeLabel(
+  name: string,
+  t: (key: string, params: Record<string, string>) => string,
+): string {
+  const capitalize = (word: string) =>
+    word.charAt(0).toUpperCase() + word.slice(1);
+  const room = /^room(.+)$/i.exec(name);
+  if (!room) {
+    return capitalize(name);
+  }
+  return t("maps.radar_room.room", {
+    name: /^\d+$/.test(room[1]) ? room[1] : capitalize(room[1]),
+  });
 }
 
 export function projectWithCalibration(
@@ -127,7 +208,10 @@ export function loadRadarCalibrations(): Promise<Record<
 
 export function useRadarProjection(
   mapName: Ref<string | null | undefined> | (() => string | null | undefined),
-  options: { radarFailed?: Ref<boolean> } = {},
+  options: {
+    radarFailed?: Ref<boolean>;
+    volumePoints?: () => RadarPoint[];
+  } = {},
 ) {
   const calibrations = ref<Record<string, RadarMeta> | null>(null);
 
@@ -137,12 +221,46 @@ export function useRadarProjection(
     ),
   );
 
-  const calibration = computed<RadarMeta | null>(() => {
+  const mapCalibration = computed<RadarMeta | null>(() => {
     if (!calibrations.value || !normalizedMap.value) {
       return null;
     }
     return calibrations.value[normalizedMap.value] ?? null;
   });
+
+  const volumes = computed<RadarVolume[]>(
+    () => mapCalibration.value?.volumes ?? [],
+  );
+
+  // A volume name picked by hand. It means nothing on the next map.
+  const volumeOverride = ref<string | null>(null);
+  watch(normalizedMap, () => {
+    volumeOverride.value = null;
+  });
+
+  const activeVolume = computed<RadarVolume | null>(() => {
+    if (!volumes.value.length) {
+      return null;
+    }
+    if (volumeOverride.value) {
+      const picked = volumes.value.find(
+        (volume) => volume.name === volumeOverride.value,
+      );
+      if (picked) {
+        return picked;
+      }
+    }
+    if (!options.volumePoints) {
+      return null;
+    }
+    return pickRadarVolume(mapCalibration.value, options.volumePoints());
+  });
+
+  // The volume object itself rather than a copy: the pick re-runs on every
+  // point update, and an identical result must not re-project everything.
+  const calibration = computed<RadarMeta | null>(
+    () => activeVolume.value ?? mapCalibration.value,
+  );
 
   const radarSrc = computed(() => {
     if (
@@ -152,13 +270,16 @@ export function useRadarProjection(
     ) {
       return null;
     }
+    if (activeVolume.value) {
+      return `/radars/${normalizedMap.value}_${activeVolume.value.name}.png`;
+    }
     return `/radars/${normalizedMap.value}.png`;
   });
 
   // Undecided until the fetch resolves, so a caller does not flash "no radar"
   // for a map that does in fact have one.
   const hasCalibration = computed(() =>
-    calibrations.value === null ? true : !!calibration.value,
+    calibrations.value === null ? true : !!mapCalibration.value,
   );
 
   async function load() {
@@ -187,6 +308,9 @@ export function useRadarProjection(
     calibrations,
     normalizedMap,
     calibration,
+    volumes,
+    activeVolume,
+    volumeOverride,
     radarSrc,
     hasCalibration,
     projectCalibrated,

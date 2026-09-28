@@ -986,7 +986,8 @@
   "elo_change_badge": {
     "comp": "경쟁전",
     "wingman": "윙맨",
-    "duel": "듀얼"
+    "duel": "듀얼",
+    "rush": "러시"
   },
   "render_queue_status": {
     "queued": "대기 중",
@@ -1968,7 +1969,7 @@
           "order_hint": "아래 계층이 위 계층보다 우선합니다.",
           "layers": {
             "type": "경기 유형",
-            "type_note": "Competitive, Wingman, Duel",
+            "type_note": "Competitive, Wingman, Duel, Rush",
             "lan_note": "LAN 지역만",
             "global_note": "모든 경기",
             "plugin": "플러그인 cvar",
@@ -3561,6 +3562,7 @@
         "competitive": "경쟁전",
         "wingman": "윙맨",
         "duel": "듀얼",
+        "rush": "러시",
         "scrimmage": "스크림",
         "premier": "Premier",
         "faceit": "Faceit"
@@ -4572,6 +4574,7 @@
         "duration": "{seconds}초",
         "requested_by": "요청자",
         "capped": "{total}행 중 처음 {shown}행을 표시합니다.",
+        "caveats": "주의 사항 ({count})",
         "count_broken": "사용 불가 {count}개",
         "count_moved": "이동 {count}개",
         "count_unsimulatable": "시뮬레이션 불가 {count}개",
@@ -6679,6 +6682,7 @@
           "description": "진영을 교체하기 전까지 진행되는 라운드 수입니다.",
           "placeholder": "최대 라운드 선택"
         },
+        "rush_fixed_rules": "러시는 항상 8라운드 선승제로 진행되며, 연장과 나이프 라운드가 없습니다.",
         "region": {
           "title": "지역 설정",
           "lan_match": "LAN 매치",
@@ -7429,7 +7433,7 @@
         "cam_chase": "체이스",
         "cam_chase_tip": "추적 중인 플레이어를 따라감",
         "roof": "지붕",
-        "roof_tip": "지붕 컷 — 중간이 자동입니다(지붕 제거, 상황 노출). 위로 하면 더 많이 보이고, 아래로 하면 더 많이 잘리며, 최대는 전체 맵입니다.",
+        "roof_tip": "지붕 컷 — 지붕을 숨기고 벽을 잘라 상황이 잘 보이게 합니다. 아래로 하면 더 낮게 자르고(평면도), 위로 하면 벽이 높아지며, 최대는 전체 맵입니다.",
         "play_by_play": "플레이 바이 플레이",
         "play_by_play_tip": "해당 라운드의 플레이 바이 플레이 이벤트 로그 표시",
         "more": "추가 옵션",
@@ -7883,7 +7887,13 @@
     },
     "official": "공식 맵",
     "workshop": "워크샵 맵",
-    "active_duty": "액티브 듀티"
+    "active_duty": "액티브 듀티",
+    "radar_room": {
+      "label": "방",
+      "auto": "자동",
+      "room": "방 {name}",
+      "full_map": "전체 맵"
+    }
   },
   "region": {
     "form": {
@@ -7906,6 +7916,10 @@
       "duel": {
         "title": "듀얼",
         "description": "개인 기량을 연습하기 좋은 1 대 1 경쟁전"
+      },
+      "rush": {
+        "title": "러시",
+        "description": "방마다 싸우는 빠른 템포의 3v3 매치, 라운드를 이길 때마다 전선을 밀어붙이세요"
       }
     },
     "cancel_matchmaking": "매치메이킹 취소",

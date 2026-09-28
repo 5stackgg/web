@@ -50,6 +50,7 @@ export default defineComponent<ComponentData>({
             e_game_cfg_types_enum.Competitive,
             e_game_cfg_types_enum.Wingman,
             e_game_cfg_types_enum.Duel,
+            e_game_cfg_types_enum.Rush,
             e_game_cfg_types_enum.Lan,
             e_game_cfg_types_enum.Global,
           ];

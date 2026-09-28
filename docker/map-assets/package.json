@@ -1,0 +1,9 @@
+{
+  "name": "5stack-map-assets",
+  "private": true,
+  "description": "Runtime dependencies of scripts/build-map-assets.mjs, pinned to what web/yarn.lock resolves",
+  "dependencies": {
+    "aws4fetch": "1.0.20",
+    "meshoptimizer": "1.1.1"
+  }
+}

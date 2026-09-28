@@ -961,6 +961,8 @@ export type UtilityDriftScan = {
   map_name: string;
   status: string | null;
   failure_reason: string | null;
+  /** The parser's warning label for the scan's numbers: a JSON array of strings. */
+  caveats: unknown;
   from_revision: string | null;
   to_revision: string | null;
   /** How many lineups the scan took on, and how many it has got through. */
@@ -1000,6 +1002,7 @@ export type UtilityDriftScanView = {
   mapName: string;
   status: string | null;
   failureReason: string | null;
+  caveats: string[];
   fromRevision: string | null;
   toRevision: string | null;
   lineups: number | null;
@@ -1061,6 +1064,9 @@ export function readUtilityDriftScan(row: UtilityDriftScan): UtilityDriftScanVie
     mapName: row.map_name,
     status: row.status ?? null,
     failureReason: row.failure_reason ?? null,
+    caveats: Array.isArray(row.caveats)
+      ? row.caveats.filter((caveat): caveat is string => typeof caveat === "string")
+      : [],
     fromRevision: row.from_revision ?? null,
     toRevision: row.to_revision ?? null,
     lineups,

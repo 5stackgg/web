@@ -129,6 +129,7 @@ const debouncedSearch = debounce(async (searchQuery: string) => {
         competitive: document.elo_competitive,
         wingman: document.elo_wingman,
         duel: document.elo_duel,
+        rush: document.elo_rush,
       },
     }));
   } catch (error) {

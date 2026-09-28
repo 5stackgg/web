@@ -8,6 +8,7 @@ const props = defineProps<{
     avg_elo?: number | null;
     avg_wingman_elo?: number | null;
     avg_duel_elo?: number | null;
+    avg_rush_elo?: number | null;
     min_elo?: number | null;
     max_elo?: number | null;
     avg_faceit_level?: number | null;
@@ -29,6 +30,7 @@ const player = computed(() => ({
     competitive: props.ranks?.avg_elo ?? undefined,
     wingman: props.ranks?.avg_wingman_elo ?? undefined,
     duel: props.ranks?.avg_duel_elo ?? undefined,
+    rush: props.ranks?.avg_rush_elo ?? undefined,
   },
   premier_rank: props.ranks?.avg_premier ?? undefined,
   // FACEIT levels are 1–10 integers; round the team average so the badge shows

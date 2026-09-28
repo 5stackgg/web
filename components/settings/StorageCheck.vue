@@ -355,25 +355,25 @@ const lastRunTime = computed(() =>
       leave-active-class="transition duration-150 ease-in motion-reduce:transition-none"
       leave-to-class="opacity-0"
     >
-      <ul
+      <dl
         v-if="notes.length"
-        class="grid gap-1.5 border-t border-dashed border-border/70 pt-3 text-sm"
+        class="grid grid-cols-[max-content_1fr] items-baseline gap-x-3 gap-y-1.5 border-t border-dashed border-border/70 pt-3 text-sm"
       >
-        <li
-          v-for="note in notes"
-          :key="note.id"
-          class="flex items-start gap-2"
-          :data-test="`storage-check-note-${note.id}`"
-        >
-          <span
-            class="mt-[0.2rem] shrink-0 font-mono text-[0.64rem] uppercase tracking-[0.2em]"
+        <template v-for="note in notes" :key="note.id">
+          <dt
+            class="font-mono text-[0.64rem] uppercase tracking-[0.2em]"
             :class="text[note.state]"
           >
             {{ note.name }}
-          </span>
-          <span class="text-muted-foreground">{{ note.detail }}</span>
-        </li>
-      </ul>
+          </dt>
+          <dd
+            class="text-muted-foreground"
+            :data-test="`storage-check-note-${note.id}`"
+          >
+            {{ note.detail }}
+          </dd>
+        </template>
+      </dl>
     </Transition>
   </div>
 </template>

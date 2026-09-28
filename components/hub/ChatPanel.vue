@@ -18,6 +18,7 @@ import { useChatTabs, type ChatTab } from "~/composables/useChatTabs";
 import { cancelChatTabRestore } from "~/composables/useChatTabPersistence";
 import { useDirectConversationBar } from "~/composables/useDirectConversationBar";
 import { directTabId } from "~/composables/useDirectMessages";
+import { orderChatTabs } from "~/utilities/chatTabOrder";
 import { hapticTap } from "~/utilities/haptics";
 import {
   ContextMenu,
@@ -65,29 +66,7 @@ function teamLobbyIdFor(tab: ChatTab) {
 
 const activeChatId = ref<string | null>(null);
 
-const orderedTabs = computed<ChatTab[]>(() => {
-  // Your own rooms first. Organizer and tournament rooms are broadcast
-  // channels, so landing on one by default put the least personal room in
-  // front of the lobby you are actually in. Conversations are not channels at
-  // all, so they sit below every channel behind a divider.
-  const weight = (tab: ChatTab) => {
-    if (tab.id.startsWith("matchmaking:")) return 0;
-    if (tab.type === "match") return 1;
-    if (tab.type === "direct") return 3;
-    return 2;
-  };
-  return [...tabs.value].sort((a, b) => {
-    const wa = weight(a);
-    const wb = weight(b);
-    if (wa !== wb) return wa - wb;
-    // Conversations sit in the order the player dragged them into; channels
-    // are not arrangeable and stay alphabetical.
-    if (a.type === "direct" && b.type === "direct") {
-      return (a.position ?? 0) - (b.position ?? 0);
-    }
-    return a.label.localeCompare(b.label);
-  });
-});
+const orderedTabs = computed<ChatTab[]>(() => orderChatTabs(tabs.value));
 
 // The divider only earns its place when there are channels above it.
 const firstDirectTabId = computed(() => {

@@ -1,5 +1,6 @@
 import { ref, computed } from "vue";
 import type { ChatType } from "~/web-sockets/Socket";
+import { orderChatTabs } from "~/utilities/chatTabOrder";
 
 export interface ChatTab {
   id: string;
@@ -71,15 +72,13 @@ export function useChatTabs() {
       return;
     }
 
+    const ordered = orderChatTabs(tabsRef.value);
     const [removed] = tabsRef.value.splice(idx, 1);
     delete unreadCountsRef.value[removed.id];
 
     if (activeTabIdRef.value === removed.id) {
-      const next =
-        tabsRef.value[idx] ||
-        tabsRef.value[idx - 1] ||
-        tabsRef.value[0] ||
-        null;
+      const position = ordered.findIndex((tab) => tab.id === removed.id);
+      const next = ordered[position + 1] ?? ordered[position - 1] ?? null;
       activeTabIdRef.value = next ? next.id : null;
     }
   }

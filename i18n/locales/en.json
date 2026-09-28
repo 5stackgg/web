@@ -8258,6 +8258,8 @@
     "send_other_hint": "Ctrl+Enter to send to {channel}",
     "everyone_hint": "Both teams — also shown in game chat",
     "team_hint": "Your lineup only — not shown in game chat",
+    "message_too_long": "Messages can be up to {max} characters.",
+    "send_failed": "Your message couldn't be sent.",
     "direct": {
       "message": "Message",
       "empty": "No messages yet. Say hello."

@@ -127,6 +127,17 @@ const fieldName = `chat-message-${Math.random().toString(36).slice(2, 10)}`;
                 ]"
                 @keydown.enter="onEnter"
               />
+              <span
+                v-if="showRemaining"
+                class="shrink-0 self-center font-mono text-[0.6rem] tabular-nums leading-none"
+                :class="
+                  remainingCharacters < 0
+                    ? 'text-destructive'
+                    : 'text-muted-foreground/70'
+                "
+              >
+                {{ remainingCharacters }}
+              </span>
               <Button
                 type="submit"
                 size="sm"
@@ -155,6 +166,10 @@ import * as z from "zod";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { chatEnterAction } from "~/utilities/chatInputKeys";
+import { toastChatError } from "~/utilities/chatErrors";
+import { CHAT_MESSAGE_MAX_LENGTH } from "~/constants/chat";
+
+const REMAINING_HINT_AT = 200;
 
 export interface ChatInputChannel {
   value: string;
@@ -201,7 +216,7 @@ export default {
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
-            message: z.string().min(1),
+            message: z.string().min(1).max(CHAT_MESSAGE_MAX_LENGTH),
           }),
         ),
       }),
@@ -210,6 +225,14 @@ export default {
   computed: {
     hasChannels() {
       return this.channels.length > 1;
+    },
+    remainingCharacters(): number {
+      const message = this.form.values.message?.trim() ?? "";
+
+      return CHAT_MESSAGE_MAX_LENGTH - message.length;
+    },
+    showRemaining(): boolean {
+      return this.remainingCharacters <= REMAINING_HINT_AT;
     },
     activeChannelValue() {
       return this.destination ?? this.channels[0]?.value;
@@ -316,6 +339,10 @@ export default {
     sendMessage(destination?: string) {
       const message = this.form.values.message?.trim();
       if (!message) {
+        return;
+      }
+      if (message.length > CHAT_MESSAGE_MAX_LENGTH) {
+        toastChatError({ code: "too_long", max: CHAT_MESSAGE_MAX_LENGTH });
         return;
       }
       this.$emit(

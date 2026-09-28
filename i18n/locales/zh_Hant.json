@@ -8258,6 +8258,8 @@
     "send_other_hint": "按 Ctrl+Enter 傳送到 {channel}",
     "everyone_hint": "兩支隊伍 — 也會顯示在遊戲內聊天",
     "team_hint": "僅限你的名單 — 不會顯示在遊戲內聊天",
+    "message_too_long": "訊息最多 {max} 個字元。",
+    "send_failed": "訊息傳送失敗。",
     "direct": {
       "message": "訊息",
       "empty": "還沒有訊息，先打個招呼吧。"

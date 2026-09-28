@@ -8258,6 +8258,8 @@
     "send_other_hint": "Ctrl+Entrée pour envoyer à {channel}",
     "everyone_hint": "Les deux équipes — également affiché dans le chat du jeu",
     "team_hint": "Votre composition uniquement — non affiché dans le chat du jeu",
+    "message_too_long": "Les messages peuvent contenir jusqu'à {max} caractères.",
+    "send_failed": "Ton message n'a pas pu être envoyé.",
     "direct": {
       "message": "Message",
       "empty": "Aucun message pour l'instant. Dites bonjour."

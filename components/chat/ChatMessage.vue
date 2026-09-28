@@ -173,7 +173,12 @@ export default {
       if (this.previousMessage.__channel !== this.message.__channel) {
         return false;
       }
-      return this.message.from.steam_id === this.previousMessage.from.steam_id;
+      // Lines stored before the api stamped steam_id as a string can still
+      // hold it as a number.
+      return (
+        String(this.message.from?.steam_id) ===
+        String(this.previousMessage.from?.steam_id)
+      );
     },
     isCloseTogether() {
       if (!this.isSameSender || !this.previousMessage) {

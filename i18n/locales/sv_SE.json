@@ -8467,6 +8467,13 @@
     "team_hint": "Bara din laguppställning — visas inte i spelets chatt",
     "message_too_long": "Meddelanden får vara högst {max} tecken långa.",
     "send_failed": "Ditt meddelande kunde inte skickas",
+    "gagged": "Din chatt är avstängd och du kan inte skicka chattmeddelanden.",
+    "message_actions": "Meddelandeåtgärder",
+    "delete_message": "Ta bort meddelande",
+    "delete_confirm_title": "Ta bort meddelande?",
+    "delete_confirm_description": "Meddelandet tas bort för alla i den här chatten.",
+    "delete_failed": "Meddelandet kunde inte tas bort",
+    "message_already_gone": "Meddelandet har redan tagits bort.",
     "direct": {
       "message": "Meddelande",
       "empty": "Inga meddelanden än. Säg hej."

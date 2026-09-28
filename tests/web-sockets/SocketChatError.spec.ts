@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import socket from "~/web-sockets/Socket";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import socket, { type LobbyMessage } from "~/web-sockets/Socket";
 
 const { toast } = vi.hoisted(() => ({ toast: vi.fn() }));
 
@@ -7,6 +7,50 @@ vi.mock("@/components/ui/toast", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/components/ui/toast")>()),
   toast,
 }));
+
+const line = (id: string, minute: number): LobbyMessage => ({
+  id,
+  message: `line ${id}`,
+  timestamp: new Date(Date.UTC(2026, 8, 28, 12, minute)).toISOString(),
+  from: { steam_id: "76561198000000002" },
+});
+
+const ids = (messages: readonly LobbyMessage[]) =>
+  messages.map((message) => message.id);
+
+function connect() {
+  const send = vi.fn();
+  (socket as any).connected = true;
+  (socket as any).connection = { send };
+  return send;
+}
+
+function disconnect() {
+  (socket as any).connected = false;
+  (socket as any).connection = undefined;
+}
+
+function sentDeletes(send: ReturnType<typeof vi.fn>) {
+  return send.mock.calls
+    .map(([payload]) => JSON.parse(payload))
+    .filter(({ event }) => event === "lobby:delete")
+    .map(({ data }) => data);
+}
+
+async function settled(promise: Promise<unknown>) {
+  let state = "pending";
+  promise.then(
+    () => {
+      state = "resolved";
+    },
+    () => {
+      state = "rejected";
+    },
+  );
+  await Promise.resolve();
+  await Promise.resolve();
+  return state;
+}
 
 describe("Socket chat:error", () => {
   beforeEach(() => {
@@ -23,16 +67,214 @@ describe("Socket chat:error", () => {
     });
   });
 
-  it.each(["not_allowed", "invalid", "gagged"])(
-    "toasts a failed send for %s",
-    (code) => {
-      socket.emit("chat:error", { code });
+  it.each(["not_allowed", "invalid"])("toasts a failed send for %s", (code) => {
+    socket.emit("chat:error", { code });
 
-      expect(toast).toHaveBeenCalledWith({
-        title: "Failed to send message",
-        description: undefined,
-        variant: "destructive",
-      });
-    },
-  );
+    expect(toast).toHaveBeenCalledWith({
+      title: "Failed to send message",
+      description: undefined,
+      variant: "destructive",
+    });
+  });
+
+  it("tells a gagged player why their send was refused", () => {
+    socket.emit("chat:error", { code: "gagged", action: "send" });
+
+    expect(toast).toHaveBeenCalledWith({
+      title: "Failed to send message",
+      description: "You're gagged and can't send chat messages.",
+      variant: "destructive",
+    });
+  });
+
+  it("titles a delete nobody is waiting on as a failed delete", () => {
+    socket.emit("chat:error", {
+      code: "not_found",
+      action: "delete",
+      requestId: "nobody-asked",
+    });
+
+    expect(toast).toHaveBeenCalledWith({
+      title: "Failed to delete message",
+      description: "That message was already removed.",
+      variant: "destructive",
+    });
+  });
+});
+
+describe("Socket deleteMessage", () => {
+  let send: ReturnType<typeof vi.fn>;
+
+  beforeEach(() => {
+    toast.mockClear();
+    send = connect();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    disconnect();
+  });
+
+  it("asks the api to delete the message with a request id", () => {
+    void socket.deleteMessage("match", "match-1", "message-1").catch(() => {});
+
+    const [request] = sentDeletes(send);
+    expect(request).toMatchObject({
+      type: "match",
+      id: "match-1",
+      messageId: "message-1",
+    });
+    expect(typeof request.requestId).toBe("string");
+  });
+
+  it("resolves on the ack for its own request", async () => {
+    const pending = socket.deleteMessage("match", "match-1", "message-1");
+    const [{ requestId }] = sentDeletes(send);
+
+    socket.emit("chat:ack", { requestId: "someone-else", action: "delete" });
+    expect(await settled(pending)).toBe("pending");
+
+    socket.emit("chat:ack", {
+      requestId,
+      messageId: "message-1",
+      action: "send",
+    });
+    expect(await settled(pending)).toBe("pending");
+
+    socket.emit("chat:ack", {
+      requestId,
+      messageId: "message-1",
+      action: "delete",
+    });
+    await expect(pending).resolves.toBeUndefined();
+  });
+
+  it("rejects on the error for its own request without a global toast", async () => {
+    const pending = socket.deleteMessage("match", "match-1", "message-1");
+    const [{ requestId }] = sentDeletes(send);
+
+    socket.emit("chat:error", {
+      code: "not_allowed",
+      action: "delete",
+      requestId,
+    });
+
+    await expect(pending).rejects.toMatchObject({
+      code: "not_allowed",
+      action: "delete",
+    });
+    expect(toast).not.toHaveBeenCalled();
+  });
+
+  it("gives up when the api never answers", async () => {
+    vi.useFakeTimers();
+    const pending = socket.deleteMessage("match", "match-1", "message-1");
+    const [{ requestId }] = sentDeletes(send);
+
+    vi.advanceTimersByTime(7999);
+    expect(await settled(pending)).toBe("pending");
+
+    vi.advanceTimersByTime(1);
+    await expect(pending).rejects.toMatchObject({
+      code: "timeout",
+      action: "delete",
+    });
+
+    socket.emit("chat:ack", { requestId, action: "delete" });
+    expect(toast).not.toHaveBeenCalled();
+  });
+
+  it("refuses straight away while offline and sends nothing", async () => {
+    disconnect();
+
+    await expect(
+      socket.deleteMessage("match", "match-1", "message-1"),
+    ).rejects.toMatchObject({ code: "offline", action: "delete" });
+    expect(sentDeletes(send)).toEqual([]);
+    expect((socket as any).offlineQueue).not.toContainEqual(
+      expect.objectContaining({ event: "lobby:delete" }),
+    );
+  });
+});
+
+describe("Socket lobby deletes", () => {
+  let lobby: ReturnType<typeof socket.joinLobby>;
+  let deleted: ReturnType<typeof vi.fn>;
+
+  beforeEach(() => {
+    vi.spyOn(console, "info").mockImplementation(() => {});
+    lobby = socket.joinLobby("socket-spec", "match", "match-1");
+    deleted = vi.fn();
+    lobby.on("lobby:deleted", deleted);
+    socket.emit("lobby:match:match-1:messages", {
+      messages: [line("a", 0), line("b", 1), line("c", 2)],
+    });
+  });
+
+  afterEach(() => {
+    lobby.leave();
+    disconnect();
+    vi.restoreAllMocks();
+  });
+
+  it("removes the message and tells the lobby where it was", () => {
+    socket.emit("lobby:match:match-1:deleted", { id: "b" });
+
+    expect(ids(lobby.messages)).toEqual(["a", "c"]);
+    expect(deleted).toHaveBeenCalledWith({ message: line("b", 1), index: 1 });
+  });
+
+  it("keeps a deleted message out of a stale snapshot and a replayed chat", () => {
+    socket.emit("lobby:match:match-1:deleted", { id: "b" });
+
+    socket.emit("lobby:match:match-1:messages", {
+      messages: [line("a", 0), line("b", 1), line("c", 2)],
+    });
+    socket.emit("lobby:match:match-1:chat", line("b", 1));
+
+    expect(ids(lobby.messages)).toEqual(["a", "c"]);
+  });
+
+  it("drops a message deleted before it ever arrived", () => {
+    socket.emit("lobby:match:match-1:deleted", { id: "d" });
+    socket.emit("lobby:match:match-1:chat", line("d", 3));
+
+    expect(ids(lobby.messages)).toEqual(["a", "b", "c"]);
+    expect(deleted).not.toHaveBeenCalled();
+  });
+
+  it("ignores a delete with no id", () => {
+    socket.emit("lobby:match:match-1:deleted", {});
+
+    expect(ids(lobby.messages)).toEqual(["a", "b", "c"]);
+  });
+
+  it("removes the message on the ack, before the room hears about it", async () => {
+    const send = connect();
+    const pending = socket.deleteMessage("match", "match-1", "b");
+    const [{ requestId }] = sentDeletes(send);
+
+    socket.emit("chat:ack", { requestId, messageId: "b", action: "delete" });
+    await pending;
+
+    expect(ids(lobby.messages)).toEqual(["a", "c"]);
+
+    socket.emit("lobby:match:match-1:deleted", { id: "b" });
+    expect(deleted).toHaveBeenCalledTimes(1);
+  });
+
+  it("removes a message the api says is already gone", async () => {
+    const send = connect();
+    const pending = socket.deleteMessage("match", "match-1", "b");
+    const [{ requestId }] = sentDeletes(send);
+
+    socket.emit("chat:error", {
+      code: "not_found",
+      action: "delete",
+      requestId,
+    });
+
+    await expect(pending).rejects.toMatchObject({ code: "not_found" });
+    expect(ids(lobby.messages)).toEqual(["a", "c"]);
+  });
 });

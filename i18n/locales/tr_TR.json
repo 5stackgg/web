@@ -8467,6 +8467,13 @@
     "team_hint": "Yalnızca kendi kadron — oyun içi sohbette görünmez",
     "message_too_long": "Mesajlar en fazla {max} karakter olabilir.",
     "send_failed": "Mesajın gönderilemedi",
+    "gagged": "Sohbetin kapatıldı, sohbet mesajı gönderemezsin.",
+    "message_actions": "Mesaj işlemleri",
+    "delete_message": "Mesajı Sil",
+    "delete_confirm_title": "Mesaj silinsin mi?",
+    "delete_confirm_description": "Bu mesaj, bu sohbetteki herkes için kaldırılacak.",
+    "delete_failed": "Mesaj silinemedi",
+    "message_already_gone": "Bu mesaj zaten kaldırılmış.",
     "direct": {
       "message": "Mesaj",
       "empty": "Henüz mesaj yok. Merhaba de."

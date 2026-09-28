@@ -10,6 +10,8 @@ import { chatThreadKey } from "~/utilities/chatThread";
 // asking the server again.
 const cursors = ref<Record<string, string>>({});
 
+type ReadMessage = { timestamp?: string; from?: { steam_id?: string } };
+
 export function useChatReadState() {
   async function hydrate() {
     try {
@@ -49,23 +51,32 @@ export function useChatReadState() {
     };
   }
 
-  function unreadSince(
+  function isUnread(
     type: string,
     lobbyId: string,
-    messages: Array<{ timestamp?: string; from?: { steam_id?: string } }>,
+    message: ReadMessage,
     mySteamId?: string | null,
   ) {
+    if (String(message?.from?.steam_id) === String(mySteamId)) {
+      return false;
+    }
+
     const cursor = cursors.value[chatThreadKey(type, lobbyId)];
     const readAt = cursor ? new Date(cursor).getTime() : 0;
 
-    return messages.filter((message) => {
-      if (String(message?.from?.steam_id) === String(mySteamId)) {
-        return false;
-      }
-
-      return new Date(message?.timestamp ?? 0).getTime() > readAt;
-    }).length;
+    return new Date(message?.timestamp ?? 0).getTime() > readAt;
   }
 
-  return { cursors, hydrate, markRead, setCursor, unreadSince };
+  function unreadSince(
+    type: string,
+    lobbyId: string,
+    messages: ReadMessage[],
+    mySteamId?: string | null,
+  ) {
+    return messages.filter((message) =>
+      isUnread(type, lobbyId, message, mySteamId),
+    ).length;
+  }
+
+  return { cursors, hydrate, isUnread, markRead, setCursor, unreadSince };
 }

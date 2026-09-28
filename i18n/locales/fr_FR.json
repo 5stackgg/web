@@ -8467,6 +8467,13 @@
     "team_hint": "Votre composition uniquement — non affiché dans le chat du jeu",
     "message_too_long": "Les messages peuvent contenir jusqu'à {max} caractères.",
     "send_failed": "Votre message n'a pas pu être envoyé",
+    "gagged": "Vous êtes bâillonné et ne pouvez pas envoyer de messages dans le chat.",
+    "message_actions": "Actions du message",
+    "delete_message": "Supprimer le message",
+    "delete_confirm_title": "Supprimer le message ?",
+    "delete_confirm_description": "Ce message sera supprimé pour tous les participants de ce chat.",
+    "delete_failed": "Impossible de supprimer le message",
+    "message_already_gone": "Ce message a déjà été supprimé.",
     "direct": {
       "message": "Message",
       "empty": "Aucun message pour l'instant. Dites bonjour."

@@ -8467,6 +8467,13 @@
     "team_hint": "내 라인업만 — 게임 내 채팅에는 표시되지 않습니다",
     "message_too_long": "메시지는 최대 {max}자까지 입력할 수 있습니다.",
     "send_failed": "메시지를 보내지 못했습니다",
+    "gagged": "채팅이 금지되어 메시지를 보낼 수 없습니다.",
+    "message_actions": "메시지 작업",
+    "delete_message": "메시지 삭제",
+    "delete_confirm_title": "메시지를 삭제할까요?",
+    "delete_confirm_description": "이 채팅의 모든 사람에게서 이 메시지가 삭제됩니다.",
+    "delete_failed": "메시지를 삭제하지 못했습니다",
+    "message_already_gone": "이미 삭제된 메시지입니다.",
     "direct": {
       "message": "메시지",
       "empty": "아직 메시지가 없습니다. 인사를 건네보세요."

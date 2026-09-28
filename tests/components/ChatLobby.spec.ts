@@ -1,0 +1,233 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { flushPromises } from "@vue/test-utils";
+import { mountSuspended } from "@nuxt/test-utils/runtime";
+import ChatLobby from "~/components/chat/ChatLobby.vue";
+import { useAuthStore } from "~/stores/AuthStore";
+import socket, { type LobbyMessage } from "~/web-sockets/Socket";
+
+vi.mock("~/graphql/getGraphqlClient", () => ({
+  default: () => ({
+    query: vi.fn().mockResolvedValue({ data: {} }),
+    mutate: vi.fn().mockResolvedValue({ data: {} }),
+    subscribe: () => ({ subscribe: () => ({ unsubscribe() {} }) }),
+  }),
+}));
+
+const ME = "76561198000000001";
+const OTHER = "76561198000000002";
+const GAGGED = "You're gagged and can't send chat messages.";
+const TRIGGER = 'button[aria-label="Message actions"]';
+
+const line = (id: string, minute: number, from = OTHER): LobbyMessage => ({
+  id,
+  message: `line ${id}`,
+  timestamp: new Date(Date.UTC(2026, 8, 28, 12, minute)).toISOString(),
+  from: { steam_id: from, name: `Player ${from}` },
+});
+
+let lobbyCounter = 0;
+let unmount: (() => void) | undefined;
+
+function signIn(me: Record<string, unknown>) {
+  useAuthStore().me = { steam_id: ME, role: "user", ...me } as any;
+}
+
+async function mountLobby(props: Record<string, unknown> = {}) {
+  const wrapper = await mountSuspended(ChatLobby, {
+    props: {
+      instance: "chat-lobby-spec",
+      type: "match",
+      lobbyId: `match-${++lobbyCounter}`,
+      playNotificationSound: false,
+      ...props,
+    },
+  });
+  unmount = () => wrapper.unmount();
+  return wrapper;
+}
+
+beforeEach(() => {
+  vi.spyOn(console, "info").mockImplementation(() => {});
+});
+
+afterEach(() => {
+  unmount?.();
+  unmount = undefined;
+  vi.restoreAllMocks();
+});
+
+describe("ChatLobby gag", () => {
+  it("swaps the composer for the gag hint in a group room", async () => {
+    signIn({ is_gagged: true });
+
+    const wrapper = await mountLobby();
+
+    expect(wrapper.find("textarea").exists()).toBe(false);
+    expect(wrapper.text()).toContain(GAGGED);
+  });
+
+  it("leaves a direct conversation alone", async () => {
+    signIn({ is_gagged: true });
+
+    const wrapper = await mountLobby({
+      type: "direct",
+      lobbyId: `${ME}:${OTHER}`,
+    });
+
+    expect(wrapper.find("textarea").exists()).toBe(true);
+    expect(wrapper.text()).not.toContain(GAGGED);
+  });
+
+  it("keeps the room's own reason when the room was read-only anyway", async () => {
+    signIn({ is_gagged: true });
+
+    const wrapper = await mountLobby({
+      canSend: false,
+      readonlyHint: "Only players can chat here.",
+    });
+
+    expect(wrapper.text()).toContain("Only players can chat here.");
+    expect(wrapper.text()).not.toContain(GAGGED);
+  });
+
+  it("offers the composer to a player who isn't gagged", async () => {
+    signIn({ is_gagged: false });
+
+    const wrapper = await mountLobby();
+
+    expect(wrapper.find("textarea").exists()).toBe(true);
+  });
+});
+
+describe("ChatLobby moderation", () => {
+  async function mountWithHistory(
+    type: string,
+    lobbyId: string,
+    messages: LobbyMessage[],
+    props: Record<string, unknown> = {},
+  ) {
+    const wrapper = await mountLobby({ type, lobbyId, ...props });
+    socket.emit(`lobby:${type}:${lobbyId}:messages`, { messages });
+    await flushPromises();
+    return wrapper;
+  }
+
+  it("offers a moderator message actions in a group room", async () => {
+    signIn({ role: "moderator" });
+
+    const wrapper = await mountWithHistory("match", "moderated-match", [
+      line("a", 0),
+    ]);
+
+    expect(wrapper.find(TRIGGER).exists()).toBe(true);
+  });
+
+  it("offers a moderator nothing in a direct conversation", async () => {
+    signIn({ role: "administrator" });
+
+    const wrapper = await mountWithHistory("direct", `${ME}:${OTHER}`, [
+      line("a", 0),
+    ]);
+
+    expect(wrapper.text()).toContain("line a");
+    expect(wrapper.find(TRIGGER).exists()).toBe(false);
+  });
+
+  it("offers a streamer nothing", async () => {
+    signIn({ role: "streamer" });
+
+    const wrapper = await mountWithHistory("match", "streamed-match", [
+      line("a", 0),
+    ]);
+
+    expect(wrapper.find(TRIGGER).exists()).toBe(false);
+  });
+
+  it("points a team line at the team room on a merged panel", async () => {
+    signIn({ role: "moderator" });
+
+    const wrapper = await mountLobby({
+      lobbyId: "merged-match",
+      teamLobbyId: "merged-match:lineup-1",
+    });
+    socket.emit("lobby:match:merged-match:messages", {
+      messages: [line("everyone-line", 0)],
+    });
+    socket.emit("lobby:match_team:merged-match:lineup-1:messages", {
+      messages: [line("team-line", 1)],
+    });
+    await flushPromises();
+
+    const lobby = wrapper.vm as any;
+    const [everyone, team] = lobby.messages;
+
+    expect(lobby.messageRoom(everyone)).toEqual({
+      type: "match",
+      id: "merged-match",
+    });
+    expect(lobby.messageRoom(team)).toEqual({
+      type: "match_team",
+      id: "merged-match:lineup-1",
+    });
+    expect(wrapper.findAll(TRIGGER)).toHaveLength(2);
+  });
+
+  it("counts the other room's lines when a merged line above the New line goes", async () => {
+    signIn({ role: "user" });
+
+    const wrapper = await mountLobby({
+      lobbyId: "merged-divider",
+      teamLobbyId: "merged-divider:lineup-1",
+    });
+    socket.emit("lobby:match:merged-divider:messages", {
+      messages: [line("e1", 0), line("e2", 2), line("e3", 4)],
+    });
+    socket.emit("lobby:match_team:merged-divider:lineup-1:messages", {
+      messages: [line("t1", 1), line("t2", 3)],
+    });
+    await flushPromises();
+
+    const lobby = wrapper.vm as any;
+    lobby.lastReadMessageCount = 4;
+
+    socket.emit("lobby:match_team:merged-divider:lineup-1:deleted", {
+      id: "t2",
+    });
+    await flushPromises();
+
+    expect(lobby.lastReadMessageCount).toBe(3);
+
+    socket.emit("lobby:match:merged-divider:deleted", { id: "e3" });
+    await flushPromises();
+
+    expect(lobby.lastReadMessageCount).toBe(3);
+  });
+
+  it("keeps the New line on the same message when a read line above it goes", async () => {
+    signIn({ role: "user" });
+
+    const wrapper = await mountWithHistory(
+      "match",
+      "divider-match",
+      [line("a", 0), line("b", 1), line("c", 2), line("d", 3)],
+      { isGlobalContext: true },
+    );
+    const lobby = wrapper.vm as any;
+    lobby.lastReadMessageCount = 2;
+
+    socket.emit("lobby:match:divider-match:deleted", { id: "a" });
+    await flushPromises();
+
+    expect(lobby.messages.map((m: LobbyMessage) => m.id)).toEqual([
+      "b",
+      "c",
+      "d",
+    ]);
+    expect(lobby.lastReadMessageCount).toBe(1);
+
+    socket.emit("lobby:match:divider-match:deleted", { id: "c" });
+    await flushPromises();
+
+    expect(lobby.lastReadMessageCount).toBe(1);
+  });
+});

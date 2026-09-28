@@ -140,6 +140,12 @@ export function useChatTabs() {
     return true;
   }
 
+  function decrementUnread(id: string) {
+    if (unreadCountsRef.value[id]) {
+      unreadCountsRef.value[id] -= 1;
+    }
+  }
+
   function resetUnread(id: string) {
     unreadMessageIds.delete(id);
 
@@ -176,6 +182,7 @@ export function useChatTabs() {
     setPinned,
     setTabPosition,
     incrementUnread,
+    decrementUnread,
     resetUnread,
     setUnread,
     clearAll,

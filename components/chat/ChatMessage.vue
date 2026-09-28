@@ -2,6 +2,7 @@
 import { dateLocale } from "~/utilities/dateLocale";
 import TimeAgo from "~/components/TimeAgo.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import ChatMessageActions from "~/components/chat/ChatMessageActions.vue";
 </script>
 
 <template>
@@ -77,10 +78,28 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
         {{ message.message }}
       </p>
     </div>
+
+    <!-- Centred on the first line rather than hung off its top: the trigger is
+         taller than a line of chat. -->
+    <ChatMessageActions
+      v-if="hasActions"
+      class="absolute right-0 z-10"
+      :style="{ top: `calc(${padTopRem}rem - 0.25rem)` }"
+      :message="message"
+      :room="room"
+      :permissions="permissions"
+    />
   </div>
 </template>
 
 <script lang="ts">
+import type { PropType } from "vue";
+import type { ChatType } from "~/web-sockets/Socket";
+import {
+  chatMessagePermissions,
+  hasChatMessageActions,
+} from "~/utilities/chatMessageActions";
+
 export default {
   props: {
     message: {
@@ -95,8 +114,29 @@ export default {
       type: Object,
       required: false,
     },
+    // The room this line lives in. Without one there is nothing to act on, so
+    // no actions are offered.
+    room: {
+      type: Object as PropType<{ type: ChatType; id: string } | null>,
+      default: null,
+    },
+    canModerate: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
+    permissions() {
+      return chatMessagePermissions({
+        message: this.message,
+        viewerSteamId: useAuthStore().me?.steam_id,
+        canModerate: this.canModerate,
+        roomType: this.room?.type ?? "",
+      });
+    },
+    hasActions() {
+      return !!this.room && hasChatMessageActions(this.permissions);
+    },
     // Stamped by ChatLobby when it merges the match room with a lineup room.
     // Absent everywhere else, which is what keeps every other chat surface
     // rendering exactly as before.
@@ -144,7 +184,15 @@ export default {
       // Same gutter either way. The rail is drawn inside it rather than added
       // to it, so a team line starts on the same column as every other line and
       // the avatars stay in one straight edge down the list.
-      const classes = ["group relative pl-12 text-[11px] leading-snug"];
+      const classes = [
+        "group group/chat-message relative pl-12 text-[11px] leading-snug",
+      ];
+
+      // Room for the actions trigger kept whether or not it is showing, so a
+      // hover never rewraps the line under the pointer.
+      if (this.hasActions) {
+        classes.push("pr-7");
+      }
 
       if (!this.isTeamMessage) {
         classes.push(
@@ -153,7 +201,10 @@ export default {
         return classes;
       }
 
-      classes.push("pr-2 bg-[hsl(var(--tac-amber)/0.05)]");
+      classes.push("bg-[hsl(var(--tac-amber)/0.05)]");
+      if (!this.hasActions) {
+        classes.push("pr-2");
+      }
 
       // Inside a run the separation between speakers is padding, not margin, so
       // the tinted block and the rail stay unbroken. The amount comes from

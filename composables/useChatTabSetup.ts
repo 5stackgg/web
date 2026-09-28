@@ -5,7 +5,10 @@ import { useChatReadState } from "~/composables/useChatReadState";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
-import socket, { type Lobby } from "~/web-sockets/Socket";
+import socket, {
+  type Lobby,
+  type LobbyMessageDeleted,
+} from "~/web-sockets/Socket";
 
 export function tournamentChatTab(tournament: {
   id: string;
@@ -37,9 +40,14 @@ export function useChatTabSetup() {
     closeTab,
     setPinned,
     incrementUnread,
+    decrementUnread,
     setUnread,
   } = useChatTabs();
-  const { hydrate: hydrateReadState, unreadSince } = useChatReadState();
+  const {
+    hydrate: hydrateReadState,
+    isUnread,
+    unreadSince,
+  } = useChatReadState();
 
   const matchLobbyStore = useMatchLobbyStore();
   const authStore = useAuthStore();
@@ -65,6 +73,18 @@ export function useChatTabSetup() {
 
       if (!isChatTabOnScreen(tab.id)) {
         incrementUnread(tab.id, message?.id);
+      }
+    });
+
+    // Only a line the badge was counting, which is one past the read cursor
+    // from someone else -- anything else was never in the number.
+    lobby.on("lobby:deleted", ({ message }: LobbyMessageDeleted) => {
+      if (isChatTabOnScreen(tab.id)) {
+        return;
+      }
+
+      if (isUnread(tab.type, tab.lobbyId, message, authStore.me?.steam_id)) {
+        decrementUnread(tab.id);
       }
     });
 

@@ -8467,6 +8467,13 @@
     "team_hint": "Tylko twój skład — nie jest pokazywane na czacie w grze",
     "message_too_long": "Wiadomość może mieć maksymalnie {max} znaków.",
     "send_failed": "Nie udało się wysłać wiadomości",
+    "gagged": "Masz zablokowany czat i nie możesz wysyłać wiadomości.",
+    "message_actions": "Akcje wiadomości",
+    "delete_message": "Usuń wiadomość",
+    "delete_confirm_title": "Usunąć wiadomość?",
+    "delete_confirm_description": "Ta wiadomość zostanie usunięta dla wszystkich na tym czacie.",
+    "delete_failed": "Nie udało się usunąć wiadomości",
+    "message_already_gone": "Ta wiadomość została już usunięta.",
     "direct": {
       "message": "Wiadomość",
       "empty": "Brak wiadomości. Przywitaj się."

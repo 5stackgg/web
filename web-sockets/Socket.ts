@@ -134,6 +134,7 @@ export class Socket extends EventEmitter {
   private lobbies: Map<string, LobbyState> = new Map();
   private instanceCounter = 0;
   private pendingRequests: Map<string, PendingChatRequest> = new Map();
+  private reactionsInFlight = new Set<string>();
   // The api answers a request it failed to carry out with nothing at all.
   private static readonly REQUEST_TIMEOUT_MS = 8000;
   // How long a request that timed out still recognises its answer, so a slow
@@ -505,7 +506,9 @@ export class Socket extends EventEmitter {
   }
 
   // Sending a reaction the player already holds takes it back. Nothing changes
-  // here until the room's `reaction` broadcast, which carries the whole state.
+  // here until the room's `reaction` broadcast, which carries the whole state,
+  // so a second click before then would toggle it straight back: a toggle
+  // already on its way is not sent again.
   public react(
     type: ChatType,
     id: string,
@@ -513,8 +516,13 @@ export class Socket extends EventEmitter {
     reaction: ChatReaction,
   ): Promise<void> {
     const lobbyId = `${type}:${id}`;
+    const toggle = `${lobbyId}:${messageId}:${reaction}`;
 
-    return this.chatRequest(
+    if (this.reactionsInFlight.has(toggle)) {
+      return Promise.resolve();
+    }
+
+    const request = this.chatRequest(
       "react",
       { id, type, messageId, reaction },
       {
@@ -526,6 +534,14 @@ export class Socket extends EventEmitter {
         },
       },
     );
+
+    this.reactionsInFlight.add(toggle);
+    const settle = () => {
+      this.reactionsInFlight.delete(toggle);
+    };
+    request.then(settle, settle);
+
+    return request;
   }
 
   // Never queued: someone told a delete or an edit failed must not have it

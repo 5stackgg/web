@@ -8503,6 +8503,7 @@
     "reacted_you": "你",
     "reacted_others": "其他 {count} 人 | 其他 {count} 人",
     "react_failed": "回應失敗",
+    "react_timeout": "伺服器沒有回應。你的表情回應仍可能生效。",
     "react_rate_limited": "你的回應操作過快。",
     "react_gagged": "你已被禁言，無法新增表情回應。",
     "direct": {

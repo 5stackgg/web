@@ -8503,6 +8503,7 @@
     "reacted_you": "Du",
     "reacted_others": "{count} annan | {count} andra",
     "react_failed": "Kunde inte reagera",
+    "react_timeout": "Servern svarade inte. Din reaktion kan fortfarande registreras.",
     "react_rate_limited": "Du reagerar för snabbt.",
     "react_gagged": "Din chatt är avstängd och du kan inte lägga till reaktioner.",
     "direct": {

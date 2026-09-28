@@ -144,13 +144,14 @@ describe("chat react errors", () => {
     ["rate_limited", "chat.react_rate_limited"],
     ["gagged", "chat.react_gagged"],
     ["not_found", "chat.message_already_gone"],
+    ["timeout", "chat.react_timeout"],
   ])("describes %s", (code, description) => {
     expect(chatErrorDescription({ code, action: "react" }, t)).toBe(
       description,
     );
   });
 
-  it.each(["not_allowed", "invalid", "offline", "timeout"])(
+  it.each(["not_allowed", "invalid", "offline"])(
     "adds nothing to a failed reaction for %s",
     (code) => {
       expect(

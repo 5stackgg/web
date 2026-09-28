@@ -79,6 +79,8 @@ export function chatErrorDescription(
 
   if (chatErrorAction(error) === "react") {
     switch (error?.code) {
+      case "timeout":
+        return t("chat.react_timeout");
       case "rate_limited":
         return t("chat.react_rate_limited");
       case "gagged":

@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { watch } from "vue";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import ChatMessage from "~/components/chat/ChatMessage.vue";
@@ -443,6 +444,24 @@ describe("ChatMessageActions reactions", () => {
     expect(hubHeld()).toBe(true);
   });
 
+  it("never lets go of the hub between the menu and the picker", async () => {
+    const held: boolean[] = [];
+    const stop = watch(
+      () => useRightSidebar().hoverCloseSuspended.value,
+      (value) => held.push(value),
+      { flush: "sync" },
+    );
+
+    try {
+      await openPicker();
+    } finally {
+      stop();
+    }
+
+    expect(picker()).not.toBeNull();
+    expect(held).toEqual([true]);
+  });
+
   it("reacts with the pick, closes, and hands focus back", async () => {
     const wrapper = await openPicker();
 
@@ -484,6 +503,40 @@ describe("ChatMessageActions reactions", () => {
     await flushPromises();
 
     expect(wrapper.emitted("react")).toEqual([["heart"]]);
+  });
+
+  it("reacts once for a double click", async () => {
+    const wrapper = await openPicker();
+
+    const fire = choice("fire");
+    fire.click();
+    fire.click();
+    await flushPromises();
+
+    expect(wrapper.emitted("react")).toEqual([["fire"]]);
+  });
+
+  it("leaves focus where a click outside put it", async () => {
+    const wrapper = await openPicker();
+
+    const outside = document.createElement("button");
+    document.body.appendChild(outside);
+
+    try {
+      outside.dispatchEvent(
+        new PointerEvent("pointerdown", { bubbles: true, button: 0 }),
+      );
+      outside.focus();
+      await flushPromises();
+      await new Promise((resolve) => setTimeout(resolve, 20));
+      await flushPromises();
+
+      expect(picker()).toBeNull();
+      expect(hubHeld()).toBe(false);
+      expect(document.activeElement).not.toBe(wrapper.get(TRIGGER).element);
+    } finally {
+      outside.remove();
+    }
   });
 
   it("closes on Escape and lets go of the hub", async () => {

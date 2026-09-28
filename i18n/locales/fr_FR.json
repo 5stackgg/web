@@ -8503,6 +8503,7 @@
     "reacted_you": "vous",
     "reacted_others": "{count} autre | {count} autres",
     "react_failed": "Impossible de réagir",
+    "react_timeout": "Le serveur n'a pas répondu. Votre réaction peut tout de même être prise en compte.",
     "react_rate_limited": "Vous réagissez trop vite.",
     "react_gagged": "Vous êtes bâillonné et ne pouvez pas ajouter de réactions.",
     "direct": {

@@ -51,6 +51,7 @@ let pickerRequested = false;
 function setMenuOpen(open: boolean) {
   if (open) {
     pickerRequested = false;
+    holdRightHub("picker", pickerOpen.value);
     emit("open");
   }
 
@@ -86,7 +87,13 @@ onBeforeUnmount(() => {
 
 // The picker opens once the menu has finished closing. Opened any sooner, the
 // menu hands focus back to the trigger, which reads as a click outside the
-// picker and closes it again.
+// picker and closes it again. The hub is held from the pick, since the menu's
+// exit animation outlasts the hub's hover-close delay.
+function requestPicker() {
+  pickerRequested = true;
+  holdRightHub("picker", true);
+}
+
 function menuClosedFocus(event: Event) {
   if (!pickerRequested) {
     return;
@@ -115,15 +122,24 @@ const pickerChoices = computed(() =>
 );
 
 function pickReaction(reaction: ChatReaction) {
+  if (!pickerOpen.value) {
+    return;
+  }
+
   pickerOpen.value = false;
   emit("react", reaction);
 }
 
 // Back to the trigger unless the picker was closed by clicking somewhere else,
-// where that click decides focus.
+// where that click decides focus. reka's non-modal popover emits this twice,
+// and the second call must not undo the first.
 let pickerDismissedOutside = false;
 
 function pickerClosedFocus(event: Event) {
+  if (event.defaultPrevented) {
+    return;
+  }
+
   event.preventDefault();
 
   if (!pickerDismissedOutside) {
@@ -169,10 +185,7 @@ async function deleteMessage() {
          trigger already belongs to the menu. -->
     <Popover v-model:open="pickerOpen">
       <PopoverAnchor as-child>
-        <span
-          class="inline-flex"
-          :data-state="pickerOpen ? 'open' : 'closed'"
-        >
+        <span class="inline-flex" :data-state="pickerOpen ? 'open' : 'closed'">
           <DropdownMenu
             :open="menuOpen"
             :modal="false"
@@ -197,7 +210,7 @@ async function deleteMessage() {
             >
               <DropdownMenuItem
                 v-if="permissions.canReact"
-                @select="pickerRequested = true"
+                @select="requestPicker"
               >
                 <SmilePlus />
                 <span>{{ $t("chat.add_reaction") }}</span>
@@ -230,15 +243,12 @@ async function deleteMessage() {
       <PopoverContent
         align="end"
         class="w-auto p-1"
+        :aria-label="$t('chat.react')"
         data-right-hub-interactive
         @interact-outside="pickerDismissedOutside = true"
         @close-auto-focus="pickerClosedFocus"
       >
-        <div
-          role="group"
-          :aria-label="$t('chat.react')"
-          class="grid grid-cols-6 gap-0.5"
-        >
+        <div class="grid grid-cols-6 gap-0.5">
           <button
             v-for="choice in pickerChoices"
             :key="choice.id"

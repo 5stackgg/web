@@ -739,6 +739,46 @@ describe("Socket react", () => {
     );
   });
 
+  it("sends a toggle once while the same one is on its way", async () => {
+    const first = socket.react("match", "match-1", "message-2", "heart");
+    const again = socket.react("match", "match-1", "message-2", "heart");
+    void socket.react("match", "match-1", "message-2", "fire").catch(() => {});
+
+    expect(
+      sentReacts(send).map(({ messageId, reaction }) => [messageId, reaction]),
+    ).toEqual([
+      ["message-2", "heart"],
+      ["message-2", "fire"],
+    ]);
+    await expect(again).resolves.toBeUndefined();
+
+    const [{ requestId }] = sentReacts(send);
+    socket.emit("chat:ack", {
+      requestId,
+      messageId: "message-2",
+      action: "react",
+    });
+    await first;
+
+    void socket.react("match", "match-1", "message-2", "heart").catch(() => {});
+    expect(sentReacts(send)).toHaveLength(3);
+  });
+
+  it("sends a toggle again once the last one failed", async () => {
+    const first = socket.react("match", "match-1", "message-2", "sad");
+    const [{ requestId }] = sentReacts(send);
+
+    socket.emit("chat:error", {
+      code: "rate_limited",
+      action: "react",
+      requestId,
+    });
+    await expect(first).rejects.toMatchObject({ code: "rate_limited" });
+
+    void socket.react("match", "match-1", "message-2", "sad").catch(() => {});
+    expect(sentReacts(send)).toHaveLength(2);
+  });
+
   it("titles a react error nobody is waiting on as a failed reaction", () => {
     socket.emit("chat:error", {
       code: "rate_limited",

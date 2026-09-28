@@ -8503,6 +8503,7 @@
     "reacted_you": "dir",
     "reacted_others": "{count} weiteren Person | {count} weiteren Personen",
     "react_failed": "Reaktion fehlgeschlagen",
+    "react_timeout": "Der Server hat nicht geantwortet. Deine Reaktion kommt eventuell trotzdem an.",
     "react_rate_limited": "Du reagierst zu schnell.",
     "react_gagged": "Du bist im Chat gesperrt und kannst keine Reaktionen hinzufügen.",
     "direct": {

@@ -135,6 +135,18 @@ describe("ChatMessageReactions", () => {
     expect(wrapper.emitted("toggle")).toBeUndefined();
   });
 
+  it("keeps a held pill amber without a hover once it can't be toggled", async () => {
+    const wrapper = await mountPills(
+      { heart: [ME] },
+      { permissions: { canReact: false, canAddReaction: false } },
+    );
+
+    const classes = pills(wrapper)[0].classes();
+
+    expect(classes).toContain("!text-[hsl(var(--tac-amber))]");
+    expect(classes.some((name) => name.startsWith("hover:"))).toBe(false);
+  });
+
   describe("who reacted", () => {
     const tooltip = async (wrapper: Awaited<ReturnType<typeof mountPills>>) => {
       const pill = pills(wrapper)[0];

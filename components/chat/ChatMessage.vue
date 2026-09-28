@@ -254,6 +254,17 @@ export default {
     hasActions() {
       return !!this.room && hasChatMessageActions(this.permissions);
     },
+    // A gagged player's trigger comes and goes with the reactions they hold,
+    // so the room for it is kept wherever reacting is possible at all.
+    reservesActions() {
+      return (
+        this.hasActions ||
+        (!!this.room &&
+          this.canPost &&
+          !!this.message?.id &&
+          !!this.viewerSteamId)
+      );
+    },
     // Stamped by ChatLobby when it merges the match room with a lineup room.
     // Absent everywhere else, which is what keeps every other chat surface
     // rendering exactly as before.
@@ -307,7 +318,7 @@ export default {
 
       // Room for the actions trigger kept whether or not it is showing, so a
       // hover never rewraps the line under the pointer.
-      if (this.hasActions) {
+      if (this.reservesActions) {
         classes.push("pr-7");
       }
 
@@ -319,7 +330,7 @@ export default {
       }
 
       classes.push("bg-[hsl(var(--tac-amber)/0.05)]");
-      if (!this.hasActions) {
+      if (!this.reservesActions) {
         classes.push("pr-2");
       }
 

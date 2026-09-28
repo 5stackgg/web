@@ -8503,6 +8503,7 @@
     "reacted_you": "Du",
     "reacted_others": "{count} anden | {count} andre",
     "react_failed": "Kunne ikke reagere",
+    "react_timeout": "Serveren svarede ikke. Din reaktion kan stadig blive registreret.",
     "react_rate_limited": "Du reagerer for hurtigt.",
     "react_gagged": "Din chat er lukket, så du kan ikke tilføje reaktioner.",
     "direct": {

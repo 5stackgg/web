@@ -8503,6 +8503,7 @@
     "reacted_you": "te",
     "reacted_others": "{count} altro | {count} altri",
     "react_failed": "Impossibile reagire",
+    "react_timeout": "Il server non ha risposto. La reazione potrebbe comunque essere registrata.",
     "react_rate_limited": "Stai reagendo troppo velocemente.",
     "react_gagged": "Sei silenziato in chat e non puoi aggiungere reazioni.",
     "direct": {

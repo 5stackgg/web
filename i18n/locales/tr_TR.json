@@ -8503,6 +8503,7 @@
     "reacted_you": "Sen",
     "reacted_others": "{count} kişi daha | {count} kişi daha",
     "react_failed": "Tepki verilemedi",
+    "react_timeout": "Sunucu yanıt vermedi. Tepkin yine de kaydedilebilir.",
     "react_rate_limited": "Çok hızlı tepki veriyorsun.",
     "react_gagged": "Sohbetin kapatıldı, tepki ekleyemezsin.",
     "direct": {

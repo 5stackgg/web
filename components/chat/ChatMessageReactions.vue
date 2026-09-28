@@ -31,6 +31,11 @@ const NAMES_SHOWN = 8;
 const pillClasses =
   "inline-flex h-5 items-center gap-1 rounded-full border border-border bg-muted/30 px-1.5 text-[10px] leading-none tabular-nums text-muted-foreground transition-colors duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring motion-reduce:transition-none";
 
+const heldStaticClasses = tacticalFilterPillActiveClasses
+  .split(" ")
+  .filter((name) => !name.startsWith("hover:"))
+  .join(" ");
+
 const pills = computed(() => {
   const held = heldChatReactions(props.message, props.viewerSteamId);
 
@@ -54,6 +59,16 @@ const pills = computed(() => {
     ];
   });
 });
+
+function pillTone(pill: { mine: boolean; interactive: boolean }) {
+  if (!pill.interactive) {
+    return ["cursor-default", pill.mine ? heldStaticClasses : ""];
+  }
+
+  return pill.mine
+    ? tacticalFilterPillActiveClasses
+    : "hover:bg-muted/50 hover:text-foreground";
+}
 
 function toggle(pill: { id: ChatReaction; interactive: boolean }) {
   if (pill.interactive) {
@@ -150,13 +165,7 @@ function reactedBy(pill: {
       <template #trigger>
         <button
           type="button"
-          :class="[
-            pillClasses,
-            pill.interactive
-              ? 'hover:bg-muted/50 hover:text-foreground'
-              : 'cursor-default',
-            pill.mine ? tacticalFilterPillActiveClasses : '',
-          ]"
+          :class="[pillClasses, pillTone(pill)]"
           :aria-pressed="pill.mine"
           :aria-disabled="pill.interactive ? undefined : 'true'"
           :aria-label="

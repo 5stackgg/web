@@ -8503,6 +8503,7 @@
     "reacted_you": "あなた",
     "reacted_others": "他 {count} 人 | 他 {count} 人",
     "react_failed": "リアクションできませんでした",
+    "react_timeout": "サーバーから応答がありませんでした。リアクションは後で反映される可能性があります。",
     "react_rate_limited": "リアクションの操作が速すぎます。",
     "react_gagged": "発言禁止中のため、リアクションを追加できません。",
     "direct": {

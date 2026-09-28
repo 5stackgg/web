@@ -16,7 +16,6 @@ export interface ChatMessagePermissionInput {
   viewerSteamId?: string | null;
   viewerGagged?: boolean;
   canModerate: boolean;
-  // Whether the viewer may send in this room at all.
   canPost?: boolean;
   roomType: ChatType | string;
   now?: number;

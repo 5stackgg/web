@@ -8503,6 +8503,7 @@
     "reacted_you": "나",
     "reacted_others": "다른 {count}명 | 다른 {count}명",
     "react_failed": "반응하지 못했습니다",
+    "react_timeout": "서버가 응답하지 않았습니다. 반응이 나중에 반영될 수도 있습니다.",
     "react_rate_limited": "반응을 너무 빠르게 하고 있습니다.",
     "react_gagged": "채팅이 금지되어 반응을 추가할 수 없습니다.",
     "direct": {

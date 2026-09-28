@@ -8503,6 +8503,7 @@
     "reacted_you": "أنت",
     "reacted_others": "{count} آخر | {count} آخرون",
     "react_failed": "تعذّر التفاعل",
+    "react_timeout": "لم يستجب الخادم. قد يُسجَّل تفاعلك لاحقًا.",
     "react_rate_limited": "أنت تتفاعل بسرعة كبيرة.",
     "react_gagged": "أنت ممنوع من الكتابة ولا يمكنك إضافة تفاعلات.",
     "direct": {

@@ -8503,6 +8503,7 @@
     "reacted_you": "Ty",
     "reacted_others": "jeszcze {count} | jeszcze {count}",
     "react_failed": "Nie udało się zareagować",
+    "react_timeout": "Serwer nie odpowiedział. Twoja reakcja może mimo to zostać zapisana.",
     "react_rate_limited": "Reagujesz zbyt szybko.",
     "react_gagged": "Masz zablokowany czat i nie możesz dodawać reakcji.",
     "direct": {

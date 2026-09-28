@@ -8503,6 +8503,7 @@
     "reacted_you": "You",
     "reacted_others": "{count} other | {count} others",
     "react_failed": "Failed to react",
+    "react_timeout": "The server didn't answer. Your reaction may still go through.",
     "react_rate_limited": "You're reacting too fast.",
     "react_gagged": "You're gagged and can't add reactions.",
     "direct": {

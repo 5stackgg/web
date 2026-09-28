@@ -543,6 +543,19 @@ describe("ChatMessage reactions", () => {
     expect(toast).not.toHaveBeenCalled();
   });
 
+  it("keeps a gagged player's row the same width with or without a trigger", async () => {
+    useAuthStore().me = { steam_id: ME, role: "user", is_gagged: true } as any;
+    const wrapper = await mountMessage();
+
+    expect(wrapper.find(TRIGGER).exists()).toBe(true);
+    expect(wrapper.classes()).toContain("pr-7");
+
+    await wrapper.setProps({ message: theirs({ reactions: {} }) });
+
+    expect(wrapper.find(TRIGGER).exists()).toBe(false);
+    expect(wrapper.classes()).toContain("pr-7");
+  });
+
   it("shows the pills but offers no trigger where the viewer can't post", async () => {
     const react = vi.spyOn(socket, "react");
     const wrapper = await mountMessage({ canPost: false });

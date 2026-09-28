@@ -167,31 +167,42 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
             </FormItem>
           </FormField>
 
-          <FormField v-slot="{ componentField }" name="cloudflare_worker_url">
-            <FormItem>
-              <FormLabel>{{
+          <div class="space-y-2 text-sm">
+            <p class="font-medium">
+              {{
                 $t(
                   "pages.settings.application.demo_settings.cloudflare_worker_url",
                 )
-              }}</FormLabel>
-              <FormDescription>
-                {{
-                  $t(
-                    "pages.settings.application.demo_settings.cloudflare_worker_url_description",
-                  )
-                }}
-                <a
-                  href="https://docs.5stack.gg/advanced/s3/backblaze#backblaze-cloudflare"
-                  target="_blank"
-                  class="text-primary hover:underline"
-                >
-                  docs.5stack.gg/advanced/s3/backblaze
-                </a>
-              </FormDescription>
-              <Input v-bind="componentField"></Input>
-              <FormMessage />
-            </FormItem>
-          </FormField>
+              }}
+            </p>
+            <p v-if="cloudflareWorkerUrl" class="font-mono">
+              {{ cloudflareWorkerUrl }}
+            </p>
+            <p v-else class="text-muted-foreground">
+              {{
+                $t(
+                  "pages.settings.application.demo_settings.cloudflare_worker_url_not_set",
+                )
+              }}
+            </p>
+            <p class="text-muted-foreground">
+              {{
+                $t(
+                  "pages.settings.application.demo_settings.cloudflare_worker_url_description",
+                )
+              }}
+            </p>
+            <pre
+              class="overflow-x-auto rounded-md bg-muted p-2"
+            ><code>./backblaze-proxy.sh</code></pre>
+            <a
+              href="https://docs.5stack.gg/advanced/s3/backblaze#backblaze-cloudflare"
+              target="_blank"
+              class="text-primary hover:underline"
+            >
+              docs.5stack.gg/advanced/s3/backblaze
+            </a>
+          </div>
 
           <div class="space-y-2">
             <p class="text-sm text-muted-foreground">
@@ -250,7 +261,6 @@ export default {
           z.object({
             s3_min_retention: z.number().int().min(1).optional().default(1),
             s3_max_storage: z.number().int().min(1).default(10),
-            cloudflare_worker_url: z.string().url().optional(),
             demo_network_limiter: z.number().int().optional().nullable(),
             default_hud_mode: z
               .enum(["horizontal", "vertical"])
@@ -361,10 +371,6 @@ export default {
                   value: this.form.values.s3_max_storage?.toString(),
                 },
                 {
-                  name: "cloudflare_worker_url",
-                  value: this.form.values.cloudflare_worker_url,
-                },
-                {
                   name: "demo_network_limiter",
                   value: this.form.values.demo_network_limiter?.toString(),
                 },
@@ -395,6 +401,11 @@ export default {
   computed: {
     settings() {
       return useApplicationSettingsStore().settings;
+    },
+    cloudflareWorkerUrl() {
+      return this.settings.find(
+        (setting) => setting.name === "cloudflare_worker_url",
+      )?.value;
     },
   },
 };

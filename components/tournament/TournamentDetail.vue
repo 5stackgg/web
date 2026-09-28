@@ -87,6 +87,7 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
+import AnimatedStat from "~/components/AnimatedStat.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import HeightMorph from "~/components/ui/transitions/HeightMorph.vue";
@@ -154,15 +155,19 @@ const tournamentHeroJoinButtonClasses = [
 const tournamentHeroSettingsButtonClasses =
   "h-9 w-9 border-[hsl(var(--tac-amber)_/_0.45)] bg-background/45 text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.12)] hover:text-[hsl(var(--tac-amber))]";
 const tournamentHeroTabsClasses =
-  "mt-5 flex flex-wrap items-start gap-2 border-t border-border pt-4";
-const tournamentChatRoomStripClasses = [
-  tacticalTabsListClasses,
-  "inline-flex items-center text-muted-foreground",
-];
-const tournamentChatRoomTabClasses =
-  "relative z-[1] inline-flex items-center justify-center whitespace-nowrap rounded-md ring-offset-background hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
+  "mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4 md:flex-nowrap";
+const tournamentChatRoomButtonClasses =
+  "shrink-0 inline-flex items-center gap-2 font-sans text-[0.7rem] font-semibold uppercase leading-none tracking-[0.14em]";
 const tournamentChatRoomUnreadClasses =
-  "inline-flex h-4 min-w-[1.05rem] items-center justify-center rounded-full bg-red-500 px-1 text-[9px] leading-none tracking-normal text-white tabular-nums";
+  "inline-flex h-4 min-w-[1rem] origin-center items-center justify-center rounded-full bg-red-500 px-1 font-sans text-[0.6rem] font-bold leading-none tracking-normal text-white tabular-nums";
+const chatRoomUnreadPopTransition = {
+  enterActiveClass:
+    "[transition:transform_0.3s_cubic-bezier(0.34,1.56,0.64,1),opacity_0.2s_ease] motion-reduce:[transition:none]",
+  enterFromClass: "scale-0 opacity-0",
+  leaveActiveClass:
+    "[transition:transform_0.15s_ease-in,opacity_0.15s_ease-in] motion-reduce:[transition:none]",
+  leaveToClass: "scale-0 opacity-0",
+};
 const tacticalSectionCountClasses =
   "rounded-full border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] px-[0.45rem] py-[0.05rem] text-[0.62rem] tracking-[0.08em] text-[hsl(var(--tac-amber))]";
 const tournamentTeamCardClasses =
@@ -493,7 +498,7 @@ function clearTeamEnterDelay(el: Element) {
           <div :class="tournamentHeroTabsClasses">
             <TabsList
               variant="underline"
-              :class="[tacticalTabsListClasses, 'h-auto flex-wrap']"
+              :class="[tacticalTabsListClasses, 'h-auto min-w-0 flex-wrap']"
             >
               <TabsTrigger value="overview" :class="tacticalTabsTriggerClasses">
                 {{ $t("tournament.overview") }}
@@ -593,28 +598,26 @@ function clearTeamEnterDelay(el: Element) {
                 {{ $t("tournament.notifications.title") }}
               </TabsTrigger>
             </TabsList>
-            <div
+            <Button
               v-if="chatRoomTournament"
-              :class="tournamentChatRoomStripClasses"
+              variant="ghost"
+              size="sm"
+              :class="tournamentChatRoomButtonClasses"
+              @click="openChatRoom"
             >
-              <button
-                type="button"
-                :class="[
-                  tournamentChatRoomTabClasses,
-                  tacticalTabsTriggerClasses,
-                ]"
-                @click="openChatRoom"
-              >
-                <MessageSquare class="h-3.5 w-3.5" />
+              <MessageSquare class="h-4 w-4 shrink-0" />
+              <span class="leading-none">
                 {{ $t("tournament.page.chat_room_tab") }}
+              </span>
+              <Transition v-bind="chatRoomUnreadPopTransition">
                 <span
                   v-if="chatRoomUnreadLabel"
                   :class="tournamentChatRoomUnreadClasses"
                 >
-                  {{ chatRoomUnreadLabel }}
+                  <AnimatedStat :value="chatRoomUnreadLabel" />
                 </span>
-              </button>
-            </div>
+              </Transition>
+            </Button>
           </div>
         </header>
       </PageTransition>

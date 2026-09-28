@@ -14,6 +14,7 @@ import { useRouter } from "#app";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
 import ChatParticipants from "~/components/chat/ChatParticipants.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import AnimatedStat from "~/components/AnimatedStat.vue";
 import { useChatTabs, type ChatTab } from "~/composables/useChatTabs";
 import { cancelChatTabRestore } from "~/composables/useChatTabPersistence";
 import { useDirectConversationBar } from "~/composables/useDirectConversationBar";
@@ -47,6 +48,18 @@ const { remove, reorder, directRoomIds } = useDirectConversationBar();
 
 const matchLobbyStore = useMatchLobbyStore();
 const isMobile = useMediaQuery("(max-width: 768px)");
+
+const formatBadgeCount = (count: number) =>
+  count > 100 ? "100+" : String(count);
+
+const badgePopTransition = {
+  enterActiveClass:
+    "[transition:transform_0.3s_cubic-bezier(0.34,1.56,0.64,1),opacity_0.2s_ease] motion-reduce:[transition:none]",
+  enterFromClass: "scale-0 opacity-0",
+  leaveActiveClass:
+    "[transition:transform_0.15s_ease-in,opacity_0.15s_ease-in] motion-reduce:[transition:none]",
+  leaveToClass: "scale-0 opacity-0",
+};
 
 // A match tab is a room, and one side of that match is a second room the tab
 // never offered -- so team chat used to exist on the match page and vanish the
@@ -719,12 +732,16 @@ function handlePopOut() {
                           class="w-3.5 h-3.5"
                         />
                       </div>
-                      <span
-                        v-if="unreadCounts[tab.id] && !wiggling"
-                        class="absolute -top-1 -right-1 inline-flex items-center justify-center rounded-full bg-red-500 text-white text-[9px] px-1 min-w-[1.05rem] h-4 leading-none"
-                      >
-                        {{ unreadCounts[tab.id] }}
-                      </span>
+                      <Transition v-bind="badgePopTransition">
+                        <span
+                          v-if="unreadCounts[tab.id] > 0 && !wiggling"
+                          class="absolute -top-1 -right-1 inline-flex h-4 min-w-[1rem] origin-center items-center justify-center rounded-full bg-red-500 px-1 font-sans text-[0.6rem] font-bold leading-none tabular-nums text-white shadow-sm ring-1 ring-background"
+                        >
+                          <AnimatedStat
+                            :value="formatBadgeCount(unreadCounts[tab.id])"
+                          />
+                        </span>
+                      </Transition>
                       <!-- Editing mode's remove badge, in place of the unread
                            count. The only removal a touch device can reach
                            without a right button. -->

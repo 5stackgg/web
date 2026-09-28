@@ -8259,7 +8259,7 @@
     "everyone_hint": "Ambos equipos: también se muestra en el chat del juego",
     "team_hint": "Solo tu alineación: no se muestra en el chat del juego",
     "message_too_long": "Los mensajes pueden tener un máximo de {max} caracteres.",
-    "send_failed": "No se ha podido enviar tu mensaje.",
+    "send_failed": "No se ha podido enviar tu mensaje",
     "direct": {
       "message": "Mensaje",
       "empty": "Aún no hay mensajes. Saluda."

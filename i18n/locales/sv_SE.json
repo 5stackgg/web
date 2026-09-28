@@ -8259,7 +8259,7 @@
     "everyone_hint": "Båda lagen — visas även i spelets chatt",
     "team_hint": "Bara din laguppställning — visas inte i spelets chatt",
     "message_too_long": "Meddelanden får vara högst {max} tecken långa.",
-    "send_failed": "Ditt meddelande kunde inte skickas.",
+    "send_failed": "Ditt meddelande kunde inte skickas",
     "direct": {
       "message": "Meddelande",
       "empty": "Inga meddelanden än. Säg hej."

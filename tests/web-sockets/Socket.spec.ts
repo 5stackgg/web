@@ -17,8 +17,9 @@ describe("Socket chat:error", () => {
     socket.emit("chat:error", { code: "too_long", max: 2000, requestId: "r" });
 
     expect(toast).toHaveBeenCalledWith({
-      variant: "destructive",
+      title: "Failed to send message",
       description: "Messages can be up to 2000 characters.",
+      variant: "destructive",
     });
   });
 
@@ -28,8 +29,9 @@ describe("Socket chat:error", () => {
       socket.emit("chat:error", { code });
 
       expect(toast).toHaveBeenCalledWith({
+        title: "Failed to send message",
+        description: undefined,
         variant: "destructive",
-        description: "Your message couldn't be sent.",
       });
     },
   );

@@ -76,8 +76,9 @@ describe("ChatInput", () => {
     expect(textarea(wrapper).value).toBe(message);
     expect(toast).toHaveBeenCalledTimes(1);
     expect(toast).toHaveBeenCalledWith({
-      variant: "destructive",
+      title: "Failed to send message",
       description: "Messages can be up to 2000 characters.",
+      variant: "destructive",
     });
   });
 

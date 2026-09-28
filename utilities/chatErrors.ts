@@ -9,7 +9,10 @@ export interface ChatError {
 
 type Translate = (key: string, params?: Record<string, unknown>) => string;
 
-export function chatErrorMessage(error: ChatError, t: Translate): string {
+export function chatErrorDescription(
+  error: ChatError,
+  t: Translate,
+): string | undefined {
   switch (error?.code) {
     case "too_long":
       return t("chat.message_too_long", {
@@ -19,17 +22,17 @@ export function chatErrorMessage(error: ChatError, t: Translate): string {
     // lobby rejoin does, so it must not tell the user they are barred.
     case "not_allowed":
     default:
-      return t("chat.send_failed");
+      return undefined;
   }
 }
 
 export function toastChatError(error: ChatError) {
   const { $i18n } = useNuxtApp();
+  const t: Translate = (key, params) => $i18n.t(key, params ?? {});
 
   toast({
+    title: t("chat.send_failed"),
+    description: chatErrorDescription(error, t),
     variant: "destructive",
-    description: chatErrorMessage(error, (key, params) =>
-      $i18n.t(key, params ?? {}),
-    ),
   });
 }

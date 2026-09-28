@@ -8259,7 +8259,7 @@
     "everyone_hint": "Beide Teams — wird auch im Spielchat angezeigt",
     "team_hint": "Nur dein Lineup — wird nicht im Spielchat angezeigt",
     "message_too_long": "Nachrichten dürfen höchstens {max} Zeichen lang sein.",
-    "send_failed": "Deine Nachricht konnte nicht gesendet werden.",
+    "send_failed": "Deine Nachricht konnte nicht gesendet werden",
     "direct": {
       "message": "Nachricht",
       "empty": "Noch keine Nachrichten. Sag Hallo."

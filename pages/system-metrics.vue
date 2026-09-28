@@ -85,12 +85,12 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
             </div>
 
             <div
-              class="flex h-9 items-center gap-1 border border-border bg-background/40 px-2 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground"
+              class="flex h-9 items-center gap-1 rounded-md border border-border bg-background/40 px-2 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground"
             >
               <span class="pl-1">{{ $t("common.sort") }}</span>
               <Select v-model="nodeSortBy">
                 <SelectTrigger
-                  class="h-7 w-20 border-none bg-transparent px-1 font-mono text-[0.65rem] uppercase tracking-[0.2em] shadow-none transition-colors hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))] focus:ring-0 [&[data-state=open]]:bg-[hsl(var(--tac-amber)/0.16)] [&[data-state=open]]:text-[hsl(var(--tac-amber))]"
+                  class="h-7 w-20 rounded-sm border-none bg-transparent px-1 font-mono text-[0.65rem] uppercase tracking-[0.2em] shadow-none transition-colors hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))] focus:ring-0 [&[data-state=open]]:bg-[hsl(var(--tac-amber)/0.16)] [&[data-state=open]]:text-[hsl(var(--tac-amber))]"
                 >
                   <SelectValue />
                 </SelectTrigger>
@@ -105,7 +105,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
               <FiveStackToolTip>
                 <template #trigger>
                   <button
-                    class="grid h-6 w-6 place-items-center border border-border text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.12)]"
+                    class="grid h-6 w-6 place-items-center rounded-sm border border-border text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.12)]"
                     @click="
                       nodeSortDirection =
                         nodeSortDirection === 'asc' ? 'desc' : 'asc'
@@ -199,7 +199,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
                 <FiveStackToolTip>
                   <template #trigger>
                     <button
-                      class="grid h-9 w-9 place-items-center border transition-colors"
+                      class="grid h-9 w-9 place-items-center rounded-md border transition-colors"
                       :class="
                         isNodeExpanded(node)
                           ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.14)] text-[hsl(var(--tac-amber))]'
@@ -296,7 +296,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
                 <FiveStackToolTip>
                   <template #trigger>
                     <button
-                      class="grid h-8 w-8 shrink-0 place-items-center border transition-colors"
+                      class="grid h-8 w-8 shrink-0 place-items-center rounded-md border transition-colors"
                       :class="
                         isGpuExpanded(node)
                           ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.14)] text-[hsl(var(--tac-amber))]'
@@ -393,12 +393,12 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
             </Select>
 
             <div
-              class="flex h-9 items-center gap-1 border border-border bg-background/40 px-2 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground"
+              class="flex h-9 items-center gap-1 rounded-md border border-border bg-background/40 px-2 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground"
             >
               <span class="pl-1">{{ $t("common.sort") }}</span>
               <Select v-model="serviceSortBy">
                 <SelectTrigger
-                  class="h-7 w-20 border-none bg-transparent px-1 font-mono text-[0.65rem] uppercase tracking-[0.2em] shadow-none transition-colors hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))] focus:ring-0 [&[data-state=open]]:bg-[hsl(var(--tac-amber)/0.16)] [&[data-state=open]]:text-[hsl(var(--tac-amber))]"
+                  class="h-7 w-20 rounded-sm border-none bg-transparent px-1 font-mono text-[0.65rem] uppercase tracking-[0.2em] shadow-none transition-colors hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))] focus:ring-0 [&[data-state=open]]:bg-[hsl(var(--tac-amber)/0.16)] [&[data-state=open]]:text-[hsl(var(--tac-amber))]"
                 >
                   <SelectValue />
                 </SelectTrigger>
@@ -413,7 +413,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
               <FiveStackToolTip>
                 <template #trigger>
                   <button
-                    class="grid h-6 w-6 place-items-center border border-border text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.12)]"
+                    class="grid h-6 w-6 place-items-center rounded-sm border border-border text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.12)]"
                     @click="
                       serviceSortDirection =
                         serviceSortDirection === 'asc' ? 'desc' : 'asc'
@@ -595,7 +595,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
                   <FiveStackToolTip>
                     <template #trigger>
                       <button
-                        class="grid h-7 w-7 place-items-center border transition-colors"
+                        class="grid h-7 w-7 place-items-center rounded-md border transition-colors"
                         :class="
                           isServiceExpanded(service)
                             ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.14)] text-[hsl(var(--tac-amber))]'
@@ -620,7 +620,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
                   <FiveStackToolTip>
                     <template #trigger>
                       <button
-                        class="grid h-7 w-7 place-items-center border border-border bg-background/60 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]"
+                        class="grid h-7 w-7 place-items-center rounded-md border border-border bg-background/60 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]"
                         @click="
                           $router.push({
                             path: '/system-logs',

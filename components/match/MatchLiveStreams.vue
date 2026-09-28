@@ -125,7 +125,7 @@ import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
                   <TableCell class="w-12" v-if="canManageStreams">
                     <div
                       v-if="!stream.is_game_streamer"
-                      class="cursor-grab active:cursor-grabbing p-1 -m-1 rounded hover:bg-black/5"
+                      class="cursor-grab active:cursor-grabbing p-1 -m-1 rounded-md hover:bg-black/5"
                     >
                       <GripVertical
                         class="h-4 w-4 text-muted-foreground transition-colors"

@@ -5148,9 +5148,6 @@
       }
     }
   },
-  "custom_match": {
-    "description": "أنشئ مباراتك الخاصة بقواعد وخرائط وتشكيلات مخصصة"
-  },
   "layouts": {
     "account_settings": {
       "title": "إعدادات الحساب",

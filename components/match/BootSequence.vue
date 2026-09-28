@@ -226,7 +226,7 @@ function formatShaderCount(raw: string | null | undefined): string {
             "
             type="button"
             :disabled="skipping"
-            class="ml-1 inline-flex shrink-0 items-center gap-1 rounded border border-border/60 bg-card/60 px-1.5 py-0.5 font-mono text-[0.6rem] font-medium uppercase tracking-wider text-muted-foreground transition-colors hover:bg-card hover:text-foreground disabled:opacity-50 cursor-pointer"
+            class="ml-1 inline-flex shrink-0 items-center gap-1 rounded-md border border-border/60 bg-card/60 px-1.5 py-0.5 font-mono text-[0.6rem] font-medium uppercase tracking-wider text-muted-foreground transition-colors hover:bg-card hover:text-foreground disabled:opacity-50 cursor-pointer"
             @click.stop="emit('skip')"
           >
             <Spinner v-if="skipping" class="w-2.5 h-2.5" />

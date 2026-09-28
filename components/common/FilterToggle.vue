@@ -45,7 +45,7 @@ const tone = computed(() => TONES[props.tone]);
     type="button"
     role="switch"
     :aria-checked="modelValue"
-    class="group flex w-full items-center justify-between gap-3 rounded px-2 py-1.5 text-xs transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[hsl(var(--tac-amber)/0.5)]"
+    class="group flex w-full items-center justify-between gap-3 rounded-sm px-2 py-1.5 text-xs transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[hsl(var(--tac-amber)/0.5)]"
     :class="modelValue ? tone.label : 'text-foreground/90'"
     @click="$emit('update:modelValue', !modelValue)"
   >

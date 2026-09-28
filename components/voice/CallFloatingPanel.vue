@@ -117,7 +117,7 @@ onScopeDispose(onUp);
           </span>
           <button
             type="button"
-            class="grid h-5 w-5 shrink-0 place-items-center rounded text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+            class="grid h-5 w-5 shrink-0 place-items-center rounded-sm text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
             :aria-label="$t('voice.call.pop_in')"
             @click="emit('close')"
           >

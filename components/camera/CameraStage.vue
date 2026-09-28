@@ -204,7 +204,7 @@ defineExpose({
     <button
       v-if="reframe.cropping.value && previewVisible"
       type="button"
-      class="absolute bottom-2 right-2 z-20 inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-black/70 px-2.5 py-1 font-mono text-[0.55rem] uppercase tracking-[0.2em] text-white/80 backdrop-blur-sm transition-colors hover:border-white/40 hover:text-white"
+      class="absolute bottom-2 right-2 z-20 inline-flex items-center gap-1.5 rounded-md border border-white/20 bg-black/70 px-2.5 py-1 font-mono text-[0.55rem] uppercase tracking-[0.2em] text-white/80 backdrop-blur-sm transition-colors hover:border-white/40 hover:text-white"
       @click="reframe.reset"
     >
       <LucideRotateCcw class="h-2.5 w-2.5" />

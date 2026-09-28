@@ -5148,9 +5148,6 @@
       }
     }
   },
-  "custom_match": {
-    "description": "Özel kurallar, haritalar ve dizilişlerle kendi maçını oluştur"
-  },
   "layouts": {
     "account_settings": {
       "title": "Hesap ayarları",

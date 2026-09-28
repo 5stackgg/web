@@ -146,7 +146,7 @@ const slots = computed(() => {
           <Transition name="action">
             <button
               v-if="removable || player.steam_id === selfSteamId"
-              class="remove-btn grid h-6 w-6 place-items-center rounded transition-colors"
+              class="remove-btn grid h-6 w-6 place-items-center rounded-md transition-colors"
               @click="emit('remove', player.steam_id)"
             >
               <X class="h-3.5 w-3.5" />

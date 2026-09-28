@@ -362,7 +362,7 @@ onBeforeUnmount(() => {
         >
           <button
             type="button"
-            class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-black/70 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/90 hover:text-[hsl(var(--tac-amber))] disabled:opacity-50"
+            class="inline-flex h-7 w-7 items-center justify-center rounded-md bg-black/70 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/90 hover:text-[hsl(var(--tac-amber))] disabled:opacity-50"
             :title="$t('image_upload.replace')"
             :disabled="busy"
             @click.stop="triggerPicker"
@@ -372,7 +372,7 @@ onBeforeUnmount(() => {
           <button
             v-if="showRemove"
             type="button"
-            class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-black/70 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/90 hover:text-destructive disabled:opacity-50"
+            class="inline-flex h-7 w-7 items-center justify-center rounded-md bg-black/70 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/90 hover:text-destructive disabled:opacity-50"
             :title="$t('image_upload.remove')"
             :disabled="busy"
             @click.stop="remove"

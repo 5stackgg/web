@@ -303,7 +303,7 @@ defineExpose({ startCreate });
           <button
             v-if="canDelete(collection)"
             type="button"
-            class="absolute right-2 top-2.5 flex h-5 w-5 items-center justify-center rounded text-muted-foreground/50 transition-colors duration-150 hover:bg-destructive/10 hover:text-destructive"
+            class="absolute right-2 top-2.5 flex h-5 w-5 items-center justify-center rounded-sm text-muted-foreground/50 transition-colors duration-150 hover:bg-destructive/10 hover:text-destructive"
             :title="$t('pages.utility.collections.delete')"
             :aria-label="$t('pages.utility.collections.delete')"
             @click.stop="askDelete(collection)"

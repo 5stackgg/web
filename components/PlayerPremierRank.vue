@@ -76,7 +76,7 @@ const tier = computed<Tier>(() => {
 // Same boxed pill as ELO / RANK / FACEIT, tinted with the tier color.
 const wrapperClasses = [
   "inline-flex items-center gap-1.5 select-none leading-none font-sans",
-  "h-[26px] px-[0.6rem] rounded border",
+  "h-[26px] px-[0.6rem] rounded-md border",
   "[backdrop-filter:blur(6px)]",
 ].join(" ");
 

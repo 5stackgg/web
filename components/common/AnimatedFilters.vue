@@ -32,25 +32,21 @@ const props = defineProps<{
 
 const model = defineModel<string>();
 
-const containerShape = computed(() =>
-  props.square || props.stacked ? "rounded-md" : "rounded-full",
-);
-const indicatorShape = computed(() =>
-  props.square || props.stacked ? "rounded" : "rounded-full",
-);
+const containerShape = "rounded-md";
+const indicatorShape = "rounded-sm";
 const buttonShape = computed(() => {
   const base = props.block ? "min-w-0 flex-1" : "";
   if (props.stacked) {
-    return "flex min-w-0 flex-col items-center justify-center gap-1 rounded px-1 py-1.5";
+    return "flex min-w-0 flex-col items-center justify-center gap-1 rounded-sm px-1 py-1.5";
   }
   if (props.size === "lg") {
-    return `inline-flex items-center justify-center gap-1.5 rounded-md px-3 py-2.5 font-mono text-[0.72rem] font-bold uppercase leading-tight tracking-[0.08em] ${base}`;
+    return `inline-flex items-center justify-center gap-1.5 rounded-sm px-3 py-2.5 font-mono text-[0.72rem] font-bold uppercase leading-tight tracking-[0.08em] ${base}`;
   }
   // h-[1.375rem] + the container's p-1 and 1px border lands the whole strip on
   // exactly 2rem, so a square filter group lines up with adjacent h-8 buttons.
   return props.square
-    ? `inline-flex h-[1.375rem] items-center justify-center gap-1.5 rounded px-2.5 font-mono text-[0.65rem] font-semibold uppercase leading-none tracking-[0.12em] ${base}`
-    : `inline-flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-xs tracking-[0.06em] ${base}`;
+    ? `inline-flex h-[1.375rem] items-center justify-center gap-1.5 rounded-sm px-2.5 font-mono text-[0.65rem] font-semibold uppercase leading-none tracking-[0.12em] ${base}`
+    : `inline-flex items-center justify-center gap-1.5 rounded-sm px-3 py-1.5 text-xs tracking-[0.06em] ${base}`;
 });
 function countTone(opt: FilterOption) {
   if (model.value === opt.key || opt.disabled) {

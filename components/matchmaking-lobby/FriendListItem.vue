@@ -198,7 +198,7 @@ const showBanner = computed(
 );
 
 const actionBtn =
-  "h-8 w-8 cursor-pointer rounded-md p-0 text-muted-foreground transition-colors";
+  "h-8 w-8 cursor-pointer p-0 text-muted-foreground transition-colors";
 const dangerHover = "hover:bg-destructive/15 hover:text-destructive";
 const amberHover =
   "hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))]";
@@ -321,7 +321,7 @@ const amberHover =
                       <TooltipTrigger as-child>
                         <Button
                           variant="ghost"
-                          class="h-8 w-8 cursor-pointer rounded-md p-0 text-[hsl(var(--tac-amber))] ring-1 ring-inset ring-[hsl(var(--tac-amber)/0.35)] transition-colors hover:bg-[hsl(var(--tac-amber))] hover:text-[hsl(var(--tac-amber-foreground))]"
+                          class="h-8 w-8 cursor-pointer p-0 text-[hsl(var(--tac-amber))] ring-1 ring-inset ring-[hsl(var(--tac-amber)/0.35)] transition-colors hover:bg-[hsl(var(--tac-amber))] hover:text-[hsl(var(--tac-amber-foreground))]"
                           :loading="loadingFor('accept')"
                           :disabled="busy"
                           @click="acceptFriend(player.steam_id)"

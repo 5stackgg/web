@@ -58,7 +58,7 @@ const onSelected = (player: { steam_id: string }) => {
   min-height: 3.5rem;
   align-items: center;
   gap: 0.6rem;
-  border-radius: 0.55rem;
+  border-radius: 0.5rem;
   border: 1px dashed hsl(var(--border) / 0.7);
   background: transparent;
   padding: 0.5rem 0.75rem;

@@ -917,7 +917,7 @@ function formatPendingDate(date: string): string {
           :key="status"
           type="button"
           :disabled="!pendingCountsByStatus[status]"
-          class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-mono text-[0.65rem] uppercase tracking-[0.14em] transition-colors disabled:opacity-30"
+          class="inline-flex items-center gap-1.5 rounded-md border px-2.5 py-0.5 font-mono text-[0.65rem] uppercase tracking-[0.14em] transition-colors disabled:opacity-30"
           :class="
             pendingFilters.has(status)
               ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))]'

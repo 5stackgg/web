@@ -27,7 +27,7 @@ const model = defineModel<string>({ required: true });
       :key="option.key"
       type="button"
       :disabled="disabled"
-      class="rounded border px-2 py-1 font-mono text-[0.62rem] uppercase tracking-[0.1em] transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+      class="rounded-md border px-2 py-1 font-mono text-[0.62rem] uppercase tracking-[0.1em] transition-colors disabled:cursor-not-allowed disabled:opacity-50"
       :class="[
         even ? 'min-w-0 flex-1' : '',
         model === option.key

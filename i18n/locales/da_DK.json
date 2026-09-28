@@ -5148,9 +5148,6 @@
       }
     }
   },
-  "custom_match": {
-    "description": "Byg din egen kamp med egne regler, maps og opstillinger"
-  },
   "layouts": {
     "account_settings": {
       "title": "Kontoindstillinger",

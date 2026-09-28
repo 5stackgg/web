@@ -1677,15 +1677,15 @@ const playerHeroClasses =
 const playerHeroBodyClasses =
   "flex flex-wrap items-center gap-5 max-md:items-start max-md:gap-4";
 const playerHeroInlineRoleChipClasses =
-  "inline-flex h-7 items-center gap-1.5 rounded border border-border bg-card/60 px-2.5 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground";
+  "inline-flex h-7 items-center gap-1.5 rounded-md border border-border bg-card/60 px-2.5 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground";
 const playerHeroInlineRoleWrapClasses =
-  "inline-flex [&_button]:inline-flex [&_button]:h-7 [&_button]:items-center [&_button]:gap-1.5 [&_button]:rounded [&_button]:border-[hsl(var(--tac-amber)_/_0.4)] [&_button]:bg-[hsl(var(--tac-amber)_/_0.08)] [&_button]:px-2.5 [&_button]:font-mono [&_button]:text-[0.6rem] [&_button]:font-semibold [&_button]:tracking-[0.14em] [&_button]:text-[hsl(var(--tac-amber))] [&_button]:hover:border-[hsl(var(--tac-amber))] [&_button]:hover:bg-[hsl(var(--tac-amber)_/_0.16)] [&_button>span]:uppercase [&_button>svg]:h-3 [&_button>svg]:w-3 [&_button>svg]:shrink-0";
+  "inline-flex [&_button]:inline-flex [&_button]:h-7 [&_button]:items-center [&_button]:gap-1.5 [&_button]:rounded-md [&_button]:border-[hsl(var(--tac-amber)_/_0.4)] [&_button]:bg-[hsl(var(--tac-amber)_/_0.08)] [&_button]:px-2.5 [&_button]:font-mono [&_button]:text-[0.6rem] [&_button]:font-semibold [&_button]:tracking-[0.14em] [&_button]:text-[hsl(var(--tac-amber))] [&_button]:hover:border-[hsl(var(--tac-amber))] [&_button]:hover:bg-[hsl(var(--tac-amber)_/_0.16)] [&_button>span]:uppercase [&_button>svg]:h-3 [&_button>svg]:w-3 [&_button>svg]:shrink-0";
 const playerHeroNameEditButtonClasses =
-  "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded border border-border bg-card/60 text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber)_/_0.6)] hover:bg-[hsl(var(--tac-amber)_/_0.1)] hover:text-[hsl(var(--tac-amber))] [&_svg]:h-4 [&_svg]:w-4";
+  "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-border bg-card/60 text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber)_/_0.6)] hover:bg-[hsl(var(--tac-amber)_/_0.1)] hover:text-[hsl(var(--tac-amber))] [&_svg]:h-4 [&_svg]:w-4";
 const playerHeroAddFriendClasses =
-  "group/addfriend relative inline-flex items-center justify-center gap-[0.55rem] overflow-hidden rounded border border-[hsl(var(--tac-amber)_/_0.55)] bg-[hsl(var(--tac-amber)_/_0.12)] px-4 py-2.5 font-sans text-[0.8rem] font-bold uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))] transition-[transform,border-color,background-color,box-shadow] duration-150 hover:-translate-y-px hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.2)] hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.45),0_8px_24px_-8px_hsl(var(--tac-amber)/0.5)] disabled:cursor-not-allowed disabled:opacity-60 max-md:w-full";
+  "group/addfriend relative inline-flex items-center justify-center gap-[0.55rem] overflow-hidden rounded-md border border-[hsl(var(--tac-amber)_/_0.55)] bg-[hsl(var(--tac-amber)_/_0.12)] px-4 py-2.5 font-sans text-[0.8rem] font-bold uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))] transition-[transform,border-color,background-color,box-shadow] duration-150 hover:-translate-y-px hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.2)] hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.45),0_8px_24px_-8px_hsl(var(--tac-amber)/0.5)] disabled:cursor-not-allowed disabled:opacity-60 max-md:w-full";
 const playerHeroFriendBadgeClasses =
-  "inline-flex items-center justify-center gap-[0.5rem] rounded border border-emerald-500/40 bg-emerald-500/15 px-3 py-2 font-mono text-[0.72rem] font-medium uppercase tracking-[0.16em] text-emerald-400 max-md:w-full";
+  "inline-flex items-center justify-center gap-[0.5rem] rounded-md border border-emerald-500/40 bg-emerald-500/15 px-3 py-2 font-mono text-[0.72rem] font-medium uppercase tracking-[0.16em] text-emerald-400 max-md:w-full";
 const playerHeroAvatarFrameClasses =
   "relative h-[156px] w-[156px] border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] p-1 max-md:h-24 max-md:w-24";
 const playerHeroAvatarClasses = "block h-full w-full object-cover";
@@ -1703,10 +1703,10 @@ const playerHeroMetaDividerClasses = "h-3 w-px shrink-0 bg-border/70";
 const playerHeroIdentClasses = "inline-flex min-w-0 items-center gap-2";
 const playerHeroSteamIdClasses = "min-w-0 truncate tracking-[0.05em]";
 const playerHeroSteamLinkClasses =
-  "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded border border-border bg-card/60 text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber)_/_0.6)] hover:bg-[hsl(var(--tac-amber)_/_0.1)] hover:text-[hsl(var(--tac-amber))]";
+  "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-border bg-card/60 text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber)_/_0.6)] hover:bg-[hsl(var(--tac-amber)_/_0.1)] hover:text-[hsl(var(--tac-amber))]";
 const playerHeroRightActionsClasses = "flex flex-col items-stretch gap-3";
 const playerHeroPlayClasses =
-  "group/play relative isolate inline-flex w-full cursor-pointer items-center justify-center overflow-hidden border font-sans text-[0.85rem] font-bold uppercase tracking-[0.18em] no-underline transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-px active:translate-y-0 py-[0.7rem] px-4 text-[hsl(var(--tac-amber-foreground))] border-[hsl(var(--tac-amber))] [background:linear-gradient(135deg,var(--tac-amber-cta-from)_0%,hsl(var(--tac-amber))_50%,var(--tac-amber-cta-to)_100%)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_6px_20px_-6px_hsl(var(--tac-amber)/0.6)] hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.6),0_12px_32px_-6px_hsl(var(--tac-amber)/0.8),0_0_24px_hsl(var(--tac-amber)/0.35)]";
+  "group/play relative isolate inline-flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-md border font-sans text-[0.85rem] font-bold uppercase tracking-[0.18em] no-underline transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-px active:translate-y-0 py-[0.7rem] px-4 text-[hsl(var(--tac-amber-foreground))] border-[hsl(var(--tac-amber))] [background:linear-gradient(135deg,var(--tac-amber-cta-from)_0%,hsl(var(--tac-amber))_50%,var(--tac-amber-cta-to)_100%)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_6px_20px_-6px_hsl(var(--tac-amber)/0.6)] hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.6),0_12px_32px_-6px_hsl(var(--tac-amber)/0.8),0_0_24px_hsl(var(--tac-amber)/0.35)]";
 const playerHeroPlayInnerClasses =
   "relative z-[1] inline-flex items-center gap-[0.65rem]";
 const playerHeroPlayIconClasses =
@@ -1721,7 +1721,7 @@ const playerHeroFormTickClasses = "h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]";
 const playerHeroFormDotsClasses = "flex flex-wrap items-center gap-1.5";
 const playerHeroFormDotBaseClasses = "h-2.5 w-2.5 rounded-[2px]";
 const playerHeroTeamChipClasses =
-  "inline-flex h-7 items-center gap-1.5 rounded border border-border bg-card/60 px-2 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber)_/_0.6)] hover:bg-[hsl(var(--tac-amber)_/_0.1)] hover:text-[hsl(var(--tac-amber))]";
+  "inline-flex h-7 items-center gap-1.5 rounded-md border border-border bg-card/60 px-2 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber)_/_0.6)] hover:bg-[hsl(var(--tac-amber)_/_0.1)] hover:text-[hsl(var(--tac-amber))]";
 const playerHeroTeamChipDotClasses =
   "h-1.5 w-1.5 shrink-0 rounded-full bg-[hsl(var(--tac-amber))]";
 </script>
@@ -2221,7 +2221,7 @@ const playerHeroTeamChipDotClasses =
               </div>
               <button
                 type="button"
-                class="inline-flex h-[26px] flex-1 items-center justify-center gap-1.5 rounded border border-border/60 bg-card/40 px-3 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)_/_0.5)] hover:bg-[hsl(var(--tac-amber)_/_0.08)] hover:text-[hsl(var(--tac-amber))]"
+                class="inline-flex h-[26px] flex-1 items-center justify-center gap-1.5 rounded-md border border-border/60 bg-card/40 px-3 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)_/_0.5)] hover:bg-[hsl(var(--tac-amber)_/_0.08)] hover:text-[hsl(var(--tac-amber))]"
                 @click="openEloTab"
               >
                 <Maximize2 class="h-3 w-3" />
@@ -2240,7 +2240,7 @@ const playerHeroTeamChipDotClasses =
         <template v-if="canGrantAwards" #action>
           <button
             type="button"
-            class="grid h-9 w-9 place-items-center rounded border border-border/80 bg-background/60 text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
+            class="grid h-9 w-9 place-items-center rounded-md border border-border/80 bg-background/60 text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
             :title="$t('awards.composer.grant_here')"
             :aria-label="$t('awards.composer.grant_here')"
             @click="awardComposerOpen = true"
@@ -2459,7 +2459,7 @@ const playerHeroTeamChipDotClasses =
                 v-for="r in presetRanges"
                 :key="r.key"
                 type="button"
-                class="shrink-0 rounded border px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] transition-colors"
+                class="shrink-0 rounded-md border px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] transition-colors"
                 :class="
                   eloRange === r.key
                     ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))]'
@@ -2473,7 +2473,7 @@ const playerHeroTeamChipDotClasses =
                    season, the right chevron opens a dropdown to switch. -->
               <div
                 v-if="seasonsEnabled && seasons.length"
-                class="inline-flex shrink-0 items-stretch overflow-hidden rounded border font-mono text-[0.65rem] uppercase tracking-[0.12em] transition-colors"
+                class="inline-flex shrink-0 items-stretch overflow-hidden rounded-md border font-mono text-[0.65rem] uppercase tracking-[0.12em] transition-colors"
                 :class="
                   eloRange === 'season'
                     ? 'border-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber))]'
@@ -2512,7 +2512,7 @@ const playerHeroTeamChipDotClasses =
                       v-for="s in seasonsAsc"
                       :key="s.id"
                       type="button"
-                      class="flex w-full flex-col items-start gap-0.5 rounded px-2 py-1.5 text-left transition-colors hover:bg-[hsl(var(--tac-amber)/0.1)]"
+                      class="flex w-full flex-col items-start gap-0.5 rounded-sm px-2 py-1.5 text-left transition-colors hover:bg-[hsl(var(--tac-amber)/0.1)]"
                       :class="{
                         'bg-[hsl(var(--tac-amber)/0.12)]':
                           eloRange === 'season' && s.id === selectedSeasonId,
@@ -2550,7 +2550,7 @@ const playerHeroTeamChipDotClasses =
               </div>
               <span
                 v-if="eloRange === 'custom'"
-                class="shrink-0 rounded border border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
+                class="shrink-0 rounded-md border border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
               >
                 {{ activeRangeLabel }}
               </span>
@@ -2566,7 +2566,7 @@ const playerHeroTeamChipDotClasses =
                 <PopoverTrigger as-child>
                   <button
                     type="button"
-                    class="relative inline-flex h-8 w-8 items-center justify-center rounded border border-border/60 bg-card/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
+                    class="relative inline-flex h-8 w-8 items-center justify-center rounded-md border border-border/60 bg-card/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
                     :title="
                       $t(
                         'pages.players.detail.range_settings',
@@ -2592,7 +2592,7 @@ const playerHeroTeamChipDotClasses =
                     <div class="flex items-center gap-2">
                       <button
                         type="button"
-                        class="flex flex-1 items-center justify-between gap-2 rounded border bg-background px-2 py-1.5 text-xs transition-colors"
+                        class="flex flex-1 items-center justify-between gap-2 rounded-md border bg-background px-2 py-1.5 text-xs transition-colors"
                         :class="
                           activeDateField === 'from'
                             ? 'border-[hsl(var(--tac-amber))]'
@@ -2617,7 +2617,7 @@ const playerHeroTeamChipDotClasses =
                       <span class="text-muted-foreground text-xs">→</span>
                       <button
                         type="button"
-                        class="flex flex-1 items-center justify-between gap-2 rounded border bg-background px-2 py-1.5 text-xs transition-colors"
+                        class="flex flex-1 items-center justify-between gap-2 rounded-md border bg-background px-2 py-1.5 text-xs transition-colors"
                         :class="
                           activeDateField === 'to'
                             ? 'border-[hsl(var(--tac-amber))]'
@@ -2667,7 +2667,7 @@ const playerHeroTeamChipDotClasses =
                     </div>
                   </div>
                   <label
-                    class="flex items-start gap-2 cursor-pointer rounded p-1 -mx-1 hover:bg-muted/40"
+                    class="flex items-start gap-2 cursor-pointer rounded-sm p-1 -mx-1 hover:bg-muted/40"
                   >
                     <Checkbox
                       :model-value="excludeTournaments"
@@ -2754,7 +2754,7 @@ const playerHeroTeamChipDotClasses =
             </NuxtLink>
             <button
               type="button"
-              class="inline-flex h-7 w-7 items-center justify-center rounded border border-border/60 text-muted-foreground transition-colors hover:text-foreground"
+              class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border/60 text-muted-foreground transition-colors hover:text-foreground"
               :title="$t('common.close')"
               @click="dismissExternalWarning"
             >

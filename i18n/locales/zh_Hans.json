@@ -5148,9 +5148,6 @@
       }
     }
   },
-  "custom_match": {
-    "description": "使用自定义规则、地图和阵容创建您自己的比赛"
-  },
   "layouts": {
     "account_settings": {
       "title": "账户设置",

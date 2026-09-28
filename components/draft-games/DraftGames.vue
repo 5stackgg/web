@@ -398,7 +398,7 @@ const rehost = async () => {
 
         <button
           type="button"
-          class="inline-flex h-7 shrink-0 items-center gap-1.5 rounded-full border px-3 font-mono text-[0.6rem] uppercase tracking-[0.16em] transition-colors duration-150"
+          class="inline-flex h-7 shrink-0 items-center gap-1.5 rounded-md border px-3 font-mono text-[0.6rem] uppercase tracking-[0.16em] transition-colors duration-150"
           :class="
             hasSpace
               ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))]'

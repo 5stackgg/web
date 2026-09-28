@@ -537,7 +537,7 @@ onMounted(() => {
             v-model:open="visPopoverOpen"
           >
             <PopoverTrigger
-              class="inline-flex h-7 items-center gap-1.5 rounded-full border border-border/60 bg-card/50 pl-1.5 pr-2.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] transition-colors cursor-pointer hover:border-[hsl(var(--tac-amber)/0.6)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              class="inline-flex h-7 items-center gap-1.5 rounded-md border border-border/60 bg-card/50 pl-1.5 pr-2.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] transition-colors cursor-pointer hover:border-[hsl(var(--tac-amber)/0.6)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               :class="
                 clip.visibility === 'public'
                   ? 'text-emerald-300 hover:text-emerald-200'
@@ -576,7 +576,7 @@ onMounted(() => {
                 v-for="opt in VISIBILITY_OPTIONS"
                 :key="opt.value"
                 type="button"
-                class="w-full text-left flex items-start gap-2 rounded px-2 py-1.5 text-xs hover:bg-muted/60 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+                class="w-full text-left flex items-start gap-2 rounded-sm px-2 py-1.5 text-xs hover:bg-muted/60 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                 :class="clip.visibility === opt.value ? 'bg-muted/40' : ''"
                 :disabled="visSaving"
                 @click="setVisibility(opt.value)"
@@ -610,7 +610,7 @@ onMounted(() => {
           </Popover>
           <span
             v-else-if="clip"
-            class="inline-flex h-7 items-center gap-1.5 rounded-full border border-border/60 bg-card/40 pl-1.5 pr-2.5 font-mono text-[0.6rem] uppercase tracking-[0.18em]"
+            class="inline-flex h-7 items-center gap-1.5 rounded-md border border-border/60 bg-card/40 pl-1.5 pr-2.5 font-mono text-[0.6rem] uppercase tracking-[0.18em]"
             :class="
               clip.visibility === 'public'
                 ? 'text-emerald-300'
@@ -628,7 +628,7 @@ onMounted(() => {
           <div class="ml-auto flex items-center gap-3">
             <span
               v-if="hasQueueNav"
-              class="hidden sm:inline-flex h-7 items-center rounded-full border border-border/60 bg-card/35 px-2.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground tabular-nums"
+              class="hidden sm:inline-flex h-7 items-center rounded-md border border-border/60 bg-card/35 px-2.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground tabular-nums"
             >
               {{ queuePositionLabel }}
             </span>
@@ -655,7 +655,7 @@ onMounted(() => {
 
             <button
               type="button"
-              class="inline-flex h-7 items-center gap-1.5 rounded-full border border-border/60 bg-card/40 px-2.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-[hsl(var(--tac-amber))] transition-colors cursor-pointer"
+              class="inline-flex h-7 items-center gap-1.5 rounded-md border border-border/60 bg-card/40 px-2.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-[hsl(var(--tac-amber))] transition-colors cursor-pointer"
               @click="closeClip"
             >
               <X class="h-3 w-3" />
@@ -743,7 +743,7 @@ onMounted(() => {
                 </template>
                 <template #top-right>
                   <span
-                    class="inline-flex h-7 shrink-0 items-center gap-1 rounded-full border border-white/20 bg-black/55 px-2.5 font-mono text-[0.7rem] font-medium leading-none tabular-nums text-white/85 backdrop-blur-sm"
+                    class="inline-flex h-7 shrink-0 items-center gap-1 rounded-md border border-white/20 bg-black/55 px-2.5 font-mono text-[0.7rem] font-medium leading-none tabular-nums text-white/85 backdrop-blur-sm"
                     :title="
                       t(
                         'clips.plays_count',
@@ -758,7 +758,7 @@ onMounted(() => {
                   <button
                     v-if="isOwner && !editing"
                     type="button"
-                    class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/20 bg-black/55 text-white/85 backdrop-blur-sm transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-[hsl(var(--tac-amber))] cursor-pointer"
+                    class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-white/20 bg-black/55 text-white/85 backdrop-blur-sm transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-[hsl(var(--tac-amber))] cursor-pointer"
                     :title="$t('ui.edit_title')"
                     @click.stop="startEdit"
                   >
@@ -766,7 +766,7 @@ onMounted(() => {
                   </button>
                   <button
                     type="button"
-                    class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border bg-black/55 backdrop-blur-sm transition-all duration-200 hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-[hsl(var(--tac-amber))] cursor-pointer"
+                    class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md border bg-black/55 backdrop-blur-sm transition-all duration-200 hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-[hsl(var(--tac-amber))] cursor-pointer"
                     :class="
                       linkCopied
                         ? 'share-flash border-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber))] scale-110'
@@ -986,7 +986,7 @@ onMounted(() => {
                   v-for="q in clipQueue"
                   :key="q.id"
                   type="button"
-                  class="group/q relative flex w-full items-center gap-2 rounded border px-1.5 py-1.5 text-left transition-colors"
+                  class="group/q relative flex w-full items-center gap-2 rounded-sm border px-1.5 py-1.5 text-left transition-colors"
                   :class="
                     q.id === clip.id
                       ? 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.12)]'

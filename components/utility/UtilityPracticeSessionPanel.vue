@@ -435,7 +435,7 @@ const panelCta = "w-full font-bold uppercase tracking-[0.22em]";
                 v-for="entry of invitees"
                 :key="entry.steamId"
                 type="button"
-                class="inline-flex items-center gap-1 rounded-sm border border-border bg-background px-1.5 py-0.5 text-[0.7rem] transition-colors hover:border-destructive/50"
+                class="inline-flex items-center gap-1 rounded-md border border-border bg-background px-1.5 py-0.5 text-[0.7rem] transition-colors hover:border-destructive/50"
                 :title="$t('common.remove')"
                 @click="removeInvitee(entry.steamId)"
               >

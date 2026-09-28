@@ -151,7 +151,7 @@ const showIndicator = computed(() => indicatorHeight.value > 0);
           :key="item.path"
           as-child
           variant="ghost"
-          class="relative z-[1] h-9 w-full justify-start overflow-hidden rounded-sm px-3 text-left transition-colors duration-200 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-foreground"
+          class="relative z-[1] h-9 w-full justify-start overflow-hidden px-3 text-left transition-colors duration-200 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-foreground"
           :class="
             item.path === activePath
               ? 'bg-[hsl(var(--tac-amber)/0.06)] text-foreground'

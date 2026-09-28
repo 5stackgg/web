@@ -88,7 +88,7 @@ import {
           <button
             v-if="form.values.name"
             type="button"
-            class="rounded p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            class="rounded-sm p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             @click="
               form.setFieldValue('name', '');
               onFilterChange();

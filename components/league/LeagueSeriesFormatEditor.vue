@@ -187,7 +187,7 @@ function setStageType(type: string) {
               v-for="type in STAGE_TYPES"
               :key="type"
               type="button"
-              class="rounded px-3 py-1.5 text-xs font-medium transition-colors disabled:cursor-not-allowed"
+              class="rounded-sm px-3 py-1.5 text-xs font-medium transition-colors disabled:cursor-not-allowed"
               :class="
                 playoffStageType === type
                   ? 'bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))] shadow-[inset_0_0_0_1px_hsl(var(--tac-amber)/0.35)]'

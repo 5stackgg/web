@@ -96,7 +96,7 @@ async function kick() {
     type="button"
     :title="$t('player.kick.button')"
     :aria-label="$t('player.kick.button')"
-    class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded border border-amber-500/45 bg-amber-500/10 text-amber-400 transition-colors hover:border-amber-500/80 hover:bg-amber-500/20 hover:text-amber-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+    class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-amber-500/45 bg-amber-500/10 text-amber-400 transition-colors hover:border-amber-500/80 hover:bg-amber-500/20 hover:text-amber-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     @click="open = true"
   >
     <UserMinus class="h-4 w-4" />

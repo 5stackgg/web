@@ -42,7 +42,7 @@ function bind(el: Element | null) {
       </span>
       <button
         type="button"
-        class="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded text-[hsl(var(--tac-amber))] transition-colors hover:bg-[hsl(var(--tac-amber)/0.15)]"
+        class="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-sm text-[hsl(var(--tac-amber))] transition-colors hover:bg-[hsl(var(--tac-amber)/0.15)]"
         :aria-label="muted ? $t('camera.talk_unmute') : $t('camera.talk_mute')"
         :title="muted ? $t('camera.talk_unmute') : $t('camera.talk_mute')"
         @click="$emit('toggle-audio')"

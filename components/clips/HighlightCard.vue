@@ -196,7 +196,7 @@ async function setVisibility(v: Visibility) {
 
         <div class="absolute top-2 right-2 flex items-center gap-1">
           <span
-            class="inline-flex h-7 items-center gap-1 rounded-full bg-black/75 px-2.5 font-mono text-[0.7rem] font-medium leading-none tabular-nums text-white/90 backdrop-blur-sm"
+            class="inline-flex h-7 items-center gap-1 rounded-md bg-black/75 px-2.5 font-mono text-[0.7rem] font-medium leading-none tabular-nums text-white/90 backdrop-blur-sm"
             :title="
               $t(
                 'clips.plays_count',
@@ -210,7 +210,7 @@ async function setVisibility(v: Visibility) {
           </span>
           <button
             type="button"
-            class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-black/75 backdrop-blur-sm transition-all duration-200 hover:bg-black/90 hover:text-[hsl(var(--tac-amber))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
+            class="inline-flex h-7 w-7 items-center justify-center rounded-md bg-black/75 backdrop-blur-sm transition-all duration-200 hover:bg-black/90 hover:text-[hsl(var(--tac-amber))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
             :class="
               copiedClipId === clip.id
                 ? 'share-flash text-[hsl(var(--tac-amber))] scale-110'
@@ -229,7 +229,7 @@ async function setVisibility(v: Visibility) {
           </button>
           <Popover v-if="isAdmin" v-model:open="visPopoverOpen">
             <PopoverTrigger
-              class="inline-flex h-7 items-center gap-1 rounded-full bg-black/75 pl-1.5 pr-2 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/90 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
+              class="inline-flex h-7 items-center gap-1 rounded-md bg-black/75 pl-1.5 pr-2 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/90 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
               :aria-label="
                 $t('ui_extras.visibility_change_hint', {
                   value: visibility,
@@ -269,7 +269,7 @@ async function setVisibility(v: Visibility) {
                 v-for="opt in VISIBILITY_OPTIONS"
                 :key="opt.value"
                 type="button"
-                class="w-full text-left flex items-start gap-2 rounded px-2 py-1.5 text-xs hover:bg-muted/60 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+                class="w-full text-left flex items-start gap-2 rounded-sm px-2 py-1.5 text-xs hover:bg-muted/60 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                 :class="visibility === opt.value ? 'bg-muted/40' : ''"
                 :disabled="saving"
                 @click="setVisibility(opt.value)"

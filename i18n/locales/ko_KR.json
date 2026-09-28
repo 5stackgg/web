@@ -5148,9 +5148,6 @@
       }
     }
   },
-  "custom_match": {
-    "description": "자유롭게 규칙, 맵, 라인업을 설정하여 나만의 매치를 만들어 보세요"
-  },
   "layouts": {
     "account_settings": {
       "title": "계정 설정",

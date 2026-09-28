@@ -738,7 +738,7 @@ function startRepair(row: UtilityDriftResultView) {
 
               <NuxtLink
                 :to="utilityLineupRoute(selectedScan?.mapName, row.lineupId)"
-                class="inline-flex shrink-0 items-center gap-1 rounded p-1 text-xs text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+                class="inline-flex shrink-0 items-center gap-1 rounded-md p-1 text-xs text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
                 :class="
                   canRepair(row) || repairQueued[row.lineupId] ? '' : 'ml-auto'
                 "

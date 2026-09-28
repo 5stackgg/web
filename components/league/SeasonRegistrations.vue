@@ -107,7 +107,7 @@ watch([search, statusFilter], () => (page.value = 1));
           <button
             v-if="search"
             type="button"
-            class="rounded p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            class="rounded-sm p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             @click="search = ''"
           >
             <X class="h-3.5 w-3.5" />

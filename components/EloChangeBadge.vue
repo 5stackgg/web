@@ -139,7 +139,7 @@ function formatSignedPercent(n: number): string {
 }
 
 const badgeBase =
-  "inline-flex items-center gap-[3px] font-['Oxanium',sans-serif] font-bold tracking-[0.04em] tabular-nums rounded-[3px] border leading-none whitespace-nowrap cursor-help transition-all duration-150 hover:-translate-y-px";
+  "inline-flex items-center gap-[3px] font-['Oxanium',sans-serif] font-bold tracking-[0.04em] tabular-nums rounded-md border leading-none whitespace-nowrap cursor-help transition-all duration-150 hover:-translate-y-px";
 const badgeSizeXs = "text-[10px] px-1.5 h-4";
 const badgeSizeSm = "text-[10px] sm:text-xs px-2 py-0.5";
 const winBadge =

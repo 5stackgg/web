@@ -352,7 +352,7 @@ function clipTeamName(c: Clip): string | null {
           </span>
           <button
             type="button"
-            class="inline-flex h-7 items-center gap-1.5 rounded-full border border-white/20 bg-black/70 px-2.5 font-mono text-[0.56rem] uppercase tracking-[0.16em] text-white/80 backdrop-blur-md transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
+            class="inline-flex h-7 items-center gap-1.5 rounded-md border border-white/20 bg-black/70 px-2.5 font-mono text-[0.56rem] uppercase tracking-[0.16em] text-white/80 backdrop-blur-md transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
             :title="
               t('clips.open_details', {
                 title: featuredClip.title ?? t('clips.default_clip'),

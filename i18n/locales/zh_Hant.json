@@ -5148,9 +5148,6 @@
       }
     }
   },
-  "custom_match": {
-    "description": "使用自訂規則、地圖與陣容建立您自己的比賽"
-  },
   "layouts": {
     "account_settings": {
       "title": "帳戶設定",

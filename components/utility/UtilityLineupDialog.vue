@@ -569,7 +569,7 @@ const stats = computed(() => {
           <!-- The telemetry, folded: it answers "why did this land there" on
                the day something is wrong with the lineup, and nothing at all
                on the ordinary day you came to learn it. -->
-          <div class="rounded-md border border-border">
+          <div class="overflow-hidden rounded-md border border-border">
             <button
               type="button"
               class="flex w-full items-center gap-2 p-2.5 text-left transition-colors hover:bg-muted/30"

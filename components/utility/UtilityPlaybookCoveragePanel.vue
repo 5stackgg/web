@@ -489,7 +489,7 @@ function coordinate(point: UtilitySightlinePoint) {
             </span>
             <button
               type="button"
-              class="ml-auto shrink-0 rounded p-1 text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+              class="ml-auto shrink-0 rounded-sm p-1 text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
               :title="$t('pages.utility.sightline.remove')"
               @click.stop="removePair(row.pair.id)"
             >

@@ -119,7 +119,7 @@ function optionRowClass(active: boolean) {
               :key="status.value"
               type="button"
               @click="toggleStatus(status.value)"
-              class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
+              class="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
             >
               <span>{{ status.label }}</span>
               <Check
@@ -132,7 +132,7 @@ function optionRowClass(active: boolean) {
             v-if="form.values.statuses?.length"
             type="button"
             @click="clearAllStatuses"
-            class="mt-2 flex w-full items-center justify-center gap-1 rounded border border-border px-2 py-1 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground"
+            class="mt-2 flex w-full items-center justify-center gap-1 rounded-md border border-border px-2 py-1 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground"
           >
             <X class="h-3 w-3" />
             {{ $t("pages.manage_tournaments.clear_all") }}
@@ -686,39 +686,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-/* Soft amber chip — no border, fill-only. */
-.tac-chip {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.2rem 0.45rem 0.2rem 0.55rem;
-  background: hsl(var(--tac-amber) / 0.08);
-  border-radius: 2px;
-  font-feature-settings:
-    "tnum" on,
-    "cv11" on;
-  transition: background 150ms ease;
-}
-.tac-chip:hover {
-  background: hsl(var(--tac-amber) / 0.14);
-}
-.tac-chip-x {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: hsl(var(--tac-amber) / 0.55);
-  margin-left: 0.1rem;
-  border-radius: 2px;
-  padding: 1px;
-  transition:
-    color 150ms ease,
-    background 150ms ease;
-}
-.tac-chip-x:hover {
-  color: hsl(var(--tac-amber));
-  background: hsl(var(--tac-amber) / 0.12);
-}
-</style>

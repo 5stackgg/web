@@ -5760,7 +5760,7 @@ watch(overlayMode, (on) => {
           <TooltipTrigger as-child>
             <button
               type="button"
-              class="inline-flex items-center justify-center w-10 h-10 border transition-colors backdrop-blur-sm"
+              class="inline-flex items-center justify-center w-10 h-10 rounded-md border transition-colors backdrop-blur-sm"
               :class="
                 viewMode === '3d'
                   ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
@@ -5777,7 +5777,7 @@ watch(overlayMode, (on) => {
           <TooltipTrigger as-child>
             <button
               type="button"
-              class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
+              class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
               @click="showScoreboard = !showScoreboard"
             >
               <PanelRightClose v-if="showScoreboard" class="w-5 h-5" />
@@ -5796,7 +5796,7 @@ watch(overlayMode, (on) => {
           <TooltipTrigger as-child>
             <button
               type="button"
-              class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
+              class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
               @click="showAvatars = !showAvatars"
             >
               <Users v-if="showAvatars" class="w-5 h-5" />
@@ -5815,7 +5815,7 @@ watch(overlayMode, (on) => {
           <TooltipTrigger as-child>
             <button
               type="button"
-              class="inline-flex items-center justify-center w-10 h-10 border bg-[hsl(var(--card)/0.85)] transition-colors backdrop-blur-sm"
+              class="inline-flex items-center justify-center w-10 h-10 rounded-md border bg-[hsl(var(--card)/0.85)] transition-colors backdrop-blur-sm"
               :class="
                 pathingMode === 'off'
                   ? 'border-[hsl(var(--tac-amber)/0.35)] text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.7)] hover:text-[hsl(var(--tac-amber))]'
@@ -5838,7 +5838,7 @@ watch(overlayMode, (on) => {
           <PopoverTrigger as-child>
             <button
               type="button"
-              class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
+              class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
               :title="$t('match.replay.overlays')"
             >
               <Settings2 class="w-5 h-5" />
@@ -5896,7 +5896,7 @@ watch(overlayMode, (on) => {
           <TooltipTrigger as-child>
             <button
               type="button"
-              class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
+              class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
               @click="openReplayPopout"
             >
               <ExternalLink class="w-5 h-5" />
@@ -6202,7 +6202,7 @@ watch(overlayMode, (on) => {
         <template v-if="!overlayMode">
           <button
             type="button"
-            class="inline-flex items-center justify-center w-7 h-7 shrink-0 border border-border/60 rounded-sm text-muted-foreground hover:text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber)/0.7)] transition-colors disabled:opacity-30 disabled:pointer-events-none"
+            class="inline-flex items-center justify-center w-7 h-7 shrink-0 border border-border/60 rounded-md text-muted-foreground hover:text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber)/0.7)] transition-colors disabled:opacity-30 disabled:pointer-events-none"
             :title="$t('match.replay.prev_round')"
             :disabled="!canPrevRound"
             @click="jumpToRound(-1)"
@@ -6218,7 +6218,7 @@ watch(overlayMode, (on) => {
           />
           <button
             type="button"
-            class="inline-flex items-center justify-center w-7 h-7 shrink-0 border border-border/60 rounded-sm text-muted-foreground hover:text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber)/0.7)] transition-colors disabled:opacity-30 disabled:pointer-events-none"
+            class="inline-flex items-center justify-center w-7 h-7 shrink-0 border border-border/60 rounded-md text-muted-foreground hover:text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber)/0.7)] transition-colors disabled:opacity-30 disabled:pointer-events-none"
             :title="$t('match.replay.next_round')"
             :disabled="!canNextRound"
             @click="jumpToRound(1)"
@@ -6250,7 +6250,7 @@ watch(overlayMode, (on) => {
               v-for="rn in fullBuyRounds"
               :key="rn"
               type="button"
-              class="inline-flex items-center justify-center min-w-6 h-6 px-1.5 border text-[0.65rem] tabular-nums transition-colors"
+              class="inline-flex items-center justify-center min-w-6 h-6 px-1.5 rounded-md border text-[0.65rem] tabular-nums transition-colors"
               :class="
                 overlaySelectedRounds.has(rn)
                   ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
@@ -6266,7 +6266,7 @@ watch(overlayMode, (on) => {
         <button
           v-if="overlayAvailable"
           type="button"
-          class="inline-flex items-center justify-center w-7 h-7 shrink-0 border rounded-sm transition-colors ml-auto"
+          class="inline-flex items-center justify-center w-7 h-7 shrink-0 border rounded-md transition-colors ml-auto"
           :class="
             overlayMode
               ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
@@ -6287,7 +6287,7 @@ watch(overlayMode, (on) => {
         <div class="flex items-center gap-1 shrink-0">
           <button
             type="button"
-            class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.28)] transition-colors"
+            class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.28)] transition-colors"
             :title="
               playing ? $t('match.replay.pause') : $t('match.replay.play')
             "
@@ -6391,7 +6391,7 @@ watch(overlayMode, (on) => {
             v-for="s of SPEEDS"
             :key="s"
             type="button"
-            class="px-1.5 py-0.5 font-mono text-[0.65rem] font-bold tabular-nums transition-colors border rounded-sm"
+            class="px-1.5 py-0.5 font-mono text-[0.65rem] font-bold tabular-nums transition-colors border rounded-md"
             :class="
               speed === s
                 ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))]'

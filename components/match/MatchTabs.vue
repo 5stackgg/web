@@ -325,7 +325,7 @@ provide("commander", commander);
             v-for="l in scoreboardLenses"
             :key="l.value"
             type="button"
-            class="shrink-0 rounded px-2.5 py-1 font-mono text-[0.65rem] font-semibold uppercase tracking-[0.12em] transition-colors"
+            class="shrink-0 rounded-sm px-2.5 py-1 font-mono text-[0.65rem] font-semibold uppercase tracking-[0.12em] transition-colors"
             :class="
               scoreboardLens === l.value
                 ? 'bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'

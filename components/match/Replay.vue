@@ -23,7 +23,7 @@ import mapLabel from "~/utilities/mapLabel";
           type="button"
           role="tab"
           :aria-selected="effectiveMap?.id === m.id"
-          class="group relative overflow-hidden border-2 transition-all text-left"
+          class="group relative overflow-hidden rounded-lg border-2 transition-all text-left"
           :class="
             effectiveMap?.id === m.id
               ? 'border-[hsl(var(--tac-amber))] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.6),_0_8px_24px_-8px_hsl(var(--tac-amber)/0.45)]'
@@ -98,7 +98,7 @@ import mapLabel from "~/utilities/mapLabel";
     >
       <button
         type="button"
-        class="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-[0.72rem] font-bold tracking-[0.22em] uppercase border border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.2)] transition-colors"
+        class="inline-flex items-center gap-2 rounded-md px-5 py-2.5 font-mono text-[0.72rem] font-bold tracking-[0.22em] uppercase border border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.2)] transition-colors"
         @click="openPopout(effectiveMap.id)"
       >
         <ExternalLink class="h-4 w-4" />
@@ -106,7 +106,7 @@ import mapLabel from "~/utilities/mapLabel";
       </button>
       <button
         type="button"
-        class="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-[0.72rem] font-bold tracking-[0.22em] uppercase border border-[#38e1ff] bg-[#38e1ff]/10 text-[#38e1ff] hover:bg-[#38e1ff]/20 transition-colors"
+        class="inline-flex items-center gap-2 rounded-md px-5 py-2.5 font-mono text-[0.72rem] font-bold tracking-[0.22em] uppercase border border-[#38e1ff] bg-[#38e1ff]/10 text-[#38e1ff] hover:bg-[#38e1ff]/20 transition-colors"
         @click="openPopout3d(effectiveMap.id)"
       >
         <Box class="h-4 w-4" />

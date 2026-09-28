@@ -37,7 +37,7 @@ const titleText = computed(() => {
 // Same boxed pill chrome as ELO / RANK / FACEIT / PREMIER.
 const wrapperClasses = [
   "inline-flex items-center gap-1.5 select-none leading-none font-sans",
-  "h-[26px] px-[0.6rem] rounded border border-border bg-card/55",
+  "h-[26px] px-[0.6rem] rounded-md border border-border bg-card/55",
   "[backdrop-filter:blur(6px)]",
 ].join(" ");
 

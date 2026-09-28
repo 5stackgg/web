@@ -2,7 +2,7 @@
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
-import { Check, ExternalLink, Minus, Play, X } from "lucide-vue-next";
+import { Check, Minus, Play, X } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
@@ -10,7 +10,7 @@ import { checkBackblazeWorker } from "~/utilities/backblazeWorkerHealth";
 
 type StageId = "write" | "read" | "edge";
 type StageState = "idle" | "running" | "ok" | "fail" | "manual" | "skipped";
-type Stage = { state: StageState; detail?: string; link?: string };
+type Stage = { state: StageState; detail?: string };
 
 const { client } = useApolloClient();
 const { t, locale } = useI18n();
@@ -56,48 +56,19 @@ async function write(): Promise<boolean> {
   }
 }
 
-// Read back in this browser, the way players' downloads are, rather than by the
-// panel. A bucket without CORS for this site can't be read by fetch at all, so
-// that case hands over the link to check by hand instead of failing.
 async function read() {
   stages.value.read = { state: "running" };
   const start = performance.now();
-  let link: string;
   try {
     const { data } = await client.mutate({
-      mutation: generateMutation({
-        getTestUploadLink: { link: true, error: true },
-      }),
+      mutation: generateMutation({ testDownload: { error: true } }),
     });
-    if (data?.getTestUploadLink?.error || !data?.getTestUploadLink?.link) {
-      stages.value.read = {
-        state: "fail",
-        detail: data?.getTestUploadLink?.error || "",
-      };
-      return;
-    }
-    link = data.getTestUploadLink.link;
+    const error = data?.testDownload?.error;
+    stages.value.read = error
+      ? { state: "fail", detail: error }
+      : { state: "ok", detail: took(start) };
   } catch (error) {
     stages.value.read = { state: "fail", detail: (error as Error).message };
-    return;
-  }
-
-  try {
-    const response = await fetch(link, { cache: "no-store" });
-    if (!response.ok) {
-      stages.value.read = { state: "fail", detail: `HTTP ${response.status}` };
-      return;
-    }
-    const body = await response.text();
-    stages.value.read = body.startsWith("world")
-      ? { state: "ok", detail: took(start) }
-      : { state: "fail", detail: t(key("storage_check_unexpected")) };
-  } catch {
-    stages.value.read = {
-      state: "manual",
-      detail: t(key("storage_check_read_blocked")),
-      link,
-    };
   }
 }
 
@@ -208,14 +179,19 @@ const node: Record<StageState, string> = {
   skipped: "border-border bg-background text-muted-foreground/50",
 };
 
-const track: Record<StageState, string> = {
-  idle: "bg-border",
-  running: "bg-border",
-  ok: "bg-success/50",
-  fail: "bg-destructive/50",
-  manual: "bg-warning/50",
-  skipped: "bg-border",
+// Painted over a plain hairline and scaled in from the step that just
+// finished, so the line fills toward the next step instead of changing colour.
+const fill: Record<StageState, string> = {
+  idle: "",
+  running: "",
+  ok: "bg-success/60",
+  fail: "bg-destructive/60",
+  manual: "bg-warning/60",
+  skipped: "",
 };
+
+const finished = (state: StageState) =>
+  state === "ok" || state === "fail" || state === "manual";
 
 const text: Record<StageState, string> = {
   idle: "text-muted-foreground/60",
@@ -234,15 +210,24 @@ const lastRunTime = computed(() =>
 <template>
   <div class="grid gap-5 rounded-md border border-border/70 bg-card/40 p-4">
     <div class="flex flex-wrap items-center justify-between gap-3">
-      <span
-        class="font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground/70"
+      <Transition
+        mode="out-in"
+        enter-active-class="transition-opacity duration-300 motion-reduce:transition-none"
+        enter-from-class="opacity-0"
+        leave-active-class="transition-opacity duration-150 motion-reduce:transition-none"
+        leave-to-class="opacity-0"
       >
-        {{
-          lastRunTime
-            ? $t(key("storage_check_last_run"), { time: lastRunTime })
-            : $t(key("storage_check_not_run"))
-        }}
-      </span>
+        <span
+          :key="lastRunTime"
+          class="font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground/70"
+        >
+          {{
+            lastRunTime
+              ? $t(key("storage_check_last_run"), { time: lastRunTime })
+              : $t(key("storage_check_not_run"))
+          }}
+        </span>
+      </Transition>
       <Button
         type="button"
         size="sm"
@@ -271,34 +256,72 @@ const lastRunTime = computed(() =>
       >
         <template v-if="!stage.last">
           <span
-            class="absolute bottom-1 left-[10px] top-6 w-px sm:hidden"
-            :class="track[stage.state]"
-          />
-          <span
-            class="absolute -right-5 left-6 top-[10px] hidden h-px sm:block"
-            :class="track[stage.state]"
-          />
-          <span
-            v-if="stage.state === 'running'"
-            class="absolute -right-5 left-6 top-[10px] hidden h-px overflow-hidden text-[hsl(var(--tac-amber))] sm:block"
+            class="absolute bottom-1 left-[10px] top-6 w-px bg-border sm:hidden"
           >
-            <span class="tac-scan-sweep block h-full" />
+            <span
+              class="absolute inset-0 origin-top transition-transform duration-500 ease-out motion-reduce:transition-none"
+              :class="[
+                fill[stage.state],
+                finished(stage.state) ? 'scale-y-100' : 'scale-y-0',
+              ]"
+            />
+          </span>
+          <span
+            class="absolute -right-5 left-6 top-[10px] hidden h-px bg-border sm:block"
+          >
+            <span
+              class="absolute inset-0 origin-left transition-transform duration-500 ease-out motion-reduce:transition-none"
+              :class="[
+                fill[stage.state],
+                finished(stage.state) ? 'scale-x-100' : 'scale-x-0',
+              ]"
+            />
+            <span
+              v-if="stage.state === 'running'"
+              class="absolute inset-0 overflow-hidden text-[hsl(var(--tac-amber))]"
+            >
+              <span class="tac-scan-sweep block h-full" />
+            </span>
           </span>
         </template>
         <span
-          class="absolute left-0 top-0 flex size-5 items-center justify-center rounded-full border font-mono text-[0.62rem]"
+          class="absolute left-0 top-0 flex size-5 items-center justify-center rounded-full border font-mono text-[0.62rem] transition-[color,background-color,border-color] duration-300 motion-reduce:transition-none"
           :class="node[stage.state]"
           data-test="storage-check-step"
         >
-          <Check v-if="stage.state === 'ok'" class="size-3" stroke-width="3" />
-          <X
-            v-else-if="stage.state === 'fail'"
-            class="size-3"
-            stroke-width="3"
-          />
-          <span v-else-if="stage.state === 'manual'" class="font-bold">!</span>
-          <Minus v-else-if="stage.state === 'skipped'" class="size-3" />
-          <template v-else>{{ stage.number }}</template>
+          <Transition
+            mode="out-in"
+            enter-active-class="transition duration-200 ease-out motion-reduce:transition-none"
+            enter-from-class="scale-50 opacity-0"
+            leave-active-class="transition duration-100 ease-in motion-reduce:transition-none"
+            leave-to-class="scale-50 opacity-0"
+          >
+            <Check
+              v-if="stage.state === 'ok'"
+              key="ok"
+              class="size-3"
+              stroke-width="3"
+            />
+            <X
+              v-else-if="stage.state === 'fail'"
+              key="fail"
+              class="size-3"
+              stroke-width="3"
+            />
+            <span
+              v-else-if="stage.state === 'manual'"
+              key="manual"
+              class="font-bold"
+            >
+              !
+            </span>
+            <Minus
+              v-else-if="stage.state === 'skipped'"
+              key="skipped"
+              class="size-3"
+            />
+            <span v-else key="number">{{ stage.number }}</span>
+          </Transition>
         </span>
 
         <span
@@ -307,46 +330,50 @@ const lastRunTime = computed(() =>
           {{ stage.name }}
         </span>
         <span class="text-xs text-muted-foreground/70">{{ stage.path }}</span>
-        <span
-          class="mt-1.5 truncate text-sm"
-          :class="text[stage.state]"
-          data-test="storage-check-result"
+        <Transition
+          mode="out-in"
+          enter-active-class="transition duration-200 ease-out motion-reduce:transition-none"
+          enter-from-class="translate-y-1 opacity-0"
+          leave-active-class="transition duration-100 ease-in motion-reduce:transition-none"
+          leave-to-class="opacity-0"
         >
-          {{ result(stage) }}
-        </span>
+          <span
+            :key="`${stage.state}:${result(stage)}`"
+            class="mt-1.5 truncate text-sm"
+            :class="text[stage.state]"
+            data-test="storage-check-result"
+          >
+            {{ result(stage) }}
+          </span>
+        </Transition>
       </li>
     </ol>
 
-    <ul
-      v-if="notes.length"
-      class="grid gap-1.5 border-t border-dashed border-border/70 pt-3 text-sm"
+    <Transition
+      enter-active-class="transition duration-300 ease-out motion-reduce:transition-none"
+      enter-from-class="-translate-y-1 opacity-0"
+      leave-active-class="transition duration-150 ease-in motion-reduce:transition-none"
+      leave-to-class="opacity-0"
     >
-      <li
-        v-for="note in notes"
-        :key="note.id"
-        class="flex items-start gap-2"
-        :data-test="`storage-check-note-${note.id}`"
+      <ul
+        v-if="notes.length"
+        class="grid gap-1.5 border-t border-dashed border-border/70 pt-3 text-sm"
       >
-        <span
-          class="mt-[0.2rem] shrink-0 font-mono text-[0.64rem] uppercase tracking-[0.2em]"
-          :class="text[note.state]"
+        <li
+          v-for="note in notes"
+          :key="note.id"
+          class="flex items-start gap-2"
+          :data-test="`storage-check-note-${note.id}`"
         >
-          {{ note.name }}
-        </span>
-        <span class="text-muted-foreground">
-          {{ note.detail }}
-          <a
-            v-if="note.link"
-            :href="note.link"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="ml-1 inline-flex items-center gap-1 whitespace-nowrap text-primary transition-colors hover:text-primary/80"
+          <span
+            class="mt-[0.2rem] shrink-0 font-mono text-[0.64rem] uppercase tracking-[0.2em]"
+            :class="text[note.state]"
           >
-            {{ $t(key("storage_check_open_file")) }}
-            <ExternalLink class="size-3.5" />
-          </a>
-        </span>
-      </li>
-    </ul>
+            {{ note.name }}
+          </span>
+          <span class="text-muted-foreground">{{ note.detail }}</span>
+        </li>
+      </ul>
+    </Transition>
   </div>
 </template>

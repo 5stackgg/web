@@ -5,8 +5,6 @@ import { print } from "graphql";
 import StorageCheck from "~/components/settings/StorageCheck.vue";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 
-const TEST_FILE = "https://bucket.acme.gg/hello.txt?signature=abc";
-
 const { mutations } = vi.hoisted(() => ({
   mutations: {} as Record<string, () => Promise<any>>,
 }));
@@ -24,7 +22,6 @@ vi.mock("@vue/apollo-composable", async (importOriginal) => ({
   }),
 }));
 
-const readFile = vi.fn();
 const health = vi.fn();
 const realFetch = globalThis.fetch;
 
@@ -46,14 +43,9 @@ async function runCheck(workerUrl: string | null) {
 describe("StorageCheck", () => {
   beforeEach(() => {
     mutations.testUpload = async () => ({ data: { testUpload: { error: null } } });
-    mutations.getTestUploadLink = async () => ({
-      data: { getTestUploadLink: { link: TEST_FILE, error: null } },
-    });
-    readFile
-      .mockReset()
-      .mockImplementation(
-        async () => new Response("world : 2026-09-28T12:00:00.000Z"),
-      );
+    mutations.testDownload = vi.fn(async () => ({
+      data: { testDownload: { error: null } },
+    }));
     health.mockReset().mockImplementation(async () =>
       Response.json({
         ok: true,
@@ -64,9 +56,6 @@ describe("StorageCheck", () => {
       }),
     );
     globalThis.fetch = vi.fn(async (input: any) => {
-      if (String(input) === TEST_FILE) {
-        return readFile();
-      }
       if (String(input) === "https://cf.acme.gg/demo/_health") {
         return health();
       }
@@ -108,17 +97,19 @@ describe("StorageCheck", () => {
     expect(stage(wrapper, "write").text()).toContain("Failed");
     expect(note(wrapper, "write").text()).toContain("Access Denied");
     expect(stage(wrapper, "read").attributes("data-state")).toBe("skipped");
-    expect(readFile).not.toHaveBeenCalled();
+    expect(mutations.testDownload).not.toHaveBeenCalled();
   });
 
-  it("hands over the file when the browser can't read the bucket", async () => {
-    readFile.mockRejectedValue(new TypeError("Failed to fetch"));
+  it("fails the read when the panel can't read the file back", async () => {
+    mutations.testDownload = vi.fn(async () => ({
+      data: { testDownload: { error: "404 Not Found" } },
+    }));
 
     const wrapper = await runCheck(null);
 
-    expect(stage(wrapper, "read").attributes("data-state")).toBe("manual");
-    expect(stage(wrapper, "read").text()).toContain("Check by hand");
-    expect(note(wrapper, "read").find("a").attributes("href")).toBe(TEST_FILE);
+    expect(stage(wrapper, "read").attributes("data-state")).toBe("fail");
+    expect(stage(wrapper, "read").text()).toContain("Failed");
+    expect(note(wrapper, "read").text()).toContain("404 Not Found");
   });
 
   it("fails the edge stage when Backblaze rejects the worker's keys", async () => {

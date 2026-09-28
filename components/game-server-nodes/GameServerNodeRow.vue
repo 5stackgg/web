@@ -1257,14 +1257,14 @@ const isSectionExpanded = (section: string) => {
         <!-- Overprovisioning Warning (if applicable) -->
         <div
           v-if="overPrevisionedServers"
-          class="flex items-start gap-2 p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 rounded-lg"
+          class="flex items-start gap-2 p-3 bg-red-950/20 border border-red-900 rounded-lg"
         >
           <AlertCircle class="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" />
           <div class="text-xs space-y-1">
-            <div class="font-semibold text-red-600 dark:text-red-400">
+            <div class="font-semibold text-red-400">
               {{ $t("game_server.overprovisioned_warning") }}
             </div>
-            <div class="text-red-700 dark:text-red-300">
+            <div class="text-red-300">
               {{
                 $t("game_server.overprovisioned_warning_description", {
                   total_server_count: gameServerNode.total_server_count,

@@ -14,104 +14,6 @@
 @layer base {
   :root {
     color-scheme: dark;
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
-
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-
-    --warning: 36 100% 50%;
-    --warning-foreground: 0 0% 100%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-
-    --success: 142 76% 36%;
-    --success-foreground: 0 0% 98%;
-
-    --info: 199 89% 48%;
-    --info-foreground: 0 0% 100%;
-
-    --ring: 240 10% 3.9%;
-
-    --radius: 0.5rem;
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-
-    --topnav-background: 0 0% 98%;
-    --topnav-foreground: 240 5.3% 26.1%;
-    --topnav-primary: 240 5.9% 10%;
-    --topnav-primary-foreground: 0 0% 98%;
-    --topnav-accent: 142 77% 73%;
-    --topnav-accent-foreground: 0 0% 98%;
-    --topnav-border: 220 13% 91%;
-    --topnav-ring: 217.2 91.2% 59.8%;
-
-    --tac-amber: 33 94% 58%;
-    --tac-amber-foreground: 0 0% 10%;
-
-    /* CTA gradient endpoints derived from --tac-amber so the whole gradient
-       follows branding (lighter tint -> base -> darker shade). */
-    --tac-amber-cta-from: color-mix(in hsl, hsl(var(--tac-amber)), white 15%);
-    --tac-amber-cta-to: color-mix(in hsl, hsl(var(--tac-amber)), black 12%);
-
-    /* Ordered amber ramp for tiered telemetry meters -- recency bands, node
-       states. One hue, lightness stepping down, so a reader gets the order
-       without needing to tell two colours apart. Stepped separately per theme
-       instead of flipped: on white the lightest step has to stay dark enough to
-       be visible, and on near-black the darkest step has to stay light enough,
-       which no single set of four satisfies. */
-    --tac-step-1: 33 95% 58%;
-    --tac-step-2: 33 92% 48%;
-    --tac-step-3: 33 90% 42%;
-    --tac-step-4: 33 85% 37%;
-
-    /* Subset rails -- a slice that cuts across the bands above it rather than
-       being one of them. Chosen for separation from --tac-step-1 under
-       protanopia, where a light amber and a green of similar lightness are the
-       classic collision; not a status colour, so deliberately not --success. */
-    --tac-subset: 120 45% 30%;
-
-    /* How wide settings content is allowed to get. One knob for every settings
-       surface -- see .settings-measure and components/settings/SettingsPage.vue.
-       56rem keeps a switch within reach of the label it belongs to and still
-       leaves the widest tile row (steam-presence, 5 up) about 170px a tile. */
-    --settings-measure: 56rem;
-  }
-
-  .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
 
@@ -136,9 +38,12 @@
     --accent: 240 3.7% 15.9%;
     --accent-foreground: 0 0% 98%;
 
-    /* Dark-mode destructive used to be 0 62.8% 30.6% which was nearly
-       invisible as text. Bumped to a brighter rose so red text on stat
-       tables stays legible against the dark card background. */
+    --warning: 36 100% 30%;
+    --warning-foreground: 0 0% 100%;
+
+    /* Destructive used to be 0 62.8% 30.6%, which was nearly invisible as
+       text. A brighter rose keeps red text on stat tables legible against
+       the dark card background. */
     --destructive: 0 82% 62%;
     --destructive-foreground: 0 0% 98%;
 
@@ -148,10 +53,9 @@
     --info: 199 90% 56%;
     --info-foreground: 0 0% 100%;
 
-    --warning: 36 100% 30%;
-    --warning-foreground: 0 0% 100%;
-
     --ring: 240 4.9% 83.9%;
+
+    --radius: 0.5rem;
 
     --sidebar-background: 240 5.9% 10%;
 
@@ -181,14 +85,33 @@
     --tac-amber: 33 94% 58%;
     --tac-amber-foreground: 0 0% 10%;
 
+    /* CTA gradient endpoints derived from --tac-amber so the whole gradient
+       follows branding (lighter tint -> base -> darker shade). */
     --tac-amber-cta-from: color-mix(in hsl, hsl(var(--tac-amber)), white 15%);
     --tac-amber-cta-to: color-mix(in hsl, hsl(var(--tac-amber)), black 12%);
 
+    /* Ordered amber ramp for tiered telemetry meters -- recency bands, node
+       states. One hue, lightness stepping down, so a reader gets the order
+       without needing to tell two colours apart. Stepped separately per theme
+       instead of flipped: on white the lightest step has to stay dark enough to
+       be visible, and on near-black the darkest step has to stay light enough,
+       which no single set of four satisfies. */
     --tac-step-1: 33 95% 70%;
     --tac-step-2: 33 92% 58%;
     --tac-step-3: 33 90% 48%;
     --tac-step-4: 33 85% 43%;
+
+    /* Subset rails -- a slice that cuts across the bands above it rather than
+       being one of them. Chosen for separation from --tac-step-1 under
+       protanopia, where a light amber and a green of similar lightness are the
+       classic collision; not a status colour, so deliberately not --success. */
     --tac-subset: 120 45% 46%;
+
+    /* How wide settings content is allowed to get. One knob for every settings
+       surface -- see .settings-measure and components/settings/SettingsPage.vue.
+       56rem keeps a switch within reach of the label it belongs to and still
+       leaves the widest tile row (steam-presence, 5 up) about 170px a tile. */
+    --settings-measure: 56rem;
   }
 }
 
@@ -261,26 +184,6 @@ div[role="menuitem"] {
 
 @layer base {
   :root {
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-
-    --topnav-background: 0 0% 98%;
-    --topnav-foreground: 240 5.3% 26.1%;
-    --topnav-primary: 240 5.9% 10%;
-    --topnav-primary-foreground: 0 0% 98%;
-    --topnav-accent: 142 77% 73%;
-    --topnav-accent-foreground: 0 0% 98%;
-    --topnav-border: 220 13% 91%;
-    --topnav-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;

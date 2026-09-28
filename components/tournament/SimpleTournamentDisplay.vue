@@ -93,12 +93,12 @@ import MapDisplay from "~/components/MapDisplay.vue";
           <div class="flex items-center space-x-2">
             <TimeAgo
               :date="tournament.start"
-              class="text-sm text-gray-600 dark:text-gray-400"
+              class="text-sm text-gray-400"
             ></TimeAgo>
           </div>
           <div
             v-if="tournament.teams_aggregate?.aggregate?.count !== undefined"
-            class="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400"
+            class="flex items-center gap-1.5 text-xs text-gray-400"
           >
             <UsersIcon class="h-3.5 w-3.5" />
             <span>

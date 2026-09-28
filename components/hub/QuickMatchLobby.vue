@@ -6,7 +6,7 @@ import MatchLobbyLineup from "~/layouts/components/MatchLobbyLineup.vue";
   <div class="flex gap-2 items-center justify-center pr-5">
     <MatchLobbyLineup :match="match" :lineup="myLineup" :flip="true" />
 
-    <span class="text-xs font-bold text-red-400/90 dark:text-red-400/90 ml-5">{{
+    <span class="text-xs font-bold text-red-400/90 ml-5">{{
       $t("layouts.match_lobby.versus")
     }}</span>
 

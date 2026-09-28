@@ -80,7 +80,7 @@ import { e_match_status_enum } from "~/generated/zeus";
         <div class="flex items-center space-x-2">
           <TimeAgo
             :date="match.scheduled_at || match.created_at"
-            class="text-sm text-gray-600 dark:text-gray-400"
+            class="text-sm text-gray-400"
           ></TimeAgo>
         </div>
       </div>

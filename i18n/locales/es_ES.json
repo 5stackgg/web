@@ -7966,11 +7966,13 @@
       "reason_label": "Motivo",
       "reason_placeholder": "Escribe el motivo de la sanción...",
       "reason_description": "Indica un motivo claro para esta sanción",
+      "reason_required": "El motivo es obligatorio",
       "types": {
         "ban_description": "El jugador no puede participar en ninguna actividad",
         "mute_description": "El jugador no puede usar el chat de voz en la partida",
         "gag_description": "El jugador no puede usar el chat de texto en la partida",
-        "silence_description": "Jugador silenciado en voz y en texto"
+        "silence_description": "Jugador silenciado en voz y en texto",
+        "warning_description": "Nota informativa en el historial del jugador, nunca se aplica"
       },
       "durations": {
         "15_minutes": "15 minutos",
@@ -7985,20 +7987,24 @@
         "ban": "Vetando al jugador",
         "mute": "Silenciando al jugador",
         "gag": "Amordazando al jugador",
-        "silence": "Enmudeciendo al jugador"
+        "silence": "Enmudeciendo al jugador",
+        "warning": "Advirtiendo al jugador"
       },
       "submit": {
         "ban": "Vetar jugador",
         "mute": "Silenciar jugador",
         "gag": "Amordazar jugador",
-        "silence": "Enmudecer jugador"
+        "silence": "Enmudecer jugador",
+        "warning": "Emitir advertencia"
       },
       "applied": {
         "ban": "{name} vetado",
         "mute": "{name} silenciado",
         "gag": "{name} amordazado",
-        "silence": "{name} enmudecido"
+        "silence": "{name} enmudecido",
+        "warning": "Advertencia emitida a {name}"
       },
+      "warning_note": "La advertencia se guarda en el historial del jugador y se le notifica. Nunca se aplica y nunca caduca.",
       "typed_player": "Jugador {type}"
     },
     "search": {
@@ -8025,6 +8031,13 @@
       "muted": "Silenciado en voz",
       "gagged": "Silenciado en texto",
       "silenced": "Silenciado",
+      "type_labels": {
+        "ban": "Veto",
+        "mute": "Silencio de voz",
+        "gag": "Mordaza",
+        "silence": "Enmudecimiento",
+        "warning": "Advertencia"
+      },
       "duration_label": "Duración",
       "select_duration": "Selecciona la duración",
       "sanctions": "Sanciones",
@@ -8039,6 +8052,7 @@
       "permanent": "Permanente",
       "active": "Activa",
       "expired": "Caducada",
+      "on_record": "En el historial",
       "cannot_edit_expired": "Las sanciones caducadas no se pueden editar: añade una nueva",
       "edit": "Editar",
       "remove": "Quitar",

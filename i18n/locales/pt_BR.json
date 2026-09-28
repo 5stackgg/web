@@ -7966,11 +7966,13 @@
       "reason_label": "Motivo",
       "reason_placeholder": "Insira o motivo da sanção...",
       "reason_description": "Forneça um motivo claro para esta sanção",
+      "reason_required": "O motivo é obrigatório",
       "types": {
         "ban_description": "Banido e não pode participar de nenhuma atividade.",
         "mute_description": "Não pode usar o chat de voz dentro do jogo.",
         "gag_description": "Não pode usar o chat de texto dentro do jogo.",
-        "silence_description": "Silenciado: sem acesso ao chat de voz e ao chat de texto."
+        "silence_description": "Silenciado: sem acesso ao chat de voz e ao chat de texto.",
+        "warning_description": "Nota informativa no histórico do jogador. Nunca é aplicada."
       },
       "durations": {
         "15_minutes": "15 minutos",
@@ -7985,20 +7987,24 @@
         "ban": "Banindo jogador",
         "mute": "Mutando jogador",
         "gag": "Aplicando gag ao jogador",
-        "silence": "Silenciando jogador"
+        "silence": "Silenciando jogador",
+        "warning": "Advertindo jogador"
       },
       "submit": {
         "ban": "Banir jogador",
         "mute": "Mutar jogador",
         "gag": "Aplicar gag",
-        "silence": "Silenciar jogador"
+        "silence": "Silenciar jogador",
+        "warning": "Emitir advertência"
       },
       "applied": {
         "ban": "{name} foi banido",
         "mute": "{name} foi mutado",
         "gag": "{name} recebeu gag",
-        "silence": "{name} foi silenciado"
+        "silence": "{name} foi silenciado",
+        "warning": "{name} recebeu uma advertência"
       },
+      "warning_note": "A advertência fica salva no histórico do jogador e ele é notificado. Nunca é aplicada e nunca expira.",
       "typed_player": "Jogador {type}"
     },
     "search": {
@@ -8025,6 +8031,13 @@
       "muted": "Silenciado (voz)",
       "gagged": "Censurado (texto)",
       "silenced": "Silenciado",
+      "type_labels": {
+        "ban": "Banimento",
+        "mute": "Mute",
+        "gag": "Gag",
+        "silence": "Silenciamento",
+        "warning": "Advertência"
+      },
       "duration_label": "Duração",
       "select_duration": "Selecionar duração",
       "sanctions": "Sanções",
@@ -8039,6 +8052,7 @@
       "permanent": "Permanente",
       "active": "Ativo",
       "expired": "Expirado",
+      "on_record": "No histórico",
       "cannot_edit_expired": "Sanções expiradas não podem ser editadas — adicione uma nova",
       "edit": "Editar",
       "remove": "Remover",

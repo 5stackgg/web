@@ -7966,11 +7966,13 @@
       "reason_label": "原因",
       "reason_placeholder": "输入处罚原因...",
       "reason_description": "请为此处罚提供明确原因",
+      "reason_required": "必须填写原因",
       "types": {
         "ban_description": "玩家无法参与任何活动",
         "mute_description": "玩家无法在游戏中使用语音聊天",
         "gag_description": "玩家无法在游戏中使用文字聊天",
-        "silence_description": "玩家被静音和禁言"
+        "silence_description": "玩家被静音和禁言",
+        "warning_description": "记录在玩家档案中的提示信息，永不执行"
       },
       "durations": {
         "15_minutes": "15 分钟",
@@ -7985,20 +7987,24 @@
         "ban": "封禁玩家",
         "mute": "关闭玩家麦克风",
         "gag": "禁止玩家打字",
-        "silence": "完全禁言玩家"
+        "silence": "完全禁言玩家",
+        "warning": "警告玩家"
       },
       "submit": {
         "ban": "封禁玩家",
         "mute": "关闭玩家麦克风",
         "gag": "禁止玩家打字",
-        "silence": "完全禁言玩家"
+        "silence": "完全禁言玩家",
+        "warning": "发出警告"
       },
       "applied": {
         "ban": "已封禁 {name}",
         "mute": "已关闭 {name} 的麦克风",
         "gag": "已禁止 {name} 打字",
-        "silence": "已完全禁言 {name}"
+        "silence": "已完全禁言 {name}",
+        "warning": "已向 {name} 发出警告"
       },
+      "warning_note": "警告会保存到玩家档案并通知该玩家。它永远不会被执行，也永不过期。",
       "typed_player": "{type}玩家"
     },
     "search": {
@@ -8025,6 +8031,13 @@
       "muted": "静音",
       "gagged": "禁言",
       "silenced": "禁言+静音",
+      "type_labels": {
+        "ban": "封禁",
+        "mute": "静音",
+        "gag": "禁言",
+        "silence": "禁言+静音",
+        "warning": "警告"
+      },
       "duration_label": "时长",
       "select_duration": "选择时长",
       "sanctions": "处罚",
@@ -8039,6 +8052,7 @@
       "permanent": "永久",
       "active": "活跃",
       "expired": "已过期",
+      "on_record": "已记录",
       "cannot_edit_expired": "已过期的处罚无法编辑——请添加新的处罚",
       "edit": "编辑",
       "remove": "移除",

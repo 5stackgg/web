@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, onBeforeUnmount } from "vue";
-import { Trash2, Check } from "lucide-vue-next";
+import { Trash2, Check, TriangleAlert, Ban } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import TimeAgo from "~/components/TimeAgo.vue";
 import NotificationContext from "~/components/notification/NotificationContext.vue";
@@ -27,6 +27,7 @@ type NotificationItemProps = {
     title: string;
     message: string;
     type: string;
+    role?: string | null;
     steam_id?: string | null;
     entity_id?: string | null;
     is_read: boolean;
@@ -53,11 +54,45 @@ const emit = defineEmits<{
   ): void;
 }>();
 
-const wrapperClass = computed(() =>
+// Older co-player notices shared PlayerSanctioned with mutes and gags, so only
+// the admin alert and the banned player's own notice are certainly bans.
+const tone = computed<"ban" | "warning" | null>(() => {
+  const { type, role, steam_id, entity_id } = props.notification;
+  if (type === "PlayerWarning") {
+    return "warning";
+  }
+  if (
+    type === "PlayerSanctioned" &&
+    (role === "administrator" || (!!steam_id && steam_id === entity_id))
+  ) {
+    return "ban";
+  }
+  return null;
+});
+
+const wrapperClass = computed(() => [
   props.variant === "sheet"
     ? "mb-4 p-4 rounded-lg shadow-md relative"
     : "mb-3 p-3 rounded-md border border-border bg-card/40 relative",
+  tone.value ? "overflow-hidden" : "",
+]);
+
+const accentBarClass = computed(() =>
+  tone.value === "ban" ? "bg-destructive" : "bg-[hsl(var(--tac-amber))]",
 );
+
+const titleToneClass = computed(() => {
+  if (props.notification.is_read) {
+    return "text-muted-foreground";
+  }
+  if (tone.value === "ban") {
+    return "text-destructive";
+  }
+  if (tone.value === "warning") {
+    return "text-[hsl(var(--tac-amber))]";
+  }
+  return "";
+});
 
 const deleting = ref(false);
 const dismissed = ref(false);
@@ -112,6 +147,12 @@ onBeforeUnmount(() => {
 
 <template>
   <div :class="wrapperClass">
+    <span
+      v-if="tone"
+      aria-hidden="true"
+      class="absolute inset-y-0 left-0 w-1"
+      :class="accentBarClass"
+    />
     <Button
       v-if="notification.deletable !== false"
       size="icon"
@@ -126,9 +167,20 @@ onBeforeUnmount(() => {
     <h3
       :class="[
         'text-lg font-semibold mb-2',
-        notification.is_read ? 'text-muted-foreground' : '',
+        tone ? 'flex items-center gap-2' : '',
+        titleToneClass,
       ]"
     >
+      <TriangleAlert
+        v-if="tone === 'warning'"
+        aria-hidden="true"
+        class="h-4 w-4 shrink-0"
+      />
+      <Ban
+        v-else-if="tone === 'ban'"
+        aria-hidden="true"
+        class="h-4 w-4 shrink-0"
+      />
       {{ notification.title }}
     </h3>
 

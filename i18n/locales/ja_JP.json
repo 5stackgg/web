@@ -7966,11 +7966,13 @@
       "reason_label": "理由",
       "reason_placeholder": "処分理由を入力...",
       "reason_description": "この処分の明確な理由を入力してください",
+      "reason_required": "理由は必須です",
       "types": {
         "ban_description": "プレイヤーはあらゆるアクティビティに参加できません",
         "mute_description": "プレイヤーはゲーム内でボイスチャットを使用できません",
         "gag_description": "プレイヤーはゲーム内でテキストチャットを使用できません",
-        "silence_description": "プレイヤーはミュート・ガグの両方が適用されます"
+        "silence_description": "プレイヤーはミュート・ガグの両方が適用されます",
+        "warning_description": "プレイヤーの記録に残る情報のみの記録で、適用されることはありません"
       },
       "durations": {
         "15_minutes": "15分",
@@ -7985,20 +7987,24 @@
         "ban": "プレイヤーをBAN",
         "mute": "プレイヤーをミュート",
         "gag": "プレイヤーのチャットを禁止",
-        "silence": "プレイヤーを完全に発言禁止"
+        "silence": "プレイヤーを完全に発言禁止",
+        "warning": "プレイヤーに警告"
       },
       "submit": {
         "ban": "プレイヤーをBANする",
         "mute": "プレイヤーをミュートする",
         "gag": "プレイヤーのチャットを禁止する",
-        "silence": "プレイヤーを完全に発言禁止にする"
+        "silence": "プレイヤーを完全に発言禁止にする",
+        "warning": "警告を発行"
       },
       "applied": {
         "ban": "{name} をBANしました",
         "mute": "{name} をミュートしました",
         "gag": "{name} のチャットを禁止しました",
-        "silence": "{name} を完全に発言禁止にしました"
+        "silence": "{name} を完全に発言禁止にしました",
+        "warning": "{name} に警告を発行しました"
       },
+      "warning_note": "警告はプレイヤーの記録に保存され、本人に通知されます。適用されることはなく、期限切れにもなりません。",
       "typed_player": "{type}プレイヤー"
     },
     "search": {
@@ -8025,6 +8031,13 @@
       "muted": "ミュート",
       "gagged": "ガグ",
       "silenced": "サイレンス",
+      "type_labels": {
+        "ban": "BAN",
+        "mute": "ミュート",
+        "gag": "チャット禁止",
+        "silence": "完全発言禁止",
+        "warning": "警告"
+      },
       "duration_label": "期間",
       "select_duration": "期間を選択",
       "sanctions": "処分",
@@ -8039,6 +8052,7 @@
       "permanent": "無期限",
       "active": "有効",
       "expired": "失効済み",
+      "on_record": "記録済み",
       "cannot_edit_expired": "失効済みの処分は編集できません — 新しく追加してください",
       "edit": "編集",
       "remove": "削除",

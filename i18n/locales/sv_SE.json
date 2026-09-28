@@ -7966,11 +7966,13 @@
       "reason_label": "Anledning",
       "reason_placeholder": "Ange anledning för sanktionen...",
       "reason_description": "Ange en tydlig anledning för denna sanktion",
+      "reason_required": "En anledning krävs",
       "types": {
         "ban_description": "Spelaren kan inte delta i någon aktivitet",
         "mute_description": "Spelaren kan inte använda röstchatt i spelet",
         "gag_description": "Spelaren kan inte använda textchatt i spelet",
-        "silence_description": "Spelaren är tystad i röst och text"
+        "silence_description": "Spelaren är tystad i röst och text",
+        "warning_description": "Informativ anteckning i spelarens historik, verkställs aldrig"
       },
       "durations": {
         "15_minutes": "15 minuter",
@@ -7985,20 +7987,24 @@
         "ban": "Stänger av spelare",
         "mute": "Stänger av spelarens mikrofon",
         "gag": "Stänger spelarens chatt",
-        "silence": "Tystar spelaren helt"
+        "silence": "Tystar spelaren helt",
+        "warning": "Varnar spelare"
       },
       "submit": {
         "ban": "Stäng av spelaren",
         "mute": "Stäng av spelarens mikrofon",
         "gag": "Stäng spelarens chatt",
-        "silence": "Tysta spelaren helt"
+        "silence": "Tysta spelaren helt",
+        "warning": "Utfärda varning"
       },
       "applied": {
         "ban": "{name} avstängd",
         "mute": "{name}s mikrofon avstängd",
         "gag": "{name}s chatt stängd",
-        "silence": "{name} helt tystad"
+        "silence": "{name} helt tystad",
+        "warning": "Varning utfärdad till {name}"
       },
+      "warning_note": "En varning sparas i spelarens historik och spelaren meddelas. Den verkställs aldrig och upphör aldrig.",
       "typed_player": "{type}-spelare"
     },
     "search": {
@@ -8025,6 +8031,13 @@
       "muted": "Tystad",
       "gagged": "Textblockerad",
       "silenced": "Helt tystad",
+      "type_labels": {
+        "ban": "Avstängning",
+        "mute": "Mikrofon av",
+        "gag": "Chatt stängd",
+        "silence": "Helt tystad",
+        "warning": "Varning"
+      },
       "duration_label": "Varaktighet",
       "select_duration": "Välj varaktighet",
       "sanctions": "Sanktioner",
@@ -8039,6 +8052,7 @@
       "permanent": "Permanent",
       "active": "Aktiv",
       "expired": "Upphört",
+      "on_record": "Registrerad",
       "cannot_edit_expired": "Utgångna sanktioner kan inte redigeras — lägg till en ny",
       "edit": "Redigera",
       "remove": "Ta bort",

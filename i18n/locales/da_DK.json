@@ -7966,11 +7966,13 @@
       "reason_label": "Begrundelse",
       "reason_placeholder": "Angiv begrundelse for sanktionen...",
       "reason_description": "Angiv en klar begrundelse for denne sanktion",
+      "reason_required": "En begrundelse er påkrævet",
       "types": {
         "ban_description": "Spilleren kan ikke deltage i nogen aktivitet",
         "mute_description": "Spilleren kan ikke bruge voicechat i spillet",
         "gag_description": "Spilleren kan ikke bruge tekstchat i spillet",
-        "silence_description": "Spilleren er mutet og gagget"
+        "silence_description": "Spilleren er mutet og gagget",
+        "warning_description": "Informativ note på spillerens historik, håndhæves aldrig"
       },
       "durations": {
         "15_minutes": "15 minutter",
@@ -7985,20 +7987,24 @@
         "ban": "Udelukker spiller",
         "mute": "Slår spillerens mikrofon fra",
         "gag": "Lukker spillerens chat",
-        "silence": "Gør spilleren helt tavs"
+        "silence": "Gør spilleren helt tavs",
+        "warning": "Advarer spiller"
       },
       "submit": {
         "ban": "Udeluk spiller",
         "mute": "Slå spillerens mikrofon fra",
         "gag": "Luk spillerens chat",
-        "silence": "Gør spilleren helt tavs"
+        "silence": "Gør spilleren helt tavs",
+        "warning": "Giv advarsel"
       },
       "applied": {
         "ban": "{name} udelukket",
         "mute": "{name}s mikrofon slået fra",
         "gag": "{name}s chat lukket",
-        "silence": "{name} gjort helt tavs"
+        "silence": "{name} gjort helt tavs",
+        "warning": "Advarsel givet til {name}"
       },
+      "warning_note": "En advarsel gemmes på spillerens historik og giver spilleren besked. Den håndhæves aldrig og udløber aldrig.",
       "typed_player": "{type}-spiller"
     },
     "search": {
@@ -8025,6 +8031,13 @@
       "muted": "Mutet",
       "gagged": "Gagget",
       "silenced": "Silenced",
+      "type_labels": {
+        "ban": "Udelukkelse",
+        "mute": "Mikrofon fra",
+        "gag": "Chat lukket",
+        "silence": "Helt tavs",
+        "warning": "Advarsel"
+      },
       "duration_label": "Varighed",
       "select_duration": "Vælg varighed",
       "sanctions": "Sanktioner",
@@ -8039,6 +8052,7 @@
       "permanent": "Permanent",
       "active": "Aktiv",
       "expired": "Udløbet",
+      "on_record": "Registreret",
       "cannot_edit_expired": "Udløbne sanktioner kan ikke redigeres — tilføj en ny",
       "edit": "Rediger",
       "remove": "Fjern",

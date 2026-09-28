@@ -7966,11 +7966,13 @@
       "reason_label": "Grund",
       "reason_placeholder": "Grund für die Sanktion eingeben...",
       "reason_description": "Gib einen klaren Grund für diese Sanktion an",
+      "reason_required": "Ein Grund ist erforderlich",
       "types": {
         "ban_description": "Spieler kann an keiner Aktivität teilnehmen",
         "mute_description": "Spieler kann den Voice-Chat im Spiel nicht nutzen",
         "gag_description": "Spieler kann den Text-Chat im Spiel nicht nutzen",
-        "silence_description": "Spieler ist gemutet und gegagt"
+        "silence_description": "Spieler ist gemutet und gegagt",
+        "warning_description": "Informativer Vermerk in der Akte des Spielers, wird nie durchgesetzt"
       },
       "durations": {
         "15_minutes": "15 Minuten",
@@ -7985,20 +7987,24 @@
         "ban": "Spieler wird gebannt",
         "mute": "Spieler wird stummgeschaltet",
         "gag": "Spieler wird geknebelt",
-        "silence": "Spieler wird zum Schweigen gebracht"
+        "silence": "Spieler wird zum Schweigen gebracht",
+        "warning": "Spieler wird verwarnt"
       },
       "submit": {
         "ban": "Spieler bannen",
         "mute": "Spieler stummschalten",
         "gag": "Spieler knebeln",
-        "silence": "Spieler zum Schweigen bringen"
+        "silence": "Spieler zum Schweigen bringen",
+        "warning": "Verwarnung erteilen"
       },
       "applied": {
         "ban": "{name} gebannt",
         "mute": "{name} stummgeschaltet",
         "gag": "{name} geknebelt",
-        "silence": "{name} zum Schweigen gebracht"
+        "silence": "{name} zum Schweigen gebracht",
+        "warning": "Verwarnung an {name} erteilt"
       },
+      "warning_note": "Eine Verwarnung wird in der Akte des Spielers gespeichert und der Spieler wird benachrichtigt. Sie wird nie durchgesetzt und läuft nie ab.",
       "typed_player": "{type}-Spieler"
     },
     "search": {
@@ -8025,6 +8031,13 @@
       "muted": "Gemutet",
       "gagged": "Gegagt",
       "silenced": "Silenced",
+      "type_labels": {
+        "ban": "Bann",
+        "mute": "Stummschaltung",
+        "gag": "Knebel",
+        "silence": "Schweigen",
+        "warning": "Verwarnung"
+      },
       "duration_label": "Dauer",
       "select_duration": "Dauer wählen",
       "sanctions": "Sanktionen",
@@ -8039,6 +8052,7 @@
       "permanent": "Permanent",
       "active": "Aktiv",
       "expired": "Abgelaufen",
+      "on_record": "Vermerkt",
       "cannot_edit_expired": "Abgelaufene Sanktionen lassen sich nicht bearbeiten — leg eine neue an",
       "edit": "Bearbeiten",
       "remove": "Entfernen",

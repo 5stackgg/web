@@ -7966,11 +7966,13 @@
       "reason_label": "Reason",
       "reason_placeholder": "Enter reason for sanction...",
       "reason_description": "Please provide a clear reason for this sanction",
+      "reason_required": "A reason is required",
       "types": {
         "ban_description": "Player is not able to participate in any activity",
         "mute_description": "Player cannot use voice chat in game",
         "gag_description": "Player cannot use text chat in game",
-        "silence_description": "Player muted and gagged"
+        "silence_description": "Player muted and gagged",
+        "warning_description": "Informational note on the player's record, never enforced"
       },
       "durations": {
         "15_minutes": "15 minutes",
@@ -7985,20 +7987,24 @@
         "ban": "Banning Player",
         "mute": "Muting Player",
         "gag": "Gagging Player",
-        "silence": "Silencing Player"
+        "silence": "Silencing Player",
+        "warning": "Warning Player"
       },
       "submit": {
         "ban": "Ban Player",
         "mute": "Mute Player",
         "gag": "Gag Player",
-        "silence": "Silence Player"
+        "silence": "Silence Player",
+        "warning": "Issue Warning"
       },
       "applied": {
         "ban": "Banned {name}",
         "mute": "Muted {name}",
         "gag": "Gagged {name}",
-        "silence": "Silenced {name}"
+        "silence": "Silenced {name}",
+        "warning": "Warning issued to {name}"
       },
+      "warning_note": "A warning is saved to the player's record and notifies them. It is never enforced and never expires.",
       "typed_player": "{type} Player"
     },
     "search": {
@@ -8025,6 +8031,13 @@
       "muted": "Muted",
       "gagged": "Gagged",
       "silenced": "Silenced",
+      "type_labels": {
+        "ban": "Ban",
+        "mute": "Mute",
+        "gag": "Gag",
+        "silence": "Silence",
+        "warning": "Warning"
+      },
       "duration_label": "Duration",
       "select_duration": "Select duration",
       "sanctions": "Sanctions",
@@ -8039,6 +8052,7 @@
       "permanent": "Permanent",
       "active": "Active",
       "expired": "Expired",
+      "on_record": "On record",
       "cannot_edit_expired": "Expired sanctions can't be edited — add a new one",
       "edit": "Edit",
       "remove": "Remove",

@@ -95,28 +95,51 @@ const sortedObject = (object) =>
       .map((key) => [key, object[key]]),
   );
 
+/** Whether a manifest lists `map` as not fully built. */
+export function listsFailure(manifest, map) {
+  return retryMaps(manifest).includes(map);
+}
+
 /**
  * The manifest for one run, and the files it has to upload.
  *
- *   base     the manifest this run builds on: the newest one of this build
- *            for a retry, else latest.json's
- *   results  [{ map, files: { <asset>: { file, sha256 } }, triFailed,
- *            calloutsFailed, viewFailed }] for every map this run attempted
+ *   base       the manifest this run builds on: the newest one of this build
+ *              for a retry, else latest.json's
+ *   results    one per map this run looked at: `{ map, unchanged: true }` for
+ *              a map whose inputs matched base's and was not built, else
+ *              `{ map, source, files: { <asset>: { file, sha256 } },
+ *              triFailed, calloutsFailed, viewFailed }`
+ *   installed  every map in the install; base's entries for anything else
+ *              are dropped. null keeps them all.
+ *   pipeline   recorded as is, for whoever reads the manifest later
  *
- * A file whose sha256 matches base's entry for the same map keeps base's key.
- * A map whose collision failed keeps base's entry whole (or has none) and is
- * listed in `failed`, as is one whose callouts failed (those keep base's
- * callouts). A map whose view mesh failed ships without `view` and is listed
- * in `failed_view`. Maps this run did not attempt carry over from base,
- * failure listings included.
+ * An unchanged map keeps base's entry verbatim. A built file whose sha256
+ * matches base's entry for the same map keeps base's key. A map whose
+ * collision failed keeps base's entry whole (or has none) and is listed in
+ * `failed`, as is one whose callouts failed (those keep base's callouts). A
+ * map whose view mesh failed ships without `view` and is listed in
+ * `failed_view`. Installed maps this run did not look at carry over from
+ * base, failure listings included.
  */
-export function mergeManifest({ build, revision = 1, base = null, results, createdAt }) {
+export function mergeManifest({
+  build,
+  revision = 1,
+  base = null,
+  results,
+  installed = null,
+  pipeline = null,
+  createdAt,
+}) {
   const prefix = uploadPrefix(build, revision);
+  const present = installed ? new Set(installed) : null;
+  const kept = (map) => !present || present.has(map);
   const maps = {};
   const failed = new Set();
   const failedView = new Set();
   const uploads = [];
   const carried = [];
+  const unchanged = [];
+  const dropped = [];
   let reused = 0;
 
   const attempted = new Set();
@@ -124,6 +147,11 @@ export function mergeManifest({ build, revision = 1, base = null, results, creat
     const { map } = result;
     attempted.add(map);
     const before = base?.maps?.[map];
+    if (result.unchanged) {
+      maps[map] = before;
+      unchanged.push(map);
+      continue;
+    }
     if (result.triFailed) {
       failed.add(map);
       if (before) {
@@ -153,7 +181,7 @@ export function mergeManifest({ build, revision = 1, base = null, results, creat
       }
       sums[asset] = file.sha256;
     }
-    maps[map] = { ...entry, sha256: sums };
+    maps[map] = { ...entry, sha256: sums, ...(result.source ? { source: result.source } : {}) };
     if (result.calloutsFailed) {
       failed.add(map);
     }
@@ -163,18 +191,23 @@ export function mergeManifest({ build, revision = 1, base = null, results, creat
   }
 
   for (const [map, entry] of Object.entries(base?.maps ?? {})) {
-    if (!attempted.has(map)) {
+    if (attempted.has(map)) {
+      continue;
+    }
+    if (kept(map)) {
       maps[map] = entry;
       carried.push(map);
+    } else {
+      dropped.push(map);
     }
   }
   for (const map of base?.failed ?? []) {
-    if (!attempted.has(map)) {
+    if (!attempted.has(map) && kept(map)) {
       failed.add(map);
     }
   }
   for (const map of base?.failed_view ?? []) {
-    if (!attempted.has(map)) {
+    if (!attempted.has(map) && kept(map)) {
       failedView.add(map);
     }
   }
@@ -184,9 +217,10 @@ export function mergeManifest({ build, revision = 1, base = null, results, creat
     build,
     ...(revision > 1 ? { revision } : {}),
     created_at: createdAt,
+    ...(pipeline ? { pipeline } : {}),
     ...(failed.size ? { failed: [...failed].sort() } : {}),
     ...(failedView.size ? { failed_view: [...failedView].sort() } : {}),
     maps: sortedObject(maps),
   };
-  return { manifest, uploads, reused, carried };
+  return { manifest, uploads, reused, carried, unchanged, dropped: dropped.sort() };
 }

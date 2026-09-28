@@ -32562,6 +32562,7 @@ update_v_team_stage_results_by_pk?: [{	/** increments the numeric columns with g
 	_set?: ValueTypes["v_team_stage_results_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["v_team_stage_results_pk_columns_input"] | Variable<any, string>},ValueTypes["v_team_stage_results"]],
 update_v_team_stage_results_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["v_team_stage_results_updates"]> | Variable<any, string>},ValueTypes["v_team_stage_results_mutation_response"]],
+buildMapAssets?: [{	game_server_node_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 validateGamedata?: [{	game_server_node_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 watchDemo?: [{	match_map_demo_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	match_map_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["WatchDemoOutput"]],
 writeServerFile?: [{	content: string | Variable<any, string>,	file_path: string | Variable<any, string>,	node_id: string | Variable<any, string>,	server_id?: string | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
@@ -114956,6 +114957,7 @@ update_v_team_stage_results_by_pk?: [{	/** increments the numeric columns with g
 	_set?: ResolverInputTypes["v_team_stage_results_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["v_team_stage_results_pk_columns_input"]},ResolverInputTypes["v_team_stage_results"]],
 update_v_team_stage_results_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["v_team_stage_results_updates"]>},ResolverInputTypes["v_team_stage_results_mutation_response"]],
+buildMapAssets?: [{	game_server_node_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 validateGamedata?: [{	game_server_node_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 watchDemo?: [{	match_map_demo_id?: ResolverInputTypes["uuid"] | undefined | null,	match_map_id: ResolverInputTypes["uuid"]},ResolverInputTypes["WatchDemoOutput"]],
 writeServerFile?: [{	content: string,	file_path: string,	node_id: string,	server_id?: string | undefined | null},ResolverInputTypes["SuccessOutput"]],
@@ -194133,6 +194135,7 @@ export type ModelTypes = {
 	/** update multiples rows of table: "v_team_stage_results" */
 	update_v_team_stage_results_many?: Array<ModelTypes["v_team_stage_results_mutation_response"] | undefined | null> | undefined | null,
 	/** Validate CS2 gamedata signatures/offsets on a node (5stack.gg test instance only) */
+	buildMapAssets?: ModelTypes["SuccessOutput"] | undefined | null,
 	validateGamedata?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Spawn a per-user game-streamer pod to play back a finished match's demo */
 	watchDemo?: ModelTypes["WatchDemoOutput"] | undefined | null,
@@ -268232,6 +268235,7 @@ export type GraphQLTypes = {
 	/** update multiples rows of table: "v_team_stage_results" */
 	update_v_team_stage_results_many?: Array<GraphQLTypes["v_team_stage_results_mutation_response"] | undefined | null> | undefined | null,
 	/** Validate CS2 gamedata signatures/offsets on a node (5stack.gg test instance only) */
+	buildMapAssets?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	validateGamedata?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Spawn a per-user game-streamer pod to play back a finished match's demo */
 	watchDemo?: GraphQLTypes["WatchDemoOutput"] | undefined | null,

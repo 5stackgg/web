@@ -41,6 +41,6 @@ RUN npm ci --omit=dev --no-audit --no-fund
 
 COPY scripts/ ./scripts/
 
-RUN node -e "Promise.all(['extract-map-meshes', 'extract-map-callouts', 'lib-bucket'].map((m) => import('./scripts/' + m + '.mjs')))"
+RUN node -e "import('./scripts/build-map-assets.mjs').then(() => import('./scripts/lib-fingerprint.mjs')).then((f) => console.log('meshoptimizer', f.meshoptimizerVersion(), 'Source2Viewer', f.sourceViewerVersion(process.env.CLI)))"
 
 ENTRYPOINT ["node", "scripts/build-map-assets.mjs"]

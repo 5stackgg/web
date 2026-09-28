@@ -37,6 +37,7 @@ which maps did not fully build:
 
 ```json
 { "version": 1, "build": "25537370", "revision": 2, "created_at": "...",
+  "pipeline": { "sha256": "…", "source_viewer": "20.0.6980+a06886f…", "meshoptimizer": "1.1.1" },
   "failed": ["de_brand_new"],
   "failed_view": ["rush_001"],
   "maps": { "de_mirage": {
@@ -44,10 +45,14 @@ which maps did not fully build:
     "grenadeclip": "25537370/de_mirage.grenadeclip.tri.gz",
     "view": "24957633/de_mirage.view.bin.gz",
     "callouts": "25537370/de_mirage.callouts.json",
-    "sha256": { "tri": "…", "grenadeclip": "…", "view": "…", "callouts": "…" } } } }
+    "sha256": { "tri": "…", "grenadeclip": "…", "view": "…", "callouts": "…" },
+    "source": { "vpk_sha256": "…", "pipeline": "…" } } } }
 ```
 
 - `revision` is only present from 2 up.
+- `source` is what the entry was built from (see *Unchanged maps are not
+  rebuilt* below); `pipeline` at the top is the run's own, with the versions
+  spelled out.
 - `failed`: maps whose collision or callouts failed to build. A map whose
   collision failed keeps its previous build's entry (or has none at all); one
   whose callouts failed ships new collision and its previous callouts.
@@ -56,9 +61,10 @@ which maps did not fully build:
   the collision `.tri` for them.
 - Both lists are left out when empty.
 
-A key can point at an **older** build: the publisher dedupes, so a map Valve
-did not touch keeps pointing at the object it already has. A map missing an
-asset simply has no key for it.
+A key can point at an **older** build: a map Valve did not touch keeps the
+entry it already has, and a rebuilt file identical to the one before keeps the
+old key. A map missing an asset simply has no key for it. A map that is no
+longer in the install is dropped from the next manifest.
 
 `<build>` is the CS2 build id (`buildid` in `steamapps/appmanifest_730.acf`).
 Everything under `maps/<build>/` — every manifest revision included — is
@@ -128,14 +134,18 @@ What `build-map-assets.mjs` does:
    the worker's cache) and finds the newest manifest of this build — the one
    `latest.json` names if it is this build's, then any higher `manifest.r<N>`
    that exists; otherwise `manifest.json`, `manifest.r2.json`, … probed in turn.
-3. Decides what to build:
+3. Decides what to look at:
    - **no manifest for this build** — every eligible map in `game/csgo/maps/`
      (`de_`, `cs_`, `ar_`, `rush_`; never `_vanity` or `_night`), or `--maps`;
-   - **newest manifest lists no failures** — nothing: the build is done. It
-     only moves `latest.json` to that manifest if an earlier run died before
-     doing so, and exits 0;
-   - **newest manifest lists failures** — only the maps in `failed` and
-     `failed_view` (intersected with `--maps`), as the next revision.
+   - **newest manifest lists no failures, nothing forced** — nothing: the
+     build is done. It only moves `latest.json` to that manifest if an earlier
+     run died before doing so, and exits 0;
+   - **newest manifest lists failures, or `--force`/`--force-maps` names
+     maps** — only those maps (intersected with `--maps`), as the next
+     revision.
+
+   Each of them is then fingerprinted, and one whose fingerprint matches
+   the base manifest's entry is carried over without any work (below).
 4. Per map: collision + grenade clips + view mesh (`extract-map-meshes.mjs`)
    and callouts (`extract-map-callouts.mjs`, written without `generatedAt` so
    the hash only changes when the callouts do). Only the collision can fail a
@@ -154,14 +164,51 @@ What `build-map-assets.mjs` does:
    re-reads `latest.json` and moves it **last**, and only forwards: never to
    an older build, nor to an older revision of the same build.
 
-A retry that fixes nothing publishes nothing. A first run in which no map
-built at all publishes nothing either.
+A retry (or forced rebuild of a published build) that changes nothing
+publishes nothing. A first run in which every map that needed building failed,
+and none was unchanged, publishes nothing either — that is the tooling, not
+the maps. A run in which every map is unchanged still publishes the build's
+(small) manifest and moves `latest.json`, so `maps/<build>/manifest.json`
+exists for every build the job has seen.
+
+### Unchanged maps are not rebuilt
+
+Before any Source2Viewer work, every map gets a fingerprint, stored in its
+manifest entry as `source`:
+
+- `vpk_sha256` — sha256 of `game/csgo/maps/<map>.vpk`. Geometry, nav and the
+  entity lump all live in the map's own VPK, so the same VPK means the same
+  inputs. Hashing is streamed and cheap: mirage, nuke and rush_001 (1 GB)
+  hash in 0.5 s.
+- `pipeline` — sha256 over the source of `build-map-assets.mjs` and every
+  local module it imports, transitively (`lib-fingerprint.mjs` follows the
+  imports, so a new `lib-*.mjs` is covered the moment it is imported), plus
+  the Source2Viewer-CLI version (`--version`'s `Version:` line) and the
+  meshoptimizer version. The macOS CLI and the linux image report the same
+  version and hash the same scripts, so a local run and the job agree.
+
+A map whose `source` equals the entry in the base manifest (the one
+`latest.json` points at) and which that manifest does not list in `failed` or
+`failed_view` is carried over verbatim — same keys, same sha256s, same
+`source` — with no export, no build and no upload, logged as
+
+```
+de_mirage          unchanged (vpk e66cdf1ae6a9, pipeline a6b5472a9b48) -- reused 25537370/
+```
+
+Anything else is built as before, and the content dedupe still applies: a new
+pipeline that produces identical files reuses the old keys and uploads
+nothing. A CS2 update that touches no map therefore costs well under a second
+and one manifest upload. `--force` rebuilds every map regardless, and
+`--force-maps a,b` just those; on a build that is already published they
+rebuild into the next revision (which is only published if something
+changed).
 
 **Exit codes** (the API records them):
 
 | code | meaning |
 | --- | --- |
-| 0 | every map fully published (or the build already was) |
+| 0 | every map fully published, unchanged ones included (or the build already was) |
 | 2 | published, but the manifest lists `failed` or `failed_view` maps — run it again to retry just those |
 | 1 | fatal: nothing new was published (or the manifest went up but `latest.json` could not be moved; a re-run finishes it) |
 
@@ -174,6 +221,10 @@ on first use; `CLI=<path>` overrides):
 # build only -> .cache/map-assets/<build>/{raw,files}/ + manifest.json (or --out <dir>)
 node scripts/build-map-assets.mjs --cs2 "/path/to/Counter-Strike Global Offensive"
 node scripts/build-map-assets.mjs --cs2 <install> --maps de_mirage,rush_001
+
+# rebuild regardless of fingerprints
+node scripts/build-map-assets.mjs --cs2 <install> --force
+node scripts/build-map-assets.mjs --cs2 <install> --force-maps de_nuke,rush_001
 
 # every check a publish makes, uploading nothing
 S3_ACCESS_KEY=… S3_SECRET=… node scripts/build-map-assets.mjs --cs2 <install> --publish --dry-run
@@ -322,6 +373,9 @@ byte-identical files):
 | de_mirage | 1.22M | 256k (3u) | 7.5 → 3.2 MB | 124k tris, 0.8 MB gz | 4 s |
 | de_nuke | 3.56M | 649k (3u) | 17.1 → 5.4 MB | 175k tris, 1.0 MB gz | 13 s |
 | rush_001 | 14.45M | 723k (6u, 20 chunks) | 18.2 → 6.2 MB | 1.07M tris, 4.9 MB gz | 104 s |
+
+The same three maps on a later build with unchanged VPKs: 0.66 s end to end
+(0.5 s of it hashing), no exports, one manifest upload.
 
 ### `.callouts.json`
 

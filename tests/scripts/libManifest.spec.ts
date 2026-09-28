@@ -179,6 +179,41 @@ describe("mergeManifest", () => {
     expect(hasFailures(manifest)).toBe(true);
   });
 
+  it("keeps an unchanged map's entry verbatim and records a built map's source", () => {
+    const source = { vpk_sha256: "a".repeat(64), pipeline: "b".repeat(64) };
+    const { manifest, unchanged, uploads } = mergeManifest({
+      build: "200",
+      base: previous,
+      results: [
+        { map: "de_mirage", unchanged: true },
+        { ...built("de_nuke", { tri: "n2", callouts: "nc1" }), source },
+      ],
+      pipeline: { sha256: "b".repeat(64), source_viewer: "20.0", meshoptimizer: "1.1.1" },
+      createdAt: NOW,
+    });
+    expect(unchanged).toEqual(["de_mirage"]);
+    expect(manifest.maps.de_mirage).toBe(previous.maps.de_mirage);
+    expect(manifest.maps.de_nuke.source).toEqual(source);
+    expect(manifest.pipeline.source_viewer).toBe("20.0");
+    expect(uploads.map((u: { key: string }) => u.key)).toEqual(["maps/200/de_nuke.tri.gz"]);
+  });
+
+  it("drops maps, and their failure listings, that are no longer installed", () => {
+    const base = { ...previous, failed_view: ["de_nuke"], failed: ["de_gone"] };
+    const { manifest, dropped, carried } = mergeManifest({
+      build: "200",
+      base,
+      results: [],
+      installed: ["de_mirage"],
+      createdAt: NOW,
+    });
+    expect(Object.keys(manifest.maps)).toEqual(["de_mirage"]);
+    expect(dropped).toEqual(["de_nuke"]);
+    expect(carried).toEqual(["de_mirage"]);
+    expect(manifest).not.toHaveProperty("failed");
+    expect(manifest).not.toHaveProperty("failed_view");
+  });
+
   it("recognises a retry that changed nothing", () => {
     const base = { ...previous, failed_view: ["de_nuke"] };
     const { manifest } = mergeManifest({

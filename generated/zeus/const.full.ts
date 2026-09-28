@@ -19693,6 +19693,9 @@ export const AllTypesProps: Record<string,any> = {
 		update_v_team_stage_results_many:{
 			updates:"v_team_stage_results_updates"
 		},
+		buildMapAssets:{
+			game_server_node_id:"uuid"
+		},
 		validateGamedata:{
 			game_server_node_id:"uuid"
 		},
@@ -56453,6 +56456,7 @@ export const ReturnTypes: Record<string,any> = {
 		update_v_team_stage_results:"v_team_stage_results_mutation_response",
 		update_v_team_stage_results_by_pk:"v_team_stage_results",
 		update_v_team_stage_results_many:"v_team_stage_results_mutation_response",
+		buildMapAssets:"SuccessOutput",
 		validateGamedata:"SuccessOutput",
 		watchDemo:"WatchDemoOutput",
 		writeServerFile:"SuccessOutput"

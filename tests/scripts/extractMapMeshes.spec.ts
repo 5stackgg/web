@@ -1,6 +1,5 @@
 // @vitest-environment node
 import {
-  chmodSync,
   existsSync,
   mkdirSync,
   mkdtempSync,
@@ -13,34 +12,16 @@ import { join } from "node:path";
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { extractMap } from "~/scripts/extract-map-meshes.mjs";
 import { readViewBin } from "~/scripts/lib-view-mesh.mjs";
+import { installFakeSourceViewer } from "../helpers/fakeMapTools";
 import { buildGlb, buildNav, quad } from "../helpers/mapFixtures";
 
 const MAP = "de_fixture";
-
-// Stands in for Source2Viewer-CLI: FAKE_S2V maps each --vpk_filepath to the
-// files it "exports" (relative to -o), or to "FAIL" to exit non-zero.
-const FAKE_CLI = `
-import { copyFileSync, mkdirSync } from "node:fs";
-import { dirname, join } from "node:path";
-const args = process.argv.slice(2);
-const at = (flag) => args[args.indexOf(flag) + 1];
-const plan = JSON.parse(process.env.FAKE_S2V)[at("--vpk_filepath")];
-if (plan === "FAIL") {
-  process.stderr.write("simulated export failure\\n");
-  process.exit(3);
-}
-for (const [target, source] of Object.entries(plan ?? {})) {
-  const path = join(at("-o"), target);
-  mkdirSync(dirname(path), { recursive: true });
-  copyFileSync(source, path);
-}
-`;
 
 describe("extractMap", () => {
   const dir = mkdtempSync(join(tmpdir(), "extract-map-"));
   const mapsDir = join(dir, "maps");
   const outDir = join(dir, "out");
-  const cli = join(dir, "s2v");
+  const cli = installFakeSourceViewer(dir);
   const physics = join(dir, "physics.glb");
   const world = join(dir, "world.glb");
   const nav = join(dir, "good.nav");
@@ -49,9 +30,6 @@ describe("extractMap", () => {
 
   mkdirSync(mapsDir);
   writeFileSync(join(mapsDir, `${MAP}.vpk`), "");
-  writeFileSync(join(dir, "fake-s2v.mjs"), FAKE_CLI);
-  writeFileSync(cli, `#!/bin/sh\nexec "${process.execPath}" "${join(dir, "fake-s2v.mjs")}" "$@"\n`);
-  chmodSync(cli, 0o755);
 
   const floor = quad([0, 0, 0], [1024, 0, 0], [1024, 1024, 0], [0, 1024, 0]);
   const wall = quad([0, 0, 0], [1024, 0, 0], [1024, 0, 256], [0, 0, 256]);

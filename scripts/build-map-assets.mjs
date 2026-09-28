@@ -13,9 +13,17 @@
 //   <build>/manifest.r<N>.json        a retry of the maps revision N-1 failed
 //   latest.json                       -> the newest manifest; the only mutable key
 //
-// DEDUPE. A file whose sha256 (of its uncompressed bytes) matches the base
-// manifest's entry is not uploaded again: the new manifest points at the older
-// key. Maps this run did not build carry over from the base untouched.
+// UNCHANGED MAPS ARE NOT REBUILT. Every map entry records what it was built
+// from, `source: { vpk_sha256, pipeline }` (lib-fingerprint.mjs): the map's
+// VPK, and the build scripts + Source2Viewer + meshoptimizer versions. A map
+// whose source matches the previous manifest's entry, and which that manifest
+// does not list as failed, is carried over verbatim without a single export.
+// --force / --force-maps a,b build regardless.
+//
+// DEDUPE. A built file whose sha256 (of its uncompressed bytes) matches the
+// base manifest's entry is not uploaded again: the new manifest points at the
+// older key. Installed maps this run did not look at carry over from the base
+// untouched; maps no longer in the install are dropped.
 //
 // FAILURES. Only a map's collision can fail it. A failed map keeps its
 // previous entry and is listed in `failed`; a map whose callouts failed ships
@@ -23,9 +31,9 @@
 // mesh failed ships without `view` and is listed in `failed_view`.
 //
 // RE-RUNS. A build whose newest manifest lists no failures is done: the run
-// only makes sure latest.json points at it. One that lists failures is
-// retried for those maps alone, into the next manifest.r<N>.json -- published
-// manifests are never overwritten.
+// only makes sure latest.json points at it (unless --force asks for maps to be
+// rebuilt). One that lists failures is retried for those maps alone, into the
+// next manifest.r<N>.json -- published manifests are never overwritten.
 //
 // IMMUTABILITY. Every new key is HEAD-checked first; one that already exists
 // is only accepted when its x-amz-meta-sha256 matches (an interrupted run of
@@ -38,7 +46,7 @@
 //
 // Usage:
 //   node scripts/build-map-assets.mjs --cs2 <install> [--build <id>] [--maps a,b]
-//     [--out <dir>] [--publish] [--dry-run]
+//     [--force | --force-maps a,b] [--out <dir>] [--publish] [--dry-run]
 //
 // --build defaults to the install's own build id (steamapps/appmanifest_730.acf)
 // and must match it when both are known. --out (or MAP_ASSETS_OUT) holds every
@@ -47,17 +55,25 @@
 // check but uploads nothing. S3_ACCESS_KEY / S3_SECRET (and optionally
 // BUCKET_NAME / S3_ENDPOINT) are the B2 credentials.
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  realpathSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { gzipSync } from "node:zlib";
 import { extractCallouts } from "./extract-map-callouts.mjs";
 import { describe, eligibleMaps, extractMap } from "./extract-map-meshes.mjs";
 import { bucketFromEnv } from "./lib-bucket.mjs";
+import { pipelineFingerprint, sameSource, sha256File } from "./lib-fingerprint.mjs";
 import {
   compareRevisions,
-  hasFailures,
   latestPointer,
+  listsFailure,
   manifestKey,
   mergeManifest,
   parseManifest,
@@ -90,18 +106,17 @@ const CONTENT = {
   callouts: { type: "application/json", encoding: "gzip" },
 };
 
-const args = process.argv.slice(2);
-const has = (flag) => args.includes(flag);
-const value = (flag, fallback) => {
-  const i = args.indexOf(flag);
-  return i >= 0 && args[i + 1] && !args[i + 1].startsWith("--")
-    ? args[i + 1]
-    : fallback;
-};
+class FatalError extends Error {}
 
 function fail(message) {
-  console.error(`✗ ${message}`);
-  process.exit(1);
+  throw new FatalError(message);
+}
+
+function list(text) {
+  return (text ?? "")
+    .split(",")
+    .map((m) => m.trim())
+    .filter(Boolean);
 }
 
 function installBuild(cs2) {
@@ -286,7 +301,15 @@ async function buildMap(map, { mapsDir, rawDir, filesDir, cli, pak }) {
   return result;
 }
 
-async function main() {
+async function build(args) {
+  const has = (flag) => args.includes(flag);
+  const value = (flag, fallback) => {
+    const i = args.indexOf(flag);
+    return i >= 0 && args[i + 1] && !args[i + 1].startsWith("--")
+      ? args[i + 1]
+      : fallback;
+  };
+
   const cs2 =
     value("--cs2", null) ??
     process.env.CS2_DIR ??
@@ -335,10 +358,10 @@ async function main() {
   }
 
   const available = eligibleMaps(mapsDir);
-  const requested = value("--maps", null)
-    ?.split(",")
-    .map((m) => m.trim())
-    .filter(Boolean);
+  const requested = value("--maps", null) ? list(value("--maps", null)) : null;
+  const forceAll = has("--force");
+  const forceMaps = list(value("--force-maps", null));
+  const forced = (map) => forceAll || forceMaps.includes(map);
 
   let revision = 1;
   let base = latest;
@@ -350,7 +373,10 @@ async function main() {
     } catch (error) {
       fail(`could not tell what build ${build} already has: ${error.message}`);
     }
-    if (newest && !hasFailures(newest.manifest)) {
+    const again = newest
+      ? [...new Set([...retryMaps(newest.manifest), ...available.filter(forced)])].sort()
+      : [];
+    if (newest && !again.length) {
       const moved = bucket
         ? await moveLatest(bucket, build, newest.revision, dry)
         : "latest.json not checked (no credentials)";
@@ -358,16 +384,15 @@ async function main() {
         `build ${build} is already published without failures ` +
           `(${manifestKey(build, newest.revision)}); ${moved}`,
       );
-      return;
+      return 0;
     }
     if (newest) {
       revision = newest.revision + 1;
       base = newest.manifest;
-      const retry = retryMaps(base);
-      candidates = requested ? retry.filter((m) => requested.includes(m)) : retry;
+      candidates = requested ? again.filter((m) => requested.includes(m)) : again;
       console.log(
-        `build ${build} revision ${newest.revision} lists failures; ` +
-          `retrying ${candidates.join(" ") || "nothing"} as revision ${revision}`,
+        `build ${build} revision ${newest.revision} is published; rebuilding ` +
+          `${candidates.join(" ") || "nothing"} (failed or forced) as revision ${revision}`,
       );
     }
   }
@@ -397,21 +422,62 @@ async function main() {
     `CS2 build ${build} revision ${revision}: ${maps.length} map(s) -> ${outDir}${mode}`,
   );
 
-  const cli = maps.length ? resolveCli() : null;
+  const cli = resolveCli();
+  const pipeline = pipelineFingerprint(cli);
+  console.log(
+    `pipeline ${pipeline.sha256.slice(0, 12)}: Source2Viewer ${pipeline.source_viewer}, ` +
+      `meshoptimizer ${pipeline.meshoptimizer}, ${pipeline.files.length} script(s)`,
+  );
   const pak = join(cs2, "game", "csgo", "pak01_dir.vpk");
   const started = performance.now();
   const results = [];
+  let hashing = 0;
   for (const map of maps) {
-    results.push(await buildMap(map, { mapsDir, rawDir, filesDir, cli, pak }));
+    const hashStart = performance.now();
+    const source = {
+      vpk_sha256: await sha256File(join(mapsDir, `${map}.vpk`)),
+      pipeline: pipeline.sha256,
+    };
+    hashing += performance.now() - hashStart;
+    const before = base?.maps?.[map];
+    if (!forced(map) && sameSource(before?.source, source) && !listsFailure(base, map)) {
+      const reusedFrom = [
+        ...new Set(
+          Object.entries(before)
+            .filter(([asset]) => asset !== "sha256" && asset !== "source")
+            .map(([, key]) => dirname(key)),
+        ),
+      ];
+      console.log(
+        `${map.padEnd(18)} unchanged (vpk ${source.vpk_sha256.slice(0, 12)}, ` +
+          `pipeline ${source.pipeline.slice(0, 12)}) -- reused ` +
+          reusedFrom.map((prefix) => `${prefix}/`).join(" "),
+      );
+      results.push({ map, unchanged: true });
+      continue;
+    }
+    const result = await buildMap(map, { mapsDir, rawDir, filesDir, cli, pak });
+    results.push({ ...result, source });
   }
-  const fresh = results.filter((r) => !r.triFailed).length;
-  console.log(`\nbuilt ${fresh}/${maps.length} map(s) in ${seconds(performance.now() - started)}`);
+  const attempted = results.filter((r) => !r.unchanged);
+  const fresh = attempted.filter((r) => !r.triFailed).length;
+  const same = results.length - attempted.length;
+  console.log(
+    `\nbuilt ${fresh}/${attempted.length} map(s), ${same} unchanged, ` +
+      `in ${seconds(performance.now() - started)} (hashing VPKs ${seconds(hashing)})`,
+  );
 
-  const { manifest, uploads, reused, carried } = mergeManifest({
+  const { manifest, uploads, reused, carried, dropped } = mergeManifest({
     build,
     revision,
     base,
     results,
+    installed: available,
+    pipeline: {
+      sha256: pipeline.sha256,
+      source_viewer: pipeline.source_viewer,
+      meshoptimizer: pipeline.meshoptimizer,
+    },
     createdAt: new Date().toISOString(),
   });
   const key = manifestKey(build, revision);
@@ -424,26 +490,27 @@ async function main() {
     `${key}: ${Object.keys(manifest.maps).length} map(s), ` +
       `${uploads.length} new file(s), ${reused} reused from ` +
       `${base ? manifestKey(base.build, base.revision ?? 1) : "nothing (first run)"}` +
+      `${same ? `, ${same} unchanged` : ""}` +
       `${carried.length ? `, ${carried.length} carried over` : ""}` +
+      `${dropped.length ? `; dropped (no longer installed): ${dropped.join(" ")}` : ""}` +
       `${manifest.failed ? `; failed: ${manifest.failed.join(" ")}` : ""}` +
       `${manifest.failed_view ? `; failed_view: ${manifest.failed_view.join(" ")}` : ""}`,
   );
-  const outcome = () => {
-    process.exitCode = failures.length ? EXIT_FAILED_MAPS : 0;
-  };
+  const outcome = failures.length ? EXIT_FAILED_MAPS : 0;
 
   if (!publish) {
     console.log(`not publishing (no --publish): ${join(outDir, basename(key))}`);
-    outcome();
-    return;
+    return outcome;
   }
-  if (revision === 1 && !fresh) {
+  // Every map that needed building failed and none was reusable: that is the
+  // tooling, not the maps, and a manifest of carried-over entries would only
+  // hide it.
+  if (revision === 1 && attempted.length && !fresh && !same) {
     fail("no map built -- refusing to publish a manifest of carried-over entries");
   }
   if (revision > 1 && sameContent(manifest, base)) {
-    console.log(`the retry changed nothing; no revision ${revision} published`);
-    outcome();
-    return;
+    console.log(`the rebuild changed nothing; no revision ${revision} published`);
+    return outcome;
   }
 
   // Settle every key before the first upload, so a refusal leaves nothing
@@ -491,8 +558,7 @@ async function main() {
       ? await moveLatest(bucket, build, revision, true)
       : "latest.json not checked (no credentials)";
     console.log(`  would put maps/${key}; ${moved}`);
-    outcome();
-    return;
+    return outcome;
   }
   await bucket.put(`maps/${key}`, manifestBody, { type: "application/json" });
   try {
@@ -503,9 +569,19 @@ async function main() {
         "a re-run finishes it",
     );
   }
-  outcome();
+  return outcome;
 }
 
-await main().catch((error) => {
-  fail(error.stack ?? String(error));
-});
+/** Runs the build with `args` (argv without node and the script); resolves to the exit code. */
+export async function run(args) {
+  try {
+    return await build(args);
+  } catch (error) {
+    console.error(`✗ ${error instanceof FatalError ? error.message : (error.stack ?? error)}`);
+    return 1;
+  }
+}
+
+if (process.argv[1] && realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  process.exitCode = await run(process.argv.slice(2));
+}

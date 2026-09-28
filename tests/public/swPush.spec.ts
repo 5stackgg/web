@@ -59,6 +59,7 @@ function loadWorker() {
 
   const push = (payload: Record<string, unknown>) => {
     let settled = false;
+    let visibleWhenSettled: number | undefined;
     let done: Promise<unknown> = Promise.resolve();
 
     listeners.push({
@@ -66,11 +67,16 @@ function loadWorker() {
       waitUntil: (promise: Promise<unknown>) => {
         done = promise.then(() => {
           settled = true;
+          visibleWhenSettled = onScreen.length;
         });
       },
     });
 
-    return { done, isSettled: () => settled };
+    return {
+      done,
+      isSettled: () => settled,
+      visibleWhenSettled: () => visibleWhenSettled,
+    };
   };
 
   return {
@@ -150,22 +156,31 @@ describe("sw-push", () => {
     expect(options).toMatchObject({ tag: "chat:lobby:abc", renotify: true });
   });
 
-  it("closes the notification at expiresAt and holds the event open until then", async () => {
+  it("closes the notification at expiresAt", async () => {
     const worker = loadWorker();
 
-    const event = worker.push(matchFound());
+    worker.push(matchFound());
     await vi.advanceTimersByTimeAsync(29_999);
 
     expect(worker.onScreen()).toHaveLength(1);
-    expect(event.isSettled()).toBe(false);
 
     await vi.advanceTimersByTimeAsync(1);
-    await event.done;
 
     expect(worker.onScreen()).toHaveLength(0);
     expect(worker.registration.getNotifications).toHaveBeenCalledWith({
       tag: "MatchFound:confirmation-1",
     });
+  });
+
+  it("settles the push event while the ring is still on screen, or Chrome counts it as silent", async () => {
+    const worker = loadWorker();
+
+    const event = worker.push(matchFound());
+    await vi.advanceTimersByTimeAsync(0);
+
+    expect(event.isSettled()).toBe(true);
+    expect(event.visibleWhenSettled()).toBe(1);
+    expect(vi.getTimerCount()).toBe(1);
   });
 
   it("sets no timer without expiresAt", async () => {
@@ -193,12 +208,20 @@ describe("sw-push", () => {
     expect(worker.onScreen()).toHaveLength(0);
   });
 
-  it("closes straight away when expiresAt has already passed", async () => {
+  it("still shows a ring for a moment when the device clock runs ahead", async () => {
     const worker = loadWorker();
 
     const event = worker.push(matchFound({ expiresAt: inSeconds(-5) }));
     await vi.advanceTimersByTimeAsync(0);
-    await event.done;
+
+    expect(event.isSettled()).toBe(true);
+    expect(event.visibleWhenSettled()).toBe(1);
+
+    await vi.advanceTimersByTimeAsync(4_999);
+
+    expect(worker.onScreen()).toHaveLength(1);
+
+    await vi.advanceTimersByTimeAsync(1);
 
     expect(worker.onScreen()).toHaveLength(0);
   });

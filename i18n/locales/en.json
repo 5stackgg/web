@@ -1832,7 +1832,7 @@
         },
         "quiet_hours": {
           "title": "Quiet Hours",
-          "description": "Push notifications stay silent during this window. They still appear in your alert bell. Match found and admin calls ring anyway.",
+          "description": "Push notifications stay silent during this window. They still appear in your alert bell. Match-found alerts and admin calls ring anyway.",
           "from": "From",
           "to": "To",
           "reset": "Reset",

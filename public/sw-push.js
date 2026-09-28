@@ -71,8 +71,10 @@ const setAppBadge = async (unread) => {
 
 const RING_VIBRATION = [300, 100, 300, 100, 300];
 
-// A device clock running behind the server's reads `expiresAt` as further away
-// than it is, so the wait is capped rather than trusted.
+// Clock skew, both ways. A device clock behind the server's reads `expiresAt`
+// as further away than it is, so the wait is capped; one ahead of it reads a
+// ring that has only just arrived as already over, so it still gets a moment.
+const MIN_RING_MS = 5_000;
 const MAX_RING_MS = 60_000;
 
 const expiryDelayOf = (expiresAt) => {
@@ -86,29 +88,36 @@ const expiryDelayOf = (expiresAt) => {
     return null;
   }
 
-  return Math.min(Math.max(0, at - Date.now()), MAX_RING_MS);
+  return Math.min(Math.max(MIN_RING_MS, at - Date.now()), MAX_RING_MS);
 };
 
+// Deliberately not part of the push event's waitUntil. Chrome judges a push by
+// whether its notification is still on screen when the event settles; one that
+// has already been closed counts as a silent push, and once that budget is
+// spent Chrome shows "This site has been updated in the background" instead.
+// An idle worker lives on for about 30s, so the close usually still lands, and
+// when it does not the ring simply stays until it is dismissed.
+//
 // Matched on `expiresAt` as well as the tag: a newer push with the same tag has
 // already replaced this one on screen, and it has its own expiry to keep.
-const closeAtExpiry = async (payload) => {
+const closeAtExpiry = (payload) => {
   const delay = expiryDelayOf(payload.expiresAt);
 
   if (delay === null) {
     return;
   }
 
-  await new Promise((resolve) => setTimeout(resolve, delay));
+  setTimeout(async () => {
+    const notifications = await self.registration.getNotifications(
+      payload.tag ? { tag: payload.tag } : {},
+    );
 
-  const notifications = await self.registration.getNotifications(
-    payload.tag ? { tag: payload.tag } : {},
-  );
-
-  for (const notification of notifications) {
-    if (notification.data?.expiresAt === payload.expiresAt) {
-      notification.close();
+    for (const notification of notifications) {
+      if (notification.data?.expiresAt === payload.expiresAt) {
+        notification.close();
+      }
     }
-  }
+  }, delay);
 };
 
 self.addEventListener("push", (event) => {

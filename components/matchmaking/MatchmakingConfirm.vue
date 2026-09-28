@@ -156,7 +156,6 @@ export default {
     return {
       remainingSeconds: 0,
       routedConfirmedId: undefined as string | undefined,
-      silencedRingId: undefined as string | undefined,
       countdownInterval: undefined as NodeJS.Timeout | undefined,
       playCountdownSound: useSound().playCountdownSound,
       playMatchFoundSound: useSound().playMatchFoundSound,
@@ -233,12 +232,10 @@ export default {
         confirmationId: this.confirmation.confirmationId,
       });
     },
+    // On every update rather than once: the push is sent after the socket
+    // update that opened the ready check, so it can land here after the
+    // player has already accepted.
     silenceRing(confirmationId: string) {
-      if (this.silencedRingId === confirmationId) {
-        return;
-      }
-
-      this.silencedRingId = confirmationId;
       void closeNotifications(
         notificationThreadKey("MatchFound", confirmationId),
       );

@@ -35,6 +35,11 @@ export function fakeServiceWorker({
   return {
     notifications,
     registration,
+    show(tag: string) {
+      const notification = { tag, close: vi.fn() };
+      notifications.push(notification);
+      return notification;
+    },
     serviceWorker,
     closed: () =>
       notifications

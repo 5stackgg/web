@@ -12,7 +12,7 @@ import PlayerStatusDisplay from "~/components/match/PlayerStatusDisplay.vue";
     >
       <div class="relative transition-all duration-500">
         <div
-          class="absolute inset-0 bg-white/0 hover:bg-white/5 dark:bg-black/0 dark:hover:bg-black/5 rounded-lg transition-all duration-500"
+          class="absolute inset-0 bg-black/0 hover:bg-black/5 rounded-lg transition-all duration-500"
         ></div>
         <PlayerStatusDisplay
           :member="member"

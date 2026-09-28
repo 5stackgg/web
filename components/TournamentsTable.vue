@@ -25,7 +25,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
       <template v-if="tournaments.length === 0">
         <TableRow>
           <TableCell colspan="4" class="text-center py-8">
-            <div class="text-gray-500 dark:text-gray-400">
+            <div class="text-gray-400">
               <p>
                 <slot name="none-found">{{
                   $t("tournament.table.no_tournaments_found")

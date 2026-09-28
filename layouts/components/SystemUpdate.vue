@@ -60,7 +60,7 @@ import { AlertCircle } from "lucide-vue-next";
                 {{ $t("layouts.system_update.panel_update") }}
 
                 <code
-                  class="block bg-gray-100 dark:bg-gray-800 p-2 rounded font-mono text-sm"
+                  class="block bg-gray-800 p-2 rounded font-mono text-sm"
                 >
                   git pull && ./update.sh
                 </code>

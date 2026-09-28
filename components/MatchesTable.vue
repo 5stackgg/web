@@ -9,7 +9,7 @@ const isMobile = useMediaQuery("(max-width: 639px)");
   <div class="space-y-4">
     <template v-if="matches.length === 0">
       <div class="text-center py-12">
-        <div class="text-gray-500 dark:text-gray-400">
+        <div class="text-gray-400">
           <p>
             <slot name="none-found">{{
               $t("match.options.table.no_matches_found")

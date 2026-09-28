@@ -6,6 +6,11 @@ import TimeAgo from "~/components/TimeAgo.vue";
 import NotificationContext from "~/components/notification/NotificationContext.vue";
 import NotificationMessage from "~/components/notification/NotificationMessage.vue";
 import { useOrphanedScan } from "~/composables/useOrphanedScan";
+import {
+  sanctionNotificationTone,
+  sanctionToneBarClasses,
+  sanctionToneTextClasses,
+} from "~/utilities/sanctionNotificationTone";
 
 // The orphaned-uploads dialog is mounted globally (default layout), so a
 // StorageScan notification can open it in place instead of navigating away.
@@ -54,21 +59,7 @@ const emit = defineEmits<{
   ): void;
 }>();
 
-// Older co-player notices shared PlayerSanctioned with mutes and gags, so only
-// the admin alert and the banned player's own notice are certainly bans.
-const tone = computed<"ban" | "warning" | null>(() => {
-  const { type, role, steam_id, entity_id } = props.notification;
-  if (type === "PlayerWarning") {
-    return "warning";
-  }
-  if (
-    type === "PlayerSanctioned" &&
-    (role === "administrator" || (!!steam_id && steam_id === entity_id))
-  ) {
-    return "ban";
-  }
-  return null;
-});
+const tone = computed(() => sanctionNotificationTone(props.notification));
 
 const wrapperClass = computed(() => [
   props.variant === "sheet"
@@ -77,21 +68,11 @@ const wrapperClass = computed(() => [
   tone.value ? "overflow-hidden" : "",
 ]);
 
-const accentBarClass = computed(() =>
-  tone.value === "ban" ? "bg-destructive" : "bg-[hsl(var(--tac-amber))]",
-);
-
 const titleToneClass = computed(() => {
   if (props.notification.is_read) {
     return "text-muted-foreground";
   }
-  if (tone.value === "ban") {
-    return "text-destructive";
-  }
-  if (tone.value === "warning") {
-    return "text-[hsl(var(--tac-amber))]";
-  }
-  return "";
+  return tone.value ? sanctionToneTextClasses[tone.value] : "";
 });
 
 const deleting = ref(false);
@@ -151,7 +132,7 @@ onBeforeUnmount(() => {
       v-if="tone"
       aria-hidden="true"
       class="absolute inset-y-0 left-0 w-1"
-      :class="accentBarClass"
+      :class="sanctionToneBarClasses[tone]"
     />
     <Button
       v-if="notification.deletable !== false"

@@ -4,7 +4,6 @@ import {
   Edit2,
   Trash2,
   Calendar as CalendarIcon,
-  AlertTriangle,
   ExternalLink,
   Ban,
   MicOff,
@@ -85,7 +84,7 @@ const tabCountClasses =
             'text-destructive hover:text-destructive': activeSanctions > 0,
           }"
         >
-          <AlertTriangle class="h-3.5 w-3.5" />
+          <TriangleAlert class="h-3.5 w-3.5" />
           <span>{{ $t("player.sanctions.title") }}</span>
           <ShieldX
             v-if="vacBanned"
@@ -910,12 +909,12 @@ export default {
         : "text-[hsl(var(--tac-amber))]";
     },
     statusPillClass(sanction: any) {
-      if (this.isWarning(sanction)) {
-        return "border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]";
+      if (this.isExpired(sanction)) {
+        return "border-border text-muted-foreground";
       }
-      return this.isExpired(sanction)
-        ? "border-border text-muted-foreground"
-        : "border-destructive/40 bg-destructive/10 text-destructive";
+      return sanction.type === "ban"
+        ? "border-destructive/40 bg-destructive/10 text-destructive"
+        : "border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]";
     },
     openEditDialog(sanction: any) {
       if (!this.canEditEndDate(sanction)) {

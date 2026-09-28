@@ -42,8 +42,8 @@ function serve() {
   const client = (useNuxtApp() as any).$apollo.defaultClient;
   vi.spyOn(client, "subscribe").mockImplementation((options: any) => ({
     subscribe(observer: any) {
-      const root = options.query.definitions[0].selectionSet.selections[0]
-        .name.value as string;
+      const root = options.query.definitions[0].selectionSet.selections[0].name
+        .value as string;
       const data = { [root]: root === "player_sanctions" ? rows : [] };
       Promise.resolve().then(() => observer.next({ data }));
       return { unsubscribe() {}, closed: false };
@@ -135,6 +135,17 @@ describe("PlayerSanctions warnings", () => {
     expect(ban.querySelector('[aria-label="Edit"]')).not.toBeNull();
     expect(ban.textContent).toContain("Permanent");
     expect(statusPill(ban).textContent!.trim()).toBe("Active");
+  });
+
+  it("tones an active ban pill destructive and milder ones amber", async () => {
+    await mountSheet([
+      sanction("ban-1", "ban"),
+      sanction("mute-1", "mute", tomorrow()),
+    ]);
+
+    expect(statusPill(card("Ban")).className).toContain("text-destructive");
+    expect(statusPill(card("Mute")).className).toContain(AMBER_TEXT);
+    expect(statusPill(card("Mute")).textContent!.trim()).toBe("Active");
   });
 
   it("never opens the end-date editor for a warning", async () => {

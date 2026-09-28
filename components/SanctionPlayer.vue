@@ -107,7 +107,9 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
         <DrawerDescription
           class="text-lg flex gap-4 items-center"
           :class="
-            isWarning ? 'text-[hsl(var(--tac-amber))]' : 'text-red-500'
+            sanctionType === 'ban'
+              ? 'text-destructive'
+              : 'text-[hsl(var(--tac-amber))]'
           "
           v-if="sanctionType"
         >
@@ -120,7 +122,7 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
         </p>
         <div
           v-else-if="serverId && sanctionType && sanctionType !== 'ban'"
-          class="flex gap-2 items-start text-sm text-yellow-500"
+          class="flex gap-2 items-start text-sm text-[hsl(var(--tac-amber))]"
         >
           <TriangleAlert class="mt-0.5 h-4 w-4 shrink-0" />
           {{ $t("pages.dedicated_servers.detail.sanctions_wip") }}
@@ -217,10 +219,7 @@ export default {
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
-            reason: z
-              .string({ error: this.$t("player.sanction.reason_required") })
-              .trim()
-              .min(1, { error: this.$t("player.sanction.reason_required") }),
+            reason: z.string().optional(),
             duration: z.string().min(1),
           }),
         ),
@@ -297,11 +296,12 @@ export default {
         return;
       }
 
-      if (this.isWarning) {
-        const { valid } = await this.form.validateField("reason");
-        if (!valid) {
-          return;
-        }
+      if (this.isWarning && !this.form.values.reason?.trim()) {
+        this.form.setFieldError(
+          "reason",
+          this.$t("player.sanction.reason_required"),
+        );
+        return;
       }
 
       this.submitting = true;

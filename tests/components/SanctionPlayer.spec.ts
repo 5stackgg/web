@@ -112,7 +112,30 @@ describe("SanctionPlayer warnings", () => {
     expect(drawerForm().textContent).toContain("A reason is required");
   });
 
-  it("issues the warning with no duration", async () => {
+  it("does not demand a reason for an enforced sanction", async () => {
+    const wrapper = await openDrawer("ban");
+
+    await submit(wrapper);
+
+    expect(mutate).toHaveBeenCalledTimes(1);
+    expect(drawerForm().textContent).not.toContain("A reason is required");
+  });
+
+  it("issues a warning", async () => {
+    const wrapper = await openDrawer("warning");
+
+    await typeReason("Griefing");
+    await submit(wrapper);
+
+    expect(mutate).toHaveBeenCalledTimes(1);
+    expect(mutate.mock.calls[0][0].variables).toMatchObject({
+      type: "warning",
+      reason: "Griefing",
+      duration: 0,
+    });
+  });
+
+  it("drops a duration picked before switching to a warning", async () => {
     const wrapper = await openDrawer("warning", "server-1");
     (wrapper.vm as any).form.setFieldValue("duration", "900000");
 

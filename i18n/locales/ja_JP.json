@@ -7972,7 +7972,7 @@
         "mute_description": "プレイヤーはゲーム内でボイスチャットを使用できません",
         "gag_description": "プレイヤーはゲーム内でテキストチャットを使用できません",
         "silence_description": "プレイヤーはミュート・ガグの両方が適用されます",
-        "warning_description": "プレイヤーの記録に残る情報のみの記録で、適用されることはありません"
+        "warning_description": "プレイヤーの記録に残る情報提供用のメモで、適用されることはありません"
       },
       "durations": {
         "15_minutes": "15分",

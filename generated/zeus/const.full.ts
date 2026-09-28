@@ -692,6 +692,127 @@ export const AllTypesProps: Record<string,any> = {
 		_neq:"bigint",
 		_nin:"bigint"
 	},
+	broadcast_huds:{
+		hud_json:{
+
+		}
+	},
+	broadcast_huds_aggregate_fields:{
+		count:{
+			columns:"broadcast_huds_select_column"
+		}
+	},
+	broadcast_huds_append_input:{
+		hud_json:"jsonb"
+	},
+	broadcast_huds_bool_exp:{
+		_and:"broadcast_huds_bool_exp",
+		_not:"broadcast_huds_bool_exp",
+		_or:"broadcast_huds_bool_exp",
+		author:"String_comparison_exp",
+		created_at:"timestamptz_comparison_exp",
+		description:"String_comparison_exp",
+		enabled:"Boolean_comparison_exp",
+		hud_json:"jsonb_comparison_exp",
+		id:"uuid_comparison_exp",
+		is_signed:"Boolean_comparison_exp",
+		jthud_id:"String_comparison_exp",
+		name:"String_comparison_exp",
+		size_bytes:"bigint_comparison_exp",
+		slug:"String_comparison_exp",
+		source:"String_comparison_exp",
+		storage_key:"String_comparison_exp",
+		thumbnail:"String_comparison_exp",
+		updated_at:"timestamptz_comparison_exp",
+		uploaded_by_steam_id:"bigint_comparison_exp",
+		variant:"String_comparison_exp",
+		version:"String_comparison_exp"
+	},
+	broadcast_huds_constraint: "enum" as const,
+	broadcast_huds_delete_at_path_input:{
+
+	},
+	broadcast_huds_delete_elem_input:{
+
+	},
+	broadcast_huds_delete_key_input:{
+
+	},
+	broadcast_huds_inc_input:{
+		size_bytes:"bigint",
+		uploaded_by_steam_id:"bigint"
+	},
+	broadcast_huds_insert_input:{
+		created_at:"timestamptz",
+		hud_json:"jsonb",
+		id:"uuid",
+		size_bytes:"bigint",
+		updated_at:"timestamptz",
+		uploaded_by_steam_id:"bigint"
+	},
+	broadcast_huds_on_conflict:{
+		constraint:"broadcast_huds_constraint",
+		update_columns:"broadcast_huds_update_column",
+		where:"broadcast_huds_bool_exp"
+	},
+	broadcast_huds_order_by:{
+		author:"order_by",
+		created_at:"order_by",
+		description:"order_by",
+		enabled:"order_by",
+		hud_json:"order_by",
+		id:"order_by",
+		is_signed:"order_by",
+		jthud_id:"order_by",
+		name:"order_by",
+		size_bytes:"order_by",
+		slug:"order_by",
+		source:"order_by",
+		storage_key:"order_by",
+		thumbnail:"order_by",
+		updated_at:"order_by",
+		uploaded_by_steam_id:"order_by",
+		variant:"order_by",
+		version:"order_by"
+	},
+	broadcast_huds_pk_columns_input:{
+		id:"uuid"
+	},
+	broadcast_huds_prepend_input:{
+		hud_json:"jsonb"
+	},
+	broadcast_huds_select_column: "enum" as const,
+	broadcast_huds_set_input:{
+		created_at:"timestamptz",
+		hud_json:"jsonb",
+		id:"uuid",
+		size_bytes:"bigint",
+		updated_at:"timestamptz",
+		uploaded_by_steam_id:"bigint"
+	},
+	broadcast_huds_stream_cursor_input:{
+		initial_value:"broadcast_huds_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	broadcast_huds_stream_cursor_value_input:{
+		created_at:"timestamptz",
+		hud_json:"jsonb",
+		id:"uuid",
+		size_bytes:"bigint",
+		updated_at:"timestamptz",
+		uploaded_by_steam_id:"bigint"
+	},
+	broadcast_huds_update_column: "enum" as const,
+	broadcast_huds_updates:{
+		_append:"broadcast_huds_append_input",
+		_delete_at_path:"broadcast_huds_delete_at_path_input",
+		_delete_elem:"broadcast_huds_delete_elem_input",
+		_delete_key:"broadcast_huds_delete_key_input",
+		_inc:"broadcast_huds_inc_input",
+		_prepend:"broadcast_huds_prepend_input",
+		_set:"broadcast_huds_set_input",
+		where:"broadcast_huds_bool_exp"
+	},
 	bytea: `scalar.bytea` as const,
 	bytea_comparison_exp:{
 		_eq:"bytea",
@@ -10019,6 +10140,121 @@ export const AllTypesProps: Record<string,any> = {
 		invited_by_steam_id:"order_by",
 		steam_id:"order_by"
 	},
+	map_asset_builds:{
+		failed:{
+
+		},
+		failed_view:{
+
+		},
+		maps:{
+
+		}
+	},
+	map_asset_builds_aggregate_fields:{
+		count:{
+			columns:"map_asset_builds_select_column"
+		}
+	},
+	map_asset_builds_append_input:{
+		failed:"jsonb",
+		failed_view:"jsonb",
+		maps:"jsonb"
+	},
+	map_asset_builds_bool_exp:{
+		_and:"map_asset_builds_bool_exp",
+		_not:"map_asset_builds_bool_exp",
+		_or:"map_asset_builds_bool_exp",
+		build_id:"String_comparison_exp",
+		created_at:"timestamptz_comparison_exp",
+		error:"String_comparison_exp",
+		failed:"jsonb_comparison_exp",
+		failed_view:"jsonb_comparison_exp",
+		finished_at:"timestamptz_comparison_exp",
+		manifest:"String_comparison_exp",
+		maps:"jsonb_comparison_exp",
+		started_at:"timestamptz_comparison_exp",
+		status:"String_comparison_exp",
+		updated_at:"timestamptz_comparison_exp"
+	},
+	map_asset_builds_constraint: "enum" as const,
+	map_asset_builds_delete_at_path_input:{
+
+	},
+	map_asset_builds_delete_elem_input:{
+
+	},
+	map_asset_builds_delete_key_input:{
+
+	},
+	map_asset_builds_insert_input:{
+		created_at:"timestamptz",
+		failed:"jsonb",
+		failed_view:"jsonb",
+		finished_at:"timestamptz",
+		maps:"jsonb",
+		started_at:"timestamptz",
+		updated_at:"timestamptz"
+	},
+	map_asset_builds_on_conflict:{
+		constraint:"map_asset_builds_constraint",
+		update_columns:"map_asset_builds_update_column",
+		where:"map_asset_builds_bool_exp"
+	},
+	map_asset_builds_order_by:{
+		build_id:"order_by",
+		created_at:"order_by",
+		error:"order_by",
+		failed:"order_by",
+		failed_view:"order_by",
+		finished_at:"order_by",
+		manifest:"order_by",
+		maps:"order_by",
+		started_at:"order_by",
+		status:"order_by",
+		updated_at:"order_by"
+	},
+	map_asset_builds_pk_columns_input:{
+
+	},
+	map_asset_builds_prepend_input:{
+		failed:"jsonb",
+		failed_view:"jsonb",
+		maps:"jsonb"
+	},
+	map_asset_builds_select_column: "enum" as const,
+	map_asset_builds_set_input:{
+		created_at:"timestamptz",
+		failed:"jsonb",
+		failed_view:"jsonb",
+		finished_at:"timestamptz",
+		maps:"jsonb",
+		started_at:"timestamptz",
+		updated_at:"timestamptz"
+	},
+	map_asset_builds_stream_cursor_input:{
+		initial_value:"map_asset_builds_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	map_asset_builds_stream_cursor_value_input:{
+		created_at:"timestamptz",
+		failed:"jsonb",
+		failed_view:"jsonb",
+		finished_at:"timestamptz",
+		maps:"jsonb",
+		started_at:"timestamptz",
+		updated_at:"timestamptz"
+	},
+	map_asset_builds_update_column: "enum" as const,
+	map_asset_builds_updates:{
+		_append:"map_asset_builds_append_input",
+		_delete_at_path:"map_asset_builds_delete_at_path_input",
+		_delete_elem:"map_asset_builds_delete_elem_input",
+		_delete_key:"map_asset_builds_delete_key_input",
+		_prepend:"map_asset_builds_prepend_input",
+		_set:"map_asset_builds_set_input",
+		where:"map_asset_builds_bool_exp"
+	},
 	map_callouts:{
 		boxes:{
 
@@ -13664,6 +13900,9 @@ export const AllTypesProps: Record<string,any> = {
 		bakeShaders:{
 			game_server_node_id:"uuid"
 		},
+		buildMapAssets:{
+			game_server_node_id:"uuid"
+		},
 		callForOrganizer:{
 
 		},
@@ -13799,6 +14038,12 @@ export const AllTypesProps: Record<string,any> = {
 			where:"awards_bool_exp"
 		},
 		delete_awards_by_pk:{
+			id:"uuid"
+		},
+		delete_broadcast_huds:{
+			where:"broadcast_huds_bool_exp"
+		},
+		delete_broadcast_huds_by_pk:{
 			id:"uuid"
 		},
 		delete_chat_read_state:{
@@ -14395,6 +14640,12 @@ export const AllTypesProps: Record<string,any> = {
 		delete_lobby_players_by_pk:{
 			lobby_id:"uuid",
 			steam_id:"bigint"
+		},
+		delete_map_asset_builds:{
+			where:"map_asset_builds_bool_exp"
+		},
+		delete_map_asset_builds_by_pk:{
+
 		},
 		delete_map_callouts:{
 			where:"map_callouts_bool_exp"
@@ -15105,6 +15356,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_awards_one:{
 			object:"awards_insert_input",
 			on_conflict:"awards_on_conflict"
+		},
+		insert_broadcast_huds:{
+			objects:"broadcast_huds_insert_input",
+			on_conflict:"broadcast_huds_on_conflict"
+		},
+		insert_broadcast_huds_one:{
+			object:"broadcast_huds_insert_input",
+			on_conflict:"broadcast_huds_on_conflict"
 		},
 		insert_chat_read_state:{
 			objects:"chat_read_state_insert_input",
@@ -15887,6 +16146,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_lobby_players_one:{
 			object:"lobby_players_insert_input",
 			on_conflict:"lobby_players_on_conflict"
+		},
+		insert_map_asset_builds:{
+			objects:"map_asset_builds_insert_input",
+			on_conflict:"map_asset_builds_on_conflict"
+		},
+		insert_map_asset_builds_one:{
+			object:"map_asset_builds_insert_input",
+			on_conflict:"map_asset_builds_on_conflict"
 		},
 		insert_map_callouts:{
 			objects:"map_callouts_insert_input",
@@ -17093,6 +17360,29 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_awards_many:{
 			updates:"awards_updates"
+		},
+		update_broadcast_huds:{
+			_append:"broadcast_huds_append_input",
+			_delete_at_path:"broadcast_huds_delete_at_path_input",
+			_delete_elem:"broadcast_huds_delete_elem_input",
+			_delete_key:"broadcast_huds_delete_key_input",
+			_inc:"broadcast_huds_inc_input",
+			_prepend:"broadcast_huds_prepend_input",
+			_set:"broadcast_huds_set_input",
+			where:"broadcast_huds_bool_exp"
+		},
+		update_broadcast_huds_by_pk:{
+			_append:"broadcast_huds_append_input",
+			_delete_at_path:"broadcast_huds_delete_at_path_input",
+			_delete_elem:"broadcast_huds_delete_elem_input",
+			_delete_key:"broadcast_huds_delete_key_input",
+			_inc:"broadcast_huds_inc_input",
+			_prepend:"broadcast_huds_prepend_input",
+			_set:"broadcast_huds_set_input",
+			pk_columns:"broadcast_huds_pk_columns_input"
+		},
+		update_broadcast_huds_many:{
+			updates:"broadcast_huds_updates"
 		},
 		update_chat_read_state:{
 			_inc:"chat_read_state_inc_input",
@@ -18309,6 +18599,27 @@ export const AllTypesProps: Record<string,any> = {
 		update_lobby_players_many:{
 			updates:"lobby_players_updates"
 		},
+		update_map_asset_builds:{
+			_append:"map_asset_builds_append_input",
+			_delete_at_path:"map_asset_builds_delete_at_path_input",
+			_delete_elem:"map_asset_builds_delete_elem_input",
+			_delete_key:"map_asset_builds_delete_key_input",
+			_prepend:"map_asset_builds_prepend_input",
+			_set:"map_asset_builds_set_input",
+			where:"map_asset_builds_bool_exp"
+		},
+		update_map_asset_builds_by_pk:{
+			_append:"map_asset_builds_append_input",
+			_delete_at_path:"map_asset_builds_delete_at_path_input",
+			_delete_elem:"map_asset_builds_delete_elem_input",
+			_delete_key:"map_asset_builds_delete_key_input",
+			_prepend:"map_asset_builds_prepend_input",
+			_set:"map_asset_builds_set_input",
+			pk_columns:"map_asset_builds_pk_columns_input"
+		},
+		update_map_asset_builds_many:{
+			updates:"map_asset_builds_updates"
+		},
 		update_map_callouts:{
 			_append:"map_callouts_append_input",
 			_delete_at_path:"map_callouts_delete_at_path_input",
@@ -19474,12 +19785,22 @@ export const AllTypesProps: Record<string,any> = {
 			updates:"utility_drift_results_updates"
 		},
 		update_utility_drift_scans:{
+			_append:"utility_drift_scans_append_input",
+			_delete_at_path:"utility_drift_scans_delete_at_path_input",
+			_delete_elem:"utility_drift_scans_delete_elem_input",
+			_delete_key:"utility_drift_scans_delete_key_input",
 			_inc:"utility_drift_scans_inc_input",
+			_prepend:"utility_drift_scans_prepend_input",
 			_set:"utility_drift_scans_set_input",
 			where:"utility_drift_scans_bool_exp"
 		},
 		update_utility_drift_scans_by_pk:{
+			_append:"utility_drift_scans_append_input",
+			_delete_at_path:"utility_drift_scans_delete_at_path_input",
+			_delete_elem:"utility_drift_scans_delete_elem_input",
+			_delete_key:"utility_drift_scans_delete_key_input",
 			_inc:"utility_drift_scans_inc_input",
+			_prepend:"utility_drift_scans_prepend_input",
 			_set:"utility_drift_scans_set_input",
 			pk_columns:"utility_drift_scans_pk_columns_input"
 		},
@@ -19692,9 +20013,6 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_v_team_stage_results_many:{
 			updates:"v_team_stage_results_updates"
-		},
-		buildMapAssets:{
-			game_server_node_id:"uuid"
 		},
 		validateGamedata:{
 			game_server_node_id:"uuid"
@@ -26884,6 +27202,19 @@ export const AllTypesProps: Record<string,any> = {
 		awards_by_pk:{
 			id:"uuid"
 		},
+		broadcast_huds:{
+			distinct_on:"broadcast_huds_select_column",
+			order_by:"broadcast_huds_order_by",
+			where:"broadcast_huds_bool_exp"
+		},
+		broadcast_huds_aggregate:{
+			distinct_on:"broadcast_huds_select_column",
+			order_by:"broadcast_huds_order_by",
+			where:"broadcast_huds_bool_exp"
+		},
+		broadcast_huds_by_pk:{
+			id:"uuid"
+		},
 		chat_read_state:{
 			distinct_on:"chat_read_state_select_column",
 			order_by:"chat_read_state_order_by",
@@ -28265,6 +28596,19 @@ export const AllTypesProps: Record<string,any> = {
 		lobby_players_by_pk:{
 			lobby_id:"uuid",
 			steam_id:"bigint"
+		},
+		map_asset_builds:{
+			distinct_on:"map_asset_builds_select_column",
+			order_by:"map_asset_builds_order_by",
+			where:"map_asset_builds_bool_exp"
+		},
+		map_asset_builds_aggregate:{
+			distinct_on:"map_asset_builds_select_column",
+			order_by:"map_asset_builds_order_by",
+			where:"map_asset_builds_bool_exp"
+		},
+		map_asset_builds_by_pk:{
+
 		},
 		map_callouts:{
 			distinct_on:"map_callouts_select_column",
@@ -30858,6 +31202,23 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"awards_stream_cursor_input",
 			where:"awards_bool_exp"
 		},
+		broadcast_huds:{
+			distinct_on:"broadcast_huds_select_column",
+			order_by:"broadcast_huds_order_by",
+			where:"broadcast_huds_bool_exp"
+		},
+		broadcast_huds_aggregate:{
+			distinct_on:"broadcast_huds_select_column",
+			order_by:"broadcast_huds_order_by",
+			where:"broadcast_huds_bool_exp"
+		},
+		broadcast_huds_by_pk:{
+			id:"uuid"
+		},
+		broadcast_huds_stream:{
+			cursor:"broadcast_huds_stream_cursor_input",
+			where:"broadcast_huds_bool_exp"
+		},
 		chat_read_state:{
 			distinct_on:"chat_read_state_select_column",
 			order_by:"chat_read_state_order_by",
@@ -32590,6 +32951,23 @@ export const AllTypesProps: Record<string,any> = {
 		lobby_players_stream:{
 			cursor:"lobby_players_stream_cursor_input",
 			where:"lobby_players_bool_exp"
+		},
+		map_asset_builds:{
+			distinct_on:"map_asset_builds_select_column",
+			order_by:"map_asset_builds_order_by",
+			where:"map_asset_builds_bool_exp"
+		},
+		map_asset_builds_aggregate:{
+			distinct_on:"map_asset_builds_select_column",
+			order_by:"map_asset_builds_order_by",
+			where:"map_asset_builds_bool_exp"
+		},
+		map_asset_builds_by_pk:{
+
+		},
+		map_asset_builds_stream:{
+			cursor:"map_asset_builds_stream_cursor_input",
+			where:"map_asset_builds_bool_exp"
 		},
 		map_callouts:{
 			distinct_on:"map_callouts_select_column",
@@ -40138,6 +40516,9 @@ export const AllTypesProps: Record<string,any> = {
 		distance_z:"order_by"
 	},
 	utility_drift_scans:{
+		caveats:{
+
+		},
 		results:{
 			distinct_on:"utility_drift_results_select_column",
 			order_by:"utility_drift_results_order_by",
@@ -40154,11 +40535,15 @@ export const AllTypesProps: Record<string,any> = {
 			columns:"utility_drift_scans_select_column"
 		}
 	},
+	utility_drift_scans_append_input:{
+		caveats:"jsonb"
+	},
 	utility_drift_scans_bool_exp:{
 		_and:"utility_drift_scans_bool_exp",
 		_not:"utility_drift_scans_bool_exp",
 		_or:"utility_drift_scans_bool_exp",
 		broken:"Int_comparison_exp",
+		caveats:"jsonb_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
 		failure_reason:"String_comparison_exp",
 		finished_at:"timestamptz_comparison_exp",
@@ -40181,11 +40566,21 @@ export const AllTypesProps: Record<string,any> = {
 		updated_at:"timestamptz_comparison_exp"
 	},
 	utility_drift_scans_constraint: "enum" as const,
+	utility_drift_scans_delete_at_path_input:{
+
+	},
+	utility_drift_scans_delete_elem_input:{
+
+	},
+	utility_drift_scans_delete_key_input:{
+
+	},
 	utility_drift_scans_inc_input:{
 		max_distance:"float8",
 		requested_by_steam_id:"bigint"
 	},
 	utility_drift_scans_insert_input:{
+		caveats:"jsonb",
 		created_at:"timestamptz",
 		finished_at:"timestamptz",
 		id:"uuid",
@@ -40207,6 +40602,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	utility_drift_scans_order_by:{
 		broken:"order_by",
+		caveats:"order_by",
 		created_at:"order_by",
 		failure_reason:"order_by",
 		finished_at:"order_by",
@@ -40230,8 +40626,12 @@ export const AllTypesProps: Record<string,any> = {
 	utility_drift_scans_pk_columns_input:{
 		id:"uuid"
 	},
+	utility_drift_scans_prepend_input:{
+		caveats:"jsonb"
+	},
 	utility_drift_scans_select_column: "enum" as const,
 	utility_drift_scans_set_input:{
+		caveats:"jsonb",
 		created_at:"timestamptz",
 		finished_at:"timestamptz",
 		id:"uuid",
@@ -40245,6 +40645,7 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	utility_drift_scans_stream_cursor_value_input:{
+		caveats:"jsonb",
 		created_at:"timestamptz",
 		finished_at:"timestamptz",
 		id:"uuid",
@@ -40255,7 +40656,12 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	utility_drift_scans_update_column: "enum" as const,
 	utility_drift_scans_updates:{
+		_append:"utility_drift_scans_append_input",
+		_delete_at_path:"utility_drift_scans_delete_at_path_input",
+		_delete_elem:"utility_drift_scans_delete_elem_input",
+		_delete_key:"utility_drift_scans_delete_key_input",
 		_inc:"utility_drift_scans_inc_input",
+		_prepend:"utility_drift_scans_prepend_input",
 		_set:"utility_drift_scans_set_input",
 		where:"utility_drift_scans_bool_exp"
 	},
@@ -48334,6 +48740,113 @@ export const ReturnTypes: Record<string,any> = {
 		silhouette:"Float"
 	},
 	bigint: `scalar.bigint` as const,
+	broadcast_huds:{
+		author:"String",
+		created_at:"timestamptz",
+		description:"String",
+		enabled:"Boolean",
+		hud_json:"jsonb",
+		id:"uuid",
+		is_signed:"Boolean",
+		jthud_id:"String",
+		name:"String",
+		size_bytes:"bigint",
+		slug:"String",
+		source:"String",
+		storage_key:"String",
+		thumbnail:"String",
+		updated_at:"timestamptz",
+		uploaded_by_steam_id:"bigint",
+		variant:"String",
+		version:"String"
+	},
+	broadcast_huds_aggregate:{
+		aggregate:"broadcast_huds_aggregate_fields",
+		nodes:"broadcast_huds"
+	},
+	broadcast_huds_aggregate_fields:{
+		avg:"broadcast_huds_avg_fields",
+		count:"Int",
+		max:"broadcast_huds_max_fields",
+		min:"broadcast_huds_min_fields",
+		stddev:"broadcast_huds_stddev_fields",
+		stddev_pop:"broadcast_huds_stddev_pop_fields",
+		stddev_samp:"broadcast_huds_stddev_samp_fields",
+		sum:"broadcast_huds_sum_fields",
+		var_pop:"broadcast_huds_var_pop_fields",
+		var_samp:"broadcast_huds_var_samp_fields",
+		variance:"broadcast_huds_variance_fields"
+	},
+	broadcast_huds_avg_fields:{
+		size_bytes:"Float",
+		uploaded_by_steam_id:"Float"
+	},
+	broadcast_huds_max_fields:{
+		author:"String",
+		created_at:"timestamptz",
+		description:"String",
+		id:"uuid",
+		jthud_id:"String",
+		name:"String",
+		size_bytes:"bigint",
+		slug:"String",
+		source:"String",
+		storage_key:"String",
+		thumbnail:"String",
+		updated_at:"timestamptz",
+		uploaded_by_steam_id:"bigint",
+		variant:"String",
+		version:"String"
+	},
+	broadcast_huds_min_fields:{
+		author:"String",
+		created_at:"timestamptz",
+		description:"String",
+		id:"uuid",
+		jthud_id:"String",
+		name:"String",
+		size_bytes:"bigint",
+		slug:"String",
+		source:"String",
+		storage_key:"String",
+		thumbnail:"String",
+		updated_at:"timestamptz",
+		uploaded_by_steam_id:"bigint",
+		variant:"String",
+		version:"String"
+	},
+	broadcast_huds_mutation_response:{
+		affected_rows:"Int",
+		returning:"broadcast_huds"
+	},
+	broadcast_huds_stddev_fields:{
+		size_bytes:"Float",
+		uploaded_by_steam_id:"Float"
+	},
+	broadcast_huds_stddev_pop_fields:{
+		size_bytes:"Float",
+		uploaded_by_steam_id:"Float"
+	},
+	broadcast_huds_stddev_samp_fields:{
+		size_bytes:"Float",
+		uploaded_by_steam_id:"Float"
+	},
+	broadcast_huds_sum_fields:{
+		size_bytes:"bigint",
+		uploaded_by_steam_id:"bigint"
+	},
+	broadcast_huds_var_pop_fields:{
+		size_bytes:"Float",
+		uploaded_by_steam_id:"Float"
+	},
+	broadcast_huds_var_samp_fields:{
+		size_bytes:"Float",
+		uploaded_by_steam_id:"Float"
+	},
+	broadcast_huds_variance_fields:{
+		size_bytes:"Float",
+		uploaded_by_steam_id:"Float"
+	},
 	bytea: `scalar.bytea` as const,
 	chat_read_state:{
 		last_read_at:"timestamptz",
@@ -53193,6 +53706,52 @@ export const ReturnTypes: Record<string,any> = {
 		invited_by_steam_id:"Float",
 		steam_id:"Float"
 	},
+	map_asset_builds:{
+		build_id:"String",
+		created_at:"timestamptz",
+		error:"String",
+		failed:"jsonb",
+		failed_view:"jsonb",
+		finished_at:"timestamptz",
+		manifest:"String",
+		maps:"jsonb",
+		started_at:"timestamptz",
+		status:"String",
+		updated_at:"timestamptz"
+	},
+	map_asset_builds_aggregate:{
+		aggregate:"map_asset_builds_aggregate_fields",
+		nodes:"map_asset_builds"
+	},
+	map_asset_builds_aggregate_fields:{
+		count:"Int",
+		max:"map_asset_builds_max_fields",
+		min:"map_asset_builds_min_fields"
+	},
+	map_asset_builds_max_fields:{
+		build_id:"String",
+		created_at:"timestamptz",
+		error:"String",
+		finished_at:"timestamptz",
+		manifest:"String",
+		started_at:"timestamptz",
+		status:"String",
+		updated_at:"timestamptz"
+	},
+	map_asset_builds_min_fields:{
+		build_id:"String",
+		created_at:"timestamptz",
+		error:"String",
+		finished_at:"timestamptz",
+		manifest:"String",
+		started_at:"timestamptz",
+		status:"String",
+		updated_at:"timestamptz"
+	},
+	map_asset_builds_mutation_response:{
+		affected_rows:"Int",
+		returning:"map_asset_builds"
+	},
 	map_callouts:{
 		boxes:"jsonb",
 		map_name:"String",
@@ -54863,6 +55422,7 @@ export const ReturnTypes: Record<string,any> = {
 		backfillSeasonEloStatus:"SeasonBackfillStatusOutput",
 		backfillUtilityLaunchSeeds:"UtilityLaunchSeedBackfillOutput",
 		bakeShaders:"SuccessOutput",
+		buildMapAssets:"SuccessOutput",
 		callForOrganizer:"SuccessOutput",
 		cancelBackfillSeasonElo:"SuccessOutput",
 		cancelBakeShaders:"SuccessOutput",
@@ -54911,6 +55471,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_award_recipients_by_pk:"award_recipients",
 		delete_awards:"awards_mutation_response",
 		delete_awards_by_pk:"awards",
+		delete_broadcast_huds:"broadcast_huds_mutation_response",
+		delete_broadcast_huds_by_pk:"broadcast_huds",
 		delete_chat_read_state:"chat_read_state_mutation_response",
 		delete_chat_read_state_by_pk:"chat_read_state",
 		delete_clip_render_jobs:"clip_render_jobs_mutation_response",
@@ -55106,6 +55668,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_lobbies_by_pk:"lobbies",
 		delete_lobby_players:"lobby_players_mutation_response",
 		delete_lobby_players_by_pk:"lobby_players",
+		delete_map_asset_builds:"map_asset_builds_mutation_response",
+		delete_map_asset_builds_by_pk:"map_asset_builds",
 		delete_map_callouts:"map_callouts_mutation_response",
 		delete_map_callouts_by_pk:"map_callouts",
 		delete_map_pools:"map_pools_mutation_response",
@@ -55326,6 +55890,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_award_recipients_one:"award_recipients",
 		insert_awards:"awards_mutation_response",
 		insert_awards_one:"awards",
+		insert_broadcast_huds:"broadcast_huds_mutation_response",
+		insert_broadcast_huds_one:"broadcast_huds",
 		insert_chat_read_state:"chat_read_state_mutation_response",
 		insert_chat_read_state_one:"chat_read_state",
 		insert_clip_render_jobs:"clip_render_jobs_mutation_response",
@@ -55522,6 +56088,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_lobbies_one:"lobbies",
 		insert_lobby_players:"lobby_players_mutation_response",
 		insert_lobby_players_one:"lobby_players",
+		insert_map_asset_builds:"map_asset_builds_mutation_response",
+		insert_map_asset_builds_one:"map_asset_builds",
 		insert_map_callouts:"map_callouts_mutation_response",
 		insert_map_callouts_one:"map_callouts",
 		insert_map_pools:"map_pools_mutation_response",
@@ -55864,6 +56432,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_awards:"awards_mutation_response",
 		update_awards_by_pk:"awards",
 		update_awards_many:"awards_mutation_response",
+		update_broadcast_huds:"broadcast_huds_mutation_response",
+		update_broadcast_huds_by_pk:"broadcast_huds",
+		update_broadcast_huds_many:"broadcast_huds_mutation_response",
 		update_chat_read_state:"chat_read_state_mutation_response",
 		update_chat_read_state_by_pk:"chat_read_state",
 		update_chat_read_state_many:"chat_read_state_mutation_response",
@@ -56157,6 +56728,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_lobby_players:"lobby_players_mutation_response",
 		update_lobby_players_by_pk:"lobby_players",
 		update_lobby_players_many:"lobby_players_mutation_response",
+		update_map_asset_builds:"map_asset_builds_mutation_response",
+		update_map_asset_builds_by_pk:"map_asset_builds",
+		update_map_asset_builds_many:"map_asset_builds_mutation_response",
 		update_map_callouts:"map_callouts_mutation_response",
 		update_map_callouts_by_pk:"map_callouts",
 		update_map_callouts_many:"map_callouts_mutation_response",
@@ -56460,7 +57034,6 @@ export const ReturnTypes: Record<string,any> = {
 		update_v_team_stage_results:"v_team_stage_results_mutation_response",
 		update_v_team_stage_results_by_pk:"v_team_stage_results",
 		update_v_team_stage_results_many:"v_team_stage_results_mutation_response",
-		buildMapAssets:"SuccessOutput",
 		validateGamedata:"SuccessOutput",
 		watchDemo:"WatchDemoOutput",
 		writeServerFile:"SuccessOutput"
@@ -62309,6 +62882,9 @@ export const ReturnTypes: Record<string,any> = {
 		awards:"awards",
 		awards_aggregate:"awards_aggregate",
 		awards_by_pk:"awards",
+		broadcast_huds:"broadcast_huds",
+		broadcast_huds_aggregate:"broadcast_huds_aggregate",
+		broadcast_huds_by_pk:"broadcast_huds",
 		chat_read_state:"chat_read_state",
 		chat_read_state_aggregate:"chat_read_state_aggregate",
 		chat_read_state_by_pk:"chat_read_state",
@@ -62636,6 +63212,9 @@ export const ReturnTypes: Record<string,any> = {
 		lobby_players:"lobby_players",
 		lobby_players_aggregate:"lobby_players_aggregate",
 		lobby_players_by_pk:"lobby_players",
+		map_asset_builds:"map_asset_builds",
+		map_asset_builds_aggregate:"map_asset_builds_aggregate",
+		map_asset_builds_by_pk:"map_asset_builds",
 		map_callouts:"map_callouts",
 		map_callouts_aggregate:"map_callouts_aggregate",
 		map_callouts_by_pk:"map_callouts",
@@ -63532,6 +64111,10 @@ export const ReturnTypes: Record<string,any> = {
 		awards_aggregate:"awards_aggregate",
 		awards_by_pk:"awards",
 		awards_stream:"awards",
+		broadcast_huds:"broadcast_huds",
+		broadcast_huds_aggregate:"broadcast_huds_aggregate",
+		broadcast_huds_by_pk:"broadcast_huds",
+		broadcast_huds_stream:"broadcast_huds",
 		chat_read_state:"chat_read_state",
 		chat_read_state_aggregate:"chat_read_state_aggregate",
 		chat_read_state_by_pk:"chat_read_state",
@@ -63933,6 +64516,10 @@ export const ReturnTypes: Record<string,any> = {
 		lobby_players_aggregate:"lobby_players_aggregate",
 		lobby_players_by_pk:"lobby_players",
 		lobby_players_stream:"lobby_players",
+		map_asset_builds:"map_asset_builds",
+		map_asset_builds_aggregate:"map_asset_builds_aggregate",
+		map_asset_builds_by_pk:"map_asset_builds",
+		map_asset_builds_stream:"map_asset_builds",
 		map_callouts:"map_callouts",
 		map_callouts_aggregate:"map_callouts_aggregate",
 		map_callouts_by_pk:"map_callouts",
@@ -67566,6 +68153,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	utility_drift_scans:{
 		broken:"Int",
+		caveats:"jsonb",
 		created_at:"timestamptz",
 		failure_reason:"String",
 		finished_at:"timestamptz",

@@ -30,6 +30,8 @@ const realFetch = globalThis.fetch;
 
 const stage = (wrapper: any, id: string) =>
   wrapper.find(`[data-test="storage-check-${id}"]`);
+const note = (wrapper: any, id: string) =>
+  wrapper.find(`[data-test="storage-check-note-${id}"]`);
 
 async function runCheck(workerUrl: string | null) {
   useApplicationSettingsStore().settings = workerUrl
@@ -83,6 +85,9 @@ describe("StorageCheck", () => {
     expect(stage(wrapper, "read").attributes("data-state")).toBe("ok");
     expect(stage(wrapper, "edge").attributes("data-state")).toBe("ok");
     expect(stage(wrapper, "edge").text()).toContain("Through cf.acme.gg");
+    expect(wrapper.find('[data-test^="storage-check-note-"]').exists()).toBe(
+      false,
+    );
   });
 
   it("leaves out the edge stage without a worker", async () => {
@@ -100,7 +105,8 @@ describe("StorageCheck", () => {
     const wrapper = await runCheck(null);
 
     expect(stage(wrapper, "write").attributes("data-state")).toBe("fail");
-    expect(stage(wrapper, "write").text()).toContain("Access Denied");
+    expect(stage(wrapper, "write").text()).toContain("Failed");
+    expect(note(wrapper, "write").text()).toContain("Access Denied");
     expect(stage(wrapper, "read").attributes("data-state")).toBe("skipped");
     expect(readFile).not.toHaveBeenCalled();
   });
@@ -111,7 +117,8 @@ describe("StorageCheck", () => {
     const wrapper = await runCheck(null);
 
     expect(stage(wrapper, "read").attributes("data-state")).toBe("manual");
-    expect(stage(wrapper, "read").find("a").attributes("href")).toBe(TEST_FILE);
+    expect(stage(wrapper, "read").text()).toContain("Check by hand");
+    expect(note(wrapper, "read").find("a").attributes("href")).toBe(TEST_FILE);
   });
 
   it("fails the edge stage when Backblaze rejects the worker's keys", async () => {
@@ -128,7 +135,7 @@ describe("StorageCheck", () => {
     const wrapper = await runCheck("https://cf.acme.gg");
 
     expect(stage(wrapper, "edge").attributes("data-state")).toBe("fail");
-    expect(stage(wrapper, "edge").text()).toContain(
+    expect(note(wrapper, "edge").text()).toContain(
       "Keys rejected (InvalidAccessKeyId)",
     );
   });

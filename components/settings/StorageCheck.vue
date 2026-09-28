@@ -2,7 +2,13 @@
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
-import { CheckCircle2, ExternalLink, Play, XCircle } from "lucide-vue-next";
+import {
+  AlertTriangle,
+  CheckCircle2,
+  ExternalLink,
+  Play,
+  XCircle,
+} from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
@@ -116,10 +122,7 @@ async function edge() {
       detail: t(key("cloudflare_worker_outdated")),
     };
   } else if (health.bucket === "ok") {
-    stages.value.edge = {
-      state: "ok",
-      detail: `${t(key("cloudflare_worker_bucket_ok"))} · ${took(start)}`,
-    };
+    stages.value.edge = { state: "ok", detail: took(start) };
   } else if (health.bucket === "rejected") {
     stages.value.edge = {
       state: "fail",
@@ -175,6 +178,8 @@ const rows = computed(() =>
   })),
 );
 
+// Stages only ever show a one-line result so the three columns stay level;
+// why a stage failed goes in the notes under them.
 const result = (stage: Stage) => {
   switch (stage.state) {
     case "idle":
@@ -183,10 +188,21 @@ const result = (stage: Stage) => {
       return t(key("storage_check_running"));
     case "skipped":
       return t(key("storage_check_skipped"));
+    case "fail":
+      return t(key("storage_check_failed"));
+    case "manual":
+      return t(key("storage_check_unverified"));
     default:
       return stage.detail ?? "";
   }
 };
+
+const notes = computed(() =>
+  rows.value.filter(
+    (stage) =>
+      (stage.state === "fail" || stage.state === "manual") && stage.detail,
+  ),
+);
 
 const node: Record<StageState, string> = {
   idle: "border border-muted-foreground/50 bg-background",
@@ -286,32 +302,57 @@ const lastRunTime = computed(() =>
         </span>
         <span class="text-xs text-muted-foreground/70">{{ stage.path }}</span>
         <span
-          class="mt-1.5 flex items-start gap-1.5 text-sm"
+          class="mt-1.5 flex min-w-0 items-center gap-1.5 text-sm"
           :class="text[stage.state]"
+          data-test="storage-check-result"
         >
           <CheckCircle2
             v-if="stage.state === 'ok'"
-            class="mt-0.5 size-3.5 shrink-0"
+            class="size-3.5 shrink-0"
           />
           <XCircle
             v-else-if="stage.state === 'fail'"
-            class="mt-0.5 size-3.5 shrink-0"
+            class="size-3.5 shrink-0"
           />
-          <span class="min-w-0 break-words" data-test="storage-check-result">
-            {{ result(stage) }}
-          </span>
+          <AlertTriangle
+            v-else-if="stage.state === 'manual'"
+            class="size-3.5 shrink-0"
+          />
+          <span class="truncate">{{ result(stage) }}</span>
         </span>
-        <a
-          v-if="stage.link"
-          :href="stage.link"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex w-fit items-center gap-1 text-sm text-primary transition-colors hover:text-primary/80"
-        >
-          {{ $t(key("storage_check_open_file")) }}
-          <ExternalLink class="size-3.5" />
-        </a>
       </li>
     </ol>
+
+    <ul
+      v-if="notes.length"
+      class="grid gap-1.5 border-t border-dashed border-border/70 pt-3 text-sm"
+    >
+      <li
+        v-for="note in notes"
+        :key="note.id"
+        class="flex items-start gap-2"
+        :data-test="`storage-check-note-${note.id}`"
+      >
+        <span
+          class="mt-[0.2rem] shrink-0 font-mono text-[0.64rem] uppercase tracking-[0.2em]"
+          :class="text[note.state]"
+        >
+          {{ note.index }}
+        </span>
+        <span class="text-muted-foreground">
+          {{ note.detail }}
+          <a
+            v-if="note.link"
+            :href="note.link"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="ml-1 inline-flex items-center gap-1 whitespace-nowrap text-primary transition-colors hover:text-primary/80"
+          >
+            {{ $t(key("storage_check_open_file")) }}
+            <ExternalLink class="size-3.5" />
+          </a>
+        </span>
+      </li>
+    </ul>
   </div>
 </template>

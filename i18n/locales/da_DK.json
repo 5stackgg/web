@@ -1975,13 +1975,13 @@
             "role_id": "Rolle-ID til kampnotifikationer",
             "role_id_description": "Disse roller nævnes i notifikationer om kampstatus. Du kan angive flere rolle-ID'er adskilt af komma."
           },
-          "gamedata_notifications": {
-            "title": "Notifikationer om gamedata-validering",
-            "description": "Konfigurer hvor resultater af signaturvalidering for CS2-gamedata sendes hen.",
-            "webhook": "Webhook-URL til gamedata-notifikationer",
-            "webhook_description": "Dedikeret webhook til resultater af gamedata-validering. Falder tilbage til standard-webhooken, hvis den ikke er angivet.",
-            "role_id": "Rolle-ID til gamedata-notifikationer",
-            "role_id_description": "Disse roller nævnes i notifikationer om gamedata-validering. Du kan angive flere rolle-ID'er adskilt af komma. Falder tilbage til standardrollen, hvis den ikke er angivet."
+          "cs2_build_notifications": {
+            "title": "Notifikationer om CS2-builds",
+            "description": "Hvor meddelelser om CS2-opdateringer, gamedata-validering og builds af kortressourcer sendes hen.",
+            "webhook": "Webhook-URL til CS2-build-notifikationer",
+            "webhook_description": "Dedikeret webhook til meddelelser om CS2-builds. Falder tilbage til standard-webhooken, hvis den ikke er angivet.",
+            "role_id": "Rolle-ID til CS2-build-notifikationer",
+            "role_id_description": "Disse roller nævnes i meddelelser om CS2-builds. Du kan angive flere rolle-ID'er adskilt af komma. Falder tilbage til standardrollen, hvis den ikke er angivet."
           },
           "server_notifications": {
             "title": "Servernotifikationer",
@@ -3426,7 +3426,122 @@
       "no_nodes_title": "Ingen game server nodes",
       "display_metrics": "Vis metrikker",
       "create": "Opret game server node",
-      "cs_version_info": "CS2-versionsinformation:",
+      "cs2_build": {
+        "title": "CS2-build",
+        "released": "Udgivet",
+        "history": "Buildhistorik",
+        "gamedata": "Gamedata",
+        "gamedata_description": "Plugin-signaturer, offsets og patches",
+        "map_assets": "Kortressourcer",
+        "map_assets_description": "Meshes, granat-clips og callouts til 3D-replay",
+        "gamedata_never": "Endnu ikke valideret for denne build",
+        "map_assets_never": "Endnu ikke bygget for denne build",
+        "auto_hint": "Kører af sig selv, når en node første gang rapporterer en ny build",
+        "map_assets_hint": "Bygges efter gamedata-validering, når auto-build er slået til",
+        "revalidate": "Valider igen",
+        "rebuild": "Byg igen",
+        "build": "Byg",
+        "retry_failed": "Prøv fejlede kort igen",
+        "run_on": "Kør på",
+        "automatic": "Automatisk",
+        "automatic_description": "En online node, der allerede er på build {build}",
+        "auto": "auto",
+        "started": "Startet",
+        "validated": "Valideret",
+        "finished": "Færdig",
+        "took": "tog {duration}",
+        "ran_on": "kørte på {node}",
+        "requested_by": "af {name}",
+        "vs_build": "Ændringer i forhold til {build}",
+        "first_run": "Intet at sammenligne med endnu",
+        "no_changes": "Ingen ændringer siden {build}",
+        "nothing_broken": "Intet i stykker",
+        "no_maps": "Ingen kort blev udgivet",
+        "reused_from": "genbrugt fra {build}",
+        "skipped_entries": "{count} sprunget over — kunne ikke kontrolleres",
+        "log": "Build-log",
+        "trigger": {
+          "auto": "automatisk",
+          "manual": "manuel"
+        },
+        "stats": {
+          "checked": "Kontrolleret",
+          "broken": "I stykker",
+          "warnings": "Advarsler",
+          "skipped": "Sprunget over",
+          "maps": "Kort",
+          "changed": "Ændret",
+          "unchanged": "Uændret",
+          "failed": "Fejlet"
+        },
+        "chip": {
+          "newly_broken": "{count} nyligt i stykker",
+          "fixed": "{count} rettet",
+          "new_warnings": "advarsler +{count}",
+          "rebuilt": "{count} bygget igen",
+          "added": "{count} tilføjet",
+          "removed": "{count} fjernet"
+        },
+        "change": {
+          "broken": "I stykker",
+          "still_broken": "Stadig i stykker",
+          "fixed": "Rettet",
+          "warning": "Advarsel",
+          "cleared": "Ryddet",
+          "rebuilt": "Bygget igen",
+          "added": "Tilføjet",
+          "removed": "Fjernet",
+          "failed": "Fejlet",
+          "unchanged": "Uændret",
+          "included": "Udgivet"
+        },
+        "reason": {
+          "vpk": "Kort ændret",
+          "pipeline": "Værktøjer ændret",
+          "assets": "Bygget igen",
+          "collision": "Kollision fejlede",
+          "view": "Visnings-mesh fejlede"
+        },
+        "gamedata_status": {
+          "running": "Validerer",
+          "passed": "Bestået",
+          "warning": "Advarsel",
+          "failed": "Fejlet",
+          "error": "Fejl",
+          "stale": "Gået i stå",
+          "none": "Ikke kørt"
+        },
+        "map_assets_status": {
+          "pending": "I kø",
+          "building": "Bygger",
+          "published": "Udgivet",
+          "partial": "Delvis",
+          "failed": "Fejlet",
+          "stale": "Gået i stå",
+          "none": "Ikke bygget"
+        },
+        "blocked": {
+          "no_node": "Ingen online node er på build {build}",
+          "running": "En validering kører allerede",
+          "building": "En build er allerede i kø eller kører"
+        },
+        "node_reason": {
+          "disabled": "Deaktiveret",
+          "gpu_only": "Kun-GPU-node",
+          "status": "{status}",
+          "updating": "Opdaterer CS2",
+          "other_build": "På build {build}"
+        },
+        "toast": {
+          "queued_validation": "Gamedata-validering sat i kø",
+          "queued_build": "Build af kortressourcer sat i kø"
+        },
+        "force": {
+          "title": "Byg alle kort igen?",
+          "description": "Kortressourcer til build {build} er allerede udgivet. En tvungen genbygning bygger alle kort igen på noden, hvilket kan tage et par timer, og udgiver kun en ny manifest-revision, hvis noget er ændret.",
+          "confirm": "Byg alle kort igen"
+        }
+      },
       "hide_offline": "Skjul offline noder",
       "only_enabled": "Kun aktive noder",
       "setup_dialog": {
@@ -3454,7 +3569,21 @@
         "supports_cpu_pinning": "Understøtter CPU-pinning",
         "cpu_governor": "CPU-governor"
       },
-      "last_updated": "Sidst opdateret: {date}",
+      "builds": {
+        "title": "CS2-buildhistorik",
+        "description": "Gamedata-validering og builds af kortressourcer for hver CS2-build, og hvad hver enkelt ændrede i forhold til den forrige build.",
+        "back": "Game server nodes",
+        "builds": "Builds",
+        "no_builds": "Ingen build er valideret eller bygget endnu.",
+        "current": "Aktuel",
+        "compared_with": "Sammenlignet med {build}",
+        "history_note": "Historikken starter med denne udgivelse; tidligere builds blev fjernet sammen med deres spilversion.",
+        "timeline": {
+          "detected": "Opdatering udgivet",
+          "gamedata": "Gamedata",
+          "map_assets": "Kortressourcer"
+        }
+      },
       "max_label": "Maks.:",
       "ports_label": "Porte:",
       "cpu_hardware": "CPU og hardware"
@@ -8097,8 +8226,6 @@
     "update_cs": "Opdater CS2",
     "updating_to": "Opdaterer til {version}",
     "update_to_version": "Opdater til {version}",
-    "validate_gamedata": "Valider gamedata",
-    "build_map_assets": "Byg kortressourcer",
     "note_label": "Bemærk:",
     "one_cpu_core": "1 CPU-kerne",
     "cpu_reservation_note": " {cores} er reserveret til systemet på hver node, så den forbliver responsiv.",
@@ -8196,8 +8323,6 @@
     "toast": {
       "cs_updating": "CS2 opdateres på noden",
       "csgo_installing": "CS:GO installeres på noden",
-      "validating_gamedata": "Validerer gamedata-signaturer på noden",
-      "building_map_assets": "Bygger kortmeshes og callouts til denne nodes CS2-build",
       "ports_updated": "Node-porte opdateret",
       "ports_removed": "Node-porte fjernet",
       "made_gpu_only": "Node sat til kun GPU",

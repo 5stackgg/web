@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import GameServerNodeRow from "~/components/game-server-nodes/GameServerNodeRow.vue";
 import SetupDialog from "~/components/game-server-nodes/SetupDialog.vue";
+import Cs2BuildCard from "~/components/game-server-nodes/Cs2BuildCard.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import FilterBar from "~/components/common/FilterBar.vue";
@@ -39,7 +40,6 @@ import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
 import {
   tacticalCtaButtonClasses,
   tacticalHeaderActionClasses,
-  tacticalSectionTickClasses,
   filterTriggerBase,
   filterTriggerIdle,
   filterTriggerActive,
@@ -106,29 +106,8 @@ const fadeTransition = {
     </div>
   </PageTransition>
 
-  <!-- CS version info strip -->
   <PageTransition :delay="120" class="mt-6" v-if="currentGameVersion">
-    <div
-      class="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-md border border-border bg-card/40 px-3 py-2 text-xs [backdrop-filter:blur(6px)]"
-    >
-      <span
-        class="inline-flex items-center gap-1.5 font-mono uppercase tracking-[0.16em] text-muted-foreground"
-      >
-        <span :class="tacticalSectionTickClasses"></span>
-        {{ $t("pages.game_server_nodes.cs_version_info") }}
-      </span>
-      <span class="font-semibold text-foreground">
-        {{ currentGameVersion.version }} ({{ currentGameVersion.build_id }})
-      </span>
-      <span class="text-muted-foreground/50">•</span>
-      <span class="text-muted-foreground">
-        {{
-          $t("pages.game_server_nodes.last_updated", {
-            date: new Date(currentGameVersion.updated_at).toLocaleString(),
-          })
-        }}
-      </span>
-    </div>
+    <Cs2BuildCard :current-version="currentGameVersion" />
   </PageTransition>
 
   <!-- Filters -->

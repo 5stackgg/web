@@ -1975,13 +1975,13 @@
             "role_id": "매치 알림 역할 ID",
             "role_id_description": "매치 상태 알림에서 이 역할들이 멘션됩니다. 여러 역할 ID를 쉼표로 구분해 추가할 수 있습니다."
           },
-          "gamedata_notifications": {
-            "title": "게임데이터 검증 알림",
-            "description": "CS2 게임데이터 시그니처 검증 결과가 게시되는 위치를 설정합니다.",
-            "webhook": "게임데이터 알림 웹훅 URL",
-            "webhook_description": "게임데이터 검증 결과 전용 웹훅입니다. 설정하지 않으면 기본 웹훅을 사용합니다.",
-            "role_id": "게임데이터 알림 역할 ID",
-            "role_id_description": "게임데이터 검증 알림에서 이 역할들이 멘션됩니다. 여러 역할 ID를 쉼표로 구분해 추가할 수 있습니다. 설정하지 않으면 기본 역할을 사용합니다."
+          "cs2_build_notifications": {
+            "title": "CS2 빌드 알림",
+            "description": "CS2 업데이트, 게임데이터 검증, 맵 에셋 빌드 알림이 게시되는 위치입니다.",
+            "webhook": "CS2 빌드 알림 웹훅 URL",
+            "webhook_description": "CS2 빌드 알림 전용 웹훅입니다. 설정하지 않으면 기본 웹훅을 사용합니다.",
+            "role_id": "CS2 빌드 알림 역할 ID",
+            "role_id_description": "CS2 빌드 알림에서 이 역할들이 멘션됩니다. 여러 역할 ID를 쉼표로 구분해 추가할 수 있습니다. 설정하지 않으면 기본 역할을 사용합니다."
           },
           "server_notifications": {
             "title": "서버 알림",
@@ -3426,7 +3426,122 @@
       "no_nodes_title": "게임 서버 노드 없음",
       "display_metrics": "지표 표시",
       "create": "게임 서버 노드 생성",
-      "cs_version_info": "CS2 버전 정보:",
+      "cs2_build": {
+        "title": "CS2 빌드",
+        "released": "출시",
+        "history": "빌드 기록",
+        "gamedata": "게임 데이터",
+        "gamedata_description": "플러그인 시그니처, 오프셋 및 패치",
+        "map_assets": "맵 에셋",
+        "map_assets_description": "3D 리플레이용 메시, 수류탄 클립 및 콜아웃",
+        "gamedata_never": "이 빌드는 아직 검증되지 않았습니다",
+        "map_assets_never": "이 빌드는 아직 빌드되지 않았습니다",
+        "auto_hint": "노드가 새 빌드를 처음 보고하면 자동으로 실행됩니다",
+        "map_assets_hint": "자동 빌드가 켜져 있으면 게임 데이터 검증 후 빌드됩니다",
+        "revalidate": "다시 검증",
+        "rebuild": "다시 빌드",
+        "build": "빌드",
+        "retry_failed": "실패한 맵 재시도",
+        "run_on": "실행 노드",
+        "automatic": "자동",
+        "automatic_description": "이미 {build} 빌드인 온라인 노드",
+        "auto": "자동",
+        "started": "시작",
+        "validated": "검증",
+        "finished": "완료",
+        "took": "{duration} 소요",
+        "ran_on": "{node}에서 실행",
+        "requested_by": "{name} 요청",
+        "vs_build": "{build} 대비 변경 사항",
+        "first_run": "아직 비교할 대상이 없습니다",
+        "no_changes": "{build} 이후 변경 사항 없음",
+        "nothing_broken": "손상된 항목 없음",
+        "no_maps": "게시된 맵이 없습니다",
+        "reused_from": "{build}에서 재사용",
+        "skipped_entries": "{count}개 건너뜀 — 확인할 수 없음",
+        "log": "빌드 로그",
+        "trigger": {
+          "auto": "자동",
+          "manual": "수동"
+        },
+        "stats": {
+          "checked": "확인됨",
+          "broken": "손상",
+          "warnings": "경고",
+          "skipped": "건너뜀",
+          "maps": "맵",
+          "changed": "변경됨",
+          "unchanged": "변경 없음",
+          "failed": "실패"
+        },
+        "chip": {
+          "newly_broken": "새로 손상 {count}",
+          "fixed": "수정 {count}",
+          "new_warnings": "경고 +{count}",
+          "rebuilt": "재빌드 {count}",
+          "added": "추가 {count}",
+          "removed": "제거 {count}"
+        },
+        "change": {
+          "broken": "손상",
+          "still_broken": "여전히 손상",
+          "fixed": "수정됨",
+          "warning": "경고",
+          "cleared": "해제됨",
+          "rebuilt": "재빌드됨",
+          "added": "추가됨",
+          "removed": "제거됨",
+          "failed": "실패",
+          "unchanged": "변경 없음",
+          "included": "게시됨"
+        },
+        "reason": {
+          "vpk": "맵 변경",
+          "pipeline": "도구 변경",
+          "assets": "재빌드",
+          "collision": "충돌 실패",
+          "view": "뷰 메시 실패"
+        },
+        "gamedata_status": {
+          "running": "검증 중",
+          "passed": "통과",
+          "warning": "경고",
+          "failed": "실패",
+          "error": "오류",
+          "stale": "멈춤",
+          "none": "실행 안 됨"
+        },
+        "map_assets_status": {
+          "pending": "대기 중",
+          "building": "빌드 중",
+          "published": "게시됨",
+          "partial": "일부",
+          "failed": "실패",
+          "stale": "멈춤",
+          "none": "빌드 안 됨"
+        },
+        "blocked": {
+          "no_node": "{build} 빌드인 온라인 노드가 없습니다",
+          "running": "이미 검증이 실행 중입니다",
+          "building": "이미 빌드가 대기 중이거나 실행 중입니다"
+        },
+        "node_reason": {
+          "disabled": "비활성화됨",
+          "gpu_only": "GPU 전용 노드",
+          "status": "{status}",
+          "updating": "CS2 업데이트 중",
+          "other_build": "{build} 빌드"
+        },
+        "toast": {
+          "queued_validation": "게임 데이터 검증이 대기열에 추가되었습니다",
+          "queued_build": "맵 에셋 빌드가 대기열에 추가되었습니다"
+        },
+        "force": {
+          "title": "모든 맵을 다시 빌드할까요?",
+          "description": "{build} 빌드의 맵 에셋은 이미 게시되었습니다. 강제 재빌드는 노드에서 모든 맵을 다시 빌드하므로 몇 시간이 걸릴 수 있으며, 변경 사항이 있을 때만 새 매니페스트 리비전을 게시합니다.",
+          "confirm": "모든 맵 다시 빌드"
+        }
+      },
       "hide_offline": "오프라인 노드 숨기기",
       "only_enabled": "활성화된 노드만",
       "setup_dialog": {
@@ -3454,7 +3569,21 @@
         "supports_cpu_pinning": "CPU 고정 지원",
         "cpu_governor": "CPU 거버너"
       },
-      "last_updated": "마지막 업데이트: {date}",
+      "builds": {
+        "title": "CS2 빌드 기록",
+        "description": "모든 CS2 빌드의 게임 데이터 검증과 맵 에셋 빌드, 그리고 각 빌드에서 이전 빌드 대비 무엇이 바뀌었는지 보여 줍니다.",
+        "back": "게임 서버 노드",
+        "builds": "빌드",
+        "no_builds": "아직 검증되거나 빌드된 빌드가 없습니다.",
+        "current": "현재",
+        "compared_with": "비교 대상: {build}",
+        "history_note": "기록은 이번 릴리스부터 시작됩니다. 이전 빌드는 해당 게임 버전과 함께 삭제되었습니다.",
+        "timeline": {
+          "detected": "업데이트 출시",
+          "gamedata": "게임 데이터",
+          "map_assets": "맵 에셋"
+        }
+      },
       "max_label": "최대:",
       "ports_label": "포트:",
       "cpu_hardware": "CPU 및 하드웨어"
@@ -8097,8 +8226,6 @@
     "update_cs": "CS2 업데이트",
     "updating_to": "{version}(으)로 업데이트 중",
     "update_to_version": "{version}(으)로 업데이트",
-    "validate_gamedata": "게임 데이터 검증",
-    "build_map_assets": "맵 에셋 빌드",
     "note_label": "참고:",
     "one_cpu_core": "CPU 코어 1개",
     "cpu_reservation_note": " {cores}은(는) 각 노드에서 시스템 응답성 유지를 위해 예약됩니다.",
@@ -8196,8 +8323,6 @@
     "toast": {
       "cs_updating": "노드에서 CS2를 업데이트하는 중입니다",
       "csgo_installing": "노드에서 CS:GO를 설치하는 중입니다",
-      "validating_gamedata": "노드에서 게임 데이터 서명을 검증하는 중입니다",
-      "building_map_assets": "이 노드의 CS2 빌드용 맵 메시와 콜아웃을 빌드하는 중입니다",
       "ports_updated": "노드 포트가 업데이트되었습니다",
       "ports_removed": "노드 포트가 제거되었습니다",
       "made_gpu_only": "노드가 GPU 전용으로 설정되었습니다",

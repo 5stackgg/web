@@ -1975,13 +1975,13 @@
             "role_id": "معرّف الدور لإشعارات المباريات",
             "role_id_description": "سيتم ذكر هذه الأدوار في إشعارات حالة المباراة. يمكنك إضافة عدة معرّفات أدوار مفصولة بفواصل."
           },
-          "gamedata_notifications": {
-            "title": "إشعارات التحقق من gamedata",
-            "description": "اضبط مكان نشر نتائج التحقق من توقيعات gamedata في CS2.",
-            "webhook": "رابط webhook لإشعارات gamedata",
-            "webhook_description": "webhook مخصص لنتائج التحقق من gamedata. يرجع إلى الـ webhook الافتراضي إذا لم يُضبط.",
-            "role_id": "معرّف الدور لإشعارات gamedata",
-            "role_id_description": "سيتم ذكر هذه الأدوار في إشعارات التحقق من gamedata. يمكنك إضافة عدة معرّفات أدوار مفصولة بفواصل. يرجع إلى الدور الافتراضي إذا لم يُضبط."
+          "cs2_build_notifications": {
+            "title": "إشعارات إصدارات CS2",
+            "description": "مكان نشر إشعارات تحديثات CS2 والتحقق من gamedata وبناء أصول الخرائط.",
+            "webhook": "رابط webhook لإشعارات إصدارات CS2",
+            "webhook_description": "webhook مخصص لإشعارات إصدارات CS2. يرجع إلى الـ webhook الافتراضي إذا لم يُضبط.",
+            "role_id": "معرّف الدور لإشعارات إصدارات CS2",
+            "role_id_description": "سيتم ذكر هذه الأدوار في إشعارات إصدارات CS2. يمكنك إضافة عدة معرّفات أدوار مفصولة بفواصل. يرجع إلى الدور الافتراضي إذا لم يُضبط."
           },
           "server_notifications": {
             "title": "إشعارات السيرفرات",
@@ -3426,7 +3426,122 @@
       "no_nodes_title": "لا توجد عقد سيرفرات",
       "display_metrics": "عرض المقاييس",
       "create": "أنشئ عقدة سيرفرات",
-      "cs_version_info": "معلومات إصدار CS2:",
+      "cs2_build": {
+        "title": "إصدار CS2",
+        "released": "تاريخ الصدور",
+        "history": "سجل الإصدارات",
+        "gamedata": "Gamedata",
+        "gamedata_description": "توقيعات الإضافات والإزاحات والتصحيحات",
+        "map_assets": "أصول الخرائط",
+        "map_assets_description": "المجسمات وحواجز القنابل ونقاط التسمية للإعادة ثلاثية الأبعاد",
+        "gamedata_never": "لم يتم التحقق لهذا الإصدار بعد",
+        "map_assets_never": "لم يتم البناء لهذا الإصدار بعد",
+        "auto_hint": "يعمل تلقائيًا عندما تُبلغ عقدة عن إصدار جديد لأول مرة",
+        "map_assets_hint": "تُبنى بعد التحقق من Gamedata عند تفعيل البناء التلقائي",
+        "revalidate": "إعادة التحقق",
+        "rebuild": "إعادة البناء",
+        "build": "بناء",
+        "retry_failed": "إعادة محاولة الخرائط الفاشلة",
+        "run_on": "التشغيل على",
+        "automatic": "تلقائي",
+        "automatic_description": "عقدة متصلة تعمل بالفعل على الإصدار {build}",
+        "auto": "تلقائي",
+        "started": "بدأ",
+        "validated": "تم التحقق",
+        "finished": "انتهى",
+        "took": "استغرق {duration}",
+        "ran_on": "نُفّذ على {node}",
+        "requested_by": "بواسطة {name}",
+        "vs_build": "التغييرات مقارنة بـ {build}",
+        "first_run": "لا يوجد ما يُقارن به بعد",
+        "no_changes": "لا تغييرات منذ {build}",
+        "nothing_broken": "لا شيء معطّل",
+        "no_maps": "لم تُنشر أي خرائط",
+        "reused_from": "أُعيد استخدامه من {build}",
+        "skipped_entries": "تم التخطي: {count} — تعذّر الفحص",
+        "log": "سجل البناء",
+        "trigger": {
+          "auto": "تلقائي",
+          "manual": "يدوي"
+        },
+        "stats": {
+          "checked": "تم فحصه",
+          "broken": "معطّل",
+          "warnings": "تحذيرات",
+          "skipped": "تم تخطيه",
+          "maps": "الخرائط",
+          "changed": "تغيّر",
+          "unchanged": "بلا تغيير",
+          "failed": "فشل"
+        },
+        "chip": {
+          "newly_broken": "معطّل حديثًا: {count}",
+          "fixed": "تم إصلاحه: {count}",
+          "new_warnings": "تحذيرات +{count}",
+          "rebuilt": "أُعيد بناؤه: {count}",
+          "added": "مُضاف: {count}",
+          "removed": "محذوف: {count}"
+        },
+        "change": {
+          "broken": "معطّل",
+          "still_broken": "لا يزال معطّلًا",
+          "fixed": "تم الإصلاح",
+          "warning": "تحذير",
+          "cleared": "زال",
+          "rebuilt": "أُعيد البناء",
+          "added": "مُضاف",
+          "removed": "محذوف",
+          "failed": "فشل",
+          "unchanged": "بلا تغيير",
+          "included": "منشور"
+        },
+        "reason": {
+          "vpk": "تغيّرت الخريطة",
+          "pipeline": "تغيّرت الأدوات",
+          "assets": "أُعيد البناء",
+          "collision": "فشل التصادم",
+          "view": "فشل مجسم العرض"
+        },
+        "gamedata_status": {
+          "running": "جارٍ التحقق",
+          "passed": "نجح",
+          "warning": "تحذير",
+          "failed": "فشل",
+          "error": "خطأ",
+          "stale": "متوقف",
+          "none": "لم يُشغَّل"
+        },
+        "map_assets_status": {
+          "pending": "في الانتظار",
+          "building": "جارٍ البناء",
+          "published": "منشور",
+          "partial": "جزئي",
+          "failed": "فشل",
+          "stale": "متوقف",
+          "none": "لم يُبنَ"
+        },
+        "blocked": {
+          "no_node": "لا توجد عقدة متصلة على الإصدار {build}",
+          "running": "هناك عملية تحقق قيد التشغيل بالفعل",
+          "building": "هناك عملية بناء في قائمة الانتظار أو قيد التشغيل بالفعل"
+        },
+        "node_reason": {
+          "disabled": "معطّلة",
+          "gpu_only": "عقدة GPU فقط",
+          "status": "{status}",
+          "updating": "يجري تحديث CS2",
+          "other_build": "على الإصدار {build}"
+        },
+        "toast": {
+          "queued_validation": "أُضيف التحقق من Gamedata إلى قائمة الانتظار",
+          "queued_build": "أُضيف بناء أصول الخرائط إلى قائمة الانتظار"
+        },
+        "force": {
+          "title": "إعادة بناء كل الخرائط؟",
+          "description": "أصول الخرائط للإصدار {build} منشورة بالفعل. تعيد إعادة البناء القسرية بناء كل خريطة على العقدة، وقد يستغرق ذلك بضع ساعات، ولا تنشر مراجعة جديدة للبيان إلا إذا تغيّر شيء.",
+          "confirm": "إعادة بناء كل الخرائط"
+        }
+      },
       "hide_offline": "إخفاء العقد غير المتصلة",
       "only_enabled": "العقد المفعّلة فقط",
       "setup_dialog": {
@@ -3454,7 +3569,21 @@
         "supports_cpu_pinning": "يدعم تثبيت CPU",
         "cpu_governor": "منظّم CPU"
       },
-      "last_updated": "آخر تحديث: {date}",
+      "builds": {
+        "title": "سجل إصدارات CS2",
+        "description": "التحقق من Gamedata وبناء أصول الخرائط لكل إصدار من CS2، وما غيّره كل إصدار مقارنة بالإصدار السابق.",
+        "back": "عقد السيرفرات",
+        "builds": "الإصدارات",
+        "no_builds": "لم يتم التحقق من أي إصدار أو بناؤه بعد.",
+        "current": "الحالي",
+        "compared_with": "مقارنة بـ {build}",
+        "history_note": "يبدأ السجل من هذا التحديث؛ أُزيلت الإصدارات الأقدم مع نسخة اللعبة الخاصة بها.",
+        "timeline": {
+          "detected": "صدر التحديث",
+          "gamedata": "Gamedata",
+          "map_assets": "أصول الخرائط"
+        }
+      },
       "max_label": "الحد الأقصى:",
       "ports_label": "المنافذ:",
       "cpu_hardware": "CPU والعتاد"
@@ -8097,8 +8226,6 @@
     "update_cs": "حدّث CS2",
     "updating_to": "جارٍ التحديث إلى {version}",
     "update_to_version": "حدّث إلى {version}",
-    "validate_gamedata": "تحقق من Gamedata",
-    "build_map_assets": "بناء أصول الخرائط",
     "note_label": "ملاحظة:",
     "one_cpu_core": "نواة CPU واحدة",
     "cpu_reservation_note": " {cores} محجوزة للنظام على كل عقدة للحفاظ على استجابتها.",
@@ -8196,8 +8323,6 @@
     "toast": {
       "cs_updating": "يجري تحديث CS2 على العقدة",
       "csgo_installing": "يجري تثبيت CS:GO على العقدة",
-      "validating_gamedata": "يجري التحقق من توقيعات Gamedata على العقدة",
-      "building_map_assets": "جارٍ بناء مجسمات الخرائط ونقاط التسمية لإصدار CS2 على هذه العقدة",
       "ports_updated": "تم تحديث منافذ العقدة",
       "ports_removed": "تم حذف منافذ العقدة",
       "made_gpu_only": "تم ضبط العقدة لـ GPU فقط",

@@ -57,16 +57,6 @@ const isBuiltIn = computed(() => !!props.award.system_key);
       aria-hidden="true"
     ></span>
 
-    <!-- Corner brackets, revealed on approach -->
-    <span
-      class="pointer-events-none absolute left-1.5 top-1.5 h-[11px] w-[11px] border-l-2 border-t-2 border-[hsl(var(--tac-amber))] opacity-0 transition-opacity duration-300 group-hover/vitrine:opacity-100 motion-reduce:transition-none"
-      aria-hidden="true"
-    ></span>
-    <span
-      class="pointer-events-none absolute bottom-1.5 right-1.5 h-[11px] w-[11px] border-b-2 border-r-2 border-[hsl(var(--tac-amber))] opacity-0 transition-opacity duration-300 group-hover/vitrine:opacity-100 motion-reduce:transition-none"
-      aria-hidden="true"
-    ></span>
-
     <span
       class="pointer-events-none absolute inset-0 [background-image:repeating-linear-gradient(3deg,transparent_0,transparent_3px,hsl(var(--tac-amber)/0.02)_3px,hsl(var(--tac-amber)/0.02)_4px)]"
       aria-hidden="true"

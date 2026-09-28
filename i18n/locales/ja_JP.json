@@ -1975,13 +1975,13 @@
             "role_id": "試合通知のロール ID",
             "role_id_description": "試合ステータス通知でこれらのロールがメンションされます。複数のロール ID をカンマ区切りで指定できます。"
           },
-          "gamedata_notifications": {
-            "title": "Gamedata 検証通知",
-            "description": "CS2 の gamedata シグネチャ検証結果の投稿先を設定します。",
-            "webhook": "Gamedata 通知の Webhook URL",
-            "webhook_description": "gamedata 検証結果の専用 Webhook です。未設定の場合は既定の Webhook を使用します。",
-            "role_id": "Gamedata 通知のロール ID",
-            "role_id_description": "gamedata 検証通知でこれらのロールがメンションされます。複数のロール ID をカンマ区切りで指定できます。未設定の場合は既定のロールを使用します。"
+          "cs2_build_notifications": {
+            "title": "CS2 ビルド通知",
+            "description": "CS2 のアップデート、gamedata 検証、マップアセットのビルドに関する通知の投稿先です。",
+            "webhook": "CS2 ビルド通知の Webhook URL",
+            "webhook_description": "CS2 ビルド通知の専用 Webhook です。未設定の場合は既定の Webhook を使用します。",
+            "role_id": "CS2 ビルド通知のロール ID",
+            "role_id_description": "CS2 ビルド通知でこれらのロールがメンションされます。複数のロール ID をカンマ区切りで指定できます。未設定の場合は既定のロールを使用します。"
           },
           "server_notifications": {
             "title": "サーバー通知",
@@ -3426,7 +3426,122 @@
       "no_nodes_title": "ゲームサーバーノードなし",
       "display_metrics": "メトリクス表示",
       "create": "ゲームサーバーノードを作成",
-      "cs_version_info": "CS2バージョン情報:",
+      "cs2_build": {
+        "title": "CS2ビルド",
+        "released": "リリース",
+        "history": "ビルド履歴",
+        "gamedata": "ゲームデータ",
+        "gamedata_description": "プラグインのシグネチャ、オフセット、パッチ",
+        "map_assets": "マップアセット",
+        "map_assets_description": "3Dリプレイ用のメッシュ、グレネードクリップ、コールアウト",
+        "gamedata_never": "このビルドではまだ検証されていません",
+        "map_assets_never": "このビルドではまだビルドされていません",
+        "auto_hint": "ノードが新しいビルドを初めて報告すると自動で実行されます",
+        "map_assets_hint": "自動ビルドが有効な場合、ゲームデータの検証後にビルドされます",
+        "revalidate": "再検証",
+        "rebuild": "再ビルド",
+        "build": "ビルド",
+        "retry_failed": "失敗したマップを再試行",
+        "run_on": "実行先",
+        "automatic": "自動",
+        "automatic_description": "すでにビルド {build} のオンラインノード",
+        "auto": "自動",
+        "started": "開始",
+        "validated": "検証",
+        "finished": "完了",
+        "took": "所要時間 {duration}",
+        "ran_on": "実行ノード: {node}",
+        "requested_by": "実行者: {name}",
+        "vs_build": "{build} からの変更",
+        "first_run": "まだ比較対象がありません",
+        "no_changes": "{build} から変更はありません",
+        "nothing_broken": "破損なし",
+        "no_maps": "公開されたマップはありません",
+        "reused_from": "{build} から再利用",
+        "skipped_entries": "{count} 件スキップ — 確認できませんでした",
+        "log": "ビルドログ",
+        "trigger": {
+          "auto": "自動",
+          "manual": "手動"
+        },
+        "stats": {
+          "checked": "確認済み",
+          "broken": "破損",
+          "warnings": "警告",
+          "skipped": "スキップ",
+          "maps": "マップ",
+          "changed": "変更",
+          "unchanged": "変更なし",
+          "failed": "失敗"
+        },
+        "chip": {
+          "newly_broken": "新たに破損 {count}",
+          "fixed": "修正 {count}",
+          "new_warnings": "警告 +{count}",
+          "rebuilt": "再ビルド {count}",
+          "added": "追加 {count}",
+          "removed": "削除 {count}"
+        },
+        "change": {
+          "broken": "破損",
+          "still_broken": "破損継続",
+          "fixed": "修正",
+          "warning": "警告",
+          "cleared": "解消",
+          "rebuilt": "再ビルド",
+          "added": "追加",
+          "removed": "削除",
+          "failed": "失敗",
+          "unchanged": "変更なし",
+          "included": "公開"
+        },
+        "reason": {
+          "vpk": "マップ変更",
+          "pipeline": "ツール変更",
+          "assets": "再ビルド",
+          "collision": "コリジョン失敗",
+          "view": "ビューメッシュ失敗"
+        },
+        "gamedata_status": {
+          "running": "検証中",
+          "passed": "合格",
+          "warning": "警告",
+          "failed": "失敗",
+          "error": "エラー",
+          "stale": "停止",
+          "none": "未実行"
+        },
+        "map_assets_status": {
+          "pending": "待機中",
+          "building": "ビルド中",
+          "published": "公開済み",
+          "partial": "一部",
+          "failed": "失敗",
+          "stale": "停止",
+          "none": "未ビルド"
+        },
+        "blocked": {
+          "no_node": "ビルド {build} のオンラインノードがありません",
+          "running": "検証はすでに実行中です",
+          "building": "ビルドはすでに待機中または実行中です"
+        },
+        "node_reason": {
+          "disabled": "無効",
+          "gpu_only": "GPU専用ノード",
+          "status": "{status}",
+          "updating": "CS2を更新中",
+          "other_build": "ビルド {build}"
+        },
+        "toast": {
+          "queued_validation": "ゲームデータの検証をキューに追加しました",
+          "queued_build": "マップアセットのビルドをキューに追加しました"
+        },
+        "force": {
+          "title": "すべてのマップを再ビルドしますか？",
+          "description": "ビルド {build} のマップアセットはすでに公開されています。強制再ビルドではノード上ですべてのマップを再度ビルドするため数時間かかることがあり、変更があった場合にのみ新しいマニフェストのリビジョンを公開します。",
+          "confirm": "すべてのマップを再ビルド"
+        }
+      },
       "hide_offline": "オフラインノードを非表示",
       "only_enabled": "有効なノードのみ",
       "setup_dialog": {
@@ -3454,7 +3569,21 @@
         "supports_cpu_pinning": "CPUピニング対応",
         "cpu_governor": "CPUガバナー"
       },
-      "last_updated": "最終更新: {date}",
+      "builds": {
+        "title": "CS2ビルド履歴",
+        "description": "各CS2ビルドのゲームデータ検証とマップアセットのビルド、および前のビルドからの変更点。",
+        "back": "ゲームサーバーノード",
+        "builds": "ビルド",
+        "no_builds": "検証またはビルドされたビルドはまだありません。",
+        "current": "現在",
+        "compared_with": "{build} と比較",
+        "history_note": "履歴はこのリリースから始まります。以前のビルドはそのゲームバージョンとともに削除されました。",
+        "timeline": {
+          "detected": "アップデート公開",
+          "gamedata": "ゲームデータ",
+          "map_assets": "マップアセット"
+        }
+      },
       "max_label": "最大:",
       "ports_label": "ポート:",
       "cpu_hardware": "CPU・ハードウェア"
@@ -8097,8 +8226,6 @@
     "update_cs": "CS2 を更新",
     "updating_to": "{version} に更新中",
     "update_to_version": "{version} に更新",
-    "validate_gamedata": "ゲームデータを検証",
-    "build_map_assets": "マップアセットをビルド",
     "note_label": "注意：",
     "one_cpu_core": "CPU 1コア",
     "cpu_reservation_note": " 各ノードの応答性を保つため、{cores}をシステム用に予約しています。",
@@ -8196,8 +8323,6 @@
     "toast": {
       "cs_updating": "ノード上で CS2 を更新しています。",
       "csgo_installing": "ノード上で CS:GO をインストールしています。",
-      "validating_gamedata": "ノード上でゲームデータの署名を検証しています。",
-      "building_map_assets": "このノードのCS2ビルド用にマップメッシュとコールアウトをビルドしています",
       "ports_updated": "ノードのポートを更新しました",
       "ports_removed": "ノードのポートを削除しました",
       "made_gpu_only": "ノードを GPU 専用に設定しました",

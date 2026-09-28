@@ -15,8 +15,6 @@ defineProps<{
     class="tsc group/tsc relative isolate flex min-h-[92px] flex-col gap-[0.4rem] overflow-hidden border border-border px-4 pb-4 pt-3.5 text-left [transition:border-color_180ms_ease,background_220ms_ease,box-shadow_220ms_ease]"
     :class="active ? 'tsc-active' : ''"
   >
-    <span class="corner corner-tl" aria-hidden="true"></span>
-    <span class="corner corner-br" aria-hidden="true"></span>
     <span class="scanline" aria-hidden="true"></span>
 
     <div
@@ -67,32 +65,6 @@ defineProps<{
     hsl(var(--tac-amber) / 0.18) 100%
   );
   box-shadow: 0 0 32px hsl(var(--tac-amber) / 0.2);
-}
-.corner {
-  position: absolute;
-  width: 13px;
-  height: 13px;
-  pointer-events: none;
-  z-index: 2;
-  border: 0 solid hsl(var(--tac-amber));
-  opacity: 0;
-  transition: opacity 180ms ease;
-}
-.corner-tl {
-  top: 7px;
-  left: 7px;
-  border-top-width: 2px;
-  border-left-width: 2px;
-}
-.corner-br {
-  bottom: 7px;
-  right: 7px;
-  border-bottom-width: 2px;
-  border-right-width: 2px;
-}
-.tsc:hover .corner,
-.tsc-active .corner {
-  opacity: 1;
 }
 .scanline {
   position: absolute;

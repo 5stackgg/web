@@ -1975,13 +1975,13 @@
             "role_id": "ID de rôle des notifications de match",
             "role_id_description": "Ces rôles seront mentionnés dans les notifications de statut de match. Tu peux ajouter plusieurs ID de rôle séparés par des virgules."
           },
-          "gamedata_notifications": {
-            "title": "Notifications de validation gamedata",
-            "description": "Configure où sont publiés les résultats de validation des signatures gamedata CS2.",
-            "webhook": "URL du webhook des notifications gamedata",
-            "webhook_description": "Webhook dédié aux résultats de validation gamedata. Se replie sur le webhook par défaut s'il n'est pas défini.",
-            "role_id": "ID de rôle des notifications gamedata",
-            "role_id_description": "Ces rôles seront mentionnés dans les notifications de validation gamedata. Tu peux ajouter plusieurs ID de rôle séparés par des virgules. Se replie sur le rôle par défaut s'il n'est pas défini."
+          "cs2_build_notifications": {
+            "title": "Notifications des builds CS2",
+            "description": "Où sont publiés les avis de mise à jour CS2, de validation gamedata et de génération des ressources des cartes.",
+            "webhook": "URL du webhook des notifications de builds CS2",
+            "webhook_description": "Webhook dédié aux avis de builds CS2. Se replie sur le webhook par défaut s'il n'est pas défini.",
+            "role_id": "ID de rôle des notifications de builds CS2",
+            "role_id_description": "Ces rôles seront mentionnés dans les avis de builds CS2. Tu peux ajouter plusieurs ID de rôle séparés par des virgules. Se replie sur le rôle par défaut s'il n'est pas défini."
           },
           "server_notifications": {
             "title": "Notifications serveur",
@@ -3426,7 +3426,122 @@
       "no_nodes_title": "Aucun nœud de serveurs de jeu",
       "display_metrics": "Afficher les métriques",
       "create": "Créer un nœud de serveurs de jeu",
-      "cs_version_info": "Informations sur la version de CS2 :",
+      "cs2_build": {
+        "title": "Build CS2",
+        "released": "Publiée",
+        "history": "Historique des builds",
+        "gamedata": "Gamedata",
+        "gamedata_description": "Signatures, offsets et patchs des plugins",
+        "map_assets": "Ressources des cartes",
+        "map_assets_description": "Maillages, grenade clips et callouts pour le replay 3D",
+        "gamedata_never": "Pas encore validées pour cette build",
+        "map_assets_never": "Pas encore générées pour cette build",
+        "auto_hint": "S'exécute automatiquement dès qu'un nœud signale une nouvelle build",
+        "map_assets_hint": "Générées après la validation des gamedata si la génération automatique est activée",
+        "revalidate": "Revalider",
+        "rebuild": "Régénérer",
+        "build": "Générer",
+        "retry_failed": "Relancer les cartes en échec",
+        "run_on": "Exécuter sur",
+        "automatic": "Automatique",
+        "automatic_description": "Un nœud en ligne déjà sur la build {build}",
+        "auto": "auto",
+        "started": "Démarré",
+        "validated": "Validé",
+        "finished": "Terminé",
+        "took": "a pris {duration}",
+        "ran_on": "exécuté sur {node}",
+        "requested_by": "par {name}",
+        "vs_build": "Changements par rapport à {build}",
+        "first_run": "Rien à comparer pour l'instant",
+        "no_changes": "Aucun changement depuis {build}",
+        "nothing_broken": "Rien de cassé",
+        "no_maps": "Aucune carte n'a été publiée",
+        "reused_from": "réutilisé depuis {build}",
+        "skipped_entries": "Ignorés : {count} — vérification impossible",
+        "log": "Journal de build",
+        "trigger": {
+          "auto": "automatique",
+          "manual": "manuel"
+        },
+        "stats": {
+          "checked": "Vérifiés",
+          "broken": "Cassés",
+          "warnings": "Avertissements",
+          "skipped": "Ignorés",
+          "maps": "Cartes",
+          "changed": "Modifiés",
+          "unchanged": "Inchangés",
+          "failed": "Échecs"
+        },
+        "chip": {
+          "newly_broken": "nouvellement cassés : {count}",
+          "fixed": "corrigés : {count}",
+          "new_warnings": "avertissements +{count}",
+          "rebuilt": "régénérés : {count}",
+          "added": "ajoutés : {count}",
+          "removed": "supprimés : {count}"
+        },
+        "change": {
+          "broken": "Cassé",
+          "still_broken": "Toujours cassé",
+          "fixed": "Corrigé",
+          "warning": "Avertissement",
+          "cleared": "Résolu",
+          "rebuilt": "Régénéré",
+          "added": "Ajouté",
+          "removed": "Supprimé",
+          "failed": "Échec",
+          "unchanged": "Inchangé",
+          "included": "Publié"
+        },
+        "reason": {
+          "vpk": "Carte modifiée",
+          "pipeline": "Outillage modifié",
+          "assets": "Régénéré",
+          "collision": "Échec de la collision",
+          "view": "Échec du maillage de vue"
+        },
+        "gamedata_status": {
+          "running": "Validation",
+          "passed": "Réussi",
+          "warning": "Avertissement",
+          "failed": "Échec",
+          "error": "Erreur",
+          "stale": "Bloqué",
+          "none": "Non exécuté"
+        },
+        "map_assets_status": {
+          "pending": "En file",
+          "building": "Génération",
+          "published": "Publié",
+          "partial": "Partiel",
+          "failed": "Échec",
+          "stale": "Bloqué",
+          "none": "Non généré"
+        },
+        "blocked": {
+          "no_node": "Aucun nœud en ligne n'est sur la build {build}",
+          "running": "Une validation est déjà en cours",
+          "building": "Une génération est déjà en file ou en cours"
+        },
+        "node_reason": {
+          "disabled": "Désactivé",
+          "gpu_only": "Nœud GPU uniquement",
+          "status": "{status}",
+          "updating": "Mise à jour de CS2",
+          "other_build": "Sur la build {build}"
+        },
+        "toast": {
+          "queued_validation": "Validation des gamedata mise en file",
+          "queued_build": "Génération des ressources des cartes mise en file"
+        },
+        "force": {
+          "title": "Régénérer toutes les cartes ?",
+          "description": "Les ressources des cartes pour la build {build} sont déjà publiées. Une régénération forcée génère à nouveau chaque carte sur le nœud, ce qui peut prendre quelques heures, et ne publie une nouvelle révision du manifeste que si quelque chose a changé.",
+          "confirm": "Régénérer toutes les cartes"
+        }
+      },
       "hide_offline": "Masquer les nœuds hors ligne",
       "only_enabled": "Nœuds activés uniquement",
       "setup_dialog": {
@@ -3454,7 +3569,21 @@
         "supports_cpu_pinning": "Prend en charge l'épinglage CPU",
         "cpu_governor": "Gouverneur CPU"
       },
-      "last_updated": "Dernière mise à jour : {date}",
+      "builds": {
+        "title": "Historique des builds CS2",
+        "description": "Validation des gamedata et génération des ressources des cartes pour chaque build CS2, et ce que chacune a changé par rapport à la build précédente.",
+        "back": "Nœuds de serveurs de jeu",
+        "builds": "Builds",
+        "no_builds": "Aucune build n'a encore été validée ni générée.",
+        "current": "Actuelle",
+        "compared_with": "Comparée à {build}",
+        "history_note": "L'historique commence avec cette version ; les builds antérieures ont été supprimées avec leur version du jeu.",
+        "timeline": {
+          "detected": "Mise à jour publiée",
+          "gamedata": "Gamedata",
+          "map_assets": "Ressources des cartes"
+        }
+      },
       "max_label": "Max :",
       "ports_label": "Ports :",
       "cpu_hardware": "CPU et matériel"
@@ -8097,8 +8226,6 @@
     "update_cs": "Mettre à jour CS2",
     "updating_to": "Mise à jour vers {version}",
     "update_to_version": "Mettre à jour vers {version}",
-    "validate_gamedata": "Valider les gamedata",
-    "build_map_assets": "Générer les ressources des cartes",
     "note_label": "Note :",
     "one_cpu_core": "1 cœur CPU",
     "cpu_reservation_note": " {cores} est réservé au système sur chaque nœud pour le garder réactif.",
@@ -8196,8 +8323,6 @@
     "toast": {
       "cs_updating": "CS2 est en cours de mise à jour sur le nœud",
       "csgo_installing": "CS:GO est en cours d'installation sur le nœud",
-      "validating_gamedata": "Validation des signatures gamedata sur le nœud",
-      "building_map_assets": "Génération des maillages et des callouts des cartes pour la build CS2 de ce nœud",
       "ports_updated": "Ports du nœud mis à jour",
       "ports_removed": "Ports du nœud supprimés",
       "made_gpu_only": "Nœud passé en GPU uniquement",

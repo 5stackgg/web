@@ -385,12 +385,6 @@ async function stopGpuSession(nodeId: string) {
         :data-disabled="!node.enabled"
         :data-busy="!!busyByNode[node.id]"
       >
-        <span
-          v-if="busyByNode[node.id]"
-          class="gpu-corner gpu-corner-tl"
-          aria-hidden="true"
-        ></span>
-
         <!-- Row: status + identity + controls -->
         <div class="gpu-node-row">
           <!-- Node control menu -->
@@ -1244,26 +1238,6 @@ export default {
 }
 .gpu-stat-btn .gpu-stat-val {
   font-size: 0.95rem;
-}
-
-/* ===== Corner ticks ===== */
-.gpu-corner {
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  pointer-events: none;
-}
-.gpu-corner-tl {
-  top: 8px;
-  left: 8px;
-  border-top: 2px solid hsl(var(--tac-amber));
-  border-left: 2px solid hsl(var(--tac-amber));
-}
-.gpu-corner-br {
-  bottom: 8px;
-  right: 8px;
-  border-bottom: 2px solid hsl(var(--tac-amber));
-  border-right: 2px solid hsl(var(--tac-amber));
 }
 
 /* ===== Status LED ===== */

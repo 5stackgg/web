@@ -1975,13 +1975,13 @@
             "role_id": "Rollen-ID für Match-Benachrichtigungen",
             "role_id_description": "Diese Rollen werden in Benachrichtigungen zum Match-Status erwähnt. Du kannst mehrere Rollen-IDs durch Kommas getrennt angeben."
           },
-          "gamedata_notifications": {
-            "title": "Benachrichtigungen zur Gamedata-Prüfung",
-            "description": "Leg fest, wo die Ergebnisse der CS2-Gamedata-Signaturprüfung gepostet werden.",
-            "webhook": "Webhook-URL für Gamedata-Benachrichtigungen",
-            "webhook_description": "Eigener Webhook für Ergebnisse der Gamedata-Prüfung. Ohne Angabe wird der Standard-Webhook verwendet.",
-            "role_id": "Rollen-ID für Gamedata-Benachrichtigungen",
-            "role_id_description": "Diese Rollen werden in Benachrichtigungen zur Gamedata-Prüfung erwähnt. Du kannst mehrere Rollen-IDs durch Kommas getrennt angeben. Ohne Angabe wird die Standardrolle verwendet."
+          "cs2_build_notifications": {
+            "title": "Benachrichtigungen zu CS2-Builds",
+            "description": "Wo Hinweise zu CS2-Updates, Gamedata-Prüfungen und Karten-Asset-Builds gepostet werden.",
+            "webhook": "Webhook-URL für CS2-Build-Benachrichtigungen",
+            "webhook_description": "Eigener Webhook für Hinweise zu CS2-Builds. Ohne Angabe wird der Standard-Webhook verwendet.",
+            "role_id": "Rollen-ID für CS2-Build-Benachrichtigungen",
+            "role_id_description": "Diese Rollen werden in Hinweisen zu CS2-Builds erwähnt. Du kannst mehrere Rollen-IDs durch Kommas getrennt angeben. Ohne Angabe wird die Standardrolle verwendet."
           },
           "server_notifications": {
             "title": "Server-Benachrichtigungen",
@@ -3426,7 +3426,122 @@
       "no_nodes_title": "Keine Game-Server-Nodes",
       "display_metrics": "Metriken anzeigen",
       "create": "Game-Server-Node erstellen",
-      "cs_version_info": "CS2-Versionsinfo:",
+      "cs2_build": {
+        "title": "CS2-Build",
+        "released": "Veröffentlicht",
+        "history": "Build-Verlauf",
+        "gamedata": "Gamedata",
+        "gamedata_description": "Plugin-Signaturen, Offsets & Patches",
+        "map_assets": "Karten-Assets",
+        "map_assets_description": "Meshes, Granaten-Clips & Callouts für das 3D-Replay",
+        "gamedata_never": "Für diesen Build noch nicht geprüft",
+        "map_assets_never": "Für diesen Build noch nicht erstellt",
+        "auto_hint": "Läuft automatisch, sobald ein Node erstmals einen neuen Build meldet",
+        "map_assets_hint": "Wird nach der Gamedata-Prüfung erstellt, wenn Auto-Build aktiv ist",
+        "revalidate": "Erneut prüfen",
+        "rebuild": "Neu erstellen",
+        "build": "Erstellen",
+        "retry_failed": "Fehlgeschlagene Karten wiederholen",
+        "run_on": "Ausführen auf",
+        "automatic": "Automatisch",
+        "automatic_description": "Ein Online-Node, der bereits auf Build {build} ist",
+        "auto": "auto",
+        "started": "Gestartet",
+        "validated": "Geprüft",
+        "finished": "Abgeschlossen",
+        "took": "dauerte {duration}",
+        "ran_on": "lief auf {node}",
+        "requested_by": "von {name}",
+        "vs_build": "Änderungen gegenüber {build}",
+        "first_run": "Noch nichts zum Vergleichen",
+        "no_changes": "Keine Änderungen seit {build}",
+        "nothing_broken": "Nichts defekt",
+        "no_maps": "Es wurden keine Karten veröffentlicht",
+        "reused_from": "übernommen aus {build}",
+        "skipped_entries": "{count} übersprungen — nicht prüfbar",
+        "log": "Build-Log",
+        "trigger": {
+          "auto": "automatisch",
+          "manual": "manuell"
+        },
+        "stats": {
+          "checked": "Geprüft",
+          "broken": "Defekt",
+          "warnings": "Warnungen",
+          "skipped": "Übersprungen",
+          "maps": "Karten",
+          "changed": "Geändert",
+          "unchanged": "Unverändert",
+          "failed": "Fehlgeschlagen"
+        },
+        "chip": {
+          "newly_broken": "{count} neu defekt",
+          "fixed": "{count} behoben",
+          "new_warnings": "Warnungen +{count}",
+          "rebuilt": "{count} neu erstellt",
+          "added": "{count} hinzugefügt",
+          "removed": "{count} entfernt"
+        },
+        "change": {
+          "broken": "Defekt",
+          "still_broken": "Weiter defekt",
+          "fixed": "Behoben",
+          "warning": "Warnung",
+          "cleared": "Aufgelöst",
+          "rebuilt": "Neu erstellt",
+          "added": "Hinzugefügt",
+          "removed": "Entfernt",
+          "failed": "Fehlgeschlagen",
+          "unchanged": "Unverändert",
+          "included": "Veröffentlicht"
+        },
+        "reason": {
+          "vpk": "Karte geändert",
+          "pipeline": "Tooling geändert",
+          "assets": "Neu erstellt",
+          "collision": "Kollision fehlgeschlagen",
+          "view": "View-Mesh fehlgeschlagen"
+        },
+        "gamedata_status": {
+          "running": "Wird geprüft",
+          "passed": "Bestanden",
+          "warning": "Warnung",
+          "failed": "Fehlgeschlagen",
+          "error": "Fehler",
+          "stale": "Hängt",
+          "none": "Nicht ausgeführt"
+        },
+        "map_assets_status": {
+          "pending": "Eingereiht",
+          "building": "Wird erstellt",
+          "published": "Veröffentlicht",
+          "partial": "Teilweise",
+          "failed": "Fehlgeschlagen",
+          "stale": "Hängt",
+          "none": "Nicht erstellt"
+        },
+        "blocked": {
+          "no_node": "Kein Online-Node ist auf Build {build}",
+          "running": "Es läuft bereits eine Prüfung",
+          "building": "Ein Build ist bereits eingereiht oder läuft"
+        },
+        "node_reason": {
+          "disabled": "Deaktiviert",
+          "gpu_only": "Reiner GPU-Node",
+          "status": "{status}",
+          "updating": "Aktualisiert CS2",
+          "other_build": "Auf Build {build}"
+        },
+        "toast": {
+          "queued_validation": "Gamedata-Prüfung eingereiht",
+          "queued_build": "Karten-Asset-Build eingereiht"
+        },
+        "force": {
+          "title": "Alle Karten neu erstellen?",
+          "description": "Die Karten-Assets für Build {build} sind bereits veröffentlicht. Ein erzwungener Rebuild erstellt jede Karte auf dem Node erneut, was ein paar Stunden dauern kann, und veröffentlicht nur dann eine neue Manifest-Revision, wenn sich etwas geändert hat.",
+          "confirm": "Alle Karten neu erstellen"
+        }
+      },
       "hide_offline": "Offline-Nodes ausblenden",
       "only_enabled": "Nur aktive Nodes",
       "setup_dialog": {
@@ -3454,7 +3569,21 @@
         "supports_cpu_pinning": "Unterstützt CPU-Pinning",
         "cpu_governor": "CPU-Governor"
       },
-      "last_updated": "Zuletzt aktualisiert: {date}",
+      "builds": {
+        "title": "CS2-Build-Verlauf",
+        "description": "Gamedata-Prüfung und Karten-Asset-Builds für jeden CS2-Build und was sich jeweils gegenüber dem vorherigen Build geändert hat.",
+        "back": "Game-Server-Nodes",
+        "builds": "Builds",
+        "no_builds": "Es wurde noch kein Build geprüft oder erstellt.",
+        "current": "Aktuell",
+        "compared_with": "Verglichen mit {build}",
+        "history_note": "Der Verlauf beginnt mit diesem Release; frühere Builds wurden zusammen mit ihrer Spielversion entfernt.",
+        "timeline": {
+          "detected": "Update veröffentlicht",
+          "gamedata": "Gamedata",
+          "map_assets": "Karten-Assets"
+        }
+      },
       "max_label": "Max.:",
       "ports_label": "Ports:",
       "cpu_hardware": "CPU & Hardware"
@@ -8097,8 +8226,6 @@
     "update_cs": "CS2 aktualisieren",
     "updating_to": "Aktualisiert auf {version}",
     "update_to_version": "Auf {version} aktualisieren",
-    "validate_gamedata": "Gamedata prüfen",
-    "build_map_assets": "Karten-Assets erstellen",
     "note_label": "Hinweis:",
     "one_cpu_core": "1 CPU-Kern",
     "cpu_reservation_note": " {cores} ist auf jeder Node für das System reserviert, damit es reaktionsfähig bleibt.",
@@ -8196,8 +8323,6 @@
     "toast": {
       "cs_updating": "CS2 wird auf der Node aktualisiert",
       "csgo_installing": "CS:GO wird auf der Node installiert",
-      "validating_gamedata": "Gamedata-Signaturen werden auf der Node geprüft",
-      "building_map_assets": "Karten-Meshes und Callouts für den CS2-Build dieses Nodes werden erstellt",
       "ports_updated": "Node-Ports aktualisiert",
       "ports_removed": "Node-Ports entfernt",
       "made_gpu_only": "Node auf „nur GPU“ gesetzt",

@@ -489,6 +489,10 @@ const WINGMAN_OPT = computed(() => ({
   value: "Wingman",
   label: t("pages.leaderboard.match_types.wingman"),
 }));
+const RUSH_OPT = computed(() => ({
+  value: "Rush",
+  label: t("pages.leaderboard.match_types.rush"),
+}));
 const ALL_OPT = computed(() => ({
   value: "all",
   label: t("pages.players.detail.all_short"),
@@ -500,7 +504,7 @@ const modeOptions = computed<{ value: string; label: string }[]>(() => {
       COMPETITIVE_OPT.value,
       WINGMAN_OPT.value,
       { value: "Duel", label: t("pages.leaderboard.match_types.duel") },
-      { value: "Rush", label: t("pages.leaderboard.match_types.rush") },
+      RUSH_OPT.value,
     ];
   }
   switch (providerRef.value) {
@@ -510,6 +514,7 @@ const modeOptions = computed<{ value: string; label: string }[]>(() => {
         { value: "Premier", label: "Premier" },
         COMPETITIVE_OPT.value,
         WINGMAN_OPT.value,
+        RUSH_OPT.value,
       ];
     case "faceit":
       return [];
@@ -519,6 +524,7 @@ const modeOptions = computed<{ value: string; label: string }[]>(() => {
         { value: "Premier", label: "Premier" },
         COMPETITIVE_OPT.value,
         WINGMAN_OPT.value,
+        RUSH_OPT.value,
       ];
   }
 });
@@ -576,7 +582,7 @@ const modeModel = computed<string>({
 function setSource(s: StatSource) {
   const validModes =
     s === "external"
-      ? ["all", "Premier", "Competitive", "Wingman"]
+      ? ["all", "Premier", "Competitive", "Wingman", "Rush"]
       : ["all", "Competitive", "Wingman", "Duel", "Rush"];
   const query: Record<string, any> = { ...route.query, source: s };
   if (!validModes.includes(selectedModeRef.value)) {

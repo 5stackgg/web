@@ -14,8 +14,10 @@ import {
   chatMessageKey,
   insertChatMessage,
   isChatMessageDeleted,
+  isChatMessageFrom,
   mergeChatSnapshot,
   removeChatMessage,
+  removeChatMessagesFrom,
   type ChatMessageEdit,
   type ChatMessageReactionsUpdate,
   type RemovedChatMessage,
@@ -135,6 +137,9 @@ export class Socket extends EventEmitter {
   private instanceCounter = 0;
   private pendingRequests: Map<string, PendingChatRequest> = new Map();
   private reactionsInFlight = new Set<string>();
+  // Players this viewer has blocked. The api stops sending their lines once the
+  // block has committed, but not one already on its way.
+  private hiddenAuthors = new Set<string>();
   // The api answers a request it failed to carry out with nothing at all.
   private static readonly REQUEST_TIMEOUT_MS = 8000;
   // How long a request that timed out still recognises its answer, so a slow
@@ -411,6 +416,36 @@ export class Socket extends EventEmitter {
   public rejoinAll() {
     for (const { room, data } of Array.from(this.rooms.values())) {
       this.join(room, data);
+    }
+  }
+
+  public hidesAuthor(steamId?: string | number | null) {
+    return steamId != null && this.hiddenAuthors.has(String(steamId));
+  }
+
+  public hideAuthors(steamIds: Array<string | number>) {
+    const authors = new Set(steamIds.map(String));
+
+    for (const steamId of authors) {
+      this.hiddenAuthors.add(steamId);
+    }
+
+    for (const lobby of this.lobbies.values()) {
+      this.removeLobbyAuthors(lobby, authors);
+    }
+  }
+
+  // The api sends nothing on an unblock, so the rooms' history is asked for
+  // again to bring back whatever of theirs is still there.
+  public showAuthors(steamIds: Array<string | number>) {
+    let shown = false;
+
+    for (const steamId of steamIds) {
+      shown = this.hiddenAuthors.delete(String(steamId)) || shown;
+    }
+
+    if (shown) {
+      this.rejoinAll();
     }
   }
 
@@ -785,7 +820,9 @@ export class Socket extends EventEmitter {
   private mergeLobbyMessages(lobby: LobbyState, messages: LobbyMessage[]) {
     const merged = mergeChatSnapshot(
       lobby.messages.value,
-      messages,
+      (messages || []).filter(
+        (message) => !isChatMessageFrom(message, this.hiddenAuthors),
+      ),
       lobby.deleted,
       lobby.reacted,
     );
@@ -801,7 +838,11 @@ export class Socket extends EventEmitter {
 
   private addLobbyMessage(lobby: LobbyState, message: LobbyMessage) {
     const key = chatMessageKey(message);
-    if (lobby.seen.has(key) || isChatMessageDeleted(message, lobby.deleted)) {
+    if (
+      lobby.seen.has(key) ||
+      isChatMessageDeleted(message, lobby.deleted) ||
+      isChatMessageFrom(message, this.hiddenAuthors)
+    ) {
       return;
     }
     lobby.seen.add(key);
@@ -872,6 +913,20 @@ export class Socket extends EventEmitter {
       index: removed.index,
     };
     this.emitToLobbyInstances(lobby, "lobby:deleted", event);
+  }
+
+  // No tombstones: an unblock brings these back with the room's history.
+  private removeLobbyAuthors(lobby: LobbyState, authors: ReadonlySet<string>) {
+    const removed = removeChatMessagesFrom(lobby.messages.value, authors);
+    if (!removed) {
+      return;
+    }
+
+    lobby.messages.value = removed.messages;
+
+    for (const event of removed.removed) {
+      this.emitToLobbyInstances(lobby, "lobby:deleted", event);
+    }
   }
 
   private emitToLobbyInstances(

@@ -25,6 +25,10 @@ export function useIncomingDirectMessages() {
     unread = 0,
     position?: number,
   ) {
+    if (socket.hidesAuthor(peer?.steam_id)) {
+      return;
+    }
+
     openTab({
       id: directTabId(roomId),
       label: peer?.name ?? peer?.steam_id ?? roomId,

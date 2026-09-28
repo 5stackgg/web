@@ -6,6 +6,14 @@ import ChatMessage from "~/components/chat/ChatMessage.vue";
 import { useAuthStore } from "~/stores/AuthStore";
 import socket, { type LobbyMessage } from "~/web-sockets/Socket";
 
+const { playNotificationSound } = vi.hoisted(() => ({
+  playNotificationSound: vi.fn(),
+}));
+
+vi.mock("~/composables/useSound", () => ({
+  useSound: () => ({ playNotificationSound }),
+}));
+
 vi.mock("~/graphql/getGraphqlClient", () => ({
   default: () => ({
     query: vi.fn().mockResolvedValue({ data: {} }),
@@ -308,5 +316,67 @@ describe("ChatLobby moderation", () => {
     await flushPromises();
 
     expect(lobby.lastReadMessageCount).toBe(1);
+  });
+});
+
+describe("ChatLobby blocked authors", () => {
+  const THIRD = "76561198000000003";
+
+  afterEach(() => {
+    socket.showAuthors([OTHER]);
+    playNotificationSound.mockClear();
+  });
+
+  it("stays silent for a blocked player's live line", async () => {
+    signIn({ role: "user" });
+
+    const wrapper = await mountLobby({
+      lobbyId: "blocked-live",
+      playNotificationSound: true,
+    });
+    socket.hideAuthors([OTHER]);
+
+    socket.emit("lobby:match:blocked-live:chat", line("hidden", 0));
+    await flushPromises();
+
+    expect(playNotificationSound).not.toHaveBeenCalled();
+    expect(wrapper.emitted("message-received")).toBeUndefined();
+    expect(wrapper.text()).not.toContain("line hidden");
+
+    socket.emit("lobby:match:blocked-live:chat", line("shown", 1, THIRD));
+    await flushPromises();
+
+    expect(playNotificationSound).toHaveBeenCalledTimes(1);
+    expect(wrapper.emitted("message-received")).toHaveLength(1);
+    expect(wrapper.text()).toContain("line shown");
+  });
+
+  it("keeps the New line on the same message when a blocked player's lines go", async () => {
+    signIn({ role: "user" });
+
+    const wrapper = await mountLobby({
+      lobbyId: "blocked-divider",
+      isGlobalContext: true,
+    });
+    socket.emit("lobby:match:blocked-divider:messages", {
+      messages: [
+        line("a", 0),
+        line("b", 1, THIRD),
+        line("c", 2),
+        line("d", 3, THIRD),
+        line("e", 4),
+      ],
+    });
+    await flushPromises();
+
+    const lobby = wrapper.vm as any;
+    lobby.lastReadMessageCount = 4;
+
+    socket.hideAuthors([OTHER]);
+    await flushPromises();
+
+    expect(lobby.messages.map((m: LobbyMessage) => m.id)).toEqual(["b", "d"]);
+    expect(lobby.lastReadMessageCount).toBe(2);
+    expect(wrapper.text()).not.toContain("line a");
   });
 });

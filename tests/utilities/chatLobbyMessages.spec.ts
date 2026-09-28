@@ -5,9 +5,11 @@ import {
   chatMessageKey,
   insertChatMessage,
   isChatMessageDeleted,
+  isChatMessageFrom,
   mergeChatSnapshot,
   newestMessageIdsFrom,
   removeChatMessage,
+  removeChatMessagesFrom,
 } from "~/utilities/chatLobbyMessages";
 import type { LobbyMessage } from "~/web-sockets/Socket";
 
@@ -39,6 +41,83 @@ describe("removeChatMessage", () => {
 
   it("never matches a line that has no id", () => {
     expect(removeChatMessage([line(undefined, 0)], "")).toBeNull();
+  });
+});
+
+describe("removeChatMessagesFrom", () => {
+  const DANA = "76561198000000002";
+  const EVAN = "76561198000000003";
+
+  const by = (id: string, minute: number, steamId: string): LobbyMessage => ({
+    ...line(id, minute),
+    from: { steam_id: steamId },
+  });
+
+  it("removes every line by the authors and says where each one was", () => {
+    const messages = [
+      by("a", 0, DANA),
+      line("b", 1),
+      by("c", 2, DANA),
+      by("d", 3, EVAN),
+      line("e", 4),
+    ];
+
+    const removed = removeChatMessagesFrom(messages, new Set([DANA, EVAN]));
+
+    expect(ids(removed!.messages)).toEqual(["b", "e"]);
+    expect(
+      removed!.removed.map(({ message, index }) => [message.id, index]),
+    ).toEqual([
+      ["a", 0],
+      ["c", 1],
+      ["d", 1],
+    ]);
+    expect(ids(messages)).toEqual(["a", "b", "c", "d", "e"]);
+  });
+
+  it("gives the same indexes as deleting the lines one at a time", () => {
+    const messages = [line("a", 0), by("b", 1, DANA), by("c", 2, DANA)];
+    const removed = removeChatMessagesFrom(messages, new Set([DANA]))!;
+
+    let current = messages;
+    for (const { message, index } of removed.removed) {
+      const single = removeChatMessage(current, message.id as string)!;
+      expect(single.index).toBe(index);
+      current = single.messages;
+    }
+
+    expect(current).toEqual(removed.messages);
+  });
+
+  it("returns null when none of the lines are theirs", () => {
+    expect(removeChatMessagesFrom([line("a", 0)], new Set([DANA]))).toBeNull();
+    expect(removeChatMessagesFrom([by("a", 0, DANA)], new Set())).toBeNull();
+  });
+
+  it("keeps a line that has no author", () => {
+    const system: LobbyMessage = { id: "s", message: "x", timestamp: "" };
+
+    const removed = removeChatMessagesFrom(
+      [system, by("a", 0, DANA)],
+      new Set([DANA]),
+    );
+
+    expect(ids(removed!.messages)).toEqual(["s"]);
+  });
+});
+
+describe("isChatMessageFrom", () => {
+  it("compares steam ids as strings", () => {
+    const message = {
+      ...line("a", 0),
+      from: { steam_id: 42 as unknown as string },
+    };
+
+    expect(isChatMessageFrom(message, new Set(["42"]))).toBe(true);
+    expect(isChatMessageFrom(message, new Set(["43"]))).toBe(false);
+    expect(
+      isChatMessageFrom({ ...message, from: undefined }, new Set(["42"])),
+    ).toBe(false);
   });
 });
 

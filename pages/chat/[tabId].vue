@@ -8,6 +8,7 @@ import {
   setPageChatFocus,
   useChatPresence,
 } from "~/composables/useChatPresence";
+import { useChatBlocks } from "~/composables/useChatBlocks";
 import { chatThreadKey } from "~/utilities/chatThread";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { matchTeamLobbyId } from "~/utilities/matchTeamLobby";
@@ -131,6 +132,9 @@ const thread = computed(() =>
 );
 
 useChatPresence();
+// Nor does its block watcher, so this window would keep showing the lines of
+// a player blocked while it was open.
+useChatBlocks();
 
 watch(
   thread,

@@ -179,6 +179,49 @@ export function removeChatMessage(
   return { messages, message, index };
 }
 
+export function isChatMessageFrom(
+  message: LobbyMessage,
+  authors: ReadonlySet<string>,
+) {
+  const steamId = message?.from?.steam_id;
+
+  return steamId != null && authors.has(String(steamId));
+}
+
+export interface RemovedChatAuthors {
+  messages: LobbyMessage[];
+  removed: Array<Omit<RemovedChatMessage, "messages">>;
+}
+
+// Each index is where the message sat once the ones before it were gone, as if
+// they had been deleted one at a time.
+export function removeChatMessagesFrom(
+  current: LobbyMessage[],
+  authors: ReadonlySet<string>,
+): RemovedChatAuthors | null {
+  if (authors.size === 0) {
+    return null;
+  }
+
+  const messages: LobbyMessage[] = [];
+  const removed: RemovedChatAuthors["removed"] = [];
+
+  for (const message of current) {
+    if (isChatMessageFrom(message, authors)) {
+      removed.push({ message, index: messages.length });
+      continue;
+    }
+
+    messages.push(message);
+  }
+
+  if (removed.length === 0) {
+    return null;
+  }
+
+  return { messages, removed };
+}
+
 // A conversation's unread count comes from the server, which counts every
 // message from the other party after the read cursor -- which are always the
 // newest of theirs. So the ids behind the count can be read off the room

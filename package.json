@@ -12,11 +12,9 @@
     "codegen": "bash -c '. ./.env && zeus https://$NUXT_PUBLIC_API_DOMAIN/v1/graphql ./generated --ts --td --header=x-hasura-admin-secret:$HASURA_GRAPHQL_ADMIN_SECRET && ./scripts/patch-zeus-codegen.sh'",
     "check-translations": "node scripts/check-translations.js",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "wrangler": "wrangler --config cloudflare-workers/backblaze-proxy/wrangler.toml"
+    "test:watch": "vitest"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20250508.0",
     "@nuxt/devtools": "^2.4.0",
     "@nuxt/image": "^1.10.0",
     "@nuxt/test-utils": "^3.23.0",
@@ -45,8 +43,7 @@
     "vue-router": "^4.5.1",
     "workbox-core": "^7.3.0",
     "workbox-precaching": "^7.3.0",
-    "workbox-routing": "^7.3.0",
-    "wrangler": "^4.14.4"
+    "workbox-routing": "^7.3.0"
   },
   "dependencies": {
     "@apollo/client": "^3.13.8",

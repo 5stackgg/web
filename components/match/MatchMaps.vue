@@ -95,7 +95,13 @@ import mapLabel from "~/utilities/mapLabel";
               class="inline-flex h-[1.35rem] items-center gap-1 rounded-sm border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.12)] px-1.5 font-mono text-[0.6rem] font-bold leading-none tracking-[0.1em] text-[hsl(var(--tac-amber))] backdrop-blur-sm [font-variant-numeric:tabular-nums]"
             >
               <Spinner class="h-2.5 w-2.5 shrink-0" />
-              <TimeAgo :date="demoProcessingStartedAt" seconds hide-icon />
+              <TimeAgo v-if="tvReadyAt" :date="tvReadyAt" countdown hide-icon />
+              <TimeAgo
+                v-else
+                :date="demoProcessingStartedAt"
+                seconds
+                hide-icon
+              />
             </span>
           </TooltipTrigger>
           <TooltipContent class="max-w-[15rem]">
@@ -400,9 +406,8 @@ export default {
   computed: {
     // Anchored on the server's own timestamp, so a refresh keeps counting from
     // when processing actually began rather than restarting at page load.
-    // Deliberately elapsed time, not a countdown: how long demo upload takes
-    // depends on tv_delay and transfer speed, so any predicted finish would be
-    // a guess that goes stale the moment it is wrong.
+    // The upload is elapsed time, not a countdown: it depends on transfer
+    // speed, so any predicted finish would be a guess.
     demoProcessingStartedAt() {
       if (
         !["WaitingForTV", "UploadingDemo"].includes(this.matchMap.status ?? "")
@@ -410,6 +415,20 @@ export default {
         return null;
       }
       return this.matchMap.demo_processing_started_at ?? null;
+    },
+    // Waiting for TV is exactly tv_delay: the plugin holds the end of the map
+    // that long after the stamp above is set, so this one can count down.
+    tvReadyAt() {
+      if (this.matchMap.status !== "WaitingForTV" || !this.demoProcessingStartedAt) {
+        return null;
+      }
+      const delay = Number(this.match?.options?.tv_delay);
+      if (!Number.isFinite(delay)) {
+        return null;
+      }
+      return new Date(
+        new Date(this.demoProcessingStartedAt).getTime() + delay * 1000,
+      );
     },
     canOpenStats() {
       if (this.matchMap.status === e_match_status_enum.Scheduled) {

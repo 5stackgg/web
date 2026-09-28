@@ -16,6 +16,10 @@ import type {
 import { toast } from "@/components/ui/toast";
 import { isAuthErrorMessage } from "~/graphql/isAuthError";
 import { tournamentInviteErrorKey } from "~/utilities/tournamentInvites";
+import {
+  createGraphqlWsWatchdog,
+  graphqlWsRetryWait,
+} from "~/utilities/graphqlWsWatchdog";
 
 const mergeObjectFields = (
   existing: Record<string, unknown> | undefined,
@@ -125,12 +129,20 @@ export default defineNuxtPlugin((nuxtApp) => {
     uri: `https://${config.public.apiDomain}/v1/graphql`,
   });
 
+  const wsWatchdog = createGraphqlWsWatchdog();
+
   const wsClient = createClient({
     url: `wss://${config.public.apiDomain}/v1/graphql`,
     connectionParams: {
       credentials: "include",
     },
+    keepAlive: 15_000,
+    retryAttempts: Infinity,
+    retryWait: graphqlWsRetryWait,
+    on: wsWatchdog.on,
   });
+
+  wsWatchdog.watch(wsClient);
 
   nuxtApp.provide("wsClient", wsClient);
 

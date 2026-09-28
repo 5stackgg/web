@@ -1863,9 +1863,11 @@
       "application": {
         "broadcast_huds": {
           "title": "直播 HUD",
-          "description": "叠加在直播、Demo 回放和批量高光中的 HUD。以 .zip 导入 JTs Hud Manager 或 Lexogrine 包，并选择游戏流媒体 Pod 加载哪一个；主播仍可在每场直播中从播放控制切换。",
+          "description": "为直播、Demo 回放和精彩片段选择 HUD。主播仍可在每场直播中切换。",
           "import": "导入 HUD",
-          "import_hint": "根目录或单个顶层文件夹中包含 hud.json 的 .zip 文件。",
+          "import_hint": "JTs Hud Manager 或 Lexogrine 包，hud.json 需位于根目录或唯一的顶层文件夹中。",
+          "drop": "将 .zip 拖放到此处，或点击浏览",
+          "importing": "正在导入…",
           "imported": "HUD 已导入",
           "import_failed": "无法导入该 HUD",
           "make_default": "设为默认",
@@ -1877,7 +1879,18 @@
           "delete_title": "删除此 HUD？",
           "delete_description": "这会移除「{name}」及其上传的压缩包。此操作无法撤销。",
           "delete_confirm": "删除",
-          "signed": "已签名的包"
+          "signed": "已签名的包",
+          "source_builtin": "内置",
+          "source_imported": "已导入",
+          "preview": "预览 {name}",
+          "get_more": "在 {site} 查找更多 HUD",
+          "set_page_link": "设置 HUD 页面",
+          "page_link": "HUD 页面",
+          "page_link_description": "粘贴 HUD 的页面链接，例如 cshuds.com 上的页面。该页面的预览图将作为此 HUD 的预览。",
+          "page_link_saved": "已保存 HUD 页面",
+          "page_link_preview_saved": "已保存 HUD 页面并更新预览",
+          "page_link_failed": "无法使用该页面",
+          "view_on": "在 {site} 查看"
         },
         "update_success": "已更新",
         "db_backups": {

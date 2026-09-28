@@ -1863,9 +1863,11 @@
       "application": {
         "broadcast_huds": {
           "title": "Broadcast-HUDs",
-          "description": "Das HUD, das in Live-Streams, Demo-Wiedergabe und Batch-Highlights eingeblendet wird. Importiere ein JTs Hud Manager- oder Lexogrine-Bundle als .zip und wähle, welches der Game-Streamer-Pod lädt; Streamer können es pro Stream weiterhin über die Player-Steuerung wechseln.",
+          "description": "Wähle das HUD für Livestreams, Demo-Wiedergabe und Highlights. Streamer können pro Stream weiterhin wechseln.",
           "import": "HUD importieren",
-          "import_hint": "Eine .zip mit hud.json im Stammverzeichnis oder in einem einzelnen Ordner auf oberster Ebene.",
+          "import_hint": "Ein JTs-Hud-Manager- oder Lexogrine-Paket mit hud.json im Stammverzeichnis oder in einem einzelnen Ordner der obersten Ebene.",
+          "drop": ".zip hier ablegen oder zum Auswählen klicken",
+          "importing": "Wird importiert…",
           "imported": "HUD importiert",
           "import_failed": "Dieses HUD konnte nicht importiert werden",
           "make_default": "Als Standard festlegen",
@@ -1877,7 +1879,18 @@
           "delete_title": "Dieses HUD löschen?",
           "delete_description": "Damit werden „{name}“ und das hochgeladene Archiv entfernt. Das lässt sich nicht rückgängig machen.",
           "delete_confirm": "Löschen",
-          "signed": "Signiertes Bundle"
+          "signed": "Signiertes Bundle",
+          "source_builtin": "Integriert",
+          "source_imported": "Importiert",
+          "preview": "Vorschau von {name}",
+          "get_more": "Weitere HUDs auf {site}",
+          "set_page_link": "HUD-Seite festlegen",
+          "page_link": "HUD-Seite",
+          "page_link_description": "Füge die Seite des HUDs ein, zum Beispiel auf cshuds.com. Ihr Vorschaubild wird zur Vorschau dieses HUDs.",
+          "page_link_saved": "HUD-Seite gespeichert",
+          "page_link_preview_saved": "HUD-Seite gespeichert und Vorschau aktualisiert",
+          "page_link_failed": "Diese Seite konnte nicht verwendet werden",
+          "view_on": "Auf {site} ansehen"
         },
         "update_success": "Aktualisiert",
         "db_backups": {

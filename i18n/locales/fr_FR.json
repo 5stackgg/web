@@ -1863,9 +1863,11 @@
       "application": {
         "broadcast_huds": {
           "title": "HUD de diffusion",
-          "description": "Le HUD incrusté dans les streams en direct, la lecture de démos et les highlights en lot. Importe un pack JTs Hud Manager ou Lexogrine au format .zip et choisis celui que charge le pod game-streamer ; les streamers peuvent toujours en changer par stream depuis les contrôles du lecteur.",
+          "description": "Choisis le HUD des streams en direct, de la lecture de démos et des highlights. Les streamers peuvent toujours en changer à chaque stream.",
           "import": "Importer un HUD",
-          "import_hint": "Un .zip avec hud.json à la racine ou dans un unique dossier de premier niveau.",
+          "import_hint": "Un pack JTs Hud Manager ou Lexogrine, avec hud.json à la racine ou dans un unique dossier de premier niveau.",
+          "drop": "Dépose un .zip ici ou clique pour parcourir",
+          "importing": "Importation…",
           "imported": "HUD importé",
           "import_failed": "Impossible d'importer ce HUD",
           "make_default": "Définir par défaut",
@@ -1877,7 +1879,18 @@
           "delete_title": "Supprimer ce HUD ?",
           "delete_description": "Cela supprimera « {name} » et son archive téléversée. Cette action est irréversible.",
           "delete_confirm": "Supprimer",
-          "signed": "Pack signé"
+          "signed": "Pack signé",
+          "source_builtin": "Intégré",
+          "source_imported": "Importé",
+          "preview": "Aperçu de {name}",
+          "get_more": "Trouve d'autres HUD sur {site}",
+          "set_page_link": "Définir la page du HUD",
+          "page_link": "Page du HUD",
+          "page_link_description": "Colle la page du HUD, par exemple sur cshuds.com. Son image d'aperçu devient l'aperçu de ce HUD.",
+          "page_link_saved": "Page du HUD enregistrée",
+          "page_link_preview_saved": "Page du HUD enregistrée et aperçu mis à jour",
+          "page_link_failed": "Impossible d'utiliser cette page",
+          "view_on": "Voir sur {site}"
         },
         "update_success": "Mis à jour",
         "db_backups": {

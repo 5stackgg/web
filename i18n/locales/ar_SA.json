@@ -1863,9 +1863,11 @@
       "application": {
         "broadcast_huds": {
           "title": "واجهات HUD للبث",
-          "description": "واجهة HUD المدمجة في البث المباشر وتشغيل Demo واللقطات المجمّعة. استورد حزمة JTs Hud Manager أو Lexogrine كملف .zip واختر الحزمة التي تحمّلها وحدة البث؛ يظل بإمكان المشغّلين التبديل لكل بث من عناصر التحكم.",
+          "description": "اختر واجهة HUD للبث المباشر وتشغيل الديمو واللقطات المميزة. يمكن للمذيعين التبديل في كل بث.",
           "import": "استيراد HUD",
-          "import_hint": "ملف .zip يحتوي hud.json في جذره أو داخل مجلد واحد في المستوى الأعلى.",
+          "import_hint": "حزمة JTs Hud Manager أو Lexogrine، يكون فيها hud.json في الجذر أو داخل مجلد واحد في المستوى الأعلى.",
+          "drop": "أفلت ملف .zip هنا أو انقر للاستعراض",
+          "importing": "جارٍ الاستيراد…",
           "imported": "تم استيراد HUD",
           "import_failed": "تعذّر استيراد هذه الواجهة",
           "make_default": "تعيين كافتراضي",
@@ -1877,7 +1879,18 @@
           "delete_title": "حذف هذه الواجهة؟",
           "delete_description": "سيؤدي هذا إلى إزالة «{name}» والأرشيف المرفوع. لا يمكن التراجع عن هذا الإجراء.",
           "delete_confirm": "احذف",
-          "signed": "حزمة موقّعة"
+          "signed": "حزمة موقّعة",
+          "source_builtin": "مدمج",
+          "source_imported": "مستورد",
+          "preview": "معاينة {name}",
+          "get_more": "اعثر على المزيد من واجهات HUD على {site}",
+          "set_page_link": "تعيين صفحة HUD",
+          "page_link": "صفحة HUD",
+          "page_link_description": "الصق رابط صفحة الـ HUD، مثلاً على cshuds.com. ستصبح صورة المعاينة فيها معاينة هذا الـ HUD.",
+          "page_link_saved": "تم حفظ صفحة HUD",
+          "page_link_preview_saved": "تم حفظ صفحة HUD وتحديث المعاينة",
+          "page_link_failed": "تعذّر استخدام هذه الصفحة",
+          "view_on": "عرض على {site}"
         },
         "update_success": "تم التحديث",
         "db_backups": {

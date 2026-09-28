@@ -1863,9 +1863,11 @@
       "application": {
         "broadcast_huds": {
           "title": "Yayın HUD'ları",
-          "description": "Canlı yayınlara, demo oynatmaya ve toplu öne çıkan anlara işlenen HUD. Bir JTs Hud Manager veya Lexogrine paketini .zip olarak içe aktar ve oyun-streamer pod'unun hangisini yükleyeceğini seç; streamer'lar yayın başına oynatıcı kontrollerinden yine değiştirebilir.",
+          "description": "Canlı yayınlar, demo oynatma ve öne çıkanlar için HUD'u seç. Yayıncılar yine de her yayında değiştirebilir.",
           "import": "HUD içe aktar",
-          "import_hint": "Kökünde veya tek bir üst düzey klasörün içinde hud.json bulunan bir .zip.",
+          "import_hint": "Kök dizinde veya tek bir üst düzey klasörde hud.json bulunan bir JTs Hud Manager ya da Lexogrine paketi.",
+          "drop": "Bir .zip dosyasını buraya bırak veya göz atmak için tıkla",
+          "importing": "İçe aktarılıyor…",
           "imported": "HUD içe aktarıldı",
           "import_failed": "Bu HUD içe aktarılamadı",
           "make_default": "Varsayılan yap",
@@ -1877,7 +1879,18 @@
           "delete_title": "Bu HUD silinsin mi?",
           "delete_description": "Bu işlem \"{name}\" HUD'unu ve yüklenen arşivini kaldırır. Geri alınamaz.",
           "delete_confirm": "Sil",
-          "signed": "İmzalı paket"
+          "signed": "İmzalı paket",
+          "source_builtin": "Yerleşik",
+          "source_imported": "İçe aktarılmış",
+          "preview": "{name} önizlemesi",
+          "get_more": "{site} adresinde daha fazla HUD bul",
+          "set_page_link": "HUD sayfasını ayarla",
+          "page_link": "HUD sayfası",
+          "page_link_description": "HUD'un sayfasını yapıştır, örneğin cshuds.com'dan. Sayfanın önizleme görseli bu HUD'un önizlemesi olur.",
+          "page_link_saved": "HUD sayfası kaydedildi",
+          "page_link_preview_saved": "HUD sayfası kaydedildi ve önizleme güncellendi",
+          "page_link_failed": "Bu sayfa kullanılamadı",
+          "view_on": "{site} üzerinde gör"
         },
         "update_success": "Güncellendi",
         "db_backups": {

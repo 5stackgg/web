@@ -1863,9 +1863,11 @@
       "application": {
         "broadcast_huds": {
           "title": "Sändnings-HUD:ar",
-          "description": "HUD:en som bränns in i livesändningar, demouppspelning och batchhöjdpunkter. Importera ett JTs Hud Manager- eller Lexogrine-paket som .zip och välj vilket streamerpoden laddar; streamers kan fortfarande byta per sändning från spelarkontrollerna.",
+          "description": "Välj HUD:en för livesändningar, demouppspelning och highlights. Streamers kan fortfarande byta för varje sändning.",
           "import": "Importera HUD",
-          "import_hint": "En .zip med hud.json i roten eller i en enda mapp på översta nivån.",
+          "import_hint": "Ett JTs Hud Manager- eller Lexogrine-paket med hud.json i roten eller i en enda mapp på översta nivån.",
+          "drop": "Släpp en .zip här eller klicka för att bläddra",
+          "importing": "Importerar…",
           "imported": "HUD importerad",
           "import_failed": "Kunde inte importera den HUD:en",
           "make_default": "Gör till standard",
@@ -1877,7 +1879,18 @@
           "delete_title": "Ta bort den här HUD:en?",
           "delete_description": "Detta tar bort \"{name}\" och dess uppladdade arkiv. Detta går inte att ångra.",
           "delete_confirm": "Ta bort",
-          "signed": "Signerat paket"
+          "signed": "Signerat paket",
+          "source_builtin": "Inbyggd",
+          "source_imported": "Importerad",
+          "preview": "Förhandsvisa {name}",
+          "get_more": "Hitta fler HUD:er på {site}",
+          "set_page_link": "Ange HUD-sida",
+          "page_link": "HUD-sida",
+          "page_link_description": "Klistra in HUD:ens sida, till exempel på cshuds.com. Sidans förhandsbild blir den här HUD:ens förhandsvisning.",
+          "page_link_saved": "HUD-sidan sparades",
+          "page_link_preview_saved": "HUD-sidan sparades och förhandsvisningen uppdaterades",
+          "page_link_failed": "Kunde inte använda den sidan",
+          "view_on": "Visa på {site}"
         },
         "update_success": "Uppdaterad",
         "db_backups": {

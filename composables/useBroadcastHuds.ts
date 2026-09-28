@@ -6,14 +6,19 @@ export type BroadcastHud = {
   id: string;
   slug: string;
   name: string;
-  author: string | null;
-  version: string | null;
   description: string | null;
   source: "builtin" | "imported";
   variant: string | null;
-  thumbnail: string | null;
-  is_signed: boolean;
   enabled: boolean;
+};
+
+export type BroadcastHudDetails = BroadcastHud & {
+  author: string | null;
+  version: string | null;
+  thumbnail: string | null;
+  preview: string | null;
+  page_url: string | null;
+  is_signed: boolean;
 };
 
 // Raw gql until zeus is regenerated against a Hasura that has broadcast_huds.
@@ -23,14 +28,30 @@ export const BROADCAST_HUDS_QUERY = gql`
       id
       slug
       name
-      author
-      version
       description
       source
       variant
-      thumbnail
-      is_signed
       enabled
+    }
+  }
+`;
+
+export const BROADCAST_HUD_LIBRARY_QUERY = gql`
+  query BroadcastHudLibrary {
+    broadcast_huds(order_by: [{ source: asc }, { name: asc }]) {
+      id
+      slug
+      name
+      description
+      source
+      variant
+      enabled
+      author
+      version
+      thumbnail
+      preview
+      page_url
+      is_signed
     }
   }
 `;

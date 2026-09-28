@@ -1863,9 +1863,11 @@
       "application": {
         "broadcast_huds": {
           "title": "Broadcast HUDs",
-          "description": "The HUD burned into live streams, demo playback and batch highlights. Import a JTs Hud Manager or Lexogrine bundle as a .zip and pick which one the game-streamer pod loads; streamers can still switch per-stream from the player controls.",
+          "description": "Pick the HUD for live streams, demo playback and highlights. Streamers can still switch per stream.",
           "import": "Import HUD",
-          "import_hint": "A .zip with hud.json at its root or in a single top-level folder.",
+          "import_hint": "A JTs Hud Manager or Lexogrine bundle, with hud.json at the root or in one top-level folder.",
+          "drop": "Drop a .zip here or click to browse",
+          "importing": "Importing…",
           "imported": "HUD imported",
           "import_failed": "Could not import that HUD",
           "make_default": "Make default",
@@ -1877,7 +1879,18 @@
           "delete_title": "Delete this HUD?",
           "delete_description": "This removes \"{name}\" and its uploaded archive. This cannot be undone.",
           "delete_confirm": "Delete",
-          "signed": "Signed bundle"
+          "signed": "Signed bundle",
+          "source_builtin": "Built-in",
+          "source_imported": "Imported",
+          "preview": "Preview {name}",
+          "get_more": "Find more HUDs at {site}",
+          "set_page_link": "Set HUD page",
+          "page_link": "HUD page",
+          "page_link_description": "Paste the HUD's page, for example on cshuds.com. Its preview image becomes this HUD's preview.",
+          "page_link_saved": "HUD page saved",
+          "page_link_preview_saved": "HUD page saved and preview updated",
+          "page_link_failed": "Could not use that page",
+          "view_on": "View on {site}"
         },
         "update_success": "Updated",
         "db_backups": {

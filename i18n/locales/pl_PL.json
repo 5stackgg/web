@@ -1863,9 +1863,11 @@
       "application": {
         "broadcast_huds": {
           "title": "HUD-y transmisji",
-          "description": "HUD wtapiany w transmisje na żywo, odtwarzanie demo i zbiorcze highlighty. Zaimportuj pakiet JTs Hud Manager lub Lexogrine jako .zip i wybierz, który wczytuje pod streamujący; streamerzy nadal mogą go zmieniać dla pojedynczej transmisji w kontrolkach odtwarzacza.",
+          "description": "Wybierz HUD do transmisji na żywo, odtwarzania dem i highlightów. Streamerzy nadal mogą go zmienić dla każdej transmisji.",
           "import": "Importuj HUD",
-          "import_hint": "Plik .zip z hud.json w katalogu głównym lub w jednym folderze najwyższego poziomu.",
+          "import_hint": "Paczka JTs Hud Manager lub Lexogrine z plikiem hud.json w katalogu głównym lub w jednym folderze najwyższego poziomu.",
+          "drop": "Upuść tutaj plik .zip lub kliknij, aby wybrać",
+          "importing": "Importowanie…",
           "imported": "Zaimportowano HUD",
           "import_failed": "Nie udało się zaimportować tego HUD-a",
           "make_default": "Ustaw jako domyślny",
@@ -1877,7 +1879,18 @@
           "delete_title": "Usunąć ten HUD?",
           "delete_description": "Spowoduje to usunięcie „{name}” oraz przesłanego archiwum. Tej operacji nie można cofnąć.",
           "delete_confirm": "Usuń",
-          "signed": "Podpisany pakiet"
+          "signed": "Podpisany pakiet",
+          "source_builtin": "Wbudowany",
+          "source_imported": "Zaimportowany",
+          "preview": "Podgląd: {name}",
+          "get_more": "Więcej HUD-ów znajdziesz na {site}",
+          "set_page_link": "Ustaw stronę HUD-a",
+          "page_link": "Strona HUD-a",
+          "page_link_description": "Wklej stronę HUD-a, na przykład z cshuds.com. Jej obraz podglądu stanie się podglądem tego HUD-a.",
+          "page_link_saved": "Zapisano stronę HUD-a",
+          "page_link_preview_saved": "Zapisano stronę HUD-a i zaktualizowano podgląd",
+          "page_link_failed": "Nie udało się użyć tej strony",
+          "view_on": "Zobacz na {site}"
         },
         "update_success": "Zaktualizowano",
         "db_backups": {

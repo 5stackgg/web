@@ -1863,9 +1863,11 @@
       "application": {
         "broadcast_huds": {
           "title": "直播 HUD",
-          "description": "疊加在直播、Demo 回放與批次精華中的 HUD。以 .zip 匯入 JTs Hud Manager 或 Lexogrine 套件，並選擇遊戲串流 Pod 要載入哪一個；實況主仍可在每場直播中從播放控制切換。",
+          "description": "為直播、Demo 回放和精華片段選擇 HUD。實況主仍可在每場直播中切換。",
           "import": "匯入 HUD",
-          "import_hint": "根目錄或單一頂層資料夾中包含 hud.json 的 .zip 檔案。",
+          "import_hint": "JTs Hud Manager 或 Lexogrine 套件，hud.json 須位於根目錄或唯一的頂層資料夾中。",
+          "drop": "將 .zip 拖放到此處，或點擊瀏覽",
+          "importing": "正在匯入…",
           "imported": "HUD 已匯入",
           "import_failed": "無法匯入該 HUD",
           "make_default": "設為預設",
@@ -1877,7 +1879,18 @@
           "delete_title": "刪除此 HUD？",
           "delete_description": "這將移除「{name}」及其上傳的壓縮檔。此操作無法復原。",
           "delete_confirm": "刪除",
-          "signed": "已簽署的套件"
+          "signed": "已簽署的套件",
+          "source_builtin": "內建",
+          "source_imported": "已匯入",
+          "preview": "預覽 {name}",
+          "get_more": "在 {site} 尋找更多 HUD",
+          "set_page_link": "設定 HUD 頁面",
+          "page_link": "HUD 頁面",
+          "page_link_description": "貼上 HUD 的頁面連結，例如 cshuds.com 上的頁面。該頁面的預覽圖會成為此 HUD 的預覽。",
+          "page_link_saved": "已儲存 HUD 頁面",
+          "page_link_preview_saved": "已儲存 HUD 頁面並更新預覽",
+          "page_link_failed": "無法使用該頁面",
+          "view_on": "在 {site} 查看"
         },
         "update_success": "已更新",
         "db_backups": {

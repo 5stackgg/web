@@ -1863,9 +1863,11 @@
       "application": {
         "broadcast_huds": {
           "title": "配信用HUD",
-          "description": "ライブ配信・デモ再生・バッチハイライトに焼き込まれるHUDです。JTs Hud ManagerまたはLexogrineのバンドルを.zipでインポートし、ゲームストリーマーポッドが読み込むものを選択します。ストリーマーは配信ごとにプレイヤーコントロールから切り替えられます。",
+          "description": "ライブ配信、デモ再生、ハイライトで使う HUD を選びます。配信者は配信ごとに切り替えることもできます。",
           "import": "HUDをインポート",
-          "import_hint": "ルート、または最上位の単一フォルダ内にhud.jsonがある.zipファイル。",
+          "import_hint": "JTs Hud Manager または Lexogrine のバンドル（hud.json がルートか、最上位の 1 フォルダ内にあるもの）。",
+          "drop": ".zip をここにドロップするか、クリックして選択",
+          "importing": "インポート中…",
           "imported": "HUDをインポートしました",
           "import_failed": "HUDをインポートできませんでした",
           "make_default": "デフォルトに設定",
@@ -1877,7 +1879,18 @@
           "delete_title": "このHUDを削除しますか？",
           "delete_description": "「{name}」とアップロードされたアーカイブを削除します。この操作は取り消せません。",
           "delete_confirm": "削除する",
-          "signed": "署名済みバンドル"
+          "signed": "署名済みバンドル",
+          "source_builtin": "内蔵",
+          "source_imported": "インポート済み",
+          "preview": "{name} のプレビュー",
+          "get_more": "{site} でさらに HUD を探す",
+          "set_page_link": "HUD ページを設定",
+          "page_link": "HUD ページ",
+          "page_link_description": "cshuds.com などにある HUD のページを貼り付けてください。そのページのプレビュー画像がこの HUD のプレビューになります。",
+          "page_link_saved": "HUD ページを保存しました",
+          "page_link_preview_saved": "HUD ページを保存し、プレビューを更新しました",
+          "page_link_failed": "そのページは使用できませんでした",
+          "view_on": "{site} で見る"
         },
         "update_success": "更新しました",
         "db_backups": {

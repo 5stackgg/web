@@ -157,7 +157,7 @@ const tournamentHeroSettingsButtonClasses =
 const tournamentHeroTabsClasses =
   "mt-5 flex items-start gap-3 border-t border-border pt-4";
 const tournamentChatRoomButtonClasses =
-  "shrink-0 inline-flex items-center gap-2 font-sans text-[0.7rem] font-semibold uppercase leading-none tracking-[0.14em] max-sm:px-2";
+  "mt-[0.2rem] shrink-0 inline-flex items-center gap-2 font-sans text-[0.7rem] font-semibold uppercase leading-none tracking-[0.14em] max-sm:px-2";
 const tournamentChatRoomUnreadClasses =
   "inline-flex h-4 min-w-[1rem] origin-center items-center justify-center rounded-full bg-red-500 px-1 font-sans text-[0.6rem] font-bold leading-none tracking-normal text-white tabular-nums";
 const chatRoomUnreadPopTransition = {
@@ -498,7 +498,7 @@ function clearTeamEnterDelay(el: Element) {
           <div :class="tournamentHeroTabsClasses">
             <TabsList
               variant="underline"
-              :class="[tacticalTabsListClasses, 'h-auto min-w-0 flex-1 flex-wrap']"
+              :class="[tacticalTabsListClasses, 'h-auto min-w-0 flex-wrap justify-start']"
             >
               <TabsTrigger value="overview" :class="tacticalTabsTriggerClasses">
                 {{ $t("tournament.overview") }}

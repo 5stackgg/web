@@ -1,9 +1,0 @@
-{
-  // Stub — the real config is cloudflare-workers/backblaze-proxy/wrangler.toml.
-  // `yarn wrangler …` (package.json) points at it via --config.
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "5stack",
-  "main": "./cloudflare-workers/backblaze-proxy/index.ts",
-  "compatibility_date": "2025-04-29",
-  "observability": { "enabled": true }
-}

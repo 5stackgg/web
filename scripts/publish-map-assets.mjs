@@ -1,5 +1,5 @@
 // Upload built map assets to the 5stack bucket, behind the existing Cloudflare
-// worker (cloudflare-workers/backblaze-proxy).
+// worker (cloudflare-workers/backblaze-proxy in 5stack-panel).
 //
 // WHY NOT jsDelivr ANY MORE. It refuses any file over ~20MiB with a 403 (not a
 // 404), which the 3D viewer reads as "no mesh" and silently answers with the

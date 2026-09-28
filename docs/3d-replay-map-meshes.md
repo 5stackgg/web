@@ -2,7 +2,8 @@
 
 Every map the game-server nodes run gets four files, built straight from the
 CS2 install and served by the panel's own Cloudflare worker
-(`cloudflare-workers/backblaze-proxy`) out of the B2 bucket `5stack`:
+(`cloudflare-workers/backblaze-proxy` in 5stack-panel) out of the B2 bucket
+`5stack`:
 
 | asset | file | read by |
 | --- | --- | --- |
@@ -76,7 +77,7 @@ edge and in the browser, and the publisher only ever moves it forwards.
 > **⚠ Deploy the worker BEFORE the first publish.** A worker from before this
 > change caches `latest.json` at the edge and in browsers as immutable for 30
 > days the first time anybody reads it, and every later build would be
-> invisible for a month. `yarn wrangler deploy` from `web/`, then publish.
+> invisible for a month. `./backblaze-proxy.sh` from `5stack-panel/`, then publish.
 
 ## How the consumers resolve a map
 

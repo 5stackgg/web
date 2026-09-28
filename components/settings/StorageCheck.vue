@@ -2,13 +2,7 @@
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
-import {
-  AlertTriangle,
-  CheckCircle2,
-  ExternalLink,
-  Play,
-  XCircle,
-} from "lucide-vue-next";
+import { Check, ExternalLink, Minus, Play, X } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
@@ -163,7 +157,7 @@ async function run() {
 const rows = computed(() =>
   order.value.map((id, index) => ({
     id,
-    index: String(index + 1).padStart(2, "0"),
+    number: index + 1,
     last: index === order.value.length - 1,
     name: t(key(`storage_check_${id}`)),
     path:
@@ -205,12 +199,13 @@ const notes = computed(() =>
 );
 
 const node: Record<StageState, string> = {
-  idle: "border border-muted-foreground/50 bg-background",
-  running: "bg-[hsl(var(--tac-amber))] motion-safe:animate-pulse",
-  ok: "bg-success",
-  fail: "bg-destructive",
-  manual: "bg-warning",
-  skipped: "bg-muted-foreground/30",
+  idle: "border-border bg-background text-muted-foreground",
+  running:
+    "border-[hsl(var(--tac-amber))] bg-background text-[hsl(var(--tac-amber))] motion-safe:animate-pulse",
+  ok: "border-success/60 bg-success/15 text-success",
+  fail: "border-destructive/60 bg-destructive/15 text-destructive",
+  manual: "border-warning/60 bg-warning/15 text-warning",
+  skipped: "border-border bg-background text-muted-foreground/50",
 };
 
 const track: Record<StageState, string> = {
@@ -270,55 +265,54 @@ const lastRunTime = computed(() =>
       <li
         v-for="stage in rows"
         :key="stage.id"
-        class="relative grid content-start gap-1 pb-6 pl-7 sm:pb-0 sm:pl-0 sm:pt-7"
+        class="relative grid content-start gap-1 pb-6 pl-8 sm:pb-0 sm:pl-0 sm:pt-8"
         :data-test="`storage-check-${stage.id}`"
         :data-state="stage.state"
       >
         <template v-if="!stage.last">
           <span
-            class="absolute bottom-0 left-[4px] top-4 w-px sm:hidden"
+            class="absolute bottom-1 left-[10px] top-6 w-px sm:hidden"
             :class="track[stage.state]"
           />
           <span
-            class="absolute -right-6 left-5 top-[4px] hidden h-px sm:block"
+            class="absolute -right-5 left-6 top-[10px] hidden h-px sm:block"
             :class="track[stage.state]"
           />
           <span
             v-if="stage.state === 'running'"
-            class="absolute -right-6 left-5 top-[4px] hidden h-px overflow-hidden text-[hsl(var(--tac-amber))] sm:block"
+            class="absolute -right-5 left-6 top-[10px] hidden h-px overflow-hidden text-[hsl(var(--tac-amber))] sm:block"
           >
             <span class="tac-scan-sweep block h-full" />
           </span>
         </template>
         <span
-          class="absolute left-0 top-0 size-[9px] rotate-45"
+          class="absolute left-0 top-0 flex size-5 items-center justify-center rounded-full border font-mono text-[0.62rem]"
           :class="node[stage.state]"
-        />
+          data-test="storage-check-step"
+        >
+          <Check v-if="stage.state === 'ok'" class="size-3" stroke-width="3" />
+          <X
+            v-else-if="stage.state === 'fail'"
+            class="size-3"
+            stroke-width="3"
+          />
+          <span v-else-if="stage.state === 'manual'" class="font-bold">!</span>
+          <Minus v-else-if="stage.state === 'skipped'" class="size-3" />
+          <template v-else>{{ stage.number }}</template>
+        </span>
 
         <span
           class="font-mono text-[0.64rem] uppercase tracking-[0.2em] text-muted-foreground"
         >
-          {{ stage.index }} · {{ stage.name }}
+          {{ stage.name }}
         </span>
         <span class="text-xs text-muted-foreground/70">{{ stage.path }}</span>
         <span
-          class="mt-1.5 flex min-w-0 items-center gap-1.5 text-sm"
+          class="mt-1.5 truncate text-sm"
           :class="text[stage.state]"
           data-test="storage-check-result"
         >
-          <CheckCircle2
-            v-if="stage.state === 'ok'"
-            class="size-3.5 shrink-0"
-          />
-          <XCircle
-            v-else-if="stage.state === 'fail'"
-            class="size-3.5 shrink-0"
-          />
-          <AlertTriangle
-            v-else-if="stage.state === 'manual'"
-            class="size-3.5 shrink-0"
-          />
-          <span class="truncate">{{ result(stage) }}</span>
+          {{ result(stage) }}
         </span>
       </li>
     </ol>
@@ -337,7 +331,7 @@ const lastRunTime = computed(() =>
           class="mt-[0.2rem] shrink-0 font-mono text-[0.64rem] uppercase tracking-[0.2em]"
           :class="text[note.state]"
         >
-          {{ note.index }}
+          {{ note.name }}
         </span>
         <span class="text-muted-foreground">
           {{ note.detail }}

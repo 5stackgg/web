@@ -25,39 +25,46 @@ const { locale } = useI18n();
 
 const tones: Record<
   EdgeStatusState,
-  { rail: string; text: string; tint: string; dot: string }
+  { rail: string; text: string; tint: string; bar: string; lit: number }
 > = {
   online: {
     rail: "bg-success",
     text: "text-success",
     tint: "from-[hsl(var(--success)/0.08)]",
-    dot: "bg-success",
+    bar: "bg-success",
+    lit: 3,
   },
   attention: {
     rail: "bg-warning",
     text: "text-warning",
     tint: "from-[hsl(var(--warning)/0.08)]",
-    dot: "bg-warning",
+    bar: "bg-warning",
+    lit: 2,
   },
   offline: {
     rail: "bg-destructive",
     text: "text-destructive",
     tint: "from-[hsl(var(--destructive)/0.08)]",
-    dot: "bg-destructive",
+    bar: "bg-destructive",
+    lit: 1,
   },
   checking: {
     rail: "bg-muted-foreground/30",
     text: "text-muted-foreground",
     tint: "from-muted/40",
-    dot: "bg-[hsl(var(--tac-amber))] motion-safe:animate-pulse",
+    bar: "bg-[hsl(var(--tac-amber))] motion-safe:animate-pulse",
+    lit: 3,
   },
   idle: {
     rail: "bg-muted-foreground/30",
     text: "text-muted-foreground",
     tint: "from-muted/40",
-    dot: "border border-muted-foreground/70",
+    bar: "",
+    lit: 0,
   },
 };
+
+const BAR_HEIGHTS = ["h-[5px]", "h-[8px]", "h-[11px]"];
 
 const tone = computed(() => tones[props.state]);
 
@@ -83,12 +90,22 @@ const checkedTime = computed(() =>
 
     <div class="grid gap-1 py-3 pl-5 pr-3">
       <div class="flex items-center gap-3">
-        <span class="relative inline-flex size-2 shrink-0">
+        <span
+          class="flex h-[11px] shrink-0 items-end gap-[2px]"
+          aria-hidden="true"
+        >
           <span
-            v-if="state === 'online'"
-            class="absolute inset-0 rotate-45 bg-success/50 motion-safe:animate-ping"
+            v-for="(height, bar) in BAR_HEIGHTS"
+            :key="bar"
+            class="w-[3px] rounded-[1px]"
+            :class="[
+              height,
+              bar < tone.lit ? tone.bar : 'bg-muted-foreground/25',
+            ]"
+            :style="
+              state === 'checking' ? { animationDelay: `${bar * 180}ms` } : {}
+            "
           />
-          <span class="relative size-2 rotate-45" :class="tone.dot" />
         </span>
         <span
           class="shrink-0 font-mono text-[0.68rem] font-semibold uppercase tracking-[0.22em]"

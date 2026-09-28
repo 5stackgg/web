@@ -2308,7 +2308,6 @@
           "cloudflare_worker_keys_rejected": "Backblaze が Worker のキーを拒否しているため、まだキャッシュされていないファイルを読み込めません。パネルと同じキーでセットアップを再実行してください。",
           "cloudflare_worker_misconfigured": "Worker にバケットの設定がありません。セットアップを再実行してください。",
           "cloudflare_worker_bucket_unreachable": "Worker がバケットに接続できません。",
-          "cloudflare_worker_row_bucket": "バケット",
           "cloudflare_worker_bucket_ok": "Backblaze がキーを受け入れました",
           "cloudflare_worker_bucket_rejected": "キーが拒否されました ({code})",
           "storage_check_section": "ストレージチェック",
@@ -9964,7 +9963,6 @@
     "offline": "オフライン",
     "checking": "確認中",
     "idle": "未設定",
-    "checked_at": "{time} に確認",
     "check_again": "再確認",
     "setup_guide": "セットアップガイド"
   }

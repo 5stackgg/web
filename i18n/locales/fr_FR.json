@@ -2308,7 +2308,6 @@
           "cloudflare_worker_keys_rejected": "Backblaze refuse les clés du worker, donc les fichiers pas encore en cache ne se chargent pas. Relancez l'installation avec les clés utilisées par le panel.",
           "cloudflare_worker_misconfigured": "Il manque au worker les réglages de son bucket. Relancez l'installation.",
           "cloudflare_worker_bucket_unreachable": "Le worker n'arrive pas à joindre votre bucket.",
-          "cloudflare_worker_row_bucket": "Bucket",
           "cloudflare_worker_bucket_ok": "Clés acceptées par Backblaze",
           "cloudflare_worker_bucket_rejected": "Clés refusées ({code})",
           "storage_check_section": "Vérification du stockage",
@@ -9964,7 +9963,6 @@
     "offline": "Hors ligne",
     "checking": "Vérification",
     "idle": "Non configuré",
-    "checked_at": "Vérifié à {time}",
     "check_again": "Vérifier à nouveau",
     "setup_guide": "Guide d'installation"
   }

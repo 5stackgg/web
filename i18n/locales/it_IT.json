@@ -2308,7 +2308,6 @@
           "cloudflare_worker_keys_rejected": "Backblaze rifiuta le chiavi del worker, quindi i file non ancora in cache non si caricano. Esegui di nuovo la configurazione con le chiavi usate dal pannello.",
           "cloudflare_worker_misconfigured": "Al worker mancano le impostazioni del bucket. Esegui di nuovo la configurazione.",
           "cloudflare_worker_bucket_unreachable": "Il worker non riesce a raggiungere il bucket.",
-          "cloudflare_worker_row_bucket": "Bucket",
           "cloudflare_worker_bucket_ok": "Chiavi accettate da Backblaze",
           "cloudflare_worker_bucket_rejected": "Chiavi rifiutate ({code})",
           "storage_check_section": "Verifica dello storage",
@@ -9964,7 +9963,6 @@
     "offline": "Offline",
     "checking": "Verifica in corso",
     "idle": "Non configurato",
-    "checked_at": "Verificato alle {time}",
     "check_again": "Verifica di nuovo",
     "setup_guide": "Guida alla configurazione"
   }

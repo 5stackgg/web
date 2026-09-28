@@ -66,7 +66,8 @@ describe("BackblazeWorkerStatus", () => {
     expect(wrapper.find('[data-test="edge-status-endpoint"]').text()).toBe(
       "cf.acme.gg",
     );
-    expect(wrapper.text()).toContain("Keys accepted by Backblaze");
+    expect(summary(wrapper)).toContain("served through Cloudflare");
+    expect(wrapper.find('[data-test="edge-status-guide"]').exists()).toBe(false);
   });
 
   it("is offline when Backblaze rejects the worker's keys", async () => {
@@ -78,7 +79,9 @@ describe("BackblazeWorkerStatus", () => {
 
     expect(state(wrapper)).toBe("offline");
     expect(summary(wrapper)).toContain("rejects the worker's keys");
-    expect(wrapper.text()).toContain("Keys rejected (InvalidAccessKeyId)");
+    expect(wrapper.find('[data-test="edge-status-guide"]').attributes("href")).toBe(
+      "https://docs.5stack.gg/advanced/s3/backblaze",
+    );
   });
 
   it("asks for an update when an older worker only answers the preflight", async () => {

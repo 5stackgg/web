@@ -2308,7 +2308,6 @@
           "cloudflare_worker_keys_rejected": "Backblaze afviser workerens nøgler, så filer, der ikke er cachet endnu, kan ikke indlæses. Kør opsætningen igen med de nøgler, panelet bruger.",
           "cloudflare_worker_misconfigured": "Workeren mangler sine bucket-indstillinger. Kør opsætningen igen.",
           "cloudflare_worker_bucket_unreachable": "Workeren kan ikke nå din bucket.",
-          "cloudflare_worker_row_bucket": "Bucket",
           "cloudflare_worker_bucket_ok": "Nøgler godkendt af Backblaze",
           "cloudflare_worker_bucket_rejected": "Nøgler afvist ({code})",
           "storage_check_section": "Lagertjek",
@@ -9964,7 +9963,6 @@
     "offline": "Offline",
     "checking": "Tjekker",
     "idle": "Ikke sat op",
-    "checked_at": "Tjekket {time}",
     "check_again": "Tjek igen",
     "setup_guide": "Opsætningsguide"
   }

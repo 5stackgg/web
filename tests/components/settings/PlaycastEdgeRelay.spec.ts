@@ -77,10 +77,7 @@ describe("PlaycastEdgeRelay", () => {
     health.mockResolvedValueOnce(
       Response.json({ ok: true, worker: "5stack-playcast-relay", version: "2" }),
     );
-    await wrapper
-      .findAll("button")
-      .find((button: any) => button.text().includes("Check again"))!
-      .trigger("click");
+    await wrapper.find('[data-test="edge-status-check"]').trigger("click");
     await flushPromises();
 
     expect(panel(wrapper).attributes("data-state")).toBe("online");

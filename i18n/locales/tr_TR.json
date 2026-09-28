@@ -2308,7 +2308,6 @@
           "cloudflare_worker_keys_rejected": "Backblaze worker'ın anahtarlarını reddediyor, bu yüzden henüz önbelleğe alınmamış dosyalar yüklenemiyor. Kurulumu panelin kullandığı anahtarlarla yeniden çalıştırın.",
           "cloudflare_worker_misconfigured": "Worker'ın bucket ayarları eksik. Kurulumu yeniden çalıştırın.",
           "cloudflare_worker_bucket_unreachable": "Worker bucket'ınıza ulaşamıyor.",
-          "cloudflare_worker_row_bucket": "Bucket",
           "cloudflare_worker_bucket_ok": "Anahtarlar Backblaze tarafından kabul edildi",
           "cloudflare_worker_bucket_rejected": "Anahtarlar reddedildi ({code})",
           "storage_check_section": "Depolama kontrolü",
@@ -9964,7 +9963,6 @@
     "offline": "Çevrimdışı",
     "checking": "Kontrol ediliyor",
     "idle": "Kurulmadı",
-    "checked_at": "{time} itibarıyla kontrol edildi",
     "check_again": "Tekrar kontrol et",
     "setup_guide": "Kurulum kılavuzu"
   }

@@ -2308,7 +2308,6 @@
           "cloudflare_worker_keys_rejected": "Backblaze가 Worker의 키를 거부하여 아직 캐시되지 않은 파일을 불러올 수 없습니다. 패널이 사용하는 키로 설정을 다시 실행하세요.",
           "cloudflare_worker_misconfigured": "Worker에 버킷 설정이 없습니다. 설정을 다시 실행하세요.",
           "cloudflare_worker_bucket_unreachable": "Worker가 버킷에 연결할 수 없습니다.",
-          "cloudflare_worker_row_bucket": "버킷",
           "cloudflare_worker_bucket_ok": "Backblaze가 키를 수락함",
           "cloudflare_worker_bucket_rejected": "키 거부됨 ({code})",
           "storage_check_section": "스토리지 확인",
@@ -9964,7 +9963,6 @@
     "offline": "오프라인",
     "checking": "확인 중",
     "idle": "설정 안 됨",
-    "checked_at": "{time}에 확인함",
     "check_again": "다시 확인",
     "setup_guide": "설정 가이드"
   }

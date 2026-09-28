@@ -2308,7 +2308,6 @@
           "cloudflare_worker_keys_rejected": "Backblaze lehnt die Schlüssel des Workers ab, daher lassen sich noch nicht gecachte Dateien nicht laden. Führe die Einrichtung erneut mit den Schlüsseln aus, die das Panel verwendet.",
           "cloudflare_worker_misconfigured": "Dem Worker fehlen seine Bucket-Einstellungen. Führe die Einrichtung erneut aus.",
           "cloudflare_worker_bucket_unreachable": "Der Worker erreicht deinen Bucket nicht.",
-          "cloudflare_worker_row_bucket": "Bucket",
           "cloudflare_worker_bucket_ok": "Schlüssel von Backblaze akzeptiert",
           "cloudflare_worker_bucket_rejected": "Schlüssel abgelehnt ({code})",
           "storage_check_section": "Speicherprüfung",
@@ -9964,7 +9963,6 @@
     "offline": "Offline",
     "checking": "Wird geprüft",
     "idle": "Nicht eingerichtet",
-    "checked_at": "Geprüft um {time}",
     "check_again": "Erneut prüfen",
     "setup_guide": "Einrichtungsanleitung"
   }

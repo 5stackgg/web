@@ -2308,7 +2308,6 @@
           "cloudflare_worker_keys_rejected": "Backblaze odrzuca klucze workera, więc pliki, których nie ma jeszcze w pamięci podręcznej, nie wczytują się. Uruchom konfigurację ponownie z kluczami, których używa panel.",
           "cloudflare_worker_misconfigured": "Workerowi brakuje ustawień bucketu. Uruchom konfigurację ponownie.",
           "cloudflare_worker_bucket_unreachable": "Worker nie może połączyć się z bucketem.",
-          "cloudflare_worker_row_bucket": "Bucket",
           "cloudflare_worker_bucket_ok": "Klucze zaakceptowane przez Backblaze",
           "cloudflare_worker_bucket_rejected": "Klucze odrzucone ({code})",
           "storage_check_section": "Test magazynu",
@@ -9964,7 +9963,6 @@
     "offline": "Offline",
     "checking": "Sprawdzanie",
     "idle": "Nieskonfigurowane",
-    "checked_at": "Sprawdzono o {time}",
     "check_again": "Sprawdź ponownie",
     "setup_guide": "Instrukcja konfiguracji"
   }

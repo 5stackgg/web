@@ -2308,7 +2308,6 @@
           "cloudflare_worker_keys_rejected": "Backblaze avvisar workerns nycklar, så filer som inte har cachats än går inte att läsa in. Kör installationen igen med nycklarna som panelen använder.",
           "cloudflare_worker_misconfigured": "Workern saknar sina bucket-inställningar. Kör installationen igen.",
           "cloudflare_worker_bucket_unreachable": "Workern når inte din bucket.",
-          "cloudflare_worker_row_bucket": "Bucket",
           "cloudflare_worker_bucket_ok": "Nycklarna godkända av Backblaze",
           "cloudflare_worker_bucket_rejected": "Nycklarna avvisade ({code})",
           "storage_check_section": "Lagringskontroll",
@@ -9964,7 +9963,6 @@
     "offline": "Offline",
     "checking": "Kontrollerar",
     "idle": "Inte inställt",
-    "checked_at": "Kontrollerad {time}",
     "check_again": "Kontrollera igen",
     "setup_guide": "Installationsguide"
   }

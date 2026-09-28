@@ -2308,7 +2308,6 @@
           "cloudflare_worker_keys_rejected": "Backblaze 拒絕了 Worker 的金鑰，尚未快取的檔案無法載入。請使用面板所用的金鑰重新執行設定。",
           "cloudflare_worker_misconfigured": "Worker 缺少儲存桶設定。請重新執行設定。",
           "cloudflare_worker_bucket_unreachable": "Worker 無法連線到儲存桶。",
-          "cloudflare_worker_row_bucket": "儲存桶",
           "cloudflare_worker_bucket_ok": "Backblaze 已接受金鑰",
           "cloudflare_worker_bucket_rejected": "金鑰遭拒（{code}）",
           "storage_check_section": "儲存空間檢查",
@@ -9964,7 +9963,6 @@
     "offline": "離線",
     "checking": "檢查中",
     "idle": "未設定",
-    "checked_at": "檢查於 {time}",
     "check_again": "重新檢查",
     "setup_guide": "設定指南"
   }

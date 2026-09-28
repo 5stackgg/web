@@ -2308,7 +2308,6 @@
           "cloudflare_worker_keys_rejected": "Backblaze rejects the worker's keys, so files that aren't cached yet fail to load. Run the setup again with the keys the panel uses.",
           "cloudflare_worker_misconfigured": "The worker is missing its bucket settings. Run the setup again.",
           "cloudflare_worker_bucket_unreachable": "The worker can't reach your bucket.",
-          "cloudflare_worker_row_bucket": "Bucket",
           "cloudflare_worker_bucket_ok": "Keys accepted by Backblaze",
           "cloudflare_worker_bucket_rejected": "Keys rejected ({code})",
           "storage_check_section": "Storage check",
@@ -9964,7 +9963,6 @@
     "offline": "Offline",
     "checking": "Checking",
     "idle": "Not set up",
-    "checked_at": "Checked {time}",
     "check_again": "Check again",
     "setup_guide": "Setup guide"
   }

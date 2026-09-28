@@ -11,17 +11,10 @@ export type EdgeStatusState =
   | "offline"
   | "idle";
 
-export type EdgeStatusRow = {
-  label: string;
-  value: string;
-  tone?: "good" | "bad";
-};
-
 const props = defineProps<{
   state: EdgeStatusState;
   summary: string;
   endpoint?: string;
-  rows?: EdgeStatusRow[];
   docsUrl: string;
   checkedAt?: Date | null;
 }>();
@@ -88,89 +81,65 @@ const checkedTime = computed(() =>
       <div class="tac-scan-sweep h-full" />
     </div>
 
-    <div class="grid gap-3 py-4 pl-6 pr-4">
-      <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-        <div class="flex min-w-0 items-center gap-3">
-          <span class="relative inline-flex size-2 shrink-0">
-            <span
-              v-if="state === 'online'"
-              class="absolute inset-0 rotate-45 bg-success/50 motion-safe:animate-ping"
-            />
-            <span class="relative size-2 rotate-45" :class="tone.dot" />
-          </span>
+    <div class="grid gap-1 py-3 pl-5 pr-3">
+      <div class="flex items-center gap-3">
+        <span class="relative inline-flex size-2 shrink-0">
           <span
-            class="font-mono text-[0.68rem] font-semibold uppercase tracking-[0.22em]"
-            :class="tone.text"
-            data-test="edge-status-state"
-          >
-            {{ $t(`edge_status.${state}`) }}
-          </span>
-        </div>
-        <div class="flex items-center gap-3">
-          <span
-            v-if="checkedTime && state !== 'checking'"
-            class="hidden font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground/70 sm:inline"
-          >
-            {{ $t("edge_status.checked_at", { time: checkedTime }) }}
-          </span>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            :loading="state === 'checking'"
-            @click="$emit('check')"
-          >
-            <RefreshCw class="size-3.5" />
-            {{ $t("edge_status.check_again") }}
-          </Button>
-        </div>
-      </div>
-
-      <div class="grid gap-1">
+            v-if="state === 'online'"
+            class="absolute inset-0 rotate-45 bg-success/50 motion-safe:animate-ping"
+          />
+          <span class="relative size-2 rotate-45" :class="tone.dot" />
+        </span>
+        <span
+          class="shrink-0 font-mono text-[0.68rem] font-semibold uppercase tracking-[0.22em]"
+          :class="tone.text"
+          data-test="edge-status-state"
+        >
+          {{ $t(`edge_status.${state}`) }}
+        </span>
         <span
           v-if="endpoint"
-          class="break-all font-mono text-lg leading-tight tracking-tight"
+          class="min-w-0 truncate font-mono text-sm"
           data-test="edge-status-endpoint"
         >
           {{ endpoint }}
         </span>
-        <p class="text-sm text-muted-foreground" data-test="edge-status-summary">
-          {{ summary }}
-        </p>
+        <span
+          v-if="checkedTime && state !== 'checking'"
+          class="ml-auto hidden shrink-0 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground/60 sm:inline"
+        >
+          {{ checkedTime }}
+        </span>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          class="size-7 shrink-0"
+          :class="{ 'ml-auto': !checkedTime || state === 'checking' }"
+          :title="$t('edge_status.check_again')"
+          :aria-label="$t('edge_status.check_again')"
+          :loading="state === 'checking'"
+          data-test="edge-status-check"
+          @click="$emit('check')"
+        >
+          <RefreshCw class="size-3.5" />
+        </Button>
       </div>
 
-      <dl
-        v-if="rows?.length"
-        class="grid gap-x-6 gap-y-1.5 border-t border-dashed border-border/70 pt-3 sm:grid-cols-[max-content_1fr]"
-      >
-        <template v-for="row in rows" :key="row.label">
-          <dt
-            class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground/70 sm:pt-[0.2rem]"
-          >
-            {{ row.label }}
-          </dt>
-          <dd
-            class="text-sm"
-            :class="{
-              'text-success': row.tone === 'good',
-              'text-destructive': row.tone === 'bad',
-            }"
-          >
-            {{ row.value }}
-          </dd>
-        </template>
-      </dl>
-
-      <a
-        :href="docsUrl"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="inline-flex w-fit items-center gap-1.5 text-sm text-primary transition-colors hover:text-primary/80"
-        data-test="edge-status-guide"
-      >
-        {{ $t("edge_status.setup_guide") }}
-        <ExternalLink class="size-3.5" />
-      </a>
+      <p class="text-sm text-muted-foreground" data-test="edge-status-summary">
+        {{ summary }}
+        <a
+          v-if="state === 'idle' || state === 'offline' || state === 'attention'"
+          :href="docsUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="ml-1 inline-flex items-center gap-1 whitespace-nowrap text-primary transition-colors hover:text-primary/80"
+          data-test="edge-status-guide"
+        >
+          {{ $t("edge_status.setup_guide") }}
+          <ExternalLink class="size-3.5" />
+        </a>
+      </p>
     </div>
   </div>
 </template>

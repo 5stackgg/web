@@ -2,7 +2,6 @@
 import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import EdgeStatusPanel, {
-  type EdgeStatusRow,
   type EdgeStatusState,
 } from "~/components/settings/EdgeStatusPanel.vue";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
@@ -88,29 +87,6 @@ const summary = computed(() => {
   }
   return t(key("cloudflare_worker_bucket_unreachable"));
 });
-
-const rows = computed<EdgeStatusRow[]>(() => {
-  const current = health.value;
-  if (state.value === "checking" || !current?.answering || !current.current) {
-    return [];
-  }
-  const label = t(key("cloudflare_worker_row_bucket"));
-  if (current.bucket === "ok") {
-    return [{ label, value: t(key("cloudflare_worker_bucket_ok")), tone: "good" }];
-  }
-  if (current.bucket === "rejected") {
-    return [
-      {
-        label,
-        value: t(key("cloudflare_worker_bucket_rejected"), {
-          code: current.code ?? "?",
-        }),
-        tone: "bad",
-      },
-    ];
-  }
-  return [];
-});
 </script>
 
 <template>
@@ -118,7 +94,6 @@ const rows = computed<EdgeStatusRow[]>(() => {
     :state="state"
     :endpoint="endpoint || undefined"
     :summary="summary"
-    :rows="rows"
     :checked-at="checkedAt"
     docs-url="https://docs.5stack.gg/advanced/s3/backblaze"
     @check="check"

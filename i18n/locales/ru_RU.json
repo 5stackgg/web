@@ -2308,7 +2308,6 @@
           "cloudflare_worker_keys_rejected": "Backblaze отклоняет ключи воркера, поэтому файлы, которых ещё нет в кэше, не загружаются. Запустите настройку снова с ключами, которые использует панель.",
           "cloudflare_worker_misconfigured": "У воркера нет настроек бакета. Запустите настройку снова.",
           "cloudflare_worker_bucket_unreachable": "Воркер не может подключиться к бакету.",
-          "cloudflare_worker_row_bucket": "Бакет",
           "cloudflare_worker_bucket_ok": "Backblaze принял ключи",
           "cloudflare_worker_bucket_rejected": "Ключи отклонены ({code})",
           "storage_check_section": "Проверка хранилища",
@@ -9964,7 +9963,6 @@
     "offline": "Не в сети",
     "checking": "Проверка",
     "idle": "Не настроено",
-    "checked_at": "Проверено в {time}",
     "check_again": "Проверить снова",
     "setup_guide": "Инструкция по настройке"
   }

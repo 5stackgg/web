@@ -111,14 +111,37 @@ describe("usePlayerBlocks", () => {
     expect(blocks.isBlocked(DANA)).toBe(false);
   });
 
-  it("reads a rejected subscription as nobody blocked rather than loading forever", async () => {
+  it("offers blocking only once the list has arrived", async () => {
+    await signIn();
+    const blocks = usePlayerBlocks();
+
+    expect(blocks.available.value).toBe(false);
+
+    live().next({ data: { player_blocks: [] } });
+
+    expect(blocks.available.value).toBe(true);
+  });
+
+  it("reads an api without the table as nobody blocked and nothing to offer", async () => {
     await signIn();
     const blocks = usePlayerBlocks();
 
     live().error(new Error("field 'player_blocks' not found"));
 
     expect(blocks.loaded.value).toBe(true);
+    expect(blocks.available.value).toBe(false);
     expect(blocks.blocks.value).toEqual([]);
+  });
+
+  it("keeps the last list when the stream dies after delivering", async () => {
+    await signIn();
+    const blocks = usePlayerBlocks();
+    live().next({ data: { player_blocks: [row(DANA, "Dana")] } });
+
+    live().error(new Error("socket closed"));
+
+    expect(blocks.isBlocked(DANA)).toBe(true);
+    expect(blocks.available.value).toBe(true);
   });
 
   it("drops the list and the subscription when the viewer signs out", async () => {
@@ -131,6 +154,7 @@ describe("usePlayerBlocks", () => {
 
     expect(graphql.observers.every((entry) => entry.closed)).toBe(true);
     expect(blocks.isBlocked(DANA)).toBe(false);
+    expect(blocks.available.value).toBe(false);
   });
 
   it("blocks by steam id and holds a second call while the first is in flight", async () => {

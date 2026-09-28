@@ -24,8 +24,10 @@ const SUBSCRIPTION_KEY = "player-blocks";
 
 const blocks = ref<Array<PlayerBlock>>([]);
 const loaded = ref(false);
+const available = ref(false);
 const blocksView = computed(() => blocks.value);
 const loadedView = computed(() => loaded.value);
+const availableView = computed(() => available.value);
 const busy = reactive<Record<string, boolean>>({});
 const pending = new Map<string, Promise<void>>();
 let watching = false;
@@ -39,6 +41,7 @@ function subscribe(steamId?: string | null) {
 
   blocks.value = [];
   loaded.value = false;
+  available.value = false;
 
   if (!steamId) {
     manager.unsubscribe(SUBSCRIPTION_KEY);
@@ -46,7 +49,8 @@ function subscribe(steamId?: string | null) {
   }
 
   // Optional: web can reach an api that has not run the player_blocks
-  // migration yet, which must read as "nobody blocked", not as an error toast.
+  // migration yet. That reads as "nobody blocked" with no way to block, not as
+  // an error toast; and a stream that dies later keeps the list it last had.
   manager.subscribe(
     SUBSCRIPTION_KEY,
     getGraphqlClient()
@@ -58,9 +62,9 @@ function subscribe(steamId?: string | null) {
         next: ({ data }: { data?: any }) => {
           blocks.value = data?.player_blocks ?? [];
           loaded.value = true;
+          available.value = true;
         },
         error: () => {
-          blocks.value = [];
           loaded.value = true;
         },
       }),
@@ -138,6 +142,7 @@ export function usePlayerBlocks() {
   return {
     blocks: blocksView,
     loaded: loadedView,
+    available: availableView,
     isBlocked,
     isBusy,
     block,

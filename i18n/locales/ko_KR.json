@@ -8124,7 +8124,8 @@
     },
     "errors": {
       "title": "사용할 수 없는 작업",
-      "player_blocked": "이 플레이어에게는 그 작업을 할 수 없습니다."
+      "player_blocked": "이 플레이어에게는 그 작업을 할 수 없습니다.",
+      "player_blocked_bulk": "이 플레이어 중 추가할 수 없는 플레이어가 있습니다."
     }
   },
   "maps": {

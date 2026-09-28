@@ -8124,7 +8124,8 @@
     },
     "errors": {
       "title": "Handling ikke tilgængelig",
-      "player_blocked": "Det kan du ikke gøre med denne spiller."
+      "player_blocked": "Det kan du ikke gøre med denne spiller.",
+      "player_blocked_bulk": "Mindst én af disse spillere kan ikke tilføjes."
     }
   },
   "maps": {

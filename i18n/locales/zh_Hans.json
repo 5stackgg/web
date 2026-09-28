@@ -2845,7 +2845,7 @@
         "description": "被屏蔽的玩家无法向你发送消息、邀请或好友请求。取消屏蔽不会恢复你们的好友关系。",
         "empty_title": "没有已屏蔽的玩家",
         "empty_description": "你在玩家资料页或玩家菜单中屏蔽的玩家会显示在这里。",
-        "blocked_on": "屏蔽于"
+        "blocked_on": "已屏蔽"
       }
     },
     "watch": {
@@ -8124,7 +8124,8 @@
     },
     "errors": {
       "title": "操作不可用",
-      "player_blocked": "无法对该玩家执行此操作。"
+      "player_blocked": "无法对该玩家执行此操作。",
+      "player_blocked_bulk": "其中至少有一名玩家无法添加。"
     }
   },
   "maps": {

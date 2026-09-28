@@ -50,7 +50,12 @@ const {
 
 const { canMessage, openConversation } = useDirectMessages();
 
-const { isBlocked, isBusy: isBlockBusy, unblock } = usePlayerBlocks();
+const {
+  available: blocksAvailable,
+  isBlocked,
+  isBusy: isBlockBusy,
+  unblock,
+} = usePlayerBlocks();
 
 const steamId = computed(() =>
   props.player?.steam_id ? String(props.player.steam_id) : null,
@@ -303,7 +308,7 @@ async function unblockPlayer() {
           <span>{{ $t("ui.tooltips.view_steam_profile") }}</span>
         </DropdownMenuItem>
 
-        <template v-if="showFriendActions">
+        <template v-if="showFriendActions && blocksAvailable">
           <DropdownMenuSeparator />
 
           <DropdownMenuItem

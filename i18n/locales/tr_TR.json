@@ -8124,7 +8124,8 @@
     },
     "errors": {
       "title": "İşlem kullanılamıyor",
-      "player_blocked": "Bu oyuncuyla bunu yapamazsın."
+      "player_blocked": "Bu oyuncuyla bunu yapamazsın.",
+      "player_blocked_bulk": "Bu oyunculardan en az biri eklenemiyor."
     }
   },
   "maps": {

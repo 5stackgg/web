@@ -38,6 +38,7 @@ import {
   HoverCardTrigger,
 } from "~/components/ui/hover-card";
 import { toast } from "@/components/ui/toast";
+import { playerBlockErrorKey } from "~/utilities/playerBlocks";
 import {
   Trash2,
   ExternalLink,
@@ -220,6 +221,15 @@ onMounted(async () => {
 });
 
 function onError(error: any) {
+  const blockedKey = playerBlockErrorKey(error?.message);
+  if (blockedKey) {
+    toast({
+      title: t("player_blocks.errors.title"),
+      description: t(blockedKey),
+      variant: "destructive",
+    });
+    return;
+  }
   toast({ title: error?.message ?? String(error), variant: "destructive" });
 }
 

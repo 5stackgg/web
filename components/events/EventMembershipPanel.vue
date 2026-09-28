@@ -716,7 +716,9 @@ export default {
         toast({
           variant: "destructive",
           title: this.$t("common.error"),
-          description: error?.message,
+          description: playerBlockErrorKey(error?.message)
+            ? this.$t("player_blocks.errors.player_blocked_bulk")
+            : error?.message,
         });
       } finally {
         this.importingPlayers = false;

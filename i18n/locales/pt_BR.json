@@ -8124,7 +8124,8 @@
     },
     "errors": {
       "title": "Ação indisponível",
-      "player_blocked": "Você não pode fazer isso com este jogador."
+      "player_blocked": "Você não pode fazer isso com este jogador.",
+      "player_blocked_bulk": "Pelo menos um desses jogadores não pode ser adicionado."
     }
   },
   "maps": {

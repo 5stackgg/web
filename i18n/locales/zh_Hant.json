@@ -2845,7 +2845,7 @@
         "description": "被封鎖的玩家無法傳送訊息、邀請或好友邀請給你。解除封鎖不會恢復你們的好友關係。",
         "empty_title": "沒有已封鎖的玩家",
         "empty_description": "你從玩家個人檔案或玩家選單封鎖的玩家會顯示在這裡。",
-        "blocked_on": "封鎖於"
+        "blocked_on": "已封鎖"
       }
     },
     "watch": {
@@ -8124,7 +8124,8 @@
     },
     "errors": {
       "title": "無法執行此操作",
-      "player_blocked": "無法對這位玩家執行此操作。"
+      "player_blocked": "無法對這位玩家執行此操作。",
+      "player_blocked_bulk": "其中至少有一名玩家無法加入。"
     }
   },
   "maps": {

@@ -1683,9 +1683,9 @@ const playerHeroInlineRoleChipClasses =
 const playerHeroInlineRoleWrapClasses =
   "inline-flex [&_button]:inline-flex [&_button]:h-7 [&_button]:items-center [&_button]:gap-1.5 [&_button]:rounded-md [&_button]:border-[hsl(var(--tac-amber)_/_0.4)] [&_button]:bg-[hsl(var(--tac-amber)_/_0.08)] [&_button]:px-2.5 [&_button]:font-mono [&_button]:text-[0.6rem] [&_button]:font-semibold [&_button]:tracking-[0.14em] [&_button]:text-[hsl(var(--tac-amber))] [&_button]:hover:border-[hsl(var(--tac-amber))] [&_button]:hover:bg-[hsl(var(--tac-amber)_/_0.16)] [&_button>span]:uppercase [&_button>svg]:h-3 [&_button>svg]:w-3 [&_button>svg]:shrink-0";
 const playerHeroNameEditButtonClasses =
-  "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-border bg-card/60 text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber)_/_0.6)] hover:bg-[hsl(var(--tac-amber)_/_0.1)] hover:text-[hsl(var(--tac-amber))] [&_svg]:h-4 [&_svg]:w-4";
+  "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-border bg-card/60 text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber)_/_0.6)] hover:bg-[hsl(var(--tac-amber)_/_0.1)] hover:text-[hsl(var(--tac-amber))] disabled:cursor-not-allowed disabled:opacity-60 [&_svg]:h-4 [&_svg]:w-4";
 const playerHeroDangerActionButtonClasses =
-  "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-border bg-card/60 text-muted-foreground transition-colors duration-150 hover:border-destructive/50 hover:bg-destructive/15 hover:text-destructive [&_svg]:h-4 [&_svg]:w-4";
+  "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-border bg-card/60 text-muted-foreground transition-colors duration-150 hover:border-destructive/50 hover:bg-destructive/15 hover:text-destructive disabled:cursor-not-allowed disabled:opacity-60 [&_svg]:h-4 [&_svg]:w-4";
 const playerHeroAddFriendClasses =
   "group/addfriend relative inline-flex items-center justify-center gap-[0.55rem] overflow-hidden rounded-md border border-[hsl(var(--tac-amber)_/_0.55)] bg-[hsl(var(--tac-amber)_/_0.12)] px-4 py-2.5 font-sans text-[0.8rem] font-bold uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))] transition-[transform,border-color,background-color,box-shadow] duration-150 hover:-translate-y-px hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.2)] hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.45),0_8px_24px_-8px_hsl(var(--tac-amber)/0.5)] disabled:cursor-not-allowed disabled:opacity-60 max-md:w-full";
 const playerHeroFriendBadgeClasses =
@@ -1780,6 +1780,7 @@ const playerHeroTeamChipDotClasses =
                     "
                     :title="heroActions[0].label"
                     :aria-label="heroActions[0].label"
+                    :disabled="heroActions[0].busy"
                     @click="heroActions[0].run()"
                   >
                     <component :is="heroActions[0].icon" />
@@ -1804,6 +1805,7 @@ const playerHeroTeamChipDotClasses =
                             'text-destructive focus:text-destructive':
                               action.destructive,
                           }"
+                          :disabled="action.busy"
                           @click="action.run()"
                         >
                           <component
@@ -3419,6 +3421,7 @@ export default {
                 key: "unblock",
                 label: this.$t("player_blocks.unblock"),
                 icon: Ban,
+                busy: usePlayerBlocks().isBusy(this.player.steam_id),
                 run: () => this.unblockPlayer(),
               }
             : {
@@ -3458,12 +3461,15 @@ export default {
       );
     },
     canBlock() {
-      return !!(this.me && this.player?.steam_id && !this.isSelfProfile);
+      return !!(
+        this.me &&
+        this.player?.steam_id &&
+        !this.isSelfProfile &&
+        usePlayerBlocks().available.value
+      );
     },
     isBlocked() {
-      return (
-        this.canBlock && usePlayerBlocks().isBlocked(this.player.steam_id)
-      );
+      return this.canBlock && usePlayerBlocks().isBlocked(this.player.steam_id);
     },
     canAddFriend() {
       return !!(

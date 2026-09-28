@@ -104,8 +104,15 @@ describe("blocked players settings page", () => {
 
     expect(wrapper.text()).toContain("Dana");
     expect(wrapper.text()).toContain("Evan");
-    expect(wrapper.text()).toContain("Blocked");
     expect(unblockButtons(wrapper)).toHaveLength(2);
+
+    const labels = wrapper
+      .findAll("span")
+      .filter((span) => span.classes().includes("tracking-widest"));
+    expect(labels.map((label) => label.text())).toEqual([
+      "Blocked",
+      "Blocked",
+    ]);
   });
 
   it("unblocks the row's player and confirms it", async () => {

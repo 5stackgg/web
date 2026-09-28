@@ -114,6 +114,14 @@ describe("PlayerContextMenu blocking", () => {
     expect(last.className).not.toContain("text-destructive");
   });
 
+  it("offers no Block entry until the block list has loaded", async () => {
+    await openMenu();
+
+    expect(labels()).toContain("Invite to Lobby");
+    expect(labels()).not.toContain("Block");
+    expect(labels()).not.toContain("Unblock");
+  });
+
   it("confirms before blocking", async () => {
     pushBlocks([]);
     await openMenu();

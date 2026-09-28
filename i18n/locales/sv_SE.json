@@ -8124,7 +8124,8 @@
     },
     "errors": {
       "title": "Åtgärden är inte tillgänglig",
-      "player_blocked": "Det går inte att göra med den här spelaren."
+      "player_blocked": "Det går inte att göra med den här spelaren.",
+      "player_blocked_bulk": "Minst en av de här spelarna kan inte läggas till."
     }
   },
   "maps": {

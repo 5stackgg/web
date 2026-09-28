@@ -1,25 +1,31 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { ref } from "vue";
 import { flushPromises } from "@vue/test-utils";
-import { mockNuxtImport } from "@nuxt/test-utils/runtime";
+import { mockNuxtImport, mountSuspended } from "@nuxt/test-utils/runtime";
+import { provideApolloClient } from "@vue/apollo-composable";
 import PlayerPage from "~/pages/players/[id].vue";
+import BlockPlayerDialog from "~/components/player/BlockPlayerDialog.vue";
 import { toast, useToast } from "~/components/ui/toast";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import { usePlayerBlocks } from "~/composables/usePlayerBlocks";
-import { UNBLOCK_PLAYER_MUTATION } from "~/graphql/playerBlocks";
+import {
+  MY_PLAYER_BLOCKS_SUBSCRIPTION,
+  UNBLOCK_PLAYER_MUTATION,
+} from "~/graphql/playerBlocks";
 
 const graphql = vi.hoisted(() => ({
   mutate: vi.fn(),
-  observers: [] as Array<{ observer: any; closed: boolean }>,
+  observers: [] as Array<{ query: unknown; observer: any; closed: boolean }>,
 }));
 
 vi.mock("~/graphql/getGraphqlClient", () => ({
   default: () => ({
     query: vi.fn().mockResolvedValue({ data: {} }),
     mutate: graphql.mutate,
-    subscribe: () => ({
+    subscribe: (options: { query: unknown }) => ({
       subscribe(observer: any) {
-        const entry = { observer, closed: false };
+        const entry = { query: options.query, observer, closed: false };
         graphql.observers.push(entry);
         return {
           unsubscribe() {
@@ -31,6 +37,11 @@ vi.mock("~/graphql/getGraphqlClient", () => ({
   }),
 }));
 
+vi.mock("~/components/ui/sidebar/utils", async (original) => ({
+  ...(await original<Record<string, unknown>>()),
+  useSidebar: () => ({ isMobile: ref(false) }),
+}));
+
 mockNuxtImport("useDirectMessages", () => () => ({
   canMessage: () => true,
   openConversation: () => {},
@@ -39,10 +50,12 @@ mockNuxtImport("useDirectMessages", () => () => ({
 const ME = "76561198000000001";
 const DANA = "76561198000000002";
 
-const dana = { steam_id: DANA, name: "Dana" };
+let unmount: (() => void) | undefined;
 
 function pushBlocks(steamIds: Array<string>) {
-  const open = graphql.observers.filter((entry) => !entry.closed);
+  const open = graphql.observers.filter(
+    (entry) => !entry.closed && entry.query === MY_PLAYER_BLOCKS_SUBSCRIPTION,
+  );
   expect(open).toHaveLength(1);
   open[0].observer.next({
     data: {
@@ -55,38 +68,34 @@ function pushBlocks(steamIds: Array<string>) {
   });
 }
 
-function profile(player: Record<string, any>) {
-  const component = PlayerPage as any;
-  const context: Record<string, any> = {
-    ...component.data.call({ $t: (key: string) => key }),
-    player,
-    $t: (key: string, values?: Record<string, unknown>) =>
-      values?.name ? `${key}:${values.name}` : key,
-  };
-
-  for (const [name, definition] of Object.entries<any>(component.computed)) {
-    const getter =
-      typeof definition === "function" ? definition : definition.get;
-    Object.defineProperty(context, name, {
-      get: () => getter.call(context),
-    });
-  }
-
-  for (const [name, method] of Object.entries<any>(component.methods)) {
-    context[name] = method.bind(context);
-  }
-
-  return context;
-}
-
 async function signIn() {
   useAuthStore().me = { steam_id: ME, role: "user" } as any;
   usePlayerBlocks();
   await flushPromises();
 }
 
-const actionKeys = (context: Record<string, any>) =>
-  context.heroActions.map((action: any) => action.key);
+async function mountProfile(player: { steam_id: string; name: string }) {
+  provideApolloClient((useNuxtApp() as any).$apollo.defaultClient);
+  const wrapper = await mountSuspended(PlayerPage, {
+    shallow: true,
+    route: `/players/${player.steam_id}`,
+    global: { renderStubDefaultSlot: true },
+  } as any);
+  unmount = () => wrapper.unmount();
+  (wrapper.vm as any).player = player;
+  await flushPromises();
+  return wrapper;
+}
+
+type Wrapper = Awaited<ReturnType<typeof mountProfile>>;
+
+const button = (wrapper: Wrapper, text: string) =>
+  wrapper.findAll("button").find((candidate) => candidate.text() === text);
+
+const heroAction = (wrapper: Wrapper, label: string) =>
+  wrapper.find(`button[aria-label="${label}"]`);
+
+const dialog = (wrapper: Wrapper) => wrapper.findComponent(BlockPlayerDialog);
 
 beforeEach(() => {
   graphql.mutate.mockReset();
@@ -95,71 +104,74 @@ beforeEach(() => {
 });
 
 afterEach(async () => {
+  unmount?.();
+  unmount = undefined;
   useAuthStore().me = undefined;
   await flushPromises();
 });
 
-describe("player profile block gating", () => {
+describe("player profile blocking", () => {
   it("offers nothing to a signed-out visitor", async () => {
-    useAuthStore().me = undefined;
-    await flushPromises();
+    const wrapper = await mountProfile({ steam_id: DANA, name: "Dana" });
 
-    const context = profile(dana);
-
-    expect(context.canBlock).toBe(false);
-    expect(context.isBlocked).toBe(false);
-    expect(actionKeys(context)).not.toContain("block");
-    expect(actionKeys(context)).not.toContain("unblock");
+    expect(heroAction(wrapper, "Block").exists()).toBe(false);
+    expect(dialog(wrapper).exists()).toBe(false);
   });
 
   it("never offers to block yourself", async () => {
     await signIn();
     pushBlocks([]);
+    const wrapper = await mountProfile({ steam_id: ME, name: "Me" });
 
-    const context = profile({ steam_id: ME, name: "Me" });
-
-    expect(context.canBlock).toBe(false);
-    expect(actionKeys(context)).not.toContain("block");
+    expect(heroAction(wrapper, "Block").exists()).toBe(false);
+    expect(dialog(wrapper).exists()).toBe(false);
   });
 
-  it("offers Block as a destructive action that only opens the confirm", async () => {
+  it("waits for the block list before offering to block", async () => {
+    await signIn();
+    const wrapper = await mountProfile({ steam_id: DANA, name: "Dana" });
+
+    expect(heroAction(wrapper, "Block").exists()).toBe(false);
+
+    pushBlocks([]);
+    await flushPromises();
+
+    expect(heroAction(wrapper, "Block").exists()).toBe(true);
+  });
+
+  it("opens the confirm from the Block action without blocking yet", async () => {
     await signIn();
     pushBlocks([]);
+    const wrapper = await mountProfile({ steam_id: DANA, name: "Dana" });
 
-    const context = profile(dana);
+    expect(button(wrapper, "Add as friend")).toBeDefined();
+    expect(button(wrapper, "Message")).toBeDefined();
+    expect(dialog(wrapper).props("open")).toBe(false);
 
-    expect(context.isBlocked).toBe(false);
-    expect(context.canAddFriend).toBe(true);
-    expect(context.canMessage).toBe(true);
+    await heroAction(wrapper, "Block").trigger("click");
+    await flushPromises();
 
-    const block = context.heroActions.at(-1);
-    expect(block).toMatchObject({
-      key: "block",
-      label: "player_blocks.block",
-      danger: true,
-      destructive: true,
-    });
-
-    block.run();
-
-    expect(context.blockDialogOpen).toBe(true);
+    expect(dialog(wrapper).props("open")).toBe(true);
+    expect(dialog(wrapper).props("player")).toMatchObject({ steam_id: DANA });
     expect(graphql.mutate).not.toHaveBeenCalled();
   });
 
-  it("swaps friend and message actions for the Blocked badge once blocked", async () => {
+  it("shows the Blocked badge instead of friend and message actions", async () => {
     await signIn();
     useMatchmakingStore().friends = [
       { steam_id: DANA, status: "Accepted", invited_by_steam_id: ME },
     ] as any;
     pushBlocks([DANA]);
+    const wrapper = await mountProfile({ steam_id: DANA, name: "Dana" });
 
-    const context = profile(dana);
-
-    expect(context.isBlocked).toBe(true);
-    expect(context.canAddFriend).toBe(false);
-    expect(context.canMessage).toBe(false);
-    expect(context.hasRightColumn).toBe(true);
-    expect(actionKeys(context)).not.toContain("block");
+    const badge = wrapper
+      .findAll("span")
+      .find((span) => span.classes().includes("bg-muted/40"));
+    expect(badge?.text()).toBe("Blocked");
+    expect(button(wrapper, "Add as friend")).toBeUndefined();
+    expect(button(wrapper, "Message")).toBeUndefined();
+    expect(wrapper.text()).not.toContain("Friend");
+    expect(heroAction(wrapper, "Block").exists()).toBe(false);
   });
 
   it("unblocks straight from the hero action and confirms it", async () => {
@@ -168,22 +180,16 @@ describe("player profile block gating", () => {
     graphql.mutate.mockResolvedValue({
       data: { delete_player_blocks: { affected_rows: 1 } },
     });
+    const wrapper = await mountProfile({ steam_id: DANA, name: "Dana" });
 
-    const context = profile(dana);
-    const unblock = context.heroActions.at(-1);
+    await heroAction(wrapper, "Unblock").trigger("click");
+    await flushPromises();
 
-    expect(unblock.key).toBe("unblock");
-    expect(unblock.destructive).toBeFalsy();
-
-    await unblock.run();
-
-    expect(context.blockDialogOpen).toBe(false);
+    expect(dialog(wrapper).props("open")).toBe(false);
     expect(graphql.mutate).toHaveBeenCalledWith({
       mutation: UNBLOCK_PLAYER_MUTATION,
       variables: { steamId: DANA },
     });
-    expect(useToast().toasts.value[0]?.title).toBe(
-      "player_blocks.toasts.unblocked:Dana",
-    );
+    expect(useToast().toasts.value[0]?.title).toBe("Dana unblocked");
   });
 });

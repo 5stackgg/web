@@ -113,20 +113,6 @@ import { $ } from "~/generated/zeus";
             >
               {{ type.description }}
             </span>
-            <span
-              aria-hidden="true"
-              :class="[
-                'absolute -top-px -left-px w-[10px] h-[10px] border-solid border-[hsl(var(--tac-amber))] border-t-2 border-l-2 pointer-events-none transition-opacity [transition-duration:160ms]',
-                value === type.value ? 'opacity-100' : 'opacity-0',
-              ]"
-            />
-            <span
-              aria-hidden="true"
-              :class="[
-                'absolute -bottom-px -right-px w-[10px] h-[10px] border-solid border-[hsl(var(--tac-amber))] border-b-2 border-r-2 pointer-events-none transition-opacity [transition-duration:160ms]',
-                value === type.value ? 'opacity-100' : 'opacity-0',
-              ]"
-            />
           </button>
         </div>
         <FormMessage />

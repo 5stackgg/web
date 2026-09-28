@@ -1975,13 +1975,13 @@
             "role_id": "ID de Cargo para Notificações de Partida",
             "role_id_description": "Esses cargos serão mencionados nas notificações de status das partidas. É possível adicionar múltiplos IDs separados por vírgulas."
           },
-          "gamedata_notifications": {
-            "title": "Notificações de validação de gamedata",
-            "description": "Configure onde os resultados da validação de assinatura de gamedata do CS2 serão publicados.",
-            "webhook": "URL do Webhook de notificações de gamedata",
-            "webhook_description": "Webhook dedicado para resultados de validação de gamedata. Se não definido, será usado o webhook padrão.",
-            "role_id": "ID de função para notificações de gamedata",
-            "role_id_description": "Essas funções serão mencionadas nas notificações de validação de gamedata. Você pode adicionar múltiplos IDs de função separados por vírgulas. Se não definido, será usada a função padrão."
+          "cs2_build_notifications": {
+            "title": "Notificações de builds do CS2",
+            "description": "Onde são publicados os avisos de atualizações do CS2, validação de gamedata e geração dos recursos dos mapas.",
+            "webhook": "URL do Webhook de notificações de builds do CS2",
+            "webhook_description": "Webhook dedicado para avisos de builds do CS2. Se não definido, será usado o webhook padrão.",
+            "role_id": "ID de função para notificações de builds do CS2",
+            "role_id_description": "Essas funções serão mencionadas nos avisos de builds do CS2. Você pode adicionar múltiplos IDs de função separados por vírgulas. Se não definido, será usada a função padrão."
           },
           "server_notifications": {
             "title": "Notificações do Servidor",
@@ -3426,7 +3426,122 @@
       "no_nodes_title": "Nenhum Nó de Servidor de Jogo",
       "display_metrics": "Exibir Métricas",
       "create": "Criar Novo Nó de Servidor",
-      "cs_version_info": "Informações da Versão do CS2:",
+      "cs2_build": {
+        "title": "Build do CS2",
+        "released": "Lançada",
+        "history": "Histórico de builds",
+        "gamedata": "Gamedata",
+        "gamedata_description": "Assinaturas, offsets e patches de plugins",
+        "map_assets": "Recursos dos mapas",
+        "map_assets_description": "Malhas, grenade clips e callouts para o replay 3D",
+        "gamedata_never": "Ainda não validado para esta build",
+        "map_assets_never": "Ainda não gerados para esta build",
+        "auto_hint": "Executa sozinho quando um nó informa uma nova build pela primeira vez",
+        "map_assets_hint": "Gerados após a validação do gamedata quando a geração automática está ativada",
+        "revalidate": "Revalidar",
+        "rebuild": "Regerar",
+        "build": "Gerar",
+        "retry_failed": "Tentar novamente mapas com falha",
+        "run_on": "Executar em",
+        "automatic": "Automático",
+        "automatic_description": "Um nó online já na build {build}",
+        "auto": "auto",
+        "started": "Iniciado",
+        "validated": "Validado",
+        "finished": "Concluído",
+        "took": "levou {duration}",
+        "ran_on": "executado em {node}",
+        "requested_by": "por {name}",
+        "vs_build": "Mudanças em relação a {build}",
+        "first_run": "Ainda não há nada para comparar",
+        "no_changes": "Sem mudanças desde {build}",
+        "nothing_broken": "Nada quebrado",
+        "no_maps": "Nenhum mapa foi publicado",
+        "reused_from": "reutilizado de {build}",
+        "skipped_entries": "Ignorados: {count} — não foi possível verificar",
+        "log": "Log da build",
+        "trigger": {
+          "auto": "automático",
+          "manual": "manual"
+        },
+        "stats": {
+          "checked": "Verificados",
+          "broken": "Quebrados",
+          "warnings": "Avisos",
+          "skipped": "Ignorados",
+          "maps": "Mapas",
+          "changed": "Alterados",
+          "unchanged": "Inalterados",
+          "failed": "Com falha"
+        },
+        "chip": {
+          "newly_broken": "recém-quebrados: {count}",
+          "fixed": "corrigidos: {count}",
+          "new_warnings": "avisos +{count}",
+          "rebuilt": "regerados: {count}",
+          "added": "adicionados: {count}",
+          "removed": "removidos: {count}"
+        },
+        "change": {
+          "broken": "Quebrado",
+          "still_broken": "Ainda quebrado",
+          "fixed": "Corrigido",
+          "warning": "Aviso",
+          "cleared": "Resolvido",
+          "rebuilt": "Regerado",
+          "added": "Adicionado",
+          "removed": "Removido",
+          "failed": "Falhou",
+          "unchanged": "Inalterado",
+          "included": "Publicado"
+        },
+        "reason": {
+          "vpk": "Mapa alterado",
+          "pipeline": "Ferramentas alteradas",
+          "assets": "Regerado",
+          "collision": "Falha na colisão",
+          "view": "Falha na malha de visualização"
+        },
+        "gamedata_status": {
+          "running": "Validando",
+          "passed": "Aprovado",
+          "warning": "Aviso",
+          "failed": "Falhou",
+          "error": "Erro",
+          "stale": "Travado",
+          "none": "Não executado"
+        },
+        "map_assets_status": {
+          "pending": "Na fila",
+          "building": "Gerando",
+          "published": "Publicado",
+          "partial": "Parcial",
+          "failed": "Falhou",
+          "stale": "Travado",
+          "none": "Não gerado"
+        },
+        "blocked": {
+          "no_node": "Nenhum nó online está na build {build}",
+          "running": "Uma validação já está em andamento",
+          "building": "Uma geração já está na fila ou em andamento"
+        },
+        "node_reason": {
+          "disabled": "Desativado",
+          "gpu_only": "Nó somente GPU",
+          "status": "{status}",
+          "updating": "Atualizando CS2",
+          "other_build": "Na build {build}"
+        },
+        "toast": {
+          "queued_validation": "Validação do gamedata na fila",
+          "queued_build": "Geração dos recursos dos mapas na fila"
+        },
+        "force": {
+          "title": "Regerar todos os mapas?",
+          "description": "Os recursos dos mapas da build {build} já estão publicados. Uma regeração forçada gera novamente todos os mapas no nó, o que pode levar algumas horas, e só publica uma nova revisão do manifesto se algo mudou.",
+          "confirm": "Regerar todos os mapas"
+        }
+      },
       "hide_offline": "Ocultar Nós Offline",
       "only_enabled": "Apenas Nós Ativos",
       "setup_dialog": {
@@ -3454,7 +3569,21 @@
         "supports_cpu_pinning": "Suporta Fixação de CPU",
         "cpu_governor": "Esquema de Energia da CPU"
       },
-      "last_updated": "Última atualização: {date}",
+      "builds": {
+        "title": "Histórico de builds do CS2",
+        "description": "Validação do gamedata e geração dos recursos dos mapas para cada build do CS2, e o que cada uma mudou em relação à build anterior.",
+        "back": "Nós de Servidor de Jogo",
+        "builds": "Builds",
+        "no_builds": "Nenhuma build foi validada ou gerada ainda.",
+        "current": "Atual",
+        "compared_with": "Comparada com {build}",
+        "history_note": "O histórico começa nesta versão; builds anteriores foram removidas junto com sua versão do jogo.",
+        "timeline": {
+          "detected": "Atualização lançada",
+          "gamedata": "Gamedata",
+          "map_assets": "Recursos dos mapas"
+        }
+      },
       "max_label": "Max:",
       "ports_label": "Portas:",
       "cpu_hardware": "CPU & Hardware"
@@ -8097,8 +8226,6 @@
     "update_cs": "Atualizar CS2",
     "updating_to": "Atualizando para {version}",
     "update_to_version": "Atualizar para {version}",
-    "validate_gamedata": "Validar gamedata",
-    "build_map_assets": "Gerar recursos dos mapas",
     "note_label": "Nota:",
     "one_cpu_core": "1 núcleo da CPU",
     "cpu_reservation_note": "{cores} são reservados para o sistema em cada nó para mantê-lo responsivo.",
@@ -8196,8 +8323,6 @@
     "toast": {
       "cs_updating": "Atualizando CS2",
       "csgo_installing": "CS:GO está sendo instalado neste nó",
-      "validating_gamedata": "Validando assinaturas do gamedata no nó",
-      "building_map_assets": "Gerando malhas e callouts dos mapas para a build do CS2 deste nó",
       "ports_updated": "Portas Atualizadas",
       "ports_removed": "Portas do Nó Removidas",
       "made_gpu_only": "Nó Definido como Apenas GPU",

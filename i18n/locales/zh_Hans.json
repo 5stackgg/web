@@ -1975,13 +1975,13 @@
             "role_id": "比赛通知角色 ID",
             "role_id_description": "在比赛状态通知中，这些角色将被 {'@'}提及。您可以添加多个角色 ID，用逗号分隔。"
           },
-          "gamedata_notifications": {
-            "title": "游戏数据验证通知",
-            "description": "配置 CS2 游戏数据签名验证结果的发布位置。",
-            "webhook": "游戏数据通知 Webhook URL",
-            "webhook_description": "用于游戏数据验证结果的专用 Webhook。如果未设置，则回退使用默认 Webhook。",
-            "role_id": "游戏数据通知角色 ID",
-            "role_id_description": "在游戏数据验证通知中，这些角色将被 {'@'}提及。您可以添加多个角色 ID，用逗号分隔。如果未设置，则回退使用默认角色。"
+          "cs2_build_notifications": {
+            "title": "CS2 版本通知",
+            "description": "CS2 更新、游戏数据验证和地图资源构建通知的发布位置。",
+            "webhook": "CS2 版本通知 Webhook URL",
+            "webhook_description": "用于 CS2 版本通知的专用 Webhook。如果未设置，则回退使用默认 Webhook。",
+            "role_id": "CS2 版本通知角色 ID",
+            "role_id_description": "在 CS2 版本通知中，这些角色将被提及。您可以添加多个角色 ID，用逗号分隔。如果未设置，则回退使用默认角色。"
           },
           "server_notifications": {
             "title": "服务器通知",
@@ -3426,7 +3426,122 @@
       "no_nodes_title": "无游戏服务器节点",
       "display_metrics": "显示指标",
       "create": "创建游戏服务器节点",
-      "cs_version_info": "CS2 版本信息：",
+      "cs2_build": {
+        "title": "CS2 版本",
+        "released": "发布于",
+        "history": "版本历史",
+        "gamedata": "游戏数据",
+        "gamedata_description": "插件签名、偏移量和补丁",
+        "map_assets": "地图资源",
+        "map_assets_description": "用于 3D 回放的网格、手雷阻挡体和点位标注",
+        "gamedata_never": "此版本尚未验证",
+        "map_assets_never": "此版本尚未构建",
+        "auto_hint": "节点首次报告新版本时自动运行",
+        "map_assets_hint": "开启自动构建时，会在游戏数据验证后构建",
+        "revalidate": "重新验证",
+        "rebuild": "重新构建",
+        "build": "构建",
+        "retry_failed": "重试失败的地图",
+        "run_on": "运行节点",
+        "automatic": "自动",
+        "automatic_description": "已处于版本 {build} 的在线节点",
+        "auto": "自动",
+        "started": "已开始",
+        "validated": "已验证",
+        "finished": "已完成",
+        "took": "耗时 {duration}",
+        "ran_on": "运行于 {node}",
+        "requested_by": "由 {name} 发起",
+        "vs_build": "相比 {build} 的变更",
+        "first_run": "暂无可比较的版本",
+        "no_changes": "自 {build} 以来无变更",
+        "nothing_broken": "没有损坏项",
+        "no_maps": "未发布任何地图",
+        "reused_from": "复用自 {build}",
+        "skipped_entries": "已跳过 {count} 个 — 无法检查",
+        "log": "构建日志",
+        "trigger": {
+          "auto": "自动",
+          "manual": "手动"
+        },
+        "stats": {
+          "checked": "已检查",
+          "broken": "损坏",
+          "warnings": "警告",
+          "skipped": "已跳过",
+          "maps": "地图",
+          "changed": "已变更",
+          "unchanged": "未变更",
+          "failed": "失败"
+        },
+        "chip": {
+          "newly_broken": "{count} 个新损坏",
+          "fixed": "{count} 个已修复",
+          "new_warnings": "警告 +{count}",
+          "rebuilt": "{count} 个已重建",
+          "added": "{count} 个新增",
+          "removed": "{count} 个移除"
+        },
+        "change": {
+          "broken": "损坏",
+          "still_broken": "仍损坏",
+          "fixed": "已修复",
+          "warning": "警告",
+          "cleared": "已消除",
+          "rebuilt": "已重建",
+          "added": "新增",
+          "removed": "移除",
+          "failed": "失败",
+          "unchanged": "未变更",
+          "included": "已发布"
+        },
+        "reason": {
+          "vpk": "地图变更",
+          "pipeline": "工具链变更",
+          "assets": "已重建",
+          "collision": "碰撞失败",
+          "view": "视图网格失败"
+        },
+        "gamedata_status": {
+          "running": "验证中",
+          "passed": "通过",
+          "warning": "警告",
+          "failed": "失败",
+          "error": "错误",
+          "stale": "停滞",
+          "none": "未运行"
+        },
+        "map_assets_status": {
+          "pending": "排队中",
+          "building": "构建中",
+          "published": "已发布",
+          "partial": "部分完成",
+          "failed": "失败",
+          "stale": "停滞",
+          "none": "未构建"
+        },
+        "blocked": {
+          "no_node": "没有处于版本 {build} 的在线节点",
+          "running": "已有验证正在运行",
+          "building": "已有构建在排队或运行中"
+        },
+        "node_reason": {
+          "disabled": "已禁用",
+          "gpu_only": "仅 GPU 节点",
+          "status": "{status}",
+          "updating": "正在更新 CS2",
+          "other_build": "处于版本 {build}"
+        },
+        "toast": {
+          "queued_validation": "游戏数据验证已加入队列",
+          "queued_build": "地图资源构建已加入队列"
+        },
+        "force": {
+          "title": "重新构建所有地图？",
+          "description": "版本 {build} 的地图资源已发布。强制重新构建会在节点上再次构建每张地图，可能需要几个小时，并且只有在有变更时才会发布新的清单修订版本。",
+          "confirm": "重新构建所有地图"
+        }
+      },
       "hide_offline": "隐藏离线节点",
       "only_enabled": "仅启用节点",
       "setup_dialog": {
@@ -3454,7 +3569,21 @@
         "supports_cpu_pinning": "支持 CPU 亲和性",
         "cpu_governor": "CPU 调度策略"
       },
-      "last_updated": "最后更新：{date}",
+      "builds": {
+        "title": "CS2 版本历史",
+        "description": "每个 CS2 版本的游戏数据验证和地图资源构建，以及各版本相对于上一版本的变更。",
+        "back": "游戏服务器节点",
+        "builds": "版本",
+        "no_builds": "尚无任何版本经过验证或构建。",
+        "current": "当前",
+        "compared_with": "对比 {build}",
+        "history_note": "历史记录从此次发布开始；更早的版本已随其游戏版本一并移除。",
+        "timeline": {
+          "detected": "更新发布",
+          "gamedata": "游戏数据",
+          "map_assets": "地图资源"
+        }
+      },
       "max_label": "最大：",
       "ports_label": "端口：",
       "cpu_hardware": "CPU 与硬件"
@@ -8097,8 +8226,6 @@
     "update_cs": "更新 CS2",
     "updating_to": "更新到 {version}",
     "update_to_version": "更新到 {version}",
-    "validate_gamedata": "验证游戏数据",
-    "build_map_assets": "构建地图资源",
     "note_label": "注意：",
     "one_cpu_core": "1 个 CPU 核心",
     "cpu_reservation_note": "每个节点上为系统预留 {cores} 个核心以保持响应。",
@@ -8196,8 +8323,6 @@
     "toast": {
       "cs_updating": "节点上的 CS2 正在更新",
       "csgo_installing": "节点上的 CS:GO 正在安装",
-      "validating_gamedata": "正在验证节点上的游戏数据签名",
-      "building_map_assets": "正在为此节点的 CS2 版本构建地图网格和点位标注",
       "ports_updated": "节点端口已更新",
       "ports_removed": "节点端口已移除",
       "made_gpu_only": "节点已设置为仅 GPU",

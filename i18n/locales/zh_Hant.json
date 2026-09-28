@@ -1975,13 +1975,13 @@
             "role_id": "比賽通知角色 ID",
             "role_id_description": "在比賽狀態通知中，這些角色將被標註提及。您可以新增多個角色 ID，以逗號分隔。"
           },
-          "gamedata_notifications": {
-            "title": "遊戲資料驗證通知",
-            "description": "設定 CS2 遊戲資料簽章驗證結果的發佈位置。",
-            "webhook": "遊戲資料通知 Webhook URL",
-            "webhook_description": "用於遊戲資料驗證結果的專用 Webhook。若未設定，則回退使用預設 Webhook。",
-            "role_id": "遊戲資料通知角色 ID",
-            "role_id_description": "在遊戲資料驗證通知中，這些角色將被標註提及。您可以新增多個角色 ID，以逗號分隔。若未設定，則回退使用預設角色。"
+          "cs2_build_notifications": {
+            "title": "CS2 版本通知",
+            "description": "CS2 更新、遊戲資料驗證與地圖資源建置通知的發佈位置。",
+            "webhook": "CS2 版本通知 Webhook URL",
+            "webhook_description": "用於 CS2 版本通知的專用 Webhook。若未設定，則回退使用預設 Webhook。",
+            "role_id": "CS2 版本通知角色 ID",
+            "role_id_description": "在 CS2 版本通知中，這些角色將被標註提及。您可以新增多個角色 ID，以逗號分隔。若未設定，則回退使用預設角色。"
           },
           "server_notifications": {
             "title": "伺服器通知",
@@ -3426,7 +3426,122 @@
       "no_nodes_title": "無遊戲伺服器節點",
       "display_metrics": "顯示指標",
       "create": "建立遊戲伺服器節點",
-      "cs_version_info": "CS2 版本資訊：",
+      "cs2_build": {
+        "title": "CS2 版本",
+        "released": "發佈於",
+        "history": "版本歷史",
+        "gamedata": "遊戲資料",
+        "gamedata_description": "外掛程式簽章、偏移量與修補",
+        "map_assets": "地圖資源",
+        "map_assets_description": "用於 3D 重播的網格、手榴彈阻擋體與點位標註",
+        "gamedata_never": "此版本尚未驗證",
+        "map_assets_never": "此版本尚未建置",
+        "auto_hint": "節點首次回報新版本時自動執行",
+        "map_assets_hint": "開啟自動建置時，會在遊戲資料驗證後建置",
+        "revalidate": "重新驗證",
+        "rebuild": "重新建置",
+        "build": "建置",
+        "retry_failed": "重試失敗的地圖",
+        "run_on": "執行節點",
+        "automatic": "自動",
+        "automatic_description": "已處於版本 {build} 的線上節點",
+        "auto": "自動",
+        "started": "已開始",
+        "validated": "已驗證",
+        "finished": "已完成",
+        "took": "耗時 {duration}",
+        "ran_on": "執行於 {node}",
+        "requested_by": "由 {name} 發起",
+        "vs_build": "相較於 {build} 的變更",
+        "first_run": "尚無可比較的版本",
+        "no_changes": "自 {build} 以來無變更",
+        "nothing_broken": "沒有損壞項目",
+        "no_maps": "未發佈任何地圖",
+        "reused_from": "沿用自 {build}",
+        "skipped_entries": "已略過 {count} 個 — 無法檢查",
+        "log": "建置記錄",
+        "trigger": {
+          "auto": "自動",
+          "manual": "手動"
+        },
+        "stats": {
+          "checked": "已檢查",
+          "broken": "損壞",
+          "warnings": "警告",
+          "skipped": "已略過",
+          "maps": "地圖",
+          "changed": "已變更",
+          "unchanged": "未變更",
+          "failed": "失敗"
+        },
+        "chip": {
+          "newly_broken": "{count} 個新損壞",
+          "fixed": "{count} 個已修復",
+          "new_warnings": "警告 +{count}",
+          "rebuilt": "{count} 個已重建",
+          "added": "{count} 個新增",
+          "removed": "{count} 個移除"
+        },
+        "change": {
+          "broken": "損壞",
+          "still_broken": "仍損壞",
+          "fixed": "已修復",
+          "warning": "警告",
+          "cleared": "已消除",
+          "rebuilt": "已重建",
+          "added": "新增",
+          "removed": "移除",
+          "failed": "失敗",
+          "unchanged": "未變更",
+          "included": "已發佈"
+        },
+        "reason": {
+          "vpk": "地圖變更",
+          "pipeline": "工具鏈變更",
+          "assets": "已重建",
+          "collision": "碰撞失敗",
+          "view": "檢視網格失敗"
+        },
+        "gamedata_status": {
+          "running": "驗證中",
+          "passed": "通過",
+          "warning": "警告",
+          "failed": "失敗",
+          "error": "錯誤",
+          "stale": "停滯",
+          "none": "未執行"
+        },
+        "map_assets_status": {
+          "pending": "排隊中",
+          "building": "建置中",
+          "published": "已發佈",
+          "partial": "部分完成",
+          "failed": "失敗",
+          "stale": "停滯",
+          "none": "未建置"
+        },
+        "blocked": {
+          "no_node": "沒有處於版本 {build} 的線上節點",
+          "running": "已有驗證正在執行",
+          "building": "已有建置在排隊或執行中"
+        },
+        "node_reason": {
+          "disabled": "已停用",
+          "gpu_only": "僅 GPU 節點",
+          "status": "{status}",
+          "updating": "正在更新 CS2",
+          "other_build": "處於版本 {build}"
+        },
+        "toast": {
+          "queued_validation": "遊戲資料驗證已加入佇列",
+          "queued_build": "地圖資源建置已加入佇列"
+        },
+        "force": {
+          "title": "重新建置所有地圖？",
+          "description": "版本 {build} 的地圖資源已發佈。強制重新建置會在節點上再次建置每張地圖，可能需要數小時，且只有在有變更時才會發佈新的清單修訂版本。",
+          "confirm": "重新建置所有地圖"
+        }
+      },
       "hide_offline": "隱藏離線節點",
       "only_enabled": "僅顯示已啟用節點",
       "setup_dialog": {
@@ -3454,7 +3569,21 @@
         "supports_cpu_pinning": "支援 CPU 綁定",
         "cpu_governor": "CPU 排程策略"
       },
-      "last_updated": "最後更新：{date}",
+      "builds": {
+        "title": "CS2 版本歷史",
+        "description": "每個 CS2 版本的遊戲資料驗證與地圖資源建置，以及各版本相較於上一版本的變更。",
+        "back": "遊戲伺服器節點",
+        "builds": "版本",
+        "no_builds": "尚無任何版本經過驗證或建置。",
+        "current": "目前",
+        "compared_with": "對比 {build}",
+        "history_note": "歷史記錄從此次發佈開始；更早的版本已隨其遊戲版本一併移除。",
+        "timeline": {
+          "detected": "更新發佈",
+          "gamedata": "遊戲資料",
+          "map_assets": "地圖資源"
+        }
+      },
       "max_label": "最大：",
       "ports_label": "連接埠：",
       "cpu_hardware": "CPU 與硬體"
@@ -8097,8 +8226,6 @@
     "update_cs": "更新 CS2",
     "updating_to": "更新到 {version}",
     "update_to_version": "更新到 {version}",
-    "validate_gamedata": "驗證遊戲資料",
-    "build_map_assets": "建置地圖資源",
     "note_label": "注意：",
     "one_cpu_core": "1 個 CPU 核心",
     "cpu_reservation_note": " 每個節點上為系統保留 {cores} 以維持回應能力。",
@@ -8196,8 +8323,6 @@
     "toast": {
       "cs_updating": "節點上的 CS2 正在更新",
       "csgo_installing": "節點上的 CS:GO 正在安裝",
-      "validating_gamedata": "正在驗證節點上的遊戲資料簽章",
-      "building_map_assets": "正在為此節點的 CS2 版本建置地圖網格與點位標註",
       "ports_updated": "節點連接埠已更新",
       "ports_removed": "節點連接埠已移除",
       "made_gpu_only": "節點已設為僅 GPU",

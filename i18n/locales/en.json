@@ -1975,13 +1975,13 @@
             "role_id": "Match Notifications Role ID",
             "role_id_description": "These roles will be mentioned in match status notifications. You can add multiple Role IDs separated by commas."
           },
-          "gamedata_notifications": {
-            "title": "Gamedata Validation Notifications",
-            "description": "Configure where CS2 gamedata signature validation results are posted.",
-            "webhook": "Gamedata Notifications Webhook URL",
-            "webhook_description": "Dedicated webhook for gamedata validation results. Falls back to the default webhook if not set.",
-            "role_id": "Gamedata Notifications Role ID",
-            "role_id_description": "These roles will be mentioned in gamedata validation notifications. You can add multiple Role IDs separated by commas. Falls back to the default role if not set."
+          "cs2_build_notifications": {
+            "title": "CS2 Build Notifications",
+            "description": "Where CS2 update, gamedata validation and map-asset build notices are posted.",
+            "webhook": "CS2 Build Notifications Webhook URL",
+            "webhook_description": "Dedicated webhook for CS2 build notices. Falls back to the default webhook if not set.",
+            "role_id": "CS2 Build Notifications Role ID",
+            "role_id_description": "These roles will be mentioned in CS2 build notices. You can add multiple Role IDs separated by commas. Falls back to the default role if not set."
           },
           "server_notifications": {
             "title": "Server Notifications",
@@ -3426,7 +3426,122 @@
       "no_nodes_title": "No Game Server Nodes",
       "display_metrics": "Display Metrics",
       "create": "Create Game Server Node",
-      "cs_version_info": "CS2 Version Information:",
+      "cs2_build": {
+        "title": "CS2 build",
+        "released": "Released",
+        "history": "Build history",
+        "gamedata": "Gamedata",
+        "gamedata_description": "Plugin signatures, offsets & patches",
+        "map_assets": "Map assets",
+        "map_assets_description": "Meshes, grenade clips & callouts for 3D replay",
+        "gamedata_never": "Not validated for this build yet",
+        "map_assets_never": "Not built for this build yet",
+        "auto_hint": "Runs by itself when a node first reports a new build",
+        "map_assets_hint": "Built after gamedata validation when auto-build is on",
+        "revalidate": "Re-validate",
+        "rebuild": "Rebuild",
+        "build": "Build",
+        "retry_failed": "Retry failed maps",
+        "run_on": "Run on",
+        "automatic": "Automatic",
+        "automatic_description": "An online node already on build {build}",
+        "auto": "auto",
+        "started": "Started",
+        "validated": "Validated",
+        "finished": "Finished",
+        "took": "took {duration}",
+        "ran_on": "ran on {node}",
+        "requested_by": "by {name}",
+        "vs_build": "Changes vs {build}",
+        "first_run": "Nothing to compare with yet",
+        "no_changes": "No changes since {build}",
+        "nothing_broken": "Nothing broken",
+        "no_maps": "No maps were published",
+        "reused_from": "reused from {build}",
+        "skipped_entries": "{count} skipped — could not be checked",
+        "log": "Build log",
+        "trigger": {
+          "auto": "automatic",
+          "manual": "manual"
+        },
+        "stats": {
+          "checked": "Checked",
+          "broken": "Broken",
+          "warnings": "Warnings",
+          "skipped": "Skipped",
+          "maps": "Maps",
+          "changed": "Changed",
+          "unchanged": "Unchanged",
+          "failed": "Failed"
+        },
+        "chip": {
+          "newly_broken": "{count} newly broken",
+          "fixed": "{count} fixed",
+          "new_warnings": "warnings +{count}",
+          "rebuilt": "{count} rebuilt",
+          "added": "{count} added",
+          "removed": "{count} removed"
+        },
+        "change": {
+          "broken": "Broken",
+          "still_broken": "Still broken",
+          "fixed": "Fixed",
+          "warning": "Warning",
+          "cleared": "Cleared",
+          "rebuilt": "Rebuilt",
+          "added": "Added",
+          "removed": "Removed",
+          "failed": "Failed",
+          "unchanged": "Unchanged",
+          "included": "Published"
+        },
+        "reason": {
+          "vpk": "Map changed",
+          "pipeline": "Tooling changed",
+          "assets": "Rebuilt",
+          "collision": "Collision failed",
+          "view": "View mesh failed"
+        },
+        "gamedata_status": {
+          "running": "Validating",
+          "passed": "Passed",
+          "warning": "Warning",
+          "failed": "Failed",
+          "error": "Error",
+          "stale": "Stalled",
+          "none": "Not run"
+        },
+        "map_assets_status": {
+          "pending": "Queued",
+          "building": "Building",
+          "published": "Published",
+          "partial": "Partial",
+          "failed": "Failed",
+          "stale": "Stalled",
+          "none": "Not built"
+        },
+        "blocked": {
+          "no_node": "No online node is on build {build}",
+          "running": "A validation is already running",
+          "building": "A build is already queued or running"
+        },
+        "node_reason": {
+          "disabled": "Disabled",
+          "gpu_only": "GPU-only node",
+          "status": "{status}",
+          "updating": "Updating CS2",
+          "other_build": "On build {build}"
+        },
+        "toast": {
+          "queued_validation": "Gamedata validation queued",
+          "queued_build": "Map-asset build queued"
+        },
+        "force": {
+          "title": "Rebuild every map?",
+          "description": "Map assets for build {build} are already published. A forced rebuild builds every map again on the node, which can take a couple of hours, and publishes a new manifest revision only if something changed.",
+          "confirm": "Rebuild every map"
+        }
+      },
       "hide_offline": "Hide Offline Nodes",
       "only_enabled": "Only Enabled Nodes",
       "setup_dialog": {
@@ -3454,7 +3569,21 @@
         "supports_cpu_pinning": "Supports CPU Pinning",
         "cpu_governor": "CPU Governor"
       },
-      "last_updated": "Last Updated: {date}",
+      "builds": {
+        "title": "CS2 Build History",
+        "description": "Gamedata validation and map-asset builds for every CS2 build, and what each changed against the build before it.",
+        "back": "Game Server Nodes",
+        "builds": "Builds",
+        "no_builds": "No build has been validated or built yet.",
+        "current": "Current",
+        "compared_with": "Compared with {build}",
+        "history_note": "History starts with this release; earlier builds were removed along with their game version.",
+        "timeline": {
+          "detected": "Update released",
+          "gamedata": "Gamedata",
+          "map_assets": "Map assets"
+        }
+      },
       "max_label": "Max:",
       "ports_label": "Ports:",
       "cpu_hardware": "CPU & Hardware"
@@ -8097,8 +8226,6 @@
     "update_cs": "Update CS2",
     "updating_to": "Updating to {version}",
     "update_to_version": "Update to {version}",
-    "validate_gamedata": "Validate Gamedata",
-    "build_map_assets": "Build Map Assets",
     "note_label": "Note:",
     "one_cpu_core": "1 CPU core",
     "cpu_reservation_note": " {cores} is reserved for the system on each node to keep it responsive.",
@@ -8196,8 +8323,6 @@
     "toast": {
       "cs_updating": "CS2 is being updated on the node",
       "csgo_installing": "CS:GO is being installed on the node",
-      "validating_gamedata": "Validating gamedata signatures on the node",
-      "building_map_assets": "Building map meshes and callouts for this node's CS2 build",
       "ports_updated": "Node Ports Updated",
       "ports_removed": "Node Ports Removed",
       "made_gpu_only": "Node Set To GPU Only",

@@ -1975,13 +1975,13 @@
             "role_id": "Maç bildirimleri rol ID'si",
             "role_id_description": "Bu roller maç durumu bildirimlerinde etiketlenir. Virgülle ayırarak birden fazla rol ID'si ekleyebilirsin."
           },
-          "gamedata_notifications": {
-            "title": "Oyun verisi doğrulama bildirimleri",
-            "description": "CS2 oyun verisi imza doğrulama sonuçlarının nereye gönderileceğini yapılandır.",
-            "webhook": "Oyun verisi bildirimleri webhook URL'si",
-            "webhook_description": "Oyun verisi doğrulama sonuçları için özel webhook. Ayarlanmazsa varsayılan webhook'a döner.",
-            "role_id": "Oyun verisi bildirimleri rol ID'si",
-            "role_id_description": "Bu roller oyun verisi doğrulama bildirimlerinde etiketlenir. Virgülle ayırarak birden fazla rol ID'si ekleyebilirsin. Ayarlanmazsa varsayılan role döner."
+          "cs2_build_notifications": {
+            "title": "CS2 sürüm bildirimleri",
+            "description": "CS2 güncelleme, oyun verisi doğrulama ve harita varlığı oluşturma bildirimlerinin nereye gönderileceği.",
+            "webhook": "CS2 sürüm bildirimleri webhook URL'si",
+            "webhook_description": "CS2 sürüm bildirimleri için özel webhook. Ayarlanmazsa varsayılan webhook'a döner.",
+            "role_id": "CS2 sürüm bildirimleri rol ID'si",
+            "role_id_description": "Bu roller CS2 sürüm bildirimlerinde etiketlenir. Virgülle ayırarak birden fazla rol ID'si ekleyebilirsin. Ayarlanmazsa varsayılan role döner."
           },
           "server_notifications": {
             "title": "Sunucu bildirimleri",
@@ -3426,7 +3426,122 @@
       "no_nodes_title": "Sunucu düğümü yok",
       "display_metrics": "Metrikleri göster",
       "create": "Sunucu düğümü oluştur",
-      "cs_version_info": "CS2 sürüm bilgisi:",
+      "cs2_build": {
+        "title": "CS2 sürümü",
+        "released": "Yayınlandı",
+        "history": "Sürüm geçmişi",
+        "gamedata": "Gamedata",
+        "gamedata_description": "Eklenti imzaları, offset'ler ve yamalar",
+        "map_assets": "Harita varlıkları",
+        "map_assets_description": "3D tekrar için mesh'ler, bomba clip'leri ve callout'lar",
+        "gamedata_never": "Bu sürüm için henüz doğrulanmadı",
+        "map_assets_never": "Bu sürüm için henüz oluşturulmadı",
+        "auto_hint": "Bir düğüm yeni bir sürümü ilk kez bildirdiğinde kendiliğinden çalışır",
+        "map_assets_hint": "Otomatik oluşturma açıksa gamedata doğrulamasından sonra oluşturulur",
+        "revalidate": "Yeniden doğrula",
+        "rebuild": "Yeniden oluştur",
+        "build": "Oluştur",
+        "retry_failed": "Başarısız haritaları yeniden dene",
+        "run_on": "Çalıştırılacak düğüm",
+        "automatic": "Otomatik",
+        "automatic_description": "Zaten {build} sürümünde olan çevrimiçi bir düğüm",
+        "auto": "otomatik",
+        "started": "Başladı",
+        "validated": "Doğrulandı",
+        "finished": "Bitti",
+        "took": "süre: {duration}",
+        "ran_on": "düğüm: {node}",
+        "requested_by": "isteyen: {name}",
+        "vs_build": "{build} sürümüne göre değişiklikler",
+        "first_run": "Henüz karşılaştırılacak bir şey yok",
+        "no_changes": "{build} sürümünden beri değişiklik yok",
+        "nothing_broken": "Bozuk bir şey yok",
+        "no_maps": "Hiç harita yayınlanmadı",
+        "reused_from": "{build} sürümünden yeniden kullanıldı",
+        "skipped_entries": "{count} atlandı — kontrol edilemedi",
+        "log": "Oluşturma günlüğü",
+        "trigger": {
+          "auto": "otomatik",
+          "manual": "manuel"
+        },
+        "stats": {
+          "checked": "Kontrol edilen",
+          "broken": "Bozuk",
+          "warnings": "Uyarılar",
+          "skipped": "Atlanan",
+          "maps": "Haritalar",
+          "changed": "Değişen",
+          "unchanged": "Değişmeyen",
+          "failed": "Başarısız"
+        },
+        "chip": {
+          "newly_broken": "{count} yeni bozuk",
+          "fixed": "{count} düzeltildi",
+          "new_warnings": "uyarılar +{count}",
+          "rebuilt": "{count} yeniden oluşturuldu",
+          "added": "{count} eklendi",
+          "removed": "{count} kaldırıldı"
+        },
+        "change": {
+          "broken": "Bozuk",
+          "still_broken": "Hâlâ bozuk",
+          "fixed": "Düzeltildi",
+          "warning": "Uyarı",
+          "cleared": "Giderildi",
+          "rebuilt": "Yeniden oluşturuldu",
+          "added": "Eklendi",
+          "removed": "Kaldırıldı",
+          "failed": "Başarısız",
+          "unchanged": "Değişmedi",
+          "included": "Yayınlandı"
+        },
+        "reason": {
+          "vpk": "Harita değişti",
+          "pipeline": "Araçlar değişti",
+          "assets": "Yeniden oluşturuldu",
+          "collision": "Çarpışma başarısız",
+          "view": "Görünüm mesh'i başarısız"
+        },
+        "gamedata_status": {
+          "running": "Doğrulanıyor",
+          "passed": "Geçti",
+          "warning": "Uyarı",
+          "failed": "Başarısız",
+          "error": "Hata",
+          "stale": "Takıldı",
+          "none": "Çalışmadı"
+        },
+        "map_assets_status": {
+          "pending": "Sırada",
+          "building": "Oluşturuluyor",
+          "published": "Yayınlandı",
+          "partial": "Kısmi",
+          "failed": "Başarısız",
+          "stale": "Takıldı",
+          "none": "Oluşturulmadı"
+        },
+        "blocked": {
+          "no_node": "{build} sürümünde çevrimiçi düğüm yok",
+          "running": "Zaten bir doğrulama çalışıyor",
+          "building": "Zaten bir oluşturma sırada veya çalışıyor"
+        },
+        "node_reason": {
+          "disabled": "Devre dışı",
+          "gpu_only": "Yalnızca GPU düğümü",
+          "status": "{status}",
+          "updating": "CS2 güncelleniyor",
+          "other_build": "{build} sürümünde"
+        },
+        "toast": {
+          "queued_validation": "Gamedata doğrulaması sıraya alındı",
+          "queued_build": "Harita varlığı oluşturma sıraya alındı"
+        },
+        "force": {
+          "title": "Tüm haritalar yeniden oluşturulsun mu?",
+          "description": "{build} sürümünün harita varlıkları zaten yayınlandı. Zorunlu yeniden oluşturma, düğümdeki her haritayı yeniden oluşturur; bu birkaç saat sürebilir ve yalnızca bir şey değiştiyse yeni bir manifest revizyonu yayınlar.",
+          "confirm": "Tüm haritaları yeniden oluştur"
+        }
+      },
       "hide_offline": "Çevrimdışı düğümleri gizle",
       "only_enabled": "Yalnızca etkin düğümler",
       "setup_dialog": {
@@ -3454,7 +3569,21 @@
         "supports_cpu_pinning": "CPU sabitleme desteği",
         "cpu_governor": "CPU governor"
       },
-      "last_updated": "Son güncelleme: {date}",
+      "builds": {
+        "title": "CS2 Sürüm Geçmişi",
+        "description": "Her CS2 sürümü için gamedata doğrulaması ve harita varlığı oluşturma işlemleri ile her birinin bir önceki sürüme göre neyi değiştirdiği.",
+        "back": "Sunucu Düğümleri",
+        "builds": "Sürümler",
+        "no_builds": "Henüz hiçbir sürüm doğrulanmadı veya oluşturulmadı.",
+        "current": "Güncel",
+        "compared_with": "{build} ile karşılaştırıldı",
+        "history_note": "Geçmiş bu yayından itibaren tutulur; daha eski sürümler oyun sürümleriyle birlikte kaldırıldı.",
+        "timeline": {
+          "detected": "Güncelleme yayınlandı",
+          "gamedata": "Gamedata",
+          "map_assets": "Harita varlıkları"
+        }
+      },
       "max_label": "Maks:",
       "ports_label": "Portlar:",
       "cpu_hardware": "CPU ve donanım"
@@ -8097,8 +8226,6 @@
     "update_cs": "CS2'yi güncelle",
     "updating_to": "{version} sürümüne güncelleniyor",
     "update_to_version": "{version} sürümüne güncelle",
-    "validate_gamedata": "Gamedata'yı doğrula",
-    "build_map_assets": "Harita varlıklarını oluştur",
     "note_label": "Not:",
     "one_cpu_core": "1 CPU çekirdeği",
     "cpu_reservation_note": " {cores}, düğümü duyarlı tutmak için sistem tarafından ayrılmıştır.",
@@ -8196,8 +8323,6 @@
     "toast": {
       "cs_updating": "CS2 düğümde güncelleniyor",
       "csgo_installing": "CS:GO düğümde yükleniyor",
-      "validating_gamedata": "Düğümde gamedata imzaları doğrulanıyor",
-      "building_map_assets": "Bu düğümün CS2 sürümü için harita meshleri ve callout'lar oluşturuluyor",
       "ports_updated": "Düğüm portları güncellendi",
       "ports_removed": "Düğüm portları kaldırıldı",
       "made_gpu_only": "Düğüm yalnızca GPU olarak ayarlandı",

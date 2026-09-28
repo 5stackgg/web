@@ -8,9 +8,21 @@ import DOMPurify from "dompurify";
 // the walk below copies every attribute it finds onto the rendered element, so
 // a single missed escape upstream is `onerror=` running in the bell.
 //
-// The api only ever emits <a> and <b>; the rest are here so a future message
-// with light formatting in it renders rather than arriving stripped.
-const ALLOWED_TAGS = ["a", "b", "strong", "i", "em", "code", "br", "span"];
+// The api emits <a>, <b>, <i>, <code>, <br> and the <ul>/<li> lists in
+// CS2 build notices; the rest are here so a future message with light
+// formatting in it renders rather than arriving stripped.
+const ALLOWED_TAGS = [
+  "a",
+  "b",
+  "strong",
+  "i",
+  "em",
+  "code",
+  "br",
+  "span",
+  "ul",
+  "li",
+];
 const ALLOWED_ATTR = ["href", "target", "rel", "class"];
 
 function toInternalPath(href: string | undefined): string | null {
@@ -87,9 +99,20 @@ export default defineComponent({
         // markup nothing has checked. As a text child whatever is left of the
         // tags is escaped by Vue rather than parsed by the browser, so the
         // strip only has to be tidy, not airtight.
-        return h("span", props.html.replace(/<[^>]*>/g, ""));
+        return h(
+          "span",
+          { class: "[overflow-wrap:anywhere]" },
+          props.html.replace(/<[^>]*>/g, ""),
+        );
       }
-      return h("span", parsed.value);
+      return h(
+        "span",
+        {
+          class:
+            "[overflow-wrap:anywhere] [&_ul]:my-1 [&_ul]:list-disc [&_ul]:pl-4",
+        },
+        parsed.value,
+      );
     };
   },
 });

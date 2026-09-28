@@ -1975,13 +1975,13 @@
             "role_id": "Roll-ID för matchnotiser",
             "role_id_description": "Dessa roller nämns i notiser om matchstatus. Du kan lägga till flera roll-ID:n separerade med kommatecken."
           },
-          "gamedata_notifications": {
-            "title": "Notiser för gamedata-validering",
-            "description": "Konfigurera var resultat från valideringen av CS2-gamedatasignaturer publiceras.",
-            "webhook": "Webhook-URL för gamedata-notiser",
-            "webhook_description": "Dedikerad webhook för resultat av gamedata-validering. Faller tillbaka på standard-webhooken om den inte är inställd.",
-            "role_id": "Roll-ID för gamedata-notiser",
-            "role_id_description": "Dessa roller nämns i notiser om gamedata-validering. Du kan lägga till flera roll-ID:n separerade med kommatecken. Faller tillbaka på standardrollen om den inte är inställd."
+          "cs2_build_notifications": {
+            "title": "Notiser för CS2-builds",
+            "description": "Var notiser om CS2-uppdateringar, gamedata-validering och byggen av karttillgångar publiceras.",
+            "webhook": "Webhook-URL för CS2-build-notiser",
+            "webhook_description": "Dedikerad webhook för notiser om CS2-builds. Faller tillbaka på standard-webhooken om den inte är inställd.",
+            "role_id": "Roll-ID för CS2-build-notiser",
+            "role_id_description": "Dessa roller nämns i notiser om CS2-builds. Du kan lägga till flera roll-ID:n separerade med kommatecken. Faller tillbaka på standardrollen om den inte är inställd."
           },
           "server_notifications": {
             "title": "Servernotiser",
@@ -3426,7 +3426,122 @@
       "no_nodes_title": "Inga spelservernoder",
       "display_metrics": "Visa mätvärden",
       "create": "Skapa spelservernod",
-      "cs_version_info": "CS2-versionsinformation:",
+      "cs2_build": {
+        "title": "CS2-build",
+        "released": "Släppt",
+        "history": "Buildhistorik",
+        "gamedata": "Gamedata",
+        "gamedata_description": "Pluginsignaturer, offsets och patchar",
+        "map_assets": "Karttillgångar",
+        "map_assets_description": "Meshar, granatclips och callouts för 3D-repris",
+        "gamedata_never": "Inte validerad för den här builden än",
+        "map_assets_never": "Inte byggda för den här builden än",
+        "auto_hint": "Körs automatiskt när en nod först rapporterar en ny build",
+        "map_assets_hint": "Byggs efter gamedata-validering när auto-bygge är på",
+        "revalidate": "Validera igen",
+        "rebuild": "Bygg om",
+        "build": "Bygg",
+        "retry_failed": "Försök igen med misslyckade kartor",
+        "run_on": "Kör på",
+        "automatic": "Automatiskt",
+        "automatic_description": "En online-nod som redan har build {build}",
+        "auto": "auto",
+        "started": "Startad",
+        "validated": "Validerad",
+        "finished": "Klar",
+        "took": "tog {duration}",
+        "ran_on": "kördes på {node}",
+        "requested_by": "av {name}",
+        "vs_build": "Ändringar jämfört med {build}",
+        "first_run": "Inget att jämföra med än",
+        "no_changes": "Inga ändringar sedan {build}",
+        "nothing_broken": "Inget trasigt",
+        "no_maps": "Inga kartor publicerades",
+        "reused_from": "återanvänd från {build}",
+        "skipped_entries": "Överhoppade: {count} — kunde inte kontrolleras",
+        "log": "Bygglogg",
+        "trigger": {
+          "auto": "automatisk",
+          "manual": "manuell"
+        },
+        "stats": {
+          "checked": "Kontrollerade",
+          "broken": "Trasiga",
+          "warnings": "Varningar",
+          "skipped": "Överhoppade",
+          "maps": "Kartor",
+          "changed": "Ändrade",
+          "unchanged": "Oförändrade",
+          "failed": "Misslyckade"
+        },
+        "chip": {
+          "newly_broken": "nya trasiga: {count}",
+          "fixed": "fixade: {count}",
+          "new_warnings": "varningar +{count}",
+          "rebuilt": "ombyggda: {count}",
+          "added": "tillagda: {count}",
+          "removed": "borttagna: {count}"
+        },
+        "change": {
+          "broken": "Trasig",
+          "still_broken": "Fortfarande trasig",
+          "fixed": "Fixad",
+          "warning": "Varning",
+          "cleared": "Rensad",
+          "rebuilt": "Ombyggd",
+          "added": "Tillagd",
+          "removed": "Borttagen",
+          "failed": "Misslyckad",
+          "unchanged": "Oförändrad",
+          "included": "Publicerad"
+        },
+        "reason": {
+          "vpk": "Kartan ändrad",
+          "pipeline": "Verktyg ändrade",
+          "assets": "Ombyggd",
+          "collision": "Kollision misslyckades",
+          "view": "Vy-mesh misslyckades"
+        },
+        "gamedata_status": {
+          "running": "Validerar",
+          "passed": "Godkänd",
+          "warning": "Varning",
+          "failed": "Misslyckad",
+          "error": "Fel",
+          "stale": "Fastnat",
+          "none": "Inte körd"
+        },
+        "map_assets_status": {
+          "pending": "I kö",
+          "building": "Bygger",
+          "published": "Publicerad",
+          "partial": "Delvis",
+          "failed": "Misslyckad",
+          "stale": "Fastnat",
+          "none": "Inte byggd"
+        },
+        "blocked": {
+          "no_node": "Ingen online-nod har build {build}",
+          "running": "En validering körs redan",
+          "building": "En build är redan köad eller körs"
+        },
+        "node_reason": {
+          "disabled": "Inaktiverad",
+          "gpu_only": "Endast GPU-nod",
+          "status": "{status}",
+          "updating": "Uppdaterar CS2",
+          "other_build": "På build {build}"
+        },
+        "toast": {
+          "queued_validation": "Gamedata-validering köad",
+          "queued_build": "Bygge av karttillgångar köat"
+        },
+        "force": {
+          "title": "Bygga om alla kartor?",
+          "description": "Karttillgångar för build {build} är redan publicerade. En tvingad ombyggnad bygger alla kartor igen på noden, vilket kan ta ett par timmar, och publicerar en ny manifestrevision bara om något har ändrats.",
+          "confirm": "Bygg om alla kartor"
+        }
+      },
       "hide_offline": "Dölj offline-noder",
       "only_enabled": "Endast aktiverade noder",
       "setup_dialog": {
@@ -3454,7 +3569,21 @@
         "supports_cpu_pinning": "Stödjer CPU-pinning",
         "cpu_governor": "CPU-governor"
       },
-      "last_updated": "Senast uppdaterad: {date}",
+      "builds": {
+        "title": "CS2-buildhistorik",
+        "description": "Gamedata-validering och byggen av karttillgångar för varje CS2-build, och vad varje build ändrade jämfört med den föregående.",
+        "back": "Spelservernoder",
+        "builds": "Builds",
+        "no_builds": "Ingen build har validerats eller byggts än.",
+        "current": "Aktuell",
+        "compared_with": "Jämförd med {build}",
+        "history_note": "Historiken börjar med den här versionen; tidigare builds togs bort tillsammans med sin spelversion.",
+        "timeline": {
+          "detected": "Uppdatering släppt",
+          "gamedata": "Gamedata",
+          "map_assets": "Karttillgångar"
+        }
+      },
       "max_label": "Max:",
       "ports_label": "Portar:",
       "cpu_hardware": "CPU och hårdvara"
@@ -8097,8 +8226,6 @@
     "update_cs": "Uppdatera CS2",
     "updating_to": "Uppdaterar till {version}",
     "update_to_version": "Uppdatera till {version}",
-    "validate_gamedata": "Validera gamedata",
-    "build_map_assets": "Bygg karttillgångar",
     "note_label": "Obs:",
     "one_cpu_core": "1 CPU-kärna",
     "cpu_reservation_note": " {cores} är reserverat för systemet på varje nod för att hålla den responsiv.",
@@ -8196,8 +8323,6 @@
     "toast": {
       "cs_updating": "CS2 uppdateras på noden",
       "csgo_installing": "CS:GO installeras på noden",
-      "validating_gamedata": "Validerar gamedata-signaturer på noden",
-      "building_map_assets": "Bygger kartmeshar och callouts för den här nodens CS2-build",
       "ports_updated": "Nodportar uppdaterade",
       "ports_removed": "Nodportar borttagna",
       "made_gpu_only": "Nod satt till endast GPU",

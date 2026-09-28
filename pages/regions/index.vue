@@ -10,6 +10,8 @@ import RegionForm from "~/components/regions/RegionForm.vue";
 import FivestackTooltip from "~/components/FiveStackToolTip.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Card } from "~/components/ui/card";
+
+definePageMeta({ middleware: "admin" });
 </script>
 
 <template>

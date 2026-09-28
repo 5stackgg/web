@@ -2,6 +2,8 @@
 import PageHeading from "~/components/PageHeading.vue";
 import ServerForm from "~/components/servers/ServerForm.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+
+definePageMeta({ middleware: "admin" });
 </script>
 
 <template>

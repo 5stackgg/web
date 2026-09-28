@@ -41,6 +41,8 @@ import { generateQuery } from "~/graphql/graphqlGen";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import FileManagerContainer from "~/components/file-manager/FileManagerContainer.vue";
 
+definePageMeta({ middleware: "admin" });
+
 const route = useRoute();
 const router = useRouter();
 

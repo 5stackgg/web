@@ -3,15 +3,25 @@ import { e_player_roles_enum } from "~/generated/zeus";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useAuthStore } from "~/stores/AuthStore";
 
-export default defineNuxtRouteMiddleware(async (to) => {
+export default defineNuxtRouteMiddleware(async (to, from) => {
   if (process.server) {
     return;
   }
 
+  const router = useRouter();
+
+  // A redirect issued after an await would pull the player off whatever page
+  // they moved on to while this navigation was still pending.
+  const superseded = () => router.currentRoute.value !== from;
+
   const authStore = useAuthStore();
 
-  if (!authStore.hasCheckedSession) {
-    await authStore.getMe();
+  // /tournaments is a public route, so nothing upstream has waited out the
+  // verification of a cached `me`.
+  await authStore.getMe();
+
+  if (superseded()) {
+    return;
   }
 
   if (!authStore.me) {
@@ -24,6 +34,10 @@ export default defineNuxtRouteMiddleware(async (to) => {
   await until(() => applicationSettings.settingsLoaded).toBe(true, {
     timeout: 10000,
   });
+
+  if (superseded()) {
+    return;
+  }
 
   if (
     !applicationSettings.settingsLoaded ||

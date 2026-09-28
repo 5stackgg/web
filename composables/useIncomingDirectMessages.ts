@@ -1,5 +1,6 @@
 import { watch } from "vue";
 import socket, { type LobbyMessage } from "~/web-sockets/Socket";
+import { newestMessageIdsFrom } from "~/utilities/chatLobbyMessages";
 import {
   directTabId,
   peerSteamId,
@@ -42,10 +43,17 @@ export function useIncomingDirectMessages() {
     });
 
     if (unread > 0) {
-      setUnread(directTabId(roomId), unread);
+      setUnread(
+        directTabId(roomId),
+        unread,
+        newestMessageIdsFrom(
+          socket.lobbyMessages("direct", roomId),
+          unread,
+          authStore.me?.steam_id,
+        ),
+      );
     }
   }
-
 
   // The server owns both what is unread and what is on the rail, so this is
   // the whole of it. Both used to be split -- unread from here, the open set

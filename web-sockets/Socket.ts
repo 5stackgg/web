@@ -9,11 +9,13 @@ import {
   type ChatError,
 } from "~/utilities/chatErrors";
 import {
+  applyChatMessageEdit,
   chatMessageKey,
   insertChatMessage,
   isChatMessageDeleted,
   mergeChatSnapshot,
   removeChatMessage,
+  type ChatMessageEdit,
   type RemovedChatMessage,
 } from "~/utilities/chatLobbyMessages";
 import guid from "~/utilities/uuid";
@@ -25,6 +27,7 @@ export interface LobbyMessage {
   message: string;
   timestamp: string;
   source?: "web" | "game";
+  edited_at?: string;
   from?: {
     role?: string;
     name?: string;
@@ -411,35 +414,89 @@ export class Socket extends EventEmitter {
     });
   }
 
-  // Never queued: a moderator told the delete failed must not have it carried
-  // out behind their back once the connection comes back.
   public deleteMessage(
     type: ChatType,
     id: string,
     messageId: string,
   ): Promise<void> {
-    if (!this.connected || !this.connection) {
-      return Promise.reject({ code: "offline", action: "delete" });
-    }
-
-    const requestId = guid();
     const lobbyId = `${type}:${id}`;
 
-    return new Promise<void>((resolve, reject) => {
-      const pending: PendingChatRequest = {
-        action: "delete",
-        resolve: () => {
+    return this.chatRequest(
+      "delete",
+      { id, type, messageId },
+      {
+        resolved: () => {
           this.removeMessageFromLobby(lobbyId, messageId);
-          resolve();
         },
-        reject: (error) => {
+        rejected: (error) => {
           if (error?.code === "not_found") {
             this.removeMessageFromLobby(lobbyId, messageId);
           }
+        },
+      },
+    );
+  }
+
+  // The ack beats the room's `edited` broadcast, which goes round through
+  // redis, so the text is applied here rather than flashing back to the old
+  // one. The broadcast then settles the server's edited_at.
+  public editMessage(
+    type: ChatType,
+    id: string,
+    messageId: string,
+    message: string,
+  ): Promise<void> {
+    const lobbyId = `${type}:${id}`;
+
+    return this.chatRequest(
+      "edit",
+      { id, type, messageId, message },
+      {
+        resolved: () => {
+          this.editMessageInLobby(lobbyId, {
+            id: messageId,
+            message,
+            edited_at: new Date().toISOString(),
+          });
+        },
+        rejected: (error) => {
+          if (error?.code === "not_found") {
+            this.removeMessageFromLobby(lobbyId, messageId);
+          }
+        },
+      },
+    );
+  }
+
+  // Never queued: someone told a delete or an edit failed must not have it
+  // carried out behind their back once the connection comes back.
+  private chatRequest(
+    action: Exclude<ChatAction, "send">,
+    data: Record<string, unknown>,
+    handlers: {
+      resolved: () => void;
+      rejected: (error: ChatError) => void;
+    },
+  ): Promise<void> {
+    if (!this.connected || !this.connection) {
+      return Promise.reject({ code: "offline", action });
+    }
+
+    const requestId = guid();
+
+    return new Promise<void>((resolve, reject) => {
+      const pending: PendingChatRequest = {
+        action,
+        resolve: () => {
+          handlers.resolved();
+          resolve();
+        },
+        reject: (error) => {
+          handlers.rejected(error);
           reject(error);
         },
         timer: setTimeout(() => {
-          reject({ code: "timeout", action: "delete", requestId });
+          reject({ code: "timeout", action, requestId });
           pending.timer = setTimeout(() => {
             this.pendingRequests.delete(requestId);
           }, Socket.LATE_ANSWER_MS);
@@ -448,12 +505,7 @@ export class Socket extends EventEmitter {
 
       this.pendingRequests.set(requestId, pending);
 
-      this.event(`lobby:delete`, {
-        id,
-        type,
-        messageId,
-        requestId,
-      });
+      this.event(`lobby:${action}`, { ...data, requestId });
     });
   }
 
@@ -547,6 +599,10 @@ export class Socket extends EventEmitter {
     );
   }
 
+  public lobbyMessages(type: ChatType, id: string): readonly LobbyMessage[] {
+    return this.lobbies.get(`${type}:${id}`)?.messages.value ?? [];
+  }
+
   public listen(event: string, callback: (data: any) => void) {
     this.on(event, callback);
     this.listening.add(event);
@@ -626,6 +682,12 @@ export class Socket extends EventEmitter {
       }),
     );
 
+    lobby.listeners.push(
+      this.listen(`lobby:${lobbyId}:edited`, (edit: ChatMessageEdit) => {
+        this.editLobbyMessage(lobby, edit);
+      }),
+    );
+
     this.join(`lobby`, {
       id: _id,
       type,
@@ -659,6 +721,25 @@ export class Socket extends EventEmitter {
 
     lobby.messages.value = insertChatMessage(lobby.messages.value, message);
     this.emitToLobbyInstances(lobby, "lobby:chat", message);
+  }
+
+  private editMessageInLobby(lobbyId: string, edit: ChatMessageEdit) {
+    const lobby = this.lobbies.get(lobbyId);
+    if (lobby) {
+      this.editLobbyMessage(lobby, edit);
+    }
+  }
+
+  private editLobbyMessage(lobby: LobbyState, edit: ChatMessageEdit) {
+    const messages = applyChatMessageEdit(
+      lobby.messages.value,
+      edit,
+      lobby.deleted,
+    );
+
+    if (messages) {
+      lobby.messages.value = messages;
+    }
   }
 
   private removeMessageFromLobby(lobbyId: string, messageId: string) {

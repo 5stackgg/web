@@ -8482,9 +8482,18 @@
     "delete_message": "Delete Message",
     "delete_confirm_title": "Delete Message?",
     "delete_confirm_description": "The message from {name} will be removed for everyone in this chat.",
+    "delete_own_confirm_description": "Your message will be removed for everyone in this chat.",
     "delete_failed": "Failed to delete message",
     "delete_timeout": "The server didn't answer. The message may still be removed.",
     "message_already_gone": "Message already removed",
+    "own_message_window_closed": "You can only edit or delete your messages for 10 minutes.",
+    "edit_message": "Edit Message",
+    "edit_hint": "Enter to save · Esc to cancel",
+    "edited": "(edited)",
+    "edited_at": "Edited {time}",
+    "edit_failed": "Failed to edit message",
+    "edit_timeout": "The server didn't answer. Your edit may still be saved.",
+    "edit_window_closed": "You can only edit a message for 10 minutes.",
     "direct": {
       "message": "Message",
       "empty": "No messages yet. Say hello."

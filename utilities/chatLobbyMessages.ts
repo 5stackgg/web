@@ -36,12 +36,24 @@ export function isChatMessageDeleted(
 // window between the server building the snapshot and it arriving here. The
 // same window means a snapshot can still carry a message deleted since, so the
 // tombstones apply to both halves.
+//
+// The same goes for an edit: a message is never un-edited, so a snapshot copy
+// older than the edit this client already applied keeps the edit.
 export function mergeChatSnapshot(
   current: LobbyMessage[],
   snapshot: LobbyMessage[] | null | undefined,
   deleted: ReadonlySet<string>,
 ) {
-  const history = snapshot || [];
+  const edited = new Map<string, LobbyMessage>();
+  for (const message of current) {
+    if (message?.id && message.edited_at) {
+      edited.set(message.id, message);
+    }
+  }
+
+  const history = (snapshot || []).map((message) =>
+    keepNewerEdit(message, message?.id ? edited.get(message.id) : undefined),
+  );
   const snapshotKeys = new Set(history.map(chatMessageKey));
 
   const newest = history.reduce(
@@ -63,6 +75,21 @@ export function mergeChatSnapshot(
   merged.sort((a, b) => chatMessageTime(a) - chatMessageTime(b));
 
   return merged;
+}
+
+function editTime(message: LobbyMessage | undefined) {
+  return new Date(message?.edited_at ?? 0).getTime() || 0;
+}
+
+function keepNewerEdit(
+  snapshot: LobbyMessage,
+  held: LobbyMessage | undefined,
+) {
+  if (!held || editTime(held) <= editTime(snapshot)) {
+    return snapshot;
+  }
+
+  return { ...snapshot, message: held.message, edited_at: held.edited_at };
 }
 
 export function insertChatMessage(
@@ -101,4 +128,66 @@ export function removeChatMessage(
   const [message] = messages.splice(index, 1);
 
   return { messages, message, index };
+}
+
+// A conversation's unread count comes from the server, which counts every
+// message from the other party after the read cursor -- which are always the
+// newest of theirs. So the ids behind the count can be read off the room
+// without trusting this browser's copy of the cursor.
+export function newestMessageIdsFrom(
+  messages: readonly LobbyMessage[],
+  count: number,
+  viewerSteamId?: string | null,
+): string[] {
+  if (count <= 0) {
+    return [];
+  }
+
+  return messages
+    .filter(
+      (message) =>
+        !!message?.id &&
+        String(message.from?.steam_id) !== String(viewerSteamId),
+    )
+    .slice(-count)
+    .map((message) => message.id as string);
+}
+
+export interface ChatMessageEdit {
+  id?: string;
+  message?: string;
+  edited_at?: string;
+}
+
+// An edit can race a delete and arrive after it, so it only ever changes a
+// message this client still holds and never brings one back.
+export function applyChatMessageEdit(
+  current: LobbyMessage[],
+  edit: ChatMessageEdit | null | undefined,
+  deleted: ReadonlySet<string>,
+): LobbyMessage[] | null {
+  const id = edit?.id;
+
+  if (typeof id !== "string" || !id || typeof edit?.message !== "string") {
+    return null;
+  }
+
+  if (deleted.has(id)) {
+    return null;
+  }
+
+  const index = current.findIndex((message) => message?.id === id);
+
+  if (index === -1) {
+    return null;
+  }
+
+  const messages = current.slice();
+  messages[index] = {
+    ...messages[index],
+    message: edit.message,
+    edited_at: edit.edited_at ?? new Date().toISOString(),
+  };
+
+  return messages;
 }

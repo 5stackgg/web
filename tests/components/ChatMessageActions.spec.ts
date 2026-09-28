@@ -102,7 +102,7 @@ describe("ChatMessageActions", () => {
       props: {
         message: MESSAGE,
         room: { type: "match_team", id: "match-1:lineup-1" },
-        permissions: { canDelete: true },
+        permissions: { canDelete: true, canEdit: false },
       },
       attachTo: document.body,
     });
@@ -212,5 +212,120 @@ describe("ChatMessageActions", () => {
     unmount = undefined;
 
     expect(hubHeld()).toBe(false);
+  });
+});
+
+describe("ChatMessageActions for the author", () => {
+  const menuItems = () =>
+    Array.from(
+      document.body.querySelectorAll<HTMLElement>('[role="menuitem"]'),
+    ).map((item) => item.textContent?.trim());
+
+  const menuItem = (label: string) =>
+    Array.from(
+      document.body.querySelectorAll<HTMLElement>('[role="menuitem"]'),
+    ).find((item) => item.textContent?.trim() === label);
+
+  const dialog = () =>
+    document.body.querySelector<HTMLElement>('[role="alertdialog"]');
+
+  const dialogButton = (label: string) =>
+    Array.from(dialog()?.querySelectorAll("button") ?? []).find(
+      (button) => button.textContent?.trim() === label,
+    );
+
+  beforeEach(() => {
+    while (useRightSidebar().hoverCloseSuspended.value) {
+      useRightSidebar().resumeHoverClose();
+    }
+  });
+
+  async function openMenu(
+    permissions = { canDelete: true, canEdit: true },
+    own = true,
+  ) {
+    const wrapper = await mountSuspended(ChatMessageActions, {
+      props: {
+        message: MESSAGE,
+        room: { type: "direct", id: "1:2" },
+        permissions,
+        own,
+      },
+      attachTo: document.body,
+    });
+    unmount = () => wrapper.unmount();
+
+    await wrapper.get(TRIGGER).trigger("keydown", { key: "Enter" });
+    await flushPromises();
+
+    return wrapper;
+  }
+
+  it("asks the row to re-check its window before the menu opens", async () => {
+    const wrapper = await openMenu();
+
+    expect(wrapper.emitted("open")).toHaveLength(1);
+  });
+
+  it("puts Edit first, and Delete after a separator", async () => {
+    await openMenu();
+
+    expect(menuItems()).toEqual(["Edit Message", "Delete Message"]);
+    expect(
+      document.body.querySelector('[role="menu"] [role="separator"]'),
+    ).not.toBeNull();
+  });
+
+  it("leaves the separator out when there is nothing to separate", async () => {
+    await openMenu({ canDelete: false, canEdit: true });
+
+    expect(menuItems()).toEqual(["Edit Message"]);
+    expect(
+      document.body.querySelector('[role="menu"] [role="separator"]'),
+    ).toBeNull();
+  });
+
+  it("hands the edit to the row and lets go of the hub", async () => {
+    const wrapper = await openMenu();
+
+    menuItem("Edit Message")!.click();
+    await flushPromises();
+
+    expect(wrapper.emitted("edit")).toHaveLength(1);
+    expect(document.body.querySelector('[role="menu"]')).toBeNull();
+    expect(useRightSidebar().hoverCloseSuspended.value).toBe(false);
+  });
+
+  it("asks about the author's own message in their own terms", async () => {
+    await openMenu();
+
+    menuItem("Delete Message")!.click();
+    await flushPromises();
+
+    expect(dialog()?.textContent).toContain("Delete Message?");
+    expect(dialog()?.textContent).toContain(
+      "Your message will be removed for everyone in this chat.",
+    );
+  });
+
+  it("closes the confirm once the window has closed", async () => {
+    vi.spyOn(socket, "deleteMessage").mockRejectedValue({
+      code: "window_closed",
+      action: "delete",
+    });
+
+    await openMenu();
+
+    menuItem("Delete Message")!.click();
+    await flushPromises();
+    dialogButton("Delete")!.click();
+    await flushPromises();
+
+    expect(toast).toHaveBeenCalledWith({
+      title: "Failed to delete message",
+      description: "You can only edit or delete your messages for 10 minutes.",
+      variant: "destructive",
+    });
+    expect(dialog()).toBeNull();
   });
 });

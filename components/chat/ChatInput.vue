@@ -167,9 +167,10 @@ import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { chatEnterAction } from "~/utilities/chatInputKeys";
 import { toastChatError } from "~/utilities/chatErrors";
-import { CHAT_MESSAGE_MAX_LENGTH } from "~/constants/chat";
-
-const REMAINING_HINT_AT = 200;
+import {
+  CHAT_MESSAGE_MAX_LENGTH,
+  CHAT_REMAINING_HINT_AT,
+} from "~/constants/chat";
 
 export interface ChatInputChannel {
   value: string;
@@ -232,7 +233,7 @@ export default {
       return CHAT_MESSAGE_MAX_LENGTH - message.length;
     },
     showRemaining(): boolean {
-      return this.remainingCharacters <= REMAINING_HINT_AT;
+      return this.remainingCharacters <= CHAT_REMAINING_HINT_AT;
     },
     activeChannelValue() {
       return this.destination ?? this.channels[0]?.value;

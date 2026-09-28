@@ -5,6 +5,7 @@ import { useChatReadState } from "~/composables/useChatReadState";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
+import { newestMessageIdsFrom } from "~/utilities/chatLobbyMessages";
 import socket, {
   type Lobby,
   type LobbyMessageDeleted,
@@ -36,6 +37,7 @@ export function useChatTabSetup() {
   const { t } = useI18n();
   const {
     tabs,
+    unreadCounts,
     openTab,
     closeTab,
     setPinned,
@@ -83,11 +85,19 @@ export function useChatTabSetup() {
     // and agree with the other devices -- the live handler above only ever
     // knew about this session.
     //
-    // Conversations are left alone: their count comes from
+    // A conversation keeps its count: it comes from
     // /chat/direct/conversations, which counts the whole thread rather than
-    // the last 200 messages of it.
+    // the last 200 messages of it. Only the ids behind it are filled in, so a
+    // deleted message can come off the badge.
     lobby.on("lobby:messages", (messages: any[]) => {
       if (tab.type === "direct") {
+        const count = unreadCounts.value[tab.id] ?? 0;
+
+        setUnread(
+          tab.id,
+          count,
+          newestMessageIdsFrom(messages ?? [], count, authStore.me?.steam_id),
+        );
         return;
       }
 

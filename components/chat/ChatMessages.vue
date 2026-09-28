@@ -54,6 +54,9 @@
             :next-message="messages[index + 1]"
             :room="messageRoom ? messageRoom(message) : null"
             :can-moderate="canModerate"
+            :editing="!!message.id && message.id === editingId"
+            @edit="editingId = message.id"
+            @edit-end="stopEditing(message.id)"
           />
         </div>
       </TransitionGroup>
@@ -113,11 +116,17 @@ export default {
   data() {
     return {
       isAtBottom: false,
+      editingId: null as string | null,
     };
   },
   methods: {
     messageKey(message: any) {
       return chatMessageKey(message);
+    },
+    stopEditing(messageId?: string) {
+      if (this.editingId === messageId) {
+        this.editingId = null;
+      }
     },
     checkIfAtBottom() {
       const chatMessages = this.$refs.chatMessages as HTMLElement;
@@ -166,6 +175,13 @@ export default {
   watch: {
     messages: {
       handler(current, prev) {
+        if (
+          this.editingId &&
+          !current.some((message: any) => message?.id === this.editingId)
+        ) {
+          this.editingId = null;
+        }
+
         this.$nextTick(() => {
           this.scrollToBottom(prev.length === 0);
           this.checkIfAtBottom();

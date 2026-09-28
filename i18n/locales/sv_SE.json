@@ -8482,9 +8482,18 @@
     "delete_message": "Ta bort meddelande",
     "delete_confirm_title": "Ta bort meddelande?",
     "delete_confirm_description": "Meddelandet från {name} tas bort för alla i den här chatten.",
+    "delete_own_confirm_description": "Ditt meddelande tas bort för alla i den här chatten.",
     "delete_failed": "Meddelandet kunde inte tas bort",
     "delete_timeout": "Servern svarade inte. Meddelandet kan fortfarande tas bort.",
     "message_already_gone": "Meddelandet har redan tagits bort",
+    "own_message_window_closed": "Du kan bara redigera eller ta bort dina meddelanden i 10 minuter.",
+    "edit_message": "Redigera meddelande",
+    "edit_hint": "Enter för att spara · Esc för att avbryta",
+    "edited": "(redigerat)",
+    "edited_at": "Redigerat {time}",
+    "edit_failed": "Meddelandet kunde inte redigeras",
+    "edit_timeout": "Servern svarade inte. Din ändring kan fortfarande sparas.",
+    "edit_window_closed": "Du kan bara redigera ett meddelande i 10 minuter.",
     "direct": {
       "message": "Meddelande",
       "empty": "Inga meddelanden än. Säg hej."

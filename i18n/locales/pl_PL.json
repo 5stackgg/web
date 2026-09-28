@@ -8482,9 +8482,18 @@
     "delete_message": "Usuń wiadomość",
     "delete_confirm_title": "Usunąć wiadomość?",
     "delete_confirm_description": "Wiadomość od {name} zostanie usunięta dla wszystkich na tym czacie.",
+    "delete_own_confirm_description": "Twoja wiadomość zostanie usunięta dla wszystkich na tym czacie.",
     "delete_failed": "Nie udało się usunąć wiadomości",
     "delete_timeout": "Serwer nie odpowiedział. Wiadomość może mimo to zostać usunięta.",
     "message_already_gone": "Wiadomość została już usunięta",
+    "own_message_window_closed": "Swoje wiadomości możesz edytować lub usuwać tylko przez 10 minut.",
+    "edit_message": "Edytuj wiadomość",
+    "edit_hint": "Enter, aby zapisać · Esc, aby anulować",
+    "edited": "(edytowano)",
+    "edited_at": "Edytowano {time}",
+    "edit_failed": "Nie udało się edytować wiadomości",
+    "edit_timeout": "Serwer nie odpowiedział. Twoja zmiana może mimo to zostać zapisana.",
+    "edit_window_closed": "Wiadomość możesz edytować tylko przez 10 minut.",
     "direct": {
       "message": "Wiadomość",
       "empty": "Brak wiadomości. Przywitaj się."

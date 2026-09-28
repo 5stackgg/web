@@ -4,6 +4,9 @@ import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { useChatTabs } from "~/composables/useChatTabs";
 import { useChatTabSetup } from "~/composables/useChatTabSetup";
+import {
+  useIncomingDirectMessages,
+} from "~/composables/useIncomingDirectMessages";
 import { useRightSidebar } from "~/composables/useRightSidebar";
 import { setActiveHub } from "~/composables/useHubState";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
@@ -144,5 +147,88 @@ describe("useChatTabSetup deletes", () => {
     socket.emit(`${room}:deleted`, { id: "unread" });
 
     expect(unread()).toBe(1);
+  });
+});
+
+describe("useChatTabSetup conversation deletes", () => {
+  let dmRoom = "";
+  let dmTab = "";
+
+  const dmUnread = () => useChatTabs().unreadCounts.value[dmTab];
+
+  const history = () => [
+    line("dm-read", 0),
+    line("dm-1", 2),
+    line("dm-mine", 3, ME),
+    line("dm-2", 4),
+  ];
+
+  beforeEach(() => {
+    dmRoom = `${ME}:dm-${lobbyCounter}`;
+    dmTab = `direct:${dmRoom}`;
+  });
+
+  it("takes a deleted message off a conversation's badge", async () => {
+    useChatTabs().openTab({
+      id: dmTab,
+      label: "Other",
+      instance: "direct",
+      type: "direct",
+      lobbyId: dmRoom,
+      activate: false,
+    });
+    useChatTabs().setUnread(dmTab, 2);
+    await flushPromises();
+
+    socket.emit(`lobby:direct:${dmRoom}:messages`, { messages: history() });
+    expect(dmUnread()).toBe(2);
+
+    socket.emit(`lobby:direct:${dmRoom}:deleted`, { id: "dm-read" });
+    socket.emit(`lobby:direct:${dmRoom}:deleted`, { id: "dm-mine" });
+    expect(dmUnread()).toBe(2);
+
+    socket.emit(`lobby:direct:${dmRoom}:deleted`, { id: "dm-2" });
+    expect(dmUnread()).toBe(1);
+  });
+
+  it("knows the ids behind a count that lands after the history", async () => {
+    const held = socket.joinLobby("spec-held", "direct", dmRoom);
+    socket.emit(`lobby:direct:${dmRoom}:messages`, { messages: history() });
+
+    vi.stubGlobal(
+      "$fetch",
+      vi.fn().mockResolvedValue({
+        conversations: [
+          {
+            roomId: dmRoom,
+            unread: 1,
+            isOpen: true,
+            position: 0,
+            peer: { steam_id: OTHER, name: "Other" },
+          },
+        ],
+      }),
+    );
+
+    const wrapper = await mountSuspended(
+      defineComponent({
+        setup() {
+          useIncomingDirectMessages();
+          return () => h("div");
+        },
+      }),
+    );
+    await flushPromises();
+
+    expect(dmUnread()).toBe(1);
+
+    socket.emit(`lobby:direct:${dmRoom}:deleted`, { id: "dm-1" });
+    expect(dmUnread()).toBe(1);
+
+    socket.emit(`lobby:direct:${dmRoom}:deleted`, { id: "dm-2" });
+    expect(dmUnread()).toBe(0);
+
+    wrapper.unmount();
+    held.leave();
   });
 });

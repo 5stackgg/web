@@ -79,12 +79,53 @@ describe("chat error actions", () => {
     );
   });
 
+  it("says why the author's own delete came too late", () => {
+    expect(
+      chatErrorDescription({ code: "window_closed", action: "delete" }, t),
+    ).toBe("chat.own_message_window_closed");
+  });
+
   it.each(["not_allowed", "offline", "gagged", "too_long"])(
     "adds nothing to a failed delete for %s",
     (code) => {
       expect(
         chatErrorDescription({ code, action: "delete" }, t),
       ).toBeUndefined();
+    },
+  );
+});
+
+describe("chat edit errors", () => {
+  it("titles every edit error as a failed edit", () => {
+    for (const code of ["not_allowed", "not_found", "window_closed"]) {
+      const error = { code, action: "edit" as const };
+
+      expect(chatErrorTitle(error, t)).toBe("chat.edit_failed");
+      expect(chatErrorFailed(error)).toBe(true);
+    }
+  });
+
+  it.each([
+    ["window_closed", "chat.edit_window_closed"],
+    ["not_found", "chat.message_already_gone"],
+    ["gagged", "chat.gagged"],
+    ["timeout", "chat.edit_timeout"],
+  ])("describes %s", (code, description) => {
+    expect(chatErrorDescription({ code, action: "edit" }, t)).toBe(
+      description,
+    );
+  });
+
+  it("says how long an edit can be", () => {
+    expect(
+      chatErrorDescription({ code: "too_long", action: "edit", max: 2000 }, t),
+    ).toBe('chat.message_too_long {"max":2000}');
+  });
+
+  it.each(["not_allowed", "invalid", "offline"])(
+    "adds nothing to a failed edit for %s",
+    (code) => {
+      expect(chatErrorDescription({ code, action: "edit" }, t)).toBeUndefined();
     },
   );
 });

@@ -8482,9 +8482,18 @@
     "delete_message": "删除消息",
     "delete_confirm_title": "要删除消息吗？",
     "delete_confirm_description": "{name} 的这条消息将对本聊天中的所有人移除。",
+    "delete_own_confirm_description": "你的这条消息将对本聊天中的所有人移除。",
     "delete_failed": "消息删除失败",
     "delete_timeout": "服务器没有响应。该消息仍可能被移除。",
     "message_already_gone": "该消息已被移除",
+    "own_message_window_closed": "你只能在发送后 10 分钟内编辑或删除自己的消息。",
+    "edit_message": "编辑消息",
+    "edit_hint": "按 Enter 保存 · 按 Esc 取消",
+    "edited": "（已编辑）",
+    "edited_at": "编辑于 {time}",
+    "edit_failed": "消息编辑失败",
+    "edit_timeout": "服务器没有响应。你的修改仍可能被保存。",
+    "edit_window_closed": "你只能在发送后 10 分钟内编辑消息。",
     "direct": {
       "message": "消息",
       "empty": "还没有消息，先打个招呼吧。"

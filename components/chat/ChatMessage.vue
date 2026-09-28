@@ -3,6 +3,8 @@ import { dateLocale } from "~/utilities/dateLocale";
 import TimeAgo from "~/components/TimeAgo.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import ChatMessageActions from "~/components/chat/ChatMessageActions.vue";
+import ChatMessageEditor from "~/components/chat/ChatMessageEditor.vue";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 </script>
 
 <template>
@@ -74,20 +76,48 @@ import ChatMessageActions from "~/components/chat/ChatMessageActions.vue";
           {{ $t("chat.team_tag") }}
         </span>
       </div>
-      <p class="text-[11px] leading-snug break-words whitespace-pre-wrap">
-        {{ message.message }}
+      <ChatMessageEditor
+        v-if="editing && room"
+        :message="message"
+        :room="room"
+        @close="$emit('edit-end')"
+      />
+      <p
+        v-else
+        class="text-[11px] leading-snug break-words whitespace-pre-wrap"
+      >
+        <span>{{ message.message }}</span>
+        <FiveStackToolTip
+          v-if="editedAtLabel"
+          as-child
+          :delay-duration="120"
+          side="top"
+        >
+          <template #trigger>
+            <span
+              class="ml-1 whitespace-nowrap text-[9px] text-muted-foreground/70"
+              data-chat-edited
+            >
+              {{ $t("chat.edited") }}
+            </span>
+          </template>
+          {{ $t("chat.edited_at", { time: editedAtLabel }) }}
+        </FiveStackToolTip>
       </p>
     </div>
 
     <!-- Centred on the first line rather than hung off its top: the trigger is
          taller than a line of chat. -->
     <ChatMessageActions
-      v-if="hasActions"
+      v-if="hasActions && !editing"
       class="absolute right-0 z-10"
       :style="{ top: `calc(${padTopRem}rem - 0.25rem)` }"
       :message="message"
       :room="room"
       :permissions="permissions"
+      :own="isOwnMessage"
+      @open="recheckPermissions"
+      @edit="$emit('edit')"
     />
   </div>
 </template>
@@ -95,9 +125,11 @@ import ChatMessageActions from "~/components/chat/ChatMessageActions.vue";
 <script lang="ts">
 import type { PropType } from "vue";
 import type { ChatType } from "~/web-sockets/Socket";
+import { toast } from "@/components/ui/toast";
 import {
   chatMessagePermissions,
   hasChatMessageActions,
+  isOwnChatMessage,
 } from "~/utilities/chatMessageActions";
 
 export default {
@@ -124,13 +156,55 @@ export default {
       type: Boolean,
       default: false,
     },
+    editing: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  emits: ["edit", "edit-end"],
+  data() {
+    return {
+      // Not a ticking clock: the menu refreshes it when it opens.
+      permissionsCheckedAt: Date.now(),
+    };
+  },
+  methods: {
+    // A menu opened after the window closed has nothing left to offer, so the
+    // trigger goes and the reason is given instead of an empty menu.
+    recheckPermissions() {
+      this.permissionsCheckedAt = Date.now();
+
+      if (!hasChatMessageActions(this.permissions)) {
+        toast({ title: this.$t("chat.own_message_window_closed") });
+      }
+    },
   },
   computed: {
+    viewerSteamId() {
+      return useAuthStore().me?.steam_id ?? null;
+    },
+    isOwnMessage() {
+      return isOwnChatMessage(this.message, this.viewerSteamId);
+    },
     permissions() {
       return chatMessagePermissions({
         message: this.message,
+        viewerSteamId: this.viewerSteamId,
         canModerate: this.canModerate,
         roomType: this.room?.type ?? "",
+        now: this.permissionsCheckedAt,
+      });
+    },
+    editedAtLabel() {
+      const editedAt = new Date(this.message?.edited_at ?? NaN);
+
+      if (Number.isNaN(editedAt.getTime())) {
+        return "";
+      }
+
+      return editedAt.toLocaleString(dateLocale(), {
+        dateStyle: "medium",
+        timeStyle: "short",
       });
     },
     hasActions() {

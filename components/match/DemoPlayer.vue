@@ -2,16 +2,19 @@
 import { computed, ref } from "vue";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
 import DesktopSnapshot from "~/components/match/DesktopSnapshot.vue";
-import BootSequence from "~/components/match/BootSequence.vue";
+import StreamMatchCard from "~/components/match/StreamMatchCard.vue";
+import StreamStatusPanel from "~/components/match/StreamStatusPanel.vue";
+import StreamBootStatus from "~/components/match/StreamBootStatus.vue";
 import DemoPlaybackControls from "~/components/match/DemoPlaybackControls.vue";
 import ClipEditorBar from "~/components/clips/ClipEditorBar.vue";
 import { Button } from "~/components/ui/button";
 import { useDemoPlayback } from "~/composables/useDemoPlayback";
+import { useWhepStatusCopy } from "~/composables/useWhepStatusCopy";
 import { useClipEditor } from "~/composables/useClipEditor";
 import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
 
-defineProps<{
+const props = defineProps<{
   matchMapId: string;
   isOrganizer: boolean;
 }>();
@@ -26,11 +29,19 @@ function onSkipShaders() {
   skippingShaders.value = true;
   skipShaders();
 }
-// Boot pipeline is operator info — gate the stepper to streamer+.
-// (`/stream-deck/*` already has middleware/streamer.ts; the demo page
-// has no middleware, so we gate inline.)
+// Boot stage names, the pod desktop and skip-shaders are operator info —
+// streamer+ only. (`/stream-deck/*` already has middleware/streamer.ts; the
+// demo page has no middleware, so we gate inline.) Everyone else sees the
+// replay caption with a step count.
 const canSeeBoot = computed(() =>
   authStore.isRoleAbove(e_player_roles_enum.streamer),
+);
+
+const { copyFor } = useWhepStatusCopy();
+// The route param is a sentinel in /demo/dev attach mode; the store holds
+// the resolved id once the session starts.
+const replayMapId = computed(() =>
+  props.matchMapId === "dev" ? store.matchMapId : props.matchMapId,
 );
 
 const whepUrl = computed(() => {
@@ -57,56 +68,60 @@ function closeWindow() {
       :fallback-url="store.streamUrl"
       :is-live="store.isPlaying"
       mode="demo"
-      header-label="Demo session boot"
       :show-boot="true"
       class="flex-1 min-h-0"
     >
-      <template #boot>
-        <!-- Streamer+ only. The stepper exposes pod-internal stages
-             (Allocating GPU, Launching Steam, …) — operator info, not
-             viewer info. Regulars get an empty canvas until WHEP is
-             actually publishing. -->
-        <template v-if="canSeeBoot">
-          <!-- Progress on the left, live desktop snapshot on the right
-               (stacks on narrow screens). One stepper, always rendered —
-               `status` is the unified surface from the store (sessionRow
-               .status when present, else localStatus) so we never get a
-               dead-air frame between page mount and the first sub tick. -->
-          <div
-            class="flex w-full flex-col items-center justify-center gap-4 sm:flex-row sm:items-start"
+      <template #status="{ phase, message, retry }">
+        <StreamMatchCard :match-map-id="replayMapId">
+          <StreamStatusPanel
+            :title="copyFor(phase).title"
+            :hint="phase === 'failed' ? message : copyFor(phase).hint"
+            :tone="copyFor(phase).tone"
+            :progress="copyFor(phase).progress"
           >
-            <BootSequence
-              mode="demo"
-              :status="store.status"
-              :error-message="
-                store.sessionRow?.error_message ?? store.errorMessage
-              "
-              :last-status-at="store.sessionRow?.last_status_at"
-              :histories="[store.sessionRow?.status_history || []]"
-              header-label="Demo session boot"
-              :can-skip="canSeeBoot"
-              :skipping="skippingShaders"
-              @skip="onSkipShaders"
-            />
+            <template v-if="phase === 'failed'" #actions>
+              <Button size="sm" @click="retry">
+                {{ $t("match.stream.try_again") }}
+              </Button>
+            </template>
+          </StreamStatusPanel>
+        </StreamMatchCard>
+      </template>
+
+      <template #boot>
+        <StreamMatchCard :match-map-id="replayMapId">
+          <template v-if="canSeeBoot && store.sessionRow?.id" #corner>
             <DesktopSnapshot
-              v-if="store.sessionRow?.id"
               kind="demo"
               :id="store.sessionRow.id"
-              class="w-full max-w-md overflow-hidden rounded-md border border-border/50"
+              class="absolute right-4 top-16 w-72 overflow-hidden rounded-[3px] border border-border/50 shadow-[0_18px_40px_-18px_rgba(0,0,0,0.85)] max-sm:hidden"
             />
-          </div>
-          <Button
-            v-if="store.isErrored || store.localStatus === 'error'"
-            size="sm"
-            variant="outline"
-            @click="closeWindow"
+          </template>
+          <!-- `status` is the unified surface from the store (sessionRow
+               .status when present, else localStatus) so there's no
+               dead-air frame between page mount and the first sub tick. -->
+          <StreamBootStatus
+            mode="demo"
+            :status="store.isErrored ? 'errored' : store.status"
+            :error-message="
+              store.sessionRow?.error_message ?? store.errorMessage
+            "
+            :last-status-at="store.sessionRow?.last_status_at"
+            :histories="[store.sessionRow?.status_history || []]"
+            :title="$t('match.stream.loading_replay')"
+            :failed-title="$t('match.stream.replay_failed')"
+            :show-stage="canSeeBoot"
+            :can-skip="canSeeBoot"
+            :skipping="skippingShaders"
+            @skip="onSkipShaders"
           >
-            {{ $t("common.close") }}
-          </Button>
-          <Button v-else size="sm" variant="ghost" @click="closeWindow">
-            {{ $t("common.cancel") }}
-          </Button>
-        </template>
+            <template #actions="{ errored }">
+              <Button size="sm" variant="outline" @click="closeWindow">
+                {{ errored ? $t("common.close") : $t("common.cancel") }}
+              </Button>
+            </template>
+          </StreamBootStatus>
+        </StreamMatchCard>
       </template>
     </StreamCanvas>
 

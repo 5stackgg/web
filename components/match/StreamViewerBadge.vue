@@ -7,8 +7,10 @@ const props = withDefaults(
   defineProps<{
     matchId: string;
     size?: "sm" | "md";
+    // No pill chrome, for placing inside another badge (the LIVE tag).
+    bare?: boolean;
   }>(),
-  { size: "sm" },
+  { size: "sm", bare: false },
 );
 
 const { getCount } = useStreamViewers();
@@ -35,8 +37,15 @@ const iconClasses = computed(() =>
 
 <template>
   <span
-    class="inline-flex items-center rounded border border-white/20 bg-black/60 font-medium text-white backdrop-blur-sm"
-    :class="sizeClasses"
+    class="inline-flex items-center font-medium"
+    :class="
+      bare
+        ? 'gap-1.5 tabular-nums'
+        : [
+            'rounded border border-white/20 bg-black/60 text-white backdrop-blur-sm',
+            sizeClasses,
+          ]
+    "
     :title="$t('match.stream.watching', { count: count ?? 0 })"
   >
     <Eye :class="iconClasses" />

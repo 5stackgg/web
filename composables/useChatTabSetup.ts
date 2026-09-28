@@ -21,18 +21,24 @@ export function tournamentChatTab(tournament: {
   };
 }
 
+export function isChatTabOnScreen(tabId: string) {
+  return (
+    useChatTabs().activeTabId.value === tabId &&
+    useRightSidebar().rightSidebarOpen.value &&
+    currentHub() === "chat"
+  );
+}
+
 export function useChatTabSetup() {
   const { t } = useI18n();
   const {
     tabs,
-    activeTabId,
     openTab,
     closeTab,
     setPinned,
     incrementUnread,
     setUnread,
   } = useChatTabs();
-  const { rightSidebarOpen } = useRightSidebar();
   const { hydrate: hydrateReadState, unreadSince } = useChatReadState();
 
   const matchLobbyStore = useMatchLobbyStore();
@@ -54,13 +60,8 @@ export function useChatTabSetup() {
         return;
       }
 
-      const isOnScreen =
-        activeTabId.value === tab.id &&
-        rightSidebarOpen.value &&
-        currentHub() === "chat";
-
-      if (!isOnScreen) {
-        incrementUnread(tab.id);
+      if (!isChatTabOnScreen(tab.id)) {
+        incrementUnread(tab.id, message?.id);
       }
     });
 

@@ -73,3 +73,74 @@ describe("useChatTabs closeTab", () => {
     expect(activeTabId.value).toBe("organizers");
   });
 });
+
+describe("useChatTabs incrementUnread", () => {
+  const TAB = "organizers";
+
+  const count = () => useChatTabs().unreadCounts.value[TAB] ?? 0;
+
+  it("counts a message id once", () => {
+    const { incrementUnread } = useChatTabs();
+
+    expect(incrementUnread(TAB, "m1")).toBe(true);
+    expect(incrementUnread(TAB, "m1")).toBe(false);
+    expect(incrementUnread(TAB, "m2")).toBe(true);
+
+    expect(count()).toBe(2);
+  });
+
+  it("counts a message with no id every time", () => {
+    const { incrementUnread } = useChatTabs();
+
+    incrementUnread(TAB);
+    incrementUnread(TAB);
+
+    expect(count()).toBe(2);
+  });
+
+  it("keeps what it counted through a non-zero recount", () => {
+    const { incrementUnread, setUnread } = useChatTabs();
+
+    incrementUnread(TAB, "m1");
+    setUnread(TAB, 4);
+
+    expect(incrementUnread(TAB, "m1")).toBe(false);
+    expect(incrementUnread(TAB, "m2")).toBe(true);
+    expect(count()).toBe(5);
+  });
+
+  it("forgets what it counted once the badge is cleared", () => {
+    const { incrementUnread, resetUnread, setUnread } = useChatTabs();
+
+    incrementUnread(TAB, "m1");
+    resetUnread(TAB);
+    expect(incrementUnread(TAB, "m1")).toBe(true);
+
+    setUnread(TAB, 0);
+    expect(incrementUnread(TAB, "m1")).toBe(true);
+
+    expect(count()).toBe(1);
+  });
+
+  it("forgets what it counted once the tab is closed", () => {
+    open(TAB, "organizers", "Organizers");
+    const { incrementUnread, closeTab } = useChatTabs();
+
+    incrementUnread(TAB, "m1");
+    closeTab(TAB);
+    open(TAB, "organizers", "Organizers");
+
+    expect(incrementUnread(TAB, "m1")).toBe(true);
+  });
+
+  it("remembers only the latest 200 ids", () => {
+    const { incrementUnread } = useChatTabs();
+
+    for (let index = 0; index <= 200; index++) {
+      incrementUnread(TAB, `m${index}`);
+    }
+
+    expect(incrementUnread(TAB, "m1")).toBe(false);
+    expect(incrementUnread(TAB, "m0")).toBe(true);
+  });
+});

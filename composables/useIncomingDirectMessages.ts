@@ -1,10 +1,11 @@
 import { watch } from "vue";
-import socket from "~/web-sockets/Socket";
+import socket, { type LobbyMessage } from "~/web-sockets/Socket";
 import {
   directTabId,
   peerSteamId,
   type DirectMessagePeer,
 } from "~/composables/useDirectMessages";
+import { isChatTabOnScreen } from "~/composables/useChatTabSetup";
 
 // A conversation you haven't opened has no tab, so nothing is listening to its
 // room -- which is exactly the case for a first message from someone. The
@@ -14,7 +15,7 @@ import {
 // Mounted once, from the default layout.
 export function useIncomingDirectMessages() {
   const authStore = useAuthStore();
-  const { openTab, closeTab, setUnread, tabs } = useChatTabs();
+  const { openTab, closeTab, incrementUnread, setUnread, tabs } = useChatTabs();
   const { topPosition } = useDirectConversationBar();
 
   function ensureTab(
@@ -94,7 +95,11 @@ export function useIncomingDirectMessages() {
 
   socket.listen(
     "direct:incoming",
-    (data: { roomId: string; from: DirectMessagePeer }) => {
+    (data: {
+      roomId: string;
+      from: DirectMessagePeer;
+      message?: LobbyMessage;
+    }) => {
       const steamId = authStore.me?.steam_id;
 
       if (!steamId || !data?.roomId) {
@@ -104,25 +109,21 @@ export function useIncomingDirectMessages() {
       // Deliberately does not inject the message: opening the tab makes
       // useChatTabSetup join the room, and the join's history snapshot delivers
       // it (deduped by chatMessageKey either way).
-      //
-      // Only a tab this creates is counted here. An existing tab is already in
-      // the room and its live lobby:chat handler counts the message, while the
-      // snapshot a new tab joins into is never counted for conversations. A new
-      // tab cannot be the one on screen; if ChatPanel selects it while visible,
-      // its on-screen watcher clears the badge.
-      const tabId = directTabId(data.roomId);
-      const isNew = !tabs.value.some((tab) => tab.id === tabId);
+      ensureTab(data.roomId, {
+        steam_id:
+          data.from?.steam_id ?? peerSteamId(data.roomId, steamId) ?? "",
+        name: data.from?.name,
+        avatar_url: data.from?.avatar_url,
+      });
 
-      ensureTab(
-        data.roomId,
-        {
-          steam_id:
-            data.from?.steam_id ?? peerSteamId(data.roomId, steamId) ?? "",
-          name: data.from?.name,
-          avatar_url: data.from?.avatar_url,
-        },
-        isNew ? 1 : 0,
-      );
+      // Counted here for an existing tab too: a burst that lands before a new
+      // tab's join reaches no lobby:chat, and the join's snapshot is never
+      // counted for conversations. Once joined, the room's lobby:chat counts
+      // the same message, so both go by its id.
+      const tabId = directTabId(data.roomId);
+      if (!isChatTabOnScreen(tabId)) {
+        incrementUnread(tabId, data.message?.id);
+      }
     },
   );
 

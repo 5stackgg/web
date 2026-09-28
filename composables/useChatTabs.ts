@@ -21,6 +21,10 @@ export interface ChatTab {
 
 const tabsRef = ref<ChatTab[]>([]);
 const unreadCountsRef = ref<Record<string, number>>({});
+// A message can reach a badge twice, from direct:incoming and from its room's
+// lobby:chat, so a badge remembers which ids it has already counted.
+const unreadMessageIds = new Map<string, Set<string>>();
+const MAX_UNREAD_MESSAGE_IDS = 200;
 const activeTabIdRef = ref<string | null>(null);
 
 export function useChatTabs() {
@@ -75,6 +79,7 @@ export function useChatTabs() {
     const ordered = orderChatTabs(tabsRef.value);
     const [removed] = tabsRef.value.splice(idx, 1);
     delete unreadCountsRef.value[removed.id];
+    unreadMessageIds.delete(removed.id);
 
     if (activeTabIdRef.value === removed.id) {
       const position = ordered.findIndex((tab) => tab.id === removed.id);
@@ -109,23 +114,51 @@ export function useChatTabs() {
     };
   }
 
-  function incrementUnread(id: string) {
+  function incrementUnread(id: string, messageId?: string) {
+    if (messageId) {
+      let counted = unreadMessageIds.get(id);
+      if (!counted) {
+        counted = new Set();
+        unreadMessageIds.set(id, counted);
+      }
+
+      if (counted.has(messageId)) {
+        return false;
+      }
+
+      counted.add(messageId);
+      if (counted.size > MAX_UNREAD_MESSAGE_IDS) {
+        const [oldest] = counted;
+        counted.delete(oldest);
+      }
+    }
+
     unreadCountsRef.value[id] = (unreadCountsRef.value[id] || 0) + 1;
+    return true;
   }
 
   function resetUnread(id: string) {
+    unreadMessageIds.delete(id);
+
     if (unreadCountsRef.value[id]) {
       unreadCountsRef.value[id] = 0;
     }
   }
 
+  // A non-zero recount keeps the ids already counted, taking them to be part of
+  // the new number, so a late second delivery of one still isn't counted again.
   function setUnread(id: string, value: number) {
     unreadCountsRef.value[id] = value;
+
+    if (!value) {
+      unreadMessageIds.delete(id);
+    }
   }
 
   function clearAll() {
     tabsRef.value = [];
     unreadCountsRef.value = {};
+    unreadMessageIds.clear();
     activeTabIdRef.value = null;
   }
 

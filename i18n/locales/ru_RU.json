@@ -2831,7 +2831,12 @@
         "upload_success_message": "Загружено — идёт импорт. Матч скоро появится.",
         "toast_demo_uploaded": "Демка загружена",
         "toast_demo_uploaded_description": "Идёт импорт — матч скоро появится.",
-        "toast_upload_failed": "Загрузка не удалась"
+        "toast_upload_failed": "Загрузка не удалась",
+        "import_share_code_title": "Импорт матча по коду доступа",
+        "import_share_code_description": "Вставь код доступа или ссылку из Смотреть → Твои матчи в CS2, чтобы импортировать матч из матчмейкинга, который не подтянулся из привязанной истории.",
+        "import_share_code_submit": "Импортировать",
+        "toast_share_code_queued": "Матч поставлен в очередь на импорт",
+        "toast_share_code_failed": "Не удалось импортировать матч"
       }
     },
     "watch": {

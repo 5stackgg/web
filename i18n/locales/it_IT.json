@@ -2831,7 +2831,12 @@
         "upload_success_message": "Caricato: importazione in corso. Il tuo match comparirà a breve.",
         "toast_demo_uploaded": "Demo caricata",
         "toast_demo_uploaded_description": "Importazione in corso: il tuo match comparirà a breve.",
-        "toast_upload_failed": "Caricamento non riuscito"
+        "toast_upload_failed": "Caricamento non riuscito",
+        "import_share_code_title": "Importa un match con il codice condivisione",
+        "import_share_code_description": "Incolla un codice o un link di condivisione da Guarda → I tuoi match in CS2 per importare un match di matchmaking che la tua cronologia collegata non ha rilevato.",
+        "import_share_code_submit": "Importa",
+        "toast_share_code_queued": "Match in coda per l'importazione",
+        "toast_share_code_failed": "Importazione del match non riuscita"
       }
     },
     "watch": {

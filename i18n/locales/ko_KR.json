@@ -2831,7 +2831,12 @@
         "upload_success_message": "업로드 완료 — 가져오는 중입니다. 곧 매치가 표시됩니다.",
         "toast_demo_uploaded": "데모가 업로드되었습니다",
         "toast_demo_uploaded_description": "가져오는 중입니다 — 곧 매치가 표시됩니다.",
-        "toast_upload_failed": "업로드 실패"
+        "toast_upload_failed": "업로드 실패",
+        "import_share_code_title": "공유 코드로 매치 가져오기",
+        "import_share_code_description": "CS2의 Watch → Your Matches에서 공유 코드나 공유 링크를 붙여 넣으면 연결된 매치 기록에서 누락된 매치메이킹 매치를 가져옵니다.",
+        "import_share_code_submit": "가져오기",
+        "toast_share_code_queued": "매치를 가져오기 대기열에 추가했습니다",
+        "toast_share_code_failed": "매치를 가져오지 못했습니다"
       }
     },
     "watch": {

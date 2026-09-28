@@ -2831,7 +2831,12 @@
         "upload_success_message": "Hochgeladen — Import läuft. Dein Match erscheint gleich.",
         "toast_demo_uploaded": "Demo hochgeladen",
         "toast_demo_uploaded_description": "Import läuft — dein Match erscheint gleich.",
-        "toast_upload_failed": "Upload fehlgeschlagen"
+        "toast_upload_failed": "Upload fehlgeschlagen",
+        "import_share_code_title": "Match per Share-Code importieren",
+        "import_share_code_description": "Füge einen Share-Code oder Share-Link aus Zuschauen → Deine Matches in CS2 ein, um ein Matchmaking-Match zu importieren, das dein verknüpfter Match-Verlauf verpasst hat.",
+        "import_share_code_submit": "Importieren",
+        "toast_share_code_queued": "Match zum Import eingereiht",
+        "toast_share_code_failed": "Match konnte nicht importiert werden"
       }
     },
     "watch": {

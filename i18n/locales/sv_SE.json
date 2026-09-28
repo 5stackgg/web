@@ -2831,7 +2831,12 @@
         "upload_success_message": "Uppladdad — importerar nu. Din match visas inom kort.",
         "toast_demo_uploaded": "Demo uppladdad",
         "toast_demo_uploaded_description": "Importerar nu — din match visas inom kort.",
-        "toast_upload_failed": "Uppladdning misslyckades"
+        "toast_upload_failed": "Uppladdning misslyckades",
+        "import_share_code_title": "Importera en match med delningskod",
+        "import_share_code_description": "Klistra in en delningskod eller delningslänk från Watch → Your Matches i CS2 för att importera en matchmaking-match som din länkade matchhistorik missade.",
+        "import_share_code_submit": "Importera",
+        "toast_share_code_queued": "Matchen har köats för import",
+        "toast_share_code_failed": "Kunde inte importera matchen"
       }
     },
     "watch": {

@@ -31,46 +31,15 @@ import StorageCheck from "~/components/settings/StorageCheck.vue";
             $t('pages.settings.application.demo_settings.playback_section')
           "
         >
-          <!-- Default HUD bundle the game-streamer pod loads at boot.
-               Used for live, demo playback, and batch-highlights pods.
-               Streamers can still hot-swap mid-stream from the live /
-               demo player UI; this is just the persistent default. -->
-          <FormField v-slot="{ value, handleChange }" name="default_hud_mode">
-            <FormItem>
-              <FormLabel>{{
-                $t("pages.settings.application.demo_settings.default_hud_mode")
-              }}</FormLabel>
-              <FormDescription>{{
-                $t(
-                  "pages.settings.application.demo_settings.default_hud_mode_description",
-                )
-              }}</FormDescription>
-              <Select :model-value="value" @update:model-value="handleChange">
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="horizontal">
-                    {{
-                      $t(
-                        "pages.settings.application.demo_settings.hud_mode_horizontal",
-                      )
-                    }}
-                  </SelectItem>
-                  <SelectItem value="vertical">
-                    {{
-                      $t(
-                        "pages.settings.application.demo_settings.hud_mode_vertical",
-                      )
-                    }}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          </FormField>
+          <p class="text-sm text-muted-foreground">
+            {{ $t("pages.settings.application.demo_settings.hud_moved") }}
+            <NuxtLink
+              to="/settings/application/broadcast-huds"
+              class="underline underline-offset-4 hover:text-foreground"
+            >
+              {{ $t("pages.settings.application.broadcast_huds.title") }}
+            </NuxtLink>
+          </p>
         </SettingsSection>
 
         <SettingsSection
@@ -224,9 +193,6 @@ export default {
             s3_min_retention: z.number().int().min(1).optional().default(1),
             s3_max_storage: z.number().int().min(1).default(10),
             demo_network_limiter: z.number().int().optional().nullable(),
-            default_hud_mode: z
-              .enum(["horizontal", "vertical"])
-              .default("horizontal"),
           }),
         ),
       }),
@@ -246,17 +212,6 @@ export default {
               continue;
             }
             this.form.setFieldValue(setting.name, parseInt(setting.value));
-            continue;
-          }
-
-          if (setting.name === "default_hud_mode") {
-            // Persisted value may be an old typo, stale enum, or the
-            // legacy "default" (now folded into "horizontal" since the
-            // two render identically) — coerce so the Select doesn't
-            // render an unknown option.
-            const value =
-              setting.value === "vertical" ? "vertical" : "horizontal";
-            this.form.setFieldValue(setting.name, value);
             continue;
           }
 
@@ -284,10 +239,6 @@ export default {
                 {
                   name: "demo_network_limiter",
                   value: this.form.values.demo_network_limiter?.toString(),
-                },
-                {
-                  name: "default_hud_mode",
-                  value: this.form.values.default_hud_mode ?? "horizontal",
                 },
               ],
               on_conflict: {

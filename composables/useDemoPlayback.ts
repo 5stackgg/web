@@ -350,10 +350,8 @@ export function useDemoPlayback() {
   ) {
     store.reset();
     store.localStatus = "starting";
-    // The pod boots the configured default_hud_mode (api resolveHudMode), so
-    // seed the player's active-layout state to match — otherwise reset()'s
-    // "horizontal" default mislabels a vertical pod until the operator swaps.
-    store.hudMode = useApplicationSettingsStore().defaultHudMode;
+    // Seed from the instance default or reset() mislabels the HUD the pod booted.
+    store.hudSlug = useApplicationSettingsStore().defaultBroadcastHud;
     try {
       if (opts?.attach) {
         // DEV: bind to the standing gs-demo-dev pod. attachDemo takes no ids —
@@ -719,16 +717,9 @@ export function useDemoPlayback() {
   function toggleHud() {
     setHudVisible(!store.hudVisible);
   }
-  // Hot-swap the active HUD bundle (horizontal | vertical). The api
-  // spec-server's /spec/hud-mode handler proxies to JTs Hud Manager's
-  // POST /api/overlay/start which rebuilds the BrowserWindow against
-  // /huds/<mode>/index.html. Ephemeral — a pod restart resets to
-  // whatever HUD_MODE the api stamped at job creation. Picking a mode
-  // also force-shows the overlay so the operator doesn't have to
-  // hunt for a separate visibility toggle after a hot-swap.
-  function setHudMode(mode: "horizontal" | "vertical") {
-    store.hudMode = mode;
-    control("hud-mode", { mode });
+  function setHud(slug: string) {
+    store.hudSlug = slug;
+    control("hud-mode", { slug });
     if (!store.hudVisible) setHudVisible(true);
   }
   function toggleHudSides() {
@@ -788,7 +779,7 @@ export function useDemoPlayback() {
     toggleXray,
     setHudVisible,
     toggleHud,
-    setHudMode,
+    setHud,
     toggleHudSides,
     toggleDemoUI,
     setAutodirector,

@@ -111,15 +111,7 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
   // spec_show_xray 1 for live spectating.
   const xrayEnabled = ref<boolean>(true);
   const hudVisible = ref<boolean>(true);
-  // Which JTs Hud Manager variant is currently loaded in the streamer
-  // pod's Electron overlay. Initial value mirrors the pod's HUD_MODE
-  // env (the api stamps `horizontal` at job-create time unless
-  // overridden by the `default_hud_mode` Hasura setting); operator
-  // can hot-swap via the toolbar (control() → "hud-mode") which
-  // proxies to JTs Hud Manager's POST /api/overlay/start. Ephemeral;
-  // reset by a pod restart. The legacy `default` variant is folded
-  // into `horizontal` at the boundary (they render identically).
-  const hudMode = ref<"horizontal" | "vertical">("horizontal");
+  const hudSlug = ref<string>("default-horizontal");
   // cs2-better-autodirector daemon: default on (the streamer pod
   // starts it for both live + demo). Operator flips this off from the
   // toolbar to take manual F-key control without the daemon switching
@@ -346,7 +338,7 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
     killFilterMode.value = "killer";
     xrayEnabled.value = true;
     hudVisible.value = true;
-    hudMode.value = "horizontal";
+    hudSlug.value = "default-horizontal";
     autodirectorEnabled.value = true;
     specSlots.value = [];
     spectatedSteamId.value = null;
@@ -375,7 +367,7 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
     killFilterMode,
     xrayEnabled,
     hudVisible,
-    hudMode,
+    hudSlug,
     autodirectorEnabled,
     specSlots,
     spectatedSteamId,

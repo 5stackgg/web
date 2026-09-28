@@ -1861,6 +1861,37 @@
         }
       },
       "application": {
+        "broadcast_huds": {
+          "title": "HUD-y transmisji",
+          "description": "Wybierz HUD do transmisji na żywo, odtwarzania dem i highlightów. Streamerzy nadal mogą go zmienić dla każdej transmisji.",
+          "import": "Importuj HUD",
+          "import_hint": "Paczka JTs Hud Manager lub Lexogrine z plikiem hud.json w katalogu głównym lub w jednym folderze najwyższego poziomu.",
+          "drop": "Upuść tutaj plik .zip lub kliknij, aby wybrać",
+          "importing": "Importowanie…",
+          "imported": "Zaimportowano HUD",
+          "import_failed": "Nie udało się zaimportować tego HUD-a",
+          "make_default": "Ustaw jako domyślny",
+          "is_default": "Domyślny",
+          "default_set": "Zaktualizowano domyślny HUD",
+          "default_failed": "Nie udało się ustawić domyślnego HUD-a",
+          "removed": "Usunięto HUD",
+          "remove_failed": "Nie udało się usunąć tego HUD-a",
+          "delete_title": "Usunąć ten HUD?",
+          "delete_description": "Spowoduje to usunięcie „{name}” oraz przesłanego archiwum. Tej operacji nie można cofnąć.",
+          "delete_confirm": "Usuń",
+          "signed": "Podpisany pakiet",
+          "source_builtin": "Wbudowany",
+          "source_imported": "Zaimportowany",
+          "preview": "Podgląd: {name}",
+          "get_more": "Więcej HUD-ów znajdziesz na {site}",
+          "set_page_link": "Ustaw stronę HUD-a",
+          "page_link": "Strona HUD-a",
+          "page_link_description": "Wklej stronę HUD-a, na przykład z cshuds.com. Jej obraz podglądu stanie się podglądem tego HUD-a.",
+          "page_link_saved": "Zapisano stronę HUD-a",
+          "page_link_preview_saved": "Zapisano stronę HUD-a i zaktualizowano podgląd",
+          "page_link_failed": "Nie udało się użyć tej strony",
+          "view_on": "Zobacz na {site}"
+        },
         "update_success": "Zaktualizowano",
         "db_backups": {
           "name": "Nazwa",
@@ -2364,10 +2395,6 @@
           "auto_clip_min_kills_ace": "Tylko ace (5K)",
           "visibility_private": "Prywatne",
           "visibility_public": "Publiczne",
-          "default_hud_mode": "Domyślny styl HUD",
-          "default_hud_mode_description": "Który układ JTs Hud Manager wczytuje pod streamujący gry przy starcie transmisji na żywo, odtwarzania demo i zbiorczych highlightów. Streamerzy mogą nadal zmieniać styl dla pojedynczej transmisji w kontrolkach odtwarzacza.",
-          "hud_mode_horizontal": "Poziomy",
-          "hud_mode_vertical": "Pionowy",
           "playback_section": "Odtwarzanie",
           "reparse_warning_title": "To ponownie przetwarza każde demo — może to zająć bardzo dużo czasu",
           "reparse_warning_body": "Demo są przetwarzane pojedynczo, co może trwać godziny lub dni w zależności od ich liczby. Rób to tylko, jeśli wiesz co robisz, lub po większej aktualizacji zmieniającej sposób przetwarzania demo. Nowe statystyki z aktualizacji są przetwarzane automatycznie przy przeglądaniu meczów — to wymusza przetworzenie wszystkiego naraz.",
@@ -2414,7 +2441,8 @@
           "orphaned_scanning_short": "Skanowanie…",
           "orphaned_demos_count": "{count} demo",
           "orphaned_highlights_count": "{count} highlightów",
-          "orphaned_object_count": "{count} plików"
+          "orphaned_object_count": "{count} plików",
+          "hud_moved": "HUD-y transmisji mają własną stronę ustawień:"
         },
         "update_map_pools": {
           "title": "Automatyczna aktualizacja map pool",

@@ -1861,6 +1861,37 @@
         }
       },
       "application": {
+        "broadcast_huds": {
+          "title": "Broadcast-HUD'er",
+          "description": "Vælg HUD'en til livestreams, demoafspilning og highlights. Streamere kan stadig skifte for hver stream.",
+          "import": "Importér HUD",
+          "import_hint": "En JTs Hud Manager- eller Lexogrine-pakke med hud.json i roden eller i én mappe på øverste niveau.",
+          "drop": "Slip en .zip-fil her, eller klik for at vælge",
+          "importing": "Importerer…",
+          "imported": "HUD importeret",
+          "import_failed": "Kunne ikke importere den HUD",
+          "make_default": "Gør til standard",
+          "is_default": "Standard",
+          "default_set": "Standard-HUD opdateret",
+          "default_failed": "Kunne ikke angive standard-HUD",
+          "removed": "HUD fjernet",
+          "remove_failed": "Kunne ikke fjerne den HUD",
+          "delete_title": "Slet denne HUD?",
+          "delete_description": "Dette fjerner \"{name}\" og dens uploadede arkiv. Det kan ikke fortrydes.",
+          "delete_confirm": "Slet",
+          "signed": "Signeret pakke",
+          "source_builtin": "Indbygget",
+          "source_imported": "Importeret",
+          "preview": "Forhåndsvis {name}",
+          "get_more": "Find flere HUD'er på {site}",
+          "set_page_link": "Angiv HUD-side",
+          "page_link": "HUD-side",
+          "page_link_description": "Indsæt HUD'ens side, fx på cshuds.com. Sidens forhåndsbillede bliver denne HUD's forhåndsvisning.",
+          "page_link_saved": "HUD-side gemt",
+          "page_link_preview_saved": "HUD-side gemt og forhåndsvisning opdateret",
+          "page_link_failed": "Kunne ikke bruge den side",
+          "view_on": "Se på {site}"
+        },
         "update_success": "Opdateret",
         "db_backups": {
           "name": "Navn",
@@ -2364,10 +2395,6 @@
           "auto_clip_min_kills_ace": "Kun aces (5K)",
           "visibility_private": "Privat",
           "visibility_public": "Offentlig",
-          "default_hud_mode": "Standard HUD-stil",
-          "default_hud_mode_description": "Hvilket JTs Hud Manager-layout game-streamer-podden indlæser ved opstart til livestreams, demoafspilning og batch-highlights. Streamere kan stadig skifte stil pr. stream fra afspillerens kontroller.",
-          "hud_mode_horizontal": "Vandret",
-          "hud_mode_vertical": "Lodret",
           "playback_section": "Afspilning",
           "reparse_warning_title": "Dette genindlæser hver eneste demo — det kan tage meget lang tid.",
           "reparse_warning_body": "Demoer behandles én ad gangen, hvilket kan køre i timer eller dage afhængigt af hvor mange du har. Gør kun dette, hvis du ved hvad du laver, eller efter en større opdatering ændrer måden demoer parses på. Nye stats fra opdateringer parses automatisk, efterhånden som kampe vises — dette er kun til at tvinge det hele igennem på én gang.",
@@ -2414,7 +2441,8 @@
           "orphaned_scanning_short": "Scanner…",
           "orphaned_demos_count": "{count} demoer",
           "orphaned_highlights_count": "{count} highlights",
-          "orphaned_object_count": "{count} filer"
+          "orphaned_object_count": "{count} filer",
+          "hud_moved": "Broadcast-HUD'er har deres egen indstillingsside:"
         },
         "update_map_pools": {
           "title": "Opdatér map pools automatisk",

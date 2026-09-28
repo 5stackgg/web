@@ -1861,6 +1861,37 @@
         }
       },
       "application": {
+        "broadcast_huds": {
+          "title": "HUD для трансляцій",
+          "description": "Обери HUD для прямих трансляцій, перегляду демо та хайлайтів. Стримери все одно можуть змінювати його для кожної трансляції.",
+          "import": "Імпортувати HUD",
+          "import_hint": "Пакет JTs Hud Manager або Lexogrine із hud.json у корені або в одній теці верхнього рівня.",
+          "drop": "Перетягни сюди .zip або натисни, щоб вибрати",
+          "importing": "Імпорт…",
+          "imported": "HUD імпортовано",
+          "import_failed": "Не вдалося імпортувати цей HUD",
+          "make_default": "Зробити типовим",
+          "is_default": "Типовий",
+          "default_set": "Типовий HUD оновлено",
+          "default_failed": "Не вдалося встановити типовий HUD",
+          "removed": "HUD видалено",
+          "remove_failed": "Не вдалося видалити цей HUD",
+          "delete_title": "Видалити цей HUD?",
+          "delete_description": "Це видалить «{name}» та завантажений архів. Це неможливо скасувати.",
+          "delete_confirm": "Видалити",
+          "signed": "Підписаний пакет",
+          "source_builtin": "Вбудований",
+          "source_imported": "Імпортований",
+          "preview": "Попередній перегляд: {name}",
+          "get_more": "Більше HUD на {site}",
+          "set_page_link": "Указати сторінку HUD",
+          "page_link": "Сторінка HUD",
+          "page_link_description": "Встав посилання на сторінку HUD, наприклад на cshuds.com. Її зображення прев'ю стане прев'ю цього HUD.",
+          "page_link_saved": "Сторінку HUD збережено",
+          "page_link_preview_saved": "Сторінку HUD збережено, прев'ю оновлено",
+          "page_link_failed": "Не вдалося використати цю сторінку",
+          "view_on": "Відкрити на {site}"
+        },
         "update_success": "Оновлено",
         "db_backups": {
           "name": "Назва",
@@ -2364,10 +2395,6 @@
           "auto_clip_min_kills_ace": "Лише ейси (5K)",
           "visibility_private": "Приватний",
           "visibility_public": "Публічний",
-          "default_hud_mode": "Типовий стиль HUD",
-          "default_hud_mode_description": "Який макет JTs Hud Manager под стрімера ігор завантажує під час запуску для прямих трансляцій, відтворення демок і пакетних хайлайтів. Стрімери все ще можуть перемикати стилі окремо для кожної трансляції в елементах керування плеєра.",
-          "hud_mode_horizontal": "Горизонтальний",
-          "hud_mode_vertical": "Вертикальний",
           "playback_section": "Відтворення",
           "reparse_warning_title": "Це переобробить кожну демку — може зайняти дуже багато часу.",
           "reparse_warning_body": "Демки переобробляються по одній, що може тривати годинами або днями залежно від їх кількості. Роби це лише якщо розумієш наслідки, або після великого оновлення, що змінило спосіб обробки демок. Нова статистика з оновлень переобробляється автоматично під час перегляду матчів — це потрібно лише щоб примусово запустити все одразу.",
@@ -2414,7 +2441,8 @@
           "orphaned_scanning_short": "Сканування…",
           "orphaned_demos_count": "{count} демок",
           "orphaned_highlights_count": "{count} хайлайтів",
-          "orphaned_object_count": "{count} файлів"
+          "orphaned_object_count": "{count} файлів",
+          "hud_moved": "HUD для трансляцій мають окрему сторінку налаштувань:"
         },
         "update_map_pools": {
           "title": "Автоматичне оновлення пулів карт",

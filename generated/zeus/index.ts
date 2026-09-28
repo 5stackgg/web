@@ -3504,6 +3504,334 @@ count?: [{	columns?: Array<ValueTypes["awards_select_column"]> | undefined | nul
 	_neq?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	_nin?: Array<ValueTypes["bigint"]> | undefined | null | Variable<any, string>
 };
+	/** columns and relationships of "broadcast_huds" */
+["broadcast_huds"]: AliasType<{
+	author?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	description?:boolean | `@${string}`,
+	enabled?:boolean | `@${string}`,
+hud_json?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	id?:boolean | `@${string}`,
+	is_signed?:boolean | `@${string}`,
+	jthud_id?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	page_url?:boolean | `@${string}`,
+	preview?:boolean | `@${string}`,
+	size_bytes?:boolean | `@${string}`,
+	slug?:boolean | `@${string}`,
+	source?:boolean | `@${string}`,
+	storage_key?:boolean | `@${string}`,
+	thumbnail?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+	uploaded_by_steam_id?:boolean | `@${string}`,
+	variant?:boolean | `@${string}`,
+	version?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "broadcast_huds" */
+["broadcast_huds_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["broadcast_huds_aggregate_fields"],
+	nodes?:ValueTypes["broadcast_huds"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "broadcast_huds" */
+["broadcast_huds_aggregate_fields"]: AliasType<{
+	avg?:ValueTypes["broadcast_huds_avg_fields"],
+count?: [{	columns?: Array<ValueTypes["broadcast_huds_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["broadcast_huds_max_fields"],
+	min?:ValueTypes["broadcast_huds_min_fields"],
+	stddev?:ValueTypes["broadcast_huds_stddev_fields"],
+	stddev_pop?:ValueTypes["broadcast_huds_stddev_pop_fields"],
+	stddev_samp?:ValueTypes["broadcast_huds_stddev_samp_fields"],
+	sum?:ValueTypes["broadcast_huds_sum_fields"],
+	var_pop?:ValueTypes["broadcast_huds_var_pop_fields"],
+	var_samp?:ValueTypes["broadcast_huds_var_samp_fields"],
+	variance?:ValueTypes["broadcast_huds_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["broadcast_huds_append_input"]: {
+	hud_json?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
+	/** aggregate avg on columns */
+["broadcast_huds_avg_fields"]: AliasType<{
+	size_bytes?:boolean | `@${string}`,
+	uploaded_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "broadcast_huds". All fields are combined with a logical 'AND'. */
+["broadcast_huds_bool_exp"]: {
+	_and?: Array<ValueTypes["broadcast_huds_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["broadcast_huds_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["broadcast_huds_bool_exp"]> | undefined | null | Variable<any, string>,
+	author?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	description?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	enabled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	hud_json?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	is_signed?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	jthud_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	page_url?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	preview?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	size_bytes?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	slug?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	source?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	storage_key?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	thumbnail?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	uploaded_by_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	variant?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	version?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "broadcast_huds" */
+["broadcast_huds_constraint"]:broadcast_huds_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["broadcast_huds_delete_at_path_input"]: {
+	hud_json?: Array<string> | undefined | null | Variable<any, string>
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["broadcast_huds_delete_elem_input"]: {
+	hud_json?: number | undefined | null | Variable<any, string>
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["broadcast_huds_delete_key_input"]: {
+	hud_json?: string | undefined | null | Variable<any, string>
+};
+	/** input type for incrementing numeric columns in table "broadcast_huds" */
+["broadcast_huds_inc_input"]: {
+	size_bytes?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	uploaded_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "broadcast_huds" */
+["broadcast_huds_insert_input"]: {
+	author?: string | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	description?: string | undefined | null | Variable<any, string>,
+	enabled?: boolean | undefined | null | Variable<any, string>,
+	hud_json?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	is_signed?: boolean | undefined | null | Variable<any, string>,
+	jthud_id?: string | undefined | null | Variable<any, string>,
+	name?: string | undefined | null | Variable<any, string>,
+	page_url?: string | undefined | null | Variable<any, string>,
+	preview?: string | undefined | null | Variable<any, string>,
+	size_bytes?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	slug?: string | undefined | null | Variable<any, string>,
+	source?: string | undefined | null | Variable<any, string>,
+	storage_key?: string | undefined | null | Variable<any, string>,
+	thumbnail?: string | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	uploaded_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	variant?: string | undefined | null | Variable<any, string>,
+	version?: string | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["broadcast_huds_max_fields"]: AliasType<{
+	author?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	description?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	jthud_id?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	page_url?:boolean | `@${string}`,
+	preview?:boolean | `@${string}`,
+	size_bytes?:boolean | `@${string}`,
+	slug?:boolean | `@${string}`,
+	source?:boolean | `@${string}`,
+	storage_key?:boolean | `@${string}`,
+	thumbnail?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+	uploaded_by_steam_id?:boolean | `@${string}`,
+	variant?:boolean | `@${string}`,
+	version?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["broadcast_huds_min_fields"]: AliasType<{
+	author?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	description?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	jthud_id?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	page_url?:boolean | `@${string}`,
+	preview?:boolean | `@${string}`,
+	size_bytes?:boolean | `@${string}`,
+	slug?:boolean | `@${string}`,
+	source?:boolean | `@${string}`,
+	storage_key?:boolean | `@${string}`,
+	thumbnail?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+	uploaded_by_steam_id?:boolean | `@${string}`,
+	variant?:boolean | `@${string}`,
+	version?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "broadcast_huds" */
+["broadcast_huds_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["broadcast_huds"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "broadcast_huds" */
+["broadcast_huds_on_conflict"]: {
+	constraint: ValueTypes["broadcast_huds_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["broadcast_huds_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["broadcast_huds_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "broadcast_huds". */
+["broadcast_huds_order_by"]: {
+	author?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	description?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	enabled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	hud_json?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	is_signed?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	jthud_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	page_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	preview?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	size_bytes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	slug?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	source?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	storage_key?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	thumbnail?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	uploaded_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	variant?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: broadcast_huds */
+["broadcast_huds_pk_columns_input"]: {
+	id: ValueTypes["uuid"] | Variable<any, string>
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["broadcast_huds_prepend_input"]: {
+	hud_json?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
+	/** select columns of table "broadcast_huds" */
+["broadcast_huds_select_column"]:broadcast_huds_select_column;
+	/** input type for updating data in table "broadcast_huds" */
+["broadcast_huds_set_input"]: {
+	author?: string | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	description?: string | undefined | null | Variable<any, string>,
+	enabled?: boolean | undefined | null | Variable<any, string>,
+	hud_json?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	is_signed?: boolean | undefined | null | Variable<any, string>,
+	jthud_id?: string | undefined | null | Variable<any, string>,
+	name?: string | undefined | null | Variable<any, string>,
+	page_url?: string | undefined | null | Variable<any, string>,
+	preview?: string | undefined | null | Variable<any, string>,
+	size_bytes?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	slug?: string | undefined | null | Variable<any, string>,
+	source?: string | undefined | null | Variable<any, string>,
+	storage_key?: string | undefined | null | Variable<any, string>,
+	thumbnail?: string | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	uploaded_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	variant?: string | undefined | null | Variable<any, string>,
+	version?: string | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev on columns */
+["broadcast_huds_stddev_fields"]: AliasType<{
+	size_bytes?:boolean | `@${string}`,
+	uploaded_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["broadcast_huds_stddev_pop_fields"]: AliasType<{
+	size_bytes?:boolean | `@${string}`,
+	uploaded_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["broadcast_huds_stddev_samp_fields"]: AliasType<{
+	size_bytes?:boolean | `@${string}`,
+	uploaded_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "broadcast_huds" */
+["broadcast_huds_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["broadcast_huds_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["broadcast_huds_stream_cursor_value_input"]: {
+	author?: string | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	description?: string | undefined | null | Variable<any, string>,
+	enabled?: boolean | undefined | null | Variable<any, string>,
+	hud_json?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	is_signed?: boolean | undefined | null | Variable<any, string>,
+	jthud_id?: string | undefined | null | Variable<any, string>,
+	name?: string | undefined | null | Variable<any, string>,
+	page_url?: string | undefined | null | Variable<any, string>,
+	preview?: string | undefined | null | Variable<any, string>,
+	size_bytes?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	slug?: string | undefined | null | Variable<any, string>,
+	source?: string | undefined | null | Variable<any, string>,
+	storage_key?: string | undefined | null | Variable<any, string>,
+	thumbnail?: string | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	uploaded_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	variant?: string | undefined | null | Variable<any, string>,
+	version?: string | undefined | null | Variable<any, string>
+};
+	/** aggregate sum on columns */
+["broadcast_huds_sum_fields"]: AliasType<{
+	size_bytes?:boolean | `@${string}`,
+	uploaded_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** update columns of table "broadcast_huds" */
+["broadcast_huds_update_column"]:broadcast_huds_update_column;
+	["broadcast_huds_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["broadcast_huds_append_input"] | undefined | null | Variable<any, string>,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["broadcast_huds_delete_at_path_input"] | undefined | null | Variable<any, string>,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["broadcast_huds_delete_elem_input"] | undefined | null | Variable<any, string>,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["broadcast_huds_delete_key_input"] | undefined | null | Variable<any, string>,
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["broadcast_huds_inc_input"] | undefined | null | Variable<any, string>,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["broadcast_huds_prepend_input"] | undefined | null | Variable<any, string>,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["broadcast_huds_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["broadcast_huds_bool_exp"] | Variable<any, string>
+};
+	/** aggregate var_pop on columns */
+["broadcast_huds_var_pop_fields"]: AliasType<{
+	size_bytes?:boolean | `@${string}`,
+	uploaded_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["broadcast_huds_var_samp_fields"]: AliasType<{
+	size_bytes?:boolean | `@${string}`,
+	uploaded_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["broadcast_huds_variance_fields"]: AliasType<{
+	size_bytes?:boolean | `@${string}`,
+	uploaded_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["bytea"]:unknown;
 	/** Boolean expression to compare columns of type "bytea". All fields are combined with logical 'AND'. */
 ["bytea_comparison_exp"]: {
@@ -22050,6 +22378,211 @@ count?: [{	columns?: Array<ValueTypes["lobby_players_select_column"]> | undefine
 	invited_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
+	/** columns and relationships of "map_asset_builds" */
+["map_asset_builds"]: AliasType<{
+	build_id?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	error?:boolean | `@${string}`,
+failed?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
+failed_view?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	finished_at?:boolean | `@${string}`,
+	manifest?:boolean | `@${string}`,
+maps?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	started_at?:boolean | `@${string}`,
+	status?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "map_asset_builds" */
+["map_asset_builds_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["map_asset_builds_aggregate_fields"],
+	nodes?:ValueTypes["map_asset_builds"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "map_asset_builds" */
+["map_asset_builds_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ValueTypes["map_asset_builds_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["map_asset_builds_max_fields"],
+	min?:ValueTypes["map_asset_builds_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["map_asset_builds_append_input"]: {
+	failed?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	failed_view?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	maps?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
+	/** Boolean expression to filter rows from the table "map_asset_builds". All fields are combined with a logical 'AND'. */
+["map_asset_builds_bool_exp"]: {
+	_and?: Array<ValueTypes["map_asset_builds_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["map_asset_builds_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["map_asset_builds_bool_exp"]> | undefined | null | Variable<any, string>,
+	build_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	error?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	failed?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
+	failed_view?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
+	finished_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	manifest?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	maps?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
+	started_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	status?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "map_asset_builds" */
+["map_asset_builds_constraint"]:map_asset_builds_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["map_asset_builds_delete_at_path_input"]: {
+	failed?: Array<string> | undefined | null | Variable<any, string>,
+	failed_view?: Array<string> | undefined | null | Variable<any, string>,
+	maps?: Array<string> | undefined | null | Variable<any, string>
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["map_asset_builds_delete_elem_input"]: {
+	failed?: number | undefined | null | Variable<any, string>,
+	failed_view?: number | undefined | null | Variable<any, string>,
+	maps?: number | undefined | null | Variable<any, string>
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["map_asset_builds_delete_key_input"]: {
+	failed?: string | undefined | null | Variable<any, string>,
+	failed_view?: string | undefined | null | Variable<any, string>,
+	maps?: string | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "map_asset_builds" */
+["map_asset_builds_insert_input"]: {
+	build_id?: string | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	error?: string | undefined | null | Variable<any, string>,
+	failed?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	failed_view?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	finished_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	manifest?: string | undefined | null | Variable<any, string>,
+	maps?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	started_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	status?: string | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["map_asset_builds_max_fields"]: AliasType<{
+	build_id?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	error?:boolean | `@${string}`,
+	finished_at?:boolean | `@${string}`,
+	manifest?:boolean | `@${string}`,
+	started_at?:boolean | `@${string}`,
+	status?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["map_asset_builds_min_fields"]: AliasType<{
+	build_id?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	error?:boolean | `@${string}`,
+	finished_at?:boolean | `@${string}`,
+	manifest?:boolean | `@${string}`,
+	started_at?:boolean | `@${string}`,
+	status?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "map_asset_builds" */
+["map_asset_builds_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["map_asset_builds"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "map_asset_builds" */
+["map_asset_builds_on_conflict"]: {
+	constraint: ValueTypes["map_asset_builds_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["map_asset_builds_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["map_asset_builds_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "map_asset_builds". */
+["map_asset_builds_order_by"]: {
+	build_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	error?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	failed?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	failed_view?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	finished_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	manifest?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	maps?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	started_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	status?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: map_asset_builds */
+["map_asset_builds_pk_columns_input"]: {
+	build_id: string | Variable<any, string>
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["map_asset_builds_prepend_input"]: {
+	failed?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	failed_view?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	maps?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
+	/** select columns of table "map_asset_builds" */
+["map_asset_builds_select_column"]:map_asset_builds_select_column;
+	/** input type for updating data in table "map_asset_builds" */
+["map_asset_builds_set_input"]: {
+	build_id?: string | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	error?: string | undefined | null | Variable<any, string>,
+	failed?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	failed_view?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	finished_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	manifest?: string | undefined | null | Variable<any, string>,
+	maps?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	started_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	status?: string | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
+};
+	/** Streaming cursor of the table "map_asset_builds" */
+["map_asset_builds_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["map_asset_builds_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["map_asset_builds_stream_cursor_value_input"]: {
+	build_id?: string | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	error?: string | undefined | null | Variable<any, string>,
+	failed?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	failed_view?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	finished_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	manifest?: string | undefined | null | Variable<any, string>,
+	maps?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	started_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	status?: string | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
+};
+	/** update columns of table "map_asset_builds" */
+["map_asset_builds_update_column"]:map_asset_builds_update_column;
+	["map_asset_builds_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["map_asset_builds_append_input"] | undefined | null | Variable<any, string>,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["map_asset_builds_delete_at_path_input"] | undefined | null | Variable<any, string>,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["map_asset_builds_delete_elem_input"] | undefined | null | Variable<any, string>,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["map_asset_builds_delete_key_input"] | undefined | null | Variable<any, string>,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["map_asset_builds_prepend_input"] | undefined | null | Variable<any, string>,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["map_asset_builds_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["map_asset_builds_bool_exp"] | Variable<any, string>
+};
 	/** columns and relationships of "map_callouts" */
 ["map_callouts"]: AliasType<{
 boxes?: [{	/** JSON select path */
@@ -28652,6 +29185,7 @@ backfillSeasonElo?: [{	season_id: string | Variable<any, string>},ValueTypes["Re
 	backfillSeasonEloStatus?:ValueTypes["SeasonBackfillStatusOutput"],
 backfillUtilityLaunchSeeds?: [{	limit?: number | undefined | null | Variable<any, string>},ValueTypes["UtilityLaunchSeedBackfillOutput"]],
 bakeShaders?: [{	game_server_node_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
+buildMapAssets?: [{	game_server_node_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 callForOrganizer?: [{	match_id: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 	/** Request cancellation of the in-progress season ELO backfill (admin only). Stops after the current match. */
 	cancelBackfillSeasonElo?:ValueTypes["SuccessOutput"],
@@ -28717,6 +29251,9 @@ delete_award_recipients_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string
 delete_awards?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["awards_bool_exp"] | Variable<any, string>},ValueTypes["awards_mutation_response"]],
 delete_awards_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["awards"]],
+delete_broadcast_huds?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["broadcast_huds_bool_exp"] | Variable<any, string>},ValueTypes["broadcast_huds_mutation_response"]],
+delete_broadcast_huds_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["broadcast_huds"]],
 delete_chat_read_state?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["chat_read_state_bool_exp"] | Variable<any, string>},ValueTypes["chat_read_state_mutation_response"]],
 delete_chat_read_state_by_pk?: [{	steam_id: ValueTypes["bigint"] | Variable<any, string>,	thread: string | Variable<any, string>},ValueTypes["chat_read_state"]],
@@ -29010,6 +29547,9 @@ delete_lobbies_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueT
 delete_lobby_players?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["lobby_players_bool_exp"] | Variable<any, string>},ValueTypes["lobby_players_mutation_response"]],
 delete_lobby_players_by_pk?: [{	lobby_id: ValueTypes["uuid"] | Variable<any, string>,	steam_id: ValueTypes["bigint"] | Variable<any, string>},ValueTypes["lobby_players"]],
+delete_map_asset_builds?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["map_asset_builds_bool_exp"] | Variable<any, string>},ValueTypes["map_asset_builds_mutation_response"]],
+delete_map_asset_builds_by_pk?: [{	build_id: string | Variable<any, string>},ValueTypes["map_asset_builds"]],
 delete_map_callouts?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["map_callouts_bool_exp"] | Variable<any, string>},ValueTypes["map_callouts_mutation_response"]],
 delete_map_callouts_by_pk?: [{	map_name: string | Variable<any, string>,	name: string | Variable<any, string>},ValueTypes["map_callouts"]],
@@ -29354,6 +29894,12 @@ insert_awards?: [{	/** the rows to be inserted */
 insert_awards_one?: [{	/** the row to be inserted */
 	object: ValueTypes["awards_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["awards_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["awards"]],
+insert_broadcast_huds?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["broadcast_huds_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["broadcast_huds_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["broadcast_huds_mutation_response"]],
+insert_broadcast_huds_one?: [{	/** the row to be inserted */
+	object: ValueTypes["broadcast_huds_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["broadcast_huds_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["broadcast_huds"]],
 insert_chat_read_state?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["chat_read_state_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["chat_read_state_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["chat_read_state_mutation_response"]],
@@ -29940,6 +30486,12 @@ insert_lobby_players?: [{	/** the rows to be inserted */
 insert_lobby_players_one?: [{	/** the row to be inserted */
 	object: ValueTypes["lobby_players_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["lobby_players_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["lobby_players"]],
+insert_map_asset_builds?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["map_asset_builds_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["map_asset_builds_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["map_asset_builds_mutation_response"]],
+insert_map_asset_builds_one?: [{	/** the row to be inserted */
+	object: ValueTypes["map_asset_builds_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["map_asset_builds_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["map_asset_builds"]],
 insert_map_callouts?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["map_callouts_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["map_callouts_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["map_callouts_mutation_response"]],
@@ -30756,6 +31308,25 @@ update_awards_by_pk?: [{	/** increments the numeric columns with given value of 
 	_set?: ValueTypes["awards_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["awards_pk_columns_input"] | Variable<any, string>},ValueTypes["awards"]],
 update_awards_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["awards_updates"]> | Variable<any, string>},ValueTypes["awards_mutation_response"]],
+update_broadcast_huds?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["broadcast_huds_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["broadcast_huds_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["broadcast_huds_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["broadcast_huds_delete_key_input"] | undefined | null | Variable<any, string>,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["broadcast_huds_inc_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["broadcast_huds_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["broadcast_huds_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["broadcast_huds_bool_exp"] | Variable<any, string>},ValueTypes["broadcast_huds_mutation_response"]],
+update_broadcast_huds_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["broadcast_huds_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["broadcast_huds_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["broadcast_huds_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["broadcast_huds_delete_key_input"] | undefined | null | Variable<any, string>,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["broadcast_huds_inc_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["broadcast_huds_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["broadcast_huds_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["broadcast_huds_pk_columns_input"] | Variable<any, string>},ValueTypes["broadcast_huds"]],
+update_broadcast_huds_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["broadcast_huds_updates"]> | Variable<any, string>},ValueTypes["broadcast_huds_mutation_response"]],
 update_chat_read_state?: [{	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ValueTypes["chat_read_state_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["chat_read_state_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
@@ -31581,6 +32152,23 @@ update_lobby_players_by_pk?: [{	/** increments the numeric columns with given va
 	_set?: ValueTypes["lobby_players_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["lobby_players_pk_columns_input"] | Variable<any, string>},ValueTypes["lobby_players"]],
 update_lobby_players_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["lobby_players_updates"]> | Variable<any, string>},ValueTypes["lobby_players_mutation_response"]],
+update_map_asset_builds?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["map_asset_builds_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["map_asset_builds_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["map_asset_builds_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["map_asset_builds_delete_key_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["map_asset_builds_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["map_asset_builds_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["map_asset_builds_bool_exp"] | Variable<any, string>},ValueTypes["map_asset_builds_mutation_response"]],
+update_map_asset_builds_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["map_asset_builds_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["map_asset_builds_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["map_asset_builds_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["map_asset_builds_delete_key_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["map_asset_builds_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["map_asset_builds_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["map_asset_builds_pk_columns_input"] | Variable<any, string>},ValueTypes["map_asset_builds"]],
+update_map_asset_builds_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["map_asset_builds_updates"]> | Variable<any, string>},ValueTypes["map_asset_builds_mutation_response"]],
 update_map_callouts?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
 	_append?: ValueTypes["map_callouts_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 	_delete_at_path?: ValueTypes["map_callouts_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
@@ -32407,12 +32995,22 @@ update_utility_drift_results_by_pk?: [{	/** increments the numeric columns with 
 	_set?: ValueTypes["utility_drift_results_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["utility_drift_results_pk_columns_input"] | Variable<any, string>},ValueTypes["utility_drift_results"]],
 update_utility_drift_results_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["utility_drift_results_updates"]> | Variable<any, string>},ValueTypes["utility_drift_results_mutation_response"]],
-update_utility_drift_scans?: [{	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ValueTypes["utility_drift_scans_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+update_utility_drift_scans?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["utility_drift_scans_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["utility_drift_scans_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["utility_drift_scans_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["utility_drift_scans_delete_key_input"] | undefined | null | Variable<any, string>,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["utility_drift_scans_inc_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["utility_drift_scans_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["utility_drift_scans_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
 	where: ValueTypes["utility_drift_scans_bool_exp"] | Variable<any, string>},ValueTypes["utility_drift_scans_mutation_response"]],
-update_utility_drift_scans_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ValueTypes["utility_drift_scans_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+update_utility_drift_scans_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["utility_drift_scans_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["utility_drift_scans_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["utility_drift_scans_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["utility_drift_scans_delete_key_input"] | undefined | null | Variable<any, string>,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["utility_drift_scans_inc_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["utility_drift_scans_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["utility_drift_scans_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["utility_drift_scans_pk_columns_input"] | Variable<any, string>},ValueTypes["utility_drift_scans"]],
 update_utility_drift_scans_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["utility_drift_scans_updates"]> | Variable<any, string>},ValueTypes["utility_drift_scans_mutation_response"]],
@@ -32567,7 +33165,6 @@ update_v_team_stage_results_by_pk?: [{	/** increments the numeric columns with g
 	_set?: ValueTypes["v_team_stage_results_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["v_team_stage_results_pk_columns_input"] | Variable<any, string>},ValueTypes["v_team_stage_results"]],
 update_v_team_stage_results_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["v_team_stage_results_updates"]> | Variable<any, string>},ValueTypes["v_team_stage_results_mutation_response"]],
-buildMapAssets?: [{	game_server_node_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 validateGamedata?: [{	game_server_node_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 watchDemo?: [{	match_map_demo_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	match_map_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["WatchDemoOutput"]],
 writeServerFile?: [{	content: string | Variable<any, string>,	file_path: string | Variable<any, string>,	node_id: string | Variable<any, string>,	server_id?: string | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
@@ -48383,6 +48980,19 @@ awards_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["awards_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["awards_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["awards_aggregate"]],
 awards_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["awards"]],
+broadcast_huds?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["broadcast_huds_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["broadcast_huds_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["broadcast_huds_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["broadcast_huds"]],
+broadcast_huds_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["broadcast_huds_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["broadcast_huds_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["broadcast_huds_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["broadcast_huds_aggregate"]],
+broadcast_huds_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["broadcast_huds"]],
 chat_read_state?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["chat_read_state_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -49758,6 +50368,19 @@ lobby_players_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["lobby_players_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["lobby_players_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["lobby_players_aggregate"]],
 lobby_players_by_pk?: [{	lobby_id: ValueTypes["uuid"] | Variable<any, string>,	steam_id: ValueTypes["bigint"] | Variable<any, string>},ValueTypes["lobby_players"]],
+map_asset_builds?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["map_asset_builds_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["map_asset_builds_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["map_asset_builds_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["map_asset_builds"]],
+map_asset_builds_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["map_asset_builds_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["map_asset_builds_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["map_asset_builds_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["map_asset_builds_aggregate"]],
+map_asset_builds_by_pk?: [{	build_id: string | Variable<any, string>},ValueTypes["map_asset_builds"]],
 map_callouts?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["map_callouts_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -53300,6 +53923,23 @@ awards_stream?: [{	/** maximum number of rows returned in a single batch */
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["awards_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["awards_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["awards"]],
+broadcast_huds?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["broadcast_huds_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["broadcast_huds_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["broadcast_huds_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["broadcast_huds"]],
+broadcast_huds_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["broadcast_huds_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["broadcast_huds_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["broadcast_huds_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["broadcast_huds_aggregate"]],
+broadcast_huds_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["broadcast_huds"]],
+broadcast_huds_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["broadcast_huds_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["broadcast_huds_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["broadcast_huds"]],
 chat_read_state?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["chat_read_state_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -55035,6 +55675,23 @@ lobby_players_stream?: [{	/** maximum number of rows returned in a single batch 
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["lobby_players_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["lobby_players_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["lobby_players"]],
+map_asset_builds?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["map_asset_builds_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["map_asset_builds_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["map_asset_builds_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["map_asset_builds"]],
+map_asset_builds_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["map_asset_builds_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["map_asset_builds_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["map_asset_builds_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["map_asset_builds_aggregate"]],
+map_asset_builds_by_pk?: [{	build_id: string | Variable<any, string>},ValueTypes["map_asset_builds"]],
+map_asset_builds_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["map_asset_builds_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["map_asset_builds_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["map_asset_builds"]],
 map_callouts?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["map_callouts_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -68154,6 +68811,10 @@ count?: [{	columns?: Array<ValueTypes["utility_drift_scans_select_column"]> | un
 	variance?:ValueTypes["utility_drift_scans_variance_fields"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["utility_drift_scans_append_input"]: {
+	caveats?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
 	/** aggregate avg on columns */
 ["utility_drift_scans_avg_fields"]: AliasType<{
 	broken?:boolean | `@${string}`,
@@ -68172,6 +68833,7 @@ count?: [{	columns?: Array<ValueTypes["utility_drift_scans_select_column"]> | un
 	_not?: ValueTypes["utility_drift_scans_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["utility_drift_scans_bool_exp"]> | undefined | null | Variable<any, string>,
 	broken?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	caveats?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	failure_reason?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	finished_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -68195,6 +68857,18 @@ count?: [{	columns?: Array<ValueTypes["utility_drift_scans_select_column"]> | un
 };
 	/** unique or primary key constraints on table "utility_drift_scans" */
 ["utility_drift_scans_constraint"]:utility_drift_scans_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["utility_drift_scans_delete_at_path_input"]: {
+	caveats?: Array<string> | undefined | null | Variable<any, string>
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["utility_drift_scans_delete_elem_input"]: {
+	caveats?: number | undefined | null | Variable<any, string>
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["utility_drift_scans_delete_key_input"]: {
+	caveats?: string | undefined | null | Variable<any, string>
+};
 	/** input type for incrementing numeric columns in table "utility_drift_scans" */
 ["utility_drift_scans_inc_input"]: {
 	broken?: number | undefined | null | Variable<any, string>,
@@ -68209,6 +68883,7 @@ count?: [{	columns?: Array<ValueTypes["utility_drift_scans_select_column"]> | un
 	/** input type for inserting data into table "utility_drift_scans" */
 ["utility_drift_scans_insert_input"]: {
 	broken?: number | undefined | null | Variable<any, string>,
+	caveats?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	failure_reason?: string | undefined | null | Variable<any, string>,
 	finished_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -68296,6 +68971,7 @@ count?: [{	columns?: Array<ValueTypes["utility_drift_scans_select_column"]> | un
 	/** Ordering options when selecting data from "utility_drift_scans". */
 ["utility_drift_scans_order_by"]: {
 	broken?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	caveats?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	failure_reason?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	finished_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -68320,11 +68996,16 @@ count?: [{	columns?: Array<ValueTypes["utility_drift_scans_select_column"]> | un
 ["utility_drift_scans_pk_columns_input"]: {
 	id: ValueTypes["uuid"] | Variable<any, string>
 };
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["utility_drift_scans_prepend_input"]: {
+	caveats?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
 	/** select columns of table "utility_drift_scans" */
 ["utility_drift_scans_select_column"]:utility_drift_scans_select_column;
 	/** input type for updating data in table "utility_drift_scans" */
 ["utility_drift_scans_set_input"]: {
 	broken?: number | undefined | null | Variable<any, string>,
+	caveats?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	failure_reason?: string | undefined | null | Variable<any, string>,
 	finished_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -68389,6 +69070,7 @@ count?: [{	columns?: Array<ValueTypes["utility_drift_scans_select_column"]> | un
 	/** Initial value of the column from where the streaming should start */
 ["utility_drift_scans_stream_cursor_value_input"]: {
 	broken?: number | undefined | null | Variable<any, string>,
+	caveats?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	failure_reason?: string | undefined | null | Variable<any, string>,
 	finished_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -68422,8 +69104,18 @@ count?: [{	columns?: Array<ValueTypes["utility_drift_scans_select_column"]> | un
 	/** update columns of table "utility_drift_scans" */
 ["utility_drift_scans_update_column"]:utility_drift_scans_update_column;
 	["utility_drift_scans_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["utility_drift_scans_append_input"] | undefined | null | Variable<any, string>,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["utility_drift_scans_delete_at_path_input"] | undefined | null | Variable<any, string>,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["utility_drift_scans_delete_elem_input"] | undefined | null | Variable<any, string>,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["utility_drift_scans_delete_key_input"] | undefined | null | Variable<any, string>,
 	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ValueTypes["utility_drift_scans_inc_input"] | undefined | null | Variable<any, string>,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["utility_drift_scans_prepend_input"] | undefined | null | Variable<any, string>,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["utility_drift_scans_set_input"] | undefined | null | Variable<any, string>,
 	/** filter the rows which have to be updated */
@@ -85904,6 +86596,334 @@ count?: [{	columns?: Array<ResolverInputTypes["awards_select_column"]> | undefin
 	_neq?: ResolverInputTypes["bigint"] | undefined | null,
 	_nin?: Array<ResolverInputTypes["bigint"]> | undefined | null
 };
+	/** columns and relationships of "broadcast_huds" */
+["broadcast_huds"]: AliasType<{
+	author?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	description?:boolean | `@${string}`,
+	enabled?:boolean | `@${string}`,
+hud_json?: [{	/** JSON select path */
+	path?: string | undefined | null},boolean | `@${string}`],
+	id?:boolean | `@${string}`,
+	is_signed?:boolean | `@${string}`,
+	jthud_id?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	page_url?:boolean | `@${string}`,
+	preview?:boolean | `@${string}`,
+	size_bytes?:boolean | `@${string}`,
+	slug?:boolean | `@${string}`,
+	source?:boolean | `@${string}`,
+	storage_key?:boolean | `@${string}`,
+	thumbnail?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+	uploaded_by_steam_id?:boolean | `@${string}`,
+	variant?:boolean | `@${string}`,
+	version?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "broadcast_huds" */
+["broadcast_huds_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["broadcast_huds_aggregate_fields"],
+	nodes?:ResolverInputTypes["broadcast_huds"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "broadcast_huds" */
+["broadcast_huds_aggregate_fields"]: AliasType<{
+	avg?:ResolverInputTypes["broadcast_huds_avg_fields"],
+count?: [{	columns?: Array<ResolverInputTypes["broadcast_huds_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["broadcast_huds_max_fields"],
+	min?:ResolverInputTypes["broadcast_huds_min_fields"],
+	stddev?:ResolverInputTypes["broadcast_huds_stddev_fields"],
+	stddev_pop?:ResolverInputTypes["broadcast_huds_stddev_pop_fields"],
+	stddev_samp?:ResolverInputTypes["broadcast_huds_stddev_samp_fields"],
+	sum?:ResolverInputTypes["broadcast_huds_sum_fields"],
+	var_pop?:ResolverInputTypes["broadcast_huds_var_pop_fields"],
+	var_samp?:ResolverInputTypes["broadcast_huds_var_samp_fields"],
+	variance?:ResolverInputTypes["broadcast_huds_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["broadcast_huds_append_input"]: {
+	hud_json?: ResolverInputTypes["jsonb"] | undefined | null
+};
+	/** aggregate avg on columns */
+["broadcast_huds_avg_fields"]: AliasType<{
+	size_bytes?:boolean | `@${string}`,
+	uploaded_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "broadcast_huds". All fields are combined with a logical 'AND'. */
+["broadcast_huds_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["broadcast_huds_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["broadcast_huds_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["broadcast_huds_bool_exp"]> | undefined | null,
+	author?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	description?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	enabled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	hud_json?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
+	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	is_signed?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	jthud_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	page_url?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	preview?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	size_bytes?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	slug?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	source?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	storage_key?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	thumbnail?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	uploaded_by_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	variant?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	version?: ResolverInputTypes["String_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "broadcast_huds" */
+["broadcast_huds_constraint"]:broadcast_huds_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["broadcast_huds_delete_at_path_input"]: {
+	hud_json?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["broadcast_huds_delete_elem_input"]: {
+	hud_json?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["broadcast_huds_delete_key_input"]: {
+	hud_json?: string | undefined | null
+};
+	/** input type for incrementing numeric columns in table "broadcast_huds" */
+["broadcast_huds_inc_input"]: {
+	size_bytes?: ResolverInputTypes["bigint"] | undefined | null,
+	uploaded_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null
+};
+	/** input type for inserting data into table "broadcast_huds" */
+["broadcast_huds_insert_input"]: {
+	author?: string | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	description?: string | undefined | null,
+	enabled?: boolean | undefined | null,
+	hud_json?: ResolverInputTypes["jsonb"] | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	is_signed?: boolean | undefined | null,
+	jthud_id?: string | undefined | null,
+	name?: string | undefined | null,
+	page_url?: string | undefined | null,
+	preview?: string | undefined | null,
+	size_bytes?: ResolverInputTypes["bigint"] | undefined | null,
+	slug?: string | undefined | null,
+	source?: string | undefined | null,
+	storage_key?: string | undefined | null,
+	thumbnail?: string | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	uploaded_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	variant?: string | undefined | null,
+	version?: string | undefined | null
+};
+	/** aggregate max on columns */
+["broadcast_huds_max_fields"]: AliasType<{
+	author?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	description?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	jthud_id?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	page_url?:boolean | `@${string}`,
+	preview?:boolean | `@${string}`,
+	size_bytes?:boolean | `@${string}`,
+	slug?:boolean | `@${string}`,
+	source?:boolean | `@${string}`,
+	storage_key?:boolean | `@${string}`,
+	thumbnail?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+	uploaded_by_steam_id?:boolean | `@${string}`,
+	variant?:boolean | `@${string}`,
+	version?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["broadcast_huds_min_fields"]: AliasType<{
+	author?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	description?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	jthud_id?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	page_url?:boolean | `@${string}`,
+	preview?:boolean | `@${string}`,
+	size_bytes?:boolean | `@${string}`,
+	slug?:boolean | `@${string}`,
+	source?:boolean | `@${string}`,
+	storage_key?:boolean | `@${string}`,
+	thumbnail?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+	uploaded_by_steam_id?:boolean | `@${string}`,
+	variant?:boolean | `@${string}`,
+	version?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "broadcast_huds" */
+["broadcast_huds_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["broadcast_huds"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "broadcast_huds" */
+["broadcast_huds_on_conflict"]: {
+	constraint: ResolverInputTypes["broadcast_huds_constraint"],
+	update_columns: Array<ResolverInputTypes["broadcast_huds_update_column"]>,
+	where?: ResolverInputTypes["broadcast_huds_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "broadcast_huds". */
+["broadcast_huds_order_by"]: {
+	author?: ResolverInputTypes["order_by"] | undefined | null,
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
+	description?: ResolverInputTypes["order_by"] | undefined | null,
+	enabled?: ResolverInputTypes["order_by"] | undefined | null,
+	hud_json?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	is_signed?: ResolverInputTypes["order_by"] | undefined | null,
+	jthud_id?: ResolverInputTypes["order_by"] | undefined | null,
+	name?: ResolverInputTypes["order_by"] | undefined | null,
+	page_url?: ResolverInputTypes["order_by"] | undefined | null,
+	preview?: ResolverInputTypes["order_by"] | undefined | null,
+	size_bytes?: ResolverInputTypes["order_by"] | undefined | null,
+	slug?: ResolverInputTypes["order_by"] | undefined | null,
+	source?: ResolverInputTypes["order_by"] | undefined | null,
+	storage_key?: ResolverInputTypes["order_by"] | undefined | null,
+	thumbnail?: ResolverInputTypes["order_by"] | undefined | null,
+	updated_at?: ResolverInputTypes["order_by"] | undefined | null,
+	uploaded_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	variant?: ResolverInputTypes["order_by"] | undefined | null,
+	version?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: broadcast_huds */
+["broadcast_huds_pk_columns_input"]: {
+	id: ResolverInputTypes["uuid"]
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["broadcast_huds_prepend_input"]: {
+	hud_json?: ResolverInputTypes["jsonb"] | undefined | null
+};
+	/** select columns of table "broadcast_huds" */
+["broadcast_huds_select_column"]:broadcast_huds_select_column;
+	/** input type for updating data in table "broadcast_huds" */
+["broadcast_huds_set_input"]: {
+	author?: string | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	description?: string | undefined | null,
+	enabled?: boolean | undefined | null,
+	hud_json?: ResolverInputTypes["jsonb"] | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	is_signed?: boolean | undefined | null,
+	jthud_id?: string | undefined | null,
+	name?: string | undefined | null,
+	page_url?: string | undefined | null,
+	preview?: string | undefined | null,
+	size_bytes?: ResolverInputTypes["bigint"] | undefined | null,
+	slug?: string | undefined | null,
+	source?: string | undefined | null,
+	storage_key?: string | undefined | null,
+	thumbnail?: string | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	uploaded_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	variant?: string | undefined | null,
+	version?: string | undefined | null
+};
+	/** aggregate stddev on columns */
+["broadcast_huds_stddev_fields"]: AliasType<{
+	size_bytes?:boolean | `@${string}`,
+	uploaded_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["broadcast_huds_stddev_pop_fields"]: AliasType<{
+	size_bytes?:boolean | `@${string}`,
+	uploaded_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["broadcast_huds_stddev_samp_fields"]: AliasType<{
+	size_bytes?:boolean | `@${string}`,
+	uploaded_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "broadcast_huds" */
+["broadcast_huds_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["broadcast_huds_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["broadcast_huds_stream_cursor_value_input"]: {
+	author?: string | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	description?: string | undefined | null,
+	enabled?: boolean | undefined | null,
+	hud_json?: ResolverInputTypes["jsonb"] | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	is_signed?: boolean | undefined | null,
+	jthud_id?: string | undefined | null,
+	name?: string | undefined | null,
+	page_url?: string | undefined | null,
+	preview?: string | undefined | null,
+	size_bytes?: ResolverInputTypes["bigint"] | undefined | null,
+	slug?: string | undefined | null,
+	source?: string | undefined | null,
+	storage_key?: string | undefined | null,
+	thumbnail?: string | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	uploaded_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	variant?: string | undefined | null,
+	version?: string | undefined | null
+};
+	/** aggregate sum on columns */
+["broadcast_huds_sum_fields"]: AliasType<{
+	size_bytes?:boolean | `@${string}`,
+	uploaded_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** update columns of table "broadcast_huds" */
+["broadcast_huds_update_column"]:broadcast_huds_update_column;
+	["broadcast_huds_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["broadcast_huds_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["broadcast_huds_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["broadcast_huds_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["broadcast_huds_delete_key_input"] | undefined | null,
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["broadcast_huds_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["broadcast_huds_prepend_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["broadcast_huds_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["broadcast_huds_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["broadcast_huds_var_pop_fields"]: AliasType<{
+	size_bytes?:boolean | `@${string}`,
+	uploaded_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["broadcast_huds_var_samp_fields"]: AliasType<{
+	size_bytes?:boolean | `@${string}`,
+	uploaded_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["broadcast_huds_variance_fields"]: AliasType<{
+	size_bytes?:boolean | `@${string}`,
+	uploaded_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["bytea"]:unknown;
 	/** Boolean expression to compare columns of type "bytea". All fields are combined with logical 'AND'. */
 ["bytea_comparison_exp"]: {
@@ -104450,6 +105470,211 @@ count?: [{	columns?: Array<ResolverInputTypes["lobby_players_select_column"]> | 
 	invited_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
+	/** columns and relationships of "map_asset_builds" */
+["map_asset_builds"]: AliasType<{
+	build_id?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	error?:boolean | `@${string}`,
+failed?: [{	/** JSON select path */
+	path?: string | undefined | null},boolean | `@${string}`],
+failed_view?: [{	/** JSON select path */
+	path?: string | undefined | null},boolean | `@${string}`],
+	finished_at?:boolean | `@${string}`,
+	manifest?:boolean | `@${string}`,
+maps?: [{	/** JSON select path */
+	path?: string | undefined | null},boolean | `@${string}`],
+	started_at?:boolean | `@${string}`,
+	status?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "map_asset_builds" */
+["map_asset_builds_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["map_asset_builds_aggregate_fields"],
+	nodes?:ResolverInputTypes["map_asset_builds"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "map_asset_builds" */
+["map_asset_builds_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ResolverInputTypes["map_asset_builds_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["map_asset_builds_max_fields"],
+	min?:ResolverInputTypes["map_asset_builds_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["map_asset_builds_append_input"]: {
+	failed?: ResolverInputTypes["jsonb"] | undefined | null,
+	failed_view?: ResolverInputTypes["jsonb"] | undefined | null,
+	maps?: ResolverInputTypes["jsonb"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "map_asset_builds". All fields are combined with a logical 'AND'. */
+["map_asset_builds_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["map_asset_builds_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["map_asset_builds_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["map_asset_builds_bool_exp"]> | undefined | null,
+	build_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	error?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	failed?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
+	failed_view?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
+	finished_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	manifest?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	maps?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
+	started_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	status?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "map_asset_builds" */
+["map_asset_builds_constraint"]:map_asset_builds_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["map_asset_builds_delete_at_path_input"]: {
+	failed?: Array<string> | undefined | null,
+	failed_view?: Array<string> | undefined | null,
+	maps?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["map_asset_builds_delete_elem_input"]: {
+	failed?: number | undefined | null,
+	failed_view?: number | undefined | null,
+	maps?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["map_asset_builds_delete_key_input"]: {
+	failed?: string | undefined | null,
+	failed_view?: string | undefined | null,
+	maps?: string | undefined | null
+};
+	/** input type for inserting data into table "map_asset_builds" */
+["map_asset_builds_insert_input"]: {
+	build_id?: string | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	error?: string | undefined | null,
+	failed?: ResolverInputTypes["jsonb"] | undefined | null,
+	failed_view?: ResolverInputTypes["jsonb"] | undefined | null,
+	finished_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	manifest?: string | undefined | null,
+	maps?: ResolverInputTypes["jsonb"] | undefined | null,
+	started_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	status?: string | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
+};
+	/** aggregate max on columns */
+["map_asset_builds_max_fields"]: AliasType<{
+	build_id?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	error?:boolean | `@${string}`,
+	finished_at?:boolean | `@${string}`,
+	manifest?:boolean | `@${string}`,
+	started_at?:boolean | `@${string}`,
+	status?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["map_asset_builds_min_fields"]: AliasType<{
+	build_id?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	error?:boolean | `@${string}`,
+	finished_at?:boolean | `@${string}`,
+	manifest?:boolean | `@${string}`,
+	started_at?:boolean | `@${string}`,
+	status?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "map_asset_builds" */
+["map_asset_builds_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["map_asset_builds"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "map_asset_builds" */
+["map_asset_builds_on_conflict"]: {
+	constraint: ResolverInputTypes["map_asset_builds_constraint"],
+	update_columns: Array<ResolverInputTypes["map_asset_builds_update_column"]>,
+	where?: ResolverInputTypes["map_asset_builds_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "map_asset_builds". */
+["map_asset_builds_order_by"]: {
+	build_id?: ResolverInputTypes["order_by"] | undefined | null,
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
+	error?: ResolverInputTypes["order_by"] | undefined | null,
+	failed?: ResolverInputTypes["order_by"] | undefined | null,
+	failed_view?: ResolverInputTypes["order_by"] | undefined | null,
+	finished_at?: ResolverInputTypes["order_by"] | undefined | null,
+	manifest?: ResolverInputTypes["order_by"] | undefined | null,
+	maps?: ResolverInputTypes["order_by"] | undefined | null,
+	started_at?: ResolverInputTypes["order_by"] | undefined | null,
+	status?: ResolverInputTypes["order_by"] | undefined | null,
+	updated_at?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: map_asset_builds */
+["map_asset_builds_pk_columns_input"]: {
+	build_id: string
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["map_asset_builds_prepend_input"]: {
+	failed?: ResolverInputTypes["jsonb"] | undefined | null,
+	failed_view?: ResolverInputTypes["jsonb"] | undefined | null,
+	maps?: ResolverInputTypes["jsonb"] | undefined | null
+};
+	/** select columns of table "map_asset_builds" */
+["map_asset_builds_select_column"]:map_asset_builds_select_column;
+	/** input type for updating data in table "map_asset_builds" */
+["map_asset_builds_set_input"]: {
+	build_id?: string | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	error?: string | undefined | null,
+	failed?: ResolverInputTypes["jsonb"] | undefined | null,
+	failed_view?: ResolverInputTypes["jsonb"] | undefined | null,
+	finished_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	manifest?: string | undefined | null,
+	maps?: ResolverInputTypes["jsonb"] | undefined | null,
+	started_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	status?: string | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
+};
+	/** Streaming cursor of the table "map_asset_builds" */
+["map_asset_builds_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["map_asset_builds_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["map_asset_builds_stream_cursor_value_input"]: {
+	build_id?: string | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	error?: string | undefined | null,
+	failed?: ResolverInputTypes["jsonb"] | undefined | null,
+	failed_view?: ResolverInputTypes["jsonb"] | undefined | null,
+	finished_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	manifest?: string | undefined | null,
+	maps?: ResolverInputTypes["jsonb"] | undefined | null,
+	started_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	status?: string | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
+};
+	/** update columns of table "map_asset_builds" */
+["map_asset_builds_update_column"]:map_asset_builds_update_column;
+	["map_asset_builds_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["map_asset_builds_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["map_asset_builds_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["map_asset_builds_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["map_asset_builds_delete_key_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["map_asset_builds_prepend_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["map_asset_builds_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["map_asset_builds_bool_exp"]
+};
 	/** columns and relationships of "map_callouts" */
 ["map_callouts"]: AliasType<{
 boxes?: [{	/** JSON select path */
@@ -111052,6 +112277,7 @@ backfillSeasonElo?: [{	season_id: string},ResolverInputTypes["RecomputeEloStarte
 	backfillSeasonEloStatus?:ResolverInputTypes["SeasonBackfillStatusOutput"],
 backfillUtilityLaunchSeeds?: [{	limit?: number | undefined | null},ResolverInputTypes["UtilityLaunchSeedBackfillOutput"]],
 bakeShaders?: [{	game_server_node_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
+buildMapAssets?: [{	game_server_node_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 callForOrganizer?: [{	match_id: string},ResolverInputTypes["SuccessOutput"]],
 	/** Request cancellation of the in-progress season ELO backfill (admin only). Stops after the current match. */
 	cancelBackfillSeasonElo?:ResolverInputTypes["SuccessOutput"],
@@ -111117,6 +112343,9 @@ delete_award_recipients_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInput
 delete_awards?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["awards_bool_exp"]},ResolverInputTypes["awards_mutation_response"]],
 delete_awards_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["awards"]],
+delete_broadcast_huds?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["broadcast_huds_bool_exp"]},ResolverInputTypes["broadcast_huds_mutation_response"]],
+delete_broadcast_huds_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["broadcast_huds"]],
 delete_chat_read_state?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["chat_read_state_bool_exp"]},ResolverInputTypes["chat_read_state_mutation_response"]],
 delete_chat_read_state_by_pk?: [{	steam_id: ResolverInputTypes["bigint"],	thread: string},ResolverInputTypes["chat_read_state"]],
@@ -111410,6 +112639,9 @@ delete_lobbies_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["lo
 delete_lobby_players?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["lobby_players_bool_exp"]},ResolverInputTypes["lobby_players_mutation_response"]],
 delete_lobby_players_by_pk?: [{	lobby_id: ResolverInputTypes["uuid"],	steam_id: ResolverInputTypes["bigint"]},ResolverInputTypes["lobby_players"]],
+delete_map_asset_builds?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["map_asset_builds_bool_exp"]},ResolverInputTypes["map_asset_builds_mutation_response"]],
+delete_map_asset_builds_by_pk?: [{	build_id: string},ResolverInputTypes["map_asset_builds"]],
 delete_map_callouts?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["map_callouts_bool_exp"]},ResolverInputTypes["map_callouts_mutation_response"]],
 delete_map_callouts_by_pk?: [{	map_name: string,	name: string},ResolverInputTypes["map_callouts"]],
@@ -111754,6 +112986,12 @@ insert_awards?: [{	/** the rows to be inserted */
 insert_awards_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["awards_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["awards_on_conflict"] | undefined | null},ResolverInputTypes["awards"]],
+insert_broadcast_huds?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["broadcast_huds_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["broadcast_huds_on_conflict"] | undefined | null},ResolverInputTypes["broadcast_huds_mutation_response"]],
+insert_broadcast_huds_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["broadcast_huds_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["broadcast_huds_on_conflict"] | undefined | null},ResolverInputTypes["broadcast_huds"]],
 insert_chat_read_state?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["chat_read_state_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["chat_read_state_on_conflict"] | undefined | null},ResolverInputTypes["chat_read_state_mutation_response"]],
@@ -112340,6 +113578,12 @@ insert_lobby_players?: [{	/** the rows to be inserted */
 insert_lobby_players_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["lobby_players_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["lobby_players_on_conflict"] | undefined | null},ResolverInputTypes["lobby_players"]],
+insert_map_asset_builds?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["map_asset_builds_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["map_asset_builds_on_conflict"] | undefined | null},ResolverInputTypes["map_asset_builds_mutation_response"]],
+insert_map_asset_builds_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["map_asset_builds_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["map_asset_builds_on_conflict"] | undefined | null},ResolverInputTypes["map_asset_builds"]],
 insert_map_callouts?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["map_callouts_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["map_callouts_on_conflict"] | undefined | null},ResolverInputTypes["map_callouts_mutation_response"]],
@@ -113156,6 +114400,25 @@ update_awards_by_pk?: [{	/** increments the numeric columns with given value of 
 	_set?: ResolverInputTypes["awards_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["awards_pk_columns_input"]},ResolverInputTypes["awards"]],
 update_awards_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["awards_updates"]>},ResolverInputTypes["awards_mutation_response"]],
+update_broadcast_huds?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["broadcast_huds_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["broadcast_huds_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["broadcast_huds_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["broadcast_huds_delete_key_input"] | undefined | null,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["broadcast_huds_inc_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["broadcast_huds_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["broadcast_huds_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["broadcast_huds_bool_exp"]},ResolverInputTypes["broadcast_huds_mutation_response"]],
+update_broadcast_huds_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["broadcast_huds_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["broadcast_huds_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["broadcast_huds_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["broadcast_huds_delete_key_input"] | undefined | null,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["broadcast_huds_inc_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["broadcast_huds_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["broadcast_huds_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["broadcast_huds_pk_columns_input"]},ResolverInputTypes["broadcast_huds"]],
+update_broadcast_huds_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["broadcast_huds_updates"]>},ResolverInputTypes["broadcast_huds_mutation_response"]],
 update_chat_read_state?: [{	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ResolverInputTypes["chat_read_state_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["chat_read_state_set_input"] | undefined | null,	/** filter the rows which have to be updated */
@@ -113981,6 +115244,23 @@ update_lobby_players_by_pk?: [{	/** increments the numeric columns with given va
 	_set?: ResolverInputTypes["lobby_players_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["lobby_players_pk_columns_input"]},ResolverInputTypes["lobby_players"]],
 update_lobby_players_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["lobby_players_updates"]>},ResolverInputTypes["lobby_players_mutation_response"]],
+update_map_asset_builds?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["map_asset_builds_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["map_asset_builds_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["map_asset_builds_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["map_asset_builds_delete_key_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["map_asset_builds_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["map_asset_builds_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["map_asset_builds_bool_exp"]},ResolverInputTypes["map_asset_builds_mutation_response"]],
+update_map_asset_builds_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["map_asset_builds_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["map_asset_builds_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["map_asset_builds_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["map_asset_builds_delete_key_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["map_asset_builds_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["map_asset_builds_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["map_asset_builds_pk_columns_input"]},ResolverInputTypes["map_asset_builds"]],
+update_map_asset_builds_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["map_asset_builds_updates"]>},ResolverInputTypes["map_asset_builds_mutation_response"]],
 update_map_callouts?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
 	_append?: ResolverInputTypes["map_callouts_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 	_delete_at_path?: ResolverInputTypes["map_callouts_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
@@ -114807,12 +116087,22 @@ update_utility_drift_results_by_pk?: [{	/** increments the numeric columns with 
 	_set?: ResolverInputTypes["utility_drift_results_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["utility_drift_results_pk_columns_input"]},ResolverInputTypes["utility_drift_results"]],
 update_utility_drift_results_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["utility_drift_results_updates"]>},ResolverInputTypes["utility_drift_results_mutation_response"]],
-update_utility_drift_scans?: [{	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ResolverInputTypes["utility_drift_scans_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+update_utility_drift_scans?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["utility_drift_scans_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["utility_drift_scans_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["utility_drift_scans_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["utility_drift_scans_delete_key_input"] | undefined | null,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["utility_drift_scans_inc_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["utility_drift_scans_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["utility_drift_scans_set_input"] | undefined | null,	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["utility_drift_scans_bool_exp"]},ResolverInputTypes["utility_drift_scans_mutation_response"]],
-update_utility_drift_scans_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ResolverInputTypes["utility_drift_scans_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+update_utility_drift_scans_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["utility_drift_scans_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["utility_drift_scans_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["utility_drift_scans_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["utility_drift_scans_delete_key_input"] | undefined | null,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["utility_drift_scans_inc_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["utility_drift_scans_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["utility_drift_scans_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["utility_drift_scans_pk_columns_input"]},ResolverInputTypes["utility_drift_scans"]],
 update_utility_drift_scans_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["utility_drift_scans_updates"]>},ResolverInputTypes["utility_drift_scans_mutation_response"]],
@@ -114967,7 +116257,6 @@ update_v_team_stage_results_by_pk?: [{	/** increments the numeric columns with g
 	_set?: ResolverInputTypes["v_team_stage_results_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["v_team_stage_results_pk_columns_input"]},ResolverInputTypes["v_team_stage_results"]],
 update_v_team_stage_results_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["v_team_stage_results_updates"]>},ResolverInputTypes["v_team_stage_results_mutation_response"]],
-buildMapAssets?: [{	game_server_node_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 validateGamedata?: [{	game_server_node_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 watchDemo?: [{	match_map_demo_id?: ResolverInputTypes["uuid"] | undefined | null,	match_map_id: ResolverInputTypes["uuid"]},ResolverInputTypes["WatchDemoOutput"]],
 writeServerFile?: [{	content: string,	file_path: string,	node_id: string,	server_id?: string | undefined | null},ResolverInputTypes["SuccessOutput"]],
@@ -130783,6 +132072,19 @@ awards_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["awards_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["awards_bool_exp"] | undefined | null},ResolverInputTypes["awards_aggregate"]],
 awards_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["awards"]],
+broadcast_huds?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["broadcast_huds_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["broadcast_huds_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["broadcast_huds_bool_exp"] | undefined | null},ResolverInputTypes["broadcast_huds"]],
+broadcast_huds_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["broadcast_huds_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["broadcast_huds_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["broadcast_huds_bool_exp"] | undefined | null},ResolverInputTypes["broadcast_huds_aggregate"]],
+broadcast_huds_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["broadcast_huds"]],
 chat_read_state?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["chat_read_state_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -132158,6 +133460,19 @@ lobby_players_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["lobby_players_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["lobby_players_bool_exp"] | undefined | null},ResolverInputTypes["lobby_players_aggregate"]],
 lobby_players_by_pk?: [{	lobby_id: ResolverInputTypes["uuid"],	steam_id: ResolverInputTypes["bigint"]},ResolverInputTypes["lobby_players"]],
+map_asset_builds?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["map_asset_builds_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["map_asset_builds_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["map_asset_builds_bool_exp"] | undefined | null},ResolverInputTypes["map_asset_builds"]],
+map_asset_builds_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["map_asset_builds_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["map_asset_builds_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["map_asset_builds_bool_exp"] | undefined | null},ResolverInputTypes["map_asset_builds_aggregate"]],
+map_asset_builds_by_pk?: [{	build_id: string},ResolverInputTypes["map_asset_builds"]],
 map_callouts?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["map_callouts_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -135700,6 +137015,23 @@ awards_stream?: [{	/** maximum number of rows returned in a single batch */
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["awards_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["awards_bool_exp"] | undefined | null},ResolverInputTypes["awards"]],
+broadcast_huds?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["broadcast_huds_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["broadcast_huds_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["broadcast_huds_bool_exp"] | undefined | null},ResolverInputTypes["broadcast_huds"]],
+broadcast_huds_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["broadcast_huds_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["broadcast_huds_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["broadcast_huds_bool_exp"] | undefined | null},ResolverInputTypes["broadcast_huds_aggregate"]],
+broadcast_huds_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["broadcast_huds"]],
+broadcast_huds_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["broadcast_huds_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["broadcast_huds_bool_exp"] | undefined | null},ResolverInputTypes["broadcast_huds"]],
 chat_read_state?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["chat_read_state_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -137435,6 +138767,23 @@ lobby_players_stream?: [{	/** maximum number of rows returned in a single batch 
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["lobby_players_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["lobby_players_bool_exp"] | undefined | null},ResolverInputTypes["lobby_players"]],
+map_asset_builds?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["map_asset_builds_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["map_asset_builds_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["map_asset_builds_bool_exp"] | undefined | null},ResolverInputTypes["map_asset_builds"]],
+map_asset_builds_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["map_asset_builds_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["map_asset_builds_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["map_asset_builds_bool_exp"] | undefined | null},ResolverInputTypes["map_asset_builds_aggregate"]],
+map_asset_builds_by_pk?: [{	build_id: string},ResolverInputTypes["map_asset_builds"]],
+map_asset_builds_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["map_asset_builds_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["map_asset_builds_bool_exp"] | undefined | null},ResolverInputTypes["map_asset_builds"]],
 map_callouts?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["map_callouts_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -150499,7 +151848,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_drift_results_select_colu
 ["utility_drift_scans"]: AliasType<{
 	broken?:boolean | `@${string}`,
 caveats?: [{	/** JSON select path */
-	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	path?: string | undefined | null},boolean | `@${string}`],
 	created_at?:boolean | `@${string}`,
 	failure_reason?:boolean | `@${string}`,
 	finished_at?:boolean | `@${string}`,
@@ -150554,6 +151903,10 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_drift_scans_select_column
 	variance?:ResolverInputTypes["utility_drift_scans_variance_fields"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["utility_drift_scans_append_input"]: {
+	caveats?: ResolverInputTypes["jsonb"] | undefined | null
+};
 	/** aggregate avg on columns */
 ["utility_drift_scans_avg_fields"]: AliasType<{
 	broken?:boolean | `@${string}`,
@@ -150572,6 +151925,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_drift_scans_select_column
 	_not?: ResolverInputTypes["utility_drift_scans_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["utility_drift_scans_bool_exp"]> | undefined | null,
 	broken?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	caveats?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	failure_reason?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	finished_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
@@ -150595,6 +151949,18 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_drift_scans_select_column
 };
 	/** unique or primary key constraints on table "utility_drift_scans" */
 ["utility_drift_scans_constraint"]:utility_drift_scans_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["utility_drift_scans_delete_at_path_input"]: {
+	caveats?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["utility_drift_scans_delete_elem_input"]: {
+	caveats?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["utility_drift_scans_delete_key_input"]: {
+	caveats?: string | undefined | null
+};
 	/** input type for incrementing numeric columns in table "utility_drift_scans" */
 ["utility_drift_scans_inc_input"]: {
 	broken?: number | undefined | null,
@@ -150609,6 +151975,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_drift_scans_select_column
 	/** input type for inserting data into table "utility_drift_scans" */
 ["utility_drift_scans_insert_input"]: {
 	broken?: number | undefined | null,
+	caveats?: ResolverInputTypes["jsonb"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	failure_reason?: string | undefined | null,
 	finished_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -150696,6 +152063,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_drift_scans_select_column
 	/** Ordering options when selecting data from "utility_drift_scans". */
 ["utility_drift_scans_order_by"]: {
 	broken?: ResolverInputTypes["order_by"] | undefined | null,
+	caveats?: ResolverInputTypes["order_by"] | undefined | null,
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	failure_reason?: ResolverInputTypes["order_by"] | undefined | null,
 	finished_at?: ResolverInputTypes["order_by"] | undefined | null,
@@ -150720,11 +152088,16 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_drift_scans_select_column
 ["utility_drift_scans_pk_columns_input"]: {
 	id: ResolverInputTypes["uuid"]
 };
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["utility_drift_scans_prepend_input"]: {
+	caveats?: ResolverInputTypes["jsonb"] | undefined | null
+};
 	/** select columns of table "utility_drift_scans" */
 ["utility_drift_scans_select_column"]:utility_drift_scans_select_column;
 	/** input type for updating data in table "utility_drift_scans" */
 ["utility_drift_scans_set_input"]: {
 	broken?: number | undefined | null,
+	caveats?: ResolverInputTypes["jsonb"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	failure_reason?: string | undefined | null,
 	finished_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -150789,6 +152162,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_drift_scans_select_column
 	/** Initial value of the column from where the streaming should start */
 ["utility_drift_scans_stream_cursor_value_input"]: {
 	broken?: number | undefined | null,
+	caveats?: ResolverInputTypes["jsonb"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	failure_reason?: string | undefined | null,
 	finished_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -150822,8 +152196,18 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_drift_scans_select_column
 	/** update columns of table "utility_drift_scans" */
 ["utility_drift_scans_update_column"]:utility_drift_scans_update_column;
 	["utility_drift_scans_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["utility_drift_scans_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["utility_drift_scans_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["utility_drift_scans_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["utility_drift_scans_delete_key_input"] | undefined | null,
 	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ResolverInputTypes["utility_drift_scans_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["utility_drift_scans_prepend_input"] | undefined | null,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["utility_drift_scans_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
@@ -168072,6 +169456,316 @@ export type ModelTypes = {
 	_neq?: ModelTypes["bigint"] | undefined | null,
 	_nin?: Array<ModelTypes["bigint"]> | undefined | null
 };
+	/** columns and relationships of "broadcast_huds" */
+["broadcast_huds"]: {
+		author?: string | undefined | null,
+	created_at: ModelTypes["timestamptz"],
+	description?: string | undefined | null,
+	enabled: boolean,
+	hud_json?: ModelTypes["jsonb"] | undefined | null,
+	id: ModelTypes["uuid"],
+	is_signed: boolean,
+	jthud_id: string,
+	name: string,
+	page_url?: string | undefined | null,
+	preview?: string | undefined | null,
+	size_bytes?: ModelTypes["bigint"] | undefined | null,
+	slug: string,
+	source: string,
+	storage_key?: string | undefined | null,
+	thumbnail?: string | undefined | null,
+	updated_at: ModelTypes["timestamptz"],
+	uploaded_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	variant?: string | undefined | null,
+	version?: string | undefined | null
+};
+	/** aggregated selection of "broadcast_huds" */
+["broadcast_huds_aggregate"]: {
+		aggregate?: ModelTypes["broadcast_huds_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["broadcast_huds"]>
+};
+	/** aggregate fields of "broadcast_huds" */
+["broadcast_huds_aggregate_fields"]: {
+		avg?: ModelTypes["broadcast_huds_avg_fields"] | undefined | null,
+	count: number,
+	max?: ModelTypes["broadcast_huds_max_fields"] | undefined | null,
+	min?: ModelTypes["broadcast_huds_min_fields"] | undefined | null,
+	stddev?: ModelTypes["broadcast_huds_stddev_fields"] | undefined | null,
+	stddev_pop?: ModelTypes["broadcast_huds_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: ModelTypes["broadcast_huds_stddev_samp_fields"] | undefined | null,
+	sum?: ModelTypes["broadcast_huds_sum_fields"] | undefined | null,
+	var_pop?: ModelTypes["broadcast_huds_var_pop_fields"] | undefined | null,
+	var_samp?: ModelTypes["broadcast_huds_var_samp_fields"] | undefined | null,
+	variance?: ModelTypes["broadcast_huds_variance_fields"] | undefined | null
+};
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["broadcast_huds_append_input"]: {
+	hud_json?: ModelTypes["jsonb"] | undefined | null
+};
+	/** aggregate avg on columns */
+["broadcast_huds_avg_fields"]: {
+		size_bytes?: number | undefined | null,
+	uploaded_by_steam_id?: number | undefined | null
+};
+	/** Boolean expression to filter rows from the table "broadcast_huds". All fields are combined with a logical 'AND'. */
+["broadcast_huds_bool_exp"]: {
+	_and?: Array<ModelTypes["broadcast_huds_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["broadcast_huds_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["broadcast_huds_bool_exp"]> | undefined | null,
+	author?: ModelTypes["String_comparison_exp"] | undefined | null,
+	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	description?: ModelTypes["String_comparison_exp"] | undefined | null,
+	enabled?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	hud_json?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
+	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	is_signed?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	jthud_id?: ModelTypes["String_comparison_exp"] | undefined | null,
+	name?: ModelTypes["String_comparison_exp"] | undefined | null,
+	page_url?: ModelTypes["String_comparison_exp"] | undefined | null,
+	preview?: ModelTypes["String_comparison_exp"] | undefined | null,
+	size_bytes?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	slug?: ModelTypes["String_comparison_exp"] | undefined | null,
+	source?: ModelTypes["String_comparison_exp"] | undefined | null,
+	storage_key?: ModelTypes["String_comparison_exp"] | undefined | null,
+	thumbnail?: ModelTypes["String_comparison_exp"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	uploaded_by_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	variant?: ModelTypes["String_comparison_exp"] | undefined | null,
+	version?: ModelTypes["String_comparison_exp"] | undefined | null
+};
+	["broadcast_huds_constraint"]:broadcast_huds_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["broadcast_huds_delete_at_path_input"]: {
+	hud_json?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["broadcast_huds_delete_elem_input"]: {
+	hud_json?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["broadcast_huds_delete_key_input"]: {
+	hud_json?: string | undefined | null
+};
+	/** input type for incrementing numeric columns in table "broadcast_huds" */
+["broadcast_huds_inc_input"]: {
+	size_bytes?: ModelTypes["bigint"] | undefined | null,
+	uploaded_by_steam_id?: ModelTypes["bigint"] | undefined | null
+};
+	/** input type for inserting data into table "broadcast_huds" */
+["broadcast_huds_insert_input"]: {
+	author?: string | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	description?: string | undefined | null,
+	enabled?: boolean | undefined | null,
+	hud_json?: ModelTypes["jsonb"] | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	is_signed?: boolean | undefined | null,
+	jthud_id?: string | undefined | null,
+	name?: string | undefined | null,
+	page_url?: string | undefined | null,
+	preview?: string | undefined | null,
+	size_bytes?: ModelTypes["bigint"] | undefined | null,
+	slug?: string | undefined | null,
+	source?: string | undefined | null,
+	storage_key?: string | undefined | null,
+	thumbnail?: string | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null,
+	uploaded_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	variant?: string | undefined | null,
+	version?: string | undefined | null
+};
+	/** aggregate max on columns */
+["broadcast_huds_max_fields"]: {
+		author?: string | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	description?: string | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	jthud_id?: string | undefined | null,
+	name?: string | undefined | null,
+	page_url?: string | undefined | null,
+	preview?: string | undefined | null,
+	size_bytes?: ModelTypes["bigint"] | undefined | null,
+	slug?: string | undefined | null,
+	source?: string | undefined | null,
+	storage_key?: string | undefined | null,
+	thumbnail?: string | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null,
+	uploaded_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	variant?: string | undefined | null,
+	version?: string | undefined | null
+};
+	/** aggregate min on columns */
+["broadcast_huds_min_fields"]: {
+		author?: string | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	description?: string | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	jthud_id?: string | undefined | null,
+	name?: string | undefined | null,
+	page_url?: string | undefined | null,
+	preview?: string | undefined | null,
+	size_bytes?: ModelTypes["bigint"] | undefined | null,
+	slug?: string | undefined | null,
+	source?: string | undefined | null,
+	storage_key?: string | undefined | null,
+	thumbnail?: string | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null,
+	uploaded_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	variant?: string | undefined | null,
+	version?: string | undefined | null
+};
+	/** response of any mutation on the table "broadcast_huds" */
+["broadcast_huds_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["broadcast_huds"]>
+};
+	/** on_conflict condition type for table "broadcast_huds" */
+["broadcast_huds_on_conflict"]: {
+	constraint: ModelTypes["broadcast_huds_constraint"],
+	update_columns: Array<ModelTypes["broadcast_huds_update_column"]>,
+	where?: ModelTypes["broadcast_huds_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "broadcast_huds". */
+["broadcast_huds_order_by"]: {
+	author?: ModelTypes["order_by"] | undefined | null,
+	created_at?: ModelTypes["order_by"] | undefined | null,
+	description?: ModelTypes["order_by"] | undefined | null,
+	enabled?: ModelTypes["order_by"] | undefined | null,
+	hud_json?: ModelTypes["order_by"] | undefined | null,
+	id?: ModelTypes["order_by"] | undefined | null,
+	is_signed?: ModelTypes["order_by"] | undefined | null,
+	jthud_id?: ModelTypes["order_by"] | undefined | null,
+	name?: ModelTypes["order_by"] | undefined | null,
+	page_url?: ModelTypes["order_by"] | undefined | null,
+	preview?: ModelTypes["order_by"] | undefined | null,
+	size_bytes?: ModelTypes["order_by"] | undefined | null,
+	slug?: ModelTypes["order_by"] | undefined | null,
+	source?: ModelTypes["order_by"] | undefined | null,
+	storage_key?: ModelTypes["order_by"] | undefined | null,
+	thumbnail?: ModelTypes["order_by"] | undefined | null,
+	updated_at?: ModelTypes["order_by"] | undefined | null,
+	uploaded_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	variant?: ModelTypes["order_by"] | undefined | null,
+	version?: ModelTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: broadcast_huds */
+["broadcast_huds_pk_columns_input"]: {
+	id: ModelTypes["uuid"]
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["broadcast_huds_prepend_input"]: {
+	hud_json?: ModelTypes["jsonb"] | undefined | null
+};
+	["broadcast_huds_select_column"]:broadcast_huds_select_column;
+	/** input type for updating data in table "broadcast_huds" */
+["broadcast_huds_set_input"]: {
+	author?: string | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	description?: string | undefined | null,
+	enabled?: boolean | undefined | null,
+	hud_json?: ModelTypes["jsonb"] | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	is_signed?: boolean | undefined | null,
+	jthud_id?: string | undefined | null,
+	name?: string | undefined | null,
+	page_url?: string | undefined | null,
+	preview?: string | undefined | null,
+	size_bytes?: ModelTypes["bigint"] | undefined | null,
+	slug?: string | undefined | null,
+	source?: string | undefined | null,
+	storage_key?: string | undefined | null,
+	thumbnail?: string | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null,
+	uploaded_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	variant?: string | undefined | null,
+	version?: string | undefined | null
+};
+	/** aggregate stddev on columns */
+["broadcast_huds_stddev_fields"]: {
+		size_bytes?: number | undefined | null,
+	uploaded_by_steam_id?: number | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["broadcast_huds_stddev_pop_fields"]: {
+		size_bytes?: number | undefined | null,
+	uploaded_by_steam_id?: number | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["broadcast_huds_stddev_samp_fields"]: {
+		size_bytes?: number | undefined | null,
+	uploaded_by_steam_id?: number | undefined | null
+};
+	/** Streaming cursor of the table "broadcast_huds" */
+["broadcast_huds_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["broadcast_huds_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["broadcast_huds_stream_cursor_value_input"]: {
+	author?: string | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	description?: string | undefined | null,
+	enabled?: boolean | undefined | null,
+	hud_json?: ModelTypes["jsonb"] | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	is_signed?: boolean | undefined | null,
+	jthud_id?: string | undefined | null,
+	name?: string | undefined | null,
+	page_url?: string | undefined | null,
+	preview?: string | undefined | null,
+	size_bytes?: ModelTypes["bigint"] | undefined | null,
+	slug?: string | undefined | null,
+	source?: string | undefined | null,
+	storage_key?: string | undefined | null,
+	thumbnail?: string | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null,
+	uploaded_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	variant?: string | undefined | null,
+	version?: string | undefined | null
+};
+	/** aggregate sum on columns */
+["broadcast_huds_sum_fields"]: {
+		size_bytes?: ModelTypes["bigint"] | undefined | null,
+	uploaded_by_steam_id?: ModelTypes["bigint"] | undefined | null
+};
+	["broadcast_huds_update_column"]:broadcast_huds_update_column;
+	["broadcast_huds_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ModelTypes["broadcast_huds_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ModelTypes["broadcast_huds_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ModelTypes["broadcast_huds_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ModelTypes["broadcast_huds_delete_key_input"] | undefined | null,
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ModelTypes["broadcast_huds_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ModelTypes["broadcast_huds_prepend_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["broadcast_huds_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["broadcast_huds_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["broadcast_huds_var_pop_fields"]: {
+		size_bytes?: number | undefined | null,
+	uploaded_by_steam_id?: number | undefined | null
+};
+	/** aggregate var_samp on columns */
+["broadcast_huds_var_samp_fields"]: {
+		size_bytes?: number | undefined | null,
+	uploaded_by_steam_id?: number | undefined | null
+};
+	/** aggregate variance on columns */
+["broadcast_huds_variance_fields"]: {
+		size_bytes?: number | undefined | null,
+	uploaded_by_steam_id?: number | undefined | null
+};
 	["bytea"]:any;
 	/** Boolean expression to compare columns of type "bytea". All fields are combined with logical 'AND'. */
 ["bytea_comparison_exp"]: {
@@ -184993,6 +186687,199 @@ export type ModelTypes = {
 	invited_by_steam_id?: ModelTypes["order_by"] | undefined | null,
 	steam_id?: ModelTypes["order_by"] | undefined | null
 };
+	/** columns and relationships of "map_asset_builds" */
+["map_asset_builds"]: {
+		build_id: string,
+	created_at: ModelTypes["timestamptz"],
+	error?: string | undefined | null,
+	failed?: ModelTypes["jsonb"] | undefined | null,
+	failed_view?: ModelTypes["jsonb"] | undefined | null,
+	finished_at?: ModelTypes["timestamptz"] | undefined | null,
+	manifest?: string | undefined | null,
+	maps?: ModelTypes["jsonb"] | undefined | null,
+	started_at?: ModelTypes["timestamptz"] | undefined | null,
+	status: string,
+	updated_at: ModelTypes["timestamptz"]
+};
+	/** aggregated selection of "map_asset_builds" */
+["map_asset_builds_aggregate"]: {
+		aggregate?: ModelTypes["map_asset_builds_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["map_asset_builds"]>
+};
+	/** aggregate fields of "map_asset_builds" */
+["map_asset_builds_aggregate_fields"]: {
+		count: number,
+	max?: ModelTypes["map_asset_builds_max_fields"] | undefined | null,
+	min?: ModelTypes["map_asset_builds_min_fields"] | undefined | null
+};
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["map_asset_builds_append_input"]: {
+	failed?: ModelTypes["jsonb"] | undefined | null,
+	failed_view?: ModelTypes["jsonb"] | undefined | null,
+	maps?: ModelTypes["jsonb"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "map_asset_builds". All fields are combined with a logical 'AND'. */
+["map_asset_builds_bool_exp"]: {
+	_and?: Array<ModelTypes["map_asset_builds_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["map_asset_builds_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["map_asset_builds_bool_exp"]> | undefined | null,
+	build_id?: ModelTypes["String_comparison_exp"] | undefined | null,
+	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	error?: ModelTypes["String_comparison_exp"] | undefined | null,
+	failed?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
+	failed_view?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
+	finished_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	manifest?: ModelTypes["String_comparison_exp"] | undefined | null,
+	maps?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
+	started_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	status?: ModelTypes["String_comparison_exp"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null
+};
+	["map_asset_builds_constraint"]:map_asset_builds_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["map_asset_builds_delete_at_path_input"]: {
+	failed?: Array<string> | undefined | null,
+	failed_view?: Array<string> | undefined | null,
+	maps?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["map_asset_builds_delete_elem_input"]: {
+	failed?: number | undefined | null,
+	failed_view?: number | undefined | null,
+	maps?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["map_asset_builds_delete_key_input"]: {
+	failed?: string | undefined | null,
+	failed_view?: string | undefined | null,
+	maps?: string | undefined | null
+};
+	/** input type for inserting data into table "map_asset_builds" */
+["map_asset_builds_insert_input"]: {
+	build_id?: string | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	error?: string | undefined | null,
+	failed?: ModelTypes["jsonb"] | undefined | null,
+	failed_view?: ModelTypes["jsonb"] | undefined | null,
+	finished_at?: ModelTypes["timestamptz"] | undefined | null,
+	manifest?: string | undefined | null,
+	maps?: ModelTypes["jsonb"] | undefined | null,
+	started_at?: ModelTypes["timestamptz"] | undefined | null,
+	status?: string | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** aggregate max on columns */
+["map_asset_builds_max_fields"]: {
+		build_id?: string | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	error?: string | undefined | null,
+	finished_at?: ModelTypes["timestamptz"] | undefined | null,
+	manifest?: string | undefined | null,
+	started_at?: ModelTypes["timestamptz"] | undefined | null,
+	status?: string | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** aggregate min on columns */
+["map_asset_builds_min_fields"]: {
+		build_id?: string | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	error?: string | undefined | null,
+	finished_at?: ModelTypes["timestamptz"] | undefined | null,
+	manifest?: string | undefined | null,
+	started_at?: ModelTypes["timestamptz"] | undefined | null,
+	status?: string | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** response of any mutation on the table "map_asset_builds" */
+["map_asset_builds_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["map_asset_builds"]>
+};
+	/** on_conflict condition type for table "map_asset_builds" */
+["map_asset_builds_on_conflict"]: {
+	constraint: ModelTypes["map_asset_builds_constraint"],
+	update_columns: Array<ModelTypes["map_asset_builds_update_column"]>,
+	where?: ModelTypes["map_asset_builds_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "map_asset_builds". */
+["map_asset_builds_order_by"]: {
+	build_id?: ModelTypes["order_by"] | undefined | null,
+	created_at?: ModelTypes["order_by"] | undefined | null,
+	error?: ModelTypes["order_by"] | undefined | null,
+	failed?: ModelTypes["order_by"] | undefined | null,
+	failed_view?: ModelTypes["order_by"] | undefined | null,
+	finished_at?: ModelTypes["order_by"] | undefined | null,
+	manifest?: ModelTypes["order_by"] | undefined | null,
+	maps?: ModelTypes["order_by"] | undefined | null,
+	started_at?: ModelTypes["order_by"] | undefined | null,
+	status?: ModelTypes["order_by"] | undefined | null,
+	updated_at?: ModelTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: map_asset_builds */
+["map_asset_builds_pk_columns_input"]: {
+	build_id: string
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["map_asset_builds_prepend_input"]: {
+	failed?: ModelTypes["jsonb"] | undefined | null,
+	failed_view?: ModelTypes["jsonb"] | undefined | null,
+	maps?: ModelTypes["jsonb"] | undefined | null
+};
+	["map_asset_builds_select_column"]:map_asset_builds_select_column;
+	/** input type for updating data in table "map_asset_builds" */
+["map_asset_builds_set_input"]: {
+	build_id?: string | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	error?: string | undefined | null,
+	failed?: ModelTypes["jsonb"] | undefined | null,
+	failed_view?: ModelTypes["jsonb"] | undefined | null,
+	finished_at?: ModelTypes["timestamptz"] | undefined | null,
+	manifest?: string | undefined | null,
+	maps?: ModelTypes["jsonb"] | undefined | null,
+	started_at?: ModelTypes["timestamptz"] | undefined | null,
+	status?: string | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** Streaming cursor of the table "map_asset_builds" */
+["map_asset_builds_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["map_asset_builds_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["map_asset_builds_stream_cursor_value_input"]: {
+	build_id?: string | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	error?: string | undefined | null,
+	failed?: ModelTypes["jsonb"] | undefined | null,
+	failed_view?: ModelTypes["jsonb"] | undefined | null,
+	finished_at?: ModelTypes["timestamptz"] | undefined | null,
+	manifest?: string | undefined | null,
+	maps?: ModelTypes["jsonb"] | undefined | null,
+	started_at?: ModelTypes["timestamptz"] | undefined | null,
+	status?: string | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	["map_asset_builds_update_column"]:map_asset_builds_update_column;
+	["map_asset_builds_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ModelTypes["map_asset_builds_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ModelTypes["map_asset_builds_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ModelTypes["map_asset_builds_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ModelTypes["map_asset_builds_delete_key_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ModelTypes["map_asset_builds_prepend_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["map_asset_builds_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["map_asset_builds_bool_exp"]
+};
 	/** columns and relationships of "map_callouts" */
 ["map_callouts"]: {
 		boxes: ModelTypes["jsonb"],
@@ -191009,6 +192896,8 @@ export type ModelTypes = {
 	backfillUtilityLaunchSeeds?: ModelTypes["UtilityLaunchSeedBackfillOutput"] | undefined | null,
 	/** Launch a Vulkan shader pre-bake Job on a GPU node */
 	bakeShaders?: ModelTypes["SuccessOutput"] | undefined | null,
+	/** Build and publish map assets from a node's CS2 install (5stack.gg only) */
+	buildMapAssets?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** callForOrganizer */
 	callForOrganizer?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Request cancellation of the in-progress season ELO backfill (admin only). Stops after the current match. */
@@ -191100,6 +192989,10 @@ export type ModelTypes = {
 	delete_awards?: ModelTypes["awards_mutation_response"] | undefined | null,
 	/** delete single row from the table: "awards" */
 	delete_awards_by_pk?: ModelTypes["awards"] | undefined | null,
+	/** delete data from the table: "broadcast_huds" */
+	delete_broadcast_huds?: ModelTypes["broadcast_huds_mutation_response"] | undefined | null,
+	/** delete single row from the table: "broadcast_huds" */
+	delete_broadcast_huds_by_pk?: ModelTypes["broadcast_huds"] | undefined | null,
 	/** delete data from the table: "chat_read_state" */
 	delete_chat_read_state?: ModelTypes["chat_read_state_mutation_response"] | undefined | null,
 	/** delete single row from the table: "chat_read_state" */
@@ -191490,6 +193383,10 @@ export type ModelTypes = {
 	delete_lobby_players?: ModelTypes["lobby_players_mutation_response"] | undefined | null,
 	/** delete single row from the table: "lobby_players" */
 	delete_lobby_players_by_pk?: ModelTypes["lobby_players"] | undefined | null,
+	/** delete data from the table: "map_asset_builds" */
+	delete_map_asset_builds?: ModelTypes["map_asset_builds_mutation_response"] | undefined | null,
+	/** delete single row from the table: "map_asset_builds" */
+	delete_map_asset_builds_by_pk?: ModelTypes["map_asset_builds"] | undefined | null,
 	/** delete data from the table: "map_callouts" */
 	delete_map_callouts?: ModelTypes["map_callouts_mutation_response"] | undefined | null,
 	/** delete single row from the table: "map_callouts" */
@@ -191926,6 +193823,10 @@ export type ModelTypes = {
 	insert_awards?: ModelTypes["awards_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "awards" */
 	insert_awards_one?: ModelTypes["awards"] | undefined | null,
+	/** insert data into the table: "broadcast_huds" */
+	insert_broadcast_huds?: ModelTypes["broadcast_huds_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "broadcast_huds" */
+	insert_broadcast_huds_one?: ModelTypes["broadcast_huds"] | undefined | null,
 	/** insert data into the table: "chat_read_state" */
 	insert_chat_read_state?: ModelTypes["chat_read_state_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "chat_read_state" */
@@ -192318,6 +194219,10 @@ export type ModelTypes = {
 	insert_lobby_players?: ModelTypes["lobby_players_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "lobby_players" */
 	insert_lobby_players_one?: ModelTypes["lobby_players"] | undefined | null,
+	/** insert data into the table: "map_asset_builds" */
+	insert_map_asset_builds?: ModelTypes["map_asset_builds_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "map_asset_builds" */
+	insert_map_asset_builds_one?: ModelTypes["map_asset_builds"] | undefined | null,
 	/** insert data into the table: "map_callouts" */
 	insert_map_callouts?: ModelTypes["map_callouts_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "map_callouts" */
@@ -192956,6 +194861,12 @@ export type ModelTypes = {
 	update_awards_by_pk?: ModelTypes["awards"] | undefined | null,
 	/** update multiples rows of table: "awards" */
 	update_awards_many?: Array<ModelTypes["awards_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "broadcast_huds" */
+	update_broadcast_huds?: ModelTypes["broadcast_huds_mutation_response"] | undefined | null,
+	/** update single row of the table: "broadcast_huds" */
+	update_broadcast_huds_by_pk?: ModelTypes["broadcast_huds"] | undefined | null,
+	/** update multiples rows of table: "broadcast_huds" */
+	update_broadcast_huds_many?: Array<ModelTypes["broadcast_huds_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "chat_read_state" */
 	update_chat_read_state?: ModelTypes["chat_read_state_mutation_response"] | undefined | null,
 	/** update single row of the table: "chat_read_state" */
@@ -193542,6 +195453,12 @@ export type ModelTypes = {
 	update_lobby_players_by_pk?: ModelTypes["lobby_players"] | undefined | null,
 	/** update multiples rows of table: "lobby_players" */
 	update_lobby_players_many?: Array<ModelTypes["lobby_players_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "map_asset_builds" */
+	update_map_asset_builds?: ModelTypes["map_asset_builds_mutation_response"] | undefined | null,
+	/** update single row of the table: "map_asset_builds" */
+	update_map_asset_builds_by_pk?: ModelTypes["map_asset_builds"] | undefined | null,
+	/** update multiples rows of table: "map_asset_builds" */
+	update_map_asset_builds_many?: Array<ModelTypes["map_asset_builds_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "map_callouts" */
 	update_map_callouts?: ModelTypes["map_callouts_mutation_response"] | undefined | null,
 	/** update single row of the table: "map_callouts" */
@@ -194149,7 +196066,6 @@ export type ModelTypes = {
 	/** update multiples rows of table: "v_team_stage_results" */
 	update_v_team_stage_results_many?: Array<ModelTypes["v_team_stage_results_mutation_response"] | undefined | null> | undefined | null,
 	/** Validate CS2 gamedata signatures/offsets on a node (5stack.gg test instance only) */
-	buildMapAssets?: ModelTypes["SuccessOutput"] | undefined | null,
 	validateGamedata?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Spawn a per-user game-streamer pod to play back a finished match's demo */
 	watchDemo?: ModelTypes["WatchDemoOutput"] | undefined | null,
@@ -209021,6 +210937,12 @@ export type ModelTypes = {
 	awards_aggregate: ModelTypes["awards_aggregate"],
 	/** fetch data from the table: "awards" using primary key columns */
 	awards_by_pk?: ModelTypes["awards"] | undefined | null,
+	/** fetch data from the table: "broadcast_huds" */
+	broadcast_huds: Array<ModelTypes["broadcast_huds"]>,
+	/** fetch aggregated fields from the table: "broadcast_huds" */
+	broadcast_huds_aggregate: ModelTypes["broadcast_huds_aggregate"],
+	/** fetch data from the table: "broadcast_huds" using primary key columns */
+	broadcast_huds_by_pk?: ModelTypes["broadcast_huds"] | undefined | null,
 	/** fetch data from the table: "chat_read_state" */
 	chat_read_state: Array<ModelTypes["chat_read_state"]>,
 	/** fetch aggregated fields from the table: "chat_read_state" */
@@ -209670,6 +211592,12 @@ export type ModelTypes = {
 	lobby_players_aggregate: ModelTypes["lobby_players_aggregate"],
 	/** fetch data from the table: "lobby_players" using primary key columns */
 	lobby_players_by_pk?: ModelTypes["lobby_players"] | undefined | null,
+	/** fetch data from the table: "map_asset_builds" */
+	map_asset_builds: Array<ModelTypes["map_asset_builds"]>,
+	/** fetch aggregated fields from the table: "map_asset_builds" */
+	map_asset_builds_aggregate: ModelTypes["map_asset_builds_aggregate"],
+	/** fetch data from the table: "map_asset_builds" using primary key columns */
+	map_asset_builds_by_pk?: ModelTypes["map_asset_builds"] | undefined | null,
 	/** fetch data from the table: "map_callouts" */
 	map_callouts: Array<ModelTypes["map_callouts"]>,
 	/** fetch aggregated fields from the table: "map_callouts" */
@@ -212037,6 +213965,14 @@ export type ModelTypes = {
 	awards_by_pk?: ModelTypes["awards"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "awards" */
 	awards_stream: Array<ModelTypes["awards"]>,
+	/** fetch data from the table: "broadcast_huds" */
+	broadcast_huds: Array<ModelTypes["broadcast_huds"]>,
+	/** fetch aggregated fields from the table: "broadcast_huds" */
+	broadcast_huds_aggregate: ModelTypes["broadcast_huds_aggregate"],
+	/** fetch data from the table: "broadcast_huds" using primary key columns */
+	broadcast_huds_by_pk?: ModelTypes["broadcast_huds"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "broadcast_huds" */
+	broadcast_huds_stream: Array<ModelTypes["broadcast_huds"]>,
 	/** fetch data from the table: "chat_read_state" */
 	chat_read_state: Array<ModelTypes["chat_read_state"]>,
 	/** fetch aggregated fields from the table: "chat_read_state" */
@@ -212839,6 +214775,14 @@ export type ModelTypes = {
 	lobby_players_by_pk?: ModelTypes["lobby_players"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "lobby_players" */
 	lobby_players_stream: Array<ModelTypes["lobby_players"]>,
+	/** fetch data from the table: "map_asset_builds" */
+	map_asset_builds: Array<ModelTypes["map_asset_builds"]>,
+	/** fetch aggregated fields from the table: "map_asset_builds" */
+	map_asset_builds_aggregate: ModelTypes["map_asset_builds_aggregate"],
+	/** fetch data from the table: "map_asset_builds" using primary key columns */
+	map_asset_builds_by_pk?: ModelTypes["map_asset_builds"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "map_asset_builds" */
+	map_asset_builds_stream: Array<ModelTypes["map_asset_builds"]>,
 	/** fetch data from the table: "map_callouts" */
 	map_callouts: Array<ModelTypes["map_callouts"]>,
 	/** fetch aggregated fields from the table: "map_callouts" */
@@ -223853,6 +225797,10 @@ export type ModelTypes = {
 	var_samp?: ModelTypes["utility_drift_scans_var_samp_fields"] | undefined | null,
 	variance?: ModelTypes["utility_drift_scans_variance_fields"] | undefined | null
 };
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["utility_drift_scans_append_input"]: {
+	caveats?: ModelTypes["jsonb"] | undefined | null
+};
 	/** aggregate avg on columns */
 ["utility_drift_scans_avg_fields"]: {
 		broken?: number | undefined | null,
@@ -223870,6 +225818,7 @@ export type ModelTypes = {
 	_not?: ModelTypes["utility_drift_scans_bool_exp"] | undefined | null,
 	_or?: Array<ModelTypes["utility_drift_scans_bool_exp"]> | undefined | null,
 	broken?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	caveats?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
 	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	failure_reason?: ModelTypes["String_comparison_exp"] | undefined | null,
 	finished_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
@@ -223892,6 +225841,18 @@ export type ModelTypes = {
 	updated_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null
 };
 	["utility_drift_scans_constraint"]:utility_drift_scans_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["utility_drift_scans_delete_at_path_input"]: {
+	caveats?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["utility_drift_scans_delete_elem_input"]: {
+	caveats?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["utility_drift_scans_delete_key_input"]: {
+	caveats?: string | undefined | null
+};
 	/** input type for incrementing numeric columns in table "utility_drift_scans" */
 ["utility_drift_scans_inc_input"]: {
 	broken?: number | undefined | null,
@@ -223906,6 +225867,7 @@ export type ModelTypes = {
 	/** input type for inserting data into table "utility_drift_scans" */
 ["utility_drift_scans_insert_input"]: {
 	broken?: number | undefined | null,
+	caveats?: ModelTypes["jsonb"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	failure_reason?: string | undefined | null,
 	finished_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -223990,6 +225952,7 @@ export type ModelTypes = {
 	/** Ordering options when selecting data from "utility_drift_scans". */
 ["utility_drift_scans_order_by"]: {
 	broken?: ModelTypes["order_by"] | undefined | null,
+	caveats?: ModelTypes["order_by"] | undefined | null,
 	created_at?: ModelTypes["order_by"] | undefined | null,
 	failure_reason?: ModelTypes["order_by"] | undefined | null,
 	finished_at?: ModelTypes["order_by"] | undefined | null,
@@ -224014,10 +225977,15 @@ export type ModelTypes = {
 ["utility_drift_scans_pk_columns_input"]: {
 	id: ModelTypes["uuid"]
 };
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["utility_drift_scans_prepend_input"]: {
+	caveats?: ModelTypes["jsonb"] | undefined | null
+};
 	["utility_drift_scans_select_column"]:utility_drift_scans_select_column;
 	/** input type for updating data in table "utility_drift_scans" */
 ["utility_drift_scans_set_input"]: {
 	broken?: number | undefined | null,
+	caveats?: ModelTypes["jsonb"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	failure_reason?: string | undefined | null,
 	finished_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -224079,6 +226047,7 @@ export type ModelTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["utility_drift_scans_stream_cursor_value_input"]: {
 	broken?: number | undefined | null,
+	caveats?: ModelTypes["jsonb"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	failure_reason?: string | undefined | null,
 	finished_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -224110,8 +226079,18 @@ export type ModelTypes = {
 };
 	["utility_drift_scans_update_column"]:utility_drift_scans_update_column;
 	["utility_drift_scans_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ModelTypes["utility_drift_scans_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ModelTypes["utility_drift_scans_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ModelTypes["utility_drift_scans_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ModelTypes["utility_drift_scans_delete_key_input"] | undefined | null,
 	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ModelTypes["utility_drift_scans_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ModelTypes["utility_drift_scans_prepend_input"] | undefined | null,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ModelTypes["utility_drift_scans_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
@@ -240771,6 +242750,333 @@ export type GraphQLTypes = {
 	_lte?: GraphQLTypes["bigint"] | undefined | null,
 	_neq?: GraphQLTypes["bigint"] | undefined | null,
 	_nin?: Array<GraphQLTypes["bigint"]> | undefined | null
+};
+	/** columns and relationships of "broadcast_huds" */
+["broadcast_huds"]: {
+	__typename: "broadcast_huds",
+	author?: string | undefined | null,
+	created_at: GraphQLTypes["timestamptz"],
+	description?: string | undefined | null,
+	enabled: boolean,
+	hud_json?: GraphQLTypes["jsonb"] | undefined | null,
+	id: GraphQLTypes["uuid"],
+	is_signed: boolean,
+	jthud_id: string,
+	name: string,
+	page_url?: string | undefined | null,
+	preview?: string | undefined | null,
+	size_bytes?: GraphQLTypes["bigint"] | undefined | null,
+	slug: string,
+	source: string,
+	storage_key?: string | undefined | null,
+	thumbnail?: string | undefined | null,
+	updated_at: GraphQLTypes["timestamptz"],
+	uploaded_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	variant?: string | undefined | null,
+	version?: string | undefined | null
+};
+	/** aggregated selection of "broadcast_huds" */
+["broadcast_huds_aggregate"]: {
+	__typename: "broadcast_huds_aggregate",
+	aggregate?: GraphQLTypes["broadcast_huds_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["broadcast_huds"]>
+};
+	/** aggregate fields of "broadcast_huds" */
+["broadcast_huds_aggregate_fields"]: {
+	__typename: "broadcast_huds_aggregate_fields",
+	avg?: GraphQLTypes["broadcast_huds_avg_fields"] | undefined | null,
+	count: number,
+	max?: GraphQLTypes["broadcast_huds_max_fields"] | undefined | null,
+	min?: GraphQLTypes["broadcast_huds_min_fields"] | undefined | null,
+	stddev?: GraphQLTypes["broadcast_huds_stddev_fields"] | undefined | null,
+	stddev_pop?: GraphQLTypes["broadcast_huds_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: GraphQLTypes["broadcast_huds_stddev_samp_fields"] | undefined | null,
+	sum?: GraphQLTypes["broadcast_huds_sum_fields"] | undefined | null,
+	var_pop?: GraphQLTypes["broadcast_huds_var_pop_fields"] | undefined | null,
+	var_samp?: GraphQLTypes["broadcast_huds_var_samp_fields"] | undefined | null,
+	variance?: GraphQLTypes["broadcast_huds_variance_fields"] | undefined | null
+};
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["broadcast_huds_append_input"]: {
+		hud_json?: GraphQLTypes["jsonb"] | undefined | null
+};
+	/** aggregate avg on columns */
+["broadcast_huds_avg_fields"]: {
+	__typename: "broadcast_huds_avg_fields",
+	size_bytes?: number | undefined | null,
+	uploaded_by_steam_id?: number | undefined | null
+};
+	/** Boolean expression to filter rows from the table "broadcast_huds". All fields are combined with a logical 'AND'. */
+["broadcast_huds_bool_exp"]: {
+		_and?: Array<GraphQLTypes["broadcast_huds_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["broadcast_huds_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["broadcast_huds_bool_exp"]> | undefined | null,
+	author?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	description?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	enabled?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	hud_json?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
+	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	is_signed?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	jthud_id?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	name?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	page_url?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	preview?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	size_bytes?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	slug?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	source?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	storage_key?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	thumbnail?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	uploaded_by_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	variant?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	version?: GraphQLTypes["String_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "broadcast_huds" */
+["broadcast_huds_constraint"]: broadcast_huds_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["broadcast_huds_delete_at_path_input"]: {
+		hud_json?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["broadcast_huds_delete_elem_input"]: {
+		hud_json?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["broadcast_huds_delete_key_input"]: {
+		hud_json?: string | undefined | null
+};
+	/** input type for incrementing numeric columns in table "broadcast_huds" */
+["broadcast_huds_inc_input"]: {
+		size_bytes?: GraphQLTypes["bigint"] | undefined | null,
+	uploaded_by_steam_id?: GraphQLTypes["bigint"] | undefined | null
+};
+	/** input type for inserting data into table "broadcast_huds" */
+["broadcast_huds_insert_input"]: {
+		author?: string | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	description?: string | undefined | null,
+	enabled?: boolean | undefined | null,
+	hud_json?: GraphQLTypes["jsonb"] | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	is_signed?: boolean | undefined | null,
+	jthud_id?: string | undefined | null,
+	name?: string | undefined | null,
+	page_url?: string | undefined | null,
+	preview?: string | undefined | null,
+	size_bytes?: GraphQLTypes["bigint"] | undefined | null,
+	slug?: string | undefined | null,
+	source?: string | undefined | null,
+	storage_key?: string | undefined | null,
+	thumbnail?: string | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	uploaded_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	variant?: string | undefined | null,
+	version?: string | undefined | null
+};
+	/** aggregate max on columns */
+["broadcast_huds_max_fields"]: {
+	__typename: "broadcast_huds_max_fields",
+	author?: string | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	description?: string | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	jthud_id?: string | undefined | null,
+	name?: string | undefined | null,
+	page_url?: string | undefined | null,
+	preview?: string | undefined | null,
+	size_bytes?: GraphQLTypes["bigint"] | undefined | null,
+	slug?: string | undefined | null,
+	source?: string | undefined | null,
+	storage_key?: string | undefined | null,
+	thumbnail?: string | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	uploaded_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	variant?: string | undefined | null,
+	version?: string | undefined | null
+};
+	/** aggregate min on columns */
+["broadcast_huds_min_fields"]: {
+	__typename: "broadcast_huds_min_fields",
+	author?: string | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	description?: string | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	jthud_id?: string | undefined | null,
+	name?: string | undefined | null,
+	page_url?: string | undefined | null,
+	preview?: string | undefined | null,
+	size_bytes?: GraphQLTypes["bigint"] | undefined | null,
+	slug?: string | undefined | null,
+	source?: string | undefined | null,
+	storage_key?: string | undefined | null,
+	thumbnail?: string | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	uploaded_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	variant?: string | undefined | null,
+	version?: string | undefined | null
+};
+	/** response of any mutation on the table "broadcast_huds" */
+["broadcast_huds_mutation_response"]: {
+	__typename: "broadcast_huds_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["broadcast_huds"]>
+};
+	/** on_conflict condition type for table "broadcast_huds" */
+["broadcast_huds_on_conflict"]: {
+		constraint: GraphQLTypes["broadcast_huds_constraint"],
+	update_columns: Array<GraphQLTypes["broadcast_huds_update_column"]>,
+	where?: GraphQLTypes["broadcast_huds_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "broadcast_huds". */
+["broadcast_huds_order_by"]: {
+		author?: GraphQLTypes["order_by"] | undefined | null,
+	created_at?: GraphQLTypes["order_by"] | undefined | null,
+	description?: GraphQLTypes["order_by"] | undefined | null,
+	enabled?: GraphQLTypes["order_by"] | undefined | null,
+	hud_json?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
+	is_signed?: GraphQLTypes["order_by"] | undefined | null,
+	jthud_id?: GraphQLTypes["order_by"] | undefined | null,
+	name?: GraphQLTypes["order_by"] | undefined | null,
+	page_url?: GraphQLTypes["order_by"] | undefined | null,
+	preview?: GraphQLTypes["order_by"] | undefined | null,
+	size_bytes?: GraphQLTypes["order_by"] | undefined | null,
+	slug?: GraphQLTypes["order_by"] | undefined | null,
+	source?: GraphQLTypes["order_by"] | undefined | null,
+	storage_key?: GraphQLTypes["order_by"] | undefined | null,
+	thumbnail?: GraphQLTypes["order_by"] | undefined | null,
+	updated_at?: GraphQLTypes["order_by"] | undefined | null,
+	uploaded_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	variant?: GraphQLTypes["order_by"] | undefined | null,
+	version?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: broadcast_huds */
+["broadcast_huds_pk_columns_input"]: {
+		id: GraphQLTypes["uuid"]
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["broadcast_huds_prepend_input"]: {
+		hud_json?: GraphQLTypes["jsonb"] | undefined | null
+};
+	/** select columns of table "broadcast_huds" */
+["broadcast_huds_select_column"]: broadcast_huds_select_column;
+	/** input type for updating data in table "broadcast_huds" */
+["broadcast_huds_set_input"]: {
+		author?: string | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	description?: string | undefined | null,
+	enabled?: boolean | undefined | null,
+	hud_json?: GraphQLTypes["jsonb"] | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	is_signed?: boolean | undefined | null,
+	jthud_id?: string | undefined | null,
+	name?: string | undefined | null,
+	page_url?: string | undefined | null,
+	preview?: string | undefined | null,
+	size_bytes?: GraphQLTypes["bigint"] | undefined | null,
+	slug?: string | undefined | null,
+	source?: string | undefined | null,
+	storage_key?: string | undefined | null,
+	thumbnail?: string | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	uploaded_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	variant?: string | undefined | null,
+	version?: string | undefined | null
+};
+	/** aggregate stddev on columns */
+["broadcast_huds_stddev_fields"]: {
+	__typename: "broadcast_huds_stddev_fields",
+	size_bytes?: number | undefined | null,
+	uploaded_by_steam_id?: number | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["broadcast_huds_stddev_pop_fields"]: {
+	__typename: "broadcast_huds_stddev_pop_fields",
+	size_bytes?: number | undefined | null,
+	uploaded_by_steam_id?: number | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["broadcast_huds_stddev_samp_fields"]: {
+	__typename: "broadcast_huds_stddev_samp_fields",
+	size_bytes?: number | undefined | null,
+	uploaded_by_steam_id?: number | undefined | null
+};
+	/** Streaming cursor of the table "broadcast_huds" */
+["broadcast_huds_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["broadcast_huds_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["broadcast_huds_stream_cursor_value_input"]: {
+		author?: string | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	description?: string | undefined | null,
+	enabled?: boolean | undefined | null,
+	hud_json?: GraphQLTypes["jsonb"] | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	is_signed?: boolean | undefined | null,
+	jthud_id?: string | undefined | null,
+	name?: string | undefined | null,
+	page_url?: string | undefined | null,
+	preview?: string | undefined | null,
+	size_bytes?: GraphQLTypes["bigint"] | undefined | null,
+	slug?: string | undefined | null,
+	source?: string | undefined | null,
+	storage_key?: string | undefined | null,
+	thumbnail?: string | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	uploaded_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	variant?: string | undefined | null,
+	version?: string | undefined | null
+};
+	/** aggregate sum on columns */
+["broadcast_huds_sum_fields"]: {
+	__typename: "broadcast_huds_sum_fields",
+	size_bytes?: GraphQLTypes["bigint"] | undefined | null,
+	uploaded_by_steam_id?: GraphQLTypes["bigint"] | undefined | null
+};
+	/** update columns of table "broadcast_huds" */
+["broadcast_huds_update_column"]: broadcast_huds_update_column;
+	["broadcast_huds_updates"]: {
+		/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: GraphQLTypes["broadcast_huds_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: GraphQLTypes["broadcast_huds_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: GraphQLTypes["broadcast_huds_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: GraphQLTypes["broadcast_huds_delete_key_input"] | undefined | null,
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: GraphQLTypes["broadcast_huds_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: GraphQLTypes["broadcast_huds_prepend_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["broadcast_huds_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["broadcast_huds_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["broadcast_huds_var_pop_fields"]: {
+	__typename: "broadcast_huds_var_pop_fields",
+	size_bytes?: number | undefined | null,
+	uploaded_by_steam_id?: number | undefined | null
+};
+	/** aggregate var_samp on columns */
+["broadcast_huds_var_samp_fields"]: {
+	__typename: "broadcast_huds_var_samp_fields",
+	size_bytes?: number | undefined | null,
+	uploaded_by_steam_id?: number | undefined | null
+};
+	/** aggregate variance on columns */
+["broadcast_huds_variance_fields"]: {
+	__typename: "broadcast_huds_variance_fields",
+	size_bytes?: number | undefined | null,
+	uploaded_by_steam_id?: number | undefined | null
 };
 	["bytea"]: "scalar" & { name: "bytea" };
 	/** Boolean expression to compare columns of type "bytea". All fields are combined with logical 'AND'. */
@@ -258848,6 +261154,208 @@ export type GraphQLTypes = {
 		invited_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	steam_id?: GraphQLTypes["order_by"] | undefined | null
 };
+	/** columns and relationships of "map_asset_builds" */
+["map_asset_builds"]: {
+	__typename: "map_asset_builds",
+	build_id: string,
+	created_at: GraphQLTypes["timestamptz"],
+	error?: string | undefined | null,
+	failed?: GraphQLTypes["jsonb"] | undefined | null,
+	failed_view?: GraphQLTypes["jsonb"] | undefined | null,
+	finished_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	manifest?: string | undefined | null,
+	maps?: GraphQLTypes["jsonb"] | undefined | null,
+	started_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	status: string,
+	updated_at: GraphQLTypes["timestamptz"]
+};
+	/** aggregated selection of "map_asset_builds" */
+["map_asset_builds_aggregate"]: {
+	__typename: "map_asset_builds_aggregate",
+	aggregate?: GraphQLTypes["map_asset_builds_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["map_asset_builds"]>
+};
+	/** aggregate fields of "map_asset_builds" */
+["map_asset_builds_aggregate_fields"]: {
+	__typename: "map_asset_builds_aggregate_fields",
+	count: number,
+	max?: GraphQLTypes["map_asset_builds_max_fields"] | undefined | null,
+	min?: GraphQLTypes["map_asset_builds_min_fields"] | undefined | null
+};
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["map_asset_builds_append_input"]: {
+		failed?: GraphQLTypes["jsonb"] | undefined | null,
+	failed_view?: GraphQLTypes["jsonb"] | undefined | null,
+	maps?: GraphQLTypes["jsonb"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "map_asset_builds". All fields are combined with a logical 'AND'. */
+["map_asset_builds_bool_exp"]: {
+		_and?: Array<GraphQLTypes["map_asset_builds_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["map_asset_builds_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["map_asset_builds_bool_exp"]> | undefined | null,
+	build_id?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	error?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	failed?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
+	failed_view?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
+	finished_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	manifest?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	maps?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
+	started_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	status?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "map_asset_builds" */
+["map_asset_builds_constraint"]: map_asset_builds_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["map_asset_builds_delete_at_path_input"]: {
+		failed?: Array<string> | undefined | null,
+	failed_view?: Array<string> | undefined | null,
+	maps?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["map_asset_builds_delete_elem_input"]: {
+		failed?: number | undefined | null,
+	failed_view?: number | undefined | null,
+	maps?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["map_asset_builds_delete_key_input"]: {
+		failed?: string | undefined | null,
+	failed_view?: string | undefined | null,
+	maps?: string | undefined | null
+};
+	/** input type for inserting data into table "map_asset_builds" */
+["map_asset_builds_insert_input"]: {
+		build_id?: string | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	error?: string | undefined | null,
+	failed?: GraphQLTypes["jsonb"] | undefined | null,
+	failed_view?: GraphQLTypes["jsonb"] | undefined | null,
+	finished_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	manifest?: string | undefined | null,
+	maps?: GraphQLTypes["jsonb"] | undefined | null,
+	started_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	status?: string | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** aggregate max on columns */
+["map_asset_builds_max_fields"]: {
+	__typename: "map_asset_builds_max_fields",
+	build_id?: string | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	error?: string | undefined | null,
+	finished_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	manifest?: string | undefined | null,
+	started_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	status?: string | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** aggregate min on columns */
+["map_asset_builds_min_fields"]: {
+	__typename: "map_asset_builds_min_fields",
+	build_id?: string | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	error?: string | undefined | null,
+	finished_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	manifest?: string | undefined | null,
+	started_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	status?: string | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** response of any mutation on the table "map_asset_builds" */
+["map_asset_builds_mutation_response"]: {
+	__typename: "map_asset_builds_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["map_asset_builds"]>
+};
+	/** on_conflict condition type for table "map_asset_builds" */
+["map_asset_builds_on_conflict"]: {
+		constraint: GraphQLTypes["map_asset_builds_constraint"],
+	update_columns: Array<GraphQLTypes["map_asset_builds_update_column"]>,
+	where?: GraphQLTypes["map_asset_builds_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "map_asset_builds". */
+["map_asset_builds_order_by"]: {
+		build_id?: GraphQLTypes["order_by"] | undefined | null,
+	created_at?: GraphQLTypes["order_by"] | undefined | null,
+	error?: GraphQLTypes["order_by"] | undefined | null,
+	failed?: GraphQLTypes["order_by"] | undefined | null,
+	failed_view?: GraphQLTypes["order_by"] | undefined | null,
+	finished_at?: GraphQLTypes["order_by"] | undefined | null,
+	manifest?: GraphQLTypes["order_by"] | undefined | null,
+	maps?: GraphQLTypes["order_by"] | undefined | null,
+	started_at?: GraphQLTypes["order_by"] | undefined | null,
+	status?: GraphQLTypes["order_by"] | undefined | null,
+	updated_at?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: map_asset_builds */
+["map_asset_builds_pk_columns_input"]: {
+		build_id: string
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["map_asset_builds_prepend_input"]: {
+		failed?: GraphQLTypes["jsonb"] | undefined | null,
+	failed_view?: GraphQLTypes["jsonb"] | undefined | null,
+	maps?: GraphQLTypes["jsonb"] | undefined | null
+};
+	/** select columns of table "map_asset_builds" */
+["map_asset_builds_select_column"]: map_asset_builds_select_column;
+	/** input type for updating data in table "map_asset_builds" */
+["map_asset_builds_set_input"]: {
+		build_id?: string | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	error?: string | undefined | null,
+	failed?: GraphQLTypes["jsonb"] | undefined | null,
+	failed_view?: GraphQLTypes["jsonb"] | undefined | null,
+	finished_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	manifest?: string | undefined | null,
+	maps?: GraphQLTypes["jsonb"] | undefined | null,
+	started_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	status?: string | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** Streaming cursor of the table "map_asset_builds" */
+["map_asset_builds_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["map_asset_builds_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["map_asset_builds_stream_cursor_value_input"]: {
+		build_id?: string | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	error?: string | undefined | null,
+	failed?: GraphQLTypes["jsonb"] | undefined | null,
+	failed_view?: GraphQLTypes["jsonb"] | undefined | null,
+	finished_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	manifest?: string | undefined | null,
+	maps?: GraphQLTypes["jsonb"] | undefined | null,
+	started_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	status?: string | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** update columns of table "map_asset_builds" */
+["map_asset_builds_update_column"]: map_asset_builds_update_column;
+	["map_asset_builds_updates"]: {
+		/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: GraphQLTypes["map_asset_builds_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: GraphQLTypes["map_asset_builds_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: GraphQLTypes["map_asset_builds_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: GraphQLTypes["map_asset_builds_delete_key_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: GraphQLTypes["map_asset_builds_prepend_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["map_asset_builds_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["map_asset_builds_bool_exp"]
+};
 	/** columns and relationships of "map_callouts" */
 ["map_callouts"]: {
 	__typename: "map_callouts",
@@ -265114,6 +267622,8 @@ export type GraphQLTypes = {
 	backfillUtilityLaunchSeeds?: GraphQLTypes["UtilityLaunchSeedBackfillOutput"] | undefined | null,
 	/** Launch a Vulkan shader pre-bake Job on a GPU node */
 	bakeShaders?: GraphQLTypes["SuccessOutput"] | undefined | null,
+	/** Build and publish map assets from a node's CS2 install (5stack.gg only) */
+	buildMapAssets?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** callForOrganizer */
 	callForOrganizer?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Request cancellation of the in-progress season ELO backfill (admin only). Stops after the current match. */
@@ -265205,6 +267715,10 @@ export type GraphQLTypes = {
 	delete_awards?: GraphQLTypes["awards_mutation_response"] | undefined | null,
 	/** delete single row from the table: "awards" */
 	delete_awards_by_pk?: GraphQLTypes["awards"] | undefined | null,
+	/** delete data from the table: "broadcast_huds" */
+	delete_broadcast_huds?: GraphQLTypes["broadcast_huds_mutation_response"] | undefined | null,
+	/** delete single row from the table: "broadcast_huds" */
+	delete_broadcast_huds_by_pk?: GraphQLTypes["broadcast_huds"] | undefined | null,
 	/** delete data from the table: "chat_read_state" */
 	delete_chat_read_state?: GraphQLTypes["chat_read_state_mutation_response"] | undefined | null,
 	/** delete single row from the table: "chat_read_state" */
@@ -265595,6 +268109,10 @@ export type GraphQLTypes = {
 	delete_lobby_players?: GraphQLTypes["lobby_players_mutation_response"] | undefined | null,
 	/** delete single row from the table: "lobby_players" */
 	delete_lobby_players_by_pk?: GraphQLTypes["lobby_players"] | undefined | null,
+	/** delete data from the table: "map_asset_builds" */
+	delete_map_asset_builds?: GraphQLTypes["map_asset_builds_mutation_response"] | undefined | null,
+	/** delete single row from the table: "map_asset_builds" */
+	delete_map_asset_builds_by_pk?: GraphQLTypes["map_asset_builds"] | undefined | null,
 	/** delete data from the table: "map_callouts" */
 	delete_map_callouts?: GraphQLTypes["map_callouts_mutation_response"] | undefined | null,
 	/** delete single row from the table: "map_callouts" */
@@ -266031,6 +268549,10 @@ export type GraphQLTypes = {
 	insert_awards?: GraphQLTypes["awards_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "awards" */
 	insert_awards_one?: GraphQLTypes["awards"] | undefined | null,
+	/** insert data into the table: "broadcast_huds" */
+	insert_broadcast_huds?: GraphQLTypes["broadcast_huds_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "broadcast_huds" */
+	insert_broadcast_huds_one?: GraphQLTypes["broadcast_huds"] | undefined | null,
 	/** insert data into the table: "chat_read_state" */
 	insert_chat_read_state?: GraphQLTypes["chat_read_state_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "chat_read_state" */
@@ -266423,6 +268945,10 @@ export type GraphQLTypes = {
 	insert_lobby_players?: GraphQLTypes["lobby_players_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "lobby_players" */
 	insert_lobby_players_one?: GraphQLTypes["lobby_players"] | undefined | null,
+	/** insert data into the table: "map_asset_builds" */
+	insert_map_asset_builds?: GraphQLTypes["map_asset_builds_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "map_asset_builds" */
+	insert_map_asset_builds_one?: GraphQLTypes["map_asset_builds"] | undefined | null,
 	/** insert data into the table: "map_callouts" */
 	insert_map_callouts?: GraphQLTypes["map_callouts_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "map_callouts" */
@@ -267061,6 +269587,12 @@ export type GraphQLTypes = {
 	update_awards_by_pk?: GraphQLTypes["awards"] | undefined | null,
 	/** update multiples rows of table: "awards" */
 	update_awards_many?: Array<GraphQLTypes["awards_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "broadcast_huds" */
+	update_broadcast_huds?: GraphQLTypes["broadcast_huds_mutation_response"] | undefined | null,
+	/** update single row of the table: "broadcast_huds" */
+	update_broadcast_huds_by_pk?: GraphQLTypes["broadcast_huds"] | undefined | null,
+	/** update multiples rows of table: "broadcast_huds" */
+	update_broadcast_huds_many?: Array<GraphQLTypes["broadcast_huds_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "chat_read_state" */
 	update_chat_read_state?: GraphQLTypes["chat_read_state_mutation_response"] | undefined | null,
 	/** update single row of the table: "chat_read_state" */
@@ -267647,6 +270179,12 @@ export type GraphQLTypes = {
 	update_lobby_players_by_pk?: GraphQLTypes["lobby_players"] | undefined | null,
 	/** update multiples rows of table: "lobby_players" */
 	update_lobby_players_many?: Array<GraphQLTypes["lobby_players_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "map_asset_builds" */
+	update_map_asset_builds?: GraphQLTypes["map_asset_builds_mutation_response"] | undefined | null,
+	/** update single row of the table: "map_asset_builds" */
+	update_map_asset_builds_by_pk?: GraphQLTypes["map_asset_builds"] | undefined | null,
+	/** update multiples rows of table: "map_asset_builds" */
+	update_map_asset_builds_many?: Array<GraphQLTypes["map_asset_builds_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "map_callouts" */
 	update_map_callouts?: GraphQLTypes["map_callouts_mutation_response"] | undefined | null,
 	/** update single row of the table: "map_callouts" */
@@ -268254,7 +270792,6 @@ export type GraphQLTypes = {
 	/** update multiples rows of table: "v_team_stage_results" */
 	update_v_team_stage_results_many?: Array<GraphQLTypes["v_team_stage_results_mutation_response"] | undefined | null> | undefined | null,
 	/** Validate CS2 gamedata signatures/offsets on a node (5stack.gg test instance only) */
-	buildMapAssets?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	validateGamedata?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Spawn a per-user game-streamer pod to play back a finished match's demo */
 	watchDemo?: GraphQLTypes["WatchDemoOutput"] | undefined | null,
@@ -283705,6 +286242,12 @@ export type GraphQLTypes = {
 	awards_aggregate: GraphQLTypes["awards_aggregate"],
 	/** fetch data from the table: "awards" using primary key columns */
 	awards_by_pk?: GraphQLTypes["awards"] | undefined | null,
+	/** fetch data from the table: "broadcast_huds" */
+	broadcast_huds: Array<GraphQLTypes["broadcast_huds"]>,
+	/** fetch aggregated fields from the table: "broadcast_huds" */
+	broadcast_huds_aggregate: GraphQLTypes["broadcast_huds_aggregate"],
+	/** fetch data from the table: "broadcast_huds" using primary key columns */
+	broadcast_huds_by_pk?: GraphQLTypes["broadcast_huds"] | undefined | null,
 	/** fetch data from the table: "chat_read_state" */
 	chat_read_state: Array<GraphQLTypes["chat_read_state"]>,
 	/** fetch aggregated fields from the table: "chat_read_state" */
@@ -284354,6 +286897,12 @@ export type GraphQLTypes = {
 	lobby_players_aggregate: GraphQLTypes["lobby_players_aggregate"],
 	/** fetch data from the table: "lobby_players" using primary key columns */
 	lobby_players_by_pk?: GraphQLTypes["lobby_players"] | undefined | null,
+	/** fetch data from the table: "map_asset_builds" */
+	map_asset_builds: Array<GraphQLTypes["map_asset_builds"]>,
+	/** fetch aggregated fields from the table: "map_asset_builds" */
+	map_asset_builds_aggregate: GraphQLTypes["map_asset_builds_aggregate"],
+	/** fetch data from the table: "map_asset_builds" using primary key columns */
+	map_asset_builds_by_pk?: GraphQLTypes["map_asset_builds"] | undefined | null,
 	/** fetch data from the table: "map_callouts" */
 	map_callouts: Array<GraphQLTypes["map_callouts"]>,
 	/** fetch aggregated fields from the table: "map_callouts" */
@@ -286817,6 +289366,14 @@ export type GraphQLTypes = {
 	awards_by_pk?: GraphQLTypes["awards"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "awards" */
 	awards_stream: Array<GraphQLTypes["awards"]>,
+	/** fetch data from the table: "broadcast_huds" */
+	broadcast_huds: Array<GraphQLTypes["broadcast_huds"]>,
+	/** fetch aggregated fields from the table: "broadcast_huds" */
+	broadcast_huds_aggregate: GraphQLTypes["broadcast_huds_aggregate"],
+	/** fetch data from the table: "broadcast_huds" using primary key columns */
+	broadcast_huds_by_pk?: GraphQLTypes["broadcast_huds"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "broadcast_huds" */
+	broadcast_huds_stream: Array<GraphQLTypes["broadcast_huds"]>,
 	/** fetch data from the table: "chat_read_state" */
 	chat_read_state: Array<GraphQLTypes["chat_read_state"]>,
 	/** fetch aggregated fields from the table: "chat_read_state" */
@@ -287619,6 +290176,14 @@ export type GraphQLTypes = {
 	lobby_players_by_pk?: GraphQLTypes["lobby_players"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "lobby_players" */
 	lobby_players_stream: Array<GraphQLTypes["lobby_players"]>,
+	/** fetch data from the table: "map_asset_builds" */
+	map_asset_builds: Array<GraphQLTypes["map_asset_builds"]>,
+	/** fetch aggregated fields from the table: "map_asset_builds" */
+	map_asset_builds_aggregate: GraphQLTypes["map_asset_builds_aggregate"],
+	/** fetch data from the table: "map_asset_builds" using primary key columns */
+	map_asset_builds_by_pk?: GraphQLTypes["map_asset_builds"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "map_asset_builds" */
+	map_asset_builds_stream: Array<GraphQLTypes["map_asset_builds"]>,
 	/** fetch data from the table: "map_callouts" */
 	map_callouts: Array<GraphQLTypes["map_callouts"]>,
 	/** fetch aggregated fields from the table: "map_callouts" */
@@ -299220,6 +301785,10 @@ export type GraphQLTypes = {
 	var_samp?: GraphQLTypes["utility_drift_scans_var_samp_fields"] | undefined | null,
 	variance?: GraphQLTypes["utility_drift_scans_variance_fields"] | undefined | null
 };
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["utility_drift_scans_append_input"]: {
+		caveats?: GraphQLTypes["jsonb"] | undefined | null
+};
 	/** aggregate avg on columns */
 ["utility_drift_scans_avg_fields"]: {
 	__typename: "utility_drift_scans_avg_fields",
@@ -299238,6 +301807,7 @@ export type GraphQLTypes = {
 	_not?: GraphQLTypes["utility_drift_scans_bool_exp"] | undefined | null,
 	_or?: Array<GraphQLTypes["utility_drift_scans_bool_exp"]> | undefined | null,
 	broken?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	caveats?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	failure_reason?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	finished_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
@@ -299261,6 +301831,18 @@ export type GraphQLTypes = {
 };
 	/** unique or primary key constraints on table "utility_drift_scans" */
 ["utility_drift_scans_constraint"]: utility_drift_scans_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["utility_drift_scans_delete_at_path_input"]: {
+		caveats?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["utility_drift_scans_delete_elem_input"]: {
+		caveats?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["utility_drift_scans_delete_key_input"]: {
+		caveats?: string | undefined | null
+};
 	/** input type for incrementing numeric columns in table "utility_drift_scans" */
 ["utility_drift_scans_inc_input"]: {
 		broken?: number | undefined | null,
@@ -299275,6 +301857,7 @@ export type GraphQLTypes = {
 	/** input type for inserting data into table "utility_drift_scans" */
 ["utility_drift_scans_insert_input"]: {
 		broken?: number | undefined | null,
+	caveats?: GraphQLTypes["jsonb"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	failure_reason?: string | undefined | null,
 	finished_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -299362,6 +301945,7 @@ export type GraphQLTypes = {
 	/** Ordering options when selecting data from "utility_drift_scans". */
 ["utility_drift_scans_order_by"]: {
 		broken?: GraphQLTypes["order_by"] | undefined | null,
+	caveats?: GraphQLTypes["order_by"] | undefined | null,
 	created_at?: GraphQLTypes["order_by"] | undefined | null,
 	failure_reason?: GraphQLTypes["order_by"] | undefined | null,
 	finished_at?: GraphQLTypes["order_by"] | undefined | null,
@@ -299386,11 +301970,16 @@ export type GraphQLTypes = {
 ["utility_drift_scans_pk_columns_input"]: {
 		id: GraphQLTypes["uuid"]
 };
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["utility_drift_scans_prepend_input"]: {
+		caveats?: GraphQLTypes["jsonb"] | undefined | null
+};
 	/** select columns of table "utility_drift_scans" */
 ["utility_drift_scans_select_column"]: utility_drift_scans_select_column;
 	/** input type for updating data in table "utility_drift_scans" */
 ["utility_drift_scans_set_input"]: {
 		broken?: number | undefined | null,
+	caveats?: GraphQLTypes["jsonb"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	failure_reason?: string | undefined | null,
 	finished_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -299455,6 +302044,7 @@ export type GraphQLTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["utility_drift_scans_stream_cursor_value_input"]: {
 		broken?: number | undefined | null,
+	caveats?: GraphQLTypes["jsonb"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	failure_reason?: string | undefined | null,
 	finished_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -299488,8 +302078,18 @@ export type GraphQLTypes = {
 	/** update columns of table "utility_drift_scans" */
 ["utility_drift_scans_update_column"]: utility_drift_scans_update_column;
 	["utility_drift_scans_updates"]: {
-		/** increments the numeric columns with given value of the filtered values */
+		/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: GraphQLTypes["utility_drift_scans_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: GraphQLTypes["utility_drift_scans_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: GraphQLTypes["utility_drift_scans_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: GraphQLTypes["utility_drift_scans_delete_key_input"] | undefined | null,
+	/** increments the numeric columns with given value of the filtered values */
 	_inc?: GraphQLTypes["utility_drift_scans_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: GraphQLTypes["utility_drift_scans_prepend_input"] | undefined | null,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: GraphQLTypes["utility_drift_scans_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
@@ -314447,6 +317047,57 @@ export enum awards_update_column {
 	tournament_id = "tournament_id",
 	updated_at = "updated_at"
 }
+/** unique or primary key constraints on table "broadcast_huds" */
+export enum broadcast_huds_constraint {
+	broadcast_huds_pkey = "broadcast_huds_pkey",
+	broadcast_huds_slug_key = "broadcast_huds_slug_key"
+}
+/** select columns of table "broadcast_huds" */
+export enum broadcast_huds_select_column {
+	author = "author",
+	created_at = "created_at",
+	description = "description",
+	enabled = "enabled",
+	hud_json = "hud_json",
+	id = "id",
+	is_signed = "is_signed",
+	jthud_id = "jthud_id",
+	name = "name",
+	page_url = "page_url",
+	preview = "preview",
+	size_bytes = "size_bytes",
+	slug = "slug",
+	source = "source",
+	storage_key = "storage_key",
+	thumbnail = "thumbnail",
+	updated_at = "updated_at",
+	uploaded_by_steam_id = "uploaded_by_steam_id",
+	variant = "variant",
+	version = "version"
+}
+/** update columns of table "broadcast_huds" */
+export enum broadcast_huds_update_column {
+	author = "author",
+	created_at = "created_at",
+	description = "description",
+	enabled = "enabled",
+	hud_json = "hud_json",
+	id = "id",
+	is_signed = "is_signed",
+	jthud_id = "jthud_id",
+	name = "name",
+	page_url = "page_url",
+	preview = "preview",
+	size_bytes = "size_bytes",
+	slug = "slug",
+	source = "source",
+	storage_key = "storage_key",
+	thumbnail = "thumbnail",
+	updated_at = "updated_at",
+	uploaded_by_steam_id = "uploaded_by_steam_id",
+	variant = "variant",
+	version = "version"
+}
 /** unique or primary key constraints on table "chat_read_state" */
 export enum chat_read_state_constraint {
 	chat_read_state_pkey = "chat_read_state_pkey"
@@ -316941,6 +319592,38 @@ export enum lobby_players_update_column {
 	lobby_id = "lobby_id",
 	status = "status",
 	steam_id = "steam_id"
+}
+/** unique or primary key constraints on table "map_asset_builds" */
+export enum map_asset_builds_constraint {
+	map_asset_builds_pkey = "map_asset_builds_pkey"
+}
+/** select columns of table "map_asset_builds" */
+export enum map_asset_builds_select_column {
+	build_id = "build_id",
+	created_at = "created_at",
+	error = "error",
+	failed = "failed",
+	failed_view = "failed_view",
+	finished_at = "finished_at",
+	manifest = "manifest",
+	maps = "maps",
+	started_at = "started_at",
+	status = "status",
+	updated_at = "updated_at"
+}
+/** update columns of table "map_asset_builds" */
+export enum map_asset_builds_update_column {
+	build_id = "build_id",
+	created_at = "created_at",
+	error = "error",
+	failed = "failed",
+	failed_view = "failed_view",
+	finished_at = "finished_at",
+	manifest = "manifest",
+	maps = "maps",
+	started_at = "started_at",
+	status = "status",
+	updated_at = "updated_at"
 }
 /** unique or primary key constraints on table "map_callouts" */
 export enum map_callouts_constraint {
@@ -320296,6 +322979,7 @@ export enum utility_drift_scans_constraint {
 /** select columns of table "utility_drift_scans" */
 export enum utility_drift_scans_select_column {
 	broken = "broken",
+	caveats = "caveats",
 	created_at = "created_at",
 	failure_reason = "failure_reason",
 	finished_at = "finished_at",
@@ -320317,6 +323001,7 @@ export enum utility_drift_scans_select_column {
 /** update columns of table "utility_drift_scans" */
 export enum utility_drift_scans_update_column {
 	broken = "broken",
+	caveats = "caveats",
 	created_at = "created_at",
 	failure_reason = "failure_reason",
 	finished_at = "finished_at",
@@ -321935,6 +324620,24 @@ type ZEUS_VARIABLES = {
 	["bigint"]: ValueTypes["bigint"];
 	["bigint_array_comparison_exp"]: ValueTypes["bigint_array_comparison_exp"];
 	["bigint_comparison_exp"]: ValueTypes["bigint_comparison_exp"];
+	["broadcast_huds_append_input"]: ValueTypes["broadcast_huds_append_input"];
+	["broadcast_huds_bool_exp"]: ValueTypes["broadcast_huds_bool_exp"];
+	["broadcast_huds_constraint"]: ValueTypes["broadcast_huds_constraint"];
+	["broadcast_huds_delete_at_path_input"]: ValueTypes["broadcast_huds_delete_at_path_input"];
+	["broadcast_huds_delete_elem_input"]: ValueTypes["broadcast_huds_delete_elem_input"];
+	["broadcast_huds_delete_key_input"]: ValueTypes["broadcast_huds_delete_key_input"];
+	["broadcast_huds_inc_input"]: ValueTypes["broadcast_huds_inc_input"];
+	["broadcast_huds_insert_input"]: ValueTypes["broadcast_huds_insert_input"];
+	["broadcast_huds_on_conflict"]: ValueTypes["broadcast_huds_on_conflict"];
+	["broadcast_huds_order_by"]: ValueTypes["broadcast_huds_order_by"];
+	["broadcast_huds_pk_columns_input"]: ValueTypes["broadcast_huds_pk_columns_input"];
+	["broadcast_huds_prepend_input"]: ValueTypes["broadcast_huds_prepend_input"];
+	["broadcast_huds_select_column"]: ValueTypes["broadcast_huds_select_column"];
+	["broadcast_huds_set_input"]: ValueTypes["broadcast_huds_set_input"];
+	["broadcast_huds_stream_cursor_input"]: ValueTypes["broadcast_huds_stream_cursor_input"];
+	["broadcast_huds_stream_cursor_value_input"]: ValueTypes["broadcast_huds_stream_cursor_value_input"];
+	["broadcast_huds_update_column"]: ValueTypes["broadcast_huds_update_column"];
+	["broadcast_huds_updates"]: ValueTypes["broadcast_huds_updates"];
 	["bytea"]: ValueTypes["bytea"];
 	["bytea_comparison_exp"]: ValueTypes["bytea_comparison_exp"];
 	["chat_read_state_bool_exp"]: ValueTypes["chat_read_state_bool_exp"];
@@ -323664,6 +326367,23 @@ type ZEUS_VARIABLES = {
 	["lobby_players_var_pop_order_by"]: ValueTypes["lobby_players_var_pop_order_by"];
 	["lobby_players_var_samp_order_by"]: ValueTypes["lobby_players_var_samp_order_by"];
 	["lobby_players_variance_order_by"]: ValueTypes["lobby_players_variance_order_by"];
+	["map_asset_builds_append_input"]: ValueTypes["map_asset_builds_append_input"];
+	["map_asset_builds_bool_exp"]: ValueTypes["map_asset_builds_bool_exp"];
+	["map_asset_builds_constraint"]: ValueTypes["map_asset_builds_constraint"];
+	["map_asset_builds_delete_at_path_input"]: ValueTypes["map_asset_builds_delete_at_path_input"];
+	["map_asset_builds_delete_elem_input"]: ValueTypes["map_asset_builds_delete_elem_input"];
+	["map_asset_builds_delete_key_input"]: ValueTypes["map_asset_builds_delete_key_input"];
+	["map_asset_builds_insert_input"]: ValueTypes["map_asset_builds_insert_input"];
+	["map_asset_builds_on_conflict"]: ValueTypes["map_asset_builds_on_conflict"];
+	["map_asset_builds_order_by"]: ValueTypes["map_asset_builds_order_by"];
+	["map_asset_builds_pk_columns_input"]: ValueTypes["map_asset_builds_pk_columns_input"];
+	["map_asset_builds_prepend_input"]: ValueTypes["map_asset_builds_prepend_input"];
+	["map_asset_builds_select_column"]: ValueTypes["map_asset_builds_select_column"];
+	["map_asset_builds_set_input"]: ValueTypes["map_asset_builds_set_input"];
+	["map_asset_builds_stream_cursor_input"]: ValueTypes["map_asset_builds_stream_cursor_input"];
+	["map_asset_builds_stream_cursor_value_input"]: ValueTypes["map_asset_builds_stream_cursor_value_input"];
+	["map_asset_builds_update_column"]: ValueTypes["map_asset_builds_update_column"];
+	["map_asset_builds_updates"]: ValueTypes["map_asset_builds_updates"];
 	["map_callouts_append_input"]: ValueTypes["map_callouts_append_input"];
 	["map_callouts_bool_exp"]: ValueTypes["map_callouts_bool_exp"];
 	["map_callouts_constraint"]: ValueTypes["map_callouts_constraint"];
@@ -325745,14 +328465,19 @@ type ZEUS_VARIABLES = {
 	["utility_drift_results_var_pop_order_by"]: ValueTypes["utility_drift_results_var_pop_order_by"];
 	["utility_drift_results_var_samp_order_by"]: ValueTypes["utility_drift_results_var_samp_order_by"];
 	["utility_drift_results_variance_order_by"]: ValueTypes["utility_drift_results_variance_order_by"];
+	["utility_drift_scans_append_input"]: ValueTypes["utility_drift_scans_append_input"];
 	["utility_drift_scans_bool_exp"]: ValueTypes["utility_drift_scans_bool_exp"];
 	["utility_drift_scans_constraint"]: ValueTypes["utility_drift_scans_constraint"];
+	["utility_drift_scans_delete_at_path_input"]: ValueTypes["utility_drift_scans_delete_at_path_input"];
+	["utility_drift_scans_delete_elem_input"]: ValueTypes["utility_drift_scans_delete_elem_input"];
+	["utility_drift_scans_delete_key_input"]: ValueTypes["utility_drift_scans_delete_key_input"];
 	["utility_drift_scans_inc_input"]: ValueTypes["utility_drift_scans_inc_input"];
 	["utility_drift_scans_insert_input"]: ValueTypes["utility_drift_scans_insert_input"];
 	["utility_drift_scans_obj_rel_insert_input"]: ValueTypes["utility_drift_scans_obj_rel_insert_input"];
 	["utility_drift_scans_on_conflict"]: ValueTypes["utility_drift_scans_on_conflict"];
 	["utility_drift_scans_order_by"]: ValueTypes["utility_drift_scans_order_by"];
 	["utility_drift_scans_pk_columns_input"]: ValueTypes["utility_drift_scans_pk_columns_input"];
+	["utility_drift_scans_prepend_input"]: ValueTypes["utility_drift_scans_prepend_input"];
 	["utility_drift_scans_select_column"]: ValueTypes["utility_drift_scans_select_column"];
 	["utility_drift_scans_set_input"]: ValueTypes["utility_drift_scans_set_input"];
 	["utility_drift_scans_stream_cursor_input"]: ValueTypes["utility_drift_scans_stream_cursor_input"];

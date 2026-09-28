@@ -1861,6 +1861,37 @@
         }
       },
       "application": {
+        "broadcast_huds": {
+          "title": "واجهات HUD للبث",
+          "description": "اختر واجهة HUD للبث المباشر وتشغيل الديمو واللقطات المميزة. يمكن للمذيعين التبديل في كل بث.",
+          "import": "استيراد HUD",
+          "import_hint": "حزمة JTs Hud Manager أو Lexogrine، يكون فيها hud.json في الجذر أو داخل مجلد واحد في المستوى الأعلى.",
+          "drop": "أفلت ملف .zip هنا أو انقر للاستعراض",
+          "importing": "جارٍ الاستيراد…",
+          "imported": "تم استيراد HUD",
+          "import_failed": "تعذّر استيراد هذه الواجهة",
+          "make_default": "تعيين كافتراضي",
+          "is_default": "افتراضي",
+          "default_set": "تم تحديث HUD الافتراضي",
+          "default_failed": "تعذّر تعيين HUD الافتراضي",
+          "removed": "تمت إزالة HUD",
+          "remove_failed": "تعذّرت إزالة هذه الواجهة",
+          "delete_title": "حذف هذه الواجهة؟",
+          "delete_description": "سيؤدي هذا إلى إزالة «{name}» والأرشيف المرفوع. لا يمكن التراجع عن هذا الإجراء.",
+          "delete_confirm": "احذف",
+          "signed": "حزمة موقّعة",
+          "source_builtin": "مدمج",
+          "source_imported": "مستورد",
+          "preview": "معاينة {name}",
+          "get_more": "اعثر على المزيد من واجهات HUD على {site}",
+          "set_page_link": "تعيين صفحة HUD",
+          "page_link": "صفحة HUD",
+          "page_link_description": "الصق رابط صفحة الـ HUD، مثلاً على cshuds.com. ستصبح صورة المعاينة فيها معاينة هذا الـ HUD.",
+          "page_link_saved": "تم حفظ صفحة HUD",
+          "page_link_preview_saved": "تم حفظ صفحة HUD وتحديث المعاينة",
+          "page_link_failed": "تعذّر استخدام هذه الصفحة",
+          "view_on": "عرض على {site}"
+        },
         "update_success": "تم التحديث",
         "db_backups": {
           "name": "الاسم",
@@ -2364,10 +2395,6 @@
           "auto_clip_min_kills_ace": "Ace فقط (5K)",
           "visibility_private": "خاص",
           "visibility_public": "عام",
-          "default_hud_mode": "نمط HUD الافتراضي",
-          "default_hud_mode_description": "تخطيط JTs Hud Manager الذي تحمّله وحدة البث عند الإقلاع للبث المباشر وتشغيل Demo ومعالجة اللقطات. يظل بإمكان المشغّلين تبديل النمط لكل بث من عناصر التحكم.",
-          "hud_mode_horizontal": "أفقي",
-          "hud_mode_vertical": "رأسي",
           "playback_section": "التشغيل",
           "reparse_warning_title": "هذا يعيد تحليل كل ملفات Demo — وقد يستغرق وقتًا طويلًا جدًا",
           "reparse_warning_body": "تُعالَج ملفات Demo واحدًا تلو الآخر، وقد يستمر ذلك ساعات أو أيامًا حسب عددها. لا تفعل هذا إلا إذا كنت تعرف ما تفعله، أو بعد تحديث كبير يغيّر طريقة تحليل الملفات. الإحصائيات الجديدة من التحديثات تُحلَّل تلقائيًا عند عرض المباريات — وهذا الخيار فقط لفرض كل شيء دفعة واحدة.",
@@ -2414,7 +2441,8 @@
           "orphaned_scanning_short": "جارٍ الفحص…",
           "orphaned_demos_count": "{count} demos",
           "orphaned_highlights_count": "{count} لقطة",
-          "orphaned_object_count": "{count} ملف"
+          "orphaned_object_count": "{count} ملف",
+          "hud_moved": "لواجهات HUD للبث صفحة إعدادات خاصة بها:"
         },
         "update_map_pools": {
           "title": "تحديث قوائم الخرائط تلقائيًا",

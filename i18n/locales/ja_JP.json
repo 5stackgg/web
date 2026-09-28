@@ -1861,6 +1861,37 @@
         }
       },
       "application": {
+        "broadcast_huds": {
+          "title": "配信用HUD",
+          "description": "ライブ配信、デモ再生、ハイライトで使う HUD を選びます。配信者は配信ごとに切り替えることもできます。",
+          "import": "HUDをインポート",
+          "import_hint": "JTs Hud Manager または Lexogrine のバンドル（hud.json がルートか、最上位の 1 フォルダ内にあるもの）。",
+          "drop": ".zip をここにドロップするか、クリックして選択",
+          "importing": "インポート中…",
+          "imported": "HUDをインポートしました",
+          "import_failed": "HUDをインポートできませんでした",
+          "make_default": "デフォルトに設定",
+          "is_default": "デフォルト",
+          "default_set": "デフォルトHUDを更新しました",
+          "default_failed": "デフォルトHUDを設定できませんでした",
+          "removed": "HUDを削除しました",
+          "remove_failed": "HUDを削除できませんでした",
+          "delete_title": "このHUDを削除しますか？",
+          "delete_description": "「{name}」とアップロードされたアーカイブを削除します。この操作は取り消せません。",
+          "delete_confirm": "削除する",
+          "signed": "署名済みバンドル",
+          "source_builtin": "内蔵",
+          "source_imported": "インポート済み",
+          "preview": "{name} のプレビュー",
+          "get_more": "{site} でさらに HUD を探す",
+          "set_page_link": "HUD ページを設定",
+          "page_link": "HUD ページ",
+          "page_link_description": "cshuds.com などにある HUD のページを貼り付けてください。そのページのプレビュー画像がこの HUD のプレビューになります。",
+          "page_link_saved": "HUD ページを保存しました",
+          "page_link_preview_saved": "HUD ページを保存し、プレビューを更新しました",
+          "page_link_failed": "そのページは使用できませんでした",
+          "view_on": "{site} で見る"
+        },
         "update_success": "更新しました",
         "db_backups": {
           "name": "名前",
@@ -2364,10 +2395,6 @@
           "auto_clip_min_kills_ace": "エースのみ（5キル）",
           "visibility_private": "非公開",
           "visibility_public": "公開",
-          "default_hud_mode": "デフォルトHUDスタイル",
-          "default_hud_mode_description": "ライブ配信・デモ再生・バッチハイライト生成時に、ゲームストリーマーポッドが起動時に読み込むJTs Hud Managerのレイアウトです。ストリーマーは配信ごとにプレイヤーコントロールからスタイルを切り替えられます。",
-          "hud_mode_horizontal": "横型",
-          "hud_mode_vertical": "縦型",
           "playback_section": "再生",
           "reparse_warning_title": "すべてのデモを再パースします。非常に時間がかかる場合があります。",
           "reparse_warning_body": "デモは1件ずつ再処理されるため、保有数によっては数時間から数日かかることがあります。内容を理解したうえで実行するか、アップデートでデモの解析方法が変わった場合にのみ行ってください。アップデートによる新しいスタッツは試合閲覧時に自動的に再パースされます。これは一括で強制実行するための機能です。",
@@ -2414,7 +2441,8 @@
           "orphaned_scanning_short": "スキャン中…",
           "orphaned_demos_count": "デモ{count}件",
           "orphaned_highlights_count": "ハイライト{count}件",
-          "orphaned_object_count": "ファイル{count}件"
+          "orphaned_object_count": "ファイル{count}件",
+          "hud_moved": "配信用HUDは専用の設定ページで管理します："
         },
         "update_map_pools": {
           "title": "マッププールの自動更新",

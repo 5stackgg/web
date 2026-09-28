@@ -1861,6 +1861,37 @@
         }
       },
       "application": {
+        "broadcast_huds": {
+          "title": "Yayın HUD'ları",
+          "description": "Canlı yayınlar, demo oynatma ve öne çıkanlar için HUD'u seç. Yayıncılar yine de her yayında değiştirebilir.",
+          "import": "HUD içe aktar",
+          "import_hint": "Kök dizinde veya tek bir üst düzey klasörde hud.json bulunan bir JTs Hud Manager ya da Lexogrine paketi.",
+          "drop": "Bir .zip dosyasını buraya bırak veya göz atmak için tıkla",
+          "importing": "İçe aktarılıyor…",
+          "imported": "HUD içe aktarıldı",
+          "import_failed": "Bu HUD içe aktarılamadı",
+          "make_default": "Varsayılan yap",
+          "is_default": "Varsayılan",
+          "default_set": "Varsayılan HUD güncellendi",
+          "default_failed": "Varsayılan HUD ayarlanamadı",
+          "removed": "HUD kaldırıldı",
+          "remove_failed": "Bu HUD kaldırılamadı",
+          "delete_title": "Bu HUD silinsin mi?",
+          "delete_description": "Bu işlem \"{name}\" HUD'unu ve yüklenen arşivini kaldırır. Geri alınamaz.",
+          "delete_confirm": "Sil",
+          "signed": "İmzalı paket",
+          "source_builtin": "Yerleşik",
+          "source_imported": "İçe aktarılmış",
+          "preview": "{name} önizlemesi",
+          "get_more": "{site} adresinde daha fazla HUD bul",
+          "set_page_link": "HUD sayfasını ayarla",
+          "page_link": "HUD sayfası",
+          "page_link_description": "HUD'un sayfasını yapıştır, örneğin cshuds.com'dan. Sayfanın önizleme görseli bu HUD'un önizlemesi olur.",
+          "page_link_saved": "HUD sayfası kaydedildi",
+          "page_link_preview_saved": "HUD sayfası kaydedildi ve önizleme güncellendi",
+          "page_link_failed": "Bu sayfa kullanılamadı",
+          "view_on": "{site} üzerinde gör"
+        },
         "update_success": "Güncellendi",
         "db_backups": {
           "name": "İsim",
@@ -2364,10 +2395,6 @@
           "auto_clip_min_kills_ace": "Yalnızca ace (5K)",
           "visibility_private": "Özel",
           "visibility_public": "Herkese açık",
-          "default_hud_mode": "Varsayılan HUD stili",
-          "default_hud_mode_description": "Canlı yayınlar, demo oynatma ve toplu öne çıkan anlar için oyun-streamer pod'unun açılışta yükleyeceği JTs Hud Manager düzeni. Streamer'lar yayın başına stili yine oynatıcı kontrollerinden değiştirebilir.",
-          "hud_mode_horizontal": "Yatay",
-          "hud_mode_vertical": "Dikey",
           "playback_section": "Oynatma",
           "reparse_warning_title": "Bu, her demoyu yeniden ayrıştırır — çok uzun sürebilir.",
           "reparse_warning_body": "Demolar teker teker yeniden işlenir; kaç tane demon olduğuna bağlı olarak saatler ya da günler sürebilir. Bunu yalnızca ne yaptığını biliyorsan ya da büyük bir güncelleme demoların ayrıştırılma şeklini değiştirdiyse yap. Güncellemelerden gelen yeni istatistikler maçlar görüntülendikçe zaten otomatik yeniden ayrıştırılır — bu yalnızca hepsini tek seferde zorlamak içindir.",
@@ -2414,7 +2441,8 @@
           "orphaned_scanning_short": "Taranıyor…",
           "orphaned_demos_count": "{count} demo",
           "orphaned_highlights_count": "{count} öne çıkan an",
-          "orphaned_object_count": "{count} dosya"
+          "orphaned_object_count": "{count} dosya",
+          "hud_moved": "Yayın HUD'larının kendi ayarlar sayfası var:"
         },
         "update_map_pools": {
           "title": "Harita Havuzlarını Otomatik Güncelle",

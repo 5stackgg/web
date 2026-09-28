@@ -1861,6 +1861,37 @@
         }
       },
       "application": {
+        "broadcast_huds": {
+          "title": "Sändnings-HUD:ar",
+          "description": "Välj HUD:en för livesändningar, demouppspelning och highlights. Streamers kan fortfarande byta för varje sändning.",
+          "import": "Importera HUD",
+          "import_hint": "Ett JTs Hud Manager- eller Lexogrine-paket med hud.json i roten eller i en enda mapp på översta nivån.",
+          "drop": "Släpp en .zip här eller klicka för att bläddra",
+          "importing": "Importerar…",
+          "imported": "HUD importerad",
+          "import_failed": "Kunde inte importera den HUD:en",
+          "make_default": "Gör till standard",
+          "is_default": "Standard",
+          "default_set": "Standard-HUD uppdaterad",
+          "default_failed": "Kunde inte ange standard-HUD",
+          "removed": "HUD borttagen",
+          "remove_failed": "Kunde inte ta bort den HUD:en",
+          "delete_title": "Ta bort den här HUD:en?",
+          "delete_description": "Detta tar bort \"{name}\" och dess uppladdade arkiv. Detta går inte att ångra.",
+          "delete_confirm": "Ta bort",
+          "signed": "Signerat paket",
+          "source_builtin": "Inbyggd",
+          "source_imported": "Importerad",
+          "preview": "Förhandsvisa {name}",
+          "get_more": "Hitta fler HUD:er på {site}",
+          "set_page_link": "Ange HUD-sida",
+          "page_link": "HUD-sida",
+          "page_link_description": "Klistra in HUD:ens sida, till exempel på cshuds.com. Sidans förhandsbild blir den här HUD:ens förhandsvisning.",
+          "page_link_saved": "HUD-sidan sparades",
+          "page_link_preview_saved": "HUD-sidan sparades och förhandsvisningen uppdaterades",
+          "page_link_failed": "Kunde inte använda den sidan",
+          "view_on": "Visa på {site}"
+        },
         "update_success": "Uppdaterad",
         "db_backups": {
           "name": "Namn",
@@ -2364,10 +2395,6 @@
           "auto_clip_min_kills_ace": "Endast ace (5K)",
           "visibility_private": "Privat",
           "visibility_public": "Publik",
-          "default_hud_mode": "Standard-HUD-stil",
-          "default_hud_mode_description": "Vilken JTs Hud Manager-layout streamerpoden laddar vid start för livesändningar, demouppspelning och batchhöjdpunkter. Streamers kan fortfarande byta stil per sändning från spelarkontrollerna.",
-          "hud_mode_horizontal": "Horisontell",
-          "hud_mode_vertical": "Vertikal",
           "playback_section": "Uppspelning",
           "reparse_warning_title": "Detta tolkar om varje demo — det kan ta väldigt lång tid.",
           "reparse_warning_body": "Demos bearbetas en i taget, vilket kan pågå i timmar eller dagar beroende på hur många du har. Gör bara detta om du vet vad du gör, eller efter en större uppdatering som ändrar hur demos tolkas. Ny statistik från uppdateringar tolkas om automatiskt när matcher visas — detta är bara för att tvinga fram allt på en gång.",
@@ -2414,7 +2441,8 @@
           "orphaned_scanning_short": "Skannar…",
           "orphaned_demos_count": "{count} demos",
           "orphaned_highlights_count": "{count} höjdpunkter",
-          "orphaned_object_count": "{count} filer"
+          "orphaned_object_count": "{count} filer",
+          "hud_moved": "Sändnings-HUD:ar har en egen inställningssida:"
         },
         "update_map_pools": {
           "title": "Automatisk uppdatering av kartpooler",

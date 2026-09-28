@@ -1861,6 +1861,37 @@
         }
       },
       "application": {
+        "broadcast_huds": {
+          "title": "Broadcast HUDs",
+          "description": "Pick the HUD for live streams, demo playback and highlights. Streamers can still switch per stream.",
+          "import": "Import HUD",
+          "import_hint": "A JTs Hud Manager or Lexogrine bundle, with hud.json at the root or in one top-level folder.",
+          "drop": "Drop a .zip here or click to browse",
+          "importing": "Importing…",
+          "imported": "HUD imported",
+          "import_failed": "Could not import that HUD",
+          "make_default": "Make default",
+          "is_default": "Default",
+          "default_set": "Default HUD updated",
+          "default_failed": "Could not set the default HUD",
+          "removed": "HUD removed",
+          "remove_failed": "Could not remove that HUD",
+          "delete_title": "Delete this HUD?",
+          "delete_description": "This removes \"{name}\" and its uploaded archive. This cannot be undone.",
+          "delete_confirm": "Delete",
+          "signed": "Signed bundle",
+          "source_builtin": "Built-in",
+          "source_imported": "Imported",
+          "preview": "Preview {name}",
+          "get_more": "Find more HUDs at {site}",
+          "set_page_link": "Set HUD page",
+          "page_link": "HUD page",
+          "page_link_description": "Paste the HUD's page, for example on cshuds.com. Its preview image becomes this HUD's preview.",
+          "page_link_saved": "HUD page saved",
+          "page_link_preview_saved": "HUD page saved and preview updated",
+          "page_link_failed": "Could not use that page",
+          "view_on": "View on {site}"
+        },
         "update_success": "Updated",
         "db_backups": {
           "name": "Name",
@@ -2364,10 +2395,6 @@
           "auto_clip_min_kills_ace": "Aces only (5K)",
           "visibility_private": "Private",
           "visibility_public": "Public",
-          "default_hud_mode": "Default HUD style",
-          "default_hud_mode_description": "Which JTs Hud Manager layout the game-streamer pod loads at boot for live streams, demo playback, and batch highlights. Streamers can still switch styles per-stream from the player controls.",
-          "hud_mode_horizontal": "Horizontal",
-          "hud_mode_vertical": "Vertical",
           "playback_section": "Playback",
           "reparse_warning_title": "This reparses every demo — it can take a very long time.",
           "reparse_warning_body": "Demos are reprocessed one at a time, which can run for hours or days depending on how many you have. Only do this if you know what you're doing, or after a major update changes how demos are parsed. New stats from updates are reparsed automatically as matches are viewed — this is only to force everything at once.",
@@ -2414,7 +2441,8 @@
           "orphaned_scanning_short": "Scanning…",
           "orphaned_demos_count": "{count} demos",
           "orphaned_highlights_count": "{count} highlights",
-          "orphaned_object_count": "{count} files"
+          "orphaned_object_count": "{count} files",
+          "hud_moved": "Broadcast HUDs have their own settings page:"
         },
         "update_map_pools": {
           "title": "Automatic Update Map Pools",

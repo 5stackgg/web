@@ -1861,6 +1861,37 @@
         }
       },
       "application": {
+        "broadcast_huds": {
+          "title": "Broadcast-HUDs",
+          "description": "Wähle das HUD für Livestreams, Demo-Wiedergabe und Highlights. Streamer können pro Stream weiterhin wechseln.",
+          "import": "HUD importieren",
+          "import_hint": "Ein JTs-Hud-Manager- oder Lexogrine-Paket mit hud.json im Stammverzeichnis oder in einem einzelnen Ordner der obersten Ebene.",
+          "drop": ".zip hier ablegen oder zum Auswählen klicken",
+          "importing": "Wird importiert…",
+          "imported": "HUD importiert",
+          "import_failed": "Dieses HUD konnte nicht importiert werden",
+          "make_default": "Als Standard festlegen",
+          "is_default": "Standard",
+          "default_set": "Standard-HUD aktualisiert",
+          "default_failed": "Standard-HUD konnte nicht festgelegt werden",
+          "removed": "HUD entfernt",
+          "remove_failed": "Dieses HUD konnte nicht entfernt werden",
+          "delete_title": "Dieses HUD löschen?",
+          "delete_description": "Damit werden „{name}“ und das hochgeladene Archiv entfernt. Das lässt sich nicht rückgängig machen.",
+          "delete_confirm": "Löschen",
+          "signed": "Signiertes Bundle",
+          "source_builtin": "Integriert",
+          "source_imported": "Importiert",
+          "preview": "Vorschau von {name}",
+          "get_more": "Weitere HUDs auf {site}",
+          "set_page_link": "HUD-Seite festlegen",
+          "page_link": "HUD-Seite",
+          "page_link_description": "Füge die Seite des HUDs ein, zum Beispiel auf cshuds.com. Ihr Vorschaubild wird zur Vorschau dieses HUDs.",
+          "page_link_saved": "HUD-Seite gespeichert",
+          "page_link_preview_saved": "HUD-Seite gespeichert und Vorschau aktualisiert",
+          "page_link_failed": "Diese Seite konnte nicht verwendet werden",
+          "view_on": "Auf {site} ansehen"
+        },
         "update_success": "Aktualisiert",
         "db_backups": {
           "name": "Name",
@@ -2364,10 +2395,6 @@
           "auto_clip_min_kills_ace": "Nur Aces (5K)",
           "visibility_private": "Privat",
           "visibility_public": "Öffentlich",
-          "default_hud_mode": "Standard-HUD-Stil",
-          "default_hud_mode_description": "Welches Layout des JTs Hud Managers der Game-Streamer-Pod beim Start für Live-Streams, Demo-Wiedergabe und Batch-Highlights lädt. Streamer können den Stil pro Stream weiterhin über die Player-Steuerung wechseln.",
-          "hud_mode_horizontal": "Horizontal",
-          "hud_mode_vertical": "Vertikal",
           "playback_section": "Wiedergabe",
           "reparse_warning_title": "Das parst jede Demo neu — es kann sehr lange dauern.",
           "reparse_warning_body": "Demos werden nacheinander neu verarbeitet, was je nach Menge Stunden oder Tage laufen kann. Mach das nur, wenn du weißt, was du tust, oder nachdem ein größeres Update das Demo-Parsing geändert hat. Neue Stats aus Updates werden ohnehin automatisch neu geparst, sobald Matches angesehen werden — das hier erzwingt nur alles auf einmal.",
@@ -2414,7 +2441,8 @@
           "orphaned_scanning_short": "Scan läuft…",
           "orphaned_demos_count": "{count} Demos",
           "orphaned_highlights_count": "{count} Highlights",
-          "orphaned_object_count": "{count} Dateien"
+          "orphaned_object_count": "{count} Dateien",
+          "hud_moved": "Broadcast-HUDs haben eine eigene Einstellungsseite:"
         },
         "update_map_pools": {
           "title": "Map-Pools automatisch aktualisieren",

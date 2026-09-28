@@ -1861,6 +1861,37 @@
         }
       },
       "application": {
+        "broadcast_huds": {
+          "title": "HUDs de retransmisión",
+          "description": "Elige el HUD para directos, reproducción de demos y highlights. Los streamers pueden cambiarlo en cada directo.",
+          "import": "Importar HUD",
+          "import_hint": "Un paquete de JTs Hud Manager o Lexogrine, con hud.json en la raíz o en una única carpeta de primer nivel.",
+          "drop": "Suelta aquí un .zip o haz clic para buscarlo",
+          "importing": "Importando…",
+          "imported": "HUD importado",
+          "import_failed": "No se pudo importar ese HUD",
+          "make_default": "Establecer por defecto",
+          "is_default": "Por defecto",
+          "default_set": "HUD por defecto actualizado",
+          "default_failed": "No se pudo establecer el HUD por defecto",
+          "removed": "HUD eliminado",
+          "remove_failed": "No se pudo eliminar ese HUD",
+          "delete_title": "¿Eliminar este HUD?",
+          "delete_description": "Esto eliminará «{name}» y su archivo subido. No se puede deshacer.",
+          "delete_confirm": "Eliminar",
+          "signed": "Paquete firmado",
+          "source_builtin": "Integrado",
+          "source_imported": "Importado",
+          "preview": "Vista previa de {name}",
+          "get_more": "Encuentra más HUD en {site}",
+          "set_page_link": "Definir página del HUD",
+          "page_link": "Página del HUD",
+          "page_link_description": "Pega la página del HUD, por ejemplo en cshuds.com. Su imagen de vista previa pasará a ser la de este HUD.",
+          "page_link_saved": "Página del HUD guardada",
+          "page_link_preview_saved": "Página del HUD guardada y vista previa actualizada",
+          "page_link_failed": "No se pudo usar esa página",
+          "view_on": "Ver en {site}"
+        },
         "update_success": "Actualizado",
         "db_backups": {
           "name": "Nombre",
@@ -2364,10 +2395,6 @@
           "auto_clip_min_kills_ace": "Solo aces (5K)",
           "visibility_private": "Privado",
           "visibility_public": "Público",
-          "default_hud_mode": "Estilo de HUD por defecto",
-          "default_hud_mode_description": "Qué diseño de JTs Hud Manager carga el pod de streaming al arrancar para directos, reproducción de demos y highlights por lotes. Los streamers pueden cambiar de estilo en cada directo desde los controles del reproductor.",
-          "hud_mode_horizontal": "Horizontal",
-          "hud_mode_vertical": "Vertical",
           "playback_section": "Reproducción",
           "reparse_warning_title": "Esto vuelve a analizar todas las demos: puede tardar muchísimo.",
           "reparse_warning_body": "Las demos se reprocesan de una en una, lo que puede durar horas o días según cuántas tengas. Hazlo solo si sabes lo que haces o después de una actualización importante que cambie el análisis de demos. Las estadísticas nuevas de las actualizaciones se reanalizan solas a medida que se ven las partidas; esto solo sirve para forzarlo todo de golpe.",
@@ -2414,7 +2441,8 @@
           "orphaned_scanning_short": "Analizando…",
           "orphaned_demos_count": "{count} demos",
           "orphaned_highlights_count": "{count} highlights",
-          "orphaned_object_count": "{count} archivos"
+          "orphaned_object_count": "{count} archivos",
+          "hud_moved": "Los HUDs de retransmisión tienen su propia página de ajustes:"
         },
         "update_map_pools": {
           "title": "Actualización automática de pools de mapas",

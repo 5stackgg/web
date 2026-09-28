@@ -47,6 +47,10 @@ import {
 } from "~/components/ui/tooltip";
 import { useDemoPlayback } from "~/composables/useDemoPlayback";
 import { useClipEditor } from "~/composables/useClipEditor";
+import {
+  broadcastHudLabel,
+  useBroadcastHuds,
+} from "~/composables/useBroadcastHuds";
 import RoundSelector from "~/components/match/RoundSelector.vue";
 import SpectatorSlots from "~/components/stream-deck/SpectatorSlots.vue";
 import { resolveKeyToRealSlot } from "~/utilities/streamerSpecSlots";
@@ -87,22 +91,14 @@ const {
   reloadDemo,
   toggleXray,
   toggleHud,
-  setHudMode,
+  setHud,
   toggleHudSides,
   toggleDemoUI,
   toggleAutodirector,
   setScoreboard,
 } = useDemoPlayback();
 
-// JTs Hud's default bundle declares variants ["default","horizontal",
-// "vertical"] in hud.json — but `default` and `horizontal` render the
-// same layout, so we only expose the two distinct ones. Legacy
-// `default` payloads are folded into `horizontal` at the boundary.
-const HUD_MODES: Array<"horizontal" | "vertical"> = ["horizontal", "vertical"];
-const HUD_MODE_LABELS: Record<(typeof HUD_MODES)[number], string> = {
-  horizontal: "Horizontal",
-  vertical: "Vertical",
-};
+const { huds: broadcastHuds } = useBroadcastHuds();
 
 // Slot identity is GSI — survives a demo attached to the wrong match_map.
 const ctSlots = computed(() =>
@@ -1188,31 +1184,26 @@ const killMarkers = computed<Marker[]>(() => {
             }}</TooltipContent>
           </Tooltip>
 
-          <!-- HUD bundle picker. Hot-swaps the active JTs Hud Manager
-               BrowserWindow in the streamer pod via /spec/hud-mode →
-               POST /api/overlay/start. Ephemeral; reset by a pod
-               restart to whatever HUD_MODE the api stamped. The
-               trailing Eye toggle lives inside the picker (where the
-               legacy "Default" segment used to sit) so visibility is
-               framed as a third HUD state alongside the two layouts. -->
+          <!-- Hot-swap only: a pod restart reverts to the api's default HUD. -->
           <Tooltip>
             <TooltipTrigger as-child>
               <div
                 class="inline-flex rounded-md border border-border/60 bg-card/40 p-0.5"
               >
                 <button
-                  v-for="m in HUD_MODES"
-                  :key="m"
+                  v-for="hud in broadcastHuds"
+                  :key="hud.slug"
                   type="button"
-                  class="px-2 h-8 font-mono text-[0.6rem] uppercase tracking-[0.18em] rounded-sm cursor-pointer transition-colors"
+                  class="px-2 h-8 font-mono text-[0.6rem] uppercase tracking-[0.18em] rounded-sm cursor-pointer transition-colors whitespace-nowrap"
                   :class="
-                    store.hudVisible && store.hudMode === m
+                    store.hudVisible && store.hudSlug === hud.slug
                       ? 'bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
                       : 'text-muted-foreground hover:text-foreground'
                   "
-                  @click="setHudMode(m)"
+                  :title="hud.description || broadcastHudLabel(hud)"
+                  @click="setHud(hud.slug)"
                 >
-                  {{ HUD_MODE_LABELS[m] }}
+                  {{ broadcastHudLabel(hud) }}
                 </button>
                 <button
                   type="button"

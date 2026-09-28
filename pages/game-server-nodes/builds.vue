@@ -238,7 +238,12 @@ onMounted(() => {
       key,
       getGraphqlClient()
         .subscribe({ query, context: CS2_BUILD_OPTIONAL })
-        .subscribe({ next: ({ data }) => next(data) }),
+        .subscribe({
+          next: ({ data }) => next(data),
+          error: () => {
+            loaded.value = true;
+          },
+        }),
     );
   }
 });

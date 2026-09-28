@@ -190,6 +190,12 @@ async function confirmForce() {
   }
 }
 
+const startedAt = computed(() =>
+  status.value === "building"
+    ? (props.row?.started_at ?? null)
+    : (props.row?.updated_at ?? props.row?.created_at ?? null),
+);
+
 const node = computed(
   () =>
     props.row?.game_server_node?.label || props.row?.game_server_node?.id || null,
@@ -232,8 +238,8 @@ const error = computed(() =>
         <template v-if="running || status === 'stale'">
           <span>{{ $t("pages.game_server_nodes.cs2_build.started") }}</span>
           <TimeAgo
-            v-if="row.started_at || row.created_at"
-            :date="(row.started_at || row.created_at)!"
+            v-if="startedAt"
+            :date="startedAt"
             hide-icon
           />
         </template>

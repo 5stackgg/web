@@ -51,6 +51,9 @@ export function useCs2BuildRuns(buildId: Ref<number | null | undefined>) {
               (data as any)?.gamedata_signature_validations?.[0] ?? null;
             loaded.value = true;
           },
+          error: () => {
+            loaded.value = true;
+          },
         }),
     );
 
@@ -65,6 +68,9 @@ export function useCs2BuildRuns(buildId: Ref<number | null | undefined>) {
         .subscribe({
           next: ({ data }) => {
             mapAssets.value = (data as any)?.map_asset_builds_by_pk ?? null;
+          },
+          error: () => {
+            mapAssets.value = null;
           },
         }),
     );
@@ -100,6 +106,9 @@ export function useCs2BuildNodes(enabled: Ref<boolean>) {
         .subscribe({
           next: ({ data }) => {
             nodes.value = (data as any)?.game_server_nodes ?? [];
+          },
+          error: () => {
+            nodes.value = [];
           },
         }),
     );

@@ -1103,20 +1103,6 @@ const interpolatedPlayers = computed(() => {
   return result;
 });
 
-watch(
-  [interpolatedPlayers, () => radarVolumes.value.length],
-  ([players, rooms]) => {
-    if (!rooms) {
-      return;
-    }
-    const alive = players.filter((player) => player.alive);
-    if (pickRadarVolume({ volumes: radarVolumes.value }, alive)) {
-      roomPoints.value = alive;
-    }
-  },
-  { immediate: true },
-);
-
 // Firing tracers for the 3D view. A shot carries its exact muzzle origin
 // (eye_*) + view angles + outcome from the parser; we draw a brief line
 // from the muzzle along the real shot direction, ending on the victim for
@@ -1359,6 +1345,20 @@ function resolveGrenadePosition(
   }
   return { x: g.x, y: g.y, z: g.z };
 }
+
+watch(
+  [interpolatedPlayers, () => radarVolumes.value.length],
+  ([players, rooms]) => {
+    if (!rooms) {
+      return;
+    }
+    const alive = players.filter((player) => player.alive);
+    if (pickRadarVolume({ volumes: radarVolumes.value }, alive)) {
+      roomPoints.value = alive;
+    }
+  },
+  { immediate: true },
+);
 
 // Grenade lifetimes (in ticks @ 64 tps — close enough at 128 too).
 // How long a detonation stays on screen, in seconds of playback.

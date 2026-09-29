@@ -1588,6 +1588,7 @@
         "my_account": "Mein Konto",
         "api_keys": "API-Keys",
         "linked_accounts": "Verknüpfte Konten",
+        "blocked_players": "Blockierte Spieler",
         "voice": "Sprache & Audio",
         "api_keys_management": {
           "add_api_key": "API-Key hinzufügen",
@@ -2867,6 +2868,13 @@
         "import_share_code_submit": "Importieren",
         "toast_share_code_queued": "Match zum Import eingereiht",
         "toast_share_code_failed": "Match konnte nicht importiert werden"
+      },
+      "blocked_players": {
+        "title": "Blockierte Spieler",
+        "description": "Blockierte Spieler können dir keine Nachrichten, Einladungen oder Freundschaftsanfragen senden. Das Aufheben einer Blockierung stellt eure Freundschaft nicht wieder her.",
+        "empty_title": "Keine blockierten Spieler",
+        "empty_description": "Spieler, die du über ihr Profil oder das Spielermenü blockierst, erscheinen hier.",
+        "blocked_on": "Blockiert"
       }
     },
     "watch": {
@@ -8151,6 +8159,25 @@
     "current_elo": "AKTUELL",
     "faceit_level": "Level {level}",
     "elo_aria_label": "ELO, primär {tier} {elo}"
+  },
+  "player_blocks": {
+    "block": "Blockieren",
+    "unblock": "Blockierung aufheben",
+    "blocked_badge": "Blockiert",
+    "confirm": {
+      "title": "{name} blockieren?",
+      "description": "{name} kann dir dann keine Nachrichten, Einladungen oder Freundschaftsanfragen mehr senden. Eure Freundschaft wird entfernt und durch das Aufheben der Blockierung nicht wiederhergestellt.",
+      "action": "Blockieren"
+    },
+    "toasts": {
+      "blocked": "{name} blockiert",
+      "unblocked": "Blockierung von {name} aufgehoben"
+    },
+    "errors": {
+      "title": "Aktion nicht verfügbar",
+      "player_blocked": "Das ist mit diesem Spieler nicht möglich.",
+      "player_blocked_bulk": "Mindestens einer dieser Spieler kann nicht hinzugefügt werden."
+    }
   },
   "maps": {
     "veto": {

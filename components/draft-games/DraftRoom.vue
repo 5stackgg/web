@@ -48,6 +48,7 @@ import DraftSettingsSheet from "~/components/draft-games/DraftSettingsSheet.vue"
 import DraftCoinFlip from "~/components/draft-games/DraftCoinFlip.vue";
 import MatchAdminBottomBar from "~/components/match/MatchAdminBottomBar.vue";
 import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
+import { playerBlockErrorKey } from "~/utilities/playerBlocks";
 
 const props = defineProps<{
   room: any;
@@ -373,10 +374,11 @@ const runGuarded = async (key: string, action: () => Promise<unknown>) => {
   try {
     await action();
   } catch (error: any) {
+    const blockedKey = playerBlockErrorKey(error?.message);
     toast({
       variant: "destructive",
       title: t("common.error"),
-      description: error?.message,
+      description: blockedKey ? t(blockedKey) : error?.message,
     });
   } finally {
     const next = new Set(pending.value);

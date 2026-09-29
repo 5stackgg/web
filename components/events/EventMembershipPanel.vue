@@ -329,6 +329,7 @@ import { $ } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
+import { playerBlockErrorKey } from "~/utilities/playerBlocks";
 
 const importRosterQuery = typedGql("query")({
   events_by_pk: [
@@ -542,10 +543,11 @@ export default {
           variables: { eventId: this.event.id, steamId: player.steam_id },
         });
       } catch (error: any) {
+        const blockedKey = playerBlockErrorKey(error?.message);
         toast({
           variant: "destructive",
           title: this.$t("common.error"),
-          description: error?.message,
+          description: blockedKey ? this.$t(blockedKey) : error?.message,
         });
       }
     },
@@ -635,10 +637,11 @@ export default {
           variables: { eventId: this.event.id, steamId: player.steam_id },
         });
       } catch (error: any) {
+        const blockedKey = playerBlockErrorKey(error?.message);
         toast({
           variant: "destructive",
           title: this.$t("common.error"),
-          description: error?.message,
+          description: blockedKey ? this.$t(blockedKey) : error?.message,
         });
       }
     },
@@ -713,7 +716,9 @@ export default {
         toast({
           variant: "destructive",
           title: this.$t("common.error"),
-          description: error?.message,
+          description: playerBlockErrorKey(error?.message)
+            ? this.$t("player_blocks.errors.player_blocked_bulk")
+            : error?.message,
         });
       } finally {
         this.importingPlayers = false;

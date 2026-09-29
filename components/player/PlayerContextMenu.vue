@@ -10,9 +10,12 @@ import {
   X,
   Trash2,
   Copy,
+  Ban,
 } from "lucide-vue-next";
 import SteamIcon from "~/components/icons/SteamIcon.vue";
+import BlockPlayerDialog from "~/components/player/BlockPlayerDialog.vue";
 import { useFriendActions } from "~/composables/useFriendActions";
+import { usePlayerBlocks } from "~/composables/usePlayerBlocks";
 import { toast } from "~/components/ui/toast";
 
 // Cursor-anchored, not trigger-anchored: the caller owns the contextmenu event
@@ -47,6 +50,13 @@ const {
 
 const { canMessage, openConversation } = useDirectMessages();
 
+const {
+  available: blocksAvailable,
+  isBlocked,
+  isBusy: isBlockBusy,
+  unblock,
+} = usePlayerBlocks();
+
 const steamId = computed(() =>
   props.player?.steam_id ? String(props.player.steam_id) : null,
 );
@@ -63,6 +73,10 @@ const rel = computed(() =>
 
 const busy = computed(() => (steamId.value ? isBusy(steamId.value) : false));
 
+const blocked = computed(() => isBlocked(steamId.value));
+
+const blockBusy = computed(() => isBlockBusy(steamId.value));
+
 const currentLobby = computed(() =>
   useMatchmakingStore().lobbies?.find(
     (lobby: any) => lobby.id === me.value?.current_lobby_id,
@@ -70,7 +84,7 @@ const currentLobby = computed(() =>
 );
 
 const canInviteToLobby = computed(() => {
-  if (!me.value || isMe.value || !steamId.value) {
+  if (!me.value || isMe.value || !steamId.value || blocked.value) {
     return false;
   }
 
@@ -91,6 +105,8 @@ const showFriendActions = computed(
 // Same rule as the friends list: a mis-click here has no undo.
 const confirmRemove = ref(false);
 
+const confirmBlock = ref(false);
+
 // The menu (and the confirm that follows it) live over the right hub, which
 // closes itself when the pointer leaves. Both count as "still interacting".
 function holdRightHub(open: boolean, wasOpen: boolean) {
@@ -105,9 +121,10 @@ function holdRightHub(open: boolean, wasOpen: boolean) {
 
 watch(() => props.open, holdRightHub);
 watch(confirmRemove, holdRightHub);
+watch(confirmBlock, holdRightHub);
 
 onBeforeUnmount(() => {
-  if (props.open || confirmRemove.value) {
+  if (props.open || confirmRemove.value || confirmBlock.value) {
     useRightSidebar().resumeHoverClose();
   }
 });
@@ -164,6 +181,22 @@ async function copySteamId() {
 function openSteamProfile() {
   window.open(props.player.profile_url, "_blank", "noopener");
 }
+
+async function unblockPlayer() {
+  if (!steamId.value) {
+    return;
+  }
+
+  try {
+    await unblock(steamId.value);
+  } catch {
+    return;
+  }
+
+  toast({
+    title: t("player_blocks.toasts.unblocked", { name: props.player.name }),
+  });
+}
 </script>
 
 <template>
@@ -198,7 +231,10 @@ function openSteamProfile() {
           <span>{{ $t("player.context_menu.view_profile") }}</span>
         </DropdownMenuItem>
 
-        <DropdownMenuItem v-if="canMessage(steamId)" @select="message">
+        <DropdownMenuItem
+          v-if="!blocked && canMessage(steamId)"
+          @select="message"
+        >
           <MessageSquare />
           <span>{{ $t("chat.direct.message") }}</span>
         </DropdownMenuItem>
@@ -212,7 +248,7 @@ function openSteamProfile() {
           <span>{{ $t("matchmaking.friends.invite_to_lobby") }}</span>
         </DropdownMenuItem>
 
-        <template v-if="showFriendActions">
+        <template v-if="showFriendActions && !blocked">
           <DropdownMenuSeparator />
 
           <DropdownMenuItem
@@ -271,8 +307,37 @@ function openSteamProfile() {
           <SteamIcon class="size-4 fill-current" />
           <span>{{ $t("ui.tooltips.view_steam_profile") }}</span>
         </DropdownMenuItem>
+
+        <template v-if="showFriendActions && blocksAvailable">
+          <DropdownMenuSeparator />
+
+          <DropdownMenuItem
+            v-if="blocked"
+            :disabled="blockBusy"
+            @select="unblockPlayer"
+          >
+            <Ban />
+            <span>{{ $t("player_blocks.unblock") }}</span>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
+            v-else
+            class="text-destructive focus:text-destructive"
+            :disabled="blockBusy"
+            @select="confirmBlock = true"
+          >
+            <Ban />
+            <span>{{ $t("player_blocks.block") }}</span>
+          </DropdownMenuItem>
+        </template>
       </DropdownMenuContent>
     </DropdownMenu>
+
+    <BlockPlayerDialog
+      v-if="showFriendActions"
+      v-model:open="confirmBlock"
+      :player="player"
+    />
 
     <AlertDialog v-model:open="confirmRemove">
       <AlertDialogContent data-right-hub-interactive>

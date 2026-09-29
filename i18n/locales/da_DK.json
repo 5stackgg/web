@@ -1588,6 +1588,7 @@
         "my_account": "Min konto",
         "api_keys": "API-nøgler",
         "linked_accounts": "Tilknyttede konti",
+        "blocked_players": "Blokerede spillere",
         "voice": "Stemme og lyd",
         "api_keys_management": {
           "add_api_key": "Tilføj API-nøgle",
@@ -2867,6 +2868,13 @@
         "import_share_code_submit": "Importér",
         "toast_share_code_queued": "Kampen er sat i kø til import",
         "toast_share_code_failed": "Kunne ikke importere kampen"
+      },
+      "blocked_players": {
+        "title": "Blokerede spillere",
+        "description": "Blokerede spillere kan ikke sende dig beskeder, invitationer eller venneanmodninger. At fjerne en blokering gendanner ikke jeres venskab.",
+        "empty_title": "Ingen blokerede spillere",
+        "empty_description": "Spillere, du blokerer fra deres profil eller spillermenuen, vises her.",
+        "blocked_on": "Blokeret"
       }
     },
     "watch": {
@@ -8151,6 +8159,25 @@
     "current_elo": "NU",
     "faceit_level": "Niveau {level}",
     "elo_aria_label": "ELO, primær {tier} {elo}"
+  },
+  "player_blocks": {
+    "block": "Bloker",
+    "unblock": "Fjern blokering",
+    "blocked_badge": "Blokeret",
+    "confirm": {
+      "title": "Bloker {name}?",
+      "description": "{name} vil ikke kunne sende dig beskeder, invitationer eller venneanmodninger. Jeres venskab fjernes og bliver ikke gendannet, hvis du fjerner blokeringen.",
+      "action": "Bloker"
+    },
+    "toasts": {
+      "blocked": "{name} blokeret",
+      "unblocked": "Blokering af {name} fjernet"
+    },
+    "errors": {
+      "title": "Handling ikke tilgængelig",
+      "player_blocked": "Det kan du ikke gøre med denne spiller.",
+      "player_blocked_bulk": "Mindst én af disse spillere kan ikke tilføjes."
+    }
   },
   "maps": {
     "veto": {

@@ -52,6 +52,10 @@ const navItems = computed(() => {
       label: $t("pages.settings.account.linked_accounts"),
     },
     {
+      path: "/settings/blocked-players",
+      label: $t("pages.settings.account.blocked_players"),
+    },
+    {
       path: "/settings/notification-preferences",
       label: $t("pages.settings.notification_preferences.title"),
     },

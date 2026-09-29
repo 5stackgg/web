@@ -15,6 +15,7 @@ import type {
 import { toast } from "@/components/ui/toast";
 import { isAuthErrorMessage } from "~/graphql/isAuthError";
 import { tournamentInviteErrorKey } from "~/utilities/tournamentInvites";
+import { playerBlockErrorKey } from "~/utilities/playerBlocks";
 import { createWatchedGraphqlWsClient } from "~/utilities/graphqlWsWatchdog";
 
 const mergeObjectFields = (
@@ -177,6 +178,17 @@ export default defineNuxtPlugin((nuxtApp) => {
         // RCON being unreachable is an expected, transient state already
         // surfaced by the server status badge + RCON console — don't toast it.
         if (/unable to connect to rcon/i.test(graphqlError.message)) {
+          continue;
+        }
+
+        const blockedKey = playerBlockErrorKey(graphqlError.message);
+
+        if (blockedKey) {
+          toast({
+            variant: "destructive",
+            title: $i18n.t("player_blocks.errors.title"),
+            description: $i18n.t(blockedKey),
+          });
           continue;
         }
 

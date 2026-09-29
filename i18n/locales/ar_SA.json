@@ -1588,6 +1588,7 @@
         "my_account": "حسابي",
         "api_keys": "مفاتيح API",
         "linked_accounts": "الحسابات المرتبطة",
+        "blocked_players": "اللاعبون المحظورون",
         "voice": "الصوت والسماعات",
         "api_keys_management": {
           "add_api_key": "أضف مفتاح API",
@@ -2867,6 +2868,13 @@
         "import_share_code_submit": "استيراد",
         "toast_share_code_queued": "أُضيفت المباراة إلى قائمة الاستيراد",
         "toast_share_code_failed": "تعذّر استيراد المباراة"
+      },
+      "blocked_players": {
+        "title": "اللاعبون المحظورون",
+        "description": "لا يمكن للاعبين المحظورين مراسلتك أو دعوتك أو إرسال طلبات صداقة إليك. إلغاء حظر أي لاعب لا يعيد صداقتكما.",
+        "empty_title": "لا يوجد لاعبون محظورون",
+        "empty_description": "سيظهر هنا اللاعبون الذين تحظرهم من ملفهم الشخصي أو من قائمة اللاعب.",
+        "blocked_on": "حُظر"
       }
     },
     "watch": {
@@ -8151,6 +8159,25 @@
     "current_elo": "الحالي",
     "faceit_level": "المستوى {level}",
     "elo_aria_label": "ELO، الأساسي {tier} {elo}"
+  },
+  "player_blocks": {
+    "block": "احظر",
+    "unblock": "ألغِ الحظر",
+    "blocked_badge": "محظور",
+    "confirm": {
+      "title": "هل تريد حظر {name}؟",
+      "description": "لن يتمكن {name} من مراسلتك أو دعوتك أو إرسال طلبات صداقة إليك. ستُزال صداقتكما، ولن يعيدها إلغاء الحظر.",
+      "action": "احظر"
+    },
+    "toasts": {
+      "blocked": "تم حظر {name}",
+      "unblocked": "تم إلغاء حظر {name}"
+    },
+    "errors": {
+      "title": "الإجراء غير متاح",
+      "player_blocked": "لا يمكنك فعل ذلك مع هذا اللاعب.",
+      "player_blocked_bulk": "لا يمكن إضافة لاعب واحد على الأقل من هؤلاء اللاعبين."
+    }
   },
   "maps": {
     "veto": {

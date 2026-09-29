@@ -1588,6 +1588,7 @@
         "my_account": "Mon compte",
         "api_keys": "Clés API",
         "linked_accounts": "Comptes liés",
+        "blocked_players": "Joueurs bloqués",
         "voice": "Voix et audio",
         "api_keys_management": {
           "add_api_key": "Ajouter une clé API",
@@ -2867,6 +2868,13 @@
         "import_share_code_submit": "Importer",
         "toast_share_code_queued": "Match en file d'attente d'import",
         "toast_share_code_failed": "Impossible d'importer le match"
+      },
+      "blocked_players": {
+        "title": "Joueurs bloqués",
+        "description": "Les joueurs bloqués ne peuvent pas vous envoyer de messages, d'invitations ni de demandes d'ami. Débloquer quelqu'un ne rétablit pas votre amitié.",
+        "empty_title": "Aucun joueur bloqué",
+        "empty_description": "Les joueurs que vous bloquez depuis leur profil ou le menu joueur apparaîtront ici.",
+        "blocked_on": "Bloqué"
       }
     },
     "watch": {
@@ -8151,6 +8159,25 @@
     "current_elo": "ACTUEL",
     "faceit_level": "Niveau {level}",
     "elo_aria_label": "ELO, principal {tier} {elo}"
+  },
+  "player_blocks": {
+    "block": "Bloquer",
+    "unblock": "Débloquer",
+    "blocked_badge": "Bloqué",
+    "confirm": {
+      "title": "Bloquer {name} ?",
+      "description": "{name} ne pourra plus vous envoyer de messages, d'invitations ni de demandes d'ami. Votre amitié sera supprimée et ne sera pas rétablie si vous le débloquez.",
+      "action": "Bloquer"
+    },
+    "toasts": {
+      "blocked": "{name} bloqué",
+      "unblocked": "{name} débloqué"
+    },
+    "errors": {
+      "title": "Action indisponible",
+      "player_blocked": "Vous ne pouvez pas faire cela avec ce joueur.",
+      "player_blocked_bulk": "Au moins un de ces joueurs ne peut pas être ajouté."
+    }
   },
   "maps": {
     "veto": {

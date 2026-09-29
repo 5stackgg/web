@@ -20,8 +20,11 @@ import {
   Swords,
   LogIn,
   MessageSquare,
+  Ban,
 } from "lucide-vue-next";
+import BlockPlayerDialog from "~/components/player/BlockPlayerDialog.vue";
 import { useFriendActions } from "~/composables/useFriendActions";
+import { usePlayerBlocks } from "~/composables/usePlayerBlocks";
 import { useFriendStatus } from "~/composables/useFriendStatus";
 import { useDraftGamesStore } from "~/stores/DraftGamesStore";
 import { toast } from "~/components/ui/toast";
@@ -52,6 +55,8 @@ const {
 // Rendered inside the accepted-friend branch, so the friend-only rule the
 // server enforces is already satisfied by where the button lives.
 const { openConversation } = useDirectMessages();
+
+const { available: blocksAvailable } = usePlayerBlocks();
 
 const rel = computed(() => relationship(props.player.steam_id));
 const busy = computed(() => isBusy(props.player.steam_id));
@@ -120,8 +125,13 @@ function onMenuOpenChange(open: boolean) {
 const confirmRemove = ref(false);
 watch(confirmRemove, (open) => onMenuOpenChange(open));
 
+const confirmBlock = ref(false);
+watch(confirmBlock, (open) => onMenuOpenChange(open));
+
 onBeforeUnmount(() => {
-  if (confirmRemove.value) useRightSidebar().resumeHoverClose();
+  if (confirmRemove.value || confirmBlock.value) {
+    useRightSidebar().resumeHoverClose();
+  }
 });
 
 // Invite to my draft lobby — the server only lets the host or an organizer add
@@ -461,7 +471,7 @@ const amberHover =
       </ContextMenuTrigger>
 
       <ContextMenuContent
-        v-if="isFriend || canInviteToDraft"
+        v-if="isFriend || canInviteToDraft || blocksAvailable"
         data-right-hub-interactive
         class="w-56"
       >
@@ -477,8 +487,24 @@ const amberHover =
           <Trash2 />
           <span>{{ $t("matchmaking.friends.remove") }}</span>
         </ContextMenuItem>
+        <template v-if="blocksAvailable">
+          <ContextMenuSeparator v-if="isFriend || canInviteToDraft" />
+          <ContextMenuItem
+            class="text-destructive focus:text-destructive"
+            @click="confirmBlock = true"
+          >
+            <Ban />
+            <span>{{ $t("player_blocks.block") }}</span>
+          </ContextMenuItem>
+        </template>
       </ContextMenuContent>
     </ContextMenu>
+
+    <BlockPlayerDialog
+      v-if="blocksAvailable"
+      v-model:open="confirmBlock"
+      :player="player"
+    />
 
     <AlertDialog v-model:open="confirmRemove">
       <AlertDialogContent data-right-hub-interactive>

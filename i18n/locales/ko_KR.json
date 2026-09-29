@@ -1588,6 +1588,7 @@
         "my_account": "내 계정",
         "api_keys": "API 키",
         "linked_accounts": "연동 계정",
+        "blocked_players": "차단한 플레이어",
         "voice": "음성 및 오디오",
         "api_keys_management": {
           "add_api_key": "API 키 추가",
@@ -2867,6 +2868,13 @@
         "import_share_code_submit": "가져오기",
         "toast_share_code_queued": "매치를 가져오기 대기열에 추가했습니다",
         "toast_share_code_failed": "매치를 가져오지 못했습니다"
+      },
+      "blocked_players": {
+        "title": "차단한 플레이어",
+        "description": "차단한 플레이어는 메시지, 초대, 친구 요청을 보낼 수 없습니다. 차단을 해제해도 친구 관계는 복구되지 않습니다.",
+        "empty_title": "차단한 플레이어가 없습니다",
+        "empty_description": "프로필이나 플레이어 메뉴에서 차단한 플레이어가 여기에 표시됩니다.",
+        "blocked_on": "차단"
       }
     },
     "watch": {
@@ -8151,6 +8159,25 @@
     "current_elo": "현재",
     "faceit_level": "레벨 {level}",
     "elo_aria_label": "ELO, 주 {tier} {elo}"
+  },
+  "player_blocks": {
+    "block": "차단",
+    "unblock": "차단 해제",
+    "blocked_badge": "차단됨",
+    "confirm": {
+      "title": "{name}을(를) 차단할까요?",
+      "description": "{name}은(는) 더 이상 메시지, 초대, 친구 요청을 보낼 수 없습니다. 친구 관계가 삭제되며, 차단을 해제해도 복구되지 않습니다.",
+      "action": "차단"
+    },
+    "toasts": {
+      "blocked": "{name}을(를) 차단했습니다",
+      "unblocked": "{name}의 차단을 해제했습니다"
+    },
+    "errors": {
+      "title": "사용할 수 없는 작업",
+      "player_blocked": "이 플레이어에게는 그 작업을 할 수 없습니다.",
+      "player_blocked_bulk": "이 플레이어 중 추가할 수 없는 플레이어가 있습니다."
+    }
   },
   "maps": {
     "veto": {

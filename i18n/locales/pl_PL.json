@@ -1588,6 +1588,7 @@
         "my_account": "Moje konto",
         "api_keys": "Klucze API",
         "linked_accounts": "Połączone konta",
+        "blocked_players": "Zablokowani gracze",
         "voice": "Głos i dźwięk",
         "api_keys_management": {
           "add_api_key": "Dodaj klucz API",
@@ -2867,6 +2868,13 @@
         "import_share_code_submit": "Importuj",
         "toast_share_code_queued": "Mecz dodany do kolejki importu",
         "toast_share_code_failed": "Nie udało się zaimportować meczu"
+      },
+      "blocked_players": {
+        "title": "Zablokowani gracze",
+        "description": "Zablokowani gracze nie mogą wysyłać ci wiadomości, zaproszeń ani próśb o dodanie do znajomych. Odblokowanie kogoś nie przywraca waszej znajomości.",
+        "empty_title": "Brak zablokowanych graczy",
+        "empty_description": "Gracze zablokowani z poziomu ich profilu lub menu gracza pojawią się tutaj.",
+        "blocked_on": "Zablokowano"
       }
     },
     "watch": {
@@ -8151,6 +8159,25 @@
     "current_elo": "OBECNIE",
     "faceit_level": "Poziom {level}",
     "elo_aria_label": "ELO, główny {tier} {elo}"
+  },
+  "player_blocks": {
+    "block": "Zablokuj",
+    "unblock": "Odblokuj",
+    "blocked_badge": "Zablokowany",
+    "confirm": {
+      "title": "Zablokować {name}?",
+      "description": "{name} nie będzie mógł wysyłać ci wiadomości, zaproszeń ani próśb o dodanie do znajomych. Wasza znajomość zostanie usunięta, a odblokowanie jej nie przywróci.",
+      "action": "Zablokuj"
+    },
+    "toasts": {
+      "blocked": "Zablokowano {name}",
+      "unblocked": "Odblokowano {name}"
+    },
+    "errors": {
+      "title": "Akcja niedostępna",
+      "player_blocked": "Nie możesz tego zrobić z tym graczem.",
+      "player_blocked_bulk": "Co najmniej jednego z tych graczy nie można dodać."
+    }
   },
   "maps": {
     "veto": {

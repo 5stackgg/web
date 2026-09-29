@@ -1588,6 +1588,7 @@
         "my_account": "我的帳戶",
         "api_keys": "API 金鑰",
         "linked_accounts": "已連結帳戶",
+        "blocked_players": "已封鎖的玩家",
         "voice": "語音與音訊",
         "api_keys_management": {
           "add_api_key": "新增 API 金鑰",
@@ -2867,6 +2868,13 @@
         "import_share_code_submit": "匯入",
         "toast_share_code_queued": "比賽已加入匯入佇列",
         "toast_share_code_failed": "無法匯入比賽"
+      },
+      "blocked_players": {
+        "title": "已封鎖的玩家",
+        "description": "被封鎖的玩家無法傳送訊息、邀請或好友邀請給你。解除封鎖不會恢復你們的好友關係。",
+        "empty_title": "沒有已封鎖的玩家",
+        "empty_description": "你從玩家個人檔案或玩家選單封鎖的玩家會顯示在這裡。",
+        "blocked_on": "已封鎖"
       }
     },
     "watch": {
@@ -8151,6 +8159,25 @@
     "current_elo": "目前",
     "faceit_level": "等級 {level}",
     "elo_aria_label": "ELO，主要 {tier} {elo}"
+  },
+  "player_blocks": {
+    "block": "封鎖",
+    "unblock": "解除封鎖",
+    "blocked_badge": "已封鎖",
+    "confirm": {
+      "title": "要封鎖 {name} 嗎？",
+      "description": "{name} 將無法再傳送訊息、邀請或好友邀請給你。你們的好友關係會被移除，解除封鎖後也不會恢復。",
+      "action": "封鎖"
+    },
+    "toasts": {
+      "blocked": "已封鎖 {name}",
+      "unblocked": "已解除封鎖 {name}"
+    },
+    "errors": {
+      "title": "無法執行此操作",
+      "player_blocked": "無法對這位玩家執行此操作。",
+      "player_blocked_bulk": "其中至少有一名玩家無法加入。"
+    }
   },
   "maps": {
     "veto": {

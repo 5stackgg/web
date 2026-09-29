@@ -8,12 +8,14 @@ import {
 } from "~/composables/useDirectMessages";
 import { isChatTabOnScreen } from "~/composables/useChatTabSetup";
 
+// Outlives the default layout that mounts this, like the rooms in
+// useChatTabSetup: a remount replaces the listener rather than adding another.
+let incoming: ReturnType<typeof socket.listen> | undefined;
+
 // A conversation you haven't opened has no tab, so nothing is listening to its
 // room -- which is exactly the case for a first message from someone. The
 // server addresses the recipient directly with `direct:incoming` regardless of
 // room membership, and this turns that into a background tab.
-//
-// Mounted once, from the default layout.
 export function useIncomingDirectMessages() {
   const authStore = useAuthStore();
   const { openTab, closeTab, incrementUnread, setUnread, tabs } = useChatTabs();
@@ -105,7 +107,8 @@ export function useIncomingDirectMessages() {
     }
   }
 
-  socket.listen(
+  incoming?.stop();
+  incoming = socket.listen(
     "direct:incoming",
     (data: {
       roomId: string;

@@ -84,6 +84,7 @@ function setVisibility(state: DocumentVisibilityState) {
 }
 
 let socket: Socket;
+let events: MockInstance<Socket["event"]>;
 let lifecycleSpies: Array<[EventTarget, MockInstance]> = [];
 
 beforeEach(() => {
@@ -100,6 +101,14 @@ beforeEach(() => {
 
   FakeWebSocket.instances = [];
   socket = new Socket();
+
+  const event = socket.event.bind(socket);
+  events = vi.spyOn(socket, "event").mockImplementation((name, data) => {
+    // Capped so a flush that re-queues forever fails a test instead of hanging.
+    if (events.mock.calls.length <= 1000) {
+      event(name, data);
+    }
+  });
 });
 
 afterEach(() => {
@@ -209,7 +218,7 @@ describe("Socket pong watchdog", () => {
     socket.connect();
     const current = latest();
 
-    replaced.open();
+    expect(() => replaced.open()).not.toThrow();
 
     expect(online).not.toHaveBeenCalled();
     expect(replaced.sent).toEqual([]);
@@ -264,6 +273,7 @@ describe("Socket pong watchdog", () => {
 
     vi.advanceTimersByTime(100);
 
+    expect(events).toHaveBeenCalledTimes(1);
     expect(shortLived.sent.map(({ event }) => event)).not.toContain(
       "match:ready",
     );
@@ -283,6 +293,7 @@ describe("Socket pong watchdog", () => {
     socket.connect();
     const dropped = latest();
     dropped.open();
+    vi.advanceTimersByTime(HEARTBEAT_MS - 500);
     const pings = dropped.pings();
 
     dropped.fail();

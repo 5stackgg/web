@@ -304,6 +304,26 @@ describe("createWatchedGraphqlWsClient", () => {
     expect(sink.error).not.toHaveBeenCalled();
   });
 
+  it("keeps retrying past graphql-ws's default of five attempts", async () => {
+    const sink = await subscribed();
+
+    latest().serverClose(1006);
+
+    for (let attempt = 1; attempt <= 8; attempt++) {
+      await vi.advanceTimersByTimeAsync(GRAPHQL_WS_MAX_RETRY_WAIT_MS);
+
+      expect(FakeGraphqlSocket.instances).toHaveLength(attempt + 1);
+
+      latest().failHandshake();
+    }
+
+    await vi.advanceTimersByTimeAsync(GRAPHQL_WS_MAX_RETRY_WAIT_MS);
+    await acknowledge(latest());
+
+    expect(latest().types()).toEqual(["connection_init", "subscribe"]);
+    expect(sink.error).not.toHaveBeenCalled();
+  });
+
   it("still gives up on a close graphql-ws treats as fatal", async () => {
     const sink = await subscribed();
 

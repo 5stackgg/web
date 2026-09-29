@@ -17209,6 +17209,7 @@ shader_bake_status_history?: [{	/** JSON select path */
 	token?:boolean | `@${string}`,
 	/** A computed field, executes function "total_node_server_count" */
 	total_server_count?:boolean | `@${string}`,
+	update_failed_at?:boolean | `@${string}`,
 	update_status?:boolean | `@${string}`,
 	/** An object relationship */
 	version?:ValueTypes["game_versions"],
@@ -100301,6 +100302,7 @@ shader_bake_status_history?: [{	/** JSON select path */
 	token?:boolean | `@${string}`,
 	/** A computed field, executes function "total_node_server_count" */
 	total_server_count?:boolean | `@${string}`,
+	update_failed_at?:boolean | `@${string}`,
 	update_status?:boolean | `@${string}`,
 	/** An object relationship */
 	version?:ResolverInputTypes["game_versions"],
@@ -181888,6 +181890,7 @@ export type ModelTypes = {
 	token?: string | undefined | null,
 	/** A computed field, executes function "total_node_server_count" */
 	total_server_count?: number | undefined | null,
+	update_failed_at?: ModelTypes["timestamptz"] | undefined | null,
 	update_status?: string | undefined | null,
 	/** An object relationship */
 	version?: ModelTypes["game_versions"] | undefined | null
@@ -256106,6 +256109,7 @@ export type GraphQLTypes = {
 	token?: string | undefined | null,
 	/** A computed field, executes function "total_node_server_count" */
 	total_server_count?: number | undefined | null,
+	update_failed_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	update_status?: string | undefined | null,
 	/** An object relationship */
 	version?: GraphQLTypes["game_versions"] | undefined | null

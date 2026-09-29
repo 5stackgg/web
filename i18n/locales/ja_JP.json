@@ -8352,6 +8352,8 @@
       "use_as_gpu_only": "GPU 専用として使用"
     },
     "show_update_logs": "更新ログを表示",
+    "update_failed": "更新失敗",
+    "update_failed_description": "前回の更新に失敗しました。更新ログは24時間保持されます。",
     "edit_label": "ラベルを編集",
     "edit_cs2_options": "映像設定を編集",
     "cs2_options": {

@@ -8352,6 +8352,8 @@
       "use_as_gpu_only": "Brug kun som GPU"
     },
     "show_update_logs": "Vis opdateringslogs",
+    "update_failed": "Opdatering mislykkedes",
+    "update_failed_description": "Den seneste opdatering mislykkedes. Opdateringslogs gemmes i 24 timer.",
     "edit_label": "Rediger label",
     "edit_cs2_options": "Rediger videoindstillinger",
     "cs2_options": {

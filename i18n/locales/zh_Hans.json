@@ -8352,6 +8352,8 @@
       "use_as_gpu_only": "仅用作 GPU"
     },
     "show_update_logs": "显示更新日志",
+    "update_failed": "更新失败",
+    "update_failed_description": "上次更新失败。更新日志保留 24 小时。",
     "edit_label": "编辑标签",
     "edit_cs2_options": "编辑视频设置",
     "cs2_options": {

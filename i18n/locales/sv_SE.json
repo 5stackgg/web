@@ -8352,6 +8352,8 @@
       "use_as_gpu_only": "Använd endast som GPU"
     },
     "show_update_logs": "Visa uppdateringsloggar",
+    "update_failed": "Uppdateringen misslyckades",
+    "update_failed_description": "Den senaste uppdateringen misslyckades. Uppdateringsloggar sparas i 24 timmar.",
     "edit_label": "Redigera etikett",
     "edit_cs2_options": "Redigera videoinställningar",
     "cs2_options": {

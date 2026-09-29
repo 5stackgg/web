@@ -8352,6 +8352,8 @@
       "use_as_gpu_only": "Usar solo como GPU"
     },
     "show_update_logs": "Ver registros de actualización",
+    "update_failed": "Actualización fallida",
+    "update_failed_description": "La última actualización falló. Los registros de actualización se conservan durante 24 horas.",
     "edit_label": "Editar etiqueta",
     "edit_cs2_options": "Editar ajustes de vídeo",
     "cs2_options": {

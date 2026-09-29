@@ -8352,6 +8352,8 @@
       "use_as_gpu_only": "Yalnızca GPU olarak kullan"
     },
     "show_update_logs": "Güncelleme günlüklerini göster",
+    "update_failed": "Güncelleme Başarısız",
+    "update_failed_description": "Son güncelleme başarısız oldu. Güncelleme günlükleri 24 saat saklanır.",
     "edit_label": "Etiketi düzenle",
     "edit_cs2_options": "Video ayarlarını düzenle",
     "cs2_options": {

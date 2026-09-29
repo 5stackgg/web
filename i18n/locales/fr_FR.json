@@ -8352,6 +8352,8 @@
       "use_as_gpu_only": "Utiliser en GPU uniquement"
     },
     "show_update_logs": "Afficher les logs de mise à jour",
+    "update_failed": "Échec de la mise à jour",
+    "update_failed_description": "La dernière mise à jour a échoué. Les logs de mise à jour sont conservés pendant 24 heures.",
     "edit_label": "Modifier le libellé",
     "edit_cs2_options": "Modifier les paramètres vidéo",
     "cs2_options": {

@@ -8352,6 +8352,8 @@
       "use_as_gpu_only": "Usar como Apenas GPU"
     },
     "show_update_logs": "Mostrar Logs de Atualizações",
+    "update_failed": "Falha na atualização",
+    "update_failed_description": "A última atualização falhou. Os logs de atualizações ficam disponíveis por 24 horas.",
     "edit_label": "Editar rótulo",
     "edit_cs2_options": "Configurações de Vídeo do CS2",
     "cs2_options": {

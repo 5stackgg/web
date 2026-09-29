@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, ref, watch } from "vue";
-import { MoreVertical, Trash2 } from "lucide-vue-next";
+import { MoreVertical, Pencil, Trash2 } from "lucide-vue-next";
 import { useRightSidebar } from "~/composables/useRightSidebar";
 import socket, { type ChatType, type LobbyMessage } from "~/web-sockets/Socket";
 import {
@@ -16,32 +16,57 @@ const props = defineProps<{
   // the room the panel was opened for.
   room: { type: ChatType; id: string };
   permissions: ChatMessagePermissions;
+  own?: boolean;
 }>();
+
+const emit = defineEmits<{
+  open: [];
+  expired: [];
+  edit: [];
+}>();
+
+const triggerRef = ref<{ $el?: HTMLElement } | null>(null);
+
+defineExpose({
+  focusTrigger() {
+    triggerRef.value?.$el?.focus();
+  },
+});
 
 const menuOpen = ref(false);
 const confirmDelete = ref(false);
 
-// The menu and the confirm after it sit over the right hub, which closes itself
-// when the pointer leaves. Both count as still interacting with it.
-function holdRightHub(open: boolean, wasOpen: boolean) {
-  const rightSidebar = useRightSidebar();
+// Before the menu renders, so the row re-checks the ten minute window against
+// the clock now rather than when the line first rendered.
+function setMenuOpen(open: boolean) {
+  if (open) {
+    emit("open");
+  }
 
-  if (open && !wasOpen) {
-    rightSidebar.suspendHoverClose();
-  } else if (!open && wasOpen) {
-    rightSidebar.resumeHoverClose();
+  menuOpen.value = open;
+}
+
+// The menu and the confirm after it sit over the right hub, which closes itself
+// when the pointer leaves. Both count as still interacting with it. The row can
+// unmount this before a watcher sees the menu open, so only locks actually
+// taken are released.
+const hubHolds = new Set<"menu" | "confirm">();
+
+function holdRightHub(hold: "menu" | "confirm", open: boolean) {
+  if (open && !hubHolds.has(hold)) {
+    hubHolds.add(hold);
+    useRightSidebar().suspendHoverClose();
+  } else if (!open && hubHolds.delete(hold)) {
+    useRightSidebar().resumeHoverClose();
   }
 }
 
-watch(menuOpen, holdRightHub);
-watch(confirmDelete, holdRightHub);
+watch(menuOpen, (open) => holdRightHub("menu", open));
+watch(confirmDelete, (open) => holdRightHub("confirm", open));
 
 onBeforeUnmount(() => {
-  for (const open of [menuOpen.value, confirmDelete.value]) {
-    if (open) {
-      useRightSidebar().resumeHoverClose();
-    }
-  }
+  holdRightHub("menu", false);
+  holdRightHub("confirm", false);
 });
 
 async function deleteMessage() {
@@ -59,6 +84,12 @@ async function deleteMessage() {
   } catch (error) {
     toastChatError(error as ChatError);
 
+    if ((error as ChatError)?.code === "window_closed") {
+      confirmDelete.value = false;
+      emit("expired");
+      return;
+    }
+
     if (!chatErrorFailed(error as ChatError)) {
       confirmDelete.value = false;
     }
@@ -70,9 +101,10 @@ async function deleteMessage() {
   <div
     class="opacity-0 transition-opacity duration-150 focus-within:opacity-100 group-hover/chat-message:opacity-100 has-[[data-state=open]]:opacity-100 motion-reduce:transition-none [@media(hover:none)]:opacity-100"
   >
-    <DropdownMenu v-model:open="menuOpen" :modal="false">
+    <DropdownMenu :open="menuOpen" :modal="false" @update:open="setMenuOpen">
       <DropdownMenuTrigger as-child>
         <Button
+          ref="triggerRef"
           variant="ghost"
           size="icon"
           class="h-6 w-6 text-muted-foreground hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))] [&_svg]:size-3.5"
@@ -81,7 +113,18 @@ async function deleteMessage() {
           <MoreVertical />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" class="w-48" data-right-hub-interactive>
+      <DropdownMenuContent
+        align="end"
+        class="w-48"
+        data-right-hub-interactive
+      >
+        <DropdownMenuItem v-if="permissions.canEdit" @select="emit('edit')">
+          <Pencil />
+          <span>{{ $t("chat.edit_message") }}</span>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator
+          v-if="permissions.canEdit && permissions.canDelete"
+        />
         <DropdownMenuItem
           v-if="permissions.canDelete"
           class="text-destructive focus:text-destructive"
@@ -99,7 +142,10 @@ async function deleteMessage() {
           <AlertDialogTitle>
             {{ $t("chat.delete_confirm_title") }}
           </AlertDialogTitle>
-          <AlertDialogDescription>
+          <AlertDialogDescription v-if="own">
+            {{ $t("chat.delete_own_confirm_description") }}
+          </AlertDialogDescription>
+          <AlertDialogDescription v-else>
             {{
               $t("chat.delete_confirm_description", {
                 name: message.from?.name || $t("common.unknown"),

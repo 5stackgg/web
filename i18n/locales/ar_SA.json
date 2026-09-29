@@ -8482,9 +8482,18 @@
     "delete_message": "حذف الرسالة",
     "delete_confirm_title": "حذف الرسالة؟",
     "delete_confirm_description": "ستُزال رسالة {name} لدى جميع من في هذه الدردشة.",
+    "delete_own_confirm_description": "ستُزال رسالتك لدى جميع من في هذه الدردشة.",
     "delete_failed": "تعذّر حذف الرسالة",
     "delete_timeout": "لم يستجب الخادم. قد تتم إزالة الرسالة لاحقًا.",
     "message_already_gone": "تمت إزالة الرسالة بالفعل",
+    "own_message_window_closed": "يمكنك تعديل رسائلك أو حذفها خلال 10 دقائق فقط.",
+    "edit_message": "تعديل الرسالة",
+    "edit_hint": "Enter للحفظ · Esc للإلغاء",
+    "edited": "(مُعدّلة)",
+    "edited_at": "عُدّلت {time}",
+    "edit_failed": "تعذّر تعديل الرسالة",
+    "edit_timeout": "لم يستجب الخادم. قد يُحفظ تعديلك لاحقًا.",
+    "edit_window_closed": "يمكنك تعديل الرسالة خلال 10 دقائق فقط.",
     "direct": {
       "message": "رسالة",
       "empty": "لا رسائل بعد. ألقِ التحية."

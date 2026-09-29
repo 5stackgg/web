@@ -62,6 +62,9 @@ vi.mock("~/web-sockets/Socket", async (importOriginal) => ({
         },
       };
     },
+    lobbyMessages() {
+      return [];
+    },
     markLobbyRead() {},
   },
 }));
@@ -165,6 +168,29 @@ describe("useIncomingDirectMessages", () => {
     incoming("m3");
 
     expect(unread()).toBe(3);
+  });
+
+  it("still counts a burst once after the join's history fills in its ids", async () => {
+    await mountChat();
+
+    incoming("m1");
+    incoming("m2");
+    incoming("m3");
+    await flushPromises();
+
+    socketMock.emitLobby(`direct:${ROOM}`, "lobby:messages", [
+      line("m1"),
+      line("m2"),
+      line("m3"),
+    ]);
+    expect(unread()).toBe(3);
+
+    roomChat("m3");
+    incoming("m2");
+    expect(unread()).toBe(3);
+
+    roomChat("m4");
+    expect(unread()).toBe(4);
   });
 
   it("counts a message once when the joined room delivers it too", async () => {

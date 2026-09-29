@@ -8482,9 +8482,18 @@
     "delete_message": "Mesajı sil",
     "delete_confirm_title": "Mesaj silinsin mi?",
     "delete_confirm_description": "{name} adlı oyuncunun mesajı bu sohbetteki herkes için kaldırılacak.",
+    "delete_own_confirm_description": "Mesajın bu sohbetteki herkes için kaldırılacak.",
     "delete_failed": "Mesaj silinemedi",
     "delete_timeout": "Sunucu yanıt vermedi. Mesaj yine de kaldırılabilir.",
     "message_already_gone": "Mesaj zaten kaldırılmış",
+    "own_message_window_closed": "Mesajlarını yalnızca 10 dakika boyunca düzenleyebilir veya silebilirsin.",
+    "edit_message": "Mesajı düzenle",
+    "edit_hint": "Kaydetmek için Enter · Vazgeçmek için Esc",
+    "edited": "(düzenlendi)",
+    "edited_at": "Düzenlenme: {time}",
+    "edit_failed": "Mesaj düzenlenemedi",
+    "edit_timeout": "Sunucu yanıt vermedi. Düzenlemen yine de kaydedilebilir.",
+    "edit_window_closed": "Bir mesajı yalnızca 10 dakika boyunca düzenleyebilirsin.",
     "direct": {
       "message": "Mesaj",
       "empty": "Henüz mesaj yok. Merhaba de."

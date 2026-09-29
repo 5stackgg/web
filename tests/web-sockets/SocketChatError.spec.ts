@@ -37,6 +37,13 @@ function sentDeletes(send: ReturnType<typeof vi.fn>) {
     .map(({ data }) => data);
 }
 
+function sentEdits(send: ReturnType<typeof vi.fn>) {
+  return send.mock.calls
+    .map(([payload]) => JSON.parse(payload))
+    .filter(({ event }) => event === "lobby:edit")
+    .map(({ data }) => data);
+}
+
 async function settled(promise: Promise<unknown>) {
   let state = "pending";
   promise.then(
@@ -327,5 +334,313 @@ describe("Socket lobby deletes", () => {
 
     await expect(pending).rejects.toMatchObject({ code: "not_found" });
     expect(ids(lobby.messages)).toEqual(["a", "c"]);
+  });
+});
+
+describe("Socket editMessage", () => {
+  let send: ReturnType<typeof vi.fn>;
+
+  beforeEach(() => {
+    toast.mockClear();
+    send = connect();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    disconnect();
+  });
+
+  it("asks the api to edit the message with a request id", () => {
+    void socket
+      .editMessage("direct", "1:2", "message-1", "fixed")
+      .catch(() => {});
+
+    const [request] = sentEdits(send);
+    expect(request).toMatchObject({
+      type: "direct",
+      id: "1:2",
+      messageId: "message-1",
+      message: "fixed",
+    });
+    expect(typeof request.requestId).toBe("string");
+  });
+
+  it("resolves only on the edit ack for its own request", async () => {
+    const pending = socket.editMessage("match", "match-1", "message-1", "x");
+    const [{ requestId }] = sentEdits(send);
+
+    socket.emit("chat:ack", { requestId, action: "delete" });
+    expect(await settled(pending)).toBe("pending");
+
+    socket.emit("chat:ack", { requestId: "someone-else", action: "edit" });
+    expect(await settled(pending)).toBe("pending");
+
+    socket.emit("chat:ack", {
+      requestId,
+      messageId: "message-1",
+      action: "edit",
+    });
+    await expect(pending).resolves.toBeUndefined();
+  });
+
+  it("rejects on its own error without a global toast", async () => {
+    const pending = socket.editMessage("match", "match-1", "message-1", "x");
+    const [{ requestId }] = sentEdits(send);
+
+    socket.emit("chat:error", {
+      code: "window_closed",
+      action: "edit",
+      requestId,
+    });
+
+    await expect(pending).rejects.toMatchObject({
+      code: "window_closed",
+      action: "edit",
+    });
+    expect(toast).not.toHaveBeenCalled();
+  });
+
+  it("gives up when the api never answers", async () => {
+    vi.useFakeTimers();
+    const pending = socket.editMessage("match", "match-1", "message-1", "x");
+
+    vi.advanceTimersByTime(7999);
+    expect(await settled(pending)).toBe("pending");
+
+    vi.advanceTimersByTime(1);
+    await expect(pending).rejects.toMatchObject({
+      code: "timeout",
+      action: "edit",
+    });
+  });
+
+  it("refuses straight away while offline and sends nothing", async () => {
+    disconnect();
+
+    await expect(
+      socket.editMessage("match", "match-1", "message-1", "x"),
+    ).rejects.toMatchObject({ code: "offline", action: "edit" });
+    expect(sentEdits(send)).toEqual([]);
+    expect((socket as any).offlineQueue).not.toContainEqual(
+      expect.objectContaining({ event: "lobby:edit" }),
+    );
+  });
+
+  it("titles an edit error nobody is waiting on as a failed edit", () => {
+    socket.emit("chat:error", {
+      code: "window_closed",
+      action: "edit",
+      requestId: "nobody-asked",
+    });
+
+    expect(toast).toHaveBeenCalledWith({
+      title: "Failed to edit message",
+      description: "You can only edit a message for 10 minutes.",
+      variant: "destructive",
+    });
+  });
+});
+
+describe("Socket lobby edits", () => {
+  let lobby: ReturnType<typeof socket.joinLobby>;
+  const EDITED_AT = "2026-09-28T12:05:00.000Z";
+
+  beforeEach(() => {
+    vi.spyOn(console, "info").mockImplementation(() => {});
+    lobby = socket.joinLobby("socket-spec", "direct", "1:2");
+    socket.emit("lobby:direct:1:2:messages", {
+      messages: [line("a", 0), line("b", 1)],
+    });
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    lobby.leave();
+    disconnect();
+    vi.restoreAllMocks();
+  });
+
+  const text = () => lobby.messages.map((message) => message.message);
+
+  it("applies an edit to the message it names", () => {
+    socket.emit("lobby:direct:1:2:edited", {
+      id: "b",
+      message: "fixed",
+      edited_at: EDITED_AT,
+    });
+
+    expect(text()).toEqual(["line a", "fixed"]);
+    expect(lobby.messages[1].edited_at).toBe(EDITED_AT);
+  });
+
+  it("never creates a message from an edit for an id it doesn't hold", () => {
+    socket.emit("lobby:direct:1:2:edited", {
+      id: "c",
+      message: "ghost",
+      edited_at: EDITED_AT,
+    });
+
+    expect(ids(lobby.messages)).toEqual(["a", "b"]);
+  });
+
+  it("ignores an edit that arrives after the delete it raced", () => {
+    socket.emit("lobby:direct:1:2:deleted", { id: "b" });
+    socket.emit("lobby:direct:1:2:edited", {
+      id: "b",
+      message: "fixed",
+      edited_at: EDITED_AT,
+    });
+    socket.emit("lobby:direct:1:2:messages", {
+      messages: [line("a", 0), line("b", 1)],
+    });
+
+    expect(ids(lobby.messages)).toEqual(["a"]);
+  });
+
+  it("keeps an edit through a snapshot built before it", () => {
+    socket.emit("lobby:direct:1:2:edited", {
+      id: "b",
+      message: "fixed",
+      edited_at: EDITED_AT,
+    });
+    socket.emit("lobby:direct:1:2:messages", {
+      messages: [line("a", 0), line("b", 1)],
+    });
+
+    expect(text()).toEqual(["line a", "fixed"]);
+  });
+
+  it("shows what the server stored on the ack, before the room hears about it", async () => {
+    const send = connect();
+    const pending = socket.editMessage("direct", "1:2", "b", "fixed");
+    const [{ requestId }] = sentEdits(send);
+
+    socket.emit("chat:ack", {
+      requestId,
+      messageId: "b",
+      action: "edit",
+      message: "fixed as stored",
+      edited_at: EDITED_AT,
+    });
+    await pending;
+
+    expect(text()).toEqual(["line a", "fixed as stored"]);
+    expect(lobby.messages[1].edited_at).toBe(EDITED_AT);
+    expect(lobby.messages[1].__edited_locally).toBeUndefined();
+  });
+
+  it("stamps this browser's clock on an ack from an older api, until the server's arrives", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-09-28T12:05:30.000Z"));
+    const send = connect();
+    const pending = socket.editMessage("direct", "1:2", "b", "fixed");
+    const [{ requestId }] = sentEdits(send);
+
+    socket.emit("chat:ack", { requestId, messageId: "b", action: "edit" });
+    await pending;
+
+    expect(text()).toEqual(["line a", "fixed"]);
+    expect(lobby.messages[1].edited_at).toBe("2026-09-28T12:05:30.000Z");
+
+    socket.emit("lobby:direct:1:2:edited", {
+      id: "b",
+      message: "fixed",
+      edited_at: EDITED_AT,
+    });
+    expect(lobby.messages[1].edited_at).toBe(EDITED_AT);
+    expect(lobby.messages[1].__edited_locally).toBeUndefined();
+  });
+
+  it("ignores an older edit's ack that lands after a newer edit's broadcast", async () => {
+    const send = connect();
+    const pending = socket.editMessage("direct", "1:2", "b", "mine");
+    const [{ requestId }] = sentEdits(send);
+
+    socket.emit("lobby:direct:1:2:edited", {
+      id: "b",
+      message: "other tab",
+      edited_at: "2026-09-28T12:06:00.000Z",
+    });
+    socket.emit("chat:ack", {
+      requestId,
+      messageId: "b",
+      action: "edit",
+      message: "mine",
+      edited_at: EDITED_AT,
+    });
+    await pending;
+
+    expect(text()).toEqual(["line a", "other tab"]);
+    expect(lobby.messages[1].edited_at).toBe("2026-09-28T12:06:00.000Z");
+  });
+
+  it("ignores an older edit's broadcast that lands after a newer edit's ack", async () => {
+    const send = connect();
+    const pending = socket.editMessage("direct", "1:2", "b", "mine");
+    const [{ requestId }] = sentEdits(send);
+
+    socket.emit("chat:ack", {
+      requestId,
+      messageId: "b",
+      action: "edit",
+      message: "mine",
+      edited_at: "2026-09-28T12:06:00.000Z",
+    });
+    await pending;
+    socket.emit("lobby:direct:1:2:edited", {
+      id: "b",
+      message: "other tab",
+      edited_at: EDITED_AT,
+    });
+
+    expect(text()).toEqual(["line a", "mine"]);
+    expect(lobby.messages[1].edited_at).toBe("2026-09-28T12:06:00.000Z");
+  });
+
+  it("keeps the server's edit time when the broadcast beats the ack", async () => {
+    const send = connect();
+    const pending = socket.editMessage("direct", "1:2", "b", "fixed");
+    const [{ requestId }] = sentEdits(send);
+
+    socket.emit("lobby:direct:1:2:edited", {
+      id: "b",
+      message: "fixed",
+      edited_at: EDITED_AT,
+    });
+    socket.emit("chat:ack", { requestId, messageId: "b", action: "edit" });
+    await pending;
+
+    expect(text()).toEqual(["line a", "fixed"]);
+    expect(lobby.messages[1].edited_at).toBe(EDITED_AT);
+  });
+
+  it("drops the line when the api says it is already gone", async () => {
+    const send = connect();
+    const pending = socket.editMessage("direct", "1:2", "b", "fixed");
+    const [{ requestId }] = sentEdits(send);
+
+    socket.emit("chat:error", {
+      code: "not_found",
+      action: "edit",
+      requestId,
+    });
+
+    await expect(pending).rejects.toMatchObject({ code: "not_found" });
+    expect(ids(lobby.messages)).toEqual(["a"]);
+  });
+
+  it("leaves the line alone when the edit is refused", async () => {
+    const send = connect();
+    const pending = socket.editMessage("direct", "1:2", "b", "fixed");
+    const [{ requestId }] = sentEdits(send);
+
+    socket.emit("chat:error", {
+      code: "window_closed",
+      action: "edit",
+      requestId,
+    });
+
+    await expect(pending).rejects.toMatchObject({ code: "window_closed" });
+    expect(text()).toEqual(["line a", "line b"]);
   });
 });

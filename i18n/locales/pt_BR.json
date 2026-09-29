@@ -8482,9 +8482,18 @@
     "delete_message": "Excluir Mensagem",
     "delete_confirm_title": "Excluir Mensagem?",
     "delete_confirm_description": "A mensagem de {name} será removida para todos neste chat.",
+    "delete_own_confirm_description": "Sua mensagem será removida para todos neste chat.",
     "delete_failed": "Não foi possível excluir a mensagem",
     "delete_timeout": "O servidor não respondeu. A mensagem ainda pode ser removida.",
     "message_already_gone": "Mensagem já removida",
+    "own_message_window_closed": "Você só pode editar ou excluir suas mensagens por 10 minutos.",
+    "edit_message": "Editar Mensagem",
+    "edit_hint": "Enter para salvar · Esc para cancelar",
+    "edited": "(editada)",
+    "edited_at": "Editada em {time}",
+    "edit_failed": "Não foi possível editar a mensagem",
+    "edit_timeout": "O servidor não respondeu. Sua edição ainda pode ser salva.",
+    "edit_window_closed": "Você só pode editar uma mensagem por 10 minutos.",
     "direct": {
       "message": "Mensagem",
       "empty": "Nenhuma mensagem ainda. Diga Olá."

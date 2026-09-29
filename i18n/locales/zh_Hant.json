@@ -8482,9 +8482,18 @@
     "delete_message": "刪除訊息",
     "delete_confirm_title": "要刪除訊息嗎？",
     "delete_confirm_description": "{name} 的這則訊息將對此聊天中的所有人移除。",
+    "delete_own_confirm_description": "你的這則訊息將對此聊天中的所有人移除。",
     "delete_failed": "訊息刪除失敗",
     "delete_timeout": "伺服器沒有回應。該訊息仍可能被移除。",
     "message_already_gone": "該訊息已被移除",
+    "own_message_window_closed": "你只能在傳送後 10 分鐘內編輯或刪除自己的訊息。",
+    "edit_message": "編輯訊息",
+    "edit_hint": "按 Enter 儲存 · 按 Esc 取消",
+    "edited": "（已編輯）",
+    "edited_at": "編輯於 {time}",
+    "edit_failed": "訊息編輯失敗",
+    "edit_timeout": "伺服器沒有回應。你的修改仍可能被儲存。",
+    "edit_window_closed": "你只能在傳送後 10 分鐘內編輯訊息。",
     "direct": {
       "message": "訊息",
       "empty": "還沒有訊息，先打個招呼吧。"

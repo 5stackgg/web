@@ -8482,9 +8482,18 @@
     "delete_message": "Slet besked",
     "delete_confirm_title": "Slet besked?",
     "delete_confirm_description": "Beskeden fra {name} bliver fjernet for alle i denne chat.",
+    "delete_own_confirm_description": "Din besked bliver fjernet for alle i denne chat.",
     "delete_failed": "Beskeden kunne ikke slettes",
     "delete_timeout": "Serveren svarede ikke. Beskeden kan stadig blive fjernet.",
     "message_already_gone": "Beskeden er allerede fjernet",
+    "own_message_window_closed": "Du kan kun redigere eller slette dine beskeder i 10 minutter.",
+    "edit_message": "Rediger besked",
+    "edit_hint": "Enter for at gemme · Esc for at annullere",
+    "edited": "(redigeret)",
+    "edited_at": "Redigeret {time}",
+    "edit_failed": "Beskeden kunne ikke redigeres",
+    "edit_timeout": "Serveren svarede ikke. Din ændring kan stadig blive gemt.",
+    "edit_window_closed": "Du kan kun redigere en besked i 10 minutter.",
     "direct": {
       "message": "Besked",
       "empty": "Ingen beskeder endnu. Sig hej."

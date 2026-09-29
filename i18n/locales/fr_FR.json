@@ -8482,9 +8482,18 @@
     "delete_message": "Supprimer le message",
     "delete_confirm_title": "Supprimer le message ?",
     "delete_confirm_description": "Le message de {name} sera supprimé pour tous les participants de ce chat.",
+    "delete_own_confirm_description": "Votre message sera supprimé pour tous les participants de ce chat.",
     "delete_failed": "Impossible de supprimer le message",
     "delete_timeout": "Le serveur n'a pas répondu. Le message peut tout de même être supprimé.",
     "message_already_gone": "Message déjà supprimé",
+    "own_message_window_closed": "Vous ne pouvez modifier ou supprimer vos messages que pendant 10 minutes.",
+    "edit_message": "Modifier le message",
+    "edit_hint": "Entrée pour enregistrer · Échap pour annuler",
+    "edited": "(modifié)",
+    "edited_at": "Modifié le {time}",
+    "edit_failed": "Impossible de modifier le message",
+    "edit_timeout": "Le serveur n'a pas répondu. Votre modification peut tout de même être enregistrée.",
+    "edit_window_closed": "Vous ne pouvez modifier un message que pendant 10 minutes.",
     "direct": {
       "message": "Message",
       "empty": "Aucun message pour l'instant. Dites bonjour."

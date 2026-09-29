@@ -8482,9 +8482,18 @@
     "delete_message": "Nachricht löschen",
     "delete_confirm_title": "Nachricht löschen?",
     "delete_confirm_description": "Die Nachricht von {name} wird für alle in diesem Chat entfernt.",
+    "delete_own_confirm_description": "Deine Nachricht wird für alle in diesem Chat entfernt.",
     "delete_failed": "Nachricht konnte nicht gelöscht werden",
     "delete_timeout": "Der Server hat nicht geantwortet. Die Nachricht wird eventuell trotzdem entfernt.",
     "message_already_gone": "Nachricht wurde bereits entfernt",
+    "own_message_window_closed": "Du kannst deine Nachrichten nur 10 Minuten lang bearbeiten oder löschen.",
+    "edit_message": "Nachricht bearbeiten",
+    "edit_hint": "Enter zum Speichern · Esc zum Abbrechen",
+    "edited": "(bearbeitet)",
+    "edited_at": "Bearbeitet am {time}",
+    "edit_failed": "Nachricht konnte nicht bearbeitet werden",
+    "edit_timeout": "Der Server hat nicht geantwortet. Deine Änderung wird eventuell trotzdem gespeichert.",
+    "edit_window_closed": "Du kannst eine Nachricht nur 10 Minuten lang bearbeiten.",
     "direct": {
       "message": "Nachricht",
       "empty": "Noch keine Nachrichten. Sag Hallo."

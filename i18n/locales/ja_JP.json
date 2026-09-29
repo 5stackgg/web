@@ -8482,9 +8482,18 @@
     "delete_message": "メッセージを削除",
     "delete_confirm_title": "メッセージを削除しますか？",
     "delete_confirm_description": "{name} のメッセージは、このチャットの全員に対して削除されます。",
+    "delete_own_confirm_description": "あなたのメッセージは、このチャットの全員に対して削除されます。",
     "delete_failed": "メッセージを削除できませんでした",
     "delete_timeout": "サーバーから応答がありませんでした。メッセージは後で削除される可能性があります。",
     "message_already_gone": "メッセージはすでに削除されています",
+    "own_message_window_closed": "自分のメッセージを編集・削除できるのは送信後10分間だけです。",
+    "edit_message": "メッセージを編集",
+    "edit_hint": "Enter で保存 · Esc でキャンセル",
+    "edited": "（編集済み）",
+    "edited_at": "{time} に編集",
+    "edit_failed": "メッセージを編集できませんでした",
+    "edit_timeout": "サーバーから応答がありませんでした。編集は後で保存される可能性があります。",
+    "edit_window_closed": "メッセージを編集できるのは送信後10分間だけです。",
     "direct": {
       "message": "メッセージ",
       "empty": "まだメッセージはありません。あいさつしてみましょう。"

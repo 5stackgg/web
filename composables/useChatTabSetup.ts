@@ -1,4 +1,4 @@
-import { watch, computed } from "vue";
+import { watch, computed, onScopeDispose } from "vue";
 import { useI18n } from "vue-i18n";
 import { useChatTabs, type ChatTab } from "~/composables/useChatTabs";
 import { useChatReadState } from "~/composables/useChatReadState";
@@ -317,4 +317,11 @@ export function useChatTabSetup() {
   );
 
   watch(tabs, syncPersistentChatJoins, { immediate: true, deep: true });
+
+  onScopeDispose(() => {
+    for (const lobby of persistentLobbies.values()) {
+      lobby.leave();
+    }
+    persistentLobbies.clear();
+  });
 }

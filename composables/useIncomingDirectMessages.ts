@@ -1,4 +1,4 @@
-import { watch } from "vue";
+import { onScopeDispose, watch } from "vue";
 import socket, { type LobbyMessage } from "~/web-sockets/Socket";
 import { newestMessageIdsFrom } from "~/utilities/chatLobbyMessages";
 import {
@@ -105,7 +105,7 @@ export function useIncomingDirectMessages() {
     }
   }
 
-  socket.listen(
+  const incoming = socket.listen(
     "direct:incoming",
     (data: {
       roomId: string;
@@ -166,4 +166,8 @@ export function useIncomingDirectMessages() {
     },
     { immediate: true },
   );
+
+  onScopeDispose(() => {
+    incoming.stop();
+  });
 }

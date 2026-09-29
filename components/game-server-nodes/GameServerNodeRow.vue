@@ -66,6 +66,7 @@ import EditCs2Options from "~/components/game-server-nodes/EditCs2Options.vue";
 import FiveStackToolTip from "../FiveStackToolTip.vue";
 import NodeMetrics from "@/components/system-metrics/NodeMetrics.vue";
 import ServiceLogs from "~/components/ServiceLogs.vue";
+import TimeAgo from "~/components/TimeAgo.vue";
 import { ref } from "vue";
 
 const { openFiles } = useFilePopout();
@@ -707,6 +708,29 @@ const isSectionExpanded = (section: string) => {
                 {{ $t("game_server.install_cs") }}
               </Button>
             </template>
+
+            <FiveStackToolTip v-if="gameServerNode.update_failed_at">
+              <template #trigger>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  class="h-7 w-7 shrink-0 p-0 border-destructive/50 text-destructive hover:text-destructive"
+                  :aria-label="$t('game_server.update_failed')"
+                  @click="toggleLogs"
+                >
+                  <AlertCircle class="h-3.5 w-3.5" />
+                </Button>
+              </template>
+              <div class="flex flex-col gap-0.5">
+                <span class="font-medium">
+                  {{ $t("game_server.update_failed") }}
+                  <TimeAgo :date="gameServerNode.update_failed_at" hide-icon />
+                </span>
+                <span class="text-muted-foreground">
+                  {{ $t("game_server.update_failed_description") }}
+                </span>
+              </div>
+            </FiveStackToolTip>
 
             <FiveStackToolTip
               v-if="
@@ -1394,6 +1418,12 @@ const isSectionExpanded = (section: string) => {
                   </template>
                   {{ $t("game_server.update_cs") }}
                 </FiveStackToolTip>
+                <FiveStackToolTip v-if="gameServerNode.update_failed_at">
+                  <template #trigger>
+                    <AlertCircle class="h-3 w-3 text-destructive" />
+                  </template>
+                  {{ $t("game_server.update_failed") }}
+                </FiveStackToolTip>
               </div>
               <ChevronDown
                 class="h-4 w-4 transition-transform"
@@ -1440,6 +1470,22 @@ const isSectionExpanded = (section: string) => {
                   </div>
                 </template>
                 <template v-else>
+                  <button
+                    v-if="gameServerNode.update_failed_at"
+                    type="button"
+                    class="flex w-full items-center gap-1.5 text-left text-xs text-destructive"
+                    @click="toggleLogs"
+                  >
+                    <AlertCircle class="h-3 w-3 shrink-0" />
+                    <span class="truncate font-medium">{{
+                      $t("game_server.update_failed")
+                    }}</span>
+                    <TimeAgo
+                      :date="gameServerNode.update_failed_at"
+                      hide-icon
+                      class="text-muted-foreground"
+                    />
+                  </button>
                   <template v-if="gameServerNode.build_id">
                     <Select
                       :model-value="pinBuildIdForm.values.pin_build_id"
@@ -1890,6 +1936,7 @@ interface GameServerNode {
   cpu_warnings?: Array<string> | null;
   plugin_supported?: boolean;
   update_status?: string;
+  update_failed_at?: string | null;
   e_region?: {
     description: string;
   };

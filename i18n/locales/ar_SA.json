@@ -8352,6 +8352,8 @@
       "use_as_gpu_only": "استخدمها لـ GPU فقط"
     },
     "show_update_logs": "اعرض سجلات التحديث",
+    "update_failed": "فشل التحديث",
+    "update_failed_description": "فشل التحديث الأخير. يتم الاحتفاظ بسجلات التحديث لمدة 24 ساعة.",
     "edit_label": "عدّل الاسم",
     "edit_cs2_options": "عدّل إعدادات الفيديو",
     "cs2_options": {

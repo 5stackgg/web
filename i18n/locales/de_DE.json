@@ -8352,6 +8352,8 @@
       "use_as_gpu_only": "Nur als GPU nutzen"
     },
     "show_update_logs": "Update-Logs anzeigen",
+    "update_failed": "Update fehlgeschlagen",
+    "update_failed_description": "Das letzte Update ist fehlgeschlagen. Update-Logs werden 24 Stunden lang aufbewahrt.",
     "edit_label": "Label bearbeiten",
     "edit_cs2_options": "Video-Einstellungen bearbeiten",
     "cs2_options": {

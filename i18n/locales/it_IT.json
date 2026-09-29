@@ -8352,6 +8352,8 @@
       "use_as_gpu_only": "Usa solo per GPU"
     },
     "show_update_logs": "Mostra log di aggiornamento",
+    "update_failed": "Aggiornamento non riuscito",
+    "update_failed_description": "L'ultimo aggiornamento non è riuscito. I log di aggiornamento vengono conservati per 24 ore.",
     "edit_label": "Modifica etichetta",
     "edit_cs2_options": "Modifica impostazioni video",
     "cs2_options": {

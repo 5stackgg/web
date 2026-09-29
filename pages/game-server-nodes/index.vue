@@ -432,6 +432,7 @@ export default {
               supports_low_latency: true,
               supports_cpu_pinning: true,
               update_status: true,
+              update_failed_at: true,
               gpu: true,
               gpu_info: true,
               gpu_streaming_enabled: true,

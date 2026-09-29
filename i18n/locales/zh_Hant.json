@@ -8352,6 +8352,8 @@
       "use_as_gpu_only": "僅用作 GPU"
     },
     "show_update_logs": "顯示更新紀錄",
+    "update_failed": "更新失敗",
+    "update_failed_description": "上次更新失敗。更新紀錄保留 24 小時。",
     "edit_label": "編輯標籤",
     "edit_cs2_options": "編輯影像設定",
     "cs2_options": {

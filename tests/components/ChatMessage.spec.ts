@@ -23,6 +23,24 @@ describe("ChatMessage grouping", () => {
     expect(wrapper.text()).toContain("second");
   });
 
+  it("folds under an older line that stored the sender id as a number", async () => {
+    const wrapper = await mountSuspended(ChatMessage, {
+      props: {
+        previousMessage: {
+          ...line("76561198000000000", 0, "first"),
+          from: {
+            steam_id: 76561198000000000,
+            name: "Player 76561198000000000",
+          },
+        },
+        message: line("76561198000000000", 1, "second"),
+      },
+    });
+
+    expect(wrapper.find("h4").exists()).toBe(false);
+    expect(wrapper.text()).toContain("second");
+  });
+
   it("names the sender when someone else spoke last", async () => {
     const wrapper = await mountSuspended(ChatMessage, {
       props: {

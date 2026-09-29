@@ -13,7 +13,7 @@ import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vites
 import { extractMap } from "~/scripts/extract-map-meshes.mjs";
 import { readViewBin } from "~/scripts/lib-view-mesh.mjs";
 import { installFakeSourceViewer } from "../helpers/fakeMapTools";
-import { buildGlb, buildNav, quad } from "../helpers/mapFixtures";
+import { buildGlb, buildNav, glbToGltf, quad } from "../helpers/mapFixtures";
 
 const MAP = "de_fixture";
 
@@ -46,13 +46,28 @@ describe("extractMap", () => {
       { render: false },
     ),
   );
-  writeFileSync(
-    world,
-    buildGlb([
-      { name: "n0_lr0_agg_merge_concrete_floor_0", triangles: floor },
-      { name: "n0_lr0_agg_merge_concrete_wall_0", triangles: wall },
-    ]),
-  );
+  const worldGlb = buildGlb([
+    { name: "n0_lr0_agg_merge_concrete_floor_0", triangles: floor },
+    { name: "n0_lr0_agg_merge_concrete_wall_0", triangles: wall },
+  ]);
+  writeFileSync(world, worldGlb);
+  const worldGltf = glbToGltf(worldGlb, "world");
+  writeFileSync(join(dir, "world.gltf"), worldGltf.gltf);
+  const gltfExport = { [`maps/${MAP}/world.gltf`]: join(dir, "world.gltf") };
+  for (const [file, body] of Object.entries(worldGltf.files)) {
+    writeFileSync(join(dir, file), body);
+    gltfExport[`maps/${MAP}/${file}`] = join(dir, file);
+  }
+  // What Source2Viewer-CLI 20.0 says, and all it does, when the world is over
+  // the .glb cap: it still exits 0.
+  const tooBig = {
+    stdout: "--- Dumping decompiled files...\n--- Writing model to file 'world.glb'...\n",
+    stderr:
+      `File: maps/${MAP}/world.vwrld_c (parent: ${mapsDir}/${MAP}.vpk)\n` +
+      "System.NotSupportedException: VRF does not properly support big model (>=2GiB) " +
+      "exports yet due to glTF limitations. Try exporting as .gltf, not .glb.\n" +
+      "   at ValveResourceFormat.IO.GltfModelExporter.WriteModelFile(ModelRoot exportedModel)\n",
+  };
   const area = [
     [0, 0, 0],
     [1024, 0, 0],
@@ -70,8 +85,13 @@ describe("extractMap", () => {
     [`maps/${MAP}.nav`]: { [`maps/${MAP}.nav`]: nav },
     ...overrides,
   });
-  const run = (plan: Record<string, unknown>, viewOptions = {}) => {
+  const run = (
+    plan: Record<string, unknown>,
+    viewOptions = {},
+    output: Record<string, unknown> = {},
+  ) => {
     process.env.FAKE_S2V = JSON.stringify(plan);
+    process.env.FAKE_S2V_OUTPUT = JSON.stringify(output);
     return extractMap(MAP, { mapsDir, outDir, cli, viewOptions });
   };
   const written = (suffix: string) => existsSync(join(outDir, `${MAP}.${suffix}`));
@@ -85,6 +105,7 @@ describe("extractMap", () => {
   afterEach(() => {
     warn.mockRestore();
     delete process.env.FAKE_S2V;
+    delete process.env.FAKE_S2V_OUTPUT;
   });
 
   afterAll(() => rmSync(dir, { recursive: true, force: true }));
@@ -118,6 +139,33 @@ describe("extractMap", () => {
     expect(result.viewError).toMatch(/no world\.glb/);
   });
 
+  it("says why no render world came out, in the CLI's own words", async () => {
+    const result = await run(exports({ [`maps/${MAP}/world.vwrld_c`]: {} }), {}, {
+      [`maps/${MAP}/world.vwrld_c#glb`]: tooBig,
+    });
+    expect(result.view).toBeNull();
+    expect(result.viewError).toMatch(
+      /^no world\.glb or world\.gltf came out of the render world \(\.glb: File: maps\/de_fixture\/world\.vwrld_c \| System\.NotSupportedException: VRF does not properly support big model \(>=2GiB\)/,
+    );
+    expect(result.viewError).toMatch(/-- stdout: .*Writing model to file 'world\.glb'/);
+    expect(result.viewError).toMatch(/; \.gltf: the CLI printed nothing\)$/);
+    expect(result.viewError).not.toMatch(/ at ValveResourceFormat/);
+    expect(warn).toHaveBeenCalledWith(expect.stringMatching(/VIEW MESH FAILED \(.*>=2GiB/));
+  });
+
+  it("exports a world over the .glb cap as .gltf instead", async () => {
+    const result = await run(exports({ [`maps/${MAP}/world.vwrld_c`]: gltfExport }), {}, {
+      [`maps/${MAP}/world.vwrld_c#glb`]: tooBig,
+    });
+    expect(result.viewError).toBeNull();
+    expect(result.view.trianglesIn).toBe(4);
+    const view = readViewBin(readFileSync(join(outDir, `${MAP}.view.bin`)));
+    expect(view.chunks.map((c: { name: string }) => c.name)).toEqual(["world"]);
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringMatching(/de_fixture: render world exported as \.gltf instead \(\.glb: .*>=2GiB/),
+    );
+  });
+
   it("keeps the map when the view mesh is over budget", async () => {
     const result = await run(exports(), { targetTriangles: 0, maxTriangles: 1 });
     expect(result.tri).not.toBeNull();
@@ -136,5 +184,15 @@ describe("extractMap", () => {
     await expect(
       run(exports({ [`maps/${MAP}/world_physics.vmdl_c`]: "FAIL" })),
     ).rejects.toThrow(/world_physics\.vmdl_c/);
+  });
+
+  it("says why no collision hull came out", async () => {
+    await expect(
+      run(exports({ [`maps/${MAP}/world_physics.vmdl_c`]: {} }), {}, {
+        [`maps/${MAP}/world_physics.vmdl_c`]: { stderr: "System.OutOfMemoryException: boom\n" },
+      }),
+    ).rejects.toThrow(
+      "no world_physics_physics.glb came out (Source2Viewer-CLI said: System.OutOfMemoryException: boom)",
+    );
   });
 });

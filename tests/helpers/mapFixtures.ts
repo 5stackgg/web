@@ -183,6 +183,31 @@ export function buildGlb(
   ]);
 }
 
+/**
+ * The same model as a .gltf whose buffers are files beside it, one per
+ * bufferView (`<name>_<i>.bin`), the way Source2Viewer writes a world too big
+ * for a .glb. Returns the .gltf and each .bin by file name.
+ */
+export function glbToGltf(glb: Buffer, name: string) {
+  const jsonLength = glb.readUInt32LE(12);
+  const gltf = JSON.parse(glb.toString("utf8", 20, 20 + jsonLength));
+  const binStart = 20 + jsonLength + 8;
+  const files: Record<string, Buffer> = {};
+  type View = { byteOffset: number; byteLength: number };
+  gltf.buffers = gltf.bufferViews.map((view: View, i: number) => {
+    const uri = `${name}_${i}.bin`;
+    const start = binStart + view.byteOffset;
+    files[uri] = glb.subarray(start, start + view.byteLength);
+    return { uri, byteLength: view.byteLength };
+  });
+  gltf.bufferViews = gltf.bufferViews.map((view: object, i: number) => ({
+    ...view,
+    buffer: i,
+    byteOffset: 0,
+  }));
+  return { gltf: Buffer.from(JSON.stringify(gltf)), files };
+}
+
 export const quad = (a: Vec3, b: Vec3, c: Vec3, d: Vec3): Vec3[][] => [
   [a, b, c],
   [a, c, d],

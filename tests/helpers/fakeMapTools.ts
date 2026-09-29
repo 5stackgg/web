@@ -3,11 +3,16 @@ import { join } from "node:path";
 import { vi } from "vitest";
 
 // Stands in for Source2Viewer-CLI. FAKE_S2V maps each --vpk_filepath to the
-// files it "exports" (relative to -o), or to "FAIL" to exit non-zero;
-// FAKE_S2V_VERSION is what --version reports; every export is appended to
-// FAKE_S2V_LOG when set.
+// files it "exports" (relative to -o), or to "FAIL" to exit non-zero; a .glb
+// or .gltf target is only written when --gltf_export_format asks for that
+// format. FAKE_S2V_OUTPUT maps `<filepath>` or `<filepath>#<format>` to
+// `{ stdout, stderr, repeat }`, printed before exiting (stdout `repeat`
+// times), with stderr also appended to ./exceptions.txt the way the real CLI
+// logs what it swallows. FAKE_S2V_VERSION is what --version reports; every
+// export is appended to FAKE_S2V_LOG, and the directory it ran in to
+// FAKE_S2V_CWD_LOG, when set.
 const FAKE_CLI = `
-import { appendFileSync, copyFileSync, mkdirSync } from "node:fs";
+import { appendFileSync, copyFileSync, mkdirSync, writeSync } from "node:fs";
 import { dirname, join } from "node:path";
 const args = process.argv.slice(2);
 if (args.includes("--version")) {
@@ -17,8 +22,21 @@ if (args.includes("--version")) {
 }
 const at = (flag) => args[args.indexOf(flag) + 1];
 const filepath = at("--vpk_filepath");
+const format = args.includes("--gltf_export_format") ? at("--gltf_export_format") : null;
 if (process.env.FAKE_S2V_LOG) {
   appendFileSync(process.env.FAKE_S2V_LOG, filepath + "\\n");
+}
+if (process.env.FAKE_S2V_CWD_LOG) {
+  appendFileSync(process.env.FAKE_S2V_CWD_LOG, process.cwd() + "\\n");
+}
+const outputs = JSON.parse(process.env.FAKE_S2V_OUTPUT ?? "{}");
+const said = outputs[filepath + "#" + format] ?? outputs[filepath] ?? {};
+for (let i = 0; i < (said.repeat ?? 1) && said.stdout; i++) {
+  writeSync(1, said.stdout);
+}
+if (said.stderr) {
+  writeSync(2, said.stderr);
+  appendFileSync("exceptions.txt", said.stderr);
 }
 const plan = JSON.parse(process.env.FAKE_S2V)[filepath];
 if (plan === "FAIL") {
@@ -26,6 +44,10 @@ if (plan === "FAIL") {
   process.exit(3);
 }
 for (const [target, source] of Object.entries(plan ?? {})) {
+  const kind = /\\.(glb|gltf)$/.exec(target)?.[1];
+  if (kind && format && kind !== format) {
+    continue;
+  }
   const path = join(at("-o"), target);
   mkdirSync(dirname(path), { recursive: true });
   copyFileSync(source, path);

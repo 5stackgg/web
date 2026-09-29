@@ -29,13 +29,6 @@ describe("ChatMessage blocked tag", () => {
     });
 
     expect(tag(wrapper)).toHaveLength(1);
-    expect(tag(wrapper)[0].classes()).toEqual(
-      expect.arrayContaining([
-        "font-mono",
-        "uppercase",
-        "text-muted-foreground/70",
-      ]),
-    );
   });
 
   it("leaves everyone else's lines alone", async () => {

@@ -342,9 +342,16 @@ describe("useChatBlocks for a moderator", () => {
 
   const dmMessages = () => socket.lobbyMessages("direct", dmRoomId);
 
+  let popout: ReturnType<typeof socket.joinLobby> | undefined;
+
+  afterEach(() => {
+    popout?.leave();
+    popout = undefined;
+  });
+
   it("keeps a blocked player's lines, live lines and reactions in group rooms", async () => {
     signInAs("moderator");
-    const popout = socket.joinLobby("popout", "direct", dmRoomId);
+    popout = socket.joinLobby("popout", "direct", dmRoomId);
     await flushPromises();
 
     setBlocks(DANA);
@@ -373,15 +380,16 @@ describe("useChatBlocks for a moderator", () => {
 
     expect(hasTab(dmTab)).toBe(false);
     expect(ids(dmMessages())).toEqual(["dm-mine"]);
-    popout.leave();
   });
 
-  it("still closes the conversation and ignores a message on its way", async () => {
+  it("keeps group lines for roles above moderator but still closes the conversation", async () => {
     signInAs("administrator");
     await flushPromises();
 
     setBlocks(DANA);
     await flushPromises();
+
+    expect(ids(groupMessages())).toEqual(["read", "dana-1", "dana-2", "evan"]);
 
     socket.emit("direct:incoming", {
       roomId: dmRoomId,

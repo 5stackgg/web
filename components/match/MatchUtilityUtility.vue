@@ -518,7 +518,10 @@ const canSaveLineups = computed(() => !!mySteamId.value);
                     {{ $t("match.utility.throws") }}
                   </TableHead>
                   <TableHead class="text-right">
-                    {{ $t("match.utility.matched") }}
+                    {{ $t("match.utility.matched_lineups") }}
+                  </TableHead>
+                  <TableHead class="text-right">
+                    {{ $t("match.utility.matched_meta") }}
                   </TableHead>
                   <TableHead class="text-right">
                     {{ $t("match.utility.landed") }}
@@ -536,7 +539,12 @@ const canSaveLineups = computed(() => !!mySteamId.value);
                   <TableCell
                     class="text-right tabular-nums text-muted-foreground"
                   >
-                    {{ row.matched }}
+                    {{ row.matchedLineups }}
+                  </TableCell>
+                  <TableCell
+                    class="text-right tabular-nums text-muted-foreground"
+                  >
+                    {{ row.matchedMeta }}
                   </TableCell>
                   <TableCell class="text-right font-bold tabular-nums">
                     {{ row.landed }}

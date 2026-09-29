@@ -1228,7 +1228,8 @@ export const utilityMatchUtilityReportQuery = generateQuery({
       by_type: {
         utility_type: true,
         throws: true,
-        matched: true,
+        matched_lineups: true,
+        matched_meta: true,
         landed: true,
       },
     },

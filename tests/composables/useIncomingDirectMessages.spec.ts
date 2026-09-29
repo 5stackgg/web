@@ -16,6 +16,7 @@ const socketMock = vi.hoisted(() => {
   return {
     handlers,
     lobbies,
+    hidden: new Set<string>(),
     emit(event: string, data: unknown) {
       for (const handler of handlers.get(event) ?? []) {
         handler(data);
@@ -64,6 +65,9 @@ vi.mock("~/web-sockets/Socket", async (importOriginal) => ({
     },
     lobbyMessages() {
       return [];
+    },
+    hidesAuthor(steamId?: string | null) {
+      return socketMock.hidden.has(String(steamId));
     },
     markLobbyRead() {},
   },
@@ -134,6 +138,7 @@ const unread = () => useChatTabs().unreadCounts.value[TAB] ?? 0;
 beforeEach(() => {
   socketMock.handlers.clear();
   socketMock.lobbies.clear();
+  socketMock.hidden.clear();
   useChatTabs().clearAll();
   useAuthStore().me = { steam_id: ME } as any;
   stubApi();
@@ -158,6 +163,17 @@ describe("useIncomingDirectMessages", () => {
     expect(tabs.value.map((tab) => tab.id)).toContain(TAB);
     expect(unread()).toBe(1);
     expect(activeTabId.value).toBeNull();
+  });
+
+  it("ignores a message from a blocked player that was already on its way", async () => {
+    await mountChat();
+    socketMock.hidden.add(FRIEND);
+
+    incoming("m1");
+
+    expect(useChatTabs().tabs.value.map((tab) => tab.id)).not.toContain(TAB);
+    expect(unread()).toBe(0);
+    expect(useChatTabs().totalUnread.value).toBe(0);
   });
 
   it("counts every message in a burst that lands before the room is joined", async () => {

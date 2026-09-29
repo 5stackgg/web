@@ -8,6 +8,9 @@ import {
   setPageChatFocus,
   useChatPresence,
 } from "~/composables/useChatPresence";
+import { useChatBlocks } from "~/composables/useChatBlocks";
+import { peerSteamId } from "~/composables/useDirectMessages";
+import { usePlayerBlocks } from "~/composables/usePlayerBlocks";
 import { chatThreadKey } from "~/utilities/chatThread";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { matchTeamLobbyId } from "~/utilities/matchTeamLobby";
@@ -80,7 +83,22 @@ const currentTab = computed<ChatTab | null>(() => {
   return tabFromSession.value ?? tabFromQuery.value ?? tabFromId.value;
 });
 
-const hasTab = computed(() => currentTab.value !== null);
+const { isBlocked } = usePlayerBlocks();
+
+// The sidebar closes its tab for a blocked player, but this window has no tab
+// to close.
+const blockedPeer = computed(() => {
+  const tab = currentTab.value;
+  const mySteamId = useAuthStore().me?.steam_id;
+
+  if (tab?.type !== "direct" || !mySteamId) {
+    return false;
+  }
+
+  return isBlocked(peerSteamId(tab.lobbyId, String(mySteamId)));
+});
+
+const hasTab = computed(() => currentTab.value !== null && !blockedPeer.value);
 
 // Same second room the sidebar and the match page offer. This window can be
 // opened cold from a bare URL, so the match is looked up in the store rather
@@ -131,6 +149,9 @@ const thread = computed(() =>
 );
 
 useChatPresence();
+// Nor does its block watcher, so this window would keep showing the lines of
+// a player blocked while it was open.
+useChatBlocks();
 
 watch(
   thread,

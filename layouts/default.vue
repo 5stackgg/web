@@ -8,6 +8,7 @@ import { e_player_roles_enum } from "~/generated/zeus";
 import { useGtm } from "@/layouts/composables/useGtm";
 import { useChatTabSetup } from "~/composables/useChatTabSetup";
 import { useChatPresence } from "~/composables/useChatPresence";
+import { useChatBlocks } from "~/composables/useChatBlocks";
 
 const AppSidebar = defineAsyncComponent(
   () => import("@/components/AppSidebar.vue"),
@@ -53,6 +54,7 @@ useChatTabSetup();
 useChatTabPersistence();
 useIncomingDirectMessages();
 useChatPresence();
+useChatBlocks();
 
 const route = useRoute();
 const authStore = useAuthStore();

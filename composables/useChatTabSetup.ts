@@ -99,7 +99,16 @@ export function useChatTabSetup() {
     // /chat/direct/conversations, which counts the whole thread rather than
     // the last 200 messages of it. Only the ids behind it are filled in, so a
     // deleted message can come off the badge.
+    //
+    // A room on screen counts nothing, as the live handler above doesn't. The
+    // cursor only moves when the tab is opened, so a rejoin (an unblock
+    // rejoins every room) would otherwise badge lines read while it was open.
     lobby.on("lobby:messages", (messages: any[]) => {
+      if (isChatTabOnScreen(tab.id)) {
+        setUnread(tab.id, 0);
+        return;
+      }
+
       if (tab.type === "direct") {
         const count = unreadCounts.value[tab.id] ?? 0;
 

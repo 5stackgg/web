@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import {
   PLAYER_BLOCKED_ERROR,
+  blockedIdsChange,
   playerBlockErrorKey,
 } from "~/utilities/playerBlocks";
 
@@ -60,6 +61,21 @@ describe("playerBlockErrorKey", () => {
     for (const text of Object.values(en.player_blocks.errors) as string[]) {
       expect(text).not.toMatch(/block/i);
     }
+  });
+});
+
+describe("blockedIdsChange", () => {
+  it("names the ids that joined and left the set", () => {
+    expect(
+      blockedIdsChange(new Set(["a", "b"]), new Set(["b", "c", "d"])),
+    ).toEqual({ added: ["c", "d"], removed: ["a"] });
+  });
+
+  it("reports nothing for the same set", () => {
+    expect(blockedIdsChange(new Set(["a"]), new Set(["a"]))).toEqual({
+      added: [],
+      removed: [],
+    });
   });
 });
 

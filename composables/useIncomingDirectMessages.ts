@@ -25,6 +25,10 @@ export function useIncomingDirectMessages() {
     unread = 0,
     position?: number,
   ) {
+    if (socket.hidesAuthor(peer?.steam_id)) {
+      return;
+    }
+
     openTab({
       id: directTabId(roomId),
       label: peer?.name ?? peer?.steam_id ?? roomId,
@@ -114,6 +118,15 @@ export function useIncomingDirectMessages() {
         return;
       }
 
+      const peerId =
+        data.from?.steam_id ?? peerSteamId(data.roomId, steamId) ?? "";
+
+      // A blocked player's message can still be on its way when the block
+      // lands, and it must neither flash nor badge.
+      if (socket.hidesAuthor(peerId)) {
+        return;
+      }
+
       // The room's own `lobby:chat` carries the same id when its tab is open.
       useTabFlash().signalChat("direct", data.message);
 
@@ -121,8 +134,7 @@ export function useIncomingDirectMessages() {
       // useChatTabSetup join the room, and the join's history snapshot delivers
       // it (deduped by chatMessageKey either way).
       ensureTab(data.roomId, {
-        steam_id:
-          data.from?.steam_id ?? peerSteamId(data.roomId, steamId) ?? "",
+        steam_id: peerId,
         name: data.from?.name,
         avatar_url: data.from?.avatar_url,
       });

@@ -3,11 +3,14 @@ import {
   applyChatMessageEdit,
   applyChatMessageReactions,
   chatMessageKey,
+  hideChatAuthors,
   insertChatMessage,
   isChatMessageDeleted,
+  isChatMessageFrom,
   mergeChatSnapshot,
   newestMessageIdsFrom,
   removeChatMessage,
+  withoutChatReactors,
 } from "~/utilities/chatLobbyMessages";
 import type { LobbyMessage } from "~/web-sockets/Socket";
 
@@ -39,6 +42,119 @@ describe("removeChatMessage", () => {
 
   it("never matches a line that has no id", () => {
     expect(removeChatMessage([line(undefined, 0)], "")).toBeNull();
+  });
+});
+
+describe("hideChatAuthors", () => {
+  const DANA = "76561198000000002";
+  const EVAN = "76561198000000003";
+
+  const by = (id: string, minute: number, steamId: string): LobbyMessage => ({
+    ...line(id, minute),
+    from: { steam_id: steamId },
+  });
+
+  it("removes every line by the authors and says where each one was", () => {
+    const messages = [
+      by("a", 0, DANA),
+      line("b", 1),
+      by("c", 2, DANA),
+      by("d", 3, EVAN),
+      line("e", 4),
+    ];
+
+    const removed = hideChatAuthors(messages, new Set([DANA, EVAN]));
+
+    expect(ids(removed!.messages)).toEqual(["b", "e"]);
+    expect(
+      removed!.removed.map(({ message, index }) => [message.id, index]),
+    ).toEqual([
+      ["a", 0],
+      ["c", 1],
+      ["d", 1],
+    ]);
+    expect(ids(messages)).toEqual(["a", "b", "c", "d", "e"]);
+  });
+
+  it("gives the same indexes as deleting the lines one at a time", () => {
+    const messages = [line("a", 0), by("b", 1, DANA), by("c", 2, DANA)];
+    const removed = hideChatAuthors(messages, new Set([DANA]))!;
+
+    let current = messages;
+    for (const { message, index } of removed.removed) {
+      const single = removeChatMessage(current, message.id as string)!;
+      expect(single.index).toBe(index);
+      current = single.messages;
+    }
+
+    expect(current).toEqual(removed.messages);
+  });
+
+  it("returns null when none of the lines are theirs", () => {
+    expect(hideChatAuthors([line("a", 0)], new Set([DANA]))).toBeNull();
+    expect(hideChatAuthors([by("a", 0, DANA)], new Set())).toBeNull();
+  });
+
+  it("keeps a line that has no author", () => {
+    const system: LobbyMessage = { id: "s", message: "x", timestamp: "" };
+
+    const removed = hideChatAuthors(
+      [system, by("a", 0, DANA)],
+      new Set([DANA]),
+    );
+
+    expect(ids(removed!.messages)).toEqual(["s"]);
+  });
+
+  it("takes their reactions off everyone else's lines", () => {
+    const untouched = { ...line("a", 0), reactions: { heart: [EVAN] } };
+    const messages = [
+      untouched,
+      { ...line("b", 1), reactions: { heart: [DANA, EVAN], fire: [DANA] } },
+    ];
+
+    const hidden = hideChatAuthors(messages, new Set([DANA]));
+
+    expect(hidden!.removed).toEqual([]);
+    expect(hidden!.messages[0]).toBe(untouched);
+    expect(hidden!.messages[1].reactions).toEqual({ heart: [EVAN] });
+    expect(messages[1].reactions).toEqual({
+      heart: [DANA, EVAN],
+      fire: [DANA],
+    });
+  });
+});
+
+describe("withoutChatReactors", () => {
+  it("drops the authors and any reaction left with nobody", () => {
+    expect(
+      withoutChatReactors(
+        { heart: ["1", "2"], fire: ["2"], sad: ["3"] },
+        new Set(["2"]),
+      ),
+    ).toEqual({ heart: ["1"], sad: ["3"] });
+  });
+
+  it("hands back the same object when nobody is dropped", () => {
+    const reactions = { heart: ["1"] };
+
+    expect(withoutChatReactors(reactions, new Set(["2"]))).toBe(reactions);
+    expect(withoutChatReactors(undefined, new Set(["2"]))).toBeUndefined();
+  });
+});
+
+describe("isChatMessageFrom", () => {
+  it("compares steam ids as strings", () => {
+    const message = {
+      ...line("a", 0),
+      from: { steam_id: 42 as unknown as string },
+    };
+
+    expect(isChatMessageFrom(message, new Set(["42"]))).toBe(true);
+    expect(isChatMessageFrom(message, new Set(["43"]))).toBe(false);
+    expect(
+      isChatMessageFrom({ ...message, from: undefined }, new Set(["42"])),
+    ).toBe(false);
   });
 });
 

@@ -79,7 +79,7 @@ async function downloadFullLogs(service: string) {
             <Tooltip>
               <TooltipTrigger as-child>
                 <button
-                  class="grid h-9 w-9 place-items-center border border-border bg-background/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]"
+                  class="grid h-9 w-9 place-items-center rounded-md border border-border bg-background/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]"
                   @click="maximized = !maximized"
                 >
                   <Minimize2 v-if="maximized" class="h-4 w-4" />
@@ -98,7 +98,7 @@ async function downloadFullLogs(service: string) {
             <Tooltip>
               <TooltipTrigger as-child>
                 <button
-                  class="grid h-9 w-9 place-items-center border transition-colors"
+                  class="grid h-9 w-9 place-items-center rounded-md border transition-colors"
                   :class="
                     _timestamps
                       ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))]'
@@ -116,7 +116,7 @@ async function downloadFullLogs(service: string) {
           <DropdownMenu>
             <DropdownMenuTrigger as-child>
               <button
-                class="grid h-9 w-9 place-items-center border border-border bg-background/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]"
+                class="grid h-9 w-9 place-items-center rounded-md border border-border bg-background/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]"
               >
                 <DownloadIcon class="h-4 w-4" />
               </button>
@@ -142,7 +142,7 @@ async function downloadFullLogs(service: string) {
         <button
           v-for="(pod, idx) in podList"
           :key="pod"
-          class="group relative flex items-center gap-2 border px-2.5 py-1.5 font-mono text-[0.62rem] uppercase tracking-[0.18em] transition-colors"
+          class="group relative flex items-center gap-2 rounded-md border px-2.5 py-1.5 font-mono text-[0.62rem] uppercase tracking-[0.18em] transition-colors"
           :class="
             activePod === pod
               ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'

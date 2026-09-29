@@ -42,6 +42,7 @@ import {
   MapPin,
   Minimize,
   Maximize,
+  MessageSquare,
 } from "lucide-vue-next";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import { Button } from "@/components/ui/button";
@@ -86,6 +87,7 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
+import AnimatedStat from "~/components/AnimatedStat.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import HeightMorph from "~/components/ui/transitions/HeightMorph.vue";
@@ -134,7 +136,7 @@ const tournamentHeroOrganizerClasses =
 const tournamentHeroActionsClasses =
   "flex min-w-0 shrink-0 flex-wrap items-center justify-end gap-2 max-sm:w-full max-sm:justify-start";
 const tournamentHeroStatusClasses =
-  "inline-flex h-9 items-center gap-2 whitespace-nowrap rounded border border-border bg-muted/30 px-[0.7rem] py-[0.3rem] font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-muted-foreground max-sm:flex-1 max-sm:justify-center";
+  "inline-flex h-9 items-center gap-2 whitespace-nowrap rounded-md border border-border bg-muted/30 px-[0.7rem] py-[0.3rem] font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-muted-foreground max-sm:flex-1 max-sm:justify-center";
 const tournamentHeroStatusDotClasses = "h-1.5 w-1.5 rounded-full bg-current";
 const tournamentHeroStatusTierClasses: Record<string, string> = {
   live: "border-destructive/55 bg-destructive/15 text-destructive",
@@ -152,7 +154,20 @@ const tournamentHeroJoinButtonClasses = [
 ];
 const tournamentHeroSettingsButtonClasses =
   "h-9 w-9 border-[hsl(var(--tac-amber)_/_0.45)] bg-background/45 text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.12)] hover:text-[hsl(var(--tac-amber))]";
-const tournamentHeroTabsClasses = "mt-5 border-t border-border pt-4";
+const tournamentHeroTabsClasses =
+  "mt-5 flex items-start gap-3 border-t border-border pt-4";
+const tournamentChatRoomButtonClasses =
+  "mt-[0.2rem] shrink-0 inline-flex items-center gap-2 font-sans text-[0.7rem] font-semibold uppercase leading-none tracking-[0.14em] max-sm:px-2";
+const tournamentChatRoomUnreadClasses =
+  "inline-flex h-4 min-w-[1rem] origin-center items-center justify-center rounded-full bg-red-500 px-1 font-sans text-[0.6rem] font-bold leading-none tracking-normal text-white tabular-nums";
+const chatRoomUnreadPopTransition = {
+  enterActiveClass:
+    "[transition:transform_0.3s_cubic-bezier(0.34,1.56,0.64,1),opacity_0.2s_ease] motion-reduce:[transition:none]",
+  enterFromClass: "scale-0 opacity-0",
+  leaveActiveClass:
+    "[transition:transform_0.15s_ease-in,opacity_0.15s_ease-in] motion-reduce:[transition:none]",
+  leaveToClass: "scale-0 opacity-0",
+};
 const tacticalSectionCountClasses =
   "rounded-full border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] px-[0.45rem] py-[0.05rem] text-[0.62rem] tracking-[0.08em] text-[hsl(var(--tac-amber))]";
 const tournamentTeamCardClasses =
@@ -483,7 +498,7 @@ function clearTeamEnterDelay(el: Element) {
           <div :class="tournamentHeroTabsClasses">
             <TabsList
               variant="underline"
-              :class="[tacticalTabsListClasses, 'h-auto flex-wrap']"
+              :class="[tacticalTabsListClasses, 'h-auto min-w-0 flex-wrap justify-start']"
             >
               <TabsTrigger value="overview" :class="tacticalTabsTriggerClasses">
                 {{ $t("tournament.overview") }}
@@ -583,6 +598,26 @@ function clearTeamEnterDelay(el: Element) {
                 {{ $t("tournament.notifications.title") }}
               </TabsTrigger>
             </TabsList>
+            <Button
+              v-if="chatRoomTournament"
+              variant="ghost"
+              size="sm"
+              :class="tournamentChatRoomButtonClasses"
+              @click="openChatRoom"
+            >
+              <MessageSquare class="h-4 w-4 shrink-0" />
+              <span class="sr-only leading-none sm:not-sr-only">
+                {{ $t("tournament.page.chat_room_tab") }}
+              </span>
+              <Transition v-bind="chatRoomUnreadPopTransition">
+                <span
+                  v-if="chatRoomUnreadLabel"
+                  :class="tournamentChatRoomUnreadClasses"
+                >
+                  <AnimatedStat :value="chatRoomUnreadLabel" />
+                </span>
+              </Transition>
+            </Button>
           </div>
         </header>
       </PageTransition>
@@ -1141,6 +1176,12 @@ import {
   normalizeRouteTab,
   replaceRouteTab,
 } from "~/composables/useRouteTab";
+import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
+import { useChatTabs } from "~/composables/useChatTabs";
+import { tournamentChatTab } from "~/composables/useChatTabSetup";
+import { cancelChatTabRestore } from "~/composables/useChatTabPersistence";
+import { setActiveHub } from "~/composables/useHubState";
+import { useRightSidebar } from "~/composables/useRightSidebar";
 
 export default {
   data() {
@@ -1847,6 +1888,31 @@ export default {
       }
       return { ...this.tournamentStatic, ...this.tournamentLive };
     },
+    chatRoomTournament(): { id: string; name: string } | undefined {
+      const id = this.tournament?.id;
+      if (!id) {
+        return undefined;
+      }
+      return (
+        useMatchLobbyStore().chatTournaments as Array<{
+          id: string;
+          name: string;
+        }>
+      ).find((candidate) => candidate.id === id);
+    },
+    chatRoomUnreadLabel(): string {
+      if (!this.chatRoomTournament) {
+        return "";
+      }
+      const unread =
+        useChatTabs().unreadCounts.value[
+          tournamentChatTab(this.chatRoomTournament).id
+        ] ?? 0;
+      if (unread <= 0) {
+        return "";
+      }
+      return unread > 100 ? "100+" : String(unread);
+    },
     leagueSeasonId() {
       return this.$route.params.seasonId ?? null;
     },
@@ -2164,6 +2230,18 @@ export default {
     },
   },
   methods: {
+    openChatRoom() {
+      if (!this.chatRoomTournament) {
+        return;
+      }
+      cancelChatTabRestore();
+      useChatTabs().openTab({
+        ...tournamentChatTab(this.chatRoomTournament),
+        activate: true,
+      });
+      setActiveHub("chat");
+      useRightSidebar().setRightSidebarOpen(true);
+    },
     refetchTournamentStatic() {
       return this.$apollo?.queries?.tournamentStatic?.refetch();
     },

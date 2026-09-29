@@ -613,7 +613,7 @@ const viewModeOptions = computed<
                 setKills(opt.value);
                 killsOpen = false;
               "
-              class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
+              class="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
             >
               <span>{{ opt.label }}</span>
               <Check
@@ -626,14 +626,14 @@ const viewModeOptions = computed<
 
         <!-- View mode — pinned to the right of the trigger row -->
         <div
-          class="relative ml-auto flex items-center rounded-full border border-border/60 bg-muted/30 p-0.5"
+          class="relative ml-auto flex items-center rounded-md border border-border/60 bg-muted/30 p-0.5"
           role="group"
           :aria-label="$t('pages.highlights.view_mode')"
         >
             <!-- Sliding active-tab indicator -->
             <span
               aria-hidden="true"
-              class="absolute inset-y-0.5 left-0.5 w-[calc(50%-0.125rem)] rounded-full bg-[hsl(var(--tac-amber))] shadow-[0_0_12px_-2px_hsl(var(--tac-amber)/0.6)] transition-transform duration-300 ease-out"
+              class="absolute inset-y-0.5 left-0.5 w-[calc(50%-0.125rem)] rounded-sm bg-[hsl(var(--tac-amber))] shadow-[0_0_12px_-2px_hsl(var(--tac-amber)/0.6)] transition-transform duration-300 ease-out"
               :style="{
                 transform:
                   effectiveMode === 'singles'
@@ -652,7 +652,7 @@ const viewModeOptions = computed<
                   : undefined
               "
               :class="[
-                'relative z-10 inline-flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-4 py-1 text-xs transition-colors',
+                'relative z-10 inline-flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-sm px-4 py-1 text-xs transition-colors',
                 effectiveMode === opt.value
                   ? 'font-bold text-black'
                   : 'text-muted-foreground hover:text-foreground',
@@ -696,7 +696,7 @@ const viewModeOptions = computed<
               :key="opt.value"
               type="button"
               @click="visibilityFilter = opt.value"
-              class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
+              class="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
             >
               <span class="flex items-center gap-2">
                 <component :is="opt.icon" v-if="opt.icon" class="h-3.5 w-3.5" />
@@ -724,7 +724,7 @@ const viewModeOptions = computed<
               :key="opt.value"
               type="button"
               @click="setSince(opt.value)"
-              class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
+              class="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
             >
               <span>{{ opt.label }}</span>
               <Check
@@ -746,7 +746,7 @@ const viewModeOptions = computed<
               :key="opt.value"
               type="button"
               @click="setSort(opt.value)"
-              class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
+              class="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
             >
               <span>{{ opt.label }}</span>
               <Check

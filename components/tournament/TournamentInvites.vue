@@ -28,6 +28,7 @@ import {
   TOURNAMENT_INVITES_SUBSCRIPTION,
 } from "~/graphql/tournamentInvites";
 import { canSendTournamentInvites } from "~/utilities/tournamentInvites";
+import { playerBlockErrorKey } from "~/utilities/playerBlocks";
 
 /**
  * The organizer's direct-invite list: address a specific team or a specific
@@ -167,9 +168,10 @@ async function sendInvite(mutation: any, variables: Record<string, any>) {
       toast({ title: t("tournament.invites.already_invited") });
       return;
     }
+    const blockedKey = playerBlockErrorKey(message);
     toast({
       title: t("tournament.invites.send_failed"),
-      description: message,
+      description: blockedKey ? t(blockedKey) : message,
       variant: "destructive",
     });
   }

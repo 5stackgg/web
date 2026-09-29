@@ -173,7 +173,7 @@ definePageMeta({
                 </span>
 
                 <span
-                  class="absolute bottom-2.5 right-2.5 grid h-7 w-7 place-items-center rounded-sm bg-black/70 text-white/80 opacity-0 backdrop-blur-sm transition-opacity duration-200 group-hover/tile:opacity-100 group-focus-visible/preview:opacity-100"
+                  class="absolute bottom-2.5 right-2.5 grid h-7 w-7 place-items-center rounded-md bg-black/70 text-white/80 opacity-0 backdrop-blur-sm transition-opacity duration-200 group-hover/tile:opacity-100 group-focus-visible/preview:opacity-100"
                 >
                   <Maximize2 class="h-3.5 w-3.5" />
                 </span>

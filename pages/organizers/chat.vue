@@ -3,7 +3,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
 
 definePageMeta({
-  middleware: "auth",
+  middleware: "match-schedule",
 });
 
 const authStore = useAuthStore();

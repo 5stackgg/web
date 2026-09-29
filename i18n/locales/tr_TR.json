@@ -34,6 +34,7 @@
       "title_placeholder": "Planlı bakım",
       "message": "Mesaj",
       "message_placeholder": "İnceleme sürerken eşleştirme geçici olarak devre dışı.",
+      "message_link_hint": "[label](https://example.com) biçiminde bağlantı ekleyin. Bu sitenin bağlantıları uygulama içinde açılır.",
       "is_active": "Aktif",
       "is_active_hint": "Bu banner şu an herkese gösterilsin.",
       "dismissible": "Kapatılabilir",
@@ -928,6 +929,7 @@
     "user": "Kullanıcı",
     "verified_user": "Doğrulanmış Kullanıcı",
     "streamer": "Yayıncı",
+    "moderator": "Moderatör",
     "match_organizer": "Maç Organizatörü",
     "tournament_organizer": "Turnuva Organizatörü",
     "administrator": "Yönetici"
@@ -1586,6 +1588,7 @@
         "my_account": "Hesabım",
         "api_keys": "API anahtarları",
         "linked_accounts": "Bağlı hesaplar",
+        "blocked_players": "Engellenen oyuncular",
         "voice": "Ses ve mikrofon",
         "api_keys_management": {
           "add_api_key": "API anahtarı ekle",
@@ -1699,6 +1702,14 @@
           "matches": {
             "title": "Maçlar",
             "description": "Maç durumu değişiklikleri ve içe aktarılan maçlar."
+          },
+          "match_found": {
+            "title": "Maç bulundu",
+            "description": "Eşleştirme maçını buldu ve kabul etmeni bekliyor. Sessiz saatlerde bile çalar."
+          },
+          "admin_call": {
+            "title": "Yönetici çağrıları",
+            "description": "Bir yönetici maç kameran üzerinden seninle konuşmak istiyor. Sessiz saatlerde bile çalar."
           },
           "chat": {
             "title": "Sohbet",
@@ -1823,11 +1834,31 @@
         },
         "quiet_hours": {
           "title": "Sessiz saatler",
-          "description": "Bu aralıkta anlık bildirimler sessiz kalır. Bildirim zilinde yine de görünürler.",
+          "description": "Bu aralıkta anlık bildirimler sessiz kalır. Bildirim zilinde yine de görünürler. Maç bulundu bildirimleri ve yönetici çağrıları her durumda çalar.",
           "from": "Başlangıç",
           "to": "Bitiş",
           "reset": "Sıfırla",
           "incomplete": "Sessiz saatleri kaydetmek için hem başlangıç hem bitiş saatini gir."
+        },
+        "tab_flash": {
+          "title": "Tarayıcı sekmesi",
+          "description": "Bu sekme arka plandayken seni bekleyen bir şey olduğunda sekmenin başlığını ve simgesini yanıp söndürür. Bu cihaza kaydedilir.",
+          "match_found": {
+            "title": "Maç bulundu",
+            "description": "Bir maç hazır ve kabul etmeni bekliyor."
+          },
+          "admin_call": {
+            "title": "Organizatör görüşmeleri",
+            "description": "Bir maç organizatörü kamera sayfan üzerinden seninle konuşmaya başladığında."
+          },
+          "chat": {
+            "title": "Sohbet mesajları",
+            "description": "Bir konuşmada, lobide veya turnuva odasında yeni bir mesaj. Maçın oyun içi sohbeti dahil değildir."
+          },
+          "bell": {
+            "title": "Bildirimler",
+            "description": "Bildirim ziline yeni bir şey geldiğinde."
+          }
         }
       },
       "notifications": {
@@ -1975,13 +2006,13 @@
             "role_id": "Maç bildirimleri rol ID'si",
             "role_id_description": "Bu roller maç durumu bildirimlerinde etiketlenir. Virgülle ayırarak birden fazla rol ID'si ekleyebilirsin."
           },
-          "gamedata_notifications": {
-            "title": "Oyun verisi doğrulama bildirimleri",
-            "description": "CS2 oyun verisi imza doğrulama sonuçlarının nereye gönderileceğini yapılandır.",
-            "webhook": "Oyun verisi bildirimleri webhook URL'si",
-            "webhook_description": "Oyun verisi doğrulama sonuçları için özel webhook. Ayarlanmazsa varsayılan webhook'a döner.",
-            "role_id": "Oyun verisi bildirimleri rol ID'si",
-            "role_id_description": "Bu roller oyun verisi doğrulama bildirimlerinde etiketlenir. Virgülle ayırarak birden fazla rol ID'si ekleyebilirsin. Ayarlanmazsa varsayılan role döner."
+          "cs2_build_notifications": {
+            "title": "CS2 sürüm bildirimleri",
+            "description": "CS2 güncelleme, oyun verisi doğrulama ve harita varlığı oluşturma bildirimlerinin nereye gönderileceği.",
+            "webhook": "CS2 sürüm bildirimleri webhook URL'si",
+            "webhook_description": "CS2 sürüm bildirimleri için özel webhook. Ayarlanmazsa varsayılan webhook'a döner.",
+            "role_id": "CS2 sürüm bildirimleri rol ID'si",
+            "role_id_description": "Bu roller CS2 sürüm bildirimlerinde etiketlenir. Virgülle ayırarak birden fazla rol ID'si ekleyebilirsin. Ayarlanmazsa varsayılan role döner."
           },
           "server_notifications": {
             "title": "Sunucu bildirimleri",
@@ -2831,7 +2862,19 @@
         "upload_success_message": "Yüklendi — şimdi içe aktarılıyor. Maçın kısa süre içinde görünecek.",
         "toast_demo_uploaded": "Demo yüklendi",
         "toast_demo_uploaded_description": "Şimdi içe aktarılıyor — maçın kısa süre içinde görünecek.",
-        "toast_upload_failed": "Yükleme başarısız"
+        "toast_upload_failed": "Yükleme başarısız",
+        "import_share_code_title": "Paylaşım koduyla maç içe aktar",
+        "import_share_code_description": "Bağlı maç geçmişinin kaçırdığı bir eşleştirme maçını içe aktarmak için CS2'deki Watch → Your Matches bölümünden bir paylaşım kodu veya paylaşım bağlantısı yapıştır.",
+        "import_share_code_submit": "İçe aktar",
+        "toast_share_code_queued": "Maç içe aktarma sırasına alındı",
+        "toast_share_code_failed": "Maç içe aktarılamadı"
+      },
+      "blocked_players": {
+        "title": "Engellenen oyuncular",
+        "description": "Engellenen oyuncular sana mesaj, davet veya arkadaşlık isteği gönderemez. Birinin engelini kaldırmak arkadaşlığınızı geri getirmez.",
+        "empty_title": "Engellenen oyuncu yok",
+        "empty_description": "Profilinden veya oyuncu menüsünden engellediğin oyuncular burada görünür.",
+        "blocked_on": "Engellendi"
       }
     },
     "watch": {
@@ -3116,6 +3159,7 @@
         "recent_wins_and_losses": "Son galibiyet ve mağlubiyetler",
         "elo_history": "ELO geçmişi",
         "no_elo_history": "ELO oluşturmak için bir maç oyna",
+        "no_elo_history_other": "Henüz ELO geçmişi yok",
         "play_a_match": "Oyna",
         "matches": "Maçlar",
         "no_matches": "Henüz maç yok",
@@ -3426,7 +3470,122 @@
       "no_nodes_title": "Sunucu düğümü yok",
       "display_metrics": "Metrikleri göster",
       "create": "Sunucu düğümü oluştur",
-      "cs_version_info": "CS2 sürüm bilgisi:",
+      "cs2_build": {
+        "title": "CS2 sürümü",
+        "released": "Yayınlandı",
+        "history": "Sürüm geçmişi",
+        "gamedata": "Gamedata",
+        "gamedata_description": "Eklenti imzaları, offset'ler ve yamalar",
+        "map_assets": "Harita varlıkları",
+        "map_assets_description": "3D tekrar için mesh'ler, bomba clip'leri ve callout'lar",
+        "gamedata_never": "Bu sürüm için henüz doğrulanmadı",
+        "map_assets_never": "Bu sürüm için henüz oluşturulmadı",
+        "auto_hint": "Bir düğüm yeni bir sürümü ilk kez bildirdiğinde kendiliğinden çalışır",
+        "map_assets_hint": "Otomatik oluşturma açıksa gamedata doğrulamasından sonra oluşturulur",
+        "revalidate": "Yeniden doğrula",
+        "rebuild": "Yeniden oluştur",
+        "build": "Oluştur",
+        "retry_failed": "Başarısız haritaları yeniden dene",
+        "run_on": "Çalıştırılacak düğüm",
+        "automatic": "Otomatik",
+        "automatic_description": "Zaten {build} sürümünde olan çevrimiçi bir düğüm",
+        "auto": "otomatik",
+        "started": "Başladı",
+        "validated": "Doğrulandı",
+        "finished": "Bitti",
+        "took": "süre: {duration}",
+        "ran_on": "düğüm: {node}",
+        "requested_by": "isteyen: {name}",
+        "vs_build": "{build} sürümüne göre değişiklikler",
+        "first_run": "Henüz karşılaştırılacak bir şey yok",
+        "no_changes": "{build} sürümünden beri değişiklik yok",
+        "nothing_broken": "Bozuk bir şey yok",
+        "no_maps": "Hiç harita yayınlanmadı",
+        "reused_from": "{build} sürümünden yeniden kullanıldı",
+        "skipped_entries": "{count} atlandı — kontrol edilemedi",
+        "log": "Oluşturma günlüğü",
+        "trigger": {
+          "auto": "otomatik",
+          "manual": "manuel"
+        },
+        "stats": {
+          "checked": "Kontrol edilen",
+          "broken": "Bozuk",
+          "warnings": "Uyarılar",
+          "skipped": "Atlanan",
+          "maps": "Haritalar",
+          "changed": "Değişen",
+          "unchanged": "Değişmeyen",
+          "failed": "Başarısız"
+        },
+        "chip": {
+          "newly_broken": "{count} yeni bozuk",
+          "fixed": "{count} düzeltildi",
+          "new_warnings": "uyarılar +{count}",
+          "rebuilt": "{count} yeniden oluşturuldu",
+          "added": "{count} eklendi",
+          "removed": "{count} kaldırıldı"
+        },
+        "change": {
+          "broken": "Bozuk",
+          "still_broken": "Hâlâ bozuk",
+          "fixed": "Düzeltildi",
+          "warning": "Uyarı",
+          "cleared": "Giderildi",
+          "rebuilt": "Yeniden oluşturuldu",
+          "added": "Eklendi",
+          "removed": "Kaldırıldı",
+          "failed": "Başarısız",
+          "unchanged": "Değişmedi",
+          "included": "Yayınlandı"
+        },
+        "reason": {
+          "vpk": "Harita değişti",
+          "pipeline": "Araçlar değişti",
+          "assets": "Yeniden oluşturuldu",
+          "collision": "Çarpışma başarısız",
+          "view": "Görünüm mesh'i başarısız"
+        },
+        "gamedata_status": {
+          "running": "Doğrulanıyor",
+          "passed": "Geçti",
+          "warning": "Uyarı",
+          "failed": "Başarısız",
+          "error": "Hata",
+          "stale": "Takıldı",
+          "none": "Çalışmadı"
+        },
+        "map_assets_status": {
+          "pending": "Sırada",
+          "building": "Oluşturuluyor",
+          "published": "Yayınlandı",
+          "partial": "Kısmi",
+          "failed": "Başarısız",
+          "stale": "Takıldı",
+          "none": "Oluşturulmadı"
+        },
+        "blocked": {
+          "no_node": "{build} sürümünde çevrimiçi düğüm yok",
+          "running": "Zaten bir doğrulama çalışıyor",
+          "building": "Zaten bir oluşturma sırada veya çalışıyor"
+        },
+        "node_reason": {
+          "disabled": "Devre dışı",
+          "gpu_only": "Yalnızca GPU düğümü",
+          "status": "{status}",
+          "updating": "CS2 güncelleniyor",
+          "other_build": "{build} sürümünde"
+        },
+        "toast": {
+          "queued_validation": "Gamedata doğrulaması sıraya alındı",
+          "queued_build": "Harita varlığı oluşturma sıraya alındı"
+        },
+        "force": {
+          "title": "Tüm haritalar yeniden oluşturulsun mu?",
+          "description": "{build} sürümünün harita varlıkları zaten yayınlandı. Zorunlu yeniden oluşturma, düğümdeki her haritayı yeniden oluşturur; bu birkaç saat sürebilir ve yalnızca bir şey değiştiyse yeni bir manifest revizyonu yayınlar.",
+          "confirm": "Tüm haritaları yeniden oluştur"
+        }
+      },
       "hide_offline": "Çevrimdışı düğümleri gizle",
       "only_enabled": "Yalnızca etkin düğümler",
       "setup_dialog": {
@@ -3454,7 +3613,21 @@
         "supports_cpu_pinning": "CPU sabitleme desteği",
         "cpu_governor": "CPU governor"
       },
-      "last_updated": "Son güncelleme: {date}",
+      "builds": {
+        "title": "CS2 Sürüm Geçmişi",
+        "description": "Her CS2 sürümü için gamedata doğrulaması ve harita varlığı oluşturma işlemleri ile her birinin bir önceki sürüme göre neyi değiştirdiği.",
+        "back": "Sunucu Düğümleri",
+        "builds": "Sürümler",
+        "no_builds": "Henüz hiçbir sürüm doğrulanmadı veya oluşturulmadı.",
+        "current": "Güncel",
+        "compared_with": "{build} ile karşılaştırıldı",
+        "history_note": "Geçmiş bu yayından itibaren tutulur; daha eski sürümler oyun sürümleriyle birlikte kaldırıldı.",
+        "timeline": {
+          "detected": "Güncelleme yayınlandı",
+          "gamedata": "Gamedata",
+          "map_assets": "Harita varlıkları"
+        }
+      },
       "max_label": "Maks:",
       "ports_label": "Portlar:",
       "cpu_hardware": "CPU ve donanım"
@@ -5019,9 +5192,6 @@
       }
     }
   },
-  "custom_match": {
-    "description": "Özel kurallar, haritalar ve dizilişlerle kendi maçını oluştur"
-  },
   "layouts": {
     "account_settings": {
       "title": "Hesap ayarları",
@@ -5381,6 +5551,12 @@
       }
     }
   },
+  "tab_flash": {
+    "match_found": "Maç bulundu",
+    "admin_call": "Bir organizatör seni arıyor",
+    "chat": "Yeni mesaj | Yeni mesajlar",
+    "bell": "Yeni bildirim | Yeni bildirimler"
+  },
   "roster_picker": {
     "add_starter": "İlk 5'e ekle",
     "add_substitute": "Yedek ekle",
@@ -5695,6 +5871,7 @@
       "information_tab": "Bilgi",
       "about_section": "Hakkında",
       "match_settings": "Maç ayarları",
+      "chat_room_tab": "Sohbet Odası",
       "read_more": "Devamını oku",
       "read_less": "Daha az göster"
     },
@@ -7690,6 +7867,7 @@
     "tooltips": {
       "fullscreen": "Tam ekran",
       "toggle_right_sidebar": "Sağ kenar çubuğunu aç/kapat",
+      "toggle_right_sidebar_unread": "Sağ kenar çubuğunu aç/kapat ({count} okunmamış)",
       "view_steam_profile": "Steam profilini görüntüle",
       "zoom_in": "Yakınlaştır",
       "zoom_in_scroll": "Yakınlaştır (Ctrl/Cmd + Kaydırma)",
@@ -7833,11 +8011,13 @@
       "reason_label": "Sebep",
       "reason_placeholder": "Yaptırım için sebep gir...",
       "reason_description": "Lütfen bu yaptırım için açık bir sebep belirt",
+      "reason_required": "Bir sebep gerekli",
       "types": {
         "ban_description": "Oyuncu hiçbir etkinliğe katılamaz",
         "mute_description": "Oyuncu oyun içinde sesli sohbeti kullanamaz",
         "gag_description": "Oyuncu oyun içinde yazılı sohbeti kullanamaz",
-        "silence_description": "Oyuncunun sesi ve yazısı susturuldu"
+        "silence_description": "Oyuncunun sesi ve yazısı susturuldu",
+        "warning_description": "Oyuncunun siciline eklenen bilgilendirme notu, asla uygulanmaz"
       },
       "durations": {
         "15_minutes": "15 dakika",
@@ -7852,20 +8032,24 @@
         "ban": "Oyuncu yasaklanıyor",
         "mute": "Oyuncunun mikrofonu kapatılıyor",
         "gag": "Oyuncunun sohbeti kapatılıyor",
-        "silence": "Oyuncu tamamen susturuluyor"
+        "silence": "Oyuncu tamamen susturuluyor",
+        "warning": "Oyuncu uyarılıyor"
       },
       "submit": {
         "ban": "Oyuncuyu yasakla",
         "mute": "Oyuncunun mikrofonunu kapat",
         "gag": "Oyuncunun sohbetini kapat",
-        "silence": "Oyuncuyu tamamen sustur"
+        "silence": "Oyuncuyu tamamen sustur",
+        "warning": "Uyarı ver"
       },
       "applied": {
         "ban": "{name} yasaklandı",
         "mute": "{name} adlı oyuncunun mikrofonu kapatıldı",
         "gag": "{name} adlı oyuncunun sohbeti kapatıldı",
-        "silence": "{name} tamamen susturuldu"
+        "silence": "{name} tamamen susturuldu",
+        "warning": "{name} adlı oyuncuya uyarı verildi"
       },
+      "warning_note": "Uyarı oyuncunun siciline kaydedilir ve oyuncuya bildirilir. Asla uygulanmaz ve süresi hiç dolmaz.",
       "typed_player": "{type} Oyuncu"
     },
     "search": {
@@ -7892,6 +8076,13 @@
       "muted": "Sessize alındı",
       "gagged": "Susturuldu",
       "silenced": "Tamamen susturuldu",
+      "type_labels": {
+        "ban": "Yasak",
+        "mute": "Mikrofon kapatma",
+        "gag": "Sohbet kapatma",
+        "silence": "Tamamen susturma",
+        "warning": "Uyarı"
+      },
       "duration_label": "Süre",
       "select_duration": "Süre seç",
       "sanctions": "Yaptırımlar",
@@ -7906,6 +8097,7 @@
       "permanent": "Kalıcı",
       "active": "Aktif",
       "expired": "Süresi doldu",
+      "on_record": "Sicilde",
       "cannot_edit_expired": "Süresi dolmuş yaptırımlar düzenlenemez — yeni bir tane ekle",
       "edit": "Düzenle",
       "remove": "Kaldır",
@@ -7967,6 +8159,25 @@
     "current_elo": "ŞU AN",
     "faceit_level": "Seviye {level}",
     "elo_aria_label": "ELO, birincil {tier} {elo}"
+  },
+  "player_blocks": {
+    "block": "Engelle",
+    "unblock": "Engeli kaldır",
+    "blocked_badge": "Engellendi",
+    "confirm": {
+      "title": "{name} engellensin mi?",
+      "description": "{name} sana mesaj, davet veya arkadaşlık isteği gönderemeyecek. Arkadaşlığınız kaldırılacak ve engeli kaldırsan bile geri gelmeyecek.",
+      "action": "Engelle"
+    },
+    "toasts": {
+      "blocked": "{name} engellendi",
+      "unblocked": "{name} adlı oyuncunun engeli kaldırıldı"
+    },
+    "errors": {
+      "title": "İşlem kullanılamıyor",
+      "player_blocked": "Bu oyuncuyla bunu yapamazsın.",
+      "player_blocked_bulk": "Bu oyunculardan en az biri eklenemiyor."
+    }
   },
   "maps": {
     "veto": {
@@ -8097,8 +8308,6 @@
     "update_cs": "CS2'yi güncelle",
     "updating_to": "{version} sürümüne güncelleniyor",
     "update_to_version": "{version} sürümüne güncelle",
-    "validate_gamedata": "Gamedata'yı doğrula",
-    "build_map_assets": "Harita varlıklarını oluştur",
     "note_label": "Not:",
     "one_cpu_core": "1 CPU çekirdeği",
     "cpu_reservation_note": " {cores}, düğümü duyarlı tutmak için sistem tarafından ayrılmıştır.",
@@ -8196,8 +8405,6 @@
     "toast": {
       "cs_updating": "CS2 düğümde güncelleniyor",
       "csgo_installing": "CS:GO düğümde yükleniyor",
-      "validating_gamedata": "Düğümde gamedata imzaları doğrulanıyor",
-      "building_map_assets": "Bu düğümün CS2 sürümü için harita meshleri ve callout'lar oluşturuluyor",
       "ports_updated": "Düğüm portları güncellendi",
       "ports_removed": "Düğüm portları kaldırıldı",
       "made_gpu_only": "Düğüm yalnızca GPU olarak ayarlandı",

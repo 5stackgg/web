@@ -47,7 +47,7 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
         type="button"
         :title="$t('player.sanction.button')"
         :aria-label="$t('player.sanction.button')"
-        class="group/sanction inline-flex h-9 w-9 shrink-0 items-center justify-center rounded border border-red-500/45 bg-red-500/10 text-red-400 transition-[border-color,background-color,color,box-shadow] duration-150 hover:border-red-500/80 hover:bg-red-500/20 hover:text-red-200 hover:shadow-[0_0_0_1px_rgb(239_68_68_/_0.35),0_6px_18px_-6px_rgb(239_68_68_/_0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        class="group/sanction inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-red-500/45 bg-red-500/10 text-red-400 transition-[border-color,background-color,color,box-shadow] duration-150 hover:border-red-500/80 hover:bg-red-500/20 hover:text-red-200 hover:shadow-[0_0_0_1px_rgb(239_68_68_/_0.35),0_6px_18px_-6px_rgb(239_68_68_/_0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
         <Ban class="h-4 w-4" />
       </button>
@@ -72,7 +72,9 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
               >
                 <div class="flex items-center gap-2">
                   <component :is="sanction.icon" class="h-4 w-4" />
-                  <span class="font-medium capitalize">{{ type }}</span>
+                  <span class="font-medium">
+                    {{ $t(`player.sanctions.type_labels.${type}`) }}
+                  </span>
                 </div>
                 <p class="text-sm text-muted-foreground mt-1">
                   {{ sanction.description }}
@@ -103,16 +105,24 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
         <Separator class="my-2" />
 
         <DrawerDescription
-          class="text-lg flex gap-4 items-center text-red-500"
+          class="text-lg flex gap-4 items-center"
+          :class="
+            sanctionType === 'ban'
+              ? 'text-destructive'
+              : 'text-[hsl(var(--tac-amber))]'
+          "
           v-if="sanctionType"
         >
           <component :is="sanctions[sanctionType].icon" class="h-4 w-4" />
           {{ sanctions[sanctionType].description }}
         </DrawerDescription>
 
+        <p v-if="isWarning" class="text-sm text-muted-foreground">
+          {{ $t("player.sanction.warning_note") }}
+        </p>
         <div
-          v-if="serverId && sanctionType && sanctionType !== 'ban'"
-          class="flex gap-2 items-start text-sm text-yellow-500"
+          v-else-if="serverId && sanctionType && sanctionType !== 'ban'"
+          class="flex gap-2 items-start text-sm text-[hsl(var(--tac-amber))]"
         >
           <TriangleAlert class="mt-0.5 h-4 w-4 shrink-0" />
           {{ $t("pages.dedicated_servers.detail.sanctions_wip") }}
@@ -127,7 +137,7 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
         </SettingHeader>
 
         <FormField v-slot="{ componentField }" name="reason">
-          <FormItem>
+          <FormItem :class="{ 'col-span-2': isWarning }">
             <FormLabel>{{ $t("player.sanction.reason_label") }}</FormLabel>
             <FormControl>
               <Input
@@ -142,7 +152,11 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
           </FormItem>
         </FormField>
 
-        <FormField v-slot="{ componentField }" name="duration">
+        <FormField
+          v-if="!isWarning"
+          v-slot="{ componentField }"
+          name="duration"
+        >
           <FormItem>
             <FormLabel>{{ $t("player.sanctions.duration_label") }}</FormLabel>
             <FormControl>
@@ -205,7 +219,7 @@ export default {
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
-            reason: z.string().min(1),
+            reason: z.string().optional(),
             duration: z.string().min(1),
           }),
         ),
@@ -215,6 +229,9 @@ export default {
     };
   },
   computed: {
+    isWarning(): boolean {
+      return this.sanctionType === "warning";
+    },
     sanctions(): Record<string, { icon: any; description: string }> {
       return {
         ban: {
@@ -232,6 +249,10 @@ export default {
         silence: {
           icon: BellOff,
           description: this.$t("player.sanction.types.silence_description"),
+        },
+        warning: {
+          icon: TriangleAlert,
+          description: this.$t("player.sanction.types.warning_description"),
         },
       };
     },
@@ -275,6 +296,14 @@ export default {
         return;
       }
 
+      if (this.isWarning && !this.form.values.reason?.trim()) {
+        this.form.setFieldError(
+          "reason",
+          this.$t("player.sanction.reason_required"),
+        );
+        return;
+      }
+
       this.submitting = true;
       try {
         await this.$apollo.mutate({
@@ -304,9 +333,10 @@ export default {
             steam_id: this.player.steam_id,
             type: this.sanctionType,
             reason: this.form.values.reason,
-            duration: this.form.values.duration
-              ? parseInt(this.form.values.duration)
-              : 0,
+            duration:
+              !this.isWarning && this.form.values.duration
+                ? parseInt(this.form.values.duration)
+                : 0,
           },
         });
 

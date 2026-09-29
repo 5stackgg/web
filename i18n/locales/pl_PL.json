@@ -34,6 +34,7 @@
       "title_placeholder": "Planowana konserwacja",
       "message": "Treść",
       "message_placeholder": "Matchmaking jest tymczasowo wyłączony, trwa analiza problemu",
+      "message_link_hint": "Dodaj link w formacie [label](https://example.com). Linki do tej strony otwierają się w aplikacji.",
       "is_active": "Aktywny",
       "is_active_hint": "Pokaż ten baner wszystkim od razu",
       "dismissible": "Można zamknąć",
@@ -928,6 +929,7 @@
     "user": "Użytkownik",
     "verified_user": "Zweryfikowany użytkownik",
     "streamer": "Streamer",
+    "moderator": "Moderator",
     "match_organizer": "Organizator meczów",
     "tournament_organizer": "Organizator turniejów",
     "administrator": "Administrator"
@@ -1586,6 +1588,7 @@
         "my_account": "Moje konto",
         "api_keys": "Klucze API",
         "linked_accounts": "Połączone konta",
+        "blocked_players": "Zablokowani gracze",
         "voice": "Głos i dźwięk",
         "api_keys_management": {
           "add_api_key": "Dodaj klucz API",
@@ -1699,6 +1702,14 @@
           "matches": {
             "title": "Mecze",
             "description": "Zmiany statusu meczu i zaimportowane mecze."
+          },
+          "match_found": {
+            "title": "Znaleziono mecz",
+            "description": "Matchmaking znalazł twój mecz i czeka, aż go zaakceptujesz. Dzwoni nawet w godzinach ciszy."
+          },
+          "admin_call": {
+            "title": "Połączenia od administratorów",
+            "description": "Administrator chce porozmawiać z tobą przez kamerę meczu. Dzwoni nawet w godzinach ciszy."
           },
           "chat": {
             "title": "Czat",
@@ -1823,11 +1834,31 @@
         },
         "quiet_hours": {
           "title": "Godziny ciszy",
-          "description": "W tym przedziale powiadomienia push pozostają wyciszone. Nadal pojawiają się w dzwonku powiadomień.",
+          "description": "W tym przedziale powiadomienia push pozostają wyciszone. Nadal pojawiają się w dzwonku powiadomień. Znalezione mecze i połączenia od administratorów dzwonią mimo to.",
           "from": "Od",
           "to": "Do",
           "reset": "Resetuj",
           "incomplete": "Ustaw godzinę początku i końca, aby zapisać godziny ciszy."
+        },
+        "tab_flash": {
+          "title": "Karta przeglądarki",
+          "description": "Miga tytułem i ikoną tej karty, gdy coś wymaga twojej uwagi, a karta jest w tle. Zapisywane na tym urządzeniu.",
+          "match_found": {
+            "title": "Znaleziono mecz",
+            "description": "Mecz jest gotowy i czeka, aż go zaakceptujesz."
+          },
+          "admin_call": {
+            "title": "Rozmowy z organizatorem",
+            "description": "Organizator meczu zaczyna mówić do ciebie przez stronę kamery."
+          },
+          "chat": {
+            "title": "Wiadomości czatu",
+            "description": "Nowa wiadomość w rozmowie, lobby lub pokoju turniejowym. Czat z gry podczas meczu jest pomijany."
+          },
+          "bell": {
+            "title": "Powiadomienia",
+            "description": "W dzwonku powiadomień pojawia się coś nowego."
+          }
         }
       },
       "notifications": {
@@ -1975,13 +2006,13 @@
             "role_id": "ID roli powiadomień o meczach",
             "role_id_description": "Te role zostaną wspomniane w powiadomieniach o statusie meczu. Możesz dodać wiele ID ról oddzielonych przecinkami."
           },
-          "gamedata_notifications": {
-            "title": "Powiadomienia o walidacji gamedata",
-            "description": "Skonfiguruj, gdzie publikowane są wyniki walidacji sygnatur gamedata CS2.",
-            "webhook": "URL webhooka powiadomień gamedata",
-            "webhook_description": "Dedykowany webhook dla wyników walidacji gamedata. Jeśli nie ustawiono, używany jest domyślny webhook.",
-            "role_id": "ID roli powiadomień gamedata",
-            "role_id_description": "Te role zostaną wspomniane w powiadomieniach o walidacji gamedata. Możesz dodać wiele ID ról oddzielonych przecinkami. Jeśli nie ustawiono, używana jest domyślna rola."
+          "cs2_build_notifications": {
+            "title": "Powiadomienia o buildach CS2",
+            "description": "Gdzie publikowane są powiadomienia o aktualizacjach CS2, walidacji gamedata i budowaniu zasobów map.",
+            "webhook": "URL webhooka powiadomień o buildach CS2",
+            "webhook_description": "Dedykowany webhook dla powiadomień o buildach CS2. Jeśli nie ustawiono, używany jest domyślny webhook.",
+            "role_id": "ID roli powiadomień o buildach CS2",
+            "role_id_description": "Te role zostaną wspomniane w powiadomieniach o buildach CS2. Możesz dodać wiele ID ról oddzielonych przecinkami. Jeśli nie ustawiono, używana jest domyślna rola."
           },
           "server_notifications": {
             "title": "Powiadomienia o serwerach",
@@ -2831,7 +2862,19 @@
         "upload_success_message": "Przesłano — trwa import. Twój mecz pojawi się wkrótce.",
         "toast_demo_uploaded": "Przesłano demo",
         "toast_demo_uploaded_description": "Trwa import — twój mecz pojawi się wkrótce.",
-        "toast_upload_failed": "Przesyłanie nie powiodło się"
+        "toast_upload_failed": "Przesyłanie nie powiodło się",
+        "import_share_code_title": "Zaimportuj mecz kodem udostępniania",
+        "import_share_code_description": "Wklej kod lub link udostępniania z Watch → Your Matches w CS2, aby zaimportować mecz z matchmakingu, którego nie pobrała połączona historia meczów.",
+        "import_share_code_submit": "Importuj",
+        "toast_share_code_queued": "Mecz dodany do kolejki importu",
+        "toast_share_code_failed": "Nie udało się zaimportować meczu"
+      },
+      "blocked_players": {
+        "title": "Zablokowani gracze",
+        "description": "Zablokowani gracze nie mogą wysyłać ci wiadomości, zaproszeń ani próśb o dodanie do znajomych. Odblokowanie kogoś nie przywraca waszej znajomości.",
+        "empty_title": "Brak zablokowanych graczy",
+        "empty_description": "Gracze zablokowani z poziomu ich profilu lub menu gracza pojawią się tutaj.",
+        "blocked_on": "Zablokowano"
       }
     },
     "watch": {
@@ -3116,6 +3159,7 @@
         "recent_wins_and_losses": "Ostatnie wygrane i przegrane",
         "elo_history": "Historia ELO",
         "no_elo_history": "Zagraj mecz, aby wygenerować ELO",
+        "no_elo_history_other": "Brak historii ELO",
         "play_a_match": "Zagraj",
         "matches": "Mecze",
         "no_matches": "Brak meczów",
@@ -3426,7 +3470,122 @@
       "no_nodes_title": "Brak węzłów serwerów gry",
       "display_metrics": "Pokaż metryki",
       "create": "Utwórz węzeł serwerów gry",
-      "cs_version_info": "Informacje o wersji CS2:",
+      "cs2_build": {
+        "title": "Build CS2",
+        "released": "Wydano",
+        "history": "Historia buildów",
+        "gamedata": "Gamedata",
+        "gamedata_description": "Sygnatury, offsety i poprawki pluginów",
+        "map_assets": "Zasoby map",
+        "map_assets_description": "Siatki, grenade clipy i callouty do powtórki 3D",
+        "gamedata_never": "Jeszcze nie zweryfikowano dla tego buildu",
+        "map_assets_never": "Jeszcze nie zbudowano dla tego buildu",
+        "auto_hint": "Uruchamia się samo, gdy węzeł po raz pierwszy zgłosi nowy build",
+        "map_assets_hint": "Budowane po walidacji gamedata, gdy automatyczne budowanie jest włączone",
+        "revalidate": "Zweryfikuj ponownie",
+        "rebuild": "Przebuduj",
+        "build": "Zbuduj",
+        "retry_failed": "Ponów nieudane mapy",
+        "run_on": "Uruchom na",
+        "automatic": "Automatycznie",
+        "automatic_description": "Węzeł online już na buildzie {build}",
+        "auto": "auto",
+        "started": "Rozpoczęto",
+        "validated": "Zweryfikowano",
+        "finished": "Zakończono",
+        "took": "trwało {duration}",
+        "ran_on": "uruchomiono na {node}",
+        "requested_by": "przez {name}",
+        "vs_build": "Zmiany względem {build}",
+        "first_run": "Jeszcze nie ma z czym porównać",
+        "no_changes": "Brak zmian od {build}",
+        "nothing_broken": "Nic nie jest zepsute",
+        "no_maps": "Nie opublikowano żadnych map",
+        "reused_from": "użyto ponownie z {build}",
+        "skipped_entries": "Pominięte: {count} — nie można sprawdzić",
+        "log": "Log buildu",
+        "trigger": {
+          "auto": "automatyczny",
+          "manual": "ręczny"
+        },
+        "stats": {
+          "checked": "Sprawdzone",
+          "broken": "Zepsute",
+          "warnings": "Ostrzeżenia",
+          "skipped": "Pominięte",
+          "maps": "Mapy",
+          "changed": "Zmienione",
+          "unchanged": "Bez zmian",
+          "failed": "Nieudane"
+        },
+        "chip": {
+          "newly_broken": "nowo zepsute: {count}",
+          "fixed": "naprawione: {count}",
+          "new_warnings": "ostrzeżenia +{count}",
+          "rebuilt": "przebudowane: {count}",
+          "added": "dodane: {count}",
+          "removed": "usunięte: {count}"
+        },
+        "change": {
+          "broken": "Zepsute",
+          "still_broken": "Nadal zepsute",
+          "fixed": "Naprawione",
+          "warning": "Ostrzeżenie",
+          "cleared": "Wyczyszczone",
+          "rebuilt": "Przebudowane",
+          "added": "Dodane",
+          "removed": "Usunięte",
+          "failed": "Nieudane",
+          "unchanged": "Bez zmian",
+          "included": "Opublikowane"
+        },
+        "reason": {
+          "vpk": "Zmiana mapy",
+          "pipeline": "Zmiana narzędzi",
+          "assets": "Przebudowane",
+          "collision": "Błąd kolizji",
+          "view": "Błąd siatki widoku"
+        },
+        "gamedata_status": {
+          "running": "Weryfikacja",
+          "passed": "Zaliczone",
+          "warning": "Ostrzeżenie",
+          "failed": "Nieudane",
+          "error": "Błąd",
+          "stale": "Zawieszone",
+          "none": "Nie uruchomiono"
+        },
+        "map_assets_status": {
+          "pending": "W kolejce",
+          "building": "Budowanie",
+          "published": "Opublikowane",
+          "partial": "Częściowe",
+          "failed": "Nieudane",
+          "stale": "Zawieszone",
+          "none": "Nie zbudowano"
+        },
+        "blocked": {
+          "no_node": "Żaden węzeł online nie jest na buildzie {build}",
+          "running": "Weryfikacja już trwa",
+          "building": "Build jest już w kolejce lub w trakcie"
+        },
+        "node_reason": {
+          "disabled": "Wyłączony",
+          "gpu_only": "Węzeł tylko GPU",
+          "status": "{status}",
+          "updating": "Aktualizacja CS2",
+          "other_build": "Na buildzie {build}"
+        },
+        "toast": {
+          "queued_validation": "Walidacja gamedata dodana do kolejki",
+          "queued_build": "Budowanie zasobów map dodane do kolejki"
+        },
+        "force": {
+          "title": "Przebudować wszystkie mapy?",
+          "description": "Zasoby map dla buildu {build} są już opublikowane. Wymuszona przebudowa ponownie buduje każdą mapę na węźle, co może potrwać kilka godzin, i publikuje nową rewizję manifestu tylko wtedy, gdy coś się zmieniło.",
+          "confirm": "Przebuduj wszystkie mapy"
+        }
+      },
       "hide_offline": "Ukryj węzły offline",
       "only_enabled": "Tylko włączone węzły",
       "setup_dialog": {
@@ -3454,7 +3613,21 @@
         "supports_cpu_pinning": "Obsługuje przypisywanie CPU",
         "cpu_governor": "Governor CPU"
       },
-      "last_updated": "Ostatnia aktualizacja: {date}",
+      "builds": {
+        "title": "Historia buildów CS2",
+        "description": "Walidacja gamedata i budowanie zasobów map dla każdego buildu CS2 oraz zmiany każdego z nich względem poprzedniego buildu.",
+        "back": "Węzły serwerów gry",
+        "builds": "Buildy",
+        "no_builds": "Żaden build nie został jeszcze zweryfikowany ani zbudowany.",
+        "current": "Bieżący",
+        "compared_with": "Porównano z {build}",
+        "history_note": "Historia zaczyna się od tego wydania; wcześniejsze buildy zostały usunięte wraz z ich wersją gry.",
+        "timeline": {
+          "detected": "Wydano aktualizację",
+          "gamedata": "Gamedata",
+          "map_assets": "Zasoby map"
+        }
+      },
       "max_label": "Maks.:",
       "ports_label": "Porty:",
       "cpu_hardware": "CPU i sprzęt"
@@ -5019,9 +5192,6 @@
       }
     }
   },
-  "custom_match": {
-    "description": "Zbuduj własny mecz z niestandardowymi zasadami, mapami i ustawieniami"
-  },
   "layouts": {
     "account_settings": {
       "title": "Ustawienia konta",
@@ -5381,6 +5551,12 @@
       }
     }
   },
+  "tab_flash": {
+    "match_found": "Znaleziono mecz",
+    "admin_call": "Organizator do ciebie dzwoni",
+    "chat": "Nowa wiadomość | Nowe wiadomości",
+    "bell": "Nowe powiadomienie | Nowe powiadomienia"
+  },
   "roster_picker": {
     "add_starter": "Dodaj podstawowego gracza",
     "add_substitute": "Dodaj rezerwowego",
@@ -5695,6 +5871,7 @@
       "information_tab": "Informacje",
       "about_section": "O turnieju",
       "match_settings": "Ustawienia meczu",
+      "chat_room_tab": "Czat",
       "read_more": "Czytaj więcej",
       "read_less": "Zwiń"
     },
@@ -7690,6 +7867,7 @@
     "tooltips": {
       "fullscreen": "Pełny ekran",
       "toggle_right_sidebar": "Przełącz prawy panel boczny",
+      "toggle_right_sidebar_unread": "Przełącz prawy panel boczny (nieprzeczytane: {count})",
       "view_steam_profile": "Zobacz profil Steam",
       "zoom_in": "Powiększ",
       "zoom_in_scroll": "Powiększ (Ctrl/Cmd + scroll)",
@@ -7833,11 +8011,13 @@
       "reason_label": "Powód",
       "reason_placeholder": "Podaj powód sankcji...",
       "reason_description": "Podaj jasny powód tej sankcji",
+      "reason_required": "Powód jest wymagany",
       "types": {
         "ban_description": "Gracz nie może uczestniczyć w żadnej aktywności",
         "mute_description": "Gracz nie może używać czatu głosowego w grze",
         "gag_description": "Gracz nie może używać czatu tekstowego w grze",
-        "silence_description": "Gracz wyciszony i pozbawiony czatu tekstowego"
+        "silence_description": "Gracz wyciszony i pozbawiony czatu tekstowego",
+        "warning_description": "Informacyjna notatka w historii gracza, nigdy nie jest egzekwowana"
       },
       "durations": {
         "15_minutes": "15 minut",
@@ -7852,20 +8032,24 @@
         "ban": "Banowanie gracza",
         "mute": "Wyciszanie mikrofonu gracza",
         "gag": "Blokowanie czatu gracza",
-        "silence": "Całkowite uciszanie gracza"
+        "silence": "Całkowite uciszanie gracza",
+        "warning": "Ostrzeganie gracza"
       },
       "submit": {
         "ban": "Zbanuj gracza",
         "mute": "Wycisz mikrofon gracza",
         "gag": "Zablokuj czat gracza",
-        "silence": "Całkowicie ucisz gracza"
+        "silence": "Całkowicie ucisz gracza",
+        "warning": "Wystaw ostrzeżenie"
       },
       "applied": {
         "ban": "{name} zbanowany",
         "mute": "Mikrofon {name} wyciszony",
         "gag": "Czat {name} zablokowany",
-        "silence": "{name} całkowicie uciszony"
+        "silence": "{name} całkowicie uciszony",
+        "warning": "Wystawiono ostrzeżenie dla {name}"
       },
+      "warning_note": "Ostrzeżenie zostaje zapisane w historii gracza, a gracz otrzymuje powiadomienie. Nigdy nie jest egzekwowane i nigdy nie wygasa.",
       "typed_player": "Gracz: {type}"
     },
     "search": {
@@ -7892,6 +8076,13 @@
       "muted": "Wyciszony głosowo",
       "gagged": "Wyciszony na czacie",
       "silenced": "Wyciszony całkowicie",
+      "type_labels": {
+        "ban": "Ban",
+        "mute": "Wyciszenie mikrofonu",
+        "gag": "Blokada czatu",
+        "silence": "Całkowite uciszenie",
+        "warning": "Ostrzeżenie"
+      },
       "duration_label": "Czas trwania",
       "select_duration": "Wybierz czas trwania",
       "sanctions": "Sankcje",
@@ -7906,6 +8097,7 @@
       "permanent": "Stała",
       "active": "Aktywna",
       "expired": "Wygasła",
+      "on_record": "W historii",
       "cannot_edit_expired": "Wygasłych sankcji nie można edytować — dodaj nową",
       "edit": "Edytuj",
       "remove": "Usuń",
@@ -7967,6 +8159,25 @@
     "current_elo": "OBECNIE",
     "faceit_level": "Poziom {level}",
     "elo_aria_label": "ELO, główny {tier} {elo}"
+  },
+  "player_blocks": {
+    "block": "Zablokuj",
+    "unblock": "Odblokuj",
+    "blocked_badge": "Zablokowany",
+    "confirm": {
+      "title": "Zablokować {name}?",
+      "description": "{name} nie będzie mógł wysyłać ci wiadomości, zaproszeń ani próśb o dodanie do znajomych. Wasza znajomość zostanie usunięta, a odblokowanie jej nie przywróci.",
+      "action": "Zablokuj"
+    },
+    "toasts": {
+      "blocked": "Zablokowano {name}",
+      "unblocked": "Odblokowano {name}"
+    },
+    "errors": {
+      "title": "Akcja niedostępna",
+      "player_blocked": "Nie możesz tego zrobić z tym graczem.",
+      "player_blocked_bulk": "Co najmniej jednego z tych graczy nie można dodać."
+    }
   },
   "maps": {
     "veto": {
@@ -8097,8 +8308,6 @@
     "update_cs": "Zaktualizuj CS2",
     "updating_to": "Aktualizowanie do {version}",
     "update_to_version": "Zaktualizuj do {version}",
-    "validate_gamedata": "Zweryfikuj gamedata",
-    "build_map_assets": "Zbuduj zasoby map",
     "note_label": "Uwaga:",
     "one_cpu_core": "1 rdzeń CPU",
     "cpu_reservation_note": " {cores} jest zarezerwowane dla systemu na każdym węźle, aby zachować jego responsywność",
@@ -8196,8 +8405,6 @@
     "toast": {
       "cs_updating": "CS2 jest aktualizowane na węźle",
       "csgo_installing": "CS:GO jest instalowane na węźle",
-      "validating_gamedata": "Weryfikowanie sygnatur gamedata na węźle",
-      "building_map_assets": "Budowanie siatek map i callouts dla buildu CS2 tego węzła",
       "ports_updated": "Porty węzła zaktualizowane",
       "ports_removed": "Porty węzła usunięte",
       "made_gpu_only": "Węzeł ustawiony jako tylko GPU",

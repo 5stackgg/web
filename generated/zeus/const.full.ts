@@ -17290,7 +17290,7 @@ export const AllTypesProps: Record<string,any> = {
 
 		},
 		unsanctionServerPlayer:{
-
+			sanction_id:"uuid"
 		},
 		updateClip:{
 			clip_id:"uuid"

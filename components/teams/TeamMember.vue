@@ -74,11 +74,13 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
           >
             {{ member.role }}
           </span>
-          <GraduationCap
+          <span
             v-if="!isInvite && member.coach"
-            class="h-3.5 w-3.5 text-muted-foreground/80"
-            :aria-label="$t('team.member.coach')"
-          />
+            class="inline-flex items-center gap-1 rounded-full border border-border bg-muted/40 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.08em] text-muted-foreground"
+          >
+            <GraduationCap class="h-3 w-3" />
+            {{ $t("team.member.coach") }}
+          </span>
           <span
             v-if="!isInvite && isCaptain"
             class="inline-flex items-center gap-1 rounded-full border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.12)] px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.08em] text-[hsl(var(--tac-amber))]"
@@ -134,7 +136,7 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" class="w-56">
           <DropdownMenuGroup v-if="team.can_change_role && roles?.length">
-            <DropdownMenuSub>
+            <DropdownMenuSub v-if="!isOwner">
               <DropdownMenuSubTrigger>
                 <span>{{ $t("team.members.role") }}</span>
                 <span class="ml-auto text-muted-foreground text-xs">{{
@@ -166,14 +168,12 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
             <DropdownMenuSub>
               <DropdownMenuSubTrigger>
                 <span>{{ $t("common.status") }}</span>
-                <span
-                  class="ml-auto text-muted-foreground text-xs capitalize"
-                  >{{
-                    member.coach
-                      ? $t("team.member.coach")
-                      : $t(`team.member.${statusKey}`)
-                  }}</span
-                >
+                <span class="ml-auto text-muted-foreground text-xs">
+                  {{ $t(`team.member.${statusKey}`) }}
+                  <template v-if="member.coach">
+                    · {{ $t("team.member.coach") }}
+                  </template>
+                </span>
               </DropdownMenuSubTrigger>
               <DropdownMenuSubContent class="w-48">
                 <DropdownMenuItem
@@ -183,10 +183,7 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
                 >
                   {{ $t("team.member.starter") }}
                   <span
-                    v-if="
-                      !member.coach &&
-                      member.status === e_team_roster_statuses_enum.Starter
-                    "
+                    v-if="member.status === e_team_roster_statuses_enum.Starter"
                     class="ml-auto text-primary"
                     >✓</span
                   >
@@ -199,7 +196,6 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
                   {{ $t("team.member.substitute") }}
                   <span
                     v-if="
-                      !member.coach &&
                       member.status === e_team_roster_statuses_enum.Substitute
                     "
                     class="ml-auto text-primary"
@@ -213,10 +209,7 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
                 >
                   {{ $t("team.member.benched") }}
                   <span
-                    v-if="
-                      !member.coach &&
-                      member.status === e_team_roster_statuses_enum.Benched
-                    "
+                    v-if="member.status === e_team_roster_statuses_enum.Benched"
                     class="ml-auto text-primary"
                     >✓</span
                   >
@@ -373,6 +366,11 @@ export default {
       required: false,
       default: false,
     },
+    isOwner: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     matchType: {
       type: String,
       required: false,
@@ -399,7 +397,7 @@ export default {
       return this.member.player.steam_id === this.me?.steam_id;
     },
     canRemoveMember(): boolean {
-      return !!this.team.can_remove && !this.isSelf;
+      return !!this.team.can_remove && !this.isSelf && !this.isOwner;
     },
     canEditRosterImage(): boolean {
       return !!this.team.can_change_role && !this.isInvite;

@@ -6,7 +6,7 @@
       v-for="category in e_tournament_categories"
       :key="category.value"
       type="button"
-      class="rounded-sm border px-3 py-1.5 font-mono text-[0.65rem] uppercase tracking-[0.14em] transition-colors duration-150"
+      class="rounded-md border px-3 py-1.5 font-mono text-[0.65rem] uppercase tracking-[0.14em] transition-colors duration-150"
       :class="
         selected.includes(category.value)
           ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)_/_0.12)] text-[hsl(var(--tac-amber))]'

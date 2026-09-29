@@ -245,7 +245,7 @@ export default defineNuxtConfig({
       // Adds `push` / `notificationclick` handlers to the generated service
       // worker without giving up the default generateSW strategy for a custom
       // SW file. Served unhashed from public/, so bump the ?v= on any change.
-      importScripts: ["/sw-push.js?v=4"],
+      importScripts: ["/sw-push.js?v=5"],
       cleanupOutdatedCaches: true,
       maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
       // Do not precache every Nuxt chunk during service-worker install.

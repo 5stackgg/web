@@ -154,7 +154,7 @@ const wideGrid =
       <button
         v-if="bestClip"
         type="button"
-        class="group/clip relative h-7 w-full overflow-hidden rounded border border-border/70 transition-colors hover:border-[hsl(var(--tac-amber)/0.6)]"
+        class="group/clip relative h-7 w-full overflow-hidden rounded-md border border-border/70 transition-colors hover:border-[hsl(var(--tac-amber)/0.6)]"
         :title="bestClip.title || $t('common.highlights')"
         @click.stop="openBestClip"
       >
@@ -392,7 +392,7 @@ const wideGrid =
         <button
           v-if="bestClip"
           type="button"
-          class="group/clip relative ml-auto h-9 w-16 shrink-0 overflow-hidden rounded border border-border/70 transition-colors hover:border-[hsl(var(--tac-amber)/0.6)]"
+          class="group/clip relative ml-auto h-9 w-16 shrink-0 overflow-hidden rounded-md border border-border/70 transition-colors hover:border-[hsl(var(--tac-amber)/0.6)]"
           :title="bestClip.title || $t('common.highlights')"
           @click.stop="openBestClip"
         >

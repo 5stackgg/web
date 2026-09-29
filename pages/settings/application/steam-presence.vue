@@ -249,7 +249,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
                   type="text"
                   autocomplete="one-time-code"
                   :placeholder="$t('pages.settings.application.steam_presence.code_placeholder')"
-                  class="w-28 rounded border border-border/60 bg-background/60 px-3 py-1.5 text-center text-sm uppercase tracking-[0.3em] focus:border-[hsl(var(--tac-amber))] focus:outline-none"
+                  class="w-28 rounded-md border border-border/60 bg-background/60 px-3 py-1.5 text-center text-sm uppercase tracking-[0.3em] focus:border-[hsl(var(--tac-amber))] focus:outline-none"
                 />
                 <Button
                   type="submit"
@@ -302,7 +302,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
               autocomplete="off"
               data-1p-ignore="true"
               data-lpignore="true"
-              class="w-full rounded border border-border/60 bg-background/60 px-3 py-2 text-sm focus:border-[hsl(var(--tac-amber))] focus:outline-none"
+              class="w-full rounded-md border border-border/60 bg-background/60 px-3 py-2 text-sm focus:border-[hsl(var(--tac-amber))] focus:outline-none"
             />
           </div>
           <div class="space-y-1">
@@ -316,7 +316,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
               autocomplete="off"
               data-1p-ignore="true"
               data-lpignore="true"
-              class="w-full rounded border border-border/60 bg-background/60 px-3 py-2 text-sm focus:border-[hsl(var(--tac-amber))] focus:outline-none"
+              class="w-full rounded-md border border-border/60 bg-background/60 px-3 py-2 text-sm focus:border-[hsl(var(--tac-amber))] focus:outline-none"
             />
           </div>
         </form>

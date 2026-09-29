@@ -1,4 +1,4 @@
-import { ref, watch, computed } from "vue";
+import { ref, watch } from "vue";
 import { useMediaQuery } from "@vueuse/core";
 import { useRightSidebar } from "@/composables/useRightSidebar";
 import { useNotificationBadge } from "~/composables/useNotificationBadge";
@@ -48,11 +48,7 @@ export function useHubState() {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const { hasNotifications } = useNotificationBadge();
   const { hasLobbyInvites, hasSocialInvites } = useInvites();
-  const { unreadCounts } = useChatTabs();
-
-  const totalUnread = computed(() =>
-    Object.values(unreadCounts.value).reduce((sum, n) => sum + (n || 0), 0),
-  );
+  const { totalUnread } = useChatTabs();
 
   function defaultHub(): Hub {
     if (hasNotifications.value) return "notifications";

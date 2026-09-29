@@ -888,7 +888,7 @@ function avgKda(agg: MapAggregate, side: SideKey): string {
               {{ $t("pages.players.detail.maps.table_section") }}
             </div>
             <div
-              class="inline-flex items-stretch overflow-hidden rounded-sm border border-border bg-[hsl(var(--card)/0.5)]"
+              class="inline-flex items-stretch overflow-hidden rounded-md border border-border bg-[hsl(var(--card)/0.5)]"
             >
               <button
                 v-for="opt of sideOptions"

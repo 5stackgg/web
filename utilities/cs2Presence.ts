@@ -15,6 +15,7 @@ export type Cs2PresenceState = {
 const MODE_LABELS: Record<string, string> = {
   competitive: "Competitive",
   premier: "Premier",
+  rush: "Rush",
   scrimcomp2v2: "Wingman",
   wingman: "Wingman",
   scrimcomp5v5: "5v5 Scrim",

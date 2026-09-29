@@ -81,7 +81,7 @@ const isElevatedUser = computed(() =>
               <NuxtLink
                 to="/play"
                 :title="$t('layouts.lobby_panel.find_match')"
-                class="group/play relative isolate inline-flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] no-underline [background:linear-gradient(135deg,var(--tac-amber-cta-from)_0%,hsl(var(--tac-amber))_50%,var(--tac-amber-cta-to)_100%)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_6px_20px_-6px_hsl(var(--tac-amber)/0.6)] transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-px hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.6),0_12px_32px_-6px_hsl(var(--tac-amber)/0.8),0_0_24px_hsl(var(--tac-amber)/0.35)] active:translate-y-0"
+                class="group/play relative isolate inline-flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-md border border-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] no-underline [background:linear-gradient(135deg,var(--tac-amber-cta-from)_0%,hsl(var(--tac-amber))_50%,var(--tac-amber-cta-to)_100%)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_6px_20px_-6px_hsl(var(--tac-amber)/0.6)] transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-px hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.6),0_12px_32px_-6px_hsl(var(--tac-amber)/0.8),0_0_24px_hsl(var(--tac-amber)/0.35)] active:translate-y-0"
               >
                 <Play
                   class="relative z-[1] h-4 w-4 fill-current transition-transform duration-300 group-hover/play:scale-110"
@@ -117,18 +117,18 @@ const isElevatedUser = computed(() =>
       "
       :disabled="creatingLobby"
       size="default"
-      class="relative group h-12 overflow-hidden rounded bg-transparent px-5 text-[hsl(var(--tac-amber))] shadow-lg hover:bg-transparent hover:text-[hsl(var(--tac-amber))] hover:shadow transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
+      class="relative group h-12 overflow-hidden bg-transparent px-5 text-[hsl(var(--tac-amber))] shadow-lg hover:bg-transparent hover:text-[hsl(var(--tac-amber))] hover:shadow transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
     >
       <span
-        class="absolute inset-0 rounded p-[1.5px] bg-[linear-gradient(135deg,var(--tac-amber-cta-from)_0%,hsl(var(--tac-amber))_50%,var(--tac-amber-cta-to)_100%)]"
+        class="absolute inset-0 rounded-md p-[1.5px] bg-[linear-gradient(135deg,var(--tac-amber-cta-from)_0%,hsl(var(--tac-amber))_50%,var(--tac-amber-cta-to)_100%)]"
       >
         <span
-          class="block h-full w-full rounded-[2.5px] bg-[hsl(var(--topnav-background))]"
+          class="block h-full w-full rounded-[4.5px] bg-[hsl(var(--topnav-background))]"
         ></span>
       </span>
 
       <span
-        class="pointer-events-none absolute inset-0 rounded bg-[hsl(var(--tac-amber)/0.12)] opacity-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300 ease-out"
+        class="pointer-events-none absolute inset-0 rounded-md bg-[hsl(var(--tac-amber)/0.12)] opacity-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300 ease-out"
       ></span>
 
       <div class="relative flex items-center gap-2 z-10">

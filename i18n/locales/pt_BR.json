@@ -34,6 +34,7 @@
       "title_placeholder": "Manutenção programada",
       "message": "Mensagem",
       "message_placeholder": "O matchmaking está temporariamente fora do ar enquanto investigamos.",
+      "message_link_hint": "Adicione um link com [label](https://example.com). Links para este site abrem no app.",
       "is_active": "Ativo",
       "is_active_hint": "Mostrar este banner para todos agora.",
       "dismissible": "Dispensável",
@@ -928,6 +929,7 @@
     "user": "Usuário",
     "verified_user": "Usuário verificado",
     "streamer": "Streamer",
+    "moderator": "Moderador",
     "match_organizer": "Organizador da partida",
     "tournament_organizer": "Organizador do torneio",
     "administrator": "Administrador"
@@ -1586,6 +1588,7 @@
         "my_account": "Minha Conta",
         "api_keys": "Chaves API",
         "linked_accounts": "Partidas Externas",
+        "blocked_players": "Jogadores bloqueados",
         "voice": "Voz & Áudio",
         "api_keys_management": {
           "add_api_key": "Adicionar chave API",
@@ -1699,6 +1702,14 @@
           "matches": {
             "title": "Partidas",
             "description": "Mudanças de status de partidas e partidas importadas."
+          },
+          "match_found": {
+            "title": "Partida encontrada",
+            "description": "O matchmaking encontrou sua partida e está esperando você aceitar. Toca mesmo durante o horário silencioso."
+          },
+          "admin_call": {
+            "title": "Chamadas de administradores",
+            "description": "Um administrador quer falar com você pela câmera da partida. Toca mesmo durante o horário silencioso."
           },
           "chat": {
             "title": "Chat",
@@ -1823,11 +1834,31 @@
         },
         "quiet_hours": {
           "title": "Horário silencioso",
-          "description": "Notificações push permanecem silenciosas durante este período. Elas ainda aparecem no sino de alertas.",
+          "description": "Notificações push permanecem silenciosas durante este período. Elas ainda aparecem no sino de alertas. Partidas encontradas e chamadas de administradores tocam mesmo assim.",
           "from": "De",
           "to": "Até",
           "reset": "Redefinir",
           "incomplete": "Defina tanto um horário de início quanto de término para salvar o horário silencioso."
+        },
+        "tab_flash": {
+          "title": "Aba do navegador",
+          "description": "Faz o título e o ícone desta aba piscarem quando algo precisa de você enquanto ela está em segundo plano. Salvo neste dispositivo.",
+          "match_found": {
+            "title": "Partida encontrada",
+            "description": "Uma partida está pronta e esperando você aceitar."
+          },
+          "admin_call": {
+            "title": "Chamadas do organizador",
+            "description": "Um organizador da partida começa a falar com você pela sua página da câmera."
+          },
+          "chat": {
+            "title": "Mensagens de chat",
+            "description": "Uma nova mensagem em uma conversa, lobby ou sala de torneio. O chat da partida dentro do jogo fica de fora."
+          },
+          "bell": {
+            "title": "Notificações",
+            "description": "Algo novo chega ao seu sino de alertas."
+          }
         }
       },
       "notifications": {
@@ -1975,13 +2006,13 @@
             "role_id": "ID de Cargo para Notificações de Partida",
             "role_id_description": "Esses cargos serão mencionados nas notificações de status das partidas. É possível adicionar múltiplos IDs separados por vírgulas."
           },
-          "gamedata_notifications": {
-            "title": "Notificações de validação de gamedata",
-            "description": "Configure onde os resultados da validação de assinatura de gamedata do CS2 serão publicados.",
-            "webhook": "URL do Webhook de notificações de gamedata",
-            "webhook_description": "Webhook dedicado para resultados de validação de gamedata. Se não definido, será usado o webhook padrão.",
-            "role_id": "ID de função para notificações de gamedata",
-            "role_id_description": "Essas funções serão mencionadas nas notificações de validação de gamedata. Você pode adicionar múltiplos IDs de função separados por vírgulas. Se não definido, será usada a função padrão."
+          "cs2_build_notifications": {
+            "title": "Notificações de builds do CS2",
+            "description": "Onde são publicados os avisos de atualizações do CS2, validação de gamedata e geração dos recursos dos mapas.",
+            "webhook": "URL do Webhook de notificações de builds do CS2",
+            "webhook_description": "Webhook dedicado para avisos de builds do CS2. Se não definido, será usado o webhook padrão.",
+            "role_id": "ID de função para notificações de builds do CS2",
+            "role_id_description": "Essas funções serão mencionadas nos avisos de builds do CS2. Você pode adicionar múltiplos IDs de função separados por vírgulas. Se não definido, será usada a função padrão."
           },
           "server_notifications": {
             "title": "Notificações do Servidor",
@@ -2831,7 +2862,19 @@
         "upload_success_message": "Enviado — importando agora. Sua partida aparecerá em breve.",
         "toast_demo_uploaded": "Demo enviada",
         "toast_demo_uploaded_description": "Importando agora — sua partida aparecerá em breve.",
-        "toast_upload_failed": "Falha no envio"
+        "toast_upload_failed": "Falha no envio",
+        "import_share_code_title": "Importar uma partida pelo share code",
+        "import_share_code_description": "Cole um share code ou link de compartilhamento de Assistir → Suas partidas no CS2 para importar uma partida do matchmaking que seu histórico vinculado não trouxe.",
+        "import_share_code_submit": "Importar",
+        "toast_share_code_queued": "Partida na fila de importação",
+        "toast_share_code_failed": "Não foi possível importar a partida"
+      },
+      "blocked_players": {
+        "title": "Jogadores bloqueados",
+        "description": "Jogadores bloqueados não podem enviar mensagens, convites ou pedidos de amizade para você. Desbloquear alguém não restaura a amizade.",
+        "empty_title": "Nenhum jogador bloqueado",
+        "empty_description": "Os jogadores que você bloquear pelo perfil ou pelo menu do jogador aparecerão aqui.",
+        "blocked_on": "Bloqueado"
       }
     },
     "watch": {
@@ -3116,6 +3159,7 @@
         "recent_wins_and_losses": "Vitórias e Derrotas Recentes",
         "elo_history": "Histórico do ELO",
         "no_elo_history": "Jogue uma partida para descobrir seu ELO",
+        "no_elo_history_other": "Ainda sem histórico de ELO",
         "play_a_match": "Jogar",
         "matches": "Partidas",
         "no_matches": "Ainda sem partidas",
@@ -3426,7 +3470,122 @@
       "no_nodes_title": "Nenhum Nó de Servidor de Jogo",
       "display_metrics": "Exibir Métricas",
       "create": "Criar Novo Nó de Servidor",
-      "cs_version_info": "Informações da Versão do CS2:",
+      "cs2_build": {
+        "title": "Build do CS2",
+        "released": "Lançada",
+        "history": "Histórico de builds",
+        "gamedata": "Gamedata",
+        "gamedata_description": "Assinaturas, offsets e patches de plugins",
+        "map_assets": "Recursos dos mapas",
+        "map_assets_description": "Malhas, grenade clips e callouts para o replay 3D",
+        "gamedata_never": "Ainda não validado para esta build",
+        "map_assets_never": "Ainda não gerados para esta build",
+        "auto_hint": "Executa sozinho quando um nó informa uma nova build pela primeira vez",
+        "map_assets_hint": "Gerados após a validação do gamedata quando a geração automática está ativada",
+        "revalidate": "Revalidar",
+        "rebuild": "Regerar",
+        "build": "Gerar",
+        "retry_failed": "Tentar novamente mapas com falha",
+        "run_on": "Executar em",
+        "automatic": "Automático",
+        "automatic_description": "Um nó online já na build {build}",
+        "auto": "auto",
+        "started": "Iniciado",
+        "validated": "Validado",
+        "finished": "Concluído",
+        "took": "levou {duration}",
+        "ran_on": "executado em {node}",
+        "requested_by": "por {name}",
+        "vs_build": "Mudanças em relação a {build}",
+        "first_run": "Ainda não há nada para comparar",
+        "no_changes": "Sem mudanças desde {build}",
+        "nothing_broken": "Nada quebrado",
+        "no_maps": "Nenhum mapa foi publicado",
+        "reused_from": "reutilizado de {build}",
+        "skipped_entries": "Ignorados: {count} — não foi possível verificar",
+        "log": "Log da build",
+        "trigger": {
+          "auto": "automático",
+          "manual": "manual"
+        },
+        "stats": {
+          "checked": "Verificados",
+          "broken": "Quebrados",
+          "warnings": "Avisos",
+          "skipped": "Ignorados",
+          "maps": "Mapas",
+          "changed": "Alterados",
+          "unchanged": "Inalterados",
+          "failed": "Com falha"
+        },
+        "chip": {
+          "newly_broken": "recém-quebrados: {count}",
+          "fixed": "corrigidos: {count}",
+          "new_warnings": "avisos +{count}",
+          "rebuilt": "regerados: {count}",
+          "added": "adicionados: {count}",
+          "removed": "removidos: {count}"
+        },
+        "change": {
+          "broken": "Quebrado",
+          "still_broken": "Ainda quebrado",
+          "fixed": "Corrigido",
+          "warning": "Aviso",
+          "cleared": "Resolvido",
+          "rebuilt": "Regerado",
+          "added": "Adicionado",
+          "removed": "Removido",
+          "failed": "Falhou",
+          "unchanged": "Inalterado",
+          "included": "Publicado"
+        },
+        "reason": {
+          "vpk": "Mapa alterado",
+          "pipeline": "Ferramentas alteradas",
+          "assets": "Regerado",
+          "collision": "Falha na colisão",
+          "view": "Falha na malha de visualização"
+        },
+        "gamedata_status": {
+          "running": "Validando",
+          "passed": "Aprovado",
+          "warning": "Aviso",
+          "failed": "Falhou",
+          "error": "Erro",
+          "stale": "Travado",
+          "none": "Não executado"
+        },
+        "map_assets_status": {
+          "pending": "Na fila",
+          "building": "Gerando",
+          "published": "Publicado",
+          "partial": "Parcial",
+          "failed": "Falhou",
+          "stale": "Travado",
+          "none": "Não gerado"
+        },
+        "blocked": {
+          "no_node": "Nenhum nó online está na build {build}",
+          "running": "Uma validação já está em andamento",
+          "building": "Uma geração já está na fila ou em andamento"
+        },
+        "node_reason": {
+          "disabled": "Desativado",
+          "gpu_only": "Nó somente GPU",
+          "status": "{status}",
+          "updating": "Atualizando CS2",
+          "other_build": "Na build {build}"
+        },
+        "toast": {
+          "queued_validation": "Validação do gamedata na fila",
+          "queued_build": "Geração dos recursos dos mapas na fila"
+        },
+        "force": {
+          "title": "Regerar todos os mapas?",
+          "description": "Os recursos dos mapas da build {build} já estão publicados. Uma regeração forçada gera novamente todos os mapas no nó, o que pode levar algumas horas, e só publica uma nova revisão do manifesto se algo mudou.",
+          "confirm": "Regerar todos os mapas"
+        }
+      },
       "hide_offline": "Ocultar Nós Offline",
       "only_enabled": "Apenas Nós Ativos",
       "setup_dialog": {
@@ -3454,7 +3613,21 @@
         "supports_cpu_pinning": "Suporta Fixação de CPU",
         "cpu_governor": "Esquema de Energia da CPU"
       },
-      "last_updated": "Última atualização: {date}",
+      "builds": {
+        "title": "Histórico de builds do CS2",
+        "description": "Validação do gamedata e geração dos recursos dos mapas para cada build do CS2, e o que cada uma mudou em relação à build anterior.",
+        "back": "Nós de Servidor de Jogo",
+        "builds": "Builds",
+        "no_builds": "Nenhuma build foi validada ou gerada ainda.",
+        "current": "Atual",
+        "compared_with": "Comparada com {build}",
+        "history_note": "O histórico começa nesta versão; builds anteriores foram removidas junto com sua versão do jogo.",
+        "timeline": {
+          "detected": "Atualização lançada",
+          "gamedata": "Gamedata",
+          "map_assets": "Recursos dos mapas"
+        }
+      },
       "max_label": "Max:",
       "ports_label": "Portas:",
       "cpu_hardware": "CPU & Hardware"
@@ -5019,9 +5192,6 @@
       }
     }
   },
-  "custom_match": {
-    "description": "Crie e personalize seu próprio jogo. Defina regras, escolha mapas e convide amigos para uma experiência de jogo personalizada."
-  },
   "layouts": {
     "account_settings": {
       "title": "Configuração da Conta",
@@ -5381,6 +5551,12 @@
       }
     }
   },
+  "tab_flash": {
+    "match_found": "Partida encontrada",
+    "admin_call": "Um organizador está chamando você",
+    "chat": "Nova mensagem | Novas mensagens",
+    "bell": "Nova notificação | Novas notificações"
+  },
   "roster_picker": {
     "add_starter": "Adicionar titular",
     "add_substitute": "Adicionar reserva",
@@ -5695,6 +5871,7 @@
       "information_tab": "Informações",
       "about_section": "Sobre",
       "match_settings": "Configurações da Partida",
+      "chat_room_tab": "Sala de chat",
       "read_more": "Ler mais",
       "read_less": "Ler menos"
     },
@@ -7690,6 +7867,7 @@
     "tooltips": {
       "fullscreen": "Tela cheia",
       "toggle_right_sidebar": "Alternar barra lateral direita",
+      "toggle_right_sidebar_unread": "Alternar barra lateral direita ({count} não lidas)",
       "view_steam_profile": "Ver perfil Steam",
       "zoom_in": "Ampliar",
       "zoom_in_scroll": "Ampliar (Ctrl/Cmd + Scroll)",
@@ -7833,11 +8011,13 @@
       "reason_label": "Motivo",
       "reason_placeholder": "Insira o motivo da sanção...",
       "reason_description": "Forneça um motivo claro para esta sanção",
+      "reason_required": "O motivo é obrigatório",
       "types": {
         "ban_description": "Banido e não pode participar de nenhuma atividade.",
         "mute_description": "Não pode usar o chat de voz dentro do jogo.",
         "gag_description": "Não pode usar o chat de texto dentro do jogo.",
-        "silence_description": "Silenciado: sem acesso ao chat de voz e ao chat de texto."
+        "silence_description": "Silenciado: sem acesso ao chat de voz e ao chat de texto.",
+        "warning_description": "Nota informativa no histórico do jogador. Nunca é aplicada."
       },
       "durations": {
         "15_minutes": "15 minutos",
@@ -7852,20 +8032,24 @@
         "ban": "Banindo jogador",
         "mute": "Mutando jogador",
         "gag": "Aplicando gag ao jogador",
-        "silence": "Silenciando jogador"
+        "silence": "Silenciando jogador",
+        "warning": "Advertindo jogador"
       },
       "submit": {
         "ban": "Banir jogador",
         "mute": "Mutar jogador",
         "gag": "Aplicar gag",
-        "silence": "Silenciar jogador"
+        "silence": "Silenciar jogador",
+        "warning": "Emitir advertência"
       },
       "applied": {
         "ban": "{name} foi banido",
         "mute": "{name} foi mutado",
         "gag": "{name} recebeu gag",
-        "silence": "{name} foi silenciado"
+        "silence": "{name} foi silenciado",
+        "warning": "{name} recebeu uma advertência"
       },
+      "warning_note": "A advertência fica salva no histórico do jogador e ele é notificado. Nunca é aplicada e nunca expira.",
       "typed_player": "Jogador {type}"
     },
     "search": {
@@ -7892,6 +8076,13 @@
       "muted": "Silenciado (voz)",
       "gagged": "Censurado (texto)",
       "silenced": "Silenciado",
+      "type_labels": {
+        "ban": "Banimento",
+        "mute": "Mute",
+        "gag": "Gag",
+        "silence": "Silenciamento",
+        "warning": "Advertência"
+      },
       "duration_label": "Duração",
       "select_duration": "Selecionar duração",
       "sanctions": "Sanções",
@@ -7906,6 +8097,7 @@
       "permanent": "Permanente",
       "active": "Ativo",
       "expired": "Expirado",
+      "on_record": "No histórico",
       "cannot_edit_expired": "Sanções expiradas não podem ser editadas — adicione uma nova",
       "edit": "Editar",
       "remove": "Remover",
@@ -7967,6 +8159,25 @@
     "current_elo": "ATUAL",
     "faceit_level": "Nível {level}",
     "elo_aria_label": "ELO, principal {tier} {elo}"
+  },
+  "player_blocks": {
+    "block": "Bloquear",
+    "unblock": "Desbloquear",
+    "blocked_badge": "Bloqueado",
+    "confirm": {
+      "title": "Bloquear {name}?",
+      "description": "{name} não poderá mais enviar mensagens, convites ou pedidos de amizade para você. A amizade de vocês será removida e não voltará se você desbloquear.",
+      "action": "Bloquear"
+    },
+    "toasts": {
+      "blocked": "{name} bloqueado",
+      "unblocked": "{name} desbloqueado"
+    },
+    "errors": {
+      "title": "Ação indisponível",
+      "player_blocked": "Você não pode fazer isso com este jogador.",
+      "player_blocked_bulk": "Pelo menos um desses jogadores não pode ser adicionado."
+    }
   },
   "maps": {
     "veto": {
@@ -8097,8 +8308,6 @@
     "update_cs": "Atualizar CS2",
     "updating_to": "Atualizando para {version}",
     "update_to_version": "Atualizar para {version}",
-    "validate_gamedata": "Validar gamedata",
-    "build_map_assets": "Gerar recursos dos mapas",
     "note_label": "Nota:",
     "one_cpu_core": "1 núcleo da CPU",
     "cpu_reservation_note": "{cores} são reservados para o sistema em cada nó para mantê-lo responsivo.",
@@ -8196,8 +8405,6 @@
     "toast": {
       "cs_updating": "Atualizando CS2",
       "csgo_installing": "CS:GO está sendo instalado neste nó",
-      "validating_gamedata": "Validando assinaturas do gamedata no nó",
-      "building_map_assets": "Gerando malhas e callouts dos mapas para a build do CS2 deste nó",
       "ports_updated": "Portas Atualizadas",
       "ports_removed": "Portas do Nó Removidas",
       "made_gpu_only": "Nó Definido como Apenas GPU",

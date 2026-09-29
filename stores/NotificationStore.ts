@@ -1,7 +1,7 @@
 import { ref, computed, watch } from "vue";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { $, order_by } from "~/generated/zeus";
+import { $, order_by, e_notification_types_enum } from "~/generated/zeus";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { playerFields } from "~/graphql/playerFields";
@@ -107,7 +107,9 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     ),
   );
   const draft_invites = ref<any[]>([]);
+  const draftInvitesLoaded = ref(false);
   const notifications = ref<Notification[]>([]);
+  const notificationsLoaded = ref(false);
   const seasonRebuilds = ref<Array<{ id: any; number: number | null }>>([]);
   // Raw league seasons (with only the viewer's un-played brackets, filtered
   // server-side); actionability is derived below into `scheduleTasks` — a
@@ -342,11 +344,45 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     () => hasPersonalNotifications.value || hasAdminNotifications.value,
   );
 
+  // Every chat message also leaves a bell row, keyed `${chatType}:${lobbyId}`,
+  // so a badge that adds the chat tabs' unread to the bell can tell which rows
+  // it has already counted.
+  const unreadChatNotificationRooms = computed(() =>
+    visibleNotifications.value
+      .filter(
+        (n) =>
+          !n.is_read &&
+          (n.type === e_notification_types_enum.ChatMessage ||
+            n.type === e_notification_types_enum.MatchChatMessage),
+      )
+      .map((n) => n.entity_id),
+  );
+
+  // One per thing that happened to the player. Invites, news and league
+  // scheduling each insert a row too, so counting rows rather than the bell's
+  // own lists sees them once; chat rows are left to the chat tabs' unread.
+  const unreadPersonalAlertCount = computed(
+    () =>
+      visibleNotifications.value.filter(
+        (n) =>
+          !n.is_read &&
+          n.role === "user" &&
+          n.type !== e_notification_types_enum.ChatMessage &&
+          n.type !== e_notification_types_enum.MatchChatMessage,
+      ).length,
+  );
+
   const stackedNotifications = computed<NotificationStackItem[]>(() => {
     const groups = new Map<string, Notification[]>();
     const singles: Notification[] = [];
 
     for (const n of visibleNotifications.value) {
+      // Keyed on the player's own steam id, a warning would fold into a stack
+      // under their name-change notices and hide behind a newer one.
+      if (n.type === "PlayerWarning") {
+        singles.push(n);
+        continue;
+      }
       const groupKey =
         n.type === "PlayerSanctioned"
           ? `type:PlayerSanctioned:${n.role}`
@@ -513,6 +549,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
         .subscribe({
           next: ({ data }) => {
             draft_invites.value = data.draft_game_players;
+            draftInvitesLoaded.value = true;
           },
         }),
     );
@@ -567,6 +604,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
         .subscribe({
           next: ({ data }) => {
             notifications.value = data.notifications;
+            notificationsLoaded.value = true;
           },
         }),
     );
@@ -664,6 +702,8 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
   watch(
     () => useAuthStore().me?.steam_id,
     (steamId) => {
+      draftInvitesLoaded.value = false;
+      notificationsLoaded.value = false;
       if (steamId) {
         subscribeToAll(steamId);
         // Loaded here rather than only on the settings page: the bell filters
@@ -697,12 +737,16 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     tournament_team_invites,
     tournament_invites,
     draft_invites,
+    draftInvitesLoaded,
     notifications: visibleNotifications,
     seasonRebuildCount,
     scheduleTasks,
     scheduleTaskCount,
     stackedNotifications,
     unreadNotificationCount,
+    unreadChatNotificationRooms,
+    unreadPersonalAlertCount,
+    notificationsLoaded,
     hasNotifications,
     hasPersonalNotifications,
     hasAdminNotifications,

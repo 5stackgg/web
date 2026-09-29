@@ -19,18 +19,9 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
       v-for="(team, index) in teams"
       :key="team.id"
       :to="{ name: 'teams-id', params: { id: team.id } }"
-      class="group team-card relative flex flex-col gap-3 overflow-hidden rounded-lg border border-border bg-card/50 p-4 transition-all duration-200 hover:border-[hsl(var(--tac-amber)/0.45)] hover:bg-card/70 animate-in fade-in slide-in-from-bottom-2"
+      class="relative flex flex-col gap-3 overflow-hidden rounded-lg border border-border bg-card/50 p-4 transition-all duration-200 hover:border-[hsl(var(--tac-amber)/0.45)] hover:bg-card/70 animate-in fade-in slide-in-from-bottom-2"
       :style="{ animationDelay: `${index * 40}ms` }"
     >
-      <span
-        aria-hidden="true"
-        class="pointer-events-none absolute -left-[1px] -top-[1px] h-3 w-3 border-l-2 border-t-2 border-[hsl(var(--tac-amber)/0.55)] opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-      ></span>
-      <span
-        aria-hidden="true"
-        class="pointer-events-none absolute -bottom-[1px] -right-[1px] h-3 w-3 border-b-2 border-r-2 border-[hsl(var(--tac-amber)/0.55)] opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-      ></span>
-
       <!-- Header: avatar + name + stats -->
       <div class="flex items-start gap-3 min-w-0">
         <div

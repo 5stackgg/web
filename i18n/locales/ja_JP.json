@@ -34,6 +34,7 @@
       "title_placeholder": "メンテナンス予定",
       "message": "本文",
       "message_placeholder": "調査中のため、マッチメイキングを一時停止しています。",
+      "message_link_hint": "[label](https://example.com) の形式でリンクを追加できます。このサイトへのリンクはアプリ内で開きます。",
       "is_active": "有効",
       "is_active_hint": "このバナーを今すぐ全ユーザーに表示します。",
       "dismissible": "閉じられる",
@@ -928,6 +929,7 @@
     "user": "ユーザー",
     "verified_user": "認証済みユーザー",
     "streamer": "ストリーマー",
+    "moderator": "モデレーター",
     "match_organizer": "試合主催者",
     "tournament_organizer": "トーナメント主催者",
     "administrator": "管理者"
@@ -1586,6 +1588,7 @@
         "my_account": "アカウント",
         "api_keys": "API キー",
         "linked_accounts": "連携アカウント",
+        "blocked_players": "ブロックしたプレイヤー",
         "voice": "音声とオーディオ",
         "api_keys_management": {
           "add_api_key": "API キーを追加",
@@ -1699,6 +1702,14 @@
           "matches": {
             "title": "試合",
             "description": "試合状況の変化とインポートされた試合。"
+          },
+          "match_found": {
+            "title": "マッチ成立",
+            "description": "マッチメイキングで試合が見つかり、承認を待っています。サイレント時間中も鳴ります。"
+          },
+          "admin_call": {
+            "title": "管理者からの呼び出し",
+            "description": "管理者が試合用カメラを通じてあなたと話したがっています。サイレント時間中も鳴ります。"
           },
           "chat": {
             "title": "チャット",
@@ -1823,11 +1834,31 @@
         },
         "quiet_hours": {
           "title": "サイレント時間",
-          "description": "この時間帯はプッシュ通知が鳴りません。通知ベルには引き続き表示されます。",
+          "description": "この時間帯はプッシュ通知が鳴りません。通知ベルには引き続き表示されます。マッチ成立と管理者からの呼び出しは例外として鳴ります。",
           "from": "開始",
           "to": "終了",
           "reset": "リセット",
           "incomplete": "サイレント時間を保存するには、開始時刻と終了時刻の両方を設定してください。"
+        },
+        "tab_flash": {
+          "title": "ブラウザタブ",
+          "description": "このタブがバックグラウンドにあるときに対応が必要なことが起きると、タブのタイトルとアイコンを点滅させます。この端末に保存されます。",
+          "match_found": {
+            "title": "マッチが見つかりました",
+            "description": "マッチの準備ができ、あなたの承認を待っています。"
+          },
+          "admin_call": {
+            "title": "主催者からの通話",
+            "description": "試合の主催者がカメラページであなたに話しかけ始めたとき。"
+          },
+          "chat": {
+            "title": "チャットメッセージ",
+            "description": "会話、ロビー、トーナメントルームの新着メッセージ。試合中のゲーム内チャットは対象外です。"
+          },
+          "bell": {
+            "title": "通知",
+            "description": "通知ベルに新しいものが届いたとき。"
+          }
         }
       },
       "notifications": {
@@ -1975,13 +2006,13 @@
             "role_id": "試合通知のロール ID",
             "role_id_description": "試合ステータス通知でこれらのロールがメンションされます。複数のロール ID をカンマ区切りで指定できます。"
           },
-          "gamedata_notifications": {
-            "title": "Gamedata 検証通知",
-            "description": "CS2 の gamedata シグネチャ検証結果の投稿先を設定します。",
-            "webhook": "Gamedata 通知の Webhook URL",
-            "webhook_description": "gamedata 検証結果の専用 Webhook です。未設定の場合は既定の Webhook を使用します。",
-            "role_id": "Gamedata 通知のロール ID",
-            "role_id_description": "gamedata 検証通知でこれらのロールがメンションされます。複数のロール ID をカンマ区切りで指定できます。未設定の場合は既定のロールを使用します。"
+          "cs2_build_notifications": {
+            "title": "CS2 ビルド通知",
+            "description": "CS2 のアップデート、gamedata 検証、マップアセットのビルドに関する通知の投稿先です。",
+            "webhook": "CS2 ビルド通知の Webhook URL",
+            "webhook_description": "CS2 ビルド通知の専用 Webhook です。未設定の場合は既定の Webhook を使用します。",
+            "role_id": "CS2 ビルド通知のロール ID",
+            "role_id_description": "CS2 ビルド通知でこれらのロールがメンションされます。複数のロール ID をカンマ区切りで指定できます。未設定の場合は既定のロールを使用します。"
           },
           "server_notifications": {
             "title": "サーバー通知",
@@ -2831,7 +2862,19 @@
         "upload_success_message": "アップロード完了 — インポート中です。まもなく試合が表示されます。",
         "toast_demo_uploaded": "デモをアップロードしました",
         "toast_demo_uploaded_description": "インポート中です — まもなく試合が表示されます。",
-        "toast_upload_failed": "アップロードに失敗しました"
+        "toast_upload_failed": "アップロードに失敗しました",
+        "import_share_code_title": "共有コードで試合をインポート",
+        "import_share_code_description": "CS2 の Watch → Your Matches から共有コードまたは共有リンクを貼り付けると、リンク済みの試合履歴で取り込まれなかったマッチメイキングの試合をインポートできます。",
+        "import_share_code_submit": "インポート",
+        "toast_share_code_queued": "試合をインポートの待機列に追加しました",
+        "toast_share_code_failed": "試合をインポートできませんでした"
+      },
+      "blocked_players": {
+        "title": "ブロックしたプレイヤー",
+        "description": "ブロックしたプレイヤーは、あなたにメッセージ、招待、フレンド申請を送れません。ブロックを解除してもフレンド関係は元に戻りません。",
+        "empty_title": "ブロックしたプレイヤーはいません",
+        "empty_description": "プロフィールやプレイヤーメニューからブロックしたプレイヤーがここに表示されます。",
+        "blocked_on": "ブロック"
       }
     },
     "watch": {
@@ -3116,6 +3159,7 @@
         "recent_wins_and_losses": "直近の勝敗",
         "elo_history": "ELO 推移",
         "no_elo_history": "試合をプレイすると ELO が付きます",
+        "no_elo_history_other": "ELO 履歴はまだありません",
         "play_a_match": "プレイ",
         "matches": "試合",
         "no_matches": "試合はまだありません",
@@ -3426,7 +3470,122 @@
       "no_nodes_title": "ゲームサーバーノードなし",
       "display_metrics": "メトリクス表示",
       "create": "ゲームサーバーノードを作成",
-      "cs_version_info": "CS2バージョン情報:",
+      "cs2_build": {
+        "title": "CS2ビルド",
+        "released": "リリース",
+        "history": "ビルド履歴",
+        "gamedata": "ゲームデータ",
+        "gamedata_description": "プラグインのシグネチャ、オフセット、パッチ",
+        "map_assets": "マップアセット",
+        "map_assets_description": "3Dリプレイ用のメッシュ、グレネードクリップ、コールアウト",
+        "gamedata_never": "このビルドではまだ検証されていません",
+        "map_assets_never": "このビルドではまだビルドされていません",
+        "auto_hint": "ノードが新しいビルドを初めて報告すると自動で実行されます",
+        "map_assets_hint": "自動ビルドが有効な場合、ゲームデータの検証後にビルドされます",
+        "revalidate": "再検証",
+        "rebuild": "再ビルド",
+        "build": "ビルド",
+        "retry_failed": "失敗したマップを再試行",
+        "run_on": "実行先",
+        "automatic": "自動",
+        "automatic_description": "すでにビルド {build} のオンラインノード",
+        "auto": "自動",
+        "started": "開始",
+        "validated": "検証",
+        "finished": "完了",
+        "took": "所要時間 {duration}",
+        "ran_on": "実行ノード: {node}",
+        "requested_by": "実行者: {name}",
+        "vs_build": "{build} からの変更",
+        "first_run": "まだ比較対象がありません",
+        "no_changes": "{build} から変更はありません",
+        "nothing_broken": "破損なし",
+        "no_maps": "公開されたマップはありません",
+        "reused_from": "{build} から再利用",
+        "skipped_entries": "{count} 件スキップ — 確認できませんでした",
+        "log": "ビルドログ",
+        "trigger": {
+          "auto": "自動",
+          "manual": "手動"
+        },
+        "stats": {
+          "checked": "確認済み",
+          "broken": "破損",
+          "warnings": "警告",
+          "skipped": "スキップ",
+          "maps": "マップ",
+          "changed": "変更",
+          "unchanged": "変更なし",
+          "failed": "失敗"
+        },
+        "chip": {
+          "newly_broken": "新たに破損 {count}",
+          "fixed": "修正 {count}",
+          "new_warnings": "警告 +{count}",
+          "rebuilt": "再ビルド {count}",
+          "added": "追加 {count}",
+          "removed": "削除 {count}"
+        },
+        "change": {
+          "broken": "破損",
+          "still_broken": "破損継続",
+          "fixed": "修正",
+          "warning": "警告",
+          "cleared": "解消",
+          "rebuilt": "再ビルド",
+          "added": "追加",
+          "removed": "削除",
+          "failed": "失敗",
+          "unchanged": "変更なし",
+          "included": "公開"
+        },
+        "reason": {
+          "vpk": "マップ変更",
+          "pipeline": "ツール変更",
+          "assets": "再ビルド",
+          "collision": "コリジョン失敗",
+          "view": "ビューメッシュ失敗"
+        },
+        "gamedata_status": {
+          "running": "検証中",
+          "passed": "合格",
+          "warning": "警告",
+          "failed": "失敗",
+          "error": "エラー",
+          "stale": "停止",
+          "none": "未実行"
+        },
+        "map_assets_status": {
+          "pending": "待機中",
+          "building": "ビルド中",
+          "published": "公開済み",
+          "partial": "一部",
+          "failed": "失敗",
+          "stale": "停止",
+          "none": "未ビルド"
+        },
+        "blocked": {
+          "no_node": "ビルド {build} のオンラインノードがありません",
+          "running": "検証はすでに実行中です",
+          "building": "ビルドはすでに待機中または実行中です"
+        },
+        "node_reason": {
+          "disabled": "無効",
+          "gpu_only": "GPU専用ノード",
+          "status": "{status}",
+          "updating": "CS2を更新中",
+          "other_build": "ビルド {build}"
+        },
+        "toast": {
+          "queued_validation": "ゲームデータの検証をキューに追加しました",
+          "queued_build": "マップアセットのビルドをキューに追加しました"
+        },
+        "force": {
+          "title": "すべてのマップを再ビルドしますか？",
+          "description": "ビルド {build} のマップアセットはすでに公開されています。強制再ビルドではノード上ですべてのマップを再度ビルドするため数時間かかることがあり、変更があった場合にのみ新しいマニフェストのリビジョンを公開します。",
+          "confirm": "すべてのマップを再ビルド"
+        }
+      },
       "hide_offline": "オフラインノードを非表示",
       "only_enabled": "有効なノードのみ",
       "setup_dialog": {
@@ -3454,7 +3613,21 @@
         "supports_cpu_pinning": "CPUピニング対応",
         "cpu_governor": "CPUガバナー"
       },
-      "last_updated": "最終更新: {date}",
+      "builds": {
+        "title": "CS2ビルド履歴",
+        "description": "各CS2ビルドのゲームデータ検証とマップアセットのビルド、および前のビルドからの変更点。",
+        "back": "ゲームサーバーノード",
+        "builds": "ビルド",
+        "no_builds": "検証またはビルドされたビルドはまだありません。",
+        "current": "現在",
+        "compared_with": "{build} と比較",
+        "history_note": "履歴はこのリリースから始まります。以前のビルドはそのゲームバージョンとともに削除されました。",
+        "timeline": {
+          "detected": "アップデート公開",
+          "gamedata": "ゲームデータ",
+          "map_assets": "マップアセット"
+        }
+      },
       "max_label": "最大:",
       "ports_label": "ポート:",
       "cpu_hardware": "CPU・ハードウェア"
@@ -5019,9 +5192,6 @@
       }
     }
   },
-  "custom_match": {
-    "description": "独自のルール・マップ・出場メンバーで試合を作成"
-  },
   "layouts": {
     "account_settings": {
       "title": "アカウント設定",
@@ -5381,6 +5551,12 @@
       }
     }
   },
+  "tab_flash": {
+    "match_found": "マッチが見つかりました",
+    "admin_call": "主催者から通話が来ています",
+    "chat": "新着メッセージ | 新着メッセージ",
+    "bell": "新しい通知 | 新しい通知"
+  },
   "roster_picker": {
     "add_starter": "スタメンを追加",
     "add_substitute": "控えを追加",
@@ -5695,6 +5871,7 @@
       "information_tab": "情報",
       "about_section": "概要",
       "match_settings": "試合設定",
+      "chat_room_tab": "チャットルーム",
       "read_more": "もっと見る",
       "read_less": "折りたたむ"
     },
@@ -7690,6 +7867,7 @@
     "tooltips": {
       "fullscreen": "フルスクリーン",
       "toggle_right_sidebar": "右サイドバーの切り替え",
+      "toggle_right_sidebar_unread": "右サイドバーの切り替え（未読 {count} 件）",
       "view_steam_profile": "Steamプロフィールを見る",
       "zoom_in": "拡大",
       "zoom_in_scroll": "拡大（Ctrl/Cmd + スクロール）",
@@ -7833,11 +8011,13 @@
       "reason_label": "理由",
       "reason_placeholder": "処分理由を入力...",
       "reason_description": "この処分の明確な理由を入力してください",
+      "reason_required": "理由は必須です",
       "types": {
         "ban_description": "プレイヤーはあらゆるアクティビティに参加できません",
         "mute_description": "プレイヤーはゲーム内でボイスチャットを使用できません",
         "gag_description": "プレイヤーはゲーム内でテキストチャットを使用できません",
-        "silence_description": "プレイヤーはミュート・ガグの両方が適用されます"
+        "silence_description": "プレイヤーはミュート・ガグの両方が適用されます",
+        "warning_description": "プレイヤーの記録に残る情報提供用のメモで、適用されることはありません"
       },
       "durations": {
         "15_minutes": "15分",
@@ -7852,20 +8032,24 @@
         "ban": "プレイヤーをBAN",
         "mute": "プレイヤーをミュート",
         "gag": "プレイヤーのチャットを禁止",
-        "silence": "プレイヤーを完全に発言禁止"
+        "silence": "プレイヤーを完全に発言禁止",
+        "warning": "プレイヤーに警告"
       },
       "submit": {
         "ban": "プレイヤーをBANする",
         "mute": "プレイヤーをミュートする",
         "gag": "プレイヤーのチャットを禁止する",
-        "silence": "プレイヤーを完全に発言禁止にする"
+        "silence": "プレイヤーを完全に発言禁止にする",
+        "warning": "警告を発行"
       },
       "applied": {
         "ban": "{name} をBANしました",
         "mute": "{name} をミュートしました",
         "gag": "{name} のチャットを禁止しました",
-        "silence": "{name} を完全に発言禁止にしました"
+        "silence": "{name} を完全に発言禁止にしました",
+        "warning": "{name} に警告を発行しました"
       },
+      "warning_note": "警告はプレイヤーの記録に保存され、本人に通知されます。適用されることはなく、期限切れにもなりません。",
       "typed_player": "{type}プレイヤー"
     },
     "search": {
@@ -7892,6 +8076,13 @@
       "muted": "ミュート",
       "gagged": "ガグ",
       "silenced": "サイレンス",
+      "type_labels": {
+        "ban": "BAN",
+        "mute": "ミュート",
+        "gag": "チャット禁止",
+        "silence": "完全発言禁止",
+        "warning": "警告"
+      },
       "duration_label": "期間",
       "select_duration": "期間を選択",
       "sanctions": "処分",
@@ -7906,6 +8097,7 @@
       "permanent": "無期限",
       "active": "有効",
       "expired": "失効済み",
+      "on_record": "記録済み",
       "cannot_edit_expired": "失効済みの処分は編集できません — 新しく追加してください",
       "edit": "編集",
       "remove": "削除",
@@ -7967,6 +8159,25 @@
     "current_elo": "現在",
     "faceit_level": "レベル {level}",
     "elo_aria_label": "ELO、主要 {tier} {elo}"
+  },
+  "player_blocks": {
+    "block": "ブロック",
+    "unblock": "ブロック解除",
+    "blocked_badge": "ブロック中",
+    "confirm": {
+      "title": "{name} をブロックしますか？",
+      "description": "{name} はあなたにメッセージ、招待、フレンド申請を送れなくなります。フレンド関係は解除され、ブロックを解除しても元に戻りません。",
+      "action": "ブロック"
+    },
+    "toasts": {
+      "blocked": "{name} をブロックしました",
+      "unblocked": "{name} のブロックを解除しました"
+    },
+    "errors": {
+      "title": "この操作は利用できません",
+      "player_blocked": "このプレイヤーに対してその操作はできません。",
+      "player_blocked_bulk": "これらのプレイヤーの中に追加できない人がいます。"
+    }
   },
   "maps": {
     "veto": {
@@ -8097,8 +8308,6 @@
     "update_cs": "CS2 を更新",
     "updating_to": "{version} に更新中",
     "update_to_version": "{version} に更新",
-    "validate_gamedata": "ゲームデータを検証",
-    "build_map_assets": "マップアセットをビルド",
     "note_label": "注意：",
     "one_cpu_core": "CPU 1コア",
     "cpu_reservation_note": " 各ノードの応答性を保つため、{cores}をシステム用に予約しています。",
@@ -8196,8 +8405,6 @@
     "toast": {
       "cs_updating": "ノード上で CS2 を更新しています。",
       "csgo_installing": "ノード上で CS:GO をインストールしています。",
-      "validating_gamedata": "ノード上でゲームデータの署名を検証しています。",
-      "building_map_assets": "このノードのCS2ビルド用にマップメッシュとコールアウトをビルドしています",
       "ports_updated": "ノードのポートを更新しました",
       "ports_removed": "ノードのポートを削除しました",
       "made_gpu_only": "ノードを GPU 専用に設定しました",

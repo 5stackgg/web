@@ -34,6 +34,7 @@
       "title_placeholder": "صيانة مجدولة",
       "message": "الرسالة",
       "message_placeholder": "Matchmaking متوقف مؤقتًا ريثما نحقق في المشكلة.",
+      "message_link_hint": "أضف رابطًا بصيغة [label](https://example.com). تُفتح روابط هذا الموقع داخل التطبيق.",
       "is_active": "مفعّل",
       "is_active_hint": "أظهر هذه اللافتة للجميع الآن.",
       "dismissible": "قابل للإخفاء",
@@ -928,6 +929,7 @@
     "user": "مستخدم",
     "verified_user": "مستخدم موثّق",
     "streamer": "مذيع بث",
+    "moderator": "مشرف محتوى",
     "match_organizer": "منظم مباريات",
     "tournament_organizer": "منظم بطولات",
     "administrator": "مشرف"
@@ -1586,6 +1588,7 @@
         "my_account": "حسابي",
         "api_keys": "مفاتيح API",
         "linked_accounts": "الحسابات المرتبطة",
+        "blocked_players": "اللاعبون المحظورون",
         "voice": "الصوت والسماعات",
         "api_keys_management": {
           "add_api_key": "أضف مفتاح API",
@@ -1699,6 +1702,14 @@
           "matches": {
             "title": "المباريات",
             "description": "تغيّرات حالة المباراة والمباريات المستوردة."
+          },
+          "match_found": {
+            "title": "تم العثور على مباراة",
+            "description": "وجد نظام المطابقة مباراتك وينتظر قبولك. يرن حتى خلال ساعات الهدوء."
+          },
+          "admin_call": {
+            "title": "مكالمات المشرفين",
+            "description": "مشرف يريد التحدث إليك عبر كاميرا المباراة. يرن حتى خلال ساعات الهدوء."
           },
           "chat": {
             "title": "الدردشة",
@@ -1823,11 +1834,31 @@
         },
         "quiet_hours": {
           "title": "ساعات الهدوء",
-          "description": "تبقى الإشعارات الفورية صامتة خلال هذه الفترة، لكنها تظل تظهر في جرس التنبيهات.",
+          "description": "تبقى الإشعارات الفورية صامتة خلال هذه الفترة، لكنها تظل تظهر في جرس التنبيهات. أما العثور على مباراة ومكالمات المشرفين فترن على أي حال.",
           "from": "من",
           "to": "إلى",
           "reset": "إعادة الضبط",
           "incomplete": "حدّد وقت البداية والنهاية معًا لحفظ ساعات الهدوء."
+        },
+        "tab_flash": {
+          "title": "علامة تبويب المتصفح",
+          "description": "يومض عنوان هذه العلامة وأيقونتها عندما يحتاجك شيء ما وهي في الخلفية. يُحفظ على هذا الجهاز.",
+          "match_found": {
+            "title": "تم العثور على مباراة",
+            "description": "مباراة جاهزة وتنتظر قبولك."
+          },
+          "admin_call": {
+            "title": "مكالمات المنظّم",
+            "description": "يبدأ منظّم المباراة بالتحدث إليك عبر صفحة الكاميرا."
+          },
+          "chat": {
+            "title": "رسائل الدردشة",
+            "description": "رسالة جديدة في محادثة أو ردهة أو غرفة بطولة. تُستثنى دردشة المباراة داخل اللعبة."
+          },
+          "bell": {
+            "title": "الإشعارات",
+            "description": "وصول شيء جديد إلى جرس التنبيهات."
+          }
         }
       },
       "notifications": {
@@ -1975,13 +2006,13 @@
             "role_id": "معرّف الدور لإشعارات المباريات",
             "role_id_description": "سيتم ذكر هذه الأدوار في إشعارات حالة المباراة. يمكنك إضافة عدة معرّفات أدوار مفصولة بفواصل."
           },
-          "gamedata_notifications": {
-            "title": "إشعارات التحقق من gamedata",
-            "description": "اضبط مكان نشر نتائج التحقق من توقيعات gamedata في CS2.",
-            "webhook": "رابط webhook لإشعارات gamedata",
-            "webhook_description": "webhook مخصص لنتائج التحقق من gamedata. يرجع إلى الـ webhook الافتراضي إذا لم يُضبط.",
-            "role_id": "معرّف الدور لإشعارات gamedata",
-            "role_id_description": "سيتم ذكر هذه الأدوار في إشعارات التحقق من gamedata. يمكنك إضافة عدة معرّفات أدوار مفصولة بفواصل. يرجع إلى الدور الافتراضي إذا لم يُضبط."
+          "cs2_build_notifications": {
+            "title": "إشعارات إصدارات CS2",
+            "description": "مكان نشر إشعارات تحديثات CS2 والتحقق من gamedata وبناء أصول الخرائط.",
+            "webhook": "رابط webhook لإشعارات إصدارات CS2",
+            "webhook_description": "webhook مخصص لإشعارات إصدارات CS2. يرجع إلى الـ webhook الافتراضي إذا لم يُضبط.",
+            "role_id": "معرّف الدور لإشعارات إصدارات CS2",
+            "role_id_description": "سيتم ذكر هذه الأدوار في إشعارات إصدارات CS2. يمكنك إضافة عدة معرّفات أدوار مفصولة بفواصل. يرجع إلى الدور الافتراضي إذا لم يُضبط."
           },
           "server_notifications": {
             "title": "إشعارات السيرفرات",
@@ -2831,7 +2862,19 @@
         "upload_success_message": "تم الرفع — جارٍ الاستيراد. ستظهر مباراتك قريبًا.",
         "toast_demo_uploaded": "تم رفع الـ Demo",
         "toast_demo_uploaded_description": "جارٍ الاستيراد — ستظهر مباراتك قريبًا.",
-        "toast_upload_failed": "تعذّر الرفع"
+        "toast_upload_failed": "تعذّر الرفع",
+        "import_share_code_title": "استيراد مباراة عبر رمز المشاركة",
+        "import_share_code_description": "الصق رمز المشاركة أو رابط المشاركة من Watch ← Your Matches في CS2 لاستيراد مباراة لم يلتقطها سجل مبارياتك المرتبط.",
+        "import_share_code_submit": "استيراد",
+        "toast_share_code_queued": "أُضيفت المباراة إلى قائمة الاستيراد",
+        "toast_share_code_failed": "تعذّر استيراد المباراة"
+      },
+      "blocked_players": {
+        "title": "اللاعبون المحظورون",
+        "description": "لا يمكن للاعبين المحظورين مراسلتك أو دعوتك أو إرسال طلبات صداقة إليك. إلغاء حظر أي لاعب لا يعيد صداقتكما.",
+        "empty_title": "لا يوجد لاعبون محظورون",
+        "empty_description": "سيظهر هنا اللاعبون الذين تحظرهم من ملفهم الشخصي أو من قائمة اللاعب.",
+        "blocked_on": "حُظر"
       }
     },
     "watch": {
@@ -3116,6 +3159,7 @@
         "recent_wins_and_losses": "الفوز والخسارة مؤخرًا",
         "elo_history": "سجل ELO",
         "no_elo_history": "العب مباراة لتوليد ELO",
+        "no_elo_history_other": "لا يوجد سجل ELO بعد",
         "play_a_match": "العب",
         "matches": "المباريات",
         "no_matches": "لا توجد مباريات بعد",
@@ -3426,7 +3470,122 @@
       "no_nodes_title": "لا توجد عقد سيرفرات",
       "display_metrics": "عرض المقاييس",
       "create": "أنشئ عقدة سيرفرات",
-      "cs_version_info": "معلومات إصدار CS2:",
+      "cs2_build": {
+        "title": "إصدار CS2",
+        "released": "تاريخ الصدور",
+        "history": "سجل الإصدارات",
+        "gamedata": "Gamedata",
+        "gamedata_description": "توقيعات الإضافات والإزاحات والتصحيحات",
+        "map_assets": "أصول الخرائط",
+        "map_assets_description": "المجسمات وحواجز القنابل ونقاط التسمية للإعادة ثلاثية الأبعاد",
+        "gamedata_never": "لم يتم التحقق لهذا الإصدار بعد",
+        "map_assets_never": "لم يتم البناء لهذا الإصدار بعد",
+        "auto_hint": "يعمل تلقائيًا عندما تُبلغ عقدة عن إصدار جديد لأول مرة",
+        "map_assets_hint": "تُبنى بعد التحقق من Gamedata عند تفعيل البناء التلقائي",
+        "revalidate": "إعادة التحقق",
+        "rebuild": "إعادة البناء",
+        "build": "بناء",
+        "retry_failed": "إعادة محاولة الخرائط الفاشلة",
+        "run_on": "التشغيل على",
+        "automatic": "تلقائي",
+        "automatic_description": "عقدة متصلة تعمل بالفعل على الإصدار {build}",
+        "auto": "تلقائي",
+        "started": "بدأ",
+        "validated": "تم التحقق",
+        "finished": "انتهى",
+        "took": "استغرق {duration}",
+        "ran_on": "نُفّذ على {node}",
+        "requested_by": "بواسطة {name}",
+        "vs_build": "التغييرات مقارنة بـ {build}",
+        "first_run": "لا يوجد ما يُقارن به بعد",
+        "no_changes": "لا تغييرات منذ {build}",
+        "nothing_broken": "لا شيء معطّل",
+        "no_maps": "لم تُنشر أي خرائط",
+        "reused_from": "أُعيد استخدامه من {build}",
+        "skipped_entries": "تم التخطي: {count} — تعذّر الفحص",
+        "log": "سجل البناء",
+        "trigger": {
+          "auto": "تلقائي",
+          "manual": "يدوي"
+        },
+        "stats": {
+          "checked": "تم فحصه",
+          "broken": "معطّل",
+          "warnings": "تحذيرات",
+          "skipped": "تم تخطيه",
+          "maps": "الخرائط",
+          "changed": "تغيّر",
+          "unchanged": "بلا تغيير",
+          "failed": "فشل"
+        },
+        "chip": {
+          "newly_broken": "معطّل حديثًا: {count}",
+          "fixed": "تم إصلاحه: {count}",
+          "new_warnings": "تحذيرات +{count}",
+          "rebuilt": "أُعيد بناؤه: {count}",
+          "added": "مُضاف: {count}",
+          "removed": "محذوف: {count}"
+        },
+        "change": {
+          "broken": "معطّل",
+          "still_broken": "لا يزال معطّلًا",
+          "fixed": "تم الإصلاح",
+          "warning": "تحذير",
+          "cleared": "زال",
+          "rebuilt": "أُعيد البناء",
+          "added": "مُضاف",
+          "removed": "محذوف",
+          "failed": "فشل",
+          "unchanged": "بلا تغيير",
+          "included": "منشور"
+        },
+        "reason": {
+          "vpk": "تغيّرت الخريطة",
+          "pipeline": "تغيّرت الأدوات",
+          "assets": "أُعيد البناء",
+          "collision": "فشل التصادم",
+          "view": "فشل مجسم العرض"
+        },
+        "gamedata_status": {
+          "running": "جارٍ التحقق",
+          "passed": "نجح",
+          "warning": "تحذير",
+          "failed": "فشل",
+          "error": "خطأ",
+          "stale": "متوقف",
+          "none": "لم يُشغَّل"
+        },
+        "map_assets_status": {
+          "pending": "في الانتظار",
+          "building": "جارٍ البناء",
+          "published": "منشور",
+          "partial": "جزئي",
+          "failed": "فشل",
+          "stale": "متوقف",
+          "none": "لم يُبنَ"
+        },
+        "blocked": {
+          "no_node": "لا توجد عقدة متصلة على الإصدار {build}",
+          "running": "هناك عملية تحقق قيد التشغيل بالفعل",
+          "building": "هناك عملية بناء في قائمة الانتظار أو قيد التشغيل بالفعل"
+        },
+        "node_reason": {
+          "disabled": "معطّلة",
+          "gpu_only": "عقدة GPU فقط",
+          "status": "{status}",
+          "updating": "يجري تحديث CS2",
+          "other_build": "على الإصدار {build}"
+        },
+        "toast": {
+          "queued_validation": "أُضيف التحقق من Gamedata إلى قائمة الانتظار",
+          "queued_build": "أُضيف بناء أصول الخرائط إلى قائمة الانتظار"
+        },
+        "force": {
+          "title": "إعادة بناء كل الخرائط؟",
+          "description": "أصول الخرائط للإصدار {build} منشورة بالفعل. تعيد إعادة البناء القسرية بناء كل خريطة على العقدة، وقد يستغرق ذلك بضع ساعات، ولا تنشر مراجعة جديدة للبيان إلا إذا تغيّر شيء.",
+          "confirm": "إعادة بناء كل الخرائط"
+        }
+      },
       "hide_offline": "إخفاء العقد غير المتصلة",
       "only_enabled": "العقد المفعّلة فقط",
       "setup_dialog": {
@@ -3454,7 +3613,21 @@
         "supports_cpu_pinning": "يدعم تثبيت CPU",
         "cpu_governor": "منظّم CPU"
       },
-      "last_updated": "آخر تحديث: {date}",
+      "builds": {
+        "title": "سجل إصدارات CS2",
+        "description": "التحقق من Gamedata وبناء أصول الخرائط لكل إصدار من CS2، وما غيّره كل إصدار مقارنة بالإصدار السابق.",
+        "back": "عقد السيرفرات",
+        "builds": "الإصدارات",
+        "no_builds": "لم يتم التحقق من أي إصدار أو بناؤه بعد.",
+        "current": "الحالي",
+        "compared_with": "مقارنة بـ {build}",
+        "history_note": "يبدأ السجل من هذا التحديث؛ أُزيلت الإصدارات الأقدم مع نسخة اللعبة الخاصة بها.",
+        "timeline": {
+          "detected": "صدر التحديث",
+          "gamedata": "Gamedata",
+          "map_assets": "أصول الخرائط"
+        }
+      },
       "max_label": "الحد الأقصى:",
       "ports_label": "المنافذ:",
       "cpu_hardware": "CPU والعتاد"
@@ -5019,9 +5192,6 @@
       }
     }
   },
-  "custom_match": {
-    "description": "أنشئ مباراتك الخاصة بقواعد وخرائط وتشكيلات مخصصة"
-  },
   "layouts": {
     "account_settings": {
       "title": "إعدادات الحساب",
@@ -5381,6 +5551,12 @@
       }
     }
   },
+  "tab_flash": {
+    "match_found": "تم العثور على مباراة",
+    "admin_call": "منظّم يتصل بك",
+    "chat": "رسالة جديدة | رسائل جديدة",
+    "bell": "إشعار جديد | إشعارات جديدة"
+  },
   "roster_picker": {
     "add_starter": "أضف أساسيًا",
     "add_substitute": "أضف لاعبًا بديلاً",
@@ -5695,6 +5871,7 @@
       "information_tab": "معلومات",
       "about_section": "نبذة",
       "match_settings": "إعدادات المباراة",
+      "chat_room_tab": "غرفة الدردشة",
       "read_more": "اقرأ المزيد",
       "read_less": "اعرض أقل"
     },
@@ -7690,6 +7867,7 @@
     "tooltips": {
       "fullscreen": "ملء الشاشة",
       "toggle_right_sidebar": "إظهار/إخفاء الشريط الجانبي الأيمن",
+      "toggle_right_sidebar_unread": "إظهار/إخفاء الشريط الجانبي الأيمن ({count} غير مقروءة)",
       "view_steam_profile": "عرض ملف Steam",
       "zoom_in": "تقريب",
       "zoom_in_scroll": "تقريب (Ctrl/Cmd + تمرير)",
@@ -7833,11 +8011,13 @@
       "reason_label": "السبب",
       "reason_placeholder": "اكتب سبب العقوبة...",
       "reason_description": "اذكر سببًا واضحًا لهذه العقوبة",
+      "reason_required": "السبب مطلوب",
       "types": {
         "ban_description": "اللاعب لا يستطيع المشاركة في أي نشاط",
         "mute_description": "اللاعب لا يستطيع استخدام المحادثة الصوتية داخل اللعبة",
         "gag_description": "اللاعب لا يستطيع استخدام المحادثة النصية داخل اللعبة",
-        "silence_description": "اللاعب مكتوم صوتيًا ونصيًا"
+        "silence_description": "اللاعب مكتوم صوتيًا ونصيًا",
+        "warning_description": "ملاحظة إعلامية في سجل اللاعب، لا تُطبَّق أبدًا"
       },
       "durations": {
         "15_minutes": "15 دقيقة",
@@ -7852,20 +8032,24 @@
         "ban": "حظر اللاعب",
         "mute": "كتم ميكروفون اللاعب",
         "gag": "منع اللاعب من الكتابة",
-        "silence": "إسكات اللاعب تمامًا"
+        "silence": "إسكات اللاعب تمامًا",
+        "warning": "تحذير اللاعب"
       },
       "submit": {
         "ban": "احظر اللاعب",
         "mute": "اكتم ميكروفون اللاعب",
         "gag": "امنع اللاعب من الكتابة",
-        "silence": "أسكت اللاعب تمامًا"
+        "silence": "أسكت اللاعب تمامًا",
+        "warning": "إصدار تحذير"
       },
       "applied": {
         "ban": "حُظر {name}",
         "mute": "كُتم ميكروفون {name}",
         "gag": "مُنع {name} من الكتابة",
-        "silence": "أُسكت {name} تمامًا"
+        "silence": "أُسكت {name} تمامًا",
+        "warning": "صدر تحذير إلى {name}"
       },
+      "warning_note": "يُحفظ التحذير في سجل اللاعب ويُبلَّغ به. لا يُطبَّق أبدًا ولا تنتهي صلاحيته.",
       "typed_player": "لاعب {type}"
     },
     "search": {
@@ -7892,6 +8076,13 @@
       "muted": "مكتوم صوتيًا",
       "gagged": "مكتوم نصيًا",
       "silenced": "مكتوم كليًا",
+      "type_labels": {
+        "ban": "حظر",
+        "mute": "كتم الصوت",
+        "gag": "منع الكتابة",
+        "silence": "إسكات كامل",
+        "warning": "تحذير"
+      },
       "duration_label": "المدة",
       "select_duration": "اختر المدة",
       "sanctions": "العقوبات",
@@ -7906,6 +8097,7 @@
       "permanent": "دائم",
       "active": "نشطة",
       "expired": "منتهية",
+      "on_record": "في السجل",
       "cannot_edit_expired": "لا يمكن تعديل العقوبات المنتهية — أضف عقوبة جديدة",
       "edit": "عدّل",
       "remove": "احذف",
@@ -7967,6 +8159,25 @@
     "current_elo": "الحالي",
     "faceit_level": "المستوى {level}",
     "elo_aria_label": "ELO، الأساسي {tier} {elo}"
+  },
+  "player_blocks": {
+    "block": "احظر",
+    "unblock": "ألغِ الحظر",
+    "blocked_badge": "محظور",
+    "confirm": {
+      "title": "هل تريد حظر {name}؟",
+      "description": "لن يتمكن {name} من مراسلتك أو دعوتك أو إرسال طلبات صداقة إليك. ستُزال صداقتكما، ولن يعيدها إلغاء الحظر.",
+      "action": "احظر"
+    },
+    "toasts": {
+      "blocked": "تم حظر {name}",
+      "unblocked": "تم إلغاء حظر {name}"
+    },
+    "errors": {
+      "title": "الإجراء غير متاح",
+      "player_blocked": "لا يمكنك فعل ذلك مع هذا اللاعب.",
+      "player_blocked_bulk": "لا يمكن إضافة لاعب واحد على الأقل من هؤلاء اللاعبين."
+    }
   },
   "maps": {
     "veto": {
@@ -8097,8 +8308,6 @@
     "update_cs": "حدّث CS2",
     "updating_to": "جارٍ التحديث إلى {version}",
     "update_to_version": "حدّث إلى {version}",
-    "validate_gamedata": "تحقق من Gamedata",
-    "build_map_assets": "بناء أصول الخرائط",
     "note_label": "ملاحظة:",
     "one_cpu_core": "نواة CPU واحدة",
     "cpu_reservation_note": " {cores} محجوزة للنظام على كل عقدة للحفاظ على استجابتها.",
@@ -8196,8 +8405,6 @@
     "toast": {
       "cs_updating": "يجري تحديث CS2 على العقدة",
       "csgo_installing": "يجري تثبيت CS:GO على العقدة",
-      "validating_gamedata": "يجري التحقق من توقيعات Gamedata على العقدة",
-      "building_map_assets": "جارٍ بناء مجسمات الخرائط ونقاط التسمية لإصدار CS2 على هذه العقدة",
       "ports_updated": "تم تحديث منافذ العقدة",
       "ports_removed": "تم حذف منافذ العقدة",
       "made_gpu_only": "تم ضبط العقدة لـ GPU فقط",

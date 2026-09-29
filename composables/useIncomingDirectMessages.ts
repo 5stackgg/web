@@ -1,10 +1,11 @@
 import { watch } from "vue";
-import socket from "~/web-sockets/Socket";
+import socket, { type LobbyMessage } from "~/web-sockets/Socket";
 import {
   directTabId,
   peerSteamId,
   type DirectMessagePeer,
 } from "~/composables/useDirectMessages";
+import { isChatTabOnScreen } from "~/composables/useChatTabSetup";
 
 // A conversation you haven't opened has no tab, so nothing is listening to its
 // room -- which is exactly the case for a first message from someone. The
@@ -14,7 +15,7 @@ import {
 // Mounted once, from the default layout.
 export function useIncomingDirectMessages() {
   const authStore = useAuthStore();
-  const { openTab, closeTab, setUnread, tabs } = useChatTabs();
+  const { openTab, closeTab, incrementUnread, setUnread, tabs } = useChatTabs();
   const { topPosition } = useDirectConversationBar();
 
   function ensureTab(
@@ -94,12 +95,19 @@ export function useIncomingDirectMessages() {
 
   socket.listen(
     "direct:incoming",
-    (data: { roomId: string; from: DirectMessagePeer }) => {
+    (data: {
+      roomId: string;
+      from: DirectMessagePeer;
+      message?: LobbyMessage;
+    }) => {
       const steamId = authStore.me?.steam_id;
 
       if (!steamId || !data?.roomId) {
         return;
       }
+
+      // The room's own `lobby:chat` carries the same id when its tab is open.
+      useTabFlash().signalChat("direct", data.message);
 
       // Deliberately does not inject the message: opening the tab makes
       // useChatTabSetup join the room, and the join's history snapshot delivers
@@ -110,6 +118,15 @@ export function useIncomingDirectMessages() {
         name: data.from?.name,
         avatar_url: data.from?.avatar_url,
       });
+
+      // Counted here for an existing tab too: a burst that lands before a new
+      // tab's join reaches no lobby:chat, and the join's snapshot is never
+      // counted for conversations. Once joined, the room's lobby:chat counts
+      // the same message, so both go by its id.
+      const tabId = directTabId(data.roomId);
+      if (!isChatTabOnScreen(tabId)) {
+        incrementUnread(tabId, data.message?.id);
+      }
     },
   );
 

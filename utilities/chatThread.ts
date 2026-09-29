@@ -1,5 +1,5 @@
-// The thread key, which has to match the server's chatThreadKey exactly -- see
-// api/src/notifications/push/notification-delivery.ts.
+// Thread keys, which have to match the server's chatThreadKey and threadKeyFor
+// exactly -- see api/src/notifications/push/notification-delivery.ts.
 //
 // The same string is the read cursor, the device's notification tag and what a
 // visible tab reports as focused. A mismatch does not fail loudly; it just
@@ -11,4 +11,11 @@
 // import cycle.
 export function chatThreadKey(type: string, lobbyId: string) {
   return `chat:${type}:${lobbyId}`;
+}
+
+export function notificationThreadKey(
+  type: string,
+  entityId: string | null | undefined,
+) {
+  return `${type}:${entityId ?? ""}`;
 }

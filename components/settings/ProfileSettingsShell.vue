@@ -52,6 +52,10 @@ const navItems = computed(() => {
       label: $t("pages.settings.account.linked_accounts"),
     },
     {
+      path: "/settings/blocked-players",
+      label: $t("pages.settings.account.blocked_players"),
+    },
+    {
       path: "/settings/notification-preferences",
       label: $t("pages.settings.notification_preferences.title"),
     },
@@ -189,7 +193,7 @@ async function unlinkDiscord() {
             <Button
               v-if="hasDiscordLinked"
               variant="ghost"
-              class="w-full justify-start rounded-sm px-3 text-left text-muted-foreground transition-colors duration-200 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-foreground"
+              class="w-full justify-start px-3 text-left text-muted-foreground transition-colors duration-200 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-foreground"
               @click.stop.prevent="showUnlinkDiscordDialog = true"
             >
               <Unlink class="mr-2 h-4 w-4" />
@@ -198,7 +202,7 @@ async function unlinkDiscord() {
             <Button
               v-else-if="supportsDiscordBot"
               variant="ghost"
-              class="w-full justify-start rounded-sm px-3 text-left text-muted-foreground transition-colors duration-200 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-foreground"
+              class="w-full justify-start px-3 text-left text-muted-foreground transition-colors duration-200 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-foreground"
               @click="linkDiscord"
             >
               <Link class="mr-2 h-4 w-4" />

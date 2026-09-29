@@ -34,6 +34,7 @@
       "title_placeholder": "Planerat underhåll",
       "message": "Meddelande",
       "message_placeholder": "Matchmaking är tillfälligt nere medan vi undersöker.",
+      "message_link_hint": "Lägg till en länk med [label](https://example.com). Länkar till den här webbplatsen öppnas i appen.",
       "is_active": "Aktiv",
       "is_active_hint": "Visa den här bannern för alla just nu.",
       "dismissible": "Kan stängas",
@@ -928,6 +929,7 @@
     "user": "Användare",
     "verified_user": "Verifierad användare",
     "streamer": "Streamer",
+    "moderator": "Moderator",
     "match_organizer": "Matcharrangör",
     "tournament_organizer": "Turneringsarrangör",
     "administrator": "Administratör"
@@ -1586,6 +1588,7 @@
         "my_account": "Mitt konto",
         "api_keys": "API-nycklar",
         "linked_accounts": "Länkade konton",
+        "blocked_players": "Blockerade spelare",
         "voice": "Röst och ljud",
         "api_keys_management": {
           "add_api_key": "Lägg till API-nyckel",
@@ -1699,6 +1702,14 @@
           "matches": {
             "title": "Matcher",
             "description": "Ändringar av matchstatus och importerade matcher."
+          },
+          "match_found": {
+            "title": "Match hittad",
+            "description": "Matchmaking har hittat din match och väntar på att du accepterar. Ringer även under tysta timmar."
+          },
+          "admin_call": {
+            "title": "Samtal från admins",
+            "description": "En admin vill prata med dig via din matchkamera. Ringer även under tysta timmar."
           },
           "chat": {
             "title": "Chatt",
@@ -1823,11 +1834,31 @@
         },
         "quiet_hours": {
           "title": "Tysta timmar",
-          "description": "Push-aviseringar förblir ljudlösa under det här intervallet. De visas fortfarande i din aviseringsklocka.",
+          "description": "Push-aviseringar förblir ljudlösa under det här intervallet. De visas fortfarande i din aviseringsklocka. Hittade matcher och samtal från admins ringer ändå.",
           "from": "Från",
           "to": "Till",
           "reset": "Återställ",
           "incomplete": "Ange både en start- och en sluttid för att spara tysta timmar."
+        },
+        "tab_flash": {
+          "title": "Webbläsarflik",
+          "description": "Låter flikens titel och ikon blinka när något behöver dig medan den ligger i bakgrunden. Sparas på den här enheten.",
+          "match_found": {
+            "title": "Match hittad",
+            "description": "En match är redo och väntar på att du accepterar."
+          },
+          "admin_call": {
+            "title": "Arrangörssamtal",
+            "description": "En matcharrangör börjar prata med dig via din kamerasida."
+          },
+          "chat": {
+            "title": "Chattmeddelanden",
+            "description": "Ett nytt meddelande i en konversation, en lobby eller ett turneringsrum. Chatten från själva matchen i spelet räknas inte."
+          },
+          "bell": {
+            "title": "Aviseringar",
+            "description": "Något nytt landar i din aviseringsklocka."
+          }
         }
       },
       "notifications": {
@@ -1975,13 +2006,13 @@
             "role_id": "Roll-ID för matchnotiser",
             "role_id_description": "Dessa roller nämns i notiser om matchstatus. Du kan lägga till flera roll-ID:n separerade med kommatecken."
           },
-          "gamedata_notifications": {
-            "title": "Notiser för gamedata-validering",
-            "description": "Konfigurera var resultat från valideringen av CS2-gamedatasignaturer publiceras.",
-            "webhook": "Webhook-URL för gamedata-notiser",
-            "webhook_description": "Dedikerad webhook för resultat av gamedata-validering. Faller tillbaka på standard-webhooken om den inte är inställd.",
-            "role_id": "Roll-ID för gamedata-notiser",
-            "role_id_description": "Dessa roller nämns i notiser om gamedata-validering. Du kan lägga till flera roll-ID:n separerade med kommatecken. Faller tillbaka på standardrollen om den inte är inställd."
+          "cs2_build_notifications": {
+            "title": "Notiser för CS2-builds",
+            "description": "Var notiser om CS2-uppdateringar, gamedata-validering och byggen av karttillgångar publiceras.",
+            "webhook": "Webhook-URL för CS2-build-notiser",
+            "webhook_description": "Dedikerad webhook för notiser om CS2-builds. Faller tillbaka på standard-webhooken om den inte är inställd.",
+            "role_id": "Roll-ID för CS2-build-notiser",
+            "role_id_description": "Dessa roller nämns i notiser om CS2-builds. Du kan lägga till flera roll-ID:n separerade med kommatecken. Faller tillbaka på standardrollen om den inte är inställd."
           },
           "server_notifications": {
             "title": "Servernotiser",
@@ -2831,7 +2862,19 @@
         "upload_success_message": "Uppladdad — importerar nu. Din match visas inom kort.",
         "toast_demo_uploaded": "Demo uppladdad",
         "toast_demo_uploaded_description": "Importerar nu — din match visas inom kort.",
-        "toast_upload_failed": "Uppladdning misslyckades"
+        "toast_upload_failed": "Uppladdning misslyckades",
+        "import_share_code_title": "Importera en match med delningskod",
+        "import_share_code_description": "Klistra in en delningskod eller delningslänk från Watch → Your Matches i CS2 för att importera en matchmaking-match som din länkade matchhistorik missade.",
+        "import_share_code_submit": "Importera",
+        "toast_share_code_queued": "Matchen har köats för import",
+        "toast_share_code_failed": "Kunde inte importera matchen"
+      },
+      "blocked_players": {
+        "title": "Blockerade spelare",
+        "description": "Blockerade spelare kan inte skicka meddelanden, inbjudningar eller vänförfrågningar till dig. Att avblockera någon återställer inte er vänskap.",
+        "empty_title": "Inga blockerade spelare",
+        "empty_description": "Spelare som du blockerar från deras profil eller spelarmenyn visas här.",
+        "blocked_on": "Blockerad"
       }
     },
     "watch": {
@@ -3116,6 +3159,7 @@
         "recent_wins_and_losses": "Senaste vinster och förluster",
         "elo_history": "ELO-historik",
         "no_elo_history": "Spela en match för att generera ELO",
+        "no_elo_history_other": "Ingen ELO-historik än",
         "play_a_match": "Spela",
         "matches": "Matcher",
         "no_matches": "Inga matcher än",
@@ -3426,7 +3470,122 @@
       "no_nodes_title": "Inga spelservernoder",
       "display_metrics": "Visa mätvärden",
       "create": "Skapa spelservernod",
-      "cs_version_info": "CS2-versionsinformation:",
+      "cs2_build": {
+        "title": "CS2-build",
+        "released": "Släppt",
+        "history": "Buildhistorik",
+        "gamedata": "Gamedata",
+        "gamedata_description": "Pluginsignaturer, offsets och patchar",
+        "map_assets": "Karttillgångar",
+        "map_assets_description": "Meshar, granatclips och callouts för 3D-repris",
+        "gamedata_never": "Inte validerad för den här builden än",
+        "map_assets_never": "Inte byggda för den här builden än",
+        "auto_hint": "Körs automatiskt när en nod först rapporterar en ny build",
+        "map_assets_hint": "Byggs efter gamedata-validering när auto-bygge är på",
+        "revalidate": "Validera igen",
+        "rebuild": "Bygg om",
+        "build": "Bygg",
+        "retry_failed": "Försök igen med misslyckade kartor",
+        "run_on": "Kör på",
+        "automatic": "Automatiskt",
+        "automatic_description": "En online-nod som redan har build {build}",
+        "auto": "auto",
+        "started": "Startad",
+        "validated": "Validerad",
+        "finished": "Klar",
+        "took": "tog {duration}",
+        "ran_on": "kördes på {node}",
+        "requested_by": "av {name}",
+        "vs_build": "Ändringar jämfört med {build}",
+        "first_run": "Inget att jämföra med än",
+        "no_changes": "Inga ändringar sedan {build}",
+        "nothing_broken": "Inget trasigt",
+        "no_maps": "Inga kartor publicerades",
+        "reused_from": "återanvänd från {build}",
+        "skipped_entries": "Överhoppade: {count} — kunde inte kontrolleras",
+        "log": "Bygglogg",
+        "trigger": {
+          "auto": "automatisk",
+          "manual": "manuell"
+        },
+        "stats": {
+          "checked": "Kontrollerade",
+          "broken": "Trasiga",
+          "warnings": "Varningar",
+          "skipped": "Överhoppade",
+          "maps": "Kartor",
+          "changed": "Ändrade",
+          "unchanged": "Oförändrade",
+          "failed": "Misslyckade"
+        },
+        "chip": {
+          "newly_broken": "nya trasiga: {count}",
+          "fixed": "fixade: {count}",
+          "new_warnings": "varningar +{count}",
+          "rebuilt": "ombyggda: {count}",
+          "added": "tillagda: {count}",
+          "removed": "borttagna: {count}"
+        },
+        "change": {
+          "broken": "Trasig",
+          "still_broken": "Fortfarande trasig",
+          "fixed": "Fixad",
+          "warning": "Varning",
+          "cleared": "Rensad",
+          "rebuilt": "Ombyggd",
+          "added": "Tillagd",
+          "removed": "Borttagen",
+          "failed": "Misslyckad",
+          "unchanged": "Oförändrad",
+          "included": "Publicerad"
+        },
+        "reason": {
+          "vpk": "Kartan ändrad",
+          "pipeline": "Verktyg ändrade",
+          "assets": "Ombyggd",
+          "collision": "Kollision misslyckades",
+          "view": "Vy-mesh misslyckades"
+        },
+        "gamedata_status": {
+          "running": "Validerar",
+          "passed": "Godkänd",
+          "warning": "Varning",
+          "failed": "Misslyckad",
+          "error": "Fel",
+          "stale": "Fastnat",
+          "none": "Inte körd"
+        },
+        "map_assets_status": {
+          "pending": "I kö",
+          "building": "Bygger",
+          "published": "Publicerad",
+          "partial": "Delvis",
+          "failed": "Misslyckad",
+          "stale": "Fastnat",
+          "none": "Inte byggd"
+        },
+        "blocked": {
+          "no_node": "Ingen online-nod har build {build}",
+          "running": "En validering körs redan",
+          "building": "En build är redan köad eller körs"
+        },
+        "node_reason": {
+          "disabled": "Inaktiverad",
+          "gpu_only": "Endast GPU-nod",
+          "status": "{status}",
+          "updating": "Uppdaterar CS2",
+          "other_build": "På build {build}"
+        },
+        "toast": {
+          "queued_validation": "Gamedata-validering köad",
+          "queued_build": "Bygge av karttillgångar köat"
+        },
+        "force": {
+          "title": "Bygga om alla kartor?",
+          "description": "Karttillgångar för build {build} är redan publicerade. En tvingad ombyggnad bygger alla kartor igen på noden, vilket kan ta ett par timmar, och publicerar en ny manifestrevision bara om något har ändrats.",
+          "confirm": "Bygg om alla kartor"
+        }
+      },
       "hide_offline": "Dölj offline-noder",
       "only_enabled": "Endast aktiverade noder",
       "setup_dialog": {
@@ -3454,7 +3613,21 @@
         "supports_cpu_pinning": "Stödjer CPU-pinning",
         "cpu_governor": "CPU-governor"
       },
-      "last_updated": "Senast uppdaterad: {date}",
+      "builds": {
+        "title": "CS2-buildhistorik",
+        "description": "Gamedata-validering och byggen av karttillgångar för varje CS2-build, och vad varje build ändrade jämfört med den föregående.",
+        "back": "Spelservernoder",
+        "builds": "Builds",
+        "no_builds": "Ingen build har validerats eller byggts än.",
+        "current": "Aktuell",
+        "compared_with": "Jämförd med {build}",
+        "history_note": "Historiken börjar med den här versionen; tidigare builds togs bort tillsammans med sin spelversion.",
+        "timeline": {
+          "detected": "Uppdatering släppt",
+          "gamedata": "Gamedata",
+          "map_assets": "Karttillgångar"
+        }
+      },
       "max_label": "Max:",
       "ports_label": "Portar:",
       "cpu_hardware": "CPU och hårdvara"
@@ -5019,9 +5192,6 @@
       }
     }
   },
-  "custom_match": {
-    "description": "Bygg din egen match med egna regler, kartor och laguppställningar"
-  },
   "layouts": {
     "account_settings": {
       "title": "Kontoinställningar",
@@ -5381,6 +5551,12 @@
       }
     }
   },
+  "tab_flash": {
+    "match_found": "Match hittad",
+    "admin_call": "En arrangör ringer",
+    "chat": "Nytt meddelande | Nya meddelanden",
+    "bell": "Ny avisering | Nya aviseringar"
+  },
   "roster_picker": {
     "add_starter": "Lägg till ordinarie",
     "add_substitute": "Lägg till reserv",
@@ -5695,6 +5871,7 @@
       "information_tab": "Information",
       "about_section": "Om",
       "match_settings": "Matchinställningar",
+      "chat_room_tab": "Chattrum",
       "read_more": "Läs mer",
       "read_less": "Visa mindre"
     },
@@ -7690,6 +7867,7 @@
     "tooltips": {
       "fullscreen": "Helskärm",
       "toggle_right_sidebar": "Växla höger sidopanel",
+      "toggle_right_sidebar_unread": "Växla höger sidopanel ({count} olästa)",
       "view_steam_profile": "Visa Steam-profil",
       "zoom_in": "Zooma in",
       "zoom_in_scroll": "Zooma in (Ctrl/Cmd + scroll)",
@@ -7833,11 +8011,13 @@
       "reason_label": "Anledning",
       "reason_placeholder": "Ange anledning för sanktionen...",
       "reason_description": "Ange en tydlig anledning för denna sanktion",
+      "reason_required": "En anledning krävs",
       "types": {
         "ban_description": "Spelaren kan inte delta i någon aktivitet",
         "mute_description": "Spelaren kan inte använda röstchatt i spelet",
         "gag_description": "Spelaren kan inte använda textchatt i spelet",
-        "silence_description": "Spelaren är tystad i röst och text"
+        "silence_description": "Spelaren är tystad i röst och text",
+        "warning_description": "Informativ anteckning i spelarens historik, verkställs aldrig"
       },
       "durations": {
         "15_minutes": "15 minuter",
@@ -7852,20 +8032,24 @@
         "ban": "Stänger av spelare",
         "mute": "Stänger av spelarens mikrofon",
         "gag": "Stänger spelarens chatt",
-        "silence": "Tystar spelaren helt"
+        "silence": "Tystar spelaren helt",
+        "warning": "Varnar spelare"
       },
       "submit": {
         "ban": "Stäng av spelaren",
         "mute": "Stäng av spelarens mikrofon",
         "gag": "Stäng spelarens chatt",
-        "silence": "Tysta spelaren helt"
+        "silence": "Tysta spelaren helt",
+        "warning": "Utfärda varning"
       },
       "applied": {
         "ban": "{name} avstängd",
         "mute": "{name}s mikrofon avstängd",
         "gag": "{name}s chatt stängd",
-        "silence": "{name} helt tystad"
+        "silence": "{name} helt tystad",
+        "warning": "Varning utfärdad till {name}"
       },
+      "warning_note": "En varning sparas i spelarens historik och spelaren meddelas. Den verkställs aldrig och upphör aldrig.",
       "typed_player": "{type}-spelare"
     },
     "search": {
@@ -7892,6 +8076,13 @@
       "muted": "Tystad",
       "gagged": "Textblockerad",
       "silenced": "Helt tystad",
+      "type_labels": {
+        "ban": "Avstängning",
+        "mute": "Mikrofon av",
+        "gag": "Chatt stängd",
+        "silence": "Helt tystad",
+        "warning": "Varning"
+      },
       "duration_label": "Varaktighet",
       "select_duration": "Välj varaktighet",
       "sanctions": "Sanktioner",
@@ -7906,6 +8097,7 @@
       "permanent": "Permanent",
       "active": "Aktiv",
       "expired": "Upphört",
+      "on_record": "Registrerad",
       "cannot_edit_expired": "Utgångna sanktioner kan inte redigeras — lägg till en ny",
       "edit": "Redigera",
       "remove": "Ta bort",
@@ -7967,6 +8159,25 @@
     "current_elo": "NU",
     "faceit_level": "Nivå {level}",
     "elo_aria_label": "ELO, primär {tier} {elo}"
+  },
+  "player_blocks": {
+    "block": "Blockera",
+    "unblock": "Avblockera",
+    "blocked_badge": "Blockerad",
+    "confirm": {
+      "title": "Blockera {name}?",
+      "description": "{name} kommer inte att kunna skicka meddelanden, inbjudningar eller vänförfrågningar till dig. Er vänskap tas bort och återställs inte om du avblockerar.",
+      "action": "Blockera"
+    },
+    "toasts": {
+      "blocked": "{name} blockerad",
+      "unblocked": "{name} avblockerad"
+    },
+    "errors": {
+      "title": "Åtgärden är inte tillgänglig",
+      "player_blocked": "Det går inte att göra med den här spelaren.",
+      "player_blocked_bulk": "Minst en av de här spelarna kan inte läggas till."
+    }
   },
   "maps": {
     "veto": {
@@ -8097,8 +8308,6 @@
     "update_cs": "Uppdatera CS2",
     "updating_to": "Uppdaterar till {version}",
     "update_to_version": "Uppdatera till {version}",
-    "validate_gamedata": "Validera gamedata",
-    "build_map_assets": "Bygg karttillgångar",
     "note_label": "Obs:",
     "one_cpu_core": "1 CPU-kärna",
     "cpu_reservation_note": " {cores} är reserverat för systemet på varje nod för att hålla den responsiv.",
@@ -8196,8 +8405,6 @@
     "toast": {
       "cs_updating": "CS2 uppdateras på noden",
       "csgo_installing": "CS:GO installeras på noden",
-      "validating_gamedata": "Validerar gamedata-signaturer på noden",
-      "building_map_assets": "Bygger kartmeshar och callouts för den här nodens CS2-build",
       "ports_updated": "Nodportar uppdaterade",
       "ports_removed": "Nodportar borttagna",
       "made_gpu_only": "Nod satt till endast GPU",

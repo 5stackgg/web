@@ -496,7 +496,7 @@ async function toggleVideo() {
                 <Button
                   size="xs"
                   variant="ghost"
-                  class="h-9 w-full gap-1.5 rounded-md text-[11px] text-zinc-300 hover:bg-zinc-800/60 hover:text-white"
+                  class="h-9 w-full gap-1.5 text-[11px] text-zinc-300 hover:bg-zinc-800/60 hover:text-white"
                   :loading="connecting"
                   @click="onJoin"
                 >

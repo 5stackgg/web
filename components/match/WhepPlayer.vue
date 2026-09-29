@@ -867,7 +867,7 @@ defineExpose({ connect, teardown });
       "
       type="button"
       :aria-label="$t('ui.unmute')"
-      class="whep-unmute absolute bottom-3 right-3 z-10 inline-flex h-8 items-center gap-2 rounded-full bg-foreground pl-2.5 pr-3.5 text-[0.8rem] font-medium text-background shadow-[0_8px_24px_-8px_rgba(0,0,0,0.7)] transition-colors duration-150 hover:bg-foreground/85 cursor-pointer"
+      class="whep-unmute absolute bottom-3 right-3 z-10 inline-flex h-8 items-center gap-2 rounded-md bg-foreground pl-2.5 pr-3.5 text-[0.8rem] font-medium text-background shadow-[0_8px_24px_-8px_rgba(0,0,0,0.7)] transition-colors duration-150 hover:bg-foreground/85 cursor-pointer"
       @click="toggleMute"
     >
       <VolumeX class="size-4" />

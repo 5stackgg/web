@@ -31260,7 +31260,7 @@ switchLiveMatch?: [{	from_match_id: ValueTypes["uuid"] | Variable<any, string>,	
 uninstallGamePlugin?: [{	force?: boolean | undefined | null | Variable<any, string>,	slug: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 	unlinkDiscord?:ValueTypes["SuccessOutput"],
 	unlinkSteamMatchHistory?:ValueTypes["SuccessOutput"],
-unsanctionServerPlayer?: [{	serverId?: string | undefined | null | Variable<any, string>,	steam_id: string | Variable<any, string>,	type: string | Variable<any, string>},ValueTypes["SanctionResult"]],
+unsanctionServerPlayer?: [{	sanction_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	serverId?: string | undefined | null | Variable<any, string>,	steam_id: string | Variable<any, string>,	type: string | Variable<any, string>},ValueTypes["SanctionResult"]],
 updateClip?: [{	clip_id: ValueTypes["uuid"] | Variable<any, string>,	target_steam_id?: string | undefined | null | Variable<any, string>,	title?: string | undefined | null | Variable<any, string>,	visibility?: string | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 updateCs?: [{	game?: string | undefined | null | Variable<any, string>,	game_server_node_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 updateDraftGame?: [{	draftGameId: ValueTypes["uuid"] | Variable<any, string>,	settings: ValueTypes["jsonb"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
@@ -114352,7 +114352,7 @@ switchLiveMatch?: [{	from_match_id: ResolverInputTypes["uuid"],	mode: string,	to
 uninstallGamePlugin?: [{	force?: boolean | undefined | null,	slug: string},ResolverInputTypes["SuccessOutput"]],
 	unlinkDiscord?:ResolverInputTypes["SuccessOutput"],
 	unlinkSteamMatchHistory?:ResolverInputTypes["SuccessOutput"],
-unsanctionServerPlayer?: [{	serverId?: string | undefined | null,	steam_id: string,	type: string},ResolverInputTypes["SanctionResult"]],
+unsanctionServerPlayer?: [{	sanction_id?: ResolverInputTypes["uuid"] | undefined | null,	serverId?: string | undefined | null,	steam_id: string,	type: string},ResolverInputTypes["SanctionResult"]],
 updateClip?: [{	clip_id: ResolverInputTypes["uuid"],	target_steam_id?: string | undefined | null,	title?: string | undefined | null,	visibility?: string | undefined | null},ResolverInputTypes["SuccessOutput"]],
 updateCs?: [{	game?: string | undefined | null,	game_server_node_id?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
 updateDraftGame?: [{	draftGameId: ResolverInputTypes["uuid"],	settings: ResolverInputTypes["jsonb"]},ResolverInputTypes["SuccessOutput"]],
@@ -318055,6 +318055,7 @@ export enum e_notification_types_enum {
 	NewsPublished = "NewsPublished",
 	PlayerReindex = "PlayerReindex",
 	PlayerSanctioned = "PlayerSanctioned",
+	PlayerWarning = "PlayerWarning",
 	ScrimAlertMatch = "ScrimAlertMatch",
 	ScrimMatchCanceled = "ScrimMatchCanceled",
 	ScrimMatchScheduled = "ScrimMatchScheduled",
@@ -318217,7 +318218,8 @@ export enum e_sanction_types_enum {
 	ban = "ban",
 	gag = "gag",
 	mute = "mute",
-	silence = "silence"
+	silence = "silence",
+	warning = "warning"
 }
 /** select columns of table "e_sanction_types" */
 export enum e_sanction_types_select_column {

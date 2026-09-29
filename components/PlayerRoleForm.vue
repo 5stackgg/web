@@ -7,11 +7,7 @@ import { e_player_roles_enum } from "~/generated/zeus";
   <Popover v-if="canChangeRole" v-model:open="popoverOpen">
     <PopoverTrigger as-child>
       <Button variant="outline" size="sm" class="h-7 px-2.5 text-xs">
-        <span class="capitalize">{{
-          player.role
-            ? $t(`player_roles.${player.role}`)
-            : $t("player_roles.user")
-        }}</span>
+        <span class="capitalize">{{ roleLabel }}</span>
         <ChevronDownIcon class="ml-1.5 h-3.5 w-3.5 text-muted-foreground" />
       </Button>
     </PopoverTrigger>
@@ -31,11 +27,15 @@ import { e_player_roles_enum } from "~/generated/zeus";
       </Command>
     </PopoverContent>
   </Popover>
+  <span v-else class="text-xs capitalize text-muted-foreground">{{
+    roleLabel
+  }}</span>
 </template>
 
 <script lang="ts">
 import { generateMutation } from "~/graphql/graphqlGen";
 import { e_player_roles_enum } from "~/generated/zeus";
+import { canEditPlayerRole } from "~/utilities/playerRoleEdit";
 
 export default {
   props: {
@@ -75,16 +75,11 @@ export default {
     },
   },
   computed: {
-    // Gate on a fixed "may I edit roles at all" floor, not on whoever's profile
-    // happens to be open. Comparing against the *viewed* player's role meant a
-    // plain user passed `user >= user` on any other plain user's (public)
-    // profile and got a live dropdown they had no permission to submit --
-    // hasura grants the players.role column to match_organizer and above only
-    // (see api/hasura/metadata .../public_players.yaml update_permissions), so
-    // it failed with a raw Hasura error. The `roles` list below still filters
-    // to roles at or below the viewer's own.
     canChangeRole() {
-      return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
+      return canEditPlayerRole(useAuthStore().isRoleAbove, this.player.role);
+    },
+    roleLabel() {
+      return this.$t(`player_roles.${this.player.role || "user"}`);
     },
     roles() {
       return [
@@ -99,6 +94,10 @@ export default {
         {
           value: e_player_roles_enum.streamer,
           display: this.$t("player_roles.streamer"),
+        },
+        {
+          value: e_player_roles_enum.moderator,
+          display: this.$t("player_roles.moderator"),
         },
         {
           value: e_player_roles_enum.match_organizer,

@@ -404,7 +404,7 @@ function onRenderClose() {
           >
             <button
               type="button"
-              class="inline-flex h-6 items-center gap-1 rounded-[3px] px-2 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground transition-colors cursor-pointer hover:bg-[hsl(var(--tac-amber)/0.1)] hover:text-[hsl(var(--tac-amber))]"
+              class="inline-flex h-6 items-center gap-1 rounded-md px-2 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground transition-colors cursor-pointer hover:bg-[hsl(var(--tac-amber)/0.1)] hover:text-[hsl(var(--tac-amber))]"
               @click="addAtPlayhead"
             >
               <Plus class="h-3.5 w-3.5" />
@@ -414,7 +414,7 @@ function onRenderClose() {
             <button
               type="button"
               :disabled="!editor.selectedId.value"
-              class="inline-flex h-6 items-center gap-1 rounded-[3px] px-2 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground transition-colors cursor-pointer hover:bg-muted/50 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-muted-foreground"
+              class="inline-flex h-6 items-center gap-1 rounded-md px-2 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground transition-colors cursor-pointer hover:bg-muted/50 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-muted-foreground"
               @click="splitSelected"
             >
               <Scissors class="h-3.5 w-3.5" />
@@ -424,7 +424,7 @@ function onRenderClose() {
             <button
               type="button"
               :disabled="!editor.selectedId.value"
-              class="inline-flex h-6 items-center gap-1 rounded-[3px] px-2 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground transition-colors cursor-pointer hover:bg-destructive/10 hover:text-destructive disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-muted-foreground"
+              class="inline-flex h-6 items-center gap-1 rounded-md px-2 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground transition-colors cursor-pointer hover:bg-destructive/10 hover:text-destructive disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-muted-foreground"
               @click="deleteSelected"
             >
               <Trash2 class="h-3.5 w-3.5" />
@@ -577,7 +577,7 @@ function onRenderClose() {
               <div class="max-h-64 overflow-y-auto">
                 <button
                   type="button"
-                  class="w-full text-left px-2 py-1.5 rounded text-xs hover:bg-muted/50 text-muted-foreground"
+                  class="w-full text-left px-2 py-1.5 rounded-sm text-xs hover:bg-muted/50 text-muted-foreground"
                   @click="editor.setSegmentPov(seg.id, null)"
                 >
                   {{ $t("clips.editor.auto_current_spectator") }}
@@ -594,7 +594,7 @@ function onRenderClose() {
                   :key="p.steam_id"
                   type="button"
                   :class="[
-                    'w-full text-left px-2 py-1.5 rounded text-xs hover:bg-muted/50 flex items-center gap-2',
+                    'w-full text-left px-2 py-1.5 rounded-sm text-xs hover:bg-muted/50 flex items-center gap-2',
                     seg.pov_steam_id === p.steam_id ? 'bg-muted/60' : '',
                   ]"
                   @click="editor.setSegmentPov(seg.id, p.steam_id)"

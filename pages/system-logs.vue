@@ -10,6 +10,8 @@ import {
   tacticalTabsTriggerClasses,
 } from "~/utilities/tacticalClasses";
 
+definePageMeta({ middleware: "admin" });
+
 const SYSTEM_LOG_SERVICES = [
   "api",
   "web",

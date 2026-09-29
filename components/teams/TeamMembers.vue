@@ -114,6 +114,7 @@ const setEloSource = (key: string) => {
             :member="member"
             :roles="roles"
             :is-captain="member.player.steam_id === team.captain_steam_id"
+            :is-owner="member.player.steam_id === team.owner_steam_id"
             :is-invite="false"
             :match-type="rankMatchType"
           />
@@ -141,6 +142,7 @@ const setEloSource = (key: string) => {
             :member="member"
             :roles="roles"
             :is-captain="member.player.steam_id === team.captain_steam_id"
+            :is-owner="member.player.steam_id === team.owner_steam_id"
             :is-invite="false"
             :match-type="rankMatchType"
           />
@@ -168,6 +170,7 @@ const setEloSource = (key: string) => {
             :member="member"
             :roles="roles"
             :is-captain="member.player.steam_id === team.captain_steam_id"
+            :is-owner="member.player.steam_id === team.owner_steam_id"
             :is-invite="false"
             :match-type="rankMatchType"
           />
@@ -195,6 +198,7 @@ const setEloSource = (key: string) => {
             :member="member"
             :roles="roles"
             :is-captain="member.player.steam_id === team.captain_steam_id"
+            :is-owner="member.player.steam_id === team.owner_steam_id"
             :is-invite="false"
             :match-type="rankMatchType"
           />
@@ -236,6 +240,10 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, e_team_roles_enum, order_by } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { playerFields } from "~/graphql/playerFields";
+import {
+  teamRosterBuckets,
+  type TeamRosterBuckets,
+} from "~/utilities/teamRosterBuckets";
 
 export default {
   props: {
@@ -261,6 +269,7 @@ export default {
             },
             {
               id: true,
+              owner_steam_id: true,
               captain_steam_id: true,
               can_invite: true,
               can_remove: true,
@@ -377,23 +386,20 @@ export default {
         return (roleOrder[a.role] || 4) - (roleOrder[b.role] || 4);
       });
     },
+    rosterBuckets(): TeamRosterBuckets<any> {
+      return teamRosterBuckets(this.sortedRoster);
+    },
     starters(): any[] {
-      return this.sortedRoster.filter(
-        (m: any) => !m.coach && m.status === "Starter",
-      );
+      return this.rosterBuckets.starters;
     },
     bench(): any[] {
-      return this.sortedRoster.filter(
-        (m: any) => !m.coach && m.status === "Benched",
-      );
+      return this.rosterBuckets.bench;
     },
     substitutes(): any[] {
-      return this.sortedRoster.filter(
-        (m: any) => !m.coach && m.status === "Substitute",
-      );
+      return this.rosterBuckets.substitutes;
     },
     coaches(): any[] {
-      return this.sortedRoster.filter((m: any) => m.coach);
+      return this.rosterBuckets.coaches;
     },
   },
   methods: {

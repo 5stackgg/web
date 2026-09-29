@@ -428,7 +428,7 @@ export default {
             </Button>
             <button
               type="button"
-              class="grid h-8 w-8 shrink-0 place-items-center rounded-sm border border-border/70 text-muted-foreground transition-colors duration-150 hover:bg-muted/40 hover:text-foreground disabled:opacity-40"
+              class="grid h-8 w-8 shrink-0 place-items-center rounded-md border border-border/70 text-muted-foreground transition-colors duration-150 hover:bg-muted/40 hover:text-foreground disabled:opacity-40"
               :title="$t('tournament.awards_config.reset')"
               :aria-label="$t('tournament.awards_config.reset')"
               :disabled="saving[p]"
@@ -538,7 +538,7 @@ export default {
                 v-for="key in silhouetteKeys"
                 :key="key"
                 type="button"
-                class="rounded-sm border px-2 py-1.5 font-mono text-[0.6rem] uppercase tracking-[0.12em] transition-colors duration-150"
+                class="rounded-md border px-2 py-1.5 font-mono text-[0.6rem] uppercase tracking-[0.12em] transition-colors duration-150"
                 :class="
                   silhouetteKey(uploadFor) === key
                     ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'

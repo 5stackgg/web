@@ -9,11 +9,16 @@ import {
 import { cn } from "@/lib/utils"
 import NavigationMenuViewport from "./NavigationMenuViewport.vue"
 
-const props = defineProps<NavigationMenuRootProps & { class?: HTMLAttributes["class"] }>()
+const props = defineProps<
+  NavigationMenuRootProps & {
+    class?: HTMLAttributes["class"]
+    viewportClass?: HTMLAttributes["class"]
+  }
+>()
 
 const emits = defineEmits<NavigationMenuRootEmits>()
 
-const delegatedProps = reactiveOmit(props, "class")
+const delegatedProps = reactiveOmit(props, "class", "viewportClass")
 
 const forwarded = useForwardPropsEmits(delegatedProps, emits)
 </script>
@@ -24,6 +29,6 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
     :class="cn('relative z-10 flex max-w-max flex-1 items-center justify-center', props.class)"
   >
     <slot />
-    <NavigationMenuViewport />
+    <NavigationMenuViewport :class="props.viewportClass" />
   </NavigationMenuRoot>
 </template>

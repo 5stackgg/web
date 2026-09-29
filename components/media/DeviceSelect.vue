@@ -64,7 +64,7 @@ const dotOpacity = computed(() => {
     "
   >
     <SelectTrigger
-      class="h-auto w-full items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-muted/40"
+      class="h-auto w-full items-center gap-3 px-3 py-2.5 transition-colors hover:bg-muted/40"
     >
       <span class="flex min-w-0 items-center gap-3">
         <span

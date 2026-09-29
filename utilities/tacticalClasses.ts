@@ -46,7 +46,7 @@ export const filterTriggerValueClasses =
   "inline-flex items-center font-sans text-[0.6rem] font-bold leading-none normal-case tracking-normal text-[hsl(var(--tac-amber))]";
 
 export const tacticalFilterPillClasses =
-  "inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/30 px-3 py-1.5 text-xs tracking-[0.06em] text-muted-foreground transition-colors duration-150 hover:bg-muted/50 hover:text-foreground";
+  "inline-flex items-center gap-1.5 rounded-md border border-border bg-muted/30 px-3 py-1.5 text-xs tracking-[0.06em] text-muted-foreground transition-colors duration-150 hover:bg-muted/50 hover:text-foreground";
 
 // Active overrides are marked important so they reliably beat the pill base's
 // `border-border bg-muted/30 text-muted-foreground` regardless of Tailwind's

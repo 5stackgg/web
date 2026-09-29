@@ -23,7 +23,7 @@ function setSide(value: MatchSide) {
 
 <template>
   <div
-    class="inline-flex items-stretch border border-border bg-[hsl(var(--card)/0.5)] rounded-sm overflow-hidden"
+    class="inline-flex items-stretch border border-border bg-[hsl(var(--card)/0.5)] rounded-md overflow-hidden"
     :class="matchSelect ? 'h-9' : 'h-7'"
   >
     <button

@@ -52,14 +52,14 @@ watch(
       <NuxtLink
         v-if="stream.match_id && !isOnMatchPage"
         :to="`/matches/${stream.match_id}`"
-        class="w-6 h-6 rounded-sm opacity-70 hover:opacity-100 transition-opacity bg-background/80 hover:bg-background border border-border flex items-center justify-center"
+        class="w-6 h-6 rounded-md opacity-70 hover:opacity-100 transition-opacity bg-background/80 hover:bg-background border border-border flex items-center justify-center"
         :title="$t('match.open_match')"
       >
         <ArrowUpRight class="w-4 h-4" />
         <span class="sr-only">{{ $t("match.open_match") }}</span>
       </NuxtLink>
       <button
-        class="w-6 h-6 rounded-sm opacity-70 hover:opacity-100 transition-opacity bg-background/80 hover:bg-background border border-border flex items-center justify-center"
+        class="w-6 h-6 rounded-md opacity-70 hover:opacity-100 transition-opacity bg-background/80 hover:bg-background border border-border flex items-center justify-center"
         @click="closePreview"
         type="button"
       >

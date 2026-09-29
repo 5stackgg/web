@@ -385,12 +385,6 @@ async function stopGpuSession(nodeId: string) {
         :data-disabled="!node.enabled"
         :data-busy="!!busyByNode[node.id]"
       >
-        <span
-          v-if="busyByNode[node.id]"
-          class="gpu-corner gpu-corner-tl"
-          aria-hidden="true"
-        ></span>
-
         <!-- Row: status + identity + controls -->
         <div class="gpu-node-row">
           <!-- Node control menu -->
@@ -1232,7 +1226,7 @@ export default {
   align-items: center;
   padding: 0.35rem 0.6rem;
   border: 1px solid hsl(var(--border));
-  border-radius: 0.4rem;
+  border-radius: 0.375rem;
   background: hsl(var(--card) / 0.5);
   color: hsl(var(--muted-foreground));
   transition:
@@ -1244,26 +1238,6 @@ export default {
 }
 .gpu-stat-btn .gpu-stat-val {
   font-size: 0.95rem;
-}
-
-/* ===== Corner ticks ===== */
-.gpu-corner {
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  pointer-events: none;
-}
-.gpu-corner-tl {
-  top: 8px;
-  left: 8px;
-  border-top: 2px solid hsl(var(--tac-amber));
-  border-left: 2px solid hsl(var(--tac-amber));
-}
-.gpu-corner-br {
-  bottom: 8px;
-  right: 8px;
-  border-bottom: 2px solid hsl(var(--tac-amber));
-  border-right: 2px solid hsl(var(--tac-amber));
 }
 
 /* ===== Status LED ===== */
@@ -1507,7 +1481,7 @@ export default {
   width: 28px;
   height: 28px;
   border: 1px solid hsl(var(--border) / 0.6);
-  border-radius: 0.4rem;
+  border-radius: 0.375rem;
   background: hsl(var(--card) / 0.4);
   color: hsl(var(--muted-foreground));
   transition:
@@ -1526,7 +1500,7 @@ export default {
   height: 28px;
   padding: 0 0.6rem;
   border: 1px solid hsl(var(--border) / 0.6);
-  border-radius: 0.4rem;
+  border-radius: 0.375rem;
   background: hsl(var(--card) / 0.4);
   font-family: ui-monospace, monospace;
   font-size: 0.55rem;
@@ -1558,7 +1532,7 @@ export default {
   gap: 0.35rem;
   padding: 0.3rem 0.6rem;
   border: 1px solid hsl(var(--t-bad) / 0.5);
-  border-radius: 0.4rem;
+  border-radius: 0.375rem;
   background: transparent;
   font-family: ui-monospace, monospace;
   font-size: 0.6rem;

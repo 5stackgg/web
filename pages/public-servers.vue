@@ -27,6 +27,10 @@ import { e_player_roles_enum } from "~/generated/zeus";
 const canManage = computed(() =>
   useAuthStore().isRoleAbove(e_player_roles_enum.moderator),
 );
+
+const canSetup = computed(() =>
+  useAuthStore().isRoleAbove(e_player_roles_enum.administrator),
+);
 </script>
 
 <template>
@@ -34,7 +38,7 @@ const canManage = computed(() =>
     <TacticalPageHeader inline-actions>
       <template #title>{{ $t("pages.public_servers.title") }}</template>
 
-      <template v-if="canManage && servers && servers.length" #actions>
+      <template v-if="canSetup && servers && servers.length" #actions>
         <NuxtLink
           to="/dedicated-servers/create"
           :class="[
@@ -92,11 +96,11 @@ const canManage = computed(() =>
             $t("pages.public_servers.no_servers_title")
           }}</EmptyTitle>
           <EmptyDescription>{{
-            canManage
+            canSetup
               ? $t("pages.public_servers.no_public_servers_admin")
               : $t("pages.public_servers.no_public_servers")
           }}</EmptyDescription>
-          <Button v-if="canManage" as-child>
+          <Button v-if="canSetup" as-child>
             <NuxtLink to="/dedicated-servers/create">
               <Settings2 class="h-4 w-4" />
               {{ $t("pages.public_servers.setup_public_server") }}

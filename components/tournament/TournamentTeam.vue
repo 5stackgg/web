@@ -448,6 +448,7 @@ import { toast } from "~/components/ui/toast";
 import { e_team_roles_enum, e_tournament_status_enum } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateMutation } from "~/graphql/graphqlGen";
+import { playerBlockErrorKey } from "~/utilities/playerBlocks";
 
 export default {
   emits: ["toggle-collapsed"],
@@ -921,12 +922,15 @@ export default {
         // ones we can see, but pending invites on other teams aren't readable
         // from here, so that case only surfaces as this error.
         const alreadyInTournament = /already.*(tournament|team)/i.test(message);
+        const blockedKey = playerBlockErrorKey(message);
 
         toast({
           title: this.$t("tournament.team.add_player"),
           description: alreadyInTournament
             ? this.$t("tournament.team.already_in_tournament")
-            : message,
+            : blockedKey
+              ? this.$t(blockedKey)
+              : message,
           variant: "destructive",
         });
       }

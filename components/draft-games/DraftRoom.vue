@@ -48,6 +48,7 @@ import DraftSettingsSheet from "~/components/draft-games/DraftSettingsSheet.vue"
 import DraftCoinFlip from "~/components/draft-games/DraftCoinFlip.vue";
 import MatchAdminBottomBar from "~/components/match/MatchAdminBottomBar.vue";
 import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
+import { playerBlockErrorKey } from "~/utilities/playerBlocks";
 
 const props = defineProps<{
   room: any;
@@ -373,10 +374,11 @@ const runGuarded = async (key: string, action: () => Promise<unknown>) => {
   try {
     await action();
   } catch (error: any) {
+    const blockedKey = playerBlockErrorKey(error?.message);
     toast({
       variant: "destructive",
       title: t("common.error"),
-      description: error?.message,
+      description: blockedKey ? t(blockedKey) : error?.message,
     });
   } finally {
     const next = new Set(pending.value);
@@ -2092,7 +2094,7 @@ const start = () => {
   height: 1.75rem;
   width: 1.75rem;
   padding: 0;
-  border-radius: 0.3rem;
+  border-radius: 0.375rem;
   font-family: var(--font-mono, monospace);
   font-weight: 700;
   font-size: 0.72rem;
@@ -2127,7 +2129,7 @@ const start = () => {
   height: 1.75rem;
   width: 1.75rem;
   padding: 0;
-  border-radius: 0.3rem;
+  border-radius: 0.375rem;
   color: hsl(var(--muted-foreground));
   border: 1px solid hsl(var(--border));
   transition: all 0.15s ease;
@@ -2144,7 +2146,7 @@ const start = () => {
   height: 1.75rem;
   width: 1.75rem;
   padding: 0;
-  border-radius: 0.3rem;
+  border-radius: 0.375rem;
   font-family: var(--font-mono, monospace);
   font-size: 0.68rem;
   font-weight: 700;

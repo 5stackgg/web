@@ -17,21 +17,6 @@ import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog";
       >
         <span
           aria-hidden="true"
-          class="pointer-events-none absolute left-2 top-2 h-[14px] w-[14px] border-l-2 border-t-2 transition-colors duration-300"
-          :class="
-            isCritical ? 'border-destructive' : 'border-[hsl(var(--tac-amber))]'
-          "
-        ></span>
-        <span
-          aria-hidden="true"
-          class="pointer-events-none absolute bottom-2 right-2 h-[14px] w-[14px] border-b-2 border-r-2 transition-colors duration-300"
-          :class="
-            isCritical ? 'border-destructive' : 'border-[hsl(var(--tac-amber))]'
-          "
-        ></span>
-
-        <span
-          aria-hidden="true"
           class="pointer-events-none absolute inset-0 opacity-30 [background-image:repeating-linear-gradient(180deg,transparent_0,transparent_3px,hsl(var(--tac-amber)/0.04)_3px,hsl(var(--tac-amber)/0.04)_4px)]"
         ></span>
 
@@ -163,6 +148,8 @@ import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import { useMatchReadyModal } from "~/composables/useMatchReadyModal";
 import socket from "~/web-sockets/Socket";
 import { useSound } from "~/composables/useSound";
+import { closeNotifications } from "~/composables/usePushNotifications";
+import { notificationThreadKey } from "~/utilities/chatThread";
 
 export default {
   data() {
@@ -198,6 +185,17 @@ export default {
     confirmation: {
       immediate: true,
       handler(confirmation, oldConfirmation) {
+        if (
+          oldConfirmation &&
+          oldConfirmation.confirmationId !== confirmation?.confirmationId
+        ) {
+          this.silenceRing(oldConfirmation.confirmationId);
+        }
+
+        if (confirmation?.isReady || confirmation?.matchId) {
+          this.silenceRing(confirmation.confirmationId);
+        }
+
         if (!confirmation) {
           useMatchReadyModal().closeMatchReadyModal();
           return;
@@ -233,6 +231,14 @@ export default {
       socket.event("matchmaking:confirm", {
         confirmationId: this.confirmation.confirmationId,
       });
+    },
+    // On every update rather than once: the push is sent after the socket
+    // update that opened the ready check, so it can land here after the
+    // player has already accepted.
+    silenceRing(confirmationId: string) {
+      void closeNotifications(
+        notificationThreadKey("MatchFound", confirmationId),
+      );
     },
     updateCountdown() {
       if (

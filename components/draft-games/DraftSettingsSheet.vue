@@ -153,7 +153,7 @@ const cancelDraft = () => {
   flex-shrink: 0;
   align-items: center;
   gap: 0.4rem;
-  border-radius: 0.4rem;
+  border-radius: 0.375rem;
   border: 1px solid hsl(var(--destructive) / 0.4);
   background: hsl(var(--destructive) / 0.08);
   padding: 0.4rem 0.6rem;

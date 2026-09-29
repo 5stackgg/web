@@ -34,6 +34,7 @@
       "title_placeholder": "Planlagt vedligeholdelse",
       "message": "Besked",
       "message_placeholder": "Matchmaking er midlertidigt nede, mens vi undersøger sagen.",
+      "message_link_hint": "Tilføj et link med [label](https://example.com). Links til dette site åbnes i appen.",
       "is_active": "Aktiv",
       "is_active_hint": "Vis banneret for alle med det samme.",
       "dismissible": "Kan lukkes",
@@ -928,6 +929,7 @@
     "user": "Bruger",
     "verified_user": "Verificeret bruger",
     "streamer": "Streamer",
+    "moderator": "Moderator",
     "match_organizer": "Kamparrangør",
     "tournament_organizer": "Turneringsarrangør",
     "administrator": "Administrator"
@@ -1586,6 +1588,7 @@
         "my_account": "Min konto",
         "api_keys": "API-nøgler",
         "linked_accounts": "Tilknyttede konti",
+        "blocked_players": "Blokerede spillere",
         "voice": "Stemme og lyd",
         "api_keys_management": {
           "add_api_key": "Tilføj API-nøgle",
@@ -1699,6 +1702,14 @@
           "matches": {
             "title": "Kampe",
             "description": "Ændringer i kampstatus og importerede kampe."
+          },
+          "match_found": {
+            "title": "Kamp fundet",
+            "description": "Matchmaking har fundet din kamp og venter på, at du accepterer. Ringer også i stilletimer."
+          },
+          "admin_call": {
+            "title": "Opkald fra admins",
+            "description": "En admin vil tale med dig via dit kampkamera. Ringer også i stilletimer."
           },
           "chat": {
             "title": "Chat",
@@ -1823,11 +1834,31 @@
         },
         "quiet_hours": {
           "title": "Stilletimer",
-          "description": "Push-notifikationer forbliver lydløse i dette tidsrum. De vises stadig i din notifikationsklokke.",
+          "description": "Push-notifikationer forbliver lydløse i dette tidsrum. De vises stadig i din notifikationsklokke. Fundne kampe og opkald fra admins ringer alligevel.",
           "from": "Fra",
           "to": "Til",
           "reset": "Nulstil",
           "incomplete": "Angiv både et start- og et sluttidspunkt for at gemme stilletimer."
+        },
+        "tab_flash": {
+          "title": "Browserfane",
+          "description": "Få fanens titel og ikon til at blinke, når noget kræver din opmærksomhed, mens den er i baggrunden. Gemmes på denne enhed.",
+          "match_found": {
+            "title": "Kamp fundet",
+            "description": "En kamp er klar og venter på, at du accepterer."
+          },
+          "admin_call": {
+            "title": "Arrangøropkald",
+            "description": "En kamparrangør begynder at tale til dig på din kameraside."
+          },
+          "chat": {
+            "title": "Chatbeskeder",
+            "description": "En ny besked i en samtale, en lobby eller et turneringsrum. Chat fra selve kampen i spillet er udeladt."
+          },
+          "bell": {
+            "title": "Notifikationer",
+            "description": "Der kommer noget nyt i din notifikationsklokke."
+          }
         }
       },
       "notifications": {
@@ -1975,13 +2006,13 @@
             "role_id": "Rolle-ID til kampnotifikationer",
             "role_id_description": "Disse roller nævnes i notifikationer om kampstatus. Du kan angive flere rolle-ID'er adskilt af komma."
           },
-          "gamedata_notifications": {
-            "title": "Notifikationer om gamedata-validering",
-            "description": "Konfigurer hvor resultater af signaturvalidering for CS2-gamedata sendes hen.",
-            "webhook": "Webhook-URL til gamedata-notifikationer",
-            "webhook_description": "Dedikeret webhook til resultater af gamedata-validering. Falder tilbage til standard-webhooken, hvis den ikke er angivet.",
-            "role_id": "Rolle-ID til gamedata-notifikationer",
-            "role_id_description": "Disse roller nævnes i notifikationer om gamedata-validering. Du kan angive flere rolle-ID'er adskilt af komma. Falder tilbage til standardrollen, hvis den ikke er angivet."
+          "cs2_build_notifications": {
+            "title": "Notifikationer om CS2-builds",
+            "description": "Hvor meddelelser om CS2-opdateringer, gamedata-validering og builds af kortressourcer sendes hen.",
+            "webhook": "Webhook-URL til CS2-build-notifikationer",
+            "webhook_description": "Dedikeret webhook til meddelelser om CS2-builds. Falder tilbage til standard-webhooken, hvis den ikke er angivet.",
+            "role_id": "Rolle-ID til CS2-build-notifikationer",
+            "role_id_description": "Disse roller nævnes i meddelelser om CS2-builds. Du kan angive flere rolle-ID'er adskilt af komma. Falder tilbage til standardrollen, hvis den ikke er angivet."
           },
           "server_notifications": {
             "title": "Servernotifikationer",
@@ -2831,7 +2862,19 @@
         "upload_success_message": "Uploadet — importerer nu. Din kamp dukker op om lidt.",
         "toast_demo_uploaded": "Demo uploadet",
         "toast_demo_uploaded_description": "Importerer nu — din kamp dukker op om lidt.",
-        "toast_upload_failed": "Upload mislykkedes"
+        "toast_upload_failed": "Upload mislykkedes",
+        "import_share_code_title": "Importér en kamp med share-kode",
+        "import_share_code_description": "Indsæt en share-kode eller et share-link fra Watch → Your Matches i CS2 for at importere en matchmaking-kamp, som din forbundne kamphistorik ikke fik med.",
+        "import_share_code_submit": "Importér",
+        "toast_share_code_queued": "Kampen er sat i kø til import",
+        "toast_share_code_failed": "Kunne ikke importere kampen"
+      },
+      "blocked_players": {
+        "title": "Blokerede spillere",
+        "description": "Blokerede spillere kan ikke sende dig beskeder, invitationer eller venneanmodninger. At fjerne en blokering gendanner ikke jeres venskab.",
+        "empty_title": "Ingen blokerede spillere",
+        "empty_description": "Spillere, du blokerer fra deres profil eller spillermenuen, vises her.",
+        "blocked_on": "Blokeret"
       }
     },
     "watch": {
@@ -3116,6 +3159,7 @@
         "recent_wins_and_losses": "Seneste sejre og nederlag",
         "elo_history": "ELO-historik",
         "no_elo_history": "Spil en kamp for at få ELO",
+        "no_elo_history_other": "Ingen ELO-historik endnu",
         "play_a_match": "Spil",
         "matches": "Kampe",
         "no_matches": "Ingen kampe endnu",
@@ -3426,7 +3470,122 @@
       "no_nodes_title": "Ingen game server nodes",
       "display_metrics": "Vis metrikker",
       "create": "Opret game server node",
-      "cs_version_info": "CS2-versionsinformation:",
+      "cs2_build": {
+        "title": "CS2-build",
+        "released": "Udgivet",
+        "history": "Buildhistorik",
+        "gamedata": "Gamedata",
+        "gamedata_description": "Plugin-signaturer, offsets og patches",
+        "map_assets": "Kortressourcer",
+        "map_assets_description": "Meshes, granat-clips og callouts til 3D-replay",
+        "gamedata_never": "Endnu ikke valideret for denne build",
+        "map_assets_never": "Endnu ikke bygget for denne build",
+        "auto_hint": "Kører af sig selv, når en node første gang rapporterer en ny build",
+        "map_assets_hint": "Bygges efter gamedata-validering, når auto-build er slået til",
+        "revalidate": "Valider igen",
+        "rebuild": "Byg igen",
+        "build": "Byg",
+        "retry_failed": "Prøv fejlede kort igen",
+        "run_on": "Kør på",
+        "automatic": "Automatisk",
+        "automatic_description": "En online node, der allerede er på build {build}",
+        "auto": "auto",
+        "started": "Startet",
+        "validated": "Valideret",
+        "finished": "Færdig",
+        "took": "tog {duration}",
+        "ran_on": "kørte på {node}",
+        "requested_by": "af {name}",
+        "vs_build": "Ændringer i forhold til {build}",
+        "first_run": "Intet at sammenligne med endnu",
+        "no_changes": "Ingen ændringer siden {build}",
+        "nothing_broken": "Intet i stykker",
+        "no_maps": "Ingen kort blev udgivet",
+        "reused_from": "genbrugt fra {build}",
+        "skipped_entries": "{count} sprunget over — kunne ikke kontrolleres",
+        "log": "Build-log",
+        "trigger": {
+          "auto": "automatisk",
+          "manual": "manuel"
+        },
+        "stats": {
+          "checked": "Kontrolleret",
+          "broken": "I stykker",
+          "warnings": "Advarsler",
+          "skipped": "Sprunget over",
+          "maps": "Kort",
+          "changed": "Ændret",
+          "unchanged": "Uændret",
+          "failed": "Fejlet"
+        },
+        "chip": {
+          "newly_broken": "{count} nyligt i stykker",
+          "fixed": "{count} rettet",
+          "new_warnings": "advarsler +{count}",
+          "rebuilt": "{count} bygget igen",
+          "added": "{count} tilføjet",
+          "removed": "{count} fjernet"
+        },
+        "change": {
+          "broken": "I stykker",
+          "still_broken": "Stadig i stykker",
+          "fixed": "Rettet",
+          "warning": "Advarsel",
+          "cleared": "Ryddet",
+          "rebuilt": "Bygget igen",
+          "added": "Tilføjet",
+          "removed": "Fjernet",
+          "failed": "Fejlet",
+          "unchanged": "Uændret",
+          "included": "Udgivet"
+        },
+        "reason": {
+          "vpk": "Kort ændret",
+          "pipeline": "Værktøjer ændret",
+          "assets": "Bygget igen",
+          "collision": "Kollision fejlede",
+          "view": "Visnings-mesh fejlede"
+        },
+        "gamedata_status": {
+          "running": "Validerer",
+          "passed": "Bestået",
+          "warning": "Advarsel",
+          "failed": "Fejlet",
+          "error": "Fejl",
+          "stale": "Gået i stå",
+          "none": "Ikke kørt"
+        },
+        "map_assets_status": {
+          "pending": "I kø",
+          "building": "Bygger",
+          "published": "Udgivet",
+          "partial": "Delvis",
+          "failed": "Fejlet",
+          "stale": "Gået i stå",
+          "none": "Ikke bygget"
+        },
+        "blocked": {
+          "no_node": "Ingen online node er på build {build}",
+          "running": "En validering kører allerede",
+          "building": "En build er allerede i kø eller kører"
+        },
+        "node_reason": {
+          "disabled": "Deaktiveret",
+          "gpu_only": "Kun-GPU-node",
+          "status": "{status}",
+          "updating": "Opdaterer CS2",
+          "other_build": "På build {build}"
+        },
+        "toast": {
+          "queued_validation": "Gamedata-validering sat i kø",
+          "queued_build": "Build af kortressourcer sat i kø"
+        },
+        "force": {
+          "title": "Byg alle kort igen?",
+          "description": "Kortressourcer til build {build} er allerede udgivet. En tvungen genbygning bygger alle kort igen på noden, hvilket kan tage et par timer, og udgiver kun en ny manifest-revision, hvis noget er ændret.",
+          "confirm": "Byg alle kort igen"
+        }
+      },
       "hide_offline": "Skjul offline noder",
       "only_enabled": "Kun aktive noder",
       "setup_dialog": {
@@ -3454,7 +3613,21 @@
         "supports_cpu_pinning": "Understøtter CPU-pinning",
         "cpu_governor": "CPU-governor"
       },
-      "last_updated": "Sidst opdateret: {date}",
+      "builds": {
+        "title": "CS2-buildhistorik",
+        "description": "Gamedata-validering og builds af kortressourcer for hver CS2-build, og hvad hver enkelt ændrede i forhold til den forrige build.",
+        "back": "Game server nodes",
+        "builds": "Builds",
+        "no_builds": "Ingen build er valideret eller bygget endnu.",
+        "current": "Aktuel",
+        "compared_with": "Sammenlignet med {build}",
+        "history_note": "Historikken starter med denne udgivelse; tidligere builds blev fjernet sammen med deres spilversion.",
+        "timeline": {
+          "detected": "Opdatering udgivet",
+          "gamedata": "Gamedata",
+          "map_assets": "Kortressourcer"
+        }
+      },
       "max_label": "Maks.:",
       "ports_label": "Porte:",
       "cpu_hardware": "CPU og hardware"
@@ -5019,9 +5192,6 @@
       }
     }
   },
-  "custom_match": {
-    "description": "Byg din egen kamp med egne regler, maps og opstillinger"
-  },
   "layouts": {
     "account_settings": {
       "title": "Kontoindstillinger",
@@ -5381,6 +5551,12 @@
       }
     }
   },
+  "tab_flash": {
+    "match_found": "Kamp fundet",
+    "admin_call": "En arrangør ringer",
+    "chat": "Ny besked | Nye beskeder",
+    "bell": "Ny notifikation | Nye notifikationer"
+  },
   "roster_picker": {
     "add_starter": "Tilføj starter",
     "add_substitute": "Tilføj reserve",
@@ -5695,6 +5871,7 @@
       "information_tab": "Information",
       "about_section": "Om",
       "match_settings": "Kampindstillinger",
+      "chat_room_tab": "Chatrum",
       "read_more": "Læs mere",
       "read_less": "Læs mindre"
     },
@@ -7690,6 +7867,7 @@
     "tooltips": {
       "fullscreen": "Fuld skærm",
       "toggle_right_sidebar": "Slå højre sidebar til/fra",
+      "toggle_right_sidebar_unread": "Slå højre sidebar til/fra ({count} ulæste)",
       "view_steam_profile": "Se Steam-profil",
       "zoom_in": "Zoom ind",
       "zoom_in_scroll": "Zoom ind (Ctrl/Cmd + scroll)",
@@ -7833,11 +8011,13 @@
       "reason_label": "Begrundelse",
       "reason_placeholder": "Angiv begrundelse for sanktionen...",
       "reason_description": "Angiv en klar begrundelse for denne sanktion",
+      "reason_required": "En begrundelse er påkrævet",
       "types": {
         "ban_description": "Spilleren kan ikke deltage i nogen aktivitet",
         "mute_description": "Spilleren kan ikke bruge voicechat i spillet",
         "gag_description": "Spilleren kan ikke bruge tekstchat i spillet",
-        "silence_description": "Spilleren er mutet og gagget"
+        "silence_description": "Spilleren er mutet og gagget",
+        "warning_description": "Informativ note på spillerens historik, håndhæves aldrig"
       },
       "durations": {
         "15_minutes": "15 minutter",
@@ -7852,20 +8032,24 @@
         "ban": "Udelukker spiller",
         "mute": "Slår spillerens mikrofon fra",
         "gag": "Lukker spillerens chat",
-        "silence": "Gør spilleren helt tavs"
+        "silence": "Gør spilleren helt tavs",
+        "warning": "Advarer spiller"
       },
       "submit": {
         "ban": "Udeluk spiller",
         "mute": "Slå spillerens mikrofon fra",
         "gag": "Luk spillerens chat",
-        "silence": "Gør spilleren helt tavs"
+        "silence": "Gør spilleren helt tavs",
+        "warning": "Giv advarsel"
       },
       "applied": {
         "ban": "{name} udelukket",
         "mute": "{name}s mikrofon slået fra",
         "gag": "{name}s chat lukket",
-        "silence": "{name} gjort helt tavs"
+        "silence": "{name} gjort helt tavs",
+        "warning": "Advarsel givet til {name}"
       },
+      "warning_note": "En advarsel gemmes på spillerens historik og giver spilleren besked. Den håndhæves aldrig og udløber aldrig.",
       "typed_player": "{type}-spiller"
     },
     "search": {
@@ -7892,6 +8076,13 @@
       "muted": "Mutet",
       "gagged": "Gagget",
       "silenced": "Silenced",
+      "type_labels": {
+        "ban": "Udelukkelse",
+        "mute": "Mikrofon fra",
+        "gag": "Chat lukket",
+        "silence": "Helt tavs",
+        "warning": "Advarsel"
+      },
       "duration_label": "Varighed",
       "select_duration": "Vælg varighed",
       "sanctions": "Sanktioner",
@@ -7906,6 +8097,7 @@
       "permanent": "Permanent",
       "active": "Aktiv",
       "expired": "Udløbet",
+      "on_record": "Registreret",
       "cannot_edit_expired": "Udløbne sanktioner kan ikke redigeres — tilføj en ny",
       "edit": "Rediger",
       "remove": "Fjern",
@@ -7967,6 +8159,25 @@
     "current_elo": "NU",
     "faceit_level": "Niveau {level}",
     "elo_aria_label": "ELO, primær {tier} {elo}"
+  },
+  "player_blocks": {
+    "block": "Bloker",
+    "unblock": "Fjern blokering",
+    "blocked_badge": "Blokeret",
+    "confirm": {
+      "title": "Bloker {name}?",
+      "description": "{name} vil ikke kunne sende dig beskeder, invitationer eller venneanmodninger. Jeres venskab fjernes og bliver ikke gendannet, hvis du fjerner blokeringen.",
+      "action": "Bloker"
+    },
+    "toasts": {
+      "blocked": "{name} blokeret",
+      "unblocked": "Blokering af {name} fjernet"
+    },
+    "errors": {
+      "title": "Handling ikke tilgængelig",
+      "player_blocked": "Det kan du ikke gøre med denne spiller.",
+      "player_blocked_bulk": "Mindst én af disse spillere kan ikke tilføjes."
+    }
   },
   "maps": {
     "veto": {
@@ -8097,8 +8308,6 @@
     "update_cs": "Opdater CS2",
     "updating_to": "Opdaterer til {version}",
     "update_to_version": "Opdater til {version}",
-    "validate_gamedata": "Valider gamedata",
-    "build_map_assets": "Byg kortressourcer",
     "note_label": "Bemærk:",
     "one_cpu_core": "1 CPU-kerne",
     "cpu_reservation_note": " {cores} er reserveret til systemet på hver node, så den forbliver responsiv.",
@@ -8196,8 +8405,6 @@
     "toast": {
       "cs_updating": "CS2 opdateres på noden",
       "csgo_installing": "CS:GO installeres på noden",
-      "validating_gamedata": "Validerer gamedata-signaturer på noden",
-      "building_map_assets": "Bygger kortmeshes og callouts til denne nodes CS2-build",
       "ports_updated": "Node-porte opdateret",
       "ports_removed": "Node-porte fjernet",
       "made_gpu_only": "Node sat til kun GPU",

@@ -76,14 +76,14 @@ const filterTriggerActive =
 const filterBadgeClasses =
   "inline-flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-[hsl(var(--tac-amber)/0.25)] px-1 font-sans text-[0.6rem] font-bold leading-none text-[hsl(var(--tac-amber))]";
 const presetBase =
-  "inline-flex items-center rounded-full border px-2.5 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.14em] transition-colors duration-150";
+  "inline-flex items-center rounded-md border px-2.5 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.14em] transition-colors duration-150";
 const presetActive =
   "border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))]";
 const presetIdle =
   "border-border bg-muted/30 text-muted-foreground hover:bg-muted/50 hover:text-foreground";
 function optionRowClass(active: boolean) {
   return [
-    "flex w-full items-center justify-between rounded px-2 py-1.5 text-xs transition-colors",
+    "flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-xs transition-colors",
     active
       ? "text-[hsl(var(--tac-amber))]"
       : "text-foreground/90 hover:bg-muted/50",
@@ -164,7 +164,7 @@ function optionRowClass(active: boolean) {
               :key="status.value"
               type="button"
               @click="toggleStatus(status.value)"
-              class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
+              class="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
             >
               <span>{{ status.label }}</span>
               <Check
@@ -177,7 +177,7 @@ function optionRowClass(active: boolean) {
             v-if="form.statuses.length"
             type="button"
             @click="clearAllStatuses"
-            class="mt-2 flex w-full items-center justify-center gap-1 rounded border border-border px-2 py-1 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground"
+            class="mt-2 flex w-full items-center justify-center gap-1 rounded-md border border-border px-2 py-1 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground"
           >
             <X class="h-3 w-3" /> {{ $t("pages.matches.clear_short") }}
           </button>
@@ -1092,39 +1092,3 @@ function loadFiltersFromStorage(): Partial<{
   }
 }
 </script>
-
-<style scoped>
-/* Soft amber chip — no border, fill-only. */
-.tac-chip {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.2rem 0.45rem 0.2rem 0.55rem;
-  background: hsl(var(--tac-amber) / 0.08);
-  border-radius: 2px;
-  font-feature-settings:
-    "tnum" on,
-    "cv11" on;
-  transition: background 150ms ease;
-}
-.tac-chip:hover {
-  background: hsl(var(--tac-amber) / 0.14);
-}
-.tac-chip-x {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: hsl(var(--tac-amber) / 0.55);
-  margin-left: 0.1rem;
-  border-radius: 2px;
-  padding: 1px;
-  transition:
-    color 150ms ease,
-    background 150ms ease;
-}
-.tac-chip-x:hover {
-  color: hsl(var(--tac-amber));
-  background: hsl(var(--tac-amber) / 0.12);
-}
-</style>

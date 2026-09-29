@@ -34,6 +34,7 @@
       "title_placeholder": "예정된 점검",
       "message": "메시지",
       "message_placeholder": "원인을 확인하는 동안 매치메이킹이 일시적으로 중단됩니다.",
+      "message_link_hint": "[label](https://example.com) 형식으로 링크를 추가하세요. 이 사이트 링크는 앱 안에서 열립니다.",
       "is_active": "활성",
       "is_active_hint": "지금 즉시 모든 사용자에게 이 배너를 표시합니다.",
       "dismissible": "닫기 가능",
@@ -928,6 +929,7 @@
     "user": "사용자",
     "verified_user": "인증된 사용자",
     "streamer": "스트리머",
+    "moderator": "모더레이터",
     "match_organizer": "매치 주최자",
     "tournament_organizer": "토너먼트 주최자",
     "administrator": "관리자"
@@ -1586,6 +1588,7 @@
         "my_account": "내 계정",
         "api_keys": "API 키",
         "linked_accounts": "연동 계정",
+        "blocked_players": "차단한 플레이어",
         "voice": "음성 및 오디오",
         "api_keys_management": {
           "add_api_key": "API 키 추가",
@@ -1699,6 +1702,14 @@
           "matches": {
             "title": "경기",
             "description": "경기 상태 변경 및 가져온 경기."
+          },
+          "match_found": {
+            "title": "매치 찾음",
+            "description": "매치메이킹이 매치를 찾았고 수락을 기다리고 있습니다. 방해 금지 시간에도 울립니다."
+          },
+          "admin_call": {
+            "title": "관리자 호출",
+            "description": "관리자가 경기 카메라로 대화하고 싶어 합니다. 방해 금지 시간에도 울립니다."
           },
           "chat": {
             "title": "채팅",
@@ -1823,11 +1834,31 @@
         },
         "quiet_hours": {
           "title": "방해 금지 시간",
-          "description": "이 시간대에는 푸시 알림이 소리 없이 전달됩니다. 알림 종에는 계속 표시됩니다.",
+          "description": "이 시간대에는 푸시 알림이 소리 없이 전달됩니다. 알림 종에는 계속 표시됩니다. 매치 찾음과 관리자 호출은 예외로 울립니다.",
           "from": "시작",
           "to": "종료",
           "reset": "초기화",
           "incomplete": "방해 금지 시간을 저장하려면 시작 시각과 종료 시각을 모두 설정하세요."
+        },
+        "tab_flash": {
+          "title": "브라우저 탭",
+          "description": "이 탭이 백그라운드에 있을 때 확인이 필요한 일이 생기면 탭 제목과 아이콘을 깜박입니다. 이 기기에 저장됩니다.",
+          "match_found": {
+            "title": "매치 찾음",
+            "description": "매치가 준비되어 수락을 기다리고 있습니다."
+          },
+          "admin_call": {
+            "title": "주최자 통화",
+            "description": "경기 주최자가 카메라 페이지에서 말을 걸기 시작할 때."
+          },
+          "chat": {
+            "title": "채팅 메시지",
+            "description": "대화, 로비 또는 토너먼트 방의 새 메시지. 경기 중 게임 내 채팅은 제외됩니다."
+          },
+          "bell": {
+            "title": "알림",
+            "description": "알림 종에 새 항목이 도착할 때."
+          }
         }
       },
       "notifications": {
@@ -1975,13 +2006,13 @@
             "role_id": "매치 알림 역할 ID",
             "role_id_description": "매치 상태 알림에서 이 역할들이 멘션됩니다. 여러 역할 ID를 쉼표로 구분해 추가할 수 있습니다."
           },
-          "gamedata_notifications": {
-            "title": "게임데이터 검증 알림",
-            "description": "CS2 게임데이터 시그니처 검증 결과가 게시되는 위치를 설정합니다.",
-            "webhook": "게임데이터 알림 웹훅 URL",
-            "webhook_description": "게임데이터 검증 결과 전용 웹훅입니다. 설정하지 않으면 기본 웹훅을 사용합니다.",
-            "role_id": "게임데이터 알림 역할 ID",
-            "role_id_description": "게임데이터 검증 알림에서 이 역할들이 멘션됩니다. 여러 역할 ID를 쉼표로 구분해 추가할 수 있습니다. 설정하지 않으면 기본 역할을 사용합니다."
+          "cs2_build_notifications": {
+            "title": "CS2 빌드 알림",
+            "description": "CS2 업데이트, 게임데이터 검증, 맵 에셋 빌드 알림이 게시되는 위치입니다.",
+            "webhook": "CS2 빌드 알림 웹훅 URL",
+            "webhook_description": "CS2 빌드 알림 전용 웹훅입니다. 설정하지 않으면 기본 웹훅을 사용합니다.",
+            "role_id": "CS2 빌드 알림 역할 ID",
+            "role_id_description": "CS2 빌드 알림에서 이 역할들이 멘션됩니다. 여러 역할 ID를 쉼표로 구분해 추가할 수 있습니다. 설정하지 않으면 기본 역할을 사용합니다."
           },
           "server_notifications": {
             "title": "서버 알림",
@@ -2831,7 +2862,19 @@
         "upload_success_message": "업로드 완료 — 가져오는 중입니다. 곧 매치가 표시됩니다.",
         "toast_demo_uploaded": "데모가 업로드되었습니다",
         "toast_demo_uploaded_description": "가져오는 중입니다 — 곧 매치가 표시됩니다.",
-        "toast_upload_failed": "업로드 실패"
+        "toast_upload_failed": "업로드 실패",
+        "import_share_code_title": "공유 코드로 매치 가져오기",
+        "import_share_code_description": "CS2의 Watch → Your Matches에서 공유 코드나 공유 링크를 붙여 넣으면 연결된 매치 기록에서 누락된 매치메이킹 매치를 가져옵니다.",
+        "import_share_code_submit": "가져오기",
+        "toast_share_code_queued": "매치를 가져오기 대기열에 추가했습니다",
+        "toast_share_code_failed": "매치를 가져오지 못했습니다"
+      },
+      "blocked_players": {
+        "title": "차단한 플레이어",
+        "description": "차단한 플레이어는 메시지, 초대, 친구 요청을 보낼 수 없습니다. 차단을 해제해도 친구 관계는 복구되지 않습니다.",
+        "empty_title": "차단한 플레이어가 없습니다",
+        "empty_description": "프로필이나 플레이어 메뉴에서 차단한 플레이어가 여기에 표시됩니다.",
+        "blocked_on": "차단"
       }
     },
     "watch": {
@@ -3116,6 +3159,7 @@
         "recent_wins_and_losses": "최근 승/패",
         "elo_history": "ELO 기록",
         "no_elo_history": "매치를 플레이하면 ELO가 생성됩니다",
+        "no_elo_history_other": "아직 ELO 기록이 없습니다",
         "play_a_match": "플레이",
         "matches": "매치",
         "no_matches": "아직 매치 없음",
@@ -3426,7 +3470,122 @@
       "no_nodes_title": "게임 서버 노드 없음",
       "display_metrics": "지표 표시",
       "create": "게임 서버 노드 생성",
-      "cs_version_info": "CS2 버전 정보:",
+      "cs2_build": {
+        "title": "CS2 빌드",
+        "released": "출시",
+        "history": "빌드 기록",
+        "gamedata": "게임 데이터",
+        "gamedata_description": "플러그인 시그니처, 오프셋 및 패치",
+        "map_assets": "맵 에셋",
+        "map_assets_description": "3D 리플레이용 메시, 수류탄 클립 및 콜아웃",
+        "gamedata_never": "이 빌드는 아직 검증되지 않았습니다",
+        "map_assets_never": "이 빌드는 아직 빌드되지 않았습니다",
+        "auto_hint": "노드가 새 빌드를 처음 보고하면 자동으로 실행됩니다",
+        "map_assets_hint": "자동 빌드가 켜져 있으면 게임 데이터 검증 후 빌드됩니다",
+        "revalidate": "다시 검증",
+        "rebuild": "다시 빌드",
+        "build": "빌드",
+        "retry_failed": "실패한 맵 재시도",
+        "run_on": "실행 노드",
+        "automatic": "자동",
+        "automatic_description": "이미 {build} 빌드인 온라인 노드",
+        "auto": "자동",
+        "started": "시작",
+        "validated": "검증",
+        "finished": "완료",
+        "took": "{duration} 소요",
+        "ran_on": "{node}에서 실행",
+        "requested_by": "{name} 요청",
+        "vs_build": "{build} 대비 변경 사항",
+        "first_run": "아직 비교할 대상이 없습니다",
+        "no_changes": "{build} 이후 변경 사항 없음",
+        "nothing_broken": "손상된 항목 없음",
+        "no_maps": "게시된 맵이 없습니다",
+        "reused_from": "{build}에서 재사용",
+        "skipped_entries": "{count}개 건너뜀 — 확인할 수 없음",
+        "log": "빌드 로그",
+        "trigger": {
+          "auto": "자동",
+          "manual": "수동"
+        },
+        "stats": {
+          "checked": "확인됨",
+          "broken": "손상",
+          "warnings": "경고",
+          "skipped": "건너뜀",
+          "maps": "맵",
+          "changed": "변경됨",
+          "unchanged": "변경 없음",
+          "failed": "실패"
+        },
+        "chip": {
+          "newly_broken": "새로 손상 {count}",
+          "fixed": "수정 {count}",
+          "new_warnings": "경고 +{count}",
+          "rebuilt": "재빌드 {count}",
+          "added": "추가 {count}",
+          "removed": "제거 {count}"
+        },
+        "change": {
+          "broken": "손상",
+          "still_broken": "여전히 손상",
+          "fixed": "수정됨",
+          "warning": "경고",
+          "cleared": "해제됨",
+          "rebuilt": "재빌드됨",
+          "added": "추가됨",
+          "removed": "제거됨",
+          "failed": "실패",
+          "unchanged": "변경 없음",
+          "included": "게시됨"
+        },
+        "reason": {
+          "vpk": "맵 변경",
+          "pipeline": "도구 변경",
+          "assets": "재빌드",
+          "collision": "충돌 실패",
+          "view": "뷰 메시 실패"
+        },
+        "gamedata_status": {
+          "running": "검증 중",
+          "passed": "통과",
+          "warning": "경고",
+          "failed": "실패",
+          "error": "오류",
+          "stale": "멈춤",
+          "none": "실행 안 됨"
+        },
+        "map_assets_status": {
+          "pending": "대기 중",
+          "building": "빌드 중",
+          "published": "게시됨",
+          "partial": "일부",
+          "failed": "실패",
+          "stale": "멈춤",
+          "none": "빌드 안 됨"
+        },
+        "blocked": {
+          "no_node": "{build} 빌드인 온라인 노드가 없습니다",
+          "running": "이미 검증이 실행 중입니다",
+          "building": "이미 빌드가 대기 중이거나 실행 중입니다"
+        },
+        "node_reason": {
+          "disabled": "비활성화됨",
+          "gpu_only": "GPU 전용 노드",
+          "status": "{status}",
+          "updating": "CS2 업데이트 중",
+          "other_build": "{build} 빌드"
+        },
+        "toast": {
+          "queued_validation": "게임 데이터 검증이 대기열에 추가되었습니다",
+          "queued_build": "맵 에셋 빌드가 대기열에 추가되었습니다"
+        },
+        "force": {
+          "title": "모든 맵을 다시 빌드할까요?",
+          "description": "{build} 빌드의 맵 에셋은 이미 게시되었습니다. 강제 재빌드는 노드에서 모든 맵을 다시 빌드하므로 몇 시간이 걸릴 수 있으며, 변경 사항이 있을 때만 새 매니페스트 리비전을 게시합니다.",
+          "confirm": "모든 맵 다시 빌드"
+        }
+      },
       "hide_offline": "오프라인 노드 숨기기",
       "only_enabled": "활성화된 노드만",
       "setup_dialog": {
@@ -3454,7 +3613,21 @@
         "supports_cpu_pinning": "CPU 고정 지원",
         "cpu_governor": "CPU 거버너"
       },
-      "last_updated": "마지막 업데이트: {date}",
+      "builds": {
+        "title": "CS2 빌드 기록",
+        "description": "모든 CS2 빌드의 게임 데이터 검증과 맵 에셋 빌드, 그리고 각 빌드에서 이전 빌드 대비 무엇이 바뀌었는지 보여 줍니다.",
+        "back": "게임 서버 노드",
+        "builds": "빌드",
+        "no_builds": "아직 검증되거나 빌드된 빌드가 없습니다.",
+        "current": "현재",
+        "compared_with": "비교 대상: {build}",
+        "history_note": "기록은 이번 릴리스부터 시작됩니다. 이전 빌드는 해당 게임 버전과 함께 삭제되었습니다.",
+        "timeline": {
+          "detected": "업데이트 출시",
+          "gamedata": "게임 데이터",
+          "map_assets": "맵 에셋"
+        }
+      },
       "max_label": "최대:",
       "ports_label": "포트:",
       "cpu_hardware": "CPU 및 하드웨어"
@@ -5019,9 +5192,6 @@
       }
     }
   },
-  "custom_match": {
-    "description": "자유롭게 규칙, 맵, 라인업을 설정하여 나만의 매치를 만들어 보세요"
-  },
   "layouts": {
     "account_settings": {
       "title": "계정 설정",
@@ -5381,6 +5551,12 @@
       }
     }
   },
+  "tab_flash": {
+    "match_found": "매치 찾음",
+    "admin_call": "주최자가 통화를 요청했습니다",
+    "chat": "새 메시지 | 새 메시지",
+    "bell": "새 알림 | 새 알림"
+  },
   "roster_picker": {
     "add_starter": "주전 추가",
     "add_substitute": "교체 선수 추가",
@@ -5695,6 +5871,7 @@
       "information_tab": "정보",
       "about_section": "소개",
       "match_settings": "매치 설정",
+      "chat_room_tab": "채팅방",
       "read_more": "더 보기",
       "read_less": "접기"
     },
@@ -7690,6 +7867,7 @@
     "tooltips": {
       "fullscreen": "전체화면",
       "toggle_right_sidebar": "오른쪽 사이드바 전환",
+      "toggle_right_sidebar_unread": "오른쪽 사이드바 전환 (읽지 않음 {count}개)",
       "view_steam_profile": "Steam 프로필 보기",
       "zoom_in": "확대",
       "zoom_in_scroll": "확대 (Ctrl/Cmd + 스크롤)",
@@ -7833,11 +8011,13 @@
       "reason_label": "사유",
       "reason_placeholder": "제재 사유를 입력하세요...",
       "reason_description": "이 제재에 대한 명확한 사유를 입력해 주세요",
+      "reason_required": "사유는 필수입니다",
       "types": {
         "ban_description": "플레이어가 어떤 활동에도 참여할 수 없습니다",
         "mute_description": "플레이어가 게임 내 음성 채팅을 사용할 수 없습니다",
         "gag_description": "플레이어가 게임 내 텍스트 채팅을 사용할 수 없습니다",
-        "silence_description": "플레이어가 음소거 및 채팅 금지됩니다"
+        "silence_description": "플레이어가 음소거 및 채팅 금지됩니다",
+        "warning_description": "플레이어 기록에 남는 정보성 메모로, 적용되지 않습니다"
       },
       "durations": {
         "15_minutes": "15분",
@@ -7852,20 +8032,24 @@
         "ban": "플레이어 차단",
         "mute": "플레이어 마이크 차단",
         "gag": "플레이어 채팅 차단",
-        "silence": "플레이어 전체 발언 차단"
+        "silence": "플레이어 전체 발언 차단",
+        "warning": "플레이어 경고"
       },
       "submit": {
         "ban": "플레이어 차단하기",
         "mute": "플레이어 마이크 차단하기",
         "gag": "플레이어 채팅 차단하기",
-        "silence": "플레이어 전체 발언 차단하기"
+        "silence": "플레이어 전체 발언 차단하기",
+        "warning": "경고 발급"
       },
       "applied": {
         "ban": "{name}을(를) 차단했습니다",
         "mute": "{name}의 마이크를 차단했습니다",
         "gag": "{name}의 채팅을 차단했습니다",
-        "silence": "{name}의 발언을 전체 차단했습니다"
+        "silence": "{name}의 발언을 전체 차단했습니다",
+        "warning": "{name}에게 경고를 발급했습니다"
       },
+      "warning_note": "경고는 플레이어 기록에 저장되고 플레이어에게 알림이 전송됩니다. 적용되지 않으며 만료되지 않습니다.",
       "typed_player": "{type} 플레이어"
     },
     "search": {
@@ -7892,6 +8076,13 @@
       "muted": "음소거됨",
       "gagged": "채팅 금지됨",
       "silenced": "제재됨",
+      "type_labels": {
+        "ban": "차단",
+        "mute": "마이크 차단",
+        "gag": "채팅 차단",
+        "silence": "전체 발언 차단",
+        "warning": "경고"
+      },
       "duration_label": "기간",
       "select_duration": "기간 선택",
       "sanctions": "제재",
@@ -7906,6 +8097,7 @@
       "permanent": "영구",
       "active": "활성",
       "expired": "만료됨",
+      "on_record": "기록됨",
       "cannot_edit_expired": "만료된 제재는 수정할 수 없습니다 — 새로 추가하세요",
       "edit": "수정",
       "remove": "제거",
@@ -7967,6 +8159,25 @@
     "current_elo": "현재",
     "faceit_level": "레벨 {level}",
     "elo_aria_label": "ELO, 주 {tier} {elo}"
+  },
+  "player_blocks": {
+    "block": "차단",
+    "unblock": "차단 해제",
+    "blocked_badge": "차단됨",
+    "confirm": {
+      "title": "{name}을(를) 차단할까요?",
+      "description": "{name}은(는) 더 이상 메시지, 초대, 친구 요청을 보낼 수 없습니다. 친구 관계가 삭제되며, 차단을 해제해도 복구되지 않습니다.",
+      "action": "차단"
+    },
+    "toasts": {
+      "blocked": "{name}을(를) 차단했습니다",
+      "unblocked": "{name}의 차단을 해제했습니다"
+    },
+    "errors": {
+      "title": "사용할 수 없는 작업",
+      "player_blocked": "이 플레이어에게는 그 작업을 할 수 없습니다.",
+      "player_blocked_bulk": "이 플레이어 중 추가할 수 없는 플레이어가 있습니다."
+    }
   },
   "maps": {
     "veto": {
@@ -8097,8 +8308,6 @@
     "update_cs": "CS2 업데이트",
     "updating_to": "{version}(으)로 업데이트 중",
     "update_to_version": "{version}(으)로 업데이트",
-    "validate_gamedata": "게임 데이터 검증",
-    "build_map_assets": "맵 에셋 빌드",
     "note_label": "참고:",
     "one_cpu_core": "CPU 코어 1개",
     "cpu_reservation_note": " {cores}은(는) 각 노드에서 시스템 응답성 유지를 위해 예약됩니다.",
@@ -8196,8 +8405,6 @@
     "toast": {
       "cs_updating": "노드에서 CS2를 업데이트하는 중입니다",
       "csgo_installing": "노드에서 CS:GO를 설치하는 중입니다",
-      "validating_gamedata": "노드에서 게임 데이터 서명을 검증하는 중입니다",
-      "building_map_assets": "이 노드의 CS2 빌드용 맵 메시와 콜아웃을 빌드하는 중입니다",
       "ports_updated": "노드 포트가 업데이트되었습니다",
       "ports_removed": "노드 포트가 제거되었습니다",
       "made_gpu_only": "노드가 GPU 전용으로 설정되었습니다",

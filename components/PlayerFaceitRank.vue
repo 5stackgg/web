@@ -33,7 +33,7 @@ const wrapperStyle = computed(() => ({
 
 const wrapperClasses = [
   "group/faceit relative inline-flex items-center gap-1.5 select-none leading-none",
-  "h-[26px] px-[0.6rem] rounded border",
+  "h-[26px] px-[0.6rem] rounded-md border",
   "[backdrop-filter:blur(6px)]",
   "transition-[border-color,box-shadow] duration-150",
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(0_0%_100%/0.2)]",

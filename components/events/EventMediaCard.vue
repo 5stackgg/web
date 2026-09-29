@@ -74,7 +74,7 @@ async function deleteMedia() {
     >
       <button
         type="button"
-        class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-black/70 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/90 hover:text-[hsl(var(--tac-amber))]"
+        class="inline-flex h-7 w-7 items-center justify-center rounded-md bg-black/70 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/90 hover:text-[hsl(var(--tac-amber))]"
         :title="$t('event.media.details')"
         @click.stop="detailOpen = true"
       >
@@ -82,7 +82,7 @@ async function deleteMedia() {
       </button>
       <button
         type="button"
-        class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-black/70 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/90 hover:text-destructive disabled:opacity-50"
+        class="inline-flex h-7 w-7 items-center justify-center rounded-md bg-black/70 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/90 hover:text-destructive disabled:opacity-50"
         :title="$t('event.media.delete')"
         :disabled="deleting"
         @click.stop="deleteMedia"

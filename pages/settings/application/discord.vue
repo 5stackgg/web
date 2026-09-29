@@ -123,13 +123,15 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
         </SettingsSection>
 
         <SettingsSection
-          id="gamedata-notifications"
+          id="cs2-build-notifications"
           :title="
-            $t('pages.settings.application.discord.gamedata_notifications.title')
+            $t(
+              'pages.settings.application.discord.cs2_build_notifications.title',
+            )
           "
           :description="
             $t(
-              'pages.settings.application.discord.gamedata_notifications.description',
+              'pages.settings.application.discord.cs2_build_notifications.description',
             )
           "
         >
@@ -140,12 +142,12 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
             <FormItem>
               <FormLabel>{{
                 $t(
-                  "pages.settings.application.discord.gamedata_notifications.webhook",
+                  "pages.settings.application.discord.cs2_build_notifications.webhook",
                 )
               }}</FormLabel>
               <FormDescription>{{
                 $t(
-                  "pages.settings.application.discord.gamedata_notifications.webhook_description",
+                  "pages.settings.application.discord.cs2_build_notifications.webhook_description",
                 )
               }}</FormDescription>
               <Input
@@ -163,12 +165,12 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
             <FormItem>
               <FormLabel>{{
                 $t(
-                  "pages.settings.application.discord.gamedata_notifications.role_id",
+                  "pages.settings.application.discord.cs2_build_notifications.role_id",
                 )
               }}</FormLabel>
               <FormDescription>{{
                 $t(
-                  "pages.settings.application.discord.gamedata_notifications.role_id_description",
+                  "pages.settings.application.discord.cs2_build_notifications.role_id_description",
                 )
               }}</FormDescription>
               <Input

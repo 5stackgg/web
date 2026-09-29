@@ -170,9 +170,9 @@ onBeforeUnmount(() => {
       :tabindex="clickThrough ? undefined : 0"
       :aria-label="unmuted ? $t('camera.mute') : $t('camera.listen')"
       :title="unmuted ? $t('camera.mute') : $t('camera.listen')"
-      class="pointer-events-auto absolute top-1 right-1 z-20 inline-flex cursor-pointer items-center justify-center rounded border backdrop-blur-sm transition-colors"
+      class="pointer-events-auto absolute top-1 right-1 z-20 inline-flex cursor-pointer items-center justify-center border backdrop-blur-sm transition-colors"
       :class="[
-        dense ? 'h-5 w-5' : 'h-6 w-6',
+        dense ? 'h-5 w-5 rounded-sm' : 'h-6 w-6 rounded-md',
         unmuted
           ? 'border-[hsl(var(--tac-amber)/0.6)] bg-black/70 text-[hsl(var(--tac-amber))]'
           : 'border-white/20 bg-black/60 text-white/70 hover:text-white',

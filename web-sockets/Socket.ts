@@ -72,11 +72,17 @@ export function chatMessageTime(message: LobbyMessage) {
   return new Date(message?.timestamp).getTime() || 0;
 }
 
-class Socket extends EventEmitter {
+export class Socket extends EventEmitter {
   private listening = new Set();
   private connection?: WebSocket;
   private connected = false;
   private heartBeat?: NodeJS.Timeout;
+  private reconnectTimer?: ReturnType<typeof setTimeout>;
+  private resumeCheck?: ReturnType<typeof setTimeout>;
+  private lifecycleBound = false;
+  private pongSeen = false;
+  private lastPongAt = 0;
+  private unansweredPingAt?: number;
   private rejoinTimers: Map<string, NodeJS.Timeout> = new Map();
   private offlineQueue: Array<{
     event: string;
@@ -90,6 +96,8 @@ class Socket extends EventEmitter {
   private static readonly MAX_RETRIES = 50;
   private static readonly BASE_DELAY_MS = 1000;
   private static readonly MAX_DELAY_MS = 30000;
+  private static readonly PONG_TIMEOUT_MS = 45_000;
+  private static readonly PONG_GRACE_MS = 10_000;
 
   private lobbies: Map<string, LobbyState> = new Map();
   private instanceCounter = 0;
@@ -101,7 +109,47 @@ class Socket extends EventEmitter {
     }
   > = new Map();
 
+  constructor() {
+    super();
+
+    this.on("pong", () => {
+      this.pongSeen = true;
+      this.lastPongAt = Date.now();
+      this.unansweredPingAt = undefined;
+    });
+  }
+
+  // Only armed once this connection has answered a ping: an api that predates
+  // the pong reply would otherwise be reconnected every 45 seconds.
+  //
+  // Measured from the oldest unanswered ping and not only from the last pong,
+  // because a tab hidden for a few minutes runs the heartbeat once a minute and
+  // every pong would look late.
+  public static isStale(
+    pongSeen: boolean,
+    lastPongAt: number,
+    unansweredPingAt: number | undefined,
+    now: number,
+  ) {
+    if (!pongSeen || unansweredPingAt === undefined) {
+      return false;
+    }
+
+    return (
+      now - unansweredPingAt > Socket.PONG_GRACE_MS &&
+      now - lastPongAt > Socket.PONG_TIMEOUT_MS
+    );
+  }
+
   public connect() {
+    this.bindLifecycle();
+
+    clearTimeout(this.reconnectTimer);
+    this.reconnectTimer = undefined;
+    clearTimeout(this.resumeCheck);
+    clearInterval(this.heartBeat);
+    this.connected = false;
+
     // Clean up any existing connection before creating a new one
     if (this.connection) {
       try {
@@ -121,20 +169,27 @@ class Socket extends EventEmitter {
     this.connection = webSocket;
 
     webSocket.addEventListener("message", (message) => {
+      if (this.connection !== webSocket) {
+        return;
+      }
+
       const { event, data } = JSON.parse(message.data);
       this.emit(event, data);
     });
 
     webSocket.addEventListener("open", () => {
+      if (this.connection !== webSocket) {
+        return;
+      }
+
       this.emit("online");
       this.connected = true;
       this.retryCount = 0;
+      this.pongSeen = false;
+      this.lastPongAt = 0;
+      this.unansweredPingAt = undefined;
 
       clearInterval(this.heartBeat);
-
-      if (!this.connection) {
-        return;
-      }
 
       this.heartbeat();
 
@@ -149,16 +204,22 @@ class Socket extends EventEmitter {
       }
 
       setTimeout(() => {
-        for (let i = 0; i < this.offlineQueue.length; i++) {
-          const { event, data } = this.offlineQueue[i];
+        if (this.connection !== webSocket || !this.connected) {
+          return;
+        }
+
+        for (const { event, data } of this.offlineQueue.splice(0)) {
           this.event(event, data);
-          this.offlineQueue.shift();
-          i--;
         }
       }, 100);
     });
 
     webSocket.onclose = (closeEvent) => {
+      if (this.connection !== webSocket) {
+        return;
+      }
+
+      clearInterval(this.heartBeat);
       this.emit("offline");
       this.connected = false;
       console.warn("[ws] lost connection to websocket server", closeEvent);
@@ -181,7 +242,8 @@ class Socket extends EventEmitter {
         `[ws] reconnecting in ${Math.round(delay + jitter)}ms (attempt ${this.retryCount}/${Socket.MAX_RETRIES})`,
       );
 
-      setTimeout(() => {
+      this.reconnectTimer = setTimeout(() => {
+        this.reconnectTimer = undefined;
         this.connect();
       }, delay + jitter);
     };
@@ -189,6 +251,64 @@ class Socket extends EventEmitter {
     webSocket.onerror = (error) => {
       console.warn("[ws] web socket error", error);
     };
+  }
+
+  private forceReconnect() {
+    console.warn("[ws] no pong from the server, reconnecting");
+
+    this.connected = false;
+    this.emit("offline");
+    this.retryCount = 0;
+    this.connect();
+  }
+
+  private bindLifecycle() {
+    if (
+      this.lifecycleBound ||
+      typeof window === "undefined" ||
+      typeof document === "undefined"
+    ) {
+      return;
+    }
+
+    this.lifecycleBound = true;
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") {
+        this.resume();
+      }
+    });
+
+    window.addEventListener("online", () => {
+      this.resume();
+    });
+  }
+
+  private resume() {
+    if (!this.connected) {
+      if (this.connection?.readyState === WebSocket.CONNECTING) {
+        return;
+      }
+
+      this.retryCount = 0;
+      this.connect();
+      return;
+    }
+
+    this.heartbeat();
+
+    if (!this.connected) {
+      return;
+    }
+
+    // A zombie only gives itself away by not answering, so look again as soon
+    // as this ping is overdue instead of waiting for the next heartbeat.
+    clearTimeout(this.resumeCheck);
+    this.resumeCheck = setTimeout(() => {
+      if (this.connected) {
+        this.heartbeat();
+      }
+    }, Socket.PONG_GRACE_MS + 1);
   }
 
   private getRoomKey(room: string, data: Record<string, unknown>) {
@@ -308,6 +428,19 @@ class Socket extends EventEmitter {
   // the server expires a focus after a couple of heartbeats and a tab left open
   // on a conversation has to keep saying so.
   private heartbeat() {
+    const now = Date.now();
+
+    if (
+      Socket.isStale(this.pongSeen, this.lastPongAt, this.unansweredPingAt, now)
+    ) {
+      this.forceReconnect();
+      return;
+    }
+
+    if (this.unansweredPingAt === undefined) {
+      this.unansweredPingAt = now;
+    }
+
     this.connection?.send(JSON.stringify({ event: "ping" }));
     this.sendPresence();
   }

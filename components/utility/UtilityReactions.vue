@@ -78,7 +78,7 @@ const digits = computed(() =>
     <button
       type="button"
       :disabled="!canReact"
-      class="inline-flex h-7 items-center gap-1.5 rounded px-1.5 transition-colors disabled:cursor-default disabled:opacity-60"
+      class="inline-flex h-7 items-center gap-1.5 rounded-md px-1.5 transition-colors disabled:cursor-default disabled:opacity-60"
       :class="
         myVote === 1
           ? 'text-[hsl(var(--tac-amber))]'
@@ -98,7 +98,7 @@ const digits = computed(() =>
       v-if="showDownvote"
       type="button"
       :disabled="!canReact"
-      class="inline-flex h-7 items-center justify-center rounded px-1.5 transition-colors disabled:cursor-default disabled:opacity-60"
+      class="inline-flex h-7 items-center justify-center rounded-md px-1.5 transition-colors disabled:cursor-default disabled:opacity-60"
       :class="
         myVote === -1
           ? 'text-destructive'
@@ -116,7 +116,7 @@ const digits = computed(() =>
     <button
       type="button"
       :disabled="!canReact"
-      class="inline-flex h-7 items-center gap-1.5 rounded px-1.5 transition-colors disabled:cursor-default disabled:opacity-60"
+      class="inline-flex h-7 items-center gap-1.5 rounded-md px-1.5 transition-colors disabled:cursor-default disabled:opacity-60"
       :class="
         isFavorited
           ? 'text-destructive'

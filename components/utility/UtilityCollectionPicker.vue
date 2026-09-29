@@ -224,7 +224,7 @@ async function create() {
             v-for="collection of collections"
             :key="collection.id"
             type="button"
-            class="flex w-full items-center justify-between gap-2 rounded px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
+            class="flex w-full items-center justify-between gap-2 rounded-sm px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
             @click="toggle(collection)"
           >
             <span class="min-w-0 truncate text-left">

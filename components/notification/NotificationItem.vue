@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import { computed, ref, onBeforeUnmount } from "vue";
-import { Trash2, Check } from "lucide-vue-next";
+import { Trash2, Check, TriangleAlert, Ban } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import TimeAgo from "~/components/TimeAgo.vue";
 import NotificationContext from "~/components/notification/NotificationContext.vue";
 import NotificationMessage from "~/components/notification/NotificationMessage.vue";
 import { useOrphanedScan } from "~/composables/useOrphanedScan";
+import {
+  sanctionNotificationTone,
+  sanctionToneBarClasses,
+  sanctionToneTextClasses,
+} from "~/utilities/sanctionNotificationTone";
 
 // The orphaned-uploads dialog is mounted globally (default layout), so a
 // StorageScan notification can open it in place instead of navigating away.
@@ -27,6 +32,7 @@ type NotificationItemProps = {
     title: string;
     message: string;
     type: string;
+    role?: string | null;
     steam_id?: string | null;
     entity_id?: string | null;
     is_read: boolean;
@@ -53,11 +59,21 @@ const emit = defineEmits<{
   ): void;
 }>();
 
-const wrapperClass = computed(() =>
+const tone = computed(() => sanctionNotificationTone(props.notification));
+
+const wrapperClass = computed(() => [
   props.variant === "sheet"
     ? "mb-4 p-4 rounded-lg shadow-md relative"
     : "mb-3 p-3 rounded-md border border-border bg-card/40 relative",
-);
+  tone.value ? "overflow-hidden" : "",
+]);
+
+const titleToneClass = computed(() => {
+  if (props.notification.is_read) {
+    return "text-muted-foreground";
+  }
+  return tone.value ? sanctionToneTextClasses[tone.value] : "";
+});
 
 const deleting = ref(false);
 const dismissed = ref(false);
@@ -112,6 +128,12 @@ onBeforeUnmount(() => {
 
 <template>
   <div :class="wrapperClass">
+    <span
+      v-if="tone"
+      aria-hidden="true"
+      class="absolute inset-y-0 left-0 w-1"
+      :class="sanctionToneBarClasses[tone]"
+    />
     <Button
       v-if="notification.deletable !== false"
       size="icon"
@@ -126,9 +148,20 @@ onBeforeUnmount(() => {
     <h3
       :class="[
         'text-lg font-semibold mb-2',
-        notification.is_read ? 'text-muted-foreground' : '',
+        tone ? 'flex items-center gap-2' : '',
+        titleToneClass,
       ]"
     >
+      <TriangleAlert
+        v-if="tone === 'warning'"
+        aria-hidden="true"
+        class="h-4 w-4 shrink-0"
+      />
+      <Ban
+        v-else-if="tone === 'ban'"
+        aria-hidden="true"
+        class="h-4 w-4 shrink-0"
+      />
       {{ notification.title }}
     </h3>
 

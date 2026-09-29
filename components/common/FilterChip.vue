@@ -13,7 +13,7 @@ defineEmits<{
   <button
     type="button"
     :aria-pressed="active"
-    class="inline-flex h-6 shrink-0 cursor-pointer items-center gap-1.5 rounded-sm border px-2 font-mono text-[0.6rem] font-bold uppercase leading-none tracking-[0.14em] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[hsl(var(--tac-amber)/0.6)]"
+    class="inline-flex h-6 shrink-0 cursor-pointer items-center gap-1.5 rounded-md border px-2 font-mono text-[0.6rem] font-bold uppercase leading-none tracking-[0.14em] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[hsl(var(--tac-amber)/0.6)]"
     :class="
       active
         ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.1)] text-[hsl(var(--tac-amber))]'

@@ -29,7 +29,7 @@ const daysSinceLastBan = computed(() => {
 const emit = defineEmits<{ (e: "click"): void }>();
 
 const buttonClasses =
-  "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded border transition-colors duration-150";
+  "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md border transition-colors duration-150";
 </script>
 
 <template>

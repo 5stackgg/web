@@ -18,7 +18,7 @@ import StreamCanvas from "~/components/match/StreamCanvas.vue";
 
       <Button
         v-if="global === false"
-        class="absolute top-2 right-2 w-8 h-8 rounded-sm opacity-70 hover:opacity-100 transition-opacity bg-background/80 hover:bg-background border border-border flex items-center justify-center z-10"
+        class="absolute top-2 right-2 w-8 h-8 opacity-70 hover:opacity-100 transition-opacity bg-background/80 hover:bg-background border border-border flex items-center justify-center z-10"
         @click="setGlobalStream(selectedStream)"
         type="button"
         :title="$t('streams.move_to_global_view')"

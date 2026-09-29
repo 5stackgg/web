@@ -123,7 +123,7 @@ const unwritten = computed(
 
       <button
         type="button"
-        class="-mr-1 -mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+        class="-mr-1 -mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
         :title="$t('common.close')"
         @click="emit('close')"
       >
@@ -240,7 +240,7 @@ const unwritten = computed(
       <button
         v-if="compact"
         type="button"
-        class="flex h-8 w-8 shrink-0 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+        class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
         :title="$t('common.close')"
         @click="emit('close')"
       >

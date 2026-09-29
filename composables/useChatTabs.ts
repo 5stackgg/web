@@ -1,5 +1,6 @@
 import { ref, computed } from "vue";
 import type { ChatType } from "~/web-sockets/Socket";
+import { orderChatTabs } from "~/utilities/chatTabOrder";
 
 export interface ChatTab {
   id: string;
@@ -20,27 +21,35 @@ export interface ChatTab {
 
 const tabsRef = ref<ChatTab[]>([]);
 const unreadCountsRef = ref<Record<string, number>>({});
+// A message can reach a badge twice, from direct:incoming and from its room's
+// lobby:chat, so a badge remembers which ids it has already counted.
+const unreadMessageIds = new Map<string, Set<string>>();
+const MAX_UNREAD_MESSAGE_IDS = 200;
 const activeTabIdRef = ref<string | null>(null);
 
 export function useChatTabs() {
   const tabs = computed(() => tabsRef.value);
   const unreadCounts = computed(() => unreadCountsRef.value);
   const activeTabId = computed(() => activeTabIdRef.value);
+  const totalUnread = computed(() =>
+    Object.values(unreadCountsRef.value).reduce((sum, n) => sum + (n || 0), 0),
+  );
 
   function findTabIndex(id: string) {
     return tabsRef.value.findIndex((t) => t.id === id);
   }
 
-  // `activate` exists for incoming direct messages: a tab opened because
-  // someone messaged you must not yank you out of the room you are reading.
+  // `activate: false` opens a tab in the background -- an incoming direct
+  // message, or a room the session adds on its own -- so it does not yank you
+  // out of the room you are reading.
   function openTab(
     payload: Omit<ChatTab, "pinned"> & {
       pinned?: boolean;
       activate?: boolean;
     },
   ) {
-    const id = payload.id;
-    const activate = payload.activate ?? true;
+    const { activate = true, ...fields } = payload;
+    const id = fields.id;
     const existingIndex = findTabIndex(id);
 
     if (existingIndex !== -1) {
@@ -51,8 +60,8 @@ export function useChatTabs() {
     }
 
     const tab: ChatTab = {
-      ...payload,
-      pinned: payload.pinned ?? false,
+      ...fields,
+      pinned: fields.pinned ?? false,
     };
 
     tabsRef.value.push(tab);
@@ -70,15 +79,14 @@ export function useChatTabs() {
       return;
     }
 
+    const ordered = orderChatTabs(tabsRef.value);
     const [removed] = tabsRef.value.splice(idx, 1);
     delete unreadCountsRef.value[removed.id];
+    unreadMessageIds.delete(removed.id);
 
     if (activeTabIdRef.value === removed.id) {
-      const next =
-        tabsRef.value[idx] ||
-        tabsRef.value[idx - 1] ||
-        tabsRef.value[0] ||
-        null;
+      const position = ordered.findIndex((tab) => tab.id === removed.id);
+      const next = ordered[position + 1] ?? ordered[position - 1] ?? null;
       activeTabIdRef.value = next ? next.id : null;
     }
   }
@@ -109,29 +117,58 @@ export function useChatTabs() {
     };
   }
 
-  function incrementUnread(id: string) {
+  function incrementUnread(id: string, messageId?: string) {
+    if (messageId) {
+      let counted = unreadMessageIds.get(id);
+      if (!counted) {
+        counted = new Set();
+        unreadMessageIds.set(id, counted);
+      }
+
+      if (counted.has(messageId)) {
+        return false;
+      }
+
+      counted.add(messageId);
+      if (counted.size > MAX_UNREAD_MESSAGE_IDS) {
+        const [oldest] = counted;
+        counted.delete(oldest);
+      }
+    }
+
     unreadCountsRef.value[id] = (unreadCountsRef.value[id] || 0) + 1;
+    return true;
   }
 
   function resetUnread(id: string) {
+    unreadMessageIds.delete(id);
+
     if (unreadCountsRef.value[id]) {
       unreadCountsRef.value[id] = 0;
     }
   }
 
+  // A non-zero recount keeps the ids already counted, taking them to be part of
+  // the new number, so a late second delivery of one still isn't counted again.
   function setUnread(id: string, value: number) {
     unreadCountsRef.value[id] = value;
+
+    if (!value) {
+      unreadMessageIds.delete(id);
+    }
   }
 
   function clearAll() {
     tabsRef.value = [];
     unreadCountsRef.value = {};
+    unreadMessageIds.clear();
     activeTabIdRef.value = null;
   }
 
   return {
     tabs,
     unreadCounts,
+    totalUnread,
     activeTabId,
     openTab,
     closeTab,

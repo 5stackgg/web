@@ -34,6 +34,8 @@ import FileManagerContainer from "~/components/file-manager/FileManagerContainer
 import { generateQuery } from "~/graphql/graphqlGen";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 
+definePageMeta({ middleware: "admin" });
+
 const route = useRoute();
 const router = useRouter();
 

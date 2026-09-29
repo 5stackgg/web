@@ -112,7 +112,7 @@ const titleClasses =
           <QuickServerConnect :server="server" highlight />
 
           <template v-if="isManager">
-            <TooltipProvider v-if="server?.game_server_node_id">
+            <TooltipProvider v-if="isAdmin && server?.game_server_node_id">
               <Tooltip>
                 <TooltipTrigger as-child>
                   <Button

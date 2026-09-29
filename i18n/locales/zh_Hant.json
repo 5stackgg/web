@@ -34,6 +34,7 @@
       "title_placeholder": "計劃維護",
       "message": "訊息內容",
       "message_placeholder": "配對功能暫時無法使用，我們正在調查中。",
+      "message_link_hint": "使用 [label](https://example.com) 新增連結。指向本站的連結會在應用程式內開啟。",
       "is_active": "啟用",
       "is_active_hint": "立即向所有人顯示此橫幅。",
       "dismissible": "可關閉",
@@ -928,6 +929,7 @@
     "user": "使用者",
     "verified_user": "已驗證使用者",
     "streamer": "實況主",
+    "moderator": "版主",
     "match_organizer": "比賽主辦者",
     "tournament_organizer": "賽事主辦者",
     "administrator": "管理員"
@@ -1586,6 +1588,7 @@
         "my_account": "我的帳戶",
         "api_keys": "API 金鑰",
         "linked_accounts": "已連結帳戶",
+        "blocked_players": "已封鎖的玩家",
         "voice": "語音與音訊",
         "api_keys_management": {
           "add_api_key": "新增 API 金鑰",
@@ -1699,6 +1702,14 @@
           "matches": {
             "title": "比賽",
             "description": "比賽狀態變更與匯入的比賽。"
+          },
+          "match_found": {
+            "title": "找到比賽",
+            "description": "配對系統已為你找到比賽，正在等待你接受。即使在勿擾時段也會響鈴。"
+          },
+          "admin_call": {
+            "title": "管理員呼叫",
+            "description": "管理員想透過你的比賽攝影機與你通話。即使在勿擾時段也會響鈴。"
           },
           "chat": {
             "title": "聊天",
@@ -1823,11 +1834,31 @@
         },
         "quiet_hours": {
           "title": "勿擾時段",
-          "description": "在這段時間內推播通知不會發出聲音，但仍會出現在你的通知鈴鐺中。",
+          "description": "在這段時間內推播通知不會發出聲音，但仍會出現在你的通知鈴鐺中。找到比賽和管理員呼叫仍會照常響鈴。",
           "from": "開始",
           "to": "結束",
           "reset": "重設",
           "incomplete": "請同時設定開始與結束時間才能儲存勿擾時段。"
+        },
+        "tab_flash": {
+          "title": "瀏覽器分頁",
+          "description": "當此分頁在背景且有事需要你處理時，閃爍分頁的標題和圖示。儲存在此裝置上。",
+          "match_found": {
+            "title": "已找到比賽",
+            "description": "比賽已就緒，正在等待你接受。"
+          },
+          "admin_call": {
+            "title": "主辦方通話",
+            "description": "比賽主辦方開始透過你的攝影機頁面與你通話時。"
+          },
+          "chat": {
+            "title": "聊天訊息",
+            "description": "對話、大廳或錦標賽房間中的新訊息。不包括比賽中的遊戲內聊天。"
+          },
+          "bell": {
+            "title": "通知",
+            "description": "通知鈴鐺中出現新內容時。"
+          }
         }
       },
       "notifications": {
@@ -1975,13 +2006,13 @@
             "role_id": "比賽通知角色 ID",
             "role_id_description": "在比賽狀態通知中，這些角色將被標註提及。您可以新增多個角色 ID，以逗號分隔。"
           },
-          "gamedata_notifications": {
-            "title": "遊戲資料驗證通知",
-            "description": "設定 CS2 遊戲資料簽章驗證結果的發佈位置。",
-            "webhook": "遊戲資料通知 Webhook URL",
-            "webhook_description": "用於遊戲資料驗證結果的專用 Webhook。若未設定，則回退使用預設 Webhook。",
-            "role_id": "遊戲資料通知角色 ID",
-            "role_id_description": "在遊戲資料驗證通知中，這些角色將被標註提及。您可以新增多個角色 ID，以逗號分隔。若未設定，則回退使用預設角色。"
+          "cs2_build_notifications": {
+            "title": "CS2 版本通知",
+            "description": "CS2 更新、遊戲資料驗證與地圖資源建置通知的發佈位置。",
+            "webhook": "CS2 版本通知 Webhook URL",
+            "webhook_description": "用於 CS2 版本通知的專用 Webhook。若未設定，則回退使用預設 Webhook。",
+            "role_id": "CS2 版本通知角色 ID",
+            "role_id_description": "在 CS2 版本通知中，這些角色將被標註提及。您可以新增多個角色 ID，以逗號分隔。若未設定，則回退使用預設角色。"
           },
           "server_notifications": {
             "title": "伺服器通知",
@@ -2831,7 +2862,19 @@
         "upload_success_message": "已上傳——正在匯入。您的比賽將很快顯示。",
         "toast_demo_uploaded": "Demo 已上傳",
         "toast_demo_uploaded_description": "正在匯入——您的比賽將很快顯示。",
-        "toast_upload_failed": "上傳失敗"
+        "toast_upload_failed": "上傳失敗",
+        "import_share_code_title": "透過分享碼匯入比賽",
+        "import_share_code_description": "貼上 CS2 中 觀戰 → 您的比賽 裡的分享碼或分享連結，即可匯入已連結的比賽紀錄中遺漏的配對比賽。",
+        "import_share_code_submit": "匯入",
+        "toast_share_code_queued": "比賽已加入匯入佇列",
+        "toast_share_code_failed": "無法匯入比賽"
+      },
+      "blocked_players": {
+        "title": "已封鎖的玩家",
+        "description": "被封鎖的玩家無法傳送訊息、邀請或好友邀請給你。解除封鎖不會恢復你們的好友關係。",
+        "empty_title": "沒有已封鎖的玩家",
+        "empty_description": "你從玩家個人檔案或玩家選單封鎖的玩家會顯示在這裡。",
+        "blocked_on": "已封鎖"
       }
     },
     "watch": {
@@ -3116,6 +3159,7 @@
         "recent_wins_and_losses": "近期勝負",
         "elo_history": "ELO 歷史",
         "no_elo_history": "參加比賽以產生 ELO",
+        "no_elo_history_other": "尚無 ELO 紀錄",
         "play_a_match": "開始比賽",
         "matches": "比賽",
         "no_matches": "尚無比賽",
@@ -3426,7 +3470,122 @@
       "no_nodes_title": "無遊戲伺服器節點",
       "display_metrics": "顯示指標",
       "create": "建立遊戲伺服器節點",
-      "cs_version_info": "CS2 版本資訊：",
+      "cs2_build": {
+        "title": "CS2 版本",
+        "released": "發佈於",
+        "history": "版本歷史",
+        "gamedata": "遊戲資料",
+        "gamedata_description": "外掛程式簽章、偏移量與修補",
+        "map_assets": "地圖資源",
+        "map_assets_description": "用於 3D 重播的網格、手榴彈阻擋體與點位標註",
+        "gamedata_never": "此版本尚未驗證",
+        "map_assets_never": "此版本尚未建置",
+        "auto_hint": "節點首次回報新版本時自動執行",
+        "map_assets_hint": "開啟自動建置時，會在遊戲資料驗證後建置",
+        "revalidate": "重新驗證",
+        "rebuild": "重新建置",
+        "build": "建置",
+        "retry_failed": "重試失敗的地圖",
+        "run_on": "執行節點",
+        "automatic": "自動",
+        "automatic_description": "已處於版本 {build} 的線上節點",
+        "auto": "自動",
+        "started": "已開始",
+        "validated": "已驗證",
+        "finished": "已完成",
+        "took": "耗時 {duration}",
+        "ran_on": "執行於 {node}",
+        "requested_by": "由 {name} 發起",
+        "vs_build": "相較於 {build} 的變更",
+        "first_run": "尚無可比較的版本",
+        "no_changes": "自 {build} 以來無變更",
+        "nothing_broken": "沒有損壞項目",
+        "no_maps": "未發佈任何地圖",
+        "reused_from": "沿用自 {build}",
+        "skipped_entries": "已略過 {count} 個 — 無法檢查",
+        "log": "建置記錄",
+        "trigger": {
+          "auto": "自動",
+          "manual": "手動"
+        },
+        "stats": {
+          "checked": "已檢查",
+          "broken": "損壞",
+          "warnings": "警告",
+          "skipped": "已略過",
+          "maps": "地圖",
+          "changed": "已變更",
+          "unchanged": "未變更",
+          "failed": "失敗"
+        },
+        "chip": {
+          "newly_broken": "{count} 個新損壞",
+          "fixed": "{count} 個已修復",
+          "new_warnings": "警告 +{count}",
+          "rebuilt": "{count} 個已重建",
+          "added": "{count} 個新增",
+          "removed": "{count} 個移除"
+        },
+        "change": {
+          "broken": "損壞",
+          "still_broken": "仍損壞",
+          "fixed": "已修復",
+          "warning": "警告",
+          "cleared": "已消除",
+          "rebuilt": "已重建",
+          "added": "新增",
+          "removed": "移除",
+          "failed": "失敗",
+          "unchanged": "未變更",
+          "included": "已發佈"
+        },
+        "reason": {
+          "vpk": "地圖變更",
+          "pipeline": "工具鏈變更",
+          "assets": "已重建",
+          "collision": "碰撞失敗",
+          "view": "檢視網格失敗"
+        },
+        "gamedata_status": {
+          "running": "驗證中",
+          "passed": "通過",
+          "warning": "警告",
+          "failed": "失敗",
+          "error": "錯誤",
+          "stale": "停滯",
+          "none": "未執行"
+        },
+        "map_assets_status": {
+          "pending": "排隊中",
+          "building": "建置中",
+          "published": "已發佈",
+          "partial": "部分完成",
+          "failed": "失敗",
+          "stale": "停滯",
+          "none": "未建置"
+        },
+        "blocked": {
+          "no_node": "沒有處於版本 {build} 的線上節點",
+          "running": "已有驗證正在執行",
+          "building": "已有建置在排隊或執行中"
+        },
+        "node_reason": {
+          "disabled": "已停用",
+          "gpu_only": "僅 GPU 節點",
+          "status": "{status}",
+          "updating": "正在更新 CS2",
+          "other_build": "處於版本 {build}"
+        },
+        "toast": {
+          "queued_validation": "遊戲資料驗證已加入佇列",
+          "queued_build": "地圖資源建置已加入佇列"
+        },
+        "force": {
+          "title": "重新建置所有地圖？",
+          "description": "版本 {build} 的地圖資源已發佈。強制重新建置會在節點上再次建置每張地圖，可能需要數小時，且只有在有變更時才會發佈新的清單修訂版本。",
+          "confirm": "重新建置所有地圖"
+        }
+      },
       "hide_offline": "隱藏離線節點",
       "only_enabled": "僅顯示已啟用節點",
       "setup_dialog": {
@@ -3454,7 +3613,21 @@
         "supports_cpu_pinning": "支援 CPU 綁定",
         "cpu_governor": "CPU 排程策略"
       },
-      "last_updated": "最後更新：{date}",
+      "builds": {
+        "title": "CS2 版本歷史",
+        "description": "每個 CS2 版本的遊戲資料驗證與地圖資源建置，以及各版本相較於上一版本的變更。",
+        "back": "遊戲伺服器節點",
+        "builds": "版本",
+        "no_builds": "尚無任何版本經過驗證或建置。",
+        "current": "目前",
+        "compared_with": "對比 {build}",
+        "history_note": "歷史記錄從此次發佈開始；更早的版本已隨其遊戲版本一併移除。",
+        "timeline": {
+          "detected": "更新發佈",
+          "gamedata": "遊戲資料",
+          "map_assets": "地圖資源"
+        }
+      },
       "max_label": "最大：",
       "ports_label": "連接埠：",
       "cpu_hardware": "CPU 與硬體"
@@ -5019,9 +5192,6 @@
       }
     }
   },
-  "custom_match": {
-    "description": "使用自訂規則、地圖與陣容建立您自己的比賽"
-  },
   "layouts": {
     "account_settings": {
       "title": "帳戶設定",
@@ -5381,6 +5551,12 @@
       }
     }
   },
+  "tab_flash": {
+    "match_found": "已找到比賽",
+    "admin_call": "主辦方正在呼叫你",
+    "chat": "新訊息 | 新訊息",
+    "bell": "新通知 | 新通知"
+  },
   "roster_picker": {
     "add_starter": "新增先發",
     "add_substitute": "新增替補",
@@ -5695,6 +5871,7 @@
       "information_tab": "資訊",
       "about_section": "關於",
       "match_settings": "比賽設定",
+      "chat_room_tab": "聊天室",
       "read_more": "顯示更多",
       "read_less": "顯示較少"
     },
@@ -7690,6 +7867,7 @@
     "tooltips": {
       "fullscreen": "全螢幕",
       "toggle_right_sidebar": "切換右側邊欄",
+      "toggle_right_sidebar_unread": "切換右側邊欄（{count} 則未讀）",
       "view_steam_profile": "查看 Steam 個人檔案",
       "zoom_in": "放大",
       "zoom_in_scroll": "放大（Ctrl/Cmd + 滾輪）",
@@ -7833,11 +8011,13 @@
       "reason_label": "原因",
       "reason_placeholder": "輸入處罰原因...",
       "reason_description": "請為此處罰提供明確的原因",
+      "reason_required": "必須填寫原因",
       "types": {
         "ban_description": "玩家無法參與任何活動",
         "mute_description": "玩家無法在遊戲中使用語音聊天",
         "gag_description": "玩家無法在遊戲中使用文字聊天",
-        "silence_description": "玩家被禁音並禁言"
+        "silence_description": "玩家被禁音並禁言",
+        "warning_description": "記錄在玩家檔案中的提示資訊，永不執行"
       },
       "durations": {
         "15_minutes": "15 分鐘",
@@ -7852,20 +8032,24 @@
         "ban": "封禁玩家",
         "mute": "關閉玩家麥克風",
         "gag": "禁止玩家打字",
-        "silence": "完全禁言玩家"
+        "silence": "完全禁言玩家",
+        "warning": "警告玩家"
       },
       "submit": {
         "ban": "封禁玩家",
         "mute": "關閉玩家麥克風",
         "gag": "禁止玩家打字",
-        "silence": "完全禁言玩家"
+        "silence": "完全禁言玩家",
+        "warning": "發出警告"
       },
       "applied": {
         "ban": "已封禁 {name}",
         "mute": "已關閉 {name} 的麥克風",
         "gag": "已禁止 {name} 打字",
-        "silence": "已完全禁言 {name}"
+        "silence": "已完全禁言 {name}",
+        "warning": "已向 {name} 發出警告"
       },
+      "warning_note": "警告會儲存到玩家檔案並通知該玩家。它永遠不會被執行，也永不過期。",
       "typed_player": "{type}玩家"
     },
     "search": {
@@ -7892,6 +8076,13 @@
       "muted": "已禁音",
       "gagged": "已禁言",
       "silenced": "已禁音＋禁言",
+      "type_labels": {
+        "ban": "封禁",
+        "mute": "禁音",
+        "gag": "禁言",
+        "silence": "禁音＋禁言",
+        "warning": "警告"
+      },
       "duration_label": "期間",
       "select_duration": "選擇期間",
       "sanctions": "處罰",
@@ -7906,6 +8097,7 @@
       "permanent": "永久",
       "active": "生效中",
       "expired": "已到期",
+      "on_record": "已記錄",
       "cannot_edit_expired": "已到期的處罰無法編輯——請新增一筆",
       "edit": "編輯",
       "remove": "移除",
@@ -7967,6 +8159,25 @@
     "current_elo": "目前",
     "faceit_level": "等級 {level}",
     "elo_aria_label": "ELO，主要 {tier} {elo}"
+  },
+  "player_blocks": {
+    "block": "封鎖",
+    "unblock": "解除封鎖",
+    "blocked_badge": "已封鎖",
+    "confirm": {
+      "title": "要封鎖 {name} 嗎？",
+      "description": "{name} 將無法再傳送訊息、邀請或好友邀請給你。你們的好友關係會被移除，解除封鎖後也不會恢復。",
+      "action": "封鎖"
+    },
+    "toasts": {
+      "blocked": "已封鎖 {name}",
+      "unblocked": "已解除封鎖 {name}"
+    },
+    "errors": {
+      "title": "無法執行此操作",
+      "player_blocked": "無法對這位玩家執行此操作。",
+      "player_blocked_bulk": "其中至少有一名玩家無法加入。"
+    }
   },
   "maps": {
     "veto": {
@@ -8097,8 +8308,6 @@
     "update_cs": "更新 CS2",
     "updating_to": "更新到 {version}",
     "update_to_version": "更新到 {version}",
-    "validate_gamedata": "驗證遊戲資料",
-    "build_map_assets": "建置地圖資源",
     "note_label": "注意：",
     "one_cpu_core": "1 個 CPU 核心",
     "cpu_reservation_note": " 每個節點上為系統保留 {cores} 以維持回應能力。",
@@ -8196,8 +8405,6 @@
     "toast": {
       "cs_updating": "節點上的 CS2 正在更新",
       "csgo_installing": "節點上的 CS:GO 正在安裝",
-      "validating_gamedata": "正在驗證節點上的遊戲資料簽章",
-      "building_map_assets": "正在為此節點的 CS2 版本建置地圖網格與點位標註",
       "ports_updated": "節點連接埠已更新",
       "ports_removed": "節點連接埠已移除",
       "made_gpu_only": "節點已設為僅 GPU",

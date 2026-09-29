@@ -23,6 +23,7 @@ import { useInvites } from "@/composables/useInvites";
 import { useMediaQuery } from "@vueuse/core";
 import MiniDisplay from "~/components/matchmaking-lobby/MiniDisplay.vue";
 import AnimatedStat from "~/components/AnimatedStat.vue";
+import { badgePopTransition, formatBadgeCount } from "~/utilities/badgeCount";
 import SocialPanel from "~/components/hub/SocialPanel.vue";
 import RecentGamesPanel from "~/components/hub/RecentGamesPanel.vue";
 import SidebarChatTab from "~/components/hub/ChatPanel.vue";
@@ -42,7 +43,7 @@ const {
   togglePin,
 } = useRightSidebar();
 const { activeHub, selectHub } = useHubState();
-const { unreadCounts } = useChatTabs();
+const { totalUnread } = useChatTabs();
 const { hasNotifications, unreadNotificationCount } = useNotificationBadge();
 const { hasSocialInvites, hasLobbyInvites, lobbyInvites, pendingFriends } =
   useInvites();
@@ -156,13 +157,8 @@ watch(hoverCloseSuspended, (suspended) => {
   }
 });
 
-const totalUnread = computed(() =>
-  Object.values(unreadCounts.value).reduce((sum, n) => sum + (n || 0), 0),
-);
 const lobbyInviteCount = computed(() => lobbyInvites.value?.length ?? 0);
 const socialInviteCount = computed(() => pendingFriends.value?.length ?? 0);
-const formatBadgeCount = (count: number) =>
-  count > 100 ? "100+" : String(count);
 const notificationBadgeLabel = computed(() =>
   formatBadgeCount(unreadNotificationCount.value),
 );
@@ -216,14 +212,6 @@ watch(
   { immediate: true },
 );
 
-// Pop-in/out for the count circles (bouncy enter, quick fade-shrink leave)
-const badgePopTransition = {
-  enterActiveClass:
-    "[transition:transform_0.3s_cubic-bezier(0.34,1.56,0.64,1),opacity_0.2s_ease]",
-  enterFromClass: "scale-0 opacity-0",
-  leaveActiveClass: "[transition:transform_0.15s_ease-in,opacity_0.15s_ease-in]",
-  leaveToClass: "scale-0 opacity-0",
-};
 const socialBadgeLabel = computed(() =>
   formatBadgeCount(socialInviteCount.value),
 );

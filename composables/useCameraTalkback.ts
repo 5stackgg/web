@@ -1,11 +1,16 @@
-import { ref, onScopeDispose } from "vue";
+import { ref, onScopeDispose, watch } from "vue";
+import { useDocumentVisibility } from "@vueuse/core";
+import socket from "~/web-sockets/Socket";
 import {
   cameraPlayerTalkUrl,
   fetchCameraTalkStatus,
   hangupPlayerTalk,
   negotiateWebRtc,
 } from "~/composables/useCameraApi";
+import { useTabFlash } from "~/composables/useTabFlash";
 import { useIceServers } from "~/composables/useIceServers";
+import { closeNotifications } from "~/composables/usePushNotifications";
+import { notificationThreadKey } from "~/utilities/chatThread";
 
 // The other direction: an organizer talking to the player whose camera this is.
 // Nothing here starts until the player has connected, because the connect click
@@ -22,8 +27,31 @@ export function useCameraTalkback(matchId: () => string) {
   // clearing the timer does nothing to a request that is about to re-arm it, so
   // the page kept polling -- and could still open a peer connection -- forever.
   let disposed = false;
+  // Hanging up kicks every session on the talk path, the organizer's included.
+  // A tab that never connected -- opened from the ring on a device that is not
+  // the camera -- must not end a call the player is taking on the one that is.
+  let started = false;
 
   const ice = useIceServers();
+  const visibility = useDocumentVisibility();
+
+  const callThread = () => notificationThreadKey("AdminCall", matchId());
+
+  // The camera page has no layout, so no chat presence reporter runs beside
+  // this one, and whatever the previous page last reported would otherwise
+  // keep going out on every heartbeat. While the call is playing here,
+  // reporting it as focused lets the server skip ringing the player again
+  // about a call they are already on.
+  watch(
+    [talking, visibility],
+    ([isTalking, visible]) => {
+      socket.setPresence({
+        visible: visible !== "hidden",
+        focus: isTalking ? callThread() : null,
+      });
+    },
+    { immediate: true },
+  );
 
   // If autoplay refuses sound the promise rejects and nothing plays at all, so
   // fall back to a muted start -- a picture with a visible unmute beats a black
@@ -68,6 +96,7 @@ export function useCameraTalkback(matchId: () => string) {
 
       await negotiateWebRtc(pc, cameraPlayerTalkUrl(matchId()), "include");
       talking.value = true;
+      void closeNotifications(callThread());
     } catch {
       end();
     }
@@ -75,6 +104,7 @@ export function useCameraTalkback(matchId: () => string) {
 
   function end() {
     talking.value = false;
+    useTabFlash().clear("admin_call");
     muted.value = false;
     talkPc?.close();
     talkPc = null;
@@ -93,6 +123,10 @@ export function useCameraTalkback(matchId: () => string) {
 
     if (ready && !talking.value) {
       await join();
+
+      if (talking.value && !disposed) {
+        useTabFlash().signal("admin_call");
+      }
     } else if (!ready && talking.value) {
       end();
     }
@@ -110,6 +144,7 @@ export function useCameraTalkback(matchId: () => string) {
   }
 
   function start() {
+    started = true;
     void poll();
   }
 
@@ -121,7 +156,10 @@ export function useCameraTalkback(matchId: () => string) {
     }
 
     end();
-    void hangupPlayerTalk(matchId());
+
+    if (started) {
+      void hangupPlayerTalk(matchId());
+    }
   });
 
   return { talkEl, talking, muted, start, toggleAudio, end };

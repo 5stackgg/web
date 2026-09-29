@@ -249,7 +249,7 @@ async function untagPlayer(steamId: string | number) {
               <button
                 v-if="canEdit"
                 type="button"
-                class="rounded p-0.5 text-muted-foreground transition-colors hover:bg-destructive/20 hover:text-destructive"
+                class="rounded-sm p-0.5 text-muted-foreground transition-colors hover:bg-destructive/20 hover:text-destructive"
                 :aria-label="$t('common.remove')"
                 @click="untagPlayer(row.steam_id)"
               >

@@ -66,7 +66,7 @@ defineEmits<{ (e: "toggle-preview"): void }>();
     <button
       v-if="phase === 'connected'"
       type="button"
-      class="inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[0.55rem] uppercase tracking-[0.2em] transition-colors"
+      class="inline-flex shrink-0 items-center gap-1.5 rounded-md border px-2.5 py-1 font-mono text-[0.55rem] uppercase tracking-[0.2em] transition-colors"
       :class="
         previewVisible
           ? 'border-border bg-background/40 text-muted-foreground hover:text-foreground'

@@ -2,6 +2,8 @@
 import TournamentCreateWizard from "~/components/tournament/TournamentCreateWizard.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+
+definePageMeta({ middleware: "tournament-create" });
 </script>
 
 <template>

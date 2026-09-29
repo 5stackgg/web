@@ -40,6 +40,7 @@ const linkedAccountsEnabled = computed(
 
 const authCode = ref("");
 const shareCode = ref("");
+const importShareCodeInput = ref("");
 const linking = ref(false);
 const unlinking = ref(false);
 const polling = ref(false);
@@ -117,6 +118,15 @@ const CLEAR_PENDING_MUTATION = gql`
   mutation ClearPendingMatchImport($valve_match_id: String!) {
     clearPendingMatchImport(valve_match_id: $valve_match_id) {
       success
+    }
+  }
+`;
+
+const IMPORT_SHARE_CODE_MUTATION = gql`
+  mutation ImportSteamMatchShareCode($share_code: String!) {
+    importSteamMatchShareCode(share_code: $share_code) {
+      success
+      error
     }
   }
 `;
@@ -405,6 +415,30 @@ async function submitUnlink() {
     showUnlinkConfirm.value = false;
   } finally {
     unlinking.value = false;
+  }
+}
+
+async function submitShareCodeImport() {
+  if (!importShareCodeInput.value) {
+    return;
+  }
+  const { data } = await apolloClient.mutate({
+    mutation: IMPORT_SHARE_CODE_MUTATION,
+    variables: { share_code: importShareCodeInput.value },
+  });
+  const result = data?.importSteamMatchShareCode;
+  if (result?.success) {
+    toast({
+      title: t("pages.settings.linked_accounts.toast_share_code_queued"),
+    });
+    importShareCodeInput.value = "";
+  } else {
+    toast({
+      title: t("pages.settings.linked_accounts.toast_share_code_failed"),
+      description:
+        result?.error ?? t("pages.settings.linked_accounts.unknown_error"),
+      variant: "destructive",
+    });
   }
 }
 
@@ -845,6 +879,39 @@ function formatPendingDate(date: string): string {
     </FadeSwap>
   </PageTransition>
 
+  <PageTransition v-if="linkedAccountsEnabled && linkLoaded" :delay="120">
+    <div
+      class="rounded-lg border border-border bg-card/50 px-4 py-3 space-y-3 max-w-xl mt-4"
+    >
+      <div>
+        <div class="text-sm font-medium leading-tight">
+          {{ $t("pages.settings.linked_accounts.import_share_code_title") }}
+        </div>
+        <p class="text-xs text-muted-foreground mt-0.5">
+          {{
+            $t("pages.settings.linked_accounts.import_share_code_description")
+          }}
+        </p>
+      </div>
+      <div class="flex items-center gap-2">
+        <Input
+          v-model="importShareCodeInput"
+          placeholder="CSGO-XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <Button
+          variant="outline"
+          class="shrink-0"
+          :disabled="!importShareCodeInput"
+          @click="submitShareCodeImport"
+        >
+          {{ $t("pages.settings.linked_accounts.import_share_code_submit") }}
+        </Button>
+      </div>
+    </div>
+  </PageTransition>
+
   <AlertDialog v-model:open="showUnlinkConfirm">
     <AlertDialogContent>
       <AlertDialogHeader>
@@ -917,7 +984,7 @@ function formatPendingDate(date: string): string {
           :key="status"
           type="button"
           :disabled="!pendingCountsByStatus[status]"
-          class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-mono text-[0.65rem] uppercase tracking-[0.14em] transition-colors disabled:opacity-30"
+          class="inline-flex items-center gap-1.5 rounded-md border px-2.5 py-0.5 font-mono text-[0.65rem] uppercase tracking-[0.14em] transition-colors disabled:opacity-30"
           :class="
             pendingFilters.has(status)
               ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))]'

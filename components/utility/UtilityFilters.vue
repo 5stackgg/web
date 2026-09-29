@@ -313,7 +313,7 @@ const sortOptions = computed<Array<{ value: UtilitySort; label: string }>>(() =>
           v-for="option of sortOptions"
           :key="option.value"
           type="button"
-          class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
+          class="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
           @click="setSort(option.value)"
         >
           <span>{{ option.label }}</span>

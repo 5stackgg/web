@@ -92,6 +92,33 @@ async function getExistingSubscription(): Promise<PushSubscription | null> {
   return registration.pushManager.getSubscription();
 }
 
+// Takes a ring off this device once it has been answered here. Other devices
+// keep theirs until their worker closes it at `expiresAt`.
+//
+// getRegistration() rather than serviceWorker.ready, which never settles when
+// no worker is registered.
+export async function closeNotifications(tag: string): Promise<void> {
+  if (typeof navigator === "undefined" || !("serviceWorker" in navigator)) {
+    return;
+  }
+
+  try {
+    const registration = await navigator.serviceWorker.getRegistration();
+
+    if (!registration || typeof registration.getNotifications !== "function") {
+      return;
+    }
+
+    const notifications = await registration.getNotifications({ tag });
+
+    for (const notification of notifications) {
+      notification.close();
+    }
+  } catch {
+    // Best effort: the worker closes it at `expiresAt` regardless.
+  }
+}
+
 export function usePushNotifications() {
   const isDenied = computed(() => permission.value === "denied");
 

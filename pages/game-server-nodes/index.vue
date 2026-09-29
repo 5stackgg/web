@@ -46,6 +46,8 @@ import {
   filterBadgeClasses,
 } from "~/utilities/tacticalClasses";
 
+definePageMeta({ middleware: "admin" });
+
 const fadeTransition = {
   enterActiveClass: "transition-opacity duration-200 ease-out",
   leaveActiveClass: "transition-opacity duration-200 ease-out",

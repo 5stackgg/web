@@ -101,6 +101,38 @@
   </div>
 </template>
 
+<script setup lang="ts">
+definePageMeta({ middleware: "admin" });
+
+const activeTab = useRouteTab({
+  defaultTab: "queries",
+  tabs: [
+    "queries",
+    "connections",
+    "locks",
+    "io",
+    "index-usage",
+    "storage",
+    "timescale",
+    "backups",
+  ],
+});
+
+const activeTabComponent = computed(() => {
+  const map: Record<string, any> = {
+    queries: QueryPerformanceTab,
+    connections: ConnectionsTab,
+    locks: LocksTransactionsTab,
+    io: IOBufferStatsTab,
+    "index-usage": IndexUsageTab,
+    storage: StorageTab,
+    timescale: TimescaleTab,
+    backups: BackupsTab,
+  };
+  return map[activeTab.value] || QueryPerformanceTab;
+});
+</script>
+
 <script lang="ts">
 import {
   PlayIcon,
@@ -171,23 +203,6 @@ export default {
     RefreshCwIcon,
     DatabaseIcon,
   },
-  setup() {
-    const activeTab = useRouteTab({
-      defaultTab: "queries",
-      tabs: [
-        "queries",
-        "connections",
-        "locks",
-        "io",
-        "index-usage",
-        "storage",
-        "timescale",
-        "backups",
-      ],
-    });
-
-    return { activeTab };
-  },
   data() {
     return {
       refreshInterval: "5",
@@ -220,19 +235,6 @@ export default {
         { value: "timescale", label: this.$t("pages.database.tabs.timescale") },
         { value: "backups", label: this.$t("pages.database.tabs.backups") },
       ];
-    },
-    activeTabComponent() {
-      const map: Record<string, any> = {
-        queries: QueryPerformanceTab,
-        connections: ConnectionsTab,
-        locks: LocksTransactionsTab,
-        io: IOBufferStatsTab,
-        "index-usage": IndexUsageTab,
-        storage: StorageTab,
-        timescale: TimescaleTab,
-        backups: BackupsTab,
-      };
-      return map[this.activeTab] || QueryPerformanceTab;
     },
     pollInterval() {
       if (this.isPaused) {

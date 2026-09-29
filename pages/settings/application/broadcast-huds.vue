@@ -185,15 +185,15 @@ definePageMeta({
                     {{ broadcastHudLabel(hud) }}
                   </h3>
                   <div
-                    v-if="hudMeta(hud) || hud.page_url"
+                    v-if="hudMeta(hud) || pageHref(hud)"
                     class="mt-1 flex min-w-0 items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground"
                   >
                     <span v-if="hudMeta(hud)" class="truncate">{{
                       hudMeta(hud)
                     }}</span>
                     <a
-                      v-if="hud.page_url"
-                      :href="hud.page_url"
+                      v-if="pageHref(hud)"
+                      :href="pageHref(hud)"
                       target="_blank"
                       rel="noopener noreferrer"
                       class="inline-flex shrink-0 items-center gap-1 transition-colors hover:text-[hsl(var(--tac-amber))]"
@@ -386,8 +386,8 @@ definePageMeta({
                 </DialogDescription>
               </div>
               <a
-                v-if="previewHud.page_url"
-                :href="previewHud.page_url"
+                v-if="pageHref(previewHud)"
+                :href="pageHref(previewHud)"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="inline-flex shrink-0 items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-[hsl(var(--tac-amber))]"
@@ -548,6 +548,16 @@ export default {
         hud.preview ??
         (hud.source === "builtin" ? BUILTIN_PREVIEWS[hud.slug] : undefined)
       );
+    },
+    // A stored link only ever renders as https: an href runs as script when it
+    // is a javascript: URL.
+    pageHref(hud: BroadcastHudDetails) {
+      try {
+        const url = new URL(hud.page_url as string);
+        return url.protocol === "https:" ? url.href : null;
+      } catch {
+        return null;
+      }
     },
     pageHost(hud: BroadcastHudDetails) {
       try {

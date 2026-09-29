@@ -23,10 +23,12 @@ import {
 } from "~/components/ui/select";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import { useToast } from "~/components/ui/toast/use-toast";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 
 const { t } = useI18n();
 const nuxtApp = useNuxtApp();
 const { toast } = useToast();
+const appSettings = useApplicationSettingsStore();
 
 type MapWithDemo = {
   id: string;
@@ -57,7 +59,13 @@ const PRESET_ORDER: Preset[] = ["multikills", "best_round", "knife", "recap"];
 
 const selectedMatchMapId = ref<string | null>(null);
 const presetChoice = ref<Preset>("multikills");
-const resolution = ref<"720p" | "1080p">("1080p");
+const clipResolutionDefault = computed<"720p" | "1080p">(() => {
+  const raw = appSettings.settings.find(
+    (s) => s.name === "public.clip_resolution",
+  )?.value;
+  return raw === "720p" ? "720p" : "1080p";
+});
+const resolution = ref<"720p" | "1080p">(clipResolutionDefault.value);
 const submitting = ref(false);
 const submitError = ref<string | null>(null);
 const availability = ref<Availability | null>(null);
@@ -70,7 +78,7 @@ watch(
     submitting.value = false;
     submitError.value = null;
     presetChoice.value = "multikills";
-    resolution.value = "1080p";
+    resolution.value = clipResolutionDefault.value;
     availability.value = null;
     selectedMatchMapId.value = props.matchMaps[0]?.id ?? null;
   },
@@ -208,7 +216,6 @@ async function submit() {
             target_steam_id: props.targetSteamId,
             preset: presetChoice.value,
             resolution: resolution.value,
-            fps: 60,
             target_name: props.targetName ?? undefined,
           },
           { success: true, job_id: true },

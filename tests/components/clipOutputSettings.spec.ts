@@ -1,7 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import CreateClipDialog from "~/components/clips/CreateClipDialog.vue";
 import ClipEditorBar from "~/components/clips/ClipEditorBar.vue";
+import RenderHighlightForPlayerDialog from "~/components/match/RenderHighlightForPlayerDialog.vue";
 import HighlightsSettings from "~/pages/settings/application/highlights.vue";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useDemoPlaybackStore } from "~/stores/DemoPlaybackStore";
@@ -79,6 +81,41 @@ describe("clip output settings for a non-administrator", () => {
       fps: 30,
     });
   });
+
+  it("opens the admin highlight dialog on the operator's resolution", async () => {
+    vi.spyOn(
+      (useNuxtApp() as any).$apollo.defaultClient,
+      "query",
+    ).mockResolvedValue({
+      data: {
+        getHighlightPresetAvailability: {
+          has_demo: true,
+          knife: true,
+          multikills: true,
+          best_round: true,
+          recap: true,
+        },
+      },
+    });
+
+    const wrapper = await mountSuspended(RenderHighlightForPlayerDialog, {
+      props: {
+        open: false,
+        matchMaps: [{ id: "map-1", label: "Mirage" }],
+        targetSteamId: "76561198000000009",
+        targetName: "keith",
+      },
+    });
+    unmount = () => wrapper.unmount();
+
+    await wrapper.setProps({ open: true });
+    await flushPromises();
+    await (wrapper.vm as any).submit();
+
+    const args = sent("queueClipFromPreset");
+    expect(args.resolution).toBe("720p");
+    expect(args).not.toHaveProperty("fps");
+  });
 });
 
 describe("highlights settings page", () => {
@@ -89,11 +126,7 @@ describe("highlights settings page", () => {
     vi.restoreAllMocks();
   });
 
-  it("saves the clip settings under names every role can read", async () => {
-    useApplicationSettingsStore().settings = [
-      { name: "public.clip_fps", value: "30" },
-      { name: "public.clip_resolution", value: "720p" },
-    ];
+  const mountPage = async () => {
     mutate = vi.fn().mockResolvedValue({ data: {} });
     vi.spyOn(
       (useNuxtApp() as any).$apollo.defaultClient,
@@ -107,7 +140,36 @@ describe("highlights settings page", () => {
       },
     });
     unmount = () => wrapper.unmount();
+    return wrapper;
+  };
 
+  it("loads and saves the clip settings under names every role can read", async () => {
+    useApplicationSettingsStore().settings = [
+      { name: "public.clip_fps", value: "30" },
+      { name: "public.clip_resolution", value: "720p" },
+    ];
+    const wrapper = await mountPage();
+
+    await (wrapper.vm as any).updateSettings();
+
+    expect(sent("insert_settings").objects).toEqual(
+      expect.arrayContaining([
+        { name: "public.clip_fps", value: "30" },
+        { name: "public.clip_resolution", value: "720p" },
+      ]),
+    );
+  });
+
+  it("saves what an admin picks in the clip fields", async () => {
+    const wrapper = await mountPage();
+    const field = (name: string) =>
+      wrapper
+        .findAllComponents({ name: "Field" })
+        .find((f) => f.props("name") === name);
+
+    field("public.clip_fps")!.vm.handleChange("30");
+    field("public.clip_resolution")!.vm.handleChange("720p");
+    await flushPromises();
     await (wrapper.vm as any).updateSettings();
 
     expect(sent("insert_settings").objects).toEqual(

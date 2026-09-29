@@ -2,6 +2,7 @@ import { watch } from "vue";
 import { useChatTabs } from "~/composables/useChatTabs";
 import { directRoomId, directTabId } from "~/composables/useDirectMessages";
 import { usePlayerBlocks } from "~/composables/usePlayerBlocks";
+import { e_player_roles_enum } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
 import socket from "~/web-sockets/Socket";
 
@@ -14,14 +15,18 @@ export function useChatBlocks() {
   const authStore = useAuthStore();
 
   watch(
-    () => (loaded.value ? blocks.value : null),
-    (rows) => {
+    [
+      () => (loaded.value ? blocks.value : null),
+      () => authStore.isRoleAbove(e_player_roles_enum.moderator),
+    ],
+    ([rows, moderator]) => {
       if (!rows) {
         return;
       }
 
       const { added } = socket.setHiddenAuthors(
         rows.map((row) => String(row.blocked_steam_id)),
+        { inGroups: !moderator },
       );
 
       const mySteamId = authStore.me?.steam_id;

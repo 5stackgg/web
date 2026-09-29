@@ -148,6 +148,62 @@ describe("ChatMessage editing", () => {
     expect(useRightSidebar().hoverCloseSuspended.value).toBe(false);
   });
 
+  it("leaves another hold on the hub alone when a stale trigger goes away", async () => {
+    const wrapper = await mountMessage();
+    const sentAt = Date.parse(own().timestamp);
+    vi.spyOn(Date, "now").mockReturnValue(sentAt + 10 * 60_000);
+    useRightSidebar().suspendHoverClose();
+
+    await wrapper.get(TRIGGER).trigger("keydown", { key: "Enter" });
+    await flushPromises();
+
+    expect(wrapper.find(TRIGGER).exists()).toBe(false);
+    expect(useRightSidebar().hoverCloseSuspended.value).toBe(true);
+  });
+
+  it("takes the trigger away when a self-delete finds the window closed", async () => {
+    vi.spyOn(socket, "deleteMessage").mockRejectedValue({
+      code: "window_closed",
+      action: "delete",
+    });
+    const byText = (selector: string, text: string) =>
+      Array.from(document.body.querySelectorAll<HTMLElement>(selector)).find(
+        (element) => element.textContent?.trim() === text,
+      );
+    const wrapper = await mountMessage();
+
+    await wrapper.get(TRIGGER).trigger("keydown", { key: "Enter" });
+    await flushPromises();
+    byText('[role="menuitem"]', "Delete Message")!.click();
+    await flushPromises();
+
+    const sentAt = Date.parse(own().timestamp);
+    vi.spyOn(Date, "now").mockReturnValue(sentAt + 10 * 60_000);
+    byText('[role="alertdialog"] button', "Delete")!.click();
+    await flushPromises();
+
+    expect(document.body.querySelector('[role="alertdialog"]')).toBeNull();
+    expect(wrapper.find(TRIGGER).exists()).toBe(false);
+  });
+
+  it("takes the trigger away when an edit finds the window closed", async () => {
+    vi.spyOn(socket, "editMessage").mockRejectedValue({
+      code: "window_closed",
+      action: "edit",
+    });
+    const wrapper = await mountMessage({ editing: true });
+
+    const sentAt = Date.parse(own().timestamp);
+    vi.spyOn(Date, "now").mockReturnValue(sentAt + 10 * 60_000);
+    await wrapper.get("textarea").setValue("fixed");
+    await press(wrapper, "Enter");
+    await wrapper.setProps({ editing: false });
+    await flushPromises();
+
+    expect(wrapper.emitted("edit-end")).toHaveLength(1);
+    expect(wrapper.find(TRIGGER).exists()).toBe(false);
+  });
+
   it("opens the editor on the current text, focused", async () => {
     const wrapper = await mountMessage({ editing: true });
 

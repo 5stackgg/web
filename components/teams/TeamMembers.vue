@@ -114,6 +114,7 @@ const setEloSource = (key: string) => {
             :member="member"
             :roles="roles"
             :is-captain="member.player.steam_id === team.captain_steam_id"
+            :is-owner="member.player.steam_id === team.owner_steam_id"
             :is-invite="false"
             :match-type="rankMatchType"
           />
@@ -141,6 +142,7 @@ const setEloSource = (key: string) => {
             :member="member"
             :roles="roles"
             :is-captain="member.player.steam_id === team.captain_steam_id"
+            :is-owner="member.player.steam_id === team.owner_steam_id"
             :is-invite="false"
             :match-type="rankMatchType"
           />
@@ -168,6 +170,7 @@ const setEloSource = (key: string) => {
             :member="member"
             :roles="roles"
             :is-captain="member.player.steam_id === team.captain_steam_id"
+            :is-owner="member.player.steam_id === team.owner_steam_id"
             :is-invite="false"
             :match-type="rankMatchType"
           />
@@ -195,6 +198,7 @@ const setEloSource = (key: string) => {
             :member="member"
             :roles="roles"
             :is-captain="member.player.steam_id === team.captain_steam_id"
+            :is-owner="member.player.steam_id === team.owner_steam_id"
             :is-invite="false"
             :match-type="rankMatchType"
           />
@@ -265,6 +269,7 @@ export default {
             },
             {
               id: true,
+              owner_steam_id: true,
               captain_steam_id: true,
               can_invite: true,
               can_remove: true,

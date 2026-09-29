@@ -30,6 +30,8 @@ import {
   Signal,
 } from "lucide-vue-next";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+
+definePageMeta({ middleware: "admin" });
 </script>
 
 <template>

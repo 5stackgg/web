@@ -929,6 +929,7 @@
     "user": "사용자",
     "verified_user": "인증된 사용자",
     "streamer": "스트리머",
+    "moderator": "모더레이터",
     "match_organizer": "매치 주최자",
     "tournament_organizer": "토너먼트 주최자",
     "administrator": "관리자"
@@ -1702,6 +1703,14 @@
             "title": "경기",
             "description": "경기 상태 변경 및 가져온 경기."
           },
+          "match_found": {
+            "title": "매치 찾음",
+            "description": "매치메이킹이 매치를 찾았고 수락을 기다리고 있습니다. 방해 금지 시간에도 울립니다."
+          },
+          "admin_call": {
+            "title": "관리자 호출",
+            "description": "관리자가 경기 카메라로 대화하고 싶어 합니다. 방해 금지 시간에도 울립니다."
+          },
           "chat": {
             "title": "채팅",
             "description": "대화, 로비 또는 토너먼트 방의 새 메시지."
@@ -1825,11 +1834,31 @@
         },
         "quiet_hours": {
           "title": "방해 금지 시간",
-          "description": "이 시간대에는 푸시 알림이 소리 없이 전달됩니다. 알림 종에는 계속 표시됩니다.",
+          "description": "이 시간대에는 푸시 알림이 소리 없이 전달됩니다. 알림 종에는 계속 표시됩니다. 매치 찾음과 관리자 호출은 예외로 울립니다.",
           "from": "시작",
           "to": "종료",
           "reset": "초기화",
           "incomplete": "방해 금지 시간을 저장하려면 시작 시각과 종료 시각을 모두 설정하세요."
+        },
+        "tab_flash": {
+          "title": "브라우저 탭",
+          "description": "이 탭이 백그라운드에 있을 때 확인이 필요한 일이 생기면 탭 제목과 아이콘을 깜박입니다. 이 기기에 저장됩니다.",
+          "match_found": {
+            "title": "매치 찾음",
+            "description": "매치가 준비되어 수락을 기다리고 있습니다."
+          },
+          "admin_call": {
+            "title": "주최자 통화",
+            "description": "경기 주최자가 카메라 페이지에서 말을 걸기 시작할 때."
+          },
+          "chat": {
+            "title": "채팅 메시지",
+            "description": "대화, 로비 또는 토너먼트 방의 새 메시지. 경기 중 게임 내 채팅은 제외됩니다."
+          },
+          "bell": {
+            "title": "알림",
+            "description": "알림 종에 새 항목이 도착할 때."
+          }
         }
       },
       "notifications": {
@@ -3130,6 +3159,7 @@
         "recent_wins_and_losses": "최근 승/패",
         "elo_history": "ELO 기록",
         "no_elo_history": "매치를 플레이하면 ELO가 생성됩니다",
+        "no_elo_history_other": "아직 ELO 기록이 없습니다",
         "play_a_match": "플레이",
         "matches": "매치",
         "no_matches": "아직 매치 없음",
@@ -5521,6 +5551,12 @@
       }
     }
   },
+  "tab_flash": {
+    "match_found": "매치 찾음",
+    "admin_call": "주최자가 통화를 요청했습니다",
+    "chat": "새 메시지 | 새 메시지",
+    "bell": "새 알림 | 새 알림"
+  },
   "roster_picker": {
     "add_starter": "주전 추가",
     "add_substitute": "교체 선수 추가",
@@ -5835,6 +5871,7 @@
       "information_tab": "정보",
       "about_section": "소개",
       "match_settings": "매치 설정",
+      "chat_room_tab": "채팅방",
       "read_more": "더 보기",
       "read_less": "접기"
     },
@@ -7974,11 +8011,13 @@
       "reason_label": "사유",
       "reason_placeholder": "제재 사유를 입력하세요...",
       "reason_description": "이 제재에 대한 명확한 사유를 입력해 주세요",
+      "reason_required": "사유는 필수입니다",
       "types": {
         "ban_description": "플레이어가 어떤 활동에도 참여할 수 없습니다",
         "mute_description": "플레이어가 게임 내 음성 채팅을 사용할 수 없습니다",
         "gag_description": "플레이어가 게임 내 텍스트 채팅을 사용할 수 없습니다",
-        "silence_description": "플레이어가 음소거 및 채팅 금지됩니다"
+        "silence_description": "플레이어가 음소거 및 채팅 금지됩니다",
+        "warning_description": "플레이어 기록에 남는 정보성 메모로, 적용되지 않습니다"
       },
       "durations": {
         "15_minutes": "15분",
@@ -7993,20 +8032,24 @@
         "ban": "플레이어 차단",
         "mute": "플레이어 마이크 차단",
         "gag": "플레이어 채팅 차단",
-        "silence": "플레이어 전체 발언 차단"
+        "silence": "플레이어 전체 발언 차단",
+        "warning": "플레이어 경고"
       },
       "submit": {
         "ban": "플레이어 차단하기",
         "mute": "플레이어 마이크 차단하기",
         "gag": "플레이어 채팅 차단하기",
-        "silence": "플레이어 전체 발언 차단하기"
+        "silence": "플레이어 전체 발언 차단하기",
+        "warning": "경고 발급"
       },
       "applied": {
         "ban": "{name}을(를) 차단했습니다",
         "mute": "{name}의 마이크를 차단했습니다",
         "gag": "{name}의 채팅을 차단했습니다",
-        "silence": "{name}의 발언을 전체 차단했습니다"
+        "silence": "{name}의 발언을 전체 차단했습니다",
+        "warning": "{name}에게 경고를 발급했습니다"
       },
+      "warning_note": "경고는 플레이어 기록에 저장되고 플레이어에게 알림이 전송됩니다. 적용되지 않으며 만료되지 않습니다.",
       "typed_player": "{type} 플레이어"
     },
     "search": {
@@ -8033,6 +8076,13 @@
       "muted": "음소거됨",
       "gagged": "채팅 금지됨",
       "silenced": "제재됨",
+      "type_labels": {
+        "ban": "차단",
+        "mute": "마이크 차단",
+        "gag": "채팅 차단",
+        "silence": "전체 발언 차단",
+        "warning": "경고"
+      },
       "duration_label": "기간",
       "select_duration": "기간 선택",
       "sanctions": "제재",
@@ -8047,6 +8097,7 @@
       "permanent": "영구",
       "active": "활성",
       "expired": "만료됨",
+      "on_record": "기록됨",
       "cannot_edit_expired": "만료된 제재는 수정할 수 없습니다 — 새로 추가하세요",
       "edit": "수정",
       "remove": "제거",

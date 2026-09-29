@@ -22,6 +22,8 @@ import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
 
+definePageMeta({ middleware: "admin" });
+
 const fadeTransition = {
   enterActiveClass: "transition-opacity duration-200 ease-out",
   leaveActiveClass: "transition-opacity duration-200 ease-out",

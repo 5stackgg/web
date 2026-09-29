@@ -929,6 +929,7 @@
     "user": "Benutzer",
     "verified_user": "Verifizierter Benutzer",
     "streamer": "Streamer",
+    "moderator": "Moderator",
     "match_organizer": "Match-Veranstalter",
     "tournament_organizer": "Turnier-Veranstalter",
     "administrator": "Administrator"
@@ -1702,6 +1703,14 @@
             "title": "Matches",
             "description": "Änderungen des Matchstatus und importierte Matches."
           },
+          "match_found": {
+            "title": "Match gefunden",
+            "description": "Das Matchmaking hat dein Match gefunden und wartet darauf, dass du annimmst. Klingelt auch während der Ruhezeiten."
+          },
+          "admin_call": {
+            "title": "Admin-Anrufe",
+            "description": "Ein Admin möchte über deine Match-Kamera mit dir sprechen. Klingelt auch während der Ruhezeiten."
+          },
           "chat": {
             "title": "Chat",
             "description": "Neue Nachrichten in einer Unterhaltung, Lobby oder einem Turnierraum."
@@ -1825,11 +1834,31 @@
         },
         "quiet_hours": {
           "title": "Ruhezeiten",
-          "description": "Push-Benachrichtigungen bleiben in diesem Zeitfenster stumm. In deiner Benachrichtigungsglocke erscheinen sie weiterhin.",
+          "description": "Push-Benachrichtigungen bleiben in diesem Zeitfenster stumm. In deiner Benachrichtigungsglocke erscheinen sie weiterhin. Gefundene Matches und Admin-Anrufe klingeln trotzdem.",
           "from": "Von",
           "to": "Bis",
           "reset": "Zurücksetzen",
           "incomplete": "Lege eine Start- und eine Endzeit fest, um Ruhezeiten zu speichern."
+        },
+        "tab_flash": {
+          "title": "Browser-Tab",
+          "description": "Lässt Titel und Symbol dieses Tabs blinken, wenn etwas deine Aufmerksamkeit braucht, während er im Hintergrund ist. Wird auf diesem Gerät gespeichert.",
+          "match_found": {
+            "title": "Match gefunden",
+            "description": "Ein Match ist bereit und wartet darauf, dass du annimmst."
+          },
+          "admin_call": {
+            "title": "Organisator-Anrufe",
+            "description": "Ein Match-Organisator beginnt, über deine Kameraseite mit dir zu sprechen."
+          },
+          "chat": {
+            "title": "Chatnachrichten",
+            "description": "Eine neue Nachricht in einer Unterhaltung, Lobby oder einem Turnierraum. Der Ingame-Chat von Matches ist ausgenommen."
+          },
+          "bell": {
+            "title": "Benachrichtigungen",
+            "description": "Etwas Neues landet in deiner Benachrichtigungsglocke."
+          }
         }
       },
       "notifications": {
@@ -3130,6 +3159,7 @@
         "recent_wins_and_losses": "Letzte Siege und Niederlagen",
         "elo_history": "ELO-Verlauf",
         "no_elo_history": "Spiel ein Match, um ELO zu erzeugen",
+        "no_elo_history_other": "Noch kein ELO-Verlauf",
         "play_a_match": "Spielen",
         "matches": "Matches",
         "no_matches": "Noch keine Matches",
@@ -5521,6 +5551,12 @@
       }
     }
   },
+  "tab_flash": {
+    "match_found": "Match gefunden",
+    "admin_call": "Ein Organisator ruft an",
+    "chat": "Neue Nachricht | Neue Nachrichten",
+    "bell": "Neue Benachrichtigung | Neue Benachrichtigungen"
+  },
   "roster_picker": {
     "add_starter": "Starter hinzufügen",
     "add_substitute": "Ersatzspieler hinzufügen",
@@ -5835,6 +5871,7 @@
       "information_tab": "Informationen",
       "about_section": "Über",
       "match_settings": "Match-Einstellungen",
+      "chat_room_tab": "Chatraum",
       "read_more": "Mehr anzeigen",
       "read_less": "Weniger anzeigen"
     },
@@ -7974,11 +8011,13 @@
       "reason_label": "Grund",
       "reason_placeholder": "Grund für die Sanktion eingeben...",
       "reason_description": "Gib einen klaren Grund für diese Sanktion an",
+      "reason_required": "Ein Grund ist erforderlich",
       "types": {
         "ban_description": "Spieler kann an keiner Aktivität teilnehmen",
         "mute_description": "Spieler kann den Voice-Chat im Spiel nicht nutzen",
         "gag_description": "Spieler kann den Text-Chat im Spiel nicht nutzen",
-        "silence_description": "Spieler ist gemutet und gegagt"
+        "silence_description": "Spieler ist gemutet und gegagt",
+        "warning_description": "Informativer Vermerk in der Akte des Spielers, wird nie durchgesetzt"
       },
       "durations": {
         "15_minutes": "15 Minuten",
@@ -7993,20 +8032,24 @@
         "ban": "Spieler wird gebannt",
         "mute": "Spieler wird stummgeschaltet",
         "gag": "Spieler wird geknebelt",
-        "silence": "Spieler wird zum Schweigen gebracht"
+        "silence": "Spieler wird zum Schweigen gebracht",
+        "warning": "Spieler wird verwarnt"
       },
       "submit": {
         "ban": "Spieler bannen",
         "mute": "Spieler stummschalten",
         "gag": "Spieler knebeln",
-        "silence": "Spieler zum Schweigen bringen"
+        "silence": "Spieler zum Schweigen bringen",
+        "warning": "Verwarnung erteilen"
       },
       "applied": {
         "ban": "{name} gebannt",
         "mute": "{name} stummgeschaltet",
         "gag": "{name} geknebelt",
-        "silence": "{name} zum Schweigen gebracht"
+        "silence": "{name} zum Schweigen gebracht",
+        "warning": "Verwarnung an {name} erteilt"
       },
+      "warning_note": "Eine Verwarnung wird in der Akte des Spielers gespeichert und der Spieler wird benachrichtigt. Sie wird nie durchgesetzt und läuft nie ab.",
       "typed_player": "{type}-Spieler"
     },
     "search": {
@@ -8033,6 +8076,13 @@
       "muted": "Gemutet",
       "gagged": "Gegagt",
       "silenced": "Silenced",
+      "type_labels": {
+        "ban": "Bann",
+        "mute": "Stummschaltung",
+        "gag": "Knebel",
+        "silence": "Schweigen",
+        "warning": "Verwarnung"
+      },
       "duration_label": "Dauer",
       "select_duration": "Dauer wählen",
       "sanctions": "Sanktionen",
@@ -8047,6 +8097,7 @@
       "permanent": "Permanent",
       "active": "Aktiv",
       "expired": "Abgelaufen",
+      "on_record": "Vermerkt",
       "cannot_edit_expired": "Abgelaufene Sanktionen lassen sich nicht bearbeiten — leg eine neue an",
       "edit": "Bearbeiten",
       "remove": "Entfernen",

@@ -54,6 +54,8 @@ import {
   Maximize2,
   UserPlus,
   UserCheck,
+  X,
+  Clock,
   MessageSquare,
   Calendar as CalendarIcon,
   ChevronDown,
@@ -1692,6 +1694,8 @@ const playerHeroFriendBadgeClasses =
   "inline-flex items-center justify-center gap-[0.5rem] rounded-md border border-emerald-500/40 bg-emerald-500/15 px-3 py-2 font-mono text-[0.72rem] font-medium uppercase tracking-[0.16em] text-emerald-400 max-md:w-full";
 const playerHeroBlockedBadgeClasses =
   "inline-flex items-center justify-center gap-[0.5rem] rounded-md border border-border bg-muted/40 px-3 py-2 font-mono text-[0.72rem] font-medium uppercase tracking-[0.16em] text-muted-foreground max-md:w-full";
+const playerHeroCancelRequestClasses =
+  "group/req inline-flex items-center justify-center rounded-md border border-border/70 bg-muted/30 px-3 py-2 font-mono text-[0.72rem] font-bold uppercase tracking-[0.16em] text-muted-foreground transition-colors duration-150 hover:border-destructive/50 hover:bg-destructive/15 hover:text-destructive focus-visible:border-destructive/50 focus-visible:bg-destructive/15 focus-visible:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-60 max-md:w-full";
 const playerHeroAvatarFrameClasses =
   "relative h-[156px] w-[156px] border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] p-1 max-md:h-24 max-md:w-24";
 const playerHeroAvatarClasses = "block h-full w-full object-cover";
@@ -2003,13 +2007,29 @@ const playerHeroTeamChipDotClasses =
                   <UserCheck class="h-4 w-4" />
                   <span>{{ $t("matchmaking.friends.accept") }}</span>
                 </button>
-                <span
+                <button
                   v-else-if="friendRelationship === 'outgoing'"
-                  :class="[playerHeroFriendBadgeClasses, 'flex-1']"
+                  type="button"
+                  :class="[playerHeroCancelRequestClasses, 'flex-1']"
+                  :disabled="friendActionPending"
+                  :aria-label="$t('matchmaking.friends.cancel_request')"
+                  @click="cancelFriendRequest"
                 >
-                  <UserPlus class="h-3.5 w-3.5" />
-                  <span>{{ $t("matchmaking.friends.requested") }}</span>
-                </span>
+                  <span class="grid justify-items-center [&>*]:[grid-area:1/1]">
+                    <span
+                      class="inline-flex items-center gap-[0.5rem] transition-opacity duration-150 group-hover/req:opacity-0 group-focus-visible/req:opacity-0 [@media(hover:none)]:opacity-0"
+                    >
+                      <Clock class="h-3.5 w-3.5" />
+                      {{ $t("matchmaking.friends.requested") }}
+                    </span>
+                    <span
+                      class="inline-flex items-center gap-[0.5rem] opacity-0 transition-opacity duration-150 group-hover/req:opacity-100 group-focus-visible/req:opacity-100 [@media(hover:none)]:opacity-100"
+                    >
+                      <X class="h-3.5 w-3.5" />
+                      {{ $t("matchmaking.friends.cancel_request") }}
+                    </span>
+                  </span>
+                </button>
                 <span
                   v-else-if="friendRelationship === 'friend'"
                   :class="[playerHeroFriendBadgeClasses, 'flex-1']"
@@ -2213,9 +2233,13 @@ const playerHeroTeamChipDotClasses =
                   <span
                     class="font-mono text-[0.65rem] tracking-[0.22em] text-muted-foreground"
                   >
-                    {{ $t("pages.players.detail.no_elo_history") }}
+                    {{
+                      isSelfProfile
+                        ? $t("pages.players.detail.no_elo_history")
+                        : $t("pages.players.detail.no_elo_history_other")
+                    }}
                   </span>
-                  <NuxtLink v-if="me" to="/play" class="mt-2">
+                  <NuxtLink v-if="isSelfProfile" to="/play" class="mt-2">
                     <Button
                       variant="outline"
                       size="sm"
@@ -3135,6 +3159,7 @@ import { awardFields } from "~/graphql/awardFields";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import { usePlayerBlocks } from "~/composables/usePlayerBlocks";
 import { toast } from "~/components/ui/toast";
+import { canEditPlayerRole } from "~/utilities/playerRoleEdit";
 
 export default {
   apollo: {
@@ -3521,7 +3546,7 @@ export default {
       if (!this.me || !this.player || this.isSelfProfile) {
         return false;
       }
-      return useAuthStore().isRoleAbove(this.player.role);
+      return canEditPlayerRole(useAuthStore().isRoleAbove, this.player.role);
     },
     canEditPlayer() {
       // Only fields actually rendered inside the edit sheet — the role editor
@@ -3626,6 +3651,13 @@ export default {
       }
 
       toast({ title: this.$t("player_blocks.toasts.unblocked", { name }) });
+    },
+
+    async cancelFriendRequest() {
+      if (!this.player?.steam_id || this.friendActionPending) {
+        return;
+      }
+      await useFriendActions().cancelRequest(this.player.steam_id);
     },
     handleImageError(event) {
       const img = event.target;

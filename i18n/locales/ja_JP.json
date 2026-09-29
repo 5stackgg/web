@@ -929,6 +929,7 @@
     "user": "ユーザー",
     "verified_user": "認証済みユーザー",
     "streamer": "ストリーマー",
+    "moderator": "モデレーター",
     "match_organizer": "試合主催者",
     "tournament_organizer": "トーナメント主催者",
     "administrator": "管理者"
@@ -1702,6 +1703,14 @@
             "title": "試合",
             "description": "試合状況の変化とインポートされた試合。"
           },
+          "match_found": {
+            "title": "マッチ成立",
+            "description": "マッチメイキングで試合が見つかり、承認を待っています。サイレント時間中も鳴ります。"
+          },
+          "admin_call": {
+            "title": "管理者からの呼び出し",
+            "description": "管理者が試合用カメラを通じてあなたと話したがっています。サイレント時間中も鳴ります。"
+          },
           "chat": {
             "title": "チャット",
             "description": "会話、ロビー、トーナメントルームの新着メッセージ。"
@@ -1825,11 +1834,31 @@
         },
         "quiet_hours": {
           "title": "サイレント時間",
-          "description": "この時間帯はプッシュ通知が鳴りません。通知ベルには引き続き表示されます。",
+          "description": "この時間帯はプッシュ通知が鳴りません。通知ベルには引き続き表示されます。マッチ成立と管理者からの呼び出しは例外として鳴ります。",
           "from": "開始",
           "to": "終了",
           "reset": "リセット",
           "incomplete": "サイレント時間を保存するには、開始時刻と終了時刻の両方を設定してください。"
+        },
+        "tab_flash": {
+          "title": "ブラウザタブ",
+          "description": "このタブがバックグラウンドにあるときに対応が必要なことが起きると、タブのタイトルとアイコンを点滅させます。この端末に保存されます。",
+          "match_found": {
+            "title": "マッチが見つかりました",
+            "description": "マッチの準備ができ、あなたの承認を待っています。"
+          },
+          "admin_call": {
+            "title": "主催者からの通話",
+            "description": "試合の主催者がカメラページであなたに話しかけ始めたとき。"
+          },
+          "chat": {
+            "title": "チャットメッセージ",
+            "description": "会話、ロビー、トーナメントルームの新着メッセージ。試合中のゲーム内チャットは対象外です。"
+          },
+          "bell": {
+            "title": "通知",
+            "description": "通知ベルに新しいものが届いたとき。"
+          }
         }
       },
       "notifications": {
@@ -3130,6 +3159,7 @@
         "recent_wins_and_losses": "直近の勝敗",
         "elo_history": "ELO 推移",
         "no_elo_history": "試合をプレイすると ELO が付きます",
+        "no_elo_history_other": "ELO 履歴はまだありません",
         "play_a_match": "プレイ",
         "matches": "試合",
         "no_matches": "試合はまだありません",
@@ -5521,6 +5551,12 @@
       }
     }
   },
+  "tab_flash": {
+    "match_found": "マッチが見つかりました",
+    "admin_call": "主催者から通話が来ています",
+    "chat": "新着メッセージ | 新着メッセージ",
+    "bell": "新しい通知 | 新しい通知"
+  },
   "roster_picker": {
     "add_starter": "スタメンを追加",
     "add_substitute": "控えを追加",
@@ -5835,6 +5871,7 @@
       "information_tab": "情報",
       "about_section": "概要",
       "match_settings": "試合設定",
+      "chat_room_tab": "チャットルーム",
       "read_more": "もっと見る",
       "read_less": "折りたたむ"
     },
@@ -7974,11 +8011,13 @@
       "reason_label": "理由",
       "reason_placeholder": "処分理由を入力...",
       "reason_description": "この処分の明確な理由を入力してください",
+      "reason_required": "理由は必須です",
       "types": {
         "ban_description": "プレイヤーはあらゆるアクティビティに参加できません",
         "mute_description": "プレイヤーはゲーム内でボイスチャットを使用できません",
         "gag_description": "プレイヤーはゲーム内でテキストチャットを使用できません",
-        "silence_description": "プレイヤーはミュート・ガグの両方が適用されます"
+        "silence_description": "プレイヤーはミュート・ガグの両方が適用されます",
+        "warning_description": "プレイヤーの記録に残る情報提供用のメモで、適用されることはありません"
       },
       "durations": {
         "15_minutes": "15分",
@@ -7993,20 +8032,24 @@
         "ban": "プレイヤーをBAN",
         "mute": "プレイヤーをミュート",
         "gag": "プレイヤーのチャットを禁止",
-        "silence": "プレイヤーを完全に発言禁止"
+        "silence": "プレイヤーを完全に発言禁止",
+        "warning": "プレイヤーに警告"
       },
       "submit": {
         "ban": "プレイヤーをBANする",
         "mute": "プレイヤーをミュートする",
         "gag": "プレイヤーのチャットを禁止する",
-        "silence": "プレイヤーを完全に発言禁止にする"
+        "silence": "プレイヤーを完全に発言禁止にする",
+        "warning": "警告を発行"
       },
       "applied": {
         "ban": "{name} をBANしました",
         "mute": "{name} をミュートしました",
         "gag": "{name} のチャットを禁止しました",
-        "silence": "{name} を完全に発言禁止にしました"
+        "silence": "{name} を完全に発言禁止にしました",
+        "warning": "{name} に警告を発行しました"
       },
+      "warning_note": "警告はプレイヤーの記録に保存され、本人に通知されます。適用されることはなく、期限切れにもなりません。",
       "typed_player": "{type}プレイヤー"
     },
     "search": {
@@ -8033,6 +8076,13 @@
       "muted": "ミュート",
       "gagged": "ガグ",
       "silenced": "サイレンス",
+      "type_labels": {
+        "ban": "BAN",
+        "mute": "ミュート",
+        "gag": "チャット禁止",
+        "silence": "完全発言禁止",
+        "warning": "警告"
+      },
       "duration_label": "期間",
       "select_duration": "期間を選択",
       "sanctions": "処分",
@@ -8047,6 +8097,7 @@
       "permanent": "無期限",
       "active": "有効",
       "expired": "失効済み",
+      "on_record": "記録済み",
       "cannot_edit_expired": "失効済みの処分は編集できません — 新しく追加してください",
       "edit": "編集",
       "remove": "削除",

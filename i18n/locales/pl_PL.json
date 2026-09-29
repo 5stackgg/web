@@ -929,6 +929,7 @@
     "user": "Użytkownik",
     "verified_user": "Zweryfikowany użytkownik",
     "streamer": "Streamer",
+    "moderator": "Moderator",
     "match_organizer": "Organizator meczów",
     "tournament_organizer": "Organizator turniejów",
     "administrator": "Administrator"
@@ -1702,6 +1703,14 @@
             "title": "Mecze",
             "description": "Zmiany statusu meczu i zaimportowane mecze."
           },
+          "match_found": {
+            "title": "Znaleziono mecz",
+            "description": "Matchmaking znalazł twój mecz i czeka, aż go zaakceptujesz. Dzwoni nawet w godzinach ciszy."
+          },
+          "admin_call": {
+            "title": "Połączenia od administratorów",
+            "description": "Administrator chce porozmawiać z tobą przez kamerę meczu. Dzwoni nawet w godzinach ciszy."
+          },
           "chat": {
             "title": "Czat",
             "description": "Nowe wiadomości w rozmowie, lobby lub pokoju turniejowym."
@@ -1825,11 +1834,31 @@
         },
         "quiet_hours": {
           "title": "Godziny ciszy",
-          "description": "W tym przedziale powiadomienia push pozostają wyciszone. Nadal pojawiają się w dzwonku powiadomień.",
+          "description": "W tym przedziale powiadomienia push pozostają wyciszone. Nadal pojawiają się w dzwonku powiadomień. Znalezione mecze i połączenia od administratorów dzwonią mimo to.",
           "from": "Od",
           "to": "Do",
           "reset": "Resetuj",
           "incomplete": "Ustaw godzinę początku i końca, aby zapisać godziny ciszy."
+        },
+        "tab_flash": {
+          "title": "Karta przeglądarki",
+          "description": "Miga tytułem i ikoną tej karty, gdy coś wymaga twojej uwagi, a karta jest w tle. Zapisywane na tym urządzeniu.",
+          "match_found": {
+            "title": "Znaleziono mecz",
+            "description": "Mecz jest gotowy i czeka, aż go zaakceptujesz."
+          },
+          "admin_call": {
+            "title": "Rozmowy z organizatorem",
+            "description": "Organizator meczu zaczyna mówić do ciebie przez stronę kamery."
+          },
+          "chat": {
+            "title": "Wiadomości czatu",
+            "description": "Nowa wiadomość w rozmowie, lobby lub pokoju turniejowym. Czat z gry podczas meczu jest pomijany."
+          },
+          "bell": {
+            "title": "Powiadomienia",
+            "description": "W dzwonku powiadomień pojawia się coś nowego."
+          }
         }
       },
       "notifications": {
@@ -3130,6 +3159,7 @@
         "recent_wins_and_losses": "Ostatnie wygrane i przegrane",
         "elo_history": "Historia ELO",
         "no_elo_history": "Zagraj mecz, aby wygenerować ELO",
+        "no_elo_history_other": "Brak historii ELO",
         "play_a_match": "Zagraj",
         "matches": "Mecze",
         "no_matches": "Brak meczów",
@@ -5521,6 +5551,12 @@
       }
     }
   },
+  "tab_flash": {
+    "match_found": "Znaleziono mecz",
+    "admin_call": "Organizator do ciebie dzwoni",
+    "chat": "Nowa wiadomość | Nowe wiadomości",
+    "bell": "Nowe powiadomienie | Nowe powiadomienia"
+  },
   "roster_picker": {
     "add_starter": "Dodaj podstawowego gracza",
     "add_substitute": "Dodaj rezerwowego",
@@ -5835,6 +5871,7 @@
       "information_tab": "Informacje",
       "about_section": "O turnieju",
       "match_settings": "Ustawienia meczu",
+      "chat_room_tab": "Czat",
       "read_more": "Czytaj więcej",
       "read_less": "Zwiń"
     },
@@ -7974,11 +8011,13 @@
       "reason_label": "Powód",
       "reason_placeholder": "Podaj powód sankcji...",
       "reason_description": "Podaj jasny powód tej sankcji",
+      "reason_required": "Powód jest wymagany",
       "types": {
         "ban_description": "Gracz nie może uczestniczyć w żadnej aktywności",
         "mute_description": "Gracz nie może używać czatu głosowego w grze",
         "gag_description": "Gracz nie może używać czatu tekstowego w grze",
-        "silence_description": "Gracz wyciszony i pozbawiony czatu tekstowego"
+        "silence_description": "Gracz wyciszony i pozbawiony czatu tekstowego",
+        "warning_description": "Informacyjna notatka w historii gracza, nigdy nie jest egzekwowana"
       },
       "durations": {
         "15_minutes": "15 minut",
@@ -7993,20 +8032,24 @@
         "ban": "Banowanie gracza",
         "mute": "Wyciszanie mikrofonu gracza",
         "gag": "Blokowanie czatu gracza",
-        "silence": "Całkowite uciszanie gracza"
+        "silence": "Całkowite uciszanie gracza",
+        "warning": "Ostrzeganie gracza"
       },
       "submit": {
         "ban": "Zbanuj gracza",
         "mute": "Wycisz mikrofon gracza",
         "gag": "Zablokuj czat gracza",
-        "silence": "Całkowicie ucisz gracza"
+        "silence": "Całkowicie ucisz gracza",
+        "warning": "Wystaw ostrzeżenie"
       },
       "applied": {
         "ban": "{name} zbanowany",
         "mute": "Mikrofon {name} wyciszony",
         "gag": "Czat {name} zablokowany",
-        "silence": "{name} całkowicie uciszony"
+        "silence": "{name} całkowicie uciszony",
+        "warning": "Wystawiono ostrzeżenie dla {name}"
       },
+      "warning_note": "Ostrzeżenie zostaje zapisane w historii gracza, a gracz otrzymuje powiadomienie. Nigdy nie jest egzekwowane i nigdy nie wygasa.",
       "typed_player": "Gracz: {type}"
     },
     "search": {
@@ -8033,6 +8076,13 @@
       "muted": "Wyciszony głosowo",
       "gagged": "Wyciszony na czacie",
       "silenced": "Wyciszony całkowicie",
+      "type_labels": {
+        "ban": "Ban",
+        "mute": "Wyciszenie mikrofonu",
+        "gag": "Blokada czatu",
+        "silence": "Całkowite uciszenie",
+        "warning": "Ostrzeżenie"
+      },
       "duration_label": "Czas trwania",
       "select_duration": "Wybierz czas trwania",
       "sanctions": "Sankcje",
@@ -8047,6 +8097,7 @@
       "permanent": "Stała",
       "active": "Aktywna",
       "expired": "Wygasła",
+      "on_record": "W historii",
       "cannot_edit_expired": "Wygasłych sankcji nie można edytować — dodaj nową",
       "edit": "Edytuj",
       "remove": "Usuń",

@@ -38,7 +38,7 @@ const isVetoing = computed(
 );
 
 const open = ref(false);
-const mounted = ref(false);
+const dockReady = ref(false);
 const hasLogs = ref(false);
 const showConfirmDialog = ref(false);
 const showRebootDialog = ref(false);
@@ -84,24 +84,25 @@ function startDrag(e: MouseEvent) {
   document.addEventListener("mouseup", activeUp);
 }
 
+let dockRaf = 0;
+
 onMounted(() => {
   panelHeight.value = Math.round(window.innerHeight * 0.45);
-  // Only enable the teleport once its target is actually in the DOM.
-  // On a fresh load the layout's #main-bottom-dock can mount a frame
-  // after this component, and flipping `mounted` while the target is
-  // missing makes Vue move the teleport into a null node
-  // (moveTeleport -> insertBefore on null).
-  const enableTeleport = () => {
+  // Teleport resolves its target once, at mount, and never re-resolves it on
+  // a `disabled` toggle. On a fresh load #main-bottom-dock can land after this
+  // component, so hold off mounting the Teleport until the dock exists.
+  const waitForDock = () => {
     if (document.getElementById("main-bottom-dock")) {
-      mounted.value = true;
+      dockReady.value = true;
     } else {
-      requestAnimationFrame(enableTeleport);
+      dockRaf = requestAnimationFrame(waitForDock);
     }
   };
-  enableTeleport();
+  waitForDock();
 });
 
 onBeforeUnmount(() => {
+  cancelAnimationFrame(dockRaf);
   stopDrag();
 });
 
@@ -174,7 +175,7 @@ function runCommand(
 </script>
 
 <template>
-  <Teleport to="#main-bottom-dock" :disabled="!mounted">
+  <Teleport v-if="dockReady" to="#main-bottom-dock">
     <div
       class="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80"
     >

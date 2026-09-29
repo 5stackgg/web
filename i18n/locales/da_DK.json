@@ -929,6 +929,7 @@
     "user": "Bruger",
     "verified_user": "Verificeret bruger",
     "streamer": "Streamer",
+    "moderator": "Moderator",
     "match_organizer": "Kamparrangør",
     "tournament_organizer": "Turneringsarrangør",
     "administrator": "Administrator"
@@ -1702,6 +1703,14 @@
             "title": "Kampe",
             "description": "Ændringer i kampstatus og importerede kampe."
           },
+          "match_found": {
+            "title": "Kamp fundet",
+            "description": "Matchmaking har fundet din kamp og venter på, at du accepterer. Ringer også i stilletimer."
+          },
+          "admin_call": {
+            "title": "Opkald fra admins",
+            "description": "En admin vil tale med dig via dit kampkamera. Ringer også i stilletimer."
+          },
           "chat": {
             "title": "Chat",
             "description": "Nye beskeder i en samtale, en lobby eller et turneringsrum."
@@ -1825,11 +1834,31 @@
         },
         "quiet_hours": {
           "title": "Stilletimer",
-          "description": "Push-notifikationer forbliver lydløse i dette tidsrum. De vises stadig i din notifikationsklokke.",
+          "description": "Push-notifikationer forbliver lydløse i dette tidsrum. De vises stadig i din notifikationsklokke. Fundne kampe og opkald fra admins ringer alligevel.",
           "from": "Fra",
           "to": "Til",
           "reset": "Nulstil",
           "incomplete": "Angiv både et start- og et sluttidspunkt for at gemme stilletimer."
+        },
+        "tab_flash": {
+          "title": "Browserfane",
+          "description": "Få fanens titel og ikon til at blinke, når noget kræver din opmærksomhed, mens den er i baggrunden. Gemmes på denne enhed.",
+          "match_found": {
+            "title": "Kamp fundet",
+            "description": "En kamp er klar og venter på, at du accepterer."
+          },
+          "admin_call": {
+            "title": "Arrangøropkald",
+            "description": "En kamparrangør begynder at tale til dig på din kameraside."
+          },
+          "chat": {
+            "title": "Chatbeskeder",
+            "description": "En ny besked i en samtale, en lobby eller et turneringsrum. Chat fra selve kampen i spillet er udeladt."
+          },
+          "bell": {
+            "title": "Notifikationer",
+            "description": "Der kommer noget nyt i din notifikationsklokke."
+          }
         }
       },
       "notifications": {
@@ -3130,6 +3159,7 @@
         "recent_wins_and_losses": "Seneste sejre og nederlag",
         "elo_history": "ELO-historik",
         "no_elo_history": "Spil en kamp for at få ELO",
+        "no_elo_history_other": "Ingen ELO-historik endnu",
         "play_a_match": "Spil",
         "matches": "Kampe",
         "no_matches": "Ingen kampe endnu",
@@ -5521,6 +5551,12 @@
       }
     }
   },
+  "tab_flash": {
+    "match_found": "Kamp fundet",
+    "admin_call": "En arrangør ringer",
+    "chat": "Ny besked | Nye beskeder",
+    "bell": "Ny notifikation | Nye notifikationer"
+  },
   "roster_picker": {
     "add_starter": "Tilføj starter",
     "add_substitute": "Tilføj reserve",
@@ -5835,6 +5871,7 @@
       "information_tab": "Information",
       "about_section": "Om",
       "match_settings": "Kampindstillinger",
+      "chat_room_tab": "Chatrum",
       "read_more": "Læs mere",
       "read_less": "Læs mindre"
     },
@@ -7974,11 +8011,13 @@
       "reason_label": "Begrundelse",
       "reason_placeholder": "Angiv begrundelse for sanktionen...",
       "reason_description": "Angiv en klar begrundelse for denne sanktion",
+      "reason_required": "En begrundelse er påkrævet",
       "types": {
         "ban_description": "Spilleren kan ikke deltage i nogen aktivitet",
         "mute_description": "Spilleren kan ikke bruge voicechat i spillet",
         "gag_description": "Spilleren kan ikke bruge tekstchat i spillet",
-        "silence_description": "Spilleren er mutet og gagget"
+        "silence_description": "Spilleren er mutet og gagget",
+        "warning_description": "Informativ note på spillerens historik, håndhæves aldrig"
       },
       "durations": {
         "15_minutes": "15 minutter",
@@ -7993,20 +8032,24 @@
         "ban": "Udelukker spiller",
         "mute": "Slår spillerens mikrofon fra",
         "gag": "Lukker spillerens chat",
-        "silence": "Gør spilleren helt tavs"
+        "silence": "Gør spilleren helt tavs",
+        "warning": "Advarer spiller"
       },
       "submit": {
         "ban": "Udeluk spiller",
         "mute": "Slå spillerens mikrofon fra",
         "gag": "Luk spillerens chat",
-        "silence": "Gør spilleren helt tavs"
+        "silence": "Gør spilleren helt tavs",
+        "warning": "Giv advarsel"
       },
       "applied": {
         "ban": "{name} udelukket",
         "mute": "{name}s mikrofon slået fra",
         "gag": "{name}s chat lukket",
-        "silence": "{name} gjort helt tavs"
+        "silence": "{name} gjort helt tavs",
+        "warning": "Advarsel givet til {name}"
       },
+      "warning_note": "En advarsel gemmes på spillerens historik og giver spilleren besked. Den håndhæves aldrig og udløber aldrig.",
       "typed_player": "{type}-spiller"
     },
     "search": {
@@ -8033,6 +8076,13 @@
       "muted": "Mutet",
       "gagged": "Gagget",
       "silenced": "Silenced",
+      "type_labels": {
+        "ban": "Udelukkelse",
+        "mute": "Mikrofon fra",
+        "gag": "Chat lukket",
+        "silence": "Helt tavs",
+        "warning": "Advarsel"
+      },
       "duration_label": "Varighed",
       "select_duration": "Vælg varighed",
       "sanctions": "Sanktioner",
@@ -8047,6 +8097,7 @@
       "permanent": "Permanent",
       "active": "Aktiv",
       "expired": "Udløbet",
+      "on_record": "Registreret",
       "cannot_edit_expired": "Udløbne sanktioner kan ikke redigeres — tilføj en ny",
       "edit": "Rediger",
       "remove": "Fjern",

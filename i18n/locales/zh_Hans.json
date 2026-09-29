@@ -929,6 +929,7 @@
     "user": "用户",
     "verified_user": "认证用户",
     "streamer": "主播",
+    "moderator": "版主",
     "match_organizer": "比赛组织者",
     "tournament_organizer": "赛事组织者",
     "administrator": "管理员"
@@ -1702,6 +1703,14 @@
             "title": "比赛",
             "description": "比赛状态变化和导入的比赛。"
           },
+          "match_found": {
+            "title": "找到比赛",
+            "description": "匹配系统已为你找到比赛，正在等待你接受。即使在免打扰时段也会响铃。"
+          },
+          "admin_call": {
+            "title": "管理员呼叫",
+            "description": "管理员想通过你的比赛摄像头与你通话。即使在免打扰时段也会响铃。"
+          },
           "chat": {
             "title": "聊天",
             "description": "会话、大厅或锦标赛房间中的新消息。"
@@ -1825,11 +1834,31 @@
         },
         "quiet_hours": {
           "title": "免打扰时段",
-          "description": "在这段时间内推送通知不会发出声音，但仍会出现在你的通知铃铛中。",
+          "description": "在这段时间内推送通知不会发出声音，但仍会出现在你的通知铃铛中。找到比赛和管理员呼叫仍会照常响铃。",
           "from": "开始",
           "to": "结束",
           "reset": "重置",
           "incomplete": "请同时设置开始和结束时间才能保存免打扰时段。"
+        },
+        "tab_flash": {
+          "title": "浏览器标签页",
+          "description": "当此标签页在后台且有事需要你处理时，闪烁标签页的标题和图标。保存在此设备上。",
+          "match_found": {
+            "title": "已找到比赛",
+            "description": "比赛已就绪，正在等待你接受。"
+          },
+          "admin_call": {
+            "title": "主办方通话",
+            "description": "比赛主办方开始通过你的摄像头页面与你通话时。"
+          },
+          "chat": {
+            "title": "聊天消息",
+            "description": "会话、大厅或锦标赛房间中的新消息。不包括比赛中的游戏内聊天。"
+          },
+          "bell": {
+            "title": "通知",
+            "description": "通知铃铛中出现新内容时。"
+          }
         }
       },
       "notifications": {
@@ -3130,6 +3159,7 @@
         "recent_wins_and_losses": "近期胜负",
         "elo_history": "ELO 历史",
         "no_elo_history": "参加比赛以生成 ELO",
+        "no_elo_history_other": "暂无 ELO 记录",
         "play_a_match": "开始比赛",
         "matches": "比赛",
         "no_matches": "暂无比赛",
@@ -5521,6 +5551,12 @@
       }
     }
   },
+  "tab_flash": {
+    "match_found": "已找到比赛",
+    "admin_call": "主办方正在呼叫你",
+    "chat": "新消息 | 新消息",
+    "bell": "新通知 | 新通知"
+  },
   "roster_picker": {
     "add_starter": "添加首发",
     "add_substitute": "添加替补",
@@ -5835,6 +5871,7 @@
       "information_tab": "信息",
       "about_section": "简介",
       "match_settings": "比赛设置",
+      "chat_room_tab": "聊天室",
       "read_more": "展开",
       "read_less": "收起"
     },
@@ -7974,11 +8011,13 @@
       "reason_label": "原因",
       "reason_placeholder": "输入处罚原因...",
       "reason_description": "请为此处罚提供明确原因",
+      "reason_required": "必须填写原因",
       "types": {
         "ban_description": "玩家无法参与任何活动",
         "mute_description": "玩家无法在游戏中使用语音聊天",
         "gag_description": "玩家无法在游戏中使用文字聊天",
-        "silence_description": "玩家被静音和禁言"
+        "silence_description": "玩家被静音和禁言",
+        "warning_description": "记录在玩家档案中的提示信息，永不执行"
       },
       "durations": {
         "15_minutes": "15 分钟",
@@ -7993,20 +8032,24 @@
         "ban": "封禁玩家",
         "mute": "关闭玩家麦克风",
         "gag": "禁止玩家打字",
-        "silence": "完全禁言玩家"
+        "silence": "完全禁言玩家",
+        "warning": "警告玩家"
       },
       "submit": {
         "ban": "封禁玩家",
         "mute": "关闭玩家麦克风",
         "gag": "禁止玩家打字",
-        "silence": "完全禁言玩家"
+        "silence": "完全禁言玩家",
+        "warning": "发出警告"
       },
       "applied": {
         "ban": "已封禁 {name}",
         "mute": "已关闭 {name} 的麦克风",
         "gag": "已禁止 {name} 打字",
-        "silence": "已完全禁言 {name}"
+        "silence": "已完全禁言 {name}",
+        "warning": "已向 {name} 发出警告"
       },
+      "warning_note": "警告会保存到玩家档案并通知该玩家。它永远不会被执行，也永不过期。",
       "typed_player": "{type}玩家"
     },
     "search": {
@@ -8033,6 +8076,13 @@
       "muted": "静音",
       "gagged": "禁言",
       "silenced": "禁言+静音",
+      "type_labels": {
+        "ban": "封禁",
+        "mute": "静音",
+        "gag": "禁言",
+        "silence": "禁言+静音",
+        "warning": "警告"
+      },
       "duration_label": "时长",
       "select_duration": "选择时长",
       "sanctions": "处罚",
@@ -8047,6 +8097,7 @@
       "permanent": "永久",
       "active": "活跃",
       "expired": "已过期",
+      "on_record": "已记录",
       "cannot_edit_expired": "已过期的处罚无法编辑——请添加新的处罚",
       "edit": "编辑",
       "remove": "移除",

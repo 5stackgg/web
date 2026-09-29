@@ -11,6 +11,11 @@ import {
   tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
 import { e_player_roles_enum } from "~/generated/zeus";
+import {
+  TAB_FLASH_KINDS,
+  useTabFlashSettings,
+  type TabFlashKind,
+} from "~/composables/useTabFlashSettings";
 
 const { t, te } = useI18n();
 const authStore = useAuthStore();
@@ -217,6 +222,42 @@ const handlePushToggle = async (enabled: boolean) => {
     title: t("pages.settings.notification_preferences.push.disabled_toast"),
   });
 };
+
+const { enabled: tabFlashEnabled, setEnabled: setTabFlashEnabled } =
+  useTabFlashSettings();
+
+const tabFlashCopy = computed<
+  Record<TabFlashKind, { title: string; description: string }>
+>(() => ({
+  match_found: {
+    title: t(
+      "pages.settings.notification_preferences.tab_flash.match_found.title",
+    ),
+    description: t(
+      "pages.settings.notification_preferences.tab_flash.match_found.description",
+    ),
+  },
+  admin_call: {
+    title: t(
+      "pages.settings.notification_preferences.tab_flash.admin_call.title",
+    ),
+    description: t(
+      "pages.settings.notification_preferences.tab_flash.admin_call.description",
+    ),
+  },
+  chat: {
+    title: t("pages.settings.notification_preferences.tab_flash.chat.title"),
+    description: t(
+      "pages.settings.notification_preferences.tab_flash.chat.description",
+    ),
+  },
+  bell: {
+    title: t("pages.settings.notification_preferences.tab_flash.bell.title"),
+    description: t(
+      "pages.settings.notification_preferences.tab_flash.bell.description",
+    ),
+  },
+}));
 
 const handlePreferenceToggle = async (
   channel: "push" | "in_app",
@@ -448,6 +489,41 @@ const handlePreferenceToggle = async (
               $t("pages.settings.notification_preferences.quiet_hours.incomplete")
             }}
           </p>
+        </div>
+      </section>
+
+      <!-- Per device, so it works with or without push. -->
+      <section class="space-y-2">
+        <div :class="[tacticalSectionLabelClasses, 'mb-0']">
+          <span :class="tacticalSectionTickClasses"></span>
+          {{ $t("pages.settings.notification_preferences.tab_flash.title") }}
+        </div>
+        <p class="max-w-prose text-xs text-muted-foreground">
+          {{
+            $t("pages.settings.notification_preferences.tab_flash.description")
+          }}
+        </p>
+        <div
+          class="divide-y divide-border/50 overflow-hidden rounded-lg border border-border/60 bg-card/30"
+        >
+          <label
+            v-for="kind in TAB_FLASH_KINDS"
+            :key="kind"
+            class="flex cursor-pointer items-center justify-between gap-4 px-4 py-3 transition-colors duration-150 hover:bg-muted/20"
+          >
+            <div class="min-w-0 space-y-0.5">
+              <span class="block text-sm font-medium leading-none">
+                {{ tabFlashCopy[kind].title }}
+              </span>
+              <span class="block text-xs text-muted-foreground">
+                {{ tabFlashCopy[kind].description }}
+              </span>
+            </div>
+            <Switch
+              :model-value="tabFlashEnabled[kind]"
+              @update:model-value="(value) => setTabFlashEnabled(kind, value)"
+            />
+          </label>
         </div>
       </section>
 

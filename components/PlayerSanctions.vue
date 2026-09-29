@@ -4,7 +4,6 @@ import {
   Edit2,
   Trash2,
   Calendar as CalendarIcon,
-  AlertTriangle,
   ExternalLink,
   Ban,
   MicOff,
@@ -15,6 +14,7 @@ import {
   ShieldAlert,
   ShieldCheck,
   ShieldX,
+  TriangleAlert,
 } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import {
@@ -84,7 +84,7 @@ const tabCountClasses =
             'text-destructive hover:text-destructive': activeSanctions > 0,
           }"
         >
-          <AlertTriangle class="h-3.5 w-3.5" />
+          <TriangleAlert class="h-3.5 w-3.5" />
           <span>{{ $t("player.sanctions.title") }}</span>
           <ShieldX
             v-if="vacBanned"
@@ -276,6 +276,11 @@ const tabCountClasses =
                         class="h-4 w-4 shrink-0"
                         :class="accentTextClass(sanction)"
                       />
+                      <TriangleAlert
+                        v-else-if="isWarning(sanction)"
+                        class="h-4 w-4 shrink-0"
+                        :class="accentTextClass(sanction)"
+                      />
                       <VolumeX
                         v-else
                         class="h-4 w-4 shrink-0"
@@ -286,17 +291,13 @@ const tabCountClasses =
                           <span
                             class="text-sm font-semibold uppercase tracking-wider"
                           >
-                            {{ sanction.type }}
+                            {{ typeLabel(sanction.type) }}
                           </span>
                           <span
                             class="inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
                             :class="statusPillClass(sanction)"
                           >
-                            {{
-                              isExpired(sanction)
-                                ? $t("player.sanctions.expired")
-                                : $t("player.sanctions.active")
-                            }}
+                            {{ statusLabel(sanction) }}
                           </span>
                         </div>
                         <p
@@ -311,13 +312,14 @@ const tabCountClasses =
                       v-if="canManageSanctions"
                       class="flex gap-1 items-center shrink-0"
                     >
-                      <TooltipProvider v-if="!isExpired(sanction)">
+                      <TooltipProvider v-if="canEditEndDate(sanction)">
                         <Tooltip>
                           <TooltipTrigger as-child>
                             <Button
                               variant="ghost"
                               size="icon"
                               class="h-7 w-7"
+                              :aria-label="$t('player.sanctions.edit')"
                               @click="openEditDialog(sanction)"
                             >
                               <Edit2 class="h-3.5 w-3.5" />
@@ -335,6 +337,7 @@ const tabCountClasses =
                               variant="ghost"
                               size="icon"
                               class="h-7 w-7 text-destructive hover:text-destructive"
+                              :aria-label="$t('player.sanctions.remove')"
                               @click="removeSanction(sanction)"
                             >
                               <Trash2 class="h-3.5 w-3.5" />
@@ -356,6 +359,7 @@ const tabCountClasses =
                   </p>
 
                   <div
+                    v-if="!isWarning(sanction)"
                     class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs"
                   >
                     <span
@@ -746,6 +750,9 @@ export default {
   computed: {
     activeSanctions() {
       return this.sanctions.filter((sanction) => {
+        if (this.isWarning(sanction)) {
+          return false;
+        }
         if (sanction.remove_sanction_date) {
           return new Date(sanction.remove_sanction_date) > new Date();
         }
@@ -855,11 +862,32 @@ export default {
     },
   },
   methods: {
+    isWarning(sanction: any) {
+      return sanction.type === "warning";
+    },
     isExpired(sanction: any) {
+      if (this.isWarning(sanction)) {
+        return false;
+      }
       return (
         !!sanction.remove_sanction_date &&
         new Date(sanction.remove_sanction_date) <= new Date()
       );
+    },
+    canEditEndDate(sanction: any) {
+      return !this.isWarning(sanction) && !this.isExpired(sanction);
+    },
+    typeLabel(type: string) {
+      const key = `player.sanctions.type_labels.${type}`;
+      return this.$te(key) ? this.$t(key) : type;
+    },
+    statusLabel(sanction: any) {
+      if (this.isWarning(sanction)) {
+        return this.$t("player.sanctions.on_record");
+      }
+      return this.isExpired(sanction)
+        ? this.$t("player.sanctions.expired")
+        : this.$t("player.sanctions.active");
     },
     isAutoSteamBan(sanction: any) {
       return (
@@ -881,12 +909,15 @@ export default {
         : "text-[hsl(var(--tac-amber))]";
     },
     statusPillClass(sanction: any) {
-      return this.isExpired(sanction)
-        ? "border-border text-muted-foreground"
-        : "border-destructive/40 bg-destructive/10 text-destructive";
+      if (this.isExpired(sanction)) {
+        return "border-border text-muted-foreground";
+      }
+      return sanction.type === "ban"
+        ? "border-destructive/40 bg-destructive/10 text-destructive"
+        : "border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]";
     },
     openEditDialog(sanction: any) {
-      if (this.isExpired(sanction)) {
+      if (!this.canEditEndDate(sanction)) {
         return;
       }
       this.editingSanction = sanction;
@@ -991,11 +1022,13 @@ export default {
               $serverId: String
               $steam_id: String!
               $type: String!
+              $sanction_id: uuid
             ) {
               unsanctionServerPlayer(
                 serverId: $serverId
                 steam_id: $steam_id
                 type: $type
+                sanction_id: $sanction_id
               ) {
                 enforced
                 message
@@ -1006,6 +1039,7 @@ export default {
             serverId: this.serverId ?? null,
             steam_id: this.playerId,
             type: this.sanctionToDelete.type,
+            sanction_id: this.sanctionToDelete.id,
           },
         });
 

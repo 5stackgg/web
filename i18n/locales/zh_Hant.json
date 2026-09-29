@@ -929,6 +929,7 @@
     "user": "使用者",
     "verified_user": "已驗證使用者",
     "streamer": "實況主",
+    "moderator": "版主",
     "match_organizer": "比賽主辦者",
     "tournament_organizer": "賽事主辦者",
     "administrator": "管理員"
@@ -1702,6 +1703,14 @@
             "title": "比賽",
             "description": "比賽狀態變更與匯入的比賽。"
           },
+          "match_found": {
+            "title": "找到比賽",
+            "description": "配對系統已為你找到比賽，正在等待你接受。即使在勿擾時段也會響鈴。"
+          },
+          "admin_call": {
+            "title": "管理員呼叫",
+            "description": "管理員想透過你的比賽攝影機與你通話。即使在勿擾時段也會響鈴。"
+          },
           "chat": {
             "title": "聊天",
             "description": "對話、大廳或錦標賽房間中的新訊息。"
@@ -1825,11 +1834,31 @@
         },
         "quiet_hours": {
           "title": "勿擾時段",
-          "description": "在這段時間內推播通知不會發出聲音，但仍會出現在你的通知鈴鐺中。",
+          "description": "在這段時間內推播通知不會發出聲音，但仍會出現在你的通知鈴鐺中。找到比賽和管理員呼叫仍會照常響鈴。",
           "from": "開始",
           "to": "結束",
           "reset": "重設",
           "incomplete": "請同時設定開始與結束時間才能儲存勿擾時段。"
+        },
+        "tab_flash": {
+          "title": "瀏覽器分頁",
+          "description": "當此分頁在背景且有事需要你處理時，閃爍分頁的標題和圖示。儲存在此裝置上。",
+          "match_found": {
+            "title": "已找到比賽",
+            "description": "比賽已就緒，正在等待你接受。"
+          },
+          "admin_call": {
+            "title": "主辦方通話",
+            "description": "比賽主辦方開始透過你的攝影機頁面與你通話時。"
+          },
+          "chat": {
+            "title": "聊天訊息",
+            "description": "對話、大廳或錦標賽房間中的新訊息。不包括比賽中的遊戲內聊天。"
+          },
+          "bell": {
+            "title": "通知",
+            "description": "通知鈴鐺中出現新內容時。"
+          }
         }
       },
       "notifications": {
@@ -3130,6 +3159,7 @@
         "recent_wins_and_losses": "近期勝負",
         "elo_history": "ELO 歷史",
         "no_elo_history": "參加比賽以產生 ELO",
+        "no_elo_history_other": "尚無 ELO 紀錄",
         "play_a_match": "開始比賽",
         "matches": "比賽",
         "no_matches": "尚無比賽",
@@ -5521,6 +5551,12 @@
       }
     }
   },
+  "tab_flash": {
+    "match_found": "已找到比賽",
+    "admin_call": "主辦方正在呼叫你",
+    "chat": "新訊息 | 新訊息",
+    "bell": "新通知 | 新通知"
+  },
   "roster_picker": {
     "add_starter": "新增先發",
     "add_substitute": "新增替補",
@@ -5835,6 +5871,7 @@
       "information_tab": "資訊",
       "about_section": "關於",
       "match_settings": "比賽設定",
+      "chat_room_tab": "聊天室",
       "read_more": "顯示更多",
       "read_less": "顯示較少"
     },
@@ -7974,11 +8011,13 @@
       "reason_label": "原因",
       "reason_placeholder": "輸入處罰原因...",
       "reason_description": "請為此處罰提供明確的原因",
+      "reason_required": "必須填寫原因",
       "types": {
         "ban_description": "玩家無法參與任何活動",
         "mute_description": "玩家無法在遊戲中使用語音聊天",
         "gag_description": "玩家無法在遊戲中使用文字聊天",
-        "silence_description": "玩家被禁音並禁言"
+        "silence_description": "玩家被禁音並禁言",
+        "warning_description": "記錄在玩家檔案中的提示資訊，永不執行"
       },
       "durations": {
         "15_minutes": "15 分鐘",
@@ -7993,20 +8032,24 @@
         "ban": "封禁玩家",
         "mute": "關閉玩家麥克風",
         "gag": "禁止玩家打字",
-        "silence": "完全禁言玩家"
+        "silence": "完全禁言玩家",
+        "warning": "警告玩家"
       },
       "submit": {
         "ban": "封禁玩家",
         "mute": "關閉玩家麥克風",
         "gag": "禁止玩家打字",
-        "silence": "完全禁言玩家"
+        "silence": "完全禁言玩家",
+        "warning": "發出警告"
       },
       "applied": {
         "ban": "已封禁 {name}",
         "mute": "已關閉 {name} 的麥克風",
         "gag": "已禁止 {name} 打字",
-        "silence": "已完全禁言 {name}"
+        "silence": "已完全禁言 {name}",
+        "warning": "已向 {name} 發出警告"
       },
+      "warning_note": "警告會儲存到玩家檔案並通知該玩家。它永遠不會被執行，也永不過期。",
       "typed_player": "{type}玩家"
     },
     "search": {
@@ -8033,6 +8076,13 @@
       "muted": "已禁音",
       "gagged": "已禁言",
       "silenced": "已禁音＋禁言",
+      "type_labels": {
+        "ban": "封禁",
+        "mute": "禁音",
+        "gag": "禁言",
+        "silence": "禁音＋禁言",
+        "warning": "警告"
+      },
       "duration_label": "期間",
       "select_duration": "選擇期間",
       "sanctions": "處罰",
@@ -8047,6 +8097,7 @@
       "permanent": "永久",
       "active": "生效中",
       "expired": "已到期",
+      "on_record": "已記錄",
       "cannot_edit_expired": "已到期的處罰無法編輯——請新增一筆",
       "edit": "編輯",
       "remove": "移除",

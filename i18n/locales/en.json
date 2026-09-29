@@ -929,6 +929,7 @@
     "user": "User",
     "verified_user": "Verified User",
     "streamer": "Streamer",
+    "moderator": "Moderator",
     "match_organizer": "Match Organizer",
     "tournament_organizer": "Tournament Organizer",
     "administrator": "Administrator"
@@ -1702,6 +1703,14 @@
             "title": "Matches",
             "description": "Match status changes and imported matches."
           },
+          "match_found": {
+            "title": "Match found",
+            "description": "Matchmaking found your match and is waiting for you to accept. Rings even during quiet hours."
+          },
+          "admin_call": {
+            "title": "Admin calls",
+            "description": "An admin wants to talk to you over your match camera. Rings even during quiet hours."
+          },
           "chat": {
             "title": "Chat",
             "description": "New messages in a conversation, lobby or tournament room."
@@ -1825,11 +1834,31 @@
         },
         "quiet_hours": {
           "title": "Quiet Hours",
-          "description": "Push notifications stay silent during this window. They still appear in your alert bell.",
+          "description": "Push notifications stay silent during this window. They still appear in your alert bell. Match-found alerts and admin calls ring anyway.",
           "from": "From",
           "to": "To",
           "reset": "Reset",
           "incomplete": "Set both a start and an end time to save quiet hours."
+        },
+        "tab_flash": {
+          "title": "Browser tab",
+          "description": "Flash this tab's title and icon when something needs you while it's in the background. Saved on this device.",
+          "match_found": {
+            "title": "Match found",
+            "description": "A match is ready and waiting for you to accept."
+          },
+          "admin_call": {
+            "title": "Organizer calls",
+            "description": "A match organizer starts talking to you on your camera page."
+          },
+          "chat": {
+            "title": "Chat messages",
+            "description": "A new message in a conversation, lobby or tournament room. In-game match chat is left out."
+          },
+          "bell": {
+            "title": "Notifications",
+            "description": "Something new lands in your alert bell."
+          }
         }
       },
       "notifications": {
@@ -3130,6 +3159,7 @@
         "recent_wins_and_losses": "Recent Wins and Losses",
         "elo_history": "ELO History",
         "no_elo_history": "Play a match to generate ELO",
+        "no_elo_history_other": "No ELO history yet",
         "play_a_match": "Play",
         "matches": "Matches",
         "no_matches": "No matches yet",
@@ -5521,6 +5551,12 @@
       }
     }
   },
+  "tab_flash": {
+    "match_found": "Match found",
+    "admin_call": "An organizer is calling",
+    "chat": "New message | New messages",
+    "bell": "New notification | New notifications"
+  },
   "roster_picker": {
     "add_starter": "Add starter",
     "add_substitute": "Add substitute",
@@ -5835,6 +5871,7 @@
       "information_tab": "Information",
       "about_section": "About",
       "match_settings": "Match Settings",
+      "chat_room_tab": "Chat Room",
       "read_more": "Read more",
       "read_less": "Read less"
     },
@@ -7974,11 +8011,13 @@
       "reason_label": "Reason",
       "reason_placeholder": "Enter reason for sanction...",
       "reason_description": "Please provide a clear reason for this sanction",
+      "reason_required": "A reason is required",
       "types": {
         "ban_description": "Player is not able to participate in any activity",
         "mute_description": "Player cannot use voice chat in game",
         "gag_description": "Player cannot use text chat in game",
-        "silence_description": "Player muted and gagged"
+        "silence_description": "Player muted and gagged",
+        "warning_description": "Informational note on the player's record, never enforced"
       },
       "durations": {
         "15_minutes": "15 minutes",
@@ -7993,20 +8032,24 @@
         "ban": "Banning Player",
         "mute": "Muting Player",
         "gag": "Gagging Player",
-        "silence": "Silencing Player"
+        "silence": "Silencing Player",
+        "warning": "Warning Player"
       },
       "submit": {
         "ban": "Ban Player",
         "mute": "Mute Player",
         "gag": "Gag Player",
-        "silence": "Silence Player"
+        "silence": "Silence Player",
+        "warning": "Issue Warning"
       },
       "applied": {
         "ban": "Banned {name}",
         "mute": "Muted {name}",
         "gag": "Gagged {name}",
-        "silence": "Silenced {name}"
+        "silence": "Silenced {name}",
+        "warning": "Warning issued to {name}"
       },
+      "warning_note": "A warning is saved to the player's record and notifies them. It is never enforced and never expires.",
       "typed_player": "{type} Player"
     },
     "search": {
@@ -8033,6 +8076,13 @@
       "muted": "Muted",
       "gagged": "Gagged",
       "silenced": "Silenced",
+      "type_labels": {
+        "ban": "Ban",
+        "mute": "Mute",
+        "gag": "Gag",
+        "silence": "Silence",
+        "warning": "Warning"
+      },
       "duration_label": "Duration",
       "select_duration": "Select duration",
       "sanctions": "Sanctions",
@@ -8047,6 +8097,7 @@
       "permanent": "Permanent",
       "active": "Active",
       "expired": "Expired",
+      "on_record": "On record",
       "cannot_edit_expired": "Expired sanctions can't be edited — add a new one",
       "edit": "Edit",
       "remove": "Remove",

@@ -100,3 +100,72 @@ describe("notification preferences install gate", () => {
     expect(wrapper.text()).not.toContain(ALREADY_INSTALLED);
   });
 });
+
+describe("notification preferences browser tab toggles", () => {
+  const storageKey = (kind: string) => `5stack:tab-flash:${kind}`;
+
+  afterEach(() => {
+    for (const kind of ["match-found", "admin-call", "chat", "bell"]) {
+      localStorage.removeItem(storageKey(kind));
+    }
+  });
+
+  async function mountTabFlashRows() {
+    emulateDevice({ userAgent: userAgents.desktopChrome });
+    pwa = fakePwa({ showInstallPrompt: false });
+
+    const wrapper = await mountPage();
+    const section = wrapper
+      .findAll("section")
+      .find((candidate) => candidate.text().includes("Browser tab"));
+
+    expect(section).toBeDefined();
+
+    return section!.findAll("label").map((row) => ({
+      title: row.find("span").text(),
+      toggle: row.find("[role='switch']"),
+    }));
+  }
+
+  it("offers every kind, on by default, without push", async () => {
+    const rows = await mountTabFlashRows();
+
+    expect(rows.map((row) => row.title)).toEqual([
+      "Match found",
+      "Organizer calls",
+      "Chat messages",
+      "Notifications",
+    ]);
+    for (const row of rows) {
+      expect(row.toggle.attributes("aria-checked")).toBe("true");
+    }
+  });
+
+  it("saves a toggle on this device", async () => {
+    const rows = await mountTabFlashRows();
+    const chat = rows.find((row) => row.title === "Chat messages")!;
+
+    await chat.toggle.trigger("click");
+    await flushPromises();
+
+    expect(localStorage.getItem(storageKey("chat"))).toBe("false");
+    expect(chat.toggle.attributes("aria-checked")).toBe("false");
+  });
+
+  it("reads a saved choice back", async () => {
+    localStorage.setItem(storageKey("bell"), "false");
+
+    const rows = await mountTabFlashRows();
+
+    expect(
+      rows
+        .find((row) => row.title === "Notifications")!
+        .toggle.attributes("aria-checked"),
+    ).toBe("false");
+    expect(
+      rows
+        .find((row) => row.title === "Match found")!
+        .toggle.attributes("aria-checked"),
+    ).toBe("true");
+  });
+});

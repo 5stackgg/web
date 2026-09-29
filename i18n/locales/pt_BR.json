@@ -929,6 +929,7 @@
     "user": "Usuário",
     "verified_user": "Usuário verificado",
     "streamer": "Streamer",
+    "moderator": "Moderador",
     "match_organizer": "Organizador da partida",
     "tournament_organizer": "Organizador do torneio",
     "administrator": "Administrador"
@@ -1702,6 +1703,14 @@
             "title": "Partidas",
             "description": "Mudanças de status de partidas e partidas importadas."
           },
+          "match_found": {
+            "title": "Partida encontrada",
+            "description": "O matchmaking encontrou sua partida e está esperando você aceitar. Toca mesmo durante o horário silencioso."
+          },
+          "admin_call": {
+            "title": "Chamadas de administradores",
+            "description": "Um administrador quer falar com você pela câmera da partida. Toca mesmo durante o horário silencioso."
+          },
           "chat": {
             "title": "Chat",
             "description": "Novas mensagens em um lobby, partida ou conversa."
@@ -1825,11 +1834,31 @@
         },
         "quiet_hours": {
           "title": "Horário silencioso",
-          "description": "Notificações push permanecem silenciosas durante este período. Elas ainda aparecem no sino de alertas.",
+          "description": "Notificações push permanecem silenciosas durante este período. Elas ainda aparecem no sino de alertas. Partidas encontradas e chamadas de administradores tocam mesmo assim.",
           "from": "De",
           "to": "Até",
           "reset": "Redefinir",
           "incomplete": "Defina tanto um horário de início quanto de término para salvar o horário silencioso."
+        },
+        "tab_flash": {
+          "title": "Aba do navegador",
+          "description": "Faz o título e o ícone desta aba piscarem quando algo precisa de você enquanto ela está em segundo plano. Salvo neste dispositivo.",
+          "match_found": {
+            "title": "Partida encontrada",
+            "description": "Uma partida está pronta e esperando você aceitar."
+          },
+          "admin_call": {
+            "title": "Chamadas do organizador",
+            "description": "Um organizador da partida começa a falar com você pela sua página da câmera."
+          },
+          "chat": {
+            "title": "Mensagens de chat",
+            "description": "Uma nova mensagem em uma conversa, lobby ou sala de torneio. O chat da partida dentro do jogo fica de fora."
+          },
+          "bell": {
+            "title": "Notificações",
+            "description": "Algo novo chega ao seu sino de alertas."
+          }
         }
       },
       "notifications": {
@@ -3130,6 +3159,7 @@
         "recent_wins_and_losses": "Vitórias e Derrotas Recentes",
         "elo_history": "Histórico do ELO",
         "no_elo_history": "Jogue uma partida para descobrir seu ELO",
+        "no_elo_history_other": "Ainda sem histórico de ELO",
         "play_a_match": "Jogar",
         "matches": "Partidas",
         "no_matches": "Ainda sem partidas",
@@ -5521,6 +5551,12 @@
       }
     }
   },
+  "tab_flash": {
+    "match_found": "Partida encontrada",
+    "admin_call": "Um organizador está chamando você",
+    "chat": "Nova mensagem | Novas mensagens",
+    "bell": "Nova notificação | Novas notificações"
+  },
   "roster_picker": {
     "add_starter": "Adicionar titular",
     "add_substitute": "Adicionar reserva",
@@ -5835,6 +5871,7 @@
       "information_tab": "Informações",
       "about_section": "Sobre",
       "match_settings": "Configurações da Partida",
+      "chat_room_tab": "Sala de chat",
       "read_more": "Ler mais",
       "read_less": "Ler menos"
     },
@@ -7974,11 +8011,13 @@
       "reason_label": "Motivo",
       "reason_placeholder": "Insira o motivo da sanção...",
       "reason_description": "Forneça um motivo claro para esta sanção",
+      "reason_required": "O motivo é obrigatório",
       "types": {
         "ban_description": "Banido e não pode participar de nenhuma atividade.",
         "mute_description": "Não pode usar o chat de voz dentro do jogo.",
         "gag_description": "Não pode usar o chat de texto dentro do jogo.",
-        "silence_description": "Silenciado: sem acesso ao chat de voz e ao chat de texto."
+        "silence_description": "Silenciado: sem acesso ao chat de voz e ao chat de texto.",
+        "warning_description": "Nota informativa no histórico do jogador. Nunca é aplicada."
       },
       "durations": {
         "15_minutes": "15 minutos",
@@ -7993,20 +8032,24 @@
         "ban": "Banindo jogador",
         "mute": "Mutando jogador",
         "gag": "Aplicando gag ao jogador",
-        "silence": "Silenciando jogador"
+        "silence": "Silenciando jogador",
+        "warning": "Advertindo jogador"
       },
       "submit": {
         "ban": "Banir jogador",
         "mute": "Mutar jogador",
         "gag": "Aplicar gag",
-        "silence": "Silenciar jogador"
+        "silence": "Silenciar jogador",
+        "warning": "Emitir advertência"
       },
       "applied": {
         "ban": "{name} foi banido",
         "mute": "{name} foi mutado",
         "gag": "{name} recebeu gag",
-        "silence": "{name} foi silenciado"
+        "silence": "{name} foi silenciado",
+        "warning": "{name} recebeu uma advertência"
       },
+      "warning_note": "A advertência fica salva no histórico do jogador e ele é notificado. Nunca é aplicada e nunca expira.",
       "typed_player": "Jogador {type}"
     },
     "search": {
@@ -8033,6 +8076,13 @@
       "muted": "Silenciado (voz)",
       "gagged": "Censurado (texto)",
       "silenced": "Silenciado",
+      "type_labels": {
+        "ban": "Banimento",
+        "mute": "Mute",
+        "gag": "Gag",
+        "silence": "Silenciamento",
+        "warning": "Advertência"
+      },
       "duration_label": "Duração",
       "select_duration": "Selecionar duração",
       "sanctions": "Sanções",
@@ -8047,6 +8097,7 @@
       "permanent": "Permanente",
       "active": "Ativo",
       "expired": "Expirado",
+      "on_record": "No histórico",
       "cannot_edit_expired": "Sanções expiradas não podem ser editadas — adicione uma nova",
       "edit": "Editar",
       "remove": "Remover",

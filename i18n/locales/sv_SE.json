@@ -929,6 +929,7 @@
     "user": "Användare",
     "verified_user": "Verifierad användare",
     "streamer": "Streamer",
+    "moderator": "Moderator",
     "match_organizer": "Matcharrangör",
     "tournament_organizer": "Turneringsarrangör",
     "administrator": "Administratör"
@@ -1702,6 +1703,14 @@
             "title": "Matcher",
             "description": "Ändringar av matchstatus och importerade matcher."
           },
+          "match_found": {
+            "title": "Match hittad",
+            "description": "Matchmaking har hittat din match och väntar på att du accepterar. Ringer även under tysta timmar."
+          },
+          "admin_call": {
+            "title": "Samtal från admins",
+            "description": "En admin vill prata med dig via din matchkamera. Ringer även under tysta timmar."
+          },
           "chat": {
             "title": "Chatt",
             "description": "Nya meddelanden i en konversation, ett lobby eller ett turneringsrum."
@@ -1825,11 +1834,31 @@
         },
         "quiet_hours": {
           "title": "Tysta timmar",
-          "description": "Push-aviseringar förblir ljudlösa under det här intervallet. De visas fortfarande i din aviseringsklocka.",
+          "description": "Push-aviseringar förblir ljudlösa under det här intervallet. De visas fortfarande i din aviseringsklocka. Hittade matcher och samtal från admins ringer ändå.",
           "from": "Från",
           "to": "Till",
           "reset": "Återställ",
           "incomplete": "Ange både en start- och en sluttid för att spara tysta timmar."
+        },
+        "tab_flash": {
+          "title": "Webbläsarflik",
+          "description": "Låter flikens titel och ikon blinka när något behöver dig medan den ligger i bakgrunden. Sparas på den här enheten.",
+          "match_found": {
+            "title": "Match hittad",
+            "description": "En match är redo och väntar på att du accepterar."
+          },
+          "admin_call": {
+            "title": "Arrangörssamtal",
+            "description": "En matcharrangör börjar prata med dig via din kamerasida."
+          },
+          "chat": {
+            "title": "Chattmeddelanden",
+            "description": "Ett nytt meddelande i en konversation, en lobby eller ett turneringsrum. Chatten från själva matchen i spelet räknas inte."
+          },
+          "bell": {
+            "title": "Aviseringar",
+            "description": "Något nytt landar i din aviseringsklocka."
+          }
         }
       },
       "notifications": {
@@ -3130,6 +3159,7 @@
         "recent_wins_and_losses": "Senaste vinster och förluster",
         "elo_history": "ELO-historik",
         "no_elo_history": "Spela en match för att generera ELO",
+        "no_elo_history_other": "Ingen ELO-historik än",
         "play_a_match": "Spela",
         "matches": "Matcher",
         "no_matches": "Inga matcher än",
@@ -5521,6 +5551,12 @@
       }
     }
   },
+  "tab_flash": {
+    "match_found": "Match hittad",
+    "admin_call": "En arrangör ringer",
+    "chat": "Nytt meddelande | Nya meddelanden",
+    "bell": "Ny avisering | Nya aviseringar"
+  },
   "roster_picker": {
     "add_starter": "Lägg till ordinarie",
     "add_substitute": "Lägg till reserv",
@@ -5835,6 +5871,7 @@
       "information_tab": "Information",
       "about_section": "Om",
       "match_settings": "Matchinställningar",
+      "chat_room_tab": "Chattrum",
       "read_more": "Läs mer",
       "read_less": "Visa mindre"
     },
@@ -7974,11 +8011,13 @@
       "reason_label": "Anledning",
       "reason_placeholder": "Ange anledning för sanktionen...",
       "reason_description": "Ange en tydlig anledning för denna sanktion",
+      "reason_required": "En anledning krävs",
       "types": {
         "ban_description": "Spelaren kan inte delta i någon aktivitet",
         "mute_description": "Spelaren kan inte använda röstchatt i spelet",
         "gag_description": "Spelaren kan inte använda textchatt i spelet",
-        "silence_description": "Spelaren är tystad i röst och text"
+        "silence_description": "Spelaren är tystad i röst och text",
+        "warning_description": "Informativ anteckning i spelarens historik, verkställs aldrig"
       },
       "durations": {
         "15_minutes": "15 minuter",
@@ -7993,20 +8032,24 @@
         "ban": "Stänger av spelare",
         "mute": "Stänger av spelarens mikrofon",
         "gag": "Stänger spelarens chatt",
-        "silence": "Tystar spelaren helt"
+        "silence": "Tystar spelaren helt",
+        "warning": "Varnar spelare"
       },
       "submit": {
         "ban": "Stäng av spelaren",
         "mute": "Stäng av spelarens mikrofon",
         "gag": "Stäng spelarens chatt",
-        "silence": "Tysta spelaren helt"
+        "silence": "Tysta spelaren helt",
+        "warning": "Utfärda varning"
       },
       "applied": {
         "ban": "{name} avstängd",
         "mute": "{name}s mikrofon avstängd",
         "gag": "{name}s chatt stängd",
-        "silence": "{name} helt tystad"
+        "silence": "{name} helt tystad",
+        "warning": "Varning utfärdad till {name}"
       },
+      "warning_note": "En varning sparas i spelarens historik och spelaren meddelas. Den verkställs aldrig och upphör aldrig.",
       "typed_player": "{type}-spelare"
     },
     "search": {
@@ -8033,6 +8076,13 @@
       "muted": "Tystad",
       "gagged": "Textblockerad",
       "silenced": "Helt tystad",
+      "type_labels": {
+        "ban": "Avstängning",
+        "mute": "Mikrofon av",
+        "gag": "Chatt stängd",
+        "silence": "Helt tystad",
+        "warning": "Varning"
+      },
       "duration_label": "Varaktighet",
       "select_duration": "Välj varaktighet",
       "sanctions": "Sanktioner",
@@ -8047,6 +8097,7 @@
       "permanent": "Permanent",
       "active": "Aktiv",
       "expired": "Upphört",
+      "on_record": "Registrerad",
       "cannot_edit_expired": "Utgångna sanktioner kan inte redigeras — lägg till en ny",
       "edit": "Redigera",
       "remove": "Ta bort",

@@ -2,7 +2,6 @@ import { onError } from "@apollo/client/link/error";
 import { RetryLink } from "@apollo/client/link/retry";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
-import { createClient } from "graphql-ws";
 import {
   DefaultApolloClient,
   provideApolloClient,
@@ -16,6 +15,7 @@ import type {
 import { toast } from "@/components/ui/toast";
 import { isAuthErrorMessage } from "~/graphql/isAuthError";
 import { tournamentInviteErrorKey } from "~/utilities/tournamentInvites";
+import { createWatchedGraphqlWsClient } from "~/utilities/graphqlWsWatchdog";
 
 const mergeObjectFields = (
   existing: Record<string, unknown> | undefined,
@@ -125,7 +125,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     uri: `https://${config.public.apiDomain}/v1/graphql`,
   });
 
-  const wsClient = createClient({
+  const wsClient = createWatchedGraphqlWsClient({
     url: `wss://${config.public.apiDomain}/v1/graphql`,
     connectionParams: {
       credentials: "include",

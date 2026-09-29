@@ -2402,7 +2402,7 @@
           "clip_fps": "Highlight-FPS",
           "clip_fps_description": "Bildrate der Ausgabe für gerenderte Highlights und manuell geschnittene Clips. 60 FPS ist flüssiger, verdoppelt aber Encoding-Aufwand und Dateigröße; 30 FPS ist die leichtere Option.",
           "clip_resolution": "Highlight-Auflösung",
-          "clip_resolution_description": "Standard-Ausgabeauflösung für gerenderte Highlights und manuell geschnittene Clips. Nutzer können sie im Render-Dialog pro Clip überschreiben. 1080p hält Qualität und Dateigröße in Balance; 720p erzeugt rund 50 % kleinere Dateien. Beide profitieren, wenn GPU-Nodes in 1440p rendern — der Streamer skaliert das auf die gewählte Ausgabeauflösung herunter.",
+          "clip_resolution_description": "Ausgabeauflösung für gerenderte Highlights und manuell geschnittene Clips. 1080p hält Qualität und Dateigröße in Balance; 720p erzeugt rund 50 % kleinere Dateien. Beide profitieren, wenn GPU-Nodes in 1440p rendern — der Streamer skaliert das auf die gewählte Ausgabeauflösung herunter.",
           "codec_h265": "H.265 / HEVC",
           "codec_h264": "H.264 (empfohlen)",
           "clip_bake_branding": "Spieler-Chip + Outro in Highlights einbrennen",
@@ -8820,7 +8820,6 @@
       "close": "Schließen",
       "segments": "Segmente",
       "title_label": "Titel",
-      "resolution": "Auflösung",
       "render": "Rendern",
       "add": "Hinzufügen",
       "stop": "Stopp",
@@ -8893,7 +8892,6 @@
       "preset": "Preset",
       "title_label": "Titel",
       "title_placeholder": "Standard ist der Preset-Name",
-      "resolution": "Auflösung",
       "submit": "Highlights erzeugen"
     },
     "presets": {

@@ -2402,7 +2402,7 @@
           "clip_fps": "精華影格率",
           "clip_fps_description": "算圖精華與手動剪輯片段的輸出影格率。60 FPS 較流暢，但編碼工作量與檔案大小加倍；30 FPS 則較輕量。",
           "clip_resolution": "精華解析度",
-          "clip_resolution_description": "算圖精華與手動剪輯片段的預設輸出解析度。使用者仍可在算圖對話框中逐一覆寫。1080p 兼顧品質與檔案大小；720p 檔案約小 50%。當 GPU 節點以 1440p 算圖時兩者都能受益——串流器會將其超取樣降至所選的輸出解析度。",
+          "clip_resolution_description": "算圖精華與手動剪輯片段的輸出解析度。1080p 兼顧品質與檔案大小；720p 檔案約小 50%。當 GPU 節點以 1440p 算圖時兩者都能受益——串流器會將其超取樣降至所選的輸出解析度。",
           "codec_h265": "H.265 / HEVC",
           "codec_h264": "H.264（建議）",
           "clip_bake_branding": "將玩家標籤與片尾嵌入精華",
@@ -8820,7 +8820,6 @@
       "close": "關閉",
       "segments": "片段",
       "title_label": "標題",
-      "resolution": "解析度",
       "render": "算圖",
       "add": "新增",
       "stop": "停止",
@@ -8893,7 +8892,6 @@
       "preset": "預設集",
       "title_label": "標題",
       "title_placeholder": "預設使用預設集名稱",
-      "resolution": "解析度",
       "submit": "產生精華"
     },
     "presets": {

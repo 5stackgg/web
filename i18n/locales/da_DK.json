@@ -2402,7 +2402,7 @@
           "clip_fps": "Highlight-FPS",
           "clip_fps_description": "Billedhastighed for renderede highlights og manuelt redigerede klip. 60 FPS er mere flydende, men fordobler encode-arbejdet og filstørrelsen; 30 FPS er den lettere løsning.",
           "clip_resolution": "Highlight-opløsning",
-          "clip_resolution_description": "Standardopløsning for renderede highlights og manuelt redigerede klip. Brugere kan stadig ændre den pr. klip i renderdialogen. 1080p balancerer kvalitet og filstørrelse; 720p giver ca. 50 % mindre filer. Begge får gavn af, at GPU-noder renderer i 1440p — streameren supersampler ned til den valgte opløsning.",
+          "clip_resolution_description": "Opløsning for renderede highlights og manuelt redigerede klip. 1080p balancerer kvalitet og filstørrelse; 720p giver ca. 50 % mindre filer. Begge får gavn af, at GPU-noder renderer i 1440p — streameren supersampler ned til den valgte opløsning.",
           "codec_h265": "H.265 / HEVC",
           "codec_h264": "H.264 (anbefales)",
           "clip_bake_branding": "Indbrænd spillerchip og outro i highlights",
@@ -8820,7 +8820,6 @@
       "close": "Luk",
       "segments": "Segmenter",
       "title_label": "Titel",
-      "resolution": "Opløsning",
       "render": "Render",
       "add": "Tilføj",
       "stop": "Stop",
@@ -8893,7 +8892,6 @@
       "preset": "Preset",
       "title_label": "Titel",
       "title_placeholder": "Bruger preset-navnet som standard",
-      "resolution": "Opløsning",
       "submit": "Generér highlights"
     },
     "presets": {

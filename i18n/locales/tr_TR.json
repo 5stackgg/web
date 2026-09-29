@@ -2402,7 +2402,7 @@
           "clip_fps": "Öne Çıkan An FPS",
           "clip_fps_description": "Render edilen öne çıkan anlar ve manuel düzenlenen klipler için çıktı kare hızı. 60 FPS daha akıcıdır ama render işini ve dosya boyutunu iki katına çıkarır; 30 FPS daha hafif seçenektir.",
           "clip_resolution": "Öne Çıkan An Çözünürlüğü",
-          "clip_resolution_description": "Render edilen öne çıkan anlar ve manuel düzenlenen klipler için varsayılan çıktı çözünürlüğü. Kullanıcılar render diyaloğunda klip başına bunu değiştirebilir. 1080p kalite ve dosya boyutu dengesi sunar; 720p yaklaşık %50 daha küçük dosyalar üretir. GPU düğümleri 1440p'de render ettiğinde ikisi de fayda görür — streamer bunu seçilen çıktı çözünürlüğüne süper örnekler.",
+          "clip_resolution_description": "Render edilen öne çıkan anlar ve manuel düzenlenen klipler için çıktı çözünürlüğü. 1080p kalite ve dosya boyutu dengesi sunar; 720p yaklaşık %50 daha küçük dosyalar üretir. GPU düğümleri 1440p'de render ettiğinde ikisi de fayda görür — streamer bunu seçilen çıktı çözünürlüğüne süper örnekler.",
           "codec_h265": "H.265 / HEVC",
           "codec_h264": "H.264 (önerilen)",
           "clip_bake_branding": "Oyuncu etiketini ve kapanışı öne çıkan anlara göm",
@@ -8820,7 +8820,6 @@
       "close": "Kapat",
       "segments": "Parçalar",
       "title_label": "Başlık",
-      "resolution": "Çözünürlük",
       "render": "Render",
       "add": "Ekle",
       "stop": "Durdur",
@@ -8893,7 +8892,6 @@
       "preset": "Hazır ayar",
       "title_label": "Başlık",
       "title_placeholder": "Varsayılan olarak hazır ayar adı kullanılır",
-      "resolution": "Çözünürlük",
       "submit": "Öne çıkan anları oluştur"
     },
     "presets": {

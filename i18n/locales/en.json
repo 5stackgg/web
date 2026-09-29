@@ -2402,7 +2402,7 @@
           "clip_fps": "Highlight FPS",
           "clip_fps_description": "Output frame rate for rendered highlights and manually-edited clips. 60 FPS is smoother but doubles the encode work and file size; 30 FPS is the lighter option.",
           "clip_resolution": "Highlight Resolution",
-          "clip_resolution_description": "Default output resolution for rendered highlights and manually-edited clips. Users can still override per-clip in the render dialog. 1080p balances quality and file size; 720p produces ~50% smaller files. Both benefit when GPU nodes render at 1440p — the streamer supersamples that down to the selected output resolution.",
+          "clip_resolution_description": "Output resolution for rendered highlights and manually-edited clips. 1080p balances quality and file size; 720p produces ~50% smaller files. Both benefit when GPU nodes render at 1440p — the streamer supersamples that down to the selected output resolution.",
           "codec_h265": "H.265 / HEVC",
           "codec_h264": "H.264 (recommended)",
           "clip_bake_branding": "Bake player chip + outro into highlights",
@@ -8820,7 +8820,6 @@
       "close": "Close",
       "segments": "Segments",
       "title_label": "Title",
-      "resolution": "Resolution",
       "render": "Render",
       "add": "Add",
       "stop": "Stop",
@@ -8893,7 +8892,6 @@
       "preset": "Preset",
       "title_label": "Title",
       "title_placeholder": "Defaults to preset name",
-      "resolution": "Resolution",
       "submit": "Generate highlights"
     },
     "presets": {

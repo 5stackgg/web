@@ -2402,7 +2402,7 @@
           "clip_fps": "FPS des highlights",
           "clip_fps_description": "Fréquence d'images en sortie pour les highlights rendus et les clips montés manuellement. 60 FPS est plus fluide mais double le travail d'encodage et la taille des fichiers ; 30 FPS est l'option la plus légère.",
           "clip_resolution": "Résolution des highlights",
-          "clip_resolution_description": "Résolution de sortie par défaut pour les highlights rendus et les clips montés manuellement. Les utilisateurs peuvent toujours la modifier clip par clip dans la fenêtre de rendu. 1080p équilibre qualité et taille de fichier ; 720p produit des fichiers ~50 % plus petits. Les deux profitent d'un rendu en 1440p sur les nœuds GPU — le streamer suréchantillonne ensuite vers la résolution de sortie choisie.",
+          "clip_resolution_description": "Résolution de sortie pour les highlights rendus et les clips montés manuellement. 1080p équilibre qualité et taille de fichier ; 720p produit des fichiers ~50 % plus petits. Les deux profitent d'un rendu en 1440p sur les nœuds GPU — le streamer suréchantillonne ensuite vers la résolution de sortie choisie.",
           "codec_h265": "H.265 / HEVC",
           "codec_h264": "H.264 (recommandé)",
           "clip_bake_branding": "Intégrer le bandeau joueur et l'outro aux highlights",
@@ -8820,7 +8820,6 @@
       "close": "Fermer",
       "segments": "Segments",
       "title_label": "Titre",
-      "resolution": "Résolution",
       "render": "Rendre",
       "add": "Ajouter",
       "stop": "Arrêter",
@@ -8893,7 +8892,6 @@
       "preset": "Preset",
       "title_label": "Titre",
       "title_placeholder": "Par défaut : le nom du preset",
-      "resolution": "Résolution",
       "submit": "Générer les highlights"
     },
     "presets": {

@@ -2402,7 +2402,7 @@
           "clip_fps": "FPS highlight",
           "clip_fps_description": "Frame rate di output per gli highlight renderizzati e le clip modificate a mano. 60 FPS è più fluido ma raddoppia il carico di encoding e la dimensione dei file; 30 FPS è l'opzione più leggera.",
           "clip_resolution": "Risoluzione highlight",
-          "clip_resolution_description": "Risoluzione di output predefinita per gli highlight renderizzati e le clip modificate a mano. Gli utenti possono comunque cambiarla per singola clip nella finestra di render. 1080p bilancia qualità e dimensione; 720p produce file circa il 50% più piccoli. Entrambe migliorano quando i nodi GPU renderizzano a 1440p — lo streamer effettua il supersampling verso la risoluzione di output scelta.",
+          "clip_resolution_description": "Risoluzione di output per gli highlight renderizzati e le clip modificate a mano. 1080p bilancia qualità e dimensione; 720p produce file circa il 50% più piccoli. Entrambe migliorano quando i nodi GPU renderizzano a 1440p — lo streamer effettua il supersampling verso la risoluzione di output scelta.",
           "codec_h265": "H.265 / HEVC",
           "codec_h264": "H.264 (consigliato)",
           "clip_bake_branding": "Includi chip giocatore e outro negli highlight",
@@ -8820,7 +8820,6 @@
       "close": "Chiudi",
       "segments": "Segmenti",
       "title_label": "Titolo",
-      "resolution": "Risoluzione",
       "render": "Render",
       "add": "Aggiungi",
       "stop": "Ferma",
@@ -8893,7 +8892,6 @@
       "preset": "Preset",
       "title_label": "Titolo",
       "title_placeholder": "Predefinito: nome del preset",
-      "resolution": "Risoluzione",
       "submit": "Genera highlight"
     },
     "presets": {

@@ -56,11 +56,6 @@ export type ClipSpec = {
     fade_out_ms?: number;
     duck_game_audio?: boolean;
   };
-  output: {
-    format: "mp4";
-    resolution: "720p" | "1080p";
-    fps: 60;
-  };
   destination: "download" | "library";
   title?: string;
 };

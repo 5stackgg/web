@@ -2402,7 +2402,7 @@
           "clip_fps": "Höjdpunkts-FPS",
           "clip_fps_description": "Utdatabildfrekvens för renderade höjdpunkter och manuellt redigerade klipp. 60 FPS är mjukare men dubblar kodningsarbetet och filstorleken; 30 FPS är det lättare alternativet.",
           "clip_resolution": "Höjdpunktsupplösning",
-          "clip_resolution_description": "Standardupplösning för renderade höjdpunkter och manuellt redigerade klipp. Användare kan fortfarande åsidosätta detta per klipp i renderingsdialogen. 1080p balanserar kvalitet och filstorlek; 720p ger ~50 % mindre filer. Båda gynnas när GPU-noder renderar i 1440p — streamern nedsamplar det till vald utdataupplösning.",
+          "clip_resolution_description": "Utdataupplösning för renderade höjdpunkter och manuellt redigerade klipp. 1080p balanserar kvalitet och filstorlek; 720p ger ~50 % mindre filer. Båda gynnas när GPU-noder renderar i 1440p — streamern nedsamplar det till vald utdataupplösning.",
           "codec_h265": "H.265 / HEVC",
           "codec_h264": "H.264 (rekommenderas)",
           "clip_bake_branding": "Bränn in spelarchip och outro i höjdpunkter",
@@ -8820,7 +8820,6 @@
       "close": "Stäng",
       "segments": "Segment",
       "title_label": "Titel",
-      "resolution": "Upplösning",
       "render": "Rendera",
       "add": "Lägg till",
       "stop": "Stoppa",
@@ -8893,7 +8892,6 @@
       "preset": "Förinställning",
       "title_label": "Titel",
       "title_placeholder": "Standard är förinställningens namn",
-      "resolution": "Upplösning",
       "submit": "Generera höjdpunkter"
     },
     "presets": {

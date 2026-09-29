@@ -1024,7 +1024,7 @@ export type ValueTypes = {
 	audio?: ValueTypes["ClipAudioInput"] | undefined | null | Variable<any, string>,
 	destination: string | Variable<any, string>,
 	match_map_id: ValueTypes["uuid"] | Variable<any, string>,
-	output: ValueTypes["ClipOutputInput"] | Variable<any, string>,
+	output?: ValueTypes["ClipOutputInput"] | undefined | null | Variable<any, string>,
 	overlays?: Array<ValueTypes["ClipOverlayInput"]> | undefined | null | Variable<any, string>,
 	segments: Array<ValueTypes["ClipSegmentInput"]> | Variable<any, string>,
 	title?: string | undefined | null | Variable<any, string>
@@ -84117,7 +84117,7 @@ export type ResolverInputTypes = {
 	audio?: ResolverInputTypes["ClipAudioInput"] | undefined | null,
 	destination: string,
 	match_map_id: ResolverInputTypes["uuid"],
-	output: ResolverInputTypes["ClipOutputInput"],
+	output?: ResolverInputTypes["ClipOutputInput"] | undefined | null,
 	overlays?: Array<ResolverInputTypes["ClipOverlayInput"]> | undefined | null,
 	segments: Array<ResolverInputTypes["ClipSegmentInput"]>,
 	title?: string | undefined | null
@@ -167203,7 +167203,7 @@ export type ModelTypes = {
 	audio?: ModelTypes["ClipAudioInput"] | undefined | null,
 	destination: string,
 	match_map_id: ModelTypes["uuid"],
-	output: ModelTypes["ClipOutputInput"],
+	output?: ModelTypes["ClipOutputInput"] | undefined | null,
 	overlays?: Array<ModelTypes["ClipOverlayInput"]> | undefined | null,
 	segments: Array<ModelTypes["ClipSegmentInput"]>,
 	title?: string | undefined | null
@@ -240290,7 +240290,7 @@ export type GraphQLTypes = {
 		audio?: GraphQLTypes["ClipAudioInput"] | undefined | null,
 	destination: string,
 	match_map_id: GraphQLTypes["uuid"],
-	output: GraphQLTypes["ClipOutputInput"],
+	output?: GraphQLTypes["ClipOutputInput"] | undefined | null,
 	overlays?: Array<GraphQLTypes["ClipOverlayInput"]> | undefined | null,
 	segments: Array<GraphQLTypes["ClipSegmentInput"]>,
 	title?: string | undefined | null

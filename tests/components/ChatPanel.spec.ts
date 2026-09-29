@@ -36,6 +36,7 @@ vi.mock("~/web-sockets/Socket", async (importOriginal) => ({
       };
     },
     joinLobby: () => ({ messages: [], on() {}, leave() {} }),
+    hidesAuthor: () => false,
     markLobbyRead() {},
   },
 }));

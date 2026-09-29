@@ -828,6 +828,169 @@ export const AllTypesProps: Record<string,any> = {
 		_neq:"bytea",
 		_nin:"bytea"
 	},
+	chat_message_deletions_aggregate_fields:{
+		count:{
+			columns:"chat_message_deletions_select_column"
+		}
+	},
+	chat_message_deletions_bool_exp:{
+		_and:"chat_message_deletions_bool_exp",
+		_not:"chat_message_deletions_bool_exp",
+		_or:"chat_message_deletions_bool_exp",
+		author:"players_bool_exp",
+		author_steam_id:"bigint_comparison_exp",
+		deleted_at:"timestamptz_comparison_exp",
+		deleted_by:"players_bool_exp",
+		deleted_by_steam_id:"bigint_comparison_exp",
+		id:"uuid_comparison_exp",
+		message:"String_comparison_exp",
+		message_created_at:"timestamptz_comparison_exp",
+		message_id:"uuid_comparison_exp",
+		room_id:"String_comparison_exp",
+		room_type:"String_comparison_exp",
+		source:"String_comparison_exp"
+	},
+	chat_message_deletions_constraint: "enum" as const,
+	chat_message_deletions_inc_input:{
+		author_steam_id:"bigint",
+		deleted_by_steam_id:"bigint"
+	},
+	chat_message_deletions_insert_input:{
+		author:"players_obj_rel_insert_input",
+		author_steam_id:"bigint",
+		deleted_at:"timestamptz",
+		deleted_by:"players_obj_rel_insert_input",
+		deleted_by_steam_id:"bigint",
+		id:"uuid",
+		message_created_at:"timestamptz",
+		message_id:"uuid"
+	},
+	chat_message_deletions_on_conflict:{
+		constraint:"chat_message_deletions_constraint",
+		update_columns:"chat_message_deletions_update_column",
+		where:"chat_message_deletions_bool_exp"
+	},
+	chat_message_deletions_order_by:{
+		author:"players_order_by",
+		author_steam_id:"order_by",
+		deleted_at:"order_by",
+		deleted_by:"players_order_by",
+		deleted_by_steam_id:"order_by",
+		id:"order_by",
+		message:"order_by",
+		message_created_at:"order_by",
+		message_id:"order_by",
+		room_id:"order_by",
+		room_type:"order_by",
+		source:"order_by"
+	},
+	chat_message_deletions_pk_columns_input:{
+		id:"uuid"
+	},
+	chat_message_deletions_select_column: "enum" as const,
+	chat_message_deletions_set_input:{
+		author_steam_id:"bigint",
+		deleted_at:"timestamptz",
+		deleted_by_steam_id:"bigint",
+		id:"uuid",
+		message_created_at:"timestamptz",
+		message_id:"uuid"
+	},
+	chat_message_deletions_stream_cursor_input:{
+		initial_value:"chat_message_deletions_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	chat_message_deletions_stream_cursor_value_input:{
+		author_steam_id:"bigint",
+		deleted_at:"timestamptz",
+		deleted_by_steam_id:"bigint",
+		id:"uuid",
+		message_created_at:"timestamptz",
+		message_id:"uuid"
+	},
+	chat_message_deletions_update_column: "enum" as const,
+	chat_message_deletions_updates:{
+		_inc:"chat_message_deletions_inc_input",
+		_set:"chat_message_deletions_set_input",
+		where:"chat_message_deletions_bool_exp"
+	},
+	chat_message_edits_aggregate_fields:{
+		count:{
+			columns:"chat_message_edits_select_column"
+		}
+	},
+	chat_message_edits_bool_exp:{
+		_and:"chat_message_edits_bool_exp",
+		_not:"chat_message_edits_bool_exp",
+		_or:"chat_message_edits_bool_exp",
+		author:"players_bool_exp",
+		author_steam_id:"bigint_comparison_exp",
+		edited_at:"timestamptz_comparison_exp",
+		id:"uuid_comparison_exp",
+		message_created_at:"timestamptz_comparison_exp",
+		message_id:"uuid_comparison_exp",
+		new_message:"String_comparison_exp",
+		previous_message:"String_comparison_exp",
+		room_id:"String_comparison_exp",
+		room_type:"String_comparison_exp"
+	},
+	chat_message_edits_constraint: "enum" as const,
+	chat_message_edits_inc_input:{
+		author_steam_id:"bigint"
+	},
+	chat_message_edits_insert_input:{
+		author:"players_obj_rel_insert_input",
+		author_steam_id:"bigint",
+		edited_at:"timestamptz",
+		id:"uuid",
+		message_created_at:"timestamptz",
+		message_id:"uuid"
+	},
+	chat_message_edits_on_conflict:{
+		constraint:"chat_message_edits_constraint",
+		update_columns:"chat_message_edits_update_column",
+		where:"chat_message_edits_bool_exp"
+	},
+	chat_message_edits_order_by:{
+		author:"players_order_by",
+		author_steam_id:"order_by",
+		edited_at:"order_by",
+		id:"order_by",
+		message_created_at:"order_by",
+		message_id:"order_by",
+		new_message:"order_by",
+		previous_message:"order_by",
+		room_id:"order_by",
+		room_type:"order_by"
+	},
+	chat_message_edits_pk_columns_input:{
+		id:"uuid"
+	},
+	chat_message_edits_select_column: "enum" as const,
+	chat_message_edits_set_input:{
+		author_steam_id:"bigint",
+		edited_at:"timestamptz",
+		id:"uuid",
+		message_created_at:"timestamptz",
+		message_id:"uuid"
+	},
+	chat_message_edits_stream_cursor_input:{
+		initial_value:"chat_message_edits_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	chat_message_edits_stream_cursor_value_input:{
+		author_steam_id:"bigint",
+		edited_at:"timestamptz",
+		id:"uuid",
+		message_created_at:"timestamptz",
+		message_id:"uuid"
+	},
+	chat_message_edits_update_column: "enum" as const,
+	chat_message_edits_updates:{
+		_inc:"chat_message_edits_inc_input",
+		_set:"chat_message_edits_set_input",
+		where:"chat_message_edits_bool_exp"
+	},
 	chat_read_state_aggregate_fields:{
 		count:{
 			columns:"chat_read_state_select_column"
@@ -1376,6 +1539,65 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"direct_conversations_set_input",
 		where:"direct_conversations_bool_exp"
 	},
+	direct_message_reactions_aggregate_fields:{
+		count:{
+			columns:"direct_message_reactions_select_column"
+		}
+	},
+	direct_message_reactions_bool_exp:{
+		_and:"direct_message_reactions_bool_exp",
+		_not:"direct_message_reactions_bool_exp",
+		_or:"direct_message_reactions_bool_exp",
+		created_at:"timestamptz_comparison_exp",
+		message_id:"uuid_comparison_exp",
+		reaction:"String_comparison_exp",
+		steam_id:"bigint_comparison_exp"
+	},
+	direct_message_reactions_constraint: "enum" as const,
+	direct_message_reactions_inc_input:{
+		steam_id:"bigint"
+	},
+	direct_message_reactions_insert_input:{
+		created_at:"timestamptz",
+		message_id:"uuid",
+		steam_id:"bigint"
+	},
+	direct_message_reactions_on_conflict:{
+		constraint:"direct_message_reactions_constraint",
+		update_columns:"direct_message_reactions_update_column",
+		where:"direct_message_reactions_bool_exp"
+	},
+	direct_message_reactions_order_by:{
+		created_at:"order_by",
+		message_id:"order_by",
+		reaction:"order_by",
+		steam_id:"order_by"
+	},
+	direct_message_reactions_pk_columns_input:{
+		message_id:"uuid",
+		steam_id:"bigint"
+	},
+	direct_message_reactions_select_column: "enum" as const,
+	direct_message_reactions_set_input:{
+		created_at:"timestamptz",
+		message_id:"uuid",
+		steam_id:"bigint"
+	},
+	direct_message_reactions_stream_cursor_input:{
+		initial_value:"direct_message_reactions_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	direct_message_reactions_stream_cursor_value_input:{
+		created_at:"timestamptz",
+		message_id:"uuid",
+		steam_id:"bigint"
+	},
+	direct_message_reactions_update_column: "enum" as const,
+	direct_message_reactions_updates:{
+		_inc:"direct_message_reactions_inc_input",
+		_set:"direct_message_reactions_set_input",
+		where:"direct_message_reactions_bool_exp"
+	},
 	direct_messages_aggregate_fields:{
 		count:{
 			columns:"direct_messages_select_column"
@@ -1386,6 +1608,7 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"direct_messages_bool_exp",
 		_or:"direct_messages_bool_exp",
 		created_at:"timestamptz_comparison_exp",
+		edited_at:"timestamptz_comparison_exp",
 		from_steam_id:"bigint_comparison_exp",
 		id:"uuid_comparison_exp",
 		message:"String_comparison_exp",
@@ -1399,6 +1622,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	direct_messages_insert_input:{
 		created_at:"timestamptz",
+		edited_at:"timestamptz",
 		from_steam_id:"bigint",
 		id:"uuid",
 		seq:"bigint"
@@ -1410,6 +1634,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	direct_messages_order_by:{
 		created_at:"order_by",
+		edited_at:"order_by",
 		from_steam_id:"order_by",
 		id:"order_by",
 		message:"order_by",
@@ -1422,6 +1647,7 @@ export const AllTypesProps: Record<string,any> = {
 	direct_messages_select_column: "enum" as const,
 	direct_messages_set_input:{
 		created_at:"timestamptz",
+		edited_at:"timestamptz",
 		from_steam_id:"bigint",
 		id:"uuid",
 		seq:"bigint"
@@ -1432,6 +1658,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	direct_messages_stream_cursor_value_input:{
 		created_at:"timestamptz",
+		edited_at:"timestamptz",
 		from_steam_id:"bigint",
 		id:"uuid",
 		seq:"bigint"
@@ -7673,6 +7900,7 @@ export const AllTypesProps: Record<string,any> = {
 		supports_low_latency:"Boolean_comparison_exp",
 		token:"String_comparison_exp",
 		total_server_count:"Int_comparison_exp",
+		update_failed_at:"timestamptz_comparison_exp",
 		update_status:"String_comparison_exp",
 		version:"game_versions_bool_exp"
 	},
@@ -7709,6 +7937,7 @@ export const AllTypesProps: Record<string,any> = {
 		shader_bake_progress:"numeric",
 		shader_bake_status_history:"jsonb",
 		status:"e_game_server_node_statuses_enum",
+		update_failed_at:"timestamptz",
 		version:"game_versions_obj_rel_insert_input"
 	},
 	game_server_nodes_max_order_by:{
@@ -7734,6 +7963,7 @@ export const AllTypesProps: Record<string,any> = {
 		shader_bake_status:"order_by",
 		start_port_range:"order_by",
 		token:"order_by",
+		update_failed_at:"order_by",
 		update_status:"order_by"
 	},
 	game_server_nodes_min_order_by:{
@@ -7759,6 +7989,7 @@ export const AllTypesProps: Record<string,any> = {
 		shader_bake_status:"order_by",
 		start_port_range:"order_by",
 		token:"order_by",
+		update_failed_at:"order_by",
 		update_status:"order_by"
 	},
 	game_server_nodes_obj_rel_insert_input:{
@@ -7820,6 +8051,7 @@ export const AllTypesProps: Record<string,any> = {
 		supports_low_latency:"order_by",
 		token:"order_by",
 		total_server_count:"order_by",
+		update_failed_at:"order_by",
 		update_status:"order_by",
 		version:"game_versions_order_by"
 	},
@@ -7852,7 +8084,8 @@ export const AllTypesProps: Record<string,any> = {
 		public_ip:"inet",
 		shader_bake_progress:"numeric",
 		shader_bake_status_history:"jsonb",
-		status:"e_game_server_node_statuses_enum"
+		status:"e_game_server_node_statuses_enum",
+		update_failed_at:"timestamptz"
 	},
 	game_server_nodes_stddev_order_by:{
 		build_id:"order_by",
@@ -7914,7 +8147,8 @@ export const AllTypesProps: Record<string,any> = {
 		public_ip:"inet",
 		shader_bake_progress:"numeric",
 		shader_bake_status_history:"jsonb",
-		status:"e_game_server_node_statuses_enum"
+		status:"e_game_server_node_statuses_enum",
+		update_failed_at:"timestamptz"
 	},
 	game_server_nodes_sum_order_by:{
 		build_id:"order_by",
@@ -8074,6 +8308,9 @@ export const AllTypesProps: Record<string,any> = {
 		where:"game_versions_bool_exp"
 	},
 	gamedata_signature_validations:{
+		changes:{
+
+		},
 		results:{
 
 		}
@@ -8084,6 +8321,7 @@ export const AllTypesProps: Record<string,any> = {
 		}
 	},
 	gamedata_signature_validations_append_input:{
+		changes:"jsonb",
 		results:"jsonb"
 	},
 	gamedata_signature_validations_bool_exp:{
@@ -8092,10 +8330,18 @@ export const AllTypesProps: Record<string,any> = {
 		_or:"gamedata_signature_validations_bool_exp",
 		branch:"String_comparison_exp",
 		build_id:"Int_comparison_exp",
+		changes:"jsonb_comparison_exp",
+		game_server_node:"game_server_nodes_bool_exp",
+		game_server_node_id:"String_comparison_exp",
 		game_version:"game_versions_bool_exp",
 		id:"uuid_comparison_exp",
+		previous_build_id:"Int_comparison_exp",
+		requested_by:"players_bool_exp",
+		requested_by_steam_id:"bigint_comparison_exp",
 		results:"jsonb_comparison_exp",
+		started_at:"timestamptz_comparison_exp",
 		status:"String_comparison_exp",
+		trigger:"String_comparison_exp",
 		validated_at:"timestamptz_comparison_exp"
 	},
 	gamedata_signature_validations_constraint: "enum" as const,
@@ -8109,12 +8355,17 @@ export const AllTypesProps: Record<string,any> = {
 
 	},
 	gamedata_signature_validations_inc_input:{
-
+		requested_by_steam_id:"bigint"
 	},
 	gamedata_signature_validations_insert_input:{
+		changes:"jsonb",
+		game_server_node:"game_server_nodes_obj_rel_insert_input",
 		game_version:"game_versions_obj_rel_insert_input",
 		id:"uuid",
+		requested_by:"players_obj_rel_insert_input",
+		requested_by_steam_id:"bigint",
 		results:"jsonb",
+		started_at:"timestamptz",
 		validated_at:"timestamptz"
 	},
 	gamedata_signature_validations_on_conflict:{
@@ -8125,22 +8376,34 @@ export const AllTypesProps: Record<string,any> = {
 	gamedata_signature_validations_order_by:{
 		branch:"order_by",
 		build_id:"order_by",
+		changes:"order_by",
+		game_server_node:"game_server_nodes_order_by",
+		game_server_node_id:"order_by",
 		game_version:"game_versions_order_by",
 		id:"order_by",
+		previous_build_id:"order_by",
+		requested_by:"players_order_by",
+		requested_by_steam_id:"order_by",
 		results:"order_by",
+		started_at:"order_by",
 		status:"order_by",
+		trigger:"order_by",
 		validated_at:"order_by"
 	},
 	gamedata_signature_validations_pk_columns_input:{
 		id:"uuid"
 	},
 	gamedata_signature_validations_prepend_input:{
+		changes:"jsonb",
 		results:"jsonb"
 	},
 	gamedata_signature_validations_select_column: "enum" as const,
 	gamedata_signature_validations_set_input:{
+		changes:"jsonb",
 		id:"uuid",
+		requested_by_steam_id:"bigint",
 		results:"jsonb",
+		started_at:"timestamptz",
 		validated_at:"timestamptz"
 	},
 	gamedata_signature_validations_stream_cursor_input:{
@@ -8148,8 +8411,11 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	gamedata_signature_validations_stream_cursor_value_input:{
+		changes:"jsonb",
 		id:"uuid",
+		requested_by_steam_id:"bigint",
 		results:"jsonb",
+		started_at:"timestamptz",
 		validated_at:"timestamptz"
 	},
 	gamedata_signature_validations_update_column: "enum" as const,
@@ -10145,6 +10411,9 @@ export const AllTypesProps: Record<string,any> = {
 		steam_id:"order_by"
 	},
 	map_asset_builds:{
+		changes:{
+
+		},
 		failed:{
 
 		},
@@ -10161,6 +10430,7 @@ export const AllTypesProps: Record<string,any> = {
 		}
 	},
 	map_asset_builds_append_input:{
+		changes:"jsonb",
 		failed:"jsonb",
 		failed_view:"jsonb",
 		maps:"jsonb"
@@ -10170,15 +10440,22 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"map_asset_builds_bool_exp",
 		_or:"map_asset_builds_bool_exp",
 		build_id:"String_comparison_exp",
+		changes:"jsonb_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
 		error:"String_comparison_exp",
 		failed:"jsonb_comparison_exp",
 		failed_view:"jsonb_comparison_exp",
 		finished_at:"timestamptz_comparison_exp",
+		game_server_node:"game_server_nodes_bool_exp",
+		game_server_node_id:"String_comparison_exp",
 		manifest:"String_comparison_exp",
 		maps:"jsonb_comparison_exp",
+		previous_build_id:"String_comparison_exp",
+		requested_by:"players_bool_exp",
+		requested_by_steam_id:"bigint_comparison_exp",
 		started_at:"timestamptz_comparison_exp",
 		status:"String_comparison_exp",
+		trigger:"String_comparison_exp",
 		updated_at:"timestamptz_comparison_exp"
 	},
 	map_asset_builds_constraint: "enum" as const,
@@ -10191,12 +10468,19 @@ export const AllTypesProps: Record<string,any> = {
 	map_asset_builds_delete_key_input:{
 
 	},
+	map_asset_builds_inc_input:{
+		requested_by_steam_id:"bigint"
+	},
 	map_asset_builds_insert_input:{
+		changes:"jsonb",
 		created_at:"timestamptz",
 		failed:"jsonb",
 		failed_view:"jsonb",
 		finished_at:"timestamptz",
+		game_server_node:"game_server_nodes_obj_rel_insert_input",
 		maps:"jsonb",
+		requested_by:"players_obj_rel_insert_input",
+		requested_by_steam_id:"bigint",
 		started_at:"timestamptz",
 		updated_at:"timestamptz"
 	},
@@ -10207,32 +10491,42 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	map_asset_builds_order_by:{
 		build_id:"order_by",
+		changes:"order_by",
 		created_at:"order_by",
 		error:"order_by",
 		failed:"order_by",
 		failed_view:"order_by",
 		finished_at:"order_by",
+		game_server_node:"game_server_nodes_order_by",
+		game_server_node_id:"order_by",
 		manifest:"order_by",
 		maps:"order_by",
+		previous_build_id:"order_by",
+		requested_by:"players_order_by",
+		requested_by_steam_id:"order_by",
 		started_at:"order_by",
 		status:"order_by",
+		trigger:"order_by",
 		updated_at:"order_by"
 	},
 	map_asset_builds_pk_columns_input:{
 
 	},
 	map_asset_builds_prepend_input:{
+		changes:"jsonb",
 		failed:"jsonb",
 		failed_view:"jsonb",
 		maps:"jsonb"
 	},
 	map_asset_builds_select_column: "enum" as const,
 	map_asset_builds_set_input:{
+		changes:"jsonb",
 		created_at:"timestamptz",
 		failed:"jsonb",
 		failed_view:"jsonb",
 		finished_at:"timestamptz",
 		maps:"jsonb",
+		requested_by_steam_id:"bigint",
 		started_at:"timestamptz",
 		updated_at:"timestamptz"
 	},
@@ -10241,11 +10535,13 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	map_asset_builds_stream_cursor_value_input:{
+		changes:"jsonb",
 		created_at:"timestamptz",
 		failed:"jsonb",
 		failed_view:"jsonb",
 		finished_at:"timestamptz",
 		maps:"jsonb",
+		requested_by_steam_id:"bigint",
 		started_at:"timestamptz",
 		updated_at:"timestamptz"
 	},
@@ -10255,6 +10551,7 @@ export const AllTypesProps: Record<string,any> = {
 		_delete_at_path:"map_asset_builds_delete_at_path_input",
 		_delete_elem:"map_asset_builds_delete_elem_input",
 		_delete_key:"map_asset_builds_delete_key_input",
+		_inc:"map_asset_builds_inc_input",
 		_prepend:"map_asset_builds_prepend_input",
 		_set:"map_asset_builds_set_input",
 		where:"map_asset_builds_bool_exp"
@@ -13905,7 +14202,7 @@ export const AllTypesProps: Record<string,any> = {
 			game_server_node_id:"uuid"
 		},
 		buildMapAssets:{
-			game_server_node_id:"uuid"
+
 		},
 		callForOrganizer:{
 
@@ -14050,6 +14347,18 @@ export const AllTypesProps: Record<string,any> = {
 		delete_broadcast_huds_by_pk:{
 			id:"uuid"
 		},
+		delete_chat_message_deletions:{
+			where:"chat_message_deletions_bool_exp"
+		},
+		delete_chat_message_deletions_by_pk:{
+			id:"uuid"
+		},
+		delete_chat_message_edits:{
+			where:"chat_message_edits_bool_exp"
+		},
+		delete_chat_message_edits_by_pk:{
+			id:"uuid"
+		},
 		delete_chat_read_state:{
 			where:"chat_read_state_bool_exp"
 		},
@@ -14078,6 +14387,13 @@ export const AllTypesProps: Record<string,any> = {
 			where:"direct_conversations_bool_exp"
 		},
 		delete_direct_conversations_by_pk:{
+			steam_id:"bigint"
+		},
+		delete_direct_message_reactions:{
+			where:"direct_message_reactions_bool_exp"
+		},
+		delete_direct_message_reactions_by_pk:{
+			message_id:"uuid",
 			steam_id:"bigint"
 		},
 		delete_direct_messages:{
@@ -14810,6 +15126,13 @@ export const AllTypesProps: Record<string,any> = {
 			match_map_id:"uuid",
 			time:"timestamptz"
 		},
+		delete_player_blocks:{
+			where:"player_blocks_bool_exp"
+		},
+		delete_player_blocks_by_pk:{
+			blocked_steam_id:"bigint",
+			blocker_steam_id:"bigint"
+		},
 		delete_player_damages:{
 			where:"player_damages_bool_exp"
 		},
@@ -15318,6 +15641,9 @@ export const AllTypesProps: Record<string,any> = {
 			team_id:"uuid",
 			tournament_id:"uuid"
 		},
+		importSteamMatchShareCode:{
+
+		},
 		importUtilityLineups:{
 			payload:"jsonb"
 		},
@@ -15369,6 +15695,22 @@ export const AllTypesProps: Record<string,any> = {
 			object:"broadcast_huds_insert_input",
 			on_conflict:"broadcast_huds_on_conflict"
 		},
+		insert_chat_message_deletions:{
+			objects:"chat_message_deletions_insert_input",
+			on_conflict:"chat_message_deletions_on_conflict"
+		},
+		insert_chat_message_deletions_one:{
+			object:"chat_message_deletions_insert_input",
+			on_conflict:"chat_message_deletions_on_conflict"
+		},
+		insert_chat_message_edits:{
+			objects:"chat_message_edits_insert_input",
+			on_conflict:"chat_message_edits_on_conflict"
+		},
+		insert_chat_message_edits_one:{
+			object:"chat_message_edits_insert_input",
+			on_conflict:"chat_message_edits_on_conflict"
+		},
 		insert_chat_read_state:{
 			objects:"chat_read_state_insert_input",
 			on_conflict:"chat_read_state_on_conflict"
@@ -15408,6 +15750,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_direct_conversations_one:{
 			object:"direct_conversations_insert_input",
 			on_conflict:"direct_conversations_on_conflict"
+		},
+		insert_direct_message_reactions:{
+			objects:"direct_message_reactions_insert_input",
+			on_conflict:"direct_message_reactions_on_conflict"
+		},
+		insert_direct_message_reactions_one:{
+			object:"direct_message_reactions_insert_input",
+			on_conflict:"direct_message_reactions_on_conflict"
 		},
 		insert_direct_messages:{
 			objects:"direct_messages_insert_input",
@@ -16364,6 +16714,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_player_assists_one:{
 			object:"player_assists_insert_input",
 			on_conflict:"player_assists_on_conflict"
+		},
+		insert_player_blocks:{
+			objects:"player_blocks_insert_input",
+			on_conflict:"player_blocks_on_conflict"
+		},
+		insert_player_blocks_one:{
+			object:"player_blocks_insert_input",
+			on_conflict:"player_blocks_on_conflict"
 		},
 		insert_player_damages:{
 			objects:"player_damages_insert_input",
@@ -17388,6 +17746,32 @@ export const AllTypesProps: Record<string,any> = {
 		update_broadcast_huds_many:{
 			updates:"broadcast_huds_updates"
 		},
+		update_chat_message_deletions:{
+			_inc:"chat_message_deletions_inc_input",
+			_set:"chat_message_deletions_set_input",
+			where:"chat_message_deletions_bool_exp"
+		},
+		update_chat_message_deletions_by_pk:{
+			_inc:"chat_message_deletions_inc_input",
+			_set:"chat_message_deletions_set_input",
+			pk_columns:"chat_message_deletions_pk_columns_input"
+		},
+		update_chat_message_deletions_many:{
+			updates:"chat_message_deletions_updates"
+		},
+		update_chat_message_edits:{
+			_inc:"chat_message_edits_inc_input",
+			_set:"chat_message_edits_set_input",
+			where:"chat_message_edits_bool_exp"
+		},
+		update_chat_message_edits_by_pk:{
+			_inc:"chat_message_edits_inc_input",
+			_set:"chat_message_edits_set_input",
+			pk_columns:"chat_message_edits_pk_columns_input"
+		},
+		update_chat_message_edits_many:{
+			updates:"chat_message_edits_updates"
+		},
 		update_chat_read_state:{
 			_inc:"chat_read_state_inc_input",
 			_set:"chat_read_state_set_input",
@@ -17472,6 +17856,19 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_direct_conversations_many:{
 			updates:"direct_conversations_updates"
+		},
+		update_direct_message_reactions:{
+			_inc:"direct_message_reactions_inc_input",
+			_set:"direct_message_reactions_set_input",
+			where:"direct_message_reactions_bool_exp"
+		},
+		update_direct_message_reactions_by_pk:{
+			_inc:"direct_message_reactions_inc_input",
+			_set:"direct_message_reactions_set_input",
+			pk_columns:"direct_message_reactions_pk_columns_input"
+		},
+		update_direct_message_reactions_many:{
+			updates:"direct_message_reactions_updates"
 		},
 		update_direct_messages:{
 			_inc:"direct_messages_inc_input",
@@ -18608,6 +19005,7 @@ export const AllTypesProps: Record<string,any> = {
 			_delete_at_path:"map_asset_builds_delete_at_path_input",
 			_delete_elem:"map_asset_builds_delete_elem_input",
 			_delete_key:"map_asset_builds_delete_key_input",
+			_inc:"map_asset_builds_inc_input",
 			_prepend:"map_asset_builds_prepend_input",
 			_set:"map_asset_builds_set_input",
 			where:"map_asset_builds_bool_exp"
@@ -18617,6 +19015,7 @@ export const AllTypesProps: Record<string,any> = {
 			_delete_at_path:"map_asset_builds_delete_at_path_input",
 			_delete_elem:"map_asset_builds_delete_elem_input",
 			_delete_key:"map_asset_builds_delete_key_input",
+			_inc:"map_asset_builds_inc_input",
 			_prepend:"map_asset_builds_prepend_input",
 			_set:"map_asset_builds_set_input",
 			pk_columns:"map_asset_builds_pk_columns_input"
@@ -18997,6 +19396,19 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_player_assists_many:{
 			updates:"player_assists_updates"
+		},
+		update_player_blocks:{
+			_inc:"player_blocks_inc_input",
+			_set:"player_blocks_set_input",
+			where:"player_blocks_bool_exp"
+		},
+		update_player_blocks_by_pk:{
+			_inc:"player_blocks_inc_input",
+			_set:"player_blocks_set_input",
+			pk_columns:"player_blocks_pk_columns_input"
+		},
+		update_player_blocks_many:{
+			updates:"player_blocks_updates"
 		},
 		update_player_damages:{
 			_inc:"player_damages_inc_input",
@@ -20019,7 +20431,7 @@ export const AllTypesProps: Record<string,any> = {
 			updates:"v_team_stage_results_updates"
 		},
 		validateGamedata:{
-			game_server_node_id:"uuid"
+
 		},
 		watchDemo:{
 			match_map_demo_id:"uuid",
@@ -21492,6 +21904,67 @@ export const AllTypesProps: Record<string,any> = {
 		attacked_steam_id:"order_by",
 		attacker_steam_id:"order_by",
 		round:"order_by"
+	},
+	player_blocks_aggregate_fields:{
+		count:{
+			columns:"player_blocks_select_column"
+		}
+	},
+	player_blocks_bool_exp:{
+		_and:"player_blocks_bool_exp",
+		_not:"player_blocks_bool_exp",
+		_or:"player_blocks_bool_exp",
+		blocked:"players_bool_exp",
+		blocked_steam_id:"bigint_comparison_exp",
+		blocker_steam_id:"bigint_comparison_exp",
+		created_at:"timestamptz_comparison_exp"
+	},
+	player_blocks_constraint: "enum" as const,
+	player_blocks_inc_input:{
+		blocked_steam_id:"bigint",
+		blocker_steam_id:"bigint"
+	},
+	player_blocks_insert_input:{
+		blocked:"players_obj_rel_insert_input",
+		blocked_steam_id:"bigint",
+		blocker_steam_id:"bigint",
+		created_at:"timestamptz"
+	},
+	player_blocks_on_conflict:{
+		constraint:"player_blocks_constraint",
+		update_columns:"player_blocks_update_column",
+		where:"player_blocks_bool_exp"
+	},
+	player_blocks_order_by:{
+		blocked:"players_order_by",
+		blocked_steam_id:"order_by",
+		blocker_steam_id:"order_by",
+		created_at:"order_by"
+	},
+	player_blocks_pk_columns_input:{
+		blocked_steam_id:"bigint",
+		blocker_steam_id:"bigint"
+	},
+	player_blocks_select_column: "enum" as const,
+	player_blocks_set_input:{
+		blocked_steam_id:"bigint",
+		blocker_steam_id:"bigint",
+		created_at:"timestamptz"
+	},
+	player_blocks_stream_cursor_input:{
+		initial_value:"player_blocks_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	player_blocks_stream_cursor_value_input:{
+		blocked_steam_id:"bigint",
+		blocker_steam_id:"bigint",
+		created_at:"timestamptz"
+	},
+	player_blocks_update_column: "enum" as const,
+	player_blocks_updates:{
+		_inc:"player_blocks_inc_input",
+		_set:"player_blocks_set_input",
+		where:"player_blocks_bool_exp"
 	},
 	player_career_stats_v_aggregate_fields:{
 		count:{
@@ -27219,6 +27692,32 @@ export const AllTypesProps: Record<string,any> = {
 		broadcast_huds_by_pk:{
 			id:"uuid"
 		},
+		chat_message_deletions:{
+			distinct_on:"chat_message_deletions_select_column",
+			order_by:"chat_message_deletions_order_by",
+			where:"chat_message_deletions_bool_exp"
+		},
+		chat_message_deletions_aggregate:{
+			distinct_on:"chat_message_deletions_select_column",
+			order_by:"chat_message_deletions_order_by",
+			where:"chat_message_deletions_bool_exp"
+		},
+		chat_message_deletions_by_pk:{
+			id:"uuid"
+		},
+		chat_message_edits:{
+			distinct_on:"chat_message_edits_select_column",
+			order_by:"chat_message_edits_order_by",
+			where:"chat_message_edits_bool_exp"
+		},
+		chat_message_edits_aggregate:{
+			distinct_on:"chat_message_edits_select_column",
+			order_by:"chat_message_edits_order_by",
+			where:"chat_message_edits_bool_exp"
+		},
+		chat_message_edits_by_pk:{
+			id:"uuid"
+		},
 		chat_read_state:{
 			distinct_on:"chat_read_state_select_column",
 			order_by:"chat_read_state_order_by",
@@ -27290,6 +27789,20 @@ export const AllTypesProps: Record<string,any> = {
 			where:"direct_conversations_bool_exp"
 		},
 		direct_conversations_by_pk:{
+			steam_id:"bigint"
+		},
+		direct_message_reactions:{
+			distinct_on:"direct_message_reactions_select_column",
+			order_by:"direct_message_reactions_order_by",
+			where:"direct_message_reactions_bool_exp"
+		},
+		direct_message_reactions_aggregate:{
+			distinct_on:"direct_message_reactions_select_column",
+			order_by:"direct_message_reactions_order_by",
+			where:"direct_message_reactions_bool_exp"
+		},
+		direct_message_reactions_by_pk:{
+			message_id:"uuid",
 			steam_id:"bigint"
 		},
 		direct_messages:{
@@ -28957,6 +29470,20 @@ export const AllTypesProps: Record<string,any> = {
 			attacker_steam_id:"bigint",
 			match_map_id:"uuid",
 			time:"timestamptz"
+		},
+		player_blocks:{
+			distinct_on:"player_blocks_select_column",
+			order_by:"player_blocks_order_by",
+			where:"player_blocks_bool_exp"
+		},
+		player_blocks_aggregate:{
+			distinct_on:"player_blocks_select_column",
+			order_by:"player_blocks_order_by",
+			where:"player_blocks_bool_exp"
+		},
+		player_blocks_by_pk:{
+			blocked_steam_id:"bigint",
+			blocker_steam_id:"bigint"
 		},
 		player_career_stats_v:{
 			distinct_on:"player_career_stats_v_select_column",
@@ -31223,6 +31750,40 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"broadcast_huds_stream_cursor_input",
 			where:"broadcast_huds_bool_exp"
 		},
+		chat_message_deletions:{
+			distinct_on:"chat_message_deletions_select_column",
+			order_by:"chat_message_deletions_order_by",
+			where:"chat_message_deletions_bool_exp"
+		},
+		chat_message_deletions_aggregate:{
+			distinct_on:"chat_message_deletions_select_column",
+			order_by:"chat_message_deletions_order_by",
+			where:"chat_message_deletions_bool_exp"
+		},
+		chat_message_deletions_by_pk:{
+			id:"uuid"
+		},
+		chat_message_deletions_stream:{
+			cursor:"chat_message_deletions_stream_cursor_input",
+			where:"chat_message_deletions_bool_exp"
+		},
+		chat_message_edits:{
+			distinct_on:"chat_message_edits_select_column",
+			order_by:"chat_message_edits_order_by",
+			where:"chat_message_edits_bool_exp"
+		},
+		chat_message_edits_aggregate:{
+			distinct_on:"chat_message_edits_select_column",
+			order_by:"chat_message_edits_order_by",
+			where:"chat_message_edits_bool_exp"
+		},
+		chat_message_edits_by_pk:{
+			id:"uuid"
+		},
+		chat_message_edits_stream:{
+			cursor:"chat_message_edits_stream_cursor_input",
+			where:"chat_message_edits_bool_exp"
+		},
 		chat_read_state:{
 			distinct_on:"chat_read_state_select_column",
 			order_by:"chat_read_state_order_by",
@@ -31307,6 +31868,24 @@ export const AllTypesProps: Record<string,any> = {
 		direct_conversations_stream:{
 			cursor:"direct_conversations_stream_cursor_input",
 			where:"direct_conversations_bool_exp"
+		},
+		direct_message_reactions:{
+			distinct_on:"direct_message_reactions_select_column",
+			order_by:"direct_message_reactions_order_by",
+			where:"direct_message_reactions_bool_exp"
+		},
+		direct_message_reactions_aggregate:{
+			distinct_on:"direct_message_reactions_select_column",
+			order_by:"direct_message_reactions_order_by",
+			where:"direct_message_reactions_bool_exp"
+		},
+		direct_message_reactions_by_pk:{
+			message_id:"uuid",
+			steam_id:"bigint"
+		},
+		direct_message_reactions_stream:{
+			cursor:"direct_message_reactions_stream_cursor_input",
+			where:"direct_message_reactions_bool_exp"
 		},
 		direct_messages:{
 			distinct_on:"direct_messages_select_column",
@@ -33417,6 +33996,24 @@ export const AllTypesProps: Record<string,any> = {
 		player_assists_stream:{
 			cursor:"player_assists_stream_cursor_input",
 			where:"player_assists_bool_exp"
+		},
+		player_blocks:{
+			distinct_on:"player_blocks_select_column",
+			order_by:"player_blocks_order_by",
+			where:"player_blocks_bool_exp"
+		},
+		player_blocks_aggregate:{
+			distinct_on:"player_blocks_select_column",
+			order_by:"player_blocks_order_by",
+			where:"player_blocks_bool_exp"
+		},
+		player_blocks_by_pk:{
+			blocked_steam_id:"bigint",
+			blocker_steam_id:"bigint"
+		},
+		player_blocks_stream:{
+			cursor:"player_blocks_stream_cursor_input",
+			where:"player_blocks_bool_exp"
 		},
 		player_career_stats_v:{
 			distinct_on:"player_career_stats_v_select_column",
@@ -48858,6 +49455,176 @@ export const ReturnTypes: Record<string,any> = {
 		uploaded_by_steam_id:"Float"
 	},
 	bytea: `scalar.bytea` as const,
+	chat_message_deletions:{
+		author:"players",
+		author_steam_id:"bigint",
+		deleted_at:"timestamptz",
+		deleted_by:"players",
+		deleted_by_steam_id:"bigint",
+		id:"uuid",
+		message:"String",
+		message_created_at:"timestamptz",
+		message_id:"uuid",
+		room_id:"String",
+		room_type:"String",
+		source:"String"
+	},
+	chat_message_deletions_aggregate:{
+		aggregate:"chat_message_deletions_aggregate_fields",
+		nodes:"chat_message_deletions"
+	},
+	chat_message_deletions_aggregate_fields:{
+		avg:"chat_message_deletions_avg_fields",
+		count:"Int",
+		max:"chat_message_deletions_max_fields",
+		min:"chat_message_deletions_min_fields",
+		stddev:"chat_message_deletions_stddev_fields",
+		stddev_pop:"chat_message_deletions_stddev_pop_fields",
+		stddev_samp:"chat_message_deletions_stddev_samp_fields",
+		sum:"chat_message_deletions_sum_fields",
+		var_pop:"chat_message_deletions_var_pop_fields",
+		var_samp:"chat_message_deletions_var_samp_fields",
+		variance:"chat_message_deletions_variance_fields"
+	},
+	chat_message_deletions_avg_fields:{
+		author_steam_id:"Float",
+		deleted_by_steam_id:"Float"
+	},
+	chat_message_deletions_max_fields:{
+		author_steam_id:"bigint",
+		deleted_at:"timestamptz",
+		deleted_by_steam_id:"bigint",
+		id:"uuid",
+		message:"String",
+		message_created_at:"timestamptz",
+		message_id:"uuid",
+		room_id:"String",
+		room_type:"String",
+		source:"String"
+	},
+	chat_message_deletions_min_fields:{
+		author_steam_id:"bigint",
+		deleted_at:"timestamptz",
+		deleted_by_steam_id:"bigint",
+		id:"uuid",
+		message:"String",
+		message_created_at:"timestamptz",
+		message_id:"uuid",
+		room_id:"String",
+		room_type:"String",
+		source:"String"
+	},
+	chat_message_deletions_mutation_response:{
+		affected_rows:"Int",
+		returning:"chat_message_deletions"
+	},
+	chat_message_deletions_stddev_fields:{
+		author_steam_id:"Float",
+		deleted_by_steam_id:"Float"
+	},
+	chat_message_deletions_stddev_pop_fields:{
+		author_steam_id:"Float",
+		deleted_by_steam_id:"Float"
+	},
+	chat_message_deletions_stddev_samp_fields:{
+		author_steam_id:"Float",
+		deleted_by_steam_id:"Float"
+	},
+	chat_message_deletions_sum_fields:{
+		author_steam_id:"bigint",
+		deleted_by_steam_id:"bigint"
+	},
+	chat_message_deletions_var_pop_fields:{
+		author_steam_id:"Float",
+		deleted_by_steam_id:"Float"
+	},
+	chat_message_deletions_var_samp_fields:{
+		author_steam_id:"Float",
+		deleted_by_steam_id:"Float"
+	},
+	chat_message_deletions_variance_fields:{
+		author_steam_id:"Float",
+		deleted_by_steam_id:"Float"
+	},
+	chat_message_edits:{
+		author:"players",
+		author_steam_id:"bigint",
+		edited_at:"timestamptz",
+		id:"uuid",
+		message_created_at:"timestamptz",
+		message_id:"uuid",
+		new_message:"String",
+		previous_message:"String",
+		room_id:"String",
+		room_type:"String"
+	},
+	chat_message_edits_aggregate:{
+		aggregate:"chat_message_edits_aggregate_fields",
+		nodes:"chat_message_edits"
+	},
+	chat_message_edits_aggregate_fields:{
+		avg:"chat_message_edits_avg_fields",
+		count:"Int",
+		max:"chat_message_edits_max_fields",
+		min:"chat_message_edits_min_fields",
+		stddev:"chat_message_edits_stddev_fields",
+		stddev_pop:"chat_message_edits_stddev_pop_fields",
+		stddev_samp:"chat_message_edits_stddev_samp_fields",
+		sum:"chat_message_edits_sum_fields",
+		var_pop:"chat_message_edits_var_pop_fields",
+		var_samp:"chat_message_edits_var_samp_fields",
+		variance:"chat_message_edits_variance_fields"
+	},
+	chat_message_edits_avg_fields:{
+		author_steam_id:"Float"
+	},
+	chat_message_edits_max_fields:{
+		author_steam_id:"bigint",
+		edited_at:"timestamptz",
+		id:"uuid",
+		message_created_at:"timestamptz",
+		message_id:"uuid",
+		new_message:"String",
+		previous_message:"String",
+		room_id:"String",
+		room_type:"String"
+	},
+	chat_message_edits_min_fields:{
+		author_steam_id:"bigint",
+		edited_at:"timestamptz",
+		id:"uuid",
+		message_created_at:"timestamptz",
+		message_id:"uuid",
+		new_message:"String",
+		previous_message:"String",
+		room_id:"String",
+		room_type:"String"
+	},
+	chat_message_edits_mutation_response:{
+		affected_rows:"Int",
+		returning:"chat_message_edits"
+	},
+	chat_message_edits_stddev_fields:{
+		author_steam_id:"Float"
+	},
+	chat_message_edits_stddev_pop_fields:{
+		author_steam_id:"Float"
+	},
+	chat_message_edits_stddev_samp_fields:{
+		author_steam_id:"Float"
+	},
+	chat_message_edits_sum_fields:{
+		author_steam_id:"bigint"
+	},
+	chat_message_edits_var_pop_fields:{
+		author_steam_id:"Float"
+	},
+	chat_message_edits_var_samp_fields:{
+		author_steam_id:"Float"
+	},
+	chat_message_edits_variance_fields:{
+		author_steam_id:"Float"
+	},
 	chat_read_state:{
 		last_read_at:"timestamptz",
 		steam_id:"bigint",
@@ -49267,8 +50034,72 @@ export const ReturnTypes: Record<string,any> = {
 		position:"Float",
 		steam_id:"Float"
 	},
+	direct_message_reactions:{
+		created_at:"timestamptz",
+		message_id:"uuid",
+		reaction:"String",
+		steam_id:"bigint"
+	},
+	direct_message_reactions_aggregate:{
+		aggregate:"direct_message_reactions_aggregate_fields",
+		nodes:"direct_message_reactions"
+	},
+	direct_message_reactions_aggregate_fields:{
+		avg:"direct_message_reactions_avg_fields",
+		count:"Int",
+		max:"direct_message_reactions_max_fields",
+		min:"direct_message_reactions_min_fields",
+		stddev:"direct_message_reactions_stddev_fields",
+		stddev_pop:"direct_message_reactions_stddev_pop_fields",
+		stddev_samp:"direct_message_reactions_stddev_samp_fields",
+		sum:"direct_message_reactions_sum_fields",
+		var_pop:"direct_message_reactions_var_pop_fields",
+		var_samp:"direct_message_reactions_var_samp_fields",
+		variance:"direct_message_reactions_variance_fields"
+	},
+	direct_message_reactions_avg_fields:{
+		steam_id:"Float"
+	},
+	direct_message_reactions_max_fields:{
+		created_at:"timestamptz",
+		message_id:"uuid",
+		reaction:"String",
+		steam_id:"bigint"
+	},
+	direct_message_reactions_min_fields:{
+		created_at:"timestamptz",
+		message_id:"uuid",
+		reaction:"String",
+		steam_id:"bigint"
+	},
+	direct_message_reactions_mutation_response:{
+		affected_rows:"Int",
+		returning:"direct_message_reactions"
+	},
+	direct_message_reactions_stddev_fields:{
+		steam_id:"Float"
+	},
+	direct_message_reactions_stddev_pop_fields:{
+		steam_id:"Float"
+	},
+	direct_message_reactions_stddev_samp_fields:{
+		steam_id:"Float"
+	},
+	direct_message_reactions_sum_fields:{
+		steam_id:"bigint"
+	},
+	direct_message_reactions_var_pop_fields:{
+		steam_id:"Float"
+	},
+	direct_message_reactions_var_samp_fields:{
+		steam_id:"Float"
+	},
+	direct_message_reactions_variance_fields:{
+		steam_id:"Float"
+	},
 	direct_messages:{
 		created_at:"timestamptz",
+		edited_at:"timestamptz",
 		from_steam_id:"bigint",
 		id:"uuid",
 		message:"String",
@@ -49298,6 +50129,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	direct_messages_max_fields:{
 		created_at:"timestamptz",
+		edited_at:"timestamptz",
 		from_steam_id:"bigint",
 		id:"uuid",
 		message:"String",
@@ -49306,6 +50138,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	direct_messages_min_fields:{
 		created_at:"timestamptz",
+		edited_at:"timestamptz",
 		from_steam_id:"bigint",
 		id:"uuid",
 		message:"String",
@@ -52254,6 +53087,7 @@ export const ReturnTypes: Record<string,any> = {
 		supports_low_latency:"Boolean",
 		token:"String",
 		total_server_count:"Int",
+		update_failed_at:"timestamptz",
 		update_status:"String",
 		version:"game_versions"
 	},
@@ -52315,6 +53149,7 @@ export const ReturnTypes: Record<string,any> = {
 		start_port_range:"Int",
 		token:"String",
 		total_server_count:"Int",
+		update_failed_at:"timestamptz",
 		update_status:"String"
 	},
 	game_server_nodes_min_fields:{
@@ -52342,6 +53177,7 @@ export const ReturnTypes: Record<string,any> = {
 		start_port_range:"Int",
 		token:"String",
 		total_server_count:"Int",
+		update_failed_at:"timestamptz",
 		update_status:"String"
 	},
 	game_server_nodes_mutation_response:{
@@ -52529,10 +53365,18 @@ export const ReturnTypes: Record<string,any> = {
 	gamedata_signature_validations:{
 		branch:"String",
 		build_id:"Int",
+		changes:"jsonb",
+		game_server_node:"game_server_nodes",
+		game_server_node_id:"String",
 		game_version:"game_versions",
 		id:"uuid",
+		previous_build_id:"Int",
+		requested_by:"players",
+		requested_by_steam_id:"bigint",
 		results:"jsonb",
+		started_at:"timestamptz",
 		status:"String",
+		trigger:"String",
 		validated_at:"timestamptz"
 	},
 	gamedata_signature_validations_aggregate:{
@@ -52553,20 +53397,32 @@ export const ReturnTypes: Record<string,any> = {
 		variance:"gamedata_signature_validations_variance_fields"
 	},
 	gamedata_signature_validations_avg_fields:{
-		build_id:"Float"
+		build_id:"Float",
+		previous_build_id:"Float",
+		requested_by_steam_id:"Float"
 	},
 	gamedata_signature_validations_max_fields:{
 		branch:"String",
 		build_id:"Int",
+		game_server_node_id:"String",
 		id:"uuid",
+		previous_build_id:"Int",
+		requested_by_steam_id:"bigint",
+		started_at:"timestamptz",
 		status:"String",
+		trigger:"String",
 		validated_at:"timestamptz"
 	},
 	gamedata_signature_validations_min_fields:{
 		branch:"String",
 		build_id:"Int",
+		game_server_node_id:"String",
 		id:"uuid",
+		previous_build_id:"Int",
+		requested_by_steam_id:"bigint",
+		started_at:"timestamptz",
 		status:"String",
+		trigger:"String",
 		validated_at:"timestamptz"
 	},
 	gamedata_signature_validations_mutation_response:{
@@ -52574,25 +53430,39 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"gamedata_signature_validations"
 	},
 	gamedata_signature_validations_stddev_fields:{
-		build_id:"Float"
+		build_id:"Float",
+		previous_build_id:"Float",
+		requested_by_steam_id:"Float"
 	},
 	gamedata_signature_validations_stddev_pop_fields:{
-		build_id:"Float"
+		build_id:"Float",
+		previous_build_id:"Float",
+		requested_by_steam_id:"Float"
 	},
 	gamedata_signature_validations_stddev_samp_fields:{
-		build_id:"Float"
+		build_id:"Float",
+		previous_build_id:"Float",
+		requested_by_steam_id:"Float"
 	},
 	gamedata_signature_validations_sum_fields:{
-		build_id:"Int"
+		build_id:"Int",
+		previous_build_id:"Int",
+		requested_by_steam_id:"bigint"
 	},
 	gamedata_signature_validations_var_pop_fields:{
-		build_id:"Float"
+		build_id:"Float",
+		previous_build_id:"Float",
+		requested_by_steam_id:"Float"
 	},
 	gamedata_signature_validations_var_samp_fields:{
-		build_id:"Float"
+		build_id:"Float",
+		previous_build_id:"Float",
+		requested_by_steam_id:"Float"
 	},
 	gamedata_signature_validations_variance_fields:{
-		build_id:"Float"
+		build_id:"Float",
+		previous_build_id:"Float",
+		requested_by_steam_id:"Float"
 	},
 	inet: `scalar.inet` as const,
 	json: `scalar.json` as const,
@@ -53718,15 +54588,22 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	map_asset_builds:{
 		build_id:"String",
+		changes:"jsonb",
 		created_at:"timestamptz",
 		error:"String",
 		failed:"jsonb",
 		failed_view:"jsonb",
 		finished_at:"timestamptz",
+		game_server_node:"game_server_nodes",
+		game_server_node_id:"String",
 		manifest:"String",
 		maps:"jsonb",
+		previous_build_id:"String",
+		requested_by:"players",
+		requested_by_steam_id:"bigint",
 		started_at:"timestamptz",
 		status:"String",
+		trigger:"String",
 		updated_at:"timestamptz"
 	},
 	map_asset_builds_aggregate:{
@@ -53734,18 +54611,33 @@ export const ReturnTypes: Record<string,any> = {
 		nodes:"map_asset_builds"
 	},
 	map_asset_builds_aggregate_fields:{
+		avg:"map_asset_builds_avg_fields",
 		count:"Int",
 		max:"map_asset_builds_max_fields",
-		min:"map_asset_builds_min_fields"
+		min:"map_asset_builds_min_fields",
+		stddev:"map_asset_builds_stddev_fields",
+		stddev_pop:"map_asset_builds_stddev_pop_fields",
+		stddev_samp:"map_asset_builds_stddev_samp_fields",
+		sum:"map_asset_builds_sum_fields",
+		var_pop:"map_asset_builds_var_pop_fields",
+		var_samp:"map_asset_builds_var_samp_fields",
+		variance:"map_asset_builds_variance_fields"
+	},
+	map_asset_builds_avg_fields:{
+		requested_by_steam_id:"Float"
 	},
 	map_asset_builds_max_fields:{
 		build_id:"String",
 		created_at:"timestamptz",
 		error:"String",
 		finished_at:"timestamptz",
+		game_server_node_id:"String",
 		manifest:"String",
+		previous_build_id:"String",
+		requested_by_steam_id:"bigint",
 		started_at:"timestamptz",
 		status:"String",
+		trigger:"String",
 		updated_at:"timestamptz"
 	},
 	map_asset_builds_min_fields:{
@@ -53753,14 +54645,39 @@ export const ReturnTypes: Record<string,any> = {
 		created_at:"timestamptz",
 		error:"String",
 		finished_at:"timestamptz",
+		game_server_node_id:"String",
 		manifest:"String",
+		previous_build_id:"String",
+		requested_by_steam_id:"bigint",
 		started_at:"timestamptz",
 		status:"String",
+		trigger:"String",
 		updated_at:"timestamptz"
 	},
 	map_asset_builds_mutation_response:{
 		affected_rows:"Int",
 		returning:"map_asset_builds"
+	},
+	map_asset_builds_stddev_fields:{
+		requested_by_steam_id:"Float"
+	},
+	map_asset_builds_stddev_pop_fields:{
+		requested_by_steam_id:"Float"
+	},
+	map_asset_builds_stddev_samp_fields:{
+		requested_by_steam_id:"Float"
+	},
+	map_asset_builds_sum_fields:{
+		requested_by_steam_id:"bigint"
+	},
+	map_asset_builds_var_pop_fields:{
+		requested_by_steam_id:"Float"
+	},
+	map_asset_builds_var_samp_fields:{
+		requested_by_steam_id:"Float"
+	},
+	map_asset_builds_variance_fields:{
+		requested_by_steam_id:"Float"
 	},
 	map_callouts:{
 		boxes:"jsonb",
@@ -55483,6 +56400,10 @@ export const ReturnTypes: Record<string,any> = {
 		delete_awards_by_pk:"awards",
 		delete_broadcast_huds:"broadcast_huds_mutation_response",
 		delete_broadcast_huds_by_pk:"broadcast_huds",
+		delete_chat_message_deletions:"chat_message_deletions_mutation_response",
+		delete_chat_message_deletions_by_pk:"chat_message_deletions",
+		delete_chat_message_edits:"chat_message_edits_mutation_response",
+		delete_chat_message_edits_by_pk:"chat_message_edits",
 		delete_chat_read_state:"chat_read_state_mutation_response",
 		delete_chat_read_state_by_pk:"chat_read_state",
 		delete_clip_render_jobs:"clip_render_jobs_mutation_response",
@@ -55493,6 +56414,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_db_backups_by_pk:"db_backups",
 		delete_direct_conversations:"direct_conversations_mutation_response",
 		delete_direct_conversations_by_pk:"direct_conversations",
+		delete_direct_message_reactions:"direct_message_reactions_mutation_response",
+		delete_direct_message_reactions_by_pk:"direct_message_reactions",
 		delete_direct_messages:"direct_messages_mutation_response",
 		delete_direct_messages_by_pk:"direct_messages",
 		delete_draft_game_picks:"draft_game_picks_mutation_response",
@@ -55731,6 +56654,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_player_aim_weapon_stats_by_pk:"player_aim_weapon_stats",
 		delete_player_assists:"player_assists_mutation_response",
 		delete_player_assists_by_pk:"player_assists",
+		delete_player_blocks:"player_blocks_mutation_response",
+		delete_player_blocks_by_pk:"player_blocks",
 		delete_player_damages:"player_damages_mutation_response",
 		delete_player_damages_by_pk:"player_damages",
 		delete_player_elo:"player_elo_mutation_response",
@@ -55889,6 +56814,7 @@ export const ReturnTypes: Record<string,any> = {
 		getPluginReadme:"PluginReadmeOutput",
 		getTestUploadLink:"GetTestUploadResponse",
 		grantAward:"AwardRecipient",
+		importSteamMatchShareCode:"PendingMatchImportActionOutput",
 		importUtilityLineups:"UtilityImportOutput",
 		insert__map_pool:"_map_pool_mutation_response",
 		insert__map_pool_one:"_map_pool",
@@ -55902,6 +56828,10 @@ export const ReturnTypes: Record<string,any> = {
 		insert_awards_one:"awards",
 		insert_broadcast_huds:"broadcast_huds_mutation_response",
 		insert_broadcast_huds_one:"broadcast_huds",
+		insert_chat_message_deletions:"chat_message_deletions_mutation_response",
+		insert_chat_message_deletions_one:"chat_message_deletions",
+		insert_chat_message_edits:"chat_message_edits_mutation_response",
+		insert_chat_message_edits_one:"chat_message_edits",
 		insert_chat_read_state:"chat_read_state_mutation_response",
 		insert_chat_read_state_one:"chat_read_state",
 		insert_clip_render_jobs:"clip_render_jobs_mutation_response",
@@ -55912,6 +56842,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_db_backups_one:"db_backups",
 		insert_direct_conversations:"direct_conversations_mutation_response",
 		insert_direct_conversations_one:"direct_conversations",
+		insert_direct_message_reactions:"direct_message_reactions_mutation_response",
+		insert_direct_message_reactions_one:"direct_message_reactions",
 		insert_direct_messages:"direct_messages_mutation_response",
 		insert_direct_messages_one:"direct_messages",
 		insert_draft_game_picks:"draft_game_picks_mutation_response",
@@ -56152,6 +57084,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_player_aim_weapon_stats_one:"player_aim_weapon_stats",
 		insert_player_assists:"player_assists_mutation_response",
 		insert_player_assists_one:"player_assists",
+		insert_player_blocks:"player_blocks_mutation_response",
+		insert_player_blocks_one:"player_blocks",
 		insert_player_damages:"player_damages_mutation_response",
 		insert_player_damages_one:"player_damages",
 		insert_player_elo:"player_elo_mutation_response",
@@ -56445,6 +57379,12 @@ export const ReturnTypes: Record<string,any> = {
 		update_broadcast_huds:"broadcast_huds_mutation_response",
 		update_broadcast_huds_by_pk:"broadcast_huds",
 		update_broadcast_huds_many:"broadcast_huds_mutation_response",
+		update_chat_message_deletions:"chat_message_deletions_mutation_response",
+		update_chat_message_deletions_by_pk:"chat_message_deletions",
+		update_chat_message_deletions_many:"chat_message_deletions_mutation_response",
+		update_chat_message_edits:"chat_message_edits_mutation_response",
+		update_chat_message_edits_by_pk:"chat_message_edits",
+		update_chat_message_edits_many:"chat_message_edits_mutation_response",
 		update_chat_read_state:"chat_read_state_mutation_response",
 		update_chat_read_state_by_pk:"chat_read_state",
 		update_chat_read_state_many:"chat_read_state_mutation_response",
@@ -56460,6 +57400,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_direct_conversations:"direct_conversations_mutation_response",
 		update_direct_conversations_by_pk:"direct_conversations",
 		update_direct_conversations_many:"direct_conversations_mutation_response",
+		update_direct_message_reactions:"direct_message_reactions_mutation_response",
+		update_direct_message_reactions_by_pk:"direct_message_reactions",
+		update_direct_message_reactions_many:"direct_message_reactions_mutation_response",
 		update_direct_messages:"direct_messages_mutation_response",
 		update_direct_messages_by_pk:"direct_messages",
 		update_direct_messages_many:"direct_messages_mutation_response",
@@ -56818,6 +57761,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_player_assists:"player_assists_mutation_response",
 		update_player_assists_by_pk:"player_assists",
 		update_player_assists_many:"player_assists_mutation_response",
+		update_player_blocks:"player_blocks_mutation_response",
+		update_player_blocks_by_pk:"player_blocks",
+		update_player_blocks_many:"player_blocks_mutation_response",
 		update_player_damages:"player_damages_mutation_response",
 		update_player_damages_by_pk:"player_damages",
 		update_player_damages_many:"player_damages_mutation_response",
@@ -58133,6 +59079,75 @@ export const ReturnTypes: Record<string,any> = {
 		attacked_steam_id:"Float",
 		attacker_steam_id:"Float",
 		round:"Float"
+	},
+	player_blocks:{
+		blocked:"players",
+		blocked_steam_id:"bigint",
+		blocker_steam_id:"bigint",
+		created_at:"timestamptz"
+	},
+	player_blocks_aggregate:{
+		aggregate:"player_blocks_aggregate_fields",
+		nodes:"player_blocks"
+	},
+	player_blocks_aggregate_fields:{
+		avg:"player_blocks_avg_fields",
+		count:"Int",
+		max:"player_blocks_max_fields",
+		min:"player_blocks_min_fields",
+		stddev:"player_blocks_stddev_fields",
+		stddev_pop:"player_blocks_stddev_pop_fields",
+		stddev_samp:"player_blocks_stddev_samp_fields",
+		sum:"player_blocks_sum_fields",
+		var_pop:"player_blocks_var_pop_fields",
+		var_samp:"player_blocks_var_samp_fields",
+		variance:"player_blocks_variance_fields"
+	},
+	player_blocks_avg_fields:{
+		blocked_steam_id:"Float",
+		blocker_steam_id:"Float"
+	},
+	player_blocks_max_fields:{
+		blocked_steam_id:"bigint",
+		blocker_steam_id:"bigint",
+		created_at:"timestamptz"
+	},
+	player_blocks_min_fields:{
+		blocked_steam_id:"bigint",
+		blocker_steam_id:"bigint",
+		created_at:"timestamptz"
+	},
+	player_blocks_mutation_response:{
+		affected_rows:"Int",
+		returning:"player_blocks"
+	},
+	player_blocks_stddev_fields:{
+		blocked_steam_id:"Float",
+		blocker_steam_id:"Float"
+	},
+	player_blocks_stddev_pop_fields:{
+		blocked_steam_id:"Float",
+		blocker_steam_id:"Float"
+	},
+	player_blocks_stddev_samp_fields:{
+		blocked_steam_id:"Float",
+		blocker_steam_id:"Float"
+	},
+	player_blocks_sum_fields:{
+		blocked_steam_id:"bigint",
+		blocker_steam_id:"bigint"
+	},
+	player_blocks_var_pop_fields:{
+		blocked_steam_id:"Float",
+		blocker_steam_id:"Float"
+	},
+	player_blocks_var_samp_fields:{
+		blocked_steam_id:"Float",
+		blocker_steam_id:"Float"
+	},
+	player_blocks_variance_fields:{
+		blocked_steam_id:"Float",
+		blocker_steam_id:"Float"
 	},
 	player_career_stats_v:{
 		accuracy:"numeric",
@@ -62895,6 +63910,12 @@ export const ReturnTypes: Record<string,any> = {
 		broadcast_huds:"broadcast_huds",
 		broadcast_huds_aggregate:"broadcast_huds_aggregate",
 		broadcast_huds_by_pk:"broadcast_huds",
+		chat_message_deletions:"chat_message_deletions",
+		chat_message_deletions_aggregate:"chat_message_deletions_aggregate",
+		chat_message_deletions_by_pk:"chat_message_deletions",
+		chat_message_edits:"chat_message_edits",
+		chat_message_edits_aggregate:"chat_message_edits_aggregate",
+		chat_message_edits_by_pk:"chat_message_edits",
 		chat_read_state:"chat_read_state",
 		chat_read_state_aggregate:"chat_read_state_aggregate",
 		chat_read_state_by_pk:"chat_read_state",
@@ -62913,6 +63934,9 @@ export const ReturnTypes: Record<string,any> = {
 		direct_conversations:"direct_conversations",
 		direct_conversations_aggregate:"direct_conversations_aggregate",
 		direct_conversations_by_pk:"direct_conversations",
+		direct_message_reactions:"direct_message_reactions",
+		direct_message_reactions_aggregate:"direct_message_reactions_aggregate",
+		direct_message_reactions_by_pk:"direct_message_reactions",
 		direct_messages:"direct_messages",
 		direct_messages_aggregate:"direct_messages_aggregate",
 		direct_messages_by_pk:"direct_messages",
@@ -63305,6 +64329,9 @@ export const ReturnTypes: Record<string,any> = {
 		player_assists:"player_assists",
 		player_assists_aggregate:"player_assists_aggregate",
 		player_assists_by_pk:"player_assists",
+		player_blocks:"player_blocks",
+		player_blocks_aggregate:"player_blocks_aggregate",
+		player_blocks_by_pk:"player_blocks",
 		player_career_stats_v:"player_career_stats_v",
 		player_career_stats_v_aggregate:"player_career_stats_v_aggregate",
 		player_damages:"player_damages",
@@ -64125,6 +65152,14 @@ export const ReturnTypes: Record<string,any> = {
 		broadcast_huds_aggregate:"broadcast_huds_aggregate",
 		broadcast_huds_by_pk:"broadcast_huds",
 		broadcast_huds_stream:"broadcast_huds",
+		chat_message_deletions:"chat_message_deletions",
+		chat_message_deletions_aggregate:"chat_message_deletions_aggregate",
+		chat_message_deletions_by_pk:"chat_message_deletions",
+		chat_message_deletions_stream:"chat_message_deletions",
+		chat_message_edits:"chat_message_edits",
+		chat_message_edits_aggregate:"chat_message_edits_aggregate",
+		chat_message_edits_by_pk:"chat_message_edits",
+		chat_message_edits_stream:"chat_message_edits",
 		chat_read_state:"chat_read_state",
 		chat_read_state_aggregate:"chat_read_state_aggregate",
 		chat_read_state_by_pk:"chat_read_state",
@@ -64145,6 +65180,10 @@ export const ReturnTypes: Record<string,any> = {
 		direct_conversations_aggregate:"direct_conversations_aggregate",
 		direct_conversations_by_pk:"direct_conversations",
 		direct_conversations_stream:"direct_conversations",
+		direct_message_reactions:"direct_message_reactions",
+		direct_message_reactions_aggregate:"direct_message_reactions_aggregate",
+		direct_message_reactions_by_pk:"direct_message_reactions",
+		direct_message_reactions_stream:"direct_message_reactions",
 		direct_messages:"direct_messages",
 		direct_messages_aggregate:"direct_messages_aggregate",
 		direct_messages_by_pk:"direct_messages",
@@ -64633,6 +65672,10 @@ export const ReturnTypes: Record<string,any> = {
 		player_assists_aggregate:"player_assists_aggregate",
 		player_assists_by_pk:"player_assists",
 		player_assists_stream:"player_assists",
+		player_blocks:"player_blocks",
+		player_blocks_aggregate:"player_blocks_aggregate",
+		player_blocks_by_pk:"player_blocks",
+		player_blocks_stream:"player_blocks",
 		player_career_stats_v:"player_career_stats_v",
 		player_career_stats_v_aggregate:"player_career_stats_v_aggregate",
 		player_career_stats_v_stream:"player_career_stats_v",

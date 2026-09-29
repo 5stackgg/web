@@ -3584,6 +3584,16 @@
           "title": "Przebudować wszystkie mapy?",
           "description": "Zasoby map dla buildu {build} są już opublikowane. Wymuszona przebudowa ponownie buduje każdą mapę na węźle, co może potrwać kilka godzin, i publikuje nową rewizję manifestu tylko wtedy, gdy coś się zmieniło.",
           "confirm": "Przebuduj wszystkie mapy"
+        },
+        "summary": {
+          "expand": "Pokaż szczegóły kompilacji",
+          "status": {
+            "destructive": "Niepowodzenie",
+            "warning": "Wymaga uwagi",
+            "running": "W toku",
+            "success": "Sprawne",
+            "idle": "Nie uruchomiono"
+          }
         }
       },
       "hide_offline": "Ukryj węzły offline",

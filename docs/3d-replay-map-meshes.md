@@ -109,8 +109,12 @@ the run in `map_asset_builds`, and has a manual trigger for admins. The job is
 just:
 
 ```bash
-node scripts/build-map-assets.mjs --cs2 /serverdata/serverfiles --build <id> --out /work --publish
+node scripts/build-map-assets.mjs --cs2 /serverdata/serverfiles --build <id> --out /work --publish --only-maps <names>
 ```
+
+`--only-maps` is every `name` in the API's `maps` table: an install map 5stack
+does not know is treated as not installed, so it is never built and a base
+manifest's entry for it (and any failure listed for it) is dropped.
 
 with `S3_ACCESS_KEY` / `S3_SECRET` from the `s3-secrets` secret and emptyDirs at
 `/work` and `/tmp`. Everything the run writes goes to one of those two: the
@@ -137,7 +141,8 @@ What `build-map-assets.mjs` does:
    that exists; otherwise `manifest.json`, `manifest.r2.json`, … probed in turn.
 3. Decides what to look at:
    - **no manifest for this build** — every eligible map in `game/csgo/maps/`
-     (`de_`, `cs_`, `ar_`, `rush_`; never `_vanity` or `_night`), or `--maps`;
+     (`de_`, `cs_`, `ar_`, `rush_`; never `_vanity` or `_night`; only those
+     in `--only-maps` when given), or `--maps`;
    - **newest manifest lists no failures, nothing forced** — nothing: the
      build is done. It only moves `latest.json` to that manifest if an earlier
      run died before doing so, and exits 0;

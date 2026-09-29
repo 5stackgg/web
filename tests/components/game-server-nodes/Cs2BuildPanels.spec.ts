@@ -1,5 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
+import Cs2BuildCard from "~/components/game-server-nodes/Cs2BuildCard.vue";
 import Cs2GamedataPanel from "~/components/game-server-nodes/Cs2GamedataPanel.vue";
 import Cs2MapAssetsPanel from "~/components/game-server-nodes/Cs2MapAssetsPanel.vue";
 import type {
@@ -7,6 +8,23 @@ import type {
   GamedataRunRow,
   MapAssetsRunRow,
 } from "~/types/cs2Build";
+
+const runs = vi.hoisted(() => ({
+  gamedata: null as GamedataRunRow | null,
+  mapAssets: null as MapAssetsRunRow | null,
+}));
+
+vi.mock("~/composables/useCs2BuildRuns", async () => {
+  const { ref } = await import("vue");
+  return {
+    useCs2BuildRuns: () => ({
+      gamedata: ref(runs.gamedata),
+      mapAssets: ref(runs.mapAssets),
+      loaded: ref(true),
+    }),
+    useCs2BuildNodes: () => ({ nodes: ref([]) }),
+  };
+});
 
 const minutesAgo = (minutes: number) =>
   new Date(Date.now() - minutes * 60 * 1000).toISOString();
@@ -208,5 +226,58 @@ describe("CS2 build panels", () => {
     });
 
     expect(wrapper.text()).toContain("No online node is on build 25537370");
+  });
+});
+
+describe("CS2 build card", () => {
+  const mountCard = () =>
+    mountSuspended(Cs2BuildCard, {
+      props: {
+        currentVersion: {
+          build_id: 25537370,
+          version: "public",
+          updated_at: minutesAgo(18),
+        },
+      },
+    });
+
+  it("starts folded behind one status, the worst of both jobs", async () => {
+    useRuntimeConfig().public.webDomain = "5stack.gg";
+    runs.gamedata = {
+      ...gamedata,
+      status: "pass",
+      changes: {
+        ...gamedata.changes!,
+        counts: { checked: 137, broken: 0, warnings: 14, skipped: 115 },
+      },
+    };
+    runs.mapAssets = { ...mapAssets, status: "Building", finished_at: null };
+
+    const wrapper = await mountCard();
+    const toggle = wrapper.get("button[aria-expanded]");
+    const text = wrapper.text();
+
+    expect(toggle.attributes("aria-expanded")).toBe("false");
+    expect(text).toContain("Needs attention");
+    expect(wrapper.find(".animate-ping").exists()).toBe(true);
+    expect(text).not.toContain("25537370");
+    expect(text).not.toContain("Re-validate");
+
+    await toggle.trigger("click");
+
+    expect(toggle.attributes("aria-expanded")).toBe("true");
+    expect(wrapper.text()).toContain("25537370");
+    expect(wrapper.text()).toContain("Re-validate");
+  });
+
+  it("calls a failed job out over everything else", async () => {
+    useRuntimeConfig().public.webDomain = "5stack.gg";
+    runs.gamedata = gamedata;
+    runs.mapAssets = mapAssets;
+
+    const wrapper = await mountCard();
+
+    expect(wrapper.text()).toContain("Failed");
+    expect(wrapper.find(".animate-ping").exists()).toBe(false);
   });
 });

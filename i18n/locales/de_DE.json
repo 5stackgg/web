@@ -3584,6 +3584,16 @@
           "title": "Alle Karten neu erstellen?",
           "description": "Die Karten-Assets für Build {build} sind bereits veröffentlicht. Ein erzwungener Rebuild erstellt jede Karte auf dem Node erneut, was ein paar Stunden dauern kann, und veröffentlicht nur dann eine neue Manifest-Revision, wenn sich etwas geändert hat.",
           "confirm": "Alle Karten neu erstellen"
+        },
+        "summary": {
+          "expand": "Build-Details anzeigen",
+          "status": {
+            "destructive": "Fehlgeschlagen",
+            "warning": "Prüfen",
+            "running": "Läuft",
+            "success": "In Ordnung",
+            "idle": "Nicht ausgeführt"
+          }
         }
       },
       "hide_offline": "Offline-Nodes ausblenden",

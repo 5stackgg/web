@@ -25,6 +25,10 @@
 // older key. Installed maps this run did not look at carry over from the base
 // untouched; maps no longer in the install are dropped.
 //
+// --only-maps a,b narrows "installed" to those maps (the API passes its maps
+// table), so an install map 5stack does not know is never built, and one a
+// base manifest carries is dropped along with any failure listed for it.
+//
 // FAILURES. Only a map's collision can fail it. A failed map keeps its
 // previous entry and is listed in `failed`; a map whose callouts failed ships
 // new collision and old callouts and is listed in `failed`; a map whose view
@@ -46,7 +50,8 @@
 //
 // Usage:
 //   node scripts/build-map-assets.mjs --cs2 <install> [--build <id>] [--maps a,b]
-//     [--force | --force-maps a,b] [--out <dir>] [--publish] [--dry-run]
+//     [--only-maps a,b] [--force | --force-maps a,b] [--out <dir>] [--publish]
+//     [--dry-run]
 //
 // --build defaults to the install's own build id (steamapps/appmanifest_730.acf)
 // and must match it when both are known. --out (or MAP_ASSETS_OUT) holds every
@@ -357,7 +362,8 @@ async function build(args) {
     console.warn(`• no dedupe: ${error.message}`);
   }
 
-  const available = eligibleMaps(mapsDir);
+  const only = value("--only-maps", null) ? list(value("--only-maps", null)) : null;
+  const available = eligibleMaps(mapsDir).filter((m) => !only || only.includes(m));
   const requested = value("--maps", null) ? list(value("--maps", null)) : null;
   const forceAll = has("--force");
   const forceMaps = list(value("--force-maps", null));
@@ -399,7 +405,9 @@ async function build(args) {
 
   const maps = candidates.filter((m) => {
     if (!available.includes(m)) {
-      console.warn(`${m.padEnd(18)} SKIPPED not an eligible map in ${mapsDir}`);
+      const why =
+        only && !only.includes(m) ? "not in --only-maps" : `not an eligible map in ${mapsDir}`;
+      console.warn(`${m.padEnd(18)} SKIPPED ${why}`);
       return false;
     }
     return true;
@@ -492,7 +500,7 @@ async function build(args) {
       `${base ? manifestKey(base.build, base.revision ?? 1) : "nothing (first run)"}` +
       `${same ? `, ${same} unchanged` : ""}` +
       `${carried.length ? `, ${carried.length} carried over` : ""}` +
-      `${dropped.length ? `; dropped (no longer installed): ${dropped.join(" ")}` : ""}` +
+      `${dropped.length ? `; dropped (${only ? "not installed or not in --only-maps" : "no longer installed"}): ${dropped.join(" ")}` : ""}` +
       `${manifest.failed ? `; failed: ${manifest.failed.join(" ")}` : ""}` +
       `${manifest.failed_view ? `; failed_view: ${manifest.failed_view.join(" ")}` : ""}`,
   );

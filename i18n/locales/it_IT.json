@@ -3584,6 +3584,16 @@
           "title": "Rigenerare tutte le mappe?",
           "description": "Le risorse mappe per la build {build} sono già pubblicate. Una rigenerazione forzata genera di nuovo ogni mappa sul nodo, il che può richiedere un paio d'ore, e pubblica una nuova revisione del manifest solo se qualcosa è cambiato.",
           "confirm": "Rigenera tutte le mappe"
+        },
+        "summary": {
+          "expand": "Mostra i dettagli della build",
+          "status": {
+            "destructive": "Non riuscito",
+            "warning": "Da controllare",
+            "running": "In corso",
+            "success": "Tutto ok",
+            "idle": "Non eseguito"
+          }
         }
       },
       "hide_offline": "Nascondi nodi offline",

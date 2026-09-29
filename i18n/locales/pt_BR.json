@@ -3584,6 +3584,16 @@
           "title": "Regerar todos os mapas?",
           "description": "Os recursos dos mapas da build {build} já estão publicados. Uma regeração forçada gera novamente todos os mapas no nó, o que pode levar algumas horas, e só publica uma nova revisão do manifesto se algo mudou.",
           "confirm": "Regerar todos os mapas"
+        },
+        "summary": {
+          "expand": "Mostrar detalhes da build",
+          "status": {
+            "destructive": "Falhou",
+            "warning": "Requer atenção",
+            "running": "Em andamento",
+            "success": "Saudável",
+            "idle": "Não executado"
+          }
         }
       },
       "hide_offline": "Ocultar Nós Offline",

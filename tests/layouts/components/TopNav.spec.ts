@@ -300,6 +300,14 @@ describe("TopNav between 768 and 830px", () => {
     expect(wrapper.find('a[aria-label="5stack"]').exists()).toBe(true);
   });
 
+  it("keeps 767px on the phone bar", async () => {
+    emulateDevice({ userAgent: userAgents.desktopChrome, width: 767 });
+
+    const wrapper = await mountTopNav();
+
+    expect(wrapper.find('a[aria-label="5stack"]').exists()).toBe(false);
+  });
+
   it("scrolls the desktop list instead of running it under the account controls", async () => {
     emulateDevice({ userAgent: userAgents.desktopChrome, width: 800 });
 
@@ -310,14 +318,35 @@ describe("TopNav between 768 and 830px", () => {
     expect(root.find("ul").classes()).toEqual(
       expect.arrayContaining([
         "[&>li]:shrink-0",
-        "md:min-w-0",
         "md:justify-start",
         "md:overflow-x-auto",
       ]),
     );
   });
 
-  it("drops the wordmark and tightens the links only below 830px", async () => {
+  it("lets a mouse wheel reach items cut off at the end of the list", async () => {
+    emulateDevice({ userAgent: userAgents.desktopChrome, width: 800 });
+
+    const wrapper = await mountTopNav();
+    const list = wrapper.find("[data-reka-navigation-menu] ul")
+      .element as HTMLElement;
+    Object.defineProperty(list, "scrollWidth", { value: 600 });
+    Object.defineProperty(list, "clientWidth", { value: 400 });
+
+    const down = new WheelEvent("wheel", { deltaY: 120, cancelable: true });
+    list.dispatchEvent(down);
+    expect(list.scrollLeft).toBe(120);
+    expect(down.defaultPrevented).toBe(true);
+
+    list.dispatchEvent(new WheelEvent("wheel", { deltaY: 500 }));
+    expect(list.scrollLeft).toBe(200);
+
+    const pastEnd = new WheelEvent("wheel", { deltaY: 50, cancelable: true });
+    list.dispatchEvent(pastEnd);
+    expect(pastEnd.defaultPrevented).toBe(false);
+  });
+
+  it("carries the below-830px compaction on the wordmark and links", async () => {
     emulateDevice({ userAgent: userAgents.desktopChrome, width: 800 });
 
     const wrapper = await mountTopNav();
@@ -335,8 +364,20 @@ describe("TopNav between 768 and 830px", () => {
   });
 });
 
-describe("TopNav FAQ on a phone", () => {
-  it("reaches the FAQ from the Community menu when signed out", async () => {
+describe("TopNav FAQ entry", () => {
+  async function openCommunity(
+    wrapper: Awaited<ReturnType<typeof mountTopNav>>,
+  ) {
+    const community = wrapper
+      .findAll("button")
+      .find((candidate) => candidate.text().startsWith("Community"));
+    await community!.trigger("click");
+    await flushPromises();
+
+    return wrapper.find('[data-reka-navigation-menu] [id*="-content-"]');
+  }
+
+  it("reaches the FAQ from the Community menu on a signed-out phone", async () => {
     emulateDevice({ userAgent: userAgents.androidChrome, width: 390 });
     useAuthStore().me = undefined;
 
@@ -348,20 +389,18 @@ describe("TopNav FAQ on a phone", () => {
       expect.arrayContaining(["hidden", "md:block"]),
     );
 
-    const community = wrapper
-      .findAll("button")
-      .find((candidate) => candidate.text().startsWith("Community"));
-    await community!.trigger("click");
-    await flushPromises();
-
-    const content = wrapper.find(
-      '[data-reka-navigation-menu] [id*="-content-"]',
-    );
-    const faq = content.find('a[href="/faq"]');
+    const faq = (await openCommunity(wrapper)).find('a[href="/faq"]');
     expect(faq.exists()).toBe(true);
     expect(faq.text()).toContain("Support");
-    expect(faq.element.closest("li")?.classList.contains("md:hidden")).toBe(
-      true,
+  });
+
+  it("leaves it out of the desktop panel, where the bar already has it", async () => {
+    emulateDevice({ userAgent: userAgents.desktopChrome, width: 1280 });
+
+    const wrapper = await mountTopNav();
+
+    expect((await openCommunity(wrapper)).find('a[href="/faq"]').exists()).toBe(
+      false,
     );
   });
 });

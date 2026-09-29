@@ -72,7 +72,27 @@ const navMenuClasses =
 // div), so the menu panels, which hang off the root, are never clipped. Mobile
 // scrolls the root instead and pins the panels fixed.
 const navListClasses =
-  "flex items-center gap-0 sm:gap-1 [&>li]:shrink-0 md:min-w-0 md:justify-start md:overflow-x-auto md:[scrollbar-width:none] md:[&::-webkit-scrollbar]:hidden";
+  "flex items-center gap-0 sm:gap-1 [&>li]:shrink-0 md:justify-start md:overflow-x-auto md:[scrollbar-width:none] md:[&::-webkit-scrollbar]:hidden";
+
+// With the scrollbar hidden, a plain mouse wheel is the only way a mouse can
+// reach items cut off at the end. At either end the page scrolls as usual.
+function scrollNavListOnWheel(event: WheelEvent) {
+  const list = event.currentTarget as HTMLElement;
+
+  if (Math.abs(event.deltaX) >= Math.abs(event.deltaY)) {
+    return;
+  }
+
+  const max = list.scrollWidth - list.clientWidth;
+  const next = Math.min(max, Math.max(0, list.scrollLeft + event.deltaY));
+
+  if (next === list.scrollLeft) {
+    return;
+  }
+
+  event.preventDefault();
+  list.scrollLeft = next;
+}
 
 const navViewportClasses =
   "mt-0 rounded-none border-0 bg-transparent shadow-none max-md:fixed max-md:inset-x-2 max-md:top-14 max-md:w-auto max-md:origin-top max-md:transition-none sm:max-md:top-16";
@@ -196,7 +216,10 @@ const loginArrowClasses =
           :class="navMenuClasses"
           :viewport-class="navViewportClasses"
         >
-          <NavigationMenuList :class="navListClasses">
+          <NavigationMenuList
+            :class="navListClasses"
+            @wheel="scrollNavListOnWheel"
+          >
             <NavigationMenuItem v-if="me" class="hidden md:block">
               <NavigationMenuLink as-child>
                 <NuxtLink to="/me" :class="navLinkClasses">
@@ -533,7 +556,7 @@ const loginArrowClasses =
                           </a>
                         </NavigationMenuLink>
                       </li>
-                      <li class="md:hidden">
+                      <li v-if="isMobile">
                         <NavigationMenuLink as-child>
                           <NuxtLink
                             to="/faq"

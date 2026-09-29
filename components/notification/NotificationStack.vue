@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import { computed, ref, onBeforeUnmount } from "vue";
-import { Check, ChevronDown, ChevronUp, Layers, Trash2 } from "lucide-vue-next";
+import {
+  Ban,
+  Check,
+  ChevronDown,
+  ChevronUp,
+  Layers,
+  Trash2,
+  TriangleAlert,
+} from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import {
   Collapsible,
@@ -11,6 +19,11 @@ import TimeAgo from "~/components/TimeAgo.vue";
 import NotificationItem from "~/components/notification/NotificationItem.vue";
 import NotificationContext from "~/components/notification/NotificationContext.vue";
 import NotificationMessage from "~/components/notification/NotificationMessage.vue";
+import {
+  sanctionNotificationTone,
+  sanctionToneBarClasses,
+  sanctionToneTextClasses,
+} from "~/utilities/sanctionNotificationTone";
 
 type NotificationAction = {
   label: string;
@@ -27,6 +40,7 @@ type StackNotification = {
   title: string;
   message: string;
   type: string;
+  role?: string | null;
   steam_id?: string | null;
   entity_id?: string | null;
   is_read: boolean;
@@ -65,11 +79,21 @@ const deletableIds = computed(() =>
   props.notifications.filter((n) => n.deletable !== false).map((n) => n.id),
 );
 
-const topCardClass = computed(() =>
+const topTone = computed(() => sanctionNotificationTone(top.value));
+
+const topCardClass = computed(() => [
   props.variant === "sheet"
     ? "relative w-full text-left rounded-lg shadow-md bg-accent p-4 hover:brightness-110 transition"
     : "relative w-full text-left rounded-md border border-border bg-card/60 p-3 hover:bg-card/80 transition-colors",
-);
+  topTone.value ? "overflow-hidden" : "",
+]);
+
+const topTitleClass = computed(() => {
+  if (top.value.is_read) {
+    return "text-muted-foreground";
+  }
+  return topTone.value ? sanctionToneTextClasses[topTone.value] : "";
+});
 
 const peekBaseClass = computed(() =>
   props.variant === "sheet"
@@ -148,6 +172,12 @@ function handleTopClick(event: MouseEvent) {
         @keydown.enter.prevent="isOpen = true"
         @keydown.space.prevent="isOpen = true"
       >
+        <span
+          v-if="topTone"
+          aria-hidden="true"
+          class="absolute inset-y-0 left-0 w-1"
+          :class="sanctionToneBarClasses[topTone]"
+        />
         <div class="absolute top-2 right-2 flex items-center gap-1">
           <span
             v-if="hasUnread"
@@ -183,9 +213,20 @@ function handleTopClick(event: MouseEvent) {
         <h3
           :class="[
             'text-lg font-semibold pr-20',
-            top.is_read ? 'text-muted-foreground' : '',
+            topTone ? 'flex items-center gap-2' : '',
+            topTitleClass,
           ]"
         >
+          <TriangleAlert
+            v-if="topTone === 'warning'"
+            aria-hidden="true"
+            class="h-4 w-4 shrink-0"
+          />
+          <Ban
+            v-else-if="topTone === 'ban'"
+            aria-hidden="true"
+            class="h-4 w-4 shrink-0"
+          />
           {{ top.title }}
         </h3>
 

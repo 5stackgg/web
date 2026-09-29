@@ -8001,11 +8001,13 @@
       "reason_label": "사유",
       "reason_placeholder": "제재 사유를 입력하세요...",
       "reason_description": "이 제재에 대한 명확한 사유를 입력해 주세요",
+      "reason_required": "사유는 필수입니다",
       "types": {
         "ban_description": "플레이어가 어떤 활동에도 참여할 수 없습니다",
         "mute_description": "플레이어가 게임 내 음성 채팅을 사용할 수 없습니다",
         "gag_description": "플레이어가 게임 내 텍스트 채팅을 사용할 수 없습니다",
-        "silence_description": "플레이어가 음소거 및 채팅 금지됩니다"
+        "silence_description": "플레이어가 음소거 및 채팅 금지됩니다",
+        "warning_description": "플레이어 기록에 남는 정보성 메모로, 적용되지 않습니다"
       },
       "durations": {
         "15_minutes": "15분",
@@ -8020,20 +8022,24 @@
         "ban": "플레이어 차단",
         "mute": "플레이어 마이크 차단",
         "gag": "플레이어 채팅 차단",
-        "silence": "플레이어 전체 발언 차단"
+        "silence": "플레이어 전체 발언 차단",
+        "warning": "플레이어 경고"
       },
       "submit": {
         "ban": "플레이어 차단하기",
         "mute": "플레이어 마이크 차단하기",
         "gag": "플레이어 채팅 차단하기",
-        "silence": "플레이어 전체 발언 차단하기"
+        "silence": "플레이어 전체 발언 차단하기",
+        "warning": "경고 발급"
       },
       "applied": {
         "ban": "{name}을(를) 차단했습니다",
         "mute": "{name}의 마이크를 차단했습니다",
         "gag": "{name}의 채팅을 차단했습니다",
-        "silence": "{name}의 발언을 전체 차단했습니다"
+        "silence": "{name}의 발언을 전체 차단했습니다",
+        "warning": "{name}에게 경고를 발급했습니다"
       },
+      "warning_note": "경고는 플레이어 기록에 저장되고 플레이어에게 알림이 전송됩니다. 적용되지 않으며 만료되지 않습니다.",
       "typed_player": "{type} 플레이어"
     },
     "search": {
@@ -8060,6 +8066,13 @@
       "muted": "음소거됨",
       "gagged": "채팅 금지됨",
       "silenced": "제재됨",
+      "type_labels": {
+        "ban": "차단",
+        "mute": "마이크 차단",
+        "gag": "채팅 차단",
+        "silence": "전체 발언 차단",
+        "warning": "경고"
+      },
       "duration_label": "기간",
       "select_duration": "기간 선택",
       "sanctions": "제재",
@@ -8074,6 +8087,7 @@
       "permanent": "영구",
       "active": "활성",
       "expired": "만료됨",
+      "on_record": "기록됨",
       "cannot_edit_expired": "만료된 제재는 수정할 수 없습니다 — 새로 추가하세요",
       "edit": "수정",
       "remove": "제거",

@@ -8001,11 +8001,13 @@
       "reason_label": "Raison",
       "reason_placeholder": "Saisis la raison de la sanction…",
       "reason_description": "Indique une raison claire pour cette sanction",
+      "reason_required": "Une raison est requise",
       "types": {
         "ban_description": "Le joueur ne peut participer à aucune activité",
         "mute_description": "Le joueur ne peut pas utiliser le chat vocal en jeu",
         "gag_description": "Le joueur ne peut pas utiliser le chat écrit en jeu",
-        "silence_description": "Joueur mute et gag"
+        "silence_description": "Joueur mute et gag",
+        "warning_description": "Note informative au dossier du joueur, jamais appliquée"
       },
       "durations": {
         "15_minutes": "15 minutes",
@@ -8020,20 +8022,24 @@
         "ban": "Bannissement du joueur",
         "mute": "Coupure du micro du joueur",
         "gag": "Bâillonnement du joueur",
-        "silence": "Réduction au silence du joueur"
+        "silence": "Réduction au silence du joueur",
+        "warning": "Avertissement du joueur"
       },
       "submit": {
         "ban": "Bannir le joueur",
         "mute": "Couper le micro du joueur",
         "gag": "Bâillonner le joueur",
-        "silence": "Réduire le joueur au silence"
+        "silence": "Réduire le joueur au silence",
+        "warning": "Émettre un avertissement"
       },
       "applied": {
         "ban": "{name} banni",
         "mute": "Micro de {name} coupé",
         "gag": "{name} bâillonné",
-        "silence": "{name} réduit au silence"
+        "silence": "{name} réduit au silence",
+        "warning": "Avertissement émis pour {name}"
       },
+      "warning_note": "Un avertissement est enregistré au dossier du joueur et lui est notifié. Il n'est jamais appliqué et n'expire jamais.",
       "typed_player": "Joueur {type}"
     },
     "search": {
@@ -8060,6 +8066,13 @@
       "muted": "Mute",
       "gagged": "Gag",
       "silenced": "Silence",
+      "type_labels": {
+        "ban": "Bannissement",
+        "mute": "Micro coupé",
+        "gag": "Bâillon",
+        "silence": "Réduction au silence",
+        "warning": "Avertissement"
+      },
       "duration_label": "Durée",
       "select_duration": "Sélectionner une durée",
       "sanctions": "Sanctions",
@@ -8074,6 +8087,7 @@
       "permanent": "Permanente",
       "active": "Active",
       "expired": "Expirée",
+      "on_record": "Au dossier",
       "cannot_edit_expired": "Une sanction expirée ne peut pas être modifiée — ajoutes-en une nouvelle",
       "edit": "Modifier",
       "remove": "Supprimer",

@@ -377,6 +377,12 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     const singles: Notification[] = [];
 
     for (const n of visibleNotifications.value) {
+      // Keyed on the player's own steam id, a warning would fold into a stack
+      // under their name-change notices and hide behind a newer one.
+      if (n.type === "PlayerWarning") {
+        singles.push(n);
+        continue;
+      }
       const groupKey =
         n.type === "PlayerSanctioned"
           ? `type:PlayerSanctioned:${n.role}`

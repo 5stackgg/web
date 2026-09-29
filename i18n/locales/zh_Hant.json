@@ -8001,11 +8001,13 @@
       "reason_label": "原因",
       "reason_placeholder": "輸入處罰原因...",
       "reason_description": "請為此處罰提供明確的原因",
+      "reason_required": "必須填寫原因",
       "types": {
         "ban_description": "玩家無法參與任何活動",
         "mute_description": "玩家無法在遊戲中使用語音聊天",
         "gag_description": "玩家無法在遊戲中使用文字聊天",
-        "silence_description": "玩家被禁音並禁言"
+        "silence_description": "玩家被禁音並禁言",
+        "warning_description": "記錄在玩家檔案中的提示資訊，永不執行"
       },
       "durations": {
         "15_minutes": "15 分鐘",
@@ -8020,20 +8022,24 @@
         "ban": "封禁玩家",
         "mute": "關閉玩家麥克風",
         "gag": "禁止玩家打字",
-        "silence": "完全禁言玩家"
+        "silence": "完全禁言玩家",
+        "warning": "警告玩家"
       },
       "submit": {
         "ban": "封禁玩家",
         "mute": "關閉玩家麥克風",
         "gag": "禁止玩家打字",
-        "silence": "完全禁言玩家"
+        "silence": "完全禁言玩家",
+        "warning": "發出警告"
       },
       "applied": {
         "ban": "已封禁 {name}",
         "mute": "已關閉 {name} 的麥克風",
         "gag": "已禁止 {name} 打字",
-        "silence": "已完全禁言 {name}"
+        "silence": "已完全禁言 {name}",
+        "warning": "已向 {name} 發出警告"
       },
+      "warning_note": "警告會儲存到玩家檔案並通知該玩家。它永遠不會被執行，也永不過期。",
       "typed_player": "{type}玩家"
     },
     "search": {
@@ -8060,6 +8066,13 @@
       "muted": "已禁音",
       "gagged": "已禁言",
       "silenced": "已禁音＋禁言",
+      "type_labels": {
+        "ban": "封禁",
+        "mute": "禁音",
+        "gag": "禁言",
+        "silence": "禁音＋禁言",
+        "warning": "警告"
+      },
       "duration_label": "期間",
       "select_duration": "選擇期間",
       "sanctions": "處罰",
@@ -8074,6 +8087,7 @@
       "permanent": "永久",
       "active": "生效中",
       "expired": "已到期",
+      "on_record": "已記錄",
       "cannot_edit_expired": "已到期的處罰無法編輯——請新增一筆",
       "edit": "編輯",
       "remove": "移除",

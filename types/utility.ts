@@ -570,7 +570,8 @@ export function readUtilityRepairOutput(
 export type UtilityUtilityReportTypeRow = {
   utility_type: string;
   throws: number;
-  matched: number;
+  matched_lineups: number;
+  matched_meta: number;
   landed: number;
 };
 
@@ -589,7 +590,8 @@ export type UtilityUtilityReportOutput = {
 export type UtilityUtilityReportTypeView = {
   utilityType: string;
   throws: number;
-  matched: number;
+  matchedLineups: number;
+  matchedMeta: number;
   landed: number;
 };
 
@@ -628,7 +630,8 @@ export function readUtilityUtilityReport(
       .map((row) => ({
         utilityType: row.utility_type,
         throws: utilityCount(row.throws),
-        matched: utilityCount(row.matched),
+        matchedLineups: utilityCount(row.matched_lineups),
+        matchedMeta: utilityCount(row.matched_meta),
         landed: utilityCount(row.landed),
       })),
   };

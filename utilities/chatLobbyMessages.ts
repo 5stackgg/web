@@ -51,17 +51,24 @@ export function mergeChatSnapshot(
   deleted: ReadonlySet<string>,
   reacted: ReadonlySet<string> = new Set(),
 ) {
-  const held = new Map<string, LobbyMessage>();
+  const edited = new Map<string, LobbyMessage>();
+  const live = new Map<string, LobbyMessage>();
   for (const message of current) {
-    if (message?.id && (message.edited_at || reacted.has(message.id))) {
-      held.set(message.id, message);
+    if (message?.id && message.edited_at) {
+      edited.set(message.id, message);
+    }
+    if (message?.id && reacted.has(message.id)) {
+      live.set(message.id, message);
     }
   }
 
   const history = (snapshot || []).map((message) => {
-    const mine = message?.id ? held.get(message.id) : undefined;
+    const id = message?.id;
 
-    return keepLiveReactions(keepNewerEdit(message, mine), mine, reacted);
+    return keepLiveReactions(
+      keepNewerEdit(message, id ? edited.get(id) : undefined),
+      id ? live.get(id) : undefined,
+    );
   });
   const snapshotKeys = new Set(history.map(chatMessageKey));
 
@@ -126,9 +133,8 @@ function keepNewerEdit(
 function keepLiveReactions(
   snapshot: LobbyMessage,
   held: LobbyMessage | undefined,
-  reacted: ReadonlySet<string>,
 ) {
-  if (!held?.id || !reacted.has(held.id)) {
+  if (!held) {
     return snapshot;
   }
 

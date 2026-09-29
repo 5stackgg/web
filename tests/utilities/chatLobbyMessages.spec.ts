@@ -221,6 +221,19 @@ describe("mergeChatSnapshot", () => {
     expect(merged[0].reactions).toEqual({});
   });
 
+  it("takes only the reactions from an unedited line that changed live", () => {
+    const merged = mergeChatSnapshot(
+      [{ ...line("a", 1), reactions: { fire: ["76561198000000003"] } }],
+      [{ ...line("a", 1), reactions: {} }],
+      new Set(),
+      new Set(["a"]),
+    );
+
+    expect(merged).toStrictEqual([
+      { ...line("a", 1), reactions: { fire: ["76561198000000003"] } },
+    ]);
+  });
+
   it("keeps a live edit and live reactions on the same message", () => {
     const held = {
       ...line("a", 1),

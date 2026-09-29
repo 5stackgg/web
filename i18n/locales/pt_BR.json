@@ -1701,6 +1701,14 @@
             "title": "Partidas",
             "description": "Mudanças de status de partidas e partidas importadas."
           },
+          "match_found": {
+            "title": "Partida encontrada",
+            "description": "O matchmaking encontrou sua partida e está esperando você aceitar. Toca mesmo durante o horário silencioso."
+          },
+          "admin_call": {
+            "title": "Chamadas de administradores",
+            "description": "Um administrador quer falar com você pela câmera da partida. Toca mesmo durante o horário silencioso."
+          },
           "chat": {
             "title": "Chat",
             "description": "Novas mensagens em um lobby, partida ou conversa."
@@ -1824,7 +1832,7 @@
         },
         "quiet_hours": {
           "title": "Horário silencioso",
-          "description": "Notificações push permanecem silenciosas durante este período. Elas ainda aparecem no sino de alertas.",
+          "description": "Notificações push permanecem silenciosas durante este período. Elas ainda aparecem no sino de alertas. Partidas encontradas e chamadas de administradores tocam mesmo assim.",
           "from": "De",
           "to": "Até",
           "reset": "Redefinir",

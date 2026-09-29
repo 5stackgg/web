@@ -1701,6 +1701,14 @@
             "title": "Mecze",
             "description": "Zmiany statusu meczu i zaimportowane mecze."
           },
+          "match_found": {
+            "title": "Znaleziono mecz",
+            "description": "Matchmaking znalazł twój mecz i czeka, aż go zaakceptujesz. Dzwoni nawet w godzinach ciszy."
+          },
+          "admin_call": {
+            "title": "Połączenia od administratorów",
+            "description": "Administrator chce porozmawiać z tobą przez kamerę meczu. Dzwoni nawet w godzinach ciszy."
+          },
           "chat": {
             "title": "Czat",
             "description": "Nowe wiadomości w rozmowie, lobby lub pokoju turniejowym."
@@ -1824,7 +1832,7 @@
         },
         "quiet_hours": {
           "title": "Godziny ciszy",
-          "description": "W tym przedziale powiadomienia push pozostają wyciszone. Nadal pojawiają się w dzwonku powiadomień.",
+          "description": "W tym przedziale powiadomienia push pozostają wyciszone. Nadal pojawiają się w dzwonku powiadomień. Znalezione mecze i połączenia od administratorów dzwonią mimo to.",
           "from": "Od",
           "to": "Do",
           "reset": "Resetuj",

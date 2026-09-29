@@ -1701,6 +1701,14 @@
             "title": "Partidas",
             "description": "Cambios de estado de partida y partidas importadas."
           },
+          "match_found": {
+            "title": "Partida encontrada",
+            "description": "El emparejamiento ha encontrado tu partida y espera a que la aceptes. Suena incluso en horas de silencio."
+          },
+          "admin_call": {
+            "title": "Llamadas de administradores",
+            "description": "Un administrador quiere hablar contigo a través de la cámara de tu partida. Suena incluso en horas de silencio."
+          },
           "chat": {
             "title": "Chat",
             "description": "Mensajes nuevos en una conversación, un lobby o una sala de torneo."
@@ -1824,7 +1832,7 @@
         },
         "quiet_hours": {
           "title": "Horas de silencio",
-          "description": "Las notificaciones push permanecen en silencio durante este intervalo. Siguen apareciendo en tu campana de avisos.",
+          "description": "Las notificaciones push permanecen en silencio durante este intervalo. Siguen apareciendo en tu campana de avisos. Las partidas encontradas y las llamadas de administradores suenan igualmente.",
           "from": "Desde",
           "to": "Hasta",
           "reset": "Restablecer",

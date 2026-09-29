@@ -1701,6 +1701,14 @@
             "title": "Partite",
             "description": "Cambi di stato delle partite e partite importate."
           },
+          "match_found": {
+            "title": "Match trovato",
+            "description": "Il matchmaking ha trovato la tua partita e aspetta che tu accetti. Suona anche nelle ore di silenzio."
+          },
+          "admin_call": {
+            "title": "Chiamate degli admin",
+            "description": "Un admin vuole parlarti tramite la videocamera della partita. Suona anche nelle ore di silenzio."
+          },
           "chat": {
             "title": "Chat",
             "description": "Nuovi messaggi in una conversazione, una lobby o una sala torneo."
@@ -1824,7 +1832,7 @@
         },
         "quiet_hours": {
           "title": "Ore di silenzio",
-          "description": "Le notifiche push restano silenziose in questa fascia. Compaiono comunque nella tua campanella degli avvisi.",
+          "description": "Le notifiche push restano silenziose in questa fascia. Compaiono comunque nella tua campanella degli avvisi. Le partite trovate e le chiamate degli admin suonano in ogni caso.",
           "from": "Da",
           "to": "A",
           "reset": "Reimposta",

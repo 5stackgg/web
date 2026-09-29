@@ -148,6 +148,8 @@ import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import { useMatchReadyModal } from "~/composables/useMatchReadyModal";
 import socket from "~/web-sockets/Socket";
 import { useSound } from "~/composables/useSound";
+import { closeNotifications } from "~/composables/usePushNotifications";
+import { notificationThreadKey } from "~/utilities/chatThread";
 
 export default {
   data() {
@@ -183,6 +185,17 @@ export default {
     confirmation: {
       immediate: true,
       handler(confirmation, oldConfirmation) {
+        if (
+          oldConfirmation &&
+          oldConfirmation.confirmationId !== confirmation?.confirmationId
+        ) {
+          this.silenceRing(oldConfirmation.confirmationId);
+        }
+
+        if (confirmation?.isReady || confirmation?.matchId) {
+          this.silenceRing(confirmation.confirmationId);
+        }
+
         if (!confirmation) {
           useMatchReadyModal().closeMatchReadyModal();
           return;
@@ -218,6 +231,14 @@ export default {
       socket.event("matchmaking:confirm", {
         confirmationId: this.confirmation.confirmationId,
       });
+    },
+    // On every update rather than once: the push is sent after the socket
+    // update that opened the ready check, so it can land here after the
+    // player has already accepted.
+    silenceRing(confirmationId: string) {
+      void closeNotifications(
+        notificationThreadKey("MatchFound", confirmationId),
+      );
     },
     updateCountdown() {
       if (

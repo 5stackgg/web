@@ -69,6 +69,57 @@ const setAppBadge = async (unread) => {
   }
 };
 
+const RING_VIBRATION = [300, 100, 300, 100, 300];
+
+// Clock skew, both ways. A device clock behind the server's reads `expiresAt`
+// as further away than it is, so the wait is capped; one ahead of it reads a
+// ring that has only just arrived as already over, so it still gets a moment.
+const MIN_RING_MS = 5_000;
+const MAX_RING_MS = 60_000;
+
+const expiryDelayOf = (expiresAt) => {
+  if (typeof expiresAt !== "string") {
+    return null;
+  }
+
+  const at = Date.parse(expiresAt);
+
+  if (!Number.isFinite(at)) {
+    return null;
+  }
+
+  return Math.min(Math.max(MIN_RING_MS, at - Date.now()), MAX_RING_MS);
+};
+
+// Deliberately not part of the push event's waitUntil. Chrome judges a push by
+// whether its notification is still on screen when the event settles; one that
+// has already been closed counts as a silent push, and once that budget is
+// spent Chrome shows "This site has been updated in the background" instead.
+// An idle worker lives on for about 30s, so the close usually still lands, and
+// when it does not the ring simply stays until it is dismissed.
+//
+// Matched on `expiresAt` as well as the tag: a newer push with the same tag has
+// already replaced this one on screen, and it has its own expiry to keep.
+const closeAtExpiry = (payload) => {
+  const delay = expiryDelayOf(payload.expiresAt);
+
+  if (delay === null) {
+    return;
+  }
+
+  setTimeout(async () => {
+    const notifications = await self.registration.getNotifications(
+      payload.tag ? { tag: payload.tag } : {},
+    );
+
+    for (const notification of notifications) {
+      if (notification.data?.expiresAt === payload.expiresAt) {
+        notification.close();
+      }
+    }
+  }, delay);
+};
+
 self.addEventListener("push", (event) => {
   let payload = {};
 
@@ -98,16 +149,20 @@ self.addEventListener("push", (event) => {
         // without this the summary that closes a burst arrives unannounced.
         // Ignored unless `tag` is set, and throws in Chrome without one.
         renotify: payload.renotify !== false && Boolean(payload.tag),
+        ...(payload.urgent
+          ? { requireInteraction: true, vibrate: RING_VIBRATION }
+          : {}),
         data: {
           url: payload.url || "/",
           threadKey: payload.threadKey || payload.tag,
           count: payload.count || 1,
           actions,
           graphqlUrl: trustedGraphqlUrl(payload.graphqlUrl),
+          expiresAt: payload.expiresAt,
         },
       }),
       setAppBadge(payload.unread),
-    ]),
+    ]).then(() => closeAtExpiry(payload)),
   );
 });
 

@@ -325,7 +325,7 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
             </FormItem>
           </FormField>
 
-          <FormField v-slot="{ componentField }" name="clip_fps">
+          <FormField v-slot="{ componentField }" name="public.clip_fps">
             <FormItem>
               <FormLabel>{{
                 $t("pages.settings.application.demo_settings.clip_fps")
@@ -350,7 +350,7 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
             </FormItem>
           </FormField>
 
-          <FormField v-slot="{ componentField }" name="clip_resolution">
+          <FormField v-slot="{ componentField }" name="public.clip_resolution">
             <FormItem>
               <FormLabel>{{
                 $t("pages.settings.application.demo_settings.clip_resolution")
@@ -494,8 +494,10 @@ export default {
               .enum(["private", "public"])
               .default("private"),
             clip_video_codec: z.enum(["h265", "h264"]).default("h264"),
-            clip_fps: z.enum(["30", "60"]).default("60"),
-            clip_resolution: z.enum(["720p", "1080p"]).default("1080p"),
+            public: z.object({
+              clip_fps: z.enum(["30", "60"]).default("60"),
+              clip_resolution: z.enum(["720p", "1080p"]).default("1080p"),
+            }),
           }),
         ),
       }),
@@ -525,7 +527,7 @@ export default {
             continue;
           }
 
-          if (setting.name === "clip_fps") {
+          if (setting.name === "public.clip_fps") {
             this.form.setFieldValue(
               setting.name,
               setting.value === "30" ? "30" : "60",
@@ -533,7 +535,7 @@ export default {
             continue;
           }
 
-          if (setting.name === "clip_resolution") {
+          if (setting.name === "public.clip_resolution") {
             this.form.setFieldValue(
               setting.name,
               setting.value === "720p" ? "720p" : "1080p",
@@ -627,12 +629,12 @@ export default {
                   value: this.form.values.clip_video_codec ?? "h264",
                 },
                 {
-                  name: "clip_fps",
-                  value: this.form.values.clip_fps ?? "60",
+                  name: "public.clip_fps",
+                  value: this.form.values.public?.clip_fps ?? "60",
                 },
                 {
-                  name: "clip_resolution",
-                  value: this.form.values.clip_resolution ?? "1080p",
+                  name: "public.clip_resolution",
+                  value: this.form.values.public?.clip_resolution ?? "1080p",
                 },
               ],
               on_conflict: {

@@ -3584,6 +3584,16 @@
           "title": "¿Regenerar todos los mapas?",
           "description": "Los recursos de mapas de la build {build} ya están publicados. Una regeneración forzada vuelve a generar todos los mapas en el nodo, lo que puede tardar un par de horas, y solo publica una nueva revisión del manifiesto si algo ha cambiado.",
           "confirm": "Regenerar todos los mapas"
+        },
+        "summary": {
+          "expand": "Mostrar detalles de la build",
+          "status": {
+            "destructive": "Fallido",
+            "warning": "Requiere atención",
+            "running": "En curso",
+            "success": "Correcto",
+            "idle": "Sin ejecutar"
+          }
         }
       },
       "hide_offline": "Ocultar nodos desconectados",

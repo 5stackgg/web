@@ -3584,6 +3584,16 @@
           "title": "Byg alle kort igen?",
           "description": "Kortressourcer til build {build} er allerede udgivet. En tvungen genbygning bygger alle kort igen på noden, hvilket kan tage et par timer, og udgiver kun en ny manifest-revision, hvis noget er ændret.",
           "confirm": "Byg alle kort igen"
+        },
+        "summary": {
+          "expand": "Vis build-detaljer",
+          "status": {
+            "destructive": "Fejlet",
+            "warning": "Kræver opmærksomhed",
+            "running": "Kører",
+            "success": "Sund",
+            "idle": "Ikke kørt"
+          }
         }
       },
       "hide_offline": "Skjul offline noder",

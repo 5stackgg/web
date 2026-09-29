@@ -3584,6 +3584,16 @@
           "title": "重新建置所有地圖？",
           "description": "版本 {build} 的地圖資源已發佈。強制重新建置會在節點上再次建置每張地圖，可能需要數小時，且只有在有變更時才會發佈新的清單修訂版本。",
           "confirm": "重新建置所有地圖"
+        },
+        "summary": {
+          "expand": "顯示組建詳情",
+          "status": {
+            "destructive": "失敗",
+            "warning": "需要關注",
+            "running": "執行中",
+            "success": "正常",
+            "idle": "未執行"
+          }
         }
       },
       "hide_offline": "隱藏離線節點",

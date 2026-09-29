@@ -3584,6 +3584,16 @@
           "title": "Rebuild every map?",
           "description": "Map assets for build {build} are already published. A forced rebuild builds every map again on the node, which can take a couple of hours, and publishes a new manifest revision only if something changed.",
           "confirm": "Rebuild every map"
+        },
+        "summary": {
+          "expand": "Show build details",
+          "status": {
+            "destructive": "Failed",
+            "warning": "Needs attention",
+            "running": "Running",
+            "success": "Healthy",
+            "idle": "Not run"
+          }
         }
       },
       "hide_offline": "Hide Offline Nodes",

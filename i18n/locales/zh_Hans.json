@@ -3584,6 +3584,16 @@
           "title": "重新构建所有地图？",
           "description": "版本 {build} 的地图资源已发布。强制重新构建会在节点上再次构建每张地图，可能需要几个小时，并且只有在有变更时才会发布新的清单修订版本。",
           "confirm": "重新构建所有地图"
+        },
+        "summary": {
+          "expand": "显示构建详情",
+          "status": {
+            "destructive": "失败",
+            "warning": "需要关注",
+            "running": "运行中",
+            "success": "正常",
+            "idle": "未运行"
+          }
         }
       },
       "hide_offline": "隐藏离线节点",

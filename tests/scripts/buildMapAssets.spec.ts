@@ -272,6 +272,26 @@ describe("build-map-assets", () => {
     expect(Object.keys(manifest("101/manifest.json").maps)).toEqual(["de_alpha"]);
   });
 
+  it("never builds an installed map --only-maps leaves out", async () => {
+    const first = await publish("100", { args: ["--only-maps", "de_alpha,de_gamma"] });
+    expect(first.code).toBe(0);
+    expect(first.exportsOf("de_beta")).toEqual([]);
+    expect(Object.keys(manifest("100/manifest.json").maps)).toEqual(["de_alpha"]);
+  });
+
+  it("drops maps --only-maps leaves out, failures included", async () => {
+    await publish("100", { overrides: { "maps/de_beta/world.vwrld_c": "FAIL" } });
+    expect(manifest("100/manifest.json").failed_view).toEqual(["de_beta"]);
+
+    const retry = await publish("100", { args: ["--only-maps", "de_alpha"] });
+    expect(retry.code).toBe(0);
+    expect(retry.exported).toEqual([]);
+    const m = manifest("100/manifest.r2.json");
+    expect(Object.keys(m.maps)).toEqual(["de_alpha"]);
+    expect(m).not.toHaveProperty("failed_view");
+    expect(bucket.json("maps/latest.json").manifest).toBe("100/manifest.r2.json");
+  });
+
   it("rebuilds regardless of fingerprints with --force or --force-maps", async () => {
     await publish("100");
     const all = await publish("101", { args: ["--force"] });

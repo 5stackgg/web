@@ -3584,6 +3584,16 @@
           "title": "Régénérer toutes les cartes ?",
           "description": "Les ressources des cartes pour la build {build} sont déjà publiées. Une régénération forcée génère à nouveau chaque carte sur le nœud, ce qui peut prendre quelques heures, et ne publie une nouvelle révision du manifeste que si quelque chose a changé.",
           "confirm": "Régénérer toutes les cartes"
+        },
+        "summary": {
+          "expand": "Afficher les détails du build",
+          "status": {
+            "destructive": "Échec",
+            "warning": "À vérifier",
+            "running": "En cours",
+            "success": "Opérationnel",
+            "idle": "Non exécuté"
+          }
         }
       },
       "hide_offline": "Masquer les nœuds hors ligne",

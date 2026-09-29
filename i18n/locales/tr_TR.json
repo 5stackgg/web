@@ -3584,6 +3584,16 @@
           "title": "Tüm haritalar yeniden oluşturulsun mu?",
           "description": "{build} sürümünün harita varlıkları zaten yayınlandı. Zorunlu yeniden oluşturma, düğümdeki her haritayı yeniden oluşturur; bu birkaç saat sürebilir ve yalnızca bir şey değiştiyse yeni bir manifest revizyonu yayınlar.",
           "confirm": "Tüm haritaları yeniden oluştur"
+        },
+        "summary": {
+          "expand": "Derleme ayrıntılarını göster",
+          "status": {
+            "destructive": "Başarısız",
+            "warning": "İlgilenilmeli",
+            "running": "Çalışıyor",
+            "success": "Sağlıklı",
+            "idle": "Çalıştırılmadı"
+          }
         }
       },
       "hide_offline": "Çevrimdışı düğümleri gizle",

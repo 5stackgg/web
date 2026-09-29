@@ -3584,6 +3584,16 @@
           "title": "Bygga om alla kartor?",
           "description": "Karttillgångar för build {build} är redan publicerade. En tvingad ombyggnad bygger alla kartor igen på noden, vilket kan ta ett par timmar, och publicerar en ny manifestrevision bara om något har ändrats.",
           "confirm": "Bygg om alla kartor"
+        },
+        "summary": {
+          "expand": "Visa bygginformation",
+          "status": {
+            "destructive": "Misslyckades",
+            "warning": "Behöver åtgärdas",
+            "running": "Körs",
+            "success": "Frisk",
+            "idle": "Inte körd"
+          }
         }
       },
       "hide_offline": "Dölj offline-noder",

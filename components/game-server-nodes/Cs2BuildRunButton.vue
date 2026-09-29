@@ -3,6 +3,7 @@ import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { Check, ChevronDown, RotateCw } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
+import { ButtonGroup } from "~/components/ui/button-group";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -75,6 +76,9 @@ const blockedReason = computed(
         })),
 );
 
+const ACCENT =
+  "border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.2)] hover:text-[hsl(var(--tac-amber))]";
+
 function start() {
   return props.run(selected.value ? selected.value.id : null);
 }
@@ -82,18 +86,23 @@ function start() {
 
 <template>
   <div class="flex flex-col items-end gap-1">
-    <div class="inline-flex">
+    <ButtonGroup>
       <Button
         size="sm"
-        :variant="primary ? 'default' : 'secondary'"
-        class="rounded-r-none"
+        variant="outline"
+        :class="primary && ACCENT"
         :disabled="!!blockedReason"
         @click="start"
       >
         <RotateCw />
         {{ label }}
         <span
-          class="rounded bg-background/40 px-1.5 py-px font-mono text-[0.6rem] uppercase tracking-[0.08em]"
+          class="rounded-sm px-1.5 py-px font-mono text-[0.6rem] uppercase tracking-[0.08em]"
+          :class="
+            primary
+              ? 'bg-[hsl(var(--tac-amber)/0.15)]'
+              : 'bg-muted/50 text-muted-foreground'
+          "
         >
           {{ targetLabel }}
         </span>
@@ -102,8 +111,9 @@ function start() {
         <DropdownMenuTrigger as-child>
           <Button
             size="sm"
-            :variant="primary ? 'default' : 'secondary'"
-            class="rounded-l-none border-l border-background/40 px-2"
+            variant="outline"
+            class="px-2"
+            :class="primary && ACCENT"
             :disabled="!!blocked"
             :aria-label="$t('pages.game_server_nodes.cs2_build.run_on')"
           >
@@ -152,7 +162,7 @@ function start() {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-    </div>
+    </ButtonGroup>
     <span
       v-if="blockedReason"
       class="text-right text-[0.7rem] text-muted-foreground"

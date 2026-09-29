@@ -8496,6 +8496,18 @@
     "edit_failed": "Nie udało się edytować wiadomości",
     "edit_timeout": "Serwer nie odpowiedział. Twoja zmiana może mimo to zostać zapisana.",
     "edit_window_closed": "Wiadomość możesz edytować tylko przez 10 minut.",
+    "react": "Zareaguj",
+    "add_reaction": "Dodaj reakcję",
+    "react_with": "Zareaguj: {emoji}",
+    "react_with_count": "Zareaguj: {emoji} ({count})",
+    "reacted_by": "Reakcja {emoji}: {names}",
+    "reacted_by_count": "Reakcja {emoji} – liczba graczy: {count} | Reakcja {emoji} – liczba graczy: {count}",
+    "reacted_you": "Ty",
+    "reacted_others": "jeszcze {count} | jeszcze {count}",
+    "react_failed": "Nie udało się zareagować",
+    "react_timeout": "Serwer nie odpowiedział. Twoja reakcja może mimo to zostać zapisana.",
+    "react_rate_limited": "Reagujesz zbyt szybko.",
+    "react_gagged": "Masz zablokowany czat i nie możesz dodawać reakcji.",
     "direct": {
       "message": "Wiadomość",
       "empty": "Brak wiadomości. Przywitaj się."

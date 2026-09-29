@@ -3,7 +3,7 @@ import { CHAT_MESSAGE_MAX_LENGTH } from "~/constants/chat";
 
 // Echoed by the api on `chat:ack` and `chat:error`. An api that predates it
 // sends none, and only ever answered sends.
-export type ChatAction = "send" | "delete" | "edit";
+export type ChatAction = "send" | "delete" | "edit" | "react";
 
 export interface ChatError {
   code: string;
@@ -33,6 +33,8 @@ export function chatErrorTitle(error: ChatError, t: Translate): string {
       return t("chat.delete_failed");
     case "edit":
       return t("chat.edit_failed");
+    case "react":
+      return t("chat.react_failed");
     case "send":
     default:
       return t("chat.send_failed");
@@ -70,6 +72,21 @@ export function chatErrorDescription(
       case "gagged":
         return t("chat.gagged");
       case "not_allowed":
+      default:
+        return undefined;
+    }
+  }
+
+  if (chatErrorAction(error) === "react") {
+    switch (error?.code) {
+      case "timeout":
+        return t("chat.react_timeout");
+      case "rate_limited":
+        return t("chat.react_rate_limited");
+      case "gagged":
+        return t("chat.react_gagged");
+      case "not_found":
+        return t("chat.message_already_gone");
       default:
         return undefined;
     }

@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { watch } from "vue";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import ChatMessage from "~/components/chat/ChatMessage.vue";
@@ -328,5 +329,243 @@ describe("ChatMessageActions for the author", () => {
     });
     expect(dialog()).toBeNull();
     expect(wrapper.emitted("expired")).toHaveLength(1);
+  });
+});
+
+describe("ChatMessageActions reactions", () => {
+  const ME = "76561198000000001";
+  const everything = {
+    canDelete: true,
+    canEdit: true,
+    canReact: true,
+    canAddReaction: true,
+  };
+
+  const hubHeld = () => useRightSidebar().hoverCloseSuspended.value;
+
+  const menuItems = () =>
+    Array.from(
+      document.body.querySelectorAll<HTMLElement>('[role="menuitem"]'),
+    ).map((item) => item.textContent?.trim());
+
+  const menuItem = (label: string) =>
+    Array.from(
+      document.body.querySelectorAll<HTMLElement>('[role="menuitem"]'),
+    ).find((item) => item.textContent?.trim() === label);
+
+  const picker = () =>
+    document.body.querySelector<HTMLElement>('[role="dialog"]');
+
+  const choices = () =>
+    Array.from(
+      picker()?.querySelectorAll<HTMLButtonElement>("button[data-reaction]") ??
+        [],
+    );
+
+  const choice = (reaction: string) =>
+    choices().find((button) => button.dataset.reaction === reaction)!;
+
+  beforeEach(() => {
+    while (useRightSidebar().hoverCloseSuspended.value) {
+      useRightSidebar().resumeHoverClose();
+    }
+  });
+
+  async function openPicker(
+    permissions = everything,
+    reactions: Record<string, string[]> = {},
+  ) {
+    const wrapper = await mountSuspended(ChatMessageActions, {
+      props: {
+        message: { ...MESSAGE, reactions },
+        room: { type: "match", id: "match-1" },
+        permissions,
+        viewerSteamId: ME,
+      },
+      attachTo: document.body,
+    });
+    unmount = () => wrapper.unmount();
+
+    const trigger = wrapper.get(TRIGGER);
+    (trigger.element as HTMLElement).focus();
+    await trigger.trigger("keydown", { key: "Enter" });
+    await flushPromises();
+
+    menuItem("Add Reaction")!.click();
+    await flushPromises();
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    await flushPromises();
+
+    return wrapper;
+  }
+
+  it("puts Add Reaction above Edit, and Delete after a separator", async () => {
+    const wrapper = await mountSuspended(ChatMessageActions, {
+      props: {
+        message: MESSAGE,
+        room: { type: "match", id: "match-1" },
+        permissions: everything,
+        viewerSteamId: ME,
+      },
+      attachTo: document.body,
+    });
+    unmount = () => wrapper.unmount();
+
+    await wrapper.get(TRIGGER).trigger("keydown", { key: "Enter" });
+    await flushPromises();
+
+    expect(menuItems()).toEqual([
+      "Add Reaction",
+      "Edit Message",
+      "Delete Message",
+    ]);
+    expect(
+      document.body.querySelectorAll('[role="menu"] [role="separator"]'),
+    ).toHaveLength(1);
+  });
+
+  it("opens the picker from the menu, with focus in it, holding the hub", async () => {
+    await openPicker();
+
+    expect(document.body.querySelector('[role="menu"]')).toBeNull();
+    expect(picker()?.hasAttribute("data-right-hub-interactive")).toBe(true);
+    expect(choices().map((button) => button.textContent?.trim())).toEqual([
+      "👍",
+      "❤️",
+      "😂",
+      "🔥",
+      "😮",
+      "😢",
+    ]);
+    expect(choice("thumbsup").getAttribute("aria-label")).toBe(
+      "React with 👍",
+    );
+    expect(picker()?.contains(document.activeElement)).toBe(true);
+    expect(hubHeld()).toBe(true);
+  });
+
+  it("names the picker for screen readers", async () => {
+    await openPicker();
+
+    expect(picker()?.getAttribute("aria-label")).toBe("React");
+  });
+
+  it("never lets go of the hub between the menu and the picker", async () => {
+    const held: boolean[] = [];
+    const stop = watch(
+      () => useRightSidebar().hoverCloseSuspended.value,
+      (value) => held.push(value),
+      { flush: "sync" },
+    );
+
+    try {
+      await openPicker();
+    } finally {
+      stop();
+    }
+
+    expect(picker()).not.toBeNull();
+    expect(held).toEqual([true]);
+  });
+
+  it("reacts with the pick, closes, and hands focus back", async () => {
+    const wrapper = await openPicker();
+
+    choice("fire").click();
+    await flushPromises();
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    await flushPromises();
+
+    expect(wrapper.emitted("react")).toEqual([["fire"]]);
+    expect(picker()).toBeNull();
+    expect(hubHeld()).toBe(false);
+    expect(document.activeElement).toBe(wrapper.get(TRIGGER).element);
+  });
+
+  it("marks what the viewer already holds, to take it back", async () => {
+    await openPicker(everything, { heart: [ME], fire: ["76561198000000002"] });
+
+    expect(choice("heart").getAttribute("aria-pressed")).toBe("true");
+    expect(choice("fire").getAttribute("aria-pressed")).toBe("false");
+  });
+
+  it("lets a gagged viewer take a reaction back but not add one", async () => {
+    const wrapper = await openPicker(
+      { ...everything, canAddReaction: false },
+      { heart: [ME] },
+    );
+
+    expect(
+      choices()
+        .filter((button) => !button.disabled)
+        .map((button) => button.dataset.reaction),
+    ).toEqual(["heart"]);
+    expect(picker()?.textContent).toContain(
+      "You're gagged and can't add reactions.",
+    );
+
+    choice("fire").click();
+    choice("heart").click();
+    await flushPromises();
+
+    expect(wrapper.emitted("react")).toEqual([["heart"]]);
+  });
+
+  it("reacts once for a double click", async () => {
+    const wrapper = await openPicker();
+
+    const fire = choice("fire");
+    fire.click();
+    fire.click();
+    await flushPromises();
+
+    expect(wrapper.emitted("react")).toEqual([["fire"]]);
+  });
+
+  it("leaves focus where a click outside put it", async () => {
+    const wrapper = await openPicker();
+
+    const outside = document.createElement("button");
+    document.body.appendChild(outside);
+
+    try {
+      outside.dispatchEvent(
+        new PointerEvent("pointerdown", { bubbles: true, button: 0 }),
+      );
+      outside.focus();
+      await flushPromises();
+      await new Promise((resolve) => setTimeout(resolve, 20));
+      await flushPromises();
+
+      expect(picker()).toBeNull();
+      expect(hubHeld()).toBe(false);
+      expect(document.activeElement).not.toBe(wrapper.get(TRIGGER).element);
+    } finally {
+      outside.remove();
+    }
+  });
+
+  it("closes on Escape and lets go of the hub", async () => {
+    const wrapper = await openPicker();
+
+    document.activeElement?.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+    );
+    await flushPromises();
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    await flushPromises();
+
+    expect(picker()).toBeNull();
+    expect(wrapper.emitted("react")).toBeUndefined();
+    expect(hubHeld()).toBe(false);
+  });
+
+  it("lets go of the hub when the message goes away mid-pick", async () => {
+    await openPicker();
+
+    unmount?.();
+    unmount = undefined;
+
+    expect(hubHeld()).toBe(false);
   });
 });

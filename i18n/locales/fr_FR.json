@@ -8496,6 +8496,18 @@
     "edit_failed": "Impossible de modifier le message",
     "edit_timeout": "Le serveur n'a pas répondu. Votre modification peut tout de même être enregistrée.",
     "edit_window_closed": "Vous ne pouvez modifier un message que pendant 10 minutes.",
+    "react": "Réagir",
+    "add_reaction": "Ajouter une réaction",
+    "react_with": "Réagir avec {emoji}",
+    "react_with_count": "Réagir avec {emoji} ({count})",
+    "reacted_by": "Réaction {emoji} de {names}",
+    "reacted_by_count": "Réaction {emoji} de {count} joueur | Réaction {emoji} de {count} joueurs",
+    "reacted_you": "vous",
+    "reacted_others": "{count} autre | {count} autres",
+    "react_failed": "Impossible de réagir",
+    "react_timeout": "Le serveur n'a pas répondu. Votre réaction peut tout de même être prise en compte.",
+    "react_rate_limited": "Vous réagissez trop vite.",
+    "react_gagged": "Vous êtes bâillonné et ne pouvez pas ajouter de réactions.",
     "direct": {
       "message": "Message",
       "empty": "Aucun message pour l'instant. Dites bonjour."

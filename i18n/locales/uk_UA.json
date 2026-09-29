@@ -8496,6 +8496,18 @@
     "edit_failed": "Не вдалося змінити повідомлення",
     "edit_timeout": "Сервер не відповів. Зміну ще може бути збережено.",
     "edit_window_closed": "Редагувати повідомлення можна лише протягом 10 хвилин.",
+    "react": "Реакція",
+    "add_reaction": "Додати реакцію",
+    "react_with": "Реакція {emoji}",
+    "react_with_count": "Реакція {emoji} ({count})",
+    "reacted_by": "Реакція {emoji}: {names}",
+    "reacted_by_count": "Реакція {emoji}: гравців — {count} | Реакція {emoji}: гравців — {count}",
+    "reacted_you": "ви",
+    "reacted_others": "ще {count} | ще {count}",
+    "react_failed": "Не вдалося поставити реакцію",
+    "react_timeout": "Сервер не відповів. Реакцію ще може бути збережено.",
+    "react_rate_limited": "Ви ставите реакції надто швидко.",
+    "react_gagged": "Вам вимкнули чат, тож ви не можете додавати реакції.",
     "direct": {
       "message": "Повідомлення",
       "empty": "Повідомлень поки немає. Привітайтеся."

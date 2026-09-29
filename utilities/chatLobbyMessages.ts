@@ -1,4 +1,4 @@
-import type { LobbyMessage } from "~/web-sockets/Socket";
+import type { ChatReactions, LobbyMessage } from "~/web-sockets/Socket";
 
 // The live `chat` event and the history snapshot sent on every (re)join can
 // carry the same message, so a message needs an identity the client can compare
@@ -39,21 +39,37 @@ export function isChatMessageDeleted(
 //
 // The same goes for an edit: a message is never un-edited, so a snapshot copy
 // older than the edit this client already applied keeps the edit.
+//
+// Reactions carry no version to compare. `reacted` names the messages whose
+// reactions changed live after this snapshot was asked for, and for those the
+// live state wins: the snapshot may have been read before it. Were the snapshot
+// the newer one after all, the event for the toggle it saw is still on its way
+// and replaces the state again.
 export function mergeChatSnapshot(
   current: LobbyMessage[],
   snapshot: LobbyMessage[] | null | undefined,
   deleted: ReadonlySet<string>,
+  reacted: ReadonlySet<string> = new Set(),
 ) {
   const edited = new Map<string, LobbyMessage>();
+  const live = new Map<string, LobbyMessage>();
   for (const message of current) {
     if (message?.id && message.edited_at) {
       edited.set(message.id, message);
     }
+    if (message?.id && reacted.has(message.id)) {
+      live.set(message.id, message);
+    }
   }
 
-  const history = (snapshot || []).map((message) =>
-    keepNewerEdit(message, message?.id ? edited.get(message.id) : undefined),
-  );
+  const history = (snapshot || []).map((message) => {
+    const id = message?.id;
+
+    return keepLiveReactions(
+      keepNewerEdit(message, id ? edited.get(id) : undefined),
+      id ? live.get(id) : undefined,
+    );
+  });
   const snapshotKeys = new Set(history.map(chatMessageKey));
 
   const newest = history.reduce(
@@ -112,6 +128,17 @@ function keepNewerEdit(
   }
 
   return kept;
+}
+
+function keepLiveReactions(
+  snapshot: LobbyMessage,
+  held: LobbyMessage | undefined,
+) {
+  if (!held) {
+    return snapshot;
+  }
+
+  return { ...snapshot, reactions: held.reactions };
 }
 
 export function insertChatMessage(
@@ -222,6 +249,45 @@ export function applyChatMessageEdit(
 
   const messages = current.slice();
   messages[index] = edited;
+
+  return messages;
+}
+
+export interface ChatMessageReactionsUpdate {
+  id?: string;
+  reactions?: ChatReactions;
+}
+
+// Each update is the message's whole reaction state, so it replaces what is
+// held. Like an edit, it never brings back a message this client doesn't hold.
+export function applyChatMessageReactions(
+  current: LobbyMessage[],
+  update: ChatMessageReactionsUpdate | null | undefined,
+  deleted: ReadonlySet<string>,
+): LobbyMessage[] | null {
+  const id = update?.id;
+  const reactions = update?.reactions;
+
+  if (typeof id !== "string" || !id || deleted.has(id)) {
+    return null;
+  }
+
+  if (
+    !reactions ||
+    typeof reactions !== "object" ||
+    Array.isArray(reactions)
+  ) {
+    return null;
+  }
+
+  const index = current.findIndex((message) => message?.id === id);
+
+  if (index === -1) {
+    return null;
+  }
+
+  const messages = current.slice();
+  messages[index] = { ...messages[index], reactions };
 
   return messages;
 }

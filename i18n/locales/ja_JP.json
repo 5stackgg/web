@@ -8496,6 +8496,18 @@
     "edit_failed": "メッセージを編集できませんでした",
     "edit_timeout": "サーバーから応答がありませんでした。編集は後で保存される可能性があります。",
     "edit_window_closed": "メッセージを編集できるのは送信後10分間だけです。",
+    "react": "リアクション",
+    "add_reaction": "リアクションを追加",
+    "react_with": "{emoji} でリアクション",
+    "react_with_count": "{emoji} でリアクション ({count})",
+    "reacted_by": "{names} が {emoji} でリアクションしました",
+    "reacted_by_count": "{count} 人が {emoji} でリアクションしました | {count} 人が {emoji} でリアクションしました",
+    "reacted_you": "あなた",
+    "reacted_others": "他 {count} 人 | 他 {count} 人",
+    "react_failed": "リアクションできませんでした",
+    "react_timeout": "サーバーから応答がありませんでした。リアクションは後で反映される可能性があります。",
+    "react_rate_limited": "リアクションの操作が速すぎます。",
+    "react_gagged": "発言禁止中のため、リアクションを追加できません。",
     "direct": {
       "message": "メッセージ",
       "empty": "まだメッセージはありません。あいさつしてみましょう。"

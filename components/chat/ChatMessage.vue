@@ -4,6 +4,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import ChatMessageActions from "~/components/chat/ChatMessageActions.vue";
 import ChatMessageEditor from "~/components/chat/ChatMessageEditor.vue";
+import ChatMessageReactions from "~/components/chat/ChatMessageReactions.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 </script>
 
@@ -105,6 +106,13 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
           {{ $t("chat.edited_at", { time: editedAtLabel }) }}
         </FiveStackToolTip>
       </p>
+      <ChatMessageReactions
+        :message="message"
+        :room="room"
+        :permissions="permissions"
+        :viewer-steam-id="viewerSteamId"
+        @toggle="toggleReaction"
+      />
     </div>
 
     <!-- Centred on the first line rather than hung off its top: the trigger is
@@ -118,17 +126,21 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
       :room="room"
       :permissions="permissions"
       :own="isOwnMessage"
+      :viewer-steam-id="viewerSteamId"
       @open="recheckPermissions"
       @expired="permissionsCheckedAt = Date.now()"
       @edit="$emit('edit')"
+      @react="toggleReaction"
     />
   </div>
 </template>
 
 <script lang="ts">
 import type { PropType } from "vue";
-import type { ChatType } from "~/web-sockets/Socket";
+import socket, { type ChatType } from "~/web-sockets/Socket";
+import type { ChatReaction } from "~/constants/chat";
 import { toast } from "@/components/ui/toast";
+import { toastChatError, type ChatError } from "~/utilities/chatErrors";
 import {
   chatMessagePermissions,
   hasChatMessageActions,
@@ -159,6 +171,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    canPost: {
+      type: Boolean,
+      default: false,
+    },
     editing: {
       type: Boolean,
       default: false,
@@ -180,6 +196,15 @@ export default {
       if (!hasChatMessageActions(this.permissions)) {
         toast({ title: this.$t("chat.own_message_window_closed") });
       }
+    },
+    toggleReaction(reaction: ChatReaction) {
+      if (!this.room || !this.message?.id) {
+        return;
+      }
+
+      socket
+        .react(this.room.type, this.room.id, this.message.id, reaction)
+        .catch((error: ChatError) => toastChatError(error));
     },
     // Focus goes back to the trigger the edit came from, if the window still
     // leaves it anything to offer, rather than falling to the page.
@@ -209,6 +234,7 @@ export default {
         viewerSteamId: this.viewerSteamId,
         viewerGagged: !!useAuthStore().me?.is_gagged,
         canModerate: this.canModerate,
+        canPost: this.canPost,
         roomType: this.room?.type ?? "",
         now: this.permissionsCheckedAt,
       });
@@ -227,6 +253,17 @@ export default {
     },
     hasActions() {
       return !!this.room && hasChatMessageActions(this.permissions);
+    },
+    // A gagged player's trigger comes and goes with the reactions they hold,
+    // so the room for it is kept wherever reacting is possible at all.
+    reservesActions() {
+      return (
+        this.hasActions ||
+        (!!this.room &&
+          this.canPost &&
+          !!this.message?.id &&
+          !!this.viewerSteamId)
+      );
     },
     // Stamped by ChatLobby when it merges the match room with a lineup room.
     // Absent everywhere else, which is what keeps every other chat surface
@@ -281,7 +318,7 @@ export default {
 
       // Room for the actions trigger kept whether or not it is showing, so a
       // hover never rewraps the line under the pointer.
-      if (this.hasActions) {
+      if (this.reservesActions) {
         classes.push("pr-7");
       }
 
@@ -293,7 +330,7 @@ export default {
       }
 
       classes.push("bg-[hsl(var(--tac-amber)/0.05)]");
-      if (!this.hasActions) {
+      if (!this.reservesActions) {
         classes.push("pr-2");
       }
 

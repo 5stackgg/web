@@ -110,6 +110,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
             :last-read-count="lastReadMessageCount"
             :message-room="messageRoom"
             :can-moderate="canModerate"
+            :can-post="canSend"
             @bottom-state-change="handleBottomStateChange"
           />
           <Empty v-else class="flex-1 text-muted-foreground">
@@ -282,6 +283,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
           :last-read-count="tracksReadPosition ? lastReadMessageCount : 0"
           :message-room="messageRoom"
           :can-moderate="canModerate"
+          :can-post="canSend"
           @bottom-state-change="handleBottomStateChange"
         />
         <Empty v-else key="empty" class="min-h-0 flex-1 text-muted-foreground">

@@ -54,6 +54,7 @@
             :next-message="messages[index + 1]"
             :room="messageRoom ? messageRoom(message) : null"
             :can-moderate="canModerate"
+            :can-post="canPost"
             :editing="!!message.id && message.id === editingId"
             @edit="editingId = message.id"
             @edit-end="stopEditing(message.id)"
@@ -108,6 +109,10 @@ export default {
       required: false,
     },
     canModerate: {
+      type: Boolean,
+      default: false,
+    },
+    canPost: {
       type: Boolean,
       default: false,
     },

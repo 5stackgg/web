@@ -129,3 +129,34 @@ describe("chat edit errors", () => {
     },
   );
 });
+
+describe("chat react errors", () => {
+  it("titles every react error as a failed reaction", () => {
+    for (const code of ["rate_limited", "gagged", "not_found", "invalid"]) {
+      const error = { code, action: "react" as const };
+
+      expect(chatErrorTitle(error, t)).toBe("chat.react_failed");
+      expect(chatErrorFailed(error)).toBe(true);
+    }
+  });
+
+  it.each([
+    ["rate_limited", "chat.react_rate_limited"],
+    ["gagged", "chat.react_gagged"],
+    ["not_found", "chat.message_already_gone"],
+    ["timeout", "chat.react_timeout"],
+  ])("describes %s", (code, description) => {
+    expect(chatErrorDescription({ code, action: "react" }, t)).toBe(
+      description,
+    );
+  });
+
+  it.each(["not_allowed", "invalid", "offline"])(
+    "adds nothing to a failed reaction for %s",
+    (code) => {
+      expect(
+        chatErrorDescription({ code, action: "react" }, t),
+      ).toBeUndefined();
+    },
+  );
+});

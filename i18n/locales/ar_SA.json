@@ -8496,6 +8496,18 @@
     "edit_failed": "تعذّر تعديل الرسالة",
     "edit_timeout": "لم يستجب الخادم. قد يُحفظ تعديلك لاحقًا.",
     "edit_window_closed": "يمكنك تعديل الرسالة خلال 10 دقائق فقط.",
+    "react": "تفاعل",
+    "add_reaction": "إضافة تفاعل",
+    "react_with": "تفاعل بـ {emoji}",
+    "react_with_count": "تفاعل بـ {emoji} ({count})",
+    "reacted_by": "تفاعل {names} بـ {emoji}",
+    "reacted_by_count": "تفاعل {count} لاعب بـ {emoji} | تفاعل {count} لاعبين بـ {emoji}",
+    "reacted_you": "أنت",
+    "reacted_others": "{count} آخر | {count} آخرون",
+    "react_failed": "تعذّر التفاعل",
+    "react_timeout": "لم يستجب الخادم. قد يُسجَّل تفاعلك لاحقًا.",
+    "react_rate_limited": "أنت تتفاعل بسرعة كبيرة.",
+    "react_gagged": "أنت ممنوع من الكتابة ولا يمكنك إضافة تفاعلات.",
     "direct": {
       "message": "رسالة",
       "empty": "لا رسائل بعد. ألقِ التحية."

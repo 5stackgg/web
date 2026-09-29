@@ -8496,6 +8496,18 @@
     "edit_failed": "訊息編輯失敗",
     "edit_timeout": "伺服器沒有回應。你的修改仍可能被儲存。",
     "edit_window_closed": "你只能在傳送後 10 分鐘內編輯訊息。",
+    "react": "表情回應",
+    "add_reaction": "新增表情回應",
+    "react_with": "用 {emoji} 回應",
+    "react_with_count": "用 {emoji} 回應（{count}）",
+    "reacted_by": "{names} 用 {emoji} 回應了",
+    "reacted_by_count": "{count} 名玩家用 {emoji} 回應了 | {count} 名玩家用 {emoji} 回應了",
+    "reacted_you": "你",
+    "reacted_others": "其他 {count} 人 | 其他 {count} 人",
+    "react_failed": "回應失敗",
+    "react_timeout": "伺服器沒有回應。你的表情回應仍可能生效。",
+    "react_rate_limited": "你的回應操作過快。",
+    "react_gagged": "你已被禁言，無法新增表情回應。",
     "direct": {
       "message": "訊息",
       "empty": "還沒有訊息，先打個招呼吧。"

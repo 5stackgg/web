@@ -44,6 +44,13 @@ function sentEdits(send: ReturnType<typeof vi.fn>) {
     .map(({ data }) => data);
 }
 
+function sentReacts(send: ReturnType<typeof vi.fn>) {
+  return send.mock.calls
+    .map(([payload]) => JSON.parse(payload))
+    .filter(({ event }) => event === "lobby:react")
+    .map(({ data }) => data);
+}
+
 async function settled(promise: Promise<unknown>) {
   let state = "pending";
   promise.then(
@@ -642,5 +649,265 @@ describe("Socket lobby edits", () => {
 
     await expect(pending).rejects.toMatchObject({ code: "window_closed" });
     expect(text()).toEqual(["line a", "line b"]);
+  });
+});
+
+describe("Socket react", () => {
+  let send: ReturnType<typeof vi.fn>;
+
+  beforeEach(() => {
+    toast.mockClear();
+    send = connect();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    disconnect();
+  });
+
+  it("asks the api to toggle the reaction with a request id", () => {
+    void socket.react("match", "match-1", "message-1", "fire").catch(() => {});
+
+    const [request] = sentReacts(send);
+    expect(request).toMatchObject({
+      type: "match",
+      id: "match-1",
+      messageId: "message-1",
+      reaction: "fire",
+    });
+    expect(typeof request.requestId).toBe("string");
+  });
+
+  it("resolves only on the react ack for its own request", async () => {
+    const pending = socket.react("match", "match-1", "message-1", "heart");
+    const [{ requestId }] = sentReacts(send);
+
+    socket.emit("chat:ack", { requestId, action: "edit" });
+    expect(await settled(pending)).toBe("pending");
+
+    socket.emit("chat:ack", { requestId: "someone-else", action: "react" });
+    expect(await settled(pending)).toBe("pending");
+
+    socket.emit("chat:ack", {
+      requestId,
+      messageId: "message-1",
+      action: "react",
+    });
+    await expect(pending).resolves.toBeUndefined();
+  });
+
+  it("rejects on its own error without a global toast", async () => {
+    const pending = socket.react("match", "match-1", "message-1", "heart");
+    const [{ requestId }] = sentReacts(send);
+
+    socket.emit("chat:error", {
+      code: "rate_limited",
+      action: "react",
+      requestId,
+    });
+
+    await expect(pending).rejects.toMatchObject({
+      code: "rate_limited",
+      action: "react",
+    });
+    expect(toast).not.toHaveBeenCalled();
+  });
+
+  it("gives up when the api never answers", async () => {
+    vi.useFakeTimers();
+    const pending = socket.react("match", "match-1", "message-1", "heart");
+
+    vi.advanceTimersByTime(7999);
+    expect(await settled(pending)).toBe("pending");
+
+    vi.advanceTimersByTime(1);
+    await expect(pending).rejects.toMatchObject({
+      code: "timeout",
+      action: "react",
+    });
+  });
+
+  it("refuses straight away while offline and sends nothing", async () => {
+    disconnect();
+
+    await expect(
+      socket.react("match", "match-1", "message-1", "heart"),
+    ).rejects.toMatchObject({ code: "offline", action: "react" });
+    expect(sentReacts(send)).toEqual([]);
+    expect((socket as any).offlineQueue).not.toContainEqual(
+      expect.objectContaining({ event: "lobby:react" }),
+    );
+  });
+
+  it("sends a toggle once while the same one is on its way", async () => {
+    const first = socket.react("match", "match-1", "message-2", "heart");
+    const again = socket.react("match", "match-1", "message-2", "heart");
+    void socket.react("match", "match-1", "message-2", "fire").catch(() => {});
+
+    expect(
+      sentReacts(send).map(({ messageId, reaction }) => [messageId, reaction]),
+    ).toEqual([
+      ["message-2", "heart"],
+      ["message-2", "fire"],
+    ]);
+    await expect(again).resolves.toBeUndefined();
+
+    const [{ requestId }] = sentReacts(send);
+    socket.emit("chat:ack", {
+      requestId,
+      messageId: "message-2",
+      action: "react",
+    });
+    await first;
+
+    void socket.react("match", "match-1", "message-2", "heart").catch(() => {});
+    expect(sentReacts(send)).toHaveLength(3);
+  });
+
+  it("sends a toggle again once the last one failed", async () => {
+    const first = socket.react("match", "match-1", "message-2", "sad");
+    const [{ requestId }] = sentReacts(send);
+
+    socket.emit("chat:error", {
+      code: "rate_limited",
+      action: "react",
+      requestId,
+    });
+    await expect(first).rejects.toMatchObject({ code: "rate_limited" });
+
+    void socket.react("match", "match-1", "message-2", "sad").catch(() => {});
+    expect(sentReacts(send)).toHaveLength(2);
+  });
+
+  it("titles a react error nobody is waiting on as a failed reaction", () => {
+    socket.emit("chat:error", {
+      code: "rate_limited",
+      action: "react",
+      requestId: "nobody-asked",
+    });
+
+    expect(toast).toHaveBeenCalledWith({
+      title: "Failed to react",
+      description: "You're reacting too fast.",
+      variant: "destructive",
+    });
+  });
+});
+
+describe("Socket lobby reactions", () => {
+  let lobby: ReturnType<typeof socket.joinLobby>;
+  const DANA = "76561198000000003";
+  const ELI = "76561198000000004";
+
+  beforeEach(() => {
+    vi.spyOn(console, "info").mockImplementation(() => {});
+    lobby = socket.joinLobby("socket-spec", "direct", "1:2");
+    socket.emit("lobby:direct:1:2:messages", {
+      messages: [line("a", 0), { ...line("b", 1), reactions: {} }],
+    });
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    lobby.leave();
+    disconnect();
+    vi.restoreAllMocks();
+  });
+
+  const reactions = () => lobby.messages.map((message) => message.reactions);
+
+  it("replaces the message's reactions with each broadcast", () => {
+    socket.emit("lobby:direct:1:2:reaction", {
+      id: "b",
+      reactions: { heart: [DANA], fire: [ELI] },
+    });
+    socket.emit("lobby:direct:1:2:reaction", {
+      id: "b",
+      reactions: { fire: [ELI, DANA] },
+    });
+
+    expect(reactions()).toEqual([undefined, { fire: [ELI, DANA] }]);
+  });
+
+  it("never creates a message from reactions for an id it doesn't hold", () => {
+    socket.emit("lobby:direct:1:2:reaction", {
+      id: "c",
+      reactions: { heart: [DANA] },
+    });
+
+    expect(ids(lobby.messages)).toEqual(["a", "b"]);
+  });
+
+  it("ignores reactions that arrive after the delete they raced", () => {
+    socket.emit("lobby:direct:1:2:deleted", { id: "b" });
+    socket.emit("lobby:direct:1:2:reaction", {
+      id: "b",
+      reactions: { heart: [DANA] },
+    });
+
+    expect(ids(lobby.messages)).toEqual(["a"]);
+  });
+
+  it("keeps live reactions through a snapshot built before them", () => {
+    socket.emit("lobby:direct:1:2:reaction", {
+      id: "b",
+      reactions: { heart: [DANA] },
+    });
+    socket.emit("lobby:direct:1:2:messages", {
+      messages: [line("a", 0), { ...line("b", 1), reactions: {} }],
+    });
+
+    expect(reactions()).toEqual([undefined, { heart: [DANA] }]);
+  });
+
+  it("takes the snapshot that answers a later join", () => {
+    socket.emit("lobby:direct:1:2:reaction", {
+      id: "b",
+      reactions: { heart: [DANA] },
+    });
+
+    const send = connect();
+    socket.join("lobby", { type: "direct", id: "1:2" });
+    expect(
+      send.mock.calls.some(
+        ([payload]) => JSON.parse(payload).event === "lobby:join",
+      ),
+    ).toBe(true);
+
+    socket.emit("lobby:direct:1:2:messages", {
+      messages: [line("a", 0), { ...line("b", 1), reactions: { sad: [ELI] } }],
+    });
+
+    expect(reactions()).toEqual([undefined, { sad: [ELI] }]);
+  });
+
+  it("drops the line when the api says it is already gone", async () => {
+    const send = connect();
+    const pending = socket.react("direct", "1:2", "b", "heart");
+    const [{ requestId }] = sentReacts(send);
+
+    socket.emit("chat:error", {
+      code: "not_found",
+      action: "react",
+      requestId,
+    });
+
+    await expect(pending).rejects.toMatchObject({ code: "not_found" });
+    expect(ids(lobby.messages)).toEqual(["a"]);
+  });
+
+  it("leaves the line alone when the reaction is refused", async () => {
+    const send = connect();
+    const pending = socket.react("direct", "1:2", "b", "heart");
+    const [{ requestId }] = sentReacts(send);
+
+    socket.emit("chat:error", {
+      code: "gagged",
+      action: "react",
+      requestId,
+    });
+
+    await expect(pending).rejects.toMatchObject({ code: "gagged" });
+    expect(ids(lobby.messages)).toEqual(["a", "b"]);
   });
 });

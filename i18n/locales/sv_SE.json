@@ -8496,6 +8496,18 @@
     "edit_failed": "Meddelandet kunde inte redigeras",
     "edit_timeout": "Servern svarade inte. Din ändring kan fortfarande sparas.",
     "edit_window_closed": "Du kan bara redigera ett meddelande i 10 minuter.",
+    "react": "Reagera",
+    "add_reaction": "Lägg till reaktion",
+    "react_with": "Reagera med {emoji}",
+    "react_with_count": "Reagera med {emoji} ({count})",
+    "reacted_by": "{names} reagerade med {emoji}",
+    "reacted_by_count": "{count} spelare reagerade med {emoji} | {count} spelare reagerade med {emoji}",
+    "reacted_you": "Du",
+    "reacted_others": "{count} annan | {count} andra",
+    "react_failed": "Kunde inte reagera",
+    "react_timeout": "Servern svarade inte. Din reaktion kan fortfarande registreras.",
+    "react_rate_limited": "Du reagerar för snabbt.",
+    "react_gagged": "Din chatt är avstängd och du kan inte lägga till reaktioner.",
     "direct": {
       "message": "Meddelande",
       "empty": "Inga meddelanden än. Säg hej."

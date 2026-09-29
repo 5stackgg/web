@@ -7,6 +7,7 @@ import {
   hangupPlayerTalk,
   negotiateWebRtc,
 } from "~/composables/useCameraApi";
+import { useTabFlash } from "~/composables/useTabFlash";
 import { useIceServers } from "~/composables/useIceServers";
 import { closeNotifications } from "~/composables/usePushNotifications";
 import { notificationThreadKey } from "~/utilities/chatThread";
@@ -103,6 +104,7 @@ export function useCameraTalkback(matchId: () => string) {
 
   function end() {
     talking.value = false;
+    useTabFlash().clear("admin_call");
     muted.value = false;
     talkPc?.close();
     talkPc = null;
@@ -121,6 +123,10 @@ export function useCameraTalkback(matchId: () => string) {
 
     if (ready && !talking.value) {
       await join();
+
+      if (talking.value && !disposed) {
+        useTabFlash().signal("admin_call");
+      }
     } else if (!ready && talking.value) {
       end();
     }

@@ -1837,6 +1837,26 @@
           "to": "À",
           "reset": "Réinitialiser",
           "incomplete": "Définissez une heure de début et une heure de fin pour enregistrer les heures silencieuses."
+        },
+        "tab_flash": {
+          "title": "Onglet du navigateur",
+          "description": "Fait clignoter le titre et l'icône de cet onglet quand quelque chose vous attend alors qu'il est en arrière-plan. Enregistré sur cet appareil.",
+          "match_found": {
+            "title": "Match trouvé",
+            "description": "Un match est prêt et attend que vous l'acceptiez."
+          },
+          "admin_call": {
+            "title": "Appels de l'organisateur",
+            "description": "Un organisateur du match commence à vous parler depuis votre page caméra."
+          },
+          "chat": {
+            "title": "Messages de chat",
+            "description": "Un nouveau message dans une conversation, un lobby ou un salon de tournoi. Le chat en jeu des matchs est exclu."
+          },
+          "bell": {
+            "title": "Notifications",
+            "description": "Quelque chose de nouveau arrive dans votre cloche d'alertes."
+          }
         }
       },
       "notifications": {
@@ -5520,6 +5540,12 @@
         "step2": "Dans le menu de ton navigateur (⋮), choisis « Installer l'application » ou « Ajouter à l'écran d'accueil »"
       }
     }
+  },
+  "tab_flash": {
+    "match_found": "Match trouvé",
+    "admin_call": "Un organisateur vous appelle",
+    "chat": "Nouveau message | Nouveaux messages",
+    "bell": "Nouvelle notification | Nouvelles notifications"
   },
   "roster_picker": {
     "add_starter": "Ajouter un titulaire",

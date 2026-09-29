@@ -1837,6 +1837,26 @@
           "to": "To",
           "reset": "Reset",
           "incomplete": "Set both a start and an end time to save quiet hours."
+        },
+        "tab_flash": {
+          "title": "Browser tab",
+          "description": "Flash this tab's title and icon when something needs you while it's in the background. Saved on this device.",
+          "match_found": {
+            "title": "Match found",
+            "description": "A match is ready and waiting for you to accept."
+          },
+          "admin_call": {
+            "title": "Organizer calls",
+            "description": "A match organizer starts talking to you on your camera page."
+          },
+          "chat": {
+            "title": "Chat messages",
+            "description": "A new message in a conversation, lobby or tournament room. In-game match chat is left out."
+          },
+          "bell": {
+            "title": "Notifications",
+            "description": "Something new lands in your alert bell."
+          }
         }
       },
       "notifications": {
@@ -5520,6 +5540,12 @@
         "step2": "In your browser's menu (⋮), select 'Install app' or 'Add to Home screen'"
       }
     }
+  },
+  "tab_flash": {
+    "match_found": "Match found",
+    "admin_call": "An organizer is calling",
+    "chat": "New message | New messages",
+    "bell": "New notification | New notifications"
   },
   "roster_picker": {
     "add_starter": "Add starter",

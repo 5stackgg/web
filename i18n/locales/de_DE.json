@@ -1837,6 +1837,26 @@
           "to": "Bis",
           "reset": "Zurücksetzen",
           "incomplete": "Lege eine Start- und eine Endzeit fest, um Ruhezeiten zu speichern."
+        },
+        "tab_flash": {
+          "title": "Browser-Tab",
+          "description": "Lässt Titel und Symbol dieses Tabs blinken, wenn etwas deine Aufmerksamkeit braucht, während er im Hintergrund ist. Wird auf diesem Gerät gespeichert.",
+          "match_found": {
+            "title": "Match gefunden",
+            "description": "Ein Match ist bereit und wartet darauf, dass du annimmst."
+          },
+          "admin_call": {
+            "title": "Organisator-Anrufe",
+            "description": "Ein Match-Organisator beginnt, über deine Kameraseite mit dir zu sprechen."
+          },
+          "chat": {
+            "title": "Chatnachrichten",
+            "description": "Eine neue Nachricht in einer Unterhaltung, Lobby oder einem Turnierraum. Der Ingame-Chat von Matches ist ausgenommen."
+          },
+          "bell": {
+            "title": "Benachrichtigungen",
+            "description": "Etwas Neues landet in deiner Benachrichtigungsglocke."
+          }
         }
       },
       "notifications": {
@@ -5520,6 +5540,12 @@
         "step2": "Wähle im Menü deines Browsers (⋮) „App installieren“ oder „Zum Startbildschirm hinzufügen“"
       }
     }
+  },
+  "tab_flash": {
+    "match_found": "Match gefunden",
+    "admin_call": "Ein Organisator ruft an",
+    "chat": "Neue Nachricht | Neue Nachrichten",
+    "bell": "Neue Benachrichtigung | Neue Benachrichtigungen"
   },
   "roster_picker": {
     "add_starter": "Starter hinzufügen",

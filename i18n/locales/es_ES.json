@@ -1837,6 +1837,26 @@
           "to": "Hasta",
           "reset": "Restablecer",
           "incomplete": "Define una hora de inicio y otra de fin para guardar las horas de silencio."
+        },
+        "tab_flash": {
+          "title": "Pestaña del navegador",
+          "description": "Hace parpadear el título y el icono de esta pestaña cuando algo te necesita mientras está en segundo plano. Se guarda en este dispositivo.",
+          "match_found": {
+            "title": "Partida encontrada",
+            "description": "Hay una partida lista esperando a que la aceptes."
+          },
+          "admin_call": {
+            "title": "Llamadas del organizador",
+            "description": "Un organizador de la partida empieza a hablarte desde tu página de cámara."
+          },
+          "chat": {
+            "title": "Mensajes de chat",
+            "description": "Un mensaje nuevo en una conversación, un lobby o una sala de torneo. El chat de la partida dentro del juego queda fuera."
+          },
+          "bell": {
+            "title": "Notificaciones",
+            "description": "Llega algo nuevo a tu campana de avisos."
+          }
         }
       },
       "notifications": {
@@ -5520,6 +5540,12 @@
         "step2": "En el menú de tu navegador (⋮), selecciona «Instalar aplicación» o «Añadir a pantalla de inicio»"
       }
     }
+  },
+  "tab_flash": {
+    "match_found": "Partida encontrada",
+    "admin_call": "Un organizador te está llamando",
+    "chat": "Mensaje nuevo | Mensajes nuevos",
+    "bell": "Notificación nueva | Notificaciones nuevas"
   },
   "roster_picker": {
     "add_starter": "Añadir titular",

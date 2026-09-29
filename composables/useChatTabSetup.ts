@@ -59,6 +59,9 @@ export function useChatTabSetup() {
       if (String(message?.from?.steam_id) === String(authStore.me?.steam_id)) {
         return;
       }
+      // Ahead of the on-screen check, which counts an open room as read even
+      // while the browser tab is hidden.
+      useTabFlash().signalChat(tab.type, message);
 
       if (!isChatTabOnScreen(tab.id)) {
         incrementUnread(tab.id, message?.id);

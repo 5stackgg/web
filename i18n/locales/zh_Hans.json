@@ -1837,6 +1837,26 @@
           "to": "结束",
           "reset": "重置",
           "incomplete": "请同时设置开始和结束时间才能保存免打扰时段。"
+        },
+        "tab_flash": {
+          "title": "浏览器标签页",
+          "description": "当此标签页在后台且有事需要你处理时，闪烁标签页的标题和图标。保存在此设备上。",
+          "match_found": {
+            "title": "已找到比赛",
+            "description": "比赛已就绪，正在等待你接受。"
+          },
+          "admin_call": {
+            "title": "主办方通话",
+            "description": "比赛主办方开始通过你的摄像头页面与你通话时。"
+          },
+          "chat": {
+            "title": "聊天消息",
+            "description": "会话、大厅或锦标赛房间中的新消息。不包括比赛中的游戏内聊天。"
+          },
+          "bell": {
+            "title": "通知",
+            "description": "通知铃铛中出现新内容时。"
+          }
         }
       },
       "notifications": {
@@ -5520,6 +5540,12 @@
         "step2": "在浏览器菜单（⋮）中选择“安装应用”或“添加到主屏幕”"
       }
     }
+  },
+  "tab_flash": {
+    "match_found": "已找到比赛",
+    "admin_call": "主办方正在呼叫你",
+    "chat": "新消息 | 新消息",
+    "bell": "新通知 | 新通知"
   },
   "roster_picker": {
     "add_starter": "添加首发",

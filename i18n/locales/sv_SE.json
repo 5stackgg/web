@@ -1837,6 +1837,26 @@
           "to": "Till",
           "reset": "Återställ",
           "incomplete": "Ange både en start- och en sluttid för att spara tysta timmar."
+        },
+        "tab_flash": {
+          "title": "Webbläsarflik",
+          "description": "Låter flikens titel och ikon blinka när något behöver dig medan den ligger i bakgrunden. Sparas på den här enheten.",
+          "match_found": {
+            "title": "Match hittad",
+            "description": "En match är redo och väntar på att du accepterar."
+          },
+          "admin_call": {
+            "title": "Arrangörssamtal",
+            "description": "En matcharrangör börjar prata med dig via din kamerasida."
+          },
+          "chat": {
+            "title": "Chattmeddelanden",
+            "description": "Ett nytt meddelande i en konversation, en lobby eller ett turneringsrum. Chatten från själva matchen i spelet räknas inte."
+          },
+          "bell": {
+            "title": "Aviseringar",
+            "description": "Något nytt landar i din aviseringsklocka."
+          }
         }
       },
       "notifications": {
@@ -5520,6 +5540,12 @@
         "step2": "I webbläsarens meny (⋮), välj 'Installera app' eller 'Lägg till på hemskärmen'"
       }
     }
+  },
+  "tab_flash": {
+    "match_found": "Match hittad",
+    "admin_call": "En arrangör ringer",
+    "chat": "Nytt meddelande | Nya meddelanden",
+    "bell": "Ny avisering | Nya aviseringar"
   },
   "roster_picker": {
     "add_starter": "Lägg till ordinarie",

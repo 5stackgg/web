@@ -3,6 +3,7 @@ import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import MobileHubButton from "~/layouts/components/MobileHubButton.vue";
 import { useChatTabs } from "~/composables/useChatTabs";
+import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 
 const hub = vi.hoisted(() => ({
   notifications: 0,
@@ -26,12 +27,25 @@ vi.mock("~/composables/useNotificationBadge", async () => {
   };
 });
 
+const ME = "76561198000000001";
+const DANA = "76561198000000002";
+const EVAN = "76561198000000003";
+
+const pendingFriend = (steamId: string, invitedBy: string) => ({
+  steam_id: steamId,
+  name: steamId,
+  status: "Pending",
+  invited_by_steam_id: invitedBy,
+});
+
 let unmount: (() => void) | undefined;
 
 afterEach(() => {
   unmount?.();
   unmount = undefined;
   useChatTabs().clearAll();
+  useMatchmakingStore().friends = [] as any;
+  useAuthStore().me = undefined;
   hub.notifications = 0;
   hub.chatRooms = [];
   hub.openLastOrDefaultHub = () => {};
@@ -169,5 +183,19 @@ describe("MobileHubButton", () => {
     await wrapper.find("button").trigger("click");
 
     expect(open).toHaveBeenCalledTimes(1);
+  });
+
+  it("counts friend requests waiting on the player, as the hub's social icon does", async () => {
+    useAuthStore().me = { steam_id: ME } as any;
+    useMatchmakingStore().friends = [
+      pendingFriend(DANA, DANA),
+      pendingFriend(EVAN, ME),
+    ] as any;
+    useChatTabs().setUnread("lobby", 1);
+
+    const wrapper = await mountButton();
+
+    expect(badge(wrapper).text()).toBe("2");
+    expect(wrapper.find(".animate-ping").exists()).toBe(false);
   });
 });

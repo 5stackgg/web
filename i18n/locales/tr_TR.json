@@ -5400,10 +5400,6 @@
         "operations": "OPERASYONLAR"
       },
       "community": {
-        "watch": {
-          "title": "İzle",
-          "subtitle": "Maçları, turnuvaları izle"
-        },
         "players": {
           "title": "Oyuncular",
           "subtitle": "Oyunculara göz at ve ara"
@@ -8283,6 +8279,7 @@
       "decline": "Reddet",
       "requested": "İstek gönderildi",
       "cancel_request": "İsteği iptal et",
+      "cancel_request_aria": "İstek gönderildi, İsteği iptal et",
       "incoming_requests": "İstekler",
       "sent_requests": "Gönderilen"
     },

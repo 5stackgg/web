@@ -5400,10 +5400,6 @@
         "operations": "OPERATIONER"
       },
       "community": {
-        "watch": {
-          "title": "Titta",
-          "subtitle": "Titta på matcher, turneringar"
-        },
         "players": {
           "title": "Spelare",
           "subtitle": "Bläddra och sök efter spelare"
@@ -8283,6 +8279,7 @@
       "decline": "Avvisa",
       "requested": "Skickad",
       "cancel_request": "Avbryt förfrågan",
+      "cancel_request_aria": "Skickad, Avbryt förfrågan",
       "incoming_requests": "Förfrågningar",
       "sent_requests": "Skickade"
     },

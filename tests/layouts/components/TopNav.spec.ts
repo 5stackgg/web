@@ -5,6 +5,7 @@ import { mockNuxtImport, mountSuspended } from "@nuxt/test-utils/runtime";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import TopNav from "~/layouts/components/TopNav.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
+import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { emulateDevice, fakePwa, userAgents } from "../../helpers/pwaDevice";
 
 mockNuxtImport("usePendingImports", () => () => ({ pendingImports: ref([]) }));
@@ -260,5 +261,107 @@ describe("TopNav menus on a phone", () => {
       .filter((span) => span.text() === "Browse and search for players");
     expect(subtitle).toHaveLength(1);
     expect(subtitle[0].classes()).toContain("max-md:hidden");
+  });
+});
+
+describe("TopNav Watch live badge", () => {
+  afterEach(() => {
+    useMatchLobbyStore().liveMatchesCount = 0;
+  });
+
+  it("renders red, with none of the amber count classes left to win the cascade", async () => {
+    emulateDevice({ userAgent: userAgents.desktopChrome, width: 1280 });
+    useMatchLobbyStore().liveMatchesCount = 3;
+
+    const wrapper = await mountTopNav();
+    const badge = wrapper
+      .findAll('a[href="/watch"] span')
+      .find((span) => span.text() === "3");
+
+    expect(badge).toBeDefined();
+    const classes = badge!.classes();
+    expect(classes).toEqual(
+      expect.arrayContaining([
+        "border-destructive/50",
+        "bg-destructive/15",
+        "text-destructive",
+      ]),
+    );
+    expect(classes.filter((name) => name.includes("--tac-amber"))).toEqual([]);
+  });
+});
+
+describe("TopNav between 768 and 830px", () => {
+  it("treats exactly 768px as desktop, the width Tailwind's md starts at", async () => {
+    emulateDevice({ userAgent: userAgents.desktopChrome, width: 768 });
+
+    const wrapper = await mountTopNav();
+
+    expect(wrapper.find('a[aria-label="5stack"]').exists()).toBe(true);
+  });
+
+  it("scrolls the desktop list instead of running it under the account controls", async () => {
+    emulateDevice({ userAgent: userAgents.desktopChrome, width: 800 });
+
+    const wrapper = await mountTopNav();
+    const root = wrapper.find("[data-reka-navigation-menu]");
+
+    expect(root.classes()).toContain("md:[&>div:first-child]:min-w-0");
+    expect(root.find("ul").classes()).toEqual(
+      expect.arrayContaining([
+        "[&>li]:shrink-0",
+        "md:min-w-0",
+        "md:justify-start",
+        "md:overflow-x-auto",
+      ]),
+    );
+  });
+
+  it("drops the wordmark and tightens the links only below 830px", async () => {
+    emulateDevice({ userAgent: userAgents.desktopChrome, width: 800 });
+
+    const wrapper = await mountTopNav();
+    const wordmark = wrapper.find('a[aria-label="5stack"] > span');
+    const watch = wrapper.find('a[href="/watch"]');
+
+    expect(wordmark.classes()).toContain("max-[829px]:hidden");
+    expect(watch.classes()).toEqual(
+      expect.arrayContaining([
+        "sm:px-[0.85rem]",
+        "md:max-[829px]:px-[0.55rem]",
+        "md:max-[829px]:tracking-[0.12em]",
+      ]),
+    );
+  });
+});
+
+describe("TopNav FAQ on a phone", () => {
+  it("reaches the FAQ from the Community menu when signed out", async () => {
+    emulateDevice({ userAgent: userAgents.androidChrome, width: 390 });
+    useAuthStore().me = undefined;
+
+    const wrapper = await mountTopNav();
+    const barFaq = wrapper
+      .findAll("[data-reka-navigation-menu] > div > ul > li")
+      .find((item) => item.find('a[href="/faq"]').exists());
+    expect(barFaq?.classes()).toEqual(
+      expect.arrayContaining(["hidden", "md:block"]),
+    );
+
+    const community = wrapper
+      .findAll("button")
+      .find((candidate) => candidate.text().startsWith("Community"));
+    await community!.trigger("click");
+    await flushPromises();
+
+    const content = wrapper.find(
+      '[data-reka-navigation-menu] [id*="-content-"]',
+    );
+    const faq = content.find('a[href="/faq"]');
+    expect(faq.exists()).toBe(true);
+    expect(faq.text()).toContain("Support");
+    expect(faq.element.closest("li")?.classList.contains("md:hidden")).toBe(
+      true,
+    );
   });
 });

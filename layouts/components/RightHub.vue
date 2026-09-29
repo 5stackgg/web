@@ -21,6 +21,7 @@ import { useChatTabs } from "~/composables/useChatTabs";
 import { useNotificationBadge } from "~/composables/useNotificationBadge";
 import { useInvites } from "@/composables/useInvites";
 import { useMediaQuery } from "@vueuse/core";
+import { SIDEBAR_MOBILE_QUERY } from "~/components/ui/sidebar/utils";
 import MiniDisplay from "~/components/matchmaking-lobby/MiniDisplay.vue";
 import AnimatedStat from "~/components/AnimatedStat.vue";
 import { badgePopTransition, formatBadgeCount } from "~/utilities/badgeCount";
@@ -47,7 +48,7 @@ const { totalUnread } = useChatTabs();
 const { hasNotifications, unreadNotificationCount } = useNotificationBadge();
 const { hasSocialInvites, hasLobbyInvites, lobbyInvites, pendingFriends } =
   useInvites();
-const isMobile = useMediaQuery("(max-width: 768px)");
+const isMobile = useMediaQuery(SIDEBAR_MOBILE_QUERY);
 const isMedium = useMediaQuery("(max-width: 1400px)");
 const showHoverBehavior = computed(() => isMedium.value && !isMobile.value);
 

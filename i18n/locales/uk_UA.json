@@ -5400,10 +5400,6 @@
         "operations": "ОПЕРАЦІЇ"
       },
       "community": {
-        "watch": {
-          "title": "Дивитись",
-          "subtitle": "Дивись матчі, турніри"
-        },
         "players": {
           "title": "Гравці",
           "subtitle": "Переглядай і шукай гравців"
@@ -8283,6 +8279,7 @@
       "decline": "Відхилити",
       "requested": "Запит надіслано",
       "cancel_request": "Скасувати запит",
+      "cancel_request_aria": "Запит надіслано, Скасувати запит",
       "incoming_requests": "Запити",
       "sent_requests": "Надіслані"
     },

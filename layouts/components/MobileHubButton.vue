@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import AnimatedStat from "~/components/AnimatedStat.vue";
 import { useHubState } from "@/composables/useHubState";
 import { useChatTabs } from "~/composables/useChatTabs";
+import { useInvites } from "~/composables/useInvites";
 import { useNotificationBadge } from "~/composables/useNotificationBadge";
 import { badgePopTransition, formatBadgeCount } from "~/utilities/badgeCount";
 
@@ -12,6 +13,7 @@ const { openLastOrDefaultHub } = useHubState();
 const { tabs, unreadCounts, totalUnread } = useChatTabs();
 const { unreadNotificationCount, unreadChatNotificationRooms } =
   useNotificationBadge();
+const { pendingFriends } = useInvites();
 
 const roomsCountedByTabs = computed(
   () =>
@@ -29,7 +31,10 @@ const otherNotificationCount = computed(
     ).length,
 );
 const unreadCount = computed(
-  () => totalUnread.value + otherNotificationCount.value,
+  () =>
+    totalUnread.value +
+    otherNotificationCount.value +
+    (pendingFriends.value?.length ?? 0),
 );
 const badgeLabel = computed(() => formatBadgeCount(unreadCount.value));
 </script>

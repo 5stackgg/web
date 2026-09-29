@@ -29,6 +29,7 @@ import { NuxtImg } from "#components";
 import MobileHubButton from "./MobileHubButton.vue";
 import SteamIcon from "~/components/icons/SteamIcon.vue";
 import { loginLinks } from "~/utilities/loginLinks";
+import { cn } from "@/lib/utils";
 
 const { isMobile } = useSidebar();
 const { brandName, logoUrl } = useBranding();
@@ -65,7 +66,13 @@ const isHome = computed(() => {
 });
 
 const navMenuClasses =
-  "ml-0 min-w-0 sm:ml-1 max-md:justify-start max-md:overflow-x-auto max-md:[scrollbar-width:none] max-md:[&::-webkit-scrollbar]:hidden";
+  "ml-0 min-w-0 sm:ml-1 max-md:justify-start max-md:overflow-x-auto max-md:[scrollbar-width:none] max-md:[&::-webkit-scrollbar]:hidden md:[&>div:first-child]:min-w-0";
+
+// Desktop scrolls the list, not the root (reka wraps the list in that first
+// div), so the menu panels, which hang off the root, are never clipped. Mobile
+// scrolls the root instead and pins the panels fixed.
+const navListClasses =
+  "flex items-center gap-0 sm:gap-1 [&>li]:shrink-0 md:min-w-0 md:justify-start md:overflow-x-auto md:[scrollbar-width:none] md:[&::-webkit-scrollbar]:hidden";
 
 const navViewportClasses =
   "mt-0 rounded-none border-0 bg-transparent shadow-none max-md:fixed max-md:inset-x-2 max-md:top-14 max-md:w-auto max-md:origin-top max-md:transition-none sm:max-md:top-16";
@@ -74,17 +81,19 @@ const navTickClasses =
   "nav-link-tick hidden h-[5px] w-[5px] shrink-0 rotate-45 bg-[hsl(var(--topnav-foreground)/0.3)] transition-colors duration-150 sm:block";
 
 const navLinkClasses =
-  "group relative inline-flex items-center gap-1 rounded-none border-0 bg-transparent px-[0.3rem] py-2 font-sans text-[0.68rem] font-bold uppercase leading-none tracking-[0.06em] text-[hsl(var(--topnav-foreground)/0.78)] sm:gap-[0.55rem] sm:px-[0.85rem] sm:text-[0.78rem] sm:tracking-[0.18em] transition-[color,background-color,box-shadow] duration-150 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-topnav-foreground focus-visible:bg-[hsl(var(--tac-amber)/0.08)] focus-visible:text-topnav-foreground focus-visible:outline-none [&.router-link-active]:bg-[hsl(var(--tac-amber)/0.1)] [&.router-link-active]:text-topnav-foreground [&.router-link-active]:shadow-[inset_0_-2px_0_hsl(var(--tac-amber))] [&.router-link-exact-active]:bg-[hsl(var(--tac-amber)/0.1)] [&.router-link-exact-active]:text-topnav-foreground [&.router-link-exact-active]:shadow-[inset_0_-2px_0_hsl(var(--tac-amber))] hover:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] focus-visible:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] [&.router-link-active>.nav-link-tick]:bg-[hsl(var(--tac-amber))] [&.router-link-exact-active>.nav-link-tick]:bg-[hsl(var(--tac-amber))]";
+  "group relative inline-flex items-center gap-1 rounded-none border-0 bg-transparent px-[0.3rem] py-2 font-sans text-[0.68rem] font-bold uppercase leading-none tracking-[0.06em] text-[hsl(var(--topnav-foreground)/0.78)] sm:gap-[0.55rem] sm:px-[0.85rem] sm:text-[0.78rem] sm:tracking-[0.18em] md:max-[829px]:gap-[0.4rem] md:max-[829px]:px-[0.55rem] md:max-[829px]:tracking-[0.12em] transition-[color,background-color,box-shadow] duration-150 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-topnav-foreground focus-visible:bg-[hsl(var(--tac-amber)/0.08)] focus-visible:text-topnav-foreground focus-visible:outline-none [&.router-link-active]:bg-[hsl(var(--tac-amber)/0.1)] [&.router-link-active]:text-topnav-foreground [&.router-link-active]:shadow-[inset_0_-2px_0_hsl(var(--tac-amber))] [&.router-link-exact-active]:bg-[hsl(var(--tac-amber)/0.1)] [&.router-link-exact-active]:text-topnav-foreground [&.router-link-exact-active]:shadow-[inset_0_-2px_0_hsl(var(--tac-amber))] hover:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] focus-visible:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] [&.router-link-active>.nav-link-tick]:bg-[hsl(var(--tac-amber))] [&.router-link-exact-active>.nav-link-tick]:bg-[hsl(var(--tac-amber))]";
 
 const navTriggerClasses =
-  "nav-trigger-anchor group gap-1 h-auto rounded-none border-0 bg-transparent px-[0.3rem] py-2 font-sans text-[0.68rem] font-bold uppercase leading-none tracking-[0.06em] text-[hsl(var(--topnav-foreground)/0.78)] sm:gap-[0.55rem] sm:px-[0.85rem] sm:text-[0.78rem] sm:tracking-[0.18em] transition-[color,background-color] duration-150 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-topnav-foreground focus:bg-[hsl(var(--tac-amber)/0.08)] focus:text-topnav-foreground focus-visible:outline-none data-[state=open]:bg-[hsl(var(--tac-amber)/0.08)] data-[state=open]:text-topnav-foreground hover:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] focus:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] data-[state=open]:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] [&>svg]:ml-[0.15rem] [&>svg]:h-3 [&>svg]:w-3 [&>svg]:opacity-60 max-sm:[&>svg]:hidden data-[state=open]:[&>svg]:text-[hsl(var(--tac-amber))] data-[state=open]:[&>svg]:opacity-100";
+  "nav-trigger-anchor group gap-1 h-auto rounded-none border-0 bg-transparent px-[0.3rem] py-2 font-sans text-[0.68rem] font-bold uppercase leading-none tracking-[0.06em] text-[hsl(var(--topnav-foreground)/0.78)] sm:gap-[0.55rem] sm:px-[0.85rem] sm:text-[0.78rem] sm:tracking-[0.18em] md:max-[829px]:gap-[0.4rem] md:max-[829px]:px-[0.55rem] md:max-[829px]:tracking-[0.12em] transition-[color,background-color] duration-150 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-topnav-foreground focus:bg-[hsl(var(--tac-amber)/0.08)] focus:text-topnav-foreground focus-visible:outline-none data-[state=open]:bg-[hsl(var(--tac-amber)/0.08)] data-[state=open]:text-topnav-foreground hover:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] focus:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] data-[state=open]:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] [&>svg]:ml-[0.15rem] [&>svg]:h-3 [&>svg]:w-3 [&>svg]:opacity-60 max-sm:[&>svg]:hidden data-[state=open]:[&>svg]:text-[hsl(var(--tac-amber))] data-[state=open]:[&>svg]:opacity-100";
 
 const navBadgeClasses =
   "inline-flex min-w-[1.3rem] items-center justify-center gap-[0.3rem] border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.14)] px-[0.3rem] py-[0.15rem] sm:px-[0.4rem] font-sans text-[0.62rem] font-bold leading-none tracking-[0.12em] text-[hsl(var(--tac-amber))] [font-variant-numeric:tabular-nums]";
 
 const navBadgeInlineClasses = "ml-auto";
-const navBadgeLiveClasses =
-  "border-[hsl(0_80%_60%/0.45)] bg-[hsl(0_80%_60%/0.12)] text-[hsl(0_80%_68%)]";
+const navBadgeLiveClasses = cn(
+  navBadgeClasses,
+  "border-destructive/50 bg-destructive/15 text-destructive",
+);
 const navBadgeDotClasses =
   "h-[5px] w-[5px] rounded-full bg-current shadow-[0_0_6px_currentColor]";
 
@@ -159,7 +168,7 @@ const loginArrowClasses =
           />
 
           <span
-            class="relative inline-flex whitespace-nowrap font-sans text-[1.1rem] font-bold uppercase leading-none tracking-[0.05em] [font-stretch:82%]"
+            class="relative inline-flex whitespace-nowrap font-sans text-[1.1rem] font-bold uppercase leading-none tracking-[0.05em] [font-stretch:82%] max-[829px]:hidden"
           >
             <span
               aria-hidden="true"
@@ -187,7 +196,7 @@ const loginArrowClasses =
           :class="navMenuClasses"
           :viewport-class="navViewportClasses"
         >
-          <NavigationMenuList class="flex items-center gap-0 sm:gap-1">
+          <NavigationMenuList :class="navListClasses">
             <NavigationMenuItem v-if="me" class="hidden md:block">
               <NavigationMenuLink as-child>
                 <NuxtLink to="/me" :class="navLinkClasses">
@@ -204,7 +213,7 @@ const loginArrowClasses =
                   {{ $t("layouts.top_nav.watch_menu") }}
                   <span
                     v-if="liveMatchesCount > 0"
-                    :class="[navBadgeClasses, navBadgeLiveClasses]"
+                    :class="navBadgeLiveClasses"
                   >
                     <span :class="navBadgeDotClasses"></span>
                     {{ liveMatchesCount }}
@@ -522,6 +531,21 @@ const loginArrowClasses =
                               </span>
                             </span>
                           </a>
+                        </NavigationMenuLink>
+                      </li>
+                      <li class="md:hidden">
+                        <NavigationMenuLink as-child>
+                          <NuxtLink
+                            to="/faq"
+                            :class="[navItemClasses, navItemStackedClasses]"
+                          >
+                            <span :class="navItemChevronClasses">◢</span>
+                            <span :class="navItemContentClasses">
+                              <span :class="navItemLabelClasses">
+                                {{ $t("layouts.top_nav.support_menu") }}
+                              </span>
+                            </span>
+                          </NuxtLink>
                         </NavigationMenuLink>
                       </li>
                     </ul>

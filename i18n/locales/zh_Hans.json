@@ -8465,6 +8465,8 @@
     "send_other_hint": "按 Ctrl+Enter 发送到 {channel}",
     "everyone_hint": "两支战队 — 也会显示在游戏内聊天",
     "team_hint": "仅限你的阵容 — 不会显示在游戏内聊天",
+    "message_too_long": "消息最多 {max} 个字符。",
+    "send_failed": "消息发送失败",
     "direct": {
       "message": "消息",
       "empty": "还没有消息，先打个招呼吧。"

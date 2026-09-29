@@ -8465,6 +8465,8 @@
     "send_other_hint": "Ctrl+Enter, aby wysłać do {channel}",
     "everyone_hint": "Obie drużyny — pokazywane także na czacie w grze",
     "team_hint": "Tylko twój skład — nie jest pokazywane na czacie w grze",
+    "message_too_long": "Wiadomość może mieć maksymalnie {max} znaków.",
+    "send_failed": "Nie udało się wysłać wiadomości",
     "direct": {
       "message": "Wiadomość",
       "empty": "Brak wiadomości. Przywitaj się."

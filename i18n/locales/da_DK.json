@@ -8465,6 +8465,8 @@
     "send_other_hint": "Ctrl+Enter for at sende til {channel}",
     "everyone_hint": "Begge hold — vises også i spillets chat",
     "team_hint": "Kun din opstilling — vises ikke i spillets chat",
+    "message_too_long": "Beskeder kan højst være på {max} tegn.",
+    "send_failed": "Din besked kunne ikke sendes",
     "direct": {
       "message": "Besked",
       "empty": "Ingen beskeder endnu. Sig hej."

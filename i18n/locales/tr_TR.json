@@ -8465,6 +8465,8 @@
     "send_other_hint": "{channel} kanalına göndermek için Ctrl+Enter",
     "everyone_hint": "Her iki takım — oyun içi sohbette de görünür",
     "team_hint": "Yalnızca kendi kadron — oyun içi sohbette görünmez",
+    "message_too_long": "Mesajlar en fazla {max} karakter olabilir.",
+    "send_failed": "Mesajın gönderilemedi",
     "direct": {
       "message": "Mesaj",
       "empty": "Henüz mesaj yok. Merhaba de."

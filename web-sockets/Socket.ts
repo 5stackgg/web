@@ -3,11 +3,13 @@ import { shallowRef, type ShallowRef } from "vue";
 import type { e_match_types_enum } from "~/generated/zeus";
 import { toast } from "@/components/ui/toast";
 import { useChatReadState } from "~/composables/useChatReadState";
+import { toastChatError } from "~/utilities/chatErrors";
 
 export interface LobbyMessage {
   id?: string;
   message: string;
   timestamp: string;
+  source?: "web" | "game";
   from?: {
     role?: string;
     name?: string;
@@ -670,6 +672,8 @@ socket.listen(
     useChatReadState().setCursor(thread, lastReadAt);
   },
 );
+
+socket.listen("chat:error", toastChatError);
 
 socket.listen("matchmaking:region-stats", (data) => {
   useMatchmakingStore().regionStats = data;

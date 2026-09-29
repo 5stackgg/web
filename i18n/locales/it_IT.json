@@ -8465,6 +8465,8 @@
     "send_other_hint": "Ctrl+Invio per inviare a {channel}",
     "everyone_hint": "Entrambe le squadre — mostrato anche nella chat di gioco",
     "team_hint": "Solo la tua formazione — non mostrato nella chat di gioco",
+    "message_too_long": "I messaggi possono contenere al massimo {max} caratteri.",
+    "send_failed": "Non è stato possibile inviare il tuo messaggio",
     "direct": {
       "message": "Messaggio",
       "empty": "Ancora nessun messaggio. Fatti sentire."

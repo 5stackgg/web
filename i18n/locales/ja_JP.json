@@ -8465,6 +8465,8 @@
     "send_other_hint": "Ctrl+Enterで {channel} に送信",
     "everyone_hint": "両チーム — ゲーム内チャットにも表示されます",
     "team_hint": "自分のラインナップのみ — ゲーム内チャットには表示されません",
+    "message_too_long": "メッセージは最大{max}文字までです。",
+    "send_failed": "メッセージを送信できませんでした",
     "direct": {
       "message": "メッセージ",
       "empty": "まだメッセージはありません。あいさつしてみましょう。"

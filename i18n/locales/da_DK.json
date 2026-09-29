@@ -8477,6 +8477,14 @@
     "team_hint": "Kun din opstilling — vises ikke i spillets chat",
     "message_too_long": "Beskeder kan højst være på {max} tegn.",
     "send_failed": "Din besked kunne ikke sendes",
+    "gagged": "Din chat er lukket, så du kan ikke sende chatbeskeder.",
+    "message_actions": "Beskedhandlinger",
+    "delete_message": "Slet besked",
+    "delete_confirm_title": "Slet besked?",
+    "delete_confirm_description": "Beskeden fra {name} bliver fjernet for alle i denne chat.",
+    "delete_failed": "Beskeden kunne ikke slettes",
+    "delete_timeout": "Serveren svarede ikke. Beskeden kan stadig blive fjernet.",
+    "message_already_gone": "Beskeden er allerede fjernet",
     "direct": {
       "message": "Besked",
       "empty": "Ingen beskeder endnu. Sig hej."

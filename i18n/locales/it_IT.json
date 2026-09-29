@@ -8477,6 +8477,14 @@
     "team_hint": "Solo la tua formazione — non mostrato nella chat di gioco",
     "message_too_long": "I messaggi possono contenere al massimo {max} caratteri.",
     "send_failed": "Non è stato possibile inviare il tuo messaggio",
+    "gagged": "Sei silenziato in chat e non puoi inviare messaggi.",
+    "message_actions": "Azioni messaggio",
+    "delete_message": "Elimina messaggio",
+    "delete_confirm_title": "Eliminare il messaggio?",
+    "delete_confirm_description": "Il messaggio di {name} verrà rimosso per tutti i partecipanti a questa chat.",
+    "delete_failed": "Impossibile eliminare il messaggio",
+    "delete_timeout": "Il server non ha risposto. Il messaggio potrebbe comunque essere rimosso.",
+    "message_already_gone": "Messaggio già rimosso",
     "direct": {
       "message": "Messaggio",
       "empty": "Ancora nessun messaggio. Fatti sentire."

@@ -52,6 +52,8 @@
             :message="message"
             :previous-message="messages[index - 1]"
             :next-message="messages[index + 1]"
+            :room="messageRoom ? messageRoom(message) : null"
+            :can-moderate="canModerate"
           />
         </div>
       </TransitionGroup>
@@ -60,8 +62,10 @@
 </template>
 
 <script lang="ts">
+import type { PropType } from "vue";
 import ChatMessage from "~/components/chat/ChatMessage.vue";
 import { chatMessageKey } from "~/web-sockets/Socket";
+import type { ChatType, LobbyMessage } from "~/web-sockets/Socket";
 
 export default {
   components: {
@@ -91,6 +95,18 @@ export default {
     groupKey: {
       type: String,
       default: "",
+    },
+    // Which room a line belongs to, for acting on it. Hand back the same object
+    // for the same room, or every row re-renders on every new message.
+    messageRoom: {
+      type: Function as PropType<
+        (message: LobbyMessage) => { type: ChatType; id: string } | null
+      >,
+      required: false,
+    },
+    canModerate: {
+      type: Boolean,
+      default: false,
     },
   },
   emits: ["bottom-state-change"],

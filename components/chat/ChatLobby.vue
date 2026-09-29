@@ -108,6 +108,8 @@ import Empty from "~/components/ui/empty/Empty.vue";
             :is-minimized="isMinimized"
             class="min-h-0 flex-1 overflow-y-auto"
             :last-read-count="lastReadMessageCount"
+            :message-room="messageRoom"
+            :can-moderate="canModerate"
             @bottom-state-change="handleBottomStateChange"
           />
           <Empty v-else class="flex-1 text-muted-foreground">
@@ -147,7 +149,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
           </button>
         </div>
         <ChatInput
-          v-if="canSend"
+          v-if="composerEnabled"
           ref="chatInputRef"
           variant="global"
           :channels="chatChannels"
@@ -160,7 +162,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
           </template>
         </ChatInput>
         <div v-else class="px-3 py-2 text-center text-xs text-muted-foreground">
-          {{ readonlyHint || $t("chat.readonly") }}
+          {{ readonlyText }}
         </div>
       </div>
     </div>
@@ -278,6 +280,8 @@ import Empty from "~/components/ui/empty/Empty.vue";
           variant="embedded"
           class="min-h-0 flex-1 overflow-y-auto"
           :last-read-count="tracksReadPosition ? lastReadMessageCount : 0"
+          :message-room="messageRoom"
+          :can-moderate="canModerate"
           @bottom-state-change="handleBottomStateChange"
         />
         <Empty v-else key="empty" class="min-h-0 flex-1 text-muted-foreground">
@@ -342,7 +346,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
       <!-- Composer <-> readonly hint are different heights; measured swap. -->
       <HeightSwap>
         <ChatInput
-          v-if="canSend"
+          v-if="composerEnabled"
           key="composer"
           ref="chatInputRef"
           variant="embedded"
@@ -363,7 +367,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
           key="hint"
           class="px-3 py-2 text-center text-xs text-muted-foreground"
         >
-          {{ readonlyHint || $t("chat.readonly") }}
+          {{ readonlyText }}
         </div>
       </HeightSwap>
     </div>
@@ -373,7 +377,13 @@ import Empty from "~/components/ui/empty/Empty.vue";
 <script lang="ts">
 import { markRaw, type PropType } from "vue";
 import socket, { chatMessageKey, chatMessageTime } from "~/web-sockets/Socket";
-import type { ChatType, Lobby, LobbyMessage } from "~/web-sockets/Socket";
+import type {
+  ChatType,
+  Lobby,
+  LobbyMessage,
+  LobbyMessageDeleted,
+} from "~/web-sockets/Socket";
+import { e_player_roles_enum } from "~/generated/zeus";
 
 import { useRightSidebar } from "~/composables/useRightSidebar";
 import { useSound } from "~/composables/useSound";
@@ -506,9 +516,13 @@ export default {
       // how a team callout ends up in front of the other side.
       sendTo: "everyone" as "everyone" | "team",
       viewFilter: "all" as "all" | "everyone" | "team",
-      // Counted per room, but only while the filter is hiding that room --
+      // Held per room, but only while the filter is hiding that room --
       // everything on screen has by definition been offered to the reader.
-      unseen: { everyone: 0, team: 0 } as Record<string, number>,
+      // Kept as message keys so a deleted line takes its mark with it.
+      unseen: { everyone: [], team: [] } as Record<
+        "everyone" | "team",
+        string[]
+      >,
     };
   },
   computed: {
@@ -561,6 +575,40 @@ export default {
           (a.__channel === "team" ? 1 : 0) - (b.__channel === "team" ? 1 : 0)
         );
       });
+    },
+    // A conversation between two people is theirs; the api refuses to moderate
+    // one, even for an administrator.
+    canModerate() {
+      return (
+        this.type !== "direct" &&
+        useAuthStore().isRoleAbove(e_player_roles_enum.moderator)
+      );
+    },
+    // One object per room, kept for as long as the rooms are, so handing it to
+    // every row costs no re-render.
+    messageRooms(): Record<
+      "everyone" | "team",
+      { type: ChatType; id: string } | null
+    > {
+      return {
+        everyone: this.channelTarget("everyone"),
+        team: this.teamLobbyId ? this.channelTarget("team") : null,
+      };
+    },
+    // A gag covers group chat only, and the api refuses the send either way --
+    // this just says so before the player has typed anything.
+    isGagged() {
+      return this.type !== "direct" && !!useAuthStore().me?.is_gagged;
+    },
+    composerEnabled() {
+      return this.canSend && !this.isGagged;
+    },
+    readonlyText() {
+      if (!this.canSend) {
+        return this.readonlyHint || this.$t("chat.readonly");
+      }
+
+      return this.$t("chat.gagged");
     },
     // Only a single lineup's room is private; the match room admits both sides.
     isTeamContext() {
@@ -734,15 +782,70 @@ export default {
       }
 
       if (option === "all") {
-        return this.unseen.everyone + this.unseen.team;
+        return this.unseen.everyone.length + this.unseen.team.length;
       }
 
-      return this.unseen[option] ?? 0;
+      return this.unseen[option as "everyone" | "team"]?.length ?? 0;
     },
     channelTarget(channel: "everyone" | "team") {
       return channel === "team" && this.teamLobbyId
         ? { type: "match_team" as ChatType, id: this.teamLobbyId }
         : { type: this.type as ChatType, id: this.lobbyId };
+    },
+    messageRoom(message: LobbyMessage) {
+      return this.messageRooms[message?.__channel ?? "everyone"] ?? null;
+    },
+    // Where the removed line sat in what this panel renders. `index` is its
+    // place in its own room; merged, the other room's earlier lines come first.
+    renderedIndex(
+      { message, index }: LobbyMessageDeleted,
+      channel: "everyone" | "team",
+    ) {
+      if (!this.isMerged) {
+        return index;
+      }
+
+      if (!this.channelVisible(channel)) {
+        return -1;
+      }
+
+      const other = channel === "team" ? "everyone" : "team";
+      if (!this.channelVisible(other)) {
+        return index;
+      }
+
+      const otherLobby = other === "team" ? this.teamLobby : this.lobby;
+      const time = chatMessageTime(message);
+
+      // Ties sort everyone ahead of team, as the merged stream does.
+      const earlier = (otherLobby?.messages ?? NO_MESSAGES).filter(
+        (candidate) => {
+          const candidateTime = chatMessageTime(candidate);
+          return (
+            candidateTime < time ||
+            (candidateTime === time && other === "everyone")
+          );
+        },
+      ).length;
+
+      return index + earlier;
+    },
+    // The "New" line is a count from the top, so a line removed above it would
+    // otherwise drag it down onto a message that was already read.
+    handleDeletedMessage(
+      deleted: LobbyMessageDeleted,
+      channel: "everyone" | "team",
+    ) {
+      const position = this.renderedIndex(deleted, channel);
+
+      if (position !== -1 && position < this.lastReadMessageCount) {
+        this.lastReadMessageCount = Math.max(0, this.lastReadMessageCount - 1);
+      }
+
+      const key = chatMessageKey(deleted.message);
+      this.unseen[channel] = this.unseen[channel].filter(
+        (unseenKey) => unseenKey !== key,
+      );
     },
     handleIncomingMessage(
       message: LobbyMessage,
@@ -762,7 +865,7 @@ export default {
       // Only what the filter is actively hiding. A message in a room that is
       // on screen has been shown, whether or not it was read.
       if (this.isMerged && !isOwnMessage && !this.channelVisible(channel)) {
-        this.unseen[channel]++;
+        this.unseen[channel].push(chatMessageKey(message));
       }
 
       // Auto-scroll only when already at the bottom.
@@ -861,7 +964,7 @@ export default {
       handler() {
         for (const channel of ["everyone", "team"] as const) {
           if (this.channelVisible(channel)) {
-            this.unseen[channel] = 0;
+            this.unseen[channel] = [];
           }
         }
       },
@@ -890,6 +993,10 @@ export default {
 
         lobby.on("lobby:chat", (message: LobbyMessage) => {
           this.handleIncomingMessage(message, "everyone");
+        });
+
+        lobby.on("lobby:deleted", (deleted: LobbyMessageDeleted) => {
+          this.handleDeletedMessage(deleted, "everyone");
         });
       },
     },
@@ -923,6 +1030,10 @@ export default {
 
         lobby.on("lobby:chat", (message: LobbyMessage) => {
           this.handleIncomingMessage(message, "team");
+        });
+
+        lobby.on("lobby:deleted", (deleted: LobbyMessageDeleted) => {
+          this.handleDeletedMessage(deleted, "team");
         });
       },
     },

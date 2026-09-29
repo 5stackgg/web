@@ -5,7 +5,10 @@ import { useChatReadState } from "~/composables/useChatReadState";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
-import socket, { type Lobby } from "~/web-sockets/Socket";
+import socket, {
+  type Lobby,
+  type LobbyMessageDeleted,
+} from "~/web-sockets/Socket";
 
 export function tournamentChatTab(tournament: {
   id: string;
@@ -37,9 +40,10 @@ export function useChatTabSetup() {
     closeTab,
     setPinned,
     incrementUnread,
+    decrementUnread,
     setUnread,
   } = useChatTabs();
-  const { hydrate: hydrateReadState, unreadSince } = useChatReadState();
+  const { hydrate: hydrateReadState, isUnread } = useChatReadState();
 
   const matchLobbyStore = useMatchLobbyStore();
   const authStore = useAuthStore();
@@ -68,6 +72,12 @@ export function useChatTabSetup() {
       }
     });
 
+    lobby.on("lobby:deleted", ({ message }: LobbyMessageDeleted) => {
+      if (message?.id) {
+        decrementUnread(tab.id, message.id);
+      }
+    });
+
     // The room's history, which arrives on join and on every rejoin. Counting
     // it against the server's cursor is what makes a badge survive a reload
     // and agree with the other devices -- the live handler above only ever
@@ -81,9 +91,14 @@ export function useChatTabSetup() {
         return;
       }
 
+      const unread = (messages ?? []).filter((message) =>
+        isUnread(tab.type, tab.lobbyId, message, authStore.me?.steam_id),
+      );
+
       setUnread(
         tab.id,
-        unreadSince(tab.type, tab.lobbyId, messages ?? [], authStore.me?.steam_id),
+        unread.length,
+        unread.map((message) => message?.id).filter(Boolean),
       );
     });
   }

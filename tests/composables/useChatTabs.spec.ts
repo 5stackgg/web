@@ -109,6 +109,31 @@ describe("useChatTabs incrementUnread", () => {
     expect(count()).toBe(5);
   });
 
+  it("takes on a recount's ids in place of what it counted", () => {
+    const { incrementUnread, setUnread } = useChatTabs();
+
+    incrementUnread(TAB, "m1");
+    setUnread(TAB, 1, ["m2"]);
+
+    expect(incrementUnread(TAB, "m2")).toBe(false);
+    expect(incrementUnread(TAB, "m1")).toBe(true);
+    expect(count()).toBe(2);
+  });
+
+  it("takes a deleted message off only if it counted it", () => {
+    const { incrementUnread, decrementUnread } = useChatTabs();
+
+    incrementUnread(TAB, "m1");
+    incrementUnread(TAB, "m2");
+
+    decrementUnread(TAB, "never-counted");
+    expect(count()).toBe(2);
+
+    decrementUnread(TAB, "m1");
+    decrementUnread(TAB, "m1");
+    expect(count()).toBe(1);
+  });
+
   it("forgets what it counted once the badge is cleared", () => {
     const { incrementUnread, resetUnread, setUnread } = useChatTabs();
 

@@ -8477,6 +8477,14 @@
     "team_hint": "仅限你的阵容 — 不会显示在游戏内聊天",
     "message_too_long": "消息最多 {max} 个字符。",
     "send_failed": "消息发送失败",
+    "gagged": "你已被禁言，无法发送聊天消息。",
+    "message_actions": "消息操作",
+    "delete_message": "删除消息",
+    "delete_confirm_title": "要删除消息吗？",
+    "delete_confirm_description": "{name} 的这条消息将对本聊天中的所有人移除。",
+    "delete_failed": "消息删除失败",
+    "delete_timeout": "服务器没有响应。该消息仍可能被移除。",
+    "message_already_gone": "该消息已被移除",
     "direct": {
       "message": "消息",
       "empty": "还没有消息，先打个招呼吧。"

@@ -3,7 +3,22 @@ import { shallowRef, type ShallowRef } from "vue";
 import type { e_match_types_enum } from "~/generated/zeus";
 import { toast } from "@/components/ui/toast";
 import { useChatReadState } from "~/composables/useChatReadState";
-import { toastChatError } from "~/utilities/chatErrors";
+import {
+  toastChatError,
+  type ChatAction,
+  type ChatError,
+} from "~/utilities/chatErrors";
+import {
+  chatMessageKey,
+  insertChatMessage,
+  isChatMessageDeleted,
+  mergeChatSnapshot,
+  removeChatMessage,
+  type RemovedChatMessage,
+} from "~/utilities/chatLobbyMessages";
+import guid from "~/utilities/uuid";
+
+export { chatMessageKey, chatMessageTime } from "~/utilities/chatLobbyMessages";
 
 export interface LobbyMessage {
   id?: string;
@@ -30,9 +45,14 @@ export interface Lobby {
   leave: () => void;
 }
 
+export type LobbyMessageDeleted = Omit<RemovedChatMessage, "messages">;
+
 interface LobbyState {
   messages: ShallowRef<LobbyMessage[]>;
   seen: Set<string>;
+  // Ids the room has deleted. A history snapshot built before the delete can
+  // still arrive after it, and must not bring the message back.
+  deleted: Set<string>;
   instances: Set<string>;
   callbacks: Map<string, (data: any) => void>;
   listeners: ReturnType<typeof Socket.prototype.listen>[];
@@ -52,24 +72,17 @@ export type ChatType =
   // sorted ascending and joined with ":" -- see useDirectMessages.
   | "direct";
 
-// The live `chat` event and the history snapshot sent on every (re)join can
-// carry the same message, so a message needs an identity the client can compare
-// them by. Anything written before the server started stamping an id falls back
-// to a composite key.
-export function chatMessageKey(message: LobbyMessage) {
-  if (message?.id) {
-    return message.id;
-  }
-
-  return [
-    message?.from?.steam_id ?? "",
-    message?.timestamp ?? "",
-    message?.message ?? "",
-  ].join("|");
+interface ChatAck {
+  requestId?: string;
+  messageId?: string;
+  action?: ChatAction;
 }
 
-export function chatMessageTime(message: LobbyMessage) {
-  return new Date(message?.timestamp).getTime() || 0;
+interface PendingChatRequest {
+  action: ChatAction;
+  resolve: () => void;
+  reject: (error: ChatError) => void;
+  timer: ReturnType<typeof setTimeout>;
 }
 
 export class Socket extends EventEmitter {
@@ -101,6 +114,12 @@ export class Socket extends EventEmitter {
 
   private lobbies: Map<string, LobbyState> = new Map();
   private instanceCounter = 0;
+  private pendingRequests: Map<string, PendingChatRequest> = new Map();
+  // The api answers a request it failed to carry out with nothing at all.
+  private static readonly REQUEST_TIMEOUT_MS = 8000;
+  // How long a request that timed out still recognises its answer, so a slow
+  // one is applied quietly instead of being reported a second time.
+  private static readonly LATE_ANSWER_MS = 60000;
   private rooms: Map<
     string,
     {
@@ -392,6 +411,83 @@ export class Socket extends EventEmitter {
     });
   }
 
+  // Never queued: a moderator told the delete failed must not have it carried
+  // out behind their back once the connection comes back.
+  public deleteMessage(
+    type: ChatType,
+    id: string,
+    messageId: string,
+  ): Promise<void> {
+    if (!this.connected || !this.connection) {
+      return Promise.reject({ code: "offline", action: "delete" });
+    }
+
+    const requestId = guid();
+    const lobbyId = `${type}:${id}`;
+
+    return new Promise<void>((resolve, reject) => {
+      const pending: PendingChatRequest = {
+        action: "delete",
+        resolve: () => {
+          this.removeMessageFromLobby(lobbyId, messageId);
+          resolve();
+        },
+        reject: (error) => {
+          if (error?.code === "not_found") {
+            this.removeMessageFromLobby(lobbyId, messageId);
+          }
+          reject(error);
+        },
+        timer: setTimeout(() => {
+          reject({ code: "timeout", action: "delete", requestId });
+          pending.timer = setTimeout(() => {
+            this.pendingRequests.delete(requestId);
+          }, Socket.LATE_ANSWER_MS);
+        }, Socket.REQUEST_TIMEOUT_MS),
+      };
+
+      this.pendingRequests.set(requestId, pending);
+
+      this.event(`lobby:delete`, {
+        id,
+        type,
+        messageId,
+        requestId,
+      });
+    });
+  }
+
+  public resolveChatRequest(ack: ChatAck) {
+    this.takeChatRequest(ack)?.resolve();
+  }
+
+  public rejectChatRequest(error: ChatError) {
+    const pending = this.takeChatRequest(error);
+    if (!pending) {
+      return false;
+    }
+
+    pending.reject(error);
+    return true;
+  }
+
+  private takeChatRequest(answer: ChatAck | ChatError) {
+    const requestId = answer?.requestId;
+    if (!requestId) {
+      return undefined;
+    }
+
+    const pending = this.pendingRequests.get(requestId);
+    if (!pending || (answer.action ?? "send") !== pending.action) {
+      return undefined;
+    }
+
+    this.pendingRequests.delete(requestId);
+    clearTimeout(pending.timer);
+
+    return pending;
+  }
+
   // Server-side read state, so a room's unread count survives a reload and
   // doesn't come back on another device -- and so no push is sent for a
   // message that has already been read here.
@@ -485,6 +581,7 @@ export class Socket extends EventEmitter {
       instances: new Set([instanceKey]),
       messages: shallowRef([]),
       seen: new Set(),
+      deleted: new Set(),
       callbacks: new Map(),
       listeners: [],
     };
@@ -523,6 +620,12 @@ export class Socket extends EventEmitter {
       }),
     );
 
+    lobby.listeners.push(
+      this.listen(`lobby:${lobbyId}:deleted`, (data: { id?: string }) => {
+        this.removeLobbyMessage(lobby, data?.id);
+      }),
+    );
+
     this.join(`lobby`, {
       id: _id,
       type,
@@ -532,31 +635,11 @@ export class Socket extends EventEmitter {
   }
 
   private mergeLobbyMessages(lobby: LobbyState, messages: LobbyMessage[]) {
-    const snapshot = messages || [];
-    const snapshotKeys = new Set(snapshot.map(chatMessageKey));
-
-    // The server sends its whole history for the room, so the snapshot replaces
-    // what we hold rather than being unioned into it. A union never drops what
-    // the server has since expired, and leaves both the list and `seen` growing
-    // for the life of the handle.
-    //
-    // Anything newer than the snapshot is kept: a live message can land in the
-    // window between the server building the snapshot and it arriving here.
-    const newest = snapshot.reduce(
-      (latest, message) => Math.max(latest, chatMessageTime(message)),
-      0,
+    const merged = mergeChatSnapshot(
+      lobby.messages.value,
+      messages,
+      lobby.deleted,
     );
-
-    const merged = snapshot.concat(
-      lobby.messages.value.filter((message) => {
-        return (
-          !snapshotKeys.has(chatMessageKey(message)) &&
-          chatMessageTime(message) >= newest
-        );
-      }),
-    );
-
-    merged.sort((a, b) => chatMessageTime(a) - chatMessageTime(b));
 
     lobby.seen.clear();
     for (const message of merged) {
@@ -569,22 +652,42 @@ export class Socket extends EventEmitter {
 
   private addLobbyMessage(lobby: LobbyState, message: LobbyMessage) {
     const key = chatMessageKey(message);
-    if (lobby.seen.has(key)) {
+    if (lobby.seen.has(key) || isChatMessageDeleted(message, lobby.deleted)) {
       return;
     }
     lobby.seen.add(key);
 
-    const messages = lobby.messages.value.slice();
-    const timestamp = chatMessageTime(message);
-
-    let index = messages.length;
-    while (index > 0 && chatMessageTime(messages[index - 1]) > timestamp) {
-      index--;
-    }
-    messages.splice(index, 0, message);
-
-    lobby.messages.value = messages;
+    lobby.messages.value = insertChatMessage(lobby.messages.value, message);
     this.emitToLobbyInstances(lobby, "lobby:chat", message);
+  }
+
+  private removeMessageFromLobby(lobbyId: string, messageId: string) {
+    const lobby = this.lobbies.get(lobbyId);
+    if (lobby) {
+      this.removeLobbyMessage(lobby, messageId);
+    }
+  }
+
+  private removeLobbyMessage(lobby: LobbyState, messageId?: string) {
+    if (typeof messageId !== "string" || !messageId) {
+      return;
+    }
+
+    lobby.deleted.add(messageId);
+
+    const removed = removeChatMessage(lobby.messages.value, messageId);
+    if (!removed) {
+      return;
+    }
+
+    lobby.seen.delete(chatMessageKey(removed.message));
+    lobby.messages.value = removed.messages;
+
+    const event: LobbyMessageDeleted = {
+      message: removed.message,
+      index: removed.index,
+    };
+    this.emitToLobbyInstances(lobby, "lobby:deleted", event);
   }
 
   private emitToLobbyInstances(
@@ -673,7 +776,18 @@ socket.listen(
   },
 );
 
-socket.listen("chat:error", toastChatError);
+socket.listen("chat:ack", (ack: ChatAck) => {
+  socket.resolveChatRequest(ack);
+});
+
+// A request with someone waiting on it is theirs to report.
+socket.listen("chat:error", (error: ChatError) => {
+  if (socket.rejectChatRequest(error)) {
+    return;
+  }
+
+  toastChatError(error);
+});
 
 socket.listen("matchmaking:region-stats", (data) => {
   useMatchmakingStore().regionStats = data;

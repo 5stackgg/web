@@ -21,8 +21,10 @@ export interface ChatTab {
 
 const tabsRef = ref<ChatTab[]>([]);
 const unreadCountsRef = ref<Record<string, number>>({});
-// A message can reach a badge twice, from direct:incoming and from its room's
-// lobby:chat, so a badge remembers which ids it has already counted.
+// Which messages each badge has counted. A message can reach a badge twice,
+// from direct:incoming and from its room's lobby:chat, and a deleted one only
+// comes off the count if it was ever in it -- a line read on screen is newer
+// than the read cursor too, but no badge counted it.
 const unreadMessageIds = new Map<string, Set<string>>();
 const MAX_UNREAD_MESSAGE_IDS = 200;
 const activeTabIdRef = ref<string | null>(null);
@@ -140,6 +142,16 @@ export function useChatTabs() {
     return true;
   }
 
+  function decrementUnread(id: string, messageId: string) {
+    if (!unreadMessageIds.get(id)?.delete(messageId)) {
+      return;
+    }
+
+    if (unreadCountsRef.value[id]) {
+      unreadCountsRef.value[id] -= 1;
+    }
+  }
+
   function resetUnread(id: string) {
     unreadMessageIds.delete(id);
 
@@ -148,12 +160,19 @@ export function useChatTabs() {
     }
   }
 
-  // A non-zero recount keeps the ids already counted, taking them to be part of
-  // the new number, so a late second delivery of one still isn't counted again.
-  function setUnread(id: string, value: number) {
+  // A recount that names its messages replaces what the badge counted. Without
+  // them a non-zero recount keeps the ids already counted, taking them to be
+  // part of the new number, so a late second delivery of one still isn't
+  // counted again.
+  function setUnread(id: string, value: number, messageIds?: string[]) {
     unreadCountsRef.value[id] = value;
 
-    if (!value) {
+    if (messageIds) {
+      unreadMessageIds.set(
+        id,
+        new Set(messageIds.slice(-MAX_UNREAD_MESSAGE_IDS)),
+      );
+    } else if (!value) {
       unreadMessageIds.delete(id);
     }
   }
@@ -176,6 +195,7 @@ export function useChatTabs() {
     setPinned,
     setTabPosition,
     incrementUnread,
+    decrementUnread,
     resetUnread,
     setUnread,
     clearAll,

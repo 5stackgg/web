@@ -8477,6 +8477,14 @@
     "team_hint": "Your lineup only — not shown in game chat",
     "message_too_long": "Messages can be up to {max} characters.",
     "send_failed": "Failed to send message",
+    "gagged": "You're gagged and can't send chat messages.",
+    "message_actions": "Message actions",
+    "delete_message": "Delete Message",
+    "delete_confirm_title": "Delete Message?",
+    "delete_confirm_description": "The message from {name} will be removed for everyone in this chat.",
+    "delete_failed": "Failed to delete message",
+    "delete_timeout": "The server didn't answer. The message may still be removed.",
+    "message_already_gone": "Message already removed",
     "direct": {
       "message": "Message",
       "empty": "No messages yet. Say hello."

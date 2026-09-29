@@ -49,23 +49,21 @@ export function useChatReadState() {
     };
   }
 
-  function unreadSince(
+  function isUnread(
     type: string,
     lobbyId: string,
-    messages: Array<{ timestamp?: string; from?: { steam_id?: string } }>,
+    message: { timestamp?: string; from?: { steam_id?: string } },
     mySteamId?: string | null,
   ) {
+    if (String(message?.from?.steam_id) === String(mySteamId)) {
+      return false;
+    }
+
     const cursor = cursors.value[chatThreadKey(type, lobbyId)];
     const readAt = cursor ? new Date(cursor).getTime() : 0;
 
-    return messages.filter((message) => {
-      if (String(message?.from?.steam_id) === String(mySteamId)) {
-        return false;
-      }
-
-      return new Date(message?.timestamp ?? 0).getTime() > readAt;
-    }).length;
+    return new Date(message?.timestamp ?? 0).getTime() > readAt;
   }
 
-  return { cursors, hydrate, markRead, setCursor, unreadSince };
+  return { cursors, hydrate, isUnread, markRead, setCursor };
 }

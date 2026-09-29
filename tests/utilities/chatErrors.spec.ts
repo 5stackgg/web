@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { chatErrorDescription } from "~/utilities/chatErrors";
+import {
+  chatErrorAction,
+  chatErrorDescription,
+  chatErrorFailed,
+  chatErrorTitle,
+} from "~/utilities/chatErrors";
 import { CHAT_MESSAGE_MAX_LENGTH } from "~/constants/chat";
 
 const t = (key: string, params?: Record<string, unknown>) =>
@@ -23,6 +28,12 @@ describe("chatErrorDescription", () => {
     expect(chatErrorDescription({ code: "not_allowed" }, t)).toBeUndefined();
   });
 
+  it("tells a gagged player why the send was refused", () => {
+    expect(chatErrorDescription({ code: "gagged", action: "send" }, t)).toBe(
+      "chat.gagged",
+    );
+  });
+
   it.each(["invalid", "some_future_code", ""])(
     "treats %j as a plain failed send",
     (code) => {
@@ -33,4 +44,47 @@ describe("chatErrorDescription", () => {
   it("survives a payload with no code", () => {
     expect(chatErrorDescription(undefined as any, t)).toBeUndefined();
   });
+});
+
+describe("chat error actions", () => {
+  it("reads a missing action as a send, like an older api sends", () => {
+    expect(chatErrorAction({ code: "too_long" })).toBe("send");
+    expect(chatErrorTitle({ code: "too_long" }, t)).toBe("chat.send_failed");
+  });
+
+  it("titles a failed delete as a delete", () => {
+    expect(chatErrorTitle({ code: "not_allowed", action: "delete" }, t)).toBe(
+      "chat.delete_failed",
+    );
+  });
+
+  it("reports a message someone else removed first as gone, not failed", () => {
+    const error = { code: "not_found", action: "delete" as const };
+
+    expect(chatErrorFailed(error)).toBe(false);
+    expect(chatErrorTitle(error, t)).toBe("chat.message_already_gone");
+    expect(chatErrorDescription(error, t)).toBeUndefined();
+  });
+
+  it("only treats not_found as gone for a delete", () => {
+    expect(chatErrorFailed({ code: "not_found" })).toBe(true);
+    expect(chatErrorFailed({ code: "not_allowed", action: "delete" })).toBe(
+      true,
+    );
+  });
+
+  it("says a delete the api never answered may still go through", () => {
+    expect(chatErrorDescription({ code: "timeout", action: "delete" }, t)).toBe(
+      "chat.delete_timeout",
+    );
+  });
+
+  it.each(["not_allowed", "offline", "gagged", "too_long"])(
+    "adds nothing to a failed delete for %s",
+    (code) => {
+      expect(
+        chatErrorDescription({ code, action: "delete" }, t),
+      ).toBeUndefined();
+    },
+  );
 });

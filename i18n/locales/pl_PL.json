@@ -2402,7 +2402,7 @@
           "clip_fps": "FPS highlightów",
           "clip_fps_description": "Częstotliwość klatek dla renderowanych highlightów i ręcznie edytowanych klipów. 60 FPS jest płynniejsze, ale podwaja pracę enkodera i rozmiar pliku; 30 FPS to lżejsza opcja.",
           "clip_resolution": "Rozdzielczość highlightów",
-          "clip_resolution_description": "Domyślna rozdzielczość wyjściowa dla renderowanych highlightów i ręcznie edytowanych klipów. Użytkownicy mogą nadal nadpisać ją dla pojedynczego klipu w oknie renderowania. 1080p balansuje jakość i rozmiar pliku; 720p daje ~50% mniejsze pliki. Obie opcje korzystają, gdy węzły GPU renderują w 1440p — streamer nadpróbkowuje do wybranej rozdzielczości wyjściowej.",
+          "clip_resolution_description": "Rozdzielczość wyjściowa dla renderowanych highlightów i ręcznie edytowanych klipów. 1080p balansuje jakość i rozmiar pliku; 720p daje ~50% mniejsze pliki. Obie opcje korzystają, gdy węzły GPU renderują w 1440p — streamer nadpróbkowuje do wybranej rozdzielczości wyjściowej.",
           "codec_h265": "H.265 / HEVC",
           "codec_h264": "H.264 (zalecane)",
           "clip_bake_branding": "Wypal chip gracza i outro w highlighty",
@@ -8820,7 +8820,6 @@
       "close": "Zamknij",
       "segments": "Segmenty",
       "title_label": "Tytuł",
-      "resolution": "Rozdzielczość",
       "render": "Renderuj",
       "add": "Dodaj",
       "stop": "Zatrzymaj",
@@ -8893,7 +8892,6 @@
       "preset": "Szablon",
       "title_label": "Tytuł",
       "title_placeholder": "Domyślnie nazwa szablonu",
-      "resolution": "Rozdzielczość",
       "submit": "Generuj highlighty"
     },
     "presets": {

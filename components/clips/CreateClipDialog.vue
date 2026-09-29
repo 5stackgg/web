@@ -28,7 +28,6 @@ import {
 } from "~/components/ui/select";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { useDemoPlaybackStore } from "~/stores/DemoPlaybackStore";
-import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import ClipRenderProgress from "~/components/clips/ClipRenderProgress.vue";
 import { useClipRenderActive } from "~/composables/useClipRenderActive";
 
@@ -44,22 +43,7 @@ const emit = defineEmits<{
 }>();
 
 const store = useDemoPlaybackStore();
-const appSettings = useApplicationSettingsStore();
 const nuxtApp = useNuxtApp();
-
-const clipFps = computed<30 | 60>(() => {
-  const raw = appSettings.settings.find(
-    (s) => s.name === "public.clip_fps",
-  )?.value;
-  return raw === "30" ? 30 : 60;
-});
-
-const clipResolutionDefault = computed<"720p" | "1080p">(() => {
-  const raw = appSettings.settings.find(
-    (s) => s.name === "public.clip_resolution",
-  )?.value;
-  return raw === "720p" ? "720p" : "1080p";
-});
 
 type Preset = "knife" | "multikills" | "best_round" | "recap";
 const presetTarget = ref<string | null>(null);
@@ -99,7 +83,6 @@ const PRESETS = computed<
 ]);
 
 const title = ref("");
-const resolution = ref<"720p" | "1080p">(clipResolutionDefault.value);
 const submitting = ref(false);
 const submitError = ref<string | null>(null);
 const renderingJobId = ref<string | null>(null);
@@ -111,7 +94,6 @@ watch(
   (v) => {
     if (!v) return;
     title.value = "";
-    resolution.value = clipResolutionDefault.value;
     submitting.value = false;
     submitError.value = null;
     renderingJobId.value = null;
@@ -195,8 +177,6 @@ async function submit() {
             match_map_id: props.matchMapId,
             target_steam_id: presetTarget.value,
             preset: presetChoice.value,
-            resolution: resolution.value,
-            fps: clipFps.value,
             title: title.value || undefined,
             target_name: targetName,
           },
@@ -360,22 +340,6 @@ function close(v: boolean) {
             :placeholder="$t('clips.create_dialog.title_placeholder')"
             maxlength="80"
           />
-        </div>
-
-        <div class="space-y-2">
-          <Label
-            class="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground"
-            >{{ $t("clips.create_dialog.resolution") }}</Label
-          >
-          <Select v-model="resolution">
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="720p">720p</SelectItem>
-              <SelectItem value="1080p">1080p</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
 
         <p v-if="submitError" class="text-xs text-destructive">

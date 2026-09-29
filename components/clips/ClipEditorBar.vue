@@ -19,19 +19,11 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
 import { useDemoPlaybackStore } from "~/stores/DemoPlaybackStore";
-import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useDemoPlayback } from "~/composables/useDemoPlayback";
 import { useClipEditor, type EditorSegment } from "~/composables/useClipEditor";
 import { useClipRenderActive } from "~/composables/useClipRenderActive";
@@ -45,21 +37,6 @@ const props = defineProps<{
 }>();
 
 const store = useDemoPlaybackStore();
-const appSettings = useApplicationSettingsStore();
-
-const clipFps = computed<30 | 60>(() => {
-  const raw = appSettings.settings.find(
-    (s) => s.name === "public.clip_fps",
-  )?.value;
-  return raw === "30" ? 30 : 60;
-});
-
-const clipResolutionDefault = computed<"720p" | "1080p">(() => {
-  const raw = appSettings.settings.find(
-    (s) => s.name === "public.clip_resolution",
-  )?.value;
-  return raw === "720p" ? "720p" : "1080p";
-});
 const { seek, setHudVisible } = useDemoPlayback();
 const editor = useClipEditor();
 const nuxtApp = useNuxtApp();
@@ -67,10 +44,6 @@ const { active: renderActive, trackJob: trackRenderJob } =
   useClipRenderActive();
 
 const title = ref("");
-const resolution = ref<"720p" | "1080p">(clipResolutionDefault.value);
-watch(clipResolutionDefault, (v) => {
-  resolution.value = v;
-});
 const submitting = ref(false);
 const submitError = ref<string | null>(null);
 const renderingJobId = ref<string | null>(null);
@@ -316,7 +289,6 @@ async function submit() {
       end_tick: s.end_tick,
       ...(s.pov_steam_id ? { pov_steam_id: s.pov_steam_id } : {}),
     })),
-    output: { format: "mp4", resolution: resolution.value, fps: clipFps.value },
     destination: "library",
     title: title.value || undefined,
   };
@@ -637,9 +609,7 @@ function onRenderClose() {
         </div>
       </div>
 
-      <div
-        class="grid grid-cols-1 sm:grid-cols-[1fr_auto_auto] gap-2 items-end"
-      >
+      <div class="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2 items-end">
         <div class="space-y-1">
           <Label
             for="clip-editor-title"
@@ -654,22 +624,6 @@ function onRenderClose() {
             class="h-8 text-sm"
             maxlength="80"
           />
-        </div>
-        <div class="space-y-1">
-          <Label
-            class="text-[0.6rem] font-mono uppercase tracking-[0.16em] text-muted-foreground"
-          >
-            {{ $t("clips.editor.resolution") }}
-          </Label>
-          <Select v-model="resolution">
-            <SelectTrigger class="h-8 w-[6.5rem] text-xs">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="720p">720p</SelectItem>
-              <SelectItem value="1080p">1080p</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
         <Button
           type="button"

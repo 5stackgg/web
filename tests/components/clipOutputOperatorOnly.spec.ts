@@ -22,10 +22,18 @@ const sent = (action: string) =>
     .map(([{ mutation }]) => mutation?.[action]?.[0])
     .find(Boolean);
 
-describe("clip output settings for a non-administrator", () => {
+const OUTPUT_CONTROL = /resolution|\bfps\b|720p|1080p/i;
+
+const dialogWith = (marker: string) =>
+  [...document.body.querySelectorAll('[role="dialog"]')]
+    .map((dialog) => dialog.textContent ?? "")
+    .find((text) => text.includes(marker));
+
+describe("clip render requests", () => {
   beforeEach(() => {
-    // All a non-administrator's settings subscription can see: `public.` rows.
     useApplicationSettingsStore().settings = [
+      { name: "clip_fps", value: "30" },
+      { name: "clip_resolution", value: "720p" },
       { name: "public.clip_fps", value: "30" },
       { name: "public.clip_resolution", value: "720p" },
     ];
@@ -45,24 +53,28 @@ describe("clip output settings for a non-administrator", () => {
     vi.restoreAllMocks();
   });
 
-  it("sends the operator's fps and resolution from the preset dialog", async () => {
+  it("the preset dialog shows no output controls and sends no fps or resolution", async () => {
     const wrapper = await mountSuspended(CreateClipDialog, {
       props: { open: false, matchMapId: "map-1" },
     });
     unmount = () => wrapper.unmount();
 
     await wrapper.setProps({ open: true });
+    await flushPromises();
+    expect(dialogWith("Auto Clip")).toBeDefined();
+    expect(dialogWith("Auto Clip")).not.toMatch(OUTPUT_CONTROL);
+
     const vm = wrapper.vm as any;
     vm.presetTarget = "76561198000000009";
     await vm.submit();
 
-    expect(sent("createClipFromPreset")).toMatchObject({
-      resolution: "720p",
-      fps: 30,
-    });
+    const args = sent("createClipFromPreset");
+    expect(args.target_steam_id).toBe("76561198000000009");
+    expect(args).not.toHaveProperty("fps");
+    expect(args).not.toHaveProperty("resolution");
   });
 
-  it("sends the operator's fps and resolution from the clip editor", async () => {
+  it("the clip editor shows no output controls and sends no output", async () => {
     const playback = useDemoPlaybackStore();
     playback.totalTicks = 64 * 60;
     playback.hudVisible = false;
@@ -73,16 +85,16 @@ describe("clip output settings for a non-administrator", () => {
     });
     unmount = () => wrapper.unmount();
 
+    expect(wrapper.text()).not.toMatch(OUTPUT_CONTROL);
+
     await (wrapper.vm as any).submit();
 
-    expect(sent("createClipRender").spec.output).toEqual({
-      format: "mp4",
-      resolution: "720p",
-      fps: 30,
-    });
+    const { spec } = sent("createClipRender");
+    expect(spec.match_map_id).toBe("map-1");
+    expect(spec).not.toHaveProperty("output");
   });
 
-  it("opens the admin highlight dialog on the operator's resolution", async () => {
+  it("the admin highlight dialog shows no output controls and sends no fps or resolution", async () => {
     vi.spyOn(
       (useNuxtApp() as any).$apollo.defaultClient,
       "query",
@@ -110,11 +122,15 @@ describe("clip output settings for a non-administrator", () => {
 
     await wrapper.setProps({ open: true });
     await flushPromises();
+    expect(dialogWith("Mirage")).toBeDefined();
+    expect(dialogWith("Mirage")).not.toMatch(OUTPUT_CONTROL);
+
     await (wrapper.vm as any).submit();
 
     const args = sent("queueClipFromPreset");
-    expect(args.resolution).toBe("720p");
+    expect(args.target_steam_id).toBe("76561198000000009");
     expect(args).not.toHaveProperty("fps");
+    expect(args).not.toHaveProperty("resolution");
   });
 });
 
@@ -143,40 +159,45 @@ describe("highlights settings page", () => {
     return wrapper;
   };
 
-  it("loads and saves the clip settings under names every role can read", async () => {
+  const saved = () =>
+    (sent("insert_settings").objects as Array<{ name: string }>).filter(
+      ({ name }) =>
+        name.includes("clip_fps") || name.includes("clip_resolution"),
+    );
+
+  it("loads and saves the admin-only clip settings", async () => {
     useApplicationSettingsStore().settings = [
-      { name: "public.clip_fps", value: "30" },
-      { name: "public.clip_resolution", value: "720p" },
+      { name: "clip_fps", value: "30" },
+      { name: "clip_resolution", value: "720p" },
     ];
     const wrapper = await mountPage();
 
     await (wrapper.vm as any).updateSettings();
 
-    expect(sent("insert_settings").objects).toEqual(
-      expect.arrayContaining([
-        { name: "public.clip_fps", value: "30" },
-        { name: "public.clip_resolution", value: "720p" },
-      ]),
-    );
+    expect(saved()).toEqual([
+      { name: "clip_fps", value: "30" },
+      { name: "clip_resolution", value: "720p" },
+    ]);
   });
 
-  it("saves what an admin picks in the clip fields", async () => {
+  it("binds the clip fields to the admin-only names", async () => {
     const wrapper = await mountPage();
     const field = (name: string) =>
       wrapper
         .findAllComponents({ name: "Field" })
         .find((f) => f.props("name") === name);
 
-    field("public.clip_fps")!.vm.handleChange("30");
-    field("public.clip_resolution")!.vm.handleChange("720p");
+    expect(field("public.clip_fps")).toBeUndefined();
+    expect(field("public.clip_resolution")).toBeUndefined();
+
+    field("clip_fps")!.vm.handleChange("30");
+    field("clip_resolution")!.vm.handleChange("720p");
     await flushPromises();
     await (wrapper.vm as any).updateSettings();
 
-    expect(sent("insert_settings").objects).toEqual(
-      expect.arrayContaining([
-        { name: "public.clip_fps", value: "30" },
-        { name: "public.clip_resolution", value: "720p" },
-      ]),
-    );
+    expect(saved()).toEqual([
+      { name: "clip_fps", value: "30" },
+      { name: "clip_resolution", value: "720p" },
+    ]);
   });
 });

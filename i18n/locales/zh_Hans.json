@@ -2402,7 +2402,7 @@
           "clip_fps": "高光时刻帧率",
           "clip_fps_description": "渲染的高光时刻和手动编辑精彩集锦的输出帧率。60 FPS 更流畅，但编码工作量和文件大小翻倍；30 FPS 是更轻量的选择。",
           "clip_resolution": "高光时刻分辨率",
-          "clip_resolution_description": "渲染的高光时刻和手动编辑精彩集锦的默认输出分辨率。用户仍可在渲染对话框中按集锦覆盖。1080p 兼顾画质和文件大小；720p 文件大小约减小 50%。当 GPU 节点以 1440p 渲染时，两者都能受益——流媒体服务器将超采样结果下采样到所选输出分辨率。",
+          "clip_resolution_description": "渲染的高光时刻和手动编辑精彩集锦的输出分辨率。1080p 兼顾画质和文件大小；720p 文件大小约减小 50%。当 GPU 节点以 1440p 渲染时，两者都能受益——流媒体服务器将超采样结果下采样到所选输出分辨率。",
           "codec_h265": "H.265 / HEVC",
           "codec_h264": "H.264（推荐）",
           "clip_bake_branding": "在高光时刻中嵌入玩家标签和片尾",
@@ -8820,7 +8820,6 @@
       "close": "关闭",
       "segments": "片段",
       "title_label": "标题",
-      "resolution": "分辨率",
       "render": "渲染",
       "add": "添加",
       "stop": "停止",
@@ -8893,7 +8892,6 @@
       "preset": "预设",
       "title_label": "标题",
       "title_placeholder": "默认使用预设名称",
-      "resolution": "分辨率",
       "submit": "生成高光"
     },
     "presets": {

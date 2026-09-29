@@ -2402,7 +2402,7 @@
           "clip_fps": "FPS do highlight",
           "clip_fps_description": "Taxa de quadros de saída para highlights renderizados e clipes editados manualmente. 60 FPS é mais suave, mas dobra o trabalho de codificação e o tamanho do arquivo; 30 FPS é a opção mais leve.",
           "clip_resolution": "Resolução do highlight",
-          "clip_resolution_description": "Resolução de saída padrão para highlights renderizados e clipes editados manualmente. Os usuários ainda podem substituir por clipe no diálogo de renderização. 1080p equilibra qualidade e tamanho de arquivo; 720p produz arquivos ~50% menores. Ambos se beneficiam quando os nós de GPU renderizam em 1440p — o streamer faz supersampling reduzindo para a resolução de saída selecionada.",
+          "clip_resolution_description": "Resolução de saída para highlights renderizados e clipes editados manualmente. 1080p equilibra qualidade e tamanho de arquivo; 720p produz arquivos ~50% menores. Ambos se beneficiam quando os nós de GPU renderizam em 1440p — o streamer faz supersampling reduzindo para a resolução de saída selecionada.",
           "codec_h265": "H.265 / HEVC",
           "codec_h264": "H.264 (recomendado)",
           "clip_bake_branding": "Incorporar chip do jogador + outro nos highlights*",
@@ -8820,7 +8820,6 @@
       "close": "Fechar",
       "segments": "Segmentos",
       "title_label": "Título",
-      "resolution": "Resolução",
       "render": "Renderizar",
       "add": "Adicionar",
       "stop": "Parar",
@@ -8893,7 +8892,6 @@
       "preset": "Pré-ajuste",
       "title_label": "Título",
       "title_placeholder": "Padrão para o nome do pré-ajuste",
-      "resolution": "Resolução",
       "submit": "Gerar highlights"
     },
     "presets": {

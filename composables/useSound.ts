@@ -92,7 +92,7 @@ export const useSound = () => {
   };
 
   const playNotificationSound = () => {
-    if (isInGame()) {
+    if (!import.meta.client || !isEnabled.value || isInGame()) {
       return;
     }
 

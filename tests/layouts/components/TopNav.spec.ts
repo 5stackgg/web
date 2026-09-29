@@ -5,6 +5,7 @@ import { mockNuxtImport, mountSuspended } from "@nuxt/test-utils/runtime";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import TopNav from "~/layouts/components/TopNav.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
+import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { emulateDevice, fakePwa, userAgents } from "../../helpers/pwaDevice";
 
 mockNuxtImport("usePendingImports", () => () => ({ pendingImports: ref([]) }));
@@ -260,5 +261,146 @@ describe("TopNav menus on a phone", () => {
       .filter((span) => span.text() === "Browse and search for players");
     expect(subtitle).toHaveLength(1);
     expect(subtitle[0].classes()).toContain("max-md:hidden");
+  });
+});
+
+describe("TopNav Watch live badge", () => {
+  afterEach(() => {
+    useMatchLobbyStore().liveMatchesCount = 0;
+  });
+
+  it("renders red, with none of the amber count classes left to win the cascade", async () => {
+    emulateDevice({ userAgent: userAgents.desktopChrome, width: 1280 });
+    useMatchLobbyStore().liveMatchesCount = 3;
+
+    const wrapper = await mountTopNav();
+    const badge = wrapper
+      .findAll('a[href="/watch"] span')
+      .find((span) => span.text() === "3");
+
+    expect(badge).toBeDefined();
+    const classes = badge!.classes();
+    expect(classes).toEqual(
+      expect.arrayContaining([
+        "border-destructive/50",
+        "bg-destructive/15",
+        "text-destructive",
+      ]),
+    );
+    expect(classes.filter((name) => name.includes("--tac-amber"))).toEqual([]);
+  });
+});
+
+describe("TopNav between 768 and 830px", () => {
+  it("treats exactly 768px as desktop, the width Tailwind's md starts at", async () => {
+    emulateDevice({ userAgent: userAgents.desktopChrome, width: 768 });
+
+    const wrapper = await mountTopNav();
+
+    expect(wrapper.find('a[aria-label="5stack"]').exists()).toBe(true);
+  });
+
+  it("keeps 767px on the phone bar", async () => {
+    emulateDevice({ userAgent: userAgents.desktopChrome, width: 767 });
+
+    const wrapper = await mountTopNav();
+
+    expect(wrapper.find('a[aria-label="5stack"]').exists()).toBe(false);
+  });
+
+  it("scrolls the desktop list instead of running it under the account controls", async () => {
+    emulateDevice({ userAgent: userAgents.desktopChrome, width: 800 });
+
+    const wrapper = await mountTopNav();
+    const root = wrapper.find("[data-reka-navigation-menu]");
+
+    expect(root.classes()).toContain("md:[&>div:first-child]:min-w-0");
+    expect(root.find("ul").classes()).toEqual(
+      expect.arrayContaining([
+        "[&>li]:shrink-0",
+        "md:justify-start",
+        "md:overflow-x-auto",
+      ]),
+    );
+  });
+
+  it("lets a mouse wheel reach items cut off at the end of the list", async () => {
+    emulateDevice({ userAgent: userAgents.desktopChrome, width: 800 });
+
+    const wrapper = await mountTopNav();
+    const list = wrapper.find("[data-reka-navigation-menu] ul")
+      .element as HTMLElement;
+    Object.defineProperty(list, "scrollWidth", { value: 600 });
+    Object.defineProperty(list, "clientWidth", { value: 400 });
+
+    const down = new WheelEvent("wheel", { deltaY: 120, cancelable: true });
+    list.dispatchEvent(down);
+    expect(list.scrollLeft).toBe(120);
+    expect(down.defaultPrevented).toBe(true);
+
+    list.dispatchEvent(new WheelEvent("wheel", { deltaY: 500 }));
+    expect(list.scrollLeft).toBe(200);
+
+    const pastEnd = new WheelEvent("wheel", { deltaY: 50, cancelable: true });
+    list.dispatchEvent(pastEnd);
+    expect(pastEnd.defaultPrevented).toBe(false);
+  });
+
+  it("carries the below-830px compaction on the wordmark and links", async () => {
+    emulateDevice({ userAgent: userAgents.desktopChrome, width: 800 });
+
+    const wrapper = await mountTopNav();
+    const wordmark = wrapper.find('a[aria-label="5stack"] > span');
+    const watch = wrapper.find('a[href="/watch"]');
+
+    expect(wordmark.classes()).toContain("max-[829px]:hidden");
+    expect(watch.classes()).toEqual(
+      expect.arrayContaining([
+        "sm:px-[0.85rem]",
+        "md:max-[829px]:px-[0.55rem]",
+        "md:max-[829px]:tracking-[0.12em]",
+      ]),
+    );
+  });
+});
+
+describe("TopNav FAQ entry", () => {
+  async function openCommunity(
+    wrapper: Awaited<ReturnType<typeof mountTopNav>>,
+  ) {
+    const community = wrapper
+      .findAll("button")
+      .find((candidate) => candidate.text().startsWith("Community"));
+    await community!.trigger("click");
+    await flushPromises();
+
+    return wrapper.find('[data-reka-navigation-menu] [id*="-content-"]');
+  }
+
+  it("reaches the FAQ from the Community menu on a signed-out phone", async () => {
+    emulateDevice({ userAgent: userAgents.androidChrome, width: 390 });
+    useAuthStore().me = undefined;
+
+    const wrapper = await mountTopNav();
+    const barFaq = wrapper
+      .findAll("[data-reka-navigation-menu] > div > ul > li")
+      .find((item) => item.find('a[href="/faq"]').exists());
+    expect(barFaq?.classes()).toEqual(
+      expect.arrayContaining(["hidden", "md:block"]),
+    );
+
+    const faq = (await openCommunity(wrapper)).find('a[href="/faq"]');
+    expect(faq.exists()).toBe(true);
+    expect(faq.text()).toContain("Support");
+  });
+
+  it("leaves it out of the desktop panel, where the bar already has it", async () => {
+    emulateDevice({ userAgent: userAgents.desktopChrome, width: 1280 });
+
+    const wrapper = await mountTopNav();
+
+    expect((await openCommunity(wrapper)).find('a[href="/faq"]').exists()).toBe(
+      false,
+    );
   });
 });

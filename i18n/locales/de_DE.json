@@ -5400,10 +5400,6 @@
         "operations": "OPERATIONEN"
       },
       "community": {
-        "watch": {
-          "title": "Zuschauen",
-          "subtitle": "Matches und Turniere ansehen"
-        },
         "players": {
           "title": "Spieler",
           "subtitle": "Spieler durchsuchen und finden"
@@ -8283,6 +8279,7 @@
       "decline": "Ablehnen",
       "requested": "Angefragt",
       "cancel_request": "Anfrage abbrechen",
+      "cancel_request_aria": "Angefragt, Anfrage abbrechen",
       "incoming_requests": "Anfragen",
       "sent_requests": "Gesendet"
     },

@@ -5400,10 +5400,6 @@
         "operations": "OPERATIONS"
       },
       "community": {
-        "watch": {
-          "title": "시청",
-          "subtitle": "매치와 토너먼트를 시청하세요"
-        },
         "players": {
           "title": "플레이어",
           "subtitle": "플레이어를 찾아보고 검색하세요"
@@ -8283,6 +8279,7 @@
       "decline": "거절",
       "requested": "요청함",
       "cancel_request": "요청 취소",
+      "cancel_request_aria": "요청함, 요청 취소",
       "incoming_requests": "받은 요청",
       "sent_requests": "보낸 요청"
     },

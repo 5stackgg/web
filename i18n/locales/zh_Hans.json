@@ -5400,10 +5400,6 @@
         "operations": "操作"
       },
       "community": {
-        "watch": {
-          "title": "观战",
-          "subtitle": "观看比赛、赛事"
-        },
         "players": {
           "title": "玩家",
           "subtitle": "浏览和搜索玩家"
@@ -8283,6 +8279,7 @@
       "decline": "拒绝",
       "requested": "已请求",
       "cancel_request": "取消请求",
+      "cancel_request_aria": "已请求，取消请求",
       "incoming_requests": "收到的请求",
       "sent_requests": "已发送的请求"
     },

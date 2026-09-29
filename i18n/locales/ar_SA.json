@@ -5400,10 +5400,6 @@
         "operations": "العمليات"
       },
       "community": {
-        "watch": {
-          "title": "شاهد",
-          "subtitle": "شاهد المباريات والبطولات"
-        },
         "players": {
           "title": "اللاعبون",
           "subtitle": "تصفّح اللاعبين وابحث عنهم"
@@ -8283,6 +8279,7 @@
       "decline": "ارفض",
       "requested": "تم الإرسال",
       "cancel_request": "ألغِ الطلب",
+      "cancel_request_aria": "تم الإرسال، ألغِ الطلب",
       "incoming_requests": "الطلبات",
       "sent_requests": "المُرسلة"
     },

@@ -5400,10 +5400,6 @@
         "operations": "OPERATIONER"
       },
       "community": {
-        "watch": {
-          "title": "Se med",
-          "subtitle": "Se kampe og turneringer"
-        },
         "players": {
           "title": "Spillere",
           "subtitle": "Gennemse og søg efter spillere"
@@ -8283,6 +8279,7 @@
       "decline": "Afvis",
       "requested": "Anmodet",
       "cancel_request": "Annuller anmodning",
+      "cancel_request_aria": "Anmodet, Annuller anmodning",
       "incoming_requests": "Anmodninger",
       "sent_requests": "Sendt"
     },

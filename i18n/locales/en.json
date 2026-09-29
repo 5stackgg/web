@@ -5400,10 +5400,6 @@
         "operations": "OPERATIONS"
       },
       "community": {
-        "watch": {
-          "title": "Watch",
-          "subtitle": "Watch matches, tournaments"
-        },
         "players": {
           "title": "Players",
           "subtitle": "Browse and search for players"
@@ -8283,6 +8279,7 @@
       "decline": "Decline",
       "requested": "Requested",
       "cancel_request": "Cancel Request",
+      "cancel_request_aria": "Requested, Cancel Request",
       "incoming_requests": "Requests",
       "sent_requests": "Sent"
     },

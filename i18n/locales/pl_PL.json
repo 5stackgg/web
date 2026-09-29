@@ -5400,10 +5400,6 @@
         "operations": "OPERACJE"
       },
       "community": {
-        "watch": {
-          "title": "Oglądaj",
-          "subtitle": "Oglądaj mecze, turnieje"
-        },
         "players": {
           "title": "Gracze",
           "subtitle": "Przeglądaj i szukaj graczy"
@@ -8283,6 +8279,7 @@
       "decline": "Odrzuć",
       "requested": "Wysłano",
       "cancel_request": "Anuluj zaproszenie",
+      "cancel_request_aria": "Wysłano, Anuluj zaproszenie",
       "incoming_requests": "Zaproszenia",
       "sent_requests": "Wysłane"
     },

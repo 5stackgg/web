@@ -5400,10 +5400,6 @@
         "operations": "ОПЕРАЦИИ"
       },
       "community": {
-        "watch": {
-          "title": "Смотреть",
-          "subtitle": "Смотри матчи и турниры"
-        },
         "players": {
           "title": "Игроки",
           "subtitle": "Просматривай и ищи игроков"
@@ -8283,6 +8279,7 @@
       "decline": "Отклонить",
       "requested": "Отправлено",
       "cancel_request": "Отменить заявку",
+      "cancel_request_aria": "Отправлено, Отменить заявку",
       "incoming_requests": "Заявки",
       "sent_requests": "Отправленные"
     },

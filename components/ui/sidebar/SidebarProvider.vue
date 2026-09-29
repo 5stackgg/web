@@ -4,7 +4,7 @@ import { useEventListener, useMediaQuery, useVModel } from "@vueuse/core"
 import { TooltipProvider } from "reka-ui"
 import { computed, ref, watch } from "vue"
 import { cn } from "@/lib/utils"
-import { provideSidebarContext, SIDEBAR_COOKIE_MAX_AGE, SIDEBAR_COOKIE_NAME, SIDEBAR_KEYBOARD_SHORTCUT, SIDEBAR_WIDTH, SIDEBAR_WIDTH_ICON } from "./utils"
+import { provideSidebarContext, SIDEBAR_COOKIE_MAX_AGE, SIDEBAR_COOKIE_NAME, SIDEBAR_KEYBOARD_SHORTCUT, SIDEBAR_MOBILE_QUERY, SIDEBAR_WIDTH, SIDEBAR_WIDTH_ICON } from "./utils"
 
 const props = withDefaults(defineProps<{
   defaultOpen?: boolean
@@ -22,7 +22,7 @@ const emits = defineEmits<{
 }>()
 
 const isMedium = useMediaQuery("(max-width: 1400px)")
-const isMobile = useMediaQuery("(max-width: 768px)")
+const isMobile = useMediaQuery(SIDEBAR_MOBILE_QUERY)
 const openMobile = ref(false)
 
 const open = useVModel(props, "open", emits, {

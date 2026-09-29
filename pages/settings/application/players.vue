@@ -769,6 +769,10 @@ export default {
           display: this.$t("roles.streamer"),
         },
         {
+          value: e_player_roles_enum.moderator,
+          display: this.$t("roles.moderator"),
+        },
+        {
           value: e_player_roles_enum.match_organizer,
           display: this.$t("roles.match_organizer"),
         },

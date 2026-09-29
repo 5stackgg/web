@@ -24,11 +24,14 @@ export function emulateDevice({
   vi.spyOn(navigator, "userAgent", "get").mockReturnValue(userAgent);
   vi.spyOn(window, "matchMedia").mockImplementation((query: string) => {
     const maxWidth = query.match(/max-width:\s*(\d+)px/);
+    const belowWidth = query.match(/^not all and \(min-width:\s*(\d+)px\)$/);
     const matches = query.includes("display-mode: standalone")
       ? standalone
       : maxWidth
         ? width <= Number(maxWidth[1])
-        : false;
+        : belowWidth
+          ? width < Number(belowWidth[1])
+          : false;
 
     return {
       matches,

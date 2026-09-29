@@ -2012,7 +2012,7 @@ const playerHeroTeamChipDotClasses =
                   type="button"
                   :class="[playerHeroCancelRequestClasses, 'flex-1']"
                   :disabled="friendActionPending"
-                  :aria-label="$t('matchmaking.friends.cancel_request')"
+                  :aria-label="$t('matchmaking.friends.cancel_request_aria')"
                   @click="cancelFriendRequest"
                 >
                   <span class="grid justify-items-center [&>*]:[grid-area:1/1]">

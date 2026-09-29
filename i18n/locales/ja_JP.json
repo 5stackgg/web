@@ -5400,10 +5400,6 @@
         "operations": "OPERATIONS"
       },
       "community": {
-        "watch": {
-          "title": "観戦",
-          "subtitle": "試合やトーナメントを観戦"
-        },
         "players": {
           "title": "プレイヤー",
           "subtitle": "プレイヤーを閲覧・検索"
@@ -8283,6 +8279,7 @@
       "decline": "拒否",
       "requested": "申請中",
       "cancel_request": "申請を取消",
+      "cancel_request_aria": "申請中、申請を取消",
       "incoming_requests": "申請",
       "sent_requests": "送信済み"
     },

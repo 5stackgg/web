@@ -4,6 +4,7 @@ import { useRightSidebar } from "@/composables/useRightSidebar";
 import { useNotificationBadge } from "~/composables/useNotificationBadge";
 import { useInvites } from "@/composables/useInvites";
 import { useChatTabs } from "~/composables/useChatTabs";
+import { SIDEBAR_MOBILE_QUERY } from "~/components/ui/sidebar/utils";
 
 type Hub =
   | "recent-games"
@@ -45,7 +46,7 @@ export function setActiveHub(hub: Hub) {
 
 export function useHubState() {
   const { rightSidebarOpen, setRightSidebarOpen } = useRightSidebar();
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const isMobile = useMediaQuery(SIDEBAR_MOBILE_QUERY);
   const { hasNotifications } = useNotificationBadge();
   const { hasLobbyInvites, hasSocialInvites } = useInvites();
   const { totalUnread } = useChatTabs();

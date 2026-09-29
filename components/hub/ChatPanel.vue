@@ -2,6 +2,7 @@
 import { ref, computed, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useMediaQuery } from "@vueuse/core";
+import { SIDEBAR_MOBILE_QUERY } from "~/components/ui/sidebar/utils";
 import {
   Megaphone,
   Merge,
@@ -47,7 +48,7 @@ const { tabs, unreadCounts, activeTabId, setActiveTab, resetUnread, closeTab } =
 const { remove, reorder, directRoomIds } = useDirectConversationBar();
 
 const matchLobbyStore = useMatchLobbyStore();
-const isMobile = useMediaQuery("(max-width: 768px)");
+const isMobile = useMediaQuery(SIDEBAR_MOBILE_QUERY);
 
 const formatBadgeCount = (count: number) =>
   count > 100 ? "100+" : String(count);

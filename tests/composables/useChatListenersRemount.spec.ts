@@ -30,7 +30,6 @@ const OTHER = "76561198000000002";
 let lobbyId = "";
 let lobbyCounter = 0;
 let unmount: (() => void) | undefined;
-let incomingBaseline = 0;
 
 const room = () => `lobby:matchmaking:${lobbyId}`;
 
@@ -67,8 +66,7 @@ async function remountLayout() {
 }
 
 beforeEach(() => {
-  lobbyId = `lobby-teardown-${++lobbyCounter}`;
-  incomingBaseline = socket.listenerCount("direct:incoming");
+  lobbyId = `lobby-remount-${++lobbyCounter}`;
   flash.signalChat.mockClear();
   vi.spyOn(console, "info").mockImplementation(() => {});
   useChatTabs().clearAll();
@@ -105,7 +103,7 @@ describe("chat listeners across a layout remount", () => {
       "matchmaking",
       expect.objectContaining({ id: "m1" }),
     );
-    expect(useChatTabs().unreadCounts.value[`matchmaking:${lobbyId}`]).toBe(1);
+    expect(socket.listenerCount(`${room()}:chat`)).toBe(1);
   });
 
   it("handles a direct:incoming once", async () => {
@@ -118,21 +116,35 @@ describe("chat listeners across a layout remount", () => {
     });
 
     expect(flash.signalChat).toHaveBeenCalledTimes(1);
-    expect(socket.listenerCount("direct:incoming")).toBe(incomingBaseline + 1);
+    expect(socket.listenerCount("direct:incoming")).toBe(1);
   });
 
-  it("leaves its rooms and listeners when the layout unmounts", async () => {
+  it("keeps its rooms and listeners while the layout is away", async () => {
     await mountLayout();
-
-    expect(socket.listenerCount(`${room()}:chat`)).toBe(1);
-    expect(socket.listenerCount("direct:incoming")).toBe(incomingBaseline + 1);
-
     unmountLayout();
 
-    expect(socket.listenerCount(`${room()}:chat`)).toBe(0);
-    expect(socket.listenerCount("direct:incoming")).toBe(incomingBaseline);
+    expect(socket.listenerCount(`${room()}:chat`)).toBe(1);
 
     socket.emit(`${room()}:chat`, line("m2"));
-    expect(flash.signalChat).not.toHaveBeenCalled();
+    socket.emit("direct:incoming", {
+      roomId: `${ME}:${OTHER}`,
+      from: { steam_id: OTHER, name: "Dana" },
+      message: line("dm-2"),
+    });
+
+    expect(flash.signalChat).toHaveBeenCalledTimes(2);
+    expect(useChatTabs().unreadCounts.value[`matchmaking:${lobbyId}`]).toBe(1);
+    expect(useChatTabs().unreadCounts.value[`direct:${ME}:${OTHER}`]).toBe(1);
+  });
+
+  it("leaves a room whose tab closed while the layout was away", async () => {
+    await mountLayout();
+    unmountLayout();
+
+    useChatTabs().closeTab(`matchmaking:${lobbyId}`);
+    useAuthStore().me = { steam_id: ME, role: "user" } as any;
+    await mountLayout();
+
+    expect(socket.listenerCount(`${room()}:chat`)).toBe(0);
   });
 });

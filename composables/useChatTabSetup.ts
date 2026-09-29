@@ -1,4 +1,4 @@
-import { watch, computed, onScopeDispose } from "vue";
+import { watch, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { useChatTabs, type ChatTab } from "~/composables/useChatTabs";
 import { useChatReadState } from "~/composables/useChatReadState";
@@ -24,6 +24,12 @@ export function tournamentChatTab(tournament: {
     pinned: true,
   };
 }
+
+// Outlives the default layout, which unmounts whenever this window leaves it
+// (a push click lands on /chat/<id>, which has a layout of its own). Leaving
+// the rooms then would tell everyone in them this player left, and drop their
+// in-game flag, only to rejoin on the way back.
+const persistentLobbies = new Map<string, Lobby>();
 
 export function isChatTabOnScreen(tabId: string) {
   return (
@@ -53,7 +59,6 @@ export function useChatTabSetup() {
   const isOrganizer = computed(() =>
     authStore.isRoleAbove(e_player_roles_enum.match_organizer),
   );
-  const persistentLobbies = new Map<string, Lobby>();
 
   // Unread counting lives here rather than in ChatPanel because RightHub only
   // mounts a panel once its hub is first opened -- so counting inside the panel
@@ -317,11 +322,4 @@ export function useChatTabSetup() {
   );
 
   watch(tabs, syncPersistentChatJoins, { immediate: true, deep: true });
-
-  onScopeDispose(() => {
-    for (const lobby of persistentLobbies.values()) {
-      lobby.leave();
-    }
-    persistentLobbies.clear();
-  });
 }

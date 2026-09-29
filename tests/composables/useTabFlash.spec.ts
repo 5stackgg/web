@@ -487,6 +487,28 @@ describe("tab flash icon", () => {
     );
   });
 
+  it("retries an icon that failed to draw a minute later", async () => {
+    brandFavicon("retry");
+    fakeCanvas();
+    let failing = true;
+    const loaded = fakeImages(() => failing);
+    setVisibility("hidden");
+
+    useTabFlash().signal("chat", "retry-1");
+    await drainMicrotasks();
+    expect(faviconOverride.value).toBeNull();
+
+    setVisibility("visible");
+    failing = false;
+    vi.advanceTimersByTime(60_000);
+    setVisibility("hidden");
+    useTabFlash().signal("chat", "retry-2");
+    await drainMicrotasks();
+
+    expect(loaded).toHaveLength(2);
+    expect(faviconOverride.value).toBe("data:image/png;base64,ALERT");
+  });
+
   it("never applies an icon that finishes loading after the flash stopped", async () => {
     brandFavicon("late");
     fakeCanvas();

@@ -444,6 +444,12 @@ describe("ChatMessageActions reactions", () => {
     expect(hubHeld()).toBe(true);
   });
 
+  it("names the picker for screen readers", async () => {
+    await openPicker();
+
+    expect(picker()?.getAttribute("aria-label")).toBe("React");
+  });
+
   it("never lets go of the hub between the menu and the picker", async () => {
     const held: boolean[] = [];
     const stop = watch(

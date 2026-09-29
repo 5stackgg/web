@@ -48,13 +48,15 @@ const store = useDemoPlaybackStore();
 const appSettings = useApplicationSettingsStore();
 
 const clipFps = computed<30 | 60>(() => {
-  const raw = appSettings.settings.find((s) => s.name === "clip_fps")?.value;
+  const raw = appSettings.settings.find(
+    (s) => s.name === "public.clip_fps",
+  )?.value;
   return raw === "30" ? 30 : 60;
 });
 
 const clipResolutionDefault = computed<"720p" | "1080p">(() => {
   const raw = appSettings.settings.find(
-    (s) => s.name === "clip_resolution",
+    (s) => s.name === "public.clip_resolution",
   )?.value;
   return raw === "720p" ? "720p" : "1080p";
 });

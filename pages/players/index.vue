@@ -378,9 +378,23 @@ import {
                 />
               </div>
             </TableHead>
-            <TableHead v-if="canViewAdditionalDetails">{{
-              $t("pages.players.table.privilege")
-            }}</TableHead>
+            <TableHead
+              v-if="canViewAdditionalDetails"
+              class="cursor-pointer"
+              @click="toggleSort('role')"
+            >
+              <div class="flex items-center gap-1">
+                {{ $t("pages.players.table.privilege") }}
+                <ArrowUpIcon
+                  v-if="sortField === 'role' && sortDirection === 'desc'"
+                  class="w-4 h-4"
+                />
+                <ArrowDownIcon
+                  v-else-if="sortField === 'role' && sortDirection === 'asc'"
+                  class="w-4 h-4"
+                />
+              </div>
+            </TableHead>
             <TableHead
               v-if="canViewAdditionalDetails"
               class="cursor-pointer"
@@ -552,6 +566,10 @@ export default {
         {
           value: e_player_roles_enum.streamer,
           display: this.$t("roles.streamer"),
+        },
+        {
+          value: e_player_roles_enum.moderator,
+          display: this.$t("roles.moderator"),
         },
         {
           value: e_player_roles_enum.match_organizer,
@@ -935,7 +953,7 @@ export default {
       this.saveFiltersToStorage();
       this.queueSearch();
     },
-    toggleSort(field: "name" | "elo" | "last_sign_in_at") {
+    toggleSort(field: "name" | "elo" | "role" | "last_sign_in_at") {
       if (this.sortField === field) {
         // If clicking the same column, toggle direction
         this.sortDirection = this.sortDirection === "asc" ? "desc" : "asc";

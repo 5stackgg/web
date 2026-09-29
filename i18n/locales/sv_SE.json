@@ -929,6 +929,7 @@
     "user": "Användare",
     "verified_user": "Verifierad användare",
     "streamer": "Streamer",
+    "moderator": "Moderator",
     "match_organizer": "Matcharrangör",
     "tournament_organizer": "Turneringsarrangör",
     "administrator": "Administratör"
@@ -3150,6 +3151,7 @@
         "recent_wins_and_losses": "Senaste vinster och förluster",
         "elo_history": "ELO-historik",
         "no_elo_history": "Spela en match för att generera ELO",
+        "no_elo_history_other": "Ingen ELO-historik än",
         "play_a_match": "Spela",
         "matches": "Matcher",
         "no_matches": "Inga matcher än",

@@ -929,6 +929,7 @@
     "user": "Kullanıcı",
     "verified_user": "Doğrulanmış Kullanıcı",
     "streamer": "Yayıncı",
+    "moderator": "Moderatör",
     "match_organizer": "Maç Organizatörü",
     "tournament_organizer": "Turnuva Organizatörü",
     "administrator": "Yönetici"
@@ -3150,6 +3151,7 @@
         "recent_wins_and_losses": "Son galibiyet ve mağlubiyetler",
         "elo_history": "ELO geçmişi",
         "no_elo_history": "ELO oluşturmak için bir maç oyna",
+        "no_elo_history_other": "Henüz ELO geçmişi yok",
         "play_a_match": "Oyna",
         "matches": "Maçlar",
         "no_matches": "Henüz maç yok",

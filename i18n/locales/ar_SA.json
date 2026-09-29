@@ -929,6 +929,7 @@
     "user": "مستخدم",
     "verified_user": "مستخدم موثّق",
     "streamer": "مذيع بث",
+    "moderator": "مشرف محتوى",
     "match_organizer": "منظم مباريات",
     "tournament_organizer": "منظم بطولات",
     "administrator": "مشرف"
@@ -3150,6 +3151,7 @@
         "recent_wins_and_losses": "الفوز والخسارة مؤخرًا",
         "elo_history": "سجل ELO",
         "no_elo_history": "العب مباراة لتوليد ELO",
+        "no_elo_history_other": "لا يوجد سجل ELO بعد",
         "play_a_match": "العب",
         "matches": "المباريات",
         "no_matches": "لا توجد مباريات بعد",

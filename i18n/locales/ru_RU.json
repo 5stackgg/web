@@ -929,6 +929,7 @@
     "user": "Пользователь",
     "verified_user": "Верифицированный пользователь",
     "streamer": "Стример",
+    "moderator": "Модератор",
     "match_organizer": "Организатор матчей",
     "tournament_organizer": "Организатор турниров",
     "administrator": "Администратор"
@@ -3150,6 +3151,7 @@
         "recent_wins_and_losses": "Недавние победы и поражения",
         "elo_history": "История ELO",
         "no_elo_history": "Сыграй матч, чтобы получить ELO",
+        "no_elo_history_other": "Истории ELO пока нет",
         "play_a_match": "Играть",
         "matches": "Матчи",
         "no_matches": "Матчей пока нет",

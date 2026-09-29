@@ -121,6 +121,14 @@ describe("SanctionPlayer warnings", () => {
     expect(drawerForm().textContent).not.toContain("A reason is required");
   });
 
+  it("does not flag a blank reason on an enforced sanction", async () => {
+    const wrapper = await openDrawer("ban");
+
+    const { errors } = await (wrapper.vm as any).form.validate();
+
+    expect(errors.reason).toBeUndefined();
+  });
+
   it("issues a warning", async () => {
     const wrapper = await openDrawer("warning");
 

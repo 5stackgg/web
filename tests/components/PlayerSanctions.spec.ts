@@ -26,6 +26,7 @@ function sanction(
 }
 
 const tomorrow = () => new Date(Date.now() + 86_400_000).toISOString();
+const yesterday = () => new Date(Date.now() - 86_400_000).toISOString();
 
 let rows: any[] = [];
 let mutate: ReturnType<typeof vi.fn>;
@@ -228,6 +229,35 @@ describe("PlayerSanctions warnings", () => {
       steam_id: PLAYER,
       type,
       sanction_id: id,
+    });
+  });
+
+  it("removes only the expired ban, not the active ban beside it", async () => {
+    await mountSheet([
+      sanction("ban-expired", "ban", yesterday()),
+      sanction("ban-active", "ban", tomorrow()),
+    ]);
+
+    const expired = cards().find(
+      (el) => statusPill(el).textContent?.trim() === "Expired",
+    );
+    expect(expired, "expired ban card").toBeDefined();
+    expired!.querySelector<HTMLButtonElement>('[aria-label="Remove"]')!.click();
+    await flushPromises();
+
+    const confirm = Array.from(
+      document.body.querySelectorAll<HTMLButtonElement>(
+        '[role="alertdialog"] button',
+      ),
+    ).find((button) => button.textContent?.trim() === "Confirm");
+    expect(confirm, "confirm button").toBeDefined();
+    confirm!.click();
+    await flushPromises();
+
+    expect(mutate).toHaveBeenCalledTimes(1);
+    expect(mutate.mock.calls[0][0].variables).toMatchObject({
+      type: "ban",
+      sanction_id: "ban-expired",
     });
   });
 });

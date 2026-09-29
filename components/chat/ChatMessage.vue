@@ -68,6 +68,12 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
         <span class="whitespace-nowrap text-[9px] text-muted-foreground/70">
           <time-ago :date="message.timestamp" hide-icon></time-ago>
         </span>
+        <span
+          v-if="authorBlocked"
+          class="shrink-0 font-mono text-[0.5rem] font-bold uppercase leading-none tracking-[0.16em] text-muted-foreground/70"
+        >
+          {{ $t("player_blocks.blocked_badge") }}
+        </span>
         <!-- Which room, not who is speaking, so it sits away from the name --
              and only where the run starts, since the rail says the rest. -->
         <span
@@ -146,6 +152,7 @@ import {
   hasChatMessageActions,
   isOwnChatMessage,
 } from "~/utilities/chatMessageActions";
+import { usePlayerBlocks } from "~/composables/usePlayerBlocks";
 
 export default {
   props: {
@@ -227,6 +234,11 @@ export default {
     },
     isOwnMessage() {
       return isOwnChatMessage(this.message, this.viewerSteamId);
+    },
+    // Not gated on role or room: only a moderator in a group room is ever sent
+    // a blocked player's line to begin with.
+    authorBlocked() {
+      return usePlayerBlocks().isBlocked(this.message?.from?.steam_id);
     },
     permissions() {
       return chatMessagePermissions({

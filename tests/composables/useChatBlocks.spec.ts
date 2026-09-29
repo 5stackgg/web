@@ -330,3 +330,97 @@ describe("useChatBlocks", () => {
     expect(socket.hidesAuthor(DANA)).toBe(true);
   });
 });
+
+describe("useChatBlocks for a moderator", () => {
+  function signInAs(role: string) {
+    useAuthStore().me = {
+      steam_id: ME,
+      current_lobby_id: lobbyId,
+      role,
+    } as any;
+  }
+
+  const dmMessages = () => socket.lobbyMessages("direct", dmRoomId);
+
+  it("keeps a blocked player's lines, live lines and reactions in group rooms", async () => {
+    signInAs("moderator");
+    const popout = socket.joinLobby("popout", "direct", dmRoomId);
+    await flushPromises();
+
+    setBlocks(DANA);
+    await flushPromises();
+
+    expect(ids(groupMessages())).toEqual(["read", "dana-1", "dana-2", "evan"]);
+    expect(unread(groupTab)).toBe(3);
+
+    socket.emit(`${groupRoom}:chat`, line("dana-3", 5, DANA));
+    socket.emit(`${groupRoom}:reaction`, {
+      id: "evan",
+      reactions: { heart: [DANA], fire: [DANA, ME] },
+    });
+
+    expect(ids(groupMessages())).toEqual([
+      "read",
+      "dana-1",
+      "dana-2",
+      "evan",
+      "dana-3",
+    ]);
+    expect(groupMessages()[3].reactions).toEqual({
+      heart: [DANA],
+      fire: [DANA, ME],
+    });
+
+    expect(hasTab(dmTab)).toBe(false);
+    expect(ids(dmMessages())).toEqual(["dm-mine"]);
+    popout.leave();
+  });
+
+  it("still closes the conversation and ignores a message on its way", async () => {
+    signInAs("administrator");
+    await flushPromises();
+
+    setBlocks(DANA);
+    await flushPromises();
+
+    socket.emit("direct:incoming", {
+      roomId: dmRoomId,
+      from: { steam_id: DANA, name: "Dana" },
+    });
+
+    expect(hasTab(dmTab)).toBe(false);
+    expect(socket.hidesAuthor(DANA)).toBe(true);
+  });
+
+  it("hides the lines once the viewer is no longer a moderator", async () => {
+    signInAs("moderator");
+    setBlocks(DANA);
+    await flushPromises();
+    expect(ids(groupMessages())).toEqual(["read", "dana-1", "dana-2", "evan"]);
+
+    signInAs("user");
+    await flushPromises();
+
+    expect(ids(groupMessages())).toEqual(["read", "evan"]);
+  });
+
+  it("asks the group rooms for their history again on becoming a moderator", async () => {
+    setBlocks(DANA);
+    await flushPromises();
+    expect(ids(groupMessages())).toEqual(["read", "evan"]);
+    const send = connect();
+
+    signInAs("moderator");
+    await flushPromises();
+
+    expect(sentJoins(send)).toContain(`matchmaking:${lobbyId}`);
+    socket.emit(`${groupRoom}:messages`, {
+      messages: [
+        line("read", 0, EVAN),
+        line("dana-1", 2, DANA),
+        line("evan", 4, EVAN),
+      ],
+    });
+    expect(ids(groupMessages())).toEqual(["read", "dana-1", "evan"]);
+  });
+});

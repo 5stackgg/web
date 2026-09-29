@@ -65,7 +65,10 @@ export interface Lobby {
 
 export type LobbyMessageDeleted = Omit<RemovedChatMessage, "messages">;
 
+const NO_HIDDEN_AUTHORS: ReadonlySet<string> = new Set<string>();
+
 interface LobbyState {
+  type: ChatType;
   messages: ShallowRef<LobbyMessage[]>;
   seen: Set<string>;
   // Ids the room has deleted. A history snapshot built before the delete can
@@ -139,10 +142,12 @@ export class Socket extends EventEmitter {
   private instanceCounter = 0;
   private pendingRequests: Map<string, PendingChatRequest> = new Map();
   private reactionsInFlight = new Set<string>();
-  // The api stops sending a blocked player's lines once the block has
-  // committed, but not one already on its way, and it still sends their
-  // reactions.
+  // The api stops sending a blocked player's lines and reactions once the
+  // block has committed, but not what is already on its way or held here.
   private hiddenAuthors: ReadonlySet<string> = new Set<string>();
+  // Moderators are still sent a blocked player's lines and reactions in group
+  // rooms, so they can moderate them. A conversation stays closed for everyone.
+  private hidesAuthorsInGroups = true;
   // The api answers a request it failed to carry out with nothing at all.
   private static readonly REQUEST_TIMEOUT_MS = 8000;
   // How long a request that timed out still recognises its answer, so a slow
@@ -428,25 +433,53 @@ export class Socket extends EventEmitter {
 
   // Diffed here rather than by the caller, which can unmount and miss an
   // unblock that this set would then never hear about.
-  public setHiddenAuthors(steamIds: Array<string | number>) {
+  public setHiddenAuthors(
+    steamIds: Array<string | number>,
+    { inGroups = true }: { inGroups?: boolean } = {},
+  ) {
     const next = new Set(steamIds.map(String));
     const change = blockedIdsChange(this.hiddenAuthors, next);
-    this.hiddenAuthors = next;
+    const before = new Map(
+      [...this.lobbies.values()].map((lobby) => [
+        lobby,
+        this.authorsHiddenIn(lobby),
+      ]),
+    );
 
-    if (change.added.length > 0) {
-      const added = new Set(change.added);
-      for (const lobby of this.lobbies.values()) {
-        this.hideLobbyAuthors(lobby, added);
+    this.hiddenAuthors = next;
+    this.hidesAuthorsInGroups = inGroups;
+
+    let revealed = false;
+    for (const [lobby, previous] of before) {
+      const { added, removed } = blockedIdsChange(
+        previous,
+        this.authorsHiddenIn(lobby),
+      );
+
+      if (added.length > 0) {
+        this.hideLobbyAuthors(lobby, new Set(added));
+      }
+
+      if (removed.length > 0) {
+        revealed = true;
       }
     }
 
     // The api sends nothing on an unblock, so the rooms' history is asked for
     // again to bring back whatever of theirs is still there.
-    if (change.removed.length > 0) {
+    if (change.removed.length > 0 || revealed) {
       this.rejoinAll();
     }
 
     return change;
+  }
+
+  private authorsHiddenIn(lobby: LobbyState): ReadonlySet<string> {
+    if (lobby.type === "direct" || this.hidesAuthorsInGroups) {
+      return this.hiddenAuthors;
+    }
+
+    return NO_HIDDEN_AUTHORS;
   }
 
   public event(event: string, data: Record<string, unknown>) {
@@ -745,6 +778,7 @@ export class Socket extends EventEmitter {
     }
 
     const lobby: LobbyState = {
+      type,
       instances: new Set([instanceKey]),
       messages: shallowRef([]),
       seen: new Set(),
@@ -821,7 +855,8 @@ export class Socket extends EventEmitter {
     const snapshot = messages || [];
     const merged = mergeChatSnapshot(
       lobby.messages.value,
-      hideChatAuthors(snapshot, this.hiddenAuthors)?.messages ?? snapshot,
+      hideChatAuthors(snapshot, this.authorsHiddenIn(lobby))?.messages ??
+        snapshot,
       lobby.deleted,
       lobby.reacted,
     );
@@ -840,7 +875,7 @@ export class Socket extends EventEmitter {
     if (
       lobby.seen.has(key) ||
       isChatMessageDeleted(message, lobby.deleted) ||
-      isChatMessageFrom(message, this.hiddenAuthors)
+      isChatMessageFrom(message, this.authorsHiddenIn(lobby))
     ) {
       return;
     }
@@ -877,7 +912,10 @@ export class Socket extends EventEmitter {
       lobby.messages.value,
       {
         ...update,
-        reactions: withoutChatReactors(update?.reactions, this.hiddenAuthors),
+        reactions: withoutChatReactors(
+          update?.reactions,
+          this.authorsHiddenIn(lobby),
+        ),
       },
       lobby.deleted,
     );

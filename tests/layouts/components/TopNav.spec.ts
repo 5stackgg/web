@@ -171,6 +171,23 @@ describe("TopNav menus on a phone", () => {
     emulateDevice({ userAgent: userAgents.androidChrome, width: 390 });
   });
 
+  it("keeps the bar inside the screen instead of centring it off the edge", async () => {
+    const wrapper = await mountTopNav();
+
+    expect(wrapper.find("[data-reka-navigation-menu]").classes()).toEqual(
+      expect.arrayContaining([
+        "max-md:justify-start",
+        "max-md:overflow-x-auto",
+      ]),
+    );
+    expect(trigger(wrapper, "Play").classes()).toContain(
+      "max-sm:[&>svg]:hidden",
+    );
+    expect(wrapper.find("svg.lucide-chevrons-up-down").classes()).toContain(
+      "max-sm:hidden",
+    );
+  });
+
   it("pins the open panel under the bar, inside the screen", async () => {
     const wrapper = await mountTopNav();
     const play = await openMenu(wrapper, "Play");

@@ -8477,6 +8477,8 @@
     "send_failed": "Votre message n'a pas pu être envoyé",
     "gagged": "Vous êtes bâillonné et ne pouvez pas envoyer de messages dans le chat.",
     "message_actions": "Actions du message",
+    "copy_message": "Copier le texte",
+    "moderate_player": "Modérer {name}",
     "delete_message": "Supprimer le message",
     "delete_confirm_title": "Supprimer le message ?",
     "delete_confirm_description": "Le message de {name} sera supprimé pour tous les participants de ce chat.",

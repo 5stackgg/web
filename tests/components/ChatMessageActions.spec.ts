@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { watch } from "vue";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import ChatMessage from "~/components/chat/ChatMessage.vue";
 import ChatMessageActions from "~/components/chat/ChatMessageActions.vue";
 import { useRightSidebar } from "~/composables/useRightSidebar";
+import { CHAT_REACTIONS } from "~/constants/chat";
 import socket from "~/web-sockets/Socket";
 
 const { toast } = vi.hoisted(() => ({ toast: vi.fn() }));
@@ -17,7 +17,7 @@ vi.mock("@/components/ui/toast", async (importOriginal) => ({
 const MESSAGE = {
   id: "7f1d0c2e-8b1a-4c6e-9f00-000000000001",
   message: "gg",
-  source: "web",
+  source: "web" as const,
   timestamp: new Date(Date.UTC(2026, 8, 28, 12, 0)).toISOString(),
   from: { steam_id: "76561198000000002", name: "Dana" },
 };
@@ -25,6 +25,23 @@ const MESSAGE = {
 const TRIGGER = 'button[aria-label="Message actions"]';
 
 let unmount: (() => void) | undefined;
+
+// The test window hovers; this is the phone the toolbar never reaches.
+function touchScreen() {
+  vi.spyOn(window, "matchMedia").mockImplementation(
+    (query: string) =>
+      ({
+        matches: query === "(hover: none)",
+        media: query,
+        onchange: null,
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        addListener: () => {},
+        removeListener: () => {},
+        dispatchEvent: () => false,
+      }) as MediaQueryList,
+  );
+}
 
 afterEach(() => {
   unmount?.();
@@ -268,10 +285,14 @@ describe("ChatMessageActions for the author", () => {
     expect(wrapper.emitted("open")).toHaveLength(1);
   });
 
-  it("puts Edit first, and Delete after a separator", async () => {
+  it("puts Copy and Edit first, and Delete after a separator", async () => {
     await openMenu();
 
-    expect(menuItems()).toEqual(["Edit Message", "Delete Message"]);
+    expect(menuItems()).toEqual([
+      "Copy Text",
+      "Edit Message",
+      "Delete Message",
+    ]);
     expect(
       document.body.querySelector('[role="menu"] [role="separator"]'),
     ).not.toBeNull();
@@ -280,7 +301,7 @@ describe("ChatMessageActions for the author", () => {
   it("leaves the separator out when there is nothing to separate", async () => {
     await openMenu({ canDelete: false, canEdit: true });
 
-    expect(menuItems()).toEqual(["Edit Message"]);
+    expect(menuItems()).toEqual(["Copy Text", "Edit Message"]);
     expect(
       document.body.querySelector('[role="menu"] [role="separator"]'),
     ).toBeNull();
@@ -332,7 +353,8 @@ describe("ChatMessageActions for the author", () => {
   });
 });
 
-describe("ChatMessageActions reactions", () => {
+// A touch screen never gets the toolbar, so the menu is where its reactions are.
+describe("ChatMessageActions reactions on a touch screen", () => {
   const ME = "76561198000000001";
   const everything = {
     canDelete: true,
@@ -343,35 +365,31 @@ describe("ChatMessageActions reactions", () => {
 
   const hubHeld = () => useRightSidebar().hoverCloseSuspended.value;
 
+  const menu = () => document.body.querySelector<HTMLElement>('[role="menu"]');
+
   const menuItems = () =>
     Array.from(
       document.body.querySelectorAll<HTMLElement>('[role="menuitem"]'),
     ).map((item) => item.textContent?.trim());
 
-  const menuItem = (label: string) =>
-    Array.from(
-      document.body.querySelectorAll<HTMLElement>('[role="menuitem"]'),
-    ).find((item) => item.textContent?.trim() === label);
-
-  const picker = () =>
-    document.body.querySelector<HTMLElement>('[role="dialog"]');
-
   const choices = () =>
     Array.from(
-      picker()?.querySelectorAll<HTMLButtonElement>("button[data-reaction]") ??
-        [],
+      menu()?.querySelectorAll<HTMLElement>(
+        '[role="menuitemcheckbox"][data-reaction]',
+      ) ?? [],
     );
 
   const choice = (reaction: string) =>
-    choices().find((button) => button.dataset.reaction === reaction)!;
+    choices().find((item) => item.dataset.reaction === reaction)!;
 
   beforeEach(() => {
+    touchScreen();
     while (useRightSidebar().hoverCloseSuspended.value) {
       useRightSidebar().resumeHoverClose();
     }
   });
 
-  async function openPicker(
+  async function openMenu(
     permissions = everything,
     reactions: Record<string, string[]> = {},
   ) {
@@ -391,85 +409,49 @@ describe("ChatMessageActions reactions", () => {
     await trigger.trigger("keydown", { key: "Enter" });
     await flushPromises();
 
-    menuItem("Add Reaction")!.click();
-    await flushPromises();
-    await new Promise((resolve) => setTimeout(resolve, 20));
-    await flushPromises();
-
     return wrapper;
   }
 
-  it("puts Add Reaction above Edit, and Delete after a separator", async () => {
-    const wrapper = await mountSuspended(ChatMessageActions, {
-      props: {
-        message: MESSAGE,
-        room: { type: "match", id: "match-1" },
-        permissions: everything,
-        viewerSteamId: ME,
-      },
-      attachTo: document.body,
-    });
-    unmount = () => wrapper.unmount();
+  it("leads with the reactions, then Copy and Edit, and Delete after a separator", async () => {
+    await openMenu();
 
-    await wrapper.get(TRIGGER).trigger("keydown", { key: "Enter" });
-    await flushPromises();
-
+    expect(choices().map((item) => item.textContent?.trim())).toEqual(
+      CHAT_REACTIONS.map(({ glyph }) => glyph),
+    );
     expect(menuItems()).toEqual([
-      "Add Reaction",
+      "Copy Text",
       "Edit Message",
       "Delete Message",
     ]);
-    expect(
-      document.body.querySelectorAll('[role="menu"] [role="separator"]'),
-    ).toHaveLength(1);
-  });
-
-  it("opens the picker from the menu, with focus in it, holding the hub", async () => {
-    await openPicker();
-
-    expect(document.body.querySelector('[role="menu"]')).toBeNull();
-    expect(picker()?.hasAttribute("data-right-hub-interactive")).toBe(true);
-    expect(choices().map((button) => button.textContent?.trim())).toEqual([
-      "👍",
-      "❤️",
-      "😂",
-      "🔥",
-      "😮",
-      "😢",
-    ]);
-    expect(choice("thumbsup").getAttribute("aria-label")).toBe(
-      "React with 👍",
-    );
-    expect(picker()?.contains(document.activeElement)).toBe(true);
+    expect(menu()?.querySelectorAll('[role="separator"]')).toHaveLength(2);
     expect(hubHeld()).toBe(true);
   });
 
-  it("names the picker for screen readers", async () => {
-    await openPicker();
+  it("names the reactions for screen readers", async () => {
+    await openMenu();
 
-    expect(picker()?.getAttribute("aria-label")).toBe("React");
+    expect(menu()?.querySelector('[role="group"]')?.getAttribute("aria-label")).toBe(
+      "React",
+    );
+    expect(choice("thumbsup").getAttribute("aria-label")).toBe(
+      "React with 👍",
+    );
   });
 
-  it("never lets go of the hub between the menu and the picker", async () => {
-    const held: boolean[] = [];
-    const stop = watch(
-      () => useRightSidebar().hoverCloseSuspended.value,
-      (value) => held.push(value),
-      { flush: "sync" },
-    );
+  it("offers no reactions where the viewer can't react", async () => {
+    await openMenu({ ...everything, canReact: false, canAddReaction: false });
 
-    try {
-      await openPicker();
-    } finally {
-      stop();
-    }
-
-    expect(picker()).not.toBeNull();
-    expect(held).toEqual([true]);
+    expect(choices()).toHaveLength(0);
+    expect(menuItems()).toEqual([
+      "Copy Text",
+      "Edit Message",
+      "Delete Message",
+    ]);
+    expect(menu()?.querySelectorAll('[role="separator"]')).toHaveLength(1);
   });
 
   it("reacts with the pick, closes, and hands focus back", async () => {
-    const wrapper = await openPicker();
+    const wrapper = await openMenu();
 
     choice("fire").click();
     await flushPromises();
@@ -477,30 +459,30 @@ describe("ChatMessageActions reactions", () => {
     await flushPromises();
 
     expect(wrapper.emitted("react")).toEqual([["fire"]]);
-    expect(picker()).toBeNull();
+    expect(menu()).toBeNull();
     expect(hubHeld()).toBe(false);
     expect(document.activeElement).toBe(wrapper.get(TRIGGER).element);
   });
 
   it("marks what the viewer already holds, to take it back", async () => {
-    await openPicker(everything, { heart: [ME], fire: ["76561198000000002"] });
+    await openMenu(everything, { heart: [ME], fire: ["76561198000000002"] });
 
-    expect(choice("heart").getAttribute("aria-pressed")).toBe("true");
-    expect(choice("fire").getAttribute("aria-pressed")).toBe("false");
+    expect(choice("heart").getAttribute("aria-checked")).toBe("true");
+    expect(choice("fire").getAttribute("aria-checked")).toBe("false");
   });
 
   it("lets a gagged viewer take a reaction back but not add one", async () => {
-    const wrapper = await openPicker(
+    const wrapper = await openMenu(
       { ...everything, canAddReaction: false },
       { heart: [ME] },
     );
 
     expect(
       choices()
-        .filter((button) => !button.disabled)
-        .map((button) => button.dataset.reaction),
+        .filter((item) => !item.hasAttribute("data-disabled"))
+        .map((item) => item.dataset.reaction),
     ).toEqual(["heart"]);
-    expect(picker()?.textContent).toContain(
+    expect(menu()?.textContent).toContain(
       "You're gagged and can't add reactions.",
     );
 
@@ -512,7 +494,7 @@ describe("ChatMessageActions reactions", () => {
   });
 
   it("reacts once for a double click", async () => {
-    const wrapper = await openPicker();
+    const wrapper = await openMenu();
 
     const fire = choice("fire");
     fire.click();
@@ -522,50 +504,310 @@ describe("ChatMessageActions reactions", () => {
     expect(wrapper.emitted("react")).toEqual([["fire"]]);
   });
 
-  it("leaves focus where a click outside put it", async () => {
-    const wrapper = await openPicker();
-
-    const outside = document.createElement("button");
-    document.body.appendChild(outside);
+  it("copies the message text", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    vi.stubGlobal("navigator", { ...navigator, clipboard: { writeText } });
 
     try {
-      outside.dispatchEvent(
-        new PointerEvent("pointerdown", { bubbles: true, button: 0 }),
-      );
-      outside.focus();
-      await flushPromises();
-      await new Promise((resolve) => setTimeout(resolve, 20));
+      await openMenu();
+
+      Array.from(
+        document.body.querySelectorAll<HTMLElement>('[role="menuitem"]'),
+      )
+        .find((item) => item.textContent?.trim() === "Copy Text")!
+        .click();
       await flushPromises();
 
-      expect(picker()).toBeNull();
-      expect(hubHeld()).toBe(false);
-      expect(document.activeElement).not.toBe(wrapper.get(TRIGGER).element);
+      expect(writeText).toHaveBeenCalledWith("gg");
+      expect(toast).toHaveBeenCalledWith({ title: "Copied to Clipboard" });
     } finally {
-      outside.remove();
+      vi.unstubAllGlobals();
+    }
+  });
+});
+
+describe("ChatMessageActions toolbar", () => {
+  const ME = "76561198000000001";
+  const everything = {
+    canDelete: true,
+    canEdit: true,
+    canReact: true,
+    canAddReaction: true,
+  };
+
+  const hubHeld = () => useRightSidebar().hoverCloseSuspended.value;
+
+  const menu = () => document.body.querySelector<HTMLElement>('[role="menu"]');
+
+  beforeEach(() => {
+    while (useRightSidebar().hoverCloseSuspended.value) {
+      useRightSidebar().resumeHoverClose();
     }
   });
 
-  it("closes on Escape and lets go of the hub", async () => {
-    const wrapper = await openPicker();
+  async function mountToolbar(
+    props: Record<string, unknown> = {},
+    reactions: Record<string, string[]> = {},
+  ) {
+    const wrapper = await mountSuspended(ChatMessageActions, {
+      props: {
+        message: { ...MESSAGE, reactions },
+        room: { type: "match", id: "match-1" },
+        permissions: everything,
+        viewerSteamId: ME,
+        hovered: true,
+        ...props,
+      },
+      attachTo: document.body,
+    });
+    unmount = () => wrapper.unmount();
+    await flushPromises();
+    return wrapper;
+  }
 
-    document.activeElement?.dispatchEvent(
-      new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+  const quick = (wrapper: Awaited<ReturnType<typeof mountToolbar>>) =>
+    wrapper.findAll<HTMLButtonElement>("button[data-quick-reaction]");
+
+  it("is only the menu trigger until the line is hovered", async () => {
+    const wrapper = await mountToolbar({ hovered: false });
+
+    expect(quick(wrapper)).toHaveLength(0);
+    expect(wrapper.find('button[aria-label="Add Reaction"]').exists()).toBe(
+      false,
     );
+    expect(wrapper.find(TRIGGER).exists()).toBe(true);
+
+    await wrapper.setProps({ hovered: true });
+
+    expect(quick(wrapper).map((button) => button.text())).toEqual([
+      "👍",
+      "❤️",
+      "😂",
+    ]);
+    expect(wrapper.find('button[aria-label="Add Reaction"]').exists()).toBe(
+      true,
+    );
+    expect(wrapper.find('button[aria-label="Edit Message"]').exists()).toBe(
+      true,
+    );
+  });
+
+  it("reacts from a quick reaction", async () => {
+    const wrapper = await mountToolbar();
+
+    await wrapper.get('button[data-quick-reaction="heart"]').trigger("click");
+
+    expect(wrapper.emitted("react")).toEqual([["heart"]]);
+  });
+
+  it("marks what the viewer holds, and what a gag won't let them add", async () => {
+    const wrapper = await mountToolbar(
+      { permissions: { ...everything, canAddReaction: false } },
+      { heart: [ME] },
+    );
+
+    const heart = wrapper.get('button[data-quick-reaction="heart"]');
+    expect(heart.attributes("aria-pressed")).toBe("true");
+    expect(heart.attributes("disabled")).toBeUndefined();
+    expect(
+      wrapper
+        .get('button[data-quick-reaction="thumbsup"]')
+        .attributes("disabled"),
+    ).toBeDefined();
+  });
+
+  it("offers no reactions where the viewer can't react", async () => {
+    const wrapper = await mountToolbar({
+      permissions: { ...everything, canReact: false, canAddReaction: false },
+    });
+
+    expect(quick(wrapper)).toHaveLength(0);
+    expect(wrapper.find('button[aria-label="Add Reaction"]').exists()).toBe(
+      false,
+    );
+    expect(wrapper.find('button[aria-label="Edit Message"]').exists()).toBe(
+      true,
+    );
+  });
+
+  it("keeps reactions out of the menu, where the toolbar has them", async () => {
+    const wrapper = await mountToolbar();
+
+    await wrapper.get(TRIGGER).trigger("keydown", { key: "Enter" });
+    await flushPromises();
+
+    expect(menu()?.querySelectorAll("[data-reaction]")).toHaveLength(0);
+    expect(
+      Array.from(
+        document.body.querySelectorAll<HTMLElement>('[role="menuitem"]'),
+      ).map((item) => item.textContent?.trim()),
+    ).toEqual(["Copy Text", "Edit Message", "Delete Message"]);
+    expect(menu()?.querySelectorAll('[role="separator"]')).toHaveLength(1);
+  });
+
+  it("hands the edit to the row", async () => {
+    const wrapper = await mountToolbar();
+
+    await wrapper.get('button[aria-label="Edit Message"]').trigger("click");
+
+    expect(wrapper.emitted("edit")).toHaveLength(1);
+  });
+
+  it("opens every reaction from the smiley and reacts once", async () => {
+    const wrapper = await mountToolbar();
+
+    await wrapper
+      .get('button[aria-label="Add Reaction"]')
+      .trigger("keydown", { key: "Enter" });
+    await flushPromises();
+
+    const choices = Array.from(
+      menu()?.querySelectorAll<HTMLElement>('[role="menuitemcheckbox"]') ??
+        [],
+    );
+    expect(choices.map((item) => item.dataset.reaction)).toEqual(
+      CHAT_REACTIONS.map(({ id }) => id),
+    );
+    expect(choices.length).toBeGreaterThan(6);
+    expect(hubHeld()).toBe(true);
+    expect(wrapper.attributes("data-chat-menu-open")).toBeDefined();
+
+    const fire = choices.find((item) => item.dataset.reaction === "fire")!;
+    fire.click();
+    fire.click();
     await flushPromises();
     await new Promise((resolve) => setTimeout(resolve, 20));
     await flushPromises();
 
-    expect(picker()).toBeNull();
-    expect(wrapper.emitted("react")).toBeUndefined();
+    expect(wrapper.emitted("react")).toEqual([["fire"]]);
+    expect(menu()).toBeNull();
     expect(hubHeld()).toBe(false);
   });
 
-  it("lets go of the hub when the message goes away mid-pick", async () => {
-    await openPicker();
+  // The smiley sits inside a tooltip, and reka's tooltip and menu share one
+  // popper context: unanchored, the picker opened but never left its
+  // off-screen starting point.
+  it("positions the picker it opens on a mouse click", async () => {
+    const wrapper = await mountToolbar();
 
-    unmount?.();
-    unmount = undefined;
+    wrapper
+      .get('button[aria-label="Add Reaction"]')
+      .element.dispatchEvent(
+        new MouseEvent("click", { bubbles: true, cancelable: true, button: 0 }),
+      );
+    await flushPromises();
+    await new Promise((resolve) => setTimeout(resolve, 20));
 
-    expect(hubHeld()).toBe(false);
+    expect(menu()).not.toBeNull();
+    expect(menu()!.parentElement!.style.transform).not.toBe(
+      "translate(0, -200%)",
+    );
+  });
+
+  it("stays out while one of its menus is open, after the pointer leaves", async () => {
+    const wrapper = await mountToolbar();
+
+    await wrapper
+      .get('button[aria-label="Add Reaction"]')
+      .trigger("keydown", { key: "Enter" });
+    await flushPromises();
+    await wrapper.setProps({ hovered: false });
+
+    expect(menu()).not.toBeNull();
+    expect(quick(wrapper)).toHaveLength(3);
+  });
+});
+
+describe("ChatMessageActions moderation", () => {
+  const moderator = {
+    canDelete: true,
+    canEdit: false,
+    canReact: false,
+    canAddReaction: false,
+    canSanction: true,
+  };
+
+  const hubHeld = () => useRightSidebar().hoverCloseSuspended.value;
+
+  const menuItem = (label: string) =>
+    Array.from(
+      document.body.querySelectorAll<HTMLElement>('[role="menuitem"]'),
+    ).find((item) => item.textContent?.trim() === label);
+
+  beforeEach(() => {
+    while (useRightSidebar().hoverCloseSuspended.value) {
+      useRightSidebar().resumeHoverClose();
+    }
+  });
+
+  async function openMenu(permissions: Record<string, boolean>) {
+    const wrapper = await mountSuspended(ChatMessageActions, {
+      props: {
+        message: MESSAGE,
+        room: { type: "match", id: "match-1" },
+        permissions,
+      },
+      attachTo: document.body,
+    });
+    unmount = () => wrapper.unmount();
+
+    await wrapper.get(TRIGGER).trigger("keydown", { key: "Enter" });
+    await flushPromises();
+
+    return wrapper;
+  }
+
+  it("puts the author's sanctions under Moderate, above Delete", async () => {
+    await openMenu(moderator);
+
+    const moderate = menuItem("Moderate Dana")!;
+    expect(moderate.getAttribute("aria-haspopup")).toBe("menu");
+    expect(
+      Array.from(
+        document.body.querySelectorAll<HTMLElement>('[role="menuitem"]'),
+      ).map((item) => item.textContent?.trim()),
+    ).toEqual(["Copy Text", "Moderate Dana", "Delete Message"]);
+
+    moderate.focus();
+    moderate.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }),
+    );
+    await flushPromises();
+
+    expect(
+      Array.from(
+        document.body.querySelectorAll<HTMLElement>("[data-sanction]"),
+      ).map((item) => item.dataset.sanction),
+    ).toEqual(["warning", "gag", "mute", "silence", "ban"]);
+  });
+
+  it("opens the sanction form for the pick, holding the hub", async () => {
+    const wrapper = await openMenu(moderator);
+
+    const moderate = menuItem("Moderate Dana")!;
+    moderate.focus();
+    moderate.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }),
+    );
+    await flushPromises();
+
+    document.body.querySelector<HTMLElement>('[data-sanction="gag"]')!.click();
+    await flushPromises();
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    await flushPromises();
+
+    const sanction = wrapper.findComponent({ name: "SanctionPlayer" });
+    expect(sanction.props("presetType")).toBe("gag");
+    expect((sanction.vm as any).sanctionType).toBe("gag");
+    expect((sanction.vm as any).sanctioningPlayer).toBe(true);
+    expect(document.body.querySelector("form")).not.toBeNull();
+    expect(hubHeld()).toBe(true);
+  });
+
+  it("offers no moderation to someone who can't sanction", async () => {
+    await openMenu({ ...moderator, canSanction: false });
+
+    expect(menuItem("Moderate Dana")).toBeUndefined();
+    expect(menuItem("Delete Message")).toBeDefined();
   });
 });

@@ -8477,6 +8477,8 @@
     "send_failed": "Nie udało się wysłać wiadomości",
     "gagged": "Masz zablokowany czat i nie możesz wysyłać wiadomości.",
     "message_actions": "Akcje wiadomości",
+    "copy_message": "Kopiuj tekst",
+    "moderate_player": "Moderuj {name}",
     "delete_message": "Usuń wiadomość",
     "delete_confirm_title": "Usunąć wiadomość?",
     "delete_confirm_description": "Wiadomość od {name} zostanie usunięta dla wszystkich na tym czacie.",

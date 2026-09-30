@@ -8477,6 +8477,8 @@
     "send_failed": "Din besked kunne ikke sendes",
     "gagged": "Din chat er lukket, så du kan ikke sende chatbeskeder.",
     "message_actions": "Beskedhandlinger",
+    "copy_message": "Kopiér tekst",
+    "moderate_player": "Moderér {name}",
     "delete_message": "Slet besked",
     "delete_confirm_title": "Slet besked?",
     "delete_confirm_description": "Beskeden fra {name} bliver fjernet for alle i denne chat.",

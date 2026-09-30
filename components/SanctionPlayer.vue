@@ -25,7 +25,7 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
 </script>
 
 <template>
-  <Popover>
+  <Popover v-if="variant !== 'none'">
     <PopoverTrigger as-child>
       <button
         v-if="variant === 'block'"
@@ -206,13 +206,25 @@ export default {
       type: String,
       default: undefined,
     },
+    // "none" renders no trigger: the caller opens the form through `open`,
+    // for the type it names in `presetType`.
     variant: {
       required: false,
-      type: String as () => "icon" | "block",
+      type: String as () => "icon" | "block" | "none",
       default: "icon",
     },
+    open: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
+    presetType: {
+      required: false,
+      type: String,
+      default: undefined,
+    },
   },
-  emits: ["sanctioned"],
+  emits: ["sanctioned", "update:open"],
   data() {
     return {
       submitting: false,
@@ -284,6 +296,17 @@ export default {
         },
         { label: this.$t("player.sanction.durations.permanent"), duration: 0 },
       ];
+    },
+  },
+  watch: {
+    open(open: boolean) {
+      if (open) {
+        this.sanctionType = this.presetType;
+        this.sanctioningPlayer = true;
+      }
+    },
+    sanctioningPlayer(open: boolean) {
+      this.$emit("update:open", open);
     },
   },
   methods: {

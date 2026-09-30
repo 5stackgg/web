@@ -8477,6 +8477,8 @@
     "send_failed": "Não foi possível enviar sua mensagem",
     "gagged": "Você está censurado no chat e não pode enviar mensagens.",
     "message_actions": "Ações da mensagem",
+    "copy_message": "Copiar Texto",
+    "moderate_player": "Moderar {name}",
     "delete_message": "Excluir Mensagem",
     "delete_confirm_title": "Excluir Mensagem?",
     "delete_confirm_description": "A mensagem de {name} será removida para todos neste chat.",

@@ -8477,6 +8477,8 @@
     "send_failed": "メッセージを送信できませんでした",
     "gagged": "発言禁止中のため、チャットメッセージを送信できません。",
     "message_actions": "メッセージの操作",
+    "copy_message": "テキストをコピー",
+    "moderate_player": "{name}をモデレート",
     "delete_message": "メッセージを削除",
     "delete_confirm_title": "メッセージを削除しますか？",
     "delete_confirm_description": "{name} のメッセージは、このチャットの全員に対して削除されます。",

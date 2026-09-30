@@ -8477,6 +8477,8 @@
     "send_failed": "تعذّر إرسال رسالتك",
     "gagged": "أنت ممنوع من الكتابة ولا يمكنك إرسال رسائل في الدردشة.",
     "message_actions": "إجراءات الرسالة",
+    "copy_message": "نسخ النص",
+    "moderate_player": "إدارة {name}",
     "delete_message": "حذف الرسالة",
     "delete_confirm_title": "حذف الرسالة؟",
     "delete_confirm_description": "ستُزال رسالة {name} لدى جميع من في هذه الدردشة.",

@@ -8477,6 +8477,8 @@
     "send_failed": "Mesajın gönderilemedi",
     "gagged": "Sohbetin kapatıldı, sohbet mesajı gönderemezsin.",
     "message_actions": "Mesaj işlemleri",
+    "copy_message": "Metni kopyala",
+    "moderate_player": "{name} kullanıcısını denetle",
     "delete_message": "Mesajı sil",
     "delete_confirm_title": "Mesaj silinsin mi?",
     "delete_confirm_description": "{name} adlı oyuncunun mesajı bu sohbetteki herkes için kaldırılacak.",

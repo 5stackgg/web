@@ -188,3 +188,38 @@ describe("ChatMessageReactions", () => {
     });
   });
 });
+
+describe("ChatMessageReactions picker", () => {
+  const menu = () => document.body.querySelector<HTMLElement>('[role="menu"]');
+
+  it("offers every reaction beside the pills, and toggles the pick", async () => {
+    const wrapper = await mountPills({ thumbsup: [DANA] });
+
+    const add = wrapper.get('button[aria-label="Add Reaction"]');
+    add.element.dispatchEvent(
+      new MouseEvent("click", { bubbles: true, cancelable: true, button: 0 }),
+    );
+    await flushPromises();
+
+    expect(
+      menu()?.querySelectorAll('[role="menuitemcheckbox"]').length,
+    ).toBeGreaterThan(6);
+
+    menu()!.querySelector<HTMLElement>('[data-reaction="fire"]')!.click();
+    await flushPromises();
+
+    expect(wrapper.emitted("toggle")).toEqual([["fire"]]);
+  });
+
+  it("offers no picker to a viewer who can't react", async () => {
+    const wrapper = await mountPills(
+      { thumbsup: [DANA] },
+      { permissions: { canReact: false, canAddReaction: false } },
+    );
+
+    expect(wrapper.find('button[aria-label="Add Reaction"]').exists()).toBe(
+      false,
+    );
+  });
+});
+

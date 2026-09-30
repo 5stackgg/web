@@ -8477,6 +8477,8 @@
     "send_failed": "Failed to send message",
     "gagged": "You're gagged and can't send chat messages.",
     "message_actions": "Message actions",
+    "copy_message": "Copy Text",
+    "moderate_player": "Moderate {name}",
     "delete_message": "Delete Message",
     "delete_confirm_title": "Delete Message?",
     "delete_confirm_description": "The message from {name} will be removed for everyone in this chat.",

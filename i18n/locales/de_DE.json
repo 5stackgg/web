@@ -8477,6 +8477,8 @@
     "send_failed": "Deine Nachricht konnte nicht gesendet werden",
     "gagged": "Du bist im Chat gesperrt und kannst keine Nachrichten senden.",
     "message_actions": "Nachrichtenaktionen",
+    "copy_message": "Text kopieren",
+    "moderate_player": "{name} moderieren",
     "delete_message": "Nachricht löschen",
     "delete_confirm_title": "Nachricht löschen?",
     "delete_confirm_description": "Die Nachricht von {name} wird für alle in diesem Chat entfernt.",

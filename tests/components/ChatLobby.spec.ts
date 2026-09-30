@@ -136,8 +136,10 @@ describe("ChatLobby moderation", () => {
     await flushPromises();
 
     return Array.from(
-      document.body.querySelectorAll<HTMLElement>('[role="menuitem"]'),
-    ).map((item) => item.textContent?.trim());
+      document.body.querySelectorAll<HTMLElement>(
+        '[role="menu"] [role="group"], [role="menuitem"]',
+      ),
+    ).map((item) => item.getAttribute("aria-label") ?? item.textContent?.trim());
   }
 
   it("offers a moderator no delete in a direct conversation", async () => {
@@ -148,7 +150,7 @@ describe("ChatLobby moderation", () => {
     ]);
 
     expect(wrapper.text()).toContain("line a");
-    expect(await menuItems(wrapper)).toEqual(["Add Reaction"]);
+    expect(await menuItems(wrapper)).toEqual(["Copy Text"]);
   });
 
   it("offers a streamer a reaction and nothing else", async () => {
@@ -158,7 +160,14 @@ describe("ChatLobby moderation", () => {
       line("a", 0),
     ]);
 
-    expect(await menuItems(wrapper)).toEqual(["Add Reaction"]);
+    wrapper
+      .get(TRIGGER)
+      .element.closest(".group\\/chat-message")!
+      .dispatchEvent(new PointerEvent("pointerenter", { pointerType: "mouse" }));
+    await flushPromises();
+
+    expect(wrapper.findAll("button[data-quick-reaction]")).toHaveLength(3);
+    expect(await menuItems(wrapper)).toEqual(["Copy Text"]);
   });
 
   it("offers nothing where the room is read-only", async () => {

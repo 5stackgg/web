@@ -3675,8 +3675,18 @@
         "files": "Filer",
         "player_management": "Spelarhantering",
         "no_players": "Inga spelare på servern just nu",
-        "sanctions_wip_title": "Under utveckling",
-        "sanctions_wip": "Kickar fungerar redan idag. Live mute/gag-tillämpning på publika servrar är under utveckling — en ny 5Stack-serverplugin är på gång, och mute/gag kommer att tillämpas automatiskt när den släpps.",
+        "player_management_plugin": {
+          "active": "Plugin för spelarhantering aktivt",
+          "not_detected": "Pluginet för spelarhantering har inte hört av sig från den här servern ännu, så tystningar och chattförbud tillämpas inte live än.",
+          "not_detected_node": "Pluginet för spelarhantering har inte hört av sig ännu. Servrar som skapades innan det släpptes får det när de driftsätts om: stäng av servern och slå på den igen.",
+          "not_detected_external": "Tystningar, chattförbud och avstängningar tillämpas live först när 5Stacks plugin för spelarhantering är installerat på den här servern.",
+          "install": "Installera plugin",
+          "install_steps": "Installationssteg",
+          "step_download": "Ladda ner pluginet för det ramverk din server kör.",
+          "step_extract": "Packa upp zip-filen i serverns game/csgo-mapp.",
+          "step_config": "Spara den här konfigurationen på servern i:",
+          "step_restart": "Starta om servern. Pluginet visas som aktivt här inom en minut."
+        },
         "status": {
           "disconnected": "Servern är frånkopplad",
           "no_rcon": "Servern är ansluten men RCON är inte tillgängligt",

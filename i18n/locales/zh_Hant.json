@@ -3675,8 +3675,18 @@
         "files": "檔案",
         "player_management": "玩家管理",
         "no_players": "此伺服器上目前沒有玩家",
-        "sanctions_wip_title": "功能開發中",
-        "sanctions_wip": "踢出功能現已可用。公開伺服器上的即時靜音／禁言執行仍在開發中——全新的 5Stack 公開伺服器外掛即將推出，上線後靜音／禁言將自動套用。",
+        "player_management_plugin": {
+          "active": "玩家管理外掛運作中",
+          "not_detected": "玩家管理外掛尚未從此伺服器回報，因此禁麥和禁言暫時無法即時生效。",
+          "not_detected_node": "玩家管理外掛尚未回報。在它發布前建立的伺服器需要重新部署才能取得它：請先停用伺服器再重新啟用。",
+          "not_detected_external": "只有在此伺服器上安裝 5Stack 玩家管理外掛後，禁麥、禁言和封鎖才會即時生效。",
+          "install": "安裝外掛",
+          "install_steps": "安裝步驟",
+          "step_download": "下載與伺服器所用框架對應的外掛。",
+          "step_extract": "將 zip 解壓縮到伺服器的 game/csgo 資料夾。",
+          "step_config": "將此設定儲存到伺服器上的以下位置：",
+          "step_restart": "重新啟動伺服器。外掛會在一分鐘內在此顯示為運作中。"
+        },
         "status": {
           "disconnected": "伺服器已中斷連線",
           "no_rcon": "伺服器已連線，但 RCON 無法使用",

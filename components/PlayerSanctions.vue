@@ -1013,10 +1013,13 @@ export default {
       if (!this.sanctionToDelete) {
         return;
       }
+      // Held locally: the dialog closes on confirm, so another removal can
+      // replace sanctionToDelete while this one waits on the server.
+      const sanction = this.sanctionToDelete;
       this.removingSanction = true;
 
       try {
-        await (this as any).$apollo.mutate({
+        const { data } = await (this as any).$apollo.mutate({
           mutation: gql`
             mutation UnsanctionServerPlayer(
               $serverId: String
@@ -1038,16 +1041,27 @@ export default {
           variables: {
             serverId: this.serverId ?? null,
             steam_id: this.playerId,
-            type: this.sanctionToDelete.type,
-            sanction_id: this.sanctionToDelete.id,
+            type: sanction.type,
+            sanction_id: sanction.id,
           },
         });
 
+        const result = data?.unsanctionServerPlayer;
+
         toast({
           title: this.$t("player.sanctions.removed"),
+          description:
+            this.serverId &&
+            sanction.type !== "warning" &&
+            result &&
+            !result.enforced
+              ? result.message
+              : undefined,
         });
 
-        this.sanctionToDelete = null;
+        if (this.sanctionToDelete === sanction) {
+          this.sanctionToDelete = null;
+        }
       } catch (error) {
         console.error("Failed to remove sanction:", error);
         toast({

@@ -3675,8 +3675,18 @@
         "files": "Pliki",
         "player_management": "Zarządzanie graczami",
         "no_players": "Obecnie brak graczy na tym serwerze",
-        "sanctions_wip_title": "W trakcie prac",
-        "sanctions_wip": "Kicki działają już teraz. Egzekwowanie wyciszeń na żywo na serwerach publicznych jest w trakcie prac — nowy publiczny plugin 5Stack pojawi się wkrótce, a wyciszenia zaczną obowiązywać automatycznie po jego wydaniu.",
+        "player_management_plugin": {
+          "active": "Wtyczka zarządzania graczami aktywna",
+          "not_detected": "Wtyczka zarządzania graczami nie zgłosiła się jeszcze z tego serwera, więc wyciszenia i blokady czatu nie są jeszcze egzekwowane na żywo.",
+          "not_detected_node": "Wtyczka zarządzania graczami jeszcze się nie zgłosiła. Serwery utworzone przed jej wydaniem otrzymają ją po ponownym wdrożeniu: wyłącz serwer i włącz go ponownie.",
+          "not_detected_external": "Wyciszenia, blokady czatu i bany są egzekwowane na żywo dopiero po zainstalowaniu wtyczki zarządzania graczami 5Stack na tym serwerze.",
+          "install": "Zainstaluj wtyczkę",
+          "install_steps": "Kroki instalacji",
+          "step_download": "Pobierz wtyczkę dla frameworka, na którym działa twój serwer.",
+          "step_extract": "Rozpakuj plik zip do folderu game/csgo serwera.",
+          "step_config": "Zapisz tę konfigurację na serwerze w:",
+          "step_restart": "Zrestartuj serwer. Wtyczka pojawi się tutaj jako aktywna w ciągu minuty."
+        },
         "status": {
           "disconnected": "Serwer jest rozłączony",
           "no_rcon": "Serwer jest połączony, ale RCON jest niedostępny",

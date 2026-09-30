@@ -3677,6 +3677,7 @@
         "no_players": "Inga spelare på servern just nu",
         "player_management_plugin": {
           "active": "Plugin för spelarhantering aktivt",
+          "last_check_in": "Senaste kontakt",
           "not_detected": "Pluginet för spelarhantering har inte hört av sig från den här servern ännu, så tystningar och chattförbud tillämpas inte live än.",
           "not_detected_node": "Pluginet för spelarhantering har inte hört av sig ännu. Servrar som skapades innan det släpptes får det när de driftsätts om: stäng av servern och slå på den igen.",
           "not_detected_external": "Tystningar, chattförbud och avstängningar tillämpas live först när 5Stacks plugin för spelarhantering är installerat på den här servern.",

@@ -112,11 +112,13 @@ describe("ServerPlayerManagement plugin status", () => {
     expect(statusButton(wrapper).attributes("aria-label")).toBe(
       "Player Management plugin active",
     );
+    expect(statusButton(wrapper).text()).toContain("v0.0.412");
 
     const popover = await openStatus(wrapper);
 
     expect(popover.textContent).toContain("v0.0.412");
     expect(popover.textContent).toContain("SwiftlyS2");
+    expect(popover.textContent).toContain("Last check-in");
     expect(popover.textContent).not.toContain("has not checked in");
   });
 

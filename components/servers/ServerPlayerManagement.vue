@@ -6,7 +6,6 @@ import {
   RefreshCw,
   Users,
   TriangleAlert,
-  ShieldCheck,
   Download,
   Eye,
   EyeOff,
@@ -31,6 +30,7 @@ import SanctionPlayer from "~/components/SanctionPlayer.vue";
 import PlayerSanctions from "~/components/PlayerSanctions.vue";
 import KickPlayer from "~/components/KickPlayer.vue";
 import ClipBoard from "~/components/ClipBoard.vue";
+import TimeAgo from "~/components/TimeAgo.vue";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
@@ -116,6 +116,12 @@ const pluginVersionLabel = computed(() => {
   const version = pluginState.value?.player_management_version;
 
   return version && /^\d/.test(version) ? `v${version}` : version;
+});
+
+const runtimeLabel = computed(() => {
+  const runtime = pluginState.value?.player_management_runtime;
+
+  return runtime ? RUNTIME_LABELS[runtime] : null;
 });
 
 // An offline server can't check in either way, and the status pill already
@@ -371,14 +377,21 @@ onBeforeUnmount(() => {
           <PopoverTrigger as-child>
             <Button
               variant="outline"
-              size="icon"
+              :size="pluginActive ? 'default' : 'icon'"
               :aria-label="pluginStatusLabel"
               :class="
-                !pluginActive &&
-                'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.2)] hover:text-[hsl(var(--tac-amber))]'
+                pluginActive
+                  ? 'gap-2 px-3 font-mono text-xs font-normal text-muted-foreground'
+                  : 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.2)] hover:text-[hsl(var(--tac-amber))]'
               "
             >
-              <ShieldCheck v-if="pluginActive" class="text-success" />
+              <template v-if="pluginActive">
+                <span class="h-2 w-2 shrink-0 rounded-full bg-success" />
+                {{ pluginVersionLabel }}
+                <span v-if="runtimeLabel" class="max-sm:hidden">
+                  · {{ runtimeLabel }}
+                </span>
+              </template>
               <TriangleAlert v-else />
             </Button>
           </PopoverTrigger>
@@ -401,15 +414,27 @@ onBeforeUnmount(() => {
                 <TriangleAlert v-else class="h-3.5 w-3.5 shrink-0" />
                 {{ pluginStatusLabel }}
               </div>
-              <p
-                v-if="pluginActive"
-                class="font-mono text-xs text-muted-foreground"
-              >
-                {{ pluginVersionLabel }}
-                <template v-if="pluginState?.player_management_runtime">
-                  · {{ RUNTIME_LABELS[pluginState.player_management_runtime] }}
-                </template>
-              </p>
+              <template v-if="pluginActive">
+                <p class="font-mono text-xs text-muted-foreground">
+                  {{ pluginVersionLabel }}
+                  <template v-if="runtimeLabel"> · {{ runtimeLabel }}</template>
+                </p>
+                <p
+                  v-if="pluginState?.player_management_seen_at"
+                  class="text-xs text-muted-foreground"
+                >
+                  {{
+                    $t(
+                      "pages.dedicated_servers.detail.player_management_plugin.last_check_in",
+                    )
+                  }}
+                  <TimeAgo
+                    :date="pluginState.player_management_seen_at"
+                    hide-icon
+                    class="text-foreground"
+                  />
+                </p>
+              </template>
               <p v-else class="text-sm text-muted-foreground">
                 {{ notDetectedMessage }}
               </p>

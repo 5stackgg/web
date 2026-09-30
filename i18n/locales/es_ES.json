@@ -3208,8 +3208,6 @@
         "acquiring_telemetry": "Obteniendo telemetría…",
         "matches_section": "PARTIDAS",
         "intro": {
-          "section": "Resumen de rendimiento",
-          "last_n": "Últimas {n} partidas",
           "empty_title": "No hay partidas procesadas",
           "empty_description": "Las estadísticas detalladas de rendimiento aparecerán aquí cuando este jugador tenga partidas terminadas y procesadas.",
           "adr": "ADR",
@@ -3233,8 +3231,6 @@
           }
         },
         "maps": {
-          "section": "MAPAS",
-          "description": "Rendimiento de la carrera desglosado por mapa, con separación por bando T y CT.",
           "empty_title": "Aún no hay datos por mapa",
           "empty_description": "Cuando este jugador termine partidas, aquí aparecerá su rendimiento por mapa.",
           "played_short": "JUG",
@@ -3255,7 +3251,6 @@
           "col_avg_kda": "K/D/A medio"
         },
         "weapons_table": {
-          "section": "Armas",
           "empty_title": "Sin datos de armas",
           "empty_description": "Este jugador aún no tiene bajas con arma registradas.",
           "weapon": "Arma",

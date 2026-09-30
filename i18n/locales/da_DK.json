@@ -3208,8 +3208,6 @@
         "acquiring_telemetry": "Henter telemetri…",
         "matches_section": "KAMPE",
         "intro": {
-          "section": "Præstationsoverblik",
-          "last_n": "Seneste {n} kampe",
           "empty_title": "Ingen behandlede kampe",
           "empty_description": "Detaljerede præstationsstats vises her, når spilleren har færdigspillede og behandlede kampe.",
           "adr": "ADR",
@@ -3233,8 +3231,6 @@
           }
         },
         "maps": {
-          "section": "MAPS",
-          "description": "Karrierepræstation fordelt på map, med opdeling på terrorist- og counter-terrorist-side.",
           "empty_title": "Ingen mapdata endnu",
           "empty_description": "Når spilleren har spillet kampe færdig, vises præstation pr. map her.",
           "played_short": "SPL",
@@ -3255,7 +3251,6 @@
           "col_avg_kda": "Gns. K/D/A"
         },
         "weapons_table": {
-          "section": "Våben",
           "empty_title": "Ingen våbendata",
           "empty_description": "Spilleren har ingen registrerede våbenkills endnu.",
           "weapon": "Våben",

@@ -3208,8 +3208,6 @@
         "acquiring_telemetry": "Telemetri alınıyor…",
         "matches_section": "MAÇLAR",
         "intro": {
-          "section": "Performans özeti",
-          "last_n": "Son {n} maç",
           "empty_title": "İşlenmiş maç yok",
           "empty_description": "Bu oyuncu maçları bitirip işlendikten sonra ayrıntılı performans istatistikleri burada görünür.",
           "adr": "ADR",
@@ -3233,8 +3231,6 @@
           }
         },
         "maps": {
-          "section": "HARİTALAR",
-          "description": "Harita bazında kariyer performansı, terörist ve karşı-terörist taraf ayrımıyla.",
           "empty_title": "Henüz harita verisi yok",
           "empty_description": "Bu oyuncu maçları bitirdikçe harita başına performans burada görünecek.",
           "played_short": "OYN",
@@ -3255,7 +3251,6 @@
           "col_avg_kda": "Ort K/D/A"
         },
         "weapons_table": {
-          "section": "Silahlar",
           "empty_title": "Silah verisi yok",
           "empty_description": "Bu oyuncunun kayıtlı silah öldürmesi yok.",
           "weapon": "Silah",

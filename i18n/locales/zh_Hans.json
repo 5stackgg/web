@@ -3208,8 +3208,6 @@
         "acquiring_telemetry": "正在获取遥测数据……",
         "matches_section": "比赛",
         "intro": {
-          "section": "表现概览",
-          "last_n": "最近 {n} 场比赛",
           "empty_title": "无已解析比赛",
           "empty_description": "一旦该玩家完成并解析了比赛，详细表现数据将显示在这里。",
           "adr": "ADR",
@@ -3233,8 +3231,6 @@
           }
         },
         "maps": {
-          "section": "地图",
-          "description": "按地图划分的职业生涯表现，包含恐怖分子和反恐精英方数据。",
           "empty_title": "暂无地图数据",
           "empty_description": "该玩家完成比赛后，按地图的表现将显示在这里。",
           "played_short": "场次",
@@ -3255,7 +3251,6 @@
           "col_avg_kda": "平均 K/D/A"
         },
         "weapons_table": {
-          "section": "武器",
           "empty_title": "暂无武器数据",
           "empty_description": "该玩家尚无记录的武器击杀。",
           "weapon": "武器",

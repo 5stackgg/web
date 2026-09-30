@@ -3208,8 +3208,6 @@
         "acquiring_telemetry": "データ取得中…",
         "matches_section": "試合",
         "intro": {
-          "section": "パフォーマンス概要",
-          "last_n": "直近 {n} 試合",
           "empty_title": "解析済みの試合なし",
           "empty_description": "このプレイヤーの試合が終了して解析されると、詳細なパフォーマンススタッツがここに表示されます。",
           "adr": "ADR",
@@ -3233,8 +3231,6 @@
           }
         },
         "maps": {
-          "section": "マップ",
-          "description": "マップ別の通算パフォーマンス。T サイドと CT サイドの内訳付き。",
           "empty_title": "マップデータなし",
           "empty_description": "このプレイヤーが試合を終えると、マップ別のパフォーマンスがここに表示されます。",
           "played_short": "試合",
@@ -3255,7 +3251,6 @@
           "col_avg_kda": "平均 K/D/A"
         },
         "weapons_table": {
-          "section": "武器",
           "empty_title": "武器データなし",
           "empty_description": "このプレイヤーには武器別のキル記録がまだありません。",
           "weapon": "武器",

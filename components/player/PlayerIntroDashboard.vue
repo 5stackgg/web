@@ -31,10 +31,6 @@ import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import { Skeleton } from "~/components/ui/skeleton";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import mapLabel from "~/utilities/mapLabel";
-import {
-  tacticalSectionLabelClasses,
-  tacticalSectionTickClasses,
-} from "~/utilities/tacticalClasses";
 
 ChartJS.register(
   CategoryScale,
@@ -1092,22 +1088,6 @@ function tooltipAfter(index: number | undefined): string[] {
 
 <template>
   <div>
-    <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
-      <div :class="[tacticalSectionLabelClasses, 'mb-0']">
-        <span :class="tacticalSectionTickClasses"></span>
-        {{ $t("pages.players.detail.intro.section") }}
-        <span
-          v-if="hasData"
-          class="font-mono text-[0.62rem] tracking-[0.18em] text-muted-foreground/70"
-        >
-          ·
-          {{
-            $t("pages.players.detail.intro.last_n", { n: aggregate.matches })
-          }}
-        </span>
-      </div>
-    </div>
-
     <FadeSwap>
       <div
         v-if="loading && !hasData"

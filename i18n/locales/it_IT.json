@@ -3208,8 +3208,6 @@
         "acquiring_telemetry": "Acquisizione telemetria…",
         "matches_section": "MATCH",
         "intro": {
-          "section": "Introduzione rendimento",
-          "last_n": "Ultimi {n} match",
           "empty_title": "Nessun match analizzato",
           "empty_description": "Le statistiche dettagliate appaiono qui quando il giocatore ha match conclusi e analizzati.",
           "adr": "ADR",
@@ -3233,8 +3231,6 @@
           }
         },
         "maps": {
-          "section": "MAPPE",
-          "description": "Rendimento in carriera suddiviso per mappa, con dettaglio lato terrorista e antiterrorista.",
           "empty_title": "Ancora nessun dato sulle mappe",
           "empty_description": "Quando il giocatore avrà concluso dei match, qui apparirà il rendimento per mappa.",
           "played_short": "GIO",
@@ -3255,7 +3251,6 @@
           "col_avg_kda": "K/D/A medi"
         },
         "weapons_table": {
-          "section": "Armi",
           "empty_title": "Nessun dato sulle armi",
           "empty_description": "Questo giocatore non ha ancora kill registrate con armi.",
           "weapon": "Arma",

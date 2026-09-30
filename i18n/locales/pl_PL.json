@@ -3208,8 +3208,6 @@
         "acquiring_telemetry": "Pobieranie telemetrii…",
         "matches_section": "MECZE",
         "intro": {
-          "section": "Wstęp wydajności",
-          "last_n": "Ostatnie {n} meczów",
           "empty_title": "Brak przeanalizowanych meczów",
           "empty_description": "Szczegółowe statystyki wydajności pojawią się tutaj, gdy gracz zakończy i przeanalizuje mecze.",
           "adr": "ADR",
@@ -3233,8 +3231,6 @@
           }
         },
         "maps": {
-          "section": "MAPY",
-          "description": "Wydajność w karierze w podziale na mapy, ze statystykami dla strony terrorystów i antyterrorystów.",
           "empty_title": "Brak jeszcze danych o mapach",
           "empty_description": "Gdy gracz zakończy mecze, pojawi się tutaj wydajność per mapa.",
           "played_short": "ROZ",
@@ -3255,7 +3251,6 @@
           "col_avg_kda": "Śr. K/D/A"
         },
         "weapons_table": {
-          "section": "Broń",
           "empty_title": "Brak danych o broni",
           "empty_description": "Ten gracz nie ma jeszcze zapisanych zabójstw daną bronią.",
           "weapon": "Broń",

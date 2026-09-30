@@ -1223,6 +1223,19 @@ export type ValueTypes = {
 	num_chunks?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["ImportWorkshopCollectionOutput"]: AliasType<{
+	maps?:ValueTypes["ImportedWorkshopMap"],
+	skipped?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["ImportedWorkshopMap"]: AliasType<{
+	id?:boolean | `@${string}`,
+	label?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	poster?:boolean | `@${string}`,
+	workshop_map_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["IndexIOStat"]: AliasType<{
 	idx_blks_hit?:boolean | `@${string}`,
 	idx_blks_read?:boolean | `@${string}`,
@@ -1516,6 +1529,10 @@ export type ValueTypes = {
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["ServerPluginInput"]: {
+	enabled: boolean | Variable<any, string>,
+	slug: string | Variable<any, string>
+};
 	["SetupGameServeOutput"]: AliasType<{
 	gameServerId?:boolean | `@${string}`,
 	link?:boolean | `@${string}`,
@@ -16665,6 +16682,12 @@ count?: [{	columns?: Array<ValueTypes["game_plugin_installs_select_column"]> | u
 	returning?:ValueTypes["game_plugin_installs"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** input type for inserting object relation for remote table "game_plugin_installs" */
+["game_plugin_installs_obj_rel_insert_input"]: {
+	data: ValueTypes["game_plugin_installs_insert_input"] | Variable<any, string>,
+	/** upsert condition */
+	on_conflict?: ValueTypes["game_plugin_installs_on_conflict"] | undefined | null | Variable<any, string>
+};
 	/** on_conflict condition type for table "game_plugin_installs" */
 ["game_plugin_installs_on_conflict"]: {
 	constraint: ValueTypes["game_plugin_installs_constraint"] | Variable<any, string>,
@@ -17080,6 +17103,8 @@ game_modes_aggregate?: [{	/** distinct select on columns */
 	/** A computed field, executes function "game_plugin_installed_node_count" */
 	installed_node_count?:boolean | `@${string}`,
 	kind?:boolean | `@${string}`,
+map_rotation?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
 	name?:boolean | `@${string}`,
 node_installs?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["game_server_node_plugins_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
@@ -17145,6 +17170,7 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	/** append existing jsonb value of filtered columns with new jsonb value */
 ["game_plugins_append_input"]: {
 	config_schema?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	map_rotation?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	panel?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	wiring?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
 };
@@ -17173,6 +17199,7 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	install_state?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	installed_node_count?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	kind?: ValueTypes["e_game_plugin_kinds_enum_comparison_exp"] | undefined | null | Variable<any, string>,
+	map_rotation?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	node_installs?: ValueTypes["game_server_node_plugins_bool_exp"] | undefined | null | Variable<any, string>,
 	node_installs_aggregate?: ValueTypes["game_server_node_plugins_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
@@ -17195,18 +17222,21 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 ["game_plugins_delete_at_path_input"]: {
 	config_schema?: Array<string> | undefined | null | Variable<any, string>,
+	map_rotation?: Array<string> | undefined | null | Variable<any, string>,
 	panel?: Array<string> | undefined | null | Variable<any, string>,
 	wiring?: Array<string> | undefined | null | Variable<any, string>
 };
 	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
 ["game_plugins_delete_elem_input"]: {
 	config_schema?: number | undefined | null | Variable<any, string>,
+	map_rotation?: number | undefined | null | Variable<any, string>,
 	panel?: number | undefined | null | Variable<any, string>,
 	wiring?: number | undefined | null | Variable<any, string>
 };
 	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
 ["game_plugins_delete_key_input"]: {
 	config_schema?: string | undefined | null | Variable<any, string>,
+	map_rotation?: string | undefined | null | Variable<any, string>,
 	panel?: string | undefined | null | Variable<any, string>,
 	wiring?: string | undefined | null | Variable<any, string>
 };
@@ -17221,6 +17251,7 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	homepage?: string | undefined | null | Variable<any, string>,
 	hot_swappable?: boolean | undefined | null | Variable<any, string>,
 	kind?: ValueTypes["e_game_plugin_kinds_enum"] | undefined | null | Variable<any, string>,
+	map_rotation?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	node_installs?: ValueTypes["game_server_node_plugins_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	pairs_with?: Array<string> | undefined | null | Variable<any, string>,
@@ -17312,6 +17343,7 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	install_state?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	installed_node_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	kind?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	map_rotation?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	node_installs_aggregate?: ValueTypes["game_server_node_plugins_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	pairs_with?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -17334,6 +17366,7 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	/** prepend existing jsonb value of filtered columns with new jsonb value */
 ["game_plugins_prepend_input"]: {
 	config_schema?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	map_rotation?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	panel?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	wiring?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
 };
@@ -17349,6 +17382,7 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	homepage?: string | undefined | null | Variable<any, string>,
 	hot_swappable?: boolean | undefined | null | Variable<any, string>,
 	kind?: ValueTypes["e_game_plugin_kinds_enum"] | undefined | null | Variable<any, string>,
+	map_rotation?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	pairs_with?: Array<string> | undefined | null | Variable<any, string>,
 	panel?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
@@ -17402,6 +17436,7 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	homepage?: string | undefined | null | Variable<any, string>,
 	hot_swappable?: boolean | undefined | null | Variable<any, string>,
 	kind?: ValueTypes["e_game_plugin_kinds_enum"] | undefined | null | Variable<any, string>,
+	map_rotation?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	pairs_with?: Array<string> | undefined | null | Variable<any, string>,
 	panel?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
@@ -30521,6 +30556,12 @@ delete_role_permissions?: [{	/** filter the rows which have to be deleted */
 delete_seasons?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["seasons_bool_exp"] | Variable<any, string>},ValueTypes["seasons_mutation_response"]],
 delete_seasons_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["seasons"]],
+delete_server_map_rotation?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["server_map_rotation_bool_exp"] | Variable<any, string>},ValueTypes["server_map_rotation_mutation_response"]],
+delete_server_map_rotation_by_pk?: [{	map_id: ValueTypes["uuid"] | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["server_map_rotation"]],
+delete_server_plugins?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["server_plugins_bool_exp"] | Variable<any, string>},ValueTypes["server_plugins_mutation_response"]],
+delete_server_plugins_by_pk?: [{	plugin_slug: string | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["server_plugins"]],
 delete_server_regions?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["server_regions_bool_exp"] | Variable<any, string>},ValueTypes["server_regions_mutation_response"]],
 delete_server_regions_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["server_regions"]],
@@ -30695,6 +30736,7 @@ getPluginReadme?: [{	runtime?: string | undefined | null | Variable<any, string>
 grantAward?: [{	award_id: ValueTypes["uuid"] | Variable<any, string>,	event_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	league_season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	note?: string | undefined | null | Variable<any, string>,	player_steam_id?: string | undefined | null | Variable<any, string>,	season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["AwardRecipient"]],
 importSteamMatchShareCode?: [{	share_code: string | Variable<any, string>},ValueTypes["PendingMatchImportActionOutput"]],
 importUtilityLineups?: [{	dry_run?: boolean | undefined | null | Variable<any, string>,	payload: ValueTypes["jsonb"] | Variable<any, string>},ValueTypes["UtilityImportOutput"]],
+importWorkshopCollection?: [{	collection: string | Variable<any, string>},ValueTypes["ImportWorkshopCollectionOutput"]],
 insert__map_pool?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["_map_pool_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["_map_pool_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["_map_pool_mutation_response"]],
@@ -31629,6 +31671,18 @@ insert_seasons?: [{	/** the rows to be inserted */
 insert_seasons_one?: [{	/** the row to be inserted */
 	object: ValueTypes["seasons_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["seasons_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["seasons"]],
+insert_server_map_rotation?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["server_map_rotation_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["server_map_rotation_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["server_map_rotation_mutation_response"]],
+insert_server_map_rotation_one?: [{	/** the row to be inserted */
+	object: ValueTypes["server_map_rotation_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["server_map_rotation_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["server_map_rotation"]],
+insert_server_plugins?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["server_plugins_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["server_plugins_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["server_plugins_mutation_response"]],
+insert_server_plugins_one?: [{	/** the row to be inserted */
+	object: ValueTypes["server_plugins_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["server_plugins_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["server_plugins"]],
 insert_server_regions?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["server_regions_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["server_regions_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["server_regions_mutation_response"]],
@@ -32077,6 +32131,8 @@ setHudMode?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	mode: stri
 setMapWinner?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	match_map_id: ValueTypes["uuid"] | Variable<any, string>,	winning_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setMatchWinner?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	winning_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setNewsPostStatus?: [{	id: ValueTypes["uuid"] | Variable<any, string>,	status: string | Variable<any, string>},ValueTypes["NewsPost"]],
+setServerMapRotation?: [{	map_ids: Array<ValueTypes["uuid"]> | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>,	shuffle: boolean | Variable<any, string>},ValueTypes["SuccessOutput"]],
+setServerPlugins?: [{	plugins: Array<ValueTypes["ServerPluginInput"]> | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setTournamentAward?: [{	award_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	custom_name?: string | undefined | null | Variable<any, string>,	placement: number | Variable<any, string>,	silhouette?: number | undefined | null | Variable<any, string>,	tournament_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["TournamentAward"]],
 setUtilityPracticeAccess?: [{	access: string | Variable<any, string>,	session_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 	setupGameServer?:ValueTypes["SetupGameServeOutput"],
@@ -33535,6 +33591,22 @@ update_seasons_by_pk?: [{	/** increments the numeric columns with given value of
 	_set?: ValueTypes["seasons_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["seasons_pk_columns_input"] | Variable<any, string>},ValueTypes["seasons"]],
 update_seasons_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["seasons_updates"]> | Variable<any, string>},ValueTypes["seasons_mutation_response"]],
+update_server_map_rotation?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["server_map_rotation_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["server_map_rotation_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["server_map_rotation_bool_exp"] | Variable<any, string>},ValueTypes["server_map_rotation_mutation_response"]],
+update_server_map_rotation_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["server_map_rotation_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["server_map_rotation_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["server_map_rotation_pk_columns_input"] | Variable<any, string>},ValueTypes["server_map_rotation"]],
+update_server_map_rotation_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["server_map_rotation_updates"]> | Variable<any, string>},ValueTypes["server_map_rotation_mutation_response"]],
+update_server_plugins?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["server_plugins_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["server_plugins_bool_exp"] | Variable<any, string>},ValueTypes["server_plugins_mutation_response"]],
+update_server_plugins_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["server_plugins_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["server_plugins_pk_columns_input"] | Variable<any, string>},ValueTypes["server_plugins"]],
+update_server_plugins_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["server_plugins_updates"]> | Variable<any, string>},ValueTypes["server_plugins_mutation_response"]],
 update_server_regions?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["server_regions_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
 	where: ValueTypes["server_regions_bool_exp"] | Variable<any, string>},ValueTypes["server_regions_mutation_response"]],
@@ -52186,6 +52258,32 @@ seasons_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["seasons_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["seasons_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["seasons_aggregate"]],
 seasons_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["seasons"]],
+server_map_rotation?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_map_rotation_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_map_rotation_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_map_rotation_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_map_rotation"]],
+server_map_rotation_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_map_rotation_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_map_rotation_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_map_rotation_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_map_rotation_aggregate"]],
+server_map_rotation_by_pk?: [{	map_id: ValueTypes["uuid"] | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["server_map_rotation"]],
+server_plugins?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_plugins_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_plugins_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_plugins_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_plugins"]],
+server_plugins_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_plugins_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_plugins_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_plugins_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_plugins_aggregate"]],
+server_plugins_by_pk?: [{	plugin_slug: string | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["server_plugins"]],
 server_regions?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["server_regions_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -53590,6 +53688,410 @@ count?: [{	columns?: Array<ValueTypes["seasons_select_column"]> | undefined | nu
 	number?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** columns and relationships of "server_map_rotation" */
+["server_map_rotation"]: AliasType<{
+	/** An object relationship */
+	map?:ValueTypes["maps"],
+	map_id?:boolean | `@${string}`,
+	position?:boolean | `@${string}`,
+	/** An object relationship */
+	server?:ValueTypes["servers"],
+	server_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "server_map_rotation" */
+["server_map_rotation_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["server_map_rotation_aggregate_fields"],
+	nodes?:ValueTypes["server_map_rotation"],
+		__typename?: boolean | `@${string}`
+}>;
+	["server_map_rotation_aggregate_bool_exp"]: {
+	count?: ValueTypes["server_map_rotation_aggregate_bool_exp_count"] | undefined | null | Variable<any, string>
+};
+	["server_map_rotation_aggregate_bool_exp_count"]: {
+	arguments?: Array<ValueTypes["server_map_rotation_select_column"]> | undefined | null | Variable<any, string>,
+	distinct?: boolean | undefined | null | Variable<any, string>,
+	filter?: ValueTypes["server_map_rotation_bool_exp"] | undefined | null | Variable<any, string>,
+	predicate: ValueTypes["Int_comparison_exp"] | Variable<any, string>
+};
+	/** aggregate fields of "server_map_rotation" */
+["server_map_rotation_aggregate_fields"]: AliasType<{
+	avg?:ValueTypes["server_map_rotation_avg_fields"],
+count?: [{	columns?: Array<ValueTypes["server_map_rotation_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["server_map_rotation_max_fields"],
+	min?:ValueTypes["server_map_rotation_min_fields"],
+	stddev?:ValueTypes["server_map_rotation_stddev_fields"],
+	stddev_pop?:ValueTypes["server_map_rotation_stddev_pop_fields"],
+	stddev_samp?:ValueTypes["server_map_rotation_stddev_samp_fields"],
+	sum?:ValueTypes["server_map_rotation_sum_fields"],
+	var_pop?:ValueTypes["server_map_rotation_var_pop_fields"],
+	var_samp?:ValueTypes["server_map_rotation_var_samp_fields"],
+	variance?:ValueTypes["server_map_rotation_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by aggregate values of table "server_map_rotation" */
+["server_map_rotation_aggregate_order_by"]: {
+	avg?: ValueTypes["server_map_rotation_avg_order_by"] | undefined | null | Variable<any, string>,
+	count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	max?: ValueTypes["server_map_rotation_max_order_by"] | undefined | null | Variable<any, string>,
+	min?: ValueTypes["server_map_rotation_min_order_by"] | undefined | null | Variable<any, string>,
+	stddev?: ValueTypes["server_map_rotation_stddev_order_by"] | undefined | null | Variable<any, string>,
+	stddev_pop?: ValueTypes["server_map_rotation_stddev_pop_order_by"] | undefined | null | Variable<any, string>,
+	stddev_samp?: ValueTypes["server_map_rotation_stddev_samp_order_by"] | undefined | null | Variable<any, string>,
+	sum?: ValueTypes["server_map_rotation_sum_order_by"] | undefined | null | Variable<any, string>,
+	var_pop?: ValueTypes["server_map_rotation_var_pop_order_by"] | undefined | null | Variable<any, string>,
+	var_samp?: ValueTypes["server_map_rotation_var_samp_order_by"] | undefined | null | Variable<any, string>,
+	variance?: ValueTypes["server_map_rotation_variance_order_by"] | undefined | null | Variable<any, string>
+};
+	/** input type for inserting array relation for remote table "server_map_rotation" */
+["server_map_rotation_arr_rel_insert_input"]: {
+	data: Array<ValueTypes["server_map_rotation_insert_input"]> | Variable<any, string>,
+	/** upsert condition */
+	on_conflict?: ValueTypes["server_map_rotation_on_conflict"] | undefined | null | Variable<any, string>
+};
+	/** aggregate avg on columns */
+["server_map_rotation_avg_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by avg() on columns of table "server_map_rotation" */
+["server_map_rotation_avg_order_by"]: {
+	position?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** Boolean expression to filter rows from the table "server_map_rotation". All fields are combined with a logical 'AND'. */
+["server_map_rotation_bool_exp"]: {
+	_and?: Array<ValueTypes["server_map_rotation_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["server_map_rotation_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["server_map_rotation_bool_exp"]> | undefined | null | Variable<any, string>,
+	map?: ValueTypes["maps_bool_exp"] | undefined | null | Variable<any, string>,
+	map_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	position?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	server?: ValueTypes["servers_bool_exp"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "server_map_rotation" */
+["server_map_rotation_constraint"]:server_map_rotation_constraint;
+	/** input type for incrementing numeric columns in table "server_map_rotation" */
+["server_map_rotation_inc_input"]: {
+	position?: number | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "server_map_rotation" */
+["server_map_rotation_insert_input"]: {
+	map?: ValueTypes["maps_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	map_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	position?: number | undefined | null | Variable<any, string>,
+	server?: ValueTypes["servers_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["server_map_rotation_max_fields"]: AliasType<{
+	map_id?:boolean | `@${string}`,
+	position?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by max() on columns of table "server_map_rotation" */
+["server_map_rotation_max_order_by"]: {
+	map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	position?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate min on columns */
+["server_map_rotation_min_fields"]: AliasType<{
+	map_id?:boolean | `@${string}`,
+	position?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by min() on columns of table "server_map_rotation" */
+["server_map_rotation_min_order_by"]: {
+	map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	position?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** response of any mutation on the table "server_map_rotation" */
+["server_map_rotation_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["server_map_rotation"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "server_map_rotation" */
+["server_map_rotation_on_conflict"]: {
+	constraint: ValueTypes["server_map_rotation_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["server_map_rotation_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["server_map_rotation_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "server_map_rotation". */
+["server_map_rotation_order_by"]: {
+	map?: ValueTypes["maps_order_by"] | undefined | null | Variable<any, string>,
+	map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	position?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	server?: ValueTypes["servers_order_by"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: server_map_rotation */
+["server_map_rotation_pk_columns_input"]: {
+	map_id: ValueTypes["uuid"] | Variable<any, string>,
+	server_id: ValueTypes["uuid"] | Variable<any, string>
+};
+	/** select columns of table "server_map_rotation" */
+["server_map_rotation_select_column"]:server_map_rotation_select_column;
+	/** input type for updating data in table "server_map_rotation" */
+["server_map_rotation_set_input"]: {
+	map_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	position?: number | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev on columns */
+["server_map_rotation_stddev_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev() on columns of table "server_map_rotation" */
+["server_map_rotation_stddev_order_by"]: {
+	position?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev_pop on columns */
+["server_map_rotation_stddev_pop_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_pop() on columns of table "server_map_rotation" */
+["server_map_rotation_stddev_pop_order_by"]: {
+	position?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev_samp on columns */
+["server_map_rotation_stddev_samp_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_samp() on columns of table "server_map_rotation" */
+["server_map_rotation_stddev_samp_order_by"]: {
+	position?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** Streaming cursor of the table "server_map_rotation" */
+["server_map_rotation_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["server_map_rotation_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["server_map_rotation_stream_cursor_value_input"]: {
+	map_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	position?: number | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+};
+	/** aggregate sum on columns */
+["server_map_rotation_sum_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by sum() on columns of table "server_map_rotation" */
+["server_map_rotation_sum_order_by"]: {
+	position?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** update columns of table "server_map_rotation" */
+["server_map_rotation_update_column"]:server_map_rotation_update_column;
+	["server_map_rotation_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["server_map_rotation_inc_input"] | undefined | null | Variable<any, string>,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["server_map_rotation_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["server_map_rotation_bool_exp"] | Variable<any, string>
+};
+	/** aggregate var_pop on columns */
+["server_map_rotation_var_pop_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_pop() on columns of table "server_map_rotation" */
+["server_map_rotation_var_pop_order_by"]: {
+	position?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate var_samp on columns */
+["server_map_rotation_var_samp_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_samp() on columns of table "server_map_rotation" */
+["server_map_rotation_var_samp_order_by"]: {
+	position?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate variance on columns */
+["server_map_rotation_variance_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by variance() on columns of table "server_map_rotation" */
+["server_map_rotation_variance_order_by"]: {
+	position?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** columns and relationships of "server_plugins" */
+["server_plugins"]: AliasType<{
+	enabled?:boolean | `@${string}`,
+	/** An object relationship */
+	install?:ValueTypes["game_plugin_installs"],
+	plugin_slug?:boolean | `@${string}`,
+	/** An object relationship */
+	server?:ValueTypes["servers"],
+	server_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "server_plugins" */
+["server_plugins_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["server_plugins_aggregate_fields"],
+	nodes?:ValueTypes["server_plugins"],
+		__typename?: boolean | `@${string}`
+}>;
+	["server_plugins_aggregate_bool_exp"]: {
+	bool_and?: ValueTypes["server_plugins_aggregate_bool_exp_bool_and"] | undefined | null | Variable<any, string>,
+	bool_or?: ValueTypes["server_plugins_aggregate_bool_exp_bool_or"] | undefined | null | Variable<any, string>,
+	count?: ValueTypes["server_plugins_aggregate_bool_exp_count"] | undefined | null | Variable<any, string>
+};
+	["server_plugins_aggregate_bool_exp_bool_and"]: {
+	arguments: ValueTypes["server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_and_arguments_columns"] | Variable<any, string>,
+	distinct?: boolean | undefined | null | Variable<any, string>,
+	filter?: ValueTypes["server_plugins_bool_exp"] | undefined | null | Variable<any, string>,
+	predicate: ValueTypes["Boolean_comparison_exp"] | Variable<any, string>
+};
+	["server_plugins_aggregate_bool_exp_bool_or"]: {
+	arguments: ValueTypes["server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_or_arguments_columns"] | Variable<any, string>,
+	distinct?: boolean | undefined | null | Variable<any, string>,
+	filter?: ValueTypes["server_plugins_bool_exp"] | undefined | null | Variable<any, string>,
+	predicate: ValueTypes["Boolean_comparison_exp"] | Variable<any, string>
+};
+	["server_plugins_aggregate_bool_exp_count"]: {
+	arguments?: Array<ValueTypes["server_plugins_select_column"]> | undefined | null | Variable<any, string>,
+	distinct?: boolean | undefined | null | Variable<any, string>,
+	filter?: ValueTypes["server_plugins_bool_exp"] | undefined | null | Variable<any, string>,
+	predicate: ValueTypes["Int_comparison_exp"] | Variable<any, string>
+};
+	/** aggregate fields of "server_plugins" */
+["server_plugins_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ValueTypes["server_plugins_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["server_plugins_max_fields"],
+	min?:ValueTypes["server_plugins_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by aggregate values of table "server_plugins" */
+["server_plugins_aggregate_order_by"]: {
+	count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	max?: ValueTypes["server_plugins_max_order_by"] | undefined | null | Variable<any, string>,
+	min?: ValueTypes["server_plugins_min_order_by"] | undefined | null | Variable<any, string>
+};
+	/** input type for inserting array relation for remote table "server_plugins" */
+["server_plugins_arr_rel_insert_input"]: {
+	data: Array<ValueTypes["server_plugins_insert_input"]> | Variable<any, string>,
+	/** upsert condition */
+	on_conflict?: ValueTypes["server_plugins_on_conflict"] | undefined | null | Variable<any, string>
+};
+	/** Boolean expression to filter rows from the table "server_plugins". All fields are combined with a logical 'AND'. */
+["server_plugins_bool_exp"]: {
+	_and?: Array<ValueTypes["server_plugins_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["server_plugins_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["server_plugins_bool_exp"]> | undefined | null | Variable<any, string>,
+	enabled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	install?: ValueTypes["game_plugin_installs_bool_exp"] | undefined | null | Variable<any, string>,
+	plugin_slug?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	server?: ValueTypes["servers_bool_exp"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "server_plugins" */
+["server_plugins_constraint"]:server_plugins_constraint;
+	/** input type for inserting data into table "server_plugins" */
+["server_plugins_insert_input"]: {
+	enabled?: boolean | undefined | null | Variable<any, string>,
+	install?: ValueTypes["game_plugin_installs_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	plugin_slug?: string | undefined | null | Variable<any, string>,
+	server?: ValueTypes["servers_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["server_plugins_max_fields"]: AliasType<{
+	plugin_slug?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by max() on columns of table "server_plugins" */
+["server_plugins_max_order_by"]: {
+	plugin_slug?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate min on columns */
+["server_plugins_min_fields"]: AliasType<{
+	plugin_slug?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by min() on columns of table "server_plugins" */
+["server_plugins_min_order_by"]: {
+	plugin_slug?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** response of any mutation on the table "server_plugins" */
+["server_plugins_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["server_plugins"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "server_plugins" */
+["server_plugins_on_conflict"]: {
+	constraint: ValueTypes["server_plugins_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["server_plugins_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["server_plugins_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "server_plugins". */
+["server_plugins_order_by"]: {
+	enabled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	install?: ValueTypes["game_plugin_installs_order_by"] | undefined | null | Variable<any, string>,
+	plugin_slug?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	server?: ValueTypes["servers_order_by"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: server_plugins */
+["server_plugins_pk_columns_input"]: {
+	plugin_slug: string | Variable<any, string>,
+	server_id: ValueTypes["uuid"] | Variable<any, string>
+};
+	/** select columns of table "server_plugins" */
+["server_plugins_select_column"]:server_plugins_select_column;
+	/** select "server_plugins_aggregate_bool_exp_bool_and_arguments_columns" columns of table "server_plugins" */
+["server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_and_arguments_columns"]:server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_and_arguments_columns;
+	/** select "server_plugins_aggregate_bool_exp_bool_or_arguments_columns" columns of table "server_plugins" */
+["server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_or_arguments_columns"]:server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_or_arguments_columns;
+	/** input type for updating data in table "server_plugins" */
+["server_plugins_set_input"]: {
+	enabled?: boolean | undefined | null | Variable<any, string>,
+	plugin_slug?: string | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+};
+	/** Streaming cursor of the table "server_plugins" */
+["server_plugins_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["server_plugins_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["server_plugins_stream_cursor_value_input"]: {
+	enabled?: boolean | undefined | null | Variable<any, string>,
+	plugin_slug?: string | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+};
+	/** update columns of table "server_plugins" */
+["server_plugins_update_column"]:server_plugins_update_column;
+	["server_plugins_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["server_plugins_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["server_plugins_bool_exp"] | Variable<any, string>
+};
 	/** columns and relationships of "server_regions" */
 ["server_regions"]: AliasType<{
 	/** A computed field, executes function "available_region_server_count" */
@@ -53847,6 +54349,19 @@ count?: [{	columns?: Array<ValueTypes["server_regions_select_column"]> | undefin
 	label?:boolean | `@${string}`,
 loaded_plugins?: [{	/** JSON select path */
 	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
+map_rotation?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_map_rotation_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_map_rotation_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_map_rotation_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_map_rotation"]],
+map_rotation_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_map_rotation_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_map_rotation_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_map_rotation_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_map_rotation_aggregate"]],
+	map_rotation_shuffle?:boolean | `@${string}`,
 matches?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["matches_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -53861,6 +54376,18 @@ matches_aggregate?: [{	/** distinct select on columns */
 	where?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["matches_aggregate"]],
 	max_players?:boolean | `@${string}`,
 	offline_at?:boolean | `@${string}`,
+plugin_overrides?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_plugins_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_plugins_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_plugins_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_plugins"]],
+plugin_overrides_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_plugins_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_plugins_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_plugins_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_plugins_aggregate"]],
 	plugin_runtime?:boolean | `@${string}`,
 	plugin_version?:boolean | `@${string}`,
 	plugins_checked_at?:boolean | `@${string}`,
@@ -53982,10 +54509,15 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	is_dedicated?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	label?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	loaded_plugins?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
+	map_rotation?: ValueTypes["server_map_rotation_bool_exp"] | undefined | null | Variable<any, string>,
+	map_rotation_aggregate?: ValueTypes["server_map_rotation_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	map_rotation_shuffle?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	matches?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
 	matches_aggregate?: ValueTypes["matches_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	max_players?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	offline_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	plugin_overrides?: ValueTypes["server_plugins_bool_exp"] | undefined | null | Variable<any, string>,
+	plugin_overrides_aggregate?: ValueTypes["server_plugins_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	plugin_runtime?: ValueTypes["e_plugin_runtimes_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	plugin_version?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	plugins_checked_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -54039,9 +54571,12 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	is_dedicated?: boolean | undefined | null | Variable<any, string>,
 	label?: string | undefined | null | Variable<any, string>,
 	loaded_plugins?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	map_rotation?: ValueTypes["server_map_rotation_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	map_rotation_shuffle?: boolean | undefined | null | Variable<any, string>,
 	matches?: ValueTypes["matches_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	max_players?: number | undefined | null | Variable<any, string>,
 	offline_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	plugin_overrides?: ValueTypes["server_plugins_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	plugin_runtime?: ValueTypes["e_plugin_runtimes_enum"] | undefined | null | Variable<any, string>,
 	plugin_version?: string | undefined | null | Variable<any, string>,
 	plugins_checked_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -54199,9 +54734,12 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	is_dedicated?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	label?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	loaded_plugins?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	map_rotation_aggregate?: ValueTypes["server_map_rotation_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	map_rotation_shuffle?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	matches_aggregate?: ValueTypes["matches_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	max_players?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	offline_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	plugin_overrides_aggregate?: ValueTypes["server_plugins_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	plugin_runtime?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	plugin_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	plugins_checked_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -54246,6 +54784,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	is_dedicated?: boolean | undefined | null | Variable<any, string>,
 	label?: string | undefined | null | Variable<any, string>,
 	loaded_plugins?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	map_rotation_shuffle?: boolean | undefined | null | Variable<any, string>,
 	max_players?: number | undefined | null | Variable<any, string>,
 	offline_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	plugin_runtime?: ValueTypes["e_plugin_runtimes_enum"] | undefined | null | Variable<any, string>,
@@ -54323,6 +54862,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	is_dedicated?: boolean | undefined | null | Variable<any, string>,
 	label?: string | undefined | null | Variable<any, string>,
 	loaded_plugins?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	map_rotation_shuffle?: boolean | undefined | null | Variable<any, string>,
 	max_players?: number | undefined | null | Variable<any, string>,
 	offline_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	plugin_runtime?: ValueTypes["e_plugin_runtimes_enum"] | undefined | null | Variable<any, string>,
@@ -57771,6 +58311,40 @@ seasons_stream?: [{	/** maximum number of rows returned in a single batch */
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["seasons_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["seasons_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["seasons"]],
+server_map_rotation?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_map_rotation_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_map_rotation_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_map_rotation_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_map_rotation"]],
+server_map_rotation_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_map_rotation_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_map_rotation_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_map_rotation_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_map_rotation_aggregate"]],
+server_map_rotation_by_pk?: [{	map_id: ValueTypes["uuid"] | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["server_map_rotation"]],
+server_map_rotation_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["server_map_rotation_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_map_rotation_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_map_rotation"]],
+server_plugins?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_plugins_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_plugins_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_plugins_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_plugins"]],
+server_plugins_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_plugins_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_plugins_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_plugins_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_plugins_aggregate"]],
+server_plugins_by_pk?: [{	plugin_slug: string | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["server_plugins"]],
+server_plugins_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["server_plugins_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_plugins_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_plugins"]],
 server_regions?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["server_regions_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -85501,6 +86075,19 @@ export type ResolverInputTypes = {
 	num_chunks?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["ImportWorkshopCollectionOutput"]: AliasType<{
+	maps?:ResolverInputTypes["ImportedWorkshopMap"],
+	skipped?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["ImportedWorkshopMap"]: AliasType<{
+	id?:boolean | `@${string}`,
+	label?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	poster?:boolean | `@${string}`,
+	workshop_map_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["IndexIOStat"]: AliasType<{
 	idx_blks_hit?:boolean | `@${string}`,
 	idx_blks_read?:boolean | `@${string}`,
@@ -85794,6 +86381,10 @@ export type ResolverInputTypes = {
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["ServerPluginInput"]: {
+	enabled: boolean,
+	slug: string
+};
 	["SetupGameServeOutput"]: AliasType<{
 	gameServerId?:boolean | `@${string}`,
 	link?:boolean | `@${string}`,
@@ -100943,6 +101534,12 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugin_installs_select_colum
 	returning?:ResolverInputTypes["game_plugin_installs"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** input type for inserting object relation for remote table "game_plugin_installs" */
+["game_plugin_installs_obj_rel_insert_input"]: {
+	data: ResolverInputTypes["game_plugin_installs_insert_input"],
+	/** upsert condition */
+	on_conflict?: ResolverInputTypes["game_plugin_installs_on_conflict"] | undefined | null
+};
 	/** on_conflict condition type for table "game_plugin_installs" */
 ["game_plugin_installs_on_conflict"]: {
 	constraint: ResolverInputTypes["game_plugin_installs_constraint"],
@@ -101358,6 +101955,8 @@ game_modes_aggregate?: [{	/** distinct select on columns */
 	/** A computed field, executes function "game_plugin_installed_node_count" */
 	installed_node_count?:boolean | `@${string}`,
 	kind?:boolean | `@${string}`,
+map_rotation?: [{	/** JSON select path */
+	path?: string | undefined | null},boolean | `@${string}`],
 	name?:boolean | `@${string}`,
 node_installs?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["game_server_node_plugins_select_column"]> | undefined | null,	/** limit the number of rows returned */
@@ -101423,6 +102022,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	/** append existing jsonb value of filtered columns with new jsonb value */
 ["game_plugins_append_input"]: {
 	config_schema?: ResolverInputTypes["jsonb"] | undefined | null,
+	map_rotation?: ResolverInputTypes["jsonb"] | undefined | null,
 	panel?: ResolverInputTypes["jsonb"] | undefined | null,
 	wiring?: ResolverInputTypes["jsonb"] | undefined | null
 };
@@ -101451,6 +102051,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	install_state?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	installed_node_count?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	kind?: ResolverInputTypes["e_game_plugin_kinds_enum_comparison_exp"] | undefined | null,
+	map_rotation?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
 	name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	node_installs?: ResolverInputTypes["game_server_node_plugins_bool_exp"] | undefined | null,
 	node_installs_aggregate?: ResolverInputTypes["game_server_node_plugins_aggregate_bool_exp"] | undefined | null,
@@ -101473,18 +102074,21 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 ["game_plugins_delete_at_path_input"]: {
 	config_schema?: Array<string> | undefined | null,
+	map_rotation?: Array<string> | undefined | null,
 	panel?: Array<string> | undefined | null,
 	wiring?: Array<string> | undefined | null
 };
 	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
 ["game_plugins_delete_elem_input"]: {
 	config_schema?: number | undefined | null,
+	map_rotation?: number | undefined | null,
 	panel?: number | undefined | null,
 	wiring?: number | undefined | null
 };
 	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
 ["game_plugins_delete_key_input"]: {
 	config_schema?: string | undefined | null,
+	map_rotation?: string | undefined | null,
 	panel?: string | undefined | null,
 	wiring?: string | undefined | null
 };
@@ -101499,6 +102103,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	homepage?: string | undefined | null,
 	hot_swappable?: boolean | undefined | null,
 	kind?: ResolverInputTypes["e_game_plugin_kinds_enum"] | undefined | null,
+	map_rotation?: ResolverInputTypes["jsonb"] | undefined | null,
 	name?: string | undefined | null,
 	node_installs?: ResolverInputTypes["game_server_node_plugins_arr_rel_insert_input"] | undefined | null,
 	pairs_with?: Array<string> | undefined | null,
@@ -101590,6 +102195,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	install_state?: ResolverInputTypes["order_by"] | undefined | null,
 	installed_node_count?: ResolverInputTypes["order_by"] | undefined | null,
 	kind?: ResolverInputTypes["order_by"] | undefined | null,
+	map_rotation?: ResolverInputTypes["order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
 	node_installs_aggregate?: ResolverInputTypes["game_server_node_plugins_aggregate_order_by"] | undefined | null,
 	pairs_with?: ResolverInputTypes["order_by"] | undefined | null,
@@ -101612,6 +102218,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	/** prepend existing jsonb value of filtered columns with new jsonb value */
 ["game_plugins_prepend_input"]: {
 	config_schema?: ResolverInputTypes["jsonb"] | undefined | null,
+	map_rotation?: ResolverInputTypes["jsonb"] | undefined | null,
 	panel?: ResolverInputTypes["jsonb"] | undefined | null,
 	wiring?: ResolverInputTypes["jsonb"] | undefined | null
 };
@@ -101627,6 +102234,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	homepage?: string | undefined | null,
 	hot_swappable?: boolean | undefined | null,
 	kind?: ResolverInputTypes["e_game_plugin_kinds_enum"] | undefined | null,
+	map_rotation?: ResolverInputTypes["jsonb"] | undefined | null,
 	name?: string | undefined | null,
 	pairs_with?: Array<string> | undefined | null,
 	panel?: ResolverInputTypes["jsonb"] | undefined | null,
@@ -101680,6 +102288,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	homepage?: string | undefined | null,
 	hot_swappable?: boolean | undefined | null,
 	kind?: ResolverInputTypes["e_game_plugin_kinds_enum"] | undefined | null,
+	map_rotation?: ResolverInputTypes["jsonb"] | undefined | null,
 	name?: string | undefined | null,
 	pairs_with?: Array<string> | undefined | null,
 	panel?: ResolverInputTypes["jsonb"] | undefined | null,
@@ -114799,6 +115408,12 @@ delete_role_permissions?: [{	/** filter the rows which have to be deleted */
 delete_seasons?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["seasons_bool_exp"]},ResolverInputTypes["seasons_mutation_response"]],
 delete_seasons_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["seasons"]],
+delete_server_map_rotation?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["server_map_rotation_bool_exp"]},ResolverInputTypes["server_map_rotation_mutation_response"]],
+delete_server_map_rotation_by_pk?: [{	map_id: ResolverInputTypes["uuid"],	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["server_map_rotation"]],
+delete_server_plugins?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["server_plugins_bool_exp"]},ResolverInputTypes["server_plugins_mutation_response"]],
+delete_server_plugins_by_pk?: [{	plugin_slug: string,	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["server_plugins"]],
 delete_server_regions?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["server_regions_bool_exp"]},ResolverInputTypes["server_regions_mutation_response"]],
 delete_server_regions_by_pk?: [{	value: string},ResolverInputTypes["server_regions"]],
@@ -114973,6 +115588,7 @@ getPluginReadme?: [{	runtime?: string | undefined | null,	slug: string},Resolver
 grantAward?: [{	award_id: ResolverInputTypes["uuid"],	event_id?: ResolverInputTypes["uuid"] | undefined | null,	league_season_id?: ResolverInputTypes["uuid"] | undefined | null,	note?: string | undefined | null,	player_steam_id?: string | undefined | null,	season_id?: ResolverInputTypes["uuid"] | undefined | null,	team_id?: ResolverInputTypes["uuid"] | undefined | null,	tournament_id?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["AwardRecipient"]],
 importSteamMatchShareCode?: [{	share_code: string},ResolverInputTypes["PendingMatchImportActionOutput"]],
 importUtilityLineups?: [{	dry_run?: boolean | undefined | null,	payload: ResolverInputTypes["jsonb"]},ResolverInputTypes["UtilityImportOutput"]],
+importWorkshopCollection?: [{	collection: string},ResolverInputTypes["ImportWorkshopCollectionOutput"]],
 insert__map_pool?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["_map_pool_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["_map_pool_on_conflict"] | undefined | null},ResolverInputTypes["_map_pool_mutation_response"]],
@@ -115907,6 +116523,18 @@ insert_seasons?: [{	/** the rows to be inserted */
 insert_seasons_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["seasons_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["seasons_on_conflict"] | undefined | null},ResolverInputTypes["seasons"]],
+insert_server_map_rotation?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["server_map_rotation_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["server_map_rotation_on_conflict"] | undefined | null},ResolverInputTypes["server_map_rotation_mutation_response"]],
+insert_server_map_rotation_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["server_map_rotation_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["server_map_rotation_on_conflict"] | undefined | null},ResolverInputTypes["server_map_rotation"]],
+insert_server_plugins?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["server_plugins_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["server_plugins_on_conflict"] | undefined | null},ResolverInputTypes["server_plugins_mutation_response"]],
+insert_server_plugins_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["server_plugins_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["server_plugins_on_conflict"] | undefined | null},ResolverInputTypes["server_plugins"]],
 insert_server_regions?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["server_regions_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["server_regions_on_conflict"] | undefined | null},ResolverInputTypes["server_regions_mutation_response"]],
@@ -116355,6 +116983,8 @@ setHudMode?: [{	match_id: ResolverInputTypes["uuid"],	mode: string},ResolverInpu
 setMapWinner?: [{	match_id: ResolverInputTypes["uuid"],	match_map_id: ResolverInputTypes["uuid"],	winning_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 setMatchWinner?: [{	match_id: ResolverInputTypes["uuid"],	winning_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 setNewsPostStatus?: [{	id: ResolverInputTypes["uuid"],	status: string},ResolverInputTypes["NewsPost"]],
+setServerMapRotation?: [{	map_ids: Array<ResolverInputTypes["uuid"]>,	server_id: ResolverInputTypes["uuid"],	shuffle: boolean},ResolverInputTypes["SuccessOutput"]],
+setServerPlugins?: [{	plugins: Array<ResolverInputTypes["ServerPluginInput"]>,	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 setTournamentAward?: [{	award_id?: ResolverInputTypes["uuid"] | undefined | null,	custom_name?: string | undefined | null,	placement: number,	silhouette?: number | undefined | null,	tournament_id: ResolverInputTypes["uuid"]},ResolverInputTypes["TournamentAward"]],
 setUtilityPracticeAccess?: [{	access: string,	session_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 	setupGameServer?:ResolverInputTypes["SetupGameServeOutput"],
@@ -117813,6 +118443,22 @@ update_seasons_by_pk?: [{	/** increments the numeric columns with given value of
 	_set?: ResolverInputTypes["seasons_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["seasons_pk_columns_input"]},ResolverInputTypes["seasons"]],
 update_seasons_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["seasons_updates"]>},ResolverInputTypes["seasons_mutation_response"]],
+update_server_map_rotation?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["server_map_rotation_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["server_map_rotation_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["server_map_rotation_bool_exp"]},ResolverInputTypes["server_map_rotation_mutation_response"]],
+update_server_map_rotation_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["server_map_rotation_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["server_map_rotation_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["server_map_rotation_pk_columns_input"]},ResolverInputTypes["server_map_rotation"]],
+update_server_map_rotation_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["server_map_rotation_updates"]>},ResolverInputTypes["server_map_rotation_mutation_response"]],
+update_server_plugins?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["server_plugins_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["server_plugins_bool_exp"]},ResolverInputTypes["server_plugins_mutation_response"]],
+update_server_plugins_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["server_plugins_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["server_plugins_pk_columns_input"]},ResolverInputTypes["server_plugins"]],
+update_server_plugins_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["server_plugins_updates"]>},ResolverInputTypes["server_plugins_mutation_response"]],
 update_server_regions?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["server_regions_set_input"] | undefined | null,	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["server_regions_bool_exp"]},ResolverInputTypes["server_regions_mutation_response"]],
@@ -136464,6 +137110,32 @@ seasons_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["seasons_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["seasons_bool_exp"] | undefined | null},ResolverInputTypes["seasons_aggregate"]],
 seasons_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["seasons"]],
+server_map_rotation?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_map_rotation_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_map_rotation_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_map_rotation_bool_exp"] | undefined | null},ResolverInputTypes["server_map_rotation"]],
+server_map_rotation_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_map_rotation_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_map_rotation_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_map_rotation_bool_exp"] | undefined | null},ResolverInputTypes["server_map_rotation_aggregate"]],
+server_map_rotation_by_pk?: [{	map_id: ResolverInputTypes["uuid"],	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["server_map_rotation"]],
+server_plugins?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_plugins_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_plugins_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_plugins_bool_exp"] | undefined | null},ResolverInputTypes["server_plugins"]],
+server_plugins_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_plugins_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_plugins_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_plugins_bool_exp"] | undefined | null},ResolverInputTypes["server_plugins_aggregate"]],
+server_plugins_by_pk?: [{	plugin_slug: string,	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["server_plugins"]],
 server_regions?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["server_regions_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -137868,6 +138540,410 @@ count?: [{	columns?: Array<ResolverInputTypes["seasons_select_column"]> | undefi
 	number?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** columns and relationships of "server_map_rotation" */
+["server_map_rotation"]: AliasType<{
+	/** An object relationship */
+	map?:ResolverInputTypes["maps"],
+	map_id?:boolean | `@${string}`,
+	position?:boolean | `@${string}`,
+	/** An object relationship */
+	server?:ResolverInputTypes["servers"],
+	server_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "server_map_rotation" */
+["server_map_rotation_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["server_map_rotation_aggregate_fields"],
+	nodes?:ResolverInputTypes["server_map_rotation"],
+		__typename?: boolean | `@${string}`
+}>;
+	["server_map_rotation_aggregate_bool_exp"]: {
+	count?: ResolverInputTypes["server_map_rotation_aggregate_bool_exp_count"] | undefined | null
+};
+	["server_map_rotation_aggregate_bool_exp_count"]: {
+	arguments?: Array<ResolverInputTypes["server_map_rotation_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: ResolverInputTypes["server_map_rotation_bool_exp"] | undefined | null,
+	predicate: ResolverInputTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "server_map_rotation" */
+["server_map_rotation_aggregate_fields"]: AliasType<{
+	avg?:ResolverInputTypes["server_map_rotation_avg_fields"],
+count?: [{	columns?: Array<ResolverInputTypes["server_map_rotation_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["server_map_rotation_max_fields"],
+	min?:ResolverInputTypes["server_map_rotation_min_fields"],
+	stddev?:ResolverInputTypes["server_map_rotation_stddev_fields"],
+	stddev_pop?:ResolverInputTypes["server_map_rotation_stddev_pop_fields"],
+	stddev_samp?:ResolverInputTypes["server_map_rotation_stddev_samp_fields"],
+	sum?:ResolverInputTypes["server_map_rotation_sum_fields"],
+	var_pop?:ResolverInputTypes["server_map_rotation_var_pop_fields"],
+	var_samp?:ResolverInputTypes["server_map_rotation_var_samp_fields"],
+	variance?:ResolverInputTypes["server_map_rotation_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by aggregate values of table "server_map_rotation" */
+["server_map_rotation_aggregate_order_by"]: {
+	avg?: ResolverInputTypes["server_map_rotation_avg_order_by"] | undefined | null,
+	count?: ResolverInputTypes["order_by"] | undefined | null,
+	max?: ResolverInputTypes["server_map_rotation_max_order_by"] | undefined | null,
+	min?: ResolverInputTypes["server_map_rotation_min_order_by"] | undefined | null,
+	stddev?: ResolverInputTypes["server_map_rotation_stddev_order_by"] | undefined | null,
+	stddev_pop?: ResolverInputTypes["server_map_rotation_stddev_pop_order_by"] | undefined | null,
+	stddev_samp?: ResolverInputTypes["server_map_rotation_stddev_samp_order_by"] | undefined | null,
+	sum?: ResolverInputTypes["server_map_rotation_sum_order_by"] | undefined | null,
+	var_pop?: ResolverInputTypes["server_map_rotation_var_pop_order_by"] | undefined | null,
+	var_samp?: ResolverInputTypes["server_map_rotation_var_samp_order_by"] | undefined | null,
+	variance?: ResolverInputTypes["server_map_rotation_variance_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "server_map_rotation" */
+["server_map_rotation_arr_rel_insert_input"]: {
+	data: Array<ResolverInputTypes["server_map_rotation_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ResolverInputTypes["server_map_rotation_on_conflict"] | undefined | null
+};
+	/** aggregate avg on columns */
+["server_map_rotation_avg_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by avg() on columns of table "server_map_rotation" */
+["server_map_rotation_avg_order_by"]: {
+	position?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "server_map_rotation". All fields are combined with a logical 'AND'. */
+["server_map_rotation_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["server_map_rotation_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["server_map_rotation_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["server_map_rotation_bool_exp"]> | undefined | null,
+	map?: ResolverInputTypes["maps_bool_exp"] | undefined | null,
+	map_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	position?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	server?: ResolverInputTypes["servers_bool_exp"] | undefined | null,
+	server_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "server_map_rotation" */
+["server_map_rotation_constraint"]:server_map_rotation_constraint;
+	/** input type for incrementing numeric columns in table "server_map_rotation" */
+["server_map_rotation_inc_input"]: {
+	position?: number | undefined | null
+};
+	/** input type for inserting data into table "server_map_rotation" */
+["server_map_rotation_insert_input"]: {
+	map?: ResolverInputTypes["maps_obj_rel_insert_input"] | undefined | null,
+	map_id?: ResolverInputTypes["uuid"] | undefined | null,
+	position?: number | undefined | null,
+	server?: ResolverInputTypes["servers_obj_rel_insert_input"] | undefined | null,
+	server_id?: ResolverInputTypes["uuid"] | undefined | null
+};
+	/** aggregate max on columns */
+["server_map_rotation_max_fields"]: AliasType<{
+	map_id?:boolean | `@${string}`,
+	position?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by max() on columns of table "server_map_rotation" */
+["server_map_rotation_max_order_by"]: {
+	map_id?: ResolverInputTypes["order_by"] | undefined | null,
+	position?: ResolverInputTypes["order_by"] | undefined | null,
+	server_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["server_map_rotation_min_fields"]: AliasType<{
+	map_id?:boolean | `@${string}`,
+	position?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by min() on columns of table "server_map_rotation" */
+["server_map_rotation_min_order_by"]: {
+	map_id?: ResolverInputTypes["order_by"] | undefined | null,
+	position?: ResolverInputTypes["order_by"] | undefined | null,
+	server_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "server_map_rotation" */
+["server_map_rotation_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["server_map_rotation"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "server_map_rotation" */
+["server_map_rotation_on_conflict"]: {
+	constraint: ResolverInputTypes["server_map_rotation_constraint"],
+	update_columns: Array<ResolverInputTypes["server_map_rotation_update_column"]>,
+	where?: ResolverInputTypes["server_map_rotation_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "server_map_rotation". */
+["server_map_rotation_order_by"]: {
+	map?: ResolverInputTypes["maps_order_by"] | undefined | null,
+	map_id?: ResolverInputTypes["order_by"] | undefined | null,
+	position?: ResolverInputTypes["order_by"] | undefined | null,
+	server?: ResolverInputTypes["servers_order_by"] | undefined | null,
+	server_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: server_map_rotation */
+["server_map_rotation_pk_columns_input"]: {
+	map_id: ResolverInputTypes["uuid"],
+	server_id: ResolverInputTypes["uuid"]
+};
+	/** select columns of table "server_map_rotation" */
+["server_map_rotation_select_column"]:server_map_rotation_select_column;
+	/** input type for updating data in table "server_map_rotation" */
+["server_map_rotation_set_input"]: {
+	map_id?: ResolverInputTypes["uuid"] | undefined | null,
+	position?: number | undefined | null,
+	server_id?: ResolverInputTypes["uuid"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["server_map_rotation_stddev_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev() on columns of table "server_map_rotation" */
+["server_map_rotation_stddev_order_by"]: {
+	position?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["server_map_rotation_stddev_pop_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_pop() on columns of table "server_map_rotation" */
+["server_map_rotation_stddev_pop_order_by"]: {
+	position?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["server_map_rotation_stddev_samp_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_samp() on columns of table "server_map_rotation" */
+["server_map_rotation_stddev_samp_order_by"]: {
+	position?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** Streaming cursor of the table "server_map_rotation" */
+["server_map_rotation_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["server_map_rotation_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["server_map_rotation_stream_cursor_value_input"]: {
+	map_id?: ResolverInputTypes["uuid"] | undefined | null,
+	position?: number | undefined | null,
+	server_id?: ResolverInputTypes["uuid"] | undefined | null
+};
+	/** aggregate sum on columns */
+["server_map_rotation_sum_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by sum() on columns of table "server_map_rotation" */
+["server_map_rotation_sum_order_by"]: {
+	position?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** update columns of table "server_map_rotation" */
+["server_map_rotation_update_column"]:server_map_rotation_update_column;
+	["server_map_rotation_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["server_map_rotation_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["server_map_rotation_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["server_map_rotation_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["server_map_rotation_var_pop_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_pop() on columns of table "server_map_rotation" */
+["server_map_rotation_var_pop_order_by"]: {
+	position?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate var_samp on columns */
+["server_map_rotation_var_samp_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_samp() on columns of table "server_map_rotation" */
+["server_map_rotation_var_samp_order_by"]: {
+	position?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate variance on columns */
+["server_map_rotation_variance_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by variance() on columns of table "server_map_rotation" */
+["server_map_rotation_variance_order_by"]: {
+	position?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** columns and relationships of "server_plugins" */
+["server_plugins"]: AliasType<{
+	enabled?:boolean | `@${string}`,
+	/** An object relationship */
+	install?:ResolverInputTypes["game_plugin_installs"],
+	plugin_slug?:boolean | `@${string}`,
+	/** An object relationship */
+	server?:ResolverInputTypes["servers"],
+	server_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "server_plugins" */
+["server_plugins_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["server_plugins_aggregate_fields"],
+	nodes?:ResolverInputTypes["server_plugins"],
+		__typename?: boolean | `@${string}`
+}>;
+	["server_plugins_aggregate_bool_exp"]: {
+	bool_and?: ResolverInputTypes["server_plugins_aggregate_bool_exp_bool_and"] | undefined | null,
+	bool_or?: ResolverInputTypes["server_plugins_aggregate_bool_exp_bool_or"] | undefined | null,
+	count?: ResolverInputTypes["server_plugins_aggregate_bool_exp_count"] | undefined | null
+};
+	["server_plugins_aggregate_bool_exp_bool_and"]: {
+	arguments: ResolverInputTypes["server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_and_arguments_columns"],
+	distinct?: boolean | undefined | null,
+	filter?: ResolverInputTypes["server_plugins_bool_exp"] | undefined | null,
+	predicate: ResolverInputTypes["Boolean_comparison_exp"]
+};
+	["server_plugins_aggregate_bool_exp_bool_or"]: {
+	arguments: ResolverInputTypes["server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_or_arguments_columns"],
+	distinct?: boolean | undefined | null,
+	filter?: ResolverInputTypes["server_plugins_bool_exp"] | undefined | null,
+	predicate: ResolverInputTypes["Boolean_comparison_exp"]
+};
+	["server_plugins_aggregate_bool_exp_count"]: {
+	arguments?: Array<ResolverInputTypes["server_plugins_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: ResolverInputTypes["server_plugins_bool_exp"] | undefined | null,
+	predicate: ResolverInputTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "server_plugins" */
+["server_plugins_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ResolverInputTypes["server_plugins_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["server_plugins_max_fields"],
+	min?:ResolverInputTypes["server_plugins_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by aggregate values of table "server_plugins" */
+["server_plugins_aggregate_order_by"]: {
+	count?: ResolverInputTypes["order_by"] | undefined | null,
+	max?: ResolverInputTypes["server_plugins_max_order_by"] | undefined | null,
+	min?: ResolverInputTypes["server_plugins_min_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "server_plugins" */
+["server_plugins_arr_rel_insert_input"]: {
+	data: Array<ResolverInputTypes["server_plugins_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ResolverInputTypes["server_plugins_on_conflict"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "server_plugins". All fields are combined with a logical 'AND'. */
+["server_plugins_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["server_plugins_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["server_plugins_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["server_plugins_bool_exp"]> | undefined | null,
+	enabled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	install?: ResolverInputTypes["game_plugin_installs_bool_exp"] | undefined | null,
+	plugin_slug?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	server?: ResolverInputTypes["servers_bool_exp"] | undefined | null,
+	server_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "server_plugins" */
+["server_plugins_constraint"]:server_plugins_constraint;
+	/** input type for inserting data into table "server_plugins" */
+["server_plugins_insert_input"]: {
+	enabled?: boolean | undefined | null,
+	install?: ResolverInputTypes["game_plugin_installs_obj_rel_insert_input"] | undefined | null,
+	plugin_slug?: string | undefined | null,
+	server?: ResolverInputTypes["servers_obj_rel_insert_input"] | undefined | null,
+	server_id?: ResolverInputTypes["uuid"] | undefined | null
+};
+	/** aggregate max on columns */
+["server_plugins_max_fields"]: AliasType<{
+	plugin_slug?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by max() on columns of table "server_plugins" */
+["server_plugins_max_order_by"]: {
+	plugin_slug?: ResolverInputTypes["order_by"] | undefined | null,
+	server_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["server_plugins_min_fields"]: AliasType<{
+	plugin_slug?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by min() on columns of table "server_plugins" */
+["server_plugins_min_order_by"]: {
+	plugin_slug?: ResolverInputTypes["order_by"] | undefined | null,
+	server_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "server_plugins" */
+["server_plugins_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["server_plugins"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "server_plugins" */
+["server_plugins_on_conflict"]: {
+	constraint: ResolverInputTypes["server_plugins_constraint"],
+	update_columns: Array<ResolverInputTypes["server_plugins_update_column"]>,
+	where?: ResolverInputTypes["server_plugins_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "server_plugins". */
+["server_plugins_order_by"]: {
+	enabled?: ResolverInputTypes["order_by"] | undefined | null,
+	install?: ResolverInputTypes["game_plugin_installs_order_by"] | undefined | null,
+	plugin_slug?: ResolverInputTypes["order_by"] | undefined | null,
+	server?: ResolverInputTypes["servers_order_by"] | undefined | null,
+	server_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: server_plugins */
+["server_plugins_pk_columns_input"]: {
+	plugin_slug: string,
+	server_id: ResolverInputTypes["uuid"]
+};
+	/** select columns of table "server_plugins" */
+["server_plugins_select_column"]:server_plugins_select_column;
+	/** select "server_plugins_aggregate_bool_exp_bool_and_arguments_columns" columns of table "server_plugins" */
+["server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_and_arguments_columns"]:server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_and_arguments_columns;
+	/** select "server_plugins_aggregate_bool_exp_bool_or_arguments_columns" columns of table "server_plugins" */
+["server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_or_arguments_columns"]:server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_or_arguments_columns;
+	/** input type for updating data in table "server_plugins" */
+["server_plugins_set_input"]: {
+	enabled?: boolean | undefined | null,
+	plugin_slug?: string | undefined | null,
+	server_id?: ResolverInputTypes["uuid"] | undefined | null
+};
+	/** Streaming cursor of the table "server_plugins" */
+["server_plugins_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["server_plugins_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["server_plugins_stream_cursor_value_input"]: {
+	enabled?: boolean | undefined | null,
+	plugin_slug?: string | undefined | null,
+	server_id?: ResolverInputTypes["uuid"] | undefined | null
+};
+	/** update columns of table "server_plugins" */
+["server_plugins_update_column"]:server_plugins_update_column;
+	["server_plugins_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["server_plugins_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["server_plugins_bool_exp"]
+};
 	/** columns and relationships of "server_regions" */
 ["server_regions"]: AliasType<{
 	/** A computed field, executes function "available_region_server_count" */
@@ -138125,6 +139201,19 @@ count?: [{	columns?: Array<ResolverInputTypes["server_regions_select_column"]> |
 	label?:boolean | `@${string}`,
 loaded_plugins?: [{	/** JSON select path */
 	path?: string | undefined | null},boolean | `@${string}`],
+map_rotation?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_map_rotation_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_map_rotation_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_map_rotation_bool_exp"] | undefined | null},ResolverInputTypes["server_map_rotation"]],
+map_rotation_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_map_rotation_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_map_rotation_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_map_rotation_bool_exp"] | undefined | null},ResolverInputTypes["server_map_rotation_aggregate"]],
+	map_rotation_shuffle?:boolean | `@${string}`,
 matches?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["matches_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -138139,6 +139228,18 @@ matches_aggregate?: [{	/** distinct select on columns */
 	where?: ResolverInputTypes["matches_bool_exp"] | undefined | null},ResolverInputTypes["matches_aggregate"]],
 	max_players?:boolean | `@${string}`,
 	offline_at?:boolean | `@${string}`,
+plugin_overrides?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_plugins_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_plugins_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_plugins_bool_exp"] | undefined | null},ResolverInputTypes["server_plugins"]],
+plugin_overrides_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_plugins_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_plugins_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_plugins_bool_exp"] | undefined | null},ResolverInputTypes["server_plugins_aggregate"]],
 	plugin_runtime?:boolean | `@${string}`,
 	plugin_version?:boolean | `@${string}`,
 	plugins_checked_at?:boolean | `@${string}`,
@@ -138260,10 +139361,15 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	is_dedicated?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	label?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	loaded_plugins?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
+	map_rotation?: ResolverInputTypes["server_map_rotation_bool_exp"] | undefined | null,
+	map_rotation_aggregate?: ResolverInputTypes["server_map_rotation_aggregate_bool_exp"] | undefined | null,
+	map_rotation_shuffle?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	matches?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
 	matches_aggregate?: ResolverInputTypes["matches_aggregate_bool_exp"] | undefined | null,
 	max_players?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	offline_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	plugin_overrides?: ResolverInputTypes["server_plugins_bool_exp"] | undefined | null,
+	plugin_overrides_aggregate?: ResolverInputTypes["server_plugins_aggregate_bool_exp"] | undefined | null,
 	plugin_runtime?: ResolverInputTypes["e_plugin_runtimes_enum_comparison_exp"] | undefined | null,
 	plugin_version?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	plugins_checked_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
@@ -138317,9 +139423,12 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	is_dedicated?: boolean | undefined | null,
 	label?: string | undefined | null,
 	loaded_plugins?: ResolverInputTypes["jsonb"] | undefined | null,
+	map_rotation?: ResolverInputTypes["server_map_rotation_arr_rel_insert_input"] | undefined | null,
+	map_rotation_shuffle?: boolean | undefined | null,
 	matches?: ResolverInputTypes["matches_arr_rel_insert_input"] | undefined | null,
 	max_players?: number | undefined | null,
 	offline_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	plugin_overrides?: ResolverInputTypes["server_plugins_arr_rel_insert_input"] | undefined | null,
 	plugin_runtime?: ResolverInputTypes["e_plugin_runtimes_enum"] | undefined | null,
 	plugin_version?: string | undefined | null,
 	plugins_checked_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -138477,9 +139586,12 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	is_dedicated?: ResolverInputTypes["order_by"] | undefined | null,
 	label?: ResolverInputTypes["order_by"] | undefined | null,
 	loaded_plugins?: ResolverInputTypes["order_by"] | undefined | null,
+	map_rotation_aggregate?: ResolverInputTypes["server_map_rotation_aggregate_order_by"] | undefined | null,
+	map_rotation_shuffle?: ResolverInputTypes["order_by"] | undefined | null,
 	matches_aggregate?: ResolverInputTypes["matches_aggregate_order_by"] | undefined | null,
 	max_players?: ResolverInputTypes["order_by"] | undefined | null,
 	offline_at?: ResolverInputTypes["order_by"] | undefined | null,
+	plugin_overrides_aggregate?: ResolverInputTypes["server_plugins_aggregate_order_by"] | undefined | null,
 	plugin_runtime?: ResolverInputTypes["order_by"] | undefined | null,
 	plugin_version?: ResolverInputTypes["order_by"] | undefined | null,
 	plugins_checked_at?: ResolverInputTypes["order_by"] | undefined | null,
@@ -138524,6 +139636,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	is_dedicated?: boolean | undefined | null,
 	label?: string | undefined | null,
 	loaded_plugins?: ResolverInputTypes["jsonb"] | undefined | null,
+	map_rotation_shuffle?: boolean | undefined | null,
 	max_players?: number | undefined | null,
 	offline_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	plugin_runtime?: ResolverInputTypes["e_plugin_runtimes_enum"] | undefined | null,
@@ -138601,6 +139714,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	is_dedicated?: boolean | undefined | null,
 	label?: string | undefined | null,
 	loaded_plugins?: ResolverInputTypes["jsonb"] | undefined | null,
+	map_rotation_shuffle?: boolean | undefined | null,
 	max_players?: number | undefined | null,
 	offline_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	plugin_runtime?: ResolverInputTypes["e_plugin_runtimes_enum"] | undefined | null,
@@ -142049,6 +143163,40 @@ seasons_stream?: [{	/** maximum number of rows returned in a single batch */
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["seasons_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["seasons_bool_exp"] | undefined | null},ResolverInputTypes["seasons"]],
+server_map_rotation?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_map_rotation_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_map_rotation_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_map_rotation_bool_exp"] | undefined | null},ResolverInputTypes["server_map_rotation"]],
+server_map_rotation_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_map_rotation_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_map_rotation_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_map_rotation_bool_exp"] | undefined | null},ResolverInputTypes["server_map_rotation_aggregate"]],
+server_map_rotation_by_pk?: [{	map_id: ResolverInputTypes["uuid"],	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["server_map_rotation"]],
+server_map_rotation_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["server_map_rotation_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_map_rotation_bool_exp"] | undefined | null},ResolverInputTypes["server_map_rotation"]],
+server_plugins?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_plugins_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_plugins_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_plugins_bool_exp"] | undefined | null},ResolverInputTypes["server_plugins"]],
+server_plugins_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_plugins_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_plugins_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_plugins_bool_exp"] | undefined | null},ResolverInputTypes["server_plugins_aggregate"]],
+server_plugins_by_pk?: [{	plugin_slug: string,	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["server_plugins"]],
+server_plugins_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["server_plugins_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_plugins_bool_exp"] | undefined | null},ResolverInputTypes["server_plugins"]],
 server_regions?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["server_regions_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -169748,6 +170896,17 @@ export type ModelTypes = {
 	hypertable_name: string,
 	num_chunks: number
 };
+	["ImportWorkshopCollectionOutput"]: {
+		maps: Array<ModelTypes["ImportedWorkshopMap"]>,
+	skipped: number
+};
+	["ImportedWorkshopMap"]: {
+		id: ModelTypes["uuid"],
+	label?: string | undefined | null,
+	name: string,
+	poster?: string | undefined | null,
+	workshop_map_id: string
+};
 	["IndexIOStat"]: {
 		idx_blks_hit: number,
 	idx_blks_read: number,
@@ -170006,6 +171165,10 @@ export type ModelTypes = {
 	["ServerPlayer"]: {
 		name: string,
 	steam_id: string
+};
+	["ServerPluginInput"]: {
+	enabled: boolean,
+	slug: string
 };
 	["SetupGameServeOutput"]: {
 		gameServerId: string,
@@ -183764,6 +184927,12 @@ export type ModelTypes = {
 	/** data from the rows affected by the mutation */
 	returning: Array<ModelTypes["game_plugin_installs"]>
 };
+	/** input type for inserting object relation for remote table "game_plugin_installs" */
+["game_plugin_installs_obj_rel_insert_input"]: {
+	data: ModelTypes["game_plugin_installs_insert_input"],
+	/** upsert condition */
+	on_conflict?: ModelTypes["game_plugin_installs_on_conflict"] | undefined | null
+};
 	/** on_conflict condition type for table "game_plugin_installs" */
 ["game_plugin_installs_on_conflict"]: {
 	constraint: ModelTypes["game_plugin_installs_constraint"],
@@ -184149,6 +185318,7 @@ export type ModelTypes = {
 	/** A computed field, executes function "game_plugin_installed_node_count" */
 	installed_node_count?: number | undefined | null,
 	kind: ModelTypes["e_game_plugin_kinds_enum"],
+	map_rotation?: ModelTypes["jsonb"] | undefined | null,
 	name: string,
 	/** An array relationship */
 	node_installs: Array<ModelTypes["game_server_node_plugins"]>,
@@ -184193,6 +185363,7 @@ export type ModelTypes = {
 	/** append existing jsonb value of filtered columns with new jsonb value */
 ["game_plugins_append_input"]: {
 	config_schema?: ModelTypes["jsonb"] | undefined | null,
+	map_rotation?: ModelTypes["jsonb"] | undefined | null,
 	panel?: ModelTypes["jsonb"] | undefined | null,
 	wiring?: ModelTypes["jsonb"] | undefined | null
 };
@@ -184220,6 +185391,7 @@ export type ModelTypes = {
 	install_state?: ModelTypes["String_comparison_exp"] | undefined | null,
 	installed_node_count?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	kind?: ModelTypes["e_game_plugin_kinds_enum_comparison_exp"] | undefined | null,
+	map_rotation?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
 	name?: ModelTypes["String_comparison_exp"] | undefined | null,
 	node_installs?: ModelTypes["game_server_node_plugins_bool_exp"] | undefined | null,
 	node_installs_aggregate?: ModelTypes["game_server_node_plugins_aggregate_bool_exp"] | undefined | null,
@@ -184241,18 +185413,21 @@ export type ModelTypes = {
 	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 ["game_plugins_delete_at_path_input"]: {
 	config_schema?: Array<string> | undefined | null,
+	map_rotation?: Array<string> | undefined | null,
 	panel?: Array<string> | undefined | null,
 	wiring?: Array<string> | undefined | null
 };
 	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
 ["game_plugins_delete_elem_input"]: {
 	config_schema?: number | undefined | null,
+	map_rotation?: number | undefined | null,
 	panel?: number | undefined | null,
 	wiring?: number | undefined | null
 };
 	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
 ["game_plugins_delete_key_input"]: {
 	config_schema?: string | undefined | null,
+	map_rotation?: string | undefined | null,
 	panel?: string | undefined | null,
 	wiring?: string | undefined | null
 };
@@ -184267,6 +185442,7 @@ export type ModelTypes = {
 	homepage?: string | undefined | null,
 	hot_swappable?: boolean | undefined | null,
 	kind?: ModelTypes["e_game_plugin_kinds_enum"] | undefined | null,
+	map_rotation?: ModelTypes["jsonb"] | undefined | null,
 	name?: string | undefined | null,
 	node_installs?: ModelTypes["game_server_node_plugins_arr_rel_insert_input"] | undefined | null,
 	pairs_with?: Array<string> | undefined | null,
@@ -184355,6 +185531,7 @@ export type ModelTypes = {
 	install_state?: ModelTypes["order_by"] | undefined | null,
 	installed_node_count?: ModelTypes["order_by"] | undefined | null,
 	kind?: ModelTypes["order_by"] | undefined | null,
+	map_rotation?: ModelTypes["order_by"] | undefined | null,
 	name?: ModelTypes["order_by"] | undefined | null,
 	node_installs_aggregate?: ModelTypes["game_server_node_plugins_aggregate_order_by"] | undefined | null,
 	pairs_with?: ModelTypes["order_by"] | undefined | null,
@@ -184377,6 +185554,7 @@ export type ModelTypes = {
 	/** prepend existing jsonb value of filtered columns with new jsonb value */
 ["game_plugins_prepend_input"]: {
 	config_schema?: ModelTypes["jsonb"] | undefined | null,
+	map_rotation?: ModelTypes["jsonb"] | undefined | null,
 	panel?: ModelTypes["jsonb"] | undefined | null,
 	wiring?: ModelTypes["jsonb"] | undefined | null
 };
@@ -184391,6 +185569,7 @@ export type ModelTypes = {
 	homepage?: string | undefined | null,
 	hot_swappable?: boolean | undefined | null,
 	kind?: ModelTypes["e_game_plugin_kinds_enum"] | undefined | null,
+	map_rotation?: ModelTypes["jsonb"] | undefined | null,
 	name?: string | undefined | null,
 	pairs_with?: Array<string> | undefined | null,
 	panel?: ModelTypes["jsonb"] | undefined | null,
@@ -184441,6 +185620,7 @@ export type ModelTypes = {
 	homepage?: string | undefined | null,
 	hot_swappable?: boolean | undefined | null,
 	kind?: ModelTypes["e_game_plugin_kinds_enum"] | undefined | null,
+	map_rotation?: ModelTypes["jsonb"] | undefined | null,
 	name?: string | undefined | null,
 	pairs_with?: Array<string> | undefined | null,
 	panel?: ModelTypes["jsonb"] | undefined | null,
@@ -196718,6 +197898,14 @@ export type ModelTypes = {
 	delete_seasons?: ModelTypes["seasons_mutation_response"] | undefined | null,
 	/** delete single row from the table: "seasons" */
 	delete_seasons_by_pk?: ModelTypes["seasons"] | undefined | null,
+	/** delete data from the table: "server_map_rotation" */
+	delete_server_map_rotation?: ModelTypes["server_map_rotation_mutation_response"] | undefined | null,
+	/** delete single row from the table: "server_map_rotation" */
+	delete_server_map_rotation_by_pk?: ModelTypes["server_map_rotation"] | undefined | null,
+	/** delete data from the table: "server_plugins" */
+	delete_server_plugins?: ModelTypes["server_plugins_mutation_response"] | undefined | null,
+	/** delete single row from the table: "server_plugins" */
+	delete_server_plugins_by_pk?: ModelTypes["server_plugins"] | undefined | null,
 	/** delete data from the table: "server_regions" */
 	delete_server_regions?: ModelTypes["server_regions_mutation_response"] | undefined | null,
 	/** delete single row from the table: "server_regions" */
@@ -196949,6 +198137,8 @@ export type ModelTypes = {
 	importSteamMatchShareCode?: ModelTypes["PendingMatchImportActionOutput"] | undefined | null,
 	/** Seed the utility library from an operator-supplied payload */
 	importUtilityLineups?: ModelTypes["UtilityImportOutput"] | undefined | null,
+	/** Add every map in a Steam workshop collection to the map catalog */
+	importWorkshopCollection?: ModelTypes["ImportWorkshopCollectionOutput"] | undefined | null,
 	/** insert data into the table: "_map_pool" */
 	insert__map_pool?: ModelTypes["_map_pool_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "_map_pool" */
@@ -197577,6 +198767,14 @@ export type ModelTypes = {
 	insert_seasons?: ModelTypes["seasons_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "seasons" */
 	insert_seasons_one?: ModelTypes["seasons"] | undefined | null,
+	/** insert data into the table: "server_map_rotation" */
+	insert_server_map_rotation?: ModelTypes["server_map_rotation_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "server_map_rotation" */
+	insert_server_map_rotation_one?: ModelTypes["server_map_rotation"] | undefined | null,
+	/** insert data into the table: "server_plugins" */
+	insert_server_plugins?: ModelTypes["server_plugins_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "server_plugins" */
+	insert_server_plugins_one?: ModelTypes["server_plugins"] | undefined | null,
 	/** insert data into the table: "server_regions" */
 	insert_server_regions?: ModelTypes["server_regions_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "server_regions" */
@@ -197940,6 +199138,10 @@ export type ModelTypes = {
 	setMatchWinner?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Publish or unpublish a news post. Caller role is verified against public.post_news_role. */
 	setNewsPostStatus?: ModelTypes["NewsPost"] | undefined | null,
+	/** Replace a dedicated server's map rotation and restart it */
+	setServerMapRotation?: ModelTypes["SuccessOutput"] | undefined | null,
+	/** Replace a dedicated server's per-server plugin overrides and restart it */
+	setServerPlugins?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Map a tournament placement to an award */
 	setTournamentAward?: ModelTypes["TournamentAward"] | undefined | null,
 	setUtilityPracticeAccess?: ModelTypes["SuccessOutput"] | undefined | null,
@@ -198927,6 +200129,18 @@ export type ModelTypes = {
 	update_seasons_by_pk?: ModelTypes["seasons"] | undefined | null,
 	/** update multiples rows of table: "seasons" */
 	update_seasons_many?: Array<ModelTypes["seasons_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "server_map_rotation" */
+	update_server_map_rotation?: ModelTypes["server_map_rotation_mutation_response"] | undefined | null,
+	/** update single row of the table: "server_map_rotation" */
+	update_server_map_rotation_by_pk?: ModelTypes["server_map_rotation"] | undefined | null,
+	/** update multiples rows of table: "server_map_rotation" */
+	update_server_map_rotation_many?: Array<ModelTypes["server_map_rotation_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "server_plugins" */
+	update_server_plugins?: ModelTypes["server_plugins_mutation_response"] | undefined | null,
+	/** update single row of the table: "server_plugins" */
+	update_server_plugins_by_pk?: ModelTypes["server_plugins"] | undefined | null,
+	/** update multiples rows of table: "server_plugins" */
+	update_server_plugins_many?: Array<ModelTypes["server_plugins_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "server_regions" */
 	update_server_regions?: ModelTypes["server_regions_mutation_response"] | undefined | null,
 	/** update single row of the table: "server_regions" */
@@ -215274,6 +216488,18 @@ export type ModelTypes = {
 	seasons_aggregate: ModelTypes["seasons_aggregate"],
 	/** fetch data from the table: "seasons" using primary key columns */
 	seasons_by_pk?: ModelTypes["seasons"] | undefined | null,
+	/** fetch data from the table: "server_map_rotation" */
+	server_map_rotation: Array<ModelTypes["server_map_rotation"]>,
+	/** fetch aggregated fields from the table: "server_map_rotation" */
+	server_map_rotation_aggregate: ModelTypes["server_map_rotation_aggregate"],
+	/** fetch data from the table: "server_map_rotation" using primary key columns */
+	server_map_rotation_by_pk?: ModelTypes["server_map_rotation"] | undefined | null,
+	/** fetch data from the table: "server_plugins" */
+	server_plugins: Array<ModelTypes["server_plugins"]>,
+	/** fetch aggregated fields from the table: "server_plugins" */
+	server_plugins_aggregate: ModelTypes["server_plugins_aggregate"],
+	/** fetch data from the table: "server_plugins" using primary key columns */
+	server_plugins_by_pk?: ModelTypes["server_plugins"] | undefined | null,
 	/** fetch data from the table: "server_regions" */
 	server_regions: Array<ModelTypes["server_regions"]>,
 	/** fetch aggregated fields from the table: "server_regions" */
@@ -216021,6 +217247,382 @@ export type ModelTypes = {
 ["seasons_variance_fields"]: {
 		number?: number | undefined | null
 };
+	/** columns and relationships of "server_map_rotation" */
+["server_map_rotation"]: {
+		/** An object relationship */
+	map: ModelTypes["maps"],
+	map_id: ModelTypes["uuid"],
+	position: number,
+	/** An object relationship */
+	server: ModelTypes["servers"],
+	server_id: ModelTypes["uuid"]
+};
+	/** aggregated selection of "server_map_rotation" */
+["server_map_rotation_aggregate"]: {
+		aggregate?: ModelTypes["server_map_rotation_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["server_map_rotation"]>
+};
+	["server_map_rotation_aggregate_bool_exp"]: {
+	count?: ModelTypes["server_map_rotation_aggregate_bool_exp_count"] | undefined | null
+};
+	["server_map_rotation_aggregate_bool_exp_count"]: {
+	arguments?: Array<ModelTypes["server_map_rotation_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: ModelTypes["server_map_rotation_bool_exp"] | undefined | null,
+	predicate: ModelTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "server_map_rotation" */
+["server_map_rotation_aggregate_fields"]: {
+		avg?: ModelTypes["server_map_rotation_avg_fields"] | undefined | null,
+	count: number,
+	max?: ModelTypes["server_map_rotation_max_fields"] | undefined | null,
+	min?: ModelTypes["server_map_rotation_min_fields"] | undefined | null,
+	stddev?: ModelTypes["server_map_rotation_stddev_fields"] | undefined | null,
+	stddev_pop?: ModelTypes["server_map_rotation_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: ModelTypes["server_map_rotation_stddev_samp_fields"] | undefined | null,
+	sum?: ModelTypes["server_map_rotation_sum_fields"] | undefined | null,
+	var_pop?: ModelTypes["server_map_rotation_var_pop_fields"] | undefined | null,
+	var_samp?: ModelTypes["server_map_rotation_var_samp_fields"] | undefined | null,
+	variance?: ModelTypes["server_map_rotation_variance_fields"] | undefined | null
+};
+	/** order by aggregate values of table "server_map_rotation" */
+["server_map_rotation_aggregate_order_by"]: {
+	avg?: ModelTypes["server_map_rotation_avg_order_by"] | undefined | null,
+	count?: ModelTypes["order_by"] | undefined | null,
+	max?: ModelTypes["server_map_rotation_max_order_by"] | undefined | null,
+	min?: ModelTypes["server_map_rotation_min_order_by"] | undefined | null,
+	stddev?: ModelTypes["server_map_rotation_stddev_order_by"] | undefined | null,
+	stddev_pop?: ModelTypes["server_map_rotation_stddev_pop_order_by"] | undefined | null,
+	stddev_samp?: ModelTypes["server_map_rotation_stddev_samp_order_by"] | undefined | null,
+	sum?: ModelTypes["server_map_rotation_sum_order_by"] | undefined | null,
+	var_pop?: ModelTypes["server_map_rotation_var_pop_order_by"] | undefined | null,
+	var_samp?: ModelTypes["server_map_rotation_var_samp_order_by"] | undefined | null,
+	variance?: ModelTypes["server_map_rotation_variance_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "server_map_rotation" */
+["server_map_rotation_arr_rel_insert_input"]: {
+	data: Array<ModelTypes["server_map_rotation_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ModelTypes["server_map_rotation_on_conflict"] | undefined | null
+};
+	/** aggregate avg on columns */
+["server_map_rotation_avg_fields"]: {
+		position?: number | undefined | null
+};
+	/** order by avg() on columns of table "server_map_rotation" */
+["server_map_rotation_avg_order_by"]: {
+	position?: ModelTypes["order_by"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "server_map_rotation". All fields are combined with a logical 'AND'. */
+["server_map_rotation_bool_exp"]: {
+	_and?: Array<ModelTypes["server_map_rotation_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["server_map_rotation_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["server_map_rotation_bool_exp"]> | undefined | null,
+	map?: ModelTypes["maps_bool_exp"] | undefined | null,
+	map_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	position?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	server?: ModelTypes["servers_bool_exp"] | undefined | null,
+	server_id?: ModelTypes["uuid_comparison_exp"] | undefined | null
+};
+	["server_map_rotation_constraint"]:server_map_rotation_constraint;
+	/** input type for incrementing numeric columns in table "server_map_rotation" */
+["server_map_rotation_inc_input"]: {
+	position?: number | undefined | null
+};
+	/** input type for inserting data into table "server_map_rotation" */
+["server_map_rotation_insert_input"]: {
+	map?: ModelTypes["maps_obj_rel_insert_input"] | undefined | null,
+	map_id?: ModelTypes["uuid"] | undefined | null,
+	position?: number | undefined | null,
+	server?: ModelTypes["servers_obj_rel_insert_input"] | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** aggregate max on columns */
+["server_map_rotation_max_fields"]: {
+		map_id?: ModelTypes["uuid"] | undefined | null,
+	position?: number | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** order by max() on columns of table "server_map_rotation" */
+["server_map_rotation_max_order_by"]: {
+	map_id?: ModelTypes["order_by"] | undefined | null,
+	position?: ModelTypes["order_by"] | undefined | null,
+	server_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["server_map_rotation_min_fields"]: {
+		map_id?: ModelTypes["uuid"] | undefined | null,
+	position?: number | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** order by min() on columns of table "server_map_rotation" */
+["server_map_rotation_min_order_by"]: {
+	map_id?: ModelTypes["order_by"] | undefined | null,
+	position?: ModelTypes["order_by"] | undefined | null,
+	server_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "server_map_rotation" */
+["server_map_rotation_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["server_map_rotation"]>
+};
+	/** on_conflict condition type for table "server_map_rotation" */
+["server_map_rotation_on_conflict"]: {
+	constraint: ModelTypes["server_map_rotation_constraint"],
+	update_columns: Array<ModelTypes["server_map_rotation_update_column"]>,
+	where?: ModelTypes["server_map_rotation_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "server_map_rotation". */
+["server_map_rotation_order_by"]: {
+	map?: ModelTypes["maps_order_by"] | undefined | null,
+	map_id?: ModelTypes["order_by"] | undefined | null,
+	position?: ModelTypes["order_by"] | undefined | null,
+	server?: ModelTypes["servers_order_by"] | undefined | null,
+	server_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: server_map_rotation */
+["server_map_rotation_pk_columns_input"]: {
+	map_id: ModelTypes["uuid"],
+	server_id: ModelTypes["uuid"]
+};
+	["server_map_rotation_select_column"]:server_map_rotation_select_column;
+	/** input type for updating data in table "server_map_rotation" */
+["server_map_rotation_set_input"]: {
+	map_id?: ModelTypes["uuid"] | undefined | null,
+	position?: number | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["server_map_rotation_stddev_fields"]: {
+		position?: number | undefined | null
+};
+	/** order by stddev() on columns of table "server_map_rotation" */
+["server_map_rotation_stddev_order_by"]: {
+	position?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["server_map_rotation_stddev_pop_fields"]: {
+		position?: number | undefined | null
+};
+	/** order by stddev_pop() on columns of table "server_map_rotation" */
+["server_map_rotation_stddev_pop_order_by"]: {
+	position?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["server_map_rotation_stddev_samp_fields"]: {
+		position?: number | undefined | null
+};
+	/** order by stddev_samp() on columns of table "server_map_rotation" */
+["server_map_rotation_stddev_samp_order_by"]: {
+	position?: ModelTypes["order_by"] | undefined | null
+};
+	/** Streaming cursor of the table "server_map_rotation" */
+["server_map_rotation_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["server_map_rotation_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["server_map_rotation_stream_cursor_value_input"]: {
+	map_id?: ModelTypes["uuid"] | undefined | null,
+	position?: number | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** aggregate sum on columns */
+["server_map_rotation_sum_fields"]: {
+		position?: number | undefined | null
+};
+	/** order by sum() on columns of table "server_map_rotation" */
+["server_map_rotation_sum_order_by"]: {
+	position?: ModelTypes["order_by"] | undefined | null
+};
+	["server_map_rotation_update_column"]:server_map_rotation_update_column;
+	["server_map_rotation_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ModelTypes["server_map_rotation_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["server_map_rotation_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["server_map_rotation_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["server_map_rotation_var_pop_fields"]: {
+		position?: number | undefined | null
+};
+	/** order by var_pop() on columns of table "server_map_rotation" */
+["server_map_rotation_var_pop_order_by"]: {
+	position?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate var_samp on columns */
+["server_map_rotation_var_samp_fields"]: {
+		position?: number | undefined | null
+};
+	/** order by var_samp() on columns of table "server_map_rotation" */
+["server_map_rotation_var_samp_order_by"]: {
+	position?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate variance on columns */
+["server_map_rotation_variance_fields"]: {
+		position?: number | undefined | null
+};
+	/** order by variance() on columns of table "server_map_rotation" */
+["server_map_rotation_variance_order_by"]: {
+	position?: ModelTypes["order_by"] | undefined | null
+};
+	/** columns and relationships of "server_plugins" */
+["server_plugins"]: {
+		enabled: boolean,
+	/** An object relationship */
+	install: ModelTypes["game_plugin_installs"],
+	plugin_slug: string,
+	/** An object relationship */
+	server: ModelTypes["servers"],
+	server_id: ModelTypes["uuid"]
+};
+	/** aggregated selection of "server_plugins" */
+["server_plugins_aggregate"]: {
+		aggregate?: ModelTypes["server_plugins_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["server_plugins"]>
+};
+	["server_plugins_aggregate_bool_exp"]: {
+	bool_and?: ModelTypes["server_plugins_aggregate_bool_exp_bool_and"] | undefined | null,
+	bool_or?: ModelTypes["server_plugins_aggregate_bool_exp_bool_or"] | undefined | null,
+	count?: ModelTypes["server_plugins_aggregate_bool_exp_count"] | undefined | null
+};
+	["server_plugins_aggregate_bool_exp_bool_and"]: {
+	arguments: ModelTypes["server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_and_arguments_columns"],
+	distinct?: boolean | undefined | null,
+	filter?: ModelTypes["server_plugins_bool_exp"] | undefined | null,
+	predicate: ModelTypes["Boolean_comparison_exp"]
+};
+	["server_plugins_aggregate_bool_exp_bool_or"]: {
+	arguments: ModelTypes["server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_or_arguments_columns"],
+	distinct?: boolean | undefined | null,
+	filter?: ModelTypes["server_plugins_bool_exp"] | undefined | null,
+	predicate: ModelTypes["Boolean_comparison_exp"]
+};
+	["server_plugins_aggregate_bool_exp_count"]: {
+	arguments?: Array<ModelTypes["server_plugins_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: ModelTypes["server_plugins_bool_exp"] | undefined | null,
+	predicate: ModelTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "server_plugins" */
+["server_plugins_aggregate_fields"]: {
+		count: number,
+	max?: ModelTypes["server_plugins_max_fields"] | undefined | null,
+	min?: ModelTypes["server_plugins_min_fields"] | undefined | null
+};
+	/** order by aggregate values of table "server_plugins" */
+["server_plugins_aggregate_order_by"]: {
+	count?: ModelTypes["order_by"] | undefined | null,
+	max?: ModelTypes["server_plugins_max_order_by"] | undefined | null,
+	min?: ModelTypes["server_plugins_min_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "server_plugins" */
+["server_plugins_arr_rel_insert_input"]: {
+	data: Array<ModelTypes["server_plugins_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ModelTypes["server_plugins_on_conflict"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "server_plugins". All fields are combined with a logical 'AND'. */
+["server_plugins_bool_exp"]: {
+	_and?: Array<ModelTypes["server_plugins_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["server_plugins_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["server_plugins_bool_exp"]> | undefined | null,
+	enabled?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	install?: ModelTypes["game_plugin_installs_bool_exp"] | undefined | null,
+	plugin_slug?: ModelTypes["String_comparison_exp"] | undefined | null,
+	server?: ModelTypes["servers_bool_exp"] | undefined | null,
+	server_id?: ModelTypes["uuid_comparison_exp"] | undefined | null
+};
+	["server_plugins_constraint"]:server_plugins_constraint;
+	/** input type for inserting data into table "server_plugins" */
+["server_plugins_insert_input"]: {
+	enabled?: boolean | undefined | null,
+	install?: ModelTypes["game_plugin_installs_obj_rel_insert_input"] | undefined | null,
+	plugin_slug?: string | undefined | null,
+	server?: ModelTypes["servers_obj_rel_insert_input"] | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** aggregate max on columns */
+["server_plugins_max_fields"]: {
+		plugin_slug?: string | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** order by max() on columns of table "server_plugins" */
+["server_plugins_max_order_by"]: {
+	plugin_slug?: ModelTypes["order_by"] | undefined | null,
+	server_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["server_plugins_min_fields"]: {
+		plugin_slug?: string | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** order by min() on columns of table "server_plugins" */
+["server_plugins_min_order_by"]: {
+	plugin_slug?: ModelTypes["order_by"] | undefined | null,
+	server_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "server_plugins" */
+["server_plugins_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["server_plugins"]>
+};
+	/** on_conflict condition type for table "server_plugins" */
+["server_plugins_on_conflict"]: {
+	constraint: ModelTypes["server_plugins_constraint"],
+	update_columns: Array<ModelTypes["server_plugins_update_column"]>,
+	where?: ModelTypes["server_plugins_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "server_plugins". */
+["server_plugins_order_by"]: {
+	enabled?: ModelTypes["order_by"] | undefined | null,
+	install?: ModelTypes["game_plugin_installs_order_by"] | undefined | null,
+	plugin_slug?: ModelTypes["order_by"] | undefined | null,
+	server?: ModelTypes["servers_order_by"] | undefined | null,
+	server_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: server_plugins */
+["server_plugins_pk_columns_input"]: {
+	plugin_slug: string,
+	server_id: ModelTypes["uuid"]
+};
+	["server_plugins_select_column"]:server_plugins_select_column;
+	["server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_and_arguments_columns"]:server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_and_arguments_columns;
+	["server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_or_arguments_columns"]:server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_or_arguments_columns;
+	/** input type for updating data in table "server_plugins" */
+["server_plugins_set_input"]: {
+	enabled?: boolean | undefined | null,
+	plugin_slug?: string | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** Streaming cursor of the table "server_plugins" */
+["server_plugins_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["server_plugins_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["server_plugins_stream_cursor_value_input"]: {
+	enabled?: boolean | undefined | null,
+	plugin_slug?: string | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null
+};
+	["server_plugins_update_column"]:server_plugins_update_column;
+	["server_plugins_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["server_plugins_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["server_plugins_bool_exp"]
+};
 	/** columns and relationships of "server_regions" */
 ["server_regions"]: {
 		/** A computed field, executes function "available_region_server_count" */
@@ -216253,11 +217855,20 @@ export type ModelTypes = {
 	label: string,
 	loaded_plugins?: ModelTypes["jsonb"] | undefined | null,
 	/** An array relationship */
+	map_rotation: Array<ModelTypes["server_map_rotation"]>,
+	/** An aggregate relationship */
+	map_rotation_aggregate: ModelTypes["server_map_rotation_aggregate"],
+	map_rotation_shuffle: boolean,
+	/** An array relationship */
 	matches: Array<ModelTypes["matches"]>,
 	/** An aggregate relationship */
 	matches_aggregate: ModelTypes["matches_aggregate"],
 	max_players?: number | undefined | null,
 	offline_at?: ModelTypes["timestamptz"] | undefined | null,
+	/** An array relationship */
+	plugin_overrides: Array<ModelTypes["server_plugins"]>,
+	/** An aggregate relationship */
+	plugin_overrides_aggregate: ModelTypes["server_plugins_aggregate"],
 	plugin_runtime?: ModelTypes["e_plugin_runtimes_enum"] | undefined | null,
 	plugin_version?: string | undefined | null,
 	plugins_checked_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -216375,10 +217986,15 @@ export type ModelTypes = {
 	is_dedicated?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	label?: ModelTypes["String_comparison_exp"] | undefined | null,
 	loaded_plugins?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
+	map_rotation?: ModelTypes["server_map_rotation_bool_exp"] | undefined | null,
+	map_rotation_aggregate?: ModelTypes["server_map_rotation_aggregate_bool_exp"] | undefined | null,
+	map_rotation_shuffle?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	matches?: ModelTypes["matches_bool_exp"] | undefined | null,
 	matches_aggregate?: ModelTypes["matches_aggregate_bool_exp"] | undefined | null,
 	max_players?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	offline_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	plugin_overrides?: ModelTypes["server_plugins_bool_exp"] | undefined | null,
+	plugin_overrides_aggregate?: ModelTypes["server_plugins_aggregate_bool_exp"] | undefined | null,
 	plugin_runtime?: ModelTypes["e_plugin_runtimes_enum_comparison_exp"] | undefined | null,
 	plugin_version?: ModelTypes["String_comparison_exp"] | undefined | null,
 	plugins_checked_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
@@ -216431,9 +218047,12 @@ export type ModelTypes = {
 	is_dedicated?: boolean | undefined | null,
 	label?: string | undefined | null,
 	loaded_plugins?: ModelTypes["jsonb"] | undefined | null,
+	map_rotation?: ModelTypes["server_map_rotation_arr_rel_insert_input"] | undefined | null,
+	map_rotation_shuffle?: boolean | undefined | null,
 	matches?: ModelTypes["matches_arr_rel_insert_input"] | undefined | null,
 	max_players?: number | undefined | null,
 	offline_at?: ModelTypes["timestamptz"] | undefined | null,
+	plugin_overrides?: ModelTypes["server_plugins_arr_rel_insert_input"] | undefined | null,
 	plugin_runtime?: ModelTypes["e_plugin_runtimes_enum"] | undefined | null,
 	plugin_version?: string | undefined | null,
 	plugins_checked_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -216588,9 +218207,12 @@ export type ModelTypes = {
 	is_dedicated?: ModelTypes["order_by"] | undefined | null,
 	label?: ModelTypes["order_by"] | undefined | null,
 	loaded_plugins?: ModelTypes["order_by"] | undefined | null,
+	map_rotation_aggregate?: ModelTypes["server_map_rotation_aggregate_order_by"] | undefined | null,
+	map_rotation_shuffle?: ModelTypes["order_by"] | undefined | null,
 	matches_aggregate?: ModelTypes["matches_aggregate_order_by"] | undefined | null,
 	max_players?: ModelTypes["order_by"] | undefined | null,
 	offline_at?: ModelTypes["order_by"] | undefined | null,
+	plugin_overrides_aggregate?: ModelTypes["server_plugins_aggregate_order_by"] | undefined | null,
 	plugin_runtime?: ModelTypes["order_by"] | undefined | null,
 	plugin_version?: ModelTypes["order_by"] | undefined | null,
 	plugins_checked_at?: ModelTypes["order_by"] | undefined | null,
@@ -216632,6 +218254,7 @@ export type ModelTypes = {
 	is_dedicated?: boolean | undefined | null,
 	label?: string | undefined | null,
 	loaded_plugins?: ModelTypes["jsonb"] | undefined | null,
+	map_rotation_shuffle?: boolean | undefined | null,
 	max_players?: number | undefined | null,
 	offline_at?: ModelTypes["timestamptz"] | undefined | null,
 	plugin_runtime?: ModelTypes["e_plugin_runtimes_enum"] | undefined | null,
@@ -216706,6 +218329,7 @@ export type ModelTypes = {
 	is_dedicated?: boolean | undefined | null,
 	label?: string | undefined | null,
 	loaded_plugins?: ModelTypes["jsonb"] | undefined | null,
+	map_rotation_shuffle?: boolean | undefined | null,
 	max_players?: number | undefined | null,
 	offline_at?: ModelTypes["timestamptz"] | undefined | null,
 	plugin_runtime?: ModelTypes["e_plugin_runtimes_enum"] | undefined | null,
@@ -218589,6 +220213,22 @@ export type ModelTypes = {
 	seasons_by_pk?: ModelTypes["seasons"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "seasons" */
 	seasons_stream: Array<ModelTypes["seasons"]>,
+	/** fetch data from the table: "server_map_rotation" */
+	server_map_rotation: Array<ModelTypes["server_map_rotation"]>,
+	/** fetch aggregated fields from the table: "server_map_rotation" */
+	server_map_rotation_aggregate: ModelTypes["server_map_rotation_aggregate"],
+	/** fetch data from the table: "server_map_rotation" using primary key columns */
+	server_map_rotation_by_pk?: ModelTypes["server_map_rotation"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "server_map_rotation" */
+	server_map_rotation_stream: Array<ModelTypes["server_map_rotation"]>,
+	/** fetch data from the table: "server_plugins" */
+	server_plugins: Array<ModelTypes["server_plugins"]>,
+	/** fetch aggregated fields from the table: "server_plugins" */
+	server_plugins_aggregate: ModelTypes["server_plugins_aggregate"],
+	/** fetch data from the table: "server_plugins" using primary key columns */
+	server_plugins_by_pk?: ModelTypes["server_plugins"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "server_plugins" */
+	server_plugins_stream: Array<ModelTypes["server_plugins"]>,
 	/** fetch data from the table: "server_regions" */
 	server_regions: Array<ModelTypes["server_regions"]>,
 	/** fetch aggregated fields from the table: "server_regions" */
@@ -243884,6 +245524,19 @@ export type GraphQLTypes = {
 	hypertable_name: string,
 	num_chunks: number
 };
+	["ImportWorkshopCollectionOutput"]: {
+	__typename: "ImportWorkshopCollectionOutput",
+	maps: Array<GraphQLTypes["ImportedWorkshopMap"]>,
+	skipped: number
+};
+	["ImportedWorkshopMap"]: {
+	__typename: "ImportedWorkshopMap",
+	id: GraphQLTypes["uuid"],
+	label?: string | undefined | null,
+	name: string,
+	poster?: string | undefined | null,
+	workshop_map_id: string
+};
 	["IndexIOStat"]: {
 	__typename: "IndexIOStat",
 	idx_blks_hit: number,
@@ -244176,6 +245829,10 @@ export type GraphQLTypes = {
 	__typename: "ServerPlayer",
 	name: string,
 	steam_id: string
+};
+	["ServerPluginInput"]: {
+		enabled: boolean,
+	slug: string
 };
 	["SetupGameServeOutput"]: {
 	__typename: "SetupGameServeOutput",
@@ -259009,6 +260666,12 @@ export type GraphQLTypes = {
 	/** data from the rows affected by the mutation */
 	returning: Array<GraphQLTypes["game_plugin_installs"]>
 };
+	/** input type for inserting object relation for remote table "game_plugin_installs" */
+["game_plugin_installs_obj_rel_insert_input"]: {
+		data: GraphQLTypes["game_plugin_installs_insert_input"],
+	/** upsert condition */
+	on_conflict?: GraphQLTypes["game_plugin_installs_on_conflict"] | undefined | null
+};
 	/** on_conflict condition type for table "game_plugin_installs" */
 ["game_plugin_installs_on_conflict"]: {
 		constraint: GraphQLTypes["game_plugin_installs_constraint"],
@@ -259416,6 +261079,7 @@ export type GraphQLTypes = {
 	/** A computed field, executes function "game_plugin_installed_node_count" */
 	installed_node_count?: number | undefined | null,
 	kind: GraphQLTypes["e_game_plugin_kinds_enum"],
+	map_rotation?: GraphQLTypes["jsonb"] | undefined | null,
 	name: string,
 	/** An array relationship */
 	node_installs: Array<GraphQLTypes["game_server_node_plugins"]>,
@@ -259462,6 +261126,7 @@ export type GraphQLTypes = {
 	/** append existing jsonb value of filtered columns with new jsonb value */
 ["game_plugins_append_input"]: {
 		config_schema?: GraphQLTypes["jsonb"] | undefined | null,
+	map_rotation?: GraphQLTypes["jsonb"] | undefined | null,
 	panel?: GraphQLTypes["jsonb"] | undefined | null,
 	wiring?: GraphQLTypes["jsonb"] | undefined | null
 };
@@ -259490,6 +261155,7 @@ export type GraphQLTypes = {
 	install_state?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	installed_node_count?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	kind?: GraphQLTypes["e_game_plugin_kinds_enum_comparison_exp"] | undefined | null,
+	map_rotation?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
 	name?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	node_installs?: GraphQLTypes["game_server_node_plugins_bool_exp"] | undefined | null,
 	node_installs_aggregate?: GraphQLTypes["game_server_node_plugins_aggregate_bool_exp"] | undefined | null,
@@ -259512,18 +261178,21 @@ export type GraphQLTypes = {
 	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 ["game_plugins_delete_at_path_input"]: {
 		config_schema?: Array<string> | undefined | null,
+	map_rotation?: Array<string> | undefined | null,
 	panel?: Array<string> | undefined | null,
 	wiring?: Array<string> | undefined | null
 };
 	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
 ["game_plugins_delete_elem_input"]: {
 		config_schema?: number | undefined | null,
+	map_rotation?: number | undefined | null,
 	panel?: number | undefined | null,
 	wiring?: number | undefined | null
 };
 	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
 ["game_plugins_delete_key_input"]: {
 		config_schema?: string | undefined | null,
+	map_rotation?: string | undefined | null,
 	panel?: string | undefined | null,
 	wiring?: string | undefined | null
 };
@@ -259538,6 +261207,7 @@ export type GraphQLTypes = {
 	homepage?: string | undefined | null,
 	hot_swappable?: boolean | undefined | null,
 	kind?: GraphQLTypes["e_game_plugin_kinds_enum"] | undefined | null,
+	map_rotation?: GraphQLTypes["jsonb"] | undefined | null,
 	name?: string | undefined | null,
 	node_installs?: GraphQLTypes["game_server_node_plugins_arr_rel_insert_input"] | undefined | null,
 	pairs_with?: Array<string> | undefined | null,
@@ -259629,6 +261299,7 @@ export type GraphQLTypes = {
 	install_state?: GraphQLTypes["order_by"] | undefined | null,
 	installed_node_count?: GraphQLTypes["order_by"] | undefined | null,
 	kind?: GraphQLTypes["order_by"] | undefined | null,
+	map_rotation?: GraphQLTypes["order_by"] | undefined | null,
 	name?: GraphQLTypes["order_by"] | undefined | null,
 	node_installs_aggregate?: GraphQLTypes["game_server_node_plugins_aggregate_order_by"] | undefined | null,
 	pairs_with?: GraphQLTypes["order_by"] | undefined | null,
@@ -259651,6 +261322,7 @@ export type GraphQLTypes = {
 	/** prepend existing jsonb value of filtered columns with new jsonb value */
 ["game_plugins_prepend_input"]: {
 		config_schema?: GraphQLTypes["jsonb"] | undefined | null,
+	map_rotation?: GraphQLTypes["jsonb"] | undefined | null,
 	panel?: GraphQLTypes["jsonb"] | undefined | null,
 	wiring?: GraphQLTypes["jsonb"] | undefined | null
 };
@@ -259666,6 +261338,7 @@ export type GraphQLTypes = {
 	homepage?: string | undefined | null,
 	hot_swappable?: boolean | undefined | null,
 	kind?: GraphQLTypes["e_game_plugin_kinds_enum"] | undefined | null,
+	map_rotation?: GraphQLTypes["jsonb"] | undefined | null,
 	name?: string | undefined | null,
 	pairs_with?: Array<string> | undefined | null,
 	panel?: GraphQLTypes["jsonb"] | undefined | null,
@@ -259719,6 +261392,7 @@ export type GraphQLTypes = {
 	homepage?: string | undefined | null,
 	hot_swappable?: boolean | undefined | null,
 	kind?: GraphQLTypes["e_game_plugin_kinds_enum"] | undefined | null,
+	map_rotation?: GraphQLTypes["jsonb"] | undefined | null,
 	name?: string | undefined | null,
 	pairs_with?: Array<string> | undefined | null,
 	panel?: GraphQLTypes["jsonb"] | undefined | null,
@@ -272529,6 +274203,14 @@ export type GraphQLTypes = {
 	delete_seasons?: GraphQLTypes["seasons_mutation_response"] | undefined | null,
 	/** delete single row from the table: "seasons" */
 	delete_seasons_by_pk?: GraphQLTypes["seasons"] | undefined | null,
+	/** delete data from the table: "server_map_rotation" */
+	delete_server_map_rotation?: GraphQLTypes["server_map_rotation_mutation_response"] | undefined | null,
+	/** delete single row from the table: "server_map_rotation" */
+	delete_server_map_rotation_by_pk?: GraphQLTypes["server_map_rotation"] | undefined | null,
+	/** delete data from the table: "server_plugins" */
+	delete_server_plugins?: GraphQLTypes["server_plugins_mutation_response"] | undefined | null,
+	/** delete single row from the table: "server_plugins" */
+	delete_server_plugins_by_pk?: GraphQLTypes["server_plugins"] | undefined | null,
 	/** delete data from the table: "server_regions" */
 	delete_server_regions?: GraphQLTypes["server_regions_mutation_response"] | undefined | null,
 	/** delete single row from the table: "server_regions" */
@@ -272760,6 +274442,8 @@ export type GraphQLTypes = {
 	importSteamMatchShareCode?: GraphQLTypes["PendingMatchImportActionOutput"] | undefined | null,
 	/** Seed the utility library from an operator-supplied payload */
 	importUtilityLineups?: GraphQLTypes["UtilityImportOutput"] | undefined | null,
+	/** Add every map in a Steam workshop collection to the map catalog */
+	importWorkshopCollection?: GraphQLTypes["ImportWorkshopCollectionOutput"] | undefined | null,
 	/** insert data into the table: "_map_pool" */
 	insert__map_pool?: GraphQLTypes["_map_pool_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "_map_pool" */
@@ -273388,6 +275072,14 @@ export type GraphQLTypes = {
 	insert_seasons?: GraphQLTypes["seasons_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "seasons" */
 	insert_seasons_one?: GraphQLTypes["seasons"] | undefined | null,
+	/** insert data into the table: "server_map_rotation" */
+	insert_server_map_rotation?: GraphQLTypes["server_map_rotation_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "server_map_rotation" */
+	insert_server_map_rotation_one?: GraphQLTypes["server_map_rotation"] | undefined | null,
+	/** insert data into the table: "server_plugins" */
+	insert_server_plugins?: GraphQLTypes["server_plugins_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "server_plugins" */
+	insert_server_plugins_one?: GraphQLTypes["server_plugins"] | undefined | null,
 	/** insert data into the table: "server_regions" */
 	insert_server_regions?: GraphQLTypes["server_regions_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "server_regions" */
@@ -273751,6 +275443,10 @@ export type GraphQLTypes = {
 	setMatchWinner?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Publish or unpublish a news post. Caller role is verified against public.post_news_role. */
 	setNewsPostStatus?: GraphQLTypes["NewsPost"] | undefined | null,
+	/** Replace a dedicated server's map rotation and restart it */
+	setServerMapRotation?: GraphQLTypes["SuccessOutput"] | undefined | null,
+	/** Replace a dedicated server's per-server plugin overrides and restart it */
+	setServerPlugins?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Map a tournament placement to an award */
 	setTournamentAward?: GraphQLTypes["TournamentAward"] | undefined | null,
 	setUtilityPracticeAccess?: GraphQLTypes["SuccessOutput"] | undefined | null,
@@ -274738,6 +276434,18 @@ export type GraphQLTypes = {
 	update_seasons_by_pk?: GraphQLTypes["seasons"] | undefined | null,
 	/** update multiples rows of table: "seasons" */
 	update_seasons_many?: Array<GraphQLTypes["seasons_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "server_map_rotation" */
+	update_server_map_rotation?: GraphQLTypes["server_map_rotation_mutation_response"] | undefined | null,
+	/** update single row of the table: "server_map_rotation" */
+	update_server_map_rotation_by_pk?: GraphQLTypes["server_map_rotation"] | undefined | null,
+	/** update multiples rows of table: "server_map_rotation" */
+	update_server_map_rotation_many?: Array<GraphQLTypes["server_map_rotation_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "server_plugins" */
+	update_server_plugins?: GraphQLTypes["server_plugins_mutation_response"] | undefined | null,
+	/** update single row of the table: "server_plugins" */
+	update_server_plugins_by_pk?: GraphQLTypes["server_plugins"] | undefined | null,
+	/** update multiples rows of table: "server_plugins" */
+	update_server_plugins_many?: Array<GraphQLTypes["server_plugins_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "server_regions" */
 	update_server_regions?: GraphQLTypes["server_regions_mutation_response"] | undefined | null,
 	/** update single row of the table: "server_regions" */
@@ -291681,6 +293389,18 @@ export type GraphQLTypes = {
 	seasons_aggregate: GraphQLTypes["seasons_aggregate"],
 	/** fetch data from the table: "seasons" using primary key columns */
 	seasons_by_pk?: GraphQLTypes["seasons"] | undefined | null,
+	/** fetch data from the table: "server_map_rotation" */
+	server_map_rotation: Array<GraphQLTypes["server_map_rotation"]>,
+	/** fetch aggregated fields from the table: "server_map_rotation" */
+	server_map_rotation_aggregate: GraphQLTypes["server_map_rotation_aggregate"],
+	/** fetch data from the table: "server_map_rotation" using primary key columns */
+	server_map_rotation_by_pk?: GraphQLTypes["server_map_rotation"] | undefined | null,
+	/** fetch data from the table: "server_plugins" */
+	server_plugins: Array<GraphQLTypes["server_plugins"]>,
+	/** fetch aggregated fields from the table: "server_plugins" */
+	server_plugins_aggregate: GraphQLTypes["server_plugins_aggregate"],
+	/** fetch data from the table: "server_plugins" using primary key columns */
+	server_plugins_by_pk?: GraphQLTypes["server_plugins"] | undefined | null,
 	/** fetch data from the table: "server_regions" */
 	server_regions: Array<GraphQLTypes["server_regions"]>,
 	/** fetch aggregated fields from the table: "server_regions" */
@@ -292452,6 +294172,410 @@ export type GraphQLTypes = {
 	__typename: "seasons_variance_fields",
 	number?: number | undefined | null
 };
+	/** columns and relationships of "server_map_rotation" */
+["server_map_rotation"]: {
+	__typename: "server_map_rotation",
+	/** An object relationship */
+	map: GraphQLTypes["maps"],
+	map_id: GraphQLTypes["uuid"],
+	position: number,
+	/** An object relationship */
+	server: GraphQLTypes["servers"],
+	server_id: GraphQLTypes["uuid"]
+};
+	/** aggregated selection of "server_map_rotation" */
+["server_map_rotation_aggregate"]: {
+	__typename: "server_map_rotation_aggregate",
+	aggregate?: GraphQLTypes["server_map_rotation_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["server_map_rotation"]>
+};
+	["server_map_rotation_aggregate_bool_exp"]: {
+		count?: GraphQLTypes["server_map_rotation_aggregate_bool_exp_count"] | undefined | null
+};
+	["server_map_rotation_aggregate_bool_exp_count"]: {
+		arguments?: Array<GraphQLTypes["server_map_rotation_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: GraphQLTypes["server_map_rotation_bool_exp"] | undefined | null,
+	predicate: GraphQLTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "server_map_rotation" */
+["server_map_rotation_aggregate_fields"]: {
+	__typename: "server_map_rotation_aggregate_fields",
+	avg?: GraphQLTypes["server_map_rotation_avg_fields"] | undefined | null,
+	count: number,
+	max?: GraphQLTypes["server_map_rotation_max_fields"] | undefined | null,
+	min?: GraphQLTypes["server_map_rotation_min_fields"] | undefined | null,
+	stddev?: GraphQLTypes["server_map_rotation_stddev_fields"] | undefined | null,
+	stddev_pop?: GraphQLTypes["server_map_rotation_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: GraphQLTypes["server_map_rotation_stddev_samp_fields"] | undefined | null,
+	sum?: GraphQLTypes["server_map_rotation_sum_fields"] | undefined | null,
+	var_pop?: GraphQLTypes["server_map_rotation_var_pop_fields"] | undefined | null,
+	var_samp?: GraphQLTypes["server_map_rotation_var_samp_fields"] | undefined | null,
+	variance?: GraphQLTypes["server_map_rotation_variance_fields"] | undefined | null
+};
+	/** order by aggregate values of table "server_map_rotation" */
+["server_map_rotation_aggregate_order_by"]: {
+		avg?: GraphQLTypes["server_map_rotation_avg_order_by"] | undefined | null,
+	count?: GraphQLTypes["order_by"] | undefined | null,
+	max?: GraphQLTypes["server_map_rotation_max_order_by"] | undefined | null,
+	min?: GraphQLTypes["server_map_rotation_min_order_by"] | undefined | null,
+	stddev?: GraphQLTypes["server_map_rotation_stddev_order_by"] | undefined | null,
+	stddev_pop?: GraphQLTypes["server_map_rotation_stddev_pop_order_by"] | undefined | null,
+	stddev_samp?: GraphQLTypes["server_map_rotation_stddev_samp_order_by"] | undefined | null,
+	sum?: GraphQLTypes["server_map_rotation_sum_order_by"] | undefined | null,
+	var_pop?: GraphQLTypes["server_map_rotation_var_pop_order_by"] | undefined | null,
+	var_samp?: GraphQLTypes["server_map_rotation_var_samp_order_by"] | undefined | null,
+	variance?: GraphQLTypes["server_map_rotation_variance_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "server_map_rotation" */
+["server_map_rotation_arr_rel_insert_input"]: {
+		data: Array<GraphQLTypes["server_map_rotation_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: GraphQLTypes["server_map_rotation_on_conflict"] | undefined | null
+};
+	/** aggregate avg on columns */
+["server_map_rotation_avg_fields"]: {
+	__typename: "server_map_rotation_avg_fields",
+	position?: number | undefined | null
+};
+	/** order by avg() on columns of table "server_map_rotation" */
+["server_map_rotation_avg_order_by"]: {
+		position?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "server_map_rotation". All fields are combined with a logical 'AND'. */
+["server_map_rotation_bool_exp"]: {
+		_and?: Array<GraphQLTypes["server_map_rotation_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["server_map_rotation_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["server_map_rotation_bool_exp"]> | undefined | null,
+	map?: GraphQLTypes["maps_bool_exp"] | undefined | null,
+	map_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	position?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	server?: GraphQLTypes["servers_bool_exp"] | undefined | null,
+	server_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "server_map_rotation" */
+["server_map_rotation_constraint"]: server_map_rotation_constraint;
+	/** input type for incrementing numeric columns in table "server_map_rotation" */
+["server_map_rotation_inc_input"]: {
+		position?: number | undefined | null
+};
+	/** input type for inserting data into table "server_map_rotation" */
+["server_map_rotation_insert_input"]: {
+		map?: GraphQLTypes["maps_obj_rel_insert_input"] | undefined | null,
+	map_id?: GraphQLTypes["uuid"] | undefined | null,
+	position?: number | undefined | null,
+	server?: GraphQLTypes["servers_obj_rel_insert_input"] | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** aggregate max on columns */
+["server_map_rotation_max_fields"]: {
+	__typename: "server_map_rotation_max_fields",
+	map_id?: GraphQLTypes["uuid"] | undefined | null,
+	position?: number | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** order by max() on columns of table "server_map_rotation" */
+["server_map_rotation_max_order_by"]: {
+		map_id?: GraphQLTypes["order_by"] | undefined | null,
+	position?: GraphQLTypes["order_by"] | undefined | null,
+	server_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["server_map_rotation_min_fields"]: {
+	__typename: "server_map_rotation_min_fields",
+	map_id?: GraphQLTypes["uuid"] | undefined | null,
+	position?: number | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** order by min() on columns of table "server_map_rotation" */
+["server_map_rotation_min_order_by"]: {
+		map_id?: GraphQLTypes["order_by"] | undefined | null,
+	position?: GraphQLTypes["order_by"] | undefined | null,
+	server_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "server_map_rotation" */
+["server_map_rotation_mutation_response"]: {
+	__typename: "server_map_rotation_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["server_map_rotation"]>
+};
+	/** on_conflict condition type for table "server_map_rotation" */
+["server_map_rotation_on_conflict"]: {
+		constraint: GraphQLTypes["server_map_rotation_constraint"],
+	update_columns: Array<GraphQLTypes["server_map_rotation_update_column"]>,
+	where?: GraphQLTypes["server_map_rotation_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "server_map_rotation". */
+["server_map_rotation_order_by"]: {
+		map?: GraphQLTypes["maps_order_by"] | undefined | null,
+	map_id?: GraphQLTypes["order_by"] | undefined | null,
+	position?: GraphQLTypes["order_by"] | undefined | null,
+	server?: GraphQLTypes["servers_order_by"] | undefined | null,
+	server_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: server_map_rotation */
+["server_map_rotation_pk_columns_input"]: {
+		map_id: GraphQLTypes["uuid"],
+	server_id: GraphQLTypes["uuid"]
+};
+	/** select columns of table "server_map_rotation" */
+["server_map_rotation_select_column"]: server_map_rotation_select_column;
+	/** input type for updating data in table "server_map_rotation" */
+["server_map_rotation_set_input"]: {
+		map_id?: GraphQLTypes["uuid"] | undefined | null,
+	position?: number | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["server_map_rotation_stddev_fields"]: {
+	__typename: "server_map_rotation_stddev_fields",
+	position?: number | undefined | null
+};
+	/** order by stddev() on columns of table "server_map_rotation" */
+["server_map_rotation_stddev_order_by"]: {
+		position?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["server_map_rotation_stddev_pop_fields"]: {
+	__typename: "server_map_rotation_stddev_pop_fields",
+	position?: number | undefined | null
+};
+	/** order by stddev_pop() on columns of table "server_map_rotation" */
+["server_map_rotation_stddev_pop_order_by"]: {
+		position?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["server_map_rotation_stddev_samp_fields"]: {
+	__typename: "server_map_rotation_stddev_samp_fields",
+	position?: number | undefined | null
+};
+	/** order by stddev_samp() on columns of table "server_map_rotation" */
+["server_map_rotation_stddev_samp_order_by"]: {
+		position?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** Streaming cursor of the table "server_map_rotation" */
+["server_map_rotation_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["server_map_rotation_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["server_map_rotation_stream_cursor_value_input"]: {
+		map_id?: GraphQLTypes["uuid"] | undefined | null,
+	position?: number | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** aggregate sum on columns */
+["server_map_rotation_sum_fields"]: {
+	__typename: "server_map_rotation_sum_fields",
+	position?: number | undefined | null
+};
+	/** order by sum() on columns of table "server_map_rotation" */
+["server_map_rotation_sum_order_by"]: {
+		position?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** update columns of table "server_map_rotation" */
+["server_map_rotation_update_column"]: server_map_rotation_update_column;
+	["server_map_rotation_updates"]: {
+		/** increments the numeric columns with given value of the filtered values */
+	_inc?: GraphQLTypes["server_map_rotation_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["server_map_rotation_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["server_map_rotation_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["server_map_rotation_var_pop_fields"]: {
+	__typename: "server_map_rotation_var_pop_fields",
+	position?: number | undefined | null
+};
+	/** order by var_pop() on columns of table "server_map_rotation" */
+["server_map_rotation_var_pop_order_by"]: {
+		position?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate var_samp on columns */
+["server_map_rotation_var_samp_fields"]: {
+	__typename: "server_map_rotation_var_samp_fields",
+	position?: number | undefined | null
+};
+	/** order by var_samp() on columns of table "server_map_rotation" */
+["server_map_rotation_var_samp_order_by"]: {
+		position?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate variance on columns */
+["server_map_rotation_variance_fields"]: {
+	__typename: "server_map_rotation_variance_fields",
+	position?: number | undefined | null
+};
+	/** order by variance() on columns of table "server_map_rotation" */
+["server_map_rotation_variance_order_by"]: {
+		position?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** columns and relationships of "server_plugins" */
+["server_plugins"]: {
+	__typename: "server_plugins",
+	enabled: boolean,
+	/** An object relationship */
+	install: GraphQLTypes["game_plugin_installs"],
+	plugin_slug: string,
+	/** An object relationship */
+	server: GraphQLTypes["servers"],
+	server_id: GraphQLTypes["uuid"]
+};
+	/** aggregated selection of "server_plugins" */
+["server_plugins_aggregate"]: {
+	__typename: "server_plugins_aggregate",
+	aggregate?: GraphQLTypes["server_plugins_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["server_plugins"]>
+};
+	["server_plugins_aggregate_bool_exp"]: {
+		bool_and?: GraphQLTypes["server_plugins_aggregate_bool_exp_bool_and"] | undefined | null,
+	bool_or?: GraphQLTypes["server_plugins_aggregate_bool_exp_bool_or"] | undefined | null,
+	count?: GraphQLTypes["server_plugins_aggregate_bool_exp_count"] | undefined | null
+};
+	["server_plugins_aggregate_bool_exp_bool_and"]: {
+		arguments: GraphQLTypes["server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_and_arguments_columns"],
+	distinct?: boolean | undefined | null,
+	filter?: GraphQLTypes["server_plugins_bool_exp"] | undefined | null,
+	predicate: GraphQLTypes["Boolean_comparison_exp"]
+};
+	["server_plugins_aggregate_bool_exp_bool_or"]: {
+		arguments: GraphQLTypes["server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_or_arguments_columns"],
+	distinct?: boolean | undefined | null,
+	filter?: GraphQLTypes["server_plugins_bool_exp"] | undefined | null,
+	predicate: GraphQLTypes["Boolean_comparison_exp"]
+};
+	["server_plugins_aggregate_bool_exp_count"]: {
+		arguments?: Array<GraphQLTypes["server_plugins_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: GraphQLTypes["server_plugins_bool_exp"] | undefined | null,
+	predicate: GraphQLTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "server_plugins" */
+["server_plugins_aggregate_fields"]: {
+	__typename: "server_plugins_aggregate_fields",
+	count: number,
+	max?: GraphQLTypes["server_plugins_max_fields"] | undefined | null,
+	min?: GraphQLTypes["server_plugins_min_fields"] | undefined | null
+};
+	/** order by aggregate values of table "server_plugins" */
+["server_plugins_aggregate_order_by"]: {
+		count?: GraphQLTypes["order_by"] | undefined | null,
+	max?: GraphQLTypes["server_plugins_max_order_by"] | undefined | null,
+	min?: GraphQLTypes["server_plugins_min_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "server_plugins" */
+["server_plugins_arr_rel_insert_input"]: {
+		data: Array<GraphQLTypes["server_plugins_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: GraphQLTypes["server_plugins_on_conflict"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "server_plugins". All fields are combined with a logical 'AND'. */
+["server_plugins_bool_exp"]: {
+		_and?: Array<GraphQLTypes["server_plugins_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["server_plugins_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["server_plugins_bool_exp"]> | undefined | null,
+	enabled?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	install?: GraphQLTypes["game_plugin_installs_bool_exp"] | undefined | null,
+	plugin_slug?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	server?: GraphQLTypes["servers_bool_exp"] | undefined | null,
+	server_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "server_plugins" */
+["server_plugins_constraint"]: server_plugins_constraint;
+	/** input type for inserting data into table "server_plugins" */
+["server_plugins_insert_input"]: {
+		enabled?: boolean | undefined | null,
+	install?: GraphQLTypes["game_plugin_installs_obj_rel_insert_input"] | undefined | null,
+	plugin_slug?: string | undefined | null,
+	server?: GraphQLTypes["servers_obj_rel_insert_input"] | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** aggregate max on columns */
+["server_plugins_max_fields"]: {
+	__typename: "server_plugins_max_fields",
+	plugin_slug?: string | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** order by max() on columns of table "server_plugins" */
+["server_plugins_max_order_by"]: {
+		plugin_slug?: GraphQLTypes["order_by"] | undefined | null,
+	server_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["server_plugins_min_fields"]: {
+	__typename: "server_plugins_min_fields",
+	plugin_slug?: string | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** order by min() on columns of table "server_plugins" */
+["server_plugins_min_order_by"]: {
+		plugin_slug?: GraphQLTypes["order_by"] | undefined | null,
+	server_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "server_plugins" */
+["server_plugins_mutation_response"]: {
+	__typename: "server_plugins_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["server_plugins"]>
+};
+	/** on_conflict condition type for table "server_plugins" */
+["server_plugins_on_conflict"]: {
+		constraint: GraphQLTypes["server_plugins_constraint"],
+	update_columns: Array<GraphQLTypes["server_plugins_update_column"]>,
+	where?: GraphQLTypes["server_plugins_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "server_plugins". */
+["server_plugins_order_by"]: {
+		enabled?: GraphQLTypes["order_by"] | undefined | null,
+	install?: GraphQLTypes["game_plugin_installs_order_by"] | undefined | null,
+	plugin_slug?: GraphQLTypes["order_by"] | undefined | null,
+	server?: GraphQLTypes["servers_order_by"] | undefined | null,
+	server_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: server_plugins */
+["server_plugins_pk_columns_input"]: {
+		plugin_slug: string,
+	server_id: GraphQLTypes["uuid"]
+};
+	/** select columns of table "server_plugins" */
+["server_plugins_select_column"]: server_plugins_select_column;
+	/** select "server_plugins_aggregate_bool_exp_bool_and_arguments_columns" columns of table "server_plugins" */
+["server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_and_arguments_columns"]: server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_and_arguments_columns;
+	/** select "server_plugins_aggregate_bool_exp_bool_or_arguments_columns" columns of table "server_plugins" */
+["server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_or_arguments_columns"]: server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_or_arguments_columns;
+	/** input type for updating data in table "server_plugins" */
+["server_plugins_set_input"]: {
+		enabled?: boolean | undefined | null,
+	plugin_slug?: string | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** Streaming cursor of the table "server_plugins" */
+["server_plugins_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["server_plugins_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["server_plugins_stream_cursor_value_input"]: {
+		enabled?: boolean | undefined | null,
+	plugin_slug?: string | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** update columns of table "server_plugins" */
+["server_plugins_update_column"]: server_plugins_update_column;
+	["server_plugins_updates"]: {
+		/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["server_plugins_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["server_plugins_bool_exp"]
+};
 	/** columns and relationships of "server_regions" */
 ["server_regions"]: {
 	__typename: "server_regions",
@@ -292702,11 +294826,20 @@ export type GraphQLTypes = {
 	label: string,
 	loaded_plugins?: GraphQLTypes["jsonb"] | undefined | null,
 	/** An array relationship */
+	map_rotation: Array<GraphQLTypes["server_map_rotation"]>,
+	/** An aggregate relationship */
+	map_rotation_aggregate: GraphQLTypes["server_map_rotation_aggregate"],
+	map_rotation_shuffle: boolean,
+	/** An array relationship */
 	matches: Array<GraphQLTypes["matches"]>,
 	/** An aggregate relationship */
 	matches_aggregate: GraphQLTypes["matches_aggregate"],
 	max_players?: number | undefined | null,
 	offline_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	/** An array relationship */
+	plugin_overrides: Array<GraphQLTypes["server_plugins"]>,
+	/** An aggregate relationship */
+	plugin_overrides_aggregate: GraphQLTypes["server_plugins_aggregate"],
 	plugin_runtime?: GraphQLTypes["e_plugin_runtimes_enum"] | undefined | null,
 	plugin_version?: string | undefined | null,
 	plugins_checked_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -292827,10 +294960,15 @@ export type GraphQLTypes = {
 	is_dedicated?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	label?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	loaded_plugins?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
+	map_rotation?: GraphQLTypes["server_map_rotation_bool_exp"] | undefined | null,
+	map_rotation_aggregate?: GraphQLTypes["server_map_rotation_aggregate_bool_exp"] | undefined | null,
+	map_rotation_shuffle?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	matches?: GraphQLTypes["matches_bool_exp"] | undefined | null,
 	matches_aggregate?: GraphQLTypes["matches_aggregate_bool_exp"] | undefined | null,
 	max_players?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	offline_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	plugin_overrides?: GraphQLTypes["server_plugins_bool_exp"] | undefined | null,
+	plugin_overrides_aggregate?: GraphQLTypes["server_plugins_aggregate_bool_exp"] | undefined | null,
 	plugin_runtime?: GraphQLTypes["e_plugin_runtimes_enum_comparison_exp"] | undefined | null,
 	plugin_version?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	plugins_checked_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
@@ -292884,9 +295022,12 @@ export type GraphQLTypes = {
 	is_dedicated?: boolean | undefined | null,
 	label?: string | undefined | null,
 	loaded_plugins?: GraphQLTypes["jsonb"] | undefined | null,
+	map_rotation?: GraphQLTypes["server_map_rotation_arr_rel_insert_input"] | undefined | null,
+	map_rotation_shuffle?: boolean | undefined | null,
 	matches?: GraphQLTypes["matches_arr_rel_insert_input"] | undefined | null,
 	max_players?: number | undefined | null,
 	offline_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	plugin_overrides?: GraphQLTypes["server_plugins_arr_rel_insert_input"] | undefined | null,
 	plugin_runtime?: GraphQLTypes["e_plugin_runtimes_enum"] | undefined | null,
 	plugin_version?: string | undefined | null,
 	plugins_checked_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -293044,9 +295185,12 @@ export type GraphQLTypes = {
 	is_dedicated?: GraphQLTypes["order_by"] | undefined | null,
 	label?: GraphQLTypes["order_by"] | undefined | null,
 	loaded_plugins?: GraphQLTypes["order_by"] | undefined | null,
+	map_rotation_aggregate?: GraphQLTypes["server_map_rotation_aggregate_order_by"] | undefined | null,
+	map_rotation_shuffle?: GraphQLTypes["order_by"] | undefined | null,
 	matches_aggregate?: GraphQLTypes["matches_aggregate_order_by"] | undefined | null,
 	max_players?: GraphQLTypes["order_by"] | undefined | null,
 	offline_at?: GraphQLTypes["order_by"] | undefined | null,
+	plugin_overrides_aggregate?: GraphQLTypes["server_plugins_aggregate_order_by"] | undefined | null,
 	plugin_runtime?: GraphQLTypes["order_by"] | undefined | null,
 	plugin_version?: GraphQLTypes["order_by"] | undefined | null,
 	plugins_checked_at?: GraphQLTypes["order_by"] | undefined | null,
@@ -293091,6 +295235,7 @@ export type GraphQLTypes = {
 	is_dedicated?: boolean | undefined | null,
 	label?: string | undefined | null,
 	loaded_plugins?: GraphQLTypes["jsonb"] | undefined | null,
+	map_rotation_shuffle?: boolean | undefined | null,
 	max_players?: number | undefined | null,
 	offline_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	plugin_runtime?: GraphQLTypes["e_plugin_runtimes_enum"] | undefined | null,
@@ -293168,6 +295313,7 @@ export type GraphQLTypes = {
 	is_dedicated?: boolean | undefined | null,
 	label?: string | undefined | null,
 	loaded_plugins?: GraphQLTypes["jsonb"] | undefined | null,
+	map_rotation_shuffle?: boolean | undefined | null,
 	max_players?: number | undefined | null,
 	offline_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	plugin_runtime?: GraphQLTypes["e_plugin_runtimes_enum"] | undefined | null,
@@ -295092,6 +297238,22 @@ export type GraphQLTypes = {
 	seasons_by_pk?: GraphQLTypes["seasons"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "seasons" */
 	seasons_stream: Array<GraphQLTypes["seasons"]>,
+	/** fetch data from the table: "server_map_rotation" */
+	server_map_rotation: Array<GraphQLTypes["server_map_rotation"]>,
+	/** fetch aggregated fields from the table: "server_map_rotation" */
+	server_map_rotation_aggregate: GraphQLTypes["server_map_rotation_aggregate"],
+	/** fetch data from the table: "server_map_rotation" using primary key columns */
+	server_map_rotation_by_pk?: GraphQLTypes["server_map_rotation"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "server_map_rotation" */
+	server_map_rotation_stream: Array<GraphQLTypes["server_map_rotation"]>,
+	/** fetch data from the table: "server_plugins" */
+	server_plugins: Array<GraphQLTypes["server_plugins"]>,
+	/** fetch aggregated fields from the table: "server_plugins" */
+	server_plugins_aggregate: GraphQLTypes["server_plugins_aggregate"],
+	/** fetch data from the table: "server_plugins" using primary key columns */
+	server_plugins_by_pk?: GraphQLTypes["server_plugins"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "server_plugins" */
+	server_plugins_stream: Array<GraphQLTypes["server_plugins"]>,
 	/** fetch data from the table: "server_regions" */
 	server_regions: Array<GraphQLTypes["server_regions"]>,
 	/** fetch aggregated fields from the table: "server_regions" */
@@ -323570,6 +325732,7 @@ export enum game_plugins_select_column {
 	homepage = "homepage",
 	hot_swappable = "hot_swappable",
 	kind = "kind",
+	map_rotation = "map_rotation",
 	name = "name",
 	pairs_with = "pairs_with",
 	panel = "panel",
@@ -323592,6 +325755,7 @@ export enum game_plugins_update_column {
 	homepage = "homepage",
 	hot_swappable = "hot_swappable",
 	kind = "kind",
+	map_rotation = "map_rotation",
 	name = "name",
 	pairs_with = "pairs_with",
 	panel = "panel",
@@ -326246,6 +328410,46 @@ export enum seasons_update_column {
 	number = "number",
 	starts_at = "starts_at"
 }
+/** unique or primary key constraints on table "server_map_rotation" */
+export enum server_map_rotation_constraint {
+	server_map_rotation_pkey = "server_map_rotation_pkey"
+}
+/** select columns of table "server_map_rotation" */
+export enum server_map_rotation_select_column {
+	map_id = "map_id",
+	position = "position",
+	server_id = "server_id"
+}
+/** update columns of table "server_map_rotation" */
+export enum server_map_rotation_update_column {
+	map_id = "map_id",
+	position = "position",
+	server_id = "server_id"
+}
+/** unique or primary key constraints on table "server_plugins" */
+export enum server_plugins_constraint {
+	server_plugins_pkey = "server_plugins_pkey"
+}
+/** select columns of table "server_plugins" */
+export enum server_plugins_select_column {
+	enabled = "enabled",
+	plugin_slug = "plugin_slug",
+	server_id = "server_id"
+}
+/** select "server_plugins_aggregate_bool_exp_bool_and_arguments_columns" columns of table "server_plugins" */
+export enum server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_and_arguments_columns {
+	enabled = "enabled"
+}
+/** select "server_plugins_aggregate_bool_exp_bool_or_arguments_columns" columns of table "server_plugins" */
+export enum server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_or_arguments_columns {
+	enabled = "enabled"
+}
+/** update columns of table "server_plugins" */
+export enum server_plugins_update_column {
+	enabled = "enabled",
+	plugin_slug = "plugin_slug",
+	server_id = "server_id"
+}
 /** unique or primary key constraints on table "server_regions" */
 export enum server_regions_constraint {
 	e_server_regions_pkey = "e_server_regions_pkey"
@@ -326285,6 +328489,7 @@ export enum servers_select_column {
 	is_dedicated = "is_dedicated",
 	label = "label",
 	loaded_plugins = "loaded_plugins",
+	map_rotation_shuffle = "map_rotation_shuffle",
 	max_players = "max_players",
 	offline_at = "offline_at",
 	plugin_runtime = "plugin_runtime",
@@ -326305,6 +328510,7 @@ export enum servers_select_column_servers_aggregate_bool_exp_bool_and_arguments_
 	connected = "connected",
 	enabled = "enabled",
 	is_dedicated = "is_dedicated",
+	map_rotation_shuffle = "map_rotation_shuffle",
 	rcon_status = "rcon_status"
 }
 /** select "servers_aggregate_bool_exp_bool_or_arguments_columns" columns of table "servers" */
@@ -326312,6 +328518,7 @@ export enum servers_select_column_servers_aggregate_bool_exp_bool_or_arguments_c
 	connected = "connected",
 	enabled = "enabled",
 	is_dedicated = "is_dedicated",
+	map_rotation_shuffle = "map_rotation_shuffle",
 	rcon_status = "rcon_status"
 }
 /** update columns of table "servers" */
@@ -326330,6 +328537,7 @@ export enum servers_update_column {
 	is_dedicated = "is_dedicated",
 	label = "label",
 	loaded_plugins = "loaded_plugins",
+	map_rotation_shuffle = "map_rotation_shuffle",
 	max_players = "max_players",
 	offline_at = "offline_at",
 	plugin_runtime = "plugin_runtime",
@@ -329140,6 +331348,7 @@ type ZEUS_VARIABLES = {
 	["Float_comparison_exp"]: ValueTypes["Float_comparison_exp"];
 	["Int_comparison_exp"]: ValueTypes["Int_comparison_exp"];
 	["ScheduledLineupInput"]: ValueTypes["ScheduledLineupInput"];
+	["ServerPluginInput"]: ValueTypes["ServerPluginInput"];
 	["String_array_comparison_exp"]: ValueTypes["String_array_comparison_exp"];
 	["String_comparison_exp"]: ValueTypes["String_comparison_exp"];
 	["UtilityPlaybookStepInput"]: ValueTypes["UtilityPlaybookStepInput"];
@@ -330581,6 +332790,7 @@ type ZEUS_VARIABLES = {
 	["game_plugin_installs_bool_exp"]: ValueTypes["game_plugin_installs_bool_exp"];
 	["game_plugin_installs_constraint"]: ValueTypes["game_plugin_installs_constraint"];
 	["game_plugin_installs_insert_input"]: ValueTypes["game_plugin_installs_insert_input"];
+	["game_plugin_installs_obj_rel_insert_input"]: ValueTypes["game_plugin_installs_obj_rel_insert_input"];
 	["game_plugin_installs_on_conflict"]: ValueTypes["game_plugin_installs_on_conflict"];
 	["game_plugin_installs_order_by"]: ValueTypes["game_plugin_installs_order_by"];
 	["game_plugin_installs_pk_columns_input"]: ValueTypes["game_plugin_installs_pk_columns_input"];
@@ -332239,6 +334449,55 @@ type ZEUS_VARIABLES = {
 	["seasons_stream_cursor_value_input"]: ValueTypes["seasons_stream_cursor_value_input"];
 	["seasons_update_column"]: ValueTypes["seasons_update_column"];
 	["seasons_updates"]: ValueTypes["seasons_updates"];
+	["server_map_rotation_aggregate_bool_exp"]: ValueTypes["server_map_rotation_aggregate_bool_exp"];
+	["server_map_rotation_aggregate_bool_exp_count"]: ValueTypes["server_map_rotation_aggregate_bool_exp_count"];
+	["server_map_rotation_aggregate_order_by"]: ValueTypes["server_map_rotation_aggregate_order_by"];
+	["server_map_rotation_arr_rel_insert_input"]: ValueTypes["server_map_rotation_arr_rel_insert_input"];
+	["server_map_rotation_avg_order_by"]: ValueTypes["server_map_rotation_avg_order_by"];
+	["server_map_rotation_bool_exp"]: ValueTypes["server_map_rotation_bool_exp"];
+	["server_map_rotation_constraint"]: ValueTypes["server_map_rotation_constraint"];
+	["server_map_rotation_inc_input"]: ValueTypes["server_map_rotation_inc_input"];
+	["server_map_rotation_insert_input"]: ValueTypes["server_map_rotation_insert_input"];
+	["server_map_rotation_max_order_by"]: ValueTypes["server_map_rotation_max_order_by"];
+	["server_map_rotation_min_order_by"]: ValueTypes["server_map_rotation_min_order_by"];
+	["server_map_rotation_on_conflict"]: ValueTypes["server_map_rotation_on_conflict"];
+	["server_map_rotation_order_by"]: ValueTypes["server_map_rotation_order_by"];
+	["server_map_rotation_pk_columns_input"]: ValueTypes["server_map_rotation_pk_columns_input"];
+	["server_map_rotation_select_column"]: ValueTypes["server_map_rotation_select_column"];
+	["server_map_rotation_set_input"]: ValueTypes["server_map_rotation_set_input"];
+	["server_map_rotation_stddev_order_by"]: ValueTypes["server_map_rotation_stddev_order_by"];
+	["server_map_rotation_stddev_pop_order_by"]: ValueTypes["server_map_rotation_stddev_pop_order_by"];
+	["server_map_rotation_stddev_samp_order_by"]: ValueTypes["server_map_rotation_stddev_samp_order_by"];
+	["server_map_rotation_stream_cursor_input"]: ValueTypes["server_map_rotation_stream_cursor_input"];
+	["server_map_rotation_stream_cursor_value_input"]: ValueTypes["server_map_rotation_stream_cursor_value_input"];
+	["server_map_rotation_sum_order_by"]: ValueTypes["server_map_rotation_sum_order_by"];
+	["server_map_rotation_update_column"]: ValueTypes["server_map_rotation_update_column"];
+	["server_map_rotation_updates"]: ValueTypes["server_map_rotation_updates"];
+	["server_map_rotation_var_pop_order_by"]: ValueTypes["server_map_rotation_var_pop_order_by"];
+	["server_map_rotation_var_samp_order_by"]: ValueTypes["server_map_rotation_var_samp_order_by"];
+	["server_map_rotation_variance_order_by"]: ValueTypes["server_map_rotation_variance_order_by"];
+	["server_plugins_aggregate_bool_exp"]: ValueTypes["server_plugins_aggregate_bool_exp"];
+	["server_plugins_aggregate_bool_exp_bool_and"]: ValueTypes["server_plugins_aggregate_bool_exp_bool_and"];
+	["server_plugins_aggregate_bool_exp_bool_or"]: ValueTypes["server_plugins_aggregate_bool_exp_bool_or"];
+	["server_plugins_aggregate_bool_exp_count"]: ValueTypes["server_plugins_aggregate_bool_exp_count"];
+	["server_plugins_aggregate_order_by"]: ValueTypes["server_plugins_aggregate_order_by"];
+	["server_plugins_arr_rel_insert_input"]: ValueTypes["server_plugins_arr_rel_insert_input"];
+	["server_plugins_bool_exp"]: ValueTypes["server_plugins_bool_exp"];
+	["server_plugins_constraint"]: ValueTypes["server_plugins_constraint"];
+	["server_plugins_insert_input"]: ValueTypes["server_plugins_insert_input"];
+	["server_plugins_max_order_by"]: ValueTypes["server_plugins_max_order_by"];
+	["server_plugins_min_order_by"]: ValueTypes["server_plugins_min_order_by"];
+	["server_plugins_on_conflict"]: ValueTypes["server_plugins_on_conflict"];
+	["server_plugins_order_by"]: ValueTypes["server_plugins_order_by"];
+	["server_plugins_pk_columns_input"]: ValueTypes["server_plugins_pk_columns_input"];
+	["server_plugins_select_column"]: ValueTypes["server_plugins_select_column"];
+	["server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_and_arguments_columns"]: ValueTypes["server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_and_arguments_columns"];
+	["server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_or_arguments_columns"]: ValueTypes["server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_or_arguments_columns"];
+	["server_plugins_set_input"]: ValueTypes["server_plugins_set_input"];
+	["server_plugins_stream_cursor_input"]: ValueTypes["server_plugins_stream_cursor_input"];
+	["server_plugins_stream_cursor_value_input"]: ValueTypes["server_plugins_stream_cursor_value_input"];
+	["server_plugins_update_column"]: ValueTypes["server_plugins_update_column"];
+	["server_plugins_updates"]: ValueTypes["server_plugins_updates"];
 	["server_regions_bool_exp"]: ValueTypes["server_regions_bool_exp"];
 	["server_regions_constraint"]: ValueTypes["server_regions_constraint"];
 	["server_regions_insert_input"]: ValueTypes["server_regions_insert_input"];

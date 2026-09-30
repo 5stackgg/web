@@ -3,10 +3,20 @@ import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useQuery } from "@vue/apollo-composable";
 import gql from "graphql-tag";
-import { ArrowDown, ArrowUp, Download, Plus, X } from "lucide-vue-next";
+import {
+  ChevronDown,
+  ChevronUp,
+  Download,
+  GripVertical,
+  ListOrdered,
+  Map as MapIcon,
+  Plus,
+  Shuffle,
+  TriangleAlert,
+  X,
+} from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import { Switch } from "~/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -16,6 +26,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
+import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 import { toast } from "@/components/ui/toast";
 
 type RotationMap = {
@@ -26,7 +38,7 @@ type RotationMap = {
   workshop_map_id: string | null;
 };
 
-const props = defineProps<{ serverId: string }>();
+const props = defineProps<{ serverId: string; enabled?: boolean }>();
 
 const { t } = useI18n();
 const nuxtApp = useNuxtApp();
@@ -38,7 +50,13 @@ const QUERY = gql`
     servers_by_pk(id: $serverId) {
       id
       map_rotation_shuffle
-      map_rotation(order_by: { position: asc }) {
+      plugin_overrides(where: { enabled: { _eq: false } }) {
+        plugin_slug
+      }
+      map_rotation(
+        where: { map: { deleted_at: { _is_null: true } } }
+        order_by: { position: asc }
+      ) {
         map {
           id
           name
@@ -59,13 +77,18 @@ const QUERY = gql`
       workshop_map_id
       type
     }
-    game_plugins(
-      where: { map_rotation: { _is_null: false } }
-      order_by: { slug: asc }
+    game_plugin_installs(
+      where: {
+        enabled: { _eq: true }
+        plugin: { map_rotation: { _is_null: false } }
+      }
+      order_by: { plugin_slug: asc }
     ) {
-      slug
-      name
-      install_state
+      plugin {
+        slug
+        name
+        install_state
+      }
     }
   }
 `;
@@ -110,8 +133,12 @@ const { result, refetch } = useQuery(
 const entries = ref<Array<RotationMap>>([]);
 const shuffle = ref(true);
 const dirty = ref(false);
+const revision = ref(0);
+const submitting = ref(false);
+const importing = ref(false);
 const selectedMapId = ref<string | undefined>();
 const collection = ref("");
+const brokenPosters = ref(new Set<string>());
 
 const mapKey = (map: RotationMap) => map.workshop_map_id || map.name;
 const mapLabel = (map: RotationMap) => map.label || map.name;
@@ -160,14 +187,23 @@ const catalog = computed(() => {
   };
 });
 
-// Mirrors the api: the first installed plugin that declares map_rotation runs
-// the rotation when the server does not already load one.
-const rotationPlugin = computed(() =>
-  ((result.value as any)?.game_plugins ?? []).find(
-    (plugin: { install_state: string }) =>
-      plugin.install_state !== "NotInstalled",
-  ),
-);
+// Mirrors the api: the first enabled, installed plugin that declares
+// map_rotation runs the rotation, unless this server switched it off.
+const rotationPlugin = computed(() => {
+  const off = new Set(
+    ((result.value as any)?.servers_by_pk?.plugin_overrides ?? []).map(
+      (override: { plugin_slug: string }) => override.plugin_slug,
+    ),
+  );
+
+  return ((result.value as any)?.game_plugin_installs ?? [])
+    .map((install: { plugin: any }) => install.plugin)
+    .find(
+      (plugin: { slug: string; install_state: string }) =>
+        ["Installed", "Partial"].includes(plugin.install_state) &&
+        !off.has(plugin.slug),
+    );
+});
 
 const warnWorkshopOrder = computed(
   () =>
@@ -176,13 +212,43 @@ const warnWorkshopOrder = computed(
     entries.value.some((map) => map.workshop_map_id),
 );
 
+const orderModel = computed({
+  get: () => (shuffle.value ? "shuffle" : "ordered"),
+  set: (value: string) => {
+    shuffle.value = value === "shuffle";
+    touch();
+  },
+});
+
+const orderOptions = computed(() => [
+  {
+    key: "shuffle",
+    label: t("pages.dedicated_servers.detail.map_rotation.shuffle"),
+    icon: Shuffle,
+    title: t("pages.dedicated_servers.detail.map_rotation.shuffle"),
+    desc: t("pages.dedicated_servers.detail.map_rotation.shuffle_hint"),
+  },
+  {
+    key: "ordered",
+    label: t("pages.dedicated_servers.detail.map_rotation.in_order"),
+    icon: ListOrdered,
+    title: t("pages.dedicated_servers.detail.map_rotation.in_order"),
+    desc: t("pages.dedicated_servers.detail.map_rotation.in_order_hint"),
+  },
+]);
+
+function touch() {
+  dirty.value = true;
+  revision.value++;
+}
+
 function add(map: RotationMap) {
   if (entries.value.some((entry) => mapKey(entry) === mapKey(map))) {
     return;
   }
 
   entries.value.push(map);
-  dirty.value = true;
+  touch();
 }
 
 function addSelected() {
@@ -197,39 +263,83 @@ function addSelected() {
   selectedMapId.value = undefined;
 }
 
-function move(index: number, by: number) {
-  const target = index + by;
-
-  if (target < 0 || target >= entries.value.length) {
+function moveTo(from: number, to: number) {
+  if (from === to || to < 0 || to >= entries.value.length) {
     return;
   }
 
-  const [map] = entries.value.splice(index, 1);
-  entries.value.splice(target, 0, map);
-  dirty.value = true;
+  const [map] = entries.value.splice(from, 1);
+  entries.value.splice(to, 0, map);
+  touch();
 }
 
 function remove(index: number) {
   entries.value.splice(index, 1);
-  dirty.value = true;
+  touch();
 }
 
-function setShuffle(value: boolean) {
-  shuffle.value = value;
-  dirty.value = true;
+const dragIndex = ref<number | null>(null);
+const overIndex = ref<number | null>(null);
+
+function onDragStart(index: number, event: DragEvent) {
+  dragIndex.value = index;
+
+  if (event.dataTransfer) {
+    event.dataTransfer.effectAllowed = "move";
+    // Firefox refuses to start a drag without payload.
+    event.dataTransfer.setData("text/plain", String(index));
+  }
+}
+
+function onDragEnter(index: number) {
+  if (dragIndex.value !== null) {
+    overIndex.value = index;
+  }
+}
+
+function onDrop(index: number) {
+  const from = dragIndex.value;
+
+  dragIndex.value = null;
+  overIndex.value = null;
+
+  if (from !== null) {
+    moveTo(from, index);
+  }
+}
+
+function onDragEnd() {
+  dragIndex.value = null;
+  overIndex.value = null;
+}
+
+function posterFailed(map: RotationMap) {
+  brokenPosters.value = new Set([...brokenPosters.value, mapKey(map)]);
+}
+
+function hasPoster(map: RotationMap) {
+  return !!map.poster && !brokenPosters.value.has(mapKey(map));
 }
 
 async function importCollection() {
-  if (!collection.value.trim()) {
+  if (!collection.value.trim() || importing.value) {
     return;
   }
 
-  const { data } = await nuxtApp.$apollo.defaultClient.mutate({
-    mutation: IMPORT,
-    variables: { collection: collection.value.trim() },
-  });
+  importing.value = true;
 
-  const imported = data?.importWorkshopCollection;
+  let imported;
+
+  try {
+    const { data } = await nuxtApp.$apollo.defaultClient.mutate({
+      mutation: IMPORT,
+      variables: { collection: collection.value.trim() },
+    });
+
+    imported = data?.importWorkshopCollection;
+  } finally {
+    importing.value = false;
+  }
 
   if (!imported) {
     return;
@@ -256,67 +366,90 @@ async function importCollection() {
 }
 
 async function save() {
-  await nuxtApp.$apollo.defaultClient.mutate({
-    mutation: SAVE,
-    variables: {
-      serverId: props.serverId,
-      mapIds: entries.value.map((map) => map.id),
-      shuffle: shuffle.value,
-    },
-  });
+  if (submitting.value) {
+    return;
+  }
 
-  dirty.value = false;
+  submitting.value = true;
+  const startedAt = revision.value;
 
-  toast({ title: t("pages.dedicated_servers.detail.map_rotation.saved") });
+  try {
+    await nuxtApp.$apollo.defaultClient.mutate({
+      mutation: SAVE,
+      variables: {
+        serverId: props.serverId,
+        mapIds: entries.value.map((map) => map.id),
+        shuffle: shuffle.value,
+      },
+    });
 
-  await refetch();
+    toast({
+      title: t(
+        props.enabled === false
+          ? "pages.dedicated_servers.detail.map_rotation.saved_disabled"
+          : "pages.dedicated_servers.detail.map_rotation.saved",
+      ),
+    });
+
+    // Changes made while the server was restarting stay pending.
+    if (revision.value === startedAt) {
+      dirty.value = false;
+      await refetch();
+    }
+  } finally {
+    submitting.value = false;
+  }
 }
+
+const cardClasses =
+  "relative isolate overflow-hidden rounded-lg border border-border [background:linear-gradient(180deg,hsl(var(--card)/0.2)_0%,hsl(var(--card)/0.04)_100%)]";
+
+const microLabelClasses =
+  "font-mono text-[0.6rem] font-bold uppercase tracking-[0.18em] text-muted-foreground";
+
+const chipClasses =
+  "inline-flex items-center rounded border px-1.5 py-0.5 font-mono text-[0.58rem] font-bold uppercase leading-none tracking-[0.12em]";
 </script>
 
 <template>
-  <div>
-    <div
-      class="mb-3 inline-flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted-foreground"
-    >
-      <span class="h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"></span>
-      {{ $t("pages.dedicated_servers.detail.map_rotation.title") }}
+  <section>
+    <div class="mb-3 flex items-center gap-3">
+      <div
+        class="inline-flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted-foreground"
+      >
+        <span class="h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"></span>
+        {{ $t("pages.dedicated_servers.detail.map_rotation.title") }}
+      </div>
+      <span class="h-px flex-1 bg-border" />
+      <span :class="microLabelClasses">
+        {{ $t("pages.dedicated_servers.detail.map_rotation.maps") }}
+        <span class="ml-1 tabular-nums text-foreground">{{
+          entries.length
+        }}</span>
+      </span>
     </div>
 
-    <div class="space-y-4 rounded-lg border border-border bg-muted/30 p-4">
-      <div class="flex items-start justify-between gap-4 max-sm:flex-col">
-        <p class="text-sm text-muted-foreground">
+    <div :class="cardClasses">
+      <div
+        class="flex items-start justify-between gap-4 border-b border-border/60 p-4 max-sm:flex-col"
+      >
+        <p class="max-w-prose text-sm text-muted-foreground">
           {{ $t("pages.dedicated_servers.detail.map_rotation.description") }}
         </p>
-        <div class="flex shrink-0 items-center gap-2">
-          <Switch :model-value="shuffle" @update:model-value="setShuffle" />
-          <div class="space-y-0.5">
-            <p class="text-sm">
-              {{ $t("pages.dedicated_servers.detail.map_rotation.shuffle") }}
-            </p>
-            <p class="text-xs text-muted-foreground">
-              {{
-                $t("pages.dedicated_servers.detail.map_rotation.shuffle_hint")
-              }}
-            </p>
-          </div>
-        </div>
+        <AnimatedFilters
+          v-model="orderModel"
+          square
+          class="shrink-0"
+          :options="orderOptions"
+        />
       </div>
 
-      <p
-        v-if="rotationPlugin"
-        class="font-mono text-[0.65rem] uppercase tracking-[0.14em] text-muted-foreground"
-      >
-        {{
-          $t("pages.dedicated_servers.detail.map_rotation.played_by", {
-            plugin: rotationPlugin.name,
-          })
-        }}
-      </p>
       <div
-        v-else
-        class="flex items-center justify-between gap-3 rounded-md border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] px-3 py-2 text-sm text-[hsl(var(--tac-amber))] max-sm:flex-col max-sm:items-start"
+        v-if="!rotationPlugin"
+        class="flex items-center gap-3 border-b border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.08)] px-4 py-2.5 text-sm text-[hsl(var(--tac-amber))] max-sm:flex-col max-sm:items-start"
       >
-        <span>
+        <TriangleAlert class="h-4 w-4 shrink-0 max-sm:hidden" />
+        <span class="flex-1">
           {{ $t("pages.dedicated_servers.detail.map_rotation.no_plugin") }}
         </span>
         <Button as-child variant="outline" size="sm" class="shrink-0">
@@ -328,171 +461,306 @@ async function save() {
         </Button>
       </div>
 
-      <p
-        v-if="warnWorkshopOrder"
-        class="rounded-md border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] px-3 py-2 text-xs text-[hsl(var(--tac-amber))]"
+      <Transition
+        enter-active-class="transition-opacity duration-200 motion-reduce:transition-none"
+        leave-active-class="transition-opacity duration-150 motion-reduce:transition-none"
+        enter-from-class="opacity-0"
+        leave-to-class="opacity-0"
       >
-        {{
-          $t("pages.dedicated_servers.detail.map_rotation.workshop_order_hint")
-        }}
-      </p>
-
-      <ol v-if="entries.length" class="divide-y divide-border/60">
-        <li
-          v-for="(map, index) in entries"
-          :key="mapKey(map)"
-          class="flex items-center gap-3 py-2"
+        <div
+          v-if="warnWorkshopOrder"
+          class="flex items-start gap-2 border-b border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.08)] px-4 py-2.5 text-xs text-[hsl(var(--tac-amber))]"
         >
-          <span
-            class="w-6 shrink-0 text-right font-mono text-[0.7rem] tabular-nums text-muted-foreground"
-          >
-            {{ index + 1 }}
-          </span>
-          <img
-            v-if="map.poster"
-            :src="map.poster"
-            alt=""
-            class="h-8 w-14 shrink-0 rounded-sm object-cover"
-          />
-          <span v-else class="h-8 w-14 shrink-0 rounded-sm bg-muted" />
-          <span class="min-w-0 flex-1 truncate text-sm">
-            {{ mapLabel(map) }}
-          </span>
-          <span
-            v-if="map.workshop_map_id"
-            class="inline-flex items-center rounded border border-border/70 bg-muted/35 px-2 py-0.5 font-mono text-[0.6rem] font-bold uppercase tracking-[0.14em] text-muted-foreground max-sm:hidden"
-          >
-            {{ $t("pages.dedicated_servers.detail.map_rotation.workshop") }}
-          </span>
-          <div class="flex shrink-0 items-center gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              class="h-7 w-7 [&_svg]:size-3.5"
-              :disabled="index === 0"
-              :aria-label="
-                $t('pages.dedicated_servers.detail.map_rotation.move_up')
-              "
-              @click="move(index, -1)"
-            >
-              <ArrowUp />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              class="h-7 w-7 [&_svg]:size-3.5"
-              :disabled="index === entries.length - 1"
-              :aria-label="
-                $t('pages.dedicated_servers.detail.map_rotation.move_down')
-              "
-              @click="move(index, 1)"
-            >
-              <ArrowDown />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              class="h-7 w-7 [&_svg]:size-3.5"
-              :aria-label="
-                $t('pages.dedicated_servers.detail.map_rotation.remove')
-              "
-              @click="remove(index)"
-            >
-              <X />
-            </Button>
-          </div>
-        </li>
-      </ol>
-      <p v-else class="text-sm text-muted-foreground">
-        {{ $t("pages.dedicated_servers.detail.map_rotation.empty") }}
-      </p>
-
-      <div class="grid gap-3 md:grid-cols-2">
-        <div class="flex gap-2">
-          <Select v-model="selectedMapId">
-            <SelectTrigger class="min-w-0 flex-1">
-              <SelectValue
-                :placeholder="
-                  $t('pages.dedicated_servers.detail.map_rotation.add_map')
-                "
-              />
-            </SelectTrigger>
-            <SelectContent class="max-h-[300px]">
-              <SelectGroup v-if="catalog.official.length">
-                <SelectLabel>
-                  {{
-                    $t("pages.dedicated_servers.detail.map_rotation.official")
-                  }}
-                </SelectLabel>
-                <SelectItem
-                  v-for="map in catalog.official"
-                  :key="map.id"
-                  :value="map.id"
-                >
-                  {{ mapLabel(map) }}
-                </SelectItem>
-              </SelectGroup>
-              <SelectGroup v-if="catalog.workshop.length">
-                <SelectLabel>
-                  {{
-                    $t("pages.dedicated_servers.detail.map_rotation.workshop")
-                  }}
-                </SelectLabel>
-                <SelectItem
-                  v-for="map in catalog.workshop"
-                  :key="map.id"
-                  :value="map.id"
-                >
-                  {{ mapLabel(map) }}
-                </SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <Button
-            variant="outline"
-            class="shrink-0 gap-2"
-            :disabled="!selectedMapId"
-            @click="addSelected"
-          >
-            <Plus class="h-4 w-4" />
-            {{ $t("pages.dedicated_servers.detail.map_rotation.add") }}
-          </Button>
+          <TriangleAlert class="mt-px h-3.5 w-3.5 shrink-0" />
+          {{
+            $t("pages.dedicated_servers.detail.map_rotation.workshop_order_hint")
+          }}
         </div>
+      </Transition>
 
-        <form class="flex gap-2" @submit.prevent="importCollection">
-          <Input
-            v-model="collection"
-            class="min-w-0 flex-1"
-            :placeholder="
-              $t('pages.dedicated_servers.detail.map_rotation.import_placeholder')
-            "
-          />
-          <Button
-            type="button"
-            variant="outline"
-            class="shrink-0 gap-2"
-            :disabled="!collection.trim()"
-            @click="importCollection"
+      <div class="p-3">
+        <TransitionGroup
+          v-if="entries.length"
+          tag="ol"
+          class="flex flex-col gap-1.5"
+          enter-active-class="rotation-row-fold"
+          enter-from-class="rotation-row-collapsed"
+          leave-active-class="rotation-row-fold"
+          leave-to-class="rotation-row-collapsed"
+          move-class="rotation-row-move"
+        >
+          <li
+            v-for="(map, index) in entries"
+            :key="mapKey(map)"
+            class="grid grid-rows-[1fr]"
+            draggable="true"
+            @dragstart="onDragStart(index, $event)"
+            @dragenter="onDragEnter(index)"
+            @dragover.prevent
+            @drop.prevent="onDrop(index)"
+            @dragend="onDragEnd"
           >
-            <Download class="h-4 w-4" />
-            {{ $t("pages.dedicated_servers.detail.map_rotation.import") }}
-          </Button>
-        </form>
+            <div class="min-h-0">
+              <div
+                :class="[
+                  'group flex items-center gap-3 rounded-md border border-border/60 bg-background/40 p-1.5 pr-2 transition-[opacity,border-color,box-shadow] hover:border-border',
+                  dragIndex === index ? 'opacity-40' : '',
+                  overIndex === index && dragIndex !== index
+                    ? 'border-[hsl(var(--tac-amber)/0.7)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.35)]'
+                    : '',
+                ]"
+              >
+                <GripVertical
+                  class="hidden h-4 w-4 shrink-0 cursor-grab text-muted-foreground/50 transition-colors group-hover:text-muted-foreground active:cursor-grabbing sm:block"
+                />
+                <div class="flex shrink-0 flex-col sm:hidden">
+                  <button
+                    type="button"
+                    class="flex h-4 w-5 items-center justify-center text-muted-foreground/70 disabled:opacity-25"
+                    :disabled="index === 0"
+                    :aria-label="
+                      $t('pages.dedicated_servers.detail.map_rotation.move_up')
+                    "
+                    @click="moveTo(index, index - 1)"
+                  >
+                    <ChevronUp class="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    class="flex h-4 w-5 items-center justify-center text-muted-foreground/70 disabled:opacity-25"
+                    :disabled="index === entries.length - 1"
+                    :aria-label="
+                      $t('pages.dedicated_servers.detail.map_rotation.move_down')
+                    "
+                    @click="moveTo(index, index + 1)"
+                  >
+                    <ChevronDown class="h-3.5 w-3.5" />
+                  </button>
+                </div>
+
+                <span
+                  :class="[
+                    'flex h-7 w-7 shrink-0 items-center justify-center rounded-sm border font-mono text-xs font-bold tabular-nums transition-colors',
+                    index === 0 && !shuffle
+                      ? 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
+                      : 'border-border bg-muted/30 text-muted-foreground',
+                  ]"
+                >
+                  {{ index + 1 }}
+                </span>
+
+                <div
+                  class="relative h-10 w-[4.5rem] shrink-0 overflow-hidden rounded-sm bg-muted/40"
+                >
+                  <img
+                    v-if="hasPoster(map)"
+                    :src="map.poster!"
+                    alt=""
+                    loading="lazy"
+                    class="h-full w-full object-cover"
+                    @error="posterFailed(map)"
+                  />
+                  <div
+                    v-else
+                    class="flex h-full w-full items-center justify-center text-muted-foreground/40"
+                  >
+                    <MapIcon class="h-4 w-4" />
+                  </div>
+                  <div
+                    class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"
+                  />
+                </div>
+
+                <div class="min-w-0 flex-1">
+                  <p class="truncate text-sm font-semibold">
+                    {{ mapLabel(map) }}
+                  </p>
+                  <div class="mt-0.5 flex items-center gap-1.5">
+                    <span
+                      v-if="map.workshop_map_id"
+                      :class="[
+                        chipClasses,
+                        'border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))]',
+                      ]"
+                    >
+                      {{
+                        $t("pages.dedicated_servers.detail.map_rotation.workshop")
+                      }}
+                    </span>
+                    <span
+                      v-if="index === 0 && !shuffle"
+                      :class="[
+                        chipClasses,
+                        'border-border/70 bg-muted/35 text-muted-foreground',
+                      ]"
+                    >
+                      {{
+                        $t(
+                          "pages.dedicated_servers.detail.map_rotation.boots_first",
+                        )
+                      }}
+                    </span>
+                    <span
+                      class="truncate font-mono text-[0.62rem] text-muted-foreground/70"
+                    >
+                      {{ map.workshop_map_id || map.name }}
+                    </span>
+                  </div>
+                </div>
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  class="h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive [&_svg]:size-3.5"
+                  :aria-label="
+                    $t('pages.dedicated_servers.detail.map_rotation.remove')
+                  "
+                  @click="remove(index)"
+                >
+                  <X />
+                </Button>
+              </div>
+            </div>
+          </li>
+        </TransitionGroup>
+
+        <div
+          v-else
+          class="flex flex-col items-center gap-2 rounded-md border border-dashed border-border/70 px-6 py-8 text-center"
+        >
+          <MapIcon class="h-6 w-6 text-muted-foreground/50" />
+          <p class="font-mono text-[0.7rem] font-bold uppercase tracking-[0.18em]">
+            {{ $t("pages.dedicated_servers.detail.map_rotation.empty_title") }}
+          </p>
+          <p class="max-w-sm text-sm text-muted-foreground">
+            {{ $t("pages.dedicated_servers.detail.map_rotation.empty") }}
+          </p>
+        </div>
       </div>
 
       <div
-        class="flex items-center justify-end gap-3 border-t border-border/60 pt-4 max-sm:flex-col max-sm:items-stretch"
+        class="grid gap-4 border-t border-border/60 bg-background/20 p-4 md:grid-cols-2"
       >
-        <p class="mr-auto text-xs text-muted-foreground">
-          {{ $t("pages.dedicated_servers.detail.restart_hint") }}
-        </p>
-        <Button v-if="dirty" variant="ghost" @click="reset">
-          {{ $t("pages.dedicated_servers.detail.discard") }}
-        </Button>
-        <Button :disabled="!dirty" @click="save">
-          {{ $t("pages.dedicated_servers.detail.save_restart") }}
-        </Button>
+        <div class="space-y-2">
+          <p :class="microLabelClasses">
+            {{ $t("pages.dedicated_servers.detail.map_rotation.from_catalog") }}
+          </p>
+          <div class="flex gap-2">
+            <Select v-model="selectedMapId">
+              <SelectTrigger class="min-w-0 flex-1">
+                <SelectValue
+                  :placeholder="
+                    $t('pages.dedicated_servers.detail.map_rotation.add_map')
+                  "
+                />
+              </SelectTrigger>
+              <SelectContent class="max-h-[300px]">
+                <SelectGroup v-if="catalog.official.length">
+                  <SelectLabel>
+                    {{
+                      $t("pages.dedicated_servers.detail.map_rotation.official")
+                    }}
+                  </SelectLabel>
+                  <SelectItem
+                    v-for="map in catalog.official"
+                    :key="map.id"
+                    :value="map.id"
+                  >
+                    {{ mapLabel(map) }}
+                  </SelectItem>
+                </SelectGroup>
+                <SelectGroup v-if="catalog.workshop.length">
+                  <SelectLabel>
+                    {{
+                      $t("pages.dedicated_servers.detail.map_rotation.workshop")
+                    }}
+                  </SelectLabel>
+                  <SelectItem
+                    v-for="map in catalog.workshop"
+                    :key="map.id"
+                    :value="map.id"
+                  >
+                    {{ mapLabel(map) }}
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <Button
+              variant="outline"
+              class="shrink-0 gap-2"
+              :disabled="!selectedMapId"
+              @click="addSelected"
+            >
+              <Plus class="h-4 w-4" />
+              {{ $t("pages.dedicated_servers.detail.map_rotation.add") }}
+            </Button>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <p :class="microLabelClasses">
+            {{ $t("pages.dedicated_servers.detail.map_rotation.from_workshop") }}
+          </p>
+          <div class="flex gap-2">
+            <Input
+              v-model="collection"
+              class="min-w-0 flex-1"
+              :placeholder="
+                $t(
+                  'pages.dedicated_servers.detail.map_rotation.import_placeholder',
+                )
+              "
+              @keydown.enter.prevent="importCollection"
+            />
+            <Button
+              variant="outline"
+              class="shrink-0 gap-2"
+              :disabled="!collection.trim() || importing"
+              @click="importCollection"
+            >
+              <Download class="h-4 w-4" />
+              {{ $t("pages.dedicated_servers.detail.map_rotation.import") }}
+            </Button>
+          </div>
+          <p class="text-xs text-muted-foreground">
+            {{ $t("pages.dedicated_servers.detail.map_rotation.import_hint") }}
+          </p>
+        </div>
       </div>
+
+      <SettingsSaveBar
+        contained
+        :dirty="dirty"
+        :submitting="submitting"
+        :description="$t('pages.dedicated_servers.detail.restart_hint')"
+        :action-label="$t('pages.dedicated_servers.detail.save_restart')"
+        @save="save"
+        @discard="reset"
+      />
     </div>
-  </div>
+  </section>
 </template>
+
+<style scoped>
+.rotation-row-fold {
+  transition:
+    grid-template-rows 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.18s ease;
+}
+.rotation-row-fold > * {
+  overflow: hidden;
+}
+.rotation-row-collapsed {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+.rotation-row-move {
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .rotation-row-fold,
+  .rotation-row-move {
+    transition-duration: 1ms;
+  }
+}
+</style>

@@ -3,8 +3,10 @@ import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useQuery } from "@vue/apollo-composable";
 import gql from "graphql-tag";
+import { Lock, Puzzle } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
+import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 import { toast } from "@/components/ui/toast";
 
 type Choice = "default" | "on" | "off";
@@ -16,7 +18,7 @@ type Install = {
   plugin: { name: string; map_rotation: unknown | null } | null;
 };
 
-const props = defineProps<{ serverId: string }>();
+const props = defineProps<{ serverId: string; enabled?: boolean }>();
 
 const { t } = useI18n();
 const nuxtApp = useNuxtApp();
@@ -37,6 +39,13 @@ const QUERY = gql`
       plugin_overrides {
         plugin_slug
         enabled
+      }
+      map_rotation_aggregate(
+        where: { map: { deleted_at: { _is_null: true } } }
+      ) {
+        aggregate {
+          count
+        }
       }
     }
     game_plugin_installs(
@@ -72,12 +81,22 @@ const { result, refetch } = useQuery(
 );
 
 const choices = ref<Record<string, Choice>>({});
-const dirty = ref(false);
+const saved = ref<Record<string, Choice>>({});
+const revision = ref(0);
+const submitting = ref(false);
 
-function reset() {
+const dirty = computed(() =>
+  installs.value.some(
+    (install) =>
+      choiceFor(install.plugin_slug) !==
+      (saved.value[install.plugin_slug] ?? "default"),
+  ),
+);
+
+function fromServer(): Record<string, Choice> {
   const overrides = (result.value as any)?.servers_by_pk?.plugin_overrides;
 
-  choices.value = Object.fromEntries(
+  return Object.fromEntries(
     (overrides ?? []).map(
       (override: { plugin_slug: string; enabled: boolean }) => [
         override.plugin_slug,
@@ -85,7 +104,11 @@ function reset() {
       ],
     ),
   );
-  dirty.value = false;
+}
+
+function reset() {
+  saved.value = fromServer();
+  choices.value = { ...saved.value };
 }
 
 watch(
@@ -104,6 +127,12 @@ const installs = computed<Array<Install>>(
 
 const gameMode = computed(
   () => (result.value as any)?.servers_by_pk?.game_mode,
+);
+
+const hasRotation = computed(
+  () =>
+    ((result.value as any)?.servers_by_pk?.map_rotation_aggregate?.aggregate
+      ?.count ?? 0) > 0,
 );
 
 // A mode's plugins load whenever the mode does; the api does not let a server
@@ -132,48 +161,177 @@ function choiceFor(slug: string): Choice {
 
 function setChoice(slug: string, choice: Choice) {
   choices.value = { ...choices.value, [slug]: choice };
-  dirty.value = true;
+  revision.value++;
 }
 
 // A community server has no match to scope by, so it takes every plugin
 // flagged for tournaments or custom matches.
-function defaultHint(install: Install) {
-  return install.load_custom || install.load_tournaments
-    ? t("pages.dedicated_servers.detail.plugins.loads_by_default")
-    : t("pages.dedicated_servers.detail.plugins.off_by_default");
+function loadsWithoutRotation(install: Install) {
+  const slug = install.plugin_slug;
+
+  if (modePlugins.value.has(slug)) {
+    return true;
+  }
+
+  const choice = choiceFor(slug);
+
+  if (choice !== "default") {
+    return choice === "on";
+  }
+
+  return install.load_custom || install.load_tournaments;
+}
+
+// Mirrors the api: when nothing already loading can play the rotation, the
+// first rotation plugin the server has not switched off is added for it.
+const rotationRunner = computed(() => {
+  if (!hasRotation.value) {
+    return null;
+  }
+
+  const players = installs.value.filter(
+    (install) => install.plugin?.map_rotation,
+  );
+
+  if (players.some(loadsWithoutRotation)) {
+    return null;
+  }
+
+  return (
+    players.find((install) => choiceFor(install.plugin_slug) !== "off")
+      ?.plugin_slug ?? null
+  );
+});
+
+function status(install: Install): { loads: boolean; reason: string } {
+  const slug = install.plugin_slug;
+
+  if (modePlugins.value.has(slug)) {
+    return {
+      loads: true,
+      reason: t("pages.dedicated_servers.detail.plugins.from_mode", {
+        mode: gameMode.value?.name,
+      }),
+    };
+  }
+
+  const choice = choiceFor(slug);
+
+  if (choice === "on") {
+    return {
+      loads: true,
+      reason: t("pages.dedicated_servers.detail.plugins.forced_on"),
+    };
+  }
+
+  if (choice === "off") {
+    return {
+      loads: false,
+      reason: t("pages.dedicated_servers.detail.plugins.forced_off"),
+    };
+  }
+
+  if (install.load_custom || install.load_tournaments) {
+    return {
+      loads: true,
+      reason: t("pages.dedicated_servers.detail.plugins.loads_by_default"),
+    };
+  }
+
+  if (rotationRunner.value === slug) {
+    return {
+      loads: true,
+      reason: t("pages.dedicated_servers.detail.plugins.for_rotation"),
+    };
+  }
+
+  return {
+    loads: false,
+    reason: t("pages.dedicated_servers.detail.plugins.off_by_default"),
+  };
+}
+
+const activeCount = computed(
+  () => installs.value.filter((install) => status(install).loads).length,
+);
+
+function changed(slug: string) {
+  return choiceFor(slug) !== (saved.value[slug] ?? "default");
 }
 
 async function save() {
-  const plugins = Object.entries(choices.value)
-    .filter(
-      ([slug, choice]) => choice !== "default" && !modePlugins.value.has(slug),
-    )
-    .map(([slug, choice]) => ({ slug, enabled: choice === "on" }));
+  if (submitting.value) {
+    return;
+  }
 
-  await nuxtApp.$apollo.defaultClient.mutate({
-    mutation: SAVE,
-    variables: { serverId: props.serverId, plugins },
-  });
+  submitting.value = true;
+  const startedAt = revision.value;
 
-  dirty.value = false;
+  try {
+    const plugins = Object.entries(choices.value)
+      .filter(
+        ([slug, choice]) =>
+          choice !== "default" && !modePlugins.value.has(slug),
+      )
+      .map(([slug, choice]) => ({ slug, enabled: choice === "on" }));
 
-  toast({ title: t("pages.dedicated_servers.detail.plugins.saved") });
+    await nuxtApp.$apollo.defaultClient.mutate({
+      mutation: SAVE,
+      variables: { serverId: props.serverId, plugins },
+    });
 
-  await refetch();
+    toast({
+      title: t(
+        props.enabled === false
+          ? "pages.dedicated_servers.detail.plugins.saved_disabled"
+          : "pages.dedicated_servers.detail.plugins.saved",
+      ),
+    });
+
+    // Changes made while the server was restarting stay pending.
+    if (revision.value === startedAt) {
+      await refetch();
+      reset();
+    } else {
+      saved.value = Object.fromEntries(
+        plugins.map((plugin) => [plugin.slug, plugin.enabled ? "on" : "off"]),
+      );
+    }
+  } finally {
+    submitting.value = false;
+  }
 }
+
+const cardClasses =
+  "relative overflow-hidden rounded-lg border border-border [background:linear-gradient(180deg,hsl(var(--card)/0.2)_0%,hsl(var(--card)/0.04)_100%)]";
+
+const microLabelClasses =
+  "font-mono text-[0.6rem] font-bold uppercase tracking-[0.18em] text-muted-foreground";
+
+const pillClasses =
+  "inline-flex items-center gap-1.5 rounded border px-1.5 py-0.5 font-mono text-[0.58rem] font-bold uppercase leading-none tracking-[0.12em]";
 </script>
 
 <template>
-  <div>
-    <div
-      class="mb-3 inline-flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted-foreground"
-    >
-      <span class="h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"></span>
-      {{ $t("pages.dedicated_servers.detail.plugins.title") }}
+  <section>
+    <div class="mb-3 flex items-center gap-3">
+      <div
+        class="inline-flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted-foreground"
+      >
+        <span class="h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"></span>
+        {{ $t("pages.dedicated_servers.detail.plugins.title") }}
+      </div>
+      <span class="h-px flex-1 bg-border" />
+      <span :class="microLabelClasses">
+        {{ $t("pages.dedicated_servers.detail.plugins.active") }}
+        <span class="ml-1 tabular-nums text-foreground">{{
+          activeCount
+        }}</span>
+      </span>
     </div>
 
-    <div class="space-y-4 rounded-lg border border-border bg-muted/30 p-4">
-      <p class="text-sm text-muted-foreground">
+    <div :class="cardClasses">
+      <p class="border-b border-border/60 p-4 text-sm text-muted-foreground">
         {{ $t("pages.dedicated_servers.detail.plugins.description") }}
       </p>
 
@@ -181,28 +339,65 @@ async function save() {
         <li
           v-for="install in installs"
           :key="install.plugin_slug"
-          class="flex items-center justify-between gap-4 py-2.5 max-sm:flex-col max-sm:items-start"
+          class="relative flex items-center justify-between gap-4 px-4 py-3 max-sm:flex-col max-sm:items-start"
         >
-          <div class="min-w-0 space-y-0.5">
-            <NuxtLink
-              :to="`/plugins/${install.plugin_slug}`"
-              class="text-sm font-medium hover:underline"
-            >
-              {{ install.plugin?.name ?? install.plugin_slug }}
-            </NuxtLink>
-            <p class="text-xs text-muted-foreground">
-              {{ defaultHint(install) }}
-              <template v-if="install.plugin?.map_rotation">
-                ·
+          <span
+            class="absolute inset-y-2 left-0 w-[2px] rounded-full bg-[hsl(var(--tac-amber))] transition-opacity duration-200 motion-reduce:transition-none"
+            :class="changed(install.plugin_slug) ? 'opacity-100' : 'opacity-0'"
+          />
+          <div class="min-w-0 space-y-1">
+            <div class="flex flex-wrap items-center gap-2">
+              <NuxtLink
+                :to="`/plugins/${install.plugin_slug}`"
+                class="truncate text-sm font-semibold hover:underline"
+              >
+                {{ install.plugin?.name ?? install.plugin_slug }}
+              </NuxtLink>
+              <span
+                :class="[
+                  pillClasses,
+                  status(install).loads
+                    ? 'border-[hsl(var(--success)/0.5)] bg-[hsl(var(--success)/0.12)] text-success'
+                    : 'border-border/70 bg-muted/35 text-muted-foreground',
+                ]"
+              >
+                <span
+                  class="h-1 w-1 rounded-full"
+                  :class="
+                    status(install).loads
+                      ? 'bg-success'
+                      : 'bg-muted-foreground/60'
+                  "
+                />
+                {{
+                  status(install).loads
+                    ? $t("pages.dedicated_servers.detail.plugins.status_loads")
+                    : $t("pages.dedicated_servers.detail.plugins.status_off")
+                }}
+              </span>
+              <span
+                v-if="install.plugin?.map_rotation"
+                :class="[
+                  pillClasses,
+                  'border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))]',
+                ]"
+              >
                 {{ $t("pages.dedicated_servers.detail.plugins.map_rotation") }}
-              </template>
+              </span>
+            </div>
+            <p class="text-xs text-muted-foreground">
+              {{ status(install).reason }}
             </p>
           </div>
 
           <span
             v-if="modePlugins.has(install.plugin_slug)"
-            class="inline-flex shrink-0 items-center rounded border border-border/70 bg-muted/35 px-2.5 py-1 font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] text-muted-foreground"
+            :class="[
+              pillClasses,
+              'shrink-0 border-border/70 bg-muted/35 px-2.5 py-1.5 text-muted-foreground',
+            ]"
           >
+            <Lock class="h-3 w-3" />
             {{
               $t("pages.dedicated_servers.detail.plugins.from_mode", {
                 mode: gameMode?.name,
@@ -212,6 +407,7 @@ async function save() {
           <AnimatedFilters
             v-else
             square
+            class="shrink-0"
             :options="options"
             :model-value="choiceFor(install.plugin_slug)"
             @update:model-value="
@@ -222,9 +418,12 @@ async function save() {
       </ul>
       <div
         v-else
-        class="flex items-center justify-between gap-3 text-sm text-muted-foreground max-sm:flex-col max-sm:items-start"
+        class="flex flex-col items-center gap-2 px-6 py-8 text-center"
       >
-        <span>{{ $t("pages.dedicated_servers.detail.plugins.empty") }}</span>
+        <Puzzle class="h-6 w-6 text-muted-foreground/50" />
+        <p class="max-w-sm text-sm text-muted-foreground">
+          {{ $t("pages.dedicated_servers.detail.plugins.empty") }}
+        </p>
         <Button as-child variant="outline" size="sm">
           <NuxtLink to="/plugins">
             {{ $t("pages.dedicated_servers.detail.plugins.browse") }}
@@ -232,19 +431,15 @@ async function save() {
         </Button>
       </div>
 
-      <div
-        class="flex items-center justify-end gap-3 border-t border-border/60 pt-4 max-sm:flex-col max-sm:items-stretch"
-      >
-        <p class="mr-auto text-xs text-muted-foreground">
-          {{ $t("pages.dedicated_servers.detail.restart_hint") }}
-        </p>
-        <Button v-if="dirty" variant="ghost" @click="reset">
-          {{ $t("pages.dedicated_servers.detail.discard") }}
-        </Button>
-        <Button :disabled="!dirty" @click="save">
-          {{ $t("pages.dedicated_servers.detail.save_restart") }}
-        </Button>
-      </div>
+      <SettingsSaveBar
+        contained
+        :dirty="dirty"
+        :submitting="submitting"
+        :description="$t('pages.dedicated_servers.detail.restart_hint')"
+        :action-label="$t('pages.dedicated_servers.detail.save_restart')"
+        @save="save"
+        @discard="reset"
+      />
     </div>
-  </div>
+  </section>
 </template>

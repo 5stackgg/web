@@ -241,15 +241,19 @@ const titleClasses =
     </div>
   </PageTransition>
 
-  <template v-if="server && isAdmin && isCommunityServer">
-    <PageTransition v-if="server.game === 'cs2'" :delay="100" class="mt-6">
-      <ServerMapRotation :server-id="server.id" />
-    </PageTransition>
-
-    <PageTransition :delay="125" class="mt-6">
-      <ServerPlugins :server-id="server.id" />
-    </PageTransition>
-  </template>
+  <!-- csgo servers load no framework plugins, so neither card applies. -->
+  <PageTransition
+    v-if="server && isAdmin && isCommunityServer && server.game === 'cs2'"
+    :delay="100"
+    class="mt-6"
+  >
+    <div
+      class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] xl:items-start"
+    >
+      <ServerMapRotation :server-id="server.id" :enabled="server.enabled" />
+      <ServerPlugins :server-id="server.id" :enabled="server.enabled" />
+    </div>
+  </PageTransition>
 
   <PageTransition :delay="150" class="mt-6">
     <ServerPlayerManagement

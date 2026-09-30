@@ -3680,7 +3680,7 @@
           "not_detected": "Das Player-Management-Plugin hat sich von diesem Server noch nicht gemeldet, daher werden Stummschaltungen und Chatsperren noch nicht live durchgesetzt.",
           "not_detected_node": "Das Player-Management-Plugin hat sich noch nicht gemeldet. Server, die vor seiner Veröffentlichung erstellt wurden, erhalten es nach einer Neubereitstellung: Schalte den Server aus und wieder ein.",
           "not_detected_external": "Stummschaltungen, Chatsperren und Banns werden erst live durchgesetzt, wenn das 5Stack-Player-Management-Plugin auf diesem Server installiert ist.",
-          "install": "Plugin installieren",
+          "not_detected_title": "Player-Management-Plugin nicht erkannt",
           "install_steps": "Installationsschritte",
           "step_download": "Lade das Plugin für das Framework herunter, das auf deinem Server läuft.",
           "step_extract": "Entpacke die ZIP-Datei in den Ordner game/csgo des Servers.",

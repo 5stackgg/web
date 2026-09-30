@@ -3680,7 +3680,7 @@
           "not_detected": "Pluginet för spelarhantering har inte hört av sig från den här servern ännu, så tystningar och chattförbud tillämpas inte live än.",
           "not_detected_node": "Pluginet för spelarhantering har inte hört av sig ännu. Servrar som skapades innan det släpptes får det när de driftsätts om: stäng av servern och slå på den igen.",
           "not_detected_external": "Tystningar, chattförbud och avstängningar tillämpas live först när 5Stacks plugin för spelarhantering är installerat på den här servern.",
-          "install": "Installera plugin",
+          "not_detected_title": "Plugin för spelarhantering hittades inte",
           "install_steps": "Installationssteg",
           "step_download": "Ladda ner pluginet för det ramverk din server kör.",
           "step_extract": "Packa upp zip-filen i serverns game/csgo-mapp.",

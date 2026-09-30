@@ -3680,7 +3680,7 @@
           "not_detected": "Le plugin de gestion des joueurs ne s'est pas encore signalé depuis ce serveur, les mutes et bâillons ne sont donc pas encore appliqués en direct.",
           "not_detected_node": "Le plugin de gestion des joueurs ne s'est pas encore signalé. Les serveurs créés avant sa sortie le reçoivent une fois redéployés : désactivez puis réactivez le serveur.",
           "not_detected_external": "Les mutes, bâillons et bannissements ne sont appliqués en direct qu'une fois le plugin de gestion des joueurs 5Stack installé sur ce serveur.",
-          "install": "Installer le plugin",
+          "not_detected_title": "Plugin de gestion des joueurs non détecté",
           "install_steps": "Étapes d'installation",
           "step_download": "Téléchargez le plugin pour le framework utilisé par votre serveur.",
           "step_extract": "Extrayez le zip dans le dossier game/csgo du serveur.",

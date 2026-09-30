@@ -3675,8 +3675,18 @@
         "files": "Dateien",
         "player_management": "Spielerverwaltung",
         "no_players": "Aktuell keine Spieler auf diesem Server",
-        "sanctions_wip_title": "In Arbeit",
-        "sanctions_wip": "Kicks funktionieren bereits. Live-Mutes und -Gags auf öffentlichen Servern sind noch in Arbeit — ein neues öffentliches 5Stack-Server-Plugin kommt bald, danach greifen Mutes und Gags automatisch.",
+        "player_management_plugin": {
+          "active": "Player-Management-Plugin aktiv",
+          "not_detected": "Das Player-Management-Plugin hat sich von diesem Server noch nicht gemeldet, daher werden Stummschaltungen und Chatsperren noch nicht live durchgesetzt.",
+          "not_detected_node": "Das Player-Management-Plugin hat sich noch nicht gemeldet. Dieser Node lädt es automatisch, starte den Server also neu, falls das anhält.",
+          "not_detected_external": "Stummschaltungen, Chatsperren und Banns werden erst live durchgesetzt, wenn das 5Stack-Player-Management-Plugin auf diesem Server installiert ist.",
+          "install": "Plugin installieren",
+          "install_steps": "Installationsschritte",
+          "step_download": "Lade das Plugin für das Framework herunter, das auf deinem Server läuft.",
+          "step_extract": "Entpacke die ZIP-Datei in den Ordner game/csgo des Servers.",
+          "step_config": "Speichere diese Konfiguration auf dem Server unter:",
+          "step_restart": "Starte den Server neu. Das Plugin wird hier innerhalb einer Minute als aktiv angezeigt."
+        },
         "status": {
           "disconnected": "Server ist getrennt",
           "no_rcon": "Server ist verbunden, aber RCON ist nicht verfügbar",

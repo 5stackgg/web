@@ -2,9 +2,10 @@
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { useI18n } from "vue-i18n";
 import gql from "graphql-tag";
-import { RefreshCw, Users, TriangleAlert } from "lucide-vue-next";
+import { RefreshCw, Users, TriangleAlert, Download } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import {
   Tooltip,
   TooltipContent,
@@ -16,13 +17,151 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import SanctionPlayer from "~/components/SanctionPlayer.vue";
 import PlayerSanctions from "~/components/PlayerSanctions.vue";
 import KickPlayer from "~/components/KickPlayer.vue";
+import ClipBoard from "~/components/ClipBoard.vue";
+import getGraphqlClient from "~/graphql/getGraphqlClient";
+import { useAuthStore } from "~/stores/AuthStore";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+import { effectivePluginRuntime } from "~/constants/rconCommands";
+import {
+  PLAYER_MANAGEMENT_CONFIG_PATHS,
+  playerManagementConfig,
+  playerManagementDownloadUrl,
+} from "~/constants/gameServerReleases";
 
+// Only an administrator can read the node assignment and the api password, so
+// for anyone else these arrive undefined and the install steps stay hidden.
 const props = defineProps<{
   serverId: string;
+  gameServerNodeId?: string | null;
+  apiPassword?: string | null;
+  pluginRuntime?: string | null;
 }>();
 
 const { t } = useI18n();
 const nuxtApp = useNuxtApp();
+const authStore = useAuthStore();
+const applicationSettings = useApplicationSettingsStore();
+
+// The plugin syncs every 30s and the api keeps at most one heartbeat a minute.
+const PLUGIN_STALE_MS = 3 * 60 * 1000;
+
+const RUNTIME_LABELS: Record<string, string> = {
+  swiftlys2: "SwiftlyS2",
+  counterstrikesharp: "CounterStrikeSharp",
+};
+
+const pluginSubscription = gql`
+  subscription ServerPlayerManagementPlugin($serverId: uuid!) {
+    servers_by_pk(id: $serverId) {
+      id
+      type
+      game
+      is_dedicated
+      player_management_version
+      player_management_runtime
+      player_management_seen_at
+    }
+  }
+`;
+
+const pluginState = ref<{
+  type: string;
+  game: string;
+  is_dedicated: boolean;
+  player_management_version: string | null;
+  player_management_runtime: string | null;
+  player_management_seen_at: string | null;
+} | null>(null);
+const now = ref(Date.now());
+const installOpen = ref(false);
+const selectedRuntime = ref<string | null>(null);
+let pluginSub: { unsubscribe: () => void } | null = null;
+let clockTimer: ReturnType<typeof setInterval> | null = null;
+
+// A Ranked server's sanctions ride its match payload and a Practice server has
+// no public players, so only community servers need the plugin.
+const isCommunityServer = computed(() => {
+  const server = pluginState.value;
+
+  return (
+    !!server &&
+    server.is_dedicated &&
+    server.game !== "csgo" &&
+    server.type !== "Ranked" &&
+    server.type !== "Practice"
+  );
+});
+
+const pluginActive = computed(() => {
+  const seenAt = pluginState.value?.player_management_seen_at;
+
+  return !!seenAt && now.value - new Date(seenAt).getTime() < PLUGIN_STALE_MS;
+});
+
+const pluginVersionLabel = computed(() => {
+  const version = pluginState.value?.player_management_version;
+
+  return version && /^\d/.test(version) ? `v${version}` : version;
+});
+
+const canInstall = computed(
+  () => props.gameServerNodeId === null && authStore.isAdmin,
+);
+
+const notDetectedMessage = computed(() => {
+  if (props.gameServerNodeId === null) {
+    return t(
+      "pages.dedicated_servers.detail.player_management_plugin.not_detected_external",
+    );
+  }
+
+  if (props.gameServerNodeId) {
+    return t(
+      "pages.dedicated_servers.detail.player_management_plugin.not_detected_node",
+    );
+  }
+
+  return t(
+    "pages.dedicated_servers.detail.player_management_plugin.not_detected",
+  );
+});
+
+const installRuntime = computed({
+  get: () =>
+    selectedRuntime.value ??
+    effectivePluginRuntime(
+      pluginState.value?.player_management_runtime ?? props.pluginRuntime,
+      applicationSettings.gameServerPluginRuntime,
+    ),
+  set: (runtime: string) => {
+    selectedRuntime.value = runtime;
+  },
+});
+
+const downloadUrl = computed(() =>
+  playerManagementDownloadUrl(
+    installRuntime.value,
+    applicationSettings.latestPluginVersion(installRuntime.value),
+  ),
+);
+
+const downloadName = computed(() => {
+  const file = downloadUrl.value.split("/").pop() ?? "";
+
+  return file.endsWith(".zip") ? file : null;
+});
+
+const configPath = computed(
+  () => PLAYER_MANAGEMENT_CONFIG_PATHS[installRuntime.value],
+);
+
+const config = computed(() =>
+  playerManagementConfig(installRuntime.value, {
+    apiDomain: `https://${useRuntimeConfig().public.apiDomain}`,
+    serverId: props.serverId,
+    apiPassword: props.apiPassword,
+  }),
+);
 
 const loading = ref(false);
 const roster = ref<Array<{ steam_id: string; name: string }>>([]);
@@ -150,12 +289,36 @@ onMounted(() => {
   pollTimer = setInterval(() => {
     void fetchRoster();
   }, 30 * 1000);
+
+  pluginSub = getGraphqlClient()
+    .subscribe({
+      query: pluginSubscription,
+      variables: { serverId: props.serverId },
+    })
+    .subscribe({
+      next: ({ data }: any) => {
+        pluginState.value = data?.servers_by_pk ?? null;
+      },
+      error: () => {
+        pluginState.value = null;
+      },
+    });
+
+  clockTimer = setInterval(() => {
+    now.value = Date.now();
+  }, 15 * 1000);
 });
 
 onBeforeUnmount(() => {
   if (pollTimer) {
     clearInterval(pollTimer);
   }
+
+  if (clockTimer) {
+    clearInterval(clockTimer);
+  }
+
+  pluginSub?.unsubscribe();
 });
 </script>
 
@@ -186,19 +349,157 @@ onBeforeUnmount(() => {
       </TooltipProvider>
     </div>
 
-    <div
-      class="mb-4 flex items-start gap-3 rounded-md border border-yellow-500/40 bg-yellow-500/10 p-3 text-sm"
-    >
-      <TriangleAlert class="mt-0.5 h-4 w-4 shrink-0 text-yellow-500" />
-      <div>
-        <p class="font-medium text-yellow-500">
-          {{ $t("pages.dedicated_servers.detail.sanctions_wip_title") }}
-        </p>
-        <p class="text-muted-foreground">
-          {{ $t("pages.dedicated_servers.detail.sanctions_wip") }}
-        </p>
+    <template v-if="isCommunityServer">
+      <div
+        v-if="pluginActive"
+        class="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground"
+      >
+        <span class="h-2 w-2 shrink-0 rounded-full bg-green-600" />
+        <span class="text-foreground">
+          {{
+            $t("pages.dedicated_servers.detail.player_management_plugin.active")
+          }}
+        </span>
+        <span class="font-mono text-xs">
+          {{ pluginVersionLabel }}
+          <template v-if="pluginState?.player_management_runtime">
+            · {{ RUNTIME_LABELS[pluginState.player_management_runtime] }}
+          </template>
+        </span>
+        <Button
+          v-if="canInstall"
+          variant="ghost"
+          size="xs"
+          class="ml-auto"
+          @click="installOpen = !installOpen"
+        >
+          {{
+            $t(
+              "pages.dedicated_servers.detail.player_management_plugin.install_steps",
+            )
+          }}
+        </Button>
       </div>
-    </div>
+
+      <div
+        v-else
+        class="mb-4 flex items-center gap-3 rounded-md border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.08)] px-3 py-2.5 text-sm text-[hsl(var(--tac-amber))] max-sm:flex-col max-sm:items-start"
+      >
+        <TriangleAlert class="h-4 w-4 shrink-0 max-sm:hidden" />
+        <span class="flex-1">{{ notDetectedMessage }}</span>
+        <Button
+          v-if="canInstall"
+          variant="outline"
+          size="sm"
+          class="shrink-0"
+          @click="installOpen = !installOpen"
+        >
+          {{
+            $t(
+              "pages.dedicated_servers.detail.player_management_plugin.install",
+            )
+          }}
+        </Button>
+      </div>
+
+      <div v-if="canInstall && installOpen" class="mb-4 rounded-md border p-4">
+        <ol class="space-y-4">
+          <li class="flex gap-3">
+            <span
+              class="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border border-border/60 font-mono text-[0.65rem] text-muted-foreground"
+              >1</span
+            >
+            <div class="min-w-0 flex-1 space-y-3">
+              <p class="text-sm">
+                {{
+                  $t(
+                    "pages.dedicated_servers.detail.player_management_plugin.step_download",
+                  )
+                }}
+              </p>
+              <Tabs v-model="installRuntime">
+                <TabsList>
+                  <TabsTrigger value="swiftlys2">SwiftlyS2</TabsTrigger>
+                  <TabsTrigger value="counterstrikesharp">
+                    CounterStrikeSharp
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+              <Button as-child variant="outline" size="sm">
+                <a
+                  :href="downloadUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Download class="mr-2 h-4 w-4" />
+                  <span v-if="downloadName" class="font-mono text-xs">
+                    {{ downloadName }}
+                  </span>
+                  <template v-else>{{ $t("common.download") }}</template>
+                </a>
+              </Button>
+            </div>
+          </li>
+          <li class="flex gap-3">
+            <span
+              class="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border border-border/60 font-mono text-[0.65rem] text-muted-foreground"
+              >2</span
+            >
+            <p class="flex-1 text-sm">
+              {{
+                $t(
+                  "pages.dedicated_servers.detail.player_management_plugin.step_extract",
+                )
+              }}
+            </p>
+          </li>
+          <li class="flex gap-3">
+            <span
+              class="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border border-border/60 font-mono text-[0.65rem] text-muted-foreground"
+              >3</span
+            >
+            <div class="min-w-0 flex-1 space-y-2">
+              <p class="text-sm">
+                {{
+                  $t(
+                    "pages.dedicated_servers.detail.player_management_plugin.step_config",
+                  )
+                }}
+              </p>
+              <div class="flex items-center gap-2">
+                <code
+                  class="min-w-0 break-all rounded bg-secondary px-1.5 py-0.5 text-xs"
+                >
+                  {{ configPath }}
+                </code>
+                <ClipBoard :data="configPath" />
+              </div>
+              <div class="relative">
+                <pre
+                  class="overflow-x-auto rounded-md border bg-muted/40 p-3 pr-14 font-mono text-sm"
+                ><code>{{ config }}</code></pre>
+                <div class="absolute right-2 top-2">
+                  <ClipBoard :data="config" />
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="flex gap-3">
+            <span
+              class="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border border-border/60 font-mono text-[0.65rem] text-muted-foreground"
+              >4</span
+            >
+            <p class="flex-1 text-sm">
+              {{
+                $t(
+                  "pages.dedicated_servers.detail.player_management_plugin.step_restart",
+                )
+              }}
+            </p>
+          </li>
+        </ol>
+      </div>
+    </template>
 
     <div
       v-if="players.length === 0"

@@ -3675,8 +3675,18 @@
         "files": "Dosyalar",
         "player_management": "Oyuncu yönetimi",
         "no_players": "Bu sunucuda şu anda oyuncu yok",
-        "sanctions_wip_title": "Geliştirme aşamasında",
-        "sanctions_wip": "Kick işlemi bugün çalışıyor. Herkese açık sunucularda canlı sessize alma/susturma uygulaması henüz geliştirme aşamasında — yeni bir 5Stack herkese açık sunucu eklentisi yakında geliyor, yayınlandığında sessize alma/susturma otomatik olarak uygulanacak.",
+        "player_management_plugin": {
+          "active": "Oyuncu yönetimi eklentisi etkin",
+          "not_detected": "Oyuncu yönetimi eklentisi bu sunucudan henüz bildirim göndermedi, bu yüzden susturmalar ve sohbet yasakları henüz canlı uygulanmıyor.",
+          "not_detected_node": "Oyuncu yönetimi eklentisi henüz bildirim göndermedi. Bu düğüm onu otomatik yükler, bu durum sürerse sunucuyu yeniden başlatın.",
+          "not_detected_external": "Susturmalar, sohbet yasakları ve yasaklamalar ancak 5Stack oyuncu yönetimi eklentisi bu sunucuya kurulduğunda canlı uygulanır.",
+          "install": "Eklentiyi Kur",
+          "install_steps": "Kurulum Adımları",
+          "step_download": "Sunucunuzun çalıştırdığı çerçeve için eklentiyi indirin.",
+          "step_extract": "Zip dosyasını sunucunun game/csgo klasörüne çıkarın.",
+          "step_config": "Bu yapılandırmayı sunucuda şu konuma kaydedin:",
+          "step_restart": "Sunucuyu yeniden başlatın. Eklenti bir dakika içinde burada etkin olarak görünür."
+        },
         "status": {
           "disconnected": "Sunucu bağlı değil",
           "no_rcon": "Sunucu bağlı ama RCON kullanılamıyor",

@@ -3675,8 +3675,18 @@
         "files": "파일",
         "player_management": "플레이어 관리",
         "no_players": "현재 이 서버에 접속 중인 플레이어가 없습니다",
-        "sanctions_wip_title": "개발 진행 중",
-        "sanctions_wip": "킥 기능은 현재 정상 작동합니다. 퍼블릭 서버의 실시간 뮤트/각 적용은 아직 개발 중입니다. 새로운 5Stack 퍼블릭 서버 플러그인이 곧 출시되며, 출시 후에는 뮤트/각이 자동으로 적용됩니다.",
+        "player_management_plugin": {
+          "active": "플레이어 관리 플러그인 활성",
+          "not_detected": "이 서버에서 플레이어 관리 플러그인이 아직 응답하지 않아 음성 및 채팅 차단이 아직 실시간으로 적용되지 않습니다.",
+          "not_detected_node": "플레이어 관리 플러그인이 아직 응답하지 않았습니다. 이 노드는 자동으로 불러오므로 계속되면 서버를 다시 시작하세요.",
+          "not_detected_external": "음성 차단, 채팅 차단, 밴은 이 서버에 5Stack 플레이어 관리 플러그인을 설치해야 실시간으로 적용됩니다.",
+          "install": "플러그인 설치",
+          "install_steps": "설치 단계",
+          "step_download": "서버에서 사용하는 프레임워크용 플러그인을 다운로드하세요.",
+          "step_extract": "zip 파일을 서버의 game/csgo 폴더에 압축 해제하세요.",
+          "step_config": "이 설정을 서버의 다음 위치에 저장하세요:",
+          "step_restart": "서버를 다시 시작하세요. 1분 안에 여기에 활성으로 표시됩니다."
+        },
         "status": {
           "disconnected": "서버 연결이 끊겼습니다",
           "no_rcon": "서버는 연결되었지만 RCON을 사용할 수 없습니다",

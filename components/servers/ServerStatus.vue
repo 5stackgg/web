@@ -57,12 +57,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
 <script lang="ts">
 import { e_server_types_enum } from "~/generated/zeus";
 import { effectivePluginRuntime } from "~/constants/rconCommands";
-
-// both plugins release out of the one repo, so the tag carries the framework
-const PLUGIN_RELEASE_TAG_PREFIXES: Record<string, string> = {
-  counterstrikesharp: "css",
-  swiftlys2: "sw",
-};
+import { pluginReleaseUrl } from "~/constants/gameServerReleases";
 
 export default {
   props: {
@@ -79,15 +74,13 @@ export default {
       return useApplicationSettingsStore().gameServerPluginRuntime;
     },
     pluginReleaseLink() {
-      const prefix =
-        PLUGIN_RELEASE_TAG_PREFIXES[
-          effectivePluginRuntime(
-            this.server.plugin_runtime,
-            this.gameServerPluginRuntime,
-          )
-        ];
-
-      return `https://github.com/5stackgg/game-server/releases/tag/${prefix}-v${this.currentPluginVersion}`;
+      return pluginReleaseUrl(
+        effectivePluginRuntime(
+          this.server.plugin_runtime,
+          this.gameServerPluginRuntime,
+        ),
+        this.currentPluginVersion,
+      );
     },
     pluginVersionMismatch() {
       if (this.server.type !== e_server_types_enum.Ranked) {

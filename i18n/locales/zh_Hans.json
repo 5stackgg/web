@@ -3675,8 +3675,18 @@
         "files": "文件",
         "player_management": "玩家管理",
         "no_players": "此服务器上当前无玩家",
-        "sanctions_wip_title": "功能开发中",
-        "sanctions_wip": "踢出功能现已可用。公共服务器上的实时静音/禁言执行正在开发中——新的 5Stack 公共服务器插件即将推出，上线后静音/禁言将自动应用。",
+        "player_management_plugin": {
+          "active": "玩家管理插件运行中",
+          "not_detected": "玩家管理插件尚未从此服务器报到，因此禁麦和禁言暂时无法实时生效。",
+          "not_detected_node": "玩家管理插件尚未报到。此节点会自动加载它，如果持续如此，请重启服务器。",
+          "not_detected_external": "只有在此服务器上安装 5Stack 玩家管理插件后，禁麦、禁言和封禁才会实时生效。",
+          "install": "安装插件",
+          "install_steps": "安装步骤",
+          "step_download": "下载与服务器所用框架对应的插件。",
+          "step_extract": "将 zip 解压到服务器的 game/csgo 文件夹。",
+          "step_config": "将此配置保存到服务器上的以下位置：",
+          "step_restart": "重启服务器。插件会在一分钟内在此显示为运行中。"
+        },
         "status": {
           "disconnected": "服务器已断开",
           "no_rcon": "服务器已连接但 RCON 不可用",

@@ -3675,8 +3675,18 @@
         "files": "Archivos",
         "player_management": "Gestión de jugadores",
         "no_players": "Ahora mismo no hay jugadores en este servidor",
-        "sanctions_wip_title": "En desarrollo",
-        "sanctions_wip": "Los kicks ya funcionan. El silenciado y el gag en directo en servidores públicos siguen en desarrollo: pronto llegará un nuevo plugin público de 5Stack y, en cuanto salga, los mutes y gags se aplicarán automáticamente.",
+        "player_management_plugin": {
+          "active": "Plugin de gestión de jugadores activo",
+          "not_detected": "El plugin de gestión de jugadores aún no se ha comunicado desde este servidor, así que los muteos y silencios todavía no se aplican en directo.",
+          "not_detected_node": "El plugin de gestión de jugadores aún no se ha comunicado. Este nodo lo carga automáticamente, así que reinicia el servidor si esto continúa.",
+          "not_detected_external": "Los muteos, silencios y baneos solo se aplican en directo cuando el plugin de gestión de jugadores de 5Stack está instalado en este servidor.",
+          "install": "Instalar plugin",
+          "install_steps": "Pasos de instalación",
+          "step_download": "Descarga el plugin para el framework que usa tu servidor.",
+          "step_extract": "Extrae el zip en la carpeta game/csgo del servidor.",
+          "step_config": "Guarda esta configuración en el servidor en:",
+          "step_restart": "Reinicia el servidor. El plugin aparecerá aquí como activo en menos de un minuto."
+        },
         "status": {
           "disconnected": "El servidor está desconectado",
           "no_rcon": "El servidor está conectado, pero RCON no está disponible",

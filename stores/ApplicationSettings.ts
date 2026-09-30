@@ -93,6 +93,15 @@ export const useApplicationSettingsStore = defineStore(
       );
     });
 
+    // Newest first, so the first match is the latest release of a runtime.
+    const latestPluginVersion = (runtime: string): string | null => {
+      return (
+        pluginVersions.value.find((pluginVersion) => {
+          return pluginVersion.runtime === runtime;
+        })?.version ?? null
+      );
+    };
+
     const subscribeToPluginVersion = async () => {
       const { subscribe } = useSubscriptionManager();
       const authStore = useAuthStore();
@@ -732,6 +741,7 @@ export const useApplicationSettingsStore = defineStore(
       defaultBroadcastHud,
       canCreateMatch,
       currentPluginVersion,
+      latestPluginVersion,
       gameServerPluginRuntime,
       settingsLoaded,
       brandName,

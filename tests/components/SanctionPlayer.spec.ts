@@ -6,6 +6,13 @@ import SanctionPlayer from "~/components/SanctionPlayer.vue";
 
 const PLAYER = "76561198000000001";
 
+const { toast } = vi.hoisted(() => ({ toast: vi.fn() }));
+
+vi.mock("@/components/ui/toast", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/components/ui/toast")>()),
+  toast,
+}));
+
 let mutate: ReturnType<typeof vi.fn>;
 let unmount: (() => void) | null = null;
 
@@ -15,14 +22,20 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-async function openDrawer(type: string, serverId?: string) {
+async function openDrawer(
+  type: string,
+  serverId?: string,
+  result: { enforced: boolean; message: string } = {
+    enforced: false,
+    message: "warning saved",
+  },
+) {
   const client = (useNuxtApp() as any).$apollo.defaultClient;
   mutate = vi.fn().mockResolvedValue({
     data: {
       sanctionServerPlayer: {
         id: "sanction-1",
-        enforced: false,
-        message: "warning saved",
+        ...result,
       },
     },
   });
@@ -158,5 +171,52 @@ describe("SanctionPlayer warnings", () => {
       reason: "Toxic comms",
       duration: 0,
     });
+  });
+});
+
+describe("SanctionPlayer on a server", () => {
+  afterEach(() => {
+    toast.mockReset();
+  });
+
+  it("tells the moderator why the server could not enforce it live", async () => {
+    const wrapper = await openDrawer("mute", "server-1", {
+      enforced: false,
+      message:
+        "sanction saved; the Player Management plugin is not installed on this server",
+    });
+
+    await submit(wrapper);
+
+    expect(toast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        description:
+          "sanction saved; the Player Management plugin is not installed on this server",
+      }),
+    );
+  });
+
+  it("keeps the toast plain once the server has applied it", async () => {
+    const wrapper = await openDrawer("gag", "server-1", {
+      enforced: true,
+      message: "sanction saved and synced to server",
+    });
+
+    await submit(wrapper);
+
+    expect(toast).toHaveBeenCalledWith(
+      expect.objectContaining({ description: undefined }),
+    );
+  });
+
+  it("never repeats a warning's save message, which no server enforces", async () => {
+    const wrapper = await openDrawer("warning", "server-1");
+
+    await typeReason("Griefing");
+    await submit(wrapper);
+
+    expect(toast).toHaveBeenCalledWith(
+      expect.objectContaining({ description: undefined }),
+    );
   });
 });

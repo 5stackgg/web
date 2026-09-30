@@ -120,13 +120,6 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
         <p v-if="isWarning" class="text-sm text-muted-foreground">
           {{ $t("player.sanction.warning_note") }}
         </p>
-        <div
-          v-else-if="serverId && sanctionType && sanctionType !== 'ban'"
-          class="flex gap-2 items-start text-sm text-[hsl(var(--tac-amber))]"
-        >
-          <TriangleAlert class="mt-0.5 h-4 w-4 shrink-0" />
-          {{ $t("pages.dedicated_servers.detail.sanctions_wip") }}
-        </div>
 
         <Separator class="my-2" />
       </DrawerHeader>
@@ -329,7 +322,7 @@ export default {
 
       this.submitting = true;
       try {
-        await this.$apollo.mutate({
+        const { data } = await this.$apollo.mutate({
           mutation: gql`
             mutation SanctionServerPlayer(
               $serverId: String
@@ -363,10 +356,18 @@ export default {
           },
         });
 
+        const result = data?.sanctionServerPlayer;
+
+        // Saved either way; the message says why it could not reach the
+        // server live, e.g. a community server without the plugin.
         toast({
           title: this.$t(`player.sanction.applied.${this.sanctionType}`, {
             name: this.player.name,
           }),
+          description:
+            this.serverId && !this.isWarning && result && !result.enforced
+              ? result.message
+              : undefined,
         });
 
         this.sanctioningPlayer = false;

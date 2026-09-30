@@ -1016,7 +1016,7 @@ export default {
       this.removingSanction = true;
 
       try {
-        await (this as any).$apollo.mutate({
+        const { data } = await (this as any).$apollo.mutate({
           mutation: gql`
             mutation UnsanctionServerPlayer(
               $serverId: String
@@ -1043,8 +1043,17 @@ export default {
           },
         });
 
+        const result = data?.unsanctionServerPlayer;
+
         toast({
           title: this.$t("player.sanctions.removed"),
+          description:
+            this.serverId &&
+            this.sanctionToDelete.type !== "warning" &&
+            result &&
+            !result.enforced
+              ? result.message
+              : undefined,
         });
 
         this.sanctionToDelete = null;

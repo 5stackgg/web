@@ -3675,8 +3675,18 @@
         "files": "Filer",
         "player_management": "Spillerstyring",
         "no_players": "Ingen spillere på denne server lige nu",
-        "sanctions_wip_title": "Under udvikling",
-        "sanctions_wip": "Kick virker allerede. Live mute/gag på offentlige servere er stadig under udvikling — et nyt offentligt 5Stack-serverplugin er på vej, og mutes/gags håndhæves automatisk, når det udkommer.",
+        "player_management_plugin": {
+          "active": "Player Management-plugin aktivt",
+          "not_detected": "Player Management-pluginet har ikke meldt sig fra denne server, så mutes og gags håndhæves ikke live endnu.",
+          "not_detected_node": "Player Management-pluginet har ikke meldt sig. Denne node indlæser det automatisk, så genstart serveren, hvis det fortsætter.",
+          "not_detected_external": "Mutes, gags og bans håndhæves først live, når 5Stack Player Management-pluginet er installeret på denne server.",
+          "install": "Installer plugin",
+          "install_steps": "Installationstrin",
+          "step_download": "Download pluginet til det framework, din server kører.",
+          "step_extract": "Pak zip-filen ud i serverens game/csgo-mappe.",
+          "step_config": "Gem denne konfiguration på serveren her:",
+          "step_restart": "Genstart serveren. Pluginet vises som aktivt her inden for et minut."
+        },
         "status": {
           "disconnected": "Serveren er afbrudt",
           "no_rcon": "Serveren er forbundet, men RCON er ikke tilgængelig",

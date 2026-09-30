@@ -3751,6 +3751,29 @@
           "browse": "外掛目錄",
           "saved": "外掛已儲存，伺服器正在重新啟動。",
           "saved_disabled": "外掛已儲存，將在伺服器啟用後生效。"
+        },
+        "access": {
+          "title": "存取權限",
+          "description": "選擇誰可以連線。受限伺服器對其他所有人隱藏，Player Management 外掛會在連線時拒絕他們。",
+          "open": "開放",
+          "restricted": "受限",
+          "open_hint": "任何人都可以找到並加入此伺服器。",
+          "plugin_missing": "Player Management 外掛在過去 3 分鐘內沒有從此伺服器回報，因此目前還沒有阻擋任何人。",
+          "staff": "版主及以上角色一律可以加入。",
+          "min_role": "最低角色",
+          "no_role": "無角色規則",
+          "role_and_up": "{role} 及以上",
+          "players": "玩家",
+          "add_player": "新增玩家",
+          "already_added": "已在清單中",
+          "events": "活動",
+          "add_event": "新增活動",
+          "events_hint": "活動成員只能在活動進行期間加入。",
+          "no_events": "找不到活動",
+          "remove": "移除",
+          "save": "儲存",
+          "save_hint": "幾秒內生效。不被允許的玩家會被移出。",
+          "saved": "存取權限已儲存，伺服器將在幾秒內套用。"
         }
       }
     },

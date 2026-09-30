@@ -3751,6 +3751,29 @@
           "browse": "Répertoire des plugins",
           "saved": "Plugins enregistrés. Le serveur redémarre.",
           "saved_disabled": "Plugins enregistrés. Ils s'appliqueront quand le serveur sera activé."
+        },
+        "access": {
+          "title": "Accès",
+          "description": "Choisissez qui peut se connecter. Un serveur restreint est masqué pour tous les autres, et le plugin Player Management les refuse à la connexion.",
+          "open": "Ouvert",
+          "restricted": "Restreint",
+          "open_hint": "Tout le monde peut trouver ce serveur et le rejoindre.",
+          "plugin_missing": "Le plugin Player Management ne s'est pas manifesté depuis ce serveur ces 3 dernières minutes, personne n'est donc encore tenu à l'écart.",
+          "staff": "Les modérateurs et au-dessus peuvent toujours rejoindre.",
+          "min_role": "Rôle minimum",
+          "no_role": "Aucune règle de rôle",
+          "role_and_up": "{role} et au-dessus",
+          "players": "Joueurs",
+          "add_player": "Ajouter un joueur",
+          "already_added": "Déjà dans la liste",
+          "events": "Événements",
+          "add_event": "Ajouter un événement",
+          "events_hint": "Les membres d'un événement ne peuvent rejoindre que pendant l'événement.",
+          "no_events": "Aucun événement trouvé",
+          "remove": "Retirer",
+          "save": "Enregistrer",
+          "save_hint": "S'applique en quelques secondes. Les joueurs non autorisés sont retirés.",
+          "saved": "Accès enregistré. Le serveur l'applique en quelques secondes."
         }
       }
     },

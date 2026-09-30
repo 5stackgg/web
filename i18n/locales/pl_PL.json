@@ -3751,6 +3751,29 @@
           "browse": "Katalog pluginów",
           "saved": "Zapisano pluginy. Serwer uruchamia się ponownie.",
           "saved_disabled": "Zapisano pluginy. Zadziałają po włączeniu serwera."
+        },
+        "access": {
+          "title": "Dostęp",
+          "description": "Wybierz, kto może się łączyć. Serwer z ograniczonym dostępem jest ukryty dla wszystkich innych, a plugin Player Management odrzuca ich przy łączeniu.",
+          "open": "Otwarty",
+          "restricted": "Ograniczony",
+          "open_hint": "Każdy może znaleźć ten serwer i dołączyć.",
+          "plugin_missing": "Plugin Player Management nie odezwał się z tego serwera przez ostatnie 3 minuty, więc nikt nie jest jeszcze blokowany.",
+          "staff": "Moderatorzy i wyżej mogą zawsze dołączyć.",
+          "min_role": "Minimalna rola",
+          "no_role": "Brak reguły roli",
+          "role_and_up": "{role} i wyżej",
+          "players": "Gracze",
+          "add_player": "Dodaj gracza",
+          "already_added": "Już na liście",
+          "events": "Wydarzenia",
+          "add_event": "Dodaj wydarzenie",
+          "events_hint": "Członkowie wydarzenia mogą dołączyć tylko w trakcie wydarzenia.",
+          "no_events": "Nie znaleziono wydarzeń",
+          "remove": "Usuń",
+          "save": "Zapisz",
+          "save_hint": "Działa w ciągu kilku sekund. Gracze bez dostępu są usuwani.",
+          "saved": "Zapisano dostęp. Serwer zastosuje go w ciągu kilku sekund."
         }
       }
     },

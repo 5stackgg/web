@@ -3751,6 +3751,29 @@
           "browse": "插件目录",
           "saved": "插件已保存，服务器正在重启。",
           "saved_disabled": "插件已保存，将在服务器启用后生效。"
+        },
+        "access": {
+          "title": "访问权限",
+          "description": "选择谁可以连接。受限服务器对其他所有人隐藏，Player Management 插件会在连接时拒绝他们。",
+          "open": "开放",
+          "restricted": "受限",
+          "open_hint": "任何人都可以找到并加入此服务器。",
+          "plugin_missing": "Player Management 插件在过去 3 分钟内没有从此服务器报到，因此目前还没有阻止任何人。",
+          "staff": "版主及以上角色始终可以加入。",
+          "min_role": "最低角色",
+          "no_role": "无角色规则",
+          "role_and_up": "{role} 及以上",
+          "players": "玩家",
+          "add_player": "添加玩家",
+          "already_added": "已在列表中",
+          "events": "活动",
+          "add_event": "添加活动",
+          "events_hint": "活动成员只能在活动进行期间加入。",
+          "no_events": "未找到活动",
+          "remove": "移除",
+          "save": "保存",
+          "save_hint": "几秒内生效。不被允许的玩家会被移出。",
+          "saved": "访问权限已保存，服务器将在几秒内应用。"
         }
       }
     },

@@ -3751,6 +3751,29 @@
           "browse": "Pluginkatalog",
           "saved": "Plugins sparade. Servern startas om.",
           "saved_disabled": "Plugins sparade. De gäller när servern är aktiverad."
+        },
+        "access": {
+          "title": "Åtkomst",
+          "description": "Välj vem som får ansluta. En begränsad server döljs för alla andra, och Player Management-pluginet nekar dem vid anslutning.",
+          "open": "Öppen",
+          "restricted": "Begränsad",
+          "open_hint": "Vem som helst kan hitta och gå med på den här servern.",
+          "plugin_missing": "Player Management-pluginet har inte hört av sig från den här servern de senaste 3 minuterna, så ingen hålls ute ännu.",
+          "staff": "Moderatorer och uppåt kan alltid gå med.",
+          "min_role": "Lägsta roll",
+          "no_role": "Ingen rollregel",
+          "role_and_up": "{role} och uppåt",
+          "players": "Spelare",
+          "add_player": "Lägg till en spelare",
+          "already_added": "Redan på listan",
+          "events": "Evenemang",
+          "add_event": "Lägg till ett evenemang",
+          "events_hint": "Evenemangsmedlemmar kan bara gå med medan evenemanget pågår.",
+          "no_events": "Inga evenemang hittades",
+          "remove": "Ta bort",
+          "save": "Spara",
+          "save_hint": "Gäller inom några sekunder. Spelare utan åtkomst tas bort.",
+          "saved": "Åtkomst sparad. Servern tillämpar den inom några sekunder."
         }
       }
     },

@@ -3751,6 +3751,29 @@
           "browse": "Plugin Directory",
           "saved": "Plugins saved. The server is restarting.",
           "saved_disabled": "Plugins saved. They apply when the server is enabled."
+        },
+        "access": {
+          "title": "Access",
+          "description": "Choose who can connect. A restricted server is hidden from everyone else, and the Player Management plugin refuses them at connect.",
+          "open": "Open",
+          "restricted": "Restricted",
+          "open_hint": "Anyone can find and join this server.",
+          "plugin_missing": "The Player Management plugin hasn't checked in from this server in the last 3 minutes, so nobody is kept out yet.",
+          "staff": "Moderators and above can always join.",
+          "min_role": "Minimum Role",
+          "no_role": "No role rule",
+          "role_and_up": "{role} and above",
+          "players": "Players",
+          "add_player": "Add a player",
+          "already_added": "Already on the list",
+          "events": "Events",
+          "add_event": "Add an event",
+          "events_hint": "Event members can join only while the event is live.",
+          "no_events": "No events found",
+          "remove": "Remove",
+          "save": "Save",
+          "save_hint": "Applies within seconds. Players who aren't allowed are removed.",
+          "saved": "Access saved. The server applies it within seconds."
         }
       }
     },

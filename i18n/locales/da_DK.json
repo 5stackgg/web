@@ -3751,6 +3751,29 @@
           "browse": "Plugin-oversigt",
           "saved": "Plugins gemt. Serveren genstarter.",
           "saved_disabled": "Plugins gemt. De gælder, når serveren er slået til."
+        },
+        "access": {
+          "title": "Adgang",
+          "description": "Vælg hvem der kan forbinde. En begrænset server er skjult for alle andre, og Player Management-pluginnet afviser dem ved forbindelse.",
+          "open": "Åben",
+          "restricted": "Begrænset",
+          "open_hint": "Alle kan finde og joine denne server.",
+          "plugin_missing": "Player Management-pluginnet har ikke meldt sig fra denne server de sidste 3 minutter, så ingen holdes ude endnu.",
+          "staff": "Moderatorer og derover kan altid joine.",
+          "min_role": "Minimumsrolle",
+          "no_role": "Ingen rolleregel",
+          "role_and_up": "{role} og derover",
+          "players": "Spillere",
+          "add_player": "Tilføj en spiller",
+          "already_added": "Allerede på listen",
+          "events": "Events",
+          "add_event": "Tilføj et event",
+          "events_hint": "Eventmedlemmer kan kun joine, mens eventet er i gang.",
+          "no_events": "Ingen events fundet",
+          "remove": "Fjern",
+          "save": "Gem",
+          "save_hint": "Træder i kraft inden for sekunder. Spillere uden adgang fjernes.",
+          "saved": "Adgang gemt. Serveren anvender den inden for sekunder."
         }
       }
     },

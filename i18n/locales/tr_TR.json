@@ -3751,6 +3751,29 @@
           "browse": "Eklenti Dizini",
           "saved": "Eklentiler kaydedildi. Sunucu yeniden başlatılıyor.",
           "saved_disabled": "Eklentiler kaydedildi. Sunucu etkinleştirildiğinde uygulanır."
+        },
+        "access": {
+          "title": "Erişim",
+          "description": "Kimlerin bağlanabileceğini seç. Kısıtlı bir sunucu diğer herkesten gizlenir ve Player Management eklentisi onları bağlanırken reddeder.",
+          "open": "Açık",
+          "restricted": "Kısıtlı",
+          "open_hint": "Herkes bu sunucuyu bulup katılabilir.",
+          "plugin_missing": "Player Management eklentisi son 3 dakikadır bu sunucudan haber vermedi, bu yüzden henüz kimse dışarıda tutulmuyor.",
+          "staff": "Moderatörler ve üstü her zaman katılabilir.",
+          "min_role": "En Düşük Rol",
+          "no_role": "Rol kuralı yok",
+          "role_and_up": "{role} ve üstü",
+          "players": "Oyuncular",
+          "add_player": "Oyuncu ekle",
+          "already_added": "Zaten listede",
+          "events": "Etkinlikler",
+          "add_event": "Etkinlik ekle",
+          "events_hint": "Etkinlik üyeleri yalnızca etkinlik sürerken katılabilir.",
+          "no_events": "Etkinlik bulunamadı",
+          "remove": "Kaldır",
+          "save": "Kaydet",
+          "save_hint": "Saniyeler içinde uygulanır. İzni olmayan oyuncular çıkarılır.",
+          "saved": "Erişim kaydedildi. Sunucu bunu saniyeler içinde uygular."
         }
       }
     },

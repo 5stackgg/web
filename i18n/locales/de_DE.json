@@ -3751,6 +3751,29 @@
           "browse": "Plugin-Verzeichnis",
           "saved": "Plugins gespeichert. Der Server startet neu.",
           "saved_disabled": "Plugins gespeichert. Sie gelten, sobald der Server aktiviert ist."
+        },
+        "access": {
+          "title": "Zugang",
+          "description": "Lege fest, wer sich verbinden darf. Ein eingeschränkter Server ist für alle anderen ausgeblendet, und das Player-Management-Plugin weist sie beim Verbinden ab.",
+          "open": "Offen",
+          "restricted": "Eingeschränkt",
+          "open_hint": "Jeder kann diesen Server finden und beitreten.",
+          "plugin_missing": "Das Player-Management-Plugin hat sich in den letzten 3 Minuten nicht von diesem Server gemeldet, daher wird noch niemand ferngehalten.",
+          "staff": "Moderatoren und höher können immer beitreten.",
+          "min_role": "Mindestrolle",
+          "no_role": "Keine Rollenregel",
+          "role_and_up": "{role} und höher",
+          "players": "Spieler",
+          "add_player": "Spieler hinzufügen",
+          "already_added": "Bereits auf der Liste",
+          "events": "Events",
+          "add_event": "Event hinzufügen",
+          "events_hint": "Event-Mitglieder können nur beitreten, solange das Event läuft.",
+          "no_events": "Keine Events gefunden",
+          "remove": "Entfernen",
+          "save": "Speichern",
+          "save_hint": "Gilt innerhalb von Sekunden. Nicht zugelassene Spieler werden entfernt.",
+          "saved": "Zugang gespeichert. Der Server übernimmt ihn innerhalb von Sekunden."
         }
       }
     },

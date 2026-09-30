@@ -80,6 +80,10 @@ const { result, refetch } = useQuery(
   { fetchPolicy: "cache-and-network" },
 );
 
+const installs = computed<Array<Install>>(
+  () => (result.value as any)?.game_plugin_installs ?? [],
+);
+
 const choices = ref<Record<string, Choice>>({});
 const saved = ref<Record<string, Choice>>({});
 const revision = ref(0);
@@ -119,10 +123,6 @@ watch(
     }
   },
   { immediate: true },
-);
-
-const installs = computed<Array<Install>>(
-  () => (result.value as any)?.game_plugin_installs ?? [],
 );
 
 const gameMode = computed(

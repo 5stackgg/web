@@ -3677,10 +3677,11 @@
         "no_players": "此服务器上当前无玩家",
         "player_management_plugin": {
           "active": "玩家管理插件运行中",
+          "last_check_in": "最后响应",
           "not_detected": "玩家管理插件尚未从此服务器报到，因此禁麦和禁言暂时无法实时生效。",
           "not_detected_node": "玩家管理插件尚未报到。在它发布前创建的服务器需要重新部署才能获得它：请先停用服务器再重新启用。",
           "not_detected_external": "只有在此服务器上安装 5Stack 玩家管理插件后，禁麦、禁言和封禁才会实时生效。",
-          "install": "安装插件",
+          "not_detected_title": "未检测到玩家管理插件",
           "install_steps": "安装步骤",
           "step_download": "下载与服务器所用框架对应的插件。",
           "step_extract": "将 zip 解压到服务器的 game/csgo 文件夹。",

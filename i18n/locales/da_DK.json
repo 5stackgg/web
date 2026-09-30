@@ -3677,10 +3677,11 @@
         "no_players": "Ingen spillere på denne server lige nu",
         "player_management_plugin": {
           "active": "Player Management-plugin aktivt",
+          "last_check_in": "Seneste kontakt",
           "not_detected": "Player Management-pluginet har ikke meldt sig fra denne server, så mutes og gags håndhæves ikke live endnu.",
           "not_detected_node": "Player Management-pluginet har ikke meldt sig. Servere oprettet før det kom, får det, når de udrulles igen: slå serveren fra og til igen.",
           "not_detected_external": "Mutes, gags og bans håndhæves først live, når 5Stack Player Management-pluginet er installeret på denne server.",
-          "install": "Installer plugin",
+          "not_detected_title": "Player Management-plugin ikke fundet",
           "install_steps": "Installationstrin",
           "step_download": "Download pluginet til det framework, din server kører.",
           "step_extract": "Pak zip-filen ud i serverens game/csgo-mappe.",

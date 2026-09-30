@@ -3677,10 +3677,11 @@
         "no_players": "Nenhum jogador atualmente neste servidor",
         "player_management_plugin": {
           "active": "Plugin de gerenciamento de jogadores ativo",
+          "last_check_in": "Último contato",
           "not_detected": "O plugin de gerenciamento de jogadores ainda não se comunicou a partir deste servidor, então mutes e silenciamentos ainda não são aplicados ao vivo.",
           "not_detected_node": "O plugin de gerenciamento de jogadores ainda não se comunicou. Servidores criados antes do lançamento o recebem ao serem reimplantados: desative o servidor e ative-o novamente.",
           "not_detected_external": "Mutes, silenciamentos e banimentos só são aplicados ao vivo depois que o plugin de gerenciamento de jogadores da 5Stack é instalado neste servidor.",
-          "install": "Instalar plugin",
+          "not_detected_title": "Plugin de gerenciamento de jogadores não detectado",
           "install_steps": "Passos de instalação",
           "step_download": "Baixe o plugin para o framework que seu servidor usa.",
           "step_extract": "Extraia o zip na pasta game/csgo do servidor.",

@@ -262,6 +262,7 @@ const titleClasses =
       :game-server-node-id="server.game_server_node_id"
       :api-password="apiPassword"
       :plugin-runtime="server.plugin_runtime"
+      :online="rconOnline"
     />
   </PageTransition>
 

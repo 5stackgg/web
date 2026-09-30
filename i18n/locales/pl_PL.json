@@ -3677,10 +3677,11 @@
         "no_players": "Obecnie brak graczy na tym serwerze",
         "player_management_plugin": {
           "active": "Wtyczka zarządzania graczami aktywna",
+          "last_check_in": "Ostatni kontakt",
           "not_detected": "Wtyczka zarządzania graczami nie zgłosiła się jeszcze z tego serwera, więc wyciszenia i blokady czatu nie są jeszcze egzekwowane na żywo.",
           "not_detected_node": "Wtyczka zarządzania graczami jeszcze się nie zgłosiła. Serwery utworzone przed jej wydaniem otrzymają ją po ponownym wdrożeniu: wyłącz serwer i włącz go ponownie.",
           "not_detected_external": "Wyciszenia, blokady czatu i bany są egzekwowane na żywo dopiero po zainstalowaniu wtyczki zarządzania graczami 5Stack na tym serwerze.",
-          "install": "Zainstaluj wtyczkę",
+          "not_detected_title": "Nie wykryto wtyczki zarządzania graczami",
           "install_steps": "Kroki instalacji",
           "step_download": "Pobierz wtyczkę dla frameworka, na którym działa twój serwer.",
           "step_extract": "Rozpakuj plik zip do folderu game/csgo serwera.",

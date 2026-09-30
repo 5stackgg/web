@@ -32,6 +32,9 @@ export const AllTypesProps: Record<string,any> = {
 	ScheduledLineupInput:{
 
 	},
+	ServerPluginInput:{
+
+	},
 	String_array_comparison_exp:{
 
 	},
@@ -7210,6 +7213,10 @@ export const AllTypesProps: Record<string,any> = {
 		plugin:"game_plugins_obj_rel_insert_input",
 		updated_at:"timestamptz"
 	},
+	game_plugin_installs_obj_rel_insert_input:{
+		data:"game_plugin_installs_insert_input",
+		on_conflict:"game_plugin_installs_on_conflict"
+	},
 	game_plugin_installs_on_conflict:{
 		constraint:"game_plugin_installs_constraint",
 		update_columns:"game_plugin_installs_update_column",
@@ -7419,6 +7426,9 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"game_mode_plugins_order_by",
 			where:"game_mode_plugins_bool_exp"
 		},
+		map_rotation:{
+
+		},
 		node_installs:{
 			distinct_on:"game_server_node_plugins_select_column",
 			order_by:"game_server_node_plugins_order_by",
@@ -7453,6 +7463,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	game_plugins_append_input:{
 		config_schema:"jsonb",
+		map_rotation:"jsonb",
 		panel:"jsonb",
 		wiring:"jsonb"
 	},
@@ -7472,6 +7483,7 @@ export const AllTypesProps: Record<string,any> = {
 		install_state:"String_comparison_exp",
 		installed_node_count:"Int_comparison_exp",
 		kind:"e_game_plugin_kinds_enum_comparison_exp",
+		map_rotation:"jsonb_comparison_exp",
 		name:"String_comparison_exp",
 		node_installs:"game_server_node_plugins_bool_exp",
 		node_installs_aggregate:"game_server_node_plugins_aggregate_bool_exp",
@@ -7503,6 +7515,7 @@ export const AllTypesProps: Record<string,any> = {
 		config_schema:"jsonb",
 		game_modes:"game_mode_plugins_arr_rel_insert_input",
 		kind:"e_game_plugin_kinds_enum",
+		map_rotation:"jsonb",
 		node_installs:"game_server_node_plugins_arr_rel_insert_input",
 		panel:"jsonb",
 		synced_at:"timestamptz",
@@ -7530,6 +7543,7 @@ export const AllTypesProps: Record<string,any> = {
 		install_state:"order_by",
 		installed_node_count:"order_by",
 		kind:"order_by",
+		map_rotation:"order_by",
 		name:"order_by",
 		node_installs_aggregate:"game_server_node_plugins_aggregate_order_by",
 		pairs_with:"order_by",
@@ -7550,6 +7564,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	game_plugins_prepend_input:{
 		config_schema:"jsonb",
+		map_rotation:"jsonb",
 		panel:"jsonb",
 		wiring:"jsonb"
 	},
@@ -7557,6 +7572,7 @@ export const AllTypesProps: Record<string,any> = {
 	game_plugins_set_input:{
 		config_schema:"jsonb",
 		kind:"e_game_plugin_kinds_enum",
+		map_rotation:"jsonb",
 		panel:"jsonb",
 		synced_at:"timestamptz",
 		wiring:"jsonb"
@@ -7568,6 +7584,7 @@ export const AllTypesProps: Record<string,any> = {
 	game_plugins_stream_cursor_value_input:{
 		config_schema:"jsonb",
 		kind:"e_game_plugin_kinds_enum",
+		map_rotation:"jsonb",
 		panel:"jsonb",
 		synced_at:"timestamptz",
 		wiring:"jsonb"
@@ -15276,6 +15293,19 @@ export const AllTypesProps: Record<string,any> = {
 		delete_seasons_by_pk:{
 			id:"uuid"
 		},
+		delete_server_map_rotation:{
+			where:"server_map_rotation_bool_exp"
+		},
+		delete_server_map_rotation_by_pk:{
+			map_id:"uuid",
+			server_id:"uuid"
+		},
+		delete_server_plugins:{
+			where:"server_plugins_bool_exp"
+		},
+		delete_server_plugins_by_pk:{
+			server_id:"uuid"
+		},
 		delete_server_regions:{
 			where:"server_regions_bool_exp"
 		},
@@ -15646,6 +15676,9 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		importUtilityLineups:{
 			payload:"jsonb"
+		},
+		importWorkshopCollection:{
+
 		},
 		insert__map_pool:{
 			objects:"_map_pool_insert_input",
@@ -16895,6 +16928,22 @@ export const AllTypesProps: Record<string,any> = {
 			object:"seasons_insert_input",
 			on_conflict:"seasons_on_conflict"
 		},
+		insert_server_map_rotation:{
+			objects:"server_map_rotation_insert_input",
+			on_conflict:"server_map_rotation_on_conflict"
+		},
+		insert_server_map_rotation_one:{
+			object:"server_map_rotation_insert_input",
+			on_conflict:"server_map_rotation_on_conflict"
+		},
+		insert_server_plugins:{
+			objects:"server_plugins_insert_input",
+			on_conflict:"server_plugins_on_conflict"
+		},
+		insert_server_plugins_one:{
+			object:"server_plugins_insert_input",
+			on_conflict:"server_plugins_on_conflict"
+		},
 		insert_server_regions:{
 			objects:"server_regions_insert_input",
 			on_conflict:"server_regions_on_conflict"
@@ -17563,6 +17612,14 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		setNewsPostStatus:{
 			id:"uuid"
+		},
+		setServerMapRotation:{
+			map_ids:"uuid",
+			server_id:"uuid"
+		},
+		setServerPlugins:{
+			plugins:"ServerPluginInput",
+			server_id:"uuid"
 		},
 		setTournamentAward:{
 			award_id:"uuid",
@@ -19694,6 +19751,30 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_seasons_many:{
 			updates:"seasons_updates"
+		},
+		update_server_map_rotation:{
+			_inc:"server_map_rotation_inc_input",
+			_set:"server_map_rotation_set_input",
+			where:"server_map_rotation_bool_exp"
+		},
+		update_server_map_rotation_by_pk:{
+			_inc:"server_map_rotation_inc_input",
+			_set:"server_map_rotation_set_input",
+			pk_columns:"server_map_rotation_pk_columns_input"
+		},
+		update_server_map_rotation_many:{
+			updates:"server_map_rotation_updates"
+		},
+		update_server_plugins:{
+			_set:"server_plugins_set_input",
+			where:"server_plugins_bool_exp"
+		},
+		update_server_plugins_by_pk:{
+			_set:"server_plugins_set_input",
+			pk_columns:"server_plugins_pk_columns_input"
+		},
+		update_server_plugins_many:{
+			updates:"server_plugins_updates"
 		},
 		update_server_regions:{
 			_set:"server_regions_set_input",
@@ -29835,6 +29916,33 @@ export const AllTypesProps: Record<string,any> = {
 		seasons_by_pk:{
 			id:"uuid"
 		},
+		server_map_rotation:{
+			distinct_on:"server_map_rotation_select_column",
+			order_by:"server_map_rotation_order_by",
+			where:"server_map_rotation_bool_exp"
+		},
+		server_map_rotation_aggregate:{
+			distinct_on:"server_map_rotation_select_column",
+			order_by:"server_map_rotation_order_by",
+			where:"server_map_rotation_bool_exp"
+		},
+		server_map_rotation_by_pk:{
+			map_id:"uuid",
+			server_id:"uuid"
+		},
+		server_plugins:{
+			distinct_on:"server_plugins_select_column",
+			order_by:"server_plugins_order_by",
+			where:"server_plugins_bool_exp"
+		},
+		server_plugins_aggregate:{
+			distinct_on:"server_plugins_select_column",
+			order_by:"server_plugins_order_by",
+			where:"server_plugins_bool_exp"
+		},
+		server_plugins_by_pk:{
+			server_id:"uuid"
+		},
 		server_regions:{
 			distinct_on:"server_regions_select_column",
 			order_by:"server_regions_order_by",
@@ -31011,6 +31119,216 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"seasons_set_input",
 		where:"seasons_bool_exp"
 	},
+	server_map_rotation_aggregate_bool_exp:{
+		count:"server_map_rotation_aggregate_bool_exp_count"
+	},
+	server_map_rotation_aggregate_bool_exp_count:{
+		arguments:"server_map_rotation_select_column",
+		filter:"server_map_rotation_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	server_map_rotation_aggregate_fields:{
+		count:{
+			columns:"server_map_rotation_select_column"
+		}
+	},
+	server_map_rotation_aggregate_order_by:{
+		avg:"server_map_rotation_avg_order_by",
+		count:"order_by",
+		max:"server_map_rotation_max_order_by",
+		min:"server_map_rotation_min_order_by",
+		stddev:"server_map_rotation_stddev_order_by",
+		stddev_pop:"server_map_rotation_stddev_pop_order_by",
+		stddev_samp:"server_map_rotation_stddev_samp_order_by",
+		sum:"server_map_rotation_sum_order_by",
+		var_pop:"server_map_rotation_var_pop_order_by",
+		var_samp:"server_map_rotation_var_samp_order_by",
+		variance:"server_map_rotation_variance_order_by"
+	},
+	server_map_rotation_arr_rel_insert_input:{
+		data:"server_map_rotation_insert_input",
+		on_conflict:"server_map_rotation_on_conflict"
+	},
+	server_map_rotation_avg_order_by:{
+		position:"order_by"
+	},
+	server_map_rotation_bool_exp:{
+		_and:"server_map_rotation_bool_exp",
+		_not:"server_map_rotation_bool_exp",
+		_or:"server_map_rotation_bool_exp",
+		map:"maps_bool_exp",
+		map_id:"uuid_comparison_exp",
+		position:"Int_comparison_exp",
+		server:"servers_bool_exp",
+		server_id:"uuid_comparison_exp"
+	},
+	server_map_rotation_constraint: "enum" as const,
+	server_map_rotation_inc_input:{
+
+	},
+	server_map_rotation_insert_input:{
+		map:"maps_obj_rel_insert_input",
+		map_id:"uuid",
+		server:"servers_obj_rel_insert_input",
+		server_id:"uuid"
+	},
+	server_map_rotation_max_order_by:{
+		map_id:"order_by",
+		position:"order_by",
+		server_id:"order_by"
+	},
+	server_map_rotation_min_order_by:{
+		map_id:"order_by",
+		position:"order_by",
+		server_id:"order_by"
+	},
+	server_map_rotation_on_conflict:{
+		constraint:"server_map_rotation_constraint",
+		update_columns:"server_map_rotation_update_column",
+		where:"server_map_rotation_bool_exp"
+	},
+	server_map_rotation_order_by:{
+		map:"maps_order_by",
+		map_id:"order_by",
+		position:"order_by",
+		server:"servers_order_by",
+		server_id:"order_by"
+	},
+	server_map_rotation_pk_columns_input:{
+		map_id:"uuid",
+		server_id:"uuid"
+	},
+	server_map_rotation_select_column: "enum" as const,
+	server_map_rotation_set_input:{
+		map_id:"uuid",
+		server_id:"uuid"
+	},
+	server_map_rotation_stddev_order_by:{
+		position:"order_by"
+	},
+	server_map_rotation_stddev_pop_order_by:{
+		position:"order_by"
+	},
+	server_map_rotation_stddev_samp_order_by:{
+		position:"order_by"
+	},
+	server_map_rotation_stream_cursor_input:{
+		initial_value:"server_map_rotation_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	server_map_rotation_stream_cursor_value_input:{
+		map_id:"uuid",
+		server_id:"uuid"
+	},
+	server_map_rotation_sum_order_by:{
+		position:"order_by"
+	},
+	server_map_rotation_update_column: "enum" as const,
+	server_map_rotation_updates:{
+		_inc:"server_map_rotation_inc_input",
+		_set:"server_map_rotation_set_input",
+		where:"server_map_rotation_bool_exp"
+	},
+	server_map_rotation_var_pop_order_by:{
+		position:"order_by"
+	},
+	server_map_rotation_var_samp_order_by:{
+		position:"order_by"
+	},
+	server_map_rotation_variance_order_by:{
+		position:"order_by"
+	},
+	server_plugins_aggregate_bool_exp:{
+		bool_and:"server_plugins_aggregate_bool_exp_bool_and",
+		bool_or:"server_plugins_aggregate_bool_exp_bool_or",
+		count:"server_plugins_aggregate_bool_exp_count"
+	},
+	server_plugins_aggregate_bool_exp_bool_and:{
+		arguments:"server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_and_arguments_columns",
+		filter:"server_plugins_bool_exp",
+		predicate:"Boolean_comparison_exp"
+	},
+	server_plugins_aggregate_bool_exp_bool_or:{
+		arguments:"server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_or_arguments_columns",
+		filter:"server_plugins_bool_exp",
+		predicate:"Boolean_comparison_exp"
+	},
+	server_plugins_aggregate_bool_exp_count:{
+		arguments:"server_plugins_select_column",
+		filter:"server_plugins_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	server_plugins_aggregate_fields:{
+		count:{
+			columns:"server_plugins_select_column"
+		}
+	},
+	server_plugins_aggregate_order_by:{
+		count:"order_by",
+		max:"server_plugins_max_order_by",
+		min:"server_plugins_min_order_by"
+	},
+	server_plugins_arr_rel_insert_input:{
+		data:"server_plugins_insert_input",
+		on_conflict:"server_plugins_on_conflict"
+	},
+	server_plugins_bool_exp:{
+		_and:"server_plugins_bool_exp",
+		_not:"server_plugins_bool_exp",
+		_or:"server_plugins_bool_exp",
+		enabled:"Boolean_comparison_exp",
+		install:"game_plugin_installs_bool_exp",
+		plugin_slug:"String_comparison_exp",
+		server:"servers_bool_exp",
+		server_id:"uuid_comparison_exp"
+	},
+	server_plugins_constraint: "enum" as const,
+	server_plugins_insert_input:{
+		install:"game_plugin_installs_obj_rel_insert_input",
+		server:"servers_obj_rel_insert_input",
+		server_id:"uuid"
+	},
+	server_plugins_max_order_by:{
+		plugin_slug:"order_by",
+		server_id:"order_by"
+	},
+	server_plugins_min_order_by:{
+		plugin_slug:"order_by",
+		server_id:"order_by"
+	},
+	server_plugins_on_conflict:{
+		constraint:"server_plugins_constraint",
+		update_columns:"server_plugins_update_column",
+		where:"server_plugins_bool_exp"
+	},
+	server_plugins_order_by:{
+		enabled:"order_by",
+		install:"game_plugin_installs_order_by",
+		plugin_slug:"order_by",
+		server:"servers_order_by",
+		server_id:"order_by"
+	},
+	server_plugins_pk_columns_input:{
+		server_id:"uuid"
+	},
+	server_plugins_select_column: "enum" as const,
+	server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
+	server_plugins_select_column_server_plugins_aggregate_bool_exp_bool_or_arguments_columns: "enum" as const,
+	server_plugins_set_input:{
+		server_id:"uuid"
+	},
+	server_plugins_stream_cursor_input:{
+		initial_value:"server_plugins_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	server_plugins_stream_cursor_value_input:{
+		server_id:"uuid"
+	},
+	server_plugins_update_column: "enum" as const,
+	server_plugins_updates:{
+		_set:"server_plugins_set_input",
+		where:"server_plugins_bool_exp"
+	},
 	server_regions:{
 		game_server_nodes:{
 			distinct_on:"game_server_nodes_select_column",
@@ -31090,6 +31408,16 @@ export const AllTypesProps: Record<string,any> = {
 		loaded_plugins:{
 
 		},
+		map_rotation:{
+			distinct_on:"server_map_rotation_select_column",
+			order_by:"server_map_rotation_order_by",
+			where:"server_map_rotation_bool_exp"
+		},
+		map_rotation_aggregate:{
+			distinct_on:"server_map_rotation_select_column",
+			order_by:"server_map_rotation_order_by",
+			where:"server_map_rotation_bool_exp"
+		},
 		matches:{
 			distinct_on:"matches_select_column",
 			order_by:"matches_order_by",
@@ -31099,6 +31427,16 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"matches_select_column",
 			order_by:"matches_order_by",
 			where:"matches_bool_exp"
+		},
+		plugin_overrides:{
+			distinct_on:"server_plugins_select_column",
+			order_by:"server_plugins_order_by",
+			where:"server_plugins_bool_exp"
+		},
+		plugin_overrides_aggregate:{
+			distinct_on:"server_plugins_select_column",
+			order_by:"server_plugins_order_by",
+			where:"server_plugins_bool_exp"
 		}
 	},
 	servers_aggregate_bool_exp:{
@@ -31174,10 +31512,15 @@ export const AllTypesProps: Record<string,any> = {
 		is_dedicated:"Boolean_comparison_exp",
 		label:"String_comparison_exp",
 		loaded_plugins:"jsonb_comparison_exp",
+		map_rotation:"server_map_rotation_bool_exp",
+		map_rotation_aggregate:"server_map_rotation_aggregate_bool_exp",
+		map_rotation_shuffle:"Boolean_comparison_exp",
 		matches:"matches_bool_exp",
 		matches_aggregate:"matches_aggregate_bool_exp",
 		max_players:"Int_comparison_exp",
 		offline_at:"timestamptz_comparison_exp",
+		plugin_overrides:"server_plugins_bool_exp",
+		plugin_overrides_aggregate:"server_plugins_aggregate_bool_exp",
 		plugin_runtime:"e_plugin_runtimes_enum_comparison_exp",
 		plugin_version:"String_comparison_exp",
 		plugins_checked_at:"timestamptz_comparison_exp",
@@ -31213,8 +31556,10 @@ export const AllTypesProps: Record<string,any> = {
 		game_server_node:"game_server_nodes_obj_rel_insert_input",
 		id:"uuid",
 		loaded_plugins:"jsonb",
+		map_rotation:"server_map_rotation_arr_rel_insert_input",
 		matches:"matches_arr_rel_insert_input",
 		offline_at:"timestamptz",
+		plugin_overrides:"server_plugins_arr_rel_insert_input",
 		plugin_runtime:"e_plugin_runtimes_enum",
 		plugins_checked_at:"timestamptz",
 		rcon_password:"bytea",
@@ -31296,9 +31641,12 @@ export const AllTypesProps: Record<string,any> = {
 		is_dedicated:"order_by",
 		label:"order_by",
 		loaded_plugins:"order_by",
+		map_rotation_aggregate:"server_map_rotation_aggregate_order_by",
+		map_rotation_shuffle:"order_by",
 		matches_aggregate:"matches_aggregate_order_by",
 		max_players:"order_by",
 		offline_at:"order_by",
+		plugin_overrides_aggregate:"server_plugins_aggregate_order_by",
 		plugin_runtime:"order_by",
 		plugin_version:"order_by",
 		plugins_checked_at:"order_by",
@@ -34469,6 +34817,41 @@ export const AllTypesProps: Record<string,any> = {
 		seasons_stream:{
 			cursor:"seasons_stream_cursor_input",
 			where:"seasons_bool_exp"
+		},
+		server_map_rotation:{
+			distinct_on:"server_map_rotation_select_column",
+			order_by:"server_map_rotation_order_by",
+			where:"server_map_rotation_bool_exp"
+		},
+		server_map_rotation_aggregate:{
+			distinct_on:"server_map_rotation_select_column",
+			order_by:"server_map_rotation_order_by",
+			where:"server_map_rotation_bool_exp"
+		},
+		server_map_rotation_by_pk:{
+			map_id:"uuid",
+			server_id:"uuid"
+		},
+		server_map_rotation_stream:{
+			cursor:"server_map_rotation_stream_cursor_input",
+			where:"server_map_rotation_bool_exp"
+		},
+		server_plugins:{
+			distinct_on:"server_plugins_select_column",
+			order_by:"server_plugins_order_by",
+			where:"server_plugins_bool_exp"
+		},
+		server_plugins_aggregate:{
+			distinct_on:"server_plugins_select_column",
+			order_by:"server_plugins_order_by",
+			where:"server_plugins_bool_exp"
+		},
+		server_plugins_by_pk:{
+			server_id:"uuid"
+		},
+		server_plugins_stream:{
+			cursor:"server_plugins_stream_cursor_input",
+			where:"server_plugins_bool_exp"
 		},
 		server_regions:{
 			distinct_on:"server_regions_select_column",
@@ -48179,6 +48562,17 @@ export const ReturnTypes: Record<string,any> = {
 		hypertable_name:"String",
 		num_chunks:"Int"
 	},
+	ImportWorkshopCollectionOutput:{
+		maps:"ImportedWorkshopMap",
+		skipped:"Int"
+	},
+	ImportedWorkshopMap:{
+		id:"uuid",
+		label:"String",
+		name:"String",
+		poster:"String",
+		workshop_map_id:"String"
+	},
 	IndexIOStat:{
 		idx_blks_hit:"Int",
 		idx_blks_read:"Int",
@@ -52870,6 +53264,7 @@ export const ReturnTypes: Record<string,any> = {
 		install_state:"String",
 		installed_node_count:"Int",
 		kind:"e_game_plugin_kinds_enum",
+		map_rotation:"jsonb",
 		name:"String",
 		node_installs:"game_server_node_plugins",
 		node_installs_aggregate:"game_server_node_plugins_aggregate",
@@ -56698,6 +57093,10 @@ export const ReturnTypes: Record<string,any> = {
 		delete_role_permissions:"role_permissions_mutation_response",
 		delete_seasons:"seasons_mutation_response",
 		delete_seasons_by_pk:"seasons",
+		delete_server_map_rotation:"server_map_rotation_mutation_response",
+		delete_server_map_rotation_by_pk:"server_map_rotation",
+		delete_server_plugins:"server_plugins_mutation_response",
+		delete_server_plugins_by_pk:"server_plugins",
 		delete_server_regions:"server_regions_mutation_response",
 		delete_server_regions_by_pk:"server_regions",
 		delete_servers:"servers_mutation_response",
@@ -56816,6 +57215,7 @@ export const ReturnTypes: Record<string,any> = {
 		grantAward:"AwardRecipient",
 		importSteamMatchShareCode:"PendingMatchImportActionOutput",
 		importUtilityLineups:"UtilityImportOutput",
+		importWorkshopCollection:"ImportWorkshopCollectionOutput",
 		insert__map_pool:"_map_pool_mutation_response",
 		insert__map_pool_one:"_map_pool",
 		insert_abandoned_matches:"abandoned_matches_mutation_response",
@@ -57130,6 +57530,10 @@ export const ReturnTypes: Record<string,any> = {
 		insert_role_permissions_one:"role_permissions",
 		insert_seasons:"seasons_mutation_response",
 		insert_seasons_one:"seasons",
+		insert_server_map_rotation:"server_map_rotation_mutation_response",
+		insert_server_map_rotation_one:"server_map_rotation",
+		insert_server_plugins:"server_plugins_mutation_response",
+		insert_server_plugins_one:"server_plugins",
 		insert_server_regions:"server_regions_mutation_response",
 		insert_server_regions_one:"server_regions",
 		insert_servers:"servers_mutation_response",
@@ -57321,6 +57725,8 @@ export const ReturnTypes: Record<string,any> = {
 		setMapWinner:"SuccessOutput",
 		setMatchWinner:"SuccessOutput",
 		setNewsPostStatus:"NewsPost",
+		setServerMapRotation:"SuccessOutput",
+		setServerPlugins:"SuccessOutput",
 		setTournamentAward:"TournamentAward",
 		setUtilityPracticeAccess:"SuccessOutput",
 		setupGameServer:"SetupGameServeOutput",
@@ -57828,6 +58234,12 @@ export const ReturnTypes: Record<string,any> = {
 		update_seasons:"seasons_mutation_response",
 		update_seasons_by_pk:"seasons",
 		update_seasons_many:"seasons_mutation_response",
+		update_server_map_rotation:"server_map_rotation_mutation_response",
+		update_server_map_rotation_by_pk:"server_map_rotation",
+		update_server_map_rotation_many:"server_map_rotation_mutation_response",
+		update_server_plugins:"server_plugins_mutation_response",
+		update_server_plugins_by_pk:"server_plugins",
+		update_server_plugins_many:"server_plugins_mutation_response",
 		update_server_regions:"server_regions_mutation_response",
 		update_server_regions_by_pk:"server_regions",
 		update_server_regions_many:"server_regions_mutation_response",
@@ -64407,6 +64819,12 @@ export const ReturnTypes: Record<string,any> = {
 		seasons:"seasons",
 		seasons_aggregate:"seasons_aggregate",
 		seasons_by_pk:"seasons",
+		server_map_rotation:"server_map_rotation",
+		server_map_rotation_aggregate:"server_map_rotation_aggregate",
+		server_map_rotation_by_pk:"server_map_rotation",
+		server_plugins:"server_plugins",
+		server_plugins_aggregate:"server_plugins_aggregate",
+		server_plugins_by_pk:"server_plugins",
 		server_regions:"server_regions",
 		server_regions_aggregate:"server_regions_aggregate",
 		server_regions_by_pk:"server_regions",
@@ -64736,6 +65154,96 @@ export const ReturnTypes: Record<string,any> = {
 	seasons_variance_fields:{
 		number:"Float"
 	},
+	server_map_rotation:{
+		map:"maps",
+		map_id:"uuid",
+		position:"Int",
+		server:"servers",
+		server_id:"uuid"
+	},
+	server_map_rotation_aggregate:{
+		aggregate:"server_map_rotation_aggregate_fields",
+		nodes:"server_map_rotation"
+	},
+	server_map_rotation_aggregate_fields:{
+		avg:"server_map_rotation_avg_fields",
+		count:"Int",
+		max:"server_map_rotation_max_fields",
+		min:"server_map_rotation_min_fields",
+		stddev:"server_map_rotation_stddev_fields",
+		stddev_pop:"server_map_rotation_stddev_pop_fields",
+		stddev_samp:"server_map_rotation_stddev_samp_fields",
+		sum:"server_map_rotation_sum_fields",
+		var_pop:"server_map_rotation_var_pop_fields",
+		var_samp:"server_map_rotation_var_samp_fields",
+		variance:"server_map_rotation_variance_fields"
+	},
+	server_map_rotation_avg_fields:{
+		position:"Float"
+	},
+	server_map_rotation_max_fields:{
+		map_id:"uuid",
+		position:"Int",
+		server_id:"uuid"
+	},
+	server_map_rotation_min_fields:{
+		map_id:"uuid",
+		position:"Int",
+		server_id:"uuid"
+	},
+	server_map_rotation_mutation_response:{
+		affected_rows:"Int",
+		returning:"server_map_rotation"
+	},
+	server_map_rotation_stddev_fields:{
+		position:"Float"
+	},
+	server_map_rotation_stddev_pop_fields:{
+		position:"Float"
+	},
+	server_map_rotation_stddev_samp_fields:{
+		position:"Float"
+	},
+	server_map_rotation_sum_fields:{
+		position:"Int"
+	},
+	server_map_rotation_var_pop_fields:{
+		position:"Float"
+	},
+	server_map_rotation_var_samp_fields:{
+		position:"Float"
+	},
+	server_map_rotation_variance_fields:{
+		position:"Float"
+	},
+	server_plugins:{
+		enabled:"Boolean",
+		install:"game_plugin_installs",
+		plugin_slug:"String",
+		server:"servers",
+		server_id:"uuid"
+	},
+	server_plugins_aggregate:{
+		aggregate:"server_plugins_aggregate_fields",
+		nodes:"server_plugins"
+	},
+	server_plugins_aggregate_fields:{
+		count:"Int",
+		max:"server_plugins_max_fields",
+		min:"server_plugins_min_fields"
+	},
+	server_plugins_max_fields:{
+		plugin_slug:"String",
+		server_id:"uuid"
+	},
+	server_plugins_min_fields:{
+		plugin_slug:"String",
+		server_id:"uuid"
+	},
+	server_plugins_mutation_response:{
+		affected_rows:"Int",
+		returning:"server_plugins"
+	},
 	server_regions:{
 		available_server_count:"Int",
 		description:"String",
@@ -64835,10 +65343,15 @@ export const ReturnTypes: Record<string,any> = {
 		is_dedicated:"Boolean",
 		label:"String",
 		loaded_plugins:"jsonb",
+		map_rotation:"server_map_rotation",
+		map_rotation_aggregate:"server_map_rotation_aggregate",
+		map_rotation_shuffle:"Boolean",
 		matches:"matches",
 		matches_aggregate:"matches_aggregate",
 		max_players:"Int",
 		offline_at:"timestamptz",
+		plugin_overrides:"server_plugins",
+		plugin_overrides_aggregate:"server_plugins_aggregate",
 		plugin_runtime:"e_plugin_runtimes_enum",
 		plugin_version:"String",
 		plugins_checked_at:"timestamptz",
@@ -65777,6 +66290,14 @@ export const ReturnTypes: Record<string,any> = {
 		seasons_aggregate:"seasons_aggregate",
 		seasons_by_pk:"seasons",
 		seasons_stream:"seasons",
+		server_map_rotation:"server_map_rotation",
+		server_map_rotation_aggregate:"server_map_rotation_aggregate",
+		server_map_rotation_by_pk:"server_map_rotation",
+		server_map_rotation_stream:"server_map_rotation",
+		server_plugins:"server_plugins",
+		server_plugins_aggregate:"server_plugins_aggregate",
+		server_plugins_by_pk:"server_plugins",
+		server_plugins_stream:"server_plugins",
 		server_regions:"server_regions",
 		server_regions_aggregate:"server_regions_aggregate",
 		server_regions_by_pk:"server_regions",

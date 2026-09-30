@@ -1915,6 +1915,7 @@ interface GameServerNode {
   region: string | null;
   enabled: boolean;
   enabled_for_match_making?: boolean;
+  accepting_new_matches?: boolean;
   demo_network_limiter?: number | null;
   build_id?: string;
   csgo_build_id?: number | null;

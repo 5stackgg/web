@@ -419,6 +419,7 @@ export default {
               region: true,
               enabled: true,
               enabled_for_match_making: true,
+              accepting_new_matches: true,
               build_id: true,
               csgo_build_id: true,
               pin_build_id: true,

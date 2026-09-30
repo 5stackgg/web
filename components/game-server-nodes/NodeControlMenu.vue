@@ -145,7 +145,7 @@ async function setWorkload(
         <label
           v-if="hasPorts && node.enabled_for_match_making"
           class="ncm-row"
-          :data-on="node.status === 'Online'"
+          :data-on="node.accepting_new_matches"
           :data-disabled="!node.enabled"
         >
           <span class="ncm-ico"><CalendarCheck class="w-4 h-4" /></span>
@@ -158,7 +158,7 @@ async function setWorkload(
             }}</span>
           </span>
           <Switch
-            :model-value="node.status === 'Online'"
+            :model-value="node.accepting_new_matches"
             :disabled="!node.enabled"
             @update:model-value="(v) => setScheduling(!!v)"
           />

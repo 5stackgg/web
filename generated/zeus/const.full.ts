@@ -7866,6 +7866,7 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"game_server_nodes_bool_exp",
 		_not:"game_server_nodes_bool_exp",
 		_or:"game_server_nodes_bool_exp",
+		accepting_new_matches:"Boolean_comparison_exp",
 		available_server_count:"Int_comparison_exp",
 		build_id:"Int_comparison_exp",
 		cpu_cores_per_socket:"Int_comparison_exp",
@@ -8019,6 +8020,7 @@ export const AllTypesProps: Record<string,any> = {
 		where:"game_server_nodes_bool_exp"
 	},
 	game_server_nodes_order_by:{
+		accepting_new_matches:"order_by",
 		available_server_count:"order_by",
 		build_id:"order_by",
 		cpu_cores_per_socket:"order_by",
@@ -53431,6 +53433,7 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"game_server_node_plugins"
 	},
 	game_server_nodes:{
+		accepting_new_matches:"Boolean",
 		available_server_count:"Int",
 		build_id:"Int",
 		cpu_cores_per_socket:"Int",

@@ -17780,6 +17780,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_node_plugins_select_column"]>
 };
 	/** columns and relationships of "game_server_nodes" */
 ["game_server_nodes"]: AliasType<{
+	accepting_new_matches?:boolean | `@${string}`,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
 	build_id?:boolean | `@${string}`,
@@ -17984,6 +17985,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 	_and?: Array<ValueTypes["game_server_nodes_bool_exp"]> | undefined | null | Variable<any, string>,
 	_not?: ValueTypes["game_server_nodes_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["game_server_nodes_bool_exp"]> | undefined | null | Variable<any, string>,
+	accepting_new_matches?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	available_server_count?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	build_id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	cpu_cores_per_socket?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -18088,6 +18090,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 };
 	/** input type for inserting data into table "game_server_nodes" */
 ["game_server_nodes_insert_input"]: {
+	accepting_new_matches?: boolean | undefined | null | Variable<any, string>,
 	build_id?: number | undefined | null | Variable<any, string>,
 	cpu_cores_per_socket?: number | undefined | null | Variable<any, string>,
 	cpu_frequency_info?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
@@ -18278,6 +18281,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 };
 	/** Ordering options when selecting data from "game_server_nodes". */
 ["game_server_nodes_order_by"]: {
+	accepting_new_matches?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	available_server_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	build_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	cpu_cores_per_socket?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -18353,6 +18357,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 ["game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns"]:game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "game_server_nodes" */
 ["game_server_nodes_set_input"]: {
+	accepting_new_matches?: boolean | undefined | null | Variable<any, string>,
 	build_id?: number | undefined | null | Variable<any, string>,
 	cpu_cores_per_socket?: number | undefined | null | Variable<any, string>,
 	cpu_frequency_info?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
@@ -18511,6 +18516,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 };
 	/** Initial value of the column from where the streaming should start */
 ["game_server_nodes_stream_cursor_value_input"]: {
+	accepting_new_matches?: boolean | undefined | null | Variable<any, string>,
 	build_id?: number | undefined | null | Variable<any, string>,
 	cpu_cores_per_socket?: number | undefined | null | Variable<any, string>,
 	cpu_frequency_info?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
@@ -102632,6 +102638,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_node_plugins_select_c
 };
 	/** columns and relationships of "game_server_nodes" */
 ["game_server_nodes"]: AliasType<{
+	accepting_new_matches?:boolean | `@${string}`,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
 	build_id?:boolean | `@${string}`,
@@ -102836,6 +102843,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 	_and?: Array<ResolverInputTypes["game_server_nodes_bool_exp"]> | undefined | null,
 	_not?: ResolverInputTypes["game_server_nodes_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["game_server_nodes_bool_exp"]> | undefined | null,
+	accepting_new_matches?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	available_server_count?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	build_id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	cpu_cores_per_socket?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
@@ -102940,6 +102948,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 };
 	/** input type for inserting data into table "game_server_nodes" */
 ["game_server_nodes_insert_input"]: {
+	accepting_new_matches?: boolean | undefined | null,
 	build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
 	cpu_frequency_info?: ResolverInputTypes["jsonb"] | undefined | null,
@@ -103130,6 +103139,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 };
 	/** Ordering options when selecting data from "game_server_nodes". */
 ["game_server_nodes_order_by"]: {
+	accepting_new_matches?: ResolverInputTypes["order_by"] | undefined | null,
 	available_server_count?: ResolverInputTypes["order_by"] | undefined | null,
 	build_id?: ResolverInputTypes["order_by"] | undefined | null,
 	cpu_cores_per_socket?: ResolverInputTypes["order_by"] | undefined | null,
@@ -103205,6 +103215,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 ["game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns"]:game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "game_server_nodes" */
 ["game_server_nodes_set_input"]: {
+	accepting_new_matches?: boolean | undefined | null,
 	build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
 	cpu_frequency_info?: ResolverInputTypes["jsonb"] | undefined | null,
@@ -103363,6 +103374,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 };
 	/** Initial value of the column from where the streaming should start */
 ["game_server_nodes_stream_cursor_value_input"]: {
+	accepting_new_matches?: boolean | undefined | null,
 	build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
 	cpu_frequency_info?: ResolverInputTypes["jsonb"] | undefined | null,
@@ -185948,6 +185960,7 @@ export type ModelTypes = {
 };
 	/** columns and relationships of "game_server_nodes" */
 ["game_server_nodes"]: {
+	accepting_new_matches: boolean,
 		/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined | null,
 	build_id?: number | undefined | null,
@@ -186125,6 +186138,7 @@ export type ModelTypes = {
 	_and?: Array<ModelTypes["game_server_nodes_bool_exp"]> | undefined | null,
 	_not?: ModelTypes["game_server_nodes_bool_exp"] | undefined | null,
 	_or?: Array<ModelTypes["game_server_nodes_bool_exp"]> | undefined | null,
+	accepting_new_matches?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	available_server_count?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	build_id?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	cpu_cores_per_socket?: ModelTypes["Int_comparison_exp"] | undefined | null,
@@ -186228,6 +186242,7 @@ export type ModelTypes = {
 };
 	/** input type for inserting data into table "game_server_nodes" */
 ["game_server_nodes_insert_input"]: {
+	accepting_new_matches?: boolean | undefined | null,
 	build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
 	cpu_frequency_info?: ModelTypes["jsonb"] | undefined | null,
@@ -186415,6 +186430,7 @@ export type ModelTypes = {
 };
 	/** Ordering options when selecting data from "game_server_nodes". */
 ["game_server_nodes_order_by"]: {
+	accepting_new_matches?: ModelTypes["order_by"] | undefined | null,
 	available_server_count?: ModelTypes["order_by"] | undefined | null,
 	build_id?: ModelTypes["order_by"] | undefined | null,
 	cpu_cores_per_socket?: ModelTypes["order_by"] | undefined | null,
@@ -186487,6 +186503,7 @@ export type ModelTypes = {
 	["game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns"]:game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "game_server_nodes" */
 ["game_server_nodes_set_input"]: {
+	accepting_new_matches?: boolean | undefined | null,
 	build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
 	cpu_frequency_info?: ModelTypes["jsonb"] | undefined | null,
@@ -186642,6 +186659,7 @@ export type ModelTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["game_server_nodes_stream_cursor_value_input"]: {
+	accepting_new_matches?: boolean | undefined | null,
 	build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
 	cpu_frequency_info?: ModelTypes["jsonb"] | undefined | null,
@@ -261737,6 +261755,7 @@ export type GraphQLTypes = {
 	/** columns and relationships of "game_server_nodes" */
 ["game_server_nodes"]: {
 	__typename: "game_server_nodes",
+	accepting_new_matches: boolean,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined | null,
 	build_id?: number | undefined | null,
@@ -261917,6 +261936,7 @@ export type GraphQLTypes = {
 		_and?: Array<GraphQLTypes["game_server_nodes_bool_exp"]> | undefined | null,
 	_not?: GraphQLTypes["game_server_nodes_bool_exp"] | undefined | null,
 	_or?: Array<GraphQLTypes["game_server_nodes_bool_exp"]> | undefined | null,
+	accepting_new_matches?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	available_server_count?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	build_id?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	cpu_cores_per_socket?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
@@ -262021,6 +262041,7 @@ export type GraphQLTypes = {
 };
 	/** input type for inserting data into table "game_server_nodes" */
 ["game_server_nodes_insert_input"]: {
+	accepting_new_matches?: boolean | undefined | null,
 		build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
 	cpu_frequency_info?: GraphQLTypes["jsonb"] | undefined | null,
@@ -262211,6 +262232,7 @@ export type GraphQLTypes = {
 };
 	/** Ordering options when selecting data from "game_server_nodes". */
 ["game_server_nodes_order_by"]: {
+	accepting_new_matches?: GraphQLTypes["order_by"] | undefined | null,
 		available_server_count?: GraphQLTypes["order_by"] | undefined | null,
 	build_id?: GraphQLTypes["order_by"] | undefined | null,
 	cpu_cores_per_socket?: GraphQLTypes["order_by"] | undefined | null,
@@ -262286,6 +262308,7 @@ export type GraphQLTypes = {
 ["game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns"]: game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "game_server_nodes" */
 ["game_server_nodes_set_input"]: {
+	accepting_new_matches?: boolean | undefined | null,
 		build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
 	cpu_frequency_info?: GraphQLTypes["jsonb"] | undefined | null,
@@ -262444,6 +262467,7 @@ export type GraphQLTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["game_server_nodes_stream_cursor_value_input"]: {
+	accepting_new_matches?: boolean | undefined | null,
 		build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
 	cpu_frequency_info?: GraphQLTypes["jsonb"] | undefined | null,
@@ -325825,6 +325849,7 @@ export enum game_server_nodes_constraint {
 }
 /** select columns of table "game_server_nodes" */
 export enum game_server_nodes_select_column {
+	accepting_new_matches = "accepting_new_matches",
 	build_id = "build_id",
 	cpu_cores_per_socket = "cpu_cores_per_socket",
 	cpu_frequency_info = "cpu_frequency_info",
@@ -325871,6 +325896,7 @@ export enum game_server_nodes_select_column {
 }
 /** select "game_server_nodes_aggregate_bool_exp_bool_and_arguments_columns" columns of table "game_server_nodes" */
 export enum game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_and_arguments_columns {
+	accepting_new_matches = "accepting_new_matches",
 	enabled = "enabled",
 	enabled_for_match_making = "enabled_for_match_making",
 	gpu = "gpu",
@@ -325882,6 +325908,7 @@ export enum game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp
 }
 /** select "game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns" columns of table "game_server_nodes" */
 export enum game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns {
+	accepting_new_matches = "accepting_new_matches",
 	enabled = "enabled",
 	enabled_for_match_making = "enabled_for_match_making",
 	gpu = "gpu",
@@ -325893,6 +325920,7 @@ export enum game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp
 }
 /** update columns of table "game_server_nodes" */
 export enum game_server_nodes_update_column {
+	accepting_new_matches = "accepting_new_matches",
 	build_id = "build_id",
 	cpu_cores_per_socket = "cpu_cores_per_socket",
 	cpu_frequency_info = "cpu_frequency_info",

@@ -507,7 +507,6 @@ export default {
             min_elo: $("min_elo", "Int"),
             max_elo: $("max_elo", "Int"),
             invite_only: $("invite_only", "Boolean!"),
-            regions: $("regions", "[String!]!"),
             check_in_required: $("check_in_required", "Boolean!"),
             check_in_setting: $(
               "check_in_setting",

@@ -402,7 +402,7 @@ async function save() {
 }
 
 const cardClasses =
-  "relative overflow-hidden rounded-lg border border-border [background:linear-gradient(180deg,hsl(var(--card)/0.2)_0%,hsl(var(--card)/0.04)_100%)]";
+  "relative isolate overflow-hidden rounded-lg border border-border [background:linear-gradient(180deg,hsl(var(--card)/0.2)_0%,hsl(var(--card)/0.04)_100%)]";
 
 const microLabelClasses =
   "font-mono text-[0.6rem] font-bold uppercase tracking-[0.18em] text-muted-foreground";

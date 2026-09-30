@@ -3698,7 +3698,6 @@
           "shuffle_hint": "Vælg næste map tilfældigt",
           "in_order": "I rækkefølge",
           "in_order_hint": "Spil listen oppefra og ned",
-          "played_by": "Styres af {plugin}",
           "no_plugin": "Der er ikke installeret et plugin til mapsrotation, så serveren bliver på sit første map.",
           "install_plugin": "Installer MapChooser",
           "workshop_order_hint": "MapChooser mister sin plads i listen på workshop-maps og vender altid tilbage til det andet. Hold Bland slået til for workshop-maps.",

@@ -3698,7 +3698,6 @@
           "shuffle_hint": "随机选择下一张地图",
           "in_order": "按顺序",
           "in_order_hint": "从上到下依次游玩列表",
-          "played_by": "由 {plugin} 管理",
           "no_plugin": "未安装地图轮换插件，服务器会一直停留在第一张地图。",
           "install_plugin": "安装 MapChooser",
           "workshop_order_hint": "MapChooser 在创意工坊地图上会丢失它在列表中的位置，并不断回到第二张地图。使用创意工坊地图时请保持随机开启。",

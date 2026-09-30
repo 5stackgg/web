@@ -3698,7 +3698,6 @@
           "shuffle_hint": "次のマップをランダムに選ぶ",
           "in_order": "順番",
           "in_order_hint": "リストを上から順に遊ぶ",
-          "played_by": "{plugin} が管理",
           "no_plugin": "マップローテーションプラグインがインストールされていないため、サーバーは最初のマップのままになります。",
           "install_plugin": "MapChooser をインストール",
           "workshop_order_hint": "MapChooser はワークショップマップでリスト内の位置を見失い、2 番目のマップに戻り続けます。ワークショップマップではシャッフルをオンにしてください。",

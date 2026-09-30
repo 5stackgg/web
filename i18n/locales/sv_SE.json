@@ -3698,7 +3698,6 @@
           "shuffle_hint": "Välj nästa karta slumpmässigt",
           "in_order": "I ordning",
           "in_order_hint": "Spela listan uppifrån och ned",
-          "played_by": "Styrs av {plugin}",
           "no_plugin": "Inget plugin för kartrotation är installerat, så servern stannar på sin första karta.",
           "install_plugin": "Installera MapChooser",
           "workshop_order_hint": "MapChooser tappar bort sin plats i listan på workshop-kartor och återvänder alltid till den andra. Ha Blanda påslaget för workshop-kartor.",

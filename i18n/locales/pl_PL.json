@@ -3698,7 +3698,6 @@
           "shuffle_hint": "Wybieraj następną mapę losowo",
           "in_order": "Po kolei",
           "in_order_hint": "Graj listę od góry do dołu",
-          "played_by": "Obsługiwane przez {plugin}",
           "no_plugin": "Nie zainstalowano pluginu rotacji map, więc serwer zostanie na pierwszej mapie.",
           "install_plugin": "Zainstaluj MapChooser",
           "workshop_order_hint": "MapChooser gubi swoje miejsce na liście przy mapach z warsztatu i ciągle wraca do drugiej. Przy mapach z warsztatu zostaw włączone Losowo.",

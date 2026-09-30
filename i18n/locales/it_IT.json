@@ -3698,7 +3698,6 @@
           "shuffle_hint": "Scegli la mappa successiva a caso",
           "in_order": "In ordine",
           "in_order_hint": "Gioca la lista dall'alto verso il basso",
-          "played_by": "Gestita da {plugin}",
           "no_plugin": "Nessun plugin di rotazione mappe installato, quindi il server resterà sulla prima mappa.",
           "install_plugin": "Installa MapChooser",
           "workshop_order_hint": "MapChooser perde la sua posizione nella lista con le mappe del workshop e torna sempre alla seconda. Tieni attivo Casuale per le mappe del workshop.",

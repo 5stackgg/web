@@ -3698,7 +3698,6 @@
           "shuffle_hint": "Escolher o próximo mapa aleatoriamente",
           "in_order": "Em ordem",
           "in_order_hint": "Jogar a lista de cima para baixo",
-          "played_by": "Controlado por {plugin}",
           "no_plugin": "Nenhum plugin de rotação de mapas está instalado, então o servidor ficará no primeiro mapa.",
           "install_plugin": "Instalar MapChooser",
           "workshop_order_hint": "O MapChooser perde sua posição na lista com mapas da oficina e sempre volta ao segundo. Mantenha Embaralhar ligado para mapas da oficina.",

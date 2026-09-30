@@ -445,25 +445,7 @@ const chipClasses =
       </div>
 
       <div
-        v-if="rotationPlugin"
-        class="flex items-center gap-2 border-b border-border/60 px-4 py-2.5"
-      >
-        <span
-          class="h-1.5 w-1.5 rounded-full bg-success shadow-[0_0_6px_hsl(var(--success)/0.8)]"
-        />
-        <NuxtLink
-          :to="`/plugins/${rotationPlugin.slug}`"
-          :class="[microLabelClasses, 'hover:text-foreground']"
-        >
-          {{
-            $t("pages.dedicated_servers.detail.map_rotation.played_by", {
-              plugin: rotationPlugin.name,
-            })
-          }}
-        </NuxtLink>
-      </div>
-      <div
-        v-else
+        v-if="!rotationPlugin"
         class="flex items-center gap-3 border-b border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.08)] px-4 py-2.5 text-sm text-[hsl(var(--tac-amber))] max-sm:flex-col max-sm:items-start"
       >
         <TriangleAlert class="h-4 w-4 shrink-0 max-sm:hidden" />

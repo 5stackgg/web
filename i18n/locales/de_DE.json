@@ -3698,7 +3698,6 @@
           "shuffle_hint": "Nächste Map zufällig wählen",
           "in_order": "Der Reihe nach",
           "in_order_hint": "Die Liste von oben nach unten spielen",
-          "played_by": "Gespielt von {plugin}",
           "no_plugin": "Kein Map-Rotations-Plugin installiert, der Server bleibt auf seiner ersten Map.",
           "install_plugin": "MapChooser installieren",
           "workshop_order_hint": "MapChooser verliert bei Workshop-Maps seine Position in der Liste und kehrt immer zur zweiten zurück. Lass „Zufällig“ bei Workshop-Maps an.",

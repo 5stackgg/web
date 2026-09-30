@@ -65,7 +65,7 @@ async function mountCard() {
 }
 
 describe("ServerMapRotation", () => {
-  it("lists the rotation in order and names the plugin that plays it", async () => {
+  it("lists the rotation in order with no warning when a rotation plugin is installed", async () => {
     state.data = fixture();
 
     const wrapper = await mountCard();
@@ -75,7 +75,7 @@ describe("ServerMapRotation", () => {
     expect(items[0]).toContain("Prophunt Mirage");
     expect(items[0]).toContain("Workshop");
     expect(items[1]).toContain("m2");
-    expect(wrapper.text()).toContain("Played by MapChooser");
+    expect(wrapper.text()).not.toContain("No map rotation plugin is installed");
     expect(wrapper.text()).not.toContain("Boots First");
   });
 
@@ -101,7 +101,6 @@ describe("ServerMapRotation", () => {
       const wrapper = await mountCard();
 
       expect(wrapper.text()).toContain("No map rotation plugin is installed");
-      expect(wrapper.text()).not.toContain("Played by");
 
       unmount?.();
       unmount = undefined;

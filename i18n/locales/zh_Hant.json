@@ -3698,7 +3698,6 @@
           "shuffle_hint": "隨機選擇下一張地圖",
           "in_order": "依序",
           "in_order_hint": "從上到下依序遊玩清單",
-          "played_by": "由 {plugin} 管理",
           "no_plugin": "未安裝地圖輪替外掛，伺服器會一直停留在第一張地圖。",
           "install_plugin": "安裝 MapChooser",
           "workshop_order_hint": "MapChooser 在工作坊地圖上會失去它在清單中的位置，並不斷回到第二張地圖。使用工作坊地圖時請保持隨機開啟。",

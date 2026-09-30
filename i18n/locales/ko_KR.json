@@ -3698,7 +3698,6 @@
           "shuffle_hint": "다음 맵을 무작위로 선택",
           "in_order": "순서대로",
           "in_order_hint": "목록을 위에서 아래로 플레이",
-          "played_by": "{plugin}에서 관리",
           "no_plugin": "맵 로테이션 플러그인이 설치되어 있지 않아 서버가 첫 번째 맵에 머무릅니다.",
           "install_plugin": "MapChooser 설치",
           "workshop_order_hint": "MapChooser는 창작마당 맵에서 목록의 위치를 잃고 계속 두 번째 맵으로 돌아갑니다. 창작마당 맵에는 셔플을 켜 두세요.",

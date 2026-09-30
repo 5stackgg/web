@@ -38,6 +38,8 @@ import { ref, computed } from "vue";
 import ServerForm from "~/components/servers/ServerForm.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
 import ServerPlayerManagement from "~/components/servers/ServerPlayerManagement.vue";
+import ServerMapRotation from "~/components/servers/ServerMapRotation.vue";
+import ServerPlugins from "~/components/servers/ServerPlugins.vue";
 import { Eye, EyeOff } from "lucide-vue-next";
 import Clipboard from "~/components/ClipBoard.vue";
 import ServerStatus from "~/components/servers/ServerStatus.vue";
@@ -238,6 +240,16 @@ const titleClasses =
       </div>
     </div>
   </PageTransition>
+
+  <template v-if="server && isAdmin && isCommunityServer">
+    <PageTransition v-if="server.game === 'cs2'" :delay="100" class="mt-6">
+      <ServerMapRotation :server-id="server.id" />
+    </PageTransition>
+
+    <PageTransition :delay="125" class="mt-6">
+      <ServerPlugins :server-id="server.id" />
+    </PageTransition>
+  </template>
 
   <PageTransition :delay="150" class="mt-6">
     <ServerPlayerManagement
@@ -468,6 +480,15 @@ export default {
       return (
         this.server?.type === SERVER_TYPE_RANKED ||
         this.server?.type === SERVER_TYPE_PRACTICE
+      );
+    },
+    // Ranked and Practice servers run 5Stack's own plugin set, and an external
+    // server has no pod for the settings to reach.
+    isCommunityServer() {
+      return (
+        !!this.server?.game_server_node_id &&
+        this.server.type !== SERVER_TYPE_RANKED &&
+        this.server.type !== SERVER_TYPE_PRACTICE
       );
     },
     isPracticeServer() {

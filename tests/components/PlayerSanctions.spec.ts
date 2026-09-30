@@ -6,6 +6,13 @@ import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
 
 const PLAYER = "76561198000000001";
+
+const { toast } = vi.hoisted(() => ({ toast: vi.fn() }));
+
+vi.mock("@/components/ui/toast", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/components/ui/toast")>()),
+  toast,
+}));
 const MODERATOR = "76561198000000099";
 
 const AMBER_BAR = "bg-[hsl(var(--tac-amber))]";
@@ -29,6 +36,7 @@ const tomorrow = () => new Date(Date.now() + 86_400_000).toISOString();
 const yesterday = () => new Date(Date.now() - 86_400_000).toISOString();
 
 let rows: any[] = [];
+let removal = { enforced: false, message: "ok" };
 let mutate: ReturnType<typeof vi.fn>;
 let unmount: (() => void) | null = null;
 
@@ -36,6 +44,8 @@ afterEach(() => {
   unmount?.();
   unmount = null;
   useAuthStore().me = undefined;
+  removal = { enforced: false, message: "ok" };
+  toast.mockReset();
   vi.restoreAllMocks();
 });
 
@@ -51,12 +61,12 @@ function serve() {
     },
   }));
   mutate = vi.fn().mockResolvedValue({
-    data: { unsanctionServerPlayer: { enforced: false, message: "ok" } },
+    data: { unsanctionServerPlayer: removal },
   });
   vi.spyOn(client, "mutate").mockImplementation(mutate);
 }
 
-async function mountSheet(sanctions: any[]) {
+async function mountSheet(sanctions: any[], serverId?: string) {
   rows = sanctions;
   useAuthStore().me = {
     steam_id: MODERATOR,
@@ -70,6 +80,7 @@ async function mountSheet(sanctions: any[]) {
       player: { steam_id: PLAYER, name: "Player" },
       variant: "external",
       open: true,
+      serverId,
     },
     attachTo: document.body,
     global: {
@@ -259,5 +270,52 @@ describe("PlayerSanctions warnings", () => {
       type: "ban",
       sanction_id: "ban-expired",
     });
+  });
+});
+
+describe("PlayerSanctions removal on a server", () => {
+  async function remove(label: string) {
+    card(label)
+      .querySelector<HTMLButtonElement>('[aria-label="Remove"]')!
+      .click();
+    await flushPromises();
+
+    Array.from(
+      document.body.querySelectorAll<HTMLButtonElement>(
+        '[role="alertdialog"] button',
+      ),
+    )
+      .find((button) => button.textContent?.trim() === "Confirm")!
+      .click();
+    await flushPromises();
+  }
+
+  it("tells the moderator why a lifted sanction did not reach the server", async () => {
+    removal = {
+      enforced: false,
+      message:
+        "sanction removed; the Player Management plugin is not installed on this server",
+    };
+    await mountSheet([sanction("mute-1", "mute", tomorrow())], "server-1");
+
+    await remove("Mute");
+
+    expect(toast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        description:
+          "sanction removed; the Player Management plugin is not installed on this server",
+      }),
+    );
+  });
+
+  it("never repeats a warning's removal message, which no server enforces", async () => {
+    removal = { enforced: false, message: "warning removed" };
+    await mountSheet([sanction("warning-1", "warning")], "server-1");
+
+    await remove("Warning");
+
+    expect(toast).toHaveBeenCalledWith(
+      expect.objectContaining({ description: undefined }),
+    );
   });
 });

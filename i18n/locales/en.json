@@ -3678,7 +3678,7 @@
         "player_management_plugin": {
           "active": "Player Management plugin active",
           "not_detected": "The Player Management plugin has not checked in from this server, so mutes and gags are not enforced live yet.",
-          "not_detected_node": "The Player Management plugin has not checked in. This node loads it automatically, so restart the server if this persists.",
+          "not_detected_node": "The Player Management plugin has not checked in. Servers created before it shipped get it once redeployed: switch the server off and back on.",
           "not_detected_external": "Mutes, gags and bans are only enforced live once the 5Stack Player Management plugin is installed on this server.",
           "install": "Install Plugin",
           "install_steps": "Install Steps",

@@ -3678,7 +3678,7 @@
         "player_management_plugin": {
           "active": "Plugin för spelarhantering aktivt",
           "not_detected": "Pluginet för spelarhantering har inte hört av sig från den här servern ännu, så tystningar och chattförbud tillämpas inte live än.",
-          "not_detected_node": "Pluginet för spelarhantering har inte hört av sig ännu. Den här noden laddar det automatiskt, så starta om servern om det fortsätter.",
+          "not_detected_node": "Pluginet för spelarhantering har inte hört av sig ännu. Servrar som skapades innan det släpptes får det när de driftsätts om: stäng av servern och slå på den igen.",
           "not_detected_external": "Tystningar, chattförbud och avstängningar tillämpas live först när 5Stacks plugin för spelarhantering är installerat på den här servern.",
           "install": "Installera plugin",
           "install_steps": "Installationssteg",

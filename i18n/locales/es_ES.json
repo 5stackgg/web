@@ -3678,7 +3678,7 @@
         "player_management_plugin": {
           "active": "Plugin de gestión de jugadores activo",
           "not_detected": "El plugin de gestión de jugadores aún no se ha comunicado desde este servidor, así que los muteos y silencios todavía no se aplican en directo.",
-          "not_detected_node": "El plugin de gestión de jugadores aún no se ha comunicado. Este nodo lo carga automáticamente, así que reinicia el servidor si esto continúa.",
+          "not_detected_node": "El plugin de gestión de jugadores aún no se ha comunicado. Los servidores creados antes de su lanzamiento lo reciben al volver a desplegarse: desactiva el servidor y vuelve a activarlo.",
           "not_detected_external": "Los muteos, silencios y baneos solo se aplican en directo cuando el plugin de gestión de jugadores de 5Stack está instalado en este servidor.",
           "install": "Instalar plugin",
           "install_steps": "Pasos de instalación",

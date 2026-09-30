@@ -209,6 +209,19 @@ describe("SanctionPlayer on a server", () => {
     );
   });
 
+  it("adds nothing when the sanction was not aimed at a server", async () => {
+    const wrapper = await openDrawer("mute", undefined, {
+      enforced: false,
+      message: "sanction saved",
+    });
+
+    await submit(wrapper);
+
+    expect(toast).toHaveBeenCalledWith(
+      expect.objectContaining({ description: undefined }),
+    );
+  });
+
   it("never repeats a warning's save message, which no server enforces", async () => {
     const wrapper = await openDrawer("warning", "server-1");
 

@@ -3678,7 +3678,7 @@
         "player_management_plugin": {
           "active": "Oyuncu yönetimi eklentisi etkin",
           "not_detected": "Oyuncu yönetimi eklentisi bu sunucudan henüz bildirim göndermedi, bu yüzden susturmalar ve sohbet yasakları henüz canlı uygulanmıyor.",
-          "not_detected_node": "Oyuncu yönetimi eklentisi henüz bildirim göndermedi. Bu düğüm onu otomatik yükler, bu durum sürerse sunucuyu yeniden başlatın.",
+          "not_detected_node": "Oyuncu yönetimi eklentisi henüz bildirim göndermedi. Eklenti yayınlanmadan önce oluşturulan sunucular yeniden dağıtıldığında onu alır: sunucuyu kapatıp yeniden açın.",
           "not_detected_external": "Susturmalar, sohbet yasakları ve yasaklamalar ancak 5Stack oyuncu yönetimi eklentisi bu sunucuya kurulduğunda canlı uygulanır.",
           "install": "Eklentiyi Kur",
           "install_steps": "Kurulum Adımları",

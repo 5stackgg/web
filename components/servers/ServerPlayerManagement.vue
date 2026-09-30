@@ -2,7 +2,14 @@
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { useI18n } from "vue-i18n";
 import gql from "graphql-tag";
-import { RefreshCw, Users, TriangleAlert, Download } from "lucide-vue-next";
+import {
+  RefreshCw,
+  Users,
+  TriangleAlert,
+  Download,
+  Eye,
+  EyeOff,
+} from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
@@ -28,8 +35,8 @@ import {
   playerManagementDownloadUrl,
 } from "~/constants/gameServerReleases";
 
-// Only an administrator can read the node assignment and the api password, so
-// for anyone else these arrive undefined and the install steps stay hidden.
+// Only an administrator can read the api password, so only they get the
+// install steps; everyone else is told the plugin is missing and nothing more.
 const props = defineProps<{
   serverId: string;
   gameServerNodeId?: string | null;
@@ -74,6 +81,7 @@ const pluginState = ref<{
 } | null>(null);
 const now = ref(Date.now());
 const installOpen = ref(false);
+const showConfig = ref(false);
 const selectedRuntime = ref<string | null>(null);
 let pluginSub: { unsubscribe: () => void } | null = null;
 let clockTimer: ReturnType<typeof setInterval> | null = null;
@@ -290,10 +298,13 @@ onMounted(() => {
     void fetchRoster();
   }, 30 * 1000);
 
+  // Optional: the columns only exist once the api has migrated, and until then
+  // the card simply says nothing about the plugin.
   pluginSub = getGraphqlClient()
     .subscribe({
       query: pluginSubscription,
       variables: { serverId: props.serverId },
+      context: { optional: true },
     })
     .subscribe({
       next: ({ data }: any) => {
@@ -354,7 +365,7 @@ onBeforeUnmount(() => {
         v-if="pluginActive"
         class="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground"
       >
-        <span class="h-2 w-2 shrink-0 rounded-full bg-green-600" />
+        <span class="h-2 w-2 shrink-0 rounded-full bg-success" />
         <span class="text-foreground">
           {{
             $t("pages.dedicated_servers.detail.player_management_plugin.active")
@@ -371,6 +382,7 @@ onBeforeUnmount(() => {
           variant="ghost"
           size="xs"
           class="ml-auto"
+          :aria-expanded="installOpen"
           @click="installOpen = !installOpen"
         >
           {{
@@ -392,6 +404,7 @@ onBeforeUnmount(() => {
           variant="outline"
           size="sm"
           class="shrink-0"
+          :aria-expanded="installOpen"
           @click="installOpen = !installOpen"
         >
           {{
@@ -417,7 +430,7 @@ onBeforeUnmount(() => {
                   )
                 }}
               </p>
-              <Tabs v-model="installRuntime">
+              <Tabs v-model="installRuntime" :scroll-floor="false">
                 <TabsList>
                   <TabsTrigger value="swiftlys2">SwiftlyS2</TabsTrigger>
                   <TabsTrigger value="counterstrikesharp">
@@ -474,7 +487,21 @@ onBeforeUnmount(() => {
                 </code>
                 <ClipBoard :data="configPath" />
               </div>
-              <div class="relative">
+              <Button
+                variant="ghost"
+                size="sm"
+                :aria-expanded="showConfig"
+                @click="showConfig = !showConfig"
+              >
+                <Eye v-if="!showConfig" class="mr-2 h-4 w-4" />
+                <EyeOff v-else class="mr-2 h-4 w-4" />
+                {{
+                  showConfig
+                    ? $t("pages.dedicated_servers.detail.hide_config")
+                    : $t("pages.dedicated_servers.detail.show_config")
+                }}
+              </Button>
+              <div v-if="showConfig" class="relative">
                 <pre
                   class="overflow-x-auto rounded-md border bg-muted/40 p-3 pr-14 font-mono text-sm"
                 ><code>{{ config }}</code></pre>

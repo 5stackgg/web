@@ -3678,7 +3678,7 @@
         "player_management_plugin": {
           "active": "玩家管理插件运行中",
           "not_detected": "玩家管理插件尚未从此服务器报到，因此禁麦和禁言暂时无法实时生效。",
-          "not_detected_node": "玩家管理插件尚未报到。此节点会自动加载它，如果持续如此，请重启服务器。",
+          "not_detected_node": "玩家管理插件尚未报到。在它发布前创建的服务器需要重新部署才能获得它：请先停用服务器再重新启用。",
           "not_detected_external": "只有在此服务器上安装 5Stack 玩家管理插件后，禁麦、禁言和封禁才会实时生效。",
           "install": "安装插件",
           "install_steps": "安装步骤",

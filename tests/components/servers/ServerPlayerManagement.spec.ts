@@ -83,7 +83,7 @@ describe("ServerPlayerManagement plugin status", () => {
 
     const wrapper = await mountCard({ gameServerNodeId: "node-1" });
 
-    expect(wrapper.text()).toContain("This node loads it automatically");
+    expect(wrapper.text()).toContain("switch the server off and back on");
     expect(wrapper.text()).not.toContain("Install Plugin");
   });
 
@@ -111,6 +111,16 @@ describe("ServerPlayerManagement plugin status", () => {
     expect(wrapper.text()).toContain(
       "addons/swiftlys2/configs/plugins/PlayerManagement/config.jsonc",
     );
+
+    // The config carries the api password, so it stays hidden like the
+    // page's own plugin config until asked for.
+    expect(wrapper.html()).not.toContain("secret-password");
+
+    const show = wrapper
+      .findAll("button")
+      .find((button) => button.text() === "Show Config");
+    await show!.trigger("click");
+
     expect(wrapper.find("pre").text()).toContain('"PlayerManagement"');
     expect(wrapper.find("pre").text()).toContain("secret-password");
   });

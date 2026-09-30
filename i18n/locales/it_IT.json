@@ -3678,7 +3678,7 @@
         "player_management_plugin": {
           "active": "Plugin di gestione giocatori attivo",
           "not_detected": "Il plugin di gestione giocatori non ha ancora comunicato da questo server, quindi mute e gag non vengono ancora applicati in tempo reale.",
-          "not_detected_node": "Il plugin di gestione giocatori non ha ancora comunicato. Questo nodo lo carica automaticamente, quindi riavvia il server se il problema persiste.",
+          "not_detected_node": "Il plugin di gestione giocatori non ha ancora comunicato. I server creati prima del suo rilascio lo ricevono dopo un nuovo deploy: disattiva e riattiva il server.",
           "not_detected_external": "Mute, gag e ban vengono applicati in tempo reale solo dopo aver installato il plugin di gestione giocatori di 5Stack su questo server.",
           "install": "Installa plugin",
           "install_steps": "Passaggi di installazione",

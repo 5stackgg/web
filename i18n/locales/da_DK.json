@@ -3678,7 +3678,7 @@
         "player_management_plugin": {
           "active": "Player Management-plugin aktivt",
           "not_detected": "Player Management-pluginet har ikke meldt sig fra denne server, så mutes og gags håndhæves ikke live endnu.",
-          "not_detected_node": "Player Management-pluginet har ikke meldt sig. Denne node indlæser det automatisk, så genstart serveren, hvis det fortsætter.",
+          "not_detected_node": "Player Management-pluginet har ikke meldt sig. Servere oprettet før det kom, får det, når de udrulles igen: slå serveren fra og til igen.",
           "not_detected_external": "Mutes, gags og bans håndhæves først live, når 5Stack Player Management-pluginet er installeret på denne server.",
           "install": "Installer plugin",
           "install_steps": "Installationstrin",

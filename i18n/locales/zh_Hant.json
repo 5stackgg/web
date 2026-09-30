@@ -3678,7 +3678,7 @@
         "player_management_plugin": {
           "active": "玩家管理外掛運作中",
           "not_detected": "玩家管理外掛尚未從此伺服器回報，因此禁麥和禁言暫時無法即時生效。",
-          "not_detected_node": "玩家管理外掛尚未回報。此節點會自動載入它，若持續如此，請重新啟動伺服器。",
+          "not_detected_node": "玩家管理外掛尚未回報。在它發布前建立的伺服器需要重新部署才能取得它：請先停用伺服器再重新啟用。",
           "not_detected_external": "只有在此伺服器上安裝 5Stack 玩家管理外掛後，禁麥、禁言和封鎖才會即時生效。",
           "install": "安裝外掛",
           "install_steps": "安裝步驟",

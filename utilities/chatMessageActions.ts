@@ -9,6 +9,7 @@ export interface ChatMessagePermissions {
   canEdit: boolean;
   canReact: boolean;
   canAddReaction: boolean;
+  canSanction: boolean;
 }
 
 export interface ChatMessagePermissionInput {
@@ -67,6 +68,9 @@ export function heldChatReactions(
 // Reacting follows sending instead, on any line of any source. A gag in a group
 // room stops adding a reaction but not taking one back, so a gagged player is
 // only offered the reactions they already hold.
+//
+// A sanction is on the author, not the line, so it needs neither an id nor a
+// source -- only someone other than the viewer to put it on.
 export function chatMessagePermissions({
   message,
   viewerSteamId,
@@ -101,6 +105,11 @@ export function chatMessagePermissions({
       canAddReaction ||
       (reactor && heldChatReactions(message, viewerSteamId).size > 0),
     canAddReaction,
+    canSanction:
+      canModerate &&
+      roomType !== "direct" &&
+      !!message?.from?.steam_id &&
+      !isOwnChatMessage(message, viewerSteamId),
   };
 }
 
@@ -109,6 +118,27 @@ export function canToggleChatReaction(
   held: boolean,
 ) {
   return held ? permissions.canReact : permissions.canAddReaction;
+}
+
+// Every reaction, marked with whether the viewer holds it and whether they may
+// toggle it -- what a picker lays out.
+export function chatReactionChoices(
+  message: LobbyMessage | null | undefined,
+  viewerSteamId: string | null | undefined,
+  permissions: Pick<ChatMessagePermissions, "canReact" | "canAddReaction">,
+) {
+  const held = heldChatReactions(message, viewerSteamId);
+
+  return CHAT_REACTIONS.map(({ id, glyph }) => {
+    const mine = held.has(id);
+
+    return {
+      id,
+      glyph,
+      mine,
+      disabled: !canToggleChatReaction(permissions, mine),
+    };
+  });
 }
 
 export function hasChatMessageActions(permissions: ChatMessagePermissions) {

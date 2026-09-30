@@ -37,7 +37,27 @@ describe("chatMessagePermissions", () => {
       canEdit: false,
       canReact: false,
       canAddReaction: false,
+      canSanction: true,
     });
+  });
+
+  it("offers a moderator no sanction on their own line or in a conversation", () => {
+    expect(
+      chatMessagePermissions({
+        message: { ...message, from: { steam_id: viewerSteamId } },
+        viewerSteamId,
+        canModerate: true,
+        roomType: "match",
+      }).canSanction,
+    ).toBe(false);
+    expect(
+      chatMessagePermissions({
+        message,
+        viewerSteamId,
+        canModerate: true,
+        roomType: "direct",
+      }).canSanction,
+    ).toBe(false);
   });
 
   it("never offers a delete in a direct conversation", () => {
@@ -103,6 +123,7 @@ describe("chatMessagePermissions for the author", () => {
         canEdit: true,
         canReact: false,
         canAddReaction: false,
+        canSanction: false,
       });
     },
   );
@@ -113,12 +134,14 @@ describe("chatMessagePermissions for the author", () => {
       canEdit: true,
       canReact: false,
       canAddReaction: false,
+      canSanction: false,
     });
     expect(permissions({}, { age: SELF_SERVICE_WINDOW_MS })).toEqual({
       canDelete: false,
       canEdit: false,
       canReact: false,
       canAddReaction: false,
+      canSanction: false,
     });
   });
 
@@ -133,6 +156,7 @@ describe("chatMessagePermissions for the author", () => {
       canEdit: false,
       canReact: false,
       canAddReaction: false,
+      canSanction: false,
     });
   });
 
@@ -151,6 +175,7 @@ describe("chatMessagePermissions for the author", () => {
       canEdit: false,
       canReact: false,
       canAddReaction: false,
+      canSanction: false,
     });
   });
 
@@ -169,6 +194,7 @@ describe("chatMessagePermissions for the author", () => {
       canEdit: false,
       canReact: false,
       canAddReaction: false,
+      canSanction: false,
     });
   });
 
@@ -187,6 +213,7 @@ describe("chatMessagePermissions for the author", () => {
       canEdit: true,
       canReact: false,
       canAddReaction: false,
+      canSanction: false,
     });
   });
 
@@ -201,6 +228,7 @@ describe("chatMessagePermissions for the author", () => {
       canEdit: false,
       canReact: false,
       canAddReaction: false,
+      canSanction: true,
     });
   });
 
@@ -215,6 +243,7 @@ describe("chatMessagePermissions for the author", () => {
       canEdit: false,
       canReact: false,
       canAddReaction: false,
+      canSanction: false,
     });
   });
 
@@ -232,6 +261,7 @@ describe("chatMessagePermissions for the author", () => {
       canEdit: false,
       canReact: false,
       canAddReaction: false,
+      canSanction: false,
     });
   });
 });
@@ -349,12 +379,14 @@ describe("hasChatMessageActions", () => {
     canEdit: false,
     canReact: false,
     canAddReaction: false,
+    canSanction: false,
   };
 
   it("is true only when something is permitted", () => {
     expect(hasChatMessageActions({ ...none, canDelete: true })).toBe(true);
     expect(hasChatMessageActions({ ...none, canEdit: true })).toBe(true);
     expect(hasChatMessageActions({ ...none, canReact: true })).toBe(true);
+    expect(hasChatMessageActions({ ...none, canSanction: true })).toBe(true);
     expect(hasChatMessageActions(none)).toBe(false);
   });
 });

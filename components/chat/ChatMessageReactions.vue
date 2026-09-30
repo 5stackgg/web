@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import ChatReactionPicker from "~/components/chat/ChatReactionPicker.vue";
+import { Fold } from "~/components/ui/transitions";
 import { CHAT_REACTIONS, type ChatReaction } from "~/constants/chat";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { dateLocale } from "~/utilities/dateLocale";
 import {
   canToggleChatReaction,
+  chatReactionChoices,
   heldChatReactions,
   type ChatMessagePermissions,
 } from "~/utilities/chatMessageActions";
@@ -29,7 +32,15 @@ const { t } = useI18n();
 const NAMES_SHOWN = 8;
 
 const pillClasses =
-  "inline-flex h-5 items-center gap-1 rounded-full border border-border bg-muted/30 px-1.5 text-[10px] leading-none tabular-nums text-muted-foreground transition-colors duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring motion-reduce:transition-none";
+  "inline-flex h-6 items-center gap-1.5 rounded-md border border-border/70 bg-muted/30 pl-1.5 pr-2 text-[11px] font-semibold leading-none tabular-nums text-muted-foreground transition-colors duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring motion-reduce:transition-none";
+
+const pickerOpen = ref(false);
+
+const canAdd = computed(() => !!props.room && props.permissions.canReact);
+
+const reactionChoices = computed(() =>
+  chatReactionChoices(props.message, props.viewerSteamId, props.permissions),
+);
 
 const heldStaticClasses = tacticalFilterPillActiveClasses
   .split(" ")
@@ -108,11 +119,7 @@ function reactorName(steamId: string) {
   return undefined;
 }
 
-function reactedBy(pill: {
-  glyph: string;
-  steamIds: string[];
-  mine: boolean;
-}) {
+function reactedBy(pill: { glyph: string; steamIds: string[]; mine: boolean }) {
   const viewer = String(props.viewerSteamId);
   const steamIds = pill.steamIds.map(String);
   const ordered = pill.mine
@@ -153,35 +160,116 @@ function reactedBy(pill: {
 </script>
 
 <template>
-  <div v-if="pills.length" class="mt-1 flex flex-wrap gap-1">
-    <FiveStackToolTip
-      v-for="pill in pills"
-      :key="pill.id"
-      as-child
-      :delay-duration="120"
-      side="top"
-      :tap-toggle="!pill.interactive"
-    >
-      <template #trigger>
-        <button
-          type="button"
-          :class="[pillClasses, pillTone(pill)]"
-          :aria-pressed="pill.mine"
-          :aria-disabled="pill.interactive ? undefined : 'true'"
-          :aria-label="
-            t('chat.react_with_count', {
-              emoji: pill.glyph,
-              count: pill.steamIds.length,
-            })
-          "
-          :data-reaction="pill.id"
-          @click="toggle(pill)"
-        >
-          <span class="text-[11px]" aria-hidden="true">{{ pill.glyph }}</span>
-          <span aria-hidden="true">{{ pill.steamIds.length }}</span>
-        </button>
-      </template>
-      {{ reactedBy(pill) }}
-    </FiveStackToolTip>
-  </div>
+  <!-- The row folds open with its first reaction and shut with its last, the
+       dying pill carried by the frozen subtree rather than snapping away. -->
+  <Fold :open="pills.length > 0">
+    <div class="-m-0.5 flex flex-wrap items-center pt-1">
+      <TransitionGroup
+        tag="div"
+        class="contents"
+        enter-active-class="pill-anim"
+        enter-from-class="pill-collapsed"
+        leave-active-class="pill-anim pill-leave"
+        leave-to-class="pill-collapsed"
+      >
+        <!-- A bare cell whose column folds, so the pills beside it slide over
+             rather than jump. Its spacing rides inside the clip. -->
+        <div v-for="pill in pills" :key="pill.id" class="grid grid-cols-[1fr]">
+          <div class="pill-cell min-w-0">
+            <div class="p-0.5">
+              <FiveStackToolTip
+                as-child
+                :delay-duration="120"
+                side="top"
+                :tap-toggle="!pill.interactive"
+              >
+                <template #trigger>
+                  <button
+                    type="button"
+                    :class="[pillClasses, pillTone(pill)]"
+                    :aria-pressed="pill.mine"
+                    :aria-disabled="pill.interactive ? undefined : 'true'"
+                    :aria-label="
+                      t('chat.react_with_count', {
+                        emoji: pill.glyph,
+                        count: pill.steamIds.length,
+                      })
+                    "
+                    :data-reaction="pill.id"
+                    @click="toggle(pill)"
+                  >
+                    <span class="text-sm leading-none" aria-hidden="true">
+                      {{ pill.glyph }}
+                    </span>
+                    <!-- The count rolls rather than blinks when it changes. -->
+                    <span
+                      class="inline-grid overflow-hidden"
+                      aria-hidden="true"
+                    >
+                      <Transition
+                        enter-from-class="translate-y-full opacity-0"
+                        enter-active-class="transition-[transform,opacity] duration-200 ease-out motion-reduce:transition-none"
+                        leave-active-class="transition-[transform,opacity] duration-150 ease-in motion-reduce:transition-none"
+                        leave-to-class="-translate-y-full opacity-0"
+                      >
+                        <span
+                          :key="pill.steamIds.length"
+                          class="[grid-area:1/1]"
+                        >
+                          {{ pill.steamIds.length }}
+                        </span>
+                      </Transition>
+                    </span>
+                  </button>
+                </template>
+                {{ reactedBy(pill) }}
+              </FiveStackToolTip>
+            </div>
+          </div>
+        </div>
+      </TransitionGroup>
+      <!-- Always holds its place at the end, so showing it on hover moves
+           nothing. A touch screen reacts from the line's menu instead. -->
+      <div
+        v-if="canAdd"
+        class="p-0.5 opacity-0 transition-opacity duration-150 focus-within:opacity-100 group-hover/chat-message:opacity-100 has-[[aria-expanded=true]]:opacity-100 motion-reduce:transition-none [@media(hover:none)]:hidden"
+      >
+        <ChatReactionPicker
+          v-model:open="pickerOpen"
+          :choices="reactionChoices"
+          :gagged="!permissions.canAddReaction"
+          trigger-class="h-6 w-7 rounded-md border border-transparent bg-muted/30 text-muted-foreground hover:bg-muted/60 hover:text-foreground [&_svg]:size-3.5"
+          @react="emit('toggle', $event)"
+        />
+      </div>
+    </div>
+  </Fold>
 </template>
+
+<style scoped>
+.pill-anim {
+  transition:
+    grid-template-columns 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.18s ease,
+    transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: left center;
+}
+.pill-leave {
+  transition-duration: 0.11s;
+  transition-timing-function: ease-in;
+}
+/* Clipped only while animating, so focus rings survive at rest. */
+.pill-anim > .pill-cell {
+  overflow: hidden;
+}
+.pill-collapsed {
+  grid-template-columns: 0fr;
+  opacity: 0;
+  transform: scale(0.6);
+}
+@media (prefers-reduced-motion: reduce) {
+  .pill-anim {
+    transition-duration: 1ms;
+  }
+}
+</style>

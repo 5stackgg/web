@@ -9,7 +9,12 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 </script>
 
 <template>
-  <div :class="rowClasses" :style="{ paddingTop: `${padTopRem}rem` }">
+  <div
+    :class="rowClasses"
+    :style="{ paddingTop: `${padTopRem}rem` }"
+    @pointerenter="hovered = $event.pointerType !== 'touch'"
+    @pointerleave="hovered = false"
+  >
     <!-- One rail down a whole run of team lines. Rows inside a run carry no
          margin, so the segments meet and read as a single stroke; a border per
          row broke into dashes the moment two people spoke in a row. -->
@@ -121,13 +126,14 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
       />
     </div>
 
-    <!-- Centred on the first line rather than hung off its top: the trigger is
-         taller than a line of chat. -->
+    <!-- Floats over the top edge of the line, as the frame is taller than a
+         line of chat and would otherwise hide the text it acts on. -->
     <ChatMessageActions
       v-if="hasActions && !editing"
       ref="actions"
-      class="absolute right-0 z-10"
-      :style="{ top: `calc(${padTopRem}rem - 0.25rem)` }"
+      class="absolute right-0.5 z-10"
+      :style="{ top: `calc(${padTopRem}rem - 0.75rem)` }"
+      :hovered="hovered"
       :message="message"
       :room="room"
       :permissions="permissions"
@@ -192,6 +198,7 @@ export default {
     return {
       // Not a ticking clock: the menu refreshes it when it opens.
       permissionsCheckedAt: Date.now(),
+      hovered: false,
     };
   },
   methods: {
@@ -221,8 +228,7 @@ export default {
 
       void this.$nextTick(() => {
         const actions = this.$refs.actions as
-          | { focusTrigger?: () => void }
-          | undefined;
+          { focusTrigger?: () => void } | undefined;
 
         actions?.focusTrigger?.();
       });
@@ -325,7 +331,10 @@ export default {
       // to it, so a team line starts on the same column as every other line and
       // the avatars stay in one straight edge down the list.
       const classes = [
-        "group group/chat-message relative pl-12 text-[11px] leading-snug",
+        "group group/chat-message relative isolate pl-12 text-[11px] leading-snug",
+        // Lifts the line under the pointer, and holds it while one of its menus
+        // is open and the pointer has gone into it.
+        "before:pointer-events-none before:absolute before:-z-10 before:rounded-sm before:transition-colors before:duration-150 [@media(hover:hover)]:hover:before:bg-muted/25 has-[[data-chat-menu-open]]:before:bg-muted/40",
       ];
 
       // Room for the actions trigger kept whether or not it is showing, so a
@@ -336,12 +345,13 @@ export default {
 
       if (!this.isTeamMessage) {
         classes.push(
+          "before:inset-x-0 before:-inset-y-0.5",
           this.isSameSender && this.isCloseTogether ? "mt-1" : "mt-3",
         );
         return classes;
       }
 
-      classes.push("bg-[hsl(var(--tac-amber)/0.05)]");
+      classes.push("bg-[hsl(var(--tac-amber)/0.05)] before:inset-0");
       if (!this.reservesActions) {
         classes.push("pr-2");
       }

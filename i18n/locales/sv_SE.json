@@ -8517,6 +8517,8 @@
     "send_failed": "Ditt meddelande kunde inte skickas",
     "gagged": "Din chatt är avstängd och du kan inte skicka chattmeddelanden.",
     "message_actions": "Meddelandeåtgärder",
+    "copy_message": "Kopiera text",
+    "moderate_player": "Moderera {name}",
     "delete_message": "Ta bort meddelande",
     "delete_confirm_title": "Ta bort meddelande?",
     "delete_confirm_description": "Meddelandet från {name} tas bort för alla i den här chatten.",

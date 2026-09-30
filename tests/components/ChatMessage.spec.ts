@@ -378,7 +378,7 @@ describe("ChatMessage editing", () => {
     const items = Array.from(
       document.body.querySelectorAll<HTMLElement>('[role="menuitem"]'),
     ).map((item) => item.textContent?.trim());
-    expect(items).toEqual(["Delete Message"]);
+    expect(items).toEqual(["Copy Text", "Delete Message"]);
   });
 
   it("closes and explains when the window closed first", async () => {
@@ -493,24 +493,16 @@ describe("ChatMessage reactions", () => {
     });
   });
 
-  it("reacts from the menu's picker", async () => {
+  it("reacts from the toolbar", async () => {
     const react = vi.spyOn(socket, "react").mockResolvedValue(undefined);
     const wrapper = await mountMessage();
 
-    await wrapper.get(TRIGGER).trigger("keydown", { key: "Enter" });
-    await flushPromises();
-    Array.from(
-      document.body.querySelectorAll<HTMLElement>('[role="menuitem"]'),
-    )
-      .find((item) => item.textContent?.trim() === "Add Reaction")!
-      .click();
-    await flushPromises();
-    await new Promise((resolve) => setTimeout(resolve, 20));
+    wrapper.element.dispatchEvent(
+      new PointerEvent("pointerenter", { pointerType: "mouse" }),
+    );
     await flushPromises();
 
-    document.body
-      .querySelector<HTMLElement>('[role="dialog"] [data-reaction="laugh"]')!
-      .click();
+    await wrapper.get('button[data-quick-reaction="laugh"]').trigger("click");
     await flushPromises();
 
     expect(react).toHaveBeenCalledWith(
@@ -539,8 +531,42 @@ describe("ChatMessage reactions", () => {
       Array.from(
         document.body.querySelectorAll<HTMLElement>('[role="menuitem"]'),
       ).map((item) => item.textContent?.trim()),
-    ).toEqual(["Add Reaction"]);
+    ).toEqual(["Copy Text"]);
     expect(toast).not.toHaveBeenCalled();
+
+    wrapper.element.dispatchEvent(
+      new PointerEvent("pointerenter", { pointerType: "mouse" }),
+    );
+    await flushPromises();
+
+    expect(wrapper.findAll("button[data-quick-reaction]")).toHaveLength(3);
+  });
+
+  it("shows the toolbar for a mouse over the line, never a touch", async () => {
+    const wrapper = await mountMessage();
+    const quick = () => wrapper.findAll("button[data-quick-reaction]");
+
+    wrapper.element.dispatchEvent(
+      new PointerEvent("pointerenter", { pointerType: "mouse" }),
+    );
+    await flushPromises();
+
+    expect(quick()).toHaveLength(3);
+
+    wrapper.element.dispatchEvent(
+      new PointerEvent("pointerleave", { pointerType: "mouse" }),
+    );
+    await flushPromises();
+
+    expect(quick()).toHaveLength(0);
+
+    wrapper.element.dispatchEvent(
+      new PointerEvent("pointerenter", { pointerType: "touch" }),
+    );
+    await flushPromises();
+
+    expect(quick()).toHaveLength(0);
+    expect(wrapper.find(TRIGGER).exists()).toBe(true);
   });
 
   it("keeps a gagged player's row the same width with or without a trigger", async () => {

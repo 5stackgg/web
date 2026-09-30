@@ -8517,6 +8517,8 @@
     "send_failed": "Non è stato possibile inviare il tuo messaggio",
     "gagged": "Sei silenziato in chat e non puoi inviare messaggi.",
     "message_actions": "Azioni messaggio",
+    "copy_message": "Copia testo",
+    "moderate_player": "Modera {name}",
     "delete_message": "Elimina messaggio",
     "delete_confirm_title": "Eliminare il messaggio?",
     "delete_confirm_description": "Il messaggio di {name} verrà rimosso per tutti i partecipanti a questa chat.",

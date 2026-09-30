@@ -8517,6 +8517,8 @@
     "send_failed": "訊息傳送失敗",
     "gagged": "你已被禁言，無法傳送聊天訊息。",
     "message_actions": "訊息操作",
+    "copy_message": "複製文字",
+    "moderate_player": "管理 {name}",
     "delete_message": "刪除訊息",
     "delete_confirm_title": "要刪除訊息嗎？",
     "delete_confirm_description": "{name} 的這則訊息將對此聊天中的所有人移除。",

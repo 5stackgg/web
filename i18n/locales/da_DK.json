@@ -3699,15 +3699,12 @@
           "continue": "Fortsæt"
         },
         "save_restart": "Gem og genstart",
-        "restart_hint": "Når du gemmer, genstartes serveren, og alle der spiller bliver afbrudt.",
         "map_rotation": {
           "title": "Mapsrotation",
           "description": "De maps denne server skifter mellem. Den starter på den første, eller en tilfældig når der blandes, og derefter overtager rotationspluginnet med afstemninger ved mapslut, rock the vote og det automatiske skift.",
           "maps": "Maps",
           "shuffle": "Bland",
           "shuffle_hint": "Vælg næste map tilfældigt",
-          "in_order": "I rækkefølge",
-          "in_order_hint": "Spil listen oppefra og ned",
           "no_plugin": "Der er ikke installeret et plugin til mapsrotation, så serveren bliver på sit første map.",
           "install_plugin": "Installer MapChooser",
           "workshop_order_hint": "MapChooser mister sin plads i listen på workshop-maps og vender altid tilbage til det andet. Hold Bland slået til for workshop-maps.",
@@ -3727,14 +3724,11 @@
           "imported_skipped": "Sprunget over, ikke CS2-maps: {count}",
           "move_up": "Flyt op",
           "move_down": "Flyt ned",
-          "remove": "Fjern",
-          "saved": "Mapsrotation gemt. Serveren genstarter.",
-          "saved_disabled": "Mapsrotation gemt. Den gælder, når serveren er slået til."
+          "remove": "Fjern"
         },
         "plugins": {
           "title": "Plugins",
           "description": "Slå et spilplugin til eller fra kun for denne server. Standard følger pluginnets egne indlæsningsindstillinger.",
-          "active": "Aktive",
           "default": "Standard",
           "on": "Til",
           "off": "Fra",
@@ -3745,35 +3739,58 @@
           "forced_on": "Slået til for denne server",
           "forced_off": "Slået fra for denne server",
           "for_rotation": "Indlæses for mapsrotationen",
-          "map_rotation": "Styrer mapsrotationen",
           "from_mode": "Fra {mode}",
           "empty": "Der er endnu ikke installeret nogen spilplugins.",
-          "browse": "Plugin-oversigt",
-          "saved": "Plugins gemt. Serveren genstarter.",
-          "saved_disabled": "Plugins gemt. De gælder, når serveren er slået til."
+          "browse": "Plugin-oversigt"
         },
         "access": {
           "title": "Adgang",
           "description": "Vælg hvem der kan forbinde. En begrænset server er skjult for alle andre, og Player Management-pluginnet afviser dem ved forbindelse.",
-          "open": "Åben",
           "restricted": "Begrænset",
           "open_hint": "Alle kan finde og joine denne server.",
           "plugin_missing": "Player Management-pluginnet har ikke meldt sig fra denne server de sidste 3 minutter, så ingen holdes ude endnu.",
           "staff": "Moderatorer og derover kan altid joine.",
           "min_role": "Minimumsrolle",
+          "min_role_hint": "Alle med denne rolle eller højere kan joine.",
           "no_role": "Ingen rolleregel",
           "role_and_up": "{role} og derover",
           "players": "Spillere",
+          "players_hint": "Udvalgte spillere, der altid kan joine.",
           "add_player": "Tilføj en spiller",
           "already_added": "Allerede på listen",
           "events": "Events",
           "add_event": "Tilføj et event",
           "events_hint": "Eventmedlemmer kan kun joine, mens eventet er i gang.",
           "no_events": "Ingen events fundet",
-          "remove": "Fjern",
+          "remove": "Fjern"
+        },
+        "settings": {
+          "title": "Serverindstillinger",
+          "group": "Communityserver",
+          "select_section": "Sektion",
           "save": "Gem",
-          "save_hint": "Træder i kraft inden for sekunder. Spillere uden adgang fjernes.",
-          "saved": "Adgang gemt. Serveren anvender den inden for sekunder."
+          "restart_note": "Når du gemmer, genstarter serveren én gang.",
+          "live_note": "Træder i kraft inden for sekunder.",
+          "saved_restart": "Gemt. Serveren genstarter.",
+          "saved_live": "Gemt. Serveren anvender det inden for sekunder.",
+          "saved_disabled": "Gemt. Gælder, når serveren er slået til.",
+          "changes": {
+            "maps_added": "Maps tilføjet: {count}",
+            "maps_removed": "Maps fjernet: {count}",
+            "map_order": "Maprækkefølge ændret",
+            "shuffle_on": "Bland til",
+            "shuffle_off": "Bland fra",
+            "plugin_default": "{plugin}: standard",
+            "plugin_on": "{plugin}: til",
+            "plugin_off": "{plugin}: fra",
+            "restricted": "Begrænset",
+            "opened": "Åben for alle",
+            "min_role": "Minimumsrolle ændret",
+            "players_added": "Spillere tilføjet: {count}",
+            "players_removed": "Spillere fjernet: {count}",
+            "events_added": "Events tilføjet: {count}",
+            "events_removed": "Events fjernet: {count}"
+          }
         }
       }
     },

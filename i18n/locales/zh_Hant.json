@@ -3699,15 +3699,12 @@
           "continue": "繼續"
         },
         "save_restart": "儲存並重新啟動",
-        "restart_hint": "儲存後伺服器會重新啟動，正在遊戲中的所有人都會中斷連線。",
         "map_rotation": {
           "title": "地圖輪替",
           "description": "此伺服器輪流使用的地圖。它會從第一張地圖啟動（開啟隨機時則隨機選一張），之後由地圖輪替外掛負責地圖結束投票、Rock the Vote 與自動輪替。",
           "maps": "地圖",
           "shuffle": "隨機",
           "shuffle_hint": "隨機選擇下一張地圖",
-          "in_order": "依序",
-          "in_order_hint": "從上到下依序遊玩清單",
           "no_plugin": "未安裝地圖輪替外掛，伺服器會一直停留在第一張地圖。",
           "install_plugin": "安裝 MapChooser",
           "workshop_order_hint": "MapChooser 在工作坊地圖上會失去它在清單中的位置，並不斷回到第二張地圖。使用工作坊地圖時請保持隨機開啟。",
@@ -3727,14 +3724,11 @@
           "imported_skipped": "已略過（不是 CS2 地圖）：{count}",
           "move_up": "上移",
           "move_down": "下移",
-          "remove": "移除",
-          "saved": "地圖輪替已儲存，伺服器正在重新啟動。",
-          "saved_disabled": "地圖輪替已儲存，將在伺服器啟用後生效。"
+          "remove": "移除"
         },
         "plugins": {
           "title": "外掛",
           "description": "僅為此伺服器開啟或關閉某個遊戲外掛。預設會遵循外掛本身的載入設定。",
-          "active": "已啟用",
           "default": "預設",
           "on": "開啟",
           "off": "關閉",
@@ -3745,35 +3739,58 @@
           "forced_on": "已為此伺服器開啟",
           "forced_off": "已為此伺服器關閉",
           "for_rotation": "為地圖輪替載入",
-          "map_rotation": "負責地圖輪替",
           "from_mode": "來自 {mode}",
           "empty": "尚未安裝任何遊戲外掛。",
-          "browse": "外掛目錄",
-          "saved": "外掛已儲存，伺服器正在重新啟動。",
-          "saved_disabled": "外掛已儲存，將在伺服器啟用後生效。"
+          "browse": "外掛目錄"
         },
         "access": {
           "title": "存取權限",
           "description": "選擇誰可以連線。受限伺服器對其他所有人隱藏，Player Management 外掛會在連線時拒絕他們。",
-          "open": "開放",
           "restricted": "受限",
           "open_hint": "任何人都可以找到並加入此伺服器。",
           "plugin_missing": "Player Management 外掛在過去 3 分鐘內沒有從此伺服器回報，因此目前還沒有阻擋任何人。",
           "staff": "版主及以上角色一律可以加入。",
           "min_role": "最低角色",
+          "min_role_hint": "達到此角色及以上的所有人都可以加入。",
           "no_role": "無角色規則",
           "role_and_up": "{role} 及以上",
           "players": "玩家",
+          "players_hint": "一律可以加入的指定玩家。",
           "add_player": "新增玩家",
           "already_added": "已在清單中",
           "events": "活動",
           "add_event": "新增活動",
           "events_hint": "活動成員只能在活動進行期間加入。",
           "no_events": "找不到活動",
-          "remove": "移除",
+          "remove": "移除"
+        },
+        "settings": {
+          "title": "伺服器設定",
+          "group": "社群伺服器",
+          "select_section": "區段",
           "save": "儲存",
-          "save_hint": "幾秒內生效。不被允許的玩家會被移出。",
-          "saved": "存取權限已儲存，伺服器將在幾秒內套用。"
+          "restart_note": "儲存後伺服器會重新啟動一次。",
+          "live_note": "幾秒內生效。",
+          "saved_restart": "已儲存，伺服器正在重新啟動。",
+          "saved_live": "已儲存，伺服器將在幾秒內套用。",
+          "saved_disabled": "已儲存，將在伺服器啟用後生效。",
+          "changes": {
+            "maps_added": "已新增地圖：{count}",
+            "maps_removed": "已移除地圖：{count}",
+            "map_order": "地圖順序已變更",
+            "shuffle_on": "隨機已開啟",
+            "shuffle_off": "隨機已關閉",
+            "plugin_default": "{plugin}：預設",
+            "plugin_on": "{plugin}：開啟",
+            "plugin_off": "{plugin}：關閉",
+            "restricted": "受限",
+            "opened": "對所有人開放",
+            "min_role": "最低角色已變更",
+            "players_added": "已新增玩家：{count}",
+            "players_removed": "已移除玩家：{count}",
+            "events_added": "已新增活動：{count}",
+            "events_removed": "已移除活動：{count}"
+          }
         }
       }
     },

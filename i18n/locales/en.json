@@ -3699,15 +3699,12 @@
           "continue": "Continue"
         },
         "save_restart": "Save & Restart",
-        "restart_hint": "Saving restarts the server, which disconnects anyone playing on it.",
         "map_rotation": {
           "title": "Map Rotation",
           "description": "The maps this server cycles through. It boots on the first one, or a random one when shuffled, and the map rotation plugin takes over from there with end-of-map votes, rock the vote and the automatic cycle.",
           "maps": "Maps",
           "shuffle": "Shuffle",
           "shuffle_hint": "Pick the next map at random",
-          "in_order": "In Order",
-          "in_order_hint": "Play the list from top to bottom",
           "no_plugin": "No map rotation plugin is installed, so the server will stay on its first map.",
           "install_plugin": "Install MapChooser",
           "workshop_order_hint": "MapChooser loses its place in the list on workshop maps and keeps returning to the second one. Keep Shuffle on for workshop maps.",
@@ -3727,14 +3724,11 @@
           "imported_skipped": "Skipped, not CS2 maps: {count}",
           "move_up": "Move Up",
           "move_down": "Move Down",
-          "remove": "Remove",
-          "saved": "Map rotation saved. The server is restarting.",
-          "saved_disabled": "Map rotation saved. It applies when the server is enabled."
+          "remove": "Remove"
         },
         "plugins": {
           "title": "Plugins",
           "description": "Switch a game plugin on or off for this server only. Default follows the plugin's own load settings.",
-          "active": "Active",
           "default": "Default",
           "on": "On",
           "off": "Off",
@@ -3745,35 +3739,58 @@
           "forced_on": "Switched on for this server",
           "forced_off": "Switched off for this server",
           "for_rotation": "Loads to play the map rotation",
-          "map_rotation": "Runs the map rotation",
           "from_mode": "From {mode}",
           "empty": "No game plugins are installed yet.",
-          "browse": "Plugin Directory",
-          "saved": "Plugins saved. The server is restarting.",
-          "saved_disabled": "Plugins saved. They apply when the server is enabled."
+          "browse": "Plugin Directory"
         },
         "access": {
           "title": "Access",
           "description": "Choose who can connect. A restricted server is hidden from everyone else, and the Player Management plugin refuses them at connect.",
-          "open": "Open",
           "restricted": "Restricted",
           "open_hint": "Anyone can find and join this server.",
           "plugin_missing": "The Player Management plugin hasn't checked in from this server in the last 3 minutes, so nobody is kept out yet.",
           "staff": "Moderators and above can always join.",
           "min_role": "Minimum Role",
+          "min_role_hint": "Everyone at or above this role can join.",
           "no_role": "No role rule",
           "role_and_up": "{role} and above",
           "players": "Players",
+          "players_hint": "Hand-picked players who can always join.",
           "add_player": "Add a player",
           "already_added": "Already on the list",
           "events": "Events",
           "add_event": "Add an event",
           "events_hint": "Event members can join only while the event is live.",
           "no_events": "No events found",
-          "remove": "Remove",
+          "remove": "Remove"
+        },
+        "settings": {
+          "title": "Server Settings",
+          "group": "Community Server",
+          "select_section": "Section",
           "save": "Save",
-          "save_hint": "Applies within seconds. Players who aren't allowed are removed.",
-          "saved": "Access saved. The server applies it within seconds."
+          "restart_note": "Saving restarts the server once.",
+          "live_note": "Applies within seconds.",
+          "saved_restart": "Saved. The server is restarting.",
+          "saved_live": "Saved. The server applies it within seconds.",
+          "saved_disabled": "Saved. It applies when the server is enabled.",
+          "changes": {
+            "maps_added": "Maps added: {count}",
+            "maps_removed": "Maps removed: {count}",
+            "map_order": "Map order changed",
+            "shuffle_on": "Shuffle on",
+            "shuffle_off": "Shuffle off",
+            "plugin_default": "{plugin}: default",
+            "plugin_on": "{plugin}: on",
+            "plugin_off": "{plugin}: off",
+            "restricted": "Restricted",
+            "opened": "Open to everyone",
+            "min_role": "Minimum role changed",
+            "players_added": "Players added: {count}",
+            "players_removed": "Players removed: {count}",
+            "events_added": "Events added: {count}",
+            "events_removed": "Events removed: {count}"
+          }
         }
       }
     },

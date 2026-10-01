@@ -3699,15 +3699,12 @@
           "continue": "Weiter"
         },
         "save_restart": "Speichern & Neu starten",
-        "restart_hint": "Beim Speichern wird der Server neu gestartet, alle Spieler darauf werden getrennt.",
         "map_rotation": {
           "title": "Map-Rotation",
           "description": "Die Maps, die dieser Server durchläuft. Er startet auf der ersten, oder bei Zufallsreihenfolge auf einer zufälligen, danach übernimmt das Map-Rotations-Plugin mit Abstimmungen am Map-Ende, Rock the Vote und dem automatischen Wechsel.",
           "maps": "Maps",
           "shuffle": "Zufällig",
           "shuffle_hint": "Nächste Map zufällig wählen",
-          "in_order": "Der Reihe nach",
-          "in_order_hint": "Die Liste von oben nach unten spielen",
           "no_plugin": "Kein Map-Rotations-Plugin installiert, der Server bleibt auf seiner ersten Map.",
           "install_plugin": "MapChooser installieren",
           "workshop_order_hint": "MapChooser verliert bei Workshop-Maps seine Position in der Liste und kehrt immer zur zweiten zurück. Lass „Zufällig“ bei Workshop-Maps an.",
@@ -3727,14 +3724,11 @@
           "imported_skipped": "Übersprungen, keine CS2-Maps: {count}",
           "move_up": "Nach oben",
           "move_down": "Nach unten",
-          "remove": "Entfernen",
-          "saved": "Map-Rotation gespeichert. Der Server startet neu.",
-          "saved_disabled": "Map-Rotation gespeichert. Sie gilt, sobald der Server aktiviert ist."
+          "remove": "Entfernen"
         },
         "plugins": {
           "title": "Plugins",
           "description": "Schalte ein Spiel-Plugin nur für diesen Server ein oder aus. Standard folgt den Ladeeinstellungen des Plugins.",
-          "active": "Aktiv",
           "default": "Standard",
           "on": "An",
           "off": "Aus",
@@ -3745,35 +3739,58 @@
           "forced_on": "Für diesen Server eingeschaltet",
           "forced_off": "Für diesen Server ausgeschaltet",
           "for_rotation": "Lädt für die Map-Rotation",
-          "map_rotation": "Steuert die Map-Rotation",
           "from_mode": "Aus {mode}",
           "empty": "Noch keine Spiel-Plugins installiert.",
-          "browse": "Plugin-Verzeichnis",
-          "saved": "Plugins gespeichert. Der Server startet neu.",
-          "saved_disabled": "Plugins gespeichert. Sie gelten, sobald der Server aktiviert ist."
+          "browse": "Plugin-Verzeichnis"
         },
         "access": {
           "title": "Zugang",
           "description": "Lege fest, wer sich verbinden darf. Ein eingeschränkter Server ist für alle anderen ausgeblendet, und das Player-Management-Plugin weist sie beim Verbinden ab.",
-          "open": "Offen",
           "restricted": "Eingeschränkt",
           "open_hint": "Jeder kann diesen Server finden und beitreten.",
           "plugin_missing": "Das Player-Management-Plugin hat sich in den letzten 3 Minuten nicht von diesem Server gemeldet, daher wird noch niemand ferngehalten.",
           "staff": "Moderatoren und höher können immer beitreten.",
           "min_role": "Mindestrolle",
+          "min_role_hint": "Alle ab dieser Rolle können beitreten.",
           "no_role": "Keine Rollenregel",
           "role_and_up": "{role} und höher",
           "players": "Spieler",
+          "players_hint": "Ausgewählte Spieler, die immer beitreten können.",
           "add_player": "Spieler hinzufügen",
           "already_added": "Bereits auf der Liste",
           "events": "Events",
           "add_event": "Event hinzufügen",
           "events_hint": "Event-Mitglieder können nur beitreten, solange das Event läuft.",
           "no_events": "Keine Events gefunden",
-          "remove": "Entfernen",
+          "remove": "Entfernen"
+        },
+        "settings": {
+          "title": "Servereinstellungen",
+          "group": "Community-Server",
+          "select_section": "Bereich",
           "save": "Speichern",
-          "save_hint": "Gilt innerhalb von Sekunden. Nicht zugelassene Spieler werden entfernt.",
-          "saved": "Zugang gespeichert. Der Server übernimmt ihn innerhalb von Sekunden."
+          "restart_note": "Beim Speichern startet der Server einmal neu.",
+          "live_note": "Gilt innerhalb von Sekunden.",
+          "saved_restart": "Gespeichert. Der Server startet neu.",
+          "saved_live": "Gespeichert. Der Server übernimmt es innerhalb von Sekunden.",
+          "saved_disabled": "Gespeichert. Gilt, sobald der Server aktiviert ist.",
+          "changes": {
+            "maps_added": "Maps hinzugefügt: {count}",
+            "maps_removed": "Maps entfernt: {count}",
+            "map_order": "Map-Reihenfolge geändert",
+            "shuffle_on": "Zufällig an",
+            "shuffle_off": "Zufällig aus",
+            "plugin_default": "{plugin}: Standard",
+            "plugin_on": "{plugin}: an",
+            "plugin_off": "{plugin}: aus",
+            "restricted": "Eingeschränkt",
+            "opened": "Offen für alle",
+            "min_role": "Mindestrolle geändert",
+            "players_added": "Spieler hinzugefügt: {count}",
+            "players_removed": "Spieler entfernt: {count}",
+            "events_added": "Events hinzugefügt: {count}",
+            "events_removed": "Events entfernt: {count}"
+          }
         }
       }
     },

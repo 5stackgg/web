@@ -3208,8 +3208,6 @@
         "acquiring_telemetry": "Acquiring telemetry…",
         "matches_section": "MATCHES",
         "intro": {
-          "section": "Performance Intro",
-          "last_n": "Last {n} matches",
           "empty_title": "No parsed matches",
           "empty_description": "Detailed performance stats appear here once this player has finished and parsed matches.",
           "adr": "ADR",
@@ -3233,8 +3231,6 @@
           }
         },
         "maps": {
-          "section": "MAPS",
-          "description": "Career performance broken down by map, with terrorist and counter-terrorist side splits.",
           "empty_title": "No map data yet",
           "empty_description": "Once this player finishes matches, per-map performance will appear here.",
           "played_short": "PLD",
@@ -3255,7 +3251,6 @@
           "col_avg_kda": "Avg K/D/A"
         },
         "weapons_table": {
-          "section": "Weapons",
           "empty_title": "No weapon data",
           "empty_description": "This player has no recorded weapon kills yet.",
           "weapon": "Weapon",

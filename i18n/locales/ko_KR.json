@@ -3208,8 +3208,6 @@
         "acquiring_telemetry": "데이터 수집 중…",
         "matches_section": "매치",
         "intro": {
-          "section": "퍼포먼스 개요",
-          "last_n": "최근 {n}경기",
           "empty_title": "파싱된 매치 없음",
           "empty_description": "이 플레이어의 매치가 종료되고 파싱되면 상세 퍼포먼스 통계가 이곳에 표시됩니다.",
           "adr": "ADR",
@@ -3233,8 +3231,6 @@
           }
         },
         "maps": {
-          "section": "맵",
-          "description": "맵별 커리어 퍼포먼스를 테러리스트/카운터테러리스트 진영별로 나눠서 보여줍니다.",
           "empty_title": "아직 맵 데이터 없음",
           "empty_description": "이 플레이어가 매치를 마치면 맵별 퍼포먼스가 이곳에 표시됩니다.",
           "played_short": "PLD",
@@ -3255,7 +3251,6 @@
           "col_avg_kda": "평균 K/D/A"
         },
         "weapons_table": {
-          "section": "무기",
           "empty_title": "무기 데이터 없음",
           "empty_description": "이 플레이어는 아직 무기 킬 기록이 없습니다.",
           "weapon": "무기",

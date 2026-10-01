@@ -3208,8 +3208,6 @@
         "acquiring_telemetry": "正在取得遙測資料……",
         "matches_section": "比賽",
         "intro": {
-          "section": "表現概覽",
-          "last_n": "最近 {n} 場比賽",
           "empty_title": "無已解析比賽",
           "empty_description": "當此玩家完成並解析比賽後，詳細表現數據將顯示於此。",
           "adr": "ADR",
@@ -3233,8 +3231,6 @@
           }
         },
         "maps": {
-          "section": "地圖",
-          "description": "依地圖劃分的生涯表現，包含恐怖分子與反恐小組兩方數據。",
           "empty_title": "尚無地圖資料",
           "empty_description": "此玩家完成比賽後，各地圖表現將顯示於此。",
           "played_short": "場次",
@@ -3255,7 +3251,6 @@
           "col_avg_kda": "平均 K/D/A"
         },
         "weapons_table": {
-          "section": "武器",
           "empty_title": "尚無武器資料",
           "empty_description": "此玩家尚無記錄的武器擊殺。",
           "weapon": "武器",

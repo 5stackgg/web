@@ -3208,8 +3208,6 @@
         "acquiring_telemetry": "Obtendo telemetria…",
         "matches_section": "PARTIDAS",
         "intro": {
-          "section": "Desempenho / Performance",
-          "last_n": "Últimas {n} partidas",
           "empty_title": "Nenhuma partida processada",
           "empty_description": "As estatísticas detalhadas de desempenho aparecerão aqui quando este jogador concluir e processar partidas.",
           "adr": "ADR",
@@ -3233,8 +3231,6 @@
           }
         },
         "maps": {
-          "section": "MAPAS",
-          "description": "Desempenho de carreira detalhado por mapa, com divisão entre lados terrorista e contra-terrorista.",
           "empty_title": "Nenhum dado de mapa ainda",
           "empty_description": "Assim que este jogador concluir partidas, o desempenho por mapa aparecerá aqui.",
           "played_short": "JOG",
@@ -3255,7 +3251,6 @@
           "col_avg_kda": "Média K/D/A"
         },
         "weapons_table": {
-          "section": "Armas",
           "empty_title": "Nenhum dado de armas",
           "empty_description": "Este jogador ainda não possui abates registrados com armas.",
           "weapon": "Arma",

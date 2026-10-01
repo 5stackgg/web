@@ -3208,8 +3208,6 @@
         "acquiring_telemetry": "Telemetrie wird geladen …",
         "matches_section": "MATCHES",
         "intro": {
-          "section": "Performance-Übersicht",
-          "last_n": "Letzte {n} Matches",
           "empty_title": "Keine ausgewerteten Matches",
           "empty_description": "Detaillierte Performance-Stats erscheinen hier, sobald dieser Spieler Matches beendet hat und sie ausgewertet sind.",
           "adr": "ADR",
@@ -3233,8 +3231,6 @@
           }
         },
         "maps": {
-          "section": "MAPS",
-          "description": "Karriere-Performance pro Map, aufgeteilt nach T- und CT-Seite.",
           "empty_title": "Noch keine Map-Daten",
           "empty_description": "Sobald dieser Spieler Matches beendet, erscheint hier die Performance pro Map.",
           "played_short": "GSP",
@@ -3255,7 +3251,6 @@
           "col_avg_kda": "Ø K/D/A"
         },
         "weapons_table": {
-          "section": "Waffen",
           "empty_title": "Keine Waffendaten",
           "empty_description": "Für diesen Spieler sind noch keine Kills mit Waffen erfasst.",
           "weapon": "Waffe",

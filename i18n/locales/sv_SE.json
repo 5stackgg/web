@@ -3208,8 +3208,6 @@
         "acquiring_telemetry": "Hämtar telemetri…",
         "matches_section": "MATCHER",
         "intro": {
-          "section": "Prestationsöversikt",
-          "last_n": "Senaste {n} matcherna",
           "empty_title": "Inga analyserade matcher",
           "empty_description": "Detaljerad prestationsstatistik visas här när den här spelaren har avslutade och analyserade matcher.",
           "adr": "ADR",
@@ -3233,8 +3231,6 @@
           }
         },
         "maps": {
-          "section": "KARTOR",
-          "description": "Karriärprestation uppdelad per karta, med split för terrorist- och counter-terrorist-sida.",
           "empty_title": "Ingen kartdata än",
           "empty_description": "När den här spelaren avslutar matcher visas prestation per karta här.",
           "played_short": "SPL",
@@ -3255,7 +3251,6 @@
           "col_avg_kda": "Snitt K/D/A"
         },
         "weapons_table": {
-          "section": "Vapen",
           "empty_title": "Ingen vapendata",
           "empty_description": "Den här spelaren har inga registrerade vapenkills än.",
           "weapon": "Vapen",

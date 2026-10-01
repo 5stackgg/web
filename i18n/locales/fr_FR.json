@@ -3208,8 +3208,6 @@
         "acquiring_telemetry": "Acquisition de la télémétrie…",
         "matches_section": "MATCHS",
         "intro": {
-          "section": "Aperçu des performances",
-          "last_n": "{n} derniers matchs",
           "empty_title": "Aucun match analysé",
           "empty_description": "Les stats détaillées apparaîtront ici une fois que ce joueur aura terminé des matchs et qu'ils auront été analysés.",
           "adr": "ADR",
@@ -3233,8 +3231,6 @@
           }
         },
         "maps": {
-          "section": "MAPS",
-          "description": "Performances de carrière détaillées par map, avec la répartition camp T et camp CT.",
           "empty_title": "Aucune donnée de map",
           "empty_description": "Une fois que ce joueur aura terminé des matchs, les performances par map apparaîtront ici.",
           "played_short": "JOU",
@@ -3255,7 +3251,6 @@
           "col_avg_kda": "K/D/A moy."
         },
         "weapons_table": {
-          "section": "Armes",
           "empty_title": "Aucune donnée d'arme",
           "empty_description": "Ce joueur n'a encore aucun kill enregistré par arme.",
           "weapon": "Arme",

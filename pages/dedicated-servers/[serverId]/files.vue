@@ -17,9 +17,16 @@
     <PageTransition :delay="100" class="mt-6">
       <div class="flex-1 min-h-0 overflow-hidden">
         <Card class="h-full">
+          <p
+            v-if="isMigrating"
+            class="p-8 text-center text-sm text-muted-foreground"
+          >
+            {{ $t("file_manager.server_moving") }}
+          </p>
           <FileManagerContainer
-            v-if="server"
-            :node-id="server.game_server_node_id"
+            v-else-if="server && nodeId"
+            :key="nodeId"
+            :node-id="nodeId"
             :server-id="serverId"
           />
           <div v-else class="p-8 text-center text-muted-foreground">
@@ -40,6 +47,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { generateQuery } from "~/graphql/graphqlGen";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import FileManagerContainer from "~/components/file-manager/FileManagerContainer.vue";
+import { useServerMigration } from "~/composables/useServerMigration";
 
 definePageMeta({ middleware: "admin" });
 
@@ -56,6 +64,17 @@ const server = ref<{
     node_ip: string;
   };
 } | null>(null);
+
+const { server: migratingServer, isMigrating } = useServerMigration(
+  serverId,
+  computed(() => useAuthStore().isAdmin),
+);
+
+const nodeId = computed(
+  () =>
+    migratingServer.value?.game_server_node_id ??
+    server.value?.game_server_node_id,
+);
 
 onMounted(async () => {
   // Check if user is administrator

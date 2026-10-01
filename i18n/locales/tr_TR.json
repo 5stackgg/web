@@ -3747,6 +3747,58 @@
           "browse": "Eklenti Dizini",
           "saved": "Eklentiler kaydedildi. Sunucu yeniden başlatılıyor.",
           "saved_disabled": "Eklentiler kaydedildi. Sunucu etkinleştirildiğinde uygulanır."
+        },
+        "move": {
+          "menu": "Başka Düğüme Taşı",
+          "title": "Başka Düğüme Taşı",
+          "description": "Sunucu {node} düğümünde durdurulur, dosyaları yeni düğüme kopyalanır ve orada yeniden başlatılır.",
+          "source_offline": "{node} düğümü çevrimdışı olduğu için sunucunun dosyaları kopyalanamıyor. Sunucu yeni düğümde varsayılan ayarlarla başlayacak ve {node} düğümünde kalan her şey orada kalacak.",
+          "without_files": "Sunucunun dosyaları olmadan taşı",
+          "target": "Yeni düğüm",
+          "no_nodes": "Başka oyun sunucusu düğümü yok",
+          "free_slots": "Boş slot: {count}",
+          "free_disk": "{size} boş",
+          "confirm": "Sunucuyu Taşı",
+          "started": "{server}, {node} düğümüne taşınıyor",
+          "warning": {
+            "address": "Sunucu yeni düğümde yeni bir adres alır.",
+            "region": "Sunucu {region} bölgesinde listelenecek.",
+            "runtime": "Yeni düğüm {runtime} çalıştırıyor, bu yüzden diğer çerçeve için derlenmiş eklentiler orada yüklenmez."
+          },
+          "reason": {
+            "current": "Mevcut düğüm",
+            "disabled": "Devre dışı",
+            "offline": "Çevrimdışı",
+            "setup": "Kurulum",
+            "unreachable": "Erişilemiyor",
+            "updating": "CS2 güncelleniyor",
+            "no_build": "{game} yüklü değil",
+            "no_slot": "Boş sunucu slotu yok"
+          }
+        },
+        "migration": {
+          "title": {
+            "active": "{node} düğümüne taşınıyor",
+            "Completed": "{node} düğümüne taşındı",
+            "Failed": "{node} düğümüne taşıma başarısız oldu",
+            "Canceled": "{node} düğümüne taşıma iptal edildi"
+          },
+          "status": {
+            "Queued": "Sırada",
+            "Stopping": "Durduruluyor",
+            "Transferring": "Dosyalar Kopyalanıyor",
+            "Finalizing": "Geçiş Yapılıyor",
+            "Completed": "Tamamlandı",
+            "Failed": "Başarısız",
+            "Canceled": "İptal edildi"
+          },
+          "progress": "{done} / {total} (%{percent})",
+          "without_files": "dosyalar olmadan",
+          "restored": "Sunucu yeniden {node} düğümünde.",
+          "cancel": "Taşımayı İptal Et",
+          "cancel_requested": "Taşıma iptal ediliyor",
+          "dismiss": "Kapat",
+          "locked": "Sunucu başka bir düğüme taşınıyor. Taşıma bittikten sonra tekrar dene."
         }
       }
     },
@@ -5870,7 +5922,8 @@
     "scope_server": "Sunucu",
     "missing_path": "Bu dizin henüz yok.",
     "missing_path_create": "Oluştur",
-    "missing_path_dismiss": "Kapat"
+    "missing_path_dismiss": "Kapat",
+    "server_moving": "Bu sunucu başka bir düğüme taşınıyor. Taşıma bittiğinde dosyaları yeniden kullanılabilir olacak."
   },
   "error": {
     "generic": "Bir hata oluştu. Tekrar dene."
@@ -8594,6 +8647,8 @@
       "game_server_node": "Sunucu Düğümü",
       "select_game_server_node": "Sunucu düğümü seç",
       "game_server_node_description": "CS yüklü bir sunucu düğümü seç",
+      "move_node_hint": "Düğümü değiştirmek için sunucuyu taşıyın. Dosyaları da kopyalanır.",
+      "move_node": "Sunucuyu Taşı",
       "type": "Sunucu Türü",
       "select_type": "Sunucu türü seç",
       "game_mode": "Oyun Modu",

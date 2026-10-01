@@ -3747,6 +3747,58 @@
           "browse": "Pluginkatalog",
           "saved": "Plugins sparade. Servern startas om.",
           "saved_disabled": "Plugins sparade. De gäller när servern är aktiverad."
+        },
+        "move": {
+          "menu": "Flytta till en annan nod",
+          "title": "Flytta till en annan nod",
+          "description": "Servern stoppas på {node}, dess filer kopieras till den nya noden och den startas igen där.",
+          "source_offline": "{node} är offline, så serverns filer kan inte kopieras. Den startar på den nya noden med standardinställningar, och allt som finns kvar på {node} stannar där.",
+          "without_files": "Flytta utan serverns filer",
+          "target": "Ny nod",
+          "no_nodes": "Det finns inga andra spelservernoder",
+          "free_slots": "Lediga platser: {count}",
+          "free_disk": "{size} ledigt",
+          "confirm": "Flytta server",
+          "started": "Flyttar {server} till {node}",
+          "warning": {
+            "address": "Servern får en ny adress på den nya noden.",
+            "region": "Servern kommer att listas i {region}.",
+            "runtime": "Den nya noden kör {runtime}, så plugins byggda för det andra ramverket laddas inte där."
+          },
+          "reason": {
+            "current": "Nuvarande nod",
+            "disabled": "Inaktiverad",
+            "offline": "Offline",
+            "setup": "Konfiguration",
+            "unreachable": "Går inte att nå",
+            "updating": "Uppdaterar CS2",
+            "no_build": "{game} är inte installerat",
+            "no_slot": "Inga lediga serverplatser"
+          }
+        },
+        "migration": {
+          "title": {
+            "active": "Flyttar till {node}",
+            "Completed": "Flyttad till {node}",
+            "Failed": "Flytten till {node} misslyckades",
+            "Canceled": "Flytten till {node} avbröts"
+          },
+          "status": {
+            "Queued": "Köad",
+            "Stopping": "Stoppar",
+            "Transferring": "Kopierar filer",
+            "Finalizing": "Växlar över",
+            "Completed": "Slutförd",
+            "Failed": "Misslyckades",
+            "Canceled": "Avbruten"
+          },
+          "progress": "{done} av {total} ({percent}%)",
+          "without_files": "utan filer",
+          "restored": "Servern är tillbaka på {node}.",
+          "cancel": "Avbryt flytt",
+          "cancel_requested": "Avbryter flytten",
+          "dismiss": "Stäng",
+          "locked": "Servern flyttas till en annan nod. Försök igen när flytten är klar."
         }
       }
     },
@@ -5870,7 +5922,8 @@
     "scope_server": "Server",
     "missing_path": "Den här mappen finns inte än.",
     "missing_path_create": "Skapa den",
-    "missing_path_dismiss": "Avfärda"
+    "missing_path_dismiss": "Avfärda",
+    "server_moving": "Den här servern flyttas till en annan nod. Dess filer blir tillgängliga igen när flytten är klar."
   },
   "error": {
     "generic": "Ett fel uppstod. Försök igen."
@@ -8594,6 +8647,8 @@
       "game_server_node": "Spelservernod",
       "select_game_server_node": "Välj spelservernod",
       "game_server_node_description": "Välj en spelservernod med CS installerat",
+      "move_node_hint": "Flytta servern för att byta nod. Dess filer kopieras över.",
+      "move_node": "Flytta server",
       "type": "Servertyp",
       "select_type": "Välj servertyp",
       "game_mode": "Spelläge",

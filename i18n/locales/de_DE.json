@@ -3747,6 +3747,58 @@
           "browse": "Plugin-Verzeichnis",
           "saved": "Plugins gespeichert. Der Server startet neu.",
           "saved_disabled": "Plugins gespeichert. Sie gelten, sobald der Server aktiviert ist."
+        },
+        "move": {
+          "menu": "Auf andere Node verschieben",
+          "title": "Auf andere Node verschieben",
+          "description": "Der Server wird auf {node} gestoppt, seine Dateien werden auf die neue Node kopiert, und dort startet er erneut.",
+          "source_offline": "{node} ist offline, daher können die Dateien des Servers nicht kopiert werden. Er startet auf der neuen Node mit Standardeinstellungen, und alles, was auf {node} liegt, bleibt dort.",
+          "without_files": "Ohne die Dateien des Servers verschieben",
+          "target": "Neue Node",
+          "no_nodes": "Es gibt keine anderen Game-Server-Nodes",
+          "free_slots": "Freie Slots: {count}",
+          "free_disk": "{size} frei",
+          "confirm": "Server verschieben",
+          "started": "{server} wird auf {node} verschoben",
+          "warning": {
+            "address": "Der Server erhält auf der neuen Node eine neue Adresse.",
+            "region": "Der Server wird in {region} gelistet.",
+            "runtime": "Auf der neuen Node läuft {runtime}, daher werden Plugins für das andere Framework dort nicht geladen."
+          },
+          "reason": {
+            "current": "Aktuelle Node",
+            "disabled": "Deaktiviert",
+            "offline": "Offline",
+            "setup": "Einrichtung",
+            "unreachable": "Nicht erreichbar",
+            "updating": "Aktualisiert CS2",
+            "no_build": "{game} ist nicht installiert",
+            "no_slot": "Keine freien Server-Slots"
+          }
+        },
+        "migration": {
+          "title": {
+            "active": "Wird auf {node} verschoben",
+            "Completed": "Auf {node} verschoben",
+            "Failed": "Verschieben auf {node} fehlgeschlagen",
+            "Canceled": "Verschieben auf {node} abgebrochen"
+          },
+          "status": {
+            "Queued": "In Warteschlange",
+            "Stopping": "Wird gestoppt",
+            "Transferring": "Dateien werden kopiert",
+            "Finalizing": "Wird umgeschaltet",
+            "Completed": "Abgeschlossen",
+            "Failed": "Fehlgeschlagen",
+            "Canceled": "Abgebrochen"
+          },
+          "progress": "{done} von {total} ({percent}%)",
+          "without_files": "ohne Dateien",
+          "restored": "Der Server ist wieder auf {node}.",
+          "cancel": "Verschieben abbrechen",
+          "cancel_requested": "Verschieben wird abgebrochen",
+          "dismiss": "Ausblenden",
+          "locked": "Der Server wird auf eine andere Node verschoben. Versuche es erneut, sobald der Umzug abgeschlossen ist."
         }
       }
     },
@@ -5870,7 +5922,8 @@
     "scope_server": "Server",
     "missing_path": "Dieses Verzeichnis existiert noch nicht.",
     "missing_path_create": "Anlegen",
-    "missing_path_dismiss": "Ausblenden"
+    "missing_path_dismiss": "Ausblenden",
+    "server_moving": "Dieser Server wird gerade auf eine andere Node verschoben. Seine Dateien sind wieder verfügbar, sobald das Verschieben abgeschlossen ist."
   },
   "error": {
     "generic": "Ein Fehler ist aufgetreten. Versuch es erneut."
@@ -8594,6 +8647,8 @@
       "game_server_node": "Game-Server-Node",
       "select_game_server_node": "Game-Server-Node wählen",
       "game_server_node_description": "Wähle eine Game-Server-Node mit installiertem CS",
+      "move_node_hint": "Um die Node zu wechseln, verschiebe den Server. Seine Dateien werden mitkopiert.",
+      "move_node": "Server verschieben",
       "type": "Server-Typ",
       "select_type": "Server-Typ wählen",
       "game_mode": "Spielmodus",

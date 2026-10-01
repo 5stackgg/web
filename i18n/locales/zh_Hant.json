@@ -3747,6 +3747,58 @@
           "browse": "外掛目錄",
           "saved": "外掛已儲存，伺服器正在重新啟動。",
           "saved_disabled": "外掛已儲存，將在伺服器啟用後生效。"
+        },
+        "move": {
+          "menu": "遷移至其他節點",
+          "title": "遷移至其他節點",
+          "description": "伺服器會在 {node} 上停止，其檔案將複製到新節點，然後在新節點上重新啟動。",
+          "source_offline": "{node} 已離線，因此無法複製伺服器檔案。伺服器將以預設設定在新節點上啟動，留在 {node} 上的內容將保留在原處。",
+          "without_files": "遷移時不帶伺服器檔案",
+          "target": "新節點",
+          "no_nodes": "沒有其他遊戲伺服器節點",
+          "free_slots": "可用名額：{count}",
+          "free_disk": "可用 {size}",
+          "confirm": "遷移伺服器",
+          "started": "正在將 {server} 遷移至 {node}",
+          "warning": {
+            "address": "伺服器在新節點上會取得新的位址。",
+            "region": "伺服器將列於 {region} 地區。",
+            "runtime": "新節點執行 {runtime}，因此為另一框架建置的外掛將無法在其上載入。"
+          },
+          "reason": {
+            "current": "目前節點",
+            "disabled": "已停用",
+            "offline": "離線",
+            "setup": "設定",
+            "unreachable": "無法連線",
+            "updating": "正在更新 CS2",
+            "no_build": "未安裝 {game}",
+            "no_slot": "沒有可用的伺服器名額"
+          }
+        },
+        "migration": {
+          "title": {
+            "active": "正在遷移至 {node}",
+            "Completed": "已遷移至 {node}",
+            "Failed": "遷移至 {node} 失敗",
+            "Canceled": "已取消遷移至 {node}"
+          },
+          "status": {
+            "Queued": "排隊中",
+            "Stopping": "正在停止",
+            "Transferring": "正在複製檔案",
+            "Finalizing": "正在切換",
+            "Completed": "已完成",
+            "Failed": "失敗",
+            "Canceled": "已取消"
+          },
+          "progress": "{done} / {total} ({percent}%)",
+          "without_files": "不含檔案",
+          "restored": "伺服器已回到 {node}。",
+          "cancel": "取消遷移",
+          "cancel_requested": "正在取消遷移",
+          "dismiss": "關閉",
+          "locked": "伺服器正在遷移到另一個節點。遷移完成後請重試。"
         }
       }
     },
@@ -5870,7 +5922,8 @@
     "scope_server": "伺服器",
     "missing_path": "這個目錄尚不存在。",
     "missing_path_create": "建立它",
-    "missing_path_dismiss": "忽略"
+    "missing_path_dismiss": "忽略",
+    "server_moving": "此伺服器正在遷移至其他節點。遷移完成後，其檔案將重新可用。"
   },
   "error": {
     "generic": "發生錯誤。請重試。"
@@ -8594,6 +8647,8 @@
       "game_server_node": "遊戲伺服器節點",
       "select_game_server_node": "選擇遊戲伺服器節點",
       "game_server_node_description": "選擇已安裝 CS 的遊戲伺服器節點",
+      "move_node_hint": "如需變更節點，請遷移伺服器。其檔案會一併複製。",
+      "move_node": "遷移伺服器",
       "type": "伺服器類型",
       "select_type": "選擇伺服器類型",
       "game_mode": "遊戲模式",

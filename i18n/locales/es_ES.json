@@ -3747,6 +3747,58 @@
           "browse": "Directorio de plugins",
           "saved": "Plugins guardados. El servidor se está reiniciando.",
           "saved_disabled": "Plugins guardados. Se aplicarán cuando el servidor esté activado."
+        },
+        "move": {
+          "menu": "Mover a otro nodo",
+          "title": "Mover a otro nodo",
+          "description": "El servidor se detiene en {node}, sus archivos se copian al nuevo nodo y vuelve a arrancar allí.",
+          "source_offline": "{node} está desconectado, así que no se pueden copiar los archivos del servidor. Arrancará en el nuevo nodo con la configuración predeterminada, y lo que quede en {node} se quedará allí.",
+          "without_files": "Mover sin los archivos del servidor",
+          "target": "Nuevo nodo",
+          "no_nodes": "No hay otros nodos de servidores",
+          "free_slots": "Espacios libres: {count}",
+          "free_disk": "{size} libres",
+          "confirm": "Mover servidor",
+          "started": "Moviendo {server} a {node}",
+          "warning": {
+            "address": "El servidor tendrá una nueva dirección en el nuevo nodo.",
+            "region": "El servidor aparecerá en {region}.",
+            "runtime": "El nuevo nodo ejecuta {runtime}, así que los plugins creados para el otro framework no se cargarán allí."
+          },
+          "reason": {
+            "current": "Nodo actual",
+            "disabled": "Desactivado",
+            "offline": "Desconectado",
+            "setup": "Configuración",
+            "unreachable": "Inaccesible",
+            "updating": "Actualizando CS2",
+            "no_build": "{game} no está instalado",
+            "no_slot": "No hay espacios de servidor libres"
+          }
+        },
+        "migration": {
+          "title": {
+            "active": "Moviendo a {node}",
+            "Completed": "Movido a {node}",
+            "Failed": "Error al mover a {node}",
+            "Canceled": "Traslado a {node} cancelado"
+          },
+          "status": {
+            "Queued": "En cola",
+            "Stopping": "Deteniendo",
+            "Transferring": "Copiando archivos",
+            "Finalizing": "Cambiando de nodo",
+            "Completed": "Completado",
+            "Failed": "Fallido",
+            "Canceled": "Cancelado"
+          },
+          "progress": "{done} de {total} ({percent}%)",
+          "without_files": "sin archivos",
+          "restored": "El servidor vuelve a estar en {node}.",
+          "cancel": "Cancelar traslado",
+          "cancel_requested": "Cancelando el traslado",
+          "dismiss": "Descartar",
+          "locked": "El servidor se está moviendo a otro nodo. Inténtalo de nuevo cuando termine el traslado."
         }
       }
     },
@@ -5870,7 +5922,8 @@
     "scope_server": "Servidor",
     "missing_path": "Este directorio todavía no existe.",
     "missing_path_create": "Crearlo",
-    "missing_path_dismiss": "Descartar"
+    "missing_path_dismiss": "Descartar",
+    "server_moving": "Este servidor se está moviendo a otro nodo. Sus archivos volverán a estar disponibles cuando termine el traslado."
   },
   "error": {
     "generic": "Se ha producido un error. Inténtalo de nuevo."
@@ -8594,6 +8647,8 @@
       "game_server_node": "Nodo de servidores",
       "select_game_server_node": "Selecciona un nodo de servidores",
       "game_server_node_description": "Selecciona un nodo de servidores con CS instalado",
+      "move_node_hint": "Para cambiar de nodo, mueve el servidor. Sus archivos se copian al nuevo nodo.",
+      "move_node": "Mover servidor",
       "type": "Tipo de servidor",
       "select_type": "Selecciona el tipo de servidor",
       "game_mode": "Modo de juego",

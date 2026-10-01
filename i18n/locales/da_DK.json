@@ -3747,6 +3747,58 @@
           "browse": "Plugin-oversigt",
           "saved": "Plugins gemt. Serveren genstarter.",
           "saved_disabled": "Plugins gemt. De gælder, når serveren er slået til."
+        },
+        "move": {
+          "menu": "Flyt til en anden node",
+          "title": "Flyt til en anden node",
+          "description": "Serveren stopper på {node}, dens filer kopieres til den nye node, og den starter igen der.",
+          "source_offline": "{node} er offline, så serverens filer kan ikke kopieres. Den starter på den nye node med standardindstillinger, og alt, der er tilbage på {node}, bliver liggende der.",
+          "without_files": "Flyt uden serverens filer",
+          "target": "Ny node",
+          "no_nodes": "Der er ingen andre game server noder",
+          "free_slots": "Ledige pladser: {count}",
+          "free_disk": "{size} ledig",
+          "confirm": "Flyt server",
+          "started": "Flytter {server} til {node}",
+          "warning": {
+            "address": "Serveren får en ny adresse på den nye node.",
+            "region": "Serveren bliver vist i {region}.",
+            "runtime": "Den nye node kører {runtime}, så plugins bygget til det andet framework indlæses ikke der."
+          },
+          "reason": {
+            "current": "Nuværende node",
+            "disabled": "Deaktiveret",
+            "offline": "Offline",
+            "setup": "Opsætning",
+            "unreachable": "Kan ikke nås",
+            "updating": "Opdaterer CS2",
+            "no_build": "{game} er ikke installeret",
+            "no_slot": "Ingen ledige serverpladser"
+          }
+        },
+        "migration": {
+          "title": {
+            "active": "Flytter til {node}",
+            "Completed": "Flyttet til {node}",
+            "Failed": "Flytning til {node} mislykkedes",
+            "Canceled": "Flytning til {node} annulleret"
+          },
+          "status": {
+            "Queued": "I kø",
+            "Stopping": "Stopper",
+            "Transferring": "Kopierer filer",
+            "Finalizing": "Skifter over",
+            "Completed": "Fuldført",
+            "Failed": "Mislykkedes",
+            "Canceled": "Annulleret"
+          },
+          "progress": "{done} af {total} ({percent}%)",
+          "without_files": "uden filer",
+          "restored": "Serveren er tilbage på {node}.",
+          "cancel": "Annuller flytning",
+          "cancel_requested": "Annullerer flytningen",
+          "dismiss": "Luk",
+          "locked": "Serveren flyttes til en anden node. Prøv igen, når flytningen er færdig."
         }
       }
     },
@@ -5870,7 +5922,8 @@
     "scope_server": "Server",
     "missing_path": "Denne mappe findes ikke endnu.",
     "missing_path_create": "Opret den",
-    "missing_path_dismiss": "Afvis"
+    "missing_path_dismiss": "Afvis",
+    "server_moving": "Denne server er ved at blive flyttet til en anden node. Dens filer er tilgængelige igen, når flytningen er færdig."
   },
   "error": {
     "generic": "Der opstod en fejl. Prøv igen."
@@ -8594,6 +8647,8 @@
       "game_server_node": "Game server node",
       "select_game_server_node": "Vælg game server node",
       "game_server_node_description": "Vælg en game server node med CS installeret",
+      "move_node_hint": "Flyt serveren for at skifte node. Dens filer kopieres med.",
+      "move_node": "Flyt server",
       "type": "Servertype",
       "select_type": "Vælg servertype",
       "game_mode": "Spiltilstand",

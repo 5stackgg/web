@@ -3747,6 +3747,58 @@
           "browse": "Katalog pluginów",
           "saved": "Zapisano pluginy. Serwer uruchamia się ponownie.",
           "saved_disabled": "Zapisano pluginy. Zadziałają po włączeniu serwera."
+        },
+        "move": {
+          "menu": "Przenieś na inny węzeł",
+          "title": "Przenieś na inny węzeł",
+          "description": "Serwer zostanie zatrzymany na węźle {node}, jego pliki zostaną skopiowane na nowy węzeł, a następnie zostanie tam ponownie uruchomiony.",
+          "source_offline": "Węzeł {node} jest offline, więc nie można skopiować plików serwera. Serwer uruchomi się na nowym węźle z domyślnymi ustawieniami, a wszystko, co zostało na węźle {node}, tam pozostanie.",
+          "without_files": "Przenieś bez plików serwera",
+          "target": "Nowy węzeł",
+          "no_nodes": "Brak innych węzłów serwerów gry",
+          "free_slots": "Wolne sloty: {count}",
+          "free_disk": "{size} wolnego miejsca",
+          "confirm": "Przenieś serwer",
+          "started": "Przenoszenie {server} na węzeł {node}",
+          "warning": {
+            "address": "Na nowym węźle serwer otrzyma nowy adres.",
+            "region": "Serwer będzie widoczny w regionie {region}.",
+            "runtime": "Nowy węzeł działa na {runtime}, więc wtyczki zbudowane dla innego frameworka nie zostaną tam załadowane."
+          },
+          "reason": {
+            "current": "Obecny węzeł",
+            "disabled": "Wyłączony",
+            "offline": "Offline",
+            "setup": "Konfiguracja",
+            "unreachable": "Nieosiągalny",
+            "updating": "Aktualizacja CS2",
+            "no_build": "Nie zainstalowano {game}",
+            "no_slot": "Brak wolnych slotów serwerów"
+          }
+        },
+        "migration": {
+          "title": {
+            "active": "Przenoszenie na węzeł {node}",
+            "Completed": "Przeniesiono na węzeł {node}",
+            "Failed": "Przeniesienie na węzeł {node} nie powiodło się",
+            "Canceled": "Anulowano przeniesienie na węzeł {node}"
+          },
+          "status": {
+            "Queued": "W kolejce",
+            "Stopping": "Zatrzymywanie",
+            "Transferring": "Kopiowanie plików",
+            "Finalizing": "Przełączanie",
+            "Completed": "Ukończono",
+            "Failed": "Niepowodzenie",
+            "Canceled": "Anulowano"
+          },
+          "progress": "{done} z {total} ({percent}%)",
+          "without_files": "bez plików",
+          "restored": "Serwer wrócił na węzeł {node}.",
+          "cancel": "Anuluj przenoszenie",
+          "cancel_requested": "Anulowanie przenoszenia",
+          "dismiss": "Zamknij",
+          "locked": "Serwer jest przenoszony na inny węzeł. Spróbuj ponownie po zakończeniu przenoszenia."
         }
       }
     },
@@ -5870,7 +5922,8 @@
     "scope_server": "Serwer",
     "missing_path": "Ten katalog jeszcze nie istnieje.",
     "missing_path_create": "Utwórz go",
-    "missing_path_dismiss": "Odrzuć"
+    "missing_path_dismiss": "Odrzuć",
+    "server_moving": "Ten serwer jest przenoszony na inny węzeł. Jego pliki będą ponownie dostępne po zakończeniu przenoszenia."
   },
   "error": {
     "generic": "Wystąpił błąd. Spróbuj ponownie."
@@ -8594,6 +8647,8 @@
       "game_server_node": "Węzeł serwerów gry",
       "select_game_server_node": "Wybierz węzeł serwerów gry",
       "game_server_node_description": "Wybierz węzeł serwerów gry z zainstalowanym CS",
+      "move_node_hint": "Aby zmienić węzeł, przenieś serwer. Jego pliki zostaną skopiowane.",
+      "move_node": "Przenieś serwer",
       "type": "Typ serwera",
       "select_type": "Wybierz typ serwera",
       "game_mode": "Tryb gry",

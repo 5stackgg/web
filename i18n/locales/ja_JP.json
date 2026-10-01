@@ -3747,6 +3747,58 @@
           "browse": "プラグインディレクトリ",
           "saved": "プラグインを保存しました。サーバーを再起動しています。",
           "saved_disabled": "プラグインを保存しました。サーバーを有効にすると適用されます。"
+        },
+        "move": {
+          "menu": "別のノードへ移動",
+          "title": "別のノードへ移動",
+          "description": "サーバーは{node}上で停止し、ファイルが新しいノードにコピーされた後、そこで再び起動します。",
+          "source_offline": "{node}がオフラインのため、サーバーのファイルをコピーできません。新しいノードではデフォルト設定で起動し、{node}に残ったものはそのまま残ります。",
+          "without_files": "サーバーのファイルなしで移動",
+          "target": "新しいノード",
+          "no_nodes": "他のゲームサーバーノードがありません",
+          "free_slots": "空きスロット: {count}",
+          "free_disk": "空き {size}",
+          "confirm": "サーバーを移動",
+          "started": "{server}を{node}へ移動しています",
+          "warning": {
+            "address": "新しいノードではサーバーのアドレスが変わります。",
+            "region": "サーバーは{region}に表示されます。",
+            "runtime": "新しいノードは{runtime}で動作するため、もう一方のフレームワーク向けに作られたプラグインは読み込まれません。"
+          },
+          "reason": {
+            "current": "現在のノード",
+            "disabled": "無効",
+            "offline": "オフライン",
+            "setup": "セットアップ",
+            "unreachable": "接続できません",
+            "updating": "CS2を更新中",
+            "no_build": "{game}がインストールされていません",
+            "no_slot": "空きサーバースロットがありません"
+          }
+        },
+        "migration": {
+          "title": {
+            "active": "{node}へ移動中",
+            "Completed": "{node}へ移動しました",
+            "Failed": "{node}への移動に失敗しました",
+            "Canceled": "{node}への移動をキャンセルしました"
+          },
+          "status": {
+            "Queued": "待機中",
+            "Stopping": "停止中",
+            "Transferring": "ファイルをコピー中",
+            "Finalizing": "切り替え中",
+            "Completed": "完了",
+            "Failed": "失敗",
+            "Canceled": "キャンセル済み"
+          },
+          "progress": "{done} / {total} ({percent}%)",
+          "without_files": "ファイルなし",
+          "restored": "サーバーは{node}に戻りました。",
+          "cancel": "移動をキャンセル",
+          "cancel_requested": "移動をキャンセルしています",
+          "dismiss": "閉じる",
+          "locked": "サーバーを別のノードへ移動中です。移動が完了してからもう一度お試しください。"
         }
       }
     },
@@ -5870,7 +5922,8 @@
     "scope_server": "サーバー",
     "missing_path": "このディレクトリはまだ存在しません。",
     "missing_path_create": "作成する",
-    "missing_path_dismiss": "閉じる"
+    "missing_path_dismiss": "閉じる",
+    "server_moving": "このサーバーは別のノードへ移動中です。移動が完了すると、ファイルは再び利用できるようになります。"
   },
   "error": {
     "generic": "エラーが発生しました。もう一度お試しください。"
@@ -8594,6 +8647,8 @@
       "game_server_node": "ゲームサーバーノード",
       "select_game_server_node": "ゲームサーバーノードを選択",
       "game_server_node_description": "CS がインストール済みのゲームサーバーノードを選択してください",
+      "move_node_hint": "ノードを変更するには、サーバーを移動してください。ファイルもコピーされます。",
+      "move_node": "サーバーを移動",
       "type": "サーバータイプ",
       "select_type": "サーバータイプを選択",
       "game_mode": "ゲームモード",

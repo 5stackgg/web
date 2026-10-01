@@ -474,6 +474,23 @@ const showConnectPassword = ref(false);
             <FormDescription>{{
               $t("server.form.game_server_node_description")
             }}</FormDescription>
+            <div
+              v-if="canMoveNode"
+              class="flex items-center justify-between gap-3 pt-1"
+            >
+              <span class="text-xs text-muted-foreground">
+                {{ $t("server.form.move_node_hint") }}
+              </span>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                class="shrink-0"
+                @click="$emit('move')"
+              >
+                {{ $t("server.form.move_node") }}
+              </Button>
+            </div>
           </FormItem>
         </FormField>
         </Fold>
@@ -579,11 +596,15 @@ const SERVER_TYPE_PRACTICE = "Practice";
 const SERVER_TYPE_CUSTOM = "Custom";
 
 export default {
-  emits: ["updated"],
+  emits: ["updated", "move"],
   props: {
     server: {
       type: Object,
       required: false,
+    },
+    canMove: {
+      type: Boolean,
+      default: false,
     },
   },
   apollo: {
@@ -863,6 +884,9 @@ export default {
           mode.enabled && (mode.supported_runtimes ?? []).includes(runtime),
       );
     },
+    canMoveNode() {
+      return this.isEditingGameServerNode && this.canMove;
+    },
     isEditingGameServerNode() {
       return !!(this.server && this.server.game_server_node_id);
     },
@@ -1019,7 +1043,7 @@ export default {
             formValues.game_server_node_id = null;
           }
 
-          await this.$apollo.mutate({
+          const { data } = await this.$apollo.mutate({
             mutation: generateMutation({
               update_servers_by_pk: [
                 {
@@ -1049,6 +1073,18 @@ export default {
               ],
             }),
           });
+
+          if (!data?.update_servers_by_pk) {
+            toast({
+              variant: "destructive",
+              title: this.$t("common.error"),
+              description: this.$t(
+                "pages.dedicated_servers.detail.migration.locked",
+              ),
+            });
+            return;
+          }
+
           this.takeSnapshot();
           this.$emit("updated");
           return;

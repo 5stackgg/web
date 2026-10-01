@@ -33,9 +33,16 @@
     </header>
 
     <div class="min-h-0 flex-1 overflow-hidden">
+      <p
+        v-if="isMigrating"
+        class="p-8 text-center text-sm text-muted-foreground"
+      >
+        {{ $t("file_manager.server_moving") }}
+      </p>
       <FileManagerContainer
-        v-if="ready"
-        :node-id="nodeId"
+        v-else-if="ready"
+        :key="currentNodeId"
+        :node-id="currentNodeId"
         :server-id="scope === 'server' ? id : undefined"
         :open-path="openPath"
         class="h-full"
@@ -57,6 +64,7 @@ import { HardDrive } from "lucide-vue-next";
 import FileManagerContainer from "~/components/file-manager/FileManagerContainer.vue";
 import { generateQuery } from "~/graphql/graphqlGen";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
+import { useServerMigration } from "~/composables/useServerMigration";
 
 definePageMeta({ layout: false });
 
@@ -71,6 +79,17 @@ const nodeId = ref<string>("");
 const ready = ref(false);
 
 const title = computed(() => label.value || id.value);
+
+const { server: migratingServer, isMigrating } = useServerMigration(
+  computed(() => (scope.value === "server" ? id.value : null)),
+  computed(() => useAuthStore().isAdmin),
+);
+
+const currentNodeId = computed(
+  () =>
+    (scope.value === "server" && migratingServer.value?.game_server_node_id) ||
+    nodeId.value,
+);
 
 useHead({
   title: computed(() =>

@@ -3747,6 +3747,58 @@
           "browse": "插件目录",
           "saved": "插件已保存，服务器正在重启。",
           "saved_disabled": "插件已保存，将在服务器启用后生效。"
+        },
+        "move": {
+          "menu": "迁移到其他节点",
+          "title": "迁移到其他节点",
+          "description": "服务器会在 {node} 上停止，其文件将复制到新节点，然后在新节点上重新启动。",
+          "source_offline": "{node} 已离线，因此无法复制服务器文件。服务器将以默认设置在新节点上启动，留在 {node} 上的内容将保留在原处。",
+          "without_files": "迁移时不带服务器文件",
+          "target": "新节点",
+          "no_nodes": "没有其他游戏服务器节点",
+          "free_slots": "空闲槽位：{count}",
+          "free_disk": "可用 {size}",
+          "confirm": "迁移服务器",
+          "started": "正在将 {server} 迁移到 {node}",
+          "warning": {
+            "address": "服务器在新节点上会获得新的地址。",
+            "region": "服务器将显示在 {region} 地区。",
+            "runtime": "新节点运行 {runtime}，因此为另一框架构建的插件将无法在其上加载。"
+          },
+          "reason": {
+            "current": "当前节点",
+            "disabled": "已禁用",
+            "offline": "离线",
+            "setup": "设置",
+            "unreachable": "无法连接",
+            "updating": "正在更新 CS2",
+            "no_build": "未安装 {game}",
+            "no_slot": "没有空闲的服务器槽位"
+          }
+        },
+        "migration": {
+          "title": {
+            "active": "正在迁移到 {node}",
+            "Completed": "已迁移到 {node}",
+            "Failed": "迁移到 {node} 失败",
+            "Canceled": "已取消迁移到 {node}"
+          },
+          "status": {
+            "Queued": "排队中",
+            "Stopping": "正在停止",
+            "Transferring": "正在复制文件",
+            "Finalizing": "正在切换",
+            "Completed": "已完成",
+            "Failed": "失败",
+            "Canceled": "已取消"
+          },
+          "progress": "{done} / {total} ({percent}%)",
+          "without_files": "不含文件",
+          "restored": "服务器已回到 {node}。",
+          "cancel": "取消迁移",
+          "cancel_requested": "正在取消迁移",
+          "dismiss": "关闭",
+          "locked": "服务器正在迁移到另一个节点。迁移完成后请重试。"
         }
       }
     },
@@ -5870,7 +5922,8 @@
     "scope_server": "服务器",
     "missing_path": "该目录尚不存在。",
     "missing_path_create": "创建它",
-    "missing_path_dismiss": "忽略"
+    "missing_path_dismiss": "忽略",
+    "server_moving": "此服务器正在迁移到其他节点。迁移完成后，其文件将重新可用。"
   },
   "error": {
     "generic": "发生错误。请重试。"
@@ -8594,6 +8647,8 @@
       "game_server_node": "游戏服务器节点",
       "select_game_server_node": "选择游戏服务器节点",
       "game_server_node_description": "选择已安装 CS 的游戏服务器节点",
+      "move_node_hint": "如需更换节点，请迁移服务器。其文件会一并复制。",
+      "move_node": "迁移服务器",
       "type": "服务器类型",
       "select_type": "选择服务器类型",
       "game_mode": "游戏模式",

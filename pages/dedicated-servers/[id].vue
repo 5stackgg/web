@@ -45,8 +45,7 @@ import { useNow } from "@vueuse/core";
 import ServerForm from "~/components/servers/ServerForm.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
 import ServerPlayerManagement from "~/components/servers/ServerPlayerManagement.vue";
-import ServerMapRotation from "~/components/servers/ServerMapRotation.vue";
-import ServerPlugins from "~/components/servers/ServerPlugins.vue";
+import ServerSettings from "~/components/servers/ServerSettings.vue";
 import ServerMoveDialog from "~/components/servers/ServerMoveDialog.vue";
 import ServerMigrationPanel from "~/components/servers/ServerMigrationPanel.vue";
 import { useServerMigration } from "~/composables/useServerMigration";
@@ -326,18 +325,13 @@ const titleClasses =
     </div>
   </PageTransition>
 
-  <!-- csgo servers load no framework plugins, so neither card applies. -->
+  <!-- csgo servers load no framework plugins, so the settings don't apply. -->
   <PageTransition
-    v-if="server && isAdmin && isCommunityServer && server.game === 'cs2'"
+    v-if="server && isAdmin && hasServerSettings"
     :delay="100"
-    class="mt-6"
+    class="mt-8"
   >
-    <div
-      class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] xl:items-start"
-    >
-      <ServerMapRotation :server-id="server.id" :enabled="server.enabled" />
-      <ServerPlugins :server-id="server.id" :enabled="server.enabled" />
-    </div>
+    <ServerSettings :server="server" />
   </PageTransition>
 
   <PageTransition :delay="150" class="mt-6">
@@ -592,11 +586,11 @@ export default {
         this.server?.type === SERVER_TYPE_PRACTICE
       );
     },
-    // Ranked and Practice servers run 5Stack's own plugin set, and an external
-    // server has no pod for the settings to reach.
-    isCommunityServer() {
+    // Ranked and Practice servers run 5Stack's own plugin set; an external
+    // server still gets access, the console hides what needs a pod.
+    hasServerSettings() {
       return (
-        !!this.server?.game_server_node_id &&
+        this.server?.game === "cs2" &&
         this.server.type !== SERVER_TYPE_RANKED &&
         this.server.type !== SERVER_TYPE_PRACTICE
       );

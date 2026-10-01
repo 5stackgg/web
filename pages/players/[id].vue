@@ -13,6 +13,7 @@ import PlayerPerformanceRating from "~/components/player/PlayerPerformanceRating
 import PlayerConsistencyChart from "~/components/player/PlayerConsistencyChart.vue";
 import PlayerCareerDuels from "~/components/player/PlayerCareerDuels.vue";
 import PlayerCareerClutches from "~/components/player/PlayerCareerClutches.vue";
+import PlayerCommunityHistory from "~/components/player/PlayerCommunityHistory.vue";
 
 const { t } = useI18n();
 
@@ -362,6 +363,7 @@ const VALID_STATS_TABS = [
   "maps",
   "arsenal",
   "combat",
+  "community",
 ] as const;
 // A plugin tab is keyed by its slug, which the DB constrains to
 // ^[a-z0-9]+(-[a-z0-9]+)*$ — URL-safe, and it can't collide with the built-ins.
@@ -2347,6 +2349,19 @@ const playerHeroTeamChipDotClasses =
       </Empty>
     </PageTransition>
 
+    <!-- The tabs only exist for players with matches, but a community regular
+         may never have played one, so their server history stands alone. -->
+    <PageTransition
+      v-if="player && pageContentReady && noCareerData && playerId"
+      :delay="50"
+    >
+      <PlayerCommunityHistory
+        :steam-id="playerId"
+        :heading="$t('pages.players.detail.tabs.community')"
+        hide-when-empty
+      />
+    </PageTransition>
+
     <div
       class="flex flex-col gap-4 md:gap-6"
       v-if="player && pageContentReady && !noCareerData"
@@ -2379,6 +2394,9 @@ const playerHeroTeamChipDotClasses =
                 </SelectItem>
                 <SelectItem value="combat">
                   {{ $t("pages.players.detail.tabs.combat") }}
+                </SelectItem>
+                <SelectItem value="community">
+                  {{ $t("pages.players.detail.tabs.community") }}
                 </SelectItem>
                 <SelectItem
                   v-for="plugin in plugins.profileTabPlugins"
@@ -2414,6 +2432,9 @@ const playerHeroTeamChipDotClasses =
                 <TabsTrigger value="combat">
                   {{ $t("pages.players.detail.tabs.combat") }}
                 </TabsTrigger>
+                <TabsTrigger value="community">
+                  {{ $t("pages.players.detail.tabs.community") }}
+                </TabsTrigger>
                 <!-- Label comes from the registry, not i18n — an admin sets it
                      per plugin, so there's no key to translate against. -->
                 <TabsTrigger
@@ -2436,7 +2457,10 @@ const playerHeroTeamChipDotClasses =
           </div>
         </div>
 
+        <!-- Community time is counted on servers, not in matches, so none of
+             the match filters apply to it. -->
         <div
+          v-if="statsTab !== 'community'"
           class="mb-5 flex flex-col gap-3 rounded-lg border border-border/60 bg-card/40 px-3 py-2.5 [backdrop-filter:blur(6px)] md:flex-row md:flex-wrap md:items-center md:gap-x-4 md:gap-y-3"
         >
           <div
@@ -2925,6 +2949,12 @@ const playerHeroTeamChipDotClasses =
               :limit="statsMatchLimit"
               :since="sinceTimestamp"
             />
+          </PageTransition>
+        </TabsContent>
+
+        <TabsContent value="community" class="mt-0">
+          <PageTransition v-if="playerId && statsTab === 'community'">
+            <PlayerCommunityHistory :steam-id="playerId" />
           </PageTransition>
         </TabsContent>
 

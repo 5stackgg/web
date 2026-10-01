@@ -126,6 +126,48 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
           </FormField>
         </SettingsSection>
 
+        <SettingsSection
+          id="player-sessions"
+          :title="
+            $t('pages.settings.application.servers.player_sessions_section')
+          "
+          :description="
+            $t(
+              'pages.settings.application.servers.player_sessions_description',
+            )
+          "
+        >
+          <FormField
+            v-slot="{ componentField }"
+            name="player_session_retention_days"
+          >
+            <FormItem>
+              <FormLabel>{{
+                $t(
+                  "pages.settings.application.servers.player_session_retention_days",
+                )
+              }}</FormLabel>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.servers.player_session_retention_days_description",
+                  {
+                    min: PLAYER_SESSION_RETENTION.min,
+                    max: PLAYER_SESSION_RETENTION.max,
+                  },
+                )
+              }}</FormDescription>
+              <Input
+                type="number"
+                v-bind="componentField"
+                :min="PLAYER_SESSION_RETENTION.min"
+                :max="PLAYER_SESSION_RETENTION.max"
+                class="sm:max-w-xs"
+              />
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </SettingsSection>
+
         <SettingsSaveBar
           :form="form"
           :submitting="submitting"
@@ -144,10 +186,15 @@ import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { z } from "zod";
 
+// The api clamps to the same bounds: the weekly leaderboards read raw
+// sessions, so a week is the floor.
+const PLAYER_SESSION_RETENTION = { min: 7, max: 90, fallback: 7 };
+
 export default {
   data() {
     return {
       submitting: false,
+      PLAYER_SESSION_RETENTION,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -155,6 +202,12 @@ export default {
             number_of_cpus_per_server: z.number().min(1).default(1),
             reserved_disk_space_fresh_gb: z.number().min(0).default(120),
             reserved_disk_space_existing_gb: z.number().min(0).default(60),
+            player_session_retention_days: z
+              .number()
+              .int()
+              .min(PLAYER_SESSION_RETENTION.min)
+              .max(PLAYER_SESSION_RETENTION.max)
+              .default(PLAYER_SESSION_RETENTION.fallback),
           }),
         ),
       }),
@@ -168,7 +221,8 @@ export default {
           if (
             setting.name === "number_of_cpus_per_server" ||
             setting.name === "reserved_disk_space_fresh_gb" ||
-            setting.name === "reserved_disk_space_existing_gb"
+            setting.name === "reserved_disk_space_existing_gb" ||
+            setting.name === "player_session_retention_days"
           ) {
             this.form.setFieldValue(setting.name, parseInt(setting.value));
           }
@@ -200,6 +254,14 @@ export default {
           {
             name: "reserved_disk_space_existing_gb",
             value: this.form.values.reserved_disk_space_existing_gb?.toString(),
+          },
+          {
+            name: "player_session_retention_days",
+            value: String(
+              this.clampRetention(
+                this.form.values.player_session_retention_days,
+              ),
+            ),
           },
         ];
 
@@ -233,6 +295,18 @@ export default {
       } finally {
         this.submitting = false;
       }
+    },
+    clampRetention(days: number | undefined) {
+      const value = Math.trunc(Number(days));
+
+      if (!Number.isFinite(value)) {
+        return PLAYER_SESSION_RETENTION.fallback;
+      }
+
+      return Math.min(
+        PLAYER_SESSION_RETENTION.max,
+        Math.max(PLAYER_SESSION_RETENTION.min, value),
+      );
     },
     async toggleCpuPinning() {
       await this.$apollo.mutate({

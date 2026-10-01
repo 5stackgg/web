@@ -31,6 +31,9 @@ const canManage = computed(() =>
 const canSetup = computed(() =>
   useAuthStore().isRoleAbove(e_player_roles_enum.administrator),
 );
+
+const serverLinkClasses =
+  "truncate font-semibold transition-colors after:absolute after:inset-0 after:z-[1] after:rounded-xl after:content-[''] group-hover:text-[hsl(var(--tac-amber))] focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:ring-[hsl(var(--tac-amber))]";
 </script>
 
 <template>
@@ -134,7 +137,7 @@ const canSetup = computed(() =>
                 v-for="server of matchingMode(flattenGame(gameServers))"
                 :key="server.id"
                 variant="elevated"
-                class="overflow-hidden group cursor-pointer p-0"
+                class="relative overflow-hidden group cursor-pointer p-0"
               >
                 <!-- Zone A: Map Hero -->
                 <div class="relative h-36 rounded-t-xl overflow-hidden">
@@ -184,9 +187,14 @@ const canSetup = computed(() =>
                 <!-- Zone B: Card Body -->
                 <div class="px-4 pt-3 pb-2">
                   <div class="mb-2 flex items-center gap-2">
-                    <p class="min-w-0 flex-1 truncate font-semibold">
+                    <!-- Stretched over the whole card, so the card opens the
+                         server's page while Zone C keeps its own buttons. -->
+                    <NuxtLink
+                      :to="`/public-servers/${server.id}`"
+                      :class="[serverLinkClasses, 'min-w-0 flex-1']"
+                    >
                       {{ server.label }}
-                    </p>
+                    </NuxtLink>
                     <!-- What the server is actually running. A name alone does
                          not tell anyone whether this is retakes or vanilla. -->
                     <span
@@ -220,7 +228,7 @@ const canSetup = computed(() =>
                 </div>
 
                 <!-- Zone C: CTA Footer -->
-                <div class="px-4 pb-4 pt-3">
+                <div class="relative z-[2] px-4 pb-4 pt-3">
                   <div class="flex items-center gap-2">
                     <div
                       class="flex-1 [&>div]:w-full [&_a]:flex-1 [&_a_button]:w-full"
@@ -268,7 +276,7 @@ const canSetup = computed(() =>
           v-for="server of lanServers"
           :key="server.id"
           variant="elevated"
-          class="overflow-hidden group cursor-pointer p-0"
+          class="relative overflow-hidden group cursor-pointer p-0"
         >
           <!-- Zone A: Map Hero -->
           <div class="relative h-36 rounded-t-xl overflow-hidden">
@@ -307,7 +315,12 @@ const canSetup = computed(() =>
 
           <!-- Zone B: Card Body -->
           <div class="px-4 pt-3 pb-2">
-            <p class="font-semibold truncate mb-2">{{ server.label }}</p>
+            <NuxtLink
+              :to="`/public-servers/${server.id}`"
+              :class="[serverLinkClasses, 'mb-2 block']"
+            >
+              {{ server.label }}
+            </NuxtLink>
             <div class="flex items-center justify-between text-sm mb-1.5">
               <span class="text-muted-foreground">{{
                 $t("pages.public_servers.players")
@@ -332,7 +345,7 @@ const canSetup = computed(() =>
           </div>
 
           <!-- Zone C: CTA Footer -->
-          <div class="px-4 pb-4 pt-3">
+          <div class="relative z-[2] px-4 pb-4 pt-3">
             <div class="flex items-center gap-2">
               <div
                 class="flex-1 [&>div]:w-full [&_a]:flex-1 [&_a_button]:w-full"

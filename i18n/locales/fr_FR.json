@@ -3752,6 +3752,58 @@
           "browse": "Répertoire des plugins",
           "saved": "Plugins enregistrés. Le serveur redémarre.",
           "saved_disabled": "Plugins enregistrés. Ils s'appliqueront quand le serveur sera activé."
+        },
+        "move": {
+          "menu": "Déplacer vers un autre nœud",
+          "title": "Déplacer vers un autre nœud",
+          "description": "Le serveur s'arrête sur {node}, ses fichiers sont copiés vers le nouveau nœud, puis il redémarre là-bas.",
+          "source_offline": "{node} est hors ligne, les fichiers du serveur ne peuvent donc pas être copiés. Il démarrera sur le nouveau nœud avec les paramètres par défaut, et tout ce qui reste sur {node} y restera.",
+          "without_files": "Déplacer sans les fichiers du serveur",
+          "target": "Nouveau nœud",
+          "no_nodes": "Il n'y a aucun autre nœud de serveurs de jeu",
+          "free_slots": "Emplacements libres : {count}",
+          "free_disk": "{size} libres",
+          "confirm": "Déplacer le serveur",
+          "started": "Déplacement de {server} vers {node}",
+          "warning": {
+            "address": "Le serveur obtient une nouvelle adresse sur le nouveau nœud.",
+            "region": "Le serveur sera répertorié dans {region}.",
+            "runtime": "Le nouveau nœud utilise {runtime}, les plugins conçus pour l'autre framework n'y seront donc pas chargés."
+          },
+          "reason": {
+            "current": "Nœud actuel",
+            "disabled": "Désactivé",
+            "offline": "Hors ligne",
+            "setup": "Configuration",
+            "unreachable": "Injoignable",
+            "updating": "Mise à jour de CS2",
+            "no_build": "{game} n'est pas installé",
+            "no_slot": "Aucun emplacement de serveur libre"
+          }
+        },
+        "migration": {
+          "title": {
+            "active": "Déplacement vers {node}",
+            "Completed": "Déplacé vers {node}",
+            "Failed": "Échec du déplacement vers {node}",
+            "Canceled": "Déplacement vers {node} annulé"
+          },
+          "status": {
+            "Queued": "En file d'attente",
+            "Stopping": "Arrêt en cours",
+            "Transferring": "Copie des fichiers",
+            "Finalizing": "Basculement",
+            "Completed": "Terminé",
+            "Failed": "Échec",
+            "Canceled": "Annulé"
+          },
+          "progress": "{done} sur {total} ({percent}%)",
+          "without_files": "sans fichiers",
+          "restored": "Le serveur est de retour sur {node}.",
+          "cancel": "Annuler le déplacement",
+          "cancel_requested": "Annulation du déplacement",
+          "dismiss": "Masquer",
+          "locked": "Le serveur est en cours de déplacement vers un autre nœud. Réessaie une fois le déplacement terminé."
         }
       }
     },
@@ -5875,7 +5927,8 @@
     "scope_server": "Serveur",
     "missing_path": "Ce répertoire n'existe pas encore.",
     "missing_path_create": "Le créer",
-    "missing_path_dismiss": "Ignorer"
+    "missing_path_dismiss": "Ignorer",
+    "server_moving": "Ce serveur est en cours de déplacement vers un autre nœud. Ses fichiers seront de nouveau disponibles une fois le déplacement terminé."
   },
   "error": {
     "generic": "Une erreur est survenue. Réessaie."
@@ -8599,6 +8652,8 @@
       "game_server_node": "Nœud de serveurs de jeu",
       "select_game_server_node": "Sélectionner un nœud de serveurs de jeu",
       "game_server_node_description": "Sélectionne un nœud de serveurs de jeu avec CS installé",
+      "move_node_hint": "Pour changer de nœud, déplace le serveur. Ses fichiers sont copiés avec lui.",
+      "move_node": "Déplacer le serveur",
       "type": "Type de serveur",
       "select_type": "Sélectionner le type de serveur",
       "game_mode": "Mode de jeu",

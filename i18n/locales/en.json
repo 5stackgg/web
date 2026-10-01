@@ -3752,6 +3752,58 @@
           "browse": "Plugin Directory",
           "saved": "Plugins saved. The server is restarting.",
           "saved_disabled": "Plugins saved. They apply when the server is enabled."
+        },
+        "move": {
+          "menu": "Move to Another Node",
+          "title": "Move to Another Node",
+          "description": "The server stops on {node}, its files are copied to the new node, and it starts again there.",
+          "source_offline": "{node} is offline, so the server's files can't be copied. It will start on the new node with default settings, and anything left on {node} stays there.",
+          "without_files": "Move without the server's files",
+          "target": "New node",
+          "no_nodes": "There are no other game server nodes",
+          "free_slots": "Free slots: {count}",
+          "free_disk": "{size} free",
+          "confirm": "Move Server",
+          "started": "Moving {server} to {node}",
+          "warning": {
+            "address": "The server gets a new address on the new node.",
+            "region": "The server will be listed in {region}.",
+            "runtime": "The new node runs {runtime}, so plugins built for the other framework won't load there."
+          },
+          "reason": {
+            "current": "Current node",
+            "disabled": "Disabled",
+            "offline": "Offline",
+            "setup": "Setting up",
+            "unreachable": "Unreachable",
+            "updating": "Updating CS2",
+            "no_build": "{game} is not installed",
+            "no_slot": "No free server slots"
+          }
+        },
+        "migration": {
+          "title": {
+            "active": "Moving to {node}",
+            "Completed": "Moved to {node}",
+            "Failed": "Move to {node} failed",
+            "Canceled": "Move to {node} canceled"
+          },
+          "status": {
+            "Queued": "Queued",
+            "Stopping": "Stopping",
+            "Transferring": "Copying Files",
+            "Finalizing": "Switching",
+            "Completed": "Completed",
+            "Failed": "Failed",
+            "Canceled": "Canceled"
+          },
+          "progress": "{done} of {total} ({percent}%)",
+          "without_files": "without files",
+          "restored": "The server is back on {node}.",
+          "cancel": "Cancel Move",
+          "cancel_requested": "Canceling the move",
+          "dismiss": "Dismiss",
+          "locked": "The server is being moved to another node. Try again once the move finishes."
         }
       }
     },
@@ -5875,7 +5927,8 @@
     "scope_server": "Server",
     "missing_path": "This directory doesn't exist yet.",
     "missing_path_create": "Create it",
-    "missing_path_dismiss": "Dismiss"
+    "missing_path_dismiss": "Dismiss",
+    "server_moving": "This server is being moved to another node. Its files will be available again once the move finishes."
   },
   "error": {
     "generic": "An error occurred. Please try again."
@@ -8599,6 +8652,8 @@
       "game_server_node": "Game Server Node",
       "select_game_server_node": "Select Game Server Node",
       "game_server_node_description": "Select a game server node with CS installed",
+      "move_node_hint": "To change the node, move the server. Its files are copied across.",
+      "move_node": "Move Server",
       "type": "Server Type",
       "select_type": "Select Server Type",
       "game_mode": "Game Mode",

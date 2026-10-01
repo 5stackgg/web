@@ -2,7 +2,13 @@
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { MoreVertical, Trash2, FolderOpen, Pencil } from "lucide-vue-next";
+import {
+  MoreVertical,
+  Trash2,
+  FolderOpen,
+  Pencil,
+  ArrowRightLeft,
+} from "lucide-vue-next";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,11 +41,16 @@ import {
 } from "~/components/ui/tooltip";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { ref, computed } from "vue";
+import { useNow } from "@vueuse/core";
 import ServerForm from "~/components/servers/ServerForm.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
 import ServerPlayerManagement from "~/components/servers/ServerPlayerManagement.vue";
 import ServerMapRotation from "~/components/servers/ServerMapRotation.vue";
 import ServerPlugins from "~/components/servers/ServerPlugins.vue";
+import ServerMoveDialog from "~/components/servers/ServerMoveDialog.vue";
+import ServerMigrationPanel from "~/components/servers/ServerMigrationPanel.vue";
+import { useServerMigration } from "~/composables/useServerMigration";
+import { ACTIVE_SERVER_MIGRATION_STATUSES } from "~/types/serverMigration";
 import { Eye, EyeOff } from "lucide-vue-next";
 import Clipboard from "~/components/ClipBoard.vue";
 import ServerStatus from "~/components/servers/ServerStatus.vue";
@@ -60,6 +71,46 @@ const isManager = computed(() =>
 const isAdmin = computed(() => authStore.isAdmin);
 
 const serverMenu = ref(false);
+const moveDialog = ref(false);
+const dismissedMigrationId = ref<string | null>(null);
+
+const route = useRoute();
+const {
+  server: migratingServer,
+  node: serverNode,
+  migration,
+  isMigrating,
+  sourceReachable,
+} = useServerMigration(
+  computed(() => route.params.id as string),
+  isAdmin,
+);
+
+const MIGRATION_SHOWN_FOR_MS = 15 * 60 * 1000;
+const now = useNow({ interval: 30_000 });
+
+const visibleMigration = computed(() => {
+  const latest = migration.value;
+
+  if (!latest) {
+    return null;
+  }
+
+  if (ACTIVE_SERVER_MIGRATION_STATUSES.includes(latest.status)) {
+    return latest;
+  }
+
+  if (
+    latest.id === dismissedMigrationId.value ||
+    !latest.finished_at ||
+    now.value.getTime() - new Date(latest.finished_at).getTime() >
+      MIGRATION_SHOWN_FOR_MS
+  ) {
+    return null;
+  }
+
+  return latest;
+});
 
 const heroClasses =
   "relative min-w-0 max-w-full px-6 pt-5 pb-6 max-sm:p-4 border border-border [background:linear-gradient(180deg,hsl(var(--card)/0.2)_0%,hsl(var(--card)/0.04)_100%)]";
@@ -94,6 +145,9 @@ const titleClasses =
 
         <span :class="chipClasses">{{ server.region }}</span>
         <span v-if="server.type" :class="chipClasses">{{ server.type }}</span>
+        <span v-if="isAdmin && serverNode" :class="chipClasses">
+          {{ serverNode.label || serverNode.id }}
+        </span>
 
         <div class="inline-flex items-center gap-2 ml-auto">
           <div
@@ -102,6 +156,7 @@ const titleClasses =
           >
             <Switch
               :model-value="server.enabled"
+              :disabled="isMigrating"
               @click="toggleServerEnabled"
             />
             <Label
@@ -120,6 +175,8 @@ const titleClasses =
                   <Button
                     variant="outline"
                     size="icon"
+                    :disabled="isMigrating"
+                    :aria-label="$t('pages.dedicated_servers.detail.files')"
                     @click="
                       openFiles({ scope: 'server', id: server.id })
                     "
@@ -141,13 +198,25 @@ const titleClasses =
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" class="w-[200px]">
                 <DropdownMenuGroup>
-                  <DropdownMenuItem @click="editServerSheet = true">
+                  <DropdownMenuItem
+                    :disabled="isMigrating"
+                    @click="editServerSheet = true"
+                  >
                     <Pencil />
                     {{ $t("common.actions.edit") }}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    v-if="isAdmin && migratingServer?.game_server_node_id"
+                    :disabled="isMigrating"
+                    @click="moveDialog = true"
+                  >
+                    <ArrowRightLeft />
+                    {{ $t("pages.dedicated_servers.detail.move.menu") }}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     class="text-destructive focus:text-destructive"
+                    :disabled="isMigrating"
                     @click="deleteServerAlertDialog = true"
                   >
                     <Trash2 />
@@ -186,9 +255,25 @@ const titleClasses =
         >
           {{ $t("pages.dedicated_servers.detail.enabled") }}
         </Label>
-        <Switch :model-value="server.enabled" @click="toggleServerEnabled" />
+        <Switch
+          :model-value="server.enabled"
+          :disabled="isMigrating"
+          @click="toggleServerEnabled"
+        />
       </div>
     </header>
+  </PageTransition>
+
+  <PageTransition
+    v-if="server && isAdmin && visibleMigration"
+    :delay="50"
+    class="mt-6"
+  >
+    <ServerMigrationPanel
+      :server-id="server.id"
+      :migration="visibleMigration"
+      @dismiss="dismissedMigrationId = visibleMigration.id"
+    />
   </PageTransition>
 
   <PageTransition
@@ -302,10 +387,26 @@ const titleClasses =
         <SheetTitle>{{ $t("common.actions.edit") }}</SheetTitle>
       </SheetHeader>
       <div class="-mx-4 mt-4 flex-1 overflow-y-auto px-4 py-1">
-        <ServerForm :server="server" @updated="editServerSheet = false" />
+        <ServerForm
+          :server="server"
+          :can-move="!!migratingServer?.game_server_node_id && !isMigrating"
+          @updated="editServerSheet = false"
+          @move="
+            editServerSheet = false;
+            moveDialog = true;
+          "
+        />
       </div>
     </SheetContent>
   </Sheet>
+
+  <ServerMoveDialog
+    v-if="isAdmin"
+    v-model:open="moveDialog"
+    :server="migratingServer"
+    :server-label="server?.label ?? ''"
+    :source-reachable="sourceReachable"
+  />
 
   <AlertDialog
     :open="deleteServerAlertDialog"
@@ -332,6 +433,7 @@ const titleClasses =
 
 <script lang="ts">
 import { $ } from "~/generated/zeus";
+import { toast } from "@/components/ui/toast";
 import {
   generateMutation,
   generateQuery,
@@ -573,7 +675,7 @@ export default {
       });
     },
     async deleteServer() {
-      await this.$apollo.mutate({
+      const { data } = await this.$apollo.mutate({
         mutation: generateMutation({
           delete_servers_by_pk: [
             {
@@ -585,6 +687,17 @@ export default {
           ],
         }),
       });
+
+      if (!data?.delete_servers_by_pk) {
+        toast({
+          variant: "destructive",
+          title: this.$t("common.error"),
+          description: this.$t(
+            "pages.dedicated_servers.detail.migration.locked",
+          ),
+        });
+        return;
+      }
 
       this.$router.push("/dedicated-servers");
     },

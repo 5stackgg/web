@@ -46,10 +46,11 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-async function mountConsole(nodeId: string | null) {
+async function mountConsole(nodeId: string | null, route = "/") {
   state.data = fixture();
 
   const wrapper = await mountSuspended(ServerSettings, {
+    route,
     props: {
       server: { id: "server-1", enabled: true, game_server_node_id: nodeId },
     },
@@ -66,6 +67,21 @@ describe("ServerSettings", () => {
     expect(wrapper.text()).toContain("Map Rotation");
     expect(wrapper.text()).toContain("Plugins");
     expect(wrapper.text()).toContain("Access");
+    expect(wrapper.text()).toContain("Player Management");
+  });
+
+  // The install steps moved out of the roster's popover into their own
+  // section, mounted only while it is the open one.
+  it("opens the Player Management section from its deep link", async () => {
+    const wrapper = await mountConsole(
+      null,
+      "/?settings=player-management",
+    );
+
+    expect(
+      wrapper.find('[data-testid="player-management-plugin"]').exists(),
+    ).toBe(true);
+    expect(wrapper.find("#server-access-restricted").isVisible()).toBe(false);
   });
 
   // Rotation and plugins reach the server in its pod spec; an external server

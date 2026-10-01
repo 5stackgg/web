@@ -3662,6 +3662,12 @@
       "detail": {
         "enabled": "Habilitado",
         "eyebrow": "Servidor Dedicado",
+        "tabs": {
+          "players": "Jogadores",
+          "console": "Console",
+          "logs": "Logs",
+          "settings": "Configurações"
+        },
         "status_label": {
           "connected": "Conectado",
           "disconnected": "Desconectado",
@@ -3686,7 +3692,8 @@
           "step_download": "Baixe o plugin para o framework que seu servidor usa.",
           "step_extract": "Extraia o zip na pasta game/csgo do servidor.",
           "step_config": "Salve esta configuração no servidor em:",
-          "step_restart": "Reinicie o servidor. O plugin aparecerá aqui como ativo em até um minuto."
+          "step_restart": "Reinicie o servidor. O plugin aparecerá aqui como ativo em até um minuto.",
+          "open_install": "Clique para abrir as etapas de instalação nas Configurações."
         },
         "status": {
           "disconnected": "O servidor está desconectado",
@@ -10471,7 +10478,8 @@
       "connected": "Conectado",
       "not_available": "n/d",
       "not_detected": "Plugin Player Management não detectado. A lista de jogadores é lida via RCON a cada 30 segundos e nenhum histórico é registrado.",
-      "not_reporting": "O plugin Player Management ainda não informa os jogadores, então a lista é lida via RCON a cada 30 segundos e nenhum histórico é registrado."
+      "not_reporting": "O plugin Player Management ainda não informa os jogadores, então a lista é lida via RCON a cada 30 segundos e nenhum histórico é registrado.",
+      "last_left": "O último jogador saiu {time}"
     },
     "recent": {
       "title": "Jogadores Recentes",

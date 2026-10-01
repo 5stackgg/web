@@ -32,7 +32,11 @@ function rootField(query: any): string | undefined {
   return query.definitions[0]?.selectionSet?.selections[0]?.name?.value;
 }
 
-async function mountAs(role: string) {
+async function mountAs(
+  role: string,
+  options: { server?: Record<string, unknown>; route?: string } = {},
+) {
+  const current = { ...server, ...options.server };
   useAuthStore().me = {
     steam_id: "76561198000000001",
     role,
@@ -43,7 +47,7 @@ async function mountAs(role: string) {
     subscribe(observer: any) {
       if (rootField(options.query) === "servers_by_pk") {
         Promise.resolve().then(() =>
-          observer.next({ data: { servers_by_pk: server } }),
+          observer.next({ data: { servers_by_pk: current } }),
         );
       }
       return { unsubscribe() {}, closed: false };
@@ -51,12 +55,15 @@ async function mountAs(role: string) {
   }));
 
   const wrapper = await mountSuspended(DedicatedServerPage, {
-    route: `/dedicated-servers/${server.id}`,
+    route: options.route ?? `/dedicated-servers/${server.id}`,
     global: {
       mixins: (useNuxtApp().vueApp as any)._context.mixins,
       stubs: {
         QuickServerConnect: true,
         ServerPlayerManagement: true,
+        ServerRecentPlayers: true,
+        ServerOverviewStrip: true,
+        ServerSettings: true,
         RconCommander: true,
         ServiceLogs: true,
         ServerForm: true,
@@ -88,5 +95,72 @@ describe("dedicated server files button", () => {
     const wrapper = await mountAs("administrator");
 
     expect(wrapper.find(".lucide-folder-open").exists()).toBe(true);
+  });
+});
+
+function tabLabels(wrapper: Awaited<ReturnType<typeof mountAs>>) {
+  return wrapper
+    .find('[role="tablist"]')
+    .findAll('[role="tab"]')
+    .map((tab) => tab.text());
+}
+
+describe("dedicated server tabs", () => {
+  it("gives a moderator the daily tools only", async () => {
+    const wrapper = await mountAs("moderator");
+
+    expect(tabLabels(wrapper)).toEqual(["Players", "Console"]);
+  });
+
+  it("adds logs and settings for an administrator", async () => {
+    const wrapper = await mountAs("administrator");
+
+    expect(tabLabels(wrapper)).toEqual([
+      "Players",
+      "Console",
+      "Logs",
+      "Settings",
+    ]);
+    expect(wrapper.find('[role="tab"][data-state="active"]').text()).toBe(
+      "Players",
+    );
+  });
+
+  it("still opens settings from a link made before the tabs", async () => {
+    const wrapper = await mountAs("administrator", {
+      server: { type: "Casual" },
+      route: `/dedicated-servers/${server.id}?settings=plugins`,
+    });
+
+    expect(wrapper.find('[role="tab"][data-state="active"]').text()).toBe(
+      "Settings",
+    );
+    expect(wrapper.find("server-settings-stub").isVisible()).toBe(true);
+  });
+});
+
+describe("dedicated server header", () => {
+  it("puts Join right beside the address it connects to", async () => {
+    const wrapper = await mountAs("moderator", {
+      server: { connection_string: "connect 10.0.0.5:27015" },
+    });
+
+    const join = wrapper.find("quick-server-connect-stub");
+    expect(join.exists()).toBe(true);
+    expect(join.element.parentElement?.textContent).toContain(
+      "10.0.0.5:27015",
+    );
+  });
+
+  it("shows the overview strip on a community server only", async () => {
+    const ranked = await mountAs("moderator");
+    expect(ranked.find("server-overview-strip-stub").exists()).toBe(false);
+    ranked.unmount();
+    mounted = null;
+
+    const community = await mountAs("moderator", {
+      server: { type: "Casual" },
+    });
+    expect(community.find("server-overview-strip-stub").exists()).toBe(true);
   });
 });

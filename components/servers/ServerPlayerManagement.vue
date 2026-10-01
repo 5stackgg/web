@@ -2,22 +2,8 @@
 import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
 import { useI18n } from "vue-i18n";
 import gql from "graphql-tag";
-import {
-  RefreshCw,
-  Users,
-  TriangleAlert,
-  Download,
-  Eye,
-  EyeOff,
-} from "lucide-vue-next";
+import { RefreshCw, TriangleAlert } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
-import { Badge } from "~/components/ui/badge";
-import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "~/components/ui/popover";
 import {
   Tooltip,
   TooltipContent,
@@ -28,8 +14,6 @@ import { toast } from "@/components/ui/toast";
 import SanctionPlayer from "~/components/SanctionPlayer.vue";
 import PlayerSanctions from "~/components/PlayerSanctions.vue";
 import KickPlayer from "~/components/KickPlayer.vue";
-import ClipBoard from "~/components/ClipBoard.vue";
-import TimeAgo from "~/components/TimeAgo.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import CommunityPlayerCell from "~/components/community/CommunityPlayerCell.vue";
 import CommunityPlayerMenu from "~/components/community/CommunityPlayerMenu.vue";
@@ -40,36 +24,33 @@ import {
 } from "~/graphql/communityGraphql";
 import { ipPeers, sinceSeconds } from "~/utilities/communityStats";
 import { useCommunityFormat } from "~/composables/useCommunityFormat";
+import { useServerPlayerManagementPlugin } from "~/composables/useServerPlayerManagementPlugin";
+import type { ServerRosterStatus } from "~/types/serverOverview";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { useAuthStore } from "~/stores/AuthStore";
-import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
-import { effectivePluginRuntime } from "~/constants/rconCommands";
 import {
-  PLAYER_MANAGEMENT_CONFIG_PATHS,
-  playerManagementConfig,
-  playerManagementDownloadUrl,
-} from "~/constants/gameServerReleases";
+  tacticalSectionLabelClasses,
+  tacticalSectionTickClasses,
+} from "~/utilities/tacticalClasses";
 
-// Only an administrator can read the api password, so only they get the
-// install steps; everyone else is told the plugin is missing and nothing more.
 const props = defineProps<{
   serverId: string;
   gameServerNodeId?: string | null;
-  apiPassword?: string | null;
-  pluginRuntime?: string | null;
+  maxPlayers?: number | null;
   online?: boolean;
 }>();
 
-const emit = defineEmits<{ (e: "roster-change"): void }>();
+const emit = defineEmits<{
+  (e: "roster-change"): void;
+  (e: "status", status: ServerRosterStatus): void;
+}>();
 
 const { t } = useI18n();
 const format = useCommunityFormat();
 const nuxtApp = useNuxtApp();
 const authStore = useAuthStore();
-const applicationSettings = useApplicationSettingsStore();
-
-// The plugin syncs every 30s and the api keeps at most one heartbeat a minute.
-const PLUGIN_STALE_MS = 3 * 60 * 1000;
+const route = useRoute();
+const router = useRouter();
 
 // Same window the api's sweep uses before it closes a silent server's
 // sessions: past it the plugin roster is history, not the server.
@@ -79,87 +60,18 @@ const ROSTER_STALE_MS = 3 * 60 * 1000;
 // anyway, so a dead websocket can't leave the card empty.
 const ROSTER_DECIDE_MS = 5 * 1000;
 
-const RUNTIME_LABELS: Record<string, string> = {
-  swiftlys2: "SwiftlyS2",
-  counterstrikesharp: "CounterStrikeSharp",
-};
+const plugin = useServerPlayerManagementPlugin(() => props.serverId);
+const now = plugin.now;
+const isCommunityServer = plugin.isCommunityServer;
+const pluginActive = plugin.active;
 
-const pluginSubscription = gql`
-  subscription ServerPlayerManagementPlugin($serverId: uuid!) {
-    servers_by_pk(id: $serverId) {
-      id
-      type
-      game
-      is_dedicated
-      player_management_version
-      player_management_runtime
-      player_management_seen_at
-    }
-  }
-`;
-
-const pluginState = ref<{
-  type: string;
-  game: string;
-  is_dedicated: boolean;
-  player_management_version: string | null;
-  player_management_runtime: string | null;
-  player_management_seen_at: string | null;
-} | null>(null);
-const now = ref(Date.now());
-const showConfig = ref(false);
-const selectedRuntime = ref<string | null>(null);
-let pluginSub: { unsubscribe: () => void } | null = null;
-let clockTimer: ReturnType<typeof setInterval> | null = null;
-
-// A Ranked server's sanctions ride its match payload and a Practice server has
-// no public players, so only community servers need the plugin.
-const isCommunityServer = computed(() => {
-  const server = pluginState.value;
-
-  return (
-    !!server &&
-    server.is_dedicated &&
-    server.game !== "csgo" &&
-    server.type !== "Ranked" &&
-    server.type !== "Practice"
-  );
-});
-
-const pluginActive = computed(() => {
-  const seenAt = pluginState.value?.player_management_seen_at;
-
-  return !!seenAt && now.value - new Date(seenAt).getTime() < PLUGIN_STALE_MS;
-});
-
-const pluginVersionLabel = computed(() => {
-  const version = pluginState.value?.player_management_version;
-
-  return version && /^\d/.test(version) ? `v${version}` : version;
-});
-
-const runtimeLabel = computed(() => {
-  const runtime = pluginState.value?.player_management_runtime;
-
-  return runtime ? RUNTIME_LABELS[runtime] : null;
-});
-
-// An offline server can't check in either way, and the status pill already
-// says it is offline, so a missing plugin is only worth flagging once RCON is up.
-const showPluginStatus = computed(
-  () => isCommunityServer.value && (pluginActive.value || props.online),
-);
-
-const pluginStatusLabel = computed(() =>
-  t(
-    pluginActive.value
-      ? "pages.dedicated_servers.detail.player_management_plugin.active"
-      : "pages.dedicated_servers.detail.player_management_plugin.not_detected_title",
-  ),
-);
-
-const canInstall = computed(
-  () => props.gameServerNodeId === null && authStore.isAdmin,
+// The install steps live in the server settings, which only an administrator
+// can open; a server on a node gets the plugin baked into its image.
+const canOpenInstall = computed(
+  () =>
+    authStore.isAdmin &&
+    !pluginActive.value &&
+    props.gameServerNodeId === null,
 );
 
 const notDetectedMessage = computed(() => {
@@ -180,42 +92,33 @@ const notDetectedMessage = computed(() => {
   );
 });
 
-const installRuntime = computed({
-  get: () =>
-    selectedRuntime.value ??
-    effectivePluginRuntime(
-      pluginState.value?.player_management_runtime ?? props.pluginRuntime,
-      applicationSettings.gameServerPluginRuntime,
-    ),
-  set: (runtime: string) => {
-    selectedRuntime.value = runtime;
-  },
+const pluginWarning = computed(() => {
+  if (pluginActive.value) {
+    return [t("community.roster.not_reporting")];
+  }
+
+  return [
+    t("community.roster.not_detected"),
+    notDetectedMessage.value,
+    ...(canOpenInstall.value
+      ? [
+          t(
+            "pages.dedicated_servers.detail.player_management_plugin.open_install",
+          ),
+        ]
+      : []),
+  ];
 });
 
-const downloadUrl = computed(() =>
-  playerManagementDownloadUrl(
-    installRuntime.value,
-    applicationSettings.latestPluginVersion(installRuntime.value),
-  ),
-);
+function openInstall() {
+  if (!canOpenInstall.value) {
+    return;
+  }
 
-const downloadName = computed(() => {
-  const file = downloadUrl.value.split("/").pop() ?? "";
-
-  return file.endsWith(".zip") ? file : null;
-});
-
-const configPath = computed(
-  () => PLAYER_MANAGEMENT_CONFIG_PATHS[installRuntime.value],
-);
-
-const config = computed(() =>
-  playerManagementConfig(installRuntime.value, {
-    apiDomain: `https://${useRuntimeConfig().public.apiDomain}`,
-    serverId: props.serverId,
-    apiPassword: props.apiPassword,
-  }),
-);
+  void router.push({
+    query: { ...route.query, tab: "settings", settings: "player-management" },
+  });
+}
 
 const loading = ref(false);
 const roster = ref<Array<{ steam_id: string; name: string }>>([]);
@@ -331,7 +234,7 @@ function peerNames(steamId: string) {
   return (livePeers.value.get(steamId) ?? []).map((row) => row.displayName);
 }
 
-const showPollNotice = computed(
+const showPluginWarning = computed(
   () =>
     isCommunityServer.value &&
     !rosterLive.value &&
@@ -528,6 +431,62 @@ watch(
   },
 );
 
+
+const SERVER_LAST_SEEN_QUERY = gql`
+  query ServerLastSeen($serverId: uuid!) {
+    server_recent_players(
+      where: { server_id: { _eq: $serverId }, online: { _eq: false } }
+      order_by: { last_seen_at: desc }
+      limit: 1
+    ) {
+      last_seen_at
+    }
+  }
+`;
+
+const lastLeftAt = ref<string | null>(null);
+
+// Only a community server keeps session history, so only it can say when the
+// last player left.
+async function loadLastLeft() {
+  try {
+    const { data } = await nuxtApp.$apollo.defaultClient.query({
+      query: SERVER_LAST_SEEN_QUERY,
+      variables: { serverId: props.serverId },
+      fetchPolicy: "network-only",
+      context: COMMUNITY_OPTIONAL,
+    });
+
+    lastLeftAt.value = data?.server_recent_players?.[0]?.last_seen_at ?? null;
+  } catch {
+    lastLeftAt.value = null;
+  }
+}
+
+watch(
+  () => listReady.value && rows.value.length === 0 && isCommunityServer.value,
+  (empty) => {
+    if (empty) {
+      void loadLastLeft();
+    }
+  },
+  { immediate: true },
+);
+
+watch(
+  (): ServerRosterStatus => ({
+    count: rows.value.length,
+    live: rosterLive.value,
+    community: isCommunityServer.value,
+    pluginActive: pluginActive.value,
+    pluginVersion: plugin.versionLabel.value,
+    pluginRuntime: plugin.runtimeLabel.value,
+    pluginSeenAt: plugin.server.value?.player_management_seen_at ?? null,
+  }),
+  (status) => emit("status", status),
+  { immediate: true },
+);
+
 onMounted(() => {
   rosterSub = getGraphqlClient()
     .subscribe({
@@ -548,249 +507,63 @@ onMounted(() => {
   rosterDecideTimer = setTimeout(() => {
     rosterResolved.value = true;
   }, ROSTER_DECIDE_MS);
-
-  // Optional: the columns only exist once the api has migrated, and until then
-  // the card simply says nothing about the plugin.
-  pluginSub = getGraphqlClient()
-    .subscribe({
-      query: pluginSubscription,
-      variables: { serverId: props.serverId },
-      context: { optional: true },
-    })
-    .subscribe({
-      next: ({ data }: any) => {
-        pluginState.value = data?.servers_by_pk ?? null;
-      },
-      error: () => {
-        pluginState.value = null;
-      },
-    });
-
-  clockTimer = setInterval(() => {
-    now.value = Date.now();
-  }, 1000);
 });
 
 onBeforeUnmount(() => {
   stopPolling();
 
-  if (clockTimer) {
-    clearInterval(clockTimer);
-  }
-
   if (rosterDecideTimer) {
     clearTimeout(rosterDecideTimer);
   }
 
-  pluginSub?.unsubscribe();
   rosterSub?.unsubscribe();
 });
 </script>
 
 <template>
-  <div class="rounded-md border p-4">
-    <div class="flex items-center justify-between mb-4">
-      <div class="flex items-center gap-2">
-        <Users class="h-4 w-4 text-muted-foreground" />
-        <h3 class="text-lg font-semibold">
-          {{ $t("pages.dedicated_servers.detail.player_management") }}
+  <section aria-labelledby="online-now-title">
+    <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-baseline gap-3">
+        <h3
+          id="online-now-title"
+          :class="[tacticalSectionLabelClasses, 'mb-0']"
+        >
+          <span :class="tacticalSectionTickClasses"></span>
+          {{ $t("community.online_now") }}
         </h3>
-        <Badge variant="secondary">{{ rows.length }}</Badge>
+        <span
+          class="font-mono text-xs tabular-nums text-muted-foreground"
+          data-testid="roster-count"
+        >
+          {{ rows.length
+          }}<template v-if="maxPlayers"> / {{ maxPlayers }}</template>
+        </span>
       </div>
       <div class="flex items-center gap-2">
-        <Popover
-          v-if="showPluginStatus"
-          @update:open="(open: boolean) => !open && (showConfig = false)"
+        <FiveStackToolTip
+          v-if="showPluginWarning"
+          as-child
+          :delay-duration="120"
         >
-          <PopoverTrigger as-child>
+          <template #trigger>
             <Button
               variant="outline"
-              :size="pluginActive ? 'default' : 'icon'"
-              :aria-label="pluginStatusLabel"
-              :class="
-                pluginActive
-                  ? 'gap-2 px-3 font-mono text-xs font-normal text-muted-foreground'
-                  : 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.2)] hover:text-[hsl(var(--tac-amber))]'
-              "
+              size="icon"
+              :as="canOpenInstall ? 'button' : 'span'"
+              :tabindex="canOpenInstall ? undefined : 0"
+              :aria-label="pluginWarning.join(' ')"
+              class="border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.2)] hover:text-[hsl(var(--tac-amber))]"
+              :class="!canOpenInstall && 'cursor-default'"
+              data-testid="plugin-warning"
+              @click="openInstall"
             >
-              <template v-if="pluginActive">
-                <span class="h-2 w-2 shrink-0 rounded-full bg-success" />
-                {{ pluginVersionLabel }}
-                <span v-if="runtimeLabel" class="max-sm:hidden">
-                  · {{ runtimeLabel }}
-                </span>
-              </template>
-              <TriangleAlert v-else />
+              <TriangleAlert />
             </Button>
-          </PopoverTrigger>
-          <PopoverContent
-            align="end"
-            :collision-padding="16"
-            class="max-h-[var(--reka-popover-content-available-height)] w-[26rem] max-w-[calc(100vw-2rem)] overflow-y-auto p-0"
-          >
-            <div class="space-y-1.5 p-4">
-              <div
-                class="flex items-center gap-2 font-mono text-[0.65rem] font-bold uppercase tracking-[0.18em]"
-                :class="
-                  pluginActive ? 'text-success' : 'text-[hsl(var(--tac-amber))]'
-                "
-              >
-                <span
-                  v-if="pluginActive"
-                  class="h-1.5 w-1.5 shrink-0 rounded-full bg-success"
-                />
-                <TriangleAlert v-else class="h-3.5 w-3.5 shrink-0" />
-                {{ pluginStatusLabel }}
-              </div>
-              <template v-if="pluginActive">
-                <p class="font-mono text-xs text-muted-foreground">
-                  {{ pluginVersionLabel }}
-                  <template v-if="runtimeLabel"> · {{ runtimeLabel }}</template>
-                </p>
-                <p
-                  v-if="pluginState?.player_management_seen_at"
-                  class="text-xs text-muted-foreground"
-                >
-                  {{
-                    $t(
-                      "pages.dedicated_servers.detail.player_management_plugin.last_check_in",
-                    )
-                  }}
-                  <TimeAgo
-                    :date="pluginState.player_management_seen_at"
-                    hide-icon
-                    class="text-foreground"
-                  />
-                </p>
-              </template>
-              <p v-else class="text-sm text-muted-foreground">
-                {{ notDetectedMessage }}
-              </p>
-            </div>
-
-            <div v-if="canInstall" class="border-t border-border/60 p-4">
-              <div
-                class="mb-4 inline-flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.2em] text-muted-foreground"
-              >
-                <span class="h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]" />
-                {{
-                  $t(
-                    "pages.dedicated_servers.detail.player_management_plugin.install_steps",
-                  )
-                }}
-              </div>
-              <ol class="space-y-4">
-                <li class="flex gap-3">
-                  <span
-                    class="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border border-border/60 font-mono text-[0.65rem] text-muted-foreground"
-                    >1</span
-                  >
-                  <div class="min-w-0 flex-1 space-y-3">
-                    <p class="text-sm">
-                      {{
-                        $t(
-                          "pages.dedicated_servers.detail.player_management_plugin.step_download",
-                        )
-                      }}
-                    </p>
-                    <Tabs v-model="installRuntime" :scroll-floor="false">
-                      <TabsList>
-                        <TabsTrigger value="swiftlys2">SwiftlyS2</TabsTrigger>
-                        <TabsTrigger value="counterstrikesharp">
-                          CounterStrikeSharp
-                        </TabsTrigger>
-                      </TabsList>
-                    </Tabs>
-                    <Button as-child variant="outline" size="sm">
-                      <a
-                        :href="downloadUrl"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Download class="mr-2 h-4 w-4" />
-                        <span v-if="downloadName" class="font-mono text-xs">
-                          {{ downloadName }}
-                        </span>
-                        <template v-else>{{ $t("common.download") }}</template>
-                      </a>
-                    </Button>
-                  </div>
-                </li>
-                <li class="flex gap-3">
-                  <span
-                    class="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border border-border/60 font-mono text-[0.65rem] text-muted-foreground"
-                    >2</span
-                  >
-                  <p class="flex-1 text-sm">
-                    {{
-                      $t(
-                        "pages.dedicated_servers.detail.player_management_plugin.step_extract",
-                      )
-                    }}
-                  </p>
-                </li>
-                <li class="flex gap-3">
-                  <span
-                    class="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border border-border/60 font-mono text-[0.65rem] text-muted-foreground"
-                    >3</span
-                  >
-                  <div class="min-w-0 flex-1 space-y-2">
-                    <p class="text-sm">
-                      {{
-                        $t(
-                          "pages.dedicated_servers.detail.player_management_plugin.step_config",
-                        )
-                      }}
-                    </p>
-                    <div class="flex items-center gap-2">
-                      <code
-                        class="min-w-0 break-all rounded bg-secondary px-1.5 py-0.5 text-xs"
-                      >
-                        {{ configPath }}
-                      </code>
-                      <ClipBoard :data="configPath" />
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      :aria-expanded="showConfig"
-                      @click="showConfig = !showConfig"
-                    >
-                      <Eye v-if="!showConfig" class="mr-2 h-4 w-4" />
-                      <EyeOff v-else class="mr-2 h-4 w-4" />
-                      {{
-                        showConfig
-                          ? $t("pages.dedicated_servers.detail.hide_config")
-                          : $t("pages.dedicated_servers.detail.show_config")
-                      }}
-                    </Button>
-                    <div v-if="showConfig" class="relative">
-                      <pre
-                        class="max-h-64 overflow-auto rounded-md border bg-muted/40 p-3 pr-14 font-mono text-xs"
-                      ><code>{{ config }}</code></pre>
-                      <div class="absolute right-2 top-2">
-                        <ClipBoard :data="config" />
-                      </div>
-                    </div>
-                  </div>
-                </li>
-                <li class="flex gap-3">
-                  <span
-                    class="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border border-border/60 font-mono text-[0.65rem] text-muted-foreground"
-                    >4</span
-                  >
-                  <p class="flex-1 text-sm">
-                    {{
-                      $t(
-                        "pages.dedicated_servers.detail.player_management_plugin.step_restart",
-                      )
-                    }}
-                  </p>
-                </li>
-              </ol>
-            </div>
-          </PopoverContent>
-        </Popover>
+          </template>
+          <div class="max-w-[18rem] space-y-1.5">
+            <p v-for="line in pluginWarning" :key="line">{{ line }}</p>
+          </div>
+        </FiveStackToolTip>
         <FiveStackToolTip v-if="rosterLive" as-child :delay-duration="120">
           <template #trigger>
             <span
@@ -834,101 +607,105 @@ onBeforeUnmount(() => {
     </div>
 
     <div
-      v-if="showPollNotice"
-      class="mb-3 flex items-start gap-2.5 rounded-md border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.08)] px-3 py-2.5 text-sm text-[hsl(var(--tac-amber))]"
-      data-testid="poll-notice"
+      class="border border-border px-3 [background:linear-gradient(180deg,hsl(var(--card)/0.6)_0%,hsl(var(--card)/0.22)_100%)] max-sm:px-2"
     >
-      <TriangleAlert class="mt-0.5 h-4 w-4 shrink-0" />
-      <span>
-        {{
-          pluginActive
-            ? $t("community.roster.not_reporting")
-            : $t("community.roster.not_detected")
-        }}
-      </span>
-    </div>
-
-    <div
-      v-if="listReady"
-      class="relative"
-      :data-testid="rosterLive ? 'live-roster' : 'polled-roster'"
-    >
-      <TransitionGroup
-        tag="div"
-        name="roster-row"
-        class="relative flex flex-col"
+      <div
+        v-if="listReady"
+        class="relative"
+        :data-testid="rosterLive ? 'live-roster' : 'polled-roster'"
       >
-        <div
-          v-for="row in rows"
-          :key="row.steamId"
-          class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-2 border-b border-border px-1.5 py-2 last:border-b-0 md:grid-cols-[minmax(0,1fr)_6.5rem_11rem_auto]"
-          :data-steam-id="row.steamId"
+        <TransitionGroup
+          tag="div"
+          name="roster-row"
+          class="relative flex flex-col"
         >
-          <CommunityPlayerCell
-            :steam-id="row.steamId"
-            :name="row.name"
-            :player="row.player"
-          />
-          <div class="font-mono text-xs tabular-nums whitespace-nowrap">
-            <span
-              class="mb-0.5 block text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
-            >
-              {{ $t("community.roster.connected") }}
-            </span>
-            <template v-if="row.startedAt">
-              {{ format.played(sinceSeconds(row.startedAt, now)) }}
-            </template>
-            <span v-else class="text-muted-foreground">
-              {{ $t("community.roster.not_available") }}
-            </span>
-          </div>
-          <div class="min-w-0 font-mono text-xs">
-            <span
-              class="mb-0.5 block text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
-            >
-              {{ $t("community.ip.label") }}
-            </span>
-            <CommunityIp
-              v-if="rosterLive"
-              :ip="row.ip"
-              :others="peerNames(row.steamId)"
-              scope="now"
-            />
-            <span v-else class="text-muted-foreground">
-              {{ $t("community.roster.not_available") }}
-            </span>
-          </div>
-          <div class="flex items-center justify-end gap-2">
-            <KickPlayer
-              :player="row.target"
-              :server-id="serverId"
-              @kicked="onRowAction"
-            />
-            <SanctionPlayer
-              :player="row.target"
-              :server-id="serverId"
-              @sanctioned="onRowAction"
-            />
-            <CommunityPlayerMenu
+          <div
+            v-for="row in rows"
+            :key="row.steamId"
+            class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-2 border-b border-border px-1.5 py-2 last:border-b-0 md:grid-cols-[minmax(0,1fr)_6.5rem_11rem_auto]"
+            :data-steam-id="row.steamId"
+          >
+            <CommunityPlayerCell
               :steam-id="row.steamId"
-              :name="row.displayName"
-              :has-account="!!row.player?.is_registered"
-              @history="openHistory(row.target)"
+              :name="row.name"
+              :player="row.player"
             />
+            <div class="font-mono text-xs tabular-nums whitespace-nowrap">
+              <span
+                class="mb-0.5 block text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+              >
+                {{ $t("community.roster.connected") }}
+              </span>
+              <template v-if="row.startedAt">
+                {{ format.played(sinceSeconds(row.startedAt, now)) }}
+              </template>
+              <span v-else class="text-muted-foreground">
+                {{ $t("community.roster.not_available") }}
+              </span>
+            </div>
+            <div class="min-w-0 font-mono text-xs">
+              <span
+                class="mb-0.5 block text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+              >
+                {{ $t("community.ip.label") }}
+              </span>
+              <CommunityIp
+                v-if="rosterLive"
+                :ip="row.ip"
+                :others="peerNames(row.steamId)"
+                scope="now"
+              />
+              <span v-else class="text-muted-foreground">
+                {{ $t("community.roster.not_available") }}
+              </span>
+            </div>
+            <div class="flex items-center justify-end gap-2">
+              <KickPlayer
+                :player="row.target"
+                :server-id="serverId"
+                @kicked="onRowAction"
+              />
+              <SanctionPlayer
+                :player="row.target"
+                :server-id="serverId"
+                @sanctioned="onRowAction"
+              />
+              <CommunityPlayerMenu
+                :steam-id="row.steamId"
+                :name="row.displayName"
+                :has-account="!!row.player?.is_registered"
+                @history="openHistory(row.target)"
+              />
+            </div>
           </div>
-        </div>
-      </TransitionGroup>
-      <Transition
-        enter-active-class="transition-opacity duration-300 motion-reduce:transition-none"
-        enter-from-class="opacity-0"
-      >
-        <div
-          v-if="rows.length === 0"
-          class="py-8 text-center text-muted-foreground"
+        </TransitionGroup>
+        <Transition
+          enter-active-class="transition-opacity duration-300 motion-reduce:transition-none"
+          enter-from-class="opacity-0"
         >
-          {{ $t("pages.dedicated_servers.detail.no_players") }}
-        </div>
-      </Transition>
+          <div
+            v-if="rows.length === 0"
+            class="flex flex-col gap-1 px-1.5 py-5"
+            data-testid="roster-empty"
+          >
+            <span class="text-sm font-semibold">
+              {{ $t("pages.dedicated_servers.detail.no_players") }}
+            </span>
+            <span
+              v-if="lastLeftAt"
+              class="font-mono text-xs text-muted-foreground"
+              :title="format.exact(lastLeftAt)"
+            >
+              {{
+                $t("community.roster.last_left", {
+                  time: format.ago(lastLeftAt, { now }),
+                })
+              }}
+            </span>
+          </div>
+        </Transition>
+      </div>
+      <div v-else class="h-14" aria-hidden="true"></div>
     </div>
 
     <PlayerSanctions
@@ -940,7 +717,7 @@ onBeforeUnmount(() => {
       variant="external"
       v-model:open="historyOpen"
     />
-  </div>
+  </section>
 </template>
 
 <style scoped>

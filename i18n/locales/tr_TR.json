@@ -3662,6 +3662,12 @@
       "detail": {
         "enabled": "Etkin",
         "eyebrow": "Özel sunucu",
+        "tabs": {
+          "players": "Oyuncular",
+          "console": "Konsol",
+          "logs": "Günlükler",
+          "settings": "Ayarlar"
+        },
         "status_label": {
           "connected": "Bağlı",
           "disconnected": "Bağlı değil",
@@ -3686,7 +3692,8 @@
           "step_download": "Sunucunuzun çalıştırdığı çerçeve için eklentiyi indirin.",
           "step_extract": "Zip dosyasını sunucunun game/csgo klasörüne çıkarın.",
           "step_config": "Bu yapılandırmayı sunucuda şu konuma kaydedin:",
-          "step_restart": "Sunucuyu yeniden başlatın. Eklenti bir dakika içinde burada etkin olarak görünür."
+          "step_restart": "Sunucuyu yeniden başlatın. Eklenti bir dakika içinde burada etkin olarak görünür.",
+          "open_install": "Kurulum adımlarını Ayarlar’da açmak için tıkla."
         },
         "status": {
           "disconnected": "Sunucu bağlı değil",
@@ -10471,7 +10478,8 @@
       "connected": "Bağlı",
       "not_available": "yok",
       "not_detected": "Player Management eklentisi algılanmadı. Oyuncu listesi her 30 saniyede bir RCON üzerinden okunur ve geçmiş kaydedilmez.",
-      "not_reporting": "Player Management eklentisi henüz oyuncuları bildirmiyor, bu yüzden liste her 30 saniyede bir RCON üzerinden okunur ve geçmiş kaydedilmez."
+      "not_reporting": "Player Management eklentisi henüz oyuncuları bildirmiyor, bu yüzden liste her 30 saniyede bir RCON üzerinden okunur ve geçmiş kaydedilmez.",
+      "last_left": "Son oyuncu ayrıldı: {time}"
     },
     "recent": {
       "title": "Son Oyuncular",

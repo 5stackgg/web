@@ -3662,6 +3662,12 @@
       "detail": {
         "enabled": "已启用",
         "eyebrow": "专用服务器",
+        "tabs": {
+          "players": "玩家",
+          "console": "控制台",
+          "logs": "日志",
+          "settings": "设置"
+        },
         "status_label": {
           "connected": "已连接",
           "disconnected": "已断开",
@@ -3686,7 +3692,8 @@
           "step_download": "下载与服务器所用框架对应的插件。",
           "step_extract": "将 zip 解压到服务器的 game/csgo 文件夹。",
           "step_config": "将此配置保存到服务器上的以下位置：",
-          "step_restart": "重启服务器。插件会在一分钟内在此显示为运行中。"
+          "step_restart": "重启服务器。插件会在一分钟内在此显示为运行中。",
+          "open_install": "点击可在设置中打开安装步骤。"
         },
         "status": {
           "disconnected": "服务器已断开",
@@ -10471,7 +10478,8 @@
       "connected": "已连接",
       "not_available": "无",
       "not_detected": "未检测到 Player Management 插件。玩家列表每 30 秒通过 RCON 读取一次，不会记录历史。",
-      "not_reporting": "Player Management 插件尚未上报玩家，因此玩家列表每 30 秒通过 RCON 读取一次，不会记录历史。"
+      "not_reporting": "Player Management 插件尚未上报玩家，因此玩家列表每 30 秒通过 RCON 读取一次，不会记录历史。",
+      "last_left": "最后一名玩家离开于 {time}"
     },
     "recent": {
       "title": "最近玩家",

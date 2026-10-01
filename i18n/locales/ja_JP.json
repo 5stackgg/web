@@ -3662,6 +3662,12 @@
       "detail": {
         "enabled": "有効",
         "eyebrow": "専用サーバー",
+        "tabs": {
+          "players": "プレイヤー",
+          "console": "コンソール",
+          "logs": "ログ",
+          "settings": "設定"
+        },
         "status_label": {
           "connected": "接続済み",
           "disconnected": "切断",
@@ -3686,7 +3692,8 @@
           "step_download": "サーバーで使用しているフレームワーク用のプラグインをダウンロードします。",
           "step_extract": "zipをサーバーのgame/csgoフォルダーに展開します。",
           "step_config": "この設定をサーバーの次の場所に保存します：",
-          "step_restart": "サーバーを再起動します。1分以内にここで稼働中と表示されます。"
+          "step_restart": "サーバーを再起動します。1分以内にここで稼働中と表示されます。",
+          "open_install": "クリックすると設定でインストール手順を開きます。"
         },
         "status": {
           "disconnected": "サーバーは切断されています",
@@ -10471,7 +10478,8 @@
       "connected": "接続時間",
       "not_available": "なし",
       "not_detected": "Player Managementプラグインが検出されません。プレイヤー一覧は30秒ごとにRCONで取得され、履歴は記録されません。",
-      "not_reporting": "Player Managementプラグインはまだプレイヤーを報告していないため、一覧は30秒ごとにRCONで取得され、履歴は記録されません。"
+      "not_reporting": "Player Managementプラグインはまだプレイヤーを報告していないため、一覧は30秒ごとにRCONで取得され、履歴は記録されません。",
+      "last_left": "最後のプレイヤーの退出: {time}"
     },
     "recent": {
       "title": "最近のプレイヤー",

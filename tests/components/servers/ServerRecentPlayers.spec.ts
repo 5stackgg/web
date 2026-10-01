@@ -157,16 +157,17 @@ afterEach(() => {
 });
 
 describe("ServerRecentPlayers", () => {
-  it("shows the week's tiles and labels the per-player figures as 7-day ones", async () => {
+  it("hands the week's totals to the page and labels the per-player figures as 7-day ones", async () => {
     const wrapper = await mountCard();
 
-    const tile = (key: string) =>
-      wrapper.find(`[data-tile="${key}"]`).text().replace(/ /g, " ");
-
-    expect(tile("day")).toBe("41");
-    expect(tile("week")).toBe("218");
-    expect(tile("sessions")).toBe("637");
-    expect(tile("average")).toBe("38m");
+    const totals = wrapper.emitted("totals") ?? [];
+    expect(totals[totals.length - 1]?.[0]).toEqual({
+      day: 41,
+      week: 218,
+      sessions: 637,
+      seconds: 1452600,
+    });
+    expect(wrapper.find("[data-tile]").exists()).toBe(false);
 
     const headers = wrapper.findAll("th").map((th) => th.text());
     expect(headers).toContain("Sessions · 7d");

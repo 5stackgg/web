@@ -66,21 +66,13 @@ async function mountCard(props: Record<string, unknown> = {}) {
   return wrapper;
 }
 
-function statusButton(wrapper: Awaited<ReturnType<typeof mountCard>>) {
-  return wrapper.find('button[aria-label^="Player Management plugin"]');
+function warning(wrapper: Awaited<ReturnType<typeof mountCard>>) {
+  return wrapper.find('[data-testid="plugin-warning"]');
 }
 
-// The popover portals out of the card, so its content is read off the body.
-async function openStatus(wrapper: Awaited<ReturnType<typeof mountCard>>) {
-  await statusButton(wrapper).trigger("click");
-  await flushPromises();
-  return document.body.querySelector<HTMLElement>('[role="dialog"]')!;
-}
-
-function buttonIn(root: HTMLElement, text: string) {
-  return Array.from(root.querySelectorAll("button")).find(
-    (button) => button.textContent?.trim() === text,
-  );
+function lastStatus(wrapper: Awaited<ReturnType<typeof mountCard>>) {
+  const events = wrapper.emitted("status") ?? [];
+  return events[events.length - 1]?.[0] as Record<string, unknown>;
 }
 
 // A browser can't focus reka's popper wrapper (a plain div), but happy-dom
@@ -120,22 +112,36 @@ afterEach(() => {
 });
 
 describe("ServerPlayerManagement plugin status", () => {
-  it("shows a community server whose plugin checked in as active", async () => {
+  it("shows only Live while the plugin reports players, and hands the version to the page", async () => {
     state.server = community(new Date().toISOString());
+    state.roster = roster([]);
 
     const wrapper = await mountCard({ gameServerNodeId: "node-1" });
 
-    expect(statusButton(wrapper).attributes("aria-label")).toBe(
-      "Player Management plugin active",
+    expect(wrapper.find('[data-testid="roster-live"]').exists()).toBe(true);
+    expect(warning(wrapper).exists()).toBe(false);
+    expect(wrapper.text()).not.toContain("v0.0.412");
+    expect(lastStatus(wrapper)).toMatchObject({
+      community: true,
+      pluginActive: true,
+      pluginVersion: "v0.0.412",
+      pluginRuntime: "SwiftlyS2",
+    });
+  });
+
+  it("keeps a plugin that isn't reporting players behind a warning triangle, not a banner", async () => {
+    state.server = community(new Date().toISOString());
+
+    const wrapper = await mountCard({
+      gameServerNodeId: "node-1",
+      online: true,
+    });
+
+    expect(warning(wrapper).attributes("aria-label")).toBe(
+      "The Player Management plugin isn't reporting players yet, so the roster is read over RCON every 30 seconds and no history is recorded.",
     );
-    expect(statusButton(wrapper).text()).toContain("v0.0.412");
-
-    const popover = await openStatus(wrapper);
-
-    expect(popover.textContent).toContain("v0.0.412");
-    expect(popover.textContent).toContain("SwiftlyS2");
-    expect(popover.textContent).toContain("Last check-in");
-    expect(popover.textContent).not.toContain("has not checked in");
+    expect(wrapper.text()).not.toContain("isn't reporting players");
+    expect(wrapper.find('[data-testid="poll-notice"]').exists()).toBe(false);
   });
 
   it("treats a heartbeat older than a few minutes as the plugin being gone", async () => {
@@ -148,14 +154,11 @@ describe("ServerPlayerManagement plugin status", () => {
       online: true,
     });
 
-    expect(statusButton(wrapper).attributes("aria-label")).toBe(
-      "Player Management plugin not detected",
-    );
-
-    const popover = await openStatus(wrapper);
-
-    expect(popover.textContent).toContain("switch the server off and back on");
-    expect(popover.textContent).not.toContain("Install Steps");
+    const label = warning(wrapper).attributes("aria-label");
+    expect(label).toContain("Player Management plugin not detected.");
+    expect(label).toContain("switch the server off and back on");
+    expect(label).not.toContain("install steps");
+    expect(lastStatus(wrapper).pluginActive).toBe(false);
   });
 
   it("stays quiet about a missing plugin while the server is offline", async () => {
@@ -163,69 +166,50 @@ describe("ServerPlayerManagement plugin status", () => {
 
     const wrapper = await mountCard({ gameServerNodeId: "node-1" });
 
-    expect(statusButton(wrapper).exists()).toBe(false);
+    expect(warning(wrapper).exists()).toBe(false);
     expect(wrapper.text()).not.toContain("has not checked in");
   });
 
-  it("offers an administrator the download and config for a server outside a node", async () => {
+  it("sends an administrator from the warning to the install steps on a server outside a node", async () => {
     state.server = community(null);
 
-    const wrapper = await mountCard({
-      gameServerNodeId: null,
-      apiPassword: "secret-password",
-      online: true,
+    const push = vi.spyOn(useRouter(), "push").mockResolvedValue(undefined);
+    const wrapper = await mountCard({ gameServerNodeId: null, online: true });
+
+    expect(warning(wrapper).attributes("aria-label")).toContain(
+      "Click to open the install steps in Settings.",
+    );
+
+    await warning(wrapper).trigger("click");
+
+    expect(push).toHaveBeenCalledWith({
+      query: expect.objectContaining({
+        tab: "settings",
+        settings: "player-management",
+      }),
     });
-
-    let popover = await openStatus(wrapper);
-
-    expect(popover.textContent).toContain(
-      "only enforced live once the 5Stack Player Management plugin is installed",
-    );
-
-    const download = popover.querySelector('a[href*="PlayerManagement"]');
-    expect(download?.getAttribute("href")).toBe(
-      "https://github.com/5stackgg/game-server/releases/download/sw-v0.0.412/PlayerManagement-sw-v0.0.412.zip",
-    );
-    expect(popover.textContent).toContain(
-      "addons/swiftlys2/configs/plugins/PlayerManagement/config.jsonc",
-    );
-
-    // The config carries the api password, so it stays hidden like the
-    // page's own plugin config until asked for.
-    expect(document.body.innerHTML).not.toContain("secret-password");
-
-    buttonIn(popover, "Show Config")!.click();
-    await flushPromises();
-
-    expect(popover.querySelector("pre")?.textContent).toContain(
-      '"PlayerManagement"',
-    );
-    expect(popover.querySelector("pre")?.textContent).toContain(
-      "secret-password",
-    );
-
-    // Closing the popover hides it again rather than leaving it on screen.
-    await statusButton(wrapper).trigger("click");
-    await flushPromises();
-    popover = await openStatus(wrapper);
-
-    expect(popover.querySelector("pre")).toBeNull();
-    expect(document.body.innerHTML).not.toContain("secret-password");
   });
 
-  it("never shows install steps to someone who is not an administrator", async () => {
+  it("never points someone who is not an administrator at the install steps", async () => {
     useAuthStore().me = {
       steam_id: "76561198000000002",
       role: "moderator",
     } as any;
     state.server = community(null);
 
+    const push = vi.spyOn(useRouter(), "push").mockResolvedValue(undefined);
     const wrapper = await mountCard({ gameServerNodeId: null, online: true });
 
-    const popover = await openStatus(wrapper);
+    expect(warning(wrapper).attributes("aria-label")).toContain(
+      "installed on this server",
+    );
+    expect(warning(wrapper).attributes("aria-label")).not.toContain(
+      "install steps",
+    );
 
-    expect(popover.textContent).toContain("installed on this server");
-    expect(popover.textContent).not.toContain("Install Steps");
+    await warning(wrapper).trigger("click");
+
+    expect(push).not.toHaveBeenCalled();
   });
 
   it("says nothing about the plugin on a Ranked server", async () => {
@@ -236,7 +220,7 @@ describe("ServerPlayerManagement plugin status", () => {
       online: true,
     });
 
-    expect(statusButton(wrapper).exists()).toBe(false);
+    expect(warning(wrapper).exists()).toBe(false);
   });
 });
 
@@ -476,7 +460,7 @@ describe("ServerPlayerManagement live roster", () => {
       online: true,
     });
 
-    expect(wrapper.find('[data-testid="poll-notice"]').text()).toContain(
+    expect(warning(wrapper).attributes("aria-label")).toContain(
       "Player Management plugin not detected. The roster is read over RCON every 30 seconds",
     );
 
@@ -491,6 +475,41 @@ describe("ServerPlayerManagement live roster", () => {
 });
 
 describe("ServerPlayerManagement player states", () => {
+  it("says when the last player left an empty community server", async () => {
+    state.server = community(new Date().toISOString());
+    state.roster = roster([]);
+    vi.spyOn(
+      (useNuxtApp() as any).$apollo.defaultClient,
+      "query",
+    ).mockImplementation(async ({ query }: any) =>
+      operationName(query) === "ServerLastSeen"
+        ? {
+            data: {
+              server_recent_players: [
+                {
+                  last_seen_at: new Date(
+                    Date.now() - 14 * MINUTE,
+                  ).toISOString(),
+                },
+              ],
+            },
+          }
+        : { data: {} },
+    );
+
+    const wrapper = await mountCard({
+      gameServerNodeId: "node-1",
+      maxPlayers: 24,
+    });
+    const empty = wrapper.find('[data-testid="roster-empty"]');
+
+    expect(wrapper.find('[data-testid="roster-count"]').text()).toBe(
+      "0 / 24",
+    );
+    expect(empty.text()).toContain("No players currently on this server");
+    expect(empty.text()).toMatch(/Last player left 14 min/);
+  });
+
   it("shows one sanction pill for the worst active sanction and counts the rest", async () => {
     mockRcon([]);
     state.roster = roster([

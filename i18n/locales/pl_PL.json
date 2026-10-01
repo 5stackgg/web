@@ -3662,6 +3662,12 @@
       "detail": {
         "enabled": "Włączony",
         "eyebrow": "Serwer dedykowany",
+        "tabs": {
+          "players": "Gracze",
+          "console": "Konsola",
+          "logs": "Logi",
+          "settings": "Ustawienia"
+        },
         "status_label": {
           "connected": "Połączony",
           "disconnected": "Rozłączony",
@@ -3686,7 +3692,8 @@
           "step_download": "Pobierz wtyczkę dla frameworka, na którym działa twój serwer.",
           "step_extract": "Rozpakuj plik zip do folderu game/csgo serwera.",
           "step_config": "Zapisz tę konfigurację na serwerze w:",
-          "step_restart": "Zrestartuj serwer. Wtyczka pojawi się tutaj jako aktywna w ciągu minuty."
+          "step_restart": "Zrestartuj serwer. Wtyczka pojawi się tutaj jako aktywna w ciągu minuty.",
+          "open_install": "Kliknij, aby otworzyć kroki instalacji w ustawieniach."
         },
         "status": {
           "disconnected": "Serwer jest rozłączony",
@@ -10471,7 +10478,8 @@
       "connected": "Połączony",
       "not_available": "b/d",
       "not_detected": "Nie wykryto wtyczki Player Management. Lista graczy jest odczytywana przez RCON co 30 sekund i nie jest zapisywana żadna historia.",
-      "not_reporting": "Wtyczka Player Management nie zgłasza jeszcze graczy, więc lista jest odczytywana przez RCON co 30 sekund i nie jest zapisywana żadna historia."
+      "not_reporting": "Wtyczka Player Management nie zgłasza jeszcze graczy, więc lista jest odczytywana przez RCON co 30 sekund i nie jest zapisywana żadna historia.",
+      "last_left": "Ostatni gracz wyszedł {time}"
     },
     "recent": {
       "title": "Ostatni Gracze",

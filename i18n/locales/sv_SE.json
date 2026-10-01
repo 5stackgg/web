@@ -3662,6 +3662,12 @@
       "detail": {
         "enabled": "Aktiverad",
         "eyebrow": "Dedikerad server",
+        "tabs": {
+          "players": "Spelare",
+          "console": "Konsol",
+          "logs": "Loggar",
+          "settings": "Inställningar"
+        },
         "status_label": {
           "connected": "Ansluten",
           "disconnected": "Frånkopplad",
@@ -3686,7 +3692,8 @@
           "step_download": "Ladda ner pluginet för det ramverk din server kör.",
           "step_extract": "Packa upp zip-filen i serverns game/csgo-mapp.",
           "step_config": "Spara den här konfigurationen på servern i:",
-          "step_restart": "Starta om servern. Pluginet visas som aktivt här inom en minut."
+          "step_restart": "Starta om servern. Pluginet visas som aktivt här inom en minut.",
+          "open_install": "Klicka för att öppna installationsstegen i Inställningar."
         },
         "status": {
           "disconnected": "Servern är frånkopplad",
@@ -10471,7 +10478,8 @@
       "connected": "Ansluten",
       "not_available": "saknas",
       "not_detected": "Player Management-pluginet hittades inte. Spelarlistan läses via RCON var 30:e sekund och ingen historik sparas.",
-      "not_reporting": "Player Management-pluginet rapporterar inga spelare än, så spelarlistan läses via RCON var 30:e sekund och ingen historik sparas."
+      "not_reporting": "Player Management-pluginet rapporterar inga spelare än, så spelarlistan läses via RCON var 30:e sekund och ingen historik sparas.",
+      "last_left": "Senaste spelaren lämnade {time}"
     },
     "recent": {
       "title": "Senaste Spelare",

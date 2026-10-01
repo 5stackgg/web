@@ -2,11 +2,10 @@
 import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
 import { useI18n } from "vue-i18n";
 import { useNow } from "@vueuse/core";
-import { History, Search } from "lucide-vue-next";
+import { Search } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
-import AnimatedStat from "~/components/AnimatedStat.vue";
 import SanctionPlayer from "~/components/SanctionPlayer.vue";
 import PlayerSanctions from "~/components/PlayerSanctions.vue";
 import CommunityPlayerCell from "~/components/community/CommunityPlayerCell.vue";
@@ -21,10 +20,19 @@ import {
 import { useCommunityFormat } from "~/composables/useCommunityFormat";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import debounce from "~/utilities/debounce";
+import type { ServerRecentTotals } from "~/types/serverOverview";
+import {
+  tacticalSectionLabelClasses,
+  tacticalSectionTickClasses,
+} from "~/utilities/tacticalClasses";
 
 const props = defineProps<{
   serverId: string;
   rosterRevision?: number;
+}>();
+
+const emit = defineEmits<{
+  (e: "totals", totals: ServerRecentTotals): void;
 }>();
 
 const PAGE_SIZE = 25;
@@ -80,37 +88,6 @@ const retentionDays = computed(() => {
 
   return value ? Number(value) : null;
 });
-
-const averageSession = computed(() =>
-  totals.value.sessions > 0 ? totals.value.seconds / totals.value.sessions : 0,
-);
-
-const tiles = computed(() => [
-  {
-    key: "day",
-    label: t("community.recent.unique_24h"),
-    value: format.count(totals.value.day),
-    sub: t("community.recent.players"),
-  },
-  {
-    key: "week",
-    label: t("community.recent.unique_7d"),
-    value: format.count(totals.value.week),
-    sub: t("community.recent.players"),
-  },
-  {
-    key: "sessions",
-    label: t("community.recent.sessions_7d"),
-    value: format.count(totals.value.sessions),
-    sub: t("community.recent.joins"),
-  },
-  {
-    key: "average",
-    label: t("community.recent.avg_session"),
-    value: format.played(averageSession.value),
-    sub: t("community.recent.per_visit"),
-  },
-]);
 
 const refreshing = computed(() => refreshesInFlight.value > 0);
 
@@ -263,6 +240,7 @@ async function loadTotals() {
     sessions: week?.sum?.sessions ?? 0,
     seconds: week?.sum?.seconds_played ?? 0,
   };
+  emit("totals", totals.value);
 }
 
 function uniqueRows(list: RecentRow[], existing: RecentRow[] = []) {
@@ -395,18 +373,15 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <section
-    v-if="available"
-    class="rounded-md border p-4"
-    aria-labelledby="recent-players-title"
-  >
-    <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-      <div class="flex items-center gap-2">
-        <History class="h-4 w-4 text-muted-foreground" />
-        <h3 id="recent-players-title" class="text-lg font-semibold">
-          {{ $t("community.recent.title") }}
-        </h3>
-      </div>
+  <section v-if="available" aria-labelledby="recent-players-title">
+    <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
+      <h3
+        id="recent-players-title"
+        :class="[tacticalSectionLabelClasses, 'mb-0']"
+      >
+        <span :class="tacticalSectionTickClasses"></span>
+        {{ $t("community.recent.title") }}
+      </h3>
       <span
         v-if="retentionDays"
         class="font-mono text-[0.65rem] uppercase tracking-[0.14em] text-muted-foreground"
@@ -415,175 +390,153 @@ onBeforeUnmount(() => {
       </span>
     </div>
 
-    <div class="mb-4 grid grid-cols-2 gap-2.5 md:grid-cols-4">
-      <div
-        v-for="tile in tiles"
-        :key="tile.key"
-        class="min-w-0 rounded-md border border-border bg-card/40 px-3 py-2.5"
-      >
-        <div
-          class="flex items-center gap-1.5 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
-        >
-          <span
-            class="inline-block h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"
-          />
-          {{ tile.label }}
-        </div>
-        <div
-          class="mt-2 text-2xl font-bold leading-none tabular-nums"
-          :data-tile="tile.key"
-        >
-          <AnimatedStat :value="tile.value" />
-        </div>
-        <div class="mt-1 font-mono text-[0.7rem] text-muted-foreground">
-          {{ tile.sub }}
-        </div>
-      </div>
-    </div>
-
-    <div class="mb-2 flex flex-wrap items-center gap-2">
-      <div class="relative min-w-0 flex-[1_1_220px]">
-        <Search
-          class="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-        />
-        <Input
-          v-model="search"
-          type="search"
-          class="h-8 pl-8"
-          autocomplete="off"
-          :placeholder="$t('community.recent.search')"
-          :aria-label="$t('community.recent.search')"
-        />
-      </div>
-      <AnimatedFilters v-model="windowKey" square :options="windowOptions" />
-    </div>
-
-    <div class="overflow-x-auto">
-      <table class="w-full min-w-[820px] table-fixed border-collapse text-sm">
-        <colgroup>
-          <col />
-          <col class="w-[7.5rem]" />
-          <col class="w-[7.5rem]" />
-          <col class="w-[9rem]" />
-          <col class="w-[11rem]" />
-          <col class="w-[6rem]" />
-        </colgroup>
-        <thead>
-          <tr
-            class="whitespace-nowrap border-b border-border font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
-          >
-            <th class="px-2 py-2.5 text-left font-semibold">
-              {{ $t("community.recent.player") }}
-            </th>
-            <th class="px-2 py-2.5 text-left font-semibold">
-              {{ $t("community.last_seen") }}
-            </th>
-            <th class="px-2 py-2.5 text-right font-semibold">
-              {{ $t("community.recent.sessions_7d") }}
-            </th>
-            <th class="px-2 py-2.5 text-right font-semibold">
-              {{ $t("community.recent.time_played_7d") }}
-            </th>
-            <th class="px-2 py-2.5 text-left font-semibold">
-              {{ $t("community.ip.label") }}
-            </th>
-            <th class="px-2 py-2.5">
-              <span class="sr-only">{{ $t("community.actions") }}</span>
-            </th>
-          </tr>
-        </thead>
-        <TransitionGroup
-          tag="tbody"
-          enter-active-class="transition-opacity duration-300 motion-reduce:transition-none"
-          enter-from-class="opacity-0"
-          move-class="transition-transform duration-300 motion-reduce:transition-none"
-        >
-          <tr
-            v-for="row in displayRows"
-            :key="row.steamId"
-            class="border-b border-border"
-            :data-steam-id="row.steamId"
-          >
-            <td class="px-2 py-2">
-              <CommunityPlayerCell
-                :steam-id="row.steamId"
-                :name="row.name"
-                :player="row.player"
-                :dim="!row.online"
-              />
-            </td>
-            <td class="px-2 py-2">
-              <span
-                v-if="row.online"
-                class="inline-flex items-center gap-1.5 whitespace-nowrap text-xs font-semibold text-success"
-              >
-                <span class="h-[7px] w-[7px] rounded-full bg-current" />
-                {{ $t("community.online") }}
-              </span>
-              <time
-                v-else
-                :datetime="row.last_seen_at"
-                :title="format.exact(row.last_seen_at)"
-                class="whitespace-nowrap font-mono text-xs"
-              >
-                {{ format.ago(row.last_seen_at, { now: now.getTime() }) }}
-              </time>
-            </td>
-            <td class="px-2 py-2 text-right font-mono tabular-nums">
-              {{ format.count(row.sessions) }}
-            </td>
-            <td class="px-2 py-2 text-right font-mono tabular-nums">
-              {{ format.played(row.seconds_played) }}
-            </td>
-            <td class="min-w-0 px-2 py-2">
-              <CommunityIp :ip="row.ip" :others="row.others" scope="week" />
-            </td>
-            <td class="px-2 py-2">
-              <div class="flex items-center justify-end gap-2">
-                <SanctionPlayer :player="row.target" :server-id="serverId" />
-                <CommunityPlayerMenu
-                  :steam-id="row.steamId"
-                  :name="row.displayName"
-                  :has-account="!!row.player?.is_registered"
-                  @history="openHistory(row.target)"
-                />
-              </div>
-            </td>
-          </tr>
-        </TransitionGroup>
-      </table>
-      <p
-        v-if="loaded && displayRows.length === 0"
-        class="py-6 text-center text-sm text-muted-foreground"
-      >
-        {{
-          appliedSearch.trim()
-            ? $t("community.recent.no_matches")
-            : $t("community.recent.empty")
-        }}
-      </p>
-    </div>
-
     <div
-      class="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground"
+      class="border border-border p-3 [background:linear-gradient(180deg,hsl(var(--card)/0.6)_0%,hsl(var(--card)/0.22)_100%)] max-sm:p-2"
     >
-      <span v-if="loaded">
-        {{
-          $t("community.recent.showing", {
-            shown: format.count(displayRows.length),
-            total: format.count(total),
-          })
-        }}
-      </span>
-      <Button
-        v-if="displayRows.length < total"
-        variant="outline"
-        size="sm"
-        :disabled="refreshing"
-        @click="loadMore"
+      <div class="mb-2 flex flex-wrap items-center gap-2">
+        <div class="relative min-w-0 flex-[1_1_220px]">
+          <Search
+            class="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+          />
+          <Input
+            v-model="search"
+            type="search"
+            class="h-8 pl-8"
+            autocomplete="off"
+            :placeholder="$t('community.recent.search')"
+            :aria-label="$t('community.recent.search')"
+          />
+        </div>
+        <AnimatedFilters v-model="windowKey" square :options="windowOptions" />
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[820px] table-fixed border-collapse text-sm">
+          <colgroup>
+            <col />
+            <col class="w-[7.5rem]" />
+            <col class="w-[7.5rem]" />
+            <col class="w-[9rem]" />
+            <col class="w-[11rem]" />
+            <col class="w-[6rem]" />
+          </colgroup>
+          <thead>
+            <tr
+              class="whitespace-nowrap border-b border-border font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+            >
+              <th class="px-2 py-2.5 text-left font-semibold">
+                {{ $t("community.recent.player") }}
+              </th>
+              <th class="px-2 py-2.5 text-left font-semibold">
+                {{ $t("community.last_seen") }}
+              </th>
+              <th class="px-2 py-2.5 text-right font-semibold">
+                {{ $t("community.recent.sessions_7d") }}
+              </th>
+              <th class="px-2 py-2.5 text-right font-semibold">
+                {{ $t("community.recent.time_played_7d") }}
+              </th>
+              <th class="px-2 py-2.5 text-left font-semibold">
+                {{ $t("community.ip.label") }}
+              </th>
+              <th class="px-2 py-2.5">
+                <span class="sr-only">{{ $t("community.actions") }}</span>
+              </th>
+            </tr>
+          </thead>
+          <TransitionGroup
+            tag="tbody"
+            enter-active-class="transition-opacity duration-300 motion-reduce:transition-none"
+            enter-from-class="opacity-0"
+            move-class="transition-transform duration-300 motion-reduce:transition-none"
+          >
+            <tr
+              v-for="row in displayRows"
+              :key="row.steamId"
+              class="border-b border-border"
+              :data-steam-id="row.steamId"
+            >
+              <td class="px-2 py-2">
+                <CommunityPlayerCell
+                  :steam-id="row.steamId"
+                  :name="row.name"
+                  :player="row.player"
+                  :dim="!row.online"
+                />
+              </td>
+              <td class="px-2 py-2">
+                <span
+                  v-if="row.online"
+                  class="inline-flex items-center gap-1.5 whitespace-nowrap text-xs font-semibold text-success"
+                >
+                  <span class="h-[7px] w-[7px] rounded-full bg-current" />
+                  {{ $t("community.online") }}
+                </span>
+                <time
+                  v-else
+                  :datetime="row.last_seen_at"
+                  :title="format.exact(row.last_seen_at)"
+                  class="whitespace-nowrap font-mono text-xs"
+                >
+                  {{ format.ago(row.last_seen_at, { now: now.getTime() }) }}
+                </time>
+              </td>
+              <td class="px-2 py-2 text-right font-mono tabular-nums">
+                {{ format.count(row.sessions) }}
+              </td>
+              <td class="px-2 py-2 text-right font-mono tabular-nums">
+                {{ format.played(row.seconds_played) }}
+              </td>
+              <td class="min-w-0 px-2 py-2">
+                <CommunityIp :ip="row.ip" :others="row.others" scope="week" />
+              </td>
+              <td class="px-2 py-2">
+                <div class="flex items-center justify-end gap-2">
+                  <SanctionPlayer :player="row.target" :server-id="serverId" />
+                  <CommunityPlayerMenu
+                    :steam-id="row.steamId"
+                    :name="row.displayName"
+                    :has-account="!!row.player?.is_registered"
+                    @history="openHistory(row.target)"
+                  />
+                </div>
+              </td>
+            </tr>
+          </TransitionGroup>
+        </table>
+        <p
+          v-if="loaded && displayRows.length === 0"
+          class="py-6 text-center text-sm text-muted-foreground"
+        >
+          {{
+            appliedSearch.trim()
+              ? $t("community.recent.no_matches")
+              : $t("community.recent.empty")
+          }}
+        </p>
+      </div>
+
+      <div
+        class="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground"
       >
-        {{ $t("community.recent.load_more") }}
-      </Button>
+        <span v-if="loaded">
+          {{
+            $t("community.recent.showing", {
+              shown: format.count(displayRows.length),
+              total: format.count(total),
+            })
+          }}
+        </span>
+        <Button
+          v-if="displayRows.length < total"
+          variant="outline"
+          size="sm"
+          :disabled="refreshing"
+          @click="loadMore"
+        >
+          {{ $t("community.recent.load_more") }}
+        </Button>
+      </div>
     </div>
 
     <PlayerSanctions

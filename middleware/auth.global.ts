@@ -27,6 +27,10 @@ function isPublicRoute(path: string): boolean {
     return true;
   }
 
+  if (path.startsWith("/public-servers/")) {
+    return true;
+  }
+
   if (path.startsWith("/leaderboard")) {
     return true;
   }

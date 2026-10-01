@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
-import PublicServers from "~/pages/public-servers.vue";
+import PublicServers from "~/pages/public-servers/index.vue";
 import { useAuthStore } from "~/stores/AuthStore";
 
 const server = {
@@ -88,6 +88,19 @@ describe("public servers setup gating", () => {
 
     expect(manageLinks(wrapper)).toHaveLength(1);
     expect(setupLinks(wrapper)).toHaveLength(0);
+  });
+
+  it("links each server card to its stats page and keeps the connect controls", async () => {
+    const wrapper = await mountAs("user", [
+      { ...server, connection_link: "steam://connect/127.0.0.1:27015" },
+    ]);
+
+    expect(
+      wrapper.findAll(`a[href="/public-servers/${server.id}"]`),
+    ).toHaveLength(1);
+    expect(
+      wrapper.find('a[href="steam://connect/127.0.0.1:27015"]').exists(),
+    ).toBe(true);
   });
 
   it("gives an administrator the header CTA", async () => {

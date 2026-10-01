@@ -45,6 +45,7 @@ import { useNow } from "@vueuse/core";
 import ServerForm from "~/components/servers/ServerForm.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
 import ServerPlayerManagement from "~/components/servers/ServerPlayerManagement.vue";
+import ServerRecentPlayers from "~/components/servers/ServerRecentPlayers.vue";
 import ServerSettings from "~/components/servers/ServerSettings.vue";
 import ServerMoveDialog from "~/components/servers/ServerMoveDialog.vue";
 import ServerMigrationPanel from "~/components/servers/ServerMigrationPanel.vue";
@@ -342,6 +343,14 @@ const titleClasses =
       :api-password="apiPassword"
       :plugin-runtime="server.plugin_runtime"
       :online="rconOnline"
+      @roster-change="rosterRevision++"
+    />
+  </PageTransition>
+
+  <PageTransition v-if="server && isCommunityServer" :delay="175" class="mt-6">
+    <ServerRecentPlayers
+      :server-id="$route.params.id as string"
+      :roster-revision="rosterRevision"
     />
   </PageTransition>
 
@@ -514,6 +523,7 @@ export default {
       selectedConfigRuntime: null as string | null,
       editServerSheet: false,
       deleteServerAlertDialog: false,
+      rosterRevision: 0,
     };
   },
   computed: {
@@ -597,6 +607,16 @@ export default {
     },
     isPracticeServer() {
       return this.server?.type === SERVER_TYPE_PRACTICE;
+    },
+    // Only community servers report players through the Player Management
+    // plugin, so only they have a session history to show.
+    isCommunityServer() {
+      return (
+        !!this.server &&
+        this.server.game !== "csgo" &&
+        this.server.type !== SERVER_TYPE_RANKED &&
+        this.server.type !== SERVER_TYPE_PRACTICE
+      );
     },
     configPath() {
       const runtime =

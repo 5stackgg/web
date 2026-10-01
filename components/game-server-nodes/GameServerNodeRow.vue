@@ -28,6 +28,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "~/components/ui/alert-dialog";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
@@ -983,7 +993,7 @@ const isSectionExpanded = (section: string) => {
             <DropdownMenuSeparator />
 
             <DropdownMenuItem
-              @click="removeGameNodeServer"
+              @click="showRemoveNodeDialog = true"
               class="text-destructive focus:text-destructive"
             >
               <Trash2 />
@@ -1218,7 +1228,7 @@ const isSectionExpanded = (section: string) => {
               <DropdownMenuSeparator />
 
               <DropdownMenuItem
-                @click="removeGameNodeServer"
+                @click="showRemoveNodeDialog = true"
                 class="text-destructive focus:text-destructive"
               >
                 <Trash2 />
@@ -1880,6 +1890,32 @@ const isSectionExpanded = (section: string) => {
     </DialogContent>
   </Dialog>
 
+  <!-- Remove Node Dialog -->
+  <AlertDialog v-model:open="showRemoveNodeDialog">
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>
+          {{
+            $t("game_server.remove_node_confirm_title", {
+              node: gameServerNode.label || gameServerNode.id,
+            })
+          }}
+        </AlertDialogTitle>
+        <AlertDialogDescription>
+          {{ $t("game_server.remove_node_confirm_description") }}
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel>
+          {{ $t("common.cancel") }}
+        </AlertDialogCancel>
+        <AlertDialogAction variant="destructive" @click="removeGameNodeServer">
+          {{ $t("game_server.remove_node") }}
+        </AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
+
   <UpdateGameServerLabel
     :game-server-node="gameServerNode"
     :open="editLabelSheet"
@@ -1968,6 +2004,7 @@ interface ComponentData {
   portForm: ReturnType<typeof useForm>;
   server_regions: ServerRegion[];
   removingNode: boolean;
+  showRemoveNodeDialog: boolean;
 }
 
 export default defineComponent({
@@ -2058,6 +2095,7 @@ export default defineComponent({
       editCs2OptionsSheet: false,
       server_regions: [],
       removingNode: false,
+      showRemoveNodeDialog: false,
       pinBuildIdForm: useForm({
         validationSchema: toTypedSchema(
           z.object({

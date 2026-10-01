@@ -4,6 +4,19 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import { AlertTriangle } from "lucide-vue-next";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 </script>
 
 <template>
@@ -175,6 +188,106 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
         />
       </form>
     </PageTransition>
+
+    <PageTransition :delay="100">
+      <section id="danger-zone" class="scroll-mt-4">
+        <div class="rounded-lg border border-destructive/40 bg-destructive/5">
+          <div class="p-6 space-y-6">
+            <div class="flex items-start gap-3">
+              <AlertTriangle class="h-5 w-5 shrink-0 text-destructive" />
+              <div class="min-w-0 flex-1 space-y-0.5">
+                <h3
+                  class="text-sm font-semibold uppercase tracking-wider text-destructive"
+                >
+                  {{
+                    $t("pages.settings.application.servers.danger_zone_title")
+                  }}
+                </h3>
+                <p class="text-sm text-muted-foreground">
+                  {{
+                    $t(
+                      "pages.settings.application.servers.danger_zone_description",
+                    )
+                  }}
+                </p>
+              </div>
+            </div>
+
+            <div
+              class="flex items-start justify-between gap-4 border-t border-destructive/20 pt-4"
+            >
+              <div class="min-w-0 space-y-0.5">
+                <p class="text-sm font-medium">
+                  {{
+                    $t("pages.settings.application.servers.cleanup_nodes_title")
+                  }}
+                </p>
+                <p class="text-sm text-muted-foreground">
+                  {{
+                    $t(
+                      "pages.settings.application.servers.cleanup_nodes_description",
+                    )
+                  }}
+                </p>
+              </div>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                :disabled="cleaningUpNodes"
+                class="shrink-0 flex items-center gap-2"
+                @click="showCleanupNodesDialog = true"
+              >
+                <Spinner v-if="cleaningUpNodes" class="h-4 w-4" />
+                {{
+                  cleaningUpNodes
+                    ? $t(
+                        "pages.settings.application.servers.cleanup_nodes_running",
+                      )
+                    : $t(
+                        "pages.settings.application.servers.cleanup_nodes_button",
+                      )
+                }}
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <AlertDialog v-model:open="showCleanupNodesDialog">
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                {{
+                  $t(
+                    "pages.settings.application.servers.cleanup_nodes_dialog_title",
+                  )
+                }}
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                {{
+                  $t(
+                    "pages.settings.application.servers.cleanup_nodes_dialog_description",
+                  )
+                }}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>
+                {{ $t("common.cancel") }}
+              </AlertDialogCancel>
+              <AlertDialogAction
+                variant="destructive"
+                @click="cleanupRemovedNodes"
+              >
+                {{
+                  $t("pages.settings.application.servers.cleanup_nodes_button")
+                }}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </section>
+    </PageTransition>
   </SettingsPage>
 </template>
 
@@ -185,6 +298,7 @@ import { settings_constraint, settings_update_column } from "~/generated/zeus";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { z } from "zod";
+import gql from "graphql-tag";
 
 // The api clamps to the same bounds: the weekly leaderboards read raw
 // sessions, so a week is the floor.
@@ -194,6 +308,8 @@ export default {
   data() {
     return {
       submitting: false,
+      cleaningUpNodes: false,
+      showCleanupNodesDialog: false,
       PLAYER_SESSION_RETENTION,
       form: useForm({
         validationSchema: toTypedSchema(
@@ -334,6 +450,111 @@ export default {
       toast({
         title: this.$t("pages.settings.application.servers.update_cpu_pinning"),
       });
+    },
+    async cleanupRemovedNodes() {
+      if (this.cleaningUpNodes) {
+        return;
+      }
+      this.showCleanupNodesDialog = false;
+      this.cleaningUpNodes = true;
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation: gql`
+            mutation CleanupRemovedNodes {
+              cleanupRemovedNodes {
+                nodes
+                jobs
+                volume_claims
+                volumes
+                failed
+                node_delete_forbidden
+                recently_ready
+              }
+            }
+          `,
+        });
+
+        const {
+          nodes,
+          jobs,
+          volume_claims,
+          volumes,
+          failed,
+          node_delete_forbidden,
+          recently_ready,
+        } = data.cleanupRemovedNodes;
+        const removed = nodes + jobs + volume_claims + volumes;
+
+        const lines: string[] = [];
+        if (removed > 0) {
+          lines.push(
+            this.$t("pages.settings.application.servers.cleanup_nodes_counts", {
+              nodes,
+              volumes,
+              volume_claims,
+              jobs,
+            }),
+          );
+        }
+        // Older panel installs do not let the API delete Kubernetes nodes.
+        if (node_delete_forbidden) {
+          lines.push(
+            this.$t(
+              "pages.settings.application.servers.cleanup_nodes_node_delete_forbidden",
+            ),
+          );
+        }
+        // They may only be restarting, so the API keeps them for now.
+        if (recently_ready > 0) {
+          lines.push(
+            this.$t(
+              "pages.settings.application.servers.cleanup_nodes_recently_ready",
+              { recently_ready },
+            ),
+          );
+        }
+        if (failed > 0) {
+          lines.push(
+            this.$t(
+              "pages.settings.application.servers.cleanup_nodes_failed_count",
+              { failed },
+            ),
+          );
+        }
+
+        let title = this.$t(
+          "pages.settings.application.servers.cleanup_nodes_done",
+        );
+        if (failed > 0) {
+          title = this.$t(
+            "pages.settings.application.servers.cleanup_nodes_done_with_errors",
+          );
+        } else if (
+          removed === 0 &&
+          !node_delete_forbidden &&
+          recently_ready === 0
+        ) {
+          title = this.$t(
+            "pages.settings.application.servers.cleanup_nodes_nothing",
+          );
+        }
+
+        toast({
+          title,
+          description: lines.join("\n"),
+          variant: failed > 0 ? "destructive" : "default",
+        });
+      } catch (error: any) {
+        toast({
+          title: this.$t(
+            "pages.settings.application.servers.cleanup_nodes_failed",
+          ),
+          description: error?.message,
+          variant: "destructive",
+        });
+      } finally {
+        this.cleaningUpNodes = false;
+      }
     },
   },
   computed: {

@@ -3662,6 +3662,12 @@
       "detail": {
         "enabled": "已啟用",
         "eyebrow": "專用伺服器",
+        "tabs": {
+          "players": "玩家",
+          "console": "主控台",
+          "logs": "日誌",
+          "settings": "設定"
+        },
         "status_label": {
           "connected": "已連線",
           "disconnected": "已中斷連線",
@@ -3686,7 +3692,8 @@
           "step_download": "下載與伺服器所用框架對應的外掛。",
           "step_extract": "將 zip 解壓縮到伺服器的 game/csgo 資料夾。",
           "step_config": "將此設定儲存到伺服器上的以下位置：",
-          "step_restart": "重新啟動伺服器。外掛會在一分鐘內在此顯示為運作中。"
+          "step_restart": "重新啟動伺服器。外掛會在一分鐘內在此顯示為運作中。",
+          "open_install": "點擊即可在設定中開啟安裝步驟。"
         },
         "status": {
           "disconnected": "伺服器已中斷連線",
@@ -10471,7 +10478,8 @@
       "connected": "已連線",
       "not_available": "無",
       "not_detected": "未偵測到 Player Management 外掛。玩家列表每 30 秒透過 RCON 讀取一次，不會記錄歷史。",
-      "not_reporting": "Player Management 外掛尚未回報玩家，因此玩家列表每 30 秒透過 RCON 讀取一次，不會記錄歷史。"
+      "not_reporting": "Player Management 外掛尚未回報玩家，因此玩家列表每 30 秒透過 RCON 讀取一次，不會記錄歷史。",
+      "last_left": "最後一名玩家離開於 {time}"
     },
     "recent": {
       "title": "最近玩家",

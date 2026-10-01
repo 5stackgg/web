@@ -14,11 +14,8 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 import ServerMapRotation from "~/components/servers/ServerMapRotation.vue";
 import ServerPlugins from "~/components/servers/ServerPlugins.vue";
 import ServerAccess from "~/components/servers/ServerAccess.vue";
+import ServerPlayerManagementPlugin from "~/components/servers/ServerPlayerManagementPlugin.vue";
 import { toast } from "@/components/ui/toast";
-import {
-  tacticalSectionLabelClasses,
-  tacticalSectionTickClasses,
-} from "~/utilities/tacticalClasses";
 
 type Change = { text: string; restart: boolean };
 
@@ -34,7 +31,9 @@ const props = defineProps<{
     id: string;
     enabled: boolean;
     game_server_node_id: string | null;
+    plugin_runtime?: string | null;
   };
+  apiPassword?: string | null;
 }>();
 
 const { t } = useI18n();
@@ -80,6 +79,10 @@ const tabs = computed(() => [
       ]
     : []),
   { key: "access", label: t("pages.dedicated_servers.detail.access.title") },
+  {
+    key: "player-management",
+    label: t("pages.dedicated_servers.detail.player_management"),
+  },
 ]);
 
 const activeTab = computed(() => {
@@ -188,11 +191,6 @@ function discard() {
 
 <template>
   <section class="grid gap-4">
-    <div :class="[tacticalSectionLabelClasses, 'mb-0']">
-      <span :class="tacticalSectionTickClasses"></span>
-      {{ $t("pages.dedicated_servers.detail.settings.title") }}
-    </div>
-
     <div class="flex flex-col gap-6 lg:flex-row lg:gap-8">
       <aside class="shrink-0">
         <div class="lg:hidden">
@@ -243,6 +241,13 @@ function discard() {
           v-show="activeTab === 'access'"
           ref="access"
           :server-id="server.id"
+        />
+        <ServerPlayerManagementPlugin
+          v-if="activeTab === 'player-management'"
+          :server-id="server.id"
+          :game-server-node-id="server.game_server_node_id"
+          :api-password="apiPassword"
+          :plugin-runtime="server.plugin_runtime"
         />
       </div>
     </div>

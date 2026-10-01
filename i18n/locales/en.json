@@ -3662,6 +3662,12 @@
       "detail": {
         "enabled": "Enabled",
         "eyebrow": "Dedicated Server",
+        "tabs": {
+          "players": "Players",
+          "console": "Console",
+          "logs": "Logs",
+          "settings": "Settings"
+        },
         "status_label": {
           "connected": "Connected",
           "disconnected": "Disconnected",
@@ -3686,7 +3692,8 @@
           "step_download": "Download the plugin for the framework your server runs.",
           "step_extract": "Extract the zip into the server's game/csgo folder.",
           "step_config": "Save this config on the server at:",
-          "step_restart": "Restart the server. The plugin shows as active here within a minute."
+          "step_restart": "Restart the server. The plugin shows as active here within a minute.",
+          "open_install": "Click to open the install steps in Settings."
         },
         "status": {
           "disconnected": "Server is disconnected",
@@ -10471,7 +10478,8 @@
       "connected": "Connected",
       "not_available": "n/a",
       "not_detected": "Player Management plugin not detected. The roster is read over RCON every 30 seconds, and no history is recorded.",
-      "not_reporting": "The Player Management plugin isn't reporting players yet, so the roster is read over RCON every 30 seconds and no history is recorded."
+      "not_reporting": "The Player Management plugin isn't reporting players yet, so the roster is read over RCON every 30 seconds and no history is recorded.",
+      "last_left": "Last player left {time}"
     },
     "recent": {
       "title": "Recent Players",

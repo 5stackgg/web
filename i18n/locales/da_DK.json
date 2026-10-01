@@ -3662,6 +3662,12 @@
       "detail": {
         "enabled": "Aktiv",
         "eyebrow": "Dedikeret server",
+        "tabs": {
+          "players": "Spillere",
+          "console": "Konsol",
+          "logs": "Logs",
+          "settings": "Indstillinger"
+        },
         "status_label": {
           "connected": "Forbundet",
           "disconnected": "Afbrudt",
@@ -3686,7 +3692,8 @@
           "step_download": "Download pluginet til det framework, din server kører.",
           "step_extract": "Pak zip-filen ud i serverens game/csgo-mappe.",
           "step_config": "Gem denne konfiguration på serveren her:",
-          "step_restart": "Genstart serveren. Pluginet vises som aktivt her inden for et minut."
+          "step_restart": "Genstart serveren. Pluginet vises som aktivt her inden for et minut.",
+          "open_install": "Klik for at åbne installationstrinnene i Indstillinger."
         },
         "status": {
           "disconnected": "Serveren er afbrudt",
@@ -10471,7 +10478,8 @@
       "connected": "Tilsluttet",
       "not_available": "i/t",
       "not_detected": "Player Management-pluginnet blev ikke fundet. Spillerlisten læses via RCON hvert 30. sekund, og der gemmes ingen historik.",
-      "not_reporting": "Player Management-pluginnet rapporterer endnu ingen spillere, så spillerlisten læses via RCON hvert 30. sekund, og der gemmes ingen historik."
+      "not_reporting": "Player Management-pluginnet rapporterer endnu ingen spillere, så spillerlisten læses via RCON hvert 30. sekund, og der gemmes ingen historik.",
+      "last_left": "Sidste spiller gik {time}"
     },
     "recent": {
       "title": "Seneste Spillere",

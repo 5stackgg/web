@@ -3662,6 +3662,12 @@
       "detail": {
         "enabled": "활성화",
         "eyebrow": "데디케이티드 서버",
+        "tabs": {
+          "players": "플레이어",
+          "console": "콘솔",
+          "logs": "로그",
+          "settings": "설정"
+        },
         "status_label": {
           "connected": "연결됨",
           "disconnected": "연결 끊김",
@@ -3686,7 +3692,8 @@
           "step_download": "서버에서 사용하는 프레임워크용 플러그인을 다운로드하세요.",
           "step_extract": "zip 파일을 서버의 game/csgo 폴더에 압축 해제하세요.",
           "step_config": "이 설정을 서버의 다음 위치에 저장하세요:",
-          "step_restart": "서버를 다시 시작하세요. 1분 안에 여기에 활성으로 표시됩니다."
+          "step_restart": "서버를 다시 시작하세요. 1분 안에 여기에 활성으로 표시됩니다.",
+          "open_install": "클릭하면 설정에서 설치 단계를 엽니다."
         },
         "status": {
           "disconnected": "서버 연결이 끊겼습니다",
@@ -10471,7 +10478,8 @@
       "connected": "접속 시간",
       "not_available": "없음",
       "not_detected": "Player Management 플러그인이 감지되지 않았습니다. 플레이어 목록은 30초마다 RCON으로 읽으며, 기록은 저장되지 않습니다.",
-      "not_reporting": "Player Management 플러그인이 아직 플레이어를 보고하지 않아, 목록을 30초마다 RCON으로 읽으며 기록은 저장되지 않습니다."
+      "not_reporting": "Player Management 플러그인이 아직 플레이어를 보고하지 않아, 목록을 30초마다 RCON으로 읽으며 기록은 저장되지 않습니다.",
+      "last_left": "마지막 플레이어 퇴장: {time}"
     },
     "recent": {
       "title": "최근 플레이어",

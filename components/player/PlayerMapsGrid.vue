@@ -26,7 +26,6 @@ import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
-  tacticalSectionDescriptionClasses,
 } from "~/utilities/tacticalClasses";
 import StatChevron from "~/components/StatChevron.vue";
 import {
@@ -630,19 +629,7 @@ function avgKda(agg: MapAggregate, side: SideKey): string {
 
 <template>
   <div>
-    <div class="flex flex-wrap items-start justify-between gap-3">
-      <div>
-        <div :class="[tacticalSectionLabelClasses, 'mb-0']">
-          <span :class="tacticalSectionTickClasses"></span>
-          {{ $t("pages.players.detail.maps.section") }}
-        </div>
-        <div :class="tacticalSectionDescriptionClasses">
-          {{ $t("pages.players.detail.maps.description") }}
-        </div>
-      </div>
-    </div>
-
-    <FadeSwap class="mt-3">
+    <FadeSwap>
       <div v-if="loading && !hasMaps" key="skeleton">
         <div
           class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"

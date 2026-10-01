@@ -3208,8 +3208,6 @@
         "acquiring_telemetry": "Acquisition de la télémétrie…",
         "matches_section": "MATCHS",
         "intro": {
-          "section": "Aperçu des performances",
-          "last_n": "{n} derniers matchs",
           "empty_title": "Aucun match analysé",
           "empty_description": "Les stats détaillées apparaîtront ici une fois que ce joueur aura terminé des matchs et qu'ils auront été analysés.",
           "adr": "ADR",
@@ -3233,8 +3231,6 @@
           }
         },
         "maps": {
-          "section": "MAPS",
-          "description": "Performances de carrière détaillées par map, avec la répartition camp T et camp CT.",
           "empty_title": "Aucune donnée de map",
           "empty_description": "Une fois que ce joueur aura terminé des matchs, les performances par map apparaîtront ici.",
           "played_short": "JOU",
@@ -3255,7 +3251,6 @@
           "col_avg_kda": "K/D/A moy."
         },
         "weapons_table": {
-          "section": "Armes",
           "empty_title": "Aucune donnée d'arme",
           "empty_description": "Ce joueur n'a encore aucun kill enregistré par arme.",
           "weapon": "Arme",
@@ -3677,10 +3672,11 @@
         "no_players": "Aucun joueur actuellement sur ce serveur",
         "player_management_plugin": {
           "active": "Plugin de gestion des joueurs actif",
+          "last_check_in": "Dernier signal",
           "not_detected": "Le plugin de gestion des joueurs ne s'est pas encore signalé depuis ce serveur, les mutes et bâillons ne sont donc pas encore appliqués en direct.",
           "not_detected_node": "Le plugin de gestion des joueurs ne s'est pas encore signalé. Les serveurs créés avant sa sortie le reçoivent une fois redéployés : désactivez puis réactivez le serveur.",
           "not_detected_external": "Les mutes, bâillons et bannissements ne sont appliqués en direct qu'une fois le plugin de gestion des joueurs 5Stack installé sur ce serveur.",
-          "install": "Installer le plugin",
+          "not_detected_title": "Plugin de gestion des joueurs non détecté",
           "install_steps": "Étapes d'installation",
           "step_download": "Téléchargez le plugin pour le framework utilisé par votre serveur.",
           "step_extract": "Extrayez le zip dans le dossier game/csgo du serveur.",
@@ -3791,6 +3787,58 @@
             "events_added": "Événements ajoutés : {count}",
             "events_removed": "Événements retirés : {count}"
           }
+        },
+        "move": {
+          "menu": "Déplacer vers un autre nœud",
+          "title": "Déplacer vers un autre nœud",
+          "description": "Le serveur s'arrête sur {node}, ses fichiers sont copiés vers le nouveau nœud, puis il redémarre là-bas.",
+          "source_offline": "{node} est hors ligne, les fichiers du serveur ne peuvent donc pas être copiés. Il démarrera sur le nouveau nœud avec les paramètres par défaut, et tout ce qui reste sur {node} y restera.",
+          "without_files": "Déplacer sans les fichiers du serveur",
+          "target": "Nouveau nœud",
+          "no_nodes": "Il n'y a aucun autre nœud de serveurs de jeu",
+          "free_slots": "Emplacements libres : {count}",
+          "free_disk": "{size} libres",
+          "confirm": "Déplacer le serveur",
+          "started": "Déplacement de {server} vers {node}",
+          "warning": {
+            "address": "Le serveur obtient une nouvelle adresse sur le nouveau nœud.",
+            "region": "Le serveur sera répertorié dans {region}.",
+            "runtime": "Le nouveau nœud utilise {runtime}, les plugins conçus pour l'autre framework n'y seront donc pas chargés."
+          },
+          "reason": {
+            "current": "Nœud actuel",
+            "disabled": "Désactivé",
+            "offline": "Hors ligne",
+            "setup": "Configuration",
+            "unreachable": "Injoignable",
+            "updating": "Mise à jour de CS2",
+            "no_build": "{game} n'est pas installé",
+            "no_slot": "Aucun emplacement de serveur libre"
+          }
+        },
+        "migration": {
+          "title": {
+            "active": "Déplacement vers {node}",
+            "Completed": "Déplacé vers {node}",
+            "Failed": "Échec du déplacement vers {node}",
+            "Canceled": "Déplacement vers {node} annulé"
+          },
+          "status": {
+            "Queued": "En file d'attente",
+            "Stopping": "Arrêt en cours",
+            "Transferring": "Copie des fichiers",
+            "Finalizing": "Basculement",
+            "Completed": "Terminé",
+            "Failed": "Échec",
+            "Canceled": "Annulé"
+          },
+          "progress": "{done} sur {total} ({percent}%)",
+          "without_files": "sans fichiers",
+          "restored": "Le serveur est de retour sur {node}.",
+          "cancel": "Annuler le déplacement",
+          "cancel_requested": "Annulation du déplacement",
+          "dismiss": "Masquer",
+          "locked": "Le serveur est en cours de déplacement vers un autre nœud. Réessaie une fois le déplacement terminé."
         }
       }
     },
@@ -5914,7 +5962,8 @@
     "scope_server": "Serveur",
     "missing_path": "Ce répertoire n'existe pas encore.",
     "missing_path_create": "Le créer",
-    "missing_path_dismiss": "Ignorer"
+    "missing_path_dismiss": "Ignorer",
+    "server_moving": "Ce serveur est en cours de déplacement vers un autre nœud. Ses fichiers seront de nouveau disponibles une fois le déplacement terminé."
   },
   "error": {
     "generic": "Une erreur est survenue. Réessaie."
@@ -8638,6 +8687,8 @@
       "game_server_node": "Nœud de serveurs de jeu",
       "select_game_server_node": "Sélectionner un nœud de serveurs de jeu",
       "game_server_node_description": "Sélectionne un nœud de serveurs de jeu avec CS installé",
+      "move_node_hint": "Pour changer de nœud, déplace le serveur. Ses fichiers sont copiés avec lui.",
+      "move_node": "Déplacer le serveur",
       "type": "Type de serveur",
       "select_type": "Sélectionner le type de serveur",
       "game_mode": "Mode de jeu",

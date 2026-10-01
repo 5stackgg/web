@@ -3208,8 +3208,6 @@
         "acquiring_telemetry": "データ取得中…",
         "matches_section": "試合",
         "intro": {
-          "section": "パフォーマンス概要",
-          "last_n": "直近 {n} 試合",
           "empty_title": "解析済みの試合なし",
           "empty_description": "このプレイヤーの試合が終了して解析されると、詳細なパフォーマンススタッツがここに表示されます。",
           "adr": "ADR",
@@ -3233,8 +3231,6 @@
           }
         },
         "maps": {
-          "section": "マップ",
-          "description": "マップ別の通算パフォーマンス。T サイドと CT サイドの内訳付き。",
           "empty_title": "マップデータなし",
           "empty_description": "このプレイヤーが試合を終えると、マップ別のパフォーマンスがここに表示されます。",
           "played_short": "試合",
@@ -3255,7 +3251,6 @@
           "col_avg_kda": "平均 K/D/A"
         },
         "weapons_table": {
-          "section": "武器",
           "empty_title": "武器データなし",
           "empty_description": "このプレイヤーには武器別のキル記録がまだありません。",
           "weapon": "武器",
@@ -3677,10 +3672,11 @@
         "no_players": "現在このサーバーにプレイヤーはいません",
         "player_management_plugin": {
           "active": "プレイヤー管理プラグイン稼働中",
+          "last_check_in": "最終応答",
           "not_detected": "このサーバーからプレイヤー管理プラグインの応答がまだないため、ミュートとチャット禁止はまだリアルタイムで適用されません。",
           "not_detected_node": "プレイヤー管理プラグインの応答がまだありません。公開前に作成したサーバーは再デプロイで導入されます：サーバーを一度無効にしてから再度有効にしてください。",
           "not_detected_external": "ミュート、チャット禁止、BANは、このサーバーに5Stackのプレイヤー管理プラグインをインストールするまでリアルタイムで適用されません。",
-          "install": "プラグインをインストール",
+          "not_detected_title": "プレイヤー管理プラグインが検出されません",
           "install_steps": "インストール手順",
           "step_download": "サーバーで使用しているフレームワーク用のプラグインをダウンロードします。",
           "step_extract": "zipをサーバーのgame/csgoフォルダーに展開します。",
@@ -3791,6 +3787,58 @@
             "events_added": "追加したイベント: {count}",
             "events_removed": "削除したイベント: {count}"
           }
+        },
+        "move": {
+          "menu": "別のノードへ移動",
+          "title": "別のノードへ移動",
+          "description": "サーバーは{node}上で停止し、ファイルが新しいノードにコピーされた後、そこで再び起動します。",
+          "source_offline": "{node}がオフラインのため、サーバーのファイルをコピーできません。新しいノードではデフォルト設定で起動し、{node}に残ったものはそのまま残ります。",
+          "without_files": "サーバーのファイルなしで移動",
+          "target": "新しいノード",
+          "no_nodes": "他のゲームサーバーノードがありません",
+          "free_slots": "空きスロット: {count}",
+          "free_disk": "空き {size}",
+          "confirm": "サーバーを移動",
+          "started": "{server}を{node}へ移動しています",
+          "warning": {
+            "address": "新しいノードではサーバーのアドレスが変わります。",
+            "region": "サーバーは{region}に表示されます。",
+            "runtime": "新しいノードは{runtime}で動作するため、もう一方のフレームワーク向けに作られたプラグインは読み込まれません。"
+          },
+          "reason": {
+            "current": "現在のノード",
+            "disabled": "無効",
+            "offline": "オフライン",
+            "setup": "セットアップ",
+            "unreachable": "接続できません",
+            "updating": "CS2を更新中",
+            "no_build": "{game}がインストールされていません",
+            "no_slot": "空きサーバースロットがありません"
+          }
+        },
+        "migration": {
+          "title": {
+            "active": "{node}へ移動中",
+            "Completed": "{node}へ移動しました",
+            "Failed": "{node}への移動に失敗しました",
+            "Canceled": "{node}への移動をキャンセルしました"
+          },
+          "status": {
+            "Queued": "待機中",
+            "Stopping": "停止中",
+            "Transferring": "ファイルをコピー中",
+            "Finalizing": "切り替え中",
+            "Completed": "完了",
+            "Failed": "失敗",
+            "Canceled": "キャンセル済み"
+          },
+          "progress": "{done} / {total} ({percent}%)",
+          "without_files": "ファイルなし",
+          "restored": "サーバーは{node}に戻りました。",
+          "cancel": "移動をキャンセル",
+          "cancel_requested": "移動をキャンセルしています",
+          "dismiss": "閉じる",
+          "locked": "サーバーを別のノードへ移動中です。移動が完了してからもう一度お試しください。"
         }
       }
     },
@@ -5914,7 +5962,8 @@
     "scope_server": "サーバー",
     "missing_path": "このディレクトリはまだ存在しません。",
     "missing_path_create": "作成する",
-    "missing_path_dismiss": "閉じる"
+    "missing_path_dismiss": "閉じる",
+    "server_moving": "このサーバーは別のノードへ移動中です。移動が完了すると、ファイルは再び利用できるようになります。"
   },
   "error": {
     "generic": "エラーが発生しました。もう一度お試しください。"
@@ -8638,6 +8687,8 @@
       "game_server_node": "ゲームサーバーノード",
       "select_game_server_node": "ゲームサーバーノードを選択",
       "game_server_node_description": "CS がインストール済みのゲームサーバーノードを選択してください",
+      "move_node_hint": "ノードを変更するには、サーバーを移動してください。ファイルもコピーされます。",
+      "move_node": "サーバーを移動",
       "type": "サーバータイプ",
       "select_type": "サーバータイプを選択",
       "game_mode": "ゲームモード",

@@ -3208,8 +3208,6 @@
         "acquiring_telemetry": "Acquisizione telemetria…",
         "matches_section": "MATCH",
         "intro": {
-          "section": "Introduzione rendimento",
-          "last_n": "Ultimi {n} match",
           "empty_title": "Nessun match analizzato",
           "empty_description": "Le statistiche dettagliate appaiono qui quando il giocatore ha match conclusi e analizzati.",
           "adr": "ADR",
@@ -3233,8 +3231,6 @@
           }
         },
         "maps": {
-          "section": "MAPPE",
-          "description": "Rendimento in carriera suddiviso per mappa, con dettaglio lato terrorista e antiterrorista.",
           "empty_title": "Ancora nessun dato sulle mappe",
           "empty_description": "Quando il giocatore avrà concluso dei match, qui apparirà il rendimento per mappa.",
           "played_short": "GIO",
@@ -3255,7 +3251,6 @@
           "col_avg_kda": "K/D/A medi"
         },
         "weapons_table": {
-          "section": "Armi",
           "empty_title": "Nessun dato sulle armi",
           "empty_description": "Questo giocatore non ha ancora kill registrate con armi.",
           "weapon": "Arma",
@@ -3677,10 +3672,11 @@
         "no_players": "Nessun giocatore attualmente su questo server",
         "player_management_plugin": {
           "active": "Plugin di gestione giocatori attivo",
+          "last_check_in": "Ultimo segnale",
           "not_detected": "Il plugin di gestione giocatori non ha ancora comunicato da questo server, quindi mute e gag non vengono ancora applicati in tempo reale.",
           "not_detected_node": "Il plugin di gestione giocatori non ha ancora comunicato. I server creati prima del suo rilascio lo ricevono dopo un nuovo deploy: disattiva e riattiva il server.",
           "not_detected_external": "Mute, gag e ban vengono applicati in tempo reale solo dopo aver installato il plugin di gestione giocatori di 5Stack su questo server.",
-          "install": "Installa plugin",
+          "not_detected_title": "Plugin di gestione giocatori non rilevato",
           "install_steps": "Passaggi di installazione",
           "step_download": "Scarica il plugin per il framework usato dal tuo server.",
           "step_extract": "Estrai lo zip nella cartella game/csgo del server.",
@@ -3791,6 +3787,58 @@
             "events_added": "Eventi aggiunti: {count}",
             "events_removed": "Eventi rimossi: {count}"
           }
+        },
+        "move": {
+          "menu": "Sposta su un altro nodo",
+          "title": "Sposta su un altro nodo",
+          "description": "Il server si arresta su {node}, i suoi file vengono copiati sul nuovo nodo e poi si riavvia lì.",
+          "source_offline": "{node} è offline, quindi i file del server non possono essere copiati. Si avvierà sul nuovo nodo con le impostazioni predefinite e ciò che resta su {node} rimarrà lì.",
+          "without_files": "Sposta senza i file del server",
+          "target": "Nuovo nodo",
+          "no_nodes": "Non ci sono altri nodi server di gioco",
+          "free_slots": "Slot liberi: {count}",
+          "free_disk": "{size} liberi",
+          "confirm": "Sposta server",
+          "started": "Spostamento di {server} su {node}",
+          "warning": {
+            "address": "Il server riceve un nuovo indirizzo sul nuovo nodo.",
+            "region": "Il server sarà elencato in {region}.",
+            "runtime": "Il nuovo nodo usa {runtime}, quindi i plugin creati per l'altro framework non verranno caricati lì."
+          },
+          "reason": {
+            "current": "Nodo attuale",
+            "disabled": "Disattivato",
+            "offline": "Offline",
+            "setup": "Configurazione",
+            "unreachable": "Non raggiungibile",
+            "updating": "Aggiornamento CS2",
+            "no_build": "{game} non è installato",
+            "no_slot": "Nessuno slot server libero"
+          }
+        },
+        "migration": {
+          "title": {
+            "active": "Spostamento su {node}",
+            "Completed": "Spostato su {node}",
+            "Failed": "Spostamento su {node} non riuscito",
+            "Canceled": "Spostamento su {node} annullato"
+          },
+          "status": {
+            "Queued": "In coda",
+            "Stopping": "Arresto in corso",
+            "Transferring": "Copia dei file",
+            "Finalizing": "Passaggio al nuovo nodo",
+            "Completed": "Completato",
+            "Failed": "Non riuscito",
+            "Canceled": "Annullato"
+          },
+          "progress": "{done} di {total} ({percent}%)",
+          "without_files": "senza file",
+          "restored": "Il server è di nuovo su {node}.",
+          "cancel": "Annulla spostamento",
+          "cancel_requested": "Annullamento dello spostamento",
+          "dismiss": "Chiudi",
+          "locked": "Il server è in fase di spostamento su un altro nodo. Riprova al termine dello spostamento."
         }
       }
     },
@@ -5914,7 +5962,8 @@
     "scope_server": "Server",
     "missing_path": "Questa directory non esiste ancora.",
     "missing_path_create": "Creala",
-    "missing_path_dismiss": "Ignora"
+    "missing_path_dismiss": "Ignora",
+    "server_moving": "Questo server è in fase di spostamento su un altro nodo. I suoi file saranno di nuovo disponibili al termine dello spostamento."
   },
   "error": {
     "generic": "Si è verificato un errore. Riprova."
@@ -8638,6 +8687,8 @@
       "game_server_node": "Nodo server di gioco",
       "select_game_server_node": "Seleziona nodo server di gioco",
       "game_server_node_description": "Seleziona un nodo server di gioco con CS installato",
+      "move_node_hint": "Per cambiare nodo, sposta il server. I suoi file vengono copiati.",
+      "move_node": "Sposta server",
       "type": "Tipo di server",
       "select_type": "Seleziona tipo di server",
       "game_mode": "Modalità di gioco",

@@ -3208,8 +3208,6 @@
         "acquiring_telemetry": "Telemetrie wird geladen …",
         "matches_section": "MATCHES",
         "intro": {
-          "section": "Performance-Übersicht",
-          "last_n": "Letzte {n} Matches",
           "empty_title": "Keine ausgewerteten Matches",
           "empty_description": "Detaillierte Performance-Stats erscheinen hier, sobald dieser Spieler Matches beendet hat und sie ausgewertet sind.",
           "adr": "ADR",
@@ -3233,8 +3231,6 @@
           }
         },
         "maps": {
-          "section": "MAPS",
-          "description": "Karriere-Performance pro Map, aufgeteilt nach T- und CT-Seite.",
           "empty_title": "Noch keine Map-Daten",
           "empty_description": "Sobald dieser Spieler Matches beendet, erscheint hier die Performance pro Map.",
           "played_short": "GSP",
@@ -3255,7 +3251,6 @@
           "col_avg_kda": "Ø K/D/A"
         },
         "weapons_table": {
-          "section": "Waffen",
           "empty_title": "Keine Waffendaten",
           "empty_description": "Für diesen Spieler sind noch keine Kills mit Waffen erfasst.",
           "weapon": "Waffe",
@@ -3677,10 +3672,11 @@
         "no_players": "Aktuell keine Spieler auf diesem Server",
         "player_management_plugin": {
           "active": "Player-Management-Plugin aktiv",
+          "last_check_in": "Letzte Rückmeldung",
           "not_detected": "Das Player-Management-Plugin hat sich von diesem Server noch nicht gemeldet, daher werden Stummschaltungen und Chatsperren noch nicht live durchgesetzt.",
           "not_detected_node": "Das Player-Management-Plugin hat sich noch nicht gemeldet. Server, die vor seiner Veröffentlichung erstellt wurden, erhalten es nach einer Neubereitstellung: Schalte den Server aus und wieder ein.",
           "not_detected_external": "Stummschaltungen, Chatsperren und Banns werden erst live durchgesetzt, wenn das 5Stack-Player-Management-Plugin auf diesem Server installiert ist.",
-          "install": "Plugin installieren",
+          "not_detected_title": "Player-Management-Plugin nicht erkannt",
           "install_steps": "Installationsschritte",
           "step_download": "Lade das Plugin für das Framework herunter, das auf deinem Server läuft.",
           "step_extract": "Entpacke die ZIP-Datei in den Ordner game/csgo des Servers.",
@@ -3791,6 +3787,58 @@
             "events_added": "Events hinzugefügt: {count}",
             "events_removed": "Events entfernt: {count}"
           }
+        },
+        "move": {
+          "menu": "Auf andere Node verschieben",
+          "title": "Auf andere Node verschieben",
+          "description": "Der Server wird auf {node} gestoppt, seine Dateien werden auf die neue Node kopiert, und dort startet er erneut.",
+          "source_offline": "{node} ist offline, daher können die Dateien des Servers nicht kopiert werden. Er startet auf der neuen Node mit Standardeinstellungen, und alles, was auf {node} liegt, bleibt dort.",
+          "without_files": "Ohne die Dateien des Servers verschieben",
+          "target": "Neue Node",
+          "no_nodes": "Es gibt keine anderen Game-Server-Nodes",
+          "free_slots": "Freie Slots: {count}",
+          "free_disk": "{size} frei",
+          "confirm": "Server verschieben",
+          "started": "{server} wird auf {node} verschoben",
+          "warning": {
+            "address": "Der Server erhält auf der neuen Node eine neue Adresse.",
+            "region": "Der Server wird in {region} gelistet.",
+            "runtime": "Auf der neuen Node läuft {runtime}, daher werden Plugins für das andere Framework dort nicht geladen."
+          },
+          "reason": {
+            "current": "Aktuelle Node",
+            "disabled": "Deaktiviert",
+            "offline": "Offline",
+            "setup": "Einrichtung",
+            "unreachable": "Nicht erreichbar",
+            "updating": "Aktualisiert CS2",
+            "no_build": "{game} ist nicht installiert",
+            "no_slot": "Keine freien Server-Slots"
+          }
+        },
+        "migration": {
+          "title": {
+            "active": "Wird auf {node} verschoben",
+            "Completed": "Auf {node} verschoben",
+            "Failed": "Verschieben auf {node} fehlgeschlagen",
+            "Canceled": "Verschieben auf {node} abgebrochen"
+          },
+          "status": {
+            "Queued": "In Warteschlange",
+            "Stopping": "Wird gestoppt",
+            "Transferring": "Dateien werden kopiert",
+            "Finalizing": "Wird umgeschaltet",
+            "Completed": "Abgeschlossen",
+            "Failed": "Fehlgeschlagen",
+            "Canceled": "Abgebrochen"
+          },
+          "progress": "{done} von {total} ({percent}%)",
+          "without_files": "ohne Dateien",
+          "restored": "Der Server ist wieder auf {node}.",
+          "cancel": "Verschieben abbrechen",
+          "cancel_requested": "Verschieben wird abgebrochen",
+          "dismiss": "Ausblenden",
+          "locked": "Der Server wird auf eine andere Node verschoben. Versuche es erneut, sobald der Umzug abgeschlossen ist."
         }
       }
     },
@@ -5914,7 +5962,8 @@
     "scope_server": "Server",
     "missing_path": "Dieses Verzeichnis existiert noch nicht.",
     "missing_path_create": "Anlegen",
-    "missing_path_dismiss": "Ausblenden"
+    "missing_path_dismiss": "Ausblenden",
+    "server_moving": "Dieser Server wird gerade auf eine andere Node verschoben. Seine Dateien sind wieder verfügbar, sobald das Verschieben abgeschlossen ist."
   },
   "error": {
     "generic": "Ein Fehler ist aufgetreten. Versuch es erneut."
@@ -8638,6 +8687,8 @@
       "game_server_node": "Game-Server-Node",
       "select_game_server_node": "Game-Server-Node wählen",
       "game_server_node_description": "Wähle eine Game-Server-Node mit installiertem CS",
+      "move_node_hint": "Um die Node zu wechseln, verschiebe den Server. Seine Dateien werden mitkopiert.",
+      "move_node": "Server verschieben",
       "type": "Server-Typ",
       "select_type": "Server-Typ wählen",
       "game_mode": "Spielmodus",

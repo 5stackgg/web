@@ -27,10 +27,6 @@ import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import TableSkeleton from "~/components/player/stats/TableSkeleton.vue";
 import { resolveWeapon } from "~/utilities/weaponIcon";
-import {
-  tacticalSectionLabelClasses,
-  tacticalSectionTickClasses,
-} from "~/utilities/tacticalClasses";
 import { hltvColor } from "~/utils/statTiers";
 
 const props = defineProps<{
@@ -347,11 +343,6 @@ function onIconError(event: Event) {
 
 <template>
   <div>
-    <div :class="[tacticalSectionLabelClasses, 'mb-3']">
-      <span :class="tacticalSectionTickClasses"></span>
-      {{ $t("pages.players.detail.weapons_table.section") }}
-    </div>
-
     <FadeSwap>
       <TableSkeleton
         v-if="loading && !hasData"

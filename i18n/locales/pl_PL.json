@@ -3208,8 +3208,6 @@
         "acquiring_telemetry": "Pobieranie telemetrii…",
         "matches_section": "MECZE",
         "intro": {
-          "section": "Wstęp wydajności",
-          "last_n": "Ostatnie {n} meczów",
           "empty_title": "Brak przeanalizowanych meczów",
           "empty_description": "Szczegółowe statystyki wydajności pojawią się tutaj, gdy gracz zakończy i przeanalizuje mecze.",
           "adr": "ADR",
@@ -3233,8 +3231,6 @@
           }
         },
         "maps": {
-          "section": "MAPY",
-          "description": "Wydajność w karierze w podziale na mapy, ze statystykami dla strony terrorystów i antyterrorystów.",
           "empty_title": "Brak jeszcze danych o mapach",
           "empty_description": "Gdy gracz zakończy mecze, pojawi się tutaj wydajność per mapa.",
           "played_short": "ROZ",
@@ -3255,7 +3251,6 @@
           "col_avg_kda": "Śr. K/D/A"
         },
         "weapons_table": {
-          "section": "Broń",
           "empty_title": "Brak danych o broni",
           "empty_description": "Ten gracz nie ma jeszcze zapisanych zabójstw daną bronią.",
           "weapon": "Broń",
@@ -3677,10 +3672,11 @@
         "no_players": "Obecnie brak graczy na tym serwerze",
         "player_management_plugin": {
           "active": "Wtyczka zarządzania graczami aktywna",
+          "last_check_in": "Ostatni kontakt",
           "not_detected": "Wtyczka zarządzania graczami nie zgłosiła się jeszcze z tego serwera, więc wyciszenia i blokady czatu nie są jeszcze egzekwowane na żywo.",
           "not_detected_node": "Wtyczka zarządzania graczami jeszcze się nie zgłosiła. Serwery utworzone przed jej wydaniem otrzymają ją po ponownym wdrożeniu: wyłącz serwer i włącz go ponownie.",
           "not_detected_external": "Wyciszenia, blokady czatu i bany są egzekwowane na żywo dopiero po zainstalowaniu wtyczki zarządzania graczami 5Stack na tym serwerze.",
-          "install": "Zainstaluj wtyczkę",
+          "not_detected_title": "Nie wykryto wtyczki zarządzania graczami",
           "install_steps": "Kroki instalacji",
           "step_download": "Pobierz wtyczkę dla frameworka, na którym działa twój serwer.",
           "step_extract": "Rozpakuj plik zip do folderu game/csgo serwera.",
@@ -3791,6 +3787,58 @@
             "events_added": "Dodane wydarzenia: {count}",
             "events_removed": "Usunięte wydarzenia: {count}"
           }
+        },
+        "move": {
+          "menu": "Przenieś na inny węzeł",
+          "title": "Przenieś na inny węzeł",
+          "description": "Serwer zostanie zatrzymany na węźle {node}, jego pliki zostaną skopiowane na nowy węzeł, a następnie zostanie tam ponownie uruchomiony.",
+          "source_offline": "Węzeł {node} jest offline, więc nie można skopiować plików serwera. Serwer uruchomi się na nowym węźle z domyślnymi ustawieniami, a wszystko, co zostało na węźle {node}, tam pozostanie.",
+          "without_files": "Przenieś bez plików serwera",
+          "target": "Nowy węzeł",
+          "no_nodes": "Brak innych węzłów serwerów gry",
+          "free_slots": "Wolne sloty: {count}",
+          "free_disk": "{size} wolnego miejsca",
+          "confirm": "Przenieś serwer",
+          "started": "Przenoszenie {server} na węzeł {node}",
+          "warning": {
+            "address": "Na nowym węźle serwer otrzyma nowy adres.",
+            "region": "Serwer będzie widoczny w regionie {region}.",
+            "runtime": "Nowy węzeł działa na {runtime}, więc wtyczki zbudowane dla innego frameworka nie zostaną tam załadowane."
+          },
+          "reason": {
+            "current": "Obecny węzeł",
+            "disabled": "Wyłączony",
+            "offline": "Offline",
+            "setup": "Konfiguracja",
+            "unreachable": "Nieosiągalny",
+            "updating": "Aktualizacja CS2",
+            "no_build": "Nie zainstalowano {game}",
+            "no_slot": "Brak wolnych slotów serwerów"
+          }
+        },
+        "migration": {
+          "title": {
+            "active": "Przenoszenie na węzeł {node}",
+            "Completed": "Przeniesiono na węzeł {node}",
+            "Failed": "Przeniesienie na węzeł {node} nie powiodło się",
+            "Canceled": "Anulowano przeniesienie na węzeł {node}"
+          },
+          "status": {
+            "Queued": "W kolejce",
+            "Stopping": "Zatrzymywanie",
+            "Transferring": "Kopiowanie plików",
+            "Finalizing": "Przełączanie",
+            "Completed": "Ukończono",
+            "Failed": "Niepowodzenie",
+            "Canceled": "Anulowano"
+          },
+          "progress": "{done} z {total} ({percent}%)",
+          "without_files": "bez plików",
+          "restored": "Serwer wrócił na węzeł {node}.",
+          "cancel": "Anuluj przenoszenie",
+          "cancel_requested": "Anulowanie przenoszenia",
+          "dismiss": "Zamknij",
+          "locked": "Serwer jest przenoszony na inny węzeł. Spróbuj ponownie po zakończeniu przenoszenia."
         }
       }
     },
@@ -5914,7 +5962,8 @@
     "scope_server": "Serwer",
     "missing_path": "Ten katalog jeszcze nie istnieje.",
     "missing_path_create": "Utwórz go",
-    "missing_path_dismiss": "Odrzuć"
+    "missing_path_dismiss": "Odrzuć",
+    "server_moving": "Ten serwer jest przenoszony na inny węzeł. Jego pliki będą ponownie dostępne po zakończeniu przenoszenia."
   },
   "error": {
     "generic": "Wystąpił błąd. Spróbuj ponownie."
@@ -8638,6 +8687,8 @@
       "game_server_node": "Węzeł serwerów gry",
       "select_game_server_node": "Wybierz węzeł serwerów gry",
       "game_server_node_description": "Wybierz węzeł serwerów gry z zainstalowanym CS",
+      "move_node_hint": "Aby zmienić węzeł, przenieś serwer. Jego pliki zostaną skopiowane.",
+      "move_node": "Przenieś serwer",
       "type": "Typ serwera",
       "select_type": "Wybierz typ serwera",
       "game_mode": "Tryb gry",

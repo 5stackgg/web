@@ -8382,7 +8382,9 @@
     "change_name": {
       "name_label": "Navn",
       "success": "Spillerens navn er ændret",
-      "request_success": "Navneændring anmodet"
+      "request_success": "Navneændring anmodet",
+      "request_success_description": "Dit nye navn vises, når en admin har godkendt det. Vi giver dig besked uanset hvad.",
+      "approval_hint": "En admin godkender navneændringer, før de vises."
     },
     "pending_imports": {
       "title": "Afventende CS2-imports",

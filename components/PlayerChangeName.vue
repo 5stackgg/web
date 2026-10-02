@@ -5,28 +5,29 @@ import { Spinner } from "~/components/ui/spinner";
 </script>
 
 <template>
-  <form
-    v-if="canChangeName"
-    class="flex items-center gap-2"
-    @submit.prevent="save"
-  >
-    <Input
-      v-model="name"
-      maxlength="32"
-      :placeholder="$t('player.change_name.name_label')"
-      class="flex-1 min-w-0"
-    />
-    <Button
-      variant="tactical"
-      type="submit"
-      size="sm"
-      :loading="saving"
-      :disabled="saving || !isValid || name === player.name"
-    >
-      <Spinner v-if="saving" class="mr-1 h-4 w-4" />
-      {{ $t("common.save") }}
-    </Button>
-  </form>
+  <div v-if="canChangeName" class="flex flex-col gap-1.5">
+    <form class="flex items-center gap-2" @submit.prevent="save">
+      <Input
+        v-model="name"
+        maxlength="32"
+        :placeholder="$t('player.change_name.name_label')"
+        class="flex-1 min-w-0"
+      />
+      <Button
+        variant="tactical"
+        type="submit"
+        size="sm"
+        :loading="saving"
+        :disabled="saving || !isValid || name === player.name"
+      >
+        <Spinner v-if="saving" class="mr-1 h-4 w-4" />
+        {{ $t("common.save") }}
+      </Button>
+    </form>
+    <p v-if="mustRequestNameChange" class="text-xs text-muted-foreground">
+      {{ $t("player.change_name.approval_hint") }}
+    </p>
+  </div>
 </template>
 
 <script lang="ts">
@@ -93,7 +94,12 @@ export default {
               ],
             }),
           });
-          toast({ title: this.$t("player.change_name.request_success") });
+          toast({
+            title: this.$t("player.change_name.request_success"),
+            description: this.$t(
+              "player.change_name.request_success_description",
+            ),
+          });
         } else {
           await this.$apollo.mutate({
             variables: { player_name: this.name },

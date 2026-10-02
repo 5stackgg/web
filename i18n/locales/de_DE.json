@@ -8382,7 +8382,9 @@
     "change_name": {
       "name_label": "Name",
       "success": "Spielername geändert",
-      "request_success": "Namensänderung angefragt"
+      "request_success": "Namensänderung angefragt",
+      "request_success_description": "Dein neuer Name wird angezeigt, sobald ein Admin ihn genehmigt. Wir benachrichtigen dich in jedem Fall.",
+      "approval_hint": "Ein Admin genehmigt Namensänderungen, bevor sie angezeigt werden."
     },
     "pending_imports": {
       "title": "Ausstehende CS2-Importe",

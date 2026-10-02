@@ -8382,7 +8382,9 @@
     "change_name": {
       "name_label": "名前",
       "success": "プレイヤー名を変更しました",
-      "request_success": "名前変更をリクエストしました"
+      "request_success": "名前変更をリクエストしました",
+      "request_success_description": "新しい名前は管理者が承認すると表示されます。結果はどちらの場合もお知らせします。",
+      "approval_hint": "名前の変更は、管理者の承認後に表示されます。"
     },
     "pending_imports": {
       "title": "CS2インポート保留中",

@@ -8382,7 +8382,9 @@
     "change_name": {
       "name_label": "Ad",
       "success": "Oyuncu adı değiştirildi",
-      "request_success": "Ad değişikliği istendi"
+      "request_success": "Ad değişikliği istendi",
+      "request_success_description": "Yeni adın bir yönetici onayladığında görünür. Her iki durumda da seni bilgilendireceğiz.",
+      "approval_hint": "Ad değişiklikleri görünmeden önce bir yönetici tarafından onaylanır."
     },
     "pending_imports": {
       "title": "Bekleyen CS2 içe aktarmaları",

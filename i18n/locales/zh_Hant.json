@@ -8382,7 +8382,9 @@
     "change_name": {
       "name_label": "名稱",
       "success": "玩家名稱已更改",
-      "request_success": "已請求更改名稱"
+      "request_success": "已請求更改名稱",
+      "request_success_description": "管理員核准後，你的新名稱才會顯示。無論結果如何，我們都會通知你。",
+      "approval_hint": "名稱變更需經管理員核准後才會顯示。"
     },
     "pending_imports": {
       "title": "待匯入的 CS2 比賽",

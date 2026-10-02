@@ -8382,7 +8382,9 @@
     "change_name": {
       "name_label": "Nome",
       "success": "Nome do Jogador Alterado",
-      "request_success": "Solicitação de alteração de nome requerida"
+      "request_success": "Alteração de nome solicitada",
+      "request_success_description": "Seu novo nome aparece assim que um administrador aprová-lo. Avisaremos você de qualquer forma.",
+      "approval_hint": "Um administrador aprova as alterações de nome antes que elas apareçam."
     },
     "pending_imports": {
       "title": "Importações CS2 Pendentes",

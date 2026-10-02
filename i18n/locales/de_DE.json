@@ -8513,10 +8513,6 @@
     "locked_in": "Fix dabei",
     "check_in": "Check-in",
     "go_to_match": "Zum Match",
-    "toasts": {
-      "your_veto_title": "Du bist mit dem Veto dran",
-      "your_veto_desc": "Du bist dran — bann oder pick auf der Match-Seite"
-    },
     "disable_match_ready_modal_hint": "Willst du dieses Popup nicht?",
     "disable_match_ready_modal_action": "In den Matchmaking-Einstellungen deaktivieren",
     "invites": "Einladungen",

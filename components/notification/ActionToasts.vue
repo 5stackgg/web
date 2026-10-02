@@ -13,6 +13,7 @@ import { useAuthStore } from "~/stores/AuthStore";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useRightSidebar } from "~/composables/useRightSidebar";
+import { useMobileToastYield } from "~/composables/useMobileToastYield";
 import { useCallInvites } from "~/composables/useVoiceAnnouncements";
 import { useVoiceSession } from "~/composables/useVoiceSession";
 import VoiceRosterPreview from "~/components/voice/VoiceRosterPreview.vue";
@@ -22,6 +23,7 @@ import {
 } from "~/utilities/matchActionToasts";
 
 const { rightSidebarOpen } = useRightSidebar();
+const { yielding } = useMobileToastYield();
 const route = useRoute();
 
 type ToastItem = {
@@ -371,6 +373,10 @@ watch(
 
 const hoveredGroup = ref<string | null>(null);
 
+// On phones the hub opens as a sheet under this stack, so it yields like the
+// other bottom surfaces do. Desktop places the stack beside the hub instead.
+const phoneYield = computed(() => rightSidebarOpen.value || yielding.value);
+
 const visibleItems = computed(() =>
   items.value.filter((item) => !dismissed.value.has(item.id) && !item.onPage),
 );
@@ -433,10 +439,13 @@ const dismissItem = (item: ToastItem) => {
          last toast's dismissal used to unmount the group mid-leave -- the
          single-toast case (the common one) never played its exit. -->
     <div
-      class="pointer-events-none fixed bottom-4 left-2 right-2 z-[60] flex flex-col transition-[right] duration-200 ease-linear md:left-auto md:w-[340px]"
-      :class="
-        rightSidebarOpen ? 'md:right-[30.75rem]' : 'md:right-[4.75rem]'
-      "
+      class="pointer-events-none fixed bottom-4 left-2 right-2 z-[60] flex flex-col transition-[right,opacity,transform,visibility] duration-200 ease-linear max-md:motion-reduce:transition-none md:left-auto md:w-[340px]"
+      :class="[
+        rightSidebarOpen ? 'md:right-[30.75rem]' : 'md:right-[4.75rem]',
+        phoneYield
+          ? 'max-md:invisible max-md:translate-y-4 max-md:opacity-0'
+          : '',
+      ]"
     >
       <TransitionGroup
         name="toast"

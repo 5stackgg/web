@@ -8513,10 +8513,6 @@
     "locked_in": "تم التثبيت",
     "check_in": "أكّد الحضور",
     "go_to_match": "اذهب للمباراة",
-    "toasts": {
-      "your_veto_title": "دورك في Veto",
-      "your_veto_desc": "حان دورك — احظر أو اختر من صفحة المباراة."
-    },
     "disable_match_ready_modal_hint": "لا تريد هذه النافذة؟",
     "disable_match_ready_modal_action": "عطّلها من إعدادات Matchmaking",
     "invites": "الدعوات",

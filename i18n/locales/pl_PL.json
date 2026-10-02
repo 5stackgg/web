@@ -8513,10 +8513,6 @@
     "locked_in": "Zablokowano",
     "check_in": "Potwierdź obecność",
     "go_to_match": "Przejdź do meczu",
-    "toasts": {
-      "your_veto_title": "Twoja kolej na veto",
-      "your_veto_desc": "Twoja kolej — zbanuj lub wybierz mapę na stronie meczu"
-    },
     "disable_match_ready_modal_hint": "Nie chcesz widzieć tego okna?",
     "disable_match_ready_modal_action": "Wyłącz w ustawieniach matchmakingu",
     "invites": "Zaproszenia",

@@ -36,6 +36,8 @@ function match(overrides: Record<string, any> = {}) {
     is_in_lineup: true,
     can_check_in: true,
     map_veto_type: null,
+    region: null,
+    options: { region_veto: false },
     draft_games: [],
     lineup_1: lineup(
       "Iron Wolves",
@@ -45,6 +47,14 @@ function match(overrides: Record<string, any> = {}) {
     lineup_2: lineup("Night Owls", [{ steamId: OPPONENT }], theirs),
     ...rest,
   };
+}
+
+function regionVeto(overrides: Record<string, any> = {}) {
+  return match({
+    status: "Veto",
+    options: { region_veto: true },
+    ...overrides,
+  });
 }
 
 const kinds = (matches: any[], steamId: string | null = ME) =>
@@ -90,7 +100,7 @@ describe("matchActions check-in", () => {
 describe("matchActions veto", () => {
   it("tells the picking captain it is their region ban", () => {
     const [action] = matchActions(
-      [match({ status: "Veto", mine: { can_pick_region_veto: true } })],
+      [regionVeto({ mine: { can_pick_region_veto: true } })],
       ME,
     );
 
@@ -135,6 +145,32 @@ describe("matchActions veto", () => {
     );
   });
 
+  it("does not offer a map veto turn while the region veto is running", () => {
+    const theirRegionBan = regionVeto({
+      map_veto_type: "Ban",
+      mine: { can_pick_map_veto: true },
+      theirs: { can_pick_region_veto: true },
+    });
+
+    expect(kinds([theirRegionBan])).toEqual([]);
+  });
+
+  it("only offers a region ban while a region veto is running", () => {
+    const mapVetoWithoutRegionVeto = match({
+      status: "Veto",
+      map_veto_type: "Ban",
+      mine: { can_pick_region_veto: true, can_pick_map_veto: true },
+    });
+    const regionAlreadyPicked = regionVeto({
+      region: "USE",
+      map_veto_type: "Ban",
+      mine: { can_pick_region_veto: true, can_pick_map_veto: true },
+    });
+
+    expect(kinds([mapVetoWithoutRegionVeto])).toEqual(["map_veto"]);
+    expect(kinds([regionAlreadyPicked])).toEqual(["map_veto"]);
+  });
+
   it("stays quiet while the other lineup is picking", () => {
     const theirTurn = match({
       status: "Veto",
@@ -173,9 +209,8 @@ describe("matchActions audience", () => {
   });
 
   it("lists one action per match", () => {
-    const veto = match({
+    const veto = regionVeto({
       id: "match-2",
-      status: "Veto",
       mine: { can_pick_region_veto: true },
     });
 

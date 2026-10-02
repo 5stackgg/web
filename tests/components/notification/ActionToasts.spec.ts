@@ -2,6 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 import { mockNuxtImport, mountSuspended } from "@nuxt/test-utils/runtime";
 import ActionToasts from "~/components/notification/ActionToasts.vue";
+import MatchActiveAlert from "~/components/match/MatchActiveAlert.vue";
+import { useRightSidebar } from "~/composables/useRightSidebar";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
@@ -343,6 +345,8 @@ function myMatch(overrides: Record<string, any> = {}) {
     is_in_lineup: true,
     can_check_in: true,
     map_veto_type: null,
+    region: null,
+    options: { region_veto: false },
     draft_games: [],
     lineup_1: {
       id: "lineup-1",
@@ -413,7 +417,11 @@ describe("ActionToasts match actions", () => {
 
   it("tells the captain whose turn it is in each veto", async () => {
     setMyMatches([
-      myMatch({ status: "Veto", mine: { can_pick_region_veto: true } }),
+      myMatch({
+        status: "Veto",
+        options: { region_veto: true },
+        mine: { can_pick_region_veto: true },
+      }),
     ]);
 
     const wrapper = await mountToasts();
@@ -474,6 +482,7 @@ describe("ActionToasts match actions", () => {
   it("comes back on the player's next veto turn after a dismissal", async () => {
     const myTurn = myMatch({
       status: "Veto",
+      options: { region_veto: true },
       mine: { can_pick_region_veto: true },
     });
     setMyMatches([myTurn]);
@@ -483,7 +492,9 @@ describe("ActionToasts match actions", () => {
     expect(matchToast(wrapper)).toBeUndefined();
     expect(stored()).toEqual(["match-region_veto:match-1"]);
 
-    setMyMatches([myMatch({ status: "Veto" })]);
+    setMyMatches([
+      myMatch({ status: "Veto", options: { region_veto: true } }),
+    ]);
     await flushPromises();
     expect(stored()).toEqual([]);
 
@@ -502,14 +513,70 @@ describe("ActionToasts match actions", () => {
     expect(stored()).toEqual(["match-region_veto:match-1"]);
 
     setMyMatches([
-      myMatch({ status: "Veto", mine: { can_pick_region_veto: true } }),
+      myMatch({
+        status: "Veto",
+        options: { region_veto: true },
+        mine: { can_pick_region_veto: true },
+      }),
     ]);
     await flushPromises();
     expect(stored()).toEqual(["match-region_veto:match-1"]);
   });
 
+  it("does not offer a map veto turn while the region veto is running", async () => {
+    setMyMatches([
+      myMatch({
+        status: "Veto",
+        options: { region_veto: true },
+        map_veto_type: "Ban",
+        mine: { can_pick_map_veto: true },
+      }),
+    ]);
+
+    const wrapper = await mountToasts();
+
+    expect(matchToast(wrapper)).toBeUndefined();
+  });
+
+  it("steps aside on phones while the mobile hub is open", async () => {
+    setMyMatches([myMatch()]);
+    useRightSidebar().setRightSidebarOpen(true);
+
+    try {
+      const wrapper = await mountToasts();
+
+      expect(matchToast(wrapper)).toBeDefined();
+      expect(wrapper.find(".fixed").classes()).toContain("max-md:invisible");
+    } finally {
+      useRightSidebar().setRightSidebarOpen(false);
+    }
+  });
+
+  it("steps aside on phones while the match popup is open", async () => {
+    setMyMatches([myMatch()]);
+    useAuthStore().me = {
+      steam_id: ME,
+      current_lobby_id: null,
+      show_match_ready_modal: true,
+    } as any;
+
+    const alert = await mountSuspended(MatchActiveAlert);
+    try {
+      await flushPromises();
+      expect((alert.vm as any).shouldShow).toBe(true);
+
+      const wrapper = await mountToasts();
+
+      expect(matchToast(wrapper)).toBeDefined();
+      expect(wrapper.find(".fixed").classes()).toContain("max-md:invisible");
+    } finally {
+      alert.unmount();
+    }
+  });
+
   it("shows match toasts on phones while invites stay desktop-only", async () => {
     setMyMatches([myMatch()]);
+    useRightSidebar().setRightSidebarOpen(false);
     const matchmaking = useMatchmakingStore();
     matchmaking.friends = [pendingFriend("76561198000000002", "Dana")] as any;
     matchmaking.friendsLoaded = true;

@@ -92,6 +92,7 @@ import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useMatchReadyModal } from "~/composables/useMatchReadyModal";
+import { useMobileToastYield } from "~/composables/useMobileToastYield";
 
 const ALERT_STATUSES: string[] = [
   e_match_status_enum.WaitingForCheckIn,
@@ -182,6 +183,12 @@ export default {
         this.restore();
       },
     },
+    shouldShow: {
+      immediate: true,
+      handler(showing: boolean) {
+        useMobileToastYield().holdBottom("match-active-alert", !!showing);
+      },
+    },
     visitKey: {
       immediate: true,
       handler(key: string | null) {
@@ -197,6 +204,7 @@ export default {
     document.addEventListener("visibilitychange", this.onVisibilityChange);
   },
   beforeUnmount() {
+    useMobileToastYield().holdBottom("match-active-alert", false);
     window.removeEventListener("storage", this.onStorage);
     document.removeEventListener("visibilitychange", this.onVisibilityChange);
   },

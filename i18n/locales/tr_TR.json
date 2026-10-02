@@ -8513,10 +8513,6 @@
     "locked_in": "Kesinleşti",
     "check_in": "Katılımı onayla",
     "go_to_match": "Maça git",
-    "toasts": {
-      "your_veto_title": "Veto sırası sende",
-      "your_veto_desc": "Sıra sende — maç sayfasından ban ya da pick yap."
-    },
     "disable_match_ready_modal_hint": "Bu pencereyi görmek istemiyor musun?",
     "disable_match_ready_modal_action": "Eşleştirme Ayarları'ndan kapat",
     "invites": "Davetler",

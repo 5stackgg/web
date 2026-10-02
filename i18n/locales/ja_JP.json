@@ -8513,10 +8513,6 @@
     "locked_in": "確定",
     "check_in": "チェックイン",
     "go_to_match": "試合へ移動",
-    "toasts": {
-      "your_veto_title": "あなたのVetoの番です",
-      "your_veto_desc": "あなたの番です — 試合ページでBanまたはPickしてください。"
-    },
     "disable_match_ready_modal_hint": "このポップアップを表示しない",
     "disable_match_ready_modal_action": "マッチメイキング設定で無効化",
     "invites": "招待",

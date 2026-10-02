@@ -8513,10 +8513,6 @@
     "locked_in": "Зафіксовано",
     "check_in": "Зареєструватись",
     "go_to_match": "Перейти до матчу",
-    "toasts": {
-      "your_veto_title": "Твоя черга вето",
-      "your_veto_desc": "Твоя черга — забань або обери карту на сторінці матчу."
-    },
     "disable_match_ready_modal_hint": "Не хочеш бачити це вікно?",
     "disable_match_ready_modal_action": "Вимкни в налаштуваннях матчмейкінгу",
     "invites": "Запрошення",

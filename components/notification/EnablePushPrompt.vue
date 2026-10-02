@@ -7,6 +7,7 @@ import { toast } from "@/components/ui/toast";
 import { useAuthStore } from "~/stores/AuthStore";
 import { usePwaInstall } from "~/composables/usePwaInstall";
 import { isPushSupported } from "~/composables/usePushNotifications";
+import { useMobileToastYield } from "~/composables/useMobileToastYield";
 
 // A one-time nudge toward push, shown once the player is in the installed app
 // -- either because they opened it from their home screen, or because they
@@ -34,6 +35,11 @@ const push = usePushNotifications();
 const { installed } = usePwaInstall();
 
 const visible = ref(false);
+const { holdBottom } = useMobileToastYield();
+
+watch(visible, (showing) => {
+  holdBottom("enable-push-prompt", showing);
+});
 
 let checked = false;
 let showTimer: ReturnType<typeof setTimeout> | null = null;
@@ -128,6 +134,7 @@ async function enable() {
 watch([() => authStore.me, installed], evaluate, { immediate: true });
 
 onBeforeUnmount(() => {
+  holdBottom("enable-push-prompt", false);
   if (showTimer) {
     clearTimeout(showTimer);
   }

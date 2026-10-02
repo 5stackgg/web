@@ -8513,10 +8513,6 @@
     "locked_in": "Låst",
     "check_in": "Checka in",
     "go_to_match": "Gå till matchen",
-    "toasts": {
-      "your_veto_title": "Din tur att vetoa",
-      "your_veto_desc": "Du är på tur — banna eller välj på matchsidan."
-    },
     "disable_match_ready_modal_hint": "Vill du inte se den här rutan?",
     "disable_match_ready_modal_action": "Inaktivera i matchmaking-inställningar",
     "invites": "Inbjudningar",

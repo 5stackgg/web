@@ -357,6 +357,11 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
             ...simpleMatchFields,
             can_check_in: true,
             map_veto_type: true,
+            region: true,
+            options: {
+              ...simpleMatchFields.options,
+              region_veto: true,
+            },
             lineup_1: {
               ...simpleMatchFields.lineup_1,
               is_ready: true,

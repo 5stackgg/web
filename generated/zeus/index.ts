@@ -1029,6 +1029,15 @@ export type ValueTypes = {
 	segments: Array<ValueTypes["ClipSegmentInput"]> | Variable<any, string>,
 	title?: string | undefined | null | Variable<any, string>
 };
+	["CommunityTotals"]: AliasType<{
+	deaths?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	rank?:boolean | `@${string}`,
+	seconds?:boolean | `@${string}`,
+	servers?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["ConnectionByState"]: AliasType<{
 	count?:boolean | `@${string}`,
 	state?:boolean | `@${string}`,
@@ -1396,6 +1405,54 @@ export type ValueTypes = {
 	success?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["PlayerCommunityIp"]: AliasType<{
+	ip?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["PlayerCommunityIpMatch"]: AliasType<{
+	avatar_url?:boolean | `@${string}`,
+	has_account?:boolean | `@${string}`,
+	ip?:boolean | `@${string}`,
+	is_banned?:boolean | `@${string}`,
+	last_seen_at?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	online?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["PlayerCommunityServer"]: AliasType<{
+	all_time?:ValueTypes["CommunityTotals"],
+	label?:boolean | `@${string}`,
+	last_seen_at?:boolean | `@${string}`,
+	names?:boolean | `@${string}`,
+	online?:boolean | `@${string}`,
+	region?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+	sessions?:ValueTypes["PlayerCommunitySession"],
+	type?:boolean | `@${string}`,
+	week?:ValueTypes["CommunityTotals"],
+		__typename?: boolean | `@${string}`
+}>;
+	["PlayerCommunitySession"]: AliasType<{
+	ended_at?:boolean | `@${string}`,
+	ip?:boolean | `@${string}`,
+	started_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["PlayerCommunityStats"]: AliasType<{
+	all_time?:ValueTypes["CommunityTotals"],
+	ip_matches?:ValueTypes["PlayerCommunityIpMatch"],
+	ips?:ValueTypes["PlayerCommunityIp"],
+	is_moderator_view?:boolean | `@${string}`,
+	last_seen_at?:boolean | `@${string}`,
+	online_server_id?:boolean | `@${string}`,
+	online_server_label?:boolean | `@${string}`,
+	servers?:ValueTypes["PlayerCommunityServer"],
+	week?:ValueTypes["CommunityTotals"],
+		__typename?: boolean | `@${string}`
+}>;
 	["PluginReadmeOutput"]: AliasType<{
 	content?:boolean | `@${string}`,
 	format?:boolean | `@${string}`,
@@ -1524,6 +1581,50 @@ export type ValueTypes = {
 	total?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["ServerAccessInput"]: {
+	event_ids: Array<ValueTypes["uuid"]> | Variable<any, string>,
+	min_role?: string | undefined | null | Variable<any, string>,
+	restricted: boolean | Variable<any, string>,
+	steam_ids: Array<string> | Variable<any, string>
+};
+	["ServerCommunityStats"]: AliasType<{
+	all_time_players?:boolean | `@${string}`,
+	hourly?:ValueTypes["ServerHourlyActivity"],
+	max_players?:boolean | `@${string}`,
+	online?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+	tracked_since?:boolean | `@${string}`,
+	week_players?:boolean | `@${string}`,
+	week_seconds?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["ServerHourlyActivity"]: AliasType<{
+	hour?:boolean | `@${string}`,
+	players?:boolean | `@${string}`,
+	seconds?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["ServerLeaderboard"]: AliasType<{
+	entries?:ValueTypes["ServerLeaderboardEntry"],
+	you?:ValueTypes["ServerLeaderboardEntry"],
+		__typename?: boolean | `@${string}`
+}>;
+	["ServerLeaderboardEntry"]: AliasType<{
+	avatar_url?:boolean | `@${string}`,
+	country?:boolean | `@${string}`,
+	deaths?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	rank?:boolean | `@${string}`,
+	seconds?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["ServerMapRotationInput"]: {
+	map_ids: Array<ValueTypes["uuid"]> | Variable<any, string>,
+	shuffle: boolean | Variable<any, string>
+};
 	["ServerPlayer"]: AliasType<{
 	name?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
@@ -11586,6 +11687,117 @@ count?: [{	columns?: Array<ValueTypes["e_scrim_request_statuses_select_column"]>
 	/** filter the rows which have to be updated */
 	where: ValueTypes["e_scrim_request_statuses_bool_exp"] | Variable<any, string>
 };
+	/** columns and relationships of "e_server_migration_statuses" */
+["e_server_migration_statuses"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "e_server_migration_statuses" */
+["e_server_migration_statuses_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["e_server_migration_statuses_aggregate_fields"],
+	nodes?:ValueTypes["e_server_migration_statuses"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "e_server_migration_statuses" */
+["e_server_migration_statuses_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ValueTypes["e_server_migration_statuses_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["e_server_migration_statuses_max_fields"],
+	min?:ValueTypes["e_server_migration_statuses_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "e_server_migration_statuses". All fields are combined with a logical 'AND'. */
+["e_server_migration_statuses_bool_exp"]: {
+	_and?: Array<ValueTypes["e_server_migration_statuses_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["e_server_migration_statuses_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["e_server_migration_statuses_bool_exp"]> | undefined | null | Variable<any, string>,
+	description?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	value?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "e_server_migration_statuses" */
+["e_server_migration_statuses_constraint"]:e_server_migration_statuses_constraint;
+	["e_server_migration_statuses_enum"]:e_server_migration_statuses_enum;
+	/** Boolean expression to compare columns of type "e_server_migration_statuses_enum". All fields are combined with logical 'AND'. */
+["e_server_migration_statuses_enum_comparison_exp"]: {
+	_eq?: ValueTypes["e_server_migration_statuses_enum"] | undefined | null | Variable<any, string>,
+	_in?: Array<ValueTypes["e_server_migration_statuses_enum"]> | undefined | null | Variable<any, string>,
+	_is_null?: boolean | undefined | null | Variable<any, string>,
+	_neq?: ValueTypes["e_server_migration_statuses_enum"] | undefined | null | Variable<any, string>,
+	_nin?: Array<ValueTypes["e_server_migration_statuses_enum"]> | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "e_server_migration_statuses" */
+["e_server_migration_statuses_insert_input"]: {
+	description?: string | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["e_server_migration_statuses_max_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["e_server_migration_statuses_min_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "e_server_migration_statuses" */
+["e_server_migration_statuses_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["e_server_migration_statuses"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** input type for inserting object relation for remote table "e_server_migration_statuses" */
+["e_server_migration_statuses_obj_rel_insert_input"]: {
+	data: ValueTypes["e_server_migration_statuses_insert_input"] | Variable<any, string>,
+	/** upsert condition */
+	on_conflict?: ValueTypes["e_server_migration_statuses_on_conflict"] | undefined | null | Variable<any, string>
+};
+	/** on_conflict condition type for table "e_server_migration_statuses" */
+["e_server_migration_statuses_on_conflict"]: {
+	constraint: ValueTypes["e_server_migration_statuses_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["e_server_migration_statuses_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["e_server_migration_statuses_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "e_server_migration_statuses". */
+["e_server_migration_statuses_order_by"]: {
+	description?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	value?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: e_server_migration_statuses */
+["e_server_migration_statuses_pk_columns_input"]: {
+	value: string | Variable<any, string>
+};
+	/** select columns of table "e_server_migration_statuses" */
+["e_server_migration_statuses_select_column"]:e_server_migration_statuses_select_column;
+	/** input type for updating data in table "e_server_migration_statuses" */
+["e_server_migration_statuses_set_input"]: {
+	description?: string | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** Streaming cursor of the table "e_server_migration_statuses" */
+["e_server_migration_statuses_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["e_server_migration_statuses_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["e_server_migration_statuses_stream_cursor_value_input"]: {
+	description?: string | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** update columns of table "e_server_migration_statuses" */
+["e_server_migration_statuses_update_column"]:e_server_migration_statuses_update_column;
+	["e_server_migration_statuses_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["e_server_migration_statuses_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["e_server_migration_statuses_bool_exp"] | Variable<any, string>
+};
 	/** columns and relationships of "e_server_types" */
 ["e_server_types"]: AliasType<{
 	description?:boolean | `@${string}`,
@@ -16378,12 +16590,10 @@ count?: [{	columns?: Array<ValueTypes["game_mode_plugins_select_column"]> | unde
 	archived_at?:boolean | `@${string}`,
 	cfg?:boolean | `@${string}`,
 	competitive_safe?:boolean | `@${string}`,
-	system?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
 	description?:boolean | `@${string}`,
 	enabled?:boolean | `@${string}`,
 	extra_game_params?:boolean | `@${string}`,
-	valve_mode?:boolean | `@${string}`,
 	icon?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 match_options?: [{	/** distinct select on columns */
@@ -16416,7 +16626,9 @@ runtime_conflicts?: [{	/** JSON select path */
 	slug?:boolean | `@${string}`,
 supported_runtimes?: [{	/** JSON select path */
 	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	system?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
+	valve_mode?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregated selection of "game_modes" */
@@ -16440,12 +16652,10 @@ count?: [{	columns?: Array<ValueTypes["game_modes_select_column"]> | undefined |
 	archived_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	cfg?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	competitive_safe?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
-	system?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	description?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	enabled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	extra_game_params?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
-	valve_mode?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	icon?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	match_options?: ValueTypes["match_options_bool_exp"] | undefined | null | Variable<any, string>,
@@ -16456,7 +16666,9 @@ count?: [{	columns?: Array<ValueTypes["game_modes_select_column"]> | undefined |
 	runtime_conflicts?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
 	slug?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	supported_runtimes?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
-	updated_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>
+	system?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	valve_mode?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
 };
 	/** unique or primary key constraints on table "game_modes" */
 ["game_modes_constraint"]:game_modes_constraint;
@@ -16465,19 +16677,19 @@ count?: [{	columns?: Array<ValueTypes["game_modes_select_column"]> | undefined |
 	archived_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	cfg?: string | undefined | null | Variable<any, string>,
 	competitive_safe?: boolean | undefined | null | Variable<any, string>,
-	system?: boolean | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	description?: string | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
 	extra_game_params?: string | undefined | null | Variable<any, string>,
-	valve_mode?: string | undefined | null | Variable<any, string>,
 	icon?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_options?: ValueTypes["match_options_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	plugins?: ValueTypes["game_mode_plugins_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	slug?: string | undefined | null | Variable<any, string>,
-	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
+	system?: boolean | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	valve_mode?: string | undefined | null | Variable<any, string>
 };
 	/** aggregate max on columns */
 ["game_modes_max_fields"]: AliasType<{
@@ -16486,12 +16698,12 @@ count?: [{	columns?: Array<ValueTypes["game_modes_select_column"]> | undefined |
 	created_at?:boolean | `@${string}`,
 	description?:boolean | `@${string}`,
 	extra_game_params?:boolean | `@${string}`,
-	valve_mode?:boolean | `@${string}`,
 	icon?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	slug?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
+	valve_mode?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate min on columns */
@@ -16501,12 +16713,12 @@ count?: [{	columns?: Array<ValueTypes["game_modes_select_column"]> | undefined |
 	created_at?:boolean | `@${string}`,
 	description?:boolean | `@${string}`,
 	extra_game_params?:boolean | `@${string}`,
-	valve_mode?:boolean | `@${string}`,
 	icon?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	slug?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
+	valve_mode?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** response of any mutation on the table "game_modes" */
@@ -16534,12 +16746,10 @@ count?: [{	columns?: Array<ValueTypes["game_modes_select_column"]> | undefined |
 	archived_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	cfg?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	competitive_safe?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	system?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	description?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	enabled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	extra_game_params?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	valve_mode?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	icon?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_options_aggregate?: ValueTypes["match_options_aggregate_order_by"] | undefined | null | Variable<any, string>,
@@ -16548,7 +16758,9 @@ count?: [{	columns?: Array<ValueTypes["game_modes_select_column"]> | undefined |
 	runtime_conflicts?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	slug?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	supported_runtimes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	system?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	valve_mode?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** primary key columns input for table: game_modes */
 ["game_modes_pk_columns_input"]: {
@@ -16561,17 +16773,17 @@ count?: [{	columns?: Array<ValueTypes["game_modes_select_column"]> | undefined |
 	archived_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	cfg?: string | undefined | null | Variable<any, string>,
 	competitive_safe?: boolean | undefined | null | Variable<any, string>,
-	system?: boolean | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	description?: string | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
 	extra_game_params?: string | undefined | null | Variable<any, string>,
-	valve_mode?: string | undefined | null | Variable<any, string>,
 	icon?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	slug?: string | undefined | null | Variable<any, string>,
-	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
+	system?: boolean | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	valve_mode?: string | undefined | null | Variable<any, string>
 };
 	/** Streaming cursor of the table "game_modes" */
 ["game_modes_stream_cursor_input"]: {
@@ -16585,17 +16797,17 @@ count?: [{	columns?: Array<ValueTypes["game_modes_select_column"]> | undefined |
 	archived_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	cfg?: string | undefined | null | Variable<any, string>,
 	competitive_safe?: boolean | undefined | null | Variable<any, string>,
-	system?: boolean | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	description?: string | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
 	extra_game_params?: string | undefined | null | Variable<any, string>,
-	valve_mode?: string | undefined | null | Variable<any, string>,
 	icon?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	slug?: string | undefined | null | Variable<any, string>,
-	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
+	system?: boolean | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	valve_mode?: string | undefined | null | Variable<any, string>
 };
 	/** update columns of table "game_modes" */
 ["game_modes_update_column"]:game_modes_update_column;
@@ -17794,6 +18006,9 @@ count?: [{	columns?: Array<ValueTypes["game_server_node_plugins_select_column"]>
 };
 	/** columns and relationships of "game_server_nodes" */
 ["game_server_nodes"]: AliasType<{
+	accepting_new_matches?:boolean | `@${string}`,
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?:boolean | `@${string}`,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
 	build_id?:boolean | `@${string}`,
@@ -17960,6 +18175,8 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 };
 	/** aggregate avg on columns */
 ["game_server_nodes_avg_fields"]: AliasType<{
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?:boolean | `@${string}`,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
 	build_id?:boolean | `@${string}`,
@@ -17998,6 +18215,8 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 	_and?: Array<ValueTypes["game_server_nodes_bool_exp"]> | undefined | null | Variable<any, string>,
 	_not?: ValueTypes["game_server_nodes_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["game_server_nodes_bool_exp"]> | undefined | null | Variable<any, string>,
+	accepting_new_matches?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	available_dedicated_slot_count?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	available_server_count?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	build_id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	cpu_cores_per_socket?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -18102,6 +18321,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 };
 	/** input type for inserting data into table "game_server_nodes" */
 ["game_server_nodes_insert_input"]: {
+	accepting_new_matches?: boolean | undefined | null | Variable<any, string>,
 	build_id?: number | undefined | null | Variable<any, string>,
 	cpu_cores_per_socket?: number | undefined | null | Variable<any, string>,
 	cpu_frequency_info?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
@@ -18154,6 +18374,8 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 };
 	/** aggregate max on columns */
 ["game_server_nodes_max_fields"]: AliasType<{
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?:boolean | `@${string}`,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
 	build_id?:boolean | `@${string}`,
@@ -18213,6 +18435,8 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 };
 	/** aggregate min on columns */
 ["game_server_nodes_min_fields"]: AliasType<{
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?:boolean | `@${string}`,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
 	build_id?:boolean | `@${string}`,
@@ -18292,6 +18516,8 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 };
 	/** Ordering options when selecting data from "game_server_nodes". */
 ["game_server_nodes_order_by"]: {
+	accepting_new_matches?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	available_dedicated_slot_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	available_server_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	build_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	cpu_cores_per_socket?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -18367,6 +18593,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 ["game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns"]:game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "game_server_nodes" */
 ["game_server_nodes_set_input"]: {
+	accepting_new_matches?: boolean | undefined | null | Variable<any, string>,
 	build_id?: number | undefined | null | Variable<any, string>,
 	cpu_cores_per_socket?: number | undefined | null | Variable<any, string>,
 	cpu_frequency_info?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
@@ -18413,6 +18640,8 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 };
 	/** aggregate stddev on columns */
 ["game_server_nodes_stddev_fields"]: AliasType<{
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?:boolean | `@${string}`,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
 	build_id?:boolean | `@${string}`,
@@ -18448,6 +18677,8 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 };
 	/** aggregate stddev_pop on columns */
 ["game_server_nodes_stddev_pop_fields"]: AliasType<{
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?:boolean | `@${string}`,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
 	build_id?:boolean | `@${string}`,
@@ -18483,6 +18714,8 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 };
 	/** aggregate stddev_samp on columns */
 ["game_server_nodes_stddev_samp_fields"]: AliasType<{
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?:boolean | `@${string}`,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
 	build_id?:boolean | `@${string}`,
@@ -18525,6 +18758,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 };
 	/** Initial value of the column from where the streaming should start */
 ["game_server_nodes_stream_cursor_value_input"]: {
+	accepting_new_matches?: boolean | undefined | null | Variable<any, string>,
 	build_id?: number | undefined | null | Variable<any, string>,
 	cpu_cores_per_socket?: number | undefined | null | Variable<any, string>,
 	cpu_frequency_info?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
@@ -18571,6 +18805,8 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 };
 	/** aggregate sum on columns */
 ["game_server_nodes_sum_fields"]: AliasType<{
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?:boolean | `@${string}`,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
 	build_id?:boolean | `@${string}`,
@@ -18626,6 +18862,8 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 };
 	/** aggregate var_pop on columns */
 ["game_server_nodes_var_pop_fields"]: AliasType<{
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?:boolean | `@${string}`,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
 	build_id?:boolean | `@${string}`,
@@ -18661,6 +18899,8 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 };
 	/** aggregate var_samp on columns */
 ["game_server_nodes_var_samp_fields"]: AliasType<{
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?:boolean | `@${string}`,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
 	build_id?:boolean | `@${string}`,
@@ -18696,6 +18936,8 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 };
 	/** aggregate variance on columns */
 ["game_server_nodes_variance_fields"]: AliasType<{
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?:boolean | `@${string}`,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
 	build_id?:boolean | `@${string}`,
@@ -30059,6 +30301,7 @@ callForOrganizer?: [{	match_id: string | Variable<any, string>},ValueTypes["Succ
 cancelBakeShaders?: [{	game_server_node_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 cancelClipRender?: [{	job_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 cancelClipRenderBatch?: [{	match_map_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
+cancelDedicatedServerMove?: [{	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 cancelMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 	/** Request cancellation of the in-progress ELO recompute (admin only). Stops after the current match. */
 	cancelRecomputePlayerElo?:ValueTypes["SuccessOutput"],
@@ -30271,6 +30514,9 @@ delete_e_sanction_types_by_pk?: [{	value: string | Variable<any, string>},ValueT
 delete_e_scrim_request_statuses?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["e_scrim_request_statuses_bool_exp"] | Variable<any, string>},ValueTypes["e_scrim_request_statuses_mutation_response"]],
 delete_e_scrim_request_statuses_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_scrim_request_statuses"]],
+delete_e_server_migration_statuses?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["e_server_migration_statuses_bool_exp"] | Variable<any, string>},ValueTypes["e_server_migration_statuses_mutation_response"]],
+delete_e_server_migration_statuses_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_server_migration_statuses"]],
 delete_e_server_types?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["e_server_types_bool_exp"] | Variable<any, string>},ValueTypes["e_server_types_mutation_response"]],
 delete_e_server_types_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_server_types"]],
@@ -30570,15 +30816,30 @@ delete_role_permissions?: [{	/** filter the rows which have to be deleted */
 delete_seasons?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["seasons_bool_exp"] | Variable<any, string>},ValueTypes["seasons_mutation_response"]],
 delete_seasons_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["seasons"]],
+delete_server_access_events?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["server_access_events_bool_exp"] | Variable<any, string>},ValueTypes["server_access_events_mutation_response"]],
+delete_server_access_events_by_pk?: [{	event_id: ValueTypes["uuid"] | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["server_access_events"]],
+delete_server_access_players?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["server_access_players_bool_exp"] | Variable<any, string>},ValueTypes["server_access_players_mutation_response"]],
+delete_server_access_players_by_pk?: [{	server_id: ValueTypes["uuid"] | Variable<any, string>,	steam_id: ValueTypes["bigint"] | Variable<any, string>},ValueTypes["server_access_players"]],
 delete_server_map_rotation?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["server_map_rotation_bool_exp"] | Variable<any, string>},ValueTypes["server_map_rotation_mutation_response"]],
 delete_server_map_rotation_by_pk?: [{	map_id: ValueTypes["uuid"] | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["server_map_rotation"]],
+delete_server_migrations?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["server_migrations_bool_exp"] | Variable<any, string>},ValueTypes["server_migrations_mutation_response"]],
+delete_server_migrations_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["server_migrations"]],
+delete_server_player_sessions?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["server_player_sessions_bool_exp"] | Variable<any, string>},ValueTypes["server_player_sessions_mutation_response"]],
+delete_server_player_sessions_by_pk?: [{	id: ValueTypes["bigint"] | Variable<any, string>},ValueTypes["server_player_sessions"]],
 delete_server_plugins?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["server_plugins_bool_exp"] | Variable<any, string>},ValueTypes["server_plugins_mutation_response"]],
 delete_server_plugins_by_pk?: [{	plugin_slug: string | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["server_plugins"]],
 delete_server_regions?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["server_regions_bool_exp"] | Variable<any, string>},ValueTypes["server_regions_mutation_response"]],
 delete_server_regions_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["server_regions"]],
+delete_server_rosters?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["server_rosters_bool_exp"] | Variable<any, string>},ValueTypes["server_rosters_mutation_response"]],
+delete_server_rosters_by_pk?: [{	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["server_rosters"]],
 delete_servers?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["servers_bool_exp"] | Variable<any, string>},ValueTypes["servers_mutation_response"]],
 delete_servers_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["servers"]],
@@ -31087,6 +31348,12 @@ insert_e_scrim_request_statuses?: [{	/** the rows to be inserted */
 insert_e_scrim_request_statuses_one?: [{	/** the row to be inserted */
 	object: ValueTypes["e_scrim_request_statuses_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["e_scrim_request_statuses_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_scrim_request_statuses"]],
+insert_e_server_migration_statuses?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["e_server_migration_statuses_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["e_server_migration_statuses_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_server_migration_statuses_mutation_response"]],
+insert_e_server_migration_statuses_one?: [{	/** the row to be inserted */
+	object: ValueTypes["e_server_migration_statuses_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["e_server_migration_statuses_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_server_migration_statuses"]],
 insert_e_server_types?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["e_server_types_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["e_server_types_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_server_types_mutation_response"]],
@@ -31685,12 +31952,36 @@ insert_seasons?: [{	/** the rows to be inserted */
 insert_seasons_one?: [{	/** the row to be inserted */
 	object: ValueTypes["seasons_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["seasons_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["seasons"]],
+insert_server_access_events?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["server_access_events_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["server_access_events_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["server_access_events_mutation_response"]],
+insert_server_access_events_one?: [{	/** the row to be inserted */
+	object: ValueTypes["server_access_events_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["server_access_events_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["server_access_events"]],
+insert_server_access_players?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["server_access_players_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["server_access_players_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["server_access_players_mutation_response"]],
+insert_server_access_players_one?: [{	/** the row to be inserted */
+	object: ValueTypes["server_access_players_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["server_access_players_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["server_access_players"]],
 insert_server_map_rotation?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["server_map_rotation_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["server_map_rotation_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["server_map_rotation_mutation_response"]],
 insert_server_map_rotation_one?: [{	/** the row to be inserted */
 	object: ValueTypes["server_map_rotation_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["server_map_rotation_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["server_map_rotation"]],
+insert_server_migrations?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["server_migrations_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["server_migrations_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["server_migrations_mutation_response"]],
+insert_server_migrations_one?: [{	/** the row to be inserted */
+	object: ValueTypes["server_migrations_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["server_migrations_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["server_migrations"]],
+insert_server_player_sessions?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["server_player_sessions_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["server_player_sessions_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["server_player_sessions_mutation_response"]],
+insert_server_player_sessions_one?: [{	/** the row to be inserted */
+	object: ValueTypes["server_player_sessions_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["server_player_sessions_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["server_player_sessions"]],
 insert_server_plugins?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["server_plugins_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["server_plugins_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["server_plugins_mutation_response"]],
@@ -31703,6 +31994,12 @@ insert_server_regions?: [{	/** the rows to be inserted */
 insert_server_regions_one?: [{	/** the row to be inserted */
 	object: ValueTypes["server_regions_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["server_regions_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["server_regions"]],
+insert_server_rosters?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["server_rosters_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["server_rosters_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["server_rosters_mutation_response"]],
+insert_server_rosters_one?: [{	/** the row to be inserted */
+	object: ValueTypes["server_rosters_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["server_rosters_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["server_rosters"]],
 insert_servers?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["servers_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["servers_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["servers_mutation_response"]],
@@ -32046,6 +32343,7 @@ linkSteamMatchHistory?: [{	auth_code: string | Variable<any, string>,	share_code
 loadUtilityPlaybookIntoSession?: [{	playbook_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	session_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 	/** logout */
 	logout?:ValueTypes["SuccessOutput"],
+moveDedicatedServerToNode?: [{	game_server_node_id: string | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>,	without_files?: boolean | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 moveServerItem?: [{	dest_path: string | Variable<any, string>,	node_id: string | Variable<any, string>,	server_id?: string | undefined | null | Variable<any, string>,	source_path: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 	/** Return the latest S3 orphan-scan report (admin only). */
 	orphanedDemosScanResult?:ValueTypes["OrphanScanResultOutput"],
@@ -32145,8 +32443,10 @@ setHudMode?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	mode: stri
 setMapWinner?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	match_map_id: ValueTypes["uuid"] | Variable<any, string>,	winning_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setMatchWinner?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	winning_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setNewsPostStatus?: [{	id: ValueTypes["uuid"] | Variable<any, string>,	status: string | Variable<any, string>},ValueTypes["NewsPost"]],
+setServerAccess?: [{	event_ids: Array<ValueTypes["uuid"]> | Variable<any, string>,	min_role?: string | undefined | null | Variable<any, string>,	restricted: boolean | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>,	steam_ids: Array<string> | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setServerMapRotation?: [{	map_ids: Array<ValueTypes["uuid"]> | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>,	shuffle: boolean | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setServerPlugins?: [{	plugins: Array<ValueTypes["ServerPluginInput"]> | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
+setServerSettings?: [{	access?: ValueTypes["ServerAccessInput"] | undefined | null | Variable<any, string>,	map_rotation?: ValueTypes["ServerMapRotationInput"] | undefined | null | Variable<any, string>,	plugins?: Array<ValueTypes["ServerPluginInput"]> | undefined | null | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setTournamentAward?: [{	award_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	custom_name?: string | undefined | null | Variable<any, string>,	placement: number | Variable<any, string>,	silhouette?: number | undefined | null | Variable<any, string>,	tournament_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["TournamentAward"]],
 setUtilityPracticeAccess?: [{	access: string | Variable<any, string>,	session_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 	setupGameServer?:ValueTypes["SetupGameServeOutput"],
@@ -32648,6 +32948,13 @@ update_e_scrim_request_statuses_by_pk?: [{	/** sets the columns of the filtered 
 	_set?: ValueTypes["e_scrim_request_statuses_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["e_scrim_request_statuses_pk_columns_input"] | Variable<any, string>},ValueTypes["e_scrim_request_statuses"]],
 update_e_scrim_request_statuses_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["e_scrim_request_statuses_updates"]> | Variable<any, string>},ValueTypes["e_scrim_request_statuses_mutation_response"]],
+update_e_server_migration_statuses?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["e_server_migration_statuses_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["e_server_migration_statuses_bool_exp"] | Variable<any, string>},ValueTypes["e_server_migration_statuses_mutation_response"]],
+update_e_server_migration_statuses_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["e_server_migration_statuses_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["e_server_migration_statuses_pk_columns_input"] | Variable<any, string>},ValueTypes["e_server_migration_statuses"]],
+update_e_server_migration_statuses_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["e_server_migration_statuses_updates"]> | Variable<any, string>},ValueTypes["e_server_migration_statuses_mutation_response"]],
 update_e_server_types?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["e_server_types_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
 	where: ValueTypes["e_server_types_bool_exp"] | Variable<any, string>},ValueTypes["e_server_types_mutation_response"]],
@@ -33605,6 +33912,22 @@ update_seasons_by_pk?: [{	/** increments the numeric columns with given value of
 	_set?: ValueTypes["seasons_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["seasons_pk_columns_input"] | Variable<any, string>},ValueTypes["seasons"]],
 update_seasons_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["seasons_updates"]> | Variable<any, string>},ValueTypes["seasons_mutation_response"]],
+update_server_access_events?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["server_access_events_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["server_access_events_bool_exp"] | Variable<any, string>},ValueTypes["server_access_events_mutation_response"]],
+update_server_access_events_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["server_access_events_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["server_access_events_pk_columns_input"] | Variable<any, string>},ValueTypes["server_access_events"]],
+update_server_access_events_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["server_access_events_updates"]> | Variable<any, string>},ValueTypes["server_access_events_mutation_response"]],
+update_server_access_players?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["server_access_players_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["server_access_players_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["server_access_players_bool_exp"] | Variable<any, string>},ValueTypes["server_access_players_mutation_response"]],
+update_server_access_players_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["server_access_players_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["server_access_players_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["server_access_players_pk_columns_input"] | Variable<any, string>},ValueTypes["server_access_players"]],
+update_server_access_players_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["server_access_players_updates"]> | Variable<any, string>},ValueTypes["server_access_players_mutation_response"]],
 update_server_map_rotation?: [{	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ValueTypes["server_map_rotation_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["server_map_rotation_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
@@ -33614,6 +33937,34 @@ update_server_map_rotation_by_pk?: [{	/** increments the numeric columns with gi
 	_set?: ValueTypes["server_map_rotation_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["server_map_rotation_pk_columns_input"] | Variable<any, string>},ValueTypes["server_map_rotation"]],
 update_server_map_rotation_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["server_map_rotation_updates"]> | Variable<any, string>},ValueTypes["server_map_rotation_mutation_response"]],
+update_server_migrations?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["server_migrations_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["server_migrations_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["server_migrations_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["server_migrations_delete_key_input"] | undefined | null | Variable<any, string>,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["server_migrations_inc_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["server_migrations_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["server_migrations_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["server_migrations_bool_exp"] | Variable<any, string>},ValueTypes["server_migrations_mutation_response"]],
+update_server_migrations_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["server_migrations_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["server_migrations_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["server_migrations_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["server_migrations_delete_key_input"] | undefined | null | Variable<any, string>,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["server_migrations_inc_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["server_migrations_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["server_migrations_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["server_migrations_pk_columns_input"] | Variable<any, string>},ValueTypes["server_migrations"]],
+update_server_migrations_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["server_migrations_updates"]> | Variable<any, string>},ValueTypes["server_migrations_mutation_response"]],
+update_server_player_sessions?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["server_player_sessions_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["server_player_sessions_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["server_player_sessions_bool_exp"] | Variable<any, string>},ValueTypes["server_player_sessions_mutation_response"]],
+update_server_player_sessions_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["server_player_sessions_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["server_player_sessions_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["server_player_sessions_pk_columns_input"] | Variable<any, string>},ValueTypes["server_player_sessions"]],
+update_server_player_sessions_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["server_player_sessions_updates"]> | Variable<any, string>},ValueTypes["server_player_sessions_mutation_response"]],
 update_server_plugins?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["server_plugins_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
 	where: ValueTypes["server_plugins_bool_exp"] | Variable<any, string>},ValueTypes["server_plugins_mutation_response"]],
@@ -33628,6 +33979,13 @@ update_server_regions_by_pk?: [{	/** sets the columns of the filtered rows to th
 	_set?: ValueTypes["server_regions_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["server_regions_pk_columns_input"] | Variable<any, string>},ValueTypes["server_regions"]],
 update_server_regions_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["server_regions_updates"]> | Variable<any, string>},ValueTypes["server_regions_mutation_response"]],
+update_server_rosters?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["server_rosters_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["server_rosters_bool_exp"] | Variable<any, string>},ValueTypes["server_rosters_mutation_response"]],
+update_server_rosters_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["server_rosters_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["server_rosters_pk_columns_input"] | Variable<any, string>},ValueTypes["server_rosters"]],
+update_server_rosters_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["server_rosters_updates"]> | Variable<any, string>},ValueTypes["server_rosters_mutation_response"]],
 update_servers?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
 	_append?: ValueTypes["servers_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 	_delete_at_path?: ValueTypes["servers_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
@@ -50798,6 +51156,19 @@ e_scrim_request_statuses_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["e_scrim_request_statuses_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["e_scrim_request_statuses_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_scrim_request_statuses_aggregate"]],
 e_scrim_request_statuses_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_scrim_request_statuses"]],
+e_server_migration_statuses?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_server_migration_statuses_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_server_migration_statuses_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_server_migration_statuses_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_server_migration_statuses"]],
+e_server_migration_statuses_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_server_migration_statuses_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_server_migration_statuses_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_server_migration_statuses_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_server_migration_statuses_aggregate"]],
+e_server_migration_statuses_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_server_migration_statuses"]],
 e_server_types?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["e_server_types_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -51309,11 +51680,14 @@ getHighlightPresetAvailability?: [{	match_map_id: ValueTypes["uuid"] | Variable<
 getIndexIOStats?: [{	schemas?: Array<string> | undefined | null | Variable<any, string>},ValueTypes["IndexIOStat"]],
 getIndexStats?: [{	schemas?: Array<string> | undefined | null | Variable<any, string>},ValueTypes["IndexStat"]],
 getNodeStats?: [{	node: string | Variable<any, string>},ValueTypes["NodeStats"]],
+getPlayerCommunityStats?: [{	steam_id: ValueTypes["bigint"] | Variable<any, string>},ValueTypes["PlayerCommunityStats"]],
 getQueryDetail?: [{	queryid: string | Variable<any, string>},ValueTypes["QueryDetail"]],
 	/** Get enhanced query performance statistics */
 	getQueryStats?:ValueTypes["QueryStat"],
 	/** Get available database schemas */
 	getSchemas?:boolean | `@${string}`,
+getServerCommunityStats?: [{	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["ServerCommunityStats"]],
+getServerLeaderboard?: [{	limit?: number | undefined | null | Variable<any, string>,	metric: string | Variable<any, string>,	period: string | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["ServerLeaderboard"]],
 	getServiceStats?:ValueTypes["PodStats"],
 getStorageStats?: [{	schemas?: Array<string> | undefined | null | Variable<any, string>},ValueTypes["StorageStats"]],
 getTableIOStats?: [{	schemas?: Array<string> | undefined | null | Variable<any, string>},ValueTypes["TableIOStat"]],
@@ -52272,6 +52646,32 @@ seasons_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["seasons_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["seasons_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["seasons_aggregate"]],
 seasons_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["seasons"]],
+server_access_events?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_access_events_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_access_events_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_access_events_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_access_events"]],
+server_access_events_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_access_events_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_access_events_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_access_events_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_access_events_aggregate"]],
+server_access_events_by_pk?: [{	event_id: ValueTypes["uuid"] | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["server_access_events"]],
+server_access_players?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_access_players_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_access_players_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_access_players_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_access_players"]],
+server_access_players_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_access_players_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_access_players_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_access_players_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_access_players_aggregate"]],
+server_access_players_by_pk?: [{	server_id: ValueTypes["uuid"] | Variable<any, string>,	steam_id: ValueTypes["bigint"] | Variable<any, string>},ValueTypes["server_access_players"]],
 server_map_rotation?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["server_map_rotation_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -52285,6 +52685,32 @@ server_map_rotation_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["server_map_rotation_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["server_map_rotation_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_map_rotation_aggregate"]],
 server_map_rotation_by_pk?: [{	map_id: ValueTypes["uuid"] | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["server_map_rotation"]],
+server_migrations?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_migrations_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_migrations_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_migrations_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_migrations"]],
+server_migrations_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_migrations_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_migrations_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_migrations_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_migrations_aggregate"]],
+server_migrations_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["server_migrations"]],
+server_player_sessions?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_player_sessions_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_player_sessions_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_player_sessions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_player_sessions"]],
+server_player_sessions_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_player_sessions_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_player_sessions_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_player_sessions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_player_sessions_aggregate"]],
+server_player_sessions_by_pk?: [{	id: ValueTypes["bigint"] | Variable<any, string>},ValueTypes["server_player_sessions"]],
 server_plugins?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["server_plugins_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -52298,6 +52724,18 @@ server_plugins_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["server_plugins_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["server_plugins_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_plugins_aggregate"]],
 server_plugins_by_pk?: [{	plugin_slug: string | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["server_plugins"]],
+server_recent_players?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_recent_players_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_recent_players_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_recent_players_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_recent_players"]],
+server_recent_players_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_recent_players_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_recent_players_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_recent_players_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_recent_players_aggregate"]],
 server_regions?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["server_regions_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -52311,6 +52749,19 @@ server_regions_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["server_regions_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["server_regions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_regions_aggregate"]],
 server_regions_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["server_regions"]],
+server_rosters?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_rosters_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_rosters_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_rosters_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_rosters"]],
+server_rosters_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_rosters_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_rosters_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_rosters_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_rosters_aggregate"]],
+server_rosters_by_pk?: [{	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["server_rosters"]],
 servers?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["servers_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -53247,18 +53698,6 @@ v_player_multi_kills_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["v_player_multi_kills_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["v_player_multi_kills_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_multi_kills_aggregate"]],
-v_player_queue_partners?: [{	/** distinct select on columns */
-	distinct_on?: Array<ValueTypes["v_player_queue_partners_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
-	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
-	order_by?: Array<ValueTypes["v_player_queue_partners_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["v_player_queue_partners_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_queue_partners"]],
-v_player_queue_partners_aggregate?: [{	/** distinct select on columns */
-	distinct_on?: Array<ValueTypes["v_player_queue_partners_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
-	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
-	order_by?: Array<ValueTypes["v_player_queue_partners_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["v_player_queue_partners_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_queue_partners_aggregate"]],
 v_player_weapon_damage?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["v_player_weapon_damage_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -53702,6 +54141,376 @@ count?: [{	columns?: Array<ValueTypes["seasons_select_column"]> | undefined | nu
 	number?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** columns and relationships of "server_access_events" */
+["server_access_events"]: AliasType<{
+	/** An object relationship */
+	event?:ValueTypes["events"],
+	event_id?:boolean | `@${string}`,
+	/** An object relationship */
+	server?:ValueTypes["servers"],
+	server_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "server_access_events" */
+["server_access_events_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["server_access_events_aggregate_fields"],
+	nodes?:ValueTypes["server_access_events"],
+		__typename?: boolean | `@${string}`
+}>;
+	["server_access_events_aggregate_bool_exp"]: {
+	count?: ValueTypes["server_access_events_aggregate_bool_exp_count"] | undefined | null | Variable<any, string>
+};
+	["server_access_events_aggregate_bool_exp_count"]: {
+	arguments?: Array<ValueTypes["server_access_events_select_column"]> | undefined | null | Variable<any, string>,
+	distinct?: boolean | undefined | null | Variable<any, string>,
+	filter?: ValueTypes["server_access_events_bool_exp"] | undefined | null | Variable<any, string>,
+	predicate: ValueTypes["Int_comparison_exp"] | Variable<any, string>
+};
+	/** aggregate fields of "server_access_events" */
+["server_access_events_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ValueTypes["server_access_events_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["server_access_events_max_fields"],
+	min?:ValueTypes["server_access_events_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by aggregate values of table "server_access_events" */
+["server_access_events_aggregate_order_by"]: {
+	count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	max?: ValueTypes["server_access_events_max_order_by"] | undefined | null | Variable<any, string>,
+	min?: ValueTypes["server_access_events_min_order_by"] | undefined | null | Variable<any, string>
+};
+	/** input type for inserting array relation for remote table "server_access_events" */
+["server_access_events_arr_rel_insert_input"]: {
+	data: Array<ValueTypes["server_access_events_insert_input"]> | Variable<any, string>,
+	/** upsert condition */
+	on_conflict?: ValueTypes["server_access_events_on_conflict"] | undefined | null | Variable<any, string>
+};
+	/** Boolean expression to filter rows from the table "server_access_events". All fields are combined with a logical 'AND'. */
+["server_access_events_bool_exp"]: {
+	_and?: Array<ValueTypes["server_access_events_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["server_access_events_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["server_access_events_bool_exp"]> | undefined | null | Variable<any, string>,
+	event?: ValueTypes["events_bool_exp"] | undefined | null | Variable<any, string>,
+	event_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	server?: ValueTypes["servers_bool_exp"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "server_access_events" */
+["server_access_events_constraint"]:server_access_events_constraint;
+	/** input type for inserting data into table "server_access_events" */
+["server_access_events_insert_input"]: {
+	event?: ValueTypes["events_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	event_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	server?: ValueTypes["servers_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["server_access_events_max_fields"]: AliasType<{
+	event_id?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by max() on columns of table "server_access_events" */
+["server_access_events_max_order_by"]: {
+	event_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate min on columns */
+["server_access_events_min_fields"]: AliasType<{
+	event_id?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by min() on columns of table "server_access_events" */
+["server_access_events_min_order_by"]: {
+	event_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** response of any mutation on the table "server_access_events" */
+["server_access_events_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["server_access_events"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "server_access_events" */
+["server_access_events_on_conflict"]: {
+	constraint: ValueTypes["server_access_events_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["server_access_events_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["server_access_events_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "server_access_events". */
+["server_access_events_order_by"]: {
+	event?: ValueTypes["events_order_by"] | undefined | null | Variable<any, string>,
+	event_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	server?: ValueTypes["servers_order_by"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: server_access_events */
+["server_access_events_pk_columns_input"]: {
+	event_id: ValueTypes["uuid"] | Variable<any, string>,
+	server_id: ValueTypes["uuid"] | Variable<any, string>
+};
+	/** select columns of table "server_access_events" */
+["server_access_events_select_column"]:server_access_events_select_column;
+	/** input type for updating data in table "server_access_events" */
+["server_access_events_set_input"]: {
+	event_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+};
+	/** Streaming cursor of the table "server_access_events" */
+["server_access_events_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["server_access_events_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["server_access_events_stream_cursor_value_input"]: {
+	event_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+};
+	/** update columns of table "server_access_events" */
+["server_access_events_update_column"]:server_access_events_update_column;
+	["server_access_events_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["server_access_events_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["server_access_events_bool_exp"] | Variable<any, string>
+};
+	/** columns and relationships of "server_access_players" */
+["server_access_players"]: AliasType<{
+	/** An object relationship */
+	player?:ValueTypes["players"],
+	/** An object relationship */
+	server?:ValueTypes["servers"],
+	server_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "server_access_players" */
+["server_access_players_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["server_access_players_aggregate_fields"],
+	nodes?:ValueTypes["server_access_players"],
+		__typename?: boolean | `@${string}`
+}>;
+	["server_access_players_aggregate_bool_exp"]: {
+	count?: ValueTypes["server_access_players_aggregate_bool_exp_count"] | undefined | null | Variable<any, string>
+};
+	["server_access_players_aggregate_bool_exp_count"]: {
+	arguments?: Array<ValueTypes["server_access_players_select_column"]> | undefined | null | Variable<any, string>,
+	distinct?: boolean | undefined | null | Variable<any, string>,
+	filter?: ValueTypes["server_access_players_bool_exp"] | undefined | null | Variable<any, string>,
+	predicate: ValueTypes["Int_comparison_exp"] | Variable<any, string>
+};
+	/** aggregate fields of "server_access_players" */
+["server_access_players_aggregate_fields"]: AliasType<{
+	avg?:ValueTypes["server_access_players_avg_fields"],
+count?: [{	columns?: Array<ValueTypes["server_access_players_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["server_access_players_max_fields"],
+	min?:ValueTypes["server_access_players_min_fields"],
+	stddev?:ValueTypes["server_access_players_stddev_fields"],
+	stddev_pop?:ValueTypes["server_access_players_stddev_pop_fields"],
+	stddev_samp?:ValueTypes["server_access_players_stddev_samp_fields"],
+	sum?:ValueTypes["server_access_players_sum_fields"],
+	var_pop?:ValueTypes["server_access_players_var_pop_fields"],
+	var_samp?:ValueTypes["server_access_players_var_samp_fields"],
+	variance?:ValueTypes["server_access_players_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by aggregate values of table "server_access_players" */
+["server_access_players_aggregate_order_by"]: {
+	avg?: ValueTypes["server_access_players_avg_order_by"] | undefined | null | Variable<any, string>,
+	count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	max?: ValueTypes["server_access_players_max_order_by"] | undefined | null | Variable<any, string>,
+	min?: ValueTypes["server_access_players_min_order_by"] | undefined | null | Variable<any, string>,
+	stddev?: ValueTypes["server_access_players_stddev_order_by"] | undefined | null | Variable<any, string>,
+	stddev_pop?: ValueTypes["server_access_players_stddev_pop_order_by"] | undefined | null | Variable<any, string>,
+	stddev_samp?: ValueTypes["server_access_players_stddev_samp_order_by"] | undefined | null | Variable<any, string>,
+	sum?: ValueTypes["server_access_players_sum_order_by"] | undefined | null | Variable<any, string>,
+	var_pop?: ValueTypes["server_access_players_var_pop_order_by"] | undefined | null | Variable<any, string>,
+	var_samp?: ValueTypes["server_access_players_var_samp_order_by"] | undefined | null | Variable<any, string>,
+	variance?: ValueTypes["server_access_players_variance_order_by"] | undefined | null | Variable<any, string>
+};
+	/** input type for inserting array relation for remote table "server_access_players" */
+["server_access_players_arr_rel_insert_input"]: {
+	data: Array<ValueTypes["server_access_players_insert_input"]> | Variable<any, string>,
+	/** upsert condition */
+	on_conflict?: ValueTypes["server_access_players_on_conflict"] | undefined | null | Variable<any, string>
+};
+	/** aggregate avg on columns */
+["server_access_players_avg_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by avg() on columns of table "server_access_players" */
+["server_access_players_avg_order_by"]: {
+	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** Boolean expression to filter rows from the table "server_access_players". All fields are combined with a logical 'AND'. */
+["server_access_players_bool_exp"]: {
+	_and?: Array<ValueTypes["server_access_players_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["server_access_players_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["server_access_players_bool_exp"]> | undefined | null | Variable<any, string>,
+	player?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
+	server?: ValueTypes["servers_bool_exp"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "server_access_players" */
+["server_access_players_constraint"]:server_access_players_constraint;
+	/** input type for incrementing numeric columns in table "server_access_players" */
+["server_access_players_inc_input"]: {
+	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "server_access_players" */
+["server_access_players_insert_input"]: {
+	player?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	server?: ValueTypes["servers_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["server_access_players_max_fields"]: AliasType<{
+	server_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by max() on columns of table "server_access_players" */
+["server_access_players_max_order_by"]: {
+	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate min on columns */
+["server_access_players_min_fields"]: AliasType<{
+	server_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by min() on columns of table "server_access_players" */
+["server_access_players_min_order_by"]: {
+	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** response of any mutation on the table "server_access_players" */
+["server_access_players_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["server_access_players"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "server_access_players" */
+["server_access_players_on_conflict"]: {
+	constraint: ValueTypes["server_access_players_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["server_access_players_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["server_access_players_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "server_access_players". */
+["server_access_players_order_by"]: {
+	player?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
+	server?: ValueTypes["servers_order_by"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: server_access_players */
+["server_access_players_pk_columns_input"]: {
+	server_id: ValueTypes["uuid"] | Variable<any, string>,
+	steam_id: ValueTypes["bigint"] | Variable<any, string>
+};
+	/** select columns of table "server_access_players" */
+["server_access_players_select_column"]:server_access_players_select_column;
+	/** input type for updating data in table "server_access_players" */
+["server_access_players_set_input"]: {
+	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev on columns */
+["server_access_players_stddev_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev() on columns of table "server_access_players" */
+["server_access_players_stddev_order_by"]: {
+	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev_pop on columns */
+["server_access_players_stddev_pop_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_pop() on columns of table "server_access_players" */
+["server_access_players_stddev_pop_order_by"]: {
+	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev_samp on columns */
+["server_access_players_stddev_samp_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_samp() on columns of table "server_access_players" */
+["server_access_players_stddev_samp_order_by"]: {
+	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** Streaming cursor of the table "server_access_players" */
+["server_access_players_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["server_access_players_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["server_access_players_stream_cursor_value_input"]: {
+	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
+};
+	/** aggregate sum on columns */
+["server_access_players_sum_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by sum() on columns of table "server_access_players" */
+["server_access_players_sum_order_by"]: {
+	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** update columns of table "server_access_players" */
+["server_access_players_update_column"]:server_access_players_update_column;
+	["server_access_players_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["server_access_players_inc_input"] | undefined | null | Variable<any, string>,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["server_access_players_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["server_access_players_bool_exp"] | Variable<any, string>
+};
+	/** aggregate var_pop on columns */
+["server_access_players_var_pop_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_pop() on columns of table "server_access_players" */
+["server_access_players_var_pop_order_by"]: {
+	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate var_samp on columns */
+["server_access_players_var_samp_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_samp() on columns of table "server_access_players" */
+["server_access_players_var_samp_order_by"]: {
+	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate variance on columns */
+["server_access_players_variance_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by variance() on columns of table "server_access_players" */
+["server_access_players_variance_order_by"]: {
+	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
 	/** columns and relationships of "server_map_rotation" */
 ["server_map_rotation"]: AliasType<{
 	/** An object relationship */
@@ -53944,6 +54753,899 @@ count?: [{	columns?: Array<ValueTypes["server_map_rotation_select_column"]> | un
 ["server_map_rotation_variance_order_by"]: {
 	position?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
+	/** columns and relationships of "server_migrations" */
+["server_migrations"]: AliasType<{
+	bytes_done?:boolean | `@${string}`,
+	bytes_total?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	/** An object relationship */
+	e_status?:ValueTypes["e_server_migration_statuses"],
+	entries_total?:boolean | `@${string}`,
+	error?:boolean | `@${string}`,
+	finished_at?:boolean | `@${string}`,
+	/** An object relationship */
+	from_game_server_node?:ValueTypes["game_server_nodes"],
+	from_game_server_node_id?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	/** An object relationship */
+	requested_by?:ValueTypes["players"],
+	requested_by_steam_id?:boolean | `@${string}`,
+	/** An object relationship */
+	server?:ValueTypes["servers"],
+	server_id?:boolean | `@${string}`,
+	started_at?:boolean | `@${string}`,
+	status?:boolean | `@${string}`,
+	/** An object relationship */
+	to_game_server_node?:ValueTypes["game_server_nodes"],
+	to_game_server_node_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+warnings?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	with_files?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "server_migrations" */
+["server_migrations_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["server_migrations_aggregate_fields"],
+	nodes?:ValueTypes["server_migrations"],
+		__typename?: boolean | `@${string}`
+}>;
+	["server_migrations_aggregate_bool_exp"]: {
+	bool_and?: ValueTypes["server_migrations_aggregate_bool_exp_bool_and"] | undefined | null | Variable<any, string>,
+	bool_or?: ValueTypes["server_migrations_aggregate_bool_exp_bool_or"] | undefined | null | Variable<any, string>,
+	count?: ValueTypes["server_migrations_aggregate_bool_exp_count"] | undefined | null | Variable<any, string>
+};
+	["server_migrations_aggregate_bool_exp_bool_and"]: {
+	arguments: ValueTypes["server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_and_arguments_columns"] | Variable<any, string>,
+	distinct?: boolean | undefined | null | Variable<any, string>,
+	filter?: ValueTypes["server_migrations_bool_exp"] | undefined | null | Variable<any, string>,
+	predicate: ValueTypes["Boolean_comparison_exp"] | Variable<any, string>
+};
+	["server_migrations_aggregate_bool_exp_bool_or"]: {
+	arguments: ValueTypes["server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_or_arguments_columns"] | Variable<any, string>,
+	distinct?: boolean | undefined | null | Variable<any, string>,
+	filter?: ValueTypes["server_migrations_bool_exp"] | undefined | null | Variable<any, string>,
+	predicate: ValueTypes["Boolean_comparison_exp"] | Variable<any, string>
+};
+	["server_migrations_aggregate_bool_exp_count"]: {
+	arguments?: Array<ValueTypes["server_migrations_select_column"]> | undefined | null | Variable<any, string>,
+	distinct?: boolean | undefined | null | Variable<any, string>,
+	filter?: ValueTypes["server_migrations_bool_exp"] | undefined | null | Variable<any, string>,
+	predicate: ValueTypes["Int_comparison_exp"] | Variable<any, string>
+};
+	/** aggregate fields of "server_migrations" */
+["server_migrations_aggregate_fields"]: AliasType<{
+	avg?:ValueTypes["server_migrations_avg_fields"],
+count?: [{	columns?: Array<ValueTypes["server_migrations_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["server_migrations_max_fields"],
+	min?:ValueTypes["server_migrations_min_fields"],
+	stddev?:ValueTypes["server_migrations_stddev_fields"],
+	stddev_pop?:ValueTypes["server_migrations_stddev_pop_fields"],
+	stddev_samp?:ValueTypes["server_migrations_stddev_samp_fields"],
+	sum?:ValueTypes["server_migrations_sum_fields"],
+	var_pop?:ValueTypes["server_migrations_var_pop_fields"],
+	var_samp?:ValueTypes["server_migrations_var_samp_fields"],
+	variance?:ValueTypes["server_migrations_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by aggregate values of table "server_migrations" */
+["server_migrations_aggregate_order_by"]: {
+	avg?: ValueTypes["server_migrations_avg_order_by"] | undefined | null | Variable<any, string>,
+	count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	max?: ValueTypes["server_migrations_max_order_by"] | undefined | null | Variable<any, string>,
+	min?: ValueTypes["server_migrations_min_order_by"] | undefined | null | Variable<any, string>,
+	stddev?: ValueTypes["server_migrations_stddev_order_by"] | undefined | null | Variable<any, string>,
+	stddev_pop?: ValueTypes["server_migrations_stddev_pop_order_by"] | undefined | null | Variable<any, string>,
+	stddev_samp?: ValueTypes["server_migrations_stddev_samp_order_by"] | undefined | null | Variable<any, string>,
+	sum?: ValueTypes["server_migrations_sum_order_by"] | undefined | null | Variable<any, string>,
+	var_pop?: ValueTypes["server_migrations_var_pop_order_by"] | undefined | null | Variable<any, string>,
+	var_samp?: ValueTypes["server_migrations_var_samp_order_by"] | undefined | null | Variable<any, string>,
+	variance?: ValueTypes["server_migrations_variance_order_by"] | undefined | null | Variable<any, string>
+};
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["server_migrations_append_input"]: {
+	warnings?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
+	/** input type for inserting array relation for remote table "server_migrations" */
+["server_migrations_arr_rel_insert_input"]: {
+	data: Array<ValueTypes["server_migrations_insert_input"]> | Variable<any, string>,
+	/** upsert condition */
+	on_conflict?: ValueTypes["server_migrations_on_conflict"] | undefined | null | Variable<any, string>
+};
+	/** aggregate avg on columns */
+["server_migrations_avg_fields"]: AliasType<{
+	bytes_done?:boolean | `@${string}`,
+	bytes_total?:boolean | `@${string}`,
+	entries_total?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by avg() on columns of table "server_migrations" */
+["server_migrations_avg_order_by"]: {
+	bytes_done?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	bytes_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	entries_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** Boolean expression to filter rows from the table "server_migrations". All fields are combined with a logical 'AND'. */
+["server_migrations_bool_exp"]: {
+	_and?: Array<ValueTypes["server_migrations_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["server_migrations_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["server_migrations_bool_exp"]> | undefined | null | Variable<any, string>,
+	bytes_done?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	bytes_total?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	e_status?: ValueTypes["e_server_migration_statuses_bool_exp"] | undefined | null | Variable<any, string>,
+	entries_total?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	error?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	finished_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	from_game_server_node?: ValueTypes["game_server_nodes_bool_exp"] | undefined | null | Variable<any, string>,
+	from_game_server_node_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	requested_by?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	server?: ValueTypes["servers_bool_exp"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	started_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	status?: ValueTypes["e_server_migration_statuses_enum_comparison_exp"] | undefined | null | Variable<any, string>,
+	to_game_server_node?: ValueTypes["game_server_nodes_bool_exp"] | undefined | null | Variable<any, string>,
+	to_game_server_node_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	warnings?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
+	with_files?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "server_migrations" */
+["server_migrations_constraint"]:server_migrations_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["server_migrations_delete_at_path_input"]: {
+	warnings?: Array<string> | undefined | null | Variable<any, string>
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["server_migrations_delete_elem_input"]: {
+	warnings?: number | undefined | null | Variable<any, string>
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["server_migrations_delete_key_input"]: {
+	warnings?: string | undefined | null | Variable<any, string>
+};
+	/** input type for incrementing numeric columns in table "server_migrations" */
+["server_migrations_inc_input"]: {
+	bytes_done?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	bytes_total?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	entries_total?: number | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "server_migrations" */
+["server_migrations_insert_input"]: {
+	bytes_done?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	bytes_total?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	e_status?: ValueTypes["e_server_migration_statuses_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	entries_total?: number | undefined | null | Variable<any, string>,
+	error?: string | undefined | null | Variable<any, string>,
+	finished_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	from_game_server_node?: ValueTypes["game_server_nodes_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	from_game_server_node_id?: string | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	requested_by?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	server?: ValueTypes["servers_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	started_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	status?: ValueTypes["e_server_migration_statuses_enum"] | undefined | null | Variable<any, string>,
+	to_game_server_node?: ValueTypes["game_server_nodes_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	to_game_server_node_id?: string | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	warnings?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	with_files?: boolean | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["server_migrations_max_fields"]: AliasType<{
+	bytes_done?:boolean | `@${string}`,
+	bytes_total?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	entries_total?:boolean | `@${string}`,
+	error?:boolean | `@${string}`,
+	finished_at?:boolean | `@${string}`,
+	from_game_server_node_id?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+	started_at?:boolean | `@${string}`,
+	to_game_server_node_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by max() on columns of table "server_migrations" */
+["server_migrations_max_order_by"]: {
+	bytes_done?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	bytes_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	entries_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	error?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	finished_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	from_game_server_node_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	started_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	to_game_server_node_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate min on columns */
+["server_migrations_min_fields"]: AliasType<{
+	bytes_done?:boolean | `@${string}`,
+	bytes_total?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	entries_total?:boolean | `@${string}`,
+	error?:boolean | `@${string}`,
+	finished_at?:boolean | `@${string}`,
+	from_game_server_node_id?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+	started_at?:boolean | `@${string}`,
+	to_game_server_node_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by min() on columns of table "server_migrations" */
+["server_migrations_min_order_by"]: {
+	bytes_done?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	bytes_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	entries_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	error?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	finished_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	from_game_server_node_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	started_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	to_game_server_node_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** response of any mutation on the table "server_migrations" */
+["server_migrations_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["server_migrations"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "server_migrations" */
+["server_migrations_on_conflict"]: {
+	constraint: ValueTypes["server_migrations_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["server_migrations_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["server_migrations_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "server_migrations". */
+["server_migrations_order_by"]: {
+	bytes_done?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	bytes_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	e_status?: ValueTypes["e_server_migration_statuses_order_by"] | undefined | null | Variable<any, string>,
+	entries_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	error?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	finished_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	from_game_server_node?: ValueTypes["game_server_nodes_order_by"] | undefined | null | Variable<any, string>,
+	from_game_server_node_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	requested_by?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	server?: ValueTypes["servers_order_by"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	started_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	status?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	to_game_server_node?: ValueTypes["game_server_nodes_order_by"] | undefined | null | Variable<any, string>,
+	to_game_server_node_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	warnings?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	with_files?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: server_migrations */
+["server_migrations_pk_columns_input"]: {
+	id: ValueTypes["uuid"] | Variable<any, string>
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["server_migrations_prepend_input"]: {
+	warnings?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
+	/** select columns of table "server_migrations" */
+["server_migrations_select_column"]:server_migrations_select_column;
+	/** select "server_migrations_aggregate_bool_exp_bool_and_arguments_columns" columns of table "server_migrations" */
+["server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_and_arguments_columns"]:server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_and_arguments_columns;
+	/** select "server_migrations_aggregate_bool_exp_bool_or_arguments_columns" columns of table "server_migrations" */
+["server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_or_arguments_columns"]:server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_or_arguments_columns;
+	/** input type for updating data in table "server_migrations" */
+["server_migrations_set_input"]: {
+	bytes_done?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	bytes_total?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	entries_total?: number | undefined | null | Variable<any, string>,
+	error?: string | undefined | null | Variable<any, string>,
+	finished_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	from_game_server_node_id?: string | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	started_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	status?: ValueTypes["e_server_migration_statuses_enum"] | undefined | null | Variable<any, string>,
+	to_game_server_node_id?: string | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	warnings?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	with_files?: boolean | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev on columns */
+["server_migrations_stddev_fields"]: AliasType<{
+	bytes_done?:boolean | `@${string}`,
+	bytes_total?:boolean | `@${string}`,
+	entries_total?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev() on columns of table "server_migrations" */
+["server_migrations_stddev_order_by"]: {
+	bytes_done?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	bytes_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	entries_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev_pop on columns */
+["server_migrations_stddev_pop_fields"]: AliasType<{
+	bytes_done?:boolean | `@${string}`,
+	bytes_total?:boolean | `@${string}`,
+	entries_total?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_pop() on columns of table "server_migrations" */
+["server_migrations_stddev_pop_order_by"]: {
+	bytes_done?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	bytes_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	entries_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev_samp on columns */
+["server_migrations_stddev_samp_fields"]: AliasType<{
+	bytes_done?:boolean | `@${string}`,
+	bytes_total?:boolean | `@${string}`,
+	entries_total?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_samp() on columns of table "server_migrations" */
+["server_migrations_stddev_samp_order_by"]: {
+	bytes_done?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	bytes_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	entries_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** Streaming cursor of the table "server_migrations" */
+["server_migrations_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["server_migrations_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["server_migrations_stream_cursor_value_input"]: {
+	bytes_done?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	bytes_total?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	entries_total?: number | undefined | null | Variable<any, string>,
+	error?: string | undefined | null | Variable<any, string>,
+	finished_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	from_game_server_node_id?: string | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	started_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	status?: ValueTypes["e_server_migration_statuses_enum"] | undefined | null | Variable<any, string>,
+	to_game_server_node_id?: string | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	warnings?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	with_files?: boolean | undefined | null | Variable<any, string>
+};
+	/** aggregate sum on columns */
+["server_migrations_sum_fields"]: AliasType<{
+	bytes_done?:boolean | `@${string}`,
+	bytes_total?:boolean | `@${string}`,
+	entries_total?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by sum() on columns of table "server_migrations" */
+["server_migrations_sum_order_by"]: {
+	bytes_done?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	bytes_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	entries_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** update columns of table "server_migrations" */
+["server_migrations_update_column"]:server_migrations_update_column;
+	["server_migrations_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["server_migrations_append_input"] | undefined | null | Variable<any, string>,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["server_migrations_delete_at_path_input"] | undefined | null | Variable<any, string>,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["server_migrations_delete_elem_input"] | undefined | null | Variable<any, string>,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["server_migrations_delete_key_input"] | undefined | null | Variable<any, string>,
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["server_migrations_inc_input"] | undefined | null | Variable<any, string>,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["server_migrations_prepend_input"] | undefined | null | Variable<any, string>,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["server_migrations_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["server_migrations_bool_exp"] | Variable<any, string>
+};
+	/** aggregate var_pop on columns */
+["server_migrations_var_pop_fields"]: AliasType<{
+	bytes_done?:boolean | `@${string}`,
+	bytes_total?:boolean | `@${string}`,
+	entries_total?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_pop() on columns of table "server_migrations" */
+["server_migrations_var_pop_order_by"]: {
+	bytes_done?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	bytes_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	entries_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate var_samp on columns */
+["server_migrations_var_samp_fields"]: AliasType<{
+	bytes_done?:boolean | `@${string}`,
+	bytes_total?:boolean | `@${string}`,
+	entries_total?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_samp() on columns of table "server_migrations" */
+["server_migrations_var_samp_order_by"]: {
+	bytes_done?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	bytes_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	entries_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate variance on columns */
+["server_migrations_variance_fields"]: AliasType<{
+	bytes_done?:boolean | `@${string}`,
+	bytes_total?:boolean | `@${string}`,
+	entries_total?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by variance() on columns of table "server_migrations" */
+["server_migrations_variance_order_by"]: {
+	bytes_done?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	bytes_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	entries_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** columns and relationships of "server_player_sessions" */
+["server_player_sessions"]: AliasType<{
+	conn?:boolean | `@${string}`,
+	deaths?:boolean | `@${string}`,
+	deaths_conn?:boolean | `@${string}`,
+	ended_at?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	ip?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	kills_conn?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	/** An object relationship */
+	player?:ValueTypes["players"],
+	player_steam_id?:boolean | `@${string}`,
+	/** An object relationship */
+	server?:ValueTypes["servers"],
+	server_id?:boolean | `@${string}`,
+	settled_conns?:boolean | `@${string}`,
+	started_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "server_player_sessions" */
+["server_player_sessions_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["server_player_sessions_aggregate_fields"],
+	nodes?:ValueTypes["server_player_sessions"],
+		__typename?: boolean | `@${string}`
+}>;
+	["server_player_sessions_aggregate_bool_exp"]: {
+	count?: ValueTypes["server_player_sessions_aggregate_bool_exp_count"] | undefined | null | Variable<any, string>
+};
+	["server_player_sessions_aggregate_bool_exp_count"]: {
+	arguments?: Array<ValueTypes["server_player_sessions_select_column"]> | undefined | null | Variable<any, string>,
+	distinct?: boolean | undefined | null | Variable<any, string>,
+	filter?: ValueTypes["server_player_sessions_bool_exp"] | undefined | null | Variable<any, string>,
+	predicate: ValueTypes["Int_comparison_exp"] | Variable<any, string>
+};
+	/** aggregate fields of "server_player_sessions" */
+["server_player_sessions_aggregate_fields"]: AliasType<{
+	avg?:ValueTypes["server_player_sessions_avg_fields"],
+count?: [{	columns?: Array<ValueTypes["server_player_sessions_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["server_player_sessions_max_fields"],
+	min?:ValueTypes["server_player_sessions_min_fields"],
+	stddev?:ValueTypes["server_player_sessions_stddev_fields"],
+	stddev_pop?:ValueTypes["server_player_sessions_stddev_pop_fields"],
+	stddev_samp?:ValueTypes["server_player_sessions_stddev_samp_fields"],
+	sum?:ValueTypes["server_player_sessions_sum_fields"],
+	var_pop?:ValueTypes["server_player_sessions_var_pop_fields"],
+	var_samp?:ValueTypes["server_player_sessions_var_samp_fields"],
+	variance?:ValueTypes["server_player_sessions_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by aggregate values of table "server_player_sessions" */
+["server_player_sessions_aggregate_order_by"]: {
+	avg?: ValueTypes["server_player_sessions_avg_order_by"] | undefined | null | Variable<any, string>,
+	count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	max?: ValueTypes["server_player_sessions_max_order_by"] | undefined | null | Variable<any, string>,
+	min?: ValueTypes["server_player_sessions_min_order_by"] | undefined | null | Variable<any, string>,
+	stddev?: ValueTypes["server_player_sessions_stddev_order_by"] | undefined | null | Variable<any, string>,
+	stddev_pop?: ValueTypes["server_player_sessions_stddev_pop_order_by"] | undefined | null | Variable<any, string>,
+	stddev_samp?: ValueTypes["server_player_sessions_stddev_samp_order_by"] | undefined | null | Variable<any, string>,
+	sum?: ValueTypes["server_player_sessions_sum_order_by"] | undefined | null | Variable<any, string>,
+	var_pop?: ValueTypes["server_player_sessions_var_pop_order_by"] | undefined | null | Variable<any, string>,
+	var_samp?: ValueTypes["server_player_sessions_var_samp_order_by"] | undefined | null | Variable<any, string>,
+	variance?: ValueTypes["server_player_sessions_variance_order_by"] | undefined | null | Variable<any, string>
+};
+	/** input type for inserting array relation for remote table "server_player_sessions" */
+["server_player_sessions_arr_rel_insert_input"]: {
+	data: Array<ValueTypes["server_player_sessions_insert_input"]> | Variable<any, string>,
+	/** upsert condition */
+	on_conflict?: ValueTypes["server_player_sessions_on_conflict"] | undefined | null | Variable<any, string>
+};
+	/** aggregate avg on columns */
+["server_player_sessions_avg_fields"]: AliasType<{
+	deaths?:boolean | `@${string}`,
+	deaths_conn?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	kills_conn?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by avg() on columns of table "server_player_sessions" */
+["server_player_sessions_avg_order_by"]: {
+	deaths?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	deaths_conn?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	kills?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	kills_conn?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** Boolean expression to filter rows from the table "server_player_sessions". All fields are combined with a logical 'AND'. */
+["server_player_sessions_bool_exp"]: {
+	_and?: Array<ValueTypes["server_player_sessions_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["server_player_sessions_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["server_player_sessions_bool_exp"]> | undefined | null | Variable<any, string>,
+	conn?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	deaths?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	deaths_conn?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	ended_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	ip?: ValueTypes["inet_comparison_exp"] | undefined | null | Variable<any, string>,
+	kills?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	kills_conn?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	player?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	server?: ValueTypes["servers_bool_exp"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	settled_conns?: ValueTypes["String_array_comparison_exp"] | undefined | null | Variable<any, string>,
+	started_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "server_player_sessions" */
+["server_player_sessions_constraint"]:server_player_sessions_constraint;
+	/** input type for incrementing numeric columns in table "server_player_sessions" */
+["server_player_sessions_inc_input"]: {
+	deaths?: number | undefined | null | Variable<any, string>,
+	deaths_conn?: number | undefined | null | Variable<any, string>,
+	kills?: number | undefined | null | Variable<any, string>,
+	kills_conn?: number | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "server_player_sessions" */
+["server_player_sessions_insert_input"]: {
+	conn?: string | undefined | null | Variable<any, string>,
+	deaths?: number | undefined | null | Variable<any, string>,
+	deaths_conn?: number | undefined | null | Variable<any, string>,
+	ended_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	ip?: ValueTypes["inet"] | undefined | null | Variable<any, string>,
+	kills?: number | undefined | null | Variable<any, string>,
+	kills_conn?: number | undefined | null | Variable<any, string>,
+	name?: string | undefined | null | Variable<any, string>,
+	player?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	server?: ValueTypes["servers_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	settled_conns?: Array<string> | undefined | null | Variable<any, string>,
+	started_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["server_player_sessions_max_fields"]: AliasType<{
+	conn?:boolean | `@${string}`,
+	deaths?:boolean | `@${string}`,
+	deaths_conn?:boolean | `@${string}`,
+	ended_at?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	kills_conn?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+	settled_conns?:boolean | `@${string}`,
+	started_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by max() on columns of table "server_player_sessions" */
+["server_player_sessions_max_order_by"]: {
+	conn?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	deaths?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	deaths_conn?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	ended_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	kills?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	kills_conn?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	settled_conns?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	started_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate min on columns */
+["server_player_sessions_min_fields"]: AliasType<{
+	conn?:boolean | `@${string}`,
+	deaths?:boolean | `@${string}`,
+	deaths_conn?:boolean | `@${string}`,
+	ended_at?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	kills_conn?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+	settled_conns?:boolean | `@${string}`,
+	started_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by min() on columns of table "server_player_sessions" */
+["server_player_sessions_min_order_by"]: {
+	conn?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	deaths?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	deaths_conn?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	ended_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	kills?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	kills_conn?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	settled_conns?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	started_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** response of any mutation on the table "server_player_sessions" */
+["server_player_sessions_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["server_player_sessions"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "server_player_sessions" */
+["server_player_sessions_on_conflict"]: {
+	constraint: ValueTypes["server_player_sessions_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["server_player_sessions_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["server_player_sessions_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "server_player_sessions". */
+["server_player_sessions_order_by"]: {
+	conn?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	deaths?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	deaths_conn?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	ended_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	ip?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	kills?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	kills_conn?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	server?: ValueTypes["servers_order_by"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	settled_conns?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	started_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: server_player_sessions */
+["server_player_sessions_pk_columns_input"]: {
+	id: ValueTypes["bigint"] | Variable<any, string>
+};
+	/** select columns of table "server_player_sessions" */
+["server_player_sessions_select_column"]:server_player_sessions_select_column;
+	/** input type for updating data in table "server_player_sessions" */
+["server_player_sessions_set_input"]: {
+	conn?: string | undefined | null | Variable<any, string>,
+	deaths?: number | undefined | null | Variable<any, string>,
+	deaths_conn?: number | undefined | null | Variable<any, string>,
+	ended_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	ip?: ValueTypes["inet"] | undefined | null | Variable<any, string>,
+	kills?: number | undefined | null | Variable<any, string>,
+	kills_conn?: number | undefined | null | Variable<any, string>,
+	name?: string | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	settled_conns?: Array<string> | undefined | null | Variable<any, string>,
+	started_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev on columns */
+["server_player_sessions_stddev_fields"]: AliasType<{
+	deaths?:boolean | `@${string}`,
+	deaths_conn?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	kills_conn?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev() on columns of table "server_player_sessions" */
+["server_player_sessions_stddev_order_by"]: {
+	deaths?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	deaths_conn?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	kills?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	kills_conn?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev_pop on columns */
+["server_player_sessions_stddev_pop_fields"]: AliasType<{
+	deaths?:boolean | `@${string}`,
+	deaths_conn?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	kills_conn?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_pop() on columns of table "server_player_sessions" */
+["server_player_sessions_stddev_pop_order_by"]: {
+	deaths?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	deaths_conn?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	kills?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	kills_conn?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev_samp on columns */
+["server_player_sessions_stddev_samp_fields"]: AliasType<{
+	deaths?:boolean | `@${string}`,
+	deaths_conn?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	kills_conn?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_samp() on columns of table "server_player_sessions" */
+["server_player_sessions_stddev_samp_order_by"]: {
+	deaths?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	deaths_conn?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	kills?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	kills_conn?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** Streaming cursor of the table "server_player_sessions" */
+["server_player_sessions_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["server_player_sessions_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["server_player_sessions_stream_cursor_value_input"]: {
+	conn?: string | undefined | null | Variable<any, string>,
+	deaths?: number | undefined | null | Variable<any, string>,
+	deaths_conn?: number | undefined | null | Variable<any, string>,
+	ended_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	ip?: ValueTypes["inet"] | undefined | null | Variable<any, string>,
+	kills?: number | undefined | null | Variable<any, string>,
+	kills_conn?: number | undefined | null | Variable<any, string>,
+	name?: string | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	settled_conns?: Array<string> | undefined | null | Variable<any, string>,
+	started_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
+};
+	/** aggregate sum on columns */
+["server_player_sessions_sum_fields"]: AliasType<{
+	deaths?:boolean | `@${string}`,
+	deaths_conn?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	kills_conn?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by sum() on columns of table "server_player_sessions" */
+["server_player_sessions_sum_order_by"]: {
+	deaths?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	deaths_conn?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	kills?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	kills_conn?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** update columns of table "server_player_sessions" */
+["server_player_sessions_update_column"]:server_player_sessions_update_column;
+	["server_player_sessions_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["server_player_sessions_inc_input"] | undefined | null | Variable<any, string>,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["server_player_sessions_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["server_player_sessions_bool_exp"] | Variable<any, string>
+};
+	/** aggregate var_pop on columns */
+["server_player_sessions_var_pop_fields"]: AliasType<{
+	deaths?:boolean | `@${string}`,
+	deaths_conn?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	kills_conn?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_pop() on columns of table "server_player_sessions" */
+["server_player_sessions_var_pop_order_by"]: {
+	deaths?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	deaths_conn?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	kills?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	kills_conn?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate var_samp on columns */
+["server_player_sessions_var_samp_fields"]: AliasType<{
+	deaths?:boolean | `@${string}`,
+	deaths_conn?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	kills_conn?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_samp() on columns of table "server_player_sessions" */
+["server_player_sessions_var_samp_order_by"]: {
+	deaths?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	deaths_conn?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	kills?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	kills_conn?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate variance on columns */
+["server_player_sessions_variance_fields"]: AliasType<{
+	deaths?:boolean | `@${string}`,
+	deaths_conn?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	kills_conn?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by variance() on columns of table "server_player_sessions" */
+["server_player_sessions_variance_order_by"]: {
+	deaths?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	deaths_conn?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	kills?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	kills_conn?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
 	/** columns and relationships of "server_plugins" */
 ["server_plugins"]: AliasType<{
 	enabled?:boolean | `@${string}`,
@@ -54106,6 +55808,190 @@ count?: [{	columns?: Array<ValueTypes["server_plugins_select_column"]> | undefin
 	/** filter the rows which have to be updated */
 	where: ValueTypes["server_plugins_bool_exp"] | Variable<any, string>
 };
+	/** columns and relationships of "server_recent_players" */
+["server_recent_players"]: AliasType<{
+	first_seen_at?:boolean | `@${string}`,
+	ip?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	last_seen_at?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	online?:boolean | `@${string}`,
+	/** An object relationship */
+	player?:ValueTypes["players"],
+	player_steam_id?:boolean | `@${string}`,
+	seconds_played?:boolean | `@${string}`,
+	/** An object relationship */
+	server?:ValueTypes["servers"],
+	server_id?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "server_recent_players" */
+["server_recent_players_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["server_recent_players_aggregate_fields"],
+	nodes?:ValueTypes["server_recent_players"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "server_recent_players" */
+["server_recent_players_aggregate_fields"]: AliasType<{
+	avg?:ValueTypes["server_recent_players_avg_fields"],
+count?: [{	columns?: Array<ValueTypes["server_recent_players_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["server_recent_players_max_fields"],
+	min?:ValueTypes["server_recent_players_min_fields"],
+	stddev?:ValueTypes["server_recent_players_stddev_fields"],
+	stddev_pop?:ValueTypes["server_recent_players_stddev_pop_fields"],
+	stddev_samp?:ValueTypes["server_recent_players_stddev_samp_fields"],
+	sum?:ValueTypes["server_recent_players_sum_fields"],
+	var_pop?:ValueTypes["server_recent_players_var_pop_fields"],
+	var_samp?:ValueTypes["server_recent_players_var_samp_fields"],
+	variance?:ValueTypes["server_recent_players_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate avg on columns */
+["server_recent_players_avg_fields"]: AliasType<{
+	kills?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	seconds_played?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "server_recent_players". All fields are combined with a logical 'AND'. */
+["server_recent_players_bool_exp"]: {
+	_and?: Array<ValueTypes["server_recent_players_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["server_recent_players_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["server_recent_players_bool_exp"]> | undefined | null | Variable<any, string>,
+	first_seen_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	ip?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	kills?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	last_seen_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	online?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	player?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	seconds_played?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	server?: ValueTypes["servers_bool_exp"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	sessions?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["server_recent_players_max_fields"]: AliasType<{
+	first_seen_at?:boolean | `@${string}`,
+	ip?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	last_seen_at?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	seconds_played?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["server_recent_players_min_fields"]: AliasType<{
+	first_seen_at?:boolean | `@${string}`,
+	ip?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	last_seen_at?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	seconds_played?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Ordering options when selecting data from "server_recent_players". */
+["server_recent_players_order_by"]: {
+	first_seen_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	ip?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	kills?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	last_seen_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	online?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	seconds_played?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	server?: ValueTypes["servers_order_by"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	sessions?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** select columns of table "server_recent_players" */
+["server_recent_players_select_column"]:server_recent_players_select_column;
+	/** aggregate stddev on columns */
+["server_recent_players_stddev_fields"]: AliasType<{
+	kills?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	seconds_played?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["server_recent_players_stddev_pop_fields"]: AliasType<{
+	kills?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	seconds_played?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["server_recent_players_stddev_samp_fields"]: AliasType<{
+	kills?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	seconds_played?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "server_recent_players" */
+["server_recent_players_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["server_recent_players_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["server_recent_players_stream_cursor_value_input"]: {
+	first_seen_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	ip?: string | undefined | null | Variable<any, string>,
+	kills?: number | undefined | null | Variable<any, string>,
+	last_seen_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	name?: string | undefined | null | Variable<any, string>,
+	online?: boolean | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	seconds_played?: number | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	sessions?: number | undefined | null | Variable<any, string>
+};
+	/** aggregate sum on columns */
+["server_recent_players_sum_fields"]: AliasType<{
+	kills?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	seconds_played?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_pop on columns */
+["server_recent_players_var_pop_fields"]: AliasType<{
+	kills?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	seconds_played?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["server_recent_players_var_samp_fields"]: AliasType<{
+	kills?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	seconds_played?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["server_recent_players_variance_fields"]: AliasType<{
+	kills?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	seconds_played?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	/** columns and relationships of "server_regions" */
 ["server_regions"]: AliasType<{
 	/** A computed field, executes function "available_region_server_count" */
@@ -54336,8 +56222,159 @@ count?: [{	columns?: Array<ValueTypes["server_regions_select_column"]> | undefin
 	total_server_count?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** columns and relationships of "server_rosters" */
+["server_rosters"]: AliasType<{
+	held_since?:boolean | `@${string}`,
+	reported_at?:boolean | `@${string}`,
+	/** An object relationship */
+	server?:ValueTypes["servers"],
+	server_id?:boolean | `@${string}`,
+sessions?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_player_sessions_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_player_sessions_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_player_sessions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_player_sessions"]],
+sessions_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_player_sessions_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_player_sessions_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_player_sessions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_player_sessions_aggregate"]],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "server_rosters" */
+["server_rosters_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["server_rosters_aggregate_fields"],
+	nodes?:ValueTypes["server_rosters"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "server_rosters" */
+["server_rosters_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ValueTypes["server_rosters_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["server_rosters_max_fields"],
+	min?:ValueTypes["server_rosters_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "server_rosters". All fields are combined with a logical 'AND'. */
+["server_rosters_bool_exp"]: {
+	_and?: Array<ValueTypes["server_rosters_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["server_rosters_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["server_rosters_bool_exp"]> | undefined | null | Variable<any, string>,
+	held_since?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	reported_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	server?: ValueTypes["servers_bool_exp"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	sessions?: ValueTypes["server_player_sessions_bool_exp"] | undefined | null | Variable<any, string>,
+	sessions_aggregate?: ValueTypes["server_player_sessions_aggregate_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "server_rosters" */
+["server_rosters_constraint"]:server_rosters_constraint;
+	/** input type for inserting data into table "server_rosters" */
+["server_rosters_insert_input"]: {
+	held_since?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	reported_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	server?: ValueTypes["servers_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	sessions?: ValueTypes["server_player_sessions_arr_rel_insert_input"] | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["server_rosters_max_fields"]: AliasType<{
+	held_since?:boolean | `@${string}`,
+	reported_at?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["server_rosters_min_fields"]: AliasType<{
+	held_since?:boolean | `@${string}`,
+	reported_at?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "server_rosters" */
+["server_rosters_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["server_rosters"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "server_rosters" */
+["server_rosters_on_conflict"]: {
+	constraint: ValueTypes["server_rosters_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["server_rosters_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["server_rosters_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "server_rosters". */
+["server_rosters_order_by"]: {
+	held_since?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	reported_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	server?: ValueTypes["servers_order_by"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	sessions_aggregate?: ValueTypes["server_player_sessions_aggregate_order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: server_rosters */
+["server_rosters_pk_columns_input"]: {
+	server_id: ValueTypes["uuid"] | Variable<any, string>
+};
+	/** select columns of table "server_rosters" */
+["server_rosters_select_column"]:server_rosters_select_column;
+	/** input type for updating data in table "server_rosters" */
+["server_rosters_set_input"]: {
+	held_since?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	reported_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+};
+	/** Streaming cursor of the table "server_rosters" */
+["server_rosters_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["server_rosters_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["server_rosters_stream_cursor_value_input"]: {
+	held_since?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	reported_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+};
+	/** update columns of table "server_rosters" */
+["server_rosters_update_column"]:server_rosters_update_column;
+	["server_rosters_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["server_rosters_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["server_rosters_bool_exp"] | Variable<any, string>
+};
 	/** columns and relationships of "servers" */
 ["servers"]: AliasType<{
+access_events?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_access_events_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_access_events_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_access_events_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_access_events"]],
+access_events_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_access_events_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_access_events_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_access_events_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_access_events_aggregate"]],
+	access_min_role?:boolean | `@${string}`,
+access_players?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_access_players_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_access_players_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_access_players_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_access_players"]],
+access_players_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_access_players_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_access_players_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_access_players_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_access_players_aggregate"]],
+	access_restricted?:boolean | `@${string}`,
 	api_password?:boolean | `@${string}`,
 	boot_status?:boolean | `@${string}`,
 	boot_status_detail?:boolean | `@${string}`,
@@ -54389,7 +56426,22 @@ matches_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["matches_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["matches_aggregate"]],
 	max_players?:boolean | `@${string}`,
+migrations?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_migrations_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_migrations_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_migrations_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_migrations"]],
+migrations_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_migrations_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_migrations_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_migrations_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_migrations_aggregate"]],
 	offline_at?:boolean | `@${string}`,
+	player_management_runtime?:boolean | `@${string}`,
+	player_management_seen_at?:boolean | `@${string}`,
+	player_management_version?:boolean | `@${string}`,
 plugin_overrides?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["server_plugins_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -54504,6 +56556,12 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	_and?: Array<ValueTypes["servers_bool_exp"]> | undefined | null | Variable<any, string>,
 	_not?: ValueTypes["servers_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["servers_bool_exp"]> | undefined | null | Variable<any, string>,
+	access_events?: ValueTypes["server_access_events_bool_exp"] | undefined | null | Variable<any, string>,
+	access_events_aggregate?: ValueTypes["server_access_events_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	access_min_role?: ValueTypes["e_player_roles_enum_comparison_exp"] | undefined | null | Variable<any, string>,
+	access_players?: ValueTypes["server_access_players_bool_exp"] | undefined | null | Variable<any, string>,
+	access_players_aggregate?: ValueTypes["server_access_players_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	access_restricted?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	api_password?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	boot_status?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	boot_status_detail?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -54529,7 +56587,12 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	matches?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
 	matches_aggregate?: ValueTypes["matches_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	max_players?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	migrations?: ValueTypes["server_migrations_bool_exp"] | undefined | null | Variable<any, string>,
+	migrations_aggregate?: ValueTypes["server_migrations_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	offline_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	player_management_runtime?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	player_management_seen_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	player_management_version?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	plugin_overrides?: ValueTypes["server_plugins_bool_exp"] | undefined | null | Variable<any, string>,
 	plugin_overrides_aggregate?: ValueTypes["server_plugins_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	plugin_runtime?: ValueTypes["e_plugin_runtimes_enum_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -54568,6 +56631,10 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 };
 	/** input type for inserting data into table "servers" */
 ["servers_insert_input"]: {
+	access_events?: ValueTypes["server_access_events_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	access_min_role?: ValueTypes["e_player_roles_enum"] | undefined | null | Variable<any, string>,
+	access_players?: ValueTypes["server_access_players_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	access_restricted?: boolean | undefined | null | Variable<any, string>,
 	api_password?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	boot_status?: string | undefined | null | Variable<any, string>,
 	boot_status_detail?: string | undefined | null | Variable<any, string>,
@@ -54589,7 +56656,11 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	map_rotation_shuffle?: boolean | undefined | null | Variable<any, string>,
 	matches?: ValueTypes["matches_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	max_players?: number | undefined | null | Variable<any, string>,
+	migrations?: ValueTypes["server_migrations_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	offline_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	player_management_runtime?: string | undefined | null | Variable<any, string>,
+	player_management_seen_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	player_management_version?: string | undefined | null | Variable<any, string>,
 	plugin_overrides?: ValueTypes["server_plugins_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	plugin_runtime?: ValueTypes["e_plugin_runtimes_enum"] | undefined | null | Variable<any, string>,
 	plugin_version?: string | undefined | null | Variable<any, string>,
@@ -54623,6 +56694,9 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	label?:boolean | `@${string}`,
 	max_players?:boolean | `@${string}`,
 	offline_at?:boolean | `@${string}`,
+	player_management_runtime?:boolean | `@${string}`,
+	player_management_seen_at?:boolean | `@${string}`,
+	player_management_version?:boolean | `@${string}`,
 	plugin_version?:boolean | `@${string}`,
 	plugins_checked_at?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
@@ -54647,6 +56721,9 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	label?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	max_players?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	offline_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_management_runtime?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_management_seen_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_management_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	plugin_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	plugins_checked_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	port?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -54674,6 +56751,9 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	label?:boolean | `@${string}`,
 	max_players?:boolean | `@${string}`,
 	offline_at?:boolean | `@${string}`,
+	player_management_runtime?:boolean | `@${string}`,
+	player_management_seen_at?:boolean | `@${string}`,
+	player_management_version?:boolean | `@${string}`,
 	plugin_version?:boolean | `@${string}`,
 	plugins_checked_at?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
@@ -54698,6 +56778,9 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	label?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	max_players?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	offline_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_management_runtime?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_management_seen_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_management_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	plugin_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	plugins_checked_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	port?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -54729,6 +56812,10 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 };
 	/** Ordering options when selecting data from "servers". */
 ["servers_order_by"]: {
+	access_events_aggregate?: ValueTypes["server_access_events_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	access_min_role?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	access_players_aggregate?: ValueTypes["server_access_players_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	access_restricted?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	api_password?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	boot_status?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	boot_status_detail?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -54752,7 +56839,11 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	map_rotation_shuffle?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	matches_aggregate?: ValueTypes["matches_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	max_players?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	migrations_aggregate?: ValueTypes["server_migrations_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	offline_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_management_runtime?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_management_seen_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_management_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	plugin_overrides_aggregate?: ValueTypes["server_plugins_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	plugin_runtime?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	plugin_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -54784,6 +56875,8 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 ["servers_select_column_servers_aggregate_bool_exp_bool_or_arguments_columns"]:servers_select_column_servers_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "servers" */
 ["servers_set_input"]: {
+	access_min_role?: ValueTypes["e_player_roles_enum"] | undefined | null | Variable<any, string>,
+	access_restricted?: boolean | undefined | null | Variable<any, string>,
 	api_password?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	boot_status?: string | undefined | null | Variable<any, string>,
 	boot_status_detail?: string | undefined | null | Variable<any, string>,
@@ -54801,6 +56894,9 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	map_rotation_shuffle?: boolean | undefined | null | Variable<any, string>,
 	max_players?: number | undefined | null | Variable<any, string>,
 	offline_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	player_management_runtime?: string | undefined | null | Variable<any, string>,
+	player_management_seen_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	player_management_version?: string | undefined | null | Variable<any, string>,
 	plugin_runtime?: ValueTypes["e_plugin_runtimes_enum"] | undefined | null | Variable<any, string>,
 	plugin_version?: string | undefined | null | Variable<any, string>,
 	plugins_checked_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -54862,6 +56958,8 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 };
 	/** Initial value of the column from where the streaming should start */
 ["servers_stream_cursor_value_input"]: {
+	access_min_role?: ValueTypes["e_player_roles_enum"] | undefined | null | Variable<any, string>,
+	access_restricted?: boolean | undefined | null | Variable<any, string>,
 	api_password?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	boot_status?: string | undefined | null | Variable<any, string>,
 	boot_status_detail?: string | undefined | null | Variable<any, string>,
@@ -54879,6 +56977,9 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	map_rotation_shuffle?: boolean | undefined | null | Variable<any, string>,
 	max_players?: number | undefined | null | Variable<any, string>,
 	offline_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	player_management_runtime?: string | undefined | null | Variable<any, string>,
+	player_management_seen_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	player_management_version?: string | undefined | null | Variable<any, string>,
 	plugin_runtime?: ValueTypes["e_plugin_runtimes_enum"] | undefined | null | Variable<any, string>,
 	plugin_version?: string | undefined | null | Variable<any, string>,
 	plugins_checked_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -56462,6 +58563,23 @@ e_scrim_request_statuses_stream?: [{	/** maximum number of rows returned in a si
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["e_scrim_request_statuses_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["e_scrim_request_statuses_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_scrim_request_statuses"]],
+e_server_migration_statuses?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_server_migration_statuses_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_server_migration_statuses_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_server_migration_statuses_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_server_migration_statuses"]],
+e_server_migration_statuses_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_server_migration_statuses_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_server_migration_statuses_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_server_migration_statuses_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_server_migration_statuses_aggregate"]],
+e_server_migration_statuses_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_server_migration_statuses"]],
+e_server_migration_statuses_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["e_server_migration_statuses_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_server_migration_statuses_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_server_migration_statuses"]],
 e_server_types?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["e_server_types_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -58325,6 +60443,40 @@ seasons_stream?: [{	/** maximum number of rows returned in a single batch */
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["seasons_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["seasons_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["seasons"]],
+server_access_events?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_access_events_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_access_events_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_access_events_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_access_events"]],
+server_access_events_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_access_events_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_access_events_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_access_events_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_access_events_aggregate"]],
+server_access_events_by_pk?: [{	event_id: ValueTypes["uuid"] | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["server_access_events"]],
+server_access_events_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["server_access_events_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_access_events_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_access_events"]],
+server_access_players?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_access_players_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_access_players_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_access_players_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_access_players"]],
+server_access_players_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_access_players_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_access_players_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_access_players_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_access_players_aggregate"]],
+server_access_players_by_pk?: [{	server_id: ValueTypes["uuid"] | Variable<any, string>,	steam_id: ValueTypes["bigint"] | Variable<any, string>},ValueTypes["server_access_players"]],
+server_access_players_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["server_access_players_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_access_players_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_access_players"]],
 server_map_rotation?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["server_map_rotation_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -58342,6 +60494,40 @@ server_map_rotation_stream?: [{	/** maximum number of rows returned in a single 
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["server_map_rotation_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["server_map_rotation_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_map_rotation"]],
+server_migrations?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_migrations_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_migrations_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_migrations_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_migrations"]],
+server_migrations_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_migrations_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_migrations_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_migrations_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_migrations_aggregate"]],
+server_migrations_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["server_migrations"]],
+server_migrations_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["server_migrations_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_migrations_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_migrations"]],
+server_player_sessions?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_player_sessions_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_player_sessions_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_player_sessions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_player_sessions"]],
+server_player_sessions_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_player_sessions_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_player_sessions_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_player_sessions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_player_sessions_aggregate"]],
+server_player_sessions_by_pk?: [{	id: ValueTypes["bigint"] | Variable<any, string>},ValueTypes["server_player_sessions"]],
+server_player_sessions_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["server_player_sessions_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_player_sessions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_player_sessions"]],
 server_plugins?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["server_plugins_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -58359,6 +60545,22 @@ server_plugins_stream?: [{	/** maximum number of rows returned in a single batch
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["server_plugins_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["server_plugins_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_plugins"]],
+server_recent_players?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_recent_players_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_recent_players_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_recent_players_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_recent_players"]],
+server_recent_players_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_recent_players_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_recent_players_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_recent_players_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_recent_players_aggregate"]],
+server_recent_players_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["server_recent_players_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_recent_players_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_recent_players"]],
 server_regions?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["server_regions_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -58376,6 +60578,23 @@ server_regions_stream?: [{	/** maximum number of rows returned in a single batch
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["server_regions_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["server_regions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_regions"]],
+server_rosters?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_rosters_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_rosters_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_rosters_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_rosters"]],
+server_rosters_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_rosters_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_rosters_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_rosters_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_rosters_aggregate"]],
+server_rosters_by_pk?: [{	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["server_rosters"]],
+server_rosters_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["server_rosters_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_rosters_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_rosters"]],
 servers?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["servers_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -59592,22 +61811,6 @@ v_player_multi_kills_stream?: [{	/** maximum number of rows returned in a single
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["v_player_multi_kills_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["v_player_multi_kills_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_multi_kills"]],
-v_player_queue_partners?: [{	/** distinct select on columns */
-	distinct_on?: Array<ValueTypes["v_player_queue_partners_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
-	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
-	order_by?: Array<ValueTypes["v_player_queue_partners_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["v_player_queue_partners_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_queue_partners"]],
-v_player_queue_partners_aggregate?: [{	/** distinct select on columns */
-	distinct_on?: Array<ValueTypes["v_player_queue_partners_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
-	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
-	order_by?: Array<ValueTypes["v_player_queue_partners_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["v_player_queue_partners_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_queue_partners_aggregate"]],
-v_player_queue_partners_stream?: [{	/** maximum number of rows returned in a single batch */
-	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
-	cursor: Array<ValueTypes["v_player_queue_partners_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["v_player_queue_partners_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_queue_partners"]],
 v_player_weapon_damage?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["v_player_weapon_damage_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -82802,168 +85005,6 @@ count?: [{	columns?: Array<ValueTypes["v_player_multi_kills_select_column"]> | u
 	kills?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
-	/** columns and relationships of "v_player_queue_partners" */
-["v_player_queue_partners"]: AliasType<{
-	first_played_at?:boolean | `@${string}`,
-	last_played_at?:boolean | `@${string}`,
-	matches_together?:boolean | `@${string}`,
-	/** An object relationship */
-	partner?:ValueTypes["players"],
-	partner_steam_id?:boolean | `@${string}`,
-	/** An object relationship */
-	player?:ValueTypes["players"],
-	steam_id?:boolean | `@${string}`,
-	wins_together?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregated selection of "v_player_queue_partners" */
-["v_player_queue_partners_aggregate"]: AliasType<{
-	aggregate?:ValueTypes["v_player_queue_partners_aggregate_fields"],
-	nodes?:ValueTypes["v_player_queue_partners"],
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregate fields of "v_player_queue_partners" */
-["v_player_queue_partners_aggregate_fields"]: AliasType<{
-	avg?:ValueTypes["v_player_queue_partners_avg_fields"],
-count?: [{	columns?: Array<ValueTypes["v_player_queue_partners_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
-	max?:ValueTypes["v_player_queue_partners_max_fields"],
-	min?:ValueTypes["v_player_queue_partners_min_fields"],
-	stddev?:ValueTypes["v_player_queue_partners_stddev_fields"],
-	stddev_pop?:ValueTypes["v_player_queue_partners_stddev_pop_fields"],
-	stddev_samp?:ValueTypes["v_player_queue_partners_stddev_samp_fields"],
-	sum?:ValueTypes["v_player_queue_partners_sum_fields"],
-	var_pop?:ValueTypes["v_player_queue_partners_var_pop_fields"],
-	var_samp?:ValueTypes["v_player_queue_partners_var_samp_fields"],
-	variance?:ValueTypes["v_player_queue_partners_variance_fields"],
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregate avg on columns */
-["v_player_queue_partners_avg_fields"]: AliasType<{
-	matches_together?:boolean | `@${string}`,
-	partner_steam_id?:boolean | `@${string}`,
-	steam_id?:boolean | `@${string}`,
-	wins_together?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** Boolean expression to filter rows from the table "v_player_queue_partners". All fields are combined with a logical 'AND'. */
-["v_player_queue_partners_bool_exp"]: {
-	_and?: Array<ValueTypes["v_player_queue_partners_bool_exp"]> | undefined | null | Variable<any, string>,
-	_not?: ValueTypes["v_player_queue_partners_bool_exp"] | undefined | null | Variable<any, string>,
-	_or?: Array<ValueTypes["v_player_queue_partners_bool_exp"]> | undefined | null | Variable<any, string>,
-	first_played_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
-	last_played_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
-	matches_together?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
-	partner?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
-	partner_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
-	player?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
-	steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
-	wins_together?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>
-};
-	/** aggregate max on columns */
-["v_player_queue_partners_max_fields"]: AliasType<{
-	first_played_at?:boolean | `@${string}`,
-	last_played_at?:boolean | `@${string}`,
-	matches_together?:boolean | `@${string}`,
-	partner_steam_id?:boolean | `@${string}`,
-	steam_id?:boolean | `@${string}`,
-	wins_together?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregate min on columns */
-["v_player_queue_partners_min_fields"]: AliasType<{
-	first_played_at?:boolean | `@${string}`,
-	last_played_at?:boolean | `@${string}`,
-	matches_together?:boolean | `@${string}`,
-	partner_steam_id?:boolean | `@${string}`,
-	steam_id?:boolean | `@${string}`,
-	wins_together?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** Ordering options when selecting data from "v_player_queue_partners". */
-["v_player_queue_partners_order_by"]: {
-	first_played_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	last_played_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	matches_together?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	partner?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
-	partner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	player?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
-	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	wins_together?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
-};
-	/** select columns of table "v_player_queue_partners" */
-["v_player_queue_partners_select_column"]:v_player_queue_partners_select_column;
-	/** aggregate stddev on columns */
-["v_player_queue_partners_stddev_fields"]: AliasType<{
-	matches_together?:boolean | `@${string}`,
-	partner_steam_id?:boolean | `@${string}`,
-	steam_id?:boolean | `@${string}`,
-	wins_together?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregate stddev_pop on columns */
-["v_player_queue_partners_stddev_pop_fields"]: AliasType<{
-	matches_together?:boolean | `@${string}`,
-	partner_steam_id?:boolean | `@${string}`,
-	steam_id?:boolean | `@${string}`,
-	wins_together?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregate stddev_samp on columns */
-["v_player_queue_partners_stddev_samp_fields"]: AliasType<{
-	matches_together?:boolean | `@${string}`,
-	partner_steam_id?:boolean | `@${string}`,
-	steam_id?:boolean | `@${string}`,
-	wins_together?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** Streaming cursor of the table "v_player_queue_partners" */
-["v_player_queue_partners_stream_cursor_input"]: {
-	/** Stream column input with initial value */
-	initial_value: ValueTypes["v_player_queue_partners_stream_cursor_value_input"] | Variable<any, string>,
-	/** cursor ordering */
-	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
-};
-	/** Initial value of the column from where the streaming should start */
-["v_player_queue_partners_stream_cursor_value_input"]: {
-	first_played_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
-	last_played_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
-	matches_together?: number | undefined | null | Variable<any, string>,
-	partner_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
-	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
-	wins_together?: number | undefined | null | Variable<any, string>
-};
-	/** aggregate sum on columns */
-["v_player_queue_partners_sum_fields"]: AliasType<{
-	matches_together?:boolean | `@${string}`,
-	partner_steam_id?:boolean | `@${string}`,
-	steam_id?:boolean | `@${string}`,
-	wins_together?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregate var_pop on columns */
-["v_player_queue_partners_var_pop_fields"]: AliasType<{
-	matches_together?:boolean | `@${string}`,
-	partner_steam_id?:boolean | `@${string}`,
-	steam_id?:boolean | `@${string}`,
-	wins_together?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregate var_samp on columns */
-["v_player_queue_partners_var_samp_fields"]: AliasType<{
-	matches_together?:boolean | `@${string}`,
-	partner_steam_id?:boolean | `@${string}`,
-	steam_id?:boolean | `@${string}`,
-	wins_together?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregate variance on columns */
-["v_player_queue_partners_variance_fields"]: AliasType<{
-	matches_together?:boolean | `@${string}`,
-	partner_steam_id?:boolean | `@${string}`,
-	steam_id?:boolean | `@${string}`,
-	wins_together?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
 	/** columns and relationships of "v_player_weapon_damage" */
 ["v_player_weapon_damage"]: AliasType<{
 	damage?:boolean | `@${string}`,
@@ -85895,6 +87936,15 @@ export type ResolverInputTypes = {
 	segments: Array<ResolverInputTypes["ClipSegmentInput"]>,
 	title?: string | undefined | null
 };
+	["CommunityTotals"]: AliasType<{
+	deaths?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	rank?:boolean | `@${string}`,
+	seconds?:boolean | `@${string}`,
+	servers?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["ConnectionByState"]: AliasType<{
 	count?:boolean | `@${string}`,
 	state?:boolean | `@${string}`,
@@ -86262,6 +88312,54 @@ export type ResolverInputTypes = {
 	success?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["PlayerCommunityIp"]: AliasType<{
+	ip?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["PlayerCommunityIpMatch"]: AliasType<{
+	avatar_url?:boolean | `@${string}`,
+	has_account?:boolean | `@${string}`,
+	ip?:boolean | `@${string}`,
+	is_banned?:boolean | `@${string}`,
+	last_seen_at?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	online?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["PlayerCommunityServer"]: AliasType<{
+	all_time?:ResolverInputTypes["CommunityTotals"],
+	label?:boolean | `@${string}`,
+	last_seen_at?:boolean | `@${string}`,
+	names?:boolean | `@${string}`,
+	online?:boolean | `@${string}`,
+	region?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+	sessions?:ResolverInputTypes["PlayerCommunitySession"],
+	type?:boolean | `@${string}`,
+	week?:ResolverInputTypes["CommunityTotals"],
+		__typename?: boolean | `@${string}`
+}>;
+	["PlayerCommunitySession"]: AliasType<{
+	ended_at?:boolean | `@${string}`,
+	ip?:boolean | `@${string}`,
+	started_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["PlayerCommunityStats"]: AliasType<{
+	all_time?:ResolverInputTypes["CommunityTotals"],
+	ip_matches?:ResolverInputTypes["PlayerCommunityIpMatch"],
+	ips?:ResolverInputTypes["PlayerCommunityIp"],
+	is_moderator_view?:boolean | `@${string}`,
+	last_seen_at?:boolean | `@${string}`,
+	online_server_id?:boolean | `@${string}`,
+	online_server_label?:boolean | `@${string}`,
+	servers?:ResolverInputTypes["PlayerCommunityServer"],
+	week?:ResolverInputTypes["CommunityTotals"],
+		__typename?: boolean | `@${string}`
+}>;
 	["PluginReadmeOutput"]: AliasType<{
 	content?:boolean | `@${string}`,
 	format?:boolean | `@${string}`,
@@ -86390,6 +88488,50 @@ export type ResolverInputTypes = {
 	total?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["ServerAccessInput"]: {
+	event_ids: Array<ResolverInputTypes["uuid"]>,
+	min_role?: string | undefined | null,
+	restricted: boolean,
+	steam_ids: Array<string>
+};
+	["ServerCommunityStats"]: AliasType<{
+	all_time_players?:boolean | `@${string}`,
+	hourly?:ResolverInputTypes["ServerHourlyActivity"],
+	max_players?:boolean | `@${string}`,
+	online?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+	tracked_since?:boolean | `@${string}`,
+	week_players?:boolean | `@${string}`,
+	week_seconds?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["ServerHourlyActivity"]: AliasType<{
+	hour?:boolean | `@${string}`,
+	players?:boolean | `@${string}`,
+	seconds?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["ServerLeaderboard"]: AliasType<{
+	entries?:ResolverInputTypes["ServerLeaderboardEntry"],
+	you?:ResolverInputTypes["ServerLeaderboardEntry"],
+		__typename?: boolean | `@${string}`
+}>;
+	["ServerLeaderboardEntry"]: AliasType<{
+	avatar_url?:boolean | `@${string}`,
+	country?:boolean | `@${string}`,
+	deaths?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	rank?:boolean | `@${string}`,
+	seconds?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["ServerMapRotationInput"]: {
+	map_ids: Array<ResolverInputTypes["uuid"]>,
+	shuffle: boolean
+};
 	["ServerPlayer"]: AliasType<{
 	name?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
@@ -96452,6 +98594,117 @@ count?: [{	columns?: Array<ResolverInputTypes["e_scrim_request_statuses_select_c
 	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["e_scrim_request_statuses_bool_exp"]
 };
+	/** columns and relationships of "e_server_migration_statuses" */
+["e_server_migration_statuses"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "e_server_migration_statuses" */
+["e_server_migration_statuses_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["e_server_migration_statuses_aggregate_fields"],
+	nodes?:ResolverInputTypes["e_server_migration_statuses"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "e_server_migration_statuses" */
+["e_server_migration_statuses_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ResolverInputTypes["e_server_migration_statuses_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["e_server_migration_statuses_max_fields"],
+	min?:ResolverInputTypes["e_server_migration_statuses_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "e_server_migration_statuses". All fields are combined with a logical 'AND'. */
+["e_server_migration_statuses_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["e_server_migration_statuses_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["e_server_migration_statuses_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["e_server_migration_statuses_bool_exp"]> | undefined | null,
+	description?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	value?: ResolverInputTypes["String_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "e_server_migration_statuses" */
+["e_server_migration_statuses_constraint"]:e_server_migration_statuses_constraint;
+	["e_server_migration_statuses_enum"]:e_server_migration_statuses_enum;
+	/** Boolean expression to compare columns of type "e_server_migration_statuses_enum". All fields are combined with logical 'AND'. */
+["e_server_migration_statuses_enum_comparison_exp"]: {
+	_eq?: ResolverInputTypes["e_server_migration_statuses_enum"] | undefined | null,
+	_in?: Array<ResolverInputTypes["e_server_migration_statuses_enum"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_neq?: ResolverInputTypes["e_server_migration_statuses_enum"] | undefined | null,
+	_nin?: Array<ResolverInputTypes["e_server_migration_statuses_enum"]> | undefined | null
+};
+	/** input type for inserting data into table "e_server_migration_statuses" */
+["e_server_migration_statuses_insert_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate max on columns */
+["e_server_migration_statuses_max_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["e_server_migration_statuses_min_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "e_server_migration_statuses" */
+["e_server_migration_statuses_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["e_server_migration_statuses"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** input type for inserting object relation for remote table "e_server_migration_statuses" */
+["e_server_migration_statuses_obj_rel_insert_input"]: {
+	data: ResolverInputTypes["e_server_migration_statuses_insert_input"],
+	/** upsert condition */
+	on_conflict?: ResolverInputTypes["e_server_migration_statuses_on_conflict"] | undefined | null
+};
+	/** on_conflict condition type for table "e_server_migration_statuses" */
+["e_server_migration_statuses_on_conflict"]: {
+	constraint: ResolverInputTypes["e_server_migration_statuses_constraint"],
+	update_columns: Array<ResolverInputTypes["e_server_migration_statuses_update_column"]>,
+	where?: ResolverInputTypes["e_server_migration_statuses_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "e_server_migration_statuses". */
+["e_server_migration_statuses_order_by"]: {
+	description?: ResolverInputTypes["order_by"] | undefined | null,
+	value?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: e_server_migration_statuses */
+["e_server_migration_statuses_pk_columns_input"]: {
+	value: string
+};
+	/** select columns of table "e_server_migration_statuses" */
+["e_server_migration_statuses_select_column"]:e_server_migration_statuses_select_column;
+	/** input type for updating data in table "e_server_migration_statuses" */
+["e_server_migration_statuses_set_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** Streaming cursor of the table "e_server_migration_statuses" */
+["e_server_migration_statuses_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["e_server_migration_statuses_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["e_server_migration_statuses_stream_cursor_value_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** update columns of table "e_server_migration_statuses" */
+["e_server_migration_statuses_update_column"]:e_server_migration_statuses_update_column;
+	["e_server_migration_statuses_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["e_server_migration_statuses_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["e_server_migration_statuses_bool_exp"]
+};
 	/** columns and relationships of "e_server_types" */
 ["e_server_types"]: AliasType<{
 	description?:boolean | `@${string}`,
@@ -101244,12 +103497,10 @@ count?: [{	columns?: Array<ResolverInputTypes["game_mode_plugins_select_column"]
 	archived_at?:boolean | `@${string}`,
 	cfg?:boolean | `@${string}`,
 	competitive_safe?:boolean | `@${string}`,
-	system?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
 	description?:boolean | `@${string}`,
 	enabled?:boolean | `@${string}`,
 	extra_game_params?:boolean | `@${string}`,
-	valve_mode?:boolean | `@${string}`,
 	icon?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 match_options?: [{	/** distinct select on columns */
@@ -101282,7 +103533,9 @@ runtime_conflicts?: [{	/** JSON select path */
 	slug?:boolean | `@${string}`,
 supported_runtimes?: [{	/** JSON select path */
 	path?: string | undefined | null},boolean | `@${string}`],
+	system?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
+	valve_mode?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregated selection of "game_modes" */
@@ -101306,12 +103559,10 @@ count?: [{	columns?: Array<ResolverInputTypes["game_modes_select_column"]> | und
 	archived_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	cfg?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	competitive_safe?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
-	system?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	description?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	enabled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	extra_game_params?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
-	valve_mode?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	icon?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	match_options?: ResolverInputTypes["match_options_bool_exp"] | undefined | null,
@@ -101322,7 +103573,9 @@ count?: [{	columns?: Array<ResolverInputTypes["game_modes_select_column"]> | und
 	runtime_conflicts?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
 	slug?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	supported_runtimes?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
-	updated_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null
+	system?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	valve_mode?: ResolverInputTypes["String_comparison_exp"] | undefined | null
 };
 	/** unique or primary key constraints on table "game_modes" */
 ["game_modes_constraint"]:game_modes_constraint;
@@ -101331,19 +103584,19 @@ count?: [{	columns?: Array<ResolverInputTypes["game_modes_select_column"]> | und
 	archived_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	cfg?: string | undefined | null,
 	competitive_safe?: boolean | undefined | null,
-	system?: boolean | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
 	enabled?: boolean | undefined | null,
 	extra_game_params?: string | undefined | null,
-	valve_mode?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_options?: ResolverInputTypes["match_options_arr_rel_insert_input"] | undefined | null,
 	name?: string | undefined | null,
 	plugins?: ResolverInputTypes["game_mode_plugins_arr_rel_insert_input"] | undefined | null,
 	slug?: string | undefined | null,
-	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
+	system?: boolean | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	valve_mode?: string | undefined | null
 };
 	/** aggregate max on columns */
 ["game_modes_max_fields"]: AliasType<{
@@ -101352,12 +103605,12 @@ count?: [{	columns?: Array<ResolverInputTypes["game_modes_select_column"]> | und
 	created_at?:boolean | `@${string}`,
 	description?:boolean | `@${string}`,
 	extra_game_params?:boolean | `@${string}`,
-	valve_mode?:boolean | `@${string}`,
 	icon?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	slug?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
+	valve_mode?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate min on columns */
@@ -101367,12 +103620,12 @@ count?: [{	columns?: Array<ResolverInputTypes["game_modes_select_column"]> | und
 	created_at?:boolean | `@${string}`,
 	description?:boolean | `@${string}`,
 	extra_game_params?:boolean | `@${string}`,
-	valve_mode?:boolean | `@${string}`,
 	icon?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	slug?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
+	valve_mode?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** response of any mutation on the table "game_modes" */
@@ -101400,12 +103653,10 @@ count?: [{	columns?: Array<ResolverInputTypes["game_modes_select_column"]> | und
 	archived_at?: ResolverInputTypes["order_by"] | undefined | null,
 	cfg?: ResolverInputTypes["order_by"] | undefined | null,
 	competitive_safe?: ResolverInputTypes["order_by"] | undefined | null,
-	system?: ResolverInputTypes["order_by"] | undefined | null,
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	description?: ResolverInputTypes["order_by"] | undefined | null,
 	enabled?: ResolverInputTypes["order_by"] | undefined | null,
 	extra_game_params?: ResolverInputTypes["order_by"] | undefined | null,
-	valve_mode?: ResolverInputTypes["order_by"] | undefined | null,
 	icon?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_options_aggregate?: ResolverInputTypes["match_options_aggregate_order_by"] | undefined | null,
@@ -101414,7 +103665,9 @@ count?: [{	columns?: Array<ResolverInputTypes["game_modes_select_column"]> | und
 	runtime_conflicts?: ResolverInputTypes["order_by"] | undefined | null,
 	slug?: ResolverInputTypes["order_by"] | undefined | null,
 	supported_runtimes?: ResolverInputTypes["order_by"] | undefined | null,
-	updated_at?: ResolverInputTypes["order_by"] | undefined | null
+	system?: ResolverInputTypes["order_by"] | undefined | null,
+	updated_at?: ResolverInputTypes["order_by"] | undefined | null,
+	valve_mode?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** primary key columns input for table: game_modes */
 ["game_modes_pk_columns_input"]: {
@@ -101427,17 +103680,17 @@ count?: [{	columns?: Array<ResolverInputTypes["game_modes_select_column"]> | und
 	archived_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	cfg?: string | undefined | null,
 	competitive_safe?: boolean | undefined | null,
-	system?: boolean | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
 	enabled?: boolean | undefined | null,
 	extra_game_params?: string | undefined | null,
-	valve_mode?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	name?: string | undefined | null,
 	slug?: string | undefined | null,
-	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
+	system?: boolean | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	valve_mode?: string | undefined | null
 };
 	/** Streaming cursor of the table "game_modes" */
 ["game_modes_stream_cursor_input"]: {
@@ -101451,17 +103704,17 @@ count?: [{	columns?: Array<ResolverInputTypes["game_modes_select_column"]> | und
 	archived_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	cfg?: string | undefined | null,
 	competitive_safe?: boolean | undefined | null,
-	system?: boolean | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
 	enabled?: boolean | undefined | null,
 	extra_game_params?: string | undefined | null,
-	valve_mode?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	name?: string | undefined | null,
 	slug?: string | undefined | null,
-	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
+	system?: boolean | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	valve_mode?: string | undefined | null
 };
 	/** update columns of table "game_modes" */
 ["game_modes_update_column"]:game_modes_update_column;
@@ -102660,6 +104913,9 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_node_plugins_select_c
 };
 	/** columns and relationships of "game_server_nodes" */
 ["game_server_nodes"]: AliasType<{
+	accepting_new_matches?:boolean | `@${string}`,
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?:boolean | `@${string}`,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
 	build_id?:boolean | `@${string}`,
@@ -102826,6 +105082,8 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 };
 	/** aggregate avg on columns */
 ["game_server_nodes_avg_fields"]: AliasType<{
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?:boolean | `@${string}`,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
 	build_id?:boolean | `@${string}`,
@@ -102864,6 +105122,8 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 	_and?: Array<ResolverInputTypes["game_server_nodes_bool_exp"]> | undefined | null,
 	_not?: ResolverInputTypes["game_server_nodes_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["game_server_nodes_bool_exp"]> | undefined | null,
+	accepting_new_matches?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	available_dedicated_slot_count?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	available_server_count?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	build_id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	cpu_cores_per_socket?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
@@ -102968,6 +105228,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 };
 	/** input type for inserting data into table "game_server_nodes" */
 ["game_server_nodes_insert_input"]: {
+	accepting_new_matches?: boolean | undefined | null,
 	build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
 	cpu_frequency_info?: ResolverInputTypes["jsonb"] | undefined | null,
@@ -103020,6 +105281,8 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 };
 	/** aggregate max on columns */
 ["game_server_nodes_max_fields"]: AliasType<{
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?:boolean | `@${string}`,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
 	build_id?:boolean | `@${string}`,
@@ -103079,6 +105342,8 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 };
 	/** aggregate min on columns */
 ["game_server_nodes_min_fields"]: AliasType<{
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?:boolean | `@${string}`,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
 	build_id?:boolean | `@${string}`,
@@ -103158,6 +105423,8 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 };
 	/** Ordering options when selecting data from "game_server_nodes". */
 ["game_server_nodes_order_by"]: {
+	accepting_new_matches?: ResolverInputTypes["order_by"] | undefined | null,
+	available_dedicated_slot_count?: ResolverInputTypes["order_by"] | undefined | null,
 	available_server_count?: ResolverInputTypes["order_by"] | undefined | null,
 	build_id?: ResolverInputTypes["order_by"] | undefined | null,
 	cpu_cores_per_socket?: ResolverInputTypes["order_by"] | undefined | null,
@@ -103233,6 +105500,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 ["game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns"]:game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "game_server_nodes" */
 ["game_server_nodes_set_input"]: {
+	accepting_new_matches?: boolean | undefined | null,
 	build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
 	cpu_frequency_info?: ResolverInputTypes["jsonb"] | undefined | null,
@@ -103279,6 +105547,8 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 };
 	/** aggregate stddev on columns */
 ["game_server_nodes_stddev_fields"]: AliasType<{
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?:boolean | `@${string}`,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
 	build_id?:boolean | `@${string}`,
@@ -103314,6 +105584,8 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 };
 	/** aggregate stddev_pop on columns */
 ["game_server_nodes_stddev_pop_fields"]: AliasType<{
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?:boolean | `@${string}`,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
 	build_id?:boolean | `@${string}`,
@@ -103349,6 +105621,8 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 };
 	/** aggregate stddev_samp on columns */
 ["game_server_nodes_stddev_samp_fields"]: AliasType<{
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?:boolean | `@${string}`,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
 	build_id?:boolean | `@${string}`,
@@ -103391,6 +105665,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 };
 	/** Initial value of the column from where the streaming should start */
 ["game_server_nodes_stream_cursor_value_input"]: {
+	accepting_new_matches?: boolean | undefined | null,
 	build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
 	cpu_frequency_info?: ResolverInputTypes["jsonb"] | undefined | null,
@@ -103437,6 +105712,8 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 };
 	/** aggregate sum on columns */
 ["game_server_nodes_sum_fields"]: AliasType<{
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?:boolean | `@${string}`,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
 	build_id?:boolean | `@${string}`,
@@ -103492,6 +105769,8 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 };
 	/** aggregate var_pop on columns */
 ["game_server_nodes_var_pop_fields"]: AliasType<{
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?:boolean | `@${string}`,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
 	build_id?:boolean | `@${string}`,
@@ -103527,6 +105806,8 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 };
 	/** aggregate var_samp on columns */
 ["game_server_nodes_var_samp_fields"]: AliasType<{
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?:boolean | `@${string}`,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
 	build_id?:boolean | `@${string}`,
@@ -103562,6 +105843,8 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 };
 	/** aggregate variance on columns */
 ["game_server_nodes_variance_fields"]: AliasType<{
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?:boolean | `@${string}`,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
 	build_id?:boolean | `@${string}`,
@@ -114925,6 +117208,7 @@ callForOrganizer?: [{	match_id: string},ResolverInputTypes["SuccessOutput"]],
 cancelBakeShaders?: [{	game_server_node_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 cancelClipRender?: [{	job_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 cancelClipRenderBatch?: [{	match_map_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
+cancelDedicatedServerMove?: [{	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 cancelMatch?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 	/** Request cancellation of the in-progress ELO recompute (admin only). Stops after the current match. */
 	cancelRecomputePlayerElo?:ResolverInputTypes["SuccessOutput"],
@@ -115137,6 +117421,9 @@ delete_e_sanction_types_by_pk?: [{	value: string},ResolverInputTypes["e_sanction
 delete_e_scrim_request_statuses?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["e_scrim_request_statuses_bool_exp"]},ResolverInputTypes["e_scrim_request_statuses_mutation_response"]],
 delete_e_scrim_request_statuses_by_pk?: [{	value: string},ResolverInputTypes["e_scrim_request_statuses"]],
+delete_e_server_migration_statuses?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["e_server_migration_statuses_bool_exp"]},ResolverInputTypes["e_server_migration_statuses_mutation_response"]],
+delete_e_server_migration_statuses_by_pk?: [{	value: string},ResolverInputTypes["e_server_migration_statuses"]],
 delete_e_server_types?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["e_server_types_bool_exp"]},ResolverInputTypes["e_server_types_mutation_response"]],
 delete_e_server_types_by_pk?: [{	value: string},ResolverInputTypes["e_server_types"]],
@@ -115436,15 +117723,30 @@ delete_role_permissions?: [{	/** filter the rows which have to be deleted */
 delete_seasons?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["seasons_bool_exp"]},ResolverInputTypes["seasons_mutation_response"]],
 delete_seasons_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["seasons"]],
+delete_server_access_events?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["server_access_events_bool_exp"]},ResolverInputTypes["server_access_events_mutation_response"]],
+delete_server_access_events_by_pk?: [{	event_id: ResolverInputTypes["uuid"],	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["server_access_events"]],
+delete_server_access_players?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["server_access_players_bool_exp"]},ResolverInputTypes["server_access_players_mutation_response"]],
+delete_server_access_players_by_pk?: [{	server_id: ResolverInputTypes["uuid"],	steam_id: ResolverInputTypes["bigint"]},ResolverInputTypes["server_access_players"]],
 delete_server_map_rotation?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["server_map_rotation_bool_exp"]},ResolverInputTypes["server_map_rotation_mutation_response"]],
 delete_server_map_rotation_by_pk?: [{	map_id: ResolverInputTypes["uuid"],	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["server_map_rotation"]],
+delete_server_migrations?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["server_migrations_bool_exp"]},ResolverInputTypes["server_migrations_mutation_response"]],
+delete_server_migrations_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["server_migrations"]],
+delete_server_player_sessions?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["server_player_sessions_bool_exp"]},ResolverInputTypes["server_player_sessions_mutation_response"]],
+delete_server_player_sessions_by_pk?: [{	id: ResolverInputTypes["bigint"]},ResolverInputTypes["server_player_sessions"]],
 delete_server_plugins?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["server_plugins_bool_exp"]},ResolverInputTypes["server_plugins_mutation_response"]],
 delete_server_plugins_by_pk?: [{	plugin_slug: string,	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["server_plugins"]],
 delete_server_regions?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["server_regions_bool_exp"]},ResolverInputTypes["server_regions_mutation_response"]],
 delete_server_regions_by_pk?: [{	value: string},ResolverInputTypes["server_regions"]],
+delete_server_rosters?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["server_rosters_bool_exp"]},ResolverInputTypes["server_rosters_mutation_response"]],
+delete_server_rosters_by_pk?: [{	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["server_rosters"]],
 delete_servers?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["servers_bool_exp"]},ResolverInputTypes["servers_mutation_response"]],
 delete_servers_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["servers"]],
@@ -115953,6 +118255,12 @@ insert_e_scrim_request_statuses?: [{	/** the rows to be inserted */
 insert_e_scrim_request_statuses_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["e_scrim_request_statuses_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["e_scrim_request_statuses_on_conflict"] | undefined | null},ResolverInputTypes["e_scrim_request_statuses"]],
+insert_e_server_migration_statuses?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["e_server_migration_statuses_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["e_server_migration_statuses_on_conflict"] | undefined | null},ResolverInputTypes["e_server_migration_statuses_mutation_response"]],
+insert_e_server_migration_statuses_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["e_server_migration_statuses_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["e_server_migration_statuses_on_conflict"] | undefined | null},ResolverInputTypes["e_server_migration_statuses"]],
 insert_e_server_types?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["e_server_types_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["e_server_types_on_conflict"] | undefined | null},ResolverInputTypes["e_server_types_mutation_response"]],
@@ -116551,12 +118859,36 @@ insert_seasons?: [{	/** the rows to be inserted */
 insert_seasons_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["seasons_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["seasons_on_conflict"] | undefined | null},ResolverInputTypes["seasons"]],
+insert_server_access_events?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["server_access_events_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["server_access_events_on_conflict"] | undefined | null},ResolverInputTypes["server_access_events_mutation_response"]],
+insert_server_access_events_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["server_access_events_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["server_access_events_on_conflict"] | undefined | null},ResolverInputTypes["server_access_events"]],
+insert_server_access_players?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["server_access_players_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["server_access_players_on_conflict"] | undefined | null},ResolverInputTypes["server_access_players_mutation_response"]],
+insert_server_access_players_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["server_access_players_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["server_access_players_on_conflict"] | undefined | null},ResolverInputTypes["server_access_players"]],
 insert_server_map_rotation?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["server_map_rotation_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["server_map_rotation_on_conflict"] | undefined | null},ResolverInputTypes["server_map_rotation_mutation_response"]],
 insert_server_map_rotation_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["server_map_rotation_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["server_map_rotation_on_conflict"] | undefined | null},ResolverInputTypes["server_map_rotation"]],
+insert_server_migrations?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["server_migrations_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["server_migrations_on_conflict"] | undefined | null},ResolverInputTypes["server_migrations_mutation_response"]],
+insert_server_migrations_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["server_migrations_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["server_migrations_on_conflict"] | undefined | null},ResolverInputTypes["server_migrations"]],
+insert_server_player_sessions?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["server_player_sessions_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["server_player_sessions_on_conflict"] | undefined | null},ResolverInputTypes["server_player_sessions_mutation_response"]],
+insert_server_player_sessions_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["server_player_sessions_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["server_player_sessions_on_conflict"] | undefined | null},ResolverInputTypes["server_player_sessions"]],
 insert_server_plugins?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["server_plugins_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["server_plugins_on_conflict"] | undefined | null},ResolverInputTypes["server_plugins_mutation_response"]],
@@ -116569,6 +118901,12 @@ insert_server_regions?: [{	/** the rows to be inserted */
 insert_server_regions_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["server_regions_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["server_regions_on_conflict"] | undefined | null},ResolverInputTypes["server_regions"]],
+insert_server_rosters?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["server_rosters_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["server_rosters_on_conflict"] | undefined | null},ResolverInputTypes["server_rosters_mutation_response"]],
+insert_server_rosters_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["server_rosters_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["server_rosters_on_conflict"] | undefined | null},ResolverInputTypes["server_rosters"]],
 insert_servers?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["servers_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["servers_on_conflict"] | undefined | null},ResolverInputTypes["servers_mutation_response"]],
@@ -116912,6 +119250,7 @@ linkSteamMatchHistory?: [{	auth_code: string,	share_code: string},ResolverInputT
 loadUtilityPlaybookIntoSession?: [{	playbook_id?: ResolverInputTypes["uuid"] | undefined | null,	session_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 	/** logout */
 	logout?:ResolverInputTypes["SuccessOutput"],
+moveDedicatedServerToNode?: [{	game_server_node_id: string,	server_id: ResolverInputTypes["uuid"],	without_files?: boolean | undefined | null},ResolverInputTypes["SuccessOutput"]],
 moveServerItem?: [{	dest_path: string,	node_id: string,	server_id?: string | undefined | null,	source_path: string},ResolverInputTypes["SuccessOutput"]],
 	/** Return the latest S3 orphan-scan report (admin only). */
 	orphanedDemosScanResult?:ResolverInputTypes["OrphanScanResultOutput"],
@@ -117011,8 +119350,10 @@ setHudMode?: [{	match_id: ResolverInputTypes["uuid"],	mode: string},ResolverInpu
 setMapWinner?: [{	match_id: ResolverInputTypes["uuid"],	match_map_id: ResolverInputTypes["uuid"],	winning_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 setMatchWinner?: [{	match_id: ResolverInputTypes["uuid"],	winning_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 setNewsPostStatus?: [{	id: ResolverInputTypes["uuid"],	status: string},ResolverInputTypes["NewsPost"]],
+setServerAccess?: [{	event_ids: Array<ResolverInputTypes["uuid"]>,	min_role?: string | undefined | null,	restricted: boolean,	server_id: ResolverInputTypes["uuid"],	steam_ids: Array<string>},ResolverInputTypes["SuccessOutput"]],
 setServerMapRotation?: [{	map_ids: Array<ResolverInputTypes["uuid"]>,	server_id: ResolverInputTypes["uuid"],	shuffle: boolean},ResolverInputTypes["SuccessOutput"]],
 setServerPlugins?: [{	plugins: Array<ResolverInputTypes["ServerPluginInput"]>,	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
+setServerSettings?: [{	access?: ResolverInputTypes["ServerAccessInput"] | undefined | null,	map_rotation?: ResolverInputTypes["ServerMapRotationInput"] | undefined | null,	plugins?: Array<ResolverInputTypes["ServerPluginInput"]> | undefined | null,	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 setTournamentAward?: [{	award_id?: ResolverInputTypes["uuid"] | undefined | null,	custom_name?: string | undefined | null,	placement: number,	silhouette?: number | undefined | null,	tournament_id: ResolverInputTypes["uuid"]},ResolverInputTypes["TournamentAward"]],
 setUtilityPracticeAccess?: [{	access: string,	session_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 	setupGameServer?:ResolverInputTypes["SetupGameServeOutput"],
@@ -117514,6 +119855,13 @@ update_e_scrim_request_statuses_by_pk?: [{	/** sets the columns of the filtered 
 	_set?: ResolverInputTypes["e_scrim_request_statuses_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["e_scrim_request_statuses_pk_columns_input"]},ResolverInputTypes["e_scrim_request_statuses"]],
 update_e_scrim_request_statuses_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["e_scrim_request_statuses_updates"]>},ResolverInputTypes["e_scrim_request_statuses_mutation_response"]],
+update_e_server_migration_statuses?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["e_server_migration_statuses_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["e_server_migration_statuses_bool_exp"]},ResolverInputTypes["e_server_migration_statuses_mutation_response"]],
+update_e_server_migration_statuses_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["e_server_migration_statuses_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["e_server_migration_statuses_pk_columns_input"]},ResolverInputTypes["e_server_migration_statuses"]],
+update_e_server_migration_statuses_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["e_server_migration_statuses_updates"]>},ResolverInputTypes["e_server_migration_statuses_mutation_response"]],
 update_e_server_types?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["e_server_types_set_input"] | undefined | null,	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["e_server_types_bool_exp"]},ResolverInputTypes["e_server_types_mutation_response"]],
@@ -118471,6 +120819,22 @@ update_seasons_by_pk?: [{	/** increments the numeric columns with given value of
 	_set?: ResolverInputTypes["seasons_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["seasons_pk_columns_input"]},ResolverInputTypes["seasons"]],
 update_seasons_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["seasons_updates"]>},ResolverInputTypes["seasons_mutation_response"]],
+update_server_access_events?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["server_access_events_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["server_access_events_bool_exp"]},ResolverInputTypes["server_access_events_mutation_response"]],
+update_server_access_events_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["server_access_events_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["server_access_events_pk_columns_input"]},ResolverInputTypes["server_access_events"]],
+update_server_access_events_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["server_access_events_updates"]>},ResolverInputTypes["server_access_events_mutation_response"]],
+update_server_access_players?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["server_access_players_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["server_access_players_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["server_access_players_bool_exp"]},ResolverInputTypes["server_access_players_mutation_response"]],
+update_server_access_players_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["server_access_players_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["server_access_players_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["server_access_players_pk_columns_input"]},ResolverInputTypes["server_access_players"]],
+update_server_access_players_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["server_access_players_updates"]>},ResolverInputTypes["server_access_players_mutation_response"]],
 update_server_map_rotation?: [{	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ResolverInputTypes["server_map_rotation_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["server_map_rotation_set_input"] | undefined | null,	/** filter the rows which have to be updated */
@@ -118480,6 +120844,34 @@ update_server_map_rotation_by_pk?: [{	/** increments the numeric columns with gi
 	_set?: ResolverInputTypes["server_map_rotation_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["server_map_rotation_pk_columns_input"]},ResolverInputTypes["server_map_rotation"]],
 update_server_map_rotation_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["server_map_rotation_updates"]>},ResolverInputTypes["server_map_rotation_mutation_response"]],
+update_server_migrations?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["server_migrations_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["server_migrations_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["server_migrations_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["server_migrations_delete_key_input"] | undefined | null,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["server_migrations_inc_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["server_migrations_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["server_migrations_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["server_migrations_bool_exp"]},ResolverInputTypes["server_migrations_mutation_response"]],
+update_server_migrations_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["server_migrations_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["server_migrations_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["server_migrations_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["server_migrations_delete_key_input"] | undefined | null,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["server_migrations_inc_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["server_migrations_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["server_migrations_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["server_migrations_pk_columns_input"]},ResolverInputTypes["server_migrations"]],
+update_server_migrations_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["server_migrations_updates"]>},ResolverInputTypes["server_migrations_mutation_response"]],
+update_server_player_sessions?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["server_player_sessions_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["server_player_sessions_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["server_player_sessions_bool_exp"]},ResolverInputTypes["server_player_sessions_mutation_response"]],
+update_server_player_sessions_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["server_player_sessions_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["server_player_sessions_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["server_player_sessions_pk_columns_input"]},ResolverInputTypes["server_player_sessions"]],
+update_server_player_sessions_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["server_player_sessions_updates"]>},ResolverInputTypes["server_player_sessions_mutation_response"]],
 update_server_plugins?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["server_plugins_set_input"] | undefined | null,	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["server_plugins_bool_exp"]},ResolverInputTypes["server_plugins_mutation_response"]],
@@ -118494,6 +120886,13 @@ update_server_regions_by_pk?: [{	/** sets the columns of the filtered rows to th
 	_set?: ResolverInputTypes["server_regions_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["server_regions_pk_columns_input"]},ResolverInputTypes["server_regions"]],
 update_server_regions_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["server_regions_updates"]>},ResolverInputTypes["server_regions_mutation_response"]],
+update_server_rosters?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["server_rosters_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["server_rosters_bool_exp"]},ResolverInputTypes["server_rosters_mutation_response"]],
+update_server_rosters_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["server_rosters_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["server_rosters_pk_columns_input"]},ResolverInputTypes["server_rosters"]],
+update_server_rosters_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["server_rosters_updates"]>},ResolverInputTypes["server_rosters_mutation_response"]],
 update_servers?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
 	_append?: ResolverInputTypes["servers_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 	_delete_at_path?: ResolverInputTypes["servers_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
@@ -135664,6 +138063,19 @@ e_scrim_request_statuses_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["e_scrim_request_statuses_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["e_scrim_request_statuses_bool_exp"] | undefined | null},ResolverInputTypes["e_scrim_request_statuses_aggregate"]],
 e_scrim_request_statuses_by_pk?: [{	value: string},ResolverInputTypes["e_scrim_request_statuses"]],
+e_server_migration_statuses?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_server_migration_statuses_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_server_migration_statuses_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_server_migration_statuses_bool_exp"] | undefined | null},ResolverInputTypes["e_server_migration_statuses"]],
+e_server_migration_statuses_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_server_migration_statuses_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_server_migration_statuses_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_server_migration_statuses_bool_exp"] | undefined | null},ResolverInputTypes["e_server_migration_statuses_aggregate"]],
+e_server_migration_statuses_by_pk?: [{	value: string},ResolverInputTypes["e_server_migration_statuses"]],
 e_server_types?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["e_server_types_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -136175,11 +138587,14 @@ getHighlightPresetAvailability?: [{	match_map_id: ResolverInputTypes["uuid"],	ta
 getIndexIOStats?: [{	schemas?: Array<string> | undefined | null},ResolverInputTypes["IndexIOStat"]],
 getIndexStats?: [{	schemas?: Array<string> | undefined | null},ResolverInputTypes["IndexStat"]],
 getNodeStats?: [{	node: string},ResolverInputTypes["NodeStats"]],
+getPlayerCommunityStats?: [{	steam_id: ResolverInputTypes["bigint"]},ResolverInputTypes["PlayerCommunityStats"]],
 getQueryDetail?: [{	queryid: string},ResolverInputTypes["QueryDetail"]],
 	/** Get enhanced query performance statistics */
 	getQueryStats?:ResolverInputTypes["QueryStat"],
 	/** Get available database schemas */
 	getSchemas?:boolean | `@${string}`,
+getServerCommunityStats?: [{	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["ServerCommunityStats"]],
+getServerLeaderboard?: [{	limit?: number | undefined | null,	metric: string,	period: string,	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["ServerLeaderboard"]],
 	getServiceStats?:ResolverInputTypes["PodStats"],
 getStorageStats?: [{	schemas?: Array<string> | undefined | null},ResolverInputTypes["StorageStats"]],
 getTableIOStats?: [{	schemas?: Array<string> | undefined | null},ResolverInputTypes["TableIOStat"]],
@@ -137138,6 +139553,32 @@ seasons_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["seasons_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["seasons_bool_exp"] | undefined | null},ResolverInputTypes["seasons_aggregate"]],
 seasons_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["seasons"]],
+server_access_events?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_access_events_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_access_events_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_access_events_bool_exp"] | undefined | null},ResolverInputTypes["server_access_events"]],
+server_access_events_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_access_events_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_access_events_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_access_events_bool_exp"] | undefined | null},ResolverInputTypes["server_access_events_aggregate"]],
+server_access_events_by_pk?: [{	event_id: ResolverInputTypes["uuid"],	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["server_access_events"]],
+server_access_players?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_access_players_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_access_players_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_access_players_bool_exp"] | undefined | null},ResolverInputTypes["server_access_players"]],
+server_access_players_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_access_players_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_access_players_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_access_players_bool_exp"] | undefined | null},ResolverInputTypes["server_access_players_aggregate"]],
+server_access_players_by_pk?: [{	server_id: ResolverInputTypes["uuid"],	steam_id: ResolverInputTypes["bigint"]},ResolverInputTypes["server_access_players"]],
 server_map_rotation?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["server_map_rotation_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -137151,6 +139592,32 @@ server_map_rotation_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["server_map_rotation_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["server_map_rotation_bool_exp"] | undefined | null},ResolverInputTypes["server_map_rotation_aggregate"]],
 server_map_rotation_by_pk?: [{	map_id: ResolverInputTypes["uuid"],	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["server_map_rotation"]],
+server_migrations?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_migrations_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_migrations_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_migrations_bool_exp"] | undefined | null},ResolverInputTypes["server_migrations"]],
+server_migrations_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_migrations_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_migrations_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_migrations_bool_exp"] | undefined | null},ResolverInputTypes["server_migrations_aggregate"]],
+server_migrations_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["server_migrations"]],
+server_player_sessions?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_player_sessions_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_player_sessions_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_player_sessions_bool_exp"] | undefined | null},ResolverInputTypes["server_player_sessions"]],
+server_player_sessions_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_player_sessions_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_player_sessions_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_player_sessions_bool_exp"] | undefined | null},ResolverInputTypes["server_player_sessions_aggregate"]],
+server_player_sessions_by_pk?: [{	id: ResolverInputTypes["bigint"]},ResolverInputTypes["server_player_sessions"]],
 server_plugins?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["server_plugins_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -137164,6 +139631,18 @@ server_plugins_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["server_plugins_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["server_plugins_bool_exp"] | undefined | null},ResolverInputTypes["server_plugins_aggregate"]],
 server_plugins_by_pk?: [{	plugin_slug: string,	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["server_plugins"]],
+server_recent_players?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_recent_players_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_recent_players_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_recent_players_bool_exp"] | undefined | null},ResolverInputTypes["server_recent_players"]],
+server_recent_players_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_recent_players_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_recent_players_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_recent_players_bool_exp"] | undefined | null},ResolverInputTypes["server_recent_players_aggregate"]],
 server_regions?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["server_regions_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -137177,6 +139656,19 @@ server_regions_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["server_regions_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["server_regions_bool_exp"] | undefined | null},ResolverInputTypes["server_regions_aggregate"]],
 server_regions_by_pk?: [{	value: string},ResolverInputTypes["server_regions"]],
+server_rosters?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_rosters_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_rosters_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_rosters_bool_exp"] | undefined | null},ResolverInputTypes["server_rosters"]],
+server_rosters_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_rosters_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_rosters_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_rosters_bool_exp"] | undefined | null},ResolverInputTypes["server_rosters_aggregate"]],
+server_rosters_by_pk?: [{	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["server_rosters"]],
 servers?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["servers_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -138113,18 +140605,6 @@ v_player_multi_kills_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["v_player_multi_kills_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["v_player_multi_kills_bool_exp"] | undefined | null},ResolverInputTypes["v_player_multi_kills_aggregate"]],
-v_player_queue_partners?: [{	/** distinct select on columns */
-	distinct_on?: Array<ResolverInputTypes["v_player_queue_partners_select_column"]> | undefined | null,	/** limit the number of rows returned */
-	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null,	/** sort the rows by one or more columns */
-	order_by?: Array<ResolverInputTypes["v_player_queue_partners_order_by"]> | undefined | null,	/** filter the rows returned */
-	where?: ResolverInputTypes["v_player_queue_partners_bool_exp"] | undefined | null},ResolverInputTypes["v_player_queue_partners"]],
-v_player_queue_partners_aggregate?: [{	/** distinct select on columns */
-	distinct_on?: Array<ResolverInputTypes["v_player_queue_partners_select_column"]> | undefined | null,	/** limit the number of rows returned */
-	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null,	/** sort the rows by one or more columns */
-	order_by?: Array<ResolverInputTypes["v_player_queue_partners_order_by"]> | undefined | null,	/** filter the rows returned */
-	where?: ResolverInputTypes["v_player_queue_partners_bool_exp"] | undefined | null},ResolverInputTypes["v_player_queue_partners_aggregate"]],
 v_player_weapon_damage?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["v_player_weapon_damage_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -138568,6 +141048,376 @@ count?: [{	columns?: Array<ResolverInputTypes["seasons_select_column"]> | undefi
 	number?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** columns and relationships of "server_access_events" */
+["server_access_events"]: AliasType<{
+	/** An object relationship */
+	event?:ResolverInputTypes["events"],
+	event_id?:boolean | `@${string}`,
+	/** An object relationship */
+	server?:ResolverInputTypes["servers"],
+	server_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "server_access_events" */
+["server_access_events_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["server_access_events_aggregate_fields"],
+	nodes?:ResolverInputTypes["server_access_events"],
+		__typename?: boolean | `@${string}`
+}>;
+	["server_access_events_aggregate_bool_exp"]: {
+	count?: ResolverInputTypes["server_access_events_aggregate_bool_exp_count"] | undefined | null
+};
+	["server_access_events_aggregate_bool_exp_count"]: {
+	arguments?: Array<ResolverInputTypes["server_access_events_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: ResolverInputTypes["server_access_events_bool_exp"] | undefined | null,
+	predicate: ResolverInputTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "server_access_events" */
+["server_access_events_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ResolverInputTypes["server_access_events_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["server_access_events_max_fields"],
+	min?:ResolverInputTypes["server_access_events_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by aggregate values of table "server_access_events" */
+["server_access_events_aggregate_order_by"]: {
+	count?: ResolverInputTypes["order_by"] | undefined | null,
+	max?: ResolverInputTypes["server_access_events_max_order_by"] | undefined | null,
+	min?: ResolverInputTypes["server_access_events_min_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "server_access_events" */
+["server_access_events_arr_rel_insert_input"]: {
+	data: Array<ResolverInputTypes["server_access_events_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ResolverInputTypes["server_access_events_on_conflict"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "server_access_events". All fields are combined with a logical 'AND'. */
+["server_access_events_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["server_access_events_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["server_access_events_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["server_access_events_bool_exp"]> | undefined | null,
+	event?: ResolverInputTypes["events_bool_exp"] | undefined | null,
+	event_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	server?: ResolverInputTypes["servers_bool_exp"] | undefined | null,
+	server_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "server_access_events" */
+["server_access_events_constraint"]:server_access_events_constraint;
+	/** input type for inserting data into table "server_access_events" */
+["server_access_events_insert_input"]: {
+	event?: ResolverInputTypes["events_obj_rel_insert_input"] | undefined | null,
+	event_id?: ResolverInputTypes["uuid"] | undefined | null,
+	server?: ResolverInputTypes["servers_obj_rel_insert_input"] | undefined | null,
+	server_id?: ResolverInputTypes["uuid"] | undefined | null
+};
+	/** aggregate max on columns */
+["server_access_events_max_fields"]: AliasType<{
+	event_id?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by max() on columns of table "server_access_events" */
+["server_access_events_max_order_by"]: {
+	event_id?: ResolverInputTypes["order_by"] | undefined | null,
+	server_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["server_access_events_min_fields"]: AliasType<{
+	event_id?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by min() on columns of table "server_access_events" */
+["server_access_events_min_order_by"]: {
+	event_id?: ResolverInputTypes["order_by"] | undefined | null,
+	server_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "server_access_events" */
+["server_access_events_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["server_access_events"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "server_access_events" */
+["server_access_events_on_conflict"]: {
+	constraint: ResolverInputTypes["server_access_events_constraint"],
+	update_columns: Array<ResolverInputTypes["server_access_events_update_column"]>,
+	where?: ResolverInputTypes["server_access_events_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "server_access_events". */
+["server_access_events_order_by"]: {
+	event?: ResolverInputTypes["events_order_by"] | undefined | null,
+	event_id?: ResolverInputTypes["order_by"] | undefined | null,
+	server?: ResolverInputTypes["servers_order_by"] | undefined | null,
+	server_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: server_access_events */
+["server_access_events_pk_columns_input"]: {
+	event_id: ResolverInputTypes["uuid"],
+	server_id: ResolverInputTypes["uuid"]
+};
+	/** select columns of table "server_access_events" */
+["server_access_events_select_column"]:server_access_events_select_column;
+	/** input type for updating data in table "server_access_events" */
+["server_access_events_set_input"]: {
+	event_id?: ResolverInputTypes["uuid"] | undefined | null,
+	server_id?: ResolverInputTypes["uuid"] | undefined | null
+};
+	/** Streaming cursor of the table "server_access_events" */
+["server_access_events_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["server_access_events_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["server_access_events_stream_cursor_value_input"]: {
+	event_id?: ResolverInputTypes["uuid"] | undefined | null,
+	server_id?: ResolverInputTypes["uuid"] | undefined | null
+};
+	/** update columns of table "server_access_events" */
+["server_access_events_update_column"]:server_access_events_update_column;
+	["server_access_events_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["server_access_events_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["server_access_events_bool_exp"]
+};
+	/** columns and relationships of "server_access_players" */
+["server_access_players"]: AliasType<{
+	/** An object relationship */
+	player?:ResolverInputTypes["players"],
+	/** An object relationship */
+	server?:ResolverInputTypes["servers"],
+	server_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "server_access_players" */
+["server_access_players_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["server_access_players_aggregate_fields"],
+	nodes?:ResolverInputTypes["server_access_players"],
+		__typename?: boolean | `@${string}`
+}>;
+	["server_access_players_aggregate_bool_exp"]: {
+	count?: ResolverInputTypes["server_access_players_aggregate_bool_exp_count"] | undefined | null
+};
+	["server_access_players_aggregate_bool_exp_count"]: {
+	arguments?: Array<ResolverInputTypes["server_access_players_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: ResolverInputTypes["server_access_players_bool_exp"] | undefined | null,
+	predicate: ResolverInputTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "server_access_players" */
+["server_access_players_aggregate_fields"]: AliasType<{
+	avg?:ResolverInputTypes["server_access_players_avg_fields"],
+count?: [{	columns?: Array<ResolverInputTypes["server_access_players_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["server_access_players_max_fields"],
+	min?:ResolverInputTypes["server_access_players_min_fields"],
+	stddev?:ResolverInputTypes["server_access_players_stddev_fields"],
+	stddev_pop?:ResolverInputTypes["server_access_players_stddev_pop_fields"],
+	stddev_samp?:ResolverInputTypes["server_access_players_stddev_samp_fields"],
+	sum?:ResolverInputTypes["server_access_players_sum_fields"],
+	var_pop?:ResolverInputTypes["server_access_players_var_pop_fields"],
+	var_samp?:ResolverInputTypes["server_access_players_var_samp_fields"],
+	variance?:ResolverInputTypes["server_access_players_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by aggregate values of table "server_access_players" */
+["server_access_players_aggregate_order_by"]: {
+	avg?: ResolverInputTypes["server_access_players_avg_order_by"] | undefined | null,
+	count?: ResolverInputTypes["order_by"] | undefined | null,
+	max?: ResolverInputTypes["server_access_players_max_order_by"] | undefined | null,
+	min?: ResolverInputTypes["server_access_players_min_order_by"] | undefined | null,
+	stddev?: ResolverInputTypes["server_access_players_stddev_order_by"] | undefined | null,
+	stddev_pop?: ResolverInputTypes["server_access_players_stddev_pop_order_by"] | undefined | null,
+	stddev_samp?: ResolverInputTypes["server_access_players_stddev_samp_order_by"] | undefined | null,
+	sum?: ResolverInputTypes["server_access_players_sum_order_by"] | undefined | null,
+	var_pop?: ResolverInputTypes["server_access_players_var_pop_order_by"] | undefined | null,
+	var_samp?: ResolverInputTypes["server_access_players_var_samp_order_by"] | undefined | null,
+	variance?: ResolverInputTypes["server_access_players_variance_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "server_access_players" */
+["server_access_players_arr_rel_insert_input"]: {
+	data: Array<ResolverInputTypes["server_access_players_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ResolverInputTypes["server_access_players_on_conflict"] | undefined | null
+};
+	/** aggregate avg on columns */
+["server_access_players_avg_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by avg() on columns of table "server_access_players" */
+["server_access_players_avg_order_by"]: {
+	steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "server_access_players". All fields are combined with a logical 'AND'. */
+["server_access_players_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["server_access_players_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["server_access_players_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["server_access_players_bool_exp"]> | undefined | null,
+	player?: ResolverInputTypes["players_bool_exp"] | undefined | null,
+	server?: ResolverInputTypes["servers_bool_exp"] | undefined | null,
+	server_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "server_access_players" */
+["server_access_players_constraint"]:server_access_players_constraint;
+	/** input type for incrementing numeric columns in table "server_access_players" */
+["server_access_players_inc_input"]: {
+	steam_id?: ResolverInputTypes["bigint"] | undefined | null
+};
+	/** input type for inserting data into table "server_access_players" */
+["server_access_players_insert_input"]: {
+	player?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
+	server?: ResolverInputTypes["servers_obj_rel_insert_input"] | undefined | null,
+	server_id?: ResolverInputTypes["uuid"] | undefined | null,
+	steam_id?: ResolverInputTypes["bigint"] | undefined | null
+};
+	/** aggregate max on columns */
+["server_access_players_max_fields"]: AliasType<{
+	server_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by max() on columns of table "server_access_players" */
+["server_access_players_max_order_by"]: {
+	server_id?: ResolverInputTypes["order_by"] | undefined | null,
+	steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["server_access_players_min_fields"]: AliasType<{
+	server_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by min() on columns of table "server_access_players" */
+["server_access_players_min_order_by"]: {
+	server_id?: ResolverInputTypes["order_by"] | undefined | null,
+	steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "server_access_players" */
+["server_access_players_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["server_access_players"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "server_access_players" */
+["server_access_players_on_conflict"]: {
+	constraint: ResolverInputTypes["server_access_players_constraint"],
+	update_columns: Array<ResolverInputTypes["server_access_players_update_column"]>,
+	where?: ResolverInputTypes["server_access_players_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "server_access_players". */
+["server_access_players_order_by"]: {
+	player?: ResolverInputTypes["players_order_by"] | undefined | null,
+	server?: ResolverInputTypes["servers_order_by"] | undefined | null,
+	server_id?: ResolverInputTypes["order_by"] | undefined | null,
+	steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: server_access_players */
+["server_access_players_pk_columns_input"]: {
+	server_id: ResolverInputTypes["uuid"],
+	steam_id: ResolverInputTypes["bigint"]
+};
+	/** select columns of table "server_access_players" */
+["server_access_players_select_column"]:server_access_players_select_column;
+	/** input type for updating data in table "server_access_players" */
+["server_access_players_set_input"]: {
+	server_id?: ResolverInputTypes["uuid"] | undefined | null,
+	steam_id?: ResolverInputTypes["bigint"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["server_access_players_stddev_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev() on columns of table "server_access_players" */
+["server_access_players_stddev_order_by"]: {
+	steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["server_access_players_stddev_pop_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_pop() on columns of table "server_access_players" */
+["server_access_players_stddev_pop_order_by"]: {
+	steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["server_access_players_stddev_samp_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_samp() on columns of table "server_access_players" */
+["server_access_players_stddev_samp_order_by"]: {
+	steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** Streaming cursor of the table "server_access_players" */
+["server_access_players_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["server_access_players_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["server_access_players_stream_cursor_value_input"]: {
+	server_id?: ResolverInputTypes["uuid"] | undefined | null,
+	steam_id?: ResolverInputTypes["bigint"] | undefined | null
+};
+	/** aggregate sum on columns */
+["server_access_players_sum_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by sum() on columns of table "server_access_players" */
+["server_access_players_sum_order_by"]: {
+	steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** update columns of table "server_access_players" */
+["server_access_players_update_column"]:server_access_players_update_column;
+	["server_access_players_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["server_access_players_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["server_access_players_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["server_access_players_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["server_access_players_var_pop_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_pop() on columns of table "server_access_players" */
+["server_access_players_var_pop_order_by"]: {
+	steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate var_samp on columns */
+["server_access_players_var_samp_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_samp() on columns of table "server_access_players" */
+["server_access_players_var_samp_order_by"]: {
+	steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate variance on columns */
+["server_access_players_variance_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by variance() on columns of table "server_access_players" */
+["server_access_players_variance_order_by"]: {
+	steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
 	/** columns and relationships of "server_map_rotation" */
 ["server_map_rotation"]: AliasType<{
 	/** An object relationship */
@@ -138810,6 +141660,899 @@ count?: [{	columns?: Array<ResolverInputTypes["server_map_rotation_select_column
 ["server_map_rotation_variance_order_by"]: {
 	position?: ResolverInputTypes["order_by"] | undefined | null
 };
+	/** columns and relationships of "server_migrations" */
+["server_migrations"]: AliasType<{
+	bytes_done?:boolean | `@${string}`,
+	bytes_total?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	/** An object relationship */
+	e_status?:ResolverInputTypes["e_server_migration_statuses"],
+	entries_total?:boolean | `@${string}`,
+	error?:boolean | `@${string}`,
+	finished_at?:boolean | `@${string}`,
+	/** An object relationship */
+	from_game_server_node?:ResolverInputTypes["game_server_nodes"],
+	from_game_server_node_id?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	/** An object relationship */
+	requested_by?:ResolverInputTypes["players"],
+	requested_by_steam_id?:boolean | `@${string}`,
+	/** An object relationship */
+	server?:ResolverInputTypes["servers"],
+	server_id?:boolean | `@${string}`,
+	started_at?:boolean | `@${string}`,
+	status?:boolean | `@${string}`,
+	/** An object relationship */
+	to_game_server_node?:ResolverInputTypes["game_server_nodes"],
+	to_game_server_node_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+warnings?: [{	/** JSON select path */
+	path?: string | undefined | null},boolean | `@${string}`],
+	with_files?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "server_migrations" */
+["server_migrations_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["server_migrations_aggregate_fields"],
+	nodes?:ResolverInputTypes["server_migrations"],
+		__typename?: boolean | `@${string}`
+}>;
+	["server_migrations_aggregate_bool_exp"]: {
+	bool_and?: ResolverInputTypes["server_migrations_aggregate_bool_exp_bool_and"] | undefined | null,
+	bool_or?: ResolverInputTypes["server_migrations_aggregate_bool_exp_bool_or"] | undefined | null,
+	count?: ResolverInputTypes["server_migrations_aggregate_bool_exp_count"] | undefined | null
+};
+	["server_migrations_aggregate_bool_exp_bool_and"]: {
+	arguments: ResolverInputTypes["server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_and_arguments_columns"],
+	distinct?: boolean | undefined | null,
+	filter?: ResolverInputTypes["server_migrations_bool_exp"] | undefined | null,
+	predicate: ResolverInputTypes["Boolean_comparison_exp"]
+};
+	["server_migrations_aggregate_bool_exp_bool_or"]: {
+	arguments: ResolverInputTypes["server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_or_arguments_columns"],
+	distinct?: boolean | undefined | null,
+	filter?: ResolverInputTypes["server_migrations_bool_exp"] | undefined | null,
+	predicate: ResolverInputTypes["Boolean_comparison_exp"]
+};
+	["server_migrations_aggregate_bool_exp_count"]: {
+	arguments?: Array<ResolverInputTypes["server_migrations_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: ResolverInputTypes["server_migrations_bool_exp"] | undefined | null,
+	predicate: ResolverInputTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "server_migrations" */
+["server_migrations_aggregate_fields"]: AliasType<{
+	avg?:ResolverInputTypes["server_migrations_avg_fields"],
+count?: [{	columns?: Array<ResolverInputTypes["server_migrations_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["server_migrations_max_fields"],
+	min?:ResolverInputTypes["server_migrations_min_fields"],
+	stddev?:ResolverInputTypes["server_migrations_stddev_fields"],
+	stddev_pop?:ResolverInputTypes["server_migrations_stddev_pop_fields"],
+	stddev_samp?:ResolverInputTypes["server_migrations_stddev_samp_fields"],
+	sum?:ResolverInputTypes["server_migrations_sum_fields"],
+	var_pop?:ResolverInputTypes["server_migrations_var_pop_fields"],
+	var_samp?:ResolverInputTypes["server_migrations_var_samp_fields"],
+	variance?:ResolverInputTypes["server_migrations_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by aggregate values of table "server_migrations" */
+["server_migrations_aggregate_order_by"]: {
+	avg?: ResolverInputTypes["server_migrations_avg_order_by"] | undefined | null,
+	count?: ResolverInputTypes["order_by"] | undefined | null,
+	max?: ResolverInputTypes["server_migrations_max_order_by"] | undefined | null,
+	min?: ResolverInputTypes["server_migrations_min_order_by"] | undefined | null,
+	stddev?: ResolverInputTypes["server_migrations_stddev_order_by"] | undefined | null,
+	stddev_pop?: ResolverInputTypes["server_migrations_stddev_pop_order_by"] | undefined | null,
+	stddev_samp?: ResolverInputTypes["server_migrations_stddev_samp_order_by"] | undefined | null,
+	sum?: ResolverInputTypes["server_migrations_sum_order_by"] | undefined | null,
+	var_pop?: ResolverInputTypes["server_migrations_var_pop_order_by"] | undefined | null,
+	var_samp?: ResolverInputTypes["server_migrations_var_samp_order_by"] | undefined | null,
+	variance?: ResolverInputTypes["server_migrations_variance_order_by"] | undefined | null
+};
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["server_migrations_append_input"]: {
+	warnings?: ResolverInputTypes["jsonb"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "server_migrations" */
+["server_migrations_arr_rel_insert_input"]: {
+	data: Array<ResolverInputTypes["server_migrations_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ResolverInputTypes["server_migrations_on_conflict"] | undefined | null
+};
+	/** aggregate avg on columns */
+["server_migrations_avg_fields"]: AliasType<{
+	bytes_done?:boolean | `@${string}`,
+	bytes_total?:boolean | `@${string}`,
+	entries_total?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by avg() on columns of table "server_migrations" */
+["server_migrations_avg_order_by"]: {
+	bytes_done?: ResolverInputTypes["order_by"] | undefined | null,
+	bytes_total?: ResolverInputTypes["order_by"] | undefined | null,
+	entries_total?: ResolverInputTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "server_migrations". All fields are combined with a logical 'AND'. */
+["server_migrations_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["server_migrations_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["server_migrations_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["server_migrations_bool_exp"]> | undefined | null,
+	bytes_done?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	bytes_total?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	e_status?: ResolverInputTypes["e_server_migration_statuses_bool_exp"] | undefined | null,
+	entries_total?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	error?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	finished_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	from_game_server_node?: ResolverInputTypes["game_server_nodes_bool_exp"] | undefined | null,
+	from_game_server_node_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	requested_by?: ResolverInputTypes["players_bool_exp"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	server?: ResolverInputTypes["servers_bool_exp"] | undefined | null,
+	server_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	started_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	status?: ResolverInputTypes["e_server_migration_statuses_enum_comparison_exp"] | undefined | null,
+	to_game_server_node?: ResolverInputTypes["game_server_nodes_bool_exp"] | undefined | null,
+	to_game_server_node_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	warnings?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
+	with_files?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "server_migrations" */
+["server_migrations_constraint"]:server_migrations_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["server_migrations_delete_at_path_input"]: {
+	warnings?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["server_migrations_delete_elem_input"]: {
+	warnings?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["server_migrations_delete_key_input"]: {
+	warnings?: string | undefined | null
+};
+	/** input type for incrementing numeric columns in table "server_migrations" */
+["server_migrations_inc_input"]: {
+	bytes_done?: ResolverInputTypes["bigint"] | undefined | null,
+	bytes_total?: ResolverInputTypes["bigint"] | undefined | null,
+	entries_total?: number | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null
+};
+	/** input type for inserting data into table "server_migrations" */
+["server_migrations_insert_input"]: {
+	bytes_done?: ResolverInputTypes["bigint"] | undefined | null,
+	bytes_total?: ResolverInputTypes["bigint"] | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	e_status?: ResolverInputTypes["e_server_migration_statuses_obj_rel_insert_input"] | undefined | null,
+	entries_total?: number | undefined | null,
+	error?: string | undefined | null,
+	finished_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	from_game_server_node?: ResolverInputTypes["game_server_nodes_obj_rel_insert_input"] | undefined | null,
+	from_game_server_node_id?: string | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	requested_by?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	server?: ResolverInputTypes["servers_obj_rel_insert_input"] | undefined | null,
+	server_id?: ResolverInputTypes["uuid"] | undefined | null,
+	started_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	status?: ResolverInputTypes["e_server_migration_statuses_enum"] | undefined | null,
+	to_game_server_node?: ResolverInputTypes["game_server_nodes_obj_rel_insert_input"] | undefined | null,
+	to_game_server_node_id?: string | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	warnings?: ResolverInputTypes["jsonb"] | undefined | null,
+	with_files?: boolean | undefined | null
+};
+	/** aggregate max on columns */
+["server_migrations_max_fields"]: AliasType<{
+	bytes_done?:boolean | `@${string}`,
+	bytes_total?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	entries_total?:boolean | `@${string}`,
+	error?:boolean | `@${string}`,
+	finished_at?:boolean | `@${string}`,
+	from_game_server_node_id?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+	started_at?:boolean | `@${string}`,
+	to_game_server_node_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by max() on columns of table "server_migrations" */
+["server_migrations_max_order_by"]: {
+	bytes_done?: ResolverInputTypes["order_by"] | undefined | null,
+	bytes_total?: ResolverInputTypes["order_by"] | undefined | null,
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
+	entries_total?: ResolverInputTypes["order_by"] | undefined | null,
+	error?: ResolverInputTypes["order_by"] | undefined | null,
+	finished_at?: ResolverInputTypes["order_by"] | undefined | null,
+	from_game_server_node_id?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	server_id?: ResolverInputTypes["order_by"] | undefined | null,
+	started_at?: ResolverInputTypes["order_by"] | undefined | null,
+	to_game_server_node_id?: ResolverInputTypes["order_by"] | undefined | null,
+	updated_at?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["server_migrations_min_fields"]: AliasType<{
+	bytes_done?:boolean | `@${string}`,
+	bytes_total?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	entries_total?:boolean | `@${string}`,
+	error?:boolean | `@${string}`,
+	finished_at?:boolean | `@${string}`,
+	from_game_server_node_id?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+	started_at?:boolean | `@${string}`,
+	to_game_server_node_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by min() on columns of table "server_migrations" */
+["server_migrations_min_order_by"]: {
+	bytes_done?: ResolverInputTypes["order_by"] | undefined | null,
+	bytes_total?: ResolverInputTypes["order_by"] | undefined | null,
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
+	entries_total?: ResolverInputTypes["order_by"] | undefined | null,
+	error?: ResolverInputTypes["order_by"] | undefined | null,
+	finished_at?: ResolverInputTypes["order_by"] | undefined | null,
+	from_game_server_node_id?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	server_id?: ResolverInputTypes["order_by"] | undefined | null,
+	started_at?: ResolverInputTypes["order_by"] | undefined | null,
+	to_game_server_node_id?: ResolverInputTypes["order_by"] | undefined | null,
+	updated_at?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "server_migrations" */
+["server_migrations_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["server_migrations"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "server_migrations" */
+["server_migrations_on_conflict"]: {
+	constraint: ResolverInputTypes["server_migrations_constraint"],
+	update_columns: Array<ResolverInputTypes["server_migrations_update_column"]>,
+	where?: ResolverInputTypes["server_migrations_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "server_migrations". */
+["server_migrations_order_by"]: {
+	bytes_done?: ResolverInputTypes["order_by"] | undefined | null,
+	bytes_total?: ResolverInputTypes["order_by"] | undefined | null,
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
+	e_status?: ResolverInputTypes["e_server_migration_statuses_order_by"] | undefined | null,
+	entries_total?: ResolverInputTypes["order_by"] | undefined | null,
+	error?: ResolverInputTypes["order_by"] | undefined | null,
+	finished_at?: ResolverInputTypes["order_by"] | undefined | null,
+	from_game_server_node?: ResolverInputTypes["game_server_nodes_order_by"] | undefined | null,
+	from_game_server_node_id?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	requested_by?: ResolverInputTypes["players_order_by"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	server?: ResolverInputTypes["servers_order_by"] | undefined | null,
+	server_id?: ResolverInputTypes["order_by"] | undefined | null,
+	started_at?: ResolverInputTypes["order_by"] | undefined | null,
+	status?: ResolverInputTypes["order_by"] | undefined | null,
+	to_game_server_node?: ResolverInputTypes["game_server_nodes_order_by"] | undefined | null,
+	to_game_server_node_id?: ResolverInputTypes["order_by"] | undefined | null,
+	updated_at?: ResolverInputTypes["order_by"] | undefined | null,
+	warnings?: ResolverInputTypes["order_by"] | undefined | null,
+	with_files?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: server_migrations */
+["server_migrations_pk_columns_input"]: {
+	id: ResolverInputTypes["uuid"]
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["server_migrations_prepend_input"]: {
+	warnings?: ResolverInputTypes["jsonb"] | undefined | null
+};
+	/** select columns of table "server_migrations" */
+["server_migrations_select_column"]:server_migrations_select_column;
+	/** select "server_migrations_aggregate_bool_exp_bool_and_arguments_columns" columns of table "server_migrations" */
+["server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_and_arguments_columns"]:server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_and_arguments_columns;
+	/** select "server_migrations_aggregate_bool_exp_bool_or_arguments_columns" columns of table "server_migrations" */
+["server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_or_arguments_columns"]:server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_or_arguments_columns;
+	/** input type for updating data in table "server_migrations" */
+["server_migrations_set_input"]: {
+	bytes_done?: ResolverInputTypes["bigint"] | undefined | null,
+	bytes_total?: ResolverInputTypes["bigint"] | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	entries_total?: number | undefined | null,
+	error?: string | undefined | null,
+	finished_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	from_game_server_node_id?: string | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	server_id?: ResolverInputTypes["uuid"] | undefined | null,
+	started_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	status?: ResolverInputTypes["e_server_migration_statuses_enum"] | undefined | null,
+	to_game_server_node_id?: string | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	warnings?: ResolverInputTypes["jsonb"] | undefined | null,
+	with_files?: boolean | undefined | null
+};
+	/** aggregate stddev on columns */
+["server_migrations_stddev_fields"]: AliasType<{
+	bytes_done?:boolean | `@${string}`,
+	bytes_total?:boolean | `@${string}`,
+	entries_total?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev() on columns of table "server_migrations" */
+["server_migrations_stddev_order_by"]: {
+	bytes_done?: ResolverInputTypes["order_by"] | undefined | null,
+	bytes_total?: ResolverInputTypes["order_by"] | undefined | null,
+	entries_total?: ResolverInputTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["server_migrations_stddev_pop_fields"]: AliasType<{
+	bytes_done?:boolean | `@${string}`,
+	bytes_total?:boolean | `@${string}`,
+	entries_total?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_pop() on columns of table "server_migrations" */
+["server_migrations_stddev_pop_order_by"]: {
+	bytes_done?: ResolverInputTypes["order_by"] | undefined | null,
+	bytes_total?: ResolverInputTypes["order_by"] | undefined | null,
+	entries_total?: ResolverInputTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["server_migrations_stddev_samp_fields"]: AliasType<{
+	bytes_done?:boolean | `@${string}`,
+	bytes_total?:boolean | `@${string}`,
+	entries_total?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_samp() on columns of table "server_migrations" */
+["server_migrations_stddev_samp_order_by"]: {
+	bytes_done?: ResolverInputTypes["order_by"] | undefined | null,
+	bytes_total?: ResolverInputTypes["order_by"] | undefined | null,
+	entries_total?: ResolverInputTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** Streaming cursor of the table "server_migrations" */
+["server_migrations_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["server_migrations_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["server_migrations_stream_cursor_value_input"]: {
+	bytes_done?: ResolverInputTypes["bigint"] | undefined | null,
+	bytes_total?: ResolverInputTypes["bigint"] | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	entries_total?: number | undefined | null,
+	error?: string | undefined | null,
+	finished_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	from_game_server_node_id?: string | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	server_id?: ResolverInputTypes["uuid"] | undefined | null,
+	started_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	status?: ResolverInputTypes["e_server_migration_statuses_enum"] | undefined | null,
+	to_game_server_node_id?: string | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	warnings?: ResolverInputTypes["jsonb"] | undefined | null,
+	with_files?: boolean | undefined | null
+};
+	/** aggregate sum on columns */
+["server_migrations_sum_fields"]: AliasType<{
+	bytes_done?:boolean | `@${string}`,
+	bytes_total?:boolean | `@${string}`,
+	entries_total?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by sum() on columns of table "server_migrations" */
+["server_migrations_sum_order_by"]: {
+	bytes_done?: ResolverInputTypes["order_by"] | undefined | null,
+	bytes_total?: ResolverInputTypes["order_by"] | undefined | null,
+	entries_total?: ResolverInputTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** update columns of table "server_migrations" */
+["server_migrations_update_column"]:server_migrations_update_column;
+	["server_migrations_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["server_migrations_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["server_migrations_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["server_migrations_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["server_migrations_delete_key_input"] | undefined | null,
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["server_migrations_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["server_migrations_prepend_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["server_migrations_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["server_migrations_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["server_migrations_var_pop_fields"]: AliasType<{
+	bytes_done?:boolean | `@${string}`,
+	bytes_total?:boolean | `@${string}`,
+	entries_total?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_pop() on columns of table "server_migrations" */
+["server_migrations_var_pop_order_by"]: {
+	bytes_done?: ResolverInputTypes["order_by"] | undefined | null,
+	bytes_total?: ResolverInputTypes["order_by"] | undefined | null,
+	entries_total?: ResolverInputTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate var_samp on columns */
+["server_migrations_var_samp_fields"]: AliasType<{
+	bytes_done?:boolean | `@${string}`,
+	bytes_total?:boolean | `@${string}`,
+	entries_total?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_samp() on columns of table "server_migrations" */
+["server_migrations_var_samp_order_by"]: {
+	bytes_done?: ResolverInputTypes["order_by"] | undefined | null,
+	bytes_total?: ResolverInputTypes["order_by"] | undefined | null,
+	entries_total?: ResolverInputTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate variance on columns */
+["server_migrations_variance_fields"]: AliasType<{
+	bytes_done?:boolean | `@${string}`,
+	bytes_total?:boolean | `@${string}`,
+	entries_total?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by variance() on columns of table "server_migrations" */
+["server_migrations_variance_order_by"]: {
+	bytes_done?: ResolverInputTypes["order_by"] | undefined | null,
+	bytes_total?: ResolverInputTypes["order_by"] | undefined | null,
+	entries_total?: ResolverInputTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** columns and relationships of "server_player_sessions" */
+["server_player_sessions"]: AliasType<{
+	conn?:boolean | `@${string}`,
+	deaths?:boolean | `@${string}`,
+	deaths_conn?:boolean | `@${string}`,
+	ended_at?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	ip?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	kills_conn?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	/** An object relationship */
+	player?:ResolverInputTypes["players"],
+	player_steam_id?:boolean | `@${string}`,
+	/** An object relationship */
+	server?:ResolverInputTypes["servers"],
+	server_id?:boolean | `@${string}`,
+	settled_conns?:boolean | `@${string}`,
+	started_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "server_player_sessions" */
+["server_player_sessions_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["server_player_sessions_aggregate_fields"],
+	nodes?:ResolverInputTypes["server_player_sessions"],
+		__typename?: boolean | `@${string}`
+}>;
+	["server_player_sessions_aggregate_bool_exp"]: {
+	count?: ResolverInputTypes["server_player_sessions_aggregate_bool_exp_count"] | undefined | null
+};
+	["server_player_sessions_aggregate_bool_exp_count"]: {
+	arguments?: Array<ResolverInputTypes["server_player_sessions_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: ResolverInputTypes["server_player_sessions_bool_exp"] | undefined | null,
+	predicate: ResolverInputTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "server_player_sessions" */
+["server_player_sessions_aggregate_fields"]: AliasType<{
+	avg?:ResolverInputTypes["server_player_sessions_avg_fields"],
+count?: [{	columns?: Array<ResolverInputTypes["server_player_sessions_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["server_player_sessions_max_fields"],
+	min?:ResolverInputTypes["server_player_sessions_min_fields"],
+	stddev?:ResolverInputTypes["server_player_sessions_stddev_fields"],
+	stddev_pop?:ResolverInputTypes["server_player_sessions_stddev_pop_fields"],
+	stddev_samp?:ResolverInputTypes["server_player_sessions_stddev_samp_fields"],
+	sum?:ResolverInputTypes["server_player_sessions_sum_fields"],
+	var_pop?:ResolverInputTypes["server_player_sessions_var_pop_fields"],
+	var_samp?:ResolverInputTypes["server_player_sessions_var_samp_fields"],
+	variance?:ResolverInputTypes["server_player_sessions_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by aggregate values of table "server_player_sessions" */
+["server_player_sessions_aggregate_order_by"]: {
+	avg?: ResolverInputTypes["server_player_sessions_avg_order_by"] | undefined | null,
+	count?: ResolverInputTypes["order_by"] | undefined | null,
+	max?: ResolverInputTypes["server_player_sessions_max_order_by"] | undefined | null,
+	min?: ResolverInputTypes["server_player_sessions_min_order_by"] | undefined | null,
+	stddev?: ResolverInputTypes["server_player_sessions_stddev_order_by"] | undefined | null,
+	stddev_pop?: ResolverInputTypes["server_player_sessions_stddev_pop_order_by"] | undefined | null,
+	stddev_samp?: ResolverInputTypes["server_player_sessions_stddev_samp_order_by"] | undefined | null,
+	sum?: ResolverInputTypes["server_player_sessions_sum_order_by"] | undefined | null,
+	var_pop?: ResolverInputTypes["server_player_sessions_var_pop_order_by"] | undefined | null,
+	var_samp?: ResolverInputTypes["server_player_sessions_var_samp_order_by"] | undefined | null,
+	variance?: ResolverInputTypes["server_player_sessions_variance_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "server_player_sessions" */
+["server_player_sessions_arr_rel_insert_input"]: {
+	data: Array<ResolverInputTypes["server_player_sessions_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ResolverInputTypes["server_player_sessions_on_conflict"] | undefined | null
+};
+	/** aggregate avg on columns */
+["server_player_sessions_avg_fields"]: AliasType<{
+	deaths?:boolean | `@${string}`,
+	deaths_conn?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	kills_conn?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by avg() on columns of table "server_player_sessions" */
+["server_player_sessions_avg_order_by"]: {
+	deaths?: ResolverInputTypes["order_by"] | undefined | null,
+	deaths_conn?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	kills?: ResolverInputTypes["order_by"] | undefined | null,
+	kills_conn?: ResolverInputTypes["order_by"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "server_player_sessions". All fields are combined with a logical 'AND'. */
+["server_player_sessions_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["server_player_sessions_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["server_player_sessions_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["server_player_sessions_bool_exp"]> | undefined | null,
+	conn?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	deaths?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	deaths_conn?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	ended_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	ip?: ResolverInputTypes["inet_comparison_exp"] | undefined | null,
+	kills?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	kills_conn?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	player?: ResolverInputTypes["players_bool_exp"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	server?: ResolverInputTypes["servers_bool_exp"] | undefined | null,
+	server_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	settled_conns?: ResolverInputTypes["String_array_comparison_exp"] | undefined | null,
+	started_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "server_player_sessions" */
+["server_player_sessions_constraint"]:server_player_sessions_constraint;
+	/** input type for incrementing numeric columns in table "server_player_sessions" */
+["server_player_sessions_inc_input"]: {
+	deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null
+};
+	/** input type for inserting data into table "server_player_sessions" */
+["server_player_sessions_insert_input"]: {
+	conn?: string | undefined | null,
+	deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	ended_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	ip?: ResolverInputTypes["inet"] | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	name?: string | undefined | null,
+	player?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	server?: ResolverInputTypes["servers_obj_rel_insert_input"] | undefined | null,
+	server_id?: ResolverInputTypes["uuid"] | undefined | null,
+	settled_conns?: Array<string> | undefined | null,
+	started_at?: ResolverInputTypes["timestamptz"] | undefined | null
+};
+	/** aggregate max on columns */
+["server_player_sessions_max_fields"]: AliasType<{
+	conn?:boolean | `@${string}`,
+	deaths?:boolean | `@${string}`,
+	deaths_conn?:boolean | `@${string}`,
+	ended_at?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	kills_conn?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+	settled_conns?:boolean | `@${string}`,
+	started_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by max() on columns of table "server_player_sessions" */
+["server_player_sessions_max_order_by"]: {
+	conn?: ResolverInputTypes["order_by"] | undefined | null,
+	deaths?: ResolverInputTypes["order_by"] | undefined | null,
+	deaths_conn?: ResolverInputTypes["order_by"] | undefined | null,
+	ended_at?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	kills?: ResolverInputTypes["order_by"] | undefined | null,
+	kills_conn?: ResolverInputTypes["order_by"] | undefined | null,
+	name?: ResolverInputTypes["order_by"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	server_id?: ResolverInputTypes["order_by"] | undefined | null,
+	settled_conns?: ResolverInputTypes["order_by"] | undefined | null,
+	started_at?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["server_player_sessions_min_fields"]: AliasType<{
+	conn?:boolean | `@${string}`,
+	deaths?:boolean | `@${string}`,
+	deaths_conn?:boolean | `@${string}`,
+	ended_at?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	kills_conn?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+	settled_conns?:boolean | `@${string}`,
+	started_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by min() on columns of table "server_player_sessions" */
+["server_player_sessions_min_order_by"]: {
+	conn?: ResolverInputTypes["order_by"] | undefined | null,
+	deaths?: ResolverInputTypes["order_by"] | undefined | null,
+	deaths_conn?: ResolverInputTypes["order_by"] | undefined | null,
+	ended_at?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	kills?: ResolverInputTypes["order_by"] | undefined | null,
+	kills_conn?: ResolverInputTypes["order_by"] | undefined | null,
+	name?: ResolverInputTypes["order_by"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	server_id?: ResolverInputTypes["order_by"] | undefined | null,
+	settled_conns?: ResolverInputTypes["order_by"] | undefined | null,
+	started_at?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "server_player_sessions" */
+["server_player_sessions_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["server_player_sessions"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "server_player_sessions" */
+["server_player_sessions_on_conflict"]: {
+	constraint: ResolverInputTypes["server_player_sessions_constraint"],
+	update_columns: Array<ResolverInputTypes["server_player_sessions_update_column"]>,
+	where?: ResolverInputTypes["server_player_sessions_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "server_player_sessions". */
+["server_player_sessions_order_by"]: {
+	conn?: ResolverInputTypes["order_by"] | undefined | null,
+	deaths?: ResolverInputTypes["order_by"] | undefined | null,
+	deaths_conn?: ResolverInputTypes["order_by"] | undefined | null,
+	ended_at?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	ip?: ResolverInputTypes["order_by"] | undefined | null,
+	kills?: ResolverInputTypes["order_by"] | undefined | null,
+	kills_conn?: ResolverInputTypes["order_by"] | undefined | null,
+	name?: ResolverInputTypes["order_by"] | undefined | null,
+	player?: ResolverInputTypes["players_order_by"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	server?: ResolverInputTypes["servers_order_by"] | undefined | null,
+	server_id?: ResolverInputTypes["order_by"] | undefined | null,
+	settled_conns?: ResolverInputTypes["order_by"] | undefined | null,
+	started_at?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: server_player_sessions */
+["server_player_sessions_pk_columns_input"]: {
+	id: ResolverInputTypes["bigint"]
+};
+	/** select columns of table "server_player_sessions" */
+["server_player_sessions_select_column"]:server_player_sessions_select_column;
+	/** input type for updating data in table "server_player_sessions" */
+["server_player_sessions_set_input"]: {
+	conn?: string | undefined | null,
+	deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	ended_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	ip?: ResolverInputTypes["inet"] | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	name?: string | undefined | null,
+	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	server_id?: ResolverInputTypes["uuid"] | undefined | null,
+	settled_conns?: Array<string> | undefined | null,
+	started_at?: ResolverInputTypes["timestamptz"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["server_player_sessions_stddev_fields"]: AliasType<{
+	deaths?:boolean | `@${string}`,
+	deaths_conn?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	kills_conn?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev() on columns of table "server_player_sessions" */
+["server_player_sessions_stddev_order_by"]: {
+	deaths?: ResolverInputTypes["order_by"] | undefined | null,
+	deaths_conn?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	kills?: ResolverInputTypes["order_by"] | undefined | null,
+	kills_conn?: ResolverInputTypes["order_by"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["server_player_sessions_stddev_pop_fields"]: AliasType<{
+	deaths?:boolean | `@${string}`,
+	deaths_conn?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	kills_conn?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_pop() on columns of table "server_player_sessions" */
+["server_player_sessions_stddev_pop_order_by"]: {
+	deaths?: ResolverInputTypes["order_by"] | undefined | null,
+	deaths_conn?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	kills?: ResolverInputTypes["order_by"] | undefined | null,
+	kills_conn?: ResolverInputTypes["order_by"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["server_player_sessions_stddev_samp_fields"]: AliasType<{
+	deaths?:boolean | `@${string}`,
+	deaths_conn?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	kills_conn?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_samp() on columns of table "server_player_sessions" */
+["server_player_sessions_stddev_samp_order_by"]: {
+	deaths?: ResolverInputTypes["order_by"] | undefined | null,
+	deaths_conn?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	kills?: ResolverInputTypes["order_by"] | undefined | null,
+	kills_conn?: ResolverInputTypes["order_by"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** Streaming cursor of the table "server_player_sessions" */
+["server_player_sessions_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["server_player_sessions_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["server_player_sessions_stream_cursor_value_input"]: {
+	conn?: string | undefined | null,
+	deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	ended_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	id?: ResolverInputTypes["bigint"] | undefined | null,
+	ip?: ResolverInputTypes["inet"] | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	name?: string | undefined | null,
+	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	server_id?: ResolverInputTypes["uuid"] | undefined | null,
+	settled_conns?: Array<string> | undefined | null,
+	started_at?: ResolverInputTypes["timestamptz"] | undefined | null
+};
+	/** aggregate sum on columns */
+["server_player_sessions_sum_fields"]: AliasType<{
+	deaths?:boolean | `@${string}`,
+	deaths_conn?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	kills_conn?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by sum() on columns of table "server_player_sessions" */
+["server_player_sessions_sum_order_by"]: {
+	deaths?: ResolverInputTypes["order_by"] | undefined | null,
+	deaths_conn?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	kills?: ResolverInputTypes["order_by"] | undefined | null,
+	kills_conn?: ResolverInputTypes["order_by"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** update columns of table "server_player_sessions" */
+["server_player_sessions_update_column"]:server_player_sessions_update_column;
+	["server_player_sessions_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["server_player_sessions_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["server_player_sessions_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["server_player_sessions_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["server_player_sessions_var_pop_fields"]: AliasType<{
+	deaths?:boolean | `@${string}`,
+	deaths_conn?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	kills_conn?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_pop() on columns of table "server_player_sessions" */
+["server_player_sessions_var_pop_order_by"]: {
+	deaths?: ResolverInputTypes["order_by"] | undefined | null,
+	deaths_conn?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	kills?: ResolverInputTypes["order_by"] | undefined | null,
+	kills_conn?: ResolverInputTypes["order_by"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate var_samp on columns */
+["server_player_sessions_var_samp_fields"]: AliasType<{
+	deaths?:boolean | `@${string}`,
+	deaths_conn?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	kills_conn?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_samp() on columns of table "server_player_sessions" */
+["server_player_sessions_var_samp_order_by"]: {
+	deaths?: ResolverInputTypes["order_by"] | undefined | null,
+	deaths_conn?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	kills?: ResolverInputTypes["order_by"] | undefined | null,
+	kills_conn?: ResolverInputTypes["order_by"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate variance on columns */
+["server_player_sessions_variance_fields"]: AliasType<{
+	deaths?:boolean | `@${string}`,
+	deaths_conn?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	kills_conn?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by variance() on columns of table "server_player_sessions" */
+["server_player_sessions_variance_order_by"]: {
+	deaths?: ResolverInputTypes["order_by"] | undefined | null,
+	deaths_conn?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	kills?: ResolverInputTypes["order_by"] | undefined | null,
+	kills_conn?: ResolverInputTypes["order_by"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
 	/** columns and relationships of "server_plugins" */
 ["server_plugins"]: AliasType<{
 	enabled?:boolean | `@${string}`,
@@ -138972,6 +142715,190 @@ count?: [{	columns?: Array<ResolverInputTypes["server_plugins_select_column"]> |
 	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["server_plugins_bool_exp"]
 };
+	/** columns and relationships of "server_recent_players" */
+["server_recent_players"]: AliasType<{
+	first_seen_at?:boolean | `@${string}`,
+	ip?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	last_seen_at?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	online?:boolean | `@${string}`,
+	/** An object relationship */
+	player?:ResolverInputTypes["players"],
+	player_steam_id?:boolean | `@${string}`,
+	seconds_played?:boolean | `@${string}`,
+	/** An object relationship */
+	server?:ResolverInputTypes["servers"],
+	server_id?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "server_recent_players" */
+["server_recent_players_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["server_recent_players_aggregate_fields"],
+	nodes?:ResolverInputTypes["server_recent_players"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "server_recent_players" */
+["server_recent_players_aggregate_fields"]: AliasType<{
+	avg?:ResolverInputTypes["server_recent_players_avg_fields"],
+count?: [{	columns?: Array<ResolverInputTypes["server_recent_players_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["server_recent_players_max_fields"],
+	min?:ResolverInputTypes["server_recent_players_min_fields"],
+	stddev?:ResolverInputTypes["server_recent_players_stddev_fields"],
+	stddev_pop?:ResolverInputTypes["server_recent_players_stddev_pop_fields"],
+	stddev_samp?:ResolverInputTypes["server_recent_players_stddev_samp_fields"],
+	sum?:ResolverInputTypes["server_recent_players_sum_fields"],
+	var_pop?:ResolverInputTypes["server_recent_players_var_pop_fields"],
+	var_samp?:ResolverInputTypes["server_recent_players_var_samp_fields"],
+	variance?:ResolverInputTypes["server_recent_players_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate avg on columns */
+["server_recent_players_avg_fields"]: AliasType<{
+	kills?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	seconds_played?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "server_recent_players". All fields are combined with a logical 'AND'. */
+["server_recent_players_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["server_recent_players_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["server_recent_players_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["server_recent_players_bool_exp"]> | undefined | null,
+	first_seen_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	ip?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	kills?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	last_seen_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	online?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	player?: ResolverInputTypes["players_bool_exp"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	seconds_played?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	server?: ResolverInputTypes["servers_bool_exp"] | undefined | null,
+	server_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	sessions?: ResolverInputTypes["Int_comparison_exp"] | undefined | null
+};
+	/** aggregate max on columns */
+["server_recent_players_max_fields"]: AliasType<{
+	first_seen_at?:boolean | `@${string}`,
+	ip?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	last_seen_at?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	seconds_played?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["server_recent_players_min_fields"]: AliasType<{
+	first_seen_at?:boolean | `@${string}`,
+	ip?:boolean | `@${string}`,
+	kills?:boolean | `@${string}`,
+	last_seen_at?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	seconds_played?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Ordering options when selecting data from "server_recent_players". */
+["server_recent_players_order_by"]: {
+	first_seen_at?: ResolverInputTypes["order_by"] | undefined | null,
+	ip?: ResolverInputTypes["order_by"] | undefined | null,
+	kills?: ResolverInputTypes["order_by"] | undefined | null,
+	last_seen_at?: ResolverInputTypes["order_by"] | undefined | null,
+	name?: ResolverInputTypes["order_by"] | undefined | null,
+	online?: ResolverInputTypes["order_by"] | undefined | null,
+	player?: ResolverInputTypes["players_order_by"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	seconds_played?: ResolverInputTypes["order_by"] | undefined | null,
+	server?: ResolverInputTypes["servers_order_by"] | undefined | null,
+	server_id?: ResolverInputTypes["order_by"] | undefined | null,
+	sessions?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** select columns of table "server_recent_players" */
+["server_recent_players_select_column"]:server_recent_players_select_column;
+	/** aggregate stddev on columns */
+["server_recent_players_stddev_fields"]: AliasType<{
+	kills?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	seconds_played?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["server_recent_players_stddev_pop_fields"]: AliasType<{
+	kills?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	seconds_played?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["server_recent_players_stddev_samp_fields"]: AliasType<{
+	kills?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	seconds_played?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "server_recent_players" */
+["server_recent_players_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["server_recent_players_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["server_recent_players_stream_cursor_value_input"]: {
+	first_seen_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	ip?: string | undefined | null,
+	kills?: number | undefined | null,
+	last_seen_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	name?: string | undefined | null,
+	online?: boolean | undefined | null,
+	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	seconds_played?: number | undefined | null,
+	server_id?: ResolverInputTypes["uuid"] | undefined | null,
+	sessions?: number | undefined | null
+};
+	/** aggregate sum on columns */
+["server_recent_players_sum_fields"]: AliasType<{
+	kills?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	seconds_played?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_pop on columns */
+["server_recent_players_var_pop_fields"]: AliasType<{
+	kills?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	seconds_played?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["server_recent_players_var_samp_fields"]: AliasType<{
+	kills?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	seconds_played?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["server_recent_players_variance_fields"]: AliasType<{
+	kills?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	seconds_played?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	/** columns and relationships of "server_regions" */
 ["server_regions"]: AliasType<{
 	/** A computed field, executes function "available_region_server_count" */
@@ -139202,8 +143129,159 @@ count?: [{	columns?: Array<ResolverInputTypes["server_regions_select_column"]> |
 	total_server_count?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** columns and relationships of "server_rosters" */
+["server_rosters"]: AliasType<{
+	held_since?:boolean | `@${string}`,
+	reported_at?:boolean | `@${string}`,
+	/** An object relationship */
+	server?:ResolverInputTypes["servers"],
+	server_id?:boolean | `@${string}`,
+sessions?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_player_sessions_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_player_sessions_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_player_sessions_bool_exp"] | undefined | null},ResolverInputTypes["server_player_sessions"]],
+sessions_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_player_sessions_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_player_sessions_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_player_sessions_bool_exp"] | undefined | null},ResolverInputTypes["server_player_sessions_aggregate"]],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "server_rosters" */
+["server_rosters_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["server_rosters_aggregate_fields"],
+	nodes?:ResolverInputTypes["server_rosters"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "server_rosters" */
+["server_rosters_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ResolverInputTypes["server_rosters_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["server_rosters_max_fields"],
+	min?:ResolverInputTypes["server_rosters_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "server_rosters". All fields are combined with a logical 'AND'. */
+["server_rosters_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["server_rosters_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["server_rosters_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["server_rosters_bool_exp"]> | undefined | null,
+	held_since?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	reported_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	server?: ResolverInputTypes["servers_bool_exp"] | undefined | null,
+	server_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	sessions?: ResolverInputTypes["server_player_sessions_bool_exp"] | undefined | null,
+	sessions_aggregate?: ResolverInputTypes["server_player_sessions_aggregate_bool_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "server_rosters" */
+["server_rosters_constraint"]:server_rosters_constraint;
+	/** input type for inserting data into table "server_rosters" */
+["server_rosters_insert_input"]: {
+	held_since?: ResolverInputTypes["timestamptz"] | undefined | null,
+	reported_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	server?: ResolverInputTypes["servers_obj_rel_insert_input"] | undefined | null,
+	server_id?: ResolverInputTypes["uuid"] | undefined | null,
+	sessions?: ResolverInputTypes["server_player_sessions_arr_rel_insert_input"] | undefined | null
+};
+	/** aggregate max on columns */
+["server_rosters_max_fields"]: AliasType<{
+	held_since?:boolean | `@${string}`,
+	reported_at?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["server_rosters_min_fields"]: AliasType<{
+	held_since?:boolean | `@${string}`,
+	reported_at?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "server_rosters" */
+["server_rosters_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["server_rosters"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "server_rosters" */
+["server_rosters_on_conflict"]: {
+	constraint: ResolverInputTypes["server_rosters_constraint"],
+	update_columns: Array<ResolverInputTypes["server_rosters_update_column"]>,
+	where?: ResolverInputTypes["server_rosters_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "server_rosters". */
+["server_rosters_order_by"]: {
+	held_since?: ResolverInputTypes["order_by"] | undefined | null,
+	reported_at?: ResolverInputTypes["order_by"] | undefined | null,
+	server?: ResolverInputTypes["servers_order_by"] | undefined | null,
+	server_id?: ResolverInputTypes["order_by"] | undefined | null,
+	sessions_aggregate?: ResolverInputTypes["server_player_sessions_aggregate_order_by"] | undefined | null
+};
+	/** primary key columns input for table: server_rosters */
+["server_rosters_pk_columns_input"]: {
+	server_id: ResolverInputTypes["uuid"]
+};
+	/** select columns of table "server_rosters" */
+["server_rosters_select_column"]:server_rosters_select_column;
+	/** input type for updating data in table "server_rosters" */
+["server_rosters_set_input"]: {
+	held_since?: ResolverInputTypes["timestamptz"] | undefined | null,
+	reported_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	server_id?: ResolverInputTypes["uuid"] | undefined | null
+};
+	/** Streaming cursor of the table "server_rosters" */
+["server_rosters_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["server_rosters_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["server_rosters_stream_cursor_value_input"]: {
+	held_since?: ResolverInputTypes["timestamptz"] | undefined | null,
+	reported_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	server_id?: ResolverInputTypes["uuid"] | undefined | null
+};
+	/** update columns of table "server_rosters" */
+["server_rosters_update_column"]:server_rosters_update_column;
+	["server_rosters_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["server_rosters_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["server_rosters_bool_exp"]
+};
 	/** columns and relationships of "servers" */
 ["servers"]: AliasType<{
+access_events?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_access_events_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_access_events_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_access_events_bool_exp"] | undefined | null},ResolverInputTypes["server_access_events"]],
+access_events_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_access_events_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_access_events_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_access_events_bool_exp"] | undefined | null},ResolverInputTypes["server_access_events_aggregate"]],
+	access_min_role?:boolean | `@${string}`,
+access_players?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_access_players_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_access_players_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_access_players_bool_exp"] | undefined | null},ResolverInputTypes["server_access_players"]],
+access_players_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_access_players_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_access_players_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_access_players_bool_exp"] | undefined | null},ResolverInputTypes["server_access_players_aggregate"]],
+	access_restricted?:boolean | `@${string}`,
 	api_password?:boolean | `@${string}`,
 	boot_status?:boolean | `@${string}`,
 	boot_status_detail?:boolean | `@${string}`,
@@ -139255,7 +143333,22 @@ matches_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["matches_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["matches_bool_exp"] | undefined | null},ResolverInputTypes["matches_aggregate"]],
 	max_players?:boolean | `@${string}`,
+migrations?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_migrations_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_migrations_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_migrations_bool_exp"] | undefined | null},ResolverInputTypes["server_migrations"]],
+migrations_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_migrations_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_migrations_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_migrations_bool_exp"] | undefined | null},ResolverInputTypes["server_migrations_aggregate"]],
 	offline_at?:boolean | `@${string}`,
+	player_management_runtime?:boolean | `@${string}`,
+	player_management_seen_at?:boolean | `@${string}`,
+	player_management_version?:boolean | `@${string}`,
 plugin_overrides?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["server_plugins_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -139370,6 +143463,12 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	_and?: Array<ResolverInputTypes["servers_bool_exp"]> | undefined | null,
 	_not?: ResolverInputTypes["servers_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["servers_bool_exp"]> | undefined | null,
+	access_events?: ResolverInputTypes["server_access_events_bool_exp"] | undefined | null,
+	access_events_aggregate?: ResolverInputTypes["server_access_events_aggregate_bool_exp"] | undefined | null,
+	access_min_role?: ResolverInputTypes["e_player_roles_enum_comparison_exp"] | undefined | null,
+	access_players?: ResolverInputTypes["server_access_players_bool_exp"] | undefined | null,
+	access_players_aggregate?: ResolverInputTypes["server_access_players_aggregate_bool_exp"] | undefined | null,
+	access_restricted?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	api_password?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	boot_status?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	boot_status_detail?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
@@ -139395,7 +143494,12 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	matches?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
 	matches_aggregate?: ResolverInputTypes["matches_aggregate_bool_exp"] | undefined | null,
 	max_players?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	migrations?: ResolverInputTypes["server_migrations_bool_exp"] | undefined | null,
+	migrations_aggregate?: ResolverInputTypes["server_migrations_aggregate_bool_exp"] | undefined | null,
 	offline_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	player_management_runtime?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	player_management_seen_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	player_management_version?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	plugin_overrides?: ResolverInputTypes["server_plugins_bool_exp"] | undefined | null,
 	plugin_overrides_aggregate?: ResolverInputTypes["server_plugins_aggregate_bool_exp"] | undefined | null,
 	plugin_runtime?: ResolverInputTypes["e_plugin_runtimes_enum_comparison_exp"] | undefined | null,
@@ -139434,6 +143538,10 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 };
 	/** input type for inserting data into table "servers" */
 ["servers_insert_input"]: {
+	access_events?: ResolverInputTypes["server_access_events_arr_rel_insert_input"] | undefined | null,
+	access_min_role?: ResolverInputTypes["e_player_roles_enum"] | undefined | null,
+	access_players?: ResolverInputTypes["server_access_players_arr_rel_insert_input"] | undefined | null,
+	access_restricted?: boolean | undefined | null,
 	api_password?: ResolverInputTypes["uuid"] | undefined | null,
 	boot_status?: string | undefined | null,
 	boot_status_detail?: string | undefined | null,
@@ -139455,7 +143563,11 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	map_rotation_shuffle?: boolean | undefined | null,
 	matches?: ResolverInputTypes["matches_arr_rel_insert_input"] | undefined | null,
 	max_players?: number | undefined | null,
+	migrations?: ResolverInputTypes["server_migrations_arr_rel_insert_input"] | undefined | null,
 	offline_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	player_management_runtime?: string | undefined | null,
+	player_management_seen_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	player_management_version?: string | undefined | null,
 	plugin_overrides?: ResolverInputTypes["server_plugins_arr_rel_insert_input"] | undefined | null,
 	plugin_runtime?: ResolverInputTypes["e_plugin_runtimes_enum"] | undefined | null,
 	plugin_version?: string | undefined | null,
@@ -139489,6 +143601,9 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	label?:boolean | `@${string}`,
 	max_players?:boolean | `@${string}`,
 	offline_at?:boolean | `@${string}`,
+	player_management_runtime?:boolean | `@${string}`,
+	player_management_seen_at?:boolean | `@${string}`,
+	player_management_version?:boolean | `@${string}`,
 	plugin_version?:boolean | `@${string}`,
 	plugins_checked_at?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
@@ -139513,6 +143628,9 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	label?: ResolverInputTypes["order_by"] | undefined | null,
 	max_players?: ResolverInputTypes["order_by"] | undefined | null,
 	offline_at?: ResolverInputTypes["order_by"] | undefined | null,
+	player_management_runtime?: ResolverInputTypes["order_by"] | undefined | null,
+	player_management_seen_at?: ResolverInputTypes["order_by"] | undefined | null,
+	player_management_version?: ResolverInputTypes["order_by"] | undefined | null,
 	plugin_version?: ResolverInputTypes["order_by"] | undefined | null,
 	plugins_checked_at?: ResolverInputTypes["order_by"] | undefined | null,
 	port?: ResolverInputTypes["order_by"] | undefined | null,
@@ -139540,6 +143658,9 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	label?:boolean | `@${string}`,
 	max_players?:boolean | `@${string}`,
 	offline_at?:boolean | `@${string}`,
+	player_management_runtime?:boolean | `@${string}`,
+	player_management_seen_at?:boolean | `@${string}`,
+	player_management_version?:boolean | `@${string}`,
 	plugin_version?:boolean | `@${string}`,
 	plugins_checked_at?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
@@ -139564,6 +143685,9 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	label?: ResolverInputTypes["order_by"] | undefined | null,
 	max_players?: ResolverInputTypes["order_by"] | undefined | null,
 	offline_at?: ResolverInputTypes["order_by"] | undefined | null,
+	player_management_runtime?: ResolverInputTypes["order_by"] | undefined | null,
+	player_management_seen_at?: ResolverInputTypes["order_by"] | undefined | null,
+	player_management_version?: ResolverInputTypes["order_by"] | undefined | null,
 	plugin_version?: ResolverInputTypes["order_by"] | undefined | null,
 	plugins_checked_at?: ResolverInputTypes["order_by"] | undefined | null,
 	port?: ResolverInputTypes["order_by"] | undefined | null,
@@ -139595,6 +143719,10 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 };
 	/** Ordering options when selecting data from "servers". */
 ["servers_order_by"]: {
+	access_events_aggregate?: ResolverInputTypes["server_access_events_aggregate_order_by"] | undefined | null,
+	access_min_role?: ResolverInputTypes["order_by"] | undefined | null,
+	access_players_aggregate?: ResolverInputTypes["server_access_players_aggregate_order_by"] | undefined | null,
+	access_restricted?: ResolverInputTypes["order_by"] | undefined | null,
 	api_password?: ResolverInputTypes["order_by"] | undefined | null,
 	boot_status?: ResolverInputTypes["order_by"] | undefined | null,
 	boot_status_detail?: ResolverInputTypes["order_by"] | undefined | null,
@@ -139618,7 +143746,11 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	map_rotation_shuffle?: ResolverInputTypes["order_by"] | undefined | null,
 	matches_aggregate?: ResolverInputTypes["matches_aggregate_order_by"] | undefined | null,
 	max_players?: ResolverInputTypes["order_by"] | undefined | null,
+	migrations_aggregate?: ResolverInputTypes["server_migrations_aggregate_order_by"] | undefined | null,
 	offline_at?: ResolverInputTypes["order_by"] | undefined | null,
+	player_management_runtime?: ResolverInputTypes["order_by"] | undefined | null,
+	player_management_seen_at?: ResolverInputTypes["order_by"] | undefined | null,
+	player_management_version?: ResolverInputTypes["order_by"] | undefined | null,
 	plugin_overrides_aggregate?: ResolverInputTypes["server_plugins_aggregate_order_by"] | undefined | null,
 	plugin_runtime?: ResolverInputTypes["order_by"] | undefined | null,
 	plugin_version?: ResolverInputTypes["order_by"] | undefined | null,
@@ -139650,6 +143782,8 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 ["servers_select_column_servers_aggregate_bool_exp_bool_or_arguments_columns"]:servers_select_column_servers_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "servers" */
 ["servers_set_input"]: {
+	access_min_role?: ResolverInputTypes["e_player_roles_enum"] | undefined | null,
+	access_restricted?: boolean | undefined | null,
 	api_password?: ResolverInputTypes["uuid"] | undefined | null,
 	boot_status?: string | undefined | null,
 	boot_status_detail?: string | undefined | null,
@@ -139667,6 +143801,9 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	map_rotation_shuffle?: boolean | undefined | null,
 	max_players?: number | undefined | null,
 	offline_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	player_management_runtime?: string | undefined | null,
+	player_management_seen_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	player_management_version?: string | undefined | null,
 	plugin_runtime?: ResolverInputTypes["e_plugin_runtimes_enum"] | undefined | null,
 	plugin_version?: string | undefined | null,
 	plugins_checked_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -139728,6 +143865,8 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 };
 	/** Initial value of the column from where the streaming should start */
 ["servers_stream_cursor_value_input"]: {
+	access_min_role?: ResolverInputTypes["e_player_roles_enum"] | undefined | null,
+	access_restricted?: boolean | undefined | null,
 	api_password?: ResolverInputTypes["uuid"] | undefined | null,
 	boot_status?: string | undefined | null,
 	boot_status_detail?: string | undefined | null,
@@ -139745,6 +143884,9 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	map_rotation_shuffle?: boolean | undefined | null,
 	max_players?: number | undefined | null,
 	offline_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	player_management_runtime?: string | undefined | null,
+	player_management_seen_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	player_management_version?: string | undefined | null,
 	plugin_runtime?: ResolverInputTypes["e_plugin_runtimes_enum"] | undefined | null,
 	plugin_version?: string | undefined | null,
 	plugins_checked_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -141328,6 +145470,23 @@ e_scrim_request_statuses_stream?: [{	/** maximum number of rows returned in a si
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["e_scrim_request_statuses_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["e_scrim_request_statuses_bool_exp"] | undefined | null},ResolverInputTypes["e_scrim_request_statuses"]],
+e_server_migration_statuses?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_server_migration_statuses_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_server_migration_statuses_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_server_migration_statuses_bool_exp"] | undefined | null},ResolverInputTypes["e_server_migration_statuses"]],
+e_server_migration_statuses_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_server_migration_statuses_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_server_migration_statuses_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_server_migration_statuses_bool_exp"] | undefined | null},ResolverInputTypes["e_server_migration_statuses_aggregate"]],
+e_server_migration_statuses_by_pk?: [{	value: string},ResolverInputTypes["e_server_migration_statuses"]],
+e_server_migration_statuses_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["e_server_migration_statuses_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_server_migration_statuses_bool_exp"] | undefined | null},ResolverInputTypes["e_server_migration_statuses"]],
 e_server_types?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["e_server_types_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -143191,6 +147350,40 @@ seasons_stream?: [{	/** maximum number of rows returned in a single batch */
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["seasons_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["seasons_bool_exp"] | undefined | null},ResolverInputTypes["seasons"]],
+server_access_events?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_access_events_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_access_events_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_access_events_bool_exp"] | undefined | null},ResolverInputTypes["server_access_events"]],
+server_access_events_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_access_events_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_access_events_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_access_events_bool_exp"] | undefined | null},ResolverInputTypes["server_access_events_aggregate"]],
+server_access_events_by_pk?: [{	event_id: ResolverInputTypes["uuid"],	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["server_access_events"]],
+server_access_events_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["server_access_events_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_access_events_bool_exp"] | undefined | null},ResolverInputTypes["server_access_events"]],
+server_access_players?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_access_players_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_access_players_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_access_players_bool_exp"] | undefined | null},ResolverInputTypes["server_access_players"]],
+server_access_players_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_access_players_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_access_players_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_access_players_bool_exp"] | undefined | null},ResolverInputTypes["server_access_players_aggregate"]],
+server_access_players_by_pk?: [{	server_id: ResolverInputTypes["uuid"],	steam_id: ResolverInputTypes["bigint"]},ResolverInputTypes["server_access_players"]],
+server_access_players_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["server_access_players_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_access_players_bool_exp"] | undefined | null},ResolverInputTypes["server_access_players"]],
 server_map_rotation?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["server_map_rotation_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -143208,6 +147401,40 @@ server_map_rotation_stream?: [{	/** maximum number of rows returned in a single 
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["server_map_rotation_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["server_map_rotation_bool_exp"] | undefined | null},ResolverInputTypes["server_map_rotation"]],
+server_migrations?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_migrations_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_migrations_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_migrations_bool_exp"] | undefined | null},ResolverInputTypes["server_migrations"]],
+server_migrations_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_migrations_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_migrations_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_migrations_bool_exp"] | undefined | null},ResolverInputTypes["server_migrations_aggregate"]],
+server_migrations_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["server_migrations"]],
+server_migrations_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["server_migrations_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_migrations_bool_exp"] | undefined | null},ResolverInputTypes["server_migrations"]],
+server_player_sessions?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_player_sessions_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_player_sessions_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_player_sessions_bool_exp"] | undefined | null},ResolverInputTypes["server_player_sessions"]],
+server_player_sessions_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_player_sessions_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_player_sessions_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_player_sessions_bool_exp"] | undefined | null},ResolverInputTypes["server_player_sessions_aggregate"]],
+server_player_sessions_by_pk?: [{	id: ResolverInputTypes["bigint"]},ResolverInputTypes["server_player_sessions"]],
+server_player_sessions_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["server_player_sessions_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_player_sessions_bool_exp"] | undefined | null},ResolverInputTypes["server_player_sessions"]],
 server_plugins?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["server_plugins_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -143225,6 +147452,22 @@ server_plugins_stream?: [{	/** maximum number of rows returned in a single batch
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["server_plugins_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["server_plugins_bool_exp"] | undefined | null},ResolverInputTypes["server_plugins"]],
+server_recent_players?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_recent_players_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_recent_players_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_recent_players_bool_exp"] | undefined | null},ResolverInputTypes["server_recent_players"]],
+server_recent_players_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_recent_players_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_recent_players_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_recent_players_bool_exp"] | undefined | null},ResolverInputTypes["server_recent_players_aggregate"]],
+server_recent_players_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["server_recent_players_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_recent_players_bool_exp"] | undefined | null},ResolverInputTypes["server_recent_players"]],
 server_regions?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["server_regions_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -143242,6 +147485,23 @@ server_regions_stream?: [{	/** maximum number of rows returned in a single batch
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["server_regions_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["server_regions_bool_exp"] | undefined | null},ResolverInputTypes["server_regions"]],
+server_rosters?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_rosters_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_rosters_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_rosters_bool_exp"] | undefined | null},ResolverInputTypes["server_rosters"]],
+server_rosters_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_rosters_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_rosters_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_rosters_bool_exp"] | undefined | null},ResolverInputTypes["server_rosters_aggregate"]],
+server_rosters_by_pk?: [{	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["server_rosters"]],
+server_rosters_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["server_rosters_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_rosters_bool_exp"] | undefined | null},ResolverInputTypes["server_rosters"]],
 servers?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["servers_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -144458,22 +148718,6 @@ v_player_multi_kills_stream?: [{	/** maximum number of rows returned in a single
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["v_player_multi_kills_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["v_player_multi_kills_bool_exp"] | undefined | null},ResolverInputTypes["v_player_multi_kills"]],
-v_player_queue_partners?: [{	/** distinct select on columns */
-	distinct_on?: Array<ResolverInputTypes["v_player_queue_partners_select_column"]> | undefined | null,	/** limit the number of rows returned */
-	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null,	/** sort the rows by one or more columns */
-	order_by?: Array<ResolverInputTypes["v_player_queue_partners_order_by"]> | undefined | null,	/** filter the rows returned */
-	where?: ResolverInputTypes["v_player_queue_partners_bool_exp"] | undefined | null},ResolverInputTypes["v_player_queue_partners"]],
-v_player_queue_partners_aggregate?: [{	/** distinct select on columns */
-	distinct_on?: Array<ResolverInputTypes["v_player_queue_partners_select_column"]> | undefined | null,	/** limit the number of rows returned */
-	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null,	/** sort the rows by one or more columns */
-	order_by?: Array<ResolverInputTypes["v_player_queue_partners_order_by"]> | undefined | null,	/** filter the rows returned */
-	where?: ResolverInputTypes["v_player_queue_partners_bool_exp"] | undefined | null},ResolverInputTypes["v_player_queue_partners_aggregate"]],
-v_player_queue_partners_stream?: [{	/** maximum number of rows returned in a single batch */
-	batch_size: number,	/** cursor to stream the results returned by the query */
-	cursor: Array<ResolverInputTypes["v_player_queue_partners_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
-	where?: ResolverInputTypes["v_player_queue_partners_bool_exp"] | undefined | null},ResolverInputTypes["v_player_queue_partners"]],
 v_player_weapon_damage?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["v_player_weapon_damage_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -167668,168 +171912,6 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_multi_kills_select_colum
 	kills?: ResolverInputTypes["order_by"] | undefined | null,
 	round?: ResolverInputTypes["order_by"] | undefined | null
 };
-	/** columns and relationships of "v_player_queue_partners" */
-["v_player_queue_partners"]: AliasType<{
-	first_played_at?:boolean | `@${string}`,
-	last_played_at?:boolean | `@${string}`,
-	matches_together?:boolean | `@${string}`,
-	/** An object relationship */
-	partner?:ResolverInputTypes["players"],
-	partner_steam_id?:boolean | `@${string}`,
-	/** An object relationship */
-	player?:ResolverInputTypes["players"],
-	steam_id?:boolean | `@${string}`,
-	wins_together?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregated selection of "v_player_queue_partners" */
-["v_player_queue_partners_aggregate"]: AliasType<{
-	aggregate?:ResolverInputTypes["v_player_queue_partners_aggregate_fields"],
-	nodes?:ResolverInputTypes["v_player_queue_partners"],
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregate fields of "v_player_queue_partners" */
-["v_player_queue_partners_aggregate_fields"]: AliasType<{
-	avg?:ResolverInputTypes["v_player_queue_partners_avg_fields"],
-count?: [{	columns?: Array<ResolverInputTypes["v_player_queue_partners_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
-	max?:ResolverInputTypes["v_player_queue_partners_max_fields"],
-	min?:ResolverInputTypes["v_player_queue_partners_min_fields"],
-	stddev?:ResolverInputTypes["v_player_queue_partners_stddev_fields"],
-	stddev_pop?:ResolverInputTypes["v_player_queue_partners_stddev_pop_fields"],
-	stddev_samp?:ResolverInputTypes["v_player_queue_partners_stddev_samp_fields"],
-	sum?:ResolverInputTypes["v_player_queue_partners_sum_fields"],
-	var_pop?:ResolverInputTypes["v_player_queue_partners_var_pop_fields"],
-	var_samp?:ResolverInputTypes["v_player_queue_partners_var_samp_fields"],
-	variance?:ResolverInputTypes["v_player_queue_partners_variance_fields"],
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregate avg on columns */
-["v_player_queue_partners_avg_fields"]: AliasType<{
-	matches_together?:boolean | `@${string}`,
-	partner_steam_id?:boolean | `@${string}`,
-	steam_id?:boolean | `@${string}`,
-	wins_together?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** Boolean expression to filter rows from the table "v_player_queue_partners". All fields are combined with a logical 'AND'. */
-["v_player_queue_partners_bool_exp"]: {
-	_and?: Array<ResolverInputTypes["v_player_queue_partners_bool_exp"]> | undefined | null,
-	_not?: ResolverInputTypes["v_player_queue_partners_bool_exp"] | undefined | null,
-	_or?: Array<ResolverInputTypes["v_player_queue_partners_bool_exp"]> | undefined | null,
-	first_played_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
-	last_played_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
-	matches_together?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
-	partner?: ResolverInputTypes["players_bool_exp"] | undefined | null,
-	partner_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
-	player?: ResolverInputTypes["players_bool_exp"] | undefined | null,
-	steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
-	wins_together?: ResolverInputTypes["Int_comparison_exp"] | undefined | null
-};
-	/** aggregate max on columns */
-["v_player_queue_partners_max_fields"]: AliasType<{
-	first_played_at?:boolean | `@${string}`,
-	last_played_at?:boolean | `@${string}`,
-	matches_together?:boolean | `@${string}`,
-	partner_steam_id?:boolean | `@${string}`,
-	steam_id?:boolean | `@${string}`,
-	wins_together?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregate min on columns */
-["v_player_queue_partners_min_fields"]: AliasType<{
-	first_played_at?:boolean | `@${string}`,
-	last_played_at?:boolean | `@${string}`,
-	matches_together?:boolean | `@${string}`,
-	partner_steam_id?:boolean | `@${string}`,
-	steam_id?:boolean | `@${string}`,
-	wins_together?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** Ordering options when selecting data from "v_player_queue_partners". */
-["v_player_queue_partners_order_by"]: {
-	first_played_at?: ResolverInputTypes["order_by"] | undefined | null,
-	last_played_at?: ResolverInputTypes["order_by"] | undefined | null,
-	matches_together?: ResolverInputTypes["order_by"] | undefined | null,
-	partner?: ResolverInputTypes["players_order_by"] | undefined | null,
-	partner_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
-	player?: ResolverInputTypes["players_order_by"] | undefined | null,
-	steam_id?: ResolverInputTypes["order_by"] | undefined | null,
-	wins_together?: ResolverInputTypes["order_by"] | undefined | null
-};
-	/** select columns of table "v_player_queue_partners" */
-["v_player_queue_partners_select_column"]:v_player_queue_partners_select_column;
-	/** aggregate stddev on columns */
-["v_player_queue_partners_stddev_fields"]: AliasType<{
-	matches_together?:boolean | `@${string}`,
-	partner_steam_id?:boolean | `@${string}`,
-	steam_id?:boolean | `@${string}`,
-	wins_together?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregate stddev_pop on columns */
-["v_player_queue_partners_stddev_pop_fields"]: AliasType<{
-	matches_together?:boolean | `@${string}`,
-	partner_steam_id?:boolean | `@${string}`,
-	steam_id?:boolean | `@${string}`,
-	wins_together?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregate stddev_samp on columns */
-["v_player_queue_partners_stddev_samp_fields"]: AliasType<{
-	matches_together?:boolean | `@${string}`,
-	partner_steam_id?:boolean | `@${string}`,
-	steam_id?:boolean | `@${string}`,
-	wins_together?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** Streaming cursor of the table "v_player_queue_partners" */
-["v_player_queue_partners_stream_cursor_input"]: {
-	/** Stream column input with initial value */
-	initial_value: ResolverInputTypes["v_player_queue_partners_stream_cursor_value_input"],
-	/** cursor ordering */
-	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
-};
-	/** Initial value of the column from where the streaming should start */
-["v_player_queue_partners_stream_cursor_value_input"]: {
-	first_played_at?: ResolverInputTypes["timestamptz"] | undefined | null,
-	last_played_at?: ResolverInputTypes["timestamptz"] | undefined | null,
-	matches_together?: number | undefined | null,
-	partner_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
-	steam_id?: ResolverInputTypes["bigint"] | undefined | null,
-	wins_together?: number | undefined | null
-};
-	/** aggregate sum on columns */
-["v_player_queue_partners_sum_fields"]: AliasType<{
-	matches_together?:boolean | `@${string}`,
-	partner_steam_id?:boolean | `@${string}`,
-	steam_id?:boolean | `@${string}`,
-	wins_together?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregate var_pop on columns */
-["v_player_queue_partners_var_pop_fields"]: AliasType<{
-	matches_together?:boolean | `@${string}`,
-	partner_steam_id?:boolean | `@${string}`,
-	steam_id?:boolean | `@${string}`,
-	wins_together?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregate var_samp on columns */
-["v_player_queue_partners_var_samp_fields"]: AliasType<{
-	matches_together?:boolean | `@${string}`,
-	partner_steam_id?:boolean | `@${string}`,
-	steam_id?:boolean | `@${string}`,
-	wins_together?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregate variance on columns */
-["v_player_queue_partners_variance_fields"]: AliasType<{
-	matches_together?:boolean | `@${string}`,
-	partner_steam_id?:boolean | `@${string}`,
-	steam_id?:boolean | `@${string}`,
-	wins_together?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
 	/** columns and relationships of "v_player_weapon_damage" */
 ["v_player_weapon_damage"]: AliasType<{
 	damage?:boolean | `@${string}`,
@@ -170754,6 +174836,14 @@ export type ModelTypes = {
 	segments: Array<ModelTypes["ClipSegmentInput"]>,
 	title?: string | undefined | null
 };
+	["CommunityTotals"]: {
+		deaths: number,
+	kills: number,
+	rank?: number | undefined | null,
+	seconds: number,
+	servers: number,
+	sessions: number
+};
 	["ConnectionByState"]: {
 		count: number,
 	state: string,
@@ -171078,6 +175168,49 @@ export type ModelTypes = {
 		error?: string | undefined | null,
 	success: boolean
 };
+	["PlayerCommunityIp"]: {
+		ip: string,
+	sessions: number
+};
+	["PlayerCommunityIpMatch"]: {
+		avatar_url?: string | undefined | null,
+	has_account: boolean,
+	ip: string,
+	is_banned: boolean,
+	last_seen_at?: ModelTypes["timestamptz"] | undefined | null,
+	name?: string | undefined | null,
+	online: boolean,
+	sessions: number,
+	steam_id: ModelTypes["bigint"]
+};
+	["PlayerCommunityServer"]: {
+		all_time: ModelTypes["CommunityTotals"],
+	label: string,
+	last_seen_at?: ModelTypes["timestamptz"] | undefined | null,
+	names?: Array<string> | undefined | null,
+	online: boolean,
+	region?: string | undefined | null,
+	server_id: ModelTypes["uuid"],
+	sessions?: Array<ModelTypes["PlayerCommunitySession"]> | undefined | null,
+	type?: string | undefined | null,
+	week: ModelTypes["CommunityTotals"]
+};
+	["PlayerCommunitySession"]: {
+		ended_at?: ModelTypes["timestamptz"] | undefined | null,
+	ip?: string | undefined | null,
+	started_at: ModelTypes["timestamptz"]
+};
+	["PlayerCommunityStats"]: {
+		all_time: ModelTypes["CommunityTotals"],
+	ip_matches?: Array<ModelTypes["PlayerCommunityIpMatch"]> | undefined | null,
+	ips?: Array<ModelTypes["PlayerCommunityIp"]> | undefined | null,
+	is_moderator_view: boolean,
+	last_seen_at?: ModelTypes["timestamptz"] | undefined | null,
+	online_server_id?: ModelTypes["uuid"] | undefined | null,
+	online_server_label?: string | undefined | null,
+	servers: Array<ModelTypes["PlayerCommunityServer"]>,
+	week: ModelTypes["CommunityTotals"]
+};
 	["PluginReadmeOutput"]: {
 		content?: string | undefined | null,
 	format?: string | undefined | null,
@@ -171189,6 +175322,46 @@ export type ModelTypes = {
 	season_id?: string | undefined | null,
 	started_at?: string | undefined | null,
 	total: number
+};
+	["ServerAccessInput"]: {
+	event_ids: Array<ModelTypes["uuid"]>,
+	min_role?: string | undefined | null,
+	restricted: boolean,
+	steam_ids: Array<string>
+};
+	["ServerCommunityStats"]: {
+		all_time_players: number,
+	hourly: Array<ModelTypes["ServerHourlyActivity"]>,
+	max_players?: number | undefined | null,
+	online: number,
+	server_id: ModelTypes["uuid"],
+	tracked_since?: ModelTypes["timestamptz"] | undefined | null,
+	week_players: number,
+	week_seconds: number
+};
+	["ServerHourlyActivity"]: {
+		hour: ModelTypes["timestamptz"],
+	players: number,
+	seconds: number
+};
+	["ServerLeaderboard"]: {
+		entries: Array<ModelTypes["ServerLeaderboardEntry"]>,
+	you?: ModelTypes["ServerLeaderboardEntry"] | undefined | null
+};
+	["ServerLeaderboardEntry"]: {
+		avatar_url?: string | undefined | null,
+	country?: string | undefined | null,
+	deaths: number,
+	kills: number,
+	name: string,
+	rank: number,
+	seconds: number,
+	sessions: number,
+	steam_id: ModelTypes["bigint"]
+};
+	["ServerMapRotationInput"]: {
+	map_ids: Array<ModelTypes["uuid"]>,
+	shuffle: boolean
 };
 	["ServerPlayer"]: {
 		name: string,
@@ -180428,6 +184601,108 @@ export type ModelTypes = {
 	/** filter the rows which have to be updated */
 	where: ModelTypes["e_scrim_request_statuses_bool_exp"]
 };
+	/** columns and relationships of "e_server_migration_statuses" */
+["e_server_migration_statuses"]: {
+		description: string,
+	value: string
+};
+	/** aggregated selection of "e_server_migration_statuses" */
+["e_server_migration_statuses_aggregate"]: {
+		aggregate?: ModelTypes["e_server_migration_statuses_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["e_server_migration_statuses"]>
+};
+	/** aggregate fields of "e_server_migration_statuses" */
+["e_server_migration_statuses_aggregate_fields"]: {
+		count: number,
+	max?: ModelTypes["e_server_migration_statuses_max_fields"] | undefined | null,
+	min?: ModelTypes["e_server_migration_statuses_min_fields"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "e_server_migration_statuses". All fields are combined with a logical 'AND'. */
+["e_server_migration_statuses_bool_exp"]: {
+	_and?: Array<ModelTypes["e_server_migration_statuses_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["e_server_migration_statuses_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["e_server_migration_statuses_bool_exp"]> | undefined | null,
+	description?: ModelTypes["String_comparison_exp"] | undefined | null,
+	value?: ModelTypes["String_comparison_exp"] | undefined | null
+};
+	["e_server_migration_statuses_constraint"]:e_server_migration_statuses_constraint;
+	["e_server_migration_statuses_enum"]:e_server_migration_statuses_enum;
+	/** Boolean expression to compare columns of type "e_server_migration_statuses_enum". All fields are combined with logical 'AND'. */
+["e_server_migration_statuses_enum_comparison_exp"]: {
+	_eq?: ModelTypes["e_server_migration_statuses_enum"] | undefined | null,
+	_in?: Array<ModelTypes["e_server_migration_statuses_enum"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_neq?: ModelTypes["e_server_migration_statuses_enum"] | undefined | null,
+	_nin?: Array<ModelTypes["e_server_migration_statuses_enum"]> | undefined | null
+};
+	/** input type for inserting data into table "e_server_migration_statuses" */
+["e_server_migration_statuses_insert_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate max on columns */
+["e_server_migration_statuses_max_fields"]: {
+		description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate min on columns */
+["e_server_migration_statuses_min_fields"]: {
+		description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** response of any mutation on the table "e_server_migration_statuses" */
+["e_server_migration_statuses_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["e_server_migration_statuses"]>
+};
+	/** input type for inserting object relation for remote table "e_server_migration_statuses" */
+["e_server_migration_statuses_obj_rel_insert_input"]: {
+	data: ModelTypes["e_server_migration_statuses_insert_input"],
+	/** upsert condition */
+	on_conflict?: ModelTypes["e_server_migration_statuses_on_conflict"] | undefined | null
+};
+	/** on_conflict condition type for table "e_server_migration_statuses" */
+["e_server_migration_statuses_on_conflict"]: {
+	constraint: ModelTypes["e_server_migration_statuses_constraint"],
+	update_columns: Array<ModelTypes["e_server_migration_statuses_update_column"]>,
+	where?: ModelTypes["e_server_migration_statuses_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "e_server_migration_statuses". */
+["e_server_migration_statuses_order_by"]: {
+	description?: ModelTypes["order_by"] | undefined | null,
+	value?: ModelTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: e_server_migration_statuses */
+["e_server_migration_statuses_pk_columns_input"]: {
+	value: string
+};
+	["e_server_migration_statuses_select_column"]:e_server_migration_statuses_select_column;
+	/** input type for updating data in table "e_server_migration_statuses" */
+["e_server_migration_statuses_set_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** Streaming cursor of the table "e_server_migration_statuses" */
+["e_server_migration_statuses_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["e_server_migration_statuses_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["e_server_migration_statuses_stream_cursor_value_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	["e_server_migration_statuses_update_column"]:e_server_migration_statuses_update_column;
+	["e_server_migration_statuses_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["e_server_migration_statuses_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["e_server_migration_statuses_bool_exp"]
+};
 	/** columns and relationships of "e_server_types" */
 ["e_server_types"]: {
 		description: string,
@@ -184683,12 +188958,10 @@ export type ModelTypes = {
 		archived_at?: ModelTypes["timestamptz"] | undefined | null,
 	cfg?: string | undefined | null,
 	competitive_safe: boolean,
-	system: boolean,
 	created_at: ModelTypes["timestamptz"],
 	description?: string | undefined | null,
 	enabled: boolean,
 	extra_game_params?: string | undefined | null,
-	valve_mode?: string | undefined | null,
 	icon?: string | undefined | null,
 	id: ModelTypes["uuid"],
 	/** An array relationship */
@@ -184705,7 +188978,9 @@ export type ModelTypes = {
 	slug: string,
 	/** Frameworks every plugin in this mode publishes for; empty means the selection cannot run */
 	supported_runtimes?: ModelTypes["jsonb"] | undefined | null,
-	updated_at: ModelTypes["timestamptz"]
+	system: boolean,
+	updated_at: ModelTypes["timestamptz"],
+	valve_mode?: string | undefined | null
 };
 	/** aggregated selection of "game_modes" */
 ["game_modes_aggregate"]: {
@@ -184726,12 +189001,10 @@ export type ModelTypes = {
 	archived_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	cfg?: ModelTypes["String_comparison_exp"] | undefined | null,
 	competitive_safe?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
-	system?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	description?: ModelTypes["String_comparison_exp"] | undefined | null,
 	enabled?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	extra_game_params?: ModelTypes["String_comparison_exp"] | undefined | null,
-	valve_mode?: ModelTypes["String_comparison_exp"] | undefined | null,
 	icon?: ModelTypes["String_comparison_exp"] | undefined | null,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
 	match_options?: ModelTypes["match_options_bool_exp"] | undefined | null,
@@ -184742,7 +189015,9 @@ export type ModelTypes = {
 	runtime_conflicts?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
 	slug?: ModelTypes["String_comparison_exp"] | undefined | null,
 	supported_runtimes?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
-	updated_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null
+	system?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	valve_mode?: ModelTypes["String_comparison_exp"] | undefined | null
 };
 	["game_modes_constraint"]:game_modes_constraint;
 	/** input type for inserting data into table "game_modes" */
@@ -184750,19 +189025,19 @@ export type ModelTypes = {
 	archived_at?: ModelTypes["timestamptz"] | undefined | null,
 	cfg?: string | undefined | null,
 	competitive_safe?: boolean | undefined | null,
-	system?: boolean | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
 	enabled?: boolean | undefined | null,
 	extra_game_params?: string | undefined | null,
-	valve_mode?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	match_options?: ModelTypes["match_options_arr_rel_insert_input"] | undefined | null,
 	name?: string | undefined | null,
 	plugins?: ModelTypes["game_mode_plugins_arr_rel_insert_input"] | undefined | null,
 	slug?: string | undefined | null,
-	updated_at?: ModelTypes["timestamptz"] | undefined | null
+	system?: boolean | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null,
+	valve_mode?: string | undefined | null
 };
 	/** aggregate max on columns */
 ["game_modes_max_fields"]: {
@@ -184771,12 +189046,12 @@ export type ModelTypes = {
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
 	extra_game_params?: string | undefined | null,
-	valve_mode?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	name?: string | undefined | null,
 	slug?: string | undefined | null,
-	updated_at?: ModelTypes["timestamptz"] | undefined | null
+	updated_at?: ModelTypes["timestamptz"] | undefined | null,
+	valve_mode?: string | undefined | null
 };
 	/** aggregate min on columns */
 ["game_modes_min_fields"]: {
@@ -184785,12 +189060,12 @@ export type ModelTypes = {
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
 	extra_game_params?: string | undefined | null,
-	valve_mode?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	name?: string | undefined | null,
 	slug?: string | undefined | null,
-	updated_at?: ModelTypes["timestamptz"] | undefined | null
+	updated_at?: ModelTypes["timestamptz"] | undefined | null,
+	valve_mode?: string | undefined | null
 };
 	/** response of any mutation on the table "game_modes" */
 ["game_modes_mutation_response"]: {
@@ -184816,12 +189091,10 @@ export type ModelTypes = {
 	archived_at?: ModelTypes["order_by"] | undefined | null,
 	cfg?: ModelTypes["order_by"] | undefined | null,
 	competitive_safe?: ModelTypes["order_by"] | undefined | null,
-	system?: ModelTypes["order_by"] | undefined | null,
 	created_at?: ModelTypes["order_by"] | undefined | null,
 	description?: ModelTypes["order_by"] | undefined | null,
 	enabled?: ModelTypes["order_by"] | undefined | null,
 	extra_game_params?: ModelTypes["order_by"] | undefined | null,
-	valve_mode?: ModelTypes["order_by"] | undefined | null,
 	icon?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
 	match_options_aggregate?: ModelTypes["match_options_aggregate_order_by"] | undefined | null,
@@ -184830,7 +189103,9 @@ export type ModelTypes = {
 	runtime_conflicts?: ModelTypes["order_by"] | undefined | null,
 	slug?: ModelTypes["order_by"] | undefined | null,
 	supported_runtimes?: ModelTypes["order_by"] | undefined | null,
-	updated_at?: ModelTypes["order_by"] | undefined | null
+	system?: ModelTypes["order_by"] | undefined | null,
+	updated_at?: ModelTypes["order_by"] | undefined | null,
+	valve_mode?: ModelTypes["order_by"] | undefined | null
 };
 	/** primary key columns input for table: game_modes */
 ["game_modes_pk_columns_input"]: {
@@ -184842,17 +189117,17 @@ export type ModelTypes = {
 	archived_at?: ModelTypes["timestamptz"] | undefined | null,
 	cfg?: string | undefined | null,
 	competitive_safe?: boolean | undefined | null,
-	system?: boolean | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
 	enabled?: boolean | undefined | null,
 	extra_game_params?: string | undefined | null,
-	valve_mode?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	name?: string | undefined | null,
 	slug?: string | undefined | null,
-	updated_at?: ModelTypes["timestamptz"] | undefined | null
+	system?: boolean | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null,
+	valve_mode?: string | undefined | null
 };
 	/** Streaming cursor of the table "game_modes" */
 ["game_modes_stream_cursor_input"]: {
@@ -184866,17 +189141,17 @@ export type ModelTypes = {
 	archived_at?: ModelTypes["timestamptz"] | undefined | null,
 	cfg?: string | undefined | null,
 	competitive_safe?: boolean | undefined | null,
-	system?: boolean | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
 	enabled?: boolean | undefined | null,
 	extra_game_params?: string | undefined | null,
-	valve_mode?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	name?: string | undefined | null,
 	slug?: string | undefined | null,
-	updated_at?: ModelTypes["timestamptz"] | undefined | null
+	system?: boolean | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null,
+	valve_mode?: string | undefined | null
 };
 	["game_modes_update_column"]:game_modes_update_column;
 	["game_modes_updates"]: {
@@ -185990,7 +190265,10 @@ export type ModelTypes = {
 };
 	/** columns and relationships of "game_server_nodes" */
 ["game_server_nodes"]: {
-		/** A computed field, executes function "available_node_server_count" */
+		accepting_new_matches: boolean,
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?: number | undefined | null,
+	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined | null,
 	build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
@@ -186130,7 +190408,9 @@ export type ModelTypes = {
 };
 	/** aggregate avg on columns */
 ["game_server_nodes_avg_fields"]: {
-		/** A computed field, executes function "available_node_server_count" */
+		/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?: number | undefined | null,
+	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined | null,
 	build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
@@ -186167,6 +190447,8 @@ export type ModelTypes = {
 	_and?: Array<ModelTypes["game_server_nodes_bool_exp"]> | undefined | null,
 	_not?: ModelTypes["game_server_nodes_bool_exp"] | undefined | null,
 	_or?: Array<ModelTypes["game_server_nodes_bool_exp"]> | undefined | null,
+	accepting_new_matches?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	available_dedicated_slot_count?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	available_server_count?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	build_id?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	cpu_cores_per_socket?: ModelTypes["Int_comparison_exp"] | undefined | null,
@@ -186270,6 +190552,7 @@ export type ModelTypes = {
 };
 	/** input type for inserting data into table "game_server_nodes" */
 ["game_server_nodes_insert_input"]: {
+	accepting_new_matches?: boolean | undefined | null,
 	build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
 	cpu_frequency_info?: ModelTypes["jsonb"] | undefined | null,
@@ -186322,7 +190605,9 @@ export type ModelTypes = {
 };
 	/** aggregate max on columns */
 ["game_server_nodes_max_fields"]: {
-		/** A computed field, executes function "available_node_server_count" */
+		/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?: number | undefined | null,
+	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined | null,
 	build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
@@ -186380,7 +190665,9 @@ export type ModelTypes = {
 };
 	/** aggregate min on columns */
 ["game_server_nodes_min_fields"]: {
-		/** A computed field, executes function "available_node_server_count" */
+		/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?: number | undefined | null,
+	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined | null,
 	build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
@@ -186457,6 +190744,8 @@ export type ModelTypes = {
 };
 	/** Ordering options when selecting data from "game_server_nodes". */
 ["game_server_nodes_order_by"]: {
+	accepting_new_matches?: ModelTypes["order_by"] | undefined | null,
+	available_dedicated_slot_count?: ModelTypes["order_by"] | undefined | null,
 	available_server_count?: ModelTypes["order_by"] | undefined | null,
 	build_id?: ModelTypes["order_by"] | undefined | null,
 	cpu_cores_per_socket?: ModelTypes["order_by"] | undefined | null,
@@ -186529,6 +190818,7 @@ export type ModelTypes = {
 	["game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns"]:game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "game_server_nodes" */
 ["game_server_nodes_set_input"]: {
+	accepting_new_matches?: boolean | undefined | null,
 	build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
 	cpu_frequency_info?: ModelTypes["jsonb"] | undefined | null,
@@ -186575,7 +190865,9 @@ export type ModelTypes = {
 };
 	/** aggregate stddev on columns */
 ["game_server_nodes_stddev_fields"]: {
-		/** A computed field, executes function "available_node_server_count" */
+		/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?: number | undefined | null,
+	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined | null,
 	build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
@@ -186609,7 +190901,9 @@ export type ModelTypes = {
 };
 	/** aggregate stddev_pop on columns */
 ["game_server_nodes_stddev_pop_fields"]: {
-		/** A computed field, executes function "available_node_server_count" */
+		/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?: number | undefined | null,
+	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined | null,
 	build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
@@ -186643,7 +190937,9 @@ export type ModelTypes = {
 };
 	/** aggregate stddev_samp on columns */
 ["game_server_nodes_stddev_samp_fields"]: {
-		/** A computed field, executes function "available_node_server_count" */
+		/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?: number | undefined | null,
+	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined | null,
 	build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
@@ -186684,6 +190980,7 @@ export type ModelTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["game_server_nodes_stream_cursor_value_input"]: {
+	accepting_new_matches?: boolean | undefined | null,
 	build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
 	cpu_frequency_info?: ModelTypes["jsonb"] | undefined | null,
@@ -186730,7 +191027,9 @@ export type ModelTypes = {
 };
 	/** aggregate sum on columns */
 ["game_server_nodes_sum_fields"]: {
-		/** A computed field, executes function "available_node_server_count" */
+		/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?: number | undefined | null,
+	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined | null,
 	build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
@@ -186783,7 +191082,9 @@ export type ModelTypes = {
 };
 	/** aggregate var_pop on columns */
 ["game_server_nodes_var_pop_fields"]: {
-		/** A computed field, executes function "available_node_server_count" */
+		/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?: number | undefined | null,
+	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined | null,
 	build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
@@ -186817,7 +191118,9 @@ export type ModelTypes = {
 };
 	/** aggregate var_samp on columns */
 ["game_server_nodes_var_samp_fields"]: {
-		/** A computed field, executes function "available_node_server_count" */
+		/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?: number | undefined | null,
+	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined | null,
 	build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
@@ -186851,7 +191154,9 @@ export type ModelTypes = {
 };
 	/** aggregate variance on columns */
 ["game_server_nodes_variance_fields"]: {
-		/** A computed field, executes function "available_node_server_count" */
+		/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?: number | undefined | null,
+	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined | null,
 	build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
@@ -197259,6 +201564,8 @@ export type ModelTypes = {
 	cancelClipRender?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Cancel an entire match_map's render queue + tear down the pod. */
 	cancelClipRenderBatch?: ModelTypes["SuccessOutput"] | undefined | null,
+	/** Cancel a dedicated server move that has not reached the new node yet */
+	cancelDedicatedServerMove?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** cancelMatch */
 	cancelMatch?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Request cancellation of the in-progress ELO recompute (admin only). Stops after the current match. */
@@ -197544,6 +201851,10 @@ export type ModelTypes = {
 	delete_e_scrim_request_statuses?: ModelTypes["e_scrim_request_statuses_mutation_response"] | undefined | null,
 	/** delete single row from the table: "e_scrim_request_statuses" */
 	delete_e_scrim_request_statuses_by_pk?: ModelTypes["e_scrim_request_statuses"] | undefined | null,
+	/** delete data from the table: "e_server_migration_statuses" */
+	delete_e_server_migration_statuses?: ModelTypes["e_server_migration_statuses_mutation_response"] | undefined | null,
+	/** delete single row from the table: "e_server_migration_statuses" */
+	delete_e_server_migration_statuses_by_pk?: ModelTypes["e_server_migration_statuses"] | undefined | null,
 	/** delete data from the table: "e_server_types" */
 	delete_e_server_types?: ModelTypes["e_server_types_mutation_response"] | undefined | null,
 	/** delete single row from the table: "e_server_types" */
@@ -197940,10 +202251,26 @@ export type ModelTypes = {
 	delete_seasons?: ModelTypes["seasons_mutation_response"] | undefined | null,
 	/** delete single row from the table: "seasons" */
 	delete_seasons_by_pk?: ModelTypes["seasons"] | undefined | null,
+	/** delete data from the table: "server_access_events" */
+	delete_server_access_events?: ModelTypes["server_access_events_mutation_response"] | undefined | null,
+	/** delete single row from the table: "server_access_events" */
+	delete_server_access_events_by_pk?: ModelTypes["server_access_events"] | undefined | null,
+	/** delete data from the table: "server_access_players" */
+	delete_server_access_players?: ModelTypes["server_access_players_mutation_response"] | undefined | null,
+	/** delete single row from the table: "server_access_players" */
+	delete_server_access_players_by_pk?: ModelTypes["server_access_players"] | undefined | null,
 	/** delete data from the table: "server_map_rotation" */
 	delete_server_map_rotation?: ModelTypes["server_map_rotation_mutation_response"] | undefined | null,
 	/** delete single row from the table: "server_map_rotation" */
 	delete_server_map_rotation_by_pk?: ModelTypes["server_map_rotation"] | undefined | null,
+	/** delete data from the table: "server_migrations" */
+	delete_server_migrations?: ModelTypes["server_migrations_mutation_response"] | undefined | null,
+	/** delete single row from the table: "server_migrations" */
+	delete_server_migrations_by_pk?: ModelTypes["server_migrations"] | undefined | null,
+	/** delete data from the table: "server_player_sessions" */
+	delete_server_player_sessions?: ModelTypes["server_player_sessions_mutation_response"] | undefined | null,
+	/** delete single row from the table: "server_player_sessions" */
+	delete_server_player_sessions_by_pk?: ModelTypes["server_player_sessions"] | undefined | null,
 	/** delete data from the table: "server_plugins" */
 	delete_server_plugins?: ModelTypes["server_plugins_mutation_response"] | undefined | null,
 	/** delete single row from the table: "server_plugins" */
@@ -197952,6 +202279,10 @@ export type ModelTypes = {
 	delete_server_regions?: ModelTypes["server_regions_mutation_response"] | undefined | null,
 	/** delete single row from the table: "server_regions" */
 	delete_server_regions_by_pk?: ModelTypes["server_regions"] | undefined | null,
+	/** delete data from the table: "server_rosters" */
+	delete_server_rosters?: ModelTypes["server_rosters_mutation_response"] | undefined | null,
+	/** delete single row from the table: "server_rosters" */
+	delete_server_rosters_by_pk?: ModelTypes["server_rosters"] | undefined | null,
 	/** delete data from the table: "servers" */
 	delete_servers?: ModelTypes["servers_mutation_response"] | undefined | null,
 	/** delete single row from the table: "servers" */
@@ -198405,6 +202736,10 @@ export type ModelTypes = {
 	insert_e_scrim_request_statuses?: ModelTypes["e_scrim_request_statuses_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "e_scrim_request_statuses" */
 	insert_e_scrim_request_statuses_one?: ModelTypes["e_scrim_request_statuses"] | undefined | null,
+	/** insert data into the table: "e_server_migration_statuses" */
+	insert_e_server_migration_statuses?: ModelTypes["e_server_migration_statuses_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "e_server_migration_statuses" */
+	insert_e_server_migration_statuses_one?: ModelTypes["e_server_migration_statuses"] | undefined | null,
 	/** insert data into the table: "e_server_types" */
 	insert_e_server_types?: ModelTypes["e_server_types_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "e_server_types" */
@@ -198809,10 +203144,26 @@ export type ModelTypes = {
 	insert_seasons?: ModelTypes["seasons_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "seasons" */
 	insert_seasons_one?: ModelTypes["seasons"] | undefined | null,
+	/** insert data into the table: "server_access_events" */
+	insert_server_access_events?: ModelTypes["server_access_events_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "server_access_events" */
+	insert_server_access_events_one?: ModelTypes["server_access_events"] | undefined | null,
+	/** insert data into the table: "server_access_players" */
+	insert_server_access_players?: ModelTypes["server_access_players_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "server_access_players" */
+	insert_server_access_players_one?: ModelTypes["server_access_players"] | undefined | null,
 	/** insert data into the table: "server_map_rotation" */
 	insert_server_map_rotation?: ModelTypes["server_map_rotation_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "server_map_rotation" */
 	insert_server_map_rotation_one?: ModelTypes["server_map_rotation"] | undefined | null,
+	/** insert data into the table: "server_migrations" */
+	insert_server_migrations?: ModelTypes["server_migrations_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "server_migrations" */
+	insert_server_migrations_one?: ModelTypes["server_migrations"] | undefined | null,
+	/** insert data into the table: "server_player_sessions" */
+	insert_server_player_sessions?: ModelTypes["server_player_sessions_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "server_player_sessions" */
+	insert_server_player_sessions_one?: ModelTypes["server_player_sessions"] | undefined | null,
 	/** insert data into the table: "server_plugins" */
 	insert_server_plugins?: ModelTypes["server_plugins_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "server_plugins" */
@@ -198821,6 +203172,10 @@ export type ModelTypes = {
 	insert_server_regions?: ModelTypes["server_regions_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "server_regions" */
 	insert_server_regions_one?: ModelTypes["server_regions"] | undefined | null,
+	/** insert data into the table: "server_rosters" */
+	insert_server_rosters?: ModelTypes["server_rosters_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "server_rosters" */
+	insert_server_rosters_one?: ModelTypes["server_rosters"] | undefined | null,
 	/** insert data into the table: "servers" */
 	insert_servers?: ModelTypes["servers_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "servers" */
@@ -199068,6 +203423,8 @@ export type ModelTypes = {
 	loadUtilityPlaybookIntoSession?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** logout */
 	logout?: ModelTypes["SuccessOutput"] | undefined | null,
+	/** Move a dedicated server and its files to another game server node */
+	moveDedicatedServerToNode?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Move file or directory on game server */
 	moveServerItem?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Return the latest S3 orphan-scan report (admin only). */
@@ -199180,10 +203537,14 @@ export type ModelTypes = {
 	setMatchWinner?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Publish or unpublish a news post. Caller role is verified against public.post_news_role. */
 	setNewsPostStatus?: ModelTypes["NewsPost"] | undefined | null,
+	/** Restrict who may connect to a community server */
+	setServerAccess?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Replace a dedicated server's map rotation and restart it */
 	setServerMapRotation?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Replace a dedicated server's per-server plugin overrides and restart it */
 	setServerPlugins?: ModelTypes["SuccessOutput"] | undefined | null,
+	/** Save a community server's rotation, plugins and access, restarting it at most once */
+	setServerSettings?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Map a tournament placement to an award */
 	setTournamentAward?: ModelTypes["TournamentAward"] | undefined | null,
 	setUtilityPracticeAccess?: ModelTypes["SuccessOutput"] | undefined | null,
@@ -199573,6 +203934,12 @@ export type ModelTypes = {
 	update_e_scrim_request_statuses_by_pk?: ModelTypes["e_scrim_request_statuses"] | undefined | null,
 	/** update multiples rows of table: "e_scrim_request_statuses" */
 	update_e_scrim_request_statuses_many?: Array<ModelTypes["e_scrim_request_statuses_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "e_server_migration_statuses" */
+	update_e_server_migration_statuses?: ModelTypes["e_server_migration_statuses_mutation_response"] | undefined | null,
+	/** update single row of the table: "e_server_migration_statuses" */
+	update_e_server_migration_statuses_by_pk?: ModelTypes["e_server_migration_statuses"] | undefined | null,
+	/** update multiples rows of table: "e_server_migration_statuses" */
+	update_e_server_migration_statuses_many?: Array<ModelTypes["e_server_migration_statuses_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "e_server_types" */
 	update_e_server_types?: ModelTypes["e_server_types_mutation_response"] | undefined | null,
 	/** update single row of the table: "e_server_types" */
@@ -200171,12 +204538,36 @@ export type ModelTypes = {
 	update_seasons_by_pk?: ModelTypes["seasons"] | undefined | null,
 	/** update multiples rows of table: "seasons" */
 	update_seasons_many?: Array<ModelTypes["seasons_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "server_access_events" */
+	update_server_access_events?: ModelTypes["server_access_events_mutation_response"] | undefined | null,
+	/** update single row of the table: "server_access_events" */
+	update_server_access_events_by_pk?: ModelTypes["server_access_events"] | undefined | null,
+	/** update multiples rows of table: "server_access_events" */
+	update_server_access_events_many?: Array<ModelTypes["server_access_events_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "server_access_players" */
+	update_server_access_players?: ModelTypes["server_access_players_mutation_response"] | undefined | null,
+	/** update single row of the table: "server_access_players" */
+	update_server_access_players_by_pk?: ModelTypes["server_access_players"] | undefined | null,
+	/** update multiples rows of table: "server_access_players" */
+	update_server_access_players_many?: Array<ModelTypes["server_access_players_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "server_map_rotation" */
 	update_server_map_rotation?: ModelTypes["server_map_rotation_mutation_response"] | undefined | null,
 	/** update single row of the table: "server_map_rotation" */
 	update_server_map_rotation_by_pk?: ModelTypes["server_map_rotation"] | undefined | null,
 	/** update multiples rows of table: "server_map_rotation" */
 	update_server_map_rotation_many?: Array<ModelTypes["server_map_rotation_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "server_migrations" */
+	update_server_migrations?: ModelTypes["server_migrations_mutation_response"] | undefined | null,
+	/** update single row of the table: "server_migrations" */
+	update_server_migrations_by_pk?: ModelTypes["server_migrations"] | undefined | null,
+	/** update multiples rows of table: "server_migrations" */
+	update_server_migrations_many?: Array<ModelTypes["server_migrations_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "server_player_sessions" */
+	update_server_player_sessions?: ModelTypes["server_player_sessions_mutation_response"] | undefined | null,
+	/** update single row of the table: "server_player_sessions" */
+	update_server_player_sessions_by_pk?: ModelTypes["server_player_sessions"] | undefined | null,
+	/** update multiples rows of table: "server_player_sessions" */
+	update_server_player_sessions_many?: Array<ModelTypes["server_player_sessions_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "server_plugins" */
 	update_server_plugins?: ModelTypes["server_plugins_mutation_response"] | undefined | null,
 	/** update single row of the table: "server_plugins" */
@@ -200189,6 +204580,12 @@ export type ModelTypes = {
 	update_server_regions_by_pk?: ModelTypes["server_regions"] | undefined | null,
 	/** update multiples rows of table: "server_regions" */
 	update_server_regions_many?: Array<ModelTypes["server_regions_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "server_rosters" */
+	update_server_rosters?: ModelTypes["server_rosters_mutation_response"] | undefined | null,
+	/** update single row of the table: "server_rosters" */
+	update_server_rosters_by_pk?: ModelTypes["server_rosters"] | undefined | null,
+	/** update multiples rows of table: "server_rosters" */
+	update_server_rosters_many?: Array<ModelTypes["server_rosters_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "servers" */
 	update_servers?: ModelTypes["servers_mutation_response"] | undefined | null,
 	/** update single row of the table: "servers" */
@@ -215846,6 +220243,12 @@ export type ModelTypes = {
 	e_scrim_request_statuses_aggregate: ModelTypes["e_scrim_request_statuses_aggregate"],
 	/** fetch data from the table: "e_scrim_request_statuses" using primary key columns */
 	e_scrim_request_statuses_by_pk?: ModelTypes["e_scrim_request_statuses"] | undefined | null,
+	/** fetch data from the table: "e_server_migration_statuses" */
+	e_server_migration_statuses: Array<ModelTypes["e_server_migration_statuses"]>,
+	/** fetch aggregated fields from the table: "e_server_migration_statuses" */
+	e_server_migration_statuses_aggregate: ModelTypes["e_server_migration_statuses_aggregate"],
+	/** fetch data from the table: "e_server_migration_statuses" using primary key columns */
+	e_server_migration_statuses_by_pk?: ModelTypes["e_server_migration_statuses"] | undefined | null,
 	/** fetch data from the table: "e_server_types" */
 	e_server_types: Array<ModelTypes["e_server_types"]>,
 	/** fetch aggregated fields from the table: "e_server_types" */
@@ -216095,12 +220498,15 @@ export type ModelTypes = {
 	/** Get index usage statistics */
 	getIndexStats: Array<ModelTypes["IndexStat"] | undefined | null>,
 	getNodeStats: ModelTypes["NodeStats"],
+	getPlayerCommunityStats?: ModelTypes["PlayerCommunityStats"] | undefined | null,
 	/** Get detailed query analysis with EXPLAIN plan */
 	getQueryDetail?: ModelTypes["QueryDetail"] | undefined | null,
 	/** Get enhanced query performance statistics */
 	getQueryStats: Array<ModelTypes["QueryStat"] | undefined | null>,
 	/** Get available database schemas */
 	getSchemas: string,
+	getServerCommunityStats?: ModelTypes["ServerCommunityStats"] | undefined | null,
+	getServerLeaderboard: ModelTypes["ServerLeaderboard"],
 	getServiceStats: Array<ModelTypes["PodStats"] | undefined | null>,
 	/** Get database storage statistics and reclaimable space */
 	getStorageStats: ModelTypes["StorageStats"],
@@ -216530,24 +220936,58 @@ export type ModelTypes = {
 	seasons_aggregate: ModelTypes["seasons_aggregate"],
 	/** fetch data from the table: "seasons" using primary key columns */
 	seasons_by_pk?: ModelTypes["seasons"] | undefined | null,
+	/** fetch data from the table: "server_access_events" */
+	server_access_events: Array<ModelTypes["server_access_events"]>,
+	/** fetch aggregated fields from the table: "server_access_events" */
+	server_access_events_aggregate: ModelTypes["server_access_events_aggregate"],
+	/** fetch data from the table: "server_access_events" using primary key columns */
+	server_access_events_by_pk?: ModelTypes["server_access_events"] | undefined | null,
+	/** fetch data from the table: "server_access_players" */
+	server_access_players: Array<ModelTypes["server_access_players"]>,
+	/** fetch aggregated fields from the table: "server_access_players" */
+	server_access_players_aggregate: ModelTypes["server_access_players_aggregate"],
+	/** fetch data from the table: "server_access_players" using primary key columns */
+	server_access_players_by_pk?: ModelTypes["server_access_players"] | undefined | null,
 	/** fetch data from the table: "server_map_rotation" */
 	server_map_rotation: Array<ModelTypes["server_map_rotation"]>,
 	/** fetch aggregated fields from the table: "server_map_rotation" */
 	server_map_rotation_aggregate: ModelTypes["server_map_rotation_aggregate"],
 	/** fetch data from the table: "server_map_rotation" using primary key columns */
 	server_map_rotation_by_pk?: ModelTypes["server_map_rotation"] | undefined | null,
+	/** fetch data from the table: "server_migrations" */
+	server_migrations: Array<ModelTypes["server_migrations"]>,
+	/** fetch aggregated fields from the table: "server_migrations" */
+	server_migrations_aggregate: ModelTypes["server_migrations_aggregate"],
+	/** fetch data from the table: "server_migrations" using primary key columns */
+	server_migrations_by_pk?: ModelTypes["server_migrations"] | undefined | null,
+	/** fetch data from the table: "server_player_sessions" */
+	server_player_sessions: Array<ModelTypes["server_player_sessions"]>,
+	/** fetch aggregated fields from the table: "server_player_sessions" */
+	server_player_sessions_aggregate: ModelTypes["server_player_sessions_aggregate"],
+	/** fetch data from the table: "server_player_sessions" using primary key columns */
+	server_player_sessions_by_pk?: ModelTypes["server_player_sessions"] | undefined | null,
 	/** fetch data from the table: "server_plugins" */
 	server_plugins: Array<ModelTypes["server_plugins"]>,
 	/** fetch aggregated fields from the table: "server_plugins" */
 	server_plugins_aggregate: ModelTypes["server_plugins_aggregate"],
 	/** fetch data from the table: "server_plugins" using primary key columns */
 	server_plugins_by_pk?: ModelTypes["server_plugins"] | undefined | null,
+	/** fetch data from the table: "server_recent_players" */
+	server_recent_players: Array<ModelTypes["server_recent_players"]>,
+	/** fetch aggregated fields from the table: "server_recent_players" */
+	server_recent_players_aggregate: ModelTypes["server_recent_players_aggregate"],
 	/** fetch data from the table: "server_regions" */
 	server_regions: Array<ModelTypes["server_regions"]>,
 	/** fetch aggregated fields from the table: "server_regions" */
 	server_regions_aggregate: ModelTypes["server_regions_aggregate"],
 	/** fetch data from the table: "server_regions" using primary key columns */
 	server_regions_by_pk?: ModelTypes["server_regions"] | undefined | null,
+	/** fetch data from the table: "server_rosters" */
+	server_rosters: Array<ModelTypes["server_rosters"]>,
+	/** fetch aggregated fields from the table: "server_rosters" */
+	server_rosters_aggregate: ModelTypes["server_rosters_aggregate"],
+	/** fetch data from the table: "server_rosters" using primary key columns */
+	server_rosters_by_pk?: ModelTypes["server_rosters"] | undefined | null,
 	/** An array relationship */
 	servers: Array<ModelTypes["servers"]>,
 	/** An aggregate relationship */
@@ -216954,10 +221394,6 @@ export type ModelTypes = {
 	v_player_multi_kills: Array<ModelTypes["v_player_multi_kills"]>,
 	/** fetch aggregated fields from the table: "v_player_multi_kills" */
 	v_player_multi_kills_aggregate: ModelTypes["v_player_multi_kills_aggregate"],
-	/** fetch data from the table: "v_player_queue_partners" */
-	v_player_queue_partners: Array<ModelTypes["v_player_queue_partners"]>,
-	/** fetch aggregated fields from the table: "v_player_queue_partners" */
-	v_player_queue_partners_aggregate: ModelTypes["v_player_queue_partners_aggregate"],
 	/** fetch data from the table: "v_player_weapon_damage" */
 	v_player_weapon_damage: Array<ModelTypes["v_player_weapon_damage"]>,
 	/** fetch aggregated fields from the table: "v_player_weapon_damage" */
@@ -217289,6 +221725,350 @@ export type ModelTypes = {
 ["seasons_variance_fields"]: {
 		number?: number | undefined | null
 };
+	/** columns and relationships of "server_access_events" */
+["server_access_events"]: {
+		/** An object relationship */
+	event: ModelTypes["events"],
+	event_id: ModelTypes["uuid"],
+	/** An object relationship */
+	server: ModelTypes["servers"],
+	server_id: ModelTypes["uuid"]
+};
+	/** aggregated selection of "server_access_events" */
+["server_access_events_aggregate"]: {
+		aggregate?: ModelTypes["server_access_events_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["server_access_events"]>
+};
+	["server_access_events_aggregate_bool_exp"]: {
+	count?: ModelTypes["server_access_events_aggregate_bool_exp_count"] | undefined | null
+};
+	["server_access_events_aggregate_bool_exp_count"]: {
+	arguments?: Array<ModelTypes["server_access_events_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: ModelTypes["server_access_events_bool_exp"] | undefined | null,
+	predicate: ModelTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "server_access_events" */
+["server_access_events_aggregate_fields"]: {
+		count: number,
+	max?: ModelTypes["server_access_events_max_fields"] | undefined | null,
+	min?: ModelTypes["server_access_events_min_fields"] | undefined | null
+};
+	/** order by aggregate values of table "server_access_events" */
+["server_access_events_aggregate_order_by"]: {
+	count?: ModelTypes["order_by"] | undefined | null,
+	max?: ModelTypes["server_access_events_max_order_by"] | undefined | null,
+	min?: ModelTypes["server_access_events_min_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "server_access_events" */
+["server_access_events_arr_rel_insert_input"]: {
+	data: Array<ModelTypes["server_access_events_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ModelTypes["server_access_events_on_conflict"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "server_access_events". All fields are combined with a logical 'AND'. */
+["server_access_events_bool_exp"]: {
+	_and?: Array<ModelTypes["server_access_events_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["server_access_events_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["server_access_events_bool_exp"]> | undefined | null,
+	event?: ModelTypes["events_bool_exp"] | undefined | null,
+	event_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	server?: ModelTypes["servers_bool_exp"] | undefined | null,
+	server_id?: ModelTypes["uuid_comparison_exp"] | undefined | null
+};
+	["server_access_events_constraint"]:server_access_events_constraint;
+	/** input type for inserting data into table "server_access_events" */
+["server_access_events_insert_input"]: {
+	event?: ModelTypes["events_obj_rel_insert_input"] | undefined | null,
+	event_id?: ModelTypes["uuid"] | undefined | null,
+	server?: ModelTypes["servers_obj_rel_insert_input"] | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** aggregate max on columns */
+["server_access_events_max_fields"]: {
+		event_id?: ModelTypes["uuid"] | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** order by max() on columns of table "server_access_events" */
+["server_access_events_max_order_by"]: {
+	event_id?: ModelTypes["order_by"] | undefined | null,
+	server_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["server_access_events_min_fields"]: {
+		event_id?: ModelTypes["uuid"] | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** order by min() on columns of table "server_access_events" */
+["server_access_events_min_order_by"]: {
+	event_id?: ModelTypes["order_by"] | undefined | null,
+	server_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "server_access_events" */
+["server_access_events_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["server_access_events"]>
+};
+	/** on_conflict condition type for table "server_access_events" */
+["server_access_events_on_conflict"]: {
+	constraint: ModelTypes["server_access_events_constraint"],
+	update_columns: Array<ModelTypes["server_access_events_update_column"]>,
+	where?: ModelTypes["server_access_events_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "server_access_events". */
+["server_access_events_order_by"]: {
+	event?: ModelTypes["events_order_by"] | undefined | null,
+	event_id?: ModelTypes["order_by"] | undefined | null,
+	server?: ModelTypes["servers_order_by"] | undefined | null,
+	server_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: server_access_events */
+["server_access_events_pk_columns_input"]: {
+	event_id: ModelTypes["uuid"],
+	server_id: ModelTypes["uuid"]
+};
+	["server_access_events_select_column"]:server_access_events_select_column;
+	/** input type for updating data in table "server_access_events" */
+["server_access_events_set_input"]: {
+	event_id?: ModelTypes["uuid"] | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** Streaming cursor of the table "server_access_events" */
+["server_access_events_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["server_access_events_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["server_access_events_stream_cursor_value_input"]: {
+	event_id?: ModelTypes["uuid"] | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null
+};
+	["server_access_events_update_column"]:server_access_events_update_column;
+	["server_access_events_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["server_access_events_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["server_access_events_bool_exp"]
+};
+	/** columns and relationships of "server_access_players" */
+["server_access_players"]: {
+		/** An object relationship */
+	player: ModelTypes["players"],
+	/** An object relationship */
+	server: ModelTypes["servers"],
+	server_id: ModelTypes["uuid"],
+	steam_id: ModelTypes["bigint"]
+};
+	/** aggregated selection of "server_access_players" */
+["server_access_players_aggregate"]: {
+		aggregate?: ModelTypes["server_access_players_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["server_access_players"]>
+};
+	["server_access_players_aggregate_bool_exp"]: {
+	count?: ModelTypes["server_access_players_aggregate_bool_exp_count"] | undefined | null
+};
+	["server_access_players_aggregate_bool_exp_count"]: {
+	arguments?: Array<ModelTypes["server_access_players_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: ModelTypes["server_access_players_bool_exp"] | undefined | null,
+	predicate: ModelTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "server_access_players" */
+["server_access_players_aggregate_fields"]: {
+		avg?: ModelTypes["server_access_players_avg_fields"] | undefined | null,
+	count: number,
+	max?: ModelTypes["server_access_players_max_fields"] | undefined | null,
+	min?: ModelTypes["server_access_players_min_fields"] | undefined | null,
+	stddev?: ModelTypes["server_access_players_stddev_fields"] | undefined | null,
+	stddev_pop?: ModelTypes["server_access_players_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: ModelTypes["server_access_players_stddev_samp_fields"] | undefined | null,
+	sum?: ModelTypes["server_access_players_sum_fields"] | undefined | null,
+	var_pop?: ModelTypes["server_access_players_var_pop_fields"] | undefined | null,
+	var_samp?: ModelTypes["server_access_players_var_samp_fields"] | undefined | null,
+	variance?: ModelTypes["server_access_players_variance_fields"] | undefined | null
+};
+	/** order by aggregate values of table "server_access_players" */
+["server_access_players_aggregate_order_by"]: {
+	avg?: ModelTypes["server_access_players_avg_order_by"] | undefined | null,
+	count?: ModelTypes["order_by"] | undefined | null,
+	max?: ModelTypes["server_access_players_max_order_by"] | undefined | null,
+	min?: ModelTypes["server_access_players_min_order_by"] | undefined | null,
+	stddev?: ModelTypes["server_access_players_stddev_order_by"] | undefined | null,
+	stddev_pop?: ModelTypes["server_access_players_stddev_pop_order_by"] | undefined | null,
+	stddev_samp?: ModelTypes["server_access_players_stddev_samp_order_by"] | undefined | null,
+	sum?: ModelTypes["server_access_players_sum_order_by"] | undefined | null,
+	var_pop?: ModelTypes["server_access_players_var_pop_order_by"] | undefined | null,
+	var_samp?: ModelTypes["server_access_players_var_samp_order_by"] | undefined | null,
+	variance?: ModelTypes["server_access_players_variance_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "server_access_players" */
+["server_access_players_arr_rel_insert_input"]: {
+	data: Array<ModelTypes["server_access_players_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ModelTypes["server_access_players_on_conflict"] | undefined | null
+};
+	/** aggregate avg on columns */
+["server_access_players_avg_fields"]: {
+		steam_id?: number | undefined | null
+};
+	/** order by avg() on columns of table "server_access_players" */
+["server_access_players_avg_order_by"]: {
+	steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "server_access_players". All fields are combined with a logical 'AND'. */
+["server_access_players_bool_exp"]: {
+	_and?: Array<ModelTypes["server_access_players_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["server_access_players_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["server_access_players_bool_exp"]> | undefined | null,
+	player?: ModelTypes["players_bool_exp"] | undefined | null,
+	server?: ModelTypes["servers_bool_exp"] | undefined | null,
+	server_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null
+};
+	["server_access_players_constraint"]:server_access_players_constraint;
+	/** input type for incrementing numeric columns in table "server_access_players" */
+["server_access_players_inc_input"]: {
+	steam_id?: ModelTypes["bigint"] | undefined | null
+};
+	/** input type for inserting data into table "server_access_players" */
+["server_access_players_insert_input"]: {
+	player?: ModelTypes["players_obj_rel_insert_input"] | undefined | null,
+	server?: ModelTypes["servers_obj_rel_insert_input"] | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null
+};
+	/** aggregate max on columns */
+["server_access_players_max_fields"]: {
+		server_id?: ModelTypes["uuid"] | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null
+};
+	/** order by max() on columns of table "server_access_players" */
+["server_access_players_max_order_by"]: {
+	server_id?: ModelTypes["order_by"] | undefined | null,
+	steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["server_access_players_min_fields"]: {
+		server_id?: ModelTypes["uuid"] | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null
+};
+	/** order by min() on columns of table "server_access_players" */
+["server_access_players_min_order_by"]: {
+	server_id?: ModelTypes["order_by"] | undefined | null,
+	steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "server_access_players" */
+["server_access_players_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["server_access_players"]>
+};
+	/** on_conflict condition type for table "server_access_players" */
+["server_access_players_on_conflict"]: {
+	constraint: ModelTypes["server_access_players_constraint"],
+	update_columns: Array<ModelTypes["server_access_players_update_column"]>,
+	where?: ModelTypes["server_access_players_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "server_access_players". */
+["server_access_players_order_by"]: {
+	player?: ModelTypes["players_order_by"] | undefined | null,
+	server?: ModelTypes["servers_order_by"] | undefined | null,
+	server_id?: ModelTypes["order_by"] | undefined | null,
+	steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: server_access_players */
+["server_access_players_pk_columns_input"]: {
+	server_id: ModelTypes["uuid"],
+	steam_id: ModelTypes["bigint"]
+};
+	["server_access_players_select_column"]:server_access_players_select_column;
+	/** input type for updating data in table "server_access_players" */
+["server_access_players_set_input"]: {
+	server_id?: ModelTypes["uuid"] | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["server_access_players_stddev_fields"]: {
+		steam_id?: number | undefined | null
+};
+	/** order by stddev() on columns of table "server_access_players" */
+["server_access_players_stddev_order_by"]: {
+	steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["server_access_players_stddev_pop_fields"]: {
+		steam_id?: number | undefined | null
+};
+	/** order by stddev_pop() on columns of table "server_access_players" */
+["server_access_players_stddev_pop_order_by"]: {
+	steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["server_access_players_stddev_samp_fields"]: {
+		steam_id?: number | undefined | null
+};
+	/** order by stddev_samp() on columns of table "server_access_players" */
+["server_access_players_stddev_samp_order_by"]: {
+	steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** Streaming cursor of the table "server_access_players" */
+["server_access_players_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["server_access_players_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["server_access_players_stream_cursor_value_input"]: {
+	server_id?: ModelTypes["uuid"] | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null
+};
+	/** aggregate sum on columns */
+["server_access_players_sum_fields"]: {
+		steam_id?: ModelTypes["bigint"] | undefined | null
+};
+	/** order by sum() on columns of table "server_access_players" */
+["server_access_players_sum_order_by"]: {
+	steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	["server_access_players_update_column"]:server_access_players_update_column;
+	["server_access_players_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ModelTypes["server_access_players_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["server_access_players_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["server_access_players_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["server_access_players_var_pop_fields"]: {
+		steam_id?: number | undefined | null
+};
+	/** order by var_pop() on columns of table "server_access_players" */
+["server_access_players_var_pop_order_by"]: {
+	steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate var_samp on columns */
+["server_access_players_var_samp_fields"]: {
+		steam_id?: number | undefined | null
+};
+	/** order by var_samp() on columns of table "server_access_players" */
+["server_access_players_var_samp_order_by"]: {
+	steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate variance on columns */
+["server_access_players_variance_fields"]: {
+		steam_id?: number | undefined | null
+};
+	/** order by variance() on columns of table "server_access_players" */
+["server_access_players_variance_order_by"]: {
+	steam_id?: ModelTypes["order_by"] | undefined | null
+};
 	/** columns and relationships of "server_map_rotation" */
 ["server_map_rotation"]: {
 		/** An object relationship */
@@ -217514,6 +222294,862 @@ export type ModelTypes = {
 ["server_map_rotation_variance_order_by"]: {
 	position?: ModelTypes["order_by"] | undefined | null
 };
+	/** columns and relationships of "server_migrations" */
+["server_migrations"]: {
+		bytes_done: ModelTypes["bigint"],
+	bytes_total?: ModelTypes["bigint"] | undefined | null,
+	created_at: ModelTypes["timestamptz"],
+	/** An object relationship */
+	e_status: ModelTypes["e_server_migration_statuses"],
+	entries_total?: number | undefined | null,
+	error?: string | undefined | null,
+	finished_at?: ModelTypes["timestamptz"] | undefined | null,
+	/** An object relationship */
+	from_game_server_node?: ModelTypes["game_server_nodes"] | undefined | null,
+	from_game_server_node_id?: string | undefined | null,
+	id: ModelTypes["uuid"],
+	/** An object relationship */
+	requested_by?: ModelTypes["players"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	/** An object relationship */
+	server: ModelTypes["servers"],
+	server_id: ModelTypes["uuid"],
+	started_at?: ModelTypes["timestamptz"] | undefined | null,
+	status: ModelTypes["e_server_migration_statuses_enum"],
+	/** An object relationship */
+	to_game_server_node?: ModelTypes["game_server_nodes"] | undefined | null,
+	to_game_server_node_id?: string | undefined | null,
+	updated_at: ModelTypes["timestamptz"],
+	warnings: ModelTypes["jsonb"],
+	with_files: boolean
+};
+	/** aggregated selection of "server_migrations" */
+["server_migrations_aggregate"]: {
+		aggregate?: ModelTypes["server_migrations_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["server_migrations"]>
+};
+	["server_migrations_aggregate_bool_exp"]: {
+	bool_and?: ModelTypes["server_migrations_aggregate_bool_exp_bool_and"] | undefined | null,
+	bool_or?: ModelTypes["server_migrations_aggregate_bool_exp_bool_or"] | undefined | null,
+	count?: ModelTypes["server_migrations_aggregate_bool_exp_count"] | undefined | null
+};
+	["server_migrations_aggregate_bool_exp_bool_and"]: {
+	arguments: ModelTypes["server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_and_arguments_columns"],
+	distinct?: boolean | undefined | null,
+	filter?: ModelTypes["server_migrations_bool_exp"] | undefined | null,
+	predicate: ModelTypes["Boolean_comparison_exp"]
+};
+	["server_migrations_aggregate_bool_exp_bool_or"]: {
+	arguments: ModelTypes["server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_or_arguments_columns"],
+	distinct?: boolean | undefined | null,
+	filter?: ModelTypes["server_migrations_bool_exp"] | undefined | null,
+	predicate: ModelTypes["Boolean_comparison_exp"]
+};
+	["server_migrations_aggregate_bool_exp_count"]: {
+	arguments?: Array<ModelTypes["server_migrations_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: ModelTypes["server_migrations_bool_exp"] | undefined | null,
+	predicate: ModelTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "server_migrations" */
+["server_migrations_aggregate_fields"]: {
+		avg?: ModelTypes["server_migrations_avg_fields"] | undefined | null,
+	count: number,
+	max?: ModelTypes["server_migrations_max_fields"] | undefined | null,
+	min?: ModelTypes["server_migrations_min_fields"] | undefined | null,
+	stddev?: ModelTypes["server_migrations_stddev_fields"] | undefined | null,
+	stddev_pop?: ModelTypes["server_migrations_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: ModelTypes["server_migrations_stddev_samp_fields"] | undefined | null,
+	sum?: ModelTypes["server_migrations_sum_fields"] | undefined | null,
+	var_pop?: ModelTypes["server_migrations_var_pop_fields"] | undefined | null,
+	var_samp?: ModelTypes["server_migrations_var_samp_fields"] | undefined | null,
+	variance?: ModelTypes["server_migrations_variance_fields"] | undefined | null
+};
+	/** order by aggregate values of table "server_migrations" */
+["server_migrations_aggregate_order_by"]: {
+	avg?: ModelTypes["server_migrations_avg_order_by"] | undefined | null,
+	count?: ModelTypes["order_by"] | undefined | null,
+	max?: ModelTypes["server_migrations_max_order_by"] | undefined | null,
+	min?: ModelTypes["server_migrations_min_order_by"] | undefined | null,
+	stddev?: ModelTypes["server_migrations_stddev_order_by"] | undefined | null,
+	stddev_pop?: ModelTypes["server_migrations_stddev_pop_order_by"] | undefined | null,
+	stddev_samp?: ModelTypes["server_migrations_stddev_samp_order_by"] | undefined | null,
+	sum?: ModelTypes["server_migrations_sum_order_by"] | undefined | null,
+	var_pop?: ModelTypes["server_migrations_var_pop_order_by"] | undefined | null,
+	var_samp?: ModelTypes["server_migrations_var_samp_order_by"] | undefined | null,
+	variance?: ModelTypes["server_migrations_variance_order_by"] | undefined | null
+};
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["server_migrations_append_input"]: {
+	warnings?: ModelTypes["jsonb"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "server_migrations" */
+["server_migrations_arr_rel_insert_input"]: {
+	data: Array<ModelTypes["server_migrations_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ModelTypes["server_migrations_on_conflict"] | undefined | null
+};
+	/** aggregate avg on columns */
+["server_migrations_avg_fields"]: {
+		bytes_done?: number | undefined | null,
+	bytes_total?: number | undefined | null,
+	entries_total?: number | undefined | null,
+	requested_by_steam_id?: number | undefined | null
+};
+	/** order by avg() on columns of table "server_migrations" */
+["server_migrations_avg_order_by"]: {
+	bytes_done?: ModelTypes["order_by"] | undefined | null,
+	bytes_total?: ModelTypes["order_by"] | undefined | null,
+	entries_total?: ModelTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "server_migrations". All fields are combined with a logical 'AND'. */
+["server_migrations_bool_exp"]: {
+	_and?: Array<ModelTypes["server_migrations_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["server_migrations_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["server_migrations_bool_exp"]> | undefined | null,
+	bytes_done?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	bytes_total?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	e_status?: ModelTypes["e_server_migration_statuses_bool_exp"] | undefined | null,
+	entries_total?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	error?: ModelTypes["String_comparison_exp"] | undefined | null,
+	finished_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	from_game_server_node?: ModelTypes["game_server_nodes_bool_exp"] | undefined | null,
+	from_game_server_node_id?: ModelTypes["String_comparison_exp"] | undefined | null,
+	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	requested_by?: ModelTypes["players_bool_exp"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	server?: ModelTypes["servers_bool_exp"] | undefined | null,
+	server_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	started_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	status?: ModelTypes["e_server_migration_statuses_enum_comparison_exp"] | undefined | null,
+	to_game_server_node?: ModelTypes["game_server_nodes_bool_exp"] | undefined | null,
+	to_game_server_node_id?: ModelTypes["String_comparison_exp"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	warnings?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
+	with_files?: ModelTypes["Boolean_comparison_exp"] | undefined | null
+};
+	["server_migrations_constraint"]:server_migrations_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["server_migrations_delete_at_path_input"]: {
+	warnings?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["server_migrations_delete_elem_input"]: {
+	warnings?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["server_migrations_delete_key_input"]: {
+	warnings?: string | undefined | null
+};
+	/** input type for incrementing numeric columns in table "server_migrations" */
+["server_migrations_inc_input"]: {
+	bytes_done?: ModelTypes["bigint"] | undefined | null,
+	bytes_total?: ModelTypes["bigint"] | undefined | null,
+	entries_total?: number | undefined | null,
+	requested_by_steam_id?: ModelTypes["bigint"] | undefined | null
+};
+	/** input type for inserting data into table "server_migrations" */
+["server_migrations_insert_input"]: {
+	bytes_done?: ModelTypes["bigint"] | undefined | null,
+	bytes_total?: ModelTypes["bigint"] | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	e_status?: ModelTypes["e_server_migration_statuses_obj_rel_insert_input"] | undefined | null,
+	entries_total?: number | undefined | null,
+	error?: string | undefined | null,
+	finished_at?: ModelTypes["timestamptz"] | undefined | null,
+	from_game_server_node?: ModelTypes["game_server_nodes_obj_rel_insert_input"] | undefined | null,
+	from_game_server_node_id?: string | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	requested_by?: ModelTypes["players_obj_rel_insert_input"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	server?: ModelTypes["servers_obj_rel_insert_input"] | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null,
+	started_at?: ModelTypes["timestamptz"] | undefined | null,
+	status?: ModelTypes["e_server_migration_statuses_enum"] | undefined | null,
+	to_game_server_node?: ModelTypes["game_server_nodes_obj_rel_insert_input"] | undefined | null,
+	to_game_server_node_id?: string | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null,
+	warnings?: ModelTypes["jsonb"] | undefined | null,
+	with_files?: boolean | undefined | null
+};
+	/** aggregate max on columns */
+["server_migrations_max_fields"]: {
+		bytes_done?: ModelTypes["bigint"] | undefined | null,
+	bytes_total?: ModelTypes["bigint"] | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	entries_total?: number | undefined | null,
+	error?: string | undefined | null,
+	finished_at?: ModelTypes["timestamptz"] | undefined | null,
+	from_game_server_node_id?: string | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null,
+	started_at?: ModelTypes["timestamptz"] | undefined | null,
+	to_game_server_node_id?: string | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** order by max() on columns of table "server_migrations" */
+["server_migrations_max_order_by"]: {
+	bytes_done?: ModelTypes["order_by"] | undefined | null,
+	bytes_total?: ModelTypes["order_by"] | undefined | null,
+	created_at?: ModelTypes["order_by"] | undefined | null,
+	entries_total?: ModelTypes["order_by"] | undefined | null,
+	error?: ModelTypes["order_by"] | undefined | null,
+	finished_at?: ModelTypes["order_by"] | undefined | null,
+	from_game_server_node_id?: ModelTypes["order_by"] | undefined | null,
+	id?: ModelTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	server_id?: ModelTypes["order_by"] | undefined | null,
+	started_at?: ModelTypes["order_by"] | undefined | null,
+	to_game_server_node_id?: ModelTypes["order_by"] | undefined | null,
+	updated_at?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["server_migrations_min_fields"]: {
+		bytes_done?: ModelTypes["bigint"] | undefined | null,
+	bytes_total?: ModelTypes["bigint"] | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	entries_total?: number | undefined | null,
+	error?: string | undefined | null,
+	finished_at?: ModelTypes["timestamptz"] | undefined | null,
+	from_game_server_node_id?: string | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null,
+	started_at?: ModelTypes["timestamptz"] | undefined | null,
+	to_game_server_node_id?: string | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** order by min() on columns of table "server_migrations" */
+["server_migrations_min_order_by"]: {
+	bytes_done?: ModelTypes["order_by"] | undefined | null,
+	bytes_total?: ModelTypes["order_by"] | undefined | null,
+	created_at?: ModelTypes["order_by"] | undefined | null,
+	entries_total?: ModelTypes["order_by"] | undefined | null,
+	error?: ModelTypes["order_by"] | undefined | null,
+	finished_at?: ModelTypes["order_by"] | undefined | null,
+	from_game_server_node_id?: ModelTypes["order_by"] | undefined | null,
+	id?: ModelTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	server_id?: ModelTypes["order_by"] | undefined | null,
+	started_at?: ModelTypes["order_by"] | undefined | null,
+	to_game_server_node_id?: ModelTypes["order_by"] | undefined | null,
+	updated_at?: ModelTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "server_migrations" */
+["server_migrations_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["server_migrations"]>
+};
+	/** on_conflict condition type for table "server_migrations" */
+["server_migrations_on_conflict"]: {
+	constraint: ModelTypes["server_migrations_constraint"],
+	update_columns: Array<ModelTypes["server_migrations_update_column"]>,
+	where?: ModelTypes["server_migrations_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "server_migrations". */
+["server_migrations_order_by"]: {
+	bytes_done?: ModelTypes["order_by"] | undefined | null,
+	bytes_total?: ModelTypes["order_by"] | undefined | null,
+	created_at?: ModelTypes["order_by"] | undefined | null,
+	e_status?: ModelTypes["e_server_migration_statuses_order_by"] | undefined | null,
+	entries_total?: ModelTypes["order_by"] | undefined | null,
+	error?: ModelTypes["order_by"] | undefined | null,
+	finished_at?: ModelTypes["order_by"] | undefined | null,
+	from_game_server_node?: ModelTypes["game_server_nodes_order_by"] | undefined | null,
+	from_game_server_node_id?: ModelTypes["order_by"] | undefined | null,
+	id?: ModelTypes["order_by"] | undefined | null,
+	requested_by?: ModelTypes["players_order_by"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	server?: ModelTypes["servers_order_by"] | undefined | null,
+	server_id?: ModelTypes["order_by"] | undefined | null,
+	started_at?: ModelTypes["order_by"] | undefined | null,
+	status?: ModelTypes["order_by"] | undefined | null,
+	to_game_server_node?: ModelTypes["game_server_nodes_order_by"] | undefined | null,
+	to_game_server_node_id?: ModelTypes["order_by"] | undefined | null,
+	updated_at?: ModelTypes["order_by"] | undefined | null,
+	warnings?: ModelTypes["order_by"] | undefined | null,
+	with_files?: ModelTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: server_migrations */
+["server_migrations_pk_columns_input"]: {
+	id: ModelTypes["uuid"]
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["server_migrations_prepend_input"]: {
+	warnings?: ModelTypes["jsonb"] | undefined | null
+};
+	["server_migrations_select_column"]:server_migrations_select_column;
+	["server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_and_arguments_columns"]:server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_and_arguments_columns;
+	["server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_or_arguments_columns"]:server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_or_arguments_columns;
+	/** input type for updating data in table "server_migrations" */
+["server_migrations_set_input"]: {
+	bytes_done?: ModelTypes["bigint"] | undefined | null,
+	bytes_total?: ModelTypes["bigint"] | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	entries_total?: number | undefined | null,
+	error?: string | undefined | null,
+	finished_at?: ModelTypes["timestamptz"] | undefined | null,
+	from_game_server_node_id?: string | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null,
+	started_at?: ModelTypes["timestamptz"] | undefined | null,
+	status?: ModelTypes["e_server_migration_statuses_enum"] | undefined | null,
+	to_game_server_node_id?: string | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null,
+	warnings?: ModelTypes["jsonb"] | undefined | null,
+	with_files?: boolean | undefined | null
+};
+	/** aggregate stddev on columns */
+["server_migrations_stddev_fields"]: {
+		bytes_done?: number | undefined | null,
+	bytes_total?: number | undefined | null,
+	entries_total?: number | undefined | null,
+	requested_by_steam_id?: number | undefined | null
+};
+	/** order by stddev() on columns of table "server_migrations" */
+["server_migrations_stddev_order_by"]: {
+	bytes_done?: ModelTypes["order_by"] | undefined | null,
+	bytes_total?: ModelTypes["order_by"] | undefined | null,
+	entries_total?: ModelTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["server_migrations_stddev_pop_fields"]: {
+		bytes_done?: number | undefined | null,
+	bytes_total?: number | undefined | null,
+	entries_total?: number | undefined | null,
+	requested_by_steam_id?: number | undefined | null
+};
+	/** order by stddev_pop() on columns of table "server_migrations" */
+["server_migrations_stddev_pop_order_by"]: {
+	bytes_done?: ModelTypes["order_by"] | undefined | null,
+	bytes_total?: ModelTypes["order_by"] | undefined | null,
+	entries_total?: ModelTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["server_migrations_stddev_samp_fields"]: {
+		bytes_done?: number | undefined | null,
+	bytes_total?: number | undefined | null,
+	entries_total?: number | undefined | null,
+	requested_by_steam_id?: number | undefined | null
+};
+	/** order by stddev_samp() on columns of table "server_migrations" */
+["server_migrations_stddev_samp_order_by"]: {
+	bytes_done?: ModelTypes["order_by"] | undefined | null,
+	bytes_total?: ModelTypes["order_by"] | undefined | null,
+	entries_total?: ModelTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** Streaming cursor of the table "server_migrations" */
+["server_migrations_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["server_migrations_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["server_migrations_stream_cursor_value_input"]: {
+	bytes_done?: ModelTypes["bigint"] | undefined | null,
+	bytes_total?: ModelTypes["bigint"] | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	entries_total?: number | undefined | null,
+	error?: string | undefined | null,
+	finished_at?: ModelTypes["timestamptz"] | undefined | null,
+	from_game_server_node_id?: string | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null,
+	started_at?: ModelTypes["timestamptz"] | undefined | null,
+	status?: ModelTypes["e_server_migration_statuses_enum"] | undefined | null,
+	to_game_server_node_id?: string | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null,
+	warnings?: ModelTypes["jsonb"] | undefined | null,
+	with_files?: boolean | undefined | null
+};
+	/** aggregate sum on columns */
+["server_migrations_sum_fields"]: {
+		bytes_done?: ModelTypes["bigint"] | undefined | null,
+	bytes_total?: ModelTypes["bigint"] | undefined | null,
+	entries_total?: number | undefined | null,
+	requested_by_steam_id?: ModelTypes["bigint"] | undefined | null
+};
+	/** order by sum() on columns of table "server_migrations" */
+["server_migrations_sum_order_by"]: {
+	bytes_done?: ModelTypes["order_by"] | undefined | null,
+	bytes_total?: ModelTypes["order_by"] | undefined | null,
+	entries_total?: ModelTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	["server_migrations_update_column"]:server_migrations_update_column;
+	["server_migrations_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ModelTypes["server_migrations_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ModelTypes["server_migrations_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ModelTypes["server_migrations_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ModelTypes["server_migrations_delete_key_input"] | undefined | null,
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ModelTypes["server_migrations_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ModelTypes["server_migrations_prepend_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["server_migrations_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["server_migrations_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["server_migrations_var_pop_fields"]: {
+		bytes_done?: number | undefined | null,
+	bytes_total?: number | undefined | null,
+	entries_total?: number | undefined | null,
+	requested_by_steam_id?: number | undefined | null
+};
+	/** order by var_pop() on columns of table "server_migrations" */
+["server_migrations_var_pop_order_by"]: {
+	bytes_done?: ModelTypes["order_by"] | undefined | null,
+	bytes_total?: ModelTypes["order_by"] | undefined | null,
+	entries_total?: ModelTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate var_samp on columns */
+["server_migrations_var_samp_fields"]: {
+		bytes_done?: number | undefined | null,
+	bytes_total?: number | undefined | null,
+	entries_total?: number | undefined | null,
+	requested_by_steam_id?: number | undefined | null
+};
+	/** order by var_samp() on columns of table "server_migrations" */
+["server_migrations_var_samp_order_by"]: {
+	bytes_done?: ModelTypes["order_by"] | undefined | null,
+	bytes_total?: ModelTypes["order_by"] | undefined | null,
+	entries_total?: ModelTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate variance on columns */
+["server_migrations_variance_fields"]: {
+		bytes_done?: number | undefined | null,
+	bytes_total?: number | undefined | null,
+	entries_total?: number | undefined | null,
+	requested_by_steam_id?: number | undefined | null
+};
+	/** order by variance() on columns of table "server_migrations" */
+["server_migrations_variance_order_by"]: {
+	bytes_done?: ModelTypes["order_by"] | undefined | null,
+	bytes_total?: ModelTypes["order_by"] | undefined | null,
+	entries_total?: ModelTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** columns and relationships of "server_player_sessions" */
+["server_player_sessions"]: {
+		conn?: string | undefined | null,
+	deaths: number,
+	deaths_conn: number,
+	ended_at?: ModelTypes["timestamptz"] | undefined | null,
+	id: ModelTypes["bigint"],
+	ip?: ModelTypes["inet"] | undefined | null,
+	kills: number,
+	kills_conn: number,
+	name?: string | undefined | null,
+	/** An object relationship */
+	player?: ModelTypes["players"] | undefined | null,
+	player_steam_id: ModelTypes["bigint"],
+	/** An object relationship */
+	server: ModelTypes["servers"],
+	server_id: ModelTypes["uuid"],
+	settled_conns: Array<string>,
+	started_at: ModelTypes["timestamptz"]
+};
+	/** aggregated selection of "server_player_sessions" */
+["server_player_sessions_aggregate"]: {
+		aggregate?: ModelTypes["server_player_sessions_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["server_player_sessions"]>
+};
+	["server_player_sessions_aggregate_bool_exp"]: {
+	count?: ModelTypes["server_player_sessions_aggregate_bool_exp_count"] | undefined | null
+};
+	["server_player_sessions_aggregate_bool_exp_count"]: {
+	arguments?: Array<ModelTypes["server_player_sessions_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: ModelTypes["server_player_sessions_bool_exp"] | undefined | null,
+	predicate: ModelTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "server_player_sessions" */
+["server_player_sessions_aggregate_fields"]: {
+		avg?: ModelTypes["server_player_sessions_avg_fields"] | undefined | null,
+	count: number,
+	max?: ModelTypes["server_player_sessions_max_fields"] | undefined | null,
+	min?: ModelTypes["server_player_sessions_min_fields"] | undefined | null,
+	stddev?: ModelTypes["server_player_sessions_stddev_fields"] | undefined | null,
+	stddev_pop?: ModelTypes["server_player_sessions_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: ModelTypes["server_player_sessions_stddev_samp_fields"] | undefined | null,
+	sum?: ModelTypes["server_player_sessions_sum_fields"] | undefined | null,
+	var_pop?: ModelTypes["server_player_sessions_var_pop_fields"] | undefined | null,
+	var_samp?: ModelTypes["server_player_sessions_var_samp_fields"] | undefined | null,
+	variance?: ModelTypes["server_player_sessions_variance_fields"] | undefined | null
+};
+	/** order by aggregate values of table "server_player_sessions" */
+["server_player_sessions_aggregate_order_by"]: {
+	avg?: ModelTypes["server_player_sessions_avg_order_by"] | undefined | null,
+	count?: ModelTypes["order_by"] | undefined | null,
+	max?: ModelTypes["server_player_sessions_max_order_by"] | undefined | null,
+	min?: ModelTypes["server_player_sessions_min_order_by"] | undefined | null,
+	stddev?: ModelTypes["server_player_sessions_stddev_order_by"] | undefined | null,
+	stddev_pop?: ModelTypes["server_player_sessions_stddev_pop_order_by"] | undefined | null,
+	stddev_samp?: ModelTypes["server_player_sessions_stddev_samp_order_by"] | undefined | null,
+	sum?: ModelTypes["server_player_sessions_sum_order_by"] | undefined | null,
+	var_pop?: ModelTypes["server_player_sessions_var_pop_order_by"] | undefined | null,
+	var_samp?: ModelTypes["server_player_sessions_var_samp_order_by"] | undefined | null,
+	variance?: ModelTypes["server_player_sessions_variance_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "server_player_sessions" */
+["server_player_sessions_arr_rel_insert_input"]: {
+	data: Array<ModelTypes["server_player_sessions_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ModelTypes["server_player_sessions_on_conflict"] | undefined | null
+};
+	/** aggregate avg on columns */
+["server_player_sessions_avg_fields"]: {
+		deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	id?: number | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** order by avg() on columns of table "server_player_sessions" */
+["server_player_sessions_avg_order_by"]: {
+	deaths?: ModelTypes["order_by"] | undefined | null,
+	deaths_conn?: ModelTypes["order_by"] | undefined | null,
+	id?: ModelTypes["order_by"] | undefined | null,
+	kills?: ModelTypes["order_by"] | undefined | null,
+	kills_conn?: ModelTypes["order_by"] | undefined | null,
+	player_steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "server_player_sessions". All fields are combined with a logical 'AND'. */
+["server_player_sessions_bool_exp"]: {
+	_and?: Array<ModelTypes["server_player_sessions_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["server_player_sessions_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["server_player_sessions_bool_exp"]> | undefined | null,
+	conn?: ModelTypes["String_comparison_exp"] | undefined | null,
+	deaths?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	deaths_conn?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	ended_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	ip?: ModelTypes["inet_comparison_exp"] | undefined | null,
+	kills?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	kills_conn?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	name?: ModelTypes["String_comparison_exp"] | undefined | null,
+	player?: ModelTypes["players_bool_exp"] | undefined | null,
+	player_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	server?: ModelTypes["servers_bool_exp"] | undefined | null,
+	server_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	settled_conns?: ModelTypes["String_array_comparison_exp"] | undefined | null,
+	started_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null
+};
+	["server_player_sessions_constraint"]:server_player_sessions_constraint;
+	/** input type for incrementing numeric columns in table "server_player_sessions" */
+["server_player_sessions_inc_input"]: {
+	deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null
+};
+	/** input type for inserting data into table "server_player_sessions" */
+["server_player_sessions_insert_input"]: {
+	conn?: string | undefined | null,
+	deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	ended_at?: ModelTypes["timestamptz"] | undefined | null,
+	ip?: ModelTypes["inet"] | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	name?: string | undefined | null,
+	player?: ModelTypes["players_obj_rel_insert_input"] | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	server?: ModelTypes["servers_obj_rel_insert_input"] | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null,
+	settled_conns?: Array<string> | undefined | null,
+	started_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** aggregate max on columns */
+["server_player_sessions_max_fields"]: {
+		conn?: string | undefined | null,
+	deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	ended_at?: ModelTypes["timestamptz"] | undefined | null,
+	id?: ModelTypes["bigint"] | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	name?: string | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null,
+	settled_conns?: Array<string> | undefined | null,
+	started_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** order by max() on columns of table "server_player_sessions" */
+["server_player_sessions_max_order_by"]: {
+	conn?: ModelTypes["order_by"] | undefined | null,
+	deaths?: ModelTypes["order_by"] | undefined | null,
+	deaths_conn?: ModelTypes["order_by"] | undefined | null,
+	ended_at?: ModelTypes["order_by"] | undefined | null,
+	id?: ModelTypes["order_by"] | undefined | null,
+	kills?: ModelTypes["order_by"] | undefined | null,
+	kills_conn?: ModelTypes["order_by"] | undefined | null,
+	name?: ModelTypes["order_by"] | undefined | null,
+	player_steam_id?: ModelTypes["order_by"] | undefined | null,
+	server_id?: ModelTypes["order_by"] | undefined | null,
+	settled_conns?: ModelTypes["order_by"] | undefined | null,
+	started_at?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["server_player_sessions_min_fields"]: {
+		conn?: string | undefined | null,
+	deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	ended_at?: ModelTypes["timestamptz"] | undefined | null,
+	id?: ModelTypes["bigint"] | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	name?: string | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null,
+	settled_conns?: Array<string> | undefined | null,
+	started_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** order by min() on columns of table "server_player_sessions" */
+["server_player_sessions_min_order_by"]: {
+	conn?: ModelTypes["order_by"] | undefined | null,
+	deaths?: ModelTypes["order_by"] | undefined | null,
+	deaths_conn?: ModelTypes["order_by"] | undefined | null,
+	ended_at?: ModelTypes["order_by"] | undefined | null,
+	id?: ModelTypes["order_by"] | undefined | null,
+	kills?: ModelTypes["order_by"] | undefined | null,
+	kills_conn?: ModelTypes["order_by"] | undefined | null,
+	name?: ModelTypes["order_by"] | undefined | null,
+	player_steam_id?: ModelTypes["order_by"] | undefined | null,
+	server_id?: ModelTypes["order_by"] | undefined | null,
+	settled_conns?: ModelTypes["order_by"] | undefined | null,
+	started_at?: ModelTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "server_player_sessions" */
+["server_player_sessions_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["server_player_sessions"]>
+};
+	/** on_conflict condition type for table "server_player_sessions" */
+["server_player_sessions_on_conflict"]: {
+	constraint: ModelTypes["server_player_sessions_constraint"],
+	update_columns: Array<ModelTypes["server_player_sessions_update_column"]>,
+	where?: ModelTypes["server_player_sessions_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "server_player_sessions". */
+["server_player_sessions_order_by"]: {
+	conn?: ModelTypes["order_by"] | undefined | null,
+	deaths?: ModelTypes["order_by"] | undefined | null,
+	deaths_conn?: ModelTypes["order_by"] | undefined | null,
+	ended_at?: ModelTypes["order_by"] | undefined | null,
+	id?: ModelTypes["order_by"] | undefined | null,
+	ip?: ModelTypes["order_by"] | undefined | null,
+	kills?: ModelTypes["order_by"] | undefined | null,
+	kills_conn?: ModelTypes["order_by"] | undefined | null,
+	name?: ModelTypes["order_by"] | undefined | null,
+	player?: ModelTypes["players_order_by"] | undefined | null,
+	player_steam_id?: ModelTypes["order_by"] | undefined | null,
+	server?: ModelTypes["servers_order_by"] | undefined | null,
+	server_id?: ModelTypes["order_by"] | undefined | null,
+	settled_conns?: ModelTypes["order_by"] | undefined | null,
+	started_at?: ModelTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: server_player_sessions */
+["server_player_sessions_pk_columns_input"]: {
+	id: ModelTypes["bigint"]
+};
+	["server_player_sessions_select_column"]:server_player_sessions_select_column;
+	/** input type for updating data in table "server_player_sessions" */
+["server_player_sessions_set_input"]: {
+	conn?: string | undefined | null,
+	deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	ended_at?: ModelTypes["timestamptz"] | undefined | null,
+	ip?: ModelTypes["inet"] | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	name?: string | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null,
+	settled_conns?: Array<string> | undefined | null,
+	started_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["server_player_sessions_stddev_fields"]: {
+		deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	id?: number | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** order by stddev() on columns of table "server_player_sessions" */
+["server_player_sessions_stddev_order_by"]: {
+	deaths?: ModelTypes["order_by"] | undefined | null,
+	deaths_conn?: ModelTypes["order_by"] | undefined | null,
+	id?: ModelTypes["order_by"] | undefined | null,
+	kills?: ModelTypes["order_by"] | undefined | null,
+	kills_conn?: ModelTypes["order_by"] | undefined | null,
+	player_steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["server_player_sessions_stddev_pop_fields"]: {
+		deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	id?: number | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** order by stddev_pop() on columns of table "server_player_sessions" */
+["server_player_sessions_stddev_pop_order_by"]: {
+	deaths?: ModelTypes["order_by"] | undefined | null,
+	deaths_conn?: ModelTypes["order_by"] | undefined | null,
+	id?: ModelTypes["order_by"] | undefined | null,
+	kills?: ModelTypes["order_by"] | undefined | null,
+	kills_conn?: ModelTypes["order_by"] | undefined | null,
+	player_steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["server_player_sessions_stddev_samp_fields"]: {
+		deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	id?: number | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** order by stddev_samp() on columns of table "server_player_sessions" */
+["server_player_sessions_stddev_samp_order_by"]: {
+	deaths?: ModelTypes["order_by"] | undefined | null,
+	deaths_conn?: ModelTypes["order_by"] | undefined | null,
+	id?: ModelTypes["order_by"] | undefined | null,
+	kills?: ModelTypes["order_by"] | undefined | null,
+	kills_conn?: ModelTypes["order_by"] | undefined | null,
+	player_steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** Streaming cursor of the table "server_player_sessions" */
+["server_player_sessions_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["server_player_sessions_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["server_player_sessions_stream_cursor_value_input"]: {
+	conn?: string | undefined | null,
+	deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	ended_at?: ModelTypes["timestamptz"] | undefined | null,
+	id?: ModelTypes["bigint"] | undefined | null,
+	ip?: ModelTypes["inet"] | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	name?: string | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null,
+	settled_conns?: Array<string> | undefined | null,
+	started_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** aggregate sum on columns */
+["server_player_sessions_sum_fields"]: {
+		deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	id?: ModelTypes["bigint"] | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null
+};
+	/** order by sum() on columns of table "server_player_sessions" */
+["server_player_sessions_sum_order_by"]: {
+	deaths?: ModelTypes["order_by"] | undefined | null,
+	deaths_conn?: ModelTypes["order_by"] | undefined | null,
+	id?: ModelTypes["order_by"] | undefined | null,
+	kills?: ModelTypes["order_by"] | undefined | null,
+	kills_conn?: ModelTypes["order_by"] | undefined | null,
+	player_steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	["server_player_sessions_update_column"]:server_player_sessions_update_column;
+	["server_player_sessions_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ModelTypes["server_player_sessions_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["server_player_sessions_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["server_player_sessions_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["server_player_sessions_var_pop_fields"]: {
+		deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	id?: number | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** order by var_pop() on columns of table "server_player_sessions" */
+["server_player_sessions_var_pop_order_by"]: {
+	deaths?: ModelTypes["order_by"] | undefined | null,
+	deaths_conn?: ModelTypes["order_by"] | undefined | null,
+	id?: ModelTypes["order_by"] | undefined | null,
+	kills?: ModelTypes["order_by"] | undefined | null,
+	kills_conn?: ModelTypes["order_by"] | undefined | null,
+	player_steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate var_samp on columns */
+["server_player_sessions_var_samp_fields"]: {
+		deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	id?: number | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** order by var_samp() on columns of table "server_player_sessions" */
+["server_player_sessions_var_samp_order_by"]: {
+	deaths?: ModelTypes["order_by"] | undefined | null,
+	deaths_conn?: ModelTypes["order_by"] | undefined | null,
+	id?: ModelTypes["order_by"] | undefined | null,
+	kills?: ModelTypes["order_by"] | undefined | null,
+	kills_conn?: ModelTypes["order_by"] | undefined | null,
+	player_steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate variance on columns */
+["server_player_sessions_variance_fields"]: {
+		deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	id?: number | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** order by variance() on columns of table "server_player_sessions" */
+["server_player_sessions_variance_order_by"]: {
+	deaths?: ModelTypes["order_by"] | undefined | null,
+	deaths_conn?: ModelTypes["order_by"] | undefined | null,
+	id?: ModelTypes["order_by"] | undefined | null,
+	kills?: ModelTypes["order_by"] | undefined | null,
+	kills_conn?: ModelTypes["order_by"] | undefined | null,
+	player_steam_id?: ModelTypes["order_by"] | undefined | null
+};
 	/** columns and relationships of "server_plugins" */
 ["server_plugins"]: {
 		enabled: boolean,
@@ -217664,6 +223300,176 @@ export type ModelTypes = {
 	_set?: ModelTypes["server_plugins_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
 	where: ModelTypes["server_plugins_bool_exp"]
+};
+	/** columns and relationships of "server_recent_players" */
+["server_recent_players"]: {
+		first_seen_at?: ModelTypes["timestamptz"] | undefined | null,
+	ip?: string | undefined | null,
+	kills?: number | undefined | null,
+	last_seen_at?: ModelTypes["timestamptz"] | undefined | null,
+	name?: string | undefined | null,
+	online?: boolean | undefined | null,
+	/** An object relationship */
+	player?: ModelTypes["players"] | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	seconds_played?: number | undefined | null,
+	/** An object relationship */
+	server?: ModelTypes["servers"] | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null,
+	sessions?: number | undefined | null
+};
+	/** aggregated selection of "server_recent_players" */
+["server_recent_players_aggregate"]: {
+		aggregate?: ModelTypes["server_recent_players_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["server_recent_players"]>
+};
+	/** aggregate fields of "server_recent_players" */
+["server_recent_players_aggregate_fields"]: {
+		avg?: ModelTypes["server_recent_players_avg_fields"] | undefined | null,
+	count: number,
+	max?: ModelTypes["server_recent_players_max_fields"] | undefined | null,
+	min?: ModelTypes["server_recent_players_min_fields"] | undefined | null,
+	stddev?: ModelTypes["server_recent_players_stddev_fields"] | undefined | null,
+	stddev_pop?: ModelTypes["server_recent_players_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: ModelTypes["server_recent_players_stddev_samp_fields"] | undefined | null,
+	sum?: ModelTypes["server_recent_players_sum_fields"] | undefined | null,
+	var_pop?: ModelTypes["server_recent_players_var_pop_fields"] | undefined | null,
+	var_samp?: ModelTypes["server_recent_players_var_samp_fields"] | undefined | null,
+	variance?: ModelTypes["server_recent_players_variance_fields"] | undefined | null
+};
+	/** aggregate avg on columns */
+["server_recent_players_avg_fields"]: {
+		kills?: number | undefined | null,
+	player_steam_id?: number | undefined | null,
+	seconds_played?: number | undefined | null,
+	sessions?: number | undefined | null
+};
+	/** Boolean expression to filter rows from the table "server_recent_players". All fields are combined with a logical 'AND'. */
+["server_recent_players_bool_exp"]: {
+	_and?: Array<ModelTypes["server_recent_players_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["server_recent_players_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["server_recent_players_bool_exp"]> | undefined | null,
+	first_seen_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	ip?: ModelTypes["String_comparison_exp"] | undefined | null,
+	kills?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	last_seen_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	name?: ModelTypes["String_comparison_exp"] | undefined | null,
+	online?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	player?: ModelTypes["players_bool_exp"] | undefined | null,
+	player_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	seconds_played?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	server?: ModelTypes["servers_bool_exp"] | undefined | null,
+	server_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	sessions?: ModelTypes["Int_comparison_exp"] | undefined | null
+};
+	/** aggregate max on columns */
+["server_recent_players_max_fields"]: {
+		first_seen_at?: ModelTypes["timestamptz"] | undefined | null,
+	ip?: string | undefined | null,
+	kills?: number | undefined | null,
+	last_seen_at?: ModelTypes["timestamptz"] | undefined | null,
+	name?: string | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	seconds_played?: number | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null,
+	sessions?: number | undefined | null
+};
+	/** aggregate min on columns */
+["server_recent_players_min_fields"]: {
+		first_seen_at?: ModelTypes["timestamptz"] | undefined | null,
+	ip?: string | undefined | null,
+	kills?: number | undefined | null,
+	last_seen_at?: ModelTypes["timestamptz"] | undefined | null,
+	name?: string | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	seconds_played?: number | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null,
+	sessions?: number | undefined | null
+};
+	/** Ordering options when selecting data from "server_recent_players". */
+["server_recent_players_order_by"]: {
+	first_seen_at?: ModelTypes["order_by"] | undefined | null,
+	ip?: ModelTypes["order_by"] | undefined | null,
+	kills?: ModelTypes["order_by"] | undefined | null,
+	last_seen_at?: ModelTypes["order_by"] | undefined | null,
+	name?: ModelTypes["order_by"] | undefined | null,
+	online?: ModelTypes["order_by"] | undefined | null,
+	player?: ModelTypes["players_order_by"] | undefined | null,
+	player_steam_id?: ModelTypes["order_by"] | undefined | null,
+	seconds_played?: ModelTypes["order_by"] | undefined | null,
+	server?: ModelTypes["servers_order_by"] | undefined | null,
+	server_id?: ModelTypes["order_by"] | undefined | null,
+	sessions?: ModelTypes["order_by"] | undefined | null
+};
+	["server_recent_players_select_column"]:server_recent_players_select_column;
+	/** aggregate stddev on columns */
+["server_recent_players_stddev_fields"]: {
+		kills?: number | undefined | null,
+	player_steam_id?: number | undefined | null,
+	seconds_played?: number | undefined | null,
+	sessions?: number | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["server_recent_players_stddev_pop_fields"]: {
+		kills?: number | undefined | null,
+	player_steam_id?: number | undefined | null,
+	seconds_played?: number | undefined | null,
+	sessions?: number | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["server_recent_players_stddev_samp_fields"]: {
+		kills?: number | undefined | null,
+	player_steam_id?: number | undefined | null,
+	seconds_played?: number | undefined | null,
+	sessions?: number | undefined | null
+};
+	/** Streaming cursor of the table "server_recent_players" */
+["server_recent_players_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["server_recent_players_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["server_recent_players_stream_cursor_value_input"]: {
+	first_seen_at?: ModelTypes["timestamptz"] | undefined | null,
+	ip?: string | undefined | null,
+	kills?: number | undefined | null,
+	last_seen_at?: ModelTypes["timestamptz"] | undefined | null,
+	name?: string | undefined | null,
+	online?: boolean | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	seconds_played?: number | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null,
+	sessions?: number | undefined | null
+};
+	/** aggregate sum on columns */
+["server_recent_players_sum_fields"]: {
+		kills?: number | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	seconds_played?: number | undefined | null,
+	sessions?: number | undefined | null
+};
+	/** aggregate var_pop on columns */
+["server_recent_players_var_pop_fields"]: {
+		kills?: number | undefined | null,
+	player_steam_id?: number | undefined | null,
+	seconds_played?: number | undefined | null,
+	sessions?: number | undefined | null
+};
+	/** aggregate var_samp on columns */
+["server_recent_players_var_samp_fields"]: {
+		kills?: number | undefined | null,
+	player_steam_id?: number | undefined | null,
+	seconds_played?: number | undefined | null,
+	sessions?: number | undefined | null
+};
+	/** aggregate variance on columns */
+["server_recent_players_variance_fields"]: {
+		kills?: number | undefined | null,
+	player_steam_id?: number | undefined | null,
+	seconds_played?: number | undefined | null,
+	sessions?: number | undefined | null
 };
 	/** columns and relationships of "server_regions" */
 ["server_regions"]: {
@@ -217870,9 +223676,127 @@ export type ModelTypes = {
 	/** A computed field, executes function "total_region_server_count" */
 	total_server_count?: number | undefined | null
 };
+	/** columns and relationships of "server_rosters" */
+["server_rosters"]: {
+		held_since?: ModelTypes["timestamptz"] | undefined | null,
+	reported_at: ModelTypes["timestamptz"],
+	/** An object relationship */
+	server: ModelTypes["servers"],
+	server_id: ModelTypes["uuid"],
+	/** An array relationship */
+	sessions: Array<ModelTypes["server_player_sessions"]>,
+	/** An aggregate relationship */
+	sessions_aggregate: ModelTypes["server_player_sessions_aggregate"]
+};
+	/** aggregated selection of "server_rosters" */
+["server_rosters_aggregate"]: {
+		aggregate?: ModelTypes["server_rosters_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["server_rosters"]>
+};
+	/** aggregate fields of "server_rosters" */
+["server_rosters_aggregate_fields"]: {
+		count: number,
+	max?: ModelTypes["server_rosters_max_fields"] | undefined | null,
+	min?: ModelTypes["server_rosters_min_fields"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "server_rosters". All fields are combined with a logical 'AND'. */
+["server_rosters_bool_exp"]: {
+	_and?: Array<ModelTypes["server_rosters_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["server_rosters_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["server_rosters_bool_exp"]> | undefined | null,
+	held_since?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	reported_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	server?: ModelTypes["servers_bool_exp"] | undefined | null,
+	server_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	sessions?: ModelTypes["server_player_sessions_bool_exp"] | undefined | null,
+	sessions_aggregate?: ModelTypes["server_player_sessions_aggregate_bool_exp"] | undefined | null
+};
+	["server_rosters_constraint"]:server_rosters_constraint;
+	/** input type for inserting data into table "server_rosters" */
+["server_rosters_insert_input"]: {
+	held_since?: ModelTypes["timestamptz"] | undefined | null,
+	reported_at?: ModelTypes["timestamptz"] | undefined | null,
+	server?: ModelTypes["servers_obj_rel_insert_input"] | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null,
+	sessions?: ModelTypes["server_player_sessions_arr_rel_insert_input"] | undefined | null
+};
+	/** aggregate max on columns */
+["server_rosters_max_fields"]: {
+		held_since?: ModelTypes["timestamptz"] | undefined | null,
+	reported_at?: ModelTypes["timestamptz"] | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** aggregate min on columns */
+["server_rosters_min_fields"]: {
+		held_since?: ModelTypes["timestamptz"] | undefined | null,
+	reported_at?: ModelTypes["timestamptz"] | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** response of any mutation on the table "server_rosters" */
+["server_rosters_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["server_rosters"]>
+};
+	/** on_conflict condition type for table "server_rosters" */
+["server_rosters_on_conflict"]: {
+	constraint: ModelTypes["server_rosters_constraint"],
+	update_columns: Array<ModelTypes["server_rosters_update_column"]>,
+	where?: ModelTypes["server_rosters_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "server_rosters". */
+["server_rosters_order_by"]: {
+	held_since?: ModelTypes["order_by"] | undefined | null,
+	reported_at?: ModelTypes["order_by"] | undefined | null,
+	server?: ModelTypes["servers_order_by"] | undefined | null,
+	server_id?: ModelTypes["order_by"] | undefined | null,
+	sessions_aggregate?: ModelTypes["server_player_sessions_aggregate_order_by"] | undefined | null
+};
+	/** primary key columns input for table: server_rosters */
+["server_rosters_pk_columns_input"]: {
+	server_id: ModelTypes["uuid"]
+};
+	["server_rosters_select_column"]:server_rosters_select_column;
+	/** input type for updating data in table "server_rosters" */
+["server_rosters_set_input"]: {
+	held_since?: ModelTypes["timestamptz"] | undefined | null,
+	reported_at?: ModelTypes["timestamptz"] | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** Streaming cursor of the table "server_rosters" */
+["server_rosters_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["server_rosters_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["server_rosters_stream_cursor_value_input"]: {
+	held_since?: ModelTypes["timestamptz"] | undefined | null,
+	reported_at?: ModelTypes["timestamptz"] | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null
+};
+	["server_rosters_update_column"]:server_rosters_update_column;
+	["server_rosters_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["server_rosters_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["server_rosters_bool_exp"]
+};
 	/** columns and relationships of "servers" */
 ["servers"]: {
-		api_password: ModelTypes["uuid"],
+		/** An array relationship */
+	access_events: Array<ModelTypes["server_access_events"]>,
+	/** An aggregate relationship */
+	access_events_aggregate: ModelTypes["server_access_events_aggregate"],
+	access_min_role?: ModelTypes["e_player_roles_enum"] | undefined | null,
+	/** An array relationship */
+	access_players: Array<ModelTypes["server_access_players"]>,
+	/** An aggregate relationship */
+	access_players_aggregate: ModelTypes["server_access_players_aggregate"],
+	access_restricted: boolean,
+	api_password: ModelTypes["uuid"],
 	boot_status?: string | undefined | null,
 	boot_status_detail?: string | undefined | null,
 	connect_password?: string | undefined | null,
@@ -217906,7 +223830,14 @@ export type ModelTypes = {
 	/** An aggregate relationship */
 	matches_aggregate: ModelTypes["matches_aggregate"],
 	max_players?: number | undefined | null,
+	/** An array relationship */
+	migrations: Array<ModelTypes["server_migrations"]>,
+	/** An aggregate relationship */
+	migrations_aggregate: ModelTypes["server_migrations_aggregate"],
 	offline_at?: ModelTypes["timestamptz"] | undefined | null,
+	player_management_runtime?: string | undefined | null,
+	player_management_seen_at?: ModelTypes["timestamptz"] | undefined | null,
+	player_management_version?: string | undefined | null,
 	/** An array relationship */
 	plugin_overrides: Array<ModelTypes["server_plugins"]>,
 	/** An aggregate relationship */
@@ -218009,6 +223940,12 @@ export type ModelTypes = {
 	_and?: Array<ModelTypes["servers_bool_exp"]> | undefined | null,
 	_not?: ModelTypes["servers_bool_exp"] | undefined | null,
 	_or?: Array<ModelTypes["servers_bool_exp"]> | undefined | null,
+	access_events?: ModelTypes["server_access_events_bool_exp"] | undefined | null,
+	access_events_aggregate?: ModelTypes["server_access_events_aggregate_bool_exp"] | undefined | null,
+	access_min_role?: ModelTypes["e_player_roles_enum_comparison_exp"] | undefined | null,
+	access_players?: ModelTypes["server_access_players_bool_exp"] | undefined | null,
+	access_players_aggregate?: ModelTypes["server_access_players_aggregate_bool_exp"] | undefined | null,
+	access_restricted?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	api_password?: ModelTypes["uuid_comparison_exp"] | undefined | null,
 	boot_status?: ModelTypes["String_comparison_exp"] | undefined | null,
 	boot_status_detail?: ModelTypes["String_comparison_exp"] | undefined | null,
@@ -218034,7 +223971,12 @@ export type ModelTypes = {
 	matches?: ModelTypes["matches_bool_exp"] | undefined | null,
 	matches_aggregate?: ModelTypes["matches_aggregate_bool_exp"] | undefined | null,
 	max_players?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	migrations?: ModelTypes["server_migrations_bool_exp"] | undefined | null,
+	migrations_aggregate?: ModelTypes["server_migrations_aggregate_bool_exp"] | undefined | null,
 	offline_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	player_management_runtime?: ModelTypes["String_comparison_exp"] | undefined | null,
+	player_management_seen_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	player_management_version?: ModelTypes["String_comparison_exp"] | undefined | null,
 	plugin_overrides?: ModelTypes["server_plugins_bool_exp"] | undefined | null,
 	plugin_overrides_aggregate?: ModelTypes["server_plugins_aggregate_bool_exp"] | undefined | null,
 	plugin_runtime?: ModelTypes["e_plugin_runtimes_enum_comparison_exp"] | undefined | null,
@@ -218072,6 +224014,10 @@ export type ModelTypes = {
 };
 	/** input type for inserting data into table "servers" */
 ["servers_insert_input"]: {
+	access_events?: ModelTypes["server_access_events_arr_rel_insert_input"] | undefined | null,
+	access_min_role?: ModelTypes["e_player_roles_enum"] | undefined | null,
+	access_players?: ModelTypes["server_access_players_arr_rel_insert_input"] | undefined | null,
+	access_restricted?: boolean | undefined | null,
 	api_password?: ModelTypes["uuid"] | undefined | null,
 	boot_status?: string | undefined | null,
 	boot_status_detail?: string | undefined | null,
@@ -218093,7 +224039,11 @@ export type ModelTypes = {
 	map_rotation_shuffle?: boolean | undefined | null,
 	matches?: ModelTypes["matches_arr_rel_insert_input"] | undefined | null,
 	max_players?: number | undefined | null,
+	migrations?: ModelTypes["server_migrations_arr_rel_insert_input"] | undefined | null,
 	offline_at?: ModelTypes["timestamptz"] | undefined | null,
+	player_management_runtime?: string | undefined | null,
+	player_management_seen_at?: ModelTypes["timestamptz"] | undefined | null,
+	player_management_version?: string | undefined | null,
 	plugin_overrides?: ModelTypes["server_plugins_arr_rel_insert_input"] | undefined | null,
 	plugin_runtime?: ModelTypes["e_plugin_runtimes_enum"] | undefined | null,
 	plugin_version?: string | undefined | null,
@@ -218127,6 +224077,9 @@ export type ModelTypes = {
 	label?: string | undefined | null,
 	max_players?: number | undefined | null,
 	offline_at?: ModelTypes["timestamptz"] | undefined | null,
+	player_management_runtime?: string | undefined | null,
+	player_management_seen_at?: ModelTypes["timestamptz"] | undefined | null,
+	player_management_version?: string | undefined | null,
 	plugin_version?: string | undefined | null,
 	plugins_checked_at?: ModelTypes["timestamptz"] | undefined | null,
 	port?: number | undefined | null,
@@ -218150,6 +224103,9 @@ export type ModelTypes = {
 	label?: ModelTypes["order_by"] | undefined | null,
 	max_players?: ModelTypes["order_by"] | undefined | null,
 	offline_at?: ModelTypes["order_by"] | undefined | null,
+	player_management_runtime?: ModelTypes["order_by"] | undefined | null,
+	player_management_seen_at?: ModelTypes["order_by"] | undefined | null,
+	player_management_version?: ModelTypes["order_by"] | undefined | null,
 	plugin_version?: ModelTypes["order_by"] | undefined | null,
 	plugins_checked_at?: ModelTypes["order_by"] | undefined | null,
 	port?: ModelTypes["order_by"] | undefined | null,
@@ -218177,6 +224133,9 @@ export type ModelTypes = {
 	label?: string | undefined | null,
 	max_players?: number | undefined | null,
 	offline_at?: ModelTypes["timestamptz"] | undefined | null,
+	player_management_runtime?: string | undefined | null,
+	player_management_seen_at?: ModelTypes["timestamptz"] | undefined | null,
+	player_management_version?: string | undefined | null,
 	plugin_version?: string | undefined | null,
 	plugins_checked_at?: ModelTypes["timestamptz"] | undefined | null,
 	port?: number | undefined | null,
@@ -218200,6 +224159,9 @@ export type ModelTypes = {
 	label?: ModelTypes["order_by"] | undefined | null,
 	max_players?: ModelTypes["order_by"] | undefined | null,
 	offline_at?: ModelTypes["order_by"] | undefined | null,
+	player_management_runtime?: ModelTypes["order_by"] | undefined | null,
+	player_management_seen_at?: ModelTypes["order_by"] | undefined | null,
+	player_management_version?: ModelTypes["order_by"] | undefined | null,
 	plugin_version?: ModelTypes["order_by"] | undefined | null,
 	plugins_checked_at?: ModelTypes["order_by"] | undefined | null,
 	port?: ModelTypes["order_by"] | undefined | null,
@@ -218230,6 +224192,10 @@ export type ModelTypes = {
 };
 	/** Ordering options when selecting data from "servers". */
 ["servers_order_by"]: {
+	access_events_aggregate?: ModelTypes["server_access_events_aggregate_order_by"] | undefined | null,
+	access_min_role?: ModelTypes["order_by"] | undefined | null,
+	access_players_aggregate?: ModelTypes["server_access_players_aggregate_order_by"] | undefined | null,
+	access_restricted?: ModelTypes["order_by"] | undefined | null,
 	api_password?: ModelTypes["order_by"] | undefined | null,
 	boot_status?: ModelTypes["order_by"] | undefined | null,
 	boot_status_detail?: ModelTypes["order_by"] | undefined | null,
@@ -218253,7 +224219,11 @@ export type ModelTypes = {
 	map_rotation_shuffle?: ModelTypes["order_by"] | undefined | null,
 	matches_aggregate?: ModelTypes["matches_aggregate_order_by"] | undefined | null,
 	max_players?: ModelTypes["order_by"] | undefined | null,
+	migrations_aggregate?: ModelTypes["server_migrations_aggregate_order_by"] | undefined | null,
 	offline_at?: ModelTypes["order_by"] | undefined | null,
+	player_management_runtime?: ModelTypes["order_by"] | undefined | null,
+	player_management_seen_at?: ModelTypes["order_by"] | undefined | null,
+	player_management_version?: ModelTypes["order_by"] | undefined | null,
 	plugin_overrides_aggregate?: ModelTypes["server_plugins_aggregate_order_by"] | undefined | null,
 	plugin_runtime?: ModelTypes["order_by"] | undefined | null,
 	plugin_version?: ModelTypes["order_by"] | undefined | null,
@@ -218282,6 +224252,8 @@ export type ModelTypes = {
 	["servers_select_column_servers_aggregate_bool_exp_bool_or_arguments_columns"]:servers_select_column_servers_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "servers" */
 ["servers_set_input"]: {
+	access_min_role?: ModelTypes["e_player_roles_enum"] | undefined | null,
+	access_restricted?: boolean | undefined | null,
 	api_password?: ModelTypes["uuid"] | undefined | null,
 	boot_status?: string | undefined | null,
 	boot_status_detail?: string | undefined | null,
@@ -218299,6 +224271,9 @@ export type ModelTypes = {
 	map_rotation_shuffle?: boolean | undefined | null,
 	max_players?: number | undefined | null,
 	offline_at?: ModelTypes["timestamptz"] | undefined | null,
+	player_management_runtime?: string | undefined | null,
+	player_management_seen_at?: ModelTypes["timestamptz"] | undefined | null,
+	player_management_version?: string | undefined | null,
 	plugin_runtime?: ModelTypes["e_plugin_runtimes_enum"] | undefined | null,
 	plugin_version?: string | undefined | null,
 	plugins_checked_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -218357,6 +224332,8 @@ export type ModelTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["servers_stream_cursor_value_input"]: {
+	access_min_role?: ModelTypes["e_player_roles_enum"] | undefined | null,
+	access_restricted?: boolean | undefined | null,
 	api_password?: ModelTypes["uuid"] | undefined | null,
 	boot_status?: string | undefined | null,
 	boot_status_detail?: string | undefined | null,
@@ -218374,6 +224351,9 @@ export type ModelTypes = {
 	map_rotation_shuffle?: boolean | undefined | null,
 	max_players?: number | undefined | null,
 	offline_at?: ModelTypes["timestamptz"] | undefined | null,
+	player_management_runtime?: string | undefined | null,
+	player_management_seen_at?: ModelTypes["timestamptz"] | undefined | null,
+	player_management_version?: string | undefined | null,
 	plugin_runtime?: ModelTypes["e_plugin_runtimes_enum"] | undefined | null,
 	plugin_version?: string | undefined | null,
 	plugins_checked_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -219405,6 +225385,14 @@ export type ModelTypes = {
 	e_scrim_request_statuses_by_pk?: ModelTypes["e_scrim_request_statuses"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "e_scrim_request_statuses" */
 	e_scrim_request_statuses_stream: Array<ModelTypes["e_scrim_request_statuses"]>,
+	/** fetch data from the table: "e_server_migration_statuses" */
+	e_server_migration_statuses: Array<ModelTypes["e_server_migration_statuses"]>,
+	/** fetch aggregated fields from the table: "e_server_migration_statuses" */
+	e_server_migration_statuses_aggregate: ModelTypes["e_server_migration_statuses_aggregate"],
+	/** fetch data from the table: "e_server_migration_statuses" using primary key columns */
+	e_server_migration_statuses_by_pk?: ModelTypes["e_server_migration_statuses"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "e_server_migration_statuses" */
+	e_server_migration_statuses_stream: Array<ModelTypes["e_server_migration_statuses"]>,
 	/** fetch data from the table: "e_server_types" */
 	e_server_types: Array<ModelTypes["e_server_types"]>,
 	/** fetch aggregated fields from the table: "e_server_types" */
@@ -220255,6 +226243,22 @@ export type ModelTypes = {
 	seasons_by_pk?: ModelTypes["seasons"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "seasons" */
 	seasons_stream: Array<ModelTypes["seasons"]>,
+	/** fetch data from the table: "server_access_events" */
+	server_access_events: Array<ModelTypes["server_access_events"]>,
+	/** fetch aggregated fields from the table: "server_access_events" */
+	server_access_events_aggregate: ModelTypes["server_access_events_aggregate"],
+	/** fetch data from the table: "server_access_events" using primary key columns */
+	server_access_events_by_pk?: ModelTypes["server_access_events"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "server_access_events" */
+	server_access_events_stream: Array<ModelTypes["server_access_events"]>,
+	/** fetch data from the table: "server_access_players" */
+	server_access_players: Array<ModelTypes["server_access_players"]>,
+	/** fetch aggregated fields from the table: "server_access_players" */
+	server_access_players_aggregate: ModelTypes["server_access_players_aggregate"],
+	/** fetch data from the table: "server_access_players" using primary key columns */
+	server_access_players_by_pk?: ModelTypes["server_access_players"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "server_access_players" */
+	server_access_players_stream: Array<ModelTypes["server_access_players"]>,
 	/** fetch data from the table: "server_map_rotation" */
 	server_map_rotation: Array<ModelTypes["server_map_rotation"]>,
 	/** fetch aggregated fields from the table: "server_map_rotation" */
@@ -220263,6 +226267,22 @@ export type ModelTypes = {
 	server_map_rotation_by_pk?: ModelTypes["server_map_rotation"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "server_map_rotation" */
 	server_map_rotation_stream: Array<ModelTypes["server_map_rotation"]>,
+	/** fetch data from the table: "server_migrations" */
+	server_migrations: Array<ModelTypes["server_migrations"]>,
+	/** fetch aggregated fields from the table: "server_migrations" */
+	server_migrations_aggregate: ModelTypes["server_migrations_aggregate"],
+	/** fetch data from the table: "server_migrations" using primary key columns */
+	server_migrations_by_pk?: ModelTypes["server_migrations"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "server_migrations" */
+	server_migrations_stream: Array<ModelTypes["server_migrations"]>,
+	/** fetch data from the table: "server_player_sessions" */
+	server_player_sessions: Array<ModelTypes["server_player_sessions"]>,
+	/** fetch aggregated fields from the table: "server_player_sessions" */
+	server_player_sessions_aggregate: ModelTypes["server_player_sessions_aggregate"],
+	/** fetch data from the table: "server_player_sessions" using primary key columns */
+	server_player_sessions_by_pk?: ModelTypes["server_player_sessions"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "server_player_sessions" */
+	server_player_sessions_stream: Array<ModelTypes["server_player_sessions"]>,
 	/** fetch data from the table: "server_plugins" */
 	server_plugins: Array<ModelTypes["server_plugins"]>,
 	/** fetch aggregated fields from the table: "server_plugins" */
@@ -220271,6 +226291,12 @@ export type ModelTypes = {
 	server_plugins_by_pk?: ModelTypes["server_plugins"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "server_plugins" */
 	server_plugins_stream: Array<ModelTypes["server_plugins"]>,
+	/** fetch data from the table: "server_recent_players" */
+	server_recent_players: Array<ModelTypes["server_recent_players"]>,
+	/** fetch aggregated fields from the table: "server_recent_players" */
+	server_recent_players_aggregate: ModelTypes["server_recent_players_aggregate"],
+	/** fetch data from the table in a streaming manner: "server_recent_players" */
+	server_recent_players_stream: Array<ModelTypes["server_recent_players"]>,
 	/** fetch data from the table: "server_regions" */
 	server_regions: Array<ModelTypes["server_regions"]>,
 	/** fetch aggregated fields from the table: "server_regions" */
@@ -220279,6 +226305,14 @@ export type ModelTypes = {
 	server_regions_by_pk?: ModelTypes["server_regions"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "server_regions" */
 	server_regions_stream: Array<ModelTypes["server_regions"]>,
+	/** fetch data from the table: "server_rosters" */
+	server_rosters: Array<ModelTypes["server_rosters"]>,
+	/** fetch aggregated fields from the table: "server_rosters" */
+	server_rosters_aggregate: ModelTypes["server_rosters_aggregate"],
+	/** fetch data from the table: "server_rosters" using primary key columns */
+	server_rosters_by_pk?: ModelTypes["server_rosters"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "server_rosters" */
+	server_rosters_stream: Array<ModelTypes["server_rosters"]>,
 	/** An array relationship */
 	servers: Array<ModelTypes["servers"]>,
 	/** An aggregate relationship */
@@ -220813,12 +226847,6 @@ export type ModelTypes = {
 	v_player_multi_kills_aggregate: ModelTypes["v_player_multi_kills_aggregate"],
 	/** fetch data from the table in a streaming manner: "v_player_multi_kills" */
 	v_player_multi_kills_stream: Array<ModelTypes["v_player_multi_kills"]>,
-	/** fetch data from the table: "v_player_queue_partners" */
-	v_player_queue_partners: Array<ModelTypes["v_player_queue_partners"]>,
-	/** fetch aggregated fields from the table: "v_player_queue_partners" */
-	v_player_queue_partners_aggregate: ModelTypes["v_player_queue_partners_aggregate"],
-	/** fetch data from the table in a streaming manner: "v_player_queue_partners" */
-	v_player_queue_partners_stream: Array<ModelTypes["v_player_queue_partners"]>,
 	/** fetch data from the table: "v_player_weapon_damage" */
 	v_player_weapon_damage: Array<ModelTypes["v_player_weapon_damage"]>,
 	/** fetch aggregated fields from the table: "v_player_weapon_damage" */
@@ -242447,154 +248475,6 @@ export type ModelTypes = {
 	kills?: ModelTypes["order_by"] | undefined | null,
 	round?: ModelTypes["order_by"] | undefined | null
 };
-	/** columns and relationships of "v_player_queue_partners" */
-["v_player_queue_partners"]: {
-		first_played_at?: ModelTypes["timestamptz"] | undefined | null,
-	last_played_at?: ModelTypes["timestamptz"] | undefined | null,
-	matches_together?: number | undefined | null,
-	/** An object relationship */
-	partner?: ModelTypes["players"] | undefined | null,
-	partner_steam_id?: ModelTypes["bigint"] | undefined | null,
-	/** An object relationship */
-	player?: ModelTypes["players"] | undefined | null,
-	steam_id?: ModelTypes["bigint"] | undefined | null,
-	wins_together?: number | undefined | null
-};
-	/** aggregated selection of "v_player_queue_partners" */
-["v_player_queue_partners_aggregate"]: {
-		aggregate?: ModelTypes["v_player_queue_partners_aggregate_fields"] | undefined | null,
-	nodes: Array<ModelTypes["v_player_queue_partners"]>
-};
-	/** aggregate fields of "v_player_queue_partners" */
-["v_player_queue_partners_aggregate_fields"]: {
-		avg?: ModelTypes["v_player_queue_partners_avg_fields"] | undefined | null,
-	count: number,
-	max?: ModelTypes["v_player_queue_partners_max_fields"] | undefined | null,
-	min?: ModelTypes["v_player_queue_partners_min_fields"] | undefined | null,
-	stddev?: ModelTypes["v_player_queue_partners_stddev_fields"] | undefined | null,
-	stddev_pop?: ModelTypes["v_player_queue_partners_stddev_pop_fields"] | undefined | null,
-	stddev_samp?: ModelTypes["v_player_queue_partners_stddev_samp_fields"] | undefined | null,
-	sum?: ModelTypes["v_player_queue_partners_sum_fields"] | undefined | null,
-	var_pop?: ModelTypes["v_player_queue_partners_var_pop_fields"] | undefined | null,
-	var_samp?: ModelTypes["v_player_queue_partners_var_samp_fields"] | undefined | null,
-	variance?: ModelTypes["v_player_queue_partners_variance_fields"] | undefined | null
-};
-	/** aggregate avg on columns */
-["v_player_queue_partners_avg_fields"]: {
-		matches_together?: number | undefined | null,
-	partner_steam_id?: number | undefined | null,
-	steam_id?: number | undefined | null,
-	wins_together?: number | undefined | null
-};
-	/** Boolean expression to filter rows from the table "v_player_queue_partners". All fields are combined with a logical 'AND'. */
-["v_player_queue_partners_bool_exp"]: {
-	_and?: Array<ModelTypes["v_player_queue_partners_bool_exp"]> | undefined | null,
-	_not?: ModelTypes["v_player_queue_partners_bool_exp"] | undefined | null,
-	_or?: Array<ModelTypes["v_player_queue_partners_bool_exp"]> | undefined | null,
-	first_played_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
-	last_played_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
-	matches_together?: ModelTypes["Int_comparison_exp"] | undefined | null,
-	partner?: ModelTypes["players_bool_exp"] | undefined | null,
-	partner_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
-	player?: ModelTypes["players_bool_exp"] | undefined | null,
-	steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
-	wins_together?: ModelTypes["Int_comparison_exp"] | undefined | null
-};
-	/** aggregate max on columns */
-["v_player_queue_partners_max_fields"]: {
-		first_played_at?: ModelTypes["timestamptz"] | undefined | null,
-	last_played_at?: ModelTypes["timestamptz"] | undefined | null,
-	matches_together?: number | undefined | null,
-	partner_steam_id?: ModelTypes["bigint"] | undefined | null,
-	steam_id?: ModelTypes["bigint"] | undefined | null,
-	wins_together?: number | undefined | null
-};
-	/** aggregate min on columns */
-["v_player_queue_partners_min_fields"]: {
-		first_played_at?: ModelTypes["timestamptz"] | undefined | null,
-	last_played_at?: ModelTypes["timestamptz"] | undefined | null,
-	matches_together?: number | undefined | null,
-	partner_steam_id?: ModelTypes["bigint"] | undefined | null,
-	steam_id?: ModelTypes["bigint"] | undefined | null,
-	wins_together?: number | undefined | null
-};
-	/** Ordering options when selecting data from "v_player_queue_partners". */
-["v_player_queue_partners_order_by"]: {
-	first_played_at?: ModelTypes["order_by"] | undefined | null,
-	last_played_at?: ModelTypes["order_by"] | undefined | null,
-	matches_together?: ModelTypes["order_by"] | undefined | null,
-	partner?: ModelTypes["players_order_by"] | undefined | null,
-	partner_steam_id?: ModelTypes["order_by"] | undefined | null,
-	player?: ModelTypes["players_order_by"] | undefined | null,
-	steam_id?: ModelTypes["order_by"] | undefined | null,
-	wins_together?: ModelTypes["order_by"] | undefined | null
-};
-	["v_player_queue_partners_select_column"]:v_player_queue_partners_select_column;
-	/** aggregate stddev on columns */
-["v_player_queue_partners_stddev_fields"]: {
-		matches_together?: number | undefined | null,
-	partner_steam_id?: number | undefined | null,
-	steam_id?: number | undefined | null,
-	wins_together?: number | undefined | null
-};
-	/** aggregate stddev_pop on columns */
-["v_player_queue_partners_stddev_pop_fields"]: {
-		matches_together?: number | undefined | null,
-	partner_steam_id?: number | undefined | null,
-	steam_id?: number | undefined | null,
-	wins_together?: number | undefined | null
-};
-	/** aggregate stddev_samp on columns */
-["v_player_queue_partners_stddev_samp_fields"]: {
-		matches_together?: number | undefined | null,
-	partner_steam_id?: number | undefined | null,
-	steam_id?: number | undefined | null,
-	wins_together?: number | undefined | null
-};
-	/** Streaming cursor of the table "v_player_queue_partners" */
-["v_player_queue_partners_stream_cursor_input"]: {
-	/** Stream column input with initial value */
-	initial_value: ModelTypes["v_player_queue_partners_stream_cursor_value_input"],
-	/** cursor ordering */
-	ordering?: ModelTypes["cursor_ordering"] | undefined | null
-};
-	/** Initial value of the column from where the streaming should start */
-["v_player_queue_partners_stream_cursor_value_input"]: {
-	first_played_at?: ModelTypes["timestamptz"] | undefined | null,
-	last_played_at?: ModelTypes["timestamptz"] | undefined | null,
-	matches_together?: number | undefined | null,
-	partner_steam_id?: ModelTypes["bigint"] | undefined | null,
-	steam_id?: ModelTypes["bigint"] | undefined | null,
-	wins_together?: number | undefined | null
-};
-	/** aggregate sum on columns */
-["v_player_queue_partners_sum_fields"]: {
-		matches_together?: number | undefined | null,
-	partner_steam_id?: ModelTypes["bigint"] | undefined | null,
-	steam_id?: ModelTypes["bigint"] | undefined | null,
-	wins_together?: number | undefined | null
-};
-	/** aggregate var_pop on columns */
-["v_player_queue_partners_var_pop_fields"]: {
-		matches_together?: number | undefined | null,
-	partner_steam_id?: number | undefined | null,
-	steam_id?: number | undefined | null,
-	wins_together?: number | undefined | null
-};
-	/** aggregate var_samp on columns */
-["v_player_queue_partners_var_samp_fields"]: {
-		matches_together?: number | undefined | null,
-	partner_steam_id?: number | undefined | null,
-	steam_id?: number | undefined | null,
-	wins_together?: number | undefined | null
-};
-	/** aggregate variance on columns */
-["v_player_queue_partners_variance_fields"]: {
-		matches_together?: number | undefined | null,
-	partner_steam_id?: number | undefined | null,
-	steam_id?: number | undefined | null,
-	wins_together?: number | undefined | null
-};
 	/** columns and relationships of "v_player_weapon_damage" */
 ["v_player_weapon_damage"]: {
 		damage?: ModelTypes["bigint"] | undefined | null,
@@ -245372,6 +251252,15 @@ export type GraphQLTypes = {
 	segments: Array<GraphQLTypes["ClipSegmentInput"]>,
 	title?: string | undefined | null
 };
+	["CommunityTotals"]: {
+	__typename: "CommunityTotals",
+	deaths: number,
+	kills: number,
+	rank?: number | undefined | null,
+	seconds: number,
+	servers: number,
+	sessions: number
+};
 	["ConnectionByState"]: {
 	__typename: "ConnectionByState",
 	count: number,
@@ -245739,6 +251628,54 @@ export type GraphQLTypes = {
 	error?: string | undefined | null,
 	success: boolean
 };
+	["PlayerCommunityIp"]: {
+	__typename: "PlayerCommunityIp",
+	ip: string,
+	sessions: number
+};
+	["PlayerCommunityIpMatch"]: {
+	__typename: "PlayerCommunityIpMatch",
+	avatar_url?: string | undefined | null,
+	has_account: boolean,
+	ip: string,
+	is_banned: boolean,
+	last_seen_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	name?: string | undefined | null,
+	online: boolean,
+	sessions: number,
+	steam_id: GraphQLTypes["bigint"]
+};
+	["PlayerCommunityServer"]: {
+	__typename: "PlayerCommunityServer",
+	all_time: GraphQLTypes["CommunityTotals"],
+	label: string,
+	last_seen_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	names?: Array<string> | undefined | null,
+	online: boolean,
+	region?: string | undefined | null,
+	server_id: GraphQLTypes["uuid"],
+	sessions?: Array<GraphQLTypes["PlayerCommunitySession"]> | undefined | null,
+	type?: string | undefined | null,
+	week: GraphQLTypes["CommunityTotals"]
+};
+	["PlayerCommunitySession"]: {
+	__typename: "PlayerCommunitySession",
+	ended_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	ip?: string | undefined | null,
+	started_at: GraphQLTypes["timestamptz"]
+};
+	["PlayerCommunityStats"]: {
+	__typename: "PlayerCommunityStats",
+	all_time: GraphQLTypes["CommunityTotals"],
+	ip_matches?: Array<GraphQLTypes["PlayerCommunityIpMatch"]> | undefined | null,
+	ips?: Array<GraphQLTypes["PlayerCommunityIp"]> | undefined | null,
+	is_moderator_view: boolean,
+	last_seen_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	online_server_id?: GraphQLTypes["uuid"] | undefined | null,
+	online_server_label?: string | undefined | null,
+	servers: Array<GraphQLTypes["PlayerCommunityServer"]>,
+	week: GraphQLTypes["CommunityTotals"]
+};
 	["PluginReadmeOutput"]: {
 	__typename: "PluginReadmeOutput",
 	content?: string | undefined | null,
@@ -245866,6 +251803,50 @@ export type GraphQLTypes = {
 	season_id?: string | undefined | null,
 	started_at?: string | undefined | null,
 	total: number
+};
+	["ServerAccessInput"]: {
+		event_ids: Array<GraphQLTypes["uuid"]>,
+	min_role?: string | undefined | null,
+	restricted: boolean,
+	steam_ids: Array<string>
+};
+	["ServerCommunityStats"]: {
+	__typename: "ServerCommunityStats",
+	all_time_players: number,
+	hourly: Array<GraphQLTypes["ServerHourlyActivity"]>,
+	max_players?: number | undefined | null,
+	online: number,
+	server_id: GraphQLTypes["uuid"],
+	tracked_since?: GraphQLTypes["timestamptz"] | undefined | null,
+	week_players: number,
+	week_seconds: number
+};
+	["ServerHourlyActivity"]: {
+	__typename: "ServerHourlyActivity",
+	hour: GraphQLTypes["timestamptz"],
+	players: number,
+	seconds: number
+};
+	["ServerLeaderboard"]: {
+	__typename: "ServerLeaderboard",
+	entries: Array<GraphQLTypes["ServerLeaderboardEntry"]>,
+	you?: GraphQLTypes["ServerLeaderboardEntry"] | undefined | null
+};
+	["ServerLeaderboardEntry"]: {
+	__typename: "ServerLeaderboardEntry",
+	avatar_url?: string | undefined | null,
+	country?: string | undefined | null,
+	deaths: number,
+	kills: number,
+	name: string,
+	rank: number,
+	seconds: number,
+	sessions: number,
+	steam_id: GraphQLTypes["bigint"]
+};
+	["ServerMapRotationInput"]: {
+		map_ids: Array<GraphQLTypes["uuid"]>,
+	shuffle: boolean
 };
 	["ServerPlayer"]: {
 	__typename: "ServerPlayer",
@@ -255837,6 +261818,117 @@ export type GraphQLTypes = {
 	/** filter the rows which have to be updated */
 	where: GraphQLTypes["e_scrim_request_statuses_bool_exp"]
 };
+	/** columns and relationships of "e_server_migration_statuses" */
+["e_server_migration_statuses"]: {
+	__typename: "e_server_migration_statuses",
+	description: string,
+	value: string
+};
+	/** aggregated selection of "e_server_migration_statuses" */
+["e_server_migration_statuses_aggregate"]: {
+	__typename: "e_server_migration_statuses_aggregate",
+	aggregate?: GraphQLTypes["e_server_migration_statuses_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["e_server_migration_statuses"]>
+};
+	/** aggregate fields of "e_server_migration_statuses" */
+["e_server_migration_statuses_aggregate_fields"]: {
+	__typename: "e_server_migration_statuses_aggregate_fields",
+	count: number,
+	max?: GraphQLTypes["e_server_migration_statuses_max_fields"] | undefined | null,
+	min?: GraphQLTypes["e_server_migration_statuses_min_fields"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "e_server_migration_statuses". All fields are combined with a logical 'AND'. */
+["e_server_migration_statuses_bool_exp"]: {
+		_and?: Array<GraphQLTypes["e_server_migration_statuses_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["e_server_migration_statuses_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["e_server_migration_statuses_bool_exp"]> | undefined | null,
+	description?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	value?: GraphQLTypes["String_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "e_server_migration_statuses" */
+["e_server_migration_statuses_constraint"]: e_server_migration_statuses_constraint;
+	["e_server_migration_statuses_enum"]: e_server_migration_statuses_enum;
+	/** Boolean expression to compare columns of type "e_server_migration_statuses_enum". All fields are combined with logical 'AND'. */
+["e_server_migration_statuses_enum_comparison_exp"]: {
+		_eq?: GraphQLTypes["e_server_migration_statuses_enum"] | undefined | null,
+	_in?: Array<GraphQLTypes["e_server_migration_statuses_enum"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_neq?: GraphQLTypes["e_server_migration_statuses_enum"] | undefined | null,
+	_nin?: Array<GraphQLTypes["e_server_migration_statuses_enum"]> | undefined | null
+};
+	/** input type for inserting data into table "e_server_migration_statuses" */
+["e_server_migration_statuses_insert_input"]: {
+		description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate max on columns */
+["e_server_migration_statuses_max_fields"]: {
+	__typename: "e_server_migration_statuses_max_fields",
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate min on columns */
+["e_server_migration_statuses_min_fields"]: {
+	__typename: "e_server_migration_statuses_min_fields",
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** response of any mutation on the table "e_server_migration_statuses" */
+["e_server_migration_statuses_mutation_response"]: {
+	__typename: "e_server_migration_statuses_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["e_server_migration_statuses"]>
+};
+	/** input type for inserting object relation for remote table "e_server_migration_statuses" */
+["e_server_migration_statuses_obj_rel_insert_input"]: {
+		data: GraphQLTypes["e_server_migration_statuses_insert_input"],
+	/** upsert condition */
+	on_conflict?: GraphQLTypes["e_server_migration_statuses_on_conflict"] | undefined | null
+};
+	/** on_conflict condition type for table "e_server_migration_statuses" */
+["e_server_migration_statuses_on_conflict"]: {
+		constraint: GraphQLTypes["e_server_migration_statuses_constraint"],
+	update_columns: Array<GraphQLTypes["e_server_migration_statuses_update_column"]>,
+	where?: GraphQLTypes["e_server_migration_statuses_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "e_server_migration_statuses". */
+["e_server_migration_statuses_order_by"]: {
+		description?: GraphQLTypes["order_by"] | undefined | null,
+	value?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: e_server_migration_statuses */
+["e_server_migration_statuses_pk_columns_input"]: {
+		value: string
+};
+	/** select columns of table "e_server_migration_statuses" */
+["e_server_migration_statuses_select_column"]: e_server_migration_statuses_select_column;
+	/** input type for updating data in table "e_server_migration_statuses" */
+["e_server_migration_statuses_set_input"]: {
+		description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** Streaming cursor of the table "e_server_migration_statuses" */
+["e_server_migration_statuses_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["e_server_migration_statuses_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["e_server_migration_statuses_stream_cursor_value_input"]: {
+		description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** update columns of table "e_server_migration_statuses" */
+["e_server_migration_statuses_update_column"]: e_server_migration_statuses_update_column;
+	["e_server_migration_statuses_updates"]: {
+		/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["e_server_migration_statuses_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["e_server_migration_statuses_bool_exp"]
+};
 	/** columns and relationships of "e_server_types" */
 ["e_server_types"]: {
 	__typename: "e_server_types",
@@ -260421,12 +266513,10 @@ export type GraphQLTypes = {
 	archived_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	cfg?: string | undefined | null,
 	competitive_safe: boolean,
-	system: boolean,
 	created_at: GraphQLTypes["timestamptz"],
 	description?: string | undefined | null,
 	enabled: boolean,
 	extra_game_params?: string | undefined | null,
-	valve_mode?: string | undefined | null,
 	icon?: string | undefined | null,
 	id: GraphQLTypes["uuid"],
 	/** An array relationship */
@@ -260443,7 +266533,9 @@ export type GraphQLTypes = {
 	slug: string,
 	/** Frameworks every plugin in this mode publishes for; empty means the selection cannot run */
 	supported_runtimes?: GraphQLTypes["jsonb"] | undefined | null,
-	updated_at: GraphQLTypes["timestamptz"]
+	system: boolean,
+	updated_at: GraphQLTypes["timestamptz"],
+	valve_mode?: string | undefined | null
 };
 	/** aggregated selection of "game_modes" */
 ["game_modes_aggregate"]: {
@@ -260466,12 +266558,10 @@ export type GraphQLTypes = {
 	archived_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	cfg?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	competitive_safe?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
-	system?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	description?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	enabled?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	extra_game_params?: GraphQLTypes["String_comparison_exp"] | undefined | null,
-	valve_mode?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	icon?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
 	match_options?: GraphQLTypes["match_options_bool_exp"] | undefined | null,
@@ -260482,7 +266572,9 @@ export type GraphQLTypes = {
 	runtime_conflicts?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
 	slug?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	supported_runtimes?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
-	updated_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null
+	system?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	valve_mode?: GraphQLTypes["String_comparison_exp"] | undefined | null
 };
 	/** unique or primary key constraints on table "game_modes" */
 ["game_modes_constraint"]: game_modes_constraint;
@@ -260491,19 +266583,19 @@ export type GraphQLTypes = {
 		archived_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	cfg?: string | undefined | null,
 	competitive_safe?: boolean | undefined | null,
-	system?: boolean | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
 	enabled?: boolean | undefined | null,
 	extra_game_params?: string | undefined | null,
-	valve_mode?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	match_options?: GraphQLTypes["match_options_arr_rel_insert_input"] | undefined | null,
 	name?: string | undefined | null,
 	plugins?: GraphQLTypes["game_mode_plugins_arr_rel_insert_input"] | undefined | null,
 	slug?: string | undefined | null,
-	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+	system?: boolean | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	valve_mode?: string | undefined | null
 };
 	/** aggregate max on columns */
 ["game_modes_max_fields"]: {
@@ -260513,12 +266605,12 @@ export type GraphQLTypes = {
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
 	extra_game_params?: string | undefined | null,
-	valve_mode?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	name?: string | undefined | null,
 	slug?: string | undefined | null,
-	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	valve_mode?: string | undefined | null
 };
 	/** aggregate min on columns */
 ["game_modes_min_fields"]: {
@@ -260528,12 +266620,12 @@ export type GraphQLTypes = {
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
 	extra_game_params?: string | undefined | null,
-	valve_mode?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	name?: string | undefined | null,
 	slug?: string | undefined | null,
-	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	valve_mode?: string | undefined | null
 };
 	/** response of any mutation on the table "game_modes" */
 ["game_modes_mutation_response"]: {
@@ -260560,12 +266652,10 @@ export type GraphQLTypes = {
 		archived_at?: GraphQLTypes["order_by"] | undefined | null,
 	cfg?: GraphQLTypes["order_by"] | undefined | null,
 	competitive_safe?: GraphQLTypes["order_by"] | undefined | null,
-	system?: GraphQLTypes["order_by"] | undefined | null,
 	created_at?: GraphQLTypes["order_by"] | undefined | null,
 	description?: GraphQLTypes["order_by"] | undefined | null,
 	enabled?: GraphQLTypes["order_by"] | undefined | null,
 	extra_game_params?: GraphQLTypes["order_by"] | undefined | null,
-	valve_mode?: GraphQLTypes["order_by"] | undefined | null,
 	icon?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
 	match_options_aggregate?: GraphQLTypes["match_options_aggregate_order_by"] | undefined | null,
@@ -260574,7 +266664,9 @@ export type GraphQLTypes = {
 	runtime_conflicts?: GraphQLTypes["order_by"] | undefined | null,
 	slug?: GraphQLTypes["order_by"] | undefined | null,
 	supported_runtimes?: GraphQLTypes["order_by"] | undefined | null,
-	updated_at?: GraphQLTypes["order_by"] | undefined | null
+	system?: GraphQLTypes["order_by"] | undefined | null,
+	updated_at?: GraphQLTypes["order_by"] | undefined | null,
+	valve_mode?: GraphQLTypes["order_by"] | undefined | null
 };
 	/** primary key columns input for table: game_modes */
 ["game_modes_pk_columns_input"]: {
@@ -260587,17 +266679,17 @@ export type GraphQLTypes = {
 		archived_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	cfg?: string | undefined | null,
 	competitive_safe?: boolean | undefined | null,
-	system?: boolean | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
 	enabled?: boolean | undefined | null,
 	extra_game_params?: string | undefined | null,
-	valve_mode?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	name?: string | undefined | null,
 	slug?: string | undefined | null,
-	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+	system?: boolean | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	valve_mode?: string | undefined | null
 };
 	/** Streaming cursor of the table "game_modes" */
 ["game_modes_stream_cursor_input"]: {
@@ -260611,17 +266703,17 @@ export type GraphQLTypes = {
 		archived_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	cfg?: string | undefined | null,
 	competitive_safe?: boolean | undefined | null,
-	system?: boolean | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
 	enabled?: boolean | undefined | null,
 	extra_game_params?: string | undefined | null,
-	valve_mode?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	name?: string | undefined | null,
 	slug?: string | undefined | null,
-	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+	system?: boolean | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	valve_mode?: string | undefined | null
 };
 	/** update columns of table "game_modes" */
 ["game_modes_update_column"]: game_modes_update_column;
@@ -261793,6 +267885,9 @@ export type GraphQLTypes = {
 	/** columns and relationships of "game_server_nodes" */
 ["game_server_nodes"]: {
 	__typename: "game_server_nodes",
+	accepting_new_matches: boolean,
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?: number | undefined | null,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined | null,
 	build_id?: number | undefined | null,
@@ -261936,6 +268031,8 @@ export type GraphQLTypes = {
 	/** aggregate avg on columns */
 ["game_server_nodes_avg_fields"]: {
 	__typename: "game_server_nodes_avg_fields",
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?: number | undefined | null,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined | null,
 	build_id?: number | undefined | null,
@@ -261973,6 +268070,8 @@ export type GraphQLTypes = {
 		_and?: Array<GraphQLTypes["game_server_nodes_bool_exp"]> | undefined | null,
 	_not?: GraphQLTypes["game_server_nodes_bool_exp"] | undefined | null,
 	_or?: Array<GraphQLTypes["game_server_nodes_bool_exp"]> | undefined | null,
+	accepting_new_matches?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	available_dedicated_slot_count?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	available_server_count?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	build_id?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	cpu_cores_per_socket?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
@@ -262077,7 +268176,8 @@ export type GraphQLTypes = {
 };
 	/** input type for inserting data into table "game_server_nodes" */
 ["game_server_nodes_insert_input"]: {
-		build_id?: number | undefined | null,
+		accepting_new_matches?: boolean | undefined | null,
+	build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
 	cpu_frequency_info?: GraphQLTypes["jsonb"] | undefined | null,
 	cpu_governor_info?: GraphQLTypes["jsonb"] | undefined | null,
@@ -262130,6 +268230,8 @@ export type GraphQLTypes = {
 	/** aggregate max on columns */
 ["game_server_nodes_max_fields"]: {
 	__typename: "game_server_nodes_max_fields",
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?: number | undefined | null,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined | null,
 	build_id?: number | undefined | null,
@@ -262189,6 +268291,8 @@ export type GraphQLTypes = {
 	/** aggregate min on columns */
 ["game_server_nodes_min_fields"]: {
 	__typename: "game_server_nodes_min_fields",
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?: number | undefined | null,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined | null,
 	build_id?: number | undefined | null,
@@ -262267,7 +268371,9 @@ export type GraphQLTypes = {
 };
 	/** Ordering options when selecting data from "game_server_nodes". */
 ["game_server_nodes_order_by"]: {
-		available_server_count?: GraphQLTypes["order_by"] | undefined | null,
+		accepting_new_matches?: GraphQLTypes["order_by"] | undefined | null,
+	available_dedicated_slot_count?: GraphQLTypes["order_by"] | undefined | null,
+	available_server_count?: GraphQLTypes["order_by"] | undefined | null,
 	build_id?: GraphQLTypes["order_by"] | undefined | null,
 	cpu_cores_per_socket?: GraphQLTypes["order_by"] | undefined | null,
 	cpu_frequency_info?: GraphQLTypes["order_by"] | undefined | null,
@@ -262342,7 +268448,8 @@ export type GraphQLTypes = {
 ["game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns"]: game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "game_server_nodes" */
 ["game_server_nodes_set_input"]: {
-		build_id?: number | undefined | null,
+		accepting_new_matches?: boolean | undefined | null,
+	build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
 	cpu_frequency_info?: GraphQLTypes["jsonb"] | undefined | null,
 	cpu_governor_info?: GraphQLTypes["jsonb"] | undefined | null,
@@ -262389,6 +268496,8 @@ export type GraphQLTypes = {
 	/** aggregate stddev on columns */
 ["game_server_nodes_stddev_fields"]: {
 	__typename: "game_server_nodes_stddev_fields",
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?: number | undefined | null,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined | null,
 	build_id?: number | undefined | null,
@@ -262424,6 +268533,8 @@ export type GraphQLTypes = {
 	/** aggregate stddev_pop on columns */
 ["game_server_nodes_stddev_pop_fields"]: {
 	__typename: "game_server_nodes_stddev_pop_fields",
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?: number | undefined | null,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined | null,
 	build_id?: number | undefined | null,
@@ -262459,6 +268570,8 @@ export type GraphQLTypes = {
 	/** aggregate stddev_samp on columns */
 ["game_server_nodes_stddev_samp_fields"]: {
 	__typename: "game_server_nodes_stddev_samp_fields",
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?: number | undefined | null,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined | null,
 	build_id?: number | undefined | null,
@@ -262500,7 +268613,8 @@ export type GraphQLTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["game_server_nodes_stream_cursor_value_input"]: {
-		build_id?: number | undefined | null,
+		accepting_new_matches?: boolean | undefined | null,
+	build_id?: number | undefined | null,
 	cpu_cores_per_socket?: number | undefined | null,
 	cpu_frequency_info?: GraphQLTypes["jsonb"] | undefined | null,
 	cpu_governor_info?: GraphQLTypes["jsonb"] | undefined | null,
@@ -262547,6 +268661,8 @@ export type GraphQLTypes = {
 	/** aggregate sum on columns */
 ["game_server_nodes_sum_fields"]: {
 	__typename: "game_server_nodes_sum_fields",
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?: number | undefined | null,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined | null,
 	build_id?: number | undefined | null,
@@ -262602,6 +268718,8 @@ export type GraphQLTypes = {
 	/** aggregate var_pop on columns */
 ["game_server_nodes_var_pop_fields"]: {
 	__typename: "game_server_nodes_var_pop_fields",
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?: number | undefined | null,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined | null,
 	build_id?: number | undefined | null,
@@ -262637,6 +268755,8 @@ export type GraphQLTypes = {
 	/** aggregate var_samp on columns */
 ["game_server_nodes_var_samp_fields"]: {
 	__typename: "game_server_nodes_var_samp_fields",
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?: number | undefined | null,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined | null,
 	build_id?: number | undefined | null,
@@ -262672,6 +268792,8 @@ export type GraphQLTypes = {
 	/** aggregate variance on columns */
 ["game_server_nodes_variance_fields"]: {
 	__typename: "game_server_nodes_variance_fields",
+	/** A computed field, executes function "available_dedicated_slot_count" */
+	available_dedicated_slot_count?: number | undefined | null,
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined | null,
 	build_id?: number | undefined | null,
@@ -273578,6 +279700,8 @@ export type GraphQLTypes = {
 	cancelClipRender?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Cancel an entire match_map's render queue + tear down the pod. */
 	cancelClipRenderBatch?: GraphQLTypes["SuccessOutput"] | undefined | null,
+	/** Cancel a dedicated server move that has not reached the new node yet */
+	cancelDedicatedServerMove?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** cancelMatch */
 	cancelMatch?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Request cancellation of the in-progress ELO recompute (admin only). Stops after the current match. */
@@ -273863,6 +279987,10 @@ export type GraphQLTypes = {
 	delete_e_scrim_request_statuses?: GraphQLTypes["e_scrim_request_statuses_mutation_response"] | undefined | null,
 	/** delete single row from the table: "e_scrim_request_statuses" */
 	delete_e_scrim_request_statuses_by_pk?: GraphQLTypes["e_scrim_request_statuses"] | undefined | null,
+	/** delete data from the table: "e_server_migration_statuses" */
+	delete_e_server_migration_statuses?: GraphQLTypes["e_server_migration_statuses_mutation_response"] | undefined | null,
+	/** delete single row from the table: "e_server_migration_statuses" */
+	delete_e_server_migration_statuses_by_pk?: GraphQLTypes["e_server_migration_statuses"] | undefined | null,
 	/** delete data from the table: "e_server_types" */
 	delete_e_server_types?: GraphQLTypes["e_server_types_mutation_response"] | undefined | null,
 	/** delete single row from the table: "e_server_types" */
@@ -274259,10 +280387,26 @@ export type GraphQLTypes = {
 	delete_seasons?: GraphQLTypes["seasons_mutation_response"] | undefined | null,
 	/** delete single row from the table: "seasons" */
 	delete_seasons_by_pk?: GraphQLTypes["seasons"] | undefined | null,
+	/** delete data from the table: "server_access_events" */
+	delete_server_access_events?: GraphQLTypes["server_access_events_mutation_response"] | undefined | null,
+	/** delete single row from the table: "server_access_events" */
+	delete_server_access_events_by_pk?: GraphQLTypes["server_access_events"] | undefined | null,
+	/** delete data from the table: "server_access_players" */
+	delete_server_access_players?: GraphQLTypes["server_access_players_mutation_response"] | undefined | null,
+	/** delete single row from the table: "server_access_players" */
+	delete_server_access_players_by_pk?: GraphQLTypes["server_access_players"] | undefined | null,
 	/** delete data from the table: "server_map_rotation" */
 	delete_server_map_rotation?: GraphQLTypes["server_map_rotation_mutation_response"] | undefined | null,
 	/** delete single row from the table: "server_map_rotation" */
 	delete_server_map_rotation_by_pk?: GraphQLTypes["server_map_rotation"] | undefined | null,
+	/** delete data from the table: "server_migrations" */
+	delete_server_migrations?: GraphQLTypes["server_migrations_mutation_response"] | undefined | null,
+	/** delete single row from the table: "server_migrations" */
+	delete_server_migrations_by_pk?: GraphQLTypes["server_migrations"] | undefined | null,
+	/** delete data from the table: "server_player_sessions" */
+	delete_server_player_sessions?: GraphQLTypes["server_player_sessions_mutation_response"] | undefined | null,
+	/** delete single row from the table: "server_player_sessions" */
+	delete_server_player_sessions_by_pk?: GraphQLTypes["server_player_sessions"] | undefined | null,
 	/** delete data from the table: "server_plugins" */
 	delete_server_plugins?: GraphQLTypes["server_plugins_mutation_response"] | undefined | null,
 	/** delete single row from the table: "server_plugins" */
@@ -274271,6 +280415,10 @@ export type GraphQLTypes = {
 	delete_server_regions?: GraphQLTypes["server_regions_mutation_response"] | undefined | null,
 	/** delete single row from the table: "server_regions" */
 	delete_server_regions_by_pk?: GraphQLTypes["server_regions"] | undefined | null,
+	/** delete data from the table: "server_rosters" */
+	delete_server_rosters?: GraphQLTypes["server_rosters_mutation_response"] | undefined | null,
+	/** delete single row from the table: "server_rosters" */
+	delete_server_rosters_by_pk?: GraphQLTypes["server_rosters"] | undefined | null,
 	/** delete data from the table: "servers" */
 	delete_servers?: GraphQLTypes["servers_mutation_response"] | undefined | null,
 	/** delete single row from the table: "servers" */
@@ -274724,6 +280872,10 @@ export type GraphQLTypes = {
 	insert_e_scrim_request_statuses?: GraphQLTypes["e_scrim_request_statuses_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "e_scrim_request_statuses" */
 	insert_e_scrim_request_statuses_one?: GraphQLTypes["e_scrim_request_statuses"] | undefined | null,
+	/** insert data into the table: "e_server_migration_statuses" */
+	insert_e_server_migration_statuses?: GraphQLTypes["e_server_migration_statuses_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "e_server_migration_statuses" */
+	insert_e_server_migration_statuses_one?: GraphQLTypes["e_server_migration_statuses"] | undefined | null,
 	/** insert data into the table: "e_server_types" */
 	insert_e_server_types?: GraphQLTypes["e_server_types_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "e_server_types" */
@@ -275128,10 +281280,26 @@ export type GraphQLTypes = {
 	insert_seasons?: GraphQLTypes["seasons_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "seasons" */
 	insert_seasons_one?: GraphQLTypes["seasons"] | undefined | null,
+	/** insert data into the table: "server_access_events" */
+	insert_server_access_events?: GraphQLTypes["server_access_events_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "server_access_events" */
+	insert_server_access_events_one?: GraphQLTypes["server_access_events"] | undefined | null,
+	/** insert data into the table: "server_access_players" */
+	insert_server_access_players?: GraphQLTypes["server_access_players_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "server_access_players" */
+	insert_server_access_players_one?: GraphQLTypes["server_access_players"] | undefined | null,
 	/** insert data into the table: "server_map_rotation" */
 	insert_server_map_rotation?: GraphQLTypes["server_map_rotation_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "server_map_rotation" */
 	insert_server_map_rotation_one?: GraphQLTypes["server_map_rotation"] | undefined | null,
+	/** insert data into the table: "server_migrations" */
+	insert_server_migrations?: GraphQLTypes["server_migrations_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "server_migrations" */
+	insert_server_migrations_one?: GraphQLTypes["server_migrations"] | undefined | null,
+	/** insert data into the table: "server_player_sessions" */
+	insert_server_player_sessions?: GraphQLTypes["server_player_sessions_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "server_player_sessions" */
+	insert_server_player_sessions_one?: GraphQLTypes["server_player_sessions"] | undefined | null,
 	/** insert data into the table: "server_plugins" */
 	insert_server_plugins?: GraphQLTypes["server_plugins_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "server_plugins" */
@@ -275140,6 +281308,10 @@ export type GraphQLTypes = {
 	insert_server_regions?: GraphQLTypes["server_regions_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "server_regions" */
 	insert_server_regions_one?: GraphQLTypes["server_regions"] | undefined | null,
+	/** insert data into the table: "server_rosters" */
+	insert_server_rosters?: GraphQLTypes["server_rosters_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "server_rosters" */
+	insert_server_rosters_one?: GraphQLTypes["server_rosters"] | undefined | null,
 	/** insert data into the table: "servers" */
 	insert_servers?: GraphQLTypes["servers_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "servers" */
@@ -275387,6 +281559,8 @@ export type GraphQLTypes = {
 	loadUtilityPlaybookIntoSession?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** logout */
 	logout?: GraphQLTypes["SuccessOutput"] | undefined | null,
+	/** Move a dedicated server and its files to another game server node */
+	moveDedicatedServerToNode?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Move file or directory on game server */
 	moveServerItem?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Return the latest S3 orphan-scan report (admin only). */
@@ -275499,10 +281673,14 @@ export type GraphQLTypes = {
 	setMatchWinner?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Publish or unpublish a news post. Caller role is verified against public.post_news_role. */
 	setNewsPostStatus?: GraphQLTypes["NewsPost"] | undefined | null,
+	/** Restrict who may connect to a community server */
+	setServerAccess?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Replace a dedicated server's map rotation and restart it */
 	setServerMapRotation?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Replace a dedicated server's per-server plugin overrides and restart it */
 	setServerPlugins?: GraphQLTypes["SuccessOutput"] | undefined | null,
+	/** Save a community server's rotation, plugins and access, restarting it at most once */
+	setServerSettings?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Map a tournament placement to an award */
 	setTournamentAward?: GraphQLTypes["TournamentAward"] | undefined | null,
 	setUtilityPracticeAccess?: GraphQLTypes["SuccessOutput"] | undefined | null,
@@ -275892,6 +282070,12 @@ export type GraphQLTypes = {
 	update_e_scrim_request_statuses_by_pk?: GraphQLTypes["e_scrim_request_statuses"] | undefined | null,
 	/** update multiples rows of table: "e_scrim_request_statuses" */
 	update_e_scrim_request_statuses_many?: Array<GraphQLTypes["e_scrim_request_statuses_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "e_server_migration_statuses" */
+	update_e_server_migration_statuses?: GraphQLTypes["e_server_migration_statuses_mutation_response"] | undefined | null,
+	/** update single row of the table: "e_server_migration_statuses" */
+	update_e_server_migration_statuses_by_pk?: GraphQLTypes["e_server_migration_statuses"] | undefined | null,
+	/** update multiples rows of table: "e_server_migration_statuses" */
+	update_e_server_migration_statuses_many?: Array<GraphQLTypes["e_server_migration_statuses_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "e_server_types" */
 	update_e_server_types?: GraphQLTypes["e_server_types_mutation_response"] | undefined | null,
 	/** update single row of the table: "e_server_types" */
@@ -276490,12 +282674,36 @@ export type GraphQLTypes = {
 	update_seasons_by_pk?: GraphQLTypes["seasons"] | undefined | null,
 	/** update multiples rows of table: "seasons" */
 	update_seasons_many?: Array<GraphQLTypes["seasons_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "server_access_events" */
+	update_server_access_events?: GraphQLTypes["server_access_events_mutation_response"] | undefined | null,
+	/** update single row of the table: "server_access_events" */
+	update_server_access_events_by_pk?: GraphQLTypes["server_access_events"] | undefined | null,
+	/** update multiples rows of table: "server_access_events" */
+	update_server_access_events_many?: Array<GraphQLTypes["server_access_events_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "server_access_players" */
+	update_server_access_players?: GraphQLTypes["server_access_players_mutation_response"] | undefined | null,
+	/** update single row of the table: "server_access_players" */
+	update_server_access_players_by_pk?: GraphQLTypes["server_access_players"] | undefined | null,
+	/** update multiples rows of table: "server_access_players" */
+	update_server_access_players_many?: Array<GraphQLTypes["server_access_players_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "server_map_rotation" */
 	update_server_map_rotation?: GraphQLTypes["server_map_rotation_mutation_response"] | undefined | null,
 	/** update single row of the table: "server_map_rotation" */
 	update_server_map_rotation_by_pk?: GraphQLTypes["server_map_rotation"] | undefined | null,
 	/** update multiples rows of table: "server_map_rotation" */
 	update_server_map_rotation_many?: Array<GraphQLTypes["server_map_rotation_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "server_migrations" */
+	update_server_migrations?: GraphQLTypes["server_migrations_mutation_response"] | undefined | null,
+	/** update single row of the table: "server_migrations" */
+	update_server_migrations_by_pk?: GraphQLTypes["server_migrations"] | undefined | null,
+	/** update multiples rows of table: "server_migrations" */
+	update_server_migrations_many?: Array<GraphQLTypes["server_migrations_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "server_player_sessions" */
+	update_server_player_sessions?: GraphQLTypes["server_player_sessions_mutation_response"] | undefined | null,
+	/** update single row of the table: "server_player_sessions" */
+	update_server_player_sessions_by_pk?: GraphQLTypes["server_player_sessions"] | undefined | null,
+	/** update multiples rows of table: "server_player_sessions" */
+	update_server_player_sessions_many?: Array<GraphQLTypes["server_player_sessions_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "server_plugins" */
 	update_server_plugins?: GraphQLTypes["server_plugins_mutation_response"] | undefined | null,
 	/** update single row of the table: "server_plugins" */
@@ -276508,6 +282716,12 @@ export type GraphQLTypes = {
 	update_server_regions_by_pk?: GraphQLTypes["server_regions"] | undefined | null,
 	/** update multiples rows of table: "server_regions" */
 	update_server_regions_many?: Array<GraphQLTypes["server_regions_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "server_rosters" */
+	update_server_rosters?: GraphQLTypes["server_rosters_mutation_response"] | undefined | null,
+	/** update single row of the table: "server_rosters" */
+	update_server_rosters_by_pk?: GraphQLTypes["server_rosters"] | undefined | null,
+	/** update multiples rows of table: "server_rosters" */
+	update_server_rosters_many?: Array<GraphQLTypes["server_rosters_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "servers" */
 	update_servers?: GraphQLTypes["servers_mutation_response"] | undefined | null,
 	/** update single row of the table: "servers" */
@@ -292761,6 +298975,12 @@ export type GraphQLTypes = {
 	e_scrim_request_statuses_aggregate: GraphQLTypes["e_scrim_request_statuses_aggregate"],
 	/** fetch data from the table: "e_scrim_request_statuses" using primary key columns */
 	e_scrim_request_statuses_by_pk?: GraphQLTypes["e_scrim_request_statuses"] | undefined | null,
+	/** fetch data from the table: "e_server_migration_statuses" */
+	e_server_migration_statuses: Array<GraphQLTypes["e_server_migration_statuses"]>,
+	/** fetch aggregated fields from the table: "e_server_migration_statuses" */
+	e_server_migration_statuses_aggregate: GraphQLTypes["e_server_migration_statuses_aggregate"],
+	/** fetch data from the table: "e_server_migration_statuses" using primary key columns */
+	e_server_migration_statuses_by_pk?: GraphQLTypes["e_server_migration_statuses"] | undefined | null,
 	/** fetch data from the table: "e_server_types" */
 	e_server_types: Array<GraphQLTypes["e_server_types"]>,
 	/** fetch aggregated fields from the table: "e_server_types" */
@@ -293010,12 +299230,15 @@ export type GraphQLTypes = {
 	/** Get index usage statistics */
 	getIndexStats: Array<GraphQLTypes["IndexStat"] | undefined | null>,
 	getNodeStats: GraphQLTypes["NodeStats"],
+	getPlayerCommunityStats?: GraphQLTypes["PlayerCommunityStats"] | undefined | null,
 	/** Get detailed query analysis with EXPLAIN plan */
 	getQueryDetail?: GraphQLTypes["QueryDetail"] | undefined | null,
 	/** Get enhanced query performance statistics */
 	getQueryStats: Array<GraphQLTypes["QueryStat"] | undefined | null>,
 	/** Get available database schemas */
 	getSchemas: string,
+	getServerCommunityStats?: GraphQLTypes["ServerCommunityStats"] | undefined | null,
+	getServerLeaderboard: GraphQLTypes["ServerLeaderboard"],
 	getServiceStats: Array<GraphQLTypes["PodStats"] | undefined | null>,
 	/** Get database storage statistics and reclaimable space */
 	getStorageStats: GraphQLTypes["StorageStats"],
@@ -293445,24 +299668,58 @@ export type GraphQLTypes = {
 	seasons_aggregate: GraphQLTypes["seasons_aggregate"],
 	/** fetch data from the table: "seasons" using primary key columns */
 	seasons_by_pk?: GraphQLTypes["seasons"] | undefined | null,
+	/** fetch data from the table: "server_access_events" */
+	server_access_events: Array<GraphQLTypes["server_access_events"]>,
+	/** fetch aggregated fields from the table: "server_access_events" */
+	server_access_events_aggregate: GraphQLTypes["server_access_events_aggregate"],
+	/** fetch data from the table: "server_access_events" using primary key columns */
+	server_access_events_by_pk?: GraphQLTypes["server_access_events"] | undefined | null,
+	/** fetch data from the table: "server_access_players" */
+	server_access_players: Array<GraphQLTypes["server_access_players"]>,
+	/** fetch aggregated fields from the table: "server_access_players" */
+	server_access_players_aggregate: GraphQLTypes["server_access_players_aggregate"],
+	/** fetch data from the table: "server_access_players" using primary key columns */
+	server_access_players_by_pk?: GraphQLTypes["server_access_players"] | undefined | null,
 	/** fetch data from the table: "server_map_rotation" */
 	server_map_rotation: Array<GraphQLTypes["server_map_rotation"]>,
 	/** fetch aggregated fields from the table: "server_map_rotation" */
 	server_map_rotation_aggregate: GraphQLTypes["server_map_rotation_aggregate"],
 	/** fetch data from the table: "server_map_rotation" using primary key columns */
 	server_map_rotation_by_pk?: GraphQLTypes["server_map_rotation"] | undefined | null,
+	/** fetch data from the table: "server_migrations" */
+	server_migrations: Array<GraphQLTypes["server_migrations"]>,
+	/** fetch aggregated fields from the table: "server_migrations" */
+	server_migrations_aggregate: GraphQLTypes["server_migrations_aggregate"],
+	/** fetch data from the table: "server_migrations" using primary key columns */
+	server_migrations_by_pk?: GraphQLTypes["server_migrations"] | undefined | null,
+	/** fetch data from the table: "server_player_sessions" */
+	server_player_sessions: Array<GraphQLTypes["server_player_sessions"]>,
+	/** fetch aggregated fields from the table: "server_player_sessions" */
+	server_player_sessions_aggregate: GraphQLTypes["server_player_sessions_aggregate"],
+	/** fetch data from the table: "server_player_sessions" using primary key columns */
+	server_player_sessions_by_pk?: GraphQLTypes["server_player_sessions"] | undefined | null,
 	/** fetch data from the table: "server_plugins" */
 	server_plugins: Array<GraphQLTypes["server_plugins"]>,
 	/** fetch aggregated fields from the table: "server_plugins" */
 	server_plugins_aggregate: GraphQLTypes["server_plugins_aggregate"],
 	/** fetch data from the table: "server_plugins" using primary key columns */
 	server_plugins_by_pk?: GraphQLTypes["server_plugins"] | undefined | null,
+	/** fetch data from the table: "server_recent_players" */
+	server_recent_players: Array<GraphQLTypes["server_recent_players"]>,
+	/** fetch aggregated fields from the table: "server_recent_players" */
+	server_recent_players_aggregate: GraphQLTypes["server_recent_players_aggregate"],
 	/** fetch data from the table: "server_regions" */
 	server_regions: Array<GraphQLTypes["server_regions"]>,
 	/** fetch aggregated fields from the table: "server_regions" */
 	server_regions_aggregate: GraphQLTypes["server_regions_aggregate"],
 	/** fetch data from the table: "server_regions" using primary key columns */
 	server_regions_by_pk?: GraphQLTypes["server_regions"] | undefined | null,
+	/** fetch data from the table: "server_rosters" */
+	server_rosters: Array<GraphQLTypes["server_rosters"]>,
+	/** fetch aggregated fields from the table: "server_rosters" */
+	server_rosters_aggregate: GraphQLTypes["server_rosters_aggregate"],
+	/** fetch data from the table: "server_rosters" using primary key columns */
+	server_rosters_by_pk?: GraphQLTypes["server_rosters"] | undefined | null,
 	/** An array relationship */
 	servers: Array<GraphQLTypes["servers"]>,
 	/** An aggregate relationship */
@@ -293869,10 +300126,6 @@ export type GraphQLTypes = {
 	v_player_multi_kills: Array<GraphQLTypes["v_player_multi_kills"]>,
 	/** fetch aggregated fields from the table: "v_player_multi_kills" */
 	v_player_multi_kills_aggregate: GraphQLTypes["v_player_multi_kills_aggregate"],
-	/** fetch data from the table: "v_player_queue_partners" */
-	v_player_queue_partners: Array<GraphQLTypes["v_player_queue_partners"]>,
-	/** fetch aggregated fields from the table: "v_player_queue_partners" */
-	v_player_queue_partners_aggregate: GraphQLTypes["v_player_queue_partners_aggregate"],
 	/** fetch data from the table: "v_player_weapon_damage" */
 	v_player_weapon_damage: Array<GraphQLTypes["v_player_weapon_damage"]>,
 	/** fetch aggregated fields from the table: "v_player_weapon_damage" */
@@ -294228,6 +300481,376 @@ export type GraphQLTypes = {
 	__typename: "seasons_variance_fields",
 	number?: number | undefined | null
 };
+	/** columns and relationships of "server_access_events" */
+["server_access_events"]: {
+	__typename: "server_access_events",
+	/** An object relationship */
+	event: GraphQLTypes["events"],
+	event_id: GraphQLTypes["uuid"],
+	/** An object relationship */
+	server: GraphQLTypes["servers"],
+	server_id: GraphQLTypes["uuid"]
+};
+	/** aggregated selection of "server_access_events" */
+["server_access_events_aggregate"]: {
+	__typename: "server_access_events_aggregate",
+	aggregate?: GraphQLTypes["server_access_events_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["server_access_events"]>
+};
+	["server_access_events_aggregate_bool_exp"]: {
+		count?: GraphQLTypes["server_access_events_aggregate_bool_exp_count"] | undefined | null
+};
+	["server_access_events_aggregate_bool_exp_count"]: {
+		arguments?: Array<GraphQLTypes["server_access_events_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: GraphQLTypes["server_access_events_bool_exp"] | undefined | null,
+	predicate: GraphQLTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "server_access_events" */
+["server_access_events_aggregate_fields"]: {
+	__typename: "server_access_events_aggregate_fields",
+	count: number,
+	max?: GraphQLTypes["server_access_events_max_fields"] | undefined | null,
+	min?: GraphQLTypes["server_access_events_min_fields"] | undefined | null
+};
+	/** order by aggregate values of table "server_access_events" */
+["server_access_events_aggregate_order_by"]: {
+		count?: GraphQLTypes["order_by"] | undefined | null,
+	max?: GraphQLTypes["server_access_events_max_order_by"] | undefined | null,
+	min?: GraphQLTypes["server_access_events_min_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "server_access_events" */
+["server_access_events_arr_rel_insert_input"]: {
+		data: Array<GraphQLTypes["server_access_events_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: GraphQLTypes["server_access_events_on_conflict"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "server_access_events". All fields are combined with a logical 'AND'. */
+["server_access_events_bool_exp"]: {
+		_and?: Array<GraphQLTypes["server_access_events_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["server_access_events_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["server_access_events_bool_exp"]> | undefined | null,
+	event?: GraphQLTypes["events_bool_exp"] | undefined | null,
+	event_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	server?: GraphQLTypes["servers_bool_exp"] | undefined | null,
+	server_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "server_access_events" */
+["server_access_events_constraint"]: server_access_events_constraint;
+	/** input type for inserting data into table "server_access_events" */
+["server_access_events_insert_input"]: {
+		event?: GraphQLTypes["events_obj_rel_insert_input"] | undefined | null,
+	event_id?: GraphQLTypes["uuid"] | undefined | null,
+	server?: GraphQLTypes["servers_obj_rel_insert_input"] | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** aggregate max on columns */
+["server_access_events_max_fields"]: {
+	__typename: "server_access_events_max_fields",
+	event_id?: GraphQLTypes["uuid"] | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** order by max() on columns of table "server_access_events" */
+["server_access_events_max_order_by"]: {
+		event_id?: GraphQLTypes["order_by"] | undefined | null,
+	server_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["server_access_events_min_fields"]: {
+	__typename: "server_access_events_min_fields",
+	event_id?: GraphQLTypes["uuid"] | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** order by min() on columns of table "server_access_events" */
+["server_access_events_min_order_by"]: {
+		event_id?: GraphQLTypes["order_by"] | undefined | null,
+	server_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "server_access_events" */
+["server_access_events_mutation_response"]: {
+	__typename: "server_access_events_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["server_access_events"]>
+};
+	/** on_conflict condition type for table "server_access_events" */
+["server_access_events_on_conflict"]: {
+		constraint: GraphQLTypes["server_access_events_constraint"],
+	update_columns: Array<GraphQLTypes["server_access_events_update_column"]>,
+	where?: GraphQLTypes["server_access_events_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "server_access_events". */
+["server_access_events_order_by"]: {
+		event?: GraphQLTypes["events_order_by"] | undefined | null,
+	event_id?: GraphQLTypes["order_by"] | undefined | null,
+	server?: GraphQLTypes["servers_order_by"] | undefined | null,
+	server_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: server_access_events */
+["server_access_events_pk_columns_input"]: {
+		event_id: GraphQLTypes["uuid"],
+	server_id: GraphQLTypes["uuid"]
+};
+	/** select columns of table "server_access_events" */
+["server_access_events_select_column"]: server_access_events_select_column;
+	/** input type for updating data in table "server_access_events" */
+["server_access_events_set_input"]: {
+		event_id?: GraphQLTypes["uuid"] | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** Streaming cursor of the table "server_access_events" */
+["server_access_events_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["server_access_events_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["server_access_events_stream_cursor_value_input"]: {
+		event_id?: GraphQLTypes["uuid"] | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** update columns of table "server_access_events" */
+["server_access_events_update_column"]: server_access_events_update_column;
+	["server_access_events_updates"]: {
+		/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["server_access_events_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["server_access_events_bool_exp"]
+};
+	/** columns and relationships of "server_access_players" */
+["server_access_players"]: {
+	__typename: "server_access_players",
+	/** An object relationship */
+	player: GraphQLTypes["players"],
+	/** An object relationship */
+	server: GraphQLTypes["servers"],
+	server_id: GraphQLTypes["uuid"],
+	steam_id: GraphQLTypes["bigint"]
+};
+	/** aggregated selection of "server_access_players" */
+["server_access_players_aggregate"]: {
+	__typename: "server_access_players_aggregate",
+	aggregate?: GraphQLTypes["server_access_players_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["server_access_players"]>
+};
+	["server_access_players_aggregate_bool_exp"]: {
+		count?: GraphQLTypes["server_access_players_aggregate_bool_exp_count"] | undefined | null
+};
+	["server_access_players_aggregate_bool_exp_count"]: {
+		arguments?: Array<GraphQLTypes["server_access_players_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: GraphQLTypes["server_access_players_bool_exp"] | undefined | null,
+	predicate: GraphQLTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "server_access_players" */
+["server_access_players_aggregate_fields"]: {
+	__typename: "server_access_players_aggregate_fields",
+	avg?: GraphQLTypes["server_access_players_avg_fields"] | undefined | null,
+	count: number,
+	max?: GraphQLTypes["server_access_players_max_fields"] | undefined | null,
+	min?: GraphQLTypes["server_access_players_min_fields"] | undefined | null,
+	stddev?: GraphQLTypes["server_access_players_stddev_fields"] | undefined | null,
+	stddev_pop?: GraphQLTypes["server_access_players_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: GraphQLTypes["server_access_players_stddev_samp_fields"] | undefined | null,
+	sum?: GraphQLTypes["server_access_players_sum_fields"] | undefined | null,
+	var_pop?: GraphQLTypes["server_access_players_var_pop_fields"] | undefined | null,
+	var_samp?: GraphQLTypes["server_access_players_var_samp_fields"] | undefined | null,
+	variance?: GraphQLTypes["server_access_players_variance_fields"] | undefined | null
+};
+	/** order by aggregate values of table "server_access_players" */
+["server_access_players_aggregate_order_by"]: {
+		avg?: GraphQLTypes["server_access_players_avg_order_by"] | undefined | null,
+	count?: GraphQLTypes["order_by"] | undefined | null,
+	max?: GraphQLTypes["server_access_players_max_order_by"] | undefined | null,
+	min?: GraphQLTypes["server_access_players_min_order_by"] | undefined | null,
+	stddev?: GraphQLTypes["server_access_players_stddev_order_by"] | undefined | null,
+	stddev_pop?: GraphQLTypes["server_access_players_stddev_pop_order_by"] | undefined | null,
+	stddev_samp?: GraphQLTypes["server_access_players_stddev_samp_order_by"] | undefined | null,
+	sum?: GraphQLTypes["server_access_players_sum_order_by"] | undefined | null,
+	var_pop?: GraphQLTypes["server_access_players_var_pop_order_by"] | undefined | null,
+	var_samp?: GraphQLTypes["server_access_players_var_samp_order_by"] | undefined | null,
+	variance?: GraphQLTypes["server_access_players_variance_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "server_access_players" */
+["server_access_players_arr_rel_insert_input"]: {
+		data: Array<GraphQLTypes["server_access_players_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: GraphQLTypes["server_access_players_on_conflict"] | undefined | null
+};
+	/** aggregate avg on columns */
+["server_access_players_avg_fields"]: {
+	__typename: "server_access_players_avg_fields",
+	steam_id?: number | undefined | null
+};
+	/** order by avg() on columns of table "server_access_players" */
+["server_access_players_avg_order_by"]: {
+		steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "server_access_players". All fields are combined with a logical 'AND'. */
+["server_access_players_bool_exp"]: {
+		_and?: Array<GraphQLTypes["server_access_players_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["server_access_players_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["server_access_players_bool_exp"]> | undefined | null,
+	player?: GraphQLTypes["players_bool_exp"] | undefined | null,
+	server?: GraphQLTypes["servers_bool_exp"] | undefined | null,
+	server_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "server_access_players" */
+["server_access_players_constraint"]: server_access_players_constraint;
+	/** input type for incrementing numeric columns in table "server_access_players" */
+["server_access_players_inc_input"]: {
+		steam_id?: GraphQLTypes["bigint"] | undefined | null
+};
+	/** input type for inserting data into table "server_access_players" */
+["server_access_players_insert_input"]: {
+		player?: GraphQLTypes["players_obj_rel_insert_input"] | undefined | null,
+	server?: GraphQLTypes["servers_obj_rel_insert_input"] | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null
+};
+	/** aggregate max on columns */
+["server_access_players_max_fields"]: {
+	__typename: "server_access_players_max_fields",
+	server_id?: GraphQLTypes["uuid"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null
+};
+	/** order by max() on columns of table "server_access_players" */
+["server_access_players_max_order_by"]: {
+		server_id?: GraphQLTypes["order_by"] | undefined | null,
+	steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["server_access_players_min_fields"]: {
+	__typename: "server_access_players_min_fields",
+	server_id?: GraphQLTypes["uuid"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null
+};
+	/** order by min() on columns of table "server_access_players" */
+["server_access_players_min_order_by"]: {
+		server_id?: GraphQLTypes["order_by"] | undefined | null,
+	steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "server_access_players" */
+["server_access_players_mutation_response"]: {
+	__typename: "server_access_players_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["server_access_players"]>
+};
+	/** on_conflict condition type for table "server_access_players" */
+["server_access_players_on_conflict"]: {
+		constraint: GraphQLTypes["server_access_players_constraint"],
+	update_columns: Array<GraphQLTypes["server_access_players_update_column"]>,
+	where?: GraphQLTypes["server_access_players_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "server_access_players". */
+["server_access_players_order_by"]: {
+		player?: GraphQLTypes["players_order_by"] | undefined | null,
+	server?: GraphQLTypes["servers_order_by"] | undefined | null,
+	server_id?: GraphQLTypes["order_by"] | undefined | null,
+	steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: server_access_players */
+["server_access_players_pk_columns_input"]: {
+		server_id: GraphQLTypes["uuid"],
+	steam_id: GraphQLTypes["bigint"]
+};
+	/** select columns of table "server_access_players" */
+["server_access_players_select_column"]: server_access_players_select_column;
+	/** input type for updating data in table "server_access_players" */
+["server_access_players_set_input"]: {
+		server_id?: GraphQLTypes["uuid"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["server_access_players_stddev_fields"]: {
+	__typename: "server_access_players_stddev_fields",
+	steam_id?: number | undefined | null
+};
+	/** order by stddev() on columns of table "server_access_players" */
+["server_access_players_stddev_order_by"]: {
+		steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["server_access_players_stddev_pop_fields"]: {
+	__typename: "server_access_players_stddev_pop_fields",
+	steam_id?: number | undefined | null
+};
+	/** order by stddev_pop() on columns of table "server_access_players" */
+["server_access_players_stddev_pop_order_by"]: {
+		steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["server_access_players_stddev_samp_fields"]: {
+	__typename: "server_access_players_stddev_samp_fields",
+	steam_id?: number | undefined | null
+};
+	/** order by stddev_samp() on columns of table "server_access_players" */
+["server_access_players_stddev_samp_order_by"]: {
+		steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** Streaming cursor of the table "server_access_players" */
+["server_access_players_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["server_access_players_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["server_access_players_stream_cursor_value_input"]: {
+		server_id?: GraphQLTypes["uuid"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null
+};
+	/** aggregate sum on columns */
+["server_access_players_sum_fields"]: {
+	__typename: "server_access_players_sum_fields",
+	steam_id?: GraphQLTypes["bigint"] | undefined | null
+};
+	/** order by sum() on columns of table "server_access_players" */
+["server_access_players_sum_order_by"]: {
+		steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** update columns of table "server_access_players" */
+["server_access_players_update_column"]: server_access_players_update_column;
+	["server_access_players_updates"]: {
+		/** increments the numeric columns with given value of the filtered values */
+	_inc?: GraphQLTypes["server_access_players_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["server_access_players_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["server_access_players_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["server_access_players_var_pop_fields"]: {
+	__typename: "server_access_players_var_pop_fields",
+	steam_id?: number | undefined | null
+};
+	/** order by var_pop() on columns of table "server_access_players" */
+["server_access_players_var_pop_order_by"]: {
+		steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate var_samp on columns */
+["server_access_players_var_samp_fields"]: {
+	__typename: "server_access_players_var_samp_fields",
+	steam_id?: number | undefined | null
+};
+	/** order by var_samp() on columns of table "server_access_players" */
+["server_access_players_var_samp_order_by"]: {
+		steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate variance on columns */
+["server_access_players_variance_fields"]: {
+	__typename: "server_access_players_variance_fields",
+	steam_id?: number | undefined | null
+};
+	/** order by variance() on columns of table "server_access_players" */
+["server_access_players_variance_order_by"]: {
+		steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
 	/** columns and relationships of "server_map_rotation" */
 ["server_map_rotation"]: {
 	__typename: "server_map_rotation",
@@ -294470,6 +301093,898 @@ export type GraphQLTypes = {
 ["server_map_rotation_variance_order_by"]: {
 		position?: GraphQLTypes["order_by"] | undefined | null
 };
+	/** columns and relationships of "server_migrations" */
+["server_migrations"]: {
+	__typename: "server_migrations",
+	bytes_done: GraphQLTypes["bigint"],
+	bytes_total?: GraphQLTypes["bigint"] | undefined | null,
+	created_at: GraphQLTypes["timestamptz"],
+	/** An object relationship */
+	e_status: GraphQLTypes["e_server_migration_statuses"],
+	entries_total?: number | undefined | null,
+	error?: string | undefined | null,
+	finished_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	/** An object relationship */
+	from_game_server_node?: GraphQLTypes["game_server_nodes"] | undefined | null,
+	from_game_server_node_id?: string | undefined | null,
+	id: GraphQLTypes["uuid"],
+	/** An object relationship */
+	requested_by?: GraphQLTypes["players"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	/** An object relationship */
+	server: GraphQLTypes["servers"],
+	server_id: GraphQLTypes["uuid"],
+	started_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	status: GraphQLTypes["e_server_migration_statuses_enum"],
+	/** An object relationship */
+	to_game_server_node?: GraphQLTypes["game_server_nodes"] | undefined | null,
+	to_game_server_node_id?: string | undefined | null,
+	updated_at: GraphQLTypes["timestamptz"],
+	warnings: GraphQLTypes["jsonb"],
+	with_files: boolean
+};
+	/** aggregated selection of "server_migrations" */
+["server_migrations_aggregate"]: {
+	__typename: "server_migrations_aggregate",
+	aggregate?: GraphQLTypes["server_migrations_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["server_migrations"]>
+};
+	["server_migrations_aggregate_bool_exp"]: {
+		bool_and?: GraphQLTypes["server_migrations_aggregate_bool_exp_bool_and"] | undefined | null,
+	bool_or?: GraphQLTypes["server_migrations_aggregate_bool_exp_bool_or"] | undefined | null,
+	count?: GraphQLTypes["server_migrations_aggregate_bool_exp_count"] | undefined | null
+};
+	["server_migrations_aggregate_bool_exp_bool_and"]: {
+		arguments: GraphQLTypes["server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_and_arguments_columns"],
+	distinct?: boolean | undefined | null,
+	filter?: GraphQLTypes["server_migrations_bool_exp"] | undefined | null,
+	predicate: GraphQLTypes["Boolean_comparison_exp"]
+};
+	["server_migrations_aggregate_bool_exp_bool_or"]: {
+		arguments: GraphQLTypes["server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_or_arguments_columns"],
+	distinct?: boolean | undefined | null,
+	filter?: GraphQLTypes["server_migrations_bool_exp"] | undefined | null,
+	predicate: GraphQLTypes["Boolean_comparison_exp"]
+};
+	["server_migrations_aggregate_bool_exp_count"]: {
+		arguments?: Array<GraphQLTypes["server_migrations_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: GraphQLTypes["server_migrations_bool_exp"] | undefined | null,
+	predicate: GraphQLTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "server_migrations" */
+["server_migrations_aggregate_fields"]: {
+	__typename: "server_migrations_aggregate_fields",
+	avg?: GraphQLTypes["server_migrations_avg_fields"] | undefined | null,
+	count: number,
+	max?: GraphQLTypes["server_migrations_max_fields"] | undefined | null,
+	min?: GraphQLTypes["server_migrations_min_fields"] | undefined | null,
+	stddev?: GraphQLTypes["server_migrations_stddev_fields"] | undefined | null,
+	stddev_pop?: GraphQLTypes["server_migrations_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: GraphQLTypes["server_migrations_stddev_samp_fields"] | undefined | null,
+	sum?: GraphQLTypes["server_migrations_sum_fields"] | undefined | null,
+	var_pop?: GraphQLTypes["server_migrations_var_pop_fields"] | undefined | null,
+	var_samp?: GraphQLTypes["server_migrations_var_samp_fields"] | undefined | null,
+	variance?: GraphQLTypes["server_migrations_variance_fields"] | undefined | null
+};
+	/** order by aggregate values of table "server_migrations" */
+["server_migrations_aggregate_order_by"]: {
+		avg?: GraphQLTypes["server_migrations_avg_order_by"] | undefined | null,
+	count?: GraphQLTypes["order_by"] | undefined | null,
+	max?: GraphQLTypes["server_migrations_max_order_by"] | undefined | null,
+	min?: GraphQLTypes["server_migrations_min_order_by"] | undefined | null,
+	stddev?: GraphQLTypes["server_migrations_stddev_order_by"] | undefined | null,
+	stddev_pop?: GraphQLTypes["server_migrations_stddev_pop_order_by"] | undefined | null,
+	stddev_samp?: GraphQLTypes["server_migrations_stddev_samp_order_by"] | undefined | null,
+	sum?: GraphQLTypes["server_migrations_sum_order_by"] | undefined | null,
+	var_pop?: GraphQLTypes["server_migrations_var_pop_order_by"] | undefined | null,
+	var_samp?: GraphQLTypes["server_migrations_var_samp_order_by"] | undefined | null,
+	variance?: GraphQLTypes["server_migrations_variance_order_by"] | undefined | null
+};
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["server_migrations_append_input"]: {
+		warnings?: GraphQLTypes["jsonb"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "server_migrations" */
+["server_migrations_arr_rel_insert_input"]: {
+		data: Array<GraphQLTypes["server_migrations_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: GraphQLTypes["server_migrations_on_conflict"] | undefined | null
+};
+	/** aggregate avg on columns */
+["server_migrations_avg_fields"]: {
+	__typename: "server_migrations_avg_fields",
+	bytes_done?: number | undefined | null,
+	bytes_total?: number | undefined | null,
+	entries_total?: number | undefined | null,
+	requested_by_steam_id?: number | undefined | null
+};
+	/** order by avg() on columns of table "server_migrations" */
+["server_migrations_avg_order_by"]: {
+		bytes_done?: GraphQLTypes["order_by"] | undefined | null,
+	bytes_total?: GraphQLTypes["order_by"] | undefined | null,
+	entries_total?: GraphQLTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "server_migrations". All fields are combined with a logical 'AND'. */
+["server_migrations_bool_exp"]: {
+		_and?: Array<GraphQLTypes["server_migrations_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["server_migrations_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["server_migrations_bool_exp"]> | undefined | null,
+	bytes_done?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	bytes_total?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	e_status?: GraphQLTypes["e_server_migration_statuses_bool_exp"] | undefined | null,
+	entries_total?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	error?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	finished_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	from_game_server_node?: GraphQLTypes["game_server_nodes_bool_exp"] | undefined | null,
+	from_game_server_node_id?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	requested_by?: GraphQLTypes["players_bool_exp"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	server?: GraphQLTypes["servers_bool_exp"] | undefined | null,
+	server_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	started_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	status?: GraphQLTypes["e_server_migration_statuses_enum_comparison_exp"] | undefined | null,
+	to_game_server_node?: GraphQLTypes["game_server_nodes_bool_exp"] | undefined | null,
+	to_game_server_node_id?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	warnings?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
+	with_files?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "server_migrations" */
+["server_migrations_constraint"]: server_migrations_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["server_migrations_delete_at_path_input"]: {
+		warnings?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["server_migrations_delete_elem_input"]: {
+		warnings?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["server_migrations_delete_key_input"]: {
+		warnings?: string | undefined | null
+};
+	/** input type for incrementing numeric columns in table "server_migrations" */
+["server_migrations_inc_input"]: {
+		bytes_done?: GraphQLTypes["bigint"] | undefined | null,
+	bytes_total?: GraphQLTypes["bigint"] | undefined | null,
+	entries_total?: number | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["bigint"] | undefined | null
+};
+	/** input type for inserting data into table "server_migrations" */
+["server_migrations_insert_input"]: {
+		bytes_done?: GraphQLTypes["bigint"] | undefined | null,
+	bytes_total?: GraphQLTypes["bigint"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	e_status?: GraphQLTypes["e_server_migration_statuses_obj_rel_insert_input"] | undefined | null,
+	entries_total?: number | undefined | null,
+	error?: string | undefined | null,
+	finished_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	from_game_server_node?: GraphQLTypes["game_server_nodes_obj_rel_insert_input"] | undefined | null,
+	from_game_server_node_id?: string | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	requested_by?: GraphQLTypes["players_obj_rel_insert_input"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	server?: GraphQLTypes["servers_obj_rel_insert_input"] | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null,
+	started_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	status?: GraphQLTypes["e_server_migration_statuses_enum"] | undefined | null,
+	to_game_server_node?: GraphQLTypes["game_server_nodes_obj_rel_insert_input"] | undefined | null,
+	to_game_server_node_id?: string | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	warnings?: GraphQLTypes["jsonb"] | undefined | null,
+	with_files?: boolean | undefined | null
+};
+	/** aggregate max on columns */
+["server_migrations_max_fields"]: {
+	__typename: "server_migrations_max_fields",
+	bytes_done?: GraphQLTypes["bigint"] | undefined | null,
+	bytes_total?: GraphQLTypes["bigint"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	entries_total?: number | undefined | null,
+	error?: string | undefined | null,
+	finished_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	from_game_server_node_id?: string | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null,
+	started_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	to_game_server_node_id?: string | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** order by max() on columns of table "server_migrations" */
+["server_migrations_max_order_by"]: {
+		bytes_done?: GraphQLTypes["order_by"] | undefined | null,
+	bytes_total?: GraphQLTypes["order_by"] | undefined | null,
+	created_at?: GraphQLTypes["order_by"] | undefined | null,
+	entries_total?: GraphQLTypes["order_by"] | undefined | null,
+	error?: GraphQLTypes["order_by"] | undefined | null,
+	finished_at?: GraphQLTypes["order_by"] | undefined | null,
+	from_game_server_node_id?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	server_id?: GraphQLTypes["order_by"] | undefined | null,
+	started_at?: GraphQLTypes["order_by"] | undefined | null,
+	to_game_server_node_id?: GraphQLTypes["order_by"] | undefined | null,
+	updated_at?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["server_migrations_min_fields"]: {
+	__typename: "server_migrations_min_fields",
+	bytes_done?: GraphQLTypes["bigint"] | undefined | null,
+	bytes_total?: GraphQLTypes["bigint"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	entries_total?: number | undefined | null,
+	error?: string | undefined | null,
+	finished_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	from_game_server_node_id?: string | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null,
+	started_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	to_game_server_node_id?: string | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** order by min() on columns of table "server_migrations" */
+["server_migrations_min_order_by"]: {
+		bytes_done?: GraphQLTypes["order_by"] | undefined | null,
+	bytes_total?: GraphQLTypes["order_by"] | undefined | null,
+	created_at?: GraphQLTypes["order_by"] | undefined | null,
+	entries_total?: GraphQLTypes["order_by"] | undefined | null,
+	error?: GraphQLTypes["order_by"] | undefined | null,
+	finished_at?: GraphQLTypes["order_by"] | undefined | null,
+	from_game_server_node_id?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	server_id?: GraphQLTypes["order_by"] | undefined | null,
+	started_at?: GraphQLTypes["order_by"] | undefined | null,
+	to_game_server_node_id?: GraphQLTypes["order_by"] | undefined | null,
+	updated_at?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "server_migrations" */
+["server_migrations_mutation_response"]: {
+	__typename: "server_migrations_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["server_migrations"]>
+};
+	/** on_conflict condition type for table "server_migrations" */
+["server_migrations_on_conflict"]: {
+		constraint: GraphQLTypes["server_migrations_constraint"],
+	update_columns: Array<GraphQLTypes["server_migrations_update_column"]>,
+	where?: GraphQLTypes["server_migrations_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "server_migrations". */
+["server_migrations_order_by"]: {
+		bytes_done?: GraphQLTypes["order_by"] | undefined | null,
+	bytes_total?: GraphQLTypes["order_by"] | undefined | null,
+	created_at?: GraphQLTypes["order_by"] | undefined | null,
+	e_status?: GraphQLTypes["e_server_migration_statuses_order_by"] | undefined | null,
+	entries_total?: GraphQLTypes["order_by"] | undefined | null,
+	error?: GraphQLTypes["order_by"] | undefined | null,
+	finished_at?: GraphQLTypes["order_by"] | undefined | null,
+	from_game_server_node?: GraphQLTypes["game_server_nodes_order_by"] | undefined | null,
+	from_game_server_node_id?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
+	requested_by?: GraphQLTypes["players_order_by"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	server?: GraphQLTypes["servers_order_by"] | undefined | null,
+	server_id?: GraphQLTypes["order_by"] | undefined | null,
+	started_at?: GraphQLTypes["order_by"] | undefined | null,
+	status?: GraphQLTypes["order_by"] | undefined | null,
+	to_game_server_node?: GraphQLTypes["game_server_nodes_order_by"] | undefined | null,
+	to_game_server_node_id?: GraphQLTypes["order_by"] | undefined | null,
+	updated_at?: GraphQLTypes["order_by"] | undefined | null,
+	warnings?: GraphQLTypes["order_by"] | undefined | null,
+	with_files?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: server_migrations */
+["server_migrations_pk_columns_input"]: {
+		id: GraphQLTypes["uuid"]
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["server_migrations_prepend_input"]: {
+		warnings?: GraphQLTypes["jsonb"] | undefined | null
+};
+	/** select columns of table "server_migrations" */
+["server_migrations_select_column"]: server_migrations_select_column;
+	/** select "server_migrations_aggregate_bool_exp_bool_and_arguments_columns" columns of table "server_migrations" */
+["server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_and_arguments_columns"]: server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_and_arguments_columns;
+	/** select "server_migrations_aggregate_bool_exp_bool_or_arguments_columns" columns of table "server_migrations" */
+["server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_or_arguments_columns"]: server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_or_arguments_columns;
+	/** input type for updating data in table "server_migrations" */
+["server_migrations_set_input"]: {
+		bytes_done?: GraphQLTypes["bigint"] | undefined | null,
+	bytes_total?: GraphQLTypes["bigint"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	entries_total?: number | undefined | null,
+	error?: string | undefined | null,
+	finished_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	from_game_server_node_id?: string | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null,
+	started_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	status?: GraphQLTypes["e_server_migration_statuses_enum"] | undefined | null,
+	to_game_server_node_id?: string | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	warnings?: GraphQLTypes["jsonb"] | undefined | null,
+	with_files?: boolean | undefined | null
+};
+	/** aggregate stddev on columns */
+["server_migrations_stddev_fields"]: {
+	__typename: "server_migrations_stddev_fields",
+	bytes_done?: number | undefined | null,
+	bytes_total?: number | undefined | null,
+	entries_total?: number | undefined | null,
+	requested_by_steam_id?: number | undefined | null
+};
+	/** order by stddev() on columns of table "server_migrations" */
+["server_migrations_stddev_order_by"]: {
+		bytes_done?: GraphQLTypes["order_by"] | undefined | null,
+	bytes_total?: GraphQLTypes["order_by"] | undefined | null,
+	entries_total?: GraphQLTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["server_migrations_stddev_pop_fields"]: {
+	__typename: "server_migrations_stddev_pop_fields",
+	bytes_done?: number | undefined | null,
+	bytes_total?: number | undefined | null,
+	entries_total?: number | undefined | null,
+	requested_by_steam_id?: number | undefined | null
+};
+	/** order by stddev_pop() on columns of table "server_migrations" */
+["server_migrations_stddev_pop_order_by"]: {
+		bytes_done?: GraphQLTypes["order_by"] | undefined | null,
+	bytes_total?: GraphQLTypes["order_by"] | undefined | null,
+	entries_total?: GraphQLTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["server_migrations_stddev_samp_fields"]: {
+	__typename: "server_migrations_stddev_samp_fields",
+	bytes_done?: number | undefined | null,
+	bytes_total?: number | undefined | null,
+	entries_total?: number | undefined | null,
+	requested_by_steam_id?: number | undefined | null
+};
+	/** order by stddev_samp() on columns of table "server_migrations" */
+["server_migrations_stddev_samp_order_by"]: {
+		bytes_done?: GraphQLTypes["order_by"] | undefined | null,
+	bytes_total?: GraphQLTypes["order_by"] | undefined | null,
+	entries_total?: GraphQLTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** Streaming cursor of the table "server_migrations" */
+["server_migrations_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["server_migrations_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["server_migrations_stream_cursor_value_input"]: {
+		bytes_done?: GraphQLTypes["bigint"] | undefined | null,
+	bytes_total?: GraphQLTypes["bigint"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	entries_total?: number | undefined | null,
+	error?: string | undefined | null,
+	finished_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	from_game_server_node_id?: string | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null,
+	started_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	status?: GraphQLTypes["e_server_migration_statuses_enum"] | undefined | null,
+	to_game_server_node_id?: string | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	warnings?: GraphQLTypes["jsonb"] | undefined | null,
+	with_files?: boolean | undefined | null
+};
+	/** aggregate sum on columns */
+["server_migrations_sum_fields"]: {
+	__typename: "server_migrations_sum_fields",
+	bytes_done?: GraphQLTypes["bigint"] | undefined | null,
+	bytes_total?: GraphQLTypes["bigint"] | undefined | null,
+	entries_total?: number | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["bigint"] | undefined | null
+};
+	/** order by sum() on columns of table "server_migrations" */
+["server_migrations_sum_order_by"]: {
+		bytes_done?: GraphQLTypes["order_by"] | undefined | null,
+	bytes_total?: GraphQLTypes["order_by"] | undefined | null,
+	entries_total?: GraphQLTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** update columns of table "server_migrations" */
+["server_migrations_update_column"]: server_migrations_update_column;
+	["server_migrations_updates"]: {
+		/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: GraphQLTypes["server_migrations_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: GraphQLTypes["server_migrations_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: GraphQLTypes["server_migrations_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: GraphQLTypes["server_migrations_delete_key_input"] | undefined | null,
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: GraphQLTypes["server_migrations_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: GraphQLTypes["server_migrations_prepend_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["server_migrations_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["server_migrations_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["server_migrations_var_pop_fields"]: {
+	__typename: "server_migrations_var_pop_fields",
+	bytes_done?: number | undefined | null,
+	bytes_total?: number | undefined | null,
+	entries_total?: number | undefined | null,
+	requested_by_steam_id?: number | undefined | null
+};
+	/** order by var_pop() on columns of table "server_migrations" */
+["server_migrations_var_pop_order_by"]: {
+		bytes_done?: GraphQLTypes["order_by"] | undefined | null,
+	bytes_total?: GraphQLTypes["order_by"] | undefined | null,
+	entries_total?: GraphQLTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate var_samp on columns */
+["server_migrations_var_samp_fields"]: {
+	__typename: "server_migrations_var_samp_fields",
+	bytes_done?: number | undefined | null,
+	bytes_total?: number | undefined | null,
+	entries_total?: number | undefined | null,
+	requested_by_steam_id?: number | undefined | null
+};
+	/** order by var_samp() on columns of table "server_migrations" */
+["server_migrations_var_samp_order_by"]: {
+		bytes_done?: GraphQLTypes["order_by"] | undefined | null,
+	bytes_total?: GraphQLTypes["order_by"] | undefined | null,
+	entries_total?: GraphQLTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate variance on columns */
+["server_migrations_variance_fields"]: {
+	__typename: "server_migrations_variance_fields",
+	bytes_done?: number | undefined | null,
+	bytes_total?: number | undefined | null,
+	entries_total?: number | undefined | null,
+	requested_by_steam_id?: number | undefined | null
+};
+	/** order by variance() on columns of table "server_migrations" */
+["server_migrations_variance_order_by"]: {
+		bytes_done?: GraphQLTypes["order_by"] | undefined | null,
+	bytes_total?: GraphQLTypes["order_by"] | undefined | null,
+	entries_total?: GraphQLTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** columns and relationships of "server_player_sessions" */
+["server_player_sessions"]: {
+	__typename: "server_player_sessions",
+	conn?: string | undefined | null,
+	deaths: number,
+	deaths_conn: number,
+	ended_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	id: GraphQLTypes["bigint"],
+	ip?: GraphQLTypes["inet"] | undefined | null,
+	kills: number,
+	kills_conn: number,
+	name?: string | undefined | null,
+	/** An object relationship */
+	player?: GraphQLTypes["players"] | undefined | null,
+	player_steam_id: GraphQLTypes["bigint"],
+	/** An object relationship */
+	server: GraphQLTypes["servers"],
+	server_id: GraphQLTypes["uuid"],
+	settled_conns: Array<string>,
+	started_at: GraphQLTypes["timestamptz"]
+};
+	/** aggregated selection of "server_player_sessions" */
+["server_player_sessions_aggregate"]: {
+	__typename: "server_player_sessions_aggregate",
+	aggregate?: GraphQLTypes["server_player_sessions_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["server_player_sessions"]>
+};
+	["server_player_sessions_aggregate_bool_exp"]: {
+		count?: GraphQLTypes["server_player_sessions_aggregate_bool_exp_count"] | undefined | null
+};
+	["server_player_sessions_aggregate_bool_exp_count"]: {
+		arguments?: Array<GraphQLTypes["server_player_sessions_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: GraphQLTypes["server_player_sessions_bool_exp"] | undefined | null,
+	predicate: GraphQLTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "server_player_sessions" */
+["server_player_sessions_aggregate_fields"]: {
+	__typename: "server_player_sessions_aggregate_fields",
+	avg?: GraphQLTypes["server_player_sessions_avg_fields"] | undefined | null,
+	count: number,
+	max?: GraphQLTypes["server_player_sessions_max_fields"] | undefined | null,
+	min?: GraphQLTypes["server_player_sessions_min_fields"] | undefined | null,
+	stddev?: GraphQLTypes["server_player_sessions_stddev_fields"] | undefined | null,
+	stddev_pop?: GraphQLTypes["server_player_sessions_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: GraphQLTypes["server_player_sessions_stddev_samp_fields"] | undefined | null,
+	sum?: GraphQLTypes["server_player_sessions_sum_fields"] | undefined | null,
+	var_pop?: GraphQLTypes["server_player_sessions_var_pop_fields"] | undefined | null,
+	var_samp?: GraphQLTypes["server_player_sessions_var_samp_fields"] | undefined | null,
+	variance?: GraphQLTypes["server_player_sessions_variance_fields"] | undefined | null
+};
+	/** order by aggregate values of table "server_player_sessions" */
+["server_player_sessions_aggregate_order_by"]: {
+		avg?: GraphQLTypes["server_player_sessions_avg_order_by"] | undefined | null,
+	count?: GraphQLTypes["order_by"] | undefined | null,
+	max?: GraphQLTypes["server_player_sessions_max_order_by"] | undefined | null,
+	min?: GraphQLTypes["server_player_sessions_min_order_by"] | undefined | null,
+	stddev?: GraphQLTypes["server_player_sessions_stddev_order_by"] | undefined | null,
+	stddev_pop?: GraphQLTypes["server_player_sessions_stddev_pop_order_by"] | undefined | null,
+	stddev_samp?: GraphQLTypes["server_player_sessions_stddev_samp_order_by"] | undefined | null,
+	sum?: GraphQLTypes["server_player_sessions_sum_order_by"] | undefined | null,
+	var_pop?: GraphQLTypes["server_player_sessions_var_pop_order_by"] | undefined | null,
+	var_samp?: GraphQLTypes["server_player_sessions_var_samp_order_by"] | undefined | null,
+	variance?: GraphQLTypes["server_player_sessions_variance_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "server_player_sessions" */
+["server_player_sessions_arr_rel_insert_input"]: {
+		data: Array<GraphQLTypes["server_player_sessions_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: GraphQLTypes["server_player_sessions_on_conflict"] | undefined | null
+};
+	/** aggregate avg on columns */
+["server_player_sessions_avg_fields"]: {
+	__typename: "server_player_sessions_avg_fields",
+	deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	id?: number | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** order by avg() on columns of table "server_player_sessions" */
+["server_player_sessions_avg_order_by"]: {
+		deaths?: GraphQLTypes["order_by"] | undefined | null,
+	deaths_conn?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
+	kills?: GraphQLTypes["order_by"] | undefined | null,
+	kills_conn?: GraphQLTypes["order_by"] | undefined | null,
+	player_steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "server_player_sessions". All fields are combined with a logical 'AND'. */
+["server_player_sessions_bool_exp"]: {
+		_and?: Array<GraphQLTypes["server_player_sessions_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["server_player_sessions_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["server_player_sessions_bool_exp"]> | undefined | null,
+	conn?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	deaths?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	deaths_conn?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	ended_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	ip?: GraphQLTypes["inet_comparison_exp"] | undefined | null,
+	kills?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	kills_conn?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	name?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	player?: GraphQLTypes["players_bool_exp"] | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	server?: GraphQLTypes["servers_bool_exp"] | undefined | null,
+	server_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	settled_conns?: GraphQLTypes["String_array_comparison_exp"] | undefined | null,
+	started_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "server_player_sessions" */
+["server_player_sessions_constraint"]: server_player_sessions_constraint;
+	/** input type for incrementing numeric columns in table "server_player_sessions" */
+["server_player_sessions_inc_input"]: {
+		deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null
+};
+	/** input type for inserting data into table "server_player_sessions" */
+["server_player_sessions_insert_input"]: {
+		conn?: string | undefined | null,
+	deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	ended_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	ip?: GraphQLTypes["inet"] | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	name?: string | undefined | null,
+	player?: GraphQLTypes["players_obj_rel_insert_input"] | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	server?: GraphQLTypes["servers_obj_rel_insert_input"] | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null,
+	settled_conns?: Array<string> | undefined | null,
+	started_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** aggregate max on columns */
+["server_player_sessions_max_fields"]: {
+	__typename: "server_player_sessions_max_fields",
+	conn?: string | undefined | null,
+	deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	ended_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	id?: GraphQLTypes["bigint"] | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	name?: string | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null,
+	settled_conns?: Array<string> | undefined | null,
+	started_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** order by max() on columns of table "server_player_sessions" */
+["server_player_sessions_max_order_by"]: {
+		conn?: GraphQLTypes["order_by"] | undefined | null,
+	deaths?: GraphQLTypes["order_by"] | undefined | null,
+	deaths_conn?: GraphQLTypes["order_by"] | undefined | null,
+	ended_at?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
+	kills?: GraphQLTypes["order_by"] | undefined | null,
+	kills_conn?: GraphQLTypes["order_by"] | undefined | null,
+	name?: GraphQLTypes["order_by"] | undefined | null,
+	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	server_id?: GraphQLTypes["order_by"] | undefined | null,
+	settled_conns?: GraphQLTypes["order_by"] | undefined | null,
+	started_at?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["server_player_sessions_min_fields"]: {
+	__typename: "server_player_sessions_min_fields",
+	conn?: string | undefined | null,
+	deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	ended_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	id?: GraphQLTypes["bigint"] | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	name?: string | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null,
+	settled_conns?: Array<string> | undefined | null,
+	started_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** order by min() on columns of table "server_player_sessions" */
+["server_player_sessions_min_order_by"]: {
+		conn?: GraphQLTypes["order_by"] | undefined | null,
+	deaths?: GraphQLTypes["order_by"] | undefined | null,
+	deaths_conn?: GraphQLTypes["order_by"] | undefined | null,
+	ended_at?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
+	kills?: GraphQLTypes["order_by"] | undefined | null,
+	kills_conn?: GraphQLTypes["order_by"] | undefined | null,
+	name?: GraphQLTypes["order_by"] | undefined | null,
+	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	server_id?: GraphQLTypes["order_by"] | undefined | null,
+	settled_conns?: GraphQLTypes["order_by"] | undefined | null,
+	started_at?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "server_player_sessions" */
+["server_player_sessions_mutation_response"]: {
+	__typename: "server_player_sessions_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["server_player_sessions"]>
+};
+	/** on_conflict condition type for table "server_player_sessions" */
+["server_player_sessions_on_conflict"]: {
+		constraint: GraphQLTypes["server_player_sessions_constraint"],
+	update_columns: Array<GraphQLTypes["server_player_sessions_update_column"]>,
+	where?: GraphQLTypes["server_player_sessions_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "server_player_sessions". */
+["server_player_sessions_order_by"]: {
+		conn?: GraphQLTypes["order_by"] | undefined | null,
+	deaths?: GraphQLTypes["order_by"] | undefined | null,
+	deaths_conn?: GraphQLTypes["order_by"] | undefined | null,
+	ended_at?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
+	ip?: GraphQLTypes["order_by"] | undefined | null,
+	kills?: GraphQLTypes["order_by"] | undefined | null,
+	kills_conn?: GraphQLTypes["order_by"] | undefined | null,
+	name?: GraphQLTypes["order_by"] | undefined | null,
+	player?: GraphQLTypes["players_order_by"] | undefined | null,
+	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	server?: GraphQLTypes["servers_order_by"] | undefined | null,
+	server_id?: GraphQLTypes["order_by"] | undefined | null,
+	settled_conns?: GraphQLTypes["order_by"] | undefined | null,
+	started_at?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: server_player_sessions */
+["server_player_sessions_pk_columns_input"]: {
+		id: GraphQLTypes["bigint"]
+};
+	/** select columns of table "server_player_sessions" */
+["server_player_sessions_select_column"]: server_player_sessions_select_column;
+	/** input type for updating data in table "server_player_sessions" */
+["server_player_sessions_set_input"]: {
+		conn?: string | undefined | null,
+	deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	ended_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	ip?: GraphQLTypes["inet"] | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	name?: string | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null,
+	settled_conns?: Array<string> | undefined | null,
+	started_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["server_player_sessions_stddev_fields"]: {
+	__typename: "server_player_sessions_stddev_fields",
+	deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	id?: number | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** order by stddev() on columns of table "server_player_sessions" */
+["server_player_sessions_stddev_order_by"]: {
+		deaths?: GraphQLTypes["order_by"] | undefined | null,
+	deaths_conn?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
+	kills?: GraphQLTypes["order_by"] | undefined | null,
+	kills_conn?: GraphQLTypes["order_by"] | undefined | null,
+	player_steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["server_player_sessions_stddev_pop_fields"]: {
+	__typename: "server_player_sessions_stddev_pop_fields",
+	deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	id?: number | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** order by stddev_pop() on columns of table "server_player_sessions" */
+["server_player_sessions_stddev_pop_order_by"]: {
+		deaths?: GraphQLTypes["order_by"] | undefined | null,
+	deaths_conn?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
+	kills?: GraphQLTypes["order_by"] | undefined | null,
+	kills_conn?: GraphQLTypes["order_by"] | undefined | null,
+	player_steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["server_player_sessions_stddev_samp_fields"]: {
+	__typename: "server_player_sessions_stddev_samp_fields",
+	deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	id?: number | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** order by stddev_samp() on columns of table "server_player_sessions" */
+["server_player_sessions_stddev_samp_order_by"]: {
+		deaths?: GraphQLTypes["order_by"] | undefined | null,
+	deaths_conn?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
+	kills?: GraphQLTypes["order_by"] | undefined | null,
+	kills_conn?: GraphQLTypes["order_by"] | undefined | null,
+	player_steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** Streaming cursor of the table "server_player_sessions" */
+["server_player_sessions_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["server_player_sessions_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["server_player_sessions_stream_cursor_value_input"]: {
+		conn?: string | undefined | null,
+	deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	ended_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	id?: GraphQLTypes["bigint"] | undefined | null,
+	ip?: GraphQLTypes["inet"] | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	name?: string | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null,
+	settled_conns?: Array<string> | undefined | null,
+	started_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** aggregate sum on columns */
+["server_player_sessions_sum_fields"]: {
+	__typename: "server_player_sessions_sum_fields",
+	deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	id?: GraphQLTypes["bigint"] | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null
+};
+	/** order by sum() on columns of table "server_player_sessions" */
+["server_player_sessions_sum_order_by"]: {
+		deaths?: GraphQLTypes["order_by"] | undefined | null,
+	deaths_conn?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
+	kills?: GraphQLTypes["order_by"] | undefined | null,
+	kills_conn?: GraphQLTypes["order_by"] | undefined | null,
+	player_steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** update columns of table "server_player_sessions" */
+["server_player_sessions_update_column"]: server_player_sessions_update_column;
+	["server_player_sessions_updates"]: {
+		/** increments the numeric columns with given value of the filtered values */
+	_inc?: GraphQLTypes["server_player_sessions_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["server_player_sessions_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["server_player_sessions_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["server_player_sessions_var_pop_fields"]: {
+	__typename: "server_player_sessions_var_pop_fields",
+	deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	id?: number | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** order by var_pop() on columns of table "server_player_sessions" */
+["server_player_sessions_var_pop_order_by"]: {
+		deaths?: GraphQLTypes["order_by"] | undefined | null,
+	deaths_conn?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
+	kills?: GraphQLTypes["order_by"] | undefined | null,
+	kills_conn?: GraphQLTypes["order_by"] | undefined | null,
+	player_steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate var_samp on columns */
+["server_player_sessions_var_samp_fields"]: {
+	__typename: "server_player_sessions_var_samp_fields",
+	deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	id?: number | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** order by var_samp() on columns of table "server_player_sessions" */
+["server_player_sessions_var_samp_order_by"]: {
+		deaths?: GraphQLTypes["order_by"] | undefined | null,
+	deaths_conn?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
+	kills?: GraphQLTypes["order_by"] | undefined | null,
+	kills_conn?: GraphQLTypes["order_by"] | undefined | null,
+	player_steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate variance on columns */
+["server_player_sessions_variance_fields"]: {
+	__typename: "server_player_sessions_variance_fields",
+	deaths?: number | undefined | null,
+	deaths_conn?: number | undefined | null,
+	id?: number | undefined | null,
+	kills?: number | undefined | null,
+	kills_conn?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** order by variance() on columns of table "server_player_sessions" */
+["server_player_sessions_variance_order_by"]: {
+		deaths?: GraphQLTypes["order_by"] | undefined | null,
+	deaths_conn?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
+	kills?: GraphQLTypes["order_by"] | undefined | null,
+	kills_conn?: GraphQLTypes["order_by"] | undefined | null,
+	player_steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
 	/** columns and relationships of "server_plugins" */
 ["server_plugins"]: {
 	__typename: "server_plugins",
@@ -294631,6 +302146,190 @@ export type GraphQLTypes = {
 	_set?: GraphQLTypes["server_plugins_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
 	where: GraphQLTypes["server_plugins_bool_exp"]
+};
+	/** columns and relationships of "server_recent_players" */
+["server_recent_players"]: {
+	__typename: "server_recent_players",
+	first_seen_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	ip?: string | undefined | null,
+	kills?: number | undefined | null,
+	last_seen_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	name?: string | undefined | null,
+	online?: boolean | undefined | null,
+	/** An object relationship */
+	player?: GraphQLTypes["players"] | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	seconds_played?: number | undefined | null,
+	/** An object relationship */
+	server?: GraphQLTypes["servers"] | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null,
+	sessions?: number | undefined | null
+};
+	/** aggregated selection of "server_recent_players" */
+["server_recent_players_aggregate"]: {
+	__typename: "server_recent_players_aggregate",
+	aggregate?: GraphQLTypes["server_recent_players_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["server_recent_players"]>
+};
+	/** aggregate fields of "server_recent_players" */
+["server_recent_players_aggregate_fields"]: {
+	__typename: "server_recent_players_aggregate_fields",
+	avg?: GraphQLTypes["server_recent_players_avg_fields"] | undefined | null,
+	count: number,
+	max?: GraphQLTypes["server_recent_players_max_fields"] | undefined | null,
+	min?: GraphQLTypes["server_recent_players_min_fields"] | undefined | null,
+	stddev?: GraphQLTypes["server_recent_players_stddev_fields"] | undefined | null,
+	stddev_pop?: GraphQLTypes["server_recent_players_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: GraphQLTypes["server_recent_players_stddev_samp_fields"] | undefined | null,
+	sum?: GraphQLTypes["server_recent_players_sum_fields"] | undefined | null,
+	var_pop?: GraphQLTypes["server_recent_players_var_pop_fields"] | undefined | null,
+	var_samp?: GraphQLTypes["server_recent_players_var_samp_fields"] | undefined | null,
+	variance?: GraphQLTypes["server_recent_players_variance_fields"] | undefined | null
+};
+	/** aggregate avg on columns */
+["server_recent_players_avg_fields"]: {
+	__typename: "server_recent_players_avg_fields",
+	kills?: number | undefined | null,
+	player_steam_id?: number | undefined | null,
+	seconds_played?: number | undefined | null,
+	sessions?: number | undefined | null
+};
+	/** Boolean expression to filter rows from the table "server_recent_players". All fields are combined with a logical 'AND'. */
+["server_recent_players_bool_exp"]: {
+		_and?: Array<GraphQLTypes["server_recent_players_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["server_recent_players_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["server_recent_players_bool_exp"]> | undefined | null,
+	first_seen_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	ip?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	kills?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	last_seen_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	name?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	online?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	player?: GraphQLTypes["players_bool_exp"] | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	seconds_played?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	server?: GraphQLTypes["servers_bool_exp"] | undefined | null,
+	server_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	sessions?: GraphQLTypes["Int_comparison_exp"] | undefined | null
+};
+	/** aggregate max on columns */
+["server_recent_players_max_fields"]: {
+	__typename: "server_recent_players_max_fields",
+	first_seen_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	ip?: string | undefined | null,
+	kills?: number | undefined | null,
+	last_seen_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	name?: string | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	seconds_played?: number | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null,
+	sessions?: number | undefined | null
+};
+	/** aggregate min on columns */
+["server_recent_players_min_fields"]: {
+	__typename: "server_recent_players_min_fields",
+	first_seen_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	ip?: string | undefined | null,
+	kills?: number | undefined | null,
+	last_seen_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	name?: string | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	seconds_played?: number | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null,
+	sessions?: number | undefined | null
+};
+	/** Ordering options when selecting data from "server_recent_players". */
+["server_recent_players_order_by"]: {
+		first_seen_at?: GraphQLTypes["order_by"] | undefined | null,
+	ip?: GraphQLTypes["order_by"] | undefined | null,
+	kills?: GraphQLTypes["order_by"] | undefined | null,
+	last_seen_at?: GraphQLTypes["order_by"] | undefined | null,
+	name?: GraphQLTypes["order_by"] | undefined | null,
+	online?: GraphQLTypes["order_by"] | undefined | null,
+	player?: GraphQLTypes["players_order_by"] | undefined | null,
+	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	seconds_played?: GraphQLTypes["order_by"] | undefined | null,
+	server?: GraphQLTypes["servers_order_by"] | undefined | null,
+	server_id?: GraphQLTypes["order_by"] | undefined | null,
+	sessions?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** select columns of table "server_recent_players" */
+["server_recent_players_select_column"]: server_recent_players_select_column;
+	/** aggregate stddev on columns */
+["server_recent_players_stddev_fields"]: {
+	__typename: "server_recent_players_stddev_fields",
+	kills?: number | undefined | null,
+	player_steam_id?: number | undefined | null,
+	seconds_played?: number | undefined | null,
+	sessions?: number | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["server_recent_players_stddev_pop_fields"]: {
+	__typename: "server_recent_players_stddev_pop_fields",
+	kills?: number | undefined | null,
+	player_steam_id?: number | undefined | null,
+	seconds_played?: number | undefined | null,
+	sessions?: number | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["server_recent_players_stddev_samp_fields"]: {
+	__typename: "server_recent_players_stddev_samp_fields",
+	kills?: number | undefined | null,
+	player_steam_id?: number | undefined | null,
+	seconds_played?: number | undefined | null,
+	sessions?: number | undefined | null
+};
+	/** Streaming cursor of the table "server_recent_players" */
+["server_recent_players_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["server_recent_players_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["server_recent_players_stream_cursor_value_input"]: {
+		first_seen_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	ip?: string | undefined | null,
+	kills?: number | undefined | null,
+	last_seen_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	name?: string | undefined | null,
+	online?: boolean | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	seconds_played?: number | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null,
+	sessions?: number | undefined | null
+};
+	/** aggregate sum on columns */
+["server_recent_players_sum_fields"]: {
+	__typename: "server_recent_players_sum_fields",
+	kills?: number | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	seconds_played?: number | undefined | null,
+	sessions?: number | undefined | null
+};
+	/** aggregate var_pop on columns */
+["server_recent_players_var_pop_fields"]: {
+	__typename: "server_recent_players_var_pop_fields",
+	kills?: number | undefined | null,
+	player_steam_id?: number | undefined | null,
+	seconds_played?: number | undefined | null,
+	sessions?: number | undefined | null
+};
+	/** aggregate var_samp on columns */
+["server_recent_players_var_samp_fields"]: {
+	__typename: "server_recent_players_var_samp_fields",
+	kills?: number | undefined | null,
+	player_steam_id?: number | undefined | null,
+	seconds_played?: number | undefined | null,
+	sessions?: number | undefined | null
+};
+	/** aggregate variance on columns */
+["server_recent_players_variance_fields"]: {
+	__typename: "server_recent_players_variance_fields",
+	kills?: number | undefined | null,
+	player_steam_id?: number | undefined | null,
+	seconds_played?: number | undefined | null,
+	sessions?: number | undefined | null
 };
 	/** columns and relationships of "server_regions" */
 ["server_regions"]: {
@@ -294854,9 +302553,136 @@ export type GraphQLTypes = {
 	/** A computed field, executes function "total_region_server_count" */
 	total_server_count?: number | undefined | null
 };
+	/** columns and relationships of "server_rosters" */
+["server_rosters"]: {
+	__typename: "server_rosters",
+	held_since?: GraphQLTypes["timestamptz"] | undefined | null,
+	reported_at: GraphQLTypes["timestamptz"],
+	/** An object relationship */
+	server: GraphQLTypes["servers"],
+	server_id: GraphQLTypes["uuid"],
+	/** An array relationship */
+	sessions: Array<GraphQLTypes["server_player_sessions"]>,
+	/** An aggregate relationship */
+	sessions_aggregate: GraphQLTypes["server_player_sessions_aggregate"]
+};
+	/** aggregated selection of "server_rosters" */
+["server_rosters_aggregate"]: {
+	__typename: "server_rosters_aggregate",
+	aggregate?: GraphQLTypes["server_rosters_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["server_rosters"]>
+};
+	/** aggregate fields of "server_rosters" */
+["server_rosters_aggregate_fields"]: {
+	__typename: "server_rosters_aggregate_fields",
+	count: number,
+	max?: GraphQLTypes["server_rosters_max_fields"] | undefined | null,
+	min?: GraphQLTypes["server_rosters_min_fields"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "server_rosters". All fields are combined with a logical 'AND'. */
+["server_rosters_bool_exp"]: {
+		_and?: Array<GraphQLTypes["server_rosters_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["server_rosters_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["server_rosters_bool_exp"]> | undefined | null,
+	held_since?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	reported_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	server?: GraphQLTypes["servers_bool_exp"] | undefined | null,
+	server_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	sessions?: GraphQLTypes["server_player_sessions_bool_exp"] | undefined | null,
+	sessions_aggregate?: GraphQLTypes["server_player_sessions_aggregate_bool_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "server_rosters" */
+["server_rosters_constraint"]: server_rosters_constraint;
+	/** input type for inserting data into table "server_rosters" */
+["server_rosters_insert_input"]: {
+		held_since?: GraphQLTypes["timestamptz"] | undefined | null,
+	reported_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	server?: GraphQLTypes["servers_obj_rel_insert_input"] | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null,
+	sessions?: GraphQLTypes["server_player_sessions_arr_rel_insert_input"] | undefined | null
+};
+	/** aggregate max on columns */
+["server_rosters_max_fields"]: {
+	__typename: "server_rosters_max_fields",
+	held_since?: GraphQLTypes["timestamptz"] | undefined | null,
+	reported_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** aggregate min on columns */
+["server_rosters_min_fields"]: {
+	__typename: "server_rosters_min_fields",
+	held_since?: GraphQLTypes["timestamptz"] | undefined | null,
+	reported_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** response of any mutation on the table "server_rosters" */
+["server_rosters_mutation_response"]: {
+	__typename: "server_rosters_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["server_rosters"]>
+};
+	/** on_conflict condition type for table "server_rosters" */
+["server_rosters_on_conflict"]: {
+		constraint: GraphQLTypes["server_rosters_constraint"],
+	update_columns: Array<GraphQLTypes["server_rosters_update_column"]>,
+	where?: GraphQLTypes["server_rosters_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "server_rosters". */
+["server_rosters_order_by"]: {
+		held_since?: GraphQLTypes["order_by"] | undefined | null,
+	reported_at?: GraphQLTypes["order_by"] | undefined | null,
+	server?: GraphQLTypes["servers_order_by"] | undefined | null,
+	server_id?: GraphQLTypes["order_by"] | undefined | null,
+	sessions_aggregate?: GraphQLTypes["server_player_sessions_aggregate_order_by"] | undefined | null
+};
+	/** primary key columns input for table: server_rosters */
+["server_rosters_pk_columns_input"]: {
+		server_id: GraphQLTypes["uuid"]
+};
+	/** select columns of table "server_rosters" */
+["server_rosters_select_column"]: server_rosters_select_column;
+	/** input type for updating data in table "server_rosters" */
+["server_rosters_set_input"]: {
+		held_since?: GraphQLTypes["timestamptz"] | undefined | null,
+	reported_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** Streaming cursor of the table "server_rosters" */
+["server_rosters_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["server_rosters_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["server_rosters_stream_cursor_value_input"]: {
+		held_since?: GraphQLTypes["timestamptz"] | undefined | null,
+	reported_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** update columns of table "server_rosters" */
+["server_rosters_update_column"]: server_rosters_update_column;
+	["server_rosters_updates"]: {
+		/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["server_rosters_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["server_rosters_bool_exp"]
+};
 	/** columns and relationships of "servers" */
 ["servers"]: {
 	__typename: "servers",
+	/** An array relationship */
+	access_events: Array<GraphQLTypes["server_access_events"]>,
+	/** An aggregate relationship */
+	access_events_aggregate: GraphQLTypes["server_access_events_aggregate"],
+	access_min_role?: GraphQLTypes["e_player_roles_enum"] | undefined | null,
+	/** An array relationship */
+	access_players: Array<GraphQLTypes["server_access_players"]>,
+	/** An aggregate relationship */
+	access_players_aggregate: GraphQLTypes["server_access_players_aggregate"],
+	access_restricted: boolean,
 	api_password: GraphQLTypes["uuid"],
 	boot_status?: string | undefined | null,
 	boot_status_detail?: string | undefined | null,
@@ -294891,7 +302717,14 @@ export type GraphQLTypes = {
 	/** An aggregate relationship */
 	matches_aggregate: GraphQLTypes["matches_aggregate"],
 	max_players?: number | undefined | null,
+	/** An array relationship */
+	migrations: Array<GraphQLTypes["server_migrations"]>,
+	/** An aggregate relationship */
+	migrations_aggregate: GraphQLTypes["server_migrations_aggregate"],
 	offline_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	player_management_runtime?: string | undefined | null,
+	player_management_seen_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	player_management_version?: string | undefined | null,
 	/** An array relationship */
 	plugin_overrides: Array<GraphQLTypes["server_plugins"]>,
 	/** An aggregate relationship */
@@ -294997,6 +302830,12 @@ export type GraphQLTypes = {
 		_and?: Array<GraphQLTypes["servers_bool_exp"]> | undefined | null,
 	_not?: GraphQLTypes["servers_bool_exp"] | undefined | null,
 	_or?: Array<GraphQLTypes["servers_bool_exp"]> | undefined | null,
+	access_events?: GraphQLTypes["server_access_events_bool_exp"] | undefined | null,
+	access_events_aggregate?: GraphQLTypes["server_access_events_aggregate_bool_exp"] | undefined | null,
+	access_min_role?: GraphQLTypes["e_player_roles_enum_comparison_exp"] | undefined | null,
+	access_players?: GraphQLTypes["server_access_players_bool_exp"] | undefined | null,
+	access_players_aggregate?: GraphQLTypes["server_access_players_aggregate_bool_exp"] | undefined | null,
+	access_restricted?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	api_password?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
 	boot_status?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	boot_status_detail?: GraphQLTypes["String_comparison_exp"] | undefined | null,
@@ -295022,7 +302861,12 @@ export type GraphQLTypes = {
 	matches?: GraphQLTypes["matches_bool_exp"] | undefined | null,
 	matches_aggregate?: GraphQLTypes["matches_aggregate_bool_exp"] | undefined | null,
 	max_players?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	migrations?: GraphQLTypes["server_migrations_bool_exp"] | undefined | null,
+	migrations_aggregate?: GraphQLTypes["server_migrations_aggregate_bool_exp"] | undefined | null,
 	offline_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	player_management_runtime?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	player_management_seen_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	player_management_version?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	plugin_overrides?: GraphQLTypes["server_plugins_bool_exp"] | undefined | null,
 	plugin_overrides_aggregate?: GraphQLTypes["server_plugins_aggregate_bool_exp"] | undefined | null,
 	plugin_runtime?: GraphQLTypes["e_plugin_runtimes_enum_comparison_exp"] | undefined | null,
@@ -295061,7 +302905,11 @@ export type GraphQLTypes = {
 };
 	/** input type for inserting data into table "servers" */
 ["servers_insert_input"]: {
-		api_password?: GraphQLTypes["uuid"] | undefined | null,
+		access_events?: GraphQLTypes["server_access_events_arr_rel_insert_input"] | undefined | null,
+	access_min_role?: GraphQLTypes["e_player_roles_enum"] | undefined | null,
+	access_players?: GraphQLTypes["server_access_players_arr_rel_insert_input"] | undefined | null,
+	access_restricted?: boolean | undefined | null,
+	api_password?: GraphQLTypes["uuid"] | undefined | null,
 	boot_status?: string | undefined | null,
 	boot_status_detail?: string | undefined | null,
 	connect_password?: string | undefined | null,
@@ -295082,7 +302930,11 @@ export type GraphQLTypes = {
 	map_rotation_shuffle?: boolean | undefined | null,
 	matches?: GraphQLTypes["matches_arr_rel_insert_input"] | undefined | null,
 	max_players?: number | undefined | null,
+	migrations?: GraphQLTypes["server_migrations_arr_rel_insert_input"] | undefined | null,
 	offline_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	player_management_runtime?: string | undefined | null,
+	player_management_seen_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	player_management_version?: string | undefined | null,
 	plugin_overrides?: GraphQLTypes["server_plugins_arr_rel_insert_input"] | undefined | null,
 	plugin_runtime?: GraphQLTypes["e_plugin_runtimes_enum"] | undefined | null,
 	plugin_version?: string | undefined | null,
@@ -295117,6 +302969,9 @@ export type GraphQLTypes = {
 	label?: string | undefined | null,
 	max_players?: number | undefined | null,
 	offline_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	player_management_runtime?: string | undefined | null,
+	player_management_seen_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	player_management_version?: string | undefined | null,
 	plugin_version?: string | undefined | null,
 	plugins_checked_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	port?: number | undefined | null,
@@ -295140,6 +302995,9 @@ export type GraphQLTypes = {
 	label?: GraphQLTypes["order_by"] | undefined | null,
 	max_players?: GraphQLTypes["order_by"] | undefined | null,
 	offline_at?: GraphQLTypes["order_by"] | undefined | null,
+	player_management_runtime?: GraphQLTypes["order_by"] | undefined | null,
+	player_management_seen_at?: GraphQLTypes["order_by"] | undefined | null,
+	player_management_version?: GraphQLTypes["order_by"] | undefined | null,
 	plugin_version?: GraphQLTypes["order_by"] | undefined | null,
 	plugins_checked_at?: GraphQLTypes["order_by"] | undefined | null,
 	port?: GraphQLTypes["order_by"] | undefined | null,
@@ -295168,6 +303026,9 @@ export type GraphQLTypes = {
 	label?: string | undefined | null,
 	max_players?: number | undefined | null,
 	offline_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	player_management_runtime?: string | undefined | null,
+	player_management_seen_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	player_management_version?: string | undefined | null,
 	plugin_version?: string | undefined | null,
 	plugins_checked_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	port?: number | undefined | null,
@@ -295191,6 +303052,9 @@ export type GraphQLTypes = {
 	label?: GraphQLTypes["order_by"] | undefined | null,
 	max_players?: GraphQLTypes["order_by"] | undefined | null,
 	offline_at?: GraphQLTypes["order_by"] | undefined | null,
+	player_management_runtime?: GraphQLTypes["order_by"] | undefined | null,
+	player_management_seen_at?: GraphQLTypes["order_by"] | undefined | null,
+	player_management_version?: GraphQLTypes["order_by"] | undefined | null,
 	plugin_version?: GraphQLTypes["order_by"] | undefined | null,
 	plugins_checked_at?: GraphQLTypes["order_by"] | undefined | null,
 	port?: GraphQLTypes["order_by"] | undefined | null,
@@ -295222,7 +303086,11 @@ export type GraphQLTypes = {
 };
 	/** Ordering options when selecting data from "servers". */
 ["servers_order_by"]: {
-		api_password?: GraphQLTypes["order_by"] | undefined | null,
+		access_events_aggregate?: GraphQLTypes["server_access_events_aggregate_order_by"] | undefined | null,
+	access_min_role?: GraphQLTypes["order_by"] | undefined | null,
+	access_players_aggregate?: GraphQLTypes["server_access_players_aggregate_order_by"] | undefined | null,
+	access_restricted?: GraphQLTypes["order_by"] | undefined | null,
+	api_password?: GraphQLTypes["order_by"] | undefined | null,
 	boot_status?: GraphQLTypes["order_by"] | undefined | null,
 	boot_status_detail?: GraphQLTypes["order_by"] | undefined | null,
 	connect_password?: GraphQLTypes["order_by"] | undefined | null,
@@ -295245,7 +303113,11 @@ export type GraphQLTypes = {
 	map_rotation_shuffle?: GraphQLTypes["order_by"] | undefined | null,
 	matches_aggregate?: GraphQLTypes["matches_aggregate_order_by"] | undefined | null,
 	max_players?: GraphQLTypes["order_by"] | undefined | null,
+	migrations_aggregate?: GraphQLTypes["server_migrations_aggregate_order_by"] | undefined | null,
 	offline_at?: GraphQLTypes["order_by"] | undefined | null,
+	player_management_runtime?: GraphQLTypes["order_by"] | undefined | null,
+	player_management_seen_at?: GraphQLTypes["order_by"] | undefined | null,
+	player_management_version?: GraphQLTypes["order_by"] | undefined | null,
 	plugin_overrides_aggregate?: GraphQLTypes["server_plugins_aggregate_order_by"] | undefined | null,
 	plugin_runtime?: GraphQLTypes["order_by"] | undefined | null,
 	plugin_version?: GraphQLTypes["order_by"] | undefined | null,
@@ -295277,7 +303149,9 @@ export type GraphQLTypes = {
 ["servers_select_column_servers_aggregate_bool_exp_bool_or_arguments_columns"]: servers_select_column_servers_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "servers" */
 ["servers_set_input"]: {
-		api_password?: GraphQLTypes["uuid"] | undefined | null,
+		access_min_role?: GraphQLTypes["e_player_roles_enum"] | undefined | null,
+	access_restricted?: boolean | undefined | null,
+	api_password?: GraphQLTypes["uuid"] | undefined | null,
 	boot_status?: string | undefined | null,
 	boot_status_detail?: string | undefined | null,
 	connect_password?: string | undefined | null,
@@ -295294,6 +303168,9 @@ export type GraphQLTypes = {
 	map_rotation_shuffle?: boolean | undefined | null,
 	max_players?: number | undefined | null,
 	offline_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	player_management_runtime?: string | undefined | null,
+	player_management_seen_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	player_management_version?: string | undefined | null,
 	plugin_runtime?: GraphQLTypes["e_plugin_runtimes_enum"] | undefined | null,
 	plugin_version?: string | undefined | null,
 	plugins_checked_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -295355,7 +303232,9 @@ export type GraphQLTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["servers_stream_cursor_value_input"]: {
-		api_password?: GraphQLTypes["uuid"] | undefined | null,
+		access_min_role?: GraphQLTypes["e_player_roles_enum"] | undefined | null,
+	access_restricted?: boolean | undefined | null,
+	api_password?: GraphQLTypes["uuid"] | undefined | null,
 	boot_status?: string | undefined | null,
 	boot_status_detail?: string | undefined | null,
 	connect_password?: string | undefined | null,
@@ -295372,6 +303251,9 @@ export type GraphQLTypes = {
 	map_rotation_shuffle?: boolean | undefined | null,
 	max_players?: number | undefined | null,
 	offline_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	player_management_runtime?: string | undefined | null,
+	player_management_seen_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	player_management_version?: string | undefined | null,
 	plugin_runtime?: GraphQLTypes["e_plugin_runtimes_enum"] | undefined | null,
 	plugin_version?: string | undefined | null,
 	plugins_checked_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -296444,6 +304326,14 @@ export type GraphQLTypes = {
 	e_scrim_request_statuses_by_pk?: GraphQLTypes["e_scrim_request_statuses"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "e_scrim_request_statuses" */
 	e_scrim_request_statuses_stream: Array<GraphQLTypes["e_scrim_request_statuses"]>,
+	/** fetch data from the table: "e_server_migration_statuses" */
+	e_server_migration_statuses: Array<GraphQLTypes["e_server_migration_statuses"]>,
+	/** fetch aggregated fields from the table: "e_server_migration_statuses" */
+	e_server_migration_statuses_aggregate: GraphQLTypes["e_server_migration_statuses_aggregate"],
+	/** fetch data from the table: "e_server_migration_statuses" using primary key columns */
+	e_server_migration_statuses_by_pk?: GraphQLTypes["e_server_migration_statuses"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "e_server_migration_statuses" */
+	e_server_migration_statuses_stream: Array<GraphQLTypes["e_server_migration_statuses"]>,
 	/** fetch data from the table: "e_server_types" */
 	e_server_types: Array<GraphQLTypes["e_server_types"]>,
 	/** fetch aggregated fields from the table: "e_server_types" */
@@ -297294,6 +305184,22 @@ export type GraphQLTypes = {
 	seasons_by_pk?: GraphQLTypes["seasons"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "seasons" */
 	seasons_stream: Array<GraphQLTypes["seasons"]>,
+	/** fetch data from the table: "server_access_events" */
+	server_access_events: Array<GraphQLTypes["server_access_events"]>,
+	/** fetch aggregated fields from the table: "server_access_events" */
+	server_access_events_aggregate: GraphQLTypes["server_access_events_aggregate"],
+	/** fetch data from the table: "server_access_events" using primary key columns */
+	server_access_events_by_pk?: GraphQLTypes["server_access_events"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "server_access_events" */
+	server_access_events_stream: Array<GraphQLTypes["server_access_events"]>,
+	/** fetch data from the table: "server_access_players" */
+	server_access_players: Array<GraphQLTypes["server_access_players"]>,
+	/** fetch aggregated fields from the table: "server_access_players" */
+	server_access_players_aggregate: GraphQLTypes["server_access_players_aggregate"],
+	/** fetch data from the table: "server_access_players" using primary key columns */
+	server_access_players_by_pk?: GraphQLTypes["server_access_players"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "server_access_players" */
+	server_access_players_stream: Array<GraphQLTypes["server_access_players"]>,
 	/** fetch data from the table: "server_map_rotation" */
 	server_map_rotation: Array<GraphQLTypes["server_map_rotation"]>,
 	/** fetch aggregated fields from the table: "server_map_rotation" */
@@ -297302,6 +305208,22 @@ export type GraphQLTypes = {
 	server_map_rotation_by_pk?: GraphQLTypes["server_map_rotation"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "server_map_rotation" */
 	server_map_rotation_stream: Array<GraphQLTypes["server_map_rotation"]>,
+	/** fetch data from the table: "server_migrations" */
+	server_migrations: Array<GraphQLTypes["server_migrations"]>,
+	/** fetch aggregated fields from the table: "server_migrations" */
+	server_migrations_aggregate: GraphQLTypes["server_migrations_aggregate"],
+	/** fetch data from the table: "server_migrations" using primary key columns */
+	server_migrations_by_pk?: GraphQLTypes["server_migrations"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "server_migrations" */
+	server_migrations_stream: Array<GraphQLTypes["server_migrations"]>,
+	/** fetch data from the table: "server_player_sessions" */
+	server_player_sessions: Array<GraphQLTypes["server_player_sessions"]>,
+	/** fetch aggregated fields from the table: "server_player_sessions" */
+	server_player_sessions_aggregate: GraphQLTypes["server_player_sessions_aggregate"],
+	/** fetch data from the table: "server_player_sessions" using primary key columns */
+	server_player_sessions_by_pk?: GraphQLTypes["server_player_sessions"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "server_player_sessions" */
+	server_player_sessions_stream: Array<GraphQLTypes["server_player_sessions"]>,
 	/** fetch data from the table: "server_plugins" */
 	server_plugins: Array<GraphQLTypes["server_plugins"]>,
 	/** fetch aggregated fields from the table: "server_plugins" */
@@ -297310,6 +305232,12 @@ export type GraphQLTypes = {
 	server_plugins_by_pk?: GraphQLTypes["server_plugins"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "server_plugins" */
 	server_plugins_stream: Array<GraphQLTypes["server_plugins"]>,
+	/** fetch data from the table: "server_recent_players" */
+	server_recent_players: Array<GraphQLTypes["server_recent_players"]>,
+	/** fetch aggregated fields from the table: "server_recent_players" */
+	server_recent_players_aggregate: GraphQLTypes["server_recent_players_aggregate"],
+	/** fetch data from the table in a streaming manner: "server_recent_players" */
+	server_recent_players_stream: Array<GraphQLTypes["server_recent_players"]>,
 	/** fetch data from the table: "server_regions" */
 	server_regions: Array<GraphQLTypes["server_regions"]>,
 	/** fetch aggregated fields from the table: "server_regions" */
@@ -297318,6 +305246,14 @@ export type GraphQLTypes = {
 	server_regions_by_pk?: GraphQLTypes["server_regions"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "server_regions" */
 	server_regions_stream: Array<GraphQLTypes["server_regions"]>,
+	/** fetch data from the table: "server_rosters" */
+	server_rosters: Array<GraphQLTypes["server_rosters"]>,
+	/** fetch aggregated fields from the table: "server_rosters" */
+	server_rosters_aggregate: GraphQLTypes["server_rosters_aggregate"],
+	/** fetch data from the table: "server_rosters" using primary key columns */
+	server_rosters_by_pk?: GraphQLTypes["server_rosters"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "server_rosters" */
+	server_rosters_stream: Array<GraphQLTypes["server_rosters"]>,
 	/** An array relationship */
 	servers: Array<GraphQLTypes["servers"]>,
 	/** An aggregate relationship */
@@ -297852,12 +305788,6 @@ export type GraphQLTypes = {
 	v_player_multi_kills_aggregate: GraphQLTypes["v_player_multi_kills_aggregate"],
 	/** fetch data from the table in a streaming manner: "v_player_multi_kills" */
 	v_player_multi_kills_stream: Array<GraphQLTypes["v_player_multi_kills"]>,
-	/** fetch data from the table: "v_player_queue_partners" */
-	v_player_queue_partners: Array<GraphQLTypes["v_player_queue_partners"]>,
-	/** fetch aggregated fields from the table: "v_player_queue_partners" */
-	v_player_queue_partners_aggregate: GraphQLTypes["v_player_queue_partners_aggregate"],
-	/** fetch data from the table in a streaming manner: "v_player_queue_partners" */
-	v_player_queue_partners_stream: Array<GraphQLTypes["v_player_queue_partners"]>,
 	/** fetch data from the table: "v_player_weapon_damage" */
 	v_player_weapon_damage: Array<GraphQLTypes["v_player_weapon_damage"]>,
 	/** fetch aggregated fields from the table: "v_player_weapon_damage" */
@@ -320653,168 +328583,6 @@ export type GraphQLTypes = {
 	kills?: GraphQLTypes["order_by"] | undefined | null,
 	round?: GraphQLTypes["order_by"] | undefined | null
 };
-	/** columns and relationships of "v_player_queue_partners" */
-["v_player_queue_partners"]: {
-	__typename: "v_player_queue_partners",
-	first_played_at?: GraphQLTypes["timestamptz"] | undefined | null,
-	last_played_at?: GraphQLTypes["timestamptz"] | undefined | null,
-	matches_together?: number | undefined | null,
-	/** An object relationship */
-	partner?: GraphQLTypes["players"] | undefined | null,
-	partner_steam_id?: GraphQLTypes["bigint"] | undefined | null,
-	/** An object relationship */
-	player?: GraphQLTypes["players"] | undefined | null,
-	steam_id?: GraphQLTypes["bigint"] | undefined | null,
-	wins_together?: number | undefined | null
-};
-	/** aggregated selection of "v_player_queue_partners" */
-["v_player_queue_partners_aggregate"]: {
-	__typename: "v_player_queue_partners_aggregate",
-	aggregate?: GraphQLTypes["v_player_queue_partners_aggregate_fields"] | undefined | null,
-	nodes: Array<GraphQLTypes["v_player_queue_partners"]>
-};
-	/** aggregate fields of "v_player_queue_partners" */
-["v_player_queue_partners_aggregate_fields"]: {
-	__typename: "v_player_queue_partners_aggregate_fields",
-	avg?: GraphQLTypes["v_player_queue_partners_avg_fields"] | undefined | null,
-	count: number,
-	max?: GraphQLTypes["v_player_queue_partners_max_fields"] | undefined | null,
-	min?: GraphQLTypes["v_player_queue_partners_min_fields"] | undefined | null,
-	stddev?: GraphQLTypes["v_player_queue_partners_stddev_fields"] | undefined | null,
-	stddev_pop?: GraphQLTypes["v_player_queue_partners_stddev_pop_fields"] | undefined | null,
-	stddev_samp?: GraphQLTypes["v_player_queue_partners_stddev_samp_fields"] | undefined | null,
-	sum?: GraphQLTypes["v_player_queue_partners_sum_fields"] | undefined | null,
-	var_pop?: GraphQLTypes["v_player_queue_partners_var_pop_fields"] | undefined | null,
-	var_samp?: GraphQLTypes["v_player_queue_partners_var_samp_fields"] | undefined | null,
-	variance?: GraphQLTypes["v_player_queue_partners_variance_fields"] | undefined | null
-};
-	/** aggregate avg on columns */
-["v_player_queue_partners_avg_fields"]: {
-	__typename: "v_player_queue_partners_avg_fields",
-	matches_together?: number | undefined | null,
-	partner_steam_id?: number | undefined | null,
-	steam_id?: number | undefined | null,
-	wins_together?: number | undefined | null
-};
-	/** Boolean expression to filter rows from the table "v_player_queue_partners". All fields are combined with a logical 'AND'. */
-["v_player_queue_partners_bool_exp"]: {
-		_and?: Array<GraphQLTypes["v_player_queue_partners_bool_exp"]> | undefined | null,
-	_not?: GraphQLTypes["v_player_queue_partners_bool_exp"] | undefined | null,
-	_or?: Array<GraphQLTypes["v_player_queue_partners_bool_exp"]> | undefined | null,
-	first_played_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
-	last_played_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
-	matches_together?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
-	partner?: GraphQLTypes["players_bool_exp"] | undefined | null,
-	partner_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
-	player?: GraphQLTypes["players_bool_exp"] | undefined | null,
-	steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
-	wins_together?: GraphQLTypes["Int_comparison_exp"] | undefined | null
-};
-	/** aggregate max on columns */
-["v_player_queue_partners_max_fields"]: {
-	__typename: "v_player_queue_partners_max_fields",
-	first_played_at?: GraphQLTypes["timestamptz"] | undefined | null,
-	last_played_at?: GraphQLTypes["timestamptz"] | undefined | null,
-	matches_together?: number | undefined | null,
-	partner_steam_id?: GraphQLTypes["bigint"] | undefined | null,
-	steam_id?: GraphQLTypes["bigint"] | undefined | null,
-	wins_together?: number | undefined | null
-};
-	/** aggregate min on columns */
-["v_player_queue_partners_min_fields"]: {
-	__typename: "v_player_queue_partners_min_fields",
-	first_played_at?: GraphQLTypes["timestamptz"] | undefined | null,
-	last_played_at?: GraphQLTypes["timestamptz"] | undefined | null,
-	matches_together?: number | undefined | null,
-	partner_steam_id?: GraphQLTypes["bigint"] | undefined | null,
-	steam_id?: GraphQLTypes["bigint"] | undefined | null,
-	wins_together?: number | undefined | null
-};
-	/** Ordering options when selecting data from "v_player_queue_partners". */
-["v_player_queue_partners_order_by"]: {
-		first_played_at?: GraphQLTypes["order_by"] | undefined | null,
-	last_played_at?: GraphQLTypes["order_by"] | undefined | null,
-	matches_together?: GraphQLTypes["order_by"] | undefined | null,
-	partner?: GraphQLTypes["players_order_by"] | undefined | null,
-	partner_steam_id?: GraphQLTypes["order_by"] | undefined | null,
-	player?: GraphQLTypes["players_order_by"] | undefined | null,
-	steam_id?: GraphQLTypes["order_by"] | undefined | null,
-	wins_together?: GraphQLTypes["order_by"] | undefined | null
-};
-	/** select columns of table "v_player_queue_partners" */
-["v_player_queue_partners_select_column"]: v_player_queue_partners_select_column;
-	/** aggregate stddev on columns */
-["v_player_queue_partners_stddev_fields"]: {
-	__typename: "v_player_queue_partners_stddev_fields",
-	matches_together?: number | undefined | null,
-	partner_steam_id?: number | undefined | null,
-	steam_id?: number | undefined | null,
-	wins_together?: number | undefined | null
-};
-	/** aggregate stddev_pop on columns */
-["v_player_queue_partners_stddev_pop_fields"]: {
-	__typename: "v_player_queue_partners_stddev_pop_fields",
-	matches_together?: number | undefined | null,
-	partner_steam_id?: number | undefined | null,
-	steam_id?: number | undefined | null,
-	wins_together?: number | undefined | null
-};
-	/** aggregate stddev_samp on columns */
-["v_player_queue_partners_stddev_samp_fields"]: {
-	__typename: "v_player_queue_partners_stddev_samp_fields",
-	matches_together?: number | undefined | null,
-	partner_steam_id?: number | undefined | null,
-	steam_id?: number | undefined | null,
-	wins_together?: number | undefined | null
-};
-	/** Streaming cursor of the table "v_player_queue_partners" */
-["v_player_queue_partners_stream_cursor_input"]: {
-		/** Stream column input with initial value */
-	initial_value: GraphQLTypes["v_player_queue_partners_stream_cursor_value_input"],
-	/** cursor ordering */
-	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
-};
-	/** Initial value of the column from where the streaming should start */
-["v_player_queue_partners_stream_cursor_value_input"]: {
-		first_played_at?: GraphQLTypes["timestamptz"] | undefined | null,
-	last_played_at?: GraphQLTypes["timestamptz"] | undefined | null,
-	matches_together?: number | undefined | null,
-	partner_steam_id?: GraphQLTypes["bigint"] | undefined | null,
-	steam_id?: GraphQLTypes["bigint"] | undefined | null,
-	wins_together?: number | undefined | null
-};
-	/** aggregate sum on columns */
-["v_player_queue_partners_sum_fields"]: {
-	__typename: "v_player_queue_partners_sum_fields",
-	matches_together?: number | undefined | null,
-	partner_steam_id?: GraphQLTypes["bigint"] | undefined | null,
-	steam_id?: GraphQLTypes["bigint"] | undefined | null,
-	wins_together?: number | undefined | null
-};
-	/** aggregate var_pop on columns */
-["v_player_queue_partners_var_pop_fields"]: {
-	__typename: "v_player_queue_partners_var_pop_fields",
-	matches_together?: number | undefined | null,
-	partner_steam_id?: number | undefined | null,
-	steam_id?: number | undefined | null,
-	wins_together?: number | undefined | null
-};
-	/** aggregate var_samp on columns */
-["v_player_queue_partners_var_samp_fields"]: {
-	__typename: "v_player_queue_partners_var_samp_fields",
-	matches_together?: number | undefined | null,
-	partner_steam_id?: number | undefined | null,
-	steam_id?: number | undefined | null,
-	wins_together?: number | undefined | null
-};
-	/** aggregate variance on columns */
-["v_player_queue_partners_variance_fields"]: {
-	__typename: "v_player_queue_partners_variance_fields",
-	matches_together?: number | undefined | null,
-	partner_steam_id?: number | undefined | null,
-	steam_id?: number | undefined | null,
-	wins_together?: number | undefined | null
-};
 	/** columns and relationships of "v_player_weapon_damage" */
 ["v_player_weapon_damage"]: {
 	__typename: "v_player_weapon_damage",
@@ -325053,6 +332821,29 @@ export enum e_scrim_request_statuses_update_column {
 	description = "description",
 	value = "value"
 }
+/** unique or primary key constraints on table "e_server_migration_statuses" */
+export enum e_server_migration_statuses_constraint {
+	e_server_migration_statuses_pkey = "e_server_migration_statuses_pkey"
+}
+export enum e_server_migration_statuses_enum {
+	Canceled = "Canceled",
+	Completed = "Completed",
+	Failed = "Failed",
+	Finalizing = "Finalizing",
+	Queued = "Queued",
+	Stopping = "Stopping",
+	Transferring = "Transferring"
+}
+/** select columns of table "e_server_migration_statuses" */
+export enum e_server_migration_statuses_select_column {
+	description = "description",
+	value = "value"
+}
+/** update columns of table "e_server_migration_statuses" */
+export enum e_server_migration_statuses_update_column {
+	description = "description",
+	value = "value"
+}
 /** unique or primary key constraints on table "e_server_types" */
 export enum e_server_types_constraint {
 	e_server_types_pkey = "e_server_types_pkey"
@@ -325679,34 +333470,34 @@ export enum game_modes_select_column {
 	archived_at = "archived_at",
 	cfg = "cfg",
 	competitive_safe = "competitive_safe",
-	system = "system",
 	created_at = "created_at",
 	description = "description",
 	enabled = "enabled",
 	extra_game_params = "extra_game_params",
-	valve_mode = "valve_mode",
 	icon = "icon",
 	id = "id",
 	name = "name",
 	slug = "slug",
-	updated_at = "updated_at"
+	system = "system",
+	updated_at = "updated_at",
+	valve_mode = "valve_mode"
 }
 /** update columns of table "game_modes" */
 export enum game_modes_update_column {
 	archived_at = "archived_at",
 	cfg = "cfg",
 	competitive_safe = "competitive_safe",
-	system = "system",
 	created_at = "created_at",
 	description = "description",
 	enabled = "enabled",
 	extra_game_params = "extra_game_params",
-	valve_mode = "valve_mode",
 	icon = "icon",
 	id = "id",
 	name = "name",
 	slug = "slug",
-	updated_at = "updated_at"
+	system = "system",
+	updated_at = "updated_at",
+	valve_mode = "valve_mode"
 }
 /** unique or primary key constraints on table "game_plugin_installs" */
 export enum game_plugin_installs_constraint {
@@ -325885,6 +333676,7 @@ export enum game_server_nodes_constraint {
 }
 /** select columns of table "game_server_nodes" */
 export enum game_server_nodes_select_column {
+	accepting_new_matches = "accepting_new_matches",
 	build_id = "build_id",
 	cpu_cores_per_socket = "cpu_cores_per_socket",
 	cpu_frequency_info = "cpu_frequency_info",
@@ -325931,6 +333723,7 @@ export enum game_server_nodes_select_column {
 }
 /** select "game_server_nodes_aggregate_bool_exp_bool_and_arguments_columns" columns of table "game_server_nodes" */
 export enum game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_and_arguments_columns {
+	accepting_new_matches = "accepting_new_matches",
 	enabled = "enabled",
 	enabled_for_match_making = "enabled_for_match_making",
 	gpu = "gpu",
@@ -325942,6 +333735,7 @@ export enum game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp
 }
 /** select "game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns" columns of table "game_server_nodes" */
 export enum game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns {
+	accepting_new_matches = "accepting_new_matches",
 	enabled = "enabled",
 	enabled_for_match_making = "enabled_for_match_making",
 	gpu = "gpu",
@@ -325953,6 +333747,7 @@ export enum game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp
 }
 /** update columns of table "game_server_nodes" */
 export enum game_server_nodes_update_column {
+	accepting_new_matches = "accepting_new_matches",
 	build_id = "build_id",
 	cpu_cores_per_socket = "cpu_cores_per_socket",
 	cpu_frequency_info = "cpu_frequency_info",
@@ -328470,6 +336265,34 @@ export enum seasons_update_column {
 	number = "number",
 	starts_at = "starts_at"
 }
+/** unique or primary key constraints on table "server_access_events" */
+export enum server_access_events_constraint {
+	server_access_events_pkey = "server_access_events_pkey"
+}
+/** select columns of table "server_access_events" */
+export enum server_access_events_select_column {
+	event_id = "event_id",
+	server_id = "server_id"
+}
+/** update columns of table "server_access_events" */
+export enum server_access_events_update_column {
+	event_id = "event_id",
+	server_id = "server_id"
+}
+/** unique or primary key constraints on table "server_access_players" */
+export enum server_access_players_constraint {
+	server_access_players_pkey = "server_access_players_pkey"
+}
+/** select columns of table "server_access_players" */
+export enum server_access_players_select_column {
+	server_id = "server_id",
+	steam_id = "steam_id"
+}
+/** update columns of table "server_access_players" */
+export enum server_access_players_update_column {
+	server_id = "server_id",
+	steam_id = "steam_id"
+}
 /** unique or primary key constraints on table "server_map_rotation" */
 export enum server_map_rotation_constraint {
 	server_map_rotation_pkey = "server_map_rotation_pkey"
@@ -328485,6 +336308,93 @@ export enum server_map_rotation_update_column {
 	map_id = "map_id",
 	position = "position",
 	server_id = "server_id"
+}
+/** unique or primary key constraints on table "server_migrations" */
+export enum server_migrations_constraint {
+	server_migrations_one_active_idx = "server_migrations_one_active_idx",
+	server_migrations_pkey = "server_migrations_pkey"
+}
+/** select columns of table "server_migrations" */
+export enum server_migrations_select_column {
+	bytes_done = "bytes_done",
+	bytes_total = "bytes_total",
+	created_at = "created_at",
+	entries_total = "entries_total",
+	error = "error",
+	finished_at = "finished_at",
+	from_game_server_node_id = "from_game_server_node_id",
+	id = "id",
+	requested_by_steam_id = "requested_by_steam_id",
+	server_id = "server_id",
+	started_at = "started_at",
+	status = "status",
+	to_game_server_node_id = "to_game_server_node_id",
+	updated_at = "updated_at",
+	warnings = "warnings",
+	with_files = "with_files"
+}
+/** select "server_migrations_aggregate_bool_exp_bool_and_arguments_columns" columns of table "server_migrations" */
+export enum server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_and_arguments_columns {
+	with_files = "with_files"
+}
+/** select "server_migrations_aggregate_bool_exp_bool_or_arguments_columns" columns of table "server_migrations" */
+export enum server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_or_arguments_columns {
+	with_files = "with_files"
+}
+/** update columns of table "server_migrations" */
+export enum server_migrations_update_column {
+	bytes_done = "bytes_done",
+	bytes_total = "bytes_total",
+	created_at = "created_at",
+	entries_total = "entries_total",
+	error = "error",
+	finished_at = "finished_at",
+	from_game_server_node_id = "from_game_server_node_id",
+	id = "id",
+	requested_by_steam_id = "requested_by_steam_id",
+	server_id = "server_id",
+	started_at = "started_at",
+	status = "status",
+	to_game_server_node_id = "to_game_server_node_id",
+	updated_at = "updated_at",
+	warnings = "warnings",
+	with_files = "with_files"
+}
+/** unique or primary key constraints on table "server_player_sessions" */
+export enum server_player_sessions_constraint {
+	server_player_sessions_open_idx = "server_player_sessions_open_idx",
+	server_player_sessions_pkey = "server_player_sessions_pkey"
+}
+/** select columns of table "server_player_sessions" */
+export enum server_player_sessions_select_column {
+	conn = "conn",
+	deaths = "deaths",
+	deaths_conn = "deaths_conn",
+	ended_at = "ended_at",
+	id = "id",
+	ip = "ip",
+	kills = "kills",
+	kills_conn = "kills_conn",
+	name = "name",
+	player_steam_id = "player_steam_id",
+	server_id = "server_id",
+	settled_conns = "settled_conns",
+	started_at = "started_at"
+}
+/** update columns of table "server_player_sessions" */
+export enum server_player_sessions_update_column {
+	conn = "conn",
+	deaths = "deaths",
+	deaths_conn = "deaths_conn",
+	ended_at = "ended_at",
+	ip = "ip",
+	kills = "kills",
+	kills_conn = "kills_conn",
+	name = "name",
+	player_steam_id = "player_steam_id",
+	server_id = "server_id",
+	settled_conns = "settled_conns",
+	started_at = "started_at"
 }
 /** unique or primary key constraints on table "server_plugins" */
 export enum server_plugins_constraint {
@@ -328510,6 +336420,19 @@ export enum server_plugins_update_column {
 	plugin_slug = "plugin_slug",
 	server_id = "server_id"
 }
+/** select columns of table "server_recent_players" */
+export enum server_recent_players_select_column {
+	first_seen_at = "first_seen_at",
+	ip = "ip",
+	kills = "kills",
+	last_seen_at = "last_seen_at",
+	name = "name",
+	online = "online",
+	player_steam_id = "player_steam_id",
+	seconds_played = "seconds_played",
+	server_id = "server_id",
+	sessions = "sessions"
+}
 /** unique or primary key constraints on table "server_regions" */
 export enum server_regions_constraint {
 	e_server_regions_pkey = "e_server_regions_pkey"
@@ -328528,6 +336451,22 @@ export enum server_regions_update_column {
 	steam_relay = "steam_relay",
 	value = "value"
 }
+/** unique or primary key constraints on table "server_rosters" */
+export enum server_rosters_constraint {
+	server_rosters_pkey = "server_rosters_pkey"
+}
+/** select columns of table "server_rosters" */
+export enum server_rosters_select_column {
+	held_since = "held_since",
+	reported_at = "reported_at",
+	server_id = "server_id"
+}
+/** update columns of table "server_rosters" */
+export enum server_rosters_update_column {
+	held_since = "held_since",
+	reported_at = "reported_at",
+	server_id = "server_id"
+}
 /** unique or primary key constraints on table "servers" */
 export enum servers_constraint {
 	servers_pkey = "servers_pkey",
@@ -328535,6 +336474,8 @@ export enum servers_constraint {
 }
 /** select columns of table "servers" */
 export enum servers_select_column {
+	access_min_role = "access_min_role",
+	access_restricted = "access_restricted",
 	api_password = "api_password",
 	boot_status = "boot_status",
 	boot_status_detail = "boot_status_detail",
@@ -328552,6 +336493,9 @@ export enum servers_select_column {
 	map_rotation_shuffle = "map_rotation_shuffle",
 	max_players = "max_players",
 	offline_at = "offline_at",
+	player_management_runtime = "player_management_runtime",
+	player_management_seen_at = "player_management_seen_at",
+	player_management_version = "player_management_version",
 	plugin_runtime = "plugin_runtime",
 	plugin_version = "plugin_version",
 	plugins_checked_at = "plugins_checked_at",
@@ -328567,6 +336511,7 @@ export enum servers_select_column {
 }
 /** select "servers_aggregate_bool_exp_bool_and_arguments_columns" columns of table "servers" */
 export enum servers_select_column_servers_aggregate_bool_exp_bool_and_arguments_columns {
+	access_restricted = "access_restricted",
 	connected = "connected",
 	enabled = "enabled",
 	is_dedicated = "is_dedicated",
@@ -328575,6 +336520,7 @@ export enum servers_select_column_servers_aggregate_bool_exp_bool_and_arguments_
 }
 /** select "servers_aggregate_bool_exp_bool_or_arguments_columns" columns of table "servers" */
 export enum servers_select_column_servers_aggregate_bool_exp_bool_or_arguments_columns {
+	access_restricted = "access_restricted",
 	connected = "connected",
 	enabled = "enabled",
 	is_dedicated = "is_dedicated",
@@ -328583,6 +336529,8 @@ export enum servers_select_column_servers_aggregate_bool_exp_bool_or_arguments_c
 }
 /** update columns of table "servers" */
 export enum servers_update_column {
+	access_min_role = "access_min_role",
+	access_restricted = "access_restricted",
 	api_password = "api_password",
 	boot_status = "boot_status",
 	boot_status_detail = "boot_status_detail",
@@ -328600,6 +336548,9 @@ export enum servers_update_column {
 	map_rotation_shuffle = "map_rotation_shuffle",
 	max_players = "max_players",
 	offline_at = "offline_at",
+	player_management_runtime = "player_management_runtime",
+	player_management_seen_at = "player_management_seen_at",
+	player_management_version = "player_management_version",
 	plugin_runtime = "plugin_runtime",
 	plugin_version = "plugin_version",
 	plugins_checked_at = "plugins_checked_at",
@@ -331141,15 +339092,6 @@ export enum v_player_multi_kills_select_column {
 	match_id = "match_id",
 	round = "round"
 }
-/** select columns of table "v_player_queue_partners" */
-export enum v_player_queue_partners_select_column {
-	first_played_at = "first_played_at",
-	last_played_at = "last_played_at",
-	matches_together = "matches_together",
-	partner_steam_id = "partner_steam_id",
-	steam_id = "steam_id",
-	wins_together = "wins_together"
-}
 /** select columns of table "v_player_weapon_damage" */
 export enum v_player_weapon_damage_select_column {
 	damage = "damage",
@@ -331408,6 +339350,8 @@ type ZEUS_VARIABLES = {
 	["Float_comparison_exp"]: ValueTypes["Float_comparison_exp"];
 	["Int_comparison_exp"]: ValueTypes["Int_comparison_exp"];
 	["ScheduledLineupInput"]: ValueTypes["ScheduledLineupInput"];
+	["ServerAccessInput"]: ValueTypes["ServerAccessInput"];
+	["ServerMapRotationInput"]: ValueTypes["ServerMapRotationInput"];
 	["ServerPluginInput"]: ValueTypes["ServerPluginInput"];
 	["String_array_comparison_exp"]: ValueTypes["String_array_comparison_exp"];
 	["String_comparison_exp"]: ValueTypes["String_comparison_exp"];
@@ -332320,6 +340264,21 @@ type ZEUS_VARIABLES = {
 	["e_scrim_request_statuses_stream_cursor_value_input"]: ValueTypes["e_scrim_request_statuses_stream_cursor_value_input"];
 	["e_scrim_request_statuses_update_column"]: ValueTypes["e_scrim_request_statuses_update_column"];
 	["e_scrim_request_statuses_updates"]: ValueTypes["e_scrim_request_statuses_updates"];
+	["e_server_migration_statuses_bool_exp"]: ValueTypes["e_server_migration_statuses_bool_exp"];
+	["e_server_migration_statuses_constraint"]: ValueTypes["e_server_migration_statuses_constraint"];
+	["e_server_migration_statuses_enum"]: ValueTypes["e_server_migration_statuses_enum"];
+	["e_server_migration_statuses_enum_comparison_exp"]: ValueTypes["e_server_migration_statuses_enum_comparison_exp"];
+	["e_server_migration_statuses_insert_input"]: ValueTypes["e_server_migration_statuses_insert_input"];
+	["e_server_migration_statuses_obj_rel_insert_input"]: ValueTypes["e_server_migration_statuses_obj_rel_insert_input"];
+	["e_server_migration_statuses_on_conflict"]: ValueTypes["e_server_migration_statuses_on_conflict"];
+	["e_server_migration_statuses_order_by"]: ValueTypes["e_server_migration_statuses_order_by"];
+	["e_server_migration_statuses_pk_columns_input"]: ValueTypes["e_server_migration_statuses_pk_columns_input"];
+	["e_server_migration_statuses_select_column"]: ValueTypes["e_server_migration_statuses_select_column"];
+	["e_server_migration_statuses_set_input"]: ValueTypes["e_server_migration_statuses_set_input"];
+	["e_server_migration_statuses_stream_cursor_input"]: ValueTypes["e_server_migration_statuses_stream_cursor_input"];
+	["e_server_migration_statuses_stream_cursor_value_input"]: ValueTypes["e_server_migration_statuses_stream_cursor_value_input"];
+	["e_server_migration_statuses_update_column"]: ValueTypes["e_server_migration_statuses_update_column"];
+	["e_server_migration_statuses_updates"]: ValueTypes["e_server_migration_statuses_updates"];
 	["e_server_types_bool_exp"]: ValueTypes["e_server_types_bool_exp"];
 	["e_server_types_constraint"]: ValueTypes["e_server_types_constraint"];
 	["e_server_types_enum"]: ValueTypes["e_server_types_enum"];
@@ -334509,6 +342468,51 @@ type ZEUS_VARIABLES = {
 	["seasons_stream_cursor_value_input"]: ValueTypes["seasons_stream_cursor_value_input"];
 	["seasons_update_column"]: ValueTypes["seasons_update_column"];
 	["seasons_updates"]: ValueTypes["seasons_updates"];
+	["server_access_events_aggregate_bool_exp"]: ValueTypes["server_access_events_aggregate_bool_exp"];
+	["server_access_events_aggregate_bool_exp_count"]: ValueTypes["server_access_events_aggregate_bool_exp_count"];
+	["server_access_events_aggregate_order_by"]: ValueTypes["server_access_events_aggregate_order_by"];
+	["server_access_events_arr_rel_insert_input"]: ValueTypes["server_access_events_arr_rel_insert_input"];
+	["server_access_events_bool_exp"]: ValueTypes["server_access_events_bool_exp"];
+	["server_access_events_constraint"]: ValueTypes["server_access_events_constraint"];
+	["server_access_events_insert_input"]: ValueTypes["server_access_events_insert_input"];
+	["server_access_events_max_order_by"]: ValueTypes["server_access_events_max_order_by"];
+	["server_access_events_min_order_by"]: ValueTypes["server_access_events_min_order_by"];
+	["server_access_events_on_conflict"]: ValueTypes["server_access_events_on_conflict"];
+	["server_access_events_order_by"]: ValueTypes["server_access_events_order_by"];
+	["server_access_events_pk_columns_input"]: ValueTypes["server_access_events_pk_columns_input"];
+	["server_access_events_select_column"]: ValueTypes["server_access_events_select_column"];
+	["server_access_events_set_input"]: ValueTypes["server_access_events_set_input"];
+	["server_access_events_stream_cursor_input"]: ValueTypes["server_access_events_stream_cursor_input"];
+	["server_access_events_stream_cursor_value_input"]: ValueTypes["server_access_events_stream_cursor_value_input"];
+	["server_access_events_update_column"]: ValueTypes["server_access_events_update_column"];
+	["server_access_events_updates"]: ValueTypes["server_access_events_updates"];
+	["server_access_players_aggregate_bool_exp"]: ValueTypes["server_access_players_aggregate_bool_exp"];
+	["server_access_players_aggregate_bool_exp_count"]: ValueTypes["server_access_players_aggregate_bool_exp_count"];
+	["server_access_players_aggregate_order_by"]: ValueTypes["server_access_players_aggregate_order_by"];
+	["server_access_players_arr_rel_insert_input"]: ValueTypes["server_access_players_arr_rel_insert_input"];
+	["server_access_players_avg_order_by"]: ValueTypes["server_access_players_avg_order_by"];
+	["server_access_players_bool_exp"]: ValueTypes["server_access_players_bool_exp"];
+	["server_access_players_constraint"]: ValueTypes["server_access_players_constraint"];
+	["server_access_players_inc_input"]: ValueTypes["server_access_players_inc_input"];
+	["server_access_players_insert_input"]: ValueTypes["server_access_players_insert_input"];
+	["server_access_players_max_order_by"]: ValueTypes["server_access_players_max_order_by"];
+	["server_access_players_min_order_by"]: ValueTypes["server_access_players_min_order_by"];
+	["server_access_players_on_conflict"]: ValueTypes["server_access_players_on_conflict"];
+	["server_access_players_order_by"]: ValueTypes["server_access_players_order_by"];
+	["server_access_players_pk_columns_input"]: ValueTypes["server_access_players_pk_columns_input"];
+	["server_access_players_select_column"]: ValueTypes["server_access_players_select_column"];
+	["server_access_players_set_input"]: ValueTypes["server_access_players_set_input"];
+	["server_access_players_stddev_order_by"]: ValueTypes["server_access_players_stddev_order_by"];
+	["server_access_players_stddev_pop_order_by"]: ValueTypes["server_access_players_stddev_pop_order_by"];
+	["server_access_players_stddev_samp_order_by"]: ValueTypes["server_access_players_stddev_samp_order_by"];
+	["server_access_players_stream_cursor_input"]: ValueTypes["server_access_players_stream_cursor_input"];
+	["server_access_players_stream_cursor_value_input"]: ValueTypes["server_access_players_stream_cursor_value_input"];
+	["server_access_players_sum_order_by"]: ValueTypes["server_access_players_sum_order_by"];
+	["server_access_players_update_column"]: ValueTypes["server_access_players_update_column"];
+	["server_access_players_updates"]: ValueTypes["server_access_players_updates"];
+	["server_access_players_var_pop_order_by"]: ValueTypes["server_access_players_var_pop_order_by"];
+	["server_access_players_var_samp_order_by"]: ValueTypes["server_access_players_var_samp_order_by"];
+	["server_access_players_variance_order_by"]: ValueTypes["server_access_players_variance_order_by"];
 	["server_map_rotation_aggregate_bool_exp"]: ValueTypes["server_map_rotation_aggregate_bool_exp"];
 	["server_map_rotation_aggregate_bool_exp_count"]: ValueTypes["server_map_rotation_aggregate_bool_exp_count"];
 	["server_map_rotation_aggregate_order_by"]: ValueTypes["server_map_rotation_aggregate_order_by"];
@@ -334536,6 +342540,69 @@ type ZEUS_VARIABLES = {
 	["server_map_rotation_var_pop_order_by"]: ValueTypes["server_map_rotation_var_pop_order_by"];
 	["server_map_rotation_var_samp_order_by"]: ValueTypes["server_map_rotation_var_samp_order_by"];
 	["server_map_rotation_variance_order_by"]: ValueTypes["server_map_rotation_variance_order_by"];
+	["server_migrations_aggregate_bool_exp"]: ValueTypes["server_migrations_aggregate_bool_exp"];
+	["server_migrations_aggregate_bool_exp_bool_and"]: ValueTypes["server_migrations_aggregate_bool_exp_bool_and"];
+	["server_migrations_aggregate_bool_exp_bool_or"]: ValueTypes["server_migrations_aggregate_bool_exp_bool_or"];
+	["server_migrations_aggregate_bool_exp_count"]: ValueTypes["server_migrations_aggregate_bool_exp_count"];
+	["server_migrations_aggregate_order_by"]: ValueTypes["server_migrations_aggregate_order_by"];
+	["server_migrations_append_input"]: ValueTypes["server_migrations_append_input"];
+	["server_migrations_arr_rel_insert_input"]: ValueTypes["server_migrations_arr_rel_insert_input"];
+	["server_migrations_avg_order_by"]: ValueTypes["server_migrations_avg_order_by"];
+	["server_migrations_bool_exp"]: ValueTypes["server_migrations_bool_exp"];
+	["server_migrations_constraint"]: ValueTypes["server_migrations_constraint"];
+	["server_migrations_delete_at_path_input"]: ValueTypes["server_migrations_delete_at_path_input"];
+	["server_migrations_delete_elem_input"]: ValueTypes["server_migrations_delete_elem_input"];
+	["server_migrations_delete_key_input"]: ValueTypes["server_migrations_delete_key_input"];
+	["server_migrations_inc_input"]: ValueTypes["server_migrations_inc_input"];
+	["server_migrations_insert_input"]: ValueTypes["server_migrations_insert_input"];
+	["server_migrations_max_order_by"]: ValueTypes["server_migrations_max_order_by"];
+	["server_migrations_min_order_by"]: ValueTypes["server_migrations_min_order_by"];
+	["server_migrations_on_conflict"]: ValueTypes["server_migrations_on_conflict"];
+	["server_migrations_order_by"]: ValueTypes["server_migrations_order_by"];
+	["server_migrations_pk_columns_input"]: ValueTypes["server_migrations_pk_columns_input"];
+	["server_migrations_prepend_input"]: ValueTypes["server_migrations_prepend_input"];
+	["server_migrations_select_column"]: ValueTypes["server_migrations_select_column"];
+	["server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_and_arguments_columns"]: ValueTypes["server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_and_arguments_columns"];
+	["server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_or_arguments_columns"]: ValueTypes["server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_or_arguments_columns"];
+	["server_migrations_set_input"]: ValueTypes["server_migrations_set_input"];
+	["server_migrations_stddev_order_by"]: ValueTypes["server_migrations_stddev_order_by"];
+	["server_migrations_stddev_pop_order_by"]: ValueTypes["server_migrations_stddev_pop_order_by"];
+	["server_migrations_stddev_samp_order_by"]: ValueTypes["server_migrations_stddev_samp_order_by"];
+	["server_migrations_stream_cursor_input"]: ValueTypes["server_migrations_stream_cursor_input"];
+	["server_migrations_stream_cursor_value_input"]: ValueTypes["server_migrations_stream_cursor_value_input"];
+	["server_migrations_sum_order_by"]: ValueTypes["server_migrations_sum_order_by"];
+	["server_migrations_update_column"]: ValueTypes["server_migrations_update_column"];
+	["server_migrations_updates"]: ValueTypes["server_migrations_updates"];
+	["server_migrations_var_pop_order_by"]: ValueTypes["server_migrations_var_pop_order_by"];
+	["server_migrations_var_samp_order_by"]: ValueTypes["server_migrations_var_samp_order_by"];
+	["server_migrations_variance_order_by"]: ValueTypes["server_migrations_variance_order_by"];
+	["server_player_sessions_aggregate_bool_exp"]: ValueTypes["server_player_sessions_aggregate_bool_exp"];
+	["server_player_sessions_aggregate_bool_exp_count"]: ValueTypes["server_player_sessions_aggregate_bool_exp_count"];
+	["server_player_sessions_aggregate_order_by"]: ValueTypes["server_player_sessions_aggregate_order_by"];
+	["server_player_sessions_arr_rel_insert_input"]: ValueTypes["server_player_sessions_arr_rel_insert_input"];
+	["server_player_sessions_avg_order_by"]: ValueTypes["server_player_sessions_avg_order_by"];
+	["server_player_sessions_bool_exp"]: ValueTypes["server_player_sessions_bool_exp"];
+	["server_player_sessions_constraint"]: ValueTypes["server_player_sessions_constraint"];
+	["server_player_sessions_inc_input"]: ValueTypes["server_player_sessions_inc_input"];
+	["server_player_sessions_insert_input"]: ValueTypes["server_player_sessions_insert_input"];
+	["server_player_sessions_max_order_by"]: ValueTypes["server_player_sessions_max_order_by"];
+	["server_player_sessions_min_order_by"]: ValueTypes["server_player_sessions_min_order_by"];
+	["server_player_sessions_on_conflict"]: ValueTypes["server_player_sessions_on_conflict"];
+	["server_player_sessions_order_by"]: ValueTypes["server_player_sessions_order_by"];
+	["server_player_sessions_pk_columns_input"]: ValueTypes["server_player_sessions_pk_columns_input"];
+	["server_player_sessions_select_column"]: ValueTypes["server_player_sessions_select_column"];
+	["server_player_sessions_set_input"]: ValueTypes["server_player_sessions_set_input"];
+	["server_player_sessions_stddev_order_by"]: ValueTypes["server_player_sessions_stddev_order_by"];
+	["server_player_sessions_stddev_pop_order_by"]: ValueTypes["server_player_sessions_stddev_pop_order_by"];
+	["server_player_sessions_stddev_samp_order_by"]: ValueTypes["server_player_sessions_stddev_samp_order_by"];
+	["server_player_sessions_stream_cursor_input"]: ValueTypes["server_player_sessions_stream_cursor_input"];
+	["server_player_sessions_stream_cursor_value_input"]: ValueTypes["server_player_sessions_stream_cursor_value_input"];
+	["server_player_sessions_sum_order_by"]: ValueTypes["server_player_sessions_sum_order_by"];
+	["server_player_sessions_update_column"]: ValueTypes["server_player_sessions_update_column"];
+	["server_player_sessions_updates"]: ValueTypes["server_player_sessions_updates"];
+	["server_player_sessions_var_pop_order_by"]: ValueTypes["server_player_sessions_var_pop_order_by"];
+	["server_player_sessions_var_samp_order_by"]: ValueTypes["server_player_sessions_var_samp_order_by"];
+	["server_player_sessions_variance_order_by"]: ValueTypes["server_player_sessions_variance_order_by"];
 	["server_plugins_aggregate_bool_exp"]: ValueTypes["server_plugins_aggregate_bool_exp"];
 	["server_plugins_aggregate_bool_exp_bool_and"]: ValueTypes["server_plugins_aggregate_bool_exp_bool_and"];
 	["server_plugins_aggregate_bool_exp_bool_or"]: ValueTypes["server_plugins_aggregate_bool_exp_bool_or"];
@@ -334558,6 +342625,11 @@ type ZEUS_VARIABLES = {
 	["server_plugins_stream_cursor_value_input"]: ValueTypes["server_plugins_stream_cursor_value_input"];
 	["server_plugins_update_column"]: ValueTypes["server_plugins_update_column"];
 	["server_plugins_updates"]: ValueTypes["server_plugins_updates"];
+	["server_recent_players_bool_exp"]: ValueTypes["server_recent_players_bool_exp"];
+	["server_recent_players_order_by"]: ValueTypes["server_recent_players_order_by"];
+	["server_recent_players_select_column"]: ValueTypes["server_recent_players_select_column"];
+	["server_recent_players_stream_cursor_input"]: ValueTypes["server_recent_players_stream_cursor_input"];
+	["server_recent_players_stream_cursor_value_input"]: ValueTypes["server_recent_players_stream_cursor_value_input"];
 	["server_regions_bool_exp"]: ValueTypes["server_regions_bool_exp"];
 	["server_regions_constraint"]: ValueTypes["server_regions_constraint"];
 	["server_regions_insert_input"]: ValueTypes["server_regions_insert_input"];
@@ -334571,6 +342643,18 @@ type ZEUS_VARIABLES = {
 	["server_regions_stream_cursor_value_input"]: ValueTypes["server_regions_stream_cursor_value_input"];
 	["server_regions_update_column"]: ValueTypes["server_regions_update_column"];
 	["server_regions_updates"]: ValueTypes["server_regions_updates"];
+	["server_rosters_bool_exp"]: ValueTypes["server_rosters_bool_exp"];
+	["server_rosters_constraint"]: ValueTypes["server_rosters_constraint"];
+	["server_rosters_insert_input"]: ValueTypes["server_rosters_insert_input"];
+	["server_rosters_on_conflict"]: ValueTypes["server_rosters_on_conflict"];
+	["server_rosters_order_by"]: ValueTypes["server_rosters_order_by"];
+	["server_rosters_pk_columns_input"]: ValueTypes["server_rosters_pk_columns_input"];
+	["server_rosters_select_column"]: ValueTypes["server_rosters_select_column"];
+	["server_rosters_set_input"]: ValueTypes["server_rosters_set_input"];
+	["server_rosters_stream_cursor_input"]: ValueTypes["server_rosters_stream_cursor_input"];
+	["server_rosters_stream_cursor_value_input"]: ValueTypes["server_rosters_stream_cursor_value_input"];
+	["server_rosters_update_column"]: ValueTypes["server_rosters_update_column"];
+	["server_rosters_updates"]: ValueTypes["server_rosters_updates"];
 	["servers_aggregate_bool_exp"]: ValueTypes["servers_aggregate_bool_exp"];
 	["servers_aggregate_bool_exp_bool_and"]: ValueTypes["servers_aggregate_bool_exp_bool_and"];
 	["servers_aggregate_bool_exp_bool_or"]: ValueTypes["servers_aggregate_bool_exp_bool_or"];
@@ -336131,11 +344215,6 @@ type ZEUS_VARIABLES = {
 	["v_player_multi_kills_var_pop_order_by"]: ValueTypes["v_player_multi_kills_var_pop_order_by"];
 	["v_player_multi_kills_var_samp_order_by"]: ValueTypes["v_player_multi_kills_var_samp_order_by"];
 	["v_player_multi_kills_variance_order_by"]: ValueTypes["v_player_multi_kills_variance_order_by"];
-	["v_player_queue_partners_bool_exp"]: ValueTypes["v_player_queue_partners_bool_exp"];
-	["v_player_queue_partners_order_by"]: ValueTypes["v_player_queue_partners_order_by"];
-	["v_player_queue_partners_select_column"]: ValueTypes["v_player_queue_partners_select_column"];
-	["v_player_queue_partners_stream_cursor_input"]: ValueTypes["v_player_queue_partners_stream_cursor_input"];
-	["v_player_queue_partners_stream_cursor_value_input"]: ValueTypes["v_player_queue_partners_stream_cursor_value_input"];
 	["v_player_weapon_damage_bool_exp"]: ValueTypes["v_player_weapon_damage_bool_exp"];
 	["v_player_weapon_damage_order_by"]: ValueTypes["v_player_weapon_damage_order_by"];
 	["v_player_weapon_damage_select_column"]: ValueTypes["v_player_weapon_damage_select_column"];

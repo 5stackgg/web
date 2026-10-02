@@ -47,7 +47,13 @@ const showConnectPassword = ref(false);
               {{ $t("server.form.type") }}
             </FormLabel>
             <FormControl>
-              <RadioGroup :model-value="serverKind" class="grid gap-3">
+              <!-- Inside a <form> reka's radio stops its click from bubbling,
+                   so the card's @click never sees a click on the circle. -->
+              <RadioGroup
+                :model-value="serverKind"
+                class="grid gap-3"
+                @update:model-value="setServerKind"
+              >
                 <div
                   class="flex items-center space-x-3 rounded-lg border p-3 transition-colors"
                   :class="
@@ -958,6 +964,10 @@ export default {
           this.form.setFieldValue("type", this.valveModeTypes[0]);
         }
         return;
+      }
+
+      if (!this.server && this.gameServerNodes.length > 0) {
+        this.form.setFieldValue("use_game_server_node", true);
       }
 
       if (!this.isCustomModeSelected) {

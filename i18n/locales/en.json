@@ -1733,7 +1733,11 @@
           },
           "account": {
             "title": "Account",
-            "description": "Name changes and sanctions."
+            "description": "Your name changes, warnings, sanctions and awards."
+          },
+          "teammate_bans": {
+            "title": "Banned teammates",
+            "description": "When a player you've played with in the last 6 months gets banned."
           },
           "news": {
             "title": "News",
@@ -1810,6 +1814,10 @@
           "AwardGranted": {
             "title": "Awards",
             "description": "You received an award."
+          },
+          "TeammateBanned": {
+            "title": "Banned teammates",
+            "description": "A player you've played with in the last 6 months was banned."
           },
           "EventReminder": {
             "title": "Event reminders",

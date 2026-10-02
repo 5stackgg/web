@@ -1733,7 +1733,11 @@
           },
           "account": {
             "title": "Cuenta",
-            "description": "Cambios de nombre y sanciones."
+            "description": "Tus cambios de nombre, advertencias, sanciones y premios."
+          },
+          "teammate_bans": {
+            "title": "Compañeros baneados",
+            "description": "Cuando un jugador con el que has jugado en los últimos 6 meses es baneado."
           },
           "news": {
             "title": "Noticias",
@@ -1810,6 +1814,10 @@
           "AwardGranted": {
             "title": "Premios",
             "description": "Has recibido un premio."
+          },
+          "TeammateBanned": {
+            "title": "Compañeros baneados",
+            "description": "Un jugador con el que has jugado en los últimos 6 meses ha sido baneado."
           },
           "EventReminder": {
             "title": "Recordatorios de evento",

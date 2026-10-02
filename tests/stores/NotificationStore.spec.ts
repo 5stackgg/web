@@ -72,4 +72,37 @@ describe("NotificationStore stacking", () => {
       notification: expect.objectContaining({ id: "warning" }),
     });
   });
+
+  it("stacks banned-teammate notices about different players together", async () => {
+    serve();
+    const store = useNotificationStore();
+    useAuthStore().me = { steam_id: ME } as any;
+    await flushPromises();
+
+    const banned = (id: string, entityId: string, created_at: string) => ({
+      ...row(id, "TeammateBanned", created_at),
+      entity_id: entityId,
+    });
+
+    const feed = observers.find((entry) => entry.root === "notifications");
+    feed!.observer.next({
+      data: {
+        notifications: [
+          banned("ban-2", "76561198000000003", "2026-09-28T12:00:00Z"),
+          banned("ban-1", "76561198000000002", "2026-09-27T12:00:00Z"),
+        ],
+      },
+    });
+    await flushPromises();
+
+    expect(store.stackedNotifications).toEqual([
+      expect.objectContaining({
+        kind: "stack",
+        notifications: [
+          expect.objectContaining({ id: "ban-2" }),
+          expect.objectContaining({ id: "ban-1" }),
+        ],
+      }),
+    ]);
+  });
 });

@@ -1733,7 +1733,11 @@
           },
           "account": {
             "title": "계정",
-            "description": "이름 변경 및 제재."
+            "description": "이름 변경, 경고, 제재 및 수상."
+          },
+          "teammate_bans": {
+            "title": "밴된 팀원",
+            "description": "최근 6개월 동안 함께 플레이한 플레이어가 밴되었을 때."
           },
           "news": {
             "title": "뉴스",
@@ -1810,6 +1814,10 @@
           "AwardGranted": {
             "title": "수상",
             "description": "수상했습니다."
+          },
+          "TeammateBanned": {
+            "title": "밴된 팀원",
+            "description": "최근 6개월 동안 함께 플레이한 플레이어가 밴되었습니다."
           },
           "EventReminder": {
             "title": "이벤트 알림",

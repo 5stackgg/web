@@ -1733,7 +1733,11 @@
           },
           "account": {
             "title": "アカウント",
-            "description": "名前の変更と処分。"
+            "description": "名前の変更、警告、処分、アワード。"
+          },
+          "teammate_bans": {
+            "title": "Ban されたチームメイト",
+            "description": "過去 6 か月以内に一緒にプレイしたプレイヤーが Ban されたとき。"
           },
           "news": {
             "title": "ニュース",
@@ -1810,6 +1814,10 @@
           "AwardGranted": {
             "title": "アワード",
             "description": "アワードを獲得しました。"
+          },
+          "TeammateBanned": {
+            "title": "Ban されたチームメイト",
+            "description": "過去 6 か月以内に一緒にプレイしたプレイヤーが Ban されました。"
           },
           "EventReminder": {
             "title": "イベントのリマインダー",

@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ref } from "vue";
+import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import NotificationStack from "~/components/notification/NotificationStack.vue";
 
@@ -12,6 +13,14 @@ const ADMIN_ALERT = {
   title: "Player Banned",
   role: "administrator",
   steam_id: null,
+  entity_id: "76561198000000002",
+};
+
+const BANNED_TEAMMATE = {
+  type: "TeammateBanned",
+  title: "Player Banned",
+  role: "user",
+  steam_id: "76561198000000001",
   entity_id: "76561198000000002",
 };
 
@@ -69,6 +78,18 @@ describe("NotificationStack collapsed sanction tint", () => {
     expect(card.find("h3 svg.lucide-ban-icon").exists()).toBe(true);
   });
 
+  it("tints a collapsed stack of banned-teammate notices", async () => {
+    const wrapper = await mountStack(BANNED_TEAMMATE);
+
+    const card = topCard(wrapper);
+    expect(card.classes()).toContain("overflow-hidden");
+    expect(card.find("span.absolute.w-1").classes()).toContain(
+      "bg-destructive",
+    );
+    expect(card.find("h3").classes()).toContain("text-destructive");
+    expect(card.find("h3 svg.lucide-ban-icon").exists()).toBe(true);
+  });
+
   it("leaves other collapsed stacks untinted", async () => {
     const wrapper = await mountStack({ entity_id: "match-1" });
 
@@ -76,5 +97,33 @@ describe("NotificationStack collapsed sanction tint", () => {
     expect(card.classes()).not.toContain("overflow-hidden");
     expect(card.find("span.absolute.w-1").exists()).toBe(false);
     expect(card.find("h3 svg").exists()).toBe(false);
+  });
+});
+
+describe("NotificationStack expanded banned-teammate stack", () => {
+  it("shows each banned player beside their own notice, not the newest one up top", async () => {
+    const wrapper = await mountSuspended(NotificationStack, {
+      props: {
+        notifications: [
+          notification("top", BANNED_TEAMMATE),
+          notification("older", {
+            ...BANNED_TEAMMATE,
+            entity_id: "76561198000000003",
+            created_at: "2026-09-27T12:00:00Z",
+          }),
+        ],
+      },
+      global: { stubs: { NotificationContext: true } },
+    });
+    unmount = () => wrapper.unmount();
+
+    await topCard(wrapper).trigger("click");
+    await flushPromises();
+
+    const contexts = wrapper.findAllComponents({ name: "NotificationContext" });
+    expect(contexts.map((context) => context.props("entityId"))).toEqual([
+      "76561198000000002",
+      "76561198000000003",
+    ]);
   });
 });

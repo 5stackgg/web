@@ -337659,6 +337659,7 @@ export enum e_notification_types_enum {
 	SeasonEnded = "SeasonEnded",
 	StorageScan = "StorageScan",
 	TeamInvite = "TeamInvite",
+	TeammateBanned = "TeammateBanned",
 	TournamentCheckInClosing = "TournamentCheckInClosing",
 	TournamentCheckInMissed = "TournamentCheckInMissed",
 	TournamentCheckInOpen = "TournamentCheckInOpen",

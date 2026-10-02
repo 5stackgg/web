@@ -17,6 +17,9 @@ export function sanctionNotificationTone(
   if (type === "PlayerWarning") {
     return "warning";
   }
+  if (type === "TeammateBanned") {
+    return "ban";
+  }
   if (
     type === "PlayerSanctioned" &&
     (role === "administrator" || (!!steam_id && steam_id === entity_id))

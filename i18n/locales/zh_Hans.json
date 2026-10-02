@@ -4365,6 +4365,38 @@
         "edit": "编辑配置",
         "empty": "未设置任何控制台变量。"
       },
+      "settings": {
+        "not_reported": "运行此插件的服务器上线后，会显示说明和默认值。",
+        "default": "默认：{value}",
+        "reset": "使用默认值",
+        "other_lines": "此配置中的其他 cvar：{count} 个。请在高级中编辑。"
+      },
+      "config_file": {
+        "title": "配置文件",
+        "view_repo": "在仓库中查看",
+        "open_node": "在节点上打开",
+        "using_shipped": "服务器使用插件自带的文件。",
+        "customize": "自定义",
+        "use_shipped": "使用插件的文件",
+        "view_form": "表单",
+        "view_json": "JSON",
+        "add": "添加{item}",
+        "empty_list": "这里还没有内容。",
+        "remove": "移除",
+        "move_up": "上移",
+        "move_down": "下移",
+        "status_shipped": "{file}：插件自带的文件",
+        "status_custom": "{file}：已自定义"
+      },
+      "forced": {
+        "title": "由插件在每张地图上设置 ({count})",
+        "hint": "{name} 会在每张地图加载后自行设置这些值，因此任何配置中的值都会被覆盖。",
+        "in_cfg": "{name} 会在每张地图上自行设置 {cvars}，因此此处设置的值会被覆盖。"
+      },
+      "tabs": {
+        "settings": "设置",
+        "advanced": "高级"
+      },
       "load": {
         "title": "不依赖游戏模式加载",
         "description": "选择哪些比赛会自行加载此插件。选用了该插件的游戏模式无论如何都会加载它。",

@@ -4365,6 +4365,38 @@
         "edit": "Redigera konfiguration",
         "empty": "Inga konsolvariabler angivna."
       },
+      "settings": {
+        "not_reported": "Beskrivningar och standardvärden visas när en server som kör det här pluginet kommer online.",
+        "default": "Standard: {value}",
+        "reset": "Använd standardvärdet",
+        "other_lines": "Andra cvars i den här konfigurationen: {count}. Redigera dem under Avancerat."
+      },
+      "config_file": {
+        "title": "Konfigurationsfil",
+        "view_repo": "Visa i Repo",
+        "open_node": "Öppna på Nod",
+        "using_shipped": "Servrar använder filen som följer med pluginet.",
+        "customize": "Anpassa",
+        "use_shipped": "Använd Pluginets Fil",
+        "view_form": "Formulär",
+        "view_json": "JSON",
+        "add": "Lägg till {item}",
+        "empty_list": "Inget här än.",
+        "remove": "Ta bort",
+        "move_up": "Flytta upp",
+        "move_down": "Flytta ner",
+        "status_shipped": "{file}: pluginets egen fil",
+        "status_custom": "{file}: anpassad"
+      },
+      "forced": {
+        "title": "Sätts av pluginet på varje karta ({count})",
+        "hint": "{name} sätter dessa själv efter att varje karta laddats, så ett värde för dem i en konfiguration skrivs över.",
+        "in_cfg": "{name} sätter {cvars} själv på varje karta, så värdet som anges här skrivs över."
+      },
+      "tabs": {
+        "settings": "Inställningar",
+        "advanced": "Avancerat"
+      },
       "load": {
         "title": "Ladda utan ett spelläge",
         "description": "Välj vilka matcher som laddar detta plugin på egen hand. Ett spelläge som väljer det laddar det ändå.",

@@ -4365,6 +4365,38 @@
         "edit": "Editar configuración",
         "empty": "No hay variables de consola definidas."
       },
+      "settings": {
+        "not_reported": "Las descripciones y los valores predeterminados aparecen cuando un servidor con este plugin se conecta.",
+        "default": "Predeterminado: {value}",
+        "reset": "Usar el predeterminado",
+        "other_lines": "Otras cvars en esta configuración: {count}. Edítalas en Avanzado."
+      },
+      "config_file": {
+        "title": "Archivo de configuración",
+        "view_repo": "Ver en el Repositorio",
+        "open_node": "Abrir en el Nodo",
+        "using_shipped": "Los servidores usan el archivo que incluye el plugin.",
+        "customize": "Personalizar",
+        "use_shipped": "Usar el Archivo del Plugin",
+        "view_form": "Formulario",
+        "view_json": "JSON",
+        "add": "Añadir {item}",
+        "empty_list": "Aún no hay nada.",
+        "remove": "Quitar",
+        "move_up": "Subir",
+        "move_down": "Bajar",
+        "status_shipped": "{file}: el archivo propio del plugin",
+        "status_custom": "{file}: personalizado"
+      },
+      "forced": {
+        "title": "Establecidas por el plugin en cada mapa ({count})",
+        "hint": "{name} las establece por sí mismo tras cargar cada mapa, así que cualquier valor en una configuración se sobrescribe.",
+        "in_cfg": "{name} establece {cvars} por sí mismo en cada mapa, así que el valor de aquí se sobrescribe."
+      },
+      "tabs": {
+        "settings": "Ajustes",
+        "advanced": "Avanzado"
+      },
       "load": {
         "title": "Cargar sin un modo de juego",
         "description": "Elige qué partidas cargan este plugin por sí solas. Un modo de juego que lo seleccione lo carga igualmente.",

@@ -4365,6 +4365,38 @@
         "edit": "Yapılandırmayı düzenle",
         "empty": "Ayarlanmış konsol değişkeni yok."
       },
+      "settings": {
+        "not_reported": "Açıklamalar ve varsayılan değerler, bu eklentiyi çalıştıran bir sunucu çevrimiçi olduğunda görünür.",
+        "default": "Varsayılan: {value}",
+        "reset": "Varsayılanı kullan",
+        "other_lines": "Bu yapılandırmadaki diğer cvar'lar: {count}. Bunları Gelişmiş bölümünden düzenleyin."
+      },
+      "config_file": {
+        "title": "Yapılandırma dosyası",
+        "view_repo": "Depoda Görüntüle",
+        "open_node": "Düğümde Aç",
+        "using_shipped": "Sunucular eklentiyle gelen dosyayı kullanır.",
+        "customize": "Özelleştir",
+        "use_shipped": "Eklentinin Dosyasını Kullan",
+        "view_form": "Form",
+        "view_json": "JSON",
+        "add": "{item} ekle",
+        "empty_list": "Henüz burada bir şey yok.",
+        "remove": "Kaldır",
+        "move_up": "Yukarı taşı",
+        "move_down": "Aşağı taşı",
+        "status_shipped": "{file}: eklentinin kendi dosyası",
+        "status_custom": "{file}: özelleştirildi"
+      },
+      "forced": {
+        "title": "Eklenti tarafından her haritada ayarlanır ({count})",
+        "hint": "{name} bunları her harita yüklendikten sonra kendisi ayarlar, bu yüzden herhangi bir yapılandırmadaki değerleri üzerine yazılır.",
+        "in_cfg": "{name} her haritada {cvars} değerini kendisi ayarlar, bu yüzden burada ayarlanan değer üzerine yazılır."
+      },
+      "tabs": {
+        "settings": "Ayarlar",
+        "advanced": "Gelişmiş"
+      },
       "load": {
         "title": "Oyun modu olmadan yükle",
         "description": "Bu eklentiyi kendiliğinden hangi maçların yükleyeceğini seçin. Eklentiyi seçen bir oyun modu onu zaten yükler.",

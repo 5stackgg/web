@@ -4365,6 +4365,38 @@
         "edit": "Modifica configurazione",
         "empty": "Nessuna variabile di console impostata."
       },
+      "settings": {
+        "not_reported": "Descrizioni e valori predefiniti compaiono quando un server con questo plugin va online.",
+        "default": "Predefinito: {value}",
+        "reset": "Usa il predefinito",
+        "other_lines": "Altre cvar impostate in questa configurazione: {count}. Modificale in Avanzate."
+      },
+      "config_file": {
+        "title": "File di configurazione",
+        "view_repo": "Vedi nel Repository",
+        "open_node": "Apri sul Nodo",
+        "using_shipped": "I server usano il file fornito con il plugin.",
+        "customize": "Personalizza",
+        "use_shipped": "Usa il File del Plugin",
+        "view_form": "Modulo",
+        "view_json": "JSON",
+        "add": "Aggiungi {item}",
+        "empty_list": "Ancora niente qui.",
+        "remove": "Rimuovi",
+        "move_up": "Sposta su",
+        "move_down": "Sposta giù",
+        "status_shipped": "{file}: il file del plugin",
+        "status_custom": "{file}: personalizzato"
+      },
+      "forced": {
+        "title": "Impostate dal plugin a ogni mappa ({count})",
+        "hint": "{name} le imposta da solo dopo il caricamento di ogni mappa, quindi qualsiasi valore in una configurazione viene sovrascritto.",
+        "in_cfg": "{name} imposta {cvars} da solo a ogni mappa, quindi il valore impostato qui viene sovrascritto."
+      },
+      "tabs": {
+        "settings": "Impostazioni",
+        "advanced": "Avanzate"
+      },
       "load": {
         "title": "Carica senza una modalità di gioco",
         "description": "Scegli quali partite caricano questo plugin da sole. Una modalità di gioco che lo seleziona lo carica comunque.",

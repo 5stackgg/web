@@ -4365,6 +4365,38 @@
         "edit": "Redigér konfiguration",
         "empty": "Ingen konsolvariabler angivet."
       },
+      "settings": {
+        "not_reported": "Beskrivelser og standardværdier vises, når en server med dette plugin kommer online.",
+        "default": "Standard: {value}",
+        "reset": "Brug standarden",
+        "other_lines": "Andre cvars i denne konfiguration: {count}. Rediger dem under Avanceret."
+      },
+      "config_file": {
+        "title": "Konfigurationsfil",
+        "view_repo": "Vis i Repo",
+        "open_node": "Åbn på Node",
+        "using_shipped": "Servere bruger den fil, pluginet leveres med.",
+        "customize": "Tilpas",
+        "use_shipped": "Brug Pluginets Fil",
+        "view_form": "Formular",
+        "view_json": "JSON",
+        "add": "Tilføj {item}",
+        "empty_list": "Intet her endnu.",
+        "remove": "Fjern",
+        "move_up": "Flyt op",
+        "move_down": "Flyt ned",
+        "status_shipped": "{file}: pluginets egen fil",
+        "status_custom": "{file}: tilpasset"
+      },
+      "forced": {
+        "title": "Sat af pluginet på hvert map ({count})",
+        "hint": "{name} sætter disse selv, når hvert map er indlæst, så en værdi for dem i en konfiguration bliver overskrevet.",
+        "in_cfg": "{name} sætter {cvars} selv på hvert map, så værdien her bliver overskrevet."
+      },
+      "tabs": {
+        "settings": "Indstillinger",
+        "advanced": "Avanceret"
+      },
       "load": {
         "title": "Indlæs uden en spiltilstand",
         "description": "Vælg hvilke kampe der indlæser dette plugin af sig selv. En spiltilstand, der vælger det, indlæser det alligevel.",

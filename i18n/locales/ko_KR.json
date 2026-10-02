@@ -4365,6 +4365,38 @@
         "edit": "구성 편집",
         "empty": "설정된 콘솔 변수가 없습니다."
       },
+      "settings": {
+        "not_reported": "이 플러그인을 실행하는 서버가 온라인이 되면 설명과 기본값이 표시됩니다.",
+        "default": "기본값: {value}",
+        "reset": "기본값 사용",
+        "other_lines": "이 설정의 다른 cvar: {count}개. 고급에서 편집하세요."
+      },
+      "config_file": {
+        "title": "설정 파일",
+        "view_repo": "저장소에서 보기",
+        "open_node": "노드에서 열기",
+        "using_shipped": "서버는 플러그인에 포함된 파일을 사용합니다.",
+        "customize": "사용자 지정",
+        "use_shipped": "플러그인 파일 사용",
+        "view_form": "양식",
+        "view_json": "JSON",
+        "add": "{item} 추가",
+        "empty_list": "아직 아무것도 없습니다.",
+        "remove": "제거",
+        "move_up": "위로 이동",
+        "move_down": "아래로 이동",
+        "status_shipped": "{file}: 플러그인 기본 파일",
+        "status_custom": "{file}: 사용자 지정됨"
+      },
+      "forced": {
+        "title": "플러그인이 맵마다 설정 ({count})",
+        "hint": "{name}은(는) 맵을 불러올 때마다 이 값을 직접 설정하므로 어떤 설정에 넣은 값도 덮어씌워집니다.",
+        "in_cfg": "{name}은(는) 맵마다 {cvars}을(를) 직접 설정하므로 여기서 설정한 값은 덮어씌워집니다."
+      },
+      "tabs": {
+        "settings": "설정",
+        "advanced": "고급"
+      },
       "load": {
         "title": "게임 모드 없이 불러오기",
         "description": "어떤 경기가 이 플러그인을 자체적으로 불러올지 선택하세요. 이 플러그인을 선택한 게임 모드는 어차피 불러옵니다.",

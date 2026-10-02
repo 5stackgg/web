@@ -4365,6 +4365,38 @@
         "edit": "Edytuj konfigurację",
         "empty": "Nie ustawiono żadnych zmiennych konsoli."
       },
+      "settings": {
+        "not_reported": "Opisy i wartości domyślne pojawią się, gdy serwer z tą wtyczką będzie online.",
+        "default": "Domyślnie: {value}",
+        "reset": "Użyj domyślnej",
+        "other_lines": "Inne cvary ustawione w tej konfiguracji: {count}. Edytuj je w sekcji Zaawansowane."
+      },
+      "config_file": {
+        "title": "Plik konfiguracyjny",
+        "view_repo": "Zobacz w Repozytorium",
+        "open_node": "Otwórz na Węźle",
+        "using_shipped": "Serwery używają pliku dostarczonego z wtyczką.",
+        "customize": "Dostosuj",
+        "use_shipped": "Użyj Pliku Wtyczki",
+        "view_form": "Formularz",
+        "view_json": "JSON",
+        "add": "Dodaj {item}",
+        "empty_list": "Jeszcze nic tu nie ma.",
+        "remove": "Usuń",
+        "move_up": "Przesuń w górę",
+        "move_down": "Przesuń w dół",
+        "status_shipped": "{file}: plik wtyczki",
+        "status_custom": "{file}: dostosowany"
+      },
+      "forced": {
+        "title": "Ustawiane przez wtyczkę na każdej mapie ({count})",
+        "hint": "{name} ustawia je samodzielnie po załadowaniu każdej mapy, więc wartość w dowolnej konfiguracji zostaje nadpisana.",
+        "in_cfg": "{name} samodzielnie ustawia {cvars} na każdej mapie, więc ustawiona tu wartość zostaje nadpisana."
+      },
+      "tabs": {
+        "settings": "Ustawienia",
+        "advanced": "Zaawansowane"
+      },
       "load": {
         "title": "Wczytuj bez trybu gry",
         "description": "Wybierz, które mecze wczytują tę wtyczkę samodzielnie. Tryb gry, który ją wybiera, wczytuje ją i tak.",

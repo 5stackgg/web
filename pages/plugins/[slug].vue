@@ -1015,6 +1015,7 @@ import type { PluginLoadTargets as LoadTargets } from "~/components/game-plugins
 import PluginCvarForm from "~/components/game-plugins/PluginCvarForm.vue";
 import PluginConfigFile from "~/components/game-plugins/PluginConfigFile.vue";
 import {
+  cloneConfig,
   cvarsSetIn,
   repoFileUrl,
   type PluginCvar,
@@ -1456,7 +1457,7 @@ export default {
       const stored = this.settings?.install_config ?? null;
 
       this.configBaseline = stored === null ? null : JSON.stringify(stored);
-      this.pluginConfig = stored === null ? null : structuredClone(stored);
+      this.pluginConfig = stored === null ? null : cloneConfig(stored);
       this.configDirty = false;
       this.configInvalid = false;
     },

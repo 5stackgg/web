@@ -6,7 +6,11 @@ import { Button } from "~/components/ui/button";
 import { Textarea } from "~/components/ui/textarea";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import SchemaField from "~/components/game-plugins/SchemaField.vue";
-import { schemaProblems, type JsonSchema } from "~/utilities/pluginConfig";
+import {
+  cloneConfig,
+  schemaProblems,
+  type JsonSchema,
+} from "~/utilities/pluginConfig";
 
 // null means the plugin reads the file it ships with. A value is the copy the
 // panel writes to every server that loads the plugin.
@@ -77,7 +81,7 @@ watch(
 function customize() {
   emit(
     "update:modelValue",
-    structuredClone(
+    cloneConfig(
       props.defaultConfig ?? (props.schema?.type === "array" ? [] : {}),
     ),
   );

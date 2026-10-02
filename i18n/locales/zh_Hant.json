@@ -4365,6 +4365,38 @@
         "edit": "編輯設定",
         "empty": "尚未設定任何主控台變數。"
       },
+      "settings": {
+        "not_reported": "執行此外掛的伺服器上線後，會顯示說明與預設值。",
+        "default": "預設：{value}",
+        "reset": "使用預設值",
+        "other_lines": "此設定中的其他 cvar：{count} 個。請在進階中編輯。"
+      },
+      "config_file": {
+        "title": "設定檔",
+        "view_repo": "在儲存庫中檢視",
+        "open_node": "在節點上開啟",
+        "using_shipped": "伺服器使用外掛隨附的檔案。",
+        "customize": "自訂",
+        "use_shipped": "使用外掛的檔案",
+        "view_form": "表單",
+        "view_json": "JSON",
+        "add": "新增{item}",
+        "empty_list": "這裡還沒有內容。",
+        "remove": "移除",
+        "move_up": "上移",
+        "move_down": "下移",
+        "status_shipped": "{file}：外掛隨附的檔案",
+        "status_custom": "{file}：已自訂"
+      },
+      "forced": {
+        "title": "由外掛在每張地圖上設定 ({count})",
+        "hint": "{name} 會在每張地圖載入後自行設定這些值，因此任何設定中的值都會被覆寫。",
+        "in_cfg": "{name} 會在每張地圖上自行設定 {cvars}，因此此處設定的值會被覆寫。"
+      },
+      "tabs": {
+        "settings": "設定",
+        "advanced": "進階"
+      },
       "load": {
         "title": "不依賴遊戲模式載入",
         "description": "選擇哪些比賽會自行載入此外掛。選用了該外掛的遊戲模式無論如何都會載入它。",

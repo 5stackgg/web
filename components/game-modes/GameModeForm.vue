@@ -22,7 +22,17 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
-import { ArchiveRestore, Trash2, ExternalLink } from "lucide-vue-next";
+import {
+  ArchiveRestore,
+  Trash2,
+  ExternalLink,
+  AlertTriangle,
+} from "lucide-vue-next";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
 import { VALVE_MODES } from "~/constants/valveModes";
 </script>
@@ -209,7 +219,21 @@ import { VALVE_MODES } from "~/constants/valveModes";
 
     <FormField v-slot="{ componentField }" name="cfg">
       <FormItem>
-        <FormLabel>{{ $t("game_modes.form.cfg") }}</FormLabel>
+        <div class="flex items-center gap-1.5">
+          <FormLabel>{{ $t("game_modes.form.cfg") }}</FormLabel>
+          <Tooltip v-if="forcedInMode">
+            <TooltipTrigger
+              type="button"
+              class="text-[hsl(var(--tac-amber))]"
+              :aria-label="forcedInMode"
+            >
+              <AlertTriangle class="h-3.5 w-3.5" />
+            </TooltipTrigger>
+            <TooltipContent class="max-w-xs">
+              {{ forcedInMode }}
+            </TooltipContent>
+          </Tooltip>
+        </div>
         <FormControl>
           <Textarea
             v-bind="componentField"
@@ -311,6 +335,8 @@ import { z } from "zod";
 import { toast } from "@/components/ui/toast";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
+import gql from "graphql-tag";
+import { cvarsSetIn } from "~/utilities/pluginConfig";
 
 export default {
   props: {
@@ -329,6 +355,7 @@ export default {
       selected: [] as Array<string>,
       availablePlugins: [] as Array<Record<string, any>>,
       loadsEverywhere: [] as Array<string>,
+      forcedCvars: [] as Array<Record<string, any>>,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -351,6 +378,28 @@ export default {
     };
   },
   apollo: {
+    // A column newer than the generated client, so a plain document.
+    forcedCvars: {
+      query: gql`
+        query GameModeForcedCvars {
+          game_plugins {
+            slug
+            name
+            forced_cvars
+          }
+        }
+      `,
+      context: { optional: true },
+      fetchPolicy: "no-cache",
+      update(data: { game_plugins: Array<Record<string, any>> }) {
+        return data.game_plugins.filter(
+          (plugin) => (plugin.forced_cvars ?? []).length > 0,
+        );
+      },
+      error() {
+        this.forcedCvars = [];
+      },
+    },
     loadsEverywhere: {
       query: typedGql("query")({
         game_plugin_installs: [
@@ -449,6 +498,39 @@ export default {
         (plugin: Record<string, any>) =>
           !this.loadsEverywhere.includes(plugin.slug),
       );
+    },
+    // A plugin that sets cvars itself on every map overwrites the same cvars
+    // here, so the mode's value never lands. Hover, not a banner: the mode
+    // still saves and runs.
+    forcedInMode(): string | null {
+      const set = cvarsSetIn(
+        ((this.form.values as Record<string, any>).cfg as string) ?? "",
+      );
+      const loading = new Set([...this.selected, ...this.loadsEverywhere]);
+
+      const hits = this.forcedCvars
+        .filter((plugin) => loading.has(plugin.slug))
+        .map((plugin) => ({
+          name: plugin.name,
+          cvars: (plugin.forced_cvars as Array<string>).filter((cvar) =>
+            set.has(cvar.toLowerCase()),
+          ),
+        }))
+        .filter((plugin) => plugin.cvars.length > 0);
+
+      if (hits.length === 0) {
+        return null;
+      }
+
+      return hits
+        .map(
+          (plugin) =>
+            this.$t("pages.plugins.forced.in_cfg", {
+              name: plugin.name,
+              cvars: plugin.cvars.join(", "),
+            }) as string,
+        )
+        .join(" ");
     },
     supportedRuntimes(): Array<string> {
       return this.gameMode?.supported_runtimes ?? [];

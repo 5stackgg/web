@@ -4365,6 +4365,38 @@
         "edit": "Konfiguration bearbeiten",
         "empty": "Keine Konsolenvariablen gesetzt."
       },
+      "settings": {
+        "not_reported": "Beschreibungen und Standardwerte erscheinen, sobald ein Server mit diesem Plugin online ist.",
+        "default": "Standard: {value}",
+        "reset": "Standard verwenden",
+        "other_lines": "Weitere CVars in dieser Konfiguration: {count}. Bearbeite sie unter Erweitert."
+      },
+      "config_file": {
+        "title": "Konfigurationsdatei",
+        "view_repo": "Im Repo Ansehen",
+        "open_node": "Auf Node Öffnen",
+        "using_shipped": "Server verwenden die Datei, die mit dem Plugin ausgeliefert wird.",
+        "customize": "Anpassen",
+        "use_shipped": "Datei des Plugins Verwenden",
+        "view_form": "Formular",
+        "view_json": "JSON",
+        "add": "{item} hinzufügen",
+        "empty_list": "Noch nichts vorhanden.",
+        "remove": "Entfernen",
+        "move_up": "Nach oben",
+        "move_down": "Nach unten",
+        "status_shipped": "{file}: die eigene Datei des Plugins",
+        "status_custom": "{file}: angepasst"
+      },
+      "forced": {
+        "title": "Vom Plugin auf jeder Map gesetzt ({count})",
+        "hint": "{name} setzt diese nach jedem Mapwechsel selbst, daher wird ein Wert dafür in jeder Konfiguration überschrieben.",
+        "in_cfg": "{name} setzt {cvars} auf jeder Map selbst, daher wird der hier gesetzte Wert überschrieben."
+      },
+      "tabs": {
+        "settings": "Einstellungen",
+        "advanced": "Erweitert"
+      },
       "load": {
         "title": "Ohne Spielmodus laden",
         "description": "Lege fest, welche Matches dieses Plugin von sich aus laden. Ein Spielmodus, der es auswählt, lädt es ohnehin.",

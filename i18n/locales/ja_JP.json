@@ -4365,6 +4365,38 @@
         "edit": "設定を編集",
         "empty": "コンソール変数は設定されていません。"
       },
+      "settings": {
+        "not_reported": "このプラグインを実行するサーバーがオンラインになると、説明とデフォルト値が表示されます。",
+        "default": "デフォルト: {value}",
+        "reset": "デフォルトを使用",
+        "other_lines": "この設定にあるその他のcvar: {count}件。詳細設定で編集してください。"
+      },
+      "config_file": {
+        "title": "設定ファイル",
+        "view_repo": "リポジトリで表示",
+        "open_node": "ノードで開く",
+        "using_shipped": "サーバーはプラグイン同梱のファイルを使用します。",
+        "customize": "カスタマイズ",
+        "use_shipped": "プラグインのファイルを使用",
+        "view_form": "フォーム",
+        "view_json": "JSON",
+        "add": "{item}を追加",
+        "empty_list": "まだ何もありません。",
+        "remove": "削除",
+        "move_up": "上へ移動",
+        "move_down": "下へ移動",
+        "status_shipped": "{file}: プラグイン同梱のファイル",
+        "status_custom": "{file}: カスタマイズ済み"
+      },
+      "forced": {
+        "title": "プラグインがマップごとに設定 ({count})",
+        "hint": "{name}は各マップの読み込み後にこれらを自ら設定するため、どの設定に書いた値も上書きされます。",
+        "in_cfg": "{name}はマップごとに{cvars}を自ら設定するため、ここで設定した値は上書きされます。"
+      },
+      "tabs": {
+        "settings": "設定",
+        "advanced": "詳細"
+      },
       "load": {
         "title": "ゲームモードなしで読み込む",
         "description": "どの試合がこのプラグインを単独で読み込むかを選びます。これを選択しているゲームモードは、いずれにせよ読み込みます。",

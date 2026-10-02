@@ -4365,6 +4365,38 @@
         "edit": "Edit configuration",
         "empty": "No console variables set."
       },
+      "settings": {
+        "not_reported": "Descriptions and defaults show up once a server running this plugin comes online.",
+        "default": "Default: {value}",
+        "reset": "Use the default",
+        "other_lines": "Other cvars set in this config: {count}. Edit them under Advanced."
+      },
+      "config_file": {
+        "title": "Config file",
+        "view_repo": "View in Repo",
+        "open_node": "Open on Node",
+        "using_shipped": "Servers use the file the plugin ships with.",
+        "customize": "Customize",
+        "use_shipped": "Use the Plugin's File",
+        "view_form": "Form",
+        "view_json": "JSON",
+        "add": "Add {item}",
+        "empty_list": "Nothing here yet.",
+        "remove": "Remove",
+        "move_up": "Move up",
+        "move_down": "Move down",
+        "status_shipped": "{file}: the plugin's own file",
+        "status_custom": "{file}: customized"
+      },
+      "forced": {
+        "title": "Set by the plugin on every map ({count})",
+        "hint": "{name} sets these itself after each map loads, so a value for them in any config is overwritten.",
+        "in_cfg": "{name} sets {cvars} itself on every map, so the value set here is overwritten."
+      },
+      "tabs": {
+        "settings": "Settings",
+        "advanced": "Advanced"
+      },
       "load": {
         "title": "Load without a game mode",
         "description": "Pick which matches load this plugin on their own. A game mode that selects it loads it either way.",

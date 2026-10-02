@@ -49,6 +49,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 
 definePageMeta({
   middleware: "admin",
@@ -100,8 +105,8 @@ definePageMeta({
           </div>
           <p class="text-sm text-muted-foreground">
             <a
-              v-if="authorUrl"
-              :href="authorUrl"
+              v-if="repoUrl"
+              :href="repoUrl"
               target="_blank"
               rel="noopener noreferrer"
               class="inline-flex items-center gap-1 underline-offset-2 hover:underline"
@@ -460,9 +465,22 @@ definePageMeta({
                   class="space-y-3 rounded-md border border-border/60 bg-muted/20 p-3"
                 >
                   <div class="space-y-0.5">
-                    <p class="text-sm font-medium">
-                      {{ $t("pages.plugins.config.title") }}
-                    </p>
+                    <div class="flex items-center gap-1.5">
+                      <p class="text-sm font-medium">
+                        {{ $t("pages.plugins.config.title") }}
+                      </p>
+                      <Tooltip v-if="forcedInCfg.length > 0">
+                        <TooltipTrigger
+                          class="text-[hsl(var(--tac-amber))]"
+                          :aria-label="forcedWarning"
+                        >
+                          <AlertTriangle class="h-3.5 w-3.5" />
+                        </TooltipTrigger>
+                        <TooltipContent class="max-w-xs">
+                          {{ forcedWarning }}
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
                     <p class="text-xs text-muted-foreground">
                       {{ $t("pages.plugins.config.hint") }}
                     </p>
@@ -478,6 +496,18 @@ definePageMeta({
                     >{{ cfgPreview }}</pre>
                   <p v-else class="text-xs text-muted-foreground">
                     {{ $t("pages.plugins.config.empty") }}
+                  </p>
+
+                  <p v-if="configPath" class="text-xs text-muted-foreground">
+                    {{
+                      configBaseline === null
+                        ? $t("pages.plugins.config_file.status_shipped", {
+                            file: configTitle,
+                          })
+                        : $t("pages.plugins.config_file.status_custom", {
+                            file: configTitle,
+                          })
+                    }}
                   </p>
 
                   <Button
@@ -810,16 +840,102 @@ definePageMeta({
             </DialogDescription>
           </DialogHeader>
 
-          <div
-            class="w-full overflow-hidden rounded-md border border-border/60"
-            style="height: 420px"
-          >
-            <div ref="cfgEditor" class="h-full w-full" />
+          <AnimatedFilters
+            v-if="cfgTabs.length > 1"
+            v-model="cfgTab"
+            square
+            :options="cfgTabs"
+          />
+
+          <div class="max-h-[60vh] min-h-0 overflow-y-auto pr-1">
+            <div v-show="cfgTab === 'settings'" class="space-y-4">
+              <PluginCvarForm
+                v-if="cvarRows.length > 0"
+                :cvars="cvarRows"
+                :model-value="pluginCfg"
+                @update:model-value="setCfgFromForm"
+              />
+
+              <Collapsible v-if="forcedCvars.length > 0">
+                <CollapsibleTrigger as-child>
+                  <button
+                    type="button"
+                    class="group flex w-full items-center justify-between gap-3 rounded-md border border-border/60 bg-muted/20 px-3 py-2 text-left transition-colors hover:bg-muted/40"
+                  >
+                    <span class="flex items-center gap-1.5 text-xs">
+                      <AlertTriangle
+                        v-if="forcedInCfg.length > 0"
+                        class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
+                      />
+                      {{
+                        $t("pages.plugins.forced.title", {
+                          count: forcedCvars.length,
+                        })
+                      }}
+                    </span>
+                    <ChevronDown
+                      class="h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180 motion-reduce:transition-none"
+                    />
+                  </button>
+                </CollapsibleTrigger>
+                <CollapsibleContent class="space-y-2 pt-2">
+                  <p class="text-xs text-muted-foreground">
+                    {{ $t("pages.plugins.forced.hint", { name: plugin.name }) }}
+                  </p>
+                  <div class="flex flex-wrap gap-1">
+                    <span
+                      v-for="cvar in forcedCvars"
+                      :key="cvar"
+                      class="rounded border px-1.5 py-0.5 font-mono text-[0.65rem]"
+                      :class="
+                        forcedInCfg.includes(cvar)
+                          ? 'border-[hsl(var(--tac-amber)/0.5)] text-[hsl(var(--tac-amber))]'
+                          : 'border-border/60 text-muted-foreground'
+                      "
+                    >
+                      {{ cvar }}
+                    </span>
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            </div>
+
+            <PluginConfigFile
+              v-if="configPath"
+              v-show="cfgTab === 'file'"
+              :model-value="pluginConfig"
+              :schema="settings?.config_schema ?? null"
+              :default-config="settings?.config_default ?? null"
+              :path="configPath"
+              :repo-url="shippedRepoUrl"
+              :can-open-shipped="!!shippedPath && !!shippedNodeId"
+              @update:model-value="setConfig"
+              @invalid="configInvalid = $event"
+              @open-shipped="openShipped"
+            />
+
+            <div v-show="cfgTab === 'advanced'" class="space-y-2">
+              <div
+                class="w-full overflow-hidden rounded-md border border-border/60"
+                style="height: 420px"
+              >
+                <div ref="cfgEditor" class="h-full w-full" />
+              </div>
+              <p
+                v-if="forcedInCfg.length > 0"
+                class="flex items-start gap-1.5 text-xs text-muted-foreground"
+              >
+                <AlertTriangle
+                  class="mt-0.5 h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]"
+                />
+                {{ forcedWarning }}
+              </p>
+            </div>
           </div>
 
           <DialogFooter class="gap-2 sm:justify-between">
             <Button
-              v-if="(plugin.cvars ?? []).length > 0"
+              v-if="cfgTab === 'advanced' && (plugin.cvars ?? []).length > 0"
               type="button"
               variant="ghost"
               size="sm"
@@ -841,7 +957,11 @@ definePageMeta({
               <Button
                 type="button"
                 size="sm"
-                :disabled="!cfgDirty || savingCfg"
+                :disabled="
+                  !(cfgDirty || configDirty) ||
+                  (configDirty && configInvalid) ||
+                  savingCfg
+                "
                 @click="saveCfg"
               >
                 {{ $t("common.save") }}
@@ -892,6 +1012,52 @@ import type * as Monaco from "monaco-editor";
 import { loadMonaco } from "~/utilities/loadMonaco";
 import PluginLoadTargets from "~/components/game-plugins/PluginLoadTargets.vue";
 import type { PluginLoadTargets as LoadTargets } from "~/components/game-plugins/PluginLoadTargets.vue";
+import PluginCvarForm from "~/components/game-plugins/PluginCvarForm.vue";
+import PluginConfigFile from "~/components/game-plugins/PluginConfigFile.vue";
+import {
+  cvarsSetIn,
+  repoFileUrl,
+  type PluginCvar,
+} from "~/utilities/pluginConfig";
+import gql from "graphql-tag";
+
+// Columns newer than the generated client, so these go out as plain documents.
+const PLUGIN_SETTINGS = gql`
+  query PluginSettings($slug: String!) {
+    game_plugins_by_pk(slug: $slug) {
+      slug
+      config_cvar
+      config_default
+      config_schema
+      config_shipped
+      forced_cvars
+      reported_cvars {
+        name
+        kind
+        default_value
+        description
+      }
+    }
+    game_plugin_installs_by_pk(plugin_slug: $slug) {
+      plugin_slug
+      config
+    }
+  }
+`;
+
+const SAVE_PLUGIN_SETTINGS = gql`
+  mutation SavePluginSettings(
+    $slug: String!
+    $set: game_plugin_installs_set_input!
+  ) {
+    update_game_plugin_installs_by_pk(
+      pk_columns: { plugin_slug: $slug }
+      _set: $set
+    ) {
+      plugin_slug
+    }
+  }
+`;
 
 const ALL_NODES = "__all__";
 
@@ -900,6 +1066,8 @@ let monaco: typeof Monaco | null = null;
 export default {
   components: {
     PluginLoadTargets,
+    PluginCvarForm,
+    PluginConfigFile,
   },
   data() {
     return {
@@ -926,6 +1094,12 @@ export default {
       cfgBaseline: "",
       cfgDirty: false,
       savingCfg: false,
+      cfgTab: "settings",
+      settings: null as Record<string, any> | null,
+      pluginConfig: null as unknown,
+      configBaseline: null as string | null,
+      configDirty: false,
+      configInvalid: false,
       disableGuidelines: false,
       savingGuidelines: false,
       autoUpdate: false,
@@ -1055,6 +1229,7 @@ export default {
                 version: true,
                 published_at: true,
                 install_path: true,
+                url: true,
               },
             ],
           },
@@ -1065,6 +1240,30 @@ export default {
       },
       update(data: { game_plugins_by_pk: Record<string, any> }) {
         return data.game_plugins_by_pk;
+      },
+    },
+    settings: {
+      query: PLUGIN_SETTINGS,
+      context: { optional: true },
+      // Shares game_plugins_by_pk with the catalog query, and the type has no
+      // id to merge on; caching both would have each evict the other.
+      fetchPolicy: "no-cache",
+      variables() {
+        return { slug: this.$route.params.slug };
+      },
+      skip() {
+        return !this.isAdministrator;
+      },
+      update(data: Record<string, any>) {
+        return {
+          ...(data.game_plugins_by_pk ?? {}),
+          install_config: data.game_plugin_installs_by_pk?.config ?? null,
+        };
+      },
+      // Until the API's metadata is applied these columns do not exist; the
+      // page still works off the catalog's plain cvar list.
+      error() {
+        this.settings = null;
       },
     },
     installedPages: {
@@ -1115,8 +1314,13 @@ export default {
     },
     showCfgDialog(open: boolean) {
       if (open) {
+        this.cfgTab = this.cfgTabs[0]?.key ?? "advanced";
         void this.$nextTick(() => this.mountCfgEditor());
         return;
+      }
+
+      if (this.configDirty) {
+        this.resetConfig();
       }
 
       // Disposed on close rather than reused: the dialog unmounts its content,
@@ -1131,6 +1335,14 @@ export default {
         this.pluginCfg = this.cfgBaseline;
         this.cfgDirty = false;
       }
+    },
+    settings: {
+      immediate: true,
+      handler() {
+        if (!this.configDirty) {
+          this.resetConfig();
+        }
+      },
     },
     desired: {
       immediate: true,
@@ -1228,7 +1440,36 @@ export default {
     cancelCfg() {
       this.setCfgValue(this.cfgBaseline);
       this.cfgDirty = false;
+      this.resetConfig();
       this.showCfgDialog = false;
+    },
+    setCfgFromForm(value: string) {
+      this.setCfgValue(value);
+      this.cfgDirty = value !== this.cfgBaseline;
+    },
+    setConfig(value: unknown) {
+      this.pluginConfig = value;
+      this.configDirty =
+        (value === null ? null : JSON.stringify(value)) !== this.configBaseline;
+    },
+    resetConfig() {
+      const stored = this.settings?.install_config ?? null;
+
+      this.configBaseline = stored === null ? null : JSON.stringify(stored);
+      this.pluginConfig = stored === null ? null : structuredClone(stored);
+      this.configDirty = false;
+      this.configInvalid = false;
+    },
+    openShipped() {
+      if (!this.shippedNodeId || !this.shippedPath) {
+        return;
+      }
+
+      useFilePopout().openFiles({
+        scope: "node",
+        id: this.shippedNodeId,
+        path: this.shippedPath,
+      });
     },
     async mountCfgEditor() {
       const el = this.$refs.cfgEditor as HTMLElement | undefined;
@@ -1298,23 +1539,27 @@ export default {
       this.savingCfg = true;
 
       const value = this.pluginCfg;
+      const config = this.pluginConfig;
 
       try {
         await (this as any).$apollo.mutate({
-          mutation: generateMutation({
-            update_game_plugin_installs_by_pk: [
-              {
-                pk_columns: { plugin_slug: this.$route.params.slug as string },
-                _set: { cfg: value },
-              },
-              { plugin_slug: true },
-            ],
-          }),
+          mutation: SAVE_PLUGIN_SETTINGS,
+          variables: {
+            slug: this.$route.params.slug as string,
+            set: {
+              ...(this.cfgDirty ? { cfg: value } : {}),
+              ...(this.configDirty ? { config } : {}),
+            },
+          },
         });
 
         this.cfgBaseline = value;
         this.cfgDirty = false;
+        this.configBaseline = config === null ? null : JSON.stringify(config);
+        this.configDirty = false;
         this.showCfgDialog = false;
+
+        void (this as any).$apollo.queries.settings?.refetch();
 
         toast({ title: this.$t("pages.plugins.config.saved") });
       } catch (error) {
@@ -1571,8 +1816,114 @@ export default {
         .map((slug) => this.paired.find((entry) => entry.slug === slug))
         .filter(Boolean) as Array<Record<string, any>>;
     },
-    authorUrl(): string | null {
-      return this.plugin ? pluginAuthorUrl(this.plugin) : null;
+    // The README tab already resolved the repository for this runtime's
+    // build, which is the code someone clicking the byline wants to read.
+    repoUrl(): string | null {
+      if (this.readmeRepo) {
+        return `https://github.com/${this.readmeRepo}`;
+      }
+
+      const homepage = this.plugin?.homepage?.match(
+        /^https?:\/\/github\.com\/[^/]+\/[^/#?]+/i,
+      )?.[0];
+
+      return homepage ?? (this.plugin ? pluginAuthorUrl(this.plugin) : null);
+    },
+    cvarRows(): Array<PluginCvar> {
+      const reported = new Map(
+        (this.settings?.reported_cvars ?? []).map(
+          (cvar: Record<string, any>) => [cvar.name.toLowerCase(), cvar],
+        ),
+      );
+      const managed = this.configPath
+        ? this.settings?.config_cvar?.toLowerCase()
+        : null;
+
+      return (this.plugin?.cvars ?? [])
+        .filter((name: string) => name.toLowerCase() !== managed)
+        .map((name: string) => {
+          const cvar = reported.get(name.toLowerCase()) as
+            | Record<string, any>
+            | undefined;
+
+          return {
+            name,
+            kind: cvar?.kind ?? null,
+            defaultValue: cvar?.default_value ?? null,
+            description: cvar?.description || null,
+          };
+        });
+    },
+    configPath(): string | null {
+      return (
+        this.plugin?.config_path?.replaceAll("{runtime}", this.runtime) ?? null
+      );
+    },
+    configTitle(): string {
+      return (
+        this.settings?.config_schema?.title ??
+        (this.$t("pages.plugins.config_file.title") as string)
+      );
+    },
+    forcedCvars(): Array<string> {
+      return this.settings?.forced_cvars ?? [];
+    },
+    forcedInCfg(): Array<string> {
+      const set = cvarsSetIn(this.pluginCfg);
+
+      return this.forcedCvars.filter((cvar) => set.has(cvar.toLowerCase()));
+    },
+    forcedWarning(): string {
+      return this.$t("pages.plugins.forced.in_cfg", {
+        name: this.plugin?.name ?? "",
+        cvars: this.forcedInCfg.join(", "),
+      }) as string;
+    },
+    cfgTabs(): Array<{ key: string; label: string }> {
+      return [
+        ...(this.cvarRows.length > 0 || this.forcedCvars.length > 0
+          ? [{ key: "settings", label: this.$t("pages.plugins.tabs.settings") }]
+          : []),
+        ...(this.configPath ? [{ key: "file", label: this.configTitle }] : []),
+        { key: "advanced", label: this.$t("pages.plugins.tabs.advanced") },
+      ] as Array<{ key: string; label: string }>;
+    },
+    shippedPath(): string | null {
+      return (
+        this.settings?.config_shipped?.path?.replaceAll(
+          "{runtime}",
+          this.runtime,
+        ) ?? null
+      );
+    },
+    shippedNodeId(): string | null {
+      return (
+        this.nodes.find((node: Record<string, any>) =>
+          this.installedOn(node.id),
+        )?.id ?? null
+      );
+    },
+    // At the release the nodes actually installed, so the file matches what
+    // is on disk rather than whatever the default branch has moved on to.
+    shippedRepoUrl(): string | null {
+      const installed = this.installs.find(
+        (entry: Record<string, any>) =>
+          entry.plugin_slug === this.$route.params.slug &&
+          entry.detected &&
+          entry.status === "Installed",
+      )?.version;
+      const forRuntime = this.versions.filter(
+        (version: Record<string, any>) => version.runtime === this.runtime,
+      );
+      const release =
+        forRuntime.find(
+          (version: Record<string, any>) => version.version === installed,
+        ) ?? forRuntime[0];
+
+      return repoFileUrl(
+        release?.url,
+        this.settings?.config_shipped?.repo_path,
+      );
     },
     isPanelPlugin(): boolean {
       return ["panel", "bundle"].includes(this.plugin?.kind);

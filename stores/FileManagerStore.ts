@@ -193,7 +193,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
 
     missingPath.value = null;
 
-    for (const segment of segments) {
+    for (const [index, segment] of segments.entries()) {
       const next = walked ? `${walked}/${segment}` : segment;
 
       // Whether the child exists is answered by its parent's listing.
@@ -201,9 +201,18 @@ export const useFileManagerStore = defineStore("fileManager", () => {
       // reported every unvisited directory as missing -- and, worse, left
       // currentPath pointing at one that was never confirmed, which then got
       // listed and 400d.
-      const exists = (fileTree.value.get(walked) || []).some(
-        (item) => item.path === next && item.isDirectory,
+      const entry = (fileTree.value.get(walked) || []).find(
+        (item) => item.path === next,
       );
+
+      // A deep link can name a file, such as a plugin's shipped config.
+      if (entry && !entry.isDirectory && index === segments.length - 1) {
+        currentPath.value = walked;
+        await openFile(next);
+        return;
+      }
+
+      const exists = !!entry?.isDirectory;
 
       // A plugin writes its config on first load, so the directory legitimately
       // may not exist yet. Remember what was asked for so the UI can offer to

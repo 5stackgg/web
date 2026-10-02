@@ -4365,6 +4365,38 @@
         "edit": "Modifier la configuration",
         "empty": "Aucune variable de console définie."
       },
+      "settings": {
+        "not_reported": "Les descriptions et valeurs par défaut apparaissent dès qu'un serveur exécutant ce plugin est en ligne.",
+        "default": "Par défaut : {value}",
+        "reset": "Utiliser la valeur par défaut",
+        "other_lines": "Autres cvars définies dans cette configuration : {count}. Modifiez-les dans Avancé."
+      },
+      "config_file": {
+        "title": "Fichier de configuration",
+        "view_repo": "Voir dans le Dépôt",
+        "open_node": "Ouvrir sur le Nœud",
+        "using_shipped": "Les serveurs utilisent le fichier fourni avec le plugin.",
+        "customize": "Personnaliser",
+        "use_shipped": "Utiliser le Fichier du Plugin",
+        "view_form": "Formulaire",
+        "view_json": "JSON",
+        "add": "Ajouter {item}",
+        "empty_list": "Rien pour l'instant.",
+        "remove": "Retirer",
+        "move_up": "Monter",
+        "move_down": "Descendre",
+        "status_shipped": "{file} : le fichier du plugin",
+        "status_custom": "{file} : personnalisé"
+      },
+      "forced": {
+        "title": "Définies par le plugin à chaque carte ({count})",
+        "hint": "{name} les définit lui-même après le chargement de chaque carte, donc toute valeur dans une configuration est écrasée.",
+        "in_cfg": "{name} définit {cvars} lui-même à chaque carte, donc la valeur définie ici est écrasée."
+      },
+      "tabs": {
+        "settings": "Paramètres",
+        "advanced": "Avancé"
+      },
       "load": {
         "title": "Charger sans mode de jeu",
         "description": "Choisissez quels matchs chargent ce plugin d'eux-mêmes. Un mode de jeu qui le sélectionne le charge de toute façon.",

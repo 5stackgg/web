@@ -2635,12 +2635,13 @@
           "create_title": "新增遊戲模式",
           "edit_title": "編輯遊戲模式",
           "sheet_description": "模式在伺服器啟動時套用，因此修改會影響該伺服器上的下一場比賽。",
-          "empty": "尚無遊戲模式。建立一個，讓比賽可以執行競技以外的玩法。",
           "requires_plugins": "請先啟用遊戲外掛——沒有外掛，模式就沒有可載入的內容。",
-          "disabled": "已停用",
-          "competitive": "可用於競技",
-          "casual_only": "僅休閒",
-          "plugin_count": "{count} 個外掛",
+          "runs_on": "執行於",
+          "always_on": "永遠開啟",
+          "draft_lobbies": "選人大廳",
+          "no_plugins": "無外掛：僅 cvar",
+          "new_mode_hint": "選擇外掛、cvar 及其執行的 Valve 模式",
+          "official": "5Stack 官方",
           "archived": "已封存"
         },
         "utility": {
@@ -3658,6 +3659,7 @@
         "enabled": "已啟用",
         "eyebrow": "專用伺服器",
         "tabs": {
+          "overview": "概覽",
           "players": "玩家",
           "console": "主控台",
           "logs": "日誌",
@@ -3775,8 +3777,12 @@
         },
         "settings": {
           "title": "伺服器設定",
+          "server_group": "伺服器",
+          "general": "一般",
           "group": "社群伺服器",
           "select_section": "區段",
+          "delete_title": "刪除伺服器",
+          "delete_description": "從 5Stack 移除此伺服器。遊戲伺服器節點上的伺服器也會被關閉。",
           "save": "儲存",
           "restart_note": "儲存後伺服器會重新啟動一次。",
           "live_note": "幾秒內生效。",
@@ -8710,6 +8716,7 @@
       "select_custom_preset": "選擇自訂預設組合",
       "valve_preset_group": "Valve 預設",
       "custom_mode_group": "自訂模式",
+      "edit_mode": "編輯模式",
       "custom_mode_group_locked": "需要遊戲伺服器節點",
       "custom_modes_need_node_title": "自訂模式需要遊戲伺服器節點",
       "custom_modes_need_node_description": "自訂模式是一組外掛，5Stack 會把它們安裝到執行該模式的伺服器上。它無法在第三方獨立伺服器上安裝任何東西，所以請在「連線」中把這台伺服器掛到某個遊戲伺服器節點上，才能選擇自訂模式。",
@@ -10413,9 +10420,12 @@
       "no_plugins": "目錄中尚無遊戲外掛。請先同步外掛來源並安裝一個。",
       "restart_required": "需要重新啟動",
       "cfg": "主控台變數",
-      "cfg_description": "在比賽類型的設定之後執行，因此這些值優先生效。",
+      "cfg_description": "在比賽中於比賽類型設定之後執行，在社群伺服器上於每次換圖時在 Valve 遊戲模式設定之後執行，因此這些值優先。",
       "extra_game_params": "額外啟動參數",
       "extra_game_params_description": "伺服器啟動時附加到命令列。",
+      "valve_mode": "Valve 遊戲模式",
+      "valve_mode_custom": "自訂",
+      "valve_mode_description": "使用此模式的社群伺服器啟動時所用的 CS2 遊戲模式。以 Valve 模式為基礎的外掛（如 Deathmatch）需要它：自訂模式下所有人都會在己方出生點重生。比賽保留各自的比賽類型。",
       "save": "儲存模式",
       "saved": "已儲存遊戲模式",
       "archived": "已封存遊戲模式",
@@ -10428,7 +10438,8 @@
       "runtime_none": "這些外掛沒有共同的框架，因此此模式無法在任何地方執行。請移除面向另一種框架的那個外掛。",
       "runtime_only": "僅在 {runtime} 上執行，因為這是這裡所有外掛都有推出版本的唯一框架。",
       "open_plugin": "在新分頁中開啟該外掛的頁面",
-      "archived_instead": "已經有比賽使用過這個模式，因此它被隱藏而不是刪除。您可以隨時還原它。"
+      "archived_instead": "已經有比賽使用過這個模式，因此它被隱藏而不是刪除。您可以隨時還原它。",
+      "official_note": "5Stack 官方模式：道具練習伺服器以此模式執行，因此無法刪除、停用或重新命名。其 cvar 可以編輯。"
     }
   },
   "edge_status": {

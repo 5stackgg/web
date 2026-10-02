@@ -2635,12 +2635,13 @@
           "create_title": "Yeni Oyun Modu",
           "edit_title": "Oyun Modunu Düzenle",
           "sheet_description": "Modlar sunucu başlarken uygulanır, bu yüzden bir değişiklik o sunucudaki sonraki maçı etkiler.",
-          "empty": "Henüz oyun modu yok. Maçların rekabetçi dışında bir şey oynayabilmesi için bir tane oluştur.",
           "requires_plugins": "Önce Oyun Eklentilerini aç — onlar olmadan bir modun yükleyecek bir şeyi olmaz.",
-          "disabled": "Devre dışı",
-          "competitive": "Rekabetçiye uygun",
-          "casual_only": "Yalnızca casual",
-          "plugin_count": "{count} eklenti",
+          "runs_on": "Çalıştığı mod",
+          "always_on": "Her zaman açık",
+          "draft_lobbies": "Draft lobileri",
+          "no_plugins": "Eklenti yok: yalnızca cvar'lar",
+          "new_mode_hint": "Eklentileri, cvar'ları ve üzerinde çalışacağı Valve modunu seç",
+          "official": "Resmi 5Stack",
           "archived": "Arşivlendi"
         },
         "utility": {
@@ -3658,6 +3659,7 @@
         "enabled": "Etkin",
         "eyebrow": "Özel sunucu",
         "tabs": {
+          "overview": "Genel Bakış",
           "players": "Oyuncular",
           "console": "Konsol",
           "logs": "Günlükler",
@@ -3775,8 +3777,12 @@
         },
         "settings": {
           "title": "Sunucu Ayarları",
+          "server_group": "Sunucu",
+          "general": "Genel",
           "group": "Topluluk Sunucusu",
           "select_section": "Bölüm",
+          "delete_title": "Sunucuyu Sil",
+          "delete_description": "Bu sunucuyu 5Stack'ten kaldırır. Bir oyun sunucusu düğümündeki sunucu da kapatılır.",
           "save": "Kaydet",
           "restart_note": "Kaydetmek sunucuyu bir kez yeniden başlatır.",
           "live_note": "Saniyeler içinde uygulanır.",
@@ -8710,6 +8716,7 @@
       "select_custom_preset": "Özel Hazır Ayar Seç",
       "valve_preset_group": "Valve ön ayarları",
       "custom_mode_group": "Özel modlar",
+      "edit_mode": "Modu düzenle",
       "custom_mode_group_locked": "sunucu düğümü gerekir",
       "custom_modes_need_node_title": "Özel modlar için sunucu düğümü gerekir",
       "custom_modes_need_node_description": "Özel bir mod, 5Stack'in çalıştığı sunucuya kurduğu bir eklenti setidir. Üçüncü taraf bir adanmış sunucuya hiçbir şey kuramaz; bu yüzden bir tane seçebilmek için bu sunucuyu Bağlantı altında bir sunucu düğümüne bağla.",
@@ -10413,9 +10420,12 @@
       "no_plugins": "Katalogda henüz oyun eklentisi yok. Önce kayıt defterini eşitle ve bir tane kur.",
       "restart_required": "Yeniden başlatma gerekli",
       "cfg": "Konsol Değişkenleri",
-      "cfg_description": "Maç türünün yapılandırmasından sonra çalıştırılır, bu yüzden bu değerler geçerli olur.",
+      "cfg_description": "Bir maçta maç türünün yapılandırmasından sonra, bir topluluk sunucusunda ise her harita değişiminde Valve oyun modunun yapılandırmasından sonra çalıştırılır; bu yüzden bu değerler geçerli olur.",
       "extra_game_params": "Ek Başlatma Parametreleri",
       "extra_game_params_description": "Sunucu başlarken komut satırına eklenir.",
+      "valve_mode": "Valve Oyun Modu",
+      "valve_mode_custom": "Özel",
+      "valve_mode_description": "Bu modu çalıştıran bir topluluk sunucusunun başladığı CS2 oyun modu. Deathmatch gibi bir Valve modu üzerine kurulu eklentiler buna ihtiyaç duyar: Özel modda herkes kendi takımının doğma noktasında doğar. Maçlar kendi maç türlerini korur.",
       "save": "Modu Kaydet",
       "saved": "Oyun modu kaydedildi",
       "archived": "Oyun modu arşivlendi",
@@ -10428,7 +10438,8 @@
       "runtime_none": "Bu eklentilerin ortak bir framework'ü yok, bu yüzden bu mod hiçbir yerde çalışamaz. Diğer framework'ü hedefleyen eklentiyi kaldır.",
       "runtime_only": "Yalnızca {runtime} üzerinde çalışır, çünkü buradaki tüm eklentilerin çıktığı tek framework o.",
       "open_plugin": "Bu eklentinin sayfasını yeni sekmede aç",
-      "archived_instead": "Bu modda daha önce maç oynandığı için silinmek yerine gizlendi. İstediğin zaman geri getirebilirsin."
+      "archived_instead": "Bu modda daha önce maç oynandığı için silinmek yerine gizlendi. İstediğin zaman geri getirebilirsin.",
+      "official_note": "Resmi bir 5Stack modu: utility pratik sunucuları bunun üzerinde çalışır, bu yüzden silinemez, devre dışı bırakılamaz veya yeniden adlandırılamaz. Cvar'larını düzenleyebilirsin."
     }
   },
   "edge_status": {

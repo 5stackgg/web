@@ -47,7 +47,13 @@ const showConnectPassword = ref(false);
               {{ $t("server.form.type") }}
             </FormLabel>
             <FormControl>
-              <RadioGroup :model-value="serverKind" class="grid gap-3">
+              <!-- Inside a <form> reka's radio stops its click from bubbling,
+                   so the card's @click never sees a click on the circle. -->
+              <RadioGroup
+                :model-value="serverKind"
+                class="grid gap-3"
+                @update:model-value="setServerKind"
+              >
                 <div
                   class="flex items-center space-x-3 rounded-lg border p-3 transition-colors"
                   :class="
@@ -301,7 +307,19 @@ const showConnectPassword = ref(false);
         <Fold :open="serverKind === 'presets'">
           <FormField v-slot="{ componentField }" name="type">
             <FormItem>
-              <FormLabel>{{ $t("server.form.custom_mode_group") }}</FormLabel>
+              <div class="flex items-center justify-between gap-3">
+                <FormLabel>{{ $t("server.form.custom_mode_group") }}</FormLabel>
+                <!-- What a mode loads and how it boots belongs to the mode,
+                     not the server, so it is edited where modes live. -->
+                <NuxtLink
+                  v-if="isAdmin && isCustomModeSelected"
+                  :to="editModeLink"
+                  class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-[hsl(var(--tac-amber))]"
+                  data-testid="edit-game-mode"
+                >
+                  {{ $t("server.form.edit_mode") }}
+                </NuxtLink>
+              </div>
               <Select v-bind="componentField">
                 <FormControl>
                   <SelectTrigger>
@@ -321,7 +339,7 @@ const showConnectPassword = ref(false);
                       v-for="gameMode in customModes"
                       :key="gameMode.id"
                       :value="gameMode.id"
-                      :disabled="!hasGameServerNode"
+                      :disabled="!runsOnNode"
                       class="relative flex w-full cursor-default select-none flex-col items-start rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
                     >
                       <span
@@ -349,12 +367,12 @@ const showConnectPassword = ref(false);
 
         <!-- A custom mode is plugins the panel installs onto the container it
              runs; a third-party dedicated server gives it nothing to install
-             into, so the modes stay locked until a node is attached. -->
+             into, so the modes stay locked unless it runs on a node. -->
         <Fold
           :open="
             serverKind === 'presets' &&
             customModes.length > 0 &&
-            !hasGameServerNode
+            !runsOnNode
           "
         >
           <Alert variant="warning">
@@ -586,6 +604,7 @@ import { e_server_types_enum } from "~/generated/zeus";
 
 import { toast } from "@/components/ui/toast";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+import { useAuthStore } from "~/stores/AuthStore";
 
 // Literals rather than the generated enum: a type added by a migration is
 // absent from ~/generated/zeus until codegen runs against a migrated database,
@@ -725,6 +744,21 @@ export default {
             )
             .refine(
               (data) => {
+                if (!data.use_game_server_node || this.server) {
+                  return true;
+                }
+                return (
+                  !!data.game_server_node_id &&
+                  data.game_server_node_id !== "none"
+                );
+              },
+              {
+                message: this.$t("server.form.select_game_server_node"),
+                path: ["game_server_node_id"],
+              },
+            )
+            .refine(
+              (data) => {
                 if (this.server) {
                   return true;
                 }
@@ -790,11 +824,11 @@ export default {
         }
       },
     },
-    // Detaching the node (or never picking one) leaves a custom mode with
-    // nothing to install into; fall back to a preset rather than save a mode
-    // the server could not boot with.
-    hasGameServerNode(has: boolean) {
-      if (!has && this.holdsModeId) {
+    // Switching to a manual host leaves a custom mode with nothing to install
+    // into; fall back to a preset rather than save a mode the server could
+    // not boot with.
+    runsOnNode(runs: boolean) {
+      if (!runs && this.holdsModeId) {
         this.form.setFieldValue("type", this.valveModeTypes[0]);
       }
     },
@@ -827,6 +861,15 @@ export default {
     },
   },
   computed: {
+    isAdmin(): boolean {
+      return useAuthStore().isAdmin;
+    },
+    editModeLink() {
+      return {
+        path: "/settings/application/game-modes",
+        query: { mode: this.form.values.type },
+      };
+    },
     isManagedRankedServer() {
       return this.form.values.type === SERVER_TYPE_RANKED;
     },
@@ -890,14 +933,13 @@ export default {
     isEditingGameServerNode() {
       return !!(this.server && this.server.game_server_node_id);
     },
-    hasGameServerNode(): boolean {
-      if (this.isEditingGameServerNode) {
-        return true;
+    // True before a node is picked: the schema requires one on submit, and
+    // gating the modes on the pick greys them out in the meantime.
+    runsOnNode(): boolean {
+      if (this.server) {
+        return this.isEditingGameServerNode;
       }
-      const nodeId = this.form.values.game_server_node_id;
-      return (
-        !!this.form.values.use_game_server_node && !!nodeId && nodeId !== "none"
-      );
+      return !!this.form.values.use_game_server_node;
     },
     // Anything in `type` that is not a preset is a mode id. Whether the mode
     // is still one this server can run (enabled, this runtime, not csgo) is a
@@ -958,6 +1000,10 @@ export default {
           this.form.setFieldValue("type", this.valveModeTypes[0]);
         }
         return;
+      }
+
+      if (!this.server && this.gameServerNodes.length > 0) {
+        this.form.setFieldValue("use_game_server_node", true);
       }
 
       if (!this.isCustomModeSelected) {

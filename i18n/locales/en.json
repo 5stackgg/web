@@ -2635,12 +2635,13 @@
           "create_title": "New Game Mode",
           "edit_title": "Edit Game Mode",
           "sheet_description": "Modes are applied when a server starts, so changing one affects the next match on that server.",
-          "empty": "No game modes yet. Create one to let matches run something other than competitive.",
           "requires_plugins": "Enable Game Plugins first — a mode has nothing to load without them.",
-          "disabled": "Disabled",
-          "competitive": "In draft lobbies",
-          "casual_only": "Hidden from drafts",
-          "plugin_count": "{count} plugins",
+          "runs_on": "Runs on",
+          "always_on": "Always on",
+          "draft_lobbies": "Draft lobbies",
+          "no_plugins": "No plugins: cvars only",
+          "new_mode_hint": "Pick plugins, cvars and the Valve mode it runs on",
+          "official": "Official 5Stack",
           "archived": "Archived"
         },
         "utility": {
@@ -3658,6 +3659,7 @@
         "enabled": "Enabled",
         "eyebrow": "Dedicated Server",
         "tabs": {
+          "overview": "Overview",
           "players": "Players",
           "console": "Console",
           "logs": "Logs",
@@ -3775,8 +3777,12 @@
         },
         "settings": {
           "title": "Server Settings",
+          "server_group": "Server",
+          "general": "General",
           "group": "Community Server",
           "select_section": "Section",
+          "delete_title": "Delete Server",
+          "delete_description": "Removes this server from 5Stack. A server on a game server node is shut down too.",
           "save": "Save",
           "restart_note": "Saving restarts the server once.",
           "live_note": "Applies within seconds.",
@@ -8710,6 +8716,7 @@
       "select_custom_preset": "Select Custom Preset",
       "valve_preset_group": "Valve presets",
       "custom_mode_group": "Custom modes",
+      "edit_mode": "Edit Mode",
       "custom_mode_group_locked": "needs a game server node",
       "custom_modes_need_node_title": "Custom modes need a game server node",
       "custom_modes_need_node_description": "A custom mode is a set of plugins 5Stack installs onto the server it runs. It cannot install anything on a third-party dedicated server, so attach this server to a game server node under Connection to pick one.",
@@ -10413,9 +10420,12 @@
       "no_plugins": "No game plugins in the catalog yet. Sync the registry and install one first.",
       "restart_required": "Restart required",
       "cfg": "Console Variables",
-      "cfg_description": "Exec'd after the match type's config, so these values win.",
+      "cfg_description": "Exec'd after the match type's config in a match, and after the Valve game mode's config on every map change on a community server, so these values win.",
       "extra_game_params": "Extra Launch Parameters",
       "extra_game_params_description": "Appended to the server's command line when it starts.",
+      "valve_mode": "Valve Game Mode",
+      "valve_mode_custom": "Custom",
+      "valve_mode_description": "The CS2 game mode a community server running this mode starts on. Plugins built on a Valve mode, like Deathmatch, need it: Custom keeps everyone on their team spawns. Matches keep their own match type.",
       "save": "Save Mode",
       "saved": "Game mode saved",
       "archived": "Game mode hidden",
@@ -10428,7 +10438,8 @@
       "runtime_none": "These plugins have no framework in common, so this mode cannot run anywhere. Remove whichever one targets the other framework.",
       "runtime_only": "Runs on {runtime} only, because that is the one framework every plugin here ships for.",
       "open_plugin": "Open this plugin's page in a new tab",
-      "archived_instead": "Matches have already run this mode, so it was hidden instead of deleted. You can restore it any time."
+      "archived_instead": "Matches have already run this mode, so it was hidden instead of deleted. You can restore it any time.",
+      "official_note": "An official 5Stack mode: utility practice servers run on it, so it can't be deleted, disabled or renamed. Its cvars are yours to edit."
     }
   },
   "edge_status": {

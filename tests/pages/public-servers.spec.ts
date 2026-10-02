@@ -52,8 +52,8 @@ function setupLinks(wrapper: any) {
   return wrapper.findAll('a[href="/dedicated-servers/create"]');
 }
 
-function manageLinks(wrapper: any) {
-  return wrapper.findAll(`a[href="/dedicated-servers/${server.id}"]`);
+function manageLinks(wrapper: any, tab: string) {
+  return wrapper.findAll(`a[href="/dedicated-servers/${server.id}?tab=${tab}"]`);
 }
 
 afterEach(() => {
@@ -86,7 +86,7 @@ describe("public servers setup gating", () => {
   it("keeps a moderator's manage link but not the header CTA", async () => {
     const wrapper = await mountAs("moderator", [server]);
 
-    expect(manageLinks(wrapper)).toHaveLength(1);
+    expect(manageLinks(wrapper, "players")).toHaveLength(1);
     expect(setupLinks(wrapper)).toHaveLength(0);
   });
 
@@ -96,7 +96,7 @@ describe("public servers setup gating", () => {
     ]);
 
     expect(
-      wrapper.findAll(`a[href="/public-servers/${server.id}"]`),
+      wrapper.findAll(`a[href="/dedicated-servers/${server.id}"]`),
     ).toHaveLength(1);
     expect(
       wrapper.find('a[href="steam://connect/127.0.0.1:27015"]').exists(),
@@ -106,7 +106,7 @@ describe("public servers setup gating", () => {
   it("gives an administrator the header CTA", async () => {
     const wrapper = await mountAs("administrator", [server]);
 
-    expect(manageLinks(wrapper)).toHaveLength(1);
+    expect(manageLinks(wrapper, "settings")).toHaveLength(1);
     expect(setupLinks(wrapper)).toHaveLength(1);
   });
 });

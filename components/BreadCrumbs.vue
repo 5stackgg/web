@@ -49,6 +49,7 @@ import { useDraftRoomContext } from "~/composables/useDraftRoomContext";
 import { useSeasonContext } from "~/composables/useSeasonContext";
 import { useAwardContext } from "~/composables/useAwardContext";
 import cleanMapName from "~/utilities/cleanMapName";
+import { e_player_roles_enum } from "~/generated/zeus";
 
 export default {
   computed: {
@@ -88,6 +89,21 @@ export default {
           to: `/matches/${segments[1]}`,
         });
         return breadcrumbs;
+      }
+
+      // Only staff can open the dedicated server list; everyone else reached a
+      // server's page from Public Servers.
+      if (
+        segments[0] === "dedicated-servers" &&
+        segments.length === 2 &&
+        !useAuthStore().isRoleAbove(e_player_roles_enum.moderator)
+      ) {
+        return [
+          {
+            text: this.$t("pages.public_servers.title"),
+            to: "/public-servers",
+          },
+        ];
       }
 
       let path = "";

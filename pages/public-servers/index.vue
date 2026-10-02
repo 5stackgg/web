@@ -32,6 +32,11 @@ const canSetup = computed(() =>
   useAuthStore().isRoleAbove(e_player_roles_enum.administrator),
 );
 
+// The card itself opens the server's page; this skips to where it is edited.
+// Settings is administrator-only, so a moderator lands on Players.
+const manageLink = (serverId: string) =>
+  `/dedicated-servers/${serverId}?tab=${canSetup.value ? "settings" : "players"}`;
+
 const serverLinkClasses =
   "truncate font-semibold transition-colors after:absolute after:inset-0 after:z-[1] after:rounded-xl after:content-[''] group-hover:text-[hsl(var(--tac-amber))] focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:ring-[hsl(var(--tac-amber))]";
 </script>
@@ -190,7 +195,7 @@ const serverLinkClasses =
                     <!-- Stretched over the whole card, so the card opens the
                          server's page while Zone C keeps its own buttons. -->
                     <NuxtLink
-                      :to="`/public-servers/${server.id}`"
+                      :to="`/dedicated-servers/${server.id}`"
                       :class="[serverLinkClasses, 'min-w-0 flex-1']"
                     >
                       {{ server.label }}
@@ -243,7 +248,7 @@ const serverLinkClasses =
                       :title="$t('pages.public_servers.manage')"
                     >
                       <NuxtLink
-                        :to="`/dedicated-servers/${server.id}`"
+                        :to="manageLink(server.id)"
                         :aria-label="$t('pages.public_servers.manage')"
                       >
                         <Settings2 class="h-4 w-4" />
@@ -316,7 +321,7 @@ const serverLinkClasses =
           <!-- Zone B: Card Body -->
           <div class="px-4 pt-3 pb-2">
             <NuxtLink
-              :to="`/public-servers/${server.id}`"
+              :to="`/dedicated-servers/${server.id}`"
               :class="[serverLinkClasses, 'mb-2 block']"
             >
               {{ server.label }}
@@ -360,7 +365,7 @@ const serverLinkClasses =
                 :title="$t('pages.public_servers.manage')"
               >
                 <NuxtLink
-                  :to="`/dedicated-servers/${server.id}`"
+                  :to="manageLink(server.id)"
                   :aria-label="$t('pages.public_servers.manage')"
                 >
                   <Settings2 class="h-4 w-4" />

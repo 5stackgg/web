@@ -2635,12 +2635,13 @@
           "create_title": "新しいゲームモード",
           "edit_title": "ゲームモードを編集",
           "sheet_description": "モードはサーバー起動時に適用されるため、変更はそのサーバーの次の試合から反映されます。",
-          "empty": "ゲームモードがまだありません。作成すると、Competitive 以外での試合が可能になります。",
           "requires_plugins": "先にゲームプラグインを有効にしてください。プラグインがないとモードは何も読み込めません。",
-          "disabled": "無効",
-          "competitive": "競技用に安全",
-          "casual_only": "カジュアルのみ",
-          "plugin_count": "{count} 件のプラグイン",
+          "runs_on": "ベースモード",
+          "always_on": "常にオン",
+          "draft_lobbies": "ドラフトロビー",
+          "no_plugins": "プラグインなし: cvar のみ",
+          "new_mode_hint": "プラグイン、cvar、ベースにする Valve モードを選択",
+          "official": "5Stack 公式",
           "archived": "アーカイブ済み"
         },
         "utility": {
@@ -3658,6 +3659,7 @@
         "enabled": "有効",
         "eyebrow": "専用サーバー",
         "tabs": {
+          "overview": "概要",
           "players": "プレイヤー",
           "console": "コンソール",
           "logs": "ログ",
@@ -3775,8 +3777,12 @@
         },
         "settings": {
           "title": "サーバー設定",
+          "server_group": "サーバー",
+          "general": "一般",
           "group": "コミュニティサーバー",
           "select_section": "セクション",
+          "delete_title": "サーバーを削除",
+          "delete_description": "このサーバーを 5Stack から削除します。ゲームサーバーノード上のサーバーは停止もされます。",
           "save": "保存",
           "restart_note": "保存するとサーバーが一度再起動します。",
           "live_note": "数秒で適用されます。",
@@ -8710,6 +8716,7 @@
       "select_custom_preset": "カスタムプリセットを選択",
       "valve_preset_group": "Valve プリセット",
       "custom_mode_group": "カスタムモード",
+      "edit_mode": "モードを編集",
       "custom_mode_group_locked": "ゲームサーバーノードが必要",
       "custom_modes_need_node_title": "カスタムモードにはゲームサーバーノードが必要です",
       "custom_modes_need_node_description": "カスタムモードは、5Stack が実行先のサーバーにインストールするプラグインのセットです。サードパーティの専用サーバーには何もインストールできないため、選べるようにするには「接続」でこのサーバーをゲームサーバーノードに紐付けてください。",
@@ -10413,9 +10420,12 @@
       "no_plugins": "カタログにゲームプラグインがまだありません。まずレジストリを同期してインストールしてください。",
       "restart_required": "再起動が必要",
       "cfg": "コンソール変数",
-      "cfg_description": "試合タイプの設定の後に実行されるため、ここの値が優先されます。",
+      "cfg_description": "マッチではマッチタイプの設定の後に、コミュニティサーバーではマップが変わるたびに Valve ゲームモードの設定の後に実行されるため、これらの値が優先されます。",
       "extra_game_params": "追加の起動パラメーター",
       "extra_game_params_description": "サーバー起動時にコマンドラインへ追加されます。",
+      "valve_mode": "Valve ゲームモード",
+      "valve_mode_custom": "カスタム",
+      "valve_mode_description": "このモードを使うコミュニティサーバーが起動する CS2 のゲームモードです。Deathmatch のように Valve のモードを前提にしたプラグインには必須です。カスタムでは全員が自チームのスポーン地点に出現します。マッチは独自のマッチタイプを維持します。",
       "save": "モードを保存",
       "saved": "ゲームモードを保存しました",
       "archived": "ゲームモードをアーカイブしました",
@@ -10428,7 +10438,8 @@
       "runtime_none": "これらのプラグインには共通するフレームワークがないため、このモードはどこでも動作しません。別のフレームワーク向けのプラグインを削除してください。",
       "runtime_only": "{runtime} でのみ動作します。ここにあるすべてのプラグインが対応している唯一のフレームワークだからです。",
       "open_plugin": "このプラグインのページを新しいタブで開く",
-      "archived_instead": "このモードではすでに試合が行われているため、削除ではなく非表示になりました。いつでも復元できます。"
+      "archived_instead": "このモードではすでに試合が行われているため、削除ではなく非表示になりました。いつでも復元できます。",
+      "official_note": "5Stack の公式モードです。ユーティリティ練習サーバーがこのモードで動作するため、削除・無効化・名前の変更はできません。cvar は自由に編集できます。"
     }
   },
   "edge_status": {

@@ -2635,12 +2635,13 @@
           "create_title": "Ny spiltilstand",
           "edit_title": "Redigér spiltilstand",
           "sheet_description": "Tilstande anvendes når en server starter, så en ændring påvirker næste kamp på den server.",
-          "empty": "Ingen spiltilstande endnu. Opret én, så kampe kan køre noget andet end competitive.",
           "requires_plugins": "Slå Spil-plugins til først — uden dem har en tilstand intet at indlæse.",
-          "disabled": "Deaktiveret",
-          "competitive": "Sikker til competitive",
-          "casual_only": "Kun casual",
-          "plugin_count": "{count} plugins",
+          "runs_on": "Kører på",
+          "always_on": "Altid til",
+          "draft_lobbies": "Draft-lobbyer",
+          "no_plugins": "Ingen plugins: kun cvars",
+          "new_mode_hint": "Vælg plugins, cvars og den Valve-tilstand, den kører på",
+          "official": "Officiel 5Stack",
           "archived": "Arkiveret"
         },
         "utility": {
@@ -3658,6 +3659,7 @@
         "enabled": "Aktiv",
         "eyebrow": "Dedikeret server",
         "tabs": {
+          "overview": "Oversigt",
           "players": "Spillere",
           "console": "Konsol",
           "logs": "Logs",
@@ -3775,8 +3777,12 @@
         },
         "settings": {
           "title": "Serverindstillinger",
+          "server_group": "Server",
+          "general": "Generelt",
           "group": "Communityserver",
           "select_section": "Sektion",
+          "delete_title": "Slet server",
+          "delete_description": "Fjerner denne server fra 5Stack. En server på en game server node lukkes også ned.",
           "save": "Gem",
           "restart_note": "Når du gemmer, genstarter serveren én gang.",
           "live_note": "Træder i kraft inden for sekunder.",
@@ -8710,6 +8716,7 @@
       "select_custom_preset": "Vælg egen forudindstilling",
       "valve_preset_group": "Valve-presets",
       "custom_mode_group": "Tilpassede tilstande",
+      "edit_mode": "Rediger tilstand",
       "custom_mode_group_locked": "kræver en game server node",
       "custom_modes_need_node_title": "Tilpassede tilstande kræver en game server node",
       "custom_modes_need_node_description": "En tilpasset tilstand er et sæt plugins, som 5Stack installerer på den server, den kører på. Den kan ikke installere noget på en tredjeparts dedikeret server, så knyt denne server til en game server node under Forbindelse for at kunne vælge en.",
@@ -10413,9 +10420,12 @@
       "no_plugins": "Ingen spil-plugins i kataloget endnu. Synkronisér registry og installér et først.",
       "restart_required": "Genstart påkrævet",
       "cfg": "Console-variabler",
-      "cfg_description": "Køres efter kamptypens config, så disse værdier vinder.",
+      "cfg_description": "Køres efter kamptypens konfiguration i en kamp, og efter Valve-spiltilstandens konfiguration ved hvert mapskift på en community-server, så disse værdier vinder.",
       "extra_game_params": "Ekstra opstartsparametre",
       "extra_game_params_description": "Tilføjes til serverens kommandolinje når den starter.",
+      "valve_mode": "Valve-spiltilstand",
+      "valve_mode_custom": "Brugerdefineret",
+      "valve_mode_description": "Den CS2-spiltilstand, som en community-server med denne tilstand starter i. Plugins bygget på en Valve-tilstand, som Deathmatch, har brug for den: med Brugerdefineret spawner alle ved deres holds spawns. Kampe beholder deres egen kamptype.",
       "save": "Gem tilstand",
       "saved": "Spiltilstand gemt",
       "archived": "Spiltilstand arkiveret",
@@ -10428,7 +10438,8 @@
       "runtime_none": "Disse plugins har intet framework til fælles, så denne tilstand kan ikke køre nogen steder. Fjern det plugin, der er bygget til det andet framework.",
       "runtime_only": "Kører kun på {runtime}, fordi det er det eneste framework alle plugins her findes til.",
       "open_plugin": "Åbn dette plugins side i en ny fane",
-      "archived_instead": "Der er allerede spillet kampe i denne tilstand, så den blev skjult i stedet for slettet. Du kan gendanne den når som helst."
+      "archived_instead": "Der er allerede spillet kampe i denne tilstand, så den blev skjult i stedet for slettet. Du kan gendanne den når som helst.",
+      "official_note": "En officiel 5Stack-tilstand: utility-træningsservere kører på den, så den kan ikke slettes, deaktiveres eller omdøbes. Dens cvars kan du redigere."
     }
   },
   "edge_status": {

@@ -6,6 +6,7 @@ import { Button } from "~/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import ClipBoard from "~/components/ClipBoard.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
+import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
 import { useServerPlayerManagementPlugin } from "~/composables/useServerPlayerManagementPlugin";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
@@ -97,7 +98,16 @@ const stepClasses =
       {{ $t("pages.dedicated_servers.detail.player_management") }}
     </div>
 
-    <div class="rounded-md border border-border bg-muted/20 p-4">
+    <div
+      v-if="!plugin.loaded.value"
+      class="grid gap-2 rounded-md border border-border bg-muted/20 p-4"
+      data-testid="plugin-status-loading"
+    >
+      <Skeleton class="h-3 w-56" />
+      <Skeleton class="h-3 w-72" />
+    </div>
+
+    <div v-else class="rounded-md border border-border bg-muted/20 p-4">
       <div
         class="flex items-center gap-2 font-mono text-[0.65rem] font-bold uppercase tracking-[0.18em]"
         :class="

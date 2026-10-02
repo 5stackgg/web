@@ -62,11 +62,12 @@ async function mountAs(
         QuickServerConnect: true,
         ServerPlayerManagement: true,
         ServerRecentPlayers: true,
-        ServerOverviewStrip: true,
         ServerSettings: true,
         RconCommander: true,
         ServiceLogs: true,
         ServerForm: true,
+        ServerCommunityOverview: true,
+        PublicServerView: true,
       },
     },
   });
@@ -87,7 +88,6 @@ describe("dedicated server files button", () => {
     const wrapper = await mountAs("tournament_organizer");
 
     expect(wrapper.text()).toContain("Node Server");
-    expect(wrapper.find(".lucide-ellipsis-vertical").exists()).toBe(true);
     expect(wrapper.find(".lucide-folder-open").exists()).toBe(false);
   });
 
@@ -139,6 +139,73 @@ describe("dedicated server tabs", () => {
   });
 });
 
+describe("dedicated server overview", () => {
+  it("opens a community server on the public stats, ahead of the staff tabs", async () => {
+    const wrapper = await mountAs("administrator", {
+      server: { type: "Casual" },
+    });
+
+    expect(tabLabels(wrapper)).toEqual([
+      "Overview",
+      "Players",
+      "Console",
+      "Logs",
+      "Settings",
+    ]);
+    expect(wrapper.find('[role="tab"][data-state="active"]').text()).toBe(
+      "Overview",
+    );
+    expect(wrapper.find("server-community-overview-stub").isVisible()).toBe(
+      true,
+    );
+  });
+
+  it("gives a moderator the overview too", async () => {
+    const wrapper = await mountAs("moderator", { server: { type: "Casual" } });
+
+    expect(tabLabels(wrapper)).toEqual(["Overview", "Players", "Console"]);
+  });
+
+  it("shows a player the public view and never asks for the staff columns", async () => {
+    const client = (useNuxtApp() as any).$apollo.defaultClient;
+    const wrapper = await mountAs("user", { server: { type: "Casual" } });
+
+    expect(wrapper.find("public-server-view-stub").exists()).toBe(true);
+    expect(wrapper.find('[role="tablist"]').exists()).toBe(false);
+    expect(
+      client.subscribe.mock.calls.filter(
+        ([options]: any) => rootField(options.query) === "servers_by_pk",
+      ),
+    ).toHaveLength(0);
+  });
+});
+
+describe("dedicated server settings", () => {
+  // Edit and delete used to sit in a header menu and a side sheet; they live
+  // in the Settings tab now, for every kind of server.
+  it("keeps edit and delete in Settings rather than a header menu", async () => {
+    const wrapper = await mountAs("administrator", {
+      route: `/dedicated-servers/${server.id}?tab=settings`,
+    });
+
+    expect(wrapper.find(".lucide-ellipsis-vertical").exists()).toBe(false);
+    const settings = wrapper.find("server-settings-stub");
+    expect(settings.isVisible()).toBe(true);
+    expect(settings.attributes("community")).toBe("false");
+  });
+
+  it("gives a community server its community sections too", async () => {
+    const wrapper = await mountAs("administrator", {
+      server: { type: "Casual" },
+      route: `/dedicated-servers/${server.id}?tab=settings`,
+    });
+
+    expect(wrapper.find("server-settings-stub").attributes("community")).toBe(
+      "true",
+    );
+  });
+});
+
 describe("dedicated server header", () => {
   it("puts Join right beside the address it connects to", async () => {
     const wrapper = await mountAs("moderator", {
@@ -152,15 +219,14 @@ describe("dedicated server header", () => {
     );
   });
 
-  it("shows the overview strip on a community server only", async () => {
-    const ranked = await mountAs("moderator");
-    expect(ranked.find("server-overview-strip-stub").exists()).toBe(false);
-    ranked.unmount();
-    mounted = null;
-
-    const community = await mountAs("moderator", {
+  // Online and the week's players live on the Overview tab and the plugin's
+  // status in Settings; a second copy above the tabs only repeated them.
+  it("keeps stats out of the header", async () => {
+    const wrapper = await mountAs("moderator", {
       server: { type: "Casual" },
     });
-    expect(community.find("server-overview-strip-stub").exists()).toBe(true);
+
+    expect(wrapper.find("header").text()).not.toContain("Online");
+    expect(wrapper.find("header").text()).not.toContain("Player Management");
   });
 });

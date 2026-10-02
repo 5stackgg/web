@@ -2635,12 +2635,13 @@
           "create_title": "Neuer Spielmodus",
           "edit_title": "Spielmodus bearbeiten",
           "sheet_description": "Modi werden beim Serverstart angewendet, eine Änderung wirkt sich also auf das nächste Match auf diesem Server aus.",
-          "empty": "Noch keine Spielmodi. Erstelle einen, damit Matches etwas anderes als Competitive spielen können.",
           "requires_plugins": "Aktiviere zuerst Spiel-Plugins — ohne sie hat ein Modus nichts zu laden.",
-          "disabled": "Deaktiviert",
-          "competitive": "Competitive-tauglich",
-          "casual_only": "Nur Casual",
-          "plugin_count": "{count} Plugins",
+          "runs_on": "Läuft auf",
+          "always_on": "Immer an",
+          "draft_lobbies": "Draft-Lobbys",
+          "no_plugins": "Keine Plugins: nur Cvars",
+          "new_mode_hint": "Wähle Plugins, Cvars und den Valve-Modus, auf dem er läuft",
+          "official": "Offiziell von 5Stack",
           "archived": "Archiviert"
         },
         "utility": {
@@ -3658,6 +3659,7 @@
         "enabled": "Aktiv",
         "eyebrow": "Dedicated Server",
         "tabs": {
+          "overview": "Übersicht",
           "players": "Spieler",
           "console": "Konsole",
           "logs": "Logs",
@@ -3775,8 +3777,12 @@
         },
         "settings": {
           "title": "Servereinstellungen",
+          "server_group": "Server",
+          "general": "Allgemein",
           "group": "Community-Server",
           "select_section": "Bereich",
+          "delete_title": "Server löschen",
+          "delete_description": "Entfernt diesen Server aus 5Stack. Ein Server auf einem Game-Server-Node wird auch heruntergefahren.",
           "save": "Speichern",
           "restart_note": "Beim Speichern startet der Server einmal neu.",
           "live_note": "Gilt innerhalb von Sekunden.",
@@ -8710,6 +8716,7 @@
       "select_custom_preset": "Eigene Voreinstellung wählen",
       "valve_preset_group": "Valve-Presets",
       "custom_mode_group": "Eigene Modi",
+      "edit_mode": "Modus bearbeiten",
       "custom_mode_group_locked": "benötigt eine Game-Server-Node",
       "custom_modes_need_node_title": "Eigene Modi benötigen eine Game-Server-Node",
       "custom_modes_need_node_description": "Ein eigener Modus ist ein Satz Plugins, den 5Stack auf den Server installiert, auf dem er läuft. Auf einem fremden Dedicated Server kann 5Stack nichts installieren — häng diesen Server also unter Verbindung an eine Game-Server-Node, um einen auszuwählen.",
@@ -10413,9 +10420,12 @@
       "no_plugins": "Noch keine Spiel-Plugins im Katalog. Synchronisiere die Registry und installiere zuerst eines.",
       "restart_required": "Neustart erforderlich",
       "cfg": "Console-Variablen",
-      "cfg_description": "Werden nach der Config des Match-Typs ausgeführt, diese Werte gewinnen also.",
+      "cfg_description": "Wird in einem Match nach der Konfiguration des Matchtyps ausgeführt und auf einem Community-Server bei jedem Mapwechsel nach der Konfiguration des Valve-Spielmodus, daher gelten diese Werte.",
       "extra_game_params": "Zusätzliche Startparameter",
       "extra_game_params_description": "Wird beim Start an die Kommandozeile des Servers angehängt.",
+      "valve_mode": "Valve-Spielmodus",
+      "valve_mode_custom": "Benutzerdefiniert",
+      "valve_mode_description": "Der CS2-Spielmodus, mit dem ein Community-Server mit diesem Modus startet. Plugins, die auf einem Valve-Modus aufbauen, wie Deathmatch, brauchen ihn: Mit Benutzerdefiniert spawnen alle an ihren Team-Spawns. Matches behalten ihren eigenen Matchtyp.",
       "save": "Modus speichern",
       "saved": "Spielmodus gespeichert",
       "archived": "Spielmodus archiviert",
@@ -10428,7 +10438,8 @@
       "runtime_none": "Diese Plugins haben kein gemeinsames Framework, dieser Modus kann also nirgends laufen. Entferne das Plugin, das auf das andere Framework zielt.",
       "runtime_only": "Läuft nur auf {runtime}, weil das das einzige Framework ist, für das es hier jedes Plugin gibt.",
       "open_plugin": "Die Seite dieses Plugins in einem neuen Tab öffnen",
-      "archived_instead": "Dieser Modus wurde bereits in Matches gespielt, deshalb wurde er ausgeblendet statt gelöscht. Du kannst ihn jederzeit wiederherstellen."
+      "archived_instead": "Dieser Modus wurde bereits in Matches gespielt, deshalb wurde er ausgeblendet statt gelöscht. Du kannst ihn jederzeit wiederherstellen.",
+      "official_note": "Ein offizieller 5Stack-Modus: Utility-Practice-Server laufen darauf, daher kann er nicht gelöscht, deaktiviert oder umbenannt werden. Seine Cvars kannst du frei bearbeiten."
     }
   },
   "edge_status": {

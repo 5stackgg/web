@@ -15,6 +15,10 @@ import ServerMapRotation from "~/components/servers/ServerMapRotation.vue";
 import ServerPlugins from "~/components/servers/ServerPlugins.vue";
 import ServerAccess from "~/components/servers/ServerAccess.vue";
 import ServerPlayerManagementPlugin from "~/components/servers/ServerPlayerManagementPlugin.vue";
+import ServerForm from "~/components/servers/ServerForm.vue";
+import SettingsSection from "~/components/settings/SettingsSection.vue";
+import { Button } from "~/components/ui/button";
+import { Trash2, TriangleAlert } from "lucide-vue-next";
 import { toast } from "@/components/ui/toast";
 
 type Change = { text: string; restart: boolean };
@@ -26,15 +30,25 @@ type SettingsPane = {
   saved: () => Promise<void>;
 };
 
-const props = defineProps<{
-  server: {
-    id: string;
-    enabled: boolean;
-    game_server_node_id: string | null;
-    plugin_runtime?: string | null;
-  };
-  apiPassword?: string | null;
-}>();
+const props = withDefaults(
+  defineProps<{
+    server: {
+      id: string;
+      enabled: boolean;
+      game_server_node_id: string | null;
+      plugin_runtime?: string | null;
+    };
+    apiPassword?: string | null;
+    // Rotation, plugins, access and Player Management only exist on a
+    // community server; every server gets its own settings and delete.
+    community?: boolean;
+    canMove?: boolean;
+    locked?: boolean;
+  }>(),
+  { community: true, canMove: false, locked: false },
+);
+
+const emit = defineEmits<{ move: []; delete: [] }>();
 
 const { t } = useI18n();
 const nuxtApp = useNuxtApp();
@@ -65,24 +79,47 @@ const SAVE = gql`
 // only has access, which its Player Management plugin enforces.
 const hasPod = computed(() => !!props.server.game_server_node_id);
 
-const tabs = computed(() => [
-  ...(hasPod.value
-    ? [
-        {
-          key: "rotation",
-          label: t("pages.dedicated_servers.detail.map_rotation.title"),
-        },
-        {
-          key: "plugins",
-          label: t("pages.dedicated_servers.detail.plugins.title"),
-        },
-      ]
-    : []),
-  { key: "access", label: t("pages.dedicated_servers.detail.access.title") },
+const serverTabs = computed(() => [
+  { key: "general", label: t("pages.dedicated_servers.detail.settings.general") },
+]);
+
+const communityTabs = computed(() => {
+  if (!props.community) {
+    return [];
+  }
+
+  return [
+    ...(hasPod.value
+      ? [
+          {
+            key: "rotation",
+            label: t("pages.dedicated_servers.detail.map_rotation.title"),
+          },
+          {
+            key: "plugins",
+            label: t("pages.dedicated_servers.detail.plugins.title"),
+          },
+        ]
+      : []),
+    { key: "access", label: t("pages.dedicated_servers.detail.access.title") },
+    {
+      key: "player-management",
+      label: t("pages.dedicated_servers.detail.player_management"),
+    },
+  ];
+});
+
+const dangerTabs = computed(() => [
   {
-    key: "player-management",
-    label: t("pages.dedicated_servers.detail.player_management"),
+    key: "delete",
+    label: t("pages.dedicated_servers.detail.settings.delete_title"),
   },
+]);
+
+const tabs = computed(() => [
+  ...serverTabs.value,
+  ...communityTabs.value,
+  ...dangerTabs.value,
 ]);
 
 const activeTab = computed(() => {
@@ -98,12 +135,32 @@ function tabPath(key: string): string {
     .fullPath;
 }
 
-const tabGroups = computed(() => [
-  {
-    label: t("pages.dedicated_servers.detail.settings.group"),
-    items: tabs.value.map((tab) => ({ path: tabPath(tab.key), label: tab.label })),
-  },
-]);
+const tabGroups = computed(() =>
+  [
+    {
+      label: t("pages.dedicated_servers.detail.settings.server_group"),
+      tabs: serverTabs.value,
+    },
+    {
+      label: t("pages.dedicated_servers.detail.settings.group"),
+      tabs: communityTabs.value,
+    },
+    {
+      label: "",
+      tabs: dangerTabs.value,
+      tone: "danger" as const,
+    },
+  ]
+    .filter((group) => group.tabs.length)
+    .map((group) => ({
+      label: group.label,
+      tone: "tone" in group ? group.tone : undefined,
+      items: group.tabs.map((tab) => ({
+        path: tabPath(tab.key),
+        label: tab.label,
+      })),
+    })),
+);
 
 const mobileTab = computed({
   get: () => activeTab.value,
@@ -225,19 +282,60 @@ function discard() {
         :inert="submitting || undefined"
         :aria-busy="submitting"
       >
+        <div
+          v-show="activeTab === 'general'"
+          class="grid grid-cols-[minmax(0,1fr)] gap-8"
+        >
+          <ServerForm
+            :server="server"
+            :can-move="canMove"
+            @move="emit('move')"
+          />
+        </div>
+
+        <SettingsSection
+          v-show="activeTab === 'delete'"
+          id="server-delete"
+          :title="$t('pages.dedicated_servers.detail.settings.delete_title')"
+        >
+          <div
+            class="flex flex-col gap-4 rounded-lg border border-destructive/40 bg-destructive/[0.06] p-4 sm:flex-row sm:items-center sm:justify-between"
+          >
+            <div class="flex min-w-0 items-start gap-3">
+              <TriangleAlert class="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
+              <p class="text-sm text-muted-foreground">
+                {{
+                  $t("pages.dedicated_servers.detail.settings.delete_description")
+                }}
+              </p>
+            </div>
+            <Button
+              variant="destructive"
+              class="shrink-0 gap-2"
+              :disabled="locked"
+              data-testid="delete-server"
+              @click="emit('delete')"
+            >
+              <Trash2 class="h-4 w-4" />
+              {{ $t("pages.dedicated_servers.detail.settings.delete_title") }}
+            </Button>
+          </div>
+        </SettingsSection>
+
         <ServerMapRotation
-          v-if="hasPod"
+          v-if="hasPod && community"
           v-show="activeTab === 'rotation'"
           ref="rotation"
           :server-id="server.id"
         />
         <ServerPlugins
-          v-if="hasPod"
+          v-if="hasPod && community"
           v-show="activeTab === 'plugins'"
           ref="plugins"
           :server-id="server.id"
         />
         <ServerAccess
+          v-if="community"
           v-show="activeTab === 'access'"
           ref="access"
           :server-id="server.id"

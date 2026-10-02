@@ -2635,12 +2635,13 @@
           "create_title": "Nuevo modo de juego",
           "edit_title": "Editar modo de juego",
           "sheet_description": "Los modos se aplican al arrancar el servidor, así que cambiar uno afecta a la siguiente partida en ese servidor.",
-          "empty": "Aún no hay modos de juego. Crea uno para que las partidas puedan jugar algo distinto a competitivo.",
           "requires_plugins": "Activa antes los plugins del juego: sin ellos un modo no tiene nada que cargar.",
-          "disabled": "Desactivado",
-          "competitive": "Apto para competitivo",
-          "casual_only": "Solo casual",
-          "plugin_count": "{count} plugins",
+          "runs_on": "Funciona en",
+          "always_on": "Siempre activo",
+          "draft_lobbies": "Lobbies de draft",
+          "no_plugins": "Sin plugins: solo cvars",
+          "new_mode_hint": "Elige los plugins, los cvars y el modo de Valve en el que funciona",
+          "official": "Oficial de 5Stack",
           "archived": "Archivado"
         },
         "utility": {
@@ -3658,6 +3659,7 @@
         "enabled": "Activado",
         "eyebrow": "Servidor dedicado",
         "tabs": {
+          "overview": "Resumen",
           "players": "Jugadores",
           "console": "Consola",
           "logs": "Logs",
@@ -3775,8 +3777,12 @@
         },
         "settings": {
           "title": "Ajustes del servidor",
+          "server_group": "Servidor",
+          "general": "General",
           "group": "Servidor comunitario",
           "select_section": "Sección",
+          "delete_title": "Eliminar servidor",
+          "delete_description": "Quita este servidor de 5Stack. Un servidor en un nodo de servidores de juego también se apaga.",
           "save": "Guardar",
           "restart_note": "Al guardar, el servidor se reinicia una vez.",
           "live_note": "Se aplica en segundos.",
@@ -8710,6 +8716,7 @@
       "select_custom_preset": "Seleccionar preajuste personalizado",
       "valve_preset_group": "Preajustes de Valve",
       "custom_mode_group": "Modos personalizados",
+      "edit_mode": "Editar modo",
       "custom_mode_group_locked": "requiere un nodo de servidores",
       "custom_modes_need_node_title": "Los modos personalizados requieren un nodo de servidores",
       "custom_modes_need_node_description": "Un modo personalizado es un conjunto de plugins que 5Stack instala en el servidor donde se ejecuta. No puede instalar nada en un servidor dedicado de terceros, así que vincula este servidor a un nodo de servidores en Conexión para poder elegir uno.",
@@ -10413,9 +10420,12 @@
       "no_plugins": "Todavía no hay plugins de juego en el catálogo. Sincroniza el registro e instala uno primero.",
       "restart_required": "Requiere reinicio",
       "cfg": "Variables de consola",
-      "cfg_description": "Se ejecutan después de la config del tipo de partida, así que estos valores mandan.",
+      "cfg_description": "Se ejecuta tras la config del tipo de partida en una partida, y tras la config del modo de juego de Valve en cada cambio de mapa en un servidor de comunidad, así que estos valores ganan.",
       "extra_game_params": "Parámetros de arranque extra",
       "extra_game_params_description": "Se añaden a la línea de comandos del servidor al iniciarse.",
+      "valve_mode": "Modo de juego de Valve",
+      "valve_mode_custom": "Personalizado",
+      "valve_mode_description": "El modo de juego de CS2 con el que arranca un servidor de comunidad que usa este modo. Los plugins basados en un modo de Valve, como Deathmatch, lo necesitan: en Personalizado todos aparecen en los spawns de su equipo. Las partidas mantienen su propio tipo de partida.",
       "save": "Guardar modo",
       "saved": "Modo de juego guardado",
       "archived": "Modo de juego archivado",
@@ -10428,7 +10438,8 @@
       "runtime_none": "Estos plugins no comparten ningún framework, así que este modo no puede ejecutarse en ningún sitio. Quita el que apunte al otro framework.",
       "runtime_only": "Solo funciona en {runtime}, porque es el único framework para el que existen todos estos plugins.",
       "open_plugin": "Abrir la página de este plugin en una pestaña nueva",
-      "archived_instead": "Ya se han jugado partidas con este modo, así que se ha ocultado en lugar de eliminarse. Puedes restaurarlo cuando quieras."
+      "archived_instead": "Ya se han jugado partidas con este modo, así que se ha ocultado en lugar de eliminarse. Puedes restaurarlo cuando quieras.",
+      "official_note": "Un modo oficial de 5Stack: los servidores de práctica de utilidades lo usan, así que no se puede eliminar, desactivar ni renombrar. Sus cvars se pueden editar."
     }
   },
   "edge_status": {

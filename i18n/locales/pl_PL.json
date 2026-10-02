@@ -2635,12 +2635,13 @@
           "create_title": "Nowy tryb gry",
           "edit_title": "Edytuj tryb gry",
           "sheet_description": "Tryby są stosowane przy starcie serwera, więc zmiana wpłynie na następny mecz na tym serwerze.",
-          "empty": "Brak trybów gry. Utwórz jeden, aby mecze mogły grać coś innego niż competitive.",
           "requires_plugins": "Najpierw włącz wtyczki gry — bez nich tryb nie ma czego wczytać.",
-          "disabled": "Wyłączony",
-          "competitive": "Bezpieczny dla competitive",
-          "casual_only": "Tylko casual",
-          "plugin_count": "{count} wtyczek",
+          "runs_on": "Działa na",
+          "always_on": "Zawsze włączony",
+          "draft_lobbies": "Lobby draftu",
+          "no_plugins": "Brak pluginów: tylko cvary",
+          "new_mode_hint": "Wybierz pluginy, cvary i tryb Valve, na którym działa",
+          "official": "Oficjalny 5Stack",
           "archived": "Zarchiwizowany"
         },
         "utility": {
@@ -3658,6 +3659,7 @@
         "enabled": "Włączony",
         "eyebrow": "Serwer dedykowany",
         "tabs": {
+          "overview": "Przegląd",
           "players": "Gracze",
           "console": "Konsola",
           "logs": "Logi",
@@ -3775,8 +3777,12 @@
         },
         "settings": {
           "title": "Ustawienia serwera",
+          "server_group": "Serwer",
+          "general": "Ogólne",
           "group": "Serwer społeczności",
           "select_section": "Sekcja",
+          "delete_title": "Usuń serwer",
+          "delete_description": "Usuwa ten serwer z 5Stack. Serwer na węźle serwerów gry również zostaje wyłączony.",
           "save": "Zapisz",
           "restart_note": "Zapisanie raz uruchomi serwer ponownie.",
           "live_note": "Działa w ciągu kilku sekund.",
@@ -8710,6 +8716,7 @@
       "select_custom_preset": "Wybierz własny preset",
       "valve_preset_group": "Presety Valve",
       "custom_mode_group": "Własne tryby",
+      "edit_mode": "Edytuj tryb",
       "custom_mode_group_locked": "wymaga węzła serwerów gry",
       "custom_modes_need_node_title": "Własne tryby wymagają węzła serwerów gry",
       "custom_modes_need_node_description": "Własny tryb to zestaw wtyczek, które 5Stack instaluje na serwerze, na którym działa. Na cudzym serwerze dedykowanym nie może niczego zainstalować, więc podepnij ten serwer do węzła serwerów gry w sekcji Połączenie, żeby móc jakiś wybrać.",
@@ -10413,9 +10420,12 @@
       "no_plugins": "Brak wtyczek gry w katalogu. Najpierw zsynchronizuj rejestr i zainstaluj jakąś.",
       "restart_required": "Wymaga restartu",
       "cfg": "Zmienne konsoli",
-      "cfg_description": "Wykonywane po konfiguracji typu meczu, więc te wartości mają pierwszeństwo.",
+      "cfg_description": "Wykonywane po konfiguracji typu meczu w meczu, a na serwerze społeczności po konfiguracji trybu gry Valve przy każdej zmianie mapy, więc te wartości wygrywają.",
       "extra_game_params": "Dodatkowe parametry uruchomienia",
       "extra_game_params_description": "Dopisywane do linii poleceń serwera przy starcie.",
+      "valve_mode": "Tryb gry Valve",
+      "valve_mode_custom": "Własny",
+      "valve_mode_description": "Tryb gry CS2, w którym startuje serwer społeczności z tym trybem. Pluginy oparte na trybie Valve, takie jak Deathmatch, go potrzebują: w trybie Własnym wszyscy odradzają się na spawnach swojej drużyny. Mecze zachowują własny typ meczu.",
       "save": "Zapisz tryb",
       "saved": "Tryb gry zapisany",
       "archived": "Tryb gry zarchiwizowany",
@@ -10428,7 +10438,8 @@
       "runtime_none": "Te wtyczki nie mają wspólnego frameworka, więc ten tryb nigdzie nie zadziała. Usuń tę, która celuje w drugi framework.",
       "runtime_only": "Działa tylko na {runtime}, bo to jedyny framework, dla którego istnieją wszystkie te wtyczki.",
       "open_plugin": "Otwórz stronę tej wtyczki w nowej karcie",
-      "archived_instead": "W tym trybie rozegrano już mecze, więc został ukryty zamiast usunięty. Możesz go przywrócić w dowolnej chwili."
+      "archived_instead": "W tym trybie rozegrano już mecze, więc został ukryty zamiast usunięty. Możesz go przywrócić w dowolnej chwili.",
+      "official_note": "Oficjalny tryb 5Stack: działają na nim serwery treningu granatów, więc nie można go usunąć, wyłączyć ani zmienić jego nazwy. Jego cvary możesz edytować."
     }
   },
   "edge_status": {

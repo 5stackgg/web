@@ -24,6 +24,7 @@ import {
 } from "~/components/ui/alert-dialog";
 import { ArchiveRestore, Trash2, ExternalLink } from "lucide-vue-next";
 import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
+import { VALVE_MODES } from "~/constants/valveModes";
 </script>
 
 <template>
@@ -43,7 +44,11 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
         <FormItem>
           <FormLabel>{{ $t("game_modes.form.slug") }}</FormLabel>
           <FormControl>
-            <Input v-bind="componentField" placeholder="retakes" />
+            <Input
+              v-bind="componentField"
+              placeholder="retakes"
+              :disabled="official"
+            />
           </FormControl>
           <FormMessage />
         </FormItem>
@@ -72,7 +77,11 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
         <FormField v-slot="{ value, handleChange }" name="enabled">
           <FormItem>
             <FormControl>
-              <Switch :model-value="value" @update:model-value="handleChange" />
+              <Switch
+                :model-value="value"
+                :disabled="official"
+                @update:model-value="handleChange"
+              />
             </FormControl>
           </FormItem>
         </FormField>
@@ -167,6 +176,37 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
       </div>
     </div>
 
+    <FormField v-slot="{ componentField }" name="valve_mode">
+      <FormItem>
+        <FormLabel>{{ $t("game_modes.form.valve_mode") }}</FormLabel>
+        <Select v-bind="nullableSelectField(componentField)">
+          <FormControl>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+          </FormControl>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem :value="SELECT_NONE">
+                {{ $t("game_modes.form.valve_mode_custom") }}
+              </SelectItem>
+              <SelectItem
+                v-for="mode in VALVE_MODES"
+                :key="mode.value"
+                :value="mode.value"
+              >
+                {{ mode.label }}
+              </SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <FormDescription>
+          {{ $t("game_modes.form.valve_mode_description") }}
+        </FormDescription>
+        <FormMessage />
+      </FormItem>
+    </FormField>
+
     <FormField v-slot="{ componentField }" name="cfg">
       <FormItem>
         <FormLabel>{{ $t("game_modes.form.cfg") }}</FormLabel>
@@ -203,8 +243,15 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
            some match already ran cannot be deleted (the DB keeps that history),
            so it is archived -- hidden everywhere -- and the toast says so.
            Restore undoes an archive. -->
+      <p
+        v-if="official"
+        class="text-sm text-muted-foreground"
+        data-testid="official-mode"
+      >
+        {{ $t("game_modes.form.official_note") }}
+      </p>
       <Button
-        v-if="gameMode?.archived_at"
+        v-else-if="gameMode?.archived_at"
         type="button"
         variant="outline"
         class="gap-2"
@@ -297,6 +344,7 @@ export default {
             competitive_safe: z.boolean().default(false),
             cfg: z.string().optional().default(""),
             extra_game_params: z.string().optional().default(""),
+            valve_mode: z.string().optional().default(""),
           }),
         ),
       }),
@@ -367,6 +415,7 @@ export default {
           competitive_safe: mode.competitive_safe,
           cfg: mode.cfg ?? "",
           extra_game_params: mode.extra_game_params ?? "",
+          valve_mode: mode.valve_mode ?? "",
         });
 
         // Sorted here as well as in the query: save rewrites load_order from
@@ -382,6 +431,11 @@ export default {
     },
   },
   computed: {
+    // Part of 5Stack itself (the utility system books practice on it): the
+    // database refuses to delete, retire, disable or rename it.
+    official(): boolean {
+      return !!this.gameMode?.system;
+    },
     // Whether any match has run this mode; the parent's query carries one
     // referencing match_options row as the answer.
     usedByMatches(): boolean {
@@ -431,6 +485,7 @@ export default {
           competitive_safe: values.competitive_safe,
           cfg: values.cfg || null,
           extra_game_params: values.extra_game_params || null,
+          valve_mode: values.valve_mode || null,
         };
 
         const gameModeId = this.gameMode

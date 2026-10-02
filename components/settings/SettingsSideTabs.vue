@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
+import { TriangleAlert } from "lucide-vue-next";
 
 type SettingsSideTabItem = {
   path: string;
@@ -15,6 +16,8 @@ type SettingsSideTabGroup = {
   label: string;
   items?: SettingsSideTabItem[];
   subgroups?: SettingsSideTabSubgroup[];
+  // A "danger" group holds destructive actions: it sits apart, last, in red.
+  tone?: "danger";
 };
 
 const props = defineProps<{
@@ -30,18 +33,24 @@ const props = defineProps<{
 // header-less group, and a single-level group becomes one unlabelled subgroup,
 // so the template only ever renders one structure.
 const renderGroups = computed<
-  Array<{ label: string; subgroups: SettingsSideTabSubgroup[] }>
+  Array<{
+    label: string;
+    subgroups: SettingsSideTabSubgroup[];
+    danger: boolean;
+  }>
 >(() => {
   const groups = props.groups ?? [{ label: "", items: props.items ?? [] }];
   return groups.map((group) => ({
     label: group.label,
     subgroups: group.subgroups ?? [{ label: "", items: group.items ?? [] }],
+    danger: group.tone === "danger",
   }));
 });
 
 const navRef = ref<HTMLElement | null>(null);
 const indicatorY = ref(0);
 const indicatorHeight = ref(0);
+const indicatorDanger = ref(false);
 const hasAnimated = ref(false);
 
 function updateIndicator() {
@@ -62,6 +71,7 @@ function updateIndicator() {
   const activeRect = active.getBoundingClientRect();
   indicatorY.value = activeRect.top - navRect.top;
   indicatorHeight.value = activeRect.height;
+  indicatorDanger.value = active.dataset.settingsTabTone === "danger";
 
   nextTick(() => {
     hasAnimated.value = true;
@@ -108,12 +118,15 @@ const showIndicator = computed(() => indicatorHeight.value > 0);
   >
     <div
       v-show="showIndicator"
-      class="pointer-events-none absolute right-[-1px] top-0 z-10 w-0.5 rounded-full bg-[hsl(var(--tac-amber))] shadow-[0_0_8px_hsl(var(--tac-amber)/0.45)] motion-reduce:transition-none"
-      :class="
+      class="pointer-events-none absolute right-[-1px] top-0 z-10 w-0.5 rounded-full transition-colors duration-200 motion-reduce:transition-none"
+      :class="[
+        indicatorDanger
+          ? 'bg-destructive shadow-[0_0_8px_hsl(var(--destructive)/0.5)]'
+          : 'bg-[hsl(var(--tac-amber))] shadow-[0_0_8px_hsl(var(--tac-amber)/0.45)]',
         hasAnimated
-          ? '[transition:transform_0.35s_cubic-bezier(0.34,1.56,0.64,1),height_0.18s_ease]'
-          : ''
-      "
+          ? '[transition:transform_0.35s_cubic-bezier(0.34,1.56,0.64,1),height_0.18s_ease,background-color_0.2s_ease]'
+          : '',
+      ]"
       :style="{
         transform: `translateY(${indicatorY}px)`,
         height: `${indicatorHeight}px`,
@@ -124,11 +137,19 @@ const showIndicator = computed(() => indicatorHeight.value > 0);
       v-for="(group, groupIndex) in renderGroups"
       :key="group.label || groupIndex"
       class="flex flex-col gap-1"
-      :class="groupIndex > 0 ? 'mt-5' : ''"
+      :class="[
+        groupIndex > 0 ? 'mt-5' : '',
+        group.danger
+          ? 'mt-7 border-t border-dashed border-destructive/35 pt-4'
+          : '',
+      ]"
     >
       <p
         v-if="group.label"
-        class="px-3 pb-1 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.22em] text-[hsl(var(--tac-amber))]"
+        class="px-3 pb-1 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.22em]"
+        :class="
+          group.danger ? 'text-destructive' : 'text-[hsl(var(--tac-amber))]'
+        "
       >
         {{ group.label }}
       </p>
@@ -151,11 +172,15 @@ const showIndicator = computed(() => indicatorHeight.value > 0);
           :key="item.path"
           as-child
           variant="ghost"
-          class="relative z-[1] h-9 w-full justify-start overflow-hidden px-3 text-left transition-colors duration-200 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-foreground"
+          class="relative z-[1] h-9 w-full justify-start overflow-hidden px-3 text-left transition-colors duration-200"
           :class="
-            item.path === activePath
-              ? 'bg-[hsl(var(--tac-amber)/0.06)] text-foreground'
-              : 'text-muted-foreground'
+            group.danger
+              ? item.path === activePath
+                ? 'bg-destructive/10 text-destructive hover:bg-destructive/15 hover:text-destructive'
+                : 'text-destructive/70 hover:bg-destructive/10 hover:text-destructive'
+              : item.path === activePath
+                ? 'bg-[hsl(var(--tac-amber)/0.06)] text-foreground hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-foreground'
+                : 'text-muted-foreground hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-foreground'
           "
         >
           <NuxtLink
@@ -164,7 +189,12 @@ const showIndicator = computed(() => indicatorHeight.value > 0);
             :data-settings-tab-active="
               item.path === activePath ? 'true' : 'false'
             "
+            :data-settings-tab-tone="group.danger ? 'danger' : undefined"
           >
+            <TriangleAlert
+              v-if="group.danger"
+              class="mr-2 h-3.5 w-3.5 shrink-0"
+            />
             <span class="truncate">{{ item.label }}</span>
           </NuxtLink>
         </Button>

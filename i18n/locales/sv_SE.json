@@ -2635,12 +2635,13 @@
           "create_title": "Nytt spelläge",
           "edit_title": "Redigera spelläge",
           "sheet_description": "Lägen tillämpas när en server startar, så en ändring påverkar nästa match på den servern.",
-          "empty": "Inga spellägen än. Skapa ett så att matcher kan köra något annat än competitive.",
           "requires_plugins": "Slå på Speltillägg först — utan dem har ett läge inget att ladda.",
-          "disabled": "Inaktiverat",
-          "competitive": "Säkert för competitive",
-          "casual_only": "Endast casual",
-          "plugin_count": "{count} tillägg",
+          "runs_on": "Körs på",
+          "always_on": "Alltid på",
+          "draft_lobbies": "Draftlobbyer",
+          "no_plugins": "Inga pluginer: bara cvars",
+          "new_mode_hint": "Välj pluginer, cvars och Valve-läget det körs på",
+          "official": "Officiell 5Stack",
           "archived": "Arkiverat"
         },
         "utility": {
@@ -3658,6 +3659,7 @@
         "enabled": "Aktiverad",
         "eyebrow": "Dedikerad server",
         "tabs": {
+          "overview": "Översikt",
           "players": "Spelare",
           "console": "Konsol",
           "logs": "Loggar",
@@ -3775,8 +3777,12 @@
         },
         "settings": {
           "title": "Serverinställningar",
+          "server_group": "Server",
+          "general": "Allmänt",
           "group": "Communityserver",
           "select_section": "Avsnitt",
+          "delete_title": "Ta bort server",
+          "delete_description": "Tar bort den här servern från 5Stack. En server på en spelservernod stängs också av.",
           "save": "Spara",
           "restart_note": "När du sparar startas servern om en gång.",
           "live_note": "Gäller inom några sekunder.",
@@ -8710,6 +8716,7 @@
       "select_custom_preset": "Välj egen förinställning",
       "valve_preset_group": "Valve-förval",
       "custom_mode_group": "Anpassade lägen",
+      "edit_mode": "Redigera läge",
       "custom_mode_group_locked": "kräver en spelservernod",
       "custom_modes_need_node_title": "Anpassade lägen kräver en spelservernod",
       "custom_modes_need_node_description": "Ett anpassat läge är en uppsättning tillägg som 5Stack installerar på servern det körs på. Det kan inte installera något på en dedikerad server från tredje part, så koppla den här servern till en spelservernod under Anslutning för att kunna välja ett.",
@@ -10413,9 +10420,12 @@
       "no_plugins": "Inga speltillägg i katalogen än. Synka registry och installera ett först.",
       "restart_required": "Omstart krävs",
       "cfg": "Konsolvariabler",
-      "cfg_description": "Körs efter matchtypens config, så dessa värden vinner.",
+      "cfg_description": "Körs efter matchtypens konfiguration i en match, och efter Valve-spellägets konfiguration vid varje kartbyte på en communityserver, så de här värdena vinner.",
       "extra_game_params": "Extra startparametrar",
       "extra_game_params_description": "Läggs till på serverns kommandorad när den startar.",
+      "valve_mode": "Valve-spelläge",
+      "valve_mode_custom": "Anpassat",
+      "valve_mode_description": "CS2-spelläget som en communityserver med det här läget startar i. Pluginer byggda på ett Valve-läge, som Deathmatch, behöver det: med Anpassat spawnar alla vid sitt lags spawnpunkter. Matcher behåller sin egen matchtyp.",
       "save": "Spara läge",
       "saved": "Spelläge sparat",
       "archived": "Spelläge arkiverat",
@@ -10428,7 +10438,8 @@
       "runtime_none": "De här tilläggen har inget gemensamt ramverk, så det här läget kan inte köras någonstans. Ta bort det som riktar sig mot det andra ramverket.",
       "runtime_only": "Körs bara på {runtime}, eftersom det är det enda ramverk som alla tillägg här finns för.",
       "open_plugin": "Öppna det här tilläggets sida i en ny flik",
-      "archived_instead": "Matcher har redan kört det här läget, så det doldes i stället för att tas bort. Du kan återställa det när som helst."
+      "archived_instead": "Matcher har redan kört det här läget, så det doldes i stället för att tas bort. Du kan återställa det när som helst.",
+      "official_note": "Ett officiellt 5Stack-läge: utility-träningsservrar körs på det, så det kan inte tas bort, inaktiveras eller döpas om. Dess cvars kan du redigera."
     }
   },
   "edge_status": {

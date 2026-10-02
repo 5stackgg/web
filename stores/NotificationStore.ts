@@ -365,8 +365,8 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
         continue;
       }
       const groupKey =
-        n.type === "PlayerSanctioned"
-          ? `type:PlayerSanctioned:${n.role}`
+        n.type === "PlayerSanctioned" || n.type === "TeammateBanned"
+          ? `type:${n.type}:${n.role}`
           : n.entity_id;
       if (!groupKey) {
         singles.push(n);

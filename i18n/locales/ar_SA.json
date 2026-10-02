@@ -1733,7 +1733,11 @@
           },
           "account": {
             "title": "الحساب",
-            "description": "تغييرات الاسم والعقوبات."
+            "description": "تغييرات اسمك والتحذيرات والعقوبات والجوائز."
+          },
+          "teammate_bans": {
+            "title": "زملاء محظورون",
+            "description": "عندما يُحظر لاعب لعبت معه خلال آخر 6 أشهر."
           },
           "news": {
             "title": "الأخبار",
@@ -1810,6 +1814,10 @@
           "AwardGranted": {
             "title": "الجوائز",
             "description": "حصلت على جائزة."
+          },
+          "TeammateBanned": {
+            "title": "زملاء محظورون",
+            "description": "تم حظر لاعب لعبت معه خلال آخر 6 أشهر."
           },
           "EventReminder": {
             "title": "تذكيرات الفعاليات",

@@ -1733,7 +1733,11 @@
           },
           "account": {
             "title": "帳號",
-            "description": "名稱變更與處分。"
+            "description": "你的名稱變更、警告、處分與獎項。"
+          },
+          "teammate_bans": {
+            "title": "被封鎖的隊友",
+            "description": "過去 6 個月內與你一起玩過的玩家被封鎖時。"
           },
           "news": {
             "title": "新聞",
@@ -1810,6 +1814,10 @@
           "AwardGranted": {
             "title": "獎項",
             "description": "你獲得了一項獎項。"
+          },
+          "TeammateBanned": {
+            "title": "被封鎖的隊友",
+            "description": "過去 6 個月內與你一起玩過的玩家已被封鎖。"
           },
           "EventReminder": {
             "title": "活動提醒",

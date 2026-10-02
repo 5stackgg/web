@@ -1733,7 +1733,11 @@
           },
           "account": {
             "title": "Konto",
-            "description": "Namnbyten och sanktioner."
+            "description": "Dina namnbyten, varningar, sanktioner och utmärkelser."
+          },
+          "teammate_bans": {
+            "title": "Bannade medspelare",
+            "description": "När en spelare du har spelat med under de senaste 6 månaderna blir bannad."
           },
           "news": {
             "title": "Nyheter",
@@ -1810,6 +1814,10 @@
           "AwardGranted": {
             "title": "Utmärkelser",
             "description": "Du har fått en utmärkelse."
+          },
+          "TeammateBanned": {
+            "title": "Bannade medspelare",
+            "description": "En spelare du har spelat med under de senaste 6 månaderna har blivit bannad."
           },
           "EventReminder": {
             "title": "Evenemangspåminnelser",

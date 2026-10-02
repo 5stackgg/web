@@ -81,6 +81,10 @@ const deletableIds = computed(() =>
 
 const topTone = computed(() => sanctionNotificationTone(top.value));
 
+// These stack by type rather than by entity, so each notice names a different
+// player and carries its own context.
+const PER_ITEM_CONTEXT_TYPES = ["PlayerSanctioned", "TeammateBanned"];
+
 const topCardClass = computed(() => [
   props.variant === "sheet"
     ? "relative w-full text-left rounded-lg shadow-md bg-accent p-4 hover:brightness-110 transition"
@@ -301,7 +305,7 @@ function handleTopClick(event: MouseEvent) {
         </div>
 
         <NotificationContext
-          v-if="top.entity_id && top.type !== 'PlayerSanctioned'"
+          v-if="top.entity_id && !PER_ITEM_CONTEXT_TYPES.includes(top.type)"
           :type="top.type"
           :entity-id="top.entity_id"
           class="mx-1 mb-2"
@@ -312,7 +316,7 @@ function handleTopClick(event: MouseEvent) {
           :key="n.id"
           :notification="n"
           :variant="variant"
-          :show-context="n.type === 'PlayerSanctioned'"
+          :show-context="PER_ITEM_CONTEXT_TYPES.includes(n.type)"
           @dismiss="(id) => emit('dismiss', id)"
           @delete="(id) => emit('delete', id)"
           @action="

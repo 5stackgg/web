@@ -1733,7 +1733,11 @@
           },
           "account": {
             "title": "Hesap",
-            "description": "Ad değişiklikleri ve yaptırımlar."
+            "description": "Ad değişikliklerin, uyarılar, yaptırımlar ve ödüller."
+          },
+          "teammate_bans": {
+            "title": "Banlanan takım arkadaşları",
+            "description": "Son 6 ayda birlikte oynadığın bir oyuncu banlandığında."
           },
           "news": {
             "title": "Haberler",
@@ -1810,6 +1814,10 @@
           "AwardGranted": {
             "title": "Ödüller",
             "description": "Bir ödül aldın."
+          },
+          "TeammateBanned": {
+            "title": "Banlanan takım arkadaşları",
+            "description": "Son 6 ayda birlikte oynadığın bir oyuncu banlandı."
           },
           "EventReminder": {
             "title": "Etkinlik hatırlatmaları",

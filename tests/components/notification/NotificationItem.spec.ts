@@ -100,6 +100,33 @@ describe("NotificationItem sanction tint", () => {
     expect(wrapper.find("h3").classes()).toContain("text-destructive");
   });
 
+  it("tints a banned-teammate notice as a ban", async () => {
+    const wrapper = await mountItem({
+      type: "TeammateBanned",
+      title: "Player Banned",
+      entity_id: OTHER,
+    });
+
+    expect(wrapper.classes()).toContain("overflow-hidden");
+    expect(accentBar(wrapper).classes()).toContain("bg-destructive");
+    const title = wrapper.find("h3");
+    expect(title.classes()).toContain("text-destructive");
+    expect(title.find("svg.lucide-ban-icon").exists()).toBe(true);
+  });
+
+  it("mutes a read banned-teammate title but keeps its ban bar", async () => {
+    const wrapper = await mountItem({
+      type: "TeammateBanned",
+      title: "Player Banned",
+      entity_id: OTHER,
+      is_read: true,
+    });
+
+    expect(accentBar(wrapper).classes()).toContain("bg-destructive");
+    expect(wrapper.find("h3").classes()).toContain("text-muted-foreground");
+    expect(wrapper.find("h3").classes()).not.toContain("text-destructive");
+  });
+
   it("leaves the co-player notice untinted since older ones covered mutes", async () => {
     const wrapper = await mountItem({
       type: "PlayerSanctioned",

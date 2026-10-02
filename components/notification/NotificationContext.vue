@@ -16,7 +16,11 @@ const SERVER_TYPES = ["DedicatedServerStatus", "DedicatedServerRconStatus"];
 const NODE_TYPES = ["GameNodeStatus"];
 // NameChangeRequest carries the requesting player's steam id, so an admin can
 // see who is asking without leaving the bell.
-const PLAYER_TYPES = ["PlayerSanctioned", "NameChangeRequest"];
+const PLAYER_TYPES = [
+  "PlayerSanctioned",
+  "TeammateBanned",
+  "NameChangeRequest",
+];
 const SCRIM_TYPES = [
   "ScrimRequestReceived",
   "ScrimRequestCountered",

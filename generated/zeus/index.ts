@@ -1630,6 +1630,11 @@ export type ValueTypes = {
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["ServerPluginConfigInput"]: {
+	cfg?: string | undefined | null | Variable<any, string>,
+	config?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	slug: string | Variable<any, string>
+};
 	["ServerPluginInput"]: {
 	enabled: boolean | Variable<any, string>,
 	slug: string | Variable<any, string>
@@ -16817,10 +16822,215 @@ count?: [{	columns?: Array<ValueTypes["game_modes_select_column"]> | undefined |
 	/** filter the rows which have to be updated */
 	where: ValueTypes["game_modes_bool_exp"] | Variable<any, string>
 };
+	/** columns and relationships of "game_plugin_cvars" */
+["game_plugin_cvars"]: AliasType<{
+	default_value?:boolean | `@${string}`,
+	description?:boolean | `@${string}`,
+	flags?:boolean | `@${string}`,
+	kind?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	/** An object relationship */
+	plugin?:ValueTypes["game_plugins"],
+	plugin_slug?:boolean | `@${string}`,
+	reported_at?:boolean | `@${string}`,
+	runtime?:boolean | `@${string}`,
+	version?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "game_plugin_cvars" */
+["game_plugin_cvars_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["game_plugin_cvars_aggregate_fields"],
+	nodes?:ValueTypes["game_plugin_cvars"],
+		__typename?: boolean | `@${string}`
+}>;
+	["game_plugin_cvars_aggregate_bool_exp"]: {
+	count?: ValueTypes["game_plugin_cvars_aggregate_bool_exp_count"] | undefined | null | Variable<any, string>
+};
+	["game_plugin_cvars_aggregate_bool_exp_count"]: {
+	arguments?: Array<ValueTypes["game_plugin_cvars_select_column"]> | undefined | null | Variable<any, string>,
+	distinct?: boolean | undefined | null | Variable<any, string>,
+	filter?: ValueTypes["game_plugin_cvars_bool_exp"] | undefined | null | Variable<any, string>,
+	predicate: ValueTypes["Int_comparison_exp"] | Variable<any, string>
+};
+	/** aggregate fields of "game_plugin_cvars" */
+["game_plugin_cvars_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ValueTypes["game_plugin_cvars_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["game_plugin_cvars_max_fields"],
+	min?:ValueTypes["game_plugin_cvars_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by aggregate values of table "game_plugin_cvars" */
+["game_plugin_cvars_aggregate_order_by"]: {
+	count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	max?: ValueTypes["game_plugin_cvars_max_order_by"] | undefined | null | Variable<any, string>,
+	min?: ValueTypes["game_plugin_cvars_min_order_by"] | undefined | null | Variable<any, string>
+};
+	/** input type for inserting array relation for remote table "game_plugin_cvars" */
+["game_plugin_cvars_arr_rel_insert_input"]: {
+	data: Array<ValueTypes["game_plugin_cvars_insert_input"]> | Variable<any, string>,
+	/** upsert condition */
+	on_conflict?: ValueTypes["game_plugin_cvars_on_conflict"] | undefined | null | Variable<any, string>
+};
+	/** Boolean expression to filter rows from the table "game_plugin_cvars". All fields are combined with a logical 'AND'. */
+["game_plugin_cvars_bool_exp"]: {
+	_and?: Array<ValueTypes["game_plugin_cvars_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["game_plugin_cvars_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["game_plugin_cvars_bool_exp"]> | undefined | null | Variable<any, string>,
+	default_value?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	description?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	flags?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	kind?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	plugin?: ValueTypes["game_plugins_bool_exp"] | undefined | null | Variable<any, string>,
+	plugin_slug?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	reported_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	runtime?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	version?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "game_plugin_cvars" */
+["game_plugin_cvars_constraint"]:game_plugin_cvars_constraint;
+	/** input type for inserting data into table "game_plugin_cvars" */
+["game_plugin_cvars_insert_input"]: {
+	default_value?: string | undefined | null | Variable<any, string>,
+	description?: string | undefined | null | Variable<any, string>,
+	flags?: string | undefined | null | Variable<any, string>,
+	kind?: string | undefined | null | Variable<any, string>,
+	name?: string | undefined | null | Variable<any, string>,
+	plugin?: ValueTypes["game_plugins_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	plugin_slug?: string | undefined | null | Variable<any, string>,
+	reported_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	runtime?: string | undefined | null | Variable<any, string>,
+	version?: string | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["game_plugin_cvars_max_fields"]: AliasType<{
+	default_value?:boolean | `@${string}`,
+	description?:boolean | `@${string}`,
+	flags?:boolean | `@${string}`,
+	kind?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	plugin_slug?:boolean | `@${string}`,
+	reported_at?:boolean | `@${string}`,
+	runtime?:boolean | `@${string}`,
+	version?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by max() on columns of table "game_plugin_cvars" */
+["game_plugin_cvars_max_order_by"]: {
+	default_value?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	description?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	flags?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	kind?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	plugin_slug?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	reported_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	runtime?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate min on columns */
+["game_plugin_cvars_min_fields"]: AliasType<{
+	default_value?:boolean | `@${string}`,
+	description?:boolean | `@${string}`,
+	flags?:boolean | `@${string}`,
+	kind?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	plugin_slug?:boolean | `@${string}`,
+	reported_at?:boolean | `@${string}`,
+	runtime?:boolean | `@${string}`,
+	version?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by min() on columns of table "game_plugin_cvars" */
+["game_plugin_cvars_min_order_by"]: {
+	default_value?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	description?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	flags?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	kind?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	plugin_slug?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	reported_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	runtime?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** response of any mutation on the table "game_plugin_cvars" */
+["game_plugin_cvars_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["game_plugin_cvars"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "game_plugin_cvars" */
+["game_plugin_cvars_on_conflict"]: {
+	constraint: ValueTypes["game_plugin_cvars_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["game_plugin_cvars_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["game_plugin_cvars_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "game_plugin_cvars". */
+["game_plugin_cvars_order_by"]: {
+	default_value?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	description?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	flags?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	kind?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	plugin?: ValueTypes["game_plugins_order_by"] | undefined | null | Variable<any, string>,
+	plugin_slug?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	reported_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	runtime?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: game_plugin_cvars */
+["game_plugin_cvars_pk_columns_input"]: {
+	name: string | Variable<any, string>,
+	plugin_slug: string | Variable<any, string>
+};
+	/** select columns of table "game_plugin_cvars" */
+["game_plugin_cvars_select_column"]:game_plugin_cvars_select_column;
+	/** input type for updating data in table "game_plugin_cvars" */
+["game_plugin_cvars_set_input"]: {
+	default_value?: string | undefined | null | Variable<any, string>,
+	description?: string | undefined | null | Variable<any, string>,
+	flags?: string | undefined | null | Variable<any, string>,
+	kind?: string | undefined | null | Variable<any, string>,
+	name?: string | undefined | null | Variable<any, string>,
+	plugin_slug?: string | undefined | null | Variable<any, string>,
+	reported_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	runtime?: string | undefined | null | Variable<any, string>,
+	version?: string | undefined | null | Variable<any, string>
+};
+	/** Streaming cursor of the table "game_plugin_cvars" */
+["game_plugin_cvars_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["game_plugin_cvars_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["game_plugin_cvars_stream_cursor_value_input"]: {
+	default_value?: string | undefined | null | Variable<any, string>,
+	description?: string | undefined | null | Variable<any, string>,
+	flags?: string | undefined | null | Variable<any, string>,
+	kind?: string | undefined | null | Variable<any, string>,
+	name?: string | undefined | null | Variable<any, string>,
+	plugin_slug?: string | undefined | null | Variable<any, string>,
+	reported_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	runtime?: string | undefined | null | Variable<any, string>,
+	version?: string | undefined | null | Variable<any, string>
+};
+	/** update columns of table "game_plugin_cvars" */
+["game_plugin_cvars_update_column"]:game_plugin_cvars_update_column;
+	["game_plugin_cvars_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["game_plugin_cvars_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["game_plugin_cvars_bool_exp"] | Variable<any, string>
+};
 	/** columns and relationships of "game_plugin_installs" */
 ["game_plugin_installs"]: AliasType<{
 	cfg?:boolean | `@${string}`,
 	channel?:boolean | `@${string}`,
+config?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
 	created_at?:boolean | `@${string}`,
 	disable_server_guidelines?:boolean | `@${string}`,
 	enabled?:boolean | `@${string}`,
@@ -16847,6 +17057,10 @@ count?: [{	columns?: Array<ValueTypes["game_plugin_installs_select_column"]> | u
 	min?:ValueTypes["game_plugin_installs_min_fields"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["game_plugin_installs_append_input"]: {
+	config?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
 	/** Boolean expression to filter rows from the table "game_plugin_installs". All fields are combined with a logical 'AND'. */
 ["game_plugin_installs_bool_exp"]: {
 	_and?: Array<ValueTypes["game_plugin_installs_bool_exp"]> | undefined | null | Variable<any, string>,
@@ -16854,6 +17068,7 @@ count?: [{	columns?: Array<ValueTypes["game_plugin_installs_select_column"]> | u
 	_or?: Array<ValueTypes["game_plugin_installs_bool_exp"]> | undefined | null | Variable<any, string>,
 	cfg?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	channel?: ValueTypes["e_game_plugin_channels_enum_comparison_exp"] | undefined | null | Variable<any, string>,
+	config?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	disable_server_guidelines?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	enabled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -16867,10 +17082,23 @@ count?: [{	columns?: Array<ValueTypes["game_plugin_installs_select_column"]> | u
 };
 	/** unique or primary key constraints on table "game_plugin_installs" */
 ["game_plugin_installs_constraint"]:game_plugin_installs_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["game_plugin_installs_delete_at_path_input"]: {
+	config?: Array<string> | undefined | null | Variable<any, string>
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["game_plugin_installs_delete_elem_input"]: {
+	config?: number | undefined | null | Variable<any, string>
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["game_plugin_installs_delete_key_input"]: {
+	config?: string | undefined | null | Variable<any, string>
+};
 	/** input type for inserting data into table "game_plugin_installs" */
 ["game_plugin_installs_insert_input"]: {
 	cfg?: string | undefined | null | Variable<any, string>,
 	channel?: ValueTypes["e_game_plugin_channels_enum"] | undefined | null | Variable<any, string>,
+	config?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	disable_server_guidelines?: boolean | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
@@ -16924,6 +17152,7 @@ count?: [{	columns?: Array<ValueTypes["game_plugin_installs_select_column"]> | u
 ["game_plugin_installs_order_by"]: {
 	cfg?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	channel?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	config?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	disable_server_guidelines?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	enabled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -16939,12 +17168,17 @@ count?: [{	columns?: Array<ValueTypes["game_plugin_installs_select_column"]> | u
 ["game_plugin_installs_pk_columns_input"]: {
 	plugin_slug: string | Variable<any, string>
 };
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["game_plugin_installs_prepend_input"]: {
+	config?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
 	/** select columns of table "game_plugin_installs" */
 ["game_plugin_installs_select_column"]:game_plugin_installs_select_column;
 	/** input type for updating data in table "game_plugin_installs" */
 ["game_plugin_installs_set_input"]: {
 	cfg?: string | undefined | null | Variable<any, string>,
 	channel?: ValueTypes["e_game_plugin_channels_enum"] | undefined | null | Variable<any, string>,
+	config?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	disable_server_guidelines?: boolean | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
@@ -16966,6 +17200,7 @@ count?: [{	columns?: Array<ValueTypes["game_plugin_installs_select_column"]> | u
 ["game_plugin_installs_stream_cursor_value_input"]: {
 	cfg?: string | undefined | null | Variable<any, string>,
 	channel?: ValueTypes["e_game_plugin_channels_enum"] | undefined | null | Variable<any, string>,
+	config?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	disable_server_guidelines?: boolean | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
@@ -16979,6 +17214,16 @@ count?: [{	columns?: Array<ValueTypes["game_plugin_installs_select_column"]> | u
 	/** update columns of table "game_plugin_installs" */
 ["game_plugin_installs_update_column"]:game_plugin_installs_update_column;
 	["game_plugin_installs_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["game_plugin_installs_append_input"] | undefined | null | Variable<any, string>,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["game_plugin_installs_delete_at_path_input"] | undefined | null | Variable<any, string>,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["game_plugin_installs_delete_elem_input"] | undefined | null | Variable<any, string>,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["game_plugin_installs_delete_key_input"] | undefined | null | Variable<any, string>,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["game_plugin_installs_prepend_input"] | undefined | null | Variable<any, string>,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["game_plugin_installs_set_input"] | undefined | null | Variable<any, string>,
 	/** filter the rows which have to be updated */
@@ -17305,11 +17550,17 @@ count?: [{	columns?: Array<ValueTypes["game_plugin_versions_select_column"]> | u
 	/** columns and relationships of "game_plugins" */
 ["game_plugins"]: AliasType<{
 	author?:boolean | `@${string}`,
+	config_cvar?:boolean | `@${string}`,
+config_default?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
 	config_path?:boolean | `@${string}`,
 config_schema?: [{	/** JSON select path */
 	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
+config_shipped?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
 	cvars?:boolean | `@${string}`,
 	description?:boolean | `@${string}`,
+	forced_cvars?:boolean | `@${string}`,
 game_modes?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["game_mode_plugins_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -17347,6 +17598,18 @@ node_installs_aggregate?: [{	/** distinct select on columns */
 	pairs_with?:boolean | `@${string}`,
 panel?: [{	/** JSON select path */
 	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
+reported_cvars?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["game_plugin_cvars_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["game_plugin_cvars_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["game_plugin_cvars_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["game_plugin_cvars"]],
+reported_cvars_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["game_plugin_cvars_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["game_plugin_cvars_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["game_plugin_cvars_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["game_plugin_cvars_aggregate"]],
 	requires_server_guidelines_disabled?:boolean | `@${string}`,
 	requires_service?:boolean | `@${string}`,
 	slug?:boolean | `@${string}`,
@@ -17395,7 +17658,9 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 }>;
 	/** append existing jsonb value of filtered columns with new jsonb value */
 ["game_plugins_append_input"]: {
+	config_default?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	config_schema?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	config_shipped?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	map_rotation?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	panel?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	wiring?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
@@ -17414,10 +17679,14 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	_not?: ValueTypes["game_plugins_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["game_plugins_bool_exp"]> | undefined | null | Variable<any, string>,
 	author?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	config_cvar?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	config_default?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
 	config_path?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	config_schema?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
+	config_shipped?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
 	cvars?: ValueTypes["String_array_comparison_exp"] | undefined | null | Variable<any, string>,
 	description?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	forced_cvars?: ValueTypes["String_array_comparison_exp"] | undefined | null | Variable<any, string>,
 	game_modes?: ValueTypes["game_mode_plugins_bool_exp"] | undefined | null | Variable<any, string>,
 	game_modes_aggregate?: ValueTypes["game_mode_plugins_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	homepage?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -17431,6 +17700,8 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	node_installs_aggregate?: ValueTypes["game_server_node_plugins_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	pairs_with?: ValueTypes["String_array_comparison_exp"] | undefined | null | Variable<any, string>,
 	panel?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
+	reported_cvars?: ValueTypes["game_plugin_cvars_bool_exp"] | undefined | null | Variable<any, string>,
+	reported_cvars_aggregate?: ValueTypes["game_plugin_cvars_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	requires_server_guidelines_disabled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	requires_service?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	slug?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -17447,21 +17718,27 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 ["game_plugins_constraint"]:game_plugins_constraint;
 	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 ["game_plugins_delete_at_path_input"]: {
+	config_default?: Array<string> | undefined | null | Variable<any, string>,
 	config_schema?: Array<string> | undefined | null | Variable<any, string>,
+	config_shipped?: Array<string> | undefined | null | Variable<any, string>,
 	map_rotation?: Array<string> | undefined | null | Variable<any, string>,
 	panel?: Array<string> | undefined | null | Variable<any, string>,
 	wiring?: Array<string> | undefined | null | Variable<any, string>
 };
 	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
 ["game_plugins_delete_elem_input"]: {
+	config_default?: number | undefined | null | Variable<any, string>,
 	config_schema?: number | undefined | null | Variable<any, string>,
+	config_shipped?: number | undefined | null | Variable<any, string>,
 	map_rotation?: number | undefined | null | Variable<any, string>,
 	panel?: number | undefined | null | Variable<any, string>,
 	wiring?: number | undefined | null | Variable<any, string>
 };
 	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
 ["game_plugins_delete_key_input"]: {
+	config_default?: string | undefined | null | Variable<any, string>,
 	config_schema?: string | undefined | null | Variable<any, string>,
+	config_shipped?: string | undefined | null | Variable<any, string>,
 	map_rotation?: string | undefined | null | Variable<any, string>,
 	panel?: string | undefined | null | Variable<any, string>,
 	wiring?: string | undefined | null | Variable<any, string>
@@ -17469,10 +17746,14 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	/** input type for inserting data into table "game_plugins" */
 ["game_plugins_insert_input"]: {
 	author?: string | undefined | null | Variable<any, string>,
+	config_cvar?: string | undefined | null | Variable<any, string>,
+	config_default?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	config_path?: string | undefined | null | Variable<any, string>,
 	config_schema?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	config_shipped?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	cvars?: Array<string> | undefined | null | Variable<any, string>,
 	description?: string | undefined | null | Variable<any, string>,
+	forced_cvars?: Array<string> | undefined | null | Variable<any, string>,
 	game_modes?: ValueTypes["game_mode_plugins_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	homepage?: string | undefined | null | Variable<any, string>,
 	hot_swappable?: boolean | undefined | null | Variable<any, string>,
@@ -17482,6 +17763,7 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	node_installs?: ValueTypes["game_server_node_plugins_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	pairs_with?: Array<string> | undefined | null | Variable<any, string>,
 	panel?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	reported_cvars?: ValueTypes["game_plugin_cvars_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	requires_server_guidelines_disabled?: boolean | undefined | null | Variable<any, string>,
 	requires_service?: string | undefined | null | Variable<any, string>,
 	slug?: string | undefined | null | Variable<any, string>,
@@ -17495,9 +17777,11 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	/** aggregate max on columns */
 ["game_plugins_max_fields"]: AliasType<{
 	author?:boolean | `@${string}`,
+	config_cvar?:boolean | `@${string}`,
 	config_path?:boolean | `@${string}`,
 	cvars?:boolean | `@${string}`,
 	description?:boolean | `@${string}`,
+	forced_cvars?:boolean | `@${string}`,
 	homepage?:boolean | `@${string}`,
 	/** Installed | Partial | Pending | Failed | Manual | NotInstalled */
 	install_state?:boolean | `@${string}`,
@@ -17517,9 +17801,11 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	/** aggregate min on columns */
 ["game_plugins_min_fields"]: AliasType<{
 	author?:boolean | `@${string}`,
+	config_cvar?:boolean | `@${string}`,
 	config_path?:boolean | `@${string}`,
 	cvars?:boolean | `@${string}`,
 	description?:boolean | `@${string}`,
+	forced_cvars?:boolean | `@${string}`,
 	homepage?:boolean | `@${string}`,
 	/** Installed | Partial | Pending | Failed | Manual | NotInstalled */
 	install_state?:boolean | `@${string}`,
@@ -17559,10 +17845,14 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	/** Ordering options when selecting data from "game_plugins". */
 ["game_plugins_order_by"]: {
 	author?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	config_cvar?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	config_default?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	config_path?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	config_schema?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	config_shipped?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	cvars?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	description?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	forced_cvars?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	game_modes_aggregate?: ValueTypes["game_mode_plugins_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	homepage?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	hot_swappable?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -17574,6 +17864,7 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	node_installs_aggregate?: ValueTypes["game_server_node_plugins_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	pairs_with?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	panel?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	reported_cvars_aggregate?: ValueTypes["game_plugin_cvars_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	requires_server_guidelines_disabled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	requires_service?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	slug?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -17591,7 +17882,9 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 };
 	/** prepend existing jsonb value of filtered columns with new jsonb value */
 ["game_plugins_prepend_input"]: {
+	config_default?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	config_schema?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	config_shipped?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	map_rotation?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	panel?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	wiring?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
@@ -17601,10 +17894,14 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	/** input type for updating data in table "game_plugins" */
 ["game_plugins_set_input"]: {
 	author?: string | undefined | null | Variable<any, string>,
+	config_cvar?: string | undefined | null | Variable<any, string>,
+	config_default?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	config_path?: string | undefined | null | Variable<any, string>,
 	config_schema?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	config_shipped?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	cvars?: Array<string> | undefined | null | Variable<any, string>,
 	description?: string | undefined | null | Variable<any, string>,
+	forced_cvars?: Array<string> | undefined | null | Variable<any, string>,
 	homepage?: string | undefined | null | Variable<any, string>,
 	hot_swappable?: boolean | undefined | null | Variable<any, string>,
 	kind?: ValueTypes["e_game_plugin_kinds_enum"] | undefined | null | Variable<any, string>,
@@ -17655,10 +17952,14 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	/** Initial value of the column from where the streaming should start */
 ["game_plugins_stream_cursor_value_input"]: {
 	author?: string | undefined | null | Variable<any, string>,
+	config_cvar?: string | undefined | null | Variable<any, string>,
+	config_default?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	config_path?: string | undefined | null | Variable<any, string>,
 	config_schema?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	config_shipped?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	cvars?: Array<string> | undefined | null | Variable<any, string>,
 	description?: string | undefined | null | Variable<any, string>,
+	forced_cvars?: Array<string> | undefined | null | Variable<any, string>,
 	homepage?: string | undefined | null | Variable<any, string>,
 	hot_swappable?: boolean | undefined | null | Variable<any, string>,
 	kind?: ValueTypes["e_game_plugin_kinds_enum"] | undefined | null | Variable<any, string>,
@@ -30610,6 +30911,9 @@ delete_game_mode_plugins_by_pk?: [{	game_mode_id: ValueTypes["uuid"] | Variable<
 delete_game_modes?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["game_modes_bool_exp"] | Variable<any, string>},ValueTypes["game_modes_mutation_response"]],
 delete_game_modes_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["game_modes"]],
+delete_game_plugin_cvars?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["game_plugin_cvars_bool_exp"] | Variable<any, string>},ValueTypes["game_plugin_cvars_mutation_response"]],
+delete_game_plugin_cvars_by_pk?: [{	name: string | Variable<any, string>,	plugin_slug: string | Variable<any, string>},ValueTypes["game_plugin_cvars"]],
 delete_game_plugin_installs?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["game_plugin_installs_bool_exp"] | Variable<any, string>},ValueTypes["game_plugin_installs_mutation_response"]],
 delete_game_plugin_installs_by_pk?: [{	plugin_slug: string | Variable<any, string>},ValueTypes["game_plugin_installs"]],
@@ -30831,6 +31135,9 @@ delete_server_migrations_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, strin
 delete_server_player_sessions?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["server_player_sessions_bool_exp"] | Variable<any, string>},ValueTypes["server_player_sessions_mutation_response"]],
 delete_server_player_sessions_by_pk?: [{	id: ValueTypes["bigint"] | Variable<any, string>},ValueTypes["server_player_sessions"]],
+delete_server_plugin_configs?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["server_plugin_configs_bool_exp"] | Variable<any, string>},ValueTypes["server_plugin_configs_mutation_response"]],
+delete_server_plugin_configs_by_pk?: [{	plugin_slug: string | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["server_plugin_configs"]],
 delete_server_plugins?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["server_plugins_bool_exp"] | Variable<any, string>},ValueTypes["server_plugins_mutation_response"]],
 delete_server_plugins_by_pk?: [{	plugin_slug: string | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["server_plugins"]],
@@ -31540,6 +31847,12 @@ insert_game_modes?: [{	/** the rows to be inserted */
 insert_game_modes_one?: [{	/** the row to be inserted */
 	object: ValueTypes["game_modes_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["game_modes_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["game_modes"]],
+insert_game_plugin_cvars?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["game_plugin_cvars_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["game_plugin_cvars_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["game_plugin_cvars_mutation_response"]],
+insert_game_plugin_cvars_one?: [{	/** the row to be inserted */
+	object: ValueTypes["game_plugin_cvars_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["game_plugin_cvars_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["game_plugin_cvars"]],
 insert_game_plugin_installs?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["game_plugin_installs_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["game_plugin_installs_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["game_plugin_installs_mutation_response"]],
@@ -31982,6 +32295,12 @@ insert_server_player_sessions?: [{	/** the rows to be inserted */
 insert_server_player_sessions_one?: [{	/** the row to be inserted */
 	object: ValueTypes["server_player_sessions_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["server_player_sessions_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["server_player_sessions"]],
+insert_server_plugin_configs?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["server_plugin_configs_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["server_plugin_configs_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["server_plugin_configs_mutation_response"]],
+insert_server_plugin_configs_one?: [{	/** the row to be inserted */
+	object: ValueTypes["server_plugin_configs_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["server_plugin_configs_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["server_plugin_configs"]],
 insert_server_plugins?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["server_plugins_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["server_plugins_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["server_plugins_mutation_response"]],
@@ -32446,7 +32765,7 @@ setNewsPostStatus?: [{	id: ValueTypes["uuid"] | Variable<any, string>,	status: s
 setServerAccess?: [{	event_ids: Array<ValueTypes["uuid"]> | Variable<any, string>,	min_role?: string | undefined | null | Variable<any, string>,	restricted: boolean | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>,	steam_ids: Array<string> | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setServerMapRotation?: [{	map_ids: Array<ValueTypes["uuid"]> | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>,	shuffle: boolean | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setServerPlugins?: [{	plugins: Array<ValueTypes["ServerPluginInput"]> | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
-setServerSettings?: [{	access?: ValueTypes["ServerAccessInput"] | undefined | null | Variable<any, string>,	map_rotation?: ValueTypes["ServerMapRotationInput"] | undefined | null | Variable<any, string>,	plugins?: Array<ValueTypes["ServerPluginInput"]> | undefined | null | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
+setServerSettings?: [{	access?: ValueTypes["ServerAccessInput"] | undefined | null | Variable<any, string>,	map_rotation?: ValueTypes["ServerMapRotationInput"] | undefined | null | Variable<any, string>,	plugin_configs?: Array<ValueTypes["ServerPluginConfigInput"]> | undefined | null | Variable<any, string>,	plugins?: Array<ValueTypes["ServerPluginInput"]> | undefined | null | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setTournamentAward?: [{	award_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	custom_name?: string | undefined | null | Variable<any, string>,	placement: number | Variable<any, string>,	silhouette?: number | undefined | null | Variable<any, string>,	tournament_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["TournamentAward"]],
 setUtilityPracticeAccess?: [{	access: string | Variable<any, string>,	session_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 	setupGameServer?:ValueTypes["SetupGameServeOutput"],
@@ -33196,10 +33515,27 @@ update_game_modes_by_pk?: [{	/** sets the columns of the filtered rows to the gi
 	_set?: ValueTypes["game_modes_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["game_modes_pk_columns_input"] | Variable<any, string>},ValueTypes["game_modes"]],
 update_game_modes_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["game_modes_updates"]> | Variable<any, string>},ValueTypes["game_modes_mutation_response"]],
-update_game_plugin_installs?: [{	/** sets the columns of the filtered rows to the given values */
+update_game_plugin_cvars?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["game_plugin_cvars_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["game_plugin_cvars_bool_exp"] | Variable<any, string>},ValueTypes["game_plugin_cvars_mutation_response"]],
+update_game_plugin_cvars_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["game_plugin_cvars_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["game_plugin_cvars_pk_columns_input"] | Variable<any, string>},ValueTypes["game_plugin_cvars"]],
+update_game_plugin_cvars_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["game_plugin_cvars_updates"]> | Variable<any, string>},ValueTypes["game_plugin_cvars_mutation_response"]],
+update_game_plugin_installs?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["game_plugin_installs_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["game_plugin_installs_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["game_plugin_installs_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["game_plugin_installs_delete_key_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["game_plugin_installs_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["game_plugin_installs_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
 	where: ValueTypes["game_plugin_installs_bool_exp"] | Variable<any, string>},ValueTypes["game_plugin_installs_mutation_response"]],
-update_game_plugin_installs_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+update_game_plugin_installs_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["game_plugin_installs_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["game_plugin_installs_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["game_plugin_installs_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["game_plugin_installs_delete_key_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["game_plugin_installs_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["game_plugin_installs_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["game_plugin_installs_pk_columns_input"] | Variable<any, string>},ValueTypes["game_plugin_installs"]],
 update_game_plugin_installs_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["game_plugin_installs_updates"]> | Variable<any, string>},ValueTypes["game_plugin_installs_mutation_response"]],
@@ -33965,6 +34301,23 @@ update_server_player_sessions_by_pk?: [{	/** increments the numeric columns with
 	_set?: ValueTypes["server_player_sessions_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["server_player_sessions_pk_columns_input"] | Variable<any, string>},ValueTypes["server_player_sessions"]],
 update_server_player_sessions_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["server_player_sessions_updates"]> | Variable<any, string>},ValueTypes["server_player_sessions_mutation_response"]],
+update_server_plugin_configs?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["server_plugin_configs_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["server_plugin_configs_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["server_plugin_configs_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["server_plugin_configs_delete_key_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["server_plugin_configs_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["server_plugin_configs_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["server_plugin_configs_bool_exp"] | Variable<any, string>},ValueTypes["server_plugin_configs_mutation_response"]],
+update_server_plugin_configs_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["server_plugin_configs_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["server_plugin_configs_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["server_plugin_configs_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["server_plugin_configs_delete_key_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["server_plugin_configs_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["server_plugin_configs_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["server_plugin_configs_pk_columns_input"] | Variable<any, string>},ValueTypes["server_plugin_configs"]],
+update_server_plugin_configs_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["server_plugin_configs_updates"]> | Variable<any, string>},ValueTypes["server_plugin_configs_mutation_response"]],
 update_server_plugins?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["server_plugins_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
 	where: ValueTypes["server_plugins_bool_exp"] | Variable<any, string>},ValueTypes["server_plugins_mutation_response"]],
@@ -46567,6 +46920,346 @@ count?: [{	columns?: Array<ValueTypes["player_sanctions_select_column"]> | undef
 	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	sanctioned_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
+	/** columns and relationships of "player_season_performance_v" */
+["player_season_performance_v"]: AliasType<{
+	accuracy_score?:boolean | `@${string}`,
+	aim_rating?:boolean | `@${string}`,
+	blind_score?:boolean | `@${string}`,
+	counter_strafe_score?:boolean | `@${string}`,
+	crosshair_score?:boolean | `@${string}`,
+	flash_assists_score?:boolean | `@${string}`,
+	hs_score?:boolean | `@${string}`,
+	kast_score?:boolean | `@${string}`,
+	positioning_rating?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+	/** An object relationship */
+	season?:ValueTypes["seasons"],
+	season_id?:boolean | `@${string}`,
+	season_starts_at?:boolean | `@${string}`,
+	spotted_score?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	survival_score?:boolean | `@${string}`,
+	traded_score?:boolean | `@${string}`,
+	ttd_score?:boolean | `@${string}`,
+	util_eff_score?:boolean | `@${string}`,
+	utility_rating?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "player_season_performance_v" */
+["player_season_performance_v_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["player_season_performance_v_aggregate_fields"],
+	nodes?:ValueTypes["player_season_performance_v"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "player_season_performance_v" */
+["player_season_performance_v_aggregate_fields"]: AliasType<{
+	avg?:ValueTypes["player_season_performance_v_avg_fields"],
+count?: [{	columns?: Array<ValueTypes["player_season_performance_v_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["player_season_performance_v_max_fields"],
+	min?:ValueTypes["player_season_performance_v_min_fields"],
+	stddev?:ValueTypes["player_season_performance_v_stddev_fields"],
+	stddev_pop?:ValueTypes["player_season_performance_v_stddev_pop_fields"],
+	stddev_samp?:ValueTypes["player_season_performance_v_stddev_samp_fields"],
+	sum?:ValueTypes["player_season_performance_v_sum_fields"],
+	var_pop?:ValueTypes["player_season_performance_v_var_pop_fields"],
+	var_samp?:ValueTypes["player_season_performance_v_var_samp_fields"],
+	variance?:ValueTypes["player_season_performance_v_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate avg on columns */
+["player_season_performance_v_avg_fields"]: AliasType<{
+	accuracy_score?:boolean | `@${string}`,
+	aim_rating?:boolean | `@${string}`,
+	blind_score?:boolean | `@${string}`,
+	counter_strafe_score?:boolean | `@${string}`,
+	crosshair_score?:boolean | `@${string}`,
+	flash_assists_score?:boolean | `@${string}`,
+	hs_score?:boolean | `@${string}`,
+	kast_score?:boolean | `@${string}`,
+	positioning_rating?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+	spotted_score?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	survival_score?:boolean | `@${string}`,
+	traded_score?:boolean | `@${string}`,
+	ttd_score?:boolean | `@${string}`,
+	util_eff_score?:boolean | `@${string}`,
+	utility_rating?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "player_season_performance_v". All fields are combined with a logical 'AND'. */
+["player_season_performance_v_bool_exp"]: {
+	_and?: Array<ValueTypes["player_season_performance_v_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["player_season_performance_v_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["player_season_performance_v_bool_exp"]> | undefined | null | Variable<any, string>,
+	accuracy_score?: ValueTypes["float8_comparison_exp"] | undefined | null | Variable<any, string>,
+	aim_rating?: ValueTypes["float8_comparison_exp"] | undefined | null | Variable<any, string>,
+	blind_score?: ValueTypes["float8_comparison_exp"] | undefined | null | Variable<any, string>,
+	counter_strafe_score?: ValueTypes["float8_comparison_exp"] | undefined | null | Variable<any, string>,
+	crosshair_score?: ValueTypes["float8_comparison_exp"] | undefined | null | Variable<any, string>,
+	flash_assists_score?: ValueTypes["float8_comparison_exp"] | undefined | null | Variable<any, string>,
+	hs_score?: ValueTypes["float8_comparison_exp"] | undefined | null | Variable<any, string>,
+	kast_score?: ValueTypes["float8_comparison_exp"] | undefined | null | Variable<any, string>,
+	positioning_rating?: ValueTypes["float8_comparison_exp"] | undefined | null | Variable<any, string>,
+	rounds?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	season?: ValueTypes["seasons_bool_exp"] | undefined | null | Variable<any, string>,
+	season_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	season_starts_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	spotted_score?: ValueTypes["float8_comparison_exp"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	survival_score?: ValueTypes["float8_comparison_exp"] | undefined | null | Variable<any, string>,
+	traded_score?: ValueTypes["float8_comparison_exp"] | undefined | null | Variable<any, string>,
+	ttd_score?: ValueTypes["float8_comparison_exp"] | undefined | null | Variable<any, string>,
+	util_eff_score?: ValueTypes["float8_comparison_exp"] | undefined | null | Variable<any, string>,
+	utility_rating?: ValueTypes["float8_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["player_season_performance_v_max_fields"]: AliasType<{
+	accuracy_score?:boolean | `@${string}`,
+	aim_rating?:boolean | `@${string}`,
+	blind_score?:boolean | `@${string}`,
+	counter_strafe_score?:boolean | `@${string}`,
+	crosshair_score?:boolean | `@${string}`,
+	flash_assists_score?:boolean | `@${string}`,
+	hs_score?:boolean | `@${string}`,
+	kast_score?:boolean | `@${string}`,
+	positioning_rating?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+	season_id?:boolean | `@${string}`,
+	season_starts_at?:boolean | `@${string}`,
+	spotted_score?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	survival_score?:boolean | `@${string}`,
+	traded_score?:boolean | `@${string}`,
+	ttd_score?:boolean | `@${string}`,
+	util_eff_score?:boolean | `@${string}`,
+	utility_rating?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["player_season_performance_v_min_fields"]: AliasType<{
+	accuracy_score?:boolean | `@${string}`,
+	aim_rating?:boolean | `@${string}`,
+	blind_score?:boolean | `@${string}`,
+	counter_strafe_score?:boolean | `@${string}`,
+	crosshair_score?:boolean | `@${string}`,
+	flash_assists_score?:boolean | `@${string}`,
+	hs_score?:boolean | `@${string}`,
+	kast_score?:boolean | `@${string}`,
+	positioning_rating?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+	season_id?:boolean | `@${string}`,
+	season_starts_at?:boolean | `@${string}`,
+	spotted_score?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	survival_score?:boolean | `@${string}`,
+	traded_score?:boolean | `@${string}`,
+	ttd_score?:boolean | `@${string}`,
+	util_eff_score?:boolean | `@${string}`,
+	utility_rating?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Ordering options when selecting data from "player_season_performance_v". */
+["player_season_performance_v_order_by"]: {
+	accuracy_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	aim_rating?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	blind_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	counter_strafe_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	crosshair_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	flash_assists_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	hs_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	kast_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	positioning_rating?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	rounds?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	season?: ValueTypes["seasons_order_by"] | undefined | null | Variable<any, string>,
+	season_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	season_starts_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	spotted_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	survival_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	traded_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	ttd_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	util_eff_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	utility_rating?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** select columns of table "player_season_performance_v" */
+["player_season_performance_v_select_column"]:player_season_performance_v_select_column;
+	/** aggregate stddev on columns */
+["player_season_performance_v_stddev_fields"]: AliasType<{
+	accuracy_score?:boolean | `@${string}`,
+	aim_rating?:boolean | `@${string}`,
+	blind_score?:boolean | `@${string}`,
+	counter_strafe_score?:boolean | `@${string}`,
+	crosshair_score?:boolean | `@${string}`,
+	flash_assists_score?:boolean | `@${string}`,
+	hs_score?:boolean | `@${string}`,
+	kast_score?:boolean | `@${string}`,
+	positioning_rating?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+	spotted_score?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	survival_score?:boolean | `@${string}`,
+	traded_score?:boolean | `@${string}`,
+	ttd_score?:boolean | `@${string}`,
+	util_eff_score?:boolean | `@${string}`,
+	utility_rating?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["player_season_performance_v_stddev_pop_fields"]: AliasType<{
+	accuracy_score?:boolean | `@${string}`,
+	aim_rating?:boolean | `@${string}`,
+	blind_score?:boolean | `@${string}`,
+	counter_strafe_score?:boolean | `@${string}`,
+	crosshair_score?:boolean | `@${string}`,
+	flash_assists_score?:boolean | `@${string}`,
+	hs_score?:boolean | `@${string}`,
+	kast_score?:boolean | `@${string}`,
+	positioning_rating?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+	spotted_score?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	survival_score?:boolean | `@${string}`,
+	traded_score?:boolean | `@${string}`,
+	ttd_score?:boolean | `@${string}`,
+	util_eff_score?:boolean | `@${string}`,
+	utility_rating?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["player_season_performance_v_stddev_samp_fields"]: AliasType<{
+	accuracy_score?:boolean | `@${string}`,
+	aim_rating?:boolean | `@${string}`,
+	blind_score?:boolean | `@${string}`,
+	counter_strafe_score?:boolean | `@${string}`,
+	crosshair_score?:boolean | `@${string}`,
+	flash_assists_score?:boolean | `@${string}`,
+	hs_score?:boolean | `@${string}`,
+	kast_score?:boolean | `@${string}`,
+	positioning_rating?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+	spotted_score?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	survival_score?:boolean | `@${string}`,
+	traded_score?:boolean | `@${string}`,
+	ttd_score?:boolean | `@${string}`,
+	util_eff_score?:boolean | `@${string}`,
+	utility_rating?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "player_season_performance_v" */
+["player_season_performance_v_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["player_season_performance_v_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["player_season_performance_v_stream_cursor_value_input"]: {
+	accuracy_score?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
+	aim_rating?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
+	blind_score?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
+	counter_strafe_score?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
+	crosshair_score?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
+	flash_assists_score?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
+	hs_score?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
+	kast_score?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
+	positioning_rating?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
+	rounds?: number | undefined | null | Variable<any, string>,
+	season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	season_starts_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	spotted_score?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	survival_score?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
+	traded_score?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
+	ttd_score?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
+	util_eff_score?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
+	utility_rating?: ValueTypes["float8"] | undefined | null | Variable<any, string>
+};
+	/** aggregate sum on columns */
+["player_season_performance_v_sum_fields"]: AliasType<{
+	accuracy_score?:boolean | `@${string}`,
+	aim_rating?:boolean | `@${string}`,
+	blind_score?:boolean | `@${string}`,
+	counter_strafe_score?:boolean | `@${string}`,
+	crosshair_score?:boolean | `@${string}`,
+	flash_assists_score?:boolean | `@${string}`,
+	hs_score?:boolean | `@${string}`,
+	kast_score?:boolean | `@${string}`,
+	positioning_rating?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+	spotted_score?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	survival_score?:boolean | `@${string}`,
+	traded_score?:boolean | `@${string}`,
+	ttd_score?:boolean | `@${string}`,
+	util_eff_score?:boolean | `@${string}`,
+	utility_rating?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_pop on columns */
+["player_season_performance_v_var_pop_fields"]: AliasType<{
+	accuracy_score?:boolean | `@${string}`,
+	aim_rating?:boolean | `@${string}`,
+	blind_score?:boolean | `@${string}`,
+	counter_strafe_score?:boolean | `@${string}`,
+	crosshair_score?:boolean | `@${string}`,
+	flash_assists_score?:boolean | `@${string}`,
+	hs_score?:boolean | `@${string}`,
+	kast_score?:boolean | `@${string}`,
+	positioning_rating?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+	spotted_score?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	survival_score?:boolean | `@${string}`,
+	traded_score?:boolean | `@${string}`,
+	ttd_score?:boolean | `@${string}`,
+	util_eff_score?:boolean | `@${string}`,
+	utility_rating?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["player_season_performance_v_var_samp_fields"]: AliasType<{
+	accuracy_score?:boolean | `@${string}`,
+	aim_rating?:boolean | `@${string}`,
+	blind_score?:boolean | `@${string}`,
+	counter_strafe_score?:boolean | `@${string}`,
+	crosshair_score?:boolean | `@${string}`,
+	flash_assists_score?:boolean | `@${string}`,
+	hs_score?:boolean | `@${string}`,
+	kast_score?:boolean | `@${string}`,
+	positioning_rating?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+	spotted_score?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	survival_score?:boolean | `@${string}`,
+	traded_score?:boolean | `@${string}`,
+	ttd_score?:boolean | `@${string}`,
+	util_eff_score?:boolean | `@${string}`,
+	utility_rating?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["player_season_performance_v_variance_fields"]: AliasType<{
+	accuracy_score?:boolean | `@${string}`,
+	aim_rating?:boolean | `@${string}`,
+	blind_score?:boolean | `@${string}`,
+	counter_strafe_score?:boolean | `@${string}`,
+	crosshair_score?:boolean | `@${string}`,
+	flash_assists_score?:boolean | `@${string}`,
+	hs_score?:boolean | `@${string}`,
+	kast_score?:boolean | `@${string}`,
+	positioning_rating?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+	spotted_score?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	survival_score?:boolean | `@${string}`,
+	traded_score?:boolean | `@${string}`,
+	ttd_score?:boolean | `@${string}`,
+	util_eff_score?:boolean | `@${string}`,
+	utility_rating?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	/** columns and relationships of "player_season_stats" */
 ["player_season_stats"]: AliasType<{
 	assists?:boolean | `@${string}`,
@@ -51573,6 +52266,19 @@ game_modes_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["game_modes_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["game_modes_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["game_modes_aggregate"]],
 game_modes_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["game_modes"]],
+game_plugin_cvars?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["game_plugin_cvars_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["game_plugin_cvars_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["game_plugin_cvars_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["game_plugin_cvars"]],
+game_plugin_cvars_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["game_plugin_cvars_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["game_plugin_cvars_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["game_plugin_cvars_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["game_plugin_cvars_aggregate"]],
+game_plugin_cvars_by_pk?: [{	name: string | Variable<any, string>,	plugin_slug: string | Variable<any, string>},ValueTypes["game_plugin_cvars"]],
 game_plugin_installs?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["game_plugin_installs_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -52491,6 +53197,18 @@ player_sanctions_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["player_sanctions_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["player_sanctions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_sanctions_aggregate"]],
 player_sanctions_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["player_sanctions"]],
+player_season_performance_v?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["player_season_performance_v_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["player_season_performance_v_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["player_season_performance_v_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_season_performance_v"]],
+player_season_performance_v_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["player_season_performance_v_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["player_season_performance_v_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["player_season_performance_v_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_season_performance_v_aggregate"]],
 player_season_stats?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["player_season_stats_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -52711,6 +53429,19 @@ server_player_sessions_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["server_player_sessions_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["server_player_sessions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_player_sessions_aggregate"]],
 server_player_sessions_by_pk?: [{	id: ValueTypes["bigint"] | Variable<any, string>},ValueTypes["server_player_sessions"]],
+server_plugin_configs?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_plugin_configs_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_plugin_configs_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_plugin_configs_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_plugin_configs"]],
+server_plugin_configs_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_plugin_configs_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_plugin_configs_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_plugin_configs_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_plugin_configs_aggregate"]],
+server_plugin_configs_by_pk?: [{	plugin_slug: string | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["server_plugin_configs"]],
 server_plugins?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["server_plugins_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -53722,6 +54453,30 @@ v_player_weapon_kills_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["v_player_weapon_kills_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["v_player_weapon_kills_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_weapon_kills_aggregate"]],
+v_player_weapon_match_damage?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["v_player_weapon_match_damage_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["v_player_weapon_match_damage_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["v_player_weapon_match_damage_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_weapon_match_damage"]],
+v_player_weapon_match_damage_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["v_player_weapon_match_damage_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["v_player_weapon_match_damage_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["v_player_weapon_match_damage_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_weapon_match_damage_aggregate"]],
+v_player_weapon_match_kills?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["v_player_weapon_match_kills_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["v_player_weapon_match_kills_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["v_player_weapon_match_kills_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_weapon_match_kills"]],
+v_player_weapon_match_kills_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["v_player_weapon_match_kills_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["v_player_weapon_match_kills_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["v_player_weapon_match_kills_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_weapon_match_kills_aggregate"]],
 v_pool_maps?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["v_pool_maps_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -55646,6 +56401,201 @@ count?: [{	columns?: Array<ValueTypes["server_player_sessions_select_column"]> |
 	kills_conn?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
+	/** columns and relationships of "server_plugin_configs" */
+["server_plugin_configs"]: AliasType<{
+	cfg?:boolean | `@${string}`,
+config?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	/** An object relationship */
+	plugin?:ValueTypes["game_plugins"],
+	plugin_slug?:boolean | `@${string}`,
+	/** An object relationship */
+	server?:ValueTypes["servers"],
+	server_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "server_plugin_configs" */
+["server_plugin_configs_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["server_plugin_configs_aggregate_fields"],
+	nodes?:ValueTypes["server_plugin_configs"],
+		__typename?: boolean | `@${string}`
+}>;
+	["server_plugin_configs_aggregate_bool_exp"]: {
+	count?: ValueTypes["server_plugin_configs_aggregate_bool_exp_count"] | undefined | null | Variable<any, string>
+};
+	["server_plugin_configs_aggregate_bool_exp_count"]: {
+	arguments?: Array<ValueTypes["server_plugin_configs_select_column"]> | undefined | null | Variable<any, string>,
+	distinct?: boolean | undefined | null | Variable<any, string>,
+	filter?: ValueTypes["server_plugin_configs_bool_exp"] | undefined | null | Variable<any, string>,
+	predicate: ValueTypes["Int_comparison_exp"] | Variable<any, string>
+};
+	/** aggregate fields of "server_plugin_configs" */
+["server_plugin_configs_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ValueTypes["server_plugin_configs_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["server_plugin_configs_max_fields"],
+	min?:ValueTypes["server_plugin_configs_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by aggregate values of table "server_plugin_configs" */
+["server_plugin_configs_aggregate_order_by"]: {
+	count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	max?: ValueTypes["server_plugin_configs_max_order_by"] | undefined | null | Variable<any, string>,
+	min?: ValueTypes["server_plugin_configs_min_order_by"] | undefined | null | Variable<any, string>
+};
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["server_plugin_configs_append_input"]: {
+	config?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
+	/** input type for inserting array relation for remote table "server_plugin_configs" */
+["server_plugin_configs_arr_rel_insert_input"]: {
+	data: Array<ValueTypes["server_plugin_configs_insert_input"]> | Variable<any, string>,
+	/** upsert condition */
+	on_conflict?: ValueTypes["server_plugin_configs_on_conflict"] | undefined | null | Variable<any, string>
+};
+	/** Boolean expression to filter rows from the table "server_plugin_configs". All fields are combined with a logical 'AND'. */
+["server_plugin_configs_bool_exp"]: {
+	_and?: Array<ValueTypes["server_plugin_configs_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["server_plugin_configs_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["server_plugin_configs_bool_exp"]> | undefined | null | Variable<any, string>,
+	cfg?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	config?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
+	plugin?: ValueTypes["game_plugins_bool_exp"] | undefined | null | Variable<any, string>,
+	plugin_slug?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	server?: ValueTypes["servers_bool_exp"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "server_plugin_configs" */
+["server_plugin_configs_constraint"]:server_plugin_configs_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["server_plugin_configs_delete_at_path_input"]: {
+	config?: Array<string> | undefined | null | Variable<any, string>
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["server_plugin_configs_delete_elem_input"]: {
+	config?: number | undefined | null | Variable<any, string>
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["server_plugin_configs_delete_key_input"]: {
+	config?: string | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "server_plugin_configs" */
+["server_plugin_configs_insert_input"]: {
+	cfg?: string | undefined | null | Variable<any, string>,
+	config?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	plugin?: ValueTypes["game_plugins_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	plugin_slug?: string | undefined | null | Variable<any, string>,
+	server?: ValueTypes["servers_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["server_plugin_configs_max_fields"]: AliasType<{
+	cfg?:boolean | `@${string}`,
+	plugin_slug?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by max() on columns of table "server_plugin_configs" */
+["server_plugin_configs_max_order_by"]: {
+	cfg?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	plugin_slug?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate min on columns */
+["server_plugin_configs_min_fields"]: AliasType<{
+	cfg?:boolean | `@${string}`,
+	plugin_slug?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by min() on columns of table "server_plugin_configs" */
+["server_plugin_configs_min_order_by"]: {
+	cfg?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	plugin_slug?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** response of any mutation on the table "server_plugin_configs" */
+["server_plugin_configs_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["server_plugin_configs"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "server_plugin_configs" */
+["server_plugin_configs_on_conflict"]: {
+	constraint: ValueTypes["server_plugin_configs_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["server_plugin_configs_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["server_plugin_configs_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "server_plugin_configs". */
+["server_plugin_configs_order_by"]: {
+	cfg?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	config?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	plugin?: ValueTypes["game_plugins_order_by"] | undefined | null | Variable<any, string>,
+	plugin_slug?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	server?: ValueTypes["servers_order_by"] | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: server_plugin_configs */
+["server_plugin_configs_pk_columns_input"]: {
+	plugin_slug: string | Variable<any, string>,
+	server_id: ValueTypes["uuid"] | Variable<any, string>
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["server_plugin_configs_prepend_input"]: {
+	config?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
+	/** select columns of table "server_plugin_configs" */
+["server_plugin_configs_select_column"]:server_plugin_configs_select_column;
+	/** input type for updating data in table "server_plugin_configs" */
+["server_plugin_configs_set_input"]: {
+	cfg?: string | undefined | null | Variable<any, string>,
+	config?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	plugin_slug?: string | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
+};
+	/** Streaming cursor of the table "server_plugin_configs" */
+["server_plugin_configs_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["server_plugin_configs_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["server_plugin_configs_stream_cursor_value_input"]: {
+	cfg?: string | undefined | null | Variable<any, string>,
+	config?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	plugin_slug?: string | undefined | null | Variable<any, string>,
+	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
+};
+	/** update columns of table "server_plugin_configs" */
+["server_plugin_configs_update_column"]:server_plugin_configs_update_column;
+	["server_plugin_configs_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["server_plugin_configs_append_input"] | undefined | null | Variable<any, string>,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["server_plugin_configs_delete_at_path_input"] | undefined | null | Variable<any, string>,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["server_plugin_configs_delete_elem_input"] | undefined | null | Variable<any, string>,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["server_plugin_configs_delete_key_input"] | undefined | null | Variable<any, string>,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["server_plugin_configs_prepend_input"] | undefined | null | Variable<any, string>,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["server_plugin_configs_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["server_plugin_configs_bool_exp"] | Variable<any, string>
+};
 	/** columns and relationships of "server_plugins" */
 ["server_plugins"]: AliasType<{
 	enabled?:boolean | `@${string}`,
@@ -56442,6 +57392,18 @@ migrations_aggregate?: [{	/** distinct select on columns */
 	player_management_runtime?:boolean | `@${string}`,
 	player_management_seen_at?:boolean | `@${string}`,
 	player_management_version?:boolean | `@${string}`,
+plugin_configs?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_plugin_configs_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_plugin_configs_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_plugin_configs_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_plugin_configs"]],
+plugin_configs_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_plugin_configs_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_plugin_configs_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_plugin_configs_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_plugin_configs_aggregate"]],
 plugin_overrides?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["server_plugins_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -56593,6 +57555,8 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	player_management_runtime?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	player_management_seen_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	player_management_version?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	plugin_configs?: ValueTypes["server_plugin_configs_bool_exp"] | undefined | null | Variable<any, string>,
+	plugin_configs_aggregate?: ValueTypes["server_plugin_configs_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	plugin_overrides?: ValueTypes["server_plugins_bool_exp"] | undefined | null | Variable<any, string>,
 	plugin_overrides_aggregate?: ValueTypes["server_plugins_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	plugin_runtime?: ValueTypes["e_plugin_runtimes_enum_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -56661,6 +57625,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	player_management_runtime?: string | undefined | null | Variable<any, string>,
 	player_management_seen_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	player_management_version?: string | undefined | null | Variable<any, string>,
+	plugin_configs?: ValueTypes["server_plugin_configs_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	plugin_overrides?: ValueTypes["server_plugins_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	plugin_runtime?: ValueTypes["e_plugin_runtimes_enum"] | undefined | null | Variable<any, string>,
 	plugin_version?: string | undefined | null | Variable<any, string>,
@@ -56844,6 +57809,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	player_management_runtime?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_management_seen_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_management_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	plugin_configs_aggregate?: ValueTypes["server_plugin_configs_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	plugin_overrides_aggregate?: ValueTypes["server_plugins_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	plugin_runtime?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	plugin_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -59107,6 +60073,23 @@ game_modes_stream?: [{	/** maximum number of rows returned in a single batch */
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["game_modes_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["game_modes_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["game_modes"]],
+game_plugin_cvars?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["game_plugin_cvars_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["game_plugin_cvars_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["game_plugin_cvars_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["game_plugin_cvars"]],
+game_plugin_cvars_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["game_plugin_cvars_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["game_plugin_cvars_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["game_plugin_cvars_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["game_plugin_cvars_aggregate"]],
+game_plugin_cvars_by_pk?: [{	name: string | Variable<any, string>,	plugin_slug: string | Variable<any, string>},ValueTypes["game_plugin_cvars"]],
+game_plugin_cvars_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["game_plugin_cvars_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["game_plugin_cvars_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["game_plugin_cvars"]],
 game_plugin_installs?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["game_plugin_installs_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -60241,6 +61224,22 @@ player_sanctions_stream?: [{	/** maximum number of rows returned in a single bat
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["player_sanctions_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["player_sanctions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_sanctions"]],
+player_season_performance_v?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["player_season_performance_v_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["player_season_performance_v_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["player_season_performance_v_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_season_performance_v"]],
+player_season_performance_v_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["player_season_performance_v_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["player_season_performance_v_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["player_season_performance_v_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_season_performance_v_aggregate"]],
+player_season_performance_v_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["player_season_performance_v_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["player_season_performance_v_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_season_performance_v"]],
 player_season_stats?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["player_season_stats_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -60528,6 +61527,23 @@ server_player_sessions_stream?: [{	/** maximum number of rows returned in a sing
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["server_player_sessions_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["server_player_sessions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_player_sessions"]],
+server_plugin_configs?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_plugin_configs_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_plugin_configs_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_plugin_configs_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_plugin_configs"]],
+server_plugin_configs_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["server_plugin_configs_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["server_plugin_configs_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_plugin_configs_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_plugin_configs_aggregate"]],
+server_plugin_configs_by_pk?: [{	plugin_slug: string | Variable<any, string>,	server_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["server_plugin_configs"]],
+server_plugin_configs_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["server_plugin_configs_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["server_plugin_configs_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_plugin_configs"]],
 server_plugins?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["server_plugins_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -61843,6 +62859,38 @@ v_player_weapon_kills_stream?: [{	/** maximum number of rows returned in a singl
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["v_player_weapon_kills_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["v_player_weapon_kills_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_weapon_kills"]],
+v_player_weapon_match_damage?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["v_player_weapon_match_damage_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["v_player_weapon_match_damage_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["v_player_weapon_match_damage_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_weapon_match_damage"]],
+v_player_weapon_match_damage_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["v_player_weapon_match_damage_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["v_player_weapon_match_damage_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["v_player_weapon_match_damage_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_weapon_match_damage_aggregate"]],
+v_player_weapon_match_damage_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["v_player_weapon_match_damage_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["v_player_weapon_match_damage_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_weapon_match_damage"]],
+v_player_weapon_match_kills?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["v_player_weapon_match_kills_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["v_player_weapon_match_kills_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["v_player_weapon_match_kills_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_weapon_match_kills"]],
+v_player_weapon_match_kills_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["v_player_weapon_match_kills_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["v_player_weapon_match_kills_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["v_player_weapon_match_kills_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_weapon_match_kills_aggregate"]],
+v_player_weapon_match_kills_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["v_player_weapon_match_kills_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["v_player_weapon_match_kills_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_weapon_match_kills"]],
 v_pool_maps?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["v_pool_maps_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -85297,6 +86345,294 @@ count?: [{	columns?: Array<ValueTypes["v_player_weapon_kills_select_column"]> | 
 	rounds?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** columns and relationships of "v_player_weapon_match_damage" */
+["v_player_weapon_match_damage"]: AliasType<{
+	damage?:boolean | `@${string}`,
+	hits?:boolean | `@${string}`,
+	/** An object relationship */
+	match?:ValueTypes["matches"],
+	match_id?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	with?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "v_player_weapon_match_damage" */
+["v_player_weapon_match_damage_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["v_player_weapon_match_damage_aggregate_fields"],
+	nodes?:ValueTypes["v_player_weapon_match_damage"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "v_player_weapon_match_damage" */
+["v_player_weapon_match_damage_aggregate_fields"]: AliasType<{
+	avg?:ValueTypes["v_player_weapon_match_damage_avg_fields"],
+count?: [{	columns?: Array<ValueTypes["v_player_weapon_match_damage_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["v_player_weapon_match_damage_max_fields"],
+	min?:ValueTypes["v_player_weapon_match_damage_min_fields"],
+	stddev?:ValueTypes["v_player_weapon_match_damage_stddev_fields"],
+	stddev_pop?:ValueTypes["v_player_weapon_match_damage_stddev_pop_fields"],
+	stddev_samp?:ValueTypes["v_player_weapon_match_damage_stddev_samp_fields"],
+	sum?:ValueTypes["v_player_weapon_match_damage_sum_fields"],
+	var_pop?:ValueTypes["v_player_weapon_match_damage_var_pop_fields"],
+	var_samp?:ValueTypes["v_player_weapon_match_damage_var_samp_fields"],
+	variance?:ValueTypes["v_player_weapon_match_damage_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate avg on columns */
+["v_player_weapon_match_damage_avg_fields"]: AliasType<{
+	damage?:boolean | `@${string}`,
+	hits?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "v_player_weapon_match_damage". All fields are combined with a logical 'AND'. */
+["v_player_weapon_match_damage_bool_exp"]: {
+	_and?: Array<ValueTypes["v_player_weapon_match_damage_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["v_player_weapon_match_damage_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["v_player_weapon_match_damage_bool_exp"]> | undefined | null | Variable<any, string>,
+	damage?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	hits?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	match?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	with?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["v_player_weapon_match_damage_max_fields"]: AliasType<{
+	damage?:boolean | `@${string}`,
+	hits?:boolean | `@${string}`,
+	match_id?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	with?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["v_player_weapon_match_damage_min_fields"]: AliasType<{
+	damage?:boolean | `@${string}`,
+	hits?:boolean | `@${string}`,
+	match_id?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	with?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Ordering options when selecting data from "v_player_weapon_match_damage". */
+["v_player_weapon_match_damage_order_by"]: {
+	damage?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	hits?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	match?: ValueTypes["matches_order_by"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	with?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** select columns of table "v_player_weapon_match_damage" */
+["v_player_weapon_match_damage_select_column"]:v_player_weapon_match_damage_select_column;
+	/** aggregate stddev on columns */
+["v_player_weapon_match_damage_stddev_fields"]: AliasType<{
+	damage?:boolean | `@${string}`,
+	hits?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["v_player_weapon_match_damage_stddev_pop_fields"]: AliasType<{
+	damage?:boolean | `@${string}`,
+	hits?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["v_player_weapon_match_damage_stddev_samp_fields"]: AliasType<{
+	damage?:boolean | `@${string}`,
+	hits?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "v_player_weapon_match_damage" */
+["v_player_weapon_match_damage_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["v_player_weapon_match_damage_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["v_player_weapon_match_damage_stream_cursor_value_input"]: {
+	damage?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	hits?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	with?: string | undefined | null | Variable<any, string>
+};
+	/** aggregate sum on columns */
+["v_player_weapon_match_damage_sum_fields"]: AliasType<{
+	damage?:boolean | `@${string}`,
+	hits?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_pop on columns */
+["v_player_weapon_match_damage_var_pop_fields"]: AliasType<{
+	damage?:boolean | `@${string}`,
+	hits?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["v_player_weapon_match_damage_var_samp_fields"]: AliasType<{
+	damage?:boolean | `@${string}`,
+	hits?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["v_player_weapon_match_damage_variance_fields"]: AliasType<{
+	damage?:boolean | `@${string}`,
+	hits?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** columns and relationships of "v_player_weapon_match_kills" */
+["v_player_weapon_match_kills"]: AliasType<{
+	kill_count?:boolean | `@${string}`,
+	/** An object relationship */
+	match?:ValueTypes["matches"],
+	match_id?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+	with?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "v_player_weapon_match_kills" */
+["v_player_weapon_match_kills_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["v_player_weapon_match_kills_aggregate_fields"],
+	nodes?:ValueTypes["v_player_weapon_match_kills"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "v_player_weapon_match_kills" */
+["v_player_weapon_match_kills_aggregate_fields"]: AliasType<{
+	avg?:ValueTypes["v_player_weapon_match_kills_avg_fields"],
+count?: [{	columns?: Array<ValueTypes["v_player_weapon_match_kills_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["v_player_weapon_match_kills_max_fields"],
+	min?:ValueTypes["v_player_weapon_match_kills_min_fields"],
+	stddev?:ValueTypes["v_player_weapon_match_kills_stddev_fields"],
+	stddev_pop?:ValueTypes["v_player_weapon_match_kills_stddev_pop_fields"],
+	stddev_samp?:ValueTypes["v_player_weapon_match_kills_stddev_samp_fields"],
+	sum?:ValueTypes["v_player_weapon_match_kills_sum_fields"],
+	var_pop?:ValueTypes["v_player_weapon_match_kills_var_pop_fields"],
+	var_samp?:ValueTypes["v_player_weapon_match_kills_var_samp_fields"],
+	variance?:ValueTypes["v_player_weapon_match_kills_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate avg on columns */
+["v_player_weapon_match_kills_avg_fields"]: AliasType<{
+	kill_count?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "v_player_weapon_match_kills". All fields are combined with a logical 'AND'. */
+["v_player_weapon_match_kills_bool_exp"]: {
+	_and?: Array<ValueTypes["v_player_weapon_match_kills_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["v_player_weapon_match_kills_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["v_player_weapon_match_kills_bool_exp"]> | undefined | null | Variable<any, string>,
+	kill_count?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	match?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	rounds?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	with?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["v_player_weapon_match_kills_max_fields"]: AliasType<{
+	kill_count?:boolean | `@${string}`,
+	match_id?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+	with?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["v_player_weapon_match_kills_min_fields"]: AliasType<{
+	kill_count?:boolean | `@${string}`,
+	match_id?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+	with?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Ordering options when selecting data from "v_player_weapon_match_kills". */
+["v_player_weapon_match_kills_order_by"]: {
+	kill_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	match?: ValueTypes["matches_order_by"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	rounds?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	with?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** select columns of table "v_player_weapon_match_kills" */
+["v_player_weapon_match_kills_select_column"]:v_player_weapon_match_kills_select_column;
+	/** aggregate stddev on columns */
+["v_player_weapon_match_kills_stddev_fields"]: AliasType<{
+	kill_count?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["v_player_weapon_match_kills_stddev_pop_fields"]: AliasType<{
+	kill_count?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["v_player_weapon_match_kills_stddev_samp_fields"]: AliasType<{
+	kill_count?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "v_player_weapon_match_kills" */
+["v_player_weapon_match_kills_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["v_player_weapon_match_kills_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["v_player_weapon_match_kills_stream_cursor_value_input"]: {
+	kill_count?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	rounds?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	with?: string | undefined | null | Variable<any, string>
+};
+	/** aggregate sum on columns */
+["v_player_weapon_match_kills_sum_fields"]: AliasType<{
+	kill_count?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_pop on columns */
+["v_player_weapon_match_kills_var_pop_fields"]: AliasType<{
+	kill_count?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["v_player_weapon_match_kills_var_samp_fields"]: AliasType<{
+	kill_count?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["v_player_weapon_match_kills_variance_fields"]: AliasType<{
+	kill_count?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	/** columns and relationships of "v_pool_maps" */
 ["v_pool_maps"]: AliasType<{
 	active_pool?:boolean | `@${string}`,
@@ -88537,6 +89873,11 @@ export type ResolverInputTypes = {
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["ServerPluginConfigInput"]: {
+	cfg?: string | undefined | null,
+	config?: ResolverInputTypes["jsonb"] | undefined | null,
+	slug: string
+};
 	["ServerPluginInput"]: {
 	enabled: boolean,
 	slug: string
@@ -103724,10 +105065,215 @@ count?: [{	columns?: Array<ResolverInputTypes["game_modes_select_column"]> | und
 	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["game_modes_bool_exp"]
 };
+	/** columns and relationships of "game_plugin_cvars" */
+["game_plugin_cvars"]: AliasType<{
+	default_value?:boolean | `@${string}`,
+	description?:boolean | `@${string}`,
+	flags?:boolean | `@${string}`,
+	kind?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	/** An object relationship */
+	plugin?:ResolverInputTypes["game_plugins"],
+	plugin_slug?:boolean | `@${string}`,
+	reported_at?:boolean | `@${string}`,
+	runtime?:boolean | `@${string}`,
+	version?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "game_plugin_cvars" */
+["game_plugin_cvars_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["game_plugin_cvars_aggregate_fields"],
+	nodes?:ResolverInputTypes["game_plugin_cvars"],
+		__typename?: boolean | `@${string}`
+}>;
+	["game_plugin_cvars_aggregate_bool_exp"]: {
+	count?: ResolverInputTypes["game_plugin_cvars_aggregate_bool_exp_count"] | undefined | null
+};
+	["game_plugin_cvars_aggregate_bool_exp_count"]: {
+	arguments?: Array<ResolverInputTypes["game_plugin_cvars_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: ResolverInputTypes["game_plugin_cvars_bool_exp"] | undefined | null,
+	predicate: ResolverInputTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "game_plugin_cvars" */
+["game_plugin_cvars_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ResolverInputTypes["game_plugin_cvars_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["game_plugin_cvars_max_fields"],
+	min?:ResolverInputTypes["game_plugin_cvars_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by aggregate values of table "game_plugin_cvars" */
+["game_plugin_cvars_aggregate_order_by"]: {
+	count?: ResolverInputTypes["order_by"] | undefined | null,
+	max?: ResolverInputTypes["game_plugin_cvars_max_order_by"] | undefined | null,
+	min?: ResolverInputTypes["game_plugin_cvars_min_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "game_plugin_cvars" */
+["game_plugin_cvars_arr_rel_insert_input"]: {
+	data: Array<ResolverInputTypes["game_plugin_cvars_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ResolverInputTypes["game_plugin_cvars_on_conflict"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "game_plugin_cvars". All fields are combined with a logical 'AND'. */
+["game_plugin_cvars_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["game_plugin_cvars_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["game_plugin_cvars_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["game_plugin_cvars_bool_exp"]> | undefined | null,
+	default_value?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	description?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	flags?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	kind?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	plugin?: ResolverInputTypes["game_plugins_bool_exp"] | undefined | null,
+	plugin_slug?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	reported_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	runtime?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	version?: ResolverInputTypes["String_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "game_plugin_cvars" */
+["game_plugin_cvars_constraint"]:game_plugin_cvars_constraint;
+	/** input type for inserting data into table "game_plugin_cvars" */
+["game_plugin_cvars_insert_input"]: {
+	default_value?: string | undefined | null,
+	description?: string | undefined | null,
+	flags?: string | undefined | null,
+	kind?: string | undefined | null,
+	name?: string | undefined | null,
+	plugin?: ResolverInputTypes["game_plugins_obj_rel_insert_input"] | undefined | null,
+	plugin_slug?: string | undefined | null,
+	reported_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	runtime?: string | undefined | null,
+	version?: string | undefined | null
+};
+	/** aggregate max on columns */
+["game_plugin_cvars_max_fields"]: AliasType<{
+	default_value?:boolean | `@${string}`,
+	description?:boolean | `@${string}`,
+	flags?:boolean | `@${string}`,
+	kind?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	plugin_slug?:boolean | `@${string}`,
+	reported_at?:boolean | `@${string}`,
+	runtime?:boolean | `@${string}`,
+	version?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by max() on columns of table "game_plugin_cvars" */
+["game_plugin_cvars_max_order_by"]: {
+	default_value?: ResolverInputTypes["order_by"] | undefined | null,
+	description?: ResolverInputTypes["order_by"] | undefined | null,
+	flags?: ResolverInputTypes["order_by"] | undefined | null,
+	kind?: ResolverInputTypes["order_by"] | undefined | null,
+	name?: ResolverInputTypes["order_by"] | undefined | null,
+	plugin_slug?: ResolverInputTypes["order_by"] | undefined | null,
+	reported_at?: ResolverInputTypes["order_by"] | undefined | null,
+	runtime?: ResolverInputTypes["order_by"] | undefined | null,
+	version?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["game_plugin_cvars_min_fields"]: AliasType<{
+	default_value?:boolean | `@${string}`,
+	description?:boolean | `@${string}`,
+	flags?:boolean | `@${string}`,
+	kind?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	plugin_slug?:boolean | `@${string}`,
+	reported_at?:boolean | `@${string}`,
+	runtime?:boolean | `@${string}`,
+	version?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by min() on columns of table "game_plugin_cvars" */
+["game_plugin_cvars_min_order_by"]: {
+	default_value?: ResolverInputTypes["order_by"] | undefined | null,
+	description?: ResolverInputTypes["order_by"] | undefined | null,
+	flags?: ResolverInputTypes["order_by"] | undefined | null,
+	kind?: ResolverInputTypes["order_by"] | undefined | null,
+	name?: ResolverInputTypes["order_by"] | undefined | null,
+	plugin_slug?: ResolverInputTypes["order_by"] | undefined | null,
+	reported_at?: ResolverInputTypes["order_by"] | undefined | null,
+	runtime?: ResolverInputTypes["order_by"] | undefined | null,
+	version?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "game_plugin_cvars" */
+["game_plugin_cvars_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["game_plugin_cvars"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "game_plugin_cvars" */
+["game_plugin_cvars_on_conflict"]: {
+	constraint: ResolverInputTypes["game_plugin_cvars_constraint"],
+	update_columns: Array<ResolverInputTypes["game_plugin_cvars_update_column"]>,
+	where?: ResolverInputTypes["game_plugin_cvars_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "game_plugin_cvars". */
+["game_plugin_cvars_order_by"]: {
+	default_value?: ResolverInputTypes["order_by"] | undefined | null,
+	description?: ResolverInputTypes["order_by"] | undefined | null,
+	flags?: ResolverInputTypes["order_by"] | undefined | null,
+	kind?: ResolverInputTypes["order_by"] | undefined | null,
+	name?: ResolverInputTypes["order_by"] | undefined | null,
+	plugin?: ResolverInputTypes["game_plugins_order_by"] | undefined | null,
+	plugin_slug?: ResolverInputTypes["order_by"] | undefined | null,
+	reported_at?: ResolverInputTypes["order_by"] | undefined | null,
+	runtime?: ResolverInputTypes["order_by"] | undefined | null,
+	version?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: game_plugin_cvars */
+["game_plugin_cvars_pk_columns_input"]: {
+	name: string,
+	plugin_slug: string
+};
+	/** select columns of table "game_plugin_cvars" */
+["game_plugin_cvars_select_column"]:game_plugin_cvars_select_column;
+	/** input type for updating data in table "game_plugin_cvars" */
+["game_plugin_cvars_set_input"]: {
+	default_value?: string | undefined | null,
+	description?: string | undefined | null,
+	flags?: string | undefined | null,
+	kind?: string | undefined | null,
+	name?: string | undefined | null,
+	plugin_slug?: string | undefined | null,
+	reported_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	runtime?: string | undefined | null,
+	version?: string | undefined | null
+};
+	/** Streaming cursor of the table "game_plugin_cvars" */
+["game_plugin_cvars_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["game_plugin_cvars_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["game_plugin_cvars_stream_cursor_value_input"]: {
+	default_value?: string | undefined | null,
+	description?: string | undefined | null,
+	flags?: string | undefined | null,
+	kind?: string | undefined | null,
+	name?: string | undefined | null,
+	plugin_slug?: string | undefined | null,
+	reported_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	runtime?: string | undefined | null,
+	version?: string | undefined | null
+};
+	/** update columns of table "game_plugin_cvars" */
+["game_plugin_cvars_update_column"]:game_plugin_cvars_update_column;
+	["game_plugin_cvars_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["game_plugin_cvars_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["game_plugin_cvars_bool_exp"]
+};
 	/** columns and relationships of "game_plugin_installs" */
 ["game_plugin_installs"]: AliasType<{
 	cfg?:boolean | `@${string}`,
 	channel?:boolean | `@${string}`,
+config?: [{	/** JSON select path */
+	path?: string | undefined | null},boolean | `@${string}`],
 	created_at?:boolean | `@${string}`,
 	disable_server_guidelines?:boolean | `@${string}`,
 	enabled?:boolean | `@${string}`,
@@ -103754,6 +105300,10 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugin_installs_select_colum
 	min?:ResolverInputTypes["game_plugin_installs_min_fields"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["game_plugin_installs_append_input"]: {
+	config?: ResolverInputTypes["jsonb"] | undefined | null
+};
 	/** Boolean expression to filter rows from the table "game_plugin_installs". All fields are combined with a logical 'AND'. */
 ["game_plugin_installs_bool_exp"]: {
 	_and?: Array<ResolverInputTypes["game_plugin_installs_bool_exp"]> | undefined | null,
@@ -103761,6 +105311,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugin_installs_select_colum
 	_or?: Array<ResolverInputTypes["game_plugin_installs_bool_exp"]> | undefined | null,
 	cfg?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	channel?: ResolverInputTypes["e_game_plugin_channels_enum_comparison_exp"] | undefined | null,
+	config?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	disable_server_guidelines?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	enabled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
@@ -103774,10 +105325,23 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugin_installs_select_colum
 };
 	/** unique or primary key constraints on table "game_plugin_installs" */
 ["game_plugin_installs_constraint"]:game_plugin_installs_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["game_plugin_installs_delete_at_path_input"]: {
+	config?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["game_plugin_installs_delete_elem_input"]: {
+	config?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["game_plugin_installs_delete_key_input"]: {
+	config?: string | undefined | null
+};
 	/** input type for inserting data into table "game_plugin_installs" */
 ["game_plugin_installs_insert_input"]: {
 	cfg?: string | undefined | null,
 	channel?: ResolverInputTypes["e_game_plugin_channels_enum"] | undefined | null,
+	config?: ResolverInputTypes["jsonb"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	disable_server_guidelines?: boolean | undefined | null,
 	enabled?: boolean | undefined | null,
@@ -103831,6 +105395,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugin_installs_select_colum
 ["game_plugin_installs_order_by"]: {
 	cfg?: ResolverInputTypes["order_by"] | undefined | null,
 	channel?: ResolverInputTypes["order_by"] | undefined | null,
+	config?: ResolverInputTypes["order_by"] | undefined | null,
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	disable_server_guidelines?: ResolverInputTypes["order_by"] | undefined | null,
 	enabled?: ResolverInputTypes["order_by"] | undefined | null,
@@ -103846,12 +105411,17 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugin_installs_select_colum
 ["game_plugin_installs_pk_columns_input"]: {
 	plugin_slug: string
 };
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["game_plugin_installs_prepend_input"]: {
+	config?: ResolverInputTypes["jsonb"] | undefined | null
+};
 	/** select columns of table "game_plugin_installs" */
 ["game_plugin_installs_select_column"]:game_plugin_installs_select_column;
 	/** input type for updating data in table "game_plugin_installs" */
 ["game_plugin_installs_set_input"]: {
 	cfg?: string | undefined | null,
 	channel?: ResolverInputTypes["e_game_plugin_channels_enum"] | undefined | null,
+	config?: ResolverInputTypes["jsonb"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	disable_server_guidelines?: boolean | undefined | null,
 	enabled?: boolean | undefined | null,
@@ -103873,6 +105443,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugin_installs_select_colum
 ["game_plugin_installs_stream_cursor_value_input"]: {
 	cfg?: string | undefined | null,
 	channel?: ResolverInputTypes["e_game_plugin_channels_enum"] | undefined | null,
+	config?: ResolverInputTypes["jsonb"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	disable_server_guidelines?: boolean | undefined | null,
 	enabled?: boolean | undefined | null,
@@ -103886,6 +105457,16 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugin_installs_select_colum
 	/** update columns of table "game_plugin_installs" */
 ["game_plugin_installs_update_column"]:game_plugin_installs_update_column;
 	["game_plugin_installs_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["game_plugin_installs_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["game_plugin_installs_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["game_plugin_installs_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["game_plugin_installs_delete_key_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["game_plugin_installs_prepend_input"] | undefined | null,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["game_plugin_installs_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
@@ -104212,11 +105793,17 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugin_versions_select_colum
 	/** columns and relationships of "game_plugins" */
 ["game_plugins"]: AliasType<{
 	author?:boolean | `@${string}`,
+	config_cvar?:boolean | `@${string}`,
+config_default?: [{	/** JSON select path */
+	path?: string | undefined | null},boolean | `@${string}`],
 	config_path?:boolean | `@${string}`,
 config_schema?: [{	/** JSON select path */
 	path?: string | undefined | null},boolean | `@${string}`],
+config_shipped?: [{	/** JSON select path */
+	path?: string | undefined | null},boolean | `@${string}`],
 	cvars?:boolean | `@${string}`,
 	description?:boolean | `@${string}`,
+	forced_cvars?:boolean | `@${string}`,
 game_modes?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["game_mode_plugins_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -104254,6 +105841,18 @@ node_installs_aggregate?: [{	/** distinct select on columns */
 	pairs_with?:boolean | `@${string}`,
 panel?: [{	/** JSON select path */
 	path?: string | undefined | null},boolean | `@${string}`],
+reported_cvars?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["game_plugin_cvars_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["game_plugin_cvars_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["game_plugin_cvars_bool_exp"] | undefined | null},ResolverInputTypes["game_plugin_cvars"]],
+reported_cvars_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["game_plugin_cvars_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["game_plugin_cvars_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["game_plugin_cvars_bool_exp"] | undefined | null},ResolverInputTypes["game_plugin_cvars_aggregate"]],
 	requires_server_guidelines_disabled?:boolean | `@${string}`,
 	requires_service?:boolean | `@${string}`,
 	slug?:boolean | `@${string}`,
@@ -104302,7 +105901,9 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 }>;
 	/** append existing jsonb value of filtered columns with new jsonb value */
 ["game_plugins_append_input"]: {
+	config_default?: ResolverInputTypes["jsonb"] | undefined | null,
 	config_schema?: ResolverInputTypes["jsonb"] | undefined | null,
+	config_shipped?: ResolverInputTypes["jsonb"] | undefined | null,
 	map_rotation?: ResolverInputTypes["jsonb"] | undefined | null,
 	panel?: ResolverInputTypes["jsonb"] | undefined | null,
 	wiring?: ResolverInputTypes["jsonb"] | undefined | null
@@ -104321,10 +105922,14 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	_not?: ResolverInputTypes["game_plugins_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["game_plugins_bool_exp"]> | undefined | null,
 	author?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	config_cvar?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	config_default?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
 	config_path?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	config_schema?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
+	config_shipped?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
 	cvars?: ResolverInputTypes["String_array_comparison_exp"] | undefined | null,
 	description?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	forced_cvars?: ResolverInputTypes["String_array_comparison_exp"] | undefined | null,
 	game_modes?: ResolverInputTypes["game_mode_plugins_bool_exp"] | undefined | null,
 	game_modes_aggregate?: ResolverInputTypes["game_mode_plugins_aggregate_bool_exp"] | undefined | null,
 	homepage?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
@@ -104338,6 +105943,8 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	node_installs_aggregate?: ResolverInputTypes["game_server_node_plugins_aggregate_bool_exp"] | undefined | null,
 	pairs_with?: ResolverInputTypes["String_array_comparison_exp"] | undefined | null,
 	panel?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
+	reported_cvars?: ResolverInputTypes["game_plugin_cvars_bool_exp"] | undefined | null,
+	reported_cvars_aggregate?: ResolverInputTypes["game_plugin_cvars_aggregate_bool_exp"] | undefined | null,
 	requires_server_guidelines_disabled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	requires_service?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	slug?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
@@ -104354,21 +105961,27 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 ["game_plugins_constraint"]:game_plugins_constraint;
 	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 ["game_plugins_delete_at_path_input"]: {
+	config_default?: Array<string> | undefined | null,
 	config_schema?: Array<string> | undefined | null,
+	config_shipped?: Array<string> | undefined | null,
 	map_rotation?: Array<string> | undefined | null,
 	panel?: Array<string> | undefined | null,
 	wiring?: Array<string> | undefined | null
 };
 	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
 ["game_plugins_delete_elem_input"]: {
+	config_default?: number | undefined | null,
 	config_schema?: number | undefined | null,
+	config_shipped?: number | undefined | null,
 	map_rotation?: number | undefined | null,
 	panel?: number | undefined | null,
 	wiring?: number | undefined | null
 };
 	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
 ["game_plugins_delete_key_input"]: {
+	config_default?: string | undefined | null,
 	config_schema?: string | undefined | null,
+	config_shipped?: string | undefined | null,
 	map_rotation?: string | undefined | null,
 	panel?: string | undefined | null,
 	wiring?: string | undefined | null
@@ -104376,10 +105989,14 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	/** input type for inserting data into table "game_plugins" */
 ["game_plugins_insert_input"]: {
 	author?: string | undefined | null,
+	config_cvar?: string | undefined | null,
+	config_default?: ResolverInputTypes["jsonb"] | undefined | null,
 	config_path?: string | undefined | null,
 	config_schema?: ResolverInputTypes["jsonb"] | undefined | null,
+	config_shipped?: ResolverInputTypes["jsonb"] | undefined | null,
 	cvars?: Array<string> | undefined | null,
 	description?: string | undefined | null,
+	forced_cvars?: Array<string> | undefined | null,
 	game_modes?: ResolverInputTypes["game_mode_plugins_arr_rel_insert_input"] | undefined | null,
 	homepage?: string | undefined | null,
 	hot_swappable?: boolean | undefined | null,
@@ -104389,6 +106006,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	node_installs?: ResolverInputTypes["game_server_node_plugins_arr_rel_insert_input"] | undefined | null,
 	pairs_with?: Array<string> | undefined | null,
 	panel?: ResolverInputTypes["jsonb"] | undefined | null,
+	reported_cvars?: ResolverInputTypes["game_plugin_cvars_arr_rel_insert_input"] | undefined | null,
 	requires_server_guidelines_disabled?: boolean | undefined | null,
 	requires_service?: string | undefined | null,
 	slug?: string | undefined | null,
@@ -104402,9 +106020,11 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	/** aggregate max on columns */
 ["game_plugins_max_fields"]: AliasType<{
 	author?:boolean | `@${string}`,
+	config_cvar?:boolean | `@${string}`,
 	config_path?:boolean | `@${string}`,
 	cvars?:boolean | `@${string}`,
 	description?:boolean | `@${string}`,
+	forced_cvars?:boolean | `@${string}`,
 	homepage?:boolean | `@${string}`,
 	/** Installed | Partial | Pending | Failed | Manual | NotInstalled */
 	install_state?:boolean | `@${string}`,
@@ -104424,9 +106044,11 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	/** aggregate min on columns */
 ["game_plugins_min_fields"]: AliasType<{
 	author?:boolean | `@${string}`,
+	config_cvar?:boolean | `@${string}`,
 	config_path?:boolean | `@${string}`,
 	cvars?:boolean | `@${string}`,
 	description?:boolean | `@${string}`,
+	forced_cvars?:boolean | `@${string}`,
 	homepage?:boolean | `@${string}`,
 	/** Installed | Partial | Pending | Failed | Manual | NotInstalled */
 	install_state?:boolean | `@${string}`,
@@ -104466,10 +106088,14 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	/** Ordering options when selecting data from "game_plugins". */
 ["game_plugins_order_by"]: {
 	author?: ResolverInputTypes["order_by"] | undefined | null,
+	config_cvar?: ResolverInputTypes["order_by"] | undefined | null,
+	config_default?: ResolverInputTypes["order_by"] | undefined | null,
 	config_path?: ResolverInputTypes["order_by"] | undefined | null,
 	config_schema?: ResolverInputTypes["order_by"] | undefined | null,
+	config_shipped?: ResolverInputTypes["order_by"] | undefined | null,
 	cvars?: ResolverInputTypes["order_by"] | undefined | null,
 	description?: ResolverInputTypes["order_by"] | undefined | null,
+	forced_cvars?: ResolverInputTypes["order_by"] | undefined | null,
 	game_modes_aggregate?: ResolverInputTypes["game_mode_plugins_aggregate_order_by"] | undefined | null,
 	homepage?: ResolverInputTypes["order_by"] | undefined | null,
 	hot_swappable?: ResolverInputTypes["order_by"] | undefined | null,
@@ -104481,6 +106107,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	node_installs_aggregate?: ResolverInputTypes["game_server_node_plugins_aggregate_order_by"] | undefined | null,
 	pairs_with?: ResolverInputTypes["order_by"] | undefined | null,
 	panel?: ResolverInputTypes["order_by"] | undefined | null,
+	reported_cvars_aggregate?: ResolverInputTypes["game_plugin_cvars_aggregate_order_by"] | undefined | null,
 	requires_server_guidelines_disabled?: ResolverInputTypes["order_by"] | undefined | null,
 	requires_service?: ResolverInputTypes["order_by"] | undefined | null,
 	slug?: ResolverInputTypes["order_by"] | undefined | null,
@@ -104498,7 +106125,9 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 };
 	/** prepend existing jsonb value of filtered columns with new jsonb value */
 ["game_plugins_prepend_input"]: {
+	config_default?: ResolverInputTypes["jsonb"] | undefined | null,
 	config_schema?: ResolverInputTypes["jsonb"] | undefined | null,
+	config_shipped?: ResolverInputTypes["jsonb"] | undefined | null,
 	map_rotation?: ResolverInputTypes["jsonb"] | undefined | null,
 	panel?: ResolverInputTypes["jsonb"] | undefined | null,
 	wiring?: ResolverInputTypes["jsonb"] | undefined | null
@@ -104508,10 +106137,14 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	/** input type for updating data in table "game_plugins" */
 ["game_plugins_set_input"]: {
 	author?: string | undefined | null,
+	config_cvar?: string | undefined | null,
+	config_default?: ResolverInputTypes["jsonb"] | undefined | null,
 	config_path?: string | undefined | null,
 	config_schema?: ResolverInputTypes["jsonb"] | undefined | null,
+	config_shipped?: ResolverInputTypes["jsonb"] | undefined | null,
 	cvars?: Array<string> | undefined | null,
 	description?: string | undefined | null,
+	forced_cvars?: Array<string> | undefined | null,
 	homepage?: string | undefined | null,
 	hot_swappable?: boolean | undefined | null,
 	kind?: ResolverInputTypes["e_game_plugin_kinds_enum"] | undefined | null,
@@ -104562,10 +106195,14 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	/** Initial value of the column from where the streaming should start */
 ["game_plugins_stream_cursor_value_input"]: {
 	author?: string | undefined | null,
+	config_cvar?: string | undefined | null,
+	config_default?: ResolverInputTypes["jsonb"] | undefined | null,
 	config_path?: string | undefined | null,
 	config_schema?: ResolverInputTypes["jsonb"] | undefined | null,
+	config_shipped?: ResolverInputTypes["jsonb"] | undefined | null,
 	cvars?: Array<string> | undefined | null,
 	description?: string | undefined | null,
+	forced_cvars?: Array<string> | undefined | null,
 	homepage?: string | undefined | null,
 	hot_swappable?: boolean | undefined | null,
 	kind?: ResolverInputTypes["e_game_plugin_kinds_enum"] | undefined | null,
@@ -117517,6 +119154,9 @@ delete_game_mode_plugins_by_pk?: [{	game_mode_id: ResolverInputTypes["uuid"],	pl
 delete_game_modes?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["game_modes_bool_exp"]},ResolverInputTypes["game_modes_mutation_response"]],
 delete_game_modes_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["game_modes"]],
+delete_game_plugin_cvars?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["game_plugin_cvars_bool_exp"]},ResolverInputTypes["game_plugin_cvars_mutation_response"]],
+delete_game_plugin_cvars_by_pk?: [{	name: string,	plugin_slug: string},ResolverInputTypes["game_plugin_cvars"]],
 delete_game_plugin_installs?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["game_plugin_installs_bool_exp"]},ResolverInputTypes["game_plugin_installs_mutation_response"]],
 delete_game_plugin_installs_by_pk?: [{	plugin_slug: string},ResolverInputTypes["game_plugin_installs"]],
@@ -117738,6 +119378,9 @@ delete_server_migrations_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInpu
 delete_server_player_sessions?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["server_player_sessions_bool_exp"]},ResolverInputTypes["server_player_sessions_mutation_response"]],
 delete_server_player_sessions_by_pk?: [{	id: ResolverInputTypes["bigint"]},ResolverInputTypes["server_player_sessions"]],
+delete_server_plugin_configs?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["server_plugin_configs_bool_exp"]},ResolverInputTypes["server_plugin_configs_mutation_response"]],
+delete_server_plugin_configs_by_pk?: [{	plugin_slug: string,	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["server_plugin_configs"]],
 delete_server_plugins?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["server_plugins_bool_exp"]},ResolverInputTypes["server_plugins_mutation_response"]],
 delete_server_plugins_by_pk?: [{	plugin_slug: string,	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["server_plugins"]],
@@ -118447,6 +120090,12 @@ insert_game_modes?: [{	/** the rows to be inserted */
 insert_game_modes_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["game_modes_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["game_modes_on_conflict"] | undefined | null},ResolverInputTypes["game_modes"]],
+insert_game_plugin_cvars?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["game_plugin_cvars_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["game_plugin_cvars_on_conflict"] | undefined | null},ResolverInputTypes["game_plugin_cvars_mutation_response"]],
+insert_game_plugin_cvars_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["game_plugin_cvars_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["game_plugin_cvars_on_conflict"] | undefined | null},ResolverInputTypes["game_plugin_cvars"]],
 insert_game_plugin_installs?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["game_plugin_installs_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["game_plugin_installs_on_conflict"] | undefined | null},ResolverInputTypes["game_plugin_installs_mutation_response"]],
@@ -118889,6 +120538,12 @@ insert_server_player_sessions?: [{	/** the rows to be inserted */
 insert_server_player_sessions_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["server_player_sessions_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["server_player_sessions_on_conflict"] | undefined | null},ResolverInputTypes["server_player_sessions"]],
+insert_server_plugin_configs?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["server_plugin_configs_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["server_plugin_configs_on_conflict"] | undefined | null},ResolverInputTypes["server_plugin_configs_mutation_response"]],
+insert_server_plugin_configs_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["server_plugin_configs_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["server_plugin_configs_on_conflict"] | undefined | null},ResolverInputTypes["server_plugin_configs"]],
 insert_server_plugins?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["server_plugins_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["server_plugins_on_conflict"] | undefined | null},ResolverInputTypes["server_plugins_mutation_response"]],
@@ -119353,7 +121008,7 @@ setNewsPostStatus?: [{	id: ResolverInputTypes["uuid"],	status: string},ResolverI
 setServerAccess?: [{	event_ids: Array<ResolverInputTypes["uuid"]>,	min_role?: string | undefined | null,	restricted: boolean,	server_id: ResolverInputTypes["uuid"],	steam_ids: Array<string>},ResolverInputTypes["SuccessOutput"]],
 setServerMapRotation?: [{	map_ids: Array<ResolverInputTypes["uuid"]>,	server_id: ResolverInputTypes["uuid"],	shuffle: boolean},ResolverInputTypes["SuccessOutput"]],
 setServerPlugins?: [{	plugins: Array<ResolverInputTypes["ServerPluginInput"]>,	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
-setServerSettings?: [{	access?: ResolverInputTypes["ServerAccessInput"] | undefined | null,	map_rotation?: ResolverInputTypes["ServerMapRotationInput"] | undefined | null,	plugins?: Array<ResolverInputTypes["ServerPluginInput"]> | undefined | null,	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
+setServerSettings?: [{	access?: ResolverInputTypes["ServerAccessInput"] | undefined | null,	map_rotation?: ResolverInputTypes["ServerMapRotationInput"] | undefined | null,	plugin_configs?: Array<ResolverInputTypes["ServerPluginConfigInput"]> | undefined | null,	plugins?: Array<ResolverInputTypes["ServerPluginInput"]> | undefined | null,	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 setTournamentAward?: [{	award_id?: ResolverInputTypes["uuid"] | undefined | null,	custom_name?: string | undefined | null,	placement: number,	silhouette?: number | undefined | null,	tournament_id: ResolverInputTypes["uuid"]},ResolverInputTypes["TournamentAward"]],
 setUtilityPracticeAccess?: [{	access: string,	session_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 	setupGameServer?:ResolverInputTypes["SetupGameServeOutput"],
@@ -120103,10 +121758,27 @@ update_game_modes_by_pk?: [{	/** sets the columns of the filtered rows to the gi
 	_set?: ResolverInputTypes["game_modes_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["game_modes_pk_columns_input"]},ResolverInputTypes["game_modes"]],
 update_game_modes_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["game_modes_updates"]>},ResolverInputTypes["game_modes_mutation_response"]],
-update_game_plugin_installs?: [{	/** sets the columns of the filtered rows to the given values */
+update_game_plugin_cvars?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["game_plugin_cvars_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["game_plugin_cvars_bool_exp"]},ResolverInputTypes["game_plugin_cvars_mutation_response"]],
+update_game_plugin_cvars_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["game_plugin_cvars_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["game_plugin_cvars_pk_columns_input"]},ResolverInputTypes["game_plugin_cvars"]],
+update_game_plugin_cvars_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["game_plugin_cvars_updates"]>},ResolverInputTypes["game_plugin_cvars_mutation_response"]],
+update_game_plugin_installs?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["game_plugin_installs_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["game_plugin_installs_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["game_plugin_installs_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["game_plugin_installs_delete_key_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["game_plugin_installs_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["game_plugin_installs_set_input"] | undefined | null,	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["game_plugin_installs_bool_exp"]},ResolverInputTypes["game_plugin_installs_mutation_response"]],
-update_game_plugin_installs_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+update_game_plugin_installs_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["game_plugin_installs_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["game_plugin_installs_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["game_plugin_installs_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["game_plugin_installs_delete_key_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["game_plugin_installs_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["game_plugin_installs_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["game_plugin_installs_pk_columns_input"]},ResolverInputTypes["game_plugin_installs"]],
 update_game_plugin_installs_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["game_plugin_installs_updates"]>},ResolverInputTypes["game_plugin_installs_mutation_response"]],
@@ -120872,6 +122544,23 @@ update_server_player_sessions_by_pk?: [{	/** increments the numeric columns with
 	_set?: ResolverInputTypes["server_player_sessions_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["server_player_sessions_pk_columns_input"]},ResolverInputTypes["server_player_sessions"]],
 update_server_player_sessions_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["server_player_sessions_updates"]>},ResolverInputTypes["server_player_sessions_mutation_response"]],
+update_server_plugin_configs?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["server_plugin_configs_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["server_plugin_configs_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["server_plugin_configs_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["server_plugin_configs_delete_key_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["server_plugin_configs_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["server_plugin_configs_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["server_plugin_configs_bool_exp"]},ResolverInputTypes["server_plugin_configs_mutation_response"]],
+update_server_plugin_configs_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["server_plugin_configs_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["server_plugin_configs_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["server_plugin_configs_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["server_plugin_configs_delete_key_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["server_plugin_configs_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["server_plugin_configs_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["server_plugin_configs_pk_columns_input"]},ResolverInputTypes["server_plugin_configs"]],
+update_server_plugin_configs_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["server_plugin_configs_updates"]>},ResolverInputTypes["server_plugin_configs_mutation_response"]],
 update_server_plugins?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["server_plugins_set_input"] | undefined | null,	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["server_plugins_bool_exp"]},ResolverInputTypes["server_plugins_mutation_response"]],
@@ -133474,6 +135163,346 @@ count?: [{	columns?: Array<ResolverInputTypes["player_sanctions_select_column"]>
 	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	sanctioned_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
+	/** columns and relationships of "player_season_performance_v" */
+["player_season_performance_v"]: AliasType<{
+	accuracy_score?:boolean | `@${string}`,
+	aim_rating?:boolean | `@${string}`,
+	blind_score?:boolean | `@${string}`,
+	counter_strafe_score?:boolean | `@${string}`,
+	crosshair_score?:boolean | `@${string}`,
+	flash_assists_score?:boolean | `@${string}`,
+	hs_score?:boolean | `@${string}`,
+	kast_score?:boolean | `@${string}`,
+	positioning_rating?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+	/** An object relationship */
+	season?:ResolverInputTypes["seasons"],
+	season_id?:boolean | `@${string}`,
+	season_starts_at?:boolean | `@${string}`,
+	spotted_score?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	survival_score?:boolean | `@${string}`,
+	traded_score?:boolean | `@${string}`,
+	ttd_score?:boolean | `@${string}`,
+	util_eff_score?:boolean | `@${string}`,
+	utility_rating?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "player_season_performance_v" */
+["player_season_performance_v_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["player_season_performance_v_aggregate_fields"],
+	nodes?:ResolverInputTypes["player_season_performance_v"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "player_season_performance_v" */
+["player_season_performance_v_aggregate_fields"]: AliasType<{
+	avg?:ResolverInputTypes["player_season_performance_v_avg_fields"],
+count?: [{	columns?: Array<ResolverInputTypes["player_season_performance_v_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["player_season_performance_v_max_fields"],
+	min?:ResolverInputTypes["player_season_performance_v_min_fields"],
+	stddev?:ResolverInputTypes["player_season_performance_v_stddev_fields"],
+	stddev_pop?:ResolverInputTypes["player_season_performance_v_stddev_pop_fields"],
+	stddev_samp?:ResolverInputTypes["player_season_performance_v_stddev_samp_fields"],
+	sum?:ResolverInputTypes["player_season_performance_v_sum_fields"],
+	var_pop?:ResolverInputTypes["player_season_performance_v_var_pop_fields"],
+	var_samp?:ResolverInputTypes["player_season_performance_v_var_samp_fields"],
+	variance?:ResolverInputTypes["player_season_performance_v_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate avg on columns */
+["player_season_performance_v_avg_fields"]: AliasType<{
+	accuracy_score?:boolean | `@${string}`,
+	aim_rating?:boolean | `@${string}`,
+	blind_score?:boolean | `@${string}`,
+	counter_strafe_score?:boolean | `@${string}`,
+	crosshair_score?:boolean | `@${string}`,
+	flash_assists_score?:boolean | `@${string}`,
+	hs_score?:boolean | `@${string}`,
+	kast_score?:boolean | `@${string}`,
+	positioning_rating?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+	spotted_score?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	survival_score?:boolean | `@${string}`,
+	traded_score?:boolean | `@${string}`,
+	ttd_score?:boolean | `@${string}`,
+	util_eff_score?:boolean | `@${string}`,
+	utility_rating?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "player_season_performance_v". All fields are combined with a logical 'AND'. */
+["player_season_performance_v_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["player_season_performance_v_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["player_season_performance_v_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["player_season_performance_v_bool_exp"]> | undefined | null,
+	accuracy_score?: ResolverInputTypes["float8_comparison_exp"] | undefined | null,
+	aim_rating?: ResolverInputTypes["float8_comparison_exp"] | undefined | null,
+	blind_score?: ResolverInputTypes["float8_comparison_exp"] | undefined | null,
+	counter_strafe_score?: ResolverInputTypes["float8_comparison_exp"] | undefined | null,
+	crosshair_score?: ResolverInputTypes["float8_comparison_exp"] | undefined | null,
+	flash_assists_score?: ResolverInputTypes["float8_comparison_exp"] | undefined | null,
+	hs_score?: ResolverInputTypes["float8_comparison_exp"] | undefined | null,
+	kast_score?: ResolverInputTypes["float8_comparison_exp"] | undefined | null,
+	positioning_rating?: ResolverInputTypes["float8_comparison_exp"] | undefined | null,
+	rounds?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	season?: ResolverInputTypes["seasons_bool_exp"] | undefined | null,
+	season_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	season_starts_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	spotted_score?: ResolverInputTypes["float8_comparison_exp"] | undefined | null,
+	steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	survival_score?: ResolverInputTypes["float8_comparison_exp"] | undefined | null,
+	traded_score?: ResolverInputTypes["float8_comparison_exp"] | undefined | null,
+	ttd_score?: ResolverInputTypes["float8_comparison_exp"] | undefined | null,
+	util_eff_score?: ResolverInputTypes["float8_comparison_exp"] | undefined | null,
+	utility_rating?: ResolverInputTypes["float8_comparison_exp"] | undefined | null
+};
+	/** aggregate max on columns */
+["player_season_performance_v_max_fields"]: AliasType<{
+	accuracy_score?:boolean | `@${string}`,
+	aim_rating?:boolean | `@${string}`,
+	blind_score?:boolean | `@${string}`,
+	counter_strafe_score?:boolean | `@${string}`,
+	crosshair_score?:boolean | `@${string}`,
+	flash_assists_score?:boolean | `@${string}`,
+	hs_score?:boolean | `@${string}`,
+	kast_score?:boolean | `@${string}`,
+	positioning_rating?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+	season_id?:boolean | `@${string}`,
+	season_starts_at?:boolean | `@${string}`,
+	spotted_score?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	survival_score?:boolean | `@${string}`,
+	traded_score?:boolean | `@${string}`,
+	ttd_score?:boolean | `@${string}`,
+	util_eff_score?:boolean | `@${string}`,
+	utility_rating?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["player_season_performance_v_min_fields"]: AliasType<{
+	accuracy_score?:boolean | `@${string}`,
+	aim_rating?:boolean | `@${string}`,
+	blind_score?:boolean | `@${string}`,
+	counter_strafe_score?:boolean | `@${string}`,
+	crosshair_score?:boolean | `@${string}`,
+	flash_assists_score?:boolean | `@${string}`,
+	hs_score?:boolean | `@${string}`,
+	kast_score?:boolean | `@${string}`,
+	positioning_rating?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+	season_id?:boolean | `@${string}`,
+	season_starts_at?:boolean | `@${string}`,
+	spotted_score?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	survival_score?:boolean | `@${string}`,
+	traded_score?:boolean | `@${string}`,
+	ttd_score?:boolean | `@${string}`,
+	util_eff_score?:boolean | `@${string}`,
+	utility_rating?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Ordering options when selecting data from "player_season_performance_v". */
+["player_season_performance_v_order_by"]: {
+	accuracy_score?: ResolverInputTypes["order_by"] | undefined | null,
+	aim_rating?: ResolverInputTypes["order_by"] | undefined | null,
+	blind_score?: ResolverInputTypes["order_by"] | undefined | null,
+	counter_strafe_score?: ResolverInputTypes["order_by"] | undefined | null,
+	crosshair_score?: ResolverInputTypes["order_by"] | undefined | null,
+	flash_assists_score?: ResolverInputTypes["order_by"] | undefined | null,
+	hs_score?: ResolverInputTypes["order_by"] | undefined | null,
+	kast_score?: ResolverInputTypes["order_by"] | undefined | null,
+	positioning_rating?: ResolverInputTypes["order_by"] | undefined | null,
+	rounds?: ResolverInputTypes["order_by"] | undefined | null,
+	season?: ResolverInputTypes["seasons_order_by"] | undefined | null,
+	season_id?: ResolverInputTypes["order_by"] | undefined | null,
+	season_starts_at?: ResolverInputTypes["order_by"] | undefined | null,
+	spotted_score?: ResolverInputTypes["order_by"] | undefined | null,
+	steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	survival_score?: ResolverInputTypes["order_by"] | undefined | null,
+	traded_score?: ResolverInputTypes["order_by"] | undefined | null,
+	ttd_score?: ResolverInputTypes["order_by"] | undefined | null,
+	util_eff_score?: ResolverInputTypes["order_by"] | undefined | null,
+	utility_rating?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** select columns of table "player_season_performance_v" */
+["player_season_performance_v_select_column"]:player_season_performance_v_select_column;
+	/** aggregate stddev on columns */
+["player_season_performance_v_stddev_fields"]: AliasType<{
+	accuracy_score?:boolean | `@${string}`,
+	aim_rating?:boolean | `@${string}`,
+	blind_score?:boolean | `@${string}`,
+	counter_strafe_score?:boolean | `@${string}`,
+	crosshair_score?:boolean | `@${string}`,
+	flash_assists_score?:boolean | `@${string}`,
+	hs_score?:boolean | `@${string}`,
+	kast_score?:boolean | `@${string}`,
+	positioning_rating?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+	spotted_score?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	survival_score?:boolean | `@${string}`,
+	traded_score?:boolean | `@${string}`,
+	ttd_score?:boolean | `@${string}`,
+	util_eff_score?:boolean | `@${string}`,
+	utility_rating?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["player_season_performance_v_stddev_pop_fields"]: AliasType<{
+	accuracy_score?:boolean | `@${string}`,
+	aim_rating?:boolean | `@${string}`,
+	blind_score?:boolean | `@${string}`,
+	counter_strafe_score?:boolean | `@${string}`,
+	crosshair_score?:boolean | `@${string}`,
+	flash_assists_score?:boolean | `@${string}`,
+	hs_score?:boolean | `@${string}`,
+	kast_score?:boolean | `@${string}`,
+	positioning_rating?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+	spotted_score?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	survival_score?:boolean | `@${string}`,
+	traded_score?:boolean | `@${string}`,
+	ttd_score?:boolean | `@${string}`,
+	util_eff_score?:boolean | `@${string}`,
+	utility_rating?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["player_season_performance_v_stddev_samp_fields"]: AliasType<{
+	accuracy_score?:boolean | `@${string}`,
+	aim_rating?:boolean | `@${string}`,
+	blind_score?:boolean | `@${string}`,
+	counter_strafe_score?:boolean | `@${string}`,
+	crosshair_score?:boolean | `@${string}`,
+	flash_assists_score?:boolean | `@${string}`,
+	hs_score?:boolean | `@${string}`,
+	kast_score?:boolean | `@${string}`,
+	positioning_rating?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+	spotted_score?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	survival_score?:boolean | `@${string}`,
+	traded_score?:boolean | `@${string}`,
+	ttd_score?:boolean | `@${string}`,
+	util_eff_score?:boolean | `@${string}`,
+	utility_rating?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "player_season_performance_v" */
+["player_season_performance_v_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["player_season_performance_v_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["player_season_performance_v_stream_cursor_value_input"]: {
+	accuracy_score?: ResolverInputTypes["float8"] | undefined | null,
+	aim_rating?: ResolverInputTypes["float8"] | undefined | null,
+	blind_score?: ResolverInputTypes["float8"] | undefined | null,
+	counter_strafe_score?: ResolverInputTypes["float8"] | undefined | null,
+	crosshair_score?: ResolverInputTypes["float8"] | undefined | null,
+	flash_assists_score?: ResolverInputTypes["float8"] | undefined | null,
+	hs_score?: ResolverInputTypes["float8"] | undefined | null,
+	kast_score?: ResolverInputTypes["float8"] | undefined | null,
+	positioning_rating?: ResolverInputTypes["float8"] | undefined | null,
+	rounds?: number | undefined | null,
+	season_id?: ResolverInputTypes["uuid"] | undefined | null,
+	season_starts_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	spotted_score?: ResolverInputTypes["float8"] | undefined | null,
+	steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	survival_score?: ResolverInputTypes["float8"] | undefined | null,
+	traded_score?: ResolverInputTypes["float8"] | undefined | null,
+	ttd_score?: ResolverInputTypes["float8"] | undefined | null,
+	util_eff_score?: ResolverInputTypes["float8"] | undefined | null,
+	utility_rating?: ResolverInputTypes["float8"] | undefined | null
+};
+	/** aggregate sum on columns */
+["player_season_performance_v_sum_fields"]: AliasType<{
+	accuracy_score?:boolean | `@${string}`,
+	aim_rating?:boolean | `@${string}`,
+	blind_score?:boolean | `@${string}`,
+	counter_strafe_score?:boolean | `@${string}`,
+	crosshair_score?:boolean | `@${string}`,
+	flash_assists_score?:boolean | `@${string}`,
+	hs_score?:boolean | `@${string}`,
+	kast_score?:boolean | `@${string}`,
+	positioning_rating?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+	spotted_score?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	survival_score?:boolean | `@${string}`,
+	traded_score?:boolean | `@${string}`,
+	ttd_score?:boolean | `@${string}`,
+	util_eff_score?:boolean | `@${string}`,
+	utility_rating?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_pop on columns */
+["player_season_performance_v_var_pop_fields"]: AliasType<{
+	accuracy_score?:boolean | `@${string}`,
+	aim_rating?:boolean | `@${string}`,
+	blind_score?:boolean | `@${string}`,
+	counter_strafe_score?:boolean | `@${string}`,
+	crosshair_score?:boolean | `@${string}`,
+	flash_assists_score?:boolean | `@${string}`,
+	hs_score?:boolean | `@${string}`,
+	kast_score?:boolean | `@${string}`,
+	positioning_rating?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+	spotted_score?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	survival_score?:boolean | `@${string}`,
+	traded_score?:boolean | `@${string}`,
+	ttd_score?:boolean | `@${string}`,
+	util_eff_score?:boolean | `@${string}`,
+	utility_rating?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["player_season_performance_v_var_samp_fields"]: AliasType<{
+	accuracy_score?:boolean | `@${string}`,
+	aim_rating?:boolean | `@${string}`,
+	blind_score?:boolean | `@${string}`,
+	counter_strafe_score?:boolean | `@${string}`,
+	crosshair_score?:boolean | `@${string}`,
+	flash_assists_score?:boolean | `@${string}`,
+	hs_score?:boolean | `@${string}`,
+	kast_score?:boolean | `@${string}`,
+	positioning_rating?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+	spotted_score?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	survival_score?:boolean | `@${string}`,
+	traded_score?:boolean | `@${string}`,
+	ttd_score?:boolean | `@${string}`,
+	util_eff_score?:boolean | `@${string}`,
+	utility_rating?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["player_season_performance_v_variance_fields"]: AliasType<{
+	accuracy_score?:boolean | `@${string}`,
+	aim_rating?:boolean | `@${string}`,
+	blind_score?:boolean | `@${string}`,
+	counter_strafe_score?:boolean | `@${string}`,
+	crosshair_score?:boolean | `@${string}`,
+	flash_assists_score?:boolean | `@${string}`,
+	hs_score?:boolean | `@${string}`,
+	kast_score?:boolean | `@${string}`,
+	positioning_rating?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+	spotted_score?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	survival_score?:boolean | `@${string}`,
+	traded_score?:boolean | `@${string}`,
+	ttd_score?:boolean | `@${string}`,
+	util_eff_score?:boolean | `@${string}`,
+	utility_rating?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	/** columns and relationships of "player_season_stats" */
 ["player_season_stats"]: AliasType<{
 	assists?:boolean | `@${string}`,
@@ -138480,6 +140509,19 @@ game_modes_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["game_modes_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["game_modes_bool_exp"] | undefined | null},ResolverInputTypes["game_modes_aggregate"]],
 game_modes_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["game_modes"]],
+game_plugin_cvars?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["game_plugin_cvars_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["game_plugin_cvars_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["game_plugin_cvars_bool_exp"] | undefined | null},ResolverInputTypes["game_plugin_cvars"]],
+game_plugin_cvars_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["game_plugin_cvars_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["game_plugin_cvars_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["game_plugin_cvars_bool_exp"] | undefined | null},ResolverInputTypes["game_plugin_cvars_aggregate"]],
+game_plugin_cvars_by_pk?: [{	name: string,	plugin_slug: string},ResolverInputTypes["game_plugin_cvars"]],
 game_plugin_installs?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["game_plugin_installs_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -139398,6 +141440,18 @@ player_sanctions_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["player_sanctions_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["player_sanctions_bool_exp"] | undefined | null},ResolverInputTypes["player_sanctions_aggregate"]],
 player_sanctions_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["player_sanctions"]],
+player_season_performance_v?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["player_season_performance_v_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["player_season_performance_v_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["player_season_performance_v_bool_exp"] | undefined | null},ResolverInputTypes["player_season_performance_v"]],
+player_season_performance_v_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["player_season_performance_v_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["player_season_performance_v_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["player_season_performance_v_bool_exp"] | undefined | null},ResolverInputTypes["player_season_performance_v_aggregate"]],
 player_season_stats?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["player_season_stats_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -139618,6 +141672,19 @@ server_player_sessions_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["server_player_sessions_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["server_player_sessions_bool_exp"] | undefined | null},ResolverInputTypes["server_player_sessions_aggregate"]],
 server_player_sessions_by_pk?: [{	id: ResolverInputTypes["bigint"]},ResolverInputTypes["server_player_sessions"]],
+server_plugin_configs?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_plugin_configs_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_plugin_configs_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_plugin_configs_bool_exp"] | undefined | null},ResolverInputTypes["server_plugin_configs"]],
+server_plugin_configs_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_plugin_configs_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_plugin_configs_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_plugin_configs_bool_exp"] | undefined | null},ResolverInputTypes["server_plugin_configs_aggregate"]],
+server_plugin_configs_by_pk?: [{	plugin_slug: string,	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["server_plugin_configs"]],
 server_plugins?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["server_plugins_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -140629,6 +142696,30 @@ v_player_weapon_kills_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["v_player_weapon_kills_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["v_player_weapon_kills_bool_exp"] | undefined | null},ResolverInputTypes["v_player_weapon_kills_aggregate"]],
+v_player_weapon_match_damage?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["v_player_weapon_match_damage_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["v_player_weapon_match_damage_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["v_player_weapon_match_damage_bool_exp"] | undefined | null},ResolverInputTypes["v_player_weapon_match_damage"]],
+v_player_weapon_match_damage_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["v_player_weapon_match_damage_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["v_player_weapon_match_damage_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["v_player_weapon_match_damage_bool_exp"] | undefined | null},ResolverInputTypes["v_player_weapon_match_damage_aggregate"]],
+v_player_weapon_match_kills?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["v_player_weapon_match_kills_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["v_player_weapon_match_kills_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["v_player_weapon_match_kills_bool_exp"] | undefined | null},ResolverInputTypes["v_player_weapon_match_kills"]],
+v_player_weapon_match_kills_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["v_player_weapon_match_kills_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["v_player_weapon_match_kills_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["v_player_weapon_match_kills_bool_exp"] | undefined | null},ResolverInputTypes["v_player_weapon_match_kills_aggregate"]],
 v_pool_maps?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["v_pool_maps_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -142553,6 +144644,201 @@ count?: [{	columns?: Array<ResolverInputTypes["server_player_sessions_select_col
 	kills_conn?: ResolverInputTypes["order_by"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
+	/** columns and relationships of "server_plugin_configs" */
+["server_plugin_configs"]: AliasType<{
+	cfg?:boolean | `@${string}`,
+config?: [{	/** JSON select path */
+	path?: string | undefined | null},boolean | `@${string}`],
+	/** An object relationship */
+	plugin?:ResolverInputTypes["game_plugins"],
+	plugin_slug?:boolean | `@${string}`,
+	/** An object relationship */
+	server?:ResolverInputTypes["servers"],
+	server_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "server_plugin_configs" */
+["server_plugin_configs_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["server_plugin_configs_aggregate_fields"],
+	nodes?:ResolverInputTypes["server_plugin_configs"],
+		__typename?: boolean | `@${string}`
+}>;
+	["server_plugin_configs_aggregate_bool_exp"]: {
+	count?: ResolverInputTypes["server_plugin_configs_aggregate_bool_exp_count"] | undefined | null
+};
+	["server_plugin_configs_aggregate_bool_exp_count"]: {
+	arguments?: Array<ResolverInputTypes["server_plugin_configs_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: ResolverInputTypes["server_plugin_configs_bool_exp"] | undefined | null,
+	predicate: ResolverInputTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "server_plugin_configs" */
+["server_plugin_configs_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ResolverInputTypes["server_plugin_configs_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["server_plugin_configs_max_fields"],
+	min?:ResolverInputTypes["server_plugin_configs_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by aggregate values of table "server_plugin_configs" */
+["server_plugin_configs_aggregate_order_by"]: {
+	count?: ResolverInputTypes["order_by"] | undefined | null,
+	max?: ResolverInputTypes["server_plugin_configs_max_order_by"] | undefined | null,
+	min?: ResolverInputTypes["server_plugin_configs_min_order_by"] | undefined | null
+};
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["server_plugin_configs_append_input"]: {
+	config?: ResolverInputTypes["jsonb"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "server_plugin_configs" */
+["server_plugin_configs_arr_rel_insert_input"]: {
+	data: Array<ResolverInputTypes["server_plugin_configs_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ResolverInputTypes["server_plugin_configs_on_conflict"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "server_plugin_configs". All fields are combined with a logical 'AND'. */
+["server_plugin_configs_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["server_plugin_configs_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["server_plugin_configs_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["server_plugin_configs_bool_exp"]> | undefined | null,
+	cfg?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	config?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
+	plugin?: ResolverInputTypes["game_plugins_bool_exp"] | undefined | null,
+	plugin_slug?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	server?: ResolverInputTypes["servers_bool_exp"] | undefined | null,
+	server_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "server_plugin_configs" */
+["server_plugin_configs_constraint"]:server_plugin_configs_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["server_plugin_configs_delete_at_path_input"]: {
+	config?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["server_plugin_configs_delete_elem_input"]: {
+	config?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["server_plugin_configs_delete_key_input"]: {
+	config?: string | undefined | null
+};
+	/** input type for inserting data into table "server_plugin_configs" */
+["server_plugin_configs_insert_input"]: {
+	cfg?: string | undefined | null,
+	config?: ResolverInputTypes["jsonb"] | undefined | null,
+	plugin?: ResolverInputTypes["game_plugins_obj_rel_insert_input"] | undefined | null,
+	plugin_slug?: string | undefined | null,
+	server?: ResolverInputTypes["servers_obj_rel_insert_input"] | undefined | null,
+	server_id?: ResolverInputTypes["uuid"] | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
+};
+	/** aggregate max on columns */
+["server_plugin_configs_max_fields"]: AliasType<{
+	cfg?:boolean | `@${string}`,
+	plugin_slug?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by max() on columns of table "server_plugin_configs" */
+["server_plugin_configs_max_order_by"]: {
+	cfg?: ResolverInputTypes["order_by"] | undefined | null,
+	plugin_slug?: ResolverInputTypes["order_by"] | undefined | null,
+	server_id?: ResolverInputTypes["order_by"] | undefined | null,
+	updated_at?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["server_plugin_configs_min_fields"]: AliasType<{
+	cfg?:boolean | `@${string}`,
+	plugin_slug?:boolean | `@${string}`,
+	server_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by min() on columns of table "server_plugin_configs" */
+["server_plugin_configs_min_order_by"]: {
+	cfg?: ResolverInputTypes["order_by"] | undefined | null,
+	plugin_slug?: ResolverInputTypes["order_by"] | undefined | null,
+	server_id?: ResolverInputTypes["order_by"] | undefined | null,
+	updated_at?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "server_plugin_configs" */
+["server_plugin_configs_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["server_plugin_configs"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "server_plugin_configs" */
+["server_plugin_configs_on_conflict"]: {
+	constraint: ResolverInputTypes["server_plugin_configs_constraint"],
+	update_columns: Array<ResolverInputTypes["server_plugin_configs_update_column"]>,
+	where?: ResolverInputTypes["server_plugin_configs_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "server_plugin_configs". */
+["server_plugin_configs_order_by"]: {
+	cfg?: ResolverInputTypes["order_by"] | undefined | null,
+	config?: ResolverInputTypes["order_by"] | undefined | null,
+	plugin?: ResolverInputTypes["game_plugins_order_by"] | undefined | null,
+	plugin_slug?: ResolverInputTypes["order_by"] | undefined | null,
+	server?: ResolverInputTypes["servers_order_by"] | undefined | null,
+	server_id?: ResolverInputTypes["order_by"] | undefined | null,
+	updated_at?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: server_plugin_configs */
+["server_plugin_configs_pk_columns_input"]: {
+	plugin_slug: string,
+	server_id: ResolverInputTypes["uuid"]
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["server_plugin_configs_prepend_input"]: {
+	config?: ResolverInputTypes["jsonb"] | undefined | null
+};
+	/** select columns of table "server_plugin_configs" */
+["server_plugin_configs_select_column"]:server_plugin_configs_select_column;
+	/** input type for updating data in table "server_plugin_configs" */
+["server_plugin_configs_set_input"]: {
+	cfg?: string | undefined | null,
+	config?: ResolverInputTypes["jsonb"] | undefined | null,
+	plugin_slug?: string | undefined | null,
+	server_id?: ResolverInputTypes["uuid"] | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
+};
+	/** Streaming cursor of the table "server_plugin_configs" */
+["server_plugin_configs_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["server_plugin_configs_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["server_plugin_configs_stream_cursor_value_input"]: {
+	cfg?: string | undefined | null,
+	config?: ResolverInputTypes["jsonb"] | undefined | null,
+	plugin_slug?: string | undefined | null,
+	server_id?: ResolverInputTypes["uuid"] | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
+};
+	/** update columns of table "server_plugin_configs" */
+["server_plugin_configs_update_column"]:server_plugin_configs_update_column;
+	["server_plugin_configs_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["server_plugin_configs_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["server_plugin_configs_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["server_plugin_configs_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["server_plugin_configs_delete_key_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["server_plugin_configs_prepend_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["server_plugin_configs_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["server_plugin_configs_bool_exp"]
+};
 	/** columns and relationships of "server_plugins" */
 ["server_plugins"]: AliasType<{
 	enabled?:boolean | `@${string}`,
@@ -143349,6 +145635,18 @@ migrations_aggregate?: [{	/** distinct select on columns */
 	player_management_runtime?:boolean | `@${string}`,
 	player_management_seen_at?:boolean | `@${string}`,
 	player_management_version?:boolean | `@${string}`,
+plugin_configs?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_plugin_configs_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_plugin_configs_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_plugin_configs_bool_exp"] | undefined | null},ResolverInputTypes["server_plugin_configs"]],
+plugin_configs_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_plugin_configs_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_plugin_configs_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_plugin_configs_bool_exp"] | undefined | null},ResolverInputTypes["server_plugin_configs_aggregate"]],
 plugin_overrides?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["server_plugins_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -143500,6 +145798,8 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	player_management_runtime?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	player_management_seen_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	player_management_version?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	plugin_configs?: ResolverInputTypes["server_plugin_configs_bool_exp"] | undefined | null,
+	plugin_configs_aggregate?: ResolverInputTypes["server_plugin_configs_aggregate_bool_exp"] | undefined | null,
 	plugin_overrides?: ResolverInputTypes["server_plugins_bool_exp"] | undefined | null,
 	plugin_overrides_aggregate?: ResolverInputTypes["server_plugins_aggregate_bool_exp"] | undefined | null,
 	plugin_runtime?: ResolverInputTypes["e_plugin_runtimes_enum_comparison_exp"] | undefined | null,
@@ -143568,6 +145868,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	player_management_runtime?: string | undefined | null,
 	player_management_seen_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	player_management_version?: string | undefined | null,
+	plugin_configs?: ResolverInputTypes["server_plugin_configs_arr_rel_insert_input"] | undefined | null,
 	plugin_overrides?: ResolverInputTypes["server_plugins_arr_rel_insert_input"] | undefined | null,
 	plugin_runtime?: ResolverInputTypes["e_plugin_runtimes_enum"] | undefined | null,
 	plugin_version?: string | undefined | null,
@@ -143751,6 +146052,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	player_management_runtime?: ResolverInputTypes["order_by"] | undefined | null,
 	player_management_seen_at?: ResolverInputTypes["order_by"] | undefined | null,
 	player_management_version?: ResolverInputTypes["order_by"] | undefined | null,
+	plugin_configs_aggregate?: ResolverInputTypes["server_plugin_configs_aggregate_order_by"] | undefined | null,
 	plugin_overrides_aggregate?: ResolverInputTypes["server_plugins_aggregate_order_by"] | undefined | null,
 	plugin_runtime?: ResolverInputTypes["order_by"] | undefined | null,
 	plugin_version?: ResolverInputTypes["order_by"] | undefined | null,
@@ -146014,6 +148316,23 @@ game_modes_stream?: [{	/** maximum number of rows returned in a single batch */
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["game_modes_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["game_modes_bool_exp"] | undefined | null},ResolverInputTypes["game_modes"]],
+game_plugin_cvars?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["game_plugin_cvars_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["game_plugin_cvars_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["game_plugin_cvars_bool_exp"] | undefined | null},ResolverInputTypes["game_plugin_cvars"]],
+game_plugin_cvars_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["game_plugin_cvars_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["game_plugin_cvars_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["game_plugin_cvars_bool_exp"] | undefined | null},ResolverInputTypes["game_plugin_cvars_aggregate"]],
+game_plugin_cvars_by_pk?: [{	name: string,	plugin_slug: string},ResolverInputTypes["game_plugin_cvars"]],
+game_plugin_cvars_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["game_plugin_cvars_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["game_plugin_cvars_bool_exp"] | undefined | null},ResolverInputTypes["game_plugin_cvars"]],
 game_plugin_installs?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["game_plugin_installs_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -147148,6 +149467,22 @@ player_sanctions_stream?: [{	/** maximum number of rows returned in a single bat
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["player_sanctions_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["player_sanctions_bool_exp"] | undefined | null},ResolverInputTypes["player_sanctions"]],
+player_season_performance_v?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["player_season_performance_v_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["player_season_performance_v_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["player_season_performance_v_bool_exp"] | undefined | null},ResolverInputTypes["player_season_performance_v"]],
+player_season_performance_v_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["player_season_performance_v_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["player_season_performance_v_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["player_season_performance_v_bool_exp"] | undefined | null},ResolverInputTypes["player_season_performance_v_aggregate"]],
+player_season_performance_v_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["player_season_performance_v_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["player_season_performance_v_bool_exp"] | undefined | null},ResolverInputTypes["player_season_performance_v"]],
 player_season_stats?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["player_season_stats_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -147435,6 +149770,23 @@ server_player_sessions_stream?: [{	/** maximum number of rows returned in a sing
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["server_player_sessions_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["server_player_sessions_bool_exp"] | undefined | null},ResolverInputTypes["server_player_sessions"]],
+server_plugin_configs?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_plugin_configs_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_plugin_configs_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_plugin_configs_bool_exp"] | undefined | null},ResolverInputTypes["server_plugin_configs"]],
+server_plugin_configs_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["server_plugin_configs_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["server_plugin_configs_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_plugin_configs_bool_exp"] | undefined | null},ResolverInputTypes["server_plugin_configs_aggregate"]],
+server_plugin_configs_by_pk?: [{	plugin_slug: string,	server_id: ResolverInputTypes["uuid"]},ResolverInputTypes["server_plugin_configs"]],
+server_plugin_configs_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["server_plugin_configs_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["server_plugin_configs_bool_exp"] | undefined | null},ResolverInputTypes["server_plugin_configs"]],
 server_plugins?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["server_plugins_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -148750,6 +151102,38 @@ v_player_weapon_kills_stream?: [{	/** maximum number of rows returned in a singl
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["v_player_weapon_kills_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["v_player_weapon_kills_bool_exp"] | undefined | null},ResolverInputTypes["v_player_weapon_kills"]],
+v_player_weapon_match_damage?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["v_player_weapon_match_damage_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["v_player_weapon_match_damage_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["v_player_weapon_match_damage_bool_exp"] | undefined | null},ResolverInputTypes["v_player_weapon_match_damage"]],
+v_player_weapon_match_damage_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["v_player_weapon_match_damage_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["v_player_weapon_match_damage_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["v_player_weapon_match_damage_bool_exp"] | undefined | null},ResolverInputTypes["v_player_weapon_match_damage_aggregate"]],
+v_player_weapon_match_damage_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["v_player_weapon_match_damage_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["v_player_weapon_match_damage_bool_exp"] | undefined | null},ResolverInputTypes["v_player_weapon_match_damage"]],
+v_player_weapon_match_kills?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["v_player_weapon_match_kills_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["v_player_weapon_match_kills_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["v_player_weapon_match_kills_bool_exp"] | undefined | null},ResolverInputTypes["v_player_weapon_match_kills"]],
+v_player_weapon_match_kills_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["v_player_weapon_match_kills_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["v_player_weapon_match_kills_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["v_player_weapon_match_kills_bool_exp"] | undefined | null},ResolverInputTypes["v_player_weapon_match_kills_aggregate"]],
+v_player_weapon_match_kills_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["v_player_weapon_match_kills_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["v_player_weapon_match_kills_bool_exp"] | undefined | null},ResolverInputTypes["v_player_weapon_match_kills"]],
 v_pool_maps?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["v_pool_maps_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -172204,6 +174588,294 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_weapon_kills_select_colu
 	rounds?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** columns and relationships of "v_player_weapon_match_damage" */
+["v_player_weapon_match_damage"]: AliasType<{
+	damage?:boolean | `@${string}`,
+	hits?:boolean | `@${string}`,
+	/** An object relationship */
+	match?:ResolverInputTypes["matches"],
+	match_id?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	with?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "v_player_weapon_match_damage" */
+["v_player_weapon_match_damage_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["v_player_weapon_match_damage_aggregate_fields"],
+	nodes?:ResolverInputTypes["v_player_weapon_match_damage"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "v_player_weapon_match_damage" */
+["v_player_weapon_match_damage_aggregate_fields"]: AliasType<{
+	avg?:ResolverInputTypes["v_player_weapon_match_damage_avg_fields"],
+count?: [{	columns?: Array<ResolverInputTypes["v_player_weapon_match_damage_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["v_player_weapon_match_damage_max_fields"],
+	min?:ResolverInputTypes["v_player_weapon_match_damage_min_fields"],
+	stddev?:ResolverInputTypes["v_player_weapon_match_damage_stddev_fields"],
+	stddev_pop?:ResolverInputTypes["v_player_weapon_match_damage_stddev_pop_fields"],
+	stddev_samp?:ResolverInputTypes["v_player_weapon_match_damage_stddev_samp_fields"],
+	sum?:ResolverInputTypes["v_player_weapon_match_damage_sum_fields"],
+	var_pop?:ResolverInputTypes["v_player_weapon_match_damage_var_pop_fields"],
+	var_samp?:ResolverInputTypes["v_player_weapon_match_damage_var_samp_fields"],
+	variance?:ResolverInputTypes["v_player_weapon_match_damage_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate avg on columns */
+["v_player_weapon_match_damage_avg_fields"]: AliasType<{
+	damage?:boolean | `@${string}`,
+	hits?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "v_player_weapon_match_damage". All fields are combined with a logical 'AND'. */
+["v_player_weapon_match_damage_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["v_player_weapon_match_damage_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["v_player_weapon_match_damage_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["v_player_weapon_match_damage_bool_exp"]> | undefined | null,
+	damage?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	hits?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	match?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
+	match_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	with?: ResolverInputTypes["String_comparison_exp"] | undefined | null
+};
+	/** aggregate max on columns */
+["v_player_weapon_match_damage_max_fields"]: AliasType<{
+	damage?:boolean | `@${string}`,
+	hits?:boolean | `@${string}`,
+	match_id?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	with?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["v_player_weapon_match_damage_min_fields"]: AliasType<{
+	damage?:boolean | `@${string}`,
+	hits?:boolean | `@${string}`,
+	match_id?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	with?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Ordering options when selecting data from "v_player_weapon_match_damage". */
+["v_player_weapon_match_damage_order_by"]: {
+	damage?: ResolverInputTypes["order_by"] | undefined | null,
+	hits?: ResolverInputTypes["order_by"] | undefined | null,
+	match?: ResolverInputTypes["matches_order_by"] | undefined | null,
+	match_id?: ResolverInputTypes["order_by"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	with?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** select columns of table "v_player_weapon_match_damage" */
+["v_player_weapon_match_damage_select_column"]:v_player_weapon_match_damage_select_column;
+	/** aggregate stddev on columns */
+["v_player_weapon_match_damage_stddev_fields"]: AliasType<{
+	damage?:boolean | `@${string}`,
+	hits?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["v_player_weapon_match_damage_stddev_pop_fields"]: AliasType<{
+	damage?:boolean | `@${string}`,
+	hits?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["v_player_weapon_match_damage_stddev_samp_fields"]: AliasType<{
+	damage?:boolean | `@${string}`,
+	hits?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "v_player_weapon_match_damage" */
+["v_player_weapon_match_damage_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["v_player_weapon_match_damage_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["v_player_weapon_match_damage_stream_cursor_value_input"]: {
+	damage?: ResolverInputTypes["bigint"] | undefined | null,
+	hits?: ResolverInputTypes["bigint"] | undefined | null,
+	match_id?: ResolverInputTypes["uuid"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	with?: string | undefined | null
+};
+	/** aggregate sum on columns */
+["v_player_weapon_match_damage_sum_fields"]: AliasType<{
+	damage?:boolean | `@${string}`,
+	hits?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_pop on columns */
+["v_player_weapon_match_damage_var_pop_fields"]: AliasType<{
+	damage?:boolean | `@${string}`,
+	hits?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["v_player_weapon_match_damage_var_samp_fields"]: AliasType<{
+	damage?:boolean | `@${string}`,
+	hits?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["v_player_weapon_match_damage_variance_fields"]: AliasType<{
+	damage?:boolean | `@${string}`,
+	hits?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** columns and relationships of "v_player_weapon_match_kills" */
+["v_player_weapon_match_kills"]: AliasType<{
+	kill_count?:boolean | `@${string}`,
+	/** An object relationship */
+	match?:ResolverInputTypes["matches"],
+	match_id?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+	with?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "v_player_weapon_match_kills" */
+["v_player_weapon_match_kills_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["v_player_weapon_match_kills_aggregate_fields"],
+	nodes?:ResolverInputTypes["v_player_weapon_match_kills"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "v_player_weapon_match_kills" */
+["v_player_weapon_match_kills_aggregate_fields"]: AliasType<{
+	avg?:ResolverInputTypes["v_player_weapon_match_kills_avg_fields"],
+count?: [{	columns?: Array<ResolverInputTypes["v_player_weapon_match_kills_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["v_player_weapon_match_kills_max_fields"],
+	min?:ResolverInputTypes["v_player_weapon_match_kills_min_fields"],
+	stddev?:ResolverInputTypes["v_player_weapon_match_kills_stddev_fields"],
+	stddev_pop?:ResolverInputTypes["v_player_weapon_match_kills_stddev_pop_fields"],
+	stddev_samp?:ResolverInputTypes["v_player_weapon_match_kills_stddev_samp_fields"],
+	sum?:ResolverInputTypes["v_player_weapon_match_kills_sum_fields"],
+	var_pop?:ResolverInputTypes["v_player_weapon_match_kills_var_pop_fields"],
+	var_samp?:ResolverInputTypes["v_player_weapon_match_kills_var_samp_fields"],
+	variance?:ResolverInputTypes["v_player_weapon_match_kills_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate avg on columns */
+["v_player_weapon_match_kills_avg_fields"]: AliasType<{
+	kill_count?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "v_player_weapon_match_kills". All fields are combined with a logical 'AND'. */
+["v_player_weapon_match_kills_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["v_player_weapon_match_kills_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["v_player_weapon_match_kills_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["v_player_weapon_match_kills_bool_exp"]> | undefined | null,
+	kill_count?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	match?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
+	match_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	rounds?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	with?: ResolverInputTypes["String_comparison_exp"] | undefined | null
+};
+	/** aggregate max on columns */
+["v_player_weapon_match_kills_max_fields"]: AliasType<{
+	kill_count?:boolean | `@${string}`,
+	match_id?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+	with?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["v_player_weapon_match_kills_min_fields"]: AliasType<{
+	kill_count?:boolean | `@${string}`,
+	match_id?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+	with?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Ordering options when selecting data from "v_player_weapon_match_kills". */
+["v_player_weapon_match_kills_order_by"]: {
+	kill_count?: ResolverInputTypes["order_by"] | undefined | null,
+	match?: ResolverInputTypes["matches_order_by"] | undefined | null,
+	match_id?: ResolverInputTypes["order_by"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	rounds?: ResolverInputTypes["order_by"] | undefined | null,
+	with?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** select columns of table "v_player_weapon_match_kills" */
+["v_player_weapon_match_kills_select_column"]:v_player_weapon_match_kills_select_column;
+	/** aggregate stddev on columns */
+["v_player_weapon_match_kills_stddev_fields"]: AliasType<{
+	kill_count?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["v_player_weapon_match_kills_stddev_pop_fields"]: AliasType<{
+	kill_count?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["v_player_weapon_match_kills_stddev_samp_fields"]: AliasType<{
+	kill_count?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "v_player_weapon_match_kills" */
+["v_player_weapon_match_kills_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["v_player_weapon_match_kills_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["v_player_weapon_match_kills_stream_cursor_value_input"]: {
+	kill_count?: ResolverInputTypes["bigint"] | undefined | null,
+	match_id?: ResolverInputTypes["uuid"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	rounds?: ResolverInputTypes["bigint"] | undefined | null,
+	with?: string | undefined | null
+};
+	/** aggregate sum on columns */
+["v_player_weapon_match_kills_sum_fields"]: AliasType<{
+	kill_count?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_pop on columns */
+["v_player_weapon_match_kills_var_pop_fields"]: AliasType<{
+	kill_count?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["v_player_weapon_match_kills_var_samp_fields"]: AliasType<{
+	kill_count?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["v_player_weapon_match_kills_variance_fields"]: AliasType<{
+	kill_count?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	rounds?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	/** columns and relationships of "v_pool_maps" */
 ["v_pool_maps"]: AliasType<{
 	active_pool?:boolean | `@${string}`,
@@ -175366,6 +178038,11 @@ export type ModelTypes = {
 	["ServerPlayer"]: {
 		name: string,
 	steam_id: string
+};
+	["ServerPluginConfigInput"]: {
+	cfg?: string | undefined | null,
+	config?: ModelTypes["jsonb"] | undefined | null,
+	slug: string
 };
 	["ServerPluginInput"]: {
 	enabled: boolean,
@@ -189160,10 +191837,205 @@ export type ModelTypes = {
 	/** filter the rows which have to be updated */
 	where: ModelTypes["game_modes_bool_exp"]
 };
+	/** columns and relationships of "game_plugin_cvars" */
+["game_plugin_cvars"]: {
+		default_value?: string | undefined | null,
+	description: string,
+	flags: string,
+	kind: string,
+	name: string,
+	/** An object relationship */
+	plugin: ModelTypes["game_plugins"],
+	plugin_slug: string,
+	reported_at: ModelTypes["timestamptz"],
+	runtime: string,
+	version: string
+};
+	/** aggregated selection of "game_plugin_cvars" */
+["game_plugin_cvars_aggregate"]: {
+		aggregate?: ModelTypes["game_plugin_cvars_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["game_plugin_cvars"]>
+};
+	["game_plugin_cvars_aggregate_bool_exp"]: {
+	count?: ModelTypes["game_plugin_cvars_aggregate_bool_exp_count"] | undefined | null
+};
+	["game_plugin_cvars_aggregate_bool_exp_count"]: {
+	arguments?: Array<ModelTypes["game_plugin_cvars_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: ModelTypes["game_plugin_cvars_bool_exp"] | undefined | null,
+	predicate: ModelTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "game_plugin_cvars" */
+["game_plugin_cvars_aggregate_fields"]: {
+		count: number,
+	max?: ModelTypes["game_plugin_cvars_max_fields"] | undefined | null,
+	min?: ModelTypes["game_plugin_cvars_min_fields"] | undefined | null
+};
+	/** order by aggregate values of table "game_plugin_cvars" */
+["game_plugin_cvars_aggregate_order_by"]: {
+	count?: ModelTypes["order_by"] | undefined | null,
+	max?: ModelTypes["game_plugin_cvars_max_order_by"] | undefined | null,
+	min?: ModelTypes["game_plugin_cvars_min_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "game_plugin_cvars" */
+["game_plugin_cvars_arr_rel_insert_input"]: {
+	data: Array<ModelTypes["game_plugin_cvars_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ModelTypes["game_plugin_cvars_on_conflict"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "game_plugin_cvars". All fields are combined with a logical 'AND'. */
+["game_plugin_cvars_bool_exp"]: {
+	_and?: Array<ModelTypes["game_plugin_cvars_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["game_plugin_cvars_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["game_plugin_cvars_bool_exp"]> | undefined | null,
+	default_value?: ModelTypes["String_comparison_exp"] | undefined | null,
+	description?: ModelTypes["String_comparison_exp"] | undefined | null,
+	flags?: ModelTypes["String_comparison_exp"] | undefined | null,
+	kind?: ModelTypes["String_comparison_exp"] | undefined | null,
+	name?: ModelTypes["String_comparison_exp"] | undefined | null,
+	plugin?: ModelTypes["game_plugins_bool_exp"] | undefined | null,
+	plugin_slug?: ModelTypes["String_comparison_exp"] | undefined | null,
+	reported_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	runtime?: ModelTypes["String_comparison_exp"] | undefined | null,
+	version?: ModelTypes["String_comparison_exp"] | undefined | null
+};
+	["game_plugin_cvars_constraint"]:game_plugin_cvars_constraint;
+	/** input type for inserting data into table "game_plugin_cvars" */
+["game_plugin_cvars_insert_input"]: {
+	default_value?: string | undefined | null,
+	description?: string | undefined | null,
+	flags?: string | undefined | null,
+	kind?: string | undefined | null,
+	name?: string | undefined | null,
+	plugin?: ModelTypes["game_plugins_obj_rel_insert_input"] | undefined | null,
+	plugin_slug?: string | undefined | null,
+	reported_at?: ModelTypes["timestamptz"] | undefined | null,
+	runtime?: string | undefined | null,
+	version?: string | undefined | null
+};
+	/** aggregate max on columns */
+["game_plugin_cvars_max_fields"]: {
+		default_value?: string | undefined | null,
+	description?: string | undefined | null,
+	flags?: string | undefined | null,
+	kind?: string | undefined | null,
+	name?: string | undefined | null,
+	plugin_slug?: string | undefined | null,
+	reported_at?: ModelTypes["timestamptz"] | undefined | null,
+	runtime?: string | undefined | null,
+	version?: string | undefined | null
+};
+	/** order by max() on columns of table "game_plugin_cvars" */
+["game_plugin_cvars_max_order_by"]: {
+	default_value?: ModelTypes["order_by"] | undefined | null,
+	description?: ModelTypes["order_by"] | undefined | null,
+	flags?: ModelTypes["order_by"] | undefined | null,
+	kind?: ModelTypes["order_by"] | undefined | null,
+	name?: ModelTypes["order_by"] | undefined | null,
+	plugin_slug?: ModelTypes["order_by"] | undefined | null,
+	reported_at?: ModelTypes["order_by"] | undefined | null,
+	runtime?: ModelTypes["order_by"] | undefined | null,
+	version?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["game_plugin_cvars_min_fields"]: {
+		default_value?: string | undefined | null,
+	description?: string | undefined | null,
+	flags?: string | undefined | null,
+	kind?: string | undefined | null,
+	name?: string | undefined | null,
+	plugin_slug?: string | undefined | null,
+	reported_at?: ModelTypes["timestamptz"] | undefined | null,
+	runtime?: string | undefined | null,
+	version?: string | undefined | null
+};
+	/** order by min() on columns of table "game_plugin_cvars" */
+["game_plugin_cvars_min_order_by"]: {
+	default_value?: ModelTypes["order_by"] | undefined | null,
+	description?: ModelTypes["order_by"] | undefined | null,
+	flags?: ModelTypes["order_by"] | undefined | null,
+	kind?: ModelTypes["order_by"] | undefined | null,
+	name?: ModelTypes["order_by"] | undefined | null,
+	plugin_slug?: ModelTypes["order_by"] | undefined | null,
+	reported_at?: ModelTypes["order_by"] | undefined | null,
+	runtime?: ModelTypes["order_by"] | undefined | null,
+	version?: ModelTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "game_plugin_cvars" */
+["game_plugin_cvars_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["game_plugin_cvars"]>
+};
+	/** on_conflict condition type for table "game_plugin_cvars" */
+["game_plugin_cvars_on_conflict"]: {
+	constraint: ModelTypes["game_plugin_cvars_constraint"],
+	update_columns: Array<ModelTypes["game_plugin_cvars_update_column"]>,
+	where?: ModelTypes["game_plugin_cvars_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "game_plugin_cvars". */
+["game_plugin_cvars_order_by"]: {
+	default_value?: ModelTypes["order_by"] | undefined | null,
+	description?: ModelTypes["order_by"] | undefined | null,
+	flags?: ModelTypes["order_by"] | undefined | null,
+	kind?: ModelTypes["order_by"] | undefined | null,
+	name?: ModelTypes["order_by"] | undefined | null,
+	plugin?: ModelTypes["game_plugins_order_by"] | undefined | null,
+	plugin_slug?: ModelTypes["order_by"] | undefined | null,
+	reported_at?: ModelTypes["order_by"] | undefined | null,
+	runtime?: ModelTypes["order_by"] | undefined | null,
+	version?: ModelTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: game_plugin_cvars */
+["game_plugin_cvars_pk_columns_input"]: {
+	name: string,
+	plugin_slug: string
+};
+	["game_plugin_cvars_select_column"]:game_plugin_cvars_select_column;
+	/** input type for updating data in table "game_plugin_cvars" */
+["game_plugin_cvars_set_input"]: {
+	default_value?: string | undefined | null,
+	description?: string | undefined | null,
+	flags?: string | undefined | null,
+	kind?: string | undefined | null,
+	name?: string | undefined | null,
+	plugin_slug?: string | undefined | null,
+	reported_at?: ModelTypes["timestamptz"] | undefined | null,
+	runtime?: string | undefined | null,
+	version?: string | undefined | null
+};
+	/** Streaming cursor of the table "game_plugin_cvars" */
+["game_plugin_cvars_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["game_plugin_cvars_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["game_plugin_cvars_stream_cursor_value_input"]: {
+	default_value?: string | undefined | null,
+	description?: string | undefined | null,
+	flags?: string | undefined | null,
+	kind?: string | undefined | null,
+	name?: string | undefined | null,
+	plugin_slug?: string | undefined | null,
+	reported_at?: ModelTypes["timestamptz"] | undefined | null,
+	runtime?: string | undefined | null,
+	version?: string | undefined | null
+};
+	["game_plugin_cvars_update_column"]:game_plugin_cvars_update_column;
+	["game_plugin_cvars_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["game_plugin_cvars_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["game_plugin_cvars_bool_exp"]
+};
 	/** columns and relationships of "game_plugin_installs" */
 ["game_plugin_installs"]: {
 		cfg?: string | undefined | null,
 	channel: ModelTypes["e_game_plugin_channels_enum"],
+	config?: ModelTypes["jsonb"] | undefined | null,
 	created_at: ModelTypes["timestamptz"],
 	disable_server_guidelines: boolean,
 	enabled: boolean,
@@ -189187,6 +192059,10 @@ export type ModelTypes = {
 	max?: ModelTypes["game_plugin_installs_max_fields"] | undefined | null,
 	min?: ModelTypes["game_plugin_installs_min_fields"] | undefined | null
 };
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["game_plugin_installs_append_input"]: {
+	config?: ModelTypes["jsonb"] | undefined | null
+};
 	/** Boolean expression to filter rows from the table "game_plugin_installs". All fields are combined with a logical 'AND'. */
 ["game_plugin_installs_bool_exp"]: {
 	_and?: Array<ModelTypes["game_plugin_installs_bool_exp"]> | undefined | null,
@@ -189194,6 +192070,7 @@ export type ModelTypes = {
 	_or?: Array<ModelTypes["game_plugin_installs_bool_exp"]> | undefined | null,
 	cfg?: ModelTypes["String_comparison_exp"] | undefined | null,
 	channel?: ModelTypes["e_game_plugin_channels_enum_comparison_exp"] | undefined | null,
+	config?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
 	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	disable_server_guidelines?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	enabled?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
@@ -189206,10 +192083,23 @@ export type ModelTypes = {
 	version?: ModelTypes["String_comparison_exp"] | undefined | null
 };
 	["game_plugin_installs_constraint"]:game_plugin_installs_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["game_plugin_installs_delete_at_path_input"]: {
+	config?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["game_plugin_installs_delete_elem_input"]: {
+	config?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["game_plugin_installs_delete_key_input"]: {
+	config?: string | undefined | null
+};
 	/** input type for inserting data into table "game_plugin_installs" */
 ["game_plugin_installs_insert_input"]: {
 	cfg?: string | undefined | null,
 	channel?: ModelTypes["e_game_plugin_channels_enum"] | undefined | null,
+	config?: ModelTypes["jsonb"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	disable_server_guidelines?: boolean | undefined | null,
 	enabled?: boolean | undefined | null,
@@ -189260,6 +192150,7 @@ export type ModelTypes = {
 ["game_plugin_installs_order_by"]: {
 	cfg?: ModelTypes["order_by"] | undefined | null,
 	channel?: ModelTypes["order_by"] | undefined | null,
+	config?: ModelTypes["order_by"] | undefined | null,
 	created_at?: ModelTypes["order_by"] | undefined | null,
 	disable_server_guidelines?: ModelTypes["order_by"] | undefined | null,
 	enabled?: ModelTypes["order_by"] | undefined | null,
@@ -189275,11 +192166,16 @@ export type ModelTypes = {
 ["game_plugin_installs_pk_columns_input"]: {
 	plugin_slug: string
 };
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["game_plugin_installs_prepend_input"]: {
+	config?: ModelTypes["jsonb"] | undefined | null
+};
 	["game_plugin_installs_select_column"]:game_plugin_installs_select_column;
 	/** input type for updating data in table "game_plugin_installs" */
 ["game_plugin_installs_set_input"]: {
 	cfg?: string | undefined | null,
 	channel?: ModelTypes["e_game_plugin_channels_enum"] | undefined | null,
+	config?: ModelTypes["jsonb"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	disable_server_guidelines?: boolean | undefined | null,
 	enabled?: boolean | undefined | null,
@@ -189301,6 +192197,7 @@ export type ModelTypes = {
 ["game_plugin_installs_stream_cursor_value_input"]: {
 	cfg?: string | undefined | null,
 	channel?: ModelTypes["e_game_plugin_channels_enum"] | undefined | null,
+	config?: ModelTypes["jsonb"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	disable_server_guidelines?: boolean | undefined | null,
 	enabled?: boolean | undefined | null,
@@ -189313,6 +192210,16 @@ export type ModelTypes = {
 };
 	["game_plugin_installs_update_column"]:game_plugin_installs_update_column;
 	["game_plugin_installs_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ModelTypes["game_plugin_installs_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ModelTypes["game_plugin_installs_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ModelTypes["game_plugin_installs_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ModelTypes["game_plugin_installs_delete_key_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ModelTypes["game_plugin_installs_prepend_input"] | undefined | null,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ModelTypes["game_plugin_installs_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
@@ -189620,10 +192527,14 @@ export type ModelTypes = {
 	/** columns and relationships of "game_plugins" */
 ["game_plugins"]: {
 		author: string,
+	config_cvar?: string | undefined | null,
+	config_default?: ModelTypes["jsonb"] | undefined | null,
 	config_path?: string | undefined | null,
 	config_schema?: ModelTypes["jsonb"] | undefined | null,
+	config_shipped?: ModelTypes["jsonb"] | undefined | null,
 	cvars: Array<string>,
 	description: string,
+	forced_cvars: Array<string>,
 	/** An array relationship */
 	game_modes: Array<ModelTypes["game_mode_plugins"]>,
 	/** An aggregate relationship */
@@ -189643,6 +192554,10 @@ export type ModelTypes = {
 	node_installs_aggregate: ModelTypes["game_server_node_plugins_aggregate"],
 	pairs_with: Array<string>,
 	panel?: ModelTypes["jsonb"] | undefined | null,
+	/** An array relationship */
+	reported_cvars: Array<ModelTypes["game_plugin_cvars"]>,
+	/** An aggregate relationship */
+	reported_cvars_aggregate: ModelTypes["game_plugin_cvars_aggregate"],
 	requires_server_guidelines_disabled: boolean,
 	requires_service?: string | undefined | null,
 	slug: string,
@@ -189679,7 +192594,9 @@ export type ModelTypes = {
 };
 	/** append existing jsonb value of filtered columns with new jsonb value */
 ["game_plugins_append_input"]: {
+	config_default?: ModelTypes["jsonb"] | undefined | null,
 	config_schema?: ModelTypes["jsonb"] | undefined | null,
+	config_shipped?: ModelTypes["jsonb"] | undefined | null,
 	map_rotation?: ModelTypes["jsonb"] | undefined | null,
 	panel?: ModelTypes["jsonb"] | undefined | null,
 	wiring?: ModelTypes["jsonb"] | undefined | null
@@ -189697,10 +192614,14 @@ export type ModelTypes = {
 	_not?: ModelTypes["game_plugins_bool_exp"] | undefined | null,
 	_or?: Array<ModelTypes["game_plugins_bool_exp"]> | undefined | null,
 	author?: ModelTypes["String_comparison_exp"] | undefined | null,
+	config_cvar?: ModelTypes["String_comparison_exp"] | undefined | null,
+	config_default?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
 	config_path?: ModelTypes["String_comparison_exp"] | undefined | null,
 	config_schema?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
+	config_shipped?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
 	cvars?: ModelTypes["String_array_comparison_exp"] | undefined | null,
 	description?: ModelTypes["String_comparison_exp"] | undefined | null,
+	forced_cvars?: ModelTypes["String_array_comparison_exp"] | undefined | null,
 	game_modes?: ModelTypes["game_mode_plugins_bool_exp"] | undefined | null,
 	game_modes_aggregate?: ModelTypes["game_mode_plugins_aggregate_bool_exp"] | undefined | null,
 	homepage?: ModelTypes["String_comparison_exp"] | undefined | null,
@@ -189714,6 +192635,8 @@ export type ModelTypes = {
 	node_installs_aggregate?: ModelTypes["game_server_node_plugins_aggregate_bool_exp"] | undefined | null,
 	pairs_with?: ModelTypes["String_array_comparison_exp"] | undefined | null,
 	panel?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
+	reported_cvars?: ModelTypes["game_plugin_cvars_bool_exp"] | undefined | null,
+	reported_cvars_aggregate?: ModelTypes["game_plugin_cvars_aggregate_bool_exp"] | undefined | null,
 	requires_server_guidelines_disabled?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	requires_service?: ModelTypes["String_comparison_exp"] | undefined | null,
 	slug?: ModelTypes["String_comparison_exp"] | undefined | null,
@@ -189729,21 +192652,27 @@ export type ModelTypes = {
 	["game_plugins_constraint"]:game_plugins_constraint;
 	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 ["game_plugins_delete_at_path_input"]: {
+	config_default?: Array<string> | undefined | null,
 	config_schema?: Array<string> | undefined | null,
+	config_shipped?: Array<string> | undefined | null,
 	map_rotation?: Array<string> | undefined | null,
 	panel?: Array<string> | undefined | null,
 	wiring?: Array<string> | undefined | null
 };
 	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
 ["game_plugins_delete_elem_input"]: {
+	config_default?: number | undefined | null,
 	config_schema?: number | undefined | null,
+	config_shipped?: number | undefined | null,
 	map_rotation?: number | undefined | null,
 	panel?: number | undefined | null,
 	wiring?: number | undefined | null
 };
 	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
 ["game_plugins_delete_key_input"]: {
+	config_default?: string | undefined | null,
 	config_schema?: string | undefined | null,
+	config_shipped?: string | undefined | null,
 	map_rotation?: string | undefined | null,
 	panel?: string | undefined | null,
 	wiring?: string | undefined | null
@@ -189751,10 +192680,14 @@ export type ModelTypes = {
 	/** input type for inserting data into table "game_plugins" */
 ["game_plugins_insert_input"]: {
 	author?: string | undefined | null,
+	config_cvar?: string | undefined | null,
+	config_default?: ModelTypes["jsonb"] | undefined | null,
 	config_path?: string | undefined | null,
 	config_schema?: ModelTypes["jsonb"] | undefined | null,
+	config_shipped?: ModelTypes["jsonb"] | undefined | null,
 	cvars?: Array<string> | undefined | null,
 	description?: string | undefined | null,
+	forced_cvars?: Array<string> | undefined | null,
 	game_modes?: ModelTypes["game_mode_plugins_arr_rel_insert_input"] | undefined | null,
 	homepage?: string | undefined | null,
 	hot_swappable?: boolean | undefined | null,
@@ -189764,6 +192697,7 @@ export type ModelTypes = {
 	node_installs?: ModelTypes["game_server_node_plugins_arr_rel_insert_input"] | undefined | null,
 	pairs_with?: Array<string> | undefined | null,
 	panel?: ModelTypes["jsonb"] | undefined | null,
+	reported_cvars?: ModelTypes["game_plugin_cvars_arr_rel_insert_input"] | undefined | null,
 	requires_server_guidelines_disabled?: boolean | undefined | null,
 	requires_service?: string | undefined | null,
 	slug?: string | undefined | null,
@@ -189777,9 +192711,11 @@ export type ModelTypes = {
 	/** aggregate max on columns */
 ["game_plugins_max_fields"]: {
 		author?: string | undefined | null,
+	config_cvar?: string | undefined | null,
 	config_path?: string | undefined | null,
 	cvars?: Array<string> | undefined | null,
 	description?: string | undefined | null,
+	forced_cvars?: Array<string> | undefined | null,
 	homepage?: string | undefined | null,
 	/** Installed | Partial | Pending | Failed | Manual | NotInstalled */
 	install_state?: string | undefined | null,
@@ -189798,9 +192734,11 @@ export type ModelTypes = {
 	/** aggregate min on columns */
 ["game_plugins_min_fields"]: {
 		author?: string | undefined | null,
+	config_cvar?: string | undefined | null,
 	config_path?: string | undefined | null,
 	cvars?: Array<string> | undefined | null,
 	description?: string | undefined | null,
+	forced_cvars?: Array<string> | undefined | null,
 	homepage?: string | undefined | null,
 	/** Installed | Partial | Pending | Failed | Manual | NotInstalled */
 	install_state?: string | undefined | null,
@@ -189838,10 +192776,14 @@ export type ModelTypes = {
 	/** Ordering options when selecting data from "game_plugins". */
 ["game_plugins_order_by"]: {
 	author?: ModelTypes["order_by"] | undefined | null,
+	config_cvar?: ModelTypes["order_by"] | undefined | null,
+	config_default?: ModelTypes["order_by"] | undefined | null,
 	config_path?: ModelTypes["order_by"] | undefined | null,
 	config_schema?: ModelTypes["order_by"] | undefined | null,
+	config_shipped?: ModelTypes["order_by"] | undefined | null,
 	cvars?: ModelTypes["order_by"] | undefined | null,
 	description?: ModelTypes["order_by"] | undefined | null,
+	forced_cvars?: ModelTypes["order_by"] | undefined | null,
 	game_modes_aggregate?: ModelTypes["game_mode_plugins_aggregate_order_by"] | undefined | null,
 	homepage?: ModelTypes["order_by"] | undefined | null,
 	hot_swappable?: ModelTypes["order_by"] | undefined | null,
@@ -189853,6 +192795,7 @@ export type ModelTypes = {
 	node_installs_aggregate?: ModelTypes["game_server_node_plugins_aggregate_order_by"] | undefined | null,
 	pairs_with?: ModelTypes["order_by"] | undefined | null,
 	panel?: ModelTypes["order_by"] | undefined | null,
+	reported_cvars_aggregate?: ModelTypes["game_plugin_cvars_aggregate_order_by"] | undefined | null,
 	requires_server_guidelines_disabled?: ModelTypes["order_by"] | undefined | null,
 	requires_service?: ModelTypes["order_by"] | undefined | null,
 	slug?: ModelTypes["order_by"] | undefined | null,
@@ -189870,7 +192813,9 @@ export type ModelTypes = {
 };
 	/** prepend existing jsonb value of filtered columns with new jsonb value */
 ["game_plugins_prepend_input"]: {
+	config_default?: ModelTypes["jsonb"] | undefined | null,
 	config_schema?: ModelTypes["jsonb"] | undefined | null,
+	config_shipped?: ModelTypes["jsonb"] | undefined | null,
 	map_rotation?: ModelTypes["jsonb"] | undefined | null,
 	panel?: ModelTypes["jsonb"] | undefined | null,
 	wiring?: ModelTypes["jsonb"] | undefined | null
@@ -189879,10 +192824,14 @@ export type ModelTypes = {
 	/** input type for updating data in table "game_plugins" */
 ["game_plugins_set_input"]: {
 	author?: string | undefined | null,
+	config_cvar?: string | undefined | null,
+	config_default?: ModelTypes["jsonb"] | undefined | null,
 	config_path?: string | undefined | null,
 	config_schema?: ModelTypes["jsonb"] | undefined | null,
+	config_shipped?: ModelTypes["jsonb"] | undefined | null,
 	cvars?: Array<string> | undefined | null,
 	description?: string | undefined | null,
+	forced_cvars?: Array<string> | undefined | null,
 	homepage?: string | undefined | null,
 	hot_swappable?: boolean | undefined | null,
 	kind?: ModelTypes["e_game_plugin_kinds_enum"] | undefined | null,
@@ -189930,10 +192879,14 @@ export type ModelTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["game_plugins_stream_cursor_value_input"]: {
 	author?: string | undefined | null,
+	config_cvar?: string | undefined | null,
+	config_default?: ModelTypes["jsonb"] | undefined | null,
 	config_path?: string | undefined | null,
 	config_schema?: ModelTypes["jsonb"] | undefined | null,
+	config_shipped?: ModelTypes["jsonb"] | undefined | null,
 	cvars?: Array<string> | undefined | null,
 	description?: string | undefined | null,
+	forced_cvars?: Array<string> | undefined | null,
 	homepage?: string | undefined | null,
 	hot_swappable?: boolean | undefined | null,
 	kind?: ModelTypes["e_game_plugin_kinds_enum"] | undefined | null,
@@ -201979,6 +204932,10 @@ export type ModelTypes = {
 	delete_game_modes?: ModelTypes["game_modes_mutation_response"] | undefined | null,
 	/** delete single row from the table: "game_modes" */
 	delete_game_modes_by_pk?: ModelTypes["game_modes"] | undefined | null,
+	/** delete data from the table: "game_plugin_cvars" */
+	delete_game_plugin_cvars?: ModelTypes["game_plugin_cvars_mutation_response"] | undefined | null,
+	/** delete single row from the table: "game_plugin_cvars" */
+	delete_game_plugin_cvars_by_pk?: ModelTypes["game_plugin_cvars"] | undefined | null,
 	/** delete data from the table: "game_plugin_installs" */
 	delete_game_plugin_installs?: ModelTypes["game_plugin_installs_mutation_response"] | undefined | null,
 	/** delete single row from the table: "game_plugin_installs" */
@@ -202271,6 +205228,10 @@ export type ModelTypes = {
 	delete_server_player_sessions?: ModelTypes["server_player_sessions_mutation_response"] | undefined | null,
 	/** delete single row from the table: "server_player_sessions" */
 	delete_server_player_sessions_by_pk?: ModelTypes["server_player_sessions"] | undefined | null,
+	/** delete data from the table: "server_plugin_configs" */
+	delete_server_plugin_configs?: ModelTypes["server_plugin_configs_mutation_response"] | undefined | null,
+	/** delete single row from the table: "server_plugin_configs" */
+	delete_server_plugin_configs_by_pk?: ModelTypes["server_plugin_configs"] | undefined | null,
 	/** delete data from the table: "server_plugins" */
 	delete_server_plugins?: ModelTypes["server_plugins_mutation_response"] | undefined | null,
 	/** delete single row from the table: "server_plugins" */
@@ -202864,6 +205825,10 @@ export type ModelTypes = {
 	insert_game_modes?: ModelTypes["game_modes_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "game_modes" */
 	insert_game_modes_one?: ModelTypes["game_modes"] | undefined | null,
+	/** insert data into the table: "game_plugin_cvars" */
+	insert_game_plugin_cvars?: ModelTypes["game_plugin_cvars_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "game_plugin_cvars" */
+	insert_game_plugin_cvars_one?: ModelTypes["game_plugin_cvars"] | undefined | null,
 	/** insert data into the table: "game_plugin_installs" */
 	insert_game_plugin_installs?: ModelTypes["game_plugin_installs_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "game_plugin_installs" */
@@ -203164,6 +206129,10 @@ export type ModelTypes = {
 	insert_server_player_sessions?: ModelTypes["server_player_sessions_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "server_player_sessions" */
 	insert_server_player_sessions_one?: ModelTypes["server_player_sessions"] | undefined | null,
+	/** insert data into the table: "server_plugin_configs" */
+	insert_server_plugin_configs?: ModelTypes["server_plugin_configs_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "server_plugin_configs" */
+	insert_server_plugin_configs_one?: ModelTypes["server_plugin_configs"] | undefined | null,
 	/** insert data into the table: "server_plugins" */
 	insert_server_plugins?: ModelTypes["server_plugins_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "server_plugins" */
@@ -203543,7 +206512,7 @@ export type ModelTypes = {
 	setServerMapRotation?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Replace a dedicated server's per-server plugin overrides and restart it */
 	setServerPlugins?: ModelTypes["SuccessOutput"] | undefined | null,
-	/** Save a community server's rotation, plugins and access, restarting it at most once */
+	/** Save a community server's rotation, plugins, plugin configs and access, restarting it at most once */
 	setServerSettings?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Map a tournament placement to an award */
 	setTournamentAward?: ModelTypes["TournamentAward"] | undefined | null,
@@ -204126,6 +207095,12 @@ export type ModelTypes = {
 	update_game_modes_by_pk?: ModelTypes["game_modes"] | undefined | null,
 	/** update multiples rows of table: "game_modes" */
 	update_game_modes_many?: Array<ModelTypes["game_modes_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "game_plugin_cvars" */
+	update_game_plugin_cvars?: ModelTypes["game_plugin_cvars_mutation_response"] | undefined | null,
+	/** update single row of the table: "game_plugin_cvars" */
+	update_game_plugin_cvars_by_pk?: ModelTypes["game_plugin_cvars"] | undefined | null,
+	/** update multiples rows of table: "game_plugin_cvars" */
+	update_game_plugin_cvars_many?: Array<ModelTypes["game_plugin_cvars_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "game_plugin_installs" */
 	update_game_plugin_installs?: ModelTypes["game_plugin_installs_mutation_response"] | undefined | null,
 	/** update single row of the table: "game_plugin_installs" */
@@ -204568,6 +207543,12 @@ export type ModelTypes = {
 	update_server_player_sessions_by_pk?: ModelTypes["server_player_sessions"] | undefined | null,
 	/** update multiples rows of table: "server_player_sessions" */
 	update_server_player_sessions_many?: Array<ModelTypes["server_player_sessions_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "server_plugin_configs" */
+	update_server_plugin_configs?: ModelTypes["server_plugin_configs_mutation_response"] | undefined | null,
+	/** update single row of the table: "server_plugin_configs" */
+	update_server_plugin_configs_by_pk?: ModelTypes["server_plugin_configs"] | undefined | null,
+	/** update multiples rows of table: "server_plugin_configs" */
+	update_server_plugin_configs_many?: Array<ModelTypes["server_plugin_configs_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "server_plugins" */
 	update_server_plugins?: ModelTypes["server_plugins_mutation_response"] | undefined | null,
 	/** update single row of the table: "server_plugins" */
@@ -216539,6 +219520,332 @@ export type ModelTypes = {
 	player_steam_id?: ModelTypes["order_by"] | undefined | null,
 	sanctioned_by_steam_id?: ModelTypes["order_by"] | undefined | null
 };
+	/** columns and relationships of "player_season_performance_v" */
+["player_season_performance_v"]: {
+		accuracy_score?: ModelTypes["float8"] | undefined | null,
+	aim_rating?: ModelTypes["float8"] | undefined | null,
+	blind_score?: ModelTypes["float8"] | undefined | null,
+	counter_strafe_score?: ModelTypes["float8"] | undefined | null,
+	crosshair_score?: ModelTypes["float8"] | undefined | null,
+	flash_assists_score?: ModelTypes["float8"] | undefined | null,
+	hs_score?: ModelTypes["float8"] | undefined | null,
+	kast_score?: ModelTypes["float8"] | undefined | null,
+	positioning_rating?: ModelTypes["float8"] | undefined | null,
+	rounds?: number | undefined | null,
+	/** An object relationship */
+	season?: ModelTypes["seasons"] | undefined | null,
+	season_id?: ModelTypes["uuid"] | undefined | null,
+	season_starts_at?: ModelTypes["timestamptz"] | undefined | null,
+	spotted_score?: ModelTypes["float8"] | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	survival_score?: ModelTypes["float8"] | undefined | null,
+	traded_score?: ModelTypes["float8"] | undefined | null,
+	ttd_score?: ModelTypes["float8"] | undefined | null,
+	util_eff_score?: ModelTypes["float8"] | undefined | null,
+	utility_rating?: ModelTypes["float8"] | undefined | null
+};
+	/** aggregated selection of "player_season_performance_v" */
+["player_season_performance_v_aggregate"]: {
+		aggregate?: ModelTypes["player_season_performance_v_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["player_season_performance_v"]>
+};
+	/** aggregate fields of "player_season_performance_v" */
+["player_season_performance_v_aggregate_fields"]: {
+		avg?: ModelTypes["player_season_performance_v_avg_fields"] | undefined | null,
+	count: number,
+	max?: ModelTypes["player_season_performance_v_max_fields"] | undefined | null,
+	min?: ModelTypes["player_season_performance_v_min_fields"] | undefined | null,
+	stddev?: ModelTypes["player_season_performance_v_stddev_fields"] | undefined | null,
+	stddev_pop?: ModelTypes["player_season_performance_v_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: ModelTypes["player_season_performance_v_stddev_samp_fields"] | undefined | null,
+	sum?: ModelTypes["player_season_performance_v_sum_fields"] | undefined | null,
+	var_pop?: ModelTypes["player_season_performance_v_var_pop_fields"] | undefined | null,
+	var_samp?: ModelTypes["player_season_performance_v_var_samp_fields"] | undefined | null,
+	variance?: ModelTypes["player_season_performance_v_variance_fields"] | undefined | null
+};
+	/** aggregate avg on columns */
+["player_season_performance_v_avg_fields"]: {
+		accuracy_score?: number | undefined | null,
+	aim_rating?: number | undefined | null,
+	blind_score?: number | undefined | null,
+	counter_strafe_score?: number | undefined | null,
+	crosshair_score?: number | undefined | null,
+	flash_assists_score?: number | undefined | null,
+	hs_score?: number | undefined | null,
+	kast_score?: number | undefined | null,
+	positioning_rating?: number | undefined | null,
+	rounds?: number | undefined | null,
+	spotted_score?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	survival_score?: number | undefined | null,
+	traded_score?: number | undefined | null,
+	ttd_score?: number | undefined | null,
+	util_eff_score?: number | undefined | null,
+	utility_rating?: number | undefined | null
+};
+	/** Boolean expression to filter rows from the table "player_season_performance_v". All fields are combined with a logical 'AND'. */
+["player_season_performance_v_bool_exp"]: {
+	_and?: Array<ModelTypes["player_season_performance_v_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["player_season_performance_v_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["player_season_performance_v_bool_exp"]> | undefined | null,
+	accuracy_score?: ModelTypes["float8_comparison_exp"] | undefined | null,
+	aim_rating?: ModelTypes["float8_comparison_exp"] | undefined | null,
+	blind_score?: ModelTypes["float8_comparison_exp"] | undefined | null,
+	counter_strafe_score?: ModelTypes["float8_comparison_exp"] | undefined | null,
+	crosshair_score?: ModelTypes["float8_comparison_exp"] | undefined | null,
+	flash_assists_score?: ModelTypes["float8_comparison_exp"] | undefined | null,
+	hs_score?: ModelTypes["float8_comparison_exp"] | undefined | null,
+	kast_score?: ModelTypes["float8_comparison_exp"] | undefined | null,
+	positioning_rating?: ModelTypes["float8_comparison_exp"] | undefined | null,
+	rounds?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	season?: ModelTypes["seasons_bool_exp"] | undefined | null,
+	season_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	season_starts_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	spotted_score?: ModelTypes["float8_comparison_exp"] | undefined | null,
+	steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	survival_score?: ModelTypes["float8_comparison_exp"] | undefined | null,
+	traded_score?: ModelTypes["float8_comparison_exp"] | undefined | null,
+	ttd_score?: ModelTypes["float8_comparison_exp"] | undefined | null,
+	util_eff_score?: ModelTypes["float8_comparison_exp"] | undefined | null,
+	utility_rating?: ModelTypes["float8_comparison_exp"] | undefined | null
+};
+	/** aggregate max on columns */
+["player_season_performance_v_max_fields"]: {
+		accuracy_score?: ModelTypes["float8"] | undefined | null,
+	aim_rating?: ModelTypes["float8"] | undefined | null,
+	blind_score?: ModelTypes["float8"] | undefined | null,
+	counter_strafe_score?: ModelTypes["float8"] | undefined | null,
+	crosshair_score?: ModelTypes["float8"] | undefined | null,
+	flash_assists_score?: ModelTypes["float8"] | undefined | null,
+	hs_score?: ModelTypes["float8"] | undefined | null,
+	kast_score?: ModelTypes["float8"] | undefined | null,
+	positioning_rating?: ModelTypes["float8"] | undefined | null,
+	rounds?: number | undefined | null,
+	season_id?: ModelTypes["uuid"] | undefined | null,
+	season_starts_at?: ModelTypes["timestamptz"] | undefined | null,
+	spotted_score?: ModelTypes["float8"] | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	survival_score?: ModelTypes["float8"] | undefined | null,
+	traded_score?: ModelTypes["float8"] | undefined | null,
+	ttd_score?: ModelTypes["float8"] | undefined | null,
+	util_eff_score?: ModelTypes["float8"] | undefined | null,
+	utility_rating?: ModelTypes["float8"] | undefined | null
+};
+	/** aggregate min on columns */
+["player_season_performance_v_min_fields"]: {
+		accuracy_score?: ModelTypes["float8"] | undefined | null,
+	aim_rating?: ModelTypes["float8"] | undefined | null,
+	blind_score?: ModelTypes["float8"] | undefined | null,
+	counter_strafe_score?: ModelTypes["float8"] | undefined | null,
+	crosshair_score?: ModelTypes["float8"] | undefined | null,
+	flash_assists_score?: ModelTypes["float8"] | undefined | null,
+	hs_score?: ModelTypes["float8"] | undefined | null,
+	kast_score?: ModelTypes["float8"] | undefined | null,
+	positioning_rating?: ModelTypes["float8"] | undefined | null,
+	rounds?: number | undefined | null,
+	season_id?: ModelTypes["uuid"] | undefined | null,
+	season_starts_at?: ModelTypes["timestamptz"] | undefined | null,
+	spotted_score?: ModelTypes["float8"] | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	survival_score?: ModelTypes["float8"] | undefined | null,
+	traded_score?: ModelTypes["float8"] | undefined | null,
+	ttd_score?: ModelTypes["float8"] | undefined | null,
+	util_eff_score?: ModelTypes["float8"] | undefined | null,
+	utility_rating?: ModelTypes["float8"] | undefined | null
+};
+	/** Ordering options when selecting data from "player_season_performance_v". */
+["player_season_performance_v_order_by"]: {
+	accuracy_score?: ModelTypes["order_by"] | undefined | null,
+	aim_rating?: ModelTypes["order_by"] | undefined | null,
+	blind_score?: ModelTypes["order_by"] | undefined | null,
+	counter_strafe_score?: ModelTypes["order_by"] | undefined | null,
+	crosshair_score?: ModelTypes["order_by"] | undefined | null,
+	flash_assists_score?: ModelTypes["order_by"] | undefined | null,
+	hs_score?: ModelTypes["order_by"] | undefined | null,
+	kast_score?: ModelTypes["order_by"] | undefined | null,
+	positioning_rating?: ModelTypes["order_by"] | undefined | null,
+	rounds?: ModelTypes["order_by"] | undefined | null,
+	season?: ModelTypes["seasons_order_by"] | undefined | null,
+	season_id?: ModelTypes["order_by"] | undefined | null,
+	season_starts_at?: ModelTypes["order_by"] | undefined | null,
+	spotted_score?: ModelTypes["order_by"] | undefined | null,
+	steam_id?: ModelTypes["order_by"] | undefined | null,
+	survival_score?: ModelTypes["order_by"] | undefined | null,
+	traded_score?: ModelTypes["order_by"] | undefined | null,
+	ttd_score?: ModelTypes["order_by"] | undefined | null,
+	util_eff_score?: ModelTypes["order_by"] | undefined | null,
+	utility_rating?: ModelTypes["order_by"] | undefined | null
+};
+	["player_season_performance_v_select_column"]:player_season_performance_v_select_column;
+	/** aggregate stddev on columns */
+["player_season_performance_v_stddev_fields"]: {
+		accuracy_score?: number | undefined | null,
+	aim_rating?: number | undefined | null,
+	blind_score?: number | undefined | null,
+	counter_strafe_score?: number | undefined | null,
+	crosshair_score?: number | undefined | null,
+	flash_assists_score?: number | undefined | null,
+	hs_score?: number | undefined | null,
+	kast_score?: number | undefined | null,
+	positioning_rating?: number | undefined | null,
+	rounds?: number | undefined | null,
+	spotted_score?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	survival_score?: number | undefined | null,
+	traded_score?: number | undefined | null,
+	ttd_score?: number | undefined | null,
+	util_eff_score?: number | undefined | null,
+	utility_rating?: number | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["player_season_performance_v_stddev_pop_fields"]: {
+		accuracy_score?: number | undefined | null,
+	aim_rating?: number | undefined | null,
+	blind_score?: number | undefined | null,
+	counter_strafe_score?: number | undefined | null,
+	crosshair_score?: number | undefined | null,
+	flash_assists_score?: number | undefined | null,
+	hs_score?: number | undefined | null,
+	kast_score?: number | undefined | null,
+	positioning_rating?: number | undefined | null,
+	rounds?: number | undefined | null,
+	spotted_score?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	survival_score?: number | undefined | null,
+	traded_score?: number | undefined | null,
+	ttd_score?: number | undefined | null,
+	util_eff_score?: number | undefined | null,
+	utility_rating?: number | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["player_season_performance_v_stddev_samp_fields"]: {
+		accuracy_score?: number | undefined | null,
+	aim_rating?: number | undefined | null,
+	blind_score?: number | undefined | null,
+	counter_strafe_score?: number | undefined | null,
+	crosshair_score?: number | undefined | null,
+	flash_assists_score?: number | undefined | null,
+	hs_score?: number | undefined | null,
+	kast_score?: number | undefined | null,
+	positioning_rating?: number | undefined | null,
+	rounds?: number | undefined | null,
+	spotted_score?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	survival_score?: number | undefined | null,
+	traded_score?: number | undefined | null,
+	ttd_score?: number | undefined | null,
+	util_eff_score?: number | undefined | null,
+	utility_rating?: number | undefined | null
+};
+	/** Streaming cursor of the table "player_season_performance_v" */
+["player_season_performance_v_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["player_season_performance_v_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["player_season_performance_v_stream_cursor_value_input"]: {
+	accuracy_score?: ModelTypes["float8"] | undefined | null,
+	aim_rating?: ModelTypes["float8"] | undefined | null,
+	blind_score?: ModelTypes["float8"] | undefined | null,
+	counter_strafe_score?: ModelTypes["float8"] | undefined | null,
+	crosshair_score?: ModelTypes["float8"] | undefined | null,
+	flash_assists_score?: ModelTypes["float8"] | undefined | null,
+	hs_score?: ModelTypes["float8"] | undefined | null,
+	kast_score?: ModelTypes["float8"] | undefined | null,
+	positioning_rating?: ModelTypes["float8"] | undefined | null,
+	rounds?: number | undefined | null,
+	season_id?: ModelTypes["uuid"] | undefined | null,
+	season_starts_at?: ModelTypes["timestamptz"] | undefined | null,
+	spotted_score?: ModelTypes["float8"] | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	survival_score?: ModelTypes["float8"] | undefined | null,
+	traded_score?: ModelTypes["float8"] | undefined | null,
+	ttd_score?: ModelTypes["float8"] | undefined | null,
+	util_eff_score?: ModelTypes["float8"] | undefined | null,
+	utility_rating?: ModelTypes["float8"] | undefined | null
+};
+	/** aggregate sum on columns */
+["player_season_performance_v_sum_fields"]: {
+		accuracy_score?: ModelTypes["float8"] | undefined | null,
+	aim_rating?: ModelTypes["float8"] | undefined | null,
+	blind_score?: ModelTypes["float8"] | undefined | null,
+	counter_strafe_score?: ModelTypes["float8"] | undefined | null,
+	crosshair_score?: ModelTypes["float8"] | undefined | null,
+	flash_assists_score?: ModelTypes["float8"] | undefined | null,
+	hs_score?: ModelTypes["float8"] | undefined | null,
+	kast_score?: ModelTypes["float8"] | undefined | null,
+	positioning_rating?: ModelTypes["float8"] | undefined | null,
+	rounds?: number | undefined | null,
+	spotted_score?: ModelTypes["float8"] | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	survival_score?: ModelTypes["float8"] | undefined | null,
+	traded_score?: ModelTypes["float8"] | undefined | null,
+	ttd_score?: ModelTypes["float8"] | undefined | null,
+	util_eff_score?: ModelTypes["float8"] | undefined | null,
+	utility_rating?: ModelTypes["float8"] | undefined | null
+};
+	/** aggregate var_pop on columns */
+["player_season_performance_v_var_pop_fields"]: {
+		accuracy_score?: number | undefined | null,
+	aim_rating?: number | undefined | null,
+	blind_score?: number | undefined | null,
+	counter_strafe_score?: number | undefined | null,
+	crosshair_score?: number | undefined | null,
+	flash_assists_score?: number | undefined | null,
+	hs_score?: number | undefined | null,
+	kast_score?: number | undefined | null,
+	positioning_rating?: number | undefined | null,
+	rounds?: number | undefined | null,
+	spotted_score?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	survival_score?: number | undefined | null,
+	traded_score?: number | undefined | null,
+	ttd_score?: number | undefined | null,
+	util_eff_score?: number | undefined | null,
+	utility_rating?: number | undefined | null
+};
+	/** aggregate var_samp on columns */
+["player_season_performance_v_var_samp_fields"]: {
+		accuracy_score?: number | undefined | null,
+	aim_rating?: number | undefined | null,
+	blind_score?: number | undefined | null,
+	counter_strafe_score?: number | undefined | null,
+	crosshair_score?: number | undefined | null,
+	flash_assists_score?: number | undefined | null,
+	hs_score?: number | undefined | null,
+	kast_score?: number | undefined | null,
+	positioning_rating?: number | undefined | null,
+	rounds?: number | undefined | null,
+	spotted_score?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	survival_score?: number | undefined | null,
+	traded_score?: number | undefined | null,
+	ttd_score?: number | undefined | null,
+	util_eff_score?: number | undefined | null,
+	utility_rating?: number | undefined | null
+};
+	/** aggregate variance on columns */
+["player_season_performance_v_variance_fields"]: {
+		accuracy_score?: number | undefined | null,
+	aim_rating?: number | undefined | null,
+	blind_score?: number | undefined | null,
+	counter_strafe_score?: number | undefined | null,
+	crosshair_score?: number | undefined | null,
+	flash_assists_score?: number | undefined | null,
+	hs_score?: number | undefined | null,
+	kast_score?: number | undefined | null,
+	positioning_rating?: number | undefined | null,
+	rounds?: number | undefined | null,
+	spotted_score?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	survival_score?: number | undefined | null,
+	traded_score?: number | undefined | null,
+	ttd_score?: number | undefined | null,
+	util_eff_score?: number | undefined | null,
+	utility_rating?: number | undefined | null
+};
 	/** columns and relationships of "player_season_stats" */
 ["player_season_stats"]: {
 		assists: ModelTypes["bigint"],
@@ -220437,6 +223744,12 @@ export type ModelTypes = {
 	game_modes_aggregate: ModelTypes["game_modes_aggregate"],
 	/** fetch data from the table: "game_modes" using primary key columns */
 	game_modes_by_pk?: ModelTypes["game_modes"] | undefined | null,
+	/** fetch data from the table: "game_plugin_cvars" */
+	game_plugin_cvars: Array<ModelTypes["game_plugin_cvars"]>,
+	/** fetch aggregated fields from the table: "game_plugin_cvars" */
+	game_plugin_cvars_aggregate: ModelTypes["game_plugin_cvars_aggregate"],
+	/** fetch data from the table: "game_plugin_cvars" using primary key columns */
+	game_plugin_cvars_by_pk?: ModelTypes["game_plugin_cvars"] | undefined | null,
 	/** fetch data from the table: "game_plugin_installs" */
 	game_plugin_installs: Array<ModelTypes["game_plugin_installs"]>,
 	/** fetch aggregated fields from the table: "game_plugin_installs" */
@@ -220866,6 +224179,10 @@ export type ModelTypes = {
 	player_sanctions_aggregate: ModelTypes["player_sanctions_aggregate"],
 	/** fetch data from the table: "player_sanctions" using primary key columns */
 	player_sanctions_by_pk?: ModelTypes["player_sanctions"] | undefined | null,
+	/** fetch data from the table: "player_season_performance_v" */
+	player_season_performance_v: Array<ModelTypes["player_season_performance_v"]>,
+	/** fetch aggregated fields from the table: "player_season_performance_v" */
+	player_season_performance_v_aggregate: ModelTypes["player_season_performance_v_aggregate"],
 	/** An array relationship */
 	player_season_stats: Array<ModelTypes["player_season_stats"]>,
 	/** An aggregate relationship */
@@ -220966,6 +224283,12 @@ export type ModelTypes = {
 	server_player_sessions_aggregate: ModelTypes["server_player_sessions_aggregate"],
 	/** fetch data from the table: "server_player_sessions" using primary key columns */
 	server_player_sessions_by_pk?: ModelTypes["server_player_sessions"] | undefined | null,
+	/** fetch data from the table: "server_plugin_configs" */
+	server_plugin_configs: Array<ModelTypes["server_plugin_configs"]>,
+	/** fetch aggregated fields from the table: "server_plugin_configs" */
+	server_plugin_configs_aggregate: ModelTypes["server_plugin_configs_aggregate"],
+	/** fetch data from the table: "server_plugin_configs" using primary key columns */
+	server_plugin_configs_by_pk?: ModelTypes["server_plugin_configs"] | undefined | null,
 	/** fetch data from the table: "server_plugins" */
 	server_plugins: Array<ModelTypes["server_plugins"]>,
 	/** fetch aggregated fields from the table: "server_plugins" */
@@ -221402,6 +224725,14 @@ export type ModelTypes = {
 	v_player_weapon_kills: Array<ModelTypes["v_player_weapon_kills"]>,
 	/** fetch aggregated fields from the table: "v_player_weapon_kills" */
 	v_player_weapon_kills_aggregate: ModelTypes["v_player_weapon_kills_aggregate"],
+	/** fetch data from the table: "v_player_weapon_match_damage" */
+	v_player_weapon_match_damage: Array<ModelTypes["v_player_weapon_match_damage"]>,
+	/** fetch aggregated fields from the table: "v_player_weapon_match_damage" */
+	v_player_weapon_match_damage_aggregate: ModelTypes["v_player_weapon_match_damage_aggregate"],
+	/** fetch data from the table: "v_player_weapon_match_kills" */
+	v_player_weapon_match_kills: Array<ModelTypes["v_player_weapon_match_kills"]>,
+	/** fetch aggregated fields from the table: "v_player_weapon_match_kills" */
+	v_player_weapon_match_kills_aggregate: ModelTypes["v_player_weapon_match_kills_aggregate"],
 	/** fetch data from the table: "v_pool_maps" */
 	v_pool_maps: Array<ModelTypes["v_pool_maps"]>,
 	/** fetch aggregated fields from the table: "v_pool_maps" */
@@ -223150,6 +226481,191 @@ export type ModelTypes = {
 	kills_conn?: ModelTypes["order_by"] | undefined | null,
 	player_steam_id?: ModelTypes["order_by"] | undefined | null
 };
+	/** columns and relationships of "server_plugin_configs" */
+["server_plugin_configs"]: {
+		cfg?: string | undefined | null,
+	config?: ModelTypes["jsonb"] | undefined | null,
+	/** An object relationship */
+	plugin: ModelTypes["game_plugins"],
+	plugin_slug: string,
+	/** An object relationship */
+	server: ModelTypes["servers"],
+	server_id: ModelTypes["uuid"],
+	updated_at: ModelTypes["timestamptz"]
+};
+	/** aggregated selection of "server_plugin_configs" */
+["server_plugin_configs_aggregate"]: {
+		aggregate?: ModelTypes["server_plugin_configs_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["server_plugin_configs"]>
+};
+	["server_plugin_configs_aggregate_bool_exp"]: {
+	count?: ModelTypes["server_plugin_configs_aggregate_bool_exp_count"] | undefined | null
+};
+	["server_plugin_configs_aggregate_bool_exp_count"]: {
+	arguments?: Array<ModelTypes["server_plugin_configs_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: ModelTypes["server_plugin_configs_bool_exp"] | undefined | null,
+	predicate: ModelTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "server_plugin_configs" */
+["server_plugin_configs_aggregate_fields"]: {
+		count: number,
+	max?: ModelTypes["server_plugin_configs_max_fields"] | undefined | null,
+	min?: ModelTypes["server_plugin_configs_min_fields"] | undefined | null
+};
+	/** order by aggregate values of table "server_plugin_configs" */
+["server_plugin_configs_aggregate_order_by"]: {
+	count?: ModelTypes["order_by"] | undefined | null,
+	max?: ModelTypes["server_plugin_configs_max_order_by"] | undefined | null,
+	min?: ModelTypes["server_plugin_configs_min_order_by"] | undefined | null
+};
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["server_plugin_configs_append_input"]: {
+	config?: ModelTypes["jsonb"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "server_plugin_configs" */
+["server_plugin_configs_arr_rel_insert_input"]: {
+	data: Array<ModelTypes["server_plugin_configs_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ModelTypes["server_plugin_configs_on_conflict"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "server_plugin_configs". All fields are combined with a logical 'AND'. */
+["server_plugin_configs_bool_exp"]: {
+	_and?: Array<ModelTypes["server_plugin_configs_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["server_plugin_configs_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["server_plugin_configs_bool_exp"]> | undefined | null,
+	cfg?: ModelTypes["String_comparison_exp"] | undefined | null,
+	config?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
+	plugin?: ModelTypes["game_plugins_bool_exp"] | undefined | null,
+	plugin_slug?: ModelTypes["String_comparison_exp"] | undefined | null,
+	server?: ModelTypes["servers_bool_exp"] | undefined | null,
+	server_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null
+};
+	["server_plugin_configs_constraint"]:server_plugin_configs_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["server_plugin_configs_delete_at_path_input"]: {
+	config?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["server_plugin_configs_delete_elem_input"]: {
+	config?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["server_plugin_configs_delete_key_input"]: {
+	config?: string | undefined | null
+};
+	/** input type for inserting data into table "server_plugin_configs" */
+["server_plugin_configs_insert_input"]: {
+	cfg?: string | undefined | null,
+	config?: ModelTypes["jsonb"] | undefined | null,
+	plugin?: ModelTypes["game_plugins_obj_rel_insert_input"] | undefined | null,
+	plugin_slug?: string | undefined | null,
+	server?: ModelTypes["servers_obj_rel_insert_input"] | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** aggregate max on columns */
+["server_plugin_configs_max_fields"]: {
+		cfg?: string | undefined | null,
+	plugin_slug?: string | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** order by max() on columns of table "server_plugin_configs" */
+["server_plugin_configs_max_order_by"]: {
+	cfg?: ModelTypes["order_by"] | undefined | null,
+	plugin_slug?: ModelTypes["order_by"] | undefined | null,
+	server_id?: ModelTypes["order_by"] | undefined | null,
+	updated_at?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["server_plugin_configs_min_fields"]: {
+		cfg?: string | undefined | null,
+	plugin_slug?: string | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** order by min() on columns of table "server_plugin_configs" */
+["server_plugin_configs_min_order_by"]: {
+	cfg?: ModelTypes["order_by"] | undefined | null,
+	plugin_slug?: ModelTypes["order_by"] | undefined | null,
+	server_id?: ModelTypes["order_by"] | undefined | null,
+	updated_at?: ModelTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "server_plugin_configs" */
+["server_plugin_configs_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["server_plugin_configs"]>
+};
+	/** on_conflict condition type for table "server_plugin_configs" */
+["server_plugin_configs_on_conflict"]: {
+	constraint: ModelTypes["server_plugin_configs_constraint"],
+	update_columns: Array<ModelTypes["server_plugin_configs_update_column"]>,
+	where?: ModelTypes["server_plugin_configs_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "server_plugin_configs". */
+["server_plugin_configs_order_by"]: {
+	cfg?: ModelTypes["order_by"] | undefined | null,
+	config?: ModelTypes["order_by"] | undefined | null,
+	plugin?: ModelTypes["game_plugins_order_by"] | undefined | null,
+	plugin_slug?: ModelTypes["order_by"] | undefined | null,
+	server?: ModelTypes["servers_order_by"] | undefined | null,
+	server_id?: ModelTypes["order_by"] | undefined | null,
+	updated_at?: ModelTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: server_plugin_configs */
+["server_plugin_configs_pk_columns_input"]: {
+	plugin_slug: string,
+	server_id: ModelTypes["uuid"]
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["server_plugin_configs_prepend_input"]: {
+	config?: ModelTypes["jsonb"] | undefined | null
+};
+	["server_plugin_configs_select_column"]:server_plugin_configs_select_column;
+	/** input type for updating data in table "server_plugin_configs" */
+["server_plugin_configs_set_input"]: {
+	cfg?: string | undefined | null,
+	config?: ModelTypes["jsonb"] | undefined | null,
+	plugin_slug?: string | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** Streaming cursor of the table "server_plugin_configs" */
+["server_plugin_configs_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["server_plugin_configs_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["server_plugin_configs_stream_cursor_value_input"]: {
+	cfg?: string | undefined | null,
+	config?: ModelTypes["jsonb"] | undefined | null,
+	plugin_slug?: string | undefined | null,
+	server_id?: ModelTypes["uuid"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	["server_plugin_configs_update_column"]:server_plugin_configs_update_column;
+	["server_plugin_configs_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ModelTypes["server_plugin_configs_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ModelTypes["server_plugin_configs_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ModelTypes["server_plugin_configs_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ModelTypes["server_plugin_configs_delete_key_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ModelTypes["server_plugin_configs_prepend_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["server_plugin_configs_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["server_plugin_configs_bool_exp"]
+};
 	/** columns and relationships of "server_plugins" */
 ["server_plugins"]: {
 		enabled: boolean,
@@ -223839,6 +227355,10 @@ export type ModelTypes = {
 	player_management_seen_at?: ModelTypes["timestamptz"] | undefined | null,
 	player_management_version?: string | undefined | null,
 	/** An array relationship */
+	plugin_configs: Array<ModelTypes["server_plugin_configs"]>,
+	/** An aggregate relationship */
+	plugin_configs_aggregate: ModelTypes["server_plugin_configs_aggregate"],
+	/** An array relationship */
 	plugin_overrides: Array<ModelTypes["server_plugins"]>,
 	/** An aggregate relationship */
 	plugin_overrides_aggregate: ModelTypes["server_plugins_aggregate"],
@@ -223977,6 +227497,8 @@ export type ModelTypes = {
 	player_management_runtime?: ModelTypes["String_comparison_exp"] | undefined | null,
 	player_management_seen_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	player_management_version?: ModelTypes["String_comparison_exp"] | undefined | null,
+	plugin_configs?: ModelTypes["server_plugin_configs_bool_exp"] | undefined | null,
+	plugin_configs_aggregate?: ModelTypes["server_plugin_configs_aggregate_bool_exp"] | undefined | null,
 	plugin_overrides?: ModelTypes["server_plugins_bool_exp"] | undefined | null,
 	plugin_overrides_aggregate?: ModelTypes["server_plugins_aggregate_bool_exp"] | undefined | null,
 	plugin_runtime?: ModelTypes["e_plugin_runtimes_enum_comparison_exp"] | undefined | null,
@@ -224044,6 +227566,7 @@ export type ModelTypes = {
 	player_management_runtime?: string | undefined | null,
 	player_management_seen_at?: ModelTypes["timestamptz"] | undefined | null,
 	player_management_version?: string | undefined | null,
+	plugin_configs?: ModelTypes["server_plugin_configs_arr_rel_insert_input"] | undefined | null,
 	plugin_overrides?: ModelTypes["server_plugins_arr_rel_insert_input"] | undefined | null,
 	plugin_runtime?: ModelTypes["e_plugin_runtimes_enum"] | undefined | null,
 	plugin_version?: string | undefined | null,
@@ -224224,6 +227747,7 @@ export type ModelTypes = {
 	player_management_runtime?: ModelTypes["order_by"] | undefined | null,
 	player_management_seen_at?: ModelTypes["order_by"] | undefined | null,
 	player_management_version?: ModelTypes["order_by"] | undefined | null,
+	plugin_configs_aggregate?: ModelTypes["server_plugin_configs_aggregate_order_by"] | undefined | null,
 	plugin_overrides_aggregate?: ModelTypes["server_plugins_aggregate_order_by"] | undefined | null,
 	plugin_runtime?: ModelTypes["order_by"] | undefined | null,
 	plugin_version?: ModelTypes["order_by"] | undefined | null,
@@ -225641,6 +229165,14 @@ export type ModelTypes = {
 	game_modes_by_pk?: ModelTypes["game_modes"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "game_modes" */
 	game_modes_stream: Array<ModelTypes["game_modes"]>,
+	/** fetch data from the table: "game_plugin_cvars" */
+	game_plugin_cvars: Array<ModelTypes["game_plugin_cvars"]>,
+	/** fetch aggregated fields from the table: "game_plugin_cvars" */
+	game_plugin_cvars_aggregate: ModelTypes["game_plugin_cvars_aggregate"],
+	/** fetch data from the table: "game_plugin_cvars" using primary key columns */
+	game_plugin_cvars_by_pk?: ModelTypes["game_plugin_cvars"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "game_plugin_cvars" */
+	game_plugin_cvars_stream: Array<ModelTypes["game_plugin_cvars"]>,
 	/** fetch data from the table: "game_plugin_installs" */
 	game_plugin_installs: Array<ModelTypes["game_plugin_installs"]>,
 	/** fetch aggregated fields from the table: "game_plugin_installs" */
@@ -226151,6 +229683,12 @@ export type ModelTypes = {
 	player_sanctions_by_pk?: ModelTypes["player_sanctions"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "player_sanctions" */
 	player_sanctions_stream: Array<ModelTypes["player_sanctions"]>,
+	/** fetch data from the table: "player_season_performance_v" */
+	player_season_performance_v: Array<ModelTypes["player_season_performance_v"]>,
+	/** fetch aggregated fields from the table: "player_season_performance_v" */
+	player_season_performance_v_aggregate: ModelTypes["player_season_performance_v_aggregate"],
+	/** fetch data from the table in a streaming manner: "player_season_performance_v" */
+	player_season_performance_v_stream: Array<ModelTypes["player_season_performance_v"]>,
 	/** An array relationship */
 	player_season_stats: Array<ModelTypes["player_season_stats"]>,
 	/** An aggregate relationship */
@@ -226283,6 +229821,14 @@ export type ModelTypes = {
 	server_player_sessions_by_pk?: ModelTypes["server_player_sessions"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "server_player_sessions" */
 	server_player_sessions_stream: Array<ModelTypes["server_player_sessions"]>,
+	/** fetch data from the table: "server_plugin_configs" */
+	server_plugin_configs: Array<ModelTypes["server_plugin_configs"]>,
+	/** fetch aggregated fields from the table: "server_plugin_configs" */
+	server_plugin_configs_aggregate: ModelTypes["server_plugin_configs_aggregate"],
+	/** fetch data from the table: "server_plugin_configs" using primary key columns */
+	server_plugin_configs_by_pk?: ModelTypes["server_plugin_configs"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "server_plugin_configs" */
+	server_plugin_configs_stream: Array<ModelTypes["server_plugin_configs"]>,
 	/** fetch data from the table: "server_plugins" */
 	server_plugins: Array<ModelTypes["server_plugins"]>,
 	/** fetch aggregated fields from the table: "server_plugins" */
@@ -226859,6 +230405,18 @@ export type ModelTypes = {
 	v_player_weapon_kills_aggregate: ModelTypes["v_player_weapon_kills_aggregate"],
 	/** fetch data from the table in a streaming manner: "v_player_weapon_kills" */
 	v_player_weapon_kills_stream: Array<ModelTypes["v_player_weapon_kills"]>,
+	/** fetch data from the table: "v_player_weapon_match_damage" */
+	v_player_weapon_match_damage: Array<ModelTypes["v_player_weapon_match_damage"]>,
+	/** fetch aggregated fields from the table: "v_player_weapon_match_damage" */
+	v_player_weapon_match_damage_aggregate: ModelTypes["v_player_weapon_match_damage_aggregate"],
+	/** fetch data from the table in a streaming manner: "v_player_weapon_match_damage" */
+	v_player_weapon_match_damage_stream: Array<ModelTypes["v_player_weapon_match_damage"]>,
+	/** fetch data from the table: "v_player_weapon_match_kills" */
+	v_player_weapon_match_kills: Array<ModelTypes["v_player_weapon_match_kills"]>,
+	/** fetch aggregated fields from the table: "v_player_weapon_match_kills" */
+	v_player_weapon_match_kills_aggregate: ModelTypes["v_player_weapon_match_kills_aggregate"],
+	/** fetch data from the table in a streaming manner: "v_player_weapon_match_kills" */
+	v_player_weapon_match_kills_stream: Array<ModelTypes["v_player_weapon_match_kills"]>,
 	/** fetch data from the table: "v_pool_maps" */
 	v_pool_maps: Array<ModelTypes["v_pool_maps"]>,
 	/** fetch aggregated fields from the table: "v_pool_maps" */
@@ -248739,6 +252297,266 @@ export type ModelTypes = {
 	player_steam_id?: number | undefined | null,
 	rounds?: number | undefined | null
 };
+	/** columns and relationships of "v_player_weapon_match_damage" */
+["v_player_weapon_match_damage"]: {
+		damage?: ModelTypes["bigint"] | undefined | null,
+	hits?: ModelTypes["bigint"] | undefined | null,
+	/** An object relationship */
+	match?: ModelTypes["matches"] | undefined | null,
+	match_id?: ModelTypes["uuid"] | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	with?: string | undefined | null
+};
+	/** aggregated selection of "v_player_weapon_match_damage" */
+["v_player_weapon_match_damage_aggregate"]: {
+		aggregate?: ModelTypes["v_player_weapon_match_damage_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["v_player_weapon_match_damage"]>
+};
+	/** aggregate fields of "v_player_weapon_match_damage" */
+["v_player_weapon_match_damage_aggregate_fields"]: {
+		avg?: ModelTypes["v_player_weapon_match_damage_avg_fields"] | undefined | null,
+	count: number,
+	max?: ModelTypes["v_player_weapon_match_damage_max_fields"] | undefined | null,
+	min?: ModelTypes["v_player_weapon_match_damage_min_fields"] | undefined | null,
+	stddev?: ModelTypes["v_player_weapon_match_damage_stddev_fields"] | undefined | null,
+	stddev_pop?: ModelTypes["v_player_weapon_match_damage_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: ModelTypes["v_player_weapon_match_damage_stddev_samp_fields"] | undefined | null,
+	sum?: ModelTypes["v_player_weapon_match_damage_sum_fields"] | undefined | null,
+	var_pop?: ModelTypes["v_player_weapon_match_damage_var_pop_fields"] | undefined | null,
+	var_samp?: ModelTypes["v_player_weapon_match_damage_var_samp_fields"] | undefined | null,
+	variance?: ModelTypes["v_player_weapon_match_damage_variance_fields"] | undefined | null
+};
+	/** aggregate avg on columns */
+["v_player_weapon_match_damage_avg_fields"]: {
+		damage?: number | undefined | null,
+	hits?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** Boolean expression to filter rows from the table "v_player_weapon_match_damage". All fields are combined with a logical 'AND'. */
+["v_player_weapon_match_damage_bool_exp"]: {
+	_and?: Array<ModelTypes["v_player_weapon_match_damage_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["v_player_weapon_match_damage_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["v_player_weapon_match_damage_bool_exp"]> | undefined | null,
+	damage?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	hits?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	match?: ModelTypes["matches_bool_exp"] | undefined | null,
+	match_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	player_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	with?: ModelTypes["String_comparison_exp"] | undefined | null
+};
+	/** aggregate max on columns */
+["v_player_weapon_match_damage_max_fields"]: {
+		damage?: ModelTypes["bigint"] | undefined | null,
+	hits?: ModelTypes["bigint"] | undefined | null,
+	match_id?: ModelTypes["uuid"] | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	with?: string | undefined | null
+};
+	/** aggregate min on columns */
+["v_player_weapon_match_damage_min_fields"]: {
+		damage?: ModelTypes["bigint"] | undefined | null,
+	hits?: ModelTypes["bigint"] | undefined | null,
+	match_id?: ModelTypes["uuid"] | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	with?: string | undefined | null
+};
+	/** Ordering options when selecting data from "v_player_weapon_match_damage". */
+["v_player_weapon_match_damage_order_by"]: {
+	damage?: ModelTypes["order_by"] | undefined | null,
+	hits?: ModelTypes["order_by"] | undefined | null,
+	match?: ModelTypes["matches_order_by"] | undefined | null,
+	match_id?: ModelTypes["order_by"] | undefined | null,
+	player_steam_id?: ModelTypes["order_by"] | undefined | null,
+	with?: ModelTypes["order_by"] | undefined | null
+};
+	["v_player_weapon_match_damage_select_column"]:v_player_weapon_match_damage_select_column;
+	/** aggregate stddev on columns */
+["v_player_weapon_match_damage_stddev_fields"]: {
+		damage?: number | undefined | null,
+	hits?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["v_player_weapon_match_damage_stddev_pop_fields"]: {
+		damage?: number | undefined | null,
+	hits?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["v_player_weapon_match_damage_stddev_samp_fields"]: {
+		damage?: number | undefined | null,
+	hits?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** Streaming cursor of the table "v_player_weapon_match_damage" */
+["v_player_weapon_match_damage_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["v_player_weapon_match_damage_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["v_player_weapon_match_damage_stream_cursor_value_input"]: {
+	damage?: ModelTypes["bigint"] | undefined | null,
+	hits?: ModelTypes["bigint"] | undefined | null,
+	match_id?: ModelTypes["uuid"] | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	with?: string | undefined | null
+};
+	/** aggregate sum on columns */
+["v_player_weapon_match_damage_sum_fields"]: {
+		damage?: ModelTypes["bigint"] | undefined | null,
+	hits?: ModelTypes["bigint"] | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null
+};
+	/** aggregate var_pop on columns */
+["v_player_weapon_match_damage_var_pop_fields"]: {
+		damage?: number | undefined | null,
+	hits?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** aggregate var_samp on columns */
+["v_player_weapon_match_damage_var_samp_fields"]: {
+		damage?: number | undefined | null,
+	hits?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** aggregate variance on columns */
+["v_player_weapon_match_damage_variance_fields"]: {
+		damage?: number | undefined | null,
+	hits?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** columns and relationships of "v_player_weapon_match_kills" */
+["v_player_weapon_match_kills"]: {
+		kill_count?: ModelTypes["bigint"] | undefined | null,
+	/** An object relationship */
+	match?: ModelTypes["matches"] | undefined | null,
+	match_id?: ModelTypes["uuid"] | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	rounds?: ModelTypes["bigint"] | undefined | null,
+	with?: string | undefined | null
+};
+	/** aggregated selection of "v_player_weapon_match_kills" */
+["v_player_weapon_match_kills_aggregate"]: {
+		aggregate?: ModelTypes["v_player_weapon_match_kills_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["v_player_weapon_match_kills"]>
+};
+	/** aggregate fields of "v_player_weapon_match_kills" */
+["v_player_weapon_match_kills_aggregate_fields"]: {
+		avg?: ModelTypes["v_player_weapon_match_kills_avg_fields"] | undefined | null,
+	count: number,
+	max?: ModelTypes["v_player_weapon_match_kills_max_fields"] | undefined | null,
+	min?: ModelTypes["v_player_weapon_match_kills_min_fields"] | undefined | null,
+	stddev?: ModelTypes["v_player_weapon_match_kills_stddev_fields"] | undefined | null,
+	stddev_pop?: ModelTypes["v_player_weapon_match_kills_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: ModelTypes["v_player_weapon_match_kills_stddev_samp_fields"] | undefined | null,
+	sum?: ModelTypes["v_player_weapon_match_kills_sum_fields"] | undefined | null,
+	var_pop?: ModelTypes["v_player_weapon_match_kills_var_pop_fields"] | undefined | null,
+	var_samp?: ModelTypes["v_player_weapon_match_kills_var_samp_fields"] | undefined | null,
+	variance?: ModelTypes["v_player_weapon_match_kills_variance_fields"] | undefined | null
+};
+	/** aggregate avg on columns */
+["v_player_weapon_match_kills_avg_fields"]: {
+		kill_count?: number | undefined | null,
+	player_steam_id?: number | undefined | null,
+	rounds?: number | undefined | null
+};
+	/** Boolean expression to filter rows from the table "v_player_weapon_match_kills". All fields are combined with a logical 'AND'. */
+["v_player_weapon_match_kills_bool_exp"]: {
+	_and?: Array<ModelTypes["v_player_weapon_match_kills_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["v_player_weapon_match_kills_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["v_player_weapon_match_kills_bool_exp"]> | undefined | null,
+	kill_count?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	match?: ModelTypes["matches_bool_exp"] | undefined | null,
+	match_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	player_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	rounds?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	with?: ModelTypes["String_comparison_exp"] | undefined | null
+};
+	/** aggregate max on columns */
+["v_player_weapon_match_kills_max_fields"]: {
+		kill_count?: ModelTypes["bigint"] | undefined | null,
+	match_id?: ModelTypes["uuid"] | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	rounds?: ModelTypes["bigint"] | undefined | null,
+	with?: string | undefined | null
+};
+	/** aggregate min on columns */
+["v_player_weapon_match_kills_min_fields"]: {
+		kill_count?: ModelTypes["bigint"] | undefined | null,
+	match_id?: ModelTypes["uuid"] | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	rounds?: ModelTypes["bigint"] | undefined | null,
+	with?: string | undefined | null
+};
+	/** Ordering options when selecting data from "v_player_weapon_match_kills". */
+["v_player_weapon_match_kills_order_by"]: {
+	kill_count?: ModelTypes["order_by"] | undefined | null,
+	match?: ModelTypes["matches_order_by"] | undefined | null,
+	match_id?: ModelTypes["order_by"] | undefined | null,
+	player_steam_id?: ModelTypes["order_by"] | undefined | null,
+	rounds?: ModelTypes["order_by"] | undefined | null,
+	with?: ModelTypes["order_by"] | undefined | null
+};
+	["v_player_weapon_match_kills_select_column"]:v_player_weapon_match_kills_select_column;
+	/** aggregate stddev on columns */
+["v_player_weapon_match_kills_stddev_fields"]: {
+		kill_count?: number | undefined | null,
+	player_steam_id?: number | undefined | null,
+	rounds?: number | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["v_player_weapon_match_kills_stddev_pop_fields"]: {
+		kill_count?: number | undefined | null,
+	player_steam_id?: number | undefined | null,
+	rounds?: number | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["v_player_weapon_match_kills_stddev_samp_fields"]: {
+		kill_count?: number | undefined | null,
+	player_steam_id?: number | undefined | null,
+	rounds?: number | undefined | null
+};
+	/** Streaming cursor of the table "v_player_weapon_match_kills" */
+["v_player_weapon_match_kills_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["v_player_weapon_match_kills_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["v_player_weapon_match_kills_stream_cursor_value_input"]: {
+	kill_count?: ModelTypes["bigint"] | undefined | null,
+	match_id?: ModelTypes["uuid"] | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	rounds?: ModelTypes["bigint"] | undefined | null,
+	with?: string | undefined | null
+};
+	/** aggregate sum on columns */
+["v_player_weapon_match_kills_sum_fields"]: {
+		kill_count?: ModelTypes["bigint"] | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	rounds?: ModelTypes["bigint"] | undefined | null
+};
+	/** aggregate var_pop on columns */
+["v_player_weapon_match_kills_var_pop_fields"]: {
+		kill_count?: number | undefined | null,
+	player_steam_id?: number | undefined | null,
+	rounds?: number | undefined | null
+};
+	/** aggregate var_samp on columns */
+["v_player_weapon_match_kills_var_samp_fields"]: {
+		kill_count?: number | undefined | null,
+	player_steam_id?: number | undefined | null,
+	rounds?: number | undefined | null
+};
+	/** aggregate variance on columns */
+["v_player_weapon_match_kills_variance_fields"]: {
+		kill_count?: number | undefined | null,
+	player_steam_id?: number | undefined | null,
+	rounds?: number | undefined | null
+};
 	/** columns and relationships of "v_pool_maps" */
 ["v_pool_maps"]: {
 		active_pool?: boolean | undefined | null,
@@ -251852,6 +255670,11 @@ export type GraphQLTypes = {
 	__typename: "ServerPlayer",
 	name: string,
 	steam_id: string
+};
+	["ServerPluginConfigInput"]: {
+		cfg?: string | undefined | null,
+	config?: GraphQLTypes["jsonb"] | undefined | null,
+	slug: string
 };
 	["ServerPluginInput"]: {
 		enabled: boolean,
@@ -266723,11 +270546,215 @@ export type GraphQLTypes = {
 	/** filter the rows which have to be updated */
 	where: GraphQLTypes["game_modes_bool_exp"]
 };
+	/** columns and relationships of "game_plugin_cvars" */
+["game_plugin_cvars"]: {
+	__typename: "game_plugin_cvars",
+	default_value?: string | undefined | null,
+	description: string,
+	flags: string,
+	kind: string,
+	name: string,
+	/** An object relationship */
+	plugin: GraphQLTypes["game_plugins"],
+	plugin_slug: string,
+	reported_at: GraphQLTypes["timestamptz"],
+	runtime: string,
+	version: string
+};
+	/** aggregated selection of "game_plugin_cvars" */
+["game_plugin_cvars_aggregate"]: {
+	__typename: "game_plugin_cvars_aggregate",
+	aggregate?: GraphQLTypes["game_plugin_cvars_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["game_plugin_cvars"]>
+};
+	["game_plugin_cvars_aggregate_bool_exp"]: {
+		count?: GraphQLTypes["game_plugin_cvars_aggregate_bool_exp_count"] | undefined | null
+};
+	["game_plugin_cvars_aggregate_bool_exp_count"]: {
+		arguments?: Array<GraphQLTypes["game_plugin_cvars_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: GraphQLTypes["game_plugin_cvars_bool_exp"] | undefined | null,
+	predicate: GraphQLTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "game_plugin_cvars" */
+["game_plugin_cvars_aggregate_fields"]: {
+	__typename: "game_plugin_cvars_aggregate_fields",
+	count: number,
+	max?: GraphQLTypes["game_plugin_cvars_max_fields"] | undefined | null,
+	min?: GraphQLTypes["game_plugin_cvars_min_fields"] | undefined | null
+};
+	/** order by aggregate values of table "game_plugin_cvars" */
+["game_plugin_cvars_aggregate_order_by"]: {
+		count?: GraphQLTypes["order_by"] | undefined | null,
+	max?: GraphQLTypes["game_plugin_cvars_max_order_by"] | undefined | null,
+	min?: GraphQLTypes["game_plugin_cvars_min_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "game_plugin_cvars" */
+["game_plugin_cvars_arr_rel_insert_input"]: {
+		data: Array<GraphQLTypes["game_plugin_cvars_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: GraphQLTypes["game_plugin_cvars_on_conflict"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "game_plugin_cvars". All fields are combined with a logical 'AND'. */
+["game_plugin_cvars_bool_exp"]: {
+		_and?: Array<GraphQLTypes["game_plugin_cvars_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["game_plugin_cvars_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["game_plugin_cvars_bool_exp"]> | undefined | null,
+	default_value?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	description?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	flags?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	kind?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	name?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	plugin?: GraphQLTypes["game_plugins_bool_exp"] | undefined | null,
+	plugin_slug?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	reported_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	runtime?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	version?: GraphQLTypes["String_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "game_plugin_cvars" */
+["game_plugin_cvars_constraint"]: game_plugin_cvars_constraint;
+	/** input type for inserting data into table "game_plugin_cvars" */
+["game_plugin_cvars_insert_input"]: {
+		default_value?: string | undefined | null,
+	description?: string | undefined | null,
+	flags?: string | undefined | null,
+	kind?: string | undefined | null,
+	name?: string | undefined | null,
+	plugin?: GraphQLTypes["game_plugins_obj_rel_insert_input"] | undefined | null,
+	plugin_slug?: string | undefined | null,
+	reported_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	runtime?: string | undefined | null,
+	version?: string | undefined | null
+};
+	/** aggregate max on columns */
+["game_plugin_cvars_max_fields"]: {
+	__typename: "game_plugin_cvars_max_fields",
+	default_value?: string | undefined | null,
+	description?: string | undefined | null,
+	flags?: string | undefined | null,
+	kind?: string | undefined | null,
+	name?: string | undefined | null,
+	plugin_slug?: string | undefined | null,
+	reported_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	runtime?: string | undefined | null,
+	version?: string | undefined | null
+};
+	/** order by max() on columns of table "game_plugin_cvars" */
+["game_plugin_cvars_max_order_by"]: {
+		default_value?: GraphQLTypes["order_by"] | undefined | null,
+	description?: GraphQLTypes["order_by"] | undefined | null,
+	flags?: GraphQLTypes["order_by"] | undefined | null,
+	kind?: GraphQLTypes["order_by"] | undefined | null,
+	name?: GraphQLTypes["order_by"] | undefined | null,
+	plugin_slug?: GraphQLTypes["order_by"] | undefined | null,
+	reported_at?: GraphQLTypes["order_by"] | undefined | null,
+	runtime?: GraphQLTypes["order_by"] | undefined | null,
+	version?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["game_plugin_cvars_min_fields"]: {
+	__typename: "game_plugin_cvars_min_fields",
+	default_value?: string | undefined | null,
+	description?: string | undefined | null,
+	flags?: string | undefined | null,
+	kind?: string | undefined | null,
+	name?: string | undefined | null,
+	plugin_slug?: string | undefined | null,
+	reported_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	runtime?: string | undefined | null,
+	version?: string | undefined | null
+};
+	/** order by min() on columns of table "game_plugin_cvars" */
+["game_plugin_cvars_min_order_by"]: {
+		default_value?: GraphQLTypes["order_by"] | undefined | null,
+	description?: GraphQLTypes["order_by"] | undefined | null,
+	flags?: GraphQLTypes["order_by"] | undefined | null,
+	kind?: GraphQLTypes["order_by"] | undefined | null,
+	name?: GraphQLTypes["order_by"] | undefined | null,
+	plugin_slug?: GraphQLTypes["order_by"] | undefined | null,
+	reported_at?: GraphQLTypes["order_by"] | undefined | null,
+	runtime?: GraphQLTypes["order_by"] | undefined | null,
+	version?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "game_plugin_cvars" */
+["game_plugin_cvars_mutation_response"]: {
+	__typename: "game_plugin_cvars_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["game_plugin_cvars"]>
+};
+	/** on_conflict condition type for table "game_plugin_cvars" */
+["game_plugin_cvars_on_conflict"]: {
+		constraint: GraphQLTypes["game_plugin_cvars_constraint"],
+	update_columns: Array<GraphQLTypes["game_plugin_cvars_update_column"]>,
+	where?: GraphQLTypes["game_plugin_cvars_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "game_plugin_cvars". */
+["game_plugin_cvars_order_by"]: {
+		default_value?: GraphQLTypes["order_by"] | undefined | null,
+	description?: GraphQLTypes["order_by"] | undefined | null,
+	flags?: GraphQLTypes["order_by"] | undefined | null,
+	kind?: GraphQLTypes["order_by"] | undefined | null,
+	name?: GraphQLTypes["order_by"] | undefined | null,
+	plugin?: GraphQLTypes["game_plugins_order_by"] | undefined | null,
+	plugin_slug?: GraphQLTypes["order_by"] | undefined | null,
+	reported_at?: GraphQLTypes["order_by"] | undefined | null,
+	runtime?: GraphQLTypes["order_by"] | undefined | null,
+	version?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: game_plugin_cvars */
+["game_plugin_cvars_pk_columns_input"]: {
+		name: string,
+	plugin_slug: string
+};
+	/** select columns of table "game_plugin_cvars" */
+["game_plugin_cvars_select_column"]: game_plugin_cvars_select_column;
+	/** input type for updating data in table "game_plugin_cvars" */
+["game_plugin_cvars_set_input"]: {
+		default_value?: string | undefined | null,
+	description?: string | undefined | null,
+	flags?: string | undefined | null,
+	kind?: string | undefined | null,
+	name?: string | undefined | null,
+	plugin_slug?: string | undefined | null,
+	reported_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	runtime?: string | undefined | null,
+	version?: string | undefined | null
+};
+	/** Streaming cursor of the table "game_plugin_cvars" */
+["game_plugin_cvars_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["game_plugin_cvars_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["game_plugin_cvars_stream_cursor_value_input"]: {
+		default_value?: string | undefined | null,
+	description?: string | undefined | null,
+	flags?: string | undefined | null,
+	kind?: string | undefined | null,
+	name?: string | undefined | null,
+	plugin_slug?: string | undefined | null,
+	reported_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	runtime?: string | undefined | null,
+	version?: string | undefined | null
+};
+	/** update columns of table "game_plugin_cvars" */
+["game_plugin_cvars_update_column"]: game_plugin_cvars_update_column;
+	["game_plugin_cvars_updates"]: {
+		/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["game_plugin_cvars_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["game_plugin_cvars_bool_exp"]
+};
 	/** columns and relationships of "game_plugin_installs" */
 ["game_plugin_installs"]: {
 	__typename: "game_plugin_installs",
 	cfg?: string | undefined | null,
 	channel: GraphQLTypes["e_game_plugin_channels_enum"],
+	config?: GraphQLTypes["jsonb"] | undefined | null,
 	created_at: GraphQLTypes["timestamptz"],
 	disable_server_guidelines: boolean,
 	enabled: boolean,
@@ -266753,6 +270780,10 @@ export type GraphQLTypes = {
 	max?: GraphQLTypes["game_plugin_installs_max_fields"] | undefined | null,
 	min?: GraphQLTypes["game_plugin_installs_min_fields"] | undefined | null
 };
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["game_plugin_installs_append_input"]: {
+		config?: GraphQLTypes["jsonb"] | undefined | null
+};
 	/** Boolean expression to filter rows from the table "game_plugin_installs". All fields are combined with a logical 'AND'. */
 ["game_plugin_installs_bool_exp"]: {
 		_and?: Array<GraphQLTypes["game_plugin_installs_bool_exp"]> | undefined | null,
@@ -266760,6 +270791,7 @@ export type GraphQLTypes = {
 	_or?: Array<GraphQLTypes["game_plugin_installs_bool_exp"]> | undefined | null,
 	cfg?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	channel?: GraphQLTypes["e_game_plugin_channels_enum_comparison_exp"] | undefined | null,
+	config?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	disable_server_guidelines?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	enabled?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
@@ -266773,10 +270805,23 @@ export type GraphQLTypes = {
 };
 	/** unique or primary key constraints on table "game_plugin_installs" */
 ["game_plugin_installs_constraint"]: game_plugin_installs_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["game_plugin_installs_delete_at_path_input"]: {
+		config?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["game_plugin_installs_delete_elem_input"]: {
+		config?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["game_plugin_installs_delete_key_input"]: {
+		config?: string | undefined | null
+};
 	/** input type for inserting data into table "game_plugin_installs" */
 ["game_plugin_installs_insert_input"]: {
 		cfg?: string | undefined | null,
 	channel?: GraphQLTypes["e_game_plugin_channels_enum"] | undefined | null,
+	config?: GraphQLTypes["jsonb"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	disable_server_guidelines?: boolean | undefined | null,
 	enabled?: boolean | undefined | null,
@@ -266830,6 +270875,7 @@ export type GraphQLTypes = {
 ["game_plugin_installs_order_by"]: {
 		cfg?: GraphQLTypes["order_by"] | undefined | null,
 	channel?: GraphQLTypes["order_by"] | undefined | null,
+	config?: GraphQLTypes["order_by"] | undefined | null,
 	created_at?: GraphQLTypes["order_by"] | undefined | null,
 	disable_server_guidelines?: GraphQLTypes["order_by"] | undefined | null,
 	enabled?: GraphQLTypes["order_by"] | undefined | null,
@@ -266845,12 +270891,17 @@ export type GraphQLTypes = {
 ["game_plugin_installs_pk_columns_input"]: {
 		plugin_slug: string
 };
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["game_plugin_installs_prepend_input"]: {
+		config?: GraphQLTypes["jsonb"] | undefined | null
+};
 	/** select columns of table "game_plugin_installs" */
 ["game_plugin_installs_select_column"]: game_plugin_installs_select_column;
 	/** input type for updating data in table "game_plugin_installs" */
 ["game_plugin_installs_set_input"]: {
 		cfg?: string | undefined | null,
 	channel?: GraphQLTypes["e_game_plugin_channels_enum"] | undefined | null,
+	config?: GraphQLTypes["jsonb"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	disable_server_guidelines?: boolean | undefined | null,
 	enabled?: boolean | undefined | null,
@@ -266872,6 +270923,7 @@ export type GraphQLTypes = {
 ["game_plugin_installs_stream_cursor_value_input"]: {
 		cfg?: string | undefined | null,
 	channel?: GraphQLTypes["e_game_plugin_channels_enum"] | undefined | null,
+	config?: GraphQLTypes["jsonb"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	disable_server_guidelines?: boolean | undefined | null,
 	enabled?: boolean | undefined | null,
@@ -266885,7 +270937,17 @@ export type GraphQLTypes = {
 	/** update columns of table "game_plugin_installs" */
 ["game_plugin_installs_update_column"]: game_plugin_installs_update_column;
 	["game_plugin_installs_updates"]: {
-		/** sets the columns of the filtered rows to the given values */
+		/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: GraphQLTypes["game_plugin_installs_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: GraphQLTypes["game_plugin_installs_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: GraphQLTypes["game_plugin_installs_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: GraphQLTypes["game_plugin_installs_delete_key_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: GraphQLTypes["game_plugin_installs_prepend_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
 	_set?: GraphQLTypes["game_plugin_installs_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
 	where: GraphQLTypes["game_plugin_installs_bool_exp"]
@@ -267212,10 +271274,14 @@ export type GraphQLTypes = {
 ["game_plugins"]: {
 	__typename: "game_plugins",
 	author: string,
+	config_cvar?: string | undefined | null,
+	config_default?: GraphQLTypes["jsonb"] | undefined | null,
 	config_path?: string | undefined | null,
 	config_schema?: GraphQLTypes["jsonb"] | undefined | null,
+	config_shipped?: GraphQLTypes["jsonb"] | undefined | null,
 	cvars: Array<string>,
 	description: string,
+	forced_cvars: Array<string>,
 	/** An array relationship */
 	game_modes: Array<GraphQLTypes["game_mode_plugins"]>,
 	/** An aggregate relationship */
@@ -267235,6 +271301,10 @@ export type GraphQLTypes = {
 	node_installs_aggregate: GraphQLTypes["game_server_node_plugins_aggregate"],
 	pairs_with: Array<string>,
 	panel?: GraphQLTypes["jsonb"] | undefined | null,
+	/** An array relationship */
+	reported_cvars: Array<GraphQLTypes["game_plugin_cvars"]>,
+	/** An aggregate relationship */
+	reported_cvars_aggregate: GraphQLTypes["game_plugin_cvars_aggregate"],
 	requires_server_guidelines_disabled: boolean,
 	requires_service?: string | undefined | null,
 	slug: string,
@@ -267273,7 +271343,9 @@ export type GraphQLTypes = {
 };
 	/** append existing jsonb value of filtered columns with new jsonb value */
 ["game_plugins_append_input"]: {
-		config_schema?: GraphQLTypes["jsonb"] | undefined | null,
+		config_default?: GraphQLTypes["jsonb"] | undefined | null,
+	config_schema?: GraphQLTypes["jsonb"] | undefined | null,
+	config_shipped?: GraphQLTypes["jsonb"] | undefined | null,
 	map_rotation?: GraphQLTypes["jsonb"] | undefined | null,
 	panel?: GraphQLTypes["jsonb"] | undefined | null,
 	wiring?: GraphQLTypes["jsonb"] | undefined | null
@@ -267292,10 +271364,14 @@ export type GraphQLTypes = {
 	_not?: GraphQLTypes["game_plugins_bool_exp"] | undefined | null,
 	_or?: Array<GraphQLTypes["game_plugins_bool_exp"]> | undefined | null,
 	author?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	config_cvar?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	config_default?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
 	config_path?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	config_schema?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
+	config_shipped?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
 	cvars?: GraphQLTypes["String_array_comparison_exp"] | undefined | null,
 	description?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	forced_cvars?: GraphQLTypes["String_array_comparison_exp"] | undefined | null,
 	game_modes?: GraphQLTypes["game_mode_plugins_bool_exp"] | undefined | null,
 	game_modes_aggregate?: GraphQLTypes["game_mode_plugins_aggregate_bool_exp"] | undefined | null,
 	homepage?: GraphQLTypes["String_comparison_exp"] | undefined | null,
@@ -267309,6 +271385,8 @@ export type GraphQLTypes = {
 	node_installs_aggregate?: GraphQLTypes["game_server_node_plugins_aggregate_bool_exp"] | undefined | null,
 	pairs_with?: GraphQLTypes["String_array_comparison_exp"] | undefined | null,
 	panel?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
+	reported_cvars?: GraphQLTypes["game_plugin_cvars_bool_exp"] | undefined | null,
+	reported_cvars_aggregate?: GraphQLTypes["game_plugin_cvars_aggregate_bool_exp"] | undefined | null,
 	requires_server_guidelines_disabled?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	requires_service?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	slug?: GraphQLTypes["String_comparison_exp"] | undefined | null,
@@ -267325,21 +271403,27 @@ export type GraphQLTypes = {
 ["game_plugins_constraint"]: game_plugins_constraint;
 	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 ["game_plugins_delete_at_path_input"]: {
-		config_schema?: Array<string> | undefined | null,
+		config_default?: Array<string> | undefined | null,
+	config_schema?: Array<string> | undefined | null,
+	config_shipped?: Array<string> | undefined | null,
 	map_rotation?: Array<string> | undefined | null,
 	panel?: Array<string> | undefined | null,
 	wiring?: Array<string> | undefined | null
 };
 	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
 ["game_plugins_delete_elem_input"]: {
-		config_schema?: number | undefined | null,
+		config_default?: number | undefined | null,
+	config_schema?: number | undefined | null,
+	config_shipped?: number | undefined | null,
 	map_rotation?: number | undefined | null,
 	panel?: number | undefined | null,
 	wiring?: number | undefined | null
 };
 	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
 ["game_plugins_delete_key_input"]: {
-		config_schema?: string | undefined | null,
+		config_default?: string | undefined | null,
+	config_schema?: string | undefined | null,
+	config_shipped?: string | undefined | null,
 	map_rotation?: string | undefined | null,
 	panel?: string | undefined | null,
 	wiring?: string | undefined | null
@@ -267347,10 +271431,14 @@ export type GraphQLTypes = {
 	/** input type for inserting data into table "game_plugins" */
 ["game_plugins_insert_input"]: {
 		author?: string | undefined | null,
+	config_cvar?: string | undefined | null,
+	config_default?: GraphQLTypes["jsonb"] | undefined | null,
 	config_path?: string | undefined | null,
 	config_schema?: GraphQLTypes["jsonb"] | undefined | null,
+	config_shipped?: GraphQLTypes["jsonb"] | undefined | null,
 	cvars?: Array<string> | undefined | null,
 	description?: string | undefined | null,
+	forced_cvars?: Array<string> | undefined | null,
 	game_modes?: GraphQLTypes["game_mode_plugins_arr_rel_insert_input"] | undefined | null,
 	homepage?: string | undefined | null,
 	hot_swappable?: boolean | undefined | null,
@@ -267360,6 +271448,7 @@ export type GraphQLTypes = {
 	node_installs?: GraphQLTypes["game_server_node_plugins_arr_rel_insert_input"] | undefined | null,
 	pairs_with?: Array<string> | undefined | null,
 	panel?: GraphQLTypes["jsonb"] | undefined | null,
+	reported_cvars?: GraphQLTypes["game_plugin_cvars_arr_rel_insert_input"] | undefined | null,
 	requires_server_guidelines_disabled?: boolean | undefined | null,
 	requires_service?: string | undefined | null,
 	slug?: string | undefined | null,
@@ -267374,9 +271463,11 @@ export type GraphQLTypes = {
 ["game_plugins_max_fields"]: {
 	__typename: "game_plugins_max_fields",
 	author?: string | undefined | null,
+	config_cvar?: string | undefined | null,
 	config_path?: string | undefined | null,
 	cvars?: Array<string> | undefined | null,
 	description?: string | undefined | null,
+	forced_cvars?: Array<string> | undefined | null,
 	homepage?: string | undefined | null,
 	/** Installed | Partial | Pending | Failed | Manual | NotInstalled */
 	install_state?: string | undefined | null,
@@ -267396,9 +271487,11 @@ export type GraphQLTypes = {
 ["game_plugins_min_fields"]: {
 	__typename: "game_plugins_min_fields",
 	author?: string | undefined | null,
+	config_cvar?: string | undefined | null,
 	config_path?: string | undefined | null,
 	cvars?: Array<string> | undefined | null,
 	description?: string | undefined | null,
+	forced_cvars?: Array<string> | undefined | null,
 	homepage?: string | undefined | null,
 	/** Installed | Partial | Pending | Failed | Manual | NotInstalled */
 	install_state?: string | undefined | null,
@@ -267437,10 +271530,14 @@ export type GraphQLTypes = {
 	/** Ordering options when selecting data from "game_plugins". */
 ["game_plugins_order_by"]: {
 		author?: GraphQLTypes["order_by"] | undefined | null,
+	config_cvar?: GraphQLTypes["order_by"] | undefined | null,
+	config_default?: GraphQLTypes["order_by"] | undefined | null,
 	config_path?: GraphQLTypes["order_by"] | undefined | null,
 	config_schema?: GraphQLTypes["order_by"] | undefined | null,
+	config_shipped?: GraphQLTypes["order_by"] | undefined | null,
 	cvars?: GraphQLTypes["order_by"] | undefined | null,
 	description?: GraphQLTypes["order_by"] | undefined | null,
+	forced_cvars?: GraphQLTypes["order_by"] | undefined | null,
 	game_modes_aggregate?: GraphQLTypes["game_mode_plugins_aggregate_order_by"] | undefined | null,
 	homepage?: GraphQLTypes["order_by"] | undefined | null,
 	hot_swappable?: GraphQLTypes["order_by"] | undefined | null,
@@ -267452,6 +271549,7 @@ export type GraphQLTypes = {
 	node_installs_aggregate?: GraphQLTypes["game_server_node_plugins_aggregate_order_by"] | undefined | null,
 	pairs_with?: GraphQLTypes["order_by"] | undefined | null,
 	panel?: GraphQLTypes["order_by"] | undefined | null,
+	reported_cvars_aggregate?: GraphQLTypes["game_plugin_cvars_aggregate_order_by"] | undefined | null,
 	requires_server_guidelines_disabled?: GraphQLTypes["order_by"] | undefined | null,
 	requires_service?: GraphQLTypes["order_by"] | undefined | null,
 	slug?: GraphQLTypes["order_by"] | undefined | null,
@@ -267469,7 +271567,9 @@ export type GraphQLTypes = {
 };
 	/** prepend existing jsonb value of filtered columns with new jsonb value */
 ["game_plugins_prepend_input"]: {
-		config_schema?: GraphQLTypes["jsonb"] | undefined | null,
+		config_default?: GraphQLTypes["jsonb"] | undefined | null,
+	config_schema?: GraphQLTypes["jsonb"] | undefined | null,
+	config_shipped?: GraphQLTypes["jsonb"] | undefined | null,
 	map_rotation?: GraphQLTypes["jsonb"] | undefined | null,
 	panel?: GraphQLTypes["jsonb"] | undefined | null,
 	wiring?: GraphQLTypes["jsonb"] | undefined | null
@@ -267479,10 +271579,14 @@ export type GraphQLTypes = {
 	/** input type for updating data in table "game_plugins" */
 ["game_plugins_set_input"]: {
 		author?: string | undefined | null,
+	config_cvar?: string | undefined | null,
+	config_default?: GraphQLTypes["jsonb"] | undefined | null,
 	config_path?: string | undefined | null,
 	config_schema?: GraphQLTypes["jsonb"] | undefined | null,
+	config_shipped?: GraphQLTypes["jsonb"] | undefined | null,
 	cvars?: Array<string> | undefined | null,
 	description?: string | undefined | null,
+	forced_cvars?: Array<string> | undefined | null,
 	homepage?: string | undefined | null,
 	hot_swappable?: boolean | undefined | null,
 	kind?: GraphQLTypes["e_game_plugin_kinds_enum"] | undefined | null,
@@ -267533,10 +271637,14 @@ export type GraphQLTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["game_plugins_stream_cursor_value_input"]: {
 		author?: string | undefined | null,
+	config_cvar?: string | undefined | null,
+	config_default?: GraphQLTypes["jsonb"] | undefined | null,
 	config_path?: string | undefined | null,
 	config_schema?: GraphQLTypes["jsonb"] | undefined | null,
+	config_shipped?: GraphQLTypes["jsonb"] | undefined | null,
 	cvars?: Array<string> | undefined | null,
 	description?: string | undefined | null,
+	forced_cvars?: Array<string> | undefined | null,
 	homepage?: string | undefined | null,
 	hot_swappable?: boolean | undefined | null,
 	kind?: GraphQLTypes["e_game_plugin_kinds_enum"] | undefined | null,
@@ -280115,6 +284223,10 @@ export type GraphQLTypes = {
 	delete_game_modes?: GraphQLTypes["game_modes_mutation_response"] | undefined | null,
 	/** delete single row from the table: "game_modes" */
 	delete_game_modes_by_pk?: GraphQLTypes["game_modes"] | undefined | null,
+	/** delete data from the table: "game_plugin_cvars" */
+	delete_game_plugin_cvars?: GraphQLTypes["game_plugin_cvars_mutation_response"] | undefined | null,
+	/** delete single row from the table: "game_plugin_cvars" */
+	delete_game_plugin_cvars_by_pk?: GraphQLTypes["game_plugin_cvars"] | undefined | null,
 	/** delete data from the table: "game_plugin_installs" */
 	delete_game_plugin_installs?: GraphQLTypes["game_plugin_installs_mutation_response"] | undefined | null,
 	/** delete single row from the table: "game_plugin_installs" */
@@ -280407,6 +284519,10 @@ export type GraphQLTypes = {
 	delete_server_player_sessions?: GraphQLTypes["server_player_sessions_mutation_response"] | undefined | null,
 	/** delete single row from the table: "server_player_sessions" */
 	delete_server_player_sessions_by_pk?: GraphQLTypes["server_player_sessions"] | undefined | null,
+	/** delete data from the table: "server_plugin_configs" */
+	delete_server_plugin_configs?: GraphQLTypes["server_plugin_configs_mutation_response"] | undefined | null,
+	/** delete single row from the table: "server_plugin_configs" */
+	delete_server_plugin_configs_by_pk?: GraphQLTypes["server_plugin_configs"] | undefined | null,
 	/** delete data from the table: "server_plugins" */
 	delete_server_plugins?: GraphQLTypes["server_plugins_mutation_response"] | undefined | null,
 	/** delete single row from the table: "server_plugins" */
@@ -281000,6 +285116,10 @@ export type GraphQLTypes = {
 	insert_game_modes?: GraphQLTypes["game_modes_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "game_modes" */
 	insert_game_modes_one?: GraphQLTypes["game_modes"] | undefined | null,
+	/** insert data into the table: "game_plugin_cvars" */
+	insert_game_plugin_cvars?: GraphQLTypes["game_plugin_cvars_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "game_plugin_cvars" */
+	insert_game_plugin_cvars_one?: GraphQLTypes["game_plugin_cvars"] | undefined | null,
 	/** insert data into the table: "game_plugin_installs" */
 	insert_game_plugin_installs?: GraphQLTypes["game_plugin_installs_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "game_plugin_installs" */
@@ -281300,6 +285420,10 @@ export type GraphQLTypes = {
 	insert_server_player_sessions?: GraphQLTypes["server_player_sessions_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "server_player_sessions" */
 	insert_server_player_sessions_one?: GraphQLTypes["server_player_sessions"] | undefined | null,
+	/** insert data into the table: "server_plugin_configs" */
+	insert_server_plugin_configs?: GraphQLTypes["server_plugin_configs_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "server_plugin_configs" */
+	insert_server_plugin_configs_one?: GraphQLTypes["server_plugin_configs"] | undefined | null,
 	/** insert data into the table: "server_plugins" */
 	insert_server_plugins?: GraphQLTypes["server_plugins_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "server_plugins" */
@@ -281679,7 +285803,7 @@ export type GraphQLTypes = {
 	setServerMapRotation?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Replace a dedicated server's per-server plugin overrides and restart it */
 	setServerPlugins?: GraphQLTypes["SuccessOutput"] | undefined | null,
-	/** Save a community server's rotation, plugins and access, restarting it at most once */
+	/** Save a community server's rotation, plugins, plugin configs and access, restarting it at most once */
 	setServerSettings?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Map a tournament placement to an award */
 	setTournamentAward?: GraphQLTypes["TournamentAward"] | undefined | null,
@@ -282262,6 +286386,12 @@ export type GraphQLTypes = {
 	update_game_modes_by_pk?: GraphQLTypes["game_modes"] | undefined | null,
 	/** update multiples rows of table: "game_modes" */
 	update_game_modes_many?: Array<GraphQLTypes["game_modes_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "game_plugin_cvars" */
+	update_game_plugin_cvars?: GraphQLTypes["game_plugin_cvars_mutation_response"] | undefined | null,
+	/** update single row of the table: "game_plugin_cvars" */
+	update_game_plugin_cvars_by_pk?: GraphQLTypes["game_plugin_cvars"] | undefined | null,
+	/** update multiples rows of table: "game_plugin_cvars" */
+	update_game_plugin_cvars_many?: Array<GraphQLTypes["game_plugin_cvars_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "game_plugin_installs" */
 	update_game_plugin_installs?: GraphQLTypes["game_plugin_installs_mutation_response"] | undefined | null,
 	/** update single row of the table: "game_plugin_installs" */
@@ -282704,6 +286834,12 @@ export type GraphQLTypes = {
 	update_server_player_sessions_by_pk?: GraphQLTypes["server_player_sessions"] | undefined | null,
 	/** update multiples rows of table: "server_player_sessions" */
 	update_server_player_sessions_many?: Array<GraphQLTypes["server_player_sessions_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "server_plugin_configs" */
+	update_server_plugin_configs?: GraphQLTypes["server_plugin_configs_mutation_response"] | undefined | null,
+	/** update single row of the table: "server_plugin_configs" */
+	update_server_plugin_configs_by_pk?: GraphQLTypes["server_plugin_configs"] | undefined | null,
+	/** update multiples rows of table: "server_plugin_configs" */
+	update_server_plugin_configs_many?: Array<GraphQLTypes["server_plugin_configs_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "server_plugins" */
 	update_server_plugins?: GraphQLTypes["server_plugins_mutation_response"] | undefined | null,
 	/** update single row of the table: "server_plugins" */
@@ -295095,6 +299231,346 @@ export type GraphQLTypes = {
 		player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	sanctioned_by_steam_id?: GraphQLTypes["order_by"] | undefined | null
 };
+	/** columns and relationships of "player_season_performance_v" */
+["player_season_performance_v"]: {
+	__typename: "player_season_performance_v",
+	accuracy_score?: GraphQLTypes["float8"] | undefined | null,
+	aim_rating?: GraphQLTypes["float8"] | undefined | null,
+	blind_score?: GraphQLTypes["float8"] | undefined | null,
+	counter_strafe_score?: GraphQLTypes["float8"] | undefined | null,
+	crosshair_score?: GraphQLTypes["float8"] | undefined | null,
+	flash_assists_score?: GraphQLTypes["float8"] | undefined | null,
+	hs_score?: GraphQLTypes["float8"] | undefined | null,
+	kast_score?: GraphQLTypes["float8"] | undefined | null,
+	positioning_rating?: GraphQLTypes["float8"] | undefined | null,
+	rounds?: number | undefined | null,
+	/** An object relationship */
+	season?: GraphQLTypes["seasons"] | undefined | null,
+	season_id?: GraphQLTypes["uuid"] | undefined | null,
+	season_starts_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	spotted_score?: GraphQLTypes["float8"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	survival_score?: GraphQLTypes["float8"] | undefined | null,
+	traded_score?: GraphQLTypes["float8"] | undefined | null,
+	ttd_score?: GraphQLTypes["float8"] | undefined | null,
+	util_eff_score?: GraphQLTypes["float8"] | undefined | null,
+	utility_rating?: GraphQLTypes["float8"] | undefined | null
+};
+	/** aggregated selection of "player_season_performance_v" */
+["player_season_performance_v_aggregate"]: {
+	__typename: "player_season_performance_v_aggregate",
+	aggregate?: GraphQLTypes["player_season_performance_v_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["player_season_performance_v"]>
+};
+	/** aggregate fields of "player_season_performance_v" */
+["player_season_performance_v_aggregate_fields"]: {
+	__typename: "player_season_performance_v_aggregate_fields",
+	avg?: GraphQLTypes["player_season_performance_v_avg_fields"] | undefined | null,
+	count: number,
+	max?: GraphQLTypes["player_season_performance_v_max_fields"] | undefined | null,
+	min?: GraphQLTypes["player_season_performance_v_min_fields"] | undefined | null,
+	stddev?: GraphQLTypes["player_season_performance_v_stddev_fields"] | undefined | null,
+	stddev_pop?: GraphQLTypes["player_season_performance_v_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: GraphQLTypes["player_season_performance_v_stddev_samp_fields"] | undefined | null,
+	sum?: GraphQLTypes["player_season_performance_v_sum_fields"] | undefined | null,
+	var_pop?: GraphQLTypes["player_season_performance_v_var_pop_fields"] | undefined | null,
+	var_samp?: GraphQLTypes["player_season_performance_v_var_samp_fields"] | undefined | null,
+	variance?: GraphQLTypes["player_season_performance_v_variance_fields"] | undefined | null
+};
+	/** aggregate avg on columns */
+["player_season_performance_v_avg_fields"]: {
+	__typename: "player_season_performance_v_avg_fields",
+	accuracy_score?: number | undefined | null,
+	aim_rating?: number | undefined | null,
+	blind_score?: number | undefined | null,
+	counter_strafe_score?: number | undefined | null,
+	crosshair_score?: number | undefined | null,
+	flash_assists_score?: number | undefined | null,
+	hs_score?: number | undefined | null,
+	kast_score?: number | undefined | null,
+	positioning_rating?: number | undefined | null,
+	rounds?: number | undefined | null,
+	spotted_score?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	survival_score?: number | undefined | null,
+	traded_score?: number | undefined | null,
+	ttd_score?: number | undefined | null,
+	util_eff_score?: number | undefined | null,
+	utility_rating?: number | undefined | null
+};
+	/** Boolean expression to filter rows from the table "player_season_performance_v". All fields are combined with a logical 'AND'. */
+["player_season_performance_v_bool_exp"]: {
+		_and?: Array<GraphQLTypes["player_season_performance_v_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["player_season_performance_v_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["player_season_performance_v_bool_exp"]> | undefined | null,
+	accuracy_score?: GraphQLTypes["float8_comparison_exp"] | undefined | null,
+	aim_rating?: GraphQLTypes["float8_comparison_exp"] | undefined | null,
+	blind_score?: GraphQLTypes["float8_comparison_exp"] | undefined | null,
+	counter_strafe_score?: GraphQLTypes["float8_comparison_exp"] | undefined | null,
+	crosshair_score?: GraphQLTypes["float8_comparison_exp"] | undefined | null,
+	flash_assists_score?: GraphQLTypes["float8_comparison_exp"] | undefined | null,
+	hs_score?: GraphQLTypes["float8_comparison_exp"] | undefined | null,
+	kast_score?: GraphQLTypes["float8_comparison_exp"] | undefined | null,
+	positioning_rating?: GraphQLTypes["float8_comparison_exp"] | undefined | null,
+	rounds?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	season?: GraphQLTypes["seasons_bool_exp"] | undefined | null,
+	season_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	season_starts_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	spotted_score?: GraphQLTypes["float8_comparison_exp"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	survival_score?: GraphQLTypes["float8_comparison_exp"] | undefined | null,
+	traded_score?: GraphQLTypes["float8_comparison_exp"] | undefined | null,
+	ttd_score?: GraphQLTypes["float8_comparison_exp"] | undefined | null,
+	util_eff_score?: GraphQLTypes["float8_comparison_exp"] | undefined | null,
+	utility_rating?: GraphQLTypes["float8_comparison_exp"] | undefined | null
+};
+	/** aggregate max on columns */
+["player_season_performance_v_max_fields"]: {
+	__typename: "player_season_performance_v_max_fields",
+	accuracy_score?: GraphQLTypes["float8"] | undefined | null,
+	aim_rating?: GraphQLTypes["float8"] | undefined | null,
+	blind_score?: GraphQLTypes["float8"] | undefined | null,
+	counter_strafe_score?: GraphQLTypes["float8"] | undefined | null,
+	crosshair_score?: GraphQLTypes["float8"] | undefined | null,
+	flash_assists_score?: GraphQLTypes["float8"] | undefined | null,
+	hs_score?: GraphQLTypes["float8"] | undefined | null,
+	kast_score?: GraphQLTypes["float8"] | undefined | null,
+	positioning_rating?: GraphQLTypes["float8"] | undefined | null,
+	rounds?: number | undefined | null,
+	season_id?: GraphQLTypes["uuid"] | undefined | null,
+	season_starts_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	spotted_score?: GraphQLTypes["float8"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	survival_score?: GraphQLTypes["float8"] | undefined | null,
+	traded_score?: GraphQLTypes["float8"] | undefined | null,
+	ttd_score?: GraphQLTypes["float8"] | undefined | null,
+	util_eff_score?: GraphQLTypes["float8"] | undefined | null,
+	utility_rating?: GraphQLTypes["float8"] | undefined | null
+};
+	/** aggregate min on columns */
+["player_season_performance_v_min_fields"]: {
+	__typename: "player_season_performance_v_min_fields",
+	accuracy_score?: GraphQLTypes["float8"] | undefined | null,
+	aim_rating?: GraphQLTypes["float8"] | undefined | null,
+	blind_score?: GraphQLTypes["float8"] | undefined | null,
+	counter_strafe_score?: GraphQLTypes["float8"] | undefined | null,
+	crosshair_score?: GraphQLTypes["float8"] | undefined | null,
+	flash_assists_score?: GraphQLTypes["float8"] | undefined | null,
+	hs_score?: GraphQLTypes["float8"] | undefined | null,
+	kast_score?: GraphQLTypes["float8"] | undefined | null,
+	positioning_rating?: GraphQLTypes["float8"] | undefined | null,
+	rounds?: number | undefined | null,
+	season_id?: GraphQLTypes["uuid"] | undefined | null,
+	season_starts_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	spotted_score?: GraphQLTypes["float8"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	survival_score?: GraphQLTypes["float8"] | undefined | null,
+	traded_score?: GraphQLTypes["float8"] | undefined | null,
+	ttd_score?: GraphQLTypes["float8"] | undefined | null,
+	util_eff_score?: GraphQLTypes["float8"] | undefined | null,
+	utility_rating?: GraphQLTypes["float8"] | undefined | null
+};
+	/** Ordering options when selecting data from "player_season_performance_v". */
+["player_season_performance_v_order_by"]: {
+		accuracy_score?: GraphQLTypes["order_by"] | undefined | null,
+	aim_rating?: GraphQLTypes["order_by"] | undefined | null,
+	blind_score?: GraphQLTypes["order_by"] | undefined | null,
+	counter_strafe_score?: GraphQLTypes["order_by"] | undefined | null,
+	crosshair_score?: GraphQLTypes["order_by"] | undefined | null,
+	flash_assists_score?: GraphQLTypes["order_by"] | undefined | null,
+	hs_score?: GraphQLTypes["order_by"] | undefined | null,
+	kast_score?: GraphQLTypes["order_by"] | undefined | null,
+	positioning_rating?: GraphQLTypes["order_by"] | undefined | null,
+	rounds?: GraphQLTypes["order_by"] | undefined | null,
+	season?: GraphQLTypes["seasons_order_by"] | undefined | null,
+	season_id?: GraphQLTypes["order_by"] | undefined | null,
+	season_starts_at?: GraphQLTypes["order_by"] | undefined | null,
+	spotted_score?: GraphQLTypes["order_by"] | undefined | null,
+	steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	survival_score?: GraphQLTypes["order_by"] | undefined | null,
+	traded_score?: GraphQLTypes["order_by"] | undefined | null,
+	ttd_score?: GraphQLTypes["order_by"] | undefined | null,
+	util_eff_score?: GraphQLTypes["order_by"] | undefined | null,
+	utility_rating?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** select columns of table "player_season_performance_v" */
+["player_season_performance_v_select_column"]: player_season_performance_v_select_column;
+	/** aggregate stddev on columns */
+["player_season_performance_v_stddev_fields"]: {
+	__typename: "player_season_performance_v_stddev_fields",
+	accuracy_score?: number | undefined | null,
+	aim_rating?: number | undefined | null,
+	blind_score?: number | undefined | null,
+	counter_strafe_score?: number | undefined | null,
+	crosshair_score?: number | undefined | null,
+	flash_assists_score?: number | undefined | null,
+	hs_score?: number | undefined | null,
+	kast_score?: number | undefined | null,
+	positioning_rating?: number | undefined | null,
+	rounds?: number | undefined | null,
+	spotted_score?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	survival_score?: number | undefined | null,
+	traded_score?: number | undefined | null,
+	ttd_score?: number | undefined | null,
+	util_eff_score?: number | undefined | null,
+	utility_rating?: number | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["player_season_performance_v_stddev_pop_fields"]: {
+	__typename: "player_season_performance_v_stddev_pop_fields",
+	accuracy_score?: number | undefined | null,
+	aim_rating?: number | undefined | null,
+	blind_score?: number | undefined | null,
+	counter_strafe_score?: number | undefined | null,
+	crosshair_score?: number | undefined | null,
+	flash_assists_score?: number | undefined | null,
+	hs_score?: number | undefined | null,
+	kast_score?: number | undefined | null,
+	positioning_rating?: number | undefined | null,
+	rounds?: number | undefined | null,
+	spotted_score?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	survival_score?: number | undefined | null,
+	traded_score?: number | undefined | null,
+	ttd_score?: number | undefined | null,
+	util_eff_score?: number | undefined | null,
+	utility_rating?: number | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["player_season_performance_v_stddev_samp_fields"]: {
+	__typename: "player_season_performance_v_stddev_samp_fields",
+	accuracy_score?: number | undefined | null,
+	aim_rating?: number | undefined | null,
+	blind_score?: number | undefined | null,
+	counter_strafe_score?: number | undefined | null,
+	crosshair_score?: number | undefined | null,
+	flash_assists_score?: number | undefined | null,
+	hs_score?: number | undefined | null,
+	kast_score?: number | undefined | null,
+	positioning_rating?: number | undefined | null,
+	rounds?: number | undefined | null,
+	spotted_score?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	survival_score?: number | undefined | null,
+	traded_score?: number | undefined | null,
+	ttd_score?: number | undefined | null,
+	util_eff_score?: number | undefined | null,
+	utility_rating?: number | undefined | null
+};
+	/** Streaming cursor of the table "player_season_performance_v" */
+["player_season_performance_v_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["player_season_performance_v_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["player_season_performance_v_stream_cursor_value_input"]: {
+		accuracy_score?: GraphQLTypes["float8"] | undefined | null,
+	aim_rating?: GraphQLTypes["float8"] | undefined | null,
+	blind_score?: GraphQLTypes["float8"] | undefined | null,
+	counter_strafe_score?: GraphQLTypes["float8"] | undefined | null,
+	crosshair_score?: GraphQLTypes["float8"] | undefined | null,
+	flash_assists_score?: GraphQLTypes["float8"] | undefined | null,
+	hs_score?: GraphQLTypes["float8"] | undefined | null,
+	kast_score?: GraphQLTypes["float8"] | undefined | null,
+	positioning_rating?: GraphQLTypes["float8"] | undefined | null,
+	rounds?: number | undefined | null,
+	season_id?: GraphQLTypes["uuid"] | undefined | null,
+	season_starts_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	spotted_score?: GraphQLTypes["float8"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	survival_score?: GraphQLTypes["float8"] | undefined | null,
+	traded_score?: GraphQLTypes["float8"] | undefined | null,
+	ttd_score?: GraphQLTypes["float8"] | undefined | null,
+	util_eff_score?: GraphQLTypes["float8"] | undefined | null,
+	utility_rating?: GraphQLTypes["float8"] | undefined | null
+};
+	/** aggregate sum on columns */
+["player_season_performance_v_sum_fields"]: {
+	__typename: "player_season_performance_v_sum_fields",
+	accuracy_score?: GraphQLTypes["float8"] | undefined | null,
+	aim_rating?: GraphQLTypes["float8"] | undefined | null,
+	blind_score?: GraphQLTypes["float8"] | undefined | null,
+	counter_strafe_score?: GraphQLTypes["float8"] | undefined | null,
+	crosshair_score?: GraphQLTypes["float8"] | undefined | null,
+	flash_assists_score?: GraphQLTypes["float8"] | undefined | null,
+	hs_score?: GraphQLTypes["float8"] | undefined | null,
+	kast_score?: GraphQLTypes["float8"] | undefined | null,
+	positioning_rating?: GraphQLTypes["float8"] | undefined | null,
+	rounds?: number | undefined | null,
+	spotted_score?: GraphQLTypes["float8"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	survival_score?: GraphQLTypes["float8"] | undefined | null,
+	traded_score?: GraphQLTypes["float8"] | undefined | null,
+	ttd_score?: GraphQLTypes["float8"] | undefined | null,
+	util_eff_score?: GraphQLTypes["float8"] | undefined | null,
+	utility_rating?: GraphQLTypes["float8"] | undefined | null
+};
+	/** aggregate var_pop on columns */
+["player_season_performance_v_var_pop_fields"]: {
+	__typename: "player_season_performance_v_var_pop_fields",
+	accuracy_score?: number | undefined | null,
+	aim_rating?: number | undefined | null,
+	blind_score?: number | undefined | null,
+	counter_strafe_score?: number | undefined | null,
+	crosshair_score?: number | undefined | null,
+	flash_assists_score?: number | undefined | null,
+	hs_score?: number | undefined | null,
+	kast_score?: number | undefined | null,
+	positioning_rating?: number | undefined | null,
+	rounds?: number | undefined | null,
+	spotted_score?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	survival_score?: number | undefined | null,
+	traded_score?: number | undefined | null,
+	ttd_score?: number | undefined | null,
+	util_eff_score?: number | undefined | null,
+	utility_rating?: number | undefined | null
+};
+	/** aggregate var_samp on columns */
+["player_season_performance_v_var_samp_fields"]: {
+	__typename: "player_season_performance_v_var_samp_fields",
+	accuracy_score?: number | undefined | null,
+	aim_rating?: number | undefined | null,
+	blind_score?: number | undefined | null,
+	counter_strafe_score?: number | undefined | null,
+	crosshair_score?: number | undefined | null,
+	flash_assists_score?: number | undefined | null,
+	hs_score?: number | undefined | null,
+	kast_score?: number | undefined | null,
+	positioning_rating?: number | undefined | null,
+	rounds?: number | undefined | null,
+	spotted_score?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	survival_score?: number | undefined | null,
+	traded_score?: number | undefined | null,
+	ttd_score?: number | undefined | null,
+	util_eff_score?: number | undefined | null,
+	utility_rating?: number | undefined | null
+};
+	/** aggregate variance on columns */
+["player_season_performance_v_variance_fields"]: {
+	__typename: "player_season_performance_v_variance_fields",
+	accuracy_score?: number | undefined | null,
+	aim_rating?: number | undefined | null,
+	blind_score?: number | undefined | null,
+	counter_strafe_score?: number | undefined | null,
+	crosshair_score?: number | undefined | null,
+	flash_assists_score?: number | undefined | null,
+	hs_score?: number | undefined | null,
+	kast_score?: number | undefined | null,
+	positioning_rating?: number | undefined | null,
+	rounds?: number | undefined | null,
+	spotted_score?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	survival_score?: number | undefined | null,
+	traded_score?: number | undefined | null,
+	ttd_score?: number | undefined | null,
+	util_eff_score?: number | undefined | null,
+	utility_rating?: number | undefined | null
+};
 	/** columns and relationships of "player_season_stats" */
 ["player_season_stats"]: {
 	__typename: "player_season_stats",
@@ -299169,6 +303645,12 @@ export type GraphQLTypes = {
 	game_modes_aggregate: GraphQLTypes["game_modes_aggregate"],
 	/** fetch data from the table: "game_modes" using primary key columns */
 	game_modes_by_pk?: GraphQLTypes["game_modes"] | undefined | null,
+	/** fetch data from the table: "game_plugin_cvars" */
+	game_plugin_cvars: Array<GraphQLTypes["game_plugin_cvars"]>,
+	/** fetch aggregated fields from the table: "game_plugin_cvars" */
+	game_plugin_cvars_aggregate: GraphQLTypes["game_plugin_cvars_aggregate"],
+	/** fetch data from the table: "game_plugin_cvars" using primary key columns */
+	game_plugin_cvars_by_pk?: GraphQLTypes["game_plugin_cvars"] | undefined | null,
 	/** fetch data from the table: "game_plugin_installs" */
 	game_plugin_installs: Array<GraphQLTypes["game_plugin_installs"]>,
 	/** fetch aggregated fields from the table: "game_plugin_installs" */
@@ -299598,6 +304080,10 @@ export type GraphQLTypes = {
 	player_sanctions_aggregate: GraphQLTypes["player_sanctions_aggregate"],
 	/** fetch data from the table: "player_sanctions" using primary key columns */
 	player_sanctions_by_pk?: GraphQLTypes["player_sanctions"] | undefined | null,
+	/** fetch data from the table: "player_season_performance_v" */
+	player_season_performance_v: Array<GraphQLTypes["player_season_performance_v"]>,
+	/** fetch aggregated fields from the table: "player_season_performance_v" */
+	player_season_performance_v_aggregate: GraphQLTypes["player_season_performance_v_aggregate"],
 	/** An array relationship */
 	player_season_stats: Array<GraphQLTypes["player_season_stats"]>,
 	/** An aggregate relationship */
@@ -299698,6 +304184,12 @@ export type GraphQLTypes = {
 	server_player_sessions_aggregate: GraphQLTypes["server_player_sessions_aggregate"],
 	/** fetch data from the table: "server_player_sessions" using primary key columns */
 	server_player_sessions_by_pk?: GraphQLTypes["server_player_sessions"] | undefined | null,
+	/** fetch data from the table: "server_plugin_configs" */
+	server_plugin_configs: Array<GraphQLTypes["server_plugin_configs"]>,
+	/** fetch aggregated fields from the table: "server_plugin_configs" */
+	server_plugin_configs_aggregate: GraphQLTypes["server_plugin_configs_aggregate"],
+	/** fetch data from the table: "server_plugin_configs" using primary key columns */
+	server_plugin_configs_by_pk?: GraphQLTypes["server_plugin_configs"] | undefined | null,
 	/** fetch data from the table: "server_plugins" */
 	server_plugins: Array<GraphQLTypes["server_plugins"]>,
 	/** fetch aggregated fields from the table: "server_plugins" */
@@ -300134,6 +304626,14 @@ export type GraphQLTypes = {
 	v_player_weapon_kills: Array<GraphQLTypes["v_player_weapon_kills"]>,
 	/** fetch aggregated fields from the table: "v_player_weapon_kills" */
 	v_player_weapon_kills_aggregate: GraphQLTypes["v_player_weapon_kills_aggregate"],
+	/** fetch data from the table: "v_player_weapon_match_damage" */
+	v_player_weapon_match_damage: Array<GraphQLTypes["v_player_weapon_match_damage"]>,
+	/** fetch aggregated fields from the table: "v_player_weapon_match_damage" */
+	v_player_weapon_match_damage_aggregate: GraphQLTypes["v_player_weapon_match_damage_aggregate"],
+	/** fetch data from the table: "v_player_weapon_match_kills" */
+	v_player_weapon_match_kills: Array<GraphQLTypes["v_player_weapon_match_kills"]>,
+	/** fetch aggregated fields from the table: "v_player_weapon_match_kills" */
+	v_player_weapon_match_kills_aggregate: GraphQLTypes["v_player_weapon_match_kills_aggregate"],
 	/** fetch data from the table: "v_pool_maps" */
 	v_pool_maps: Array<GraphQLTypes["v_pool_maps"]>,
 	/** fetch aggregated fields from the table: "v_pool_maps" */
@@ -301985,6 +306485,200 @@ export type GraphQLTypes = {
 	kills_conn?: GraphQLTypes["order_by"] | undefined | null,
 	player_steam_id?: GraphQLTypes["order_by"] | undefined | null
 };
+	/** columns and relationships of "server_plugin_configs" */
+["server_plugin_configs"]: {
+	__typename: "server_plugin_configs",
+	cfg?: string | undefined | null,
+	config?: GraphQLTypes["jsonb"] | undefined | null,
+	/** An object relationship */
+	plugin: GraphQLTypes["game_plugins"],
+	plugin_slug: string,
+	/** An object relationship */
+	server: GraphQLTypes["servers"],
+	server_id: GraphQLTypes["uuid"],
+	updated_at: GraphQLTypes["timestamptz"]
+};
+	/** aggregated selection of "server_plugin_configs" */
+["server_plugin_configs_aggregate"]: {
+	__typename: "server_plugin_configs_aggregate",
+	aggregate?: GraphQLTypes["server_plugin_configs_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["server_plugin_configs"]>
+};
+	["server_plugin_configs_aggregate_bool_exp"]: {
+		count?: GraphQLTypes["server_plugin_configs_aggregate_bool_exp_count"] | undefined | null
+};
+	["server_plugin_configs_aggregate_bool_exp_count"]: {
+		arguments?: Array<GraphQLTypes["server_plugin_configs_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: GraphQLTypes["server_plugin_configs_bool_exp"] | undefined | null,
+	predicate: GraphQLTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "server_plugin_configs" */
+["server_plugin_configs_aggregate_fields"]: {
+	__typename: "server_plugin_configs_aggregate_fields",
+	count: number,
+	max?: GraphQLTypes["server_plugin_configs_max_fields"] | undefined | null,
+	min?: GraphQLTypes["server_plugin_configs_min_fields"] | undefined | null
+};
+	/** order by aggregate values of table "server_plugin_configs" */
+["server_plugin_configs_aggregate_order_by"]: {
+		count?: GraphQLTypes["order_by"] | undefined | null,
+	max?: GraphQLTypes["server_plugin_configs_max_order_by"] | undefined | null,
+	min?: GraphQLTypes["server_plugin_configs_min_order_by"] | undefined | null
+};
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["server_plugin_configs_append_input"]: {
+		config?: GraphQLTypes["jsonb"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "server_plugin_configs" */
+["server_plugin_configs_arr_rel_insert_input"]: {
+		data: Array<GraphQLTypes["server_plugin_configs_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: GraphQLTypes["server_plugin_configs_on_conflict"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "server_plugin_configs". All fields are combined with a logical 'AND'. */
+["server_plugin_configs_bool_exp"]: {
+		_and?: Array<GraphQLTypes["server_plugin_configs_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["server_plugin_configs_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["server_plugin_configs_bool_exp"]> | undefined | null,
+	cfg?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	config?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
+	plugin?: GraphQLTypes["game_plugins_bool_exp"] | undefined | null,
+	plugin_slug?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	server?: GraphQLTypes["servers_bool_exp"] | undefined | null,
+	server_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "server_plugin_configs" */
+["server_plugin_configs_constraint"]: server_plugin_configs_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["server_plugin_configs_delete_at_path_input"]: {
+		config?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["server_plugin_configs_delete_elem_input"]: {
+		config?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["server_plugin_configs_delete_key_input"]: {
+		config?: string | undefined | null
+};
+	/** input type for inserting data into table "server_plugin_configs" */
+["server_plugin_configs_insert_input"]: {
+		cfg?: string | undefined | null,
+	config?: GraphQLTypes["jsonb"] | undefined | null,
+	plugin?: GraphQLTypes["game_plugins_obj_rel_insert_input"] | undefined | null,
+	plugin_slug?: string | undefined | null,
+	server?: GraphQLTypes["servers_obj_rel_insert_input"] | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** aggregate max on columns */
+["server_plugin_configs_max_fields"]: {
+	__typename: "server_plugin_configs_max_fields",
+	cfg?: string | undefined | null,
+	plugin_slug?: string | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** order by max() on columns of table "server_plugin_configs" */
+["server_plugin_configs_max_order_by"]: {
+		cfg?: GraphQLTypes["order_by"] | undefined | null,
+	plugin_slug?: GraphQLTypes["order_by"] | undefined | null,
+	server_id?: GraphQLTypes["order_by"] | undefined | null,
+	updated_at?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["server_plugin_configs_min_fields"]: {
+	__typename: "server_plugin_configs_min_fields",
+	cfg?: string | undefined | null,
+	plugin_slug?: string | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** order by min() on columns of table "server_plugin_configs" */
+["server_plugin_configs_min_order_by"]: {
+		cfg?: GraphQLTypes["order_by"] | undefined | null,
+	plugin_slug?: GraphQLTypes["order_by"] | undefined | null,
+	server_id?: GraphQLTypes["order_by"] | undefined | null,
+	updated_at?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "server_plugin_configs" */
+["server_plugin_configs_mutation_response"]: {
+	__typename: "server_plugin_configs_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["server_plugin_configs"]>
+};
+	/** on_conflict condition type for table "server_plugin_configs" */
+["server_plugin_configs_on_conflict"]: {
+		constraint: GraphQLTypes["server_plugin_configs_constraint"],
+	update_columns: Array<GraphQLTypes["server_plugin_configs_update_column"]>,
+	where?: GraphQLTypes["server_plugin_configs_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "server_plugin_configs". */
+["server_plugin_configs_order_by"]: {
+		cfg?: GraphQLTypes["order_by"] | undefined | null,
+	config?: GraphQLTypes["order_by"] | undefined | null,
+	plugin?: GraphQLTypes["game_plugins_order_by"] | undefined | null,
+	plugin_slug?: GraphQLTypes["order_by"] | undefined | null,
+	server?: GraphQLTypes["servers_order_by"] | undefined | null,
+	server_id?: GraphQLTypes["order_by"] | undefined | null,
+	updated_at?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: server_plugin_configs */
+["server_plugin_configs_pk_columns_input"]: {
+		plugin_slug: string,
+	server_id: GraphQLTypes["uuid"]
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["server_plugin_configs_prepend_input"]: {
+		config?: GraphQLTypes["jsonb"] | undefined | null
+};
+	/** select columns of table "server_plugin_configs" */
+["server_plugin_configs_select_column"]: server_plugin_configs_select_column;
+	/** input type for updating data in table "server_plugin_configs" */
+["server_plugin_configs_set_input"]: {
+		cfg?: string | undefined | null,
+	config?: GraphQLTypes["jsonb"] | undefined | null,
+	plugin_slug?: string | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** Streaming cursor of the table "server_plugin_configs" */
+["server_plugin_configs_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["server_plugin_configs_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["server_plugin_configs_stream_cursor_value_input"]: {
+		cfg?: string | undefined | null,
+	config?: GraphQLTypes["jsonb"] | undefined | null,
+	plugin_slug?: string | undefined | null,
+	server_id?: GraphQLTypes["uuid"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** update columns of table "server_plugin_configs" */
+["server_plugin_configs_update_column"]: server_plugin_configs_update_column;
+	["server_plugin_configs_updates"]: {
+		/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: GraphQLTypes["server_plugin_configs_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: GraphQLTypes["server_plugin_configs_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: GraphQLTypes["server_plugin_configs_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: GraphQLTypes["server_plugin_configs_delete_key_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: GraphQLTypes["server_plugin_configs_prepend_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["server_plugin_configs_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["server_plugin_configs_bool_exp"]
+};
 	/** columns and relationships of "server_plugins" */
 ["server_plugins"]: {
 	__typename: "server_plugins",
@@ -302726,6 +307420,10 @@ export type GraphQLTypes = {
 	player_management_seen_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	player_management_version?: string | undefined | null,
 	/** An array relationship */
+	plugin_configs: Array<GraphQLTypes["server_plugin_configs"]>,
+	/** An aggregate relationship */
+	plugin_configs_aggregate: GraphQLTypes["server_plugin_configs_aggregate"],
+	/** An array relationship */
 	plugin_overrides: Array<GraphQLTypes["server_plugins"]>,
 	/** An aggregate relationship */
 	plugin_overrides_aggregate: GraphQLTypes["server_plugins_aggregate"],
@@ -302867,6 +307565,8 @@ export type GraphQLTypes = {
 	player_management_runtime?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	player_management_seen_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	player_management_version?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	plugin_configs?: GraphQLTypes["server_plugin_configs_bool_exp"] | undefined | null,
+	plugin_configs_aggregate?: GraphQLTypes["server_plugin_configs_aggregate_bool_exp"] | undefined | null,
 	plugin_overrides?: GraphQLTypes["server_plugins_bool_exp"] | undefined | null,
 	plugin_overrides_aggregate?: GraphQLTypes["server_plugins_aggregate_bool_exp"] | undefined | null,
 	plugin_runtime?: GraphQLTypes["e_plugin_runtimes_enum_comparison_exp"] | undefined | null,
@@ -302935,6 +307635,7 @@ export type GraphQLTypes = {
 	player_management_runtime?: string | undefined | null,
 	player_management_seen_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	player_management_version?: string | undefined | null,
+	plugin_configs?: GraphQLTypes["server_plugin_configs_arr_rel_insert_input"] | undefined | null,
 	plugin_overrides?: GraphQLTypes["server_plugins_arr_rel_insert_input"] | undefined | null,
 	plugin_runtime?: GraphQLTypes["e_plugin_runtimes_enum"] | undefined | null,
 	plugin_version?: string | undefined | null,
@@ -303118,6 +307819,7 @@ export type GraphQLTypes = {
 	player_management_runtime?: GraphQLTypes["order_by"] | undefined | null,
 	player_management_seen_at?: GraphQLTypes["order_by"] | undefined | null,
 	player_management_version?: GraphQLTypes["order_by"] | undefined | null,
+	plugin_configs_aggregate?: GraphQLTypes["server_plugin_configs_aggregate_order_by"] | undefined | null,
 	plugin_overrides_aggregate?: GraphQLTypes["server_plugins_aggregate_order_by"] | undefined | null,
 	plugin_runtime?: GraphQLTypes["order_by"] | undefined | null,
 	plugin_version?: GraphQLTypes["order_by"] | undefined | null,
@@ -304582,6 +309284,14 @@ export type GraphQLTypes = {
 	game_modes_by_pk?: GraphQLTypes["game_modes"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "game_modes" */
 	game_modes_stream: Array<GraphQLTypes["game_modes"]>,
+	/** fetch data from the table: "game_plugin_cvars" */
+	game_plugin_cvars: Array<GraphQLTypes["game_plugin_cvars"]>,
+	/** fetch aggregated fields from the table: "game_plugin_cvars" */
+	game_plugin_cvars_aggregate: GraphQLTypes["game_plugin_cvars_aggregate"],
+	/** fetch data from the table: "game_plugin_cvars" using primary key columns */
+	game_plugin_cvars_by_pk?: GraphQLTypes["game_plugin_cvars"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "game_plugin_cvars" */
+	game_plugin_cvars_stream: Array<GraphQLTypes["game_plugin_cvars"]>,
 	/** fetch data from the table: "game_plugin_installs" */
 	game_plugin_installs: Array<GraphQLTypes["game_plugin_installs"]>,
 	/** fetch aggregated fields from the table: "game_plugin_installs" */
@@ -305092,6 +309802,12 @@ export type GraphQLTypes = {
 	player_sanctions_by_pk?: GraphQLTypes["player_sanctions"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "player_sanctions" */
 	player_sanctions_stream: Array<GraphQLTypes["player_sanctions"]>,
+	/** fetch data from the table: "player_season_performance_v" */
+	player_season_performance_v: Array<GraphQLTypes["player_season_performance_v"]>,
+	/** fetch aggregated fields from the table: "player_season_performance_v" */
+	player_season_performance_v_aggregate: GraphQLTypes["player_season_performance_v_aggregate"],
+	/** fetch data from the table in a streaming manner: "player_season_performance_v" */
+	player_season_performance_v_stream: Array<GraphQLTypes["player_season_performance_v"]>,
 	/** An array relationship */
 	player_season_stats: Array<GraphQLTypes["player_season_stats"]>,
 	/** An aggregate relationship */
@@ -305224,6 +309940,14 @@ export type GraphQLTypes = {
 	server_player_sessions_by_pk?: GraphQLTypes["server_player_sessions"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "server_player_sessions" */
 	server_player_sessions_stream: Array<GraphQLTypes["server_player_sessions"]>,
+	/** fetch data from the table: "server_plugin_configs" */
+	server_plugin_configs: Array<GraphQLTypes["server_plugin_configs"]>,
+	/** fetch aggregated fields from the table: "server_plugin_configs" */
+	server_plugin_configs_aggregate: GraphQLTypes["server_plugin_configs_aggregate"],
+	/** fetch data from the table: "server_plugin_configs" using primary key columns */
+	server_plugin_configs_by_pk?: GraphQLTypes["server_plugin_configs"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "server_plugin_configs" */
+	server_plugin_configs_stream: Array<GraphQLTypes["server_plugin_configs"]>,
 	/** fetch data from the table: "server_plugins" */
 	server_plugins: Array<GraphQLTypes["server_plugins"]>,
 	/** fetch aggregated fields from the table: "server_plugins" */
@@ -305800,6 +310524,18 @@ export type GraphQLTypes = {
 	v_player_weapon_kills_aggregate: GraphQLTypes["v_player_weapon_kills_aggregate"],
 	/** fetch data from the table in a streaming manner: "v_player_weapon_kills" */
 	v_player_weapon_kills_stream: Array<GraphQLTypes["v_player_weapon_kills"]>,
+	/** fetch data from the table: "v_player_weapon_match_damage" */
+	v_player_weapon_match_damage: Array<GraphQLTypes["v_player_weapon_match_damage"]>,
+	/** fetch aggregated fields from the table: "v_player_weapon_match_damage" */
+	v_player_weapon_match_damage_aggregate: GraphQLTypes["v_player_weapon_match_damage_aggregate"],
+	/** fetch data from the table in a streaming manner: "v_player_weapon_match_damage" */
+	v_player_weapon_match_damage_stream: Array<GraphQLTypes["v_player_weapon_match_damage"]>,
+	/** fetch data from the table: "v_player_weapon_match_kills" */
+	v_player_weapon_match_kills: Array<GraphQLTypes["v_player_weapon_match_kills"]>,
+	/** fetch aggregated fields from the table: "v_player_weapon_match_kills" */
+	v_player_weapon_match_kills_aggregate: GraphQLTypes["v_player_weapon_match_kills_aggregate"],
+	/** fetch data from the table in a streaming manner: "v_player_weapon_match_kills" */
+	v_player_weapon_match_kills_stream: Array<GraphQLTypes["v_player_weapon_match_kills"]>,
 	/** fetch data from the table: "v_pool_maps" */
 	v_pool_maps: Array<GraphQLTypes["v_pool_maps"]>,
 	/** fetch aggregated fields from the table: "v_pool_maps" */
@@ -328875,6 +333611,294 @@ export type GraphQLTypes = {
 	player_steam_id?: number | undefined | null,
 	rounds?: number | undefined | null
 };
+	/** columns and relationships of "v_player_weapon_match_damage" */
+["v_player_weapon_match_damage"]: {
+	__typename: "v_player_weapon_match_damage",
+	damage?: GraphQLTypes["bigint"] | undefined | null,
+	hits?: GraphQLTypes["bigint"] | undefined | null,
+	/** An object relationship */
+	match?: GraphQLTypes["matches"] | undefined | null,
+	match_id?: GraphQLTypes["uuid"] | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	with?: string | undefined | null
+};
+	/** aggregated selection of "v_player_weapon_match_damage" */
+["v_player_weapon_match_damage_aggregate"]: {
+	__typename: "v_player_weapon_match_damage_aggregate",
+	aggregate?: GraphQLTypes["v_player_weapon_match_damage_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["v_player_weapon_match_damage"]>
+};
+	/** aggregate fields of "v_player_weapon_match_damage" */
+["v_player_weapon_match_damage_aggregate_fields"]: {
+	__typename: "v_player_weapon_match_damage_aggregate_fields",
+	avg?: GraphQLTypes["v_player_weapon_match_damage_avg_fields"] | undefined | null,
+	count: number,
+	max?: GraphQLTypes["v_player_weapon_match_damage_max_fields"] | undefined | null,
+	min?: GraphQLTypes["v_player_weapon_match_damage_min_fields"] | undefined | null,
+	stddev?: GraphQLTypes["v_player_weapon_match_damage_stddev_fields"] | undefined | null,
+	stddev_pop?: GraphQLTypes["v_player_weapon_match_damage_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: GraphQLTypes["v_player_weapon_match_damage_stddev_samp_fields"] | undefined | null,
+	sum?: GraphQLTypes["v_player_weapon_match_damage_sum_fields"] | undefined | null,
+	var_pop?: GraphQLTypes["v_player_weapon_match_damage_var_pop_fields"] | undefined | null,
+	var_samp?: GraphQLTypes["v_player_weapon_match_damage_var_samp_fields"] | undefined | null,
+	variance?: GraphQLTypes["v_player_weapon_match_damage_variance_fields"] | undefined | null
+};
+	/** aggregate avg on columns */
+["v_player_weapon_match_damage_avg_fields"]: {
+	__typename: "v_player_weapon_match_damage_avg_fields",
+	damage?: number | undefined | null,
+	hits?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** Boolean expression to filter rows from the table "v_player_weapon_match_damage". All fields are combined with a logical 'AND'. */
+["v_player_weapon_match_damage_bool_exp"]: {
+		_and?: Array<GraphQLTypes["v_player_weapon_match_damage_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["v_player_weapon_match_damage_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["v_player_weapon_match_damage_bool_exp"]> | undefined | null,
+	damage?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	hits?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	match?: GraphQLTypes["matches_bool_exp"] | undefined | null,
+	match_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	with?: GraphQLTypes["String_comparison_exp"] | undefined | null
+};
+	/** aggregate max on columns */
+["v_player_weapon_match_damage_max_fields"]: {
+	__typename: "v_player_weapon_match_damage_max_fields",
+	damage?: GraphQLTypes["bigint"] | undefined | null,
+	hits?: GraphQLTypes["bigint"] | undefined | null,
+	match_id?: GraphQLTypes["uuid"] | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	with?: string | undefined | null
+};
+	/** aggregate min on columns */
+["v_player_weapon_match_damage_min_fields"]: {
+	__typename: "v_player_weapon_match_damage_min_fields",
+	damage?: GraphQLTypes["bigint"] | undefined | null,
+	hits?: GraphQLTypes["bigint"] | undefined | null,
+	match_id?: GraphQLTypes["uuid"] | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	with?: string | undefined | null
+};
+	/** Ordering options when selecting data from "v_player_weapon_match_damage". */
+["v_player_weapon_match_damage_order_by"]: {
+		damage?: GraphQLTypes["order_by"] | undefined | null,
+	hits?: GraphQLTypes["order_by"] | undefined | null,
+	match?: GraphQLTypes["matches_order_by"] | undefined | null,
+	match_id?: GraphQLTypes["order_by"] | undefined | null,
+	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	with?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** select columns of table "v_player_weapon_match_damage" */
+["v_player_weapon_match_damage_select_column"]: v_player_weapon_match_damage_select_column;
+	/** aggregate stddev on columns */
+["v_player_weapon_match_damage_stddev_fields"]: {
+	__typename: "v_player_weapon_match_damage_stddev_fields",
+	damage?: number | undefined | null,
+	hits?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["v_player_weapon_match_damage_stddev_pop_fields"]: {
+	__typename: "v_player_weapon_match_damage_stddev_pop_fields",
+	damage?: number | undefined | null,
+	hits?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["v_player_weapon_match_damage_stddev_samp_fields"]: {
+	__typename: "v_player_weapon_match_damage_stddev_samp_fields",
+	damage?: number | undefined | null,
+	hits?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** Streaming cursor of the table "v_player_weapon_match_damage" */
+["v_player_weapon_match_damage_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["v_player_weapon_match_damage_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["v_player_weapon_match_damage_stream_cursor_value_input"]: {
+		damage?: GraphQLTypes["bigint"] | undefined | null,
+	hits?: GraphQLTypes["bigint"] | undefined | null,
+	match_id?: GraphQLTypes["uuid"] | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	with?: string | undefined | null
+};
+	/** aggregate sum on columns */
+["v_player_weapon_match_damage_sum_fields"]: {
+	__typename: "v_player_weapon_match_damage_sum_fields",
+	damage?: GraphQLTypes["bigint"] | undefined | null,
+	hits?: GraphQLTypes["bigint"] | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null
+};
+	/** aggregate var_pop on columns */
+["v_player_weapon_match_damage_var_pop_fields"]: {
+	__typename: "v_player_weapon_match_damage_var_pop_fields",
+	damage?: number | undefined | null,
+	hits?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** aggregate var_samp on columns */
+["v_player_weapon_match_damage_var_samp_fields"]: {
+	__typename: "v_player_weapon_match_damage_var_samp_fields",
+	damage?: number | undefined | null,
+	hits?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** aggregate variance on columns */
+["v_player_weapon_match_damage_variance_fields"]: {
+	__typename: "v_player_weapon_match_damage_variance_fields",
+	damage?: number | undefined | null,
+	hits?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** columns and relationships of "v_player_weapon_match_kills" */
+["v_player_weapon_match_kills"]: {
+	__typename: "v_player_weapon_match_kills",
+	kill_count?: GraphQLTypes["bigint"] | undefined | null,
+	/** An object relationship */
+	match?: GraphQLTypes["matches"] | undefined | null,
+	match_id?: GraphQLTypes["uuid"] | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	rounds?: GraphQLTypes["bigint"] | undefined | null,
+	with?: string | undefined | null
+};
+	/** aggregated selection of "v_player_weapon_match_kills" */
+["v_player_weapon_match_kills_aggregate"]: {
+	__typename: "v_player_weapon_match_kills_aggregate",
+	aggregate?: GraphQLTypes["v_player_weapon_match_kills_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["v_player_weapon_match_kills"]>
+};
+	/** aggregate fields of "v_player_weapon_match_kills" */
+["v_player_weapon_match_kills_aggregate_fields"]: {
+	__typename: "v_player_weapon_match_kills_aggregate_fields",
+	avg?: GraphQLTypes["v_player_weapon_match_kills_avg_fields"] | undefined | null,
+	count: number,
+	max?: GraphQLTypes["v_player_weapon_match_kills_max_fields"] | undefined | null,
+	min?: GraphQLTypes["v_player_weapon_match_kills_min_fields"] | undefined | null,
+	stddev?: GraphQLTypes["v_player_weapon_match_kills_stddev_fields"] | undefined | null,
+	stddev_pop?: GraphQLTypes["v_player_weapon_match_kills_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: GraphQLTypes["v_player_weapon_match_kills_stddev_samp_fields"] | undefined | null,
+	sum?: GraphQLTypes["v_player_weapon_match_kills_sum_fields"] | undefined | null,
+	var_pop?: GraphQLTypes["v_player_weapon_match_kills_var_pop_fields"] | undefined | null,
+	var_samp?: GraphQLTypes["v_player_weapon_match_kills_var_samp_fields"] | undefined | null,
+	variance?: GraphQLTypes["v_player_weapon_match_kills_variance_fields"] | undefined | null
+};
+	/** aggregate avg on columns */
+["v_player_weapon_match_kills_avg_fields"]: {
+	__typename: "v_player_weapon_match_kills_avg_fields",
+	kill_count?: number | undefined | null,
+	player_steam_id?: number | undefined | null,
+	rounds?: number | undefined | null
+};
+	/** Boolean expression to filter rows from the table "v_player_weapon_match_kills". All fields are combined with a logical 'AND'. */
+["v_player_weapon_match_kills_bool_exp"]: {
+		_and?: Array<GraphQLTypes["v_player_weapon_match_kills_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["v_player_weapon_match_kills_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["v_player_weapon_match_kills_bool_exp"]> | undefined | null,
+	kill_count?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	match?: GraphQLTypes["matches_bool_exp"] | undefined | null,
+	match_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	rounds?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	with?: GraphQLTypes["String_comparison_exp"] | undefined | null
+};
+	/** aggregate max on columns */
+["v_player_weapon_match_kills_max_fields"]: {
+	__typename: "v_player_weapon_match_kills_max_fields",
+	kill_count?: GraphQLTypes["bigint"] | undefined | null,
+	match_id?: GraphQLTypes["uuid"] | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	rounds?: GraphQLTypes["bigint"] | undefined | null,
+	with?: string | undefined | null
+};
+	/** aggregate min on columns */
+["v_player_weapon_match_kills_min_fields"]: {
+	__typename: "v_player_weapon_match_kills_min_fields",
+	kill_count?: GraphQLTypes["bigint"] | undefined | null,
+	match_id?: GraphQLTypes["uuid"] | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	rounds?: GraphQLTypes["bigint"] | undefined | null,
+	with?: string | undefined | null
+};
+	/** Ordering options when selecting data from "v_player_weapon_match_kills". */
+["v_player_weapon_match_kills_order_by"]: {
+		kill_count?: GraphQLTypes["order_by"] | undefined | null,
+	match?: GraphQLTypes["matches_order_by"] | undefined | null,
+	match_id?: GraphQLTypes["order_by"] | undefined | null,
+	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	rounds?: GraphQLTypes["order_by"] | undefined | null,
+	with?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** select columns of table "v_player_weapon_match_kills" */
+["v_player_weapon_match_kills_select_column"]: v_player_weapon_match_kills_select_column;
+	/** aggregate stddev on columns */
+["v_player_weapon_match_kills_stddev_fields"]: {
+	__typename: "v_player_weapon_match_kills_stddev_fields",
+	kill_count?: number | undefined | null,
+	player_steam_id?: number | undefined | null,
+	rounds?: number | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["v_player_weapon_match_kills_stddev_pop_fields"]: {
+	__typename: "v_player_weapon_match_kills_stddev_pop_fields",
+	kill_count?: number | undefined | null,
+	player_steam_id?: number | undefined | null,
+	rounds?: number | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["v_player_weapon_match_kills_stddev_samp_fields"]: {
+	__typename: "v_player_weapon_match_kills_stddev_samp_fields",
+	kill_count?: number | undefined | null,
+	player_steam_id?: number | undefined | null,
+	rounds?: number | undefined | null
+};
+	/** Streaming cursor of the table "v_player_weapon_match_kills" */
+["v_player_weapon_match_kills_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["v_player_weapon_match_kills_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["v_player_weapon_match_kills_stream_cursor_value_input"]: {
+		kill_count?: GraphQLTypes["bigint"] | undefined | null,
+	match_id?: GraphQLTypes["uuid"] | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	rounds?: GraphQLTypes["bigint"] | undefined | null,
+	with?: string | undefined | null
+};
+	/** aggregate sum on columns */
+["v_player_weapon_match_kills_sum_fields"]: {
+	__typename: "v_player_weapon_match_kills_sum_fields",
+	kill_count?: GraphQLTypes["bigint"] | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	rounds?: GraphQLTypes["bigint"] | undefined | null
+};
+	/** aggregate var_pop on columns */
+["v_player_weapon_match_kills_var_pop_fields"]: {
+	__typename: "v_player_weapon_match_kills_var_pop_fields",
+	kill_count?: number | undefined | null,
+	player_steam_id?: number | undefined | null,
+	rounds?: number | undefined | null
+};
+	/** aggregate var_samp on columns */
+["v_player_weapon_match_kills_var_samp_fields"]: {
+	__typename: "v_player_weapon_match_kills_var_samp_fields",
+	kill_count?: number | undefined | null,
+	player_steam_id?: number | undefined | null,
+	rounds?: number | undefined | null
+};
+	/** aggregate variance on columns */
+["v_player_weapon_match_kills_variance_fields"]: {
+	__typename: "v_player_weapon_match_kills_variance_fields",
+	kill_count?: number | undefined | null,
+	player_steam_id?: number | undefined | null,
+	rounds?: number | undefined | null
+};
 	/** columns and relationships of "v_pool_maps" */
 ["v_pool_maps"]: {
 	__typename: "v_pool_maps",
@@ -333499,6 +338523,34 @@ export enum game_modes_update_column {
 	updated_at = "updated_at",
 	valve_mode = "valve_mode"
 }
+/** unique or primary key constraints on table "game_plugin_cvars" */
+export enum game_plugin_cvars_constraint {
+	game_plugin_cvars_pkey = "game_plugin_cvars_pkey"
+}
+/** select columns of table "game_plugin_cvars" */
+export enum game_plugin_cvars_select_column {
+	default_value = "default_value",
+	description = "description",
+	flags = "flags",
+	kind = "kind",
+	name = "name",
+	plugin_slug = "plugin_slug",
+	reported_at = "reported_at",
+	runtime = "runtime",
+	version = "version"
+}
+/** update columns of table "game_plugin_cvars" */
+export enum game_plugin_cvars_update_column {
+	default_value = "default_value",
+	description = "description",
+	flags = "flags",
+	kind = "kind",
+	name = "name",
+	plugin_slug = "plugin_slug",
+	reported_at = "reported_at",
+	runtime = "runtime",
+	version = "version"
+}
 /** unique or primary key constraints on table "game_plugin_installs" */
 export enum game_plugin_installs_constraint {
 	game_plugin_installs_pkey = "game_plugin_installs_pkey"
@@ -333507,6 +338559,7 @@ export enum game_plugin_installs_constraint {
 export enum game_plugin_installs_select_column {
 	cfg = "cfg",
 	channel = "channel",
+	config = "config",
 	created_at = "created_at",
 	disable_server_guidelines = "disable_server_guidelines",
 	enabled = "enabled",
@@ -333521,6 +338574,7 @@ export enum game_plugin_installs_select_column {
 export enum game_plugin_installs_update_column {
 	cfg = "cfg",
 	channel = "channel",
+	config = "config",
 	created_at = "created_at",
 	disable_server_guidelines = "disable_server_guidelines",
 	enabled = "enabled",
@@ -333576,10 +338630,14 @@ export enum game_plugins_constraint {
 /** select columns of table "game_plugins" */
 export enum game_plugins_select_column {
 	author = "author",
+	config_cvar = "config_cvar",
+	config_default = "config_default",
 	config_path = "config_path",
 	config_schema = "config_schema",
+	config_shipped = "config_shipped",
 	cvars = "cvars",
 	description = "description",
+	forced_cvars = "forced_cvars",
 	homepage = "homepage",
 	hot_swappable = "hot_swappable",
 	kind = "kind",
@@ -333599,10 +338657,14 @@ export enum game_plugins_select_column {
 /** update columns of table "game_plugins" */
 export enum game_plugins_update_column {
 	author = "author",
+	config_cvar = "config_cvar",
+	config_default = "config_default",
 	config_path = "config_path",
 	config_schema = "config_schema",
+	config_shipped = "config_shipped",
 	cvars = "cvars",
 	description = "description",
+	forced_cvars = "forced_cvars",
 	homepage = "homepage",
 	hot_swappable = "hot_swappable",
 	kind = "kind",
@@ -335927,6 +340989,28 @@ export enum player_sanctions_update_column {
 	sanctioned_by_steam_id = "sanctioned_by_steam_id",
 	type = "type"
 }
+/** select columns of table "player_season_performance_v" */
+export enum player_season_performance_v_select_column {
+	accuracy_score = "accuracy_score",
+	aim_rating = "aim_rating",
+	blind_score = "blind_score",
+	counter_strafe_score = "counter_strafe_score",
+	crosshair_score = "crosshair_score",
+	flash_assists_score = "flash_assists_score",
+	hs_score = "hs_score",
+	kast_score = "kast_score",
+	positioning_rating = "positioning_rating",
+	rounds = "rounds",
+	season_id = "season_id",
+	season_starts_at = "season_starts_at",
+	spotted_score = "spotted_score",
+	steam_id = "steam_id",
+	survival_score = "survival_score",
+	traded_score = "traded_score",
+	ttd_score = "ttd_score",
+	util_eff_score = "util_eff_score",
+	utility_rating = "utility_rating"
+}
 /** unique or primary key constraints on table "player_season_stats" */
 export enum player_season_stats_constraint {
 	player_season_stats_pkey = "player_season_stats_pkey"
@@ -336395,6 +341479,26 @@ export enum server_player_sessions_update_column {
 	server_id = "server_id",
 	settled_conns = "settled_conns",
 	started_at = "started_at"
+}
+/** unique or primary key constraints on table "server_plugin_configs" */
+export enum server_plugin_configs_constraint {
+	server_plugin_configs_pkey = "server_plugin_configs_pkey"
+}
+/** select columns of table "server_plugin_configs" */
+export enum server_plugin_configs_select_column {
+	cfg = "cfg",
+	config = "config",
+	plugin_slug = "plugin_slug",
+	server_id = "server_id",
+	updated_at = "updated_at"
+}
+/** update columns of table "server_plugin_configs" */
+export enum server_plugin_configs_update_column {
+	cfg = "cfg",
+	config = "config",
+	plugin_slug = "plugin_slug",
+	server_id = "server_id",
+	updated_at = "updated_at"
 }
 /** unique or primary key constraints on table "server_plugins" */
 export enum server_plugins_constraint {
@@ -339110,6 +344214,22 @@ export enum v_player_weapon_kills_select_column {
 	type = "type",
 	with = "with"
 }
+/** select columns of table "v_player_weapon_match_damage" */
+export enum v_player_weapon_match_damage_select_column {
+	damage = "damage",
+	hits = "hits",
+	match_id = "match_id",
+	player_steam_id = "player_steam_id",
+	with = "with"
+}
+/** select columns of table "v_player_weapon_match_kills" */
+export enum v_player_weapon_match_kills_select_column {
+	kill_count = "kill_count",
+	match_id = "match_id",
+	player_steam_id = "player_steam_id",
+	rounds = "rounds",
+	with = "with"
+}
 /** select columns of table "v_pool_maps" */
 export enum v_pool_maps_select_column {
 	active_pool = "active_pool",
@@ -339352,6 +344472,7 @@ type ZEUS_VARIABLES = {
 	["ScheduledLineupInput"]: ValueTypes["ScheduledLineupInput"];
 	["ServerAccessInput"]: ValueTypes["ServerAccessInput"];
 	["ServerMapRotationInput"]: ValueTypes["ServerMapRotationInput"];
+	["ServerPluginConfigInput"]: ValueTypes["ServerPluginConfigInput"];
 	["ServerPluginInput"]: ValueTypes["ServerPluginInput"];
 	["String_array_comparison_exp"]: ValueTypes["String_array_comparison_exp"];
 	["String_comparison_exp"]: ValueTypes["String_comparison_exp"];
@@ -340806,13 +345927,36 @@ type ZEUS_VARIABLES = {
 	["game_modes_stream_cursor_value_input"]: ValueTypes["game_modes_stream_cursor_value_input"];
 	["game_modes_update_column"]: ValueTypes["game_modes_update_column"];
 	["game_modes_updates"]: ValueTypes["game_modes_updates"];
+	["game_plugin_cvars_aggregate_bool_exp"]: ValueTypes["game_plugin_cvars_aggregate_bool_exp"];
+	["game_plugin_cvars_aggregate_bool_exp_count"]: ValueTypes["game_plugin_cvars_aggregate_bool_exp_count"];
+	["game_plugin_cvars_aggregate_order_by"]: ValueTypes["game_plugin_cvars_aggregate_order_by"];
+	["game_plugin_cvars_arr_rel_insert_input"]: ValueTypes["game_plugin_cvars_arr_rel_insert_input"];
+	["game_plugin_cvars_bool_exp"]: ValueTypes["game_plugin_cvars_bool_exp"];
+	["game_plugin_cvars_constraint"]: ValueTypes["game_plugin_cvars_constraint"];
+	["game_plugin_cvars_insert_input"]: ValueTypes["game_plugin_cvars_insert_input"];
+	["game_plugin_cvars_max_order_by"]: ValueTypes["game_plugin_cvars_max_order_by"];
+	["game_plugin_cvars_min_order_by"]: ValueTypes["game_plugin_cvars_min_order_by"];
+	["game_plugin_cvars_on_conflict"]: ValueTypes["game_plugin_cvars_on_conflict"];
+	["game_plugin_cvars_order_by"]: ValueTypes["game_plugin_cvars_order_by"];
+	["game_plugin_cvars_pk_columns_input"]: ValueTypes["game_plugin_cvars_pk_columns_input"];
+	["game_plugin_cvars_select_column"]: ValueTypes["game_plugin_cvars_select_column"];
+	["game_plugin_cvars_set_input"]: ValueTypes["game_plugin_cvars_set_input"];
+	["game_plugin_cvars_stream_cursor_input"]: ValueTypes["game_plugin_cvars_stream_cursor_input"];
+	["game_plugin_cvars_stream_cursor_value_input"]: ValueTypes["game_plugin_cvars_stream_cursor_value_input"];
+	["game_plugin_cvars_update_column"]: ValueTypes["game_plugin_cvars_update_column"];
+	["game_plugin_cvars_updates"]: ValueTypes["game_plugin_cvars_updates"];
+	["game_plugin_installs_append_input"]: ValueTypes["game_plugin_installs_append_input"];
 	["game_plugin_installs_bool_exp"]: ValueTypes["game_plugin_installs_bool_exp"];
 	["game_plugin_installs_constraint"]: ValueTypes["game_plugin_installs_constraint"];
+	["game_plugin_installs_delete_at_path_input"]: ValueTypes["game_plugin_installs_delete_at_path_input"];
+	["game_plugin_installs_delete_elem_input"]: ValueTypes["game_plugin_installs_delete_elem_input"];
+	["game_plugin_installs_delete_key_input"]: ValueTypes["game_plugin_installs_delete_key_input"];
 	["game_plugin_installs_insert_input"]: ValueTypes["game_plugin_installs_insert_input"];
 	["game_plugin_installs_obj_rel_insert_input"]: ValueTypes["game_plugin_installs_obj_rel_insert_input"];
 	["game_plugin_installs_on_conflict"]: ValueTypes["game_plugin_installs_on_conflict"];
 	["game_plugin_installs_order_by"]: ValueTypes["game_plugin_installs_order_by"];
 	["game_plugin_installs_pk_columns_input"]: ValueTypes["game_plugin_installs_pk_columns_input"];
+	["game_plugin_installs_prepend_input"]: ValueTypes["game_plugin_installs_prepend_input"];
 	["game_plugin_installs_select_column"]: ValueTypes["game_plugin_installs_select_column"];
 	["game_plugin_installs_set_input"]: ValueTypes["game_plugin_installs_set_input"];
 	["game_plugin_installs_stream_cursor_input"]: ValueTypes["game_plugin_installs_stream_cursor_input"];
@@ -342238,6 +347382,11 @@ type ZEUS_VARIABLES = {
 	["player_sanctions_var_pop_order_by"]: ValueTypes["player_sanctions_var_pop_order_by"];
 	["player_sanctions_var_samp_order_by"]: ValueTypes["player_sanctions_var_samp_order_by"];
 	["player_sanctions_variance_order_by"]: ValueTypes["player_sanctions_variance_order_by"];
+	["player_season_performance_v_bool_exp"]: ValueTypes["player_season_performance_v_bool_exp"];
+	["player_season_performance_v_order_by"]: ValueTypes["player_season_performance_v_order_by"];
+	["player_season_performance_v_select_column"]: ValueTypes["player_season_performance_v_select_column"];
+	["player_season_performance_v_stream_cursor_input"]: ValueTypes["player_season_performance_v_stream_cursor_input"];
+	["player_season_performance_v_stream_cursor_value_input"]: ValueTypes["player_season_performance_v_stream_cursor_value_input"];
 	["player_season_stats_aggregate_bool_exp"]: ValueTypes["player_season_stats_aggregate_bool_exp"];
 	["player_season_stats_aggregate_bool_exp_avg"]: ValueTypes["player_season_stats_aggregate_bool_exp_avg"];
 	["player_season_stats_aggregate_bool_exp_corr"]: ValueTypes["player_season_stats_aggregate_bool_exp_corr"];
@@ -342603,6 +347752,29 @@ type ZEUS_VARIABLES = {
 	["server_player_sessions_var_pop_order_by"]: ValueTypes["server_player_sessions_var_pop_order_by"];
 	["server_player_sessions_var_samp_order_by"]: ValueTypes["server_player_sessions_var_samp_order_by"];
 	["server_player_sessions_variance_order_by"]: ValueTypes["server_player_sessions_variance_order_by"];
+	["server_plugin_configs_aggregate_bool_exp"]: ValueTypes["server_plugin_configs_aggregate_bool_exp"];
+	["server_plugin_configs_aggregate_bool_exp_count"]: ValueTypes["server_plugin_configs_aggregate_bool_exp_count"];
+	["server_plugin_configs_aggregate_order_by"]: ValueTypes["server_plugin_configs_aggregate_order_by"];
+	["server_plugin_configs_append_input"]: ValueTypes["server_plugin_configs_append_input"];
+	["server_plugin_configs_arr_rel_insert_input"]: ValueTypes["server_plugin_configs_arr_rel_insert_input"];
+	["server_plugin_configs_bool_exp"]: ValueTypes["server_plugin_configs_bool_exp"];
+	["server_plugin_configs_constraint"]: ValueTypes["server_plugin_configs_constraint"];
+	["server_plugin_configs_delete_at_path_input"]: ValueTypes["server_plugin_configs_delete_at_path_input"];
+	["server_plugin_configs_delete_elem_input"]: ValueTypes["server_plugin_configs_delete_elem_input"];
+	["server_plugin_configs_delete_key_input"]: ValueTypes["server_plugin_configs_delete_key_input"];
+	["server_plugin_configs_insert_input"]: ValueTypes["server_plugin_configs_insert_input"];
+	["server_plugin_configs_max_order_by"]: ValueTypes["server_plugin_configs_max_order_by"];
+	["server_plugin_configs_min_order_by"]: ValueTypes["server_plugin_configs_min_order_by"];
+	["server_plugin_configs_on_conflict"]: ValueTypes["server_plugin_configs_on_conflict"];
+	["server_plugin_configs_order_by"]: ValueTypes["server_plugin_configs_order_by"];
+	["server_plugin_configs_pk_columns_input"]: ValueTypes["server_plugin_configs_pk_columns_input"];
+	["server_plugin_configs_prepend_input"]: ValueTypes["server_plugin_configs_prepend_input"];
+	["server_plugin_configs_select_column"]: ValueTypes["server_plugin_configs_select_column"];
+	["server_plugin_configs_set_input"]: ValueTypes["server_plugin_configs_set_input"];
+	["server_plugin_configs_stream_cursor_input"]: ValueTypes["server_plugin_configs_stream_cursor_input"];
+	["server_plugin_configs_stream_cursor_value_input"]: ValueTypes["server_plugin_configs_stream_cursor_value_input"];
+	["server_plugin_configs_update_column"]: ValueTypes["server_plugin_configs_update_column"];
+	["server_plugin_configs_updates"]: ValueTypes["server_plugin_configs_updates"];
 	["server_plugins_aggregate_bool_exp"]: ValueTypes["server_plugins_aggregate_bool_exp"];
 	["server_plugins_aggregate_bool_exp_bool_and"]: ValueTypes["server_plugins_aggregate_bool_exp_bool_and"];
 	["server_plugins_aggregate_bool_exp_bool_or"]: ValueTypes["server_plugins_aggregate_bool_exp_bool_or"];
@@ -344225,6 +349397,16 @@ type ZEUS_VARIABLES = {
 	["v_player_weapon_kills_select_column"]: ValueTypes["v_player_weapon_kills_select_column"];
 	["v_player_weapon_kills_stream_cursor_input"]: ValueTypes["v_player_weapon_kills_stream_cursor_input"];
 	["v_player_weapon_kills_stream_cursor_value_input"]: ValueTypes["v_player_weapon_kills_stream_cursor_value_input"];
+	["v_player_weapon_match_damage_bool_exp"]: ValueTypes["v_player_weapon_match_damage_bool_exp"];
+	["v_player_weapon_match_damage_order_by"]: ValueTypes["v_player_weapon_match_damage_order_by"];
+	["v_player_weapon_match_damage_select_column"]: ValueTypes["v_player_weapon_match_damage_select_column"];
+	["v_player_weapon_match_damage_stream_cursor_input"]: ValueTypes["v_player_weapon_match_damage_stream_cursor_input"];
+	["v_player_weapon_match_damage_stream_cursor_value_input"]: ValueTypes["v_player_weapon_match_damage_stream_cursor_value_input"];
+	["v_player_weapon_match_kills_bool_exp"]: ValueTypes["v_player_weapon_match_kills_bool_exp"];
+	["v_player_weapon_match_kills_order_by"]: ValueTypes["v_player_weapon_match_kills_order_by"];
+	["v_player_weapon_match_kills_select_column"]: ValueTypes["v_player_weapon_match_kills_select_column"];
+	["v_player_weapon_match_kills_stream_cursor_input"]: ValueTypes["v_player_weapon_match_kills_stream_cursor_input"];
+	["v_player_weapon_match_kills_stream_cursor_value_input"]: ValueTypes["v_player_weapon_match_kills_stream_cursor_value_input"];
 	["v_pool_maps_aggregate_bool_exp"]: ValueTypes["v_pool_maps_aggregate_bool_exp"];
 	["v_pool_maps_aggregate_bool_exp_bool_and"]: ValueTypes["v_pool_maps_aggregate_bool_exp_bool_and"];
 	["v_pool_maps_aggregate_bool_exp_bool_or"]: ValueTypes["v_pool_maps_aggregate_bool_exp_bool_or"];

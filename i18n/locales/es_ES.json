@@ -5480,6 +5480,17 @@
       "updating": "El sistema se está actualizando",
       "panel_update": "Tu panel está desactualizado, haz pull y ejecuta el script de actualización"
     },
+    "system_status": {
+      "regions": "Regiones de servidores",
+      "ping_by_region": "Ping por región",
+      "max_latency": "Máx. {ms} ms",
+      "online_count": "{online}/{total} en línea",
+      "partial": "Parcial",
+      "preferred": "Región preferida",
+      "skips_over": "El emparejamiento omite las regiones de más de {ms} ms.",
+      "uses_starred": "El emparejamiento usa tus regiones marcadas con estrella.",
+      "sign_in": "Inicia sesión para ver tu ping a cada región."
+    },
     "match_lobby": {
       "versus": "VS"
     },

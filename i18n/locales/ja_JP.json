@@ -5480,6 +5480,17 @@
       "updating": "システム更新中",
       "panel_update": "パネルが古いバージョンです。最新のアップデートスクリプトを取得して実行してください"
     },
+    "system_status": {
+      "regions": "サーバーリージョン",
+      "ping_by_region": "リージョン別Ping",
+      "max_latency": "最大 {ms} ms",
+      "online_count": "{online}/{total} オンライン",
+      "partial": "一部稼働",
+      "preferred": "優先リージョン",
+      "skips_over": "マッチメイキングは {ms} ms を超えるリージョンを除外します。",
+      "uses_starred": "マッチメイキングはスターを付けたリージョンを使用します。",
+      "sign_in": "ログインすると各リージョンへのPingを確認できます。"
+    },
     "match_lobby": {
       "versus": "VS"
     },

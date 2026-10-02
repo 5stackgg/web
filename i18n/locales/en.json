@@ -5480,6 +5480,17 @@
       "updating": "System is Updating",
       "panel_update": "Your panel is out of date, pull and run the update script"
     },
+    "system_status": {
+      "regions": "Server regions",
+      "ping_by_region": "Ping by region",
+      "max_latency": "Max {ms} ms",
+      "online_count": "{online}/{total} online",
+      "partial": "Partial",
+      "preferred": "Preferred region",
+      "skips_over": "Matchmaking skips regions over {ms} ms.",
+      "uses_starred": "Matchmaking uses your starred regions.",
+      "sign_in": "Sign in to see your ping to each region."
+    },
     "match_lobby": {
       "versus": "VS"
     },

@@ -5480,6 +5480,17 @@
       "updating": "Sistem güncelleniyor",
       "panel_update": "Panelin güncel değil, güncelleme betiğini çekip çalıştır"
     },
+    "system_status": {
+      "regions": "Sunucu bölgeleri",
+      "ping_by_region": "Bölgeye göre ping",
+      "max_latency": "Maks. {ms} ms",
+      "online_count": "{online}/{total} çevrimiçi",
+      "partial": "Kısmi",
+      "preferred": "Tercih edilen bölge",
+      "skips_over": "Eşleştirme {ms} ms üzerindeki bölgeleri atlar.",
+      "uses_starred": "Eşleştirme yıldızladığın bölgeleri kullanır.",
+      "sign_in": "Her bölgeye pingini görmek için giriş yap."
+    },
     "match_lobby": {
       "versus": "VS"
     },

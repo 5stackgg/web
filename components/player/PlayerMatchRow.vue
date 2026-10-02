@@ -32,6 +32,7 @@ const wideGrid =
           : ''),
     ]"
     @click="onRowClick($event)"
+    @pointerdown="onRowPointerDown($event)"
   >
     <!-- ===================== WIDE ===================== -->
     <div v-if="!compact" :class="[wideGrid, 'px-3 py-2.5']">
@@ -237,10 +238,12 @@ const wideGrid =
             : 'border-border/60 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-[hsl(var(--tac-amber))]'
         "
         :title="$t('ui_extras.quick_overview')"
+        :aria-expanded="expanded"
+        @pointerdown="prefetchDetails"
         @click.stop="toggleExpanded()"
       >
         <ChevronDown
-          class="h-3.5 w-3.5 transition-transform duration-200"
+          class="h-3.5 w-3.5 transition-transform [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]"
           :class="{ 'rotate-180': expanded }"
         />
         <span
@@ -416,10 +419,12 @@ const wideGrid =
               ? 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))]'
               : 'border-border/60 bg-muted/30 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-[hsl(var(--tac-amber))]'
           "
+          :aria-expanded="expanded"
+          @pointerdown="prefetchDetails"
           @click.stop="toggleExpanded()"
         >
           <ChevronDown
-            class="h-3.5 w-3.5 transition-transform duration-200"
+            class="h-3.5 w-3.5 transition-transform [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]"
             :class="{ 'rotate-180': expanded }"
           />
           {{ expanded ? $t("common.close") : $t("ui_extras.quick_overview") }}
@@ -446,25 +451,21 @@ const wideGrid =
     </div>
 
     <!-- ===================== EXPANDED DETAIL ===================== -->
-    <!-- grid-template-rows 0fr↔1fr expand/collapse: 1fr always resolves to
-         the panel's *current* natural height, so when the loading skeleton
-         swaps for the full table mid-animation the height re-targets smoothly
-         (no jump) and only the clip box animates — far less layout thrash than
-         animating raw height. The inner overflow-hidden lets the 0fr row
-         collapse to zero (grid items otherwise keep min-height:auto). -->
+    <!-- Opens at full height in one frame and reveals with opacity/transform
+         only (compositor work), while the page scrolls the row into view — a
+         height tween over a freshly mounting lobby table stutters. Closing
+         folds the height shut: nothing mounts then. -->
     <Transition
-      enter-active-class="grid transition-all duration-300 ease-out"
-      enter-from-class="grid-rows-[0fr] opacity-0"
-      enter-to-class="grid-rows-[1fr] opacity-100"
-      leave-active-class="grid transition-all duration-200 ease-in"
-      leave-from-class="grid-rows-[1fr] opacity-100"
-      leave-to-class="grid-rows-[0fr] opacity-0"
+      enter-active-class="unfurl-enter"
+      leave-active-class="unfurl-leave"
+      leave-to-class="unfurl-closed"
     >
-      <div v-if="expanded && isFinished" class="grid" @click.stop>
-        <div class="overflow-hidden">
+      <div v-if="expanded && isFinished" class="grid grid-rows-[1fr]">
+        <div class="unfurl-cell min-h-0">
           <div
             class="border-t border-border bg-card/40 px-3 py-3"
             :class="compact ? '' : 'sm:px-4'"
+            @click.stop
           >
             <PlayerMatchScoreboard
               :match="scoreboardMatch"
@@ -503,6 +504,22 @@ import mapLabel from "~/utilities/mapLabel";
 import { csRankKind } from "~/utilities/csRank";
 import type { MatchRankMove } from "~/components/MatchRankBadge.vue";
 
+// Breathing room kept between an opened row and the scroller's edges.
+const REVEAL_MARGIN = 16;
+
+function scrollParentOf(el: HTMLElement): HTMLElement | null {
+  for (let node = el.parentElement; node; node = node.parentElement) {
+    const { overflowY } = getComputedStyle(node);
+    if (
+      (overflowY === "auto" || overflowY === "scroll") &&
+      node.scrollHeight > node.clientHeight
+    ) {
+      return node;
+    }
+  }
+  return null;
+}
+
 export default {
   props: {
     match: { type: Object, required: true },
@@ -527,6 +544,7 @@ export default {
   data() {
     return {
       expanded: false,
+      detailsPromise: null as Promise<void> | null,
       detailsStats: null as any | null,
       // steam_id -> per-match Valve rank for the lobby (external matches).
       matchRanks: {} as Record<string, any>,
@@ -927,25 +945,66 @@ export default {
       }
       this.toggleExpanded(event);
     },
-    toggleExpanded(event?: MouseEvent) {
+    // The scoreboard query starts on pointer-down: the click that follows
+    // would start it anyway, and it buys the ~100ms before the click lands.
+    prefetchDetails() {
+      if (!this.isFinished || this.detailsStats || this.detailsPromise) return;
+      this.detailsPromise = this.getDetailedStats().catch(() => {
+        this.detailsPromise = null;
+      });
+    },
+    onRowPointerDown(event: PointerEvent) {
+      if (this.compact || this.expanded) return;
+      // The VIEW button prefetches itself; other controls don't open the row.
+      if ((event.target as HTMLElement | null)?.closest("a,button")) return;
+      this.prefetchDetails();
+    },
+    async toggleExpanded(event?: MouseEvent) {
       // Ignore clicks that originated on an interactive child (badge, links).
       if (event) {
         const el = event.target as HTMLElement | null;
         if (el?.closest("a,button")) return;
       }
-      this.expanded = !this.expanded;
       if (this.expanded) {
-        if (!this.detailsStats && !this.detailsStatsLoading) {
-          this.getDetailedStats().catch(() => {});
-        }
-        if (
-          this.hasPublicClips &&
-          this.playerClips.length === 0 &&
-          !this.playerClipsLoading
-        ) {
-          this.getPlayerClips().catch(() => {});
-        }
+        this.expanded = false;
+        return;
       }
+      this.prefetchDetails();
+      if (
+        this.hasPublicClips &&
+        this.playerClips.length === 0 &&
+        !this.playerClipsLoading
+      ) {
+        this.getPlayerClips().catch(() => {});
+      }
+      this.expanded = true;
+      await this.$nextTick();
+      this.revealExpanded();
+    },
+    // Scroll the page so the whole opened row is on screen — or, when it is
+    // taller than the screen, its top. Drives the nearest scroller directly:
+    // scrollIntoView would also shift overflow-hidden layout ancestors.
+    revealExpanded() {
+      const row = this.$el as HTMLElement;
+      const scroller = scrollParentOf(row);
+      if (!scroller) return;
+      const view = scroller.getBoundingClientRect();
+      const box = row.getBoundingClientRect();
+      const top = view.top + REVEAL_MARGIN;
+      const bottom = view.top + scroller.clientHeight - REVEAL_MARGIN;
+      let delta = 0;
+      if (box.top < top || box.height > bottom - top) {
+        delta = box.top - top;
+      } else if (box.bottom > bottom) {
+        delta = box.bottom - bottom;
+      }
+      if (Math.abs(delta) < 2) return;
+      scroller.scrollTo({
+        top: scroller.scrollTop + delta,
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "auto"
+          : "smooth",
+      });
     },
     // One query for the whole scoreboard. Every lineup member's stats come
     // from the match-scoped views, and their rating AT this match from
@@ -1067,3 +1126,41 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* Open: the panel lands at full height in one frame, so only opacity moves
+   here; the scoreboard staggers its own pieces in on top. */
+.unfurl-enter {
+  animation: unfurl-in 0.18s ease-out;
+}
+@keyframes unfurl-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+/* Close: fold the height shut. The lobby is already mounted, so the tween
+   has nothing to fight. Clipped only while it runs. */
+.unfurl-leave {
+  transition:
+    grid-template-rows 0.2s cubic-bezier(0.4, 0, 1, 1),
+    opacity 0.14s ease-in;
+}
+.unfurl-leave > .unfurl-cell {
+  overflow: hidden;
+}
+.unfurl-closed {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .unfurl-enter {
+    animation: none;
+  }
+  .unfurl-leave {
+    transition-duration: 1ms;
+  }
+}
+</style>

@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { computed, provide, toRef } from "vue";
+import { computed, onBeforeUnmount, provide, ref, toRef, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { ArrowRight, ExternalLink, Play } from "lucide-vue-next";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Skeleton } from "~/components/ui/skeleton";
+import { HeightGlide } from "~/components/ui/transitions";
 import LineupOverview from "~/components/match/LineupOverview.vue";
 import LineupUtility from "~/components/match/LineupUtility.vue";
 import LineupTradeStats from "~/components/match/LineupTradeStats.vue";
@@ -75,6 +76,58 @@ const mineRaw = computed(() =>
 const theirsRaw = computed(() =>
   focusIsLineup2.value ? props.match?.lineup_1 : props.match?.lineup_2,
 );
+
+// Skeleton rows per team, from the lineups the row already carries.
+const skeletonTeams = computed(() =>
+  [mineRaw.value, theirsRaw.value].map(
+    (lineup) => lineup?.lineup_players?.length || 5,
+  ),
+);
+
+// Opened before the data: the tables fade in when they land. Opened with data:
+// they rise in with the rest of the panel.
+const fadeContent = props.loading;
+
+// A load that lands fast never shows a skeleton — it would only blink. The
+// placeholder holds the tables' height invisibly, fades in only once the wait
+// runs past SKELETON_DELAY_MS, and once seen stays SKELETON_MIN_MS so it reads
+// as a state rather than a flash.
+const SKELETON_DELAY_MS = 200;
+const SKELETON_MIN_MS = 350;
+const skeletonShown = ref(false);
+const skeletonHeld = ref(false);
+let skeletonTimer: ReturnType<typeof setTimeout> | null = null;
+let skeletonShownAt = 0;
+
+watch(
+  () => props.loading,
+  (loading) => {
+    if (skeletonTimer) clearTimeout(skeletonTimer);
+    skeletonTimer = null;
+    if (loading) {
+      skeletonTimer = setTimeout(() => {
+        skeletonShown.value = true;
+        skeletonShownAt = Date.now();
+      }, SKELETON_DELAY_MS);
+      return;
+    }
+    if (!skeletonShown.value) return;
+    skeletonHeld.value = true;
+    skeletonTimer = setTimeout(
+      () => {
+        skeletonHeld.value = false;
+        skeletonShown.value = false;
+      },
+      Math.max(0, SKELETON_MIN_MS - (Date.now() - skeletonShownAt)),
+    );
+  },
+  { immediate: true },
+);
+onBeforeUnmount(() => {
+  if (skeletonTimer) clearTimeout(skeletonTimer);
+});
+
+const placeholder = computed(() => props.loading || skeletonHeld.value);
 
 // Lineup tables read `match_stats ?? match_map_stats`, so a single map swaps
 // the aggregate row out for that map's row (and its KAST rows).
@@ -257,7 +310,7 @@ const actionClasses =
   <div class="space-y-3">
     <!-- MATCH STRIP — map (or series), score, and this player's rank move. -->
     <div
-      class="relative overflow-hidden rounded-lg border border-border bg-[hsl(240_8%_6%)]"
+      class="sb-rise relative overflow-hidden rounded-lg border border-border bg-[hsl(240_8%_6%)]"
     >
       <img
         v-if="focusMap?.poster"
@@ -427,82 +480,96 @@ const actionClasses =
       </div>
     </div>
 
-    <div class="relative min-h-[14rem]">
-      <Transition
-        mode="out-in"
-        enter-active-class="transition-opacity duration-200 ease-out"
-        enter-from-class="opacity-0"
-        enter-to-class="opacity-100"
-        leave-active-class="transition-opacity duration-100 ease-in"
-        leave-from-class="opacity-100"
-        leave-to-class="opacity-0"
+    <!-- Glides to whatever the body becomes (skeleton → tables, tab → tab)
+         instead of jumping; the skeleton is shaped like both teams' table so
+         a late arrival barely moves. -->
+    <HeightGlide class="sb-rise sb-rise-2">
+      <div
+        v-if="placeholder"
+        class="space-y-2 transition-opacity duration-200"
+        :class="skeletonShown ? 'opacity-100' : 'opacity-0'"
+        aria-busy="true"
       >
-        <div v-if="loading" key="loading" class="space-y-2">
-          <Skeleton class="h-7 w-72" />
-          <Skeleton class="h-48 w-full" />
-        </div>
-
+        <Skeleton class="h-7 w-72" />
         <div
-          v-else-if="!hasStats"
-          key="empty"
-          class="py-6 text-center text-xs text-muted-foreground"
+          v-for="(rows, team) in skeletonTeams"
+          :key="team"
+          class="space-y-px overflow-hidden rounded-md"
         >
-          {{ $t("match.player_details_panel.stats_unavailable") }}
+          <Skeleton class="h-12 w-full rounded-none opacity-60" />
+          <Skeleton
+            v-for="row in rows"
+            :key="row"
+            class="h-[66px] w-full rounded-none"
+          />
         </div>
+      </div>
 
-        <div v-else key="content">
-          <Tabs
-            :model-value="activeTab"
-            @update:model-value="(v) => emit('update:active-tab', v as string)"
+      <div
+        v-else-if="!hasStats"
+        class="py-6 text-center text-xs text-muted-foreground"
+      >
+        {{ $t("match.player_details_panel.stats_unavailable") }}
+      </div>
+
+      <div v-else :class="fadeContent && 'sb-fade'">
+        <Tabs
+          :model-value="activeTab"
+          @update:model-value="(v) => emit('update:active-tab', v as string)"
+        >
+          <TabsList
+            class="inline-flex h-auto items-center gap-1 bg-transparent p-0"
           >
-            <TabsList
-              class="inline-flex h-auto items-center gap-1 bg-transparent p-0"
+            <TabsTrigger
+              v-for="tab in tabs"
+              :key="tab.value"
+              :value="tab.value"
+              :class="triggerClasses"
             >
-              <TabsTrigger
-                v-for="tab in tabs"
-                :key="tab.value"
-                :value="tab.value"
-                :class="triggerClasses"
-              >
-                {{ tab.label }}
-              </TabsTrigger>
-            </TabsList>
+              {{ tab.label }}
+            </TabsTrigger>
+          </TabsList>
 
-            <TabsContent value="overview" class="overflow-x-auto pt-2">
-              <LineupOverview
-                :match="match"
-                :lineup="mine"
-                :combine-with="theirs"
-                :show-stats="true"
-              />
-            </TabsContent>
-            <TabsContent value="utility" class="overflow-x-auto pt-2">
-              <LineupUtility
-                :match="match"
-                :lineup="mine"
-                :combine-with="theirs"
-              />
-            </TabsContent>
-            <TabsContent value="trades" class="overflow-x-auto pt-2">
-              <LineupTradeStats
-                :match="match"
-                :lineup="mine"
-                :combine-with="theirs"
-              />
-            </TabsContent>
-            <TabsContent value="aim" class="overflow-x-auto pt-2">
-              <LineupAimStats
-                :match="match"
-                :lineup="mine"
-                :combine-with="theirs"
-              />
-            </TabsContent>
-          </Tabs>
-        </div>
-      </Transition>
-    </div>
+          <TabsContent
+            value="overview"
+            class="tab-panel-in overflow-x-auto pt-2"
+          >
+            <LineupOverview
+              :match="match"
+              :lineup="mine"
+              :combine-with="theirs"
+              :show-stats="true"
+            />
+          </TabsContent>
+          <TabsContent
+            value="utility"
+            class="tab-panel-in overflow-x-auto pt-2"
+          >
+            <LineupUtility
+              :match="match"
+              :lineup="mine"
+              :combine-with="theirs"
+            />
+          </TabsContent>
+          <TabsContent value="trades" class="tab-panel-in overflow-x-auto pt-2">
+            <LineupTradeStats
+              :match="match"
+              :lineup="mine"
+              :combine-with="theirs"
+            />
+          </TabsContent>
+          <TabsContent value="aim" class="tab-panel-in overflow-x-auto pt-2">
+            <LineupAimStats
+              :match="match"
+              :lineup="mine"
+              :combine-with="theirs"
+            />
+          </TabsContent>
+        </Tabs>
+      </div>
+    </HeightGlide>
 
-    <div class="flex flex-wrap gap-2">
+    <div class="sb-rise sb-rise-3 flex flex-wrap gap-2">
       <button
         v-if="clipsCount > 0"
         type="button"
@@ -519,3 +586,43 @@ const actionClasses =
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Opening: strip, tables and actions rise in on a short stagger. Opacity and
+   transform only, so it stays smooth while the lobby table mounts. */
+.sb-rise {
+  animation: sb-rise 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.sb-rise-2 {
+  animation-delay: 0.06s;
+}
+.sb-rise-3 {
+  animation-delay: 0.12s;
+}
+@keyframes sb-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* Tables that arrive after the skeleton just fade over its spot; the
+   HeightGlide around them absorbs any height difference. */
+.sb-fade {
+  animation: sb-fade 0.18s ease-out both;
+}
+@keyframes sb-fade {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sb-rise,
+  .sb-fade {
+    animation: none;
+  }
+}
+</style>

@@ -9016,7 +9016,9 @@
   "rcon": {
     "console": "Konsola RCON",
     "suggestions": "Sugestie",
-    "entry_count": "{count} wpisów"
+    "entry_count": "{count} wpisów",
+    "moderators_only": "RCON jest dla moderatorów",
+    "moderators_only_description": "Poproś moderatora, jeśli ten serwer potrzebuje polecenia konsoli."
   },
   "game_server_node": {
     "set_ports": "Ustaw porty"

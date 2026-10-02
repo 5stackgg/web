@@ -60,7 +60,13 @@ import { e_match_types_enum } from "~/generated/zeus";
 import MatchForm from "~/components/match/MatchForm.vue";
 import MatchLiveStreams from "~/components/match/MatchLiveStreams.vue";
 import mapLabel from "~/utilities/mapLabel";
-import { MoreVertical, AlertTriangle, ExternalLink } from "lucide-vue-next";
+import {
+  MoreVertical,
+  AlertTriangle,
+  ExternalLink,
+  Terminal,
+} from "lucide-vue-next";
+import { HeightSwap } from "~/components/ui/transitions";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -603,58 +609,79 @@ provide("commander", commander);
         v-model:open="showRebootDialog"
       />
 
-      <RconCommander
-        :server-id="match.server_id"
-        :online="!!match.is_server_online"
-        :match-id="match.id"
-        :plugin-runtime="pluginRuntime"
-        v-if="canSendRCONCommands"
-      >
-        <template #default="{ commander: send }">
-          <template v-for="command of availableCommands">
-            <DropdownMenuItem
-              :disabled="!match.is_server_online"
-              @click="
-                command.confirm
-                  ? confirmCommand(command, send)
-                  : send(rconCommand(command.action), '')
-              "
-            >
-              {{ $t(command.display) }}
-            </DropdownMenuItem>
+      <HeightSwap v-if="canSendRCONCommands">
+        <RconCommander
+          v-if="canUseRcon"
+          key="console"
+          :server-id="match.server_id"
+          :online="!!match.is_server_online"
+          :match-id="match.id"
+          :plugin-runtime="pluginRuntime"
+        >
+          <template #default="{ commander: send }">
+            <template v-for="command of availableCommands">
+              <DropdownMenuItem
+                :disabled="!match.is_server_online"
+                @click="
+                  command.confirm
+                    ? confirmCommand(command, send)
+                    : send(rconCommand(command.action), '')
+                "
+              >
+                {{ $t(command.display) }}
+              </DropdownMenuItem>
+            </template>
+
+            <template v-if="restorableRounds.length > 0">
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger :disabled="!match.is_server_online">
+                  {{ $t("match.tabs.restore_round") }}
+                </DropdownMenuSubTrigger>
+                <DropdownMenuSubContent class="max-h-80 overflow-y-auto">
+                  <DropdownMenuItem
+                    v-for="round of restorableRounds"
+                    :key="round.round"
+                    :disabled="!match.is_server_online"
+                    @click="send('restore_round', round.round.toString())"
+                  >
+                    {{
+                      $t("common.round", {
+                        number: round.round.toString(),
+                      })
+                    }}
+                  </DropdownMenuItem>
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+            </template>
           </template>
 
-          <template v-if="restorableRounds.length > 0">
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger :disabled="!match.is_server_online">
-                {{ $t("match.tabs.restore_round") }}
-              </DropdownMenuSubTrigger>
-              <DropdownMenuSubContent class="max-h-80 overflow-y-auto">
-                <DropdownMenuItem
-                  v-for="round of restorableRounds"
-                  :key="round.round"
-                  :disabled="!match.is_server_online"
-                  @click="send('restore_round', round.round.toString())"
-                >
-                  {{
-                    $t("common.round", {
-                      number: round.round.toString(),
-                    })
-                  }}
-                </DropdownMenuItem>
-              </DropdownMenuSubContent>
-            </DropdownMenuSub>
+          <template #footer>
+            <MatchServerRebootControl
+              :match="match"
+              variant="menu-item"
+              v-model:open="showRebootDialog"
+            />
           </template>
-        </template>
-
-        <template #footer>
-          <MatchServerRebootControl
-            :match="match"
-            variant="menu-item"
-            v-model:open="showRebootDialog"
-          />
-        </template>
-      </RconCommander>
+        </RconCommander>
+        <div
+          v-else
+          key="moderators-only"
+          class="grid gap-3 lg:auto-cols-fr lg:grid-flow-col"
+        >
+          <div
+            class="flex flex-col items-center justify-center gap-1.5 rounded-md border border-dashed border-border p-6 text-center"
+          >
+            <Terminal class="h-5 w-5 text-muted-foreground" />
+            <h3 class="text-sm font-semibold">
+              {{ $t("rcon.moderators_only") }}
+            </h3>
+            <p class="text-xs text-muted-foreground">
+              {{ $t("rcon.moderators_only_description") }}
+            </p>
+          </div>
+          <MatchServerRebootControl :match="match" variant="card" />
+        </div>
+      </HeightSwap>
 
       <div
         v-if="!hasLogs"
@@ -1226,6 +1253,10 @@ export default {
     },
     canViewAdmin() {
       return this.match.is_organizer;
+    },
+    // The api runs RCON only for moderators and above, whoever organizes the match.
+    canUseRcon() {
+      return useAuthStore().isRoleAbove(e_player_roles_enum.moderator);
     },
     canViewMatchServerLogs() {
       return [

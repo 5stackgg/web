@@ -9016,7 +9016,9 @@
   "rcon": {
     "console": "RCON 主控台",
     "suggestions": "建議",
-    "entry_count": "{count} 筆"
+    "entry_count": "{count} 筆",
+    "moderators_only": "RCON 僅限版主使用",
+    "moderators_only_description": "如果此伺服器需要主控台指令，請聯絡版主。"
   },
   "game_server_node": {
     "set_ports": "設定連接埠"

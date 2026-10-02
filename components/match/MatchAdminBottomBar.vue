@@ -2,18 +2,30 @@
 import { ref, computed, provide, onMounted, onBeforeUnmount } from "vue";
 import EventEmitter from "eventemitter3";
 import { useMatchBackupRounds } from "~/composables/useMatchBackupRounds";
-import { ChevronUp, GripHorizontal, Shield, Zap } from "lucide-vue-next";
+import {
+  ChevronUp,
+  GripHorizontal,
+  Shield,
+  Terminal,
+  Zap,
+} from "lucide-vue-next";
 import { useVetoOverride } from "~/composables/useVetoOverride";
 import MatchServerRebootControl from "~/components/match/MatchServerRebootControl.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
 import ServiceLogs from "~/components/ServiceLogs.vue";
 import { Button } from "~/components/ui/button";
+import { FadeSwap } from "~/components/ui/transitions";
 import DropdownMenuItem from "~/components/ui/dropdown-menu/DropdownMenuItem.vue";
 import DropdownMenuSeparator from "~/components/ui/dropdown-menu/DropdownMenuSeparator.vue";
 import DropdownMenuSub from "~/components/ui/dropdown-menu/DropdownMenuSub.vue";
 import DropdownMenuSubTrigger from "~/components/ui/dropdown-menu/DropdownMenuSubTrigger.vue";
 import DropdownMenuSubContent from "~/components/ui/dropdown-menu/DropdownMenuSubContent.vue";
-import { e_match_status_enum, e_match_types_enum } from "~/generated/zeus";
+import {
+  e_match_status_enum,
+  e_match_types_enum,
+  e_player_roles_enum,
+} from "~/generated/zeus";
+import { useAuthStore } from "~/stores/AuthStore";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import {
   type MatchCommand,
@@ -131,6 +143,11 @@ const canSendRCONCommands = computed(
       e_match_status_enum.WaitingForCheckIn,
       e_match_status_enum.WaitingForServer,
     ].includes(props.match.status) && !!props.match.server_id,
+);
+
+// The api runs RCON only for moderators and above, whoever organizes the match.
+const canUseRcon = computed(() =>
+  useAuthStore().isRoleAbove(e_player_roles_enum.moderator),
 );
 
 const canShowLogs = computed(
@@ -306,11 +323,12 @@ function runCommand(
         <div
           class="h-full min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-3 p-3 sm:gap-4 sm:p-4 overflow-auto lg:overflow-hidden"
         >
-          <div
+          <FadeSwap
             class="min-w-0 flex flex-col gap-3 lg:min-h-0 lg:overflow-hidden"
           >
             <RconCommander
-              v-if="canSendRCONCommands"
+              v-if="canSendRCONCommands && canUseRcon"
+              key="console"
               :server-id="match.server_id"
               :online="!!match.is_server_online"
               :match-id="match.id"
@@ -362,7 +380,27 @@ function runCommand(
             </RconCommander>
 
             <div
+              v-else-if="canSendRCONCommands"
+              key="moderators-only"
+              class="flex flex-col gap-3 h-full lg:min-h-0"
+            >
+              <div
+                class="flex flex-1 flex-col items-center justify-center gap-1.5 rounded-md border border-dashed border-border p-6 text-center"
+              >
+                <Terminal class="h-5 w-5 text-muted-foreground" />
+                <h3 class="text-sm font-semibold">
+                  {{ $t("rcon.moderators_only") }}
+                </h3>
+                <p class="text-xs text-muted-foreground">
+                  {{ $t("rcon.moderators_only_description") }}
+                </p>
+              </div>
+              <MatchServerRebootControl :match="match" variant="card" />
+            </div>
+
+            <div
               v-else
+              key="unavailable"
               class="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border p-6 text-center h-full"
             >
               <h3 class="font-semibold">
@@ -372,7 +410,7 @@ function runCommand(
                 {{ $t("match.admin_bar.not_controllable") }}
               </p>
             </div>
-          </div>
+          </FadeSwap>
 
           <div
             class="min-w-0 flex flex-col gap-2 lg:min-h-0 lg:overflow-hidden"

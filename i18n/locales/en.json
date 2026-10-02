@@ -9016,7 +9016,9 @@
   "rcon": {
     "console": "RCON Console",
     "suggestions": "Suggestions",
-    "entry_count": "{count} entries"
+    "entry_count": "{count} entries",
+    "moderators_only": "RCON is for moderators",
+    "moderators_only_description": "Ask a moderator if this server needs a console command."
   },
   "game_server_node": {
     "set_ports": "Set Ports"

@@ -9016,7 +9016,9 @@
   "rcon": {
     "console": "RCON Konsolu",
     "suggestions": "Öneriler",
-    "entry_count": "{count} kayıt"
+    "entry_count": "{count} kayıt",
+    "moderators_only": "RCON moderatörler içindir",
+    "moderators_only_description": "Bu sunucunun bir konsol komutuna ihtiyacı varsa bir moderatöre sor."
   },
   "game_server_node": {
     "set_ports": "Portları Ayarla"

@@ -24,18 +24,23 @@ const remaining = computed(
     now.value.getTime(),
 );
 
-const label = computed(() => {
-  const time =
-    remaining.value >= DAY
-      ? t("layouts.chat_panel.tournament_ended_days", {
-          count: Math.floor(remaining.value / DAY),
-        })
-      : t("layouts.chat_panel.tournament_ended_hours", {
-          count: Math.max(1, Math.floor(remaining.value / HOUR)),
-        });
-
-  return t("layouts.chat_panel.tournament_ended", { time });
+const time = computed(() => {
+  if (remaining.value >= DAY) {
+    return t("layouts.chat_panel.tournament_ended_days", {
+      count: Math.floor(remaining.value / DAY),
+    });
+  }
+  if (remaining.value >= HOUR) {
+    return t("layouts.chat_panel.tournament_ended_hours", {
+      count: Math.floor(remaining.value / HOUR),
+    });
+  }
+  return `<${t("layouts.chat_panel.tournament_ended_hours", { count: 1 })}`;
 });
+
+const label = computed(() =>
+  t("layouts.chat_panel.tournament_ended", { time: time.value }),
+);
 
 const explanation = computed(() =>
   t("layouts.chat_panel.tournament_ended_tooltip"),

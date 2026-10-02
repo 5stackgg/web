@@ -179,8 +179,14 @@ describe("the ended stamp", () => {
     );
   });
 
-  it("never says zero", async () => {
+  it("says under an hour rather than rounding up to one", async () => {
     expect((await stamp(ago(7 * DAY - 10 * 60 * 1000))).text()).toBe(
+      "Ended · closes in <1h",
+    );
+  });
+
+  it("counts the last full hour as one", async () => {
+    expect((await stamp(ago(7 * DAY - 90 * 60 * 1000))).text()).toBe(
       "Ended · closes in 1h",
     );
   });

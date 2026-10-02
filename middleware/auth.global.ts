@@ -31,6 +31,12 @@ function isPublicRoute(path: string): boolean {
     return true;
   }
 
+  // A public server's page. A signed-out visitor only ever gets its public
+  // view; the list, create and files pages stay behind the login.
+  if (/^\/dedicated-servers\/[0-9a-f-]{36}\/?$/i.test(path)) {
+    return true;
+  }
+
   if (path.startsWith("/leaderboard")) {
     return true;
   }

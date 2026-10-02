@@ -2,27 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import {
-  MoreVertical,
-  Trash2,
-  FolderOpen,
-  Pencil,
-  ArrowRightLeft,
-} from "lucide-vue-next";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "~/components/ui/sheet";
+import { FolderOpen } from "lucide-vue-next";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -47,12 +27,12 @@ import {
 } from "~/components/ui/tabs";
 import { ref, computed } from "vue";
 import { useNow } from "@vueuse/core";
-import ServerForm from "~/components/servers/ServerForm.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
 import ServerPlayerManagement from "~/components/servers/ServerPlayerManagement.vue";
 import ServerRecentPlayers from "~/components/servers/ServerRecentPlayers.vue";
 import ServerSettings from "~/components/servers/ServerSettings.vue";
-import ServerOverviewStrip from "~/components/servers/ServerOverviewStrip.vue";
+import ServerCommunityOverview from "~/components/servers/ServerCommunityOverview.vue";
+import PublicServerView from "~/components/servers/PublicServerView.vue";
 import ServerMoveDialog from "~/components/servers/ServerMoveDialog.vue";
 import ServerMigrationPanel from "~/components/servers/ServerMigrationPanel.vue";
 import { useServerMigration } from "~/composables/useServerMigration";
@@ -73,15 +53,19 @@ import {
 const { openFiles } = useFilePopout();
 
 // Any other query change remounts the page (utilities/pageKey.ts).
-definePageMeta({ middleware: "moderator", persistQueryKeys: ["settings"] });
+definePageMeta({ persistQueryKeys: ["settings"] });
 
 const authStore = useAuthStore();
+// Everyone else gets the public view, which only finds a server the public
+// can see.
+const canManage = computed(() =>
+  authStore.isRoleAbove(e_player_roles_enum.moderator),
+);
 const isManager = computed(() =>
   authStore.isRoleAbove(e_player_roles_enum.match_organizer),
 );
 const isAdmin = computed(() => authStore.isAdmin);
 
-const serverMenu = ref(false);
 const moveDialog = ref(false);
 const dismissedMigrationId = ref<string | null>(null);
 
@@ -148,345 +132,301 @@ const titleClasses =
   "relative m-0 font-sans font-bold [font-stretch:80%] text-[clamp(1.5rem,3.5vw,2.5rem)] leading-[0.95] tracking-[0.02em] uppercase break-words bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent";
 </script>
 <template>
-  <PageTransition :delay="0">
-    <header v-if="server" :class="[heroClasses, isCommunityServer && '!pb-0']">
-      <div class="flex items-center gap-3 flex-wrap mb-5 max-sm:mb-4">
-        <span :class="[statusBaseClasses, statusTierClasses[statusTier]]">
-          <ServerStatus :server="server" />
-          {{ statusLabel }}
-        </span>
-
-        <span :class="chipClasses">{{ server.region }}</span>
-        <span v-if="server.type" :class="chipClasses">{{ server.type }}</span>
-        <span v-if="isAdmin && serverNode" :class="chipClasses">
-          {{ serverNode.label || serverNode.id }}
-        </span>
-
-        <div v-if="isManager" class="inline-flex items-center gap-2 ml-auto">
-          <div class="inline-flex items-center gap-2 mr-1 max-sm:hidden">
-            <Switch
-              :model-value="server.enabled"
-              :disabled="isMigrating"
-              @click="toggleServerEnabled"
-            />
-            <Label
-              class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
-            >
-              {{ $t("pages.dedicated_servers.detail.enabled") }}
-            </Label>
-          </div>
-
-          <TooltipProvider v-if="isAdmin && server?.game_server_node_id">
-            <Tooltip>
-              <TooltipTrigger as-child>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  :disabled="isMigrating"
-                  :aria-label="$t('pages.dedicated_servers.detail.files')"
-                  @click="openFiles({ scope: 'server', id: server.id })"
-                >
-                  <FolderOpen class="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                {{ $t("pages.dedicated_servers.detail.files") }}
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-
-          <DropdownMenu v-model:open="serverMenu">
-            <DropdownMenuTrigger as-child>
-              <Button variant="outline" size="icon">
-                <MoreVertical />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" class="w-[200px]">
-              <DropdownMenuGroup>
-                <DropdownMenuItem
-                  :disabled="isMigrating"
-                  @click="editServerSheet = true"
-                >
-                  <Pencil />
-                  {{ $t("common.actions.edit") }}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  v-if="isAdmin && migratingServer?.game_server_node_id"
-                  :disabled="isMigrating"
-                  @click="moveDialog = true"
-                >
-                  <ArrowRightLeft />
-                  {{ $t("pages.dedicated_servers.detail.move.menu") }}
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  class="text-destructive focus:text-destructive"
-                  :disabled="isMigrating"
-                  @click="deleteServerAlertDialog = true"
-                >
-                  <Trash2 />
-                  {{ $t("common.delete") }}
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </div>
-
-      <div class="flex flex-col gap-[0.4rem] min-w-0">
-        <span
-          class="font-mono text-[0.6rem] tracking-[0.28em] uppercase text-muted-foreground/70"
-        >
-          {{ $t("pages.dedicated_servers.detail.eyebrow") }}
-        </span>
-        <h1 :class="titleClasses">{{ server.label }}</h1>
-        <div
-          class="flex min-w-0 flex-wrap items-center gap-2 font-mono text-[0.8rem] tracking-[0.05em] text-muted-foreground"
-        >
-          <span class="min-w-0 truncate">
-            {{ server.host }}:{{ server.port }}
+  <template v-if="canManage">
+    <PageTransition :delay="0">
+      <header v-if="server" :class="heroClasses">
+        <div class="flex items-center gap-3 flex-wrap mb-5 max-sm:mb-4">
+          <span :class="[statusBaseClasses, statusTierClasses[statusTier]]">
+            <ServerStatus :server="server" />
+            {{ statusLabel }}
           </span>
-          <QuickServerConnect
-            v-if="server.connection_string"
-            :server="server"
-            highlight
-          />
-          <Clipboard v-else :data="`${server.host}:${server.port}`" />
-        </div>
-      </div>
 
-      <div
-        v-if="isManager"
-        class="sm:hidden mt-4 pt-4 border-t border-border flex items-center justify-between"
-      >
-        <Label
-          class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
-        >
-          {{ $t("pages.dedicated_servers.detail.enabled") }}
-        </Label>
-        <Switch
-          :model-value="server.enabled"
-          :disabled="isMigrating"
-          @click="toggleServerEnabled"
-        />
-      </div>
+          <span :class="chipClasses">{{ server.region }}</span>
+          <span v-if="server.type" :class="chipClasses">{{ server.type }}</span>
+          <span v-if="isAdmin && serverNode" :class="chipClasses">
+            {{ serverNode.label || serverNode.id }}
+          </span>
 
-      <ServerOverviewStrip
-        v-if="isCommunityServer"
-        class="-mx-6 mt-5 max-sm:-mx-4 max-sm:mt-4"
-        :status="rosterStatus"
-        :totals="recentTotals"
-        :max-players="server.max_players"
-      />
-    </header>
-  </PageTransition>
+          <div v-if="isManager" class="inline-flex items-center gap-2 ml-auto">
+            <div class="inline-flex items-center gap-2 mr-1 max-sm:hidden">
+              <Switch
+                :model-value="server.enabled"
+                :disabled="isMigrating"
+                @click="toggleServerEnabled"
+              />
+              <Label
+                class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+              >
+                {{ $t("pages.dedicated_servers.detail.enabled") }}
+              </Label>
+            </div>
 
-  <PageTransition
-    v-if="server && isAdmin && visibleMigration"
-    :delay="50"
-    class="mt-6"
-  >
-    <ServerMigrationPanel
-      :server-id="server.id"
-      :migration="visibleMigration"
-      @dismiss="dismissedMigrationId = visibleMigration.id"
-    />
-  </PageTransition>
-
-  <PageTransition v-if="server" :delay="100" class="mt-4">
-    <Tabs v-model="activeTab" :scroll-floor="false">
-      <div
-        class="sticky top-0 z-20 -mx-1 bg-background/85 px-1 py-2 backdrop-blur-sm"
-      >
-        <TabsList
-          variant="underline"
-          :class="[
-            tacticalTabsListClasses,
-            'h-auto max-w-full justify-start overflow-x-auto',
-          ]"
-        >
-          <TabsTrigger
-            v-for="tab in tabs"
-            :key="tab.key"
-            :value="tab.key"
-            :class="tacticalTabsTriggerClasses"
-          >
-            {{ tab.label }}
-            <span
-              v-if="tab.key === 'players' && rosterStatus"
-              :class="[
-                tabCountClasses,
-                rosterStatus.count
-                  ? 'bg-[hsl(var(--tac-amber))] text-black'
-                  : 'bg-muted text-muted-foreground',
-              ]"
-              data-testid="players-tab-count"
-            >
-              {{ rosterStatus.count }}
-            </span>
-          </TabsTrigger>
-        </TabsList>
-      </div>
-
-      <TabsContent
-        value="players"
-        force-mount
-        class="mt-4 grid gap-8 data-[state=inactive]:hidden"
-      >
-        <ServerPlayerManagement
-          :server-id="server.id"
-          :game-server-node-id="server.game_server_node_id"
-          :max-players="server.max_players"
-          :online="rconOnline"
-          @roster-change="rosterRevision++"
-          @status="rosterStatus = $event"
-        />
-        <ServerRecentPlayers
-          v-if="isCommunityServer"
-          :server-id="server.id"
-          :roster-revision="rosterRevision"
-          @totals="recentTotals = $event"
-        />
-      </TabsContent>
-
-      <TabsContent
-        value="console"
-        force-mount
-        class="mt-4 data-[state=inactive]:hidden"
-      >
-        <RconCommander
-          :server-id="server.id"
-          :online="rconOnline"
-          :plugin-runtime="server.plugin_runtime"
-        />
-      </TabsContent>
-
-      <TabsContent
-        v-if="showsLogs"
-        value="logs"
-        force-mount
-        class="mt-4 data-[state=inactive]:hidden"
-      >
-        <ServiceLogs
-          :service="`dedicated-server-${server.id}`"
-          :compact="true"
-        />
-      </TabsContent>
-
-      <TabsContent
-        v-if="showsSettings"
-        value="settings"
-        force-mount
-        class="mt-4 grid gap-8 data-[state=inactive]:hidden"
-      >
-        <div
-          v-if="showsPluginConfig"
-          class="rounded-lg border border-border bg-muted/30 p-4"
-        >
-          <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold">
-              {{ $t("pages.dedicated_servers.detail.server_plugin_config") }}
-            </h3>
-            <Button variant="ghost" size="sm" @click="showConfig = !showConfig">
-              <Eye v-if="!showConfig" class="mr-2 h-4 w-4" />
-              <EyeOff v-else class="mr-2 h-4 w-4" />
-              {{
-                showConfig
-                  ? $t("pages.dedicated_servers.detail.hide_config")
-                  : $t("pages.dedicated_servers.detail.show_config")
-              }}
-            </Button>
+            <TooltipProvider v-if="isAdmin && server?.game_server_node_id">
+              <Tooltip>
+                <TooltipTrigger as-child>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    :disabled="isMigrating"
+                    :aria-label="$t('pages.dedicated_servers.detail.files')"
+                    @click="openFiles({ scope: 'server', id: server.id })"
+                  >
+                    <FolderOpen class="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {{ $t("pages.dedicated_servers.detail.files") }}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
+        </div>
 
-          <Tabs v-model="configRuntime" :scroll-floor="false" class="mt-3">
-            <TabsList>
-              <TabsTrigger value="swiftlys2">SwiftlyS2</TabsTrigger>
-              <TabsTrigger value="counterstrikesharp">
-                CounterStrikeSharp
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+        <div class="flex flex-col gap-[0.4rem] min-w-0">
+          <span
+            class="font-mono text-[0.6rem] tracking-[0.28em] uppercase text-muted-foreground/70"
+          >
+            {{ $t("pages.dedicated_servers.detail.eyebrow") }}
+          </span>
+          <h1 :class="titleClasses">{{ server.label }}</h1>
+          <div
+            class="flex min-w-0 flex-wrap items-center gap-2 font-mono text-[0.8rem] tracking-[0.05em] text-muted-foreground"
+          >
+            <span class="min-w-0 truncate">
+              {{ server.host }}:{{ server.port }}
+            </span>
+            <QuickServerConnect
+              v-if="server.connection_string"
+              :server="server"
+              highlight
+            />
+            <Clipboard v-else :data="`${server.host}:${server.port}`" />
+          </div>
+        </div>
 
-          <p class="mt-2 text-sm text-muted-foreground">
-            {{ $t("pages.dedicated_servers.detail.config_location") }}
-            <code class="rounded bg-secondary px-1.5 py-0.5 text-xs">
-              {{ configPath }}
-            </code>
-            <Clipboard :data="configPath" />
-          </p>
+        <div
+          v-if="isManager"
+          class="sm:hidden mt-4 pt-4 border-t border-border flex items-center justify-between"
+        >
+          <Label
+            class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+          >
+            {{ $t("pages.dedicated_servers.detail.enabled") }}
+          </Label>
+          <Switch
+            :model-value="server.enabled"
+            :disabled="isMigrating"
+            @click="toggleServerEnabled"
+          />
+        </div>
 
-          <div v-if="showConfig" class="relative mt-3">
-            <pre
-              class="bg-secondary p-4 rounded-lg text-sm font-mono whitespace-pre-wrap w-full"
-              >{{ config }}</pre
+      </header>
+    </PageTransition>
+
+    <PageTransition
+      v-if="server && isAdmin && visibleMigration"
+      :delay="50"
+      class="mt-6"
+    >
+      <ServerMigrationPanel
+        :server-id="server.id"
+        :migration="visibleMigration"
+        @dismiss="dismissedMigrationId = visibleMigration.id"
+      />
+    </PageTransition>
+
+    <PageTransition v-if="server" :delay="100" class="mt-4">
+      <Tabs v-model="activeTab" :scroll-floor="false">
+        <div
+          class="sticky top-0 z-20 -mx-1 bg-background/85 px-1 py-2 backdrop-blur-sm"
+        >
+          <TabsList
+            variant="underline"
+            :class="[
+              tacticalTabsListClasses,
+              'h-auto max-w-full justify-start overflow-x-auto',
+            ]"
+          >
+            <TabsTrigger
+              v-for="tab in tabs"
+              :key="tab.key"
+              :value="tab.key"
+              :class="tacticalTabsTriggerClasses"
             >
-            <div class="absolute top-2 right-2">
-              <Clipboard :data="config"></Clipboard>
+              {{ tab.label }}
+              <span
+                v-if="tab.key === 'players' && rosterStatus"
+                :class="[
+                  tabCountClasses,
+                  rosterStatus.count
+                    ? 'bg-[hsl(var(--tac-amber))] text-black'
+                    : 'bg-muted text-muted-foreground',
+                ]"
+                data-testid="players-tab-count"
+              >
+                {{ rosterStatus.count }}
+              </span>
+            </TabsTrigger>
+          </TabsList>
+        </div>
+
+        <TabsContent
+          v-if="isCommunityServer"
+          value="overview"
+          force-mount
+          class="mt-4 data-[state=inactive]:hidden"
+        >
+          <ServerCommunityOverview
+            :server-id="server.id"
+            :label="server.label"
+            :max-players="server.max_players"
+          />
+        </TabsContent>
+
+        <TabsContent
+          value="players"
+          force-mount
+          class="mt-4 grid gap-8 data-[state=inactive]:hidden"
+        >
+          <ServerPlayerManagement
+            :server-id="server.id"
+            :game-server-node-id="server.game_server_node_id"
+            :max-players="server.max_players"
+            :online="rconOnline"
+            @roster-change="rosterRevision++"
+            @status="rosterStatus = $event"
+          />
+          <ServerRecentPlayers
+            v-if="isCommunityServer"
+            :server-id="server.id"
+            :roster-revision="rosterRevision"
+          />
+        </TabsContent>
+
+        <TabsContent
+          value="console"
+          force-mount
+          class="mt-4 data-[state=inactive]:hidden"
+        >
+          <RconCommander
+            :server-id="server.id"
+            :online="rconOnline"
+            :plugin-runtime="server.plugin_runtime"
+          />
+        </TabsContent>
+
+        <TabsContent
+          v-if="showsLogs"
+          value="logs"
+          force-mount
+          class="mt-4 data-[state=inactive]:hidden"
+        >
+          <ServiceLogs
+            :service="`dedicated-server-${server.id}`"
+            :compact="true"
+          />
+        </TabsContent>
+
+        <TabsContent
+          v-if="showsSettings"
+          value="settings"
+          force-mount
+          class="mt-4 grid gap-8 data-[state=inactive]:hidden"
+        >
+          <div
+            v-if="showsPluginConfig"
+            class="rounded-lg border border-border bg-muted/30 p-4"
+          >
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg font-semibold">
+                {{ $t("pages.dedicated_servers.detail.server_plugin_config") }}
+              </h3>
+              <Button variant="ghost" size="sm" @click="showConfig = !showConfig">
+                <Eye v-if="!showConfig" class="mr-2 h-4 w-4" />
+                <EyeOff v-else class="mr-2 h-4 w-4" />
+                {{
+                  showConfig
+                    ? $t("pages.dedicated_servers.detail.hide_config")
+                    : $t("pages.dedicated_servers.detail.show_config")
+                }}
+              </Button>
+            </div>
+
+            <Tabs v-model="configRuntime" :scroll-floor="false" class="mt-3">
+              <TabsList>
+                <TabsTrigger value="swiftlys2">SwiftlyS2</TabsTrigger>
+                <TabsTrigger value="counterstrikesharp">
+                  CounterStrikeSharp
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+
+            <p class="mt-2 text-sm text-muted-foreground">
+              {{ $t("pages.dedicated_servers.detail.config_location") }}
+              <code class="rounded bg-secondary px-1.5 py-0.5 text-xs">
+                {{ configPath }}
+              </code>
+              <Clipboard :data="configPath" />
+            </p>
+
+            <div v-if="showConfig" class="relative mt-3">
+              <pre
+                class="bg-secondary p-4 rounded-lg text-sm font-mono whitespace-pre-wrap w-full"
+                >{{ config }}</pre
+              >
+              <div class="absolute top-2 right-2">
+                <Clipboard :data="config"></Clipboard>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- csgo servers load no framework plugins, so the settings don't apply. -->
-        <ServerSettings
-          v-if="hasServerSettings"
-          :server="server"
-          :api-password="apiPassword"
-        />
-      </TabsContent>
-    </Tabs>
-  </PageTransition>
+          <!-- csgo servers load no framework plugins, so only a community CS2
+               server gets the rotation, plugin and access sections. -->
+          <ServerSettings
+            :server="server"
+            :api-password="apiPassword"
+            :community="hasServerSettings"
+            :can-move="!!migratingServer?.game_server_node_id && !isMigrating"
+            :locked="isMigrating"
+            @move="moveDialog = true"
+            @delete="deleteServerAlertDialog = true"
+          />
+        </TabsContent>
+      </Tabs>
+    </PageTransition>
 
-  <Sheet
-    :open="editServerSheet"
-    @update:open="(open) => (editServerSheet = open)"
-  >
-    <SheetContent class="flex flex-col gap-0 sm:max-w-lg">
-      <SheetHeader>
-        <SheetTitle>{{ $t("common.actions.edit") }}</SheetTitle>
-      </SheetHeader>
-      <div class="-mx-4 mt-4 flex-1 overflow-y-auto px-4 py-1">
-        <ServerForm
-          :server="server"
-          :can-move="!!migratingServer?.game_server_node_id && !isMigrating"
-          @updated="editServerSheet = false"
-          @move="
-            editServerSheet = false;
-            moveDialog = true;
-          "
-        />
-      </div>
-    </SheetContent>
-  </Sheet>
 
-  <ServerMoveDialog
-    v-if="isAdmin"
-    v-model:open="moveDialog"
-    :server="migratingServer"
-    :server-label="server?.label ?? ''"
-    :source-reachable="sourceReachable"
-  />
+    <ServerMoveDialog
+      v-if="isAdmin"
+      v-model:open="moveDialog"
+      :server="migratingServer"
+      :server-label="server?.label ?? ''"
+      :source-reachable="sourceReachable"
+    />
 
-  <AlertDialog
-    :open="deleteServerAlertDialog"
-    @update:open="(open) => (deleteServerAlertDialog = open)"
-  >
-    <AlertDialogContent>
-      <AlertDialogHeader>
-        <AlertDialogTitle>{{
-          $t("pages.dedicated_servers.detail.delete_confirm.title")
-        }}</AlertDialogTitle>
-        <AlertDialogDescription>
-          {{ $t("pages.dedicated_servers.detail.delete_confirm.description") }}
-        </AlertDialogDescription>
-      </AlertDialogHeader>
-      <AlertDialogFooter>
-        <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
-        <AlertDialogAction @click="deleteServer">{{
-          $t("pages.dedicated_servers.detail.delete_confirm.continue")
-        }}</AlertDialogAction>
-      </AlertDialogFooter>
-    </AlertDialogContent>
-  </AlertDialog>
+    <AlertDialog
+      :open="deleteServerAlertDialog"
+      @update:open="(open) => (deleteServerAlertDialog = open)"
+    >
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{{
+            $t("pages.dedicated_servers.detail.delete_confirm.title")
+          }}</AlertDialogTitle>
+          <AlertDialogDescription>
+            {{ $t("pages.dedicated_servers.detail.delete_confirm.description") }}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+          <AlertDialogAction @click="deleteServer">{{
+            $t("pages.dedicated_servers.detail.delete_confirm.continue")
+          }}</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  </template>
+  <PublicServerView v-else :server-id="(route.params.id as string)" />
 </template>
 
 <script lang="ts">
@@ -499,10 +439,7 @@ import {
 } from "~/graphql/graphqlGen";
 import { useAuthStore } from "~/stores/AuthStore";
 import { getQueryString } from "~/composables/useRouteTab";
-import type {
-  ServerRecentTotals,
-  ServerRosterStatus,
-} from "~/types/serverOverview";
+import type { ServerRosterStatus } from "~/types/serverOverview";
 
 // Literals, not the generated enum: a type added by a migration is absent
 // from ~/generated/zeus until codegen has run against a migrated database.
@@ -572,6 +509,11 @@ export default {
         result: function ({ data }) {
           this.server = data.servers_by_pk;
         },
+        // Most of these columns are staff-only, and the public view runs its
+        // own subscription.
+        skip: function () {
+          return !useAuthStore().isRoleAbove(e_player_roles_enum.moderator);
+        },
       },
     },
   },
@@ -581,11 +523,9 @@ export default {
       apiPassword: undefined,
       showConfig: false,
       selectedConfigRuntime: null as string | null,
-      editServerSheet: false,
       deleteServerAlertDialog: false,
       rosterRevision: 0,
       rosterStatus: null as ServerRosterStatus | null,
-      recentTotals: null as ServerRecentTotals | null,
     };
   },
   computed: {
@@ -595,14 +535,21 @@ export default {
         !!this.server?.game_server_node_id
       );
     },
+    // Editing and deleting a server are administrator-only in Hasura, so the
+    // tab that holds them is too.
     showsSettings() {
-      return (
-        useAuthStore().isAdmin &&
-        (this.hasServerSettings || this.showsPluginConfig)
-      );
+      return useAuthStore().isAdmin;
     },
     tabs() {
       return [
+        ...(this.isCommunityServer
+          ? [
+              {
+                key: "overview",
+                label: this.$t("pages.dedicated_servers.detail.tabs.overview"),
+              },
+            ]
+          : []),
         {
           key: "players",
           label: this.$t("pages.dedicated_servers.detail.tabs.players"),
@@ -629,6 +576,10 @@ export default {
           : []),
       ];
     },
+    // A public server opens on the same stats the public sees.
+    defaultTab() {
+      return this.isCommunityServer ? "overview" : "players";
+    },
     // A settings deep link (?settings=plugins) predates the tabs, so it still
     // opens the Settings tab without a ?tab.
     activeTab: {
@@ -640,12 +591,12 @@ export default {
 
         return this.tabs.some((tab) => tab.key === requested)
           ? (requested as string)
-          : "players";
+          : this.defaultTab;
       },
       set(tab: string) {
         const query = { ...this.$route.query };
 
-        if (tab === "players") {
+        if (tab === this.defaultTab) {
           delete query.tab;
         } else {
           query.tab = tab;

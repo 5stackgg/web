@@ -439,7 +439,7 @@ watch(
                     </td>
                     <td class="px-3 py-2.5">
                       <NuxtLink
-                        :to="`/public-servers/${server.server_id}`"
+                        :to="`/dedicated-servers/${server.server_id}`"
                         class="font-semibold transition-colors hover:text-[hsl(var(--tac-amber))]"
                       >
                         {{ server.label }}

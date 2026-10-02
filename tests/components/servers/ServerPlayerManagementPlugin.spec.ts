@@ -7,13 +7,16 @@ import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 
 const state = vi.hoisted(() => ({
   server: null as Record<string, unknown> | null,
+  pending: false,
 }));
 
 vi.mock("~/graphql/getGraphqlClient", () => ({
   default: () => ({
     subscribe: () => ({
       subscribe: ({ next }: any) => {
-        next({ data: { servers_by_pk: state.server } });
+        if (!state.pending) {
+          next({ data: { servers_by_pk: state.server } });
+        }
         return { unsubscribe() {} };
       },
     }),
@@ -44,6 +47,7 @@ async function mountSection(props: Record<string, unknown>) {
 
 beforeEach(() => {
   state.server = null;
+  state.pending = false;
   vi.spyOn(
     useApplicationSettingsStore(),
     "latestPluginVersion",
@@ -63,6 +67,19 @@ afterEach(() => {
 });
 
 describe("ServerPlayerManagementPlugin", () => {
+  // Nothing has answered yet, so the plugin is neither on nor off.
+  it("waits for the plugin's status before calling it missing", async () => {
+    state.pending = true;
+
+    const wrapper = await mountSection({ gameServerNodeId: "node-1" });
+
+    expect(wrapper.text()).not.toContain("not detected");
+    expect(wrapper.text()).not.toContain("plugin active");
+    expect(
+      wrapper.find('[data-testid="plugin-status-loading"]').exists(),
+    ).toBe(true);
+  });
+
   it("shows an active plugin's version, framework and last check-in", async () => {
     state.server = community(new Date().toISOString());
 

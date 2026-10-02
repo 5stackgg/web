@@ -126,4 +126,47 @@ describe("ServerSettings", () => {
       },
     });
   });
+
+  it("opens on the server's own settings", async () => {
+    const wrapper = await mountConsole("node-a");
+
+    expect(wrapper.find('[aria-current="page"]').text()).toBe("General");
+    expect(wrapper.text()).toContain("Server Label");
+    expect(wrapper.find('[data-testid="delete-server"]').isVisible()).toBe(
+      false,
+    );
+  });
+
+  it("keeps delete in its own danger tab, last in the list", async () => {
+    const wrapper = await mountConsole("node-a", "/?settings=delete");
+
+    const tabs = wrapper.findAll("nav a");
+    const last = tabs[tabs.length - 1];
+    expect(last.text()).toBe("Delete Server");
+    expect(last.attributes("data-settings-tab-tone")).toBe("danger");
+    expect(last.attributes("aria-current")).toBe("page");
+
+    await wrapper.find('[data-testid="delete-server"]').trigger("click");
+
+    expect(wrapper.emitted("delete")).toHaveLength(1);
+  });
+
+  it("leaves the community sections off a server that is not one", async () => {
+    state.data = fixture();
+
+    const wrapper = await mountSuspended(ServerSettings, {
+      route: "/",
+      props: {
+        server: { id: "server-1", enabled: true, game_server_node_id: "node-a" },
+        community: false,
+      },
+      attachTo: document.body,
+    });
+    unmount = () => wrapper.unmount();
+
+    expect(wrapper.text()).toContain("General");
+    expect(wrapper.text()).not.toContain("Map Rotation");
+    expect(wrapper.find("#server-access-restricted").exists()).toBe(false);
+  });
 });
+

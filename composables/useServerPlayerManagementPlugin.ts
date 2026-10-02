@@ -44,6 +44,9 @@ export function useServerPlayerManagementPlugin(
   serverId: MaybeRefOrGetter<string>,
 ) {
   const server = ref<PluginServer | null>(null);
+  // Until the first answer the plugin is neither on nor off; a "not detected"
+  // shown before then is a guess.
+  const loaded = ref(false);
   const now = ref(Date.now());
   let subscription: { unsubscribe: () => void } | null = null;
   let clock: ReturnType<typeof setInterval> | null = null;
@@ -94,9 +97,11 @@ export function useServerPlayerManagementPlugin(
       .subscribe({
         next: ({ data }: any) => {
           server.value = data?.servers_by_pk ?? null;
+          loaded.value = true;
         },
         error: () => {
           server.value = null;
+          loaded.value = true;
         },
       });
 
@@ -115,6 +120,7 @@ export function useServerPlayerManagementPlugin(
 
   return {
     server,
+    loaded,
     now,
     isCommunityServer,
     active,

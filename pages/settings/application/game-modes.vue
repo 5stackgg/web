@@ -80,6 +80,9 @@ definePageMeta({
                     <ShieldAlert class="h-3 w-3" />
                     {{ $t("pages.settings.application.game_modes.casual_only") }}
                   </Badge>
+                  <Badge v-if="mode.valve_mode" variant="outline">
+                    {{ valveModeLabel(mode.valve_mode) }}
+                  </Badge>
                 </div>
                 <p class="text-xs text-muted-foreground truncate">
                   {{ mode.description }}
@@ -130,8 +133,18 @@ definePageMeta({
 <script lang="ts">
 import { order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
+import { VALVE_MODES } from "~/constants/valveModes";
 
 export default {
+  // ?mode=<id> opens that mode's editor, so a server can link to its mode.
+  watch: {
+    gameModes() {
+      this.openRequested();
+    },
+    "$route.query.mode"() {
+      this.openRequested();
+    },
+  },
   data() {
     return {
       editing: undefined as Record<string, any> | null | undefined,
@@ -155,6 +168,7 @@ export default {
             runtime_conflicts: true,
             cfg: true,
             extra_game_params: true,
+            valve_mode: true,
             match_options: [{ limit: 1 }, { id: true }],
             plugins: [
               { order_by: [{ load_order: order_by.asc }] },
@@ -172,17 +186,41 @@ export default {
     },
   },
   methods: {
+    valveModeLabel(value: string) {
+      return VALVE_MODES.find((mode) => mode.value === value)?.label ?? value;
+    },
     create() {
       this.editing = null;
     },
     edit(mode: Record<string, any>) {
       this.editing = mode;
     },
+    openRequested() {
+      const requested = this.$route.query.mode;
+
+      if (typeof requested !== "string" || this.editing !== undefined) {
+        return;
+      }
+
+      const mode = (this.gameModes ?? []).find(
+        (candidate: Record<string, any>) => candidate.id === requested,
+      );
+
+      if (mode) {
+        this.edit(mode);
+      }
+    },
     close() {
       this.editing = undefined;
+
+      if (this.$route.query.mode) {
+        const query = { ...this.$route.query };
+        delete query.mode;
+        void this.$router.replace({ query });
+      }
     },
     async onSaved() {
-      this.editing = undefined;
+      this.close();
       await (this as any).$apollo.queries.gameModes.refetch();
     },
   },

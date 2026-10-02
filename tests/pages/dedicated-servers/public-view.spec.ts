@@ -18,7 +18,7 @@ vi.mock("~/graphql/getGraphqlClient", () => ({
   }),
 }));
 
-import PublicServerPage from "~/pages/public-servers/[id].vue";
+import DedicatedServerPage from "~/pages/dedicated-servers/[id].vue";
 import ServerActivityChart from "~/components/community/ServerActivityChart.vue";
 
 const ME = "76561198000000099";
@@ -121,8 +121,8 @@ async function mountPage(you: Record<string, unknown> | null) {
   };
   mockQueries(you);
 
-  const wrapper = await mountSuspended(PublicServerPage, {
-    route: "/public-servers/server-1",
+  const wrapper = await mountSuspended(DedicatedServerPage, {
+    route: "/dedicated-servers/server-1",
   });
   mounted = wrapper;
   await flushPromises();
@@ -138,7 +138,15 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe("public server page", () => {
+describe("dedicated server page for a player", () => {
+  it("shows only the public view, with no staff tabs or controls", async () => {
+    const wrapper = await mountPage(null);
+
+    expect(wrapper.find('[role="tablist"]').exists()).toBe(false);
+    expect(wrapper.find(".lucide-ellipsis-vertical").exists()).toBe(false);
+    expect(wrapper.text()).toContain("Public Servers");
+  });
+
   it("shows the server, its weekly tiles and the activity chart", async () => {
     const wrapper = await mountPage(null);
 

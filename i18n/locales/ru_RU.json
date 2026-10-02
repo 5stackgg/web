@@ -8415,8 +8415,8 @@
       "name_length": "Имя должно содержать от 3 до 32 символов.",
       "saved": "Игрок обновлён",
       "your_teams": "Твои команды",
-      "copy": "Копировать",
-      "copied_to_team": "Скопировано в {team}"
+      "assign": "Назначить",
+      "assigned_to_team": "Назначено для {team}"
     },
     "pending_imports": {
       "title": "Ожидающие импорты CS2",

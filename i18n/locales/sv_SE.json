@@ -8415,8 +8415,8 @@
       "name_length": "Namn måste vara 3 till 32 tecken.",
       "saved": "Spelaren uppdaterad",
       "your_teams": "Dina lag",
-      "copy": "Kopiera",
-      "copied_to_team": "Kopierad till {team}"
+      "assign": "Tilldela",
+      "assigned_to_team": "Tilldelad {team}"
     },
     "pending_imports": {
       "title": "Väntande CS2-importer",

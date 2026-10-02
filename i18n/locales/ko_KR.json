@@ -8415,8 +8415,8 @@
       "name_length": "이름은 3~32자여야 합니다.",
       "saved": "플레이어가 업데이트되었습니다",
       "your_teams": "내 팀",
-      "copy": "복사",
-      "copied_to_team": "{team}에 복사했습니다"
+      "assign": "지정",
+      "assigned_to_team": "{team}에 지정했습니다"
     },
     "pending_imports": {
       "title": "대기 중인 CS2 가져오기",

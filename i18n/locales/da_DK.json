@@ -8415,8 +8415,8 @@
       "name_length": "Navne skal være 3 til 32 tegn.",
       "saved": "Spiller opdateret",
       "your_teams": "Dine hold",
-      "copy": "Kopiér",
-      "copied_to_team": "Kopieret til {team}"
+      "assign": "Tildel",
+      "assigned_to_team": "Tildelt {team}"
     },
     "pending_imports": {
       "title": "Afventende CS2-imports",

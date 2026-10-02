@@ -8415,8 +8415,8 @@
       "name_length": "يجب أن يتكون الاسم من 3 إلى 32 حرفًا.",
       "saved": "تم تحديث اللاعب",
       "your_teams": "فرقك",
-      "copy": "نسخ",
-      "copied_to_team": "تم النسخ إلى {team}"
+      "assign": "تعيين",
+      "assigned_to_team": "تم التعيين إلى {team}"
     },
     "pending_imports": {
       "title": "استيرادات CS2 المعلّقة",

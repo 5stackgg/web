@@ -8415,8 +8415,8 @@
       "name_length": "Les noms doivent contenir entre 3 et 32 caractères.",
       "saved": "Joueur mis à jour",
       "your_teams": "Tes équipes",
-      "copy": "Copier",
-      "copied_to_team": "Copiée vers {team}"
+      "assign": "Attribuer",
+      "assigned_to_team": "Attribuée à {team}"
     },
     "pending_imports": {
       "title": "Imports CS2 en attente",

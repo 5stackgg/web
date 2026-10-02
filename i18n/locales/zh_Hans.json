@@ -8415,8 +8415,8 @@
       "name_length": "名称需为 3 到 32 个字符。",
       "saved": "玩家已更新",
       "your_teams": "你的战队",
-      "copy": "复制",
-      "copied_to_team": "已复制到 {team}"
+      "assign": "分配",
+      "assigned_to_team": "已分配给 {team}"
     },
     "pending_imports": {
       "title": "待导入的 CS2 比赛",

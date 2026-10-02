@@ -194,7 +194,7 @@ describe("PlayerEditForm", () => {
     expect(editor.props("file")).toBeInstanceOf(File);
   });
 
-  it("lists every team and copies the roster image to one at a time", async () => {
+  it("lists every team and assigns the roster image to one at a time", async () => {
     signIn(e_player_roles_enum.user);
     const fetchMock = vi
       .spyOn(globalThis, "fetch")
@@ -216,26 +216,32 @@ describe("PlayerEditForm", () => {
     });
 
     const rows = form.findAll("li");
-    expect(rows.map((row) => row.text())).toEqual([
-      "Blue Rabbits Copy",
-      "Night Owls Replace",
-      "Pub Stars",
+    expect(
+      rows.map((row) => [
+        row.find("span.truncate").text(),
+        row.find("button").exists() ? row.find("button").text() : null,
+      ]),
+    ).toEqual([
+      ["Blue Rabbits", "Assign"],
+      ["Night Owls", "Replace"],
+      ["Pub Stars", null],
     ]);
 
     await rows[0].find("button").trigger("click");
     await flushPromises();
 
     const uploads = fetchMock.mock.calls.filter(
-      ([, init]) => init?.method === "POST",
+      ([url, init]) =>
+        init?.method === "POST" && String(url).includes("/roster-teams/"),
     );
     expect(uploads).toHaveLength(1);
     expect(String(uploads[0][0])).toContain(
       "/avatars/roster-teams/t1/76561198000000001",
     );
-    expect(toastMock).toHaveBeenCalledWith({ title: "Copied to Blue Rabbits" });
+    expect(toastMock).toHaveBeenCalledWith({ title: "Assigned to Blue Rabbits" });
   });
 
-  it("can't copy to teams before there is a roster image", async () => {
+  it("can't assign to teams before there is a roster image", async () => {
     signIn(e_player_roles_enum.user);
     const form = await mountForm({
       canEditAvatar: true,
@@ -244,6 +250,6 @@ describe("PlayerEditForm", () => {
       ],
     });
 
-    expect(button(form, "Copy")!.attributes("disabled")).toBeDefined();
+    expect(button(form, "Assign")!.attributes("disabled")).toBeDefined();
   });
 });

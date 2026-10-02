@@ -7,7 +7,6 @@ import {
   RotateCcw,
   Trash2,
   Upload,
-  Copy,
 } from "lucide-vue-next";
 import { Input } from "~/components/ui/input";
 import { Spinner } from "~/components/ui/spinner";
@@ -349,13 +348,12 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
                     size="sm"
                     :disabled="!hasRoster || copyingTeamId !== null"
                     :loading="copyingTeamId === team.teamId"
-                    @click="copyToTeam(team)"
+                    @click="assignToTeam(team)"
                   >
-                    <Copy class="size-3.5" />
                     {{
                       team.rosterImageUrl
                         ? $t("image_upload.replace")
-                        : $t("player.edit.copy")
+                        : $t("player.edit.assign")
                     }}
                   </Button>
                 </li>
@@ -503,7 +501,7 @@ export default {
   },
   methods: {
     resolveAvatarUrl,
-    async copyToTeam(team: RosterTeam) {
+    async assignToTeam(team: RosterTeam) {
       if (!this.rosterSrc || this.copyingTeamId) return;
       this.copyingTeamId = team.teamId;
       try {
@@ -517,7 +515,7 @@ export default {
           "roster.webp",
         );
         toast({
-          title: this.$t("player.edit.copied_to_team", {
+          title: this.$t("player.edit.assigned_to_team", {
             team: team.teamName,
           }),
         });

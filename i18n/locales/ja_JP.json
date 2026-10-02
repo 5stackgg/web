@@ -8415,8 +8415,8 @@
       "name_length": "名前は3〜32文字にしてください。",
       "saved": "プレイヤーを更新しました",
       "your_teams": "あなたのチーム",
-      "copy": "コピー",
-      "copied_to_team": "{team} にコピーしました"
+      "assign": "割り当て",
+      "assigned_to_team": "{team} に割り当てました"
     },
     "pending_imports": {
       "title": "CS2インポート保留中",

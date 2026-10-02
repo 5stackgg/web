@@ -3031,10 +3031,7 @@
       },
       "matchmaking": {
         "title": "Configurações do Matchmaking",
-        "average_latency": "Latência",
-        "preferred": "Preferido",
         "max_acceptable_latency": "Máximo Aceitável Latência",
-        "max_latency_description": "Se nenhuma região/local está como preferida, matchmaking só usará regiões/locais com latência abaixo deste valor.",
         "show_match_ready_modal": {
           "title": "Popup de partida pronta",
           "description": "Mostrar um popup quando uma partida estiver pronta para você fazer o check-in. Quando desativado, você ainda pode fazer o check-in pelo botão na barra superior."
@@ -5723,7 +5720,6 @@
     "system_status": {
       "regions": "Regiões de servidores",
       "ping_by_region": "Ping por região",
-      "max_latency": "Máx. {ms} ms",
       "online_count": "{online}/{total} online",
       "partial": "Parcial",
       "preferred": "Região preferida",

@@ -3031,10 +3031,7 @@
       },
       "matchmaking": {
         "title": "マッチメイキング設定",
-        "average_latency": "レイテンシ",
-        "preferred": "優先",
         "max_acceptable_latency": "許容できる最大レイテンシ",
-        "max_latency_description": "優先リージョンが設定されていない場合、マッチメイキングはこの値未満のレイテンシのリージョンのみを使用します。",
         "show_match_ready_modal": {
           "title": "試合・ドラフトルームのポップアップ",
           "description": "試合またはドラフトルームの準備ができたときにポップアップを表示し、すぐに移動できるリンクを表示します。無効にすると自動遷移せず、トップナビのボタンから移動する形になります。"
@@ -5723,7 +5720,6 @@
     "system_status": {
       "regions": "サーバーリージョン",
       "ping_by_region": "リージョン別Ping",
-      "max_latency": "最大 {ms} ms",
       "online_count": "{online}/{total} オンライン",
       "partial": "一部稼働",
       "preferred": "優先リージョン",

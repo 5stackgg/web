@@ -3031,10 +3031,7 @@
       },
       "matchmaking": {
         "title": "매치메이킹 설정",
-        "average_latency": "지연 시간",
-        "preferred": "선호",
         "max_acceptable_latency": "최대 허용 지연 시간",
-        "max_latency_description": "선호 지역이 없으면 매치메이킹은 이 값보다 지연 시간이 낮은 지역만 사용합니다.",
         "show_match_ready_modal": {
           "title": "매치 및 드래프트 룸 팝업",
           "description": "매치나 드래프트 룸이 준비되면 바로 이동할 수 있는 링크와 함께 팝업을 표시합니다. 비활성화하면 자동으로 이동하지 않으며, 상단 내비게이션의 버튼으로 이동할 수 있습니다."
@@ -5723,7 +5720,6 @@
     "system_status": {
       "regions": "서버 지역",
       "ping_by_region": "지역별 핑",
-      "max_latency": "최대 {ms} ms",
       "online_count": "{online}/{total} 온라인",
       "partial": "일부 가동",
       "preferred": "선호 지역",

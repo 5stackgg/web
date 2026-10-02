@@ -3031,10 +3031,7 @@
       },
       "matchmaking": {
         "title": "Ajustes de matchmaking",
-        "average_latency": "Latencia",
-        "preferred": "Preferida",
         "max_acceptable_latency": "Latencia máxima aceptable",
-        "max_latency_description": "Si no hay regiones preferidas, el matchmaking solo usará regiones con una latencia por debajo de este valor.",
         "show_match_ready_modal": {
           "title": "Aviso de partida y sala de draft",
           "description": "Muestra un aviso cuando tu partida o tu sala de draft esté lista, con un enlace rápido para ir. Si lo desactivas, no se te redirigirá: entra desde el botón de la barra superior."
@@ -5723,7 +5720,6 @@
     "system_status": {
       "regions": "Regiones de servidores",
       "ping_by_region": "Ping por región",
-      "max_latency": "Máx. {ms} ms",
       "online_count": "{online}/{total} en línea",
       "partial": "Parcial",
       "preferred": "Región preferida",

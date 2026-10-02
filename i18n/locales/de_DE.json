@@ -3031,10 +3031,7 @@
       },
       "matchmaking": {
         "title": "Matchmaking-Einstellungen",
-        "average_latency": "Latenz",
-        "preferred": "Bevorzugt",
         "max_acceptable_latency": "Maximal akzeptable Latenz",
-        "max_latency_description": "Wenn keine Regionen bevorzugt sind, nutzt das Matchmaking nur Regionen mit einer Latenz unter diesem Wert.",
         "show_match_ready_modal": {
           "title": "Popup für Match & Draft-Raum",
           "description": "Zeigt ein Popup, sobald dein Match oder Draft-Raum bereit ist, samt Direktlink dorthin. Ist es deaktiviert, wirst du nicht weitergeleitet — nutze stattdessen den Button in der oberen Navigation."
@@ -5723,7 +5720,6 @@
     "system_status": {
       "regions": "Serverregionen",
       "ping_by_region": "Ping pro Region",
-      "max_latency": "Max. {ms} ms",
       "online_count": "{online}/{total} online",
       "partial": "Eingeschränkt",
       "preferred": "Bevorzugte Region",

@@ -12,6 +12,7 @@ interface Region {
   value: string;
   description: string;
   is_lan: boolean;
+  has_node: boolean;
   status: string;
 }
 

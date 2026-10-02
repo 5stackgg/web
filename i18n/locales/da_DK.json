@@ -3031,10 +3031,7 @@
       },
       "matchmaking": {
         "title": "Matchmaking-indstillinger",
-        "average_latency": "Latency",
-        "preferred": "Foretrukken",
         "max_acceptable_latency": "Maksimal acceptabel latency",
-        "max_latency_description": "Hvis ingen regioner er foretrukne, bruger matchmaking kun regioner med latency under denne værdi.",
         "show_match_ready_modal": {
           "title": "Popup for kamp og draftrum",
           "description": "Vis en popup, når din kamp eller dit draftrum er klar, med et hurtigt link dertil. Når den er slået fra, bliver du ikke sendt videre — brug i stedet knappen i topnavigationen."
@@ -5723,7 +5720,6 @@
     "system_status": {
       "regions": "Serverregioner",
       "ping_by_region": "Ping pr. region",
-      "max_latency": "Maks. {ms} ms",
       "online_count": "{online}/{total} online",
       "partial": "Delvist",
       "preferred": "Foretrukken region",

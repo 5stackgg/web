@@ -3031,10 +3031,7 @@
       },
       "matchmaking": {
         "title": "Matchmaking-inställningar",
-        "average_latency": "Latens",
-        "preferred": "Föredragen",
         "max_acceptable_latency": "Högsta acceptabla latens",
-        "max_latency_description": "Om inga regioner föredras används vid matchmaking endast regioner med latens under detta värde.",
         "show_match_ready_modal": {
           "title": "Popup för match- och draftrum",
           "description": "Visa en popup när ditt match- eller draftrum är redo, med en snabblänk dit. När detta är inaktiverat omdirigeras du inte — nå det via knappen i toppnavigeringen istället."
@@ -5723,7 +5720,6 @@
     "system_status": {
       "regions": "Serverregioner",
       "ping_by_region": "Ping per region",
-      "max_latency": "Max {ms} ms",
       "online_count": "{online}/{total} online",
       "partial": "Delvis",
       "preferred": "Föredragen region",

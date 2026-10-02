@@ -3031,10 +3031,7 @@
       },
       "matchmaking": {
         "title": "配對設定",
-        "average_latency": "延遲",
-        "preferred": "偏好",
         "max_acceptable_latency": "最大可接受延遲",
-        "max_latency_description": "若未設定偏好地區，配對系統將僅使用延遲低於此值的地區。",
         "show_match_ready_modal": {
           "title": "比賽與選秀大廳彈出視窗",
           "description": "當您的比賽或選秀大廳準備就緒時顯示彈出視窗，並提供快速跳轉連結。停用後，您不會被重新導向——請改由頂部導覽列的按鈕進入。"
@@ -5723,7 +5720,6 @@
     "system_status": {
       "regions": "伺服器區域",
       "ping_by_region": "各區域延遲",
-      "max_latency": "上限 {ms} ms",
       "online_count": "{online}/{total} 在線",
       "partial": "部分可用",
       "preferred": "偏好區域",

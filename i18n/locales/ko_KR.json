@@ -1201,9 +1201,6 @@
       "removing_bg": "배경 제거 중…",
       "notice_player": "이 플레이어가 팀에 소속되지 않은 매치에서 사용됩니다. 팀이 지정된 매치에서는 팀의 로스터 이미지가 대신 사용됩니다.",
       "notice_team": "이 플레이어가 이 팀 소속으로 참가하는 매치에서 사용됩니다. 솔로/개인 매치에서는 플레이어 본인의 로스터 이미지가 사용됩니다.",
-      "bulk_label": "내 팀에도 적용",
-      "bulk_will_overwrite": "기존 이미지를 덮어씁니다",
-      "bulk_success": "{count}개 팀에 적용했습니다",
       "bulk_failed": "{name}에 적용하지 못했습니다"
     }
   },
@@ -8422,6 +8419,18 @@
       "request_success": "이름 변경을 요청했습니다",
       "request_success_description": "관리자가 승인하면 새 이름이 표시됩니다. 결과와 관계없이 알려 드립니다.",
       "approval_hint": "이름 변경은 관리자가 승인한 후에 표시됩니다."
+    },
+    "edit": {
+      "profile": "프로필",
+      "use_steam_avatar": "Steam 아바타 사용",
+      "pending_name": "승인 대기: {name}",
+      "using_avatar": "아바타 사용 중",
+      "roster_hint": "픽업 매치 라인업에 표시됩니다. 팀 매치에서는 팀 이미지가 사용됩니다.",
+      "name_length": "이름은 3~32자여야 합니다.",
+      "saved": "플레이어가 업데이트되었습니다",
+      "your_teams": "내 팀",
+      "assign": "지정",
+      "assigned_to_team": "{team}에 지정했습니다"
     },
     "pending_imports": {
       "title": "대기 중인 CS2 가져오기",

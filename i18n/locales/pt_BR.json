@@ -1201,9 +1201,6 @@
       "removing_bg": "Removendo fundo…",
       "notice_player": "Usado em partidas quando este jogador não está atribuído a uma equipe. Em partidas com equipes, é usada a imagem do elenco da equipe.",
       "notice_team": "Usado em partidas quando este jogador participa como parte desta equipe. Em partidas solo/individuais, é usada a própria imagem de elenco do jogador.",
-      "bulk_label": "Aplicar também às suas equipes",
-      "bulk_will_overwrite": "Irá sobrescrever existentes",
-      "bulk_success": "Aplicado a {count} equipe(s)",
       "bulk_failed": "Falha ao aplicar em {name}"
     }
   },
@@ -8422,6 +8419,18 @@
       "request_success": "Alteração de nome solicitada",
       "request_success_description": "Seu novo nome aparece assim que um administrador aprová-lo. Avisaremos você de qualquer forma.",
       "approval_hint": "Um administrador aprova as alterações de nome antes que elas apareçam."
+    },
+    "edit": {
+      "profile": "Perfil",
+      "use_steam_avatar": "Usar avatar da Steam",
+      "pending_name": "Pendente: {name}",
+      "using_avatar": "Usando avatar",
+      "roster_hint": "Exibida nas escalações de partidas pick-up. Partidas de time usam a imagem do time.",
+      "name_length": "Os nomes precisam ter de 3 a 32 caracteres.",
+      "saved": "Jogador atualizado",
+      "your_teams": "Seus times",
+      "assign": "Atribuir",
+      "assigned_to_team": "Atribuída a {team}"
     },
     "pending_imports": {
       "title": "Importações CS2 Pendentes",

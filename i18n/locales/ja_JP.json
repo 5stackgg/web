@@ -1201,9 +1201,6 @@
       "removing_bg": "背景を除去中…",
       "notice_player": "このプレイヤーがチームに所属していない試合で使用されます。チーム所属の試合ではチームのロスター画像が使用されます。",
       "notice_team": "このプレイヤーがこのチームの一員として参加する試合で使用されます。個人参加の試合ではプレイヤー自身のロスター画像が使用されます。",
-      "bulk_label": "自分のチームにも適用する",
-      "bulk_will_overwrite": "既存の画像を上書きします",
-      "bulk_success": "{count}チームに適用しました",
       "bulk_failed": "{name}への適用に失敗しました"
     }
   },
@@ -8422,6 +8419,18 @@
       "request_success": "名前変更をリクエストしました",
       "request_success_description": "新しい名前は管理者が承認すると表示されます。結果はどちらの場合もお知らせします。",
       "approval_hint": "名前の変更は、管理者の承認後に表示されます。"
+    },
+    "edit": {
+      "profile": "プロフィール",
+      "use_steam_avatar": "Steamのアバターを使用",
+      "pending_name": "承認待ち: {name}",
+      "using_avatar": "アバターを使用中",
+      "roster_hint": "ピックアップマッチのラインナップに表示されます。チームマッチではチームの画像が使われます。",
+      "name_length": "名前は3〜32文字にしてください。",
+      "saved": "プレイヤーを更新しました",
+      "your_teams": "あなたのチーム",
+      "assign": "割り当て",
+      "assigned_to_team": "{team} に割り当てました"
     },
     "pending_imports": {
       "title": "CS2インポート保留中",

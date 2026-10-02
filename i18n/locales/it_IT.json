@@ -1201,9 +1201,6 @@
       "removing_bg": "Rimozione sfondo…",
       "notice_player": "Usata nei match quando questo giocatore non è assegnato a un team. Nei match con team assegnato viene usata l'immagine roster del team.",
       "notice_team": "Usata nei match in cui questo giocatore entra come parte di questo team. Nei match individuali viene usata l'immagine roster personale del giocatore.",
-      "bulk_label": "Applica anche ai tuoi team",
-      "bulk_will_overwrite": "Sovrascriverà quelle esistenti",
-      "bulk_success": "Applicata a {count} team",
       "bulk_failed": "Impossibile applicarla a {name}"
     }
   },
@@ -8422,6 +8419,18 @@
       "request_success": "Cambio nome richiesto",
       "request_success_description": "Il tuo nuovo nome apparirà quando un amministratore lo approverà. Ti avviseremo in ogni caso.",
       "approval_hint": "Un amministratore approva i cambi di nome prima che vengano mostrati."
+    },
+    "edit": {
+      "profile": "Profilo",
+      "use_steam_avatar": "Usa avatar di Steam",
+      "pending_name": "In attesa: {name}",
+      "using_avatar": "Usa l'avatar",
+      "roster_hint": "Mostrata nelle formazioni delle partite pick-up. Le partite di squadra usano l'immagine della squadra.",
+      "name_length": "I nomi devono avere da 3 a 32 caratteri.",
+      "saved": "Giocatore aggiornato",
+      "your_teams": "Le tue squadre",
+      "assign": "Assegna",
+      "assigned_to_team": "Assegnata a {team}"
     },
     "pending_imports": {
       "title": "Import CS2 in sospeso",

@@ -1201,9 +1201,6 @@
       "removing_bg": "Tar bort bakgrund…",
       "notice_player": "Används i matcher när spelaren inte är tilldelad ett lag. I matcher med lag används istället lagets truppbild.",
       "notice_team": "Används i matcher när spelaren deltar som en del av det här laget. Vid solo-/individuella matcher används spelarens egen truppbild.",
-      "bulk_label": "Tillämpa även på dina lag",
-      "bulk_will_overwrite": "Kommer att skriva över befintlig",
-      "bulk_success": "Tillämpad på {count} lag",
       "bulk_failed": "Det gick inte att tillämpa på {name}"
     }
   },
@@ -8422,6 +8419,18 @@
       "request_success": "Namnändring begärd",
       "request_success_description": "Ditt nya namn visas när en admin har godkänt det. Vi meddelar dig oavsett utfall.",
       "approval_hint": "En admin godkänner namnändringar innan de visas."
+    },
+    "edit": {
+      "profile": "Profil",
+      "use_steam_avatar": "Använd Steam-avatar",
+      "pending_name": "Väntar: {name}",
+      "using_avatar": "Använder avatar",
+      "roster_hint": "Visas i laguppställningar i pick-up-matcher. Lagmatcher använder lagets bild.",
+      "name_length": "Namn måste vara 3 till 32 tecken.",
+      "saved": "Spelaren uppdaterad",
+      "your_teams": "Dina lag",
+      "assign": "Tilldela",
+      "assigned_to_team": "Tilldelad {team}"
     },
     "pending_imports": {
       "title": "Väntande CS2-importer",

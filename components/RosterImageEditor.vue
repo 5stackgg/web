@@ -9,7 +9,6 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { RotateCcw, Sparkles, Upload, Info } from "lucide-vue-next";
 import { Spinner } from "~/components/ui/spinner";
 import { toast } from "@/components/ui/toast";
@@ -18,6 +17,7 @@ import "cropperjs/dist/cropper.css";
 import {
   downscaleFileToObjectUrl,
   retryDynamicImport,
+  uploadImageBlob,
 } from "@/utilities/imagePipeline";
 
 const OUTPUT_W = 400;
@@ -25,24 +25,15 @@ const OUTPUT_H = 420;
 const ASPECT = OUTPUT_W / OUTPUT_H;
 const MAX_SOURCE_EDGE = 1600;
 
-interface BulkTeam {
-  teamId: string;
-  teamName: string;
-  hasCustomImage: boolean;
-}
-
 const props = withDefaults(
   defineProps<{
     open: boolean;
     file: File | null;
     uploadUrl: string;
     mode?: "player-roster" | "team-roster";
-    bulkTeams?: BulkTeam[];
-    bulkUrlBuilder?: (teamId: string) => string;
   }>(),
   {
     mode: "player-roster",
-    bulkTeams: () => [],
   },
 );
 
@@ -57,11 +48,6 @@ const cropper = shallowRef<Cropper | null>(null);
 const removingBg = ref(false);
 const uploading = ref(false);
 const workingSrc = ref<string | null>(null);
-const selectedTeams = ref<Record<string, boolean>>({});
-
-const showBulk = computed(
-  () => props.mode === "player-roster" && props.bulkTeams.length > 0,
-);
 
 function teardownCropper() {
   cropper.value?.destroy();
@@ -99,13 +85,11 @@ watch(
       teardownCropper();
       revokeSource();
       workingSrc.value = null;
-      selectedTeams.value = {};
       return;
     }
     if (!file) return;
     revokeSource();
     workingSrc.value = null;
-    selectedTeams.value = {};
     try {
       sourceUrl.value = await downscaleFileToObjectUrl(file, MAX_SOURCE_EDGE);
     } catch {
@@ -177,63 +161,12 @@ async function renderBlob(): Promise<Blob> {
   );
 }
 
-async function postBlob(url: string, blob: Blob): Promise<string> {
-  const formData = new FormData();
-  formData.append("file", blob, "roster.webp");
-  const response = await fetch(url, {
-    method: "POST",
-    body: formData,
-    credentials: "include",
-  });
-  if (!response.ok) {
-    throw new Error(`${response.status} ${response.statusText}`);
-  }
-  const data = (await response.json()) as { path: string };
-  return data.path;
-}
-
 async function save() {
   if (!cropper.value) return;
   uploading.value = true;
   try {
     const blob = await renderBlob();
-    const path = await postBlob(props.uploadUrl, blob);
-
-    const chosenTeams = showBulk.value
-      ? props.bulkTeams.filter((t) => selectedTeams.value[t.teamId])
-      : [];
-
-    if (chosenTeams.length > 0 && props.bulkUrlBuilder) {
-      const results = await Promise.allSettled(
-        chosenTeams.map((t) =>
-          postBlob(props.bulkUrlBuilder!(t.teamId), blob).then(() => t),
-        ),
-      );
-      const failed = results
-        .map((r, i) => ({ r, team: chosenTeams[i] }))
-        .filter(({ r }) => r.status === "rejected");
-      const ok = results.length - failed.length;
-      if (ok > 0) {
-        toast({
-          title: useNuxtApp().$i18n.t("avatar.roster_editor.bulk_success", {
-            count: ok,
-          }) as string,
-        });
-      }
-      for (const { r, team } of failed) {
-        toast({
-          title: useNuxtApp().$i18n.t("avatar.roster_editor.bulk_failed", {
-            name: team.teamName,
-          }) as string,
-          description:
-            r.status === "rejected"
-              ? String((r as any).reason?.message ?? r.reason)
-              : "",
-          variant: "destructive",
-        });
-      }
-    }
-
+    const path = await uploadImageBlob(props.uploadUrl, blob, "roster.webp");
     toast({
       title: useNuxtApp().$i18n.t("avatar.upload_success") as string,
     });
@@ -307,40 +240,6 @@ const noticeKey = computed(() =>
           class="h-3.5 w-3.5 mt-0.5 shrink-0 text-[hsl(var(--tac-amber))]"
         />
         <span class="leading-snug">{{ $t(noticeKey) }}</span>
-      </div>
-
-      <div v-if="showBulk" class="space-y-2">
-        <div
-          class="inline-flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted-foreground"
-        >
-          <span class="h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"></span>
-          {{ $t("avatar.roster_editor.bulk_label") }}
-        </div>
-        <div
-          class="rounded-md border border-border/50 divide-y divide-border/40 max-h-44 overflow-auto"
-        >
-          <label
-            v-for="t in bulkTeams"
-            :key="t.teamId"
-            class="flex items-center gap-3 px-3 py-2 cursor-pointer hover:bg-accent/30"
-          >
-            <Checkbox
-              :model-value="!!selectedTeams[t.teamId]"
-              @update:model-value="
-                (v: boolean) => (selectedTeams[t.teamId] = v)
-              "
-            />
-            <div class="flex flex-1 items-center justify-between min-w-0">
-              <span class="truncate text-sm">{{ t.teamName }}</span>
-              <span
-                v-if="t.hasCustomImage"
-                class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]/85"
-              >
-                {{ $t("avatar.roster_editor.bulk_will_overwrite") }}
-              </span>
-            </div>
-          </label>
-        </div>
       </div>
 
       <DialogFooter class="gap-2 sm:gap-2">

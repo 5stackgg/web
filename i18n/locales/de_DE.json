@@ -1201,9 +1201,6 @@
       "removing_bg": "Hintergrund wird entfernt…",
       "notice_player": "Wird in Matches genutzt, wenn dieser Spieler keinem Team zugeordnet ist. In Team-Matches wird stattdessen das Roster-Bild des Teams verwendet.",
       "notice_team": "Wird in Matches genutzt, wenn dieser Spieler als Teil dieses Teams antritt. Bei Solo-/Einzelmatches wird das eigene Roster-Bild des Spielers verwendet.",
-      "bulk_label": "Auch auf deine Teams anwenden",
-      "bulk_will_overwrite": "Überschreibt vorhandene",
-      "bulk_success": "Auf {count} Team(s) angewendet",
       "bulk_failed": "Anwenden auf {name} fehlgeschlagen"
     }
   },
@@ -8422,6 +8419,18 @@
       "request_success": "Namensänderung angefragt",
       "request_success_description": "Dein neuer Name wird angezeigt, sobald ein Admin ihn genehmigt. Wir benachrichtigen dich in jedem Fall.",
       "approval_hint": "Ein Admin genehmigt Namensänderungen, bevor sie angezeigt werden."
+    },
+    "edit": {
+      "profile": "Profil",
+      "use_steam_avatar": "Steam-Avatar verwenden",
+      "pending_name": "Ausstehend: {name}",
+      "using_avatar": "Avatar wird verwendet",
+      "roster_hint": "Wird in Pick-up-Match-Aufstellungen angezeigt. Teamspiele verwenden das Bild des Teams.",
+      "name_length": "Namen müssen 3 bis 32 Zeichen lang sein.",
+      "saved": "Spieler aktualisiert",
+      "your_teams": "Deine Teams",
+      "assign": "Zuweisen",
+      "assigned_to_team": "{team} zugewiesen"
     },
     "pending_imports": {
       "title": "Ausstehende CS2-Importe",

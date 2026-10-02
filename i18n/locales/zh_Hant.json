@@ -1201,9 +1201,6 @@
       "removing_bg": "正在去除背景……",
       "notice_player": "當此玩家未分配至隊伍時，於比賽中使用。在隊伍出賽的比賽中，將改用該隊伍的名單照。",
       "notice_team": "當此玩家以此隊伍成員身分參賽時使用。個人／單人比賽則使用玩家自己的名單照。",
-      "bulk_label": "同時套用至您的隊伍",
-      "bulk_will_overwrite": "將覆寫既有內容",
-      "bulk_success": "已套用至 {count} 支隊伍",
       "bulk_failed": "套用至 {name} 失敗"
     }
   },
@@ -8422,6 +8419,18 @@
       "request_success": "已請求更改名稱",
       "request_success_description": "管理員核准後，你的新名稱才會顯示。無論結果如何，我們都會通知你。",
       "approval_hint": "名稱變更需經管理員核准後才會顯示。"
+    },
+    "edit": {
+      "profile": "個人資料",
+      "use_steam_avatar": "使用 Steam 頭像",
+      "pending_name": "待審核：{name}",
+      "using_avatar": "正在使用頭像",
+      "roster_hint": "顯示在路人比賽的陣容中。戰隊比賽使用戰隊的圖片。",
+      "name_length": "名稱需為 3 到 32 個字元。",
+      "saved": "玩家已更新",
+      "your_teams": "你的戰隊",
+      "assign": "指派",
+      "assigned_to_team": "已指派給 {team}"
     },
     "pending_imports": {
       "title": "待匯入的 CS2 比賽",

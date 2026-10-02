@@ -1201,9 +1201,6 @@
       "removing_bg": "Usuwanie tła…",
       "notice_player": "Używane w meczach, gdy ten gracz nie jest przypisany do drużyny. W meczach z przypisaną drużyną używane jest zamiast tego zdjęcie do składu drużyny",
       "notice_team": "Używane w meczach, gdy gracz dołącza jako część tej drużyny. W meczach solo / indywidualnych używane jest zdjęcie gracza do składu",
-      "bulk_label": "Zastosuj też do twoich drużyn",
-      "bulk_will_overwrite": "Nadpisze istniejące",
-      "bulk_success": "Zastosowano do {count} drużyn(y)",
       "bulk_failed": "Nie udało się zastosować do {name}"
     }
   },
@@ -8422,6 +8419,18 @@
       "request_success": "Zgłoszono zmianę nazwy",
       "request_success_description": "Nowa nazwa pojawi się, gdy administrator ją zatwierdzi. Powiadomimy cię w obu przypadkach.",
       "approval_hint": "Administrator zatwierdza zmiany nazwy, zanim się pojawią."
+    },
+    "edit": {
+      "profile": "Profil",
+      "use_steam_avatar": "Użyj awatara Steam",
+      "pending_name": "Oczekuje: {name}",
+      "using_avatar": "Używa awatara",
+      "roster_hint": "Wyświetlany w składach meczów pick-up. Mecze drużynowe używają obrazu drużyny.",
+      "name_length": "Nazwa musi mieć od 3 do 32 znaków.",
+      "saved": "Zaktualizowano gracza",
+      "your_teams": "Twoje drużyny",
+      "assign": "Przypisz",
+      "assigned_to_team": "Przypisano do {team}"
     },
     "pending_imports": {
       "title": "Oczekujące importy CS2",

@@ -72,7 +72,8 @@ import {
 
 const { openFiles } = useFilePopout();
 
-definePageMeta({ middleware: "moderator" });
+// Any other query change remounts the page (utilities/pageKey.ts).
+definePageMeta({ middleware: "moderator", persistQueryKeys: ["settings"] });
 
 const authStore = useAuthStore();
 const isManager = computed(() =>

@@ -488,7 +488,7 @@ describe("ServerPlayerManagement player states", () => {
               server_recent_players: [
                 {
                   last_seen_at: new Date(
-                    Date.now() - 14 * MINUTE,
+                    Date.now() - 14 * MINUTE - 30 * 1000,
                   ).toISOString(),
                 },
               ],

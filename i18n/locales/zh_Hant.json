@@ -3203,6 +3203,27 @@
         "end_date": "結束",
         "peak_lowest": "最高 / 最低",
         "peak": "最高",
+        "season_pace": {
+          "toggle": "{season} 對比 {previous}",
+          "all_time": "所有時間",
+          "vs": "對比 {season}",
+          "ahead": "第 {n} 場時領先 | 第 {n} 場時領先",
+          "behind": "第 {n} 場時落後 | 第 {n} 場時落後",
+          "level": "第 {n} 場時持平 | 第 {n} 場時持平",
+          "ahead_final": "高於其最終積分",
+          "behind_final": "低於其最終積分",
+          "level_final": "與其最終積分持平",
+          "tooltip": "{season} 第 {n} 場時為 {then}。你現在為 {now}。 | {season} 第 {n} 場時為 {then}。你現在為 {now}。",
+          "tooltip_final": "{season} 最終為 {then}。你現在為 {now}。",
+          "none": "本賽季尚無比賽",
+          "peak": "{season} 最高",
+          "peak_marker": "{season} 最高 {elo}",
+          "start": "開始",
+          "match": "第 {n} 場",
+          "finish": "最終排名 #{rank} / {total}",
+          "finish_tooltip": "{season} 最高 {peak}（{date}）。以 {final} 結束，排行榜 #{rank} / {total}。",
+          "peak_tooltip": "{season} 最高 {peak}（{date}）。以 {final} 結束。"
+        },
         "no_matches_in_window": "此期間內無比賽",
         "no_matches_in_window_period": "此期間內無比賽。",
         "expand_to_all_time": "展開至全部時間",
@@ -3301,7 +3322,10 @@
           "label": "對比 vs",
           "select_label": "對比玩家",
           "description": "在每個數據分頁中疊加顯示此玩家的數據。",
-          "vs": "vs"
+          "vs": "vs",
+          "season_label": "或選擇賽季",
+          "sample": "場次：{matches} 對比 {compare}（{name}）",
+          "small_sample": "樣本少時波動大"
         },
         "elo_history_dialog": {
           "current": "目前",
@@ -9161,7 +9185,14 @@
     "premier": "菁英",
     "competitive": "競技",
     "wingman": "雙人",
-    "imported_from": "{type} · 匯入自 {source}"
+    "imported_from": "{type} · 匯入自 {source}",
+    "season_break": {
+      "began": "第 {number} 賽季於 {date} 開始",
+      "ended": "第 {number} 賽季於 {date} 結束",
+      "reset": "新賽季積分已重置",
+      "recap": "第 {number} 賽季以 {final} 結束，最高 {peak}，{wins}勝{losses}負"
+    },
+    "season_best": "{season} 最高積分"
   },
   "breadcrumbs": {
     "dashboard": "儀表板"

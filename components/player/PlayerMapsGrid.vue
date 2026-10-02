@@ -4,7 +4,10 @@ import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
 import { playerMapStatsQuery } from "~/graphql/playerMapStatsGraphql";
 import { playerMapHltvQuery } from "~/graphql/playerMapHltvGraphql";
-import { usePlayerComparison } from "~/composables/usePlayerComparison";
+import {
+  usePlayerComparison,
+  type ComparisonWindow,
+} from "~/composables/usePlayerComparison";
 import { useTableSort } from "~/composables/useTableSort";
 import SortableTableHead from "~/components/common/SortableTableHead.vue";
 import RadialStat from "~/components/charts/RadialStat.vue";
@@ -23,6 +26,8 @@ import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import { Skeleton } from "~/components/ui/skeleton";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import { useDeferredLoading } from "~/composables/useDeferredLoading";
+import { useRememberedCount } from "~/composables/useRememberedCount";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
@@ -44,9 +49,10 @@ const props = defineProps<{
   matchType?: string | string[] | null;
   source?: string | null;
   since?: string | null;
+  until?: string | null;
 }>();
 
-function buildStatsWhere() {
+function buildStatsWhere(season?: ComparisonWindow) {
   const match: Record<string, any> = {};
   if (props.source && props.source !== "all") {
     match.source =
@@ -67,15 +73,23 @@ function buildStatsWhere() {
       },
     };
   }
-  if (props.since) {
-    match.started_at = { _gte: props.since };
+  if (season) {
+    match.started_at = {
+      _gte: season.since,
+      ...(season.until ? { _lte: season.until } : {}),
+    };
+  } else if (props.since || props.until) {
+    match.started_at = {
+      ...(props.since ? { _gte: props.since } : {}),
+      ...(props.until ? { _lte: props.until } : {}),
+    };
   }
   return Object.keys(match).length ? { match_map: { match } } : {};
 }
 
 // The inner `match` filter (for views keyed by a `match` relationship, like
 // v_player_match_map_hltv) — same source/type/since as buildStatsWhere.
-function buildMatchWhere() {
+function buildMatchWhere(season?: ComparisonWindow) {
   const match: Record<string, any> = {};
   if (props.source && props.source !== "all") {
     match.source =
@@ -96,8 +110,16 @@ function buildMatchWhere() {
       },
     };
   }
-  if (props.since) {
-    match.started_at = { _gte: props.since };
+  if (season) {
+    match.started_at = {
+      _gte: season.since,
+      ...(season.until ? { _lte: season.until } : {}),
+    };
+  } else if (props.since || props.until) {
+    match.started_at = {
+      ...(props.since ? { _gte: props.since } : {}),
+      ...(props.until ? { _lte: props.until } : {}),
+    };
   }
   return match;
 }
@@ -179,6 +201,13 @@ interface MapAggregate {
 }
 
 const loading = ref(true);
+const { skeleton: showSkeleton, refreshing } = useDeferredLoading(
+  () => loading.value,
+);
+const { count: skeletonCount, remember: rememberCount } = useRememberedCount(
+  () => `maps:${props.steamId}`,
+  8,
+);
 const rows = ref<RawMapStat[]>([]);
 // match_map_id -> canonical per-instance rating + KAST (from the hltv view).
 type HltvEntry = { rating: number | null; kast: number; rounds: number };
@@ -251,9 +280,19 @@ async function load() {
   }
 }
 
-watch(() => [props.steamId, props.source, props.matchType, props.since], load, {
-  immediate: true,
-});
+watch(
+  () => [
+    props.steamId,
+    props.source,
+    props.matchType,
+    props.since,
+    props.until,
+  ],
+  load,
+  {
+    immediate: true,
+  },
+);
 
 function emptySplit(): SideSplit {
   return { rounds: 0, kills: 0, deaths: 0, assists: 0, damage: 0, kast: 0 };
@@ -424,22 +463,28 @@ const aggregates = computed<MapAggregate[]>(() =>
 
 const hasMaps = computed(() => aggregates.value.length > 0);
 
+watch(loading, (isLoading) => {
+  if (!isLoading) {
+    rememberCount(aggregates.value.length);
+  }
+});
+
 const {
   enabled: compareEnabled,
   comparePlayer,
   compareData,
 } = usePlayerComparison(
   playerMapStatsQuery,
-  (steamId) => ({ steamId, statsWhere: buildStatsWhere() }),
+  (steamId, season) => ({ steamId, statsWhere: buildStatsWhere(season) }),
   (data: any) => (data?.players_by_pk?.match_map_stats ?? []) as RawMapStat[],
-  () => [props.source, props.matchType, props.since],
+  () => [props.source, props.matchType, props.since, props.until],
 );
 
 const { compareData: compareHltvData } = usePlayerComparison(
   playerMapHltvQuery,
-  (steamId) => ({ steamId, where: buildMatchWhere() }),
+  (steamId, season) => ({ steamId, where: buildMatchWhere(season) }),
   (data: any) => (data?.v_player_match_map_hltv ?? []) as any[],
-  () => [props.source, props.matchType, props.since],
+  () => [props.source, props.matchType, props.since, props.until],
 );
 
 const compareHltvByMatchMap = computed(() =>
@@ -629,19 +674,24 @@ function avgKda(agg: MapAggregate, side: SideKey): string {
 
 <template>
   <div>
-    <FadeSwap>
-      <div v-if="loading && !hasMaps" key="skeleton">
+    <FadeSwap
+      class="transition-opacity duration-200"
+      :class="refreshing && 'pointer-events-none opacity-50'"
+    >
+      <div v-if="showSkeleton" key="skeleton">
         <div
           class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
         >
           <div
-            v-for="i in 8"
+            v-for="i in skeletonCount"
             :key="i"
             class="overflow-hidden rounded-lg border border-border/60 bg-card/40"
           >
             <Skeleton class="h-24 w-full rounded-none" />
             <div class="flex items-center gap-3 px-3 py-3">
-              <Skeleton class="h-12 w-12 shrink-0 rounded-full" />
+              <Skeleton
+                class="h-24 w-24 shrink-0 rounded-full sm:h-28 sm:w-28 md:h-32 md:w-32"
+              />
               <div class="flex-1 space-y-2">
                 <Skeleton class="h-3 w-2/3" />
                 <Skeleton class="h-[22px] w-full" />
@@ -651,22 +701,26 @@ function avgKda(agg: MapAggregate, side: SideKey): string {
               <div
                 v-for="c in 3"
                 :key="c"
-                class="space-y-1.5 px-2 py-2"
+                class="space-y-1 px-2 py-2"
                 :class="c > 1 && 'border-l border-border/50'"
               >
-                <Skeleton class="mx-auto h-2 w-8" />
-                <Skeleton class="mx-auto h-3.5 w-10" />
-                <Skeleton class="mx-auto h-2 w-9" />
+                <Skeleton class="mx-auto h-3 w-8" />
+                <Skeleton class="mx-auto h-5 w-10" />
+                <Skeleton class="mx-auto h-3 w-9" />
               </div>
             </div>
           </div>
         </div>
+        <div class="mb-2 mt-6 flex items-center justify-between gap-3">
+          <Skeleton class="h-3 w-28" />
+          <Skeleton class="h-[29px] w-36 rounded-md" />
+        </div>
         <div
-          class="mt-6 overflow-hidden rounded-lg border border-border/60 bg-card/40"
+          class="overflow-hidden rounded-lg border border-border/60 bg-card/40"
         >
           <Skeleton class="h-10 w-full rounded-none" />
           <div
-            v-for="r in 6"
+            v-for="r in skeletonCount"
             :key="r"
             class="flex items-center gap-3 border-t border-border/50 px-4 py-3"
           >

@@ -3203,6 +3203,27 @@
         "end_date": "Bitiş",
         "peak_lowest": "Zirve / Dip",
         "peak": "Zirve",
+        "season_pace": {
+          "toggle": "{season} vs {previous}",
+          "all_time": "Tüm zamanlar",
+          "vs": "vs {season}",
+          "ahead": "{n} maç sonunda önde | {n} maç sonunda önde",
+          "behind": "{n} maç sonunda geride | {n} maç sonunda geride",
+          "level": "{n} maç sonunda eşit | {n} maç sonunda eşit",
+          "ahead_final": "sezon sonu puanının üstünde",
+          "behind_final": "sezon sonu puanının altında",
+          "level_final": "sezon sonu puanıyla eşit",
+          "tooltip": "{season}, {n} maç sonunda {then} idi. Şu an {now}. | {season}, {n} maç sonunda {then} idi. Şu an {now}.",
+          "tooltip_final": "{season} {then} ile bitti. Şu an {now}.",
+          "none": "Bu sezon henüz maç yok",
+          "peak": "{season} zirve",
+          "peak_marker": "{season} zirve {elo}",
+          "start": "Başlangıç",
+          "match": "{n}. maç",
+          "finish": "{total} içinde #{rank} bitirdi",
+          "finish_tooltip": "{season} zirve {peak} ({date}). {final} ile bitirdi, sıralamada {total} içinde #{rank}.",
+          "peak_tooltip": "{season} zirve {peak} ({date}). {final} ile bitirdi."
+        },
         "no_matches_in_window": "Bu aralıkta maç yok",
         "no_matches_in_window_period": "Bu aralıkta maç yok.",
         "expand_to_all_time": "Tüm zamanlara genişlet",
@@ -3301,7 +3322,10 @@
           "label": "Karşılaştır",
           "select_label": "Oyuncu karşılaştır",
           "description": "Bu oyuncunun verilerini tüm istatistik sekmelerinde üst üste gösterir.",
-          "vs": "vs"
+          "vs": "vs",
+          "season_label": "Ya da bir sezon",
+          "sample": "Maçlar: {matches} vs {compare} ({name})",
+          "small_sample": "küçük örneklemler çok dalgalanır"
         },
         "elo_history_dialog": {
           "current": "Güncel",
@@ -9161,7 +9185,14 @@
     "premier": "Premier",
     "competitive": "Rekabetçi",
     "wingman": "Wingman",
-    "imported_from": "{type} · {source} kaynağından içe aktarıldı"
+    "imported_from": "{type} · {source} kaynağından içe aktarıldı",
+    "season_break": {
+      "began": "Sezon {number} {date} tarihinde başladı",
+      "ended": "Sezon {number} {date} tarihinde bitti",
+      "reset": "Puanlar yeni sezon için sıfırlandı",
+      "recap": "Sezon {number} {final} ile bitti, en iyi {peak}, {wins}G–{losses}M"
+    },
+    "season_best": "{season} en iyi puanı"
   },
   "breadcrumbs": {
     "dashboard": "kontrol paneli"

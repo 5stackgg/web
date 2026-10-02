@@ -4,20 +4,30 @@
 // so data swapping in (via FadeSwap) doesn't reflow the page.
 import { Skeleton } from "~/components/ui/skeleton";
 
-withDefaults(
-  defineProps<{ cards?: number; rows?: number; cols?: number }>(),
-  { cards: 4, rows: 6, cols: 5 },
-);
+withDefaults(defineProps<{ cards?: number; rows?: number; cols?: number }>(), {
+  cards: 4,
+  rows: 6,
+  cols: 5,
+});
 </script>
 
 <template>
   <div>
-    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-      <Skeleton v-for="i in cards" :key="i" class="h-[6.5rem] rounded-lg" />
-    </div>
     <div
-      class="mt-6 overflow-hidden rounded-lg border border-border/60 bg-card/40"
+      class="grid grid-cols-1 gap-3"
+      :class="cards === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2 lg:grid-cols-4'"
     >
+      <!-- Each card is a RadialStat ring (h-24/28/32) plus py-3 and border. -->
+      <Skeleton
+        v-for="i in cards"
+        :key="i"
+        class="h-[122px] rounded-lg sm:h-[138px] md:h-[154px]"
+      />
+    </div>
+    <div class="mb-2 mt-6 flex h-7 items-center">
+      <Skeleton class="h-3 w-28" />
+    </div>
+    <div class="overflow-hidden rounded-lg border border-border/60 bg-card/40">
       <Skeleton class="h-10 w-full rounded-none" />
       <div
         v-for="r in rows"

@@ -3203,6 +3203,27 @@
         "end_date": "Slut",
         "peak_lowest": "Top / Bund",
         "peak": "Top",
+        "season_pace": {
+          "toggle": "{season} vs {previous}",
+          "all_time": "Altid",
+          "vs": "vs {season}",
+          "ahead": "foran efter {n} kamp | foran efter {n} kampe",
+          "behind": "bagud efter {n} kamp | bagud efter {n} kampe",
+          "level": "lige efter {n} kamp | lige efter {n} kampe",
+          "ahead_final": "over dens slutrating",
+          "behind_final": "under dens slutrating",
+          "level_final": "lig med dens slutrating",
+          "tooltip": "{season} stod på {then} efter {n} kamp. Du står på {now}. | {season} stod på {then} efter {n} kampe. Du står på {now}.",
+          "tooltip_final": "{season} sluttede på {then}. Du står på {now}.",
+          "none": "Ingen kampe endnu i denne sæson",
+          "peak": "{season} top",
+          "peak_marker": "{season} top {elo}",
+          "start": "Start",
+          "match": "Kamp {n}",
+          "finish": "Sluttede #{rank} af {total}",
+          "finish_tooltip": "{season} top {peak} den {date}. Sluttede på {final}, #{rank} af {total} på ranglisten.",
+          "peak_tooltip": "{season} top {peak} den {date}. Sluttede på {final}."
+        },
         "no_matches_in_window": "Ingen kampe i dette vindue",
         "no_matches_in_window_period": "Ingen kampe i dette vindue.",
         "expand_to_all_time": "Udvid til hele tiden",
@@ -3301,7 +3322,10 @@
           "label": "Sammenlign med",
           "select_label": "Sammenlign spiller",
           "description": "Lægger denne spillers tal ind på alle statsfaner.",
-          "vs": "vs."
+          "vs": "vs.",
+          "season_label": "Eller en sæson",
+          "sample": "Kampe: {matches} vs {compare} ({name})",
+          "small_sample": "små stikprøver svinger meget"
         },
         "elo_history_dialog": {
           "current": "Nuværende",
@@ -9161,7 +9185,14 @@
     "premier": "Premier",
     "competitive": "Competitive",
     "wingman": "Wingman",
-    "imported_from": "{type} · importeret fra {source}"
+    "imported_from": "{type} · importeret fra {source}",
+    "season_break": {
+      "began": "Sæson {number} startede {date}",
+      "ended": "Sæson {number} sluttede {date}",
+      "reset": "Ratings nulstillet til den nye sæson",
+      "recap": "Sæson {number} sluttede på {final}, bedst {peak}, {wins}V–{losses}T"
+    },
+    "season_best": "Bedste rating i {season}"
   },
   "breadcrumbs": {
     "dashboard": "dashboard"

@@ -14,7 +14,10 @@ import {
 } from "chart.js";
 import { Line } from "vue-chartjs";
 import { playerIntroStatsQuery } from "~/graphql/playerIntroStatsGraphql";
-import { usePlayerComparison } from "~/composables/usePlayerComparison";
+import {
+  usePlayerComparison,
+  type ComparisonWindow,
+} from "~/composables/usePlayerComparison";
 import RadialStat from "~/components/charts/RadialStat.vue";
 import AnimatedStat from "~/components/AnimatedStat.vue";
 import StatLabel from "~/components/common/StatLabel.vue";
@@ -30,6 +33,7 @@ import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import { Skeleton } from "~/components/ui/skeleton";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import { useDeferredLoading } from "~/composables/useDeferredLoading";
 import mapLabel from "~/utilities/mapLabel";
 
 ChartJS.register(
@@ -74,7 +78,9 @@ function statDesc(key: string): string {
     : "";
 }
 
-function buildMatchesWhere() {
+function buildMatchesWhere(
+  range: { since?: string | null; until?: string | null } = props,
+) {
   const where: Record<string, any> = {
     status: { _eq: "Finished" },
   };
@@ -97,10 +103,10 @@ function buildMatchesWhere() {
       },
     };
   }
-  if (props.since || props.until) {
+  if (range.since || range.until) {
     where.started_at = {
-      ...(props.since ? { _gte: props.since } : {}),
-      ...(props.until ? { _lte: props.until } : {}),
+      ...(range.since ? { _gte: range.since } : {}),
+      ...(range.until ? { _lte: range.until } : {}),
     };
   }
   return where;
@@ -172,6 +178,9 @@ interface MatchPoint {
 }
 
 const loading = ref(true);
+const { skeleton: showSkeleton, refreshing } = useDeferredLoading(
+  () => loading.value,
+);
 const matchesMeta = ref<MatchMeta[]>([]);
 const rawStats = ref<RawStats[]>([]);
 const hltvRows = ref<any[]>([]);
@@ -470,10 +479,10 @@ const {
   compareData,
 } = usePlayerComparison(
   playerIntroStatsQuery,
-  (steamId) => ({
+  (steamId, season?: ComparisonWindow) => ({
     steamId,
-    matchesWhere: buildMatchesWhere(),
-    limit: effectiveLimit.value,
+    matchesWhere: buildMatchesWhere(season ?? props),
+    limit: season ? 1000 : effectiveLimit.value,
     statsLimit: 200,
     hltvLimit: 600,
   }),
@@ -499,13 +508,58 @@ const comparePoints = computed<MatchPoint[]>(() => {
   );
 });
 
+// Another season of the same player reads as per-stat deltas, not an overlay.
+const isSeasonCompare = computed(() => !!comparePlayer.value?.window);
+
 const hasCompare = computed(
-  () => compareEnabled.value && comparePoints.value.length > 0,
+  () =>
+    compareEnabled.value &&
+    !isSeasonCompare.value &&
+    comparePoints.value.length > 0,
 );
 
 const compareAggregate = computed(() => buildAggregate(comparePoints.value));
 
 const compareColor = "#38bdf8";
+
+const seasonAggregate = computed(() =>
+  isSeasonCompare.value && comparePoints.value.length
+    ? compareAggregate.value
+    : null,
+);
+
+// Arrow follows the number; its color follows whether that is better.
+function seasonDiff(
+  current: number | null,
+  previous: number | null | undefined,
+  digits: number,
+  suffix = "",
+  higherIsBetter = true,
+) {
+  if (
+    !seasonAggregate.value ||
+    current === null ||
+    previous === null ||
+    previous === undefined ||
+    !Number.isFinite(current) ||
+    !Number.isFinite(previous)
+  ) {
+    return null;
+  }
+  const diff = Number((current - previous).toFixed(digits));
+  return {
+    label: comparePlayer.value?.name ?? "",
+    value: previous.toFixed(digits) + suffix,
+    arrow: diff > 0 ? "▲" : diff < 0 ? "▼" : "",
+    delta: Math.abs(diff).toFixed(digits),
+    tone:
+      diff === 0
+        ? ""
+        : diff > 0 === higherIsBetter
+          ? "text-[hsl(142_71%_55%)]"
+          : "text-[hsl(0_84%_66%)]",
+  };
+}
 
 function compareSeries(selector: (p: MatchPoint) => number): number[] {
   return comparePoints.value.map(selector);
@@ -603,6 +657,12 @@ const metricCards = computed(() => [
     compareSeries: hasCompare.value
       ? cumulativeWinRate(comparePoints.value)
       : [],
+    season: seasonDiff(
+      aggregate.value.winPct,
+      seasonAggregate.value?.winPct,
+      0,
+      "%",
+    ),
     level: statLevelFromRange(aggregate.value.winPct, 65, 35),
   },
   {
@@ -612,6 +672,7 @@ const metricCards = computed(() => [
     compareValue: hasCompare.value ? fmt(compareAggregate.value.adr, 1) : null,
     series: points.value.map((p) => p.adr),
     compareSeries: compareSeries((p) => p.adr),
+    season: seasonDiff(aggregate.value.adr, seasonAggregate.value?.adr, 1),
     level: statLevelFromRange(aggregate.value.adr, 90, 55),
   },
   {
@@ -627,6 +688,7 @@ const metricCards = computed(() => [
     compareSeries: compareSeries((p) =>
       p.deaths > 0 ? p.kills / p.deaths : p.kills,
     ),
+    season: seasonDiff(aggregate.value.kd, seasonAggregate.value?.kd, 2),
     level: statLevelFromRange(aggregate.value.kd, 1.3, 0.8),
   },
   {
@@ -636,6 +698,7 @@ const metricCards = computed(() => [
     compareValue: hasCompare.value ? fmt(compareAggregate.value.kpr, 2) : null,
     series: points.value.map((p) => p.kpr),
     compareSeries: compareSeries((p) => p.kpr),
+    season: seasonDiff(aggregate.value.kpr, seasonAggregate.value?.kpr, 2),
     level: statLevelFromRange(aggregate.value.kpr, 0.85, 0.5),
   },
   {
@@ -645,9 +708,23 @@ const metricCards = computed(() => [
     compareValue: hasCompare.value ? fmt(compareAggregate.value.dpr, 2) : null,
     series: points.value.map((p) => p.dpr),
     compareSeries: compareSeries((p) => p.dpr),
+    season: seasonDiff(
+      aggregate.value.dpr,
+      seasonAggregate.value?.dpr,
+      2,
+      "",
+      false,
+    ),
     level: statLevelFromRange(aggregate.value.dpr, 0.6, 0.95),
   },
 ]);
+
+const kastSeason = computed(() =>
+  seasonDiff(aggregate.value.kast, seasonAggregate.value?.kast, 0, "%"),
+);
+const hsSeason = computed(() =>
+  seasonDiff(aggregate.value.hsPct, seasonAggregate.value?.hsPct, 0, "%"),
+);
 
 const ratingAvg = computed(() => avg(points.value.map((p) => p.hltv)));
 
@@ -1088,9 +1165,12 @@ function tooltipAfter(index: number | undefined): string[] {
 
 <template>
   <div>
-    <FadeSwap>
+    <FadeSwap
+      class="transition-opacity duration-200"
+      :class="refreshing && 'pointer-events-none opacity-50'"
+    >
       <div
-        v-if="loading && !hasData"
+        v-if="showSkeleton"
         key="skeleton"
         class="flex flex-col gap-4 md:gap-6"
       >
@@ -1146,6 +1226,22 @@ function tooltipAfter(index: number | undefined): string[] {
       </Empty>
 
       <div v-else key="content" class="flex flex-col gap-4 md:gap-6">
+        <p
+          v-if="(hasCompare || seasonAggregate) && comparePlayer"
+          class="-mb-2 font-mono text-[0.62rem] tracking-[0.06em] text-muted-foreground md:-mb-4"
+        >
+          {{
+            $t("pages.players.detail.compare.sample", {
+              matches: aggregate.matches,
+              compare: compareAggregate.matches,
+              name: comparePlayer.name,
+            })
+          }}<template
+            v-if="Math.min(aggregate.matches, compareAggregate.matches) < 10"
+          >
+            · {{ $t("pages.players.detail.compare.small_sample") }}</template
+          >
+        </p>
         <div class="grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-5">
           <AnimatedCard
             v-for="card in metricCards"
@@ -1177,6 +1273,20 @@ function tooltipAfter(index: number | undefined): string[] {
               :value="card.subtext"
               class="font-mono text-[0.6rem] tracking-[0.06em] text-muted-foreground/80"
             />
+            <div
+              v-if="card.season"
+              class="flex items-center gap-1.5 font-mono text-[0.62rem] tracking-[0.06em] text-muted-foreground"
+            >
+              <span>{{ card.season.label }} {{ card.season.value }}</span>
+              <span
+                v-if="card.season.arrow"
+                class="inline-flex items-center gap-px text-foreground/80"
+                ><span :class="card.season.tone" aria-hidden="true">{{
+                  card.season.arrow
+                }}</span
+                >{{ card.season.delta }}</span
+              >
+            </div>
             <div
               v-if="card.compareValue !== null"
               class="font-mono text-[0.62rem] tracking-[0.1em]"
@@ -1216,6 +1326,20 @@ function tooltipAfter(index: number | undefined): string[] {
                       :level="statLevelFromRange(aggregate.kast, 75, 55)"
                     />
                     <div
+                      v-if="kastSeason"
+                      class="mt-1 flex items-center gap-1 font-mono text-[0.6rem] text-muted-foreground"
+                    >
+                      <span>{{ kastSeason.label }} {{ kastSeason.value }}</span>
+                      <span
+                        v-if="kastSeason.arrow"
+                        class="inline-flex items-center gap-px text-foreground/80"
+                        ><span :class="kastSeason.tone" aria-hidden="true">{{
+                          kastSeason.arrow
+                        }}</span
+                        >{{ kastSeason.delta }}</span
+                      >
+                    </div>
+                    <div
                       v-if="hasCompare && compareAggregate.kast !== null"
                       class="mt-1 font-mono text-[0.6rem]"
                       style="color: #38bdf8"
@@ -1243,6 +1367,20 @@ function tooltipAfter(index: number | undefined): string[] {
                   :score="statScore(aggregate.hsPct, 55, 5)"
                   :level="statLevelFromRange(aggregate.hsPct ?? 0, 55, 25)"
                 />
+                <div
+                  v-if="hsSeason"
+                  class="mt-1 flex items-center gap-1 font-mono text-[0.6rem] text-muted-foreground"
+                >
+                  <span>{{ hsSeason.label }} {{ hsSeason.value }}</span>
+                  <span
+                    v-if="hsSeason.arrow"
+                    class="inline-flex items-center gap-px text-foreground/80"
+                    ><span :class="hsSeason.tone" aria-hidden="true">{{
+                      hsSeason.arrow
+                    }}</span
+                    >{{ hsSeason.delta }}</span
+                  >
+                </div>
                 <div
                   v-if="hasCompare && compareAggregate.hsPct !== null"
                   class="mt-1 font-mono text-[0.6rem]"

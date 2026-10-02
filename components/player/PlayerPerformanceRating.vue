@@ -3,6 +3,7 @@ import { ref, computed, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
 import gql from "graphql-tag";
+import { schemaHasType } from "~/utilities/schemaHasType";
 import {
   Chart as ChartJS,
   RadialLinearScale,
@@ -23,7 +24,12 @@ import {
 import { Crosshair, MapPin, Bomb } from "lucide-vue-next";
 import StatLabel from "~/components/common/StatLabel.vue";
 import StatScale from "~/components/common/StatScale.vue";
-import { usePlayerComparison } from "~/composables/usePlayerComparison";
+import {
+  usePlayerComparison,
+  type ComparisonWindow,
+} from "~/composables/usePlayerComparison";
+import { useDeferredLoading } from "~/composables/useDeferredLoading";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 
 ChartJS.register(
   RadialLinearScale,
@@ -38,12 +44,39 @@ const props = defineProps<{
   steamId: string;
   source?: string | null;
   limit?: number | null;
+  since?: string | null;
+  until?: string | null;
 }>();
 const { t } = useI18n();
 const { client: apolloClient } = useApolloClient();
 
 const COLOR_YOU = "#fbbf24";
 const COLOR_YOU_FILL = "rgba(251, 191, 36, 0.22)";
+
+const SUBSCORE_FIELDS = `
+  accuracy_score
+  hs_score
+  spotted_score
+  crosshair_score
+  ttd_score
+  counter_strafe_score
+  survival_score
+  traded_score
+  kast_score
+  flash_assists_score
+  blind_score
+  util_eff_score
+`;
+
+// Sub-scores ranked within one season's pool. Raw document so it needs no zeus
+// regen; until the view is deployed it fails and the career scores stand.
+const SEASON_PERFORMANCE_QUERY = gql`
+  query PlayerSeasonPerformance($where: player_season_performance_v_bool_exp!) {
+    player_season_performance_v(where: $where, limit: 1) {
+      ${SUBSCORE_FIELDS}
+    }
+  }
+`;
 
 const PERFORMANCE_QUERY = gql`
   query PlayerPerformance($steamId: bigint!) {
@@ -168,19 +201,43 @@ const SUBMETRICS: Array<{
 ];
 
 const loading = ref(true);
+const { skeleton: showSkeleton, refreshing } = useDeferredLoading(
+  () => loading.value,
+);
 const row = ref<Record<string, any> | null>(null);
 const matchRows = ref<Array<Record<string, any>>>([]);
 
 const COLOR_COMPARE = "#38bdf8";
 const COLOR_COMPARE_FILL = "rgba(56, 189, 248, 0.18)";
 
-function buildWhere(steamId: string) {
+function buildWhere(steamId: string, season?: ComparisonWindow) {
   const where: Record<string, any> = { steam_id: { _eq: steamId } };
   if (props.source && !["all", "", "external"].includes(props.source)) {
     where.source = { _eq: props.source };
   }
+  if (season) {
+    where.played_at = {
+      _gte: season.since,
+      ...(season.until ? { _lte: season.until } : {}),
+    };
+  } else if (props.since || props.until) {
+    where.played_at = {
+      ...(props.since ? { _gte: props.since } : {}),
+      ...(props.until ? { _lte: props.until } : {}),
+    };
+  }
   return where;
 }
+
+// A date window means every match inside it, like the Performance tab; without
+// one this is a recent-form read over the last few matches.
+function matchLimit(season?: ComparisonWindow) {
+  return (
+    props.limit ?? (season || props.since || props.until ? 1000 : RECENT_WINDOW)
+  );
+}
+
+let loadGen = 0;
 
 async function load() {
   if (!props.steamId) {
@@ -190,6 +247,7 @@ async function load() {
     return;
   }
   loading.value = true;
+  const gen = ++loadGen;
   try {
     const [perf, matches] = await Promise.all([
       apolloClient.query({
@@ -201,24 +259,35 @@ async function load() {
         query: MATCHES_QUERY,
         variables: {
           where: buildWhere(props.steamId),
-          limit: props.limit ?? RECENT_WINDOW,
+          limit: matchLimit(),
         },
         fetchPolicy: "network-only",
       }),
     ]);
+    if (gen !== loadGen) {
+      return;
+    }
     row.value = (perf.data as any)?.player_performance_v?.[0] ?? null;
     matchRows.value = (matches.data as any)?.player_match_performance_v ?? [];
   } catch {
-    row.value = null;
-    matchRows.value = [];
+    if (gen === loadGen) {
+      row.value = null;
+      matchRows.value = [];
+    }
   } finally {
-    loading.value = false;
+    if (gen === loadGen) {
+      loading.value = false;
+    }
   }
 }
 
-watch(() => [props.steamId, props.source, props.limit], load, {
-  immediate: true,
-});
+watch(
+  () => [props.steamId, props.source, props.limit, props.since, props.until],
+  load,
+  {
+    immediate: true,
+  },
+);
 
 const COMPARE_QUERY = gql`
   query PlayerPerfCompare(
@@ -264,16 +333,16 @@ const {
   compareData,
 } = usePlayerComparison(
   COMPARE_QUERY,
-  (steamId) => ({
+  (steamId, season) => ({
     steamId,
-    where: buildWhere(steamId),
-    limit: props.limit ?? RECENT_WINDOW,
+    where: buildWhere(steamId, season),
+    limit: matchLimit(season),
   }),
   (data: any) => ({
     perf: (data?.perf?.[0] ?? null) as Record<string, any> | null,
     matches: (data?.matches ?? []) as Array<Record<string, any>>,
   }),
-  () => [props.source, props.limit],
+  () => [props.source, props.limit, props.since, props.until],
 );
 
 function avgOf(rows: Array<Record<string, any>>, key: string): number | null {
@@ -298,11 +367,58 @@ function compareAvg(key: string): number | null {
   return avgOf(compareData.value.matches, key);
 }
 
-function compareScore(key: string): number | null {
-  if (!compareEnabled.value || !compareData.value?.perf) {
+// Season sub-scores: the stats window when it is exactly a season, and the
+// compared season when comparing one.
+const seasonScores = ref<Record<string, any> | null>(null);
+const compareSeasonScores = ref<Record<string, any> | null>(null);
+let seasonScoresGen = 0;
+
+async function seasonScoresFor(where: Record<string, any>) {
+  if (!(await schemaHasType(apolloClient, "player_season_performance_v"))) {
     return null;
   }
-  const v = compareData.value.perf[key];
+  try {
+    const { data } = await apolloClient.query({
+      query: SEASON_PERFORMANCE_QUERY,
+      variables: { where: { steam_id: { _eq: props.steamId }, ...where } },
+      fetchPolicy: "network-only",
+    });
+    return (data as any)?.player_season_performance_v?.[0] ?? null;
+  } catch {
+    return null;
+  }
+}
+
+async function loadSeasonScores() {
+  const gen = ++seasonScoresGen;
+  const compared = comparePlayer.value?.window;
+  const [own, other] = await Promise.all([
+    props.steamId && props.since
+      ? seasonScoresFor({ season_starts_at: { _eq: props.since } })
+      : null,
+    props.steamId && compared
+      ? seasonScoresFor({ season_id: { _eq: compared.season_id } })
+      : null,
+  ]);
+  if (gen !== seasonScoresGen) return;
+  seasonScores.value = own;
+  compareSeasonScores.value = other;
+}
+
+watch(
+  () => [props.steamId, props.since, comparePlayer.value?.window?.season_id],
+  loadSeasonScores,
+  { immediate: true },
+);
+
+function compareScore(key: string): number | null {
+  if (!compareEnabled.value) {
+    return null;
+  }
+  const source = comparePlayer.value?.window
+    ? compareSeasonScores.value
+    : compareData.value?.perf;
+  const v = source?.[key];
   return v == null ? null : Number(v);
 }
 
@@ -362,10 +478,11 @@ const categoryIcon: Record<string, any> = {
 };
 
 const focusAreas = computed(() => {
-  if (!row.value) return [];
+  const scores = seasonScores.value ?? row.value;
+  if (!scores) return [];
   return SUBMETRICS.map((m) => ({
     ...m,
-    score: row.value?.[m.key] as number | null,
+    score: scores[m.key] as number | null,
     other: compareScore(m.key),
   }))
     .filter((m) => m.score != null)
@@ -432,118 +549,138 @@ const chartOptions = computed(() => ({
           {{ $t("player.performance.description") }}
         </span>
 
-        <template v-if="loading">
-          <div class="grid gap-4 lg:grid-cols-2">
-            <Skeleton class="h-[340px] w-full" />
-            <div class="flex flex-col gap-2 self-center">
-              <Skeleton v-for="i in 3" :key="i" class="h-24 w-full" />
-            </div>
-          </div>
-        </template>
-
-        <div
-          v-else-if="!hasData"
-          class="rounded-md border border-dashed border-border p-10 text-center text-sm text-muted-foreground"
+        <FadeSwap
+          class="transition-opacity duration-200"
+          :class="refreshing && 'pointer-events-none opacity-50'"
         >
-          {{ $t("player.performance.not_enough_data") }}
-        </div>
-
-        <template v-else>
-          <div class="grid gap-6 lg:grid-cols-2 lg:items-center">
-            <div class="relative h-[260px] sm:h-[300px]">
-              <Radar :data="chartData" :options="chartOptions" />
-            </div>
-
-            <div class="flex flex-col justify-center gap-3">
+          <div v-if="showSkeleton" key="skeleton" class="flex flex-col gap-4">
+            <div class="grid gap-6 lg:grid-cols-2 lg:items-center">
               <div
-                v-for="c of categories"
-                :key="c.key"
-                class="flex items-center justify-between gap-3 rounded border border-border/60 bg-background/40 px-3 py-2"
+                class="flex h-[260px] items-center justify-center sm:h-[300px]"
               >
-                <div class="flex items-center gap-2 min-w-0">
-                  <component
-                    :is="categoryIcon[c.key]"
-                    class="w-4 h-4 shrink-0 text-muted-foreground"
-                  />
-                  <span class="font-semibold truncate">
-                    <StatLabel :stat="c.key" :label="c.label" />
-                  </span>
-                  <span
-                    v-if="c.provisional"
-                    class="shrink-0 px-1.5 py-0.5 rounded bg-muted/50 text-[0.55rem] font-mono uppercase tracking-[0.14em] text-muted-foreground"
-                  >
-                    {{ $t("player.performance.provisional") }}
-                  </span>
-                </div>
-                <div
-                  class="flex shrink-0 items-baseline gap-2 font-mono tabular-nums"
-                >
-                  <span class="text-lg font-bold" :class="tier(c.you).cls">{{
-                    c.you ?? "—"
-                  }}</span>
-                  <span
-                    v-if="compareEnabled"
-                    class="text-sm font-bold"
-                    :style="{ color: COLOR_COMPARE }"
-                    >{{ c.other ?? "—" }}</span
-                  >
-                </div>
+                <Skeleton
+                  class="aspect-square h-[200px] rounded-full sm:h-[240px]"
+                />
+              </div>
+              <div class="flex flex-col justify-center gap-3">
+                <Skeleton v-for="i in 3" :key="i" class="h-[46px] w-full" />
+              </div>
+            </div>
+            <div class="flex flex-col gap-2">
+              <Skeleton class="h-4 w-28" />
+              <div class="grid gap-3 sm:grid-cols-3">
+                <Skeleton v-for="i in 3" :key="i" class="h-44 w-full" />
               </div>
             </div>
           </div>
 
-          <div v-if="focusAreas.length" class="flex flex-col gap-2">
-            <span :class="tacticalSectionLabelClasses">
-              <span :class="tacticalSectionTickClasses" />
-              {{ $t("player.performance.focus_areas") }}
-            </span>
-            <div class="grid gap-3 sm:grid-cols-3">
-              <div
-                v-for="f of focusAreas"
-                :key="f.key"
-                class="flex flex-col gap-3 rounded border border-border/60 bg-background/40 p-4"
-              >
-                <div class="flex items-center justify-between gap-2">
+          <div
+            v-else-if="!hasData"
+            key="empty"
+            class="rounded-md border border-dashed border-border p-10 text-center text-sm text-muted-foreground"
+          >
+            {{ $t("player.performance.not_enough_data") }}
+          </div>
+
+          <div v-else key="content" class="flex flex-col gap-4">
+            <div class="grid gap-6 lg:grid-cols-2 lg:items-center">
+              <div class="relative h-[260px] sm:h-[300px]">
+                <Radar :data="chartData" :options="chartOptions" />
+              </div>
+
+              <div class="flex flex-col justify-center gap-3">
+                <div
+                  v-for="c of categories"
+                  :key="c.key"
+                  class="flex items-center justify-between gap-3 rounded border border-border/60 bg-background/40 px-3 py-2"
+                >
                   <div class="flex items-center gap-2 min-w-0">
                     <component
-                      :is="categoryIcon[f.category]"
+                      :is="categoryIcon[c.key]"
                       class="w-4 h-4 shrink-0 text-muted-foreground"
                     />
-                    <span class="font-semibold text-sm truncate">
-                      <StatLabel
-                        :stat="f.glossary"
-                        :label="$t(`player.performance.metrics.${f.key}.label`)"
-                      />
+                    <span class="font-semibold truncate">
+                      <StatLabel :stat="c.key" :label="c.label" />
+                    </span>
+                    <span
+                      v-if="c.provisional"
+                      class="shrink-0 px-1.5 py-0.5 rounded bg-muted/50 text-[0.55rem] font-mono uppercase tracking-[0.14em] text-muted-foreground"
+                    >
+                      {{ $t("player.performance.provisional") }}
                     </span>
                   </div>
                   <div
-                    class="flex shrink-0 items-baseline gap-2 font-mono leading-none tabular-nums"
+                    class="flex shrink-0 items-baseline gap-2 font-mono tabular-nums"
                   >
-                    <span
-                      class="text-xl font-bold"
-                      :class="tier(f.score).cls"
-                      >{{ f.score }}</span
-                    >
+                    <span class="text-lg font-bold" :class="tier(c.you).cls">{{
+                      c.you ?? "—"
+                    }}</span>
                     <span
                       v-if="compareEnabled"
-                      class="text-base font-bold"
+                      class="text-sm font-bold"
                       :style="{ color: COLOR_COMPARE }"
-                      >{{ f.other ?? "—" }}</span
+                      >{{ c.other ?? "—" }}</span
                     >
                   </div>
                 </div>
-                <p class="text-xs leading-snug text-muted-foreground">
-                  {{ $t(`player.performance.metrics.${f.key}.coach`) }}
-                </p>
-                <StatScale
-                  :stat="f.glossary"
-                  :score="f.score"
-                  class="mt-auto pt-2"
-                />
+              </div>
+            </div>
+
+            <div v-if="focusAreas.length" class="flex flex-col gap-2">
+              <span :class="tacticalSectionLabelClasses">
+                <span :class="tacticalSectionTickClasses" />
+                {{ $t("player.performance.focus_areas") }}
+              </span>
+              <div class="grid gap-3 sm:grid-cols-3">
+                <div
+                  v-for="f of focusAreas"
+                  :key="f.key"
+                  class="flex flex-col gap-3 rounded border border-border/60 bg-background/40 p-4"
+                >
+                  <div class="flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2 min-w-0">
+                      <component
+                        :is="categoryIcon[f.category]"
+                        class="w-4 h-4 shrink-0 text-muted-foreground"
+                      />
+                      <span class="font-semibold text-sm truncate">
+                        <StatLabel
+                          :stat="f.glossary"
+                          :label="
+                            $t(`player.performance.metrics.${f.key}.label`)
+                          "
+                        />
+                      </span>
+                    </div>
+                    <div
+                      class="flex shrink-0 items-baseline gap-2 font-mono leading-none tabular-nums"
+                    >
+                      <span
+                        class="text-xl font-bold"
+                        :class="tier(f.score).cls"
+                        >{{ f.score }}</span
+                      >
+                      <span
+                        v-if="compareEnabled"
+                        class="text-base font-bold"
+                        :style="{ color: COLOR_COMPARE }"
+                        >{{ f.other ?? "—" }}</span
+                      >
+                    </div>
+                  </div>
+                  <p class="text-xs leading-snug text-muted-foreground">
+                    {{ $t(`player.performance.metrics.${f.key}.coach`) }}
+                  </p>
+                  <StatScale
+                    :stat="f.glossary"
+                    :score="f.score"
+                    class="mt-auto pt-2"
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </template>
+        </FadeSwap>
       </div>
     </CardContent>
   </Card>

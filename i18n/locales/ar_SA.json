@@ -3203,6 +3203,27 @@
         "end_date": "النهاية",
         "peak_lowest": "الأعلى / الأدنى",
         "peak": "الأعلى",
+        "season_pace": {
+          "toggle": "{season} مقابل {previous}",
+          "all_time": "كل الأوقات",
+          "vs": "مقابل {season}",
+          "ahead": "متقدم بعد {n} مباراة | متقدم بعد {n} مباريات",
+          "behind": "متأخر بعد {n} مباراة | متأخر بعد {n} مباريات",
+          "level": "متعادل بعد {n} مباراة | متعادل بعد {n} مباريات",
+          "ahead_final": "أعلى من تقييمه النهائي",
+          "behind_final": "أقل من تقييمه النهائي",
+          "level_final": "مساوٍ لتقييمه النهائي",
+          "tooltip": "كان {season} عند {then} بعد {n} مباراة. أنت الآن عند {now}. | كان {season} عند {then} بعد {n} مباريات. أنت الآن عند {now}.",
+          "tooltip_final": "أنهى {season} عند {then}. أنت الآن عند {now}.",
+          "none": "لا توجد مباريات هذا الموسم بعد",
+          "peak": "أعلى {season}",
+          "peak_marker": "أعلى {season} {elo}",
+          "start": "البداية",
+          "match": "المباراة {n}",
+          "finish": "أنهى في المركز #{rank} من {total}",
+          "finish_tooltip": "أعلى {season} {peak} في {date}. أنهى عند {final}، المركز #{rank} من {total} في لوحة الصدارة.",
+          "peak_tooltip": "أعلى {season} {peak} في {date}. أنهى عند {final}."
+        },
         "no_matches_in_window": "لا توجد مباريات في هذا النطاق",
         "no_matches_in_window_period": "لا توجد مباريات في هذا النطاق.",
         "expand_to_all_time": "وسّع لكل الفترات",
@@ -3301,7 +3322,10 @@
           "label": "قارن مع",
           "select_label": "لاعب المقارنة",
           "description": "يعرض أرقام هذا اللاعب فوق كل تبويبات الإحصاءات.",
-          "vs": "ضد"
+          "vs": "ضد",
+          "season_label": "أو موسم",
+          "sample": "المباريات: {matches} مقابل {compare} ({name})",
+          "small_sample": "العينات الصغيرة تتقلب كثيرًا"
         },
         "elo_history_dialog": {
           "current": "الحالي",
@@ -9161,7 +9185,14 @@
     "premier": "Premier",
     "competitive": "Competitive",
     "wingman": "Wingman",
-    "imported_from": "{type} · مستوردة من {source}"
+    "imported_from": "{type} · مستوردة من {source}",
+    "season_break": {
+      "began": "بدأ الموسم {number} في {date}",
+      "ended": "انتهى الموسم {number} في {date}",
+      "reset": "أُعيد ضبط التقييمات للموسم الجديد",
+      "recap": "انتهى الموسم {number} عند {final}، الأفضل {peak}، {wins}ف–{losses}خ"
+    },
+    "season_best": "أفضل تقييم في {season}"
   },
   "breadcrumbs": {
     "dashboard": "لوحة التحكم"

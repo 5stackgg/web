@@ -16,13 +16,18 @@ import {
 import { Line } from "vue-chartjs";
 import { Card, CardContent } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import { useDeferredLoading } from "~/composables/useDeferredLoading";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
   tacticalSectionDescriptionClasses,
 } from "~/utilities/tacticalClasses";
 import StatLabel from "~/components/common/StatLabel.vue";
-import { usePlayerComparison } from "~/composables/usePlayerComparison";
+import {
+  usePlayerComparison,
+  type ComparisonWindow,
+} from "~/composables/usePlayerComparison";
 
 ChartJS.register(
   LineElement,
@@ -38,6 +43,8 @@ const props = defineProps<{
   steamId: string;
   source?: string | null;
   limit?: number | null;
+  since?: string | null;
+  until?: string | null;
 }>();
 const { t } = useI18n();
 const { client: apolloClient } = useApolloClient();
@@ -63,17 +70,39 @@ const QUERY = gql`
 `;
 
 const loading = ref(true);
+const { skeleton: showSkeleton, refreshing } = useDeferredLoading(
+  () => loading.value,
+);
 const rows = ref<Array<Record<string, any>>>([]);
 
 const COLOR_COMPARE = "#38bdf8";
 
-function buildWhere(steamId: string) {
+function buildWhere(steamId: string, season?: ComparisonWindow) {
   const where: Record<string, any> = { steam_id: { _eq: steamId } };
   if (props.source && !["all", "", "external"].includes(props.source)) {
     where.source = { _eq: props.source };
   }
+  if (season) {
+    where.played_at = {
+      _gte: season.since,
+      ...(season.until ? { _lte: season.until } : {}),
+    };
+  } else if (props.since || props.until) {
+    where.played_at = {
+      ...(props.since ? { _gte: props.since } : {}),
+      ...(props.until ? { _lte: props.until } : {}),
+    };
+  }
   return where;
 }
+
+// A date window means every match inside it, like the Performance tab; without
+// one this is a recent-form read over the last few matches.
+function matchLimit(season?: ComparisonWindow) {
+  return props.limit ?? (season || props.since || props.until ? 1000 : 20);
+}
+
+let loadGen = 0;
 
 async function load() {
   if (!props.steamId) {
@@ -82,28 +111,40 @@ async function load() {
     return;
   }
   loading.value = true;
+  const gen = ++loadGen;
   try {
     const { data } = await apolloClient.query({
       query: QUERY,
       variables: {
         where: buildWhere(props.steamId),
-        limit: props.limit ?? 20,
+        limit: matchLimit(),
       },
       fetchPolicy: "network-only",
     });
+    if (gen !== loadGen) {
+      return;
+    }
     rows.value = [
       ...((data as any)?.player_match_performance_v ?? []),
     ].reverse();
   } catch {
-    rows.value = [];
+    if (gen === loadGen) {
+      rows.value = [];
+    }
   } finally {
-    loading.value = false;
+    if (gen === loadGen) {
+      loading.value = false;
+    }
   }
 }
 
-watch(() => [props.steamId, props.source, props.limit], load, {
-  immediate: true,
-});
+watch(
+  () => [props.steamId, props.source, props.limit, props.since, props.until],
+  load,
+  {
+    immediate: true,
+  },
+);
 
 const {
   enabled: compareEnabled,
@@ -111,10 +152,13 @@ const {
   compareData,
 } = usePlayerComparison(
   QUERY,
-  (steamId) => ({ where: buildWhere(steamId), limit: props.limit ?? 20 }),
+  (steamId, season) => ({
+    where: buildWhere(steamId, season),
+    limit: matchLimit(season),
+  }),
   (data: any) =>
     [...((data?.player_match_performance_v ?? []) as any[])].reverse(),
-  () => [props.source, props.limit],
+  () => [props.source, props.limit, props.since, props.until],
 );
 
 const compareOverall = computed<Array<number | null>>(() => {
@@ -261,16 +305,26 @@ const chartOptions = computed(() => ({
           >
         </div>
 
-        <Skeleton v-if="loading" class="h-[220px] w-full" />
-        <div
-          v-else-if="!hasData"
-          class="rounded-md border border-dashed border-border p-8 text-center text-sm text-muted-foreground"
+        <FadeSwap
+          class="transition-opacity duration-200"
+          :class="refreshing && 'pointer-events-none opacity-50'"
         >
-          {{ $t("player.performance.consistency.not_enough") }}
-        </div>
-        <div v-else class="relative h-[220px]">
-          <Line :data="chartData" :options="chartOptions" />
-        </div>
+          <Skeleton
+            v-if="showSkeleton"
+            key="skeleton"
+            class="h-[220px] w-full"
+          />
+          <div
+            v-else-if="!hasData"
+            key="empty"
+            class="rounded-md border border-dashed border-border p-8 text-center text-sm text-muted-foreground"
+          >
+            {{ $t("player.performance.consistency.not_enough") }}
+          </div>
+          <div v-else key="content" class="relative h-[220px]">
+            <Line :data="chartData" :options="chartOptions" />
+          </div>
+        </FadeSwap>
       </div>
     </CardContent>
   </Card>

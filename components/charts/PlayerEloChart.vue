@@ -225,6 +225,7 @@ ChartJS.register({
       :key="chartKey"
       :data="chartData"
       :options="chartOptions"
+      :plugins="[seasonBreakMarkers]"
       v-if="chartData"
       @chart:render="onChartRender"
     />
@@ -285,6 +286,13 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    // Season starts: every rating resets there, so the line breaks instead of
+    // reading the reset as a losing streak.
+    seasonBreaks: {
+      type: Array as () => Array<{ at: string; label: string }>,
+      required: false,
+      default: () => [],
     },
   },
   data() {
@@ -376,6 +384,81 @@ export default {
         (a, b) => new Date(a).getTime() - new Date(b).getTime(),
       );
     },
+    // At most ~8 x labels, one per calendar day, with the year only where it
+    // changes — the raw labels repeat a date for every match played that day.
+    tickLabels(): Map<number, string> {
+      const labels: string[] = this.unifiedTimestamps || [];
+      const gap = Math.max(1, Math.ceil(labels.length / 8));
+      const spansYears =
+        labels.length > 1 &&
+        new Date(labels[0]).getFullYear() !==
+          new Date(labels[labels.length - 1]).getFullYear();
+      const out = new Map<number, string>();
+      let lastIndex = -Infinity;
+      let lastDay = "";
+      let lastYear: number | null = null;
+      labels.forEach((ts, index) => {
+        const date = new Date(ts);
+        const day = date.toDateString();
+        if (day === lastDay || index - lastIndex < gap) return;
+        const year = date.getFullYear();
+        out.set(
+          index,
+          date.toLocaleDateString(navigator.language, {
+            month: "short",
+            day: "numeric",
+            ...(spansYears && year !== lastYear ? { year: "2-digit" } : {}),
+          }),
+        );
+        lastIndex = index;
+        lastDay = day;
+        lastYear = year;
+      });
+      return out;
+    },
+    // Label index after which each season break falls.
+    breakIndices(): Array<{ index: number; label: string }> {
+      const labels: string[] = this.unifiedTimestamps || [];
+      const out: Array<{ index: number; label: string }> = [];
+      for (const brk of this.seasonBreaks ?? []) {
+        const at = new Date(brk.at).getTime();
+        const next = labels.findIndex((ts) => new Date(ts).getTime() >= at);
+        if (next > 0) out.push({ index: next - 1, label: brk.label });
+      }
+      return out;
+    },
+    seasonBreakMarkers() {
+      const self = this;
+      return {
+        id: "seasonBreakMarkers",
+        afterDatasetsDraw(chart: any) {
+          const x = chart.scales?.x;
+          const area = chart.chartArea;
+          if (!x || !area) return;
+          const ctx = chart.ctx;
+          for (const brk of self.breakIndices) {
+            const pos =
+              (x.getPixelForValue(brk.index) +
+                x.getPixelForValue(brk.index + 1)) /
+              2;
+            ctx.save();
+            ctx.strokeStyle = "rgba(251, 191, 36, 0.7)";
+            ctx.setLineDash([3, 3]);
+            ctx.beginPath();
+            ctx.moveTo(pos, area.top);
+            ctx.lineTo(pos, area.bottom);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.font = "600 10px Oxanium, sans-serif";
+            ctx.fillStyle = "rgba(251, 191, 36, 0.95)";
+            ctx.textAlign = "left";
+            ctx.textBaseline = "top";
+            ctx.fillText(brk.label, pos + 4, area.top + 2);
+            ctx.restore();
+          }
+        },
+      };
+    },
     focusSeries(): EloSeries | null {
       return (
         this.normalizedSeries.find((s) => s.focus) ??
@@ -401,7 +484,17 @@ export default {
         plugins: {
           rankBadgeAxis: { kind: sg },
           legend: {
-            display: false,
+            display: this.normalizedSeries.length > 1,
+            position: "top" as const,
+            align: "end" as const,
+            labels: {
+              color: "rgba(255, 255, 255, 0.6)",
+              font: { size: 10, family: "'Oxanium', sans-serif" },
+              usePointStyle: true,
+              pointStyle: "line" as const,
+              boxWidth: 14,
+              padding: 10,
+            },
           },
           tooltip: {
             enabled: true,
@@ -510,19 +603,10 @@ export default {
               color: "rgba(255, 255, 255, 0.6)",
               font: { size: 11 },
               padding: 8,
-              autoSkip: true,
-              maxTicksLimit: 10,
-              maxRotation: 45,
-              callback: (_tickValue: any, index: number) => {
-                const labels: string[] = self.unifiedTimestamps || [];
-                if (index >= labels.length) return "";
-                const ts = labels[index];
-                if (!ts) return "";
-                return new Date(ts).toLocaleDateString(navigator.language, {
-                  month: "short",
-                  day: "numeric",
-                });
-              },
+              autoSkip: false,
+              maxRotation: 0,
+              callback: (_tickValue: any, index: number) =>
+                self.tickLabels.get(index) ?? "",
             },
             afterFit: (scale: any) => {
               scale.paddingRight = 60;
@@ -618,6 +702,17 @@ export default {
           tension: this.skillGroupKind ? 0 : tension,
           stepped: this.skillGroupKind ? ("after" as const) : false,
           spanGaps: true,
+          // A segment that crosses a season start is the reset, not a result.
+          segment: {
+            borderColor: (ctx: any) =>
+              this.crossesBreak(ctx.p0DataIndex, ctx.p1DataIndex)
+                ? "rgba(255,255,255,0.15)"
+                : undefined,
+            borderDash: (ctx: any) =>
+              this.crossesBreak(ctx.p0DataIndex, ctx.p1DataIndex)
+                ? [2, 5]
+                : undefined,
+          },
           data,
           eloChanges,
           focus,
@@ -648,6 +743,11 @@ export default {
     this.winkTimers = [];
   },
   methods: {
+    crossesBreak(from: number, to: number): boolean {
+      return this.breakIndices.some(
+        (brk: { index: number }) => brk.index >= from && brk.index < to,
+      );
+    },
     hasIncomingData(): boolean {
       return Boolean(
         this.series?.some((s) => s.history && s.history.length > 0) ||

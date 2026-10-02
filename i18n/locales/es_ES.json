@@ -3203,6 +3203,27 @@
         "end_date": "Fin",
         "peak_lowest": "Máximo / Mínimo",
         "peak": "Máximo",
+        "season_pace": {
+          "toggle": "{season} vs {previous}",
+          "all_time": "Desde siempre",
+          "vs": "vs {season}",
+          "ahead": "por delante tras {n} partida | por delante tras {n} partidas",
+          "behind": "por detrás tras {n} partida | por detrás tras {n} partidas",
+          "level": "igualado tras {n} partida | igualado tras {n} partidas",
+          "ahead_final": "por encima de su puntuación final",
+          "behind_final": "por debajo de su puntuación final",
+          "level_final": "igual a su puntuación final",
+          "tooltip": "{season} iba en {then} tras {n} partida. Tú vas en {now}. | {season} iba en {then} tras {n} partidas. Tú vas en {now}.",
+          "tooltip_final": "{season} terminó en {then}. Tú vas en {now}.",
+          "none": "Aún sin partidas esta temporada",
+          "peak": "Máximo {season}",
+          "peak_marker": "Máximo {season} {elo}",
+          "start": "Inicio",
+          "match": "Partida {n}",
+          "finish": "Terminó #{rank} de {total}",
+          "finish_tooltip": "Máximo de {season}: {peak} el {date}. Terminó en {final}, #{rank} de {total} en la clasificación.",
+          "peak_tooltip": "Máximo de {season}: {peak} el {date}. Terminó en {final}."
+        },
         "no_matches_in_window": "No hay partidas en esta ventana",
         "no_matches_in_window_period": "No hay partidas en esta ventana.",
         "expand_to_all_time": "Ampliar a todo el histórico",
@@ -3301,7 +3322,10 @@
           "label": "Comparar con",
           "select_label": "Comparar jugador",
           "description": "Superpone los números de este jugador en todas las pestañas de estadísticas.",
-          "vs": "vs"
+          "vs": "vs",
+          "season_label": "O una temporada",
+          "sample": "Partidas: {matches} vs {compare} ({name})",
+          "small_sample": "las muestras pequeñas varían mucho"
         },
         "elo_history_dialog": {
           "current": "Actual",
@@ -9161,7 +9185,14 @@
     "premier": "Premier",
     "competitive": "Competitivo",
     "wingman": "Wingman",
-    "imported_from": "{type} · importada de {source}"
+    "imported_from": "{type} · importada de {source}",
+    "season_break": {
+      "began": "La temporada {number} empezó el {date}",
+      "ended": "La temporada {number} terminó el {date}",
+      "reset": "Puntuaciones reiniciadas para la nueva temporada",
+      "recap": "La temporada {number} terminó en {final}, máximo {peak}, {wins}V–{losses}D"
+    },
+    "season_best": "Mejor puntuación de {season}"
   },
   "breadcrumbs": {
     "dashboard": "panel"

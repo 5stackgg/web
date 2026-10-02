@@ -30,8 +30,18 @@ import { CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { e_player_roles_enum } from "~/generated/zeus";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import HeightGlide from "~/components/ui/transitions/HeightGlide.vue";
+import Fold from "~/components/ui/transitions/Fold.vue";
 import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 import PlayerEloChart from "~/components/charts/PlayerEloChart.vue";
+import PlayerSeasonPaceChart from "~/components/charts/PlayerSeasonPaceChart.vue";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import {
+  seasonBefore,
+  seasonRecap,
+  type SeasonRecap,
+  seasonPace,
+} from "~/utilities/seasonPace";
 import AnimatedStat from "~/components/AnimatedStat.vue";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import formatStatValue from "~/utilities/formatStatValue";
@@ -143,6 +153,7 @@ interface WindowedEloEntry {
   match_id: string | null;
   match_result: string | null;
   type: string;
+  season_id?: string | null;
   kills: number | null;
   deaths: number | null;
   assists: number | null;
@@ -283,6 +294,16 @@ onMounted(async () => {
       fetchPolicy: "no-cache",
     });
     seasons.value = (data as any)?.seasons ?? [];
+    const rawCompare = route.query.compare;
+    const compareParam = String(
+      (Array.isArray(rawCompare) ? rawCompare[0] : rawCompare) ?? "",
+    );
+    const compareSeason = compareParam.startsWith("season:")
+      ? seasons.value.find((s) => `season:${s.id}` === compareParam)
+      : null;
+    if (compareSeason && playerIdRef.value && !compareTarget.value) {
+      setCompareTarget(seasonCompareTarget(compareSeason));
+    }
     const now = Date.now();
     const active = seasons.value.find(
       (s) =>
@@ -627,7 +648,9 @@ watch(
 
 watch(compareTarget, (t) => {
   const q: Record<string, any> = { ...route.query };
-  if (t?.steam_id) {
+  if (t?.window) {
+    q.compare = `season:${t.window.season_id}`;
+  } else if (t?.steam_id) {
     q.compare = String(t.steam_id);
   } else {
     delete q.compare;
@@ -638,7 +661,7 @@ watch(compareTarget, (t) => {
 onMounted(async () => {
   const raw = route.query.compare;
   const id = Array.isArray(raw) ? raw[0] : raw;
-  if (!id || compareTarget.value) {
+  if (!id || compareTarget.value || String(id).startsWith("season:")) {
     return;
   }
   try {
@@ -777,6 +800,32 @@ const untilTimestamp = computed<string | null>(() => {
   return null;
 });
 
+// The filters each stats tab last saw. A tab mounts on its first visit (when it
+// gets an entry) and then stays mounted, so coming back shows what it already
+// loaded. Only the tab on screen follows the filter bar live: a hidden tab
+// keeps its old filters, so a filter change refetches one panel rather than
+// every tab opened so far, and the others catch up when they are next opened.
+const liveTabFilters = computed(() => ({
+  matchType: statTypeFilter.value,
+  source: effectiveSource.value,
+  limit: statsMatchLimit.value,
+  since: sinceTimestamp.value,
+  until: untilTimestamp.value,
+  eloMode: selectedModeRef.value,
+  eloRange: ["l30", "custom"].includes(eloRange.value) ? "all" : eloRange.value,
+  eloSource: sourceRef.value,
+  provider: providerRef.value,
+  excludeTournaments: excludeTournaments.value,
+}));
+const tabFilters = reactive<Record<string, typeof liveTabFilters.value>>({});
+watch(
+  [statsTab, liveTabFilters],
+  ([tab, filters]) => {
+    tabFilters[tab] = filters;
+  },
+  { immediate: true },
+);
+
 const statsScope = computed(() => ({
   source: sourceRef.value,
   provider: providerRef.value,
@@ -855,6 +904,7 @@ const PLAYER_ELO_HISTORY_QUERY = gql`
       match_id
       match_result
       type
+      season_id
       kills
       deaths
       assists
@@ -1485,6 +1535,204 @@ const windowedStats = computed(() => {
   };
 });
 
+const seasonTag = (season: { number: number | null } | null) =>
+  "S" + (season?.number ?? "?");
+
+const previousSeason = computed(() =>
+  activeSeason.value ? seasonBefore(seasons.value, activeSeason.value) : null,
+);
+
+const seasonPaceData = computed(() =>
+  seasonsEnabled.value && activeSeason.value && previousSeason.value
+    ? seasonPace(eloHistory.value, activeSeason.value, previousSeason.value)
+    : null,
+);
+
+const eloCardView = ref<"pace" | "all">("pace");
+const showSeasonPace = computed(
+  () => !!seasonPaceData.value && eloCardView.value === "pace",
+);
+const eloCardViewOptions = computed(() => [
+  {
+    key: "pace",
+    label: t("pages.players.detail.season_pace.toggle", {
+      season: seasonTag(activeSeason.value),
+      previous: seasonTag(previousSeason.value),
+    }),
+  },
+  { key: "all", label: t("pages.players.detail.season_pace.all_time") },
+]);
+
+const seasonPaceSubline = computed(() => {
+  const pace = seasonPaceData.value;
+  if (!pace || pace.delta === null) {
+    return t("pages.players.detail.season_pace.none");
+  }
+  const standing =
+    pace.delta > 0 ? "ahead" : pace.delta < 0 ? "behind" : "level";
+  return pace.pastPrevious
+    ? t(`pages.players.detail.season_pace.${standing}_final`)
+    : t(
+        `pages.players.detail.season_pace.${standing}`,
+        { n: pace.played },
+        pace.played,
+      );
+});
+
+const seasonPaceTooltip = computed(() => {
+  const pace = seasonPaceData.value;
+  if (!pace?.current) return "";
+  const named = {
+    season: seasonTag(previousSeason.value),
+    then: fmtRangeStat(pace.against),
+    now: fmtRangeStat(pace.current.ratings[pace.played]),
+    n: pace.played,
+  };
+  return pace.pastPrevious
+    ? t("pages.players.detail.season_pace.tooltip_final", named)
+    : t("pages.players.detail.season_pace.tooltip", named, pace.played);
+});
+
+const seasonPaceDeltaClass = computed(() => {
+  const delta = seasonPaceData.value?.delta ?? 0;
+  if (delta > 0) return "text-[hsl(142_71%_60%)]";
+  if (delta < 0) return "text-[hsl(0_84%_66%)]";
+  return "text-foreground";
+});
+
+// Where the previous season finished on the leaderboard, on the pace ladder.
+const PREVIOUS_SEASON_FINISH_QUERY = gql`
+  query PlayerSeasonFinish(
+    $player_steam_id: String!
+    $match_type: String
+    $season_id: uuid
+  ) {
+    get_player_leaderboard_rank(
+      args: {
+        _category: "elo"
+        _window_days: 0
+        _match_type: $match_type
+        _exclude_tournaments: false
+        _player_steam_id: $player_steam_id
+        _season_id: $season_id
+      }
+    ) {
+      rank
+      total
+    }
+  }
+`;
+const previousSeasonFinish = ref<{ rank: number; total: number } | null>(
+  null,
+);
+let previousSeasonFinishGen = 0;
+watch(
+  () =>
+    [
+      playerIdRef.value,
+      previousSeason.value?.id,
+      seasonPaceData.value?.type,
+    ] as const,
+  async ([playerId, seasonId, type]) => {
+    const gen = ++previousSeasonFinishGen;
+    previousSeasonFinish.value = null;
+    if (!playerId || !seasonId || !type) return;
+    try {
+      const { data } = await apolloClient.query({
+        query: PREVIOUS_SEASON_FINISH_QUERY,
+        variables: {
+          player_steam_id: String(playerId),
+          match_type: type,
+          season_id: seasonId,
+        },
+        fetchPolicy: "cache-first",
+      });
+      if (gen !== previousSeasonFinishGen) return;
+      previousSeasonFinish.value =
+        (data as any)?.get_player_leaderboard_rank?.[0] ?? null;
+    } catch {}
+  },
+  { immediate: true },
+);
+const previousSeasonTooltip = computed(() => {
+  const pace = seasonPaceData.value;
+  if (!pace) return "";
+  const named = {
+    season: seasonTag(previousSeason.value),
+    peak: fmtRangeStat(pace.previous.peak),
+    date: fmtDateShort(pace.previous.peakAt),
+    final: fmtRangeStat(pace.previous.ratings[pace.previous.ratings.length - 1]),
+    rank: previousSeasonFinish.value?.rank ?? 0,
+    total: previousSeasonFinish.value?.total ?? 0,
+  };
+  return previousSeasonFinish.value
+    ? t("pages.players.detail.season_pace.finish_tooltip", named)
+    : t("pages.players.detail.season_pace.peak_tooltip", named);
+});
+
+const seasonChartBreaks = computed(() =>
+  seasonsEnabled.value
+    ? seasons.value.map((s) => ({ at: s.starts_at, label: seasonTag(s) }))
+    : [],
+);
+
+const seasonBestMatches = computed(() => {
+  const best: Record<string, string> = {};
+  for (const season of seasons.value) {
+    const id = seasonBreakBounds.value[season.id]?.peakMatchId;
+    if (id) best[id] = seasonTag(season);
+  }
+  return best;
+});
+
+const seasonBreakBounds = computed(() => {
+  const recaps: Record<string, SeasonRecap> = {};
+  for (const season of seasons.value) {
+    const recap = seasonRecap(eloHistory.value, season.id);
+    if (recap) recaps[season.id] = recap;
+  }
+  return recaps;
+});
+
+// Comparing against a season is the same player over that season's dates,
+// so every tab that takes the shared compare target picks it up.
+type SeasonRow = (typeof seasons.value)[number];
+const compareSeasonId = computed(
+  () => compareTarget.value?.window?.season_id ?? null,
+);
+// What the ELO tab sets a season comparison against, match by match.
+// The season the stats are showing — never offered as its own comparison.
+const viewedSeason = computed(() =>
+  eloRange.value === "season" ? selectedSeason.value : activeSeason.value,
+);
+watch(
+  () => [viewedSeason.value?.id, compareSeasonId.value],
+  ([viewed, compared]) => {
+    if (viewed && viewed === compared) clearCompareTarget();
+  },
+);
+const eloCompareBase = computed(() =>
+  compareSeasonId.value ? viewedSeason.value : null,
+);
+function seasonCompareTarget(season: SeasonRow) {
+  return {
+    steam_id: String(playerIdRef.value),
+    name: seasonTag(season),
+    window: {
+      season_id: season.id,
+      since: new Date(season.starts_at).toISOString(),
+      until: season.ends_at ? new Date(season.ends_at).toISOString() : null,
+    },
+  };
+}
+function compareWithSeason(season: SeasonRow) {
+  if (!playerIdRef.value || season.id === viewedSeason.value?.id) return;
+  if (eloRange.value !== "season" && viewedSeason.value) {
+    pickSeason(viewedSeason.value.id);
+  }
+  setCompareTarget(seasonCompareTarget(season));
+}
+
 const RECENT_FORM_COUNT = 12;
 const recentForm = computed(() => {
   const slice = (eloHistory.value ?? []).slice(-RECENT_FORM_COUNT);
@@ -2060,7 +2308,10 @@ const playerHeroTeamChipDotClasses =
         >
           <CardContent class="flex flex-1 flex-col gap-2 p-0 sm:p-0">
             <div
-              class="grid grid-cols-1 divide-y divide-border/40 overflow-hidden rounded-md border border-border/60 sm:grid-cols-2 sm:divide-x sm:divide-y-0"
+              :class="[
+                'grid grid-cols-1 divide-y divide-border/40 overflow-hidden rounded-md border border-border/60 sm:divide-x sm:divide-y-0',
+                seasonPaceData ? 'sm:grid-cols-3' : 'sm:grid-cols-2',
+              ]"
             >
               <div class="relative min-h-[64px] px-3 py-2.5">
                 <div
@@ -2081,12 +2332,93 @@ const playerHeroTeamChipDotClasses =
                   <AnimatedStat
                     v-else
                     :value="fmtRangeStat(windowedStats.current)"
-                    class="text-3xl font-bold leading-none tabular-nums tracking-tight sm:text-4xl"
+                    :class="[
+                      'text-3xl font-bold leading-none tabular-nums tracking-tight',
+                      seasonPaceData ? '' : 'sm:text-4xl',
+                    ]"
                   />
                 </div>
               </div>
 
-              <div class="relative min-h-[64px] px-3 py-2.5 sm:pl-4">
+              <template v-if="seasonPaceData">
+                <div class="relative min-h-[64px] px-3 py-2.5">
+                  <div
+                    class="truncate font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
+                  >
+                    {{
+                      $t("pages.players.detail.season_pace.vs", {
+                        season: seasonTag(previousSeason),
+                      })
+                    }}
+                  </div>
+                  <div
+                    class="mt-1 text-xl font-bold tabular-nums"
+                    :class="seasonPaceDeltaClass"
+                  >
+                    {{ fmtSignedStat(seasonPaceData.delta) }}
+                  </div>
+                  <FiveStackToolTip
+                    v-if="seasonPaceTooltip"
+                    as-child
+                    side="bottom"
+                    :delay-duration="120"
+                  >
+                    <template #trigger>
+                      <span
+                        class="mt-0.5 block cursor-help text-[0.68rem] leading-tight text-muted-foreground underline decoration-muted-foreground/50 decoration-dotted underline-offset-[3px]"
+                      >
+                        {{ seasonPaceSubline }}
+                      </span>
+                    </template>
+                    {{ seasonPaceTooltip }}
+                  </FiveStackToolTip>
+                  <span
+                    v-else
+                    class="mt-0.5 block text-[0.68rem] leading-tight text-muted-foreground"
+                  >
+                    {{ seasonPaceSubline }}
+                  </span>
+                </div>
+
+                <div class="relative min-h-[64px] px-3 py-2.5 sm:pl-4">
+                  <span
+                    class="pointer-events-none absolute left-0 top-3 bottom-3 hidden w-[2px] bg-[hsl(var(--tac-amber))] sm:block"
+                    aria-hidden="true"
+                  ></span>
+                  <div
+                    class="truncate font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
+                  >
+                    {{
+                      $t("pages.players.detail.season_pace.peak", {
+                        season: seasonTag(previousSeason),
+                      })
+                    }}
+                  </div>
+                  <AnimatedStat
+                    :value="fmtRangeStat(seasonPaceData.previous.peak)"
+                    class="mt-1 text-xl font-bold tabular-nums text-[hsl(var(--tac-amber))]"
+                  />
+                  <FiveStackToolTip as-child side="bottom" :delay-duration="120">
+                    <template #trigger>
+                      <span
+                        class="mt-0.5 block cursor-help text-[0.68rem] leading-tight text-muted-foreground underline decoration-muted-foreground/50 decoration-dotted underline-offset-[3px]"
+                      >
+                        {{
+                          previousSeasonFinish
+                            ? $t("pages.players.detail.season_pace.finish", {
+                                rank: previousSeasonFinish.rank,
+                                total: previousSeasonFinish.total,
+                              })
+                            : fmtDateShort(seasonPaceData.previous.peakAt)
+                        }}
+                      </span>
+                    </template>
+                    {{ previousSeasonTooltip }}
+                  </FiveStackToolTip>
+                </div>
+              </template>
+
+              <div v-else class="relative min-h-[64px] px-3 py-2.5 sm:pl-4">
                 <span
                   class="pointer-events-none absolute left-0 top-3 bottom-3 hidden w-[2px] bg-[hsl(var(--tac-amber))] sm:block"
                   aria-hidden="true"
@@ -2148,7 +2480,7 @@ const playerHeroTeamChipDotClasses =
             </div>
 
             <div
-              class="relative min-h-[150px] flex-1 overflow-hidden rounded-md border border-border/40"
+              class="relative flex min-h-[150px] flex-1 flex-col overflow-hidden rounded-md border border-border/40"
             >
               <span
                 class="pointer-events-none absolute -top-px left-3 h-1.5 w-1.5 border-l border-t border-[hsl(var(--tac-amber)/0.45)]"
@@ -2172,8 +2504,44 @@ const playerHeroTeamChipDotClasses =
               ></div>
 
               <div
-                v-if="eloHistoryLoading && !hasWindowedEloData"
-                class="elo-skeleton relative flex h-full flex-col items-center justify-center gap-3 px-6"
+                v-if="seasonPaceData"
+                class="relative flex items-center justify-between gap-2 px-2 pt-2"
+              >
+                <div
+                  v-if="showSeasonPace"
+                  class="flex items-center gap-3 font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
+                >
+                  <span class="inline-flex items-center gap-1.5">
+                    <span class="h-0.5 w-3 bg-foreground"></span>
+                    {{ seasonTag(activeSeason) }}
+                  </span>
+                  <span class="inline-flex items-center gap-1.5">
+                    <span
+                      class="w-3 border-t-2 border-dashed border-muted-foreground/60"
+                    ></span>
+                    {{ seasonTag(previousSeason) }}
+                  </span>
+                </div>
+                <span v-else></span>
+                <AnimatedFilters
+                  v-model="eloCardView"
+                  square
+                  :options="eloCardViewOptions"
+                />
+              </div>
+
+              <PlayerSeasonPaceChart
+                v-if="showSeasonPace && seasonPaceData"
+                class="relative min-h-0 flex-1"
+                :current="seasonPaceData.current"
+                :previous="seasonPaceData.previous"
+                :current-label="seasonTag(activeSeason)"
+                :previous-label="seasonTag(previousSeason)"
+              />
+
+              <div
+                v-else-if="eloHistoryLoading && !hasWindowedEloData"
+                class="elo-skeleton relative flex flex-1 flex-col items-center justify-center gap-3 px-6"
                 aria-busy="true"
               >
                 <div
@@ -2205,15 +2573,16 @@ const playerHeroTeamChipDotClasses =
 
               <PlayerEloChart
                 v-else-if="hasWindowedEloData"
-                class="relative h-full"
+                class="relative min-h-0 flex-1"
                 :series="windowedChartSeries"
                 :rank-type="chartRankType"
                 :loading="eloHistoryLoading"
+                :season-breaks="seasonChartBreaks"
               />
 
               <div
                 v-else
-                class="relative flex h-full flex-col items-center justify-center gap-2 px-6 text-center uppercase text-muted-foreground"
+                class="relative flex flex-1 flex-col items-center justify-center gap-2 px-6 text-center uppercase text-muted-foreground"
               >
                 <template v-if="eloRange !== 'all' && !noCareerData">
                   <span
@@ -2361,7 +2730,7 @@ const playerHeroTeamChipDotClasses =
       class="flex flex-col gap-4 md:gap-6"
       v-if="player && pageContentReady && !noCareerData"
     >
-      <Tabs v-model="statsTab" class="w-full">
+      <Tabs v-model="statsTab" :unmount-on-hide="false" class="w-full">
         <div ref="statsTabsEl" class="scroll-mt-4">
           <div class="mb-3 md:hidden">
             <Select v-model="statsTab">
@@ -2454,349 +2823,382 @@ const playerHeroTeamChipDotClasses =
 
         <!-- Community time is counted on servers, not in matches, so none of
              the match filters apply to it. -->
-        <div
-          v-if="statsTab !== 'community'"
-          class="mb-5 flex flex-col gap-3 rounded-lg border border-border/60 bg-card/40 px-3 py-2.5 [backdrop-filter:blur(6px)] md:flex-row md:flex-wrap md:items-center md:gap-x-4 md:gap-y-3"
-        >
+        <Fold :open="statsTab !== 'community'">
           <div
-            v-if="appSettings.linkedAccountsEnabled"
-            class="flex flex-col gap-1.5 md:flex-row md:items-center md:gap-2"
-          >
-            <span
-              class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
-            >
-              {{ $t("pages.players.detail.source", "Source") }}
-            </span>
-            <AnimatedFilters
-              v-model="sourceModel"
-              square
-              :options="sourceFilterOptions"
-            />
-          </div>
-
-          <span
-            v-if="appSettings.linkedAccountsEnabled"
-            class="hidden h-5 w-px bg-border/60 md:block"
-            aria-hidden="true"
-          ></span>
-
-          <div
-            v-if="appSettings.linkedAccountsEnabled && sourceRef === 'external'"
-            class="flex flex-col gap-1.5 md:flex-row md:items-center md:gap-2"
-          >
-            <span
-              class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
-            >
-              {{ $t("pages.players.detail.provider", "Provider") }}
-            </span>
-            <AnimatedFilters
-              v-model="providerModel"
-              square
-              :options="providerFilterOptions"
-            />
-          </div>
-
-          <span
-            v-if="
-              appSettings.linkedAccountsEnabled &&
-              sourceRef === 'external' &&
-              modeOptions.length
-            "
-            class="hidden h-5 w-px bg-border/60 md:block"
-            aria-hidden="true"
-          ></span>
-
-          <div
-            v-if="modeOptions.length"
-            class="flex flex-col gap-1.5 md:flex-row md:items-center md:gap-2"
-          >
-            <span
-              class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground md:hidden"
-            >
-              {{ $t("pages.players.detail.mode", "Mode") }}
-            </span>
-            <AnimatedFilters
-              v-model="modeModel"
-              square
-              :options="modeFilterOptions"
-            />
-          </div>
-
-          <div
-            class="grid grid-cols-[1fr_auto] items-center gap-x-2 gap-y-2 md:ml-auto md:flex md:flex-wrap md:items-center md:gap-1.5"
+            class="mb-5 flex flex-col gap-3 rounded-lg border border-border/60 bg-card/40 px-3 py-2.5 [backdrop-filter:blur(6px)] md:flex-row md:flex-wrap md:items-center md:gap-x-4 md:gap-y-3"
           >
             <div
-              class="col-start-1 row-start-1 flex min-w-0 flex-nowrap items-center gap-1.5 overflow-x-auto md:flex-wrap md:overflow-visible"
+              v-if="appSettings.linkedAccountsEnabled"
+              class="flex flex-col gap-1.5 md:flex-row md:items-center md:gap-2"
             >
-              <button
-                v-for="r in presetRanges"
-                :key="r.key"
-                type="button"
-                class="shrink-0 rounded-md border px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] transition-colors"
-                :class="
-                  eloRange === r.key
-                    ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))]'
-                    : 'border-border/60 bg-card/40 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground'
-                "
-                @click="setRange(r.key)"
+              <span
+                class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
               >
-                {{ r.label }}
-              </button>
-              <!-- Season split-control: left segment shows the current/selected
-                   season, the right chevron opens a dropdown to switch. -->
+                {{ $t("pages.players.detail.source", "Source") }}
+              </span>
+              <AnimatedFilters
+                v-model="sourceModel"
+                square
+                :options="sourceFilterOptions"
+              />
+            </div>
+
+            <span
+              v-if="appSettings.linkedAccountsEnabled"
+              class="hidden h-5 w-px bg-border/60 md:block"
+              aria-hidden="true"
+            ></span>
+
+            <div
+              v-if="
+                appSettings.linkedAccountsEnabled && sourceRef === 'external'
+              "
+              class="flex flex-col gap-1.5 md:flex-row md:items-center md:gap-2"
+            >
+              <span
+                class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
+              >
+                {{ $t("pages.players.detail.provider", "Provider") }}
+              </span>
+              <AnimatedFilters
+                v-model="providerModel"
+                square
+                :options="providerFilterOptions"
+              />
+            </div>
+
+            <span
+              v-if="
+                appSettings.linkedAccountsEnabled &&
+                sourceRef === 'external' &&
+                modeOptions.length
+              "
+              class="hidden h-5 w-px bg-border/60 md:block"
+              aria-hidden="true"
+            ></span>
+
+            <div
+              v-if="modeOptions.length"
+              class="flex flex-col gap-1.5 md:flex-row md:items-center md:gap-2"
+            >
+              <span
+                class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground md:hidden"
+              >
+                {{ $t("pages.players.detail.mode", "Mode") }}
+              </span>
+              <AnimatedFilters
+                v-model="modeModel"
+                square
+                :options="modeFilterOptions"
+              />
+            </div>
+
+            <div
+              class="grid grid-cols-[1fr_auto] items-center gap-x-2 gap-y-2 md:ml-auto md:flex md:flex-wrap md:items-center md:gap-1.5"
+            >
               <div
-                v-if="seasonsEnabled && seasons.length"
-                class="inline-flex shrink-0 items-stretch overflow-hidden rounded-md border font-mono text-[0.65rem] uppercase tracking-[0.12em] transition-colors"
-                :class="
-                  eloRange === 'season'
-                    ? 'border-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber))]'
-                    : 'border-border/60 text-muted-foreground'
-                "
+                class="col-start-1 row-start-1 flex min-w-0 flex-nowrap items-center gap-1.5 overflow-x-auto md:flex-wrap md:overflow-visible"
               >
                 <button
+                  v-for="r in presetRanges"
+                  :key="r.key"
                   type="button"
-                  class="px-2.5 py-1 transition-colors"
+                  class="shrink-0 rounded-md border px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] transition-colors"
+                  :class="
+                    eloRange === r.key
+                      ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))]'
+                      : 'border-border/60 bg-card/40 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground'
+                  "
+                  @click="setRange(r.key)"
+                >
+                  {{ r.label }}
+                </button>
+                <!-- Season split-control: left segment shows the current/selected
+                     season, the right chevron opens a dropdown to switch. -->
+                <div
+                  v-if="seasonsEnabled && seasons.length"
+                  class="inline-flex shrink-0 items-stretch overflow-hidden rounded-md border font-mono text-[0.65rem] uppercase tracking-[0.12em] transition-colors"
                   :class="
                     eloRange === 'season'
-                      ? 'bg-[hsl(var(--tac-amber)/0.16)]'
-                      : 'bg-card/40 hover:text-foreground'
+                      ? 'border-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber))]'
+                      : 'border-border/60 text-muted-foreground'
                   "
-                  @click="activateSeason"
                 >
-                  {{ seasonButtonLabel }}
-                </button>
-                <Popover v-model:open="seasonMenuOpen">
+                  <button
+                    type="button"
+                    class="px-2.5 py-1 transition-colors"
+                    :class="
+                      eloRange === 'season'
+                        ? 'bg-[hsl(var(--tac-amber)/0.16)]'
+                        : 'bg-card/40 hover:text-foreground'
+                    "
+                    @click="activateSeason"
+                  >
+                    {{ seasonButtonLabel }}
+                  </button>
+                  <Popover v-model:open="seasonMenuOpen">
+                    <PopoverTrigger as-child>
+                      <button
+                        type="button"
+                        class="flex items-center border-l px-1 transition-colors"
+                        :class="
+                          eloRange === 'season'
+                            ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.16)]'
+                            : 'border-border/60 bg-card/40 hover:text-foreground'
+                        "
+                        :aria-label="$t('pages.players.detail.range_season')"
+                      >
+                        <ChevronDown class="h-3.5 w-3.5" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent align="end" class="w-56 p-1">
+                      <button
+                        v-for="s in seasonsAsc"
+                        :key="s.id"
+                        type="button"
+                        class="flex w-full flex-col items-start gap-0.5 rounded-sm px-2 py-1.5 text-left transition-colors hover:bg-[hsl(var(--tac-amber)/0.1)]"
+                        :class="{
+                          'bg-[hsl(var(--tac-amber)/0.12)]':
+                            eloRange === 'season' && s.id === selectedSeasonId,
+                        }"
+                        @click="pickSeason(s.id)"
+                      >
+                        <span
+                          class="font-mono text-[0.7rem] uppercase tracking-[0.1em]"
+                          :class="
+                            eloRange === 'season' && s.id === selectedSeasonId
+                              ? 'text-[hsl(var(--tac-amber))]'
+                              : 'text-foreground'
+                          "
+                        >
+                          {{
+                            $t("pages.seasons.season_number", {
+                              number: s.number ?? "?",
+                            })
+                          }}<span
+                            v-if="activeSeason && s.id === activeSeason.id"
+                            class="text-[hsl(var(--tac-amber))]"
+                          >
+                            ·
+                            {{
+                              $t("pages.players.detail.season_current")
+                            }}</span
+                          >
+                        </span>
+                        <span
+                          class="text-[0.62rem] normal-case text-muted-foreground"
+                        >
+                          {{ seasonRange(s) }}
+                        </span>
+                      </button>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <span
+                  v-if="eloRange === 'custom'"
+                  class="shrink-0 rounded-md border border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
+                >
+                  {{ activeRangeLabel }}
+                </span>
+              </div>
+              <div
+                class="col-start-2 row-start-1 flex items-center justify-self-end gap-1.5 md:contents"
+              >
+                <span
+                  class="mx-1 hidden h-5 w-px bg-border/60 md:block"
+                  aria-hidden="true"
+                ></span>
+                <Popover v-model:open="settingsOpen">
                   <PopoverTrigger as-child>
                     <button
                       type="button"
-                      class="flex items-center border-l px-1 transition-colors"
-                      :class="
-                        eloRange === 'season'
-                          ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.16)]'
-                          : 'border-border/60 bg-card/40 hover:text-foreground'
+                      class="relative inline-flex h-8 w-8 items-center justify-center rounded-md border border-border/60 bg-card/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
+                      :title="
+                        $t(
+                          'pages.players.detail.range_settings',
+                          'Range settings',
+                        )
                       "
-                      :aria-label="$t('pages.players.detail.range_season')"
                     >
-                      <ChevronDown class="h-3.5 w-3.5" />
+                      <Settings2 class="h-4 w-4" />
+                      <span
+                        v-if="settingsChanged"
+                        class="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full border border-background bg-[hsl(var(--tac-amber))]"
+                        :title="$t('pages.players.detail.settings_changed')"
+                      ></span>
                     </button>
                   </PopoverTrigger>
-                  <PopoverContent align="end" class="w-56 p-1">
-                    <button
-                      v-for="s in seasonsAsc"
-                      :key="s.id"
-                      type="button"
-                      class="flex w-full flex-col items-start gap-0.5 rounded-sm px-2 py-1.5 text-left transition-colors hover:bg-[hsl(var(--tac-amber)/0.1)]"
-                      :class="{
-                        'bg-[hsl(var(--tac-amber)/0.12)]':
-                          eloRange === 'season' && s.id === selectedSeasonId,
-                      }"
-                      @click="pickSeason(s.id)"
+                  <PopoverContent align="end" class="w-80 space-y-4">
+                    <div class="space-y-2">
+                      <div
+                        class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
+                      >
+                        {{ $t("pages.players.detail.custom_range") }}
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <button
+                          type="button"
+                          class="flex flex-1 items-center justify-between gap-2 rounded-md border bg-background px-2 py-1.5 text-xs transition-colors"
+                          :class="
+                            activeDateField === 'from'
+                              ? 'border-[hsl(var(--tac-amber))]'
+                              : 'border-border hover:border-[hsl(var(--tac-amber)/0.5)]'
+                          "
+                          @click="
+                            activeDateField =
+                              activeDateField === 'from' ? null : 'from'
+                          "
+                        >
+                          <span
+                            :class="customFrom ? '' : 'text-muted-foreground'"
+                            >{{
+                              customFrom ||
+                              $t("pages.players.detail.start_date", "Start")
+                            }}</span
+                          >
+                          <CalendarIcon
+                            class="h-3.5 w-3.5 text-muted-foreground"
+                          />
+                        </button>
+                        <span class="text-muted-foreground text-xs">→</span>
+                        <button
+                          type="button"
+                          class="flex flex-1 items-center justify-between gap-2 rounded-md border bg-background px-2 py-1.5 text-xs transition-colors"
+                          :class="
+                            activeDateField === 'to'
+                              ? 'border-[hsl(var(--tac-amber))]'
+                              : 'border-border hover:border-[hsl(var(--tac-amber)/0.5)]'
+                          "
+                          @click="
+                            activeDateField =
+                              activeDateField === 'to' ? null : 'to'
+                          "
+                        >
+                          <span
+                            :class="customTo ? '' : 'text-muted-foreground'"
+                            >{{
+                              customTo ||
+                              $t("pages.players.detail.end_date", "End")
+                            }}</span
+                          >
+                          <CalendarIcon
+                            class="h-3.5 w-3.5 text-muted-foreground"
+                          />
+                        </button>
+                      </div>
+                      <Calendar
+                        v-if="activeDateField === 'from'"
+                        v-model="customFromValue"
+                        class="rounded-md border border-border"
+                      />
+                      <Calendar
+                        v-else-if="activeDateField === 'to'"
+                        v-model="customToValue"
+                        class="rounded-md border border-border"
+                      />
+                      <div
+                        v-if="eloRange === 'custom' || customFrom || customTo"
+                        class="flex items-center justify-between gap-2"
+                      >
+                        <p class="text-[0.65rem] text-muted-foreground">
+                          {{ $t("pages.players.detail.custom_window_active") }}
+                        </p>
+                        <button
+                          type="button"
+                          class="shrink-0 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground underline hover:text-foreground"
+                          @click="clearCustomRange"
+                        >
+                          {{ $t("common.clear") }}
+                        </button>
+                      </div>
+                    </div>
+                    <label
+                      class="flex items-start gap-2 cursor-pointer rounded-sm p-1 -mx-1 hover:bg-muted/40"
                     >
-                      <span
-                        class="font-mono text-[0.7rem] uppercase tracking-[0.1em]"
-                        :class="
-                          eloRange === 'season' && s.id === selectedSeasonId
-                            ? 'text-[hsl(var(--tac-amber))]'
-                            : 'text-foreground'
-                        "
+                      <Checkbox
+                        :model-value="excludeTournaments"
+                        @update:model-value="(v) => (excludeTournaments = !!v)"
+                        class="mt-0.5"
+                      />
+                      <div class="flex-1">
+                        <div class="text-sm font-medium">
+                          {{ $t("pages.players.detail.exclude_tournaments") }}
+                        </div>
+                        <div class="text-[0.65rem] text-muted-foreground">
+                          {{
+                            $t(
+                              "pages.players.detail.exclude_tournaments_description",
+                            )
+                          }}
+                        </div>
+                      </div>
+                    </label>
+
+                    <Separator />
+
+                    <div class="space-y-2">
+                      <div
+                        class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
                       >
-                        {{
-                          $t("pages.seasons.season_number", {
-                            number: s.number ?? "?",
-                          })
-                        }}<span
-                          v-if="activeSeason && s.id === activeSeason.id"
-                          class="text-[hsl(var(--tac-amber))]"
-                        >
-                          ·
-                          {{ $t("pages.players.detail.season_current") }}</span
-                        >
-                      </span>
-                      <span
-                        class="text-[0.62rem] normal-case text-muted-foreground"
+                        {{ $t("pages.players.detail.compare.label") }}
+                      </div>
+                      <div
+                        class="w-full [&_.relative]:w-full [&_button]:w-full"
                       >
-                        {{ seasonRange(s) }}
-                      </span>
-                    </button>
+                        <PlayerSearch
+                          class="w-full justify-between"
+                          :label="
+                            $t('pages.players.detail.compare.select_label')
+                          "
+                          :exclude="[playerId]"
+                          :selected="compareSeasonId ? null : compareTarget"
+                          @selected="onCompareSelected"
+                        />
+                      </div>
+                      <div
+                        v-if="seasonsEnabled && seasons.length > 1"
+                        class="flex flex-wrap items-center gap-1.5"
+                      >
+                        <span class="text-[0.65rem] text-muted-foreground">{{
+                          $t("pages.players.detail.compare.season_label")
+                        }}</span>
+                        <button
+                          v-for="s in seasonsAsc"
+                          :key="s.id"
+                          type="button"
+                          class="rounded-md border px-2 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] transition-colors disabled:cursor-not-allowed disabled:opacity-40"
+                          :class="
+                            compareSeasonId === s.id
+                              ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))]'
+                              : 'border-border/60 bg-card/40 text-muted-foreground enabled:hover:text-foreground'
+                          "
+                          :disabled="s.id === viewedSeason?.id"
+                          :aria-pressed="compareSeasonId === s.id"
+                          @click="compareWithSeason(s)"
+                        >
+                          {{ seasonTag(s) }}
+                        </button>
+                      </div>
+                      <div class="flex items-center justify-between gap-2">
+                        <p class="text-[0.65rem] text-muted-foreground">
+                          {{ $t("pages.players.detail.compare.description") }}
+                        </p>
+                        <button
+                          v-if="compareTarget"
+                          type="button"
+                          class="shrink-0 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground underline hover:text-foreground"
+                          @click="clearCompareTarget"
+                        >
+                          {{ $t("common.clear") }}
+                        </button>
+                      </div>
+                    </div>
                   </PopoverContent>
                 </Popover>
               </div>
-              <span
-                v-if="eloRange === 'custom'"
-                class="shrink-0 rounded-md border border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
-              >
-                {{ activeRangeLabel }}
-              </span>
-            </div>
-            <div
-              class="col-start-2 row-start-1 flex items-center justify-self-end gap-1.5 md:contents"
-            >
-              <span
-                class="mx-1 hidden h-5 w-px bg-border/60 md:block"
-                aria-hidden="true"
-              ></span>
-              <Popover v-model:open="settingsOpen">
-                <PopoverTrigger as-child>
-                  <button
-                    type="button"
-                    class="relative inline-flex h-8 w-8 items-center justify-center rounded-md border border-border/60 bg-card/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
-                    :title="
-                      $t(
-                        'pages.players.detail.range_settings',
-                        'Range settings',
-                      )
-                    "
-                  >
-                    <Settings2 class="h-4 w-4" />
-                    <span
-                      v-if="settingsChanged"
-                      class="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full border border-background bg-[hsl(var(--tac-amber))]"
-                      :title="$t('pages.players.detail.settings_changed')"
-                    ></span>
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent align="end" class="w-80 space-y-4">
-                  <div class="space-y-2">
-                    <div
-                      class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
-                    >
-                      {{ $t("pages.players.detail.custom_range") }}
-                    </div>
-                    <div class="flex items-center gap-2">
-                      <button
-                        type="button"
-                        class="flex flex-1 items-center justify-between gap-2 rounded-md border bg-background px-2 py-1.5 text-xs transition-colors"
-                        :class="
-                          activeDateField === 'from'
-                            ? 'border-[hsl(var(--tac-amber))]'
-                            : 'border-border hover:border-[hsl(var(--tac-amber)/0.5)]'
-                        "
-                        @click="
-                          activeDateField =
-                            activeDateField === 'from' ? null : 'from'
-                        "
-                      >
-                        <span
-                          :class="customFrom ? '' : 'text-muted-foreground'"
-                          >{{
-                            customFrom ||
-                            $t("pages.players.detail.start_date", "Start")
-                          }}</span
-                        >
-                        <CalendarIcon
-                          class="h-3.5 w-3.5 text-muted-foreground"
-                        />
-                      </button>
-                      <span class="text-muted-foreground text-xs">→</span>
-                      <button
-                        type="button"
-                        class="flex flex-1 items-center justify-between gap-2 rounded-md border bg-background px-2 py-1.5 text-xs transition-colors"
-                        :class="
-                          activeDateField === 'to'
-                            ? 'border-[hsl(var(--tac-amber))]'
-                            : 'border-border hover:border-[hsl(var(--tac-amber)/0.5)]'
-                        "
-                        @click="
-                          activeDateField =
-                            activeDateField === 'to' ? null : 'to'
-                        "
-                      >
-                        <span
-                          :class="customTo ? '' : 'text-muted-foreground'"
-                          >{{
-                            customTo ||
-                            $t("pages.players.detail.end_date", "End")
-                          }}</span
-                        >
-                        <CalendarIcon
-                          class="h-3.5 w-3.5 text-muted-foreground"
-                        />
-                      </button>
-                    </div>
-                    <Calendar
-                      v-if="activeDateField === 'from'"
-                      v-model="customFromValue"
-                      class="rounded-md border border-border"
-                    />
-                    <Calendar
-                      v-else-if="activeDateField === 'to'"
-                      v-model="customToValue"
-                      class="rounded-md border border-border"
-                    />
-                    <div
-                      v-if="eloRange === 'custom' || customFrom || customTo"
-                      class="flex items-center justify-between gap-2"
-                    >
-                      <p class="text-[0.65rem] text-muted-foreground">
-                        {{ $t("pages.players.detail.custom_window_active") }}
-                      </p>
-                      <button
-                        type="button"
-                        class="shrink-0 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground underline hover:text-foreground"
-                        @click="clearCustomRange"
-                      >
-                        {{ $t("common.clear") }}
-                      </button>
-                    </div>
-                  </div>
-                  <label
-                    class="flex items-start gap-2 cursor-pointer rounded-sm p-1 -mx-1 hover:bg-muted/40"
-                  >
-                    <Checkbox
-                      :model-value="excludeTournaments"
-                      @update:model-value="(v) => (excludeTournaments = !!v)"
-                      class="mt-0.5"
-                    />
-                    <div class="flex-1">
-                      <div class="text-sm font-medium">
-                        {{ $t("pages.players.detail.exclude_tournaments") }}
-                      </div>
-                      <div class="text-[0.65rem] text-muted-foreground">
-                        {{
-                          $t(
-                            "pages.players.detail.exclude_tournaments_description",
-                          )
-                        }}
-                      </div>
-                    </div>
-                  </label>
-
-                  <Separator />
-
-                  <div class="space-y-2">
-                    <div
-                      class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
-                    >
-                      {{ $t("pages.players.detail.compare.label") }}
-                    </div>
-                    <div class="w-full [&_.relative]:w-full [&_button]:w-full">
-                      <PlayerSearch
-                        class="w-full justify-between"
-                        :label="$t('pages.players.detail.compare.select_label')"
-                        :exclude="[playerId]"
-                        :selected="compareTarget"
-                        @selected="onCompareSelected"
-                      />
-                    </div>
-                    <div class="flex items-center justify-between gap-2">
-                      <p class="text-[0.65rem] text-muted-foreground">
-                        {{ $t("pages.players.detail.compare.description") }}
-                      </p>
-                      <button
-                        v-if="compareTarget"
-                        type="button"
-                        class="shrink-0 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground underline hover:text-foreground"
-                        @click="clearCompareTarget"
-                      >
-                        {{ $t("common.clear") }}
-                      </button>
-                    </div>
-                  </div>
-                </PopoverContent>
-              </Popover>
             </div>
           </div>
-        </div>
+        </Fold>
 
         <div
           v-if="
@@ -2836,141 +3238,155 @@ const playerHeroTeamChipDotClasses =
           </div>
         </div>
 
-        <TabsContent value="performance" class="mt-0">
-          <PageTransition v-if="playerId">
-            <PlayerIntroDashboard
-              :steam-id="playerId"
-              :match-type="statTypeFilter"
-              :source="effectiveSource"
-              :limit="statsMatchLimit"
-              :since="sinceTimestamp"
-              :until="untilTimestamp"
-            />
-          </PageTransition>
-        </TabsContent>
+        <PageTransition>
+          <div>
+            <HeightGlide>
+              <TabsContent value="performance" class="tab-panel-in mt-0">
+                <template v-if="playerId && tabFilters.performance">
+                  <PlayerIntroDashboard
+                    :steam-id="playerId"
+                    :match-type="tabFilters.performance.matchType"
+                    :source="tabFilters.performance.source"
+                    :limit="tabFilters.performance.limit"
+                    :since="tabFilters.performance.since"
+                    :until="tabFilters.performance.until"
+                  />
+                </template>
+              </TabsContent>
 
-        <TabsContent value="breakdown" class="mt-0">
-          <PageTransition v-if="playerId">
-            <div class="flex flex-col gap-4 md:gap-6">
-              <PlayerPerformanceRating
-                :steam-id="playerId"
-                :source="effectiveSource"
-                :limit="statsMatchLimit"
-              />
-              <PlayerConsistencyChart
-                :steam-id="playerId"
-                :source="effectiveSource"
-                :limit="statsMatchLimit"
-              />
-            </div>
-          </PageTransition>
-        </TabsContent>
+              <TabsContent value="breakdown" class="tab-panel-in mt-0">
+                <template v-if="playerId && tabFilters.breakdown">
+                  <div class="flex flex-col gap-4 md:gap-6">
+                    <PlayerPerformanceRating
+                      :steam-id="playerId"
+                      :source="tabFilters.breakdown.source"
+                      :limit="tabFilters.breakdown.limit"
+                      :since="tabFilters.breakdown.since"
+                      :until="tabFilters.breakdown.until"
+                    />
+                    <PlayerConsistencyChart
+                      :steam-id="playerId"
+                      :source="tabFilters.breakdown.source"
+                      :limit="tabFilters.breakdown.limit"
+                      :since="tabFilters.breakdown.since"
+                      :until="tabFilters.breakdown.until"
+                    />
+                  </div>
+                </template>
+              </TabsContent>
 
-        <TabsContent value="elo" class="mt-0">
-          <PageTransition v-if="playerIdRef">
-            <PlayerEloHistoryDialog
-              :open="statsTab === 'elo'"
-              :player-id="playerIdRef"
-              :player-name="player?.name ?? null"
-              :default-mode="selectedModeRef"
-              :default-range="
-                ['l30', 'custom'].includes(eloRange) ? 'all' : eloRange
-              "
-              :exclude-tournaments="excludeTournaments"
-              :source="sourceRef"
-              :provider="providerRef"
-            />
-          </PageTransition>
-        </TabsContent>
+              <TabsContent value="elo" class="tab-panel-in mt-0">
+                <template v-if="playerIdRef && tabFilters.elo">
+                  <PlayerEloHistoryDialog
+                    open
+                    :player-id="playerIdRef"
+                    :player-name="player?.name ?? null"
+                    :default-mode="tabFilters.elo.eloMode"
+                    :default-range="tabFilters.elo.eloRange"
+                    :exclude-tournaments="tabFilters.elo.excludeTournaments"
+                    :source="tabFilters.elo.eloSource"
+                    :provider="tabFilters.elo.provider"
+                    :season="eloCompareBase"
+                    :season-breaks="seasonChartBreaks"
+                  />
+                </template>
+              </TabsContent>
 
-        <TabsContent value="maps" class="mt-0">
-          <PageTransition v-if="playerId">
-            <PlayerMapsGrid
-              :steam-id="playerId"
-              :match-type="statTypeFilter"
-              :source="effectiveSource"
-              :since="sinceTimestamp"
-            />
-          </PageTransition>
-        </TabsContent>
+              <TabsContent value="maps" class="tab-panel-in mt-0">
+                <template v-if="playerId && tabFilters.maps">
+                  <PlayerMapsGrid
+                    :steam-id="playerId"
+                    :match-type="tabFilters.maps.matchType"
+                    :source="tabFilters.maps.source"
+                    :since="tabFilters.maps.since"
+                    :until="tabFilters.maps.until"
+                  />
+                </template>
+              </TabsContent>
 
-        <TabsContent value="arsenal" class="mt-0">
-          <PageTransition v-if="playerId">
-            <PlayerWeaponsTable
-              :steam-id="playerId"
-              :match-type="statTypeFilter"
-              :source="effectiveSource"
-            />
-          </PageTransition>
-        </TabsContent>
+              <TabsContent value="arsenal" class="tab-panel-in mt-0">
+                <template v-if="playerId && tabFilters.arsenal">
+                  <PlayerWeaponsTable
+                    :steam-id="playerId"
+                    :match-type="tabFilters.arsenal.matchType"
+                    :source="tabFilters.arsenal.source"
+                    :limit="tabFilters.arsenal.limit"
+                    :since="tabFilters.arsenal.since"
+                    :until="tabFilters.arsenal.until"
+                  />
+                </template>
+              </TabsContent>
 
-        <TabsContent value="combat" class="mt-0 flex flex-col gap-6">
-          <PageTransition v-if="playerId">
-            <PlayerPreferredRoles
-              :steam-id="playerId"
-              :match-type="statTypeFilter"
-              :source="effectiveSource"
-              :limit="statsMatchLimit"
-              :since="sinceTimestamp"
-            />
-          </PageTransition>
-          <Separator />
-          <PageTransition v-if="playerId">
-            <PlayerRoleRadar
-              :steam-id="playerId"
-              :name="player?.name ?? null"
-              :match-type="statTypeFilter"
-              :source="effectiveSource"
-              :limit="statsMatchLimit"
-              :since="sinceTimestamp"
-            />
-          </PageTransition>
-          <Separator />
-          <PageTransition v-if="playerId">
-            <PlayerCareerDuels
-              :steam-id="playerId"
-              :match-type="statTypeFilter"
-              :source="effectiveSource"
-              :limit="statsMatchLimit"
-              :since="sinceTimestamp"
-            />
-          </PageTransition>
-          <Separator />
-          <PageTransition v-if="playerId">
-            <PlayerCareerClutches
-              :steam-id="playerId"
-              :match-type="statTypeFilter"
-              :source="effectiveSource"
-              :limit="statsMatchLimit"
-              :since="sinceTimestamp"
-            />
-          </PageTransition>
-        </TabsContent>
+              <TabsContent value="combat" class="tab-panel-in mt-0">
+                <div class="flex flex-col gap-6">
+                  <template v-if="playerId && tabFilters.combat">
+                    <PlayerPreferredRoles
+                      :steam-id="playerId"
+                      :match-type="tabFilters.combat.matchType"
+                      :source="tabFilters.combat.source"
+                      :limit="tabFilters.combat.limit"
+                      :since="tabFilters.combat.since"
+                      :until="tabFilters.combat.until"
+                    />
+                    <Separator />
+                    <PlayerRoleRadar
+                      :steam-id="playerId"
+                      :name="player?.name ?? null"
+                      :match-type="tabFilters.combat.matchType"
+                      :source="tabFilters.combat.source"
+                      :limit="tabFilters.combat.limit"
+                      :since="tabFilters.combat.since"
+                      :until="tabFilters.combat.until"
+                    />
+                    <Separator />
+                    <PlayerCareerDuels
+                      :steam-id="playerId"
+                      :match-type="tabFilters.combat.matchType"
+                      :source="tabFilters.combat.source"
+                      :limit="tabFilters.combat.limit"
+                      :since="tabFilters.combat.since"
+                      :until="tabFilters.combat.until"
+                    />
+                    <Separator />
+                    <PlayerCareerClutches
+                      :steam-id="playerId"
+                      :match-type="tabFilters.combat.matchType"
+                      :source="tabFilters.combat.source"
+                      :limit="tabFilters.combat.limit"
+                      :since="tabFilters.combat.since"
+                      :until="tabFilters.combat.until"
+                    />
+                  </template>
+                </div>
+              </TabsContent>
 
-        <TabsContent value="community" class="mt-0">
-          <PageTransition v-if="playerId && statsTab === 'community'">
-            <PlayerCommunityHistory :steam-id="playerId" />
-          </PageTransition>
-        </TabsContent>
+              <TabsContent value="community" class="tab-panel-in mt-0">
+                <template v-if="playerId && tabFilters.community">
+                  <PlayerCommunityHistory :steam-id="playerId" />
+                </template>
+              </TabsContent>
 
-        <TabsContent
-          v-for="plugin in plugins.profileTabPlugins"
-          :key="plugin.id"
-          :value="plugin.slug"
-          class="mt-0"
-        >
-          <!-- v-if on the active tab, not just TabsContent: a remote is a whole
-               second app over the network, so don't fetch it until it's asked for. -->
-          <PluginRemote
-            v-if="statsTab === plugin.slug && playerId"
-            :slug="plugin.slug"
-            :base="`/apps/${plugin.slug}`"
-            :path="pluginPath(plugin.slug)"
-            :query="pluginQuery"
-            :navigate="pluginNavigate(plugin.slug)"
-            :navigate-app="pluginNavigateApp"
-          />
-        </TabsContent>
+              <TabsContent
+                v-for="plugin in plugins.profileTabPlugins"
+                :key="plugin.id"
+                :value="plugin.slug"
+                class="tab-panel-in mt-0"
+              >
+                <!-- v-if on the active tab, not just TabsContent: a remote is a whole
+                     second app over the network, so don't fetch it until it's asked for. -->
+                <PluginRemote
+                  v-if="statsTab === plugin.slug && playerId"
+                  :slug="plugin.slug"
+                  :base="`/apps/${plugin.slug}`"
+                  :path="pluginPath(plugin.slug)"
+                  :query="pluginQuery"
+                  :navigate="pluginNavigate(plugin.slug)"
+                  :navigate-app="pluginNavigateApp"
+                />
+              </TabsContent>
+            </HeightGlide>
+          </div>
+        </PageTransition>
       </Tabs>
 
       <Separator />
@@ -3076,6 +3492,9 @@ const playerHeroTeamChipDotClasses =
             <PlayerMatchesTable
               :player="player"
               :matches="playerMatches"
+              :seasons="seasonsEnabled ? seasons : []"
+              :season-recaps="seasonBreakBounds"
+              :season-best="seasonBestMatches"
               :rank-by-match="rankByMatch"
               :rating-by-match="ratingByMatch"
               :stats-by-match="statsByMatch"
@@ -3153,10 +3572,7 @@ const playerHeroTeamChipDotClasses =
             :has-custom="!!player.roster_image_url"
             :current-src="playerRosterImageSrc"
             :bulk-teams="bulkApplyTeams"
-            :bulk-url-builder="
-              (teamId) =>
-                `https://${apiDomain}/avatars/roster-teams/${teamId}/${player.steam_id}`
-            "
+            :bulk-url-builder="bulkRosterUrl"
           />
         </div>
 
@@ -3646,6 +4062,9 @@ export default {
     },
   },
   methods: {
+    bulkRosterUrl(teamId: string) {
+      return `https://${this.apiDomain}/avatars/roster-teams/${teamId}/${(this.player as any)?.steam_id}`;
+    },
     messagePlayer() {
       if (!this.player?.steam_id) return;
       useDirectMessages().openConversation({

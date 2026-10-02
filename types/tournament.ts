@@ -67,6 +67,7 @@ export interface Bracket {
     };
   };
   scheduling_proposals?: Proposal[];
+  recent_proposals?: Proposal[];
   team_1_seed?: number;
   team_2_seed?: number;
   stage?: {

@@ -6373,7 +6373,9 @@
       "no_time": "Noch keine Zeit vereinbart",
       "history": "Verlauf",
       "window": "Zeiten müssen im Fenster dieser Runde liegen: {from} bis {to}.",
+      "two_weeks": "Zeiten müssen innerhalb der nächsten zwei Wochen liegen.",
       "outside_window": "Die vorgeschlagene Zeit liegt außerhalb des Planungsfensters dieser Runde.",
+      "outside_two_weeks": "Die vorgeschlagene Zeit muss innerhalb der nächsten zwei Wochen liegen.",
       "teams_only": "Nur Besitzer, Captains und Roster-Admins der Teams können eine Zeit vorschlagen."
     },
     "match": {

@@ -6373,7 +6373,9 @@
       "no_time": "No time agreed yet",
       "history": "History",
       "window": "Times must fall inside this round's window: {from} to {to}.",
+      "two_weeks": "Times must be within the next two weeks.",
       "outside_window": "The proposed time is outside this round's scheduling window.",
+      "outside_two_weeks": "The proposed time must be within the next two weeks.",
       "teams_only": "Only the teams' owners, captains and roster admins can propose a time."
     },
     "match": {

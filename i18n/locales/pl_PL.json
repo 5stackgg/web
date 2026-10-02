@@ -6373,7 +6373,9 @@
       "no_time": "Nie uzgodniono jeszcze godziny",
       "history": "Historia",
       "window": "Godziny muszą mieścić się w oknie tej rundy: od {from} do {to}.",
+      "two_weeks": "Godziny muszą mieścić się w ciągu najbliższych dwóch tygodni.",
       "outside_window": "Zaproponowana godzina wykracza poza okno planowania tej rundy.",
+      "outside_two_weeks": "Zaproponowana godzina musi mieścić się w ciągu najbliższych dwóch tygodni.",
       "teams_only": "Tylko właściciele, kapitanowie i administratorzy składów drużyn mogą zaproponować godzinę."
     },
     "match": {

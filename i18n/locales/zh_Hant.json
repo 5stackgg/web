@@ -6373,7 +6373,9 @@
       "no_time": "尚未商定時間",
       "history": "歷史紀錄",
       "window": "時間必須在本輪範圍內：{from} 至 {to}。",
+      "two_weeks": "時間必須在接下來的兩週內。",
       "outside_window": "提議的時間超出本輪的排程範圍。",
+      "outside_two_weeks": "提議的時間必須在接下來的兩週內。",
       "teams_only": "只有兩隊的擁有者、隊長和陣容管理員可以提議時間。"
     },
     "match": {

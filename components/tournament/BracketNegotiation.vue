@@ -9,10 +9,10 @@ import { FadeSwap, Fold } from "~/components/ui/transitions";
 import ProposeTimeDialog from "~/components/league/ProposeTimeDialog.vue";
 import BracketNegotiationDialog from "~/components/tournament/BracketNegotiationDialog.vue";
 import {
-  MY_MANAGED_TEAMS_QUERY,
   PROPOSE_TIME_MUTATION,
   RESPOND_PROPOSAL_MUTATION,
 } from "~/graphql/leagues";
+import { MY_TEAM_MANAGERS_QUERY } from "~/graphql/bracketNegotiation";
 import { e_player_roles_enum } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
 import { localTimeInput } from "~/utilities/leagueFixtures";
@@ -38,7 +38,14 @@ const { t } = useI18n();
 const nuxtApp = useNuxtApp();
 const authStore = useAuthStore();
 
-const managedTeamIds = ref<string[]>([]);
+type ManagedTeam = {
+  id: string;
+  owner_steam_id: string | null;
+  captain_steam_id: string | null;
+  roster: Array<{ player_steam_id: string }>;
+};
+
+const managedTeams = ref<ManagedTeam[]>([]);
 const dialogOpen = ref(false);
 const proposeOpen = ref(false);
 const counterProposalId = ref<string | null>(null);
@@ -47,23 +54,22 @@ const busy = ref(false);
 watch(
   () => authStore.me?.steam_id,
   async (steamId) => {
-    managedTeamIds.value = [];
+    managedTeams.value = [];
     if (!steamId) {
       return;
     }
     try {
       const { data } = await nuxtApp.$apollo.defaultClient.query({
-        query: MY_MANAGED_TEAMS_QUERY,
+        query: MY_TEAM_MANAGERS_QUERY,
         variables: { steamId },
+        fetchPolicy: "cache-first",
       });
       if (authStore.me?.steam_id !== steamId) {
         return;
       }
-      managedTeamIds.value = (data?.teams ?? []).map(
-        (team: { id: string }) => team.id,
-      );
+      managedTeams.value = data?.teams ?? [];
     } catch {
-      managedTeamIds.value = [];
+      managedTeams.value = [];
     }
   },
   { immediate: true },
@@ -72,7 +78,19 @@ watch(
 const viewer = computed<NegotiationViewer>(() => ({
   isAdmin: authStore.isRoleAbove(e_player_roles_enum.administrator),
   mySteamId: authStore.me?.steam_id ? String(authStore.me.steam_id) : null,
-  managedTeamIds: managedTeamIds.value,
+  managedTeamIds: managedTeams.value.map((team) => team.id),
+  teamManagers: Object.fromEntries(
+    managedTeams.value.map((team) => [
+      team.id,
+      [
+        team.owner_steam_id,
+        team.captain_steam_id,
+        ...team.roster.map((member) => member.player_steam_id),
+      ]
+        .filter((steamId): steamId is string => !!steamId)
+        .map(String),
+    ]),
+  ),
 }));
 
 const status = computed(() =>
@@ -231,6 +249,7 @@ async function onProposeSubmit(proposedTime: string, message: string) {
       :viewer="viewer"
       :window-opens-at="proposalWindow.opensAt"
       :window-closes-at="proposalWindow.closesAt"
+      :round-window="proposalWindow.roundWindow"
       :busy="busy"
       :respond="respond"
       @update:open="dialogOpen = $event"
@@ -251,7 +270,11 @@ async function onProposeSubmit(proposedTime: string, message: string) {
       "
       :matchup="matchup"
       :scope="title"
-      :outside-window-message="$t('tournament.negotiation.outside_window')"
+      :outside-window-message="
+        proposalWindow.roundWindow
+          ? $t('tournament.negotiation.outside_window')
+          : $t('tournament.negotiation.outside_two_weeks')
+      "
       @update:open="onProposeOpen"
       @submit="onProposeSubmit"
     />

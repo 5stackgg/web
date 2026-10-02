@@ -1169,6 +1169,7 @@ import {
 } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
+import { bracketProposalSelection } from "~/graphql/bracketNegotiation";
 import { formatPrizePool } from "~/utilities/prizePool";
 import {
   getRequestedRouteTab,
@@ -1644,26 +1645,7 @@ export default {
                           name: true,
                         },
                       },
-                      scheduling_proposals: [
-                        {
-                          order_by: [
-                            {
-                              created_at: order_by.desc,
-                            },
-                          ],
-                        },
-                        {
-                          id: true,
-                          proposed_time: true,
-                          status: true,
-                          message: true,
-                          proposed_by_steam_id: true,
-                          proposed_by: {
-                            steam_id: true,
-                            name: true,
-                          },
-                        },
-                      ],
+                      ...bracketProposalSelection,
                       created_at: true,
                     },
                   ],

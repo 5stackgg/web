@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
+import { print } from "graphql";
 import BracketNegotiation from "~/components/tournament/BracketNegotiation.vue";
 import ProposeTimeDialog from "~/components/league/ProposeTimeDialog.vue";
 import ProposeTimeForm from "~/components/league/ProposeTimeForm.vue";
@@ -13,7 +14,23 @@ import {
 
 const CAPTAIN_1 = "76561198000000001";
 const CAPTAIN_2 = "76561198000000002";
+const OWNER_1 = "76561198000000003";
 const SPECTATOR = "76561198000000005";
+
+const TEAMS: Record<string, any> = {
+  "team-1": {
+    id: "team-1",
+    owner_steam_id: OWNER_1,
+    captain_steam_id: CAPTAIN_1,
+    roster: [],
+  },
+  "team-2": {
+    id: "team-2",
+    owner_steam_id: CAPTAIN_2,
+    captain_steam_id: CAPTAIN_2,
+    roster: [],
+  },
+};
 
 const ROUND_WINDOW = {
   round: 2,
@@ -69,7 +86,7 @@ function signIn(steamId: string | null, managedTeamIds: string[] = []) {
     ? ({ steam_id: steamId, role: "user" } as any)
     : (undefined as any);
   query.mockResolvedValue({
-    data: { teams: managedTeamIds.map((id) => ({ id, name: id })) },
+    data: { teams: managedTeamIds.map((id) => TEAMS[id]) },
   });
 }
 
@@ -153,6 +170,18 @@ describe("BracketNegotiation status chip", () => {
     });
 
     expect(chip(wrapper).text()).toBe("Awaiting opponent");
+  });
+
+  it("tells the proposer's teammate it is waiting on the other team", async () => {
+    signIn(OWNER_1, ["team-1"]);
+
+    const wrapper = await mountNegotiation({
+      bracket: bracket({ scheduling_proposals: [proposal()] }),
+    });
+
+    expect(chip(wrapper).text()).toBe("Awaiting opponent");
+    const dialog = await openDialog(wrapper);
+    expect(dialogButton(dialog, "Accept")).toBeUndefined();
   });
 
   it("locks in an agreed time", async () => {
@@ -285,6 +314,55 @@ describe("BracketNegotiation dialog", () => {
     expect(propose.props("outsideWindowMessage")).toBe(
       "The proposed time is outside this round's scheduling window.",
     );
+  });
+
+  it("counters when the answering side proposes a new time", async () => {
+    signIn(CAPTAIN_2, ["team-2"]);
+    const wrapper = await mountNegotiation({
+      bracket: bracket({ scheduling_proposals: [proposal()] }),
+    });
+
+    const dialog = await openDialog(wrapper);
+    dialogButton(dialog, "Propose new time")!.click();
+    await flushPromises();
+    wrapper
+      .findComponent(ProposeTimeDialog)
+      .vm.$emit("submit", "2099-10-02T19:00:00.000Z", "");
+    await flushPromises();
+
+    expect(mutationsOf(PROPOSE_TIME_MUTATION)).toHaveLength(1);
+    expect(mutationsOf(RESPOND_PROPOSAL_MUTATION)[0].variables).toEqual({
+      proposalId: "proposal-1",
+      status: "Countered",
+    });
+  });
+
+  it("says the next two weeks when the round has no window", async () => {
+    signIn(CAPTAIN_1, ["team-1"]);
+    const wrapper = await mountNegotiation({ windows: [] });
+
+    const dialog = await openDialog(wrapper);
+    expect(dialog.textContent).toContain(
+      "Times must be within the next two weeks.",
+    );
+    expect(dialog.textContent).not.toContain("this round's window");
+    dialogButton(dialog, "Propose time")!.click();
+    await flushPromises();
+
+    expect(
+      wrapper.findComponent(ProposeTimeDialog).props("outsideWindowMessage"),
+    ).toBe("The proposed time must be within the next two weeks.");
+  });
+
+  it("asks for the viewer's teams once, from the cache, without rosters", async () => {
+    signIn(CAPTAIN_1, ["team-1"]);
+    await mountNegotiation();
+
+    const [options] = query.mock.calls[0];
+    const document = print(options.query);
+    expect(options.fetchPolicy).toBe("cache-first");
+    expect(document).not.toContain("avatar_url");
+    expect(document).not.toContain("player {");
   });
 
   it("lists past proposals as history", async () => {

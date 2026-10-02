@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   bracketNegotiationStatus,
+  bracketPendingProposals,
+  bracketProposalHistory,
   bracketProposalWindow,
   canNegotiateBracket,
   canRespondToBracketProposal,
@@ -9,6 +11,7 @@ import {
 
 const CAPTAIN_1 = "76561198000000001";
 const CAPTAIN_2 = "76561198000000002";
+const OWNER_1 = "76561198000000003";
 const ADMIN = "76561198000000009";
 const NOW = new Date("2026-10-02T12:00:00.000Z");
 const DAY = 24 * 60 * 60 * 1000;
@@ -49,10 +52,15 @@ const viewer = (overrides: Record<string, any> = {}) => ({
   isAdmin: false,
   mySteamId: null as string | null,
   managedTeamIds: [] as string[],
+  teamManagers: {
+    "team-1": [CAPTAIN_1, OWNER_1],
+    "team-2": [CAPTAIN_2],
+  } as Record<string, string[]>,
   ...overrides,
 });
 
 const captain1 = viewer({ mySteamId: CAPTAIN_1, managedTeamIds: ["team-1"] });
+const owner1 = viewer({ mySteamId: OWNER_1, managedTeamIds: ["team-1"] });
 const captain2 = viewer({ mySteamId: CAPTAIN_2, managedTeamIds: ["team-2"] });
 const admin = viewer({ isAdmin: true, mySteamId: ADMIN });
 const spectator = viewer({ mySteamId: "76561198000000005" });
@@ -135,6 +143,24 @@ describe("canRespondToBracketProposal", () => {
     ).toBe(true);
   });
 
+  it("does not let the proposer's teammate answer for the other team", () => {
+    expect(
+      canRespondToBracketProposal(withProposal, proposal(), owner1),
+    ).toBe(false);
+  });
+
+  it("lets a manager of both teams answer for the side that did not propose", () => {
+    const managesBoth = viewer({
+      mySteamId: OWNER_1,
+      managedTeamIds: ["team-1", "team-2"],
+      teamManagers: { "team-1": [CAPTAIN_1, OWNER_1], "team-2": [OWNER_1] },
+    });
+
+    expect(
+      canRespondToBracketProposal(withProposal, proposal(), managesBoth),
+    ).toBe(true);
+  });
+
   it("does not let the proposer answer their own offer", () => {
     expect(
       canRespondToBracketProposal(withProposal, proposal(), captain1),
@@ -176,8 +202,9 @@ describe("bracketNegotiationStatus", () => {
     expect(bracketNegotiationStatus(offered, admin)).toBe("pending-me");
   });
 
-  it("reads as Awaiting opponent for the proposer and for onlookers", () => {
+  it("reads as Awaiting opponent for the proposing team and for onlookers", () => {
     expect(bracketNegotiationStatus(offered, captain1)).toBe("pending-them");
+    expect(bracketNegotiationStatus(offered, owner1)).toBe("pending-them");
     expect(bracketNegotiationStatus(offered, spectator)).toBe("pending-them");
   });
 
@@ -214,6 +241,26 @@ describe("bracketNegotiationStatus", () => {
   });
 });
 
+describe("bracket proposals", () => {
+  it("reads pending offers and the recent history from their own selections", () => {
+    const withHistory = bracket({
+      scheduling_proposals: [proposal()],
+      recent_proposals: [
+        proposal({ id: "proposal-0", status: "Countered" }),
+        proposal({ id: "proposal-00", status: "Declined" }),
+      ],
+    });
+
+    expect(bracketPendingProposals(withHistory).map((p) => p.id)).toEqual([
+      "proposal-1",
+    ]);
+    expect(bracketProposalHistory(withHistory).map((p) => p.id)).toEqual([
+      "proposal-0",
+      "proposal-00",
+    ]);
+  });
+});
+
 describe("bracketProposalWindow", () => {
   const windows = [
     {
@@ -229,6 +276,7 @@ describe("bracketProposalWindow", () => {
       opensAt: "2026-10-01T00:00:00.000Z",
       closesAt: "2026-10-04T23:59:00.000Z",
       defaultMatchAt: "2026-10-03T19:00:00.000Z",
+      roundWindow: true,
     });
   });
 
@@ -238,6 +286,7 @@ describe("bracketProposalWindow", () => {
         opensAt: NOW.toISOString(),
         closesAt: new Date(NOW.getTime() + 14 * DAY).toISOString(),
         defaultMatchAt: null,
+        roundWindow: false,
       },
     );
     expect(bracketProposalWindow(undefined, bracket(), NOW).closesAt).toBe(
@@ -252,6 +301,7 @@ describe("bracketProposalWindow", () => {
       opensAt: NOW.toISOString(),
       closesAt: new Date(NOW.getTime() + 14 * DAY).toISOString(),
       defaultMatchAt: null,
+      roundWindow: true,
     });
   });
 });

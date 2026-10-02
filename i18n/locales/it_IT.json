@@ -6373,7 +6373,9 @@
       "no_time": "Nessun orario ancora concordato",
       "history": "Cronologia",
       "window": "Gli orari devono rientrare nella finestra di questo round: dal {from} al {to}.",
+      "two_weeks": "Gli orari devono rientrare nelle prossime due settimane.",
       "outside_window": "L'orario proposto è fuori dalla finestra di pianificazione di questo round.",
+      "outside_two_weeks": "L'orario proposto deve rientrare nelle prossime due settimane.",
       "teams_only": "Solo proprietari, capitani e admin del roster delle squadre possono proporre un orario."
     },
     "match": {

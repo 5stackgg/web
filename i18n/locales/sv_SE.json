@@ -6373,7 +6373,9 @@
       "no_time": "Ingen tid överenskommen än",
       "history": "Historik",
       "window": "Tider måste ligga inom den här rondens tidsram: {from} till {to}.",
+      "two_weeks": "Tider måste ligga inom de närmaste två veckorna.",
       "outside_window": "Den föreslagna tiden ligger utanför den här rondens tidsram för schemaläggning.",
+      "outside_two_weeks": "Den föreslagna tiden måste ligga inom de närmaste två veckorna.",
       "teams_only": "Endast lagens ägare, kaptener och roster-admins kan föreslå en tid."
     },
     "match": {

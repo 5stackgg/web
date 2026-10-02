@@ -25,12 +25,14 @@ export type NegotiationBracket = {
   team_2?: { id?: string | null; team_id?: string | null } | null;
   match?: { status?: string | null; scheduled_at?: string | null } | null;
   scheduling_proposals?: Proposal[] | null;
+  recent_proposals?: Proposal[] | null;
 };
 
 export type NegotiationViewer = {
   isAdmin: boolean;
   mySteamId?: string | null;
   managedTeamIds: string[];
+  teamManagers: Record<string, string[]>;
 };
 
 export type NegotiationWindow = {
@@ -85,6 +87,24 @@ export function canNegotiateBracket(
   return viewer.isAdmin || managesBracket(bracket, viewer.managedTeamIds);
 }
 
+// tbu_league_scheduling_proposals only lets the team that did not propose
+// accept, so a teammate of the proposer is on the waiting side too.
+function managesAnsweringTeam(
+  bracket: NegotiationBracket,
+  proposal: Proposal,
+  viewer: NegotiationViewer,
+): boolean {
+  const proposer = String(proposal.proposed_by_steam_id);
+  return [bracket.team_1?.team_id, bracket.team_2?.team_id].some(
+    (teamId) =>
+      !!teamId &&
+      viewer.managedTeamIds.includes(teamId) &&
+      !(viewer.teamManagers[teamId] ?? [String(viewer.mySteamId)]).includes(
+        proposer,
+      ),
+  );
+}
+
 export function canRespondToBracketProposal(
   bracket: NegotiationBracket,
   proposal: Proposal,
@@ -93,14 +113,25 @@ export function canRespondToBracketProposal(
   return canRespondTo(bracket as unknown as LeagueBracket, proposal, {
     isAdmin: viewer.isAdmin,
     mySteamId: viewer.mySteamId,
-    mine: managesBracket(bracket, viewer.managedTeamIds),
+    mine: managesAnsweringTeam(bracket, proposal, viewer),
   });
+}
+
+function bracketProposals(bracket: NegotiationBracket): Proposal[] {
+  const byId = new Map<string, Proposal>();
+  for (const proposal of [
+    ...(bracket.scheduling_proposals ?? []),
+    ...(bracket.recent_proposals ?? []),
+  ]) {
+    byId.set(proposal.id, proposal);
+  }
+  return [...byId.values()];
 }
 
 export function bracketPendingProposals(
   bracket: NegotiationBracket,
 ): Proposal[] {
-  return (bracket.scheduling_proposals ?? []).filter(
+  return bracketProposals(bracket).filter(
     (proposal) => proposal.status === "Pending",
   );
 }
@@ -108,7 +139,7 @@ export function bracketPendingProposals(
 export function bracketProposalHistory(
   bracket: NegotiationBracket,
 ): Proposal[] {
-  return (bracket.scheduling_proposals ?? []).filter(
+  return bracketProposals(bracket).filter(
     (proposal) => proposal.status !== "Pending",
   );
 }
@@ -137,7 +168,12 @@ export function bracketProposalWindow(
   windows: NegotiationWindow[] | null | undefined,
   bracket: NegotiationBracket,
   now: Date,
-): { opensAt: string; closesAt: string; defaultMatchAt: string | null } {
+): {
+  opensAt: string;
+  closesAt: string;
+  defaultMatchAt: string | null;
+  roundWindow: boolean;
+} {
   const window = (windows ?? []).find(
     (entry) => entry.round === bracket.round,
   );
@@ -151,5 +187,6 @@ export function bracketProposalWindow(
     opensAt: window?.opens_at ?? now.toISOString(),
     closesAt: window?.closes_at ?? twoWeeksOut,
     defaultMatchAt: window?.default_match_at ?? null,
+    roundWindow: !!window,
   };
 }

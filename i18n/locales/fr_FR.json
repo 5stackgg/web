@@ -6373,7 +6373,9 @@
       "no_time": "Aucun horaire convenu pour l'instant",
       "history": "Historique",
       "window": "Les horaires doivent se situer dans la fenêtre de ce round : du {from} au {to}.",
+      "two_weeks": "Les horaires doivent se situer dans les deux prochaines semaines.",
       "outside_window": "L'horaire proposé est en dehors de la fenêtre de planification de ce round.",
+      "outside_two_weeks": "L'horaire proposé doit se situer dans les deux prochaines semaines.",
       "teams_only": "Seuls les propriétaires, capitaines et admins de roster des équipes peuvent proposer un horaire."
     },
     "match": {

@@ -42,6 +42,7 @@ const props = defineProps<{
   viewer: NegotiationViewer;
   windowOpensAt: string;
   windowClosesAt: string;
+  roundWindow: boolean;
   busy?: boolean;
   respond: (
     proposalId: string,
@@ -63,6 +64,17 @@ const agreedAt = computed(() => bracketAgreedAt(props.bracket));
 const canPropose = computed(() =>
   canNegotiateBracket(props.bracket, props.viewer),
 );
+// The answering side's new time replaces the offer it was sent, so the two
+// teams never have two pending times on the table.
+const answerable = computed(() => pending.value.find(respondable));
+
+function proposeNewTime() {
+  if (answerable.value) {
+    emit("counter", answerable.value.id);
+    return;
+  }
+  emit("propose");
+}
 
 const team1 = computed(
   () =>
@@ -270,7 +282,7 @@ function formatBound(value: string): string {
           :class="pending.length ? '' : 'tac-amber-cta'"
           class="gap-1.5 [&_svg]:size-3.5"
           :disabled="busy"
-          @click="emit('propose')"
+          @click="proposeNewTime"
         >
           <CalendarClock class="h-3.5 w-3.5" />
           {{
@@ -292,12 +304,14 @@ function formatBound(value: string): string {
 
         <p class="text-xs text-muted-foreground">
           {{
-            canPropose
-              ? $t("tournament.negotiation.window", {
-                  from: formatBound(windowOpensAt),
-                  to: formatBound(windowClosesAt),
-                })
-              : $t("tournament.negotiation.teams_only")
+            !canPropose
+              ? $t("tournament.negotiation.teams_only")
+              : roundWindow
+                ? $t("tournament.negotiation.window", {
+                    from: formatBound(windowOpensAt),
+                    to: formatBound(windowClosesAt),
+                  })
+                : $t("tournament.negotiation.two_weeks")
           }}
         </p>
       </div>

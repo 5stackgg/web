@@ -6373,7 +6373,9 @@
       "no_time": "尚未商定时间",
       "history": "历史记录",
       "window": "时间必须在本轮窗口内：{from} 至 {to}。",
+      "two_weeks": "时间必须在接下来的两周内。",
       "outside_window": "建议时间超出本轮的排期窗口。",
+      "outside_two_weeks": "建议时间必须在接下来的两周内。",
       "teams_only": "只有两队的所有者、队长和阵容管理员可以提议时间。"
     },
     "match": {

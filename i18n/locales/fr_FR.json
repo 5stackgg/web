@@ -5480,6 +5480,17 @@
       "updating": "Mise à jour du système en cours",
       "panel_update": "Ton panel n'est pas à jour, récupère et lance le script de mise à jour"
     },
+    "system_status": {
+      "regions": "Régions des serveurs",
+      "ping_by_region": "Ping par région",
+      "max_latency": "Max {ms} ms",
+      "online_count": "{online}/{total} en ligne",
+      "partial": "Partiel",
+      "preferred": "Région préférée",
+      "skips_over": "Le matchmaking ignore les régions au-delà de {ms} ms.",
+      "uses_starred": "Le matchmaking utilise vos régions favorites.",
+      "sign_in": "Connectez-vous pour voir votre ping vers chaque région."
+    },
     "match_lobby": {
       "versus": "VS"
     },

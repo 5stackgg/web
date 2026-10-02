@@ -5480,6 +5480,17 @@
       "updating": "系統正在更新",
       "panel_update": "您的面板已過時，請拉取並執行更新指令碼"
     },
+    "system_status": {
+      "regions": "伺服器區域",
+      "ping_by_region": "各區域延遲",
+      "max_latency": "上限 {ms} ms",
+      "online_count": "{online}/{total} 在線",
+      "partial": "部分可用",
+      "preferred": "偏好區域",
+      "skips_over": "配對會略過延遲超過 {ms} ms 的區域。",
+      "uses_starred": "配對會使用你加星號的區域。",
+      "sign_in": "登入後即可查看你到各區域的延遲。"
+    },
     "match_lobby": {
       "versus": "VS"
     },

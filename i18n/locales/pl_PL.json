@@ -5480,6 +5480,17 @@
       "updating": "System się aktualizuje",
       "panel_update": "Twój panel jest nieaktualny, pobierz i uruchom skrypt aktualizacji"
     },
+    "system_status": {
+      "regions": "Regiony serwerów",
+      "ping_by_region": "Ping według regionu",
+      "max_latency": "Maks. {ms} ms",
+      "online_count": "{online}/{total} online",
+      "partial": "Częściowo",
+      "preferred": "Preferowany region",
+      "skips_over": "Matchmaking pomija regiony powyżej {ms} ms.",
+      "uses_starred": "Matchmaking korzysta z regionów oznaczonych gwiazdką.",
+      "sign_in": "Zaloguj się, aby zobaczyć swój ping do każdego regionu."
+    },
     "match_lobby": {
       "versus": "VS"
     },

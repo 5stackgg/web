@@ -5480,6 +5480,17 @@
       "updating": "Systemet uppdateras",
       "panel_update": "Din panel är inaktuell, hämta och kör uppdateringsskriptet"
     },
+    "system_status": {
+      "regions": "Serverregioner",
+      "ping_by_region": "Ping per region",
+      "max_latency": "Max {ms} ms",
+      "online_count": "{online}/{total} online",
+      "partial": "Delvis",
+      "preferred": "Föredragen region",
+      "skips_over": "Matchmaking hoppar över regioner över {ms} ms.",
+      "uses_starred": "Matchmaking använder dina stjärnmärkta regioner.",
+      "sign_in": "Logga in för att se din ping till varje region."
+    },
     "match_lobby": {
       "versus": "VS"
     },

@@ -5480,6 +5480,17 @@
       "updating": "系统正在更新",
       "panel_update": "您的面板已过时，请拉取并运行更新脚本"
     },
+    "system_status": {
+      "regions": "服务器区域",
+      "ping_by_region": "各区域延迟",
+      "max_latency": "上限 {ms} ms",
+      "online_count": "{online}/{total} 在线",
+      "partial": "部分可用",
+      "preferred": "首选区域",
+      "skips_over": "匹配会跳过延迟超过 {ms} ms 的区域。",
+      "uses_starred": "匹配会使用你标星的区域。",
+      "sign_in": "登录后可查看你到各区域的延迟。"
+    },
     "match_lobby": {
       "versus": "VS"
     },

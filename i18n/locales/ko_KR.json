@@ -5480,6 +5480,17 @@
       "updating": "시스템 업데이트 중",
       "panel_update": "패널이 오래되었습니다. 업데이트 스크립트를 받아서 실행하세요"
     },
+    "system_status": {
+      "regions": "서버 지역",
+      "ping_by_region": "지역별 핑",
+      "max_latency": "최대 {ms} ms",
+      "online_count": "{online}/{total} 온라인",
+      "partial": "일부 가동",
+      "preferred": "선호 지역",
+      "skips_over": "매치메이킹은 {ms} ms를 초과하는 지역을 제외합니다.",
+      "uses_starred": "매치메이킹은 별표한 지역을 사용합니다.",
+      "sign_in": "로그인하면 각 지역의 핑을 확인할 수 있습니다."
+    },
     "match_lobby": {
       "versus": "VS"
     },

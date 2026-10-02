@@ -5480,6 +5480,17 @@
       "updating": "Systemet opdaterer",
       "panel_update": "Dit panel er forældet — hent og kør opdateringsscriptet"
     },
+    "system_status": {
+      "regions": "Serverregioner",
+      "ping_by_region": "Ping pr. region",
+      "max_latency": "Maks. {ms} ms",
+      "online_count": "{online}/{total} online",
+      "partial": "Delvist",
+      "preferred": "Foretrukken region",
+      "skips_over": "Matchmaking springer regioner over {ms} ms over.",
+      "uses_starred": "Matchmaking bruger dine stjernemarkerede regioner.",
+      "sign_in": "Log ind for at se dit ping til hver region."
+    },
     "match_lobby": {
       "versus": "VS"
     },

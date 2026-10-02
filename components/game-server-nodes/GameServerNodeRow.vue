@@ -676,10 +676,7 @@ const isSectionExpanded = (section: string) => {
                     variant="outline"
                     size="sm"
                     class="shrink-0 border-yellow-500/50 text-yellow-500 hover:text-yellow-400"
-                    :disabled="
-                      gameServerNode.status !==
-                      e_game_server_node_statuses_enum.Online
-                    "
+                    :disabled="!isReachable"
                     @click="updateCs"
                   >
                     <CircleFadingArrowUp class="h-4 w-4" />
@@ -699,10 +696,7 @@ const isSectionExpanded = (section: string) => {
               <Button
                 size="xs"
                 @click="updateCs"
-                :disabled="
-                  gameServerNode.status !==
-                  e_game_server_node_statuses_enum.Online
-                "
+                :disabled="!isReachable"
                 v-if="gameServerNode.enabled"
               >
                 {{ $t("game_server.install_cs") }}
@@ -880,10 +874,7 @@ const isSectionExpanded = (section: string) => {
 
             <template v-if="!isGpuOnly">
               <DropdownMenuItem
-                :disabled="
-                  gameServerNode.status !==
-                  e_game_server_node_statuses_enum.Online
-                "
+                :disabled="!isReachable"
                 @click="updateCs"
               >
                 <template v-if="gameServerNode.build_id">
@@ -897,10 +888,7 @@ const isSectionExpanded = (section: string) => {
               </DropdownMenuItem>
 
               <DropdownMenuItem
-                :disabled="
-                  gameServerNode.status !==
-                  e_game_server_node_statuses_enum.Online
-                "
+                :disabled="!isReachable"
                 @click="updateCsgo"
               >
                 <template v-if="gameServerNode.csgo_build_id">
@@ -1120,10 +1108,7 @@ const isSectionExpanded = (section: string) => {
 
               <template v-if="!isGpuOnly">
                 <DropdownMenuItem
-                  :disabled="
-                    gameServerNode.status !==
-                    e_game_server_node_statuses_enum.Online
-                  "
+                  :disabled="!isReachable"
                   @click="updateCs"
                 >
                   <template v-if="gameServerNode.build_id">
@@ -1137,10 +1122,7 @@ const isSectionExpanded = (section: string) => {
                 </DropdownMenuItem>
 
                 <DropdownMenuItem
-                  :disabled="
-                    gameServerNode.status !==
-                    e_game_server_node_statuses_enum.Online
-                  "
+                  :disabled="!isReachable"
                   @click="updateCsgo"
                 >
                   <template v-if="gameServerNode.csgo_build_id">
@@ -1566,10 +1548,7 @@ const isSectionExpanded = (section: string) => {
                       variant="outline"
                       size="sm"
                       class="w-full mt-1 border-yellow-500/50 text-yellow-500 hover:text-yellow-400"
-                      :disabled="
-                        gameServerNode.status !==
-                        e_game_server_node_statuses_enum.Online
-                      "
+                      :disabled="!isReachable"
                       @click="updateCs"
                     >
                       <CircleFadingArrowUp class="mr-2 h-4 w-4" />
@@ -1587,10 +1566,7 @@ const isSectionExpanded = (section: string) => {
                       size="sm"
                       class="w-full"
                       @click="updateCs"
-                      :disabled="
-                        gameServerNode.status !==
-                        e_game_server_node_statuses_enum.Online
-                      "
+                      :disabled="!isReachable"
                       v-if="gameServerNode.enabled"
                     >
                       {{ $t("game_server.install_cs") }}
@@ -1915,6 +1891,7 @@ interface GameServerNode {
   region: string | null;
   enabled: boolean;
   enabled_for_match_making?: boolean;
+  accepting_new_matches: boolean;
   demo_network_limiter?: number | null;
   build_id?: string;
   csgo_build_id?: number | null;
@@ -2575,6 +2552,11 @@ export default defineComponent({
     },
     hasRegion() {
       return !!this.gameServerNode.region;
+    },
+    isReachable() {
+      return ["Online", "NotAcceptingNewMatches"].includes(
+        this.gameServerNode.status,
+      );
     },
     isGpuOnly() {
       return (

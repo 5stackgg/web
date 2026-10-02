@@ -3420,6 +3420,8 @@
       "accepting_matches": "接受比赛",
       "toggle_enabled_help": "关闭时，节点完全禁用——不执行 GPU 工作，也不调度比赛。",
       "toggle_scheduling_help": "关闭时，节点继续运行现有比赛，但不接受新比赛。",
+      "scheduling_setup_hint": "此节点仍在设置中。上线后将开始接受比赛。",
+      "scheduling_offline_hint": "此节点已离线。重新连接后将再次接受比赛。",
       "toggle_enabled_failed": "切换节点启用状态失败",
       "toggle_scheduling_failed": "切换调度状态失败",
       "toggle_workload_failed": "切换 GPU 工作负载可用性失败",

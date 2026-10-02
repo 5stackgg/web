@@ -3420,6 +3420,8 @@
       "accepting_matches": "Aceitando partidas",
       "toggle_enabled_help": "Quando desativado, o nó fica totalmente inativo — sem trabalho de GPU e sem agendamento de partidas.",
       "toggle_scheduling_help": "Quando desativado, o nó continua executando partidas existentes, mas não aceitará novas.",
+      "scheduling_setup_hint": "Este nó ainda está em configuração. Ele começa a aceitar partidas quando ficar online.",
+      "scheduling_offline_hint": "Este nó está offline. Ele volta a aceitar partidas quando se reconectar.",
       "toggle_enabled_failed": "Falha ao alternar estado de ativação do nó",
       "toggle_scheduling_failed": "Falha ao alternar estado de agendamento",
       "toggle_workload_failed": "Falha ao alternar disponibilidade de workload de GPU",

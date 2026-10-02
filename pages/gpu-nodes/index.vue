@@ -404,7 +404,8 @@ async function stopGpuSession(nodeId: string) {
                           ? 'bad'
                           : busyByNode[node.id]
                             ? 'operational'
-                            : node.status === 'Online'
+                            : node.status === 'Online' ||
+                                node.status === 'NotAcceptingNewMatches'
                               ? 'idle'
                               : 'degraded'
                     "
@@ -1010,6 +1011,7 @@ export default {
               status: true,
               enabled: true,
               enabled_for_match_making: true,
+              accepting_new_matches: true,
               region: true,
               gpu: true,
               gpu_info: true,

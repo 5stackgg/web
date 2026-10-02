@@ -3420,6 +3420,8 @@
       "accepting_matches": "Acepta partidas",
       "toggle_enabled_help": "Si está desactivado, el nodo queda totalmente inhabilitado: ni trabajo de GPU ni asignación de partidas.",
       "toggle_scheduling_help": "Si está desactivado, el nodo sigue ejecutando las partidas actuales pero no aceptará nuevas.",
+      "scheduling_setup_hint": "Este nodo aún se está configurando. Empezará a aceptar partidas cuando esté en línea.",
+      "scheduling_offline_hint": "Este nodo está desconectado. Volverá a aceptar partidas cuando se reconecte.",
       "toggle_enabled_failed": "No se ha podido cambiar el estado de activación del nodo",
       "toggle_scheduling_failed": "No se ha podido cambiar el estado de asignación",
       "toggle_workload_failed": "No se ha podido cambiar la disponibilidad de la carga de GPU",

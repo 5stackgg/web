@@ -3420,6 +3420,8 @@
       "accepting_matches": "Maç kabul ediyor",
       "toggle_enabled_help": "Kapalıyken düğüm tamamen devre dışı kalır — GPU işi ve maç planlaması yapılmaz.",
       "toggle_scheduling_help": "Kapalıyken düğüm mevcut maçları çalıştırmaya devam eder ama yenilerini kabul etmez.",
+      "scheduling_setup_hint": "Bu düğüm hâlâ kuruluyor. Çevrimiçi olduğunda maç kabul etmeye başlar.",
+      "scheduling_offline_hint": "Bu düğüm çevrimdışı. Yeniden bağlandığında tekrar maç kabul eder.",
       "toggle_enabled_failed": "Düğüm etkinlik durumu değiştirilemedi.",
       "toggle_scheduling_failed": "Planlama durumu değiştirilemedi.",
       "toggle_workload_failed": "GPU iş yükü uygunluğu değiştirilemedi.",

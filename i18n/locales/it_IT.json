@@ -3420,6 +3420,8 @@
       "accepting_matches": "Accetta match",
       "toggle_enabled_help": "Se disattivato, il nodo è completamente disabilitato — nessun lavoro GPU e nessuna assegnazione di match.",
       "toggle_scheduling_help": "Se disattivato, il nodo continua i match in corso ma non ne accetta di nuovi.",
+      "scheduling_setup_hint": "Questo nodo è ancora in configurazione. Inizierà ad accettare match quando sarà online.",
+      "scheduling_offline_hint": "Questo nodo è offline. Tornerà ad accettare match quando si riconnetterà.",
       "toggle_enabled_failed": "Impossibile cambiare lo stato di attivazione del nodo",
       "toggle_scheduling_failed": "Impossibile cambiare lo stato di assegnazione",
       "toggle_workload_failed": "Impossibile cambiare la disponibilità dei carichi GPU",

@@ -3420,6 +3420,8 @@
       "accepting_matches": "Accepting Matches",
       "toggle_enabled_help": "When off, the node is fully disabled — no GPU work and no match scheduling.",
       "toggle_scheduling_help": "When off, the node keeps running existing matches but won't accept new ones.",
+      "scheduling_setup_hint": "This node is still in setup. It starts taking matches once it comes online.",
+      "scheduling_offline_hint": "This node is offline. It starts taking matches again once it reconnects.",
       "toggle_enabled_failed": "Failed to toggle node enabled state",
       "toggle_scheduling_failed": "Failed to toggle scheduling state",
       "toggle_workload_failed": "Failed to toggle GPU workload availability",

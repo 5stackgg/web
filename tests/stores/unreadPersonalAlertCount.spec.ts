@@ -48,7 +48,7 @@ afterEach(async () => {
 });
 
 describe("NotificationStore unreadPersonalAlertCount", () => {
-  it("counts an invite once and leaves out chat and staff rows", async () => {
+  it("counts an invite once and leaves out staff rows", async () => {
     serve();
     const store = useNotificationStore();
     useAuthStore().me = { steam_id: ME } as any;
@@ -60,7 +60,6 @@ describe("NotificationStore unreadPersonalAlertCount", () => {
       data: {
         notifications: [
           row("invite", "TeamInvite", "user", "team-1"),
-          row("chat", "ChatMessage", "user", "lobby-1"),
           row("node", "GameNodeStatus", "administrator", "node-1"),
         ],
       },

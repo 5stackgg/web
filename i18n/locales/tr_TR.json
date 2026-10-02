@@ -1764,6 +1764,8 @@
           "push_off_by_default": "Anlık bildirim varsayılan olarak kapalı",
           "in_bell": "{kind}: zil",
           "push_for": "{kind}: anlık bildirim",
+          "bell_unavailable": "Şu anda değiştirilemiyor",
+          "legacy_hint": "5stack sunucun henüz tüm bildirim türlerini listelemiyor. Sunduğu seçenekler bunlar.",
           "groups": {
             "more": {
               "title": "Takımlar, etkinlikler, sezonlar, utility, haberler",

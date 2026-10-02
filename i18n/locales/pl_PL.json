@@ -1764,6 +1764,8 @@
           "push_off_by_default": "Push domyślnie wyłączony",
           "in_bell": "{kind} w dzwonku",
           "push_for": "{kind} przez push",
+          "bell_unavailable": "Nie można teraz zmienić",
+          "legacy_hint": "Twój serwer 5stack nie podaje jeszcze wszystkich rodzajów powiadomień. Oto dostępne opcje.",
           "groups": {
             "more": {
               "title": "Drużyny, wydarzenia, sezony, utility, aktualności",

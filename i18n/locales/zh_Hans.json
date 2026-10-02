@@ -1764,6 +1764,8 @@
           "push_off_by_default": "默认关闭推送",
           "in_bell": "铃铛中的{kind}",
           "push_for": "{kind}推送",
+          "bell_unavailable": "暂时无法更改",
+          "legacy_hint": "你的 5stack 服务器尚未列出所有通知类型。以下是它提供的选项。",
           "groups": {
             "more": {
               "title": "战队、活动、赛季、道具、新闻",

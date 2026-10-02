@@ -45,9 +45,9 @@ onBeforeUnmount(() => {
   }
 });
 
-async function setKind(enabled: boolean): Promise<boolean> {
+async function setKind(type: string, enabled: boolean): Promise<boolean> {
   try {
-    await set("in_app", props.type, enabled);
+    await set("in_app", type, enabled);
     return true;
   } catch {
     toast({
@@ -59,10 +59,17 @@ async function setKind(enabled: boolean): Promise<boolean> {
   }
 }
 
+// Captured up front: in a stack this menu sits on the top card, which shows
+// the next row's kind as soon as this one is filtered out of the bell, so
+// props.type no longer names what Undo has to restore.
 async function turnOff() {
-  const label = kind.value;
+  const type = props.type;
+  const label = kindTitle(type);
+  const previous =
+    preferences.value.in_app.find((entry) => entry.key === type)?.enabled ??
+    true;
 
-  if (!(await setKind(false))) {
+  if (!(await setKind(type, false))) {
     return;
   }
 
@@ -75,7 +82,7 @@ async function turnOff() {
       ToastAction,
       {
         altText: t("common.undo"),
-        onClick: () => setKind(true),
+        onClick: () => setKind(type, previous),
       },
       () => t("common.undo"),
     ),
@@ -93,6 +100,8 @@ async function turnOff() {
           'text-muted-foreground hover:text-foreground data-[state=open]:text-foreground',
           triggerClass,
         ]"
+        @keydown.enter.stop
+        @keydown.space.stop
       >
         <MoreVertical class="h-4 w-4" />
         <span class="sr-only">{{

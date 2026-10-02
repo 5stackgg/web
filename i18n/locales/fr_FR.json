@@ -1764,6 +1764,8 @@
           "push_off_by_default": "Push désactivé par défaut",
           "in_bell": "{kind} dans la cloche",
           "push_for": "Push : {kind}",
+          "bell_unavailable": "Impossible de modifier pour le moment",
+          "legacy_hint": "Votre serveur 5stack n'affiche pas encore tous les types de notifications. Voici les choix qu'il propose.",
           "groups": {
             "more": {
               "title": "Équipes, événements, saisons, utilitaires, actualités",

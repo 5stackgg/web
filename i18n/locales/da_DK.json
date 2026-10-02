@@ -1764,6 +1764,8 @@
           "push_off_by_default": "Push slået fra som standard",
           "in_bell": "{kind} i klokken",
           "push_for": "Push for {kind}",
+          "bell_unavailable": "Kan ikke ændres lige nu",
+          "legacy_hint": "Din 5stack-server viser endnu ikke alle typer notifikationer. Her er de valg, den tilbyder.",
           "groups": {
             "more": {
               "title": "Hold, begivenheder, sæsoner, utility, nyheder",

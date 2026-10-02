@@ -1764,6 +1764,8 @@
           "push_off_by_default": "푸시 기본값 꺼짐",
           "in_bell": "알림 종에 {kind} 표시",
           "push_for": "{kind} 푸시",
+          "bell_unavailable": "지금은 변경할 수 없습니다",
+          "legacy_hint": "사용 중인 5stack 서버가 아직 모든 알림 종류를 제공하지 않습니다. 아래는 서버에서 제공하는 설정입니다.",
           "groups": {
             "more": {
               "title": "팀, 이벤트, 시즌, 유틸리티, 뉴스",

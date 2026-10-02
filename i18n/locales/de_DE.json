@@ -1764,6 +1764,8 @@
           "push_off_by_default": "Push standardmäßig aus",
           "in_bell": "{kind} in der Glocke",
           "push_for": "Push für {kind}",
+          "bell_unavailable": "Kann gerade nicht geändert werden",
+          "legacy_hint": "Dein 5stack-Server listet noch nicht alle Benachrichtigungsarten auf. Das sind die Optionen, die er anbietet.",
           "groups": {
             "more": {
               "title": "Teams, Events, Saisons, Utility, News",

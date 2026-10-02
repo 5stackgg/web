@@ -7,6 +7,7 @@ import {
   Bell,
   CalendarClock,
   ChevronDown,
+  CircleHelp,
   Crosshair,
   Info,
   Layers,
@@ -77,9 +78,10 @@ const isModerator = computed(() =>
 const ready = ref(false);
 
 onMounted(async () => {
-  await push.refresh();
-  await load();
-  await loadQuietHours();
+  // refresh() waits on navigator.serviceWorker.ready, which never settles
+  // without a registered worker, so nothing else here may wait on it.
+  push.refresh().catch(() => {});
+  await Promise.all([load(), loadQuietHours()]);
   ready.value = true;
 });
 
@@ -164,10 +166,22 @@ type Kind = NotificationCategoryType & {
 const bellToggle = (type: string) =>
   preferences.value.in_app.find((entry) => entry.key === type);
 
-const groups = computed(() => {
-  const visible = preferences.value.push.filter(
+const visiblePush = computed(() =>
+  preferences.value.push.filter(
     (entry) => !entry.adminOnly || isModerator.value,
-  );
+  ),
+);
+
+// An api from before the catalog sends push categories without their types.
+// It still takes every switch, so the page falls back to the plain lists.
+const legacyCatalog = computed(
+  () =>
+    visiblePush.value.length > 0 &&
+    visiblePush.value.some((entry) => !entry.types),
+);
+
+const groups = computed(() => {
+  const visible = visiblePush.value;
 
   return GROUPS.map((group) => {
     const categories =
@@ -614,10 +628,13 @@ const channelIconOff =
                 class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition-colors duration-200 ease-out motion-reduce:transition-none"
                 :class="soundsEnabled ? channelIconOn : channelIconOff"
               >
-                <component
-                  :is="soundsEnabled ? Volume2 : VolumeX"
-                  class="h-4 w-4"
-                />
+                <FadeSwap class="flex">
+                  <component
+                    :is="soundsEnabled ? Volume2 : VolumeX"
+                    :key="soundsEnabled ? 'on' : 'off'"
+                    class="h-4 w-4"
+                  />
+                </FadeSwap>
               </span>
               <div class="min-w-0 flex-1">
                 <p class="text-sm font-medium leading-none">
@@ -654,8 +671,14 @@ const channelIconOff =
                     "
                     @click="toggleMute"
                   >
-                    <VolumeX v-if="volume === 0" class="h-3.5 w-3.5" />
-                    <Volume2 v-else class="h-3.5 w-3.5" />
+                    <FadeSwap class="flex">
+                      <VolumeX
+                        v-if="volume === 0"
+                        key="muted"
+                        class="h-3.5 w-3.5"
+                      />
+                      <Volume2 v-else key="audible" class="h-3.5 w-3.5" />
+                    </FadeSwap>
                   </button>
                   <input
                     type="range"
@@ -707,13 +730,19 @@ const channelIconOff =
             class="mt-3 flex items-start gap-2 rounded-md border border-border/60 bg-card/30 px-3 py-2 text-xs text-muted-foreground"
           >
             <Info class="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-            <div class="space-y-1">
+            <div>
               <p>
                 {{ $t("pages.settings.notifications.channels.push.off_hint") }}
               </p>
-              <p v-if="pushBlocker" class="text-[hsl(var(--tac-amber))]">
-                {{ pushBlocker }}
-              </p>
+              <FadeSwap>
+                <p
+                  v-if="pushBlocker"
+                  :key="pushBlocker"
+                  class="mt-1 text-[hsl(var(--tac-amber))]"
+                >
+                  {{ pushBlocker }}
+                </p>
+              </FadeSwap>
             </div>
           </div>
         </Fold>
@@ -786,6 +815,118 @@ const channelIconOff =
               <div
                 class="h-5 w-9 shrink-0 animate-pulse rounded-full bg-muted"
               />
+            </div>
+          </div>
+
+          <div
+            v-else-if="legacyCatalog"
+            key="legacy"
+            class="flex flex-col gap-2.5"
+          >
+            <p
+              class="flex items-start gap-2 rounded-md border border-border/60 bg-card/30 px-3 py-2 text-xs text-muted-foreground"
+            >
+              <Info class="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+              <span>{{
+                $t("pages.settings.notifications.catalog.legacy_hint")
+              }}</span>
+            </p>
+
+            <div
+              class="overflow-hidden rounded-lg border border-border/60 bg-card/30"
+            >
+              <div class="flex items-center gap-3 px-4 py-3">
+                <span
+                  class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-muted text-foreground"
+                >
+                  <Smartphone class="h-4 w-4" />
+                </span>
+                <span class="text-sm font-semibold">
+                  {{ $t("pages.settings.notifications.channels.push.title") }}
+                </span>
+              </div>
+              <div
+                class="divide-y divide-border/50 border-t border-border/50"
+              >
+                <div
+                  v-for="entry in visiblePush"
+                  :key="entry.key"
+                  :data-test="`legacy-push-${entry.key}`"
+                  class="flex items-center justify-between gap-3 px-4 py-2.5 transition-colors duration-150 hover:bg-muted/20 motion-reduce:transition-none"
+                >
+                  <div class="min-w-0 space-y-0.5">
+                    <p class="text-sm font-medium leading-snug">
+                      {{ categoryTitle(entry.key) }}
+                    </p>
+                    <p
+                      v-if="categoryDescription(entry.key)"
+                      class="text-xs text-muted-foreground"
+                    >
+                      {{ categoryDescription(entry.key) }}
+                    </p>
+                  </div>
+                  <Switch
+                    :model-value="entry.enabled"
+                    :aria-label="
+                      $t('pages.settings.notifications.catalog.push_for', {
+                        kind: categoryTitle(entry.key),
+                      })
+                    "
+                    @update:model-value="
+                      (value) => savePreference('push', entry.key, value)
+                    "
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div
+              v-if="preferences.in_app.length > 0"
+              class="overflow-hidden rounded-lg border border-border/60 bg-card/30"
+            >
+              <div class="flex items-center gap-3 px-4 py-3">
+                <span
+                  class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-muted text-foreground"
+                >
+                  <Bell class="h-4 w-4" />
+                </span>
+                <span class="text-sm font-semibold">
+                  {{ $t("pages.settings.notifications.channels.bell.title") }}
+                </span>
+              </div>
+              <div
+                class="divide-y divide-border/50 border-t border-border/50"
+              >
+                <div
+                  v-for="entry in preferences.in_app"
+                  :key="entry.key"
+                  :data-test="`legacy-bell-${entry.key}`"
+                  class="flex items-center justify-between gap-3 px-4 py-2.5 transition-colors duration-150 hover:bg-muted/20 motion-reduce:transition-none"
+                >
+                  <div class="min-w-0 space-y-0.5">
+                    <p class="text-sm font-medium leading-snug">
+                      {{ kindTitle(entry.key) }}
+                    </p>
+                    <p
+                      v-if="kindDescription(entry.key)"
+                      class="text-xs text-muted-foreground"
+                    >
+                      {{ kindDescription(entry.key) }}
+                    </p>
+                  </div>
+                  <Switch
+                    :model-value="entry.enabled"
+                    :aria-label="
+                      $t('pages.settings.notifications.catalog.in_bell', {
+                        kind: kindTitle(entry.key),
+                      })
+                    "
+                    @update:model-value="
+                      (value) => savePreference('in_app', entry.key, value)
+                    "
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
@@ -957,7 +1098,7 @@ const channelIconOff =
                             }}</span>
                           </template>
                         </FiveStackToolTip>
-                        <FiveStackToolTip v-else>
+                        <FiveStackToolTip v-else-if="kind.bell === 'locked'">
                           {{
                             $t(
                               group.id === "staff"
@@ -975,6 +1116,24 @@ const channelIconOff =
                                 group.id === "staff"
                                   ? "pages.settings.notifications.catalog.staff_locked"
                                   : "pages.settings.notifications.catalog.locked",
+                              )
+                            }}</span>
+                          </template>
+                        </FiveStackToolTip>
+                        <FiveStackToolTip v-else>
+                          {{
+                            $t(
+                              "pages.settings.notifications.catalog.bell_unavailable",
+                            )
+                          }}
+                          <template #trigger>
+                            <CircleHelp
+                              class="h-3 w-3 text-muted-foreground/60"
+                              aria-hidden="true"
+                            />
+                            <span class="sr-only">{{
+                              $t(
+                                "pages.settings.notifications.catalog.bell_unavailable",
                               )
                             }}</span>
                           </template>

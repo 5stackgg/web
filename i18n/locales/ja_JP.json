@@ -1764,6 +1764,8 @@
           "push_off_by_default": "プッシュは既定でオフ",
           "in_bell": "{kind}をベルに表示",
           "push_for": "{kind}のプッシュ",
+          "bell_unavailable": "現在は変更できません",
+          "legacy_hint": "お使いの 5stack サーバーは、まだすべての通知の種類を表示していません。利用できる設定は以下のとおりです。",
           "groups": {
             "more": {
               "title": "チーム、イベント、シーズン、ユーティリティ、ニュース",

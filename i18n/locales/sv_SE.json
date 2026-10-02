@@ -1764,6 +1764,8 @@
           "push_off_by_default": "Push avstängt som standard",
           "in_bell": "{kind} i klockan",
           "push_for": "{kind} via push",
+          "bell_unavailable": "Kan inte ändras just nu",
+          "legacy_hint": "Din 5stack-server listar ännu inte alla typer av aviseringar. Det här är valen den erbjuder.",
           "groups": {
             "more": {
               "title": "Lag, evenemang, säsonger, utility, nyheter",

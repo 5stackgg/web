@@ -1764,6 +1764,8 @@
           "push_off_by_default": "Push off by default",
           "in_bell": "{kind} in the bell",
           "push_for": "{kind} push",
+          "bell_unavailable": "Can't be changed right now",
+          "legacy_hint": "Your 5stack server doesn't list every notification kind yet. These are the choices it offers.",
           "groups": {
             "more": {
               "title": "Teams, events, seasons, utility, news",

@@ -136,7 +136,6 @@ onBeforeUnmount(() => {
       :class="sanctionToneBarClasses[tone]"
     />
     <div class="absolute top-2 right-2 flex items-center">
-      <NotificationKindMenu :type="notification.type" />
       <Button
         v-if="notification.deletable !== false"
         size="icon"
@@ -147,6 +146,7 @@ onBeforeUnmount(() => {
         <Trash2 class="h-4 w-4" />
         <span class="sr-only">{{ $t("common.delete") }}</span>
       </Button>
+      <NotificationKindMenu :type="notification.type" />
     </div>
     <h3
       :class="[

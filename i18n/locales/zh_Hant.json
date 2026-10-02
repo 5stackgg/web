@@ -1764,6 +1764,8 @@
           "push_off_by_default": "預設關閉推播",
           "in_bell": "鈴鐺中的{kind}",
           "push_for": "{kind}推播",
+          "bell_unavailable": "暫時無法變更",
+          "legacy_hint": "你的 5stack 伺服器尚未列出所有通知類型。以下是它提供的選項。",
           "groups": {
             "more": {
               "title": "隊伍、活動、賽季、道具、新聞",

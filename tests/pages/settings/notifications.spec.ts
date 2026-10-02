@@ -8,7 +8,10 @@ import { useAuthStore } from "~/stores/AuthStore";
 import { emulateDevice, fakePwa, userAgents } from "../../helpers/pwaDevice";
 
 const { push, preferences, set } = vi.hoisted(() => ({
-  push: { subscribed: { value: false } },
+  push: {
+    subscribed: { value: false },
+    refresh: async (): Promise<void> => {},
+  },
   preferences: { value: null as any },
   set: vi.fn(async () => {}),
 }));
@@ -19,7 +22,7 @@ mockNuxtImport("usePushNotifications", () => () => ({
   busy: ref(false),
   subscribed: ref(push.subscribed.value),
   lastError: ref(null),
-  refresh: async () => {},
+  refresh: () => push.refresh(),
   subscribe: async () => false,
   unsubscribe: async () => {},
 }));
@@ -115,6 +118,7 @@ afterEach(() => {
   pwa = undefined;
   set.mockClear();
   push.subscribed.value = false;
+  push.refresh = async () => {};
   useAuthStore().me = undefined;
   vi.restoreAllMocks();
 });
@@ -124,16 +128,18 @@ async function mountPage({
   subscribed = false,
   device = userAgents.desktopChrome,
   standalone = true,
+  served = catalog(),
 }: {
   role?: string;
   subscribed?: boolean;
   device?: string;
   standalone?: boolean;
+  served?: ReturnType<typeof catalog>;
 } = {}) {
   emulateDevice({ userAgent: device, width: 412, standalone });
   pwa = fakePwa({ showInstallPrompt: false });
   push.subscribed.value = subscribed;
-  preferences.value = catalog();
+  preferences.value = served;
   useAuthStore().me = { steam_id: "76561198000000001", role } as any;
 
   const wrapper = await mountSuspended(
@@ -306,6 +312,70 @@ describe("notifications page", () => {
     await flushPromises();
 
     expect(set).toHaveBeenCalledWith("push", "matches", false);
+  });
+});
+
+describe("notifications page loading", () => {
+  it("lists the catalog even when this device's push check never settles", async () => {
+    push.refresh = () => new Promise<void>(() => {});
+
+    const wrapper = await mountPage();
+
+    expect(group(wrapper, "matches").exists()).toBe(true);
+    expect(kindRow(wrapper, "MatchStatusChange").exists()).toBe(true);
+  });
+
+  it("falls back to the choices an older server lists, without claiming a load failure", async () => {
+    const older = catalog();
+    for (const entry of older.push) {
+      delete (entry as { types?: unknown }).types;
+    }
+
+    const wrapper = await mountPage({ served: older });
+
+    expect(wrapper.text()).not.toContain(
+      "Couldn't load your notification settings.",
+    );
+    expect(wrapper.text()).toContain(
+      "Your 5stack server doesn't list every notification kind yet.",
+    );
+
+    const pushRows = wrapper.findAll("[data-test^='legacy-push-']");
+    expect(pushRows.map((row) => row.attributes("data-test"))).toContain(
+      "legacy-push-matches",
+    );
+    expect(
+      wrapper
+        .find("[data-test='legacy-push-matches'] [role='switch']")
+        .attributes("aria-label"),
+    ).toBe("Matches push");
+    expect(
+      wrapper.find("[data-test='legacy-push-staff_moderation']").exists(),
+    ).toBe(false);
+
+    const awards = wrapper.find("[data-test='legacy-bell-AwardGranted']");
+    expect(awards.text()).toContain("Awards");
+    await awards.find("[role='switch']").trigger("click");
+    await flushPromises();
+
+    expect(set).toHaveBeenCalledWith("in_app", "AwardGranted", false);
+  });
+
+  it("does not call a switchable kind locked when its bell setting is missing", async () => {
+    const served = catalog();
+    served.in_app = served.in_app.filter(
+      (entry) => entry.key !== "AwardGranted",
+    );
+
+    const wrapper = await mountPage({ served });
+    await openGroup(wrapper, "account");
+
+    const bell = kindRow(wrapper, "AwardGranted").find(
+      "[data-test='kind-bell']",
+    );
+    expect(bell.find("svg.lucide-lock-icon").exists()).toBe(false);
+    expect(bell.text()).not.toContain("Always shown: it's about your account");
+    expect(bell.text()).toContain("Can't be changed right now");
   });
 });
 

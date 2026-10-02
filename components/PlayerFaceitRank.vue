@@ -7,6 +7,9 @@ const props = defineProps<{
   faceitElo: number | null | undefined;
   faceitUrl?: string | null;
   faceitNickname?: string | null;
+  // Keep the ELO visible instead of revealing it on hover (per-match rows,
+  // where the number is the point).
+  showElo?: boolean;
 }>();
 
 // Official FACEIT skill-level color bands (level 1 grey → 10 red).
@@ -117,7 +120,10 @@ const titleText = computed(() => {
         >
       </span>
     </template>
-    <span v-if="(faceitElo ?? null) !== null" :class="eloRevealClasses">
+    <span
+      v-if="(faceitElo ?? null) !== null"
+      :class="showElo ? 'self-center inline-flex' : eloRevealClasses"
+    >
       <span :class="eloInnerClasses">
         <span :class="sepClasses" aria-hidden="true"></span>
         <span :class="eloClasses">{{ faceitElo!.toLocaleString() }} ELO</span>

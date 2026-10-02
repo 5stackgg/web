@@ -7058,7 +7058,6 @@
     "open_match": "Apri match",
     "picks_label": "Pick",
     "full_page": "Pagina intera",
-    "match_overview": "Panoramica match",
     "no_multi_kill_rounds": "Nessun round da {count} kill trovato.",
     "map_filter_active": "Filtro mappa attivo",
     "scoreboard": "Tabellino",
@@ -9226,7 +9225,7 @@
       "result": "Risultato",
       "map": "Mappa",
       "rating": "HLTV Rating",
-      "elo": "Elo"
+      "rank": "Grado"
     },
     "source": {
       "internal": "5Stack",
@@ -9243,7 +9242,8 @@
       "reset": "Punteggi azzerati per la nuova stagione",
       "recap": "Stagione {number} chiusa a {final}, massimo {peak}, {wins}V–{losses}S"
     },
-    "season_best": "Miglior punteggio di {season}"
+    "season_best": "Miglior punteggio di {season}",
+    "to_next": "{points} a {tier}"
   },
   "breadcrumbs": {
     "dashboard": "dashboard"

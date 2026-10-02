@@ -7058,7 +7058,6 @@
     "open_match": "Відкрити матч",
     "picks_label": "Піки",
     "full_page": "Повна сторінка",
-    "match_overview": "Огляд матчу",
     "no_multi_kill_rounds": "Раундів з {count} вбивствами не знайдено.",
     "map_filter_active": "Активний фільтр карти",
     "scoreboard": "Таблиця результатів",
@@ -9226,7 +9225,7 @@
       "result": "Результат",
       "map": "Карта",
       "rating": "Рейтинг HLTV",
-      "elo": "Ело"
+      "rank": "Ранг"
     },
     "source": {
       "internal": "5Stack",
@@ -9243,7 +9242,8 @@
       "reset": "Рейтинги скинуто для нового сезону",
       "recap": "Сезон {number} завершено на {final}, найкращий {peak}, {wins}В–{losses}П"
     },
-    "season_best": "Найкращий рейтинг {season}"
+    "season_best": "Найкращий рейтинг {season}",
+    "to_next": "{points} до {tier}"
   },
   "breadcrumbs": {
     "dashboard": "дашборд"

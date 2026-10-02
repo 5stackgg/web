@@ -4,7 +4,11 @@ import PlayerStatusDisplay from "./PlayerStatusDisplay.vue";
 
 <template>
   <template v-if="member.player">
-    <PlayerStatusDisplay :member="member" :match="match" :at-elo="atElo">
+    <PlayerStatusDisplay
+      :member="member"
+      :match="match"
+      :at-elo="resolvedAtElo"
+    >
       <template v-if="$slots['name-postfix']" #name-postfix>
         <slot name="name-postfix"></slot>
       </template>
@@ -55,6 +59,23 @@ export default {
       type: Number,
       required: false,
       default: null,
+    },
+  },
+  computed: {
+    // Every lineup table shows the rating the player held going INTO the
+    // match when the match has an elo_changes row for them, not their live
+    // one (which costs get_player_elo() per player to fetch).
+    resolvedAtElo(): number | null {
+      if (this.atElo != null) return this.atElo;
+      const sid = String(
+        this.member?.steam_id ?? this.member?.player?.steam_id ?? "",
+      );
+      if (!sid) return null;
+      const row = this.match?.elo_changes?.find?.(
+        (ec: any) => String(ec.player_steam_id) === sid,
+      );
+      const start = Number(row?.current_elo);
+      return Number.isFinite(start) && start > 0 ? start : null;
     },
   },
 };

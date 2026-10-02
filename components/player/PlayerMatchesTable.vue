@@ -23,6 +23,11 @@ const props = defineProps<{
     string,
     { rankType: number; rank: number; change: number }
   > | null;
+  // match_id -> FACEIT ELO / level / change for imported FACEIT matches.
+  faceitByMatch?: Record<
+    string,
+    { elo: number; level: number | null; change: number }
+  > | null;
   // match_id -> canonical HLTV rating (backend), overrides the row's estimate.
   ratingByMatch?: Map<string, number> | null;
   // match_id -> focus player's aggregate stats, batched by the page so each
@@ -97,7 +102,7 @@ const isMobile = useMediaQuery("(max-width: 767px)");
 
 // MUST stay in sync with `wideGrid` in PlayerMatchRow.vue.
 const wideGrid =
-  "grid grid-cols-[2.5rem_5rem_6.75rem_8.5rem_minmax(4.5rem,1fr)_3rem_6rem_4.5rem_2.75rem_3.25rem_8.5rem_2.5rem] items-center gap-x-2";
+  "grid grid-cols-[2.5rem_5rem_6.75rem_8.5rem_minmax(4.5rem,1fr)_3rem_6rem_4.5rem_2.75rem_3.25rem_10rem_2.5rem] items-center gap-x-2";
 </script>
 
 <template>
@@ -137,6 +142,7 @@ const wideGrid =
           :match="row.match"
           :player="player"
           :rank-by-match="rankByMatch"
+          :faceit-by-match="faceitByMatch"
           :season-best="seasonBest?.[String(row.match.id)] ?? null"
           :canonical-rating="ratingByMatch?.get(String(row.match.id)) ?? null"
           :collapsed-agg="statsByMatch?.get(String(row.match.id)) ?? null"
@@ -151,7 +157,7 @@ const wideGrid =
          scroll guard so every row's MAP (1fr) column resolves identically
          and the columns stay aligned no matter the surrounding width. -->
     <div v-else class="overflow-x-auto">
-      <div class="min-w-[61rem]">
+      <div class="min-w-[62.5rem]">
         <div
           :class="[
             wideGrid,
@@ -173,7 +179,7 @@ const wideGrid =
           <span>K / D / A</span>
           <span><StatLabel stat="kd" header label="K/D" /></span>
           <span><StatLabel stat="adr" header label="ADR" /></span>
-          <span class="text-right">{{ $t("player_match.headers.elo") }}</span>
+          <span class="text-right">{{ $t("player_match.headers.rank") }}</span>
           <span />
         </div>
 
@@ -184,7 +190,9 @@ const wideGrid =
               :key="row.key"
               :class="[wideGrid, 'px-3 py-2.5']"
             >
-              <div class="col-span-10 flex min-w-0 items-center gap-2.5 text-xs">
+              <div
+                class="col-span-10 flex min-w-0 items-center gap-2.5 text-xs"
+              >
                 <RotateCcw
                   class="ml-3 h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]"
                 />
@@ -196,7 +204,9 @@ const wideGrid =
                   class="truncate text-muted-foreground"
                   >{{ breakNote(row) }}</span
                 >
-                <span class="h-px min-w-6 flex-1 bg-[hsl(var(--tac-amber)/0.35)]" />
+                <span
+                  class="h-px min-w-6 flex-1 bg-[hsl(var(--tac-amber)/0.35)]"
+                />
               </div>
               <span
                 class="text-right font-mono text-[0.65rem] tabular-nums text-[hsl(var(--tac-amber))]"
@@ -210,7 +220,8 @@ const wideGrid =
               :match="row.match"
               :player="player"
               :rank-by-match="rankByMatch"
-          :season-best="seasonBest?.[String(row.match.id)] ?? null"
+              :faceit-by-match="faceitByMatch"
+              :season-best="seasonBest?.[String(row.match.id)] ?? null"
               :canonical-rating="
                 ratingByMatch?.get(String(row.match.id)) ?? null
               "

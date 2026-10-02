@@ -7058,7 +7058,6 @@
     "open_match": "Åbn kamp",
     "picks_label": "Picks",
     "full_page": "Fuld side",
-    "match_overview": "Kampoverblik",
     "no_multi_kill_rounds": "Ingen runder med {count} kills fundet.",
     "map_filter_active": "Map-filter aktivt",
     "scoreboard": "Scoreboard",
@@ -9226,7 +9225,7 @@
       "result": "Resultat",
       "map": "Map",
       "rating": "HLTV-rating",
-      "elo": "ELO"
+      "rank": "Rang"
     },
     "source": {
       "internal": "5Stack",
@@ -9243,7 +9242,8 @@
       "reset": "Ratings nulstillet til den nye sæson",
       "recap": "Sæson {number} sluttede på {final}, bedst {peak}, {wins}V–{losses}T"
     },
-    "season_best": "Bedste rating i {season}"
+    "season_best": "Bedste rating i {season}",
+    "to_next": "{points} til {tier}"
   },
   "breadcrumbs": {
     "dashboard": "dashboard"

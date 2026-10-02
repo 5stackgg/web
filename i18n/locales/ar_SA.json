@@ -7058,7 +7058,6 @@
     "open_match": "افتح المباراة",
     "picks_label": "الاختيارات",
     "full_page": "صفحة كاملة",
-    "match_overview": "نظرة عامة على المباراة",
     "no_multi_kill_rounds": "لا توجد جولات بـ {count} قتلات.",
     "map_filter_active": "فلتر الخرائط مفعّل",
     "scoreboard": "لوحة النتائج",
@@ -9226,7 +9225,7 @@
       "result": "النتيجة",
       "map": "خريطة",
       "rating": "تقييم HLTV",
-      "elo": "ELO"
+      "rank": "الرتبة"
     },
     "source": {
       "internal": "5Stack",
@@ -9243,7 +9242,8 @@
       "reset": "أُعيد ضبط التقييمات للموسم الجديد",
       "recap": "انتهى الموسم {number} عند {final}، الأفضل {peak}، {wins}ف–{losses}خ"
     },
-    "season_best": "أفضل تقييم في {season}"
+    "season_best": "أفضل تقييم في {season}",
+    "to_next": "{points} حتى {tier}"
   },
   "breadcrumbs": {
     "dashboard": "لوحة التحكم"

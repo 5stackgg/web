@@ -7058,7 +7058,6 @@
     "open_match": "Abrir partida",
     "picks_label": "Escolhas",
     "full_page": "Página completa",
-    "match_overview": "Visão Geral da Partida",
     "no_multi_kill_rounds": "Nenhuma rodada com {count} abates encontrada.",
     "map_filter_active": "Filtro de mapa ativo",
     "scoreboard": "Placar",
@@ -9226,7 +9225,7 @@
       "result": "Resultado",
       "map": "Mapa",
       "rating": "Avaliação",
-      "elo": "Elo"
+      "rank": "Rank"
     },
     "source": {
       "internal": "5Stack",
@@ -9243,7 +9242,8 @@
       "reset": "Ratings zerados para a nova temporada",
       "recap": "Temporada {number} terminou em {final}, melhor {peak}, {wins}V–{losses}D"
     },
-    "season_best": "Melhor rating da {season}"
+    "season_best": "Melhor rating da {season}",
+    "to_next": "{points} para {tier}"
   },
   "breadcrumbs": {
     "dashboard": "painel"

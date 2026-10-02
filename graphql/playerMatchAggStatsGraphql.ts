@@ -42,5 +42,13 @@ export const playerMatchSummaryQuery = gql`
       match_id
       hltv_rating
     }
+    player_faceit_rank_history(
+      where: { steam_id: { _eq: $steamId }, match_id: { _in: $matchIds } }
+    ) {
+      match_id
+      elo
+      previous_rank
+      skill_level
+    }
   }
 `;

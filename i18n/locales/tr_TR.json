@@ -7058,7 +7058,6 @@
     "open_match": "Maçı aç",
     "picks_label": "Pickler",
     "full_page": "Tam sayfa",
-    "match_overview": "Maç Özeti",
     "no_multi_kill_rounds": "{count} kill'lik raunt bulunamadı.",
     "map_filter_active": "Harita Filtresi Aktif",
     "scoreboard": "Skor Tablosu",
@@ -9226,7 +9225,7 @@
       "result": "Sonuç",
       "map": "Harita",
       "rating": "HLTV Puanı",
-      "elo": "Elo"
+      "rank": "Rütbe"
     },
     "source": {
       "internal": "5Stack",
@@ -9243,7 +9242,8 @@
       "reset": "Puanlar yeni sezon için sıfırlandı",
       "recap": "Sezon {number} {final} ile bitti, en iyi {peak}, {wins}G–{losses}M"
     },
-    "season_best": "{season} en iyi puanı"
+    "season_best": "{season} en iyi puanı",
+    "to_next": "{tier} için {points}"
   },
   "breadcrumbs": {
     "dashboard": "kontrol paneli"

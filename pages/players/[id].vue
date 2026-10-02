@@ -106,7 +106,12 @@ import PluginRemote from "~/components/plugins/PluginRemote.vue";
 import { usePluginsStore, type Plugin } from "~/stores/Plugins";
 import { useApolloClient } from "@vue/apollo-composable";
 import gql from "graphql-tag";
-import { $, order_by, e_tournament_status_enum } from "~/generated/zeus";
+import {
+  $,
+  order_by,
+  e_tournament_status_enum,
+  Selector,
+} from "~/generated/zeus";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { playerMatchSummaryQuery } from "~/graphql/playerMatchAggStatsGraphql";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
@@ -1214,6 +1219,9 @@ const playerMatches = ref<any[]>([]);
 const playerMatchesTotal = ref(0);
 const ratingByMatch = ref<Map<string, number>>(new Map());
 const statsByMatch = ref<Map<string, any>>(new Map());
+const faceitByMatch = ref<
+  Record<string, { elo: number; level: number | null; change: number }>
+>({});
 
 function scopeToPlayer(filters: Record<string, any>) {
   return {
@@ -1275,6 +1283,17 @@ const rankByMatch = computed(() => {
   return map;
 });
 
+// A match row only needs this player's side and the opponent's team — not each
+// member's identity, which via playerFields would run get_player_elo() for
+// all ten players of every match on the page.
+const playerMatchLineup = Selector("match_lineups")({
+  id: true,
+  name: true,
+  team_id: true,
+  team: { name: true, short_name: true, avatar_url: true },
+  lineup_players: [{}, { steam_id: true }],
+});
+
 const PLAYER_MATCHES_QUERY = generateQuery({
   matches: [
     {
@@ -1288,6 +1307,8 @@ const PLAYER_MATCHES_QUERY = generateQuery({
     },
     {
       ...simpleMatchFields,
+      lineup_1: playerMatchLineup,
+      lineup_2: playerMatchLineup,
       elo_changes: [
         {
           where: {
@@ -1347,6 +1368,7 @@ async function loadMatchEnrichment() {
   if (!playerIdRef.value || !ids.length) {
     statsByMatch.value = new Map();
     ratingByMatch.value = new Map();
+    faceitByMatch.value = {};
     return;
   }
   try {
@@ -1370,9 +1392,25 @@ async function loadMatchEnrichment() {
       }
     }
     ratingByMatch.value = ratings;
+
+    const faceit: Record<
+      string,
+      { elo: number; level: number | null; change: number }
+    > = {};
+    for (const row of (data as any)?.player_faceit_rank_history ?? []) {
+      if (row.match_id == null || row.elo == null) continue;
+      const elo = Number(row.elo);
+      faceit[String(row.match_id)] = {
+        elo,
+        level: row.skill_level ?? null,
+        change: row.previous_rank == null ? 0 : elo - Number(row.previous_rank),
+      };
+    }
+    faceitByMatch.value = faceit;
   } catch {
     statsByMatch.value = new Map();
     ratingByMatch.value = new Map();
+    faceitByMatch.value = {};
   }
 }
 
@@ -3496,6 +3534,7 @@ const playerHeroTeamChipDotClasses =
               :season-recaps="seasonBreakBounds"
               :season-best="seasonBestMatches"
               :rank-by-match="rankByMatch"
+              :faceit-by-match="faceitByMatch"
               :rating-by-match="ratingByMatch"
               :stats-by-match="statsByMatch"
             />

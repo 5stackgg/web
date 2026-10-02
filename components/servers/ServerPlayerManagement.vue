@@ -419,15 +419,25 @@ function stopPolling() {
   }
 }
 
+// An offline server has no RCON to answer, so there's nothing to poll.
 watch(
-  () => rosterResolved.value && !rosterLive.value,
-  (shouldPoll) => {
-    if (shouldPoll) {
+  [() => rosterResolved.value && !rosterLive.value, () => !!props.online],
+  ([fallback, online]) => {
+    if (!fallback) {
+      stopPolling();
+      return;
+    }
+
+    if (online) {
       seedFromLiveRoster();
       startPolling();
-    } else {
-      stopPolling();
+      return;
     }
+
+    stopPolling();
+    roster.value = [];
+    registeredPlayers.value = {};
+    listReady.value = true;
   },
 );
 
@@ -590,7 +600,7 @@ onBeforeUnmount(() => {
               <Button
                 variant="outline"
                 size="icon"
-                :disabled="loading"
+                :disabled="loading || !online"
                 :aria-label="$t('common.refresh')"
                 @click="fetchRoster"
               >

@@ -409,6 +409,49 @@ describe("ServerPlayerManagement live roster", () => {
     expect(rconPolls()).toBe(3);
   });
 
+  it("never polls RCON while the server is offline, then starts once it's back", async () => {
+    const rconPolls = mockRcon([
+      { steam_id: "76561198000000021", name: "rcon-only" },
+    ]);
+    state.roster = roster(
+      [session(1, "76561198000000011", "ghost", null)],
+      10 * MINUTE,
+    );
+
+    const wrapper = await mountCard({ online: false });
+
+    expect(rconPolls()).toBe(0);
+    expect(wrapper.text()).not.toContain("ghost");
+    expect(
+      wrapper.find('button[aria-label="Refresh"]').attributes("disabled"),
+    ).toBeDefined();
+
+    await wrapper.setProps({ online: true });
+    await flushPromises();
+
+    expect(rconPolls()).toBe(1);
+    expect(wrapper.text()).toContain("rcon-only");
+  });
+
+  it("stops polling RCON and clears the roster when the server goes offline", async () => {
+    useFakeClock();
+    const rconPolls = mockRcon([
+      { steam_id: "76561198000000021", name: "rcon-only" },
+    ]);
+
+    const wrapper = await mountCard({ online: true });
+    await advance(5 * 1000);
+
+    expect(rconPolls()).toBe(1);
+    expect(wrapper.text()).toContain("rcon-only");
+
+    await wrapper.setProps({ online: false });
+    await advance(60 * 1000);
+
+    expect(rconPolls()).toBe(1);
+    expect(wrapper.text()).not.toContain("rcon-only");
+  });
+
   it("starts polling RCON the moment the plugin stops reporting", async () => {
     const rconPolls = mockRcon([]);
     state.roster = roster([session(1, "76561198000000011", "nyx", null)]);

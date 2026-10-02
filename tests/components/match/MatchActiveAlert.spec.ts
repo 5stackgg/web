@@ -6,7 +6,8 @@ import { useAuthStore } from "~/stores/AuthStore";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 
 const steamId = "76561198000000001";
-const storageKey = `5stack:match-ready-modal:${steamId}`;
+const acknowledgedStorageKey =
+  `5stack:match-ready-modal:acknowledged:${steamId}`;
 
 let wrapper: Awaited<ReturnType<typeof mountSuspended>> | undefined;
 
@@ -131,14 +132,52 @@ describe("MatchActiveAlert memory", () => {
     expect((await openTab()).shouldShow).toBeFalsy();
   });
 
+  it("keeps the visible tab's visit when a hidden tab saves after it", async () => {
+    setMatch("WaitingForCheckIn");
+    const removeRoute = stubMatchPage();
+    const visible = await mountSuspended(MatchActiveAlert, {
+      route: "/matches/m-1",
+    });
+    const visibility = vi
+      .spyOn(document, "visibilityState", "get")
+      .mockReturnValue("hidden");
+    const hidden = await mountSuspended(MatchActiveAlert, {
+      route: "/matches/m-1",
+    });
+    await flushPromises();
+
+    const writes: Array<[string, string]> = [];
+    const setItem = localStorage.setItem.bind(localStorage);
+    vi.spyOn(localStorage, "setItem").mockImplementation((key, value) => {
+      writes.push([key, value]);
+      setItem(key, value);
+    });
+
+    setMatch("Veto");
+    await flushPromises();
+    for (const [key, newValue] of writes) {
+      window.dispatchEvent(new StorageEvent("storage", { key, newValue }));
+    }
+    await flushPromises();
+
+    hidden.unmount();
+    visible.unmount();
+    removeRoute();
+    visibility.mockReturnValue("visible");
+
+    expect((await openTab()).shouldShow).toBeFalsy();
+  });
+
   it("closes when another tab dismisses it", async () => {
     const tab = await openTab();
     expect(tab.shouldShow).toBe(true);
 
-    const value = JSON.stringify({ acknowledgedKey: "m-1:Live" });
-    localStorage.setItem(storageKey, value);
+    localStorage.setItem(acknowledgedStorageKey, "m-1:Live");
     window.dispatchEvent(
-      new StorageEvent("storage", { key: storageKey, newValue: value }),
+      new StorageEvent("storage", {
+        key: acknowledgedStorageKey,
+        newValue: "m-1:Live",
+      }),
     );
     await flushPromises();
 
@@ -175,7 +214,9 @@ describe("MatchActiveAlert memory", () => {
     vi.spyOn(localStorage, "setItem").mockImplementation(() => {
       throw new Error("blocked");
     });
-    expect(() => localStorage.getItem(storageKey)).toThrow("blocked");
+    expect(() => localStorage.getItem(acknowledgedStorageKey)).toThrow(
+      "blocked",
+    );
     const tab = await openTab();
     expect(tab.shouldShow).toBe(true);
 

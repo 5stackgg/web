@@ -108,9 +108,8 @@ export default {
     };
   },
   computed: {
-    storageKey(): string | undefined {
-      const steamId = useAuthStore().me?.steam_id;
-      return steamId ? `5stack:match-ready-modal:${steamId}` : undefined;
+    steamId(): string | undefined {
+      return useAuthStore().me?.steam_id;
     },
     match(): any {
       return useMatchLobbyStore().currentMatch;
@@ -177,24 +176,18 @@ export default {
     },
   },
   watch: {
-    storageKey: {
+    steamId: {
       immediate: true,
       handler() {
         this.restore();
       },
     },
-    matchKey(next, prev) {
-      if (next !== prev && this.acknowledgedKey !== next) {
-        this.acknowledgedKey = null;
-        this.persist();
-      }
-    },
     visitKey: {
       immediate: true,
       handler(key: string | null) {
-        if (key) {
+        if (key && key !== this.visitedKey) {
           this.visitedKey = key;
-          this.persist();
+          this.write("visited", key);
         }
       },
     },
@@ -209,43 +202,55 @@ export default {
   },
   methods: {
     acknowledge() {
-      this.acknowledgedKey = this.matchKey;
-      this.persist();
+      if (this.matchKey && this.acknowledgedKey !== this.matchKey) {
+        this.acknowledgedKey = this.matchKey;
+        this.write("acknowledged", this.matchKey);
+      }
       useMatchReadyModal().closeMatchReadyModal();
     },
-    restore() {
-      let stored: {
-        acknowledgedKey?: string | null;
-        visitedKey?: string | null;
-      } = {};
-      try {
-        if (this.storageKey) {
-          stored = JSON.parse(localStorage.getItem(this.storageKey) ?? "{}");
-        }
-      } catch {}
-      this.acknowledgedKey = stored?.acknowledgedKey ?? null;
-      this.visitedKey = stored?.visitedKey ?? null;
+    // One key per value, written only by the tab that changed it: a tab saving
+    // both would put back the other value as it last saw it, which another
+    // tab may have moved on since.
+    storageKey(kind: "acknowledged" | "visited"): string | undefined {
+      return this.steamId
+        ? `5stack:match-ready-modal:${kind}:${this.steamId}`
+        : undefined;
     },
-    persist() {
-      if (!this.storageKey) {
+    read(kind: "acknowledged" | "visited"): string | null {
+      const key = this.storageKey(kind);
+      if (!key) {
+        return null;
+      }
+      try {
+        return localStorage.getItem(key);
+      } catch {
+        return null;
+      }
+    },
+    write(kind: "acknowledged" | "visited", value: string) {
+      const key = this.storageKey(kind);
+      if (!key) {
         return;
       }
       try {
-        localStorage.setItem(
-          this.storageKey,
-          JSON.stringify({
-            acknowledgedKey: this.acknowledgedKey,
-            visitedKey: this.visitedKey,
-          }),
-        );
+        localStorage.setItem(key, value);
       } catch {}
+    },
+    restore() {
+      this.acknowledgedKey = this.read("acknowledged");
+      this.visitedKey = this.read("visited");
     },
     onVisibilityChange() {
       this.pageVisible = document.visibilityState === "visible";
     },
     onStorage(event: StorageEvent) {
-      if (event.key && event.key === this.storageKey) {
-        this.restore();
+      if (!event.key) {
+        return;
+      }
+      if (event.key === this.storageKey("acknowledged")) {
+        this.acknowledgedKey = event.newValue;
+      } else if (event.key === this.storageKey("visited")) {
+        this.visitedKey = event.newValue;
       }
     },
   },

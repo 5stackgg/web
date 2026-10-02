@@ -5757,7 +5757,11 @@
       "pop_out_tooltip": "افتح في نافذة منفصلة",
       "close_tooltip": "إغلاق المحادثة",
       "no_chats_title": "لا دردشات بعد",
-      "no_chats_description": "بمجرد انضمامك إلى دردشة، ستظهر هنا."
+      "no_chats_description": "بمجرد انضمامك إلى دردشة، ستظهر هنا.",
+      "tournament_ended": "انتهت · تُغلق خلال {time}",
+      "tournament_ended_days": "{count} ي",
+      "tournament_ended_hours": "{count} س",
+      "tournament_ended_tooltip": "انتهت هذه البطولة. تبقى دردشتها مفتوحة لمدة 7 أيام."
     },
     "recent_games": {
       "title": "المباريات الأخيرة",

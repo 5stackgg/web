@@ -85,7 +85,7 @@ const ROOMS = [
   { key: "chat_ttl_match_team", label: "ttl_match_team", fallback: 3600 },
   { key: "chat_ttl_matchmaking", label: "ttl_matchmaking", fallback: 3600 },
   { key: "chat_ttl_draft", label: "ttl_draft", fallback: 3600 },
-  { key: "chat_ttl_tournament", label: "ttl_tournament", fallback: 86400 },
+  { key: "chat_ttl_tournament", label: "ttl_tournament", fallback: 604800 },
   { key: "chat_ttl_organizers", label: "ttl_organizers", fallback: 86400 },
 ];
 

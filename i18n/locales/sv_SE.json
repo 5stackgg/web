@@ -5757,7 +5757,11 @@
       "pop_out_tooltip": "Öppna i eget fönster",
       "close_tooltip": "Stäng konversation",
       "no_chats_title": "Inga chattar än",
-      "no_chats_description": "När du går med i en chatt visas den här."
+      "no_chats_description": "När du går med i en chatt visas den här.",
+      "tournament_ended": "Avslutad · stänger om {time}",
+      "tournament_ended_days": "{count} d",
+      "tournament_ended_hours": "{count} tim",
+      "tournament_ended_tooltip": "Den här turneringen är avslutad. Dess chatt är öppen i 7 dagar."
     },
     "recent_games": {
       "title": "Senaste matcher",

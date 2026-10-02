@@ -5757,7 +5757,11 @@
       "pop_out_tooltip": "Åbn i nyt vindue",
       "close_tooltip": "Luk samtale",
       "no_chats_title": "Ingen chats endnu",
-      "no_chats_description": "Når du joiner en chat, vises den her."
+      "no_chats_description": "Når du joiner en chat, vises den her.",
+      "tournament_ended": "Afsluttet · lukker om {time}",
+      "tournament_ended_days": "{count} d",
+      "tournament_ended_hours": "{count} t",
+      "tournament_ended_tooltip": "Denne turnering er afsluttet. Dens chat er åben i 7 dage."
     },
     "recent_games": {
       "title": "Seneste kampe",

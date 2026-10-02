@@ -5757,7 +5757,11 @@
       "pop_out_tooltip": "Открыть в отдельном окне",
       "close_tooltip": "Закрыть переписку",
       "no_chats_title": "Пока нет чатов",
-      "no_chats_description": "Как только ты присоединишься к чату, он появится здесь."
+      "no_chats_description": "Как только ты присоединишься к чату, он появится здесь.",
+      "tournament_ended": "Завершён · закроется через {time}",
+      "tournament_ended_days": "{count} дн.",
+      "tournament_ended_hours": "{count} ч",
+      "tournament_ended_tooltip": "Этот турнир завершён. Его чат остаётся открытым 7 дней."
     },
     "recent_games": {
       "title": "Недавние игры",

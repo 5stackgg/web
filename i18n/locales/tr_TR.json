@@ -5757,7 +5757,11 @@
       "pop_out_tooltip": "Ayrı pencerede aç",
       "close_tooltip": "Konuşmayı kapat",
       "no_chats_title": "Henüz sohbet yok",
-      "no_chats_description": "Bir sohbete katıldığında burada görünecek."
+      "no_chats_description": "Bir sohbete katıldığında burada görünecek.",
+      "tournament_ended": "Bitti · {time} içinde kapanıyor",
+      "tournament_ended_days": "{count} g",
+      "tournament_ended_hours": "{count} sa",
+      "tournament_ended_tooltip": "Bu turnuva sona erdi. Sohbeti 7 gün boyunca açık kalır."
     },
     "recent_games": {
       "title": "Son maçlar",

@@ -14,6 +14,7 @@ import {
 import { useRouter } from "#app";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
 import ChatParticipants from "~/components/chat/ChatParticipants.vue";
+import TournamentChatEndedStamp from "~/components/chat/TournamentChatEndedStamp.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import AnimatedStat from "~/components/AnimatedStat.vue";
 import { useChatTabs, type ChatTab } from "~/composables/useChatTabs";
@@ -91,6 +92,18 @@ const firstDirectTabId = computed(() => {
 const activeTab = computed<ChatTab | null>(() => {
   if (!activeChatId.value) return null;
   return orderedTabs.value.find((t) => t.id === activeChatId.value) || null;
+});
+
+const activeTournamentFinishedAt = computed<string | null>(() => {
+  const tab = activeTab.value;
+  if (tab?.type !== "tournament") {
+    return null;
+  }
+  return (
+    (matchLobbyStore.chatTournaments as any[]).find(
+      (tournament) => tournament.id === tab.lobbyId,
+    )?.finished_at ?? null
+  );
 });
 
 const activeParticipantsCount = computed(() => {
@@ -800,8 +813,17 @@ function handlePopOut() {
         >
           <div class="min-w-0 flex items-center gap-3">
             <div class="min-w-0">
-              <div class="text-xs font-semibold text-foreground truncate">
-                {{ activeTab?.label || $t("layouts.chat_panel.default_title") }}
+              <div class="flex min-w-0 items-center gap-2">
+                <div class="text-xs font-semibold text-foreground truncate">
+                  {{
+                    activeTab?.label || $t("layouts.chat_panel.default_title")
+                  }}
+                </div>
+                <TournamentChatEndedStamp
+                  v-if="activeTournamentFinishedAt"
+                  :key="activeTab?.id"
+                  :finished-at="activeTournamentFinishedAt"
+                />
               </div>
               <div
                 class="flex items-center gap-2 text-[10px] text-muted-foreground truncate"

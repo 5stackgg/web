@@ -3769,6 +3769,17 @@
           "default": "Standard",
           "on": "An",
           "off": "Aus",
+          "configure": "Für Diesen Server Konfigurieren",
+          "customized": "Für diesen Server angepasst",
+          "config": {
+            "title": "{plugin} auf Diesem Server",
+            "description": "Über den Einstellungen der Plugin-Seite, nur für diesen Server. Wird mit den übrigen Servereinstellungen gespeichert, mit einem Neustart.",
+            "using_inherited": "Dieser Server nutzt die Datei von der Plugin-Seite.",
+            "using_shipped": "Dieser Server nutzt die Datei, die mit dem Plugin ausgeliefert wird.",
+            "remove_override": "Serveranpassung Entfernen",
+            "apply": "Übernehmen",
+            "advanced_hint": "Konsolenvariablen nur für diesen Server, ausgeführt nach denen der Plugin-Seite und des Spielmodus."
+          },
           "status_loads": "Lädt",
           "status_off": "Nicht geladen",
           "loads_by_default": "Lädt hier standardmäßig",
@@ -3824,6 +3835,7 @@
             "plugin_default": "{plugin}: Standard",
             "plugin_on": "{plugin}: an",
             "plugin_off": "{plugin}: aus",
+            "plugin_config": "{plugin}: Einstellungen",
             "restricted": "Eingeschränkt",
             "opened": "Offen für alle",
             "min_role": "Mindestrolle geändert",
@@ -4370,6 +4382,7 @@
       "settings": {
         "not_reported": "Beschreibungen und Standardwerte erscheinen, sobald ein Server mit diesem Plugin online ist.",
         "default": "Standard: {value}",
+        "inherited": "Alle Server: {value}",
         "reset": "Standard verwenden",
         "other_lines": "Weitere CVars in dieser Konfiguration: {count}. Bearbeite sie unter Erweitert."
       },

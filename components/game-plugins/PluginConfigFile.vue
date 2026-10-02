@@ -6,7 +6,11 @@ import { Button } from "~/components/ui/button";
 import { Textarea } from "~/components/ui/textarea";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import SchemaField from "~/components/game-plugins/SchemaField.vue";
-import { schemaProblems, type JsonSchema } from "~/utilities/pluginConfig";
+import {
+  cloneConfig,
+  schemaProblems,
+  type JsonSchema,
+} from "~/utilities/pluginConfig";
 
 // null means the plugin reads the file it ships with. A value is the copy the
 // panel writes to every server that loads the plugin.
@@ -17,6 +21,9 @@ const props = defineProps<{
   path: string;
   repoUrl: string | null;
   canOpenShipped: boolean;
+  // Wording for the layer this edits; the plugin page's by default.
+  usingText?: string;
+  resetText?: string;
 }>();
 
 const emit = defineEmits<{
@@ -77,7 +84,7 @@ watch(
 function customize() {
   emit(
     "update:modelValue",
-    structuredClone(
+    cloneConfig(
       props.defaultConfig ?? (props.schema?.type === "array" ? [] : {}),
     ),
   );
@@ -105,50 +112,39 @@ function setJson(value: string | number) {
 
 <template>
   <div class="space-y-4">
-    <div class="flex flex-wrap items-start justify-between gap-3">
-      <div class="min-w-0 space-y-0.5">
-        <p class="text-sm font-medium">
-          {{ props.schema?.title ?? $t("pages.plugins.config_file.title") }}
-        </p>
-        <p
-          v-if="props.schema?.description"
-          class="text-xs text-muted-foreground"
-        >
-          {{ props.schema.description }}
-        </p>
-        <p class="break-all font-mono text-[0.7rem] text-muted-foreground/70">
-          {{ props.path }}
-        </p>
-      </div>
-
-      <div class="flex shrink-0 flex-wrap items-center gap-1.5">
+    <div class="min-w-0 space-y-1">
+      <p class="text-sm font-medium">
+        {{ props.schema?.title ?? $t("pages.plugins.config_file.title") }}
+      </p>
+      <p v-if="props.schema?.description" class="text-xs text-muted-foreground">
+        {{ props.schema.description }}
+      </p>
+      <!-- Where the file lands, and where the plugin's own copy lives: small
+           links on the path itself rather than a row of buttons above the
+           editor. -->
+      <div
+        class="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[0.7rem] text-muted-foreground/70"
+      >
+        <span class="min-w-0 break-all">{{ props.path }}</span>
         <a
           v-if="props.repoUrl"
           :href="props.repoUrl"
           target="_blank"
           rel="noopener noreferrer"
+          class="inline-flex shrink-0 items-center gap-1 font-sans text-xs text-muted-foreground underline-offset-4 transition-colors hover:text-[hsl(var(--tac-amber))] hover:underline motion-reduce:transition-none"
         >
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            class="gap-1.5 [&_svg]:size-3.5"
-          >
-            <ExternalLink />
-            {{ $t("pages.plugins.config_file.view_repo") }}
-          </Button>
+          {{ $t("pages.plugins.config_file.view_repo") }}
+          <ExternalLink class="h-3 w-3" />
         </a>
-        <Button
+        <button
           v-if="props.canOpenShipped"
           type="button"
-          variant="outline"
-          size="sm"
-          class="gap-1.5 [&_svg]:size-3.5"
+          class="inline-flex shrink-0 items-center gap-1 font-sans text-xs text-muted-foreground underline-offset-4 transition-colors hover:text-[hsl(var(--tac-amber))] hover:underline motion-reduce:transition-none"
           @click="emit('open-shipped')"
         >
-          <FolderOpen />
           {{ $t("pages.plugins.config_file.open_node") }}
-        </Button>
+          <FolderOpen class="h-3 w-3" />
+        </button>
       </div>
     </div>
 
@@ -157,7 +153,7 @@ function setJson(value: string | number) {
       class="space-y-3 rounded-md border border-dashed border-border/60 p-4 text-center"
     >
       <p class="text-sm text-muted-foreground">
-        {{ $t("pages.plugins.config_file.using_shipped") }}
+        {{ props.usingText ?? $t("pages.plugins.config_file.using_shipped") }}
       </p>
       <Button type="button" variant="tactical" size="sm" @click="customize">
         {{ $t("pages.plugins.config_file.customize") }}
@@ -179,7 +175,7 @@ function setJson(value: string | number) {
           class="ml-auto"
           @click="useShipped"
         >
-          {{ $t("pages.plugins.config_file.use_shipped") }}
+          {{ props.resetText ?? $t("pages.plugins.config_file.use_shipped") }}
         </Button>
       </div>
 

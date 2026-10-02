@@ -3769,6 +3769,17 @@
           "default": "默认",
           "on": "开启",
           "off": "关闭",
+          "configure": "为此服务器配置",
+          "customized": "已为此服务器自定义",
+          "config": {
+            "title": "此服务器上的{plugin}",
+            "description": "叠加在插件页面的设置之上，仅用于此服务器。与此服务器的其他设置一起保存，只重启一次。",
+            "using_inherited": "此服务器使用插件页面设置的文件。",
+            "using_shipped": "此服务器使用插件自带的文件。",
+            "remove_override": "移除服务器覆盖",
+            "apply": "应用",
+            "advanced_hint": "仅用于此服务器的控制台变量，在插件页面和游戏模式之后执行。"
+          },
           "status_loads": "加载",
           "status_off": "未加载",
           "loads_by_default": "默认在此加载",
@@ -3824,6 +3835,7 @@
             "plugin_default": "{plugin}：默认",
             "plugin_on": "{plugin}：开启",
             "plugin_off": "{plugin}：关闭",
+            "plugin_config": "{plugin}：设置",
             "restricted": "受限",
             "opened": "对所有人开放",
             "min_role": "最低角色已更改",
@@ -4370,6 +4382,7 @@
       "settings": {
         "not_reported": "运行此插件的服务器上线后，会显示说明和默认值。",
         "default": "默认：{value}",
+        "inherited": "所有服务器：{value}",
         "reset": "使用默认值",
         "other_lines": "此配置中的其他 cvar：{count} 个。请在高级中编辑。"
       },

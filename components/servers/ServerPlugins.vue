@@ -3,7 +3,7 @@ import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useQuery } from "@vue/apollo-composable";
 import gql from "graphql-tag";
-import { Lock } from "lucide-vue-next";
+import { Lock, SlidersHorizontal } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import {
   Select,
@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
+import PluginConfigPanel from "~/components/game-plugins/PluginConfigPanel.vue";
 
 type Choice = "default" | "on" | "off";
 
@@ -73,6 +74,124 @@ const { result, refetch } = useQuery(
   { fetchPolicy: "cache-and-network" },
 );
 
+// Apart from QUERY so the switches above still work against an api whose
+// metadata has not caught up with these columns.
+const CONFIG_QUERY = gql`
+  query ServerPluginConfigs($serverId: uuid!) {
+    servers_by_pk(id: $serverId) {
+      id
+      plugin_configs {
+        plugin_slug
+        cfg
+        config
+      }
+    }
+    game_plugin_installs(where: { enabled: { _eq: true } }) {
+      plugin_slug
+      cfg
+      config
+      plugin {
+        cvars
+        config_path
+      }
+    }
+  }
+`;
+
+const { result: configResult, refetch: refetchConfigs } = useQuery(
+  CONFIG_QUERY,
+  () => ({ serverId: props.serverId }),
+  { fetchPolicy: "no-cache", context: { optional: true } },
+);
+
+type PluginConfig = { cfg: string; config: unknown };
+
+const configs = ref<Record<string, PluginConfig>>({});
+const savedConfigs = ref<Record<string, PluginConfig>>({});
+const configuring = ref<string | null>(null);
+
+const shared = computed<Record<string, Record<string, any>>>(() =>
+  Object.fromEntries(
+    ((configResult.value as any)?.game_plugin_installs ?? []).map(
+      (install: Record<string, any>) => [install.plugin_slug, install],
+    ),
+  ),
+);
+
+function configurable(slug: string): boolean {
+  const plugin = shared.value[slug]?.plugin;
+
+  return (plugin?.cvars ?? []).length > 0 || !!plugin?.config_path;
+}
+
+const anyConfigurable = computed(() =>
+  installs.value.some((install) => configurable(install.plugin_slug)),
+);
+
+function configFor(slug: string): PluginConfig {
+  return configs.value[slug] ?? { cfg: "", config: null };
+}
+
+function customized(slug: string): boolean {
+  const config = configFor(slug);
+
+  return config.cfg.trim() !== "" || config.config !== null;
+}
+
+function sameConfig(a: PluginConfig, b: PluginConfig): boolean {
+  return (
+    a.cfg === b.cfg && JSON.stringify(a.config) === JSON.stringify(b.config)
+  );
+}
+
+const configChanges = computed(() =>
+  Object.keys({ ...configs.value, ...savedConfigs.value }).filter(
+    (slug) =>
+      !sameConfig(
+        configFor(slug),
+        savedConfigs.value[slug] ?? { cfg: "", config: null },
+      ),
+  ),
+);
+
+function resetConfigs() {
+  savedConfigs.value = Object.fromEntries(
+    ((configResult.value as any)?.servers_by_pk?.plugin_configs ?? []).map(
+      (row: Record<string, any>) => [
+        row.plugin_slug,
+        { cfg: row.cfg ?? "", config: row.config ?? null },
+      ],
+    ),
+  );
+  configs.value = { ...savedConfigs.value };
+}
+
+watch(
+  configResult,
+  () => {
+    if (!configChanges.value.length) {
+      resetConfigs();
+    }
+  },
+  { immediate: true },
+);
+
+function applyConfig(slug: string, value: PluginConfig) {
+  configs.value = { ...configs.value, [slug]: value };
+}
+
+function configPayload() {
+  if (!configChanges.value.length) {
+    return null;
+  }
+
+  return configChanges.value.map((slug) => ({
+    slug,
+    cfg: configFor(slug).cfg.trim() ? configFor(slug).cfg : null,
+    config: configFor(slug).config,
+  }));
+}
+
 const installs = computed<Array<Install>>(
   () => (result.value as any)?.game_plugin_installs ?? [],
 );
@@ -103,8 +222,8 @@ function savedChoiceFor(slug: string): Choice {
   return savedChoices.value[slug] ?? "default";
 }
 
-const changes = computed<Array<{ text: string; restart: boolean }>>(() =>
-  installs.value
+const changes = computed<Array<{ text: string; restart: boolean }>>(() => [
+  ...installs.value
     .filter(
       (install) =>
         choiceFor(install.plugin_slug) !== savedChoiceFor(install.plugin_slug),
@@ -116,7 +235,15 @@ const changes = computed<Array<{ text: string; restart: boolean }>>(() =>
       ),
       restart: true,
     })),
-);
+  ...configChanges.value.map((slug) => ({
+    text: t("pages.dedicated_servers.detail.settings.changes.plugin_config", {
+      plugin:
+        installs.value.find((install) => install.plugin_slug === slug)?.plugin
+          ?.name ?? slug,
+    }),
+    restart: true,
+  })),
+]);
 
 function reset() {
   const overrides = (result.value as any)?.servers_by_pk?.plugin_overrides;
@@ -130,6 +257,7 @@ function reset() {
     ),
   );
   choices.value = { ...savedChoices.value };
+  resetConfigs();
 }
 
 watch(
@@ -249,11 +377,12 @@ function payload() {
 
 async function saved() {
   savedChoices.value = { ...choices.value };
+  savedConfigs.value = { ...configs.value };
 
-  await refetch();
+  await Promise.all([refetch(), refetchConfigs()]);
 }
 
-defineExpose({ changes, payload, reset, saved });
+defineExpose({ changes, payload, configPayload, reset, saved });
 </script>
 
 <template>
@@ -292,42 +421,75 @@ defineExpose({ changes, payload, reset, saved });
           </p>
         </div>
 
-        <span
-          v-if="modePlugins.has(install.plugin_slug)"
-          class="inline-flex shrink-0 items-center gap-1.5 text-xs text-muted-foreground"
-        >
-          <Lock class="h-3 w-3" />
-          {{
-            $t("pages.dedicated_servers.detail.plugins.from_mode", {
-              mode: gameMode?.name,
-            })
-          }}
-        </span>
-        <Select
-          v-else
-          :model-value="choiceFor(install.plugin_slug)"
-          @update:model-value="
-            (choice) => setChoice(install.plugin_slug, choice as Choice)
-          "
-        >
-          <SelectTrigger
-            class="h-8 w-32 shrink-0"
-            :aria-label="install.plugin?.name ?? install.plugin_slug"
+        <div class="flex shrink-0 items-center gap-1.5">
+          <span
+            v-if="modePlugins.has(install.plugin_slug)"
+            class="inline-flex h-8 w-32 shrink-0 items-center gap-1.5 px-3 text-xs text-muted-foreground"
+            :title="
+              $t('pages.dedicated_servers.detail.plugins.from_mode', {
+                mode: gameMode?.name,
+              })
+            "
           >
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="default">
-              {{ $t("pages.dedicated_servers.detail.plugins.default") }}
-            </SelectItem>
-            <SelectItem value="on">
-              {{ $t("pages.dedicated_servers.detail.plugins.on") }}
-            </SelectItem>
-            <SelectItem value="off">
-              {{ $t("pages.dedicated_servers.detail.plugins.off") }}
-            </SelectItem>
-          </SelectContent>
-        </Select>
+            <Lock class="h-3 w-3 shrink-0" />
+            <span class="truncate">
+              {{
+                $t("pages.dedicated_servers.detail.plugins.from_mode", {
+                  mode: gameMode?.name,
+                })
+              }}
+            </span>
+          </span>
+          <Select
+            v-else
+            :model-value="choiceFor(install.plugin_slug)"
+            @update:model-value="
+              (choice) => setChoice(install.plugin_slug, choice as Choice)
+            "
+          >
+            <SelectTrigger
+              class="h-8 w-32 shrink-0"
+              :aria-label="install.plugin?.name ?? install.plugin_slug"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="default">
+                {{ $t("pages.dedicated_servers.detail.plugins.default") }}
+              </SelectItem>
+              <SelectItem value="on">
+                {{ $t("pages.dedicated_servers.detail.plugins.on") }}
+              </SelectItem>
+              <SelectItem value="off">
+                {{ $t("pages.dedicated_servers.detail.plugins.off") }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+          <!-- Last and always the same width, so the selects and these line
+               up down the list whichever rows have settings. -->
+          <Button
+            v-if="configurable(install.plugin_slug)"
+            type="button"
+            variant="ghost"
+            size="icon"
+            class="relative h-8 w-8 shrink-0 text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
+            :title="$t('pages.dedicated_servers.detail.plugins.configure')"
+            :aria-label="$t('pages.dedicated_servers.detail.plugins.configure')"
+            @click="configuring = install.plugin_slug"
+          >
+            <SlidersHorizontal />
+            <span
+              v-if="customized(install.plugin_slug)"
+              class="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-[hsl(var(--tac-amber))]"
+              :title="$t('pages.dedicated_servers.detail.plugins.customized')"
+            />
+          </Button>
+          <span
+            v-else-if="anyConfigurable"
+            class="h-8 w-8 shrink-0"
+            aria-hidden="true"
+          />
+        </div>
       </li>
     </ul>
     <div
@@ -341,5 +503,15 @@ defineExpose({ changes, payload, reset, saved });
         </NuxtLink>
       </Button>
     </div>
+    <PluginConfigPanel
+      :open="!!configuring"
+      :slug="configuring ?? ''"
+      :cfg="configFor(configuring ?? '').cfg"
+      :config="configFor(configuring ?? '').config"
+      :inherited-cfg="shared[configuring ?? '']?.cfg ?? ''"
+      :inherited-config="shared[configuring ?? '']?.config ?? null"
+      @update:open="(open) => !open && (configuring = null)"
+      @apply="(value) => configuring && applyConfig(configuring, value)"
+    />
   </SettingsSection>
 </template>

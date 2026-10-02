@@ -100,3 +100,90 @@ describe("ServerPlugins", () => {
     expect(wrapper.find("li button").exists()).toBe(false);
   });
 });
+
+describe("ServerPlugins per-server plugin settings", () => {
+  const configurable = (slug: string, extra: Record<string, unknown> = {}) =>
+    install(slug, {
+      cfg: "dm_replenish_health 10",
+      config: null,
+      plugin: {
+        name: "Deathmatch",
+        map_rotation: null,
+        cvars: ["dm_replenish_health"],
+        config_path: "addons/swiftlys2/configs/plugins/Deathmatch/modes.json",
+      },
+      ...extra,
+    });
+
+  it("offers settings only for a plugin that has some", async () => {
+    state.data = {
+      servers_by_pk: server({ plugin_configs: [] }),
+      game_plugin_installs: [configurable("deathmatch"), install("csroll")],
+    };
+
+    const wrapper = await mountCard();
+    const configure = wrapper.findAll(
+      'button[aria-label="Configure for This Server"]',
+    );
+
+    expect(configure).toHaveLength(1);
+  });
+
+  it("marks a plugin this server has its own settings for", async () => {
+    state.data = {
+      servers_by_pk: server({
+        plugin_configs: [
+          {
+            plugin_slug: "deathmatch",
+            cfg: "dm_replenish_health 50",
+            config: null,
+          },
+        ],
+      }),
+      game_plugin_installs: [configurable("deathmatch")],
+    };
+
+    const wrapper = await mountCard();
+
+    expect(wrapper.find('[title="Customized for this server"]').exists()).toBe(
+      true,
+    );
+    expect((wrapper.vm as any).configPayload()).toBeNull();
+  });
+
+  // Staged, not saved: the server's settings save together with one restart.
+  it("stages a plugin's settings until the server's settings are saved", async () => {
+    state.data = {
+      servers_by_pk: server({ plugin_configs: [] }),
+      game_plugin_installs: [configurable("deathmatch")],
+    };
+
+    const wrapper = await mountCard();
+    await wrapper
+      .find('button[aria-label="Configure for This Server"]')
+      .trigger("click");
+
+    const { default: PluginConfigPanel } =
+      await import("~/components/game-plugins/PluginConfigPanel.vue");
+    wrapper.findComponent(PluginConfigPanel).vm.$emit("apply", {
+      cfg: "dm_replenish_health 50",
+      config: [{ name: "Pistols", weapons: ["deagle"], duration: 60 }],
+    });
+    await wrapper.vm.$nextTick();
+
+    const vm = wrapper.vm as any;
+    expect(vm.changes).toEqual([
+      { text: "Deathmatch: settings", restart: true },
+    ]);
+    expect(vm.configPayload()).toEqual([
+      {
+        slug: "deathmatch",
+        cfg: "dm_replenish_health 50",
+        config: [{ name: "Pistols", weapons: ["deagle"], duration: 60 }],
+      },
+    ]);
+
+    vm.reset();
+    expect(vm.configPayload()).toBeNull();
+  });
+});

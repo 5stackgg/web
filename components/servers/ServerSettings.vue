@@ -28,6 +28,7 @@ type SettingsPane = {
   payload: () => unknown;
   reset: () => void;
   saved: () => Promise<void>;
+  configPayload?: () => unknown;
 };
 
 const props = withDefaults(
@@ -68,6 +69,28 @@ const SAVE = gql`
       server_id: $serverId
       map_rotation: $mapRotation
       plugins: $plugins
+      access: $access
+    ) {
+      success
+    }
+  }
+`;
+
+// Only sent when a plugin's settings changed: naming ServerPluginConfigInput
+// in every save would fail them all against an api that predates it.
+const SAVE_WITH_PLUGIN_CONFIGS = gql`
+  mutation SetServerSettingsWithPluginConfigs(
+    $serverId: uuid!
+    $mapRotation: ServerMapRotationInput
+    $plugins: [ServerPluginInput!]
+    $pluginConfigs: [ServerPluginConfigInput!]
+    $access: ServerAccessInput
+  ) {
+    setServerSettings(
+      server_id: $serverId
+      map_rotation: $mapRotation
+      plugins: $plugins
+      plugin_configs: $pluginConfigs
       access: $access
     ) {
       success
@@ -213,13 +236,16 @@ async function save() {
   const restarting = restarts.value;
 
   try {
+    const pluginConfigs = plugins.value?.configPayload?.() ?? null;
+
     await nuxtApp.$apollo.defaultClient.mutate({
-      mutation: SAVE,
+      mutation: pluginConfigs ? SAVE_WITH_PLUGIN_CONFIGS : SAVE,
       variables: {
         serverId: props.server.id,
         mapRotation: dirtyPayload(rotation.value),
         plugins: dirtyPayload(plugins.value),
         access: dirtyPayload(access.value),
+        ...(pluginConfigs ? { pluginConfigs } : {}),
       },
     });
 

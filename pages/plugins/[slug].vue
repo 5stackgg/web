@@ -42,13 +42,12 @@ import {
   Pencil,
 } from "lucide-vue-next";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "~/components/ui/dialog";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "~/components/ui/sheet";
 import {
   Tooltip,
   TooltipContent,
@@ -829,25 +828,29 @@ definePageMeta({
           </Card>
         </aside>
       </div>
-      <Dialog v-model:open="showCfgDialog">
-        <DialogContent class="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>
+      <Sheet v-model:open="showCfgDialog">
+        <SheetContent
+          side="right"
+          class="flex w-full flex-col gap-0 sm:max-w-2xl motion-reduce:animate-none"
+        >
+          <SheetHeader class="pr-8">
+            <SheetTitle>
               {{ $t("pages.plugins.config.title") }} &mdash; {{ plugin.name }}
-            </DialogTitle>
-            <DialogDescription>
+            </SheetTitle>
+            <SheetDescription>
               {{ $t("pages.plugins.config.hint") }}
-            </DialogDescription>
-          </DialogHeader>
+            </SheetDescription>
+          </SheetHeader>
 
           <AnimatedFilters
             v-if="cfgTabs.length > 1"
             v-model="cfgTab"
+            class="mt-5"
             square
             :options="cfgTabs"
           />
 
-          <div class="max-h-[60vh] min-h-0 overflow-y-auto pr-1">
+          <div class="-mx-6 mt-4 min-h-0 flex-1 overflow-y-auto px-6 pb-4">
             <div v-show="cfgTab === 'settings'" class="space-y-4">
               <PluginCvarForm
                 v-if="cvarRows.length > 0"
@@ -856,48 +859,11 @@ definePageMeta({
                 @update:model-value="setCfgFromForm"
               />
 
-              <Collapsible v-if="forcedCvars.length > 0">
-                <CollapsibleTrigger as-child>
-                  <button
-                    type="button"
-                    class="group flex w-full items-center justify-between gap-3 rounded-md border border-border/60 bg-muted/20 px-3 py-2 text-left transition-colors hover:bg-muted/40"
-                  >
-                    <span class="flex items-center gap-1.5 text-xs">
-                      <AlertTriangle
-                        v-if="forcedInCfg.length > 0"
-                        class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
-                      />
-                      {{
-                        $t("pages.plugins.forced.title", {
-                          count: forcedCvars.length,
-                        })
-                      }}
-                    </span>
-                    <ChevronDown
-                      class="h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180 motion-reduce:transition-none"
-                    />
-                  </button>
-                </CollapsibleTrigger>
-                <CollapsibleContent class="space-y-2 pt-2">
-                  <p class="text-xs text-muted-foreground">
-                    {{ $t("pages.plugins.forced.hint", { name: plugin.name }) }}
-                  </p>
-                  <div class="flex flex-wrap gap-1">
-                    <span
-                      v-for="cvar in forcedCvars"
-                      :key="cvar"
-                      class="rounded border px-1.5 py-0.5 font-mono text-[0.65rem]"
-                      :class="
-                        forcedInCfg.includes(cvar)
-                          ? 'border-[hsl(var(--tac-amber)/0.5)] text-[hsl(var(--tac-amber))]'
-                          : 'border-border/60 text-muted-foreground'
-                      "
-                    >
-                      {{ cvar }}
-                    </span>
-                  </div>
-                </CollapsibleContent>
-              </Collapsible>
+              <PluginForcedCvars
+                :forced="forcedCvars"
+                :cfg="pluginCfg"
+                :plugin-name="plugin.name"
+              />
             </div>
 
             <PluginConfigFile
@@ -916,8 +882,7 @@ definePageMeta({
 
             <div v-show="cfgTab === 'advanced'" class="space-y-2">
               <div
-                class="w-full overflow-hidden rounded-md border border-border/60"
-                style="height: 420px"
+                class="h-[min(60vh,32rem)] w-full overflow-hidden rounded-md border border-border/60"
               >
                 <div ref="cfgEditor" class="h-full w-full" />
               </div>
@@ -933,19 +898,20 @@ definePageMeta({
             </div>
           </div>
 
-          <DialogFooter class="gap-2 sm:justify-between">
+          <div
+            class="-mx-6 flex items-center gap-2 border-t border-border/60 px-6 pt-4"
+          >
             <Button
               v-if="cfgTab === 'advanced' && (plugin.cvars ?? []).length > 0"
               type="button"
               variant="ghost"
               size="sm"
-              class="sm:mr-auto"
               @click="insertCvarTemplate"
             >
               {{ $t("pages.plugins.config.insert_template") }}
             </Button>
 
-            <div class="flex items-center gap-2">
+            <div class="ml-auto flex items-center gap-2">
               <Button
                 type="button"
                 variant="outline"
@@ -967,9 +933,9 @@ definePageMeta({
                 {{ $t("common.save") }}
               </Button>
             </div>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </div>
+        </SheetContent>
+      </Sheet>
 
       <AlertDialog v-model:open="confirmRemove">
         <AlertDialogContent>
@@ -1014,7 +980,9 @@ import PluginLoadTargets from "~/components/game-plugins/PluginLoadTargets.vue";
 import type { PluginLoadTargets as LoadTargets } from "~/components/game-plugins/PluginLoadTargets.vue";
 import PluginCvarForm from "~/components/game-plugins/PluginCvarForm.vue";
 import PluginConfigFile from "~/components/game-plugins/PluginConfigFile.vue";
+import PluginForcedCvars from "~/components/game-plugins/PluginForcedCvars.vue";
 import {
+  cloneConfig,
   cvarsSetIn,
   repoFileUrl,
   type PluginCvar,
@@ -1068,6 +1036,7 @@ export default {
     PluginLoadTargets,
     PluginCvarForm,
     PluginConfigFile,
+    PluginForcedCvars,
   },
   data() {
     return {
@@ -1456,7 +1425,7 @@ export default {
       const stored = this.settings?.install_config ?? null;
 
       this.configBaseline = stored === null ? null : JSON.stringify(stored);
-      this.pluginConfig = stored === null ? null : structuredClone(stored);
+      this.pluginConfig = stored === null ? null : cloneConfig(stored);
       this.configDirty = false;
       this.configInvalid = false;
     },

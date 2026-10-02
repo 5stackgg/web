@@ -205,11 +205,17 @@ export function schemaProblems(
   return problems;
 }
 
+// Configs are plain JSON, and what a page holds is a reactive proxy of it,
+// which structuredClone refuses to copy.
+export function cloneConfig<T>(value: T): T {
+  return value === undefined ? value : JSON.parse(JSON.stringify(value));
+}
+
 // A blank entry for an array the form is adding to: each property's own
 // default where it has one, an empty value of the right shape where not.
 export function blankFor(schema: JsonSchema): unknown {
   if (schema.default !== undefined) {
-    return structuredClone(schema.default);
+    return cloneConfig(schema.default);
   }
 
   switch (schema.type) {

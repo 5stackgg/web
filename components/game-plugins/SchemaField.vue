@@ -227,8 +227,9 @@ function setLines(value: string | number) {
     <div class="flex items-center justify-between gap-3">
       <div class="space-y-0.5">
         <p v-if="props.label" class="text-sm font-medium">{{ props.label }}</p>
+        <!-- The top level's description already heads the panel. -->
         <p
-          v-if="props.schema.description"
+          v-if="props.schema.description && props.depth > 0"
           class="text-xs text-muted-foreground"
         >
           {{ props.schema.description }}

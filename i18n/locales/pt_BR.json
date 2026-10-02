@@ -3769,6 +3769,17 @@
           "default": "Padrão",
           "on": "Ligado",
           "off": "Desligado",
+          "configure": "Configurar para Este Servidor",
+          "customized": "Personalizado para este servidor",
+          "config": {
+            "title": "{plugin} Neste Servidor",
+            "description": "Sobre as configurações da página do plugin, só para este servidor. Salvo com o resto das configurações do servidor, com uma reinicialização.",
+            "using_inherited": "Este servidor usa o arquivo definido na página do plugin.",
+            "using_shipped": "Este servidor usa o arquivo que vem com o plugin.",
+            "remove_override": "Remover Personalização do Servidor",
+            "apply": "Aplicar",
+            "advanced_hint": "Variáveis de console só para este servidor, executadas depois das da página do plugin e do modo de jogo."
+          },
           "status_loads": "Carrega",
           "status_off": "Não carregado",
           "loads_by_default": "Carrega aqui por padrão",
@@ -3824,6 +3835,7 @@
             "plugin_default": "{plugin}: padrão",
             "plugin_on": "{plugin}: ligado",
             "plugin_off": "{plugin}: desligado",
+            "plugin_config": "{plugin}: configurações",
             "restricted": "Restrito",
             "opened": "Aberto a todos",
             "min_role": "Cargo mínimo alterado",
@@ -4370,6 +4382,7 @@
       "settings": {
         "not_reported": "As descrições e os valores padrão aparecem quando um servidor com este plugin fica online.",
         "default": "Padrão: {value}",
+        "inherited": "Todos os servidores: {value}",
         "reset": "Usar o padrão",
         "other_lines": "Outras cvars definidas nesta configuração: {count}. Edite-as em Avançado."
       },

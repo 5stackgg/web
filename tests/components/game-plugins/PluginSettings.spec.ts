@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { defineComponent, ref } from "vue";
+import { defineComponent, reactive, ref } from "vue";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import PluginCvarForm from "~/components/game-plugins/PluginCvarForm.vue";
 import SchemaField from "~/components/game-plugins/SchemaField.vue";
@@ -214,6 +214,39 @@ describe("PluginConfigFile", () => {
     ).toEqual(typed);
   });
 
+  // The page keeps the catalog row in reactive state, so the default arrives
+  // as a proxy, which structuredClone refuses: Customize did nothing at all.
+  it("customizes from a default the page holds reactively", async () => {
+    const wrapper = await mountSuspended(
+      defineComponent({
+        components: { PluginConfigFile },
+        setup() {
+          const value = ref<unknown>(null);
+          const settings = reactive({
+            config_default: [{ name: "Pistols", duration: 300 }],
+          });
+
+          return { value, settings, modes };
+        },
+        template: `<PluginConfigFile
+          v-model="value"
+          :schema="modes"
+          :default-config="settings.config_default"
+          path="modes.json"
+          :repo-url="null"
+          :can-open-shipped="false"
+        />`,
+      }),
+    );
+
+    const customize = wrapper
+      .findAll("button")
+      .find((button) => button.text() === "Customize");
+    await customize!.trigger("click");
+
+    expect(wrapper.vm.value).toEqual([{ name: "Pistols", duration: 300 }]);
+  });
+
   it("goes back to the plugin's own file", async () => {
     const wrapper = await mountSuspended(
       panel([{ name: "Rifles", duration: 60 }]),
@@ -225,5 +258,25 @@ describe("PluginConfigFile", () => {
     await back!.trigger("click");
 
     expect(wrapper.vm.value).toBeNull();
+  });
+});
+
+describe("PluginCvarForm over an inherited layer", () => {
+  // Editing one server's cvars: what the plugin page sets shows through until
+  // this server sets its own.
+  it("shows the plugin page's value where this layer sets nothing", async () => {
+    const wrapper = await mountSuspended(PluginCvarForm, {
+      props: {
+        cvars,
+        modelValue: "",
+        inherited: "dm_replenish_health 40\ninvsim_ws_enabled 1\n",
+      },
+    });
+
+    expect(wrapper.text()).toContain("All servers: 40");
+    expect(wrapper.find('input[placeholder="40"]').exists()).toBe(true);
+    expect(wrapper.find('[role="switch"]').attributes("data-state")).toBe(
+      "checked",
+    );
   });
 });

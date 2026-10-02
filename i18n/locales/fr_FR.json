@@ -3769,6 +3769,17 @@
           "default": "Par défaut",
           "on": "Activé",
           "off": "Désactivé",
+          "configure": "Configurer pour Ce Serveur",
+          "customized": "Personnalisé pour ce serveur",
+          "config": {
+            "title": "{plugin} sur Ce Serveur",
+            "description": "Par-dessus les paramètres de la page du plugin, pour ce serveur uniquement. Enregistré avec les autres paramètres du serveur, en un seul redémarrage.",
+            "using_inherited": "Ce serveur utilise le fichier défini sur la page du plugin.",
+            "using_shipped": "Ce serveur utilise le fichier fourni avec le plugin.",
+            "remove_override": "Retirer la Personnalisation du Serveur",
+            "apply": "Appliquer",
+            "advanced_hint": "Variables de console pour ce serveur uniquement, exécutées après celles de la page du plugin et du mode de jeu."
+          },
           "status_loads": "Chargé",
           "status_off": "Non chargé",
           "loads_by_default": "Chargé ici par défaut",
@@ -3824,6 +3835,7 @@
             "plugin_default": "{plugin} : par défaut",
             "plugin_on": "{plugin} : activé",
             "plugin_off": "{plugin} : désactivé",
+            "plugin_config": "{plugin} : paramètres",
             "restricted": "Restreint",
             "opened": "Ouvert à tous",
             "min_role": "Rôle minimum modifié",
@@ -4370,6 +4382,7 @@
       "settings": {
         "not_reported": "Les descriptions et valeurs par défaut apparaissent dès qu'un serveur exécutant ce plugin est en ligne.",
         "default": "Par défaut : {value}",
+        "inherited": "Tous les serveurs : {value}",
         "reset": "Utiliser la valeur par défaut",
         "other_lines": "Autres cvars définies dans cette configuration : {count}. Modifiez-les dans Avancé."
       },

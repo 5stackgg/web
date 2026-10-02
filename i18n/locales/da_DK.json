@@ -3769,6 +3769,17 @@
           "default": "Standard",
           "on": "Til",
           "off": "Fra",
+          "configure": "Konfigurer for Denne Server",
+          "customized": "Tilpasset til denne server",
+          "config": {
+            "title": "{plugin} på Denne Server",
+            "description": "Lagt oven på plugin-sidens indstillinger, kun for denne server. Gemmes med resten af serverens indstillinger med én genstart.",
+            "using_inherited": "Denne server bruger filen fra plugin-siden.",
+            "using_shipped": "Denne server bruger den fil, pluginet leveres med.",
+            "remove_override": "Fjern Servertilpasning",
+            "apply": "Anvend",
+            "advanced_hint": "Konsolvariabler kun for denne server, kørt efter plugin-sidens og spiltilstandens."
+          },
           "status_loads": "Indlæses",
           "status_off": "Ikke indlæst",
           "loads_by_default": "Indlæses her som standard",
@@ -3824,6 +3835,7 @@
             "plugin_default": "{plugin}: standard",
             "plugin_on": "{plugin}: til",
             "plugin_off": "{plugin}: fra",
+            "plugin_config": "{plugin}: indstillinger",
             "restricted": "Begrænset",
             "opened": "Åben for alle",
             "min_role": "Minimumsrolle ændret",
@@ -4370,6 +4382,7 @@
       "settings": {
         "not_reported": "Beskrivelser og standardværdier vises, når en server med dette plugin kommer online.",
         "default": "Standard: {value}",
+        "inherited": "Alle servere: {value}",
         "reset": "Brug standarden",
         "other_lines": "Andre cvars i denne konfiguration: {count}. Rediger dem under Avanceret."
       },

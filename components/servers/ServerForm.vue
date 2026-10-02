@@ -327,7 +327,7 @@ const showConnectPassword = ref(false);
                       v-for="gameMode in customModes"
                       :key="gameMode.id"
                       :value="gameMode.id"
-                      :disabled="!hasGameServerNode"
+                      :disabled="!runsOnNode"
                       class="relative flex w-full cursor-default select-none flex-col items-start rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
                     >
                       <span
@@ -355,12 +355,12 @@ const showConnectPassword = ref(false);
 
         <!-- A custom mode is plugins the panel installs onto the container it
              runs; a third-party dedicated server gives it nothing to install
-             into, so the modes stay locked until a node is attached. -->
+             into, so the modes stay locked unless it runs on a node. -->
         <Fold
           :open="
             serverKind === 'presets' &&
             customModes.length > 0 &&
-            !hasGameServerNode
+            !runsOnNode
           "
         >
           <Alert variant="warning">
@@ -731,6 +731,21 @@ export default {
             )
             .refine(
               (data) => {
+                if (!data.use_game_server_node || this.server) {
+                  return true;
+                }
+                return (
+                  !!data.game_server_node_id &&
+                  data.game_server_node_id !== "none"
+                );
+              },
+              {
+                message: this.$t("server.form.select_game_server_node"),
+                path: ["game_server_node_id"],
+              },
+            )
+            .refine(
+              (data) => {
                 if (this.server) {
                   return true;
                 }
@@ -796,11 +811,11 @@ export default {
         }
       },
     },
-    // Detaching the node (or never picking one) leaves a custom mode with
-    // nothing to install into; fall back to a preset rather than save a mode
-    // the server could not boot with.
-    hasGameServerNode(has: boolean) {
-      if (!has && this.holdsModeId) {
+    // Switching to a manual host leaves a custom mode with nothing to install
+    // into; fall back to a preset rather than save a mode the server could
+    // not boot with.
+    runsOnNode(runs: boolean) {
+      if (!runs && this.holdsModeId) {
         this.form.setFieldValue("type", this.valveModeTypes[0]);
       }
     },
@@ -896,14 +911,13 @@ export default {
     isEditingGameServerNode() {
       return !!(this.server && this.server.game_server_node_id);
     },
-    hasGameServerNode(): boolean {
-      if (this.isEditingGameServerNode) {
-        return true;
+    // True before a node is picked: the schema requires one on submit, and
+    // gating the modes on the pick greys them out in the meantime.
+    runsOnNode(): boolean {
+      if (this.server) {
+        return this.isEditingGameServerNode;
       }
-      const nodeId = this.form.values.game_server_node_id;
-      return (
-        !!this.form.values.use_game_server_node && !!nodeId && nodeId !== "none"
-      );
+      return !!this.form.values.use_game_server_node;
     },
     // Anything in `type` that is not a preset is a mode id. Whether the mode
     // is still one this server can run (enabled, this runtime, not csgo) is a

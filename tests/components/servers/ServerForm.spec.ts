@@ -21,6 +21,13 @@ const nodes = [
 const modes = [
   {
     id: "6426e1b6-1e09-4f51-95c0-8fd312dc0b82",
+    name: "Utility Practice",
+    description: null,
+    enabled: true,
+    supported_runtimes: ["swiftlys2"],
+  },
+  {
+    id: "09e31e82-308b-4193-b970-19c006a83ffc",
     name: "Retakes",
     description: null,
     enabled: true,
@@ -98,5 +105,49 @@ describe("ServerForm server type", () => {
     const form = (wrapper.vm as any).form;
     expect(form.values.type).toBe(modes[0].id);
     expect(form.values.use_game_server_node).toBe(true);
+  });
+
+  it("offers every custom mode before a node is picked", async () => {
+    await mount();
+
+    radio("kind-presets").click();
+    await flushPromises();
+
+    const trigger = Array.from(
+      document.body.querySelectorAll<HTMLButtonElement>(
+        'button[role="combobox"]',
+      ),
+    ).find((button) => button.textContent?.includes(modes[0].name))!;
+    trigger.dispatchEvent(
+      new PointerEvent("pointerdown", {
+        bubbles: true,
+        button: 0,
+        pointerType: "mouse",
+      }),
+    );
+    await flushPromises();
+
+    const options = Array.from(
+      document.body.querySelectorAll('[role="option"]'),
+    );
+    expect(options.map((option) => option.textContent?.trim())).toEqual(
+      modes.map((mode) => mode.name),
+    );
+    expect(options.filter((option) => option.hasAttribute("data-disabled")))
+      .toEqual([]);
+  });
+
+  it("requires a node before creating a server on one", async () => {
+    const wrapper = await mount();
+
+    radio("kind-presets").click();
+    const form = (wrapper.vm as any).form;
+    form.setFieldValue("label", "Community");
+    form.setFieldValue("rcon_password", "rcon");
+    await flushPromises();
+
+    const { valid, errors } = await form.validate();
+    expect(valid).toBe(false);
+    expect(errors.game_server_node_id).toBe("Select Game Server Node");
   });
 });

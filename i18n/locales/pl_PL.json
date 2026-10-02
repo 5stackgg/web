@@ -3031,10 +3031,7 @@
       },
       "matchmaking": {
         "title": "Ustawienia matchmakingu",
-        "average_latency": "Opóźnienie",
-        "preferred": "Preferowany",
         "max_acceptable_latency": "Maksymalne akceptowalne opóźnienie",
-        "max_latency_description": "Jeśli żaden region nie jest preferowany, matchmaking użyje tylko regionów z opóźnieniem poniżej tej wartości.",
         "show_match_ready_modal": {
           "title": "Powiadomienie o meczu i pokoju draftu",
           "description": "Pokaż powiadomienie, gdy twój mecz lub pokój draftu jest gotowy, z szybkim przejściem do niego. Po wyłączeniu nie zostaniesz przekierowany — dostęp uzyskasz z przycisku w górnym menu."
@@ -5723,7 +5720,6 @@
     "system_status": {
       "regions": "Regiony serwerów",
       "ping_by_region": "Ping według regionu",
-      "max_latency": "Maks. {ms} ms",
       "online_count": "{online}/{total} online",
       "partial": "Częściowo",
       "preferred": "Preferowany region",

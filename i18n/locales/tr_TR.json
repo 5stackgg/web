@@ -3031,10 +3031,7 @@
       },
       "matchmaking": {
         "title": "Eşleştirme Ayarları",
-        "average_latency": "Gecikme",
-        "preferred": "Tercih Edilen",
         "max_acceptable_latency": "Kabul Edilebilir Azami Gecikme",
-        "max_latency_description": "Tercih edilen bölge yoksa eşleştirme yalnızca bu değerin altında gecikmesi olan bölgeleri kullanır.",
         "show_match_ready_modal": {
           "title": "Maç ve Seçim Odası Bildirimi",
           "description": "Maçın veya seçim odan hazır olduğunda hızlı geçiş bağlantısıyla bir bildirim göster. Kapalıyken otomatik yönlendirilmezsin — üst menüdeki butondan erişebilirsin."
@@ -5723,7 +5720,6 @@
     "system_status": {
       "regions": "Sunucu bölgeleri",
       "ping_by_region": "Bölgeye göre ping",
-      "max_latency": "Maks. {ms} ms",
       "online_count": "{online}/{total} çevrimiçi",
       "partial": "Kısmi",
       "preferred": "Tercih edilen bölge",

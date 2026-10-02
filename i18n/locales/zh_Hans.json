@@ -3031,10 +3031,7 @@
       },
       "matchmaking": {
         "title": "匹配设置",
-        "average_latency": "延迟",
-        "preferred": "偏好",
         "max_acceptable_latency": "最大可接受延迟",
-        "max_latency_description": "如果没有偏好地区，匹配系统将仅使用延迟低于此值的地区。",
         "show_match_ready_modal": {
           "title": "比赛与选秀大厅弹窗",
           "description": "当您的比赛或选秀大厅准备就绪时显示弹窗，并提供快速跳转链接。禁用后，您不会被重定向——通过顶部导航栏中的按钮进入。"
@@ -5723,7 +5720,6 @@
     "system_status": {
       "regions": "服务器区域",
       "ping_by_region": "各区域延迟",
-      "max_latency": "上限 {ms} ms",
       "online_count": "{online}/{total} 在线",
       "partial": "部分可用",
       "preferred": "首选区域",

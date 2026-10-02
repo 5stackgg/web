@@ -590,6 +590,19 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     });
   }
 
+  // Regions a player can be matched into: node-backed, and a LAN region only
+  // when the probe says you are on that LAN.
+  function isMatchmakingRegion(region: {
+    value: string;
+    is_lan: boolean;
+    has_node: boolean;
+  }) {
+    return (
+      region.has_node &&
+      (!region.is_lan || !!getRegionlatencyResult(region.value)?.isLan)
+    );
+  }
+
   function getRegionProbeState(region: string) {
     return probeStates.value.get(region);
   }
@@ -738,6 +751,7 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     isRefreshing,
     getRegionlatencyResult,
     getRegionProbeState,
+    isMatchmakingRegion,
     togglePreferredRegion,
     updateMaxAcceptableLatency,
 

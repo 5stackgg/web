@@ -3031,10 +3031,7 @@
       },
       "matchmaking": {
         "title": "إعدادات Matchmaking",
-        "average_latency": "زمن الاستجابة",
-        "preferred": "مفضّلة",
         "max_acceptable_latency": "أقصى زمن استجابة مقبول",
-        "max_latency_description": "إذا لم تُحدَّد مناطق مفضّلة، سيستخدم Matchmaking المناطق التي يقل زمن استجابتها عن هذه القيمة فقط.",
         "show_match_ready_modal": {
           "title": "نافذة المباراة وغرفة اختيار اللاعبين",
           "description": "أظهر نافذة عند جاهزية مباراتك أو غرفة اختيار اللاعبين، مع رابط سريع للانتقال إليها. عند التعطيل لن يتم تحويلك تلقائيًا — استخدم الزر في الشريط العلوي بدلًا من ذلك."
@@ -5723,7 +5720,6 @@
     "system_status": {
       "regions": "مناطق الخوادم",
       "ping_by_region": "زمن الاستجابة حسب المنطقة",
-      "max_latency": "الحد الأقصى {ms} ms",
       "online_count": "{online}/{total} متصل",
       "partial": "جزئي",
       "preferred": "منطقة مفضلة",

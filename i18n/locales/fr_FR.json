@@ -3031,10 +3031,7 @@
       },
       "matchmaking": {
         "title": "Paramètres de matchmaking",
-        "average_latency": "Latence",
-        "preferred": "Préférée",
         "max_acceptable_latency": "Latence maximale acceptable",
-        "max_latency_description": "Si aucune région n'est préférée, le matchmaking n'utilisera que les régions dont la latence est inférieure à cette valeur.",
         "show_match_ready_modal": {
           "title": "Popup de match et de draft",
           "description": "Affiche une popup quand ton match ou ta salle de draft est prêt, avec un lien direct pour y aller. Si désactivé, tu ne seras pas redirigé — passe par le bouton dans la barre du haut."
@@ -5723,7 +5720,6 @@
     "system_status": {
       "regions": "Régions des serveurs",
       "ping_by_region": "Ping par région",
-      "max_latency": "Max {ms} ms",
       "online_count": "{online}/{total} en ligne",
       "partial": "Partiel",
       "preferred": "Région préférée",

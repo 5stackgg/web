@@ -3203,6 +3203,27 @@
         "end_date": "終了",
         "peak_lowest": "最高 / 最低",
         "peak": "最高",
+        "season_pace": {
+          "toggle": "{season} vs {previous}",
+          "all_time": "全期間",
+          "vs": "vs {season}",
+          "ahead": "{n}試合時点でリード | {n}試合時点でリード",
+          "behind": "{n}試合時点でビハインド | {n}試合時点でビハインド",
+          "level": "{n}試合時点で同点 | {n}試合時点で同点",
+          "ahead_final": "最終レートを上回っています",
+          "behind_final": "最終レートを下回っています",
+          "level_final": "最終レートと同じです",
+          "tooltip": "{season}は{n}試合時点で{then}でした。現在は{now}です。 | {season}は{n}試合時点で{then}でした。現在は{now}です。",
+          "tooltip_final": "{season}は{then}で終了しました。現在は{now}です。",
+          "none": "今シーズンはまだ試合がありません",
+          "peak": "{season}最高",
+          "peak_marker": "{season}最高 {elo}",
+          "start": "開始",
+          "match": "第{n}試合",
+          "finish": "{total}人中{rank}位で終了",
+          "finish_tooltip": "{season}最高 {peak}（{date}）。{final}で終了、ランキング{total}人中{rank}位。",
+          "peak_tooltip": "{season}最高 {peak}（{date}）。{final}で終了。"
+        },
         "no_matches_in_window": "この期間に試合はありません",
         "no_matches_in_window_period": "この期間に試合はありません。",
         "expand_to_all_time": "全期間に広げる",
@@ -3301,7 +3322,10 @@
           "label": "比較相手",
           "select_label": "比較するプレイヤー",
           "description": "全スタッツタブにこのプレイヤーの数値を重ねて表示します。",
-          "vs": "vs"
+          "vs": "vs",
+          "season_label": "またはシーズン",
+          "sample": "試合数: {matches} vs {compare}（{name}）",
+          "small_sample": "試合数が少ないと大きく変動します"
         },
         "elo_history_dialog": {
           "current": "現在",
@@ -9161,7 +9185,14 @@
     "premier": "Premier",
     "competitive": "Competitive",
     "wingman": "Wingman",
-    "imported_from": "{type} · {source} からインポート"
+    "imported_from": "{type} · {source} からインポート",
+    "season_break": {
+      "began": "シーズン{number}開始 {date}",
+      "ended": "シーズン{number}終了 {date}",
+      "reset": "新シーズンに向けてレートをリセット",
+      "recap": "シーズン{number}は{final}で終了、最高{peak}、{wins}勝{losses}敗"
+    },
+    "season_best": "{season}の最高レート"
   },
   "breadcrumbs": {
     "dashboard": "ダッシュボード"

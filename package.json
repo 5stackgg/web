@@ -11,6 +11,7 @@
     "postinstall": "nuxt prepare",
     "codegen": "bash -c '. ./.env && zeus https://$NUXT_PUBLIC_API_DOMAIN/v1/graphql ./generated --ts --td --header=x-hasura-admin-secret:$HASURA_GRAPHQL_ADMIN_SECRET && ./scripts/patch-zeus-codegen.sh'",
     "check-translations": "node scripts/check-translations.js",
+    "typecheck": "NODE_OPTIONS=--max-old-space-size=8192 vue-tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -41,6 +42,7 @@
     "vitest": "^3.2.7",
     "vue": "^3.5.34",
     "vue-router": "^4.5.1",
+    "vue-tsc": "3.3.12",
     "workbox-core": "^7.3.0",
     "workbox-precaching": "^7.3.0",
     "workbox-routing": "^7.3.0"

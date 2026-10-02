@@ -14,6 +14,7 @@ import {
 import { Radar } from "vue-chartjs";
 import { playerRolesQuery } from "~/graphql/playerMatchMapRolesGraphql";
 import { usePlayerCompareTarget } from "~/composables/usePlayerCompareTarget";
+import type { ComparisonWindow } from "~/composables/usePlayerComparison";
 import { normalizeViewRole, type CombatRole } from "~/utilities/roleClassify";
 import { Card, CardContent } from "~/components/ui/card";
 import {
@@ -33,6 +34,7 @@ import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import StatLabel from "~/components/common/StatLabel.vue";
 import { Skeleton } from "~/components/ui/skeleton";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import { useDeferredLoading } from "~/composables/useDeferredLoading";
 
 ChartJS.register(
   RadialLinearScale,
@@ -69,6 +71,7 @@ const props = defineProps<{
   source?: string | null;
   limit?: number | null;
   since?: string | null;
+  until?: string | null;
 }>();
 
 const { t } = useI18n();
@@ -141,11 +144,14 @@ const axisDefs: AxisDef[] = [
 const ROLE_ORDER: CombatRole[] = ["sniper", "entry", "support", "rifler"];
 
 const loading = ref(true);
+const { skeleton: showSkeleton, refreshing } = useDeferredLoading(
+  () => loading.value,
+);
 const roleFilter = ref<RoleKey>("all");
 const playerMaps = ref<MapRecord[]>([]);
 const compareMaps = ref<MapRecord[]>([]);
 
-function buildMatchesWhere() {
+function buildMatchesWhere(season?: ComparisonWindow) {
   const where: Record<string, any> = { status: { _eq: "Finished" } };
   if (props.source && props.source !== "all") {
     where.source =
@@ -166,19 +172,30 @@ function buildMatchesWhere() {
       },
     };
   }
-  if (props.since) {
-    where.started_at = { _gte: props.since };
+  if (season) {
+    where.started_at = {
+      _gte: season.since,
+      ...(season.until ? { _lte: season.until } : {}),
+    };
+  } else if (props.since || props.until) {
+    where.started_at = {
+      ...(props.since ? { _gte: props.since } : {}),
+      ...(props.until ? { _lte: props.until } : {}),
+    };
   }
   return where;
 }
 
-async function loadMaps(steamId: string): Promise<MapRecord[]> {
+async function loadMaps(
+  steamId: string,
+  season?: ComparisonWindow,
+): Promise<MapRecord[]> {
   const { data } = await apolloClient.query({
     query: playerRolesQuery,
     variables: {
       steamId,
-      where: buildMatchesWhere(),
-      limit: props.limit ?? WINDOW_MAPS,
+      where: buildMatchesWhere(season),
+      limit: season ? WINDOW_MAPS : (props.limit ?? WINDOW_MAPS),
     },
     fetchPolicy: "network-only",
   });
@@ -220,10 +237,10 @@ async function loadAll() {
       return;
     }
     playerMaps.value = mine;
-    const compareId = compareTarget.value?.steam_id
-      ? String(compareTarget.value.steam_id)
-      : null;
-    compareMaps.value = compareId ? await loadMaps(compareId) : [];
+    const target = compareTarget.value;
+    compareMaps.value = target?.steam_id
+      ? await loadMaps(String(target.steam_id), target.window)
+      : [];
   } catch {
     if (gen === loadGen) {
       playerMaps.value = [];
@@ -243,7 +260,9 @@ watch(
     props.matchType,
     props.limit,
     props.since,
+    props.until,
     compareTarget.value?.steam_id,
+    compareTarget.value?.window?.season_id,
   ],
   loadAll,
   { immediate: true },
@@ -503,8 +522,15 @@ const hasData = computed(() => playerMaps.value.length > 0);
           />
         </div>
 
-        <FadeSwap>
-          <div v-if="loading" key="skeleton" class="grid gap-4 lg:grid-cols-2">
+        <FadeSwap
+          class="transition-opacity duration-200"
+          :class="refreshing && 'pointer-events-none opacity-50'"
+        >
+          <div
+            v-if="showSkeleton"
+            key="skeleton"
+            class="grid gap-4 lg:grid-cols-2"
+          >
             <div
               class="flex h-[360px] items-center justify-center sm:h-[440px]"
             >
@@ -512,9 +538,16 @@ const hasData = computed(() => playerMaps.value.length > 0);
                 class="aspect-square h-[280px] rounded-full sm:h-[340px]"
               />
             </div>
-            <div class="flex flex-col gap-2 self-center">
-              <Skeleton class="h-10 w-full" />
-              <Skeleton v-for="i in 6" :key="i" class="h-9 w-full" />
+            <div class="flex flex-col self-center">
+              <Skeleton class="h-10 w-full rounded-none" />
+              <div
+                v-for="i in 12"
+                :key="i"
+                class="flex items-center justify-between border-t border-border/50 px-2 py-3"
+              >
+                <Skeleton class="h-3 w-28" />
+                <Skeleton class="h-3 w-10" />
+              </div>
             </div>
           </div>
 

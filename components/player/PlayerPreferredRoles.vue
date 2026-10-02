@@ -7,6 +7,7 @@ import { tallyRoles, type CombatRole } from "~/utilities/roleClassify";
 import { Card, CardContent } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import { useDeferredLoading } from "~/composables/useDeferredLoading";
 
 const props = defineProps<{
   steamId: string;
@@ -14,6 +15,7 @@ const props = defineProps<{
   source?: string | null;
   limit?: number | null;
   since?: string | null;
+  until?: string | null;
 }>();
 
 const { t } = useI18n();
@@ -33,6 +35,9 @@ const ROLE_META: Record<CombatRole, { color: string; bg: string }> = {
 };
 
 const loading = ref(true);
+const { skeleton: showSkeleton, refreshing } = useDeferredLoading(
+  () => loading.value,
+);
 const rows = ref<any[]>([]);
 
 function buildMatchesWhere() {
@@ -56,8 +61,11 @@ function buildMatchesWhere() {
       },
     };
   }
-  if (props.since) {
-    where.started_at = { _gte: props.since };
+  if (props.since || props.until) {
+    where.started_at = {
+      ...(props.since ? { _gte: props.since } : {}),
+      ...(props.until ? { _lte: props.until } : {}),
+    };
   }
   return where;
 }
@@ -103,6 +111,7 @@ watch(
     props.matchType,
     props.limit,
     props.since,
+    props.until,
   ],
   load,
   { immediate: true },
@@ -147,9 +156,12 @@ function roleLabel(role: CombatRole): string {
 <template>
   <Card class="bg-card/20">
     <CardContent class="p-3 sm:p-4">
-      <FadeSwap class="flex flex-col gap-3">
+      <FadeSwap
+        class="flex flex-col gap-3 transition-opacity duration-200"
+        :class="refreshing && 'pointer-events-none opacity-50'"
+      >
         <div
-          v-if="loading"
+          v-if="showSkeleton"
           key="skeleton"
           class="flex flex-wrap items-center gap-3"
         >

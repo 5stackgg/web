@@ -40,6 +40,8 @@ interface EloChange {
 const props = defineProps<{
   eloChange?: EloChange | null;
   size?: "xs" | "sm";
+  // Bare change next to a rating: no pill, only the arrow carries the color.
+  plain?: boolean;
 }>();
 
 function toNum(v: unknown): number {
@@ -147,6 +149,9 @@ const winBadge =
 const lossBadge =
   "text-[hsl(0_84%_66%)] border-[hsl(0_84%_66%/0.45)] [background:linear-gradient(180deg,hsl(0_84%_50%/0.18),hsl(0_84%_40%/0.08))] hover:border-[hsl(0_84%_66%/0.8)] hover:shadow-[0_0_0_1px_hsl(0_84%_66%/0.25),0_6px_16px_-6px_hsl(0_84%_50%/0.6)]";
 
+const plainBase =
+  "inline-flex items-center gap-[2px] font-mono font-semibold tabular-nums leading-none whitespace-nowrap cursor-help text-muted-foreground transition-colors hover:text-foreground";
+
 const labelClass =
   "text-[8.5px] tracking-[0.2em] uppercase text-muted-foreground/85 font-semibold leading-none";
 
@@ -161,21 +166,34 @@ const chipClipSm = "";
       <TooltipTrigger as-child>
         <button
           type="button"
-          :class="[
-            badgeBase,
-            size === 'xs' ? badgeSizeXs : badgeSizeSm,
-            isWin ? winBadge : lossBadge,
-          ]"
+          :class="
+            plain
+              ? [plainBase, size === 'xs' ? 'text-[10px]' : 'text-[11px]']
+              : [
+                  badgeBase,
+                  size === 'xs' ? badgeSizeXs : badgeSizeSm,
+                  isWin ? winBadge : lossBadge,
+                ]
+          "
           @click.stop
           @mousedown.stop
         >
           <span
-            class="text-[0.7em] opacity-80 -translate-y-[0.5px]"
+            :class="[
+              'text-[0.7em] -translate-y-[0.5px]',
+              plain
+                ? isWin
+                  ? 'text-[hsl(142_71%_55%)]'
+                  : 'text-[hsl(0_84%_66%)]'
+                : 'opacity-80',
+            ]"
             aria-hidden="true"
           >
             {{ isWin ? "▲" : "▼" }}
           </span>
-          <span class="font-bold">{{ formatSigned(change) }}</span>
+          <span :class="plain ? '' : 'font-bold'">{{
+            plain ? Math.abs(change).toLocaleString() : formatSigned(change)
+          }}</span>
           <span
             v-if="hasSeriesBonus"
             class="ml-[2px] pl-[5px] px-1 text-[0.75em] font-extrabold tracking-[0.08em] border-l border-current opacity-95"

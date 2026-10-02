@@ -11,16 +11,16 @@ withDefaults(defineProps<{ rows?: number; cols?: number }>(), {
 </script>
 
 <template>
-  <div class="overflow-hidden rounded-lg border border-border/60 bg-card/40">
+  <div class="rounded-lg border border-border/60 bg-card/40 p-4">
     <Skeleton class="h-10 w-full rounded-none" />
     <div
       v-for="r in rows"
       :key="r"
-      class="flex items-center gap-3 border-t border-border/50 px-4 py-3"
+      class="flex items-center gap-3 border-t border-border/50 px-3 py-4"
     >
-      <Skeleton class="h-3.5 w-32" />
+      <Skeleton class="h-4 w-32" />
       <div class="ml-auto flex gap-6">
-        <Skeleton v-for="c in cols - 1" :key="c" class="h-3.5 w-10" />
+        <Skeleton v-for="c in cols - 1" :key="c" class="h-4 w-10" />
       </div>
     </div>
   </div>

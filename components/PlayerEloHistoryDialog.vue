@@ -13,6 +13,13 @@ import {
 } from "~/components/ui/dialog";
 import { TrendingUp, TrendingDown, ArrowUpRight, Crown } from "lucide-vue-next";
 import PlayerEloChart from "~/components/charts/PlayerEloChart.vue";
+import PlayerSeasonPaceChart from "~/components/charts/PlayerSeasonPaceChart.vue";
+import {
+  seasonAt,
+  seasonLine,
+  type Season,
+  type SeasonEloEntry,
+} from "~/utilities/seasonPace";
 import AnimatedStat from "~/components/AnimatedStat.vue";
 import { usePlayerCompareTarget } from "~/composables/usePlayerCompareTarget";
 import {
@@ -60,6 +67,9 @@ const props = defineProps<{
   // (5Stack ELO vs External rank) instead of blending them.
   source?: StatSource;
   provider?: string;
+  // The season a season comparison is set against, match by match.
+  season?: Season | null;
+  seasonBreaks?: Array<{ at: string; label: string }>;
 }>();
 
 const sourceRef = computed<StatSource>(() =>
@@ -126,6 +136,18 @@ watch(
     if (r) selectedRange.value = r;
   },
 );
+
+const SEASON_PACE_QUERY = gql`
+  query PlayerSeasonPace($where: v_player_elo_bool_exp!) {
+    v_player_elo(where: $where, order_by: { match_created_at: asc }) {
+      season_id
+      type
+      current_elo
+      updated_elo
+      match_created_at
+    }
+  }
+`;
 
 const ELO_HISTORY_QUERY = gql`
   query PlayerEloHistoryDrillDown(
@@ -419,17 +441,84 @@ const wingmanRank = computed(() => buildRankSeries(6, "Wingman"));
 const { compareTarget } = usePlayerCompareTarget();
 const compareEloRows = ref<EloEntry[]>([]);
 const compareRankRows = ref<typeof rankHistoryRows.value>([]);
+const paceEloRows = ref<SeasonEloEntry[]>([]);
+const paceRankRows = ref<typeof rankHistoryRows.value>([]);
 let compareGen = 0;
+
+// A season compare reads as season vs season by match number.
+const paceBase = computed(() => {
+  const compared = compareTarget.value?.window;
+  const base = props.season;
+  return compared && base && base.id !== compared.season_id ? base : null;
+});
+
+function seasonRange(since: string, until: string | null) {
+  return { _gte: since, ...(until ? { _lt: until } : {}) };
+}
+
+async function loadSeasonPace(gen: number, base: Season) {
+  const compared = compareTarget.value!.window!;
+  if (sourceRef.value === "5stack") {
+    const res = await client.query({
+      query: SEASON_PACE_QUERY,
+      variables: {
+        where: {
+          player_steam_id: { _eq: props.playerId },
+          season_id: { _in: [base.id, compared.season_id] },
+        },
+      },
+      fetchPolicy: "network-only",
+    });
+    if (gen !== compareGen) return;
+    paceEloRows.value = ((res.data as any)?.v_player_elo ??
+      []) as SeasonEloEntry[];
+    paceRankRows.value = [];
+    return;
+  }
+  const res = await client.query({
+    query: RANK_HISTORY_QUERY,
+    variables: {
+      where: {
+        steam_id: { _eq: props.playerId },
+        _or: [
+          { observed_at: seasonRange(base.starts_at, base.ends_at) },
+          { observed_at: seasonRange(compared.since, compared.until) },
+        ],
+      },
+      limit: 10000,
+    },
+    fetchPolicy: "network-only",
+  });
+  if (gen !== compareGen) return;
+  paceRankRows.value = ((res.data as any)?.player_premier_rank_history ??
+    []) as typeof rankHistoryRows.value;
+  paceEloRows.value = [];
+}
 
 async function loadCompare() {
   const target = compareTarget.value;
   if (!props.open || !target?.steam_id) {
     compareEloRows.value = [];
     compareRankRows.value = [];
+    paceEloRows.value = [];
+    paceRankRows.value = [];
     return;
   }
   const gen = ++compareGen;
   try {
+    if (target.window) {
+      compareEloRows.value = [];
+      compareRankRows.value = [];
+      if (paceBase.value) {
+        await loadSeasonPace(gen, paceBase.value);
+      } else {
+        paceEloRows.value = [];
+        paceRankRows.value = [];
+      }
+      return;
+    }
+    paceEloRows.value = [];
+    paceRankRows.value = [];
     if (sourceRef.value === "5stack") {
       const where: Record<string, any> = {
         player_steam_id: { _eq: target.steam_id },
@@ -474,13 +563,7 @@ async function loadCompare() {
   }
 }
 
-const compareEntries = computed<EloEntry[]>(() => {
-  if (!compareTarget.value) return [];
-  if (sourceRef.value === "5stack") {
-    const focusMode =
-      selectedMode.value === "all" ? "Competitive" : selectedMode.value;
-    return compareEloRows.value.filter((e) => e.type === focusMode);
-  }
+function rankRowsForMode(rows: typeof rankHistoryRows.value) {
   const rankType =
     selectedMode.value === "Wingman"
       ? 6
@@ -488,12 +571,54 @@ const compareEntries = computed<EloEntry[]>(() => {
         ? 12
         : 11;
   const perMap = rankType === 6 || rankType === 12;
-  return compareRankRows.value
-    .filter(
-      (r) =>
-        r.rank_type === rankType &&
-        (!perMap || !selectedMapId.value || r.map_id === selectedMapId.value),
-    )
+  return rows.filter(
+    (r) =>
+      r.rank_type === rankType &&
+      (!perMap || !selectedMapId.value || r.map_id === selectedMapId.value),
+  );
+}
+
+const paceLines = computed(() => {
+  const compared = compareTarget.value?.window;
+  const base = paceBase.value;
+  if (!compared || !base) return null;
+  let type: string;
+  let entries: SeasonEloEntry[];
+  if (sourceRef.value === "5stack") {
+    type = selectedMode.value === "all" ? "Competitive" : selectedMode.value;
+    entries = paceEloRows.value;
+  } else {
+    const seasons: Season[] = [
+      base,
+      {
+        id: compared.season_id,
+        number: null,
+        starts_at: compared.since,
+        ends_at: compared.until,
+      },
+    ];
+    type = "rank";
+    entries = rankRowsForMode(paceRankRows.value).map((r) => ({
+      season_id: seasonAt(seasons, r.observed_at)?.id ?? null,
+      type,
+      current_elo: r.previous_rank ?? r.rank,
+      updated_elo: r.rank,
+      match_created_at: r.observed_at,
+    }));
+  }
+  const current = seasonLine(entries, base.id, type);
+  const previous = seasonLine(entries, compared.season_id, type);
+  return current || previous ? { current, previous } : null;
+});
+
+const compareEntries = computed<EloEntry[]>(() => {
+  if (!compareTarget.value) return [];
+  if (sourceRef.value === "5stack") {
+    const focusMode =
+      selectedMode.value === "all" ? "Competitive" : selectedMode.value;
+    return compareEloRows.value.filter((e) => e.type === focusMode);
+  }
+  return rankRowsForMode(compareRankRows.value)
     .map(
       (r) =>
         ({
@@ -594,6 +719,7 @@ watch(
     props.open,
     props.playerId,
     compareTarget.value,
+    props.season?.id,
     selectedRange.value,
     props.excludeTournaments,
     sourceRef.value,
@@ -714,7 +840,11 @@ const chartSeries = computed(() => {
   }
 
   // Comparison overlay — a dimmed cyan line for the pinned player.
-  if (compareTarget.value && compareEntries.value.length > 0) {
+  if (
+    compareTarget.value &&
+    !compareTarget.value.window &&
+    compareEntries.value.length > 0
+  ) {
     base.push({
       key: "__compare__",
       label: compareTarget.value.name,
@@ -1109,10 +1239,19 @@ function rankIcon(rank: number | null | undefined): string | null {
           </button>
         </div>
         <div v-else key="content" class="h-[360px] sm:h-[420px]">
+          <PlayerSeasonPaceChart
+            v-if="paceLines && paceBase"
+            :current="paceLines.current"
+            :previous="paceLines.previous"
+            :current-label="`S${paceBase.number ?? '?'}`"
+            :previous-label="compareTarget?.name ?? ''"
+          />
           <PlayerEloChart
+            v-else
             :series="chartSeries"
             :rank-type="chartRankType"
             :loading="loading"
+            :season-breaks="seasonBreaks ?? []"
           />
         </div>
       </FadeSwap>
@@ -1182,6 +1321,12 @@ function rankIcon(rank: number | null | undefined): string | null {
           <ArrowUpRight class="h-3 w-3" />
         </NuxtLink>
       </div>
+    </div>
+    <div
+      v-else-if="showExtremes && loading && !hasLoadedOnce"
+      class="px-4 sm:px-6 py-5 grid grid-cols-1 sm:grid-cols-2 gap-3 border-t border-border/50 mt-3"
+    >
+      <Skeleton v-for="i in 2" :key="i" class="h-[106px] rounded-md" />
     </div>
   </div>
 </template>

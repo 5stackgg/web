@@ -3203,6 +3203,27 @@
         "end_date": "종료",
         "peak_lowest": "최고 / 최저",
         "peak": "최고",
+        "season_pace": {
+          "toggle": "{season} vs {previous}",
+          "all_time": "전체 기간",
+          "vs": "vs {season}",
+          "ahead": "{n}경기 시점 앞섬 | {n}경기 시점 앞섬",
+          "behind": "{n}경기 시점 뒤처짐 | {n}경기 시점 뒤처짐",
+          "level": "{n}경기 시점 동률 | {n}경기 시점 동률",
+          "ahead_final": "최종 레이팅보다 높음",
+          "behind_final": "최종 레이팅보다 낮음",
+          "level_final": "최종 레이팅과 같음",
+          "tooltip": "{season}은(는) {n}경기 시점에 {then}이었습니다. 현재 {now}입니다. | {season}은(는) {n}경기 시점에 {then}이었습니다. 현재 {now}입니다.",
+          "tooltip_final": "{season}은(는) {then}(으)로 끝났습니다. 현재 {now}입니다.",
+          "none": "이번 시즌 아직 경기 없음",
+          "peak": "{season} 최고",
+          "peak_marker": "{season} 최고 {elo}",
+          "start": "시작",
+          "match": "{n}경기",
+          "finish": "{total}명 중 {rank}위로 마감",
+          "finish_tooltip": "{season} 최고 {peak} ({date}). {final}(으)로 마감, 리더보드 {total}명 중 {rank}위.",
+          "peak_tooltip": "{season} 최고 {peak} ({date}). {final}(으)로 마감."
+        },
         "no_matches_in_window": "해당 기간에 매치 없음",
         "no_matches_in_window_period": "해당 기간에 매치가 없습니다.",
         "expand_to_all_time": "전체 기간으로 확장",
@@ -3301,7 +3322,10 @@
           "label": "비교 대상",
           "select_label": "비교할 플레이어",
           "description": "모든 통계 탭에서 이 플레이어의 수치와 겹쳐 보여줍니다.",
-          "vs": "vs"
+          "vs": "vs",
+          "season_label": "또는 시즌",
+          "sample": "경기 수: {matches} vs {compare} ({name})",
+          "small_sample": "표본이 작으면 변동이 큽니다"
         },
         "elo_history_dialog": {
           "current": "현재",
@@ -9161,7 +9185,14 @@
     "premier": "프리미어",
     "competitive": "컴페티티브",
     "wingman": "윙맨",
-    "imported_from": "{type} · {source}에서 가져옴"
+    "imported_from": "{type} · {source}에서 가져옴",
+    "season_break": {
+      "began": "시즌 {number} 시작 {date}",
+      "ended": "시즌 {number} 종료 {date}",
+      "reset": "새 시즌을 위해 레이팅 초기화",
+      "recap": "시즌 {number} 최종 {final}, 최고 {peak}, {wins}승 {losses}패"
+    },
+    "season_best": "{season} 최고 레이팅"
   },
   "breadcrumbs": {
     "dashboard": "대시보드"

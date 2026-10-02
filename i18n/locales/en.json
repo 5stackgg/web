@@ -3203,6 +3203,27 @@
         "end_date": "End",
         "peak_lowest": "Peak / Lowest",
         "peak": "Peak",
+        "season_pace": {
+          "toggle": "{season} vs {previous}",
+          "all_time": "All time",
+          "vs": "vs {season}",
+          "ahead": "ahead after {n} match | ahead after {n} matches",
+          "behind": "behind after {n} match | behind after {n} matches",
+          "level": "even after {n} match | even after {n} matches",
+          "ahead_final": "ahead of its final rating",
+          "behind_final": "behind its final rating",
+          "level_final": "even with its final rating",
+          "tooltip": "{season} was {then} after {n} match. You're on {now}. | {season} was {then} after {n} matches. You're on {now}.",
+          "tooltip_final": "{season} finished at {then}. You're on {now}.",
+          "none": "No matches yet this season",
+          "peak": "{season} peak",
+          "peak_marker": "{season} peak {elo}",
+          "start": "Start",
+          "match": "Match {n}",
+          "finish": "Finished #{rank} of {total}",
+          "finish_tooltip": "{season} peak {peak} on {date}. Finished at {final}, #{rank} of {total} on the leaderboard.",
+          "peak_tooltip": "{season} peak {peak} on {date}. Finished at {final}."
+        },
         "no_matches_in_window": "No matches in this window",
         "no_matches_in_window_period": "No matches in this window.",
         "expand_to_all_time": "Expand to all time",
@@ -3301,7 +3322,10 @@
           "label": "Compare vs",
           "select_label": "Compare player",
           "description": "Overlays this player's numbers across every stats tab.",
-          "vs": "vs"
+          "vs": "vs",
+          "season_label": "Or a season",
+          "sample": "Matches: {matches} vs {compare} ({name})",
+          "small_sample": "small samples swing a lot"
         },
         "elo_history_dialog": {
           "current": "Current",
@@ -9161,7 +9185,14 @@
     "premier": "Premier",
     "competitive": "Competitive",
     "wingman": "Wingman",
-    "imported_from": "{type} · imported from {source}"
+    "imported_from": "{type} · imported from {source}",
+    "season_break": {
+      "began": "Season {number} began {date}",
+      "ended": "Season {number} ended {date}",
+      "reset": "Ratings reset for the new season",
+      "recap": "Season {number} finished {final}, best {peak}, {wins}W–{losses}L"
+    },
+    "season_best": "{season} best rating"
   },
   "breadcrumbs": {
     "dashboard": "dashboard"

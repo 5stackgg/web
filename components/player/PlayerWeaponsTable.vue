@@ -2,6 +2,7 @@
 import { ref, computed, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
+import gql from "graphql-tag";
 import {
   playerWeaponStatsQuery,
   playerWeaponExtraQuery,
@@ -25,15 +26,37 @@ import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import { useDeferredLoading } from "~/composables/useDeferredLoading";
+import { useRememberedCount } from "~/composables/useRememberedCount";
 import TableSkeleton from "~/components/player/stats/TableSkeleton.vue";
 import { resolveWeapon } from "~/utilities/weaponIcon";
 import { hltvColor } from "~/utils/statTiers";
+import { schemaHasType } from "~/utilities/schemaHasType";
 
 const props = defineProps<{
   steamId: string;
   matchType?: string | string[] | null;
   source?: string | null;
+  limit?: number | null;
+  since?: string | null;
+  until?: string | null;
 }>();
+
+function sourceFilter() {
+  if (!props.source || props.source === "all") return null;
+  return props.source === "5stack"
+    ? { _eq: "5stack" }
+    : props.source === "external"
+      ? { _neq: "5stack" }
+      : props.source === "unknown"
+        ? { _nin: ["5stack", "valve", "faceit"] }
+        : { _eq: props.source };
+}
+
+function matchTypes() {
+  if (!props.matchType) return null;
+  return Array.isArray(props.matchType) ? props.matchType : [props.matchType];
+}
 
 function buildWhere(steamId: string = props.steamId) {
   const where: Record<string, any> = {
@@ -63,6 +86,95 @@ const { client: apolloClient } = useApolloClient();
 interface RawWeaponKill {
   with: string;
   kill_count: number | string;
+}
+
+// Per-match weapon rows let the table follow the stats range and a season
+// compare. The career views above stay the fallback until these are deployed.
+const WEAPON_MATCH_QUERY = gql`
+  query PlayerWeaponMatchStats(
+    $kills: v_player_weapon_match_kills_bool_exp!
+    $damage: v_player_weapon_match_damage_bool_exp!
+  ) {
+    v_player_weapon_match_kills(where: $kills) {
+      with
+      kill_count
+      rounds
+    }
+    v_player_weapon_match_damage(where: $damage) {
+      with
+      damage
+    }
+  }
+`;
+
+const RECENT_MATCHES_QUERY = gql`
+  query PlayerWeaponRecentMatches($where: matches_bool_exp!, $limit: Int!) {
+    matches(where: $where, order_by: { started_at: desc }, limit: $limit) {
+      id
+    }
+  }
+`;
+
+function matchFilter(range: { since?: string | null; until?: string | null }) {
+  const match: Record<string, any> = {};
+  const source = sourceFilter();
+  const types = matchTypes();
+  if (source) match.source = source;
+  if (types) match.options = { type: { _in: types } };
+  if (range.since || range.until) {
+    match.started_at = {
+      ...(range.since ? { _gte: range.since } : {}),
+      ...(range.until ? { _lte: range.until } : {}),
+    };
+  }
+  return match;
+}
+
+async function loadWindowed(
+  range: { since?: string | null; until?: string | null },
+  limit: number | null,
+) {
+  if (!(await schemaHasType(apolloClient, "v_player_weapon_match_kills"))) {
+    throw new Error("per-match weapon views not deployed");
+  }
+  let scope: Record<string, any>;
+  if (limit && !range.since && !range.until) {
+    const player = {
+      lineup_players: { steam_id: { _eq: props.steamId } },
+    };
+    const { data } = await apolloClient.query({
+      query: RECENT_MATCHES_QUERY,
+      variables: {
+        where: {
+          ...matchFilter({}),
+          status: { _eq: "Finished" },
+          _or: [{ lineup_1: player }, { lineup_2: player }],
+        },
+        limit,
+      },
+      fetchPolicy: "network-only",
+    });
+    scope = {
+      match_id: {
+        _in: ((data as any)?.matches ?? []).map((m: any) => m.id),
+      },
+    };
+  } else {
+    scope = { match: matchFilter(range) };
+  }
+  const where = { player_steam_id: { _eq: props.steamId }, ...scope };
+  const { data } = await apolloClient.query({
+    query: WEAPON_MATCH_QUERY,
+    variables: { kills: where, damage: where },
+    fetchPolicy: "network-only",
+  });
+  return {
+    kills: ((data as any)?.v_player_weapon_match_kills ?? []) as Array<
+      RawWeaponKill & RawWeaponRounds
+    >,
+    damage: ((data as any)?.v_player_weapon_match_damage ??
+      []) as RawWeaponDamage[],
+  };
 }
 
 interface RawWeaponDamage {
@@ -141,6 +253,13 @@ function weaponRating(kpr: number | null, adr: number | null): number | null {
 }
 
 const loading = ref(true);
+const { skeleton: showSkeleton, refreshing } = useDeferredLoading(
+  () => loading.value,
+);
+const { count: skeletonCount, remember: rememberCount } = useRememberedCount(
+  () => `weapons:${props.steamId}`,
+  12,
+);
 const weaponKills = ref<RawWeaponKill[]>([]);
 const weaponDamage = ref<RawWeaponDamage[]>([]);
 const weaponRounds = ref<RawWeaponRounds[]>([]);
@@ -157,55 +276,69 @@ async function load() {
   }
   loading.value = true;
   const gen = ++loadGen;
-  try {
-    const { data } = await apolloClient.query({
-      query: playerWeaponStatsQuery,
-      variables: {
-        where: buildWhere(),
-      },
-      fetchPolicy: "network-only",
-    });
+  if (props.limit || props.since || props.until) {
+    try {
+      const windowed = await loadWindowed(
+        { since: props.since, until: props.until },
+        props.limit ?? null,
+      );
+      if (gen !== loadGen) {
+        return;
+      }
+      weaponKills.value = windowed.kills;
+      weaponRounds.value = windowed.kills;
+      weaponDamage.value = windowed.damage;
+      loading.value = false;
+      return;
+    } catch {
+      // Per-match views not deployed yet: career totals below.
+    }
     if (gen !== loadGen) {
       return;
     }
-    weaponKills.value = ((data as any)?.v_player_weapon_kills ??
-      []) as RawWeaponKill[];
-  } catch {
-    if (gen === loadGen) {
-      weaponKills.value = [];
-    }
-  } finally {
-    if (gen === loadGen) {
-      loading.value = false;
-    }
   }
-
+  const where = buildWhere();
   // Best-effort: per-weapon damage + rounds live in views/columns that may
-  // not be deployed yet. If this fails the table still renders kills/usage.
-  try {
-    const where = buildWhere();
-    const { data: extra } = await apolloClient.query({
+  // not be deployed yet. If that query fails the table still renders
+  // kills/usage. Both land together so the extra columns never pop in late.
+  const [kills, extra] = await Promise.allSettled([
+    apolloClient.query({
+      query: playerWeaponStatsQuery,
+      variables: { where },
+      fetchPolicy: "network-only",
+    }),
+    apolloClient.query({
       query: playerWeaponExtraQuery,
       variables: { whereDmg: where, whereKills: where },
       fetchPolicy: "network-only",
-    });
-    if (gen === loadGen) {
-      weaponDamage.value = ((extra as any)?.v_player_weapon_damage ??
-        []) as RawWeaponDamage[];
-      weaponRounds.value = ((extra as any)?.v_player_weapon_kills ??
-        []) as RawWeaponRounds[];
-    }
-  } catch {
-    if (gen === loadGen) {
-      weaponDamage.value = [];
-      weaponRounds.value = [];
-    }
+    }),
+  ]);
+  if (gen !== loadGen) {
+    return;
   }
+  const killsData = kills.status === "fulfilled" ? kills.value.data : null;
+  const extraData = extra.status === "fulfilled" ? extra.value.data : null;
+  weaponKills.value = ((killsData as any)?.v_player_weapon_kills ??
+    []) as RawWeaponKill[];
+  weaponDamage.value = ((extraData as any)?.v_player_weapon_damage ??
+    []) as RawWeaponDamage[];
+  weaponRounds.value = ((extraData as any)?.v_player_weapon_kills ??
+    []) as RawWeaponRounds[];
+  loading.value = false;
 }
 
-watch(() => [props.steamId, props.source, props.matchType], load, {
-  immediate: true,
-});
+watch(
+  () => [
+    props.steamId,
+    props.source,
+    props.matchType,
+    props.limit,
+    props.since,
+    props.until,
+  ],
+  load,
+  { immediate: true },
+);
 
 const EXCLUDED_WEAPONS = new Set(["world", "planted_c4"]);
 
@@ -274,6 +407,12 @@ const rows = computed<WeaponRow[]>(() => {
 
 const hasData = computed(() => rows.value.length > 0);
 
+watch(loading, (isLoading) => {
+  if (!isLoading) {
+    rememberCount(rows.value.length);
+  }
+});
+
 // Comparison overlay — the pinned player's per-weapon usage %, keyed the same
 // way so each row can show a "vs X%" next to the primary player's usage.
 const { comparePlayer, compareData } = usePlayerComparison(
@@ -282,11 +421,89 @@ const { comparePlayer, compareData } = usePlayerComparison(
   (data: any) => (data?.v_player_weapon_kills ?? []) as RawWeaponKill[],
   () => [props.source, props.matchType],
 );
+// The weapon views are career totals, so a season comparison counts that
+// season's kills per weapon from player_kills: one aggregate per weapon.
+const seasonKills = ref<RawWeaponKill[]>([]);
+let seasonGen = 0;
+
+async function loadSeasonKills() {
+  const season = comparePlayer.value?.window;
+  if (!season || !props.steamId) {
+    seasonKills.value = [];
+    return;
+  }
+  const gen = ++seasonGen;
+  try {
+    const windowed = await loadWindowed(season, null);
+    if (gen === seasonGen) seasonKills.value = windowed.kills;
+    return;
+  } catch {
+    // Per-match views not deployed yet: count kills per weapon below.
+  }
+  const weapons = [
+    ...new Set(weaponKills.value.map((w) => w.with).filter(Boolean)),
+  ];
+  if (gen !== seasonGen || !weapons.length) {
+    if (gen === seasonGen) seasonKills.value = [];
+    return;
+  }
+  const match: Record<string, any> = {
+    started_at: {
+      _gte: season.since,
+      ...(season.until ? { _lte: season.until } : {}),
+    },
+  };
+  const { source, type } = buildWhere();
+  if (source) match.source = source;
+  if (type) match.options = { type };
+  const variables: Record<string, any> = {};
+  const params: string[] = [];
+  const fields: string[] = [];
+  weapons.forEach((weapon, i) => {
+    variables[`w${i}`] = {
+      attacker_steam_id: { _eq: props.steamId },
+      with: { _eq: weapon },
+      match,
+    };
+    params.push(`$w${i}: player_kills_bool_exp!`);
+    fields.push(
+      `w${i}: player_kills_aggregate(where: $w${i}) { aggregate { count } }`,
+    );
+  });
+  try {
+    const { data } = await apolloClient.query({
+      query: gql(
+        `query PlayerSeasonWeaponKills(${params.join(", ")}) { ${fields.join(" ")} }`,
+      ),
+      variables,
+      fetchPolicy: "network-only",
+    });
+    if (gen !== seasonGen) return;
+    seasonKills.value = weapons.map((weapon, i) => ({
+      with: weapon,
+      kill_count: (data as any)?.[`w${i}`]?.aggregate?.count ?? 0,
+    }));
+  } catch {
+    if (gen === seasonGen) seasonKills.value = [];
+  }
+}
+
+watch(
+  () => [
+    comparePlayer.value?.window?.season_id,
+    props.source,
+    props.matchType,
+    weaponKills.value,
+  ],
+  loadSeasonKills,
+  { immediate: true },
+);
+
 const compareWeapon = computed(() => {
   const byKey = new Map<string, { kills: number; usage: number }>();
-  const kills = (compareData.value ?? []).filter(
-    (w) => !EXCLUDED_WEAPONS.has((w.with ?? "").toLowerCase().trim()),
-  );
+  const kills = (
+    (comparePlayer.value?.window ? seasonKills.value : compareData.value) ?? []
+  ).filter((w) => !EXCLUDED_WEAPONS.has((w.with ?? "").toLowerCase().trim()));
   const killsByKey = new Map<string, number>();
   let total = 0;
   for (const w of kills) {
@@ -343,12 +560,15 @@ function onIconError(event: Event) {
 
 <template>
   <div>
-    <FadeSwap>
+    <FadeSwap
+      class="transition-opacity duration-200"
+      :class="refreshing && 'pointer-events-none opacity-50'"
+    >
       <TableSkeleton
-        v-if="loading && !hasData"
+        v-if="showSkeleton"
         key="skeleton"
-        :rows="10"
-        :cols="hasExtra ? 7 : 3"
+        :rows="skeletonCount"
+        :cols="7"
       />
 
       <Empty

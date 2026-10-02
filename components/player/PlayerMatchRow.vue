@@ -3,6 +3,7 @@ import { dateLocale } from "~/utilities/dateLocale";
 import {
   ChevronDown,
   ExternalLink,
+  Crown,
   ListChecks,
   Play,
   Trophy,
@@ -25,7 +26,7 @@ import { kdColor, hltvColor } from "~/utils/statTiers";
 // gets its own slim trailing column.
 // OPEN · DATE · TYPE · RESULT · MAP · CLIP · RATING · K/D/A · K/D · ADR · Δ · VIEW
 const wideGrid =
-  "grid grid-cols-[2.5rem_5rem_6.75rem_8.5rem_minmax(4.5rem,1fr)_3rem_6rem_4.5rem_2.75rem_3.25rem_6rem_2.5rem] items-center gap-x-2";
+  "grid grid-cols-[2.5rem_5rem_6.75rem_8.5rem_minmax(4.5rem,1fr)_3rem_6rem_4.5rem_2.75rem_3.25rem_8.5rem_2.5rem] items-center gap-x-2";
 </script>
 
 <template>
@@ -221,8 +222,28 @@ const wideGrid =
       <span v-else class="text-muted-foreground">—</span>
 
       <!-- Δ ELO (5stack) / Valve rank (external: Premier rating or skill group) -->
-      <div class="flex items-center justify-end">
-        <EloChangeBadge v-if="hasElo" :elo-change="eloChange" size="sm" />
+      <div class="flex items-center justify-end gap-1.5">
+        <Crown
+          v-if="seasonBest && hasElo"
+          class="h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]"
+          :aria-label="$t('player_match.season_best', { season: seasonBest })"
+          :title="$t('player_match.season_best', { season: seasonBest })"
+        />
+        <span
+          v-if="hasElo && eloAfter !== null"
+          class="font-mono text-sm font-bold tabular-nums"
+          :class="
+            seasonBest ? 'text-[hsl(var(--tac-amber))]' : 'text-foreground'
+          "
+        >
+          {{ eloAfter.toLocaleString() }}
+        </span>
+        <EloChangeBadge
+          v-if="hasElo"
+          :elo-change="eloChange"
+          size="sm"
+          plain
+        />
         <!-- Premier: canonical CS2 rating badge. The change floats as a
              superscript overlapping the pill's top-right corner so it never
              steals width from the rating or bumps the row height. -->
@@ -303,7 +324,18 @@ const wideGrid =
             <span class="text-muted-foreground/90">{{ score.opponent }}</span>
           </span>
           <!-- ELO Δ / Valve rank, paired with the score as the match outcome. -->
-          <EloChangeBadge v-if="hasElo" :elo-change="eloChange" size="xs" />
+          <span
+            v-if="hasElo && eloAfter !== null"
+            class="font-mono text-xs font-semibold tabular-nums text-foreground/85"
+          >
+            {{ eloAfter.toLocaleString() }}
+          </span>
+          <EloChangeBadge
+            v-if="hasElo"
+            :elo-change="eloChange"
+            size="xs"
+            plain
+          />
           <span
             v-else-if="rankInfo && isPremierRank"
             class="inline-flex items-center gap-1.5"
@@ -592,6 +624,8 @@ export default {
     // internal elo. Lets the ELO column show the CS Rating (Premier) or skill
     // group icon (Competitive/Wingman) + change instead.
     rankByMatch: { type: Object, required: false, default: null },
+    // Season label when this match set that season's best rating.
+    seasonBest: { type: String, required: false, default: null },
     // Canonical per-match HLTV rating from the backend; overrides the local
     // estimate below (which can't include KAST at this level).
     canonicalRating: { type: Number, required: false, default: null },
@@ -663,6 +697,11 @@ export default {
       return (
         changes.find((ec: any) => ec.type === matchType) ?? changes[0] ?? null
       );
+    },
+    eloAfter(): number | null {
+      const raw = this.eloChange?.updated_elo;
+      const after = raw == null ? NaN : Number(raw);
+      return Number.isFinite(after) ? Math.round(after) : null;
     },
     // Mirrors EloChangeBadge's own render guard so the ELO column shows a
     // dash (instead of nothing) for matches with no elo movement / no row.

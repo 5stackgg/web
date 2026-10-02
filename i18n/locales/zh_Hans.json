@@ -3203,6 +3203,27 @@
         "end_date": "结束",
         "peak_lowest": "最高 / 最低",
         "peak": "最高",
+        "season_pace": {
+          "toggle": "{season} 对比 {previous}",
+          "all_time": "全部时间",
+          "vs": "对比 {season}",
+          "ahead": "第 {n} 场时领先 | 第 {n} 场时领先",
+          "behind": "第 {n} 场时落后 | 第 {n} 场时落后",
+          "level": "第 {n} 场时持平 | 第 {n} 场时持平",
+          "ahead_final": "高于其最终积分",
+          "behind_final": "低于其最终积分",
+          "level_final": "与其最终积分持平",
+          "tooltip": "{season} 第 {n} 场时为 {then}。你现在为 {now}。 | {season} 第 {n} 场时为 {then}。你现在为 {now}。",
+          "tooltip_final": "{season} 最终为 {then}。你现在为 {now}。",
+          "none": "本赛季暂无比赛",
+          "peak": "{season} 最高",
+          "peak_marker": "{season} 最高 {elo}",
+          "start": "开始",
+          "match": "第 {n} 场",
+          "finish": "最终排名 #{rank} / {total}",
+          "finish_tooltip": "{season} 最高 {peak}（{date}）。以 {final} 结束，排行榜 #{rank} / {total}。",
+          "peak_tooltip": "{season} 最高 {peak}（{date}）。以 {final} 结束。"
+        },
         "no_matches_in_window": "此时间段内无比赛",
         "no_matches_in_window_period": "此时间段内无比赛。",
         "expand_to_all_time": "展开到全部时间",
@@ -3301,7 +3322,10 @@
           "label": "对比 vs",
           "select_label": "对比玩家",
           "description": "在每个数据标签页中叠加显示此玩家的数据。",
-          "vs": "vs"
+          "vs": "vs",
+          "season_label": "或选择赛季",
+          "sample": "场次：{matches} 对比 {compare}（{name}）",
+          "small_sample": "样本少时波动大"
         },
         "elo_history_dialog": {
           "current": "当前",
@@ -9161,7 +9185,14 @@
     "premier": "优先",
     "competitive": "竞技",
     "wingman": "搭档",
-    "imported_from": "{type} · 导入自 {source}"
+    "imported_from": "{type} · 导入自 {source}",
+    "season_break": {
+      "began": "第 {number} 赛季于 {date} 开始",
+      "ended": "第 {number} 赛季于 {date} 结束",
+      "reset": "新赛季积分已重置",
+      "recap": "第 {number} 赛季以 {final} 结束，最高 {peak}，{wins}胜{losses}负"
+    },
+    "season_best": "{season} 最高积分"
   },
   "breadcrumbs": {
     "dashboard": "数据面板"

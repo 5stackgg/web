@@ -3,7 +3,10 @@ import { ref, computed, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
 import { playerCareerCombatQuery } from "~/graphql/playerCareerCombatGraphql";
-import { usePlayerComparison } from "~/composables/usePlayerComparison";
+import {
+  usePlayerComparison,
+  type ComparisonWindow,
+} from "~/composables/usePlayerComparison";
 import RadialStat from "~/components/charts/RadialStat.vue";
 import AnimatedStat from "~/components/AnimatedStat.vue";
 import {
@@ -29,6 +32,7 @@ import {
   type StatTierConfig,
 } from "~/utils/statTiers";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import { useDeferredLoading } from "~/composables/useDeferredLoading";
 import StatGridTableSkeleton from "~/components/player/stats/StatGridTableSkeleton.vue";
 
 const WINDOW_MAPS = 40;
@@ -39,12 +43,13 @@ const props = defineProps<{
   source?: string | null;
   limit?: number | null;
   since?: string | null;
+  until?: string | null;
 }>();
 
 const { t } = useI18n();
 const { client: apolloClient } = useApolloClient();
 
-function buildMatchesWhere() {
+function buildMatchesWhere(season?: ComparisonWindow) {
   const where: Record<string, any> = { status: { _eq: "Finished" } };
   if (props.source && props.source !== "all") {
     where.source =
@@ -65,8 +70,16 @@ function buildMatchesWhere() {
       },
     };
   }
-  if (props.since) {
-    where.started_at = { _gte: props.since };
+  if (season) {
+    where.started_at = {
+      _gte: season.since,
+      ...(season.until ? { _lte: season.until } : {}),
+    };
+  } else if (props.since || props.until) {
+    where.started_at = {
+      ...(props.since ? { _gte: props.since } : {}),
+      ...(props.until ? { _lte: props.until } : {}),
+    };
   }
   return where;
 }
@@ -89,6 +102,9 @@ interface RawMatch {
 }
 
 const loading = ref(true);
+const { skeleton: showSkeleton, refreshing } = useDeferredLoading(
+  () => loading.value,
+);
 const matches = ref<RawMatch[]>([]);
 
 let loadGen = 0;
@@ -133,6 +149,7 @@ watch(
     props.matchType,
     props.limit,
     props.since,
+    props.until,
   ],
   load,
   { immediate: true },
@@ -232,13 +249,13 @@ function computeClutchTotals(matchList: RawMatch[]) {
 
 const { comparePlayer, compareData } = usePlayerComparison(
   playerCareerCombatQuery,
-  (steamId) => ({
+  (steamId, season) => ({
     steamId,
-    matchesWhere: buildMatchesWhere(),
-    limit: props.limit ?? WINDOW_MAPS,
+    matchesWhere: buildMatchesWhere(season),
+    limit: season ? WINDOW_MAPS : (props.limit ?? WINDOW_MAPS),
   }),
   (data: any) => (data?.players_by_pk?.matches ?? []) as RawMatch[],
-  () => [props.source, props.matchType, props.limit, props.since],
+  () => [props.source, props.matchType, props.limit, props.since, props.until],
 );
 const compareTotals = computed(() =>
   computeClutchTotals(compareData.value ?? []),
@@ -282,9 +299,12 @@ function fmtPct(value: number | null): string {
       }}
     </div>
 
-    <FadeSwap class="mt-3">
+    <FadeSwap
+      class="mt-3 transition-opacity duration-200"
+      :class="refreshing && 'pointer-events-none opacity-50'"
+    >
       <StatGridTableSkeleton
-        v-if="loading && !hasData"
+        v-if="showSkeleton"
         key="skeleton"
         :cards="3"
         :rows="5"

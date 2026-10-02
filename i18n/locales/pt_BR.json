@@ -3203,6 +3203,27 @@
         "end_date": "Fim",
         "peak_lowest": "Teto / Mínimo",
         "peak": "Teto",
+        "season_pace": {
+          "toggle": "{season} vs {previous}",
+          "all_time": "Todo o período",
+          "vs": "vs {season}",
+          "ahead": "à frente após {n} partida | à frente após {n} partidas",
+          "behind": "atrás após {n} partida | atrás após {n} partidas",
+          "level": "empatado após {n} partida | empatado após {n} partidas",
+          "ahead_final": "acima do rating final",
+          "behind_final": "abaixo do rating final",
+          "level_final": "igual ao rating final",
+          "tooltip": "{season} estava em {then} após {n} partida. Você está em {now}. | {season} estava em {then} após {n} partidas. Você está em {now}.",
+          "tooltip_final": "{season} terminou em {then}. Você está em {now}.",
+          "none": "Nenhuma partida nesta temporada ainda",
+          "peak": "Teto {season}",
+          "peak_marker": "Teto {season} {elo}",
+          "start": "Início",
+          "match": "Partida {n}",
+          "finish": "Terminou em #{rank} de {total}",
+          "finish_tooltip": "Teto da {season}: {peak} em {date}. Terminou em {final}, #{rank} de {total} no ranking.",
+          "peak_tooltip": "Teto da {season}: {peak} em {date}. Terminou em {final}."
+        },
         "no_matches_in_window": "Nenhuma partida nesta janela",
         "no_matches_in_window_period": "Nenhuma partida neste período.",
         "expand_to_all_time": "Expandir para todo o período",
@@ -3301,7 +3322,10 @@
           "label": "Comparar com",
           "select_label": "Selecionar jogador",
           "description": "Sobrepõe os números deste jogador em todas as abas de estatísticas.",
-          "vs": "vs"
+          "vs": "vs",
+          "season_label": "Ou uma temporada",
+          "sample": "Partidas: {matches} vs {compare} ({name})",
+          "small_sample": "amostras pequenas variam muito"
         },
         "elo_history_dialog": {
           "current": "Atual",
@@ -9161,7 +9185,14 @@
     "premier": "Premier",
     "competitive": "Competitivo",
     "wingman": "Braço Direito",
-    "imported_from": "{type} · importada de {source}"
+    "imported_from": "{type} · importada de {source}",
+    "season_break": {
+      "began": "A temporada {number} começou em {date}",
+      "ended": "A temporada {number} terminou em {date}",
+      "reset": "Ratings zerados para a nova temporada",
+      "recap": "Temporada {number} terminou em {final}, melhor {peak}, {wins}V–{losses}D"
+    },
+    "season_best": "Melhor rating da {season}"
   },
   "breadcrumbs": {
     "dashboard": "painel"

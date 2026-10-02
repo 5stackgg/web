@@ -3203,6 +3203,27 @@
         "end_date": "Slut",
         "peak_lowest": "Topp / Lägsta",
         "peak": "Topp",
+        "season_pace": {
+          "toggle": "{season} vs {previous}",
+          "all_time": "Alla tider",
+          "vs": "vs {season}",
+          "ahead": "före vid match {n} | före vid match {n}",
+          "behind": "bakom vid match {n} | bakom vid match {n}",
+          "level": "lika vid match {n} | lika vid match {n}",
+          "ahead_final": "över dess slutranking",
+          "behind_final": "under dess slutranking",
+          "level_final": "lika med dess slutranking",
+          "tooltip": "{season} låg på {then} efter {n} match. Du ligger på {now}. | {season} låg på {then} efter {n} matcher. Du ligger på {now}.",
+          "tooltip_final": "{season} slutade på {then}. Du ligger på {now}.",
+          "none": "Inga matcher än den här säsongen",
+          "peak": "{season} topp",
+          "peak_marker": "{season} topp {elo}",
+          "start": "Start",
+          "match": "Match {n}",
+          "finish": "Slutade #{rank} av {total}",
+          "finish_tooltip": "{season} topp {peak} den {date}. Slutade på {final}, #{rank} av {total} på topplistan.",
+          "peak_tooltip": "{season} topp {peak} den {date}. Slutade på {final}."
+        },
         "no_matches_in_window": "Inga matcher i detta fönster",
         "no_matches_in_window_period": "Inga matcher i detta fönster.",
         "expand_to_all_time": "Expandera till hela tiden",
@@ -3301,7 +3322,10 @@
           "label": "Jämför med",
           "select_label": "Jämför spelare",
           "description": "Lägger denna spelares siffror ovanpå varje statistikflik.",
-          "vs": "mot"
+          "vs": "mot",
+          "season_label": "Eller en säsong",
+          "sample": "Matcher: {matches} vs {compare} ({name})",
+          "small_sample": "små urval svänger mycket"
         },
         "elo_history_dialog": {
           "current": "Nuvarande",
@@ -9161,7 +9185,14 @@
     "premier": "Premier",
     "competitive": "Competitive",
     "wingman": "Wingman",
-    "imported_from": "{type} · importerad från {source}"
+    "imported_from": "{type} · importerad från {source}",
+    "season_break": {
+      "began": "Säsong {number} började {date}",
+      "ended": "Säsong {number} slutade {date}",
+      "reset": "Rankingen nollställd inför nya säsongen",
+      "recap": "Säsong {number} slutade på {final}, bäst {peak}, {wins}V–{losses}F"
+    },
+    "season_best": "Bästa ranking i {season}"
   },
   "breadcrumbs": {
     "dashboard": "översikt"

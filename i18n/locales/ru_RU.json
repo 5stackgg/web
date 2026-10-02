@@ -3203,6 +3203,27 @@
         "end_date": "Конец",
         "peak_lowest": "Пик / Минимум",
         "peak": "Пик",
+        "season_pace": {
+          "toggle": "{season} vs {previous}",
+          "all_time": "За всё время",
+          "vs": "vs {season}",
+          "ahead": "впереди после {n} матча | впереди после {n} матчей",
+          "behind": "позади после {n} матча | позади после {n} матчей",
+          "level": "наравне после {n} матча | наравне после {n} матчей",
+          "ahead_final": "выше итогового рейтинга",
+          "behind_final": "ниже итогового рейтинга",
+          "level_final": "наравне с итоговым рейтингом",
+          "tooltip": "В {season} после {n} матча было {then}. Сейчас у вас {now}. | В {season} после {n} матчей было {then}. Сейчас у вас {now}.",
+          "tooltip_final": "{season} завершился на {then}. Сейчас у вас {now}.",
+          "none": "В этом сезоне матчей пока нет",
+          "peak": "Пик {season}",
+          "peak_marker": "Пик {season} {elo}",
+          "start": "Начало",
+          "match": "Матч {n}",
+          "finish": "Итог: #{rank} из {total}",
+          "finish_tooltip": "Пик {season}: {peak} ({date}). Итог {final}, #{rank} из {total} в таблице лидеров.",
+          "peak_tooltip": "Пик {season}: {peak} ({date}). Итог {final}."
+        },
         "no_matches_in_window": "Нет матчей за этот период",
         "no_matches_in_window_period": "Нет матчей за этот период.",
         "expand_to_all_time": "Показать за всё время",
@@ -3301,7 +3322,10 @@
           "label": "Сравнить с",
           "select_label": "Игрок для сравнения",
           "description": "Накладывает показатели этого игрока на все вкладки статистики.",
-          "vs": "vs"
+          "vs": "vs",
+          "season_label": "Или сезон",
+          "sample": "Матчи: {matches} vs {compare} ({name})",
+          "small_sample": "малые выборки сильно колеблются"
         },
         "elo_history_dialog": {
           "current": "Текущий",
@@ -9161,7 +9185,14 @@
     "premier": "Premier",
     "competitive": "Competitive",
     "wingman": "Wingman",
-    "imported_from": "{type} · импортирован из {source}"
+    "imported_from": "{type} · импортирован из {source}",
+    "season_break": {
+      "began": "Сезон {number} начался {date}",
+      "ended": "Сезон {number} закончился {date}",
+      "reset": "Рейтинги сброшены для нового сезона",
+      "recap": "Сезон {number} завершён на {final}, лучший {peak}, {wins}В–{losses}П"
+    },
+    "season_best": "Лучший рейтинг {season}"
   },
   "breadcrumbs": {
     "dashboard": "панель управления"

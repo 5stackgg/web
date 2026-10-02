@@ -3120,11 +3120,6 @@
         "headshot_pct": "HS%"
       },
       "played_matches": "المباريات المُلعَبة",
-      "queue_partners": {
-        "title": "اصطفَّ معهم",
-        "matches": "{count} مباراة | {count} مباراة",
-        "win_rate": "فوز {pct}٪"
-      },
       "min_sanctions": "الحد الأدنى للعقوبات",
       "is_banned": "محظور",
       "is_gagged": "ممنوع من الكتابة",

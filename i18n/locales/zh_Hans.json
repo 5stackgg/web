@@ -3120,11 +3120,6 @@
         "headshot_pct": "爆头率 %"
       },
       "played_matches": "已玩比赛",
-      "queue_partners": {
-        "title": "一起排队的对象",
-        "matches": "{count} 场比赛 | {count} 场比赛",
-        "win_rate": "胜率 {pct}%"
-      },
       "min_sanctions": "最低处罚数",
       "is_banned": "已封禁",
       "is_gagged": "禁言",

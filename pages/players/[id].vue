@@ -87,7 +87,6 @@ import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
 import ImageUploadTile from "~/components/ImageUploadTile.vue";
 import PlayerHighlights from "~/components/clips/PlayerHighlights.vue";
-import PlayerQueuePartners from "~/components/PlayerQueuePartners.vue";
 import PlayerElo from "~/components/PlayerElo.vue";
 import PlayerLeaderboardRank from "~/components/PlayerLeaderboardRank.vue";
 import PlayerFaceitRank from "~/components/PlayerFaceitRank.vue";
@@ -2322,10 +2321,6 @@ const playerHeroTeamChipDotClasses =
       v-model:open="blockDialogOpen"
       :player="player"
     />
-
-    <PageTransition :delay="60" v-if="playerId">
-      <PlayerQueuePartners :player-id="playerId" />
-    </PageTransition>
 
     <PageTransition :delay="75" v-if="playerId">
       <PlayerHighlights

@@ -3120,11 +3120,6 @@
         "headshot_pct": "HS%"
       },
       "played_matches": "Partidas jugadas",
-      "queue_partners": {
-        "title": "En cola con",
-        "matches": "{count} partida | {count} partidas",
-        "win_rate": "{pct} % ganadas"
-      },
       "min_sanctions": "Sanciones mínimas",
       "is_banned": "Baneado",
       "is_gagged": "Silenciado en chat",

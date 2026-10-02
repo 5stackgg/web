@@ -3120,11 +3120,6 @@
         "headshot_pct": "헤드샷 %"
       },
       "played_matches": "플레이한 매치",
-      "queue_partners": {
-        "title": "함께 대기열에 선 상대",
-        "matches": "{count}경기 | {count}경기",
-        "win_rate": "승률 {pct}%"
-      },
       "min_sanctions": "최소 제재 횟수",
       "is_banned": "밴됨",
       "is_gagged": "채팅 금지됨",

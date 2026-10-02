@@ -3120,11 +3120,6 @@
         "headshot_pct": "Kafa vuruşu %"
       },
       "played_matches": "Oynanan maçlar",
-      "queue_partners": {
-        "title": "Birlikte sıraya girilenler",
-        "matches": "{count} maç | {count} maç",
-        "win_rate": "%{pct} kazanıldı"
-      },
       "min_sanctions": "Minimum yaptırım",
       "is_banned": "Banlı",
       "is_gagged": "Susturulmuş",

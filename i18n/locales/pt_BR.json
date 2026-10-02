@@ -3120,11 +3120,6 @@
         "headshot_pct": "% de HS"
       },
       "played_matches": "Partidas Jogadas",
-      "queue_partners": {
-        "title": "Na Fila Com",
-        "matches": "{count} partida | {count} partidas",
-        "win_rate": "{pct}% vencidas"
-      },
       "min_sanctions": "Sanções Mínimas",
       "is_banned": "Banido",
       "is_gagged": "Censurado",

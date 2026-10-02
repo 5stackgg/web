@@ -3120,11 +3120,6 @@
         "headshot_pct": "HS%"
       },
       "played_matches": "Match giocati",
-      "queue_partners": {
-        "title": "In coda con",
-        "matches": "{count} partita | {count} partite",
-        "win_rate": "{pct} % vinte"
-      },
       "min_sanctions": "Sanzioni minime",
       "is_banned": "Bannati",
       "is_gagged": "Silenziati (chat)",

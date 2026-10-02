@@ -3120,11 +3120,6 @@
         "headshot_pct": "HS %"
       },
       "played_matches": "Gespielte Matches",
-      "queue_partners": {
-        "title": "Gemeinsam in der Warteschlange",
-        "matches": "{count} Match | {count} Matches",
-        "win_rate": "{pct} % gewonnen"
-      },
       "min_sanctions": "Mindestanzahl Sanktionen",
       "is_banned": "Gebannt",
       "is_gagged": "Gagged",

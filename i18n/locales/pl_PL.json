@@ -3120,11 +3120,6 @@
         "headshot_pct": "HS%"
       },
       "played_matches": "Rozegrane mecze",
-      "queue_partners": {
-        "title": "W kolejce razem z",
-        "matches": "{count} mecz | {count} meczów",
-        "win_rate": "{pct} % wygranych"
-      },
       "min_sanctions": "Minimalna liczba sankcji",
       "is_banned": "Zbanowany",
       "is_gagged": "Wyciszony na czacie",

@@ -4277,6 +4277,10 @@
       "source": "Quelle",
       "releases": "Neuestes Release",
       "requires_service": "Benötigt einen externen Dienst, den du bereitstellst: {service}",
+      "workshop_addons": {
+        "title": "Workshop-Addons",
+        "description": "Spieler laden diese aus dem Steam Workshop herunter, wenn sie einem Server beitreten, auf dem {name} läuft. SwiftlyS2-Server stellen sie automatisch bereit; CounterStrikeSharp-Server starten ohne sie."
+      },
       "install_title": "Auf einem Node installieren",
       "install": "Installieren",
       "uninstall": "Entfernen",

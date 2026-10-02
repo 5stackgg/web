@@ -4277,6 +4277,10 @@
       "source": "源码",
       "releases": "最新发布",
       "requires_service": "需要你自行提供的外部服务：{service}",
+      "workshop_addons": {
+        "title": "创意工坊附加内容",
+        "description": "玩家加入运行 {name} 的服务器时，会从 Steam 创意工坊下载这些内容。SwiftlyS2 服务器会自动提供；CounterStrikeSharp 服务器启动时不包含它们。"
+      },
       "install_title": "安装到节点",
       "install": "安装",
       "uninstall": "移除",

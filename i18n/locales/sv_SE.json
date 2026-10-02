@@ -4277,6 +4277,10 @@
       "source": "Källkod",
       "releases": "Senaste släpp",
       "requires_service": "Kräver en extern tjänst som du själv tillhandahåller: {service}",
+      "workshop_addons": {
+        "title": "Workshop-tillägg",
+        "description": "Spelare laddar ner dessa från Steam Workshop när de ansluter till en server som kör {name}. SwiftlyS2-servrar levererar dem automatiskt; CounterStrikeSharp-servrar startar utan dem."
+      },
       "install_title": "Installera på en nod",
       "install": "Installera",
       "uninstall": "Ta bort",

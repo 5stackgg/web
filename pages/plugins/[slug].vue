@@ -798,6 +798,42 @@ definePageMeta({
             </span>
           </div>
 
+          <!-- Every player who joins a server running this downloads these,
+               so it is worth knowing before turning it on. -->
+          <div
+            v-if="workshopAddons.length > 0"
+            class="space-y-2 rounded-md border border-dashed p-4 text-sm text-muted-foreground"
+          >
+            <div class="flex items-start gap-2">
+              <Download class="mt-0.5 h-4 w-4 shrink-0" />
+              <div class="space-y-1">
+                <div class="font-medium text-foreground">
+                  {{ $t("pages.plugins.workshop_addons.title") }}
+                </div>
+                <p>
+                  {{
+                    $t("pages.plugins.workshop_addons.description", {
+                      name: plugin.name,
+                    })
+                  }}
+                </p>
+              </div>
+            </div>
+            <ul class="space-y-1 pl-6">
+              <li v-for="id in workshopAddons" :key="id">
+                <a
+                  :href="`https://steamcommunity.com/sharedfiles/filedetails/?id=${id}`"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-1 font-mono text-xs underline-offset-2 hover:underline"
+                >
+                  {{ id }}
+                  <ExternalLink class="h-3 w-3" />
+                </a>
+              </li>
+            </ul>
+          </div>
+
           <Card v-if="versions.length > 0">
             <CardHeader>
               <CardTitle class="text-base">
@@ -1187,6 +1223,7 @@ export default {
             hot_swappable: true,
             requires_service: true,
             requires_server_guidelines_disabled: true,
+            workshop_addons: true,
             config_path: true,
             cvars: true,
             panel: true,
@@ -1784,6 +1821,9 @@ export default {
       return slugs
         .map((slug) => this.paired.find((entry) => entry.slug === slug))
         .filter(Boolean) as Array<Record<string, any>>;
+    },
+    workshopAddons(): Array<string> {
+      return this.plugin?.workshop_addons ?? [];
     },
     // The README tab already resolved the repository for this runtime's
     // build, which is the code someone clicking the byline wants to read.

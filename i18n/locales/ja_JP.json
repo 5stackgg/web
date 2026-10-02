@@ -4277,6 +4277,10 @@
       "source": "ソース",
       "releases": "最新リリース",
       "requires_service": "自分で用意する外部サービスが必要です: {service}",
+      "workshop_addons": {
+        "title": "Workshopアドオン",
+        "description": "{name} を実行しているサーバーに参加すると、プレイヤーはこれらをSteam Workshopからダウンロードします。SwiftlyS2サーバーは自動で配信し、CounterStrikeSharpサーバーはこれらなしで起動します。"
+      },
       "install_title": "ノードにインストール",
       "install": "インストール",
       "uninstall": "削除",

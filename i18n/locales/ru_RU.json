@@ -4277,6 +4277,10 @@
       "source": "Исходный код",
       "releases": "Последний релиз",
       "requires_service": "Нужен внешний сервис, который ты предоставляешь: {service}",
+      "workshop_addons": {
+        "title": "Аддоны из мастерской",
+        "description": "Игроки скачивают их из Steam Workshop, когда заходят на сервер с {name}. Серверы SwiftlyS2 раздают их автоматически; серверы CounterStrikeSharp запускаются без них."
+      },
       "install_title": "Установить на ноду",
       "install": "Установить",
       "uninstall": "Удалить",

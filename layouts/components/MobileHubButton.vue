@@ -10,30 +10,14 @@ import { useNotificationBadge } from "~/composables/useNotificationBadge";
 import { badgePopTransition, formatBadgeCount } from "~/utilities/badgeCount";
 
 const { openLastOrDefaultHub } = useHubState();
-const { tabs, unreadCounts, totalUnread } = useChatTabs();
-const { unreadNotificationCount, unreadChatNotificationRooms } =
-  useNotificationBadge();
+const { totalUnread } = useChatTabs();
+const { unreadNotificationCount } = useNotificationBadge();
 const { pendingFriends } = useInvites();
 
-const roomsCountedByTabs = computed(
-  () =>
-    new Set(
-      tabs.value
-        .filter((tab) => (unreadCounts.value[tab.id] ?? 0) > 0)
-        .map((tab) => `${tab.type}:${tab.lobbyId}`),
-    ),
-);
-const otherNotificationCount = computed(
-  () =>
-    unreadNotificationCount.value -
-    unreadChatNotificationRooms.value.filter((room) =>
-      roomsCountedByTabs.value.has(room),
-    ).length,
-);
 const unreadCount = computed(
   () =>
     totalUnread.value +
-    otherNotificationCount.value +
+    unreadNotificationCount.value +
     (pendingFriends.value?.length ?? 0),
 );
 const badgeLabel = computed(() => formatBadgeCount(unreadCount.value));
@@ -59,7 +43,7 @@ const badgeLabel = computed(() => formatBadgeCount(unreadCount.value));
         class="absolute -top-1 -right-1 flex origin-center"
       >
         <span
-          v-if="otherNotificationCount > 0"
+          v-if="unreadNotificationCount > 0"
           class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75 motion-reduce:hidden"
         />
         <span

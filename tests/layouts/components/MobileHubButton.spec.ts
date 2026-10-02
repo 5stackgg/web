@@ -7,7 +7,6 @@ import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 
 const hub = vi.hoisted(() => ({
   notifications: 0,
-  chatRooms: [] as string[],
   openLastOrDefaultHub: () => {},
 }));
 
@@ -22,7 +21,6 @@ vi.mock("~/composables/useNotificationBadge", async () => {
   return {
     useNotificationBadge: () => ({
       unreadNotificationCount: computed(() => hub.notifications),
-      unreadChatNotificationRooms: computed(() => hub.chatRooms),
     }),
   };
 });
@@ -47,7 +45,6 @@ afterEach(() => {
   useMatchmakingStore().friends = [] as any;
   useAuthStore().me = undefined;
   hub.notifications = 0;
-  hub.chatRooms = [];
   hub.openLastOrDefaultHub = () => {};
 });
 
@@ -56,13 +53,6 @@ async function mountButton() {
   unmount = () => wrapper.unmount();
   await flushPromises();
   return wrapper;
-}
-
-function openRoom(type: "direct" | "match", lobbyId: string, unread: number) {
-  const { openTab, setUnread } = useChatTabs();
-  const id = `${type}:${lobbyId}`;
-  openTab({ id, label: id, instance: type, type, lobbyId, activate: false });
-  setUnread(id, unread);
 }
 
 function badge(wrapper: Awaited<ReturnType<typeof mountButton>>) {
@@ -91,40 +81,6 @@ describe("MobileHubButton", () => {
     expect(wrapper.find("button").attributes("aria-label")).toBe(
       "Toggle Right Sidebar (9 unread)",
     );
-  });
-
-  it("counts a chat message once, not again for its bell row", async () => {
-    openRoom("direct", "1:2", 1);
-    openRoom("match", "m1", 4);
-    hub.notifications = 5;
-    hub.chatRooms = ["direct:1:2", "match:m1"];
-
-    const wrapper = await mountButton();
-
-    expect(badge(wrapper).text()).toBe("8");
-    expect(wrapper.find(".animate-ping").exists()).toBe(true);
-  });
-
-  it("does not ping for chat bell rows its tabs already count", async () => {
-    openRoom("direct", "1:2", 1);
-    hub.notifications = 1;
-    hub.chatRooms = ["direct:1:2"];
-
-    const wrapper = await mountButton();
-
-    expect(badge(wrapper).text()).toBe("1");
-    expect(wrapper.find(".animate-ping").exists()).toBe(false);
-  });
-
-  it("keeps a chat bell row whose room has no tab or no unread", async () => {
-    openRoom("direct", "1:2", 0);
-    hub.notifications = 2;
-    hub.chatRooms = ["direct:1:2", "match:closed"];
-
-    const wrapper = await mountButton();
-
-    expect(badge(wrapper).text()).toBe("2");
-    expect(wrapper.find(".animate-ping").exists()).toBe(true);
   });
 
   it("counts chat alone when there are no notifications", async () => {

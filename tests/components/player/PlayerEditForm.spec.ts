@@ -167,46 +167,6 @@ describe("PlayerEditForm", () => {
     expect(form.text()).toContain("Use Steam avatar");
   });
 
-  it("offers to copy a new roster image to the player's teams after upload", async () => {
-    signIn(e_player_roles_enum.user);
-    const fetchMock = vi
-      .spyOn(globalThis, "fetch")
-      .mockResolvedValue(new Response(JSON.stringify({ path: "p" })));
-    const form = await mountForm({
-      canEditAvatar: true,
-      bulkTeams: [
-        { teamId: "t1", teamName: "Blue Rabbits", hasCustomImage: false },
-        { teamId: "t2", teamName: "Night Owls", hasCustomImage: true },
-      ],
-    });
-
-    expect(form.text()).not.toContain("Also apply to your teams");
-
-    const roster = form
-      .findAllComponents(ImageUploadTile)
-      .find((tile) => tile.props("mode") === "roster")!;
-    roster.vm.$emit("uploaded", "roster.webp", new Blob(["x"]));
-    await flushPromises();
-
-    expect(form.text()).toContain("Also apply to your teams");
-    expect(button(form, "Blue Rabbits")!.attributes("aria-pressed")).toBe(
-      "true",
-    );
-    expect(button(form, "Night Owls")!.attributes("aria-pressed")).toBe(
-      "false",
-    );
-
-    await button(form, "Apply")!.trigger("click");
-    await flushPromises();
-
-    expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(String(fetchMock.mock.calls[0][0])).toContain(
-      "/avatars/roster-teams/t1/76561198000000001",
-    );
-    expect(toastMock).toHaveBeenCalledWith({ title: "Applied to 1 team(s)" });
-    expect(form.text()).not.toContain("Also apply to your teams");
-  });
-
   it("opens the current roster image in the editor when the lineup slot is clicked", async () => {
     signIn(e_player_roles_enum.user);
     const fetchMock = vi
@@ -234,23 +194,56 @@ describe("PlayerEditForm", () => {
     expect(editor.props("file")).toBeInstanceOf(File);
   });
 
-  it("copies an existing roster image to teams without a new upload", async () => {
+  it("lists every team and copies the roster image to one at a time", async () => {
     signIn(e_player_roles_enum.user);
-    vi.spyOn(globalThis, "fetch").mockResolvedValue(
-      new Response(new Blob(["x"], { type: "image/webp" })),
-    );
+    const fetchMock = vi
+      .spyOn(globalThis, "fetch")
+      .mockImplementation(async (_url, init) =>
+        init?.method === "POST"
+          ? new Response(JSON.stringify({ path: "p" }))
+          : new Response(new Blob(["x"]), {
+              headers: { "Content-Type": "image/webp" },
+            }),
+      );
     const form = await mountForm({
       canEditAvatar: true,
       player: { ...player, roster_image_url: "roster-players/1.webp" },
-      bulkTeams: [
-        { teamId: "t1", teamName: "Blue Rabbits", hasCustomImage: false },
+      teams: [
+        { teamId: "t1", teamName: "Blue Rabbits", rosterImageUrl: null, canCopy: true },
+        { teamId: "t2", teamName: "Night Owls", rosterImageUrl: "roster-teams/2.webp", canCopy: true },
+        { teamId: "t3", teamName: "Pub Stars", rosterImageUrl: null, canCopy: false },
       ],
     });
 
-    await button(form, "Copy to teams")!.trigger("click");
+    const rows = form.findAll("li");
+    expect(rows.map((row) => row.text())).toEqual([
+      "Blue Rabbits Copy",
+      "Night Owls Replace",
+      "Pub Stars",
+    ]);
+
+    await rows[0].find("button").trigger("click");
     await flushPromises();
 
-    expect(form.text()).toContain("Also apply to your teams");
-    expect(button(form, "Copy to teams")).toBeUndefined();
+    const uploads = fetchMock.mock.calls.filter(
+      ([, init]) => init?.method === "POST",
+    );
+    expect(uploads).toHaveLength(1);
+    expect(String(uploads[0][0])).toContain(
+      "/avatars/roster-teams/t1/76561198000000001",
+    );
+    expect(toastMock).toHaveBeenCalledWith({ title: "Copied to Blue Rabbits" });
+  });
+
+  it("can't copy to teams before there is a roster image", async () => {
+    signIn(e_player_roles_enum.user);
+    const form = await mountForm({
+      canEditAvatar: true,
+      teams: [
+        { teamId: "t1", teamName: "Blue Rabbits", rosterImageUrl: null, canCopy: true },
+      ],
+    });
+
+    expect(button(form, "Copy")!.attributes("disabled")).toBeDefined();
   });
 });

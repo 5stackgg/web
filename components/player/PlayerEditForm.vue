@@ -7,7 +7,7 @@ import {
   RotateCcw,
   Trash2,
   Upload,
-  Users,
+  Copy,
 } from "lucide-vue-next";
 import { Input } from "~/components/ui/input";
 import { Spinner } from "~/components/ui/spinner";
@@ -206,7 +206,6 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
         :delete-url="rosterEndpoint"
         :has-custom="hasRoster"
         :current-src="rosterSrc"
-        @uploaded="offerToTeams"
       >
         <template #default="{ pick, edit, remove, busy, dragOver, dropzone }">
           <ManageSection :label="$t('team.member.roster_image')">
@@ -306,117 +305,77 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
                 {{ $t("image_upload.drop_to_upload") }}
               </div>
             </div>
-            <div class="flex items-start justify-between gap-3">
-              <p class="text-xs text-muted-foreground">
-                {{ $t("player.edit.roster_hint") }}
-              </p>
-              <Button
-                v-if="hasRoster && bulkTeams.length > 0 && !teamOffer"
-                type="button"
-                variant="outline"
-                size="sm"
-                class="shrink-0"
-                :loading="loadingRosterCopy"
-                @click="offerCurrentToTeams"
-              >
-                <Users class="size-3.5" />
-                {{ $t("player.edit.copy_to_teams") }}
-              </Button>
+            <p class="text-xs text-muted-foreground">
+              {{ $t("player.edit.roster_hint") }}
+            </p>
+
+            <div v-if="teams.length > 0" class="grid gap-1.5">
+              <span class="text-xs font-medium text-muted-foreground">
+                {{ $t("player.edit.your_teams") }}
+              </span>
+              <ul class="divide-y divide-border rounded-md border border-border">
+                <li
+                  v-for="team in teams"
+                  :key="team.teamId"
+                  class="flex h-12 items-center gap-3 px-3"
+                >
+                  <span
+                    class="relative flex aspect-[400/420] w-7 shrink-0 items-end justify-center overflow-hidden rounded-sm bg-muted/50"
+                  >
+                    <img
+                      v-if="team.rosterImageUrl"
+                      :src="resolveAvatarUrl(team.rosterImageUrl, apiDomain)"
+                      alt=""
+                      class="absolute inset-0 size-full object-contain object-bottom"
+                    />
+                    <svg
+                      v-else
+                      viewBox="0 0 40 42"
+                      class="w-[86%] text-muted-foreground/40"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <circle cx="20" cy="14.5" r="7.5" />
+                      <path d="M4 42c0-9.5 7-15.5 16-15.5S36 32.5 36 42z" />
+                    </svg>
+                  </span>
+                  <span class="min-w-0 flex-1 truncate text-sm">
+                    {{ team.teamName }}
+                  </span>
+                  <Button
+                    v-if="team.canCopy"
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    :disabled="!hasRoster || copyingTeamId !== null"
+                    :loading="copyingTeamId === team.teamId"
+                    @click="copyToTeam(team)"
+                  >
+                    <Copy class="size-3.5" />
+                    {{
+                      team.rosterImageUrl
+                        ? $t("image_upload.replace")
+                        : $t("player.edit.copy")
+                    }}
+                  </Button>
+                </li>
+              </ul>
             </div>
           </ManageSection>
         </template>
       </ImageUploadTile>
     </div>
 
-    <div class="sticky bottom-0 z-20">
-      <Transition
-        enter-active-class="transition duration-300 ease-out"
-        enter-from-class="opacity-0 translate-y-8"
-        leave-active-class="transition duration-200 ease-in"
-        leave-to-class="opacity-0 translate-y-8"
-      >
-        <div v-if="teamOffer" class="px-1 pb-1 pt-2">
-          <div
-            class="grid gap-2.5 rounded-2xl border border-[hsl(var(--tac-amber)/0.4)] bg-background/90 px-3 py-2.5 shadow-[0_18px_40px_-12px_hsl(var(--tac-amber)/0.5)] backdrop-blur-xl"
-          >
-            <div class="flex items-center justify-between gap-3">
-              <span
-                class="text-[0.7rem] font-semibold uppercase tracking-[0.18em]"
-              >
-                {{ $t("avatar.roster_editor.bulk_label") }}
-              </span>
-              <div class="flex shrink-0 gap-1.5">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  class="text-muted-foreground hover:text-foreground"
-                  :disabled="applyingTeams"
-                  @click="teamOffer = null"
-                >
-                  {{ $t("player.edit.not_now") }}
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  class="tac-amber-cta"
-                  :loading="applyingTeams"
-                  :disabled="chosenTeams.length === 0"
-                  @click="applyToTeams"
-                >
-                  {{ $t("player.edit.apply") }}
-                </Button>
-              </div>
-            </div>
-            <div class="flex flex-wrap gap-1.5">
-              <button
-                v-for="team in bulkTeams"
-                :key="team.teamId"
-                type="button"
-                class="inline-flex h-7 max-w-full items-center gap-1.5 rounded-md border px-2.5 text-xs transition-colors"
-                :class="
-                  teamOffer.selected[team.teamId]
-                    ? 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.1)] text-foreground'
-                    : 'border-border text-muted-foreground hover:text-foreground'
-                "
-                :aria-pressed="!!teamOffer.selected[team.teamId]"
-                @click="
-                  teamOffer.selected[team.teamId] =
-                    !teamOffer.selected[team.teamId]
-                "
-              >
-                <Check
-                  class="size-3.5 shrink-0"
-                  :class="
-                    teamOffer.selected[team.teamId]
-                      ? 'text-[hsl(var(--tac-amber))]'
-                      : 'opacity-0'
-                  "
-                />
-                <span class="truncate">{{ team.teamName }}</span>
-              </button>
-            </div>
-            <p
-              v-if="chosenTeams.some((team) => team.hasCustomImage)"
-              class="text-xs text-[hsl(var(--tac-amber))]"
-            >
-              {{ $t("avatar.roster_editor.bulk_will_overwrite") }}
-            </p>
-          </div>
-        </div>
-      </Transition>
-
-      <SettingsSaveBar
-        contained
-        :dirty="isDirty"
-        :force-visible="isDirty"
-        :valid="!nameInvalid"
-        :submitting="saving"
-        :description="saveBarDescription"
-        @save="save"
-        @discard="discard"
-      />
-    </div>
+    <SettingsSaveBar
+      contained
+      :dirty="isDirty"
+      :force-visible="isDirty"
+      :valid="!nameInvalid"
+      :submitting="saving"
+      :description="saveBarDescription"
+      @save="save"
+      @discard="discard"
+    />
   </div>
 </template>
 
@@ -428,10 +387,11 @@ import { toast } from "@/components/ui/toast";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import { uploadImageBlob } from "~/utilities/imagePipeline";
 
-interface BulkTeam {
+interface RosterTeam {
   teamId: string;
   teamName: string;
-  hasCustomImage: boolean;
+  rosterImageUrl: string | null;
+  canCopy: boolean;
 }
 
 export default {
@@ -443,8 +403,8 @@ export default {
     canEditAvatar: Boolean,
     canEditName: Boolean,
     canEditCountry: Boolean,
-    bulkTeams: {
-      type: Array as () => BulkTeam[],
+    teams: {
+      type: Array as () => RosterTeam[],
       default: () => [],
     },
   },
@@ -457,12 +417,7 @@ export default {
       pendingName: null as string | null,
       saving: false,
       synced: false,
-      teamOffer: null as {
-        blob: Blob;
-        selected: Record<string, boolean>;
-      } | null,
-      applyingTeams: false,
-      loadingRosterCopy: false,
+      copyingTeamId: null as string | null,
     };
   },
   watch: {
@@ -532,12 +487,6 @@ export default {
         this.country !== this.player.country
       );
     },
-    chosenTeams() {
-      if (!this.teamOffer) return [];
-      return this.bulkTeams.filter(
-        (team) => this.teamOffer!.selected[team.teamId],
-      );
-    },
     isDirty() {
       return this.nameDirty || this.countryDirty;
     },
@@ -553,68 +502,36 @@ export default {
     },
   },
   methods: {
-    bulkRosterUrl(teamId: string) {
-      return `https://${this.apiDomain}/avatars/roster-teams/${teamId}/${this.player.steam_id}`;
-    },
-    offerToTeams(_path: string, blob?: Blob) {
-      if (!blob || this.bulkTeams.length === 0) return;
-      this.teamOffer = {
-        blob,
-        selected: Object.fromEntries(
-          this.bulkTeams.map((team) => [team.teamId, !team.hasCustomImage]),
-        ),
-      };
-    },
-    async offerCurrentToTeams() {
-      if (!this.rosterSrc || this.loadingRosterCopy) return;
-      this.loadingRosterCopy = true;
+    resolveAvatarUrl,
+    async copyToTeam(team: RosterTeam) {
+      if (!this.rosterSrc || this.copyingTeamId) return;
+      this.copyingTeamId = team.teamId;
       try {
         const response = await fetch(this.rosterSrc);
         if (!response.ok) {
           throw new Error(`${response.status} ${response.statusText}`);
         }
-        this.offerToTeams("", await response.blob());
+        await uploadImageBlob(
+          `https://${this.apiDomain}/avatars/roster-teams/${team.teamId}/${this.player.steam_id}`,
+          await response.blob(),
+          "roster.webp",
+        );
+        toast({
+          title: this.$t("player.edit.copied_to_team", {
+            team: team.teamName,
+          }),
+        });
       } catch (error: any) {
         toast({
-          title: this.$t("image_upload.upload_failed"),
+          title: this.$t("avatar.roster_editor.bulk_failed", {
+            name: team.teamName,
+          }),
           description: error?.message,
           variant: "destructive",
         });
       } finally {
-        this.loadingRosterCopy = false;
+        this.copyingTeamId = null;
       }
-    },
-    async applyToTeams() {
-      if (!this.teamOffer || this.applyingTeams) return;
-      const { blob } = this.teamOffer;
-      const teams = this.chosenTeams;
-      this.applyingTeams = true;
-      const results = await Promise.allSettled(
-        teams.map((team) =>
-          uploadImageBlob(this.bulkRosterUrl(team.teamId), blob, "roster.webp"),
-        ),
-      );
-      this.applyingTeams = false;
-      this.teamOffer = null;
-      const applied = results.filter((r) => r.status === "fulfilled").length;
-      if (applied > 0) {
-        toast({
-          title: this.$t("avatar.roster_editor.bulk_success", {
-            count: applied,
-          }),
-        });
-      }
-      results.forEach((result, i) => {
-        if (result.status === "rejected") {
-          toast({
-            title: this.$t("avatar.roster_editor.bulk_failed", {
-              name: teams[i].teamName,
-            }),
-            description: String(result.reason?.message ?? result.reason),
-            variant: "destructive",
-          });
-        }
-      });
     },
     resetAvatar() {
       (this.$refs.avatarTile as any)?.remove();

@@ -1201,9 +1201,6 @@
       "removing_bg": "Tar bort bakgrund…",
       "notice_player": "Används i matcher när spelaren inte är tilldelad ett lag. I matcher med lag används istället lagets truppbild.",
       "notice_team": "Används i matcher när spelaren deltar som en del av det här laget. Vid solo-/individuella matcher används spelarens egen truppbild.",
-      "bulk_label": "Tillämpa även på dina lag",
-      "bulk_will_overwrite": "Kommer att skriva över befintlig",
-      "bulk_success": "Tillämpad på {count} lag",
       "bulk_failed": "Det gick inte att tillämpa på {name}"
     }
   },
@@ -8417,9 +8414,9 @@
       "roster_hint": "Visas i laguppställningar i pick-up-matcher. Lagmatcher använder lagets bild.",
       "name_length": "Namn måste vara 3 till 32 tecken.",
       "saved": "Spelaren uppdaterad",
-      "not_now": "Inte nu",
-      "apply": "Tillämpa",
-      "copy_to_teams": "Kopiera till lag"
+      "your_teams": "Dina lag",
+      "copy": "Kopiera",
+      "copied_to_team": "Kopierad till {team}"
     },
     "pending_imports": {
       "title": "Väntande CS2-importer",

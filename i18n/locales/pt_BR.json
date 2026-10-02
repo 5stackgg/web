@@ -1201,9 +1201,6 @@
       "removing_bg": "Removendo fundo…",
       "notice_player": "Usado em partidas quando este jogador não está atribuído a uma equipe. Em partidas com equipes, é usada a imagem do elenco da equipe.",
       "notice_team": "Usado em partidas quando este jogador participa como parte desta equipe. Em partidas solo/individuais, é usada a própria imagem de elenco do jogador.",
-      "bulk_label": "Aplicar também às suas equipes",
-      "bulk_will_overwrite": "Irá sobrescrever existentes",
-      "bulk_success": "Aplicado a {count} equipe(s)",
       "bulk_failed": "Falha ao aplicar em {name}"
     }
   },
@@ -8417,9 +8414,9 @@
       "roster_hint": "Exibida nas escalações de partidas pick-up. Partidas de time usam a imagem do time.",
       "name_length": "Os nomes precisam ter de 3 a 32 caracteres.",
       "saved": "Jogador atualizado",
-      "not_now": "Agora não",
-      "apply": "Aplicar",
-      "copy_to_teams": "Copiar para times"
+      "your_teams": "Seus times",
+      "copy": "Copiar",
+      "copied_to_team": "Copiada para {team}"
     },
     "pending_imports": {
       "title": "Importações CS2 Pendentes",

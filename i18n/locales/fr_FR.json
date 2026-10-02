@@ -1201,9 +1201,6 @@
       "removing_bg": "Suppression du fond…",
       "notice_player": "Utilisée dans les matchs où ce joueur n'est assigné à aucune équipe. Dans les matchs avec équipes, l'image de roster de l'équipe est utilisée à la place.",
       "notice_team": "Utilisée dans les matchs où ce joueur participe avec cette équipe. Pour les matchs solo ou individuels, l'image de roster du joueur est utilisée.",
-      "bulk_label": "Appliquer aussi à tes équipes",
-      "bulk_will_overwrite": "Écrasera l'existant",
-      "bulk_success": "Appliquée à {count} équipe(s)",
       "bulk_failed": "Impossible d'appliquer à {name}"
     }
   },
@@ -8417,9 +8414,9 @@
       "roster_hint": "Affichée dans les compositions des matchs pick-up. Les matchs d'équipe utilisent l'image de l'équipe.",
       "name_length": "Les noms doivent contenir entre 3 et 32 caractères.",
       "saved": "Joueur mis à jour",
-      "not_now": "Pas maintenant",
-      "apply": "Appliquer",
-      "copy_to_teams": "Copier vers les équipes"
+      "your_teams": "Tes équipes",
+      "copy": "Copier",
+      "copied_to_team": "Copiée vers {team}"
     },
     "pending_imports": {
       "title": "Imports CS2 en attente",

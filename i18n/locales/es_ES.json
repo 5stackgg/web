@@ -1201,9 +1201,6 @@
       "removing_bg": "Quitando el fondo…",
       "notice_player": "Se usa en partidas cuando este jugador no está asignado a un equipo. En las partidas con equipo asignado se usa la imagen de roster del equipo.",
       "notice_team": "Se usa en partidas cuando este jugador entra como parte de este equipo. En partidas individuales se usa la imagen de roster del propio jugador.",
-      "bulk_label": "Aplicar también a tus equipos",
-      "bulk_will_overwrite": "Sobrescribirá las existentes",
-      "bulk_success": "Aplicada a {count} equipo(s)",
       "bulk_failed": "No se ha podido aplicar a {name}"
     }
   },
@@ -8417,9 +8414,9 @@
       "roster_hint": "Se muestra en las alineaciones de partidas pick-up. Las partidas de equipo usan la imagen del equipo.",
       "name_length": "Los nombres deben tener entre 3 y 32 caracteres.",
       "saved": "Jugador actualizado",
-      "not_now": "Ahora no",
-      "apply": "Aplicar",
-      "copy_to_teams": "Copiar a equipos"
+      "your_teams": "Tus equipos",
+      "copy": "Copiar",
+      "copied_to_team": "Copiada a {team}"
     },
     "pending_imports": {
       "title": "Importaciones de CS2 pendientes",

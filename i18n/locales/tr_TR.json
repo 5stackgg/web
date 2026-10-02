@@ -1201,9 +1201,6 @@
       "removing_bg": "Arka plan kaldırılıyor…",
       "notice_player": "Bu oyuncu bir takıma atanmadığında maçlarda kullanılır. Takıma atanmış maçlarda ise takımın kadro görseli kullanılır.",
       "notice_team": "Bu oyuncu bu takımın parçası olarak katıldığında maçlarda kullanılır. Solo / bireysel maçlarda oyuncunun kendi kadro görseli kullanılır.",
-      "bulk_label": "Takımlarına da uygula",
-      "bulk_will_overwrite": "Mevcut olanın üzerine yazılacak",
-      "bulk_success": "{count} takıma uygulandı",
       "bulk_failed": "{name} takımına uygulanamadı"
     }
   },
@@ -8417,9 +8414,9 @@
       "roster_hint": "Pick-up maç kadrolarında gösterilir. Takım maçlarında takımın görseli kullanılır.",
       "name_length": "İsimler 3 ile 32 karakter arasında olmalıdır.",
       "saved": "Oyuncu güncellendi",
-      "not_now": "Şimdi değil",
-      "apply": "Uygula",
-      "copy_to_teams": "Takımlara kopyala"
+      "your_teams": "Takımların",
+      "copy": "Kopyala",
+      "copied_to_team": "{team} takımına kopyalandı"
     },
     "pending_imports": {
       "title": "Bekleyen CS2 içe aktarmaları",

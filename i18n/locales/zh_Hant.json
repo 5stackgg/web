@@ -1201,9 +1201,6 @@
       "removing_bg": "正在去除背景……",
       "notice_player": "當此玩家未分配至隊伍時，於比賽中使用。在隊伍出賽的比賽中，將改用該隊伍的名單照。",
       "notice_team": "當此玩家以此隊伍成員身分參賽時使用。個人／單人比賽則使用玩家自己的名單照。",
-      "bulk_label": "同時套用至您的隊伍",
-      "bulk_will_overwrite": "將覆寫既有內容",
-      "bulk_success": "已套用至 {count} 支隊伍",
       "bulk_failed": "套用至 {name} 失敗"
     }
   },
@@ -8417,9 +8414,9 @@
       "roster_hint": "顯示在路人比賽的陣容中。戰隊比賽使用戰隊的圖片。",
       "name_length": "名稱需為 3 到 32 個字元。",
       "saved": "玩家已更新",
-      "not_now": "暫不",
-      "apply": "套用",
-      "copy_to_teams": "複製到戰隊"
+      "your_teams": "你的戰隊",
+      "copy": "複製",
+      "copied_to_team": "已複製到 {team}"
     },
     "pending_imports": {
       "title": "待匯入的 CS2 比賽",

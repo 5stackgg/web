@@ -3529,7 +3529,7 @@ const playerHeroTeamChipDotClasses =
         :can-edit-avatar="canEditAvatar"
         :can-edit-name="canEditName"
         :can-edit-country="canEditCountry"
-        :bulk-teams="bulkApplyTeams"
+        :teams="rosterTeams"
       />
     </SheetContent>
   </Sheet>
@@ -3935,27 +3935,21 @@ export default {
       // lives inline in the hero, so it must not open an otherwise empty sheet.
       return this.canEditAvatar || this.canEditName || this.canEditCountry;
     },
-    bulkApplyTeams() {
+    rosterTeams() {
       const me = useAuthStore().me;
       if (!me) return [];
       const isGlobalOrganizer = useAuthStore().isRoleAbove(
         e_player_roles_enum.match_organizer,
       );
-      const memberships = this.playerTeamMemberships ?? [];
-      return memberships
-        .filter((m) => {
-          if (isGlobalOrganizer) return true;
-          if (String(m.team.owner_steam_id) === String(me.steam_id))
-            return true;
-          return m.team.viewer_roster.some(
-            (r) => r.role === e_team_roles_enum.Admin,
-          );
-        })
-        .map((m) => ({
-          teamId: m.team.id,
-          teamName: m.team.name,
-          hasCustomImage: !!m.roster_image_url,
-        }));
+      return (this.playerTeamMemberships ?? []).map((m) => ({
+        teamId: m.team.id,
+        teamName: m.team.name,
+        rosterImageUrl: m.roster_image_url,
+        canCopy:
+          isGlobalOrganizer ||
+          String(m.team.owner_steam_id) === String(me.steam_id) ||
+          m.team.viewer_roster.some((r) => r.role === e_team_roles_enum.Admin),
+      }));
     },
     kd() {
       if (!this.player?.stats) {

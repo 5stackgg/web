@@ -46,7 +46,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  (e: "uploaded", srcOrPath: string, blob?: Blob): void;
+  (e: "uploaded", srcOrPath: string): void;
   (e: "removed"): void;
   (e: "apply", blob: Blob): void;
 }>();
@@ -271,9 +271,9 @@ async function store(blob: Blob) {
   }
 }
 
-function onRosterUploaded(path: string, blob: Blob) {
+function onRosterUploaded(path: string) {
   lastSource.value = editorFile.value;
-  emit("uploaded", path, blob);
+  emit("uploaded", path);
 }
 
 // Reopens the editor on an image already on screen, so it can be adjusted without picking a file.

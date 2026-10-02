@@ -39,7 +39,7 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   (e: "update:open", v: boolean): void;
-  (e: "uploaded", path: string, blob: Blob): void;
+  (e: "uploaded", path: string): void;
 }>();
 
 const imgEl = ref<HTMLImageElement | null>(null);
@@ -170,7 +170,7 @@ async function save() {
     toast({
       title: useNuxtApp().$i18n.t("avatar.upload_success") as string,
     });
-    emit("uploaded", path, blob);
+    emit("uploaded", path);
     emit("update:open", false);
   } catch (error: any) {
     toast({

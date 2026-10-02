@@ -1201,9 +1201,6 @@
       "removing_bg": "正在移除背景……",
       "notice_player": "当该玩家未分配到队伍时，在比赛中使用。在队伍分配的比赛中，将使用该队伍的名单头像。",
       "notice_team": "当该玩家作为此队伍成员参加比赛时使用。对于个人/单人比赛，将使用玩家自己的名单头像。",
-      "bulk_label": "同时应用到您的队伍",
-      "bulk_will_overwrite": "将覆盖已有头像",
-      "bulk_success": "已应用到 {count} 个队伍",
       "bulk_failed": "应用到 {name} 失败"
     }
   },
@@ -8417,9 +8414,9 @@
       "roster_hint": "显示在路人比赛的阵容中。战队比赛使用战队的图片。",
       "name_length": "名称需为 3 到 32 个字符。",
       "saved": "玩家已更新",
-      "not_now": "暂不",
-      "apply": "应用",
-      "copy_to_teams": "复制到战队"
+      "your_teams": "你的战队",
+      "copy": "复制",
+      "copied_to_team": "已复制到 {team}"
     },
     "pending_imports": {
       "title": "待导入的 CS2 比赛",

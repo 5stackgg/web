@@ -1201,9 +1201,6 @@
       "removing_bg": "Hintergrund wird entfernt…",
       "notice_player": "Wird in Matches genutzt, wenn dieser Spieler keinem Team zugeordnet ist. In Team-Matches wird stattdessen das Roster-Bild des Teams verwendet.",
       "notice_team": "Wird in Matches genutzt, wenn dieser Spieler als Teil dieses Teams antritt. Bei Solo-/Einzelmatches wird das eigene Roster-Bild des Spielers verwendet.",
-      "bulk_label": "Auch auf deine Teams anwenden",
-      "bulk_will_overwrite": "Überschreibt vorhandene",
-      "bulk_success": "Auf {count} Team(s) angewendet",
       "bulk_failed": "Anwenden auf {name} fehlgeschlagen"
     }
   },
@@ -8417,9 +8414,9 @@
       "roster_hint": "Wird in Pick-up-Match-Aufstellungen angezeigt. Teamspiele verwenden das Bild des Teams.",
       "name_length": "Namen müssen 3 bis 32 Zeichen lang sein.",
       "saved": "Spieler aktualisiert",
-      "not_now": "Nicht jetzt",
-      "apply": "Übernehmen",
-      "copy_to_teams": "In Teams übernehmen"
+      "your_teams": "Deine Teams",
+      "copy": "Kopieren",
+      "copied_to_team": "Nach {team} kopiert"
     },
     "pending_imports": {
       "title": "Ausstehende CS2-Importe",

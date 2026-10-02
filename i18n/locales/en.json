@@ -1201,9 +1201,6 @@
       "removing_bg": "Removing background…",
       "notice_player": "Used in matches when this player is not assigned to a team. In team-assigned matches the team's roster image is used instead.",
       "notice_team": "Used in matches when this player joins as part of this team. For solo / individual matches the player's own roster image is used.",
-      "bulk_label": "Also apply to your teams",
-      "bulk_will_overwrite": "Will overwrite existing",
-      "bulk_success": "Applied to {count} team(s)",
       "bulk_failed": "Failed to apply to {name}"
     }
   },
@@ -8417,9 +8414,9 @@
       "roster_hint": "Shown in pick-up match lineups. Team matches use the team's image.",
       "name_length": "Names need 3 to 32 characters.",
       "saved": "Player updated",
-      "not_now": "Not now",
-      "apply": "Apply",
-      "copy_to_teams": "Copy to teams"
+      "your_teams": "Your teams",
+      "copy": "Copy",
+      "copied_to_team": "Copied to {team}"
     },
     "pending_imports": {
       "title": "Pending CS2 imports",

@@ -3,6 +3,7 @@ import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import MatchTabs from "~/components/match/MatchTabs.vue";
 import MatchAdminBottomBar from "~/components/match/MatchAdminBottomBar.vue";
+import MatchActions from "~/components/match/MatchActions.vue";
 import MatchServerRebootControl from "~/components/match/MatchServerRebootControl.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
 import { useAuthStore } from "~/stores/AuthStore";
@@ -55,6 +56,20 @@ async function mountAdminTab(status = "Live") {
 async function mountBottomBar(status = "Live") {
   wrapper = await mountSuspended(MatchAdminBottomBar, {
     props: { match: match(status) },
+    global: global(),
+  });
+  await flushPromises();
+  return wrapper;
+}
+
+async function mountMatchActions() {
+  wrapper = await mountSuspended(MatchActions, {
+    props: {
+      match: {
+        ...match("Live"),
+        match_maps: [{ id: "map-1", is_current_map: true, status: "Live" }],
+      },
+    },
     global: global(),
   });
   await flushPromises();
@@ -149,5 +164,21 @@ describe("match admin bottom bar RCON", () => {
 
     expect(dockText()).toContain("RCON unavailable");
     expect(dockText()).not.toContain(MODERATORS_ONLY);
+  });
+});
+
+describe("match actions pause control", () => {
+  it("hides Pause Match from a non-staff organizer", async () => {
+    signIn(e_player_roles_enum.user);
+    const actions = await mountMatchActions();
+
+    expect(actions.text()).not.toContain("Pause Match");
+  });
+
+  it("keeps Pause Match for a moderator", async () => {
+    signIn(e_player_roles_enum.moderator);
+    const actions = await mountMatchActions();
+
+    expect(actions.text()).toContain("Pause Match");
   });
 });

@@ -14,7 +14,7 @@ import MatchServerRebootControl from "~/components/match/MatchServerRebootContro
 import RconCommander from "~/components/servers/RconCommander.vue";
 import ServiceLogs from "~/components/ServiceLogs.vue";
 import { Button } from "~/components/ui/button";
-import { FadeSwap } from "~/components/ui/transitions";
+import { HeightSwap } from "~/components/ui/transitions";
 import DropdownMenuItem from "~/components/ui/dropdown-menu/DropdownMenuItem.vue";
 import DropdownMenuSeparator from "~/components/ui/dropdown-menu/DropdownMenuSeparator.vue";
 import DropdownMenuSub from "~/components/ui/dropdown-menu/DropdownMenuSub.vue";
@@ -323,7 +323,7 @@ function runCommand(
         <div
           class="h-full min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-3 p-3 sm:gap-4 sm:p-4 overflow-auto lg:overflow-hidden"
         >
-          <FadeSwap
+          <HeightSwap
             class="min-w-0 flex flex-col gap-3 lg:min-h-0 lg:overflow-hidden"
           >
             <RconCommander
@@ -410,7 +410,7 @@ function runCommand(
                 {{ $t("match.admin_bar.not_controllable") }}
               </p>
             </div>
-          </FadeSwap>
+          </HeightSwap>
 
           <div
             class="min-w-0 flex flex-col gap-2 lg:min-h-0 lg:overflow-hidden"

@@ -924,6 +924,11 @@ export default {
       if (!this.match.is_organizer) {
         return false;
       }
+      // Pause and resume are RCON commands, which the api runs only for
+      // moderators and above.
+      if (!useAuthStore().isRoleAbove(e_player_roles_enum.moderator)) {
+        return false;
+      }
       if (this.match.status !== e_match_status_enum.Live) {
         return false;
       }

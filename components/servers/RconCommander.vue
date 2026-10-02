@@ -5,18 +5,17 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
 import {
   Terminal,
   ChevronDown,
+  ChevronRight,
   Info,
   RefreshCw,
-  RotateCcw,
 } from "lucide-vue-next";
+import { Badge } from "~/components/ui/badge";
+import { RotateCcw } from "lucide-vue-next";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "~/components/ui/collapsible";
 import ClipBoard from "~/components/ClipBoard.vue";
 import { ButtonGroup } from "~/components/ui/button-group";
 import debounce from "~/utilities/debounce";
@@ -28,212 +27,245 @@ import {
 </script>
 
 <template>
+  <!-- RCON Console Interface -->
   <div
     :class="[
-      'flex flex-col overflow-hidden rounded-md border border-border bg-[hsl(var(--background))]',
-      compact && 'lg:min-h-0',
+      'bg-muted/50 rounded-xl border',
+      compact ? 'p-3 sm:p-4 gap-3 lg:flex lg:flex-col lg:min-h-0' : 'p-6',
     ]"
   >
     <div
-      class="flex items-center gap-3 border-b border-border bg-muted/30 px-3 py-2"
+      :class="['flex items-center justify-between', compact ? 'mb-0' : 'mb-6']"
     >
-      <h4
-        class="flex items-center gap-2 font-mono text-[0.68rem] font-bold uppercase tracking-[0.18em] text-foreground"
-      >
-        <Terminal class="h-4 w-4 text-[hsl(var(--tac-amber))]" />
+      <h4 class="text-foreground font-semibold text-lg flex items-center gap-2">
+        <Terminal class="w-5 h-5" />
         {{ $t("rcon.console") }}
       </h4>
-      <span
-        class="inline-flex items-center gap-1.5 font-mono text-[0.6rem] uppercase tracking-[0.16em]"
-        :class="online ? 'text-success' : 'text-destructive'"
+      <Badge
+        variant="outline"
+        class="text-xs gap-1.5"
+        :class="
+          online
+            ? 'text-muted-foreground'
+            : 'border-[hsl(var(--destructive)/0.6)] bg-[hsl(var(--destructive)/0.15)] text-destructive'
+        "
       >
         <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
         {{ online ? $t("common.connected") : $t("common.disconnected") }}
-      </span>
-      <span
-        class="ml-auto font-mono text-[0.65rem] tabular-nums text-muted-foreground"
-      >
-        {{ $t("rcon.entry_count", { count: logs.length }) }}
-      </span>
-      <Button
-        variant="ghost"
-        size="icon"
-        class="h-7 w-7 text-muted-foreground hover:text-foreground [&_svg]:size-3.5"
-        :aria-label="$t('common.clear')"
-        :disabled="logs.length === 0"
-        @click="clearLogs"
-      >
-        <RotateCcw />
-      </Button>
+      </Badge>
     </div>
 
-    <div
-      ref="output"
-      :class="[
-        'overflow-y-auto px-3 py-3 font-mono text-xs leading-relaxed sm:px-4',
-        compact
-          ? 'h-80 lg:h-auto lg:min-h-0 lg:flex-1'
-          : 'h-[min(28rem,60vh)]',
-      ]"
-      role="log"
-      aria-live="polite"
-    >
-      <div
-        v-if="logs.length === 0"
-        class="flex h-full flex-col items-center justify-center gap-1 text-center font-sans text-muted-foreground"
-      >
-        <p class="text-sm">{{ $t("server.rcon.no_commands_yet") }}</p>
-        <p class="text-xs">{{ $t("server.rcon.enter_command_hint") }}</p>
-      </div>
-      <div v-else class="flex flex-col gap-3">
-        <div v-for="log in logs" :key="log.id" class="group">
-          <div class="flex items-center gap-2">
-            <span class="select-none text-muted-foreground/60">
-              {{ log.timestamp }}
-            </span>
-            <span class="select-none text-[hsl(var(--tac-amber))]">&gt;</span>
-            <span class="min-w-0 break-all text-foreground">
-              {{ log.command }}
-            </span>
-            <ClipBoard
-              v-if="log.response"
-              :data="log.response"
-              class="ml-auto opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100"
-            />
-          </div>
+    <!-- Command Controls: unified input with right-side send + quick-commands -->
+    <div :class="compact ? 'mb-0' : 'mb-6'">
+      <form @submit.prevent="sendCommand" class="w-full">
+        <div class="relative">
+          <!-- The input with padding for left and right buttons -->
+          <FormField v-slot="{ componentField }" name="command">
+            <FormItem class="w-full">
+              <FormControl>
+                <Input
+                  :placeholder="$t('server.rcon.command_placeholder')"
+                  v-bind="componentField"
+                  class="bg-background h-12 pr-40"
+                  @keydown="onCommandKeyDown"
+                  @input="onCommandInput"
+                  @focus="onCommandFocus"
+                  @blur="onCommandBlur"
+                />
+              </FormControl>
+            </FormItem>
+          </FormField>
+
           <div
-            v-if="log.response"
-            class="ml-1 mt-1 whitespace-pre-wrap break-words border-l border-border pl-3"
-            :class="
-              log.type === 'error'
-                ? 'text-destructive'
-                : 'text-muted-foreground'
-            "
+            v-if="showSuggestions && suggestions.length > 0"
+            class="absolute left-0 right-0 top-full mt-2 z-50"
           >
-            {{ log.response }}
+            <div
+              class="bg-background border rounded-md shadow-xl ring-1 ring-border overflow-hidden"
+            >
+              <div
+                class="px-3 py-1.5 text-xs text-muted-foreground bg-muted/30 border-b"
+              >
+                {{ $t("rcon.suggestions") }}
+              </div>
+              <ul class="max-h-72 overflow-auto divide-y divide-muted/30">
+                <li
+                  v-for="(s, i) in suggestions"
+                  :key="s.name + '_' + i"
+                  class="px-3 py-2 text-sm cursor-pointer hover:bg-muted/60"
+                  :class="{ 'bg-muted/70': i === suggestionIndex }"
+                  @mousedown.prevent="selectSuggestion(s.command)"
+                >
+                  <div class="flex items-start gap-3">
+                    <div class="min-w-0">
+                      <div class="font-mono text-foreground break-words">
+                        <span v-html="s.name"></span>
+                      </div>
+                      <div
+                        v-if="s.description"
+                        class="text-xs text-muted-foreground mt-0.5 line-clamp-2"
+                      >
+                        <span v-html="s.description"></span>
+                      </div>
+                    </div>
+                    <div
+                      class="ml-auto shrink-0 text-xs text-muted-foreground flex items-center gap-2"
+                    >
+                      <span v-if="s.kind">{{ s.kind }}</span>
+                      <span v-if="s.flags" class="opacity-80">{{
+                        s.flags
+                      }}</span>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Right: Send + Quick Commands dropdown inside input using ButtonGroup -->
+          <div class="absolute right-2 top-1/2 -translate-y-1/2">
+            <ButtonGroup>
+              <Button
+                :disabled="!online"
+                type="submit"
+                size="sm"
+                variant="secondary"
+                class="h-8 px-4"
+              >
+                {{ $t("server.rcon.send") }}
+              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger as-child>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    class="h-8 w-8 p-0"
+                    :disabled="!online && !$slots.default && !matchId"
+                  >
+                    <ChevronDown class="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent class="w-56">
+                  <DropdownMenuGroup>
+                    <slot :commander="commander"></slot>
+
+                    <DropdownMenuItem
+                      @click="commander('get_match', '')"
+                      :disabled="!online"
+                      v-if="matchId"
+                    >
+                      <RefreshCw />
+                      {{ $t("server.rcon.refresh_match") }}
+                    </DropdownMenuItem>
+
+                    <DropdownMenuSeparator v-if="matchId" />
+
+                    <DropdownMenuItem
+                      v-for="quickCommand of quickCommands"
+                      :key="quickCommand.display"
+                      @click="commander(quickCommand.command, '')"
+                      :disabled="!online"
+                    >
+                      <Info />
+                      {{ $t(quickCommand.display) }}
+                    </DropdownMenuItem>
+
+                    <slot name="footer" :commander="commander"></slot>
+                  </DropdownMenuGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </ButtonGroup>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Console Output -->
+    <div
+      :class="[
+        'bg-background rounded-lg border shadow-sm',
+        compact
+          ? 'lg:flex lg:flex-col lg:min-h-0 lg:flex-1 lg:overflow-hidden'
+          : '',
+      ]"
+    >
+      <div :class="['border-b bg-muted/30', compact ? 'p-2 sm:p-3' : 'p-4']">
+        <div class="flex items-center justify-between">
+          <h5 class="text-sm font-medium text-foreground">
+            {{ $t("server.rcon.console_output") }}
+          </h5>
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-muted-foreground">{{
+              $t("rcon.entry_count", { count: logs.length })
+            }}</span>
+            <Button
+              @click="clearLogs"
+              variant="outline"
+              size="icon"
+              class="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+            >
+              <RotateCcw class="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </div>
+      <div
+        :class="[
+          'overflow-y-auto',
+          compact
+            ? 'p-2 sm:p-3 h-80 lg:h-auto lg:flex-1 lg:min-h-0'
+            : 'p-4 h-96',
+        ]"
+      >
+        <div class="text-sm font-mono space-y-3">
+          <template v-for="(log, index) in logs" :key="log.id">
+            <Collapsible v-model:open="logStates[index]">
+              <div
+                class="border rounded-lg bg-muted/20 hover:bg-muted/30 transition-colors"
+              >
+                <CollapsibleTrigger
+                  class="flex w-full items-center justify-between p-3 hover:bg-muted/40 rounded-lg transition-colors group"
+                >
+                  <div class="flex items-center gap-3 text-left">
+                    <ChevronRight
+                      :class="[
+                        'h-4 w-4 transition-transform text-muted-foreground group-hover:text-foreground',
+                        logStates[index] ? 'rotate-90' : '',
+                      ]"
+                    />
+                    <span class="text-sm font-medium text-foreground">
+                      {{ log.command }}
+                    </span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <div class="text-sm text-muted-foreground font-mono">
+                      {{ log.timestamp }}
+                    </div>
+                    <ClipBoard :data="log.response" />
+                  </div>
+                </CollapsibleTrigger>
+                <CollapsibleContent class="px-3 py-3">
+                  <div
+                    class="text-sm font-mono text-foreground whitespace-pre-wrap"
+                  >
+                    {{ log.response }}
+                  </div>
+                </CollapsibleContent>
+              </div>
+            </Collapsible>
+          </template>
+          <div
+            v-if="logs.length === 0"
+            class="text-center py-12 text-muted-foreground"
+          >
+            <p class="text-sm">{{ $t("server.rcon.no_commands_yet") }}</p>
+            <p class="text-xs mt-1">
+              {{ $t("server.rcon.enter_command_hint") }}
+            </p>
           </div>
         </div>
       </div>
     </div>
-
-    <form class="relative border-t border-border" @submit.prevent="sendCommand">
-      <div
-        v-if="showSuggestions && suggestions.length > 0"
-        class="absolute bottom-full left-2 right-2 z-50 mb-2 overflow-hidden rounded-md border bg-background shadow-xl ring-1 ring-border"
-      >
-        <div
-          class="border-b bg-muted/30 px-3 py-1.5 text-xs text-muted-foreground"
-        >
-          {{ $t("rcon.suggestions") }}
-        </div>
-        <ul class="max-h-72 divide-y divide-muted/30 overflow-auto">
-          <li
-            v-for="(s, i) in suggestions"
-            :key="s.name + '_' + i"
-            class="cursor-pointer px-3 py-2 text-sm hover:bg-muted/60"
-            :class="{ 'bg-muted/70': i === suggestionIndex }"
-            @mousedown.prevent="selectSuggestion(s.command)"
-          >
-            <div class="flex items-start gap-3">
-              <div class="min-w-0">
-                <div class="break-words font-mono text-foreground">
-                  <span v-html="s.name"></span>
-                </div>
-                <div
-                  v-if="s.description"
-                  class="mt-0.5 line-clamp-2 text-xs text-muted-foreground"
-                >
-                  <span v-html="s.description"></span>
-                </div>
-              </div>
-              <div
-                class="ml-auto flex shrink-0 items-center gap-2 text-xs text-muted-foreground"
-              >
-                <span v-if="s.kind">{{ s.kind }}</span>
-                <span v-if="s.flags" class="opacity-80">{{ s.flags }}</span>
-              </div>
-            </div>
-          </li>
-        </ul>
-      </div>
-
-      <div class="flex items-center gap-2 py-1.5 pl-3 pr-1.5 sm:pl-4">
-        <span
-          class="select-none font-mono text-sm font-bold text-[hsl(var(--tac-amber))]"
-          aria-hidden="true"
-          >&gt;</span
-        >
-        <FormField v-slot="{ componentField }" name="command">
-          <FormItem class="min-w-0 flex-1">
-            <FormControl>
-              <Input
-                :placeholder="$t('server.rcon.command_placeholder')"
-                v-bind="componentField"
-                :aria-label="$t('rcon.console')"
-                autocomplete="off"
-                spellcheck="false"
-                class="h-9 border-0 bg-transparent px-0 font-mono shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
-                @keydown="onCommandKeyDown"
-                @input="onCommandInput"
-                @focus="onCommandFocus"
-                @blur="onCommandBlur"
-              />
-            </FormControl>
-          </FormItem>
-        </FormField>
-        <ButtonGroup>
-          <Button
-            :disabled="!online"
-            type="submit"
-            size="sm"
-            variant="secondary"
-            class="h-8 px-4"
-          >
-            {{ $t("server.rcon.send") }}
-          </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger as-child>
-              <Button
-                variant="outline"
-                size="sm"
-                class="h-8 w-8 p-0"
-                :disabled="!online && !$slots.default && !matchId"
-              >
-                <ChevronDown class="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" class="w-56">
-              <DropdownMenuGroup>
-                <slot :commander="commander"></slot>
-
-                <DropdownMenuItem
-                  @click="commander('get_match', '')"
-                  :disabled="!online"
-                  v-if="matchId"
-                >
-                  <RefreshCw />
-                  {{ $t("server.rcon.refresh_match") }}
-                </DropdownMenuItem>
-
-                <DropdownMenuSeparator v-if="matchId" />
-
-                <DropdownMenuItem
-                  v-for="quickCommand of quickCommands"
-                  :key="quickCommand.display"
-                  @click="commander(quickCommand.command, '')"
-                  :disabled="!online"
-                >
-                  <Info />
-                  {{ $t(quickCommand.display) }}
-                </DropdownMenuItem>
-
-                <slot name="footer" :commander="commander"></slot>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </ButtonGroup>
-      </div>
-    </form>
   </div>
 </template>
 
@@ -296,6 +328,7 @@ export default {
         timestamp: string;
         type: "command" | "response" | "error";
       }>,
+      logStates: [] as boolean[],
       uuid: undefined as string | undefined,
       rconListener: undefined as any,
       history: [] as string[],
@@ -572,24 +605,18 @@ export default {
     ) {
       const timestamp = new Date().toLocaleTimeString();
 
-      this.logs.push({
+      this.logs.unshift({
         id: uuidv4(),
         command: command,
         response: response,
         timestamp: timestamp,
         type: type,
       });
-
-      this.$nextTick(() => {
-        const output = this.$refs.output as HTMLElement | undefined;
-
-        if (output) {
-          output.scrollTop = output.scrollHeight;
-        }
-      });
+      this.logStates.unshift(true);
     },
     clearLogs() {
       this.logs = [];
+      this.logStates = [];
     },
     historyStorageKey(): string {
       return `rcon_history_${this.serverId || "global"}`;

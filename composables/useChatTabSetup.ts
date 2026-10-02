@@ -7,9 +7,14 @@ import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
 import { newestMessageIdsFrom } from "~/utilities/chatLobbyMessages";
 import socket, {
+  type ChatType,
   type Lobby,
   type LobbyMessageDeleted,
 } from "~/web-sockets/Socket";
+
+// Live match chat relays every in-game console line to players who are
+// already reading it in game, so it never counts toward the hub badge.
+const UNCOUNTED_CHAT_TYPES: ChatType[] = ["match", "match_team"];
 
 export function tournamentChatTab(tournament: {
   id: string;
@@ -66,6 +71,8 @@ export function useChatTabSetup() {
   // looking. This runs from the default layout, so it covers every tab from
   // login onwards.
   function trackUnread(tab: (typeof tabs.value)[number], lobby: Lobby) {
+    const counted = !UNCOUNTED_CHAT_TYPES.includes(tab.type);
+
     lobby.on("lobby:chat", (message: any) => {
       if (String(message?.from?.steam_id) === String(authStore.me?.steam_id)) {
         return;
@@ -74,7 +81,7 @@ export function useChatTabSetup() {
       // while the browser tab is hidden.
       useTabFlash().signalChat(tab.type, message);
 
-      if (!isChatTabOnScreen(tab.id)) {
+      if (counted && !isChatTabOnScreen(tab.id)) {
         incrementUnread(tab.id, message?.id);
       }
     });
@@ -109,7 +116,7 @@ export function useChatTabSetup() {
     // cursor only moves when the tab is opened, so a rejoin (an unblock
     // rejoins every room) would otherwise badge lines read while it was open.
     lobby.on("lobby:messages", (messages: any[]) => {
-      if (isChatTabOnScreen(tab.id)) {
+      if (!counted || isChatTabOnScreen(tab.id)) {
         setUnread(tab.id, 0);
         return;
       }

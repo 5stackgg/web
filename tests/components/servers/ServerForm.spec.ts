@@ -5,18 +5,43 @@ import ServerForm from "~/components/servers/ServerForm.vue";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useAuthStore } from "~/stores/AuthStore";
 
+const node = (overrides: Record<string, unknown>) => ({
+  label: null,
+  region: "us-east",
+  status: "Online",
+  enabled: true,
+  enabled_for_match_making: true,
+  gpu: false,
+  node_ip: "10.0.0.1",
+  public_ip: "203.0.113.10",
+  build_id: 100,
+  csgo_build_id: null,
+  update_status: null,
+  start_port_range: 30000,
+  end_port_range: 30010,
+  disk_available_gb: 120,
+  available_dedicated_slot_count: 4,
+  e_region: { description: "US East" },
+  ...overrides,
+});
+
+const lv = { region: "lv", e_region: { description: "LV" } };
+
 const nodes = [
-  {
-    id: "node-1",
-    label: "Node One",
-    region: "us-east",
-    build_id: 100,
-    lan_ip: null,
-    public_ip: null,
-    start_port_range: 30000,
-    end_port_range: 30010,
-    e_region: { description: "US East" },
-  },
+  node({ id: "node-1", label: "Node One" }),
+  node({ id: "lv-gs-01", ...lv }),
+  node({ id: "lv-gs-02", ...lv, status: "Offline" }),
+  // GPU-only: the panel clears its region and ports.
+  node({
+    id: "lv-gpu-01",
+    gpu: true,
+    enabled_for_match_making: false,
+    region: null,
+    e_region: null,
+    start_port_range: null,
+    end_port_range: null,
+    available_dedicated_slot_count: 0,
+  }),
 ];
 
 const modes = [
@@ -50,7 +75,7 @@ function rootField(query: any): string | undefined {
   return query.definitions[0]?.selectionSet?.selections[0]?.name?.value;
 }
 
-async function mount() {
+async function mount(gameServerNodes = nodes) {
   useApplicationSettingsStore().settings = [
     { name: "public.game_plugins_enabled", value: "false" },
   ];
@@ -60,7 +85,7 @@ async function mount() {
     subscribe(observer: any) {
       if (rootField(options.query) === "game_server_nodes") {
         Promise.resolve().then(() =>
-          observer.next({ data: { game_server_nodes: nodes } }),
+          observer.next({ data: { game_server_nodes: gameServerNodes } }),
         );
       }
       return { unsubscribe() {}, closed: false };
@@ -75,6 +100,10 @@ async function mount() {
   });
   unmount = () => wrapper.unmount();
   (wrapper.vm as any).gameModes = modes;
+  (wrapper.vm as any).server_regions = [
+    { value: "us-east", description: "US East" },
+    { value: "lv", description: "LV" },
+  ];
   await flushPromises();
   return wrapper;
 }
@@ -98,15 +127,19 @@ describe("ServerForm server type", () => {
     expect(radio("kind-valve").getAttribute("data-state")).toBe("checked");
   });
 
-  it("switches a new server onto a game server node when custom presets are picked", async () => {
+  it("starts a new server on a node when one can take it", async () => {
+    const wrapper = await mount();
+
+    expect((wrapper.vm as any).form.values.use_game_server_node).toBe(true);
+  });
+
+  it("picks the first custom mode when its tile is clicked", async () => {
     const wrapper = await mount();
 
     radio("kind-presets").closest<HTMLElement>("div.rounded-lg")!.click();
     await flushPromises();
 
-    const form = (wrapper.vm as any).form;
-    expect(form.values.type).toBe(modes[0].id);
-    expect(form.values.use_game_server_node).toBe(true);
+    expect((wrapper.vm as any).form.values.type).toBe(modes[0].id);
   });
 
   it("offers every custom mode before a node is picked", async () => {
@@ -115,28 +148,151 @@ describe("ServerForm server type", () => {
     radio("kind-presets").click();
     await flushPromises();
 
-    const trigger = Array.from(
-      document.body.querySelectorAll<HTMLButtonElement>(
-        'button[role="combobox"]',
-      ),
-    ).find((button) => button.textContent?.includes(modes[0].name))!;
-    trigger.dispatchEvent(
-      new PointerEvent("pointerdown", {
-        bubbles: true,
-        button: 0,
-        pointerType: "mouse",
-      }),
-    );
-    await flushPromises();
-
     const options = Array.from(
-      document.body.querySelectorAll('[role="option"]'),
+      document.body.querySelectorAll('[data-testid="custom-mode-option"]'),
     );
     expect(options.map((option) => option.textContent?.trim())).toEqual(
       modes.map((mode) => mode.name),
     );
-    expect(options.filter((option) => option.hasAttribute("data-disabled")))
-      .toEqual([]);
+    expect(
+      options.filter((option) => option.querySelector("button[disabled]")),
+    ).toEqual([]);
+  });
+
+  it("asks for a region before listing nodes", async () => {
+    await mount();
+
+    expect(
+      document.body.querySelectorAll('[data-testid="node-option"]'),
+    ).toHaveLength(0);
+    expect(document.body.textContent).toContain(
+      "Pick a region to see its game server nodes.",
+    );
+  });
+
+  it("shows the nodes and free slots each region has for the server", async () => {
+    const wrapper = await mount();
+    const vm = wrapper.vm as any;
+
+    // lv-gs-02 is offline and the GPU-only node has no region.
+    expect(vm.regionStats).toEqual({
+      "us-east": { nodes: 1, slots: 4 },
+      lv: { nodes: 1, slots: 4 },
+    });
+
+    vm.form.setFieldValue("region", "lv");
+    await flushPromises();
+
+    expect(
+      document.body.querySelector('[data-testid="region-capacity"]')
+        ?.textContent,
+    ).toContain("Nodes: 1 · Free slots: 4");
+  });
+
+  it("lists only the region's nodes, named by id when unlabeled", async () => {
+    const wrapper = await mount();
+
+    (wrapper.vm as any).form.setFieldValue("region", "lv");
+    await flushPromises();
+
+    const rows = Array.from(
+      document.body.querySelectorAll<HTMLElement>(
+        '[data-testid="node-option"]',
+      ),
+    );
+    // The GPU-only node has no region, so no region lists it.
+    expect(
+      rows.map((row) => row.querySelector("label")?.textContent?.trim()),
+    ).toEqual(["lv-gs-01", "lv-gs-02"]);
+    expect(rows[1].textContent).toContain("Offline");
+    expect(radio("node-lv-gs-02").disabled).toBe(true);
+  });
+
+  it("drops a picked node when the region changes", async () => {
+    const wrapper = await mount();
+    const form = (wrapper.vm as any).form;
+
+    form.setFieldValue("region", "lv");
+    await flushPromises();
+    form.setFieldValue("game_server_node_id", "lv-gs-01");
+    await flushPromises();
+    form.setFieldValue("region", "us-east");
+    await flushPromises();
+
+    expect(form.values.game_server_node_id).toBe("");
+  });
+
+  it("searches a region with many nodes", async () => {
+    const many = Array.from({ length: 8 }, (_, i) =>
+      node({ id: `lv-gs-${String(i + 1).padStart(2, "0")}`, ...lv }),
+    );
+    const wrapper = await mount(many);
+
+    (wrapper.vm as any).form.setFieldValue("region", "lv");
+    await flushPromises();
+    (wrapper.vm as any).nodeSearch = "07";
+    await flushPromises();
+
+    const rows = Array.from(
+      document.body.querySelectorAll<HTMLElement>(
+        '[data-testid="node-option"]',
+      ),
+    );
+    expect(
+      rows.map((row) => row.querySelector("label")?.textContent?.trim()),
+    ).toEqual(["lv-gs-07"]);
+  });
+
+  it("suggests a label from the region and mode until one is typed", async () => {
+    const wrapper = await mount();
+    const form = (wrapper.vm as any).form;
+
+    form.setFieldValue("region", "lv");
+    await flushPromises();
+    expect(form.values.label).toBe("LV Ranked Server");
+
+    const label = document.body.querySelector<HTMLInputElement>(
+      'input[data-1p-ignore]:not([type="password"])',
+    )!;
+    label.value = "Vegas 3";
+    label.dispatchEvent(new Event("input", { bubbles: true }));
+    radio("kind-practice").click();
+    await flushPromises();
+
+    expect(form.values.label).toBe("Vegas 3");
+  });
+
+  it("fills in default ports and max players", async () => {
+    const wrapper = await mount();
+
+    radio("hosting-external").click();
+    radio("kind-valve").click();
+    await flushPromises();
+
+    const values = (wrapper.vm as any).form.values;
+    expect([values.port, values.tv_port, values.max_players]).toEqual([
+      27015, 27020, 16,
+    ]);
+  });
+
+  it("locks custom modes on an external server and offers to run it on a node", async () => {
+    const wrapper = await mount();
+    const form = (wrapper.vm as any).form;
+
+    radio("hosting-external").click();
+    await flushPromises();
+
+    expect(form.values.use_game_server_node).toBe(false);
+    expect(radio("kind-presets").disabled).toBe(true);
+
+    const runOnNode = Array.from(
+      document.body.querySelectorAll<HTMLButtonElement>("button"),
+    ).find((button) => button.textContent?.trim() === "Run it on a node")!;
+    runOnNode.click();
+    await flushPromises();
+
+    expect(form.values.use_game_server_node).toBe(true);
+    expect(form.values.type).toBe(modes[0].id);
   });
 
   it("requires a node before creating a server on one", async () => {
@@ -151,6 +307,24 @@ describe("ServerForm server type", () => {
     const { valid, errors } = await form.validate();
     expect(valid).toBe(false);
     expect(errors.game_server_node_id).toBe("Select Game Server Node");
+  });
+
+  it("keeps password managers off the server's secrets", async () => {
+    await mount();
+
+    radio("kind-valve").click();
+    await flushPromises();
+
+    const inputs = Array.from(
+      document.body.querySelectorAll<HTMLInputElement>(
+        'input[type="password"]',
+      ),
+    );
+    expect(inputs).toHaveLength(2);
+    for (const input of inputs) {
+      expect(input.getAttribute("data-1p-ignore")).toBe("true");
+      expect(input.getAttribute("data-lpignore")).toBe("true");
+    }
   });
 
   it("links an administrator to the picked mode's own editor", async () => {

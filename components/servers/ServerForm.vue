@@ -15,10 +15,6 @@ import {
 import {
   Select,
   SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
@@ -28,559 +24,753 @@ import {
   SelectItemText as RekaSelectItemText,
 } from "reka-ui";
 import { CheckIcon } from "@radix-icons/vue";
-import { Switch } from "~/components/ui/switch";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
-import { Eye, EyeOff, Lock } from "lucide-vue-next";
-import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "~/components/ui/input-group";
+import {
+  ArrowRightLeft,
+  Eye,
+  EyeOff,
+  Globe,
+  Info,
+  Lock,
+  MapPin,
+  Search,
+  Server,
+  X,
+} from "lucide-vue-next";
+import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 
 const showConnectPassword = ref(false);
+const showRconPassword = ref(false);
+
+// Server secrets, not a login: keep password managers from offering to fill
+// or save them.
+const passwordManagerIgnore = {
+  "data-1p-ignore": "true",
+  "data-lpignore": "true",
+  "data-bwignore": "true",
+  "data-form-type": "other",
+};
+
+const gameOptions = [
+  { key: "cs2", label: "CS2" },
+  { key: "csgo", label: "CS:GO" },
+];
+
+const subLabelClasses =
+  "font-mono text-[0.7rem] font-medium uppercase tracking-[0.18em] text-muted-foreground";
+const tagClasses =
+  "inline-flex items-center gap-1 whitespace-nowrap rounded-sm border border-border px-1.5 py-0.5 font-mono text-[0.6rem] uppercase leading-none tracking-[0.12em] text-muted-foreground";
+const noteClasses =
+  "flex items-start gap-2.5 rounded-md bg-muted/40 px-3 py-2.5 text-sm text-muted-foreground";
+const iconBoxClasses =
+  "flex h-9 w-9 shrink-0 items-center justify-center rounded-md border transition-colors";
 </script>
 
 <template>
-  <form @submit.prevent="updateCreateServer" class="grid gap-5">
-    <FormSection :title="$t('server.form.type')">
-      <div class="grid gap-4">
-        <FormField name="type">
+  <form
+    @submit.prevent="updateCreateServer"
+    class="grid gap-8"
+    :class="{ 'pb-24': !server }"
+  >
+    <FormSection :title="$t('server.form.where_it_runs')">
+      <div class="space-y-4">
+        <!-- Region first whatever hosts the server: it is where an external
+             server is listed, and it narrows the nodes below. A node
+             server's region is its node's. -->
+        <FormField
+          v-if="!isEditingGameServerNode"
+          v-slot="{ componentField }"
+          name="region"
+        >
           <FormItem>
-            <FormLabel>
-              {{ $t("server.form.type") }}
-            </FormLabel>
+            <FormLabel>{{ $t("server.form.region") }}</FormLabel>
             <FormControl>
-              <!-- Inside a <form> reka's radio stops its click from bubbling,
-                   so the card's @click never sees a click on the circle. -->
-              <RadioGroup
-                :model-value="serverKind"
-                class="grid gap-3"
-                @update:model-value="setServerKind"
-              >
-                <div
-                  class="flex items-center space-x-3 rounded-lg border p-3 transition-colors"
-                  :class="
-                    form.values.game === 'csgo'
-                      ? 'opacity-50 cursor-not-allowed'
-                      : 'hover:bg-muted/50 cursor-pointer'
-                  "
-                  @click="form.values.game === 'csgo' || setServerKind('ranked')"
+              <Select v-bind="componentField">
+                <SelectTrigger
+                  class="h-14 justify-start gap-3 px-3 text-left"
+                  data-testid="region-trigger"
                 >
-                  <RadioGroupItem
-                    id="kind-ranked"
-                    value="ranked"
-                    :disabled="form.values.game === 'csgo'"
-                  />
-                  <div class="grid gap-1.5 leading-none">
-                    <label
-                      class="text-sm font-medium leading-none"
-                      :class="
-                        form.values.game === 'csgo'
-                          ? 'cursor-not-allowed'
-                          : 'cursor-pointer'
-                      "
-                      for="kind-ranked"
+                  <span
+                    :class="[
+                      iconBoxClasses,
+                      componentField.modelValue
+                        ? 'border-[hsl(var(--tac-amber)/0.6)] text-[hsl(var(--tac-amber))]'
+                        : 'text-muted-foreground',
+                    ]"
+                  >
+                    <MapPin class="h-4 w-4" />
+                  </span>
+                  <span class="min-w-0 flex-1 truncate text-sm font-medium">
+                    <SelectValue
+                      :placeholder="$t('server.form.select_region')"
+                    />
+                  </span>
+                  <span
+                    v-if="componentField.modelValue && gameServerNodes.length"
+                    class="hidden shrink-0 font-mono text-[0.7rem] text-muted-foreground sm:inline"
+                    data-testid="region-capacity"
+                  >
+                    {{ regionCapacity(componentField.modelValue) }}
+                  </span>
+                </SelectTrigger>
+                <SelectContent>
+                  <!-- Reka primitives so the capacity sits outside the item
+                       text: the trigger echoes only the region name. -->
+                  <RekaSelectItem
+                    v-for="region in server_regions"
+                    :key="region.value"
+                    :value="region.value"
+                    class="relative flex w-full cursor-default select-none items-center gap-6 rounded-sm py-2.5 pl-3 pr-8 text-sm outline-none focus:bg-accent focus:text-accent-foreground"
+                  >
+                    <span
+                      class="absolute right-2 flex h-3.5 w-3.5 items-center justify-center"
                     >
-                      {{ $t("server.form.ranked_server") }}
-                    </label>
-                    <p class="text-sm text-muted-foreground">
-                      {{ $t("server.form.ranked_server_description") }}
-                    </p>
-                  </div>
-                </div>
-                <div
-                  class="flex items-center space-x-3 rounded-lg border p-3 transition-colors"
-                  :class="
-                    form.values.game === 'csgo'
-                      ? 'opacity-50 cursor-not-allowed'
-                      : 'hover:bg-muted/50 cursor-pointer'
-                  "
-                  @click="form.values.game === 'csgo' || setServerKind('practice')"
-                >
-                  <RadioGroupItem
-                    id="kind-practice"
-                    value="practice"
-                    :disabled="form.values.game === 'csgo'"
-                  />
-                  <div class="grid gap-1.5 leading-none">
-                    <label
-                      class="text-sm font-medium leading-none"
-                      :class="
-                        form.values.game === 'csgo'
-                          ? 'cursor-not-allowed'
-                          : 'cursor-pointer'
-                      "
-                      for="kind-practice"
+                      <RekaSelectItemIndicator>
+                        <CheckIcon class="h-4 w-4" />
+                      </RekaSelectItemIndicator>
+                    </span>
+                    <RekaSelectItemText>
+                      {{ region.description || region.value }}
+                    </RekaSelectItemText>
+                    <span
+                      v-if="gameServerNodes.length"
+                      class="ml-auto font-mono text-[0.7rem] text-muted-foreground"
+                      :class="{
+                        'opacity-60': !regionStats[region.value]?.nodes,
+                      }"
                     >
-                      {{ $t("server.form.practice_server") }}
-                    </label>
-                    <p class="text-sm text-muted-foreground">
-                      {{ $t("server.form.practice_server_description") }}
-                    </p>
-                  </div>
-                </div>
-                <div
-                  class="flex items-center space-x-3 rounded-lg border p-3 transition-colors hover:bg-muted/50 cursor-pointer"
-                  @click="setServerKind('valve')"
-                >
-                  <RadioGroupItem
-                    id="kind-valve"
-                    value="valve"
-                  />
-                  <div class="grid gap-1.5 leading-none">
-                    <label
-                      class="text-sm font-medium leading-none"
-                      for="kind-valve"
-                    >
-                      {{ $t("server.form.valve_modes") }}
-                    </label>
-                    <p class="text-sm text-muted-foreground">
-                      {{ $t("server.form.valve_modes_description") }}
-                    </p>
-                  </div>
-                </div>
-                <div
-                  class="flex items-center space-x-3 rounded-lg border p-3 transition-colors hover:bg-muted/50 cursor-pointer"
-                  @click="setServerKind('presets')"
-                >
-                  <RadioGroupItem
-                    id="kind-presets"
-                    value="presets"
-                  />
-                  <div class="grid gap-1.5 leading-none">
-                    <label
-                      class="text-sm font-medium leading-none"
-                      for="kind-presets"
-                    >
-                      {{ $t("server.form.custom_presets") }}
-                    </label>
-                    <p class="text-sm text-muted-foreground">
-                      {{ $t("server.form.custom_presets_description") }}
-                    </p>
-                  </div>
-                </div>
-              </RadioGroup>
+                      {{ regionCapacity(region.value) }}
+                    </span>
+                  </RekaSelectItem>
+                </SelectContent>
+              </Select>
             </FormControl>
             <FormMessage />
           </FormItem>
         </FormField>
 
-        <Fold :open="gameServerNodes.length > 0 && !server">
-          <FormField v-slot="{ componentField }" name="use_game_server_node">
-            <FormItem
-              class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer hover:bg-muted/50 transition-colors"
-              @click="
-                componentField['onUpdate:modelValue'](!componentField.modelValue)
-              "
-            >
-              <div class="space-y-0.5">
-                <FormLabel class="cursor-pointer">{{
-                  $t("server.form.server_configuration")
-                }}</FormLabel>
-                <FormDescription class="cursor-pointer">
-                  {{
-                    useGameServerNode
-                      ? $t("server.form.use_game_server_node")
-                      : $t("server.form.use_manual_host_configuration")
-                  }}
-                </FormDescription>
-              </div>
-              <FormControl>
-                <Switch @click.stop :model-value="componentField.modelValue" />
-              </FormControl>
-            </FormItem>
-          </FormField>
-        </Fold>
+        <!-- Inside a <form> reka's radio stops its click from bubbling,
+             so a tile's @click never sees a click on the circle. -->
+        <RadioGroup
+          v-if="!server && gameServerNodes.length > 0"
+          :model-value="hosting"
+          class="grid gap-3 sm:grid-cols-2"
+          @update:model-value="setHosting"
+        >
+          <div
+            :class="tileClass(hosting === 'node')"
+            class="flex-col gap-3 p-4"
+            @click="setHosting('node')"
+          >
+            <div class="flex items-start justify-between gap-3">
+              <span
+                :class="[
+                  iconBoxClasses,
+                  hosting === 'node'
+                    ? 'border-[hsl(var(--tac-amber)/0.6)] text-[hsl(var(--tac-amber))]'
+                    : 'text-muted-foreground',
+                ]"
+              >
+                <Server class="h-4 w-4" />
+              </span>
+              <RadioGroupItem id="hosting-node" value="node" />
+            </div>
+            <div class="grid gap-1.5 leading-none">
+              <label
+                class="cursor-pointer text-sm font-medium leading-none"
+                for="hosting-node"
+              >
+                {{ $t("server.form.game_server_node") }}
+              </label>
+              <p class="text-sm text-muted-foreground">
+                {{ $t("server.form.game_server_node_hosting_description") }}
+              </p>
+            </div>
+          </div>
+          <div
+            :class="tileClass(hosting === 'external')"
+            class="flex-col gap-3 p-4"
+            @click="setHosting('external')"
+          >
+            <div class="flex items-start justify-between gap-3">
+              <span
+                :class="[
+                  iconBoxClasses,
+                  hosting === 'external'
+                    ? 'border-[hsl(var(--tac-amber)/0.6)] text-[hsl(var(--tac-amber))]'
+                    : 'text-muted-foreground',
+                ]"
+              >
+                <Globe class="h-4 w-4" />
+              </span>
+              <RadioGroupItem id="hosting-external" value="external" />
+            </div>
+            <div class="grid gap-1.5 leading-none">
+              <label
+                class="cursor-pointer text-sm font-medium leading-none"
+                for="hosting-external"
+              >
+                {{ $t("server.form.external_server") }}
+              </label>
+              <p class="text-sm text-muted-foreground">
+                {{ $t("server.form.external_server_description") }}
+              </p>
+            </div>
+          </div>
+        </RadioGroup>
 
-        <Fold :open="!useGameServerNode && !isEditingGameServerNode">
-          <div class="grid gap-4">
-            <FormField v-slot="{ componentField }" name="region">
+        <!-- Where an existing server runs is fixed; a node server changes
+             nodes through the move dialog. -->
+        <template v-if="server">
+          <div
+            class="flex flex-wrap items-center gap-x-4 gap-y-3 rounded-lg border bg-muted/20 px-4 py-3"
+          >
+            <span
+              :class="iconBoxClasses"
+              class="border-[hsl(var(--tac-amber)/0.6)] text-[hsl(var(--tac-amber))]"
+            >
+              <Server v-if="isEditingGameServerNode" class="h-4 w-4" />
+              <Globe v-else class="h-4 w-4" />
+            </span>
+            <div class="grid min-w-0 flex-1 gap-0.5">
+              <span class="text-sm font-medium">
+                {{
+                  isEditingGameServerNode
+                    ? $t("server.form.game_server_node")
+                    : $t("server.form.external_server")
+                }}
+                <span
+                  v-if="isEditingGameServerNode"
+                  class="ml-1 font-mono"
+                  data-testid="current-node"
+                  >{{ currentNodeName }}</span
+                >
+              </span>
+              <span
+                v-if="isEditingGameServerNode && currentNodeDetail"
+                class="break-words font-mono text-[0.7rem] text-muted-foreground"
+              >
+                {{ currentNodeDetail }}
+              </span>
+            </div>
+            <Button
+              v-if="canMoveNode"
+              type="button"
+              variant="outline"
+              size="sm"
+              class="shrink-0 gap-2"
+              @click="$emit('move')"
+            >
+              <ArrowRightLeft class="h-4 w-4" />
+              {{ $t("server.form.move_node") }}
+            </Button>
+          </div>
+          <p class="text-xs text-muted-foreground">
+            {{
+              isEditingGameServerNode
+                ? $t("server.form.move_node_hint")
+                : $t("server.form.external_server_fixed")
+            }}
+          </p>
+        </template>
+
+        <Fold
+          :open="!server && useGameServerNode && gameServerNodes.length > 0"
+        >
+          <div class="server-form-drawer">
+            <p
+              v-if="regionNodeOptions.length === 0"
+              class="py-2 text-center text-sm text-muted-foreground"
+            >
+              {{
+                form.values.region
+                  ? $t("server.form.no_nodes_in_region")
+                  : $t("server.form.node_pick_region")
+              }}
+            </p>
+            <div
+              v-if="showNodeFilters"
+              class="flex flex-wrap items-center gap-2"
+            >
+              <InputGroup class="h-8 min-w-[12rem] flex-1">
+                <InputGroupAddon class="pl-2.5">
+                  <Search class="h-3.5 w-3.5" />
+                </InputGroupAddon>
+                <InputGroupInput
+                  v-model="nodeSearch"
+                  :placeholder="$t('server.form.search_nodes')"
+                  class="h-full text-sm"
+                  data-testid="node-search"
+                />
+                <InputGroupAddon align="inline-end" class="pr-2">
+                  <button
+                    v-if="nodeSearch"
+                    type="button"
+                    class="rounded-sm p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    @click="nodeSearch = ''"
+                  >
+                    <X class="h-3.5 w-3.5" />
+                  </button>
+                </InputGroupAddon>
+              </InputGroup>
+              <span
+                class="ml-auto font-mono text-[0.65rem] tabular-nums text-muted-foreground"
+              >
+                {{
+                  $t("server.form.nodes_shown", {
+                    shown: visibleNodeOptions.length,
+                    total: regionNodeOptions.length,
+                  })
+                }}
+              </span>
+            </div>
+            <FormField
+              v-if="regionNodeOptions.length > 0"
+              v-slot="{ componentField }"
+              name="game_server_node_id"
+            >
               <FormItem>
-                <FormLabel>{{ $t("server.form.region") }}</FormLabel>
-                <Select v-bind="componentField">
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue
-                        :placeholder="$t('server.form.select_region')"
+                <FormControl>
+                  <RadioGroup
+                    v-bind="componentField"
+                    class="grid max-h-[26rem] gap-2 overflow-y-auto"
+                  >
+                    <div
+                      v-for="node in visibleNodeOptions"
+                      :key="node.id"
+                      :class="
+                        tileClass(
+                          componentField.modelValue === node.id,
+                          !!node.reason,
+                        )
+                      "
+                      class="items-start gap-3 px-3 py-2.5"
+                      data-testid="node-option"
+                      @click="
+                        node.reason ||
+                        componentField['onUpdate:modelValue'](node.id)
+                      "
+                    >
+                      <RadioGroupItem
+                        :id="`node-${node.id}`"
+                        :value="node.id"
+                        :disabled="!!node.reason"
+                        class="mt-0.5"
                       />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem
-                        :value="region.value"
-                        v-for="region in server_regions"
-                        :key="region.value"
-                      >
-                        {{ region.description || region.value }}
-                      </SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+                      <div class="grid min-w-0 flex-1 gap-1">
+                        <div
+                          class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5"
+                        >
+                          <label
+                            :for="`node-${node.id}`"
+                            class="text-sm font-medium leading-none"
+                            :class="[
+                              node.unlabeled && 'font-mono',
+                              node.reason
+                                ? 'cursor-not-allowed'
+                                : 'cursor-pointer',
+                            ]"
+                          >
+                            {{ node.name }}
+                          </label>
+                          <span
+                            v-if="!node.unlabeled"
+                            class="font-mono text-[0.7rem] text-muted-foreground/70"
+                          >
+                            {{ node.id }}
+                          </span>
+                          <span
+                            v-if="node.region"
+                            class="text-xs text-muted-foreground"
+                          >
+                            {{ node.region }}
+                          </span>
+                        </div>
+                        <span
+                          class="break-words font-mono text-[0.7rem] leading-snug text-muted-foreground"
+                        >
+                          {{ node.detail }}
+                        </span>
+                      </div>
+                      <div class="flex shrink-0 flex-col items-end gap-1.5">
+                        <span
+                          v-if="node.reason"
+                          :class="tagClasses"
+                          class="text-foreground"
+                        >
+                          <Lock
+                            class="h-2.5 w-2.5 text-[hsl(var(--tac-amber))]"
+                          />
+                          {{ node.reason }}
+                        </span>
+                        <span v-if="node.gpu" :class="tagClasses">GPU</span>
+                      </div>
+                    </div>
+                    <p
+                      v-if="visibleNodeOptions.length === 0"
+                      class="py-3 text-center text-sm text-muted-foreground"
+                    >
+                      {{ $t("server.form.no_nodes_match") }}
+                    </p>
+                  </RadioGroup>
+                </FormControl>
                 <FormMessage />
               </FormItem>
             </FormField>
           </div>
         </Fold>
+
+        <Fold :open="!useGameServerNode && !isEditingGameServerNode">
+          <div
+            :class="
+              !server && gameServerNodes.length > 0
+                ? 'server-form-drawer server-form-drawer--right'
+                : 'grid gap-4'
+            "
+          >
+            <div
+              class="grid grid-cols-1 gap-4 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)]"
+            >
+              <FormField v-slot="{ componentField }" name="host" keep-value>
+                <FormItem>
+                  <FormLabel>{{ $t("server.form.host") }}</FormLabel>
+                  <FormControl>
+                    <Input v-bind="componentField" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+
+              <FormField v-slot="{ componentField }" name="port" keep-value>
+                <FormItem>
+                  <FormLabel>{{ $t("server.form.port") }}</FormLabel>
+                  <FormControl>
+                    <Input type="number" v-bind="componentField" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+
+              <FormField v-slot="{ componentField }" name="tv_port" keep-value>
+                <FormItem>
+                  <FormLabel>{{ $t("server.form.tv_port") }}</FormLabel>
+                  <FormControl>
+                    <Input type="number" v-bind="componentField" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+            </div>
+
+            <p v-if="!server" class="text-xs text-muted-foreground">
+              {{ $t("server.form.external_plugin_hint") }}
+            </p>
+          </div>
+        </Fold>
       </div>
     </FormSection>
 
-    <FormSection :title="$t('server.form.game')">
-      <div class="grid gap-4">
-        <FormField v-slot="{ componentField }" name="game">
-          <FormItem>
-            <FormLabel>{{ $t("server.form.game") }}</FormLabel>
-            <FormControl>
-              <RadioGroup v-bind="componentField" class="grid gap-3">
-                <div
-                  class="flex items-center space-x-3 rounded-lg border p-3 hover:bg-muted/50 transition-colors cursor-pointer"
-                  @click="componentField['onUpdate:modelValue']('cs2')"
-                >
-                  <RadioGroupItem id="game-cs2" value="cs2" />
-                  <div class="grid gap-1.5 leading-none">
-                    <label
-                      class="text-sm font-medium leading-none cursor-pointer"
-                      for="game-cs2"
-                      >CS2</label
-                    >
-                  </div>
-                </div>
-                <div
-                  class="flex items-center space-x-3 rounded-lg border p-3 hover:bg-muted/50 transition-colors cursor-pointer"
-                  @click="componentField['onUpdate:modelValue']('csgo')"
-                >
-                  <RadioGroupItem id="game-csgo" value="csgo" />
-                  <div class="grid gap-1.5 leading-none">
-                    <label
-                      class="text-sm font-medium leading-none cursor-pointer"
-                      for="game-csgo"
-                      >CS:GO</label
-                    >
-                  </div>
-                </div>
-              </RadioGroup>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        </FormField>
+    <FormSection :title="$t('server.form.what_it_plays')">
+      <template #actions>
+        <AnimatedFilters
+          square
+          :options="gameOptions"
+          :model-value="form.values.game"
+          @update:model-value="form.setFieldValue('game', $event)"
+        />
+      </template>
 
-
-        <Fold
-          :open="form.values.game === 'csgo' && !form.values.use_valve_modes"
+      <div class="space-y-3">
+        <RadioGroup
+          :model-value="serverKind"
+          class="grid gap-3 sm:grid-cols-2"
+          @update:model-value="setServerKind"
         >
-          <Alert variant="warning">
-            <AlertTitle>{{
-              $t("server.form.csgo_ranked_unavailable_title")
-            }}</AlertTitle>
-            <AlertDescription>{{
-              $t("server.form.csgo_ranked_unavailable_description")
-            }}</AlertDescription>
-          </Alert>
-        </Fold>
+          <div
+            v-for="kind in kindOptions"
+            :key="kind.value"
+            :class="tileClass(serverKind === kind.value, !!kind.lock)"
+            class="items-start gap-3 p-3"
+            @click="kind.lock || setServerKind(kind.value)"
+          >
+            <RadioGroupItem
+              :id="`kind-${kind.value}`"
+              :value="kind.value"
+              :disabled="!!kind.lock"
+              class="mt-0.5"
+            />
+            <div class="grid min-w-0 flex-1 gap-1.5 leading-none">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <label
+                  :for="`kind-${kind.value}`"
+                  class="text-sm font-medium leading-none"
+                  :class="kind.lock ? 'cursor-not-allowed' : 'cursor-pointer'"
+                >
+                  {{ kind.label }}
+                </label>
+                <span v-if="kind.lock" :class="tagClasses">
+                  <Lock class="h-2.5 w-2.5" />
+                  {{ kind.lock }}
+                </span>
+              </div>
+              <p class="text-sm leading-snug text-muted-foreground">
+                {{ kind.description }}
+              </p>
+            </div>
+          </div>
+        </RadioGroup>
 
         <Fold :open="serverKind === 'valve'">
-          <FormField v-slot="{ componentField }" name="type">
-            <FormItem>
-              <FormLabel>{{ $t("server.form.game_mode") }}</FormLabel>
-              <Select v-bind="componentField">
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue
-                      :placeholder="$t('server.form.select_game_mode')"
-                    />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent class="w-[--reka-select-trigger-width]">
-                  <SelectGroup>
-                    <SelectItem
-                      :value="serverType"
-                      v-for="serverType in valveModeTypes"
-                      :key="serverType"
-                    >
-                      {{ serverType }}
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          </FormField>
+          <div class="server-form-drawer">
+            <span :class="subLabelClasses">
+              {{ $t("server.form.valve_preset_group") }}
+            </span>
+            <AnimatedFilters
+              :options="valvePresetOptions"
+              :model-value="form.values.type"
+              @update:model-value="form.setFieldValue('type', $event)"
+            />
+          </div>
         </Fold>
 
         <Fold :open="serverKind === 'presets'">
-          <FormField v-slot="{ componentField }" name="type">
-            <FormItem>
-              <div class="flex items-center justify-between gap-3">
-                <FormLabel>{{ $t("server.form.custom_mode_group") }}</FormLabel>
-                <!-- What a mode loads and how it boots belongs to the mode,
-                     not the server, so it is edited where modes live. -->
-                <NuxtLink
-                  v-if="isAdmin && isCustomModeSelected"
-                  :to="editModeLink"
-                  class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-[hsl(var(--tac-amber))]"
-                  data-testid="edit-game-mode"
-                >
-                  {{ $t("server.form.edit_mode") }}
-                </NuxtLink>
+          <div class="server-form-drawer server-form-drawer--right">
+            <div class="flex items-center justify-between gap-3">
+              <span :class="subLabelClasses">
+                {{ $t("server.form.custom_mode_group") }}
+              </span>
+              <!-- What a mode loads and how it boots belongs to the mode,
+                   not the server, so it is edited where modes live. -->
+              <NuxtLink
+                v-if="isAdmin && isCustomModeSelected"
+                :to="editModeLink"
+                class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-[hsl(var(--tac-amber))]"
+                data-testid="edit-game-mode"
+              >
+                {{ $t("server.form.edit_mode") }}
+              </NuxtLink>
+            </div>
+            <RadioGroup
+              v-if="customModes.length > 0"
+              :model-value="form.values.type"
+              class="grid gap-2"
+              @update:model-value="form.setFieldValue('type', $event)"
+            >
+              <div
+                v-for="gameMode in customModes"
+                :key="gameMode.id"
+                :class="
+                  tileClass(form.values.type === gameMode.id, !runsOnNode)
+                "
+                class="items-start gap-3 px-3 py-2.5"
+                data-testid="custom-mode-option"
+                @click="!runsOnNode || form.setFieldValue('type', gameMode.id)"
+              >
+                <RadioGroupItem
+                  :id="`mode-${gameMode.id}`"
+                  :value="gameMode.id"
+                  :disabled="!runsOnNode"
+                  class="mt-0.5"
+                />
+                <div class="grid min-w-0 flex-1 gap-1 leading-none">
+                  <label
+                    :for="`mode-${gameMode.id}`"
+                    class="cursor-pointer text-sm font-medium leading-none"
+                  >
+                    {{ gameMode.name }}
+                  </label>
+                  <p
+                    v-if="gameMode.description"
+                    class="text-xs leading-snug text-muted-foreground"
+                  >
+                    {{ gameMode.description }}
+                  </p>
+                </div>
               </div>
-              <Select v-bind="componentField">
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue
-                      :placeholder="$t('server.form.select_custom_preset')"
-                    />
-                  </SelectTrigger>
-                </FormControl>
-                <!-- Width pinned to the trigger: the popper otherwise grows to
-                     the longest mode description and the text never wraps. -->
-                <SelectContent class="w-[--reka-select-trigger-width]">
-                  <SelectGroup>
-                    <!-- Built from the reka primitives rather than ui/SelectItem
-                         so the description sits outside SelectItemText: the
-                         trigger then echoes only the name. -->
-                    <RekaSelectItem
-                      v-for="gameMode in customModes"
-                      :key="gameMode.id"
-                      :value="gameMode.id"
-                      :disabled="!runsOnNode"
-                      class="relative flex w-full cursor-default select-none flex-col items-start rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
-                    >
-                      <span
-                        class="absolute right-2 top-2 flex h-3.5 w-3.5 items-center justify-center"
-                      >
-                        <RekaSelectItemIndicator>
-                          <CheckIcon class="h-4 w-4" />
-                        </RekaSelectItemIndicator>
-                      </span>
-                      <RekaSelectItemText>{{ gameMode.name }}</RekaSelectItemText>
-                      <span
-                        v-if="gameMode.description"
-                        class="mt-0.5 block whitespace-normal text-xs leading-snug text-muted-foreground"
-                      >
-                        {{ gameMode.description }}
-                      </span>
-                    </RekaSelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+            </RadioGroup>
+            <p v-else class="text-sm text-muted-foreground">
+              {{ $t("server.form.no_custom_modes") }}
+            </p>
+          </div>
+        </Fold>
+
+        <Fold :open="!!kindNote">
+          <p :class="noteClasses">
+            <Info
+              class="mt-0.5 h-4 w-4 shrink-0 text-[hsl(var(--tac-amber))]"
+            />
+            <span>
+              {{ kindNote }}
+              <button
+                v-if="canRunOnNode"
+                type="button"
+                class="font-medium text-[hsl(var(--tac-amber))] underline decoration-[hsl(var(--tac-amber)/0.45)] underline-offset-4 hover:decoration-[hsl(var(--tac-amber))]"
+                @click="runOnNode"
+              >
+                {{ $t("server.form.run_on_node") }}
+              </button>
+            </span>
+          </p>
+        </Fold>
+      </div>
+    </FormSection>
+
+    <FormSection :title="$t('server.form.name_and_access')">
+      <div class="space-y-4">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <FormField v-slot="{ componentField }" name="label">
+            <FormItem>
+              <FormLabel>{{ $t("server.form.label") }}</FormLabel>
+              <FormControl>
+                <Input
+                  v-bind="{ ...componentField, ...passwordManagerIgnore }"
+                  @input="labelTouched = true"
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
           </FormField>
-        </Fold>
 
-        <!-- A custom mode is plugins the panel installs onto the container it
-             runs; a third-party dedicated server gives it nothing to install
-             into, so the modes stay locked unless it runs on a node. -->
-        <Fold
-          :open="
-            serverKind === 'presets' &&
-            customModes.length > 0 &&
-            !runsOnNode
-          "
-        >
-          <Alert variant="warning">
-            <AlertTitle>{{
-              $t("server.form.custom_modes_need_node_title")
-            }}</AlertTitle>
-            <AlertDescription>{{
-              $t("server.form.custom_modes_need_node_description")
-            }}</AlertDescription>
-          </Alert>
-        </Fold>
-      </div>
-    </FormSection>
+          <FormField v-slot="{ componentField }" name="rcon_password">
+            <FormItem>
+              <FormLabel>{{ $t("server.form.rcon_password") }}</FormLabel>
+              <FormControl>
+                <div class="relative">
+                  <Input
+                    :type="showRconPassword ? 'text' : 'password'"
+                    v-bind="{ ...componentField, ...passwordManagerIgnore }"
+                    class="pr-28"
+                  />
+                  <div
+                    class="absolute right-1 top-1/2 flex -translate-y-1/2 items-center gap-0.5"
+                  >
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      class="h-7 w-7"
+                      tabindex="-1"
+                      @click="showRconPassword = !showRconPassword"
+                    >
+                      <Eye v-if="!showRconPassword" class="h-4 w-4" />
+                      <EyeOff v-else class="h-4 w-4" />
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      class="h-7 px-2 text-xs"
+                      @click="
+                        generateRconPassword();
+                        showRconPassword = true;
+                      "
+                    >
+                      {{ $t("server.form.generate") }}
+                    </Button>
+                  </div>
+                </div>
+              </FormControl>
+              <FormDescription>
+                {{
+                  server
+                    ? $t("server.form.rcon_password_description")
+                    : $t("server.form.rcon_password_create_description")
+                }}
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </div>
 
-    <FormSection :title="$t('server.form.identity')">
-      <div class="grid gap-4">
-        <FormField v-slot="{ componentField }" name="label">
-          <FormItem>
-            <FormLabel>{{ $t("server.form.label") }}</FormLabel>
-            <FormControl>
-              <Input v-bind="componentField" />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        </FormField>
-
-        <FormField v-slot="{ componentField }" name="rcon_password">
-          <FormItem>
-            <FormLabel>{{ $t("server.form.rcon_password") }}</FormLabel>
-            <FormControl>
-              <Input type="password" v-bind="componentField" />
-            </FormControl>
-            <FormDescription v-if="server">
-              {{ $t("server.form.rcon_password_description") }}
-            </FormDescription>
-            <FormMessage />
-          </FormItem>
-        </FormField>
-      </div>
-    </FormSection>
-
-    <FormSection :title="$t('server.form.connection')">
-      <div class="grid gap-4">
-
-        <Fold :open="!useGameServerNode && !isEditingGameServerNode">
-        <div class="grid gap-4">
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <FormField v-slot="{ componentField }" name="host">
+        <Fold :open="!isManagedRankedServer">
+          <div class="grid gap-4 sm:grid-cols-2">
+            <FormField v-slot="{ componentField }" name="connect_password">
               <FormItem>
-                <FormLabel>{{ $t("server.form.host") }}</FormLabel>
+                <FormLabel>{{ $t("server.form.connect_password") }}</FormLabel>
                 <FormControl>
-                  <Input v-bind="componentField" />
+                  <div class="relative">
+                    <Input
+                      :type="showConnectPassword ? 'text' : 'password'"
+                      v-bind="{ ...componentField, ...passwordManagerIgnore }"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      class="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2"
+                      @click="showConnectPassword = !showConnectPassword"
+                      tabindex="-1"
+                    >
+                      <Eye v-if="!showConnectPassword" class="h-4 w-4" />
+                      <EyeOff v-else class="h-4 w-4" />
+                    </Button>
+                  </div>
                 </FormControl>
+                <FormDescription>{{
+                  $t("server.form.connect_password_description")
+                }}</FormDescription>
                 <FormMessage />
               </FormItem>
             </FormField>
 
-            <FormField v-slot="{ componentField }" name="port">
+            <FormField
+              v-slot="{ componentField }"
+              name="max_players"
+              keep-value
+            >
               <FormItem>
-                <FormLabel>{{ $t("server.form.port") }}</FormLabel>
+                <FormLabel>{{ $t("server.form.max_players") }}</FormLabel>
                 <FormControl>
-                  <Input type="number" v-bind="componentField" />
+                  <Input
+                    type="number"
+                    min="1"
+                    max="32"
+                    v-bind="componentField"
+                  />
                 </FormControl>
-                <FormMessage />
-              </FormItem>
-            </FormField>
-
-            <FormField v-slot="{ componentField }" name="tv_port">
-              <FormItem>
-                <FormLabel>{{ $t("server.form.tv_port") }}</FormLabel>
-                <FormControl>
-                  <Input type="number" v-bind="componentField" />
-                </FormControl>
+                <FormDescription>{{
+                  $t("server.form.max_players_description")
+                }}</FormDescription>
                 <FormMessage />
               </FormItem>
             </FormField>
           </div>
-        </div>
         </Fold>
 
-        <Fold
-          :open="
-            (useGameServerNode && gameServerNodes.length > 0) ||
-            isEditingGameServerNode
-          "
-        >
-        <FormField
-          v-slot="{ componentField }"
-          name="game_server_node_id"
-        >
-          <FormItem>
-            <FormLabel>{{ $t("server.form.game_server_node") }}</FormLabel>
-            <Select v-bind="componentField" :disabled="isEditingGameServerNode">
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue
-                    :placeholder="$t('server.form.select_game_server_node')"
-                  />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem
-                    :value="node.id"
-                    v-for="node in gameServerNodes"
-                    :key="node.id"
-                  >
-                    {{ node.label }} ({{
-                      node.e_region?.description || node.region
-                    }})
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <FormMessage />
-            <FormDescription>{{
-              $t("server.form.game_server_node_description")
-            }}</FormDescription>
-            <div
-              v-if="canMoveNode"
-              class="flex items-center justify-between gap-3 pt-1"
-            >
-              <span class="text-xs text-muted-foreground">
-                {{ $t("server.form.move_node_hint") }}
-              </span>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                class="shrink-0"
-                @click="$emit('move')"
-              >
-                {{ $t("server.form.move_node") }}
-              </Button>
-            </div>
-          </FormItem>
-        </FormField>
+        <Fold :open="isManagedRankedServer">
+          <p :class="noteClasses">
+            <Lock
+              class="mt-0.5 h-4 w-4 shrink-0 text-[hsl(var(--tac-amber))]"
+            />
+            <span>{{ $t("server.form.ranked_access_managed") }}</span>
+          </p>
         </Fold>
       </div>
     </FormSection>
 
-    <Fold :open="!isManagedRankedServer">
-    <FormSection :title="$t('server.form.connect_password')">
-      <div class="grid gap-4">
-        <FormField
-          v-slot="{ componentField }"
-          name="connect_password"
-          v-if="!isManagedRankedServer"
-        >
-          <FormItem>
-            <FormLabel>{{ $t("server.form.connect_password") }}</FormLabel>
-            <FormControl>
-              <div class="relative">
-                <Input
-                  :type="showConnectPassword ? 'text' : 'password'"
-                  v-bind="componentField"
-                  autocomplete="off"
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  class="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7"
-                  @click="showConnectPassword = !showConnectPassword"
-                  tabindex="-1"
-                >
-                  <Eye v-if="!showConnectPassword" class="h-4 w-4" />
-                  <EyeOff v-else class="h-4 w-4" />
-                </Button>
-              </div>
-            </FormControl>
-            <FormDescription>{{
-              $t("server.form.connect_password_description")
-            }}</FormDescription>
-            <FormMessage />
-          </FormItem>
-        </FormField>
-
-        <FormField
-          v-slot="{ componentField }"
-          name="max_players"
-          v-if="!isManagedRankedServer"
-        >
-          <FormItem>
-            <FormLabel>{{ $t("server.form.max_players") }}</FormLabel>
-            <FormControl>
-              <Input type="number" min="1" max="32" v-bind="componentField" />
-            </FormControl>
-            <FormDescription>{{
-              $t("server.form.max_players_description")
-            }}</FormDescription>
-            <FormMessage />
-          </FormItem>
-        </FormField>
-      </div>
-    </FormSection>
-    </Fold>
-
-    <Button
+    <SettingsSaveBar
       v-if="!server"
-      variant="tactical"
-      type="submit"
-      :disabled="Object.keys(form.errors).length > 0"
-      :loading="submitting"
-    >
-      {{ $t("server.form.create") }}
-    </Button>
+      force-visible
+      hide-discard
+      :valid="missingFields.length === 0"
+      :submitting="submitting"
+      :title="
+        missingFields.length
+          ? $t('server.form.create_bar.missing', {
+              fields: missingFields.join(', '),
+            })
+          : $t('server.form.create_bar.ready')
+      "
+      :description="createSummary"
+      :action-label="$t('server.form.create')"
+      @save="updateCreateServer"
+    />
 
     <SettingsSaveBar
       v-else
@@ -592,6 +782,41 @@ const showConnectPassword = ref(false);
     />
   </form>
 </template>
+
+<style scoped>
+/* A choice's follow-up fields hang off it: the caret points up at the tile
+   in the column the drawer belongs to. */
+.server-form-drawer {
+  position: relative;
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  background: color-mix(in hsl, hsl(var(--muted)) 22%, hsl(var(--background)));
+}
+.server-form-drawer::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 25%;
+  width: 10px;
+  height: 10px;
+  background: inherit;
+  border-left: 1px solid hsl(var(--border));
+  border-top: 1px solid hsl(var(--border));
+  transform: translateX(-50%) rotate(45deg);
+}
+.server-form-drawer--right::before {
+  left: 75%;
+}
+/* Stacked tiles leave no column to point at. */
+@media (max-width: 639px) {
+  .server-form-drawer::before {
+    display: none;
+  }
+}
+</style>
 
 <script lang="ts">
 import * as z from "zod";
@@ -605,6 +830,7 @@ import { e_server_types_enum } from "~/generated/zeus";
 import { toast } from "@/components/ui/toast";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useAuthStore } from "~/stores/AuthStore";
+import { formatBytes, moveTargetIneligibility } from "~/types/serverMigration";
 
 // Literals rather than the generated enum: a type added by a migration is
 // absent from ~/generated/zeus until codegen runs against a migrated database,
@@ -613,6 +839,9 @@ import { useAuthStore } from "~/stores/AuthStore";
 const SERVER_TYPE_RANKED = "Ranked";
 const SERVER_TYPE_PRACTICE = "Practice";
 const SERVER_TYPE_CUSTOM = "Custom";
+
+// Past this many nodes the picker gets a search and a region filter.
+const NODE_FILTER_THRESHOLD = 6;
 
 export default {
   emits: ["updated", "move"],
@@ -664,11 +893,6 @@ export default {
         query: typedGql("subscription")({
           game_server_nodes: [
             {
-              where: {
-                build_id: {
-                  _is_null: false,
-                },
-              },
               order_by: [
                 {},
                 {
@@ -680,11 +904,19 @@ export default {
               id: true,
               label: true,
               region: true,
-              build_id: true,
-              lan_ip: true,
+              status: true,
+              enabled: true,
+              enabled_for_match_making: true,
+              gpu: true,
+              node_ip: true,
               public_ip: true,
+              build_id: true,
+              csgo_build_id: true,
+              update_status: true,
               start_port_range: true,
               end_port_range: true,
+              disk_available_gb: true,
+              available_dedicated_slot_count: true,
               e_region: {
                 description: true,
               },
@@ -693,6 +925,14 @@ export default {
         }),
         result: function ({ data }: { data: any }) {
           this.gameServerNodes = data.game_server_nodes;
+          // A new server starts on a node when one can take it.
+          if (
+            !this.server &&
+            !this.hostingTouched &&
+            this.nodeOptions.some((node) => !node.reason)
+          ) {
+            this.form.setFieldValue("use_game_server_node", true);
+          }
         },
       },
     },
@@ -700,6 +940,9 @@ export default {
   data() {
     return {
       submitting: false,
+      hostingTouched: false,
+      labelTouched: false,
+      nodeSearch: "",
       baseline: null as string | null,
       isDirty: false,
       gameServerNodes: [],
@@ -724,22 +967,35 @@ export default {
               game_server_node_id: z.string().optional(),
               type: z.string().default(SERVER_TYPE_RANKED),
               connect_password: z.string().optional(),
-              port: z.number().min(2).max(65535).default(27015).optional(),
-              tv_port: z.number().min(2).max(65535).default(27020).optional(),
+              port: z.number().min(2).max(65535).optional().default(27015),
+              tv_port: z.number().min(2).max(65535).optional().default(27020),
               rcon_password: z.string().optional(),
-              max_players: z.number().min(1).max(32).optional(),
+              max_players: z.number().min(1).max(32).optional().default(16),
             })
             .refine(
               (data) => {
                 if (!data.use_game_server_node) {
-                  return data.host && data.region && data.port && data.tv_port;
+                  return data.host && data.port && data.tv_port;
                 }
                 return true;
               },
               {
                 message:
-                  "Host, region, and ports are required when not using a game server node",
+                  "Host and ports are required when not using a game server node",
                 path: ["host"],
+              },
+            )
+            .refine(
+              (data) => {
+                // A node server's region is its node's.
+                if (this.server?.game_server_node_id) {
+                  return true;
+                }
+                return !!data.region;
+              },
+              {
+                message: this.$t("server.form.select_region"),
+                path: ["region"],
               },
             )
             .refine(
@@ -806,8 +1062,7 @@ export default {
         // Ranked and Practice are the two that run no Valve preset, so they
         // are the two this watcher must leave alone in either direction.
         const runsNoPreset =
-          selected === SERVER_TYPE_RANKED ||
-          selected === SERVER_TYPE_PRACTICE;
+          selected === SERVER_TYPE_RANKED || selected === SERVER_TYPE_PRACTICE;
 
         if (!newValue) {
           if (!runsNoPreset) {
@@ -842,20 +1097,23 @@ export default {
     modesKnown() {
       this.dropStaleMode();
     },
-    "form.values.game_server_node_id": {
-      handler(newNodeId) {
-        if (newNodeId && newNodeId !== "none" && this.useGameServerNode) {
-          const selectedNode = this.gameServerNodes.find(
-            (node) => node.id === newNodeId,
-          );
-          if (selectedNode) {
-            this.form.setFieldValue("region", selectedNode.region);
-          }
-        } else if (
-          (!newNodeId || newNodeId === "none") &&
-          this.useGameServerNode
-        ) {
-          this.form.setFieldValue("region", "");
+    // Drop a pick that left the region or can no longer take the server
+    // (the game flipped to csgo, say).
+    regionNodeOptions(options: Array<Record<string, any>>) {
+      const picked = this.form.values.game_server_node_id;
+      if (
+        !this.server &&
+        picked &&
+        !options.some((node) => node.id === picked && !node.reason)
+      ) {
+        this.form.setFieldValue("game_server_node_id", "");
+      }
+    },
+    suggestedLabel: {
+      immediate: true,
+      handler(label: string) {
+        if (!this.server && !this.labelTouched) {
+          this.form.setFieldValue("label", label);
         }
       },
     },
@@ -875,6 +1133,219 @@ export default {
     },
     useGameServerNode() {
       return this.form.values.use_game_server_node;
+    },
+    hosting(): string {
+      return this.useGameServerNode ? "node" : "external";
+    },
+    // Every node is listed, with the reason one can't take this server --
+    // the same checks the move dialog makes, plus GPU-only nodes, which have
+    // no region or game ports.
+    nodeOptions(): Array<Record<string, any>> {
+      return this.gameServerNodes
+        .map((node: Record<string, any>) => ({
+          id: node.id,
+          name: node.label || node.id,
+          unlabeled: !node.label,
+          region: node.e_region?.description || node.region,
+          regionValue: node.region,
+          gpu: !!node.gpu,
+          slots: node.available_dedicated_slot_count ?? 0,
+          reason: this.nodeReason(node),
+          detail: [
+            node.public_ip || node.node_ip,
+            node.start_port_range && node.end_port_range
+              ? this.$t("server.form.node_ports", {
+                  range: `${node.start_port_range}–${node.end_port_range}`,
+                })
+              : null,
+            node.available_dedicated_slot_count != null
+              ? this.$t("pages.dedicated_servers.detail.move.free_slots", {
+                  count: node.available_dedicated_slot_count,
+                })
+              : null,
+            node.disk_available_gb != null
+              ? this.$t("pages.dedicated_servers.detail.move.free_disk", {
+                  size: formatBytes(node.disk_available_gb * 1024 ** 3),
+                })
+              : null,
+          ]
+            .filter(Boolean)
+            .join(" · "),
+        }))
+        .sort(
+          (a, b) =>
+            Number(!!a.reason) - Number(!!b.reason) ||
+            a.name.localeCompare(b.name),
+        );
+    },
+    // Nodes that can take the server, and their free slots, per region.
+    regionStats(): Record<string, { nodes: number; slots: number }> {
+      const stats: Record<string, { nodes: number; slots: number }> = {};
+      for (const node of this.nodeOptions) {
+        if (!node.reason && node.regionValue) {
+          const region = (stats[node.regionValue] ??= { nodes: 0, slots: 0 });
+          region.nodes += 1;
+          region.slots += node.slots;
+        }
+      }
+      return stats;
+    },
+    // A GPU-only node has no region, so it never lists here.
+    regionNodeOptions(): Array<Record<string, any>> {
+      const region = this.form.values.region;
+      return region
+        ? this.nodeOptions.filter((node) => node.regionValue === region)
+        : [];
+    },
+    showNodeFilters(): boolean {
+      return this.regionNodeOptions.length > NODE_FILTER_THRESHOLD;
+    },
+    // The picked node stays listed whatever the search says, so the choice
+    // never disappears from under the form.
+    visibleNodeOptions(): Array<Record<string, any>> {
+      const search = this.nodeSearch.trim().toLowerCase();
+      if (!this.showNodeFilters || !search) {
+        return this.regionNodeOptions;
+      }
+      const picked = this.form.values.game_server_node_id;
+      return this.regionNodeOptions.filter(
+        (node) =>
+          node.id === picked ||
+          [node.name, node.id, node.detail].some((value) =>
+            value?.toLowerCase().includes(search),
+          ),
+      );
+    },
+    // Region plus what it plays, until someone names the server themselves.
+    suggestedLabel(): string {
+      const region = this.server_regions?.find(
+        (option: Record<string, any>) =>
+          option.value === this.form.values.region,
+      );
+      return [region?.description || region?.value, this.playsLabel]
+        .filter(Boolean)
+        .join(" ");
+    },
+    playsLabel(): string | undefined {
+      const values = this.form.values;
+      if (this.serverKind === "presets") {
+        return this.customModes.find((mode) => mode.id === values.type)?.name;
+      }
+      if (this.serverKind === "valve") {
+        return values.type;
+      }
+      return this.kindOptions.find((kind) => kind.value === this.serverKind)
+        ?.label;
+    },
+    currentNode(): Record<string, any> | undefined {
+      return this.gameServerNodes.find(
+        (node: Record<string, any>) =>
+          node.id === this.server?.game_server_node_id,
+      );
+    },
+    currentNodeName(): string {
+      return (
+        this.currentNode?.label ||
+        this.currentNode?.id ||
+        this.server?.game_server_node_id
+      );
+    },
+    currentNodeDetail(): string {
+      const node = this.currentNode;
+      return node
+        ? [
+            node.e_region?.description || node.region,
+            node.public_ip || node.node_ip,
+          ]
+            .filter(Boolean)
+            .join(" · ")
+        : "";
+    },
+    kindOptions(): Array<Record<string, any>> {
+      return [
+        {
+          value: "ranked",
+          label: this.$t("server.form.ranked_server"),
+          description: this.$t("server.form.ranked_server_description"),
+        },
+        {
+          value: "practice",
+          label: this.$t("server.form.practice_server"),
+          description: this.$t("server.form.practice_server_description"),
+        },
+        {
+          value: "valve",
+          label: this.$t("server.form.valve_modes"),
+          description: this.$t("server.form.valve_modes_description"),
+        },
+        {
+          value: "presets",
+          label: this.$t("server.form.custom_presets"),
+          description: this.$t("server.form.custom_presets_description"),
+        },
+      ].map((kind) => ({ ...kind, lock: this.kindLock(kind.value) }));
+    },
+    kindNote(): string {
+      if (this.form.values.game === "csgo") {
+        return this.$t("server.form.csgo_valve_only");
+      }
+      if (!this.runsOnNode) {
+        return this.$t("server.form.custom_modes_need_node");
+      }
+      return "";
+    },
+    canRunOnNode(): boolean {
+      return (
+        !this.server &&
+        this.form.values.game !== "csgo" &&
+        (this.form.values.region
+          ? this.regionNodeOptions
+          : this.nodeOptions
+        ).some((node) => !node.reason)
+      );
+    },
+    valvePresetOptions(): Array<{ key: string; label: string }> {
+      return this.valveModeTypes.map((type: string) => ({
+        key: type,
+        label: type,
+      }));
+    },
+    missingFields(): Array<string> {
+      const values = this.form.values;
+      const missing = [];
+      if (!values.region) {
+        missing.push(this.$t("server.form.region"));
+      }
+      if (values.use_game_server_node) {
+        const node = this.nodeOptions.find(
+          (option) => option.id === values.game_server_node_id,
+        );
+        if (!node || node.reason) {
+          missing.push(this.$t("server.form.game_server_node"));
+        }
+      } else if (!values.host) {
+        missing.push(this.$t("server.form.host"));
+      }
+      if ((values.label ?? "").trim().length < 3) {
+        missing.push(this.$t("server.form.label"));
+      }
+      if (!values.rcon_password) {
+        missing.push(this.$t("server.form.rcon_password"));
+      }
+      return missing;
+    },
+    createSummary(): string {
+      const values = this.form.values;
+      const plays = this.playsLabel;
+      const node = this.nodeOptions.find(
+        (option) => option.id === values.game_server_node_id,
+      );
+      const where = values.use_game_server_node
+        ? node && [node.name, node.region].filter(Boolean).join(" · ")
+        : values.host && `${values.host}:${values.port}`;
+      return [values.game === "csgo" ? "CS:GO" : "CS2", plays, where]
+        .filter(Boolean)
+        .join(" · ");
     },
     serverTypes() {
       return Object.values(e_server_types_enum);
@@ -1002,16 +1473,79 @@ export default {
         return;
       }
 
-      if (!this.server && this.gameServerNodes.length > 0) {
-        this.form.setFieldValue("use_game_server_node", true);
-      }
-
       if (!this.isCustomModeSelected) {
         this.form.setFieldValue(
           "type",
           this.customModes[0]?.id ?? SERVER_TYPE_CUSTOM,
         );
       }
+    },
+    regionCapacity(region: string): string {
+      const stats = this.regionStats[region] ?? { nodes: 0, slots: 0 };
+      return [
+        this.$t("server.form.region_nodes", { count: stats.nodes }),
+        stats.nodes
+          ? this.$t("pages.dedicated_servers.detail.move.free_slots", {
+              count: stats.slots,
+            })
+          : null,
+      ]
+        .filter(Boolean)
+        .join(" · ");
+    },
+    kindLock(kind: string): string | null {
+      if (this.form.values.game === "csgo" && kind !== "valve") {
+        return this.$t("server.form.cs2_only");
+      }
+      if (kind === "presets" && !this.runsOnNode) {
+        return this.$t("server.form.needs_node");
+      }
+      return null;
+    },
+    nodeReason(node: Record<string, any>): string | null {
+      if (node.gpu && !node.enabled_for_match_making) {
+        return this.$t("server.form.node_gpu_only");
+      }
+      const reason = moveTargetIneligibility(node as any, {
+        game: this.form.values.game,
+        game_server_node_id: null,
+      });
+      return reason
+        ? this.$t(`pages.dedicated_servers.detail.move.reason.${reason.key}`, {
+            game: "game" in reason ? reason.game : "",
+          })
+        : null;
+    },
+    tileClass(selected: boolean, disabled = false): Array<string> {
+      return [
+        "flex rounded-lg border transition-colors",
+        disabled
+          ? "cursor-not-allowed opacity-50"
+          : selected
+            ? "cursor-pointer"
+            : "cursor-pointer hover:bg-muted/50",
+        selected
+          ? "border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.08)]"
+          : "",
+      ];
+    },
+    setHosting(hosting: string) {
+      this.hostingTouched = true;
+      this.form.setFieldValue("use_game_server_node", hosting === "node");
+    },
+    runOnNode() {
+      this.setHosting("node");
+      this.setServerKind("presets");
+    },
+    generateRconPassword() {
+      const chars = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      this.form.setFieldValue(
+        "rcon_password",
+        Array.from(
+          crypto.getRandomValues(new Uint8Array(20)),
+          (byte) => chars[byte % chars.length],
+        ).join(""),
+      );
     },
     dropStaleMode() {
       if (this.modesKnown && this.holdsModeId && !this.isCustomModeSelected) {

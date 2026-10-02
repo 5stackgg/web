@@ -24,6 +24,7 @@ import {
   type RemovedChatMessage,
 } from "~/utilities/chatLobbyMessages";
 import type { ChatReaction } from "~/constants/chat";
+import type { ChatAttachment, ChatGif } from "~/utilities/chatAttachments";
 import { blockedIdsChange } from "~/utilities/playerBlocks";
 import guid from "~/utilities/uuid";
 
@@ -40,6 +41,8 @@ export interface LobbyMessage {
   // Reaction id to the steam ids holding it, oldest first. Missing from an api
   // that predates reactions.
   reactions?: ChatReactions;
+  attachments?: ChatAttachment[];
+  gif?: ChatGif;
   from?: {
     role?: string;
     name?: string;
@@ -495,11 +498,18 @@ export class Socket extends EventEmitter {
     }
   }
 
-  public chat(type: ChatType, id: string, message: string) {
+  public chat(
+    type: ChatType,
+    id: string,
+    message: string,
+    media?: { attachments?: string[]; gif?: ChatGif },
+  ) {
     this.event(`lobby:chat`, {
       id,
       type,
       message,
+      ...(media?.attachments?.length ? { attachments: media.attachments } : {}),
+      ...(media?.gif ? { gif: media.gif } : {}),
     });
   }
 

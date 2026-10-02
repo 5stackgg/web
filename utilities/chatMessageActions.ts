@@ -71,6 +71,9 @@ export function heldChatReactions(
 //
 // A sanction is on the author, not the line, so it needs neither an id nor a
 // source -- only someone other than the viewer to put it on.
+//
+// A line that is only files or a GIF has no text to edit, and the api refuses
+// an edit that would leave it empty.
 export function chatMessagePermissions({
   message,
   viewerSteamId,
@@ -100,7 +103,7 @@ export function chatMessagePermissions({
   return {
     canDelete:
       addressable && ((canModerate && roomType !== "direct") || selfService),
-    canEdit: selfService && !gaggedHere,
+    canEdit: selfService && !gaggedHere && !!message?.message?.trim(),
     canReact:
       canAddReaction ||
       (reactor && heldChatReactions(message, viewerSteamId).size > 0),

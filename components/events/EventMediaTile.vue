@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from "vue";
 import { Film, Play, ExternalLink, Twitch, Youtube } from "lucide-vue-next";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import MediaLightbox from "~/components/media/MediaLightbox.vue";
 import ClipPlayer from "~/components/clips/ClipPlayer.vue";
 import EventAudioPlayer from "~/components/events/EventAudioPlayer.vue";
 import { eventMediaUrl } from "~/composables/useEventMediaUpload";
@@ -186,22 +186,13 @@ async function startPlayback() {
         <img :src="src" class="h-full w-full object-cover" loading="lazy" />
       </button>
 
-      <Dialog v-model:open="lightboxOpen">
-        <DialogContent
-          class="max-w-5xl border-border/60 bg-black/90 p-2 sm:p-3"
-        >
-          <DialogTitle class="sr-only">
-            {{ item.title || item.filename }}
-          </DialogTitle>
-          <img :src="src" class="max-h-[80vh] w-full rounded object-contain" />
-          <p
-            v-if="item.title"
-            class="px-1 pb-1 text-center font-mono text-[0.68rem] uppercase tracking-[0.16em] text-muted-foreground"
-          >
-            {{ item.title }}
-          </p>
-        </DialogContent>
-      </Dialog>
+      <MediaLightbox
+        v-model:open="lightboxOpen"
+        kind="image"
+        :src="src"
+        :title="item.title || item.filename"
+        :caption="item.title"
+      />
     </template>
   </div>
 </template>

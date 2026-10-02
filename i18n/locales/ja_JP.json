@@ -2208,7 +2208,18 @@
           "ttl_tournament": "トーナメントチャット",
           "ttl_organizers": "主催者チャット",
           "ttl_draft": "ドラフトロビーのチャット",
-          "retention_direct_days": "ダイレクトメッセージの保持日数"
+          "retention_direct_days": "ダイレクトメッセージの保持日数",
+          "attachments_title": "添付ファイル",
+          "attachments_description": "プレイヤーはロビー、トーナメント、運営、ドラフト、ダイレクトの各チャットで、1 メッセージに画像または動画を 4 件まで添付できます。ファイルは、そのルームのメッセージの期限が切れたとき、そのダイレクトメッセージが保持期間で削除されたとき、またはメッセージが削除された時点で削除されます。",
+          "attachment_max_mb": "最大ファイルサイズ (MB)",
+          "gifs_title": "GIF",
+          "gifs_description": "GIPHY の API キーを追加すると、プレイヤーが GIF を送信できるようになります。検索は API を経由するため、キーがブラウザに届くことはありません。キーがない場合、GIF ボタンは表示されません。",
+          "giphy_api_key": "GIPHY API キー",
+          "giphy_key_set": "キーが設定されています。置き換えるには新しいキーを入力してください。",
+          "giphy_key_missing": "キーは設定されていません。",
+          "giphy_key_placeholder": "キーを貼り付け",
+          "giphy_key_remove": "キーを削除",
+          "giphy_key_removed": "GIPHY キーを削除しました"
         },
         "news": {
           "title": "ニュース",
@@ -9419,6 +9430,51 @@
     "react_timeout": "サーバーから応答がありませんでした。リアクションは後で反映される可能性があります。",
     "react_rate_limited": "リアクションの操作が速すぎます。",
     "react_gagged": "発言禁止中のため、リアクションを追加できません。",
+    "attachments": {
+      "label": "添付ファイル",
+      "label_count": "添付ファイル {count} 件",
+      "add": "画像または動画を添付",
+      "remove": "{name} を削除",
+      "retry": "再試行",
+      "open_image": "{name} を開く",
+      "play_video": "{name} を再生",
+      "unavailable": "利用できなくなりました",
+      "drop_in": {
+        "matchmaking": "ドロップしてロビーに送信",
+        "tournament": "ドロップしてトーナメントチャットに送信",
+        "organizers": "ドロップして運営チャットに送信",
+        "draft": "ドロップしてドラフトロビーに送信",
+        "direct": "ドロップしてこの会話に送信"
+      },
+      "drop_hint": "画像と動画、一度に {count} 件まで",
+      "rejected_type": "{name} は添付できません。添付できるのは画像と動画のみです。",
+      "rejected_size": "{name} は上限の {size} を超えています。",
+      "rejected_count": "1 メッセージにつき {count} ファイルまで。",
+      "errors": {
+        "too_large": "このファイルはサイズの上限を超えています。",
+        "unsupported_type": "この種類のファイルは添付できません。",
+        "too_many_pending": "送信待ちのアップロードが多すぎます。先にいくつか送信するか削除してください。",
+        "not_allowed": "ここではファイルを添付できません。",
+        "gagged": "発言禁止中のため、ここでは何も送信できません。",
+        "unavailable": "アップロードに失敗しました。タップして再試行してください。"
+      }
+    },
+    "gifs": {
+      "label": "GIF",
+      "open": "GIF を送信",
+      "search": "GIPHY で検索",
+      "trending": "トレンド",
+      "suggestions": {
+        "gg": "gg",
+        "clutch": "clutch",
+        "rage": "rage"
+      },
+      "click_to_send": "クリックして送信",
+      "powered_by": "Powered by GIPHY",
+      "empty": "GIF が見つかりません",
+      "rate_limited": "検索が多すぎます。少し待ってから再試行してください。",
+      "unavailable": "現在 GIPHY を利用できません。"
+    },
     "direct": {
       "message": "メッセージ",
       "empty": "まだメッセージはありません。あいさつしてみましょう。"

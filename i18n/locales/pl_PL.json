@@ -2208,7 +2208,18 @@
           "ttl_tournament": "Czat turnieju",
           "ttl_organizers": "Czat organizatorów",
           "ttl_draft": "Czat lobby draftu",
-          "retention_direct_days": "Przechowuj wiadomości prywatne przez (dni)"
+          "retention_direct_days": "Przechowuj wiadomości prywatne przez (dni)",
+          "attachments_title": "Załączniki",
+          "attachments_description": "Gracze mogą załączyć do 4 obrazów lub filmów do wiadomości na czatach lobby, turnieju, organizatorów, draftu i w wiadomościach prywatnych. Plik jest usuwany, gdy wygasają wiadomości jego pokoju, gdy jego wiadomość prywatna zostaje usunięta przez retencję lub od razu po usunięciu jego wiadomości.",
+          "attachment_max_mb": "Największy plik (MB)",
+          "gifs_title": "GIF-y",
+          "gifs_description": "Dodaj klucz API GIPHY, aby gracze mogli wysyłać GIF-y. Wyszukiwania przechodzą przez API, więc klucz nigdy nie trafia do przeglądarki. Bez klucza przycisk GIF jest ukryty.",
+          "giphy_api_key": "Klucz API GIPHY",
+          "giphy_key_set": "Klucz jest ustawiony. Wpisz nowy, aby go zastąpić.",
+          "giphy_key_missing": "Nie ustawiono klucza.",
+          "giphy_key_placeholder": "Wklej klucz",
+          "giphy_key_remove": "Usuń Klucz",
+          "giphy_key_removed": "Usunięto klucz GIPHY"
         },
         "news": {
           "title": "Aktualności",
@@ -9419,6 +9430,51 @@
     "react_timeout": "Serwer nie odpowiedział. Twoja reakcja może mimo to zostać zapisana.",
     "react_rate_limited": "Reagujesz zbyt szybko.",
     "react_gagged": "Masz zablokowany czat i nie możesz dodawać reakcji.",
+    "attachments": {
+      "label": "Załącznik",
+      "label_count": "Załączniki: {count}",
+      "add": "Załącz obrazy lub filmy",
+      "remove": "Usuń {name}",
+      "retry": "Spróbuj ponownie",
+      "open_image": "Otwórz {name}",
+      "play_video": "Odtwórz {name}",
+      "unavailable": "Już niedostępne",
+      "drop_in": {
+        "matchmaking": "Upuść, aby wysłać w lobby",
+        "tournament": "Upuść, aby wysłać na czacie turnieju",
+        "organizers": "Upuść, aby wysłać na czacie organizatorów",
+        "draft": "Upuść, aby wysłać w lobby draftu",
+        "direct": "Upuść, aby wysłać w tej rozmowie"
+      },
+      "drop_hint": "Obrazy i filmy, do {count} naraz",
+      "rejected_type": "Nie można załączyć {name}. Można załączać tylko obrazy i filmy.",
+      "rejected_size": "{name} przekracza limit {size}.",
+      "rejected_count": "Do {count} plików w wiadomości.",
+      "errors": {
+        "too_large": "Ten plik przekracza limit rozmiaru.",
+        "unsupported_type": "Tego rodzaju pliku nie można załączyć.",
+        "too_many_pending": "Zbyt wiele przesłanych plików czeka na wysłanie. Najpierw wyślij lub usuń część z nich.",
+        "not_allowed": "Nie możesz tu załączać plików.",
+        "gagged": "Masz zablokowany czat i nie możesz tu nic wysłać.",
+        "unavailable": "Przesyłanie nie powiodło się. Stuknij, aby spróbować ponownie."
+      }
+    },
+    "gifs": {
+      "label": "GIF",
+      "open": "Wyślij GIF-a",
+      "search": "Szukaj w GIPHY",
+      "trending": "Popularne",
+      "suggestions": {
+        "gg": "gg",
+        "clutch": "clutch",
+        "rage": "rage"
+      },
+      "click_to_send": "Kliknij, aby wysłać",
+      "powered_by": "Powered by GIPHY",
+      "empty": "Nie znaleziono GIF-ów",
+      "rate_limited": "Zbyt wiele wyszukiwań. Poczekaj chwilę i spróbuj ponownie.",
+      "unavailable": "GIPHY jest teraz niedostępne."
+    },
     "direct": {
       "message": "Wiadomość",
       "empty": "Brak wiadomości. Przywitaj się."

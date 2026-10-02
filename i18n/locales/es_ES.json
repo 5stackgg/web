@@ -2208,7 +2208,18 @@
           "ttl_tournament": "Chat de torneo",
           "ttl_organizers": "Chat de organizadores",
           "ttl_draft": "Chat del lobby de draft",
-          "retention_direct_days": "Conservar los mensajes directos durante (días)"
+          "retention_direct_days": "Conservar los mensajes directos durante (días)",
+          "attachments_title": "Adjuntos",
+          "attachments_description": "Los jugadores pueden adjuntar hasta 4 imágenes o vídeos a un mensaje en los chats de lobby, torneo, organizadores, draft y directos. Un archivo se elimina cuando caducan los mensajes de su sala, cuando se depura su mensaje directo o en cuanto se elimina su mensaje.",
+          "attachment_max_mb": "Archivo más grande (MB)",
+          "gifs_title": "GIFs",
+          "gifs_description": "Añade una clave de API de GIPHY para que los jugadores puedan enviar GIFs. Las búsquedas pasan por la API, así que la clave nunca llega a un navegador. Sin clave, el botón de GIF se oculta.",
+          "giphy_api_key": "Clave de API de GIPHY",
+          "giphy_key_set": "Hay una clave configurada. Introduce una nueva para reemplazarla.",
+          "giphy_key_missing": "No hay ninguna clave configurada.",
+          "giphy_key_placeholder": "Pega una clave",
+          "giphy_key_remove": "Quitar Clave",
+          "giphy_key_removed": "Clave de GIPHY eliminada"
         },
         "news": {
           "title": "Noticias",
@@ -9419,6 +9430,51 @@
     "react_timeout": "El servidor no ha respondido. Puede que tu reacción se registre de todos modos.",
     "react_rate_limited": "Estás reaccionando demasiado rápido.",
     "react_gagged": "Estás silenciado en el chat y no puedes añadir reacciones.",
+    "attachments": {
+      "label": "Adjunto",
+      "label_count": "{count} adjuntos",
+      "add": "Adjuntar imágenes o vídeos",
+      "remove": "Quitar {name}",
+      "retry": "Reintentar",
+      "open_image": "Abrir {name}",
+      "play_video": "Reproducir {name}",
+      "unavailable": "Ya no está disponible",
+      "drop_in": {
+        "matchmaking": "Suelta para enviar en el lobby",
+        "tournament": "Suelta para enviar en el chat del torneo",
+        "organizers": "Suelta para enviar en el chat de organizadores",
+        "draft": "Suelta para enviar en el lobby de draft",
+        "direct": "Suelta para enviar en esta conversación"
+      },
+      "drop_hint": "Imágenes y vídeos, hasta {count} a la vez",
+      "rejected_type": "No se puede adjuntar {name}. Solo se pueden adjuntar imágenes y vídeos.",
+      "rejected_size": "{name} supera el límite de {size}.",
+      "rejected_count": "Hasta {count} archivos por mensaje.",
+      "errors": {
+        "too_large": "Este archivo supera el límite de tamaño.",
+        "unsupported_type": "No se puede adjuntar este tipo de archivo.",
+        "too_many_pending": "Hay demasiadas subidas esperando a enviarse. Envía o quita algunas primero.",
+        "not_allowed": "No puedes adjuntar archivos aquí.",
+        "gagged": "Estás silenciado en el chat y no puedes enviar nada aquí.",
+        "unavailable": "La subida ha fallado. Toca para reintentar."
+      }
+    },
+    "gifs": {
+      "label": "GIF",
+      "open": "Enviar un GIF",
+      "search": "Buscar en GIPHY",
+      "trending": "Tendencias",
+      "suggestions": {
+        "gg": "gg",
+        "clutch": "clutch",
+        "rage": "rage"
+      },
+      "click_to_send": "Haz clic para enviar",
+      "powered_by": "Powered by GIPHY",
+      "empty": "No se encontraron GIFs",
+      "rate_limited": "Demasiadas búsquedas. Espera un momento y vuelve a intentarlo.",
+      "unavailable": "GIPHY no está disponible ahora mismo."
+    },
     "direct": {
       "message": "Mensaje",
       "empty": "Aún no hay mensajes. Saluda."

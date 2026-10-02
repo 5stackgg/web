@@ -128,6 +128,23 @@ describe("chatMessagePermissions for the author", () => {
     },
   );
 
+  it("lets the author delete, but not edit, a message that is only files", () => {
+    expect(
+      permissions({
+        message: "",
+        attachments: [
+          {
+            id: "a-1",
+            kind: "image",
+            name: "smoke.png",
+            mime_type: "image/png",
+            size: 1,
+          },
+        ],
+      }),
+    ).toMatchObject({ canDelete: true, canEdit: false });
+  });
+
   it("holds the window open until the last millisecond", () => {
     expect(permissions({}, { age: SELF_SERVICE_WINDOW_MS - 1 })).toEqual({
       canDelete: true,

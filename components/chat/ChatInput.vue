@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import { CornerDownLeft } from "lucide-vue-next";
+import { CornerDownLeft, Plus } from "lucide-vue-next";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import ChatAttachmentTray from "~/components/chat/ChatAttachmentTray.vue";
+import ChatGifPicker from "~/components/chat/ChatGifPicker.vue";
+import Fold from "~/components/ui/transitions/Fold.vue";
 
 // Browsers key saved form history to the field's name, and several of them
 // ignore autocomplete="off". A name that is never the same twice means there is
@@ -98,6 +101,17 @@ const fieldName = `chat-message-${Math.random().toString(36).slice(2, 10)}`;
       "
       @submit.prevent="sendMessage()"
     >
+      <Fold :open="tray.items.length > 0">
+        <div
+          :class="variant === 'global' ? 'mb-2' : 'border-b border-border/60'"
+        >
+          <ChatAttachmentTray
+            :items="tray.items"
+            @remove="tray.remove($event)"
+            @retry="tray.retry($event)"
+          />
+        </div>
+      </Fold>
       <FormField v-slot="{ componentField }" name="message">
         <FormItem>
           <FormControl>
@@ -108,6 +122,27 @@ const fieldName = `chat-message-${Math.random().toString(36).slice(2, 10)}`;
                   : 'flex items-center gap-2 p-2'
               "
             >
+              <template v-if="canAttach">
+                <button
+                  type="button"
+                  data-chat-attach
+                  class="inline-flex h-7 w-7 shrink-0 items-center justify-center self-center rounded-full bg-muted text-muted-foreground transition-colors duration-150 hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring motion-reduce:transition-none"
+                  :aria-label="$t('chat.attachments.add')"
+                  @mousedown.prevent
+                  @click="openFilePicker"
+                >
+                  <Plus class="h-4 w-4" />
+                </button>
+                <input
+                  ref="fileInput"
+                  type="file"
+                  class="hidden"
+                  multiple
+                  :accept="acceptTypes"
+                  @change="onFilesPicked"
+                  @cancel="releaseHub"
+                />
+              </template>
               <Textarea
                 ref="inputRef"
                 rows="1"
@@ -126,6 +161,7 @@ const fieldName = `chat-message-${Math.random().toString(36).slice(2, 10)}`;
                     : 'flex-1 border-0 shadow-none focus-visible:ring-0',
                 ]"
                 @keydown.enter="onEnter"
+                @paste="onPaste"
               />
               <span
                 v-if="showRemaining"
@@ -138,9 +174,11 @@ const fieldName = `chat-message-${Math.random().toString(36).slice(2, 10)}`;
               >
                 {{ remainingCharacters }}
               </span>
+              <ChatGifPicker v-if="gifsEnabled" @select="sendGif" />
               <Button
                 type="submit"
                 size="sm"
+                :disabled="trayBusy"
                 :loading="sending"
                 :min-loading-ms="0"
                 :class="
@@ -171,6 +209,18 @@ import {
   CHAT_MESSAGE_MAX_LENGTH,
   CHAT_REMAINING_HINT_AT,
 } from "~/constants/chat";
+import { toast } from "@/components/ui/toast";
+import { useRightSidebar } from "~/composables/useRightSidebar";
+import { useChatAttachmentConfig } from "~/composables/useChatAttachmentConfig";
+import { createChatComposerAttachments } from "~/composables/useChatComposerAttachments";
+import {
+  discardChatAttachment,
+  uploadChatAttachment,
+} from "~/composables/chatAttachmentUploads";
+import type {
+  ChatFileRejection,
+  ChatGif,
+} from "~/utilities/chatAttachments";
 
 export interface ChatInputChannel {
   value: string;
@@ -200,9 +250,27 @@ export default {
       type: String,
       required: false,
     },
+    // Where an upload goes. Null where the room is text-only, which turns off
+    // files and GIFs altogether.
+    attachmentRoom: {
+      type: Object as PropType<{ type: string; id: string } | null>,
+      default: null,
+    },
   },
   emits: ["sendMessage", "update:destination"],
   watch: {
+    attachmentRoomKey: {
+      immediate: true,
+      handler(current: string, previous?: string) {
+        if (previous) {
+          this.tray.dispose();
+        }
+
+        if (current) {
+          void this.mediaConfig.load();
+        }
+      },
+    },
     // Not @input: v-bind="componentField" already binds one, and a second
     // would replace vee-validate's. Watching the value also covers a paste and
     // the reset after sending.
@@ -211,7 +279,19 @@ export default {
     },
   },
   data() {
+    const mediaConfig = useChatAttachmentConfig();
+
     return {
+      mediaConfig,
+      tray: createChatComposerAttachments({
+        room: () => this.attachmentRoom,
+        config: () => mediaConfig.config.value,
+        upload: uploadChatAttachment,
+        discard: discardChatAttachment,
+        onRejected: (rejections: ChatFileRejection[]) =>
+          this.toastRejections(rejections),
+      }),
+      holdingHub: false,
       sending: false,
       sendTimer: undefined as ReturnType<typeof setTimeout> | undefined,
       form: useForm({
@@ -226,6 +306,25 @@ export default {
   computed: {
     hasChannels() {
       return this.channels.length > 1;
+    },
+    attachmentRoomKey(): string {
+      return this.attachmentRoom
+        ? `${this.attachmentRoom.type}:${this.attachmentRoom.id}`
+        : "";
+    },
+    canAttach(): boolean {
+      return !!this.attachmentRoom && !!this.mediaConfig.config;
+    },
+    gifsEnabled(): boolean {
+      return this.canAttach && !!this.mediaConfig.config?.gifs;
+    },
+    acceptTypes(): string {
+      return (this.mediaConfig.config?.mime_types ?? []).join(",");
+    },
+    trayBusy(): boolean {
+      return this.tray.items.some(
+        (item: { status: string }) => item.status !== "done",
+      );
     },
     remainingCharacters(): number {
       const message = this.form.values.message?.trim() ?? "";
@@ -272,6 +371,9 @@ export default {
     if (this.sendTimer) {
       clearTimeout(this.sendTimer);
     }
+
+    this.tray.dispose();
+    this.releaseHub();
   },
   methods: {
     // Only the text. The marker behind the labels carries the fill and the
@@ -338,21 +440,112 @@ export default {
       field.style.height = `${Math.min(field.scrollHeight, 120)}px`;
     },
     sendMessage(destination?: string) {
-      const message = this.form.values.message?.trim();
-      if (!message) {
+      const message = this.form.values.message?.trim() ?? "";
+      const hasFiles = this.tray.items.length > 0;
+
+      if (!message && !hasFiles) {
+        return;
+      }
+      if (this.trayBusy) {
         return;
       }
       if (message.length > CHAT_MESSAGE_MAX_LENGTH) {
         toastChatError({ code: "too_long", max: CHAT_MESSAGE_MAX_LENGTH });
         return;
       }
+
+      const media = hasFiles ? [{ attachments: this.tray.take() }] : [];
+
       this.$emit(
         "sendMessage",
         message,
         destination ?? this.activeChannelValue ?? undefined,
+        ...media,
       );
       this.form.resetForm();
       this.flashSending();
+    },
+    // A GIF goes on its own, like Discord's: whatever is typed stays put.
+    sendGif(gif: ChatGif) {
+      this.$emit("sendMessage", "", this.activeChannelValue ?? undefined, {
+        gif,
+      });
+      this.focus();
+    },
+    // Also how ChatLobby hands over files dropped on the chat.
+    addFiles(files: ArrayLike<File>) {
+      if (!this.canAttach) {
+        return;
+      }
+
+      this.tray.add(files);
+    },
+    // The system file dialog takes the pointer out of the right hub, which
+    // closes itself when the pointer leaves.
+    openFilePicker() {
+      const input = this.$refs.fileInput as HTMLInputElement | undefined;
+
+      if (!input) {
+        return;
+      }
+
+      if (!this.holdingHub) {
+        this.holdingHub = true;
+        useRightSidebar().suspendHoverClose();
+        window.addEventListener("focus", this.releaseHub, { once: true });
+      }
+
+      input.click();
+    },
+    releaseHub() {
+      if (!this.holdingHub) {
+        return;
+      }
+
+      this.holdingHub = false;
+      window.removeEventListener("focus", this.releaseHub);
+      useRightSidebar().resumeHoverClose();
+    },
+    onFilesPicked(event: Event) {
+      const input = event.target as HTMLInputElement;
+
+      this.releaseHub();
+      this.addFiles(Array.from(input.files ?? []));
+      input.value = "";
+    },
+    onPaste(event: ClipboardEvent) {
+      const files = Array.from(event.clipboardData?.files ?? []);
+
+      if (!this.canAttach || files.length === 0) {
+        return;
+      }
+
+      event.preventDefault();
+      this.addFiles(files);
+    },
+    toastRejections(rejections: ChatFileRejection[]) {
+      const [first] = rejections;
+      const config = this.mediaConfig.config;
+
+      if (!first) {
+        return;
+      }
+
+      const title =
+        first.reason === "count"
+          ? this.$t("chat.attachments.rejected_count", {
+              count: config?.max_files ?? 4,
+            })
+          : first.reason === "size"
+            ? this.$t("chat.attachments.rejected_size", {
+                name: first.file.name,
+                size: `${Math.round((config?.max_file_bytes ?? 0) / 1024 / 1024)} MB`,
+              })
+            : this.$t("chat.attachments.rejected_type", {
+                name: first.file.name,
+              });
+
+      toast({ title, variant: "destructive" });
     },
   },
 };

@@ -313,20 +313,22 @@ function scrollerOf(element: HTMLElement) {
   return document.scrollingElement as HTMLElement | null;
 }
 
-// Adding from the pool grows the list above it, which would slide the next
-// tile under the cursor. The scroll is corrected after the DOM patch and
-// before the frame paints, so the pool never visibly moves.
-async function fromPool(change: () => void) {
-  const before = poolEl.value?.getBoundingClientRect().top;
-
-  change();
+// The list keeps one height, so a map added from the pool lands below the
+// fold once it is full; bring the end into view.
+async function revealEnd() {
   await nextTick();
 
-  const after = poolEl.value?.getBoundingClientRect().top;
+  listEl.value?.scrollTo({
+    top: listEl.value.scrollHeight,
+    behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+      ? "auto"
+      : "smooth",
+  });
+}
 
-  if (poolEl.value && before !== undefined && after !== undefined) {
-    scrollerOf(poolEl.value)?.scrollBy({ top: after - before });
-  }
+function addFromPool(maps: Array<RotationMap>) {
+  addAll(maps);
+  void revealEnd();
 }
 
 type Drag = {
@@ -349,7 +351,6 @@ type Drag = {
 const drag = ref<Drag | null>(null);
 const slot = ref<number | null>(null);
 const overPool = ref(false);
-const listLock = ref(0);
 let rowHeight = 53;
 let scrollFrame = 0;
 let suppressClickUntil = 0;
@@ -454,18 +455,8 @@ function onPointerMove(event: PointerEvent) {
     const row = listEl.value?.querySelector<HTMLElement>("[data-rotation-row]");
 
     rowHeight = row?.offsetHeight || 53;
-
-    // Held for the whole drag, with a row to spare for the gap a pool map
-    // opens: a list that grew and shrank as the gap came and went pushed the
-    // pool in and out under the pointer and flipped the drop target.
-    const spare = current.from === "pool" ? rowHeight : 0;
-    const height = listEl.value?.offsetHeight ?? 0;
-
-    void fromPool(() => {
-      listLock.value = height + spare;
-      slot.value = current.from === "rotation" ? current.index : null;
-      current.active = true;
-    });
+    slot.value = current.from === "rotation" ? current.index : null;
+    current.active = true;
     document.body.style.userSelect = "none";
     document.body.style.cursor = "grabbing";
     window.getSelection()?.removeAllRanges();
@@ -517,9 +508,11 @@ function track() {
 
   const count = entries.value.length - (current.from === "rotation" ? 1 : 0);
 
+  const scrolled = listEl.value?.scrollTop ?? 0;
+
   slot.value = Math.max(
     0,
-    Math.min(count, Math.floor((current.y - list.top) / rowHeight)),
+    Math.min(count, Math.floor((current.y - list.top + scrolled) / rowHeight)),
   );
 }
 
@@ -530,14 +523,23 @@ function autoScroll() {
     return;
   }
 
-  const scroller = listEl.value && scrollerOf(listEl.value);
+  // Over a list that scrolls, its own edges scroll it; anywhere else the
+  // page's edges scroll the page.
+  const list = listEl.value;
+  const listRect = list?.getBoundingClientRect();
+  const inList =
+    !!list &&
+    !!listRect &&
+    within(listRect, current.x, current.y) &&
+    list.scrollHeight > list.clientHeight;
+  const scroller = inList ? list : list && scrollerOf(list);
 
   if (scroller) {
     const bounds =
       scroller === document.scrollingElement
         ? { top: 0, bottom: window.innerHeight }
         : scroller.getBoundingClientRect();
-    const edge = 72;
+    const edge = inList ? 40 : 72;
     let speed = 0;
 
     if (current.y < bounds.top + edge) {
@@ -634,18 +636,9 @@ function finishDrag() {
   window.removeEventListener("keydown", onDragKey);
   window.removeEventListener("scroll", track, true);
 
-  const reset = () => {
-    drag.value = null;
-    slot.value = null;
-    overPool.value = false;
-  };
-
-  // Releasing the reserved height moves the pool too; hold it the same way.
-  if (wasActive) {
-    void fromPool(reset);
-  } else {
-    reset();
-  }
+  drag.value = null;
+  slot.value = null;
+  overPool.value = false;
 }
 
 onBeforeUnmount(finishDrag);
@@ -655,7 +648,7 @@ function clickTile(map: RotationMap) {
     return;
   }
 
-  fromPool(() => add(map));
+  addFromPool([map]);
 }
 
 const draggingTile = (map: RotationMap) =>
@@ -778,20 +771,22 @@ defineExpose({ changes, payload, reset, saved });
           </button>
         </div>
 
+        <!-- One height whatever the count: a list that grew with every map
+             pushed everything under it down a row, so it scrolls instead. -->
         <div
           ref="listEl"
           data-rotation-list
-          :style="drag?.active ? { minHeight: `${listLock}px` } : undefined"
+          :class="[
+            'flex h-80 flex-col overflow-y-auto overscroll-contain rounded-md border transition-[border-color] duration-150',
+            drag?.active
+              ? 'border-[hsl(var(--tac-amber)/0.45)]'
+              : 'border-border',
+          ]"
         >
           <TransitionGroup
             v-if="rows.length"
             tag="ol"
-            :class="[
-              'overflow-hidden rounded-md border transition-[border-color] duration-150',
-              drag?.active
-                ? 'border-[hsl(var(--tac-amber)/0.45)]'
-                : 'border-border',
-            ]"
+            class="shrink-0"
             enter-active-class="rotation-row-enter"
             enter-from-class="rotation-row-from"
             move-class="rotation-row-move"
@@ -801,7 +796,7 @@ defineExpose({ changes, payload, reset, saved });
               :key="mapKey(row.map)"
               data-rotation-row
               :data-rotation-placeholder="row.placeholder || undefined"
-              class="relative border-b border-border/60 last:border-b-0"
+              class="relative border-b border-border/60"
               @pointerdown="pressRow(index, $event)"
             >
               <div
@@ -913,15 +908,9 @@ defineExpose({ changes, payload, reset, saved });
           </TransitionGroup>
 
           <div
-            v-else
-            :class="[
-              'grid place-items-center gap-1 rounded-md border border-dashed px-6 py-8 text-center transition-colors',
-              drag?.active
-                ? 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.05)]'
-                : 'border-border/70',
-            ]"
+            class="flex min-h-0 flex-1 flex-col items-center justify-center gap-1 overflow-hidden px-6 text-center"
           >
-            <p class="text-sm font-medium">
+            <p v-if="!rows.length" class="text-sm font-medium">
               {{
                 $t("pages.dedicated_servers.detail.map_rotation.empty_title")
               }}
@@ -987,7 +976,7 @@ defineExpose({ changes, payload, reset, saved });
             <button
               type="button"
               class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-[hsl(var(--tac-amber))]"
-              @click="fromPool(() => addAll(group.maps))"
+              @click="addFromPool(group.maps)"
             >
               {{ $t("pages.dedicated_servers.detail.map_rotation.add_all") }}
             </button>

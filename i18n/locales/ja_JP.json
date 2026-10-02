@@ -9033,7 +9033,9 @@
   "rcon": {
     "console": "RCON コンソール",
     "suggestions": "候補",
-    "entry_count": "{count} 件"
+    "entry_count": "{count} 件",
+    "moderators_only": "RCON はモデレーター専用です",
+    "moderators_only_description": "このサーバーでコンソールコマンドが必要な場合は、モデレーターに依頼してください。"
   },
   "game_server_node": {
     "set_ports": "ポート設定"

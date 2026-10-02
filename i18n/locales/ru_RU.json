@@ -9033,7 +9033,9 @@
   "rcon": {
     "console": "Консоль RCON",
     "suggestions": "Подсказки",
-    "entry_count": "{count} записей"
+    "entry_count": "{count} записей",
+    "moderators_only": "RCON доступен только модераторам",
+    "moderators_only_description": "Обратись к модератору, если серверу нужна консольная команда."
   },
   "game_server_node": {
     "set_ports": "Задать порты"

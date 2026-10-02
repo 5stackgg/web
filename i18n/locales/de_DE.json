@@ -9033,7 +9033,9 @@
   "rcon": {
     "console": "RCON-Konsole",
     "suggestions": "Vorschläge",
-    "entry_count": "{count} Einträge"
+    "entry_count": "{count} Einträge",
+    "moderators_only": "RCON ist für Moderatoren",
+    "moderators_only_description": "Frag einen Moderator, wenn dieser Server einen Konsolenbefehl braucht."
   },
   "game_server_node": {
     "set_ports": "Ports festlegen"

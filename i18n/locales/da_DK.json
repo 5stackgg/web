@@ -9033,7 +9033,9 @@
   "rcon": {
     "console": "RCON-konsol",
     "suggestions": "Forslag",
-    "entry_count": "{count} poster"
+    "entry_count": "{count} poster",
+    "moderators_only": "RCON er for moderatorer",
+    "moderators_only_description": "Spørg en moderator, hvis serveren skal have en konsolkommando."
   },
   "game_server_node": {
     "set_ports": "Angiv porte"

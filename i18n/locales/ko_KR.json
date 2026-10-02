@@ -9033,7 +9033,9 @@
   "rcon": {
     "console": "RCON 콘솔",
     "suggestions": "제안",
-    "entry_count": "{count}개 항목"
+    "entry_count": "{count}개 항목",
+    "moderators_only": "RCON은 모더레이터 전용입니다",
+    "moderators_only_description": "이 서버에 콘솔 명령이 필요하면 모더레이터에게 요청하세요."
   },
   "game_server_node": {
     "set_ports": "포트 설정"

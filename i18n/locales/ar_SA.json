@@ -9033,7 +9033,9 @@
   "rcon": {
     "console": "وحدة RCON",
     "suggestions": "اقتراحات",
-    "entry_count": "{count} إدخال"
+    "entry_count": "{count} إدخال",
+    "moderators_only": "RCON مخصص لمشرفي المحتوى",
+    "moderators_only_description": "اطلب من أحد مشرفي المحتوى إذا كان هذا الخادم يحتاج إلى أمر في وحدة التحكم."
   },
   "game_server_node": {
     "set_ports": "حدّد المنافذ"

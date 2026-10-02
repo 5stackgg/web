@@ -9033,7 +9033,9 @@
   "rcon": {
     "console": "RCON 控制台",
     "suggestions": "建议",
-    "entry_count": "{count} 条"
+    "entry_count": "{count} 条",
+    "moderators_only": "RCON 仅限版主使用",
+    "moderators_only_description": "如果此服务器需要控制台命令，请联系版主。"
   },
   "game_server_node": {
     "set_ports": "设置端口"

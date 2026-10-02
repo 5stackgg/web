@@ -7084,7 +7084,6 @@
     "open_match": "Abrir partida",
     "picks_label": "Elecciones",
     "full_page": "Página completa",
-    "match_overview": "Resumen de la partida",
     "no_multi_kill_rounds": "No hay rondas de {count} bajas.",
     "map_filter_active": "Filtro de mapa activo",
     "scoreboard": "Marcador",
@@ -9276,7 +9275,7 @@
       "result": "Resultado",
       "map": "Mapa",
       "rating": "Rating HLTV",
-      "elo": "ELO"
+      "rank": "Rango"
     },
     "source": {
       "internal": "5Stack",
@@ -9293,7 +9292,8 @@
       "reset": "Puntuaciones reiniciadas para la nueva temporada",
       "recap": "La temporada {number} terminó en {final}, máximo {peak}, {wins}V–{losses}D"
     },
-    "season_best": "Mejor puntuación de {season}"
+    "season_best": "Mejor puntuación de {season}",
+    "to_next": "{points} para {tier}"
   },
   "breadcrumbs": {
     "dashboard": "panel"

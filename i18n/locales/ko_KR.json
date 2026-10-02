@@ -7084,7 +7084,6 @@
     "open_match": "매치 열기",
     "picks_label": "픽",
     "full_page": "전체 페이지",
-    "match_overview": "매치 개요",
     "no_multi_kill_rounds": "{count}킬 라운드가 없습니다.",
     "map_filter_active": "맵 필터 적용 중",
     "scoreboard": "스코어보드",
@@ -9276,7 +9275,7 @@
       "result": "결과",
       "map": "맵",
       "rating": "HLTV 레이팅",
-      "elo": "Elo"
+      "rank": "랭크"
     },
     "source": {
       "internal": "5Stack",
@@ -9293,7 +9292,8 @@
       "reset": "새 시즌을 위해 레이팅 초기화",
       "recap": "시즌 {number} 최종 {final}, 최고 {peak}, {wins}승 {losses}패"
     },
-    "season_best": "{season} 최고 레이팅"
+    "season_best": "{season} 최고 레이팅",
+    "to_next": "{tier}까지 {points}"
   },
   "breadcrumbs": {
     "dashboard": "대시보드"

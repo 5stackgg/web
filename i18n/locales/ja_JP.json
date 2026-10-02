@@ -7084,7 +7084,6 @@
     "open_match": "試合を開く",
     "picks_label": "Pick",
     "full_page": "全画面表示",
-    "match_overview": "試合概要",
     "no_multi_kill_rounds": "{count}キルラウンドは見つかりませんでした。",
     "map_filter_active": "マップフィルター適用中",
     "scoreboard": "スコアボード",
@@ -9276,7 +9275,7 @@
       "result": "結果",
       "map": "マップ",
       "rating": "HLTV レーティング",
-      "elo": "ELO"
+      "rank": "ランク"
     },
     "source": {
       "internal": "5Stack",
@@ -9293,7 +9292,8 @@
       "reset": "新シーズンに向けてレートをリセット",
       "recap": "シーズン{number}は{final}で終了、最高{peak}、{wins}勝{losses}敗"
     },
-    "season_best": "{season}の最高レート"
+    "season_best": "{season}の最高レート",
+    "to_next": "{tier}まで{points}"
   },
   "breadcrumbs": {
     "dashboard": "ダッシュボード"

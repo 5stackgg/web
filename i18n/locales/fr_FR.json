@@ -7084,7 +7084,6 @@
     "open_match": "Ouvrir le match",
     "picks_label": "Picks",
     "full_page": "Page complète",
-    "match_overview": "Aperçu du match",
     "no_multi_kill_rounds": "Aucun round à {count} kills trouvé.",
     "map_filter_active": "Filtre map actif",
     "scoreboard": "Scoreboard",
@@ -9276,7 +9275,7 @@
       "result": "Résultat",
       "map": "Map",
       "rating": "Rating HLTV",
-      "elo": "ELO"
+      "rank": "Rang"
     },
     "source": {
       "internal": "5Stack",
@@ -9293,7 +9292,8 @@
       "reset": "Classements réinitialisés pour la nouvelle saison",
       "recap": "Saison {number} terminée à {final}, max {peak}, {wins}V–{losses}D"
     },
-    "season_best": "Meilleur classement de {season}"
+    "season_best": "Meilleur classement de {season}",
+    "to_next": "{points} avant {tier}"
   },
   "breadcrumbs": {
     "dashboard": "tableau de bord"

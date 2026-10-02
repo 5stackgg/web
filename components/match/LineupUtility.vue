@@ -153,7 +153,11 @@ const TIER_CONFIG: Record<string, StatTierConfig> = {
                 'bg-card group-hover:bg-muted shadow-[3px_0_6px_-3px_hsl(0_0%_0%/0.7)]',
             ]"
           >
-            <lineup-member :member="member" :lineup_id="lp.id"></lineup-member>
+            <lineup-member
+              :member="member"
+              :match="match"
+              :lineup_id="lp.id"
+            ></lineup-member>
           </TableCell>
           <TableCell
             ><AnimatedStat :value="statsFor(member)?.flashes_thrown ?? '—'"

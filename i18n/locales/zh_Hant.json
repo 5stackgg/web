@@ -7084,7 +7084,6 @@
     "open_match": "開啟比賽",
     "picks_label": "選圖",
     "full_page": "全頁",
-    "match_overview": "比賽總覽",
     "no_multi_kill_rounds": "找不到 {count} 殺回合。",
     "map_filter_active": "地圖篩選已啟用",
     "scoreboard": "計分板",
@@ -9276,7 +9275,7 @@
       "result": "結果",
       "map": "地圖",
       "rating": "HLTV 評分",
-      "elo": "Elo"
+      "rank": "段位"
     },
     "source": {
       "internal": "5Stack",
@@ -9293,7 +9292,8 @@
       "reset": "新賽季積分已重置",
       "recap": "第 {number} 賽季以 {final} 結束，最高 {peak}，{wins}勝{losses}負"
     },
-    "season_best": "{season} 最高積分"
+    "season_best": "{season} 最高積分",
+    "to_next": "距 {tier} 還差 {points}"
   },
   "breadcrumbs": {
     "dashboard": "儀表板"

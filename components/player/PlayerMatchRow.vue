@@ -1,21 +1,11 @@
 <script setup lang="ts">
 import { dateLocale } from "~/utilities/dateLocale";
-import {
-  ChevronDown,
-  ExternalLink,
-  Crown,
-  ListChecks,
-  Play,
-  Trophy,
-} from "lucide-vue-next";
+import { ChevronDown, ExternalLink, Play, Trophy } from "lucide-vue-next";
 import TimeAgo from "~/components/TimeAgo.vue";
-import EloChangeBadge from "~/components/EloChangeBadge.vue";
-import PlayerPremierRank from "~/components/PlayerPremierRank.vue";
-import PlayerSkillGroupRank from "~/components/PlayerSkillGroupRank.vue";
+import MatchRankBadge from "~/components/MatchRankBadge.vue";
 import MatchSourceBadge from "~/components/MatchSourceBadge.vue";
 import MatchStatus from "~/components/match/MatchStatus.vue";
-import MatchPlayerDetailsPanel from "~/components/match/MatchPlayerDetailsPanel.vue";
-import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
+import PlayerMatchScoreboard from "~/components/player/PlayerMatchScoreboard.vue";
 import { kdColor, hltvColor } from "~/utils/statTiers";
 
 // Shared grid track template — MUST stay in sync with the header row in
@@ -24,9 +14,9 @@ import { kdColor, hltvColor } from "~/utils/statTiers";
 // same size on every row, keeping the stat columns aligned. The highlight
 // thumbnail gets its own fixed column right before RATING, and the chevron
 // gets its own slim trailing column.
-// OPEN · DATE · TYPE · RESULT · MAP · CLIP · RATING · K/D/A · K/D · ADR · Δ · VIEW
+// OPEN · DATE · TYPE · RESULT · MAP · CLIP · RATING · K/D/A · K/D · ADR · RANK · VIEW
 const wideGrid =
-  "grid grid-cols-[2.5rem_5rem_6.75rem_8.5rem_minmax(4.5rem,1fr)_3rem_6rem_4.5rem_2.75rem_3.25rem_8.5rem_2.5rem] items-center gap-x-2";
+  "grid grid-cols-[2.5rem_5rem_6.75rem_8.5rem_minmax(4.5rem,1fr)_3rem_6rem_4.5rem_2.75rem_3.25rem_10rem_2.5rem] items-center gap-x-2";
 </script>
 
 <template>
@@ -42,6 +32,7 @@ const wideGrid =
           : ''),
     ]"
     @click="onRowClick($event)"
+    @pointerdown="onRowPointerDown($event)"
   >
     <!-- ===================== WIDE ===================== -->
     <div v-if="!compact" :class="[wideGrid, 'px-3 py-2.5']">
@@ -221,69 +212,17 @@ const wideGrid =
       </span>
       <span v-else class="text-muted-foreground">—</span>
 
-      <!-- Δ ELO (5stack) / Valve rank (external: Premier rating or skill group) -->
-      <div class="flex items-center justify-end gap-1.5">
-        <Crown
-          v-if="seasonBest && hasElo"
-          class="h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]"
-          :aria-label="$t('player_match.season_best', { season: seasonBest })"
-          :title="$t('player_match.season_best', { season: seasonBest })"
+      <!-- RANK — the rank this match moved, in its own system (5Stack ELO
+           tier, Premier, FACEIT, Valve skill group). -->
+      <div class="flex items-center justify-end">
+        <MatchRankBadge
+          v-if="rankMove"
+          :kind="rankMove.kind"
+          :value="rankMove.value"
+          :change="rankMove.change"
+          :faceit-level="rankMove.faceitLevel"
+          :elo-change="rankMove.eloChange"
         />
-        <span
-          v-if="hasElo && eloAfter !== null"
-          class="font-mono text-sm font-bold tabular-nums"
-          :class="
-            seasonBest ? 'text-[hsl(var(--tac-amber))]' : 'text-foreground'
-          "
-        >
-          {{ eloAfter.toLocaleString() }}
-        </span>
-        <EloChangeBadge
-          v-if="hasElo"
-          :elo-change="eloChange"
-          size="sm"
-          plain
-        />
-        <!-- Premier: canonical CS2 rating badge. The change floats as a
-             superscript overlapping the pill's top-right corner so it never
-             steals width from the rating or bumps the row height. -->
-        <span
-          v-else-if="rankInfo && isPremierRank"
-          class="relative inline-flex items-center leading-none"
-          :title="rankTitle"
-        >
-          <PlayerPremierRank :premier-rank="rankInfo.rank" />
-          <span
-            v-if="rankInfo.change !== 0"
-            class="pointer-events-none absolute -right-1.5 -top-2 inline-flex items-center gap-px font-mono text-[0.5rem] font-bold tabular-nums leading-none [text-shadow:0_1px_2px_hsl(var(--background)),0_0_2px_hsl(var(--background))]"
-            :class="rankChangeClass"
-          >
-            <span aria-hidden="true">{{
-              rankInfo.change > 0 ? "▲" : "▼"
-            }}</span>
-            {{ Math.abs(rankInfo.change).toLocaleString() }}
-          </span>
-        </span>
-        <!-- Competitive / Wingman: skill group icon + up/down indicator -->
-        <span
-          v-else-if="rankInfo && rankIcon"
-          class="inline-flex items-center gap-1"
-          :title="rankTitle"
-        >
-          <PlayerSkillGroupRank
-            :kind="rankInfo.rankType === 6 ? 'wingman' : 'competitive'"
-            :rank="rankInfo.rank"
-            :show-label="false"
-          />
-          <span
-            v-if="rankInfo.change !== 0"
-            class="font-mono text-[0.6rem] font-bold leading-none"
-            :class="rankChangeClass"
-            aria-hidden="true"
-          >
-            {{ rankInfo.change > 0 ? "▲" : "▼" }}
-          </span>
-        </span>
         <span v-else class="text-muted-foreground">—</span>
       </div>
 
@@ -299,10 +238,12 @@ const wideGrid =
             : 'border-border/60 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-[hsl(var(--tac-amber))]'
         "
         :title="$t('ui_extras.quick_overview')"
+        :aria-expanded="expanded"
+        @pointerdown="prefetchDetails"
         @click.stop="toggleExpanded()"
       >
         <ChevronDown
-          class="h-3.5 w-3.5 transition-transform duration-200"
+          class="h-3.5 w-3.5 transition-transform [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]"
           :class="{ 'rotate-180': expanded }"
         />
         <span
@@ -323,55 +264,15 @@ const wideGrid =
             <span class="mx-0.5 text-muted-foreground/60">:</span>
             <span class="text-muted-foreground/90">{{ score.opponent }}</span>
           </span>
-          <!-- ELO Δ / Valve rank, paired with the score as the match outcome. -->
-          <span
-            v-if="hasElo && eloAfter !== null"
-            class="font-mono text-xs font-semibold tabular-nums text-foreground/85"
-          >
-            {{ eloAfter.toLocaleString() }}
-          </span>
-          <EloChangeBadge
-            v-if="hasElo"
-            :elo-change="eloChange"
-            size="xs"
-            plain
+          <!-- Rank this match moved, paired with the score as the outcome. -->
+          <MatchRankBadge
+            v-if="rankMove"
+            :kind="rankMove.kind"
+            :value="rankMove.value"
+            :change="rankMove.change"
+            :faceit-level="rankMove.faceitLevel"
+            :elo-change="rankMove.eloChange"
           />
-          <span
-            v-else-if="rankInfo && isPremierRank"
-            class="inline-flex items-center gap-1.5"
-            :title="rankTitle"
-          >
-            <PlayerPremierRank :premier-rank="rankInfo.rank" />
-            <span
-              v-if="rankInfo.change !== 0"
-              class="inline-flex items-center gap-px font-mono text-[0.6rem] font-bold tabular-nums"
-              :class="rankChangeClass"
-            >
-              <span aria-hidden="true">{{
-                rankInfo.change > 0 ? "▲" : "▼"
-              }}</span>
-              {{ Math.abs(rankInfo.change).toLocaleString() }}
-            </span>
-          </span>
-          <span
-            v-else-if="rankInfo && rankIcon"
-            class="inline-flex items-center gap-1"
-            :title="rankTitle"
-          >
-            <PlayerSkillGroupRank
-              :kind="rankInfo.rankType === 6 ? 'wingman' : 'competitive'"
-              :rank="rankInfo.rank"
-              :show-label="false"
-            />
-            <span
-              v-if="rankInfo.change !== 0"
-              class="font-mono text-[0.6rem] font-bold"
-              :class="rankChangeClass"
-              aria-hidden="true"
-            >
-              {{ rankInfo.change > 0 ? "▲" : "▼" }}
-            </span>
-          </span>
         </template>
         <MatchStatus v-else :match="match" />
 
@@ -518,10 +419,12 @@ const wideGrid =
               ? 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))]'
               : 'border-border/60 bg-muted/30 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-[hsl(var(--tac-amber))]'
           "
+          :aria-expanded="expanded"
+          @pointerdown="prefetchDetails"
           @click.stop="toggleExpanded()"
         >
           <ChevronDown
-            class="h-3.5 w-3.5 transition-transform duration-200"
+            class="h-3.5 w-3.5 transition-transform [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]"
             :class="{ 'rotate-180': expanded }"
           />
           {{ expanded ? $t("common.close") : $t("ui_extras.quick_overview") }}
@@ -548,71 +451,74 @@ const wideGrid =
     </div>
 
     <!-- ===================== EXPANDED DETAIL ===================== -->
-    <!-- grid-template-rows 0fr↔1fr expand/collapse: 1fr always resolves to
-         the panel's *current* natural height, so when the loading skeleton
-         swaps for the full table mid-animation the height re-targets smoothly
-         (no jump) and only the clip box animates — far less layout thrash than
-         animating raw height. The inner overflow-hidden lets the 0fr row
-         collapse to zero (grid items otherwise keep min-height:auto). -->
+    <!-- Opens at full height in one frame and reveals with opacity/transform
+         only (compositor work), while the page scrolls the row into view — a
+         height tween over a freshly mounting lobby table stutters. Closing
+         folds the height shut: nothing mounts then. -->
     <Transition
-      enter-active-class="grid transition-all duration-300 ease-out"
-      enter-from-class="grid-rows-[0fr] opacity-0"
-      enter-to-class="grid-rows-[1fr] opacity-100"
-      leave-active-class="grid transition-all duration-200 ease-in"
-      leave-from-class="grid-rows-[1fr] opacity-100"
-      leave-to-class="grid-rows-[0fr] opacity-0"
+      enter-active-class="unfurl-enter"
+      leave-active-class="unfurl-leave"
+      leave-to-class="unfurl-closed"
     >
-      <div v-if="expanded && isFinished" class="grid" @click.stop>
-        <div class="overflow-hidden">
+      <div v-if="expanded && isFinished" class="grid grid-rows-[1fr]">
+        <div class="unfurl-cell min-h-0">
           <div
-            class="border-t border-border bg-card/40 px-3 py-3 space-y-3"
+            class="border-t border-border bg-card/40 px-3 py-3"
             :class="compact ? '' : 'sm:px-4'"
+            @click.stop
           >
-            <MatchPlayerDetailsPanel
-              :match="panelMatch"
-              :focus-lineup="focusPlayerLineupDetailed"
+            <PlayerMatchScoreboard
+              :match="scoreboardMatch"
+              :focus-steam-id="playerSteamId"
               :loading="detailsStatsLoading"
               :active-tab="detailsTab"
               :selected-map-id="selectedMapId"
+              :match-ranks="matchRanks"
+              :rank-move="rankMove"
+              :season-best="seasonBest"
+              :score="score"
+              :result="result"
+              :type-label="matchTypeLabel"
+              :source-label="sourceLabel || $t('player_match.source.internal')"
+              :clips-count="playerClips.length"
               @update:active-tab="(v) => (detailsTab = v)"
               @update:selected-map-id="(v) => (selectedMapId = v)"
+              @open-clips="openBestClip"
             />
-
-            <!-- View details — opens the picks/deciders + team stat-table drawer
-               (same overview MatchTableRow uses). The inline panel above is the
-               player-focused readout; this is the full match breakdown. -->
-            <div class="flex">
-              <button
-                type="button"
-                class="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-border bg-muted/40 px-3 py-1.5 text-xs font-medium text-foreground/80 transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:bg-background hover:text-[hsl(var(--tac-amber))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber)/0.6)]"
-                @click.stop="drawerOpen = true"
-              >
-                <ListChecks class="h-3.5 w-3.5" />
-                <span>{{ $t("match.match_overview") }}</span>
-              </button>
-            </div>
           </div>
         </div>
       </div>
     </Transition>
-
-    <MatchOverviewDrawer
-      v-model:open="drawerOpen"
-      :match="match"
-      :player="player"
-    />
   </div>
 </template>
 
 <script lang="ts">
 import { e_match_status_enum } from "~/generated/zeus";
 import { generateQuery } from "~/graphql/graphqlGen";
-import { matchAllMapsStats } from "~/graphql/matchAllMapsStatsGraphql";
+import { matchAllMapsStatsWithoutElo } from "~/graphql/matchAllMapsStatsGraphql";
+import { eloFields } from "~/graphql/eloFields";
 import { matchClipFields } from "~/graphql/matchClip";
 import { $, order_by } from "~/generated/zeus";
 import { useClipModal } from "~/composables/useClipModal";
 import mapLabel from "~/utilities/mapLabel";
-import { csRankIcon, csRankKind } from "~/utilities/csRank";
+import { csRankKind } from "~/utilities/csRank";
+import type { MatchRankMove } from "~/components/MatchRankBadge.vue";
+
+// Breathing room kept between an opened row and the scroller's edges.
+const REVEAL_MARGIN = 16;
+
+function scrollParentOf(el: HTMLElement): HTMLElement | null {
+  for (let node = el.parentElement; node; node = node.parentElement) {
+    const { overflowY } = getComputedStyle(node);
+    if (
+      (overflowY === "auto" || overflowY === "scroll") &&
+      node.scrollHeight > node.clientHeight
+    ) {
+      return node;
+    }
+  }
+  return null;
+}
 
 export default {
   props: {
@@ -621,9 +527,11 @@ export default {
     compact: { type: Boolean, default: false },
     embedded: { type: Boolean, default: false },
     // match_id -> { rankType, rank, change } for external Valve matches with no
-    // internal elo. Lets the ELO column show the CS Rating (Premier) or skill
-    // group icon (Competitive/Wingman) + change instead.
+    // internal elo. Lets the RANK column show the CS Rating (Premier) or skill
+    // group (Competitive/Wingman) + change instead.
     rankByMatch: { type: Object, required: false, default: null },
+    // match_id -> { elo, level, change } for imported FACEIT matches.
+    faceitByMatch: { type: Object, required: false, default: null },
     // Season label when this match set that season's best rating.
     seasonBest: { type: String, required: false, default: null },
     // Canonical per-match HLTV rating from the backend; overrides the local
@@ -636,8 +544,10 @@ export default {
   data() {
     return {
       expanded: false,
-      drawerOpen: false,
+      detailsPromise: null as Promise<void> | null,
       detailsStats: null as any | null,
+      // steam_id -> per-match Valve rank for the lobby (external matches).
+      matchRanks: {} as Record<string, any>,
       detailsStatsLoading: false,
       detailsTab: "overview",
       selectedMapId: null as string | null,
@@ -668,24 +578,16 @@ export default {
         (mm: any) => (mm?.public_clips_count ?? 0) > 0,
       );
     },
-    // The match prop comes from simpleMatchFields, whose match_maps carry
-    // no per-round data — so the Overview tab's KAST/Survived columns can't
-    // compute. Once the detailed fetch lands we overlay its rounds onto the
-    // match_maps (matched by id) and hand that enriched copy to the panel.
-    panelMatch(): any {
-      const detailMaps = (this.detailsStats as any)?.match_maps;
-      if (!Array.isArray(detailMaps) || detailMaps.length === 0) {
-        return this.match;
-      }
-      const roundsById = new Map(
-        detailMaps.map((mm: any) => [mm.id, mm.rounds]),
-      );
+    // The row's match (simpleMatchFields) overlaid with the expand query's
+    // full lineups and every player's elo_changes row, for the scoreboard.
+    scoreboardMatch(): any {
+      const d = this.detailsStats as any;
+      if (!d) return this.match;
       return {
         ...this.match,
-        match_maps: (this.match?.match_maps ?? []).map((mm: any) => ({
-          ...mm,
-          rounds: roundsById.get(mm.id) ?? mm.rounds ?? [],
-        })),
+        lineup_1: d.lineup_1 ?? this.match?.lineup_1,
+        lineup_2: d.lineup_2 ?? this.match?.lineup_2,
+        elo_changes: d.elo_changes ?? [],
       };
     },
     playerSteamId(): string | null {
@@ -711,36 +613,41 @@ export default {
       return Number.isFinite(c) && c !== 0;
     },
     // Per-match Valve rank for external matches (no internal elo): Premier CS
-    // Rating (numeric) or Competitive/Wingman skill group (icon).
+    // Rating or Competitive/Wingman skill group.
     rankInfo(): { rankType: number; rank: number; change: number } | null {
       const m = (this.rankByMatch as any)?.[this.match?.id];
       return m && Number.isFinite(m.rank) ? m : null;
     },
-    isPremierRank(): boolean {
-      return this.rankInfo?.rankType === 11;
+    // Per-match FACEIT ELO + level for imported FACEIT matches.
+    faceitInfo(): { elo: number; level: number | null; change: number } | null {
+      const m = (this.faceitByMatch as any)?.[this.match?.id];
+      return m && Number.isFinite(m.elo) ? m : null;
     },
-    rankIcon(): string | null {
-      if (!this.rankInfo) return null;
-      return csRankIcon(this.rankInfo.rankType, this.rankInfo.rank);
-    },
-    rankChangeClass(): string {
-      const c = this.rankInfo?.change ?? 0;
-      if (c > 0) return "text-[hsl(142_71%_60%)]";
-      if (c < 0) return "text-[hsl(0_84%_66%)]";
-      return "text-muted-foreground";
-    },
-    rankTitle(): string {
-      if (!this.rankInfo) return "";
-      const kind = csRankKind(this.rankInfo.rankType);
-      const label =
-        kind === "wingman"
-          ? this.$t("player_match.wingman")
-          : kind === "competitive"
-            ? this.$t("player_match.competitive")
-            : this.$t("player_match.premier");
-      const after = this.rankInfo.rank;
-      const before = after - this.rankInfo.change;
-      return `${label}: ${before.toLocaleString()} → ${after.toLocaleString()}`;
+    // The rank this match moved, in the system it was played on.
+    rankMove(): MatchRankMove | null {
+      if (this.hasElo && this.eloAfter !== null) {
+        return {
+          kind: "elo",
+          value: this.eloAfter,
+          change: Number(this.eloChange.elo_change),
+          eloChange: this.eloChange,
+        };
+      }
+      const valve = this.rankInfo;
+      const kind = valve ? csRankKind(valve.rankType) : null;
+      if (valve && kind) {
+        return { kind, value: valve.rank, change: valve.change };
+      }
+      const faceit = this.faceitInfo;
+      if (faceit) {
+        return {
+          kind: "faceit",
+          value: faceit.elo,
+          change: faceit.change,
+          faceitLevel: faceit.level,
+        };
+      }
+      return null;
     },
     apiDomain(): string {
       return useRuntimeConfig().public.apiDomain as string;
@@ -777,11 +684,11 @@ export default {
       const sid = this.playerSteamId;
       if (!sid) return null;
       const onL1 = this.match?.lineup_1?.lineup_players?.some(
-        (lp: any) => String(lp.player?.steam_id ?? "") === sid,
+        (lp: any) => String(lp.steam_id ?? lp.player?.steam_id ?? "") === sid,
       );
       if (onL1) return this.match.lineup_1_id;
       const onL2 = this.match?.lineup_2?.lineup_players?.some(
-        (lp: any) => String(lp.player?.steam_id ?? "") === sid,
+        (lp: any) => String(lp.steam_id ?? lp.player?.steam_id ?? "") === sid,
       );
       if (onL2) return this.match.lineup_2_id;
       return null;
@@ -997,7 +904,7 @@ export default {
     isTournamentMatch(): boolean {
       return Boolean(
         this.match?.is_tournament_match ||
-          this.match?.tournament_brackets?.length,
+        this.match?.tournament_brackets?.length,
       );
     },
     tournamentLabel(): string {
@@ -1005,38 +912,6 @@ export default {
         this.match?.tournament_brackets?.[0]?.stage?.tournament?.name ||
         this.$t("player_match.tournament")
       );
-    },
-    focusPlayerLineupDetailed(): any {
-      const sid = this.playerSteamId;
-      if (!sid || !this.detailsStats) return null;
-      const findPlayer = (lineup: any) =>
-        (lineup?.lineup_players || []).find(
-          (lp: any) => String(lp.player?.steam_id ?? lp.steam_id ?? "") === sid,
-        );
-      const narrowMapStats = (lp: any) => {
-        if (!lp?.player) return lp;
-        if (!this.selectedMapId) {
-          return { ...lp, player: { ...lp.player, match_map_stats: null } };
-        }
-        const mapRow = (lp.player?.match_map_stats || []).find(
-          (s: any) => s.match_map_id === this.selectedMapId,
-        );
-        return {
-          ...lp,
-          player: {
-            ...lp.player,
-            match_map_stats: mapRow ? [mapRow] : null,
-          },
-        };
-      };
-      for (const key of ["lineup_1", "lineup_2"]) {
-        const lineup = (this.detailsStats as any)?.[key];
-        const found = findPlayer(lineup);
-        if (found) {
-          return { ...lineup, lineup_players: [narrowMapStats(found)] };
-        }
-      }
-      return null;
     },
     filteredPlayerClips(): any[] {
       const base = !this.selectedMapId
@@ -1070,69 +945,129 @@ export default {
       }
       this.toggleExpanded(event);
     },
-    toggleExpanded(event?: MouseEvent) {
+    // The scoreboard query starts on pointer-down: the click that follows
+    // would start it anyway, and it buys the ~100ms before the click lands.
+    prefetchDetails() {
+      if (!this.isFinished || this.detailsStats || this.detailsPromise) return;
+      this.detailsPromise = this.getDetailedStats().catch(() => {
+        this.detailsPromise = null;
+      });
+    },
+    onRowPointerDown(event: PointerEvent) {
+      if (this.compact || this.expanded) return;
+      // The VIEW button prefetches itself; other controls don't open the row.
+      if ((event.target as HTMLElement | null)?.closest("a,button")) return;
+      this.prefetchDetails();
+    },
+    async toggleExpanded(event?: MouseEvent) {
       // Ignore clicks that originated on an interactive child (badge, links).
       if (event) {
         const el = event.target as HTMLElement | null;
         if (el?.closest("a,button")) return;
       }
-      this.expanded = !this.expanded;
       if (this.expanded) {
-        if (!this.detailsStats && !this.detailsStatsLoading) {
-          this.getDetailedStats().catch(() => {});
-        }
-        if (
-          this.hasPublicClips &&
-          this.playerClips.length === 0 &&
-          !this.playerClipsLoading
-        ) {
-          this.getPlayerClips().catch(() => {});
-        }
+        this.expanded = false;
+        return;
       }
+      this.prefetchDetails();
+      if (
+        this.hasPublicClips &&
+        this.playerClips.length === 0 &&
+        !this.playerClipsLoading
+      ) {
+        this.getPlayerClips().catch(() => {});
+      }
+      this.expanded = true;
+      await this.$nextTick();
+      this.revealExpanded();
     },
+    // Scroll the page so the whole opened row is on screen — or, when it is
+    // taller than the screen, its top. Drives the nearest scroller directly:
+    // scrollIntoView would also shift overflow-hidden layout ancestors.
+    revealExpanded() {
+      const row = this.$el as HTMLElement;
+      const scroller = scrollParentOf(row);
+      if (!scroller) return;
+      const view = scroller.getBoundingClientRect();
+      const box = row.getBoundingClientRect();
+      const top = view.top + REVEAL_MARGIN;
+      const bottom = view.top + scroller.clientHeight - REVEAL_MARGIN;
+      let delta = 0;
+      if (box.top < top || box.height > bottom - top) {
+        delta = box.top - top;
+      } else if (box.bottom > bottom) {
+        delta = box.bottom - bottom;
+      }
+      if (Math.abs(delta) < 2) return;
+      scroller.scrollTo({
+        top: scroller.scrollTop + delta,
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "auto"
+          : "smooth",
+      });
+    },
+    // One query for the whole scoreboard. Every lineup member's stats come
+    // from the match-scoped views, and their rating AT this match from
+    // elo_changes (v_player_elo, by match_id) — never players.elo, whose
+    // get_player_elo() per player is the expensive part. Imported Valve
+    // matches add each player's per-match rank, keyed (steam_id, match_id).
     async getDetailedStats() {
       this.detailsStatsLoading = true;
       try {
+        const isValve = this.match?.source === "valve";
+        const steamIds = ["lineup_1", "lineup_2"].flatMap((key) =>
+          (this.match?.[key]?.lineup_players ?? [])
+            .map((lp: any) => lp.steam_id ?? lp.player?.steam_id)
+            .filter(Boolean),
+        );
         const { data } = await this.$apollo.query({
           fetchPolicy: "network-only",
-          variables: { matchId: this.match.id, order_by_name: order_by.asc },
+          variables: {
+            matchId: this.match.id,
+            order_by_name: order_by.asc,
+            ...(isValve ? { steamIds } : {}),
+          },
           query: generateQuery({
             matches_by_pk: [
               { id: this.match.id },
               {
-                lineup_1: [{}, matchAllMapsStats],
-                lineup_2: [{}, matchAllMapsStats],
-                // Round-level kills/assists feed the Overview tab's
-                // KAST + Survived columns (LineupOverviewRow computes
-                // them per round). simpleMatchFields omits rounds, so
-                // without this the columns render "—".
-                match_maps: [
-                  { order_by: [{ order: order_by.asc }] },
-                  {
-                    id: true,
-                    rounds: [
-                      { order_by: [{ round: order_by.asc }] },
-                      {
-                        round: true,
-                        lineup_1_side: true,
-                        lineup_2_side: true,
-                        kills: [
-                          {},
-                          {
-                            headshot: true,
-                            player: { steam_id: true },
-                            attacked_player: { steam_id: true },
-                          },
-                        ],
-                        assists: [{}, { attacker_steam_id: true }],
-                      },
-                    ],
-                  },
-                ],
+                lineup_1: [{}, matchAllMapsStatsWithoutElo],
+                lineup_2: [{}, matchAllMapsStatsWithoutElo],
+                elo_changes: [{}, eloFields],
               },
             ],
-          }),
+            ...(isValve
+              ? {
+                  player_premier_rank_history: [
+                    {
+                      where: {
+                        match_id: { _eq: $("matchId", "uuid!") },
+                        steam_id: { _in: $("steamIds", "[bigint!]!") },
+                      },
+                    },
+                    {
+                      steam_id: true,
+                      rank: true,
+                      rank_type: true,
+                      previous_rank: true,
+                    },
+                  ],
+                }
+              : {}),
+          } as any),
         });
+        const ranks: Record<string, any> = {};
+        for (const r of (data as any)?.player_premier_rank_history ?? []) {
+          const rank = Number(r.rank ?? 0);
+          const prev = r.previous_rank == null ? null : Number(r.previous_rank);
+          ranks[String(r.steam_id)] = {
+            rankType: Number(r.rank_type),
+            rank,
+            previousRank: prev,
+            change: prev == null ? 0 : rank - prev,
+          };
+        }
+        this.matchRanks = ranks;
         this.detailsStats = (data as any)?.matches_by_pk ?? null;
       } finally {
         this.detailsStatsLoading = false;
@@ -1191,3 +1126,41 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* Open: the panel lands at full height in one frame, so only opacity moves
+   here; the scoreboard staggers its own pieces in on top. */
+.unfurl-enter {
+  animation: unfurl-in 0.18s ease-out;
+}
+@keyframes unfurl-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+/* Close: fold the height shut. The lobby is already mounted, so the tween
+   has nothing to fight. Clipped only while it runs. */
+.unfurl-leave {
+  transition:
+    grid-template-rows 0.2s cubic-bezier(0.4, 0, 1, 1),
+    opacity 0.14s ease-in;
+}
+.unfurl-leave > .unfurl-cell {
+  overflow: hidden;
+}
+.unfurl-closed {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .unfurl-enter {
+    animation: none;
+  }
+  .unfurl-leave {
+    transition-duration: 1ms;
+  }
+}
+</style>

@@ -7084,7 +7084,6 @@
     "open_match": "Öppna match",
     "picks_label": "Val",
     "full_page": "Hela sidan",
-    "match_overview": "Matchöversikt",
     "no_multi_kill_rounds": "Inga ronder med {count} kills hittades.",
     "map_filter_active": "Kartfilter aktivt",
     "scoreboard": "Resultattavla",
@@ -9276,7 +9275,7 @@
       "result": "Resultat",
       "map": "Karta",
       "rating": "HLTV Rating",
-      "elo": "Elo"
+      "rank": "Rank"
     },
     "source": {
       "internal": "5Stack",
@@ -9293,7 +9292,8 @@
       "reset": "Rankingen nollställd inför nya säsongen",
       "recap": "Säsong {number} slutade på {final}, bäst {peak}, {wins}V–{losses}F"
     },
-    "season_best": "Bästa ranking i {season}"
+    "season_best": "Bästa ranking i {season}",
+    "to_next": "{points} till {tier}"
   },
   "breadcrumbs": {
     "dashboard": "översikt"

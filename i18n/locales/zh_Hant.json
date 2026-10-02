@@ -3400,6 +3400,8 @@
       "accepting_matches": "接受比賽",
       "toggle_enabled_help": "關閉時，節點會完全停用——不執行 GPU 工作，也不排程比賽。",
       "toggle_scheduling_help": "關閉時，節點會繼續執行現有比賽，但不接受新比賽。",
+      "scheduling_setup_hint": "此節點仍在設定中。上線後將開始接受比賽。",
+      "scheduling_offline_hint": "此節點已離線。重新連線後將再次接受比賽。",
       "toggle_enabled_failed": "切換節點啟用狀態失敗",
       "toggle_scheduling_failed": "切換排程狀態失敗",
       "toggle_workload_failed": "切換 GPU 工作負載可用性失敗",

@@ -32,6 +32,12 @@ export const AllTypesProps: Record<string,any> = {
 	ScheduledLineupInput:{
 
 	},
+	ServerAccessInput:{
+		event_ids:"uuid"
+	},
+	ServerMapRotationInput:{
+		map_ids:"uuid"
+	},
 	ServerPluginInput:{
 
 	},
@@ -4511,6 +4517,61 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"e_scrim_request_statuses_set_input",
 		where:"e_scrim_request_statuses_bool_exp"
 	},
+	e_server_migration_statuses_aggregate_fields:{
+		count:{
+			columns:"e_server_migration_statuses_select_column"
+		}
+	},
+	e_server_migration_statuses_bool_exp:{
+		_and:"e_server_migration_statuses_bool_exp",
+		_not:"e_server_migration_statuses_bool_exp",
+		_or:"e_server_migration_statuses_bool_exp",
+		description:"String_comparison_exp",
+		value:"String_comparison_exp"
+	},
+	e_server_migration_statuses_constraint: "enum" as const,
+	e_server_migration_statuses_enum: "enum" as const,
+	e_server_migration_statuses_enum_comparison_exp:{
+		_eq:"e_server_migration_statuses_enum",
+		_in:"e_server_migration_statuses_enum",
+		_neq:"e_server_migration_statuses_enum",
+		_nin:"e_server_migration_statuses_enum"
+	},
+	e_server_migration_statuses_insert_input:{
+
+	},
+	e_server_migration_statuses_obj_rel_insert_input:{
+		data:"e_server_migration_statuses_insert_input",
+		on_conflict:"e_server_migration_statuses_on_conflict"
+	},
+	e_server_migration_statuses_on_conflict:{
+		constraint:"e_server_migration_statuses_constraint",
+		update_columns:"e_server_migration_statuses_update_column",
+		where:"e_server_migration_statuses_bool_exp"
+	},
+	e_server_migration_statuses_order_by:{
+		description:"order_by",
+		value:"order_by"
+	},
+	e_server_migration_statuses_pk_columns_input:{
+
+	},
+	e_server_migration_statuses_select_column: "enum" as const,
+	e_server_migration_statuses_set_input:{
+
+	},
+	e_server_migration_statuses_stream_cursor_input:{
+		initial_value:"e_server_migration_statuses_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	e_server_migration_statuses_stream_cursor_value_input:{
+
+	},
+	e_server_migration_statuses_update_column: "enum" as const,
+	e_server_migration_statuses_updates:{
+		_set:"e_server_migration_statuses_set_input",
+		where:"e_server_migration_statuses_bool_exp"
+	},
 	e_server_types:{
 		servers:{
 			distinct_on:"servers_select_column",
@@ -7121,7 +7182,9 @@ export const AllTypesProps: Record<string,any> = {
 		runtime_conflicts:"jsonb_comparison_exp",
 		slug:"String_comparison_exp",
 		supported_runtimes:"jsonb_comparison_exp",
-		updated_at:"timestamptz_comparison_exp"
+		system:"Boolean_comparison_exp",
+		updated_at:"timestamptz_comparison_exp",
+		valve_mode:"String_comparison_exp"
 	},
 	game_modes_constraint: "enum" as const,
 	game_modes_insert_input:{
@@ -7157,7 +7220,9 @@ export const AllTypesProps: Record<string,any> = {
 		runtime_conflicts:"order_by",
 		slug:"order_by",
 		supported_runtimes:"order_by",
-		updated_at:"order_by"
+		system:"order_by",
+		updated_at:"order_by",
+		valve_mode:"order_by"
 	},
 	game_modes_pk_columns_input:{
 		id:"uuid"
@@ -7867,6 +7932,7 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"game_server_nodes_bool_exp",
 		_or:"game_server_nodes_bool_exp",
 		accepting_new_matches:"Boolean_comparison_exp",
+		available_dedicated_slot_count:"Int_comparison_exp",
 		available_server_count:"Int_comparison_exp",
 		build_id:"Int_comparison_exp",
 		cpu_cores_per_socket:"Int_comparison_exp",
@@ -8021,6 +8087,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	game_server_nodes_order_by:{
 		accepting_new_matches:"order_by",
+		available_dedicated_slot_count:"order_by",
 		available_server_count:"order_by",
 		build_id:"order_by",
 		cpu_cores_per_socket:"order_by",
@@ -14235,6 +14302,9 @@ export const AllTypesProps: Record<string,any> = {
 		cancelClipRenderBatch:{
 			match_map_id:"uuid"
 		},
+		cancelDedicatedServerMove:{
+			server_id:"uuid"
+		},
 		cancelMatch:{
 			match_id:"uuid"
 		},
@@ -14666,6 +14736,12 @@ export const AllTypesProps: Record<string,any> = {
 			where:"e_scrim_request_statuses_bool_exp"
 		},
 		delete_e_scrim_request_statuses_by_pk:{
+
+		},
+		delete_e_server_migration_statuses:{
+			where:"e_server_migration_statuses_bool_exp"
+		},
+		delete_e_server_migration_statuses_by_pk:{
 
 		},
 		delete_e_server_types:{
@@ -15295,12 +15371,38 @@ export const AllTypesProps: Record<string,any> = {
 		delete_seasons_by_pk:{
 			id:"uuid"
 		},
+		delete_server_access_events:{
+			where:"server_access_events_bool_exp"
+		},
+		delete_server_access_events_by_pk:{
+			event_id:"uuid",
+			server_id:"uuid"
+		},
+		delete_server_access_players:{
+			where:"server_access_players_bool_exp"
+		},
+		delete_server_access_players_by_pk:{
+			server_id:"uuid",
+			steam_id:"bigint"
+		},
 		delete_server_map_rotation:{
 			where:"server_map_rotation_bool_exp"
 		},
 		delete_server_map_rotation_by_pk:{
 			map_id:"uuid",
 			server_id:"uuid"
+		},
+		delete_server_migrations:{
+			where:"server_migrations_bool_exp"
+		},
+		delete_server_migrations_by_pk:{
+			id:"uuid"
+		},
+		delete_server_player_sessions:{
+			where:"server_player_sessions_bool_exp"
+		},
+		delete_server_player_sessions_by_pk:{
+			id:"bigint"
 		},
 		delete_server_plugins:{
 			where:"server_plugins_bool_exp"
@@ -15313,6 +15415,12 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		delete_server_regions_by_pk:{
 
+		},
+		delete_server_rosters:{
+			where:"server_rosters_bool_exp"
+		},
+		delete_server_rosters_by_pk:{
+			server_id:"uuid"
 		},
 		delete_servers:{
 			where:"servers_bool_exp"
@@ -16130,6 +16238,14 @@ export const AllTypesProps: Record<string,any> = {
 			object:"e_scrim_request_statuses_insert_input",
 			on_conflict:"e_scrim_request_statuses_on_conflict"
 		},
+		insert_e_server_migration_statuses:{
+			objects:"e_server_migration_statuses_insert_input",
+			on_conflict:"e_server_migration_statuses_on_conflict"
+		},
+		insert_e_server_migration_statuses_one:{
+			object:"e_server_migration_statuses_insert_input",
+			on_conflict:"e_server_migration_statuses_on_conflict"
+		},
 		insert_e_server_types:{
 			objects:"e_server_types_insert_input",
 			on_conflict:"e_server_types_on_conflict"
@@ -16930,6 +17046,22 @@ export const AllTypesProps: Record<string,any> = {
 			object:"seasons_insert_input",
 			on_conflict:"seasons_on_conflict"
 		},
+		insert_server_access_events:{
+			objects:"server_access_events_insert_input",
+			on_conflict:"server_access_events_on_conflict"
+		},
+		insert_server_access_events_one:{
+			object:"server_access_events_insert_input",
+			on_conflict:"server_access_events_on_conflict"
+		},
+		insert_server_access_players:{
+			objects:"server_access_players_insert_input",
+			on_conflict:"server_access_players_on_conflict"
+		},
+		insert_server_access_players_one:{
+			object:"server_access_players_insert_input",
+			on_conflict:"server_access_players_on_conflict"
+		},
 		insert_server_map_rotation:{
 			objects:"server_map_rotation_insert_input",
 			on_conflict:"server_map_rotation_on_conflict"
@@ -16937,6 +17069,22 @@ export const AllTypesProps: Record<string,any> = {
 		insert_server_map_rotation_one:{
 			object:"server_map_rotation_insert_input",
 			on_conflict:"server_map_rotation_on_conflict"
+		},
+		insert_server_migrations:{
+			objects:"server_migrations_insert_input",
+			on_conflict:"server_migrations_on_conflict"
+		},
+		insert_server_migrations_one:{
+			object:"server_migrations_insert_input",
+			on_conflict:"server_migrations_on_conflict"
+		},
+		insert_server_player_sessions:{
+			objects:"server_player_sessions_insert_input",
+			on_conflict:"server_player_sessions_on_conflict"
+		},
+		insert_server_player_sessions_one:{
+			object:"server_player_sessions_insert_input",
+			on_conflict:"server_player_sessions_on_conflict"
 		},
 		insert_server_plugins:{
 			objects:"server_plugins_insert_input",
@@ -16953,6 +17101,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_server_regions_one:{
 			object:"server_regions_insert_input",
 			on_conflict:"server_regions_on_conflict"
+		},
+		insert_server_rosters:{
+			objects:"server_rosters_insert_input",
+			on_conflict:"server_rosters_on_conflict"
+		},
+		insert_server_rosters_one:{
+			object:"server_rosters_insert_input",
+			on_conflict:"server_rosters_on_conflict"
 		},
 		insert_servers:{
 			objects:"servers_insert_input",
@@ -17427,6 +17583,9 @@ export const AllTypesProps: Record<string,any> = {
 			playbook_id:"uuid",
 			session_id:"uuid"
 		},
+		moveDedicatedServerToNode:{
+			server_id:"uuid"
+		},
 		moveServerItem:{
 
 		},
@@ -17615,11 +17774,21 @@ export const AllTypesProps: Record<string,any> = {
 		setNewsPostStatus:{
 			id:"uuid"
 		},
+		setServerAccess:{
+			event_ids:"uuid",
+			server_id:"uuid"
+		},
 		setServerMapRotation:{
 			map_ids:"uuid",
 			server_id:"uuid"
 		},
 		setServerPlugins:{
+			plugins:"ServerPluginInput",
+			server_id:"uuid"
+		},
+		setServerSettings:{
+			access:"ServerAccessInput",
+			map_rotation:"ServerMapRotationInput",
 			plugins:"ServerPluginInput",
 			server_id:"uuid"
 		},
@@ -18400,6 +18569,17 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_e_scrim_request_statuses_many:{
 			updates:"e_scrim_request_statuses_updates"
+		},
+		update_e_server_migration_statuses:{
+			_set:"e_server_migration_statuses_set_input",
+			where:"e_server_migration_statuses_bool_exp"
+		},
+		update_e_server_migration_statuses_by_pk:{
+			_set:"e_server_migration_statuses_set_input",
+			pk_columns:"e_server_migration_statuses_pk_columns_input"
+		},
+		update_e_server_migration_statuses_many:{
+			updates:"e_server_migration_statuses_updates"
 		},
 		update_e_server_types:{
 			_set:"e_server_types_set_input",
@@ -19754,6 +19934,30 @@ export const AllTypesProps: Record<string,any> = {
 		update_seasons_many:{
 			updates:"seasons_updates"
 		},
+		update_server_access_events:{
+			_set:"server_access_events_set_input",
+			where:"server_access_events_bool_exp"
+		},
+		update_server_access_events_by_pk:{
+			_set:"server_access_events_set_input",
+			pk_columns:"server_access_events_pk_columns_input"
+		},
+		update_server_access_events_many:{
+			updates:"server_access_events_updates"
+		},
+		update_server_access_players:{
+			_inc:"server_access_players_inc_input",
+			_set:"server_access_players_set_input",
+			where:"server_access_players_bool_exp"
+		},
+		update_server_access_players_by_pk:{
+			_inc:"server_access_players_inc_input",
+			_set:"server_access_players_set_input",
+			pk_columns:"server_access_players_pk_columns_input"
+		},
+		update_server_access_players_many:{
+			updates:"server_access_players_updates"
+		},
 		update_server_map_rotation:{
 			_inc:"server_map_rotation_inc_input",
 			_set:"server_map_rotation_set_input",
@@ -19766,6 +19970,42 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_server_map_rotation_many:{
 			updates:"server_map_rotation_updates"
+		},
+		update_server_migrations:{
+			_append:"server_migrations_append_input",
+			_delete_at_path:"server_migrations_delete_at_path_input",
+			_delete_elem:"server_migrations_delete_elem_input",
+			_delete_key:"server_migrations_delete_key_input",
+			_inc:"server_migrations_inc_input",
+			_prepend:"server_migrations_prepend_input",
+			_set:"server_migrations_set_input",
+			where:"server_migrations_bool_exp"
+		},
+		update_server_migrations_by_pk:{
+			_append:"server_migrations_append_input",
+			_delete_at_path:"server_migrations_delete_at_path_input",
+			_delete_elem:"server_migrations_delete_elem_input",
+			_delete_key:"server_migrations_delete_key_input",
+			_inc:"server_migrations_inc_input",
+			_prepend:"server_migrations_prepend_input",
+			_set:"server_migrations_set_input",
+			pk_columns:"server_migrations_pk_columns_input"
+		},
+		update_server_migrations_many:{
+			updates:"server_migrations_updates"
+		},
+		update_server_player_sessions:{
+			_inc:"server_player_sessions_inc_input",
+			_set:"server_player_sessions_set_input",
+			where:"server_player_sessions_bool_exp"
+		},
+		update_server_player_sessions_by_pk:{
+			_inc:"server_player_sessions_inc_input",
+			_set:"server_player_sessions_set_input",
+			pk_columns:"server_player_sessions_pk_columns_input"
+		},
+		update_server_player_sessions_many:{
+			updates:"server_player_sessions_updates"
 		},
 		update_server_plugins:{
 			_set:"server_plugins_set_input",
@@ -19788,6 +20028,17 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_server_regions_many:{
 			updates:"server_regions_updates"
+		},
+		update_server_rosters:{
+			_set:"server_rosters_set_input",
+			where:"server_rosters_bool_exp"
+		},
+		update_server_rosters_by_pk:{
+			_set:"server_rosters_set_input",
+			pk_columns:"server_rosters_pk_columns_input"
+		},
+		update_server_rosters_many:{
+			updates:"server_rosters_updates"
 		},
 		update_servers:{
 			_append:"servers_append_input",
@@ -28435,6 +28686,19 @@ export const AllTypesProps: Record<string,any> = {
 		e_scrim_request_statuses_by_pk:{
 
 		},
+		e_server_migration_statuses:{
+			distinct_on:"e_server_migration_statuses_select_column",
+			order_by:"e_server_migration_statuses_order_by",
+			where:"e_server_migration_statuses_bool_exp"
+		},
+		e_server_migration_statuses_aggregate:{
+			distinct_on:"e_server_migration_statuses_select_column",
+			order_by:"e_server_migration_statuses_order_by",
+			where:"e_server_migration_statuses_bool_exp"
+		},
+		e_server_migration_statuses_by_pk:{
+
+		},
 		e_server_types:{
 			distinct_on:"e_server_types_select_column",
 			order_by:"e_server_types_order_by",
@@ -28954,8 +29218,17 @@ export const AllTypesProps: Record<string,any> = {
 		getNodeStats:{
 
 		},
+		getPlayerCommunityStats:{
+			steam_id:"bigint"
+		},
 		getQueryDetail:{
 
+		},
+		getServerCommunityStats:{
+			server_id:"uuid"
+		},
+		getServerLeaderboard:{
+			server_id:"uuid"
 		},
 		getStorageStats:{
 
@@ -29918,6 +30191,34 @@ export const AllTypesProps: Record<string,any> = {
 		seasons_by_pk:{
 			id:"uuid"
 		},
+		server_access_events:{
+			distinct_on:"server_access_events_select_column",
+			order_by:"server_access_events_order_by",
+			where:"server_access_events_bool_exp"
+		},
+		server_access_events_aggregate:{
+			distinct_on:"server_access_events_select_column",
+			order_by:"server_access_events_order_by",
+			where:"server_access_events_bool_exp"
+		},
+		server_access_events_by_pk:{
+			event_id:"uuid",
+			server_id:"uuid"
+		},
+		server_access_players:{
+			distinct_on:"server_access_players_select_column",
+			order_by:"server_access_players_order_by",
+			where:"server_access_players_bool_exp"
+		},
+		server_access_players_aggregate:{
+			distinct_on:"server_access_players_select_column",
+			order_by:"server_access_players_order_by",
+			where:"server_access_players_bool_exp"
+		},
+		server_access_players_by_pk:{
+			server_id:"uuid",
+			steam_id:"bigint"
+		},
 		server_map_rotation:{
 			distinct_on:"server_map_rotation_select_column",
 			order_by:"server_map_rotation_order_by",
@@ -29932,6 +30233,32 @@ export const AllTypesProps: Record<string,any> = {
 			map_id:"uuid",
 			server_id:"uuid"
 		},
+		server_migrations:{
+			distinct_on:"server_migrations_select_column",
+			order_by:"server_migrations_order_by",
+			where:"server_migrations_bool_exp"
+		},
+		server_migrations_aggregate:{
+			distinct_on:"server_migrations_select_column",
+			order_by:"server_migrations_order_by",
+			where:"server_migrations_bool_exp"
+		},
+		server_migrations_by_pk:{
+			id:"uuid"
+		},
+		server_player_sessions:{
+			distinct_on:"server_player_sessions_select_column",
+			order_by:"server_player_sessions_order_by",
+			where:"server_player_sessions_bool_exp"
+		},
+		server_player_sessions_aggregate:{
+			distinct_on:"server_player_sessions_select_column",
+			order_by:"server_player_sessions_order_by",
+			where:"server_player_sessions_bool_exp"
+		},
+		server_player_sessions_by_pk:{
+			id:"bigint"
+		},
 		server_plugins:{
 			distinct_on:"server_plugins_select_column",
 			order_by:"server_plugins_order_by",
@@ -29945,6 +30272,16 @@ export const AllTypesProps: Record<string,any> = {
 		server_plugins_by_pk:{
 			server_id:"uuid"
 		},
+		server_recent_players:{
+			distinct_on:"server_recent_players_select_column",
+			order_by:"server_recent_players_order_by",
+			where:"server_recent_players_bool_exp"
+		},
+		server_recent_players_aggregate:{
+			distinct_on:"server_recent_players_select_column",
+			order_by:"server_recent_players_order_by",
+			where:"server_recent_players_bool_exp"
+		},
 		server_regions:{
 			distinct_on:"server_regions_select_column",
 			order_by:"server_regions_order_by",
@@ -29957,6 +30294,19 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		server_regions_by_pk:{
 
+		},
+		server_rosters:{
+			distinct_on:"server_rosters_select_column",
+			order_by:"server_rosters_order_by",
+			where:"server_rosters_bool_exp"
+		},
+		server_rosters_aggregate:{
+			distinct_on:"server_rosters_select_column",
+			order_by:"server_rosters_order_by",
+			where:"server_rosters_bool_exp"
+		},
+		server_rosters_by_pk:{
+			server_id:"uuid"
 		},
 		servers:{
 			distinct_on:"servers_select_column",
@@ -30865,16 +31215,6 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"v_player_multi_kills_order_by",
 			where:"v_player_multi_kills_bool_exp"
 		},
-		v_player_queue_partners:{
-			distinct_on:"v_player_queue_partners_select_column",
-			order_by:"v_player_queue_partners_order_by",
-			where:"v_player_queue_partners_bool_exp"
-		},
-		v_player_queue_partners_aggregate:{
-			distinct_on:"v_player_queue_partners_select_column",
-			order_by:"v_player_queue_partners_order_by",
-			where:"v_player_queue_partners_bool_exp"
-		},
 		v_player_weapon_damage:{
 			distinct_on:"v_player_weapon_damage_select_column",
 			order_by:"v_player_weapon_damage_order_by",
@@ -31121,6 +31461,200 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"seasons_set_input",
 		where:"seasons_bool_exp"
 	},
+	server_access_events_aggregate_bool_exp:{
+		count:"server_access_events_aggregate_bool_exp_count"
+	},
+	server_access_events_aggregate_bool_exp_count:{
+		arguments:"server_access_events_select_column",
+		filter:"server_access_events_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	server_access_events_aggregate_fields:{
+		count:{
+			columns:"server_access_events_select_column"
+		}
+	},
+	server_access_events_aggregate_order_by:{
+		count:"order_by",
+		max:"server_access_events_max_order_by",
+		min:"server_access_events_min_order_by"
+	},
+	server_access_events_arr_rel_insert_input:{
+		data:"server_access_events_insert_input",
+		on_conflict:"server_access_events_on_conflict"
+	},
+	server_access_events_bool_exp:{
+		_and:"server_access_events_bool_exp",
+		_not:"server_access_events_bool_exp",
+		_or:"server_access_events_bool_exp",
+		event:"events_bool_exp",
+		event_id:"uuid_comparison_exp",
+		server:"servers_bool_exp",
+		server_id:"uuid_comparison_exp"
+	},
+	server_access_events_constraint: "enum" as const,
+	server_access_events_insert_input:{
+		event:"events_obj_rel_insert_input",
+		event_id:"uuid",
+		server:"servers_obj_rel_insert_input",
+		server_id:"uuid"
+	},
+	server_access_events_max_order_by:{
+		event_id:"order_by",
+		server_id:"order_by"
+	},
+	server_access_events_min_order_by:{
+		event_id:"order_by",
+		server_id:"order_by"
+	},
+	server_access_events_on_conflict:{
+		constraint:"server_access_events_constraint",
+		update_columns:"server_access_events_update_column",
+		where:"server_access_events_bool_exp"
+	},
+	server_access_events_order_by:{
+		event:"events_order_by",
+		event_id:"order_by",
+		server:"servers_order_by",
+		server_id:"order_by"
+	},
+	server_access_events_pk_columns_input:{
+		event_id:"uuid",
+		server_id:"uuid"
+	},
+	server_access_events_select_column: "enum" as const,
+	server_access_events_set_input:{
+		event_id:"uuid",
+		server_id:"uuid"
+	},
+	server_access_events_stream_cursor_input:{
+		initial_value:"server_access_events_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	server_access_events_stream_cursor_value_input:{
+		event_id:"uuid",
+		server_id:"uuid"
+	},
+	server_access_events_update_column: "enum" as const,
+	server_access_events_updates:{
+		_set:"server_access_events_set_input",
+		where:"server_access_events_bool_exp"
+	},
+	server_access_players_aggregate_bool_exp:{
+		count:"server_access_players_aggregate_bool_exp_count"
+	},
+	server_access_players_aggregate_bool_exp_count:{
+		arguments:"server_access_players_select_column",
+		filter:"server_access_players_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	server_access_players_aggregate_fields:{
+		count:{
+			columns:"server_access_players_select_column"
+		}
+	},
+	server_access_players_aggregate_order_by:{
+		avg:"server_access_players_avg_order_by",
+		count:"order_by",
+		max:"server_access_players_max_order_by",
+		min:"server_access_players_min_order_by",
+		stddev:"server_access_players_stddev_order_by",
+		stddev_pop:"server_access_players_stddev_pop_order_by",
+		stddev_samp:"server_access_players_stddev_samp_order_by",
+		sum:"server_access_players_sum_order_by",
+		var_pop:"server_access_players_var_pop_order_by",
+		var_samp:"server_access_players_var_samp_order_by",
+		variance:"server_access_players_variance_order_by"
+	},
+	server_access_players_arr_rel_insert_input:{
+		data:"server_access_players_insert_input",
+		on_conflict:"server_access_players_on_conflict"
+	},
+	server_access_players_avg_order_by:{
+		steam_id:"order_by"
+	},
+	server_access_players_bool_exp:{
+		_and:"server_access_players_bool_exp",
+		_not:"server_access_players_bool_exp",
+		_or:"server_access_players_bool_exp",
+		player:"players_bool_exp",
+		server:"servers_bool_exp",
+		server_id:"uuid_comparison_exp",
+		steam_id:"bigint_comparison_exp"
+	},
+	server_access_players_constraint: "enum" as const,
+	server_access_players_inc_input:{
+		steam_id:"bigint"
+	},
+	server_access_players_insert_input:{
+		player:"players_obj_rel_insert_input",
+		server:"servers_obj_rel_insert_input",
+		server_id:"uuid",
+		steam_id:"bigint"
+	},
+	server_access_players_max_order_by:{
+		server_id:"order_by",
+		steam_id:"order_by"
+	},
+	server_access_players_min_order_by:{
+		server_id:"order_by",
+		steam_id:"order_by"
+	},
+	server_access_players_on_conflict:{
+		constraint:"server_access_players_constraint",
+		update_columns:"server_access_players_update_column",
+		where:"server_access_players_bool_exp"
+	},
+	server_access_players_order_by:{
+		player:"players_order_by",
+		server:"servers_order_by",
+		server_id:"order_by",
+		steam_id:"order_by"
+	},
+	server_access_players_pk_columns_input:{
+		server_id:"uuid",
+		steam_id:"bigint"
+	},
+	server_access_players_select_column: "enum" as const,
+	server_access_players_set_input:{
+		server_id:"uuid",
+		steam_id:"bigint"
+	},
+	server_access_players_stddev_order_by:{
+		steam_id:"order_by"
+	},
+	server_access_players_stddev_pop_order_by:{
+		steam_id:"order_by"
+	},
+	server_access_players_stddev_samp_order_by:{
+		steam_id:"order_by"
+	},
+	server_access_players_stream_cursor_input:{
+		initial_value:"server_access_players_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	server_access_players_stream_cursor_value_input:{
+		server_id:"uuid",
+		steam_id:"bigint"
+	},
+	server_access_players_sum_order_by:{
+		steam_id:"order_by"
+	},
+	server_access_players_update_column: "enum" as const,
+	server_access_players_updates:{
+		_inc:"server_access_players_inc_input",
+		_set:"server_access_players_set_input",
+		where:"server_access_players_bool_exp"
+	},
+	server_access_players_var_pop_order_by:{
+		steam_id:"order_by"
+	},
+	server_access_players_var_samp_order_by:{
+		steam_id:"order_by"
+	},
+	server_access_players_variance_order_by:{
+		steam_id:"order_by"
+	},
 	server_map_rotation_aggregate_bool_exp:{
 		count:"server_map_rotation_aggregate_bool_exp_count"
 	},
@@ -31240,6 +31774,477 @@ export const AllTypesProps: Record<string,any> = {
 	server_map_rotation_variance_order_by:{
 		position:"order_by"
 	},
+	server_migrations:{
+		warnings:{
+
+		}
+	},
+	server_migrations_aggregate_bool_exp:{
+		bool_and:"server_migrations_aggregate_bool_exp_bool_and",
+		bool_or:"server_migrations_aggregate_bool_exp_bool_or",
+		count:"server_migrations_aggregate_bool_exp_count"
+	},
+	server_migrations_aggregate_bool_exp_bool_and:{
+		arguments:"server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_and_arguments_columns",
+		filter:"server_migrations_bool_exp",
+		predicate:"Boolean_comparison_exp"
+	},
+	server_migrations_aggregate_bool_exp_bool_or:{
+		arguments:"server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_or_arguments_columns",
+		filter:"server_migrations_bool_exp",
+		predicate:"Boolean_comparison_exp"
+	},
+	server_migrations_aggregate_bool_exp_count:{
+		arguments:"server_migrations_select_column",
+		filter:"server_migrations_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	server_migrations_aggregate_fields:{
+		count:{
+			columns:"server_migrations_select_column"
+		}
+	},
+	server_migrations_aggregate_order_by:{
+		avg:"server_migrations_avg_order_by",
+		count:"order_by",
+		max:"server_migrations_max_order_by",
+		min:"server_migrations_min_order_by",
+		stddev:"server_migrations_stddev_order_by",
+		stddev_pop:"server_migrations_stddev_pop_order_by",
+		stddev_samp:"server_migrations_stddev_samp_order_by",
+		sum:"server_migrations_sum_order_by",
+		var_pop:"server_migrations_var_pop_order_by",
+		var_samp:"server_migrations_var_samp_order_by",
+		variance:"server_migrations_variance_order_by"
+	},
+	server_migrations_append_input:{
+		warnings:"jsonb"
+	},
+	server_migrations_arr_rel_insert_input:{
+		data:"server_migrations_insert_input",
+		on_conflict:"server_migrations_on_conflict"
+	},
+	server_migrations_avg_order_by:{
+		bytes_done:"order_by",
+		bytes_total:"order_by",
+		entries_total:"order_by",
+		requested_by_steam_id:"order_by"
+	},
+	server_migrations_bool_exp:{
+		_and:"server_migrations_bool_exp",
+		_not:"server_migrations_bool_exp",
+		_or:"server_migrations_bool_exp",
+		bytes_done:"bigint_comparison_exp",
+		bytes_total:"bigint_comparison_exp",
+		created_at:"timestamptz_comparison_exp",
+		e_status:"e_server_migration_statuses_bool_exp",
+		entries_total:"Int_comparison_exp",
+		error:"String_comparison_exp",
+		finished_at:"timestamptz_comparison_exp",
+		from_game_server_node:"game_server_nodes_bool_exp",
+		from_game_server_node_id:"String_comparison_exp",
+		id:"uuid_comparison_exp",
+		requested_by:"players_bool_exp",
+		requested_by_steam_id:"bigint_comparison_exp",
+		server:"servers_bool_exp",
+		server_id:"uuid_comparison_exp",
+		started_at:"timestamptz_comparison_exp",
+		status:"e_server_migration_statuses_enum_comparison_exp",
+		to_game_server_node:"game_server_nodes_bool_exp",
+		to_game_server_node_id:"String_comparison_exp",
+		updated_at:"timestamptz_comparison_exp",
+		warnings:"jsonb_comparison_exp",
+		with_files:"Boolean_comparison_exp"
+	},
+	server_migrations_constraint: "enum" as const,
+	server_migrations_delete_at_path_input:{
+
+	},
+	server_migrations_delete_elem_input:{
+
+	},
+	server_migrations_delete_key_input:{
+
+	},
+	server_migrations_inc_input:{
+		bytes_done:"bigint",
+		bytes_total:"bigint",
+		requested_by_steam_id:"bigint"
+	},
+	server_migrations_insert_input:{
+		bytes_done:"bigint",
+		bytes_total:"bigint",
+		created_at:"timestamptz",
+		e_status:"e_server_migration_statuses_obj_rel_insert_input",
+		finished_at:"timestamptz",
+		from_game_server_node:"game_server_nodes_obj_rel_insert_input",
+		id:"uuid",
+		requested_by:"players_obj_rel_insert_input",
+		requested_by_steam_id:"bigint",
+		server:"servers_obj_rel_insert_input",
+		server_id:"uuid",
+		started_at:"timestamptz",
+		status:"e_server_migration_statuses_enum",
+		to_game_server_node:"game_server_nodes_obj_rel_insert_input",
+		updated_at:"timestamptz",
+		warnings:"jsonb"
+	},
+	server_migrations_max_order_by:{
+		bytes_done:"order_by",
+		bytes_total:"order_by",
+		created_at:"order_by",
+		entries_total:"order_by",
+		error:"order_by",
+		finished_at:"order_by",
+		from_game_server_node_id:"order_by",
+		id:"order_by",
+		requested_by_steam_id:"order_by",
+		server_id:"order_by",
+		started_at:"order_by",
+		to_game_server_node_id:"order_by",
+		updated_at:"order_by"
+	},
+	server_migrations_min_order_by:{
+		bytes_done:"order_by",
+		bytes_total:"order_by",
+		created_at:"order_by",
+		entries_total:"order_by",
+		error:"order_by",
+		finished_at:"order_by",
+		from_game_server_node_id:"order_by",
+		id:"order_by",
+		requested_by_steam_id:"order_by",
+		server_id:"order_by",
+		started_at:"order_by",
+		to_game_server_node_id:"order_by",
+		updated_at:"order_by"
+	},
+	server_migrations_on_conflict:{
+		constraint:"server_migrations_constraint",
+		update_columns:"server_migrations_update_column",
+		where:"server_migrations_bool_exp"
+	},
+	server_migrations_order_by:{
+		bytes_done:"order_by",
+		bytes_total:"order_by",
+		created_at:"order_by",
+		e_status:"e_server_migration_statuses_order_by",
+		entries_total:"order_by",
+		error:"order_by",
+		finished_at:"order_by",
+		from_game_server_node:"game_server_nodes_order_by",
+		from_game_server_node_id:"order_by",
+		id:"order_by",
+		requested_by:"players_order_by",
+		requested_by_steam_id:"order_by",
+		server:"servers_order_by",
+		server_id:"order_by",
+		started_at:"order_by",
+		status:"order_by",
+		to_game_server_node:"game_server_nodes_order_by",
+		to_game_server_node_id:"order_by",
+		updated_at:"order_by",
+		warnings:"order_by",
+		with_files:"order_by"
+	},
+	server_migrations_pk_columns_input:{
+		id:"uuid"
+	},
+	server_migrations_prepend_input:{
+		warnings:"jsonb"
+	},
+	server_migrations_select_column: "enum" as const,
+	server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
+	server_migrations_select_column_server_migrations_aggregate_bool_exp_bool_or_arguments_columns: "enum" as const,
+	server_migrations_set_input:{
+		bytes_done:"bigint",
+		bytes_total:"bigint",
+		created_at:"timestamptz",
+		finished_at:"timestamptz",
+		id:"uuid",
+		requested_by_steam_id:"bigint",
+		server_id:"uuid",
+		started_at:"timestamptz",
+		status:"e_server_migration_statuses_enum",
+		updated_at:"timestamptz",
+		warnings:"jsonb"
+	},
+	server_migrations_stddev_order_by:{
+		bytes_done:"order_by",
+		bytes_total:"order_by",
+		entries_total:"order_by",
+		requested_by_steam_id:"order_by"
+	},
+	server_migrations_stddev_pop_order_by:{
+		bytes_done:"order_by",
+		bytes_total:"order_by",
+		entries_total:"order_by",
+		requested_by_steam_id:"order_by"
+	},
+	server_migrations_stddev_samp_order_by:{
+		bytes_done:"order_by",
+		bytes_total:"order_by",
+		entries_total:"order_by",
+		requested_by_steam_id:"order_by"
+	},
+	server_migrations_stream_cursor_input:{
+		initial_value:"server_migrations_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	server_migrations_stream_cursor_value_input:{
+		bytes_done:"bigint",
+		bytes_total:"bigint",
+		created_at:"timestamptz",
+		finished_at:"timestamptz",
+		id:"uuid",
+		requested_by_steam_id:"bigint",
+		server_id:"uuid",
+		started_at:"timestamptz",
+		status:"e_server_migration_statuses_enum",
+		updated_at:"timestamptz",
+		warnings:"jsonb"
+	},
+	server_migrations_sum_order_by:{
+		bytes_done:"order_by",
+		bytes_total:"order_by",
+		entries_total:"order_by",
+		requested_by_steam_id:"order_by"
+	},
+	server_migrations_update_column: "enum" as const,
+	server_migrations_updates:{
+		_append:"server_migrations_append_input",
+		_delete_at_path:"server_migrations_delete_at_path_input",
+		_delete_elem:"server_migrations_delete_elem_input",
+		_delete_key:"server_migrations_delete_key_input",
+		_inc:"server_migrations_inc_input",
+		_prepend:"server_migrations_prepend_input",
+		_set:"server_migrations_set_input",
+		where:"server_migrations_bool_exp"
+	},
+	server_migrations_var_pop_order_by:{
+		bytes_done:"order_by",
+		bytes_total:"order_by",
+		entries_total:"order_by",
+		requested_by_steam_id:"order_by"
+	},
+	server_migrations_var_samp_order_by:{
+		bytes_done:"order_by",
+		bytes_total:"order_by",
+		entries_total:"order_by",
+		requested_by_steam_id:"order_by"
+	},
+	server_migrations_variance_order_by:{
+		bytes_done:"order_by",
+		bytes_total:"order_by",
+		entries_total:"order_by",
+		requested_by_steam_id:"order_by"
+	},
+	server_player_sessions_aggregate_bool_exp:{
+		count:"server_player_sessions_aggregate_bool_exp_count"
+	},
+	server_player_sessions_aggregate_bool_exp_count:{
+		arguments:"server_player_sessions_select_column",
+		filter:"server_player_sessions_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	server_player_sessions_aggregate_fields:{
+		count:{
+			columns:"server_player_sessions_select_column"
+		}
+	},
+	server_player_sessions_aggregate_order_by:{
+		avg:"server_player_sessions_avg_order_by",
+		count:"order_by",
+		max:"server_player_sessions_max_order_by",
+		min:"server_player_sessions_min_order_by",
+		stddev:"server_player_sessions_stddev_order_by",
+		stddev_pop:"server_player_sessions_stddev_pop_order_by",
+		stddev_samp:"server_player_sessions_stddev_samp_order_by",
+		sum:"server_player_sessions_sum_order_by",
+		var_pop:"server_player_sessions_var_pop_order_by",
+		var_samp:"server_player_sessions_var_samp_order_by",
+		variance:"server_player_sessions_variance_order_by"
+	},
+	server_player_sessions_arr_rel_insert_input:{
+		data:"server_player_sessions_insert_input",
+		on_conflict:"server_player_sessions_on_conflict"
+	},
+	server_player_sessions_avg_order_by:{
+		deaths:"order_by",
+		deaths_conn:"order_by",
+		id:"order_by",
+		kills:"order_by",
+		kills_conn:"order_by",
+		player_steam_id:"order_by"
+	},
+	server_player_sessions_bool_exp:{
+		_and:"server_player_sessions_bool_exp",
+		_not:"server_player_sessions_bool_exp",
+		_or:"server_player_sessions_bool_exp",
+		conn:"String_comparison_exp",
+		deaths:"Int_comparison_exp",
+		deaths_conn:"Int_comparison_exp",
+		ended_at:"timestamptz_comparison_exp",
+		id:"bigint_comparison_exp",
+		ip:"inet_comparison_exp",
+		kills:"Int_comparison_exp",
+		kills_conn:"Int_comparison_exp",
+		name:"String_comparison_exp",
+		player:"players_bool_exp",
+		player_steam_id:"bigint_comparison_exp",
+		server:"servers_bool_exp",
+		server_id:"uuid_comparison_exp",
+		settled_conns:"String_array_comparison_exp",
+		started_at:"timestamptz_comparison_exp"
+	},
+	server_player_sessions_constraint: "enum" as const,
+	server_player_sessions_inc_input:{
+		player_steam_id:"bigint"
+	},
+	server_player_sessions_insert_input:{
+		ended_at:"timestamptz",
+		ip:"inet",
+		player:"players_obj_rel_insert_input",
+		player_steam_id:"bigint",
+		server:"servers_obj_rel_insert_input",
+		server_id:"uuid",
+		started_at:"timestamptz"
+	},
+	server_player_sessions_max_order_by:{
+		conn:"order_by",
+		deaths:"order_by",
+		deaths_conn:"order_by",
+		ended_at:"order_by",
+		id:"order_by",
+		kills:"order_by",
+		kills_conn:"order_by",
+		name:"order_by",
+		player_steam_id:"order_by",
+		server_id:"order_by",
+		settled_conns:"order_by",
+		started_at:"order_by"
+	},
+	server_player_sessions_min_order_by:{
+		conn:"order_by",
+		deaths:"order_by",
+		deaths_conn:"order_by",
+		ended_at:"order_by",
+		id:"order_by",
+		kills:"order_by",
+		kills_conn:"order_by",
+		name:"order_by",
+		player_steam_id:"order_by",
+		server_id:"order_by",
+		settled_conns:"order_by",
+		started_at:"order_by"
+	},
+	server_player_sessions_on_conflict:{
+		constraint:"server_player_sessions_constraint",
+		update_columns:"server_player_sessions_update_column",
+		where:"server_player_sessions_bool_exp"
+	},
+	server_player_sessions_order_by:{
+		conn:"order_by",
+		deaths:"order_by",
+		deaths_conn:"order_by",
+		ended_at:"order_by",
+		id:"order_by",
+		ip:"order_by",
+		kills:"order_by",
+		kills_conn:"order_by",
+		name:"order_by",
+		player:"players_order_by",
+		player_steam_id:"order_by",
+		server:"servers_order_by",
+		server_id:"order_by",
+		settled_conns:"order_by",
+		started_at:"order_by"
+	},
+	server_player_sessions_pk_columns_input:{
+		id:"bigint"
+	},
+	server_player_sessions_select_column: "enum" as const,
+	server_player_sessions_set_input:{
+		ended_at:"timestamptz",
+		ip:"inet",
+		player_steam_id:"bigint",
+		server_id:"uuid",
+		started_at:"timestamptz"
+	},
+	server_player_sessions_stddev_order_by:{
+		deaths:"order_by",
+		deaths_conn:"order_by",
+		id:"order_by",
+		kills:"order_by",
+		kills_conn:"order_by",
+		player_steam_id:"order_by"
+	},
+	server_player_sessions_stddev_pop_order_by:{
+		deaths:"order_by",
+		deaths_conn:"order_by",
+		id:"order_by",
+		kills:"order_by",
+		kills_conn:"order_by",
+		player_steam_id:"order_by"
+	},
+	server_player_sessions_stddev_samp_order_by:{
+		deaths:"order_by",
+		deaths_conn:"order_by",
+		id:"order_by",
+		kills:"order_by",
+		kills_conn:"order_by",
+		player_steam_id:"order_by"
+	},
+	server_player_sessions_stream_cursor_input:{
+		initial_value:"server_player_sessions_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	server_player_sessions_stream_cursor_value_input:{
+		ended_at:"timestamptz",
+		id:"bigint",
+		ip:"inet",
+		player_steam_id:"bigint",
+		server_id:"uuid",
+		started_at:"timestamptz"
+	},
+	server_player_sessions_sum_order_by:{
+		deaths:"order_by",
+		deaths_conn:"order_by",
+		id:"order_by",
+		kills:"order_by",
+		kills_conn:"order_by",
+		player_steam_id:"order_by"
+	},
+	server_player_sessions_update_column: "enum" as const,
+	server_player_sessions_updates:{
+		_inc:"server_player_sessions_inc_input",
+		_set:"server_player_sessions_set_input",
+		where:"server_player_sessions_bool_exp"
+	},
+	server_player_sessions_var_pop_order_by:{
+		deaths:"order_by",
+		deaths_conn:"order_by",
+		id:"order_by",
+		kills:"order_by",
+		kills_conn:"order_by",
+		player_steam_id:"order_by"
+	},
+	server_player_sessions_var_samp_order_by:{
+		deaths:"order_by",
+		deaths_conn:"order_by",
+		id:"order_by",
+		kills:"order_by",
+		kills_conn:"order_by",
+		player_steam_id:"order_by"
+	},
+	server_player_sessions_variance_order_by:{
+		deaths:"order_by",
+		deaths_conn:"order_by",
+		id:"order_by",
+		kills:"order_by",
+		kills_conn:"order_by",
+		player_steam_id:"order_by"
+	},
 	server_plugins_aggregate_bool_exp:{
 		bool_and:"server_plugins_aggregate_bool_exp_bool_and",
 		bool_or:"server_plugins_aggregate_bool_exp_bool_or",
@@ -31331,6 +32336,53 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"server_plugins_set_input",
 		where:"server_plugins_bool_exp"
 	},
+	server_recent_players_aggregate_fields:{
+		count:{
+			columns:"server_recent_players_select_column"
+		}
+	},
+	server_recent_players_bool_exp:{
+		_and:"server_recent_players_bool_exp",
+		_not:"server_recent_players_bool_exp",
+		_or:"server_recent_players_bool_exp",
+		first_seen_at:"timestamptz_comparison_exp",
+		ip:"String_comparison_exp",
+		kills:"Int_comparison_exp",
+		last_seen_at:"timestamptz_comparison_exp",
+		name:"String_comparison_exp",
+		online:"Boolean_comparison_exp",
+		player:"players_bool_exp",
+		player_steam_id:"bigint_comparison_exp",
+		seconds_played:"Int_comparison_exp",
+		server:"servers_bool_exp",
+		server_id:"uuid_comparison_exp",
+		sessions:"Int_comparison_exp"
+	},
+	server_recent_players_order_by:{
+		first_seen_at:"order_by",
+		ip:"order_by",
+		kills:"order_by",
+		last_seen_at:"order_by",
+		name:"order_by",
+		online:"order_by",
+		player:"players_order_by",
+		player_steam_id:"order_by",
+		seconds_played:"order_by",
+		server:"servers_order_by",
+		server_id:"order_by",
+		sessions:"order_by"
+	},
+	server_recent_players_select_column: "enum" as const,
+	server_recent_players_stream_cursor_input:{
+		initial_value:"server_recent_players_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	server_recent_players_stream_cursor_value_input:{
+		first_seen_at:"timestamptz",
+		last_seen_at:"timestamptz",
+		player_steam_id:"bigint",
+		server_id:"uuid"
+	},
 	server_regions:{
 		game_server_nodes:{
 			distinct_on:"game_server_nodes_select_column",
@@ -31406,7 +32458,98 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"server_regions_set_input",
 		where:"server_regions_bool_exp"
 	},
+	server_rosters:{
+		sessions:{
+			distinct_on:"server_player_sessions_select_column",
+			order_by:"server_player_sessions_order_by",
+			where:"server_player_sessions_bool_exp"
+		},
+		sessions_aggregate:{
+			distinct_on:"server_player_sessions_select_column",
+			order_by:"server_player_sessions_order_by",
+			where:"server_player_sessions_bool_exp"
+		}
+	},
+	server_rosters_aggregate_fields:{
+		count:{
+			columns:"server_rosters_select_column"
+		}
+	},
+	server_rosters_bool_exp:{
+		_and:"server_rosters_bool_exp",
+		_not:"server_rosters_bool_exp",
+		_or:"server_rosters_bool_exp",
+		held_since:"timestamptz_comparison_exp",
+		reported_at:"timestamptz_comparison_exp",
+		server:"servers_bool_exp",
+		server_id:"uuid_comparison_exp",
+		sessions:"server_player_sessions_bool_exp",
+		sessions_aggregate:"server_player_sessions_aggregate_bool_exp"
+	},
+	server_rosters_constraint: "enum" as const,
+	server_rosters_insert_input:{
+		held_since:"timestamptz",
+		reported_at:"timestamptz",
+		server:"servers_obj_rel_insert_input",
+		server_id:"uuid",
+		sessions:"server_player_sessions_arr_rel_insert_input"
+	},
+	server_rosters_on_conflict:{
+		constraint:"server_rosters_constraint",
+		update_columns:"server_rosters_update_column",
+		where:"server_rosters_bool_exp"
+	},
+	server_rosters_order_by:{
+		held_since:"order_by",
+		reported_at:"order_by",
+		server:"servers_order_by",
+		server_id:"order_by",
+		sessions_aggregate:"server_player_sessions_aggregate_order_by"
+	},
+	server_rosters_pk_columns_input:{
+		server_id:"uuid"
+	},
+	server_rosters_select_column: "enum" as const,
+	server_rosters_set_input:{
+		held_since:"timestamptz",
+		reported_at:"timestamptz",
+		server_id:"uuid"
+	},
+	server_rosters_stream_cursor_input:{
+		initial_value:"server_rosters_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	server_rosters_stream_cursor_value_input:{
+		held_since:"timestamptz",
+		reported_at:"timestamptz",
+		server_id:"uuid"
+	},
+	server_rosters_update_column: "enum" as const,
+	server_rosters_updates:{
+		_set:"server_rosters_set_input",
+		where:"server_rosters_bool_exp"
+	},
 	servers:{
+		access_events:{
+			distinct_on:"server_access_events_select_column",
+			order_by:"server_access_events_order_by",
+			where:"server_access_events_bool_exp"
+		},
+		access_events_aggregate:{
+			distinct_on:"server_access_events_select_column",
+			order_by:"server_access_events_order_by",
+			where:"server_access_events_bool_exp"
+		},
+		access_players:{
+			distinct_on:"server_access_players_select_column",
+			order_by:"server_access_players_order_by",
+			where:"server_access_players_bool_exp"
+		},
+		access_players_aggregate:{
+			distinct_on:"server_access_players_select_column",
+			order_by:"server_access_players_order_by",
+			where:"server_access_players_bool_exp"
+		},
 		loaded_plugins:{
 
 		},
@@ -31429,6 +32572,16 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"matches_select_column",
 			order_by:"matches_order_by",
 			where:"matches_bool_exp"
+		},
+		migrations:{
+			distinct_on:"server_migrations_select_column",
+			order_by:"server_migrations_order_by",
+			where:"server_migrations_bool_exp"
+		},
+		migrations_aggregate:{
+			distinct_on:"server_migrations_select_column",
+			order_by:"server_migrations_order_by",
+			where:"server_migrations_bool_exp"
 		},
 		plugin_overrides:{
 			distinct_on:"server_plugins_select_column",
@@ -31495,6 +32648,12 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"servers_bool_exp",
 		_not:"servers_bool_exp",
 		_or:"servers_bool_exp",
+		access_events:"server_access_events_bool_exp",
+		access_events_aggregate:"server_access_events_aggregate_bool_exp",
+		access_min_role:"e_player_roles_enum_comparison_exp",
+		access_players:"server_access_players_bool_exp",
+		access_players_aggregate:"server_access_players_aggregate_bool_exp",
+		access_restricted:"Boolean_comparison_exp",
 		api_password:"uuid_comparison_exp",
 		boot_status:"String_comparison_exp",
 		boot_status_detail:"String_comparison_exp",
@@ -31520,7 +32679,12 @@ export const AllTypesProps: Record<string,any> = {
 		matches:"matches_bool_exp",
 		matches_aggregate:"matches_aggregate_bool_exp",
 		max_players:"Int_comparison_exp",
+		migrations:"server_migrations_bool_exp",
+		migrations_aggregate:"server_migrations_aggregate_bool_exp",
 		offline_at:"timestamptz_comparison_exp",
+		player_management_runtime:"String_comparison_exp",
+		player_management_seen_at:"timestamptz_comparison_exp",
+		player_management_version:"String_comparison_exp",
 		plugin_overrides:"server_plugins_bool_exp",
 		plugin_overrides_aggregate:"server_plugins_aggregate_bool_exp",
 		plugin_runtime:"e_plugin_runtimes_enum_comparison_exp",
@@ -31551,6 +32715,9 @@ export const AllTypesProps: Record<string,any> = {
 
 	},
 	servers_insert_input:{
+		access_events:"server_access_events_arr_rel_insert_input",
+		access_min_role:"e_player_roles_enum",
+		access_players:"server_access_players_arr_rel_insert_input",
 		api_password:"uuid",
 		current_match:"matches_obj_rel_insert_input",
 		game_mode:"game_modes_obj_rel_insert_input",
@@ -31560,7 +32727,9 @@ export const AllTypesProps: Record<string,any> = {
 		loaded_plugins:"jsonb",
 		map_rotation:"server_map_rotation_arr_rel_insert_input",
 		matches:"matches_arr_rel_insert_input",
+		migrations:"server_migrations_arr_rel_insert_input",
 		offline_at:"timestamptz",
+		player_management_seen_at:"timestamptz",
 		plugin_overrides:"server_plugins_arr_rel_insert_input",
 		plugin_runtime:"e_plugin_runtimes_enum",
 		plugins_checked_at:"timestamptz",
@@ -31583,6 +32752,9 @@ export const AllTypesProps: Record<string,any> = {
 		label:"order_by",
 		max_players:"order_by",
 		offline_at:"order_by",
+		player_management_runtime:"order_by",
+		player_management_seen_at:"order_by",
+		player_management_version:"order_by",
 		plugin_version:"order_by",
 		plugins_checked_at:"order_by",
 		port:"order_by",
@@ -31605,6 +32777,9 @@ export const AllTypesProps: Record<string,any> = {
 		label:"order_by",
 		max_players:"order_by",
 		offline_at:"order_by",
+		player_management_runtime:"order_by",
+		player_management_seen_at:"order_by",
+		player_management_version:"order_by",
 		plugin_version:"order_by",
 		plugins_checked_at:"order_by",
 		port:"order_by",
@@ -31624,6 +32799,10 @@ export const AllTypesProps: Record<string,any> = {
 		where:"servers_bool_exp"
 	},
 	servers_order_by:{
+		access_events_aggregate:"server_access_events_aggregate_order_by",
+		access_min_role:"order_by",
+		access_players_aggregate:"server_access_players_aggregate_order_by",
+		access_restricted:"order_by",
 		api_password:"order_by",
 		boot_status:"order_by",
 		boot_status_detail:"order_by",
@@ -31647,7 +32826,11 @@ export const AllTypesProps: Record<string,any> = {
 		map_rotation_shuffle:"order_by",
 		matches_aggregate:"matches_aggregate_order_by",
 		max_players:"order_by",
+		migrations_aggregate:"server_migrations_aggregate_order_by",
 		offline_at:"order_by",
+		player_management_runtime:"order_by",
+		player_management_seen_at:"order_by",
+		player_management_version:"order_by",
 		plugin_overrides_aggregate:"server_plugins_aggregate_order_by",
 		plugin_runtime:"order_by",
 		plugin_version:"order_by",
@@ -31673,11 +32856,13 @@ export const AllTypesProps: Record<string,any> = {
 	servers_select_column_servers_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
 	servers_select_column_servers_aggregate_bool_exp_bool_or_arguments_columns: "enum" as const,
 	servers_set_input:{
+		access_min_role:"e_player_roles_enum",
 		api_password:"uuid",
 		game_mode_id:"uuid",
 		id:"uuid",
 		loaded_plugins:"jsonb",
 		offline_at:"timestamptz",
+		player_management_seen_at:"timestamptz",
 		plugin_runtime:"e_plugin_runtimes_enum",
 		plugins_checked_at:"timestamptz",
 		rcon_password:"bytea",
@@ -31705,11 +32890,13 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	servers_stream_cursor_value_input:{
+		access_min_role:"e_player_roles_enum",
 		api_password:"uuid",
 		game_mode_id:"uuid",
 		id:"uuid",
 		loaded_plugins:"jsonb",
 		offline_at:"timestamptz",
+		player_management_seen_at:"timestamptz",
 		plugin_runtime:"e_plugin_runtimes_enum",
 		plugins_checked_at:"timestamptz",
 		rcon_password:"bytea",
@@ -32951,6 +34138,23 @@ export const AllTypesProps: Record<string,any> = {
 		e_scrim_request_statuses_stream:{
 			cursor:"e_scrim_request_statuses_stream_cursor_input",
 			where:"e_scrim_request_statuses_bool_exp"
+		},
+		e_server_migration_statuses:{
+			distinct_on:"e_server_migration_statuses_select_column",
+			order_by:"e_server_migration_statuses_order_by",
+			where:"e_server_migration_statuses_bool_exp"
+		},
+		e_server_migration_statuses_aggregate:{
+			distinct_on:"e_server_migration_statuses_select_column",
+			order_by:"e_server_migration_statuses_order_by",
+			where:"e_server_migration_statuses_bool_exp"
+		},
+		e_server_migration_statuses_by_pk:{
+
+		},
+		e_server_migration_statuses_stream:{
+			cursor:"e_server_migration_statuses_stream_cursor_input",
+			where:"e_server_migration_statuses_bool_exp"
 		},
 		e_server_types:{
 			distinct_on:"e_server_types_select_column",
@@ -34820,6 +36024,42 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"seasons_stream_cursor_input",
 			where:"seasons_bool_exp"
 		},
+		server_access_events:{
+			distinct_on:"server_access_events_select_column",
+			order_by:"server_access_events_order_by",
+			where:"server_access_events_bool_exp"
+		},
+		server_access_events_aggregate:{
+			distinct_on:"server_access_events_select_column",
+			order_by:"server_access_events_order_by",
+			where:"server_access_events_bool_exp"
+		},
+		server_access_events_by_pk:{
+			event_id:"uuid",
+			server_id:"uuid"
+		},
+		server_access_events_stream:{
+			cursor:"server_access_events_stream_cursor_input",
+			where:"server_access_events_bool_exp"
+		},
+		server_access_players:{
+			distinct_on:"server_access_players_select_column",
+			order_by:"server_access_players_order_by",
+			where:"server_access_players_bool_exp"
+		},
+		server_access_players_aggregate:{
+			distinct_on:"server_access_players_select_column",
+			order_by:"server_access_players_order_by",
+			where:"server_access_players_bool_exp"
+		},
+		server_access_players_by_pk:{
+			server_id:"uuid",
+			steam_id:"bigint"
+		},
+		server_access_players_stream:{
+			cursor:"server_access_players_stream_cursor_input",
+			where:"server_access_players_bool_exp"
+		},
 		server_map_rotation:{
 			distinct_on:"server_map_rotation_select_column",
 			order_by:"server_map_rotation_order_by",
@@ -34838,6 +36078,40 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"server_map_rotation_stream_cursor_input",
 			where:"server_map_rotation_bool_exp"
 		},
+		server_migrations:{
+			distinct_on:"server_migrations_select_column",
+			order_by:"server_migrations_order_by",
+			where:"server_migrations_bool_exp"
+		},
+		server_migrations_aggregate:{
+			distinct_on:"server_migrations_select_column",
+			order_by:"server_migrations_order_by",
+			where:"server_migrations_bool_exp"
+		},
+		server_migrations_by_pk:{
+			id:"uuid"
+		},
+		server_migrations_stream:{
+			cursor:"server_migrations_stream_cursor_input",
+			where:"server_migrations_bool_exp"
+		},
+		server_player_sessions:{
+			distinct_on:"server_player_sessions_select_column",
+			order_by:"server_player_sessions_order_by",
+			where:"server_player_sessions_bool_exp"
+		},
+		server_player_sessions_aggregate:{
+			distinct_on:"server_player_sessions_select_column",
+			order_by:"server_player_sessions_order_by",
+			where:"server_player_sessions_bool_exp"
+		},
+		server_player_sessions_by_pk:{
+			id:"bigint"
+		},
+		server_player_sessions_stream:{
+			cursor:"server_player_sessions_stream_cursor_input",
+			where:"server_player_sessions_bool_exp"
+		},
 		server_plugins:{
 			distinct_on:"server_plugins_select_column",
 			order_by:"server_plugins_order_by",
@@ -34855,6 +36129,20 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"server_plugins_stream_cursor_input",
 			where:"server_plugins_bool_exp"
 		},
+		server_recent_players:{
+			distinct_on:"server_recent_players_select_column",
+			order_by:"server_recent_players_order_by",
+			where:"server_recent_players_bool_exp"
+		},
+		server_recent_players_aggregate:{
+			distinct_on:"server_recent_players_select_column",
+			order_by:"server_recent_players_order_by",
+			where:"server_recent_players_bool_exp"
+		},
+		server_recent_players_stream:{
+			cursor:"server_recent_players_stream_cursor_input",
+			where:"server_recent_players_bool_exp"
+		},
 		server_regions:{
 			distinct_on:"server_regions_select_column",
 			order_by:"server_regions_order_by",
@@ -34871,6 +36159,23 @@ export const AllTypesProps: Record<string,any> = {
 		server_regions_stream:{
 			cursor:"server_regions_stream_cursor_input",
 			where:"server_regions_bool_exp"
+		},
+		server_rosters:{
+			distinct_on:"server_rosters_select_column",
+			order_by:"server_rosters_order_by",
+			where:"server_rosters_bool_exp"
+		},
+		server_rosters_aggregate:{
+			distinct_on:"server_rosters_select_column",
+			order_by:"server_rosters_order_by",
+			where:"server_rosters_bool_exp"
+		},
+		server_rosters_by_pk:{
+			server_id:"uuid"
+		},
+		server_rosters_stream:{
+			cursor:"server_rosters_stream_cursor_input",
+			where:"server_rosters_bool_exp"
 		},
 		servers:{
 			distinct_on:"servers_select_column",
@@ -36049,20 +37354,6 @@ export const AllTypesProps: Record<string,any> = {
 		v_player_multi_kills_stream:{
 			cursor:"v_player_multi_kills_stream_cursor_input",
 			where:"v_player_multi_kills_bool_exp"
-		},
-		v_player_queue_partners:{
-			distinct_on:"v_player_queue_partners_select_column",
-			order_by:"v_player_queue_partners_order_by",
-			where:"v_player_queue_partners_bool_exp"
-		},
-		v_player_queue_partners_aggregate:{
-			distinct_on:"v_player_queue_partners_select_column",
-			order_by:"v_player_queue_partners_order_by",
-			where:"v_player_queue_partners_bool_exp"
-		},
-		v_player_queue_partners_stream:{
-			cursor:"v_player_queue_partners_stream_cursor_input",
-			where:"v_player_queue_partners_bool_exp"
 		},
 		v_player_weapon_damage:{
 			distinct_on:"v_player_weapon_damage_select_column",
@@ -47079,45 +48370,6 @@ export const AllTypesProps: Record<string,any> = {
 		kills:"order_by",
 		round:"order_by"
 	},
-	v_player_queue_partners_aggregate_fields:{
-		count:{
-			columns:"v_player_queue_partners_select_column"
-		}
-	},
-	v_player_queue_partners_bool_exp:{
-		_and:"v_player_queue_partners_bool_exp",
-		_not:"v_player_queue_partners_bool_exp",
-		_or:"v_player_queue_partners_bool_exp",
-		first_played_at:"timestamptz_comparison_exp",
-		last_played_at:"timestamptz_comparison_exp",
-		matches_together:"Int_comparison_exp",
-		partner:"players_bool_exp",
-		partner_steam_id:"bigint_comparison_exp",
-		player:"players_bool_exp",
-		steam_id:"bigint_comparison_exp",
-		wins_together:"Int_comparison_exp"
-	},
-	v_player_queue_partners_order_by:{
-		first_played_at:"order_by",
-		last_played_at:"order_by",
-		matches_together:"order_by",
-		partner:"players_order_by",
-		partner_steam_id:"order_by",
-		player:"players_order_by",
-		steam_id:"order_by",
-		wins_together:"order_by"
-	},
-	v_player_queue_partners_select_column: "enum" as const,
-	v_player_queue_partners_stream_cursor_input:{
-		initial_value:"v_player_queue_partners_stream_cursor_value_input",
-		ordering:"cursor_ordering"
-	},
-	v_player_queue_partners_stream_cursor_value_input:{
-		first_played_at:"timestamptz",
-		last_played_at:"timestamptz",
-		partner_steam_id:"bigint",
-		steam_id:"bigint"
-	},
 	v_player_weapon_damage_aggregate_fields:{
 		count:{
 			columns:"v_player_weapon_damage_select_column"
@@ -48406,6 +49658,14 @@ export const ReturnTypes: Record<string,any> = {
 		tournament_id:"uuid",
 		tournament_team_id:"uuid"
 	},
+	CommunityTotals:{
+		deaths:"Int",
+		kills:"Int",
+		rank:"Int",
+		seconds:"Int",
+		servers:"Int",
+		sessions:"Int"
+	},
 	ConnectionByState:{
 		count:"Int",
 		state:"String",
@@ -48706,6 +49966,49 @@ export const ReturnTypes: Record<string,any> = {
 		error:"String",
 		success:"Boolean"
 	},
+	PlayerCommunityIp:{
+		ip:"String",
+		sessions:"Int"
+	},
+	PlayerCommunityIpMatch:{
+		avatar_url:"String",
+		has_account:"Boolean",
+		ip:"String",
+		is_banned:"Boolean",
+		last_seen_at:"timestamptz",
+		name:"String",
+		online:"Boolean",
+		sessions:"Int",
+		steam_id:"bigint"
+	},
+	PlayerCommunityServer:{
+		all_time:"CommunityTotals",
+		label:"String",
+		last_seen_at:"timestamptz",
+		names:"String",
+		online:"Boolean",
+		region:"String",
+		server_id:"uuid",
+		sessions:"PlayerCommunitySession",
+		type:"String",
+		week:"CommunityTotals"
+	},
+	PlayerCommunitySession:{
+		ended_at:"timestamptz",
+		ip:"String",
+		started_at:"timestamptz"
+	},
+	PlayerCommunityStats:{
+		all_time:"CommunityTotals",
+		ip_matches:"PlayerCommunityIpMatch",
+		ips:"PlayerCommunityIp",
+		is_moderator_view:"Boolean",
+		last_seen_at:"timestamptz",
+		online_server_id:"uuid",
+		online_server_label:"String",
+		servers:"PlayerCommunityServer",
+		week:"CommunityTotals"
+	},
 	PluginReadmeOutput:{
 		content:"String",
 		format:"String",
@@ -48813,6 +50116,36 @@ export const ReturnTypes: Record<string,any> = {
 		season_id:"String",
 		started_at:"String",
 		total:"Int"
+	},
+	ServerCommunityStats:{
+		all_time_players:"Int",
+		hourly:"ServerHourlyActivity",
+		max_players:"Int",
+		online:"Int",
+		server_id:"uuid",
+		tracked_since:"timestamptz",
+		week_players:"Int",
+		week_seconds:"Int"
+	},
+	ServerHourlyActivity:{
+		hour:"timestamptz",
+		players:"Int",
+		seconds:"Int"
+	},
+	ServerLeaderboard:{
+		entries:"ServerLeaderboardEntry",
+		you:"ServerLeaderboardEntry"
+	},
+	ServerLeaderboardEntry:{
+		avatar_url:"String",
+		country:"String",
+		deaths:"Int",
+		kills:"Int",
+		name:"String",
+		rank:"Int",
+		seconds:"Int",
+		sessions:"Int",
+		steam_id:"bigint"
 	},
 	ServerPlayer:{
 		name:"String",
@@ -51943,6 +53276,31 @@ export const ReturnTypes: Record<string,any> = {
 		affected_rows:"Int",
 		returning:"e_scrim_request_statuses"
 	},
+	e_server_migration_statuses:{
+		description:"String",
+		value:"String"
+	},
+	e_server_migration_statuses_aggregate:{
+		aggregate:"e_server_migration_statuses_aggregate_fields",
+		nodes:"e_server_migration_statuses"
+	},
+	e_server_migration_statuses_aggregate_fields:{
+		count:"Int",
+		max:"e_server_migration_statuses_max_fields",
+		min:"e_server_migration_statuses_min_fields"
+	},
+	e_server_migration_statuses_max_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_server_migration_statuses_min_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_server_migration_statuses_mutation_response:{
+		affected_rows:"Int",
+		returning:"e_server_migration_statuses"
+	},
 	e_server_types:{
 		description:"String",
 		servers:"servers",
@@ -53095,7 +54453,9 @@ export const ReturnTypes: Record<string,any> = {
 		runtime_conflicts:"jsonb",
 		slug:"String",
 		supported_runtimes:"jsonb",
-		updated_at:"timestamptz"
+		system:"Boolean",
+		updated_at:"timestamptz",
+		valve_mode:"String"
 	},
 	game_modes_aggregate:{
 		aggregate:"game_modes_aggregate_fields",
@@ -53116,7 +54476,8 @@ export const ReturnTypes: Record<string,any> = {
 		id:"uuid",
 		name:"String",
 		slug:"String",
-		updated_at:"timestamptz"
+		updated_at:"timestamptz",
+		valve_mode:"String"
 	},
 	game_modes_min_fields:{
 		archived_at:"timestamptz",
@@ -53128,7 +54489,8 @@ export const ReturnTypes: Record<string,any> = {
 		id:"uuid",
 		name:"String",
 		slug:"String",
-		updated_at:"timestamptz"
+		updated_at:"timestamptz",
+		valve_mode:"String"
 	},
 	game_modes_mutation_response:{
 		affected_rows:"Int",
@@ -53434,6 +54796,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	game_server_nodes:{
 		accepting_new_matches:"Boolean",
+		available_dedicated_slot_count:"Int",
 		available_server_count:"Int",
 		build_id:"Int",
 		cpu_cores_per_socket:"Int",
@@ -53507,6 +54870,7 @@ export const ReturnTypes: Record<string,any> = {
 		variance:"game_server_nodes_variance_fields"
 	},
 	game_server_nodes_avg_fields:{
+		available_dedicated_slot_count:"Int",
 		available_server_count:"Int",
 		build_id:"Float",
 		cpu_cores_per_socket:"Float",
@@ -53523,6 +54887,7 @@ export const ReturnTypes: Record<string,any> = {
 		total_server_count:"Int"
 	},
 	game_server_nodes_max_fields:{
+		available_dedicated_slot_count:"Int",
 		available_server_count:"Int",
 		build_id:"Int",
 		cpu_cores_per_socket:"Int",
@@ -53551,6 +54916,7 @@ export const ReturnTypes: Record<string,any> = {
 		update_status:"String"
 	},
 	game_server_nodes_min_fields:{
+		available_dedicated_slot_count:"Int",
 		available_server_count:"Int",
 		build_id:"Int",
 		cpu_cores_per_socket:"Int",
@@ -53583,6 +54949,7 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"game_server_nodes"
 	},
 	game_server_nodes_stddev_fields:{
+		available_dedicated_slot_count:"Int",
 		available_server_count:"Int",
 		build_id:"Float",
 		cpu_cores_per_socket:"Float",
@@ -53599,6 +54966,7 @@ export const ReturnTypes: Record<string,any> = {
 		total_server_count:"Int"
 	},
 	game_server_nodes_stddev_pop_fields:{
+		available_dedicated_slot_count:"Int",
 		available_server_count:"Int",
 		build_id:"Float",
 		cpu_cores_per_socket:"Float",
@@ -53615,6 +54983,7 @@ export const ReturnTypes: Record<string,any> = {
 		total_server_count:"Int"
 	},
 	game_server_nodes_stddev_samp_fields:{
+		available_dedicated_slot_count:"Int",
 		available_server_count:"Int",
 		build_id:"Float",
 		cpu_cores_per_socket:"Float",
@@ -53631,6 +55000,7 @@ export const ReturnTypes: Record<string,any> = {
 		total_server_count:"Int"
 	},
 	game_server_nodes_sum_fields:{
+		available_dedicated_slot_count:"Int",
 		available_server_count:"Int",
 		build_id:"Int",
 		cpu_cores_per_socket:"Int",
@@ -53647,6 +55017,7 @@ export const ReturnTypes: Record<string,any> = {
 		total_server_count:"Int"
 	},
 	game_server_nodes_var_pop_fields:{
+		available_dedicated_slot_count:"Int",
 		available_server_count:"Int",
 		build_id:"Float",
 		cpu_cores_per_socket:"Float",
@@ -53663,6 +55034,7 @@ export const ReturnTypes: Record<string,any> = {
 		total_server_count:"Int"
 	},
 	game_server_nodes_var_samp_fields:{
+		available_dedicated_slot_count:"Int",
 		available_server_count:"Int",
 		build_id:"Float",
 		cpu_cores_per_socket:"Float",
@@ -53679,6 +55051,7 @@ export const ReturnTypes: Record<string,any> = {
 		total_server_count:"Int"
 	},
 	game_server_nodes_variance_fields:{
+		available_dedicated_slot_count:"Int",
 		available_server_count:"Int",
 		build_id:"Float",
 		cpu_cores_per_socket:"Float",
@@ -56753,6 +58126,7 @@ export const ReturnTypes: Record<string,any> = {
 		cancelBakeShaders:"SuccessOutput",
 		cancelClipRender:"SuccessOutput",
 		cancelClipRenderBatch:"SuccessOutput",
+		cancelDedicatedServerMove:"SuccessOutput",
 		cancelMatch:"SuccessOutput",
 		cancelRecomputePlayerElo:"SuccessOutput",
 		cancelRefreshAllPlayers:"SuccessOutput",
@@ -56898,6 +58272,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_e_sanction_types_by_pk:"e_sanction_types",
 		delete_e_scrim_request_statuses:"e_scrim_request_statuses_mutation_response",
 		delete_e_scrim_request_statuses_by_pk:"e_scrim_request_statuses",
+		delete_e_server_migration_statuses:"e_server_migration_statuses_mutation_response",
+		delete_e_server_migration_statuses_by_pk:"e_server_migration_statuses",
 		delete_e_server_types:"e_server_types_mutation_response",
 		delete_e_server_types_by_pk:"e_server_types",
 		delete_e_sides:"e_sides_mutation_response",
@@ -57096,12 +58472,22 @@ export const ReturnTypes: Record<string,any> = {
 		delete_role_permissions:"role_permissions_mutation_response",
 		delete_seasons:"seasons_mutation_response",
 		delete_seasons_by_pk:"seasons",
+		delete_server_access_events:"server_access_events_mutation_response",
+		delete_server_access_events_by_pk:"server_access_events",
+		delete_server_access_players:"server_access_players_mutation_response",
+		delete_server_access_players_by_pk:"server_access_players",
 		delete_server_map_rotation:"server_map_rotation_mutation_response",
 		delete_server_map_rotation_by_pk:"server_map_rotation",
+		delete_server_migrations:"server_migrations_mutation_response",
+		delete_server_migrations_by_pk:"server_migrations",
+		delete_server_player_sessions:"server_player_sessions_mutation_response",
+		delete_server_player_sessions_by_pk:"server_player_sessions",
 		delete_server_plugins:"server_plugins_mutation_response",
 		delete_server_plugins_by_pk:"server_plugins",
 		delete_server_regions:"server_regions_mutation_response",
 		delete_server_regions_by_pk:"server_regions",
+		delete_server_rosters:"server_rosters_mutation_response",
+		delete_server_rosters_by_pk:"server_rosters",
 		delete_servers:"servers_mutation_response",
 		delete_servers_by_pk:"servers",
 		delete_settings:"settings_mutation_response",
@@ -57331,6 +58717,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_e_sanction_types_one:"e_sanction_types",
 		insert_e_scrim_request_statuses:"e_scrim_request_statuses_mutation_response",
 		insert_e_scrim_request_statuses_one:"e_scrim_request_statuses",
+		insert_e_server_migration_statuses:"e_server_migration_statuses_mutation_response",
+		insert_e_server_migration_statuses_one:"e_server_migration_statuses",
 		insert_e_server_types:"e_server_types_mutation_response",
 		insert_e_server_types_one:"e_server_types",
 		insert_e_sides:"e_sides_mutation_response",
@@ -57533,12 +58921,22 @@ export const ReturnTypes: Record<string,any> = {
 		insert_role_permissions_one:"role_permissions",
 		insert_seasons:"seasons_mutation_response",
 		insert_seasons_one:"seasons",
+		insert_server_access_events:"server_access_events_mutation_response",
+		insert_server_access_events_one:"server_access_events",
+		insert_server_access_players:"server_access_players_mutation_response",
+		insert_server_access_players_one:"server_access_players",
 		insert_server_map_rotation:"server_map_rotation_mutation_response",
 		insert_server_map_rotation_one:"server_map_rotation",
+		insert_server_migrations:"server_migrations_mutation_response",
+		insert_server_migrations_one:"server_migrations",
+		insert_server_player_sessions:"server_player_sessions_mutation_response",
+		insert_server_player_sessions_one:"server_player_sessions",
 		insert_server_plugins:"server_plugins_mutation_response",
 		insert_server_plugins_one:"server_plugins",
 		insert_server_regions:"server_regions_mutation_response",
 		insert_server_regions_one:"server_regions",
+		insert_server_rosters:"server_rosters_mutation_response",
+		insert_server_rosters_one:"server_rosters",
 		insert_servers:"servers_mutation_response",
 		insert_servers_one:"servers",
 		insert_settings:"settings_mutation_response",
@@ -57664,6 +59062,7 @@ export const ReturnTypes: Record<string,any> = {
 		loadFixtures:"SuccessOutput",
 		loadUtilityPlaybookIntoSession:"SuccessOutput",
 		logout:"SuccessOutput",
+		moveDedicatedServerToNode:"SuccessOutput",
 		moveServerItem:"SuccessOutput",
 		orphanedDemosScanResult:"OrphanScanResultOutput",
 		pauseClipRenderBatch:"SuccessOutput",
@@ -57728,8 +59127,10 @@ export const ReturnTypes: Record<string,any> = {
 		setMapWinner:"SuccessOutput",
 		setMatchWinner:"SuccessOutput",
 		setNewsPostStatus:"NewsPost",
+		setServerAccess:"SuccessOutput",
 		setServerMapRotation:"SuccessOutput",
 		setServerPlugins:"SuccessOutput",
+		setServerSettings:"SuccessOutput",
 		setTournamentAward:"TournamentAward",
 		setUtilityPracticeAccess:"SuccessOutput",
 		setupGameServer:"SetupGameServeOutput",
@@ -57938,6 +59339,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_e_scrim_request_statuses:"e_scrim_request_statuses_mutation_response",
 		update_e_scrim_request_statuses_by_pk:"e_scrim_request_statuses",
 		update_e_scrim_request_statuses_many:"e_scrim_request_statuses_mutation_response",
+		update_e_server_migration_statuses:"e_server_migration_statuses_mutation_response",
+		update_e_server_migration_statuses_by_pk:"e_server_migration_statuses",
+		update_e_server_migration_statuses_many:"e_server_migration_statuses_mutation_response",
 		update_e_server_types:"e_server_types_mutation_response",
 		update_e_server_types_by_pk:"e_server_types",
 		update_e_server_types_many:"e_server_types_mutation_response",
@@ -58237,15 +59641,30 @@ export const ReturnTypes: Record<string,any> = {
 		update_seasons:"seasons_mutation_response",
 		update_seasons_by_pk:"seasons",
 		update_seasons_many:"seasons_mutation_response",
+		update_server_access_events:"server_access_events_mutation_response",
+		update_server_access_events_by_pk:"server_access_events",
+		update_server_access_events_many:"server_access_events_mutation_response",
+		update_server_access_players:"server_access_players_mutation_response",
+		update_server_access_players_by_pk:"server_access_players",
+		update_server_access_players_many:"server_access_players_mutation_response",
 		update_server_map_rotation:"server_map_rotation_mutation_response",
 		update_server_map_rotation_by_pk:"server_map_rotation",
 		update_server_map_rotation_many:"server_map_rotation_mutation_response",
+		update_server_migrations:"server_migrations_mutation_response",
+		update_server_migrations_by_pk:"server_migrations",
+		update_server_migrations_many:"server_migrations_mutation_response",
+		update_server_player_sessions:"server_player_sessions_mutation_response",
+		update_server_player_sessions_by_pk:"server_player_sessions",
+		update_server_player_sessions_many:"server_player_sessions_mutation_response",
 		update_server_plugins:"server_plugins_mutation_response",
 		update_server_plugins_by_pk:"server_plugins",
 		update_server_plugins_many:"server_plugins_mutation_response",
 		update_server_regions:"server_regions_mutation_response",
 		update_server_regions_by_pk:"server_regions",
 		update_server_regions_many:"server_regions_mutation_response",
+		update_server_rosters:"server_rosters_mutation_response",
+		update_server_rosters_by_pk:"server_rosters",
+		update_server_rosters_many:"server_rosters_mutation_response",
 		update_servers:"servers_mutation_response",
 		update_servers_by_pk:"servers",
 		update_servers_many:"servers_mutation_response",
@@ -64478,6 +65897,9 @@ export const ReturnTypes: Record<string,any> = {
 		e_scrim_request_statuses:"e_scrim_request_statuses",
 		e_scrim_request_statuses_aggregate:"e_scrim_request_statuses_aggregate",
 		e_scrim_request_statuses_by_pk:"e_scrim_request_statuses",
+		e_server_migration_statuses:"e_server_migration_statuses",
+		e_server_migration_statuses_aggregate:"e_server_migration_statuses_aggregate",
+		e_server_migration_statuses_by_pk:"e_server_migration_statuses",
 		e_server_types:"e_server_types",
 		e_server_types_aggregate:"e_server_types_aggregate",
 		e_server_types_by_pk:"e_server_types",
@@ -64604,9 +66026,12 @@ export const ReturnTypes: Record<string,any> = {
 		getIndexIOStats:"IndexIOStat",
 		getIndexStats:"IndexStat",
 		getNodeStats:"NodeStats",
+		getPlayerCommunityStats:"PlayerCommunityStats",
 		getQueryDetail:"QueryDetail",
 		getQueryStats:"QueryStat",
 		getSchemas:"String",
+		getServerCommunityStats:"ServerCommunityStats",
+		getServerLeaderboard:"ServerLeaderboard",
 		getServiceStats:"PodStats",
 		getStorageStats:"StorageStats",
 		getTableIOStats:"TableIOStat",
@@ -64822,15 +66247,32 @@ export const ReturnTypes: Record<string,any> = {
 		seasons:"seasons",
 		seasons_aggregate:"seasons_aggregate",
 		seasons_by_pk:"seasons",
+		server_access_events:"server_access_events",
+		server_access_events_aggregate:"server_access_events_aggregate",
+		server_access_events_by_pk:"server_access_events",
+		server_access_players:"server_access_players",
+		server_access_players_aggregate:"server_access_players_aggregate",
+		server_access_players_by_pk:"server_access_players",
 		server_map_rotation:"server_map_rotation",
 		server_map_rotation_aggregate:"server_map_rotation_aggregate",
 		server_map_rotation_by_pk:"server_map_rotation",
+		server_migrations:"server_migrations",
+		server_migrations_aggregate:"server_migrations_aggregate",
+		server_migrations_by_pk:"server_migrations",
+		server_player_sessions:"server_player_sessions",
+		server_player_sessions_aggregate:"server_player_sessions_aggregate",
+		server_player_sessions_by_pk:"server_player_sessions",
 		server_plugins:"server_plugins",
 		server_plugins_aggregate:"server_plugins_aggregate",
 		server_plugins_by_pk:"server_plugins",
+		server_recent_players:"server_recent_players",
+		server_recent_players_aggregate:"server_recent_players_aggregate",
 		server_regions:"server_regions",
 		server_regions_aggregate:"server_regions_aggregate",
 		server_regions_by_pk:"server_regions",
+		server_rosters:"server_rosters",
+		server_rosters_aggregate:"server_rosters_aggregate",
+		server_rosters_by_pk:"server_rosters",
 		servers:"servers",
 		servers_aggregate:"servers_aggregate",
 		servers_by_pk:"servers",
@@ -65035,8 +66477,6 @@ export const ReturnTypes: Record<string,any> = {
 		v_player_match_rating_aggregate:"v_player_match_rating_aggregate",
 		v_player_multi_kills:"v_player_multi_kills",
 		v_player_multi_kills_aggregate:"v_player_multi_kills_aggregate",
-		v_player_queue_partners:"v_player_queue_partners",
-		v_player_queue_partners_aggregate:"v_player_queue_partners_aggregate",
 		v_player_weapon_damage:"v_player_weapon_damage",
 		v_player_weapon_damage_aggregate:"v_player_weapon_damage_aggregate",
 		v_player_weapon_kills:"v_player_weapon_kills",
@@ -65157,6 +66597,92 @@ export const ReturnTypes: Record<string,any> = {
 	seasons_variance_fields:{
 		number:"Float"
 	},
+	server_access_events:{
+		event:"events",
+		event_id:"uuid",
+		server:"servers",
+		server_id:"uuid"
+	},
+	server_access_events_aggregate:{
+		aggregate:"server_access_events_aggregate_fields",
+		nodes:"server_access_events"
+	},
+	server_access_events_aggregate_fields:{
+		count:"Int",
+		max:"server_access_events_max_fields",
+		min:"server_access_events_min_fields"
+	},
+	server_access_events_max_fields:{
+		event_id:"uuid",
+		server_id:"uuid"
+	},
+	server_access_events_min_fields:{
+		event_id:"uuid",
+		server_id:"uuid"
+	},
+	server_access_events_mutation_response:{
+		affected_rows:"Int",
+		returning:"server_access_events"
+	},
+	server_access_players:{
+		player:"players",
+		server:"servers",
+		server_id:"uuid",
+		steam_id:"bigint"
+	},
+	server_access_players_aggregate:{
+		aggregate:"server_access_players_aggregate_fields",
+		nodes:"server_access_players"
+	},
+	server_access_players_aggregate_fields:{
+		avg:"server_access_players_avg_fields",
+		count:"Int",
+		max:"server_access_players_max_fields",
+		min:"server_access_players_min_fields",
+		stddev:"server_access_players_stddev_fields",
+		stddev_pop:"server_access_players_stddev_pop_fields",
+		stddev_samp:"server_access_players_stddev_samp_fields",
+		sum:"server_access_players_sum_fields",
+		var_pop:"server_access_players_var_pop_fields",
+		var_samp:"server_access_players_var_samp_fields",
+		variance:"server_access_players_variance_fields"
+	},
+	server_access_players_avg_fields:{
+		steam_id:"Float"
+	},
+	server_access_players_max_fields:{
+		server_id:"uuid",
+		steam_id:"bigint"
+	},
+	server_access_players_min_fields:{
+		server_id:"uuid",
+		steam_id:"bigint"
+	},
+	server_access_players_mutation_response:{
+		affected_rows:"Int",
+		returning:"server_access_players"
+	},
+	server_access_players_stddev_fields:{
+		steam_id:"Float"
+	},
+	server_access_players_stddev_pop_fields:{
+		steam_id:"Float"
+	},
+	server_access_players_stddev_samp_fields:{
+		steam_id:"Float"
+	},
+	server_access_players_sum_fields:{
+		steam_id:"bigint"
+	},
+	server_access_players_var_pop_fields:{
+		steam_id:"Float"
+	},
+	server_access_players_var_samp_fields:{
+		steam_id:"Float"
+	},
+	server_access_players_variance_fields:{
+		steam_id:"Float"
+	},
 	server_map_rotation:{
 		map:"maps",
 		map_id:"uuid",
@@ -65219,6 +66745,258 @@ export const ReturnTypes: Record<string,any> = {
 	server_map_rotation_variance_fields:{
 		position:"Float"
 	},
+	server_migrations:{
+		bytes_done:"bigint",
+		bytes_total:"bigint",
+		created_at:"timestamptz",
+		e_status:"e_server_migration_statuses",
+		entries_total:"Int",
+		error:"String",
+		finished_at:"timestamptz",
+		from_game_server_node:"game_server_nodes",
+		from_game_server_node_id:"String",
+		id:"uuid",
+		requested_by:"players",
+		requested_by_steam_id:"bigint",
+		server:"servers",
+		server_id:"uuid",
+		started_at:"timestamptz",
+		status:"e_server_migration_statuses_enum",
+		to_game_server_node:"game_server_nodes",
+		to_game_server_node_id:"String",
+		updated_at:"timestamptz",
+		warnings:"jsonb",
+		with_files:"Boolean"
+	},
+	server_migrations_aggregate:{
+		aggregate:"server_migrations_aggregate_fields",
+		nodes:"server_migrations"
+	},
+	server_migrations_aggregate_fields:{
+		avg:"server_migrations_avg_fields",
+		count:"Int",
+		max:"server_migrations_max_fields",
+		min:"server_migrations_min_fields",
+		stddev:"server_migrations_stddev_fields",
+		stddev_pop:"server_migrations_stddev_pop_fields",
+		stddev_samp:"server_migrations_stddev_samp_fields",
+		sum:"server_migrations_sum_fields",
+		var_pop:"server_migrations_var_pop_fields",
+		var_samp:"server_migrations_var_samp_fields",
+		variance:"server_migrations_variance_fields"
+	},
+	server_migrations_avg_fields:{
+		bytes_done:"Float",
+		bytes_total:"Float",
+		entries_total:"Float",
+		requested_by_steam_id:"Float"
+	},
+	server_migrations_max_fields:{
+		bytes_done:"bigint",
+		bytes_total:"bigint",
+		created_at:"timestamptz",
+		entries_total:"Int",
+		error:"String",
+		finished_at:"timestamptz",
+		from_game_server_node_id:"String",
+		id:"uuid",
+		requested_by_steam_id:"bigint",
+		server_id:"uuid",
+		started_at:"timestamptz",
+		to_game_server_node_id:"String",
+		updated_at:"timestamptz"
+	},
+	server_migrations_min_fields:{
+		bytes_done:"bigint",
+		bytes_total:"bigint",
+		created_at:"timestamptz",
+		entries_total:"Int",
+		error:"String",
+		finished_at:"timestamptz",
+		from_game_server_node_id:"String",
+		id:"uuid",
+		requested_by_steam_id:"bigint",
+		server_id:"uuid",
+		started_at:"timestamptz",
+		to_game_server_node_id:"String",
+		updated_at:"timestamptz"
+	},
+	server_migrations_mutation_response:{
+		affected_rows:"Int",
+		returning:"server_migrations"
+	},
+	server_migrations_stddev_fields:{
+		bytes_done:"Float",
+		bytes_total:"Float",
+		entries_total:"Float",
+		requested_by_steam_id:"Float"
+	},
+	server_migrations_stddev_pop_fields:{
+		bytes_done:"Float",
+		bytes_total:"Float",
+		entries_total:"Float",
+		requested_by_steam_id:"Float"
+	},
+	server_migrations_stddev_samp_fields:{
+		bytes_done:"Float",
+		bytes_total:"Float",
+		entries_total:"Float",
+		requested_by_steam_id:"Float"
+	},
+	server_migrations_sum_fields:{
+		bytes_done:"bigint",
+		bytes_total:"bigint",
+		entries_total:"Int",
+		requested_by_steam_id:"bigint"
+	},
+	server_migrations_var_pop_fields:{
+		bytes_done:"Float",
+		bytes_total:"Float",
+		entries_total:"Float",
+		requested_by_steam_id:"Float"
+	},
+	server_migrations_var_samp_fields:{
+		bytes_done:"Float",
+		bytes_total:"Float",
+		entries_total:"Float",
+		requested_by_steam_id:"Float"
+	},
+	server_migrations_variance_fields:{
+		bytes_done:"Float",
+		bytes_total:"Float",
+		entries_total:"Float",
+		requested_by_steam_id:"Float"
+	},
+	server_player_sessions:{
+		conn:"String",
+		deaths:"Int",
+		deaths_conn:"Int",
+		ended_at:"timestamptz",
+		id:"bigint",
+		ip:"inet",
+		kills:"Int",
+		kills_conn:"Int",
+		name:"String",
+		player:"players",
+		player_steam_id:"bigint",
+		server:"servers",
+		server_id:"uuid",
+		settled_conns:"String",
+		started_at:"timestamptz"
+	},
+	server_player_sessions_aggregate:{
+		aggregate:"server_player_sessions_aggregate_fields",
+		nodes:"server_player_sessions"
+	},
+	server_player_sessions_aggregate_fields:{
+		avg:"server_player_sessions_avg_fields",
+		count:"Int",
+		max:"server_player_sessions_max_fields",
+		min:"server_player_sessions_min_fields",
+		stddev:"server_player_sessions_stddev_fields",
+		stddev_pop:"server_player_sessions_stddev_pop_fields",
+		stddev_samp:"server_player_sessions_stddev_samp_fields",
+		sum:"server_player_sessions_sum_fields",
+		var_pop:"server_player_sessions_var_pop_fields",
+		var_samp:"server_player_sessions_var_samp_fields",
+		variance:"server_player_sessions_variance_fields"
+	},
+	server_player_sessions_avg_fields:{
+		deaths:"Float",
+		deaths_conn:"Float",
+		id:"Float",
+		kills:"Float",
+		kills_conn:"Float",
+		player_steam_id:"Float"
+	},
+	server_player_sessions_max_fields:{
+		conn:"String",
+		deaths:"Int",
+		deaths_conn:"Int",
+		ended_at:"timestamptz",
+		id:"bigint",
+		kills:"Int",
+		kills_conn:"Int",
+		name:"String",
+		player_steam_id:"bigint",
+		server_id:"uuid",
+		settled_conns:"String",
+		started_at:"timestamptz"
+	},
+	server_player_sessions_min_fields:{
+		conn:"String",
+		deaths:"Int",
+		deaths_conn:"Int",
+		ended_at:"timestamptz",
+		id:"bigint",
+		kills:"Int",
+		kills_conn:"Int",
+		name:"String",
+		player_steam_id:"bigint",
+		server_id:"uuid",
+		settled_conns:"String",
+		started_at:"timestamptz"
+	},
+	server_player_sessions_mutation_response:{
+		affected_rows:"Int",
+		returning:"server_player_sessions"
+	},
+	server_player_sessions_stddev_fields:{
+		deaths:"Float",
+		deaths_conn:"Float",
+		id:"Float",
+		kills:"Float",
+		kills_conn:"Float",
+		player_steam_id:"Float"
+	},
+	server_player_sessions_stddev_pop_fields:{
+		deaths:"Float",
+		deaths_conn:"Float",
+		id:"Float",
+		kills:"Float",
+		kills_conn:"Float",
+		player_steam_id:"Float"
+	},
+	server_player_sessions_stddev_samp_fields:{
+		deaths:"Float",
+		deaths_conn:"Float",
+		id:"Float",
+		kills:"Float",
+		kills_conn:"Float",
+		player_steam_id:"Float"
+	},
+	server_player_sessions_sum_fields:{
+		deaths:"Int",
+		deaths_conn:"Int",
+		id:"bigint",
+		kills:"Int",
+		kills_conn:"Int",
+		player_steam_id:"bigint"
+	},
+	server_player_sessions_var_pop_fields:{
+		deaths:"Float",
+		deaths_conn:"Float",
+		id:"Float",
+		kills:"Float",
+		kills_conn:"Float",
+		player_steam_id:"Float"
+	},
+	server_player_sessions_var_samp_fields:{
+		deaths:"Float",
+		deaths_conn:"Float",
+		id:"Float",
+		kills:"Float",
+		kills_conn:"Float",
+		player_steam_id:"Float"
+	},
+	server_player_sessions_variance_fields:{
+		deaths:"Float",
+		deaths_conn:"Float",
+		id:"Float",
+		kills:"Float",
+		kills_conn:"Float",
+		player_steam_id:"Float"
+	},
 	server_plugins:{
 		enabled:"Boolean",
 		install:"game_plugin_installs",
@@ -65246,6 +67024,107 @@ export const ReturnTypes: Record<string,any> = {
 	server_plugins_mutation_response:{
 		affected_rows:"Int",
 		returning:"server_plugins"
+	},
+	server_recent_players:{
+		first_seen_at:"timestamptz",
+		ip:"String",
+		kills:"Int",
+		last_seen_at:"timestamptz",
+		name:"String",
+		online:"Boolean",
+		player:"players",
+		player_steam_id:"bigint",
+		seconds_played:"Int",
+		server:"servers",
+		server_id:"uuid",
+		sessions:"Int"
+	},
+	server_recent_players_aggregate:{
+		aggregate:"server_recent_players_aggregate_fields",
+		nodes:"server_recent_players"
+	},
+	server_recent_players_aggregate_fields:{
+		avg:"server_recent_players_avg_fields",
+		count:"Int",
+		max:"server_recent_players_max_fields",
+		min:"server_recent_players_min_fields",
+		stddev:"server_recent_players_stddev_fields",
+		stddev_pop:"server_recent_players_stddev_pop_fields",
+		stddev_samp:"server_recent_players_stddev_samp_fields",
+		sum:"server_recent_players_sum_fields",
+		var_pop:"server_recent_players_var_pop_fields",
+		var_samp:"server_recent_players_var_samp_fields",
+		variance:"server_recent_players_variance_fields"
+	},
+	server_recent_players_avg_fields:{
+		kills:"Float",
+		player_steam_id:"Float",
+		seconds_played:"Float",
+		sessions:"Float"
+	},
+	server_recent_players_max_fields:{
+		first_seen_at:"timestamptz",
+		ip:"String",
+		kills:"Int",
+		last_seen_at:"timestamptz",
+		name:"String",
+		player_steam_id:"bigint",
+		seconds_played:"Int",
+		server_id:"uuid",
+		sessions:"Int"
+	},
+	server_recent_players_min_fields:{
+		first_seen_at:"timestamptz",
+		ip:"String",
+		kills:"Int",
+		last_seen_at:"timestamptz",
+		name:"String",
+		player_steam_id:"bigint",
+		seconds_played:"Int",
+		server_id:"uuid",
+		sessions:"Int"
+	},
+	server_recent_players_stddev_fields:{
+		kills:"Float",
+		player_steam_id:"Float",
+		seconds_played:"Float",
+		sessions:"Float"
+	},
+	server_recent_players_stddev_pop_fields:{
+		kills:"Float",
+		player_steam_id:"Float",
+		seconds_played:"Float",
+		sessions:"Float"
+	},
+	server_recent_players_stddev_samp_fields:{
+		kills:"Float",
+		player_steam_id:"Float",
+		seconds_played:"Float",
+		sessions:"Float"
+	},
+	server_recent_players_sum_fields:{
+		kills:"Int",
+		player_steam_id:"bigint",
+		seconds_played:"Int",
+		sessions:"Int"
+	},
+	server_recent_players_var_pop_fields:{
+		kills:"Float",
+		player_steam_id:"Float",
+		seconds_played:"Float",
+		sessions:"Float"
+	},
+	server_recent_players_var_samp_fields:{
+		kills:"Float",
+		player_steam_id:"Float",
+		seconds_played:"Float",
+		sessions:"Float"
+	},
+	server_recent_players_variance_fields:{
+		kills:"Float",
+		player_steam_id:"Float",
+		seconds_played:"Float",
+		sessions:"Float"
 	},
 	server_regions:{
 		available_server_count:"Int",
@@ -65326,7 +67205,44 @@ export const ReturnTypes: Record<string,any> = {
 		available_server_count:"Int",
 		total_server_count:"Int"
 	},
+	server_rosters:{
+		held_since:"timestamptz",
+		reported_at:"timestamptz",
+		server:"servers",
+		server_id:"uuid",
+		sessions:"server_player_sessions",
+		sessions_aggregate:"server_player_sessions_aggregate"
+	},
+	server_rosters_aggregate:{
+		aggregate:"server_rosters_aggregate_fields",
+		nodes:"server_rosters"
+	},
+	server_rosters_aggregate_fields:{
+		count:"Int",
+		max:"server_rosters_max_fields",
+		min:"server_rosters_min_fields"
+	},
+	server_rosters_max_fields:{
+		held_since:"timestamptz",
+		reported_at:"timestamptz",
+		server_id:"uuid"
+	},
+	server_rosters_min_fields:{
+		held_since:"timestamptz",
+		reported_at:"timestamptz",
+		server_id:"uuid"
+	},
+	server_rosters_mutation_response:{
+		affected_rows:"Int",
+		returning:"server_rosters"
+	},
 	servers:{
+		access_events:"server_access_events",
+		access_events_aggregate:"server_access_events_aggregate",
+		access_min_role:"e_player_roles_enum",
+		access_players:"server_access_players",
+		access_players_aggregate:"server_access_players_aggregate",
+		access_restricted:"Boolean",
 		api_password:"uuid",
 		boot_status:"String",
 		boot_status_detail:"String",
@@ -65352,7 +67268,12 @@ export const ReturnTypes: Record<string,any> = {
 		matches:"matches",
 		matches_aggregate:"matches_aggregate",
 		max_players:"Int",
+		migrations:"server_migrations",
+		migrations_aggregate:"server_migrations_aggregate",
 		offline_at:"timestamptz",
+		player_management_runtime:"String",
+		player_management_seen_at:"timestamptz",
+		player_management_version:"String",
 		plugin_overrides:"server_plugins",
 		plugin_overrides_aggregate:"server_plugins_aggregate",
 		plugin_runtime:"e_plugin_runtimes_enum",
@@ -65406,6 +67327,9 @@ export const ReturnTypes: Record<string,any> = {
 		label:"String",
 		max_players:"Int",
 		offline_at:"timestamptz",
+		player_management_runtime:"String",
+		player_management_seen_at:"timestamptz",
+		player_management_version:"String",
 		plugin_version:"String",
 		plugins_checked_at:"timestamptz",
 		port:"Int",
@@ -65430,6 +67354,9 @@ export const ReturnTypes: Record<string,any> = {
 		label:"String",
 		max_players:"Int",
 		offline_at:"timestamptz",
+		player_management_runtime:"String",
+		player_management_seen_at:"timestamptz",
+		player_management_version:"String",
 		plugin_version:"String",
 		plugins_checked_at:"timestamptz",
 		port:"Int",
@@ -65868,6 +67795,10 @@ export const ReturnTypes: Record<string,any> = {
 		e_scrim_request_statuses_aggregate:"e_scrim_request_statuses_aggregate",
 		e_scrim_request_statuses_by_pk:"e_scrim_request_statuses",
 		e_scrim_request_statuses_stream:"e_scrim_request_statuses",
+		e_server_migration_statuses:"e_server_migration_statuses",
+		e_server_migration_statuses_aggregate:"e_server_migration_statuses_aggregate",
+		e_server_migration_statuses_by_pk:"e_server_migration_statuses",
+		e_server_migration_statuses_stream:"e_server_migration_statuses",
 		e_server_types:"e_server_types",
 		e_server_types_aggregate:"e_server_types_aggregate",
 		e_server_types_by_pk:"e_server_types",
@@ -66293,18 +68224,41 @@ export const ReturnTypes: Record<string,any> = {
 		seasons_aggregate:"seasons_aggregate",
 		seasons_by_pk:"seasons",
 		seasons_stream:"seasons",
+		server_access_events:"server_access_events",
+		server_access_events_aggregate:"server_access_events_aggregate",
+		server_access_events_by_pk:"server_access_events",
+		server_access_events_stream:"server_access_events",
+		server_access_players:"server_access_players",
+		server_access_players_aggregate:"server_access_players_aggregate",
+		server_access_players_by_pk:"server_access_players",
+		server_access_players_stream:"server_access_players",
 		server_map_rotation:"server_map_rotation",
 		server_map_rotation_aggregate:"server_map_rotation_aggregate",
 		server_map_rotation_by_pk:"server_map_rotation",
 		server_map_rotation_stream:"server_map_rotation",
+		server_migrations:"server_migrations",
+		server_migrations_aggregate:"server_migrations_aggregate",
+		server_migrations_by_pk:"server_migrations",
+		server_migrations_stream:"server_migrations",
+		server_player_sessions:"server_player_sessions",
+		server_player_sessions_aggregate:"server_player_sessions_aggregate",
+		server_player_sessions_by_pk:"server_player_sessions",
+		server_player_sessions_stream:"server_player_sessions",
 		server_plugins:"server_plugins",
 		server_plugins_aggregate:"server_plugins_aggregate",
 		server_plugins_by_pk:"server_plugins",
 		server_plugins_stream:"server_plugins",
+		server_recent_players:"server_recent_players",
+		server_recent_players_aggregate:"server_recent_players_aggregate",
+		server_recent_players_stream:"server_recent_players",
 		server_regions:"server_regions",
 		server_regions_aggregate:"server_regions_aggregate",
 		server_regions_by_pk:"server_regions",
 		server_regions_stream:"server_regions",
+		server_rosters:"server_rosters",
+		server_rosters_aggregate:"server_rosters_aggregate",
+		server_rosters_by_pk:"server_rosters",
+		server_rosters_stream:"server_rosters",
 		servers:"servers",
 		servers_aggregate:"servers_aggregate",
 		servers_by_pk:"servers",
@@ -66572,9 +68526,6 @@ export const ReturnTypes: Record<string,any> = {
 		v_player_multi_kills:"v_player_multi_kills",
 		v_player_multi_kills_aggregate:"v_player_multi_kills_aggregate",
 		v_player_multi_kills_stream:"v_player_multi_kills",
-		v_player_queue_partners:"v_player_queue_partners",
-		v_player_queue_partners_aggregate:"v_player_queue_partners_aggregate",
-		v_player_queue_partners_stream:"v_player_queue_partners",
 		v_player_weapon_damage:"v_player_weapon_damage",
 		v_player_weapon_damage_aggregate:"v_player_weapon_damage_aggregate",
 		v_player_weapon_damage_stream:"v_player_weapon_damage",
@@ -74339,97 +76290,6 @@ export const ReturnTypes: Record<string,any> = {
 		attacker_steam_id:"Float",
 		kills:"Float",
 		round:"Float"
-	},
-	v_player_queue_partners:{
-		first_played_at:"timestamptz",
-		last_played_at:"timestamptz",
-		matches_together:"Int",
-		partner:"players",
-		partner_steam_id:"bigint",
-		player:"players",
-		steam_id:"bigint",
-		wins_together:"Int"
-	},
-	v_player_queue_partners_aggregate:{
-		aggregate:"v_player_queue_partners_aggregate_fields",
-		nodes:"v_player_queue_partners"
-	},
-	v_player_queue_partners_aggregate_fields:{
-		avg:"v_player_queue_partners_avg_fields",
-		count:"Int",
-		max:"v_player_queue_partners_max_fields",
-		min:"v_player_queue_partners_min_fields",
-		stddev:"v_player_queue_partners_stddev_fields",
-		stddev_pop:"v_player_queue_partners_stddev_pop_fields",
-		stddev_samp:"v_player_queue_partners_stddev_samp_fields",
-		sum:"v_player_queue_partners_sum_fields",
-		var_pop:"v_player_queue_partners_var_pop_fields",
-		var_samp:"v_player_queue_partners_var_samp_fields",
-		variance:"v_player_queue_partners_variance_fields"
-	},
-	v_player_queue_partners_avg_fields:{
-		matches_together:"Float",
-		partner_steam_id:"Float",
-		steam_id:"Float",
-		wins_together:"Float"
-	},
-	v_player_queue_partners_max_fields:{
-		first_played_at:"timestamptz",
-		last_played_at:"timestamptz",
-		matches_together:"Int",
-		partner_steam_id:"bigint",
-		steam_id:"bigint",
-		wins_together:"Int"
-	},
-	v_player_queue_partners_min_fields:{
-		first_played_at:"timestamptz",
-		last_played_at:"timestamptz",
-		matches_together:"Int",
-		partner_steam_id:"bigint",
-		steam_id:"bigint",
-		wins_together:"Int"
-	},
-	v_player_queue_partners_stddev_fields:{
-		matches_together:"Float",
-		partner_steam_id:"Float",
-		steam_id:"Float",
-		wins_together:"Float"
-	},
-	v_player_queue_partners_stddev_pop_fields:{
-		matches_together:"Float",
-		partner_steam_id:"Float",
-		steam_id:"Float",
-		wins_together:"Float"
-	},
-	v_player_queue_partners_stddev_samp_fields:{
-		matches_together:"Float",
-		partner_steam_id:"Float",
-		steam_id:"Float",
-		wins_together:"Float"
-	},
-	v_player_queue_partners_sum_fields:{
-		matches_together:"Int",
-		partner_steam_id:"bigint",
-		steam_id:"bigint",
-		wins_together:"Int"
-	},
-	v_player_queue_partners_var_pop_fields:{
-		matches_together:"Float",
-		partner_steam_id:"Float",
-		steam_id:"Float",
-		wins_together:"Float"
-	},
-	v_player_queue_partners_var_samp_fields:{
-		matches_together:"Float",
-		partner_steam_id:"Float",
-		steam_id:"Float",
-		wins_together:"Float"
-	},
-	v_player_queue_partners_variance_fields:{
-		matches_together:"Float",
-		partner_steam_id:"Float",
-		steam_id:"Float",
-		wins_together:"Float"
 	},
 	v_player_weapon_damage:{
 		damage:"bigint",

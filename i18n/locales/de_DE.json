@@ -3400,6 +3400,8 @@
       "accepting_matches": "Nimmt Matches an",
       "toggle_enabled_help": "Wenn aus, ist der Node komplett deaktiviert — keine GPU-Arbeit und keine Match-Zuteilung.",
       "toggle_scheduling_help": "Wenn aus, führt der Node laufende Matches weiter, nimmt aber keine neuen an.",
+      "scheduling_setup_hint": "Dieser Node wird noch eingerichtet. Er nimmt Matches an, sobald er online ist.",
+      "scheduling_offline_hint": "Dieser Node ist offline. Er nimmt wieder Matches an, sobald er sich neu verbindet.",
       "toggle_enabled_failed": "Node-Status konnte nicht umgeschaltet werden",
       "toggle_scheduling_failed": "Zuteilungs-Status konnte nicht umgeschaltet werden",
       "toggle_workload_failed": "GPU-Workload-Verfügbarkeit konnte nicht umgeschaltet werden",

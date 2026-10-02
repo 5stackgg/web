@@ -3400,6 +3400,8 @@
       "accepting_matches": "試合の受け入れ",
       "toggle_enabled_help": "オフにすると、ノードは完全に無効化されます。GPU 処理も試合の割り当ても行われません。",
       "toggle_scheduling_help": "オフにすると、進行中の試合は継続しますが、新しい試合は受け入れません。",
+      "scheduling_setup_hint": "このノードはまだセットアップ中です。オンラインになると試合の受け入れを開始します。",
+      "scheduling_offline_hint": "このノードはオフラインです。再接続すると試合の受け入れを再開します。",
       "toggle_enabled_failed": "ノードの有効・無効を切り替えられませんでした",
       "toggle_scheduling_failed": "割り当ての状態を切り替えられませんでした",
       "toggle_workload_failed": "GPU ワークロードの受け入れ設定を切り替えられませんでした",

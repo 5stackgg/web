@@ -3400,6 +3400,8 @@
       "accepting_matches": "매치 수락 중",
       "toggle_enabled_help": "끄면 노드가 완전히 비활성화되어 GPU 작업과 매치 스케줄링이 모두 중단됩니다.",
       "toggle_scheduling_help": "끄면 진행 중인 매치는 계속 실행되지만 새 매치는 받지 않습니다.",
+      "scheduling_setup_hint": "이 노드는 아직 설정 중입니다. 온라인이 되면 매치를 받기 시작합니다.",
+      "scheduling_offline_hint": "이 노드는 오프라인입니다. 다시 연결되면 매치를 다시 받습니다.",
       "toggle_enabled_failed": "노드 활성화 상태를 전환하지 못했습니다",
       "toggle_scheduling_failed": "스케줄링 상태를 전환하지 못했습니다",
       "toggle_workload_failed": "GPU 워크로드 가용성을 전환하지 못했습니다",

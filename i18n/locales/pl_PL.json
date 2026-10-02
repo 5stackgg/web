@@ -3400,6 +3400,8 @@
       "accepting_matches": "Przyjmuje mecze",
       "toggle_enabled_help": "Gdy wyłączone, węzeł jest całkowicie nieaktywny — brak pracy GPU i planowania meczów.",
       "toggle_scheduling_help": "Gdy wyłączone, węzeł kontynuuje bieżące mecze, ale nie przyjmuje nowych.",
+      "scheduling_setup_hint": "Ten węzeł jest nadal konfigurowany. Zacznie przyjmować mecze, gdy będzie online.",
+      "scheduling_offline_hint": "Ten węzeł jest offline. Znów zacznie przyjmować mecze po ponownym połączeniu.",
       "toggle_enabled_failed": "Nie udało się przełączyć stanu włączenia węzła",
       "toggle_scheduling_failed": "Nie udało się przełączyć stanu planowania",
       "toggle_workload_failed": "Nie udało się przełączyć dostępności zadania GPU",

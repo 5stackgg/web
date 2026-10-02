@@ -3400,6 +3400,8 @@
       "accepting_matches": "Tar emot matcher",
       "toggle_enabled_help": "När av är noden helt inaktiverad — inget GPU-arbete och ingen matchschemaläggning.",
       "toggle_scheduling_help": "När av fortsätter noden köra pågående matcher men tar inte emot nya.",
+      "scheduling_setup_hint": "Noden håller fortfarande på att konfigureras. Den börjar ta emot matcher när den är online.",
+      "scheduling_offline_hint": "Noden är offline. Den tar emot matcher igen när den återansluter.",
       "toggle_enabled_failed": "Det gick inte att växla nodens aktiveringsstatus",
       "toggle_scheduling_failed": "Det gick inte att växla schemaläggningsstatus",
       "toggle_workload_failed": "Det gick inte att växla tillgänglighet för GPU-arbetsbelastning",

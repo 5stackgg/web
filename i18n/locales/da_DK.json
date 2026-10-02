@@ -3400,6 +3400,8 @@
       "accepting_matches": "Tager imod kampe",
       "toggle_enabled_help": "Når den er slået fra, er noden helt deaktiveret — intet GPU-arbejde og ingen kampplanlægning.",
       "toggle_scheduling_help": "Når den er slået fra, kører noden eksisterende kampe færdig, men tager ikke imod nye.",
+      "scheduling_setup_hint": "Noden er stadig ved at blive sat op. Den begynder at tage imod kampe, når den kommer online.",
+      "scheduling_offline_hint": "Noden er offline. Den tager imod kampe igen, når den genopretter forbindelsen.",
       "toggle_enabled_failed": "Nodens aktiveringstilstand kunne ikke ændres",
       "toggle_scheduling_failed": "Planlægningstilstanden kunne ikke ændres",
       "toggle_workload_failed": "Tilgængeligheden for GPU-arbejde kunne ikke ændres",

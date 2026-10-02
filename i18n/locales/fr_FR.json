@@ -3400,6 +3400,8 @@
       "accepting_matches": "Accepte les matchs",
       "toggle_enabled_help": "Désactivé, le nœud est totalement hors service — aucun travail GPU ni planification de match.",
       "toggle_scheduling_help": "Désactivé, le nœud continue les matchs en cours mais n'en accepte plus de nouveaux.",
+      "scheduling_setup_hint": "Ce nœud est encore en configuration. Il acceptera des matchs dès qu'il sera en ligne.",
+      "scheduling_offline_hint": "Ce nœud est hors ligne. Il acceptera de nouveau des matchs dès sa reconnexion.",
       "toggle_enabled_failed": "Impossible de modifier l'état d'activation du nœud",
       "toggle_scheduling_failed": "Impossible de modifier l'état de la planification",
       "toggle_workload_failed": "Impossible de modifier la disponibilité de la charge GPU",

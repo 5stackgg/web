@@ -1,12 +1,22 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
+import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { print } from "graphql";
 import NodeControlMenu from "~/components/game-server-nodes/NodeControlMenu.vue";
 
-const apollo = vi.hoisted(() => ({ mutate: vi.fn() }));
+const { mutate, toastMock } = vi.hoisted(() => ({
+  mutate: vi.fn(),
+  toastMock: vi.fn(),
+}));
 
-vi.mock("@vue/apollo-composable", () => ({
-  useApolloClient: () => ({ client: apollo }),
+vi.mock("@vue/apollo-composable", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@vue/apollo-composable")>()),
+  useApolloClient: () => ({ client: { mutate } }),
+}));
+
+vi.mock("~/components/ui/toast/use-toast", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("~/components/ui/toast/use-toast")>()),
+  useToast: () => ({ toast: toastMock }),
 }));
 
 vi.mock("~/components/ui/popover", async () => {
@@ -30,6 +40,7 @@ vi.mock("~/components/ui/switch", async () => {
       setup: (props, { emit }) => () =>
         h("button", {
           class: "switch",
+          disabled: props.disabled,
           "data-checked": String(props.modelValue),
           onClick: () => emit("update:modelValue", !props.modelValue),
         }),
@@ -47,47 +58,120 @@ const node = (fields: Record<string, unknown>) => ({
   ...fields,
 });
 
-const schedulingSwitch = async (fields: Record<string, unknown>) => {
+const schedulingRow = async (fields: Record<string, unknown>) => {
   const wrapper = await mountSuspended(NodeControlMenu, {
-    props: { node: node(fields) },
+    props: { node: node(fields) as any },
   });
-  return wrapper.findAll(".switch")[1];
+  return wrapper.get('[data-testid="scheduling-row"]');
 };
+
+const scheduleMutation = () => print(mutate.mock.calls[0][0].mutation);
+
+const hasHint = (row: Awaited<ReturnType<typeof schedulingRow>>) =>
+  row.find('[data-testid="scheduling-hint"]').exists();
 
 describe("NodeControlMenu scheduling switch", () => {
   beforeEach(() => {
-    apollo.mutate.mockReset().mockResolvedValue({});
+    toastMock.mockReset();
+    mutate.mockReset().mockResolvedValue({
+      data: { setGameNodeSchedulingState: { success: true } },
+    });
   });
 
   it("shows what the node was told while it is down", async () => {
-    const accepting = await schedulingSwitch({
+    const row = await schedulingRow({
       status: "Offline",
       accepting_new_matches: true,
     });
 
-    expect(accepting.attributes("data-checked")).toBe("true");
+    expect(row.get(".switch").attributes("data-checked")).toBe("true");
   });
 
-  it("shows a node told to stop taking matches as off", async () => {
-    const accepting = await schedulingSwitch({
-      status: "NotAcceptingNewMatches",
+  it("reads the saved setting, not the status, for a node that is up", async () => {
+    const row = await schedulingRow({
+      status: "Online",
       accepting_new_matches: false,
     });
 
-    expect(accepting.attributes("data-checked")).toBe("false");
+    expect(row.get(".switch").attributes("data-checked")).toBe("false");
+  });
+
+  it("falls back to the status when the setting was not selected", async () => {
+    const online = await schedulingRow({ status: "Online" });
+    const draining = await schedulingRow({ status: "NotAcceptingNewMatches" });
+
+    expect(online.get(".switch").attributes("data-checked")).toBe("true");
+    expect(draining.get(".switch").attributes("data-checked")).toBe("false");
   });
 
   it("can stop a node that is down from taking matches once it is back", async () => {
-    const accepting = await schedulingSwitch({
+    const row = await schedulingRow({
       status: "Offline",
       accepting_new_matches: true,
     });
 
-    await accepting.trigger("click");
+    await row.get(".switch").trigger("click");
 
-    expect(apollo.mutate).toHaveBeenCalledTimes(1);
-    const mutation = print(apollo.mutate.mock.calls[0][0].mutation);
-    expect(mutation).toContain("setGameNodeSchedulingState");
-    expect(mutation).toContain("enabled: false");
+    expect(mutate).toHaveBeenCalledTimes(1);
+    expect(scheduleMutation()).toContain("setGameNodeSchedulingState");
+    expect(scheduleMutation()).toContain("enabled: false");
+  });
+
+  it("tells the admin when the api refuses the change", async () => {
+    mutate.mockResolvedValue({
+      data: { setGameNodeSchedulingState: { success: false } },
+    });
+    const row = await schedulingRow({
+      status: "Offline",
+      accepting_new_matches: true,
+    });
+
+    await row.get(".switch").trigger("click");
+    await flushPromises();
+
+    expect(toastMock).toHaveBeenCalledWith(
+      expect.objectContaining({ variant: "destructive" }),
+    );
+  });
+
+  it("stays quiet when the change goes through", async () => {
+    const row = await schedulingRow({
+      status: "Online",
+      accepting_new_matches: true,
+    });
+
+    await row.get(".switch").trigger("click");
+    await flushPromises();
+
+    expect(toastMock).not.toHaveBeenCalled();
+  });
+
+  it("locks the switch while the node is still in setup", async () => {
+    const row = await schedulingRow({
+      status: "Setup",
+      accepting_new_matches: true,
+    });
+
+    expect(row.get(".switch").attributes("disabled")).toBeDefined();
+    expect(hasHint(row)).toBe(true);
+  });
+
+  it("warns that the setting is not in effect while the node is down", async () => {
+    const offline = await schedulingRow({
+      status: "Offline",
+      accepting_new_matches: true,
+    });
+    const offlineAndOff = await schedulingRow({
+      status: "Offline",
+      accepting_new_matches: false,
+    });
+    const online = await schedulingRow({
+      status: "Online",
+      accepting_new_matches: true,
+    });
+
+    expect(hasHint(offline)).toBe(true);
+    expect(hasHint(offlineAndOff)).toBe(false);
+    expect(hasHint(online)).toBe(false);
   });
 });

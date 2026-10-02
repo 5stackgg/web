@@ -5,6 +5,8 @@ import { useI18n } from "vue-i18n";
 import { useToast } from "~/components/ui/toast/use-toast";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { Switch } from "~/components/ui/switch";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import { e_game_server_node_statuses_enum } from "~/generated/zeus";
 import {
   Popover,
   PopoverTrigger,
@@ -17,11 +19,26 @@ import {
   Radio,
   Play,
   Clapperboard,
+  TriangleAlert,
 } from "lucide-vue-next";
+
+interface ControlledNode {
+  id: string;
+  status: string;
+  enabled: boolean;
+  enabled_for_match_making?: boolean;
+  accepting_new_matches: boolean;
+  start_port_range?: number | null;
+  end_port_range?: number | null;
+  gpu?: boolean;
+  gpu_streaming_enabled?: boolean;
+  gpu_demos_enabled?: boolean;
+  gpu_rendering_enabled?: boolean;
+}
 
 const props = withDefaults(
   defineProps<{
-    node: any;
+    node: ControlledNode;
     align?: "start" | "center" | "end";
   }>(),
   {
@@ -44,6 +61,29 @@ const allWorkloadsOn = computed(() =>
       props.node.gpu_rendering_enabled,
   ),
 );
+
+const acceptingNewMatches = computed(
+  () =>
+    props.node.accepting_new_matches ??
+    props.node.status === e_game_server_node_statuses_enum.Online,
+);
+
+const inSetup = computed(
+  () => props.node.status === e_game_server_node_statuses_enum.Setup,
+);
+
+const schedulingHint = computed(() => {
+  if (inSetup.value) {
+    return t("pages.gpu_nodes.scheduling_setup_hint");
+  }
+  if (
+    acceptingNewMatches.value &&
+    props.node.status === e_game_server_node_statuses_enum.Offline
+  ) {
+    return t("pages.gpu_nodes.scheduling_offline_hint");
+  }
+  return null;
+});
 
 const flagged = computed(
   () => props.node.gpu && props.node.enabled && !allWorkloadsOn.value,
@@ -70,7 +110,7 @@ async function setEnabled(enabled: boolean) {
 
 async function setScheduling(accepting: boolean) {
   try {
-    await client.mutate({
+    const { data } = await client.mutate({
       mutation: generateMutation({
         setGameNodeSchedulingState: [
           { game_server_node_id: props.node.id, enabled: accepting },
@@ -78,6 +118,12 @@ async function setScheduling(accepting: boolean) {
         ],
       }),
     });
+    if (!data?.setGameNodeSchedulingState?.success) {
+      toast({
+        variant: "destructive",
+        title: t("pages.gpu_nodes.toggle_scheduling_failed"),
+      });
+    }
   } catch (error: any) {
     toast({
       variant: "destructive",
@@ -145,21 +191,41 @@ async function setWorkload(
         <label
           v-if="hasPorts && node.enabled_for_match_making"
           class="ncm-row"
-          :data-on="node.accepting_new_matches"
-          :data-disabled="!node.enabled"
+          data-testid="scheduling-row"
+          :data-on="acceptingNewMatches"
+          :data-disabled="!node.enabled || inSetup"
         >
           <span class="ncm-ico"><CalendarCheck class="w-4 h-4" /></span>
           <span class="ncm-text">
-            <span class="ncm-name">{{
-              t("pages.gpu_nodes.accepting_matches")
-            }}</span>
+            <span class="ncm-name">
+              {{ t("pages.gpu_nodes.accepting_matches") }}
+              <FiveStackToolTip
+                v-if="schedulingHint"
+                as-child
+                :delay-duration="120"
+              >
+                <template #trigger>
+                  <span
+                    class="ncm-hint"
+                    tabindex="0"
+                    role="img"
+                    :aria-label="schedulingHint"
+                    data-testid="scheduling-hint"
+                    @click.prevent
+                  >
+                    <TriangleAlert class="w-3 h-3" />
+                  </span>
+                </template>
+                <p class="max-w-[16rem]">{{ schedulingHint }}</p>
+              </FiveStackToolTip>
+            </span>
             <span class="ncm-desc">{{
               t("pages.gpu_nodes.toggle_scheduling_help")
             }}</span>
           </span>
           <Switch
-            :model-value="node.accepting_new_matches"
-            :disabled="!node.enabled"
+            :model-value="acceptingNewMatches"
+            :disabled="!node.enabled || inSetup"
             @update:model-value="(v) => setScheduling(!!v)"
           />
         </label>
@@ -322,6 +388,12 @@ async function setWorkload(
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: hsl(var(--foreground));
+}
+.ncm-hint {
+  display: inline-flex;
+  vertical-align: -0.1em;
+  color: hsl(var(--tac-amber));
+  cursor: help;
 }
 .ncm-row[data-on="false"] .ncm-name {
   color: hsl(var(--muted-foreground));

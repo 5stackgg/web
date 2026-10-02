@@ -193,14 +193,14 @@ const titleClasses =
             class="flex min-w-0 flex-wrap items-center gap-2 font-mono text-[0.8rem] tracking-[0.05em] text-muted-foreground"
           >
             <span class="min-w-0 truncate">
-              {{ server.host }}:{{ server.port }}
+              {{ shownAddress }}
             </span>
             <QuickServerConnect
               v-if="server.connection_string"
               :server="server"
               highlight
             />
-            <Clipboard v-else :data="`${server.host}:${server.port}`" />
+            <Clipboard v-else :data="shownAddress" />
           </div>
         </div>
 
@@ -439,6 +439,7 @@ import {
 } from "~/graphql/graphqlGen";
 import { useAuthStore } from "~/stores/AuthStore";
 import { getQueryString } from "~/composables/useRouteTab";
+import { connectAddress } from "~/utilities/connectAddress";
 import type { ServerRosterStatus } from "~/types/serverOverview";
 
 // Literals, not the generated enum: a type added by a migration is absent
@@ -529,6 +530,15 @@ export default {
     };
   },
   computed: {
+    // Not named connectAddress: an import in this block is a template binding
+    // too, and it wins over a computed of the same name.
+    shownAddress(): string {
+      return connectAddress(
+        this.server?.connection_string,
+        this.server?.host,
+        this.server?.port,
+      );
+    },
     showsLogs() {
       return (
         useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer) &&

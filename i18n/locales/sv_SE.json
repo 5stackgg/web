@@ -3769,6 +3769,17 @@
           "default": "Standard",
           "on": "På",
           "off": "Av",
+          "configure": "Konfigurera för Den Här Servern",
+          "customized": "Anpassad för den här servern",
+          "config": {
+            "title": "{plugin} på Den Här Servern",
+            "description": "Ovanpå pluginsidans inställningar, bara för den här servern. Sparas med resten av serverns inställningar, med en omstart.",
+            "using_inherited": "Den här servern använder filen från pluginsidan.",
+            "using_shipped": "Den här servern använder filen som följer med pluginet.",
+            "remove_override": "Ta Bort Serveranpassning",
+            "apply": "Tillämpa",
+            "advanced_hint": "Konsolvariabler bara för den här servern, körs efter pluginsidans och spelläget."
+          },
           "status_loads": "Laddas",
           "status_off": "Inte laddad",
           "loads_by_default": "Laddas här som standard",
@@ -3824,6 +3835,7 @@
             "plugin_default": "{plugin}: standard",
             "plugin_on": "{plugin}: på",
             "plugin_off": "{plugin}: av",
+            "plugin_config": "{plugin}: inställningar",
             "restricted": "Begränsad",
             "opened": "Öppen för alla",
             "min_role": "Lägsta roll ändrad",
@@ -4370,6 +4382,7 @@
       "settings": {
         "not_reported": "Beskrivningar och standardvärden visas när en server som kör det här pluginet kommer online.",
         "default": "Standard: {value}",
+        "inherited": "Alla servrar: {value}",
         "reset": "Använd standardvärdet",
         "other_lines": "Andra cvars i den här konfigurationen: {count}. Redigera dem under Avancerat."
       },

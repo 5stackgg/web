@@ -260,3 +260,23 @@ describe("PluginConfigFile", () => {
     expect(wrapper.vm.value).toBeNull();
   });
 });
+
+describe("PluginCvarForm over an inherited layer", () => {
+  // Editing one server's cvars: what the plugin page sets shows through until
+  // this server sets its own.
+  it("shows the plugin page's value where this layer sets nothing", async () => {
+    const wrapper = await mountSuspended(PluginCvarForm, {
+      props: {
+        cvars,
+        modelValue: "",
+        inherited: "dm_replenish_health 40\ninvsim_ws_enabled 1\n",
+      },
+    });
+
+    expect(wrapper.text()).toContain("All servers: 40");
+    expect(wrapper.find('input[placeholder="40"]').exists()).toBe(true);
+    expect(wrapper.find('[role="switch"]').attributes("data-state")).toBe(
+      "checked",
+    );
+  });
+});

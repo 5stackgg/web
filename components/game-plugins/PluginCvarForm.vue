@@ -14,9 +14,12 @@ import {
 
 // One row per cvar the plugin reads, editing the same cvar block the Advanced
 // tab shows as text. Anything else in that block is left exactly as written.
+// inherited is the layer underneath -- the plugin page's cvars when this edits
+// one server's -- and shows through wherever this layer leaves a cvar unset.
 const props = defineProps<{
   cvars: Array<PluginCvar>;
   modelValue: string;
+  inherited?: string;
 }>();
 
 const emit = defineEmits<{
@@ -34,6 +37,14 @@ const otherLines = computed(() => {
 
 function valueOf(cvar: PluginCvar): string | null {
   return readCvar(props.modelValue, cvar.name);
+}
+
+function inheritedOf(cvar: PluginCvar): string | null {
+  return props.inherited ? readCvar(props.inherited, cvar.name) : null;
+}
+
+function fallbackOf(cvar: PluginCvar): string | null {
+  return inheritedOf(cvar) ?? cvar.defaultValue;
 }
 
 function set(cvar: PluginCvar, value: string | null) {
@@ -76,7 +87,17 @@ function setFromInput(cvar: PluginCvar, value: string | number) {
             {{ cvar.description }}
           </p>
           <p
-            v-if="cvar.defaultValue !== null && cvar.kind !== 'bool'"
+            v-if="inheritedOf(cvar) !== null"
+            class="font-mono text-[0.7rem] text-muted-foreground/70"
+          >
+            {{
+              $t("pages.plugins.settings.inherited", {
+                value: inheritedOf(cvar) === "" ? '""' : inheritedOf(cvar),
+              })
+            }}
+          </p>
+          <p
+            v-else-if="cvar.defaultValue !== null && cvar.kind !== 'bool'"
             class="font-mono text-[0.7rem] text-muted-foreground/70"
           >
             {{
@@ -90,7 +111,7 @@ function setFromInput(cvar: PluginCvar, value: string | number) {
         <div class="flex shrink-0 items-center gap-1">
           <Switch
             v-if="cvar.kind === 'bool'"
-            :model-value="isTruthy(valueOf(cvar) ?? cvar.defaultValue)"
+            :model-value="isTruthy(valueOf(cvar) ?? fallbackOf(cvar))"
             @update:model-value="set(cvar, $event ? '1' : '0')"
           />
           <Input
@@ -100,7 +121,7 @@ function setFromInput(cvar: PluginCvar, value: string | number) {
             "
             step="any"
             :model-value="valueOf(cvar) ?? ''"
-            :placeholder="cvar.defaultValue ?? ''"
+            :placeholder="fallbackOf(cvar) ?? ''"
             class="h-8 w-44 font-mono text-xs sm:w-56"
             @update:model-value="setFromInput(cvar, $event)"
           />

@@ -3769,6 +3769,17 @@
           "default": "預設",
           "on": "開啟",
           "off": "關閉",
+          "configure": "為此伺服器設定",
+          "customized": "已為此伺服器自訂",
+          "config": {
+            "title": "此伺服器上的{plugin}",
+            "description": "疊加在外掛頁面的設定之上，僅用於此伺服器。與此伺服器的其他設定一起儲存，只重新啟動一次。",
+            "using_inherited": "此伺服器使用外掛頁面設定的檔案。",
+            "using_shipped": "此伺服器使用外掛隨附的檔案。",
+            "remove_override": "移除伺服器覆寫",
+            "apply": "套用",
+            "advanced_hint": "僅用於此伺服器的主控台變數，在外掛頁面和遊戲模式之後執行。"
+          },
           "status_loads": "載入",
           "status_off": "未載入",
           "loads_by_default": "預設在此載入",
@@ -3824,6 +3835,7 @@
             "plugin_default": "{plugin}：預設",
             "plugin_on": "{plugin}：開啟",
             "plugin_off": "{plugin}：關閉",
+            "plugin_config": "{plugin}：設定",
             "restricted": "受限",
             "opened": "對所有人開放",
             "min_role": "最低角色已變更",
@@ -4370,6 +4382,7 @@
       "settings": {
         "not_reported": "執行此外掛的伺服器上線後，會顯示說明與預設值。",
         "default": "預設：{value}",
+        "inherited": "所有伺服器：{value}",
         "reset": "使用預設值",
         "other_lines": "此設定中的其他 cvar：{count} 個。請在進階中編輯。"
       },

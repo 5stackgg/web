@@ -3769,6 +3769,17 @@
           "default": "Varsayılan",
           "on": "Açık",
           "off": "Kapalı",
+          "configure": "Bu Sunucu İçin Yapılandır",
+          "customized": "Bu sunucu için özelleştirildi",
+          "config": {
+            "title": "Bu Sunucuda {plugin}",
+            "description": "Eklenti sayfasının ayarlarının üzerine, yalnızca bu sunucu için. Sunucunun diğer ayarlarıyla birlikte tek yeniden başlatmayla kaydedilir.",
+            "using_inherited": "Bu sunucu eklenti sayfasında ayarlanan dosyayı kullanır.",
+            "using_shipped": "Bu sunucu eklentiyle gelen dosyayı kullanır.",
+            "remove_override": "Sunucu Özelleştirmesini Kaldır",
+            "apply": "Uygula",
+            "advanced_hint": "Yalnızca bu sunucu için konsol değişkenleri; eklenti sayfası ve oyun modundan sonra çalışır."
+          },
           "status_loads": "Yüklenir",
           "status_off": "Yüklenmez",
           "loads_by_default": "Burada varsayılan olarak yüklenir",
@@ -3824,6 +3835,7 @@
             "plugin_default": "{plugin}: varsayılan",
             "plugin_on": "{plugin}: açık",
             "plugin_off": "{plugin}: kapalı",
+            "plugin_config": "{plugin}: ayarlar",
             "restricted": "Kısıtlı",
             "opened": "Herkese açık",
             "min_role": "En düşük rol değişti",
@@ -4370,6 +4382,7 @@
       "settings": {
         "not_reported": "Açıklamalar ve varsayılan değerler, bu eklentiyi çalıştıran bir sunucu çevrimiçi olduğunda görünür.",
         "default": "Varsayılan: {value}",
+        "inherited": "Tüm sunucular: {value}",
         "reset": "Varsayılanı kullan",
         "other_lines": "Bu yapılandırmadaki diğer cvar'lar: {count}. Bunları Gelişmiş bölümünden düzenleyin."
       },

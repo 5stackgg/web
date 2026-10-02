@@ -3769,6 +3769,17 @@
           "default": "Default",
           "on": "On",
           "off": "Off",
+          "configure": "Configure for This Server",
+          "customized": "Customized for this server",
+          "config": {
+            "title": "{plugin} on This Server",
+            "description": "Layered over the plugin page's settings, for this server only. Saved with the rest of this server's settings, with one restart.",
+            "using_inherited": "This server uses the file set on the plugin page.",
+            "using_shipped": "This server uses the file the plugin ships with.",
+            "remove_override": "Remove Server Override",
+            "apply": "Apply",
+            "advanced_hint": "Console variables for this server only, run after the plugin page's and the game mode's."
+          },
           "status_loads": "Loads",
           "status_off": "Not Loaded",
           "loads_by_default": "Loads here by default",
@@ -3824,6 +3835,7 @@
             "plugin_default": "{plugin}: default",
             "plugin_on": "{plugin}: on",
             "plugin_off": "{plugin}: off",
+            "plugin_config": "{plugin}: settings",
             "restricted": "Restricted",
             "opened": "Open to everyone",
             "min_role": "Minimum role changed",
@@ -4370,6 +4382,7 @@
       "settings": {
         "not_reported": "Descriptions and defaults show up once a server running this plugin comes online.",
         "default": "Default: {value}",
+        "inherited": "All servers: {value}",
         "reset": "Use the default",
         "other_lines": "Other cvars set in this config: {count}. Edit them under Advanced."
       },

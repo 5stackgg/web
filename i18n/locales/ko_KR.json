@@ -3769,6 +3769,17 @@
           "default": "기본값",
           "on": "켜기",
           "off": "끄기",
+          "configure": "이 서버용으로 설정",
+          "customized": "이 서버용으로 사용자 지정됨",
+          "config": {
+            "title": "이 서버의 {plugin}",
+            "description": "플러그인 페이지 설정 위에 이 서버에만 적용됩니다. 서버의 다른 설정과 함께 저장되며 한 번만 재시작됩니다.",
+            "using_inherited": "이 서버는 플러그인 페이지에서 설정한 파일을 사용합니다.",
+            "using_shipped": "이 서버는 플러그인에 포함된 파일을 사용합니다.",
+            "remove_override": "서버 재정의 제거",
+            "apply": "적용",
+            "advanced_hint": "이 서버 전용 콘솔 변수로, 플러그인 페이지와 게임 모드 이후에 실행됩니다."
+          },
           "status_loads": "로드됨",
           "status_off": "로드 안 됨",
           "loads_by_default": "기본적으로 여기서 로드됨",
@@ -3824,6 +3835,7 @@
             "plugin_default": "{plugin}: 기본값",
             "plugin_on": "{plugin}: 켜기",
             "plugin_off": "{plugin}: 끄기",
+            "plugin_config": "{plugin}: 설정",
             "restricted": "제한됨",
             "opened": "모두에게 공개",
             "min_role": "최소 역할 변경됨",
@@ -4370,6 +4382,7 @@
       "settings": {
         "not_reported": "이 플러그인을 실행하는 서버가 온라인이 되면 설명과 기본값이 표시됩니다.",
         "default": "기본값: {value}",
+        "inherited": "모든 서버: {value}",
         "reset": "기본값 사용",
         "other_lines": "이 설정의 다른 cvar: {count}개. 고급에서 편집하세요."
       },

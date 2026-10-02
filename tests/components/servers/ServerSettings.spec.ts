@@ -114,6 +114,11 @@ describe("ServerSettings", () => {
     await flushPromises();
 
     expect(mutate).toHaveBeenCalledTimes(1);
+    // An api that predates per-server plugin settings rejects any document
+    // naming their input type, so a save without them never sends it.
+    expect(mutate.mock.calls[0][0].mutation.definitions[0].name.value).toBe(
+      "SetServerSettings",
+    );
     expect(mutate.mock.calls[0][0].variables).toEqual({
       serverId: "server-1",
       mapRotation: null,
@@ -125,6 +130,38 @@ describe("ServerSettings", () => {
         event_ids: [],
       },
     });
+  });
+
+  it("sends a plugin's server settings with the rest, in one save", async () => {
+    const wrapper = await mountConsole("node-a", "/?settings=plugins");
+    state.data.game_plugin_installs = [];
+    const mutate = vi
+      .spyOn(useNuxtApp().$apollo.defaultClient, "mutate")
+      .mockResolvedValue({ data: { setServerSettings: { success: true } } } as any);
+
+    const { default: ServerPlugins } = await import(
+      "~/components/servers/ServerPlugins.vue"
+    );
+    const pane = wrapper.findComponent(ServerPlugins).vm as any;
+    pane.$.setupState.applyConfig("deathmatch", {
+      cfg: "dm_replenish_health 50",
+      config: null,
+    });
+    await flushPromises();
+
+    const save = [...document.body.querySelectorAll("button")].find((button) =>
+      button.textContent?.includes("Save"),
+    );
+    save?.click();
+    await flushPromises();
+
+    expect(mutate).toHaveBeenCalledTimes(1);
+    expect(mutate.mock.calls[0][0].mutation.definitions[0].name.value).toBe(
+      "SetServerSettingsWithPluginConfigs",
+    );
+    expect(mutate.mock.calls[0][0].variables.pluginConfigs).toEqual([
+      { slug: "deathmatch", cfg: "dm_replenish_health 50", config: null },
+    ]);
   });
 
   it("opens on the server's own settings", async () => {

@@ -3769,6 +3769,17 @@
           "default": "Predeterminado",
           "on": "Activado",
           "off": "Desactivado",
+          "configure": "Configurar para Este Servidor",
+          "customized": "Personalizado para este servidor",
+          "config": {
+            "title": "{plugin} en Este Servidor",
+            "description": "Por encima de los ajustes de la página del plugin, solo para este servidor. Se guarda con el resto de ajustes del servidor, con un reinicio.",
+            "using_inherited": "Este servidor usa el archivo de la página del plugin.",
+            "using_shipped": "Este servidor usa el archivo que incluye el plugin.",
+            "remove_override": "Quitar Personalización del Servidor",
+            "apply": "Aplicar",
+            "advanced_hint": "Variables de consola solo para este servidor, ejecutadas después de las de la página del plugin y del modo de juego."
+          },
           "status_loads": "Se carga",
           "status_off": "No se carga",
           "loads_by_default": "Se carga aquí por defecto",
@@ -3824,6 +3835,7 @@
             "plugin_default": "{plugin}: predeterminado",
             "plugin_on": "{plugin}: activado",
             "plugin_off": "{plugin}: desactivado",
+            "plugin_config": "{plugin}: ajustes",
             "restricted": "Restringido",
             "opened": "Abierto a todos",
             "min_role": "Rol mínimo cambiado",
@@ -4370,6 +4382,7 @@
       "settings": {
         "not_reported": "Las descripciones y los valores predeterminados aparecen cuando un servidor con este plugin se conecta.",
         "default": "Predeterminado: {value}",
+        "inherited": "Todos los servidores: {value}",
         "reset": "Usar el predeterminado",
         "other_lines": "Otras cvars en esta configuración: {count}. Edítalas en Avanzado."
       },

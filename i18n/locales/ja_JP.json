@@ -3769,6 +3769,17 @@
           "default": "デフォルト",
           "on": "オン",
           "off": "オフ",
+          "configure": "このサーバー用に設定",
+          "customized": "このサーバー用にカスタマイズ済み",
+          "config": {
+            "title": "このサーバーの{plugin}",
+            "description": "プラグインページの設定に重ねて、このサーバーだけに適用します。サーバーの他の設定と一緒に保存され、再起動は1回です。",
+            "using_inherited": "このサーバーはプラグインページで設定したファイルを使用します。",
+            "using_shipped": "このサーバーはプラグイン同梱のファイルを使用します。",
+            "remove_override": "サーバーの上書きを削除",
+            "apply": "適用",
+            "advanced_hint": "このサーバー専用のコンソール変数です。プラグインページとゲームモードの後に実行されます。"
+          },
           "status_loads": "読み込み",
           "status_off": "未読み込み",
           "loads_by_default": "デフォルトでここで読み込まれます",
@@ -3824,6 +3835,7 @@
             "plugin_default": "{plugin}: デフォルト",
             "plugin_on": "{plugin}: オン",
             "plugin_off": "{plugin}: オフ",
+            "plugin_config": "{plugin}: 設定",
             "restricted": "制限付き",
             "opened": "全員に公開",
             "min_role": "最低ロールを変更",
@@ -4370,6 +4382,7 @@
       "settings": {
         "not_reported": "このプラグインを実行するサーバーがオンラインになると、説明とデフォルト値が表示されます。",
         "default": "デフォルト: {value}",
+        "inherited": "全サーバー: {value}",
         "reset": "デフォルトを使用",
         "other_lines": "この設定にあるその他のcvar: {count}件。詳細設定で編集してください。"
       },

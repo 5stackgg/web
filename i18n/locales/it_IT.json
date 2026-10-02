@@ -3769,6 +3769,17 @@
           "default": "Predefinito",
           "on": "Attivo",
           "off": "Disattivo",
+          "configure": "Configura per Questo Server",
+          "customized": "Personalizzato per questo server",
+          "config": {
+            "title": "{plugin} su Questo Server",
+            "description": "Sopra le impostazioni della pagina del plugin, solo per questo server. Salvato con il resto delle impostazioni del server, con un solo riavvio.",
+            "using_inherited": "Questo server usa il file impostato nella pagina del plugin.",
+            "using_shipped": "Questo server usa il file fornito con il plugin.",
+            "remove_override": "Rimuovi Personalizzazione del Server",
+            "apply": "Applica",
+            "advanced_hint": "Variabili di console solo per questo server, eseguite dopo quelle della pagina del plugin e della modalità di gioco."
+          },
           "status_loads": "Caricato",
           "status_off": "Non caricato",
           "loads_by_default": "Caricato qui per impostazione predefinita",
@@ -3824,6 +3835,7 @@
             "plugin_default": "{plugin}: predefinito",
             "plugin_on": "{plugin}: attivo",
             "plugin_off": "{plugin}: disattivo",
+            "plugin_config": "{plugin}: impostazioni",
             "restricted": "Riservato",
             "opened": "Aperto a tutti",
             "min_role": "Ruolo minimo cambiato",
@@ -4370,6 +4382,7 @@
       "settings": {
         "not_reported": "Descrizioni e valori predefiniti compaiono quando un server con questo plugin va online.",
         "default": "Predefinito: {value}",
+        "inherited": "Tutti i server: {value}",
         "reset": "Usa il predefinito",
         "other_lines": "Altre cvar impostate in questa configurazione: {count}. Modificale in Avanzate."
       },

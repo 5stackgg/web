@@ -3769,6 +3769,17 @@
           "default": "Domyślnie",
           "on": "Wł.",
           "off": "Wył.",
+          "configure": "Skonfiguruj dla Tego Serwera",
+          "customized": "Dostosowano dla tego serwera",
+          "config": {
+            "title": "{plugin} na Tym Serwerze",
+            "description": "Nakładane na ustawienia strony wtyczki, tylko dla tego serwera. Zapisywane z resztą ustawień serwera, z jednym restartem.",
+            "using_inherited": "Ten serwer używa pliku ustawionego na stronie wtyczki.",
+            "using_shipped": "Ten serwer używa pliku dostarczonego z wtyczką.",
+            "remove_override": "Usuń Ustawienia Serwera",
+            "apply": "Zastosuj",
+            "advanced_hint": "Zmienne konsoli tylko dla tego serwera, uruchamiane po zmiennych strony wtyczki i trybu gry."
+          },
           "status_loads": "Ładowany",
           "status_off": "Nieładowany",
           "loads_by_default": "Domyślnie ładowany tutaj",
@@ -3824,6 +3835,7 @@
             "plugin_default": "{plugin}: domyślnie",
             "plugin_on": "{plugin}: wł.",
             "plugin_off": "{plugin}: wył.",
+            "plugin_config": "{plugin}: ustawienia",
             "restricted": "Ograniczony",
             "opened": "Otwarty dla wszystkich",
             "min_role": "Zmieniono minimalną rolę",
@@ -4370,6 +4382,7 @@
       "settings": {
         "not_reported": "Opisy i wartości domyślne pojawią się, gdy serwer z tą wtyczką będzie online.",
         "default": "Domyślnie: {value}",
+        "inherited": "Wszystkie serwery: {value}",
         "reset": "Użyj domyślnej",
         "other_lines": "Inne cvary ustawione w tej konfiguracji: {count}. Edytuj je w sekcji Zaawansowane."
       },

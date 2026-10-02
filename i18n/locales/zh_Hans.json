@@ -5757,7 +5757,11 @@
       "pop_out_tooltip": "弹出到窗口",
       "close_tooltip": "关闭会话",
       "no_chats_title": "暂无聊天",
-      "no_chats_description": "一旦您加入聊天，它将显示在这里。"
+      "no_chats_description": "一旦您加入聊天，它将显示在这里。",
+      "tournament_ended": "已结束 · {time}后关闭",
+      "tournament_ended_days": "{count}天",
+      "tournament_ended_hours": "{count}小时",
+      "tournament_ended_tooltip": "本赛事已结束。其聊天将保持开放 7 天。"
     },
     "recent_games": {
       "title": "近期比赛",

@@ -5757,7 +5757,11 @@
       "pop_out_tooltip": "Ouvrir dans une fenêtre",
       "close_tooltip": "Fermer la conversation",
       "no_chats_title": "Aucun chat pour l'instant",
-      "no_chats_description": "Dès que tu rejoins un chat, il apparaît ici."
+      "no_chats_description": "Dès que tu rejoins un chat, il apparaît ici.",
+      "tournament_ended": "Terminé · ferme dans {time}",
+      "tournament_ended_days": "{count} j",
+      "tournament_ended_hours": "{count} h",
+      "tournament_ended_tooltip": "Ce tournoi est terminé. Son chat reste ouvert pendant 7 jours."
     },
     "recent_games": {
       "title": "Parties récentes",

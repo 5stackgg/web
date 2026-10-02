@@ -4,6 +4,10 @@ export const CHAT_MESSAGE_MAX_LENGTH = 2000;
 
 export const CHAT_REMAINING_HINT_AT = 200;
 
+// Must match the api's ChatService.FINISHED_TOURNAMENT_CHAT_DAYS, which closes
+// the room for posting and joining at the same moment.
+export const FINISHED_TOURNAMENT_CHAT_MS = 7 * 24 * 60 * 60 * 1000;
+
 // Must match the api's ChatService.REACTIONS, which refuses anything else. The
 // api only sends ids; the glyphs are ours.
 export const CHAT_REACTIONS = [

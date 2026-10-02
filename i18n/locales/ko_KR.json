@@ -5757,7 +5757,11 @@
       "pop_out_tooltip": "새 창으로 열기",
       "close_tooltip": "대화 닫기",
       "no_chats_title": "채팅 없음",
-      "no_chats_description": "채팅에 참여하면 여기에 표시됩니다."
+      "no_chats_description": "채팅에 참여하면 여기에 표시됩니다.",
+      "tournament_ended": "종료됨 · {time} 후 닫힘",
+      "tournament_ended_days": "{count}일",
+      "tournament_ended_hours": "{count}시간",
+      "tournament_ended_tooltip": "이 토너먼트는 종료되었습니다. 채팅은 7일 동안 열려 있습니다."
     },
     "recent_games": {
       "title": "최근 게임",

@@ -5757,7 +5757,11 @@
       "pop_out_tooltip": "ウィンドウとして切り離す",
       "close_tooltip": "会話を閉じる",
       "no_chats_title": "チャットはまだありません",
-      "no_chats_description": "チャットに参加すると、ここに表示されます。"
+      "no_chats_description": "チャットに参加すると、ここに表示されます。",
+      "tournament_ended": "終了 · あと{time}で閉鎖",
+      "tournament_ended_days": "{count}日",
+      "tournament_ended_hours": "{count}時間",
+      "tournament_ended_tooltip": "このトーナメントは終了しました。チャットは7日間開いたままです。"
     },
     "recent_games": {
       "title": "最近の試合",

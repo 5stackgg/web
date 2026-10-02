@@ -13,6 +13,7 @@ import { useAuthStore } from "~/stores/AuthStore";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateSubscription } from "~/graphql/graphqlGen";
 import { NOT_LEAGUE_TOURNAMENT } from "~/graphql/tournamentFilters";
+import { FINISHED_TOURNAMENT_CHAT_MS } from "~/constants/chat";
 
 export const useMatchLobbyStore = defineStore("matchLobby", () => {
   const lobbyChat = ref<Record<string, Map<string, unknown>>>({});
@@ -23,8 +24,26 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
   const liveMatchesCount = ref(0);
   const liveTournamentsCount = ref(0);
   const openRegistrationTournamentsCount = ref(0);
-  // Tournaments that should expose chat (for this user)
-  const chatTournaments = ref<any[]>([]);
+  const chatTournamentRows = ref<any[]>([]);
+  const now = ref(Date.now());
+  let clock: ReturnType<typeof setInterval> | undefined;
+
+  // The subscription's cutoff is fixed when it starts, so a finished
+  // tournament's week is judged here, against a clock that keeps moving.
+  const chatTournaments = computed({
+    get: () =>
+      chatTournamentRows.value.filter(
+        (tournament) =>
+          tournament.status !== e_tournament_status_enum.Finished ||
+          (!!tournament.finished_at &&
+            new Date(tournament.finished_at).getTime() +
+              FINISHED_TOURNAMENT_CHAT_MS >
+              now.value),
+      ),
+    set: (rows: any[]) => {
+      chatTournamentRows.value = rows;
+    },
+  });
 
   const subscribeToLiveMatches = async () => {
     const subscription = getGraphqlClient().subscribe({
@@ -142,39 +161,66 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
   };
 
   const subscribeToChatTournaments = async () => {
+    now.value = Date.now();
+    clearInterval(clock);
+    clock = setInterval(() => {
+      now.value = Date.now();
+    }, 60_000);
+
     const subscription = getGraphqlClient().subscribe({
       query: generateSubscription({
         tournaments: [
           {
             where: {
-              status: {
-                _in: [
-                  e_tournament_status_enum.Setup,
-                  e_tournament_status_enum.RegistrationOpen,
-                  e_tournament_status_enum.RegistrationClosed,
-                  // A tournament held at the check-in cutoff is exactly when
-                  // the organizer and the excluded teams need the chat.
-                  e_tournament_status_enum.CheckInReview,
-                  e_tournament_status_enum.Live,
-                  e_tournament_status_enum.Paused,
-                ],
-              },
               _or: [
                 { joined_tournament: { _eq: true } },
                 { is_organizer: { _eq: true } },
               ],
-              _and: [NOT_LEAGUE_TOURNAMENT],
+              _and: [
+                NOT_LEAGUE_TOURNAMENT,
+                {
+                  _or: [
+                    {
+                      status: {
+                        _in: [
+                          e_tournament_status_enum.Setup,
+                          e_tournament_status_enum.RegistrationOpen,
+                          e_tournament_status_enum.RegistrationClosed,
+                          // A tournament held at the check-in cutoff is exactly
+                          // when the organizer and the excluded teams need the
+                          // chat.
+                          e_tournament_status_enum.CheckInReview,
+                          e_tournament_status_enum.Live,
+                          e_tournament_status_enum.Paused,
+                        ],
+                      },
+                    },
+                    {
+                      status: { _eq: e_tournament_status_enum.Finished },
+                      finished_at: {
+                        _gt: $("finishedAfter", "timestamptz!"),
+                      },
+                    },
+                  ],
+                },
+              ],
             },
           },
           {
             id: true,
             name: true,
             status: true,
+            finished_at: true,
             joined_tournament: true,
             is_organizer: true,
           },
         ],
       }),
+      variables: {
+        finishedAfter: new Date(
+          now.value - FINISHED_TOURNAMENT_CHAT_MS,
+        ).toISOString(),
+      },
     });
 
     const { subscribe } = useSubscriptionManager();
@@ -182,7 +228,7 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
       "matchLobby:chatTournaments",
       subscription.subscribe({
         next: ({ data }) => {
-          chatTournaments.value = data?.tournaments || [];
+          chatTournamentRows.value = data?.tournaments || [];
         },
         error: (error) => {
           console.error("Error in chat tournaments subscription:", error);

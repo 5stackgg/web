@@ -5757,7 +5757,11 @@
       "pop_out_tooltip": "Otwórz w osobnym oknie",
       "close_tooltip": "Zamknij rozmowę",
       "no_chats_title": "Brak czatów",
-      "no_chats_description": "Gdy dołączysz do czatu, pojawi się tutaj."
+      "no_chats_description": "Gdy dołączysz do czatu, pojawi się tutaj.",
+      "tournament_ended": "Zakończony · zamknięcie za {time}",
+      "tournament_ended_days": "{count} d.",
+      "tournament_ended_hours": "{count} godz.",
+      "tournament_ended_tooltip": "Ten turniej się zakończył. Jego czat pozostaje otwarty przez 7 dni."
     },
     "recent_games": {
       "title": "Ostatnie gry",

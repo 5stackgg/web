@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { Component } from "vue";
 import { Check, X } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 
@@ -18,6 +19,8 @@ withDefaults(
     // joined, not accepted, and the card is worth reusing for both.
     acceptLabel?: string;
     declineLabel?: string;
+    acceptIcon?: Component;
+    hideDecline?: boolean;
   }>(),
   {
     count: 1,
@@ -25,6 +28,8 @@ withDefaults(
     elevated: false,
     acceptLabel: undefined,
     declineLabel: undefined,
+    acceptIcon: undefined,
+    hideDecline: false,
   },
 );
 
@@ -81,10 +86,11 @@ defineEmits<{ accept: []; decline: []; dismiss: [] }>();
         :disabled="pending === 'decline'"
         @click="$emit('accept')"
       >
-        <Check class="h-3.5 w-3.5" />
+        <component :is="acceptIcon ?? Check" class="h-3.5 w-3.5" />
         {{ acceptLabel ?? $t("draft_games.room.accept_invite") }}
       </Button>
       <Button
+        v-if="!hideDecline"
         size="sm"
         variant="outline"
         class="h-7 flex-1 border-border bg-transparent px-2 text-[0.7rem] font-semibold text-muted-foreground hover:border-[hsl(var(--destructive)/0.5)] hover:text-[hsl(var(--destructive))]"

@@ -5508,7 +5508,14 @@
         "actor_organizer": "En arrangör",
         "actor_player": "En spelare",
         "tournament_registration_invite": "Turneringsanmälan",
-        "invited_you_register": "bjöd in dig att anmäla dig till"
+        "invited_you_register": "bjöd in dig att anmäla dig till",
+        "match_check_in": "Matchincheckning",
+        "match_check_in_action": "Incheckningen till matchen är öppen. Checka in för att spela.",
+        "match_region_veto": "Regionveto",
+        "match_region_veto_action": "Det är din tur att banna en region.",
+        "match_map_veto": "Kartveto",
+        "match_map_veto_action": "Det är din tur i kartvetot.",
+        "open_match": "Öppna match"
       },
       "season_rebuild": {
         "title": "ELO för säsong {number} behöver räknas om",

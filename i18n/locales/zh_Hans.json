@@ -5508,7 +5508,14 @@
         "actor_organizer": "一位主办方",
         "actor_player": "一位玩家",
         "tournament_registration_invite": "赛事报名",
-        "invited_you_register": "邀请您报名参加"
+        "invited_you_register": "邀请您报名参加",
+        "match_check_in": "比赛签到",
+        "match_check_in_action": "比赛签到已开启。签到后即可参赛。",
+        "match_region_veto": "地区 BP",
+        "match_region_veto_action": "轮到您禁用一个地区。",
+        "match_map_veto": "地图 BP",
+        "match_map_veto_action": "地图 BP 轮到您了。",
+        "open_match": "打开比赛"
       },
       "season_rebuild": {
         "title": "第 {number} 赛季需要重新计算 ELO",

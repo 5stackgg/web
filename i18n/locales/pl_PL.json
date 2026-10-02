@@ -5508,7 +5508,14 @@
         "actor_organizer": "Organizator",
         "actor_player": "Gracz",
         "tournament_registration_invite": "Rejestracja na turniej",
-        "invited_you_register": "zaprosił(a) cię do rejestracji na"
+        "invited_you_register": "zaprosił(a) cię do rejestracji na",
+        "match_check_in": "Potwierdzenie obecności w meczu",
+        "match_check_in_action": "Potwierdzanie obecności w meczu jest otwarte. Potwierdź obecność, aby zagrać.",
+        "match_region_veto": "Veto regionu",
+        "match_region_veto_action": "Twoja kolej, by zbanować region.",
+        "match_map_veto": "Veto mapy",
+        "match_map_veto_action": "Twoja kolej w veto map.",
+        "open_match": "Otwórz mecz"
       },
       "season_rebuild": {
         "title": "Wymagane przeliczenie ELO sezonu {number}",

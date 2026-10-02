@@ -5508,7 +5508,14 @@
         "actor_organizer": "주최자",
         "actor_player": "플레이어",
         "tournament_registration_invite": "토너먼트 참가 신청",
-        "invited_you_register": "님이 참가 신청에 초대했습니다:"
+        "invited_you_register": "님이 참가 신청에 초대했습니다:",
+        "match_check_in": "매치 체크인",
+        "match_check_in_action": "매치 체크인이 열렸습니다. 체크인하고 플레이하세요.",
+        "match_region_veto": "지역 밴픽",
+        "match_region_veto_action": "지역을 밴할 차례입니다.",
+        "match_map_veto": "맵 밴픽",
+        "match_map_veto_action": "맵 밴픽 차례입니다.",
+        "open_match": "매치 열기"
       },
       "season_rebuild": {
         "title": "시즌 {number}의 ELO 재계산이 필요합니다",

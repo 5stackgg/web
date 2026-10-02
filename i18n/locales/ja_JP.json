@@ -5508,7 +5508,14 @@
         "actor_organizer": "主催者",
         "actor_player": "プレイヤー",
         "tournament_registration_invite": "トーナメント参加登録",
-        "invited_you_register": "があなたを参加登録に招待しました"
+        "invited_you_register": "があなたを参加登録に招待しました",
+        "match_check_in": "試合チェックイン",
+        "match_check_in_action": "試合のチェックインが始まりました。チェックインしてプレイしましょう。",
+        "match_region_veto": "リージョンVeto",
+        "match_region_veto_action": "リージョンをBANする番です。",
+        "match_map_veto": "マップVeto",
+        "match_map_veto_action": "マップVetoのあなたの番です。",
+        "open_match": "試合を開く"
       },
       "season_rebuild": {
         "title": "シーズン {number} のELO再計算が必要です",

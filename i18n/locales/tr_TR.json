@@ -8783,6 +8783,7 @@
       "host": "Host",
       "region": "Bölge",
       "select_region": "Bölge seç",
+      "region_nodes": "Düğümler: {count}",
       "game_server_node": "Sunucu Düğümü",
       "game_server_node_hosting_description": "5Stack, CS'i düğümlerinizden birinde çalıştırır. Adres, portlar ve bölge düğümden gelir.",
       "external_server": "Harici Sunucu",

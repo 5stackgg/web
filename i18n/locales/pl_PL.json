@@ -8783,6 +8783,7 @@
       "host": "Host",
       "region": "Region",
       "select_region": "Wybierz region",
+      "region_nodes": "Węzły: {count}",
       "game_server_node": "Węzeł serwerów gry",
       "game_server_node_hosting_description": "5Stack uruchamia CS na jednym z twoich węzłów. Adres, porty i region pochodzą z węzła.",
       "external_server": "Serwer zewnętrzny",

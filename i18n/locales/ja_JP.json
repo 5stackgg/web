@@ -8783,6 +8783,7 @@
       "host": "ホスト",
       "region": "リージョン",
       "select_region": "リージョンを選択",
+      "region_nodes": "ノード: {count}",
       "game_server_node": "ゲームサーバーノード",
       "game_server_node_hosting_description": "5Stack があなたのノードの 1 つで CS を実行します。アドレス、ポート、リージョンはノードから決まります。",
       "external_server": "外部サーバー",

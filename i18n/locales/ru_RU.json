@@ -8783,6 +8783,7 @@
       "host": "Хост",
       "region": "Регион",
       "select_region": "Выбрать регион",
+      "region_nodes": "Ноды: {count}",
       "game_server_node": "Нода игровых серверов",
       "game_server_node_hosting_description": "5Stack запускает CS на одной из ваших нод. Адрес, порты и регион берутся из ноды.",
       "external_server": "Внешний сервер",

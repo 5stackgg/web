@@ -8783,6 +8783,7 @@
       "host": "主機",
       "region": "地區",
       "select_region": "選擇地區",
+      "region_nodes": "節點：{count}",
       "game_server_node": "遊戲伺服器節點",
       "game_server_node_hosting_description": "5Stack 會在你的某個節點上執行 CS。位址、連接埠和區域都來自該節點。",
       "external_server": "外部伺服器",

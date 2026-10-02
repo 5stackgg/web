@@ -8783,6 +8783,7 @@
       "host": "Host",
       "region": "Region",
       "select_region": "Select Region",
+      "region_nodes": "Nodes: {count}",
       "game_server_node": "Game Server Node",
       "game_server_node_hosting_description": "5Stack runs CS on one of your nodes. The address, ports and region come from the node.",
       "external_server": "External Server",

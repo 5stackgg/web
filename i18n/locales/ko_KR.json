@@ -8783,6 +8783,7 @@
       "host": "호스트",
       "region": "지역",
       "select_region": "지역 선택",
+      "region_nodes": "노드: {count}",
       "game_server_node": "게임 서버 노드",
       "game_server_node_hosting_description": "5Stack이 내 노드 중 하나에서 CS를 실행합니다. 주소, 포트, 지역은 노드에서 정해집니다.",
       "external_server": "외부 서버",

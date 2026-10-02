@@ -170,17 +170,32 @@ describe("ServerForm server type", () => {
     );
   });
 
-  it("counts the nodes each region can put the server on", async () => {
+  it("shows each region as a tile with the nodes that can take the server", async () => {
     const wrapper = await mount();
 
+    const tiles = Array.from(
+      document.body.querySelectorAll<HTMLElement>(
+        '[data-testid="region-option"]',
+      ),
+    );
     // lv-gs-02 is offline and the GPU-only node has no region.
-    expect((wrapper.vm as any).regionNodeCounts).toEqual({
-      "us-east": 1,
-      lv: 1,
-    });
     expect(
-      document.body.querySelector('[data-testid="region-trigger"]'),
-    ).not.toBeNull();
+      tiles.map((tile) => [
+        tile.querySelector("label")?.textContent?.trim(),
+        tile.querySelector("span.font-mono")?.textContent?.trim(),
+      ]),
+    ).toEqual([
+      ["US East", "Nodes: 1"],
+      ["LV", "Nodes: 1"],
+    ]);
+
+    radio("region-lv").click();
+    await flushPromises();
+
+    expect((wrapper.vm as any).form.values.region).toBe("lv");
+    expect(
+      document.body.querySelectorAll('[data-testid="node-option"]'),
+    ).toHaveLength(2);
   });
 
   it("lists only the region's nodes, named by id when unlabeled", async () => {

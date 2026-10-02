@@ -8783,6 +8783,7 @@
       "host": "المضيف",
       "region": "المنطقة",
       "select_region": "اختر المنطقة",
+      "region_nodes": "العقد: {count}",
       "game_server_node": "عقدة سيرفرات",
       "game_server_node_hosting_description": "يشغّل 5Stack لعبة CS على إحدى عقدك. العنوان والمنافذ والمنطقة تأتي من العقدة.",
       "external_server": "سيرفر خارجي",

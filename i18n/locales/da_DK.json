@@ -6368,6 +6368,16 @@
       "impact_delete": "slet",
       "impact_reset": "nulstil"
     },
+    "negotiation": {
+      "schedule": "Planlæg",
+      "no_time": "Intet tidspunkt aftalt endnu",
+      "history": "Historik",
+      "window": "Tidspunkter skal ligge inden for denne rundes vindue: {from} til {to}.",
+      "two_weeks": "Tidspunkter skal ligge inden for de næste to uger.",
+      "outside_window": "Det foreslåede tidspunkt ligger uden for denne rundes planlægningsvindue.",
+      "outside_two_weeks": "Det foreslåede tidspunkt skal ligge inden for de næste to uger.",
+      "teams_only": "Kun holdenes ejere, kaptajner og roster-admins kan foreslå et tidspunkt."
+    },
     "match": {
       "reset_winner": "Nulstil vinder",
       "reset_warning": "Ændres dette resultat, kan efterfølgende kampe i bracketen blive slettet",

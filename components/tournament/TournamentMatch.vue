@@ -30,6 +30,7 @@ import {
 import TournamentRoundLineup from "~/components/tournament/TournamentRoundLineup.vue";
 import MatchMapDots from "~/components/match/MatchMapDots.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
+import BracketNegotiation from "~/components/tournament/BracketNegotiation.vue";
 import {
   e_match_status_enum,
   e_player_roles_enum,
@@ -37,6 +38,10 @@ import {
 } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
 import type { Bracket } from "~/types/tournament";
+import {
+  isNegotiableBracket,
+  type NegotiationWindow,
+} from "~/utilities/bracketNegotiation";
 
 type FeedingBracket = NonNullable<Bracket["feeding_brackets"]>[number];
 
@@ -55,10 +60,13 @@ const props = defineProps<{
     options?: {
       best_of?: number;
     };
+    windows?: NegotiationWindow[] | null;
   };
   tournament?: {
     is_organizer?: boolean;
     status?: string;
+    scheduling_mode?: string | null;
+    league_season_division?: { id?: string } | null;
     options?: {
       best_of?: number;
     };
@@ -480,6 +488,21 @@ const getSwissMatchType = (bracket: Bracket): string => {
   return "regular";
 };
 
+const getRoundMatchLabel = (bracket: Bracket): string => {
+  const isDoubleElimination =
+    props.stage.type === e_tournament_stage_types_enum.DoubleElimination;
+  return t("tournament.match.round_match", {
+    round: props.round,
+    match: bracket.match_number,
+    prefix:
+      bracket.path === "LB"
+        ? "LB"
+        : bracket.path === "WB" && isDoubleElimination
+          ? "WB"
+          : "",
+  }).trim();
+};
+
 const getTeamName = (team: Bracket["team_1"]): string => {
   return team?.team?.name || team?.name || "";
 };
@@ -690,20 +713,7 @@ const shouldShowCrossBracketDestination = (
           {{ $t("tournament.match.bye_round") }}
         </Badge>
         <Badge v-else class="flex items-center gap-2">
-          {{
-            $t("tournament.match.round_match", {
-              round: props.round,
-              match: bracket.match_number,
-              prefix:
-                bracket.path === "LB"
-                  ? "LB"
-                  : bracket.path === "WB" &&
-                      stage.type ===
-                        e_tournament_stage_types_enum.DoubleElimination
-                    ? "WB"
-                    : "",
-            })
-          }}
+          {{ getRoundMatchLabel(bracket) }}
           <span
             v-if="getBestOf(bracket, stage, tournament)"
             class="text-muted-foreground"
@@ -743,9 +753,16 @@ const shouldShowCrossBracketDestination = (
         </div>
       </div>
 
+      <BracketNegotiation
+        v-if="isNegotiableBracket(props.tournament, bracket)"
+        :bracket="bracket"
+        :windows="props.stage.windows"
+        :title="getRoundMatchLabel(bracket)"
+        :best-of="getBestOf(bracket, stage, tournament)"
+      />
       <!-- Display organizer-set schedule if available -->
       <div
-        v-if="bracket.scheduled_at && !bracket.match"
+        v-else-if="bracket.scheduled_at && !bracket.match"
         class="text-xs text-muted-foreground flex flex-col items-center gap-1"
       >
         <span>{{ $t("common.scheduled") }}</span>

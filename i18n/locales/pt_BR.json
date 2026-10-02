@@ -6368,6 +6368,16 @@
       "impact_delete": "excluir",
       "impact_reset": "redefinir"
     },
+    "negotiation": {
+      "schedule": "Agendar",
+      "no_time": "Nenhum horário acordado ainda",
+      "history": "Histórico",
+      "window": "Os horários devem ficar dentro da janela deste round: de {from} a {to}.",
+      "two_weeks": "Os horários devem estar dentro das próximas duas semanas.",
+      "outside_window": "O horário proposto está fora da janela de agendamento deste round.",
+      "outside_two_weeks": "O horário proposto deve estar dentro das próximas duas semanas.",
+      "teams_only": "Somente donos, capitães e admins de elenco das equipes podem propor um horário."
+    },
     "match": {
       "reset_winner": "Redefinir vencedor",
       "reset_warning": "Alterar este resultado pode excluir partidas subsequentes no chaveamento",

@@ -28,6 +28,7 @@ const props = defineProps<{
   matchup?: string | null;
   /** e.g. "Season 1 · Week 5". */
   scope?: string | null;
+  outsideWindowMessage?: string | null;
 }>();
 
 const emit = defineEmits<{
@@ -161,7 +162,7 @@ function formatBound(value: string) {
     />
 
     <p v-if="date && !isValid" class="text-sm text-destructive">
-      {{ $t("league.schedule.outside_window") }}
+      {{ outsideWindowMessage || $t("league.schedule.outside_window") }}
     </p>
 
     <div class="flex items-center justify-end gap-2 pt-1">

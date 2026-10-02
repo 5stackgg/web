@@ -6368,6 +6368,16 @@
       "impact_delete": "eliminar",
       "impact_reset": "reiniciar"
     },
+    "negotiation": {
+      "schedule": "Programar",
+      "no_time": "Aún no hay hora acordada",
+      "history": "Historial",
+      "window": "Las horas deben estar dentro del margen de esta ronda: del {from} al {to}.",
+      "two_weeks": "Las horas deben estar dentro de las próximas dos semanas.",
+      "outside_window": "La hora propuesta queda fuera del margen de programación de esta ronda.",
+      "outside_two_weeks": "La hora propuesta debe estar dentro de las próximas dos semanas.",
+      "teams_only": "Solo los propietarios, capitanes y administradores de plantilla de los equipos pueden proponer una hora."
+    },
     "match": {
       "reset_winner": "Restablecer ganador",
       "reset_warning": "Cambiar este resultado puede eliminar partidas posteriores del cuadro",

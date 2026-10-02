@@ -3120,11 +3120,6 @@
         "headshot_pct": "Хедшоты, %"
       },
       "played_matches": "Сыгранные матчи",
-      "queue_partners": {
-        "title": "В очереди вместе с",
-        "matches": "{count} матч | {count} матчей",
-        "win_rate": "{pct} % побед"
-      },
       "min_sanctions": "Минимум санкций",
       "is_banned": "Забанен",
       "is_gagged": "Заглушен",

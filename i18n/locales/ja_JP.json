@@ -3120,11 +3120,6 @@
         "headshot_pct": "HS%"
       },
       "played_matches": "試合数",
-      "queue_partners": {
-        "title": "一緒にキューに入った相手",
-        "matches": "{count} 試合 | {count} 試合",
-        "win_rate": "勝率 {pct}%"
-      },
       "min_sanctions": "処分の最小数",
       "is_banned": "Ban 中",
       "is_gagged": "発言禁止",

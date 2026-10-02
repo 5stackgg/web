@@ -3120,11 +3120,6 @@
         "headshot_pct": "HS%"
       },
       "played_matches": "Spillede kampe",
-      "queue_partners": {
-        "title": "I kø med",
-        "matches": "{count} kamp | {count} kampe",
-        "win_rate": "{pct} % vundet"
-      },
       "min_sanctions": "Minimum sanktioner",
       "is_banned": "Bannet",
       "is_gagged": "Gagget",

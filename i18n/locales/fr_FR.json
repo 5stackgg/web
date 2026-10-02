@@ -3120,11 +3120,6 @@
         "headshot_pct": "HS %"
       },
       "played_matches": "Matchs joués",
-      "queue_partners": {
-        "title": "En file avec",
-        "matches": "{count} match | {count} matchs",
-        "win_rate": "{pct} % gagnés"
-      },
       "min_sanctions": "Sanctions minimum",
       "is_banned": "Banni",
       "is_gagged": "Bâillonné",

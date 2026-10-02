@@ -3120,11 +3120,6 @@
         "headshot_pct": "Headshot %"
       },
       "played_matches": "Spelade matcher",
-      "queue_partners": {
-        "title": "I kö med",
-        "matches": "{count} match | {count} matcher",
-        "win_rate": "{pct} % vunna"
-      },
       "min_sanctions": "Minsta antal sanktioner",
       "is_banned": "Bannad",
       "is_gagged": "Tystad",

@@ -3120,11 +3120,6 @@
         "headshot_pct": "ХС %"
       },
       "played_matches": "Зіграні матчі",
-      "queue_partners": {
-        "title": "У черзі разом з",
-        "matches": "{count} матч | {count} матчів",
-        "win_rate": "{pct} % перемог"
-      },
       "min_sanctions": "Мінімум санкцій",
       "is_banned": "Забанений",
       "is_gagged": "Без чату",

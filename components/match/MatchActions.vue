@@ -421,18 +421,20 @@ export default {
   created() {
     this.rconUuid = uuidv4();
     socket.on("rcon", this.onRconResponse);
-    this.subscribeRenderSummary();
   },
   beforeUnmount() {
     socket.removeListener("rcon", this.onRconResponse);
     this.renderSummarySub?.unsubscribe();
   },
   watch: {
-    "match.id"() {
-      this.renderSummarySub?.unsubscribe();
-      this.renderSummarySub = undefined;
-      this.renderSummary = [];
-      this.subscribeRenderSummary();
+    renderSummaryScope: {
+      immediate: true,
+      handler() {
+        this.renderSummarySub?.unsubscribe();
+        this.renderSummarySub = undefined;
+        this.renderSummary = [];
+        this.subscribeRenderSummary();
+      },
     },
   },
   methods: {
@@ -578,6 +580,11 @@ export default {
       }
     },
     subscribeRenderSummary() {
+      // Guests have no select permission on clip_render_jobs, and RetryLink
+      // would retry the rejected subscription up to 30 times.
+      if (!useAuthStore().me) {
+        return;
+      }
       const mapIds = (this.match?.match_maps ?? [])
         .map((m: any) => m?.id)
         .filter((id: any) => !!id);
@@ -753,6 +760,9 @@ export default {
     },
   },
   computed: {
+    renderSummaryScope() {
+      return `${this.match?.id ?? ""}:${useAuthStore().me?.steam_id ?? ""}`;
+    },
     canAct() {
       return this.match.is_in_lineup || this.match.is_organizer;
     },

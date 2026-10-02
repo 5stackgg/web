@@ -103,10 +103,14 @@ export default {
   data() {
     return {
       acknowledgedKey: null as string | null,
-      visitedMatchId: null as string | null,
+      visitedKey: null as string | null,
+      pageVisible: document.visibilityState === "visible",
     };
   },
   computed: {
+    steamId(): string | undefined {
+      return useAuthStore().me?.steam_id;
+    },
     match(): any {
       return useMatchLobbyStore().currentMatch;
     },
@@ -135,6 +139,11 @@ export default {
       }
       return !!this.match && path.startsWith(`/matches/${this.match.id}`);
     },
+    // Only a visible tab counts: MatchmakingConfirm routes background tabs to
+    // the match page too, and the player hasn't seen those.
+    visitKey(): string | null {
+      return this.isOnMatchPage && this.pageVisible ? this.matchKey : null;
+    },
     shouldShow(): boolean {
       if (!this.isAlertable) return false;
       if (this.hasActiveMatchmakingConfirmation) return false;
@@ -144,8 +153,7 @@ export default {
       }
       // If they were on the match (or draft) page and navigated away, don't
       // auto-nag them — they already know. Manual open still works.
-      const autoShow =
-        this.showPref && this.visitedMatchId !== this.match.id;
+      const autoShow = this.showPref && this.visitedKey !== this.matchKey;
       return autoShow || this.manuallyOpened;
     },
     statusLabel(): string {
@@ -168,24 +176,82 @@ export default {
     },
   },
   watch: {
-    matchKey(next, prev) {
-      if (next !== prev && this.acknowledgedKey !== next) {
-        this.acknowledgedKey = null;
-      }
-    },
-    isOnMatchPage: {
+    steamId: {
       immediate: true,
-      handler(onPage: boolean) {
-        if (onPage && this.match) {
-          this.visitedMatchId = this.match.id;
+      handler() {
+        this.restore();
+      },
+    },
+    visitKey: {
+      immediate: true,
+      handler(key: string | null) {
+        if (key && key !== this.visitedKey) {
+          this.visitedKey = key;
+          this.write("visited", key);
         }
       },
     },
   },
+  mounted() {
+    window.addEventListener("storage", this.onStorage);
+    document.addEventListener("visibilitychange", this.onVisibilityChange);
+  },
+  beforeUnmount() {
+    window.removeEventListener("storage", this.onStorage);
+    document.removeEventListener("visibilitychange", this.onVisibilityChange);
+  },
   methods: {
     acknowledge() {
-      this.acknowledgedKey = this.matchKey;
+      if (this.matchKey && this.acknowledgedKey !== this.matchKey) {
+        this.acknowledgedKey = this.matchKey;
+        this.write("acknowledged", this.matchKey);
+      }
       useMatchReadyModal().closeMatchReadyModal();
+    },
+    // One key per value, written only by the tab that changed it: a tab saving
+    // both would put back the other value as it last saw it, which another
+    // tab may have moved on since.
+    storageKey(kind: "acknowledged" | "visited"): string | undefined {
+      return this.steamId
+        ? `5stack:match-ready-modal:${kind}:${this.steamId}`
+        : undefined;
+    },
+    read(kind: "acknowledged" | "visited"): string | null {
+      const key = this.storageKey(kind);
+      if (!key) {
+        return null;
+      }
+      try {
+        return localStorage.getItem(key);
+      } catch {
+        return null;
+      }
+    },
+    write(kind: "acknowledged" | "visited", value: string) {
+      const key = this.storageKey(kind);
+      if (!key) {
+        return;
+      }
+      try {
+        localStorage.setItem(key, value);
+      } catch {}
+    },
+    restore() {
+      this.acknowledgedKey = this.read("acknowledged");
+      this.visitedKey = this.read("visited");
+    },
+    onVisibilityChange() {
+      this.pageVisible = document.visibilityState === "visible";
+    },
+    onStorage(event: StorageEvent) {
+      if (!event.key) {
+        return;
+      }
+      if (event.key === this.storageKey("acknowledged")) {
+        this.acknowledgedKey = event.newValue;
+      } else if (event.key === this.storageKey("visited")) {
+        this.visitedKey = event.newValue;
+      }
     },
   },
 };

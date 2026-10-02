@@ -4,6 +4,7 @@ import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { useNuxtApp } from "#imports";
 import MatchmakingConfirm from "~/components/matchmaking/MatchmakingConfirm.vue";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
+import { useAuthStore } from "~/stores/AuthStore";
 import { fakeServiceWorker } from "../helpers/fakeServiceWorker";
 
 vi.mock("~/composables/useSound", () => ({
@@ -130,5 +131,89 @@ describe("MatchmakingConfirm ring", () => {
     await flushPromises();
 
     expect(worker.closed()).toEqual(["MatchFound:c-2"]);
+  });
+});
+
+describe("MatchmakingConfirm auto-route memory", () => {
+  const steamId = "76561198000000001";
+  const routedKey = `5stack:matchmaking-routed-match:${steamId}`;
+  let push: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(() => {
+    localStorage.clear();
+    useAuthStore().me = { steam_id: steamId } as any;
+    push = vi
+      .spyOn(useNuxtApp().$router, "push")
+      .mockResolvedValue(undefined);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    useAuthStore().me = undefined;
+    localStorage.clear();
+  });
+
+  async function reload() {
+    wrapper?.unmount();
+    wrapper = await mountSuspended(MatchmakingConfirm);
+    await flushPromises();
+  }
+
+  it("does not send the player back to the match after a reload", async () => {
+    setConfirmation(confirmation({ confirmed: 10, matchId: "m-1" }));
+    await reload();
+    expect(push).toHaveBeenCalledTimes(1);
+
+    await reload();
+
+    expect(push).toHaveBeenCalledTimes(1);
+    expect(localStorage.getItem(routedKey)).toBe("m-1");
+  });
+
+  it("still routes an open tab when another tab routed first", async () => {
+    setConfirmation(confirmation());
+    await reload();
+
+    localStorage.setItem(routedKey, "m-1");
+    window.dispatchEvent(
+      new StorageEvent("storage", { key: routedKey, newValue: "m-1" }),
+    );
+    setConfirmation(confirmation({ confirmed: 10, matchId: "m-1" }));
+    await flushPromises();
+
+    expect(push).toHaveBeenCalledWith("/matches/m-1");
+  });
+
+  it("still routes to a new match", async () => {
+    localStorage.setItem(routedKey, "m-1");
+    setConfirmation(confirmation({ confirmed: 10, matchId: "m-2" }));
+    await reload();
+
+    expect(push).toHaveBeenCalledWith("/matches/m-2");
+  });
+
+  it("remembers per player", async () => {
+    localStorage.setItem(
+      "5stack:matchmaking-routed-match:76561198000000002",
+      "m-1",
+    );
+    setConfirmation(confirmation({ confirmed: 10, matchId: "m-1" }));
+    await reload();
+
+    expect(push).toHaveBeenCalledWith("/matches/m-1");
+  });
+
+  it("still routes when storage is blocked", async () => {
+    vi.spyOn(localStorage, "getItem").mockImplementation(() => {
+      throw new Error("blocked");
+    });
+    vi.spyOn(localStorage, "setItem").mockImplementation(() => {
+      throw new Error("blocked");
+    });
+    expect(() => localStorage.getItem(routedKey)).toThrow("blocked");
+    setConfirmation(confirmation({ confirmed: 10, matchId: "m-1" }));
+    await reload();
+
+    expect(push).toHaveBeenCalledWith("/matches/m-1");
   });
 });

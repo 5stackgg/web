@@ -19,6 +19,7 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
   const lobbyChat = ref<Record<string, Map<string, unknown>>>({});
 
   const myMatches = ref([]);
+  const myMatchesLoaded = ref(false);
   const managingMatchesCount = ref(0);
   const managingTournamentsCount = ref(0);
   const liveMatchesCount = ref(0);
@@ -344,6 +345,8 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
       return;
     }
 
+    myMatchesLoaded.value = false;
+
     const subscription = getGraphqlClient().subscribe({
       query: generateSubscription({
         matches: [
@@ -398,13 +401,22 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
           },
           {
             ...simpleMatchFields,
+            can_check_in: true,
+            map_veto_type: true,
+            region: true,
+            options: {
+              ...simpleMatchFields.options,
+              region_veto: true,
+            },
             lineup_1: {
               ...simpleMatchFields.lineup_1,
+              is_ready: true,
               can_pick_map_veto: true,
               can_pick_region_veto: true,
             },
             lineup_2: {
               ...simpleMatchFields.lineup_2,
+              is_ready: true,
               can_pick_map_veto: true,
               can_pick_region_veto: true,
             },
@@ -439,6 +451,7 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
               new Date(match.scheduled_at).getTime() <= cutoff
             );
           });
+          myMatchesLoaded.value = true;
         },
         error: (err: any) => {
           // Surfaces silent schema drift — a bad field here kills the whole
@@ -489,6 +502,7 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
   return {
     lobbyChat,
     myMatches,
+    myMatchesLoaded,
     managingMatchesCount,
     managingTournamentsCount,
     liveMatchesCount,

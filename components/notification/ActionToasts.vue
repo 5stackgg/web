@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, type Component } from "vue";
 import { useEventListener } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
+import { ArrowRight } from "lucide-vue-next";
 import ToastCard from "~/components/notification/ToastCard.vue";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateMutation } from "~/graphql/graphqlGen";
@@ -10,12 +11,22 @@ import { useDraftGamesStore } from "~/stores/DraftGamesStore";
 import { useInvites } from "~/composables/useInvites";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
+import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useRightSidebar } from "~/composables/useRightSidebar";
+import { useMobileToastYield } from "~/composables/useMobileToastYield";
+import { trackActionToastsMounted } from "~/composables/useOffPageToasts";
 import { useCallInvites } from "~/composables/useVoiceAnnouncements";
 import { useVoiceSession } from "~/composables/useVoiceSession";
 import VoiceRosterPreview from "~/components/voice/VoiceRosterPreview.vue";
+import {
+  isOnMatchActionPage,
+  matchActions,
+} from "~/utilities/matchActionToasts";
 
 const { rightSidebarOpen } = useRightSidebar();
+const { yielding, reservedHeight } = useMobileToastYield();
+trackActionToastsMounted();
+const route = useRoute();
 
 type ToastItem = {
   id: string;
@@ -29,7 +40,13 @@ type ToastItem = {
   // above the buttons -- the decision is made on who is in there.
   acceptLabel?: string;
   declineLabel?: string;
+  acceptIcon?: Component;
+  hideDecline?: boolean;
   channelId?: string;
+  // Match actions are the only toasts phones get, and they step aside while
+  // the player is already on that match.
+  mobile?: boolean;
+  onPage?: boolean;
 };
 
 const { t } = useI18n();
@@ -86,8 +103,32 @@ const friendMutation = (steamId: string, accept: boolean) =>
     }),
   });
 
+const matchLobbyStore = useMatchLobbyStore();
+
 const items = computed<ToastItem[]>(() => {
   const list: ToastItem[] = [];
+
+  for (const action of matchActions(
+    matchLobbyStore.myMatches,
+    useAuthStore().me?.steam_id,
+  )) {
+    const team1 = action.match.lineup_1?.name || t("common.tbd");
+    const team2 = action.match.lineup_2?.name || t("common.tbd");
+    list.push({
+      id: action.id,
+      kind: t(`layouts.notifications.toast.match_${action.kind}`),
+      who: `${team1} vs ${team2}`,
+      action: t(`layouts.notifications.toast.match_${action.kind}_action`),
+      detail: "",
+      acceptLabel: t("layouts.notifications.toast.open_match"),
+      acceptIcon: ArrowRight,
+      hideDecline: true,
+      mobile: true,
+      onPage: isOnMatchActionPage(action, route.path),
+      accept: () => navigateTo(action.path),
+      decline: () => {},
+    });
+  }
 
   // Somebody started talking. The same shape as an invite, because it is the
   // same sort of thing: a decision someone is asking you to make now.
@@ -236,6 +277,7 @@ const REUSABLE_ID_SOURCES = [
   { prefix: "friend:", loaded: () => matchmakingStore.friendsLoaded },
   { prefix: "lobby:", loaded: () => matchmakingStore.lobbiesLoaded },
   { prefix: "draft:", loaded: () => notificationStore.draftInvitesLoaded },
+  { prefix: "match-", loaded: () => matchLobbyStore.myMatchesLoaded },
 ];
 
 const dismissed = ref<Set<string>>(new Set());
@@ -333,8 +375,17 @@ watch(
 
 const hoveredGroup = ref<string | null>(null);
 
+// On phones the hub opens as a sheet under this stack, so it yields like the
+// other bottom surfaces do. Desktop places the stack beside the hub instead.
+const phoneYield = computed(() => rightSidebarOpen.value || yielding.value);
+const phoneReserve = computed(() =>
+  reservedHeight.value > 0
+    ? { "--toast-phone-reserve": `${reservedHeight.value}px` }
+    : {},
+);
+
 const visibleItems = computed(() =>
-  items.value.filter((item) => !dismissed.value.has(item.id)),
+  items.value.filter((item) => !dismissed.value.has(item.id) && !item.onPage),
 );
 
 const groups = computed(() => {
@@ -395,10 +446,17 @@ const dismissItem = (item: ToastItem) => {
          last toast's dismissal used to unmount the group mid-leave -- the
          single-toast case (the common one) never played its exit. -->
     <div
-      class="pointer-events-none fixed bottom-4 left-2 right-2 z-[60] hidden flex-col transition-[right] duration-200 ease-linear md:left-auto md:flex md:w-[340px]"
-      :class="
-        rightSidebarOpen ? 'md:right-[30.75rem]' : 'md:right-[4.75rem]'
-      "
+      class="pointer-events-none fixed bottom-4 left-2 right-2 z-[60] flex flex-col transition-[right,bottom,opacity,transform,visibility] duration-200 ease-linear max-md:motion-reduce:transition-none md:left-auto md:w-[340px]"
+      :class="[
+        rightSidebarOpen ? 'md:right-[30.75rem]' : 'md:right-[4.75rem]',
+        phoneYield
+          ? 'max-md:invisible max-md:translate-y-4 max-md:opacity-0'
+          : '',
+        reservedHeight > 0
+          ? 'max-md:bottom-[calc(var(--toast-phone-reserve)_+_1.5rem_+_env(safe-area-inset-bottom))]'
+          : '',
+      ]"
+      :style="phoneReserve"
     >
       <TransitionGroup
         name="toast"
@@ -412,8 +470,11 @@ const dismissItem = (item: ToastItem) => {
         <div
           v-for="entry in displayList"
           :key="entry.key"
-          class="grid grid-rows-[1fr]"
-          :class="hoveredGroup === entry.key ? 'z-50' : 'z-0'"
+          class="grid-rows-[1fr]"
+          :class="[
+            entry.item.mobile ? 'grid' : 'hidden md:grid',
+            hoveredGroup === entry.key ? 'z-50' : 'z-0',
+          ]"
         >
         <div class="min-h-0">
         <div
@@ -440,6 +501,8 @@ const dismissItem = (item: ToastItem) => {
                 :pending="pending[extra.id] || null"
                 :accept-label="extra.acceptLabel"
                 :decline-label="extra.declineLabel"
+                :accept-icon="extra.acceptIcon"
+                :hide-decline="extra.hideDecline"
                 elevated
                 @accept="run(extra, true)"
                 @decline="run(extra, false)"
@@ -476,6 +539,8 @@ const dismissItem = (item: ToastItem) => {
             :pending="pending[entry.item.id] || null"
             :accept-label="entry.item.acceptLabel"
             :decline-label="entry.item.declineLabel"
+            :accept-icon="entry.item.acceptIcon"
+            :hide-decline="entry.item.hideDecline"
             :elevated="hoveredGroup === entry.key"
             @accept="run(entry.item, true)"
             @decline="run(entry.item, false)"

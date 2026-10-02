@@ -5505,7 +5505,14 @@
         "actor_organizer": "An organizer",
         "actor_player": "A player",
         "tournament_registration_invite": "Tournament Registration",
-        "invited_you_register": "invited you to register for"
+        "invited_you_register": "invited you to register for",
+        "match_check_in": "Match Check-in",
+        "match_check_in_action": "Match check-in is open. Check in to play.",
+        "match_region_veto": "Region Veto",
+        "match_region_veto_action": "It's your turn to ban a region.",
+        "match_map_veto": "Map Veto",
+        "match_map_veto_action": "It's your turn in the map veto.",
+        "open_match": "Open Match"
       },
       "season_rebuild": {
         "title": "Season {number} ELO rebuild required",

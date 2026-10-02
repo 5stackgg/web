@@ -5505,7 +5505,14 @@
         "actor_organizer": "أحد المنظمين",
         "actor_player": "أحد اللاعبين",
         "tournament_registration_invite": "التسجيل في بطولة",
-        "invited_you_register": "دعاك للتسجيل في"
+        "invited_you_register": "دعاك للتسجيل في",
+        "match_check_in": "تأكيد حضور المباراة",
+        "match_check_in_action": "تأكيد حضور المباراة مفتوح. أكّد حضورك لتلعب.",
+        "match_region_veto": "Veto المنطقة",
+        "match_region_veto_action": "دورك لحظر منطقة.",
+        "match_map_veto": "Veto الخرائط",
+        "match_map_veto_action": "دورك في Veto الخرائط.",
+        "open_match": "افتح المباراة"
       },
       "season_rebuild": {
         "title": "يلزم إعادة حساب ELO للموسم {number}",

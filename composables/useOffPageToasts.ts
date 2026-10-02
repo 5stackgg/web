@@ -1,4 +1,4 @@
-import { h, watch } from "vue";
+import { h, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { toast, ToastAction } from "~/components/ui/toast";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useDraftGamesStore } from "~/stores/DraftGamesStore";
@@ -10,6 +10,20 @@ type DraftSnapshot = {
   pickLineup: number | null;
   matchId: string | null;
 };
+
+// ActionToasts shows each veto turn itself, but only layouts/default.vue mounts
+// it; pages outside that layout (playback, the chat layout) still need this
+// toast, and pages inside it must not get both.
+const actionToastsMounted = ref(0);
+
+export function trackActionToastsMounted() {
+  onMounted(() => {
+    actionToastsMounted.value++;
+  });
+  onBeforeUnmount(() => {
+    actionToastsMounted.value--;
+  });
+}
 
 export function useOffPageToasts() {
   const draftStore = useDraftGamesStore();
@@ -112,6 +126,7 @@ export function useOffPageToasts() {
         const embeddedDraftId = match.draft_games?.[0]?.id;
 
         if (
+          actionToastsMounted.value === 0 &&
           prev &&
           prev.status === "Veto" &&
           match.status === "Veto" &&

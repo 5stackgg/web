@@ -5505,7 +5505,14 @@
         "actor_organizer": "Bir organizatör",
         "actor_player": "Bir oyuncu",
         "tournament_registration_invite": "Turnuva kaydı",
-        "invited_you_register": "seni kayıt olmaya davet etti:"
+        "invited_you_register": "seni kayıt olmaya davet etti:",
+        "match_check_in": "Maç Katılım Onayı",
+        "match_check_in_action": "Maç katılım onayı açık. Oynamak için katılımını onayla.",
+        "match_region_veto": "Bölge Vetosu",
+        "match_region_veto_action": "Bölge yasaklama sırası sende.",
+        "match_map_veto": "Harita Vetosu",
+        "match_map_veto_action": "Harita vetosunda sıra sende.",
+        "open_match": "Maçı Aç"
       },
       "season_rebuild": {
         "title": "{number}. sezonun ELO'su yeniden hesaplanmalı",

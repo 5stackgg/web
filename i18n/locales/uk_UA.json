@@ -5505,7 +5505,14 @@
         "actor_organizer": "Організатор",
         "actor_player": "Гравець",
         "tournament_registration_invite": "Реєстрація на турнір",
-        "invited_you_register": "запросив(ла) тебе зареєструватися на"
+        "invited_you_register": "запросив(ла) тебе зареєструватися на",
+        "match_check_in": "Підтвердження участі в матчі",
+        "match_check_in_action": "Підтвердження участі в матчі відкрите. Підтверди участь, щоб грати.",
+        "match_region_veto": "Вето регіону",
+        "match_region_veto_action": "Твоя черга банити регіон.",
+        "match_map_veto": "Вето карт",
+        "match_map_veto_action": "Твоя черга у вето карт.",
+        "open_match": "Відкрити матч"
       },
       "season_rebuild": {
         "title": "Потрібен перерахунок ELO сезону {number}",

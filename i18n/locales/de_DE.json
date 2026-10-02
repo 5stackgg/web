@@ -5505,7 +5505,14 @@
         "actor_organizer": "Ein Organisator",
         "actor_player": "Ein Spieler",
         "tournament_registration_invite": "Turnier-Anmeldung",
-        "invited_you_register": "hat dich eingeladen zur Anmeldung bei"
+        "invited_you_register": "hat dich eingeladen zur Anmeldung bei",
+        "match_check_in": "Match-Check-in",
+        "match_check_in_action": "Der Match-Check-in ist offen. Checke ein, um zu spielen.",
+        "match_region_veto": "Region-Veto",
+        "match_region_veto_action": "Du bist dran, eine Region zu bannen.",
+        "match_map_veto": "Map-Veto",
+        "match_map_veto_action": "Du bist beim Map-Veto dran.",
+        "open_match": "Match öffnen"
       },
       "season_rebuild": {
         "title": "ELO-Neuberechnung für Saison {number} erforderlich",

@@ -5505,7 +5505,14 @@
         "actor_organizer": "En arrangør",
         "actor_player": "En spiller",
         "tournament_registration_invite": "Turneringstilmelding",
-        "invited_you_register": "inviterede dig til at tilmelde dig"
+        "invited_you_register": "inviterede dig til at tilmelde dig",
+        "match_check_in": "Kamp-check-in",
+        "match_check_in_action": "Check-in til kampen er åben. Check ind for at spille.",
+        "match_region_veto": "Regionsveto",
+        "match_region_veto_action": "Det er din tur til at bandlyse en region.",
+        "match_map_veto": "Map-veto",
+        "match_map_veto_action": "Det er din tur i map-vetoen.",
+        "open_match": "Åbn kamp"
       },
       "season_rebuild": {
         "title": "ELO for sæson {number} skal genberegnes",

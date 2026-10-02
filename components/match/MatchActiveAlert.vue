@@ -103,7 +103,8 @@ export default {
   data() {
     return {
       acknowledgedKey: null as string | null,
-      visitedMatchId: null as string | null,
+      visitedKey: null as string | null,
+      pageVisible: document.visibilityState === "visible",
     };
   },
   computed: {
@@ -139,6 +140,11 @@ export default {
       }
       return !!this.match && path.startsWith(`/matches/${this.match.id}`);
     },
+    // Only a visible tab counts: MatchmakingConfirm routes background tabs to
+    // the match page too, and the player hasn't seen those.
+    visitKey(): string | null {
+      return this.isOnMatchPage && this.pageVisible ? this.matchKey : null;
+    },
     shouldShow(): boolean {
       if (!this.isAlertable) return false;
       if (this.hasActiveMatchmakingConfirmation) return false;
@@ -148,8 +154,7 @@ export default {
       }
       // If they were on the match (or draft) page and navigated away, don't
       // auto-nag them — they already know. Manual open still works.
-      const autoShow =
-        this.showPref && this.visitedMatchId !== this.match.id;
+      const autoShow = this.showPref && this.visitedKey !== this.matchKey;
       return autoShow || this.manuallyOpened;
     },
     statusLabel(): string {
@@ -184,11 +189,11 @@ export default {
         this.persist();
       }
     },
-    isOnMatchPage: {
+    visitKey: {
       immediate: true,
-      handler(onPage: boolean) {
-        if (onPage && this.match) {
-          this.visitedMatchId = this.match.id;
+      handler(key: string | null) {
+        if (key) {
+          this.visitedKey = key;
           this.persist();
         }
       },
@@ -196,9 +201,11 @@ export default {
   },
   mounted() {
     window.addEventListener("storage", this.onStorage);
+    document.addEventListener("visibilitychange", this.onVisibilityChange);
   },
   beforeUnmount() {
     window.removeEventListener("storage", this.onStorage);
+    document.removeEventListener("visibilitychange", this.onVisibilityChange);
   },
   methods: {
     acknowledge() {
@@ -209,7 +216,7 @@ export default {
     restore() {
       let stored: {
         acknowledgedKey?: string | null;
-        visitedMatchId?: string | null;
+        visitedKey?: string | null;
       } = {};
       try {
         if (this.storageKey) {
@@ -217,7 +224,7 @@ export default {
         }
       } catch {}
       this.acknowledgedKey = stored?.acknowledgedKey ?? null;
-      this.visitedMatchId = stored?.visitedMatchId ?? null;
+      this.visitedKey = stored?.visitedKey ?? null;
     },
     persist() {
       if (!this.storageKey) {
@@ -228,10 +235,13 @@ export default {
           this.storageKey,
           JSON.stringify({
             acknowledgedKey: this.acknowledgedKey,
-            visitedMatchId: this.visitedMatchId,
+            visitedKey: this.visitedKey,
           }),
         );
       } catch {}
+    },
+    onVisibilityChange() {
+      this.pageVisible = document.visibilityState === "visible";
     },
     onStorage(event: StorageEvent) {
       if (event.key && event.key === this.storageKey) {

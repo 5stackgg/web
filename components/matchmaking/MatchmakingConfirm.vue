@@ -168,7 +168,9 @@ export default {
       return useMatchmakingStore().joinedMatchmakingQueues?.confirmation;
     },
     // The api resends confirmation.matchId for as long as the match is
-    // active, so the auto-route guard has to survive a reload.
+    // active, so the auto-route guard has to survive a reload. It is read
+    // when the tab loads and never synced from other tabs: another tab having
+    // routed must not stop this one.
     routedMatchStorageKey(): string | undefined {
       const steamId = useAuthStore().me?.steam_id;
       return steamId
@@ -239,9 +241,6 @@ export default {
       },
     },
   },
-  mounted() {
-    window.addEventListener("storage", this.onStorage);
-  },
   methods: {
     readRoutedMatchId(): string | undefined {
       if (!this.routedMatchStorageKey) {
@@ -260,11 +259,6 @@ export default {
       try {
         localStorage.setItem(this.routedMatchStorageKey, matchId);
       } catch {}
-    },
-    onStorage(event: StorageEvent) {
-      if (event.key && event.key === this.routedMatchStorageKey) {
-        this.routedConfirmedId = event.newValue ?? undefined;
-      }
     },
     ready() {
       if (!this.confirmation) {
@@ -297,7 +291,6 @@ export default {
     },
   },
   beforeUnmount() {
-    window.removeEventListener("storage", this.onStorage);
     if (this.countdownInterval) {
       clearInterval(this.countdownInterval);
     }

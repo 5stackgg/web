@@ -16,6 +16,18 @@ function setMatch(status = "Live", id = "m-1") {
   ] as any;
 }
 
+function stubMatchPage() {
+  return useNuxtApp().$router.addRoute({
+    path: "/matches/m-1",
+    component: { render: () => null },
+  });
+}
+
+function setVisibility(state: DocumentVisibilityState) {
+  vi.spyOn(document, "visibilityState", "get").mockReturnValue(state);
+  document.dispatchEvent(new Event("visibilitychange"));
+}
+
 async function openTab(path = "/") {
   wrapper?.unmount();
   wrapper = await mountSuspended(MatchActiveAlert, { route: path });
@@ -54,11 +66,66 @@ describe("MatchActiveAlert memory", () => {
   });
 
   it("stays closed in a new tab once the player has been on the match page", async () => {
-    const removeRoute = useNuxtApp().$router.addRoute({
-      path: "/matches/m-1",
-      component: { render: () => null },
-    });
+    const removeRoute = stubMatchPage();
     await openTab("/matches/m-1");
+    removeRoute();
+
+    expect((await openTab()).shouldShow).toBeFalsy();
+  });
+
+  it("shows again in a new tab once a match visited early moves to check-in", async () => {
+    setMatch("Scheduled");
+    const removeRoute = stubMatchPage();
+    await openTab("/matches/m-1");
+    removeRoute();
+
+    setMatch("WaitingForCheckIn");
+
+    expect((await openTab()).shouldShow).toBe(true);
+  });
+
+  it("shows again when the match moves on after the player left its page", async () => {
+    setMatch("Veto");
+    const removeRoute = stubMatchPage();
+    await openTab("/matches/m-1");
+    removeRoute();
+    const tab = await openTab();
+    expect(tab.shouldShow).toBeFalsy();
+
+    setMatch("Live");
+    await flushPromises();
+
+    expect(tab.shouldShow).toBe(true);
+  });
+
+  it("stays closed after leaving the page when the match moved on while it was open", async () => {
+    setMatch("Veto");
+    const removeRoute = stubMatchPage();
+    await openTab("/matches/m-1");
+    setMatch("Live");
+    await flushPromises();
+    removeRoute();
+
+    expect((await openTab()).shouldShow).toBeFalsy();
+  });
+
+  it("is not quieted by a hidden tab sitting on the match page", async () => {
+    setVisibility("hidden");
+    const removeRoute = stubMatchPage();
+    await openTab("/matches/m-1");
+    removeRoute();
+
+    setVisibility("visible");
+
+    expect((await openTab()).shouldShow).toBe(true);
+  });
+
+  it("counts a visit once the hidden tab on the match page is brought forward", async () => {
+    setVisibility("hidden");
+    const removeRoute = stubMatchPage();
+    await openTab("/matches/m-1");
+    setVisibility("visible");
+    await flushPromises();
     removeRoute();
 
     expect((await openTab()).shouldShow).toBeFalsy();

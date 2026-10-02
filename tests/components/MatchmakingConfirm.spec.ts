@@ -170,7 +170,7 @@ describe("MatchmakingConfirm auto-route memory", () => {
     expect(localStorage.getItem(routedKey)).toBe("m-1");
   });
 
-  it("does not route a tab to a match another tab already routed to", async () => {
+  it("still routes an open tab when another tab routed first", async () => {
     setConfirmation(confirmation());
     await reload();
 
@@ -181,7 +181,7 @@ describe("MatchmakingConfirm auto-route memory", () => {
     setConfirmation(confirmation({ confirmed: 10, matchId: "m-1" }));
     await flushPromises();
 
-    expect(push).not.toHaveBeenCalled();
+    expect(push).toHaveBeenCalledWith("/matches/m-1");
   });
 
   it("still routes to a new match", async () => {

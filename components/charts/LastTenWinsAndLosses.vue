@@ -21,7 +21,12 @@ ChartJS.register(
 </script>
 
 <template>
-  <Radar :data="data" :options="options" v-if="data" />
+  <!-- Sizing classes land on this wrapper, not the canvas: Chart.js subtracts
+       the canvas's own margins when measuring, so mx-auto on a 0-wide canvas
+       eats the whole container and the chart can never grow back. -->
+  <div>
+    <Radar :data="data" :options="options" v-if="data" />
+  </div>
 </template>
 
 <script lang="ts">

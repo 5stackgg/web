@@ -170,32 +170,23 @@ describe("ServerForm server type", () => {
     );
   });
 
-  it("shows each region as a tile with the nodes that can take the server", async () => {
+  it("shows the nodes and free slots each region has for the server", async () => {
     const wrapper = await mount();
+    const vm = wrapper.vm as any;
 
-    const tiles = Array.from(
-      document.body.querySelectorAll<HTMLElement>(
-        '[data-testid="region-option"]',
-      ),
-    );
     // lv-gs-02 is offline and the GPU-only node has no region.
-    expect(
-      tiles.map((tile) => [
-        tile.querySelector("label")?.textContent?.trim(),
-        tile.querySelector("span.font-mono")?.textContent?.trim(),
-      ]),
-    ).toEqual([
-      ["US East", "Nodes: 1"],
-      ["LV", "Nodes: 1"],
-    ]);
+    expect(vm.regionStats).toEqual({
+      "us-east": { nodes: 1, slots: 4 },
+      lv: { nodes: 1, slots: 4 },
+    });
 
-    radio("region-lv").click();
+    vm.form.setFieldValue("region", "lv");
     await flushPromises();
 
-    expect((wrapper.vm as any).form.values.region).toBe("lv");
     expect(
-      document.body.querySelectorAll('[data-testid="node-option"]'),
-    ).toHaveLength(2);
+      document.body.querySelector('[data-testid="region-capacity"]')
+        ?.textContent,
+    ).toContain("Nodes: 1 · Free slots: 4");
   });
 
   it("lists only the region's nodes, named by id when unlabeled", async () => {

@@ -12,6 +12,18 @@ import {
   FormDescription,
   FormSection,
 } from "~/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+import {
+  SelectItem as RekaSelectItem,
+  SelectItemIndicator as RekaSelectItemIndicator,
+  SelectItemText as RekaSelectItemText,
+} from "reka-ui";
+import { CheckIcon } from "@radix-icons/vue";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import {
   InputGroup,
@@ -25,6 +37,7 @@ import {
   Globe,
   Info,
   Lock,
+  MapPin,
   Search,
   Server,
   X,
@@ -78,43 +91,65 @@ const iconBoxClasses =
           <FormItem>
             <FormLabel>{{ $t("server.form.region") }}</FormLabel>
             <FormControl>
-              <RadioGroup
-                v-bind="componentField"
-                class="grid gap-3 sm:grid-cols-[repeat(auto-fit,minmax(10rem,1fr))]"
-              >
-                <div
-                  v-for="region in server_regions"
-                  :key="region.value"
-                  :class="tileClass(componentField.modelValue === region.value)"
-                  class="items-center gap-3 p-3"
-                  data-testid="region-option"
-                  @click="componentField['onUpdate:modelValue'](region.value)"
+              <Select v-bind="componentField">
+                <SelectTrigger
+                  class="h-14 justify-start gap-3 px-3 text-left"
+                  data-testid="region-trigger"
                 >
-                  <RadioGroupItem
-                    :id="`region-${region.value}`"
+                  <span
+                    :class="[
+                      iconBoxClasses,
+                      componentField.modelValue
+                        ? 'border-[hsl(var(--tac-amber)/0.6)] text-[hsl(var(--tac-amber))]'
+                        : 'text-muted-foreground',
+                    ]"
+                  >
+                    <MapPin class="h-4 w-4" />
+                  </span>
+                  <span class="min-w-0 flex-1 truncate text-sm font-medium">
+                    <SelectValue
+                      :placeholder="$t('server.form.select_region')"
+                    />
+                  </span>
+                  <span
+                    v-if="componentField.modelValue && gameServerNodes.length"
+                    class="hidden shrink-0 font-mono text-[0.7rem] text-muted-foreground sm:inline"
+                    data-testid="region-capacity"
+                  >
+                    {{ regionCapacity(componentField.modelValue) }}
+                  </span>
+                </SelectTrigger>
+                <SelectContent>
+                  <!-- Reka primitives so the capacity sits outside the item
+                       text: the trigger echoes only the region name. -->
+                  <RekaSelectItem
+                    v-for="region in server_regions"
+                    :key="region.value"
                     :value="region.value"
-                  />
-                  <div class="grid min-w-0 flex-1 gap-1.5 leading-none">
-                    <label
-                      :for="`region-${region.value}`"
-                      class="cursor-pointer truncate text-sm font-medium leading-none"
-                    >
-                      {{ region.description || region.value }}
-                    </label>
+                    class="relative flex w-full cursor-default select-none items-center gap-6 rounded-sm py-2.5 pl-3 pr-8 text-sm outline-none focus:bg-accent focus:text-accent-foreground"
+                  >
                     <span
-                      v-if="gameServerNodes.length > 0"
-                      class="font-mono text-[0.7rem] leading-none text-muted-foreground"
-                      :class="{ 'opacity-60': !regionNodeCounts[region.value] }"
+                      class="absolute right-2 flex h-3.5 w-3.5 items-center justify-center"
                     >
-                      {{
-                        $t("server.form.region_nodes", {
-                          count: regionNodeCounts[region.value] ?? 0,
-                        })
-                      }}
+                      <RekaSelectItemIndicator>
+                        <CheckIcon class="h-4 w-4" />
+                      </RekaSelectItemIndicator>
                     </span>
-                  </div>
-                </div>
-              </RadioGroup>
+                    <RekaSelectItemText>
+                      {{ region.description || region.value }}
+                    </RekaSelectItemText>
+                    <span
+                      v-if="gameServerNodes.length"
+                      class="ml-auto font-mono text-[0.7rem] text-muted-foreground"
+                      :class="{
+                        'opacity-60': !regionStats[region.value]?.nodes,
+                      }"
+                    >
+                      {{ regionCapacity(region.value) }}
+                    </span>
+                  </RekaSelectItem>
+                </SelectContent>
+              </Select>
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -1114,6 +1149,7 @@ export default {
           region: node.e_region?.description || node.region,
           regionValue: node.region,
           gpu: !!node.gpu,
+          slots: node.available_dedicated_slot_count ?? 0,
           reason: this.nodeReason(node),
           detail: [
             node.public_ip || node.node_ip,
@@ -1142,15 +1178,17 @@ export default {
             a.name.localeCompare(b.name),
         );
     },
-    // Nodes that can take the server, per region, for the region tiles.
-    regionNodeCounts(): Record<string, number> {
-      const counts: Record<string, number> = {};
+    // Nodes that can take the server, and their free slots, per region.
+    regionStats(): Record<string, { nodes: number; slots: number }> {
+      const stats: Record<string, { nodes: number; slots: number }> = {};
       for (const node of this.nodeOptions) {
         if (!node.reason && node.regionValue) {
-          counts[node.regionValue] = (counts[node.regionValue] ?? 0) + 1;
+          const region = (stats[node.regionValue] ??= { nodes: 0, slots: 0 });
+          region.nodes += 1;
+          region.slots += node.slots;
         }
       }
-      return counts;
+      return stats;
     },
     // A GPU-only node has no region, so it never lists here.
     regionNodeOptions(): Array<Record<string, any>> {
@@ -1441,6 +1479,19 @@ export default {
           this.customModes[0]?.id ?? SERVER_TYPE_CUSTOM,
         );
       }
+    },
+    regionCapacity(region: string): string {
+      const stats = this.regionStats[region] ?? { nodes: 0, slots: 0 };
+      return [
+        this.$t("server.form.region_nodes", { count: stats.nodes }),
+        stats.nodes
+          ? this.$t("pages.dedicated_servers.detail.move.free_slots", {
+              count: stats.slots,
+            })
+          : null,
+      ]
+        .filter(Boolean)
+        .join(" · ");
     },
     kindLock(kind: string): string | null {
       if (this.form.values.game === "csgo" && kind !== "valve") {

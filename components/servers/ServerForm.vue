@@ -15,11 +15,15 @@ import {
 import {
   Select,
   SelectContent,
-  SelectGroup,
-  SelectItem,
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import {
+  SelectItem as RekaSelectItem,
+  SelectItemIndicator as RekaSelectItemIndicator,
+  SelectItemText as RekaSelectItemText,
+} from "reka-ui";
+import { CheckIcon } from "@radix-icons/vue";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import {
   InputGroup,
@@ -33,12 +37,18 @@ import {
   Globe,
   Info,
   Lock,
+  MapPin,
   Search,
   Server,
   X,
 } from "lucide-vue-next";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
+import {
+  filterTriggerActive,
+  filterTriggerBase,
+  filterTriggerIdle,
+} from "~/utilities/tacticalClasses";
 
 const showConnectPassword = ref(false);
 const showRconPassword = ref(false);
@@ -74,38 +84,61 @@ const iconBoxClasses =
     :class="{ 'pb-24': !server }"
   >
     <FormSection :title="$t('server.form.where_it_runs')">
-      <div class="space-y-3">
-        <!-- The region comes first whatever hosts the server: it is where
-             an external server is listed, and it narrows the nodes below. -->
-        <div v-if="!isEditingGameServerNode" class="grid sm:grid-cols-2">
-          <FormField v-slot="{ componentField }" name="region">
-            <FormItem>
-              <FormLabel>{{ $t("server.form.region") }}</FormLabel>
-              <Select v-bind="componentField">
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue
-                      :placeholder="$t('server.form.select_region')"
-                    />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem
-                      :value="region.value"
-                      v-for="region in server_regions"
-                      :key="region.value"
-                    >
-                      {{ region.description || region.value }}
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          </FormField>
-        </div>
+      <!-- The region scopes the whole section, like the game does the next
+           one: it is where an external server is listed, and it narrows the
+           nodes below. A node server's region is its node's. -->
+      <template v-if="!isEditingGameServerNode" #actions>
+        <FormField v-slot="{ componentField }" name="region">
+          <Select v-bind="componentField">
+            <SelectTrigger
+              :aria-label="$t('server.form.region')"
+              data-testid="region-trigger"
+              :class="[
+                filterTriggerBase,
+                form.errors.region
+                  ? 'border-destructive/60 text-destructive'
+                  : componentField.modelValue
+                    ? filterTriggerActive
+                    : filterTriggerIdle,
+                'w-auto max-w-[16rem] shadow-none',
+              ]"
+            >
+              <MapPin class="h-3.5 w-3.5 shrink-0" />
+              <SelectValue :placeholder="$t('server.form.select_region')" />
+            </SelectTrigger>
+            <SelectContent>
+              <!-- Reka primitives so the node count sits outside the item
+                   text: the trigger echoes only the region name. -->
+              <RekaSelectItem
+                v-for="region in server_regions"
+                :key="region.value"
+                :value="region.value"
+                class="relative flex w-full cursor-default select-none items-center gap-6 rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none focus:bg-accent focus:text-accent-foreground"
+              >
+                <span
+                  class="absolute right-2 flex h-3.5 w-3.5 items-center justify-center"
+                >
+                  <RekaSelectItemIndicator>
+                    <CheckIcon class="h-4 w-4" />
+                  </RekaSelectItemIndicator>
+                </span>
+                <RekaSelectItemText>
+                  {{ region.description || region.value }}
+                </RekaSelectItemText>
+                <span
+                  v-if="regionNodeCounts[region.value]"
+                  class="ml-auto inline-flex items-center gap-1 font-mono text-[0.65rem] tabular-nums text-muted-foreground"
+                >
+                  <Server class="h-3 w-3" />
+                  {{ regionNodeCounts[region.value] }}
+                </span>
+              </RekaSelectItem>
+            </SelectContent>
+          </Select>
+        </FormField>
+      </template>
 
+      <div class="space-y-3">
         <!-- Inside a <form> reka's radio stops its click from bubbling,
              so a tile's @click never sees a click on the circle. -->
         <RadioGroup
@@ -1127,6 +1160,16 @@ export default {
             Number(!!a.reason) - Number(!!b.reason) ||
             a.name.localeCompare(b.name),
         );
+    },
+    // Nodes that can take the server, per region, for the region picker.
+    regionNodeCounts(): Record<string, number> {
+      const counts: Record<string, number> = {};
+      for (const node of this.nodeOptions) {
+        if (!node.reason && node.regionValue) {
+          counts[node.regionValue] = (counts[node.regionValue] ?? 0) + 1;
+        }
+      }
+      return counts;
     },
     // A GPU-only node has no region, so it never lists here.
     regionNodeOptions(): Array<Record<string, any>> {

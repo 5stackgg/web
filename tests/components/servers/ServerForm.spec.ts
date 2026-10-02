@@ -170,6 +170,19 @@ describe("ServerForm server type", () => {
     );
   });
 
+  it("counts the nodes each region can put the server on", async () => {
+    const wrapper = await mount();
+
+    // lv-gs-02 is offline and the GPU-only node has no region.
+    expect((wrapper.vm as any).regionNodeCounts).toEqual({
+      "us-east": 1,
+      lv: 1,
+    });
+    expect(
+      document.body.querySelector('[data-testid="region-trigger"]'),
+    ).not.toBeNull();
+  });
+
   it("lists only the region's nodes, named by id when unlabeled", async () => {
     const wrapper = await mount();
 

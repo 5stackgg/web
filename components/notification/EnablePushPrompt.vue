@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { onBeforeUnmount, ref, watch } from "vue";
+import { nextTick, onBeforeUnmount, ref, watch } from "vue";
+import { useResizeObserver } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import { BellRing, X } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
@@ -35,11 +36,24 @@ const push = usePushNotifications();
 const { installed } = usePwaInstall();
 
 const visible = ref(false);
-const { holdBottom } = useMobileToastYield();
+const banner = ref<HTMLElement | null>(null);
+const { reserveBottom } = useMobileToastYield();
 
-watch(visible, (showing) => {
-  holdBottom("enable-push-prompt", showing);
+// The banner waits for an answer with no timeout, so the match toasts move up
+// above it rather than hiding for as long as it is ignored.
+function reserveBannerSpace() {
+  reserveBottom(
+    "enable-push-prompt",
+    visible.value ? (banner.value?.offsetHeight ?? 0) : 0,
+  );
+}
+
+watch(visible, async () => {
+  await nextTick();
+  reserveBannerSpace();
 });
+
+useResizeObserver(banner, reserveBannerSpace);
 
 let checked = false;
 let showTimer: ReturnType<typeof setTimeout> | null = null;
@@ -134,7 +148,7 @@ async function enable() {
 watch([() => authStore.me, installed], evaluate, { immediate: true });
 
 onBeforeUnmount(() => {
-  holdBottom("enable-push-prompt", false);
+  reserveBottom("enable-push-prompt", 0);
   if (showTimer) {
     clearTimeout(showTimer);
   }
@@ -150,6 +164,7 @@ onBeforeUnmount(() => {
   >
     <div
       v-if="visible"
+      ref="banner"
       class="fixed inset-x-3 bottom-3 z-50 mx-auto flex max-w-md items-start gap-3 rounded-lg border border-[hsl(var(--tac-amber))]/25 bg-[hsl(var(--card)/0.97)] p-3 shadow-2xl [backdrop-filter:blur(8px)] [margin-bottom:env(safe-area-inset-bottom)]"
       role="region"
       :aria-label="$t('push_prompt.title')"

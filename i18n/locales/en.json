@@ -8513,6 +8513,10 @@
     "locked_in": "Locked In",
     "check_in": "Check In",
     "go_to_match": "Go to Match",
+    "toasts": {
+      "your_veto_title": "Your turn to veto",
+      "your_veto_desc": "You're up — ban or pick on the match page."
+    },
     "disable_match_ready_modal_hint": "Don't want this popup?",
     "disable_match_ready_modal_action": "Disable in Matchmaking Settings",
     "invites": "Invites",

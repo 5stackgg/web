@@ -8513,6 +8513,10 @@
     "locked_in": "已鎖定",
     "check_in": "簽到",
     "go_to_match": "前往比賽",
+    "toasts": {
+      "your_veto_title": "輪到您 BP",
+      "your_veto_desc": "輪到您了——在比賽頁面禁用或選擇地圖。"
+    },
     "disable_match_ready_modal_hint": "不想要這個彈出視窗？",
     "disable_match_ready_modal_action": "在配對設定中停用",
     "invites": "邀請",

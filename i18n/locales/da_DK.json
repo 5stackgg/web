@@ -8513,6 +8513,10 @@
     "locked_in": "Låst",
     "check_in": "Check ind",
     "go_to_match": "Gå til kampen",
+    "toasts": {
+      "your_veto_title": "Din tur til at vetoe",
+      "your_veto_desc": "Det er dig — ban eller pick på kampsiden."
+    },
     "disable_match_ready_modal_hint": "Vil du ikke se denne popup?",
     "disable_match_ready_modal_action": "Slå fra i matchmaking-indstillinger",
     "invites": "Invitationer",

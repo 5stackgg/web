@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { defineComponent, h } from "vue";
+import ActionToasts from "~/components/notification/ActionToasts.vue";
 import { useOffPageToasts } from "~/composables/useOffPageToasts";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useDraftGamesStore } from "~/stores/DraftGamesStore";
@@ -14,6 +15,14 @@ vi.mock("~/components/ui/toast", async (importOriginal) => ({
   toast,
 }));
 
+vi.mock("~/graphql/getGraphqlClient", () => ({
+  default: () => ({
+    query: vi.fn().mockResolvedValue({ data: {} }),
+    mutate: vi.fn().mockResolvedValue({ data: {} }),
+    subscribe: () => ({ subscribe: () => ({ unsubscribe() {} }) }),
+  }),
+}));
+
 const ME = "76561198000000001";
 
 const Host = defineComponent({
@@ -23,21 +32,27 @@ const Host = defineComponent({
   },
 });
 
-let unmount: (() => void) | undefined;
+const cleanup: Array<() => void> = [];
+
+async function mount(component: any, options: Record<string, any> = {}) {
+  const wrapper = await mountSuspended(component, options);
+  cleanup.push(() => wrapper.unmount());
+  await flushPromises();
+  return wrapper;
+}
 
 beforeEach(async () => {
   useAuthStore().me = { steam_id: ME } as any;
   useMatchLobbyStore().myMatches = [] as any;
   useDraftGamesStore().myDraftGame = undefined;
-  const wrapper = await mountSuspended(Host);
-  unmount = () => wrapper.unmount();
-  await flushPromises();
+  await mount(Host);
   toast.mockReset();
 });
 
 afterEach(() => {
-  unmount?.();
-  unmount = undefined;
+  while (cleanup.length) {
+    cleanup.pop()!();
+  }
   useMatchLobbyStore().myMatches = [] as any;
   useDraftGamesStore().myDraftGame = undefined;
 });
@@ -55,15 +70,30 @@ function vetoMatch(myTurn: boolean) {
   };
 }
 
+async function takeVetoTurn() {
+  useMatchLobbyStore().myMatches = [vetoMatch(false)] as any;
+  await flushPromises();
+  useMatchLobbyStore().myMatches = [vetoMatch(true)] as any;
+  await flushPromises();
+}
+
 describe("useOffPageToasts", () => {
-  it("leaves veto turns to the match action toasts", async () => {
-    useMatchLobbyStore().myMatches = [vetoMatch(false)] as any;
-    await flushPromises();
+  it("leaves veto turns to the match action toasts when they are mounted", async () => {
+    await mount(ActionToasts, {
+      global: { stubs: { VoiceRosterPreview: true } },
+    });
+    toast.mockReset();
 
-    useMatchLobbyStore().myMatches = [vetoMatch(true)] as any;
-    await flushPromises();
+    await takeVetoTurn();
 
-    expect(titles()).not.toContain("Your turn to veto");
+    expect(toast).not.toHaveBeenCalled();
+  });
+
+  it("still nudges a veto turn once on pages without the match action toasts", async () => {
+    await takeVetoTurn();
+
+    expect(toast).toHaveBeenCalledTimes(1);
+    expect(titles()).toEqual(["Your turn to veto"]);
   });
 
   it("still tells a captain it is their draft pick", async () => {

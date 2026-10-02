@@ -8513,6 +8513,10 @@
     "locked_in": "已锁定",
     "check_in": "签到",
     "go_to_match": "前往比赛",
+    "toasts": {
+      "your_veto_title": "轮到您 BP",
+      "your_veto_desc": "轮到您了——在比赛页面禁用或选择地图。"
+    },
     "disable_match_ready_modal_hint": "不想要此弹窗？",
     "disable_match_ready_modal_action": "在匹配设置中禁用",
     "invites": "邀请",

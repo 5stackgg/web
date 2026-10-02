@@ -8513,6 +8513,10 @@
     "locked_in": "Confirmado y bloqueado",
     "check_in": "Check-in",
     "go_to_match": "Ir a la partida",
+    "toasts": {
+      "your_veto_title": "Tu turno de veto",
+      "your_veto_desc": "Te toca: banea o elige en la página de la partida."
+    },
     "disable_match_ready_modal_hint": "¿No quieres este aviso?",
     "disable_match_ready_modal_action": "Desactivar en ajustes de matchmaking",
     "invites": "Invitaciones",

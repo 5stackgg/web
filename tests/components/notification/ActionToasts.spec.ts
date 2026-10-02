@@ -3,12 +3,37 @@ import { flushPromises } from "@vue/test-utils";
 import { mockNuxtImport, mountSuspended } from "@nuxt/test-utils/runtime";
 import ActionToasts from "~/components/notification/ActionToasts.vue";
 import MatchActiveAlert from "~/components/match/MatchActiveAlert.vue";
+import EnablePushPrompt from "~/components/notification/EnablePushPrompt.vue";
 import { useRightSidebar } from "~/composables/useRightSidebar";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import { useNotificationStore } from "~/stores/NotificationStore";
 import { useCallInvites } from "~/composables/useVoiceAnnouncements";
+
+vi.mock("~/composables/usePwaInstall", async () => {
+  const { ref } = await import("vue");
+  return { usePwaInstall: () => ({ installed: ref(true) }) };
+});
+
+vi.mock("~/composables/usePushNotifications", async (importOriginal) => {
+  const { ref } = await import("vue");
+  return {
+    ...(await importOriginal<
+      typeof import("~/composables/usePushNotifications")
+    >()),
+    isPushSupported: () => true,
+    usePushNotifications: () => ({
+      refresh: async () => {},
+      subscribe: async () => false,
+      busy: ref(false),
+      permission: ref("default"),
+      subscribed: ref(false),
+      isDenied: ref(false),
+      lastError: ref(null),
+    }),
+  };
+});
 
 vi.mock("~/graphql/getGraphqlClient", () => ({
   default: () => ({
@@ -379,6 +404,29 @@ function setMyMatches(matches: any[]) {
   (matchLobby as any).myMatchesLoaded = true;
 }
 
+function stackYielding(wrapper: Wrapper) {
+  return wrapper.find(".fixed").classes().includes("max-md:invisible");
+}
+
+function showMatchPopup() {
+  useAuthStore().me = {
+    steam_id: ME,
+    current_lobby_id: null,
+    show_match_ready_modal: true,
+  } as any;
+}
+
+async function mountPushBanner() {
+  const banner = await mountSuspended(EnablePushPrompt);
+  await new Promise((resolve) => setTimeout(resolve, 1300));
+  await flushPromises();
+  expect(
+    banner.find('[aria-label="Turn on notifications"]').exists(),
+    "push banner",
+  ).toBe(true);
+  return banner;
+}
+
 function matchToast(wrapper: Wrapper) {
   return wrapper
     .findAll(".toast-card")
@@ -538,7 +586,7 @@ describe("ActionToasts match actions", () => {
     expect(matchToast(wrapper)).toBeUndefined();
   });
 
-  it("steps aside on phones while the mobile hub is open", async () => {
+  it("steps aside on phones while the mobile hub is open, and comes back when it closes", async () => {
     setMyMatches([myMatch()]);
     useRightSidebar().setRightSidebarOpen(true);
 
@@ -546,19 +594,20 @@ describe("ActionToasts match actions", () => {
       const wrapper = await mountToasts();
 
       expect(matchToast(wrapper)).toBeDefined();
-      expect(wrapper.find(".fixed").classes()).toContain("max-md:invisible");
+      expect(stackYielding(wrapper)).toBe(true);
+
+      useRightSidebar().setRightSidebarOpen(false);
+      await flushPromises();
+
+      expect(stackYielding(wrapper)).toBe(false);
     } finally {
       useRightSidebar().setRightSidebarOpen(false);
     }
   });
 
-  it("steps aside on phones while the match popup is open", async () => {
+  it("steps aside on phones while the match popup is open, and comes back when it is answered", async () => {
     setMyMatches([myMatch()]);
-    useAuthStore().me = {
-      steam_id: ME,
-      current_lobby_id: null,
-      show_match_ready_modal: true,
-    } as any;
+    showMatchPopup();
 
     const alert = await mountSuspended(MatchActiveAlert);
     try {
@@ -568,9 +617,57 @@ describe("ActionToasts match actions", () => {
       const wrapper = await mountToasts();
 
       expect(matchToast(wrapper)).toBeDefined();
-      expect(wrapper.find(".fixed").classes()).toContain("max-md:invisible");
+      expect(stackYielding(wrapper)).toBe(true);
+
+      (alert.vm as any).acknowledge();
+      await flushPromises();
+
+      expect((alert.vm as any).shouldShow).toBeFalsy();
+      expect(stackYielding(wrapper)).toBe(false);
     } finally {
       alert.unmount();
+    }
+  });
+
+  it("comes back on phones when the match popup unmounts", async () => {
+    setMyMatches([myMatch()]);
+    showMatchPopup();
+
+    const alert = await mountSuspended(MatchActiveAlert);
+    await flushPromises();
+    const wrapper = await mountToasts();
+    expect(stackYielding(wrapper)).toBe(true);
+
+    alert.unmount();
+    await flushPromises();
+
+    expect(stackYielding(wrapper)).toBe(false);
+  });
+
+  it("stays up on phones above the push banner instead of hiding behind it", async () => {
+    setMyMatches([myMatch()]);
+    const height = vi
+      .spyOn(HTMLElement.prototype, "offsetHeight", "get")
+      .mockReturnValue(88);
+
+    const banner = await mountPushBanner();
+    try {
+      const wrapper = await mountToasts();
+      const container = wrapper.find(".fixed");
+
+      expect(matchToast(wrapper)).toBeDefined();
+      expect(stackYielding(wrapper)).toBe(false);
+      expect(container.attributes("style")).toContain(
+        "--toast-phone-reserve: 88px",
+      );
+
+      banner.unmount();
+      await flushPromises();
+
+      expect(container.attributes("style") ?? "").not.toContain("88px");
+    } finally {
+      height.mockRestore();
+      banner.unmount();
     }
   });
 

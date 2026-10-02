@@ -1,7 +1,8 @@
-import { h, watch } from "vue";
+import { h, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { toast, ToastAction } from "~/components/ui/toast";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useDraftGamesStore } from "~/stores/DraftGamesStore";
+import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 
 type DraftSnapshot = {
   id: string;
@@ -10,8 +11,23 @@ type DraftSnapshot = {
   matchId: string | null;
 };
 
+// ActionToasts shows each veto turn itself, but only layouts/default.vue mounts
+// it; pages outside that layout (playback, the chat layout) still need this
+// toast, and pages inside it must not get both.
+const actionToastsMounted = ref(0);
+
+export function trackActionToastsMounted() {
+  onMounted(() => {
+    actionToastsMounted.value++;
+  });
+  onBeforeUnmount(() => {
+    actionToastsMounted.value--;
+  });
+}
+
 export function useOffPageToasts() {
   const draftStore = useDraftGamesStore();
+  const matchStore = useMatchLobbyStore();
   const auth = useAuthStore();
   const router = useRouter();
   const { $i18n } = useNuxtApp();
@@ -85,6 +101,54 @@ export function useOffPageToasts() {
         pickLineup,
         matchId: room.match_id ?? null,
       };
+    },
+    { deep: true },
+  );
+
+  let prevMatches = new Map<string, { status: string; canPick: boolean }>();
+
+  watch(
+    () => matchStore.myMatches,
+    (matches: any[]) => {
+      const next = new Map<string, { status: string; canPick: boolean }>();
+
+      for (const match of matches || []) {
+        const canPick =
+          !!match.is_in_lineup &&
+          !!(
+            match.lineup_1?.can_pick_map_veto ||
+            match.lineup_2?.can_pick_map_veto ||
+            match.lineup_1?.can_pick_region_veto ||
+            match.lineup_2?.can_pick_region_veto
+          );
+
+        const prev = prevMatches.get(match.id);
+        const embeddedDraftId = match.draft_games?.[0]?.id;
+
+        if (
+          actionToastsMounted.value === 0 &&
+          prev &&
+          prev.status === "Veto" &&
+          match.status === "Veto" &&
+          canPick &&
+          !prev.canPick &&
+          !onPage("/matches", match.id) &&
+          !(embeddedDraftId && onPage("/draft-room", embeddedDraftId))
+        ) {
+          toast({
+            title: t("matchmaking.toasts.your_veto_title"),
+            description: t("matchmaking.toasts.your_veto_desc"),
+            action: goAction(
+              t("matchmaking.go_to_match"),
+              `/matches/${match.id}`,
+            ),
+          });
+        }
+
+        next.set(match.id, { status: match.status, canPick });
+      }
+
+      prevMatches = next;
     },
     { deep: true },
   );

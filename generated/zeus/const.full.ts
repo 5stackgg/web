@@ -38,6 +38,9 @@ export const AllTypesProps: Record<string,any> = {
 	ServerMapRotationInput:{
 		map_ids:"uuid"
 	},
+	ServerPluginConfigInput:{
+		config:"jsonb"
+	},
 	ServerPluginInput:{
 
 	},
@@ -7249,10 +7252,118 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"game_modes_set_input",
 		where:"game_modes_bool_exp"
 	},
+	game_plugin_cvars_aggregate_bool_exp:{
+		count:"game_plugin_cvars_aggregate_bool_exp_count"
+	},
+	game_plugin_cvars_aggregate_bool_exp_count:{
+		arguments:"game_plugin_cvars_select_column",
+		filter:"game_plugin_cvars_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	game_plugin_cvars_aggregate_fields:{
+		count:{
+			columns:"game_plugin_cvars_select_column"
+		}
+	},
+	game_plugin_cvars_aggregate_order_by:{
+		count:"order_by",
+		max:"game_plugin_cvars_max_order_by",
+		min:"game_plugin_cvars_min_order_by"
+	},
+	game_plugin_cvars_arr_rel_insert_input:{
+		data:"game_plugin_cvars_insert_input",
+		on_conflict:"game_plugin_cvars_on_conflict"
+	},
+	game_plugin_cvars_bool_exp:{
+		_and:"game_plugin_cvars_bool_exp",
+		_not:"game_plugin_cvars_bool_exp",
+		_or:"game_plugin_cvars_bool_exp",
+		default_value:"String_comparison_exp",
+		description:"String_comparison_exp",
+		flags:"String_comparison_exp",
+		kind:"String_comparison_exp",
+		name:"String_comparison_exp",
+		plugin:"game_plugins_bool_exp",
+		plugin_slug:"String_comparison_exp",
+		reported_at:"timestamptz_comparison_exp",
+		runtime:"String_comparison_exp",
+		version:"String_comparison_exp"
+	},
+	game_plugin_cvars_constraint: "enum" as const,
+	game_plugin_cvars_insert_input:{
+		plugin:"game_plugins_obj_rel_insert_input",
+		reported_at:"timestamptz"
+	},
+	game_plugin_cvars_max_order_by:{
+		default_value:"order_by",
+		description:"order_by",
+		flags:"order_by",
+		kind:"order_by",
+		name:"order_by",
+		plugin_slug:"order_by",
+		reported_at:"order_by",
+		runtime:"order_by",
+		version:"order_by"
+	},
+	game_plugin_cvars_min_order_by:{
+		default_value:"order_by",
+		description:"order_by",
+		flags:"order_by",
+		kind:"order_by",
+		name:"order_by",
+		plugin_slug:"order_by",
+		reported_at:"order_by",
+		runtime:"order_by",
+		version:"order_by"
+	},
+	game_plugin_cvars_on_conflict:{
+		constraint:"game_plugin_cvars_constraint",
+		update_columns:"game_plugin_cvars_update_column",
+		where:"game_plugin_cvars_bool_exp"
+	},
+	game_plugin_cvars_order_by:{
+		default_value:"order_by",
+		description:"order_by",
+		flags:"order_by",
+		kind:"order_by",
+		name:"order_by",
+		plugin:"game_plugins_order_by",
+		plugin_slug:"order_by",
+		reported_at:"order_by",
+		runtime:"order_by",
+		version:"order_by"
+	},
+	game_plugin_cvars_pk_columns_input:{
+
+	},
+	game_plugin_cvars_select_column: "enum" as const,
+	game_plugin_cvars_set_input:{
+		reported_at:"timestamptz"
+	},
+	game_plugin_cvars_stream_cursor_input:{
+		initial_value:"game_plugin_cvars_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	game_plugin_cvars_stream_cursor_value_input:{
+		reported_at:"timestamptz"
+	},
+	game_plugin_cvars_update_column: "enum" as const,
+	game_plugin_cvars_updates:{
+		_set:"game_plugin_cvars_set_input",
+		where:"game_plugin_cvars_bool_exp"
+	},
+	game_plugin_installs:{
+		config:{
+
+		}
+	},
 	game_plugin_installs_aggregate_fields:{
 		count:{
 			columns:"game_plugin_installs_select_column"
 		}
+	},
+	game_plugin_installs_append_input:{
+		config:"jsonb"
 	},
 	game_plugin_installs_bool_exp:{
 		_and:"game_plugin_installs_bool_exp",
@@ -7260,6 +7371,7 @@ export const AllTypesProps: Record<string,any> = {
 		_or:"game_plugin_installs_bool_exp",
 		cfg:"String_comparison_exp",
 		channel:"e_game_plugin_channels_enum_comparison_exp",
+		config:"jsonb_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
 		disable_server_guidelines:"Boolean_comparison_exp",
 		enabled:"Boolean_comparison_exp",
@@ -7272,8 +7384,18 @@ export const AllTypesProps: Record<string,any> = {
 		version:"String_comparison_exp"
 	},
 	game_plugin_installs_constraint: "enum" as const,
+	game_plugin_installs_delete_at_path_input:{
+
+	},
+	game_plugin_installs_delete_elem_input:{
+
+	},
+	game_plugin_installs_delete_key_input:{
+
+	},
 	game_plugin_installs_insert_input:{
 		channel:"e_game_plugin_channels_enum",
+		config:"jsonb",
 		created_at:"timestamptz",
 		plugin:"game_plugins_obj_rel_insert_input",
 		updated_at:"timestamptz"
@@ -7290,6 +7412,7 @@ export const AllTypesProps: Record<string,any> = {
 	game_plugin_installs_order_by:{
 		cfg:"order_by",
 		channel:"order_by",
+		config:"order_by",
 		created_at:"order_by",
 		disable_server_guidelines:"order_by",
 		enabled:"order_by",
@@ -7304,9 +7427,13 @@ export const AllTypesProps: Record<string,any> = {
 	game_plugin_installs_pk_columns_input:{
 
 	},
+	game_plugin_installs_prepend_input:{
+		config:"jsonb"
+	},
 	game_plugin_installs_select_column: "enum" as const,
 	game_plugin_installs_set_input:{
 		channel:"e_game_plugin_channels_enum",
+		config:"jsonb",
 		created_at:"timestamptz",
 		updated_at:"timestamptz"
 	},
@@ -7316,11 +7443,17 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	game_plugin_installs_stream_cursor_value_input:{
 		channel:"e_game_plugin_channels_enum",
+		config:"jsonb",
 		created_at:"timestamptz",
 		updated_at:"timestamptz"
 	},
 	game_plugin_installs_update_column: "enum" as const,
 	game_plugin_installs_updates:{
+		_append:"game_plugin_installs_append_input",
+		_delete_at_path:"game_plugin_installs_delete_at_path_input",
+		_delete_elem:"game_plugin_installs_delete_elem_input",
+		_delete_key:"game_plugin_installs_delete_key_input",
+		_prepend:"game_plugin_installs_prepend_input",
 		_set:"game_plugin_installs_set_input",
 		where:"game_plugin_installs_bool_exp"
 	},
@@ -7478,7 +7611,13 @@ export const AllTypesProps: Record<string,any> = {
 		size:"order_by"
 	},
 	game_plugins:{
+		config_default:{
+
+		},
 		config_schema:{
+
+		},
+		config_shipped:{
 
 		},
 		game_modes:{
@@ -7507,6 +7646,16 @@ export const AllTypesProps: Record<string,any> = {
 		panel:{
 
 		},
+		reported_cvars:{
+			distinct_on:"game_plugin_cvars_select_column",
+			order_by:"game_plugin_cvars_order_by",
+			where:"game_plugin_cvars_bool_exp"
+		},
+		reported_cvars_aggregate:{
+			distinct_on:"game_plugin_cvars_select_column",
+			order_by:"game_plugin_cvars_order_by",
+			where:"game_plugin_cvars_bool_exp"
+		},
 		versions:{
 			distinct_on:"game_plugin_versions_select_column",
 			order_by:"game_plugin_versions_order_by",
@@ -7527,7 +7676,9 @@ export const AllTypesProps: Record<string,any> = {
 		}
 	},
 	game_plugins_append_input:{
+		config_default:"jsonb",
 		config_schema:"jsonb",
+		config_shipped:"jsonb",
 		map_rotation:"jsonb",
 		panel:"jsonb",
 		wiring:"jsonb"
@@ -7537,10 +7688,14 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"game_plugins_bool_exp",
 		_or:"game_plugins_bool_exp",
 		author:"String_comparison_exp",
+		config_cvar:"String_comparison_exp",
+		config_default:"jsonb_comparison_exp",
 		config_path:"String_comparison_exp",
 		config_schema:"jsonb_comparison_exp",
+		config_shipped:"jsonb_comparison_exp",
 		cvars:"String_array_comparison_exp",
 		description:"String_comparison_exp",
+		forced_cvars:"String_array_comparison_exp",
 		game_modes:"game_mode_plugins_bool_exp",
 		game_modes_aggregate:"game_mode_plugins_aggregate_bool_exp",
 		homepage:"String_comparison_exp",
@@ -7554,6 +7709,8 @@ export const AllTypesProps: Record<string,any> = {
 		node_installs_aggregate:"game_server_node_plugins_aggregate_bool_exp",
 		pairs_with:"String_array_comparison_exp",
 		panel:"jsonb_comparison_exp",
+		reported_cvars:"game_plugin_cvars_bool_exp",
+		reported_cvars_aggregate:"game_plugin_cvars_aggregate_bool_exp",
 		requires_server_guidelines_disabled:"Boolean_comparison_exp",
 		requires_service:"String_comparison_exp",
 		slug:"String_comparison_exp",
@@ -7577,12 +7734,15 @@ export const AllTypesProps: Record<string,any> = {
 
 	},
 	game_plugins_insert_input:{
+		config_default:"jsonb",
 		config_schema:"jsonb",
+		config_shipped:"jsonb",
 		game_modes:"game_mode_plugins_arr_rel_insert_input",
 		kind:"e_game_plugin_kinds_enum",
 		map_rotation:"jsonb",
 		node_installs:"game_server_node_plugins_arr_rel_insert_input",
 		panel:"jsonb",
+		reported_cvars:"game_plugin_cvars_arr_rel_insert_input",
 		synced_at:"timestamptz",
 		versions:"game_plugin_versions_arr_rel_insert_input",
 		wiring:"jsonb"
@@ -7598,10 +7758,14 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	game_plugins_order_by:{
 		author:"order_by",
+		config_cvar:"order_by",
+		config_default:"order_by",
 		config_path:"order_by",
 		config_schema:"order_by",
+		config_shipped:"order_by",
 		cvars:"order_by",
 		description:"order_by",
+		forced_cvars:"order_by",
 		game_modes_aggregate:"game_mode_plugins_aggregate_order_by",
 		homepage:"order_by",
 		hot_swappable:"order_by",
@@ -7613,6 +7777,7 @@ export const AllTypesProps: Record<string,any> = {
 		node_installs_aggregate:"game_server_node_plugins_aggregate_order_by",
 		pairs_with:"order_by",
 		panel:"order_by",
+		reported_cvars_aggregate:"game_plugin_cvars_aggregate_order_by",
 		requires_server_guidelines_disabled:"order_by",
 		requires_service:"order_by",
 		slug:"order_by",
@@ -7628,14 +7793,18 @@ export const AllTypesProps: Record<string,any> = {
 
 	},
 	game_plugins_prepend_input:{
+		config_default:"jsonb",
 		config_schema:"jsonb",
+		config_shipped:"jsonb",
 		map_rotation:"jsonb",
 		panel:"jsonb",
 		wiring:"jsonb"
 	},
 	game_plugins_select_column: "enum" as const,
 	game_plugins_set_input:{
+		config_default:"jsonb",
 		config_schema:"jsonb",
+		config_shipped:"jsonb",
 		kind:"e_game_plugin_kinds_enum",
 		map_rotation:"jsonb",
 		panel:"jsonb",
@@ -7647,7 +7816,9 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	game_plugins_stream_cursor_value_input:{
+		config_default:"jsonb",
 		config_schema:"jsonb",
+		config_shipped:"jsonb",
 		kind:"e_game_plugin_kinds_enum",
 		map_rotation:"jsonb",
 		panel:"jsonb",
@@ -14937,6 +15108,12 @@ export const AllTypesProps: Record<string,any> = {
 		delete_game_modes_by_pk:{
 			id:"uuid"
 		},
+		delete_game_plugin_cvars:{
+			where:"game_plugin_cvars_bool_exp"
+		},
+		delete_game_plugin_cvars_by_pk:{
+
+		},
 		delete_game_plugin_installs:{
 			where:"game_plugin_installs_bool_exp"
 		},
@@ -15403,6 +15580,12 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		delete_server_player_sessions_by_pk:{
 			id:"bigint"
+		},
+		delete_server_plugin_configs:{
+			where:"server_plugin_configs_bool_exp"
+		},
+		delete_server_plugin_configs_by_pk:{
+			server_id:"uuid"
 		},
 		delete_server_plugins:{
 			where:"server_plugins_bool_exp"
@@ -16494,6 +16677,14 @@ export const AllTypesProps: Record<string,any> = {
 			object:"game_modes_insert_input",
 			on_conflict:"game_modes_on_conflict"
 		},
+		insert_game_plugin_cvars:{
+			objects:"game_plugin_cvars_insert_input",
+			on_conflict:"game_plugin_cvars_on_conflict"
+		},
+		insert_game_plugin_cvars_one:{
+			object:"game_plugin_cvars_insert_input",
+			on_conflict:"game_plugin_cvars_on_conflict"
+		},
 		insert_game_plugin_installs:{
 			objects:"game_plugin_installs_insert_input",
 			on_conflict:"game_plugin_installs_on_conflict"
@@ -17085,6 +17276,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_server_player_sessions_one:{
 			object:"server_player_sessions_insert_input",
 			on_conflict:"server_player_sessions_on_conflict"
+		},
+		insert_server_plugin_configs:{
+			objects:"server_plugin_configs_insert_input",
+			on_conflict:"server_plugin_configs_on_conflict"
+		},
+		insert_server_plugin_configs_one:{
+			object:"server_plugin_configs_insert_input",
+			on_conflict:"server_plugin_configs_on_conflict"
 		},
 		insert_server_plugins:{
 			objects:"server_plugins_insert_input",
@@ -17789,6 +17988,7 @@ export const AllTypesProps: Record<string,any> = {
 		setServerSettings:{
 			access:"ServerAccessInput",
 			map_rotation:"ServerMapRotationInput",
+			plugin_configs:"ServerPluginConfigInput",
 			plugins:"ServerPluginInput",
 			server_id:"uuid"
 		},
@@ -18946,11 +19146,32 @@ export const AllTypesProps: Record<string,any> = {
 		update_game_modes_many:{
 			updates:"game_modes_updates"
 		},
+		update_game_plugin_cvars:{
+			_set:"game_plugin_cvars_set_input",
+			where:"game_plugin_cvars_bool_exp"
+		},
+		update_game_plugin_cvars_by_pk:{
+			_set:"game_plugin_cvars_set_input",
+			pk_columns:"game_plugin_cvars_pk_columns_input"
+		},
+		update_game_plugin_cvars_many:{
+			updates:"game_plugin_cvars_updates"
+		},
 		update_game_plugin_installs:{
+			_append:"game_plugin_installs_append_input",
+			_delete_at_path:"game_plugin_installs_delete_at_path_input",
+			_delete_elem:"game_plugin_installs_delete_elem_input",
+			_delete_key:"game_plugin_installs_delete_key_input",
+			_prepend:"game_plugin_installs_prepend_input",
 			_set:"game_plugin_installs_set_input",
 			where:"game_plugin_installs_bool_exp"
 		},
 		update_game_plugin_installs_by_pk:{
+			_append:"game_plugin_installs_append_input",
+			_delete_at_path:"game_plugin_installs_delete_at_path_input",
+			_delete_elem:"game_plugin_installs_delete_elem_input",
+			_delete_key:"game_plugin_installs_delete_key_input",
+			_prepend:"game_plugin_installs_prepend_input",
 			_set:"game_plugin_installs_set_input",
 			pk_columns:"game_plugin_installs_pk_columns_input"
 		},
@@ -20006,6 +20227,27 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_server_player_sessions_many:{
 			updates:"server_player_sessions_updates"
+		},
+		update_server_plugin_configs:{
+			_append:"server_plugin_configs_append_input",
+			_delete_at_path:"server_plugin_configs_delete_at_path_input",
+			_delete_elem:"server_plugin_configs_delete_elem_input",
+			_delete_key:"server_plugin_configs_delete_key_input",
+			_prepend:"server_plugin_configs_prepend_input",
+			_set:"server_plugin_configs_set_input",
+			where:"server_plugin_configs_bool_exp"
+		},
+		update_server_plugin_configs_by_pk:{
+			_append:"server_plugin_configs_append_input",
+			_delete_at_path:"server_plugin_configs_delete_at_path_input",
+			_delete_elem:"server_plugin_configs_delete_elem_input",
+			_delete_key:"server_plugin_configs_delete_key_input",
+			_prepend:"server_plugin_configs_prepend_input",
+			_set:"server_plugin_configs_set_input",
+			pk_columns:"server_plugin_configs_pk_columns_input"
+		},
+		update_server_plugin_configs_many:{
+			updates:"server_plugin_configs_updates"
 		},
 		update_server_plugins:{
 			_set:"server_plugins_set_input",
@@ -26063,6 +26305,83 @@ export const AllTypesProps: Record<string,any> = {
 		player_steam_id:"order_by",
 		sanctioned_by_steam_id:"order_by"
 	},
+	player_season_performance_v_aggregate_fields:{
+		count:{
+			columns:"player_season_performance_v_select_column"
+		}
+	},
+	player_season_performance_v_bool_exp:{
+		_and:"player_season_performance_v_bool_exp",
+		_not:"player_season_performance_v_bool_exp",
+		_or:"player_season_performance_v_bool_exp",
+		accuracy_score:"float8_comparison_exp",
+		aim_rating:"float8_comparison_exp",
+		blind_score:"float8_comparison_exp",
+		counter_strafe_score:"float8_comparison_exp",
+		crosshair_score:"float8_comparison_exp",
+		flash_assists_score:"float8_comparison_exp",
+		hs_score:"float8_comparison_exp",
+		kast_score:"float8_comparison_exp",
+		positioning_rating:"float8_comparison_exp",
+		rounds:"Int_comparison_exp",
+		season:"seasons_bool_exp",
+		season_id:"uuid_comparison_exp",
+		season_starts_at:"timestamptz_comparison_exp",
+		spotted_score:"float8_comparison_exp",
+		steam_id:"bigint_comparison_exp",
+		survival_score:"float8_comparison_exp",
+		traded_score:"float8_comparison_exp",
+		ttd_score:"float8_comparison_exp",
+		util_eff_score:"float8_comparison_exp",
+		utility_rating:"float8_comparison_exp"
+	},
+	player_season_performance_v_order_by:{
+		accuracy_score:"order_by",
+		aim_rating:"order_by",
+		blind_score:"order_by",
+		counter_strafe_score:"order_by",
+		crosshair_score:"order_by",
+		flash_assists_score:"order_by",
+		hs_score:"order_by",
+		kast_score:"order_by",
+		positioning_rating:"order_by",
+		rounds:"order_by",
+		season:"seasons_order_by",
+		season_id:"order_by",
+		season_starts_at:"order_by",
+		spotted_score:"order_by",
+		steam_id:"order_by",
+		survival_score:"order_by",
+		traded_score:"order_by",
+		ttd_score:"order_by",
+		util_eff_score:"order_by",
+		utility_rating:"order_by"
+	},
+	player_season_performance_v_select_column: "enum" as const,
+	player_season_performance_v_stream_cursor_input:{
+		initial_value:"player_season_performance_v_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	player_season_performance_v_stream_cursor_value_input:{
+		accuracy_score:"float8",
+		aim_rating:"float8",
+		blind_score:"float8",
+		counter_strafe_score:"float8",
+		crosshair_score:"float8",
+		flash_assists_score:"float8",
+		hs_score:"float8",
+		kast_score:"float8",
+		positioning_rating:"float8",
+		season_id:"uuid",
+		season_starts_at:"timestamptz",
+		spotted_score:"float8",
+		steam_id:"bigint",
+		survival_score:"float8",
+		traded_score:"float8",
+		ttd_score:"float8",
+		util_eff_score:"float8",
+		utility_rating:"float8"
+	},
 	player_season_stats_aggregate_bool_exp:{
 		avg:"player_season_stats_aggregate_bool_exp_avg",
 		corr:"player_season_stats_aggregate_bool_exp_corr",
@@ -29112,6 +29431,19 @@ export const AllTypesProps: Record<string,any> = {
 		game_modes_by_pk:{
 			id:"uuid"
 		},
+		game_plugin_cvars:{
+			distinct_on:"game_plugin_cvars_select_column",
+			order_by:"game_plugin_cvars_order_by",
+			where:"game_plugin_cvars_bool_exp"
+		},
+		game_plugin_cvars_aggregate:{
+			distinct_on:"game_plugin_cvars_select_column",
+			order_by:"game_plugin_cvars_order_by",
+			where:"game_plugin_cvars_bool_exp"
+		},
+		game_plugin_cvars_by_pk:{
+
+		},
 		game_plugin_installs:{
 			distinct_on:"game_plugin_installs_select_column",
 			order_by:"game_plugin_installs_order_by",
@@ -30034,6 +30366,16 @@ export const AllTypesProps: Record<string,any> = {
 		player_sanctions_by_pk:{
 			id:"uuid"
 		},
+		player_season_performance_v:{
+			distinct_on:"player_season_performance_v_select_column",
+			order_by:"player_season_performance_v_order_by",
+			where:"player_season_performance_v_bool_exp"
+		},
+		player_season_performance_v_aggregate:{
+			distinct_on:"player_season_performance_v_select_column",
+			order_by:"player_season_performance_v_order_by",
+			where:"player_season_performance_v_bool_exp"
+		},
 		player_season_stats:{
 			distinct_on:"player_season_stats_select_column",
 			order_by:"player_season_stats_order_by",
@@ -30258,6 +30600,19 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		server_player_sessions_by_pk:{
 			id:"bigint"
+		},
+		server_plugin_configs:{
+			distinct_on:"server_plugin_configs_select_column",
+			order_by:"server_plugin_configs_order_by",
+			where:"server_plugin_configs_bool_exp"
+		},
+		server_plugin_configs_aggregate:{
+			distinct_on:"server_plugin_configs_select_column",
+			order_by:"server_plugin_configs_order_by",
+			where:"server_plugin_configs_bool_exp"
+		},
+		server_plugin_configs_by_pk:{
+			server_id:"uuid"
 		},
 		server_plugins:{
 			distinct_on:"server_plugins_select_column",
@@ -31234,6 +31589,26 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"v_player_weapon_kills_select_column",
 			order_by:"v_player_weapon_kills_order_by",
 			where:"v_player_weapon_kills_bool_exp"
+		},
+		v_player_weapon_match_damage:{
+			distinct_on:"v_player_weapon_match_damage_select_column",
+			order_by:"v_player_weapon_match_damage_order_by",
+			where:"v_player_weapon_match_damage_bool_exp"
+		},
+		v_player_weapon_match_damage_aggregate:{
+			distinct_on:"v_player_weapon_match_damage_select_column",
+			order_by:"v_player_weapon_match_damage_order_by",
+			where:"v_player_weapon_match_damage_bool_exp"
+		},
+		v_player_weapon_match_kills:{
+			distinct_on:"v_player_weapon_match_kills_select_column",
+			order_by:"v_player_weapon_match_kills_order_by",
+			where:"v_player_weapon_match_kills_bool_exp"
+		},
+		v_player_weapon_match_kills_aggregate:{
+			distinct_on:"v_player_weapon_match_kills_select_column",
+			order_by:"v_player_weapon_match_kills_order_by",
+			where:"v_player_weapon_match_kills_bool_exp"
 		},
 		v_pool_maps:{
 			distinct_on:"v_pool_maps_select_column",
@@ -32245,6 +32620,122 @@ export const AllTypesProps: Record<string,any> = {
 		kills_conn:"order_by",
 		player_steam_id:"order_by"
 	},
+	server_plugin_configs:{
+		config:{
+
+		}
+	},
+	server_plugin_configs_aggregate_bool_exp:{
+		count:"server_plugin_configs_aggregate_bool_exp_count"
+	},
+	server_plugin_configs_aggregate_bool_exp_count:{
+		arguments:"server_plugin_configs_select_column",
+		filter:"server_plugin_configs_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	server_plugin_configs_aggregate_fields:{
+		count:{
+			columns:"server_plugin_configs_select_column"
+		}
+	},
+	server_plugin_configs_aggregate_order_by:{
+		count:"order_by",
+		max:"server_plugin_configs_max_order_by",
+		min:"server_plugin_configs_min_order_by"
+	},
+	server_plugin_configs_append_input:{
+		config:"jsonb"
+	},
+	server_plugin_configs_arr_rel_insert_input:{
+		data:"server_plugin_configs_insert_input",
+		on_conflict:"server_plugin_configs_on_conflict"
+	},
+	server_plugin_configs_bool_exp:{
+		_and:"server_plugin_configs_bool_exp",
+		_not:"server_plugin_configs_bool_exp",
+		_or:"server_plugin_configs_bool_exp",
+		cfg:"String_comparison_exp",
+		config:"jsonb_comparison_exp",
+		plugin:"game_plugins_bool_exp",
+		plugin_slug:"String_comparison_exp",
+		server:"servers_bool_exp",
+		server_id:"uuid_comparison_exp",
+		updated_at:"timestamptz_comparison_exp"
+	},
+	server_plugin_configs_constraint: "enum" as const,
+	server_plugin_configs_delete_at_path_input:{
+
+	},
+	server_plugin_configs_delete_elem_input:{
+
+	},
+	server_plugin_configs_delete_key_input:{
+
+	},
+	server_plugin_configs_insert_input:{
+		config:"jsonb",
+		plugin:"game_plugins_obj_rel_insert_input",
+		server:"servers_obj_rel_insert_input",
+		server_id:"uuid",
+		updated_at:"timestamptz"
+	},
+	server_plugin_configs_max_order_by:{
+		cfg:"order_by",
+		plugin_slug:"order_by",
+		server_id:"order_by",
+		updated_at:"order_by"
+	},
+	server_plugin_configs_min_order_by:{
+		cfg:"order_by",
+		plugin_slug:"order_by",
+		server_id:"order_by",
+		updated_at:"order_by"
+	},
+	server_plugin_configs_on_conflict:{
+		constraint:"server_plugin_configs_constraint",
+		update_columns:"server_plugin_configs_update_column",
+		where:"server_plugin_configs_bool_exp"
+	},
+	server_plugin_configs_order_by:{
+		cfg:"order_by",
+		config:"order_by",
+		plugin:"game_plugins_order_by",
+		plugin_slug:"order_by",
+		server:"servers_order_by",
+		server_id:"order_by",
+		updated_at:"order_by"
+	},
+	server_plugin_configs_pk_columns_input:{
+		server_id:"uuid"
+	},
+	server_plugin_configs_prepend_input:{
+		config:"jsonb"
+	},
+	server_plugin_configs_select_column: "enum" as const,
+	server_plugin_configs_set_input:{
+		config:"jsonb",
+		server_id:"uuid",
+		updated_at:"timestamptz"
+	},
+	server_plugin_configs_stream_cursor_input:{
+		initial_value:"server_plugin_configs_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	server_plugin_configs_stream_cursor_value_input:{
+		config:"jsonb",
+		server_id:"uuid",
+		updated_at:"timestamptz"
+	},
+	server_plugin_configs_update_column: "enum" as const,
+	server_plugin_configs_updates:{
+		_append:"server_plugin_configs_append_input",
+		_delete_at_path:"server_plugin_configs_delete_at_path_input",
+		_delete_elem:"server_plugin_configs_delete_elem_input",
+		_delete_key:"server_plugin_configs_delete_key_input",
+		_prepend:"server_plugin_configs_prepend_input",
+		_set:"server_plugin_configs_set_input",
+		where:"server_plugin_configs_bool_exp"
+	},
 	server_plugins_aggregate_bool_exp:{
 		bool_and:"server_plugins_aggregate_bool_exp_bool_and",
 		bool_or:"server_plugins_aggregate_bool_exp_bool_or",
@@ -32583,6 +33074,16 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"server_migrations_order_by",
 			where:"server_migrations_bool_exp"
 		},
+		plugin_configs:{
+			distinct_on:"server_plugin_configs_select_column",
+			order_by:"server_plugin_configs_order_by",
+			where:"server_plugin_configs_bool_exp"
+		},
+		plugin_configs_aggregate:{
+			distinct_on:"server_plugin_configs_select_column",
+			order_by:"server_plugin_configs_order_by",
+			where:"server_plugin_configs_bool_exp"
+		},
 		plugin_overrides:{
 			distinct_on:"server_plugins_select_column",
 			order_by:"server_plugins_order_by",
@@ -32685,6 +33186,8 @@ export const AllTypesProps: Record<string,any> = {
 		player_management_runtime:"String_comparison_exp",
 		player_management_seen_at:"timestamptz_comparison_exp",
 		player_management_version:"String_comparison_exp",
+		plugin_configs:"server_plugin_configs_bool_exp",
+		plugin_configs_aggregate:"server_plugin_configs_aggregate_bool_exp",
 		plugin_overrides:"server_plugins_bool_exp",
 		plugin_overrides_aggregate:"server_plugins_aggregate_bool_exp",
 		plugin_runtime:"e_plugin_runtimes_enum_comparison_exp",
@@ -32730,6 +33233,7 @@ export const AllTypesProps: Record<string,any> = {
 		migrations:"server_migrations_arr_rel_insert_input",
 		offline_at:"timestamptz",
 		player_management_seen_at:"timestamptz",
+		plugin_configs:"server_plugin_configs_arr_rel_insert_input",
 		plugin_overrides:"server_plugins_arr_rel_insert_input",
 		plugin_runtime:"e_plugin_runtimes_enum",
 		plugins_checked_at:"timestamptz",
@@ -32831,6 +33335,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_management_runtime:"order_by",
 		player_management_seen_at:"order_by",
 		player_management_version:"order_by",
+		plugin_configs_aggregate:"server_plugin_configs_aggregate_order_by",
 		plugin_overrides_aggregate:"server_plugins_aggregate_order_by",
 		plugin_runtime:"order_by",
 		plugin_version:"order_by",
@@ -34690,6 +35195,23 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"game_modes_stream_cursor_input",
 			where:"game_modes_bool_exp"
 		},
+		game_plugin_cvars:{
+			distinct_on:"game_plugin_cvars_select_column",
+			order_by:"game_plugin_cvars_order_by",
+			where:"game_plugin_cvars_bool_exp"
+		},
+		game_plugin_cvars_aggregate:{
+			distinct_on:"game_plugin_cvars_select_column",
+			order_by:"game_plugin_cvars_order_by",
+			where:"game_plugin_cvars_bool_exp"
+		},
+		game_plugin_cvars_by_pk:{
+
+		},
+		game_plugin_cvars_stream:{
+			cursor:"game_plugin_cvars_stream_cursor_input",
+			where:"game_plugin_cvars_bool_exp"
+		},
 		game_plugin_installs:{
 			distinct_on:"game_plugin_installs_select_column",
 			order_by:"game_plugin_installs_order_by",
@@ -35822,6 +36344,20 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"player_sanctions_stream_cursor_input",
 			where:"player_sanctions_bool_exp"
 		},
+		player_season_performance_v:{
+			distinct_on:"player_season_performance_v_select_column",
+			order_by:"player_season_performance_v_order_by",
+			where:"player_season_performance_v_bool_exp"
+		},
+		player_season_performance_v_aggregate:{
+			distinct_on:"player_season_performance_v_select_column",
+			order_by:"player_season_performance_v_order_by",
+			where:"player_season_performance_v_bool_exp"
+		},
+		player_season_performance_v_stream:{
+			cursor:"player_season_performance_v_stream_cursor_input",
+			where:"player_season_performance_v_bool_exp"
+		},
 		player_season_stats:{
 			distinct_on:"player_season_stats_select_column",
 			order_by:"player_season_stats_order_by",
@@ -36111,6 +36647,23 @@ export const AllTypesProps: Record<string,any> = {
 		server_player_sessions_stream:{
 			cursor:"server_player_sessions_stream_cursor_input",
 			where:"server_player_sessions_bool_exp"
+		},
+		server_plugin_configs:{
+			distinct_on:"server_plugin_configs_select_column",
+			order_by:"server_plugin_configs_order_by",
+			where:"server_plugin_configs_bool_exp"
+		},
+		server_plugin_configs_aggregate:{
+			distinct_on:"server_plugin_configs_select_column",
+			order_by:"server_plugin_configs_order_by",
+			where:"server_plugin_configs_bool_exp"
+		},
+		server_plugin_configs_by_pk:{
+			server_id:"uuid"
+		},
+		server_plugin_configs_stream:{
+			cursor:"server_plugin_configs_stream_cursor_input",
+			where:"server_plugin_configs_bool_exp"
 		},
 		server_plugins:{
 			distinct_on:"server_plugins_select_column",
@@ -37382,6 +37935,34 @@ export const AllTypesProps: Record<string,any> = {
 		v_player_weapon_kills_stream:{
 			cursor:"v_player_weapon_kills_stream_cursor_input",
 			where:"v_player_weapon_kills_bool_exp"
+		},
+		v_player_weapon_match_damage:{
+			distinct_on:"v_player_weapon_match_damage_select_column",
+			order_by:"v_player_weapon_match_damage_order_by",
+			where:"v_player_weapon_match_damage_bool_exp"
+		},
+		v_player_weapon_match_damage_aggregate:{
+			distinct_on:"v_player_weapon_match_damage_select_column",
+			order_by:"v_player_weapon_match_damage_order_by",
+			where:"v_player_weapon_match_damage_bool_exp"
+		},
+		v_player_weapon_match_damage_stream:{
+			cursor:"v_player_weapon_match_damage_stream_cursor_input",
+			where:"v_player_weapon_match_damage_bool_exp"
+		},
+		v_player_weapon_match_kills:{
+			distinct_on:"v_player_weapon_match_kills_select_column",
+			order_by:"v_player_weapon_match_kills_order_by",
+			where:"v_player_weapon_match_kills_bool_exp"
+		},
+		v_player_weapon_match_kills_aggregate:{
+			distinct_on:"v_player_weapon_match_kills_select_column",
+			order_by:"v_player_weapon_match_kills_order_by",
+			where:"v_player_weapon_match_kills_bool_exp"
+		},
+		v_player_weapon_match_kills_stream:{
+			cursor:"v_player_weapon_match_kills_stream_cursor_input",
+			where:"v_player_weapon_match_kills_bool_exp"
 		},
 		v_pool_maps:{
 			distinct_on:"v_pool_maps_select_column",
@@ -48438,6 +49019,76 @@ export const AllTypesProps: Record<string,any> = {
 		player_steam_id:"bigint",
 		rounds:"bigint"
 	},
+	v_player_weapon_match_damage_aggregate_fields:{
+		count:{
+			columns:"v_player_weapon_match_damage_select_column"
+		}
+	},
+	v_player_weapon_match_damage_bool_exp:{
+		_and:"v_player_weapon_match_damage_bool_exp",
+		_not:"v_player_weapon_match_damage_bool_exp",
+		_or:"v_player_weapon_match_damage_bool_exp",
+		damage:"bigint_comparison_exp",
+		hits:"bigint_comparison_exp",
+		match:"matches_bool_exp",
+		match_id:"uuid_comparison_exp",
+		player_steam_id:"bigint_comparison_exp",
+		with:"String_comparison_exp"
+	},
+	v_player_weapon_match_damage_order_by:{
+		damage:"order_by",
+		hits:"order_by",
+		match:"matches_order_by",
+		match_id:"order_by",
+		player_steam_id:"order_by",
+		with:"order_by"
+	},
+	v_player_weapon_match_damage_select_column: "enum" as const,
+	v_player_weapon_match_damage_stream_cursor_input:{
+		initial_value:"v_player_weapon_match_damage_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	v_player_weapon_match_damage_stream_cursor_value_input:{
+		damage:"bigint",
+		hits:"bigint",
+		match_id:"uuid",
+		player_steam_id:"bigint"
+	},
+	v_player_weapon_match_kills_aggregate_fields:{
+		count:{
+			columns:"v_player_weapon_match_kills_select_column"
+		}
+	},
+	v_player_weapon_match_kills_bool_exp:{
+		_and:"v_player_weapon_match_kills_bool_exp",
+		_not:"v_player_weapon_match_kills_bool_exp",
+		_or:"v_player_weapon_match_kills_bool_exp",
+		kill_count:"bigint_comparison_exp",
+		match:"matches_bool_exp",
+		match_id:"uuid_comparison_exp",
+		player_steam_id:"bigint_comparison_exp",
+		rounds:"bigint_comparison_exp",
+		with:"String_comparison_exp"
+	},
+	v_player_weapon_match_kills_order_by:{
+		kill_count:"order_by",
+		match:"matches_order_by",
+		match_id:"order_by",
+		player_steam_id:"order_by",
+		rounds:"order_by",
+		with:"order_by"
+	},
+	v_player_weapon_match_kills_select_column: "enum" as const,
+	v_player_weapon_match_kills_stream_cursor_input:{
+		initial_value:"v_player_weapon_match_kills_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	v_player_weapon_match_kills_stream_cursor_value_input:{
+		kill_count:"bigint",
+		match_id:"uuid",
+		player_steam_id:"bigint",
+		rounds:"bigint"
+	},
 	v_pool_maps_aggregate_bool_exp:{
 		bool_and:"v_pool_maps_aggregate_bool_exp_bool_and",
 		bool_or:"v_pool_maps_aggregate_bool_exp_bool_or",
@@ -54496,9 +55147,57 @@ export const ReturnTypes: Record<string,any> = {
 		affected_rows:"Int",
 		returning:"game_modes"
 	},
+	game_plugin_cvars:{
+		default_value:"String",
+		description:"String",
+		flags:"String",
+		kind:"String",
+		name:"String",
+		plugin:"game_plugins",
+		plugin_slug:"String",
+		reported_at:"timestamptz",
+		runtime:"String",
+		version:"String"
+	},
+	game_plugin_cvars_aggregate:{
+		aggregate:"game_plugin_cvars_aggregate_fields",
+		nodes:"game_plugin_cvars"
+	},
+	game_plugin_cvars_aggregate_fields:{
+		count:"Int",
+		max:"game_plugin_cvars_max_fields",
+		min:"game_plugin_cvars_min_fields"
+	},
+	game_plugin_cvars_max_fields:{
+		default_value:"String",
+		description:"String",
+		flags:"String",
+		kind:"String",
+		name:"String",
+		plugin_slug:"String",
+		reported_at:"timestamptz",
+		runtime:"String",
+		version:"String"
+	},
+	game_plugin_cvars_min_fields:{
+		default_value:"String",
+		description:"String",
+		flags:"String",
+		kind:"String",
+		name:"String",
+		plugin_slug:"String",
+		reported_at:"timestamptz",
+		runtime:"String",
+		version:"String"
+	},
+	game_plugin_cvars_mutation_response:{
+		affected_rows:"Int",
+		returning:"game_plugin_cvars"
+	},
 	game_plugin_installs:{
 		cfg:"String",
 		channel:"e_game_plugin_channels_enum",
+		config:"jsonb",
 		created_at:"timestamptz",
 		disable_server_guidelines:"Boolean",
 		enabled:"Boolean",
@@ -54617,10 +55316,14 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	game_plugins:{
 		author:"String",
+		config_cvar:"String",
+		config_default:"jsonb",
 		config_path:"String",
 		config_schema:"jsonb",
+		config_shipped:"jsonb",
 		cvars:"String",
 		description:"String",
+		forced_cvars:"String",
 		game_modes:"game_mode_plugins",
 		game_modes_aggregate:"game_mode_plugins_aggregate",
 		homepage:"String",
@@ -54634,6 +55337,8 @@ export const ReturnTypes: Record<string,any> = {
 		node_installs_aggregate:"game_server_node_plugins_aggregate",
 		pairs_with:"String",
 		panel:"jsonb",
+		reported_cvars:"game_plugin_cvars",
+		reported_cvars_aggregate:"game_plugin_cvars_aggregate",
 		requires_server_guidelines_disabled:"Boolean",
 		requires_service:"String",
 		slug:"String",
@@ -54669,9 +55374,11 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	game_plugins_max_fields:{
 		author:"String",
+		config_cvar:"String",
 		config_path:"String",
 		cvars:"String",
 		description:"String",
+		forced_cvars:"String",
 		homepage:"String",
 		install_state:"String",
 		installed_node_count:"Int",
@@ -54686,9 +55393,11 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	game_plugins_min_fields:{
 		author:"String",
+		config_cvar:"String",
 		config_path:"String",
 		cvars:"String",
 		description:"String",
+		forced_cvars:"String",
 		homepage:"String",
 		install_state:"String",
 		installed_node_count:"Int",
@@ -58336,6 +59045,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_game_mode_plugins_by_pk:"game_mode_plugins",
 		delete_game_modes:"game_modes_mutation_response",
 		delete_game_modes_by_pk:"game_modes",
+		delete_game_plugin_cvars:"game_plugin_cvars_mutation_response",
+		delete_game_plugin_cvars_by_pk:"game_plugin_cvars",
 		delete_game_plugin_installs:"game_plugin_installs_mutation_response",
 		delete_game_plugin_installs_by_pk:"game_plugin_installs",
 		delete_game_plugin_versions:"game_plugin_versions_mutation_response",
@@ -58482,6 +59193,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_server_migrations_by_pk:"server_migrations",
 		delete_server_player_sessions:"server_player_sessions_mutation_response",
 		delete_server_player_sessions_by_pk:"server_player_sessions",
+		delete_server_plugin_configs:"server_plugin_configs_mutation_response",
+		delete_server_plugin_configs_by_pk:"server_plugin_configs",
 		delete_server_plugins:"server_plugins_mutation_response",
 		delete_server_plugins_by_pk:"server_plugins",
 		delete_server_regions:"server_regions_mutation_response",
@@ -58781,6 +59494,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_game_mode_plugins_one:"game_mode_plugins",
 		insert_game_modes:"game_modes_mutation_response",
 		insert_game_modes_one:"game_modes",
+		insert_game_plugin_cvars:"game_plugin_cvars_mutation_response",
+		insert_game_plugin_cvars_one:"game_plugin_cvars",
 		insert_game_plugin_installs:"game_plugin_installs_mutation_response",
 		insert_game_plugin_installs_one:"game_plugin_installs",
 		insert_game_plugin_versions:"game_plugin_versions_mutation_response",
@@ -58931,6 +59646,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_server_migrations_one:"server_migrations",
 		insert_server_player_sessions:"server_player_sessions_mutation_response",
 		insert_server_player_sessions_one:"server_player_sessions",
+		insert_server_plugin_configs:"server_plugin_configs_mutation_response",
+		insert_server_plugin_configs_one:"server_plugin_configs",
 		insert_server_plugins:"server_plugins_mutation_response",
 		insert_server_plugins_one:"server_plugins",
 		insert_server_regions:"server_regions_mutation_response",
@@ -59435,6 +60152,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_game_modes:"game_modes_mutation_response",
 		update_game_modes_by_pk:"game_modes",
 		update_game_modes_many:"game_modes_mutation_response",
+		update_game_plugin_cvars:"game_plugin_cvars_mutation_response",
+		update_game_plugin_cvars_by_pk:"game_plugin_cvars",
+		update_game_plugin_cvars_many:"game_plugin_cvars_mutation_response",
 		update_game_plugin_installs:"game_plugin_installs_mutation_response",
 		update_game_plugin_installs_by_pk:"game_plugin_installs",
 		update_game_plugin_installs_many:"game_plugin_installs_mutation_response",
@@ -59656,6 +60376,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_server_player_sessions:"server_player_sessions_mutation_response",
 		update_server_player_sessions_by_pk:"server_player_sessions",
 		update_server_player_sessions_many:"server_player_sessions_mutation_response",
+		update_server_plugin_configs:"server_plugin_configs_mutation_response",
+		update_server_plugin_configs_by_pk:"server_plugin_configs",
+		update_server_plugin_configs_many:"server_plugin_configs_mutation_response",
 		update_server_plugins:"server_plugins_mutation_response",
 		update_server_plugins_by_pk:"server_plugins",
 		update_server_plugins_many:"server_plugins_mutation_response",
@@ -64511,6 +65234,239 @@ export const ReturnTypes: Record<string,any> = {
 		player_steam_id:"Float",
 		sanctioned_by_steam_id:"Float"
 	},
+	player_season_performance_v:{
+		accuracy_score:"float8",
+		aim_rating:"float8",
+		blind_score:"float8",
+		counter_strafe_score:"float8",
+		crosshair_score:"float8",
+		flash_assists_score:"float8",
+		hs_score:"float8",
+		kast_score:"float8",
+		positioning_rating:"float8",
+		rounds:"Int",
+		season:"seasons",
+		season_id:"uuid",
+		season_starts_at:"timestamptz",
+		spotted_score:"float8",
+		steam_id:"bigint",
+		survival_score:"float8",
+		traded_score:"float8",
+		ttd_score:"float8",
+		util_eff_score:"float8",
+		utility_rating:"float8"
+	},
+	player_season_performance_v_aggregate:{
+		aggregate:"player_season_performance_v_aggregate_fields",
+		nodes:"player_season_performance_v"
+	},
+	player_season_performance_v_aggregate_fields:{
+		avg:"player_season_performance_v_avg_fields",
+		count:"Int",
+		max:"player_season_performance_v_max_fields",
+		min:"player_season_performance_v_min_fields",
+		stddev:"player_season_performance_v_stddev_fields",
+		stddev_pop:"player_season_performance_v_stddev_pop_fields",
+		stddev_samp:"player_season_performance_v_stddev_samp_fields",
+		sum:"player_season_performance_v_sum_fields",
+		var_pop:"player_season_performance_v_var_pop_fields",
+		var_samp:"player_season_performance_v_var_samp_fields",
+		variance:"player_season_performance_v_variance_fields"
+	},
+	player_season_performance_v_avg_fields:{
+		accuracy_score:"Float",
+		aim_rating:"Float",
+		blind_score:"Float",
+		counter_strafe_score:"Float",
+		crosshair_score:"Float",
+		flash_assists_score:"Float",
+		hs_score:"Float",
+		kast_score:"Float",
+		positioning_rating:"Float",
+		rounds:"Float",
+		spotted_score:"Float",
+		steam_id:"Float",
+		survival_score:"Float",
+		traded_score:"Float",
+		ttd_score:"Float",
+		util_eff_score:"Float",
+		utility_rating:"Float"
+	},
+	player_season_performance_v_max_fields:{
+		accuracy_score:"float8",
+		aim_rating:"float8",
+		blind_score:"float8",
+		counter_strafe_score:"float8",
+		crosshair_score:"float8",
+		flash_assists_score:"float8",
+		hs_score:"float8",
+		kast_score:"float8",
+		positioning_rating:"float8",
+		rounds:"Int",
+		season_id:"uuid",
+		season_starts_at:"timestamptz",
+		spotted_score:"float8",
+		steam_id:"bigint",
+		survival_score:"float8",
+		traded_score:"float8",
+		ttd_score:"float8",
+		util_eff_score:"float8",
+		utility_rating:"float8"
+	},
+	player_season_performance_v_min_fields:{
+		accuracy_score:"float8",
+		aim_rating:"float8",
+		blind_score:"float8",
+		counter_strafe_score:"float8",
+		crosshair_score:"float8",
+		flash_assists_score:"float8",
+		hs_score:"float8",
+		kast_score:"float8",
+		positioning_rating:"float8",
+		rounds:"Int",
+		season_id:"uuid",
+		season_starts_at:"timestamptz",
+		spotted_score:"float8",
+		steam_id:"bigint",
+		survival_score:"float8",
+		traded_score:"float8",
+		ttd_score:"float8",
+		util_eff_score:"float8",
+		utility_rating:"float8"
+	},
+	player_season_performance_v_stddev_fields:{
+		accuracy_score:"Float",
+		aim_rating:"Float",
+		blind_score:"Float",
+		counter_strafe_score:"Float",
+		crosshair_score:"Float",
+		flash_assists_score:"Float",
+		hs_score:"Float",
+		kast_score:"Float",
+		positioning_rating:"Float",
+		rounds:"Float",
+		spotted_score:"Float",
+		steam_id:"Float",
+		survival_score:"Float",
+		traded_score:"Float",
+		ttd_score:"Float",
+		util_eff_score:"Float",
+		utility_rating:"Float"
+	},
+	player_season_performance_v_stddev_pop_fields:{
+		accuracy_score:"Float",
+		aim_rating:"Float",
+		blind_score:"Float",
+		counter_strafe_score:"Float",
+		crosshair_score:"Float",
+		flash_assists_score:"Float",
+		hs_score:"Float",
+		kast_score:"Float",
+		positioning_rating:"Float",
+		rounds:"Float",
+		spotted_score:"Float",
+		steam_id:"Float",
+		survival_score:"Float",
+		traded_score:"Float",
+		ttd_score:"Float",
+		util_eff_score:"Float",
+		utility_rating:"Float"
+	},
+	player_season_performance_v_stddev_samp_fields:{
+		accuracy_score:"Float",
+		aim_rating:"Float",
+		blind_score:"Float",
+		counter_strafe_score:"Float",
+		crosshair_score:"Float",
+		flash_assists_score:"Float",
+		hs_score:"Float",
+		kast_score:"Float",
+		positioning_rating:"Float",
+		rounds:"Float",
+		spotted_score:"Float",
+		steam_id:"Float",
+		survival_score:"Float",
+		traded_score:"Float",
+		ttd_score:"Float",
+		util_eff_score:"Float",
+		utility_rating:"Float"
+	},
+	player_season_performance_v_sum_fields:{
+		accuracy_score:"float8",
+		aim_rating:"float8",
+		blind_score:"float8",
+		counter_strafe_score:"float8",
+		crosshair_score:"float8",
+		flash_assists_score:"float8",
+		hs_score:"float8",
+		kast_score:"float8",
+		positioning_rating:"float8",
+		rounds:"Int",
+		spotted_score:"float8",
+		steam_id:"bigint",
+		survival_score:"float8",
+		traded_score:"float8",
+		ttd_score:"float8",
+		util_eff_score:"float8",
+		utility_rating:"float8"
+	},
+	player_season_performance_v_var_pop_fields:{
+		accuracy_score:"Float",
+		aim_rating:"Float",
+		blind_score:"Float",
+		counter_strafe_score:"Float",
+		crosshair_score:"Float",
+		flash_assists_score:"Float",
+		hs_score:"Float",
+		kast_score:"Float",
+		positioning_rating:"Float",
+		rounds:"Float",
+		spotted_score:"Float",
+		steam_id:"Float",
+		survival_score:"Float",
+		traded_score:"Float",
+		ttd_score:"Float",
+		util_eff_score:"Float",
+		utility_rating:"Float"
+	},
+	player_season_performance_v_var_samp_fields:{
+		accuracy_score:"Float",
+		aim_rating:"Float",
+		blind_score:"Float",
+		counter_strafe_score:"Float",
+		crosshair_score:"Float",
+		flash_assists_score:"Float",
+		hs_score:"Float",
+		kast_score:"Float",
+		positioning_rating:"Float",
+		rounds:"Float",
+		spotted_score:"Float",
+		steam_id:"Float",
+		survival_score:"Float",
+		traded_score:"Float",
+		ttd_score:"Float",
+		util_eff_score:"Float",
+		utility_rating:"Float"
+	},
+	player_season_performance_v_variance_fields:{
+		accuracy_score:"Float",
+		aim_rating:"Float",
+		blind_score:"Float",
+		counter_strafe_score:"Float",
+		crosshair_score:"Float",
+		flash_assists_score:"Float",
+		hs_score:"Float",
+		kast_score:"Float",
+		positioning_rating:"Float",
+		rounds:"Float",
+		spotted_score:"Float",
+		steam_id:"Float",
+		survival_score:"Float",
+		traded_score:"Float",
+		ttd_score:"Float",
+		util_eff_score:"Float",
+		utility_rating:"Float"
+	},
 	player_season_stats:{
 		assists:"bigint",
 		deaths:"bigint",
@@ -65994,6 +66950,9 @@ export const ReturnTypes: Record<string,any> = {
 		game_modes:"game_modes",
 		game_modes_aggregate:"game_modes_aggregate",
 		game_modes_by_pk:"game_modes",
+		game_plugin_cvars:"game_plugin_cvars",
+		game_plugin_cvars_aggregate:"game_plugin_cvars_aggregate",
+		game_plugin_cvars_by_pk:"game_plugin_cvars",
 		game_plugin_installs:"game_plugin_installs",
 		game_plugin_installs_aggregate:"game_plugin_installs_aggregate",
 		game_plugin_installs_by_pk:"game_plugin_installs",
@@ -66212,6 +67171,8 @@ export const ReturnTypes: Record<string,any> = {
 		player_sanctions:"player_sanctions",
 		player_sanctions_aggregate:"player_sanctions_aggregate",
 		player_sanctions_by_pk:"player_sanctions",
+		player_season_performance_v:"player_season_performance_v",
+		player_season_performance_v_aggregate:"player_season_performance_v_aggregate",
 		player_season_stats:"player_season_stats",
 		player_season_stats_aggregate:"player_season_stats_aggregate",
 		player_season_stats_by_pk:"player_season_stats",
@@ -66262,6 +67223,9 @@ export const ReturnTypes: Record<string,any> = {
 		server_player_sessions:"server_player_sessions",
 		server_player_sessions_aggregate:"server_player_sessions_aggregate",
 		server_player_sessions_by_pk:"server_player_sessions",
+		server_plugin_configs:"server_plugin_configs",
+		server_plugin_configs_aggregate:"server_plugin_configs_aggregate",
+		server_plugin_configs_by_pk:"server_plugin_configs",
 		server_plugins:"server_plugins",
 		server_plugins_aggregate:"server_plugins_aggregate",
 		server_plugins_by_pk:"server_plugins",
@@ -66481,6 +67445,10 @@ export const ReturnTypes: Record<string,any> = {
 		v_player_weapon_damage_aggregate:"v_player_weapon_damage_aggregate",
 		v_player_weapon_kills:"v_player_weapon_kills",
 		v_player_weapon_kills_aggregate:"v_player_weapon_kills_aggregate",
+		v_player_weapon_match_damage:"v_player_weapon_match_damage",
+		v_player_weapon_match_damage_aggregate:"v_player_weapon_match_damage_aggregate",
+		v_player_weapon_match_kills:"v_player_weapon_match_kills",
+		v_player_weapon_match_kills_aggregate:"v_player_weapon_match_kills_aggregate",
 		v_pool_maps:"v_pool_maps",
 		v_pool_maps_aggregate:"v_pool_maps_aggregate",
 		v_steam_account_pool_status:"v_steam_account_pool_status",
@@ -66997,6 +67965,40 @@ export const ReturnTypes: Record<string,any> = {
 		kills_conn:"Float",
 		player_steam_id:"Float"
 	},
+	server_plugin_configs:{
+		cfg:"String",
+		config:"jsonb",
+		plugin:"game_plugins",
+		plugin_slug:"String",
+		server:"servers",
+		server_id:"uuid",
+		updated_at:"timestamptz"
+	},
+	server_plugin_configs_aggregate:{
+		aggregate:"server_plugin_configs_aggregate_fields",
+		nodes:"server_plugin_configs"
+	},
+	server_plugin_configs_aggregate_fields:{
+		count:"Int",
+		max:"server_plugin_configs_max_fields",
+		min:"server_plugin_configs_min_fields"
+	},
+	server_plugin_configs_max_fields:{
+		cfg:"String",
+		plugin_slug:"String",
+		server_id:"uuid",
+		updated_at:"timestamptz"
+	},
+	server_plugin_configs_min_fields:{
+		cfg:"String",
+		plugin_slug:"String",
+		server_id:"uuid",
+		updated_at:"timestamptz"
+	},
+	server_plugin_configs_mutation_response:{
+		affected_rows:"Int",
+		returning:"server_plugin_configs"
+	},
 	server_plugins:{
 		enabled:"Boolean",
 		install:"game_plugin_installs",
@@ -67274,6 +68276,8 @@ export const ReturnTypes: Record<string,any> = {
 		player_management_runtime:"String",
 		player_management_seen_at:"timestamptz",
 		player_management_version:"String",
+		plugin_configs:"server_plugin_configs",
+		plugin_configs_aggregate:"server_plugin_configs_aggregate",
 		plugin_overrides:"server_plugins",
 		plugin_overrides_aggregate:"server_plugins_aggregate",
 		plugin_runtime:"e_plugin_runtimes_enum",
@@ -67923,6 +68927,10 @@ export const ReturnTypes: Record<string,any> = {
 		game_modes_aggregate:"game_modes_aggregate",
 		game_modes_by_pk:"game_modes",
 		game_modes_stream:"game_modes",
+		game_plugin_cvars:"game_plugin_cvars",
+		game_plugin_cvars_aggregate:"game_plugin_cvars_aggregate",
+		game_plugin_cvars_by_pk:"game_plugin_cvars",
+		game_plugin_cvars_stream:"game_plugin_cvars",
 		game_plugin_installs:"game_plugin_installs",
 		game_plugin_installs_aggregate:"game_plugin_installs_aggregate",
 		game_plugin_installs_by_pk:"game_plugin_installs",
@@ -68178,6 +69186,9 @@ export const ReturnTypes: Record<string,any> = {
 		player_sanctions_aggregate:"player_sanctions_aggregate",
 		player_sanctions_by_pk:"player_sanctions",
 		player_sanctions_stream:"player_sanctions",
+		player_season_performance_v:"player_season_performance_v",
+		player_season_performance_v_aggregate:"player_season_performance_v_aggregate",
+		player_season_performance_v_stream:"player_season_performance_v",
 		player_season_stats:"player_season_stats",
 		player_season_stats_aggregate:"player_season_stats_aggregate",
 		player_season_stats_by_pk:"player_season_stats",
@@ -68244,6 +69255,10 @@ export const ReturnTypes: Record<string,any> = {
 		server_player_sessions_aggregate:"server_player_sessions_aggregate",
 		server_player_sessions_by_pk:"server_player_sessions",
 		server_player_sessions_stream:"server_player_sessions",
+		server_plugin_configs:"server_plugin_configs",
+		server_plugin_configs_aggregate:"server_plugin_configs_aggregate",
+		server_plugin_configs_by_pk:"server_plugin_configs",
+		server_plugin_configs_stream:"server_plugin_configs",
 		server_plugins:"server_plugins",
 		server_plugins_aggregate:"server_plugins_aggregate",
 		server_plugins_by_pk:"server_plugins",
@@ -68532,6 +69547,12 @@ export const ReturnTypes: Record<string,any> = {
 		v_player_weapon_kills:"v_player_weapon_kills",
 		v_player_weapon_kills_aggregate:"v_player_weapon_kills_aggregate",
 		v_player_weapon_kills_stream:"v_player_weapon_kills",
+		v_player_weapon_match_damage:"v_player_weapon_match_damage",
+		v_player_weapon_match_damage_aggregate:"v_player_weapon_match_damage_aggregate",
+		v_player_weapon_match_damage_stream:"v_player_weapon_match_damage",
+		v_player_weapon_match_kills:"v_player_weapon_match_kills",
+		v_player_weapon_match_kills_aggregate:"v_player_weapon_match_kills_aggregate",
+		v_player_weapon_match_kills_stream:"v_player_weapon_match_kills",
 		v_pool_maps:"v_pool_maps",
 		v_pool_maps_aggregate:"v_pool_maps_aggregate",
 		v_pool_maps_stream:"v_pool_maps",
@@ -76449,6 +77470,164 @@ export const ReturnTypes: Record<string,any> = {
 		rounds:"Float"
 	},
 	v_player_weapon_kills_variance_fields:{
+		kill_count:"Float",
+		player_steam_id:"Float",
+		rounds:"Float"
+	},
+	v_player_weapon_match_damage:{
+		damage:"bigint",
+		hits:"bigint",
+		match:"matches",
+		match_id:"uuid",
+		player_steam_id:"bigint",
+		with:"String"
+	},
+	v_player_weapon_match_damage_aggregate:{
+		aggregate:"v_player_weapon_match_damage_aggregate_fields",
+		nodes:"v_player_weapon_match_damage"
+	},
+	v_player_weapon_match_damage_aggregate_fields:{
+		avg:"v_player_weapon_match_damage_avg_fields",
+		count:"Int",
+		max:"v_player_weapon_match_damage_max_fields",
+		min:"v_player_weapon_match_damage_min_fields",
+		stddev:"v_player_weapon_match_damage_stddev_fields",
+		stddev_pop:"v_player_weapon_match_damage_stddev_pop_fields",
+		stddev_samp:"v_player_weapon_match_damage_stddev_samp_fields",
+		sum:"v_player_weapon_match_damage_sum_fields",
+		var_pop:"v_player_weapon_match_damage_var_pop_fields",
+		var_samp:"v_player_weapon_match_damage_var_samp_fields",
+		variance:"v_player_weapon_match_damage_variance_fields"
+	},
+	v_player_weapon_match_damage_avg_fields:{
+		damage:"Float",
+		hits:"Float",
+		player_steam_id:"Float"
+	},
+	v_player_weapon_match_damage_max_fields:{
+		damage:"bigint",
+		hits:"bigint",
+		match_id:"uuid",
+		player_steam_id:"bigint",
+		with:"String"
+	},
+	v_player_weapon_match_damage_min_fields:{
+		damage:"bigint",
+		hits:"bigint",
+		match_id:"uuid",
+		player_steam_id:"bigint",
+		with:"String"
+	},
+	v_player_weapon_match_damage_stddev_fields:{
+		damage:"Float",
+		hits:"Float",
+		player_steam_id:"Float"
+	},
+	v_player_weapon_match_damage_stddev_pop_fields:{
+		damage:"Float",
+		hits:"Float",
+		player_steam_id:"Float"
+	},
+	v_player_weapon_match_damage_stddev_samp_fields:{
+		damage:"Float",
+		hits:"Float",
+		player_steam_id:"Float"
+	},
+	v_player_weapon_match_damage_sum_fields:{
+		damage:"bigint",
+		hits:"bigint",
+		player_steam_id:"bigint"
+	},
+	v_player_weapon_match_damage_var_pop_fields:{
+		damage:"Float",
+		hits:"Float",
+		player_steam_id:"Float"
+	},
+	v_player_weapon_match_damage_var_samp_fields:{
+		damage:"Float",
+		hits:"Float",
+		player_steam_id:"Float"
+	},
+	v_player_weapon_match_damage_variance_fields:{
+		damage:"Float",
+		hits:"Float",
+		player_steam_id:"Float"
+	},
+	v_player_weapon_match_kills:{
+		kill_count:"bigint",
+		match:"matches",
+		match_id:"uuid",
+		player_steam_id:"bigint",
+		rounds:"bigint",
+		with:"String"
+	},
+	v_player_weapon_match_kills_aggregate:{
+		aggregate:"v_player_weapon_match_kills_aggregate_fields",
+		nodes:"v_player_weapon_match_kills"
+	},
+	v_player_weapon_match_kills_aggregate_fields:{
+		avg:"v_player_weapon_match_kills_avg_fields",
+		count:"Int",
+		max:"v_player_weapon_match_kills_max_fields",
+		min:"v_player_weapon_match_kills_min_fields",
+		stddev:"v_player_weapon_match_kills_stddev_fields",
+		stddev_pop:"v_player_weapon_match_kills_stddev_pop_fields",
+		stddev_samp:"v_player_weapon_match_kills_stddev_samp_fields",
+		sum:"v_player_weapon_match_kills_sum_fields",
+		var_pop:"v_player_weapon_match_kills_var_pop_fields",
+		var_samp:"v_player_weapon_match_kills_var_samp_fields",
+		variance:"v_player_weapon_match_kills_variance_fields"
+	},
+	v_player_weapon_match_kills_avg_fields:{
+		kill_count:"Float",
+		player_steam_id:"Float",
+		rounds:"Float"
+	},
+	v_player_weapon_match_kills_max_fields:{
+		kill_count:"bigint",
+		match_id:"uuid",
+		player_steam_id:"bigint",
+		rounds:"bigint",
+		with:"String"
+	},
+	v_player_weapon_match_kills_min_fields:{
+		kill_count:"bigint",
+		match_id:"uuid",
+		player_steam_id:"bigint",
+		rounds:"bigint",
+		with:"String"
+	},
+	v_player_weapon_match_kills_stddev_fields:{
+		kill_count:"Float",
+		player_steam_id:"Float",
+		rounds:"Float"
+	},
+	v_player_weapon_match_kills_stddev_pop_fields:{
+		kill_count:"Float",
+		player_steam_id:"Float",
+		rounds:"Float"
+	},
+	v_player_weapon_match_kills_stddev_samp_fields:{
+		kill_count:"Float",
+		player_steam_id:"Float",
+		rounds:"Float"
+	},
+	v_player_weapon_match_kills_sum_fields:{
+		kill_count:"bigint",
+		player_steam_id:"bigint",
+		rounds:"bigint"
+	},
+	v_player_weapon_match_kills_var_pop_fields:{
+		kill_count:"Float",
+		player_steam_id:"Float",
+		rounds:"Float"
+	},
+	v_player_weapon_match_kills_var_samp_fields:{
+		kill_count:"Float",
+		player_steam_id:"Float",
+		rounds:"Float"
+	},
+	v_player_weapon_match_kills_variance_fields:{
 		kill_count:"Float",
 		player_steam_id:"Float",
 		rounds:"Float"

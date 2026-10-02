@@ -8409,6 +8409,17 @@
       "request_success_description": "管理员批准后，你的新名称才会显示。无论结果如何，我们都会通知你。",
       "approval_hint": "名称更改需经管理员批准后才会显示。"
     },
+    "edit": {
+      "profile": "个人资料",
+      "use_steam_avatar": "使用 Steam 头像",
+      "pending_name": "待审核：{name}",
+      "using_avatar": "正在使用头像",
+      "roster_hint": "显示在路人比赛的阵容中。战队比赛使用战队的图片。",
+      "name_length": "名称需为 3 到 32 个字符。",
+      "saved": "玩家已更新",
+      "not_now": "暂不",
+      "apply": "应用"
+    },
     "pending_imports": {
       "title": "待导入的 CS2 比赛",
       "importing": "导入中…"

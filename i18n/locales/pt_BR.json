@@ -8409,6 +8409,17 @@
       "request_success_description": "Seu novo nome aparece assim que um administrador aprová-lo. Avisaremos você de qualquer forma.",
       "approval_hint": "Um administrador aprova as alterações de nome antes que elas apareçam."
     },
+    "edit": {
+      "profile": "Perfil",
+      "use_steam_avatar": "Usar avatar da Steam",
+      "pending_name": "Pendente: {name}",
+      "using_avatar": "Usando avatar",
+      "roster_hint": "Exibida nas escalações de partidas pick-up. Partidas de time usam a imagem do time.",
+      "name_length": "Os nomes precisam ter de 3 a 32 caracteres.",
+      "saved": "Jogador atualizado",
+      "not_now": "Agora não",
+      "apply": "Aplicar"
+    },
     "pending_imports": {
       "title": "Importações CS2 Pendentes",
       "importing": "Importando..."

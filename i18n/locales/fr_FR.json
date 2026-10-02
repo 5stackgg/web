@@ -8409,6 +8409,17 @@
       "request_success_description": "Ton nouveau nom s'affichera dès qu'un admin l'aura approuvé. Nous te préviendrons dans tous les cas.",
       "approval_hint": "Un admin approuve les changements de nom avant qu'ils ne s'affichent."
     },
+    "edit": {
+      "profile": "Profil",
+      "use_steam_avatar": "Utiliser l'avatar Steam",
+      "pending_name": "En attente : {name}",
+      "using_avatar": "Avatar utilisé",
+      "roster_hint": "Affichée dans les compositions des matchs pick-up. Les matchs d'équipe utilisent l'image de l'équipe.",
+      "name_length": "Les noms doivent contenir entre 3 et 32 caractères.",
+      "saved": "Joueur mis à jour",
+      "not_now": "Pas maintenant",
+      "apply": "Appliquer"
+    },
     "pending_imports": {
       "title": "Imports CS2 en attente",
       "importing": "Import en cours…"

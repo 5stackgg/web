@@ -101,3 +101,22 @@ export function isChunkLoadError(err: unknown): boolean {
     /ChunkLoadError/i.test(msg)
   );
 }
+
+export async function uploadImageBlob(
+  url: string,
+  blob: Blob,
+  filename: string,
+): Promise<string> {
+  const formData = new FormData();
+  formData.append("file", blob, filename);
+  const response = await fetch(url, {
+    method: "POST",
+    body: formData,
+    credentials: "include",
+  });
+  if (!response.ok) {
+    throw new Error(`${response.status} ${response.statusText}`);
+  }
+  const data = (await response.json()) as { path: string };
+  return data.path;
+}

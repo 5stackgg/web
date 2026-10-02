@@ -8409,6 +8409,17 @@
       "request_success_description": "新しい名前は管理者が承認すると表示されます。結果はどちらの場合もお知らせします。",
       "approval_hint": "名前の変更は、管理者の承認後に表示されます。"
     },
+    "edit": {
+      "profile": "プロフィール",
+      "use_steam_avatar": "Steamのアバターを使用",
+      "pending_name": "承認待ち: {name}",
+      "using_avatar": "アバターを使用中",
+      "roster_hint": "ピックアップマッチのラインナップに表示されます。チームマッチではチームの画像が使われます。",
+      "name_length": "名前は3〜32文字にしてください。",
+      "saved": "プレイヤーを更新しました",
+      "not_now": "後で",
+      "apply": "適用"
+    },
     "pending_imports": {
       "title": "CS2インポート保留中",
       "importing": "インポート中…"

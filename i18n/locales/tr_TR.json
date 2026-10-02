@@ -8409,6 +8409,17 @@
       "request_success_description": "Yeni adın bir yönetici onayladığında görünür. Her iki durumda da seni bilgilendireceğiz.",
       "approval_hint": "Ad değişiklikleri görünmeden önce bir yönetici tarafından onaylanır."
     },
+    "edit": {
+      "profile": "Profil",
+      "use_steam_avatar": "Steam avatarını kullan",
+      "pending_name": "Onay bekliyor: {name}",
+      "using_avatar": "Avatar kullanılıyor",
+      "roster_hint": "Pick-up maç kadrolarında gösterilir. Takım maçlarında takımın görseli kullanılır.",
+      "name_length": "İsimler 3 ile 32 karakter arasında olmalıdır.",
+      "saved": "Oyuncu güncellendi",
+      "not_now": "Şimdi değil",
+      "apply": "Uygula"
+    },
     "pending_imports": {
       "title": "Bekleyen CS2 içe aktarmaları",
       "importing": "İçe aktarılıyor…"

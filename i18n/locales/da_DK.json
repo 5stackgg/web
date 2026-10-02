@@ -8409,6 +8409,17 @@
       "request_success_description": "Dit nye navn vises, når en admin har godkendt det. Vi giver dig besked uanset hvad.",
       "approval_hint": "En admin godkender navneændringer, før de vises."
     },
+    "edit": {
+      "profile": "Profil",
+      "use_steam_avatar": "Brug Steam-avatar",
+      "pending_name": "Afventer: {name}",
+      "using_avatar": "Bruger avatar",
+      "roster_hint": "Vises i holdopstillinger i pick-up-kampe. Holdkampe bruger holdets billede.",
+      "name_length": "Navne skal være 3 til 32 tegn.",
+      "saved": "Spiller opdateret",
+      "not_now": "Ikke nu",
+      "apply": "Anvend"
+    },
     "pending_imports": {
       "title": "Afventende CS2-imports",
       "importing": "Importerer…"

@@ -7,17 +7,11 @@ import { Spinner } from "~/components/ui/spinner";
 import ImageCropDialog from "~/components/ImageCropDialog.vue";
 import RosterImageEditor from "~/components/RosterImageEditor.vue";
 
-interface BulkTeam {
-  teamId: string;
-  teamName: string;
-  hasCustomImage: boolean;
-}
-
 // One "image-as-surface" upload control: the image fills the tile, hover reveals
 // replace/remove, and an empty tile is a dashed dropzone. Three storage modes:
 //   immediate  — POST uploadUrl / DELETE deleteUrl (or uploadFn/deleteFn)
 //   deferred   — emit the cropped blob, no network (create-wizard style)
-//   roster     — delegate to RosterImageEditor (bg-removal + bulk apply)
+//   roster     — delegate to RosterImageEditor (crop + bg-removal)
 const props = withDefaults(
   defineProps<{
     currentSrc?: string | null;
@@ -41,8 +35,6 @@ const props = withDefaults(
     uploadFn?: (blob: Blob) => Promise<string | null>;
     deleteFn?: () => Promise<void>;
     kind?: "roster" | "team-roster";
-    bulkTeams?: BulkTeam[];
-    bulkUrlBuilder?: (teamId: string) => string;
   }>(),
   {
     currentSrc: null,
@@ -50,12 +42,11 @@ const props = withDefaults(
     hasCustom: false,
     mode: "immediate",
     filename: "image.webp",
-    bulkTeams: () => [],
   },
 );
 
 const emit = defineEmits<{
-  (e: "uploaded", srcOrPath: string): void;
+  (e: "uploaded", srcOrPath: string, blob?: Blob): void;
   (e: "removed"): void;
   (e: "apply", blob: Blob): void;
 }>();
@@ -153,6 +144,22 @@ async function onDrop(event: DragEvent) {
   const file = event.dataTransfer?.files?.[0];
   if (file) await handleFile(file);
 }
+
+const dropzone = {
+  dragenter: (event: DragEvent) => {
+    event.preventDefault();
+    onDragEnter(event);
+  },
+  dragover: (event: DragEvent) => event.preventDefault(),
+  dragleave: (event: DragEvent) => {
+    event.preventDefault();
+    onDragLeave();
+  },
+  drop: (event: DragEvent) => {
+    event.preventDefault();
+    void onDrop(event);
+  },
+};
 
 function matchesAccept(file: File) {
   return ACCEPT.value
@@ -259,8 +266,8 @@ async function store(blob: Blob) {
   }
 }
 
-function onRosterUploaded(path: string) {
-  emit("uploaded", path);
+function onRosterUploaded(path: string, blob: Blob) {
+  emit("uploaded", path, blob);
 }
 
 async function remove() {
@@ -303,107 +310,115 @@ async function remove() {
 onBeforeUnmount(() => {
   if (deferredPreview.value) URL.revokeObjectURL(deferredPreview.value);
 });
+
+defineExpose({ pick: triggerPicker, remove });
 </script>
 
 <template>
   <div class="flex flex-col gap-1.5">
-    <span
-      v-if="label"
-      class="text-sm font-medium leading-none text-foreground"
+    <!-- Default slot swaps in a custom surface; upload, crop and roster editing stay here. -->
+    <slot
+      :pick="triggerPicker"
+      :remove="remove"
+      :busy="busy"
+      :drag-over="isDragOver"
+      :dropzone="dropzone"
     >
-      {{ label }}
-    </span>
+      <span
+        v-if="label"
+        class="text-sm font-medium leading-none text-foreground"
+      >
+        {{ label }}
+      </span>
 
-    <div
-      class="group relative w-full overflow-hidden rounded-md border transition-colors"
-      :class="[
-        hasImage
-          ? 'border-border'
-          : 'cursor-pointer border-dashed border-border/60 bg-card/40 hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-[hsl(var(--tac-amber)/0.05)]',
-        isDragOver && 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.12)]',
-        disabled && 'pointer-events-none opacity-60',
-      ]"
-      :style="aspectStyle"
-      @dragenter.prevent="onDragEnter"
-      @dragover.prevent
-      @dragleave.prevent="onDragLeave"
-      @drop.prevent="onDrop"
-    >
-      <!-- Filled -->
-      <template v-if="hasImage">
-        <template v-if="useBlurBackdrop">
+      <div
+        class="group relative w-full overflow-hidden rounded-md border transition-colors"
+        :class="[
+          hasImage
+            ? 'border-border'
+            : 'cursor-pointer border-dashed border-border/60 bg-card/40 hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-[hsl(var(--tac-amber)/0.05)]',
+          isDragOver && 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.12)]',
+          disabled && 'pointer-events-none opacity-60',
+        ]"
+        :style="aspectStyle"
+        v-on="dropzone"
+      >
+        <!-- Filled -->
+        <template v-if="hasImage">
+          <template v-if="useBlurBackdrop">
+            <img
+              :src="displaySrc as string"
+              aria-hidden="true"
+              class="absolute inset-0 h-full w-full scale-110 object-cover opacity-60 blur-2xl"
+            />
+            <img
+              :src="displaySrc as string"
+              alt=""
+              class="absolute inset-0 z-[1] h-full w-full object-contain"
+            />
+          </template>
           <img
-            :src="displaySrc as string"
-            aria-hidden="true"
-            class="absolute inset-0 h-full w-full scale-110 object-cover opacity-60 blur-2xl"
-          />
-          <img
+            v-else-if="effectiveFit === 'contain'"
             :src="displaySrc as string"
             alt=""
-            class="absolute inset-0 z-[1] h-full w-full object-contain"
+            class="absolute inset-0 h-full w-full object-contain p-2"
           />
+          <img
+            v-else
+            :src="displaySrc as string"
+            alt=""
+            class="absolute inset-0 h-full w-full object-cover"
+          />
+
+          <div
+            v-if="!disabled"
+            class="absolute right-2 top-2 z-[3] flex items-center gap-1 opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+          >
+            <button
+              type="button"
+              class="inline-flex h-7 w-7 items-center justify-center rounded-md bg-black/70 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/90 hover:text-[hsl(var(--tac-amber))] disabled:opacity-50"
+              :title="$t('image_upload.replace')"
+              :disabled="busy"
+              @click.stop="triggerPicker"
+            >
+              <Pencil class="h-3.5 w-3.5" />
+            </button>
+            <button
+              v-if="showRemove"
+              type="button"
+              class="inline-flex h-7 w-7 items-center justify-center rounded-md bg-black/70 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/90 hover:text-destructive disabled:opacity-50"
+              :title="$t('image_upload.remove')"
+              :disabled="busy"
+              @click.stop="remove"
+            >
+              <Spinner v-if="isRemoving" class="h-3.5 w-3.5" />
+              <Trash2 v-else class="h-3.5 w-3.5" />
+            </button>
+          </div>
         </template>
-        <img
-          v-else-if="effectiveFit === 'contain'"
-          :src="displaySrc as string"
-          alt=""
-          class="absolute inset-0 h-full w-full object-contain p-2"
-        />
-        <img
+
+        <!-- Empty -->
+        <button
           v-else
-          :src="displaySrc as string"
-          alt=""
-          class="absolute inset-0 h-full w-full object-cover"
-        />
-
-        <div
-          v-if="!disabled"
-          class="absolute right-2 top-2 z-[3] flex items-center gap-1 opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+          type="button"
+          class="absolute inset-0 flex flex-col items-center justify-center gap-1.5 p-3 text-center text-muted-foreground"
+          @click="triggerPicker"
         >
-          <button
-            type="button"
-            class="inline-flex h-7 w-7 items-center justify-center rounded-md bg-black/70 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/90 hover:text-[hsl(var(--tac-amber))] disabled:opacity-50"
-            :title="$t('image_upload.replace')"
-            :disabled="busy"
-            @click.stop="triggerPicker"
-          >
-            <Pencil class="h-3.5 w-3.5" />
-          </button>
-          <button
-            v-if="showRemove"
-            type="button"
-            class="inline-flex h-7 w-7 items-center justify-center rounded-md bg-black/70 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/90 hover:text-destructive disabled:opacity-50"
-            :title="$t('image_upload.remove')"
-            :disabled="busy"
-            @click.stop="remove"
-          >
-            <Spinner v-if="isRemoving" class="h-3.5 w-3.5" />
-            <Trash2 v-else class="h-3.5 w-3.5" />
-          </button>
+          <Upload class="h-5 w-5 text-[hsl(var(--tac-amber))]" />
+          <span class="font-mono text-[0.6rem] uppercase tracking-[0.16em]">
+            {{ isDragOver ? $t("image_upload.drop_to_upload") : defaultHint }}
+          </span>
+        </button>
+
+        <!-- Uploading overlay -->
+        <div
+          v-if="isUploading"
+          class="absolute inset-0 z-[4] flex items-center justify-center bg-background/70 backdrop-blur-sm"
+        >
+          <Spinner class="h-6 w-6 text-[hsl(var(--tac-amber))]" />
         </div>
-      </template>
-
-      <!-- Empty -->
-      <button
-        v-else
-        type="button"
-        class="absolute inset-0 flex flex-col items-center justify-center gap-1.5 p-3 text-center text-muted-foreground"
-        @click="triggerPicker"
-      >
-        <Upload class="h-5 w-5 text-[hsl(var(--tac-amber))]" />
-        <span class="font-mono text-[0.6rem] uppercase tracking-[0.16em]">
-          {{ isDragOver ? $t("image_upload.drop_to_upload") : defaultHint }}
-        </span>
-      </button>
-
-      <!-- Uploading overlay -->
-      <div
-        v-if="isUploading"
-        class="absolute inset-0 z-[4] flex items-center justify-center bg-background/70 backdrop-blur-sm"
-      >
-        <Spinner class="h-6 w-6 text-[hsl(var(--tac-amber))]" />
       </div>
-    </div>
+    </slot>
 
     <input
       ref="fileInput"
@@ -431,8 +446,6 @@ onBeforeUnmount(() => {
       :file="editorFile"
       :upload-url="uploadUrl as string"
       :mode="kind === 'team-roster' ? 'team-roster' : 'player-roster'"
-      :bulk-teams="bulkTeams"
-      :bulk-url-builder="bulkUrlBuilder"
       @uploaded="onRosterUploaded"
     />
   </div>

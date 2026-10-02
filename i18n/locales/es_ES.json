@@ -8409,6 +8409,17 @@
       "request_success_description": "Tu nuevo nombre aparecerá cuando un administrador lo apruebe. Te avisaremos en cualquier caso.",
       "approval_hint": "Un administrador aprueba los cambios de nombre antes de que se muestren."
     },
+    "edit": {
+      "profile": "Perfil",
+      "use_steam_avatar": "Usar avatar de Steam",
+      "pending_name": "Pendiente: {name}",
+      "using_avatar": "Usando avatar",
+      "roster_hint": "Se muestra en las alineaciones de partidas pick-up. Las partidas de equipo usan la imagen del equipo.",
+      "name_length": "Los nombres deben tener entre 3 y 32 caracteres.",
+      "saved": "Jugador actualizado",
+      "not_now": "Ahora no",
+      "apply": "Aplicar"
+    },
     "pending_imports": {
       "title": "Importaciones de CS2 pendientes",
       "importing": "Importando…"

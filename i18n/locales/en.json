@@ -8409,6 +8409,17 @@
       "request_success_description": "Your new name shows once an admin approves it. We'll notify you either way.",
       "approval_hint": "An admin approves name changes before they show."
     },
+    "edit": {
+      "profile": "Profile",
+      "use_steam_avatar": "Use Steam avatar",
+      "pending_name": "Pending: {name}",
+      "using_avatar": "Using avatar",
+      "roster_hint": "Shown in pick-up match lineups. Team matches use the team's image.",
+      "name_length": "Names need 3 to 32 characters.",
+      "saved": "Player updated",
+      "not_now": "Not now",
+      "apply": "Apply"
+    },
     "pending_imports": {
       "title": "Pending CS2 imports",
       "importing": "Importing…"

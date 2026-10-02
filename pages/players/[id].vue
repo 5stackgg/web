@@ -52,8 +52,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
 import { usePlayerCompareTarget } from "~/composables/usePlayerCompareTarget";
 import PlayerSanctions from "~/components/PlayerSanctions.vue";
 import PlayerVacBadge from "~/components/PlayerVacBadge.vue";
-import PlayerChangeName from "~/components/PlayerChangeName.vue";
-import PlayerChangeCountry from "~/components/PlayerChangeCountry.vue";
+import PlayerEditForm from "~/components/player/PlayerEditForm.vue";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
@@ -95,7 +94,6 @@ import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
-import ImageUploadTile from "~/components/ImageUploadTile.vue";
 import PlayerHighlights from "~/components/clips/PlayerHighlights.vue";
 import PlayerElo from "~/components/PlayerElo.vue";
 import PlayerLeaderboardRank from "~/components/PlayerLeaderboardRank.vue";
@@ -3518,74 +3516,21 @@ const playerHeroTeamChipDotClasses =
     :open="editPlayerSheet"
     @update:open="(open) => (editPlayerSheet = open)"
   >
-    <SheetContent>
+    <SheetContent class="flex w-full flex-col gap-0 sm:max-w-md">
       <SheetHeader>
         <SheetTitle>{{ $t("pages.players.detail.edit_player") }}</SheetTitle>
         <SheetDescription class="sr-only">
           {{ $t("pages.players.detail.edit_player") }}
         </SheetDescription>
       </SheetHeader>
-      <div class="mt-6 space-y-6">
-        <div v-if="canEditCountry" class="space-y-2">
-          <div
-            class="inline-flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted-foreground"
-          >
-            <span class="h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"></span>
-            {{ $t("pages.settings.account.country") }}
-          </div>
-          <PlayerChangeCountry :player="player" />
-        </div>
-
-        <div v-if="canEditAvatar" class="space-y-2">
-          <div
-            class="inline-flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted-foreground"
-          >
-            <span class="h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"></span>
-            {{ $t("avatar.player_avatar") }}
-          </div>
-          <ImageUploadTile
-            class="max-w-[9rem]"
-            aspect="square"
-            fit="cover"
-            :upload-url="`https://${apiDomain}/avatars/players/${player.steam_id}`"
-            :delete-url="`https://${apiDomain}/avatars/players/${player.steam_id}`"
-            :has-custom="!!player.custom_avatar_url"
-            :current-src="playerAvatarSrc"
-          />
-        </div>
-
-        <div v-if="canEditAvatar" class="space-y-2">
-          <div
-            class="inline-flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted-foreground"
-          >
-            <span class="h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"></span>
-            {{ $t("avatar.player_roster_image") }}
-          </div>
-          <ImageUploadTile
-            class="max-w-[11rem]"
-            aspect="square"
-            fit="contain"
-            mode="roster"
-            kind="roster"
-            :upload-url="`https://${apiDomain}/avatars/roster-players/${player.steam_id}`"
-            :delete-url="`https://${apiDomain}/avatars/roster-players/${player.steam_id}`"
-            :has-custom="!!player.roster_image_url"
-            :current-src="playerRosterImageSrc"
-            :bulk-teams="bulkApplyTeams"
-            :bulk-url-builder="bulkRosterUrl"
-          />
-        </div>
-
-        <div v-if="canEditName" class="space-y-2">
-          <div
-            class="inline-flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted-foreground"
-          >
-            <span class="h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"></span>
-            {{ $t("pages.players.detail.name") }}
-          </div>
-          <PlayerChangeName :player="player" />
-        </div>
-      </div>
+      <PlayerEditForm
+        class="-mx-4 mt-6 flex-1 overflow-y-auto px-4"
+        :player="player"
+        :can-edit-avatar="canEditAvatar"
+        :can-edit-name="canEditName"
+        :can-edit-country="canEditCountry"
+        :bulk-teams="bulkApplyTeams"
+      />
     </SheetContent>
   </Sheet>
 </template>
@@ -3816,10 +3761,6 @@ export default {
         this.player.custom_avatar_url || this.player.avatar_url,
         this.apiDomain,
       );
-    },
-    playerRosterImageSrc() {
-      if (!this.player) return null;
-      return resolveAvatarUrl(this.player.roster_image_url, this.apiDomain);
     },
     canSanction() {
       if (!this.me || !this.player) {
@@ -4062,9 +4003,6 @@ export default {
     },
   },
   methods: {
-    bulkRosterUrl(teamId: string) {
-      return `https://${this.apiDomain}/avatars/roster-teams/${teamId}/${(this.player as any)?.steam_id}`;
-    },
     messagePlayer() {
       if (!this.player?.steam_id) return;
       useDirectMessages().openConversation({

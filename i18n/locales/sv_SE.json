@@ -1664,177 +1664,463 @@
           "done": "Röstinställningar återställda på den här enheten"
         }
       },
-      "notification_preferences": {
-        "title": "Aviseringsinställningar",
-        "description": "Välj vad 5stack ska meddela dig om och var de aviseringarna hamnar.",
+      "notifications": {
+        "title": "Notiser",
+        "description": "Allt 5stack kan meddela dig om, och var varje avisering når dig.",
         "save_failed": "Kunde inte spara den inställningen. Försök igen.",
-        "push": {
-          "title": "Push-aviseringar",
-          "description": "Få aviseringar på den här enheten även när 5stack inte är öppet.",
-          "categories": "Vad som ska pushas",
-          "unsupported": "Push-aviseringar stöds inte i den här webbläsaren.",
-          "install_required": "Installera 5stack-appen för att slå på dem.",
-          "install": {
-            "description": "Push-aviseringar levereras av den installerade appen, så den måste finnas på din enhet innan du kan slå på dem.",
-            "open_app": "Redan installerad? Öppna 5stack från din hemskärm eller dina program och slå på push-aviseringar där."
+        "load_failed": "Kunde inte läsa in dina aviseringsinställningar. Uppdatera sidan för att försöka igen.",
+        "channels": {
+          "title": "Var de når dig",
+          "bell": {
+            "title": "Klocka",
+            "description": "I hubben, alltid på",
+            "unread": "{count} olästa"
           },
-          "denied": "Aviseringar är blockerade för 5stack. Tillåt dem i webbläsarens eller enhetens inställningar för att slå på det här.",
-          "failed": "Kunde inte slå på push-aviseringar. Försök igen.",
-          "errors": {
-            "permission": "Förfrågan om aviseringsbehörighet svarade aldrig. Det kan hända när Google Play Services saknas eller är trasigt på enheten.",
-            "vapid": "Tidsgränsen gick ut när push-nyckeln skulle hämtas från servern.",
-            "service_worker": "Tidsgränsen gick ut i väntan på att enhetens service worker skulle bli aktiv.",
-            "existing": "Tidsgränsen gick ut vid kontroll av en befintlig push-prenumeration.",
-            "register": "Tidsgränsen gick ut vid registrering hos enhetens push-tjänst. Bakgrunds- eller batteribegränsningar kan blockera det.",
-            "save": "Tidsgränsen gick ut när push-prenumerationen skulle sparas på servern."
+          "push": {
+            "title": "Push",
+            "caption": "Aviseringar på telefon eller dator",
+            "on": "Påslaget på den här enheten",
+            "off": "Avstängt på den här enheten",
+            "blocked": "Blockerat på den här enheten",
+            "unavailable": "Inte tillgängligt i den här webbläsaren",
+            "needs_install": "Kräver den installerade appen",
+            "toggle": "Push på den här enheten",
+            "off_hint": "Push är avstängt på den här enheten. Dina Push-val nedan är fortfarande sparade och gäller på alla enheter där du slår på push.",
+            "unsupported": "Push-aviseringar stöds inte i den här webbläsaren.",
+            "install": {
+              "description": "Push-aviseringar levereras av den installerade appen, så den måste finnas på din enhet innan du kan slå på dem.",
+              "open_app": "Redan installerad? Öppna 5stack från din hemskärm eller dina program och slå på push-aviseringar där."
+            },
+            "denied": "Aviseringar är blockerade för 5stack. Tillåt dem i webbläsarens eller enhetens inställningar för att slå på det här.",
+            "failed": "Kunde inte slå på push-aviseringar. Försök igen.",
+            "errors": {
+              "permission": "Förfrågan om aviseringsbehörighet svarade aldrig. Det kan hända när Google Play Services saknas eller är trasigt på enheten.",
+              "vapid": "Tidsgränsen gick ut när push-nyckeln skulle hämtas från servern.",
+              "service_worker": "Tidsgränsen gick ut i väntan på att enhetens service worker skulle bli aktiv.",
+              "existing": "Tidsgränsen gick ut vid kontroll av en befintlig push-prenumeration.",
+              "register": "Tidsgränsen gick ut vid registrering hos enhetens push-tjänst. Bakgrunds- eller batteribegränsningar kan blockera det.",
+              "save": "Tidsgränsen gick ut när push-prenumerationen skulle sparas på servern."
+            },
+            "enabled_toast": "Push-aviseringar påslagna",
+            "disabled_toast": "Push-aviseringar avstängda"
           },
-          "enabled_toast": "Push-aviseringar påslagna",
-          "disabled_toast": "Push-aviseringar avstängda"
+          "tab_flash": {
+            "title": "Webbläsarflik",
+            "description": "Låter flikens titel och ikon blinka när något behöver dig medan den ligger i bakgrunden. Sparas på den här enheten.",
+            "caption": "Endast den här webbläsaren",
+            "match_found": {
+              "title": "Match hittad",
+              "description": "En match är redo och väntar på att du accepterar."
+            },
+            "admin_call": {
+              "title": "Arrangörssamtal",
+              "description": "En matcharrangör börjar prata med dig via din kamerasida."
+            },
+            "chat": {
+              "title": "Chattmeddelanden",
+              "description": "Ett nytt meddelande i en konversation, en lobby eller ett turneringsrum. Chatten från själva matchen i spelet räknas inte."
+            },
+            "bell": {
+              "title": "Aviseringar",
+              "description": "Något nytt landar i din aviseringsklocka."
+            }
+          },
+          "sounds": {
+            "title": "Ljud",
+            "description": "Spela upp ett ljud för chattmeddelanden, matchhändelser och andra notiser.",
+            "volume": "Volym",
+            "mute": "Ljud av",
+            "unmute": "Ljud på",
+            "kinds": {
+              "chat": {
+                "title": "Chattmeddelande",
+                "description": "Nya chattmeddelanden"
+              },
+              "match_found": {
+                "title": "Match hittad",
+                "description": "En match är redo att spelas"
+              },
+              "tick": {
+                "title": "Tick",
+                "description": "Redo-tick"
+              },
+              "countdown": {
+                "title": "Nedräkning",
+                "description": "Nedräkning inför matchstart"
+              }
+            }
+          }
         },
-        "alerts": {
-          "title": "Aviseringsklocka",
-          "description": "Dölj dessa från klockan i appen. Allt annat fortsätter dyka upp där."
-        },
-        "keys": {
-          "matches": {
-            "title": "Matcher",
-            "description": "Ändringar av matchstatus och importerade matcher."
+        "catalog": {
+          "title": "Vad du får",
+          "per_kind": "Per typ",
+          "follows_group": "Följer gruppens push-reglage",
+          "kinds_count": "{count} typ | {count} typer",
+          "staff_only": "Endast personal",
+          "locked": "Visas alltid: det gäller ditt konto",
+          "staff_locked": "Visas alltid för personal",
+          "push_only": "Endast push, aldrig i klockan",
+          "rings_in_quiet_hours": "Ringer under tysta timmar",
+          "push_off_by_default": "Push avstängt som standard",
+          "in_bell": "{kind} i klockan",
+          "push_for": "{kind} via push",
+          "bell_unavailable": "Kan inte ändras just nu",
+          "legacy_hint": "Din 5stack-server listar ännu inte alla typer av aviseringar. Det här är valen den erbjuder.",
+          "groups": {
+            "more": {
+              "title": "Lag, evenemang, säsonger, utility, nyheter",
+              "description": "Lagförslag, evenemangspåminnelser, säsongsslut, träningsinbjudningar och artiklar."
+            },
+            "staff": {
+              "title": "Personal",
+              "description": "Supportärenden, övergivna matcher, ansökningar om namnbyte samt server- och jobbstatus."
+            }
           },
-          "match_found": {
-            "title": "Match hittad",
-            "description": "Matchmaking har hittat din match och väntar på att du accepterar. Ringer även under tysta timmar."
+          "categories": {
+            "matches": {
+              "title": "Matcher",
+              "description": "Dina matcher, från redo-kontroller och aviseringar till statistik, klipp och chatt."
+            },
+            "match_found": {
+              "title": "Match hittad"
+            },
+            "admin_call": {
+              "title": "Samtal från admins"
+            },
+            "match_chat": {
+              "title": "Matchchatt"
+            },
+            "chat": {
+              "title": "Chatt",
+              "description": "Nya meddelanden i en konversation, ett lobby eller ett turneringsrum."
+            },
+            "tournaments": {
+              "title": "Turneringar",
+              "description": "Nya turneringar, påminnelser och incheckning."
+            },
+            "events": {
+              "title": "Evenemang"
+            },
+            "seasons": {
+              "title": "Säsonger"
+            },
+            "scrims": {
+              "title": "Scrims",
+              "description": "Scrim-förfrågningar, tidsändringar och varningar."
+            },
+            "leagues": {
+              "title": "Ligor",
+              "description": "Förslag på ligaspelschema och varningar om truppen."
+            },
+            "teams": {
+              "title": "Lag"
+            },
+            "invites": {
+              "title": "Inbjudningar",
+              "description": "Lag-, turnerings- och draftinbjudningar."
+            },
+            "utility": {
+              "title": "Utility-träning"
+            },
+            "account": {
+              "title": "Konto",
+              "description": "Dina namnbyten, varningar, sanktioner och utmärkelser."
+            },
+            "teammate_bans": {
+              "title": "Bannade medspelare",
+              "description": "När en spelare du har spelat med under de senaste 6 månaderna blir bannad."
+            },
+            "news": {
+              "title": "Nyheter"
+            },
+            "staff_moderation": {
+              "title": "Moderering"
+            },
+            "staff_infrastructure": {
+              "title": "Infrastruktur"
+            }
           },
-          "admin_call": {
-            "title": "Samtal från admins",
-            "description": "En admin vill prata med dig via din matchkamera. Ringer även under tysta timmar."
-          },
-          "chat": {
-            "title": "Chatt",
-            "description": "Nya meddelanden i en konversation, ett lobby eller ett turneringsrum."
-          },
-          "tournaments": {
-            "title": "Turneringar",
-            "description": "Nya turneringar och startpåminnelser."
-          },
-          "scrims": {
-            "title": "Scrims",
-            "description": "Scrim-förfrågningar, tidsändringar och varningar."
-          },
-          "leagues": {
-            "title": "Ligor",
-            "description": "Förslag på ligaspelschema och varningar om truppen."
-          },
-          "teams": {
-            "title": "Lag",
-            "description": "Förslag på att bilda lag med spelare du köar med."
-          },
-          "account": {
-            "title": "Konto",
-            "description": "Dina namnbyten, varningar, sanktioner och utmärkelser."
-          },
-          "teammate_bans": {
-            "title": "Bannade medspelare",
-            "description": "När en spelare du har spelat med under de senaste 6 månaderna blir bannad."
-          },
-          "news": {
-            "title": "Nyheter",
-            "description": "Nya artiklar publicerade på 5stack."
-          },
-          "staff_moderation": {
-            "title": "Moderering",
-            "description": "Supportärenden, övergivna matcher och ansökningar om namnbyte."
-          },
-          "staff_infrastructure": {
-            "title": "Infrastruktur",
-            "description": "Status för servrar, noder och bakgrundsjobb."
-          },
-          "ChatMessage": {
-            "title": "Chattmeddelanden",
-            "description": "Ett nytt meddelande i en konversation, ett lobby eller ett turneringsrum."
-          },
-          "MatchImported": {
-            "title": "Importerade matcher",
-            "description": "En Valve-match du spelade importerades."
-          },
-          "NewsPublished": {
-            "title": "Nyhetsartiklar",
-            "description": "En ny artikel publicerades."
-          },
-          "TournamentReminder": {
-            "title": "Turneringspåminnelser",
-            "description": "En turnering du anmält dig till börjar snart."
-          },
-          "FormTeamSuggestion": {
-            "title": "Lagförslag",
-            "description": "Du spelar ofta med de här spelarna."
-          },
-          "ScrimAlertMatch": {
-            "title": "Scrim-varningar",
-            "description": "Ett lag som matchar din scrim-bevakning är tillgängligt."
-          },
-          "LeagueMatchUnscheduled": {
-            "title": "Oschemalagda ligamatcher",
-            "description": "Ett ligamöte har ännu ingen överenskommen tid."
-          },
-          "invites": {
-            "title": "Inbjudningar",
-            "description": "Lag-, turnerings- och draftinbjudningar."
-          },
-          "events": {
-            "title": "Evenemang",
-            "description": "Påminnelser om evenemang du deltar i."
-          },
-          "seasons": {
-            "title": "Säsonger",
-            "description": "När en säsong tar slut."
-          },
-          "TeamInvite": {
-            "title": "Laginbjudningar",
-            "description": "Någon har bjudit in dig till sitt lag."
-          },
-          "TournamentTeamInvite": {
-            "title": "Turneringsinbjudningar",
-            "description": "Någon har bjudit in dig att spela i en turnering."
-          },
-          "DraftInvite": {
-            "title": "Draftinbjudningar",
-            "description": "Någon har bjudit in dig till ett draftlobby."
-          },
-          "MatchStatsReady": {
-            "title": "Statistik klar",
-            "description": "Bearbetningen av din matchstatistik är klar."
-          },
-          "ClipReady": {
-            "title": "Klipp klara",
-            "description": "Ett klipp du beställde har renderats färdigt."
-          },
-          "AwardGranted": {
-            "title": "Utmärkelser",
-            "description": "Du har fått en utmärkelse."
-          },
-          "TeammateBanned": {
-            "title": "Bannade medspelare",
-            "description": "En spelare du har spelat med under de senaste 6 månaderna har blivit bannad."
-          },
-          "EventReminder": {
-            "title": "Evenemangspåminnelser",
-            "description": "Ett evenemang du deltar i börjar snart."
-          },
-          "SeasonEnded": {
-            "title": "Säsongen avslutad",
-            "description": "En säsong har tagit slut."
-          },
-          "match_chat": {
-            "title": "Matchchatt",
-            "description": "Nya meddelanden i en matchs rum, inklusive chatt vidarebefordrad från spelet. Avstängd som standard — den utlöses vid varje rad som skrivs under en pågående match."
-          },
-          "MatchChatMessage": {
-            "title": "Meddelanden i matchchatt",
-            "description": "Ett nytt meddelande i en matchs rum."
-          },
-          "TournamentInvite": {
-            "title": "Inbjudningar till turneringsanmälan",
-            "description": "En arrangör har bjudit in dig att anmäla dig till en turnering."
+          "kinds": {
+            "MatchStatusChange": {
+              "title": "Matchaviseringar",
+              "description": "En match du arrangerar väntar på en server eller har en pausad karta.",
+              "example": "Matchavisering: Karta pausad"
+            },
+            "MatchImported": {
+              "title": "Importerade matcher",
+              "description": "En Valve-match du spelade importerades.",
+              "example": "Din Premier-match på Ancient har importerats"
+            },
+            "MatchStatsReady": {
+              "title": "Statistik klar",
+              "description": "Bearbetningen av din matchstatistik är klar.",
+              "example": "Statistiken för Iron Wolves vs Night Owls är klar"
+            },
+            "ClipReady": {
+              "title": "Klipp klara",
+              "description": "Ett klipp du beställde har renderats färdigt.",
+              "example": "Din 4K på Mirage är klar"
+            },
+            "MatchFound": {
+              "title": "Match hittad",
+              "description": "Matchmaking har hittat din match och väntar på att du accepterar.",
+              "example": "Din Competitive-match är redo, acceptera inom 30 s"
+            },
+            "AdminCall": {
+              "title": "Samtal från admins",
+              "description": "En admin vill prata med dig via din matchkamera.",
+              "example": "En admin vill prata med dig om Iron Wolves vs Night Owls"
+            },
+            "MatchChatMessage": {
+              "title": "Meddelanden i matchchatt",
+              "description": "Ett nytt meddelande i en matchs rum, inklusive chatt vidarebefordrad från spelet.",
+              "example": "kairo: rotate B"
+            },
+            "ChatMessage": {
+              "title": "Chattmeddelanden",
+              "description": "Ett nytt meddelande i en konversation, ett lobby eller ett turneringsrum.",
+              "example": "Juno: gg"
+            },
+            "TournamentCreated": {
+              "title": "Nya turneringar",
+              "description": "Anmälan har öppnat för en turnering.",
+              "example": "Anmälan till Winter Open är öppen"
+            },
+            "TournamentReminder": {
+              "title": "Turneringspåminnelser",
+              "description": "En turnering du anmält dig till börjar snart.",
+              "example": "Autumn Cup börjar om 30 minuter"
+            },
+            "TournamentCheckInOpen": {
+              "title": "Incheckning öppen",
+              "description": "Incheckningen har öppnat för en turnering du är anmäld till.",
+              "example": "Checka in till Autumn Cup"
+            },
+            "TournamentCheckInClosing": {
+              "title": "Incheckningen stänger",
+              "description": "Incheckningen till din turnering stänger snart.",
+              "example": "Incheckningen till Autumn Cup stänger om 10 minuter"
+            },
+            "TournamentCheckInMissed": {
+              "title": "Missad incheckning",
+              "description": "Ditt lag missade incheckningen och placerades inte i slutspelsträdet.",
+              "example": "Iron Wolves missade incheckningen till Autumn Cup"
+            },
+            "TournamentPartySignup": {
+              "title": "Anmälningar av free agent-grupper",
+              "description": "Din lobby anmäldes till en turnering som en free agent-grupp.",
+              "example": "Din lobby anmäldes till Autumn Cup"
+            },
+            "EventReminder": {
+              "title": "Evenemangspåminnelser",
+              "description": "Ett evenemang du deltar i börjar snart.",
+              "example": "LAN Night börjar om 1 timme"
+            },
+            "SeasonEnded": {
+              "title": "Säsongen avslutad",
+              "description": "En säsong har tagit slut.",
+              "example": "Säsong 4 har tagit slut"
+            },
+            "ScrimRequestReceived": {
+              "title": "Scrimförfrågningar",
+              "description": "Ett lag vill scrimma mot ditt.",
+              "example": "Night Owls vill scrimma mot ditt lag"
+            },
+            "ScrimRequestCountered": {
+              "title": "Motförslag för scrims",
+              "description": "Ett lag föreslog en annan tid för scrimmen.",
+              "example": "Night Owls föreslog lördag 20:00 i stället"
+            },
+            "ScrimRequestAccepted": {
+              "title": "Accepterade scrimförfrågningar",
+              "description": "Ett lag accepterade din scrimförfrågan.",
+              "example": "Night Owls accepterade din scrim"
+            },
+            "ScrimRequestDeclined": {
+              "title": "Avböjda scrimförfrågningar",
+              "description": "Ett lag avböjde din scrimförfrågan.",
+              "example": "Night Owls avböjde din scrim"
+            },
+            "ScrimRequestExpired": {
+              "title": "Utgångna scrimförfrågningar",
+              "description": "En scrimförfrågan gick ut utan svar.",
+              "example": "Din scrimförfrågan till Night Owls har gått ut"
+            },
+            "ScrimMatchScheduled": {
+              "title": "Schemalagda scrims",
+              "description": "En scrim mellan ditt lag och ett annat har schemalagts.",
+              "example": "Din scrim mot Night Owls har schemalagts"
+            },
+            "ScrimMatchCanceled": {
+              "title": "Inställda scrims",
+              "description": "En schemalagd scrim ställdes in av ett av lagen.",
+              "example": "Din scrim mot Night Owls ställdes in"
+            },
+            "ScrimTimeChanged": {
+              "title": "Ändrade scrimtider",
+              "description": "Tiden för en schemalagd scrim har ändrats.",
+              "example": "Din scrim mot Night Owls flyttades till 21:00"
+            },
+            "ScrimAlertMatch": {
+              "title": "Scrim-varningar",
+              "description": "Ett lag som matchar din scrim-bevakning är tillgängligt.",
+              "example": "Ett lag som matchar din scrim-bevakning är öppet för scrims"
+            },
+            "LeagueProposalReceived": {
+              "title": "Tidsförslag i ligan",
+              "description": "En motståndare föreslog en tid för din ligamatch.",
+              "example": "Night Owls föreslog lördag 20:00 för vecka 3"
+            },
+            "LeagueProposalAccepted": {
+              "title": "Accepterade ligatider",
+              "description": "Den tid du föreslog för ligamatchen accepterades.",
+              "example": "Din föreslagna tid för vecka 3 accepterades"
+            },
+            "LeagueProposalDeclined": {
+              "title": "Avböjda ligatider",
+              "description": "Den tid du föreslog för ligamatchen avböjdes.",
+              "example": "Din föreslagna tid för vecka 3 avböjdes"
+            },
+            "LeagueMatchUnscheduled": {
+              "title": "Oschemalagda ligamatcher",
+              "description": "Ett ligamöte har ännu ingen överenskommen tid.",
+              "example": "Vecka 3 har ännu ingen överenskommen tid"
+            },
+            "LeagueRegistrationDecision": {
+              "title": "Ligaanmälan",
+              "description": "Ditt lags ligaanmälan har granskats.",
+              "example": "Iron Wolves antogs till säsong 4"
+            },
+            "LeagueRosterUndersized": {
+              "title": "Truppvarningar i ligan",
+              "description": "Ditt ligalag har inte längre tillräckligt många spelare.",
+              "example": "Iron Wolves har nu 4 av de 5 spelare som krävs"
+            },
+            "FormTeamSuggestion": {
+              "title": "Lagförslag",
+              "description": "Du spelar ofta med de här spelarna.",
+              "example": "Bilda ett lag med kairo och Juno?"
+            },
+            "TeamInvite": {
+              "title": "Laginbjudningar",
+              "description": "Någon har bjudit in dig till sitt lag.",
+              "example": "sable bjöd in dig till Night Owls"
+            },
+            "TournamentTeamInvite": {
+              "title": "Turneringsinbjudningar",
+              "description": "Någon har bjudit in dig att spela i en turnering.",
+              "example": "kairo bjöd in dig att spela i Autumn Cup"
+            },
+            "TournamentInvite": {
+              "title": "Inbjudningar till turneringsanmälan",
+              "description": "En arrangör har bjudit in dig att anmäla dig till en turnering.",
+              "example": "Anmäl dig till Winter Open"
+            },
+            "DraftInvite": {
+              "title": "Draftinbjudningar",
+              "description": "Någon har bjudit in dig till ett draftlobby.",
+              "example": "Pyre bjöd in dig till en draft"
+            },
+            "UtilityPracticeInvite": {
+              "title": "Träningsinbjudningar",
+              "description": "Någon bjöd in dig att träna utility tillsammans.",
+              "example": "kairo bjöd in dig att träna utility på Mirage"
+            },
+            "UtilityPracticeReady": {
+              "title": "Träningsserver redo",
+              "description": "Din utility-träningsserver är igång.",
+              "example": "Din träningsserver på Mirage är igång"
+            },
+            "NameChangeApproved": {
+              "title": "Namnbyte godkänt",
+              "description": "En admin godkände ditt nya namn.",
+              "example": "Ditt namnbyte till kairo_ godkändes"
+            },
+            "NameChangeDenied": {
+              "title": "Namnbyte nekat",
+              "description": "En admin nekade ditt nya namn.",
+              "example": "Ditt namnbyte till kairo_ nekades"
+            },
+            "PlayerSanctioned": {
+              "title": "Bans",
+              "description": "Du har bannats från plattformen.",
+              "example": "Du har blivit bannad"
+            },
+            "PlayerWarning": {
+              "title": "Varningar",
+              "description": "En moderator gav dig en varning.",
+              "example": "Du har fått en varning"
+            },
+            "AwardGranted": {
+              "title": "Utmärkelser",
+              "description": "Du har fått en utmärkelse.",
+              "example": "Du blev MVP i Autumn Cup"
+            },
+            "TeammateBanned": {
+              "title": "Bannade medspelare",
+              "description": "En spelare du har spelat med under de senaste 6 månaderna har blivit bannad.",
+              "example": "En spelare du nyligen spelat med, dusk, har blivit bannad"
+            },
+            "NewsPublished": {
+              "title": "Nyhetsartiklar",
+              "description": "En ny artikel publicerades.",
+              "example": "Patchanteckningar: Rush-läge"
+            },
+            "MatchSupport": {
+              "title": "Matchassistans",
+              "description": "En match bad om en arrangör eller admin.",
+              "example": "Matchassistans krävs"
+            },
+            "MatchAbandoned": {
+              "title": "Övergivna matcher",
+              "description": "En spelare övergav en match.",
+              "example": "kairo övergav Iron Wolves vs Night Owls"
+            },
+            "NameChangeRequest": {
+              "title": "Ansökningar om namnbyte",
+              "description": "En spelare bad om att få byta namn.",
+              "example": "kairo vill byta namn till kairo_"
+            },
+            "GameUpdate": {
+              "title": "Speluppdateringar",
+              "description": "En CS2-uppdatering upptäcktes eller kunde inte installeras.",
+              "example": "CS2-uppdatering upptäckt"
+            },
+            "GameNodeStatus": {
+              "title": "Spelservernoder",
+              "description": "En nod eller region gick offline eller kom tillbaka, eller så har en nod ont om diskutrymme.",
+              "example": "Spelservernod offline"
+            },
+            "DedicatedServerStatus": {
+              "title": "Dedikerade servrar",
+              "description": "En dedikerad server gick offline eller så är dess plugin inaktuellt.",
+              "example": "Dedikerad server offline"
+            },
+            "DedicatedServerRconStatus": {
+              "title": "RCON-fel",
+              "description": "En dedikerad server slutade svara på RCON.",
+              "example": "RCON-fel på dedikerad server"
+            },
+            "StorageScan": {
+              "title": "Lagringsskanningar",
+              "description": "En lagringsskanning hittade föräldralösa uppladdningar.",
+              "example": "Lagringsskanningen hittade 12 föräldralösa uppladdningar"
+            },
+            "EloRecompute": {
+              "title": "Omräkningar av ELO",
+              "description": "En omräkning av spelar-ELO eller en ombyggnad av en säsong är klar.",
+              "example": "Omräkning av ELO klar"
+            },
+            "PlayerReindex": {
+              "title": "Reindexeringar av sökning",
+              "description": "En reindexering av spelarsökningen är klar.",
+              "example": "Reindexering av spelarsökning klar"
+            },
+            "UtilityDriftScanFinished": {
+              "title": "Utility-driftskanningar",
+              "description": "En utility-driftskanning är klar.",
+              "example": "Utility-driftskanning klar"
+            }
           }
         },
         "quiet_hours": {
@@ -1844,56 +2130,6 @@
           "to": "Till",
           "reset": "Återställ",
           "incomplete": "Ange både en start- och en sluttid för att spara tysta timmar."
-        },
-        "tab_flash": {
-          "title": "Webbläsarflik",
-          "description": "Låter flikens titel och ikon blinka när något behöver dig medan den ligger i bakgrunden. Sparas på den här enheten.",
-          "match_found": {
-            "title": "Match hittad",
-            "description": "En match är redo och väntar på att du accepterar."
-          },
-          "admin_call": {
-            "title": "Arrangörssamtal",
-            "description": "En matcharrangör börjar prata med dig via din kamerasida."
-          },
-          "chat": {
-            "title": "Chattmeddelanden",
-            "description": "Ett nytt meddelande i en konversation, en lobby eller ett turneringsrum. Chatten från själva matchen i spelet räknas inte."
-          },
-          "bell": {
-            "title": "Aviseringar",
-            "description": "Något nytt landar i din aviseringsklocka."
-          }
-        }
-      },
-      "notifications": {
-        "title": "Ljudinställningar",
-        "description": "Förhandsgranska och justera larmljuden 5Stack spelar upp för chatt, matcher och mer.",
-        "enabled": {
-          "title": "Notisljud",
-          "description": "Spela upp ett ljud för chattmeddelanden, matchhändelser och andra notiser."
-        },
-        "volume": {
-          "title": "Volym"
-        },
-        "preview": "Förhandsgranska ljud",
-        "sounds": {
-          "chat": {
-            "title": "Chattmeddelande",
-            "description": "Nya chattmeddelanden"
-          },
-          "match_found": {
-            "title": "Match hittad",
-            "description": "En match är redo att spelas"
-          },
-          "tick": {
-            "title": "Tick",
-            "description": "Redo-tick"
-          },
-          "countdown": {
-            "title": "Nedräkning",
-            "description": "Nedräkning inför matchstart"
-          }
         }
       },
       "application": {
@@ -5504,6 +5740,13 @@
       "dismiss_all": "Avfärda alla",
       "delete_all_read": "Ta bort alla lästa",
       "review_orphaned_uploads": "Granska övergivna uppladdningar",
+      "settings": "Aviseringsinställningar",
+      "kind_menu": {
+        "label": "Fler åtgärder",
+        "turn_off": "Stäng av {kind}",
+        "turned_off": "{kind} har stängts av",
+        "turned_off_hint": "Du kan slå på dem igen i aviseringsinställningarna."
+      },
       "no_notifications_title": "Inga notiser",
       "no_notifications": "Inga notiser just nu.",
       "toast": {

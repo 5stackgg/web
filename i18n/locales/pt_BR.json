@@ -1664,177 +1664,463 @@
           "done": "Configurações de voz redefinidas neste dispositivo"
         }
       },
-      "notification_preferences": {
-        "title": "Preferências de notificações",
-        "description": "Escolha sobre o que o sistema deve notificá-lo e onde essas notificações chegam.",
+      "notifications": {
+        "title": "Notificações",
+        "description": "Tudo sobre o que o 5stack pode notificar você, e onde cada notificação chega até você.",
         "save_failed": "Não foi possível salvar essa preferência. Tente novamente.",
-        "push": {
-          "title": "Notificações push",
-          "description": "Receba notificações neste dispositivo mesmo quando o 5stack não estiver aberto.",
-          "categories": "O que enviar",
-          "unsupported": "Notificações push não são suportadas neste navegador.",
-          "install_required": "Instale o app do 5stack para ativar isso.",
-          "install": {
-            "description": "As notificações push são entregues pelo app instalado, então ele precisa estar no seu dispositivo antes de você poder ativá-las.",
-            "open_app": "Já instalou? Abra o 5stack pela tela inicial ou pelos aplicativos e ative as notificações push por lá."
+        "load_failed": "Não foi possível carregar suas configurações de notificação. Atualize a página para tentar novamente.",
+        "channels": {
+          "title": "Onde elas chegam até você",
+          "bell": {
+            "title": "Sino",
+            "description": "No hub, sempre ativo",
+            "unread": "{count} não lidas"
           },
-          "denied": "As notificações estão bloqueadas para o sistema. Ative-as nas configurações do navegador ou do dispositivo para habilitar.",
-          "failed": "Não foi possível habilitar notificações push. Tente novamente.",
-          "errors": {
-            "permission": "O pedido de permissão de notificação nunca respondeu. Isso pode acontecer quando o Google Play Services está ausente ou com problema no dispositivo.",
-            "vapid": "Tempo esgotado ao buscar a chave de push no servidor.",
-            "service_worker": "Tempo esgotado esperando o service worker deste dispositivo ficar ativo.",
-            "existing": "Tempo esgotado ao verificar se já existe uma inscrição de push.",
-            "register": "Tempo esgotado ao registrar no serviço de push deste dispositivo. Restrições de segundo plano ou de bateria podem estar bloqueando.",
-            "save": "Tempo esgotado ao salvar a inscrição de push no servidor."
+          "push": {
+            "title": "Push",
+            "caption": "Alertas no celular ou desktop",
+            "on": "Ativado neste dispositivo",
+            "off": "Desativado neste dispositivo",
+            "blocked": "Bloqueado neste dispositivo",
+            "unavailable": "Indisponível neste navegador",
+            "needs_install": "Requer o app instalado",
+            "toggle": "Push neste dispositivo",
+            "off_hint": "O push está desativado neste dispositivo. Suas escolhas de Push abaixo continuam salvas e valem em qualquer dispositivo onde você ativar o push.",
+            "unsupported": "Notificações push não são suportadas neste navegador.",
+            "install": {
+              "description": "As notificações push são entregues pelo app instalado, então ele precisa estar no seu dispositivo antes de você poder ativá-las.",
+              "open_app": "Já instalou? Abra o 5stack pela tela inicial ou pelos aplicativos e ative as notificações push por lá."
+            },
+            "denied": "As notificações estão bloqueadas para o sistema. Ative-as nas configurações do navegador ou do dispositivo para habilitar.",
+            "failed": "Não foi possível habilitar notificações push. Tente novamente.",
+            "errors": {
+              "permission": "O pedido de permissão de notificação nunca respondeu. Isso pode acontecer quando o Google Play Services está ausente ou com problema no dispositivo.",
+              "vapid": "Tempo esgotado ao buscar a chave de push no servidor.",
+              "service_worker": "Tempo esgotado esperando o service worker deste dispositivo ficar ativo.",
+              "existing": "Tempo esgotado ao verificar se já existe uma inscrição de push.",
+              "register": "Tempo esgotado ao registrar no serviço de push deste dispositivo. Restrições de segundo plano ou de bateria podem estar bloqueando.",
+              "save": "Tempo esgotado ao salvar a inscrição de push no servidor."
+            },
+            "enabled_toast": "Notificações push ativadas",
+            "disabled_toast": "Notificações push desativadas"
           },
-          "enabled_toast": "Notificações push ativadas",
-          "disabled_toast": "Notificações push desativadas"
+          "tab_flash": {
+            "title": "Aba do navegador",
+            "description": "Faz o título e o ícone desta aba piscarem quando algo precisa de você enquanto ela está em segundo plano. Salvo neste dispositivo.",
+            "caption": "Somente este navegador",
+            "match_found": {
+              "title": "Partida encontrada",
+              "description": "Uma partida está pronta e esperando você aceitar."
+            },
+            "admin_call": {
+              "title": "Chamadas do organizador",
+              "description": "Um organizador da partida começa a falar com você pela sua página da câmera."
+            },
+            "chat": {
+              "title": "Mensagens de chat",
+              "description": "Uma nova mensagem em uma conversa, lobby ou sala de torneio. O chat da partida dentro do jogo fica de fora."
+            },
+            "bell": {
+              "title": "Notificações",
+              "description": "Algo novo chega ao seu sino de alertas."
+            }
+          },
+          "sounds": {
+            "title": "Sons",
+            "description": "Toca um som para mensagens de chat, eventos de partida e outros alertas.",
+            "volume": "Volume",
+            "mute": "Silenciar",
+            "unmute": "Ativar som",
+            "kinds": {
+              "chat": {
+                "title": "Mensagem de chat",
+                "description": "Novas mensagens de chat"
+              },
+              "match_found": {
+                "title": "Partida encontrada",
+                "description": "Uma partida está pronta para jogar"
+              },
+              "tick": {
+                "title": "Tick",
+                "description": "Tick de preparação (ready-up)"
+              },
+              "countdown": {
+                "title": "Contagem regressiva",
+                "description": "Contagem regressiva para o início da partida"
+              }
+            }
+          }
         },
-        "alerts": {
-          "title": "Sino de alertas",
-          "description": "Oculte estas do sino dentro do app. Todo o resto continua aparecendo lá."
-        },
-        "keys": {
-          "matches": {
-            "title": "Partidas",
-            "description": "Mudanças de status de partidas e partidas importadas."
+        "catalog": {
+          "title": "O que você vai receber",
+          "per_kind": "Por tipo",
+          "follows_group": "Segue a chave de push deste grupo",
+          "kinds_count": "{count} tipo | {count} tipos",
+          "staff_only": "Somente staff",
+          "locked": "Sempre exibido: é sobre a sua conta",
+          "staff_locked": "Sempre exibido para o staff",
+          "push_only": "Somente push, nunca no sino",
+          "rings_in_quiet_hours": "Toca no horário silencioso",
+          "push_off_by_default": "Push desativado por padrão",
+          "in_bell": "{kind} no sino",
+          "push_for": "{kind} por push",
+          "bell_unavailable": "Não é possível alterar agora",
+          "legacy_hint": "Seu servidor 5stack ainda não lista todos os tipos de notificação. Estas são as opções que ele oferece.",
+          "groups": {
+            "more": {
+              "title": "Equipes, eventos, temporadas, utilitários, notícias",
+              "description": "Sugestões de equipe, lembretes de eventos, fim de temporada, convites de treino e artigos."
+            },
+            "staff": {
+              "title": "Staff",
+              "description": "Solicitações de suporte, abandonos, pedidos de mudança de nome e status de servidores e jobs."
+            }
           },
-          "match_found": {
-            "title": "Partida encontrada",
-            "description": "O matchmaking encontrou sua partida e está esperando você aceitar. Toca mesmo durante o horário silencioso."
+          "categories": {
+            "matches": {
+              "title": "Partidas",
+              "description": "Suas partidas, do aceite e alertas até estatísticas, clipes e chat."
+            },
+            "match_found": {
+              "title": "Partida encontrada"
+            },
+            "admin_call": {
+              "title": "Chamadas de administradores"
+            },
+            "match_chat": {
+              "title": "Chat da partida"
+            },
+            "chat": {
+              "title": "Chat",
+              "description": "Novas mensagens em um lobby, partida ou conversa."
+            },
+            "tournaments": {
+              "title": "Torneios",
+              "description": "Novos torneios, lembretes e check-in."
+            },
+            "events": {
+              "title": "Eventos"
+            },
+            "seasons": {
+              "title": "Temporadas"
+            },
+            "scrims": {
+              "title": "Desafios",
+              "description": "Solicitações de desafios, mudanças de agenda e alertas."
+            },
+            "leagues": {
+              "title": "Ligas",
+              "description": "Propostas de agendamento de ligas e avisos de escalação."
+            },
+            "teams": {
+              "title": "Equipes"
+            },
+            "invites": {
+              "title": "Convites",
+              "description": "Convites de equipe, torneio e draft."
+            },
+            "utility": {
+              "title": "Treino de utilitário"
+            },
+            "account": {
+              "title": "Conta",
+              "description": "Suas mudanças de nome, avisos, sanções e premiações."
+            },
+            "teammate_bans": {
+              "title": "Companheiros banidos",
+              "description": "Quando um jogador com quem você jogou nos últimos 6 meses é banido."
+            },
+            "news": {
+              "title": "Notícias"
+            },
+            "staff_moderation": {
+              "title": "Moderação"
+            },
+            "staff_infrastructure": {
+              "title": "Infraestrutura"
+            }
           },
-          "admin_call": {
-            "title": "Chamadas de administradores",
-            "description": "Um administrador quer falar com você pela câmera da partida. Toca mesmo durante o horário silencioso."
-          },
-          "chat": {
-            "title": "Chat",
-            "description": "Novas mensagens em um lobby, partida ou conversa."
-          },
-          "tournaments": {
-            "title": "Torneios",
-            "description": "Novos torneios e lembretes de início."
-          },
-          "scrims": {
-            "title": "Desafios",
-            "description": "Solicitações de desafios, mudanças de agenda e alertas."
-          },
-          "leagues": {
-            "title": "Ligas",
-            "description": "Propostas de agendamento de ligas e avisos de escalação."
-          },
-          "teams": {
-            "title": "Equipes",
-            "description": "Sugestões para formar uma equipe com jogadores da sua fila."
-          },
-          "account": {
-            "title": "Conta",
-            "description": "Suas mudanças de nome, avisos, sanções e premiações."
-          },
-          "teammate_bans": {
-            "title": "Companheiros banidos",
-            "description": "Quando um jogador com quem você jogou nos últimos 6 meses é banido."
-          },
-          "news": {
-            "title": "Notícias",
-            "description": "Novos artigos publicados no 5stack."
-          },
-          "staff_moderation": {
-            "title": "Moderação",
-            "description": "Solicitações de suporte, abandonos e pedidos de mudança de nome."
-          },
-          "staff_infrastructure": {
-            "title": "Infraestrutura",
-            "description": "Status de servidor, nó e jobs em segundo plano."
-          },
-          "ChatMessage": {
-            "title": "Mensagens de chat",
-            "description": "Uma nova mensagem em um lobby, partida ou conversa."
-          },
-          "MatchImported": {
-            "title": "Partidas importadas",
-            "description": "Uma partida da Valve que você jogou foi importada."
-          },
-          "NewsPublished": {
-            "title": "Artigos de notícias",
-            "description": "Um novo artigo foi publicado."
-          },
-          "TournamentReminder": {
-            "title": "Lembretes de torneio",
-            "description": "Um torneio em que você se registrou começa em breve."
-          },
-          "FormTeamSuggestion": {
-            "title": "Sugestões de time",
-            "description": "Você joga frequentemente com esses jogadores."
-          },
-          "ScrimAlertMatch": {
-            "title": "Alertas de desafios",
-            "description": "Uma equipe correspondente ao seu alerta de desafios está disponível."
-          },
-          "LeagueMatchUnscheduled": {
-            "title": "Partidas de liga não agendadas",
-            "description": "Um confronto de liga ainda não tem horário definido."
-          },
-          "invites": {
-            "title": "Convites",
-            "description": "Convites de equipe, torneio e draft."
-          },
-          "events": {
-            "title": "Eventos",
-            "description": "Lembretes de eventos que você vai participar."
-          },
-          "seasons": {
-            "title": "Temporadas",
-            "description": "Quando uma temporada termina."
-          },
-          "TeamInvite": {
-            "title": "Convites de equipe",
-            "description": "Alguém convidou você para a equipe deles."
-          },
-          "TournamentTeamInvite": {
-            "title": "Convites de torneio",
-            "description": "Alguém convidou você para jogar em um torneio."
-          },
-          "DraftInvite": {
-            "title": "Convites de draft",
-            "description": "Alguém convidou você para um lobby de draft."
-          },
-          "MatchStatsReady": {
-            "title": "Estatísticas prontas",
-            "description": "As estatísticas da sua partida foram processadas."
-          },
-          "ClipReady": {
-            "title": "Clipes prontos",
-            "description": "Um clipe que você solicitou terminou de renderizar."
-          },
-          "AwardGranted": {
-            "title": "Premiações",
-            "description": "Você recebeu uma premiação."
-          },
-          "TeammateBanned": {
-            "title": "Companheiros banidos",
-            "description": "Um jogador com quem você jogou nos últimos 6 meses foi banido."
-          },
-          "EventReminder": {
-            "title": "Lembretes de evento",
-            "description": "Um evento que você vai participar começa em breve."
-          },
-          "SeasonEnded": {
-            "title": "Temporada encerrada",
-            "description": "Uma temporada foi encerrada."
-          },
-          "match_chat": {
-            "title": "Chat da partida",
-            "description": "Novas mensagens na sala de uma partida, incluindo o chat repassado de dentro do jogo. Desativado por padrão — dispara a cada linha digitada durante uma partida ao vivo."
-          },
-          "MatchChatMessage": {
-            "title": "Mensagens do chat da partida",
-            "description": "Uma nova mensagem na sala de uma partida."
-          },
-          "TournamentInvite": {
-            "title": "Convites de inscrição em torneio",
-            "description": "Um organizador convidou você para se inscrever em um torneio."
+          "kinds": {
+            "MatchStatusChange": {
+              "title": "Alertas de partida",
+              "description": "Uma partida que você organiza está aguardando um servidor ou tem um mapa pausado.",
+              "example": "Alerta de Partida: Mapa Pausado"
+            },
+            "MatchImported": {
+              "title": "Partidas importadas",
+              "description": "Uma partida da Valve que você jogou foi importada.",
+              "example": "Sua partida Premier na Ancient foi importada"
+            },
+            "MatchStatsReady": {
+              "title": "Estatísticas prontas",
+              "description": "As estatísticas da sua partida foram processadas.",
+              "example": "As estatísticas de Iron Wolves vs Night Owls estão prontas"
+            },
+            "ClipReady": {
+              "title": "Clipes prontos",
+              "description": "Um clipe que você solicitou terminou de renderizar.",
+              "example": "Seu 4K na Mirage está pronto"
+            },
+            "MatchFound": {
+              "title": "Partida encontrada",
+              "description": "O matchmaking encontrou sua partida e está esperando você aceitar.",
+              "example": "Sua partida Competitive está pronta, aceite em até 30s"
+            },
+            "AdminCall": {
+              "title": "Chamadas de administradores",
+              "description": "Um administrador quer falar com você pela câmera da partida.",
+              "example": "Um administrador quer falar com você sobre Iron Wolves vs Night Owls"
+            },
+            "MatchChatMessage": {
+              "title": "Mensagens do chat da partida",
+              "description": "Uma nova mensagem na sala de uma partida, incluindo o chat repassado de dentro do jogo.",
+              "example": "kairo: rotate B"
+            },
+            "ChatMessage": {
+              "title": "Mensagens de chat",
+              "description": "Uma nova mensagem em um lobby, partida ou conversa.",
+              "example": "Juno: gg"
+            },
+            "TournamentCreated": {
+              "title": "Novos torneios",
+              "description": "As inscrições de um torneio foram abertas.",
+              "example": "As inscrições para o Winter Open estão abertas"
+            },
+            "TournamentReminder": {
+              "title": "Lembretes de torneio",
+              "description": "Um torneio em que você se registrou começa em breve.",
+              "example": "O Autumn Cup começa em 30 minutos"
+            },
+            "TournamentCheckInOpen": {
+              "title": "Check-in aberto",
+              "description": "O check-in abriu para um torneio em que você está inscrito.",
+              "example": "Faça check-in no Autumn Cup"
+            },
+            "TournamentCheckInClosing": {
+              "title": "Check-in fechando",
+              "description": "O check-in do seu torneio fecha em breve.",
+              "example": "O check-in do Autumn Cup fecha em 10 minutos"
+            },
+            "TournamentCheckInMissed": {
+              "title": "Check-in perdido",
+              "description": "Sua equipe perdeu o check-in e não entrou na chave.",
+              "example": "Iron Wolves perdeu o check-in do Autumn Cup"
+            },
+            "TournamentPartySignup": {
+              "title": "Inscrições de grupo de agentes livres",
+              "description": "Seu lobby foi inscrito em um torneio como grupo de agentes livres.",
+              "example": "Seu lobby foi inscrito no Autumn Cup"
+            },
+            "EventReminder": {
+              "title": "Lembretes de evento",
+              "description": "Um evento que você vai participar começa em breve.",
+              "example": "A LAN Night começa em 1 hora"
+            },
+            "SeasonEnded": {
+              "title": "Temporada encerrada",
+              "description": "Uma temporada foi encerrada.",
+              "example": "A Temporada 4 terminou"
+            },
+            "ScrimRequestReceived": {
+              "title": "Solicitações de desafio",
+              "description": "Uma equipe quer desafiar a sua.",
+              "example": "Night Owls quer desafiar sua equipe"
+            },
+            "ScrimRequestCountered": {
+              "title": "Contrapropostas de desafio",
+              "description": "Uma equipe propôs outro horário para o desafio.",
+              "example": "Night Owls propôs sábado às 20:00 em vez disso"
+            },
+            "ScrimRequestAccepted": {
+              "title": "Solicitações de desafio aceitas",
+              "description": "Uma equipe aceitou sua solicitação de desafio.",
+              "example": "Night Owls aceitou seu desafio"
+            },
+            "ScrimRequestDeclined": {
+              "title": "Solicitações de desafio recusadas",
+              "description": "Uma equipe recusou sua solicitação de desafio.",
+              "example": "Night Owls recusou seu desafio"
+            },
+            "ScrimRequestExpired": {
+              "title": "Solicitações de desafio expiradas",
+              "description": "Uma solicitação de desafio expirou sem resposta.",
+              "example": "Sua solicitação de desafio para Night Owls expirou"
+            },
+            "ScrimMatchScheduled": {
+              "title": "Desafios agendados",
+              "description": "Um desafio entre a sua equipe e outra foi agendado.",
+              "example": "Seu desafio contra Night Owls foi agendado"
+            },
+            "ScrimMatchCanceled": {
+              "title": "Desafios cancelados",
+              "description": "Um desafio agendado foi cancelado por uma das equipes.",
+              "example": "Seu desafio contra Night Owls foi cancelado"
+            },
+            "ScrimTimeChanged": {
+              "title": "Mudanças de horário de desafio",
+              "description": "O horário de um desafio agendado mudou.",
+              "example": "Seu desafio contra Night Owls foi remarcado para 21:00"
+            },
+            "ScrimAlertMatch": {
+              "title": "Alertas de desafios",
+              "description": "Uma equipe correspondente ao seu alerta de desafios está disponível.",
+              "example": "Uma equipe correspondente ao seu alerta de desafios está aberta para desafios"
+            },
+            "LeagueProposalReceived": {
+              "title": "Propostas de horário da liga",
+              "description": "Um adversário propôs um horário para sua partida de liga.",
+              "example": "Night Owls propôs sábado às 20:00 para a semana 3"
+            },
+            "LeagueProposalAccepted": {
+              "title": "Horários de liga aceitos",
+              "description": "O horário que você propôs para a partida de liga foi aceito.",
+              "example": "O horário que você propôs para a semana 3 foi aceito"
+            },
+            "LeagueProposalDeclined": {
+              "title": "Horários de liga recusados",
+              "description": "O horário que você propôs para a partida de liga foi recusado.",
+              "example": "O horário que você propôs para a semana 3 foi recusado"
+            },
+            "LeagueMatchUnscheduled": {
+              "title": "Partidas de liga não agendadas",
+              "description": "Um confronto de liga ainda não tem horário definido.",
+              "example": "A semana 3 ainda não tem horário definido"
+            },
+            "LeagueRegistrationDecision": {
+              "title": "Inscrição na liga",
+              "description": "A inscrição da sua equipe na liga foi analisada.",
+              "example": "Iron Wolves foi aceito na Temporada 4"
+            },
+            "LeagueRosterUndersized": {
+              "title": "Avisos de escalação da liga",
+              "description": "Sua equipe da liga não tem mais jogadores suficientes.",
+              "example": "Iron Wolves agora tem 4 dos 5 jogadores necessários"
+            },
+            "FormTeamSuggestion": {
+              "title": "Sugestões de time",
+              "description": "Você joga frequentemente com esses jogadores.",
+              "example": "Formar uma equipe com kairo e Juno?"
+            },
+            "TeamInvite": {
+              "title": "Convites de equipe",
+              "description": "Alguém convidou você para a equipe deles.",
+              "example": "sable convidou você para Night Owls"
+            },
+            "TournamentTeamInvite": {
+              "title": "Convites de torneio",
+              "description": "Alguém convidou você para jogar em um torneio.",
+              "example": "kairo convidou você para jogar no Autumn Cup"
+            },
+            "TournamentInvite": {
+              "title": "Convites de inscrição em torneio",
+              "description": "Um organizador convidou você para se inscrever em um torneio.",
+              "example": "Inscreva-se no Winter Open"
+            },
+            "DraftInvite": {
+              "title": "Convites de draft",
+              "description": "Alguém convidou você para um lobby de draft.",
+              "example": "Pyre convidou você para um draft"
+            },
+            "UtilityPracticeInvite": {
+              "title": "Convites de treino",
+              "description": "Alguém convidou você para treinar utilitários juntos.",
+              "example": "kairo convidou você para treinar utilitários na Mirage"
+            },
+            "UtilityPracticeReady": {
+              "title": "Servidor de treino pronto",
+              "description": "Seu servidor de treino de utilitário está no ar.",
+              "example": "Seu servidor de treino na Mirage está no ar"
+            },
+            "NameChangeApproved": {
+              "title": "Mudança de nome aprovada",
+              "description": "Um administrador aprovou seu novo nome.",
+              "example": "Sua mudança de nome para kairo_ foi aprovada"
+            },
+            "NameChangeDenied": {
+              "title": "Mudança de nome recusada",
+              "description": "Um administrador recusou seu novo nome.",
+              "example": "Sua mudança de nome para kairo_ foi recusada"
+            },
+            "PlayerSanctioned": {
+              "title": "Banimentos",
+              "description": "Você foi banido da plataforma.",
+              "example": "Você foi banido"
+            },
+            "PlayerWarning": {
+              "title": "Avisos",
+              "description": "Um moderador deu um aviso a você.",
+              "example": "Você recebeu um aviso"
+            },
+            "AwardGranted": {
+              "title": "Premiações",
+              "description": "Você recebeu uma premiação.",
+              "example": "Você conquistou o MVP do Autumn Cup"
+            },
+            "TeammateBanned": {
+              "title": "Companheiros banidos",
+              "description": "Um jogador com quem você jogou nos últimos 6 meses foi banido.",
+              "example": "Um jogador com quem você jogou recentemente, dusk, foi banido"
+            },
+            "NewsPublished": {
+              "title": "Artigos de notícias",
+              "description": "Um novo artigo foi publicado.",
+              "example": "Notas de atualização: modo Rush"
+            },
+            "MatchSupport": {
+              "title": "Assistência em partida",
+              "description": "Uma partida pediu um organizador ou administrador.",
+              "example": "Assistência Necessária na Partida"
+            },
+            "MatchAbandoned": {
+              "title": "Abandonos",
+              "description": "Um jogador abandonou uma partida.",
+              "example": "kairo abandonou Iron Wolves vs Night Owls"
+            },
+            "NameChangeRequest": {
+              "title": "Pedidos de mudança de nome",
+              "description": "Um jogador pediu para mudar de nome.",
+              "example": "kairo pediu para mudar o nome para kairo_"
+            },
+            "GameUpdate": {
+              "title": "Atualizações do jogo",
+              "description": "Uma atualização do CS2 foi detectada ou falhou ao instalar.",
+              "example": "Atualização do CS2 Detectada"
+            },
+            "GameNodeStatus": {
+              "title": "Nós de servidor de jogo",
+              "description": "Um nó ou região ficou offline ou voltou, ou um nó está com pouco espaço em disco.",
+              "example": "Nó de Servidor de Jogo Offline"
+            },
+            "DedicatedServerStatus": {
+              "title": "Servidores dedicados",
+              "description": "Um servidor dedicado ficou offline ou o plugin dele está desatualizado.",
+              "example": "Servidor Dedicado Offline"
+            },
+            "DedicatedServerRconStatus": {
+              "title": "Erros de RCON",
+              "description": "Um servidor dedicado parou de responder ao RCON.",
+              "example": "Erro de RCON do Servidor Dedicado"
+            },
+            "StorageScan": {
+              "title": "Varreduras de armazenamento",
+              "description": "Uma varredura de armazenamento encontrou uploads órfãos.",
+              "example": "A varredura de armazenamento encontrou 12 uploads órfãos"
+            },
+            "EloRecompute": {
+              "title": "Recálculos de ELO",
+              "description": "Um recálculo de ELO dos jogadores ou uma reconstrução de temporada terminou.",
+              "example": "Recálculo de ELO concluído"
+            },
+            "PlayerReindex": {
+              "title": "Reindexações da busca",
+              "description": "Uma reindexação da busca de jogadores terminou.",
+              "example": "Reindexação da busca de jogadores concluída"
+            },
+            "UtilityDriftScanFinished": {
+              "title": "Varreduras de desvio de utilitário",
+              "description": "Uma varredura de desvio de utilitário terminou.",
+              "example": "Varredura de desvio de utilitário concluída"
+            }
           }
         },
         "quiet_hours": {
@@ -1844,56 +2130,6 @@
           "to": "Até",
           "reset": "Redefinir",
           "incomplete": "Defina tanto um horário de início quanto de término para salvar o horário silencioso."
-        },
-        "tab_flash": {
-          "title": "Aba do navegador",
-          "description": "Faz o título e o ícone desta aba piscarem quando algo precisa de você enquanto ela está em segundo plano. Salvo neste dispositivo.",
-          "match_found": {
-            "title": "Partida encontrada",
-            "description": "Uma partida está pronta e esperando você aceitar."
-          },
-          "admin_call": {
-            "title": "Chamadas do organizador",
-            "description": "Um organizador da partida começa a falar com você pela sua página da câmera."
-          },
-          "chat": {
-            "title": "Mensagens de chat",
-            "description": "Uma nova mensagem em uma conversa, lobby ou sala de torneio. O chat da partida dentro do jogo fica de fora."
-          },
-          "bell": {
-            "title": "Notificações",
-            "description": "Algo novo chega ao seu sino de alertas."
-          }
-        }
-      },
-      "notifications": {
-        "title": "Notificações",
-        "description": "Gerenciar preferências de notificação para chat e outros eventos.",
-        "enabled": {
-          "title": "Sons de notificação",
-          "description": "Toca um som para mensagens de chat, eventos de partida e outros alertas."
-        },
-        "volume": {
-          "title": "Volume"
-        },
-        "preview": "Prévia dos sons",
-        "sounds": {
-          "chat": {
-            "title": "Mensagem de chat",
-            "description": "Novas mensagens de chat"
-          },
-          "match_found": {
-            "title": "Partida encontrada",
-            "description": "Uma partida está pronta para jogar"
-          },
-          "tick": {
-            "title": "Tick",
-            "description": "Tick de preparação (ready-up)"
-          },
-          "countdown": {
-            "title": "Contagem regressiva",
-            "description": "Contagem regressiva para o início da partida"
-          }
         }
       },
       "application": {
@@ -5504,6 +5740,13 @@
       "dismiss_all": "Marcar como Lidas",
       "delete_all_read": "Excluir Lidas",
       "review_orphaned_uploads": "Revisar uploads órfãos",
+      "settings": "Configurações de Notificação",
+      "kind_menu": {
+        "label": "Mais Ações",
+        "turn_off": "Desativar {kind}",
+        "turned_off": "Desativado: {kind}",
+        "turned_off_hint": "Você pode reativá-las nas configurações de notificação."
+      },
       "no_notifications_title": "Sem Notificações",
       "no_notifications": "Nenhuma notificação até o momento.",
       "toast": {

@@ -12,11 +12,21 @@ import { ref } from "vue";
 
 export type NotificationChannel = "push" | "in_app";
 
+export type BellControl = "toggle" | "locked" | "push_only";
+
+export type NotificationCategoryType = {
+  type: string;
+  bell: BellControl;
+  ignoresQuietHours: boolean;
+};
+
 export type NotificationPreference = {
   key: string;
   enabled: boolean;
   defaultEnabled: boolean;
   adminOnly?: boolean;
+  // Push categories only: every notification type the category covers.
+  types?: NotificationCategoryType[];
 };
 
 const preferences = ref<Record<NotificationChannel, NotificationPreference[]>>({

@@ -19,6 +19,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
 import NotificationItem from "~/components/notification/NotificationItem.vue";
 import NotificationContext from "~/components/notification/NotificationContext.vue";
 import NotificationMessage from "~/components/notification/NotificationMessage.vue";
+import NotificationKindMenu from "~/components/notification/NotificationKindMenu.vue";
 import {
   sanctionNotificationTone,
   sanctionToneBarClasses,
@@ -212,11 +213,15 @@ function handleTopClick(event: MouseEvent) {
             <Trash2 class="h-3.5 w-3.5" />
             <span class="sr-only">{{ $t("common.delete") }}</span>
           </Button>
+          <NotificationKindMenu
+            :type="top.type"
+            trigger-class="h-6 w-6 [&_svg]:size-3.5"
+          />
         </div>
 
         <h3
           :class="[
-            'text-lg font-semibold pr-20',
+            'text-lg font-semibold pr-28',
             topTone ? 'flex items-center gap-2' : '',
             topTitleClass,
           ]"

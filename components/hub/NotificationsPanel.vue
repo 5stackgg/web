@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CheckCheck, Trash2 } from "lucide-vue-next";
+import { CheckCheck, Settings, Trash2 } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import TeamInviteNotification from "~/components/TeamInviteNotification.vue";
 import DraftInviteNotification from "~/components/notification/DraftInviteNotification.vue";
@@ -12,13 +12,23 @@ import LeagueScheduleStack from "~/components/notification/LeagueScheduleStack.v
 
 <template>
   <div class="flex flex-col h-full">
-    <div class="px-3 pt-3 pb-3 flex-shrink-0 border-b border-border">
+    <div
+      class="px-3 pt-3 pb-3 flex-shrink-0 border-b border-border flex items-center justify-between gap-2"
+    >
       <div
         class="flex items-center gap-[0.4rem] font-mono text-[0.62rem] font-bold tracking-[0.24em] uppercase text-muted-foreground"
       >
         <span class="w-2 h-[2px] bg-[hsl(var(--tac-amber))]"></span>
         {{ $t("layouts.hub.notifications") }}
       </div>
+      <NuxtLink
+        to="/settings/notifications"
+        :aria-label="$t('layouts.notifications.settings')"
+        :title="$t('layouts.notifications.settings')"
+        class="-my-1 inline-flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground transition-colors duration-150 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-[hsl(var(--tac-amber))] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring motion-reduce:transition-none"
+      >
+        <Settings class="h-3.5 w-3.5" />
+      </NuxtLink>
     </div>
     <div class="flex-1 overflow-y-auto p-3 flex flex-col">
       <NewsNotification />

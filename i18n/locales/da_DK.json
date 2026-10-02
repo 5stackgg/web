@@ -1664,177 +1664,463 @@
           "done": "Stemmeindstillinger nulstillet på denne enhed"
         }
       },
-      "notification_preferences": {
-        "title": "Notifikationsindstillinger",
-        "description": "Vælg hvad 5stack skal give dig besked om, og hvor de beskeder lander.",
+      "notifications": {
+        "title": "Notifikationer",
+        "description": "Alt, hvad 5stack kan give dig besked om, og hvor hver enkelt når dig.",
         "save_failed": "Kunne ikke gemme den indstilling. Prøv igen.",
-        "push": {
-          "title": "Push-notifikationer",
-          "description": "Få besked på denne enhed, også når 5stack ikke er åben.",
-          "categories": "Hvad der skal pushes",
-          "unsupported": "Push-notifikationer understøttes ikke i denne browser.",
-          "install_required": "Installer 5stack-appen for at slå dem til.",
-          "install": {
-            "description": "Push-notifikationer leveres af den installerede app, så den skal være på din enhed, før du kan slå dem til.",
-            "open_app": "Allerede installeret? Åbn 5stack fra din hjemmeskærm eller dine programmer, og slå push-notifikationer til der."
+        "load_failed": "Kunne ikke indlæse dine notifikationsindstillinger. Opdater siden for at prøve igen.",
+        "channels": {
+          "title": "Hvor de når dig",
+          "bell": {
+            "title": "Klokke",
+            "description": "I hubben, altid slået til",
+            "unread": "{count} ulæste"
           },
-          "denied": "Notifikationer er blokeret for 5stack. Tillad dem i din browsers eller enheds indstillinger for at slå dette til.",
-          "failed": "Kunne ikke slå push-notifikationer til. Prøv igen.",
-          "errors": {
-            "permission": "Anmodningen om notifikationstilladelse svarede aldrig. Det kan ske, når Google Play Services mangler eller er defekt på enheden.",
-            "vapid": "Tidsfristen udløb ved hentning af push-nøglen fra serveren.",
-            "service_worker": "Tidsfristen udløb, mens der blev ventet på, at enhedens service worker blev aktiv.",
-            "existing": "Tidsfristen udløb ved kontrol af et eksisterende push-abonnement.",
-            "register": "Tidsfristen udløb ved registrering hos enhedens push-tjeneste. Baggrunds- eller batterirestriktioner kan blokere det.",
-            "save": "Tidsfristen udløb ved lagring af push-abonnementet på serveren."
+          "push": {
+            "title": "Push",
+            "caption": "Notifikationer på telefon eller computer",
+            "on": "Slået til på denne enhed",
+            "off": "Slået fra på denne enhed",
+            "blocked": "Blokeret på denne enhed",
+            "unavailable": "Ikke tilgængelig i denne browser",
+            "needs_install": "Kræver den installerede app",
+            "toggle": "Push på denne enhed",
+            "off_hint": "Push er slået fra på denne enhed. Dine push-valg nedenfor er stadig gemt og gælder på alle enheder, hvor du slår push til.",
+            "unsupported": "Push-notifikationer understøttes ikke i denne browser.",
+            "install": {
+              "description": "Push-notifikationer leveres af den installerede app, så den skal være på din enhed, før du kan slå dem til.",
+              "open_app": "Allerede installeret? Åbn 5stack fra din hjemmeskærm eller dine programmer, og slå push-notifikationer til der."
+            },
+            "denied": "Notifikationer er blokeret for 5stack. Tillad dem i din browsers eller enheds indstillinger for at slå dette til.",
+            "failed": "Kunne ikke slå push-notifikationer til. Prøv igen.",
+            "errors": {
+              "permission": "Anmodningen om notifikationstilladelse svarede aldrig. Det kan ske, når Google Play Services mangler eller er defekt på enheden.",
+              "vapid": "Tidsfristen udløb ved hentning af push-nøglen fra serveren.",
+              "service_worker": "Tidsfristen udløb, mens der blev ventet på, at enhedens service worker blev aktiv.",
+              "existing": "Tidsfristen udløb ved kontrol af et eksisterende push-abonnement.",
+              "register": "Tidsfristen udløb ved registrering hos enhedens push-tjeneste. Baggrunds- eller batterirestriktioner kan blokere det.",
+              "save": "Tidsfristen udløb ved lagring af push-abonnementet på serveren."
+            },
+            "enabled_toast": "Push-notifikationer slået til",
+            "disabled_toast": "Push-notifikationer slået fra"
           },
-          "enabled_toast": "Push-notifikationer slået til",
-          "disabled_toast": "Push-notifikationer slået fra"
+          "tab_flash": {
+            "title": "Browserfane",
+            "description": "Få fanens titel og ikon til at blinke, når noget kræver din opmærksomhed, mens den er i baggrunden. Gemmes på denne enhed.",
+            "caption": "Kun denne browser",
+            "match_found": {
+              "title": "Kamp fundet",
+              "description": "En kamp er klar og venter på, at du accepterer."
+            },
+            "admin_call": {
+              "title": "Arrangøropkald",
+              "description": "En kamparrangør begynder at tale til dig på din kameraside."
+            },
+            "chat": {
+              "title": "Chatbeskeder",
+              "description": "En ny besked i en samtale, en lobby eller et turneringsrum. Chat fra selve kampen i spillet er udeladt."
+            },
+            "bell": {
+              "title": "Notifikationer",
+              "description": "Der kommer noget nyt i din notifikationsklokke."
+            }
+          },
+          "sounds": {
+            "title": "Lyde",
+            "description": "Afspil en lyd ved chatbeskeder, kamphændelser og andre notifikationer.",
+            "volume": "Lydstyrke",
+            "mute": "Slå lyd fra",
+            "unmute": "Slå lyd til",
+            "kinds": {
+              "chat": {
+                "title": "Chatbesked",
+                "description": "Nye chatbeskeder"
+              },
+              "match_found": {
+                "title": "Kamp fundet",
+                "description": "En kamp er klar"
+              },
+              "tick": {
+                "title": "Tik",
+                "description": "Tik ved klarmelding"
+              },
+              "countdown": {
+                "title": "Nedtælling",
+                "description": "Nedtælling til kampstart"
+              }
+            }
+          }
         },
-        "alerts": {
-          "title": "Notifikationsklokke",
-          "description": "Skjul disse fra klokken i appen. Alt andet bliver ved med at dukke op der."
-        },
-        "keys": {
-          "matches": {
-            "title": "Kampe",
-            "description": "Ændringer i kampstatus og importerede kampe."
+        "catalog": {
+          "title": "Det får du",
+          "per_kind": "Pr. type",
+          "follows_group": "Følger gruppens push-kontakt",
+          "kinds_count": "{count} type | {count} typer",
+          "staff_only": "Kun for staff",
+          "locked": "Vises altid: det handler om din konto",
+          "staff_locked": "Vises altid for staff",
+          "push_only": "Kun push, aldrig i klokken",
+          "rings_in_quiet_hours": "Ringer i stilletimer",
+          "push_off_by_default": "Push slået fra som standard",
+          "in_bell": "{kind} i klokken",
+          "push_for": "Push for {kind}",
+          "bell_unavailable": "Kan ikke ændres lige nu",
+          "legacy_hint": "Din 5stack-server viser endnu ikke alle typer notifikationer. Her er de valg, den tilbyder.",
+          "groups": {
+            "more": {
+              "title": "Hold, begivenheder, sæsoner, utility, nyheder",
+              "description": "Holdforslag, påmindelser om begivenheder, sæsonafslutninger, træningsinvitationer og artikler."
+            },
+            "staff": {
+              "title": "Staff",
+              "description": "Supporthenvendelser, forladte kampe, anmodninger om navneændring samt server- og jobstatus."
+            }
           },
-          "match_found": {
-            "title": "Kamp fundet",
-            "description": "Matchmaking har fundet din kamp og venter på, at du accepterer. Ringer også i stilletimer."
+          "categories": {
+            "matches": {
+              "title": "Kampe",
+              "description": "Dine kampe, fra klarmeldinger og advarsler til statistik, klip og chat."
+            },
+            "match_found": {
+              "title": "Kamp fundet"
+            },
+            "admin_call": {
+              "title": "Opkald fra admins"
+            },
+            "match_chat": {
+              "title": "Kampchat"
+            },
+            "chat": {
+              "title": "Chat",
+              "description": "Nye beskeder i en samtale, en lobby eller et turneringsrum."
+            },
+            "tournaments": {
+              "title": "Turneringer",
+              "description": "Nye turneringer, påmindelser og check-in."
+            },
+            "events": {
+              "title": "Begivenheder"
+            },
+            "seasons": {
+              "title": "Sæsoner"
+            },
+            "scrims": {
+              "title": "Scrims",
+              "description": "Scrim-forespørgsler, tidsændringer og advarsler."
+            },
+            "leagues": {
+              "title": "Ligaer",
+              "description": "Forslag til ligakalender og advarsler om trup."
+            },
+            "teams": {
+              "title": "Hold"
+            },
+            "invites": {
+              "title": "Invitationer",
+              "description": "Hold-, turnerings- og draftinvitationer."
+            },
+            "utility": {
+              "title": "Utility-træning"
+            },
+            "account": {
+              "title": "Konto",
+              "description": "Dine navneændringer, advarsler, sanktioner og priser."
+            },
+            "teammate_bans": {
+              "title": "Bannede medspillere",
+              "description": "Når en spiller, du har spillet med inden for de seneste 6 måneder, bliver bannet."
+            },
+            "news": {
+              "title": "Nyheder"
+            },
+            "staff_moderation": {
+              "title": "Moderation"
+            },
+            "staff_infrastructure": {
+              "title": "Infrastruktur"
+            }
           },
-          "admin_call": {
-            "title": "Opkald fra admins",
-            "description": "En admin vil tale med dig via dit kampkamera. Ringer også i stilletimer."
-          },
-          "chat": {
-            "title": "Chat",
-            "description": "Nye beskeder i en samtale, en lobby eller et turneringsrum."
-          },
-          "tournaments": {
-            "title": "Turneringer",
-            "description": "Nye turneringer og startpåmindelser."
-          },
-          "scrims": {
-            "title": "Scrims",
-            "description": "Scrim-forespørgsler, tidsændringer og advarsler."
-          },
-          "leagues": {
-            "title": "Ligaer",
-            "description": "Forslag til ligakalender og advarsler om trup."
-          },
-          "teams": {
-            "title": "Hold",
-            "description": "Forslag om at danne hold med spillere, du står i kø med."
-          },
-          "account": {
-            "title": "Konto",
-            "description": "Dine navneændringer, advarsler, sanktioner og priser."
-          },
-          "teammate_bans": {
-            "title": "Bannede medspillere",
-            "description": "Når en spiller, du har spillet med inden for de seneste 6 måneder, bliver bannet."
-          },
-          "news": {
-            "title": "Nyheder",
-            "description": "Nye artikler udgivet på 5stack."
-          },
-          "staff_moderation": {
-            "title": "Moderation",
-            "description": "Supporthenvendelser, forladte kampe og anmodninger om navneændring."
-          },
-          "staff_infrastructure": {
-            "title": "Infrastruktur",
-            "description": "Status for servere, noder og baggrundsjobs."
-          },
-          "ChatMessage": {
-            "title": "Chatbeskeder",
-            "description": "En ny besked i en samtale, en lobby eller et turneringsrum."
-          },
-          "MatchImported": {
-            "title": "Importerede kampe",
-            "description": "En Valve-kamp, du spillede, blev importeret."
-          },
-          "NewsPublished": {
-            "title": "Nyhedsartikler",
-            "description": "En ny artikel blev udgivet."
-          },
-          "TournamentReminder": {
-            "title": "Turneringspåmindelser",
-            "description": "En turnering, du har tilmeldt dig, begynder snart."
-          },
-          "FormTeamSuggestion": {
-            "title": "Holdforslag",
-            "description": "Du spiller ofte med disse spillere."
-          },
-          "ScrimAlertMatch": {
-            "title": "Scrim-advarsler",
-            "description": "Et hold, der matcher din scrim-advarsel, er tilgængeligt."
-          },
-          "LeagueMatchUnscheduled": {
-            "title": "Uplanlagte ligakampe",
-            "description": "En ligaopgør har endnu ikke et aftalt tidspunkt."
-          },
-          "invites": {
-            "title": "Invitationer",
-            "description": "Hold-, turnerings- og draftinvitationer."
-          },
-          "events": {
-            "title": "Begivenheder",
-            "description": "Påmindelser om begivenheder, du deltager i."
-          },
-          "seasons": {
-            "title": "Sæsoner",
-            "description": "Når en sæson slutter."
-          },
-          "TeamInvite": {
-            "title": "Holdinvitationer",
-            "description": "Nogen har inviteret dig til deres hold."
-          },
-          "TournamentTeamInvite": {
-            "title": "Turneringsinvitationer",
-            "description": "Nogen har inviteret dig til at spille i en turnering."
-          },
-          "DraftInvite": {
-            "title": "Draftinvitationer",
-            "description": "Nogen har inviteret dig til en draft-lobby."
-          },
-          "MatchStatsReady": {
-            "title": "Statistik klar",
-            "description": "Behandlingen af din kampstatistik er færdig."
-          },
-          "ClipReady": {
-            "title": "Klip klar",
-            "description": "Et klip, du bestilte, er færdigrenderet."
-          },
-          "AwardGranted": {
-            "title": "Priser",
-            "description": "Du har modtaget en pris."
-          },
-          "TeammateBanned": {
-            "title": "Bannede medspillere",
-            "description": "En spiller, du har spillet med inden for de seneste 6 måneder, er blevet bannet."
-          },
-          "EventReminder": {
-            "title": "Påmindelser om begivenheder",
-            "description": "En begivenhed, du deltager i, begynder snart."
-          },
-          "SeasonEnded": {
-            "title": "Sæson afsluttet",
-            "description": "En sæson er slut."
-          },
-          "match_chat": {
-            "title": "Kampchat",
-            "description": "Nye beskeder i en kamps rum, inklusive chat videresendt fra spillet. Slået fra som standard — den udløses ved hver linje, der skrives under en igangværende kamp."
-          },
-          "MatchChatMessage": {
-            "title": "Beskeder i kampchat",
-            "description": "En ny besked i en kamps rum."
-          },
-          "TournamentInvite": {
-            "title": "Invitationer til turneringstilmelding",
-            "description": "En arrangør har inviteret dig til at tilmelde dig en turnering."
+          "kinds": {
+            "MatchStatusChange": {
+              "title": "Kampadvarsler",
+              "description": "En kamp, du arrangerer, venter på en server eller har et map på pause.",
+              "example": "Kampadvarsel: Map på pause"
+            },
+            "MatchImported": {
+              "title": "Importerede kampe",
+              "description": "En Valve-kamp, du spillede, blev importeret.",
+              "example": "Din Premier-kamp på Ancient blev importeret"
+            },
+            "MatchStatsReady": {
+              "title": "Statistik klar",
+              "description": "Behandlingen af din kampstatistik er færdig.",
+              "example": "Statistikken for Iron Wolves vs Night Owls er klar"
+            },
+            "ClipReady": {
+              "title": "Klip klar",
+              "description": "Et klip, du bestilte, er færdigrenderet.",
+              "example": "Din 4K på Mirage er klar"
+            },
+            "MatchFound": {
+              "title": "Kamp fundet",
+              "description": "Matchmaking har fundet din kamp og venter på, at du accepterer.",
+              "example": "Din Competitive-kamp er klar, accepter inden for 30 sek."
+            },
+            "AdminCall": {
+              "title": "Opkald fra admins",
+              "description": "En admin vil tale med dig via dit kampkamera.",
+              "example": "En admin vil tale med dig om Iron Wolves vs Night Owls"
+            },
+            "MatchChatMessage": {
+              "title": "Beskeder i kampchat",
+              "description": "En ny besked i en kamps rum, inklusive chat videresendt fra spillet.",
+              "example": "kairo: rotate B"
+            },
+            "ChatMessage": {
+              "title": "Chatbeskeder",
+              "description": "En ny besked i en samtale, en lobby eller et turneringsrum.",
+              "example": "Juno: gg"
+            },
+            "TournamentCreated": {
+              "title": "Nye turneringer",
+              "description": "Tilmeldingen til en turnering er åbnet.",
+              "example": "Tilmeldingen til Winter Open er åben"
+            },
+            "TournamentReminder": {
+              "title": "Turneringspåmindelser",
+              "description": "En turnering, du har tilmeldt dig, begynder snart.",
+              "example": "Autumn Cup begynder om 30 minutter"
+            },
+            "TournamentCheckInOpen": {
+              "title": "Check-in åbent",
+              "description": "Check-in er åbnet for en turnering, du er tilmeldt.",
+              "example": "Check ind til Autumn Cup"
+            },
+            "TournamentCheckInClosing": {
+              "title": "Check-in lukker",
+              "description": "Check-in til din turnering lukker snart.",
+              "example": "Check-in til Autumn Cup lukker om 10 minutter"
+            },
+            "TournamentCheckInMissed": {
+              "title": "Misset check-in",
+              "description": "Dit hold missede check-in og kom ikke med i bracketen.",
+              "example": "Iron Wolves missede check-in til Autumn Cup"
+            },
+            "TournamentPartySignup": {
+              "title": "Tilmeldinger som free agent-party",
+              "description": "Din lobby blev tilmeldt en turnering som free agent-party.",
+              "example": "Din lobby blev tilmeldt Autumn Cup"
+            },
+            "EventReminder": {
+              "title": "Påmindelser om begivenheder",
+              "description": "En begivenhed, du deltager i, begynder snart.",
+              "example": "LAN Night begynder om 1 time"
+            },
+            "SeasonEnded": {
+              "title": "Sæson afsluttet",
+              "description": "En sæson er slut.",
+              "example": "Sæson 4 er slut"
+            },
+            "ScrimRequestReceived": {
+              "title": "Scrim-forespørgsler",
+              "description": "Et hold vil spille scrim mod dit hold.",
+              "example": "Night Owls vil spille scrim mod dit hold"
+            },
+            "ScrimRequestCountered": {
+              "title": "Modbud på scrims",
+              "description": "Et hold har foreslået et andet scrim-tidspunkt.",
+              "example": "Night Owls foreslog lørdag kl. 20.00 i stedet"
+            },
+            "ScrimRequestAccepted": {
+              "title": "Accepterede scrim-forespørgsler",
+              "description": "Et hold accepterede din scrim-forespørgsel.",
+              "example": "Night Owls accepterede din scrim"
+            },
+            "ScrimRequestDeclined": {
+              "title": "Afviste scrim-forespørgsler",
+              "description": "Et hold afviste din scrim-forespørgsel.",
+              "example": "Night Owls afviste din scrim"
+            },
+            "ScrimRequestExpired": {
+              "title": "Udløbne scrim-forespørgsler",
+              "description": "En scrim-forespørgsel udløb uden svar.",
+              "example": "Din scrim-forespørgsel til Night Owls er udløbet"
+            },
+            "ScrimMatchScheduled": {
+              "title": "Planlagte scrims",
+              "description": "En scrim mellem dit hold og et andet er blevet planlagt.",
+              "example": "Din scrim mod Night Owls er blevet planlagt"
+            },
+            "ScrimMatchCanceled": {
+              "title": "Aflyste scrims",
+              "description": "En planlagt scrim blev aflyst af et af holdene.",
+              "example": "Din scrim mod Night Owls blev aflyst"
+            },
+            "ScrimTimeChanged": {
+              "title": "Ændrede scrim-tidspunkter",
+              "description": "Tidspunktet for en planlagt scrim er ændret.",
+              "example": "Din scrim mod Night Owls er flyttet til kl. 21.00"
+            },
+            "ScrimAlertMatch": {
+              "title": "Scrim-advarsler",
+              "description": "Et hold, der matcher din scrim-advarsel, er tilgængeligt.",
+              "example": "Et hold, der matcher din scrim-advarsel, er åbent for scrims"
+            },
+            "LeagueProposalReceived": {
+              "title": "Forslag til ligatidspunkter",
+              "description": "En modstander har foreslået et tidspunkt for din ligakamp.",
+              "example": "Night Owls foreslog lørdag kl. 20.00 for uge 3"
+            },
+            "LeagueProposalAccepted": {
+              "title": "Accepterede ligatidspunkter",
+              "description": "Dit foreslåede tidspunkt for en ligakamp blev accepteret.",
+              "example": "Dit foreslåede tidspunkt for uge 3 blev accepteret"
+            },
+            "LeagueProposalDeclined": {
+              "title": "Afviste ligatidspunkter",
+              "description": "Dit foreslåede tidspunkt for en ligakamp blev afvist.",
+              "example": "Dit foreslåede tidspunkt for uge 3 blev afvist"
+            },
+            "LeagueMatchUnscheduled": {
+              "title": "Uplanlagte ligakampe",
+              "description": "En ligaopgør har endnu ikke et aftalt tidspunkt.",
+              "example": "Uge 3 har endnu intet aftalt tidspunkt"
+            },
+            "LeagueRegistrationDecision": {
+              "title": "Ligatilmelding",
+              "description": "Dit holds ligatilmelding er blevet behandlet.",
+              "example": "Iron Wolves blev optaget i Sæson 4"
+            },
+            "LeagueRosterUndersized": {
+              "title": "Advarsler om ligatrup",
+              "description": "Dit ligahold har ikke længere nok spillere.",
+              "example": "Iron Wolves har nu 4 af de krævede 5 spillere"
+            },
+            "FormTeamSuggestion": {
+              "title": "Holdforslag",
+              "description": "Du spiller ofte med disse spillere.",
+              "example": "Dan et hold med kairo og Juno?"
+            },
+            "TeamInvite": {
+              "title": "Holdinvitationer",
+              "description": "Nogen har inviteret dig til deres hold.",
+              "example": "sable inviterede dig til Night Owls"
+            },
+            "TournamentTeamInvite": {
+              "title": "Turneringsinvitationer",
+              "description": "Nogen har inviteret dig til at spille i en turnering.",
+              "example": "kairo inviterede dig til at spille i Autumn Cup"
+            },
+            "TournamentInvite": {
+              "title": "Invitationer til turneringstilmelding",
+              "description": "En arrangør har inviteret dig til at tilmelde dig en turnering.",
+              "example": "Tilmeld dig Winter Open"
+            },
+            "DraftInvite": {
+              "title": "Draftinvitationer",
+              "description": "Nogen har inviteret dig til en draft-lobby.",
+              "example": "Pyre inviterede dig til en draft"
+            },
+            "UtilityPracticeInvite": {
+              "title": "Træningsinvitationer",
+              "description": "Nogen har inviteret dig til at træne utility sammen.",
+              "example": "kairo inviterede dig til at træne utility på Mirage"
+            },
+            "UtilityPracticeReady": {
+              "title": "Træningsserver klar",
+              "description": "Din utility-træningsserver kører.",
+              "example": "Din træningsserver på Mirage kører"
+            },
+            "NameChangeApproved": {
+              "title": "Navneændring godkendt",
+              "description": "En admin godkendte dit nye navn.",
+              "example": "Din navneændring til kairo_ blev godkendt"
+            },
+            "NameChangeDenied": {
+              "title": "Navneændring afvist",
+              "description": "En admin afviste dit nye navn.",
+              "example": "Din navneændring til kairo_ blev afvist"
+            },
+            "PlayerSanctioned": {
+              "title": "Bans",
+              "description": "Du er blevet bannet fra platformen.",
+              "example": "Du er blevet bannet"
+            },
+            "PlayerWarning": {
+              "title": "Advarsler",
+              "description": "En moderator har givet dig en advarsel.",
+              "example": "Du har fået en advarsel"
+            },
+            "AwardGranted": {
+              "title": "Priser",
+              "description": "Du har modtaget en pris.",
+              "example": "Du blev MVP i Autumn Cup"
+            },
+            "TeammateBanned": {
+              "title": "Bannede medspillere",
+              "description": "En spiller, du har spillet med inden for de seneste 6 måneder, er blevet bannet.",
+              "example": "dusk, som du for nylig har spillet med, er blevet bannet"
+            },
+            "NewsPublished": {
+              "title": "Nyhedsartikler",
+              "description": "En ny artikel blev udgivet.",
+              "example": "Patch notes: Rush-tilstand"
+            },
+            "MatchSupport": {
+              "title": "Kamphjælp",
+              "description": "En kamp har bedt om en arrangør eller admin.",
+              "example": "Kamphjælp påkrævet"
+            },
+            "MatchAbandoned": {
+              "title": "Forladte kampe",
+              "description": "En spiller forlod en kamp.",
+              "example": "kairo forlod Iron Wolves vs Night Owls"
+            },
+            "NameChangeRequest": {
+              "title": "Anmodninger om navneændring",
+              "description": "En spiller har bedt om at ændre sit navn.",
+              "example": "kairo har bedt om at ændre sit navn til kairo_"
+            },
+            "GameUpdate": {
+              "title": "Spilopdateringer",
+              "description": "En CS2-opdatering blev fundet eller kunne ikke installeres.",
+              "example": "CS2-opdatering fundet"
+            },
+            "GameNodeStatus": {
+              "title": "Spilserver-noder",
+              "description": "En node eller region gik offline eller kom tilbage, eller en node er ved at løbe tør for diskplads.",
+              "example": "Spilserver-node offline"
+            },
+            "DedicatedServerStatus": {
+              "title": "Dedikerede servere",
+              "description": "En dedikeret server gik offline, eller dens plugin er forældet.",
+              "example": "Dedikeret server offline"
+            },
+            "DedicatedServerRconStatus": {
+              "title": "RCON-fejl",
+              "description": "En dedikeret server svarer ikke længere på RCON.",
+              "example": "RCON-fejl på dedikeret server"
+            },
+            "StorageScan": {
+              "title": "Lagerscanninger",
+              "description": "En lagerscanning fandt forældreløse uploads.",
+              "example": "Lagerscanning fandt 12 forældreløse uploads"
+            },
+            "EloRecompute": {
+              "title": "ELO-genberegninger",
+              "description": "En genberegning af spiller-ELO eller en sæsongenopbygning er færdig.",
+              "example": "ELO-genberegning færdig"
+            },
+            "PlayerReindex": {
+              "title": "Genindekseringer af søgning",
+              "description": "En genindeksering af spillersøgningen er færdig.",
+              "example": "Genindeksering af spillersøgning færdig"
+            },
+            "UtilityDriftScanFinished": {
+              "title": "Utility-drift-scanninger",
+              "description": "En utility-drift-scanning er færdig.",
+              "example": "Utility-drift-scanning færdig"
+            }
           }
         },
         "quiet_hours": {
@@ -1844,56 +2130,6 @@
           "to": "Til",
           "reset": "Nulstil",
           "incomplete": "Angiv både et start- og et sluttidspunkt for at gemme stilletimer."
-        },
-        "tab_flash": {
-          "title": "Browserfane",
-          "description": "Få fanens titel og ikon til at blinke, når noget kræver din opmærksomhed, mens den er i baggrunden. Gemmes på denne enhed.",
-          "match_found": {
-            "title": "Kamp fundet",
-            "description": "En kamp er klar og venter på, at du accepterer."
-          },
-          "admin_call": {
-            "title": "Arrangøropkald",
-            "description": "En kamparrangør begynder at tale til dig på din kameraside."
-          },
-          "chat": {
-            "title": "Chatbeskeder",
-            "description": "En ny besked i en samtale, en lobby eller et turneringsrum. Chat fra selve kampen i spillet er udeladt."
-          },
-          "bell": {
-            "title": "Notifikationer",
-            "description": "Der kommer noget nyt i din notifikationsklokke."
-          }
-        }
-      },
-      "notifications": {
-        "title": "Lydindstillinger",
-        "description": "Hør og justér de lyde, 5Stack afspiller ved chat, kampe og andet.",
-        "enabled": {
-          "title": "Notifikationslyde",
-          "description": "Afspil en lyd ved chatbeskeder, kamphændelser og andre notifikationer."
-        },
-        "volume": {
-          "title": "Lydstyrke"
-        },
-        "preview": "Hør lyde",
-        "sounds": {
-          "chat": {
-            "title": "Chatbesked",
-            "description": "Nye chatbeskeder"
-          },
-          "match_found": {
-            "title": "Kamp fundet",
-            "description": "En kamp er klar"
-          },
-          "tick": {
-            "title": "Tik",
-            "description": "Tik ved klarmelding"
-          },
-          "countdown": {
-            "title": "Nedtælling",
-            "description": "Nedtælling til kampstart"
-          }
         }
       },
       "application": {
@@ -5504,6 +5740,13 @@
       "dismiss_all": "Afvis alle",
       "delete_all_read": "Slet alle læste",
       "review_orphaned_uploads": "Gennemgå forældreløse uploads",
+      "settings": "Notifikationsindstillinger",
+      "kind_menu": {
+        "label": "Flere handlinger",
+        "turn_off": "Slå {kind} fra",
+        "turned_off": "{kind} slået fra",
+        "turned_off_hint": "Du kan slå dem til igen under Notifikationer."
+      },
       "no_notifications_title": "Ingen notifikationer",
       "no_notifications": "Ingen notifikationer lige nu.",
       "toast": {

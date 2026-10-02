@@ -5,6 +5,7 @@ import { Button } from "~/components/ui/button";
 import TimeAgo from "~/components/TimeAgo.vue";
 import NotificationContext from "~/components/notification/NotificationContext.vue";
 import NotificationMessage from "~/components/notification/NotificationMessage.vue";
+import NotificationKindMenu from "~/components/notification/NotificationKindMenu.vue";
 import { useOrphanedScan } from "~/composables/useOrphanedScan";
 import {
   sanctionNotificationTone,
@@ -134,20 +135,23 @@ onBeforeUnmount(() => {
       class="absolute inset-y-0 left-0 w-1"
       :class="sanctionToneBarClasses[tone]"
     />
-    <Button
-      v-if="notification.deletable !== false"
-      size="icon"
-      variant="ghost"
-      :loading="deleting"
-      @click="onDelete"
-      class="absolute top-2 right-2"
-    >
-      <Trash2 class="h-4 w-4" />
-      <span class="sr-only">{{ $t("common.delete") }}</span>
-    </Button>
+    <div class="absolute top-2 right-2 flex items-center">
+      <NotificationKindMenu :type="notification.type" />
+      <Button
+        v-if="notification.deletable !== false"
+        size="icon"
+        variant="ghost"
+        :loading="deleting"
+        @click="onDelete"
+      >
+        <Trash2 class="h-4 w-4" />
+        <span class="sr-only">{{ $t("common.delete") }}</span>
+      </Button>
+    </div>
     <h3
       :class="[
         'text-lg font-semibold mb-2',
+        notification.deletable !== false ? 'pr-[4.5rem]' : 'pr-9',
         tone ? 'flex items-center gap-2' : '',
         titleToneClass,
       ]"

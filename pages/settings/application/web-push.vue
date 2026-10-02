@@ -281,7 +281,7 @@ onMounted(() => {
               {{ $t("pages.settings.application.web_push.empty_body") }}
             </p>
             <NuxtLink
-              to="/settings/notification-preferences"
+              to="/settings/notifications"
               class="mt-1 inline-flex items-center gap-1.5 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
             >
               {{ $t("pages.settings.application.web_push.empty_link") }}

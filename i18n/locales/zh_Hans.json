@@ -1664,177 +1664,461 @@
           "done": "已重置这台设备的语音设置"
         }
       },
-      "notification_preferences": {
-        "title": "通知偏好",
-        "description": "选择 5stack 通知你哪些内容，以及这些通知出现在哪里。",
+      "notifications": {
+        "title": "通知",
+        "description": "5stack 能通知你的所有内容，以及每项通知会通过哪里送达。",
         "save_failed": "无法保存该设置，请重试。",
-        "push": {
-          "title": "推送通知",
-          "description": "即使没有打开 5stack，也能在这台设备上收到通知。",
-          "categories": "要推送的内容",
-          "unsupported": "这个浏览器不支持推送通知。",
-          "install_required": "请先安装 5stack 应用才能开启。",
-          "install": {
-            "description": "推送通知由已安装的应用发送，因此开启前设备上必须先安装该应用。",
-            "open_app": "已经安装了？请从主屏幕或应用列表打开 5stack，并在那里开启推送通知。"
+        "load_failed": "无法加载你的通知设置，请刷新页面重试。",
+        "channels": {
+          "title": "送达方式",
+          "bell": {
+            "title": "铃铛",
+            "description": "在中心侧边栏，始终开启",
+            "unread": "{count} 条未读"
           },
-          "denied": "5stack 的通知已被拦截。请在浏览器或设备设置中允许，才能开启此功能。",
-          "failed": "无法开启推送通知，请重试。",
-          "errors": {
-            "permission": "通知权限请求一直没有响应。设备上缺少或损坏 Google Play 服务时可能出现这种情况。",
-            "vapid": "从服务器获取推送密钥时超时。",
-            "service_worker": "等待这台设备的 service worker 激活时超时。",
-            "existing": "检查已有推送订阅时超时。",
-            "register": "向这台设备的推送服务注册时超时。可能是后台运行或电池限制导致的。",
-            "save": "把推送订阅保存到服务器时超时。"
+          "push": {
+            "title": "推送",
+            "caption": "手机或桌面提醒",
+            "on": "已在此设备上开启",
+            "off": "已在此设备上关闭",
+            "blocked": "已在此设备上被拦截",
+            "unavailable": "此浏览器不可用",
+            "needs_install": "需要安装应用",
+            "toggle": "在此设备上推送",
+            "off_hint": "此设备的推送已关闭。下方的推送选项仍会保存，并在你开启推送的任何设备上生效。",
+            "unsupported": "这个浏览器不支持推送通知。",
+            "install": {
+              "description": "推送通知由已安装的应用发送，因此开启前设备上必须先安装该应用。",
+              "open_app": "已经安装了？请从主屏幕或应用列表打开 5stack，并在那里开启推送通知。"
+            },
+            "denied": "5stack 的通知已被拦截。请在浏览器或设备设置中允许，才能开启此功能。",
+            "failed": "无法开启推送通知，请重试。",
+            "errors": {
+              "permission": "通知权限请求一直没有响应。设备上缺少或损坏 Google Play 服务时可能出现这种情况。",
+              "vapid": "从服务器获取推送密钥时超时。",
+              "service_worker": "等待这台设备的 service worker 激活时超时。",
+              "existing": "检查已有推送订阅时超时。",
+              "register": "向这台设备的推送服务注册时超时。可能是后台运行或电池限制导致的。",
+              "save": "把推送订阅保存到服务器时超时。"
+            },
+            "enabled_toast": "已开启推送通知",
+            "disabled_toast": "已关闭推送通知"
           },
-          "enabled_toast": "已开启推送通知",
-          "disabled_toast": "已关闭推送通知"
+          "tab_flash": {
+            "title": "浏览器标签页",
+            "description": "当此标签页在后台且有事需要你处理时，闪烁标签页的标题和图标。保存在此设备上。",
+            "caption": "仅限此浏览器",
+            "match_found": {
+              "title": "已找到比赛",
+              "description": "比赛已就绪，正在等待你接受。"
+            },
+            "admin_call": {
+              "title": "主办方通话",
+              "description": "比赛主办方开始通过你的摄像头页面与你通话时。"
+            },
+            "chat": {
+              "title": "聊天消息",
+              "description": "会话、大厅或锦标赛房间中的新消息。不包括比赛中的游戏内聊天。"
+            },
+            "bell": {
+              "title": "通知",
+              "description": "通知铃铛中出现新内容时。"
+            }
+          },
+          "sounds": {
+            "title": "声音",
+            "description": "为聊天消息、比赛事件和其他提醒播放声音。",
+            "volume": "音量",
+            "mute": "静音",
+            "unmute": "取消静音",
+            "kinds": {
+              "chat": {
+                "title": "聊天消息",
+                "description": "新聊天消息"
+              },
+              "match_found": {
+                "title": "找到比赛",
+                "description": "比赛准备就绪"
+              },
+              "tick": {
+                "title": "滴答声",
+                "description": "准备就绪的滴答声"
+              },
+              "countdown": {
+                "title": "倒计时",
+                "description": "比赛开始倒计时"
+              }
+            }
+          }
         },
-        "alerts": {
-          "title": "通知铃铛",
-          "description": "在应用的铃铛中隐藏这些内容，其余内容仍会显示。"
-        },
-        "keys": {
-          "matches": {
-            "title": "比赛",
-            "description": "比赛状态变化和导入的比赛。"
+        "catalog": {
+          "title": "你会收到的通知",
+          "per_kind": "按类型",
+          "follows_group": "跟随此分组的推送开关",
+          "kinds_count": "{count} 种类型 | {count} 种类型",
+          "staff_only": "仅限工作人员",
+          "locked": "始终显示：与你的账号有关",
+          "staff_locked": "始终向工作人员显示",
+          "push_only": "仅推送，不会出现在铃铛中",
+          "rings_in_quiet_hours": "免打扰时段也会响铃",
+          "push_off_by_default": "默认关闭推送",
+          "in_bell": "铃铛中的{kind}",
+          "push_for": "{kind}推送",
+          "groups": {
+            "more": {
+              "title": "战队、活动、赛季、道具、新闻",
+              "description": "组队建议、活动提醒、赛季结束、练习邀请和文章。"
+            },
+            "staff": {
+              "title": "工作人员",
+              "description": "支持请求、比赛放弃、改名申请，以及服务器和任务状态。"
+            }
           },
-          "match_found": {
-            "title": "找到比赛",
-            "description": "匹配系统已为你找到比赛，正在等待你接受。即使在免打扰时段也会响铃。"
+          "categories": {
+            "matches": {
+              "title": "比赛",
+              "description": "你的比赛：从准备确认和警报，到数据、片段和聊天。"
+            },
+            "match_found": {
+              "title": "找到比赛"
+            },
+            "admin_call": {
+              "title": "管理员呼叫"
+            },
+            "match_chat": {
+              "title": "比赛聊天"
+            },
+            "chat": {
+              "title": "聊天",
+              "description": "会话、大厅或锦标赛房间中的新消息。"
+            },
+            "tournaments": {
+              "title": "锦标赛",
+              "description": "新锦标赛、提醒和签到。"
+            },
+            "events": {
+              "title": "活动"
+            },
+            "seasons": {
+              "title": "赛季"
+            },
+            "scrims": {
+              "title": "训练赛",
+              "description": "训练赛请求、时间变更和提醒。"
+            },
+            "leagues": {
+              "title": "联赛",
+              "description": "联赛赛程提议和阵容提醒。"
+            },
+            "teams": {
+              "title": "战队"
+            },
+            "invites": {
+              "title": "邀请",
+              "description": "战队、锦标赛和选人邀请。"
+            },
+            "utility": {
+              "title": "道具练习"
+            },
+            "account": {
+              "title": "账号",
+              "description": "你的名称变更、警告、处罚和奖项。"
+            },
+            "teammate_bans": {
+              "title": "被封禁的队友",
+              "description": "过去 6 个月内与你一起玩过的玩家被封禁时。"
+            },
+            "news": {
+              "title": "新闻"
+            },
+            "staff_moderation": {
+              "title": "管理"
+            },
+            "staff_infrastructure": {
+              "title": "基础设施"
+            }
           },
-          "admin_call": {
-            "title": "管理员呼叫",
-            "description": "管理员想通过你的比赛摄像头与你通话。即使在免打扰时段也会响铃。"
-          },
-          "chat": {
-            "title": "聊天",
-            "description": "会话、大厅或锦标赛房间中的新消息。"
-          },
-          "tournaments": {
-            "title": "锦标赛",
-            "description": "新锦标赛和开赛提醒。"
-          },
-          "scrims": {
-            "title": "训练赛",
-            "description": "训练赛请求、时间变更和提醒。"
-          },
-          "leagues": {
-            "title": "联赛",
-            "description": "联赛赛程提议和阵容提醒。"
-          },
-          "teams": {
-            "title": "战队",
-            "description": "建议与经常一起排队的玩家组建战队。"
-          },
-          "account": {
-            "title": "账号",
-            "description": "你的名称变更、警告、处罚和奖项。"
-          },
-          "teammate_bans": {
-            "title": "被封禁的队友",
-            "description": "过去 6 个月内与你一起玩过的玩家被封禁时。"
-          },
-          "news": {
-            "title": "新闻",
-            "description": "5stack 上发布的新文章。"
-          },
-          "staff_moderation": {
-            "title": "管理",
-            "description": "支持请求、比赛放弃和改名申请。"
-          },
-          "staff_infrastructure": {
-            "title": "基础设施",
-            "description": "服务器、节点和后台任务的状态。"
-          },
-          "ChatMessage": {
-            "title": "聊天消息",
-            "description": "会话、大厅或锦标赛房间中的新消息。"
-          },
-          "MatchImported": {
-            "title": "导入的比赛",
-            "description": "你参加过的 Valve 比赛已导入。"
-          },
-          "NewsPublished": {
-            "title": "新闻文章",
-            "description": "发布了新文章。"
-          },
-          "TournamentReminder": {
-            "title": "锦标赛提醒",
-            "description": "你报名的锦标赛即将开始。"
-          },
-          "FormTeamSuggestion": {
-            "title": "组队建议",
-            "description": "你经常和这些玩家一起游戏。"
-          },
-          "ScrimAlertMatch": {
-            "title": "训练赛提醒",
-            "description": "有符合你训练赛提醒条件的战队。"
-          },
-          "LeagueMatchUnscheduled": {
-            "title": "未排期的联赛比赛",
-            "description": "某场联赛对阵还没有约定时间。"
-          },
-          "invites": {
-            "title": "邀请",
-            "description": "战队、锦标赛和选人邀请。"
-          },
-          "events": {
-            "title": "活动",
-            "description": "你参加的活动提醒。"
-          },
-          "seasons": {
-            "title": "赛季",
-            "description": "赛季结束时。"
-          },
-          "TeamInvite": {
-            "title": "战队邀请",
-            "description": "有人邀请你加入他们的战队。"
-          },
-          "TournamentTeamInvite": {
-            "title": "锦标赛邀请",
-            "description": "有人邀请你参加锦标赛。"
-          },
-          "DraftInvite": {
-            "title": "选人邀请",
-            "description": "有人邀请你加入选人大厅。"
-          },
-          "MatchStatsReady": {
-            "title": "数据已就绪",
-            "description": "你的比赛数据已处理完成。"
-          },
-          "ClipReady": {
-            "title": "片段已就绪",
-            "description": "你请求的片段已渲染完成。"
-          },
-          "AwardGranted": {
-            "title": "奖项",
-            "description": "你获得了一项奖项。"
-          },
-          "TeammateBanned": {
-            "title": "被封禁的队友",
-            "description": "过去 6 个月内与你一起玩过的玩家已被封禁。"
-          },
-          "EventReminder": {
-            "title": "活动提醒",
-            "description": "你参加的活动即将开始。"
-          },
-          "SeasonEnded": {
-            "title": "赛季结束",
-            "description": "有一个赛季已经结束。"
-          },
-          "match_chat": {
-            "title": "比赛聊天",
-            "description": "比赛房间中的新消息，包括从游戏内转发的聊天。默认关闭，因为进行中的比赛每输入一行都会触发。"
-          },
-          "MatchChatMessage": {
-            "title": "比赛聊天消息",
-            "description": "比赛房间中的新消息。"
-          },
-          "TournamentInvite": {
-            "title": "赛事报名邀请",
-            "description": "主办方邀请你报名参加一个赛事。"
+          "kinds": {
+            "MatchStatusChange": {
+              "title": "比赛警报",
+              "description": "你主办的比赛正在等待服务器，或有地图已暂停。",
+              "example": "比赛警报：地图已暂停"
+            },
+            "MatchImported": {
+              "title": "导入的比赛",
+              "description": "你参加过的 Valve 比赛已导入。",
+              "example": "你在 Ancient 上的 Premier 比赛已导入"
+            },
+            "MatchStatsReady": {
+              "title": "数据已就绪",
+              "description": "你的比赛数据已处理完成。",
+              "example": "Iron Wolves vs Night Owls 的数据已就绪"
+            },
+            "ClipReady": {
+              "title": "片段已就绪",
+              "description": "你请求的片段已渲染完成。",
+              "example": "你在 Mirage 上的 4K 已就绪"
+            },
+            "MatchFound": {
+              "title": "找到比赛",
+              "description": "匹配系统已为你找到比赛，正在等待你接受。",
+              "example": "你的 Competitive 比赛已就绪，请在 30 秒内接受"
+            },
+            "AdminCall": {
+              "title": "管理员呼叫",
+              "description": "管理员想通过你的比赛摄像头与你通话。",
+              "example": "管理员想就 Iron Wolves vs Night Owls 与你通话"
+            },
+            "MatchChatMessage": {
+              "title": "比赛聊天消息",
+              "description": "比赛房间中的新消息，包括从游戏内转发的聊天。",
+              "example": "kairo: rotate B"
+            },
+            "ChatMessage": {
+              "title": "聊天消息",
+              "description": "会话、大厅或锦标赛房间中的新消息。",
+              "example": "Juno: gg"
+            },
+            "TournamentCreated": {
+              "title": "新锦标赛",
+              "description": "有锦标赛开放报名了。",
+              "example": "Winter Open 已开放报名"
+            },
+            "TournamentReminder": {
+              "title": "锦标赛提醒",
+              "description": "你报名的锦标赛即将开始。",
+              "example": "Autumn Cup 将在 30 分钟后开始"
+            },
+            "TournamentCheckInOpen": {
+              "title": "签到开放",
+              "description": "你报名的锦标赛已开放签到。",
+              "example": "请为 Autumn Cup 签到"
+            },
+            "TournamentCheckInClosing": {
+              "title": "签到即将截止",
+              "description": "你的锦标赛签到即将截止。",
+              "example": "Autumn Cup 签到将在 10 分钟后截止"
+            },
+            "TournamentCheckInMissed": {
+              "title": "错过签到",
+              "description": "你的战队错过了签到，未被排入对阵表。",
+              "example": "Iron Wolves 错过了 Autumn Cup 的签到"
+            },
+            "TournamentPartySignup": {
+              "title": "自由选手组队报名",
+              "description": "你的大厅已作为自由选手队伍报名参加锦标赛。",
+              "example": "你的大厅已报名 Autumn Cup"
+            },
+            "EventReminder": {
+              "title": "活动提醒",
+              "description": "你参加的活动即将开始。",
+              "example": "LAN Night 将在 1 小时后开始"
+            },
+            "SeasonEnded": {
+              "title": "赛季结束",
+              "description": "有一个赛季已经结束。",
+              "example": "第 4 赛季已结束"
+            },
+            "ScrimRequestReceived": {
+              "title": "训练赛请求",
+              "description": "有战队想和你的战队打训练赛。",
+              "example": "Night Owls 想和你的战队打训练赛"
+            },
+            "ScrimRequestCountered": {
+              "title": "训练赛反提议",
+              "description": "对方战队提议了另一个训练赛时间。",
+              "example": "Night Owls 提议改为周六 20:00"
+            },
+            "ScrimRequestAccepted": {
+              "title": "已接受的训练赛请求",
+              "description": "有战队接受了你的训练赛请求。",
+              "example": "Night Owls 接受了你的训练赛"
+            },
+            "ScrimRequestDeclined": {
+              "title": "已拒绝的训练赛请求",
+              "description": "有战队拒绝了你的训练赛请求。",
+              "example": "Night Owls 拒绝了你的训练赛"
+            },
+            "ScrimRequestExpired": {
+              "title": "已过期的训练赛请求",
+              "description": "训练赛请求无人回应，已过期。",
+              "example": "你发给 Night Owls 的训练赛请求已过期"
+            },
+            "ScrimMatchScheduled": {
+              "title": "已安排的训练赛",
+              "description": "你的战队与另一支战队的训练赛已安排。",
+              "example": "你与 Night Owls 的训练赛已安排"
+            },
+            "ScrimMatchCanceled": {
+              "title": "已取消的训练赛",
+              "description": "某支战队取消了已安排的训练赛。",
+              "example": "你与 Night Owls 的训练赛已取消"
+            },
+            "ScrimTimeChanged": {
+              "title": "训练赛时间变更",
+              "description": "已安排的训练赛时间有变更。",
+              "example": "你与 Night Owls 的训练赛改到了 21:00"
+            },
+            "ScrimAlertMatch": {
+              "title": "训练赛提醒",
+              "description": "有符合你训练赛提醒条件的战队。",
+              "example": "有符合你训练赛提醒条件的战队正在寻找训练赛"
+            },
+            "LeagueProposalReceived": {
+              "title": "联赛时间提议",
+              "description": "对手为你的联赛比赛提议了时间。",
+              "example": "Night Owls 提议第 3 周的比赛在周六 20:00 进行"
+            },
+            "LeagueProposalAccepted": {
+              "title": "已接受的联赛时间",
+              "description": "你提议的联赛比赛时间已被接受。",
+              "example": "你为第 3 周提议的时间已被接受"
+            },
+            "LeagueProposalDeclined": {
+              "title": "已拒绝的联赛时间",
+              "description": "你提议的联赛比赛时间已被拒绝。",
+              "example": "你为第 3 周提议的时间已被拒绝"
+            },
+            "LeagueMatchUnscheduled": {
+              "title": "未排期的联赛比赛",
+              "description": "某场联赛对阵还没有约定时间。",
+              "example": "第 3 周还没有约定时间"
+            },
+            "LeagueRegistrationDecision": {
+              "title": "联赛报名",
+              "description": "你战队的联赛报名已审核。",
+              "example": "Iron Wolves 已获准加入第 4 赛季"
+            },
+            "LeagueRosterUndersized": {
+              "title": "联赛阵容提醒",
+              "description": "你的联赛战队人数已不足。",
+              "example": "Iron Wolves 现有 4 名玩家，需要 5 名"
+            },
+            "FormTeamSuggestion": {
+              "title": "组队建议",
+              "description": "你经常和这些玩家一起游戏。",
+              "example": "要和 kairo、Juno 组队吗？"
+            },
+            "TeamInvite": {
+              "title": "战队邀请",
+              "description": "有人邀请你加入他们的战队。",
+              "example": "sable 邀请你加入 Night Owls"
+            },
+            "TournamentTeamInvite": {
+              "title": "锦标赛邀请",
+              "description": "有人邀请你参加锦标赛。",
+              "example": "kairo 邀请你参加 Autumn Cup"
+            },
+            "TournamentInvite": {
+              "title": "赛事报名邀请",
+              "description": "主办方邀请你报名参加一个赛事。",
+              "example": "报名参加 Winter Open"
+            },
+            "DraftInvite": {
+              "title": "选人邀请",
+              "description": "有人邀请你加入选人大厅。",
+              "example": "Pyre 邀请你加入选人"
+            },
+            "UtilityPracticeInvite": {
+              "title": "练习邀请",
+              "description": "有人邀请你一起练习道具。",
+              "example": "kairo 邀请你在 Mirage 上练习道具"
+            },
+            "UtilityPracticeReady": {
+              "title": "练习服务器已就绪",
+              "description": "你的道具练习服务器已启动。",
+              "example": "你在 Mirage 上的练习服务器已启动"
+            },
+            "NameChangeApproved": {
+              "title": "改名已批准",
+              "description": "管理员批准了你的新名称。",
+              "example": "你改名为 kairo_ 的申请已批准"
+            },
+            "NameChangeDenied": {
+              "title": "改名被拒绝",
+              "description": "管理员拒绝了你的新名称。",
+              "example": "你改名为 kairo_ 的申请被拒绝"
+            },
+            "PlayerSanctioned": {
+              "title": "封禁",
+              "description": "你已被平台封禁。",
+              "example": "你已被封禁"
+            },
+            "PlayerWarning": {
+              "title": "警告",
+              "description": "版主向你发出了警告。",
+              "example": "你收到了一条警告"
+            },
+            "AwardGranted": {
+              "title": "奖项",
+              "description": "你获得了一项奖项。",
+              "example": "你获得了 Autumn Cup 的 MVP"
+            },
+            "TeammateBanned": {
+              "title": "被封禁的队友",
+              "description": "过去 6 个月内与你一起玩过的玩家已被封禁。",
+              "example": "最近与你一起玩过的玩家 dusk 已被封禁"
+            },
+            "NewsPublished": {
+              "title": "新闻文章",
+              "description": "发布了新文章。",
+              "example": "更新说明：Rush 模式"
+            },
+            "MatchSupport": {
+              "title": "比赛协助",
+              "description": "某场比赛请求主办方或管理员协助。",
+              "example": "比赛需要协助"
+            },
+            "MatchAbandoned": {
+              "title": "比赛放弃",
+              "description": "有玩家放弃了比赛。",
+              "example": "kairo 放弃了 Iron Wolves vs Night Owls"
+            },
+            "NameChangeRequest": {
+              "title": "改名申请",
+              "description": "有玩家申请更改名称。",
+              "example": "kairo 申请改名为 kairo_"
+            },
+            "GameUpdate": {
+              "title": "游戏更新",
+              "description": "检测到 CS2 更新，或更新安装失败。",
+              "example": "检测到 CS2 更新"
+            },
+            "GameNodeStatus": {
+              "title": "游戏服务器节点",
+              "description": "节点或区域离线或恢复在线，或节点磁盘空间不足。",
+              "example": "游戏服务器节点离线"
+            },
+            "DedicatedServerStatus": {
+              "title": "专用服务器",
+              "description": "专用服务器离线，或其插件已过时。",
+              "example": "专用服务器离线"
+            },
+            "DedicatedServerRconStatus": {
+              "title": "RCON 错误",
+              "description": "专用服务器不再响应 RCON。",
+              "example": "专用服务器 RCON 错误"
+            },
+            "StorageScan": {
+              "title": "存储扫描",
+              "description": "存储扫描发现了孤立文件。",
+              "example": "存储扫描发现了 12 个孤立文件"
+            },
+            "EloRecompute": {
+              "title": "ELO 重新计算",
+              "description": "玩家 ELO 重新计算或赛季重建已完成。",
+              "example": "ELO 重新计算已完成"
+            },
+            "PlayerReindex": {
+              "title": "搜索索引重建",
+              "description": "玩家搜索索引重建已完成。",
+              "example": "玩家搜索索引重建已完成"
+            },
+            "UtilityDriftScanFinished": {
+              "title": "道具偏移扫描",
+              "description": "道具偏移扫描已完成。",
+              "example": "道具偏移扫描已完成"
+            }
           }
         },
         "quiet_hours": {
@@ -1844,56 +2128,6 @@
           "to": "结束",
           "reset": "重置",
           "incomplete": "请同时设置开始和结束时间才能保存免打扰时段。"
-        },
-        "tab_flash": {
-          "title": "浏览器标签页",
-          "description": "当此标签页在后台且有事需要你处理时，闪烁标签页的标题和图标。保存在此设备上。",
-          "match_found": {
-            "title": "已找到比赛",
-            "description": "比赛已就绪，正在等待你接受。"
-          },
-          "admin_call": {
-            "title": "主办方通话",
-            "description": "比赛主办方开始通过你的摄像头页面与你通话时。"
-          },
-          "chat": {
-            "title": "聊天消息",
-            "description": "会话、大厅或锦标赛房间中的新消息。不包括比赛中的游戏内聊天。"
-          },
-          "bell": {
-            "title": "通知",
-            "description": "通知铃铛中出现新内容时。"
-          }
-        }
-      },
-      "notifications": {
-        "title": "声音设置",
-        "description": "预览并调整 5Stack 为聊天、比赛等播放的提示音。",
-        "enabled": {
-          "title": "通知声音",
-          "description": "为聊天消息、比赛事件和其他提醒播放声音。"
-        },
-        "volume": {
-          "title": "音量"
-        },
-        "preview": "预览声音",
-        "sounds": {
-          "chat": {
-            "title": "聊天消息",
-            "description": "新聊天消息"
-          },
-          "match_found": {
-            "title": "比赛已找到",
-            "description": "比赛准备就绪"
-          },
-          "tick": {
-            "title": "滴答声",
-            "description": "准备就绪的滴答声"
-          },
-          "countdown": {
-            "title": "倒计时",
-            "description": "比赛开始倒计时"
-          }
         }
       },
       "application": {
@@ -5504,6 +5738,13 @@
       "dismiss_all": "全部关闭",
       "delete_all_read": "删除所有已读",
       "review_orphaned_uploads": "查看孤立文件",
+      "settings": "通知设置",
+      "kind_menu": {
+        "label": "更多操作",
+        "turn_off": "关闭{kind}通知",
+        "turned_off": "已关闭{kind}通知",
+        "turned_off_hint": "你可以在“通知”中重新开启。"
+      },
       "no_notifications_title": "无通知",
       "no_notifications": "目前没有通知。",
       "toast": {

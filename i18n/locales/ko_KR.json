@@ -1664,177 +1664,461 @@
           "done": "이 기기의 음성 설정을 초기화했습니다"
         }
       },
-      "notification_preferences": {
-        "title": "알림 설정",
-        "description": "5stack이 무엇을 알려줄지, 그 알림을 어디서 받을지 선택하세요.",
+      "notifications": {
+        "title": "알림",
+        "description": "5stack이 보낼 수 있는 모든 알림과 각 알림을 받는 곳입니다.",
         "save_failed": "설정을 저장하지 못했습니다. 다시 시도해 주세요.",
-        "push": {
-          "title": "푸시 알림",
-          "description": "5stack이 열려 있지 않아도 이 기기에서 알림을 받습니다.",
-          "categories": "푸시할 항목",
-          "unsupported": "이 브라우저는 푸시 알림을 지원하지 않습니다.",
-          "install_required": "사용하려면 5stack 앱을 설치하세요.",
-          "install": {
-            "description": "푸시 알림은 설치된 앱이 전달하므로, 켜기 전에 기기에 앱이 있어야 합니다.",
-            "open_app": "이미 설치했나요? 홈 화면이나 앱 목록에서 5stack을 열고 거기서 푸시 알림을 켜세요."
+        "load_failed": "알림 설정을 불러오지 못했습니다. 새로고침해 다시 시도하세요.",
+        "channels": {
+          "title": "알림을 받는 곳",
+          "bell": {
+            "title": "알림 종",
+            "description": "허브에서 항상 켜짐",
+            "unread": "읽지 않음 {count}개"
           },
-          "denied": "5stack의 알림이 차단되어 있습니다. 켜려면 브라우저 또는 기기 설정에서 허용하세요.",
-          "failed": "푸시 알림을 켜지 못했습니다. 다시 시도해 주세요.",
-          "errors": {
-            "permission": "알림 권한 요청에 응답이 없었습니다. 기기에 Google Play 서비스가 없거나 손상된 경우 발생할 수 있습니다.",
-            "vapid": "서버에서 푸시 키를 가져오는 중 시간이 초과되었습니다.",
-            "service_worker": "이 기기의 서비스 워커가 활성화되기를 기다리다 시간이 초과되었습니다.",
-            "existing": "기존 푸시 구독을 확인하는 중 시간이 초과되었습니다.",
-            "register": "이 기기의 푸시 서비스에 등록하는 중 시간이 초과되었습니다. 백그라운드 또는 배터리 제한이 막고 있을 수 있습니다.",
-            "save": "푸시 구독을 서버에 저장하는 중 시간이 초과되었습니다."
+          "push": {
+            "title": "푸시",
+            "caption": "휴대폰 또는 데스크톱 알림",
+            "on": "이 기기에서 켜짐",
+            "off": "이 기기에서 꺼짐",
+            "blocked": "이 기기에서 차단됨",
+            "unavailable": "이 브라우저에서는 사용할 수 없음",
+            "needs_install": "설치된 앱 필요",
+            "toggle": "이 기기에서 푸시",
+            "off_hint": "이 기기에서 푸시가 꺼져 있습니다. 아래 푸시 설정은 그대로 저장되며, 푸시를 켠 모든 기기에 적용됩니다.",
+            "unsupported": "이 브라우저는 푸시 알림을 지원하지 않습니다.",
+            "install": {
+              "description": "푸시 알림은 설치된 앱이 전달하므로, 켜기 전에 기기에 앱이 있어야 합니다.",
+              "open_app": "이미 설치했나요? 홈 화면이나 앱 목록에서 5stack을 열고 거기서 푸시 알림을 켜세요."
+            },
+            "denied": "5stack의 알림이 차단되어 있습니다. 켜려면 브라우저 또는 기기 설정에서 허용하세요.",
+            "failed": "푸시 알림을 켜지 못했습니다. 다시 시도해 주세요.",
+            "errors": {
+              "permission": "알림 권한 요청에 응답이 없었습니다. 기기에 Google Play 서비스가 없거나 손상된 경우 발생할 수 있습니다.",
+              "vapid": "서버에서 푸시 키를 가져오는 중 시간이 초과되었습니다.",
+              "service_worker": "이 기기의 서비스 워커가 활성화되기를 기다리다 시간이 초과되었습니다.",
+              "existing": "기존 푸시 구독을 확인하는 중 시간이 초과되었습니다.",
+              "register": "이 기기의 푸시 서비스에 등록하는 중 시간이 초과되었습니다. 백그라운드 또는 배터리 제한이 막고 있을 수 있습니다.",
+              "save": "푸시 구독을 서버에 저장하는 중 시간이 초과되었습니다."
+            },
+            "enabled_toast": "푸시 알림을 켰습니다",
+            "disabled_toast": "푸시 알림을 껐습니다"
           },
-          "enabled_toast": "푸시 알림을 켰습니다",
-          "disabled_toast": "푸시 알림을 껐습니다"
+          "tab_flash": {
+            "title": "브라우저 탭",
+            "description": "이 탭이 백그라운드에 있을 때 확인이 필요한 일이 생기면 탭 제목과 아이콘을 깜박입니다. 이 기기에 저장됩니다.",
+            "caption": "이 브라우저 전용",
+            "match_found": {
+              "title": "매치 찾음",
+              "description": "매치가 준비되어 수락을 기다리고 있습니다."
+            },
+            "admin_call": {
+              "title": "주최자 통화",
+              "description": "경기 주최자가 카메라 페이지에서 말을 걸기 시작할 때."
+            },
+            "chat": {
+              "title": "채팅 메시지",
+              "description": "대화, 로비 또는 토너먼트 방의 새 메시지. 경기 중 게임 내 채팅은 제외됩니다."
+            },
+            "bell": {
+              "title": "알림",
+              "description": "알림 종에 새 항목이 도착할 때."
+            }
+          },
+          "sounds": {
+            "title": "사운드",
+            "description": "채팅 메시지, 매치 이벤트 및 기타 알림에 소리를 재생합니다.",
+            "volume": "음량",
+            "mute": "음소거",
+            "unmute": "음소거 해제",
+            "kinds": {
+              "chat": {
+                "title": "채팅 메시지",
+                "description": "새 채팅 메시지"
+              },
+              "match_found": {
+                "title": "매치 찾음",
+                "description": "매치를 시작할 준비가 되었습니다"
+              },
+              "tick": {
+                "title": "틱",
+                "description": "준비 완료 틱음"
+              },
+              "countdown": {
+                "title": "카운트다운",
+                "description": "매치 시작 카운트다운"
+              }
+            }
+          }
         },
-        "alerts": {
-          "title": "알림 종",
-          "description": "앱 내 종에서 이 항목을 숨깁니다. 나머지는 계속 표시됩니다."
-        },
-        "keys": {
-          "matches": {
-            "title": "경기",
-            "description": "경기 상태 변경 및 가져온 경기."
+        "catalog": {
+          "title": "받게 될 알림",
+          "per_kind": "종류별",
+          "follows_group": "이 그룹의 푸시 스위치를 따름",
+          "kinds_count": "{count}개 종류 | {count}개 종류",
+          "staff_only": "스태프 전용",
+          "locked": "항상 표시: 내 계정에 관한 알림입니다",
+          "staff_locked": "스태프에게 항상 표시",
+          "push_only": "푸시 전용, 알림 종에는 표시되지 않음",
+          "rings_in_quiet_hours": "방해 금지 시간에도 울림",
+          "push_off_by_default": "푸시 기본값 꺼짐",
+          "in_bell": "알림 종에 {kind} 표시",
+          "push_for": "{kind} 푸시",
+          "groups": {
+            "more": {
+              "title": "팀, 이벤트, 시즌, 유틸리티, 뉴스",
+              "description": "팀 제안, 이벤트 알림, 시즌 종료, 연습 초대, 뉴스 글."
+            },
+            "staff": {
+              "title": "스태프",
+              "description": "지원 요청, 경기 포기, 이름 변경 요청, 서버 및 작업 상태."
+            }
           },
-          "match_found": {
-            "title": "매치 찾음",
-            "description": "매치메이킹이 매치를 찾았고 수락을 기다리고 있습니다. 방해 금지 시간에도 울립니다."
+          "categories": {
+            "matches": {
+              "title": "경기",
+              "description": "내 경기: 준비 확인과 알림부터 통계, 클립, 채팅까지."
+            },
+            "match_found": {
+              "title": "매치 찾음"
+            },
+            "admin_call": {
+              "title": "관리자 호출"
+            },
+            "match_chat": {
+              "title": "경기 채팅"
+            },
+            "chat": {
+              "title": "채팅",
+              "description": "대화, 로비 또는 토너먼트 방의 새 메시지."
+            },
+            "tournaments": {
+              "title": "토너먼트",
+              "description": "새 토너먼트, 알림, 체크인."
+            },
+            "events": {
+              "title": "이벤트"
+            },
+            "seasons": {
+              "title": "시즌"
+            },
+            "scrims": {
+              "title": "스크림",
+              "description": "스크림 요청, 일정 변경, 알림."
+            },
+            "leagues": {
+              "title": "리그",
+              "description": "리그 일정 제안 및 로스터 경고."
+            },
+            "teams": {
+              "title": "팀"
+            },
+            "invites": {
+              "title": "초대",
+              "description": "팀, 토너먼트, 드래프트 초대."
+            },
+            "utility": {
+              "title": "유틸리티 연습"
+            },
+            "account": {
+              "title": "계정",
+              "description": "이름 변경, 경고, 제재 및 수상."
+            },
+            "teammate_bans": {
+              "title": "밴된 팀원",
+              "description": "최근 6개월 동안 함께 플레이한 플레이어가 밴되었을 때."
+            },
+            "news": {
+              "title": "뉴스"
+            },
+            "staff_moderation": {
+              "title": "운영"
+            },
+            "staff_infrastructure": {
+              "title": "인프라"
+            }
           },
-          "admin_call": {
-            "title": "관리자 호출",
-            "description": "관리자가 경기 카메라로 대화하고 싶어 합니다. 방해 금지 시간에도 울립니다."
-          },
-          "chat": {
-            "title": "채팅",
-            "description": "대화, 로비 또는 토너먼트 방의 새 메시지."
-          },
-          "tournaments": {
-            "title": "토너먼트",
-            "description": "새 토너먼트 및 시작 알림."
-          },
-          "scrims": {
-            "title": "스크림",
-            "description": "스크림 요청, 일정 변경, 알림."
-          },
-          "leagues": {
-            "title": "리그",
-            "description": "리그 일정 제안 및 로스터 경고."
-          },
-          "teams": {
-            "title": "팀",
-            "description": "자주 함께 대기열에 서는 플레이어와 팀을 만들라는 제안."
-          },
-          "account": {
-            "title": "계정",
-            "description": "이름 변경, 경고, 제재 및 수상."
-          },
-          "teammate_bans": {
-            "title": "밴된 팀원",
-            "description": "최근 6개월 동안 함께 플레이한 플레이어가 밴되었을 때."
-          },
-          "news": {
-            "title": "뉴스",
-            "description": "5stack에 게시된 새 글."
-          },
-          "staff_moderation": {
-            "title": "운영",
-            "description": "지원 요청, 경기 포기, 이름 변경 요청."
-          },
-          "staff_infrastructure": {
-            "title": "인프라",
-            "description": "서버, 노드, 백그라운드 작업 상태."
-          },
-          "ChatMessage": {
-            "title": "채팅 메시지",
-            "description": "대화, 로비 또는 토너먼트 방의 새 메시지."
-          },
-          "MatchImported": {
-            "title": "가져온 경기",
-            "description": "플레이한 Valve 경기를 가져왔습니다."
-          },
-          "NewsPublished": {
-            "title": "뉴스 글",
-            "description": "새 글이 게시되었습니다."
-          },
-          "TournamentReminder": {
-            "title": "토너먼트 알림",
-            "description": "등록한 토너먼트가 곧 시작됩니다."
-          },
-          "FormTeamSuggestion": {
-            "title": "팀 제안",
-            "description": "이 플레이어들과 자주 함께 플레이합니다."
-          },
-          "ScrimAlertMatch": {
-            "title": "스크림 알림",
-            "description": "스크림 알림 조건에 맞는 팀이 있습니다."
-          },
-          "LeagueMatchUnscheduled": {
-            "title": "일정 미정 리그 경기",
-            "description": "리그 대진의 시간이 아직 정해지지 않았습니다."
-          },
-          "invites": {
-            "title": "초대",
-            "description": "팀, 토너먼트, 드래프트 초대."
-          },
-          "events": {
-            "title": "이벤트",
-            "description": "참가 중인 이벤트 알림."
-          },
-          "seasons": {
-            "title": "시즌",
-            "description": "시즌이 종료될 때."
-          },
-          "TeamInvite": {
-            "title": "팀 초대",
-            "description": "누군가 팀에 초대했습니다."
-          },
-          "TournamentTeamInvite": {
-            "title": "토너먼트 초대",
-            "description": "누군가 토너먼트에서 함께 뛰자고 초대했습니다."
-          },
-          "DraftInvite": {
-            "title": "드래프트 초대",
-            "description": "누군가 드래프트 로비에 초대했습니다."
-          },
-          "MatchStatsReady": {
-            "title": "통계 준비 완료",
-            "description": "경기 통계 처리가 끝났습니다."
-          },
-          "ClipReady": {
-            "title": "클립 준비 완료",
-            "description": "요청한 클립의 렌더링이 끝났습니다."
-          },
-          "AwardGranted": {
-            "title": "수상",
-            "description": "수상했습니다."
-          },
-          "TeammateBanned": {
-            "title": "밴된 팀원",
-            "description": "최근 6개월 동안 함께 플레이한 플레이어가 밴되었습니다."
-          },
-          "EventReminder": {
-            "title": "이벤트 알림",
-            "description": "참가 중인 이벤트가 곧 시작됩니다."
-          },
-          "SeasonEnded": {
-            "title": "시즌 종료",
-            "description": "시즌이 종료되었습니다."
-          },
-          "match_chat": {
-            "title": "경기 채팅",
-            "description": "경기 방의 새 메시지로, 게임에서 중계된 채팅을 포함합니다. 기본값은 꺼짐입니다. 진행 중인 경기에서 입력되는 모든 줄마다 발생합니다."
-          },
-          "MatchChatMessage": {
-            "title": "경기 채팅 메시지",
-            "description": "경기 방의 새 메시지."
-          },
-          "TournamentInvite": {
-            "title": "토너먼트 참가 신청 초대",
-            "description": "주최자가 토너먼트에 참가 신청하도록 초대했습니다."
+          "kinds": {
+            "MatchStatusChange": {
+              "title": "경기 알림",
+              "description": "주최한 경기가 서버를 기다리고 있거나 맵이 일시중지되었습니다.",
+              "example": "경기 알림: 맵 일시중지됨"
+            },
+            "MatchImported": {
+              "title": "가져온 경기",
+              "description": "플레이한 Valve 경기를 가져왔습니다.",
+              "example": "Ancient에서 플레이한 Premier 경기를 가져왔습니다"
+            },
+            "MatchStatsReady": {
+              "title": "통계 준비 완료",
+              "description": "경기 통계 처리가 끝났습니다.",
+              "example": "Iron Wolves vs Night Owls 통계가 준비되었습니다"
+            },
+            "ClipReady": {
+              "title": "클립 준비 완료",
+              "description": "요청한 클립의 렌더링이 끝났습니다.",
+              "example": "Mirage에서의 4K 클립이 준비되었습니다"
+            },
+            "MatchFound": {
+              "title": "매치 찾음",
+              "description": "매치메이킹이 매치를 찾았고 수락을 기다리고 있습니다.",
+              "example": "Competitive 매치가 준비되었습니다. 30초 안에 수락하세요"
+            },
+            "AdminCall": {
+              "title": "관리자 호출",
+              "description": "관리자가 경기 카메라로 대화하고 싶어 합니다.",
+              "example": "관리자가 Iron Wolves vs Night Owls 경기에 대해 대화하고 싶어 합니다"
+            },
+            "MatchChatMessage": {
+              "title": "경기 채팅 메시지",
+              "description": "게임에서 중계된 채팅을 포함한 경기 방의 새 메시지.",
+              "example": "kairo: rotate B"
+            },
+            "ChatMessage": {
+              "title": "채팅 메시지",
+              "description": "대화, 로비 또는 토너먼트 방의 새 메시지.",
+              "example": "Juno: gg"
+            },
+            "TournamentCreated": {
+              "title": "새 토너먼트",
+              "description": "토너먼트 참가 신청이 시작되었습니다.",
+              "example": "Winter Open 참가 신청이 시작되었습니다"
+            },
+            "TournamentReminder": {
+              "title": "토너먼트 알림",
+              "description": "등록한 토너먼트가 곧 시작됩니다.",
+              "example": "Autumn Cup이 30분 후에 시작됩니다"
+            },
+            "TournamentCheckInOpen": {
+              "title": "체크인 시작",
+              "description": "등록한 토너먼트의 체크인이 시작되었습니다.",
+              "example": "Autumn Cup에 체크인하세요"
+            },
+            "TournamentCheckInClosing": {
+              "title": "체크인 마감 임박",
+              "description": "토너먼트 체크인이 곧 마감됩니다.",
+              "example": "Autumn Cup 체크인이 10분 후에 마감됩니다"
+            },
+            "TournamentCheckInMissed": {
+              "title": "체크인 누락",
+              "description": "팀이 체크인을 놓쳐 대진표에 들어가지 못했습니다.",
+              "example": "Iron Wolves가 Autumn Cup 체크인을 놓쳤습니다"
+            },
+            "TournamentPartySignup": {
+              "title": "프리 에이전트 파티 참가 신청",
+              "description": "내 로비가 프리 에이전트 파티로 토너먼트에 참가 신청되었습니다.",
+              "example": "내 로비가 Autumn Cup에 참가 신청되었습니다"
+            },
+            "EventReminder": {
+              "title": "이벤트 알림",
+              "description": "참가 중인 이벤트가 곧 시작됩니다.",
+              "example": "LAN Night가 1시간 후에 시작됩니다"
+            },
+            "SeasonEnded": {
+              "title": "시즌 종료",
+              "description": "시즌이 종료되었습니다.",
+              "example": "시즌 4가 종료되었습니다"
+            },
+            "ScrimRequestReceived": {
+              "title": "스크림 요청",
+              "description": "다른 팀이 내 팀과 스크림을 원합니다.",
+              "example": "Night Owls가 내 팀과 스크림을 원합니다"
+            },
+            "ScrimRequestCountered": {
+              "title": "스크림 재제안",
+              "description": "다른 팀이 다른 스크림 시간을 제안했습니다.",
+              "example": "Night Owls가 대신 토요일 오후 8:00를 제안했습니다"
+            },
+            "ScrimRequestAccepted": {
+              "title": "수락된 스크림 요청",
+              "description": "다른 팀이 내 스크림 요청을 수락했습니다.",
+              "example": "Night Owls가 스크림을 수락했습니다"
+            },
+            "ScrimRequestDeclined": {
+              "title": "거절된 스크림 요청",
+              "description": "다른 팀이 내 스크림 요청을 거절했습니다.",
+              "example": "Night Owls가 스크림을 거절했습니다"
+            },
+            "ScrimRequestExpired": {
+              "title": "만료된 스크림 요청",
+              "description": "스크림 요청이 응답 없이 만료되었습니다.",
+              "example": "Night Owls에 보낸 스크림 요청이 만료되었습니다"
+            },
+            "ScrimMatchScheduled": {
+              "title": "예약된 스크림",
+              "description": "내 팀과 다른 팀의 스크림이 예약되었습니다.",
+              "example": "Night Owls와의 스크림이 예약되었습니다"
+            },
+            "ScrimMatchCanceled": {
+              "title": "취소된 스크림",
+              "description": "예약된 스크림이 한 팀에 의해 취소되었습니다.",
+              "example": "Night Owls와의 스크림이 취소되었습니다"
+            },
+            "ScrimTimeChanged": {
+              "title": "스크림 시간 변경",
+              "description": "예약된 스크림의 시간이 변경되었습니다.",
+              "example": "Night Owls와의 스크림이 오후 9:00로 변경되었습니다"
+            },
+            "ScrimAlertMatch": {
+              "title": "스크림 알림",
+              "description": "스크림 알림 조건에 맞는 팀이 있습니다.",
+              "example": "스크림 알림 조건에 맞는 팀이 스크림 상대를 찾고 있습니다"
+            },
+            "LeagueProposalReceived": {
+              "title": "리그 시간 제안",
+              "description": "상대 팀이 리그 경기 시간을 제안했습니다.",
+              "example": "Night Owls가 3주차 경기 시간으로 토요일 오후 8:00를 제안했습니다"
+            },
+            "LeagueProposalAccepted": {
+              "title": "수락된 리그 시간",
+              "description": "제안한 리그 경기 시간이 수락되었습니다.",
+              "example": "3주차에 제안한 시간이 수락되었습니다"
+            },
+            "LeagueProposalDeclined": {
+              "title": "거절된 리그 시간",
+              "description": "제안한 리그 경기 시간이 거절되었습니다.",
+              "example": "3주차에 제안한 시간이 거절되었습니다"
+            },
+            "LeagueMatchUnscheduled": {
+              "title": "일정 미정 리그 경기",
+              "description": "리그 대진의 시간이 아직 정해지지 않았습니다.",
+              "example": "3주차 시간이 아직 정해지지 않았습니다"
+            },
+            "LeagueRegistrationDecision": {
+              "title": "리그 등록",
+              "description": "팀의 리그 등록이 검토되었습니다.",
+              "example": "Iron Wolves의 시즌 4 등록이 승인되었습니다"
+            },
+            "LeagueRosterUndersized": {
+              "title": "리그 로스터 경고",
+              "description": "리그 팀의 플레이어가 더 이상 충분하지 않습니다.",
+              "example": "Iron Wolves의 플레이어가 필요 인원 5명 중 4명이 되었습니다"
+            },
+            "FormTeamSuggestion": {
+              "title": "팀 제안",
+              "description": "이 플레이어들과 자주 함께 플레이합니다.",
+              "example": "kairo, Juno와 팀을 만들까요?"
+            },
+            "TeamInvite": {
+              "title": "팀 초대",
+              "description": "누군가 팀에 초대했습니다.",
+              "example": "sable님이 Night Owls에 초대했습니다"
+            },
+            "TournamentTeamInvite": {
+              "title": "토너먼트 초대",
+              "description": "누군가 토너먼트에서 함께 뛰자고 초대했습니다.",
+              "example": "kairo님이 Autumn Cup에서 함께 뛰자고 초대했습니다"
+            },
+            "TournamentInvite": {
+              "title": "토너먼트 참가 신청 초대",
+              "description": "주최자가 토너먼트에 참가 신청하도록 초대했습니다.",
+              "example": "Winter Open에 참가 신청하세요"
+            },
+            "DraftInvite": {
+              "title": "드래프트 초대",
+              "description": "누군가 드래프트 로비에 초대했습니다.",
+              "example": "Pyre님이 드래프트에 초대했습니다"
+            },
+            "UtilityPracticeInvite": {
+              "title": "연습 초대",
+              "description": "누군가 함께 유틸리티를 연습하자고 초대했습니다.",
+              "example": "kairo님이 Mirage 유틸리티 연습에 초대했습니다"
+            },
+            "UtilityPracticeReady": {
+              "title": "연습 서버 준비 완료",
+              "description": "유틸리티 연습 서버가 실행되었습니다.",
+              "example": "Mirage 연습 서버가 실행되었습니다"
+            },
+            "NameChangeApproved": {
+              "title": "이름 변경 승인",
+              "description": "관리자가 새 이름을 승인했습니다.",
+              "example": "kairo_로의 이름 변경이 승인되었습니다"
+            },
+            "NameChangeDenied": {
+              "title": "이름 변경 거부",
+              "description": "관리자가 새 이름을 거부했습니다.",
+              "example": "kairo_로의 이름 변경이 거부되었습니다"
+            },
+            "PlayerSanctioned": {
+              "title": "밴",
+              "description": "플랫폼에서 밴되었습니다.",
+              "example": "밴되었습니다"
+            },
+            "PlayerWarning": {
+              "title": "경고",
+              "description": "모더레이터가 경고를 발행했습니다.",
+              "example": "경고를 받았습니다"
+            },
+            "AwardGranted": {
+              "title": "수상",
+              "description": "수상했습니다.",
+              "example": "Autumn Cup MVP를 획득했습니다"
+            },
+            "TeammateBanned": {
+              "title": "밴된 팀원",
+              "description": "최근 6개월 동안 함께 플레이한 플레이어가 밴되었습니다.",
+              "example": "최근 함께 플레이한 dusk님이 밴되었습니다"
+            },
+            "NewsPublished": {
+              "title": "뉴스 글",
+              "description": "새 글이 게시되었습니다.",
+              "example": "패치 노트: Rush 모드"
+            },
+            "MatchSupport": {
+              "title": "경기 지원",
+              "description": "경기에서 주최자나 관리자를 요청했습니다.",
+              "example": "경기 지원이 필요합니다"
+            },
+            "MatchAbandoned": {
+              "title": "경기 포기",
+              "description": "플레이어가 경기를 포기했습니다.",
+              "example": "kairo님이 Iron Wolves vs Night Owls 경기를 포기했습니다"
+            },
+            "NameChangeRequest": {
+              "title": "이름 변경 요청",
+              "description": "플레이어가 이름 변경을 요청했습니다.",
+              "example": "kairo님이 이름을 kairo_로 변경하도록 요청했습니다"
+            },
+            "GameUpdate": {
+              "title": "게임 업데이트",
+              "description": "CS2 업데이트가 감지되었거나 설치에 실패했습니다.",
+              "example": "CS2 업데이트 감지됨"
+            },
+            "GameNodeStatus": {
+              "title": "게임 서버 노드",
+              "description": "노드나 지역이 오프라인이 되거나 복구되었거나, 노드의 디스크 공간이 부족합니다.",
+              "example": "게임 서버 노드 오프라인"
+            },
+            "DedicatedServerStatus": {
+              "title": "데디케이티드 서버",
+              "description": "데디케이티드 서버가 오프라인이 되었거나 플러그인이 최신이 아닙니다.",
+              "example": "데디케이티드 서버 오프라인"
+            },
+            "DedicatedServerRconStatus": {
+              "title": "RCON 오류",
+              "description": "데디케이티드 서버가 RCON에 응답하지 않습니다.",
+              "example": "데디케이티드 서버 RCON 오류"
+            },
+            "StorageScan": {
+              "title": "스토리지 스캔",
+              "description": "스토리지 스캔에서 고아 업로드를 찾았습니다.",
+              "example": "스토리지 스캔에서 고아 업로드 12개를 찾았습니다"
+            },
+            "EloRecompute": {
+              "title": "ELO 재계산",
+              "description": "플레이어 ELO 재계산 또는 시즌 재구축이 완료되었습니다.",
+              "example": "ELO 재계산 완료"
+            },
+            "PlayerReindex": {
+              "title": "검색 재구축",
+              "description": "플레이어 검색 재구축이 완료되었습니다.",
+              "example": "플레이어 검색 재구축 완료"
+            },
+            "UtilityDriftScanFinished": {
+              "title": "유틸리티 변동 스캔",
+              "description": "유틸리티 변동 스캔이 완료되었습니다.",
+              "example": "유틸리티 변동 스캔 완료"
+            }
           }
         },
         "quiet_hours": {
@@ -1844,56 +2128,6 @@
           "to": "종료",
           "reset": "초기화",
           "incomplete": "방해 금지 시간을 저장하려면 시작 시각과 종료 시각을 모두 설정하세요."
-        },
-        "tab_flash": {
-          "title": "브라우저 탭",
-          "description": "이 탭이 백그라운드에 있을 때 확인이 필요한 일이 생기면 탭 제목과 아이콘을 깜박입니다. 이 기기에 저장됩니다.",
-          "match_found": {
-            "title": "매치 찾음",
-            "description": "매치가 준비되어 수락을 기다리고 있습니다."
-          },
-          "admin_call": {
-            "title": "주최자 통화",
-            "description": "경기 주최자가 카메라 페이지에서 말을 걸기 시작할 때."
-          },
-          "chat": {
-            "title": "채팅 메시지",
-            "description": "대화, 로비 또는 토너먼트 방의 새 메시지. 경기 중 게임 내 채팅은 제외됩니다."
-          },
-          "bell": {
-            "title": "알림",
-            "description": "알림 종에 새 항목이 도착할 때."
-          }
-        }
-      },
-      "notifications": {
-        "title": "사운드 설정",
-        "description": "채팅, 매치 등에 대해 5Stack이 재생하는 알림음을 미리 듣고 조정하세요.",
-        "enabled": {
-          "title": "알림음",
-          "description": "채팅 메시지, 매치 이벤트 및 기타 알림에 소리를 재생합니다."
-        },
-        "volume": {
-          "title": "음량"
-        },
-        "preview": "사운드 미리듣기",
-        "sounds": {
-          "chat": {
-            "title": "채팅 메시지",
-            "description": "새 채팅 메시지"
-          },
-          "match_found": {
-            "title": "매치 찾음",
-            "description": "매치를 시작할 준비가 되었습니다"
-          },
-          "tick": {
-            "title": "틱",
-            "description": "준비 완료 틱음"
-          },
-          "countdown": {
-            "title": "카운트다운",
-            "description": "매치 시작 카운트다운"
-          }
         }
       },
       "application": {
@@ -5504,6 +5738,13 @@
       "dismiss_all": "모두 닫기",
       "delete_all_read": "읽은 알림 모두 삭제",
       "review_orphaned_uploads": "고아 업로드 검토",
+      "settings": "알림 설정",
+      "kind_menu": {
+        "label": "추가 작업",
+        "turn_off": "{kind} 끄기",
+        "turned_off": "{kind} 알림을 껐습니다",
+        "turned_off_hint": "'알림'에서 다시 켤 수 있습니다."
+      },
       "no_notifications_title": "알림 없음",
       "no_notifications": "현재 알림이 없습니다.",
       "toast": {

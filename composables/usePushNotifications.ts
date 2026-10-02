@@ -17,7 +17,7 @@ const busy = ref(false);
 // subscribe() still just returns false, same contract as before.
 const lastError = ref<string | null>(null);
 
-const ERROR_KEY_BASE = "pages.settings.notification_preferences.push.errors";
+const ERROR_KEY_BASE = "pages.settings.notifications.channels.push.errors";
 
 // Every step of push registration can hang forever rather than reject:
 // serviceWorker.ready waits on the worker actually reaching "active" with no

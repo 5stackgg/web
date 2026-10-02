@@ -1664,177 +1664,461 @@
           "done": "Bu cihazdaki ses ayarları sıfırlandı"
         }
       },
-      "notification_preferences": {
-        "title": "Bildirim tercihleri",
-        "description": "5stack'in seni neler hakkında bilgilendireceğini ve bu bildirimlerin nereye geleceğini seç.",
+      "notifications": {
+        "title": "Bildirimler",
+        "description": "5stack'in seni bilgilendirebileceği her şey ve her birinin sana nereden ulaştığı.",
         "save_failed": "Bu tercih kaydedilemedi. Tekrar dene.",
-        "push": {
-          "title": "Anlık bildirimler",
-          "description": "5stack açık olmasa bile bu cihazda bildirim al.",
-          "categories": "Neler gönderilsin",
-          "unsupported": "Bu tarayıcı anlık bildirimleri desteklemiyor.",
-          "install_required": "Bunları açmak için 5stack uygulamasını yükle.",
-          "install": {
-            "description": "Anlık bildirimleri yüklü uygulama teslim eder; bu yüzden açabilmen için uygulamanın cihazında olması gerekir.",
-            "open_app": "Zaten yüklü mü? 5stack'i ana ekranından veya uygulamalarından aç ve anlık bildirimleri oradan aç."
+        "load_failed": "Bildirim ayarların yüklenemedi. Tekrar denemek için sayfayı yenile.",
+        "channels": {
+          "title": "Sana nereden ulaşırlar",
+          "bell": {
+            "title": "Zil",
+            "description": "Merkezde, her zaman açık",
+            "unread": "{count} okunmamış"
           },
-          "denied": "5stack için bildirimler engellenmiş. Bunu açabilmek için tarayıcı veya cihaz ayarlarından izin ver.",
-          "failed": "Anlık bildirimler açılamadı. Tekrar dene.",
-          "errors": {
-            "permission": "Bildirim izni isteği hiç yanıt vermedi. Cihazda Google Play Services eksik veya bozuksa bu olabilir.",
-            "vapid": "Sunucudan anlık bildirim anahtarı alınırken süre doldu.",
-            "service_worker": "Bu cihazın service worker'ının etkinleşmesi beklenirken süre doldu.",
-            "existing": "Mevcut bir bildirim aboneliği kontrol edilirken süre doldu.",
-            "register": "Bu cihazın bildirim servisine kaydolurken süre doldu. Arka plan veya pil kısıtlamaları engelliyor olabilir.",
-            "save": "Bildirim aboneliği sunucuya kaydedilirken süre doldu."
+          "push": {
+            "title": "Anlık bildirim",
+            "caption": "Telefon veya masaüstü uyarıları",
+            "on": "Bu cihazda açık",
+            "off": "Bu cihazda kapalı",
+            "blocked": "Bu cihazda engellendi",
+            "unavailable": "Bu tarayıcıda kullanılamıyor",
+            "needs_install": "Yüklü uygulama gerekiyor",
+            "toggle": "Bu cihazda anlık bildirim",
+            "off_hint": "Bu cihazda anlık bildirimler kapalı. Aşağıdaki anlık bildirim tercihlerin yine de kayıtlı ve anlık bildirimleri açtığın her cihazda geçerli olur.",
+            "unsupported": "Bu tarayıcı anlık bildirimleri desteklemiyor.",
+            "install": {
+              "description": "Anlık bildirimleri yüklü uygulama teslim eder; bu yüzden açabilmen için uygulamanın cihazında olması gerekir.",
+              "open_app": "Zaten yüklü mü? 5stack'i ana ekranından veya uygulamalarından aç ve anlık bildirimleri oradan aç."
+            },
+            "denied": "5stack için bildirimler engellenmiş. Bunu açabilmek için tarayıcı veya cihaz ayarlarından izin ver.",
+            "failed": "Anlık bildirimler açılamadı. Tekrar dene.",
+            "errors": {
+              "permission": "Bildirim izni isteği hiç yanıt vermedi. Cihazda Google Play Services eksik veya bozuksa bu olabilir.",
+              "vapid": "Sunucudan anlık bildirim anahtarı alınırken süre doldu.",
+              "service_worker": "Bu cihazın service worker'ının etkinleşmesi beklenirken süre doldu.",
+              "existing": "Mevcut bir bildirim aboneliği kontrol edilirken süre doldu.",
+              "register": "Bu cihazın bildirim servisine kaydolurken süre doldu. Arka plan veya pil kısıtlamaları engelliyor olabilir.",
+              "save": "Bildirim aboneliği sunucuya kaydedilirken süre doldu."
+            },
+            "enabled_toast": "Anlık bildirimler açıldı",
+            "disabled_toast": "Anlık bildirimler kapatıldı"
           },
-          "enabled_toast": "Anlık bildirimler açıldı",
-          "disabled_toast": "Anlık bildirimler kapatıldı"
+          "tab_flash": {
+            "title": "Tarayıcı sekmesi",
+            "description": "Bu sekme arka plandayken seni bekleyen bir şey olduğunda sekmenin başlığını ve simgesini yanıp söndürür. Bu cihaza kaydedilir.",
+            "caption": "Yalnızca bu tarayıcı",
+            "match_found": {
+              "title": "Maç bulundu",
+              "description": "Bir maç hazır ve kabul etmeni bekliyor."
+            },
+            "admin_call": {
+              "title": "Organizatör görüşmeleri",
+              "description": "Bir maç organizatörü kamera sayfan üzerinden seninle konuşmaya başladığında."
+            },
+            "chat": {
+              "title": "Sohbet mesajları",
+              "description": "Bir konuşmada, lobide veya turnuva odasında yeni bir mesaj. Maçın oyun içi sohbeti dahil değildir."
+            },
+            "bell": {
+              "title": "Bildirimler",
+              "description": "Bildirim ziline yeni bir şey geldiğinde."
+            }
+          },
+          "sounds": {
+            "title": "Sesler",
+            "description": "Sohbet mesajları, maç olayları ve diğer uyarılar için ses çal.",
+            "volume": "Ses düzeyi",
+            "mute": "Sesi kapat",
+            "unmute": "Sesi aç",
+            "kinds": {
+              "chat": {
+                "title": "Sohbet mesajı",
+                "description": "Yeni sohbet mesajları"
+              },
+              "match_found": {
+                "title": "Maç bulundu",
+                "description": "Bir maç oynanmaya hazır"
+              },
+              "tick": {
+                "title": "Tik",
+                "description": "Hazır onayı tiki"
+              },
+              "countdown": {
+                "title": "Geri sayım",
+                "description": "Maç başlangıç geri sayımı"
+              }
+            }
+          }
         },
-        "alerts": {
-          "title": "Bildirim zili",
-          "description": "Bunları uygulamadaki zilden gizle. Geri kalan her şey orada görünmeye devam eder."
-        },
-        "keys": {
-          "matches": {
-            "title": "Maçlar",
-            "description": "Maç durumu değişiklikleri ve içe aktarılan maçlar."
+        "catalog": {
+          "title": "Neler alacaksın",
+          "per_kind": "Türe göre",
+          "follows_group": "Bu grubun anlık bildirim anahtarını izler",
+          "kinds_count": "{count} tür | {count} tür",
+          "staff_only": "Yalnızca ekip",
+          "locked": "Her zaman gösterilir: hesabınla ilgili",
+          "staff_locked": "Ekibe her zaman gösterilir",
+          "push_only": "Yalnızca anlık bildirim, zilde asla görünmez",
+          "rings_in_quiet_hours": "Sessiz saatlerde de çalar",
+          "push_off_by_default": "Anlık bildirim varsayılan olarak kapalı",
+          "in_bell": "{kind}: zil",
+          "push_for": "{kind}: anlık bildirim",
+          "groups": {
+            "more": {
+              "title": "Takımlar, etkinlikler, sezonlar, utility, haberler",
+              "description": "Takım önerileri, etkinlik hatırlatmaları, sezon bitişleri, antrenman davetleri ve yazılar."
+            },
+            "staff": {
+              "title": "Ekip",
+              "description": "Destek talepleri, terk edilen maçlar, ad değişikliği istekleri ve sunucu ile iş durumu."
+            }
           },
-          "match_found": {
-            "title": "Maç bulundu",
-            "description": "Eşleştirme maçını buldu ve kabul etmeni bekliyor. Sessiz saatlerde bile çalar."
+          "categories": {
+            "matches": {
+              "title": "Maçlar",
+              "description": "Maçların: hazır onaylarından ve uyarılardan istatistiklere, kliplere ve sohbete."
+            },
+            "match_found": {
+              "title": "Maç bulundu"
+            },
+            "admin_call": {
+              "title": "Yönetici çağrıları"
+            },
+            "match_chat": {
+              "title": "Maç sohbeti"
+            },
+            "chat": {
+              "title": "Sohbet",
+              "description": "Bir konuşmada, lobide veya turnuva odasında yeni mesajlar."
+            },
+            "tournaments": {
+              "title": "Turnuvalar",
+              "description": "Yeni turnuvalar, hatırlatmalar ve katılım onayı."
+            },
+            "events": {
+              "title": "Etkinlikler"
+            },
+            "seasons": {
+              "title": "Sezonlar"
+            },
+            "scrims": {
+              "title": "Scrimler",
+              "description": "Scrim istekleri, saat değişiklikleri ve uyarılar."
+            },
+            "leagues": {
+              "title": "Ligler",
+              "description": "Lig takvim önerileri ve kadro uyarıları."
+            },
+            "teams": {
+              "title": "Takımlar"
+            },
+            "invites": {
+              "title": "Davetler",
+              "description": "Takım, turnuva ve draft davetleri."
+            },
+            "utility": {
+              "title": "Utility antrenmanı"
+            },
+            "account": {
+              "title": "Hesap",
+              "description": "Ad değişikliklerin, uyarılar, yaptırımlar ve ödüller."
+            },
+            "teammate_bans": {
+              "title": "Banlanan takım arkadaşları",
+              "description": "Son 6 ayda birlikte oynadığın bir oyuncu banlandığında."
+            },
+            "news": {
+              "title": "Haberler"
+            },
+            "staff_moderation": {
+              "title": "Moderasyon"
+            },
+            "staff_infrastructure": {
+              "title": "Altyapı"
+            }
           },
-          "admin_call": {
-            "title": "Yönetici çağrıları",
-            "description": "Bir yönetici maç kameran üzerinden seninle konuşmak istiyor. Sessiz saatlerde bile çalar."
-          },
-          "chat": {
-            "title": "Sohbet",
-            "description": "Bir konuşmada, lobide veya turnuva odasında yeni mesajlar."
-          },
-          "tournaments": {
-            "title": "Turnuvalar",
-            "description": "Yeni turnuvalar ve başlangıç hatırlatmaları."
-          },
-          "scrims": {
-            "title": "Scrimler",
-            "description": "Scrim istekleri, saat değişiklikleri ve uyarılar."
-          },
-          "leagues": {
-            "title": "Ligler",
-            "description": "Lig takvim önerileri ve kadro uyarıları."
-          },
-          "teams": {
-            "title": "Takımlar",
-            "description": "Sık sık birlikte sıraya girdiğin oyuncularla takım kurma önerileri."
-          },
-          "account": {
-            "title": "Hesap",
-            "description": "Ad değişikliklerin, uyarılar, yaptırımlar ve ödüller."
-          },
-          "teammate_bans": {
-            "title": "Banlanan takım arkadaşları",
-            "description": "Son 6 ayda birlikte oynadığın bir oyuncu banlandığında."
-          },
-          "news": {
-            "title": "Haberler",
-            "description": "5stack'te yayımlanan yeni yazılar."
-          },
-          "staff_moderation": {
-            "title": "Moderasyon",
-            "description": "Destek talepleri, terk edilen maçlar ve ad değişikliği istekleri."
-          },
-          "staff_infrastructure": {
-            "title": "Altyapı",
-            "description": "Sunucu, düğüm ve arka plan işlerinin durumu."
-          },
-          "ChatMessage": {
-            "title": "Sohbet mesajları",
-            "description": "Bir konuşmada, lobide veya turnuva odasında yeni bir mesaj."
-          },
-          "MatchImported": {
-            "title": "İçe aktarılan maçlar",
-            "description": "Oynadığın bir Valve maçı içe aktarıldı."
-          },
-          "NewsPublished": {
-            "title": "Haber yazıları",
-            "description": "Yeni bir yazı yayımlandı."
-          },
-          "TournamentReminder": {
-            "title": "Turnuva hatırlatmaları",
-            "description": "Kaydolduğun bir turnuva yakında başlıyor."
-          },
-          "FormTeamSuggestion": {
-            "title": "Takım önerileri",
-            "description": "Bu oyuncularla sık sık oynuyorsun."
-          },
-          "ScrimAlertMatch": {
-            "title": "Scrim uyarıları",
-            "description": "Scrim uyarına uyan bir takım müsait."
-          },
-          "LeagueMatchUnscheduled": {
-            "title": "Tarihi belirsiz lig maçları",
-            "description": "Bir lig eşleşmesinin henüz üzerinde anlaşılmış bir saati yok."
-          },
-          "invites": {
-            "title": "Davetler",
-            "description": "Takım, turnuva ve draft davetleri."
-          },
-          "events": {
-            "title": "Etkinlikler",
-            "description": "Katıldığın etkinlikler için hatırlatmalar."
-          },
-          "seasons": {
-            "title": "Sezonlar",
-            "description": "Bir sezon sona erdiğinde."
-          },
-          "TeamInvite": {
-            "title": "Takım davetleri",
-            "description": "Biri seni takımına davet etti."
-          },
-          "TournamentTeamInvite": {
-            "title": "Turnuva davetleri",
-            "description": "Biri seni bir turnuvada oynamaya davet etti."
-          },
-          "DraftInvite": {
-            "title": "Draft davetleri",
-            "description": "Biri seni bir draft lobisine davet etti."
-          },
-          "MatchStatsReady": {
-            "title": "İstatistikler hazır",
-            "description": "Maç istatistiklerinin işlenmesi tamamlandı."
-          },
-          "ClipReady": {
-            "title": "Klipler hazır",
-            "description": "İstediğin bir klibin işlenmesi tamamlandı."
-          },
-          "AwardGranted": {
-            "title": "Ödüller",
-            "description": "Bir ödül aldın."
-          },
-          "TeammateBanned": {
-            "title": "Banlanan takım arkadaşları",
-            "description": "Son 6 ayda birlikte oynadığın bir oyuncu banlandı."
-          },
-          "EventReminder": {
-            "title": "Etkinlik hatırlatmaları",
-            "description": "Katıldığın bir etkinlik yakında başlıyor."
-          },
-          "SeasonEnded": {
-            "title": "Sezon sona erdi",
-            "description": "Bir sezon sona erdi."
-          },
-          "match_chat": {
-            "title": "Maç sohbeti",
-            "description": "Bir maçın odasındaki yeni mesajlar; oyundan aktarılan sohbet dahil. Varsayılan olarak kapalı — devam eden bir maçta yazılan her satırda tetiklenir."
-          },
-          "MatchChatMessage": {
-            "title": "Maç sohbeti mesajları",
-            "description": "Bir maçın odasında yeni bir mesaj."
-          },
-          "TournamentInvite": {
-            "title": "Turnuva kayıt davetleri",
-            "description": "Bir organizatör seni bir turnuvaya kaydolman için davet etti."
+          "kinds": {
+            "MatchStatusChange": {
+              "title": "Maç uyarıları",
+              "description": "Organize ettiğin bir maç sunucu bekliyor ya da haritası duraklatıldı.",
+              "example": "Maç Uyarısı: Harita Duraklatıldı"
+            },
+            "MatchImported": {
+              "title": "İçe aktarılan maçlar",
+              "description": "Oynadığın bir Valve maçı içe aktarıldı.",
+              "example": "Ancient'taki Premier maçın içe aktarıldı"
+            },
+            "MatchStatsReady": {
+              "title": "İstatistikler hazır",
+              "description": "Maç istatistiklerinin işlenmesi tamamlandı.",
+              "example": "Iron Wolves vs Night Owls istatistikleri hazır"
+            },
+            "ClipReady": {
+              "title": "Klipler hazır",
+              "description": "İstediğin bir klibin işlenmesi tamamlandı.",
+              "example": "Mirage'daki 4K klibin hazır"
+            },
+            "MatchFound": {
+              "title": "Maç bulundu",
+              "description": "Eşleştirme maçını buldu ve kabul etmeni bekliyor.",
+              "example": "Competitive maçın hazır, 30 sn içinde kabul et"
+            },
+            "AdminCall": {
+              "title": "Yönetici çağrıları",
+              "description": "Bir yönetici maç kameran üzerinden seninle konuşmak istiyor.",
+              "example": "Bir yönetici Iron Wolves vs Night Owls hakkında seninle konuşmak istiyor"
+            },
+            "MatchChatMessage": {
+              "title": "Maç sohbeti mesajları",
+              "description": "Bir maçın odasında yeni bir mesaj; oyundan aktarılan sohbet dahil.",
+              "example": "kairo: rotate B"
+            },
+            "ChatMessage": {
+              "title": "Sohbet mesajları",
+              "description": "Bir konuşmada, lobide veya turnuva odasında yeni bir mesaj.",
+              "example": "Juno: gg"
+            },
+            "TournamentCreated": {
+              "title": "Yeni turnuvalar",
+              "description": "Bir turnuvanın kayıtları açıldı.",
+              "example": "Winter Open kayıtlara açıldı"
+            },
+            "TournamentReminder": {
+              "title": "Turnuva hatırlatmaları",
+              "description": "Kaydolduğun bir turnuva yakında başlıyor.",
+              "example": "Autumn Cup 30 dakika içinde başlıyor"
+            },
+            "TournamentCheckInOpen": {
+              "title": "Katılım onayı açık",
+              "description": "Kaydolduğun bir turnuvanın katılım onayı açıldı.",
+              "example": "Autumn Cup için katılımını onayla"
+            },
+            "TournamentCheckInClosing": {
+              "title": "Katılım onayı kapanıyor",
+              "description": "Turnuvanın katılım onayı yakında kapanıyor.",
+              "example": "Autumn Cup katılım onayı 10 dakika içinde kapanıyor"
+            },
+            "TournamentCheckInMissed": {
+              "title": "Kaçırılan katılım onayı",
+              "description": "Takımın katılım onayını kaçırdı ve eşleşme tablosuna yerleştirilmedi.",
+              "example": "Iron Wolves, Autumn Cup katılım onayını kaçırdı"
+            },
+            "TournamentPartySignup": {
+              "title": "Serbest oyuncu parti kayıtları",
+              "description": "Lobin bir turnuvaya serbest oyuncu partisi olarak kaydedildi.",
+              "example": "Lobin Autumn Cup'a kaydedildi"
+            },
+            "EventReminder": {
+              "title": "Etkinlik hatırlatmaları",
+              "description": "Katıldığın bir etkinlik yakında başlıyor.",
+              "example": "LAN Night 1 saat içinde başlıyor"
+            },
+            "SeasonEnded": {
+              "title": "Sezon sona erdi",
+              "description": "Bir sezon sona erdi.",
+              "example": "4. sezon sona erdi"
+            },
+            "ScrimRequestReceived": {
+              "title": "Scrim istekleri",
+              "description": "Bir takım seninkiyle scrim yapmak istiyor.",
+              "example": "Night Owls takımınla scrim yapmak istiyor"
+            },
+            "ScrimRequestCountered": {
+              "title": "Scrim karşı teklifleri",
+              "description": "Bir takım farklı bir scrim saati önerdi.",
+              "example": "Night Owls bunun yerine Cumartesi 20:00'yi önerdi"
+            },
+            "ScrimRequestAccepted": {
+              "title": "Kabul edilen scrim istekleri",
+              "description": "Bir takım scrim isteğini kabul etti.",
+              "example": "Night Owls scrim isteğini kabul etti"
+            },
+            "ScrimRequestDeclined": {
+              "title": "Reddedilen scrim istekleri",
+              "description": "Bir takım scrim isteğini reddetti.",
+              "example": "Night Owls scrim isteğini reddetti"
+            },
+            "ScrimRequestExpired": {
+              "title": "Süresi dolan scrim istekleri",
+              "description": "Bir scrim isteğinin süresi yanıt alınmadan doldu.",
+              "example": "Night Owls'a gönderdiğin scrim isteğinin süresi doldu"
+            },
+            "ScrimMatchScheduled": {
+              "title": "Planlanan scrimler",
+              "description": "Takımınla başka bir takım arasında bir scrim planlandı.",
+              "example": "Night Owls ile scrim'in planlandı"
+            },
+            "ScrimMatchCanceled": {
+              "title": "İptal edilen scrimler",
+              "description": "Planlanan bir scrim takımlardan biri tarafından iptal edildi.",
+              "example": "Night Owls ile scrim'in iptal edildi"
+            },
+            "ScrimTimeChanged": {
+              "title": "Scrim saati değişiklikleri",
+              "description": "Planlanan bir scrim'in saati değişti.",
+              "example": "Night Owls ile scrim'in 21:00'e alındı"
+            },
+            "ScrimAlertMatch": {
+              "title": "Scrim uyarıları",
+              "description": "Scrim uyarına uyan bir takım müsait.",
+              "example": "Scrim uyarına uyan bir takım scrim için müsait"
+            },
+            "LeagueProposalReceived": {
+              "title": "Lig saati önerileri",
+              "description": "Rakibin lig maçın için bir saat önerdi.",
+              "example": "Night Owls 3. hafta için Cumartesi 20:00'yi önerdi"
+            },
+            "LeagueProposalAccepted": {
+              "title": "Kabul edilen lig saatleri",
+              "description": "Önerdiğin lig maçı saati kabul edildi.",
+              "example": "3. hafta için önerdiğin saat kabul edildi"
+            },
+            "LeagueProposalDeclined": {
+              "title": "Reddedilen lig saatleri",
+              "description": "Önerdiğin lig maçı saati reddedildi.",
+              "example": "3. hafta için önerdiğin saat reddedildi"
+            },
+            "LeagueMatchUnscheduled": {
+              "title": "Tarihi belirsiz lig maçları",
+              "description": "Bir lig eşleşmesinin henüz üzerinde anlaşılmış bir saati yok.",
+              "example": "3. hafta için henüz anlaşılmış bir saat yok"
+            },
+            "LeagueRegistrationDecision": {
+              "title": "Lig kaydı",
+              "description": "Takımının lig kaydı incelendi.",
+              "example": "Iron Wolves 4. sezona kabul edildi"
+            },
+            "LeagueRosterUndersized": {
+              "title": "Lig kadro uyarıları",
+              "description": "Lig takımında artık yeterli oyuncu yok.",
+              "example": "Iron Wolves'da artık gereken 5 oyuncudan 4'ü var"
+            },
+            "FormTeamSuggestion": {
+              "title": "Takım önerileri",
+              "description": "Bu oyuncularla sık sık oynuyorsun.",
+              "example": "kairo ve Juno ile takım kurmak ister misin?"
+            },
+            "TeamInvite": {
+              "title": "Takım davetleri",
+              "description": "Biri seni takımına davet etti.",
+              "example": "sable seni Night Owls'a davet etti"
+            },
+            "TournamentTeamInvite": {
+              "title": "Turnuva davetleri",
+              "description": "Biri seni bir turnuvada oynamaya davet etti.",
+              "example": "kairo seni Autumn Cup'ta oynamaya davet etti"
+            },
+            "TournamentInvite": {
+              "title": "Turnuva kayıt davetleri",
+              "description": "Bir organizatör seni bir turnuvaya kaydolman için davet etti.",
+              "example": "Winter Open'a kaydol"
+            },
+            "DraftInvite": {
+              "title": "Draft davetleri",
+              "description": "Biri seni bir draft lobisine davet etti.",
+              "example": "Pyre seni bir drafta davet etti"
+            },
+            "UtilityPracticeInvite": {
+              "title": "Antrenman davetleri",
+              "description": "Biri seni birlikte utility çalışmaya davet etti.",
+              "example": "kairo seni Mirage'da utility çalışmaya davet etti"
+            },
+            "UtilityPracticeReady": {
+              "title": "Antrenman sunucusu hazır",
+              "description": "Utility antrenman sunucun açıldı.",
+              "example": "Mirage'daki antrenman sunucun açıldı"
+            },
+            "NameChangeApproved": {
+              "title": "Ad değişikliği onaylandı",
+              "description": "Bir yönetici yeni adını onayladı.",
+              "example": "kairo_ olarak ad değişikliğin onaylandı"
+            },
+            "NameChangeDenied": {
+              "title": "Ad değişikliği reddedildi",
+              "description": "Bir yönetici yeni adını reddetti.",
+              "example": "kairo_ olarak ad değişikliğin reddedildi"
+            },
+            "PlayerSanctioned": {
+              "title": "Banlar",
+              "description": "Platformdan banlandın.",
+              "example": "Banlandın"
+            },
+            "PlayerWarning": {
+              "title": "Uyarılar",
+              "description": "Bir moderatör sana uyarı verdi.",
+              "example": "Bir uyarı aldın"
+            },
+            "AwardGranted": {
+              "title": "Ödüller",
+              "description": "Bir ödül aldın.",
+              "example": "Autumn Cup'ın MVP'si oldun"
+            },
+            "TeammateBanned": {
+              "title": "Banlanan takım arkadaşları",
+              "description": "Son 6 ayda birlikte oynadığın bir oyuncu banlandı.",
+              "example": "Yakın zamanda birlikte oynadığın dusk banlandı"
+            },
+            "NewsPublished": {
+              "title": "Haber yazıları",
+              "description": "Yeni bir yazı yayımlandı.",
+              "example": "Yama notları: Rush modu"
+            },
+            "MatchSupport": {
+              "title": "Maç yardımı",
+              "description": "Bir maç organizatör veya yönetici çağırdı.",
+              "example": "Maç Yardımı Gerekiyor"
+            },
+            "MatchAbandoned": {
+              "title": "Terk edilen maçlar",
+              "description": "Bir oyuncu bir maçı terk etti.",
+              "example": "kairo, Iron Wolves vs Night Owls maçını terk etti"
+            },
+            "NameChangeRequest": {
+              "title": "Ad değişikliği istekleri",
+              "description": "Bir oyuncu adını değiştirmek istedi.",
+              "example": "kairo adını kairo_ olarak değiştirmek istedi"
+            },
+            "GameUpdate": {
+              "title": "Oyun güncellemeleri",
+              "description": "Bir CS2 güncellemesi algılandı ya da yüklenemedi.",
+              "example": "CS2 Güncellemesi Algılandı"
+            },
+            "GameNodeStatus": {
+              "title": "Oyun sunucusu düğümleri",
+              "description": "Bir düğüm ya da bölge çevrimdışı oldu veya geri geldi ya da bir düğümün disk alanı azaldı.",
+              "example": "Oyun Sunucusu Düğümü Çevrimdışı"
+            },
+            "DedicatedServerStatus": {
+              "title": "Özel sunucular",
+              "description": "Bir özel sunucu çevrimdışı oldu ya da eklentisi güncel değil.",
+              "example": "Özel Sunucu Çevrimdışı"
+            },
+            "DedicatedServerRconStatus": {
+              "title": "RCON hataları",
+              "description": "Bir özel sunucu RCON'a yanıt vermeyi bıraktı.",
+              "example": "Özel Sunucu RCON Hatası"
+            },
+            "StorageScan": {
+              "title": "Depolama taramaları",
+              "description": "Bir depolama taraması sahipsiz yüklemeler buldu.",
+              "example": "Depolama taraması 12 sahipsiz yükleme buldu"
+            },
+            "EloRecompute": {
+              "title": "ELO yeniden hesaplamaları",
+              "description": "Bir oyuncu ELO'su yeniden hesaplaması ya da sezon yeniden oluşturması tamamlandı.",
+              "example": "ELO yeniden hesaplaması tamamlandı"
+            },
+            "PlayerReindex": {
+              "title": "Arama yeniden indekslemeleri",
+              "description": "Bir oyuncu araması yeniden indekslemesi tamamlandı.",
+              "example": "Oyuncu araması yeniden indekslemesi tamamlandı"
+            },
+            "UtilityDriftScanFinished": {
+              "title": "Utility kayma taramaları",
+              "description": "Bir utility kayma taraması tamamlandı.",
+              "example": "Utility kayma taraması tamamlandı"
+            }
           }
         },
         "quiet_hours": {
@@ -1844,56 +2128,6 @@
           "to": "Bitiş",
           "reset": "Sıfırla",
           "incomplete": "Sessiz saatleri kaydetmek için hem başlangıç hem bitiş saatini gir."
-        },
-        "tab_flash": {
-          "title": "Tarayıcı sekmesi",
-          "description": "Bu sekme arka plandayken seni bekleyen bir şey olduğunda sekmenin başlığını ve simgesini yanıp söndürür. Bu cihaza kaydedilir.",
-          "match_found": {
-            "title": "Maç bulundu",
-            "description": "Bir maç hazır ve kabul etmeni bekliyor."
-          },
-          "admin_call": {
-            "title": "Organizatör görüşmeleri",
-            "description": "Bir maç organizatörü kamera sayfan üzerinden seninle konuşmaya başladığında."
-          },
-          "chat": {
-            "title": "Sohbet mesajları",
-            "description": "Bir konuşmada, lobide veya turnuva odasında yeni bir mesaj. Maçın oyun içi sohbeti dahil değildir."
-          },
-          "bell": {
-            "title": "Bildirimler",
-            "description": "Bildirim ziline yeni bir şey geldiğinde."
-          }
-        }
-      },
-      "notifications": {
-        "title": "Ses ayarları",
-        "description": "5Stack'in sohbet, maç ve diğer olaylar için çaldığı uyarı seslerini önizle ve ayarla.",
-        "enabled": {
-          "title": "Bildirim sesleri",
-          "description": "Sohbet mesajları, maç olayları ve diğer uyarılar için ses çal."
-        },
-        "volume": {
-          "title": "Ses düzeyi"
-        },
-        "preview": "Sesleri önizle",
-        "sounds": {
-          "chat": {
-            "title": "Sohbet mesajı",
-            "description": "Yeni sohbet mesajları"
-          },
-          "match_found": {
-            "title": "Maç bulundu",
-            "description": "Bir maç oynanmaya hazır"
-          },
-          "tick": {
-            "title": "Tik",
-            "description": "Hazır onayı tiki"
-          },
-          "countdown": {
-            "title": "Geri sayım",
-            "description": "Maç başlangıç geri sayımı"
-          }
         }
       },
       "application": {
@@ -5504,6 +5738,13 @@
       "dismiss_all": "Tümünü kapat",
       "delete_all_read": "Okunanların tümünü sil",
       "review_orphaned_uploads": "Sahipsiz yüklemeleri incele",
+      "settings": "Bildirim ayarları",
+      "kind_menu": {
+        "label": "Diğer işlemler",
+        "turn_off": "Kapat: {kind}",
+        "turned_off": "{kind} kapatıldı",
+        "turned_off_hint": "Bunları Bildirimler bölümünden tekrar açabilirsin."
+      },
       "no_notifications_title": "Bildirim yok",
       "no_notifications": "Şu an bildirim yok.",
       "toast": {

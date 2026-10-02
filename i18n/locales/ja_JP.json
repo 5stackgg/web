@@ -1664,177 +1664,461 @@
           "done": "この端末の音声設定をリセットしました"
         }
       },
-      "notification_preferences": {
-        "title": "通知設定",
-        "description": "5stackが何を知らせるか、その通知をどこで受け取るかを選びます。",
+      "notifications": {
+        "title": "通知",
+        "description": "5stack から届くすべての通知と、それぞれの届き先です。",
         "save_failed": "設定を保存できませんでした。もう一度お試しください。",
-        "push": {
-          "title": "プッシュ通知",
-          "description": "5stackを開いていないときでも、この端末で通知を受け取ります。",
-          "categories": "プッシュする内容",
-          "unsupported": "このブラウザはプッシュ通知に対応していません。",
-          "install_required": "有効にするには5stackアプリをインストールしてください。",
-          "install": {
-            "description": "プッシュ通知はインストール済みアプリが配信するため、有効にする前に端末にアプリが必要です。",
-            "open_app": "すでにインストール済みですか？ ホーム画面またはアプリ一覧から5stackを開き、そこでプッシュ通知を有効にしてください。"
+        "load_failed": "通知設定を読み込めませんでした。ページを再読み込みしてもう一度お試しください。",
+        "channels": {
+          "title": "通知の届き先",
+          "bell": {
+            "title": "通知ベル",
+            "description": "ハブ内、常にオン",
+            "unread": "未読 {count} 件"
           },
-          "denied": "5stackの通知がブロックされています。有効にするには、ブラウザまたは端末の設定で許可してください。",
-          "failed": "プッシュ通知を有効にできませんでした。もう一度お試しください。",
-          "errors": {
-            "permission": "通知の許可ダイアログから応答がありませんでした。端末のGoogle Play Servicesが欠落または破損している場合に起こることがあります。",
-            "vapid": "サーバーからプッシュキーを取得する際にタイムアウトしました。",
-            "service_worker": "この端末のService Workerが有効になるのを待つ間にタイムアウトしました。",
-            "existing": "既存のプッシュ購読を確認する際にタイムアウトしました。",
-            "register": "この端末のプッシュサービスへの登録中にタイムアウトしました。バックグラウンドやバッテリーの制限が妨げている可能性があります。",
-            "save": "プッシュ購読をサーバーに保存する際にタイムアウトしました。"
+          "push": {
+            "title": "プッシュ",
+            "caption": "スマホやPCへの通知",
+            "on": "この端末でオン",
+            "off": "この端末でオフ",
+            "blocked": "この端末でブロック中",
+            "unavailable": "このブラウザでは利用できません",
+            "needs_install": "インストール済みアプリが必要です",
+            "toggle": "この端末でのプッシュ",
+            "off_hint": "この端末ではプッシュがオフです。下のプッシュ設定は保存されたままで、プッシュをオンにしたどの端末にも適用されます。",
+            "unsupported": "このブラウザはプッシュ通知に対応していません。",
+            "install": {
+              "description": "プッシュ通知はインストール済みアプリが配信するため、有効にする前に端末にアプリが必要です。",
+              "open_app": "すでにインストール済みですか？ ホーム画面またはアプリ一覧から5stackを開き、そこでプッシュ通知を有効にしてください。"
+            },
+            "denied": "5stackの通知がブロックされています。有効にするには、ブラウザまたは端末の設定で許可してください。",
+            "failed": "プッシュ通知を有効にできませんでした。もう一度お試しください。",
+            "errors": {
+              "permission": "通知の許可ダイアログから応答がありませんでした。端末のGoogle Play Servicesが欠落または破損している場合に起こることがあります。",
+              "vapid": "サーバーからプッシュキーを取得する際にタイムアウトしました。",
+              "service_worker": "この端末のService Workerが有効になるのを待つ間にタイムアウトしました。",
+              "existing": "既存のプッシュ購読を確認する際にタイムアウトしました。",
+              "register": "この端末のプッシュサービスへの登録中にタイムアウトしました。バックグラウンドやバッテリーの制限が妨げている可能性があります。",
+              "save": "プッシュ購読をサーバーに保存する際にタイムアウトしました。"
+            },
+            "enabled_toast": "プッシュ通知を有効にしました",
+            "disabled_toast": "プッシュ通知を無効にしました"
           },
-          "enabled_toast": "プッシュ通知を有効にしました",
-          "disabled_toast": "プッシュ通知を無効にしました"
+          "tab_flash": {
+            "title": "ブラウザタブ",
+            "description": "このタブがバックグラウンドにあるときに対応が必要なことが起きると、タブのタイトルとアイコンを点滅させます。この端末に保存されます。",
+            "caption": "このブラウザのみ",
+            "match_found": {
+              "title": "マッチが見つかりました",
+              "description": "マッチの準備ができ、あなたの承認を待っています。"
+            },
+            "admin_call": {
+              "title": "主催者からの通話",
+              "description": "試合の主催者がカメラページであなたに話しかけ始めたとき。"
+            },
+            "chat": {
+              "title": "チャットメッセージ",
+              "description": "会話、ロビー、トーナメントルームの新着メッセージ。試合中のゲーム内チャットは対象外です。"
+            },
+            "bell": {
+              "title": "通知",
+              "description": "通知ベルに新しいものが届いたとき。"
+            }
+          },
+          "sounds": {
+            "title": "サウンド",
+            "description": "チャットメッセージ、試合イベント、その他の通知で音を鳴らします。",
+            "volume": "音量",
+            "mute": "ミュート",
+            "unmute": "ミュート解除",
+            "kinds": {
+              "chat": {
+                "title": "チャットメッセージ",
+                "description": "新着チャットメッセージ"
+              },
+              "match_found": {
+                "title": "マッチ成立",
+                "description": "試合の準備が整いました"
+              },
+              "tick": {
+                "title": "ティック",
+                "description": "レディ確認のティック音"
+              },
+              "countdown": {
+                "title": "カウントダウン",
+                "description": "試合開始のカウントダウン"
+              }
+            }
+          }
         },
-        "alerts": {
-          "title": "通知ベル",
-          "description": "アプリ内のベルからこれらを非表示にします。それ以外は引き続き表示されます。"
-        },
-        "keys": {
-          "matches": {
-            "title": "試合",
-            "description": "試合状況の変化とインポートされた試合。"
+        "catalog": {
+          "title": "受け取る通知",
+          "per_kind": "種類ごと",
+          "follows_group": "このグループのプッシュ設定に従います",
+          "kinds_count": "{count} 種類 | {count} 種類",
+          "staff_only": "スタッフのみ",
+          "locked": "常に表示：アカウントに関する通知です",
+          "staff_locked": "スタッフには常に表示",
+          "push_only": "プッシュのみ、ベルには表示されません",
+          "rings_in_quiet_hours": "サイレント時間中も鳴ります",
+          "push_off_by_default": "プッシュは既定でオフ",
+          "in_bell": "{kind}をベルに表示",
+          "push_for": "{kind}のプッシュ",
+          "groups": {
+            "more": {
+              "title": "チーム、イベント、シーズン、ユーティリティ、ニュース",
+              "description": "チームの提案、イベントのリマインダー、シーズン終了、練習への招待、記事。"
+            },
+            "staff": {
+              "title": "スタッフ",
+              "description": "サポート依頼、試合の放棄、名前変更の申請、サーバーとジョブの状態。"
+            }
           },
-          "match_found": {
-            "title": "マッチ成立",
-            "description": "マッチメイキングで試合が見つかり、承認を待っています。サイレント時間中も鳴ります。"
+          "categories": {
+            "matches": {
+              "title": "試合",
+              "description": "あなたの試合：レディチェックやアラートから、統計、クリップ、チャットまで。"
+            },
+            "match_found": {
+              "title": "マッチ成立"
+            },
+            "admin_call": {
+              "title": "管理者からの呼び出し"
+            },
+            "match_chat": {
+              "title": "試合チャット"
+            },
+            "chat": {
+              "title": "チャット",
+              "description": "会話、ロビー、トーナメントルームの新着メッセージ。"
+            },
+            "tournaments": {
+              "title": "トーナメント",
+              "description": "新しいトーナメント、リマインダー、チェックイン。"
+            },
+            "events": {
+              "title": "イベント"
+            },
+            "seasons": {
+              "title": "シーズン"
+            },
+            "scrims": {
+              "title": "スクリム",
+              "description": "スクリムの申請、日程変更、通知。"
+            },
+            "leagues": {
+              "title": "リーグ",
+              "description": "リーグ日程の提案とロースターの警告。"
+            },
+            "teams": {
+              "title": "チーム"
+            },
+            "invites": {
+              "title": "招待",
+              "description": "チーム、トーナメント、ドラフトの招待。"
+            },
+            "utility": {
+              "title": "ユーティリティ練習"
+            },
+            "account": {
+              "title": "アカウント",
+              "description": "名前の変更、警告、処分、アワード。"
+            },
+            "teammate_bans": {
+              "title": "Ban されたチームメイト",
+              "description": "過去 6 か月以内に一緒にプレイしたプレイヤーが Ban されたとき。"
+            },
+            "news": {
+              "title": "ニュース"
+            },
+            "staff_moderation": {
+              "title": "モデレーション"
+            },
+            "staff_infrastructure": {
+              "title": "インフラ"
+            }
           },
-          "admin_call": {
-            "title": "管理者からの呼び出し",
-            "description": "管理者が試合用カメラを通じてあなたと話したがっています。サイレント時間中も鳴ります。"
-          },
-          "chat": {
-            "title": "チャット",
-            "description": "会話、ロビー、トーナメントルームの新着メッセージ。"
-          },
-          "tournaments": {
-            "title": "トーナメント",
-            "description": "新しいトーナメントと開始のリマインダー。"
-          },
-          "scrims": {
-            "title": "スクリム",
-            "description": "スクリムの申請、日程変更、通知。"
-          },
-          "leagues": {
-            "title": "リーグ",
-            "description": "リーグ日程の提案とロースターの警告。"
-          },
-          "teams": {
-            "title": "チーム",
-            "description": "よく一緒にキューに入るプレイヤーとのチーム結成の提案。"
-          },
-          "account": {
-            "title": "アカウント",
-            "description": "名前の変更、警告、処分、アワード。"
-          },
-          "teammate_bans": {
-            "title": "Ban されたチームメイト",
-            "description": "過去 6 か月以内に一緒にプレイしたプレイヤーが Ban されたとき。"
-          },
-          "news": {
-            "title": "ニュース",
-            "description": "5stackで公開された新しい記事。"
-          },
-          "staff_moderation": {
-            "title": "モデレーション",
-            "description": "サポート依頼、試合の放棄、名前変更の申請。"
-          },
-          "staff_infrastructure": {
-            "title": "インフラ",
-            "description": "サーバー、ノード、バックグラウンドジョブの状態。"
-          },
-          "ChatMessage": {
-            "title": "チャットメッセージ",
-            "description": "会話、ロビー、トーナメントルームの新着メッセージ。"
-          },
-          "MatchImported": {
-            "title": "インポートされた試合",
-            "description": "あなたがプレイしたValveの試合がインポートされました。"
-          },
-          "NewsPublished": {
-            "title": "ニュース記事",
-            "description": "新しい記事が公開されました。"
-          },
-          "TournamentReminder": {
-            "title": "トーナメントのリマインダー",
-            "description": "登録したトーナメントがまもなく始まります。"
-          },
-          "FormTeamSuggestion": {
-            "title": "チームの提案",
-            "description": "これらのプレイヤーとよく一緒にプレイしています。"
-          },
-          "ScrimAlertMatch": {
-            "title": "スクリム通知",
-            "description": "スクリム通知の条件に合うチームが見つかりました。"
-          },
-          "LeagueMatchUnscheduled": {
-            "title": "日程未定のリーグ戦",
-            "description": "リーグの対戦がまだ日時未定です。"
-          },
-          "invites": {
-            "title": "招待",
-            "description": "チーム、トーナメント、ドラフトの招待。"
-          },
-          "events": {
-            "title": "イベント",
-            "description": "参加予定のイベントのリマインダー。"
-          },
-          "seasons": {
-            "title": "シーズン",
-            "description": "シーズンが終了したとき。"
-          },
-          "TeamInvite": {
-            "title": "チームへの招待",
-            "description": "チームに招待されました。"
-          },
-          "TournamentTeamInvite": {
-            "title": "トーナメントへの招待",
-            "description": "トーナメントでのプレイに招待されました。"
-          },
-          "DraftInvite": {
-            "title": "ドラフトへの招待",
-            "description": "ドラフトロビーに招待されました。"
-          },
-          "MatchStatsReady": {
-            "title": "統計の準備完了",
-            "description": "試合統計の処理が完了しました。"
-          },
-          "ClipReady": {
-            "title": "クリップの準備完了",
-            "description": "依頼したクリップのレンダリングが完了しました。"
-          },
-          "AwardGranted": {
-            "title": "アワード",
-            "description": "アワードを獲得しました。"
-          },
-          "TeammateBanned": {
-            "title": "Ban されたチームメイト",
-            "description": "過去 6 か月以内に一緒にプレイしたプレイヤーが Ban されました。"
-          },
-          "EventReminder": {
-            "title": "イベントのリマインダー",
-            "description": "参加予定のイベントがまもなく始まります。"
-          },
-          "SeasonEnded": {
-            "title": "シーズン終了",
-            "description": "シーズンが終了しました。"
-          },
-          "match_chat": {
-            "title": "試合チャット",
-            "description": "試合ルームの新着メッセージ（ゲームから中継されたチャットを含む）。既定ではオフです。ライブ中の試合で入力された行ごとに発生します。"
-          },
-          "MatchChatMessage": {
-            "title": "試合チャットのメッセージ",
-            "description": "試合ルームの新着メッセージ。"
-          },
-          "TournamentInvite": {
-            "title": "トーナメント参加登録への招待",
-            "description": "主催者からトーナメントへの参加登録に招待されました。"
+          "kinds": {
+            "MatchStatusChange": {
+              "title": "試合アラート",
+              "description": "あなたが主催する試合がサーバー待ち、またはマップが一時停止中です。",
+              "example": "試合アラート：マップ一時停止"
+            },
+            "MatchImported": {
+              "title": "インポートされた試合",
+              "description": "あなたがプレイしたValveの試合がインポートされました。",
+              "example": "Ancient での Premier の試合がインポートされました"
+            },
+            "MatchStatsReady": {
+              "title": "統計の準備完了",
+              "description": "試合統計の処理が完了しました。",
+              "example": "Iron Wolves vs Night Owls の統計が準備できました"
+            },
+            "ClipReady": {
+              "title": "クリップの準備完了",
+              "description": "依頼したクリップのレンダリングが完了しました。",
+              "example": "Mirage での 4K の準備ができました"
+            },
+            "MatchFound": {
+              "title": "マッチ成立",
+              "description": "マッチメイキングで試合が見つかり、承認を待っています。",
+              "example": "Competitive の試合の準備ができました。30秒以内に承認してください"
+            },
+            "AdminCall": {
+              "title": "管理者からの呼び出し",
+              "description": "管理者が試合用カメラを通じてあなたと話したがっています。",
+              "example": "管理者が Iron Wolves vs Night Owls についてあなたと話したがっています"
+            },
+            "MatchChatMessage": {
+              "title": "試合チャットのメッセージ",
+              "description": "試合ルームの新着メッセージ（ゲームから中継されたチャットを含む）。",
+              "example": "kairo: rotate B"
+            },
+            "ChatMessage": {
+              "title": "チャットメッセージ",
+              "description": "会話、ロビー、トーナメントルームの新着メッセージ。",
+              "example": "Juno: gg"
+            },
+            "TournamentCreated": {
+              "title": "新しいトーナメント",
+              "description": "トーナメントの参加登録が始まりました。",
+              "example": "Winter Open の参加登録を受付中です"
+            },
+            "TournamentReminder": {
+              "title": "トーナメントのリマインダー",
+              "description": "登録したトーナメントがまもなく始まります。",
+              "example": "Autumn Cup は30分後に始まります"
+            },
+            "TournamentCheckInOpen": {
+              "title": "チェックイン開始",
+              "description": "登録したトーナメントのチェックインが始まりました。",
+              "example": "Autumn Cup にチェックインしてください"
+            },
+            "TournamentCheckInClosing": {
+              "title": "チェックイン締め切り間近",
+              "description": "トーナメントのチェックインがまもなく締め切られます。",
+              "example": "Autumn Cup のチェックインは10分後に締め切られます"
+            },
+            "TournamentCheckInMissed": {
+              "title": "チェックイン未完了",
+              "description": "チームがチェックインしなかったため、ブラケットに入りませんでした。",
+              "example": "Iron Wolves が Autumn Cup のチェックインを逃しました"
+            },
+            "TournamentPartySignup": {
+              "title": "フリーエージェントパーティーの登録",
+              "description": "あなたのロビーがフリーエージェントパーティーとしてトーナメントに登録されました。",
+              "example": "あなたのロビーが Autumn Cup に登録されました"
+            },
+            "EventReminder": {
+              "title": "イベントのリマインダー",
+              "description": "参加予定のイベントがまもなく始まります。",
+              "example": "LAN Night は1時間後に始まります"
+            },
+            "SeasonEnded": {
+              "title": "シーズン終了",
+              "description": "シーズンが終了しました。",
+              "example": "シーズン4が終了しました"
+            },
+            "ScrimRequestReceived": {
+              "title": "スクリム申請",
+              "description": "あるチームがあなたのチームとのスクリムを希望しています。",
+              "example": "Night Owls があなたのチームとのスクリムを希望しています"
+            },
+            "ScrimRequestCountered": {
+              "title": "スクリムの再提案",
+              "description": "あるチームが別のスクリム日時を提案しました。",
+              "example": "Night Owls が代わりに土曜 20:00 を提案しました"
+            },
+            "ScrimRequestAccepted": {
+              "title": "承認されたスクリム申請",
+              "description": "あるチームがあなたのスクリム申請を承認しました。",
+              "example": "Night Owls がスクリムを承認しました"
+            },
+            "ScrimRequestDeclined": {
+              "title": "断られたスクリム申請",
+              "description": "あるチームがあなたのスクリム申請を断りました。",
+              "example": "Night Owls がスクリムを断りました"
+            },
+            "ScrimRequestExpired": {
+              "title": "期限切れのスクリム申請",
+              "description": "スクリム申請が応答のないまま期限切れになりました。",
+              "example": "Night Owls へのスクリム申請が期限切れになりました"
+            },
+            "ScrimMatchScheduled": {
+              "title": "予定されたスクリム",
+              "description": "あなたのチームと他チームのスクリムが予定されました。",
+              "example": "Night Owls とのスクリムが予定されました"
+            },
+            "ScrimMatchCanceled": {
+              "title": "キャンセルされたスクリム",
+              "description": "予定されていたスクリムがいずれかのチームによってキャンセルされました。",
+              "example": "Night Owls とのスクリムがキャンセルされました"
+            },
+            "ScrimTimeChanged": {
+              "title": "スクリムの時間変更",
+              "description": "予定されたスクリムの時間が変更されました。",
+              "example": "Night Owls とのスクリムが 21:00 に変更されました"
+            },
+            "ScrimAlertMatch": {
+              "title": "スクリム通知",
+              "description": "スクリム通知の条件に合うチームが見つかりました。",
+              "example": "スクリム通知の条件に合うチームがスクリムを募集しています"
+            },
+            "LeagueProposalReceived": {
+              "title": "リーグ日時の提案",
+              "description": "対戦相手がリーグ戦の日時を提案しました。",
+              "example": "Night Owls が第3週の日時として土曜 20:00 を提案しました"
+            },
+            "LeagueProposalAccepted": {
+              "title": "承認されたリーグ日時",
+              "description": "あなたが提案したリーグ戦の日時が承認されました。",
+              "example": "第3週に提案した日時が承認されました"
+            },
+            "LeagueProposalDeclined": {
+              "title": "断られたリーグ日時",
+              "description": "あなたが提案したリーグ戦の日時が断られました。",
+              "example": "第3週に提案した日時が断られました"
+            },
+            "LeagueMatchUnscheduled": {
+              "title": "日程未定のリーグ戦",
+              "description": "リーグの対戦がまだ日時未定です。",
+              "example": "第3週の日時はまだ決まっていません"
+            },
+            "LeagueRegistrationDecision": {
+              "title": "リーグ登録",
+              "description": "チームのリーグ登録が審査されました。",
+              "example": "Iron Wolves のシーズン4への参加が承認されました"
+            },
+            "LeagueRosterUndersized": {
+              "title": "リーグのロースター警告",
+              "description": "リーグチームのプレイヤーが足りなくなりました。",
+              "example": "Iron Wolves のプレイヤーが必要な5人中4人になりました"
+            },
+            "FormTeamSuggestion": {
+              "title": "チームの提案",
+              "description": "これらのプレイヤーとよく一緒にプレイしています。",
+              "example": "kairo と Juno でチームを組みませんか？"
+            },
+            "TeamInvite": {
+              "title": "チームへの招待",
+              "description": "チームに招待されました。",
+              "example": "sable が Night Owls にあなたを招待しました"
+            },
+            "TournamentTeamInvite": {
+              "title": "トーナメントへの招待",
+              "description": "トーナメントでのプレイに招待されました。",
+              "example": "kairo が Autumn Cup への出場にあなたを招待しました"
+            },
+            "TournamentInvite": {
+              "title": "トーナメント参加登録への招待",
+              "description": "主催者からトーナメントへの参加登録に招待されました。",
+              "example": "Winter Open に参加登録しましょう"
+            },
+            "DraftInvite": {
+              "title": "ドラフトへの招待",
+              "description": "ドラフトロビーに招待されました。",
+              "example": "Pyre がドラフトにあなたを招待しました"
+            },
+            "UtilityPracticeInvite": {
+              "title": "練習への招待",
+              "description": "ユーティリティの合同練習に招待されました。",
+              "example": "kairo が Mirage でのユーティリティ練習にあなたを招待しました"
+            },
+            "UtilityPracticeReady": {
+              "title": "練習サーバーの準備完了",
+              "description": "ユーティリティ練習サーバーが起動しました。",
+              "example": "Mirage の練習サーバーが起動しました"
+            },
+            "NameChangeApproved": {
+              "title": "名前変更の承認",
+              "description": "管理者があなたの新しい名前を承認しました。",
+              "example": "kairo_ への名前変更が承認されました"
+            },
+            "NameChangeDenied": {
+              "title": "名前変更の却下",
+              "description": "管理者があなたの新しい名前を却下しました。",
+              "example": "kairo_ への名前変更が却下されました"
+            },
+            "PlayerSanctioned": {
+              "title": "Ban",
+              "description": "プラットフォームから Ban されました。",
+              "example": "Ban されました"
+            },
+            "PlayerWarning": {
+              "title": "警告",
+              "description": "モデレーターから警告を受けました。",
+              "example": "警告を受けました"
+            },
+            "AwardGranted": {
+              "title": "アワード",
+              "description": "アワードを獲得しました。",
+              "example": "Autumn Cup の MVP を獲得しました"
+            },
+            "TeammateBanned": {
+              "title": "Ban されたチームメイト",
+              "description": "過去 6 か月以内に一緒にプレイしたプレイヤーが Ban されました。",
+              "example": "最近一緒にプレイした dusk が Ban されました"
+            },
+            "NewsPublished": {
+              "title": "ニュース記事",
+              "description": "新しい記事が公開されました。",
+              "example": "パッチノート：Rushモード"
+            },
+            "MatchSupport": {
+              "title": "試合サポート",
+              "description": "試合から主催者または管理者が呼ばれました。",
+              "example": "試合のサポートが必要です"
+            },
+            "MatchAbandoned": {
+              "title": "試合の放棄",
+              "description": "プレイヤーが試合を放棄しました。",
+              "example": "kairo が Iron Wolves vs Night Owls を放棄しました"
+            },
+            "NameChangeRequest": {
+              "title": "名前変更の申請",
+              "description": "プレイヤーが名前の変更を申請しました。",
+              "example": "kairo が kairo_ への名前変更を申請しました"
+            },
+            "GameUpdate": {
+              "title": "ゲームアップデート",
+              "description": "CS2 のアップデートを検出したか、そのインストールに失敗しました。",
+              "example": "CS2 アップデートを検出"
+            },
+            "GameNodeStatus": {
+              "title": "ゲームサーバーノード",
+              "description": "ノードやリージョンがオフラインになったか復帰した、またはノードのディスク容量が不足しています。",
+              "example": "ゲームサーバーノードがオフライン"
+            },
+            "DedicatedServerStatus": {
+              "title": "専用サーバー",
+              "description": "専用サーバーがオフラインになったか、プラグインが古くなっています。",
+              "example": "専用サーバーがオフライン"
+            },
+            "DedicatedServerRconStatus": {
+              "title": "RCON エラー",
+              "description": "専用サーバーが RCON に応答しなくなりました。",
+              "example": "専用サーバーの RCON エラー"
+            },
+            "StorageScan": {
+              "title": "ストレージスキャン",
+              "description": "ストレージスキャンで孤立アップロードが見つかりました。",
+              "example": "ストレージスキャンで孤立アップロードが12件見つかりました"
+            },
+            "EloRecompute": {
+              "title": "ELO再計算",
+              "description": "プレイヤーELOの再計算またはシーズンの再構築が完了しました。",
+              "example": "ELOの再計算が完了しました"
+            },
+            "PlayerReindex": {
+              "title": "検索インデックスの再構築",
+              "description": "プレイヤー検索インデックスの再構築が完了しました。",
+              "example": "プレイヤー検索インデックスの再構築が完了しました"
+            },
+            "UtilityDriftScanFinished": {
+              "title": "ユーティリティのずれスキャン",
+              "description": "ユーティリティのずれスキャンが完了しました。",
+              "example": "ユーティリティのずれスキャンが完了しました"
+            }
           }
         },
         "quiet_hours": {
@@ -1844,56 +2128,6 @@
           "to": "終了",
           "reset": "リセット",
           "incomplete": "サイレント時間を保存するには、開始時刻と終了時刻の両方を設定してください。"
-        },
-        "tab_flash": {
-          "title": "ブラウザタブ",
-          "description": "このタブがバックグラウンドにあるときに対応が必要なことが起きると、タブのタイトルとアイコンを点滅させます。この端末に保存されます。",
-          "match_found": {
-            "title": "マッチが見つかりました",
-            "description": "マッチの準備ができ、あなたの承認を待っています。"
-          },
-          "admin_call": {
-            "title": "主催者からの通話",
-            "description": "試合の主催者がカメラページであなたに話しかけ始めたとき。"
-          },
-          "chat": {
-            "title": "チャットメッセージ",
-            "description": "会話、ロビー、トーナメントルームの新着メッセージ。試合中のゲーム内チャットは対象外です。"
-          },
-          "bell": {
-            "title": "通知",
-            "description": "通知ベルに新しいものが届いたとき。"
-          }
-        }
-      },
-      "notifications": {
-        "title": "サウンド設定",
-        "description": "チャットや試合などで 5Stack が鳴らす通知音を試聴し、調整できます。",
-        "enabled": {
-          "title": "通知音",
-          "description": "チャットメッセージ、試合イベント、その他の通知で音を鳴らします。"
-        },
-        "volume": {
-          "title": "音量"
-        },
-        "preview": "サウンド試聴",
-        "sounds": {
-          "chat": {
-            "title": "チャットメッセージ",
-            "description": "新着チャットメッセージ"
-          },
-          "match_found": {
-            "title": "試合が見つかった",
-            "description": "試合の準備が整いました"
-          },
-          "tick": {
-            "title": "ティック",
-            "description": "レディ確認のティック音"
-          },
-          "countdown": {
-            "title": "カウントダウン",
-            "description": "試合開始のカウントダウン"
-          }
         }
       },
       "application": {
@@ -5504,6 +5738,13 @@
       "dismiss_all": "すべて閉じる",
       "delete_all_read": "既読をすべて削除",
       "review_orphaned_uploads": "孤立アップロードを確認",
+      "settings": "通知設定",
+      "kind_menu": {
+        "label": "その他の操作",
+        "turn_off": "{kind}をオフ",
+        "turned_off": "{kind}をオフにしました",
+        "turned_off_hint": "「通知」設定からいつでもオンに戻せます。"
+      },
       "no_notifications_title": "通知はありません",
       "no_notifications": "現在、通知はありません。",
       "toast": {

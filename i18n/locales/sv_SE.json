@@ -6368,6 +6368,14 @@
       "impact_delete": "radera",
       "impact_reset": "återställ"
     },
+    "negotiation": {
+      "schedule": "Schemalägg",
+      "no_time": "Ingen tid överenskommen än",
+      "history": "Historik",
+      "window": "Tider måste ligga inom den här rondens tidsram: {from} till {to}.",
+      "outside_window": "Den föreslagna tiden ligger utanför den här rondens tidsram för schemaläggning.",
+      "teams_only": "Endast lagens ägare, kaptener och roster-admins kan föreslå en tid."
+    },
     "match": {
       "reset_winner": "Återställ vinnare",
       "reset_warning": "Att ändra detta resultat kan ta bort efterföljande matcher i slutspelsträdet",

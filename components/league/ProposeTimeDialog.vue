@@ -20,6 +20,7 @@ defineProps<{
   defaultTime?: string | null;
   matchup?: string | null;
   scope?: string | null;
+  outsideWindowMessage?: string | null;
 }>();
 
 const emit = defineEmits<{
@@ -50,6 +51,7 @@ function onSubmit(proposedTime: string, message: string) {
         :default-time="defaultTime"
         :matchup="matchup"
         :scope="scope"
+        :outside-window-message="outsideWindowMessage"
         @submit="onSubmit"
         @cancel="emit('update:open', false)"
       />

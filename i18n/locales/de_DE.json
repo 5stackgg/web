@@ -6368,6 +6368,14 @@
       "impact_delete": "löschen",
       "impact_reset": "zurücksetzen"
     },
+    "negotiation": {
+      "schedule": "Planen",
+      "no_time": "Noch keine Zeit vereinbart",
+      "history": "Verlauf",
+      "window": "Zeiten müssen im Fenster dieser Runde liegen: {from} bis {to}.",
+      "outside_window": "Die vorgeschlagene Zeit liegt außerhalb des Planungsfensters dieser Runde.",
+      "teams_only": "Nur Besitzer, Captains und Roster-Admins der Teams können eine Zeit vorschlagen."
+    },
     "match": {
       "reset_winner": "Sieger zurücksetzen",
       "reset_warning": "Wenn du dieses Ergebnis änderst, können nachfolgende Matches im Bracket gelöscht werden",

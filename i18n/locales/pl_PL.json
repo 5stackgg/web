@@ -6368,6 +6368,14 @@
       "impact_delete": "usuń",
       "impact_reset": "zresetuj"
     },
+    "negotiation": {
+      "schedule": "Zaplanuj",
+      "no_time": "Nie uzgodniono jeszcze godziny",
+      "history": "Historia",
+      "window": "Godziny muszą mieścić się w oknie tej rundy: od {from} do {to}.",
+      "outside_window": "Zaproponowana godzina wykracza poza okno planowania tej rundy.",
+      "teams_only": "Tylko właściciele, kapitanowie i administratorzy składów drużyn mogą zaproponować godzinę."
+    },
     "match": {
       "reset_winner": "Resetuj zwycięzcę",
       "reset_warning": "Zmiana tego wyniku może usunąć kolejne mecze w drabince",

@@ -1420,6 +1420,9 @@ export default {
               ...({ current_stage: true } as {}),
               auto_start: true,
               scheduling_mode: true,
+              league_season_division: {
+                id: true,
+              },
               awards_enabled: true,
               substitutes_enabled: true,
               e_tournament_status: {
@@ -1486,6 +1489,15 @@ export default {
                   settings: true,
                   third_place_match: true,
                   options: matchOptionsFields,
+                  windows: [
+                    {},
+                    {
+                      round: true,
+                      opens_at: true,
+                      closes_at: true,
+                      default_match_at: true,
+                    },
+                  ],
                   results: [
                     {},
                     {
@@ -1542,6 +1554,7 @@ export default {
                       round: true,
                       group: true,
                       bye: true,
+                      finished: true,
                       match_number: true,
                       scheduled_at: true,
                       scheduled_eta: true,
@@ -1581,6 +1594,7 @@ export default {
                       match: {
                         id: true,
                         status: true,
+                        scheduled_at: true,
                         winning_lineup_id: true,
                         lineup_1_id: true,
                         lineup_2_id: true,
@@ -1617,6 +1631,7 @@ export default {
                       team_1: {
                         id: true,
                         name: true,
+                        team_id: true,
                         team: {
                           name: true,
                         },
@@ -1624,10 +1639,31 @@ export default {
                       team_2: {
                         id: true,
                         name: true,
+                        team_id: true,
                         team: {
                           name: true,
                         },
                       },
+                      scheduling_proposals: [
+                        {
+                          order_by: [
+                            {
+                              created_at: order_by.desc,
+                            },
+                          ],
+                        },
+                        {
+                          id: true,
+                          proposed_time: true,
+                          status: true,
+                          message: true,
+                          proposed_by_steam_id: true,
+                          proposed_by: {
+                            steam_id: true,
+                            name: true,
+                          },
+                        },
+                      ],
                       created_at: true,
                     },
                   ],

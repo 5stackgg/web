@@ -6368,6 +6368,14 @@
       "impact_delete": "sil",
       "impact_reset": "sıfırla"
     },
+    "negotiation": {
+      "schedule": "Planla",
+      "no_time": "Henüz bir saatte anlaşılmadı",
+      "history": "Geçmiş",
+      "window": "Saatler bu rauntun aralığında olmalı: {from} - {to}.",
+      "outside_window": "Önerilen saat bu rauntun planlama aralığının dışında.",
+      "teams_only": "Yalnızca takımların sahipleri, kaptanları ve kadro yöneticileri saat önerebilir."
+    },
     "match": {
       "reset_winner": "Kazananı sıfırla",
       "reset_warning": "Bu sonucu değiştirmek eşleşme tablosundaki sonraki maçları silebilir",

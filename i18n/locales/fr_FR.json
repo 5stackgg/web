@@ -6368,6 +6368,14 @@
       "impact_delete": "supprimer",
       "impact_reset": "réinitialiser"
     },
+    "negotiation": {
+      "schedule": "Planifier",
+      "no_time": "Aucun horaire convenu pour l'instant",
+      "history": "Historique",
+      "window": "Les horaires doivent se situer dans la fenêtre de ce round : du {from} au {to}.",
+      "outside_window": "L'horaire proposé est en dehors de la fenêtre de planification de ce round.",
+      "teams_only": "Seuls les propriétaires, capitaines et admins de roster des équipes peuvent proposer un horaire."
+    },
     "match": {
       "reset_winner": "Réinitialiser le vainqueur",
       "reset_warning": "Modifier ce résultat peut supprimer les matchs suivants du bracket",

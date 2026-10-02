@@ -6368,6 +6368,14 @@
       "impact_delete": "刪除",
       "impact_reset": "重設"
     },
+    "negotiation": {
+      "schedule": "安排時間",
+      "no_time": "尚未商定時間",
+      "history": "歷史紀錄",
+      "window": "時間必須在本輪範圍內：{from} 至 {to}。",
+      "outside_window": "提議的時間超出本輪的排程範圍。",
+      "teams_only": "只有兩隊的擁有者、隊長和陣容管理員可以提議時間。"
+    },
     "match": {
       "reset_winner": "重設勝者",
       "reset_warning": "變更此結果可能會刪除對戰表中的後續比賽",

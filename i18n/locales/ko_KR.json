@@ -2635,13 +2635,13 @@
           "create_title": "새 게임 모드",
           "edit_title": "게임 모드 편집",
           "sheet_description": "모드는 서버가 시작될 때 적용되므로, 변경하면 해당 서버의 다음 경기부터 반영됩니다.",
-          "empty": "게임 모드가 아직 없습니다. 하나 만들면 컴페티티브 외의 방식으로 경기를 진행할 수 있습니다.",
           "requires_plugins": "먼저 게임 플러그인을 활성화하세요. 플러그인이 없으면 모드가 불러올 것이 없습니다.",
-          "disabled": "비활성화됨",
-          "competitive": "컴페티티브 가능",
+          "runs_on": "실행 모드",
+          "always_on": "항상 켜짐",
+          "draft_lobbies": "드래프트 로비",
+          "no_plugins": "플러그인 없음: cvar만",
+          "new_mode_hint": "플러그인, cvar, 실행할 Valve 모드를 선택하세요",
           "official": "5Stack 공식",
-          "casual_only": "캐주얼 전용",
-          "plugin_count": "플러그인 {count}개",
           "archived": "보관됨"
         },
         "utility": {

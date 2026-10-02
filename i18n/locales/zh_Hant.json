@@ -2635,13 +2635,13 @@
           "create_title": "新增遊戲模式",
           "edit_title": "編輯遊戲模式",
           "sheet_description": "模式在伺服器啟動時套用，因此修改會影響該伺服器上的下一場比賽。",
-          "empty": "尚無遊戲模式。建立一個，讓比賽可以執行競技以外的玩法。",
           "requires_plugins": "請先啟用遊戲外掛——沒有外掛，模式就沒有可載入的內容。",
-          "disabled": "已停用",
-          "competitive": "可用於競技",
+          "runs_on": "執行於",
+          "always_on": "永遠開啟",
+          "draft_lobbies": "選人大廳",
+          "no_plugins": "無外掛：僅 cvar",
+          "new_mode_hint": "選擇外掛、cvar 及其執行的 Valve 模式",
           "official": "5Stack 官方",
-          "casual_only": "僅休閒",
-          "plugin_count": "{count} 個外掛",
           "archived": "已封存"
         },
         "utility": {

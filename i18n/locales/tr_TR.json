@@ -2635,13 +2635,13 @@
           "create_title": "Yeni Oyun Modu",
           "edit_title": "Oyun Modunu Düzenle",
           "sheet_description": "Modlar sunucu başlarken uygulanır, bu yüzden bir değişiklik o sunucudaki sonraki maçı etkiler.",
-          "empty": "Henüz oyun modu yok. Maçların rekabetçi dışında bir şey oynayabilmesi için bir tane oluştur.",
           "requires_plugins": "Önce Oyun Eklentilerini aç — onlar olmadan bir modun yükleyecek bir şeyi olmaz.",
-          "disabled": "Devre dışı",
-          "competitive": "Rekabetçiye uygun",
+          "runs_on": "Çalıştığı mod",
+          "always_on": "Her zaman açık",
+          "draft_lobbies": "Draft lobileri",
+          "no_plugins": "Eklenti yok: yalnızca cvar'lar",
+          "new_mode_hint": "Eklentileri, cvar'ları ve üzerinde çalışacağı Valve modunu seç",
           "official": "Resmi 5Stack",
-          "casual_only": "Yalnızca casual",
-          "plugin_count": "{count} eklenti",
           "archived": "Arşivlendi"
         },
         "utility": {

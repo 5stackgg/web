@@ -2635,13 +2635,13 @@
           "create_title": "Neuer Spielmodus",
           "edit_title": "Spielmodus bearbeiten",
           "sheet_description": "Modi werden beim Serverstart angewendet, eine Änderung wirkt sich also auf das nächste Match auf diesem Server aus.",
-          "empty": "Noch keine Spielmodi. Erstelle einen, damit Matches etwas anderes als Competitive spielen können.",
           "requires_plugins": "Aktiviere zuerst Spiel-Plugins — ohne sie hat ein Modus nichts zu laden.",
-          "disabled": "Deaktiviert",
-          "competitive": "Competitive-tauglich",
+          "runs_on": "Läuft auf",
+          "always_on": "Immer an",
+          "draft_lobbies": "Draft-Lobbys",
+          "no_plugins": "Keine Plugins: nur Cvars",
+          "new_mode_hint": "Wähle Plugins, Cvars und den Valve-Modus, auf dem er läuft",
           "official": "Offiziell von 5Stack",
-          "casual_only": "Nur Casual",
-          "plugin_count": "{count} Plugins",
           "archived": "Archiviert"
         },
         "utility": {

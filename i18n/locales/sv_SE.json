@@ -2635,13 +2635,13 @@
           "create_title": "Nytt spelläge",
           "edit_title": "Redigera spelläge",
           "sheet_description": "Lägen tillämpas när en server startar, så en ändring påverkar nästa match på den servern.",
-          "empty": "Inga spellägen än. Skapa ett så att matcher kan köra något annat än competitive.",
           "requires_plugins": "Slå på Speltillägg först — utan dem har ett läge inget att ladda.",
-          "disabled": "Inaktiverat",
-          "competitive": "Säkert för competitive",
+          "runs_on": "Körs på",
+          "always_on": "Alltid på",
+          "draft_lobbies": "Draftlobbyer",
+          "no_plugins": "Inga pluginer: bara cvars",
+          "new_mode_hint": "Välj pluginer, cvars och Valve-läget det körs på",
           "official": "Officiell 5Stack",
-          "casual_only": "Endast casual",
-          "plugin_count": "{count} tillägg",
           "archived": "Arkiverat"
         },
         "utility": {

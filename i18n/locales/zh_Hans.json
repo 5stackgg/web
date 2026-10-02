@@ -2635,13 +2635,13 @@
           "create_title": "新建游戏模式",
           "edit_title": "编辑游戏模式",
           "sheet_description": "模式在服务器启动时应用，因此修改会影响该服务器上的下一场比赛。",
-          "empty": "还没有游戏模式。创建一个，让比赛可以运行竞技之外的玩法。",
           "requires_plugins": "请先启用游戏插件——没有插件，模式就没有可加载的内容。",
-          "disabled": "已禁用",
-          "competitive": "可用于竞技",
+          "runs_on": "运行于",
+          "always_on": "始终开启",
+          "draft_lobbies": "选人大厅",
+          "no_plugins": "无插件：仅 cvar",
+          "new_mode_hint": "选择插件、cvar 及其运行的 Valve 模式",
           "official": "5Stack 官方",
-          "casual_only": "仅休闲",
-          "plugin_count": "{count} 个插件",
           "archived": "已归档"
         },
         "utility": {

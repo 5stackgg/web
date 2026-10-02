@@ -2635,13 +2635,13 @@
           "create_title": "Nuova modalità di gioco",
           "edit_title": "Modifica modalità di gioco",
           "sheet_description": "Le modalità vengono applicate all'avvio del server, quindi modificarne una influisce sulla prossima partita su quel server.",
-          "empty": "Nessuna modalità di gioco. Creane una per far giocare le partite con qualcosa di diverso dal competitive.",
           "requires_plugins": "Attiva prima i plugin di gioco — senza di essi una modalità non ha nulla da caricare.",
-          "disabled": "Disattivata",
-          "competitive": "Adatta al competitive",
+          "runs_on": "Gira su",
+          "always_on": "Sempre attiva",
+          "draft_lobbies": "Lobby draft",
+          "no_plugins": "Nessun plugin: solo cvar",
+          "new_mode_hint": "Scegli i plugin, i cvar e la modalità Valve su cui gira",
           "official": "Ufficiale 5Stack",
-          "casual_only": "Solo casual",
-          "plugin_count": "{count} plugin",
           "archived": "Archiviata"
         },
         "utility": {

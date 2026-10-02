@@ -2635,13 +2635,13 @@
           "create_title": "Ny spiltilstand",
           "edit_title": "Redigér spiltilstand",
           "sheet_description": "Tilstande anvendes når en server starter, så en ændring påvirker næste kamp på den server.",
-          "empty": "Ingen spiltilstande endnu. Opret én, så kampe kan køre noget andet end competitive.",
           "requires_plugins": "Slå Spil-plugins til først — uden dem har en tilstand intet at indlæse.",
-          "disabled": "Deaktiveret",
-          "competitive": "Sikker til competitive",
+          "runs_on": "Kører på",
+          "always_on": "Altid til",
+          "draft_lobbies": "Draft-lobbyer",
+          "no_plugins": "Ingen plugins: kun cvars",
+          "new_mode_hint": "Vælg plugins, cvars og den Valve-tilstand, den kører på",
           "official": "Officiel 5Stack",
-          "casual_only": "Kun casual",
-          "plugin_count": "{count} plugins",
           "archived": "Arkiveret"
         },
         "utility": {

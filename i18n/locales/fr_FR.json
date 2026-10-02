@@ -2635,13 +2635,13 @@
           "create_title": "Nouveau mode de jeu",
           "edit_title": "Modifier le mode de jeu",
           "sheet_description": "Les modes sont appliqués au démarrage du serveur : une modification affecte donc le prochain match sur ce serveur.",
-          "empty": "Aucun mode de jeu. Crées-en un pour que les matchs puissent jouer autre chose que du competitive.",
           "requires_plugins": "Active d'abord les plugins de jeu — sans eux, un mode n'a rien à charger.",
-          "disabled": "Désactivé",
-          "competitive": "Compatible compétitif",
+          "runs_on": "Tourne sur",
+          "always_on": "Toujours actif",
+          "draft_lobbies": "Lobbies de draft",
+          "no_plugins": "Aucun plugin : cvars uniquement",
+          "new_mode_hint": "Choisissez les plugins, les cvars et le mode Valve sur lequel il tourne",
           "official": "Officiel 5Stack",
-          "casual_only": "Casual uniquement",
-          "plugin_count": "{count} plugins",
           "archived": "Archivé"
         },
         "utility": {

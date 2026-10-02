@@ -2635,13 +2635,13 @@
           "create_title": "Nowy tryb gry",
           "edit_title": "Edytuj tryb gry",
           "sheet_description": "Tryby są stosowane przy starcie serwera, więc zmiana wpłynie na następny mecz na tym serwerze.",
-          "empty": "Brak trybów gry. Utwórz jeden, aby mecze mogły grać coś innego niż competitive.",
           "requires_plugins": "Najpierw włącz wtyczki gry — bez nich tryb nie ma czego wczytać.",
-          "disabled": "Wyłączony",
-          "competitive": "Bezpieczny dla competitive",
+          "runs_on": "Działa na",
+          "always_on": "Zawsze włączony",
+          "draft_lobbies": "Lobby draftu",
+          "no_plugins": "Brak pluginów: tylko cvary",
+          "new_mode_hint": "Wybierz pluginy, cvary i tryb Valve, na którym działa",
           "official": "Oficjalny 5Stack",
-          "casual_only": "Tylko casual",
-          "plugin_count": "{count} wtyczek",
           "archived": "Zarchiwizowany"
         },
         "utility": {

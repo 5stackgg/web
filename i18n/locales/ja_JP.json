@@ -2635,13 +2635,13 @@
           "create_title": "新しいゲームモード",
           "edit_title": "ゲームモードを編集",
           "sheet_description": "モードはサーバー起動時に適用されるため、変更はそのサーバーの次の試合から反映されます。",
-          "empty": "ゲームモードがまだありません。作成すると、Competitive 以外での試合が可能になります。",
           "requires_plugins": "先にゲームプラグインを有効にしてください。プラグインがないとモードは何も読み込めません。",
-          "disabled": "無効",
-          "competitive": "競技用に安全",
+          "runs_on": "ベースモード",
+          "always_on": "常にオン",
+          "draft_lobbies": "ドラフトロビー",
+          "no_plugins": "プラグインなし: cvar のみ",
+          "new_mode_hint": "プラグイン、cvar、ベースにする Valve モードを選択",
           "official": "5Stack 公式",
-          "casual_only": "カジュアルのみ",
-          "plugin_count": "{count} 件のプラグイン",
           "archived": "アーカイブ済み"
         },
         "utility": {

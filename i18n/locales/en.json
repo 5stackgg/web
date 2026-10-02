@@ -2635,13 +2635,13 @@
           "create_title": "New Game Mode",
           "edit_title": "Edit Game Mode",
           "sheet_description": "Modes are applied when a server starts, so changing one affects the next match on that server.",
-          "empty": "No game modes yet. Create one to let matches run something other than competitive.",
           "requires_plugins": "Enable Game Plugins first — a mode has nothing to load without them.",
-          "disabled": "Disabled",
-          "competitive": "In draft lobbies",
+          "runs_on": "Runs on",
+          "always_on": "Always on",
+          "draft_lobbies": "Draft lobbies",
+          "no_plugins": "No plugins: cvars only",
+          "new_mode_hint": "Pick plugins, cvars and the Valve mode it runs on",
           "official": "Official 5Stack",
-          "casual_only": "Hidden from drafts",
-          "plugin_count": "{count} plugins",
           "archived": "Archived"
         },
         "utility": {

@@ -2639,6 +2639,7 @@
           "requires_plugins": "Active d'abord les plugins de jeu — sans eux, un mode n'a rien à charger.",
           "disabled": "Désactivé",
           "competitive": "Compatible compétitif",
+          "official": "Officiel 5Stack",
           "casual_only": "Casual uniquement",
           "plugin_count": "{count} plugins",
           "archived": "Archivé"
@@ -10431,7 +10432,8 @@
       "runtime_none": "Ces plugins n'ont aucun framework en commun, ce mode ne peut donc tourner nulle part. Retire celui qui vise l'autre framework.",
       "runtime_only": "Tourne uniquement sur {runtime}, car c'est le seul framework pour lequel tous ces plugins existent.",
       "open_plugin": "Ouvrir la page de ce plugin dans un nouvel onglet",
-      "archived_instead": "Des matchs ont déjà utilisé ce mode : il a donc été masqué au lieu d'être supprimé. Tu peux le restaurer à tout moment."
+      "archived_instead": "Des matchs ont déjà utilisé ce mode : il a donc été masqué au lieu d'être supprimé. Tu peux le restaurer à tout moment.",
+      "official_note": "Un mode officiel de 5Stack : les serveurs d'entraînement aux utilitaires tournent dessus, il ne peut donc pas être supprimé, désactivé ni renommé. Ses cvars restent modifiables."
     }
   },
   "edge_status": {

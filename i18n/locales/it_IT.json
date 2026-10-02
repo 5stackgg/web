@@ -2639,6 +2639,7 @@
           "requires_plugins": "Attiva prima i plugin di gioco — senza di essi una modalità non ha nulla da caricare.",
           "disabled": "Disattivata",
           "competitive": "Adatta al competitive",
+          "official": "Ufficiale 5Stack",
           "casual_only": "Solo casual",
           "plugin_count": "{count} plugin",
           "archived": "Archiviata"
@@ -10431,7 +10432,8 @@
       "runtime_none": "Questi plugin non hanno alcun framework in comune, quindi questa modalità non può girare da nessuna parte. Rimuovi quello destinato all'altro framework.",
       "runtime_only": "Gira solo su {runtime}, perché è l'unico framework per cui esistono tutti questi plugin.",
       "open_plugin": "Apri la pagina di questo plugin in una nuova scheda",
-      "archived_instead": "Alcune partite hanno già usato questa modalità, quindi è stata nascosta anziché eliminata. Puoi ripristinarla quando vuoi."
+      "archived_instead": "Alcune partite hanno già usato questa modalità, quindi è stata nascosta anziché eliminata. Puoi ripristinarla quando vuoi.",
+      "official_note": "Una modalità ufficiale di 5Stack: i server di pratica delle utility la usano, quindi non può essere eliminata, disattivata o rinominata. I suoi cvar restano modificabili."
     }
   },
   "edge_status": {

@@ -2639,6 +2639,7 @@
           "requires_plugins": "Slå Spil-plugins til først — uden dem har en tilstand intet at indlæse.",
           "disabled": "Deaktiveret",
           "competitive": "Sikker til competitive",
+          "official": "Officiel 5Stack",
           "casual_only": "Kun casual",
           "plugin_count": "{count} plugins",
           "archived": "Arkiveret"
@@ -10431,7 +10432,8 @@
       "runtime_none": "Disse plugins har intet framework til fælles, så denne tilstand kan ikke køre nogen steder. Fjern det plugin, der er bygget til det andet framework.",
       "runtime_only": "Kører kun på {runtime}, fordi det er det eneste framework alle plugins her findes til.",
       "open_plugin": "Åbn dette plugins side i en ny fane",
-      "archived_instead": "Der er allerede spillet kampe i denne tilstand, så den blev skjult i stedet for slettet. Du kan gendanne den når som helst."
+      "archived_instead": "Der er allerede spillet kampe i denne tilstand, så den blev skjult i stedet for slettet. Du kan gendanne den når som helst.",
+      "official_note": "En officiel 5Stack-tilstand: utility-træningsservere kører på den, så den kan ikke slettes, deaktiveres eller omdøbes. Dens cvars kan du redigere."
     }
   },
   "edge_status": {

@@ -2639,6 +2639,7 @@
           "requires_plugins": "Najpierw włącz wtyczki gry — bez nich tryb nie ma czego wczytać.",
           "disabled": "Wyłączony",
           "competitive": "Bezpieczny dla competitive",
+          "official": "Oficjalny 5Stack",
           "casual_only": "Tylko casual",
           "plugin_count": "{count} wtyczek",
           "archived": "Zarchiwizowany"
@@ -10431,7 +10432,8 @@
       "runtime_none": "Te wtyczki nie mają wspólnego frameworka, więc ten tryb nigdzie nie zadziała. Usuń tę, która celuje w drugi framework.",
       "runtime_only": "Działa tylko na {runtime}, bo to jedyny framework, dla którego istnieją wszystkie te wtyczki.",
       "open_plugin": "Otwórz stronę tej wtyczki w nowej karcie",
-      "archived_instead": "W tym trybie rozegrano już mecze, więc został ukryty zamiast usunięty. Możesz go przywrócić w dowolnej chwili."
+      "archived_instead": "W tym trybie rozegrano już mecze, więc został ukryty zamiast usunięty. Możesz go przywrócić w dowolnej chwili.",
+      "official_note": "Oficjalny tryb 5Stack: działają na nim serwery treningu granatów, więc nie można go usunąć, wyłączyć ani zmienić jego nazwy. Jego cvary możesz edytować."
     }
   },
   "edge_status": {

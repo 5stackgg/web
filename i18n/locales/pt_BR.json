@@ -2639,6 +2639,7 @@
           "requires_plugins": "Ative os plugins do jogo primeiro — sem eles um modo não tem o que carregar.",
           "disabled": "Desativado",
           "competitive": "Seguro para competitivo",
+          "official": "Oficial do 5Stack",
           "casual_only": "Somente casual",
           "plugin_count": "{count} plugins",
           "archived": "Arquivado"
@@ -10431,7 +10432,8 @@
       "runtime_none": "Estes plugins não têm nenhum framework em comum, então este modo não pode rodar em lugar nenhum. Remova o que for do outro framework.",
       "runtime_only": "Roda apenas em {runtime}, porque é o único framework para o qual todos estes plugins existem.",
       "open_plugin": "Abrir a página deste plugin em uma nova aba",
-      "archived_instead": "Já houve partidas com este modo, então ele foi ocultado em vez de excluído. Você pode restaurá-lo quando quiser."
+      "archived_instead": "Já houve partidas com este modo, então ele foi ocultado em vez de excluído. Você pode restaurá-lo quando quiser.",
+      "official_note": "Um modo oficial do 5Stack: os servidores de treino de utilitários rodam nele, então ele não pode ser excluído, desativado ou renomeado. Seus cvars podem ser editados."
     }
   },
   "edge_status": {

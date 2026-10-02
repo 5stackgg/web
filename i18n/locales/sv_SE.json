@@ -2639,6 +2639,7 @@
           "requires_plugins": "Slå på Speltillägg först — utan dem har ett läge inget att ladda.",
           "disabled": "Inaktiverat",
           "competitive": "Säkert för competitive",
+          "official": "Officiell 5Stack",
           "casual_only": "Endast casual",
           "plugin_count": "{count} tillägg",
           "archived": "Arkiverat"
@@ -10431,7 +10432,8 @@
       "runtime_none": "De här tilläggen har inget gemensamt ramverk, så det här läget kan inte köras någonstans. Ta bort det som riktar sig mot det andra ramverket.",
       "runtime_only": "Körs bara på {runtime}, eftersom det är det enda ramverk som alla tillägg här finns för.",
       "open_plugin": "Öppna det här tilläggets sida i en ny flik",
-      "archived_instead": "Matcher har redan kört det här läget, så det doldes i stället för att tas bort. Du kan återställa det när som helst."
+      "archived_instead": "Matcher har redan kört det här läget, så det doldes i stället för att tas bort. Du kan återställa det när som helst.",
+      "official_note": "Ett officiellt 5Stack-läge: utility-träningsservrar körs på det, så det kan inte tas bort, inaktiveras eller döpas om. Dess cvars kan du redigera."
     }
   },
   "edge_status": {

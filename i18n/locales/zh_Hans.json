@@ -2639,6 +2639,7 @@
           "requires_plugins": "请先启用游戏插件——没有插件，模式就没有可加载的内容。",
           "disabled": "已禁用",
           "competitive": "可用于竞技",
+          "official": "5Stack 官方",
           "casual_only": "仅休闲",
           "plugin_count": "{count} 个插件",
           "archived": "已归档"
@@ -10431,7 +10432,8 @@
       "runtime_none": "这些插件没有共同的框架，因此该模式无法在任何地方运行。请移除面向另一种框架的那个插件。",
       "runtime_only": "仅在 {runtime} 上运行，因为这是这里所有插件都发布了版本的唯一框架。",
       "open_plugin": "在新标签页中打开该插件的页面",
-      "archived_instead": "已经有比赛使用过这个模式，因此它被隐藏而不是删除。您可以随时恢复它。"
+      "archived_instead": "已经有比赛使用过这个模式，因此它被隐藏而不是删除。您可以随时恢复它。",
+      "official_note": "5Stack 官方模式：道具练习服务器运行在此模式上，因此无法删除、停用或重命名。其 cvar 可以编辑。"
     }
   },
   "edge_status": {

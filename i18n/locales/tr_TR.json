@@ -2639,6 +2639,7 @@
           "requires_plugins": "Önce Oyun Eklentilerini aç — onlar olmadan bir modun yükleyecek bir şeyi olmaz.",
           "disabled": "Devre dışı",
           "competitive": "Rekabetçiye uygun",
+          "official": "Resmi 5Stack",
           "casual_only": "Yalnızca casual",
           "plugin_count": "{count} eklenti",
           "archived": "Arşivlendi"
@@ -10431,7 +10432,8 @@
       "runtime_none": "Bu eklentilerin ortak bir framework'ü yok, bu yüzden bu mod hiçbir yerde çalışamaz. Diğer framework'ü hedefleyen eklentiyi kaldır.",
       "runtime_only": "Yalnızca {runtime} üzerinde çalışır, çünkü buradaki tüm eklentilerin çıktığı tek framework o.",
       "open_plugin": "Bu eklentinin sayfasını yeni sekmede aç",
-      "archived_instead": "Bu modda daha önce maç oynandığı için silinmek yerine gizlendi. İstediğin zaman geri getirebilirsin."
+      "archived_instead": "Bu modda daha önce maç oynandığı için silinmek yerine gizlendi. İstediğin zaman geri getirebilirsin.",
+      "official_note": "Resmi bir 5Stack modu: utility pratik sunucuları bunun üzerinde çalışır, bu yüzden silinemez, devre dışı bırakılamaz veya yeniden adlandırılamaz. Cvar'larını düzenleyebilirsin."
     }
   },
   "edge_status": {

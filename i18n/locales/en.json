@@ -2639,6 +2639,7 @@
           "requires_plugins": "Enable Game Plugins first — a mode has nothing to load without them.",
           "disabled": "Disabled",
           "competitive": "In draft lobbies",
+          "official": "Official 5Stack",
           "casual_only": "Hidden from drafts",
           "plugin_count": "{count} plugins",
           "archived": "Archived"
@@ -10431,7 +10432,8 @@
       "runtime_none": "These plugins have no framework in common, so this mode cannot run anywhere. Remove whichever one targets the other framework.",
       "runtime_only": "Runs on {runtime} only, because that is the one framework every plugin here ships for.",
       "open_plugin": "Open this plugin's page in a new tab",
-      "archived_instead": "Matches have already run this mode, so it was hidden instead of deleted. You can restore it any time."
+      "archived_instead": "Matches have already run this mode, so it was hidden instead of deleted. You can restore it any time.",
+      "official_note": "An official 5Stack mode: utility practice servers run on it, so it can't be deleted, disabled or renamed. Its cvars are yours to edit."
     }
   },
   "edge_status": {

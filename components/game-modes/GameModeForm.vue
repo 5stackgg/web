@@ -44,7 +44,11 @@ import { VALVE_MODES } from "~/constants/valveModes";
         <FormItem>
           <FormLabel>{{ $t("game_modes.form.slug") }}</FormLabel>
           <FormControl>
-            <Input v-bind="componentField" placeholder="retakes" />
+            <Input
+              v-bind="componentField"
+              placeholder="retakes"
+              :disabled="official"
+            />
           </FormControl>
           <FormMessage />
         </FormItem>
@@ -73,7 +77,11 @@ import { VALVE_MODES } from "~/constants/valveModes";
         <FormField v-slot="{ value, handleChange }" name="enabled">
           <FormItem>
             <FormControl>
-              <Switch :model-value="value" @update:model-value="handleChange" />
+              <Switch
+                :model-value="value"
+                :disabled="official"
+                @update:model-value="handleChange"
+              />
             </FormControl>
           </FormItem>
         </FormField>
@@ -235,8 +243,15 @@ import { VALVE_MODES } from "~/constants/valveModes";
            some match already ran cannot be deleted (the DB keeps that history),
            so it is archived -- hidden everywhere -- and the toast says so.
            Restore undoes an archive. -->
+      <p
+        v-if="official"
+        class="text-sm text-muted-foreground"
+        data-testid="official-mode"
+      >
+        {{ $t("game_modes.form.official_note") }}
+      </p>
       <Button
-        v-if="gameMode?.archived_at"
+        v-else-if="gameMode?.archived_at"
         type="button"
         variant="outline"
         class="gap-2"
@@ -416,6 +431,11 @@ export default {
     },
   },
   computed: {
+    // Part of 5Stack itself (the utility system books practice on it): the
+    // database refuses to delete, retire, disable or rename it.
+    official(): boolean {
+      return !!this.gameMode?.system;
+    },
     // Whether any match has run this mode; the parent's query carries one
     // referencing match_options row as the answer.
     usedByMatches(): boolean {

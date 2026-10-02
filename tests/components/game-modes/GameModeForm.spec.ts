@@ -89,4 +89,32 @@ describe("GameModeForm Valve game mode", () => {
 
     expect(savedSet()).toContain("valve_mode: null");
   });
+
+  // The utility system books every practice match on this mode, and the
+  // database refuses to delete, retire, disable or rename it.
+  it("labels an official 5Stack mode and leaves out what it cannot do", async () => {
+    await mount(mode({ slug: "utility-practice", system: true }));
+
+    expect(
+      document.body.querySelector('[data-testid="official-mode"]'),
+    ).not.toBeNull();
+    expect(document.body.textContent).not.toContain("Delete Mode");
+    expect(
+      document.body.querySelector<HTMLInputElement>('input[placeholder="retakes"]')
+        ?.disabled,
+    ).toBe(true);
+    expect(
+      document.body.querySelector('[role="switch"]')?.hasAttribute("disabled"),
+    ).toBe(true);
+  });
+
+  it("keeps delete on a mode an operator made", async () => {
+    await mount(mode({ system: false }));
+
+    expect(
+      document.body.querySelector('[data-testid="official-mode"]'),
+    ).toBeNull();
+    expect(document.body.textContent).toContain("Delete");
+  });
 });
+

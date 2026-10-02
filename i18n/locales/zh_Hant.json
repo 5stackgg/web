@@ -2639,6 +2639,7 @@
           "requires_plugins": "請先啟用遊戲外掛——沒有外掛，模式就沒有可載入的內容。",
           "disabled": "已停用",
           "competitive": "可用於競技",
+          "official": "5Stack 官方",
           "casual_only": "僅休閒",
           "plugin_count": "{count} 個外掛",
           "archived": "已封存"
@@ -10431,7 +10432,8 @@
       "runtime_none": "這些外掛沒有共同的框架，因此此模式無法在任何地方執行。請移除面向另一種框架的那個外掛。",
       "runtime_only": "僅在 {runtime} 上執行，因為這是這裡所有外掛都有推出版本的唯一框架。",
       "open_plugin": "在新分頁中開啟該外掛的頁面",
-      "archived_instead": "已經有比賽使用過這個模式，因此它被隱藏而不是刪除。您可以隨時還原它。"
+      "archived_instead": "已經有比賽使用過這個模式，因此它被隱藏而不是刪除。您可以隨時還原它。",
+      "official_note": "5Stack 官方模式：道具練習伺服器以此模式執行，因此無法刪除、停用或重新命名。其 cvar 可以編輯。"
     }
   },
   "edge_status": {

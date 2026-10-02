@@ -2639,6 +2639,7 @@
           "requires_plugins": "Aktiviere zuerst Spiel-Plugins — ohne sie hat ein Modus nichts zu laden.",
           "disabled": "Deaktiviert",
           "competitive": "Competitive-tauglich",
+          "official": "Offiziell von 5Stack",
           "casual_only": "Nur Casual",
           "plugin_count": "{count} Plugins",
           "archived": "Archiviert"
@@ -10431,7 +10432,8 @@
       "runtime_none": "Diese Plugins haben kein gemeinsames Framework, dieser Modus kann also nirgends laufen. Entferne das Plugin, das auf das andere Framework zielt.",
       "runtime_only": "Läuft nur auf {runtime}, weil das das einzige Framework ist, für das es hier jedes Plugin gibt.",
       "open_plugin": "Die Seite dieses Plugins in einem neuen Tab öffnen",
-      "archived_instead": "Dieser Modus wurde bereits in Matches gespielt, deshalb wurde er ausgeblendet statt gelöscht. Du kannst ihn jederzeit wiederherstellen."
+      "archived_instead": "Dieser Modus wurde bereits in Matches gespielt, deshalb wurde er ausgeblendet statt gelöscht. Du kannst ihn jederzeit wiederherstellen.",
+      "official_note": "Ein offizieller 5Stack-Modus: Utility-Practice-Server laufen darauf, daher kann er nicht gelöscht, deaktiviert oder umbenannt werden. Seine Cvars kannst du frei bearbeiten."
     }
   },
   "edge_status": {

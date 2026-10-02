@@ -61,6 +61,13 @@ definePageMeta({
               <div class="min-w-0">
                 <div class="flex items-center gap-2">
                   <span class="font-medium truncate">{{ mode.name }}</span>
+                  <Badge
+                    v-if="mode.system"
+                    variant="outline"
+                    class="border-[hsl(var(--tac-amber)/0.5)] text-[hsl(var(--tac-amber))]"
+                  >
+                    {{ $t("pages.settings.application.game_modes.official") }}
+                  </Badge>
                   <Badge variant="outline" class="gap-1" v-if="mode.archived_at">
                     <Archive class="h-3 w-3" />
                     {{ $t("pages.settings.application.game_modes.archived") }}
@@ -169,6 +176,7 @@ export default {
             cfg: true,
             extra_game_params: true,
             valve_mode: true,
+            system: true,
             match_options: [{ limit: 1 }, { id: true }],
             plugins: [
               { order_by: [{ load_order: order_by.asc }] },

@@ -4277,6 +4277,10 @@
       "source": "Źródło",
       "releases": "Najnowsze wydanie",
       "requires_service": "Wymaga zewnętrznej usługi, którą sam zapewniasz: {service}",
+      "workshop_addons": {
+        "title": "Dodatki z Workshop",
+        "description": "Gracze pobierają je ze Steam Workshop, gdy dołączają do serwera z {name}. Serwery SwiftlyS2 udostępniają je automatycznie; serwery CounterStrikeSharp startują bez nich."
+      },
       "install_title": "Zainstaluj na węźle",
       "install": "Zainstaluj",
       "uninstall": "Usuń",

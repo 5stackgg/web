@@ -4277,6 +4277,10 @@
       "source": "Kilde",
       "releases": "Seneste release",
       "requires_service": "Kræver en ekstern tjeneste, du selv leverer: {service}",
+      "workshop_addons": {
+        "title": "Workshop-addons",
+        "description": "Spillere downloader disse fra Steam Workshop, når de joiner en server, der kører {name}. SwiftlyS2-servere leverer dem automatisk; CounterStrikeSharp-servere starter uden dem."
+      },
       "install_title": "Installér på en node",
       "install": "Installér",
       "uninstall": "Fjern",

@@ -4277,6 +4277,10 @@
       "source": "Kaynak",
       "releases": "Son sürüm",
       "requires_service": "Senin sağlayacağın harici bir servis gerekiyor: {service}",
+      "workshop_addons": {
+        "title": "Workshop eklentileri",
+        "description": "Oyuncular, {name} çalıştıran bir sunucuya katıldıklarında bunları Steam Workshop'tan indirir. SwiftlyS2 sunucuları bunları otomatik olarak sunar; CounterStrikeSharp sunucuları bunlar olmadan başlar."
+      },
       "install_title": "Bir düğüme kur",
       "install": "Kur",
       "uninstall": "Kaldır",

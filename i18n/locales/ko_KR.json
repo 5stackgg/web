@@ -4277,6 +4277,10 @@
       "source": "소스",
       "releases": "최신 릴리스",
       "requires_service": "직접 제공해야 하는 외부 서비스가 필요합니다: {service}",
+      "workshop_addons": {
+        "title": "워크숍 애드온",
+        "description": "{name}을(를) 실행하는 서버에 접속하면 플레이어가 Steam 워크숍에서 이 애드온을 다운로드합니다. SwiftlyS2 서버는 자동으로 제공하며, CounterStrikeSharp 서버는 이 애드온 없이 시작됩니다."
+      },
       "install_title": "노드에 설치",
       "install": "설치",
       "uninstall": "제거",

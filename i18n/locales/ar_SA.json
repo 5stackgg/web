@@ -4277,6 +4277,10 @@
       "source": "المصدر",
       "releases": "أحدث إصدار",
       "requires_service": "تحتاج خدمة خارجية توفّرها أنت: {service}",
+      "workshop_addons": {
+        "title": "إضافات Workshop",
+        "description": "يقوم اللاعبون بتنزيل هذه الإضافات من Steam Workshop عند الانضمام إلى خادم يشغّل {name}. تقدّمها خوادم SwiftlyS2 تلقائيًا، أما خوادم CounterStrikeSharp فتبدأ بدونها."
+      },
       "install_title": "ثبّت على عقدة",
       "install": "ثبّت",
       "uninstall": "أزل",

@@ -8397,7 +8397,9 @@
     "change_name": {
       "name_label": "이름",
       "success": "플레이어 이름이 변경되었습니다",
-      "request_success": "이름 변경을 요청했습니다"
+      "request_success": "이름 변경을 요청했습니다",
+      "request_success_description": "관리자가 승인하면 새 이름이 표시됩니다. 결과와 관계없이 알려 드립니다.",
+      "approval_hint": "이름 변경은 관리자가 승인한 후에 표시됩니다."
     },
     "pending_imports": {
       "title": "대기 중인 CS2 가져오기",

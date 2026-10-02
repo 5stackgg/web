@@ -8397,7 +8397,9 @@
     "change_name": {
       "name_label": "Nazwa",
       "success": "Zmieniono nazwę gracza",
-      "request_success": "Zgłoszono zmianę nazwy"
+      "request_success": "Zgłoszono zmianę nazwy",
+      "request_success_description": "Nowa nazwa pojawi się, gdy administrator ją zatwierdzi. Powiadomimy cię w obu przypadkach.",
+      "approval_hint": "Administrator zatwierdza zmiany nazwy, zanim się pojawią."
     },
     "pending_imports": {
       "title": "Oczekujące importy CS2",

@@ -8397,7 +8397,9 @@
     "change_name": {
       "name_label": "Namn",
       "success": "Spelarens namn ändrat",
-      "request_success": "Namnändring begärd"
+      "request_success": "Namnändring begärd",
+      "request_success_description": "Ditt nya namn visas när en admin har godkänt det. Vi meddelar dig oavsett utfall.",
+      "approval_hint": "En admin godkänner namnändringar innan de visas."
     },
     "pending_imports": {
       "title": "Väntande CS2-importer",

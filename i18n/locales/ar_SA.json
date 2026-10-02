@@ -8397,7 +8397,9 @@
     "change_name": {
       "name_label": "الاسم",
       "success": "تم تغيير اسم اللاعب",
-      "request_success": "تم طلب تغيير الاسم"
+      "request_success": "تم طلب تغيير الاسم",
+      "request_success_description": "سيظهر اسمك الجديد بعد أن يوافق عليه أحد المسؤولين. سنُعلمك في كلتا الحالتين.",
+      "approval_hint": "يوافق أحد المسؤولين على تغييرات الأسماء قبل ظهورها."
     },
     "pending_imports": {
       "title": "استيرادات CS2 المعلّقة",

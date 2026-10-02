@@ -8397,7 +8397,9 @@
     "change_name": {
       "name_label": "Name",
       "success": "Changed Players Name",
-      "request_success": "Requested Name Change"
+      "request_success": "Name change requested",
+      "request_success_description": "Your new name shows once an admin approves it. We'll notify you either way.",
+      "approval_hint": "An admin approves name changes before they show."
     },
     "pending_imports": {
       "title": "Pending CS2 imports",

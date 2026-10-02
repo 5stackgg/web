@@ -8397,7 +8397,9 @@
     "change_name": {
       "name_label": "Nome",
       "success": "Nome del giocatore cambiato",
-      "request_success": "Richiesta di cambio nome inviata"
+      "request_success": "Cambio nome richiesto",
+      "request_success_description": "Il tuo nuovo nome apparirà quando un amministratore lo approverà. Ti avviseremo in ogni caso.",
+      "approval_hint": "Un amministratore approva i cambi di nome prima che vengano mostrati."
     },
     "pending_imports": {
       "title": "Import CS2 in sospeso",

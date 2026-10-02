@@ -145,6 +145,7 @@ import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog";
 
 <script lang="ts">
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
+import { useAuthStore } from "~/stores/AuthStore";
 import { useMatchReadyModal } from "~/composables/useMatchReadyModal";
 import socket from "~/web-sockets/Socket";
 import { useSound } from "~/composables/useSound";
@@ -166,6 +167,14 @@ export default {
     confirmation() {
       return useMatchmakingStore().joinedMatchmakingQueues?.confirmation;
     },
+    // The api resends confirmation.matchId for as long as the match is
+    // active, so the auto-route guard has to survive a reload.
+    routedMatchStorageKey(): string | undefined {
+      const steamId = useAuthStore().me?.steam_id;
+      return steamId
+        ? `5stack:matchmaking-routed-match:${steamId}`
+        : undefined;
+    },
     shouldShow(): boolean {
       return !!this.confirmation && !this.confirmation.matchId;
     },
@@ -182,6 +191,12 @@ export default {
     },
   },
   watch: {
+    routedMatchStorageKey: {
+      immediate: true,
+      handler() {
+        this.routedConfirmedId = this.readRoutedMatchId();
+      },
+    },
     confirmation: {
       immediate: true,
       handler(confirmation, oldConfirmation) {
@@ -217,13 +232,40 @@ export default {
         if (!oldConfirmation?.matchId && this.confirmation?.matchId) {
           if (this.routedConfirmedId !== this.confirmation.matchId) {
             this.routedConfirmedId = this.confirmation.matchId;
+            this.rememberRoutedMatchId(this.confirmation.matchId);
             this.$router.push(`/matches/${this.confirmation.matchId}`);
           }
         }
       },
     },
   },
+  mounted() {
+    window.addEventListener("storage", this.onStorage);
+  },
   methods: {
+    readRoutedMatchId(): string | undefined {
+      if (!this.routedMatchStorageKey) {
+        return undefined;
+      }
+      try {
+        return localStorage.getItem(this.routedMatchStorageKey) ?? undefined;
+      } catch {
+        return undefined;
+      }
+    },
+    rememberRoutedMatchId(matchId: string) {
+      if (!this.routedMatchStorageKey) {
+        return;
+      }
+      try {
+        localStorage.setItem(this.routedMatchStorageKey, matchId);
+      } catch {}
+    },
+    onStorage(event: StorageEvent) {
+      if (event.key && event.key === this.routedMatchStorageKey) {
+        this.routedConfirmedId = event.newValue ?? undefined;
+      }
+    },
     ready() {
       if (!this.confirmation) {
         return;
@@ -255,6 +297,7 @@ export default {
     },
   },
   beforeUnmount() {
+    window.removeEventListener("storage", this.onStorage);
     if (this.countdownInterval) {
       clearInterval(this.countdownInterval);
     }

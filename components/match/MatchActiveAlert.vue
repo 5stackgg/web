@@ -107,6 +107,10 @@ export default {
     };
   },
   computed: {
+    storageKey(): string | undefined {
+      const steamId = useAuthStore().me?.steam_id;
+      return steamId ? `5stack:match-ready-modal:${steamId}` : undefined;
+    },
     match(): any {
       return useMatchLobbyStore().currentMatch;
     },
@@ -168,9 +172,16 @@ export default {
     },
   },
   watch: {
+    storageKey: {
+      immediate: true,
+      handler() {
+        this.restore();
+      },
+    },
     matchKey(next, prev) {
       if (next !== prev && this.acknowledgedKey !== next) {
         this.acknowledgedKey = null;
+        this.persist();
       }
     },
     isOnMatchPage: {
@@ -178,14 +189,54 @@ export default {
       handler(onPage: boolean) {
         if (onPage && this.match) {
           this.visitedMatchId = this.match.id;
+          this.persist();
         }
       },
     },
   },
+  mounted() {
+    window.addEventListener("storage", this.onStorage);
+  },
+  beforeUnmount() {
+    window.removeEventListener("storage", this.onStorage);
+  },
   methods: {
     acknowledge() {
       this.acknowledgedKey = this.matchKey;
+      this.persist();
       useMatchReadyModal().closeMatchReadyModal();
+    },
+    restore() {
+      let stored: {
+        acknowledgedKey?: string | null;
+        visitedMatchId?: string | null;
+      } = {};
+      try {
+        if (this.storageKey) {
+          stored = JSON.parse(localStorage.getItem(this.storageKey) ?? "{}");
+        }
+      } catch {}
+      this.acknowledgedKey = stored?.acknowledgedKey ?? null;
+      this.visitedMatchId = stored?.visitedMatchId ?? null;
+    },
+    persist() {
+      if (!this.storageKey) {
+        return;
+      }
+      try {
+        localStorage.setItem(
+          this.storageKey,
+          JSON.stringify({
+            acknowledgedKey: this.acknowledgedKey,
+            visitedMatchId: this.visitedMatchId,
+          }),
+        );
+      } catch {}
+    },
+    onStorage(event: StorageEvent) {
+      if (event.key && event.key === this.storageKey) {
+        this.restore();
+      }
     },
   },
 };

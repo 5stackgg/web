@@ -772,10 +772,7 @@ function handlePopOut() {
                     </button>
                   </ContextMenuTrigger>
                 </TooltipTrigger>
-                <TooltipContent
-                  side="left"
-                  class="bg-zinc-900 text-zinc-50 border border-zinc-800 shadow-lg rounded-md px-3 py-2"
-                >
+                <TooltipContent side="left">
                   <div class="flex flex-col">
                     <span class="text-xs font-medium">
                       {{ tab.label }}
@@ -866,10 +863,7 @@ function handlePopOut() {
                     <ExternalLink class="w-3.5 h-3.5" />
                   </button>
                 </TooltipTrigger>
-                <TooltipContent
-                  side="bottom"
-                  class="bg-zinc-900 text-zinc-50 border border-zinc-800 shadow-lg rounded-md px-3 py-1.5 text-[11px]"
-                >
+                <TooltipContent side="bottom" class="text-[11px]">
                   {{ $t("layouts.chat_panel.pop_out_tooltip") }}
                 </TooltipContent>
               </Tooltip>
@@ -886,10 +880,7 @@ function handlePopOut() {
                     <X class="w-3.5 h-3.5" />
                   </button>
                 </TooltipTrigger>
-                <TooltipContent
-                  side="bottom"
-                  class="bg-zinc-900 text-zinc-50 border border-zinc-800 shadow-lg rounded-md px-3 py-1.5 text-[11px]"
-                >
+                <TooltipContent side="bottom" class="text-[11px]">
                   {{ $t("layouts.chat_panel.close_tooltip") }}
                 </TooltipContent>
               </Tooltip>

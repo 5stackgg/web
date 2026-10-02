@@ -488,9 +488,7 @@ function winnerName(round: Round) {
                   </div>
                 </div>
               </TooltipTrigger>
-              <TooltipContent
-                class="font-mono !bg-zinc-950 !text-zinc-100 border border-zinc-800 shadow-lg"
-              >
+              <TooltipContent class="font-mono">
                 <div class="flex flex-col gap-0.5 text-xs">
                   <span
                     class="uppercase tracking-widest text-zinc-500 text-[10px]"

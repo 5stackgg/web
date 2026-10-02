@@ -3,6 +3,7 @@ import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import PlayerEditForm from "~/components/player/PlayerEditForm.vue";
 import ImageUploadTile from "~/components/ImageUploadTile.vue";
+import RosterImageEditor from "~/components/RosterImageEditor.vue";
 import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
 
@@ -204,5 +205,52 @@ describe("PlayerEditForm", () => {
     );
     expect(toastMock).toHaveBeenCalledWith({ title: "Applied to 1 team(s)" });
     expect(form.text()).not.toContain("Also apply to your teams");
+  });
+
+  it("opens the current roster image in the editor when the lineup slot is clicked", async () => {
+    signIn(e_player_roles_enum.user);
+    const fetchMock = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValue(
+        new Response(new Blob(["x"]), {
+          headers: { "Content-Type": "image/webp" },
+        }),
+      );
+    const form = await mountForm({
+      canEditAvatar: true,
+      player: { ...player, roster_image_url: "roster-players/1.webp" },
+    });
+
+    await form
+      .find('button[aria-label="Edit roster image"]')
+      .trigger("click");
+    await flushPromises();
+
+    expect(String(fetchMock.mock.calls[0][0])).toContain(
+      "/roster-players/1.webp",
+    );
+    const editor = form.findComponent(RosterImageEditor);
+    expect(editor.props("open")).toBe(true);
+    expect(editor.props("file")).toBeInstanceOf(File);
+  });
+
+  it("copies an existing roster image to teams without a new upload", async () => {
+    signIn(e_player_roles_enum.user);
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(new Blob(["x"], { type: "image/webp" })),
+    );
+    const form = await mountForm({
+      canEditAvatar: true,
+      player: { ...player, roster_image_url: "roster-players/1.webp" },
+      bulkTeams: [
+        { teamId: "t1", teamName: "Blue Rabbits", hasCustomImage: false },
+      ],
+    });
+
+    await button(form, "Copy to teams")!.trigger("click");
+    await flushPromises();
+
+    expect(form.text()).toContain("Also apply to your teams");
+    expect(button(form, "Copy to teams")).toBeUndefined();
   });
 });

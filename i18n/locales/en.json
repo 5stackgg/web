@@ -8418,7 +8418,8 @@
       "name_length": "Names need 3 to 32 characters.",
       "saved": "Player updated",
       "not_now": "Not now",
-      "apply": "Apply"
+      "apply": "Apply",
+      "copy_to_teams": "Copy to teams"
     },
     "pending_imports": {
       "title": "Pending CS2 imports",

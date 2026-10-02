@@ -7,6 +7,7 @@ import {
   RotateCcw,
   Trash2,
   Upload,
+  Users,
 } from "lucide-vue-next";
 import { Input } from "~/components/ui/input";
 import { Spinner } from "~/components/ui/spinner";
@@ -207,7 +208,7 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
         :current-src="rosterSrc"
         @uploaded="offerToTeams"
       >
-        <template #default="{ pick, remove, busy, dragOver, dropzone }">
+        <template #default="{ pick, edit, remove, busy, dragOver, dropzone }">
           <ManageSection :label="$t('team.member.roster_image')">
             <template #action>
               <div class="flex items-center gap-2">
@@ -250,10 +251,8 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
                   v-if="position === 3"
                   type="button"
                   class="group relative aspect-[400/420] overflow-hidden rounded-t-sm bg-black/25"
-                  :aria-label="
-                    hasRoster ? $t('image_upload.replace') : $t('common.upload')
-                  "
-                  @click="pick"
+                  :aria-label="$t('avatar.roster_editor.title')"
+                  @click="edit(hasRoster ? rosterSrc : avatarSrc)"
                 >
                   <img
                     v-if="lineupSrc"
@@ -273,7 +272,7 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
                   <span
                     class="absolute inset-0 grid place-items-center bg-black/60 text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
                   >
-                    <Upload class="size-4" />
+                    <Pencil class="size-4" />
                   </span>
                   <span
                     class="pointer-events-none absolute inset-0 rounded-t-sm border-2 border-b-0 border-[hsl(var(--tac-amber))]"
@@ -307,9 +306,23 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
                 {{ $t("image_upload.drop_to_upload") }}
               </div>
             </div>
-            <p class="text-xs text-muted-foreground">
-              {{ $t("player.edit.roster_hint") }}
-            </p>
+            <div class="flex items-start justify-between gap-3">
+              <p class="text-xs text-muted-foreground">
+                {{ $t("player.edit.roster_hint") }}
+              </p>
+              <Button
+                v-if="hasRoster && bulkTeams.length > 0 && !teamOffer"
+                type="button"
+                variant="outline"
+                size="sm"
+                class="shrink-0"
+                :loading="loadingRosterCopy"
+                @click="offerCurrentToTeams"
+              >
+                <Users class="size-3.5" />
+                {{ $t("player.edit.copy_to_teams") }}
+              </Button>
+            </div>
           </ManageSection>
         </template>
       </ImageUploadTile>
@@ -449,6 +462,7 @@ export default {
         selected: Record<string, boolean>;
       } | null,
       applyingTeams: false,
+      loadingRosterCopy: false,
     };
   },
   watch: {
@@ -550,6 +564,25 @@ export default {
           this.bulkTeams.map((team) => [team.teamId, !team.hasCustomImage]),
         ),
       };
+    },
+    async offerCurrentToTeams() {
+      if (!this.rosterSrc || this.loadingRosterCopy) return;
+      this.loadingRosterCopy = true;
+      try {
+        const response = await fetch(this.rosterSrc);
+        if (!response.ok) {
+          throw new Error(`${response.status} ${response.statusText}`);
+        }
+        this.offerToTeams("", await response.blob());
+      } catch (error: any) {
+        toast({
+          title: this.$t("image_upload.upload_failed"),
+          description: error?.message,
+          variant: "destructive",
+        });
+      } finally {
+        this.loadingRosterCopy = false;
+      }
     },
     async applyToTeams() {
       if (!this.teamOffer || this.applyingTeams) return;

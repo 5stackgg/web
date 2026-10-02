@@ -8418,7 +8418,8 @@
       "name_length": "Navne skal være 3 til 32 tegn.",
       "saved": "Spiller opdateret",
       "not_now": "Ikke nu",
-      "apply": "Anvend"
+      "apply": "Anvend",
+      "copy_to_teams": "Kopiér til hold"
     },
     "pending_imports": {
       "title": "Afventende CS2-imports",

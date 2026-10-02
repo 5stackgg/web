@@ -100,6 +100,9 @@ const defaultHint = computed(() => {
 const fileInput = ref<HTMLInputElement | null>(null);
 const isUploading = ref(false);
 const isRemoving = ref(false);
+const isFetching = ref(false);
+// The original file behind the last roster upload, so editing again re-crops it instead of the 400×420 output.
+const lastSource = ref<File | null>(null);
 const dragDepth = ref(0);
 const isDragOver = ref(false);
 const cropOpen = ref(false);
@@ -114,7 +117,9 @@ const showRemove = computed(
     (props.mode === "deferred" && !!deferredPreview.value) ||
     (props.mode !== "deferred" && props.hasCustom),
 );
-const busy = computed(() => isUploading.value || isRemoving.value);
+const busy = computed(
+  () => isUploading.value || isRemoving.value || isFetching.value,
+);
 
 function triggerPicker() {
   if (props.disabled || busy.value) return;
@@ -267,7 +272,34 @@ async function store(blob: Blob) {
 }
 
 function onRosterUploaded(path: string, blob: Blob) {
+  lastSource.value = editorFile.value;
   emit("uploaded", path, blob);
+}
+
+// Reopens the editor on an image already on screen, so it can be adjusted without picking a file.
+async function edit(src?: string | null) {
+  if (props.disabled || busy.value) return;
+  if (lastSource.value) {
+    await handleFile(lastSource.value);
+    return;
+  }
+  if (!src) {
+    triggerPicker();
+    return;
+  }
+  isFetching.value = true;
+  try {
+    const response = await fetch(src);
+    if (!response.ok) {
+      throw new Error(`${response.status} ${response.statusText}`);
+    }
+    const blob = await response.blob();
+    await handleFile(new File([blob], props.filename, { type: blob.type }));
+  } catch {
+    triggerPicker();
+  } finally {
+    isFetching.value = false;
+  }
 }
 
 async function remove() {
@@ -294,6 +326,7 @@ async function remove() {
         throw new Error(`${response.status} ${response.statusText}`);
       }
     }
+    lastSource.value = null;
     toast({ title: t("image_upload.removed") as string });
     emit("removed");
   } catch (error: any) {
@@ -311,7 +344,7 @@ onBeforeUnmount(() => {
   if (deferredPreview.value) URL.revokeObjectURL(deferredPreview.value);
 });
 
-defineExpose({ pick: triggerPicker, remove });
+defineExpose({ pick: triggerPicker, edit, remove });
 </script>
 
 <template>
@@ -319,6 +352,7 @@ defineExpose({ pick: triggerPicker, remove });
     <!-- Default slot swaps in a custom surface; upload, crop and roster editing stay here. -->
     <slot
       :pick="triggerPicker"
+      :edit="edit"
       :remove="remove"
       :busy="busy"
       :drag-over="isDragOver"

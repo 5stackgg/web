@@ -8418,7 +8418,8 @@
       "name_length": "Namen müssen 3 bis 32 Zeichen lang sein.",
       "saved": "Spieler aktualisiert",
       "not_now": "Nicht jetzt",
-      "apply": "Übernehmen"
+      "apply": "Übernehmen",
+      "copy_to_teams": "In Teams übernehmen"
     },
     "pending_imports": {
       "title": "Ausstehende CS2-Importe",

@@ -8418,7 +8418,8 @@
       "name_length": "İsimler 3 ile 32 karakter arasında olmalıdır.",
       "saved": "Oyuncu güncellendi",
       "not_now": "Şimdi değil",
-      "apply": "Uygula"
+      "apply": "Uygula",
+      "copy_to_teams": "Takımlara kopyala"
     },
     "pending_imports": {
       "title": "Bekleyen CS2 içe aktarmaları",

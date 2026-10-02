@@ -8418,7 +8418,8 @@
       "name_length": "名稱需為 3 到 32 個字元。",
       "saved": "玩家已更新",
       "not_now": "暫不",
-      "apply": "套用"
+      "apply": "套用",
+      "copy_to_teams": "複製到戰隊"
     },
     "pending_imports": {
       "title": "待匯入的 CS2 比賽",

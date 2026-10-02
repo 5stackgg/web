@@ -8418,7 +8418,8 @@
       "name_length": "Namn måste vara 3 till 32 tecken.",
       "saved": "Spelaren uppdaterad",
       "not_now": "Inte nu",
-      "apply": "Tillämpa"
+      "apply": "Tillämpa",
+      "copy_to_teams": "Kopiera till lag"
     },
     "pending_imports": {
       "title": "Väntande CS2-importer",

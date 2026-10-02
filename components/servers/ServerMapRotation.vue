@@ -454,11 +454,18 @@ function onPointerMove(event: PointerEvent) {
     const row = listEl.value?.querySelector<HTMLElement>("[data-rotation-row]");
 
     rowHeight = row?.offsetHeight || 53;
-    // Held for the whole drag: a list that shrank as the dragged row left it
-    // would pull the pool up under the pointer and flip the drop target.
-    listLock.value = listEl.value?.offsetHeight ?? 0;
-    slot.value = current.from === "rotation" ? current.index : null;
-    current.active = true;
+
+    // Held for the whole drag, with a row to spare for the gap a pool map
+    // opens: a list that grew and shrank as the gap came and went pushed the
+    // pool in and out under the pointer and flipped the drop target.
+    const spare = current.from === "pool" ? rowHeight : 0;
+    const height = listEl.value?.offsetHeight ?? 0;
+
+    void fromPool(() => {
+      listLock.value = height + spare;
+      slot.value = current.from === "rotation" ? current.index : null;
+      current.active = true;
+    });
     document.body.style.userSelect = "none";
     document.body.style.cursor = "grabbing";
     window.getSelection()?.removeAllRanges();
@@ -613,7 +620,9 @@ function onDragKey(event: KeyboardEvent) {
 }
 
 function finishDrag() {
-  if (drag.value?.active) {
+  const wasActive = !!drag.value?.active;
+
+  if (wasActive) {
     document.body.style.userSelect = "";
     document.body.style.cursor = "";
   }
@@ -624,9 +633,19 @@ function finishDrag() {
   window.removeEventListener("pointercancel", finishDrag);
   window.removeEventListener("keydown", onDragKey);
   window.removeEventListener("scroll", track, true);
-  drag.value = null;
-  slot.value = null;
-  overPool.value = false;
+
+  const reset = () => {
+    drag.value = null;
+    slot.value = null;
+    overPool.value = false;
+  };
+
+  // Releasing the reserved height moves the pool too; hold it the same way.
+  if (wasActive) {
+    void fromPool(reset);
+  } else {
+    reset();
+  }
 }
 
 onBeforeUnmount(finishDrag);

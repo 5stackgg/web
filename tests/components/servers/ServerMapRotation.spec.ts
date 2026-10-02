@@ -255,6 +255,26 @@ describe("ServerMapRotation", () => {
     expect(ids(wrapper)).toEqual(["m2", "m1"]);
   });
 
+  // The gap a pool map opens used to grow the list, push the pool down under the
+  // pointer and close again as the pointer left, so the drop target flickered.
+  it("makes room for a pool map's gap up front, so the list never resizes mid-drag", async () => {
+    state.data = fixture();
+
+    const wrapper = await mountCard();
+    await press(tile(wrapper, "Dust II"), 50, 450);
+    await move(50, 600);
+
+    const list = wrapper.find("[data-rotation-list]");
+    const reserved = list.attributes("style");
+    expect(reserved).toContain("min-height: 53px");
+
+    await move(50, 110);
+    expect(list.attributes("style")).toBe(reserved);
+
+    await move(50, 600);
+    expect(list.attributes("style")).toBe(reserved);
+  });
+
   it("removes a rotation map dropped back on the pool", async () => {
     state.data = fixture();
 

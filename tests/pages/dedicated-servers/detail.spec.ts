@@ -221,6 +221,23 @@ describe("dedicated server header", () => {
 
   // Online and the week's players live on the Overview tab and the plugin's
   // status in Settings; a second copy above the tabs only repeated them.
+  // The header printed host:port while Copy and Join used the Steam relay, and
+  // the first fix printed the helper function's source instead.
+  it("shows the address Join connects to, relay included", async () => {
+    const wrapper = await mountAs("administrator", {
+      server: { connection_string: "connect 90270873413369866" },
+    });
+
+    expect(wrapper.find("header").text()).toContain("90270873413369866");
+    expect(wrapper.find("header").text()).not.toContain("function");
+  });
+
+  it("falls back to host and port with no connect string", async () => {
+    const wrapper = await mountAs("administrator");
+
+    expect(wrapper.find("header").text()).toContain("10.0.0.5:27015");
+  });
+
   it("keeps stats out of the header", async () => {
     const wrapper = await mountAs("moderator", {
       server: { type: "Casual" },

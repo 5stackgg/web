@@ -193,14 +193,14 @@ const titleClasses =
             class="flex min-w-0 flex-wrap items-center gap-2 font-mono text-[0.8rem] tracking-[0.05em] text-muted-foreground"
           >
             <span class="min-w-0 truncate">
-              {{ connectAddress }}
+              {{ shownAddress }}
             </span>
             <QuickServerConnect
               v-if="server.connection_string"
               :server="server"
               highlight
             />
-            <Clipboard v-else :data="connectAddress" />
+            <Clipboard v-else :data="shownAddress" />
           </div>
         </div>
 
@@ -530,7 +530,9 @@ export default {
     };
   },
   computed: {
-    connectAddress(): string {
+    // Not named connectAddress: an import in this block is a template binding
+    // too, and it wins over a computed of the same name.
+    shownAddress(): string {
       return connectAddress(
         this.server?.connection_string,
         this.server?.host,

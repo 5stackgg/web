@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from "vue";
 import { Film, Play, ExternalLink, Twitch, Youtube } from "lucide-vue-next";
-import MediaLightbox from "~/components/media/MediaLightbox.vue";
 import ClipPlayer from "~/components/clips/ClipPlayer.vue";
 import EventAudioPlayer from "~/components/events/EventAudioPlayer.vue";
 import { eventMediaUrl } from "~/composables/useEventMediaUpload";
@@ -9,9 +8,10 @@ import { useMediaPlayback } from "~/composables/useMediaPlayback";
 import { parseExternalMedia } from "~/utilities/externalMedia";
 
 // Pure playback tile: clicking a video swaps the poster for the real player
-// (the mp4 is only fetched at that moment), clicking an image opens a
-// lightbox, external links embed (YouTube/Twitch) or open in a new tab.
-// Editing lives behind the parent's explicit Details action.
+// (the mp4 is only fetched at that moment), clicking an image emits `view`
+// so the list can open its gallery lightbox, external links embed
+// (YouTube/Twitch) or open in a new tab. Editing lives behind the parent's
+// explicit Details action.
 const props = defineProps<{
   event: { id: string };
   item: {
@@ -24,8 +24,9 @@ const props = defineProps<{
   };
 }>();
 
+const emit = defineEmits<{ (e: "view", id: string): void }>();
+
 const playing = ref(false);
-const lightboxOpen = ref(false);
 const playerRef = ref<InstanceType<typeof ClipPlayer> | null>(null);
 const playback = useMediaPlayback();
 
@@ -181,18 +182,10 @@ async function startPlayback() {
       <button
         type="button"
         class="absolute inset-0 h-full w-full cursor-zoom-in"
-        @click="lightboxOpen = true"
+        @click="emit('view', item.id)"
       >
         <img :src="src" class="h-full w-full object-cover" loading="lazy" />
       </button>
-
-      <MediaLightbox
-        v-model:open="lightboxOpen"
-        kind="image"
-        :src="src"
-        :title="item.title || item.filename"
-        :caption="item.title"
-      />
     </template>
   </div>
 </template>

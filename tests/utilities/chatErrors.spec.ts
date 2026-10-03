@@ -116,6 +116,12 @@ describe("chat edit errors", () => {
     );
   });
 
+  it("says when edits are coming too fast", () => {
+    expect(
+      chatErrorDescription({ code: "rate_limited", action: "edit" }, t),
+    ).toBe(t("chat.edit_rate_limited"));
+  });
+
   it("says how long an edit can be", () => {
     expect(
       chatErrorDescription({ code: "too_long", action: "edit", max: 2000 }, t),

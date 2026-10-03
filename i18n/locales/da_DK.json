@@ -8019,10 +8019,13 @@
       "no_messages": "Ingen beskeder",
       "empty_title": "Ingen chat",
       "empty_description": "Ingen skrev noget i denne kamp, eller chatten er allerede slettet.",
+      "empty_withheld_description": "Ingen skrev i fælleschatten, og holdchatten er skjult, fordi du spillede i denne kamp.",
       "failed_title": "Chatloggen er ikke tilgængelig",
       "failed_description": "Chatloggen kunne ikke indlæses.",
       "withheld": "Du spillede i denne kamp, så holdchatten er skjult.",
+      "truncated": "Chatten i denne kamp var for lang til at blive gemt i sin helhed.",
       "deleted_marker": "slettet",
+      "deleted_by": "slettet af {name}",
       "edited_marker": "redigeret"
     },
     "status": {
@@ -9260,6 +9263,7 @@
     "edited_at": "Redigeret {time}",
     "edit_failed": "Beskeden kunne ikke redigeres",
     "edit_timeout": "Serveren svarede ikke. Din ændring kan stadig blive gemt.",
+    "edit_rate_limited": "Du redigerer for hurtigt.",
     "edit_window_closed": "Du kan kun redigere en besked i 10 minutter.",
     "react": "Reagér",
     "add_reaction": "Tilføj reaktion",

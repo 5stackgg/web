@@ -8019,10 +8019,13 @@
       "no_messages": "Nenhuma mensagem",
       "empty_title": "Sem chat",
       "empty_description": "Ninguém escreveu nada nesta partida, ou o chat já foi excluído.",
+      "empty_withheld_description": "Ninguém escreveu no chat geral, e o chat do time está oculto porque você jogou esta partida.",
       "failed_title": "Registro do chat indisponível",
       "failed_description": "Não foi possível carregar o registro do chat.",
       "withheld": "Você jogou nesta partida, então o chat do time está oculto.",
+      "truncated": "O chat desta partida era longo demais para ser guardado por completo.",
       "deleted_marker": "excluída",
+      "deleted_by": "excluída por {name}",
       "edited_marker": "editada"
     },
     "status": {
@@ -9260,6 +9263,7 @@
     "edited_at": "Editada em {time}",
     "edit_failed": "Não foi possível editar a mensagem",
     "edit_timeout": "O servidor não respondeu. Sua edição ainda pode ser salva.",
+    "edit_rate_limited": "Você está editando rápido demais.",
     "edit_window_closed": "Você só pode editar uma mensagem por 10 minutos.",
     "react": "Reagir",
     "add_reaction": "Adicionar Reação",

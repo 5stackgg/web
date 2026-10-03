@@ -8019,10 +8019,13 @@
       "no_messages": "メッセージはありません",
       "empty_title": "チャットなし",
       "empty_description": "この試合では誰も発言していないか、チャットはすでに削除されています。",
+      "empty_withheld_description": "全体チャットには誰も発言しておらず、この試合に参加したためチームチャットは非表示です。",
       "failed_title": "チャットログを表示できません",
       "failed_description": "チャットログを読み込めませんでした。",
       "withheld": "この試合に参加したため、チームチャットは非表示です。",
+      "truncated": "この試合のチャットは長すぎて、すべては保存できませんでした。",
       "deleted_marker": "削除済み",
+      "deleted_by": "{name} が削除",
       "edited_marker": "編集済み"
     },
     "status": {
@@ -9260,6 +9263,7 @@
     "edited_at": "{time} に編集",
     "edit_failed": "メッセージを編集できませんでした",
     "edit_timeout": "サーバーから応答がありませんでした。編集は後で保存される可能性があります。",
+    "edit_rate_limited": "編集が速すぎます。",
     "edit_window_closed": "メッセージを編集できるのは送信後10分間だけです。",
     "react": "リアクション",
     "add_reaction": "リアクションを追加",

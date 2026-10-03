@@ -71,6 +71,8 @@ export function chatErrorDescription(
         });
       case "gagged":
         return t("chat.gagged");
+      case "rate_limited":
+        return t("chat.edit_rate_limited");
       case "not_allowed":
       default:
         return undefined;

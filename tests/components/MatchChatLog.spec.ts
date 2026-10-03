@@ -425,6 +425,95 @@ describe("MatchChatLog", () => {
     expect(plain.find("[data-chat-log-edited]").exists()).toBe(false);
   });
 
+  it("names who deleted a line", async () => {
+    fetched.mockResolvedValue({
+      ...log,
+      match: [
+        {
+          ...line("d1", "Pyre", "something nasty", 21, 1, "web"),
+          deleted_at: at(21, 2),
+          deleted_by: { steam_id: "76561198000000077", name: "Warden" },
+        },
+      ],
+    });
+
+    const wrapper = await mount();
+    const [deleted] = column(wrapper, "All Chat").findAll(
+      "[data-chat-log-line]",
+    );
+
+    expect(deleted.find("[data-chat-log-deleted]").text()).toBe(
+      "deleted by Warden",
+    );
+  });
+
+  it("opens an edited line's earlier text from its marker", async () => {
+    fetched.mockResolvedValue({
+      ...log,
+      match: [
+        {
+          ...line("e1", "tarn", "fixed it", 21, 3, "web"),
+          edited_at: at(21, 5),
+          edits: [
+            { message: "fixd it", edited_at: at(21, 4) },
+            { message: "fixed it?", edited_at: at(21, 5) },
+          ],
+        },
+      ],
+    });
+
+    const wrapper = await mount();
+    const [edited] = column(wrapper, "All Chat").findAll(
+      "[data-chat-log-line]",
+    );
+
+    expect(edited.text()).not.toContain("fixd it");
+
+    await edited.get("[data-chat-log-edited]").trigger("click");
+    await settle();
+
+    const earlier = edited
+      .findAll("[data-chat-log-earlier]")
+      .map((node: any) => node.text());
+
+    expect(earlier).toEqual([
+      expect.stringContaining("fixd it"),
+      expect.stringContaining("fixed it?"),
+    ]);
+  });
+
+  it("says all chat is empty, not that nobody spoke, when team chat is hidden", async () => {
+    fetched.mockResolvedValue({
+      ...log,
+      match: [],
+      teams: [],
+      team_chat_withheld: true,
+    });
+
+    const wrapper = await mount();
+
+    expect(wrapper.text()).not.toContain("Nobody wrote anything");
+    expect(wrapper.text()).toContain(
+      "Nobody wrote in all chat, and team chat is hidden because you played in this match.",
+    );
+  });
+
+  it("says when the match's chat was too long to keep in full", async () => {
+    fetched.mockResolvedValue({ ...log, archive_truncated: true });
+
+    const wrapper = await mount();
+
+    expect(wrapper.text()).toContain(
+      "This match's chat was too long to keep in full.",
+    );
+  });
+
+  it("says nothing of the sort when it was all kept", async () => {
+    const wrapper = await mount();
+
+    expect(wrapper.text()).not.toContain("too long to keep");
+  });
+
   it("tags lines typed on the website and stamps each with its clock time", async () => {
     const wrapper = await mount();
 

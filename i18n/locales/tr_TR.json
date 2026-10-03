@@ -8019,10 +8019,13 @@
       "no_messages": "Mesaj yok",
       "empty_title": "Sohbet Yok",
       "empty_description": "Bu maçta kimse bir şey yazmadı ya da sohbet zaten silindi.",
+      "empty_withheld_description": "Genel sohbete kimse yazmadı ve bu maçta oynadığın için takım sohbeti gizlendi.",
       "failed_title": "Sohbet Kaydı Kullanılamıyor",
       "failed_description": "Sohbet kaydı yüklenemedi.",
       "withheld": "Bu maçta oynadın, bu yüzden takım sohbeti gizlendi.",
+      "truncated": "Bu maçın sohbeti tamamı saklanamayacak kadar uzundu.",
       "deleted_marker": "silindi",
+      "deleted_by": "{name} tarafından silindi",
       "edited_marker": "düzenlendi"
     },
     "status": {
@@ -9260,6 +9263,7 @@
     "edited_at": "Düzenlenme: {time}",
     "edit_failed": "Mesaj düzenlenemedi",
     "edit_timeout": "Sunucu yanıt vermedi. Düzenlemen yine de kaydedilebilir.",
+    "edit_rate_limited": "Çok hızlı düzenliyorsun.",
     "edit_window_closed": "Bir mesajı yalnızca 10 dakika boyunca düzenleyebilirsin.",
     "react": "Tepki ver",
     "add_reaction": "Tepki ekle",

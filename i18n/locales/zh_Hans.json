@@ -8019,10 +8019,13 @@
       "no_messages": "没有消息",
       "empty_title": "没有聊天",
       "empty_description": "本场比赛中没有人发言，或聊天记录已被删除。",
+      "empty_withheld_description": "全部聊天中没有人发言，且因为你参加了这场比赛，队伍聊天已隐藏。",
       "failed_title": "聊天记录不可用",
       "failed_description": "无法加载聊天记录。",
       "withheld": "你参加了这场比赛，因此队伍聊天已隐藏。",
+      "truncated": "这场比赛的聊天太长，无法完整保存。",
       "deleted_marker": "已删除",
+      "deleted_by": "已被 {name} 删除",
       "edited_marker": "已编辑"
     },
     "status": {
@@ -9260,6 +9263,7 @@
     "edited_at": "编辑于 {time}",
     "edit_failed": "消息编辑失败",
     "edit_timeout": "服务器没有响应。你的修改仍可能被保存。",
+    "edit_rate_limited": "你编辑得太快了。",
     "edit_window_closed": "你只能在发送后 10 分钟内编辑消息。",
     "react": "表情回应",
     "add_reaction": "添加表情回应",

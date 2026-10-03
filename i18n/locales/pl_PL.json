@@ -8019,10 +8019,13 @@
       "no_messages": "Brak wiadomości",
       "empty_title": "Brak czatu",
       "empty_description": "Nikt nic nie napisał w tym meczu albo czat został już usunięty.",
+      "empty_withheld_description": "Nikt nie pisał na czacie ogólnym, a czat drużyny jest ukryty, bo grałeś w tym meczu.",
       "failed_title": "Historia czatu niedostępna",
       "failed_description": "Nie udało się wczytać historii czatu.",
       "withheld": "Grałeś w tym meczu, więc czat drużyny jest ukryty.",
+      "truncated": "Czat tego meczu był zbyt długi, by zachować go w całości.",
       "deleted_marker": "usunięto",
+      "deleted_by": "usunięte przez {name}",
       "edited_marker": "edytowano"
     },
     "status": {
@@ -9260,6 +9263,7 @@
     "edited_at": "Edytowano {time}",
     "edit_failed": "Nie udało się edytować wiadomości",
     "edit_timeout": "Serwer nie odpowiedział. Twoja zmiana może mimo to zostać zapisana.",
+    "edit_rate_limited": "Edytujesz zbyt szybko.",
     "edit_window_closed": "Wiadomość możesz edytować tylko przez 10 minut.",
     "react": "Zareaguj",
     "add_reaction": "Dodaj reakcję",

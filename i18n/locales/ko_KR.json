@@ -8019,10 +8019,13 @@
       "no_messages": "메시지 없음",
       "empty_title": "채팅 없음",
       "empty_description": "이 경기에서 아무도 채팅하지 않았거나 채팅이 이미 삭제되었습니다.",
+      "empty_withheld_description": "전체 채팅에 아무도 쓰지 않았고, 이 경기에 참가했으므로 팀 채팅은 숨겨집니다.",
       "failed_title": "채팅 기록을 사용할 수 없음",
       "failed_description": "채팅 기록을 불러올 수 없습니다.",
       "withheld": "이 경기에 참가했으므로 팀 채팅은 숨겨집니다.",
+      "truncated": "이 경기의 채팅이 너무 길어 전부 보관하지 못했습니다.",
       "deleted_marker": "삭제됨",
+      "deleted_by": "{name} 님이 삭제",
       "edited_marker": "수정됨"
     },
     "status": {
@@ -9260,6 +9263,7 @@
     "edited_at": "{time}에 편집됨",
     "edit_failed": "메시지를 편집하지 못했습니다",
     "edit_timeout": "서버가 응답하지 않았습니다. 편집 내용이 나중에 저장될 수도 있습니다.",
+    "edit_rate_limited": "너무 빠르게 수정하고 있습니다.",
     "edit_window_closed": "메시지는 보낸 후 10분 동안만 편집할 수 있습니다.",
     "react": "반응",
     "add_reaction": "반응 추가",

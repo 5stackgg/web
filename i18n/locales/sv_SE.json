@@ -8019,10 +8019,13 @@
       "no_messages": "Inga meddelanden",
       "empty_title": "Ingen chatt",
       "empty_description": "Ingen skrev något i den här matchen, eller så har chatten redan raderats.",
+      "empty_withheld_description": "Ingen skrev i den allmänna chatten, och lagchatten är dold eftersom du spelade i den här matchen.",
       "failed_title": "Chattloggen är inte tillgänglig",
       "failed_description": "Chattloggen kunde inte laddas.",
       "withheld": "Du spelade i den här matchen, så lagchatten är dold.",
+      "truncated": "Chatten i den här matchen var för lång för att sparas i sin helhet.",
       "deleted_marker": "raderad",
+      "deleted_by": "raderad av {name}",
       "edited_marker": "redigerad"
     },
     "status": {
@@ -9260,6 +9263,7 @@
     "edited_at": "Redigerat {time}",
     "edit_failed": "Meddelandet kunde inte redigeras",
     "edit_timeout": "Servern svarade inte. Din ändring kan fortfarande sparas.",
+    "edit_rate_limited": "Du redigerar för snabbt.",
     "edit_window_closed": "Du kan bara redigera ett meddelande i 10 minuter.",
     "react": "Reagera",
     "add_reaction": "Lägg till reaktion",

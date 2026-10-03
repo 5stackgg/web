@@ -8019,10 +8019,13 @@
       "no_messages": "Keine Nachrichten",
       "empty_title": "Kein Chat",
       "empty_description": "In diesem Match hat niemand etwas geschrieben, oder der Chat wurde bereits gelöscht.",
+      "empty_withheld_description": "Im allgemeinen Chat hat niemand geschrieben, und der Team-Chat ist ausgeblendet, weil du in diesem Match gespielt hast.",
       "failed_title": "Chat-Verlauf nicht verfügbar",
       "failed_description": "Der Chat-Verlauf konnte nicht geladen werden.",
       "withheld": "Du hast in diesem Match gespielt, daher ist der Team-Chat ausgeblendet.",
+      "truncated": "Der Chat dieses Matches war zu lang, um vollständig gespeichert zu werden.",
       "deleted_marker": "gelöscht",
+      "deleted_by": "gelöscht von {name}",
       "edited_marker": "bearbeitet"
     },
     "status": {
@@ -9260,6 +9263,7 @@
     "edited_at": "Bearbeitet am {time}",
     "edit_failed": "Nachricht konnte nicht bearbeitet werden",
     "edit_timeout": "Der Server hat nicht geantwortet. Deine Änderung wird eventuell trotzdem gespeichert.",
+    "edit_rate_limited": "Du bearbeitest zu schnell.",
     "edit_window_closed": "Du kannst eine Nachricht nur 10 Minuten lang bearbeiten.",
     "react": "Reagieren",
     "add_reaction": "Reaktion hinzufügen",

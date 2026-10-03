@@ -106,13 +106,44 @@ function clearCloseTimer() {
   }
 }
 
+// Menus and dialogs the hub opens are portaled outside its box, so reaching
+// one -- or a modal menu taking the pointer as it opens -- reads as leaving.
+// The close waits them out, then goes by where the pointer really is: no
+// mouseenter fires when a menu closes over the hub until the pointer moves.
+const HUB_OVERLAY =
+  '[role="dialog"], [role="alertdialog"], [role="menu"], [role="listbox"]';
+
+function overlayOpen() {
+  return Array.from(document.querySelectorAll(HUB_OVERLAY)).some(
+    (overlay) => overlay.getAttribute("data-state") === "open",
+  );
+}
+
+function pointerOverHub() {
+  const at = dockIntent.pointer();
+  const box = hubLayerRef.value?.getBoundingClientRect();
+  return (
+    !!at &&
+    !!box &&
+    at.x >= box.left &&
+    at.x <= box.right &&
+    at.y >= box.top &&
+    at.y <= box.bottom
+  );
+}
+
 function queueHoverClose() {
   clearCloseTimer();
   closeTimer = setTimeout(() => {
-    if (!hoverCloseSuspended.value && !composerBusy()) {
+    closeTimer = null;
+    if (!canDismiss()) return;
+    if (overlayOpen()) {
+      queueHoverClose();
+      return;
+    }
+    if (!hoverCloseSuspended.value && !composerBusy() && !pointerOverHub()) {
       dismissRightSidebar();
     }
-    closeTimer = null;
   }, DOCK_CLOSE_DELAY_MS);
 }
 
@@ -133,7 +164,8 @@ function onMouseLeave(event: MouseEvent) {
   if (
     hoverCloseSuspended.value ||
     (nextTarget instanceof Element &&
-      nextTarget.closest("[data-right-hub-interactive]"))
+      nextTarget.closest("[data-right-hub-interactive]") &&
+      !nextTarget.closest(HUB_OVERLAY))
   ) {
     clearCloseTimer();
     return;
@@ -148,9 +180,7 @@ watch(hoverCloseSuspended, (suspended) => {
     return;
   }
 
-  if (!isPointerInsideHub.value) {
-    queueHoverClose();
-  }
+  queueHoverClose();
 });
 
 // Clicking anywhere else puts the hub away, the way a popover goes. Menus and
@@ -160,9 +190,7 @@ function isPartOfHub(target: EventTarget | null) {
   if (!(target instanceof Element)) return false;
   return (
     !!hubLayerRef.value?.contains(target) ||
-    !!target.closest(
-      '[data-right-hub-interactive], [role="dialog"], [role="alertdialog"], [role="menu"], [role="listbox"]',
-    )
+    !!target.closest(`[data-right-hub-interactive], ${HUB_OVERLAY}`)
   );
 }
 

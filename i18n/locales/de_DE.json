@@ -3701,18 +3701,172 @@
       }
     },
     "play": {
-      "title": "Spielen",
-      "open_registration_tournaments": {
-        "section_label": "TURNIERE",
-        "description": "Turniere mit offener Anmeldung, denen jeder beitreten kann."
+      "more_ways": {
+        "title": "Weitere Spielmöglichkeiten",
+        "tournaments": {
+          "title": "Turniere",
+          "teams_of": "{count} von {max} Teams",
+          "register": "Team anmelden",
+          "sign_in": "Zum Anmelden einloggen",
+          "all": "Alle Turniere"
+        },
+        "league": {
+          "title": "Liga",
+          "open_until": "Anmeldung offen bis {date}",
+          "open": "Anmeldung offen",
+          "teams_in": "{count} Team dabei | {count} Teams dabei",
+          "register": "Team anmelden",
+          "sign_in": "Zum Anmelden einloggen"
+        },
+        "scrims": {
+          "title": "Scrims",
+          "teams_today": "Team sucht heute einen Scrim | Teams suchen heute einen Scrim",
+          "none_today": "Heute sucht kein Team einen Scrim",
+          "needs_team": "Erfordert ein Team, das du verwaltest",
+          "post_hint": "Trag ein, wann dein Team frei ist, dann können andere einen Scrim anfragen.",
+          "find": "Scrim finden",
+          "post": "Verfügbarkeit eintragen"
+        },
+        "drop_in": {
+          "title": "Direkt einsteigen",
+          "playing": "spielt auf öffentlichen Servern | spielen auf öffentlichen Servern",
+          "none": "Hier gibt es noch keine öffentlichen Server",
+          "all_servers": "Alle Server ({count})",
+          "players": "Spieler",
+          "connect": "Verbinden",
+          "copy": "Connect-Befehl kopieren"
+        },
+        "practice": {
+          "title": "Übungsserver",
+          "description": "Dein eigener Server für Utility-Lineups · jede Map",
+          "map": "Map",
+          "start": "Übung starten",
+          "sign_in": "Zum Üben einloggen"
+        }
       },
       "matchmaking": {
-        "description": "Stell dich solo oder mit deiner Party in die Queue — die Teams werden automatisch ausbalanciert und das Match startet für dich.",
-        "leader_required": "Nur der Party-Leader kann das Matchmaking starten."
+        "label": "Matchmaking",
+        "players_online": "Spieler online | Spieler online",
+        "settings": "Matchmaking-Einstellungen",
+        "mode_group": "Spielmodus",
+        "nobody_queued": "Niemand in der Queue",
+        "too_big": "Eine Party mit {count} ist zu groß für {mode}",
+        "queue_solo": "Solo in die Queue, die Teams werden für dich ausbalanciert",
+        "seats": {
+          "format": "{count} gegen {count}",
+          "yours": "deine Party belegt {count} Platz | deine Party belegt {count} Plätze",
+          "overflow": "deine Party mit {count} passt nicht auf eine Seite"
+        },
+        "regions": {
+          "edit": "Regionen bearbeiten",
+          "skipped": "{name} übersprungen, {ms} ms",
+          "unreachable": "{name} nicht erreichbar",
+          "ms": "{ms} ms",
+          "lan": "LAN",
+          "count": "{count} Region | {count} Regionen"
+        },
+        "party": {
+          "solo": "Solo in der Queue",
+          "invite": "Freunde einladen",
+          "leader": "In der Queue als Party mit {count}",
+          "you_lead": "Du bist Leader",
+          "member": "In der Party von {name} ({count})",
+          "open": "Party öffnen"
+        },
+        "guest_line": "Melde dich mit Steam an, um in die Queue zu gehen. Wir messen deinen Ping zu jeder Region und matchen dich mit Spielern in deiner Nähe.",
+        "sign_in": "Mit Steam anmelden",
+        "find_match": "Match suchen",
+        "waiting_for": "Warten auf {name}",
+        "starts_queue": "{name} startet die Queue",
+        "searching": "Suche nach einem {mode}-Match",
+        "first_in_line": "Du bist als Erster in der Queue",
+        "cancel": "Abbrechen",
+        "leader_cancels": "{name} kann die Suche abbrechen",
+        "found": "Match gefunden · im Ready-Check annehmen",
+        "clock": "Zeit in der Queue",
+        "no_region": {
+          "title": "Jede Region liegt über deinem Limit von {ms} ms",
+          "body": "Erhöhe dein Limit oder markiere eine Region, die du akzeptierst, und geh dann erneut in die Queue."
+        }
       },
-      "draft_games": {
-        "section_label": "OPEN.MATCHES",
-        "description": "Durchstöbere offene Pick-up-Games oder erstell eins — die Captains draften die Teams."
+      "schedule": {
+        "vs": "vs",
+        "now": "Jetzt",
+        "in_minutes": "in {count} Min.",
+        "in_hours": "in {count} Std.",
+        "tomorrow": "morgen",
+        "in_days": "in {count} Tagen",
+        "best_of": "Best of {count}",
+        "teams": "{count} Teams",
+        "live": "Live",
+        "live_round": "Live · Runde {round}",
+        "check_in_progress": "Check-in {checked}/{total}",
+        "check_in_closes": "bis {time}",
+        "checked_in": "Eingecheckt · {checked}/{total}",
+        "check_in_open": "Check-in offen",
+        "check_in_opens": "Check-in ab {time}",
+        "veto": "Map-Veto",
+        "waiting_for_server": "Warten auf Server",
+        "picking_players": "Spieler werden gewählt",
+        "scheduled": "Geplant",
+        "registered": "Angemeldet",
+        "check_in": "Einchecken",
+        "connect": "Verbinden",
+        "open_match": "Match öffnen",
+        "details": "Details"
+      },
+      "draft_rooms": {
+        "title": "Draft-Rooms",
+        "description": "Pick-up-Games, die andere Spieler hosten. Captains oder der Host teilen die Teams ein.",
+        "format_label": "Format",
+        "search_placeholder": "Spieler suchen",
+        "clear_search": "Suche leeren",
+        "filters": "Filter",
+        "filters_title": "Filtern und sortieren",
+        "has_space": "Nur Rooms mit freien Plätzen",
+        "avg_rank": "Durchschnittsrang",
+        "any_rank": "Beliebig",
+        "sort_label": "Sortieren nach",
+        "sort": {
+          "filling": "Fast voll zuerst",
+          "newest": "Neueste",
+          "rank_high": "Höchster Durchschnittsrang",
+          "rank_low": "Niedrigster Durchschnittsrang"
+        },
+        "host": "Draft-Room hosten",
+        "rehost": "Letzten neu hosten",
+        "types": {
+          "captains": "Captains-Draft",
+          "host": "Host verteilt",
+          "pug": "Auto-Split",
+          "teams": "Feste Teams"
+        },
+        "access": {
+          "friends": "Nur Freunde",
+          "invite": "Nur mit Einladung",
+          "private": "Privat"
+        },
+        "avg": "Ø {rank}",
+        "custom_mode": "Modus {mode}, unranked",
+        "teams_title": "{team1} vs {team2}",
+        "open_team": "offenes Team",
+        "host_elo": "Host · {elo} ELO",
+        "subs": "+{count} Ersatzspieler",
+        "drafting": "Draft läuft",
+        "join_party": "Mit Party beitreten ({count})",
+        "sign_in_to_join": "Zum Beitreten einloggen",
+        "reasons": {
+          "spots_left": "{count} Platz frei | {count} Plätze frei",
+          "no_room_for_party": "Kein Platz für deine Party",
+          "host_approves": "Der Host gibt frei",
+          "subs_waiting": "{count} Ersatzspieler wartet | {count} Ersatzspieler warten",
+          "full": "Voll",
+          "youre_in": "Du bist dabei",
+          "waiting_for_host": "Warten auf den Host"
+        },
+        "empty": "Gerade keine offenen Draft-Rooms.",
+        "no_results": "Keine Rooms passen zu diesen Filtern.",
+        "clear_filters": "Filter zurücksetzen"
       }
     },
     "matches": {
@@ -6364,7 +6518,6 @@
     "players": "Spieler",
     "duration": "Dauer",
     "your_schedule": "Dein Zeitplan",
-    "your_schedule_description": "Matches und Turniere, bei denen du aktuell dabei bist.",
     "highlights": "HIGHLIGHTS",
     "boolean": {
       "yes": "Ja",
@@ -8972,15 +9125,7 @@
         "description": "Schnelle 3v3-Matches Raum für Raum – jede gewonnene Runde treibt den Kampf nach vorn"
       }
     },
-    "cancel_matchmaking": "Matchmaking abbrechen",
-    "in_queue_label": "In der Queue",
-    "searching": "Sucht",
-    "elapsed": "Vergangen",
-    "queue_wait": {
-      "zero": "0 Sekunden",
-      "seconds": "{count} Sekunden",
-      "minutes_seconds": "{minutes}m {seconds}s"
-    },
+    "queue_wait": {},
     "match_found": "Match gefunden",
     "waiting_for_players": "Warten auf Spieler",
     "waiting_on_others": "Warten auf andere",
@@ -9035,16 +9180,11 @@
     },
     "banned": "Du bist vom Matchmaking gebannt",
     "banned_until": "Du bist bis {time} vom Matchmaking gesperrt",
-    "confirm_selection": "Queue beitreten",
     "in_queue": "in der Queue",
     "temp_banned": "Du bist vorübergehend vom Matchmaking gebannt",
-    "settings_section": {
-      "toggle": "Einstellungen anpassen"
-    },
-    "high_latency_warning": "Deine Latenz ist zu hoch für kompetitive Matches",
+    "settings_section": {},
     "no_preferred_regions": "Wähle in den Matchmaking-Einstellungen mindestens eine bevorzugte Region",
     "party_size": {
-      "unavailable": "Party mit {size} Spielern kann für diesen Modus nicht in die Queue",
       "requirement": "Queue mit {half} oder weniger, oder genau {full} Spielern"
     },
     "temp_banned_until": "Du bist vorübergehend bis {time} vom Matchmaking gesperrt",
@@ -9811,25 +9951,12 @@
   },
   "draft_games": {
     "nav_label": "Draft-Lobby",
-    "create_custom_match": "Draft-Room hosten",
     "leader_required": "Nur der Party-Leader kann ein Match erstellen.",
-    "rehost": "Letztes neu hosten",
     "rehost_hint": "Deine letzte Lobby mit denselben Einstellungen neu erstellen",
-    "search_placeholder": "Nach einem Spieler suchen ...",
-    "no_results": "Keine Matches passen zu deinen Filtern.",
     "filters": {
-      "avg_rank": "Ø Rang",
-      "has_space": "Plätze frei",
-      "any": "Beliebig",
-      "clear": "Zurücksetzen ({count})"
+      "any": "Beliebig"
     },
-    "sort": {
-      "filling": "Fast voll",
-      "newest": "Neueste",
-      "rank_high": "Rang: hoch",
-      "rank_low": "Rang: niedrig"
-    },
-    "empty": "Keine offenen Matches. Erstell eins, um loszulegen.",
+    "sort": {},
     "create": {
       "captain_selection": "Captain-Auswahl",
       "draft_order": "Draft-Reihenfolge",
@@ -9885,15 +10012,6 @@
       "front_loaded": "Front-Loaded (1-2-2-1-2-1)"
     },
     "card": {
-      "pool": "Pool",
-      "region": "Region",
-      "custom": "Custom",
-      "pending_requests": "Offene Anfragen",
-      "players": "Spieler",
-      "subs": "Ersatz",
-      "requests": "Anfragen",
-      "join_party": "Mit Party beitreten ({count})",
-      "join_party_hint": "Nimm deine ganze Matchmaking-Party mit in diese Lobby",
       "join": "Beitreten",
       "view": "Ansehen",
       "request": "Anfragen",
@@ -9904,7 +10022,6 @@
       "team": "Team {team}",
       "pool": "Verfügbare Spieler",
       "captain": "Captain",
-      "pick": "Pick",
       "empty_pool": "Alle Spieler wurden gedraftet",
       "leave": "Verlassen",
       "loading": "Draft-Room wird geladen ...",
@@ -9943,7 +10060,6 @@
       "accept": "Annehmen",
       "accept_backup": "Als Backup annehmen",
       "deny": "Ablehnen",
-      "request": "Beitritt anfragen",
       "edit_settings": "Einstellungen bearbeiten",
       "start_match": "Match starten",
       "starting": "Startet …",
@@ -9955,7 +10071,6 @@
       "join_prompt": "Spring rein — ein Slot ist frei",
       "request_prompt": "Für diese Lobby braucht der Beitritt die Freigabe des Hosts",
       "request_pending": "Deine Anfrage wartet auf die Freigabe des Hosts",
-      "waitlist": "Ersatzspieler",
       "backups": "Backups",
       "side_backups": "Backups {team}",
       "unassigned_backups": "Nicht zugewiesene Backups",
@@ -10030,12 +10145,7 @@
       "teams": "Feste Teams",
       "teams_desc": "Wähl zwei gespeicherte Teams, die gegeneinander spielen."
     },
-    "mode_short": {
-      "captains": "Captains",
-      "host": "Host",
-      "pug": "Auto-Split",
-      "teams": "Teams"
-    },
+    "mode_short": {},
     "access": {
       "open": "Offen",
       "open_desc": "Jeder kann die Lobby in der öffentlichen Liste finden und beitreten.",

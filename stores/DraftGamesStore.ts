@@ -64,6 +64,13 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
         player: playerFields,
       },
     ],
+    // The list names an unranked custom mode ("Rush mode, unranked").
+    options: {
+      game_mode: {
+        id: true,
+        name: true,
+      },
+    },
     picks: [
       {
         order_by: [{}, { created_at: order_by.asc }],

@@ -3701,18 +3701,172 @@
       }
     },
     "play": {
-      "title": "Oyna",
-      "open_registration_tournaments": {
-        "section_label": "TURNUVALAR",
-        "description": "Herkesin katılabileceği, kaydı açık turnuvalar."
+      "more_ways": {
+        "title": "Oynamanın diğer yolları",
+        "tournaments": {
+          "title": "Turnuvalar",
+          "teams_of": "{count}/{max} takım",
+          "register": "Takım kaydet",
+          "sign_in": "Kaydolmak için giriş yap",
+          "all": "Tüm turnuvalar"
+        },
+        "league": {
+          "title": "Lig",
+          "open_until": "Kayıtlar {date} tarihine kadar açık",
+          "open": "Kayıtlar açık",
+          "teams_in": "{count} takım kayıtlı | {count} takım kayıtlı",
+          "register": "Takım kaydet",
+          "sign_in": "Kaydolmak için giriş yap"
+        },
+        "scrims": {
+          "title": "Scrimler",
+          "teams_today": "takım bugün scrim arıyor | takım bugün scrim arıyor",
+          "none_today": "Bugün scrim arayan takım yok",
+          "needs_team": "Yönettiğin bir takım gerekir",
+          "post_hint": "Takımının boş olduğu zamanı paylaş, diğerleri scrim isteği gönderebilsin.",
+          "find": "Scrim bul",
+          "post": "Uygunluk paylaş"
+        },
+        "drop_in": {
+          "title": "Hemen katıl",
+          "playing": "kişi herkese açık sunucularda oynuyor | kişi herkese açık sunucularda oynuyor",
+          "none": "Burada henüz herkese açık sunucu yok",
+          "all_servers": "Tüm sunucular ({count})",
+          "players": "oyuncu",
+          "connect": "Bağlan",
+          "copy": "Connect komutunu kopyala"
+        },
+        "practice": {
+          "title": "Antrenman sunucusu",
+          "description": "Utility dizilimleri için kendi sunucun · istediğin harita",
+          "map": "Harita",
+          "start": "Antrenmana başla",
+          "sign_in": "Antrenman için giriş yap"
+        }
       },
       "matchmaking": {
-        "description": "Tek başına veya ekibinle sıraya gir — takımlar otomatik dengelenir ve maç senin için başlar.",
-        "leader_required": "Eşleştirmeyi yalnızca ekip lideri başlatabilir."
+        "label": "Eşleştirme",
+        "players_online": "oyuncu çevrimiçi | oyuncu çevrimiçi",
+        "settings": "Eşleştirme ayarları",
+        "mode_group": "Oyun modu",
+        "nobody_queued": "Sırada kimse yok",
+        "too_big": "{count} kişilik parti {mode} için fazla büyük",
+        "queue_solo": "Solo sıraya gir, takımlar senin için dengelenir",
+        "seats": {
+          "format": "{count} vs {count}",
+          "yours": "partin {count} yer kaplıyor | partin {count} yer kaplıyor",
+          "overflow": "{count} kişilik partin tek tarafa sığmıyor"
+        },
+        "regions": {
+          "edit": "Bölgeleri düzenle",
+          "skipped": "{name} atlandı, {ms} ms",
+          "unreachable": "{name} erişilemiyor",
+          "ms": "{ms} ms",
+          "lan": "LAN",
+          "count": "{count} bölge | {count} bölge"
+        },
+        "party": {
+          "solo": "Solo sıraya giriyorsun",
+          "invite": "Arkadaşlarını davet et",
+          "leader": "{count} kişilik partiyle sıraya giriyorsun",
+          "you_lead": "Lider sensin",
+          "member": "{name} partisindesin ({count} kişi)",
+          "open": "Partiyi aç"
+        },
+        "guest_line": "Sıraya girmek için Steam ile giriş yap. Her bölgeye pingini ölçer, seni yakındaki oyuncularla eşleştiririz.",
+        "sign_in": "Steam ile giriş yap",
+        "find_match": "Maç bul",
+        "waiting_for": "{name} bekleniyor",
+        "starts_queue": "Sırayı {name} başlatır",
+        "searching": "{mode} maçı aranıyor",
+        "first_in_line": "Sırada ilk sensin",
+        "cancel": "İptal",
+        "leader_cancels": "Aramayı {name} iptal edebilir",
+        "found": "Maç bulundu · hazır onayında kabul et",
+        "clock": "Sırada geçen süre",
+        "no_region": {
+          "title": "Tüm bölgeler {ms} ms sınırının üzerinde",
+          "body": "Sınırını yükselt ya da kabul edeceğin bir bölgeyi yıldızla, sonra tekrar sıraya gir."
+        }
       },
-      "draft_games": {
-        "section_label": "AÇIK MAÇLAR",
-        "description": "Açık pick-up oyunlara göz at ya da bir tane oluştur — kaptanlar takımları seçer."
+      "schedule": {
+        "vs": "vs",
+        "now": "Şimdi",
+        "in_minutes": "{count} dk sonra",
+        "in_hours": "{count} sa sonra",
+        "tomorrow": "yarın",
+        "in_days": "{count} gün sonra",
+        "best_of": "Best of {count}",
+        "teams": "{count} takım",
+        "live": "Canlı",
+        "live_round": "Canlı · Raunt {round}",
+        "check_in_progress": "Katılım onayı {checked}/{total}",
+        "check_in_closes": "kapanış {time}",
+        "checked_in": "Katılım onaylandı · {checked}/{total}",
+        "check_in_open": "Katılım onayı açık",
+        "check_in_opens": "Katılım onayı {time} açılıyor",
+        "veto": "Harita vetosu",
+        "waiting_for_server": "Sunucu bekleniyor",
+        "picking_players": "Oyuncular seçiliyor",
+        "scheduled": "Planlandı",
+        "registered": "Kayıtlı",
+        "check_in": "Katılımı onayla",
+        "connect": "Bağlan",
+        "open_match": "Maçı aç",
+        "details": "Detaylar"
+      },
+      "draft_rooms": {
+        "title": "Seçim odaları",
+        "description": "Diğer oyuncuların kurduğu oyunlar. Takımları kaptanlar ya da ev sahibi ayırır.",
+        "format_label": "Format",
+        "search_placeholder": "Oyuncu ara",
+        "clear_search": "Aramayı temizle",
+        "filters": "Filtreler",
+        "filters_title": "Filtrele ve sırala",
+        "has_space": "Sadece yeri olan odalar",
+        "avg_rank": "Ortalama rank",
+        "any_rank": "Hepsi",
+        "sort_label": "Sırala",
+        "sort": {
+          "filling": "Dolmak üzere olanlar önce",
+          "newest": "En yeni",
+          "rank_high": "En yüksek ortalama rank",
+          "rank_low": "En düşük ortalama rank"
+        },
+        "host": "Seçim odası kur",
+        "rehost": "Sonuncuyu yeniden kur",
+        "types": {
+          "captains": "Kaptan seçimi",
+          "host": "Host atar",
+          "pug": "Otomatik bölüştür",
+          "teams": "Hazır takımlar"
+        },
+        "access": {
+          "friends": "Sadece arkadaşlar",
+          "invite": "Sadece davetle",
+          "private": "Özel"
+        },
+        "avg": "Ort. {rank}",
+        "custom_mode": "{mode} modu, dereceli değil",
+        "teams_title": "{team1} vs {team2}",
+        "open_team": "açık takım",
+        "host_elo": "Ev sahibi · {elo} ELO",
+        "subs": "+{count} yedek",
+        "drafting": "Seçim yapılıyor",
+        "join_party": "Partiyle katıl ({count})",
+        "sign_in_to_join": "Katılmak için giriş yap",
+        "reasons": {
+          "spots_left": "{count} yer kaldı | {count} yer kaldı",
+          "no_room_for_party": "Partin için yer yok",
+          "host_approves": "Ev sahibi onaylar",
+          "subs_waiting": "{count} yedek bekliyor | {count} yedek bekliyor",
+          "full": "Dolu",
+          "youre_in": "Odadasın",
+          "waiting_for_host": "Ev sahibi bekleniyor"
+        },
+        "empty": "Şu an açık seçim odası yok.",
+        "no_results": "Bu filtrelere uyan oda yok.",
+        "clear_filters": "Filtreleri temizle"
       }
     },
     "matches": {
@@ -6364,7 +6518,6 @@
     "players": "oyuncu",
     "duration": "Süre",
     "your_schedule": "Programın",
-    "your_schedule_description": "Şu anda dahil olduğun maçlar ve turnuvalar.",
     "highlights": "ÖNE ÇIKANLAR",
     "boolean": {
       "yes": "Evet",
@@ -8972,15 +9125,7 @@
         "description": "Oda oda ilerleyen hızlı tempolu 3v3 maçlar; kazanılan her raunt mücadeleyi ileri taşır"
       }
     },
-    "cancel_matchmaking": "Eşleştirmeyi iptal et",
-    "in_queue_label": "Sırada",
-    "searching": "Aranıyor",
-    "elapsed": "Geçen süre",
-    "queue_wait": {
-      "zero": "0 saniye",
-      "seconds": "{count} saniye",
-      "minutes_seconds": "{minutes}dk {seconds}sn"
-    },
+    "queue_wait": {},
     "match_found": "Maç bulundu",
     "waiting_for_players": "Oyuncular bekleniyor",
     "waiting_on_others": "Diğerleri bekleniyor",
@@ -9035,16 +9180,11 @@
     },
     "banned": "Eşleştirmeden banlandın",
     "banned_until": "{time} tarihine kadar eşleştirmeden yasaklısın",
-    "confirm_selection": "Sıraya katıl",
     "in_queue": "sırada",
     "temp_banned": "Eşleştirmeden geçici olarak banlandın",
-    "settings_section": {
-      "toggle": "Ayarları düzenle"
-    },
-    "high_latency_warning": "Ping'in rekabetçi maçlar için çok yüksek",
+    "settings_section": {},
     "no_preferred_regions": "Eşleştirme ayarlarından en az bir tercih edilen bölge seç",
     "party_size": {
-      "unavailable": "{size} kişilik parti bu modda sıraya giremez",
       "requirement": "{half} veya daha az kişiyle ya da tam olarak {full} kişiyle sıraya girin"
     },
     "temp_banned_until": "{time} tarihine kadar eşleştirmeden geçici olarak yasaklısın",
@@ -9811,25 +9951,12 @@
   },
   "draft_games": {
     "nav_label": "Seçim Lobisi",
-    "create_custom_match": "Seçim Odası Kur",
     "leader_required": "Sadece parti lideri maç oluşturabilir.",
-    "rehost": "Sonuncuyu Yeniden Kur",
     "rehost_hint": "Son lobini aynı ayarlarla yeniden oluştur",
-    "search_placeholder": "Herhangi bir oyuncuya göre ara...",
-    "no_results": "Filtrelerine uyan maç yok.",
     "filters": {
-      "avg_rank": "Ort. Rank",
-      "has_space": "Yer Var",
-      "any": "Hepsi",
-      "clear": "Temizle ({count})"
+      "any": "Hepsi"
     },
-    "sort": {
-      "filling": "Dolmaya En Yakın",
-      "newest": "En Yeni",
-      "rank_high": "Rank: Yüksek",
-      "rank_low": "Rank: Düşük"
-    },
-    "empty": "Açık maç yok. Başlamak için bir tane oluştur.",
+    "sort": {},
     "create": {
       "captain_selection": "Kaptan Seçimi",
       "draft_order": "Seçim Sırası",
@@ -9885,15 +10012,6 @@
       "front_loaded": "Öne Yüklü (1-2-2-1-2-1)"
     },
     "card": {
-      "pool": "Havuz",
-      "region": "Bölge",
-      "custom": "Özel",
-      "pending_requests": "Bekleyen istekler",
-      "players": "Oyuncular",
-      "subs": "Yedekler",
-      "requests": "İstekler",
-      "join_party": "Parti ile Katıl ({count})",
-      "join_party_hint": "Tüm eşleştirme partini bu lobiye getir",
       "join": "Katıl",
       "view": "Görüntüle",
       "request": "İstek Gönder",
@@ -9904,7 +10022,6 @@
       "team": "Takım {team}",
       "pool": "Uygun Oyuncular",
       "captain": "Kaptan",
-      "pick": "Pick",
       "empty_pool": "Tüm oyuncular seçildi",
       "leave": "Ayrıl",
       "loading": "Seçim odası yükleniyor...",
@@ -9943,7 +10060,6 @@
       "accept": "Kabul Et",
       "accept_backup": "Yedek olarak kabul et",
       "deny": "Reddet",
-      "request": "Katılma İsteği Gönder",
       "edit_settings": "Ayarları Düzenle",
       "start_match": "Maçı Başlat",
       "starting": "Başlıyor…",
@@ -9955,7 +10071,6 @@
       "join_prompt": "Hemen katıl — boş bir slot var",
       "request_prompt": "Bu lobiye katılmak için ev sahibi onayı gerekiyor",
       "request_pending": "İsteğin ev sahibi onayını bekliyor",
-      "waitlist": "Yedekler",
       "backups": "Yedekler",
       "side_backups": "{team} Yedekleri",
       "unassigned_backups": "Atanmamış Yedekler",
@@ -10030,12 +10145,7 @@
       "teams": "Hazır Takımlar",
       "teams_desc": "Karşı karşıya getirmek için iki kayıtlı takım seç."
     },
-    "mode_short": {
-      "captains": "Kaptan",
-      "host": "Host",
-      "pug": "Otomatik",
-      "teams": "Takım"
-    },
+    "mode_short": {},
     "access": {
       "open": "Açık",
       "open_desc": "Herkes genel listeden bulup katılabilir.",

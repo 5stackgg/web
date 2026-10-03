@@ -3701,18 +3701,172 @@
       }
     },
     "play": {
-      "title": "游戏",
-      "open_registration_tournaments": {
-        "section_label": "锦标赛",
-        "description": "开放报名且任何人都可以加入的赛事。"
+      "more_ways": {
+        "title": "更多玩法",
+        "tournaments": {
+          "title": "赛事",
+          "teams_of": "{count} / {max} 支队伍",
+          "register": "报名队伍",
+          "sign_in": "登录后报名",
+          "all": "全部赛事"
+        },
+        "league": {
+          "title": "联赛",
+          "open_until": "报名截至 {date}",
+          "open": "报名开放中",
+          "teams_in": "已报名 {count} 支队伍 | 已报名 {count} 支队伍",
+          "register": "报名队伍",
+          "sign_in": "登录后报名"
+        },
+        "scrims": {
+          "title": "约战",
+          "teams_today": "支队伍今天在找约战 | 支队伍今天在找约战",
+          "none_today": "今天没有队伍在找约战",
+          "needs_team": "需要一支由你管理的队伍",
+          "post_hint": "发布你的队伍空闲时间，其他队伍就能向你发起约战。",
+          "find": "寻找约战",
+          "post": "发布空闲时间"
+        },
+        "drop_in": {
+          "title": "随时加入",
+          "playing": "人正在公共服务器上游戏 | 人正在公共服务器上游戏",
+          "none": "这里还没有公共服务器",
+          "all_servers": "全部服务器（{count}）",
+          "players": "玩家",
+          "connect": "连接",
+          "copy": "复制 connect 命令"
+        },
+        "practice": {
+          "title": "练习服务器",
+          "description": "专属于你的道具点位练习服务器 · 任意地图",
+          "map": "地图",
+          "start": "开始练习",
+          "sign_in": "登录后练习"
+        }
       },
       "matchmaking": {
-        "description": "单人排队或与您的队伍一起排队——队伍将被自动平衡，比赛将为您开始。",
-        "leader_required": "只有队伍队长可以开始匹配。"
+        "label": "匹配",
+        "players_online": "名玩家在线 | 名玩家在线",
+        "settings": "匹配设置",
+        "mode_group": "游戏模式",
+        "nobody_queued": "无人排队",
+        "too_big": "{count} 人小队超出 {mode} 的人数上限",
+        "queue_solo": "单人排队，系统会为你平衡队伍",
+        "seats": {
+          "format": "{count} 对 {count}",
+          "yours": "你的小队占 {count} 个位置 | 你的小队占 {count} 个位置",
+          "overflow": "你的 {count} 人小队无法排在同一方"
+        },
+        "regions": {
+          "edit": "编辑区域",
+          "skipped": "已跳过 {name}，{ms} ms",
+          "unreachable": "{name} 无法连接",
+          "ms": "{ms} ms",
+          "lan": "LAN",
+          "count": "{count} 个区域 | {count} 个区域"
+        },
+        "party": {
+          "solo": "单人排队",
+          "invite": "邀请好友",
+          "leader": "以 {count} 人小队排队",
+          "you_lead": "你是队长",
+          "member": "在 {name} 的 {count} 人小队中",
+          "open": "打开小队"
+        },
+        "guest_line": "使用 Steam 登录即可排队。我们会测量你到各区域的延迟，为你匹配附近的玩家。",
+        "sign_in": "使用 Steam 登录",
+        "find_match": "寻找比赛",
+        "waiting_for": "等待 {name}",
+        "starts_queue": "由 {name} 开始排队",
+        "searching": "正在寻找 {mode} 比赛",
+        "first_in_line": "你排在第一位",
+        "cancel": "取消",
+        "leader_cancels": "{name} 可以取消寻找",
+        "found": "已找到比赛 · 请在准备确认中接受",
+        "clock": "排队时长",
+        "no_region": {
+          "title": "所有区域都超过了你的 {ms} ms 上限",
+          "body": "提高上限或标星一个你能接受的区域，然后重新排队。"
+        }
       },
-      "draft_games": {
-        "section_label": "开放·比赛",
-        "description": "浏览开放的约战比赛或创建一场——队长选人组建队伍。"
+      "schedule": {
+        "vs": "vs",
+        "now": "现在",
+        "in_minutes": "{count} 分钟后",
+        "in_hours": "{count} 小时后",
+        "tomorrow": "明天",
+        "in_days": "{count} 天后",
+        "best_of": "BO{count}",
+        "teams": "{count} 支队伍",
+        "live": "进行中",
+        "live_round": "进行中 · 第 {round} 回合",
+        "check_in_progress": "签到 {checked}/{total}",
+        "check_in_closes": "{time} 截止",
+        "checked_in": "已签到 · {checked}/{total}",
+        "check_in_open": "签到已开放",
+        "check_in_opens": "{time} 开放签到",
+        "veto": "地图 BP",
+        "waiting_for_server": "等待服务器",
+        "picking_players": "选人中",
+        "scheduled": "已安排",
+        "registered": "已报名",
+        "check_in": "签到",
+        "connect": "连接",
+        "open_match": "打开比赛",
+        "details": "详情"
+      },
+      "draft_rooms": {
+        "title": "选秀房间",
+        "description": "其他玩家开设的路人局。由队长或房主分队。",
+        "format_label": "赛制",
+        "search_placeholder": "搜索玩家",
+        "clear_search": "清除搜索",
+        "filters": "筛选",
+        "filters_title": "筛选与排序",
+        "has_space": "仅显示有空位的房间",
+        "avg_rank": "平均段位",
+        "any_rank": "任何",
+        "sort_label": "排序方式",
+        "sort": {
+          "filling": "即将满员优先",
+          "newest": "最新",
+          "rank_high": "平均段位最高",
+          "rank_low": "平均段位最低"
+        },
+        "host": "创建选秀房间",
+        "rehost": "重新创建上次",
+        "types": {
+          "captains": "队长选人",
+          "host": "房主分配",
+          "pug": "自动分配",
+          "teams": "预设队伍"
+        },
+        "access": {
+          "friends": "仅限好友",
+          "invite": "仅限邀请",
+          "private": "私密"
+        },
+        "avg": "平均 {rank}",
+        "custom_mode": "{mode} 模式，非排位",
+        "teams_title": "{team1} vs {team2}",
+        "open_team": "空缺队伍",
+        "host_elo": "房主 · {elo} ELO",
+        "subs": "+{count} 名替补",
+        "drafting": "选秀中",
+        "join_party": "带小队加入（{count}）",
+        "sign_in_to_join": "登录后加入",
+        "reasons": {
+          "spots_left": "剩余 {count} 个空位 | 剩余 {count} 个空位",
+          "no_room_for_party": "位置不够容纳你的小队",
+          "host_approves": "需房主批准",
+          "subs_waiting": "{count} 名替补等待中 | {count} 名替补等待中",
+          "full": "已满",
+          "youre_in": "你已加入",
+          "waiting_for_host": "等待房主"
+        },
+        "empty": "当前没有开放的选秀房间。",
+        "no_results": "没有符合这些筛选条件的房间。",
+        "clear_filters": "清除筛选"
       }
     },
     "matches": {
@@ -6364,7 +6518,6 @@
     "players": "玩家",
     "duration": "时长",
     "your_schedule": "您的日程",
-    "your_schedule_description": "您当前参与的比赛和赛事。",
     "highlights": "高光时刻",
     "boolean": {
       "yes": "是",
@@ -8972,15 +9125,7 @@
         "description": "逐个房间交战的快节奏 3v3 比赛，每赢一个回合就把战线向前推进"
       }
     },
-    "cancel_matchmaking": "取消匹配",
-    "in_queue_label": "队列中",
-    "searching": "搜索中",
-    "elapsed": "已用时间",
-    "queue_wait": {
-      "zero": "0 秒",
-      "seconds": "{count} 秒",
-      "minutes_seconds": "{minutes}分 {seconds}秒"
-    },
+    "queue_wait": {},
     "match_found": "已找到比赛",
     "waiting_for_players": "等待玩家",
     "waiting_on_others": "等待其他人",
@@ -9035,16 +9180,11 @@
     },
     "banned": "您已被禁止使用匹配系统",
     "banned_until": "你被禁止使用匹配，直到 {time}",
-    "confirm_selection": "加入队列",
     "in_queue": "队列中",
     "temp_banned": "您暂时被禁止使用匹配系统",
-    "settings_section": {
-      "toggle": "调整设置"
-    },
-    "high_latency_warning": "您的延迟过高，无法进行竞技比赛",
+    "settings_section": {},
     "no_preferred_regions": "请在匹配设置中选择至少一个偏好地区",
     "party_size": {
-      "unavailable": "{size} 人的小队无法排这个模式",
       "requirement": "请以 {half} 人或更少，或正好 {full} 人排队"
     },
     "temp_banned_until": "你被暂时禁止使用匹配，直到 {time}",
@@ -9811,25 +9951,12 @@
   },
   "draft_games": {
     "nav_label": "选秀大厅",
-    "create_custom_match": "创建选秀房间",
     "leader_required": "只有队伍队长可以创建比赛。",
-    "rehost": "重新创建上次",
     "rehost_hint": "使用相同设置重新创建您的大厅",
-    "search_placeholder": "按玩家搜索...",
-    "no_results": "没有符合筛选条件的比赛。",
     "filters": {
-      "avg_rank": "平均段位",
-      "has_space": "有空位",
-      "any": "任何",
-      "clear": "清除（{count}）"
+      "any": "任何"
     },
-    "sort": {
-      "filling": "最接近满员",
-      "newest": "最新",
-      "rank_high": "段位：高",
-      "rank_low": "段位：低"
-    },
-    "empty": "暂无公开比赛。创建一个开始。",
+    "sort": {},
     "create": {
       "captain_selection": "队长选择方式",
       "draft_order": "选人顺序",
@@ -9885,15 +10012,6 @@
       "front_loaded": "前置（1-2-2-1-2-1）"
     },
     "card": {
-      "pool": "地图池",
-      "region": "地区",
-      "custom": "自定义",
-      "pending_requests": "待处理请求",
-      "players": "玩家",
-      "subs": "替补",
-      "requests": "请求",
-      "join_party": "带队伍加入（{count}）",
-      "join_party_hint": "将您的整个匹配队伍带入此大厅",
       "join": "加入",
       "view": "查看",
       "request": "请求加入",
@@ -9904,7 +10022,6 @@
       "team": "队伍 {team}",
       "pool": "可用玩家",
       "captain": "队长",
-      "pick": "选择",
       "empty_pool": "所有玩家已被选完",
       "leave": "离开",
       "loading": "加载选秀房间...",
@@ -9943,7 +10060,6 @@
       "accept": "接受",
       "accept_backup": "接受为替补",
       "deny": "拒绝",
-      "request": "请求加入",
       "edit_settings": "编辑设置",
       "start_match": "开始比赛",
       "starting": "开始中…",
@@ -9955,7 +10071,6 @@
       "join_prompt": "加入——有空位",
       "request_prompt": "此大厅需要房主批准才能加入",
       "request_pending": "您的请求正在等待房主批准",
-      "waitlist": "替补",
       "backups": "替补",
       "side_backups": "{team} 替补",
       "unassigned_backups": "未分配的替补",
@@ -10030,12 +10145,7 @@
       "teams": "预设队伍",
       "teams_desc": "选择两支已保存的队伍进行对抗。"
     },
-    "mode_short": {
-      "captains": "队长",
-      "host": "房主",
-      "pug": "自动分配",
-      "teams": "队伍"
-    },
+    "mode_short": {},
     "access": {
       "open": "公开",
       "open_desc": "任何人都可以从公开列表中查找并加入。",

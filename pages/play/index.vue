@@ -1,251 +1,30 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { Settings2, Lock } from "lucide-vue-next";
-import DraftGames from "~/components/draft-games/DraftGames.vue";
-import MyUpcoming from "~/components/MyUpcoming.vue";
-import Matchmaking from "~/components/matchmaking/Matchmaking.vue";
-import MatchmakingSettings from "~/components/matchmaking/MatchmakingSettings.vue";
-import TournamentFeatureCard from "~/components/tournament/TournamentFeatureCard.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
-import { Button } from "~/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "~/components/ui/popover";
-import {
-  tacticalSectionDescriptionClasses,
-  tacticalSectionLabelClasses,
-  tacticalSectionTickClasses,
-} from "~/utilities/tacticalClasses";
+import PlayMatchmaking from "~/components/play/PlayMatchmaking.vue";
+import PlaySchedule from "~/components/play/PlaySchedule.vue";
+import PlayDraftRooms from "~/components/play/PlayDraftRooms.vue";
+import PlayMoreWays from "~/components/play/PlayMoreWays.vue";
+import { tacticalSectionSeparatorClasses } from "~/utilities/tacticalClasses";
 
-const settingsOpen = ref(false);
+// Each section renders nothing when it has nothing to offer, so the
+// separator rule only ever sits between sections that are actually shown.
+const sectionClasses = ["mt-8", tacticalSectionSeparatorClasses];
 </script>
 
 <template>
   <PageTransition>
-    <TacticalPageHeader inline-actions>
-      <template #title>{{ $t("pages.play.title") }}</template>
-      <template
-        v-if="matchmakingAllowed && !inLobbyNotLeader && !isGuest"
-        #actions
-      >
-        <Popover v-model:open="settingsOpen">
-          <PopoverTrigger as-child>
-            <Button
-              variant="outline"
-              class="!py-0 h-[clamp(1.75rem,4.2vw,3rem)] gap-2 px-4 max-sm:aspect-square max-sm:!px-0 bg-card/60 backdrop-blur"
-              :class="{
-                'border-[hsl(var(--tac-amber)/0.55)] text-[hsl(var(--tac-amber))]':
-                  settingsOpen,
-              }"
-            >
-              <Settings2 class="w-4 h-4" />
-              <span class="hidden sm:inline">
-                {{ $t("matchmaking.settings_section.toggle") }}
-              </span>
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent
-            align="end"
-            class="w-[min(92vw,520px)] origin-top-right p-4"
-          >
-            <div class="flex items-center justify-between mb-3">
-              <h4
-                class="font-mono text-xs tracking-[0.24em] uppercase text-muted-foreground"
-              >
-                {{ $t("pages.settings.matchmaking.title") }}
-              </h4>
-            </div>
-            <MatchmakingSettings />
-          </PopoverContent>
-        </Popover>
-      </template>
-    </TacticalPageHeader>
+    <PlayMatchmaking />
   </PageTransition>
 
-  <PageTransition v-if="showMatchmaking" :delay="50" class="mt-6">
-    <div class="hidden md:block">
-      <div :class="tacticalSectionLabelClasses">
-        <span :class="tacticalSectionTickClasses"></span>
-        MATCHMAKING
-      </div>
-      <div :class="tacticalSectionDescriptionClasses">
-        {{ $t("pages.play.matchmaking.description") }}
-      </div>
-
-      <div class="relative mt-4">
-        <!-- Joining someone's party dims the panel and drops the leader pill
-             over it -- both movers ease in together instead of flipping on a
-             frame. -->
-        <div
-          class="transition-[opacity,filter] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
-          :class="{
-            'pointer-events-none select-none opacity-40 blur-[1px]':
-              inLobbyNotLeader,
-          }"
-        >
-          <Matchmaking></Matchmaking>
-        </div>
-        <Transition
-          enter-active-class="transition-[opacity,transform] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
-          leave-active-class="transition-opacity [transition-duration:110ms] ease-in motion-reduce:![transition-duration:1ms]"
-          enter-from-class="opacity-0 scale-[0.98]"
-          leave-to-class="opacity-0"
-        >
-          <div
-            v-if="inLobbyNotLeader"
-            class="absolute inset-0 z-10 grid place-items-center rounded-lg bg-background/40"
-          >
-            <div
-              class="flex items-center gap-2 rounded-full border border-border bg-card/95 px-4 py-2 shadow-lg"
-            >
-              <Lock class="h-3.5 w-3.5 text-muted-foreground" />
-              <span class="text-xs font-medium text-foreground">
-                {{ $t("pages.play.matchmaking.leader_required") }}
-              </span>
-            </div>
-          </div>
-        </Transition>
-      </div>
-    </div>
+  <PageTransition :delay="50">
+    <PlaySchedule :class="sectionClasses" />
   </PageTransition>
 
-  <PageTransition :delay="75" class="mt-6">
-    <DraftGames />
+  <PageTransition :delay="100">
+    <PlayDraftRooms :class="sectionClasses" />
   </PageTransition>
 
-  <PageTransition :delay="100" class="mt-6">
-    <MyUpcoming></MyUpcoming>
-  </PageTransition>
-
-  <PageTransition
-    v-if="openRegistrationTournaments?.length > 0"
-    :delay="200"
-    class="mt-6"
-  >
-    <div>
-      <div :class="tacticalSectionLabelClasses">
-        <span :class="tacticalSectionTickClasses"></span>
-        {{ $t("pages.play.open_registration_tournaments.section_label") }}
-      </div>
-      <div :class="tacticalSectionDescriptionClasses">
-        {{ $t("pages.play.open_registration_tournaments.description") }}
-      </div>
-      <div class="space-y-4">
-        <TournamentFeatureCard
-          v-for="tournament of openRegistrationTournaments"
-          :key="tournament.id"
-          :tournament="tournament"
-          status-variant="registration"
-        />
-      </div>
-    </div>
+  <PageTransition :delay="150">
+    <PlayMoreWays :class="sectionClasses" />
   </PageTransition>
 </template>
-
-<script lang="ts">
-import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
-import { mapFields } from "~/graphql/mapGraphql";
-import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { $, e_tournament_status_enum, order_by } from "~/generated/zeus";
-import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
-import { NOT_LEAGUE_TOURNAMENT } from "~/graphql/tournamentFilters";
-
-export default {
-  data() {
-    return {
-      page: 1,
-      perPage: 10,
-      openRegistrationTournaments: [],
-    };
-  },
-  apollo: {
-    $subscribe: {
-      openRegistrationTournaments: {
-        query: typedGql("subscription")({
-          tournaments: [
-            {
-              where: {
-                status: {
-                  _eq: e_tournament_status_enum.RegistrationOpen,
-                },
-                _not: {
-                  rosters: {
-                    player_steam_id: {
-                      _eq: $("steam_id", "bigint!"),
-                    },
-                  },
-                },
-                _and: [NOT_LEAGUE_TOURNAMENT],
-              },
-              order_by: [
-                {},
-                {
-                  start: order_by.asc,
-                },
-              ],
-            },
-            simpleTournamentFields,
-          ],
-        }),
-        variables: function () {
-          return {
-            steam_id: useAuthStore().me?.steam_id,
-          };
-        },
-        result({ data }: { data: { tournaments: any[] } }) {
-          this.openRegistrationTournaments = data.tournaments;
-        },
-        skip: function () {
-          return !useAuthStore().me?.steam_id;
-        },
-      },
-    },
-  },
-  computed: {
-    showSeparators() {
-      return useApplicationSettingsStore().showSeparators;
-    },
-    me() {
-      return useAuthStore().me;
-    },
-    isGuest() {
-      return !useAuthStore().me?.steam_id;
-    },
-    regions() {
-      return useApplicationSettingsStore().availableRegions;
-    },
-    matchmakingAllowed() {
-      return useApplicationSettingsStore().matchmakingAllowed;
-    },
-    matchmakingEnabled() {
-      return useApplicationSettingsStore().matchmakingEnabled;
-    },
-    showMatchmaking() {
-      // Guests see "fake" cards (click prompts login) whenever matchmaking is
-      // enabled in the panel, even if a min-role gates real queueing.
-      return (
-        this.matchmakingAllowed || (this.isGuest && this.matchmakingEnabled)
-      );
-    },
-    currentLobby() {
-      return useMatchmakingStore().currentLobby;
-    },
-    isPartyLeader() {
-      const lobby = this.currentLobby as any;
-      if (!lobby) {
-        return true;
-      }
-      const me = lobby.players?.find((p: any) => {
-        return p.player.steam_id === this.me?.steam_id;
-      });
-      return !!me?.captain;
-    },
-    inLobbyNotLeader() {
-      return !!this.currentLobby && !this.isPartyLeader;
-    },
-  },
-};
-</script>

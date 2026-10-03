@@ -3701,18 +3701,172 @@
       }
     },
     "play": {
-      "title": "Gioca",
-      "open_registration_tournaments": {
-        "section_label": "TORNEI",
-        "description": "Tornei con iscrizioni aperte a tutti."
+      "more_ways": {
+        "title": "Altri modi per giocare",
+        "tournaments": {
+          "title": "Tornei",
+          "teams_of": "{count} team su {max}",
+          "register": "Iscrivi un team",
+          "sign_in": "Accedi per iscriverti",
+          "all": "Tutti i tornei"
+        },
+        "league": {
+          "title": "Lega",
+          "open_until": "Iscrizioni aperte fino al {date}",
+          "open": "Iscrizioni aperte",
+          "teams_in": "{count} team iscritto | {count} team iscritti",
+          "register": "Iscrivi un team",
+          "sign_in": "Accedi per iscriverti"
+        },
+        "scrims": {
+          "title": "Scrim",
+          "teams_today": "team cerca uno scrim oggi | team cercano uno scrim oggi",
+          "none_today": "Nessun team cerca uno scrim oggi",
+          "needs_team": "Serve un team che gestisci",
+          "post_hint": "Indica quando il tuo team è libero e gli altri potranno richiedere uno scrim.",
+          "find": "Trova uno scrim",
+          "post": "Pubblica disponibilità"
+        },
+        "drop_in": {
+          "title": "Entra e gioca",
+          "playing": "gioca sui server pubblici | giocano sui server pubblici",
+          "none": "Ancora nessun server pubblico qui",
+          "all_servers": "Tutti i server ({count})",
+          "players": "giocatori",
+          "connect": "Connetti",
+          "copy": "Copia il comando connect"
+        },
+        "practice": {
+          "title": "Server di allenamento",
+          "description": "Il tuo server per i lineup di utility · qualsiasi mappa",
+          "map": "Mappa",
+          "start": "Inizia ad allenarti",
+          "sign_in": "Accedi per allenarti"
+        }
       },
       "matchmaking": {
-        "description": "Mettiti in coda da solo o con il tuo party — i team vengono bilanciati in automatico e il match parte per te.",
-        "leader_required": "Solo il leader del party può avviare il matchmaking."
+        "label": "Matchmaking",
+        "players_online": "giocatore online | giocatori online",
+        "settings": "Impostazioni matchmaking",
+        "mode_group": "Modalità di gioco",
+        "nobody_queued": "Nessuno in coda",
+        "too_big": "Un gruppo da {count} è troppo grande per {mode}",
+        "queue_solo": "In coda da solo, i team vengono bilanciati per te",
+        "seats": {
+          "format": "{count} contro {count}",
+          "yours": "il tuo gruppo occupa {count} posto | il tuo gruppo occupa {count} posti",
+          "overflow": "il tuo gruppo da {count} non entra in un solo lato"
+        },
+        "regions": {
+          "edit": "Modifica regioni",
+          "skipped": "{name} saltata, {ms} ms",
+          "unreachable": "{name} non raggiungibile",
+          "ms": "{ms} ms",
+          "lan": "LAN",
+          "count": "{count} regione | {count} regioni"
+        },
+        "party": {
+          "solo": "In coda da solo",
+          "invite": "Invita amici",
+          "leader": "In coda con un gruppo da {count}",
+          "you_lead": "Sei il leader",
+          "member": "Nel gruppo di {name} ({count})",
+          "open": "Apri gruppo"
+        },
+        "guest_line": "Accedi con Steam per metterti in coda. Misuriamo il tuo ping verso ogni regione e ti abbiniamo a giocatori vicini.",
+        "sign_in": "Accedi con Steam",
+        "find_match": "Trova match",
+        "waiting_for": "In attesa di {name}",
+        "starts_queue": "{name} avvia la coda",
+        "searching": "Ricerca di un match {mode}",
+        "first_in_line": "Sei il primo in coda",
+        "cancel": "Annulla",
+        "leader_cancels": "{name} può annullare la ricerca",
+        "found": "Match trovato · accetta nel ready check",
+        "clock": "Tempo in coda",
+        "no_region": {
+          "title": "Ogni regione supera il tuo limite di {ms} ms",
+          "body": "Alza il limite o contrassegna con la stella una regione che accetteresti, poi rimettiti in coda."
+        }
       },
-      "draft_games": {
-        "section_label": "MATCH.APERTI",
-        "description": "Esplora i pick-up game aperti o creane uno — i capitani draftano i team."
+      "schedule": {
+        "vs": "vs",
+        "now": "Ora",
+        "in_minutes": "tra {count} min",
+        "in_hours": "tra {count} h",
+        "tomorrow": "domani",
+        "in_days": "tra {count} giorni",
+        "best_of": "Al meglio di {count}",
+        "teams": "{count} team",
+        "live": "Live",
+        "live_round": "Live · Round {round}",
+        "check_in_progress": "Check-in {checked}/{total}",
+        "check_in_closes": "chiude {time}",
+        "checked_in": "Check-in effettuato · {checked}/{total}",
+        "check_in_open": "Check-in aperto",
+        "check_in_opens": "Apertura check-in {time}",
+        "veto": "Veto mappe",
+        "waiting_for_server": "In attesa del server",
+        "picking_players": "Scelta dei giocatori",
+        "scheduled": "Programmato",
+        "registered": "Iscritto",
+        "check_in": "Fai il check-in",
+        "connect": "Connetti",
+        "open_match": "Apri match",
+        "details": "Dettagli"
+      },
+      "draft_rooms": {
+        "title": "Draft room",
+        "description": "Pick-up game ospitati da altri giocatori. I capitani o l'host dividono i team.",
+        "format_label": "Formato",
+        "search_placeholder": "Cerca giocatori",
+        "clear_search": "Cancella ricerca",
+        "filters": "Filtri",
+        "filters_title": "Filtra e ordina",
+        "has_space": "Solo room con posti liberi",
+        "avg_rank": "Rank medio",
+        "any_rank": "Qualsiasi",
+        "sort_label": "Ordina per",
+        "sort": {
+          "filling": "Quasi piene prima",
+          "newest": "Più recenti",
+          "rank_high": "Rank medio più alto",
+          "rank_low": "Rank medio più basso"
+        },
+        "host": "Crea draft room",
+        "rehost": "Ripeti l'ultima",
+        "types": {
+          "captains": "Draft con capitani",
+          "host": "Assegnazione host",
+          "pug": "Divisione automatica",
+          "teams": "Team predefiniti"
+        },
+        "access": {
+          "friends": "Solo amici",
+          "invite": "Solo su invito",
+          "private": "Privata"
+        },
+        "avg": "Media {rank}",
+        "custom_mode": "Modalità {mode}, non classificata",
+        "teams_title": "{team1} vs {team2}",
+        "open_team": "team libero",
+        "host_elo": "Host · {elo} ELO",
+        "subs": "+{count} riserve",
+        "drafting": "Draft in corso",
+        "join_party": "Unisciti col gruppo ({count})",
+        "sign_in_to_join": "Accedi per unirti",
+        "reasons": {
+          "spots_left": "{count} posto libero | {count} posti liberi",
+          "no_room_for_party": "Nessun posto per il tuo gruppo",
+          "host_approves": "Approva l'host",
+          "subs_waiting": "{count} riserva in attesa | {count} riserve in attesa",
+          "full": "Piena",
+          "youre_in": "Ci sei dentro",
+          "waiting_for_host": "In attesa dell'host"
+        },
+        "empty": "Nessuna draft room aperta al momento.",
+        "no_results": "Nessuna room corrisponde a questi filtri.",
+        "clear_filters": "Cancella filtri"
       }
     },
     "matches": {
@@ -6364,7 +6518,6 @@
     "players": "giocatori",
     "duration": "Durata",
     "your_schedule": "Il tuo calendario",
-    "your_schedule_description": "Match e tornei di cui fai parte al momento.",
     "highlights": "HIGHLIGHT",
     "boolean": {
       "yes": "Sì",
@@ -8972,15 +9125,7 @@
         "description": "Match 3v3 ad alta velocità, stanza dopo stanza, dove ogni round vinto spinge avanti lo scontro"
       }
     },
-    "cancel_matchmaking": "Annulla matchmaking",
-    "in_queue_label": "In coda",
-    "searching": "Ricerca in corso",
-    "elapsed": "Tempo trascorso",
-    "queue_wait": {
-      "zero": "0 secondi",
-      "seconds": "{count} secondi",
-      "minutes_seconds": "{minutes}m {seconds}s"
-    },
+    "queue_wait": {},
     "match_found": "Match trovato",
     "waiting_for_players": "In attesa di giocatori",
     "waiting_on_others": "In attesa degli altri",
@@ -9035,16 +9180,11 @@
     },
     "banned": "Sei bannato dal matchmaking",
     "banned_until": "Sei escluso dal matchmaking fino al {time}",
-    "confirm_selection": "Entra in coda",
     "in_queue": "in coda",
     "temp_banned": "Sei temporaneamente bannato dal matchmaking",
-    "settings_section": {
-      "toggle": "Modifica impostazioni"
-    },
-    "high_latency_warning": "La tua latenza è troppo alta per i match competitivi",
+    "settings_section": {},
     "no_preferred_regions": "Seleziona almeno una regione preferita nelle impostazioni matchmaking",
     "party_size": {
-      "unavailable": "Un gruppo di {size} non può mettersi in coda per questa modalità",
       "requirement": "Mettiti in coda con {half} o meno giocatori, oppure esattamente {full}"
     },
     "temp_banned_until": "Sei temporaneamente escluso dal matchmaking fino al {time}",
@@ -9811,25 +9951,12 @@
   },
   "draft_games": {
     "nav_label": "Draft lobby",
-    "create_custom_match": "Crea draft room",
     "leader_required": "Solo il leader del party può creare un match.",
-    "rehost": "Ripeti l'ultima",
     "rehost_hint": "Ricrea la tua ultima lobby con le stesse impostazioni",
-    "search_placeholder": "Cerca per nome giocatore...",
-    "no_results": "Nessun match corrisponde ai tuoi filtri.",
     "filters": {
-      "avg_rank": "Rank medio",
-      "has_space": "Ha posti liberi",
-      "any": "Qualsiasi",
-      "clear": "Rimuovi ({count})"
+      "any": "Qualsiasi"
     },
-    "sort": {
-      "filling": "Più vicini al pieno",
-      "newest": "Più recenti",
-      "rank_high": "Rank: alto",
-      "rank_low": "Rank: basso"
-    },
-    "empty": "Nessun match aperto. Creane uno per iniziare.",
+    "sort": {},
     "create": {
       "captain_selection": "Selezione capitani",
       "draft_order": "Ordine di draft",
@@ -9885,15 +10012,6 @@
       "front_loaded": "Front-loaded (1-2-2-1-2-1)"
     },
     "card": {
-      "pool": "Pool",
-      "region": "Regione",
-      "custom": "Personalizzato",
-      "pending_requests": "Richieste in sospeso",
-      "players": "Giocatori",
-      "subs": "Riserve",
-      "requests": "Richieste",
-      "join_party": "Unisciti col party ({count})",
-      "join_party_hint": "Porta tutto il tuo party di matchmaking in questa lobby",
       "join": "Unisciti",
       "view": "Vedi",
       "request": "Richiedi",
@@ -9904,7 +10022,6 @@
       "team": "Team {team}",
       "pool": "Giocatori disponibili",
       "captain": "Capitano",
-      "pick": "Pick",
       "empty_pool": "Tutti i giocatori sono stati draftati",
       "leave": "Esci",
       "loading": "Caricamento draft room...",
@@ -9943,7 +10060,6 @@
       "accept": "Accetta",
       "accept_backup": "Accetta come riserva",
       "deny": "Rifiuta",
-      "request": "Richiedi di unirti",
       "edit_settings": "Modifica impostazioni",
       "start_match": "Avvia match",
       "starting": "Avvio…",
@@ -9955,7 +10071,6 @@
       "join_prompt": "Entra — c'è uno slot libero",
       "request_prompt": "Questa lobby richiede l'approvazione dell'host per entrare",
       "request_pending": "La tua richiesta è in attesa dell'approvazione dell'host",
-      "waitlist": "Riserve",
       "backups": "Riserve",
       "side_backups": "Riserve {team}",
       "unassigned_backups": "Riserve non assegnate",
@@ -10030,12 +10145,7 @@
       "teams": "Team predefiniti",
       "teams_desc": "Scegli due team salvati per farli scontrare."
     },
-    "mode_short": {
-      "captains": "Capitani",
-      "host": "Host",
-      "pug": "Divisione automatica",
-      "teams": "Team"
-    },
+    "mode_short": {},
     "access": {
       "open": "Aperta",
       "open_desc": "Chiunque può trovarla e unirsi dalla lista pubblica.",

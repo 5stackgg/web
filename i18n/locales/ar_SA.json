@@ -3701,18 +3701,172 @@
       }
     },
     "play": {
-      "title": "العب",
-      "open_registration_tournaments": {
-        "section_label": "البطولات",
-        "description": "بطولات التسجيل فيها مفتوح للجميع."
+      "more_ways": {
+        "title": "طرق أخرى للعب",
+        "tournaments": {
+          "title": "البطولات",
+          "teams_of": "{count} من {max} فرق",
+          "register": "سجّل فريقًا",
+          "sign_in": "سجّل الدخول للتسجيل",
+          "all": "كل البطولات"
+        },
+        "league": {
+          "title": "الدوري",
+          "open_until": "التسجيل مفتوح حتى {date}",
+          "open": "التسجيل مفتوح",
+          "teams_in": "{count} فريق مسجّل | {count} فرق مسجّلة",
+          "register": "سجّل فريقًا",
+          "sign_in": "سجّل الدخول للتسجيل"
+        },
+        "scrims": {
+          "title": "Scrim",
+          "teams_today": "فريق يبحث عن Scrim اليوم | فرق تبحث عن Scrim اليوم",
+          "none_today": "لا توجد فرق تبحث عن Scrim اليوم",
+          "needs_team": "يتطلب فريقًا تديره",
+          "post_hint": "أعلن متى يكون فريقك متاحًا ليتمكن الآخرون من طلب Scrim.",
+          "find": "ابحث عن Scrim",
+          "post": "أعلن أوقات التوفر"
+        },
+        "drop_in": {
+          "title": "انضم مباشرة",
+          "playing": "يلعب على السيرفرات العامة | يلعبون على السيرفرات العامة",
+          "none": "لا توجد سيرفرات عامة هنا بعد",
+          "all_servers": "كل السيرفرات ({count})",
+          "players": "لاعبين",
+          "connect": "اتصال",
+          "copy": "انسخ أمر connect"
+        },
+        "practice": {
+          "title": "خادم تدريب",
+          "description": "خادمك الخاص لتدريب رميات العتاد · أي خريطة",
+          "map": "الخريطة",
+          "start": "ابدأ التدريب",
+          "sign_in": "سجّل الدخول للتدرّب"
+        }
       },
       "matchmaking": {
-        "description": "ادخل طابور الانتظار وحدك أو مع مجموعتك — تُوزّع الفرق تلقائيًا وتبدأ المباراة.",
-        "leader_required": "قائد المجموعة فقط يمكنه بدء Matchmaking"
+        "label": "Matchmaking",
+        "players_online": "لاعب متصل | لاعبين متصلين",
+        "settings": "إعدادات Matchmaking",
+        "mode_group": "نمط اللعب",
+        "nobody_queued": "لا أحد في الطابور",
+        "too_big": "مجموعة من {count} أكبر من أن تلعب {mode}",
+        "queue_solo": "ادخل الطابور منفردًا، وتُوازَن الفرق لك",
+        "seats": {
+          "format": "{count} ضد {count}",
+          "yours": "مجموعتك تشغل {count} مقعد | مجموعتك تشغل {count} مقاعد",
+          "overflow": "مجموعتك المكوّنة من {count} لا تتسع في جهة واحدة"
+        },
+        "regions": {
+          "edit": "تعديل المناطق",
+          "skipped": "تم تخطي {name}، {ms} ms",
+          "unreachable": "تعذّر الوصول إلى {name}",
+          "ms": "{ms} ms",
+          "lan": "LAN",
+          "count": "{count} منطقة | {count} مناطق"
+        },
+        "party": {
+          "solo": "في الطابور منفردًا",
+          "invite": "ادعُ أصدقاءك",
+          "leader": "في الطابور كمجموعة من {count}",
+          "you_lead": "أنت القائد",
+          "member": "في مجموعة {name} ({count})",
+          "open": "افتح المجموعة"
+        },
+        "guest_line": "سجّل الدخول عبر Steam لدخول الطابور. نقيس زمن الاستجابة إلى كل منطقة ونجمعك بلاعبين قريبين منك.",
+        "sign_in": "سجّل الدخول عبر Steam",
+        "find_match": "ابحث عن مباراة",
+        "waiting_for": "بانتظار {name}",
+        "starts_queue": "{name} يبدأ الطابور",
+        "searching": "جارٍ البحث عن مباراة {mode}",
+        "first_in_line": "أنت الأول في الطابور",
+        "cancel": "إلغاء",
+        "leader_cancels": "يمكن لـ {name} إلغاء البحث",
+        "found": "تم العثور على مباراة · اقبلها في تأكيد الجاهزية",
+        "clock": "الوقت في الطابور",
+        "no_region": {
+          "title": "كل المناطق تتجاوز حدّك البالغ {ms} ms",
+          "body": "ارفع الحد أو ميّز بنجمة منطقة تقبل بها، ثم ادخل الطابور مجددًا."
+        }
       },
-      "draft_games": {
-        "section_label": "OPEN.MATCHES",
-        "description": "تصفّح المباريات المفتوحة أو أنشئ واحدة — القادة يختارون اللاعبين."
+      "schedule": {
+        "vs": "ضد",
+        "now": "الآن",
+        "in_minutes": "بعد {count} د",
+        "in_hours": "بعد {count} س",
+        "tomorrow": "غدًا",
+        "in_days": "بعد {count} أيام",
+        "best_of": "أفضل من {count}",
+        "teams": "{count} فرق",
+        "live": "مباشر",
+        "live_round": "مباشر · الجولة {round}",
+        "check_in_progress": "تأكيد الحضور {checked}/{total}",
+        "check_in_closes": "يُغلق {time}",
+        "checked_in": "تم تأكيد الحضور · {checked}/{total}",
+        "check_in_open": "تأكيد الحضور مفتوح",
+        "check_in_opens": "يُفتح تأكيد الحضور {time}",
+        "veto": "Veto الخرائط",
+        "waiting_for_server": "بانتظار السيرفر",
+        "picking_players": "جارٍ اختيار اللاعبين",
+        "scheduled": "مجدولة",
+        "registered": "مسجّل",
+        "check_in": "أكّد الحضور",
+        "connect": "اتصال",
+        "open_match": "افتح المباراة",
+        "details": "التفاصيل"
+      },
+      "draft_rooms": {
+        "title": "غرف الاختيار",
+        "description": "مباريات مفتوحة يستضيفها لاعبون آخرون. القادة أو المستضيف يقسّمون الفرق.",
+        "format_label": "النظام",
+        "search_placeholder": "ابحث عن لاعبين",
+        "clear_search": "مسح البحث",
+        "filters": "الفلاتر",
+        "filters_title": "التصفية والترتيب",
+        "has_space": "الغرف التي فيها مكان فقط",
+        "avg_rank": "متوسط الرتبة",
+        "any_rank": "الكل",
+        "sort_label": "ترتيب حسب",
+        "sort": {
+          "filling": "الأقرب للاكتمال أولًا",
+          "newest": "الأحدث",
+          "rank_high": "أعلى متوسط رتبة",
+          "rank_low": "أدنى متوسط رتبة"
+        },
+        "host": "استضف غرفة اختيار",
+        "rehost": "أعد استضافة الأخيرة",
+        "types": {
+          "captains": "اختيار القادة",
+          "host": "توزيع المضيف",
+          "pug": "تقسيم تلقائي",
+          "teams": "فرق جاهزة"
+        },
+        "access": {
+          "friends": "الأصدقاء فقط",
+          "invite": "بالدعوة فقط",
+          "private": "خاصة"
+        },
+        "avg": "المتوسط {rank}",
+        "custom_mode": "نمط {mode}، غير مصنّفة",
+        "teams_title": "{team1} ضد {team2}",
+        "open_team": "فريق مفتوح",
+        "host_elo": "المستضيف · {elo} ELO",
+        "subs": "+{count} بدلاء",
+        "drafting": "جارٍ الاختيار",
+        "join_party": "انضم مع المجموعة ({count})",
+        "sign_in_to_join": "سجّل الدخول للانضمام",
+        "reasons": {
+          "spots_left": "بقي {count} مكان | بقيت {count} أماكن",
+          "no_room_for_party": "لا مكان لمجموعتك",
+          "host_approves": "بموافقة المستضيف",
+          "subs_waiting": "{count} بديل ينتظر | {count} بدلاء ينتظرون",
+          "full": "ممتلئة",
+          "youre_in": "أنت مشارك",
+          "waiting_for_host": "بانتظار المستضيف"
+        },
+        "empty": "لا توجد غرف اختيار مفتوحة حاليًا.",
+        "no_results": "لا توجد غرف تطابق هذه الفلاتر.",
+        "clear_filters": "مسح الفلاتر"
       }
     },
     "matches": {
@@ -6364,7 +6518,6 @@
     "players": "لاعبين",
     "duration": "المدة",
     "your_schedule": "جدولك",
-    "your_schedule_description": "المباريات والبطولات التي تشارك فيها حاليًا.",
     "highlights": "أبرز اللقطات",
     "boolean": {
       "yes": "نعم",
@@ -8972,15 +9125,7 @@
         "description": "مباريات 3v3 سريعة الإيقاع تُخاض غرفةً بغرفة، وكل جولة تفوز بها تدفع القتال إلى الأمام"
       }
     },
-    "cancel_matchmaking": "ألغِ Matchmaking",
-    "in_queue_label": "في طابور الانتظار",
-    "searching": "جارٍ البحث",
-    "elapsed": "الوقت المنقضي",
-    "queue_wait": {
-      "zero": "0 ثانية",
-      "seconds": "{count} ثانية",
-      "minutes_seconds": "{minutes}د {seconds}ث"
-    },
+    "queue_wait": {},
     "match_found": "تم العثور على مباراة",
     "waiting_for_players": "بانتظار اللاعبين",
     "waiting_on_others": "بانتظار الآخرين",
@@ -9035,16 +9180,11 @@
     },
     "banned": "أنت محظور من Matchmaking",
     "banned_until": "أنت محظور من المطابقة حتى {time}",
-    "confirm_selection": "ادخل طابور الانتظار",
     "in_queue": "في طابور الانتظار",
     "temp_banned": "أنت محظور مؤقتًا من Matchmaking",
-    "settings_section": {
-      "toggle": "عدّل الإعدادات"
-    },
-    "high_latency_warning": "زمن الاستجابة لديك مرتفع جدًا للمباريات التنافسية",
+    "settings_section": {},
     "no_preferred_regions": "اختر منطقة مفضّلة واحدة على الأقل من إعدادات Matchmaking",
     "party_size": {
-      "unavailable": "لا يمكن لفريق من {size} الانضمام لقائمة الانتظار في هذا الوضع",
       "requirement": "انضم بـ {half} لاعبين أو أقل، أو بـ {full} لاعبين بالضبط"
     },
     "temp_banned_until": "أنت محظور مؤقتًا من المطابقة حتى {time}",
@@ -9811,25 +9951,12 @@
   },
   "draft_games": {
     "nav_label": "لوبي الاختيار",
-    "create_custom_match": "استضف غرفة اختيار",
     "leader_required": "قائد المجموعة وحده يمكنه إنشاء مباراة",
-    "rehost": "أعد استضافة الأخيرة",
     "rehost_hint": "أعد إنشاء آخر لوبي بنفس الإعدادات",
-    "search_placeholder": "ابحث بأي لاعب...",
-    "no_results": "لا توجد مباريات تطابق عوامل التصفية",
     "filters": {
-      "avg_rank": "متوسط الرتبة",
-      "has_space": "فيها مكان",
-      "any": "الكل",
-      "clear": "مسح ({count})"
+      "any": "الكل"
     },
-    "sort": {
-      "filling": "الأقرب للاكتمال",
-      "newest": "الأحدث",
-      "rank_high": "الرتبة: الأعلى",
-      "rank_low": "الرتبة: الأدنى"
-    },
-    "empty": "لا توجد مباريات مفتوحة. أنشئ واحدة للبدء",
+    "sort": {},
     "create": {
       "captain_selection": "اختيار القادة",
       "draft_order": "ترتيب الاختيار",
@@ -9885,15 +10012,6 @@
       "front_loaded": "مقدَّم (1-2-2-1-2-1)"
     },
     "card": {
-      "pool": "القائمة",
-      "region": "المنطقة",
-      "custom": "مخصص",
-      "pending_requests": "طلبات معلّقة",
-      "players": "اللاعبون",
-      "subs": "البدلاء",
-      "requests": "الطلبات",
-      "join_party": "انضم مع المجموعة ({count})",
-      "join_party_hint": "أدخل مجموعة الـ Matchmaking كاملة إلى هذا اللوبي",
       "join": "انضم",
       "view": "عرض",
       "request": "اطلب",
@@ -9904,7 +10022,6 @@
       "team": "الفريق {team}",
       "pool": "اللاعبون المتاحون",
       "captain": "قائد الفريق",
-      "pick": "اختر",
       "empty_pool": "تم اختيار جميع اللاعبين",
       "leave": "غادر",
       "loading": "جارٍ تحميل غرفة الاختيار...",
@@ -9943,7 +10060,6 @@
       "accept": "قبول",
       "accept_backup": "اقبله كبديل",
       "deny": "رفض",
-      "request": "اطلب الانضمام",
       "edit_settings": "عدّل الإعدادات",
       "start_match": "ابدأ المباراة",
       "starting": "جارٍ البدء…",
@@ -9955,7 +10071,6 @@
       "join_prompt": "انضم — يوجد مكان شاغر",
       "request_prompt": "هذا اللوبي يحتاج موافقة المستضيف للانضمام",
       "request_pending": "طلبك بانتظار موافقة المستضيف",
-      "waitlist": "اللاعبون البدلاء",
       "backups": "الاحتياط",
       "side_backups": "احتياط {team}",
       "unassigned_backups": "احتياط غير موزّع",
@@ -10030,12 +10145,7 @@
       "teams": "فرق جاهزة",
       "teams_desc": "اختر فريقين محفوظين لمواجهة بعضهما."
     },
-    "mode_short": {
-      "captains": "القادة",
-      "host": "المضيف",
-      "pug": "تقسيم تلقائي",
-      "teams": "فرق"
-    },
+    "mode_short": {},
     "access": {
       "open": "مفتوح",
       "open_desc": "يمكن لأي شخص إيجاده والانضمام من القائمة العامة.",

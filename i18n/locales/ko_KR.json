@@ -3701,18 +3701,172 @@
       }
     },
     "play": {
-      "title": "플레이",
-      "open_registration_tournaments": {
-        "section_label": "토너먼트",
-        "description": "누구나 참가할 수 있도록 등록이 열려 있는 토너먼트입니다."
+      "more_ways": {
+        "title": "더 많은 플레이 방법",
+        "tournaments": {
+          "title": "토너먼트",
+          "teams_of": "{count}/{max}팀",
+          "register": "팀 등록",
+          "sign_in": "로그인하고 등록",
+          "all": "모든 토너먼트"
+        },
+        "league": {
+          "title": "리그",
+          "open_until": "{date}까지 등록 가능",
+          "open": "등록 진행 중",
+          "teams_in": "{count}팀 참가 | {count}팀 참가",
+          "register": "팀 등록",
+          "sign_in": "로그인하고 등록"
+        },
+        "scrims": {
+          "title": "스크림",
+          "teams_today": "팀이 오늘 스크림 상대를 찾는 중 | 팀이 오늘 스크림 상대를 찾는 중",
+          "none_today": "오늘 스크림 상대를 찾는 팀이 없습니다",
+          "needs_team": "관리하는 팀이 필요합니다",
+          "post_hint": "팀의 가능 시간을 올리면 다른 팀이 스크림을 요청할 수 있습니다.",
+          "find": "스크림 찾기",
+          "post": "가능 시간 올리기"
+        },
+        "drop_in": {
+          "title": "바로 참여",
+          "playing": "명이 공개 서버에서 플레이 중 | 명이 공개 서버에서 플레이 중",
+          "none": "아직 공개 서버가 없습니다",
+          "all_servers": "모든 서버 ({count})",
+          "players": "플레이어",
+          "connect": "연결",
+          "copy": "connect 명령어 복사"
+        },
+        "practice": {
+          "title": "연습 서버",
+          "description": "유틸 라인업 연습용 개인 서버 · 모든 맵",
+          "map": "맵",
+          "start": "연습 시작",
+          "sign_in": "로그인하고 연습"
+        }
       },
       "matchmaking": {
-        "description": "혼자 또는 파티와 함께 대기열에 참가하면 팀이 자동으로 밸런싱되어 매치가 시작됩니다.",
-        "leader_required": "파티장만 매치메이킹을 시작할 수 있습니다."
+        "label": "매치메이킹",
+        "players_online": "명 접속 중 | 명 접속 중",
+        "settings": "매치메이킹 설정",
+        "mode_group": "게임 모드",
+        "nobody_queued": "대기 중인 플레이어 없음",
+        "too_big": "{count}명 파티는 {mode}에 너무 많습니다",
+        "queue_solo": "솔로 대기열, 팀은 자동으로 밸런싱됩니다",
+        "seats": {
+          "format": "{count} 대 {count}",
+          "yours": "파티가 {count}자리 차지 | 파티가 {count}자리 차지",
+          "overflow": "{count}명 파티는 한쪽에 모두 들어갈 수 없음"
+        },
+        "regions": {
+          "edit": "지역 편집",
+          "skipped": "{name} 제외됨, {ms} ms",
+          "unreachable": "{name} 연결 불가",
+          "ms": "{ms} ms",
+          "lan": "LAN",
+          "count": "{count}개 지역 | {count}개 지역"
+        },
+        "party": {
+          "solo": "솔로로 대기 중",
+          "invite": "친구 초대",
+          "leader": "{count}명 파티로 대기 중",
+          "you_lead": "내가 파티장",
+          "member": "{name}님의 {count}명 파티",
+          "open": "파티 열기"
+        },
+        "guest_line": "Steam으로 로그인하면 대기열에 참가할 수 있습니다. 각 지역까지의 핑을 측정해 가까운 플레이어와 매칭합니다.",
+        "sign_in": "Steam으로 로그인",
+        "find_match": "매치 찾기",
+        "waiting_for": "{name}님을 기다리는 중",
+        "starts_queue": "{name}님이 대기열을 시작합니다",
+        "searching": "{mode} 매치 찾는 중",
+        "first_in_line": "대기열 맨 앞입니다",
+        "cancel": "취소",
+        "leader_cancels": "{name}님이 검색을 취소할 수 있습니다",
+        "found": "매치 찾음 · 준비 확인에서 수락하세요",
+        "clock": "대기 시간",
+        "no_region": {
+          "title": "모든 지역이 {ms} ms 제한을 초과합니다",
+          "body": "제한을 높이거나 허용할 지역에 별표한 뒤 다시 대기열에 참가하세요."
+        }
       },
-      "draft_games": {
-        "section_label": "진행 중인 매치",
-        "description": "열려 있는 픽업 게임을 찾아보거나 직접 만들어보세요 — 팀장이 팀을 드래프트합니다."
+      "schedule": {
+        "vs": "vs",
+        "now": "지금",
+        "in_minutes": "{count}분 후",
+        "in_hours": "{count}시간 후",
+        "tomorrow": "내일",
+        "in_days": "{count}일 후",
+        "best_of": "BO{count}",
+        "teams": "{count}팀",
+        "live": "라이브",
+        "live_round": "라이브 · 라운드 {round}",
+        "check_in_progress": "체크인 {checked}/{total}",
+        "check_in_closes": "{time} 마감",
+        "checked_in": "체크인 완료 · {checked}/{total}",
+        "check_in_open": "체크인 진행 중",
+        "check_in_opens": "체크인 시작 {time}",
+        "veto": "맵 밴픽",
+        "waiting_for_server": "서버 대기 중",
+        "picking_players": "선수 선택 중",
+        "scheduled": "예정됨",
+        "registered": "등록됨",
+        "check_in": "체크인",
+        "connect": "연결",
+        "open_match": "매치 열기",
+        "details": "상세 정보"
+      },
+      "draft_rooms": {
+        "title": "드래프트 룸",
+        "description": "다른 플레이어가 여는 픽업 게임입니다. 팀장 또는 호스트가 팀을 나눕니다.",
+        "format_label": "형식",
+        "search_placeholder": "플레이어 검색",
+        "clear_search": "검색 지우기",
+        "filters": "필터",
+        "filters_title": "필터 및 정렬",
+        "has_space": "빈 자리가 있는 룸만",
+        "avg_rank": "평균 랭크",
+        "any_rank": "전체",
+        "sort_label": "정렬 기준",
+        "sort": {
+          "filling": "정원에 가까운 순",
+          "newest": "최신순",
+          "rank_high": "평균 랭크 높은 순",
+          "rank_low": "평균 랭크 낮은 순"
+        },
+        "host": "드래프트 룸 개설",
+        "rehost": "마지막 설정 재개설",
+        "types": {
+          "captains": "팀장 드래프트",
+          "host": "호스트 배정",
+          "pug": "자동 분배",
+          "teams": "사전 구성 팀"
+        },
+        "access": {
+          "friends": "친구 전용",
+          "invite": "초대 전용",
+          "private": "비공개"
+        },
+        "avg": "평균 {rank}",
+        "custom_mode": "{mode} 모드, 언랭크",
+        "teams_title": "{team1} vs {team2}",
+        "open_team": "빈 팀",
+        "host_elo": "호스트 · {elo} ELO",
+        "subs": "+교체 선수 {count}명",
+        "drafting": "드래프트 중",
+        "join_party": "파티와 함께 참가 ({count})",
+        "sign_in_to_join": "로그인하고 참가",
+        "reasons": {
+          "spots_left": "{count}자리 남음 | {count}자리 남음",
+          "no_room_for_party": "파티 전원이 들어갈 자리가 없음",
+          "host_approves": "호스트 승인 필요",
+          "subs_waiting": "교체 선수 {count}명 대기 중 | 교체 선수 {count}명 대기 중",
+          "full": "가득 참",
+          "youre_in": "참가 중",
+          "waiting_for_host": "호스트 대기 중"
+        },
+        "empty": "현재 열린 드래프트 룸이 없습니다.",
+        "no_results": "이 필터에 맞는 룸이 없습니다.",
+        "clear_filters": "필터 지우기"
       }
     },
     "matches": {
@@ -6364,7 +6518,6 @@
     "players": "플레이어",
     "duration": "지속시간",
     "your_schedule": "내 일정",
-    "your_schedule_description": "현재 참여 중인 매치와 토너먼트입니다.",
     "highlights": "HIGHLIGHTS",
     "boolean": {
       "yes": "예",
@@ -8972,15 +9125,7 @@
         "description": "방마다 싸우는 빠른 템포의 3v3 매치, 라운드를 이길 때마다 전선을 밀어붙이세요"
       }
     },
-    "cancel_matchmaking": "매치메이킹 취소",
-    "in_queue_label": "대기열 상태",
-    "searching": "검색 중",
-    "elapsed": "경과 시간",
-    "queue_wait": {
-      "zero": "0초",
-      "seconds": "{count}초",
-      "minutes_seconds": "{minutes}분 {seconds}초"
-    },
+    "queue_wait": {},
     "match_found": "매치 찾음",
     "waiting_for_players": "플레이어 대기 중",
     "waiting_on_others": "다른 플레이어 대기 중",
@@ -9035,16 +9180,11 @@
     },
     "banned": "매치메이킹 이용이 정지되었습니다",
     "banned_until": "{time}까지 매치메이킹이 제한됩니다",
-    "confirm_selection": "대기열 참가",
     "in_queue": "대기열 중",
     "temp_banned": "매치메이킹 이용이 일시 정지되었습니다",
-    "settings_section": {
-      "toggle": "설정 조정"
-    },
-    "high_latency_warning": "경쟁전에 참가하기에는 지연 시간이 너무 높습니다",
+    "settings_section": {},
     "no_preferred_regions": "매치메이킹 설정에서 선호 지역을 최소 1개 선택해 주세요",
     "party_size": {
-      "unavailable": "{size}명 파티는 이 모드로 대기열에 참가할 수 없습니다",
       "requirement": "{half}명 이하 또는 정확히 {full}명으로 대기열에 참가하세요"
     },
     "temp_banned_until": "{time}까지 매치메이킹이 일시적으로 제한됩니다",
@@ -9811,25 +9951,12 @@
   },
   "draft_games": {
     "nav_label": "드래프트 로비",
-    "create_custom_match": "드래프트 룸 개설",
     "leader_required": "파티장만 매치를 생성할 수 있습니다.",
-    "rehost": "마지막 설정 재개설",
     "rehost_hint": "동일한 설정으로 마지막 로비를 다시 생성합니다",
-    "search_placeholder": "플레이어 이름으로 검색...",
-    "no_results": "필터에 맞는 매치가 없습니다.",
     "filters": {
-      "avg_rank": "평균 랭크",
-      "has_space": "빈 자리 있음",
-      "any": "전체",
-      "clear": "초기화 ({count})"
+      "any": "전체"
     },
-    "sort": {
-      "filling": "정원에 가까운 순",
-      "newest": "최신순",
-      "rank_high": "랭크: 높은 순",
-      "rank_low": "랭크: 낮은 순"
-    },
-    "empty": "열린 매치가 없습니다. 매치를 만들어 시작해 보세요.",
+    "sort": {},
     "create": {
       "captain_selection": "팀장 선정",
       "draft_order": "드래프트 순서",
@@ -9885,15 +10012,6 @@
       "front_loaded": "선순위 집중 (1-2-2-1-2-1)"
     },
     "card": {
-      "pool": "풀",
-      "region": "지역",
-      "custom": "커스텀",
-      "pending_requests": "대기 중인 요청",
-      "players": "플레이어",
-      "subs": "교체 선수",
-      "requests": "요청",
-      "join_party": "파티와 함께 참가 ({count})",
-      "join_party_hint": "매치메이킹 파티 전원을 이 로비로 데려옵니다",
       "join": "참가",
       "view": "보기",
       "request": "요청",
@@ -9904,7 +10022,6 @@
       "team": "팀 {team}",
       "pool": "참가 가능 플레이어",
       "captain": "팀장",
-      "pick": "픽",
       "empty_pool": "모든 플레이어가 드래프트되었습니다",
       "leave": "나가기",
       "loading": "드래프트 룸 불러오는 중...",
@@ -9943,7 +10060,6 @@
       "accept": "수락",
       "accept_backup": "백업으로 수락",
       "deny": "거절",
-      "request": "참가 요청",
       "edit_settings": "설정 편집",
       "start_match": "매치 시작",
       "starting": "시작 중…",
@@ -9955,7 +10071,6 @@
       "join_prompt": "지금 참가하세요 — 빈 슬롯이 있습니다",
       "request_prompt": "이 로비는 참가하려면 호스트 승인이 필요합니다",
       "request_pending": "호스트 승인을 기다리는 중입니다",
-      "waitlist": "교체 선수",
       "backups": "백업",
       "side_backups": "{team} 백업",
       "unassigned_backups": "미배정 백업",
@@ -10030,12 +10145,7 @@
       "teams": "사전 구성 팀",
       "teams_desc": "저장된 팀 두 개를 골라 맞붙입니다."
     },
-    "mode_short": {
-      "captains": "팀장",
-      "host": "호스트",
-      "pug": "자동 분배",
-      "teams": "팀"
-    },
+    "mode_short": {},
     "access": {
       "open": "공개",
       "open_desc": "누구나 공개 목록에서 찾아 참가할 수 있습니다.",

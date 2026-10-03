@@ -3701,18 +3701,172 @@
       }
     },
     "play": {
-      "title": "プレイ",
-      "open_registration_tournaments": {
-        "section_label": "TOURNAMENTS",
-        "description": "誰でも登録して参加できるトーナメントです。"
+      "more_ways": {
+        "title": "その他の遊び方",
+        "tournaments": {
+          "title": "トーナメント",
+          "teams_of": "{count}/{max} チーム",
+          "register": "チームを登録",
+          "sign_in": "ログインして登録",
+          "all": "すべてのトーナメント"
+        },
+        "league": {
+          "title": "リーグ",
+          "open_until": "{date}まで登録受付中",
+          "open": "登録受付中",
+          "teams_in": "{count} チーム参加 | {count} チーム参加",
+          "register": "チームを登録",
+          "sign_in": "ログインして登録"
+        },
+        "scrims": {
+          "title": "スクリム",
+          "teams_today": "チームが今日のスクリム相手を募集中 | チームが今日のスクリム相手を募集中",
+          "none_today": "今日スクリム相手を募集中のチームはありません",
+          "needs_team": "管理しているチームが必要です",
+          "post_hint": "チームの空き時間を公開すると、他のチームがスクリムを申請できます。",
+          "find": "スクリムを探す",
+          "post": "空き時間を公開"
+        },
+        "drop_in": {
+          "title": "飛び入り参加",
+          "playing": "人が公開サーバーでプレイ中 | 人が公開サーバーでプレイ中",
+          "none": "まだ公開サーバーがありません",
+          "all_servers": "すべてのサーバー（{count}）",
+          "players": "プレイヤー",
+          "connect": "接続",
+          "copy": "connect コマンドをコピー"
+        },
+        "practice": {
+          "title": "練習サーバー",
+          "description": "ユーティリティのラインナップ練習用の専用サーバー · マップ自由",
+          "map": "マップ",
+          "start": "練習を開始",
+          "sign_in": "ログインして練習"
+        }
       },
       "matchmaking": {
-        "description": "ソロでもパーティーでもキューに入れます。チームは自動でバランス調整され、試合が始まります。",
-        "leader_required": "マッチメイキングを開始できるのはパーティーリーダーのみです。"
+        "label": "マッチメイキング",
+        "players_online": "人がオンライン | 人がオンライン",
+        "settings": "マッチメイキング設定",
+        "mode_group": "ゲームモード",
+        "nobody_queued": "キュー待ちなし",
+        "too_big": "{count}人パーティーは{mode}には多すぎます",
+        "queue_solo": "ソロでキュー、チームは自動でバランス調整",
+        "seats": {
+          "format": "{count}対{count}",
+          "yours": "パーティーが{count}枠を使用 | パーティーが{count}枠を使用",
+          "overflow": "{count}人パーティーは片側に収まりません"
+        },
+        "regions": {
+          "edit": "リージョンを編集",
+          "skipped": "{name}はスキップ、{ms} ms",
+          "unreachable": "{name}に接続できません",
+          "ms": "{ms} ms",
+          "lan": "LAN",
+          "count": "{count}リージョン | {count}リージョン"
+        },
+        "party": {
+          "solo": "ソロでキュー中",
+          "invite": "フレンドを招待",
+          "leader": "{count}人パーティーでキュー中",
+          "you_lead": "あなたがリーダー",
+          "member": "{name}のパーティー（{count}人）",
+          "open": "パーティーを開く"
+        },
+        "guest_line": "Steam でサインインしてキューに参加しましょう。各リージョンへの Ping を測定し、近くのプレイヤーとマッチングします。",
+        "sign_in": "Steam でサインイン",
+        "find_match": "マッチを探す",
+        "waiting_for": "{name}を待っています",
+        "starts_queue": "{name}がキューを開始します",
+        "searching": "{mode}のマッチを検索中",
+        "first_in_line": "キューの先頭です",
+        "cancel": "キャンセル",
+        "leader_cancels": "{name}が検索をキャンセルできます",
+        "found": "マッチが見つかりました · レディチェックで承認してください",
+        "clock": "キュー時間",
+        "no_region": {
+          "title": "すべてのリージョンが上限の {ms} ms を超えています",
+          "body": "上限を上げるか、許容できるリージョンにスターを付けてから、もう一度キューに参加してください。"
+        }
       },
-      "draft_games": {
-        "section_label": "OPEN.MATCHES",
-        "description": "公開中のピックアップゲームを探すか、新しく作成します。チームはキャプテンがドラフトします。"
+      "schedule": {
+        "vs": "vs",
+        "now": "現在",
+        "in_minutes": "{count}分後",
+        "in_hours": "{count}時間後",
+        "tomorrow": "明日",
+        "in_days": "{count}日後",
+        "best_of": "BO{count}",
+        "teams": "{count} チーム",
+        "live": "ライブ",
+        "live_round": "ライブ · ラウンド{round}",
+        "check_in_progress": "チェックイン {checked}/{total}",
+        "check_in_closes": "{time}締切",
+        "checked_in": "チェックイン済み · {checked}/{total}",
+        "check_in_open": "チェックイン受付中",
+        "check_in_opens": "チェックイン開始 {time}",
+        "veto": "マップVeto",
+        "waiting_for_server": "サーバー待ち",
+        "picking_players": "プレイヤー選択中",
+        "scheduled": "予定",
+        "registered": "登録済み",
+        "check_in": "チェックイン",
+        "connect": "接続",
+        "open_match": "試合を開く",
+        "details": "詳細"
+      },
+      "draft_rooms": {
+        "title": "ドラフトルーム",
+        "description": "他のプレイヤーが開くピックアップゲームです。キャプテンまたはホストがチームを分けます。",
+        "format_label": "形式",
+        "search_placeholder": "プレイヤーを検索",
+        "clear_search": "検索をクリア",
+        "filters": "フィルター",
+        "filters_title": "絞り込みと並び替え",
+        "has_space": "空きのあるルームのみ",
+        "avg_rank": "平均ランク",
+        "any_rank": "すべて",
+        "sort_label": "並び替え",
+        "sort": {
+          "filling": "満員に近い順",
+          "newest": "新しい順",
+          "rank_high": "平均ランクが高い順",
+          "rank_low": "平均ランクが低い順"
+        },
+        "host": "ドラフトルームを作成",
+        "rehost": "前回を再作成",
+        "types": {
+          "captains": "キャプテンドラフト",
+          "host": "ホストが振り分け",
+          "pug": "自動振り分け",
+          "teams": "既存チーム対戦"
+        },
+        "access": {
+          "friends": "フレンドのみ",
+          "invite": "招待制",
+          "private": "非公開"
+        },
+        "avg": "平均 {rank}",
+        "custom_mode": "{mode}モード、アンランク",
+        "teams_title": "{team1} vs {team2}",
+        "open_team": "空きチーム",
+        "host_elo": "ホスト · {elo} ELO",
+        "subs": "+控え{count}人",
+        "drafting": "ドラフト中",
+        "join_party": "パーティーで参加（{count}）",
+        "sign_in_to_join": "ログインして参加",
+        "reasons": {
+          "spots_left": "残り{count}枠 | 残り{count}枠",
+          "no_room_for_party": "パーティー全員分の空きがありません",
+          "host_approves": "ホストの承認制",
+          "subs_waiting": "控え{count}人が待機中 | 控え{count}人が待機中",
+          "full": "満員",
+          "youre_in": "参加中",
+          "waiting_for_host": "ホストを待っています"
+        },
+        "empty": "現在募集中のドラフトルームはありません。",
+        "no_results": "条件に合うルームがありません。",
+        "clear_filters": "フィルターをクリア"
       }
     },
     "matches": {
@@ -6364,7 +6518,6 @@
     "players": "プレイヤー",
     "duration": "所要時間",
     "your_schedule": "あなたのスケジュール",
-    "your_schedule_description": "現在参加中の試合やトーナメントです。",
     "highlights": "HIGHLIGHTS",
     "boolean": {
       "yes": "はい",
@@ -8972,15 +9125,7 @@
         "description": "部屋ごとに戦うテンポの速い3v3。ラウンドを取るたびに戦線を押し上げる"
       }
     },
-    "cancel_matchmaking": "マッチメイキングをキャンセル",
-    "in_queue_label": "キュー中",
-    "searching": "検索中",
-    "elapsed": "経過時間",
-    "queue_wait": {
-      "zero": "0秒",
-      "seconds": "{count}秒",
-      "minutes_seconds": "{minutes}分{seconds}秒"
-    },
+    "queue_wait": {},
     "match_found": "マッチが見つかりました",
     "waiting_for_players": "プレイヤーを待機中",
     "waiting_on_others": "他の参加者を待機中",
@@ -9035,16 +9180,11 @@
     },
     "banned": "マッチメイキングからBanされています。",
     "banned_until": "{time} までマッチメイキングを利用できません",
-    "confirm_selection": "キューに参加",
     "in_queue": "キュー待機中",
     "temp_banned": "マッチメイキングから一時的にBanされています。",
-    "settings_section": {
-      "toggle": "設定を調整"
-    },
-    "high_latency_warning": "レイテンシが高すぎるため競技マッチに参加できません。",
+    "settings_section": {},
     "no_preferred_regions": "マッチメイキング設定で優先リージョンを1つ以上選択してください。",
     "party_size": {
-      "unavailable": "{size}人パーティーはこのモードにキューできません",
       "requirement": "{half}人以下、または{full}人ちょうどでキューしてください"
     },
     "temp_banned_until": "{time} まで一時的にマッチメイキングを利用できません",
@@ -9811,25 +9951,12 @@
   },
   "draft_games": {
     "nav_label": "ドラフトロビー",
-    "create_custom_match": "ドラフトルームを作成",
     "leader_required": "試合を作成できるのはパーティーリーダーだけです。",
-    "rehost": "前回を再作成",
     "rehost_hint": "前回のロビーを同じ設定で作り直します",
-    "search_placeholder": "プレイヤー名で検索...",
-    "no_results": "条件に合う試合がありません。",
     "filters": {
-      "avg_rank": "平均ランク",
-      "has_space": "空きあり",
-      "any": "すべて",
-      "clear": "クリア（{count}）"
+      "any": "すべて"
     },
-    "sort": {
-      "filling": "満員に近い順",
-      "newest": "新しい順",
-      "rank_high": "ランク: 高い順",
-      "rank_low": "ランク: 低い順"
-    },
-    "empty": "募集中の試合はありません。作成して始めましょう。",
+    "sort": {},
     "create": {
       "captain_selection": "キャプテン選出",
       "draft_order": "ドラフト順",
@@ -9885,15 +10012,6 @@
       "front_loaded": "先行重視（1-2-2-1-2-1）"
     },
     "card": {
-      "pool": "マッププール",
-      "region": "リージョン",
-      "custom": "カスタム",
-      "pending_requests": "保留中の申請",
-      "players": "プレイヤー",
-      "subs": "控え",
-      "requests": "申請",
-      "join_party": "パーティーで参加（{count}）",
-      "join_party_hint": "マッチメイキングのパーティー全員でこのロビーに参加します",
       "join": "参加",
       "view": "表示",
       "request": "申請",
@@ -9904,7 +10022,6 @@
       "team": "チーム {team}",
       "pool": "参加可能なプレイヤー",
       "captain": "キャプテン",
-      "pick": "Pick",
       "empty_pool": "全員のドラフトが完了しました",
       "leave": "退出",
       "loading": "ドラフトルームを読み込み中...",
@@ -9943,7 +10060,6 @@
       "accept": "承認",
       "accept_backup": "控えとして承認",
       "deny": "却下",
-      "request": "参加を申請",
       "edit_settings": "設定を編集",
       "start_match": "試合開始",
       "starting": "開始中…",
@@ -9955,7 +10071,6 @@
       "join_prompt": "空き枠あり — 今すぐ参加",
       "request_prompt": "このロビーの参加にはホストの承認が必要です",
       "request_pending": "ホストの承認待ちです",
-      "waitlist": "控え",
       "backups": "控え",
       "side_backups": "{team} の控え",
       "unassigned_backups": "未割り当ての控え",
@@ -10030,12 +10145,7 @@
       "teams": "既存チーム対戦",
       "teams_desc": "保存済みのチームを2つ選んで対戦させます。"
     },
-    "mode_short": {
-      "captains": "キャプテン",
-      "host": "ホスト",
-      "pug": "自動振り分け",
-      "teams": "チーム"
-    },
+    "mode_short": {},
     "access": {
       "open": "公開",
       "open_desc": "公開リストから誰でも見つけて参加できます。",

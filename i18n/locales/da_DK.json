@@ -3701,18 +3701,172 @@
       }
     },
     "play": {
-      "title": "Spil",
-      "open_registration_tournaments": {
-        "section_label": "TURNERINGER",
-        "description": "Turneringer med åben tilmelding, som alle kan deltage i."
+      "more_ways": {
+        "title": "Flere måder at spille på",
+        "tournaments": {
+          "title": "Turneringer",
+          "teams_of": "{count} af {max} hold",
+          "register": "Tilmeld et hold",
+          "sign_in": "Log ind for at tilmelde",
+          "all": "Alle turneringer"
+        },
+        "league": {
+          "title": "Liga",
+          "open_until": "Tilmelding åben til {date}",
+          "open": "Tilmelding åben",
+          "teams_in": "{count} hold tilmeldt | {count} hold tilmeldt",
+          "register": "Tilmeld et hold",
+          "sign_in": "Log ind for at tilmelde"
+        },
+        "scrims": {
+          "title": "Scrims",
+          "teams_today": "hold søger en scrim i dag | hold søger en scrim i dag",
+          "none_today": "Ingen hold søger en scrim i dag",
+          "needs_team": "Kræver et hold, du administrerer",
+          "post_hint": "Angiv, hvornår dit hold er ledigt, så andre kan anmode om en scrim.",
+          "find": "Find en scrim",
+          "post": "Angiv ledige tider"
+        },
+        "drop_in": {
+          "title": "Hop ind",
+          "playing": "spiller på offentlige servere | spiller på offentlige servere",
+          "none": "Ingen offentlige servere her endnu",
+          "all_servers": "Alle servere ({count})",
+          "players": "spillere",
+          "connect": "Forbind",
+          "copy": "Kopiér connect-kommandoen"
+        },
+        "practice": {
+          "title": "Træningsserver",
+          "description": "Din egen server til utility-opstillinger · valgfri map",
+          "map": "Map",
+          "start": "Start træning",
+          "sign_in": "Log ind for at træne"
+        }
       },
       "matchmaking": {
-        "description": "Stil i kø solo eller med dit party — holdene balanceres automatisk, og kampen starter for dig.",
-        "leader_required": "Kun party-lederen kan starte matchmaking."
+        "label": "Matchmaking",
+        "players_online": "spiller online | spillere online",
+        "settings": "Matchmaking-indstillinger",
+        "mode_group": "Spiltilstand",
+        "nobody_queued": "Ingen i kø",
+        "too_big": "En gruppe på {count} er for stor til {mode}",
+        "queue_solo": "Stil dig i kø solo, holdene balanceres for dig",
+        "seats": {
+          "format": "{count} mod {count}",
+          "yours": "din gruppe fylder {count} plads | din gruppe fylder {count} pladser",
+          "overflow": "din gruppe på {count} kan ikke være på én side"
+        },
+        "regions": {
+          "edit": "Redigér regioner",
+          "skipped": "{name} sprunget over, {ms} ms",
+          "unreachable": "{name} kan ikke nås",
+          "ms": "{ms} ms",
+          "lan": "LAN",
+          "count": "{count} region | {count} regioner"
+        },
+        "party": {
+          "solo": "I kø solo",
+          "invite": "Invitér venner",
+          "leader": "I kø som gruppe på {count}",
+          "you_lead": "Du er leder",
+          "member": "I {name}s gruppe på {count}",
+          "open": "Åbn gruppe"
+        },
+        "guest_line": "Log ind med Steam for at stille dig i kø. Vi måler dit ping til hver region og matcher dig med spillere i nærheden.",
+        "sign_in": "Log ind med Steam",
+        "find_match": "Find kamp",
+        "waiting_for": "Venter på {name}",
+        "starts_queue": "{name} starter køen",
+        "searching": "Søger efter en {mode}-kamp",
+        "first_in_line": "Du er først i køen",
+        "cancel": "Annuller",
+        "leader_cancels": "{name} kan annullere søgningen",
+        "found": "Kamp fundet · acceptér i klarmeldingen",
+        "clock": "Tid i kø",
+        "no_region": {
+          "title": "Alle regioner er over din grænse på {ms} ms",
+          "body": "Hæv din grænse, eller stjernemarkér en region, du vil acceptere, og stil dig i kø igen."
+        }
       },
-      "draft_games": {
-        "section_label": "ÅBNE.KAMPE",
-        "description": "Se åbne pick-up games eller opret en — anførerne drafter holdene."
+      "schedule": {
+        "vs": "vs",
+        "now": "Nu",
+        "in_minutes": "om {count} min",
+        "in_hours": "om {count} t",
+        "tomorrow": "i morgen",
+        "in_days": "om {count} dage",
+        "best_of": "Bedst af {count}",
+        "teams": "{count} hold",
+        "live": "Live",
+        "live_round": "Live · Runde {round}",
+        "check_in_progress": "Check-in {checked}/{total}",
+        "check_in_closes": "lukker {time}",
+        "checked_in": "Checket ind · {checked}/{total}",
+        "check_in_open": "Check-in åben",
+        "check_in_opens": "Check-in åbner {time}",
+        "veto": "Map-veto",
+        "waiting_for_server": "Venter på server",
+        "picking_players": "Vælger spillere",
+        "scheduled": "Planlagt",
+        "registered": "Tilmeldt",
+        "check_in": "Check ind",
+        "connect": "Forbind",
+        "open_match": "Åbn kamp",
+        "details": "Detaljer"
+      },
+      "draft_rooms": {
+        "title": "Draft-rum",
+        "description": "Pick-up games, som andre spillere er vært for. Anførerne eller værten deler holdene.",
+        "format_label": "Format",
+        "search_placeholder": "Søg spillere",
+        "clear_search": "Ryd søgning",
+        "filters": "Filtre",
+        "filters_title": "Filtrér og sortér",
+        "has_space": "Kun rum med ledige pladser",
+        "avg_rank": "Gennemsnitlig rank",
+        "any_rank": "Alle",
+        "sort_label": "Sortér efter",
+        "sort": {
+          "filling": "Tættest på fuld først",
+          "newest": "Nyeste",
+          "rank_high": "Højeste gns. rank",
+          "rank_low": "Laveste gns. rank"
+        },
+        "host": "Opret draft-rum",
+        "rehost": "Genopret seneste",
+        "types": {
+          "captains": "Anførerdraft",
+          "host": "Vært fordeler",
+          "pug": "Auto-opdeling",
+          "teams": "Faste hold"
+        },
+        "access": {
+          "friends": "Kun venner",
+          "invite": "Kun med invitation",
+          "private": "Privat"
+        },
+        "avg": "Gns. {rank}",
+        "custom_mode": "{mode}-tilstand, urangleret",
+        "teams_title": "{team1} vs {team2}",
+        "open_team": "åbent hold",
+        "host_elo": "Vært · {elo} ELO",
+        "subs": "+{count} reserver",
+        "drafting": "Drafter",
+        "join_party": "Deltag med gruppe ({count})",
+        "sign_in_to_join": "Log ind for at deltage",
+        "reasons": {
+          "spots_left": "{count} plads tilbage | {count} pladser tilbage",
+          "no_room_for_party": "Ingen plads til din gruppe",
+          "host_approves": "Værten godkender",
+          "subs_waiting": "{count} reserve venter | {count} reserver venter",
+          "full": "Fuld",
+          "youre_in": "Du er med",
+          "waiting_for_host": "Venter på værten"
+        },
+        "empty": "Ingen åbne draft-rum lige nu.",
+        "no_results": "Ingen rum matcher disse filtre.",
+        "clear_filters": "Ryd filtre"
       }
     },
     "matches": {
@@ -6364,7 +6518,6 @@
     "players": "spillere",
     "duration": "Varighed",
     "your_schedule": "Dit program",
-    "your_schedule_description": "Kampe og turneringer, du aktuelt er en del af.",
     "highlights": "HIGHLIGHTS",
     "boolean": {
       "yes": "Ja",
@@ -8972,15 +9125,7 @@
         "description": "Hurtige 3v3-kampe rum for rum, hvor hver vundet runde skubber kampen fremad"
       }
     },
-    "cancel_matchmaking": "Afbryd matchmaking",
-    "in_queue_label": "I kø",
-    "searching": "Søger",
-    "elapsed": "Forløbet",
-    "queue_wait": {
-      "zero": "0 sekunder",
-      "seconds": "{count} sekunder",
-      "minutes_seconds": "{minutes}m {seconds}s"
-    },
+    "queue_wait": {},
     "match_found": "Kamp fundet",
     "waiting_for_players": "Venter på spillere",
     "waiting_on_others": "Venter på andre",
@@ -9035,16 +9180,11 @@
     },
     "banned": "Du er udelukket fra matchmaking",
     "banned_until": "Du er udelukket fra matchmaking indtil {time}",
-    "confirm_selection": "Join kø",
     "in_queue": "i kø",
     "temp_banned": "Du er midlertidigt udelukket fra matchmaking",
-    "settings_section": {
-      "toggle": "Juster indstillinger"
-    },
-    "high_latency_warning": "Din latency er for høj til ranked kampe",
+    "settings_section": {},
     "no_preferred_regions": "Vælg mindst én foretrukken region i matchmaking-indstillinger",
     "party_size": {
-      "unavailable": "Gruppe på {size} kan ikke stille sig i kø til denne tilstand",
       "requirement": "Stil i kø med {half} eller færre, eller præcis {full} spillere"
     },
     "temp_banned_until": "Du er midlertidigt udelukket fra matchmaking indtil {time}",
@@ -9811,25 +9951,12 @@
   },
   "draft_games": {
     "nav_label": "Draft-lobby",
-    "create_custom_match": "Opret draft-rum",
     "leader_required": "Kun partylederen kan oprette en kamp.",
-    "rehost": "Genopret seneste",
     "rehost_hint": "Genopret din seneste lobby med samme indstillinger",
-    "search_placeholder": "Søg på enhver spiller...",
-    "no_results": "Ingen kampe matcher dine filtre.",
     "filters": {
-      "avg_rank": "Gns. rank",
-      "has_space": "Har plads",
-      "any": "Alle",
-      "clear": "Ryd ({count})"
+      "any": "Alle"
     },
-    "sort": {
-      "filling": "Tættest på fuld",
-      "newest": "Nyeste",
-      "rank_high": "Rank: høj",
-      "rank_low": "Rank: lav"
-    },
-    "empty": "Ingen åbne kampe. Opret en for at komme i gang.",
+    "sort": {},
     "create": {
       "captain_selection": "Valg af anfører",
       "draft_order": "Draft-rækkefølge",
@@ -9885,15 +10012,6 @@
       "front_loaded": "Front-loaded (1-2-2-1-2-1)"
     },
     "card": {
-      "pool": "Pool",
-      "region": "Region",
-      "custom": "Brugerdefineret",
-      "pending_requests": "Afventende anmodninger",
-      "players": "Spillere",
-      "subs": "Reserver",
-      "requests": "Anmodninger",
-      "join_party": "Deltag m/ party ({count})",
-      "join_party_hint": "Tag hele dit matchmaking-party med ind i denne lobby",
       "join": "Deltag",
       "view": "Se",
       "request": "Anmod",
@@ -9904,7 +10022,6 @@
       "team": "Hold {team}",
       "pool": "Ledige spillere",
       "captain": "Anfører",
-      "pick": "Pick",
       "empty_pool": "Alle spillere er draftet",
       "leave": "Forlad",
       "loading": "Indlæser draft-rum...",
@@ -9943,7 +10060,6 @@
       "accept": "Godkend",
       "accept_backup": "Godkend som reserve",
       "deny": "Afvis",
-      "request": "Anmod om at deltage",
       "edit_settings": "Redigér indstillinger",
       "start_match": "Start kamp",
       "starting": "Starter…",
@@ -9955,7 +10071,6 @@
       "join_prompt": "Hop ind — der er en ledig plads",
       "request_prompt": "Denne lobby kræver værtens godkendelse",
       "request_pending": "Din anmodning afventer værtens godkendelse",
-      "waitlist": "Reserver",
       "backups": "Reserver",
       "side_backups": "Reserver for {team}",
       "unassigned_backups": "Ufordelte reserver",
@@ -10030,12 +10145,7 @@
       "teams": "Faste hold",
       "teams_desc": "Vælg to gemte hold, der skal mødes."
     },
-    "mode_short": {
-      "captains": "Anførere",
-      "host": "Vært",
-      "pug": "Auto-opdeling",
-      "teams": "Hold"
-    },
+    "mode_short": {},
     "access": {
       "open": "Åben",
       "open_desc": "Alle kan finde og joine fra den offentlige liste.",

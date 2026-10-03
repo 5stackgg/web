@@ -3719,7 +3719,6 @@
       "more_ways": {
         "title": "Fler sätt att spela",
         "tournaments": {
-          "title": "Turneringar",
           "all": "Alla turneringar"
         },
         "league": {
@@ -3740,9 +3739,7 @@
           "post": "Lägg upp tillgänglighet"
         },
         "drop_in": {
-          "title": "Hoppa in",
           "playing": "spelar på publika servrar | spelar på publika servrar",
-          "none": "Inga publika servrar här än",
           "all_servers": "Alla servrar ({count})",
           "players": "spelare",
           "connect": "Anslut",

@@ -3719,7 +3719,6 @@
       "more_ways": {
         "title": "Plus de façons de jouer",
         "tournaments": {
-          "title": "Tournois",
           "all": "Tous les tournois"
         },
         "league": {
@@ -3740,9 +3739,7 @@
           "post": "Publier des disponibilités"
         },
         "drop_in": {
-          "title": "Jouer tout de suite",
           "playing": "joue sur les serveurs publics | jouent sur les serveurs publics",
-          "none": "Pas encore de serveur public ici",
           "all_servers": "Tous les serveurs ({count})",
           "players": "joueurs",
           "connect": "Se connecter",

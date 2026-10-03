@@ -3720,7 +3720,6 @@
       "more_ways": {
         "title": "More ways to play",
         "tournaments": {
-          "title": "Tournaments",
           "all": "All tournaments"
         },
         "league": {
@@ -3741,9 +3740,7 @@
           "post": "Post availability"
         },
         "drop_in": {
-          "title": "Drop in",
           "playing": "playing on public servers | playing on public servers",
-          "none": "No public servers on this server yet",
           "all_servers": "All servers ({count})",
           "players": "players",
           "connect": "Connect",

@@ -3719,7 +3719,6 @@
       "more_ways": {
         "title": "Oynamanın diğer yolları",
         "tournaments": {
-          "title": "Turnuvalar",
           "all": "Tüm turnuvalar"
         },
         "league": {
@@ -3740,9 +3739,7 @@
           "post": "Uygunluk paylaş"
         },
         "drop_in": {
-          "title": "Hemen katıl",
           "playing": "kişi herkese açık sunucularda oynuyor | kişi herkese açık sunucularda oynuyor",
-          "none": "Burada henüz herkese açık sunucu yok",
           "all_servers": "Tüm sunucular ({count})",
           "players": "oyuncu",
           "connect": "Bağlan",

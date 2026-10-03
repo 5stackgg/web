@@ -3719,7 +3719,6 @@
       "more_ways": {
         "title": "更多玩法",
         "tournaments": {
-          "title": "賽事",
           "all": "所有賽事"
         },
         "league": {
@@ -3740,9 +3739,7 @@
           "post": "公布可用時間"
         },
         "drop_in": {
-          "title": "隨時加入",
           "playing": "人正在公開伺服器上遊戲 | 人正在公開伺服器上遊戲",
-          "none": "這裡還沒有公開伺服器",
           "all_servers": "所有伺服器（{count}）",
           "players": "玩家",
           "connect": "連線",

@@ -64,7 +64,7 @@ const practiceEnabled = computed(
 <template>
   <PlayMoreWaysView
     :guest="isGuest"
-    :tournaments="tournaments"
+    :tournament="tournament"
     :league="leagueCard(league)"
     :scrims="scrimsCard"
     :servers="serverTiles"
@@ -88,14 +88,14 @@ import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import cleanMapName from "~/utilities/cleanMapName";
 import { countScrimTeamsToday } from "~/utilities/playMoreWays";
 
-// Open for registration and the viewer isn't on a roster yet: one row of
-// the /watch tournament cards.
-const tournamentsSubscription = typedGql("subscription")({
+// Open for registration and the viewer isn't on a roster yet, shown with
+// the /watch tournament card.
+const tournamentSubscription = typedGql("subscription")({
   tournaments: [
     {
       where: $("where", "tournaments_bool_exp!"),
       order_by: [{ start: order_by.asc }],
-      limit: 2,
+      limit: 1,
     },
     tournamentCardFields,
   ],
@@ -167,7 +167,7 @@ const myTeamsQuery = generateQuery({
 export default {
   data() {
     return {
-      tournaments: [] as any[],
+      tournament: null as any,
       servers: [] as any[],
       serverInfo: [] as any[],
       scrimPostings: null as any[] | null,
@@ -205,8 +205,8 @@ export default {
       update: (data: any) => data?.teams ?? [],
     },
     $subscribe: {
-      tournaments: {
-        query: tournamentsSubscription,
+      tournament: {
+        query: tournamentSubscription,
         variables() {
           const steamId = useAuthStore().me?.steam_id;
           return {
@@ -223,10 +223,10 @@ export default {
           };
         },
         result(this: any, { data }: any) {
-          this.tournaments = data?.tournaments ?? [];
+          this.tournament = data?.tournaments?.[0] ?? null;
         },
         error(error: any) {
-          console.error("[play] open tournaments subscription error:", error);
+          console.error("[play] open tournament subscription error:", error);
         },
       },
       servers: {

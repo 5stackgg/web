@@ -3719,7 +3719,6 @@
       "more_ways": {
         "title": "更多玩法",
         "tournaments": {
-          "title": "赛事",
           "all": "全部赛事"
         },
         "league": {
@@ -3740,9 +3739,7 @@
           "post": "发布空闲时间"
         },
         "drop_in": {
-          "title": "随时加入",
           "playing": "人正在公共服务器上游戏 | 人正在公共服务器上游戏",
-          "none": "这里还没有公共服务器",
           "all_servers": "全部服务器（{count}）",
           "players": "玩家",
           "connect": "连接",

@@ -3719,7 +3719,6 @@
       "more_ways": {
         "title": "Mais formas de jogar",
         "tournaments": {
-          "title": "Torneios",
           "all": "Todos os torneios"
         },
         "league": {
@@ -3740,9 +3739,7 @@
           "post": "Publicar disponibilidade"
         },
         "drop_in": {
-          "title": "Jogar agora",
           "playing": "jogando nos servidores de warmup | jogando nos servidores de warmup",
-          "none": "Ainda não há servidores de warmup aqui",
           "all_servers": "Todos os servidores ({count})",
           "players": "jogadores",
           "connect": "Conectar",

@@ -14,7 +14,10 @@ import {
   tournamentRowState,
 } from "~/utilities/watchEventCard";
 
-const props = defineProps<{ tournament: any }>();
+// `stacked` puts the banner on top from lg up, for a grid column too narrow
+// to sit it beside the details; the banner then takes any extra height the
+// row hands the card.
+const props = defineProps<{ tournament: any; stacked?: boolean }>();
 
 const { t } = useI18n();
 const runtimeConfig = useRuntimeConfig();
@@ -126,6 +129,9 @@ const primaryClasses =
 <template>
   <article
     class="group/tour grid overflow-hidden rounded-lg border border-border bg-card/40 transition-colors duration-150 hover:border-[hsl(var(--tac-amber)/0.45)] sm:grid-cols-[minmax(0,17rem)_minmax(0,1fr)]"
+    :class="{
+      'lg:grid-cols-1 lg:grid-rows-[1fr_auto]': stacked,
+    }"
   >
     <NuxtLink
       :to="path"
@@ -275,6 +281,7 @@ const primaryClasses =
             }}
           </NuxtLink>
         </Button>
+        <slot name="actions" />
       </div>
     </div>
   </article>

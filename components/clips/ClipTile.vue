@@ -322,7 +322,7 @@ const actionClasses = `${actionBase} w-8`;
               'bg-black/70 text-[hsl(var(--tac-amber))] shadow-[inset_0_0_0_1px_hsl(var(--tac-amber)/0.55)]',
             ]"
           >
-            <span class="clip-cap-trim truncate">{{ tag }}</span>
+            <span class="clip-cap-trim whitespace-nowrap">{{ tag }}</span>
           </span>
           <span v-if="isGroup" :class="chipClasses">
             <Film class="h-3.5 w-3.5 shrink-0" />

@@ -35,7 +35,7 @@ const ariaLabel = computed(() =>
 );
 
 const cellClasses = computed(() => [
-  "relative flex w-56 shrink-0 snap-start flex-col gap-1.5 rounded-lg border px-3 pb-2.5 pt-2 text-left transition-[background-color,border-color,box-shadow] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+  "relative flex h-[6.875rem] w-56 shrink-0 snap-start flex-col gap-1.5 rounded-lg border px-3 pb-2.5 pt-2 text-left transition-[background-color,border-color,box-shadow] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] focus-visible:ring-offset-2 focus-visible:ring-offset-background",
   props.staged
     ? "border-[hsl(var(--tac-amber))] bg-muted/30 shadow-[inset_0_0_0_1px_hsl(var(--tac-amber))]"
     : "border-border bg-muted/20 hover:bg-muted/40",
@@ -73,7 +73,9 @@ const cellClasses = computed(() => [
           <span
             class="absolute inline-flex h-full w-full animate-ping rounded-full bg-destructive opacity-75 motion-reduce:animate-none"
           ></span>
-          <span class="relative inline-flex size-2 rounded-full bg-destructive"></span>
+          <span
+            class="relative inline-flex size-2 rounded-full bg-destructive"
+          ></span>
         </span>
         <span
           v-else-if="model.status.dot === 'idle'"
@@ -82,10 +84,7 @@ const cellClasses = computed(() => [
         <span class="truncate">{{ model.status.text }}</span>
       </span>
       <span class="inline-flex shrink-0 items-center gap-1.5">
-        <span
-          v-if="staged"
-          class="font-semibold text-[hsl(var(--tac-amber))]"
-        >
+        <span v-if="staged" class="font-semibold text-[hsl(var(--tac-amber))]">
           {{ $t("pages.watch.ticker.on_stage") }}
         </span>
         <component

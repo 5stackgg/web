@@ -3701,18 +3701,172 @@
       }
     },
     "play": {
-      "title": "遊戲",
-      "open_registration_tournaments": {
-        "section_label": "賽事",
-        "description": "開放報名、任何人皆可加入的賽事。"
+      "more_ways": {
+        "title": "更多玩法",
+        "tournaments": {
+          "title": "賽事",
+          "teams_of": "{count} / {max} 支隊伍",
+          "register": "報名隊伍",
+          "sign_in": "登入後報名",
+          "all": "所有賽事"
+        },
+        "league": {
+          "title": "聯賽",
+          "open_until": "報名截至 {date}",
+          "open": "開放報名中",
+          "teams_in": "已報名 {count} 支隊伍 | 已報名 {count} 支隊伍",
+          "register": "報名隊伍",
+          "sign_in": "登入後報名"
+        },
+        "scrims": {
+          "title": "練習賽",
+          "teams_today": "支隊伍今天在找練習賽 | 支隊伍今天在找練習賽",
+          "none_today": "今天沒有隊伍在找練習賽",
+          "needs_team": "需要一支由你管理的隊伍",
+          "post_hint": "公布你的隊伍有空的時間，其他隊伍就能向你發起練習賽請求。",
+          "find": "尋找練習賽",
+          "post": "公布可用時間"
+        },
+        "drop_in": {
+          "title": "隨時加入",
+          "playing": "人正在公開伺服器上遊戲 | 人正在公開伺服器上遊戲",
+          "none": "這裡還沒有公開伺服器",
+          "all_servers": "所有伺服器（{count}）",
+          "players": "玩家",
+          "connect": "連線",
+          "copy": "複製 connect 指令"
+        },
+        "practice": {
+          "title": "練習伺服器",
+          "description": "你專屬的道具點位練習伺服器 · 任意地圖",
+          "map": "地圖",
+          "start": "開始練習",
+          "sign_in": "登入後練習"
+        }
       },
       "matchmaking": {
-        "description": "單人排隊或與您的隊伍一起排隊——隊伍會自動平衡，比賽會為您開始。",
-        "leader_required": "只有隊長可以開始配對。"
+        "label": "配對",
+        "players_online": "名玩家在線上 | 名玩家在線上",
+        "settings": "配對設定",
+        "mode_group": "遊戲模式",
+        "nobody_queued": "無人排隊",
+        "too_big": "{count} 人小隊超出 {mode} 的人數上限",
+        "queue_solo": "單人排隊，系統會為你平衡隊伍",
+        "seats": {
+          "format": "{count} 對 {count}",
+          "yours": "你的小隊佔 {count} 個位置 | 你的小隊佔 {count} 個位置",
+          "overflow": "你的 {count} 人小隊無法排在同一方"
+        },
+        "regions": {
+          "edit": "編輯區域",
+          "skipped": "已略過 {name}，{ms} ms",
+          "unreachable": "{name} 無法連線",
+          "ms": "{ms} ms",
+          "lan": "LAN",
+          "count": "{count} 個區域 | {count} 個區域"
+        },
+        "party": {
+          "solo": "單人排隊",
+          "invite": "邀請好友",
+          "leader": "以 {count} 人小隊排隊",
+          "you_lead": "你是隊長",
+          "member": "在 {name} 的 {count} 人小隊中",
+          "open": "開啟小隊"
+        },
+        "guest_line": "使用 Steam 登入即可排隊。我們會測量你到各區域的延遲，為你配對附近的玩家。",
+        "sign_in": "使用 Steam 登入",
+        "find_match": "尋找比賽",
+        "waiting_for": "等待 {name}",
+        "starts_queue": "由 {name} 開始排隊",
+        "searching": "正在尋找 {mode} 比賽",
+        "first_in_line": "你排在第一位",
+        "cancel": "取消",
+        "leader_cancels": "{name} 可以取消尋找",
+        "found": "已找到比賽 · 請在準備確認中接受",
+        "clock": "排隊時間",
+        "no_region": {
+          "title": "所有區域都超過你的 {ms} ms 上限",
+          "body": "提高上限或為可接受的區域加星號，然後重新排隊。"
+        }
       },
-      "draft_games": {
-        "section_label": "開放·比賽",
-        "description": "瀏覽開放的約戰比賽或建立一場——由隊長選人組隊。"
+      "schedule": {
+        "vs": "vs",
+        "now": "現在",
+        "in_minutes": "{count} 分鐘後",
+        "in_hours": "{count} 小時後",
+        "tomorrow": "明天",
+        "in_days": "{count} 天後",
+        "best_of": "BO{count}",
+        "teams": "{count} 支隊伍",
+        "live": "進行中",
+        "live_round": "進行中 · 第 {round} 回合",
+        "check_in_progress": "報到 {checked}/{total}",
+        "check_in_closes": "{time} 截止",
+        "checked_in": "已報到 · {checked}/{total}",
+        "check_in_open": "報到已開放",
+        "check_in_opens": "{time} 開放報到",
+        "veto": "地圖 BP",
+        "waiting_for_server": "等待伺服器",
+        "picking_players": "選人中",
+        "scheduled": "已排程",
+        "registered": "已報名",
+        "check_in": "報到",
+        "connect": "連線",
+        "open_match": "開啟比賽",
+        "details": "詳情"
+      },
+      "draft_rooms": {
+        "title": "選人房間",
+        "description": "其他玩家開設的路人局。由隊長或房主分隊。",
+        "format_label": "賽制",
+        "search_placeholder": "搜尋玩家",
+        "clear_search": "清除搜尋",
+        "filters": "篩選",
+        "filters_title": "篩選與排序",
+        "has_space": "僅顯示有空位的房間",
+        "avg_rank": "平均段位",
+        "any_rank": "任何",
+        "sort_label": "排序方式",
+        "sort": {
+          "filling": "即將滿員優先",
+          "newest": "最新",
+          "rank_high": "平均段位最高",
+          "rank_low": "平均段位最低"
+        },
+        "host": "建立選人房間",
+        "rehost": "重開上一場",
+        "types": {
+          "captains": "隊長選人",
+          "host": "房主分配",
+          "pug": "自動分隊",
+          "teams": "預設隊伍"
+        },
+        "access": {
+          "friends": "僅限好友",
+          "invite": "僅限邀請",
+          "private": "私人"
+        },
+        "avg": "平均 {rank}",
+        "custom_mode": "{mode} 模式，非排名",
+        "teams_title": "{team1} vs {team2}",
+        "open_team": "空缺隊伍",
+        "host_elo": "房主 · {elo} ELO",
+        "subs": "+{count} 名替補",
+        "drafting": "選人中",
+        "join_party": "帶小隊加入（{count}）",
+        "sign_in_to_join": "登入後加入",
+        "reasons": {
+          "spots_left": "剩餘 {count} 個空位 | 剩餘 {count} 個空位",
+          "no_room_for_party": "位置不夠容納你的小隊",
+          "host_approves": "需房主核准",
+          "subs_waiting": "{count} 名替補等待中 | {count} 名替補等待中",
+          "full": "已滿",
+          "youre_in": "你已加入",
+          "waiting_for_host": "等待房主"
+        },
+        "empty": "目前沒有開放的選人房間。",
+        "no_results": "沒有符合這些篩選條件的房間。",
+        "clear_filters": "清除篩選"
       }
     },
     "matches": {
@@ -6364,7 +6518,6 @@
     "players": "玩家",
     "duration": "時長",
     "your_schedule": "您的行程",
-    "your_schedule_description": "您目前參與的比賽與賽事。",
     "highlights": "精華時刻",
     "boolean": {
       "yes": "是",
@@ -8972,15 +9125,7 @@
         "description": "逐個房間交戰的快節奏 3v3 比賽，每贏一個回合就把戰線向前推進"
       }
     },
-    "cancel_matchmaking": "取消配對",
-    "in_queue_label": "佇列中",
-    "searching": "搜尋中",
-    "elapsed": "已耗時",
-    "queue_wait": {
-      "zero": "0 秒",
-      "seconds": "{count} 秒",
-      "minutes_seconds": "{minutes}分 {seconds}秒"
-    },
+    "queue_wait": {},
     "match_found": "已找到比賽",
     "waiting_for_players": "等待玩家",
     "waiting_on_others": "等待其他人",
@@ -9035,16 +9180,11 @@
     },
     "banned": "您已被禁止使用配對系統",
     "banned_until": "你被禁止使用配對，直到 {time}",
-    "confirm_selection": "加入佇列",
     "in_queue": "佇列中",
     "temp_banned": "您暫時被禁止使用配對系統",
-    "settings_section": {
-      "toggle": "調整設定"
-    },
-    "high_latency_warning": "您的延遲過高，無法進行競技比賽",
+    "settings_section": {},
     "no_preferred_regions": "請在配對設定中選擇至少一個偏好地區",
     "party_size": {
-      "unavailable": "{size} 人隊伍無法配對此模式",
       "requirement": "請以 {half} 人以下，或剛好 {full} 人進行配對"
     },
     "temp_banned_until": "你被暫時禁止使用配對，直到 {time}",
@@ -9811,25 +9951,12 @@
   },
   "draft_games": {
     "nav_label": "選人大廳",
-    "create_custom_match": "建立選人房間",
     "leader_required": "只有隊伍隊長可以建立比賽。",
-    "rehost": "重開上一場",
     "rehost_hint": "以相同設定重新建立您的大廳",
-    "search_placeholder": "搜尋任一玩家...",
-    "no_results": "沒有符合篩選條件的比賽。",
     "filters": {
-      "avg_rank": "平均段位",
-      "has_space": "有空位",
-      "any": "任何",
-      "clear": "清除（{count}）"
+      "any": "任何"
     },
-    "sort": {
-      "filling": "最接近滿員",
-      "newest": "最新",
-      "rank_high": "段位：高",
-      "rank_low": "段位：低"
-    },
-    "empty": "目前沒有公開比賽。建立一場開始吧。",
+    "sort": {},
     "create": {
       "captain_selection": "隊長選擇方式",
       "draft_order": "選人順序",
@@ -9885,15 +10012,6 @@
       "front_loaded": "前置（1-2-2-1-2-1）"
     },
     "card": {
-      "pool": "地圖池",
-      "region": "地區",
-      "custom": "自訂",
-      "pending_requests": "待處理申請",
-      "players": "玩家",
-      "subs": "替補",
-      "requests": "申請",
-      "join_party": "帶隊伍加入（{count}）",
-      "join_party_hint": "將您整個配對隊伍帶進此大廳",
       "join": "加入",
       "view": "檢視",
       "request": "申請加入",
@@ -9904,7 +10022,6 @@
       "team": "隊伍 {team}",
       "pool": "可選玩家",
       "captain": "隊長",
-      "pick": "選擇",
       "empty_pool": "所有玩家皆已被選走",
       "leave": "離開",
       "loading": "載入選人房間中...",
@@ -9943,7 +10060,6 @@
       "accept": "接受",
       "accept_backup": "接受為替補",
       "deny": "拒絕",
-      "request": "申請加入",
       "edit_settings": "編輯設定",
       "start_match": "開始比賽",
       "starting": "開始中…",
@@ -9955,7 +10071,6 @@
       "join_prompt": "快加入吧——還有空位",
       "request_prompt": "此大廳需要房主核准才能加入",
       "request_pending": "您的申請正在等待房主核准",
-      "waitlist": "替補",
       "backups": "替補",
       "side_backups": "{team} 替補",
       "unassigned_backups": "未分配替補",
@@ -10030,12 +10145,7 @@
       "teams": "預設隊伍",
       "teams_desc": "選擇兩支已儲存的隊伍對戰。"
     },
-    "mode_short": {
-      "captains": "隊長",
-      "host": "房主",
-      "pug": "自動分隊",
-      "teams": "隊伍"
-    },
+    "mode_short": {},
     "access": {
       "open": "公開",
       "open_desc": "任何人都可以從公開列表中尋找並加入。",

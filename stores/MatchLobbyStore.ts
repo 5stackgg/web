@@ -404,9 +404,14 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
             can_check_in: true,
             map_veto_type: true,
             region: true,
+            // /play schedule: the check-in deadline, Connect once live, and
+            // whether check-in needs the camera (it can't happen inline).
+            cancels_at: true,
+            connection_link: true,
             options: {
               ...simpleMatchFields.options,
               region_veto: true,
+              camera_required: true,
             },
             lineup_1: {
               ...simpleMatchFields.lineup_1,

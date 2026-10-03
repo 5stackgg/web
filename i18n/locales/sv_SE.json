@@ -3701,18 +3701,172 @@
       }
     },
     "play": {
-      "title": "Spela",
-      "open_registration_tournaments": {
-        "section_label": "TURNERINGAR",
-        "description": "Turneringar öppna för anmälan som vem som helst kan gå med i."
+      "more_ways": {
+        "title": "Fler sätt att spela",
+        "tournaments": {
+          "title": "Turneringar",
+          "teams_of": "{count} av {max} lag",
+          "register": "Anmäl ett lag",
+          "sign_in": "Logga in för att anmäla",
+          "all": "Alla turneringar"
+        },
+        "league": {
+          "title": "Liga",
+          "open_until": "Anmälan öppen till {date}",
+          "open": "Anmälan öppen",
+          "teams_in": "{count} lag anmält | {count} lag anmälda",
+          "register": "Anmäl ett lag",
+          "sign_in": "Logga in för att anmäla"
+        },
+        "scrims": {
+          "title": "Scrims",
+          "teams_today": "lag söker scrim i dag | lag söker scrim i dag",
+          "none_today": "Inga lag söker scrim i dag",
+          "needs_team": "Kräver ett lag du hanterar",
+          "post_hint": "Lägg upp när ditt lag är ledigt så kan andra begära en scrim.",
+          "find": "Hitta en scrim",
+          "post": "Lägg upp tillgänglighet"
+        },
+        "drop_in": {
+          "title": "Hoppa in",
+          "playing": "spelar på publika servrar | spelar på publika servrar",
+          "none": "Inga publika servrar här än",
+          "all_servers": "Alla servrar ({count})",
+          "players": "spelare",
+          "connect": "Anslut",
+          "copy": "Kopiera connect-kommandot"
+        },
+        "practice": {
+          "title": "Träningsserver",
+          "description": "Din egen server för utility-uppställningar · valfri karta",
+          "map": "Karta",
+          "start": "Starta träning",
+          "sign_in": "Logga in för att träna"
+        }
       },
       "matchmaking": {
-        "description": "Köa själv eller med ditt party — lagen balanseras automatiskt och matchen startar åt dig.",
-        "leader_required": "Endast partyledaren kan starta matchmaking."
+        "label": "Matchmaking",
+        "players_online": "spelare online | spelare online",
+        "settings": "Matchmaking-inställningar",
+        "mode_group": "Spelläge",
+        "nobody_queued": "Ingen i kö",
+        "too_big": "En grupp på {count} är för stor för {mode}",
+        "queue_solo": "Köa solo, lagen balanseras åt dig",
+        "seats": {
+          "format": "{count} mot {count}",
+          "yours": "din grupp tar {count} plats | din grupp tar {count} platser",
+          "overflow": "din grupp på {count} får inte plats på en sida"
+        },
+        "regions": {
+          "edit": "Redigera regioner",
+          "skipped": "{name} hoppas över, {ms} ms",
+          "unreachable": "{name} går inte att nå",
+          "ms": "{ms} ms",
+          "lan": "LAN",
+          "count": "{count} region | {count} regioner"
+        },
+        "party": {
+          "solo": "Köar solo",
+          "invite": "Bjud in vänner",
+          "leader": "Köar som grupp på {count}",
+          "you_lead": "Du leder",
+          "member": "I {name}s grupp på {count}",
+          "open": "Öppna grupp"
+        },
+        "guest_line": "Logga in med Steam för att köa. Vi mäter din ping till varje region och matchar dig med spelare i närheten.",
+        "sign_in": "Logga in med Steam",
+        "find_match": "Hitta match",
+        "waiting_for": "Väntar på {name}",
+        "starts_queue": "{name} startar kön",
+        "searching": "Söker efter en {mode}-match",
+        "first_in_line": "Du är först i kön",
+        "cancel": "Avbryt",
+        "leader_cancels": "{name} kan avbryta sökningen",
+        "found": "Match hittad · acceptera i redo-kontrollen",
+        "clock": "Tid i kö",
+        "no_region": {
+          "title": "Alla regioner ligger över din gräns på {ms} ms",
+          "body": "Höj gränsen eller stjärnmärk en region du kan godta och köa sedan igen."
+        }
       },
-      "draft_games": {
-        "section_label": "ÖPPNA.MATCHER",
-        "description": "Bläddra bland öppna pick-up-matcher eller skapa en — lagkaptener draftar lagen."
+      "schedule": {
+        "vs": "vs",
+        "now": "Nu",
+        "in_minutes": "om {count} min",
+        "in_hours": "om {count} tim",
+        "tomorrow": "i morgon",
+        "in_days": "om {count} dagar",
+        "best_of": "Bäst av {count}",
+        "teams": "{count} lag",
+        "live": "Live",
+        "live_round": "Live · rond {round}",
+        "check_in_progress": "Incheckning {checked}/{total}",
+        "check_in_closes": "stänger {time}",
+        "checked_in": "Incheckad · {checked}/{total}",
+        "check_in_open": "Incheckning öppen",
+        "check_in_opens": "Incheckning öppnar {time}",
+        "veto": "Kartveto",
+        "waiting_for_server": "Väntar på server",
+        "picking_players": "Väljer spelare",
+        "scheduled": "Schemalagd",
+        "registered": "Anmäld",
+        "check_in": "Checka in",
+        "connect": "Anslut",
+        "open_match": "Öppna match",
+        "details": "Detaljer"
+      },
+      "draft_rooms": {
+        "title": "Draftrum",
+        "description": "Spontanmatcher som andra spelare är värdar för. Kaptener eller värden delar upp lagen.",
+        "format_label": "Format",
+        "search_placeholder": "Sök spelare",
+        "clear_search": "Rensa sökning",
+        "filters": "Filter",
+        "filters_title": "Filtrera och sortera",
+        "has_space": "Bara rum med plats",
+        "avg_rank": "Snittrank",
+        "any_rank": "Alla",
+        "sort_label": "Sortera efter",
+        "sort": {
+          "filling": "Nästan fulla först",
+          "newest": "Nyaste",
+          "rank_high": "Högst snittrank",
+          "rank_low": "Lägst snittrank"
+        },
+        "host": "Skapa draftrum",
+        "rehost": "Starta senaste igen",
+        "types": {
+          "captains": "Kaptensdraft",
+          "host": "Värden tilldelar",
+          "pug": "Automatisk uppdelning",
+          "teams": "Färdiga lag"
+        },
+        "access": {
+          "friends": "Endast vänner",
+          "invite": "Endast inbjudan",
+          "private": "Privat"
+        },
+        "avg": "Snitt {rank}",
+        "custom_mode": "{mode}-läge, orankat",
+        "teams_title": "{team1} vs {team2}",
+        "open_team": "öppet lag",
+        "host_elo": "Värd · {elo} ELO",
+        "subs": "+{count} reserver",
+        "drafting": "Draftar",
+        "join_party": "Gå med som grupp ({count})",
+        "sign_in_to_join": "Logga in för att gå med",
+        "reasons": {
+          "spots_left": "{count} plats kvar | {count} platser kvar",
+          "no_room_for_party": "Ingen plats för din grupp",
+          "host_approves": "Värden godkänner",
+          "subs_waiting": "{count} reserv väntar | {count} reserver väntar",
+          "full": "Fullt",
+          "youre_in": "Du är med",
+          "waiting_for_host": "Väntar på värden"
+        },
+        "empty": "Inga öppna draftrum just nu.",
+        "no_results": "Inga rum matchar filtren.",
+        "clear_filters": "Rensa filter"
       }
     },
     "matches": {
@@ -6364,7 +6518,6 @@
     "players": "spelare",
     "duration": "Varaktighet",
     "your_schedule": "Ditt schema",
-    "your_schedule_description": "Matcher och turneringar du för närvarande deltar i.",
     "highlights": "HÖJDPUNKTER",
     "boolean": {
       "yes": "Ja",
@@ -8972,15 +9125,7 @@
         "description": "Snabba 3v3-matcher rum för rum där varje vunnen rond driver striden framåt"
       }
     },
-    "cancel_matchmaking": "Avbryt matchmaking",
-    "in_queue_label": "I kö",
-    "searching": "Söker",
-    "elapsed": "Förfluten tid",
-    "queue_wait": {
-      "zero": "0 sekunder",
-      "seconds": "{count} sekunder",
-      "minutes_seconds": "{minutes}m {seconds}s"
-    },
+    "queue_wait": {},
     "match_found": "Match hittad",
     "waiting_for_players": "Väntar på spelare",
     "waiting_on_others": "Väntar på andra",
@@ -9035,16 +9180,11 @@
     },
     "banned": "Du är avstängd från matchmaking",
     "banned_until": "Du är avstängd från matchmaking till {time}",
-    "confirm_selection": "Gå med i kön",
     "in_queue": "i kö",
     "temp_banned": "Du är tillfälligt avstängd från matchmaking",
-    "settings_section": {
-      "toggle": "Justera inställningar"
-    },
-    "high_latency_warning": "Din latens är för hög för tävlingsmatcher",
+    "settings_section": {},
     "no_preferred_regions": "Välj minst en föredragen region i matchmaking-inställningarna",
     "party_size": {
-      "unavailable": "Ett sällskap på {size} kan inte köa för det här läget",
       "requirement": "Köa med {half} eller färre, eller exakt {full} spelare"
     },
     "temp_banned_until": "Du är tillfälligt avstängd från matchmaking till {time}",
@@ -9811,25 +9951,12 @@
   },
   "draft_games": {
     "nav_label": "Draftlobby",
-    "create_custom_match": "Skapa draftrum",
     "leader_required": "Bara partyledaren kan skapa en match.",
-    "rehost": "Starta senaste igen",
     "rehost_hint": "Skapa din senaste lobby igen med samma inställningar",
-    "search_placeholder": "Sök på valfri spelare...",
-    "no_results": "Inga matcher matchar dina filter.",
     "filters": {
-      "avg_rank": "Snittrank",
-      "has_space": "Har plats",
-      "any": "Alla",
-      "clear": "Rensa ({count})"
+      "any": "Alla"
     },
-    "sort": {
-      "filling": "Närmast fullt",
-      "newest": "Nyast",
-      "rank_high": "Rank: Hög",
-      "rank_low": "Rank: Låg"
-    },
-    "empty": "Inga öppna matcher. Skapa en för att komma igång.",
+    "sort": {},
     "create": {
       "captain_selection": "Val av lagkapten",
       "draft_order": "Draftordning",
@@ -9885,15 +10012,6 @@
       "front_loaded": "Framtung (1-2-2-1-2-1)"
     },
     "card": {
-      "pool": "Pool",
-      "region": "Region",
-      "custom": "Anpassad",
-      "pending_requests": "Väntande förfrågningar",
-      "players": "Spelare",
-      "subs": "Reserver",
-      "requests": "Förfrågningar",
-      "join_party": "Gå med w/ party ({count})",
-      "join_party_hint": "Ta med hela din matchmaking-party in i den här lobbyn",
       "join": "Gå med",
       "view": "Visa",
       "request": "Begär",
@@ -9904,7 +10022,6 @@
       "team": "Lag {team}",
       "pool": "Tillgängliga spelare",
       "captain": "Lagkapten",
-      "pick": "Välj",
       "empty_pool": "Alla spelare har draftats",
       "leave": "Lämna",
       "loading": "Laddar draftrum...",
@@ -9943,7 +10060,6 @@
       "accept": "Acceptera",
       "accept_backup": "Acceptera som backup",
       "deny": "Neka",
-      "request": "Begär att gå med",
       "edit_settings": "Redigera inställningar",
       "start_match": "Starta match",
       "starting": "Startar…",
@@ -9955,7 +10071,6 @@
       "join_prompt": "Hoppa in — det finns en öppen plats",
       "request_prompt": "Den här lobbyn kräver godkännande från värden för att gå med",
       "request_pending": "Din förfrågan väntar på godkännande från värden",
-      "waitlist": "Reserver",
       "backups": "Backuper",
       "side_backups": "{team} backuper",
       "unassigned_backups": "Otilldelade backuper",
@@ -10030,12 +10145,7 @@
       "teams": "Färdiga lag",
       "teams_desc": "Välj två sparade lag som möts."
     },
-    "mode_short": {
-      "captains": "Kaptener",
-      "host": "Värd",
-      "pug": "Automatisk",
-      "teams": "Lag"
-    },
+    "mode_short": {},
     "access": {
       "open": "Öppen",
       "open_desc": "Alla kan hitta och gå med från den publika listan.",

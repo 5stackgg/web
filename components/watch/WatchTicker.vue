@@ -10,6 +10,7 @@ import HorizontalScrollRow from "~/components/common/HorizontalScrollRow.vue";
 import WatchTickerCell from "~/components/watch/WatchTickerCell.vue";
 import WatchSegmented from "~/components/watch/WatchSegmented.vue";
 import { Skeleton } from "~/components/ui/skeleton";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import { useWatchStage } from "~/composables/useWatchStage";
 import {
   TICKER_LIVE_STATUSES,
@@ -43,9 +44,6 @@ const resultsDone = ref(false);
 const resultsLoading = ref(false);
 const filter = ref<TickerFilter>("all");
 const scrollRow = ref<InstanceType<typeof HorizontalScrollRow> | null>(null);
-// HorizontalScrollRow's root starts with a comment in dev, so its $el isn't
-// the scroller; reach it through this wrapper instead.
-const rowWrap = ref<HTMLElement | null>(null);
 
 let liveSub: { unsubscribe: () => void } | undefined;
 let upcomingSub: { unsubscribe: () => void } | undefined;
@@ -215,9 +213,10 @@ watch(
 onBeforeUnmount(stop);
 
 const now = ref(new Date());
-const clock = typeof window !== "undefined"
-  ? setInterval(() => (now.value = new Date()), 60_000)
-  : null;
+const clock =
+  typeof window !== "undefined"
+    ? setInterval(() => (now.value = new Date()), 60_000)
+    : null;
 onBeforeUnmount(() => clock && clearInterval(clock));
 
 const ctx = computed(() => ({ t, locale: locale.value, now: now.value }));
@@ -312,8 +311,13 @@ const items = computed<Item[]>(() => {
       list.push(cell(tickerCell(match, ctx.value)));
     }
     if (resultsLoading.value) {
-      for (let i = 0; i < 3; i++) list.push({ type: "skeleton", key: `sk-${i}` });
-    } else if (resultsLoaded.value && !results.value.length && f === "results") {
+      for (let i = 0; i < 3; i++)
+        list.push({ type: "skeleton", key: `sk-${i}` });
+    } else if (
+      resultsLoaded.value &&
+      !results.value.length &&
+      f === "results"
+    ) {
       list.push({
         type: "note",
         key: "no-results",
@@ -340,18 +344,6 @@ function scrollRight() {
   if (!scrollRow.value?.state.canScrollRight) loadMore();
 }
 
-// After the DOM swap: scrolling first would let the browser re-snap to
-// whichever item was snapped before the new ones were inserted ahead of it.
-watch(
-  filter,
-  () => {
-    rowWrap.value
-      ?.querySelector<HTMLElement>(".snap-x")
-      ?.scrollTo?.({ left: 0 });
-  },
-  { flush: "post" },
-);
-
 function stageMatch(matchId: string) {
   setStage(matchId);
   document
@@ -369,7 +361,7 @@ function stageMatch(matchId: string) {
     <template v-if="ghost">
       <div class="flex gap-3 overflow-hidden">
         <p
-          class="flex w-72 shrink-0 items-center rounded-lg border border-dashed border-border px-4 py-3 text-sm leading-snug text-foreground/70"
+          class="flex h-[6.875rem] w-72 shrink-0 items-center rounded-lg border border-dashed border-border px-4 py-3 text-sm leading-snug text-foreground/70"
         >
           {{ $t("pages.watch.ticker.ghost_caption") }}
         </p>
@@ -377,7 +369,7 @@ function stageMatch(matchId: string) {
           v-for="i in 5"
           :key="i"
           aria-hidden="true"
-          class="flex h-[6.5rem] w-56 shrink-0 flex-col justify-center gap-2.5 rounded-lg border border-dashed border-border/70 px-3"
+          class="flex h-[6.875rem] w-56 shrink-0 flex-col justify-center gap-2.5 rounded-lg border border-dashed border-border/70 px-3"
         >
           <span class="h-2 w-2/5 rounded-sm bg-muted/60"></span>
           <span class="h-2.5 w-3/4 rounded-sm bg-muted/60"></span>
@@ -408,8 +400,7 @@ function stageMatch(matchId: string) {
             type="button"
             :aria-label="$t('ui.scroll.right')"
             :disabled="
-              !scrollRow?.state.canScrollRight &&
-              (!showsResults || resultsDone)
+              !scrollRow?.state.canScrollRight && (!showsResults || resultsDone)
             "
             class="inline-flex size-8 items-center justify-center rounded-md border border-border bg-muted/30 text-foreground/80 transition-colors duration-150 hover:bg-muted/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] disabled:cursor-default disabled:opacity-35 disabled:hover:bg-muted/30"
             @click="scrollRight"
@@ -419,69 +410,85 @@ function stageMatch(matchId: string) {
         </div>
       </div>
 
-      <div ref="rowWrap">
-        <HorizontalScrollRow
-          ref="scrollRow"
-          @approaching-end="loadMore"
+      <!-- One height for every item (cells, dividers, notes, skeletons), so
+           an empty filter or a loading page never changes the row's height.
+           The row crossfades on load and on filter changes; a fresh row per
+           filter also starts scrolled to the left. -->
+      <FadeSwap>
+        <div
+          v-if="loading"
+          key="loading"
+          class="flex gap-3 overflow-hidden px-px pb-2 pt-1"
+          :aria-label="$t('pages.watch.ticker.loading_older')"
         >
-          <!-- Held until all three lists land: inserting the live note ahead
-               of rendered results would re-snap the row past it. -->
-          <template v-if="loading">
-            <Skeleton
-              v-for="i in 5"
-              :key="`initial-${i}`"
-              class="h-[6.5rem] w-56 shrink-0 rounded-lg"
-            />
-          </template>
-          <template v-else>
-            <template v-for="item in items" :key="item.key">
-              <WatchTickerCell
-                v-if="item.type === 'cell'"
-                :model="item.model"
-                :streamable="streamableMatchIds.includes(item.model.id)"
-                :staged="
-                  streamableMatchIds.includes(item.model.id) &&
-                  stageMatchId === item.model.id
-                "
-                @stage="stageMatch"
-              />
+          <Skeleton
+            v-for="i in 6"
+            :key="i"
+            class="h-[6.875rem] w-56 shrink-0 rounded-lg"
+          />
+        </div>
+        <div v-else :key="`row-${filter}`">
+          <HorizontalScrollRow ref="scrollRow" @approaching-end="loadMore">
+            <TransitionGroup
+              enter-active-class="transition-[opacity,transform] [transition-delay:var(--enter-delay,0ms)] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms] motion-reduce:![transition-delay:0ms]"
+              enter-from-class="translate-x-2 opacity-0"
+            >
               <div
-                v-else-if="item.type === 'divider'"
-                class="ml-1.5 flex min-w-[4.75rem] shrink-0 snap-start flex-col justify-center gap-0.5 border-l border-border/70 pl-3 pr-3.5"
+                v-for="(item, index) in items"
+                :key="item.key"
+                class="flex shrink-0 snap-start"
+                :style="{
+                  '--enter-delay': `${Math.min(index % 12, 8) * 30}ms`,
+                }"
               >
-                <span class="whitespace-nowrap text-[13px] font-bold">{{
-                  item.label
-                }}</span>
-                <span
-                  v-if="item.sub"
-                  class="whitespace-nowrap text-xs text-muted-foreground"
-                  >{{ item.sub }}</span
+                <WatchTickerCell
+                  v-if="item.type === 'cell'"
+                  :model="item.model"
+                  :streamable="streamableMatchIds.includes(item.model.id)"
+                  :staged="
+                    streamableMatchIds.includes(item.model.id) &&
+                    stageMatchId === item.model.id
+                  "
+                  @stage="stageMatch"
+                />
+                <div
+                  v-else-if="item.type === 'divider'"
+                  class="ml-1.5 flex h-[6.875rem] min-w-[4.75rem] flex-col justify-center gap-0.5 border-l border-border/70 pl-3 pr-3.5"
                 >
+                  <span class="whitespace-nowrap text-[13px] font-bold">{{
+                    item.label
+                  }}</span>
+                  <span
+                    v-if="item.sub"
+                    class="whitespace-nowrap text-xs text-muted-foreground"
+                    >{{ item.sub }}</span
+                  >
+                </div>
+                <div
+                  v-else-if="item.type === 'note'"
+                  class="flex h-[6.875rem] items-center gap-2.5 rounded-lg border border-dashed border-border px-4 text-[13px] text-muted-foreground"
+                >
+                  <span
+                    class="inline-flex size-2 shrink-0 rounded-full bg-muted-foreground/60"
+                  ></span>
+                  {{ item.text }}
+                </div>
+                <div
+                  v-else-if="item.type === 'end'"
+                  class="flex h-[6.875rem] items-center whitespace-nowrap pl-3 pr-5 text-xs text-muted-foreground"
+                >
+                  {{ $t("pages.watch.ticker.end") }}
+                </div>
+                <Skeleton
+                  v-else
+                  class="h-[6.875rem] w-56 rounded-lg"
+                  :aria-label="$t('pages.watch.ticker.loading_older')"
+                />
               </div>
-              <div
-                v-else-if="item.type === 'note'"
-                class="flex shrink-0 snap-start items-center gap-2.5 rounded-lg border border-dashed border-border px-4 text-[13px] text-muted-foreground"
-              >
-                <span
-                  class="inline-flex size-2 shrink-0 rounded-full bg-muted-foreground/60"
-                ></span>
-                {{ item.text }}
-              </div>
-              <div
-                v-else-if="item.type === 'end'"
-                class="flex shrink-0 snap-start items-center whitespace-nowrap pl-3 pr-5 text-xs text-muted-foreground"
-              >
-                {{ $t("pages.watch.ticker.end") }}
-              </div>
-              <Skeleton
-                v-else
-                class="h-[6.5rem] w-56 shrink-0 rounded-lg"
-                :aria-label="$t('pages.watch.ticker.loading_older')"
-              />
-            </template>
-          </template>
-        </HorizontalScrollRow>
-      </div>
+            </TransitionGroup>
+          </HorizontalScrollRow>
+        </div>
+      </FadeSwap>
     </template>
   </section>
 </template>

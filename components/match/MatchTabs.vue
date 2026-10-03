@@ -18,6 +18,8 @@ import MatchUtilityUtility from "~/components/match/MatchUtilityUtility.vue";
 import MatchSideFilter from "~/components/match/MatchSideFilter.vue";
 import TableColumnPicker from "~/components/common/TableColumnPicker.vue";
 import TeamUtilitySummary from "~/components/match/TeamUtilitySummary.vue";
+import MatchChatLog from "~/components/match/MatchChatLog.vue";
+import HeightGlide from "~/components/ui/transitions/HeightGlide.vue";
 import { provideMatchSide } from "~/composables/useMatchSide";
 import {
   useOverviewColumns,
@@ -65,6 +67,7 @@ import {
   AlertTriangle,
   ExternalLink,
   Terminal,
+  MessageSquare,
 } from "lucide-vue-next";
 import { HeightSwap } from "~/components/ui/transitions";
 import {
@@ -219,6 +222,9 @@ provide("commander", commander);
                   {{ $t("match.tabs.utility") }}
                 </SelectItem>
               </template>
+              <SelectItem v-if="canViewChatLog" value="chat-log">
+                {{ $t("match.tabs.chat_log") }}
+              </SelectItem>
               <SelectItem value="settings">
                 {{ $t("match.tabs.settings") }}
               </SelectItem>
@@ -264,6 +270,12 @@ provide("commander", commander);
               {{ $t("match.tabs.utility") }}
             </TabsTrigger>
           </template>
+          <TabsTrigger v-if="canViewChatLog" value="chat-log">
+            <MessageSquare
+              class="mr-1.5 inline-block h-3.5 w-3.5 align-[-2px]"
+            />
+            {{ $t("match.tabs.chat_log") }}
+          </TabsTrigger>
         </TabsList>
       </div>
       <DropdownMenu>
@@ -744,8 +756,13 @@ provide("commander", commander);
     <TabsContent value="streams" class="max-w-[1500px]">
       <MatchLiveStreams :match="match" />
     </TabsContent>
+    <TabsContent v-if="canViewChatLog" value="chat-log">
+      <HeightGlide>
+        <MatchChatLog :match="match" :active-map-id="activeMap?.id" />
+      </HeightGlide>
+    </TabsContent>
     <div
-      v-if="!disableStats && !isOpsTabActive"
+      v-if="!disableStats && !isOpsTabActive && activeTab !== 'chat-log'"
       class="mt-0.5 flex justify-end max-w-[1500px]"
     >
       <button
@@ -1043,6 +1060,7 @@ export default {
             "head-to-head",
             "roles",
             "map-analysis",
+            "chat-log",
           ];
           if (!prev && !statsTabs.includes(this.activeTab)) {
             this.activeTab = "scoreboard";
@@ -1254,6 +1272,14 @@ export default {
     canViewAdmin() {
       return this.match.is_organizer;
     },
+    // A team's room is its strategy, so never while the match is being played.
+    // The api serves the archive by the role held, not by any tie to the match.
+    canViewChatLog() {
+      return (
+        this.isMatchTerminal &&
+        useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer)
+      );
+    },
     // The api runs RCON only for moderators and above, whoever organizes the match.
     canUseRcon() {
       return useAuthStore().isRoleAbove(e_player_roles_enum.moderator);
@@ -1310,6 +1336,10 @@ export default {
         }
 
         tabs.push("head-to-head", "roles", "map-analysis", "utility");
+      }
+
+      if (this.canViewChatLog) {
+        tabs.push("chat-log");
       }
 
       tabs.push("settings");

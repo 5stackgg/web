@@ -7992,6 +7992,7 @@
       "head_to_head": "Особисті зустрічі",
       "roles": "Ролі",
       "map_analysis": "Аналіз карти",
+      "chat_log": "Журнал чату",
       "mobile_label_map": "Фільтр карти",
       "mobile_label_view": "Вигляд",
       "settings": "Налаштування матчу",
@@ -8005,6 +8006,24 @@
       "region": "Регіон",
       "no_logs_title": "Логи недоступні",
       "no_logs_description": "Логи недоступні, і сервер не підключений."
+    },
+    "chat_log": {
+      "visibility": "Лише організатори та персонал",
+      "deleted": "Видалення {relative}",
+      "deleted_soon": "Видалення протягом години",
+      "full_match": "Увесь матч",
+      "map_option": "Мапа {number} · {name}",
+      "all_chat": "Загальний чат",
+      "team_chat": "Командний чат",
+      "web_tag": "Сайт",
+      "no_messages": "Немає повідомлень",
+      "empty_title": "Чату немає",
+      "empty_description": "У цьому матчі ніхто нічого не написав, або чат уже видалено.",
+      "failed_title": "Журнал чату недоступний",
+      "failed_description": "Не вдалося завантажити журнал чату.",
+      "withheld": "Ви грали в цьому матчі, тому командний чат приховано.",
+      "deleted_marker": "видалено",
+      "edited_marker": "змінено"
     },
     "status": {
       "cancelled": "Скасовано",

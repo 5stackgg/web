@@ -7992,6 +7992,7 @@
       "head_to_head": "Личные встречи",
       "roles": "Роли",
       "map_analysis": "Анализ карты",
+      "chat_log": "Журнал чата",
       "mobile_label_map": "Фильтр карты",
       "mobile_label_view": "Вид",
       "settings": "Настройки матча",
@@ -8005,6 +8006,24 @@
       "region": "Регион",
       "no_logs_title": "Логи недоступны",
       "no_logs_description": "Логи недоступны, и сервер не подключён."
+    },
+    "chat_log": {
+      "visibility": "Только организаторы и персонал",
+      "deleted": "Удаление {relative}",
+      "deleted_soon": "Удаление в течение часа",
+      "full_match": "Весь матч",
+      "map_option": "Карта {number} · {name}",
+      "all_chat": "Общий чат",
+      "team_chat": "Командный чат",
+      "web_tag": "Сайт",
+      "no_messages": "Нет сообщений",
+      "empty_title": "Чата нет",
+      "empty_description": "В этом матче никто ничего не написал, или чат уже удалён.",
+      "failed_title": "Журнал чата недоступен",
+      "failed_description": "Не удалось загрузить журнал чата.",
+      "withheld": "Вы играли в этом матче, поэтому командный чат скрыт.",
+      "deleted_marker": "удалено",
+      "edited_marker": "изменено"
     },
     "status": {
       "cancelled": "Отменён",

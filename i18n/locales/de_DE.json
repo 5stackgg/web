@@ -7992,6 +7992,7 @@
       "head_to_head": "Direktvergleich",
       "roles": "Rollen",
       "map_analysis": "Map-Analyse",
+      "chat_log": "Chat-Verlauf",
       "mobile_label_map": "Map-Filter",
       "mobile_label_view": "Ansicht",
       "settings": "Match-Einstellungen",
@@ -8005,6 +8006,24 @@
       "region": "Region",
       "no_logs_title": "Keine Logs verfügbar",
       "no_logs_description": "Es sind keine Logs verfügbar und kein Server ist verbunden."
+    },
+    "chat_log": {
+      "visibility": "Nur Organisatoren und Staff",
+      "deleted": "Gelöscht {relative}",
+      "deleted_soon": "Wird innerhalb der nächsten Stunde gelöscht",
+      "full_match": "Gesamtes Match",
+      "map_option": "Map {number} · {name}",
+      "all_chat": "Allgemeiner Chat",
+      "team_chat": "Team-Chat",
+      "web_tag": "Web",
+      "no_messages": "Keine Nachrichten",
+      "empty_title": "Kein Chat",
+      "empty_description": "In diesem Match hat niemand etwas geschrieben, oder der Chat wurde bereits gelöscht.",
+      "failed_title": "Chat-Verlauf nicht verfügbar",
+      "failed_description": "Der Chat-Verlauf konnte nicht geladen werden.",
+      "withheld": "Du hast in diesem Match gespielt, daher ist der Team-Chat ausgeblendet.",
+      "deleted_marker": "gelöscht",
+      "edited_marker": "bearbeitet"
     },
     "status": {
       "cancelled": "Abgebrochen",

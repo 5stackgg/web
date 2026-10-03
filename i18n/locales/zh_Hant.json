@@ -7992,6 +7992,7 @@
       "head_to_head": "對位",
       "roles": "角色",
       "map_analysis": "地圖分析",
+      "chat_log": "聊天紀錄",
       "mobile_label_map": "地圖篩選",
       "mobile_label_view": "檢視",
       "settings": "比賽設定",
@@ -8005,6 +8006,24 @@
       "region": "地區",
       "no_logs_title": "無可用日誌",
       "no_logs_description": "無可用日誌，且未連接伺服器。"
+    },
+    "chat_log": {
+      "visibility": "僅限主辦者與工作人員",
+      "deleted": "{relative}刪除",
+      "deleted_soon": "1小時內刪除",
+      "full_match": "整場比賽",
+      "map_option": "地圖 {number} · {name}",
+      "all_chat": "全部聊天",
+      "team_chat": "隊伍聊天",
+      "web_tag": "網頁",
+      "no_messages": "沒有訊息",
+      "empty_title": "沒有聊天",
+      "empty_description": "本場比賽中沒有人發言，或聊天紀錄已被刪除。",
+      "failed_title": "聊天紀錄無法使用",
+      "failed_description": "無法載入聊天紀錄。",
+      "withheld": "你參加了這場比賽，因此隊伍聊天已隱藏。",
+      "deleted_marker": "已刪除",
+      "edited_marker": "已編輯"
     },
     "status": {
       "cancelled": "已取消",

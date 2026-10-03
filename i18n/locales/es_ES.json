@@ -7992,6 +7992,7 @@
       "head_to_head": "Cara a cara",
       "roles": "Roles",
       "map_analysis": "Análisis del mapa",
+      "chat_log": "Registro de chat",
       "mobile_label_map": "Filtro de mapa",
       "mobile_label_view": "Vista",
       "settings": "Ajustes de la partida",
@@ -8005,6 +8006,24 @@
       "region": "Región",
       "no_logs_title": "No hay logs disponibles",
       "no_logs_description": "No hay logs disponibles ni ningún servidor conectado."
+    },
+    "chat_log": {
+      "visibility": "Solo organizadores y staff",
+      "deleted": "Se elimina {relative}",
+      "deleted_soon": "Se elimina en menos de una hora",
+      "full_match": "Partida completa",
+      "map_option": "Mapa {number} · {name}",
+      "all_chat": "Chat general",
+      "team_chat": "Chat de equipo",
+      "web_tag": "Web",
+      "no_messages": "Sin mensajes",
+      "empty_title": "Sin chat",
+      "empty_description": "Nadie escribió nada en esta partida o su chat ya se ha eliminado.",
+      "failed_title": "Registro de chat no disponible",
+      "failed_description": "No se pudo cargar el registro de chat.",
+      "withheld": "Jugaste en esta partida, así que el chat de equipo está oculto.",
+      "deleted_marker": "eliminado",
+      "edited_marker": "editado"
     },
     "status": {
       "cancelled": "Cancelada",

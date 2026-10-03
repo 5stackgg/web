@@ -7992,6 +7992,7 @@
       "head_to_head": "상대 전적",
       "roles": "역할",
       "map_analysis": "맵 분석",
+      "chat_log": "채팅 기록",
       "mobile_label_map": "맵 필터",
       "mobile_label_view": "보기",
       "settings": "매치 설정",
@@ -8005,6 +8006,24 @@
       "region": "지역",
       "no_logs_title": "로그 없음",
       "no_logs_description": "로그가 없으며 연결된 서버도 없습니다."
+    },
+    "chat_log": {
+      "visibility": "주최자와 스태프만",
+      "deleted": "{relative} 삭제",
+      "deleted_soon": "1시간 이내 삭제",
+      "full_match": "전체 경기",
+      "map_option": "맵 {number} · {name}",
+      "all_chat": "전체 채팅",
+      "team_chat": "팀 채팅",
+      "web_tag": "웹",
+      "no_messages": "메시지 없음",
+      "empty_title": "채팅 없음",
+      "empty_description": "이 경기에서 아무도 채팅하지 않았거나 채팅이 이미 삭제되었습니다.",
+      "failed_title": "채팅 기록을 사용할 수 없음",
+      "failed_description": "채팅 기록을 불러올 수 없습니다.",
+      "withheld": "이 경기에 참가했으므로 팀 채팅은 숨겨집니다.",
+      "deleted_marker": "삭제됨",
+      "edited_marker": "수정됨"
     },
     "status": {
       "cancelled": "취소됨",

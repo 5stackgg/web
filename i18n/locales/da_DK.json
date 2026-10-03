@@ -7992,6 +7992,7 @@
       "head_to_head": "Head to head",
       "roles": "Roller",
       "map_analysis": "Mapanalyse",
+      "chat_log": "Chatlog",
       "mobile_label_map": "Mapfilter",
       "mobile_label_view": "Visning",
       "settings": "Kampindstillinger",
@@ -8005,6 +8006,24 @@
       "region": "Region",
       "no_logs_title": "Ingen logs tilgængelige",
       "no_logs_description": "Der er ingen logs tilgængelige, og ingen server er forbundet."
+    },
+    "chat_log": {
+      "visibility": "Kun arrangører og staff",
+      "deleted": "Slettes {relative}",
+      "deleted_soon": "Slettes inden for en time",
+      "full_match": "Hele kampen",
+      "map_option": "Bane {number} · {name}",
+      "all_chat": "Fælleschat",
+      "team_chat": "Holdchat",
+      "web_tag": "Web",
+      "no_messages": "Ingen beskeder",
+      "empty_title": "Ingen chat",
+      "empty_description": "Ingen skrev noget i denne kamp, eller chatten er allerede slettet.",
+      "failed_title": "Chatloggen er ikke tilgængelig",
+      "failed_description": "Chatloggen kunne ikke indlæses.",
+      "withheld": "Du spillede i denne kamp, så holdchatten er skjult.",
+      "deleted_marker": "slettet",
+      "edited_marker": "redigeret"
     },
     "status": {
       "cancelled": "Aflyst",

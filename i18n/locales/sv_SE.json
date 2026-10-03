@@ -7992,6 +7992,7 @@
       "head_to_head": "Head to head",
       "roles": "Roller",
       "map_analysis": "Kartanalys",
+      "chat_log": "Chattlogg",
       "mobile_label_map": "Kartfilter",
       "mobile_label_view": "Vy",
       "settings": "Matchinställningar",
@@ -8005,6 +8006,24 @@
       "region": "Region",
       "no_logs_title": "Inga loggar tillgängliga",
       "no_logs_description": "Inga loggar är tillgängliga och ingen server är ansluten."
+    },
+    "chat_log": {
+      "visibility": "Endast arrangörer och personal",
+      "deleted": "Raderas {relative}",
+      "deleted_soon": "Raderas inom en timme",
+      "full_match": "Hela matchen",
+      "map_option": "Karta {number} · {name}",
+      "all_chat": "Allmän chatt",
+      "team_chat": "Lagchatt",
+      "web_tag": "Webb",
+      "no_messages": "Inga meddelanden",
+      "empty_title": "Ingen chatt",
+      "empty_description": "Ingen skrev något i den här matchen, eller så har chatten redan raderats.",
+      "failed_title": "Chattloggen är inte tillgänglig",
+      "failed_description": "Chattloggen kunde inte laddas.",
+      "withheld": "Du spelade i den här matchen, så lagchatten är dold.",
+      "deleted_marker": "raderad",
+      "edited_marker": "redigerad"
     },
     "status": {
       "cancelled": "Avbruten",

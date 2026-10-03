@@ -7992,6 +7992,7 @@
       "head_to_head": "Head to Head",
       "roles": "Roles",
       "map_analysis": "Map Analysis",
+      "chat_log": "Chat Log",
       "mobile_label_map": "Map Filter",
       "mobile_label_view": "View",
       "settings": "Match Settings",
@@ -8005,6 +8006,24 @@
       "region": "Region",
       "no_logs_title": "No Logs Available",
       "no_logs_description": "No logs are available and no server is connected."
+    },
+    "chat_log": {
+      "visibility": "Organizers and staff only",
+      "deleted": "Deleted {relative}",
+      "deleted_soon": "Deleted within the hour",
+      "full_match": "Full Match",
+      "map_option": "Map {number} · {name}",
+      "all_chat": "All Chat",
+      "team_chat": "Team Chat",
+      "web_tag": "Web",
+      "no_messages": "No messages",
+      "empty_title": "No Chat",
+      "empty_description": "Nobody wrote anything in this match, or its chat has already been deleted.",
+      "failed_title": "Chat Log Unavailable",
+      "failed_description": "The chat log could not be loaded.",
+      "withheld": "You played in this match, so team chat is hidden.",
+      "deleted_marker": "deleted",
+      "edited_marker": "edited"
     },
     "status": {
       "cancelled": "Cancelled",

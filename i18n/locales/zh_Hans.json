@@ -7992,6 +7992,7 @@
       "head_to_head": "对位",
       "roles": "角色",
       "map_analysis": "地图分析",
+      "chat_log": "聊天记录",
       "mobile_label_map": "地图筛选",
       "mobile_label_view": "视图",
       "settings": "比赛设置",
@@ -8005,6 +8006,24 @@
       "region": "地区",
       "no_logs_title": "无可用日志",
       "no_logs_description": "无可用日志，且无服务器连接。"
+    },
+    "chat_log": {
+      "visibility": "仅限组织者和工作人员",
+      "deleted": "{relative}删除",
+      "deleted_soon": "1小时内删除",
+      "full_match": "整场比赛",
+      "map_option": "地图 {number} · {name}",
+      "all_chat": "全部聊天",
+      "team_chat": "队伍聊天",
+      "web_tag": "网页",
+      "no_messages": "没有消息",
+      "empty_title": "没有聊天",
+      "empty_description": "本场比赛中没有人发言，或聊天记录已被删除。",
+      "failed_title": "聊天记录不可用",
+      "failed_description": "无法加载聊天记录。",
+      "withheld": "你参加了这场比赛，因此队伍聊天已隐藏。",
+      "deleted_marker": "已删除",
+      "edited_marker": "已编辑"
     },
     "status": {
       "cancelled": "已取消",

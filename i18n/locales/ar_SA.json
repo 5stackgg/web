@@ -7992,6 +7992,7 @@
       "head_to_head": "مواجهة مباشرة",
       "roles": "الأدوار",
       "map_analysis": "تحليل الخريطة",
+      "chat_log": "سجل الدردشة",
       "mobile_label_map": "فلتر الخرائط",
       "mobile_label_view": "العرض",
       "settings": "إعدادات المباراة",
@@ -8005,6 +8006,24 @@
       "region": "المنطقة",
       "no_logs_title": "لا توجد سجلات",
       "no_logs_description": "لا توجد سجلات متاحة ولا يوجد سيرفر متصل."
+    },
+    "chat_log": {
+      "visibility": "للمنظمين والطاقم فقط",
+      "deleted": "يُحذف {relative}",
+      "deleted_soon": "يُحذف خلال أقل من ساعة",
+      "full_match": "المباراة كاملة",
+      "map_option": "الخريطة {number} · {name}",
+      "all_chat": "الدردشة العامة",
+      "team_chat": "دردشة الفريق",
+      "web_tag": "الويب",
+      "no_messages": "لا توجد رسائل",
+      "empty_title": "لا توجد دردشة",
+      "empty_description": "لم يكتب أحد شيئًا في هذه المباراة، أو حُذفت دردشتها بالفعل.",
+      "failed_title": "سجل الدردشة غير متاح",
+      "failed_description": "تعذّر تحميل سجل الدردشة.",
+      "withheld": "شاركت في هذه المباراة، لذا دردشة الفريق مخفية.",
+      "deleted_marker": "محذوفة",
+      "edited_marker": "معدّلة"
     },
     "status": {
       "cancelled": "ملغاة",

@@ -7992,6 +7992,7 @@
       "head_to_head": "Bezpośrednie starcia",
       "roles": "Role",
       "map_analysis": "Analiza mapy",
+      "chat_log": "Historia czatu",
       "mobile_label_map": "Filtr mapy",
       "mobile_label_view": "Widok",
       "settings": "Ustawienia meczu",
@@ -8005,6 +8006,24 @@
       "region": "Region",
       "no_logs_title": "Brak dostępnych logów",
       "no_logs_description": "Brak dostępnych logów i brak połączenia z serwerem"
+    },
+    "chat_log": {
+      "visibility": "Tylko organizatorzy i obsługa",
+      "deleted": "Usunięcie {relative}",
+      "deleted_soon": "Usunięcie w ciągu godziny",
+      "full_match": "Cały mecz",
+      "map_option": "Mapa {number} · {name}",
+      "all_chat": "Czat ogólny",
+      "team_chat": "Czat drużyny",
+      "web_tag": "Web",
+      "no_messages": "Brak wiadomości",
+      "empty_title": "Brak czatu",
+      "empty_description": "Nikt nic nie napisał w tym meczu albo czat został już usunięty.",
+      "failed_title": "Historia czatu niedostępna",
+      "failed_description": "Nie udało się wczytać historii czatu.",
+      "withheld": "Grałeś w tym meczu, więc czat drużyny jest ukryty.",
+      "deleted_marker": "usunięto",
+      "edited_marker": "edytowano"
     },
     "status": {
       "cancelled": "Anulowany",

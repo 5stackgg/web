@@ -7992,6 +7992,7 @@
       "head_to_head": "Karşılıklı",
       "roles": "Roller",
       "map_analysis": "Harita Analizi",
+      "chat_log": "Sohbet Kaydı",
       "mobile_label_map": "Harita Filtresi",
       "mobile_label_view": "Görünüm",
       "settings": "Maç Ayarları",
@@ -8005,6 +8006,24 @@
       "region": "Bölge",
       "no_logs_title": "Kayıt Yok",
       "no_logs_description": "Kullanılabilir kayıt yok ve bağlı bir sunucu bulunmuyor."
+    },
+    "chat_log": {
+      "visibility": "Yalnızca organizatörler ve yetkililer",
+      "deleted": "{relative} silinir",
+      "deleted_soon": "Bir saat içinde silinir",
+      "full_match": "Tüm Maç",
+      "map_option": "Harita {number} · {name}",
+      "all_chat": "Genel Sohbet",
+      "team_chat": "Takım Sohbeti",
+      "web_tag": "Web",
+      "no_messages": "Mesaj yok",
+      "empty_title": "Sohbet Yok",
+      "empty_description": "Bu maçta kimse bir şey yazmadı ya da sohbet zaten silindi.",
+      "failed_title": "Sohbet Kaydı Kullanılamıyor",
+      "failed_description": "Sohbet kaydı yüklenemedi.",
+      "withheld": "Bu maçta oynadın, bu yüzden takım sohbeti gizlendi.",
+      "deleted_marker": "silindi",
+      "edited_marker": "düzenlendi"
     },
     "status": {
       "cancelled": "İptal edildi",

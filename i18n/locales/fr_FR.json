@@ -7992,6 +7992,7 @@
       "head_to_head": "Face à face",
       "roles": "Rôles",
       "map_analysis": "Analyse de map",
+      "chat_log": "Historique du chat",
       "mobile_label_map": "Filtre map",
       "mobile_label_view": "Vue",
       "settings": "Paramètres du match",
@@ -8005,6 +8006,24 @@
       "region": "Région",
       "no_logs_title": "Aucun log disponible",
       "no_logs_description": "Aucun log disponible et aucun serveur connecté."
+    },
+    "chat_log": {
+      "visibility": "Organisateurs et staff uniquement",
+      "deleted": "Supprimé {relative}",
+      "deleted_soon": "Supprimé dans moins d'une heure",
+      "full_match": "Match complet",
+      "map_option": "Carte {number} · {name}",
+      "all_chat": "Chat général",
+      "team_chat": "Chat d'équipe",
+      "web_tag": "Web",
+      "no_messages": "Aucun message",
+      "empty_title": "Aucun chat",
+      "empty_description": "Personne n'a écrit dans ce match, ou son chat a déjà été supprimé.",
+      "failed_title": "Historique du chat indisponible",
+      "failed_description": "L'historique du chat n'a pas pu être chargé.",
+      "withheld": "Tu as joué ce match, le chat d'équipe est donc masqué.",
+      "deleted_marker": "supprimé",
+      "edited_marker": "modifié"
     },
     "status": {
       "cancelled": "Annulé",

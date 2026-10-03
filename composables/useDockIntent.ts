@@ -117,6 +117,7 @@ export function useDockIntent(cardRect: () => DOMRect | null | undefined) {
 
   return {
     shouldHold,
+    pointer: () => trail[trail.length - 1],
     noteClick: () => {
       afterClick.value = true;
     },

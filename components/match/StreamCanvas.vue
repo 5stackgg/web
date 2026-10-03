@@ -20,12 +20,16 @@ const props = withDefaults(
     disableFullscreenShortcut?: boolean;
     showBoot?: boolean;
     enablePip?: boolean;
+    muted?: boolean;
+    audio?: boolean;
+    disableShortcuts?: boolean;
   }>(),
   {
     isLive: null,
     mode: "live",
     showBoot: false,
     enablePip: false,
+    audio: true,
   },
 );
 
@@ -104,6 +108,9 @@ defineExpose({ rootEl });
         :fallback-url="displayFallback"
         :disable-fullscreen-shortcut="disableFullscreenShortcut"
         :enable-pip="enablePip"
+        :muted="muted"
+        :audio="audio"
+        :disable-shortcuts="disableShortcuts"
         class="absolute inset-0"
         @phase="emit('phase', $event)"
       >
@@ -120,6 +127,9 @@ defineExpose({ rootEl });
         :fallback-url="displayFallback"
         :disable-fullscreen-shortcut="disableFullscreenShortcut"
         :enable-pip="enablePip"
+        :muted="muted"
+        :audio="audio"
+        :disable-shortcuts="disableShortcuts"
         class="absolute inset-0"
         @phase="emit('phase', $event)"
       >

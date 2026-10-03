@@ -21,10 +21,26 @@ import { useStreamerStore } from "~/stores/StreamerStore";
 import { useMatchPopout } from "~/composables/useMatchPopout";
 import { e_player_roles_enum } from "~/generated/zeus";
 
-const props = defineProps<{
-  matchId: string;
-  inGlobal?: boolean;
-  inPopout?: boolean;
+const FRAME_SHADOW =
+  "shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.05),0_30px_60px_-30px_rgba(0,0,0,0.7)]";
+
+const props = withDefaults(
+  defineProps<{
+    matchId: string;
+    inGlobal?: boolean;
+    inPopout?: boolean;
+    // Hosted inside a frame that draws its own chrome (the /watch stage): fill
+    // the host and skip the border, LIVE tag, hover buttons and scoreboard.
+    bare?: boolean;
+    muted?: boolean;
+    audio?: boolean;
+    disableShortcuts?: boolean;
+  }>(),
+  { audio: true },
+);
+
+const emit = defineEmits<{
+  (e: "phase", phase: WhepPhase | null): void;
 }>();
 
 const { client: apolloClient } = useApolloClient();
@@ -267,10 +283,15 @@ function returnFromPip() {
 }
 
 const compact = computed(() => props.inGlobal || props.inPopout);
+const fills = computed(() => compact.value || props.bare);
+const frameClass = computed(() =>
+  props.bare ? "" : "rounded-lg border border-border/70 " + FRAME_SHADOW,
+);
 
 const { copyFor } = useWhepStatusCopy();
 // Non-null while the player has no picture (the caption covers the frame).
 const whepPhase = ref<WhepPhase | null>(null);
+watch(whepPhase, (next) => emit("phase", next));
 
 function promoteToPip() {
   if (!stream.value) return;
@@ -294,8 +315,8 @@ function focusPopoutWindow() {
 <template>
   <div
     v-if="streamEnded && canViewStream && !isPoppedOut"
-    class="relative overflow-hidden rounded-lg border border-border/70 bg-black shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.05),0_30px_60px_-30px_rgba(0,0,0,0.7)]"
-    :class="compact ? 'h-full w-full' : 'aspect-video'"
+    class="relative overflow-hidden bg-black"
+    :class="[frameClass, fills ? 'h-full w-full' : 'aspect-video']"
   >
     <StreamMatchCard :match-id="matchId" :compact="compact">
       <StreamStatusPanel :title="$t('match.stream.ended')" />
@@ -306,8 +327,8 @@ function focusPopoutWindow() {
     v-else-if="
       hasStream && canViewStream && !isPoppedOut && (isLive || canSeeBoot)
     "
-    class="overflow-hidden rounded-lg border border-border/70 bg-black shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.05),0_30px_60px_-30px_rgba(0,0,0,0.7)]"
-    :class="compact ? 'flex h-full w-full flex-col' : ''"
+    class="overflow-hidden bg-black"
+    :class="[frameClass, fills ? 'flex h-full w-full flex-col' : '']"
   >
     <StreamCanvas
       :stream="displayStream"
@@ -316,7 +337,10 @@ function focusPopoutWindow() {
       :show-boot="true"
       :enable-pip="true"
       class="group"
-      :class="compact ? 'min-h-0 flex-1' : 'aspect-video'"
+      :class="fills ? 'min-h-0 flex-1' : 'aspect-video'"
+      :muted="muted"
+      :audio="audio"
+      :disable-shortcuts="disableShortcuts"
       @phase="whepPhase = $event"
     >
       <template #status="{ phase, message, retry }">
@@ -361,7 +385,7 @@ function focusPopoutWindow() {
       </template>
 
       <div
-        v-if="isLive && !compact"
+        v-if="isLive && !fills"
         class="pointer-events-none absolute left-3 top-3 z-10 flex overflow-hidden rounded-[2px] text-[0.7rem] leading-none shadow-[0_6px_18px_-8px_rgba(0,0,0,0.7)]"
       >
         <span
@@ -380,6 +404,7 @@ function focusPopoutWindow() {
       </div>
 
       <MatchScoreboardOverlay
+        v-if="!bare"
         v-model:open="scoreboardOpen"
         :match-id="matchId"
         :compact="compact"
@@ -387,7 +412,7 @@ function focusPopoutWindow() {
       />
 
       <div
-        v-if="isLive && !inPopout && !whepPhase"
+        v-if="isLive && !inPopout && !bare && !whepPhase"
         class="absolute bottom-3 left-12 z-10 flex items-center gap-2 transition-opacity duration-150"
         :class="
           coarsePointer
@@ -422,8 +447,8 @@ function focusPopoutWindow() {
 
   <div
     v-else-if="hasStream && canViewStream && poppedToWindow"
-    class="flex items-center justify-center gap-3 rounded-lg border border-border/70 bg-black/40 px-4 text-center text-sm text-white/80 shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.05),0_30px_60px_-30px_rgba(0,0,0,0.7)]"
-    :class="compact ? 'h-full w-full' : 'aspect-video'"
+    class="flex items-center justify-center gap-3 bg-black/40 px-4 text-center text-sm text-white/80"
+    :class="[frameClass, fills ? 'h-full w-full' : 'aspect-video']"
   >
     <div class="flex flex-col items-center gap-2">
       <ExternalLink class="size-5 text-white/50" />
@@ -436,8 +461,8 @@ function focusPopoutWindow() {
 
   <div
     v-else-if="hasStream && canViewStream && inGlobalPip"
-    class="flex items-center justify-center gap-3 rounded-lg border border-border/70 bg-black/40 px-4 text-center text-sm text-white/80 shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.05),0_30px_60px_-30px_rgba(0,0,0,0.7)]"
-    :class="compact ? 'h-full w-full' : 'aspect-video'"
+    class="flex items-center justify-center gap-3 bg-black/40 px-4 text-center text-sm text-white/80"
+    :class="[frameClass, fills ? 'h-full w-full' : 'aspect-video']"
   >
     <div class="flex flex-col items-center gap-2">
       <PictureInPicture class="size-5 text-white/50" />
@@ -452,8 +477,8 @@ function focusPopoutWindow() {
     v-else-if="hasStream && needsLogin && isLive"
     role="button"
     tabindex="0"
-    class="flex cursor-pointer items-center justify-center gap-3 rounded-lg border border-border/70 bg-black px-4 text-center text-sm text-white/80 shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.05),0_30px_60px_-30px_rgba(0,0,0,0.7)]"
-    :class="compact ? 'h-full w-full' : 'aspect-video'"
+    class="flex cursor-pointer items-center justify-center gap-3 bg-black px-4 text-center text-sm text-white/80"
+    :class="[frameClass, fills ? 'h-full w-full' : 'aspect-video']"
     @click="loginToView"
     @keydown.enter="loginToView"
     @keydown.space.prevent="loginToView"

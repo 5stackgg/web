@@ -1104,24 +1104,13 @@ export default {
         this.playerClipsLoading = false;
       }
     },
-    seedPlayerClipQueue() {
-      const { setClipQueue } = useClipModal();
-      const items = (this.filteredPlayerClips as any[]).map((c: any) => ({
-        id: c.id,
-        title: c.title ?? null,
-        playerName: c.target?.name ?? c.user?.name ?? null,
-        teamName: null,
-        durationMs: c.duration_ms ?? null,
-        thumbnailUrl: c.thumbnail_download_url ?? null,
-        posterUrl: c.match_map?.map?.poster ?? null,
-      }));
-      const scope = `player-match-${this.match?.id}-${this.playerSteamId}-map-${this.selectedMapId ?? "all"}`;
-      setClipQueue(items, scope);
-    },
     openBestClip() {
       if (!this.bestClip) return;
-      this.seedPlayerClipQueue();
-      useClipModal().openClip(this.bestClip.id);
+      useClipModal().playClips(
+        this.filteredPlayerClips as any[],
+        this.bestClip.id,
+        `player-match-${this.match?.id}-${this.playerSteamId}-map-${this.selectedMapId ?? "all"}`,
+      );
     },
   },
 };

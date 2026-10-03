@@ -1,162 +1,55 @@
 <script setup lang="ts">
-import OtherMatches from "~/components/match/OtherMatches.vue";
-import RecentHighlights from "~/components/clips/RecentHighlights.vue";
-import {
-  e_match_status_enum,
-  e_tournament_status_enum,
-} from "~/generated/zeus";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
-import TournamentCard from "~/components/tournament/TournamentCard.vue";
-import LiveStreamFeatureCard from "~/components/match/LiveStreamFeatureCard.vue";
-import RecentTournaments from "~/components/tournament/RecentTournaments.vue";
+import WatchTicker from "~/components/watch/WatchTicker.vue";
+import WatchStreamStage from "~/components/watch/WatchStreamStage.vue";
 import WatchColdStart from "~/components/watch/WatchColdStart.vue";
-import {
-  tacticalSectionLabelClasses,
-  tacticalSectionTickClasses,
-} from "~/utilities/tacticalClasses";
-
-// `CheckInReview` only joins e_tournament_status_enum once codegen has run
-// against the check-in migration; until then the enum member is undefined and
-// would poison the status filter in the template. The raw column value is what
-// the row carries either way. Declared after the imports on purpose: a const
-// ahead of a later import makes vue-tsc treat that import as non-top-level.
-const CHECK_IN_REVIEW_STATUS = "CheckInReview" as e_tournament_status_enum;
-
+import WatchHighlights from "~/components/watch/WatchHighlights.vue";
+import WatchEvents from "~/components/watch/WatchEvents.vue";
+import WatchTournaments from "~/components/watch/WatchTournaments.vue";
+import { tacticalSectionSeparatorClasses } from "~/utilities/tacticalClasses";
 </script>
 
 <template>
   <PageTransition>
-    <TacticalPageHeader>
-      <template #title>{{ $t("pages.watch.title") }}</template>
-    </TacticalPageHeader>
-  </PageTransition>
-
-  <PageTransition
-    v-if="streamingMatches && streamingMatches.length > 0"
-    :delay="100"
-    class="mt-6"
-  >
-    <div>
-      <div :class="tacticalSectionLabelClasses">
-        <span :class="tacticalSectionTickClasses"></span>
-        {{ $t("pages.watch.section_streaming_now") }}
-      </div>
-      <div class="grid gap-3 md:grid-cols-2">
-        <LiveStreamFeatureCard
-          v-for="match in streamingMatches"
-          :key="match.id"
-          :match="match"
-        />
-      </div>
-    </div>
-  </PageTransition>
-
-  <PageTransition v-if="feedIsEmpty" :delay="100" class="mt-6">
-    <WatchColdStart />
-  </PageTransition>
-
-  <PageTransition :delay="115" class="mt-6">
-    <OtherMatches
-      :section-label="$t('pages.watch.section_live_matches')"
-      :is-in-lineup="true"
-      :show-pagination="false"
-      :use-subscription="true"
-      hide-when-empty
-      compact
-      :limit="12"
-      :exclude-ids="streamingMatchIds"
-      :statuses="[
-        e_match_status_enum.Live,
-        e_match_status_enum.WaitingForCheckIn,
-        e_match_status_enum.WaitingForServer,
-        e_match_status_enum.Veto,
-      ]"
+    <WatchTicker
+      :ghost="feedIsEmpty"
+      :streamable-match-ids="streamableMatchIds"
     />
   </PageTransition>
 
-  <PageTransition
-    v-if="liveTournaments && liveTournaments.length > 0"
-    :delay="125"
-    class="mt-6"
-  >
-    <div>
-      <div :class="tacticalSectionLabelClasses">
-        <span :class="tacticalSectionTickClasses"></span>
-        {{ $t("pages.watch.section_live_tournaments") }}
-      </div>
-      <div class="grid gap-3 sm:grid-cols-2">
-        <TournamentCard
-          v-for="tournament in liveTournaments"
-          :key="tournament.id"
-          :tournament="tournament"
-          variant="compact"
-          status-variant="live"
-          :status-label="$t('common.live')"
-        />
-      </div>
-    </div>
-  </PageTransition>
-
-  <PageTransition :delay="150" class="mt-6">
-    <RecentHighlights
-      :section-label="$t('pages.watch.section_recent_highlights')"
-      horizontal
+  <PageTransition :delay="50">
+    <WatchStreamStage
+      v-if="!feedIsEmpty"
+      :class="['mt-8', tacticalSectionSeparatorClasses]"
+      @update:streamable-ids="streamableMatchIds = $event"
     />
   </PageTransition>
 
-  <PageTransition :delay="175" class="mt-6">
-    <RecentTournaments
-      :section-label="$t('pages.watch.section_upcoming_tournaments')"
-      :statuses="[
-        e_tournament_status_enum.RegistrationOpen,
-        e_tournament_status_enum.RegistrationClosed,
-        e_tournament_status_enum.Setup,
-        CHECK_IN_REVIEW_STATUS,
-      ]"
-      status-variant="registration"
-      order-direction="asc"
-      hide-when-empty
-      :limit="3"
+  <PageTransition v-if="feedIsEmpty" :delay="50">
+    <WatchColdStart :class="['mt-8', tacticalSectionSeparatorClasses]" />
+  </PageTransition>
+
+  <PageTransition :delay="100">
+    <WatchHighlights
+      :class="['mt-8', tacticalSectionSeparatorClasses]"
+      :compact="streamableMatchIds.length > 0"
+      :ghost="feedIsEmpty"
     />
   </PageTransition>
 
-  <PageTransition :delay="200" class="mt-6">
-    <OtherMatches
-      :section-label="$t('pages.watch.section_upcoming_matches')"
-      :is-in-lineup="true"
-      :show-pagination="false"
-      :hide-when-empty="true"
-      compact
-      :limit="10"
-      :statuses="[e_match_status_enum.Scheduled]"
+  <PageTransition v-if="eventsEnabled" :delay="125">
+    <WatchEvents
+      :class="['mt-8', tacticalSectionSeparatorClasses]"
+      :compact="streamableMatchIds.length > 0"
+      :ghost="feedIsEmpty"
+      @tournament-ids="eventTournamentIds = $event"
     />
   </PageTransition>
 
-  <PageTransition :delay="225" class="mt-6">
-    <OtherMatches
-      :section-label="$t('pages.watch.section_recent_matches')"
-      see-all-to="/matches"
-      :is-in-lineup="true"
-      :show-pagination="false"
-      :hide-when-empty="true"
-      compact
-      :limit="10"
-      source="5stack"
-      :statuses="[e_match_status_enum.Finished]"
-    />
-  </PageTransition>
-
-  <PageTransition :delay="250" class="mt-6">
-    <RecentTournaments
-      :section-label="$t('pages.watch.section_recent_tournaments')"
-      :statuses="[e_tournament_status_enum.Finished]"
-      status-variant="finished"
-      :status-label="$t('common.finished')"
-      order-direction="desc"
-      horizontal
-      hide-when-empty
-      :limit="8"
+  <PageTransition v-if="!feedIsEmpty" :delay="150">
+    <WatchTournaments
+      :class="['mt-8', tacticalSectionSeparatorClasses]"
+      :exclude-ids="eventTournamentIds"
     />
   </PageTransition>
 </template>
@@ -164,16 +57,17 @@ const CHECK_IN_REVIEW_STATUS = "CheckInReview" as e_tournament_status_enum;
 <script lang="ts">
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { NOT_LEAGUE_TOURNAMENT } from "~/graphql/tournamentFilters";
-import { $, order_by } from "~/generated/zeus";
-import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
-import { simpleMatchFields } from "~/graphql/simpleMatchFields";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 
 export default {
   data() {
     return {
-      liveTournaments: [] as any[],
-      streamingMatches: [] as any[],
-      // null until the first result lands — the cold start must not flash
+      // Live matches the stage can show; the ticker marks and swaps them.
+      streamableMatchIds: [] as string[],
+      // Tournaments already previewed inside an event card, so the
+      // tournaments section doesn't list them twice.
+      eventTournamentIds: [] as string[],
+      // null until the first result lands -- the cold start must not flash
       // in front of a feed that is about to render.
       matchesCount: null as number | null,
       tournamentsCount: null as number | null,
@@ -181,10 +75,9 @@ export default {
   },
   apollo: {
     $subscribe: {
-      // Every section on this page hides itself when empty, so on a fresh
-      // install the page collapses to just the header. These two counts
-      // detect that state; they're subscriptions rather than queries so the
-      // cold start clears itself the moment the first match is created.
+      // A fresh install has no matches or tournaments at all; these two
+      // counts detect that so the page can show its cold start. They're
+      // subscriptions so it clears itself the moment the first match lands.
       matchesCount: {
         query: typedGql("subscription")({
           matches_aggregate: [{}, { aggregate: { count: true } }],
@@ -211,109 +104,11 @@ export default {
           console.error("[watch] tournaments count subscription error:", error);
         },
       },
-      liveTournaments: {
-        query: typedGql("subscription")({
-          tournaments: [
-            {
-              where: {
-                status: {
-                  _eq: $("status", "e_tournament_status_enum"),
-                },
-                _and: [NOT_LEAGUE_TOURNAMENT],
-              },
-              order_by: [
-                {},
-                {
-                  start: order_by.asc,
-                },
-              ],
-            },
-            simpleTournamentFields,
-          ],
-        }),
-        variables: function () {
-          return {
-            status: e_tournament_status_enum.Live,
-          };
-        },
-        result({ data }: any) {
-          this.liveTournaments = data?.tournaments || [];
-        },
-      },
-      // Live matches with at least one stream attached. Lifted into the
-      // featured "Streaming Now" section above so we can show a
-      // thumbnail tile instead of a generic compact row. A game-streamer
-      // row outlives the match by the TV delay and is removed when the
-      // stream stops, so it keeps a just-finished match listed while its
-      // stream is still playing out; embed rows are never removed.
-      streamingMatches: {
-        query: typedGql("subscription")({
-          matches: [
-            {
-              where: {
-                _or: [
-                  {
-                    status: { _eq: $("status", "e_match_status_enum") },
-                    streams: {},
-                  },
-                  { streams: { is_game_streamer: { _eq: true } } },
-                ],
-              },
-              order_by: [{}, { started_at: order_by.desc }],
-              limit: 6,
-            },
-            {
-              ...simpleMatchFields,
-              streams: [
-                { order_by: [{ priority: order_by.asc }] },
-                {
-                  id: true,
-                  link: true,
-                  title: true,
-                  is_game_streamer: true,
-                },
-              ],
-              match_maps: [
-                { order_by: [{ order: order_by.asc }] },
-                {
-                  id: true,
-                  is_current_map: true,
-                  lineup_1_score: true,
-                  lineup_2_score: true,
-                  winning_lineup_id: true,
-                  map: { id: true, name: true, label: true },
-                },
-              ],
-            },
-          ],
-        }),
-        variables: function () {
-          return {
-            status: e_match_status_enum.Live,
-          };
-        },
-        result({ data }: any) {
-          // Anti-cheat: never surface a live match's stream in the featured
-          // "Streaming Now" area to its own players/coaches — they'd gain an
-          // in-game advantage. Those matches still appear in "Live Matches"
-          // below (MatchTableRow already hides the watch button for them).
-          // Guests aren't in any lineup, so they still see the card (with the
-          // "login to view" overlay).
-          const rows = (data?.matches || []).filter(
-            (m: any) =>
-              (m.streams?.length ?? 0) > 0 && !m.is_in_lineup && !m.is_coach,
-          );
-          this.streamingMatches = rows;
-        },
-      },
     },
   },
   computed: {
-    canCreateMatch() {
-      return useApplicationSettingsStore().canCreateMatch;
-    },
-    streamingMatchIds(): string[] {
-      return (this.streamingMatches || []).map((m: any) => m.id);
+    eventsEnabled(): boolean {
+      return useApplicationSettingsStore().eventsEnabled;
     },
     feedIsEmpty(): boolean {
       return this.matchesCount === 0 && this.tournamentsCount === 0;

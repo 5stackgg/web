@@ -4,10 +4,11 @@ import { ArrowRight } from "lucide-vue-next";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateSubscription } from "~/graphql/graphqlGen";
 import { matchClipFields } from "~/graphql/matchClip";
-import HighlightCard from "~/components/clips/HighlightCard.vue";
+import ClipTile from "~/components/clips/ClipTile.vue";
 import HorizontalScrollRow from "~/components/common/HorizontalScrollRow.vue";
 import ScrollArrows from "~/components/common/ScrollArrows.vue";
-import { useClipModal, type ClipQueueItem } from "~/composables/useClipModal";
+import { useClipModal } from "~/composables/useClipModal";
+import { clipQueueItem } from "~/utilities/clipDisplay";
 import type { Clip } from "~/types/clip";
 import {
   tacticalSectionLabelClasses,
@@ -100,17 +101,6 @@ const { setClipQueue, clearClipQueue } = useClipModal();
 const clipQueueScope = computed(
   () => `player-highlights:${String(props.steamId)}`,
 );
-function clipQueueItem(c: Clip): ClipQueueItem {
-  return {
-    id: c.id,
-    title: c.title,
-    playerName: c.target?.name ?? null,
-    teamName: null,
-    durationMs: c.duration_ms,
-    thumbnailUrl: c.thumbnail_download_url,
-    posterUrl: c.match_map?.map?.poster ?? null,
-  };
-}
 watchEffect(() => {
   if (clips.value.length === 0) return;
   setClipQueue(clips.value.map(clipQueueItem), clipQueueScope.value);
@@ -181,7 +171,12 @@ const showSeeAll = computed(
 
       <HorizontalScrollRow ref="scrollRef" @approaching-end="loadMore">
         <div v-for="c in clips" :key="c.id" class="w-96 shrink-0 snap-start">
-          <HighlightCard :clip="c" hide-player />
+          <ClipTile
+            :clip="c"
+            :queue="clips"
+            :queue-scope="clipQueueScope"
+            hide-player
+          />
         </div>
       </HorizontalScrollRow>
     </div>

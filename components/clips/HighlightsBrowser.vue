@@ -30,11 +30,11 @@ import { Skeleton } from "~/components/ui/skeleton";
 import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
-import HighlightCard from "~/components/clips/HighlightCard.vue";
-import MatchClipsGroupCard from "~/components/clips/MatchClipsGroupCard.vue";
+import ClipTile from "~/components/clips/ClipTile.vue";
 import Pagination from "~/components/Pagination.vue";
 import type { Clip } from "~/types/clip";
-import { useClipModal, type ClipQueueItem } from "~/composables/useClipModal";
+import { useClipModal } from "~/composables/useClipModal";
+import { clipQueueItem } from "~/utilities/clipDisplay";
 import FilterBar from "~/components/common/FilterBar.vue";
 import FilterMenu from "~/components/common/FilterMenu.vue";
 import {
@@ -463,28 +463,6 @@ onBeforeUnmount(() => {
   clearClipQueue(clipQueueScope.value);
 });
 
-const showMap = computed(() => {
-  const seen = new Set<string>();
-  for (const c of flatClips.value) {
-    const name = c.match_map?.map?.name;
-    if (name) seen.add(name);
-    if (seen.size > 1) return true;
-  }
-  return false;
-});
-
-function clipQueueItem(c: Clip): ClipQueueItem {
-  return {
-    id: c.id,
-    title: c.title,
-    playerName: c.target?.name ?? null,
-    teamName: null,
-    durationMs: c.duration_ms,
-    thumbnailUrl: c.thumbnail_download_url,
-    posterUrl: c.match_map?.map?.poster ?? null,
-  };
-}
-
 watchEffect(() => {
   setClipQueue(flatClips.value.map(clipQueueItem), clipQueueScope.value);
 });
@@ -833,17 +811,19 @@ const viewModeOptions = computed<
           class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
         >
           <template v-for="item in gridItems">
-            <MatchClipsGroupCard
+            <ClipTile
               v-if="item.kind === 'group'"
               :key="`group-${item.matchId}`"
-              :match-id="item.matchId"
-              :clips="item.clips"
+              :clip="item.clips[0]"
+              :group="item.clips"
+              :queue-scope="clipQueueScope"
             />
-            <HighlightCard
+            <ClipTile
               v-else
               :key="`single-${item.clip.id}`"
               :clip="item.clip"
-              :show-map="showMap"
+              :queue="flatClips"
+              :queue-scope="clipQueueScope"
             />
           </template>
         </div>

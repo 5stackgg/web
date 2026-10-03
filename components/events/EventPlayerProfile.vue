@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import EventPlayerPicker from "~/components/events/EventPlayerPicker.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import MatchesTable from "~/components/MatchesTable.vue";
-import HighlightCard from "~/components/clips/HighlightCard.vue";
+import ClipTile from "~/components/clips/ClipTile.vue";
 import { usePlayerCompareTarget } from "~/composables/usePlayerCompareTarget";
 import type { Clip } from "~/types/clip";
 import { $, order_by } from "~/generated/zeus";
@@ -633,7 +633,14 @@ function winner(index: number): 0 | 1 | 2 {
             {{ $t("event.story.highlights") }}
           </div>
           <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            <HighlightCard v-for="clip in clips" :key="clip.id" :clip="clip" />
+            <ClipTile
+              v-for="clip in clips"
+              :key="clip.id"
+              :clip="clip"
+              :queue="clips"
+              :queue-scope="`event-player:${eventId}:${steamId}`"
+              hide-player
+            />
           </div>
         </section>
       </div>

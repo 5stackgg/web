@@ -75,3 +75,36 @@ describe.each([
     }
   });
 });
+
+describe("MatchTableRow stream gate", () => {
+  it("sends a signed-out viewer to sign in instead of playing the stream", async () => {
+    const settings = useApplicationSettingsStore();
+    const setGlobalStream = vi.spyOn(settings, "setGlobalStream");
+
+    const wrapper = await mountSuspended(MatchTableRow, {
+      props: {
+        match: {
+          ...finishedMatch(),
+          status: "Live",
+          winning_lineup_id: null,
+          streams: [
+            {
+              id: "stream-1",
+              link: "https://twitch.tv/somechannel",
+              is_game_streamer: false,
+            },
+          ],
+        },
+        compact: true,
+        alwaysShow: true,
+      },
+    });
+
+    const watch = wrapper.find('button[title="https://twitch.tv/somechannel"]');
+    expect(watch.exists()).toBe(true);
+    await watch.trigger("click");
+
+    expect(setGlobalStream).not.toHaveBeenCalled();
+    setGlobalStream.mockRestore();
+  });
+});

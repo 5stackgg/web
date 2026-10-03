@@ -43,7 +43,20 @@ export type ClipMatchContext = {
   lineup_2_id: string | null;
   lineup_1?: ClipLineupRef | null;
   lineup_2?: ClipLineupRef | null;
-  options?: { best_of: number | null; mr: number | null } | null;
+  options?: {
+    best_of: number | null;
+    mr: number | null;
+    type?: string | null;
+  } | null;
+  tournament_brackets?: Array<{
+    stage?: {
+      e_tournament_stage_type?: { description: string | null } | null;
+      tournament?: { id: string; name: string } | null;
+    } | null;
+  }> | null;
+  event_links?: Array<{
+    event?: { id: string; name: string } | null;
+  }> | null;
   match_maps?: ClipMatchMapEntry[] | null;
 };
 

@@ -32,7 +32,7 @@ const props = defineProps<{
 }>();
 
 const apiDomain = computed(() => useRuntimeConfig().public.apiDomain as string);
-const { openClip, activeClipId } = useClipModal();
+const { playClips, activeClipId } = useClipModal();
 const { copiedClipId, shareClip } = useClipShare();
 
 // Provided by pages/matches/[id].vue (single shared subscription).
@@ -133,6 +133,15 @@ function formatRelativeTime(iso: string | null | undefined): string | null {
   if (diff < 30 * day)
     return t("time_ago.weeks", { n: Math.floor(diff / (7 * day)) });
   return t("time_ago.months", { n: Math.floor(diff / (30 * day)) });
+}
+
+function openFeaturedInModal() {
+  if (!featuredClip.value) return;
+  playClips(
+    filteredClips.value.length ? filteredClips.value : clips.value,
+    featuredClip.value.id,
+    `match-highlights:${props.match?.id}`,
+  );
 }
 
 const featuredClip = computed<Clip | null>(() => {
@@ -358,7 +367,7 @@ function clipTeamName(c: Clip): string | null {
                 title: featuredClip.title ?? t('clips.default_clip'),
               })
             "
-            @click.stop="openClip(featuredClip.id)"
+            @click.stop="openFeaturedInModal"
           >
             {{ t("clips.details") }}
             <ArrowUpRight class="h-3 w-3" />
@@ -716,6 +725,6 @@ function clipTeamName(c: Clip): string | null {
 }
 
 /* `.share-flash` keyframe lives in assets/css/tailwind.css so the
-   feedback is identical across the reel, HighlightCard, and the
+   feedback is identical across the reel, ClipTile, and the
    ClipDetailModal. */
 </style>

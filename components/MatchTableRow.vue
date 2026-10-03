@@ -25,7 +25,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
 import MatchSourceBadge from "~/components/MatchSourceBadge.vue";
 import { ref } from "vue";
 import MatchPlayerDetailsPanel from "~/components/match/MatchPlayerDetailsPanel.vue";
-import HighlightCard from "~/components/clips/HighlightCard.vue";
+import ClipTile from "~/components/clips/ClipTile.vue";
 import HorizontalScrollRow from "~/components/common/HorizontalScrollRow.vue";
 import ScrollArrows from "~/components/common/ScrollArrows.vue";
 
@@ -1109,7 +1109,6 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
           v-if="filteredPlayerClips.length > 0"
           :key="`clips-${selectedMapId ?? 'all'}`"
           class="space-y-2"
-          @click.capture="seedPlayerClipQueue"
         >
           <div
             class="flex items-center justify-between gap-2 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
@@ -1130,11 +1129,12 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
             />
           </div>
           <HorizontalScrollRow ref="highlightsScrollRef">
-            <HighlightCard
+            <ClipTile
               v-for="clip in filteredPlayerClips"
               :key="clip.id"
               :clip="clip"
-              :show-map="false"
+              :queue="filteredPlayerClips"
+              :queue-scope="playerClipQueueScope"
               class="w-80 shrink-0 snap-start"
             />
           </HorizontalScrollRow>
@@ -1187,7 +1187,8 @@ import { generateQuery } from "~/graphql/graphqlGen";
 import { matchAllMapsStats } from "~/graphql/matchAllMapsStatsGraphql";
 import { matchClipFields } from "~/graphql/matchClip";
 import { $, order_by } from "~/generated/zeus";
-import { useClipModal } from "~/composables/useClipModal";
+import { useAuthStore } from "~/stores/AuthStore";
+import { loginLinks } from "~/utilities/loginLinks";
 
 export default {
   props: {
@@ -1305,7 +1306,7 @@ export default {
           },
           query: generateQuery({
             // Pull the full clip shape so we can render a real
-            // HighlightCard (with title link, score/round/duration
+            // ClipTile (with title link, score/round/duration
             // overlays, target metadata) for the focus player.
             match_clips: [
               {
@@ -1328,25 +1329,6 @@ export default {
       } finally {
         this.playerClipsLoading = false;
       }
-    },
-    seedPlayerClipQueue() {
-      // Click.capture handler: runs before HighlightCard's own
-      // openClip on bubble. Seeds the modal queue with whichever clips
-      // match the current map filter so prev/next can scrub through
-      // them all. Scope is keyed to match + player + selected map so
-      // switching contexts replaces the queue cleanly.
-      const { setClipQueue } = useClipModal();
-      const items = (this.filteredPlayerClips as any[]).map((c: any) => ({
-        id: c.id,
-        title: c.title ?? null,
-        playerName: c.target?.name ?? c.user?.name ?? null,
-        teamName: null,
-        durationMs: c.duration_ms ?? null,
-        thumbnailUrl: c.thumbnail_download_url ?? null,
-        posterUrl: c.match_map?.map?.poster ?? null,
-      }));
-      const scope = `match-${this.match?.id}-player-${(this.player as any)?.steam_id}-map-${this.selectedMapId ?? "all"}`;
-      setClipQueue(items, scope);
     },
     async getDetailedStats() {
       this.detailsStatsLoading = true;
@@ -1392,6 +1374,17 @@ export default {
       this.$router.push({ name: "matches-id", params: { id: matchId } });
     },
     watchStream(stream: any) {
+      // Anti-cheat: signed-out viewers sign in before any live stream plays,
+      // external embeds included -- same gate as the watch page stage.
+      if (
+        useApplicationSettingsStore().requireLoginForLiveStreams &&
+        !useAuthStore().me?.steam_id
+      ) {
+        window.location.href = `${loginLinks.steam}?redirect=${encodeURIComponent(
+          window.location.toString(),
+        )}`;
+        return;
+      }
       useApplicationSettingsStore().setGlobalStream({
         ...stream,
         match_id: this.match.id,
@@ -1557,6 +1550,11 @@ export default {
       // Only meaningful while a map is being played.
       if (this.match?.status !== e_match_status_enum.Live) return false;
       return Boolean(this.previewMatchMap);
+    },
+    // Keyed to match + player + map filter so switching context replaces the
+    // modal's queue instead of appending to it.
+    playerClipQueueScope(): string {
+      return `match-${this.match?.id}-player-${(this.player as any)?.steam_id}-map-${this.selectedMapId ?? "all"}`;
     },
     isStreamableStatus(): boolean {
       return ![

@@ -3,7 +3,7 @@ import { computed, ref, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { ArrowRight } from "lucide-vue-next";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
-import HighlightCard from "~/components/clips/HighlightCard.vue";
+import ClipTile from "~/components/clips/ClipTile.vue";
 import EventPlayerProfile from "~/components/events/EventPlayerProfile.vue";
 import EventMediaRail from "~/components/events/EventMediaRail.vue";
 import TournamentCard from "~/components/tournament/TournamentCard.vue";
@@ -411,7 +411,13 @@ const RANK_TEXT = [
       </div>
 
       <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        <HighlightCard v-for="clip in clips" :key="clip.id" :clip="clip" />
+        <ClipTile
+          v-for="clip in clips"
+          :key="clip.id"
+          :clip="clip"
+          :queue="clips"
+          :queue-scope="`event-overview:${event.id}`"
+        />
       </div>
     </section>
 

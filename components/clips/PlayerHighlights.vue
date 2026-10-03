@@ -3,7 +3,7 @@ import { computed, onBeforeUnmount, ref, watch, watchEffect } from "vue";
 import { ArrowRight } from "lucide-vue-next";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateSubscription } from "~/graphql/graphqlGen";
-import { matchClipFields } from "~/graphql/matchClip";
+import { matchClipFields, topPlayOrderBy } from "~/graphql/matchClip";
 import ClipTile from "~/components/clips/ClipTile.vue";
 import HorizontalScrollRow from "~/components/common/HorizontalScrollRow.vue";
 import ScrollArrows from "~/components/common/ScrollArrows.vue";
@@ -58,7 +58,7 @@ function subscribe() {
           where: {
             target_steam_id: { _eq: sid },
           },
-          order_by: [{ created_at: "desc" }],
+          order_by: topPlayOrderBy,
           limit: limit.value,
         } as any,
         matchClipFields,

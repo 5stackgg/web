@@ -3165,8 +3165,6 @@
           "all": "Top-play"
         },
         "empty": "Ingen plays matcher disse filtre endnu.",
-        "empty_event": "Ingen plays fra {event} matcher disse filtre endnu.",
-        "remove_event": "Fjern filteret {event}",
         "show_all_time": "Vis hele perioden",
         "ghost": "Klip vises her, når en kamps demo er behandlet."
       },
@@ -3186,6 +3184,9 @@
         "final_overtime": "Slutresultat · OT",
         "final_best_of": "Slutresultat · Bo{count}",
         "check_in": "Check-in {checked}/{total}",
+        "going_live": "Går snart live",
+        "step_check_in": "Check-in",
+        "step_server": "Server",
         "round_short": "R{round}",
         "overtime_short": "OT",
         "on_stage": "Vises nu",
@@ -3228,7 +3229,8 @@
         "players_signed_up": "spiller tilmeldt | spillere tilmeldt",
         "live_count": "{count} live",
         "starts": "Starter {time}",
-        "plays_link": "{count} play fra {event} | {count} plays fra {event}",
+        "top_plays": "Top-plays",
+        "all_plays": "{count} play | Alle {count} plays",
         "in_prizes": "{amount} i præmier",
         "leaderboard": "Rangliste efter rating",
         "full_leaderboard": "Hele ranglisten",
@@ -3312,6 +3314,7 @@
       },
       "sort": {
         "recent": "Nyeste",
+        "top": "Top-plays",
         "views": "Mest sete"
       },
       "visibility_filter": {

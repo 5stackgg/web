@@ -3165,8 +3165,6 @@
           "all": "トッププレイ"
         },
         "empty": "この条件に合うプレイはまだありません。",
-        "empty_event": "この条件に合う {event} のプレイはまだありません。",
-        "remove_event": "{event} の絞り込みを解除",
         "show_all_time": "全期間を表示",
         "ghost": "試合のデモが処理されると、ここにクリップが表示されます。"
       },
@@ -3186,6 +3184,9 @@
         "final_overtime": "最終結果 · OT",
         "final_best_of": "最終結果 · Bo{count}",
         "check_in": "チェックイン {checked}/{total}",
+        "going_live": "まもなく開始",
+        "step_check_in": "チェックイン",
+        "step_server": "サーバー準備中",
         "round_short": "R{round}",
         "overtime_short": "OT",
         "on_stage": "再生中",
@@ -3228,7 +3229,8 @@
         "players_signed_up": "人が参加登録 | 人が参加登録",
         "live_count": "ライブ中 {count}",
         "starts": "{time} 開始",
-        "plays_link": "{event} のプレイ {count} 件 | {event} のプレイ {count} 件",
+        "top_plays": "トッププレイ",
+        "all_plays": "プレイ {count} 件 | すべてのプレイ（{count} 件）",
         "in_prizes": "賞金 {amount}",
         "leaderboard": "レーティング順ランキング",
         "full_leaderboard": "ランキング全体",
@@ -3312,6 +3314,7 @@
       },
       "sort": {
         "recent": "新着順",
+        "top": "トッププレイ",
         "views": "再生数順"
       },
       "visibility_filter": {

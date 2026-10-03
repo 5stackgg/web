@@ -12,7 +12,7 @@ import type { Clip } from "~/types/clip";
 import { $, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
-import { matchClipFields } from "~/graphql/matchClip";
+import { matchClipFields, topPlayOrderBy } from "~/graphql/matchClip";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
@@ -123,7 +123,7 @@ const CLIPS_QUERY = typedGql("query")({
         target_steam_id: { _eq: $("steamId", "bigint!") },
         match_map: { match_id: { _in: $("matchIds", "[uuid!]!") } },
       },
-      order_by: [{ views_count: order_by.desc_nulls_last }],
+      order_by: topPlayOrderBy,
       limit: 6,
     },
     matchClipFields,

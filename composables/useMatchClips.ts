@@ -8,9 +8,8 @@ import {
 } from "vue";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateSubscription } from "~/graphql/graphqlGen";
-import { matchClipFields } from "~/graphql/matchClip";
+import { matchClipFields, topPlayOrderBy } from "~/graphql/matchClip";
 import type { Clip } from "~/types/clip";
-import { order_by } from "~/generated/zeus";
 
 // One subscription shared by the match page; consumers fan out via
 // the byTarget / byMatchMap maps so each row doesn't open its own.
@@ -41,10 +40,7 @@ export function useMatchClips(
             where: {
               match_map: { match_id: { _eq: id } },
             },
-            order_by: [
-              { kills_count: order_by.desc_nulls_last },
-              { created_at: order_by.desc },
-            ],
+            order_by: topPlayOrderBy,
           } as any,
           matchClipFields,
         ],

@@ -3165,8 +3165,6 @@
           "all": "Najlepsza akcja"
         },
         "empty": "Na razie brak akcji pasujących do tych filtrów.",
-        "empty_event": "Na razie brak akcji z {event} pasujących do tych filtrów.",
-        "remove_event": "Usuń filtr {event}",
         "show_all_time": "Pokaż z całego okresu",
         "ghost": "Klipy pojawią się tutaj po przetworzeniu dema meczu."
       },
@@ -3186,6 +3184,9 @@
         "final_overtime": "Koniec · OT",
         "final_best_of": "Koniec · Bo{count}",
         "check_in": "Obecność {checked}/{total}",
+        "going_live": "Zaraz na żywo",
+        "step_check_in": "Obecność",
+        "step_server": "Serwer",
         "round_short": "R{round}",
         "overtime_short": "OT",
         "on_stage": "Na ekranie",
@@ -3228,7 +3229,8 @@
         "players_signed_up": "zapisany gracz | zapisanych graczy",
         "live_count": "{count} na żywo",
         "starts": "Start {time}",
-        "plays_link": "{count} akcja z {event} | {count} akcji z {event}",
+        "top_plays": "Najlepsze akcje",
+        "all_plays": "{count} akcja | Wszystkie akcje ({count})",
         "in_prizes": "Pula nagród: {amount}",
         "leaderboard": "Ranking według ratingu",
         "full_leaderboard": "Pełny ranking",
@@ -3312,6 +3314,7 @@
       },
       "sort": {
         "recent": "Najnowsze",
+        "top": "Najlepsze akcje",
         "views": "Najczęściej oglądane"
       },
       "visibility_filter": {

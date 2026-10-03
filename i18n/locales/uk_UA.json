@@ -3165,8 +3165,6 @@
           "all": "Найкращий момент"
         },
         "empty": "Поки немає моментів за цими фільтрами.",
-        "empty_event": "Поки немає моментів з {event} за цими фільтрами.",
-        "remove_event": "Прибрати фільтр {event}",
         "show_all_time": "Показати за весь час",
         "ghost": "Кліпи з'являться тут, щойно демо матчу буде оброблено."
       },
@@ -3186,6 +3184,9 @@
         "final_overtime": "Підсумок · OT",
         "final_best_of": "Підсумок · Bo{count}",
         "check_in": "Реєстрація {checked}/{total}",
+        "going_live": "Незабаром початок",
+        "step_check_in": "Реєстрація",
+        "step_server": "Сервер",
         "round_short": "R{round}",
         "overtime_short": "OT",
         "on_stage": "На екрані",
@@ -3228,7 +3229,8 @@
         "players_signed_up": "гравець записався | гравців записалося",
         "live_count": "{count} наживо",
         "starts": "Початок: {time}",
-        "plays_link": "{count} момент з {event} | {count} моментів з {event}",
+        "top_plays": "Найкращі моменти",
+        "all_plays": "{count} момент | Усі моменти ({count})",
         "in_prizes": "Призовий фонд {amount}",
         "leaderboard": "Таблиця лідерів за рейтингом",
         "full_leaderboard": "Уся таблиця лідерів",
@@ -3312,6 +3314,7 @@
       },
       "sort": {
         "recent": "Найновіші",
+        "top": "Найкращі моменти",
         "views": "Найпопулярніші"
       },
       "visibility_filter": {

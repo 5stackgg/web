@@ -3165,8 +3165,6 @@
           "all": "最佳高光"
         },
         "empty": "暂无符合这些筛选条件的高光。",
-        "empty_event": "暂无来自 {event} 且符合这些筛选条件的高光。",
-        "remove_event": "移除 {event} 筛选",
         "show_all_time": "显示全部时间",
         "ghost": "比赛 demo 处理完成后，片段会显示在这里。"
       },
@@ -3186,6 +3184,9 @@
         "final_overtime": "已结束 · OT",
         "final_best_of": "已结束 · Bo{count}",
         "check_in": "签到 {checked}/{total}",
+        "going_live": "即将开始",
+        "step_check_in": "签到",
+        "step_server": "服务器准备中",
         "round_short": "R{round}",
         "overtime_short": "OT",
         "on_stage": "播放中",
@@ -3228,7 +3229,8 @@
         "players_signed_up": "名玩家已报名 | 名玩家已报名",
         "live_count": "{count} 场进行中",
         "starts": "{time} 开始",
-        "plays_link": "{event} 的 {count} 个高光 | {event} 的 {count} 个高光",
+        "top_plays": "最佳高光",
+        "all_plays": "{count} 个高光 | 全部 {count} 个高光",
         "in_prizes": "奖金 {amount}",
         "leaderboard": "评分排行榜",
         "full_leaderboard": "完整排行榜",
@@ -3312,6 +3314,7 @@
       },
       "sort": {
         "recent": "最新",
+        "top": "最佳高光",
         "views": "最多观看"
       },
       "visibility_filter": {

@@ -8,7 +8,7 @@ const watchLineupFields = Selector("match_lineups")({
     short_name: true,
     avatar_url: true,
   },
-  lineup_players: [{}, { checked_in: true }],
+  lineup_players: [{}, { checked_in: true, captain: true }],
 });
 
 // What a /watch ticker cell shows. Kept slim (not simpleMatchFields): the
@@ -24,11 +24,12 @@ export const watchTickerMatchFields = Selector("matches")({
   winning_lineup_id: true,
   lineup_1_id: true,
   lineup_2_id: true,
-  max_players_per_lineup: true,
+  min_players_per_lineup: true,
   options: {
     best_of: true,
     mr: true,
     type: true,
+    check_in_setting: true,
   },
   lineup_1: watchLineupFields,
   lineup_2: watchLineupFields,

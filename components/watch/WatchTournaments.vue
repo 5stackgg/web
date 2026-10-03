@@ -48,6 +48,7 @@ defineProps<{
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, e_tournament_status_enum, order_by } from "~/generated/zeus";
 import { excludeLeagueTournaments } from "~/graphql/tournamentFilters";
+import { tournamentCardFields } from "~/graphql/tournamentCardFields";
 
 const MAX_CARDS = 4;
 const MAX_FINISHED = 2;
@@ -58,52 +59,6 @@ const UPCOMING_STATUSES = [
   e_tournament_status_enum.Setup,
   e_tournament_status_enum.CheckInReview,
 ];
-
-const count = [{}, { aggregate: { count: true } }] as const;
-
-const cardFields = {
-  id: true,
-  name: true,
-  status: true,
-  start: true,
-  location: true,
-  banner: true,
-  e_tournament_status: { description: true },
-  categories: [
-    {},
-    { category: true, e_tournament_category: { description: true } },
-  ],
-  options: {
-    type: true,
-    best_of: true,
-    map_pool: { maps: [{}, { poster: true }] },
-  },
-  organizer_teams: [{}, { team: { name: true } }],
-  admin: { name: true },
-  prizes: [{}, { prize: true }],
-  teams_aggregate: count,
-  stages: [
-    { order_by: [{ order: order_by.asc }] },
-    {
-      order: true,
-      max_teams: true,
-      results: [
-        {},
-        {
-          rank: true,
-          team: { name: true, team: { name: true, short_name: true } },
-        },
-      ],
-    },
-  ],
-  awards: [
-    { where: { placement: { _eq: 1 } } },
-    {
-      placement: true,
-      tournament_team: { name: true, team: { name: true, short_name: true } },
-    },
-  ],
-};
 
 function tournamentsDocument(
   operation: "query" | "subscription",
@@ -116,7 +71,7 @@ function tournamentsDocument(
         order_by: [{ start: direction }],
         limit: $("limit", "Int!"),
       },
-      cardFields,
+      tournamentCardFields,
     ],
   } as any);
 }

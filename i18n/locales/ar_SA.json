@@ -3720,9 +3720,6 @@
         "title": "طرق أخرى للعب",
         "tournaments": {
           "title": "البطولات",
-          "teams_of": "{count} من {max} فرق",
-          "register": "سجّل فريقًا",
-          "sign_in": "سجّل الدخول للتسجيل",
           "all": "كل البطولات"
         },
         "league": {

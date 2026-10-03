@@ -12,10 +12,13 @@ vi.mock("~/graphql/getGraphqlClient", () => ({
 const tournament = {
   id: "t1",
   name: "2v2 Wingman Tournament",
+  status: "RegistrationOpen",
   start: "2026-10-31T19:00:00Z",
   location: "Buttah Boyz HQ",
-  teams: 6,
-  maxTeams: 16,
+  e_tournament_status: { description: "Registration Open" },
+  options: { type: "Wingman", best_of: 1 },
+  teams_aggregate: { aggregate: { count: 6 } },
+  stages: [{ order: 1, max_teams: 16 }],
 };
 const league = {
   id: "l1",
@@ -43,7 +46,7 @@ async function mount(props: Record<string, unknown> = {}) {
   return mountSuspended(PlayMoreWaysView, {
     props: {
       guest: false,
-      tournament,
+      tournaments: [tournament],
       league,
       scrims,
       servers: servers([8, 14, 6]),
@@ -58,22 +61,29 @@ const dropInGrid = (wrapper: any) =>
   wrapper.findAll("div.grid").at(-1)!.classes();
 
 describe("PlayMoreWaysView", () => {
-  it("shows the three cards without a group label", async () => {
+  it("shows open tournaments as watch cards above league and scrims", async () => {
     const wrapper = await mount();
 
-    expect(wrapper.text()).toContain("Tournaments");
+    expect(wrapper.find('a[href="/tournaments"]').text()).toContain(
+      "All tournaments",
+    );
+    expect(wrapper.text()).toContain("2v2 Wingman Tournament");
+    expect(wrapper.text()).toContain("6 of 16 teams");
     expect(wrapper.text()).toContain("League");
     expect(wrapper.text()).toContain("Scrims");
-    expect(wrapper.text()).not.toContain("Compete");
-    expect(cardGrid(wrapper)).toContain("md:grid-cols-3");
+    expect(cardGrid(wrapper)).toContain("md:grid-cols-2");
   });
 
-  it("re-flows two cards evenly and keeps a lone card at a third", async () => {
-    const two = await mount({ league: null });
-    expect(two.text()).not.toContain("League");
-    expect(cardGrid(two)).toContain("md:grid-cols-2");
+  it("hides the tournaments block when none are open", async () => {
+    const wrapper = await mount({ tournaments: [] });
 
-    const one = await mount({ league: null, scrims: null });
+    expect(wrapper.find('a[href="/tournaments"]').exists()).toBe(false);
+    expect(wrapper.text()).toContain("League");
+  });
+
+  it("re-flows the cards and keeps a lone card at a third", async () => {
+    const one = await mount({ league: null });
+    expect(one.text()).not.toContain("League");
     expect(cardGrid(one)).toContain("md:grid-cols-3");
   });
 
@@ -115,7 +125,7 @@ describe("PlayMoreWaysView", () => {
 
   it("renders nothing when there is nothing to offer", async () => {
     const wrapper = await mount({
-      tournament: null,
+      tournaments: [],
       league: null,
       scrims: null,
       servers: [],
@@ -133,7 +143,7 @@ describe("PlayMoreWaysView", () => {
 
     expect(wrapper.text()).toContain("Sign in to register");
     expect(wrapper.text()).toContain("Sign in to practice");
-    expect(wrapper.find('a[href="/tournaments/t1"]').exists()).toBe(false);
+    expect(wrapper.text()).not.toContain("Register a team");
     expect(wrapper.text()).not.toContain("Needs a team you manage");
   });
 

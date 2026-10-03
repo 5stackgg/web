@@ -3720,9 +3720,6 @@
         "title": "더 많은 플레이 방법",
         "tournaments": {
           "title": "토너먼트",
-          "teams_of": "{count}/{max}팀",
-          "register": "팀 등록",
-          "sign_in": "로그인하고 등록",
           "all": "모든 토너먼트"
         },
         "league": {

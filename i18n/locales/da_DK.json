@@ -3720,9 +3720,6 @@
         "title": "Flere måder at spille på",
         "tournaments": {
           "title": "Turneringer",
-          "teams_of": "{count} af {max} hold",
-          "register": "Tilmeld et hold",
-          "sign_in": "Log ind for at tilmelde",
           "all": "Alle turneringer"
         },
         "league": {

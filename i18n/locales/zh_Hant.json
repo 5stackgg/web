@@ -3720,9 +3720,6 @@
         "title": "更多玩法",
         "tournaments": {
           "title": "賽事",
-          "teams_of": "{count} / {max} 支隊伍",
-          "register": "報名隊伍",
-          "sign_in": "登入後報名",
           "all": "所有賽事"
         },
         "league": {

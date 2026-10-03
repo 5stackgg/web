@@ -3720,9 +3720,6 @@
         "title": "Oynamanın diğer yolları",
         "tournaments": {
           "title": "Turnuvalar",
-          "teams_of": "{count}/{max} takım",
-          "register": "Takım kaydet",
-          "sign_in": "Kaydolmak için giriş yap",
           "all": "Tüm turnuvalar"
         },
         "league": {

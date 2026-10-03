@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { ArrowRight, Shield, Swords, Trophy } from "lucide-vue-next";
+import { ArrowRight, Shield, Swords } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import PlayWayCard from "~/components/play/PlayWayCard.vue";
+import WatchTournamentCard from "~/components/watch/WatchTournamentCard.vue";
 import PlayServerTile, {
   type PlayServerTileModel,
 } from "~/components/play/PlayServerTile.vue";
@@ -10,7 +11,6 @@ import PlayPracticeTile from "~/components/play/PlayPracticeTile.vue";
 import {
   dropInColumns,
   formatDay,
-  formatDayAndTime,
   MAX_SERVER_TILES,
   pickServerTiles,
   wayCardColumns,
@@ -20,15 +20,6 @@ import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
-
-export type PlayWaysTournament = {
-  id: string;
-  name: string;
-  start: string | null;
-  location: string | null;
-  teams: number;
-  maxTeams: number | null;
-};
 
 export type PlayWaysLeague = {
   id: string;
@@ -45,7 +36,8 @@ export type PlayWaysScrims = {
 
 const props = defineProps<{
   guest: boolean;
-  tournament: PlayWaysTournament | null;
+  // Rows selected with tournamentCardFields.
+  tournaments: any[];
   league: PlayWaysLeague | null;
   scrims: PlayWaysScrims | null;
   servers: PlayServerTileModel[];
@@ -55,10 +47,7 @@ const props = defineProps<{
 const { locale } = useI18n();
 
 const cardCount = computed(
-  () =>
-    Number(!!props.tournament) +
-    Number(!!props.league) +
-    Number(!!props.scrims),
+  () => Number(!!props.league) + Number(!!props.scrims),
 );
 // Literal class names so Tailwind generates them.
 const cardColumnClasses: Record<number, string> = {
@@ -85,17 +74,10 @@ const playing = computed(() =>
   props.servers.reduce((sum, server) => sum + server.players, 0),
 );
 
-const hasAnything = computed(() => cardCount.value > 0 || tileCount.value > 0);
-
-const tournamentLine = computed(() => {
-  const tournament = props.tournament;
-  if (!tournament) return "";
-  const parts: string[] = [];
-  if (tournament.start)
-    parts.push(formatDayAndTime(tournament.start, locale.value));
-  if (tournament.location) parts.push(tournament.location);
-  return parts.join(" · ");
-});
+const hasAnything = computed(
+  () =>
+    props.tournaments.length > 0 || cardCount.value > 0 || tileCount.value > 0,
+);
 
 function signIn() {
   window.location.href = `${loginLinks.steam}?redirect=${encodeURIComponent(
@@ -119,56 +101,39 @@ const secondaryClasses = [
       {{ $t("pages.play.more_ways.title") }}
     </h2>
 
-    <div v-if="cardCount > 0" :class="['grid gap-3', cardGridClass]">
-      <PlayWayCard
-        v-if="tournament"
-        :icon="Trophy"
-        :title="$t('pages.play.more_ways.tournaments.title')"
+    <div v-if="tournaments.length > 0">
+      <div
+        class="mb-2.5 flex min-h-6 flex-wrap items-center justify-between gap-x-4 gap-y-1.5"
       >
-        <p class="m-0 text-[13.5px] text-foreground/90">
-          {{ tournament.name }}
-        </p>
-        <p class="m-0 text-[12.5px] text-muted-foreground">
-          {{ tournamentLine }}
-          <template v-if="tournament.maxTeams">
-            <template v-if="tournamentLine"> · </template>
-            <span class="tabular-nums">{{
-              $t("pages.play.more_ways.tournaments.teams_of", {
-                count: tournament.teams,
-                max: tournament.maxTeams,
-              })
-            }}</span>
-          </template>
-        </p>
-        <template #actions>
-          <Button
-            v-if="guest"
-            size="sm"
-            variant="outline"
-            :class="actionClasses"
-            @click="signIn"
-          >
-            {{ $t("pages.play.more_ways.tournaments.sign_in") }}
-          </Button>
-          <Button
-            v-else
-            as-child
-            size="sm"
-            variant="outline"
-            :class="actionClasses"
-          >
-            <NuxtLink :to="`/tournaments/${tournament.id}`">
-              {{ $t("pages.play.more_ways.tournaments.register") }}
-            </NuxtLink>
-          </Button>
-          <Button as-child size="sm" variant="ghost" :class="secondaryClasses">
-            <NuxtLink to="/tournaments">
-              {{ $t("pages.play.more_ways.tournaments.all") }}
-            </NuxtLink>
-          </Button>
-        </template>
-      </PlayWayCard>
+        <h3 class="m-0 text-sm font-bold">
+          {{ $t("pages.play.more_ways.tournaments.title") }}
+        </h3>
+        <NuxtLink
+          to="/tournaments"
+          class="inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
+        >
+          {{ $t("pages.play.more_ways.tournaments.all") }}
+          <ArrowRight class="size-3" />
+        </NuxtLink>
+      </div>
 
+      <div class="grid gap-3 lg:grid-cols-2">
+        <WatchTournamentCard
+          v-for="tournament in tournaments"
+          :key="tournament.id"
+          :tournament="tournament"
+        />
+      </div>
+    </div>
+
+    <div
+      v-if="cardCount > 0"
+      :class="[
+        'grid gap-3',
+        cardGridClass,
+        { 'mt-6': tournaments.length > 0 },
+      ]"
+    >
       <PlayWayCard
         v-if="league"
         :icon="Shield"
@@ -261,7 +226,10 @@ const secondaryClasses = [
       </PlayWayCard>
     </div>
 
-    <div v-if="tileCount > 0" :class="{ 'mt-6': cardCount > 0 }">
+    <div
+      v-if="tileCount > 0"
+      :class="{ 'mt-6': tournaments.length > 0 || cardCount > 0 }"
+    >
       <div
         class="mb-2.5 flex min-h-6 flex-wrap items-center justify-between gap-x-4 gap-y-1.5"
       >

@@ -3720,9 +3720,6 @@
         "title": "Altri modi per giocare",
         "tournaments": {
           "title": "Tornei",
-          "teams_of": "{count} team su {max}",
-          "register": "Iscrivi un team",
-          "sign_in": "Accedi per iscriverti",
           "all": "Tutti i tornei"
         },
         "league": {

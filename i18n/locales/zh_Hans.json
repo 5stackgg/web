@@ -3720,9 +3720,6 @@
         "title": "更多玩法",
         "tournaments": {
           "title": "赛事",
-          "teams_of": "{count} / {max} 支队伍",
-          "register": "报名队伍",
-          "sign_in": "登录后报名",
           "all": "全部赛事"
         },
         "league": {

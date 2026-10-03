@@ -64,7 +64,7 @@ const practiceEnabled = computed(
 <template>
   <PlayMoreWaysView
     :guest="isGuest"
-    :tournament="tournamentCard"
+    :tournaments="tournaments"
     :league="leagueCard(league)"
     :scrims="scrimsCard"
     :servers="serverTiles"
@@ -82,29 +82,22 @@ import {
 import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { excludeLeagueTournaments } from "~/graphql/tournamentFilters";
+import { tournamentCardFields } from "~/graphql/tournamentCardFields";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import cleanMapName from "~/utilities/cleanMapName";
 import { countScrimTeamsToday } from "~/utilities/playMoreWays";
 
-const tournamentSubscription = typedGql("subscription")({
+// Open for registration and the viewer isn't on a roster yet: one row of
+// the /watch tournament cards.
+const tournamentsSubscription = typedGql("subscription")({
   tournaments: [
     {
       where: $("where", "tournaments_bool_exp!"),
       order_by: [{ start: order_by.asc }],
-      limit: 1,
+      limit: 2,
     },
-    {
-      id: true,
-      name: true,
-      start: true,
-      location: true,
-      teams_aggregate: [{}, { aggregate: { count: true } }],
-      stages: [
-        { order_by: [{ order: order_by.asc }], limit: 1 },
-        { max_teams: true },
-      ],
-    },
+    tournamentCardFields,
   ],
 } as any);
 
@@ -174,7 +167,7 @@ const myTeamsQuery = generateQuery({
 export default {
   data() {
     return {
-      tournament: null as any,
+      tournaments: [] as any[],
       servers: [] as any[],
       serverInfo: [] as any[],
       scrimPostings: null as any[] | null,
@@ -212,8 +205,8 @@ export default {
       update: (data: any) => data?.teams ?? [],
     },
     $subscribe: {
-      tournament: {
-        query: tournamentSubscription,
+      tournaments: {
+        query: tournamentsSubscription,
         variables() {
           const steamId = useAuthStore().me?.steam_id;
           return {
@@ -230,10 +223,10 @@ export default {
           };
         },
         result(this: any, { data }: any) {
-          this.tournament = data?.tournaments?.[0] ?? null;
+          this.tournaments = data?.tournaments ?? [];
         },
         error(error: any) {
-          console.error("[play] open tournament subscription error:", error);
+          console.error("[play] open tournaments subscription error:", error);
         },
       },
       servers: {
@@ -253,18 +246,6 @@ export default {
   computed: {
     isGuest(): boolean {
       return !useAuthStore().me?.steam_id;
-    },
-    tournamentCard(): any {
-      const tournament = this.tournament;
-      if (!tournament) return null;
-      return {
-        id: tournament.id,
-        name: tournament.name,
-        start: tournament.start ?? null,
-        location: tournament.location ?? null,
-        teams: tournament.teams_aggregate?.aggregate?.count ?? 0,
-        maxTeams: tournament.stages?.[0]?.max_teams ?? null,
-      };
     },
     scrimsCard(): any {
       if (!useApplicationSettingsStore().scrimFinderEnabled) return null;

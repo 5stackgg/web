@@ -68,20 +68,6 @@ export function countScrimTeamsToday(
   return teams.size;
 }
 
-export function formatDayAndTime(value: string, locale?: string): string {
-  const date = new Date(value);
-  const day = new Intl.DateTimeFormat(locale, {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-  }).format(date);
-  const time = new Intl.DateTimeFormat(locale, {
-    hour: "numeric",
-    minute: "2-digit",
-  }).format(date);
-  return `${day} · ${time}`;
-}
-
 export function formatDay(value: string, locale?: string): string {
   return new Intl.DateTimeFormat(locale, {
     month: "short",

@@ -3720,9 +3720,6 @@
         "title": "Fler sätt att spela",
         "tournaments": {
           "title": "Turneringar",
-          "teams_of": "{count} av {max} lag",
-          "register": "Anmäl ett lag",
-          "sign_in": "Logga in för att anmäla",
           "all": "Alla turneringar"
         },
         "league": {

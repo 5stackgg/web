@@ -3721,9 +3721,6 @@
         "title": "More ways to play",
         "tournaments": {
           "title": "Tournaments",
-          "teams_of": "{count} of {max} teams",
-          "register": "Register a team",
-          "sign_in": "Sign in to register",
           "all": "All tournaments"
         },
         "league": {

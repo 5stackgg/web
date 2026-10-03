@@ -3720,9 +3720,6 @@
         "title": "Plus de façons de jouer",
         "tournaments": {
           "title": "Tournois",
-          "teams_of": "{count} équipes sur {max}",
-          "register": "Inscrire une équipe",
-          "sign_in": "Connecte-toi pour t'inscrire",
           "all": "Tous les tournois"
         },
         "league": {

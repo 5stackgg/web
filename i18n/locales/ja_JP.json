@@ -3720,9 +3720,6 @@
         "title": "その他の遊び方",
         "tournaments": {
           "title": "トーナメント",
-          "teams_of": "{count}/{max} チーム",
-          "register": "チームを登録",
-          "sign_in": "ログインして登録",
           "all": "すべてのトーナメント"
         },
         "league": {

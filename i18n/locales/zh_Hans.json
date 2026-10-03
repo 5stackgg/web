@@ -9463,6 +9463,7 @@
         "unsupported_type": "无法附加此类文件。",
         "too_many_pending": "等待发送的上传过多。请先发送或移除一些。",
         "quota_exceeded": "你已达到今日的上传额度。",
+        "rate_limited": "同时上传的文件太多。请稍后再试。",
         "not_allowed": "你不能在这里附加文件。",
         "gagged": "你已被禁言，无法在这里发送任何内容。",
         "unavailable": "上传失败。点按以重试。"

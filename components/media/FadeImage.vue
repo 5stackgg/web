@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, ref, watch } from "vue";
+import { nextTick, onBeforeUnmount, ref, watch } from "vue";
 import { ImageOff } from "lucide-vue-next";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 
@@ -50,10 +50,49 @@ async function onLoad(event: Event) {
     return;
   }
 
-  target.width = source.naturalWidth;
-  target.height = source.naturalHeight;
-  target.getContext("2d")?.drawImage(source, 0, 0);
+  draw(target, source);
 }
+
+// Drawn at the size it is shown, so a large GIF does not hold a canvas of
+// its full resolution for every tile.
+function draw(target: HTMLCanvasElement, image: HTMLImageElement) {
+  const ratio = window.devicePixelRatio || 1;
+  const width = Math.max(1, Math.round((target.clientWidth || 1) * ratio));
+  const height = Math.max(1, Math.round((target.clientHeight || 1) * ratio));
+
+  target.width = width;
+  target.height = height;
+
+  const natural = {
+    width: image.naturalWidth || width,
+    height: image.naturalHeight || height,
+  };
+  const scale =
+    props.fit === "contain"
+      ? Math.min(width / natural.width, height / natural.height)
+      : Math.max(width / natural.width, height / natural.height);
+  const drawn = {
+    width: natural.width * scale,
+    height: natural.height * scale,
+  };
+
+  target
+    .getContext("2d")
+    ?.drawImage(
+      image,
+      (width - drawn.width) / 2,
+      (height - drawn.height) / 2,
+      drawn.width,
+      drawn.height,
+    );
+}
+
+onBeforeUnmount(() => {
+  if (canvas.value) {
+    canvas.value.width = 0;
+    canvas.value.height = 0;
+  }
+});
 </script>
 
 <template>
@@ -65,7 +104,6 @@ async function onLoad(event: Event) {
       role="img"
       :aria-label="alt"
       class="block h-full w-full"
-      :class="fit === 'contain' ? 'object-contain' : 'object-cover'"
     ></canvas>
     <img
       v-else-if="loaded"

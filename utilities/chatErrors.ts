@@ -114,11 +114,10 @@ export function toastChatError(error: ChatError) {
   const t: Translate = (key, params) => $i18n.t(key, params ?? {});
 
   if (!chatErrorFailed(error)) {
-    toast({ title: chatErrorTitle(error, t) });
-    return;
+    return toast({ title: chatErrorTitle(error, t) });
   }
 
-  toast({
+  return toast({
     title: chatErrorTitle(error, t),
     description: chatErrorDescription(error, t),
     variant: "destructive",

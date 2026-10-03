@@ -9463,6 +9463,7 @@
         "unsupported_type": "Denne type fil kan ikke vedhæftes.",
         "too_many_pending": "For mange uploads venter på at blive sendt. Send eller fjern nogle først.",
         "quota_exceeded": "Du har brugt dagens upload-kvote.",
+        "rate_limited": "For mange uploads på én gang. Prøv igen om lidt.",
         "not_allowed": "Du kan ikke vedhæfte filer her.",
         "gagged": "Din chat er lukket, så du kan ikke sende noget her.",
         "unavailable": "Uploaden mislykkedes. Tryk for at prøve igen."

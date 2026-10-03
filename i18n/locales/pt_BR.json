@@ -9463,6 +9463,7 @@
         "unsupported_type": "Este tipo de arquivo não pode ser anexado.",
         "too_many_pending": "Há uploads demais esperando para serem enviados. Envie ou remova alguns primeiro.",
         "quota_exceeded": "Você atingiu seu limite de uploads de hoje.",
+        "rate_limited": "Uploads demais ao mesmo tempo. Tente de novo em instantes.",
         "not_allowed": "Você não pode anexar arquivos aqui.",
         "gagged": "Você está censurado no chat e não pode enviar nada aqui.",
         "unavailable": "O upload falhou. Toque para tentar novamente."

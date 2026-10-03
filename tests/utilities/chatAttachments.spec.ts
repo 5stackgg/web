@@ -5,6 +5,7 @@ import {
   chatMediaLabel,
   chatRoomTakesAttachments,
   formatChatDuration,
+  pasteAttachesFiles,
   pickChatFiles,
   type ChatAttachmentConfig,
 } from "~/utilities/chatAttachments";
@@ -103,6 +104,24 @@ describe("picking files", () => {
       accepted: [],
       rejected: [{ file: png, reason: "type" }],
     });
+  });
+});
+
+describe("pasting", () => {
+  const files = [file("smoke.png", "image/png")];
+
+  it.each([
+    ["no text at all", "", true],
+    ["the file's own name", "smoke.png", true],
+    ["the file's path", "/Users/me/Desktop/smoke.png", true],
+    ["a Windows path", "C:\\Users\\me\\smoke.png", true],
+    ["a single link", "https://cdn.example/x.png?w=200", true],
+    ["a sentence", "look at this smoke.png", false],
+    ["a spreadsheet's cells", "K/D\tADR\n1.4\t92", false],
+    ["two links", "https://a.example https://b.example", false],
+    ["another file's name", "flash.png", false],
+  ])("takes the file when the text is %s", (_, text, takesFiles) => {
+    expect(pasteAttachesFiles(text, files)).toBe(takesFiles);
   });
 });
 

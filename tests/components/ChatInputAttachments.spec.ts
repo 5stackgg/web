@@ -6,6 +6,16 @@ import type { ChatAttachmentConfig } from "~/utilities/chatAttachments";
 // @ts-expect-error only the mock below exports it
 import { testConfig as config } from "~/composables/useChatAttachmentConfig";
 
+const { toast, toastHandle } = vi.hoisted(() => {
+  const toastHandle = { dismiss: vi.fn(), id: "t-1", update: vi.fn() };
+  return { toast: vi.fn(() => toastHandle), toastHandle };
+});
+
+vi.mock("@/components/ui/toast", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/components/ui/toast")>()),
+  toast,
+}));
+
 const { uploads, discards } = vi.hoisted(() => ({
   uploads: [] as Array<{
     resolve: (attachment: unknown) => void;
@@ -72,6 +82,8 @@ describe("ChatInput attachments", () => {
     config.value = { ...LIMITS };
     uploads.length = 0;
     discards.length = 0;
+    toast.mockClear();
+    toastHandle.dismiss.mockClear();
   });
 
   it("offers nothing to attach in a text-only room", async () => {
@@ -179,6 +191,62 @@ describe("ChatInput attachments", () => {
     expect(discards).toEqual([]);
   });
 
+  // The answer came after the request gave up: the message is in the room,
+  // so the composer must not keep offering to send it again.
+  it("clears the composer when a timed-out send turns out to have landed", async () => {
+    const wrapper = await uploaded();
+
+    await wrapper.get("textarea").setValue("our smokes");
+    await wrapper.get("form").trigger("submit");
+    await flushPromises();
+
+    const [[, , media]] = wrapper.emitted("sendMessage") as any;
+    media.delivered(Promise.reject({ code: "timeout", action: "send" }));
+    await flushPromises();
+
+    expect(wrapper.text()).toContain("smoke.png");
+
+    media.sentLate();
+    await flushPromises();
+
+    expect(wrapper.text()).not.toContain("smoke.png");
+    expect(
+      (wrapper.get("textarea").element as HTMLTextAreaElement).value,
+    ).toBe("");
+    expect(toastHandle.dismiss).toHaveBeenCalled();
+  });
+
+  it("treats a retry the room says already went out as sent", async () => {
+    const wrapper = await uploaded();
+
+    await wrapper.get("form").trigger("submit");
+    await flushPromises();
+
+    const [[, , media]] = wrapper.emitted("sendMessage") as any;
+    media.delivered(Promise.reject({ code: "already_sent", action: "send" }));
+    await flushPromises();
+
+    expect(wrapper.text()).not.toContain("smoke.png");
+    expect(toast).not.toHaveBeenCalledWith(
+      expect.objectContaining({ variant: "destructive" }),
+    );
+  });
+
+  it("sends a GIF once, however fast it is clicked again", async () => {
+    config.value = { ...LIMITS, gifs: true };
+    const wrapper = await mountSuspended(ChatInput, {
+      props: { attachmentRoom: room },
+    });
+    const gif = { id: "abc123", width: 480, height: 270 };
+
+    (wrapper.vm as any).sendGif(gif);
+    (wrapper.vm as any).sendGif(gif);
+
+    expect(wrapper.emitted("sendMessage")).toEqual([
+      ["", undefined, { gif }],
+    ]);
+  });
+
   it("says why Send is waiting", async () => {
     const wrapper = await mountSuspended(ChatInput, {
       props: { attachmentRoom: room },
@@ -258,21 +326,47 @@ describe("ChatInput attachments", () => {
     expect(paste.defaultPrevented).toBe(true);
   });
 
+  const pasteOf = (text: string) => {
+    const paste = new Event("paste", { cancelable: true });
+    Object.defineProperty(paste, "clipboardData", {
+      value: {
+        files: [png],
+        types: ["text/plain", "Files"],
+        getData: (type: string) => (type === "text/plain" ? text : ""),
+      },
+    });
+    return paste;
+  };
+
   // A spreadsheet's cells come with an image of them on the clipboard too.
-  it("pastes the text when the clipboard has both text and a file", async () => {
+  it("pastes a spreadsheet's cells as text, not as the picture of them", async () => {
     const wrapper = await mountSuspended(ChatInput, {
       props: { attachmentRoom: room },
     });
 
-    const paste = new Event("paste", { cancelable: true });
-    Object.defineProperty(paste, "clipboardData", {
-      value: { files: [png], types: ["text/plain", "Files"] },
-    });
+    const paste = pasteOf("K/D\tADR\n1.4\t92");
     wrapper.get("textarea").element.dispatchEvent(paste);
     await flushPromises();
 
     expect(uploads).toHaveLength(0);
     expect(paste.defaultPrevented).toBe(false);
+  });
+
+  // Finder puts the file's name next to it; Firefox's Copy Image, its URL.
+  it.each([
+    ["the file's own name", "smoke.png"],
+    ["a single link", "https://cdn.example/smoke.png"],
+  ])("attaches the file when the text is just %s", async (_, text) => {
+    const wrapper = await mountSuspended(ChatInput, {
+      props: { attachmentRoom: room },
+    });
+
+    const paste = pasteOf(text);
+    wrapper.get("textarea").element.dispatchEvent(paste);
+    await flushPromises();
+
+    expect(uploads).toHaveLength(1);
+    expect(paste.defaultPrevented).toBe(true);
   });
 
   it("leaves a paste of plain text alone", async () => {

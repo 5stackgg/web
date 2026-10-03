@@ -9463,6 +9463,7 @@
         "unsupported_type": "Tego rodzaju pliku nie można załączyć.",
         "too_many_pending": "Zbyt wiele przesłanych plików czeka na wysłanie. Najpierw wyślij lub usuń część z nich.",
         "quota_exceeded": "Wykorzystano dzisiejszy limit przesyłania.",
+        "rate_limited": "Zbyt wiele przesyłanych plików naraz. Spróbuj za chwilę.",
         "not_allowed": "Nie możesz tu załączać plików.",
         "gagged": "Masz zablokowany czat i nie możesz tu nic wysłać.",
         "unavailable": "Przesyłanie nie powiodło się. Stuknij, aby spróbować ponownie."

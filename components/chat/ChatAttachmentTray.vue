@@ -15,6 +15,7 @@ const ERRORS = [
   "unsupported_type",
   "too_many_pending",
   "quota_exceeded",
+  "rate_limited",
   "not_allowed",
   "gagged",
 ];

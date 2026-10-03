@@ -156,6 +156,32 @@ export function chatMediaLabel(
   return count === 1 ? t("chat.attachments.label") : "";
 }
 
+// A clipboard often carries text alongside a file: Finder puts the file's name
+// there, a browser's Copy Image its URL, a spreadsheet the cells that the
+// picture shows. The file is what was meant only in the first two.
+export function pasteAttachesFiles(
+  text: string,
+  files: ReadonlyArray<{ name: string }>,
+): boolean {
+  const trimmed = text.trim();
+
+  if (!trimmed) {
+    return true;
+  }
+
+  if (/^https?:\/\/\S+$/i.test(trimmed)) {
+    return true;
+  }
+
+  if (/[\t\r\n]/.test(trimmed)) {
+    return false;
+  }
+
+  const name = trimmed.split(/[\\/]/).pop();
+
+  return files.some((file) => file.name === name);
+}
+
 export function formatChatDuration(ms?: number | null): string {
   if (typeof ms !== "number" || !Number.isFinite(ms) || ms < 0) {
     return "";

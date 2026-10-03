@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { Socket } from "~/web-sockets/Socket";
 
 function connected() {
@@ -99,5 +99,61 @@ describe("Socket.sendChat", () => {
     await expect(
       socket.sendChat("matchmaking", "lobby-1", "", { attachments: ["a-1"] }),
     ).rejects.toMatchObject({ code: "offline" });
+  });
+});
+
+describe("Socket.sendChat answered late", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("says so when the room takes a send after it timed out", async () => {
+    vi.useFakeTimers();
+    const { socket, sent } = connected();
+    const sentLate = vi.fn();
+
+    const delivered = socket.sendChat(
+      "matchmaking",
+      "lobby-1",
+      "",
+      { attachments: ["a-1"] },
+      sentLate,
+    );
+    const [{ data }] = sent();
+
+    vi.advanceTimersByTime(8_000);
+    await expect(delivered).rejects.toMatchObject({ code: "timeout" });
+    expect(sentLate).not.toHaveBeenCalled();
+
+    socket.resolveChatRequest({
+      requestId: data.requestId,
+      messageId: "m-1",
+      action: "send",
+    });
+
+    expect(sentLate).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not call a send that was answered in time late", async () => {
+    const { socket, sent } = connected();
+    const sentLate = vi.fn();
+
+    const delivered = socket.sendChat(
+      "matchmaking",
+      "lobby-1",
+      "",
+      { attachments: ["a-1"] },
+      sentLate,
+    );
+    const [{ data }] = sent();
+
+    socket.resolveChatRequest({
+      requestId: data.requestId,
+      messageId: "m-1",
+      action: "send",
+    });
+
+    await delivered;
+    expect(sentLate).not.toHaveBeenCalled();
   });
 });

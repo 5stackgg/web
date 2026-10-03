@@ -9463,6 +9463,7 @@
         "unsupported_type": "Questo tipo di file non può essere allegato.",
         "too_many_pending": "Troppi caricamenti in attesa di invio. Inviane o rimuovine prima alcuni.",
         "quota_exceeded": "Hai raggiunto il limite di caricamenti di oggi.",
+        "rate_limited": "Troppi caricamenti insieme. Riprova tra un momento.",
         "not_allowed": "Non puoi allegare file qui.",
         "gagged": "Sei silenziato in chat e non puoi inviare nulla qui.",
         "unavailable": "Caricamento non riuscito. Tocca per riprovare."

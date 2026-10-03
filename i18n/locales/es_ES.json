@@ -9463,6 +9463,7 @@
         "unsupported_type": "No se puede adjuntar este tipo de archivo.",
         "too_many_pending": "Hay demasiadas subidas esperando a enviarse. Envía o quita algunas primero.",
         "quota_exceeded": "Has alcanzado tu límite de subidas de hoy.",
+        "rate_limited": "Demasiadas subidas a la vez. Inténtalo de nuevo en un momento.",
         "not_allowed": "No puedes adjuntar archivos aquí.",
         "gagged": "Estás silenciado en el chat y no puedes enviar nada aquí.",
         "unavailable": "La subida ha fallado. Toca para reintentar."

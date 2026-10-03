@@ -21,6 +21,77 @@ export function chatAttachmentPosterUrl(id: string): string {
   return url ? `${url}/poster` : "";
 }
 
+// Must match the api's ChatAttachmentsService.MAX_UPLOADS_PER_PLAYER: it
+// answers 429 to a third part from the same player, so the whole tray shares
+// two at a time. A 429 can still come from the api pod's own limit, so that
+// part is sent again after a pause rather than the file started over.
+const PARTS_IN_FLIGHT = 2;
+const RATE_LIMIT_RETRIES = 6;
+const RATE_LIMIT_BACKOFF_MS = 400;
+
+let partsInFlight = 0;
+const waitingForPart: Array<() => void> = [];
+
+async function withPartSlot<T>(
+  signal: AbortSignal,
+  work: () => Promise<T>,
+): Promise<T> {
+  while (partsInFlight >= PARTS_IN_FLIGHT) {
+    await new Promise<void>((resolve) => waitingForPart.push(resolve));
+    stopIfAborted(signal);
+  }
+
+  partsInFlight++;
+
+  try {
+    return await work();
+  } finally {
+    partsInFlight--;
+    waitingForPart.shift()?.();
+  }
+}
+
+function pause(ms: number, signal: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(resolve, ms);
+
+    signal.addEventListener(
+      "abort",
+      () => {
+        clearTimeout(timer);
+        reject(new ChatUploadError("aborted"));
+      },
+      { once: true },
+    );
+  });
+}
+
+async function putPart(
+  url: string,
+  body: Blob,
+  signal: AbortSignal,
+  onProgress: (loaded: number) => void,
+): Promise<void> {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      return await withPartSlot(signal, () =>
+        put(url, body, signal, onProgress),
+      );
+    } catch (error) {
+      if (
+        !(error instanceof ChatUploadError) ||
+        error.code !== "rate_limited" ||
+        attempt >= RATE_LIMIT_RETRIES
+      ) {
+        throw error;
+      }
+
+      onProgress(0);
+      await pause(RATE_LIMIT_BACKOFF_MS * 2 ** attempt, signal);
+    }
+  }
+}
+
 function stopIfAborted(signal: AbortSignal) {
   if (signal.aborted) {
     throw new ChatUploadError("aborted");
@@ -212,15 +283,17 @@ export async function uploadChatAttachment(
     const start = (part - 1) * created.part_size;
     const chunk = file.slice(start, Math.min(start + created.part_size, file.size));
 
-    await put(`${url}/parts/${part}`, chunk, hooks.signal, (loaded) => {
+    await putPart(`${url}/parts/${part}`, chunk, hooks.signal, (loaded) => {
       hooks.onProgress(((start + loaded) / file.size) * 0.98);
     });
   }
 
   if (poster) {
-    await put(`${url}/poster`, poster, hooks.signal, () => {}).catch(() => {
-      return;
-    });
+    await putPart(`${url}/poster`, poster, hooks.signal, () => {}).catch(
+      () => {
+        return;
+      },
+    );
   }
 
   stopIfAborted(hooks.signal);

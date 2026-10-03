@@ -9463,6 +9463,7 @@
         "unsupported_type": "Den här typen av fil kan inte bifogas.",
         "too_many_pending": "För många uppladdningar väntar på att skickas. Skicka eller ta bort några först.",
         "quota_exceeded": "Du har använt dagens uppladdningskvot.",
+        "rate_limited": "För många uppladdningar på en gång. Försök igen om en stund.",
         "not_allowed": "Du kan inte bifoga filer här.",
         "gagged": "Din chatt är avstängd och du kan inte skicka något här.",
         "unavailable": "Uppladdningen misslyckades. Tryck för att försöka igen."

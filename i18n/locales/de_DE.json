@@ -9463,6 +9463,7 @@
         "unsupported_type": "Diese Art von Datei kann nicht angehängt werden.",
         "too_many_pending": "Zu viele Uploads warten darauf, gesendet zu werden. Sende oder entferne zuerst einige.",
         "quota_exceeded": "Du hast dein Upload-Kontingent für heute aufgebraucht.",
+        "rate_limited": "Zu viele Uploads auf einmal. Versuch es gleich noch mal.",
         "not_allowed": "Hier kannst du keine Dateien anhängen.",
         "gagged": "Du bist im Chat gesperrt und kannst hier nichts senden.",
         "unavailable": "Der Upload ist fehlgeschlagen. Tippe, um es erneut zu versuchen."

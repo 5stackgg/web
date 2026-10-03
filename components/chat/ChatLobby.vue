@@ -1062,6 +1062,7 @@ export default {
         attachments?: string[];
         gif?: ChatGif;
         delivered?: (request: Promise<void>) => void;
+        sentLate?: () => void;
       },
     ) {
       const channel = (destination ?? this.sendTo) as "everyone" | "team";
@@ -1069,9 +1070,13 @@ export default {
 
       if (media?.delivered) {
         media.delivered(
-          socket.sendChat(target.type, target.id, message, {
-            attachments: media.attachments,
-          }),
+          socket.sendChat(
+            target.type,
+            target.id,
+            message,
+            { attachments: media.attachments },
+            media.sentLate,
+          ),
         );
       } else {
         socket.chat(target.type, target.id, message, media);

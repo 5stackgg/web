@@ -515,13 +515,19 @@ export class Socket extends EventEmitter {
 
   // A send that carries files is answered, unlike plain text: a refusal has to
   // hand the files back to the composer. Never queued, like every request.
+  //
+  // An answer can still arrive after the request gave up on it; `sentLate`
+  // is how the sender hears the message landed after all.
   public sendChat(
     type: ChatType,
     id: string,
     message: string,
     media: { attachments?: string[]; gif?: ChatGif },
+    sentLate?: () => void,
   ): Promise<void> {
-    return this.chatRequest(
+    let settled = false;
+
+    const request = this.chatRequest(
       "send",
       {
         id,
@@ -532,8 +538,22 @@ export class Socket extends EventEmitter {
           : {}),
         ...(media.gif ? { gif: media.gif } : {}),
       },
-      { resolved: () => {}, rejected: () => {} },
+      {
+        resolved: () => {
+          if (settled) {
+            sentLate?.();
+          }
+        },
+        rejected: () => {},
+      },
     );
+
+    const settle = () => {
+      settled = true;
+    };
+    request.then(settle, settle);
+
+    return request;
   }
 
   public deleteMessage(

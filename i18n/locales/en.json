@@ -9465,6 +9465,7 @@
         "unsupported_type": "This kind of file can't be attached.",
         "too_many_pending": "Too many uploads are waiting to be sent. Send or remove some first.",
         "quota_exceeded": "You've reached today's upload allowance.",
+        "rate_limited": "Too many uploads at once. Try again in a moment.",
         "not_allowed": "You can't attach files here.",
         "gagged": "You are gagged and can't send anything here.",
         "unavailable": "The upload failed. Tap to retry."

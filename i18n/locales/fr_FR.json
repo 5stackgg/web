@@ -9463,6 +9463,7 @@
         "unsupported_type": "Ce type de fichier ne peut pas être joint.",
         "too_many_pending": "Trop d'envois attendent d'être envoyés. Envoyez-en ou retirez-en d'abord.",
         "quota_exceeded": "Vous avez atteint votre quota d'envoi du jour.",
+        "rate_limited": "Trop d'envois à la fois. Réessayez dans un instant.",
         "not_allowed": "Vous ne pouvez pas joindre de fichiers ici.",
         "gagged": "Vous êtes bâillonné et ne pouvez rien envoyer ici.",
         "unavailable": "L'envoi a échoué. Touchez pour réessayer."

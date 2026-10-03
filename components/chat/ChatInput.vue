@@ -231,9 +231,10 @@ import {
   discardChatAttachment,
   uploadChatAttachment,
 } from "~/composables/chatAttachmentUploads";
-import type {
-  ChatFileRejection,
-  ChatGif,
+import {
+  pasteAttachesFiles,
+  type ChatFileRejection,
+  type ChatGif,
 } from "~/utilities/chatAttachments";
 
 export interface ChatInputChannel {
@@ -305,6 +306,8 @@ export default {
       }),
       holdingHub: false,
       gone: false,
+      gifSentAt: 0,
+      failedSend: null as { dismiss?: () => void } | null,
       sending: false,
       sendTimer: undefined as ReturnType<typeof setTimeout> | undefined,
       form: useForm({
@@ -494,33 +497,57 @@ export default {
       this.$emit("sendMessage", message, target, {
         attachments: this.tray.beginSend(),
         delivered: (request: Promise<void>) => this.settleSend(request),
+        sentLate: () => this.landed(message),
       });
     },
     settleSend(request: Promise<void>) {
       this.sending = true;
+      const sentText = this.form.values.message?.trim() ?? "";
 
       request
         .then(() => {
-          if (this.gone) {
-            return;
-          }
-
-          this.tray.sent();
-          this.form.resetForm();
+          this.landed(sentText);
         })
         .catch((error: ChatError) => {
           if (this.gone) {
             return;
           }
 
+          // A retry of a send whose answer was lost: the first one landed.
+          if (error?.code === "already_sent") {
+            this.landed(sentText);
+            return;
+          }
+
           this.tray.unsent();
-          toastChatError(error);
+          this.failedSend = toastChatError(error) ?? null;
         })
         .finally(() => {
           this.sending = false;
         });
     },
+    // Text typed since the send stays: only what went out is cleared.
+    landed(sentText: string) {
+      if (this.gone) {
+        return;
+      }
+
+      this.tray.sent();
+      this.failedSend?.dismiss?.();
+      this.failedSend = null;
+
+      if ((this.form.values.message?.trim() ?? "") === sentText) {
+        this.form.resetForm();
+      }
+    },
+    // The picker stays on screen through its close animation, where a second
+    // click would send the same GIF again.
     sendGif(gif: ChatGif) {
+      if (this.gifSentAt && Date.now() - this.gifSentAt < 1000) {
+        return;
+      }
+
+      this.gifSentAt = Date.now();
       this.$emit("sendMessage", "", this.activeChannelValue ?? undefined, {
         gif,
       });
@@ -566,16 +593,18 @@ export default {
       this.addFiles(Array.from(input.files ?? []));
       input.value = "";
     },
-    // A spreadsheet puts a picture of its cells on the clipboard next to the
-    // text, so a file only wins when there is no text with it.
     onPaste(event: ClipboardEvent) {
       const files = Array.from(event.clipboardData?.files ?? []);
-      const types = Array.from(event.clipboardData?.types ?? []);
+      const text = Array.from(event.clipboardData?.types ?? []).includes(
+        "text/plain",
+      )
+        ? (event.clipboardData?.getData("text/plain") ?? "")
+        : "";
 
       if (
         !this.canAttach ||
         files.length === 0 ||
-        types.includes("text/plain")
+        !pasteAttachesFiles(text, files)
       ) {
         return;
       }

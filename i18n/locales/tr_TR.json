@@ -9463,6 +9463,7 @@
         "unsupported_type": "Bu türde bir dosya eklenemez.",
         "too_many_pending": "Gönderilmeyi bekleyen çok fazla yükleme var. Önce bazılarını gönder veya kaldır.",
         "quota_exceeded": "Bugünkü yükleme hakkını doldurdun.",
+        "rate_limited": "Aynı anda çok fazla yükleme var. Birazdan tekrar dene.",
         "not_allowed": "Buraya dosya ekleyemezsin.",
         "gagged": "Sohbetin kapatıldı, buraya bir şey gönderemezsin.",
         "unavailable": "Yükleme başarısız oldu. Tekrar denemek için dokun."

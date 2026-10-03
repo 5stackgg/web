@@ -33,7 +33,22 @@ onBeforeUnmount(() => {
   }
 });
 
+// One GIF per opening: the panel stays up through the close animation, where
+// a second click would otherwise send it again.
+let picked = false;
+
+watch(open, (value) => {
+  if (value) {
+    picked = false;
+  }
+});
+
 function select(gif: ChatGif) {
+  if (picked) {
+    return;
+  }
+
+  picked = true;
   open.value = false;
   emit("select", gif);
 }

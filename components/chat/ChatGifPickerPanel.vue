@@ -79,7 +79,7 @@ async function load(term: string, offset: number) {
 
   loadingMore.value = false;
 
-  if (typeof page === "string") {
+  if (typeof page === "string" || !Array.isArray(page?.results)) {
     if (offset === 0) {
       results.value = [];
       place([], true);

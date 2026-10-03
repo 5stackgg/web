@@ -42,6 +42,11 @@ const props = withDefaults(
     // that start muted pass false and flip it when the viewer asks to listen,
     // which costs one reconnect on that tile and nothing anywhere else.
     audio?: boolean;
+    // Post the offer straight away and send this browser's ICE candidates as
+    // they are found (trickle ICE), instead of waiting up to 2s to gather them
+    // all first. Only for URLs that go straight to MediaMTX: the API's camera
+    // proxy has no session URL to send them to.
+    trickle?: boolean;
   }>(),
   {
     // Vue casts an absent boolean prop to false, so "on unless a host opts out"
@@ -70,6 +75,9 @@ const MAX_WHEP_FAILURES = 3;
 // briefly drops the path during clip-render's restart_capture, and
 // falling back at that moment locks us at HLS latency.
 let hasEverPlayed = false;
+// Set once this endpoint turns out not to take trickled candidates; later
+// attempts gather them all up front instead.
+let trickleUnsupported = false;
 const errorMessage = ref<string | null>(null);
 const isRetrying = ref(false);
 // What the viewer is told while there's no picture. A failed attempt before
@@ -342,6 +350,24 @@ async function connect() {
       ],
     });
 
+    const peer = pc;
+    const trickle = props.trickle && !trickleUnsupported;
+    // Candidates found before the answer names the session URL to send them to.
+    const pendingCandidates: RTCIceCandidate[] = [];
+    let sessionUrl: string | null = null;
+    let offerSdp = "";
+
+    if (trickle) {
+      peer.onicecandidate = ({ candidate }) => {
+        if (!candidate?.candidate) return;
+        if (sessionUrl) {
+          void sendCandidates(peer, sessionUrl, offerSdp, [candidate]);
+        } else {
+          pendingCandidates.push(candidate);
+        }
+      };
+    }
+
     pc.addTransceiver("video", { direction: "recvonly" });
 
     // MediaMTX answers the offer it is given, so leaving the audio transceiver
@@ -396,7 +422,8 @@ async function connect() {
 
     const offer = await pc.createOffer();
     await pc.setLocalDescription(offer);
-    await waitForIceComplete(pc);
+    offerSdp = offer.sdp ?? "";
+    if (!trickle) await waitForIceComplete(pc);
 
     const res = await fetch(props.whepUrl, {
       method: "POST",
@@ -426,6 +453,23 @@ async function connect() {
     await pc.setRemoteDescription({ type: "answer", sdp: answerSdp });
     retryDelay = INITIAL_RETRY_DELAY_MS;
     isRetrying.value = false;
+
+    if (trickle) {
+      const location = res.headers.get("Location");
+      if (!location) {
+        trickleFailed(peer, "no session URL in the answer");
+        return;
+      }
+      sessionUrl = new URL(location, props.whepUrl).toString();
+      if (pendingCandidates.length > 0) {
+        void sendCandidates(
+          peer,
+          sessionUrl,
+          offerSdp,
+          pendingCandidates.splice(0),
+        );
+      }
+    }
   } catch (err) {
     const message = (err as Error)?.message ?? String(err);
     if (clipRenderActive.value) {
@@ -484,6 +528,60 @@ function scheduleRetry() {
     void connect();
   }, retryDelay);
   retryDelay = Math.min(MAX_RETRY_DELAY_MS, retryDelay * 2);
+}
+
+// The body MediaMTX expects for trickled candidates: the offer's ICE
+// credentials, then each candidate under its m-line, with a=mid set to that
+// m-line's index (MediaMTX reads the mid as the index).
+function sdpFragment(offerSdp: string, candidates: RTCIceCandidate[]) {
+  const lines = offerSdp.split("\r\n");
+  const ufrag = lines.find((line) => line.startsWith("a=ice-ufrag:"));
+  const pwd = lines.find((line) => line.startsWith("a=ice-pwd:"));
+  let fragment = `${ufrag}\r\n${pwd}\r\n`;
+
+  lines
+    .filter((line) => line.startsWith("m="))
+    .forEach((media, index) => {
+      const own = candidates.filter((c) => c.sdpMLineIndex === index);
+      if (own.length === 0) return;
+      fragment += `${media}\r\na=mid:${index}\r\n`;
+      for (const c of own) fragment += `a=${c.candidate}\r\n`;
+    });
+
+  return fragment;
+}
+
+async function sendCandidates(
+  peer: RTCPeerConnection,
+  url: string,
+  offerSdp: string,
+  candidates: RTCIceCandidate[],
+) {
+  try {
+    const res = await fetch(url, {
+      method: "PATCH",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/trickle-ice-sdpfrag",
+        "If-Match": "*",
+      },
+      body: sdpFragment(offerSdp, candidates),
+    });
+    if (!res.ok) throw new Error(`PATCH ${res.status}`);
+  } catch (err) {
+    trickleFailed(peer, (err as Error)?.message ?? String(err));
+  }
+}
+
+// Without this browser's candidates, a MediaMTX behind NAT with no port
+// forward (what its STUN candidate is for) can't reach it. Unless this
+// connection has already made it, start over gathering everything first.
+function trickleFailed(peer: RTCPeerConnection, reason: string) {
+  trickleUnsupported = true;
+  if (peer !== pc || peer.connectionState === "connected") return;
+  console.debug("[whep] trickle ICE unavailable, gathering first:", reason);
+  retryDelay = INITIAL_RETRY_DELAY_MS;
+  void teardown().then(() => connect());
 }
 
 function waitForIceComplete(peer: RTCPeerConnection): Promise<void> {
@@ -782,6 +880,7 @@ watch(
     retryDelay = INITIAL_RETRY_DELAY_MS;
     failureCount = 0;
     hasEverPlayed = false;
+    trickleUnsupported = false;
     everPlayed.value = false;
     failedBeforePlay.value = false;
     useFallback.value = false;

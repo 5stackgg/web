@@ -111,6 +111,7 @@ defineExpose({ rootEl });
         :muted="muted"
         :audio="audio"
         :disable-shortcuts="disableShortcuts"
+        trickle
         class="absolute inset-0"
         @phase="emit('phase', $event)"
       >
@@ -130,6 +131,7 @@ defineExpose({ rootEl });
         :muted="muted"
         :audio="audio"
         :disable-shortcuts="disableShortcuts"
+        trickle
         class="absolute inset-0"
         @phase="emit('phase', $event)"
       >

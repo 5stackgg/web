@@ -11,7 +11,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 // frame, title + tagged players overlay the bottom on a gradient, and edit /
 // delete live top-right for anyone who can manage it. Owns its own detail
 // dialog + delete so both the overview rail and the media tab reuse it; the
-// image lightbox belongs to the list so it can step through every card.
+// lightbox belongs to the list so it can step through every card.
 const props = defineProps<{
   event: { id: string; is_organizer?: boolean };
   item: {

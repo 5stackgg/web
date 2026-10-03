@@ -51,6 +51,41 @@ describe("PlayMatchmaking", () => {
     expect(wrapper.text()).not.toContain("Sign in with Steam");
   });
 
+  it("doesn't pick a mode for a solo player", async () => {
+    useAuthStore().me = {
+      steam_id: "76561198000000001",
+      role: "user",
+    } as any;
+
+    const wrapper = await mountSuspended(PlayMatchmaking);
+
+    expect(wrapper.find('[role="radio"][aria-checked="true"]').exists()).toBe(
+      false,
+    );
+    const findMatch = wrapper
+      .findAll("button")
+      .find((button) => button.text().includes("Find match"));
+    expect(findMatch?.attributes("disabled")).toBeDefined();
+  });
+
+  it("picks the mode when it's the only one", async () => {
+    useAuthStore().me = {
+      steam_id: "76561198000000001",
+      role: "user",
+    } as any;
+    useApplicationSettingsStore().settings = [
+      { name: "public.matchmaking_duel", value: "false" },
+      { name: "public.matchmaking_wingman", value: "false" },
+      { name: "public.matchmaking_rush", value: "false" },
+    ] as any;
+
+    const wrapper = await mountSuspended(PlayMatchmaking);
+
+    const checked = wrapper.findAll('[role="radio"][aria-checked="true"]');
+    expect(checked).toHaveLength(1);
+    expect(checked[0].text()).toContain("Competitive");
+  });
+
   it("turns into the search clock while queued", async () => {
     useAuthStore().me = {
       steam_id: "76561198000000001",

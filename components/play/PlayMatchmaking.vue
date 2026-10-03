@@ -50,7 +50,7 @@ const { t } = useI18n();
 const settings = useApplicationSettingsStore();
 const auth = useAuthStore();
 const matchmaking = useMatchmakingStore();
-const { partySize, modes, quickMode, queue, clock, modeTitle, join, leave } =
+const { partySize, modes, queue, clock, modeTitle, join, leave } =
   useQuickQueue();
 const { setRightSidebarOpen } = useRightSidebar();
 
@@ -81,15 +81,22 @@ function formatName(type: e_match_types_enum) {
 }
 
 // What the button queues: the tile the viewer picked if the party can still
-// play it, otherwise the mode the header's Play button would use.
+// play it. Nothing is chosen for them unless only one mode fits.
 const picked = ref<e_match_types_enum | null>(null);
+const selectable = computed(() =>
+  modes.value.filter((mode) => isGuest.value || mode.canQueue),
+);
 const selectedType = computed<e_match_types_enum | null>(() => {
   if (isMember.value) return null;
-  const choice = modes.value.find(
-    (mode) => mode.type === picked.value && (isGuest.value || mode.canQueue),
-  );
-  return choice?.type ?? quickMode.value?.type ?? null;
+  const choice = selectable.value.find((mode) => mode.type === picked.value);
+  if (choice) return choice.type;
+  return selectable.value.length === 1 ? selectable.value[0].type : null;
 });
+// With nothing checked, Tab lands on the first mode it can pick, like a
+// native radio set.
+const tabStop = computed(
+  () => selectedType.value ?? selectable.value[0]?.type ?? null,
+);
 
 const modeGrid = ref<HTMLElement | null>(null);
 
@@ -104,17 +111,13 @@ function onModeKey(event: KeyboardEvent) {
   const back = ["ArrowLeft", "ArrowUp"].includes(event.key);
   if ((!forward && !back) || isMember.value) return;
   event.preventDefault();
-  const selectable = modes.value.filter(
-    (mode) => isGuest.value || mode.canQueue,
-  );
-  if (!selectable.length) return;
-  const index = selectable.findIndex(
-    (mode) => mode.type === selectedType.value,
-  );
+  const list = selectable.value;
+  if (!list.length) return;
+  const index = list.findIndex((mode) => mode.type === selectedType.value);
   const next =
-    selectable[
-      (index + (forward ? 1 : -1) + selectable.length) % selectable.length
-    ];
+    index < 0
+      ? list[forward ? 0 : list.length - 1]
+      : list[(index + (forward ? 1 : -1) + list.length) % list.length];
   pick(next.type);
   const position = modes.value.findIndex((mode) => mode.type === next.type);
   modeGrid.value
@@ -464,6 +467,7 @@ const linkClasses =
             :party="party"
             :can-queue="mode.canQueue"
             :selected="mode.type === selectedType"
+            :tab-stop="mode.type === tabStop"
             :locked="isMember"
             @select="pick(mode.type)"
           />

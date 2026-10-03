@@ -387,7 +387,7 @@ describe("MatchChatLog", () => {
 
     expect(wrapper.findAll("[data-chat-log-column]")).toHaveLength(1);
     expect(wrapper.text()).toContain(
-      "You played in this match, so team chat is hidden.",
+      "You took part in this match, so team chat is hidden.",
     );
   });
 
@@ -455,8 +455,8 @@ describe("MatchChatLog", () => {
           ...line("e1", "tarn", "fixed it", 21, 3, "web"),
           edited_at: at(21, 5),
           edits: [
-            { message: "fixd it", edited_at: at(21, 4) },
-            { message: "fixed it?", edited_at: at(21, 5) },
+            { message: "fixd it", written_at: at(21, 3) },
+            { message: "fixed it?", written_at: at(21, 4) },
           ],
         },
       ],
@@ -477,8 +477,8 @@ describe("MatchChatLog", () => {
       .map((node: any) => node.text());
 
     expect(earlier).toEqual([
-      expect.stringContaining("fixd it"),
-      expect.stringContaining("fixed it?"),
+      expect.stringMatching(/Original · 21:03\s+fixd it/),
+      expect.stringMatching(/Edited · 21:04\s+fixed it\?/),
     ]);
   });
 
@@ -494,24 +494,63 @@ describe("MatchChatLog", () => {
 
     expect(wrapper.text()).not.toContain("Nobody wrote anything");
     expect(wrapper.text()).toContain(
-      "Nobody wrote in all chat, and team chat is hidden because you played in this match.",
+      "Nobody wrote in all chat, and team chat is hidden because you took part in this match.",
     );
   });
 
-  it("says when the match's chat was too long to keep in full", async () => {
+  const truncationWarning = (wrapper: any) =>
+    wrapper.find(
+      '[aria-label="This match\'s chat was too long to keep in full."]',
+    );
+
+  it("puts a cut-short archive behind an amber warning", async () => {
     fetched.mockResolvedValue({ ...log, archive_truncated: true });
 
     const wrapper = await mount();
 
-    expect(wrapper.text()).toContain(
-      "This match's chat was too long to keep in full.",
-    );
+    expect(truncationWarning(wrapper).exists()).toBe(true);
+    expect(truncationWarning(wrapper).find("svg").exists()).toBe(true);
+    expect(wrapper.text()).not.toContain("too long to keep");
   });
 
-  it("says nothing of the sort when it was all kept", async () => {
+  it("shows no warning when it was all kept", async () => {
     const wrapper = await mount();
 
-    expect(wrapper.text()).not.toContain("too long to keep");
+    expect(truncationWarning(wrapper).exists()).toBe(false);
+  });
+
+  it("keeps chat after the only played map when the page picks that map", async () => {
+    const onlyFirst = matchMaps.map((map) =>
+      map.id === "map-1"
+        ? map
+        : { ...map, status: "Scheduled", started_at: null, ended_at: null },
+    );
+
+    const wrapper = await mount({
+      match: match({ match_maps: onlyFirst }),
+      activeMapId: "map-1",
+    });
+
+    expect(lines(wrapper, "All Chat")).toEqual([
+      "gl hf",
+      "nice clutch",
+      "between maps",
+      "gg wp",
+    ]);
+  });
+
+  it("gives the last played map everything said after it ended", async () => {
+    fetched.mockResolvedValue({
+      ...log,
+      match: [...log.match, line("a5", "dusk", "afterwards", 22, 30)],
+    });
+    const later = await mount({ activeMapId: "map-2" });
+
+    expect(lines(later, "All Chat")).toEqual([
+      "between maps",
+      "gg wp",
+      "afterwards",
+    ]);
   });
 
   it("tags lines typed on the website and stamps each with its clock time", async () => {

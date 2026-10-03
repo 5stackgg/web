@@ -8019,14 +8019,16 @@
       "no_messages": "Inga meddelanden",
       "empty_title": "Ingen chatt",
       "empty_description": "Ingen skrev något i den här matchen, eller så har chatten redan raderats.",
-      "empty_withheld_description": "Ingen skrev i den allmänna chatten, och lagchatten är dold eftersom du spelade i den här matchen.",
+      "empty_withheld_description": "Ingen skrev i den allmänna chatten, och lagchatten är dold eftersom du deltog i den här matchen.",
       "failed_title": "Chattloggen är inte tillgänglig",
       "failed_description": "Chattloggen kunde inte laddas.",
-      "withheld": "Du spelade i den här matchen, så lagchatten är dold.",
+      "withheld": "Du deltog i den här matchen, så lagchatten är dold.",
       "truncated": "Chatten i den här matchen var för lång för att sparas i sin helhet.",
       "deleted_marker": "raderad",
       "deleted_by": "raderad av {name}",
-      "edited_marker": "redigerad"
+      "edited_marker": "redigerad",
+      "version_original": "Original · {time}",
+      "version_edited": "Redigerad · {time}"
     },
     "status": {
       "cancelled": "Avbruten",

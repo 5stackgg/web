@@ -8019,14 +8019,16 @@
       "no_messages": "Nenhuma mensagem",
       "empty_title": "Sem chat",
       "empty_description": "Ninguém escreveu nada nesta partida, ou o chat já foi excluído.",
-      "empty_withheld_description": "Ninguém escreveu no chat geral, e o chat do time está oculto porque você jogou esta partida.",
+      "empty_withheld_description": "Ninguém escreveu no chat geral, e o chat do time está oculto porque você participou desta partida.",
       "failed_title": "Registro do chat indisponível",
       "failed_description": "Não foi possível carregar o registro do chat.",
-      "withheld": "Você jogou nesta partida, então o chat do time está oculto.",
+      "withheld": "Você participou desta partida, então o chat do time está oculto.",
       "truncated": "O chat desta partida era longo demais para ser guardado por completo.",
       "deleted_marker": "excluída",
       "deleted_by": "excluída por {name}",
-      "edited_marker": "editada"
+      "edited_marker": "editada",
+      "version_original": "Original · {time}",
+      "version_edited": "Editada · {time}"
     },
     "status": {
       "cancelled": "Cancelado",

@@ -8019,14 +8019,16 @@
       "no_messages": "Aucun message",
       "empty_title": "Aucun chat",
       "empty_description": "Personne n'a écrit dans ce match, ou son chat a déjà été supprimé.",
-      "empty_withheld_description": "Personne n'a écrit dans le chat général, et le chat d'équipe est masqué car tu as joué ce match.",
+      "empty_withheld_description": "Personne n'a écrit dans le chat général, et le chat d'équipe est masqué car tu as participé à ce match.",
       "failed_title": "Historique du chat indisponible",
       "failed_description": "L'historique du chat n'a pas pu être chargé.",
-      "withheld": "Tu as joué ce match, le chat d'équipe est donc masqué.",
+      "withheld": "Tu as participé à ce match, le chat d'équipe est donc masqué.",
       "truncated": "Le chat de ce match était trop long pour être conservé en entier.",
       "deleted_marker": "supprimé",
       "deleted_by": "supprimé par {name}",
-      "edited_marker": "modifié"
+      "edited_marker": "modifié",
+      "version_original": "Original · {time}",
+      "version_edited": "Modifié · {time}"
     },
     "status": {
       "cancelled": "Annulé",

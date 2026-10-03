@@ -8019,14 +8019,16 @@
       "no_messages": "لا توجد رسائل",
       "empty_title": "لا توجد دردشة",
       "empty_description": "لم يكتب أحد شيئًا في هذه المباراة، أو حُذفت دردشتها بالفعل.",
-      "empty_withheld_description": "لم يكتب أحد في الدردشة العامة، ودردشة الفريق مخفية لأنك لعبت في هذه المباراة.",
+      "empty_withheld_description": "لم يكتب أحد في الدردشة العامة، ودردشة الفريق مخفية لأنك شاركت في هذه المباراة.",
       "failed_title": "سجل الدردشة غير متاح",
       "failed_description": "تعذّر تحميل سجل الدردشة.",
       "withheld": "شاركت في هذه المباراة، لذا دردشة الفريق مخفية.",
       "truncated": "كانت دردشة هذه المباراة أطول من أن تُحفظ كاملة.",
       "deleted_marker": "محذوفة",
       "deleted_by": "حذفها {name}",
-      "edited_marker": "معدّلة"
+      "edited_marker": "معدّلة",
+      "version_original": "الأصل · {time}",
+      "version_edited": "معدّلة · {time}"
     },
     "status": {
       "cancelled": "ملغاة",

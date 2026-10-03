@@ -2,7 +2,10 @@
 import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useNow } from "@vueuse/core";
-import { EyeOff, Lock, Scissors } from "lucide-vue-next";
+import { EyeOff, Lock, TriangleAlert } from "lucide-vue-next";
+import { Button } from "~/components/ui/button";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import { badgePopTransition } from "~/utilities/badgeCount";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
@@ -18,8 +21,8 @@ type LogMessage = {
   source?: "web" | "game";
   from: { steam_id: string; name: string };
   edited_at?: string;
-  // Each earlier text, the original first, with when it was replaced.
-  edits?: Array<{ message: string; edited_at: string }>;
+  // Each earlier version, the original first, with when it was written.
+  edits?: Array<{ message: string; written_at: string }>;
   deleted_at?: string;
   deleted_by?: { steam_id: string; name: string };
 };
@@ -75,21 +78,27 @@ const DAY = 24 * HOUR;
 const now = useNow({ interval: 60_000 });
 
 // started_at is stamped again on every move into Knife, Live or Overtime, so a
-// map's window runs from the end of the one before it, not from its start.
+// map's window runs from the end of the one before it, not from its start. The
+// last one runs on to the end of the log, so what was said after the final map
+// is never hidden behind a map pick.
 const playedMaps = computed(() => {
   let from = -Infinity;
 
-  return (props.match.match_maps ?? [])
+  const played = (props.match.match_maps ?? [])
     .map((map, index) => ({ ...map, number: index + 1 }))
-    .filter((map) => !!map.started_at || !!map.ended_at)
-    .map((map) => {
-      const to = map.ended_at ? new Date(map.ended_at).getTime() : Infinity;
-      const range = { from, to };
-      if (Number.isFinite(to)) {
-        from = to;
-      }
-      return { ...map, range };
-    });
+    .filter((map) => !!map.started_at || !!map.ended_at);
+
+  return played.map((map, index) => {
+    const to =
+      map.ended_at && index < played.length - 1
+        ? new Date(map.ended_at).getTime()
+        : Infinity;
+    const range = { from, to };
+    if (Number.isFinite(to)) {
+      from = to;
+    }
+    return { ...map, range };
+  });
 });
 
 watch(
@@ -230,6 +239,27 @@ onMounted(async () => {
             class="inline-block h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"
           ></span>
           {{ $t("match.tabs.chat_log") }}
+          <Transition v-bind="badgePopTransition">
+            <span v-if="log?.archive_truncated" class="inline-flex">
+              <FiveStackToolTip as-child :delay-duration="120">
+                <template #trigger>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    as="span"
+                    tabindex="0"
+                    :aria-label="$t('match.chat_log.truncated')"
+                    class="h-6 w-6 cursor-default border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.2)] hover:text-[hsl(var(--tac-amber))] [&_svg]:size-3.5"
+                  >
+                    <TriangleAlert />
+                  </Button>
+                </template>
+                <span class="block max-w-[18rem]">
+                  {{ $t("match.chat_log.truncated") }}
+                </span>
+              </FiveStackToolTip>
+            </span>
+          </Transition>
         </p>
         <p class="flex items-center gap-1.5 text-xs text-muted-foreground">
           <Lock class="h-3 w-3 shrink-0" />
@@ -246,15 +276,6 @@ onMounted(async () => {
           >
             <EyeOff class="h-3 w-3 shrink-0" />
             {{ $t("match.chat_log.withheld") }}
-          </p>
-        </PageTransition>
-        <PageTransition>
-          <p
-            v-if="log?.archive_truncated"
-            class="flex items-center gap-1.5 text-xs text-muted-foreground"
-          >
-            <Scissors class="h-3 w-3 shrink-0" />
-            {{ $t("match.chat_log.truncated") }}
           </p>
         </PageTransition>
       </div>
@@ -383,15 +404,24 @@ onMounted(async () => {
                       class="mt-1 flex flex-col gap-0.5 border-l border-border/60 pl-2"
                     >
                       <li
-                        v-for="earlier in message.edits ?? []"
-                        :key="earlier.edited_at"
+                        v-for="(earlier, version) in message.edits ?? []"
+                        :key="earlier.written_at"
                         data-chat-log-earlier
                         class="whitespace-pre-wrap break-words text-muted-foreground"
                       >
                         <span
                           class="font-mono text-[9px] text-muted-foreground/70"
                         >
-                          {{ clock.format(new Date(earlier.edited_at)) }}
+                          {{
+                            $t(
+                              version === 0
+                                ? "match.chat_log.version_original"
+                                : "match.chat_log.version_edited",
+                              {
+                                time: clock.format(new Date(earlier.written_at)),
+                              },
+                            )
+                          }}
                         </span>
                         {{ earlier.message }}
                       </li>

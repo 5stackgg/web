@@ -8019,14 +8019,16 @@
       "no_messages": "Brak wiadomości",
       "empty_title": "Brak czatu",
       "empty_description": "Nikt nic nie napisał w tym meczu albo czat został już usunięty.",
-      "empty_withheld_description": "Nikt nie pisał na czacie ogólnym, a czat drużyny jest ukryty, bo grałeś w tym meczu.",
+      "empty_withheld_description": "Nikt nie pisał na czacie ogólnym, a czat drużyny jest ukryty, bo brałeś udział w tym meczu.",
       "failed_title": "Historia czatu niedostępna",
       "failed_description": "Nie udało się wczytać historii czatu.",
-      "withheld": "Grałeś w tym meczu, więc czat drużyny jest ukryty.",
+      "withheld": "Brałeś udział w tym meczu, więc czat drużyny jest ukryty.",
       "truncated": "Czat tego meczu był zbyt długi, by zachować go w całości.",
       "deleted_marker": "usunięto",
       "deleted_by": "usunięte przez {name}",
-      "edited_marker": "edytowano"
+      "edited_marker": "edytowano",
+      "version_original": "Oryginał · {time}",
+      "version_edited": "Edytowano · {time}"
     },
     "status": {
       "cancelled": "Anulowany",

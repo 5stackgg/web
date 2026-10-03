@@ -8019,14 +8019,16 @@
       "no_messages": "メッセージはありません",
       "empty_title": "チャットなし",
       "empty_description": "この試合では誰も発言していないか、チャットはすでに削除されています。",
-      "empty_withheld_description": "全体チャットには誰も発言しておらず、この試合に参加したためチームチャットは非表示です。",
+      "empty_withheld_description": "全体チャットには誰も発言しておらず、この試合に関わったためチームチャットは非表示です。",
       "failed_title": "チャットログを表示できません",
       "failed_description": "チャットログを読み込めませんでした。",
-      "withheld": "この試合に参加したため、チームチャットは非表示です。",
+      "withheld": "この試合に関わったため、チームチャットは非表示です。",
       "truncated": "この試合のチャットは長すぎて、すべては保存できませんでした。",
       "deleted_marker": "削除済み",
       "deleted_by": "{name} が削除",
-      "edited_marker": "編集済み"
+      "edited_marker": "編集済み",
+      "version_original": "元の文 · {time}",
+      "version_edited": "編集 · {time}"
     },
     "status": {
       "cancelled": "中止",

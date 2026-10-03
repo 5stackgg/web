@@ -8019,14 +8019,16 @@
       "no_messages": "没有消息",
       "empty_title": "没有聊天",
       "empty_description": "本场比赛中没有人发言，或聊天记录已被删除。",
-      "empty_withheld_description": "全部聊天中没有人发言，且因为你参加了这场比赛，队伍聊天已隐藏。",
+      "empty_withheld_description": "全部聊天中没有人发言，且因为你参与了这场比赛，队伍聊天已隐藏。",
       "failed_title": "聊天记录不可用",
       "failed_description": "无法加载聊天记录。",
-      "withheld": "你参加了这场比赛，因此队伍聊天已隐藏。",
+      "withheld": "你参与了这场比赛，因此队伍聊天已隐藏。",
       "truncated": "这场比赛的聊天太长，无法完整保存。",
       "deleted_marker": "已删除",
       "deleted_by": "已被 {name} 删除",
-      "edited_marker": "已编辑"
+      "edited_marker": "已编辑",
+      "version_original": "原文 · {time}",
+      "version_edited": "已编辑 · {time}"
     },
     "status": {
       "cancelled": "已取消",

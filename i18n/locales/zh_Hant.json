@@ -8019,14 +8019,16 @@
       "no_messages": "沒有訊息",
       "empty_title": "沒有聊天",
       "empty_description": "本場比賽中沒有人發言，或聊天紀錄已被刪除。",
-      "empty_withheld_description": "全部聊天中沒有人發言，且因為你參加了這場比賽，隊伍聊天已隱藏。",
+      "empty_withheld_description": "全部聊天中沒有人發言，且因為你參與了這場比賽，隊伍聊天已隱藏。",
       "failed_title": "聊天紀錄無法使用",
       "failed_description": "無法載入聊天紀錄。",
-      "withheld": "你參加了這場比賽，因此隊伍聊天已隱藏。",
+      "withheld": "你參與了這場比賽，因此隊伍聊天已隱藏。",
       "truncated": "這場比賽的聊天太長，無法完整保存。",
       "deleted_marker": "已刪除",
       "deleted_by": "已被 {name} 刪除",
-      "edited_marker": "已編輯"
+      "edited_marker": "已編輯",
+      "version_original": "原文 · {time}",
+      "version_edited": "已編輯 · {time}"
     },
     "status": {
       "cancelled": "已取消",

@@ -8019,14 +8019,16 @@
       "no_messages": "Nessun messaggio",
       "empty_title": "Nessuna chat",
       "empty_description": "Nessuno ha scritto in questa partita, oppure la chat è già stata eliminata.",
-      "empty_withheld_description": "Nessuno ha scritto nella chat generale, e la chat di squadra è nascosta perché hai giocato questa partita.",
+      "empty_withheld_description": "Nessuno ha scritto nella chat generale, e la chat di squadra è nascosta perché hai partecipato a questa partita.",
       "failed_title": "Registro chat non disponibile",
       "failed_description": "Impossibile caricare il registro chat.",
-      "withheld": "Hai giocato in questa partita, quindi la chat di squadra è nascosta.",
+      "withheld": "Hai partecipato a questa partita, quindi la chat di squadra è nascosta.",
       "truncated": "La chat di questa partita era troppo lunga per essere conservata per intero.",
       "deleted_marker": "eliminato",
       "deleted_by": "eliminato da {name}",
-      "edited_marker": "modificato"
+      "edited_marker": "modificato",
+      "version_original": "Originale · {time}",
+      "version_edited": "Modificato · {time}"
     },
     "status": {
       "cancelled": "Annullato",

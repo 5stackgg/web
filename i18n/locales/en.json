@@ -8019,14 +8019,16 @@
       "no_messages": "No messages",
       "empty_title": "No Chat",
       "empty_description": "Nobody wrote anything in this match, or its chat has already been deleted.",
-      "empty_withheld_description": "Nobody wrote in all chat, and team chat is hidden because you played in this match.",
+      "empty_withheld_description": "Nobody wrote in all chat, and team chat is hidden because you took part in this match.",
       "failed_title": "Chat Log Unavailable",
       "failed_description": "The chat log could not be loaded.",
-      "withheld": "You played in this match, so team chat is hidden.",
+      "withheld": "You took part in this match, so team chat is hidden.",
       "truncated": "This match's chat was too long to keep in full.",
       "deleted_marker": "deleted",
       "deleted_by": "deleted by {name}",
-      "edited_marker": "edited"
+      "edited_marker": "edited",
+      "version_original": "Original · {time}",
+      "version_edited": "Edited · {time}"
     },
     "status": {
       "cancelled": "Cancelled",

@@ -8019,14 +8019,16 @@
       "no_messages": "Keine Nachrichten",
       "empty_title": "Kein Chat",
       "empty_description": "In diesem Match hat niemand etwas geschrieben, oder der Chat wurde bereits gelöscht.",
-      "empty_withheld_description": "Im allgemeinen Chat hat niemand geschrieben, und der Team-Chat ist ausgeblendet, weil du in diesem Match gespielt hast.",
+      "empty_withheld_description": "Im allgemeinen Chat hat niemand geschrieben, und der Team-Chat ist ausgeblendet, weil du an diesem Match teilgenommen hast.",
       "failed_title": "Chat-Verlauf nicht verfügbar",
       "failed_description": "Der Chat-Verlauf konnte nicht geladen werden.",
-      "withheld": "Du hast in diesem Match gespielt, daher ist der Team-Chat ausgeblendet.",
+      "withheld": "Du hast an diesem Match teilgenommen, daher ist der Team-Chat ausgeblendet.",
       "truncated": "Der Chat dieses Matches war zu lang, um vollständig gespeichert zu werden.",
       "deleted_marker": "gelöscht",
       "deleted_by": "gelöscht von {name}",
-      "edited_marker": "bearbeitet"
+      "edited_marker": "bearbeitet",
+      "version_original": "Original · {time}",
+      "version_edited": "Bearbeitet · {time}"
     },
     "status": {
       "cancelled": "Abgebrochen",

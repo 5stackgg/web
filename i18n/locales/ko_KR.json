@@ -8019,14 +8019,16 @@
       "no_messages": "메시지 없음",
       "empty_title": "채팅 없음",
       "empty_description": "이 경기에서 아무도 채팅하지 않았거나 채팅이 이미 삭제되었습니다.",
-      "empty_withheld_description": "전체 채팅에 아무도 쓰지 않았고, 이 경기에 참가했으므로 팀 채팅은 숨겨집니다.",
+      "empty_withheld_description": "전체 채팅에 아무도 쓰지 않았고, 이 경기에 참여했으므로 팀 채팅은 숨겨집니다.",
       "failed_title": "채팅 기록을 사용할 수 없음",
       "failed_description": "채팅 기록을 불러올 수 없습니다.",
-      "withheld": "이 경기에 참가했으므로 팀 채팅은 숨겨집니다.",
+      "withheld": "이 경기에 참여했으므로 팀 채팅은 숨겨집니다.",
       "truncated": "이 경기의 채팅이 너무 길어 전부 보관하지 못했습니다.",
       "deleted_marker": "삭제됨",
       "deleted_by": "{name} 님이 삭제",
-      "edited_marker": "수정됨"
+      "edited_marker": "수정됨",
+      "version_original": "원문 · {time}",
+      "version_edited": "수정 · {time}"
     },
     "status": {
       "cancelled": "취소됨",

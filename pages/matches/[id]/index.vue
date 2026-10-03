@@ -926,6 +926,8 @@ export default {
                   lineup_2_side: true,
                   map: mapFields,
                   is_current_map: true,
+                  started_at: true,
+                  ended_at: true,
                   demo_processing_started_at: true,
                   demos_total_size: true,
                   demos_download_url: true,

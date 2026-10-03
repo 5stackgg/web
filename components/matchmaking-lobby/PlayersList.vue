@@ -9,10 +9,37 @@ import {
 import { Search, RefreshCw, UserCheck } from "lucide-vue-next";
 import HubEmptyState from "~/components/hub/HubEmptyState.vue";
 import FriendListItem from "~/components/matchmaking-lobby/FriendListItem.vue";
+import { useElementVisibility } from "@vueuse/core";
+
+// Rows only animate once the list has been on screen for a moment. A list
+// update on the frame the hub opens is measured while the panel is still
+// hidden, so the move animation flew rows in from the screen's corner; while
+// hidden or just shown, changes simply apply.
+const listRoot = ref<HTMLElement | null>(null);
+const listVisible = useElementVisibility(listRoot);
+const rowsAnimate = ref(false);
+let settleTimer: ReturnType<typeof setTimeout> | null = null;
+watch(listVisible, (visible) => {
+  if (settleTimer) clearTimeout(settleTimer);
+  settleTimer = null;
+  if (!visible) {
+    rowsAnimate.value = false;
+    return;
+  }
+  settleTimer = setTimeout(() => {
+    rowsAnimate.value = true;
+  }, 300);
+});
+onBeforeUnmount(() => {
+  if (settleTimer) clearTimeout(settleTimer);
+});
+const rowTransition = computed(() =>
+  rowsAnimate.value ? "friend-row" : "friend-row-still",
+);
 </script>
 
 <template>
-  <div class="flex min-h-full flex-1 flex-col gap-3 p-2">
+  <div ref="listRoot" class="flex min-h-full flex-1 flex-col gap-3 p-2">
     <div class="flex items-center gap-2">
       <div class="relative flex-1">
         <Search class="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -96,7 +123,7 @@ import FriendListItem from "~/components/matchmaking-lobby/FriendListItem.vue";
             {{ incomingRequests.length }}
           </span>
         </div>
-        <TransitionGroup name="friend-row" tag="div" class="flex flex-col">
+        <TransitionGroup :name="rowTransition" tag="div" class="flex flex-col">
           <div
             v-for="player in incomingRequests"
             :key="player.steam_id"
@@ -139,7 +166,7 @@ import FriendListItem from "~/components/matchmaking-lobby/FriendListItem.vue";
             {{ filteredOnlinePlayers.length }}
           </span>
         </div>
-        <TransitionGroup name="friend-row" tag="div" class="flex flex-col">
+        <TransitionGroup :name="rowTransition" tag="div" class="flex flex-col">
           <div
             v-for="player in filteredOnlinePlayers"
             :key="player.steam_id"
@@ -178,7 +205,7 @@ import FriendListItem from "~/components/matchmaking-lobby/FriendListItem.vue";
             {{ filteredOfflinePlayers.length }}
           </span>
         </div>
-        <TransitionGroup name="friend-row" tag="div" class="flex flex-col">
+        <TransitionGroup :name="rowTransition" tag="div" class="flex flex-col">
           <div
             v-for="player in filteredOfflinePlayers"
             :key="player.steam_id"
@@ -214,7 +241,7 @@ import FriendListItem from "~/components/matchmaking-lobby/FriendListItem.vue";
             {{ outgoingRequests.length }}
           </span>
         </div>
-        <TransitionGroup name="friend-row" tag="div" class="flex flex-col">
+        <TransitionGroup :name="rowTransition" tag="div" class="flex flex-col">
           <div
             v-for="player in outgoingRequests"
             :key="player.steam_id"

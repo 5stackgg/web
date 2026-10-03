@@ -4,6 +4,10 @@ import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import { ExternalLink } from "lucide-vue-next";
+
+// Where an operator creates the API key this page asks for.
+const GIPHY_DASHBOARD_URL = "https://developers.giphy.com/dashboard/";
 </script>
 
 <template>
@@ -147,6 +151,15 @@ import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
                     }}
                   </span>
                 </FadeSwap>
+                <a
+                  :href="GIPHY_DASHBOARD_URL"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-1 font-medium text-[hsl(var(--tac-amber))] underline-offset-2 hover:underline"
+                >
+                  {{ $t("pages.settings.application.chat.giphy_key_get") }}
+                  <ExternalLink class="h-3.5 w-3.5" />
+                </a>
               </FormDescription>
               <FormMessage />
             </FormItem>

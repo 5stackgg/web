@@ -17,9 +17,10 @@ import {
   type ChatGifSearch,
 } from "~/composables/chatGifSearch";
 
-const props = withDefaults(defineProps<{ search?: ChatGifSearch }>(), {
-  search: () => searchChatGifs,
-});
+// No withDefaults: a function-typed prop takes its default as the value, not
+// as a factory, so `() => searchChatGifs` handed back the function itself and
+// every search read as "unavailable".
+const props = defineProps<{ search?: ChatGifSearch }>();
 
 const emit = defineEmits<{ select: [gif: ChatGif] }>();
 
@@ -71,7 +72,7 @@ async function load(term: string, offset: number) {
     loadingMore.value = true;
   }
 
-  const page = await props.search(term, offset);
+  const page = await (props.search ?? searchChatGifs)(term, offset);
 
   if (mine !== generation) {
     return;

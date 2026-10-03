@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import ChatInput from "~/components/chat/ChatInput.vue";
+import ChatAttachMenu from "~/components/chat/ChatAttachMenu.vue";
 import type { ChatAttachmentConfig } from "~/utilities/chatAttachments";
 // @ts-expect-error only the mock below exports it
 import { testConfig as config } from "~/composables/useChatAttachmentConfig";
@@ -61,9 +62,8 @@ const png = new File([new Uint8Array(16)], "smoke.png", { type: "image/png" });
 
 type Wrapper = Awaited<ReturnType<typeof mountSuspended>>;
 
-const attachButton = (wrapper: Wrapper) =>
-  wrapper.find("[data-chat-attach]");
-const gifButton = (wrapper: Wrapper) => wrapper.find("[data-chat-gif]");
+const attachButton = (wrapper: Wrapper) => wrapper.find("[data-chat-attach]");
+const attachMenu = (wrapper: Wrapper) => wrapper.findComponent(ChatAttachMenu);
 const sendButton = (wrapper: Wrapper) =>
   wrapper.get("button[type='submit']").element as HTMLButtonElement;
 
@@ -90,7 +90,7 @@ describe("ChatInput attachments", () => {
     const wrapper = await mountSuspended(ChatInput);
 
     expect(attachButton(wrapper).exists()).toBe(false);
-    expect(gifButton(wrapper).exists()).toBe(false);
+    expect(attachMenu(wrapper).exists()).toBe(false);
   });
 
   it("offers a file where the room takes them", async () => {
@@ -101,17 +101,43 @@ describe("ChatInput attachments", () => {
     expect(attachButton(wrapper).exists()).toBe(true);
   });
 
-  it("hides the GIF button until the operator sets a GIPHY key", async () => {
+  it("opens the file dialog from the + when there are no GIFs", async () => {
+    const click = vi
+      .spyOn(HTMLInputElement.prototype, "click")
+      .mockImplementation(() => {});
     const wrapper = await mountSuspended(ChatInput, {
       props: { attachmentRoom: room },
     });
 
-    expect(gifButton(wrapper).exists()).toBe(false);
+    await attachButton(wrapper).trigger("click");
+
+    expect(click).toHaveBeenCalledTimes(1);
+    click.mockRestore();
+  });
+
+  it("offers GIFs from the + once the operator sets a GIPHY key", async () => {
+    const wrapper = await mountSuspended(ChatInput, {
+      props: { attachmentRoom: room },
+    });
+
+    expect(attachMenu(wrapper).props("gifs")).toBe(false);
 
     config.value = { ...LIMITS, gifs: true };
     await flushPromises();
 
-    expect(gifButton(wrapper).exists()).toBe(true);
+    expect(attachMenu(wrapper).props("gifs")).toBe(true);
+    // No button of its own beside the box.
+    expect(wrapper.find("[data-chat-gif]").exists()).toBe(false);
+  });
+
+  it("names the box without a generic placeholder", async () => {
+    const wrapper = await mountSuspended(ChatInput, {
+      props: { attachmentRoom: room },
+    });
+    const box = wrapper.get("textarea");
+
+    expect(box.attributes("placeholder")).toBeUndefined();
+    expect(box.attributes("aria-label")).toBe("Message");
   });
 
   it("holds Send until the upload finishes, then sends the file without text", async () => {
@@ -142,7 +168,11 @@ describe("ChatInput attachments", () => {
     await flushPromises();
 
     const [[text, destination, media]] = wrapper.emitted("sendMessage") as any;
-    expect([text, destination, media.attachments]).toEqual(["", undefined, ["a-1"]]);
+    expect([text, destination, media.attachments]).toEqual([
+      "",
+      undefined,
+      ["a-1"],
+    ]);
 
     // Still held until the room says it took the message.
     expect(wrapper.text()).toContain("smoke.png");
@@ -184,9 +214,9 @@ describe("ChatInput attachments", () => {
     await flushPromises();
 
     expect(wrapper.text()).toContain("smoke.png");
-    expect(
-      (wrapper.get("textarea").element as HTMLTextAreaElement).value,
-    ).toBe("our smokes");
+    expect((wrapper.get("textarea").element as HTMLTextAreaElement).value).toBe(
+      "our smokes",
+    );
     expect(sendButton(wrapper).disabled).toBe(false);
     expect(discards).toEqual([]);
   });
@@ -210,9 +240,9 @@ describe("ChatInput attachments", () => {
     await flushPromises();
 
     expect(wrapper.text()).not.toContain("smoke.png");
-    expect(
-      (wrapper.get("textarea").element as HTMLTextAreaElement).value,
-    ).toBe("");
+    expect((wrapper.get("textarea").element as HTMLTextAreaElement).value).toBe(
+      "",
+    );
     expect(toastHandle.dismiss).toHaveBeenCalled();
   });
 
@@ -242,9 +272,7 @@ describe("ChatInput attachments", () => {
     (wrapper.vm as any).sendGif(gif);
     (wrapper.vm as any).sendGif(gif);
 
-    expect(wrapper.emitted("sendMessage")).toEqual([
-      ["", undefined, { gif }],
-    ]);
+    expect(wrapper.emitted("sendMessage")).toEqual([["", undefined, { gif }]]);
   });
 
   it("says why Send is waiting", async () => {
@@ -269,24 +297,24 @@ describe("ChatInput attachments", () => {
     const wrapper = await mountSuspended(ChatInput, {
       props: { attachmentRoom: room },
     });
-    const { ChatUploadError } = await import(
-      "~/composables/useChatComposerAttachments"
-    );
+    const { ChatUploadError } =
+      await import("~/composables/useChatComposerAttachments");
 
     await pick(wrapper, [png]);
     uploads[0].reject(new ChatUploadError("quota_exceeded"));
     await flushPromises();
 
-    expect(wrapper.html()).toContain("You've reached today's upload allowance.");
+    expect(wrapper.html()).toContain(
+      "You've reached today's upload allowance.",
+    );
   });
 
   it("says an image is too big, rather than over the size limit", async () => {
     const wrapper = await mountSuspended(ChatInput, {
       props: { attachmentRoom: room },
     });
-    const { ChatUploadError } = await import(
-      "~/composables/useChatComposerAttachments"
-    );
+    const { ChatUploadError } =
+      await import("~/composables/useChatComposerAttachments");
 
     await pick(wrapper, [png]);
     uploads[0].reject(new ChatUploadError("too_large"));

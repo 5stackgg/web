@@ -713,7 +713,6 @@ export default {
           value: "everyone",
           label: this.everyoneLabel,
           hint: this.$t("chat.everyone_hint"),
-          placeholder: this.$t("chat.message_placeholder"),
           tone: "muted",
         },
         {

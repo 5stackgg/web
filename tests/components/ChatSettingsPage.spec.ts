@@ -112,6 +112,17 @@ describe("chat settings", () => {
     expect(key.attributes("data-bwignore")).toBeDefined();
   });
 
+  it("links to where a GIPHY key is created", async () => {
+    const wrapper = await mountPage();
+    const link = wrapper.get(
+      "a[href='https://developers.giphy.com/dashboard/']",
+    );
+
+    expect(link.text()).toContain("Get a key from GIPHY");
+    expect(link.attributes("target")).toBe("_blank");
+    expect(link.attributes("rel")).toContain("noopener");
+  });
+
   it("shows the key as set the moment it is saved", async () => {
     const wrapper = await mountPage();
 

@@ -1,14 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
   chatAttachmentKind,
-  chatComposerCanSend,
   chatGifUrl,
   chatMediaLabel,
   chatRoomTakesAttachments,
   formatChatDuration,
   pickChatFiles,
   type ChatAttachmentConfig,
-  type ChatTrayItem,
 } from "~/utilities/chatAttachments";
 
 const MB = 1024 * 1024;
@@ -31,15 +29,6 @@ const config: ChatAttachmentConfig = {
 
 const file = (name: string, type: string, size = 1024) =>
   ({ name, type, size }) as File;
-
-const item = (status: ChatTrayItem["status"]): ChatTrayItem => ({
-  key: status,
-  name: "smoke.png",
-  kind: "image",
-  size: 1,
-  status,
-  progress: status === "done" ? 1 : 0,
-});
 
 const t = (key: string, params?: Record<string, unknown>) =>
   params ? `${key} ${JSON.stringify(params)}` : key;
@@ -90,11 +79,11 @@ describe("picking files", () => {
     expect(picked.rejected).toEqual([{ file: over, reason: "size" }]);
   });
 
-  it("refuses an empty file", () => {
+  it("says an empty file is empty, not too big", () => {
     const empty = file("empty.png", "image/png", 0);
 
     expect(pickChatFiles([empty], 0, config).rejected).toEqual([
-      { file: empty, reason: "size" },
+      { file: empty, reason: "empty" },
     ]);
   });
 
@@ -117,25 +106,6 @@ describe("picking files", () => {
   });
 });
 
-describe("sending", () => {
-  it("needs text or something attached", () => {
-    expect(chatComposerCanSend("", [])).toBe(false);
-    expect(chatComposerCanSend("   ", [])).toBe(false);
-    expect(chatComposerCanSend("gg", [])).toBe(true);
-    expect(chatComposerCanSend("", [item("done")])).toBe(true);
-  });
-
-  it("waits for every upload to finish", () => {
-    expect(chatComposerCanSend("gg", [item("done"), item("uploading")])).toBe(
-      false,
-    );
-  });
-
-  it("waits for a failed upload to be retried or removed", () => {
-    expect(chatComposerCanSend("gg", [item("failed")])).toBe(false);
-  });
-});
-
 describe("kinds", () => {
   it.each([
     ["image/png", "image"],
@@ -155,6 +125,16 @@ describe("GIPHY", () => {
     );
     expect(chatGifUrl("abc123", "preview")).toBe(
       "https://i.giphy.com/media/abc123/200w.webp",
+    );
+  });
+
+  // For anyone who asked their system for less motion.
+  it("builds GIPHY's still frame when asked", () => {
+    expect(chatGifUrl("abc123", "full", true)).toBe(
+      "https://i.giphy.com/media/abc123/giphy_s.gif",
+    );
+    expect(chatGifUrl("abc123", "preview", true)).toBe(
+      "https://i.giphy.com/media/abc123/200w_s.gif",
     );
   });
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
+import { usePreferredReducedMotion } from "@vueuse/core";
 import { Search } from "lucide-vue-next";
 import { Input } from "@/components/ui/input";
 import FadeImage from "~/components/media/FadeImage.vue";
@@ -31,8 +32,29 @@ const active = ref("");
 const results = ref<ChatGifResult[]>([]);
 const next = ref<number | null>(null);
 const state = ref<
-  "loading" | "ready" | "empty" | "rate_limited" | "unavailable"
+  "loading" | "ready" | "empty" | "rate_limited" | "busy" | "unavailable"
 >("loading");
+const motion = usePreferredReducedMotion();
+const still = computed(() => motion.value === "reduce");
+
+// Each GIF goes to whichever column is shorter and stays there: CSS columns
+// rebalance the whole grid as it grows, moving GIFs out from under the pointer.
+const columns = ref<[ChatGifResult[], ChatGifResult[]]>([[], []]);
+let columnHeights: [number, number] = [0, 0];
+
+function place(gifs: ChatGifResult[], reset: boolean) {
+  if (reset) {
+    columns.value = [[], []];
+    columnHeights = [0, 0];
+  }
+
+  for (const gif of gifs) {
+    const column = columnHeights[0] <= columnHeights[1] ? 0 : 1;
+
+    columns.value[column].push(gif);
+    columnHeights[column] += gif.height / gif.width;
+  }
+}
 const loadingMore = ref(false);
 const input = ref<{ $el?: HTMLInputElement } | HTMLInputElement | null>(null);
 
@@ -60,21 +82,23 @@ async function load(term: string, offset: number) {
   if (typeof page === "string") {
     if (offset === 0) {
       results.value = [];
+      place([], true);
       next.value = null;
-      state.value = page === "rate_limited" ? "rate_limited" : "unavailable";
+      state.value =
+        page === "rate_limited" || page === "busy" ? page : "unavailable";
     }
     return;
   }
 
-  results.value =
+  const fresh =
     offset === 0
       ? page.results
-      : [
-          ...results.value,
-          ...page.results.filter(
-            ({ id }) => !results.value.some((result) => result.id === id),
-          ),
-        ];
+      : page.results.filter(
+          ({ id }) => !results.value.some((result) => result.id === id),
+        );
+
+  results.value = offset === 0 ? fresh : [...results.value, ...fresh];
+  place(fresh, offset === 0);
   next.value = page.next;
   state.value = results.value.length > 0 ? "ready" : "empty";
 }
@@ -128,6 +152,8 @@ const message = computed(() => {
       return t("chat.gifs.empty");
     case "rate_limited":
       return t("chat.gifs.rate_limited");
+    case "busy":
+      return t("chat.gifs.busy");
     case "unavailable":
       return t("chat.gifs.unavailable");
     default:
@@ -206,28 +232,35 @@ onBeforeUnmount(() => {
         <div
           v-else-if="state === 'ready'"
           :key="`results:${active}`"
-          class="columns-2 gap-1.5"
+          class="grid grid-cols-2 items-start gap-1.5"
         >
-          <button
-            v-for="gif in results"
-            :key="gif.id"
-            type="button"
-            :data-gif-id="gif.id"
-            class="group/gif relative mb-1.5 block w-full overflow-hidden rounded-md ring-[hsl(var(--tac-amber))] transition-shadow duration-150 hover:ring-2 focus-visible:outline-none focus-visible:ring-2 motion-reduce:transition-none"
-            :style="{ aspectRatio: `${gif.width} / ${gif.height}` }"
-            :aria-label="gif.title || $t('chat.gifs.label')"
-            @click="select(gif)"
+          <div
+            v-for="(column, index) in columns"
+            :key="index"
+            data-gif-column
+            class="flex flex-col gap-1.5"
           >
-            <FadeImage
-              :src="chatGifUrl(gif.id, 'preview')"
-              :alt="gif.title"
-            />
-            <span
-              class="pointer-events-none absolute bottom-1 right-1 rounded-sm bg-black/70 px-1 py-0.5 font-mono text-[0.5rem] font-bold uppercase tracking-wider text-[hsl(var(--tac-amber))] opacity-0 transition-opacity duration-150 group-hover/gif:opacity-100 group-focus-visible/gif:opacity-100 motion-reduce:transition-none"
+            <button
+              v-for="gif in column"
+              :key="gif.id"
+              type="button"
+              :data-gif-id="gif.id"
+              class="group/gif relative block w-full overflow-hidden rounded-md ring-[hsl(var(--tac-amber))] transition-shadow duration-150 hover:ring-2 focus-visible:outline-none focus-visible:ring-2 motion-reduce:transition-none"
+              :style="{ aspectRatio: `${gif.width} / ${gif.height}` }"
+              :aria-label="gif.title || $t('chat.gifs.label')"
+              @click="select(gif)"
             >
-              {{ $t("chat.gifs.click_to_send") }}
-            </span>
-          </button>
+              <FadeImage
+                :src="chatGifUrl(gif.id, 'preview', still)"
+                :alt="gif.title"
+              />
+              <span
+                class="pointer-events-none absolute bottom-1 right-1 rounded-sm bg-black/70 px-1 py-0.5 font-mono text-[0.5rem] font-bold uppercase tracking-wider text-[hsl(var(--tac-amber))] opacity-0 transition-opacity duration-150 group-hover/gif:opacity-100 group-focus-visible/gif:opacity-100 motion-reduce:transition-none"
+              >
+                {{ $t("chat.gifs.click_to_send") }}
+              </span>
+            </button>
+          </div>
         </div>
         <p
           v-else

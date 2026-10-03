@@ -42,7 +42,7 @@ export interface ChatAttachmentConfig {
 
 export type ChatFileRejection = {
   file: File;
-  reason: "type" | "size" | "count";
+  reason: "type" | "size" | "empty" | "count";
 };
 
 export type ChatTrayStatus = "uploading" | "done" | "failed";
@@ -90,7 +90,12 @@ export function pickChatFiles(
       continue;
     }
 
-    if (file.size <= 0 || file.size > config.max_file_bytes) {
+    if (file.size <= 0) {
+      rejected.push({ file, reason: "empty" });
+      continue;
+    }
+
+    if (file.size > config.max_file_bytes) {
       rejected.push({ file, reason: "size" });
       continue;
     }
@@ -106,24 +111,22 @@ export function pickChatFiles(
   return { accepted, rejected };
 }
 
-export function chatComposerCanSend(
-  text: string,
-  items: ReadonlyArray<Pick<ChatTrayItem, "status">>,
-): boolean {
-  if (items.some(({ status }) => status !== "done")) {
-    return false;
-  }
-
-  return text.trim().length > 0 || items.length > 0;
-}
-
 // The id is all a message carries, so it can never point anywhere but GIPHY.
-export function chatGifUrl(id: string, size: "preview" | "full"): string {
+// A still is GIPHY's first frame, for anyone who asked for less motion.
+export function chatGifUrl(
+  id: string,
+  size: "preview" | "full",
+  still = false,
+): string {
   if (!GIPHY_ID.test(id)) {
     return "";
   }
 
-  return `https://i.giphy.com/media/${id}/${size === "preview" ? "200w" : "giphy"}.webp`;
+  const rendition = size === "preview" ? "200w" : "giphy";
+
+  return still
+    ? `https://i.giphy.com/media/${id}/${rendition}_s.gif`
+    : `https://i.giphy.com/media/${id}/${rendition}.webp`;
 }
 
 type Translate = (key: string, params?: Record<string, unknown>) => string;

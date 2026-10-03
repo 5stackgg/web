@@ -1,8 +1,6 @@
 import { computed, shallowRef } from "vue";
 import type { ChatAttachmentConfig } from "~/utilities/chatAttachments";
 
-// The operator's limits and whether a GIPHY key is set. Admin-only settings,
-// so the api hands the composer just what it needs to know.
 const config = shallowRef<ChatAttachmentConfig | null>(null);
 let loadedAt = 0;
 let pending: Promise<void> | null = null;

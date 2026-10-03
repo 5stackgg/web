@@ -3,6 +3,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 </script>
 
 <template>
@@ -78,6 +79,25 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
               <FormMessage />
             </FormItem>
           </FormField>
+          <FormField
+            v-slot="{ componentField }"
+            name="chat_attachment_daily_mb"
+          >
+            <FormItem>
+              <FormLabel>
+                {{ $t("pages.settings.application.chat.attachment_daily_mb") }}
+              </FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" type="number" min="1" />
+              </FormControl>
+              <FormDescription>
+                {{
+                  $t("pages.settings.application.chat.attachment_daily_mb_hint")
+                }}
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          </FormField>
         </SettingsSection>
 
         <SettingsSection
@@ -95,7 +115,11 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
                   <Input
                     v-bind="componentField"
                     type="password"
-                    autocomplete="off"
+                    autocomplete="new-password"
+                    data-1p-ignore="true"
+                    data-lpignore="true"
+                    data-bwignore="true"
+                    data-form-type="other"
                     :placeholder="
                       $t('pages.settings.application.chat.giphy_key_placeholder')
                     "
@@ -112,10 +136,32 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
                 </Button>
               </div>
               <FormDescription>
+                <FadeSwap>
+                  <span :key="giphyKeySet ? 'set' : 'missing'">
+                    {{
+                      giphyKeySet
+                        ? $t("pages.settings.application.chat.giphy_key_set")
+                        : $t(
+                            "pages.settings.application.chat.giphy_key_missing",
+                          )
+                    }}
+                  </span>
+                </FadeSwap>
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+          <FormField v-slot="{ componentField }" name="giphy_hourly_limit">
+            <FormItem>
+              <FormLabel>
+                {{ $t("pages.settings.application.chat.giphy_hourly_limit") }}
+              </FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" type="number" min="0" />
+              </FormControl>
+              <FormDescription>
                 {{
-                  giphyKeySet
-                    ? $t("pages.settings.application.chat.giphy_key_set")
-                    : $t("pages.settings.application.chat.giphy_key_missing")
+                  $t("pages.settings.application.chat.giphy_hourly_limit_hint")
                 }}
               </FormDescription>
               <FormMessage />
@@ -165,9 +211,13 @@ const DIRECT_RETENTION = {
 
 const ALL_SETTINGS = [...ROOMS, DIRECT_RETENTION];
 
-// Admin-only, so not `public.`: the api enforces the limit and hands the
-// composer only what it needs.
-const ATTACHMENT_MAX_MB = { name: "chat_attachment_max_mb", fallback: 100 };
+// Admin-only, so not `public.`: the api enforces these and hands the composer
+// only what it needs. Fallbacks match the api's.
+const ADMIN_LIMITS = [
+  { name: "chat_attachment_max_mb", fallback: 100, min: 1, max: 1024 },
+  { name: "chat_attachment_daily_mb", fallback: 1024, min: 1, max: 102400 },
+  { name: "giphy_hourly_limit", fallback: 90, min: 0, max: 100000 },
+];
 
 // Write-only: the administrator role cannot read it back
 // (public_settings.yaml), so the field only ever holds a new key.
@@ -181,6 +231,8 @@ export default {
       rooms: ROOMS.map((room) => ({ ...room, name: settingName(room.key) })),
       submitting: false,
       mediaConfig: useChatAttachmentConfig(),
+      // What this page last wrote, so the status does not wait on a re-read.
+      giphyKeyWritten: null as boolean | null,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -192,12 +244,12 @@ export default {
                 ]),
               ),
             ),
-            chat_attachment_max_mb: z
-              .number()
-              .int()
-              .min(1)
-              .max(1024)
-              .default(ATTACHMENT_MAX_MB.fallback),
+            ...Object.fromEntries(
+              ADMIN_LIMITS.map(({ name, fallback, min, max }) => [
+                name,
+                z.number().int().min(min).max(max).default(fallback),
+              ]),
+            ),
             giphy_api_key: z.string().trim().max(200).optional(),
           }),
         ),
@@ -205,7 +257,9 @@ export default {
           public: Object.fromEntries(
             ALL_SETTINGS.map(({ key, fallback }) => [key, fallback]),
           ),
-          chat_attachment_max_mb: ATTACHMENT_MAX_MB.fallback,
+          ...Object.fromEntries(
+            ADMIN_LIMITS.map(({ name, fallback }) => [name, fallback]),
+          ),
           giphy_api_key: "",
         },
       }),
@@ -216,13 +270,12 @@ export default {
       immediate: true,
       handler(newVal: Array<{ name: string; value: string | null }>) {
         for (const setting of newVal) {
-          if (setting.name === ATTACHMENT_MAX_MB.name) {
-            const megabytes = Number(setting.value);
-            if (Number.isInteger(megabytes) && megabytes > 0) {
-              (this.form.setFieldValue as any)(
-                ATTACHMENT_MAX_MB.name,
-                megabytes,
-              );
+          const limit = ADMIN_LIMITS.find(({ name }) => name === setting.name);
+
+          if (limit) {
+            const value = Number(setting.value);
+            if (Number.isInteger(value) && value >= limit.min) {
+              (this.form.setFieldValue as any)(limit.name, value);
             }
             continue;
           }
@@ -251,9 +304,6 @@ export default {
       try {
         const values =
           ((this.form.values as any).public as Record<string, number>) ?? {};
-        const maxMb =
-          (this.form.values as any).chat_attachment_max_mb ??
-          ATTACHMENT_MAX_MB.fallback;
         const giphyKey = String(
           (this.form.values as any).giphy_api_key ?? "",
         ).trim();
@@ -267,7 +317,10 @@ export default {
                     name: settingName(key),
                     value: String(values[key] ?? fallback),
                   })),
-                  { name: ATTACHMENT_MAX_MB.name, value: String(maxMb) },
+                  ...ADMIN_LIMITS.map(({ name, fallback }) => ({
+                    name,
+                    value: String((this.form.values as any)[name] ?? fallback),
+                  })),
                   ...(giphyKey ? [{ name: GIPHY_API_KEY, value: giphyKey }] : []),
                 ],
                 on_conflict: {
@@ -283,9 +336,10 @@ export default {
         });
 
         if (giphyKey) {
+          this.giphyKeyWritten = true;
           (this.form.setFieldValue as any)(GIPHY_API_KEY, "");
           this.form.resetForm({ values: this.form.values });
-          await this.mediaConfig.load(true);
+          void this.mediaConfig.load(true);
         }
 
         toast({
@@ -315,7 +369,8 @@ export default {
         }),
       });
 
-      await this.mediaConfig.load(true);
+      this.giphyKeyWritten = false;
+      void this.mediaConfig.load(true);
 
       toast({
         title: this.$t("pages.settings.application.chat.giphy_key_removed"),
@@ -327,7 +382,7 @@ export default {
   },
   computed: {
     giphyKeySet(): boolean {
-      return !!this.mediaConfig.config?.gifs;
+      return this.giphyKeyWritten ?? !!this.mediaConfig.config?.gifs;
     },
     settings() {
       return useApplicationSettingsStore().settings;

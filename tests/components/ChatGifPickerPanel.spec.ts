@@ -25,6 +25,7 @@ describe("ChatGifPickerPanel", () => {
 
   afterEach(() => {
     vi.useRealTimers();
+    vi.unstubAllGlobals();
   });
 
   const mount = () =>
@@ -122,6 +123,68 @@ describe("ChatGifPickerPanel", () => {
     await flushPromises();
 
     expect(wrapper.text()).toContain("Too many searches");
+  });
+
+  it("says GIFs are busy when the panel's allowance is spent", async () => {
+    search.mockResolvedValue("busy");
+    const wrapper = await mount();
+    await flushPromises();
+
+    expect(wrapper.text()).toContain("GIFs are busy, try again soon");
+  });
+
+  // CSS columns rebalance the whole grid each time it grows, so a GIF under
+  // the pointer could jump to the other column as the next page loaded.
+  it("keeps every GIF in its column as more load, filling the shorter one", async () => {
+    const sized = (id: string, width: number, height: number) => ({
+      id,
+      title: id,
+      width,
+      height,
+    });
+    search.mockImplementation(async (_query: string, offset: number) =>
+      offset === 0
+        ? {
+            results: [sized("wide1", 480, 270), sized("square1", 480, 480)],
+            next: 2,
+          }
+        : { results: [sized("wide2", 480, 270)], next: null },
+    );
+    const wrapper = await mount();
+    await flushPromises();
+
+    const columns = () =>
+      wrapper
+        .findAll("[data-gif-column]")
+        .map((column) =>
+          column.findAll("[data-gif-id]").map((tile) => tile.attributes("data-gif-id")),
+        );
+
+    expect(columns()).toEqual([["wide1"], ["square1"]]);
+
+    await wrapper.get("[data-gif-scroll]").trigger("scroll");
+    await flushPromises();
+
+    expect(columns()).toEqual([["wide1", "wide2"], ["square1"]]);
+  });
+
+  it("shows still frames to anyone who asked for less motion", async () => {
+    vi.stubGlobal("matchMedia", (query: string) => ({
+      matches: query.includes("reduce"),
+      media: query,
+      onchange: null,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      addListener: () => {},
+      removeListener: () => {},
+      dispatchEvent: () => false,
+    }));
+    const wrapper = await mount();
+    await flushPromises();
+
+    expect(wrapper.find("img").attributes("src")).toBe(
+      "https://i.giphy.com/media/trending1/200w_s.gif",
+    );
   });
 
   it("says when GIPHY cannot be reached", async () => {

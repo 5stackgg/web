@@ -4,6 +4,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import ChatAttachmentTray from "~/components/chat/ChatAttachmentTray.vue";
 import ChatGifPicker from "~/components/chat/ChatGifPicker.vue";
 import Fold from "~/components/ui/transitions/Fold.vue";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 
 // Browsers key saved form history to the field's name, and several of them
 // ignore autocomplete="off". A name that is never the same twice means there is
@@ -178,8 +179,10 @@ const fieldName = `chat-message-${Math.random().toString(36).slice(2, 10)}`;
               <Button
                 type="submit"
                 size="sm"
-                :disabled="trayBusy"
+                :disabled="tray.busy"
                 :loading="sending"
+                :aria-label="sendBlockedReason || undefined"
+                :title="sendBlockedReason || undefined"
                 :min-loading-ms="0"
                 :class="
                   variant === 'global'
@@ -194,6 +197,17 @@ const fieldName = `chat-message-${Math.random().toString(36).slice(2, 10)}`;
         </FormItem>
       </FormField>
     </form>
+    <Fold :open="!!sendBlockedReason">
+      <FadeSwap>
+        <p
+          :key="sendBlockedReason"
+          class="px-1 pt-1 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground"
+          aria-live="polite"
+        >
+          {{ sendBlockedReason }}
+        </p>
+      </FadeSwap>
+    </Fold>
   </div>
 </template>
 
@@ -204,7 +218,7 @@ import * as z from "zod";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { chatEnterAction } from "~/utilities/chatInputKeys";
-import { toastChatError } from "~/utilities/chatErrors";
+import { toastChatError, type ChatError } from "~/utilities/chatErrors";
 import {
   CHAT_MESSAGE_MAX_LENGTH,
   CHAT_REMAINING_HINT_AT,
@@ -250,8 +264,6 @@ export default {
       type: String,
       required: false,
     },
-    // Where an upload goes. Null where the room is text-only, which turns off
-    // files and GIFs altogether.
     attachmentRoom: {
       type: Object as PropType<{ type: string; id: string } | null>,
       default: null,
@@ -292,6 +304,7 @@ export default {
           this.toastRejections(rejections),
       }),
       holdingHub: false,
+      gone: false,
       sending: false,
       sendTimer: undefined as ReturnType<typeof setTimeout> | undefined,
       form: useForm({
@@ -321,10 +334,22 @@ export default {
     acceptTypes(): string {
       return (this.mediaConfig.config?.mime_types ?? []).join(",");
     },
-    trayBusy(): boolean {
-      return this.tray.items.some(
-        (item: { status: string }) => item.status !== "done",
-      );
+    sendBlockedReason(): string {
+      const items = this.tray.items as Array<{ status: string }>;
+
+      if (this.tray.sending) {
+        return "";
+      }
+
+      if (items.some(({ status }) => status === "failed")) {
+        return this.$t("chat.attachments.failed_hint");
+      }
+
+      if (items.some(({ status }) => status === "uploading")) {
+        return this.$t("chat.attachments.waiting_hint");
+      }
+
+      return "";
     },
     remainingCharacters(): number {
       const message = this.form.values.message?.trim() ?? "";
@@ -372,6 +397,7 @@ export default {
       clearTimeout(this.sendTimer);
     }
 
+    this.gone = true;
     this.tray.dispose();
     this.releaseHub();
   },
@@ -446,7 +472,7 @@ export default {
       if (!message && !hasFiles) {
         return;
       }
-      if (this.trayBusy) {
+      if (this.tray.busy) {
         return;
       }
       if (message.length > CHAT_MESSAGE_MAX_LENGTH) {
@@ -454,27 +480,54 @@ export default {
         return;
       }
 
-      const media = hasFiles ? [{ attachments: this.tray.take() }] : [];
+      const target = destination ?? this.activeChannelValue ?? undefined;
 
-      this.$emit(
-        "sendMessage",
-        message,
-        destination ?? this.activeChannelValue ?? undefined,
-        ...media,
-      );
-      this.form.resetForm();
-      this.flashSending();
+      if (!hasFiles) {
+        this.$emit("sendMessage", message, target);
+        this.form.resetForm();
+        this.flashSending();
+        return;
+      }
+
+      // The files and the text stay until the room answers: a refusal hands
+      // them back rather than leaving them stranded upload-side.
+      this.$emit("sendMessage", message, target, {
+        attachments: this.tray.beginSend(),
+        delivered: (request: Promise<void>) => this.settleSend(request),
+      });
     },
-    // A GIF goes on its own, like Discord's: whatever is typed stays put.
+    settleSend(request: Promise<void>) {
+      this.sending = true;
+
+      request
+        .then(() => {
+          if (this.gone) {
+            return;
+          }
+
+          this.tray.sent();
+          this.form.resetForm();
+        })
+        .catch((error: ChatError) => {
+          if (this.gone) {
+            return;
+          }
+
+          this.tray.unsent();
+          toastChatError(error);
+        })
+        .finally(() => {
+          this.sending = false;
+        });
+    },
     sendGif(gif: ChatGif) {
       this.$emit("sendMessage", "", this.activeChannelValue ?? undefined, {
         gif,
       });
       this.focus();
     },
-    // Also how ChatLobby hands over files dropped on the chat.
     addFiles(files: ArrayLike<File>) {
-      if (!this.canAttach) {
+      if (!this.canAttach || this.gone) {
         return;
       }
 
@@ -513,10 +566,17 @@ export default {
       this.addFiles(Array.from(input.files ?? []));
       input.value = "";
     },
+    // A spreadsheet puts a picture of its cells on the clipboard next to the
+    // text, so a file only wins when there is no text with it.
     onPaste(event: ClipboardEvent) {
       const files = Array.from(event.clipboardData?.files ?? []);
+      const types = Array.from(event.clipboardData?.types ?? []);
 
-      if (!this.canAttach || files.length === 0) {
+      if (
+        !this.canAttach ||
+        files.length === 0 ||
+        types.includes("text/plain")
+      ) {
         return;
       }
 
@@ -531,6 +591,7 @@ export default {
         return;
       }
 
+      const name = first.file.name;
       const title =
         first.reason === "count"
           ? this.$t("chat.attachments.rejected_count", {
@@ -538,12 +599,12 @@ export default {
             })
           : first.reason === "size"
             ? this.$t("chat.attachments.rejected_size", {
-                name: first.file.name,
+                name,
                 size: `${Math.round((config?.max_file_bytes ?? 0) / 1024 / 1024)} MB`,
               })
-            : this.$t("chat.attachments.rejected_type", {
-                name: first.file.name,
-              });
+            : first.reason === "empty"
+              ? this.$t("chat.attachments.rejected_empty", { name })
+              : this.$t("chat.attachments.rejected_type", { name });
 
       toast({ title, variant: "destructive" });
     },

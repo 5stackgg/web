@@ -1022,6 +1022,24 @@ export default {
     onDragLeave() {
       this.dragDepth = Math.max(0, this.dragDepth - 1);
     },
+    // The count drifts when a hovered node is removed mid-drag and never sees
+    // its dragleave, so anything that ends the drag starts it again from zero.
+    resetDrag() {
+      this.dragDepth = 0;
+    },
+    // Safari reports no relatedTarget on any dragleave, so only one that ends
+    // at the window's edge counts as leaving it.
+    onWindowDragLeave(event: DragEvent) {
+      if (
+        !event.relatedTarget &&
+        (event.clientX <= 0 ||
+          event.clientY <= 0 ||
+          event.clientX >= window.innerWidth ||
+          event.clientY >= window.innerHeight)
+      ) {
+        this.dragDepth = 0;
+      }
+    },
     onDrop(event: DragEvent) {
       this.dragDepth = 0;
 
@@ -1040,12 +1058,24 @@ export default {
     handleSendMessage(
       message: string,
       destination?: string,
-      media?: { attachments?: string[]; gif?: ChatGif },
+      media?: {
+        attachments?: string[];
+        gif?: ChatGif;
+        delivered?: (request: Promise<void>) => void;
+      },
     ) {
       const channel = (destination ?? this.sendTo) as "everyone" | "team";
       const target = this.channelTarget(channel);
 
-      socket.chat(target.type, target.id, message, media);
+      if (media?.delivered) {
+        media.delivered(
+          socket.sendChat(target.type, target.id, message, {
+            attachments: media.attachments,
+          }),
+        );
+      } else {
+        socket.chat(target.type, target.id, message, media);
+      }
       // Sending to the other room from the keyboard is a one-off; the pills do
       // not move, because the next line is almost always going back where the
       // conversation was.
@@ -1212,9 +1242,17 @@ export default {
       },
     },
   },
+  mounted() {
+    window.addEventListener("drop", this.resetDrag);
+    window.addEventListener("dragend", this.resetDrag);
+    window.addEventListener("dragleave", this.onWindowDragLeave);
+  },
   beforeUnmount() {
     this.lobby?.leave();
     this.teamLobby?.leave();
+    window.removeEventListener("drop", this.resetDrag);
+    window.removeEventListener("dragend", this.resetDrag);
+    window.removeEventListener("dragleave", this.onWindowDragLeave);
   },
 };
 </script>

@@ -2212,6 +2212,8 @@
           "attachments_title": "添付ファイル",
           "attachments_description": "プレイヤーはロビー、トーナメント、運営、ドラフト、ダイレクトの各チャットで、1 メッセージに画像または動画を 4 件まで添付できます。ファイルは、そのルームのメッセージの期限が切れたとき、そのダイレクトメッセージが保持期間で削除されたとき、またはメッセージが削除された時点で削除されます。",
           "attachment_max_mb": "最大ファイルサイズ (MB)",
+          "attachment_daily_mb": "プレイヤーごとの 1 日のアップロード量 (MB)",
+          "attachment_daily_mb_hint": "削除したファイルも含め、直近 24 時間で計算されます。",
           "gifs_title": "GIF",
           "gifs_description": "GIPHY の API キーを追加すると、プレイヤーが GIF を送信できるようになります。検索は API を経由するため、キーがブラウザに届くことはありません。キーがない場合、GIF ボタンは表示されません。",
           "giphy_api_key": "GIPHY API キー",
@@ -2219,7 +2221,9 @@
           "giphy_key_missing": "キーは設定されていません。",
           "giphy_key_placeholder": "キーを貼り付け",
           "giphy_key_remove": "キーを削除",
-          "giphy_key_removed": "GIPHY キーを削除しました"
+          "giphy_key_removed": "GIPHY キーを削除しました",
+          "giphy_hourly_limit": "1 時間あたりの GIPHY 検索数",
+          "giphy_hourly_limit_hint": "全プレイヤーで共有します。GIPHY のベータキーは 1 時間に 100 回までです。"
         },
         "news": {
           "title": "ニュース",
@@ -9449,11 +9453,16 @@
       "drop_hint": "画像と動画、一度に {count} 件まで",
       "rejected_type": "{name} は添付できません。添付できるのは画像と動画のみです。",
       "rejected_size": "{name} は上限の {size} を超えています。",
+      "rejected_empty": "{name} は空です。",
       "rejected_count": "1 メッセージにつき {count} ファイルまで。",
+      "waiting_hint": "アップロードの完了を待っています…",
+      "failed_hint": "失敗したファイルを削除するか再試行してください",
       "errors": {
         "too_large": "このファイルはサイズの上限を超えています。",
+        "image_too_large": "この画像は大きすぎます。",
         "unsupported_type": "この種類のファイルは添付できません。",
         "too_many_pending": "送信待ちのアップロードが多すぎます。先にいくつか送信するか削除してください。",
+        "quota_exceeded": "本日のアップロード上限に達しました。",
         "not_allowed": "ここではファイルを添付できません。",
         "gagged": "発言禁止中のため、ここでは何も送信できません。",
         "unavailable": "アップロードに失敗しました。タップして再試行してください。"
@@ -9473,6 +9482,7 @@
       "powered_by": "Powered by GIPHY",
       "empty": "GIF が見つかりません",
       "rate_limited": "検索が多すぎます。少し待ってから再試行してください。",
+      "busy": "GIF が混み合っています。少し待ってから再試行してください",
       "unavailable": "現在 GIPHY を利用できません。"
     },
     "direct": {

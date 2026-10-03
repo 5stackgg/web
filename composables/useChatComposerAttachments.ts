@@ -41,11 +41,6 @@ interface Entry {
   removed?: boolean;
 }
 
-// The composer's tray. A file starts uploading the moment it is picked, so by
-// the time the message is written it is usually already there; the message
-// carries only the ids. Anything taken out of the tray, or left in it when the
-// composer goes away, is deleted from the api straight away rather than left
-// for the api's 24 hour sweep.
 export function createChatComposerAttachments(options: {
   room: () => ChatUploadRoom | null;
   config: () => ChatAttachmentConfig | null;
@@ -57,10 +52,11 @@ export function createChatComposerAttachments(options: {
   const entries = new Map<string, Entry>();
   let sequence = 0;
 
-  const ready = computed(
+  const sending = ref(false);
+
+  const busy = computed(
     () =>
-      items.value.length > 0 &&
-      items.value.every(({ status }) => status === "done"),
+      sending.value || items.value.some(({ status }) => status !== "done"),
   );
 
   function patch(key: string, changes: Partial<ChatTrayItem>) {
@@ -156,7 +152,7 @@ export function createChatComposerAttachments(options: {
   function add(files: ArrayLike<File>) {
     const room = options.room();
 
-    if (!room) {
+    if (!room || sending.value) {
       return;
     }
 
@@ -207,6 +203,10 @@ export function createChatComposerAttachments(options: {
   }
 
   function remove(key: string) {
+    if (sending.value) {
+      return;
+    }
+
     drop(key);
     items.value = items.value.filter((item) => item.key !== key);
   }
@@ -214,7 +214,7 @@ export function createChatComposerAttachments(options: {
   function retry(key: string) {
     const entry = entries.get(key);
 
-    if (!entry) {
+    if (!entry || sending.value) {
       return;
     }
 
@@ -225,20 +225,26 @@ export function createChatComposerAttachments(options: {
     start(key);
   }
 
-  // Sent: the files belong to the message now, so nothing is discarded.
-  function take(): string[] {
-    const ids = items.value
+  function beginSend(): string[] {
+    sending.value = true;
+
+    return items.value
       .map((item) => entries.get(item.key)?.attachment?.id)
       .filter((id): id is string => !!id);
+  }
 
+  function sent() {
     for (const item of items.value) {
       release(item.key);
     }
 
     entries.clear();
     items.value = [];
+    sending.value = false;
+  }
 
-    return ids;
+  function unsent() {
+    sending.value = false;
   }
 
   function dispose() {
@@ -247,7 +253,19 @@ export function createChatComposerAttachments(options: {
     }
 
     items.value = [];
+    sending.value = false;
   }
 
-  return { items, ready, add, remove, retry, take, dispose };
+  return {
+    items,
+    busy,
+    sending,
+    add,
+    remove,
+    retry,
+    beginSend,
+    sent,
+    unsent,
+    dispose,
+  };
 }

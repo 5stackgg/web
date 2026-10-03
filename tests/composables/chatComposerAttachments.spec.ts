@@ -88,7 +88,7 @@ describe("the attachment tray", () => {
         progress: 0,
       }),
     ]);
-    expect(tray.ready.value).toBe(false);
+    expect(tray.busy.value).toBe(true);
   });
 
   it("shows how far each upload has got", async () => {
@@ -111,12 +111,12 @@ describe("the attachment tray", () => {
       "done",
       "uploading",
     ]);
-    expect(tray.ready.value).toBe(false);
+    expect(tray.busy.value).toBe(true);
 
     uploads[1].resolve(descriptor("a-2"));
     await flushPromises();
 
-    expect(tray.ready.value).toBe(true);
+    expect(tray.busy.value).toBe(false);
   });
 
   it("marks a failed upload and says why", async () => {
@@ -130,7 +130,7 @@ describe("the attachment tray", () => {
       status: "failed",
       error: "too_large",
     });
-    expect(tray.ready.value).toBe(false);
+    expect(tray.busy.value).toBe(true);
   });
 
   it("starts a failed upload over on retry, dropping what it had stored", async () => {
@@ -153,7 +153,7 @@ describe("the attachment tray", () => {
     uploads[1].resolve(descriptor("a-2"));
     await flushPromises();
 
-    expect(tray.take()).toEqual(["a-2"]);
+    expect(tray.beginSend()).toEqual(["a-2"]);
   });
 
   it("cancels an upload taken out of the tray, and drops what it stored", async () => {
@@ -187,7 +187,7 @@ describe("the attachment tray", () => {
     expect(discard).toHaveBeenCalledWith("a-1");
   });
 
-  it("hands the sent files over in tray order and empties it without dropping them", async () => {
+  it("hands the files over in tray order, and keeps them until the send lands", async () => {
     const { tray, uploads, discard } = harness();
 
     tray.add([png("a.png"), png("b.png")]);
@@ -195,8 +195,51 @@ describe("the attachment tray", () => {
     uploads[0].resolve(descriptor("a-1"));
     await flushPromises();
 
-    expect(tray.take()).toEqual(["a-1", "a-2"]);
+    expect(tray.beginSend()).toEqual(["a-1", "a-2"]);
+    expect(tray.items.value).toHaveLength(2);
+    expect(tray.sending.value).toBe(true);
+    expect(tray.busy.value).toBe(true);
+
+    tray.sent();
+
     expect(tray.items.value).toEqual([]);
+    expect(tray.sending.value).toBe(false);
+    expect(discard).not.toHaveBeenCalled();
+  });
+
+  // A refused send (rate limit, gag, a room the player left) must not lose
+  // what they were sending.
+  it("gives the files back when the send is refused", async () => {
+    const { tray, uploads, discard } = harness();
+
+    tray.add([png()]);
+    uploads[0].resolve(descriptor("a-1"));
+    await flushPromises();
+
+    tray.beginSend();
+    tray.unsent();
+
+    expect(tray.items.value).toEqual([
+      expect.objectContaining({ status: "done" }),
+    ]);
+    expect(tray.sending.value).toBe(false);
+    expect(tray.busy.value).toBe(false);
+    expect(discard).not.toHaveBeenCalled();
+  });
+
+  it("holds the tray still while a send is on its way", async () => {
+    const { tray, uploads, discard } = harness();
+
+    tray.add([png()]);
+    uploads[0].resolve(descriptor("a-1"));
+    await flushPromises();
+
+    tray.beginSend();
+    tray.remove(tray.items.value[0].key);
+    tray.add([png("b.png")]);
+
+    expect(tray.items.value).toHaveLength(1);
+    expect(uploads).toHaveLength(1);
     expect(discard).not.toHaveBeenCalled();
   });
 

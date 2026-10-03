@@ -2212,6 +2212,8 @@
           "attachments_title": "Vedhæftninger",
           "attachments_description": "Spillere kan vedhæfte op til 4 billeder eller videoer til en besked i lobby-, turnerings-, arrangør-, draft- og direkte chats. En fil slettes, når beskederne i dens rum udløber, når dens direkte besked ryddes op, eller så snart dens besked slettes.",
           "attachment_max_mb": "Største fil (MB)",
+          "attachment_daily_mb": "Uploads pr. spiller pr. dag (MB)",
+          "attachment_daily_mb_hint": "Tælles over de seneste 24 timer, inklusive fjernede filer.",
           "gifs_title": "GIF'er",
           "gifs_description": "Tilføj en GIPHY API-nøgle, så spillere kan sende GIF'er. Søgninger går gennem API'et, så nøglen aldrig når en browser. Uden en nøgle er GIF-knappen skjult.",
           "giphy_api_key": "GIPHY API-nøgle",
@@ -2219,7 +2221,9 @@
           "giphy_key_missing": "Der er ikke angivet nogen nøgle.",
           "giphy_key_placeholder": "Indsæt en nøgle",
           "giphy_key_remove": "Fjern Nøgle",
-          "giphy_key_removed": "GIPHY-nøglen er fjernet"
+          "giphy_key_removed": "GIPHY-nøglen er fjernet",
+          "giphy_hourly_limit": "GIPHY-søgninger pr. time",
+          "giphy_hourly_limit_hint": "Deles af alle spillere. GIPHY's beta-nøgler tillader 100 i timen."
         },
         "news": {
           "title": "Nyheder",
@@ -9449,11 +9453,16 @@
       "drop_hint": "Billeder og videoer, op til {count} ad gangen",
       "rejected_type": "{name} kan ikke vedhæftes. Kun billeder og videoer kan.",
       "rejected_size": "{name} er over grænsen på {size}.",
+      "rejected_empty": "{name} er tom.",
       "rejected_count": "Op til {count} filer pr. besked.",
+      "waiting_hint": "Venter på uploads…",
+      "failed_hint": "Fjern eller prøv de mislykkede filer igen",
       "errors": {
         "too_large": "Filen er over størrelsesgrænsen.",
+        "image_too_large": "Billedet er for stort.",
         "unsupported_type": "Denne type fil kan ikke vedhæftes.",
         "too_many_pending": "For mange uploads venter på at blive sendt. Send eller fjern nogle først.",
+        "quota_exceeded": "Du har brugt dagens upload-kvote.",
         "not_allowed": "Du kan ikke vedhæfte filer her.",
         "gagged": "Din chat er lukket, så du kan ikke sende noget her.",
         "unavailable": "Uploaden mislykkedes. Tryk for at prøve igen."
@@ -9473,6 +9482,7 @@
       "powered_by": "Powered by GIPHY",
       "empty": "Ingen GIF'er fundet",
       "rate_limited": "For mange søgninger. Vent et øjeblik, og prøv igen.",
+      "busy": "GIF'er er optaget lige nu, prøv igen om lidt",
       "unavailable": "GIPHY er ikke tilgængelig lige nu."
     },
     "direct": {

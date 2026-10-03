@@ -5,9 +5,10 @@ export type ChatGifPage = { results: ChatGifResult[]; next: number | null };
 export type ChatGifSearch = (
   query: string,
   offset: number,
-) => Promise<ChatGifPage | "rate_limited" | "unavailable" | "disabled">;
+) => Promise<
+  ChatGifPage | "rate_limited" | "busy" | "unavailable" | "disabled"
+>;
 
-// Through the api, which holds the GIPHY key.
 export const searchChatGifs: ChatGifSearch = async (query, offset) => {
   try {
     return await $fetch<ChatGifPage>(
@@ -23,6 +24,10 @@ export const searchChatGifs: ChatGifSearch = async (query, offset) => {
 
     if (status === 404) {
       return "disabled";
+    }
+
+    if (status === 503) {
+      return "busy";
     }
 
     return "unavailable";

@@ -513,6 +513,29 @@ export class Socket extends EventEmitter {
     });
   }
 
+  // A send that carries files is answered, unlike plain text: a refusal has to
+  // hand the files back to the composer. Never queued, like every request.
+  public sendChat(
+    type: ChatType,
+    id: string,
+    message: string,
+    media: { attachments?: string[]; gif?: ChatGif },
+  ): Promise<void> {
+    return this.chatRequest(
+      "send",
+      {
+        id,
+        type,
+        message,
+        ...(media.attachments?.length
+          ? { attachments: media.attachments }
+          : {}),
+        ...(media.gif ? { gif: media.gif } : {}),
+      },
+      { resolved: () => {}, rejected: () => {} },
+    );
+  }
+
   public deleteMessage(
     type: ChatType,
     id: string,
@@ -625,7 +648,7 @@ export class Socket extends EventEmitter {
   // Never queued: someone told a delete or an edit failed must not have it
   // carried out behind their back once the connection comes back.
   private chatRequest(
-    action: Exclude<ChatAction, "send">,
+    action: ChatAction,
     data: Record<string, unknown>,
     handlers: {
       resolved: (ack: ChatAck) => void;
@@ -659,7 +682,10 @@ export class Socket extends EventEmitter {
 
       this.pendingRequests.set(requestId, pending);
 
-      this.event(`lobby:${action}`, { ...data, requestId });
+      this.event(action === "send" ? "lobby:chat" : `lobby:${action}`, {
+        ...data,
+        requestId,
+      });
     });
   }
 

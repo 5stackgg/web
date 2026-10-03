@@ -22,6 +22,23 @@ export function eventMediaUrl(eventId: string, filename: string): string {
   return `https://${apiDomain}/events/media/${eventId}/${filename}`;
 }
 
+let webpSupport: boolean | undefined;
+
+// Safari cannot encode webp and silently hands back a PNG several times the
+// size, so it gets a JPEG instead. Probed once, on a pixel.
+function encodesWebp(): boolean {
+  if (webpSupport === undefined) {
+    const probe = document.createElement("canvas");
+    probe.width = 1;
+    probe.height = 1;
+    webpSupport = probe
+      .toDataURL("image/webp")
+      .startsWith("data:image/webp");
+  }
+
+  return webpSupport;
+}
+
 // Captures a poster frame from a local video file (no network: the uploader
 // already has the bytes) so gallery tiles never have to fetch the mp4.
 export function captureVideoSnapshot(file: File | Blob): Promise<Blob | null> {
@@ -62,7 +79,12 @@ export function captureVideoSnapshot(file: File | Blob): Promise<Blob | null> {
           return;
         }
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        canvas.toBlob((blob) => finish(blob), "image/webp", 0.85);
+        const webp = encodesWebp();
+        canvas.toBlob(
+          (blob) => finish(blob),
+          webp ? "image/webp" : "image/jpeg",
+          webp ? 0.85 : 0.8,
+        );
       } catch {
         finish(null);
       }

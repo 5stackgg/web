@@ -2212,6 +2212,8 @@
           "attachments_title": "Anexos",
           "attachments_description": "Jogadores podem anexar até 4 imagens ou vídeos a uma mensagem nos chats de lobby, torneio, organizadores, draft e nas mensagens diretas. Um arquivo é excluído quando as mensagens da sala dele expiram, quando a mensagem direta dele é removida pela retenção ou assim que a mensagem dele é excluída.",
           "attachment_max_mb": "Maior arquivo (MB)",
+          "attachment_daily_mb": "Uploads por jogador por dia (MB)",
+          "attachment_daily_mb_hint": "Contado nas últimas 24 horas, incluindo arquivos removidos.",
           "gifs_title": "GIFs",
           "gifs_description": "Adicione uma chave de API do GIPHY para permitir que os jogadores enviem GIFs. As pesquisas passam pela API, então a chave nunca chega a um navegador. Sem chave, o botão de GIF fica oculto.",
           "giphy_api_key": "Chave de API do GIPHY",
@@ -2219,7 +2221,9 @@
           "giphy_key_missing": "Nenhuma chave definida.",
           "giphy_key_placeholder": "Cole uma chave",
           "giphy_key_remove": "Remover Chave",
-          "giphy_key_removed": "Chave do GIPHY removida"
+          "giphy_key_removed": "Chave do GIPHY removida",
+          "giphy_hourly_limit": "Pesquisas no GIPHY por hora",
+          "giphy_hourly_limit_hint": "Compartilhado por todos os jogadores. As chaves beta do GIPHY permitem 100 por hora."
         },
         "news": {
           "title": "Notícias",
@@ -9449,11 +9453,16 @@
       "drop_hint": "Imagens e vídeos, até {count} por vez",
       "rejected_type": "{name} não pode ser anexado. Só é possível anexar imagens e vídeos.",
       "rejected_size": "{name} passa do limite de {size}.",
+      "rejected_empty": "{name} está vazio.",
       "rejected_count": "Até {count} arquivos por mensagem.",
+      "waiting_hint": "Aguardando os uploads…",
+      "failed_hint": "Remova ou tente novamente os arquivos com falha",
       "errors": {
         "too_large": "Este arquivo passa do limite de tamanho.",
+        "image_too_large": "Esta imagem é grande demais.",
         "unsupported_type": "Este tipo de arquivo não pode ser anexado.",
         "too_many_pending": "Há uploads demais esperando para serem enviados. Envie ou remova alguns primeiro.",
+        "quota_exceeded": "Você atingiu seu limite de uploads de hoje.",
         "not_allowed": "Você não pode anexar arquivos aqui.",
         "gagged": "Você está censurado no chat e não pode enviar nada aqui.",
         "unavailable": "O upload falhou. Toque para tentar novamente."
@@ -9473,6 +9482,7 @@
       "powered_by": "Powered by GIPHY",
       "empty": "Nenhum GIF encontrado",
       "rate_limited": "Pesquisas demais. Aguarde um momento e tente novamente.",
+      "busy": "Os GIFs estão sobrecarregados, tente de novo em instantes",
       "unavailable": "O GIPHY está indisponível agora."
     },
     "direct": {

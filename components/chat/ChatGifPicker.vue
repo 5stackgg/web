@@ -59,7 +59,7 @@ function select(gif: ChatGif) {
       class="w-auto overflow-hidden p-0"
       data-right-hub-interactive
     >
-      <ChatGifPickerPanel v-if="open" @select="select" />
+      <ChatGifPickerPanel @select="select" />
     </PopoverContent>
   </Popover>
 </template>

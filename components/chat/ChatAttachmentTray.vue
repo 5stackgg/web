@@ -14,12 +14,19 @@ const ERRORS = [
   "too_large",
   "unsupported_type",
   "too_many_pending",
+  "quota_exceeded",
   "not_allowed",
   "gagged",
 ];
 
-function errorKey(code?: string) {
-  return `chat.attachments.errors.${ERRORS.includes(code ?? "") ? code : "unavailable"}`;
+// A file over the size limit never leaves the browser, so an image the api
+// calls too large is one whose pixels are over the cap.
+function errorKey(item: ChatTrayItem) {
+  if (item.error === "too_large" && item.kind === "image") {
+    return "chat.attachments.errors.image_too_large";
+  }
+
+  return `chat.attachments.errors.${ERRORS.includes(item.error ?? "") ? item.error : "unavailable"}`;
 }
 </script>
 
@@ -46,7 +53,8 @@ function errorKey(code?: string) {
           key="failed"
           type="button"
           class="flex aspect-square w-full flex-col items-center justify-center gap-1 rounded text-destructive focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-destructive"
-          :title="$t(errorKey(item.error))"
+          :title="$t(errorKey(item))"
+          :aria-label="`${$t('chat.attachments.retry')}: ${$t(errorKey(item))}`"
           @click="emit('retry', item.key)"
         >
           <RotateCw class="h-4 w-4" />
@@ -87,6 +95,11 @@ function errorKey(code?: string) {
             <div
               v-if="item.status === 'uploading'"
               class="absolute inset-0 flex flex-col items-center justify-center gap-1 rounded bg-black/55"
+              role="progressbar"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              :aria-valuenow="Math.round(item.progress * 100)"
+              :aria-label="item.name"
             >
               <span
                 class="font-mono text-[0.65rem] tabular-nums text-[hsl(var(--tac-amber))]"
@@ -110,6 +123,9 @@ function errorKey(code?: string) {
         "
       >
         {{ item.name }}
+      </p>
+      <p v-if="item.status === 'failed'" class="sr-only">
+        {{ $t(errorKey(item)) }}
       </p>
       <button
         type="button"

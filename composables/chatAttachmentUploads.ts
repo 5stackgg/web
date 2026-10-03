@@ -8,12 +8,23 @@ import type { ChatAttachment } from "~/utilities/chatAttachments";
 
 const apiBase = () => `https://${useRuntimeConfig().public.apiDomain}/chat`;
 
+const UUID =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export function chatAttachmentUrl(id: string): string {
-  return `${apiBase()}/attachments/${encodeURIComponent(id)}`;
+  return UUID.test(id) ? `${apiBase()}/attachments/${id}` : "";
 }
 
 export function chatAttachmentPosterUrl(id: string): string {
-  return `${chatAttachmentUrl(id)}/poster`;
+  const url = chatAttachmentUrl(id);
+
+  return url ? `${url}/poster` : "";
+}
+
+function stopIfAborted(signal: AbortSignal) {
+  if (signal.aborted) {
+    throw new ChatUploadError("aborted");
+  }
 }
 
 async function request<T>(
@@ -51,7 +62,8 @@ function errorCode(xhr: XMLHttpRequest): string {
 
 // Raw bytes, never a multipart form: a part is one request to the api, kept
 // well under Cloudflare's 100 MB body cap. XHR because fetch cannot report
-// upload progress.
+// upload progress; a Blob body always goes with its Content-Length, never
+// chunked, and the api refuses a part without one.
 function put(
   url: string,
   body: Blob,
@@ -152,8 +164,6 @@ function videoSize(
   });
 }
 
-// Read from the file the player already has, so the message can be laid out
-// at its real size before anyone downloads it.
 async function readMeta(file: File) {
   if (file.type.startsWith("video/")) {
     const [size, poster] = await Promise.all([
@@ -174,6 +184,8 @@ export async function uploadChatAttachment(
 ): Promise<ChatAttachment> {
   const { poster, ...meta } = await readMeta(file);
 
+  stopIfAborted(hooks.signal);
+
   const created = await request<{
     id: string;
     part_size: number;
@@ -188,8 +200,13 @@ export async function uploadChatAttachment(
   });
 
   hooks.onCreated(created.id);
+  stopIfAborted(hooks.signal);
 
   const url = chatAttachmentUrl(created.id);
+
+  if (!url) {
+    throw new ChatUploadError("unavailable");
+  }
 
   for (let part = 1; part <= created.parts; part++) {
     const start = (part - 1) * created.part_size;
@@ -206,6 +223,8 @@ export async function uploadChatAttachment(
     });
   }
 
+  stopIfAborted(hooks.signal);
+
   const attachment = await request<ChatAttachment>(
     "POST",
     `/attachments/${created.id}/complete`,
@@ -217,6 +236,10 @@ export async function uploadChatAttachment(
 }
 
 export function discardChatAttachment(id: string): void {
+  if (!UUID.test(id)) {
+    return;
+  }
+
   void request("DELETE", `/attachments/${id}`).catch(() => {
     return;
   });

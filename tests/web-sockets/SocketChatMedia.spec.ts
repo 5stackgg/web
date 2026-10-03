@@ -51,3 +51,53 @@ describe("Socket.chat with media", () => {
     });
   });
 });
+
+describe("Socket.sendChat", () => {
+  it("sends with a requestId and settles when the room takes it", async () => {
+    const { socket, sent } = connected();
+
+    const delivered = socket.sendChat("matchmaking", "lobby-1", "", {
+      attachments: ["a-1"],
+    });
+
+    const [{ event, data }] = sent();
+    expect(event).toBe("lobby:chat");
+    expect(data).toMatchObject({ attachments: ["a-1"], type: "matchmaking" });
+    expect(typeof data.requestId).toBe("string");
+
+    socket.resolveChatRequest({
+      requestId: data.requestId,
+      messageId: "m-1",
+      action: "send",
+    });
+
+    await expect(delivered).resolves.toBeUndefined();
+  });
+
+  it("hands the room's refusal back to whoever sent it", async () => {
+    const { socket, sent } = connected();
+
+    const delivered = socket.sendChat("matchmaking", "lobby-1", "", {
+      attachments: ["a-1"],
+    });
+    const [{ data }] = sent();
+
+    expect(
+      socket.rejectChatRequest({
+        code: "rate_limited",
+        action: "send",
+        requestId: data.requestId,
+      }),
+    ).toBe(true);
+
+    await expect(delivered).rejects.toMatchObject({ code: "rate_limited" });
+  });
+
+  it("never queues a send with files while offline", async () => {
+    const socket = new Socket();
+
+    await expect(
+      socket.sendChat("matchmaking", "lobby-1", "", { attachments: ["a-1"] }),
+    ).rejects.toMatchObject({ code: "offline" });
+  });
+});

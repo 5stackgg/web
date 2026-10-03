@@ -2212,6 +2212,8 @@
           "attachments_title": "Załączniki",
           "attachments_description": "Gracze mogą załączyć do 4 obrazów lub filmów do wiadomości na czatach lobby, turnieju, organizatorów, draftu i w wiadomościach prywatnych. Plik jest usuwany, gdy wygasają wiadomości jego pokoju, gdy jego wiadomość prywatna zostaje usunięta przez retencję lub od razu po usunięciu jego wiadomości.",
           "attachment_max_mb": "Największy plik (MB)",
+          "attachment_daily_mb": "Przesyłanie na gracza dziennie (MB)",
+          "attachment_daily_mb_hint": "Liczone z ostatnich 24 godzin, łącznie z usuniętymi plikami.",
           "gifs_title": "GIF-y",
           "gifs_description": "Dodaj klucz API GIPHY, aby gracze mogli wysyłać GIF-y. Wyszukiwania przechodzą przez API, więc klucz nigdy nie trafia do przeglądarki. Bez klucza przycisk GIF jest ukryty.",
           "giphy_api_key": "Klucz API GIPHY",
@@ -2219,7 +2221,9 @@
           "giphy_key_missing": "Nie ustawiono klucza.",
           "giphy_key_placeholder": "Wklej klucz",
           "giphy_key_remove": "Usuń Klucz",
-          "giphy_key_removed": "Usunięto klucz GIPHY"
+          "giphy_key_removed": "Usunięto klucz GIPHY",
+          "giphy_hourly_limit": "Wyszukiwania w GIPHY na godzinę",
+          "giphy_hourly_limit_hint": "Wspólne dla wszystkich graczy. Klucze beta GIPHY pozwalają na 100 na godzinę."
         },
         "news": {
           "title": "Aktualności",
@@ -9449,11 +9453,16 @@
       "drop_hint": "Obrazy i filmy, do {count} naraz",
       "rejected_type": "Nie można załączyć {name}. Można załączać tylko obrazy i filmy.",
       "rejected_size": "{name} przekracza limit {size}.",
+      "rejected_empty": "Plik {name} jest pusty.",
       "rejected_count": "Do {count} plików w wiadomości.",
+      "waiting_hint": "Czekam na przesłanie plików…",
+      "failed_hint": "Usuń lub ponów nieudane pliki",
       "errors": {
         "too_large": "Ten plik przekracza limit rozmiaru.",
+        "image_too_large": "Ten obraz jest za duży.",
         "unsupported_type": "Tego rodzaju pliku nie można załączyć.",
         "too_many_pending": "Zbyt wiele przesłanych plików czeka na wysłanie. Najpierw wyślij lub usuń część z nich.",
+        "quota_exceeded": "Wykorzystano dzisiejszy limit przesyłania.",
         "not_allowed": "Nie możesz tu załączać plików.",
         "gagged": "Masz zablokowany czat i nie możesz tu nic wysłać.",
         "unavailable": "Przesyłanie nie powiodło się. Stuknij, aby spróbować ponownie."
@@ -9473,6 +9482,7 @@
       "powered_by": "Powered by GIPHY",
       "empty": "Nie znaleziono GIF-ów",
       "rate_limited": "Zbyt wiele wyszukiwań. Poczekaj chwilę i spróbuj ponownie.",
+      "busy": "GIF-y są teraz przeciążone, spróbuj za chwilę",
       "unavailable": "GIPHY jest teraz niedostępne."
     },
     "direct": {

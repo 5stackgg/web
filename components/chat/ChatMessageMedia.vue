@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { usePreferredReducedMotion } from "@vueuse/core";
 import { Film, Play } from "lucide-vue-next";
 import FadeImage from "~/components/media/FadeImage.vue";
 import MediaLightbox from "~/components/media/MediaLightbox.vue";
@@ -31,6 +32,12 @@ const videos = computed(() =>
   (props.message.attachments ?? []).filter(({ kind }) => kind === "video"),
 );
 
+// GIPHY serves a still first frame; an uploaded GIF or animated webp is drawn
+// once, frozen, by FadeImage.
+const motion = usePreferredReducedMotion();
+const still = computed(() => motion.value === "reduce");
+const ANIMATED = ["image/gif", "image/webp"];
+
 const gif = computed(() =>
   props.message.gif && chatGifUrl(props.message.gif.id, "full")
     ? props.message.gif
@@ -52,12 +59,15 @@ const single = computed(() => {
 
   const width =
     image.width && image.height
-      ? Math.round((SINGLE_MAX_HEIGHT * image.width) / image.height)
+      ? Math.min(
+          image.width,
+          Math.round((SINGLE_MAX_HEIGHT * image.width) / image.height),
+        )
       : 340;
 
   return {
     image,
-    style: { aspectRatio: ratio(image), width: `min(100%, ${width}px)` },
+    style: { aspectRatio: ratio(image), width: "100%", maxWidth: `${width}px` },
   };
 });
 
@@ -104,7 +114,11 @@ const tileClasses =
       :aria-label="$t('chat.attachments.open_image', { name: single.image.name })"
       @click="open(single.image)"
     >
-      <FadeImage :src="chatAttachmentUrl(single.image.id)" :alt="single.image.name" />
+      <FadeImage
+        :src="chatAttachmentUrl(single.image.id)"
+        :alt="single.image.name"
+        :still="still && ANIMATED.includes(single.image.mime_type)"
+      />
     </button>
 
     <div
@@ -127,7 +141,11 @@ const tileClasses =
         :aria-label="$t('chat.attachments.open_image', { name: image.name })"
         @click="open(image)"
       >
-        <FadeImage :src="chatAttachmentUrl(image.id)" :alt="image.name" />
+        <FadeImage
+          :src="chatAttachmentUrl(image.id)"
+          :alt="image.name"
+          :still="still && ANIMATED.includes(image.mime_type)"
+        />
       </button>
     </div>
 
@@ -176,7 +194,10 @@ const tileClasses =
       class="relative w-full max-w-[260px] overflow-hidden rounded-lg border border-border/40"
       :style="{ aspectRatio: ratio(gif) }"
     >
-      <FadeImage :src="chatGifUrl(gif.id, 'full')" :alt="$t('chat.gifs.label')" />
+      <FadeImage
+        :src="chatGifUrl(gif.id, 'full', still)"
+        :alt="$t('chat.gifs.label')"
+      />
       <span
         class="pointer-events-none absolute left-1.5 top-1.5 rounded-sm bg-black/60 px-1 py-0.5 font-mono text-[0.5rem] font-bold uppercase tracking-wider text-white/90"
       >

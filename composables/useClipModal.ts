@@ -1,6 +1,8 @@
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 import { useState } from "#app";
+import type { Clip } from "~/types/clip";
+import { clipQueueItem } from "~/utilities/clipDisplay";
 
 export type ClipQueueItem = {
   id: string;
@@ -135,6 +137,17 @@ export function useClipModal() {
     clipQueueScope.value = null;
   }
 
+  // Seed the playlist with the list the clip was picked from, then open it,
+  // so next/prev and auto-advance walk that list.
+  function playClips(
+    clips: Clip[],
+    startId: string,
+    scope: string | null = null,
+  ) {
+    setClipQueue(clips.map(clipQueueItem), scope);
+    openClip(startId);
+  }
+
   return {
     activeClipId,
     activeClipIndex,
@@ -143,6 +156,7 @@ export function useClipModal() {
     previousClip,
     setClipQueue,
     clearClipQueue,
+    playClips,
     openClip,
     showClip,
     closeClip,

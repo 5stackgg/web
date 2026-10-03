@@ -6,18 +6,19 @@ import StreamCanvas from "~/components/match/StreamCanvas.vue";
 </script>
 
 <template>
-  <div class="w-full space-y-3">
+  <div :class="inline ? 'h-full w-full' : 'w-full space-y-3'">
     <StreamCanvas
       v-if="selectedStream"
       :is-live="true"
-      class="group aspect-video w-full"
+      class="group w-full"
+      :class="inline ? 'h-full' : 'aspect-video'"
     >
       <template #video>
         <div ref="playerRef" class="absolute inset-0 h-full w-full"></div>
       </template>
 
       <Button
-        v-if="global === false"
+        v-if="global === false && !inline"
         class="absolute top-2 right-2 w-8 h-8 opacity-70 hover:opacity-100 transition-opacity bg-background/80 hover:bg-background border border-border flex items-center justify-center z-10"
         @click="setGlobalStream(selectedStream)"
         type="button"
@@ -30,7 +31,7 @@ import StreamCanvas from "~/components/match/StreamCanvas.vue";
       </Button>
 
       <MatchScoreboardOverlay
-        v-if="effectiveMatchId"
+        v-if="effectiveMatchId && !inline"
         v-model:open="scoreboardOpen"
         :match-id="effectiveMatchId"
         :compact="global"
@@ -43,6 +44,7 @@ import StreamCanvas from "~/components/match/StreamCanvas.vue";
            (so the call-to-action is reachable on touch devices); fades
            in on hover once unmuted. -->
       <button
+        v-if="!inline"
         type="button"
         :aria-label="isMuted ? $t('ui_extras.unmute') : $t('ui_extras.mute')"
         :class="[
@@ -59,7 +61,10 @@ import StreamCanvas from "~/components/match/StreamCanvas.vue";
     </StreamCanvas>
 
     <div
-      v-if="streams.length > 1 || (showTitle == false && streams.length > 0)"
+      v-if="
+        !inline &&
+        (streams.length > 1 || (showTitle == false && streams.length > 0))
+      "
       class="flex flex-wrap gap-2"
     >
       <Button
@@ -135,6 +140,13 @@ export default {
     matchId: {
       type: String,
       default: null,
+    },
+    // Hosted in a frame that owns the chrome and the mute control (the
+    // /watch stage): fill the host, play even while a global stream is up,
+    // and leave out the move-to-global, scoreboard, mute and picker UI.
+    inline: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -489,7 +501,11 @@ export default {
           return;
         }
 
-        if (this.global || (!this.setGlobalStreamOnly && !this.globalStream)) {
+        if (
+          this.global ||
+          this.inline ||
+          (!this.setGlobalStreamOnly && !this.globalStream)
+        ) {
           const firstStream = this.streams.at(0);
           if (firstStream) {
             this.selectStream(firstStream);

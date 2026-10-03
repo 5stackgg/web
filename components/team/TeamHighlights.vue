@@ -11,9 +11,10 @@ import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { matchClipFields } from "~/graphql/matchClip";
 import { Film } from "lucide-vue-next";
-import HighlightCard from "~/components/clips/HighlightCard.vue";
+import ClipTile from "~/components/clips/ClipTile.vue";
 import HighlightSkeleton from "~/components/clips/HighlightSkeleton.vue";
-import { useClipModal, type ClipQueueItem } from "~/composables/useClipModal";
+import { useClipModal } from "~/composables/useClipModal";
+import { clipQueueItem } from "~/utilities/clipDisplay";
 import type { Clip } from "~/types/clip";
 
 const props = defineProps<{
@@ -101,17 +102,6 @@ watch(
 
 const { setClipQueue, clearClipQueue } = useClipModal();
 const clipQueueScope = computed(() => `team-highlights:${props.teamId}`);
-function clipQueueItem(c: Clip): ClipQueueItem {
-  return {
-    id: c.id,
-    title: c.title,
-    playerName: c.target?.name ?? null,
-    teamName: null,
-    durationMs: c.duration_ms,
-    thumbnailUrl: c.thumbnail_download_url,
-    posterUrl: c.match_map?.map?.poster ?? null,
-  };
-}
 watchEffect(() => {
   if (clips.value.length === 0) {
     return;
@@ -187,7 +177,13 @@ const hasClips = computed(() => clips.value.length > 0);
       enter-from-class="opacity-0 translate-y-3"
       move-class="transition-transform duration-300 ease-out"
     >
-      <HighlightCard v-for="c in clips" :key="c.id" :clip="c" />
+      <ClipTile
+        v-for="c in clips"
+        :key="c.id"
+        :clip="c"
+        :queue="clips"
+        :queue-scope="clipQueueScope"
+      />
     </TransitionGroup>
 
     <div

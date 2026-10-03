@@ -637,7 +637,7 @@ export const useApplicationSettingsStore = defineStore(
 
     const globalStream = ref<object | null>(null);
 
-    const setGlobalStream = async (stream: {
+    const setGlobalStream = async (stream?: {
       id: string;
       link: string;
       preview: boolean;

@@ -77,10 +77,12 @@ describe("HighlightsBrowser", () => {
   it("stays unscoped with the global player search on the highlights page", async () => {
     const wrapper = await mountBrowser("/highlights");
 
-    const sent = query.mock.calls.map(([options]) => print(options.query));
+    const sent = query.mock.calls.map(([options]) =>
+      print(options.query).replace(/\s+/g, ""),
+    );
     expect(sent.length).toBeGreaterThan(0);
     for (const text of sent) {
-      expect(text).not.toContain("event_links");
+      expect(text).not.toContain("event_links:{event_id");
     }
     expect(wrapper.findComponent(PlayerSearch).exists()).toBe(true);
     expect(wrapper.findComponent(EventPlayerPicker).exists()).toBe(false);

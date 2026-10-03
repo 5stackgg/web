@@ -62,6 +62,7 @@ import {
   clipDownloadUrl,
 } from "~/utilities/clipDownloadName";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
+import { clipDisplayTitle } from "~/utilities/clipDisplay";
 import { useClipModal } from "~/composables/useClipModal";
 import { useClipShare } from "~/composables/useClipShare";
 import { Spinner } from "~/components/ui/spinner";
@@ -103,17 +104,11 @@ const canDelete = computed(() => isOwner.value || auth.isAdmin);
 
 // Strip a leading "<player> — " (or " - ", " – ") prefix from the clip
 // title because the player is already named in the Highlighting card.
-const displayTitle = computed(() => {
-  const raw = clip.value?.title?.trim() ?? "";
-  if (!raw) return t("clips.untitled_clip");
-  const player = clip.value?.target?.name?.trim();
-  if (!player) return raw;
-  const escaped = player.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const stripped = raw
-    .replace(new RegExp(`^${escaped}\\s*[—–-]\\s*`, "i"), "")
-    .trim();
-  return stripped || raw;
-});
+const displayTitle = computed(
+  () =>
+    clipDisplayTitle(clip.value?.title, clip.value?.target?.name) ??
+    t("clips.untitled_clip"),
+);
 
 const editing = ref(false);
 const draftTitle = ref("");

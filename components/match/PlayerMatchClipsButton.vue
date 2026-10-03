@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, inject, type ComputedRef } from "vue";
 import { Film } from "lucide-vue-next";
-import { useClipModal, type ClipQueueItem } from "~/composables/useClipModal";
+import { useClipModal } from "~/composables/useClipModal";
 import type { Clip } from "~/types/clip";
 
 const props = defineProps<{
@@ -12,7 +12,7 @@ const byTarget = inject<ComputedRef<Map<string, Clip[]>>>(
   "matchClipsByTarget",
   computed(() => new Map()) as any,
 );
-const { openClip, setClipQueue } = useClipModal();
+const { playClips } = useClipModal();
 
 const clips = computed<Clip[]>(() => {
   const sid = String(props.steamId);
@@ -21,27 +21,17 @@ const clips = computed<Clip[]>(() => {
 const count = computed(() => clips.value.length);
 const hasClips = computed(() => count.value > 0);
 
-function publishQueue() {
-  const items: ClipQueueItem[] = clips.value.map((c) => ({
-    id: c.id,
-    title: c.title,
-    playerName: c.target?.name ?? null,
-    teamName: null,
-    durationMs: c.duration_ms,
-    thumbnailUrl: c.thumbnail_download_url,
-    posterUrl: c.match_map?.map?.poster ?? null,
-  }));
-  setClipQueue(items, `player-match-clips:${String(props.steamId)}`);
-}
-
 function onClick(e: MouseEvent) {
   if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
   e.preventDefault();
   e.stopPropagation();
   const first = clips.value[0];
   if (!first) return;
-  publishQueue();
-  openClip(first.id);
+  playClips(
+    clips.value,
+    first.id,
+    `player-match-clips:${String(props.steamId)}`,
+  );
 }
 </script>
 

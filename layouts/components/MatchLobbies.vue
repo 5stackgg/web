@@ -146,12 +146,9 @@ function togglePartyRoom() {
       class="relative group h-12 overflow-hidden bg-transparent px-5 text-[hsl(var(--tac-amber))] shadow-lg hover:bg-transparent hover:text-[hsl(var(--tac-amber))] hover:shadow transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
     >
       <span
-        class="absolute inset-0 rounded-md p-[1.5px] bg-[linear-gradient(135deg,var(--tac-amber-cta-from)_0%,hsl(var(--tac-amber))_50%,var(--tac-amber-cta-to)_100%)]"
-      >
-        <span
-          class="block h-full w-full rounded-[4.5px] bg-[hsl(var(--topnav-background))]"
-        ></span>
-      </span>
+        aria-hidden="true"
+        class="tac-amber-frame pointer-events-none absolute inset-0 rounded-md"
+      ></span>
 
       <span
         class="pointer-events-none absolute inset-0 rounded-md bg-[hsl(var(--tac-amber)/0.12)] opacity-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300 ease-out"

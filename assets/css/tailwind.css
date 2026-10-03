@@ -280,6 +280,29 @@ mark {
   opacity: 0.6;
 }
 
+/* The outline counterpart: just the gradient ring, with the middle masked out
+   so whatever surface the button sits on shows through. Painting the middle
+   in a surface colour instead only matched one surface -- the Create Lobby
+   button sits in both the top nav and the left-nav header, and a branded
+   topnav colour showed up as a block in the latter. Lay it over the button
+   as an absolute, pointer-events-none span. */
+.tac-amber-frame {
+  padding: 1.5px;
+  background: linear-gradient(
+    135deg,
+    var(--tac-amber-cta-from) 0%,
+    hsl(var(--tac-amber)) 50%,
+    var(--tac-amber-cta-to) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+}
+
 /* The utility feature is iconed with the in-game HE artwork instead of a lucide
    glyph, so the nav entry reads as the same thing as the utility markers in 2D
    and 3D playback. The file is a single white path, so masking it lets the

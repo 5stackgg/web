@@ -369,6 +369,8 @@ async function connect() {
         status.value = "playing";
         everPlayed.value = true;
         failedBeforePlay.value = false;
+        failureCount = 0;
+        hasEverPlayed = true;
       } else if (state === "failed" || state === "disconnected") {
         if (clipRenderActive.value) {
           status.value = "rendering";
@@ -380,6 +382,14 @@ async function connect() {
         errorMessage.value = `peer connection ${state}`;
         if (!everPlayed.value) failedBeforePlay.value = true;
         retryDelay = INITIAL_RETRY_DELAY_MS;
+        // An answer that never connects (eg. UDP blocked on the viewer's
+        // network) is a failed attempt too, or the viewer retries forever
+        // and never reaches the fallback.
+        if (shouldFallBack()) {
+          fallBack();
+          void teardown();
+          return;
+        }
         scheduleRetry();
       }
     };
@@ -415,8 +425,6 @@ async function connect() {
     const answerSdp = await res.text();
     await pc.setRemoteDescription({ type: "answer", sdp: answerSdp });
     retryDelay = INITIAL_RETRY_DELAY_MS;
-    failureCount = 0;
-    hasEverPlayed = true;
     isRetrying.value = false;
   } catch (err) {
     const message = (err as Error)?.message ?? String(err);
@@ -430,18 +438,25 @@ async function connect() {
     errorMessage.value = message;
     if (!everPlayed.value) failedBeforePlay.value = true;
     await teardown();
-    failureCount += 1;
-    if (
-      failureCount >= MAX_WHEP_FAILURES &&
-      props.fallbackUrl &&
-      !hasEverPlayed
-    ) {
-      cancelRetries();
-      useFallback.value = true;
+    if (shouldFallBack()) {
+      fallBack();
       return;
     }
     scheduleRetry();
   }
+}
+
+// Counts a failed attempt and says whether it is time to give up on WHEP.
+function shouldFallBack() {
+  failureCount += 1;
+  return (
+    failureCount >= MAX_WHEP_FAILURES && !!props.fallbackUrl && !hasEverPlayed
+  );
+}
+
+function fallBack() {
+  cancelRetries();
+  useFallback.value = true;
 }
 
 function retryNow() {

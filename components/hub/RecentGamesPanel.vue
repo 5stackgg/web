@@ -1,33 +1,12 @@
 <script lang="ts" setup>
 import PlayerMatchesTable from "~/components/player/PlayerMatchesTable.vue";
-import Empty from "~/components/ui/empty/Empty.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import HubEmptyState from "~/components/hub/HubEmptyState.vue";
 </script>
 
 <template>
   <div class="flex flex-col h-full">
     <div class="px-3 pt-3 flex-shrink-0">
-      <div
-        class="flex items-center justify-between gap-2 -mx-3 px-3 pb-3 border-b border-border"
-      >
-        <div
-          class="inline-flex items-center gap-[0.4rem] font-mono text-[0.62rem] font-bold tracking-[0.24em] uppercase text-muted-foreground"
-        >
-          <span class="w-2 h-[2px] bg-[hsl(var(--tac-amber))]"></span>
-          {{ $t("layouts.recent_games.title") }}
-        </div>
-        <span
-          v-if="summaryStats.total > 0"
-          class="text-[10px] font-mono tracking-[0.12em] text-muted-foreground tabular-nums"
-        >
-          {{
-            $t("layouts.recent_games.last_matches", {
-              count: summaryStats.total,
-            })
-          }}
-        </span>
-      </div>
-
       <!-- The stats grid folds open when the query lands rather than pushing
            the list down ~140px on a frame. -->
       <Transition
@@ -39,7 +18,7 @@ import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
       <div v-if="summaryStats.total > 0" class="grid grid-rows-[1fr]">
       <div class="min-h-0">
       <div
-        class="mt-3 -mx-3 px-3 pb-3 border-b border-border grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs"
+        class="-mx-3 px-3 pb-3 border-b border-border grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs"
       >
         <!-- Performance (Record + Win Rate) -->
         <div
@@ -155,18 +134,12 @@ import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
       <div
         v-else-if="!matches.length"
         key="empty"
-        class="px-4 py-6 h-full flex flex-col"
+        class="h-full flex flex-col"
       >
-        <Empty>
-          <div class="space-y-1">
-            <p class="text-sm font-medium text-foreground">
-              {{ $t("layouts.recent_games.no_recent_matches_title") }}
-            </p>
-            <p class="text-xs text-muted-foreground">
-              {{ $t("layouts.recent_games.no_recent_matches_description") }}
-            </p>
-          </div>
-        </Empty>
+        <HubEmptyState
+          :title="$t('layouts.recent_games.no_recent_matches_title')"
+          :description="$t('layouts.recent_games.no_recent_matches_description')"
+        />
       </div>
       <div v-else key="list" class="p-2">
         <PlayerMatchesTable

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { CheckCheck, Settings, Trash2 } from "lucide-vue-next";
+import HubEmptyState from "~/components/hub/HubEmptyState.vue";
 import { Button } from "~/components/ui/button";
 import TeamInviteNotification from "~/components/TeamInviteNotification.vue";
 import DraftInviteNotification from "~/components/notification/DraftInviteNotification.vue";
-import Empty from "~/components/ui/empty/Empty.vue";
 import NotificationItem from "~/components/notification/NotificationItem.vue";
 import NotificationStack from "~/components/notification/NotificationStack.vue";
 import NewsNotification from "~/components/notification/NewsNotification.vue";
@@ -192,16 +192,11 @@ import LeagueScheduleStack from "~/components/notification/LeagueScheduleStack.v
         enter-from-class="opacity-0"
         leave-to-class="opacity-0"
       >
-        <Empty v-if="!hasAnyNotifications && !unreadNewsArticle">
-          <div class="space-y-1">
-            <p class="text-sm font-medium text-foreground">
-              {{ $t("layouts.notifications.no_notifications_title") }}
-            </p>
-            <p class="text-xs text-muted-foreground">
-              {{ $t("layouts.notifications.no_notifications") }}
-            </p>
-          </div>
-        </Empty>
+        <HubEmptyState
+          v-if="!hasAnyNotifications && !unreadNewsArticle"
+          :title="$t('layouts.hub.empty.inbox_title')"
+          :description="$t('layouts.hub.empty.inbox_description')"
+        />
       </Transition>
     </div>
 

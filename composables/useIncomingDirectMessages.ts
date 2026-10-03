@@ -18,7 +18,8 @@ let incoming: ReturnType<typeof socket.listen> | undefined;
 // room membership, and this turns that into a background tab.
 export function useIncomingDirectMessages() {
   const authStore = useAuthStore();
-  const { openTab, closeTab, incrementUnread, setUnread, tabs } = useChatTabs();
+  const { openTab, closeTab, incrementUnread, setUnread, noteActivity, tabs } =
+    useChatTabs();
   const { topPosition } = useDirectConversationBar();
 
   function ensureTab(
@@ -147,6 +148,8 @@ export function useIncomingDirectMessages() {
       // counted for conversations. Once joined, the room's lobby:chat counts
       // the same message, so both go by its id.
       const tabId = directTabId(data.roomId);
+      const sentAt = Date.parse(data.message?.timestamp ?? "");
+      noteActivity(tabId, Number.isFinite(sentAt) ? sentAt : Date.now());
       if (!isChatTabOnScreen(tabId)) {
         incrementUnread(tabId, data.message?.id);
       }

@@ -444,6 +444,7 @@ function releaseSwapHeight(el: Element): void {
 <script lang="ts">
 import { $ } from "~/generated/zeus";
 import socket from "~/web-sockets/Socket";
+import { rememberQueueType } from "~/composables/useQuickQueue";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { e_match_types_enum, e_match_status_enum } from "~/generated/zeus";
@@ -610,6 +611,7 @@ export default {
       this.joinMatchmaking(matchType);
     },
     joinMatchmaking(matchType: e_match_types_enum): void {
+      rememberQueueType(matchType);
       socket.event("matchmaking:join-queue", {
         type: matchType,
         regions: this.preferredRegions.map((region: Region) => {

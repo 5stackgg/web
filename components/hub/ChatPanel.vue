@@ -9,12 +9,17 @@ import {
   Sword,
   MessageSquare,
   ExternalLink,
+  MoreHorizontal,
+  Plus,
   X,
 } from "lucide-vue-next";
 import { useRouter } from "#app";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
 import ChatParticipants from "~/components/chat/ChatParticipants.vue";
 import TournamentChatEndedStamp from "~/components/chat/TournamentChatEndedStamp.vue";
+import NewConversation from "~/components/hub/NewConversation.vue";
+import NewChatRailButton from "~/components/hub/NewChatRailButton.vue";
+import HubEmptyState from "~/components/hub/HubEmptyState.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import AnimatedStat from "~/components/AnimatedStat.vue";
 import { useChatTabs, type ChatTab } from "~/composables/useChatTabs";
@@ -27,8 +32,17 @@ import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
+  ContextMenuSeparator,
   ContextMenuTrigger,
 } from "~/components/ui/context-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
+import { useDockShortcutPrefs } from "~/composables/useDockShortcutPrefs";
 import TooltipProvider from "~/components/ui/tooltip/TooltipProvider.vue";
 import TooltipTrigger from "~/components/ui/tooltip/TooltipTrigger.vue";
 import TooltipContent from "~/components/ui/tooltip/TooltipContent.vue";
@@ -552,11 +566,36 @@ function handleSelectRoom(tab: ChatTab) {
 
 // Only a click counts as choosing a room -- the auto-select watchers above are
 // filling a gap, and must not cancel a pending restore of the stored room.
+// The same per-browser dock choices the dock's right-click menu offers, from
+// the conversation itself. Party and match rooms never sit on the dock.
+const {
+  isPinned: isShortcutPinned,
+  togglePin: toggleShortcutPin,
+  dismiss: dismissShortcut,
+  hide: hideShortcut,
+  isHidden: isShortcutHidden,
+  unhide: unhideShortcut,
+} = useDockShortcutPrefs();
+
+function onDock(tab: ChatTab) {
+  return (
+    tab.type !== "match" &&
+    tab.type !== "match_team" &&
+    !tab.id.startsWith("matchmaking:")
+  );
+}
+
+// Starting a conversation takes over the thread area until a friend is
+// picked, Esc is pressed, or another conversation is opened from the rail.
+const composing = ref(false);
+
 function handleRoomClick(tab: ChatTab) {
   // The release that ends a drag also fires a click on whatever is underneath.
   if (suppressClick) {
     return;
   }
+
+  composing.value = false;
 
   // In editing mode a tap is "I am done", not "open this".
   if (wiggling.value) {
@@ -695,6 +734,12 @@ function handlePopOut() {
                 </div>
               </div>
             </Transition>
+            <!-- Starting a conversation lives at the head of the conversations. -->
+            <NewChatRailButton
+              v-if="tab.id === firstDirectTabId"
+              :active="composing"
+              @click="composing = true"
+            />
             <!-- ContextMenu wraps the pair: its root renders no element, so
                  it cannot sit under TooltipTrigger's as-child. The two triggers
                  chain onto the one button instead. -->
@@ -786,24 +831,74 @@ function handlePopOut() {
                   </div>
                 </TooltipContent>
               </Tooltip>
-              <ContextMenuContent v-if="tab.type === 'direct'">
-                <ContextMenuItem @select="handleRemoveConversation(tab)">
-                  {{ $t("chat_rail.remove_conversation") }}
-                </ContextMenuItem>
+              <ContextMenuContent
+                v-if="onDock(tab) || tab.type === 'direct'"
+                class="w-56"
+                data-right-hub-interactive
+              >
+                <template v-if="onDock(tab)">
+                  <template v-if="!isShortcutHidden(tab.id)">
+                    <ContextMenuItem @select="toggleShortcutPin(tab.id)">
+                      {{
+                        isShortcutPinned(tab.id)
+                          ? $t("layouts.hub.dock.unpin_shortcut")
+                          : $t("layouts.hub.dock.pin_shortcut")
+                      }}
+                    </ContextMenuItem>
+                    <ContextMenuItem @select="dismissShortcut(tab.id)">
+                      {{ $t("layouts.hub.dock.remove_shortcut") }}
+                    </ContextMenuItem>
+                    <ContextMenuItem @select="hideShortcut(tab.id)">
+                      {{ $t("layouts.hub.dock.hide_shortcut") }}
+                    </ContextMenuItem>
+                  </template>
+                  <ContextMenuItem v-else @select="unhideShortcut(tab.id)">
+                    {{ $t("layouts.hub.dock.show_on_dock") }}
+                  </ContextMenuItem>
+                </template>
+                <template v-if="tab.type === 'direct'">
+                  <ContextMenuSeparator v-if="onDock(tab)" />
+                  <ContextMenuItem
+                    class="text-destructive focus:text-destructive"
+                    @select="handleRemoveConversation(tab)"
+                  >
+                    {{ $t("chat_rail.remove_conversation") }}
+                  </ContextMenuItem>
+                </template>
               </ContextMenuContent>
             </ContextMenu>
+          </template>
+          <!-- No conversations yet: the button heads where they will go. -->
+          <template v-if="!firstDirectTabId">
+            <div class="flex w-full shrink-0 justify-center">
+              <div class="my-1 h-px w-8 bg-border" />
+            </div>
+            <NewChatRailButton
+              :active="composing"
+              @click="composing = true"
+            />
           </template>
         </TooltipProvider>
       </div>
 
-      <div v-else class="flex-1" />
+      <!-- No conversations yet: the way to start one is the whole rail. -->
+      <div v-else class="flex flex-1 flex-col items-center">
+        <NewChatRailButton :active="composing" @click="composing = true" />
+      </div>
     </div>
 
     <!-- Right chat area. Closing the last conversation dissolves to the empty
          state instead of cutting; both branches fill the column, so a plain
          crossfade is the right tool. -->
     <FadeSwap class="flex-1 min-w-0">
-      <div v-if="orderedTabs.length" key="chats" class="h-full flex flex-col">
+      <div v-if="composing" key="compose" class="h-full">
+        <NewConversation @close="composing = false" />
+      </div>
+      <div
+        v-else-if="orderedTabs.length"
+        key="chats"
+        class="h-full flex flex-col"
+      >
         <!-- Header with channel title + participants + controls -->
         <div
           class="flex items-center justify-between px-3 py-3 border-b border-border bg-card/30"
@@ -867,24 +962,57 @@ function handlePopOut() {
                   {{ $t("layouts.chat_panel.pop_out_tooltip") }}
                 </TooltipContent>
               </Tooltip>
-
-              <!-- Channels are derived from what you are in, so only a
-                   conversation is yours to close. -->
-              <Tooltip v-if="activeTab?.type === 'direct'">
-                <TooltipTrigger as-child>
-                  <button
-                    type="button"
-                    class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border bg-card/50 text-muted-foreground hover:bg-destructive/15 hover:text-destructive hover:border-destructive/40 transition-colors"
-                    @click="handleCloseRoom"
-                  >
-                    <X class="w-3.5 h-3.5" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" class="text-[11px]">
-                  {{ $t("layouts.chat_panel.close_tooltip") }}
-                </TooltipContent>
-              </Tooltip>
             </TooltipProvider>
+
+            <!-- The conversation's own menu: its place on the hub dock, and,
+                 for a conversation (channels are derived from what you are
+                 in), closing it. No tooltip on the trigger: a reka tooltip
+                 wrapping a menu trigger shares its popper and hides the menu. -->
+            <DropdownMenu v-if="activeTab && (onDock(activeTab) || activeTab.type === 'direct')">
+              <DropdownMenuTrigger as-child>
+                <button
+                  type="button"
+                  class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border bg-card/50 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  :aria-label="$t('layouts.chat_panel.conversation_menu')"
+                >
+                  <MoreHorizontal class="w-3.5 h-3.5" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" class="w-56" data-right-hub-interactive>
+                <template v-if="onDock(activeTab)">
+                  <template v-if="!isShortcutHidden(activeTab.id)">
+                    <DropdownMenuItem @select="toggleShortcutPin(activeTab.id)">
+                      {{
+                        isShortcutPinned(activeTab.id)
+                          ? $t("layouts.hub.dock.unpin_shortcut")
+                          : $t("layouts.hub.dock.pin_shortcut")
+                      }}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem @select="dismissShortcut(activeTab.id)">
+                      {{ $t("layouts.hub.dock.remove_shortcut") }}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem @select="hideShortcut(activeTab.id)">
+                      {{ $t("layouts.hub.dock.hide_shortcut") }}
+                    </DropdownMenuItem>
+                  </template>
+                  <DropdownMenuItem
+                    v-else
+                    @select="unhideShortcut(activeTab.id)"
+                  >
+                    {{ $t("layouts.hub.dock.show_on_dock") }}
+                  </DropdownMenuItem>
+                </template>
+                <template v-if="activeTab.type === 'direct'">
+                  <DropdownMenuSeparator v-if="onDock(activeTab)" />
+                  <DropdownMenuItem
+                    class="text-destructive focus:text-destructive"
+                    @select="handleCloseRoom"
+                  >
+                    {{ $t("layouts.chat_panel.close_tooltip") }}
+                  </DropdownMenuItem>
+                </template>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
@@ -932,16 +1060,19 @@ function handlePopOut() {
         </div>
       </div>
       <div v-else key="empty" class="h-full flex flex-col">
-        <Empty>
-          <div class="space-y-1">
-            <p class="text-sm font-medium text-foreground">
-              {{ $t("layouts.chat_panel.no_chats_title") }}
-            </p>
-            <p class="text-xs text-muted-foreground">
-              {{ $t("layouts.chat_panel.no_chats_description") }}
-            </p>
-          </div>
-        </Empty>
+        <HubEmptyState
+          :title="$t('layouts.chat_panel.start_title')"
+          :description="$t('layouts.chat_panel.start_description')"
+        >
+          <button
+            type="button"
+            class="tac-amber-cta inline-flex h-8 items-center gap-1.5 rounded-md border px-3 text-xs font-semibold"
+            @click="composing = true"
+          >
+            <Plus class="h-3.5 w-3.5" />
+            {{ $t("layouts.chat_panel.new_message") }}
+          </button>
+        </HubEmptyState>
       </div>
     </FadeSwap>
   </div>

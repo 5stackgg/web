@@ -2,12 +2,30 @@
 import { ChevronDown, Merge, Play } from "lucide-vue-next";
 import MatchLobbySelector from "./MatchLobbySelector.vue";
 import MatchLobby from "~/components/matchmaking-lobby/MatchLobby.vue";
+import QuickPlayButton from "~/components/matchmaking-lobby/QuickPlayButton.vue";
+import { currentHub, setActiveHub } from "~/composables/useHubState";
+import { useRightSidebar } from "~/composables/useRightSidebar";
 import { Spinner } from "~/components/ui/spinner";
 import { e_player_roles_enum } from "~/generated/zeus";
 
 const isElevatedUser = computed(() =>
   useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer),
 );
+
+// The pill is the party's tab: the hub panel opens right below it, on the
+// party room, and clicking the pill again closes it.
+const { rightSidebarOpen, setRightSidebarOpen } = useRightSidebar();
+const partyRoomOpen = computed(
+  () => rightSidebarOpen.value && currentHub() === "lobby",
+);
+function togglePartyRoom() {
+  if (partyRoomOpen.value) {
+    setRightSidebarOpen(false);
+    return;
+  }
+  setActiveHub("lobby");
+  setRightSidebarOpen(true);
+}
 </script>
 
 <template>
@@ -75,28 +93,32 @@ const isElevatedUser = computed(() =>
         leave-active-class="play-reveal"
         leave-to-class="play-reveal-collapsed"
       >
-        <div v-if="showPlayButton" class="grid min-w-0 grid-cols-[1fr]">
+        <div v-if="showQuickPlay" class="grid min-w-0 grid-cols-[1fr]">
           <div class="play-reveal-cell min-w-0">
             <div class="pr-2">
+              <QuickPlayButton
+                v-if="matchmakingAllowed || inQueue"
+                :leader="isLobbyLeader"
+              />
               <NuxtLink
+                v-else
                 to="/play"
                 :title="$t('layouts.lobby_panel.find_match')"
-                class="group/play relative isolate inline-flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-md border border-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] no-underline [background:linear-gradient(135deg,var(--tac-amber-cta-from)_0%,hsl(var(--tac-amber))_50%,var(--tac-amber-cta-to)_100%)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_6px_20px_-6px_hsl(var(--tac-amber)/0.6)] transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-px hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.6),0_12px_32px_-6px_hsl(var(--tac-amber)/0.8),0_0_24px_hsl(var(--tac-amber)/0.35)] active:translate-y-0"
+                class="group/play relative isolate inline-flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-md border border-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] no-underline [background:linear-gradient(135deg,var(--tac-amber-cta-from)_0%,hsl(var(--tac-amber))_50%,var(--tac-amber-cta-to)_100%)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_6px_20px_-6px_hsl(var(--tac-amber)/0.6)] transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-px active:translate-y-0"
               >
-                <Play
-                  class="relative z-[1] h-4 w-4 fill-current transition-transform duration-300 group-hover/play:scale-110"
-                />
-                <span
-                  class="pointer-events-none absolute inset-0 z-0 -translate-x-full bg-[linear-gradient(90deg,transparent_0%,hsl(0_0%_100%_/_0.4)_50%,transparent_100%)] transition-transform duration-500 group-hover/play:translate-x-full"
-                  aria-hidden="true"
-                ></span>
+                <Play class="relative z-[1] h-4 w-4 fill-current" />
               </NuxtLink>
             </div>
           </div>
         </div>
       </Transition>
 
-      <MatchLobby :lobby="currentLobby" />
+      <MatchLobby
+        :lobby="currentLobby"
+        :active="partyRoomOpen"
+        data-right-hub-interactive
+        @open="togglePartyRoom"
+      />
     </div>
 
     <!-- This button's whole chrome (gradient frame, fill) is slot content, so
@@ -106,9 +128,13 @@ const isElevatedUser = computed(() =>
          shown in place instead (icon becomes the spinner, chrome stays), and
          the click handler deliberately returns nothing so Button's async
          auto-pending never engages. -->
+    <div v-else key="create" class="flex items-center gap-2">
+    <!-- A solo search has no party pill, so its clock sits here instead. -->
+    <QuickPlayButton
+      v-if="inQueue && $route.name !== 'play'"
+      :leader="true"
+    />
     <Button
-      v-else
-      key="create"
       variant="ghost"
       @click="
         () => {
@@ -139,6 +165,7 @@ const isElevatedUser = computed(() =>
         }}</span>
       </div>
     </Button>
+    </div>
   </Transition>
 </template>
 
@@ -247,13 +274,19 @@ export default {
       });
       return !!me?.captain;
     },
-    showPlayButton() {
+    inQueue() {
+      return !!(useMatchmakingStore().joinedMatchmakingQueues as any)?.details;
+    },
+    // Leaders get the Play control; everyone sees the search clock while the
+    // party is queued. The Play page has its own, so the header stays quiet there.
+    showQuickPlay() {
       return (
-        this.isLobbyLeader &&
-        (this.matchmakingAllowed || this.canCreateMatch) &&
         this.$route.name !== "play" &&
         this.myMatches.length === 0 &&
-        !this.myDraftGame
+        !this.myDraftGame &&
+        (this.inQueue ||
+          (this.isLobbyLeader &&
+            (this.matchmakingAllowed || this.canCreateMatch)))
       );
     },
     myDraftGame() {

@@ -445,7 +445,10 @@ const dismissItem = (item: ToastItem) => {
          when empty, and gating it on the list emptying in the same tick as the
          last toast's dismissal used to unmount the group mid-leave -- the
          single-toast case (the common one) never played its exit. -->
+    <!-- Part of the hub for dismissal: they slide over when it closes, so a
+         click that closed it first would land where the toast used to be. -->
     <div
+      data-right-hub-interactive
       class="pointer-events-none fixed bottom-4 left-2 right-2 z-[60] flex flex-col transition-[right,bottom,opacity,transform,visibility] duration-200 ease-linear max-md:motion-reduce:transition-none md:left-auto md:w-[340px]"
       :class="[
         rightSidebarOpen ? 'md:right-[30.75rem]' : 'md:right-[4.75rem]',

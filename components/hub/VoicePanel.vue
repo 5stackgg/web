@@ -25,14 +25,6 @@ function onScreen() {
 
 <template>
   <div class="flex h-full flex-col">
-    <div class="flex-shrink-0 border-b border-border px-3 pb-3 pt-3">
-      <div
-        class="flex items-center gap-[0.4rem] font-mono text-[0.62rem] font-bold uppercase tracking-[0.24em] text-muted-foreground"
-      >
-        <span class="h-[2px] w-2 bg-[hsl(var(--tac-amber))]"></span>
-        {{ $t("layouts.hub.voice") }}
-      </div>
-    </div>
 
     <!-- Being in a call and not being in one are the two states this panel
          has, and it used to cut between them on a frame. Same curve as the

@@ -23,6 +23,14 @@ const props = withDefaults(
     muted?: boolean;
     audio?: boolean;
     disableShortcuts?: boolean;
+    // Start the WebRTC handshake before `isLive` while the boot screen is
+    // still up, so the picture is already flowing when it fades away.
+    // For publishers that come up before they're worth showing (a demo
+    // pod streams its loading screen before the demo plays).
+    preconnect?: boolean;
+    // Forwarded to WhepPlayer: playout buffer to trade latency for even
+    // frame pacing.
+    jitterBufferMs?: number;
   }>(),
   {
     isLive: null,
@@ -30,6 +38,7 @@ const props = withDefaults(
     showBoot: false,
     enablePip: false,
     audio: true,
+    preconnect: false,
   },
 );
 
@@ -75,6 +84,9 @@ const canPlay = computed(() => {
   }
   return !!displayWhepUrl.value;
 });
+const mountPlayer = computed(
+  () => !!displayWhepUrl.value && (canPlay.value || props.preconnect),
+);
 
 const effectiveStatus = computed<string>(
   () => props.status ?? props.stream?.status ?? "booting",
@@ -120,11 +132,14 @@ defineExpose({ rootEl });
         </template>
       </WhepPlayer>
     </template>
-    <Transition v-else name="boot-live" mode="out-in">
+    <!-- Boot → live is a crossfade, not out-in: the player mounts (and
+         starts its WebRTC handshake) the moment the stream is live, and
+         the boot screen fades away on top of it. out-in held the player
+         back until the boot screen had finished leaving. -->
+    <template v-else>
       <WhepPlayer
-        v-if="canPlay && displayWhepUrl"
-        key="live"
-        :whep-url="displayWhepUrl"
+        v-if="mountPlayer"
+        :whep-url="displayWhepUrl!"
         :fallback-url="displayFallback"
         :disable-fullscreen-shortcut="disableFullscreenShortcut"
         :enable-pip="enablePip"
@@ -132,54 +147,53 @@ defineExpose({ rootEl });
         :audio="audio"
         :disable-shortcuts="disableShortcuts"
         trickle
+        :jitter-buffer-ms="jitterBufferMs"
         class="absolute inset-0"
+        :class="{ isolate: !canPlay }"
         @phase="emit('phase', $event)"
       >
         <template v-if="$slots.status" #status="statusProps">
           <slot name="status" v-bind="statusProps" />
         </template>
       </WhepPlayer>
-      <div
-        v-else
-        key="boot"
-        class="absolute inset-0 flex flex-col items-center justify-center gap-4 overflow-auto px-6 py-6 text-center"
-      >
-        <slot
-          name="boot"
-          :status="effectiveStatus"
-          :error-message="effectiveError"
-          :last-status-at="effectiveLastStatusAt"
-          :status-history="effectiveHistory"
+      <Transition name="boot-fade">
+        <div
+          v-if="!canPlay"
+          class="absolute inset-0 flex flex-col items-center justify-center gap-4 overflow-auto bg-black px-6 py-6 text-center"
         >
-          <BootSequence
-            :mode="mode"
+          <slot
+            name="boot"
             :status="effectiveStatus"
             :error-message="effectiveError"
             :last-status-at="effectiveLastStatusAt"
-            :histories="[effectiveHistory]"
-            :header-label="headerLabel"
-          />
-        </slot>
-      </div>
-    </Transition>
+            :status-history="effectiveHistory"
+          >
+            <BootSequence
+              :mode="mode"
+              :status="effectiveStatus"
+              :error-message="effectiveError"
+              :last-status-at="effectiveLastStatusAt"
+              :histories="[effectiveHistory]"
+              :header-label="headerLabel"
+            />
+          </slot>
+        </div>
+      </Transition>
+    </template>
 
     <slot />
   </div>
 </template>
 
 <style scoped>
-.boot-live-enter-active,
-.boot-live-leave-active {
-  transition:
-    opacity 350ms ease,
-    transform 350ms ease;
+/* Opacity only — no scale. Transforming a layer over (or holding) a video
+   re-rasterises it every frame of the transition. */
+.boot-fade-enter-active,
+.boot-fade-leave-active {
+  transition: opacity 200ms ease;
 }
-.boot-live-enter-from {
+.boot-fade-enter-from,
+.boot-fade-leave-to {
   opacity: 0;
-  transform: scale(1.02);
-}
-.boot-live-leave-to {
-  opacity: 0;
-  transform: scale(0.98);
 }
 </style>

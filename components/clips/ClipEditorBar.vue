@@ -27,6 +27,7 @@ import { useDemoPlaybackStore } from "~/stores/DemoPlaybackStore";
 import { useDemoPlayback } from "~/composables/useDemoPlayback";
 import { useClipEditor, type EditorSegment } from "~/composables/useClipEditor";
 import { useClipRenderActive } from "~/composables/useClipRenderActive";
+import { useDemoPlayhead } from "~/composables/useDemoPlayhead";
 import { generateMutation } from "~/graphql/graphqlGen";
 import type { ClipSpec } from "~/graphql/clipRenderJob";
 import ClipRenderProgress from "~/components/clips/ClipRenderProgress.vue";
@@ -67,11 +68,14 @@ watch(renderActive, (active) => {
 });
 
 const max = computed(() => Math.max(1, store.totalTicks || 0));
-// Quantized to 0.02% — an unrounded string differs on every 20Hz tick
-// and patches the style for invisible motion.
-const playheadPct = computed(() => {
-  const pct = (Math.min(store.currentTick, max.value) / max.value) * 100;
-  return `${Math.round(pct * 50) / 50}%`;
+// Moved per frame with a transform on its own layer — no re-render, no
+// layout. The wrapper spans the rail, so translateX(n%) is n% of the rail.
+const playheadEl = ref<HTMLDivElement | null>(null);
+useDemoPlayhead((tick) => {
+  const el = playheadEl.value;
+  if (!el) return;
+  const pct = (Math.max(0, Math.min(tick, max.value)) / max.value) * 100;
+  el.style.transform = `translate3d(${pct}%,0,0)`;
 });
 
 function pctOf(tick: number) {
@@ -254,7 +258,7 @@ const draftStyle = computed(() => {
 });
 
 function addAtPlayhead() {
-  editor.addSegmentAt(store.currentTick);
+  editor.addSegmentAt(store.tickNow());
 }
 function splitSelected() {
   if (!editor.selectedId.value) return;
@@ -331,9 +335,7 @@ function onRenderClose() {
 </script>
 
 <template>
-  <div
-    class="border-t border-b border-border/60 bg-card/40 [backdrop-filter:blur(8px)] px-3 sm:px-4 py-3"
-  >
+  <div class="border-t border-b border-border/60 bg-card/40 px-3 sm:px-4 py-3">
     <ClipRenderProgress
       v-if="renderingJobId"
       :job-id="renderingJobId"
@@ -502,9 +504,13 @@ function onRenderClose() {
           />
 
           <div
-            :style="{ left: playheadPct }"
-            class="absolute top-0 bottom-0 w-0.5 bg-foreground/80 pointer-events-none shadow-[0_0_4px_rgba(255,255,255,0.5)]"
-          />
+            ref="playheadEl"
+            class="absolute inset-0 pointer-events-none will-change-transform"
+          >
+            <div
+              class="absolute left-0 top-0 bottom-0 w-0.5 -translate-x-1/2 bg-foreground/80 shadow-[0_0_4px_rgba(255,255,255,0.5)]"
+            />
+          </div>
         </div>
 
         <div

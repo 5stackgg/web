@@ -29,7 +29,6 @@ import { e_player_roles_enum } from "~/generated/zeus";
 import CreateClipDialog from "~/components/clips/CreateClipDialog.vue";
 import { Button } from "~/components/ui/button";
 import { Kbd } from "~/components/ui/kbd";
-import { Slider } from "~/components/ui/slider";
 import {
   Select,
   SelectContent,
@@ -52,6 +51,8 @@ import {
   useBroadcastHuds,
 } from "~/composables/useBroadcastHuds";
 import RoundSelector from "~/components/match/RoundSelector.vue";
+import DemoSeekBar from "~/components/match/DemoSeekBar.vue";
+import { roundIndexAt } from "~/utilities/demoTickEstimate";
 import SpectatorSlots from "~/components/stream-deck/SpectatorSlots.vue";
 import { resolveKeyToRealSlot } from "~/utilities/streamerSpecSlots";
 
@@ -77,12 +78,10 @@ const {
   store,
   togglePause,
   skip,
-  seek,
   setSpeed,
   jumpToRound,
   jumpToNextKill,
   jumpToPrevKill,
-  jumpToKillTick,
   jumpToNextRound,
   jumpToPrevRound,
   switchToSlot,
@@ -159,91 +158,25 @@ watch(
 // just play/pause/skip/speed.
 const hasMetadata = computed(() => store.totalTicks > 0 && store.tickRate > 0);
 
-const seekModel = ref<number[]>([0]);
-const dragging = ref(false);
-
-// Smooths the seek thumb on jumps; small per-frame diffs track 1:1.
-const visualTick = ref(0);
-let rafHandle: number | null = null;
-
-// :key bumps each pulse so the CSS animation restarts from frame 0.
-const pulseSerial = ref(0);
-const pulseTick = ref(0);
-function pulseAt(tick: number) {
-  pulseTick.value = tick;
-  pulseSerial.value++;
-}
-const pulseLeft = computed(() =>
-  store.totalTicks > 0
-    ? `${(pulseTick.value / store.totalTicks) * 100}%`
-    : "0%",
+// Round strip + end-of-demo prompt follow the seek bar's on-screen
+// position (playhead, or the drag while scrubbing). The seek bar reports
+// every frame; these only write when the value actually changes, so the
+// controls re-render on a round boundary, not per frame.
+const sortedRounds = computed(() =>
+  store.roundTicks.slice().sort((a, b) => a.start_tick - b.start_tick),
 );
-// Skip writes when nothing changed so a paused demo doesn't fire a
-// reactive update every frame.
-function frame() {
-  if (rafHandle === null) return;
-  rafHandle = requestAnimationFrame(frame);
-  if (!hasMetadata.value || dragging.value) return;
-  const target = store.currentTick;
-  const diff = target - visualTick.value;
-  if (diff === 0) return;
-  const threshold = store.tickRate * 0.75;
-  if (Math.abs(diff) > threshold) {
-    // Big jump — ease in (0.18 ≈ 300ms at 60fps).
-    visualTick.value += diff * 0.18;
-    if (Math.abs(target - visualTick.value) < 2) visualTick.value = target;
-  } else {
-    visualTick.value = target;
-  }
-  const nextSlider = Math.round(visualTick.value);
-  // Quantize to ~1px of thumb travel — sub-pixel writes re-render the
-  // slider every rAF frame for invisible motion.
-  const minStep = Math.max(1, Math.floor(store.totalTicks / 1500));
-  if (Math.abs(nextSlider - (seekModel.value[0] ?? 0)) >= minStep) {
-    seekModel.value = [nextSlider];
-  }
+const currentRound = ref<number | null>(null);
+// Once the playhead crosses the end, cs2 has dropped back to the menu —
+// surface a "Reload?" prompt. Auto-dismisses on R / Reload.
+const showReloadPrompt = ref(false);
+function onSeekPosition(tick: number) {
+  const idx = roundIndexAt(sortedRounds.value, tick);
+  const round = idx >= 0 ? sortedRounds.value[idx].round : null;
+  if (round !== currentRound.value) currentRound.value = round;
+  const ended = store.totalTicks > 0 && tick >= store.totalTicks - 32;
+  if (ended !== showReloadPrompt.value) showReloadPrompt.value = ended;
 }
 
-function syncVisualTickFromStore() {
-  visualTick.value = store.currentTick;
-  seekModel.value = [store.currentTick];
-}
-
-function startFrameLoop() {
-  if (rafHandle !== null) return;
-  rafHandle = requestAnimationFrame(frame);
-}
-
-function stopFrameLoop() {
-  if (rafHandle !== null) {
-    cancelAnimationFrame(rafHandle);
-    rafHandle = null;
-  }
-}
-
-const shouldAnimateScrubber = computed(
-  () => hasMetadata.value && store.isPlaying && !store.paused,
-);
-
-watch(
-  shouldAnimateScrubber,
-  (active) => {
-    if (active && !dragging.value) startFrameLoop();
-    else {
-      stopFrameLoop();
-      if (hasMetadata.value) syncVisualTickFromStore();
-    }
-  },
-  { immediate: true },
-);
-
-watch(dragging, (isDragging) => {
-  if (isDragging) {
-    stopFrameLoop();
-    return;
-  }
-  if (shouldAnimateScrubber.value) startFrameLoop();
-});
 // Keyboard shortcuts. Mirrors stream-deck plus playback-specific keys.
 function isTypingTarget(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false;
@@ -360,60 +293,18 @@ function onKeyUp(e: KeyboardEvent) {
 }
 
 onMounted(() => {
-  syncVisualTickFromStore();
   window.addEventListener("keydown", onKeyDown);
   window.addEventListener("keyup", onKeyUp);
 });
 onBeforeUnmount(() => {
-  stopFrameLoop();
   window.removeEventListener("keydown", onKeyDown);
   window.removeEventListener("keyup", onKeyUp);
   endScoreboardHold();
 });
 
-function onSeekStart() {
-  dragging.value = true;
-}
-function onSeekUpdate(v: number[] | undefined) {
-  if (!v) return;
-  seekModel.value = v;
-  // Keep the smoothing layer pinned to the user's drag position so
-  // when the drag ends + rAF resumes, visualTick already matches the
-  // slider — otherwise the rAF would see a gap and yank the thumb
-  // back to the pre-drag position before easing forward.
-  if (typeof v[0] === "number") visualTick.value = v[0];
-}
-async function onSeekCommit(v: number[] | undefined) {
-  dragging.value = false;
-  if (v && v.length) {
-    // Snap visualTick to the committed value before the seek round-
-    // trip lands — otherwise the next rAF frame reads currentTick
-    // (still the old value for ~1 frame), computes a "jump" back, and
-    // animates the thumb backwards before catching forward.
-    visualTick.value = v[0];
-    pulseAt(v[0]);
-    await seek(v[0]);
-  }
-}
 function onSpeedChange(value: unknown) {
   const n = Number(value);
   if (Number.isFinite(n)) void setSpeed(n);
-}
-
-// Display the smoothed visual tick so the time label, slider thumb,
-// and any future markers all read from the same eased value during a
-// jump. Falls back to the truth instantly outside of jumps.
-const visualSeconds = computed(() =>
-  store.tickRate > 0 ? visualTick.value / store.tickRate : 0,
-);
-const formattedCurrent = computed(() => formatSeconds(visualSeconds.value));
-const formattedTotal = computed(() => formatSeconds(store.totalSeconds));
-function formatSeconds(s: number): string {
-  if (!Number.isFinite(s) || s < 0) return "0:00";
-  const total = Math.floor(s);
-  const m = Math.floor(total / 60);
-  const sec = total % 60;
-  return `${m}:${sec.toString().padStart(2, "0")}`;
 }
 
 // All presets are bound to F-keys in the autoexec so changing speed
@@ -434,21 +325,51 @@ type KillPlayer = {
   name: string;
   team: "T" | "CT" | null;
 };
+// steam_id → GSI name/team. GSI lands every second with fresh health, so
+// this keeps its previous identity unless a name or side actually changed
+// — otherwise the roster below (and the dropdown) would rebuild and
+// re-sort every second of a fight.
+type GsiIdentity = Map<
+  string,
+  { name: string | null; team: "T" | "CT" | null }
+>;
+const gsiIdentity = computed<GsiIdentity>((prev) => {
+  const next: GsiIdentity = new Map();
+  for (const s of store.specSlots) {
+    if (s.steam_id) next.set(s.steam_id, { name: s.name, team: s.team });
+  }
+  if (prev && prev.size === next.size) {
+    let same = true;
+    for (const [sid, v] of next) {
+      const p = prev.get(sid);
+      if (!p || p.name !== v.name || p.team !== v.team) {
+        same = false;
+        break;
+      }
+    }
+    if (same) return prev;
+  }
+  return next;
+});
+// Prefer GSI's name (always matches the demo file) over the api
+// lineup name (which can be wrong for cross-loaded demos).
+function displayNameFor(sid: string): string {
+  return (
+    gsiIdentity.value.get(sid)?.name ??
+    store.playerNames[sid] ??
+    `#${sid.slice(-4)}`
+  );
+}
 const demoPlayers = computed<KillPlayer[]>(() => {
   const seen = new Set<string>();
   const players: KillPlayer[] = [];
-  const gsiByStId = new Map<string, (typeof store.specSlots)[number]>();
-  for (const s of store.specSlots) {
-    if (s.steam_id) gsiByStId.set(s.steam_id, s);
-  }
   const add = (sid: string | undefined) => {
     if (!sid || seen.has(sid)) return;
     seen.add(sid);
-    const gsi = gsiByStId.get(sid);
     players.push({
       steam_id: sid,
-      name: gsi?.name ?? store.playerNames[sid] ?? `#${sid.slice(-4)}`,
-      team: gsi?.team ?? null,
+      name: displayNameFor(sid),
+      team: gsiIdentity.value.get(sid)?.team ?? null,
     });
   };
   for (const k of store.kills) {
@@ -471,22 +392,19 @@ const otherDemoPlayers = computed(() =>
   demoPlayers.value.filter((p) => p.team !== "CT" && p.team !== "T"),
 );
 const hasDemoPlayers = computed(() => demoPlayers.value.length > 0);
-function killCountFor(steamId: string) {
-  let n = 0;
+// One pass over the kill list per mode, instead of one per dropdown row
+// per render.
+const killCounts = computed(() => {
+  const counts = new Map<string, number>();
+  const byVictim = store.killFilterMode === "victim";
   for (const k of store.kills) {
-    const match =
-      store.killFilterMode === "victim"
-        ? k.victim === steamId
-        : k.killer === steamId;
-    if (match) n++;
+    const sid = byVictim ? k.victim : k.killer;
+    if (sid) counts.set(sid, (counts.get(sid) ?? 0) + 1);
   }
-  return n;
-}
-// Prefer GSI's name (always matches the demo file) over the api
-// lineup name (which can be wrong for cross-loaded demos).
-function displayNameFor(sid: string): string {
-  const gsi = store.specSlots.find((s) => s.steam_id === sid);
-  return gsi?.name ?? store.playerNames[sid] ?? `#${sid.slice(-4)}`;
+  return counts;
+});
+function killCountFor(steamId: string) {
+  return killCounts.value.get(steamId) ?? 0;
 }
 // Mirrors filteredKills in useDemoPlayback: explicit pick wins, else
 // the spectated player.
@@ -520,139 +438,48 @@ const playbackRounds = computed<
     winnerSide: r.winner === "ct" ? "CT" : r.winner === "t" ? "T" : null,
   })),
 );
-const currentRound = computed<number | null>(() => {
-  const tick = visualTick.value;
-  for (const r of store.roundTicks) {
-    if (tick >= r.start_tick && tick <= r.end_tick) return r.round;
-  }
-  return null;
-});
 function onRoundSelect(round: number | null) {
   if (round != null) jumpToRound(round);
 }
 
-// End-of-demo detection. Once visualTick crosses the last round's
-// end + a small epsilon, surface a "Reload?" prompt — cs2 has
-// dropped back to the menu by then. Auto-dismisses if the operator
-// hits R / clicks Reload.
-const showReloadPrompt = computed(() => {
-  if (!hasMetadata.value || !store.totalTicks) return false;
-  return visualTick.value >= store.totalTicks - 32;
-});
 function onKillFilterChange(value: unknown) {
   const v = typeof value === "string" ? value : null;
   setKillFilter(v && v !== "__all__" ? v : null);
 }
-
-// Marker rendering. Round starts are landmarks (amber tick on the
-// rail itself), kills get a small skull glyph above the bar, colored
-// by the victim's team — blue for CTs killed, amber for Ts killed.
-// Kills are downsampled so a 36-round match doesn't render hundreds.
-type Marker = {
-  left: string;
-  type: "kill" | "round";
-  label: string;
-  tick: number;
-  victimTeam?: "ct" | "t";
-  headshot?: boolean;
-};
-// Via jumpToKillTick so the N/P anchor tracks the clicked kill.
-function jumpToKill(tick: number) {
-  const lead = Math.round(10 * store.tickRate);
-  pulseAt(Math.max(0, tick - lead));
-  jumpToKillTick(tick);
-}
-function nameFor(steamId: string | undefined): string | null {
-  if (!steamId) return null;
-  // Steam IDs come through as numeric strings; the lineup map is
-  // keyed the same way. Falls through to a short suffix so anonymous
-  // bots / world damage don't render as a 17-char id.
-  return store.playerNames[steamId] ?? `#${steamId.slice(-4)}`;
-}
-function killLabel(k: {
-  killer?: string;
-  victim?: string;
-  headshot?: boolean;
-  weapon?: string;
-}) {
-  const killer = nameFor(k.killer);
-  const victim = nameFor(k.victim);
-  const verb = k.headshot ? "headshot" : "killed";
-  const weapon = k.weapon ? ` (${k.weapon})` : "";
-  if (killer && victim) return `${killer} ${verb} ${victim}${weapon}`;
-  if (victim) return `${victim} died${weapon}`;
-  return k.headshot ? "Headshot kill" : "Kill";
-}
-// Kills shown on the seek bar respect the active player filter +
-// filter mode (kills BY the player, or deaths OF the player).
-const filteredKillsForMarkers = computed(() => {
-  if (!store.killFilterSteamId) return store.kills;
-  const sid = store.killFilterSteamId;
-  return store.kills.filter((k) =>
-    store.killFilterMode === "victim" ? k.victim === sid : k.killer === sid,
-  );
-});
-const roundMarkers = computed<Marker[]>(() => {
-  if (!hasMetadata.value) return [];
-  const total = store.totalTicks;
-  return store.roundTicks.map((r) => ({
-    left: `${(r.start_tick / total) * 100}%`,
-    type: "round" as const,
-    tick: r.start_tick,
-    label: `Round ${r.round}`,
-  }));
-});
-const killMarkers = computed<Marker[]>(() => {
-  if (!hasMetadata.value) return [];
-  const out: Marker[] = [];
-  const total = store.totalTicks;
-  const kills = filteredKillsForMarkers.value;
-  const killStride = Math.max(1, Math.floor(kills.length / 80));
-  for (let i = 0; i < kills.length; i += killStride) {
-    const k = kills[i];
-    out.push({
-      left: `${(k.tick / total) * 100}%`,
-      type: "kill",
-      tick: k.tick,
-      victimTeam: k.victim_team,
-      headshot: !!k.headshot,
-      label: killLabel(k),
-    });
-  }
-  return out;
-});
 </script>
 
 <template>
   <!-- Real <div> root so the parent's Transition has an element to
        animate; TooltipProvider renders no DOM. -->
   <div
-    class="flex flex-col gap-3 px-5 py-4 bg-card/95 backdrop-blur-sm border-t border-border/60"
+    class="relative flex flex-col gap-3 px-5 py-4 bg-card border-t border-border/60"
   >
-    <TooltipProvider>
-      <Transition name="reload-prompt">
-        <div
-          v-if="showReloadPrompt"
-          class="flex items-center justify-between gap-3 rounded-md border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.08)] px-3 py-2"
+    <!-- Floats over the bottom of the video instead of pushing the bar
+         open: growing the bar would shrink the video under it. -->
+    <Transition name="reload-prompt">
+      <div
+        v-if="showReloadPrompt"
+        class="absolute bottom-full left-1/2 z-20 mb-3 flex -translate-x-1/2 items-center gap-3 whitespace-nowrap rounded-md border border-[hsl(var(--tac-amber)/0.5)] bg-[#0c0c0f] px-3 py-2 shadow-[0_12px_28px_-10px_rgba(0,0,0,0.9)]"
+      >
+        <span
+          class="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
         >
-          <span
-            class="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
-          >
-            {{ $t("match.demo_playback.demo_ended") }}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            class="h-7 cursor-pointer transition-all hover:scale-105"
-            @click="reloadDemo"
-          >
-            <RotateCcw class="h-3.5 w-3.5 mr-1.5" />
-            {{ $t("match.demo_playback.reload") }}
-            <Kbd class="ml-2">R</Kbd>
-          </Button>
-        </div>
-      </Transition>
+          {{ $t("match.demo_playback.demo_ended") }}
+        </span>
+        <Button
+          variant="outline"
+          size="sm"
+          class="h-7 cursor-pointer"
+          @click="reloadDemo"
+        >
+          <RotateCcw class="h-3.5 w-3.5 mr-1.5" />
+          {{ $t("match.demo_playback.reload") }}
+          <Kbd class="ml-2">R</Kbd>
+        </Button>
+      </div>
+    </Transition>
 
+    <TooltipProvider>
       <RoundSelector
         v-if="store.roundTicks.length"
         :rounds="playbackRounds"
@@ -661,101 +488,7 @@ const killMarkers = computed<Marker[]>(() => {
         @update:model-value="onRoundSelect"
       />
 
-      <div v-if="hasMetadata" class="flex items-center gap-4">
-        <!-- Doubles as the seek-settle indicator — a settling gototick
-             freezes the video, which reads as a hang without feedback. -->
-        <span
-          class="font-mono text-sm tabular-nums min-w-[3.5rem] text-right"
-          :class="
-            store.seeking
-              ? 'text-[hsl(var(--tac-amber))] animate-pulse'
-              : 'text-muted-foreground'
-          "
-          :title="store.seeking ? $t('match.demo_playback.seeking') : undefined"
-        >
-          {{ formattedCurrent }}
-        </span>
-        <div class="flex-1 relative">
-          <!-- Skull rail — two-tone by victim team. Plain buttons (not
-               reka-ui Tooltip) because TransitionGroup needs real DOM. -->
-          <TransitionGroup
-            tag="div"
-            name="skull"
-            class="relative h-4 mb-1 pointer-events-none"
-            aria-hidden="true"
-          >
-            <button
-              v-for="m in killMarkers"
-              :key="`s-${m.tick}`"
-              type="button"
-              :style="{ left: m.left }"
-              class="absolute bottom-0 -translate-x-1/2 pointer-events-auto cursor-pointer transition-all duration-150 hover:scale-150 hover:-translate-y-0.5 active:scale-125"
-              :title="$t('match.demo_playback.click_to_jump', { label: m.label })"
-              @click="jumpToKill(m.tick)"
-            >
-              <Skull
-                :class="[
-                  m.headshot ? 'h-4 w-4' : 'h-3 w-3',
-                  {
-                    'text-blue-400 drop-shadow-[0_0_4px_rgba(96,165,250,0.7)]':
-                      m.victimTeam === 'ct',
-                    'text-amber-400 drop-shadow-[0_0_4px_rgba(251,191,36,0.7)]':
-                      m.victimTeam === 't',
-                    'text-red-400/70': !m.victimTeam,
-                  },
-                ]"
-                :stroke-width="m.headshot ? 3 : 2.25"
-              />
-            </button>
-          </TransitionGroup>
-
-          <div class="relative h-6">
-            <Slider
-              :model-value="seekModel"
-              :min="0"
-              :max="store.totalTicks"
-              :step="1"
-              class="absolute inset-0 z-10 cursor-pointer"
-              @update:model-value="onSeekUpdate"
-              @pointerdown="onSeekStart"
-              @value-commit="onSeekCommit"
-            />
-            <div
-              class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-4 pointer-events-none"
-            >
-              <Tooltip v-for="m in roundMarkers" :key="`r-${m.tick}`">
-                <TooltipTrigger as-child>
-                  <button
-                    type="button"
-                    :style="{ left: m.left }"
-                    class="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-auto h-3 w-[2px] bg-[hsl(var(--tac-amber))] cursor-pointer hover:h-4 hover:w-[3px] hover:bg-[hsl(var(--tac-amber))] transition-all duration-150"
-                    :title="
-                      $t('match.demo_playback.click_to_jump', {
-                        label: m.label,
-                      })
-                    "
-                    @click="seek(m.tick)"
-                  />
-                </TooltipTrigger>
-                <TooltipContent>{{ m.label }}</TooltipContent>
-              </Tooltip>
-            </div>
-
-            <span
-              v-if="pulseSerial > 0"
-              :key="pulseSerial"
-              :style="{ left: pulseLeft }"
-              class="seek-pulse absolute top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none"
-              aria-hidden="true"
-            />
-          </div>
-        </div>
-        <span
-          class="font-mono text-sm tabular-nums text-muted-foreground min-w-[3.5rem]"
-        >
-          {{ formattedTotal }}
-        </span>
-      </div>
+      <DemoSeekBar v-if="hasMetadata" @position="onSeekPosition" />
       <p
         v-else
         class="text-xs uppercase tracking-wider text-muted-foreground/70"
@@ -787,7 +520,7 @@ const killMarkers = computed<Marker[]>(() => {
               <Button
                 variant="outline"
                 size="icon"
-                class="h-9 w-9 cursor-pointer transition-all duration-150 hover:scale-110 hover:border-[hsl(var(--tac-amber)/0.6)] active:scale-95"
+                class="h-9 w-9 cursor-pointer hover:border-[hsl(var(--tac-amber)/0.6)]"
                 :disabled="!hasMetadata || !store.roundTicks.length"
                 @click="jumpToPrevRound"
               >
@@ -803,7 +536,7 @@ const killMarkers = computed<Marker[]>(() => {
               <Button
                 variant="outline"
                 size="icon"
-                class="h-9 w-9 cursor-pointer transition-all duration-150 hover:scale-110 hover:border-[hsl(var(--tac-amber)/0.6)] active:scale-95"
+                class="h-9 w-9 cursor-pointer hover:border-[hsl(var(--tac-amber)/0.6)]"
                 :disabled="!hasMetadata || !store.roundTicks.length"
                 @click="jumpToNextRound"
               >
@@ -818,7 +551,7 @@ const killMarkers = computed<Marker[]>(() => {
           <button
             v-if="hasDemoPlayers"
             type="button"
-            class="ml-1 font-mono text-[0.6rem] uppercase tracking-[0.18em] cursor-pointer transition-all duration-150 hover:text-foreground"
+            class="ml-1 font-mono text-[0.6rem] uppercase tracking-[0.18em] cursor-pointer transition-colors duration-100 hover:text-foreground"
             :class="
               store.killFilterMode === 'killer'
                 ? 'text-[hsl(var(--tac-amber))]'
@@ -936,7 +669,7 @@ const killMarkers = computed<Marker[]>(() => {
               <button
                 type="button"
                 :disabled="!hasMetadata || !store.kills.length"
-                class="kill-nav inline-flex items-center justify-center gap-0.5 h-10 w-14 rounded-md border border-red-500/40 bg-red-500/5 text-red-300/90 cursor-pointer transition-all duration-100 hover:border-red-500/80 hover:bg-red-500/15 hover:text-red-200 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-red-500/5"
+                class="kill-nav inline-flex items-center justify-center gap-0.5 h-10 w-14 rounded-md border border-red-500/40 bg-red-500/5 text-red-300/90 cursor-pointer transition-colors duration-100 hover:border-red-500/80 hover:bg-red-500/15 hover:text-red-200 active:bg-red-500/25 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-red-500/5"
                 @click="jumpToPrevKill"
               >
                 <ChevronsLeft class="h-3.5 w-3.5" />
@@ -960,7 +693,7 @@ const killMarkers = computed<Marker[]>(() => {
               <Button
                 variant="ghost"
                 size="icon"
-                class="h-10 w-10 cursor-pointer transition-all duration-150 hover:scale-110 hover:bg-accent/70 active:scale-95"
+                class="h-10 w-10 cursor-pointer hover:bg-accent/70"
                 @click="skip(-15)"
               >
                 <SkipBack class="h-5 w-5" />
@@ -976,13 +709,11 @@ const killMarkers = computed<Marker[]>(() => {
               <Button
                 variant="default"
                 size="icon"
-                class="h-12 w-12 rounded-full shadow-md cursor-pointer transition-all duration-150 hover:scale-105 hover:shadow-lg active:scale-95"
+                class="h-12 w-12 rounded-full shadow-md cursor-pointer hover:shadow-lg"
                 @click="togglePause"
               >
-                <Transition name="play-pause" mode="out-in">
-                  <Play v-if="store.paused" key="play" class="h-6 w-6" />
-                  <Pause v-else key="pause" class="h-6 w-6" />
-                </Transition>
+                <Play v-if="store.paused" class="h-6 w-6" />
+                <Pause v-else class="h-6 w-6" />
               </Button>
             </TooltipTrigger>
             <TooltipContent class="flex items-center gap-2">
@@ -999,7 +730,7 @@ const killMarkers = computed<Marker[]>(() => {
               <Button
                 variant="ghost"
                 size="icon"
-                class="h-10 w-10 cursor-pointer transition-all duration-150 hover:scale-110 hover:bg-accent/70 active:scale-95"
+                class="h-10 w-10 cursor-pointer hover:bg-accent/70"
                 @click="skip(15)"
               >
                 <SkipForward class="h-5 w-5" />
@@ -1015,7 +746,7 @@ const killMarkers = computed<Marker[]>(() => {
               <button
                 type="button"
                 :disabled="!hasMetadata || !store.kills.length"
-                class="kill-nav inline-flex items-center justify-center gap-0.5 h-10 w-14 rounded-md border border-red-500/40 bg-red-500/5 text-red-300/90 cursor-pointer transition-all duration-100 hover:border-red-500/80 hover:bg-red-500/15 hover:text-red-200 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-red-500/5"
+                class="kill-nav inline-flex items-center justify-center gap-0.5 h-10 w-14 rounded-md border border-red-500/40 bg-red-500/5 text-red-300/90 cursor-pointer transition-colors duration-100 hover:border-red-500/80 hover:bg-red-500/15 hover:text-red-200 active:bg-red-500/25 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-red-500/5"
                 @click="jumpToNextKill"
               >
                 <Skull class="h-4 w-4" :stroke-width="2.25" />
@@ -1041,7 +772,7 @@ const killMarkers = computed<Marker[]>(() => {
               <Button
                 variant="outline"
                 size="icon"
-                class="h-9 w-9 cursor-pointer transition-all duration-150 hover:scale-110 hover:border-[hsl(var(--tac-amber)/0.6)] active:scale-95"
+                class="h-9 w-9 cursor-pointer hover:border-[hsl(var(--tac-amber)/0.6)]"
                 :disabled="!hasMetadata"
                 :title="$t('ui.auto_clip')"
                 @click="openAutoClip"
@@ -1059,7 +790,7 @@ const killMarkers = computed<Marker[]>(() => {
               <Button
                 variant="outline"
                 size="icon"
-                class="h-9 w-9 cursor-pointer transition-all duration-150 hover:scale-110 active:scale-95"
+                class="h-9 w-9 cursor-pointer"
                 :class="
                   editor.active.value
                     ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))]'
@@ -1086,7 +817,7 @@ const killMarkers = computed<Marker[]>(() => {
               <Button
                 variant="outline"
                 size="icon"
-                class="h-9 w-9 cursor-pointer transition-all duration-150 hover:scale-110 active:scale-95"
+                class="h-9 w-9 cursor-pointer"
                 :title="$t('replay_extras.toggle_cs2_hud')"
                 @click="toggleDemoUI"
               >
@@ -1103,7 +834,7 @@ const killMarkers = computed<Marker[]>(() => {
               <Button
                 variant="outline"
                 size="icon"
-                class="h-9 w-9 cursor-pointer transition-all duration-150 hover:scale-110 active:scale-95"
+                class="h-9 w-9 cursor-pointer"
                 :title="$t('ui.reload_demo')"
                 @click="reloadDemo"
               >
@@ -1120,7 +851,7 @@ const killMarkers = computed<Marker[]>(() => {
               <Button
                 variant="outline"
                 size="icon"
-                class="h-9 w-9 cursor-pointer transition-all duration-150 hover:scale-110 active:scale-95"
+                class="h-9 w-9 cursor-pointer"
                 :class="
                   store.autodirectorEnabled
                     ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))]'
@@ -1146,7 +877,7 @@ const killMarkers = computed<Marker[]>(() => {
               <Button
                 variant="outline"
                 size="icon"
-                class="h-9 w-9 cursor-pointer transition-all duration-150 hover:scale-110 active:scale-95"
+                class="h-9 w-9 cursor-pointer"
                 :class="
                   store.xrayEnabled
                     ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))]'
@@ -1173,7 +904,7 @@ const killMarkers = computed<Marker[]>(() => {
               <Button
                 variant="outline"
                 size="icon"
-                class="h-9 w-9 cursor-pointer transition-all duration-150 hover:scale-110 active:scale-95 select-none active:border-amber-400/60 active:text-amber-300"
+                class="h-9 w-9 cursor-pointer select-none active:border-amber-400/60 active:text-amber-300"
                 @mousedown.prevent="startScoreboardHold"
               >
                 <Trophy class="h-4 w-4" />
@@ -1235,7 +966,7 @@ const killMarkers = computed<Marker[]>(() => {
               <Button
                 variant="outline"
                 size="icon"
-                class="h-9 w-9 cursor-pointer transition-all duration-150 hover:scale-110 active:scale-95"
+                class="h-9 w-9 cursor-pointer"
                 @click="toggleHudSides"
               >
                 <ArrowLeftRight class="h-4 w-4" />
@@ -1282,88 +1013,12 @@ const killMarkers = computed<Marker[]>(() => {
 </template>
 
 <style scoped>
-.play-pause-enter-active,
-.play-pause-leave-active {
-  transition:
-    opacity 120ms ease,
-    transform 120ms ease;
-}
-.play-pause-enter-from {
-  opacity: 0;
-  transform: scale(0.6) rotate(-15deg);
-}
-.play-pause-leave-to {
-  opacity: 0;
-  transform: scale(0.6) rotate(15deg);
-}
-
-.skull-enter-active,
-.skull-leave-active {
-  transition:
-    opacity 200ms ease,
-    transform 200ms ease;
-}
-.skull-enter-from {
-  opacity: 0;
-  transform: translate(-50%, -8px) scale(0.6);
-}
-.skull-leave-to {
-  opacity: 0;
-  transform: translate(-50%, 0) scale(0.4);
-}
-.skull-leave-active {
-  position: absolute;
-}
-
 .reload-prompt-enter-active,
 .reload-prompt-leave-active {
-  transition:
-    opacity 250ms ease,
-    transform 250ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    max-height 250ms ease;
-  overflow: hidden;
+  transition: opacity 150ms ease;
 }
 .reload-prompt-enter-from,
 .reload-prompt-leave-to {
   opacity: 0;
-  transform: translateY(-4px);
-  max-height: 0;
-}
-.reload-prompt-enter-to,
-.reload-prompt-leave-from {
-  max-height: 4rem;
-}
-
-.seek-pulse {
-  width: 0.75rem;
-  height: 0.75rem;
-  border-radius: 9999px;
-  background: hsl(var(--tac-amber) / 0.55);
-  box-shadow:
-    0 0 0 0 hsl(var(--tac-amber) / 0.75),
-    0 0 0 0 hsl(var(--tac-amber) / 0.5);
-  animation: seek-pulse-fire 480ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-}
-@keyframes seek-pulse-fire {
-  0% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(0.4);
-    box-shadow:
-      0 0 0 0 hsl(var(--tac-amber) / 0.75),
-      0 0 0 0 hsl(var(--tac-amber) / 0.5);
-  }
-  60% {
-    opacity: 0.8;
-    box-shadow:
-      0 0 0 10px hsl(var(--tac-amber) / 0),
-      0 0 0 18px hsl(var(--tac-amber) / 0);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(1.6);
-    box-shadow:
-      0 0 0 14px hsl(var(--tac-amber) / 0),
-      0 0 0 24px hsl(var(--tac-amber) / 0);
-  }
 }
 </style>

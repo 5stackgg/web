@@ -83,10 +83,30 @@ watch(
       return;
     }
     await nextTick();
-    const el = scroller.value?.querySelector(
+    const strip = scroller.value;
+    const el = strip?.querySelector(
       `[data-round="${round}"]`,
     ) as HTMLElement | null;
-    el?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    if (!strip || !el) {
+      return;
+    }
+    // Scroll the strip only — scrollIntoView also scrolls every scrollable
+    // ancestor, the page included.
+    const left = el.offsetLeft - (strip.clientWidth - el.offsetWidth) / 2;
+    const max = strip.scrollWidth - strip.clientWidth;
+    const target = Math.max(0, Math.min(max, left));
+    if (Math.abs(target - strip.scrollLeft) < 1) {
+      return;
+    }
+    // Glide to a neighbour; jump across the strip (a seek) rather than
+    // animating past every round in between.
+    strip.scrollTo({
+      left: target,
+      behavior:
+        Math.abs(target - strip.scrollLeft) > strip.clientWidth
+          ? "auto"
+          : "smooth",
+    });
   },
 );
 </script>
@@ -154,7 +174,7 @@ watch(
             </span>
             <span
               :class="[
-                'h-[3px] w-full rounded-full transition-all',
+                'h-[3px] w-full rounded-full transition-opacity',
                 underlineClass(entry.winnerSide),
                 isActive(entry.round) ? 'opacity-100' : 'opacity-80',
               ]"

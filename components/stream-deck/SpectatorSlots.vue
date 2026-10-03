@@ -258,9 +258,11 @@ function healthColor(h: number): string {
   if (h < 60) return "bg-amber-400";
   return "bg-emerald-400";
 }
-function healthWidth(h: number): string {
-  if (!Number.isFinite(h)) return "0%";
-  return `${Math.max(0, Math.min(100, h))}%`;
+// scaleX, not width: GSI lands every second, and a width transition on
+// ten bars is a layout pass per frame for every hit taken.
+function healthScale(h: number): string {
+  if (!Number.isFinite(h)) return "scaleX(0)";
+  return `scaleX(${Math.max(0, Math.min(100, h)) / 100})`;
 }
 
 // Bounded widths keep tiles a readable broadcast size on wide
@@ -450,10 +452,10 @@ function press(s: PaddedSlot) {
             >
               <span
                 :class="[
-                  'block h-full transition-[width] duration-300 ease-out',
+                  'block h-full w-full origin-left transition-transform duration-300 ease-out',
                   healthColor(s.health),
                 ]"
-                :style="{ width: healthWidth(s.health) }"
+                :style="{ transform: healthScale(s.health) }"
               />
             </span>
           </template>
@@ -585,10 +587,10 @@ function press(s: PaddedSlot) {
             >
               <span
                 :class="[
-                  'block h-full transition-[width] duration-300 ease-out',
+                  'block h-full w-full origin-left transition-transform duration-300 ease-out',
                   healthColor(s.health),
                 ]"
-                :style="{ width: healthWidth(s.health) }"
+                :style="{ transform: healthScale(s.health) }"
               />
             </span>
           </template>
@@ -742,10 +744,10 @@ function press(s: PaddedSlot) {
             >
               <span
                 :class="[
-                  'block h-full transition-[width] duration-300 ease-out',
+                  'block h-full w-full origin-left transition-transform duration-300 ease-out',
                   healthColor(s.health),
                 ]"
-                :style="{ width: healthWidth(s.health) }"
+                :style="{ transform: healthScale(s.health) }"
               />
             </span>
           </template>
@@ -862,10 +864,10 @@ function press(s: PaddedSlot) {
             >
               <span
                 :class="[
-                  'block h-full transition-[width] duration-300 ease-out',
+                  'block h-full w-full origin-left transition-transform duration-300 ease-out',
                   healthColor(s.health),
                 ]"
-                :style="{ width: healthWidth(s.health) }"
+                :style="{ transform: healthScale(s.health) }"
               />
             </span>
           </template>

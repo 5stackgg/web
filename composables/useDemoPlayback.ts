@@ -490,7 +490,7 @@ export function useDemoPlayback() {
   function pause() {
     // Snapshot the current estimate so the scrubber freezes at the
     // right tick before the WS round-trip.
-    store.syncFromControl({ tick: store.currentTick, paused: true });
+    store.syncFromControl({ tick: store.tickNow(), paused: true });
     control("pause");
   }
 
@@ -515,7 +515,7 @@ export function useDemoPlayback() {
     // sync is display-only.
     const target = Math.max(
       0,
-      store.currentTick + Math.round(secs * store.tickRate),
+      store.tickNow() + Math.round(secs * store.tickRate),
     );
     store.syncFromControl({ tick: target });
     store.beginSeek();
@@ -525,7 +525,7 @@ export function useDemoPlayback() {
   function setSpeed(rate: number) {
     // Snapshot tick BEFORE rate changes so the estimator stays
     // continuous across the transition.
-    store.syncFromControl({ tick: store.currentTick, rate });
+    store.syncFromControl({ tick: store.tickNow(), rate });
     control("speed", { rate });
   }
 
@@ -562,7 +562,7 @@ export function useDemoPlayback() {
   // to. Stepping keys off this rather than the live playhead so
   // repeated next/prev keep advancing even when the anchored seek
   // clamps to 0 near match start. An early kill anchors at
-  // `kill.tick - lead`, which clamps to 0 → currentTick reads ~0 →
+  // `kill.tick - lead`, which clamps to 0 → the playhead reads ~0 →
   // every press would otherwise re-select that same first kill. The
   // anchor remembers which event we're on regardless of where the
   // clamped playhead sits.
@@ -579,7 +579,7 @@ export function useDemoPlayback() {
   ) {
     if (!events.length) return;
     const lead = leadTicks(leadSecs);
-    const playhead = store.currentTick;
+    const playhead = store.tickNow();
     const anchor = navAnchors[key];
     // Still parked where our last jump left it (playhead ≈ anchor -
     // lead, possibly clamped to 0) → keep stepping from the event

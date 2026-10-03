@@ -2208,7 +2208,22 @@
           "ttl_tournament": "Tournament chat",
           "ttl_organizers": "Organizer chat",
           "ttl_draft": "Draft lobby chat",
-          "retention_direct_days": "Keep direct messages for (days)"
+          "retention_direct_days": "Keep direct messages for (days)",
+          "attachments_title": "Attachments",
+          "attachments_description": "Players can attach up to 4 images or videos to a message in lobby, tournament, organizer, draft and direct chat. A file is deleted when its room's messages expire, when its direct message is pruned, or as soon as its message is deleted.",
+          "attachment_max_mb": "Largest file (MB)",
+          "attachment_daily_mb": "Uploads per player per day (MB)",
+          "attachment_daily_mb_hint": "Counted over the last 24 hours, including files that were removed.",
+          "gifs_title": "GIFs",
+          "gifs_description": "Add a GIPHY API key to let players send GIFs. Searches go through the API, so the key never reaches a browser. Without a key the GIF button is hidden.",
+          "giphy_api_key": "GIPHY API key",
+          "giphy_key_set": "A key is set. Enter a new one to replace it.",
+          "giphy_key_missing": "No key is set.",
+          "giphy_key_placeholder": "Paste a key",
+          "giphy_key_remove": "Remove Key",
+          "giphy_key_removed": "GIPHY key removed",
+          "giphy_hourly_limit": "GIPHY searches per hour",
+          "giphy_hourly_limit_hint": "Shared by every player. GIPHY's beta keys allow 100 an hour."
         },
         "news": {
           "title": "News",
@@ -9421,6 +9436,58 @@
     "react_timeout": "The server didn't answer. Your reaction may still go through.",
     "react_rate_limited": "You're reacting too fast.",
     "react_gagged": "You're gagged and can't add reactions.",
+    "attachments": {
+      "label": "Attachment",
+      "label_count": "{count} attachments",
+      "add": "Attach images or videos",
+      "remove": "Remove {name}",
+      "retry": "Retry",
+      "open_image": "Open {name}",
+      "play_video": "Play {name}",
+      "unavailable": "No longer available",
+      "drop_in": {
+        "matchmaking": "Drop to send in the lobby",
+        "tournament": "Drop to send in the tournament chat",
+        "organizers": "Drop to send in the organizers' chat",
+        "draft": "Drop to send in the draft lobby",
+        "direct": "Drop to send in this conversation"
+      },
+      "drop_hint": "Images and videos, up to {count} at a time",
+      "rejected_type": "{name} can't be attached. Only images and videos can.",
+      "rejected_size": "{name} is over the {size} limit.",
+      "rejected_empty": "{name} is empty.",
+      "rejected_count": "Up to {count} files per message.",
+      "waiting_hint": "Waiting for uploads…",
+      "failed_hint": "Remove or retry failed files",
+      "errors": {
+        "too_large": "This file is over the size limit.",
+        "image_too_large": "This image is too big.",
+        "unsupported_type": "This kind of file can't be attached.",
+        "too_many_pending": "Too many uploads are waiting to be sent. Send or remove some first.",
+        "quota_exceeded": "You've reached today's upload allowance.",
+        "rate_limited": "Too many uploads at once. Try again in a moment.",
+        "not_allowed": "You can't attach files here.",
+        "gagged": "You are gagged and can't send anything here.",
+        "unavailable": "The upload failed. Tap to retry."
+      }
+    },
+    "gifs": {
+      "label": "GIF",
+      "open": "Send a GIF",
+      "search": "Search GIPHY",
+      "trending": "Trending",
+      "suggestions": {
+        "gg": "gg",
+        "clutch": "clutch",
+        "rage": "rage"
+      },
+      "click_to_send": "Click to send",
+      "powered_by": "Powered by GIPHY",
+      "empty": "No GIFs found",
+      "rate_limited": "Too many searches. Wait a moment and try again.",
+      "busy": "GIFs are busy, try again soon",
+      "unavailable": "GIPHY is unavailable right now."
+    },
     "direct": {
       "message": "Message",
       "empty": "No messages yet. Say hello."

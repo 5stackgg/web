@@ -3,6 +3,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 </script>
 
 <template>
@@ -55,6 +56,119 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
           </FormField>
         </SettingsSection>
 
+        <SettingsSection
+          id="chat-attachments"
+          :title="$t('pages.settings.application.chat.attachments_title')"
+          :description="
+            $t('pages.settings.application.chat.attachments_description')
+          "
+        >
+          <FormField v-slot="{ componentField }" name="chat_attachment_max_mb">
+            <FormItem>
+              <FormLabel>
+                {{ $t("pages.settings.application.chat.attachment_max_mb") }}
+              </FormLabel>
+              <FormControl>
+                <Input
+                  v-bind="componentField"
+                  type="number"
+                  min="1"
+                  max="1024"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+          <FormField
+            v-slot="{ componentField }"
+            name="chat_attachment_daily_mb"
+          >
+            <FormItem>
+              <FormLabel>
+                {{ $t("pages.settings.application.chat.attachment_daily_mb") }}
+              </FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" type="number" min="1" />
+              </FormControl>
+              <FormDescription>
+                {{
+                  $t("pages.settings.application.chat.attachment_daily_mb_hint")
+                }}
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </SettingsSection>
+
+        <SettingsSection
+          id="chat-gifs"
+          :title="$t('pages.settings.application.chat.gifs_title')"
+          :description="$t('pages.settings.application.chat.gifs_description')"
+        >
+          <FormField v-slot="{ componentField }" name="giphy_api_key">
+            <FormItem>
+              <FormLabel>
+                {{ $t("pages.settings.application.chat.giphy_api_key") }}
+              </FormLabel>
+              <div class="flex items-center gap-2">
+                <FormControl>
+                  <Input
+                    v-bind="componentField"
+                    type="password"
+                    autocomplete="new-password"
+                    data-1p-ignore="true"
+                    data-lpignore="true"
+                    data-bwignore="true"
+                    data-form-type="other"
+                    :placeholder="
+                      $t('pages.settings.application.chat.giphy_key_placeholder')
+                    "
+                  />
+                </FormControl>
+                <Button
+                  v-if="giphyKeySet"
+                  type="button"
+                  variant="outline"
+                  class="shrink-0"
+                  @click="removeGiphyKey"
+                >
+                  {{ $t("pages.settings.application.chat.giphy_key_remove") }}
+                </Button>
+              </div>
+              <FormDescription>
+                <FadeSwap>
+                  <span :key="giphyKeySet ? 'set' : 'missing'">
+                    {{
+                      giphyKeySet
+                        ? $t("pages.settings.application.chat.giphy_key_set")
+                        : $t(
+                            "pages.settings.application.chat.giphy_key_missing",
+                          )
+                    }}
+                  </span>
+                </FadeSwap>
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+          <FormField v-slot="{ componentField }" name="giphy_hourly_limit">
+            <FormItem>
+              <FormLabel>
+                {{ $t("pages.settings.application.chat.giphy_hourly_limit") }}
+              </FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" type="number" min="0" />
+              </FormControl>
+              <FormDescription>
+                {{
+                  $t("pages.settings.application.chat.giphy_hourly_limit_hint")
+                }}
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </SettingsSection>
+
         <SettingsSaveBar
           :form="form"
           :submitting="submitting"
@@ -73,6 +187,7 @@ import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { z } from "zod";
 import { toast } from "@/components/ui/toast";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+import { useChatAttachmentConfig } from "~/composables/useChatAttachmentConfig";
 
 // One entry per lobby type, matching ChatService.TTL_SETTINGS in the API.
 // There was a single setting before, and it wrote a name the API never read --
@@ -96,6 +211,18 @@ const DIRECT_RETENTION = {
 
 const ALL_SETTINGS = [...ROOMS, DIRECT_RETENTION];
 
+// Admin-only, so not `public.`: the api enforces these and hands the composer
+// only what it needs. Fallbacks match the api's.
+const ADMIN_LIMITS = [
+  { name: "chat_attachment_max_mb", fallback: 100, min: 1, max: 1024 },
+  { name: "chat_attachment_daily_mb", fallback: 1024, min: 1, max: 102400 },
+  { name: "giphy_hourly_limit", fallback: 90, min: 0, max: 100000 },
+];
+
+// Write-only: the administrator role cannot read it back
+// (public_settings.yaml), so the field only ever holds a new key.
+const GIPHY_API_KEY = "giphy_api_key";
+
 const settingName = (key: string) => `public.${key}`;
 
 export default {
@@ -103,6 +230,9 @@ export default {
     return {
       rooms: ROOMS.map((room) => ({ ...room, name: settingName(room.key) })),
       submitting: false,
+      mediaConfig: useChatAttachmentConfig(),
+      // What this page last wrote, so the status does not wait on a re-read.
+      giphyKeyWritten: null as boolean | null,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -114,12 +244,23 @@ export default {
                 ]),
               ),
             ),
+            ...Object.fromEntries(
+              ADMIN_LIMITS.map(({ name, fallback, min, max }) => [
+                name,
+                z.number().int().min(min).max(max).default(fallback),
+              ]),
+            ),
+            giphy_api_key: z.string().trim().max(200).optional(),
           }),
         ),
         initialValues: {
           public: Object.fromEntries(
             ALL_SETTINGS.map(({ key, fallback }) => [key, fallback]),
           ),
+          ...Object.fromEntries(
+            ADMIN_LIMITS.map(({ name, fallback }) => [name, fallback]),
+          ),
+          giphy_api_key: "",
         },
       }),
     };
@@ -129,6 +270,16 @@ export default {
       immediate: true,
       handler(newVal: Array<{ name: string; value: string | null }>) {
         for (const setting of newVal) {
+          const limit = ADMIN_LIMITS.find(({ name }) => name === setting.name);
+
+          if (limit) {
+            const value = Number(setting.value);
+            if (Number.isInteger(value) && value >= limit.min) {
+              (this.form.setFieldValue as any)(limit.name, value);
+            }
+            continue;
+          }
+
           if (
             !ALL_SETTINGS.some(({ key }) => settingName(key) === setting.name)
           ) {
@@ -153,15 +304,25 @@ export default {
       try {
         const values =
           ((this.form.values as any).public as Record<string, number>) ?? {};
+        const giphyKey = String(
+          (this.form.values as any).giphy_api_key ?? "",
+        ).trim();
 
         await (this as any).$apollo.mutate({
           mutation: generateMutation({
             insert_settings: [
               {
-                objects: ALL_SETTINGS.map(({ key, fallback }) => ({
-                  name: settingName(key),
-                  value: String(values[key] ?? fallback),
-                })),
+                objects: [
+                  ...ALL_SETTINGS.map(({ key, fallback }) => ({
+                    name: settingName(key),
+                    value: String(values[key] ?? fallback),
+                  })),
+                  ...ADMIN_LIMITS.map(({ name, fallback }) => ({
+                    name,
+                    value: String((this.form.values as any)[name] ?? fallback),
+                  })),
+                  ...(giphyKey ? [{ name: GIPHY_API_KEY, value: giphyKey }] : []),
+                ],
                 on_conflict: {
                   constraint: settings_constraint.settings_pkey,
                   update_columns: [settings_update_column.value],
@@ -174,6 +335,13 @@ export default {
           }),
         });
 
+        if (giphyKey) {
+          this.giphyKeyWritten = true;
+          (this.form.setFieldValue as any)(GIPHY_API_KEY, "");
+          this.form.resetForm({ values: this.form.values });
+          void this.mediaConfig.load(true);
+        }
+
         toast({
           title: this.$t("pages.settings.application.chat.updated"),
         });
@@ -181,8 +349,41 @@ export default {
         this.submitting = false;
       }
     },
+    // An empty key is how the api reads "no key": the role cannot delete a
+    // row it is not allowed to select.
+    async removeGiphyKey() {
+      await (this as any).$apollo.mutate({
+        mutation: generateMutation({
+          insert_settings: [
+            {
+              objects: [{ name: GIPHY_API_KEY, value: "" }],
+              on_conflict: {
+                constraint: settings_constraint.settings_pkey,
+                update_columns: [settings_update_column.value],
+              },
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
+
+      this.giphyKeyWritten = false;
+      void this.mediaConfig.load(true);
+
+      toast({
+        title: this.$t("pages.settings.application.chat.giphy_key_removed"),
+      });
+    },
+  },
+  mounted() {
+    void this.mediaConfig.load(true);
   },
   computed: {
+    giphyKeySet(): boolean {
+      return this.giphyKeyWritten ?? !!this.mediaConfig.config?.gifs;
+    },
     settings() {
       return useApplicationSettingsStore().settings;
     },

@@ -2208,7 +2208,22 @@
           "ttl_tournament": "錦標賽聊天",
           "ttl_organizers": "主辦方聊天",
           "ttl_draft": "選秀大廳聊天",
-          "retention_direct_days": "私訊保留天數"
+          "retention_direct_days": "私訊保留天數",
+          "attachments_title": "附件",
+          "attachments_description": "玩家可以在大廳、錦標賽、主辦方、選秀與私訊聊天中，為一則訊息附加最多 4 張圖片或影片。當檔案所在房間的訊息到期或其私訊因保留期限被清除時，檔案會被刪除；訊息被刪除時，檔案會立即刪除。",
+          "attachment_max_mb": "最大檔案 (MB)",
+          "attachment_daily_mb": "每位玩家每日上傳量 (MB)",
+          "attachment_daily_mb_hint": "按最近 24 小時計算，包括已移除的檔案。",
+          "gifs_title": "GIF",
+          "gifs_description": "新增 GIPHY API 金鑰後，玩家即可傳送 GIF。搜尋會經由 API 進行，因此金鑰永遠不會到達瀏覽器。沒有金鑰時，GIF 按鈕會隱藏。",
+          "giphy_api_key": "GIPHY API 金鑰",
+          "giphy_key_set": "已設定金鑰。輸入新的金鑰即可取代。",
+          "giphy_key_missing": "尚未設定金鑰。",
+          "giphy_key_placeholder": "貼上金鑰",
+          "giphy_key_remove": "移除金鑰",
+          "giphy_key_removed": "已移除 GIPHY 金鑰",
+          "giphy_hourly_limit": "每小時 GIPHY 搜尋次數",
+          "giphy_hourly_limit_hint": "所有玩家共用。GIPHY 測試版金鑰每小時允許 100 次。"
         },
         "news": {
           "title": "新聞",
@@ -9419,6 +9434,58 @@
     "react_timeout": "伺服器沒有回應。你的表情回應仍可能生效。",
     "react_rate_limited": "你的回應操作過快。",
     "react_gagged": "你已被禁言，無法新增表情回應。",
+    "attachments": {
+      "label": "附件",
+      "label_count": "{count} 個附件",
+      "add": "附加圖片或影片",
+      "remove": "移除 {name}",
+      "retry": "重試",
+      "open_image": "開啟 {name}",
+      "play_video": "播放 {name}",
+      "unavailable": "已無法使用",
+      "drop_in": {
+        "matchmaking": "放開以傳送到大廳",
+        "tournament": "放開以傳送到錦標賽聊天",
+        "organizers": "放開以傳送到主辦方聊天",
+        "draft": "放開以傳送到選秀大廳",
+        "direct": "放開以傳送到此對話"
+      },
+      "drop_hint": "圖片和影片，一次最多 {count} 個",
+      "rejected_type": "無法附加 {name}。只能附加圖片和影片。",
+      "rejected_size": "{name} 超過 {size} 的上限。",
+      "rejected_empty": "{name} 是空檔案。",
+      "rejected_count": "每則訊息最多 {count} 個檔案。",
+      "waiting_hint": "正在等待上傳完成…",
+      "failed_hint": "請移除或重試失敗的檔案",
+      "errors": {
+        "too_large": "此檔案超過大小上限。",
+        "image_too_large": "這張圖片太大了。",
+        "unsupported_type": "無法附加此類檔案。",
+        "too_many_pending": "等待傳送的上傳過多。請先傳送或移除一些。",
+        "quota_exceeded": "你已達到今日的上傳額度。",
+        "rate_limited": "同時上傳的檔案太多。請稍後再試。",
+        "not_allowed": "你不能在這裡附加檔案。",
+        "gagged": "你已被禁言，無法在這裡傳送任何內容。",
+        "unavailable": "上傳失敗。輕觸以重試。"
+      }
+    },
+    "gifs": {
+      "label": "GIF",
+      "open": "傳送 GIF",
+      "search": "搜尋 GIPHY",
+      "trending": "熱門",
+      "suggestions": {
+        "gg": "gg",
+        "clutch": "clutch",
+        "rage": "rage"
+      },
+      "click_to_send": "點擊傳送",
+      "powered_by": "Powered by GIPHY",
+      "empty": "找不到 GIF",
+      "rate_limited": "搜尋過於頻繁。請稍候再試。",
+      "busy": "GIF 目前忙碌中，請稍後再試",
+      "unavailable": "GIPHY 目前無法使用。"
+    },
     "direct": {
       "message": "訊息",
       "empty": "還沒有訊息，先打個招呼吧。"

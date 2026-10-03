@@ -24,6 +24,7 @@ import {
   type RemovedChatMessage,
 } from "~/utilities/chatLobbyMessages";
 import type { ChatReaction } from "~/constants/chat";
+import type { ChatAttachment, ChatGif } from "~/utilities/chatAttachments";
 import { blockedIdsChange } from "~/utilities/playerBlocks";
 import guid from "~/utilities/uuid";
 
@@ -40,6 +41,8 @@ export interface LobbyMessage {
   // Reaction id to the steam ids holding it, oldest first. Missing from an api
   // that predates reactions.
   reactions?: ChatReactions;
+  attachments?: ChatAttachment[];
+  gif?: ChatGif;
   from?: {
     role?: string;
     name?: string;
@@ -495,12 +498,62 @@ export class Socket extends EventEmitter {
     }
   }
 
-  public chat(type: ChatType, id: string, message: string) {
+  public chat(
+    type: ChatType,
+    id: string,
+    message: string,
+    media?: { attachments?: string[]; gif?: ChatGif },
+  ) {
     this.event(`lobby:chat`, {
       id,
       type,
       message,
+      ...(media?.attachments?.length ? { attachments: media.attachments } : {}),
+      ...(media?.gif ? { gif: media.gif } : {}),
     });
+  }
+
+  // A send that carries files is answered, unlike plain text: a refusal has to
+  // hand the files back to the composer. Never queued, like every request.
+  //
+  // An answer can still arrive after the request gave up on it; `sentLate`
+  // is how the sender hears the message landed after all.
+  public sendChat(
+    type: ChatType,
+    id: string,
+    message: string,
+    media: { attachments?: string[]; gif?: ChatGif },
+    sentLate?: () => void,
+  ): Promise<void> {
+    let settled = false;
+
+    const request = this.chatRequest(
+      "send",
+      {
+        id,
+        type,
+        message,
+        ...(media.attachments?.length
+          ? { attachments: media.attachments }
+          : {}),
+        ...(media.gif ? { gif: media.gif } : {}),
+      },
+      {
+        resolved: () => {
+          if (settled) {
+            sentLate?.();
+          }
+        },
+        rejected: () => {},
+      },
+    );
+
+    const settle = () => {
+      settled = true;
+    };
+    request.then(settle, settle);
+
+    return request;
   }
 
   public deleteMessage(
@@ -615,7 +668,7 @@ export class Socket extends EventEmitter {
   // Never queued: someone told a delete or an edit failed must not have it
   // carried out behind their back once the connection comes back.
   private chatRequest(
-    action: Exclude<ChatAction, "send">,
+    action: ChatAction,
     data: Record<string, unknown>,
     handlers: {
       resolved: (ack: ChatAck) => void;
@@ -649,7 +702,10 @@ export class Socket extends EventEmitter {
 
       this.pendingRequests.set(requestId, pending);
 
-      this.event(`lobby:${action}`, { ...data, requestId });
+      this.event(action === "send" ? "lobby:chat" : `lobby:${action}`, {
+        ...data,
+        requestId,
+      });
     });
   }
 

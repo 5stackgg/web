@@ -2208,7 +2208,22 @@
           "ttl_tournament": "Turnier-Chat",
           "ttl_organizers": "Organisatoren-Chat",
           "ttl_draft": "Draft-Lobby-Chat",
-          "retention_direct_days": "Direktnachrichten aufbewahren für (Tage)"
+          "retention_direct_days": "Direktnachrichten aufbewahren für (Tage)",
+          "attachments_title": "Anhänge",
+          "attachments_description": "Spieler können in Lobby-, Turnier-, Organisatoren-, Draft- und Direktchats bis zu 4 Bilder oder Videos an eine Nachricht anhängen. Eine Datei wird gelöscht, wenn die Nachrichten ihres Raums ablaufen, wenn ihre Direktnachricht bereinigt wird oder sobald ihre Nachricht gelöscht wird.",
+          "attachment_max_mb": "Größte Datei (MB)",
+          "attachment_daily_mb": "Uploads pro Spieler und Tag (MB)",
+          "attachment_daily_mb_hint": "Gezählt über die letzten 24 Stunden, einschließlich entfernter Dateien.",
+          "gifs_title": "GIFs",
+          "gifs_description": "Füge einen GIPHY-API-Schlüssel hinzu, damit Spieler GIFs senden können. Suchen laufen über die API, sodass der Schlüssel nie einen Browser erreicht. Ohne Schlüssel ist die GIF-Schaltfläche ausgeblendet.",
+          "giphy_api_key": "GIPHY-API-Schlüssel",
+          "giphy_key_set": "Ein Schlüssel ist gesetzt. Gib einen neuen ein, um ihn zu ersetzen.",
+          "giphy_key_missing": "Kein Schlüssel gesetzt.",
+          "giphy_key_placeholder": "Schlüssel einfügen",
+          "giphy_key_remove": "Schlüssel Entfernen",
+          "giphy_key_removed": "GIPHY-Schlüssel entfernt",
+          "giphy_hourly_limit": "GIPHY-Suchen pro Stunde",
+          "giphy_hourly_limit_hint": "Für alle Spieler gemeinsam. Beta-Schlüssel von GIPHY erlauben 100 pro Stunde."
         },
         "news": {
           "title": "News",
@@ -9419,6 +9434,58 @@
     "react_timeout": "Der Server hat nicht geantwortet. Deine Reaktion kommt eventuell trotzdem an.",
     "react_rate_limited": "Du reagierst zu schnell.",
     "react_gagged": "Du bist im Chat gesperrt und kannst keine Reaktionen hinzufügen.",
+    "attachments": {
+      "label": "Anhang",
+      "label_count": "{count} Anhänge",
+      "add": "Bilder oder Videos anhängen",
+      "remove": "{name} entfernen",
+      "retry": "Erneut versuchen",
+      "open_image": "{name} öffnen",
+      "play_video": "{name} abspielen",
+      "unavailable": "Nicht mehr verfügbar",
+      "drop_in": {
+        "matchmaking": "Ablegen, um in der Lobby zu senden",
+        "tournament": "Ablegen, um im Turnierchat zu senden",
+        "organizers": "Ablegen, um im Organisatoren-Chat zu senden",
+        "draft": "Ablegen, um in der Draft-Lobby zu senden",
+        "direct": "Ablegen, um in dieser Unterhaltung zu senden"
+      },
+      "drop_hint": "Bilder und Videos, bis zu {count} auf einmal",
+      "rejected_type": "{name} kann nicht angehängt werden. Nur Bilder und Videos sind möglich.",
+      "rejected_size": "{name} überschreitet das Limit von {size}.",
+      "rejected_empty": "{name} ist leer.",
+      "rejected_count": "Bis zu {count} Dateien pro Nachricht.",
+      "waiting_hint": "Warte auf Uploads…",
+      "failed_hint": "Fehlgeschlagene Dateien entfernen oder erneut versuchen",
+      "errors": {
+        "too_large": "Diese Datei überschreitet das Größenlimit.",
+        "image_too_large": "Dieses Bild ist zu groß.",
+        "unsupported_type": "Diese Art von Datei kann nicht angehängt werden.",
+        "too_many_pending": "Zu viele Uploads warten darauf, gesendet zu werden. Sende oder entferne zuerst einige.",
+        "quota_exceeded": "Du hast dein Upload-Kontingent für heute aufgebraucht.",
+        "rate_limited": "Zu viele Uploads auf einmal. Versuch es gleich noch mal.",
+        "not_allowed": "Hier kannst du keine Dateien anhängen.",
+        "gagged": "Du bist im Chat gesperrt und kannst hier nichts senden.",
+        "unavailable": "Der Upload ist fehlgeschlagen. Tippe, um es erneut zu versuchen."
+      }
+    },
+    "gifs": {
+      "label": "GIF",
+      "open": "GIF senden",
+      "search": "GIPHY durchsuchen",
+      "trending": "Im Trend",
+      "suggestions": {
+        "gg": "gg",
+        "clutch": "clutch",
+        "rage": "rage"
+      },
+      "click_to_send": "Zum Senden klicken",
+      "powered_by": "Powered by GIPHY",
+      "empty": "Keine GIFs gefunden",
+      "rate_limited": "Zu viele Suchen. Warte kurz und versuche es erneut.",
+      "busy": "GIFs sind gerade ausgelastet, versuch es gleich noch mal",
+      "unavailable": "GIPHY ist gerade nicht erreichbar."
+    },
     "direct": {
       "message": "Nachricht",
       "empty": "Noch keine Nachrichten. Sag Hallo."

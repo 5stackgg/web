@@ -2208,7 +2208,22 @@
           "ttl_tournament": "锦标赛聊天",
           "ttl_organizers": "主办方聊天",
           "ttl_draft": "选人大厅聊天",
-          "retention_direct_days": "私信保留天数"
+          "retention_direct_days": "私信保留天数",
+          "attachments_title": "附件",
+          "attachments_description": "玩家可以在大厅、锦标赛、组织者、选人和私信聊天中，为一条消息附加最多 4 张图片或视频。当文件所在房间的消息过期或其私信被保留期清理时，文件会被删除；消息被删除时，文件会立即删除。",
+          "attachment_max_mb": "最大文件 (MB)",
+          "attachment_daily_mb": "每位玩家每日上传量 (MB)",
+          "attachment_daily_mb_hint": "按最近 24 小时计算，包括已移除的文件。",
+          "gifs_title": "GIF",
+          "gifs_description": "添加 GIPHY API 密钥后，玩家即可发送 GIF。搜索通过 API 进行，因此密钥永远不会到达浏览器。没有密钥时，GIF 按钮会被隐藏。",
+          "giphy_api_key": "GIPHY API 密钥",
+          "giphy_key_set": "已设置密钥。输入新密钥即可替换。",
+          "giphy_key_missing": "尚未设置密钥。",
+          "giphy_key_placeholder": "粘贴密钥",
+          "giphy_key_remove": "移除密钥",
+          "giphy_key_removed": "已移除 GIPHY 密钥",
+          "giphy_hourly_limit": "每小时 GIPHY 搜索次数",
+          "giphy_hourly_limit_hint": "所有玩家共享。GIPHY 测试版密钥每小时允许 100 次。"
         },
         "news": {
           "title": "新闻",
@@ -9419,6 +9434,58 @@
     "react_timeout": "服务器没有响应。你的表情回应仍可能生效。",
     "react_rate_limited": "你的回应操作过快。",
     "react_gagged": "你已被禁言，无法添加表情回应。",
+    "attachments": {
+      "label": "附件",
+      "label_count": "{count} 个附件",
+      "add": "附加图片或视频",
+      "remove": "移除 {name}",
+      "retry": "重试",
+      "open_image": "打开 {name}",
+      "play_video": "播放 {name}",
+      "unavailable": "已不可用",
+      "drop_in": {
+        "matchmaking": "松开以发送到大厅",
+        "tournament": "松开以发送到锦标赛聊天",
+        "organizers": "松开以发送到组织者聊天",
+        "draft": "松开以发送到选人大厅",
+        "direct": "松开以发送到此对话"
+      },
+      "drop_hint": "图片和视频，一次最多 {count} 个",
+      "rejected_type": "无法附加 {name}。只能附加图片和视频。",
+      "rejected_size": "{name} 超过了 {size} 的上限。",
+      "rejected_empty": "{name} 是空文件。",
+      "rejected_count": "每条消息最多 {count} 个文件。",
+      "waiting_hint": "正在等待上传完成…",
+      "failed_hint": "请移除或重试失败的文件",
+      "errors": {
+        "too_large": "此文件超过了大小上限。",
+        "image_too_large": "这张图片太大了。",
+        "unsupported_type": "无法附加此类文件。",
+        "too_many_pending": "等待发送的上传过多。请先发送或移除一些。",
+        "quota_exceeded": "你已达到今日的上传额度。",
+        "rate_limited": "同时上传的文件太多。请稍后再试。",
+        "not_allowed": "你不能在这里附加文件。",
+        "gagged": "你已被禁言，无法在这里发送任何内容。",
+        "unavailable": "上传失败。点按以重试。"
+      }
+    },
+    "gifs": {
+      "label": "GIF",
+      "open": "发送 GIF",
+      "search": "搜索 GIPHY",
+      "trending": "热门",
+      "suggestions": {
+        "gg": "gg",
+        "clutch": "clutch",
+        "rage": "rage"
+      },
+      "click_to_send": "点击发送",
+      "powered_by": "Powered by GIPHY",
+      "empty": "未找到 GIF",
+      "rate_limited": "搜索过于频繁。请稍等片刻后重试。",
+      "busy": "GIF 当前繁忙，请稍后再试",
+      "unavailable": "GIPHY 目前不可用。"
+    },
     "direct": {
       "message": "消息",
       "empty": "还没有消息，先打个招呼吧。"

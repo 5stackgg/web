@@ -32,6 +32,7 @@ import {
   type ChatMessagePermissions,
 } from "~/utilities/chatMessageActions";
 import { tacticalFilterPillActiveClasses } from "~/utilities/tacticalClasses";
+import { chatMediaLabel } from "~/utilities/chatAttachments";
 
 const props = defineProps<{
   message: LobbyMessage;
@@ -310,7 +311,7 @@ async function deleteMessage() {
             />
             <DropdownMenuSeparator />
           </template>
-          <DropdownMenuItem @select="copyMessage">
+          <DropdownMenuItem v-if="message.message" @select="copyMessage">
             <Copy />
             <span>{{ $t("chat.copy_message") }}</span>
           </DropdownMenuItem>
@@ -393,7 +394,7 @@ async function deleteMessage() {
         <blockquote
           class="line-clamp-3 whitespace-pre-wrap break-words rounded-md border border-border/60 bg-card/40 px-3 py-2 text-xs text-muted-foreground"
         >
-          {{ message.message }}
+          {{ chatMediaLabel(message, $t) }}
         </blockquote>
         <AlertDialogFooter>
           <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>

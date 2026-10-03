@@ -2208,7 +2208,22 @@
           "ttl_tournament": "Turneringschatt",
           "ttl_organizers": "Arrangörschatt",
           "ttl_draft": "Chatt i draftlobby",
-          "retention_direct_days": "Spara direktmeddelanden i (dagar)"
+          "retention_direct_days": "Spara direktmeddelanden i (dagar)",
+          "attachments_title": "Bilagor",
+          "attachments_description": "Spelare kan bifoga upp till 4 bilder eller videor till ett meddelande i lobby-, turnerings-, arrangörs-, draft- och direktchattar. En fil raderas när meddelandena i dess rum löper ut, när dess direktmeddelande rensas bort eller så fort dess meddelande raderas.",
+          "attachment_max_mb": "Största fil (MB)",
+          "attachment_daily_mb": "Uppladdningar per spelare och dag (MB)",
+          "attachment_daily_mb_hint": "Räknas över de senaste 24 timmarna, inklusive borttagna filer.",
+          "gifs_title": "GIF:ar",
+          "gifs_description": "Lägg till en GIPHY API-nyckel så att spelare kan skicka GIF:ar. Sökningar går via API:et, så nyckeln når aldrig en webbläsare. Utan nyckel är GIF-knappen dold.",
+          "giphy_api_key": "GIPHY API-nyckel",
+          "giphy_key_set": "En nyckel är angiven. Ange en ny för att ersätta den.",
+          "giphy_key_missing": "Ingen nyckel är angiven.",
+          "giphy_key_placeholder": "Klistra in en nyckel",
+          "giphy_key_remove": "Ta Bort Nyckel",
+          "giphy_key_removed": "GIPHY-nyckeln togs bort",
+          "giphy_hourly_limit": "GIPHY-sökningar per timme",
+          "giphy_hourly_limit_hint": "Delas av alla spelare. GIPHY:s betanycklar tillåter 100 i timmen."
         },
         "news": {
           "title": "Nyheter",
@@ -9419,6 +9434,58 @@
     "react_timeout": "Servern svarade inte. Din reaktion kan fortfarande registreras.",
     "react_rate_limited": "Du reagerar för snabbt.",
     "react_gagged": "Din chatt är avstängd och du kan inte lägga till reaktioner.",
+    "attachments": {
+      "label": "Bilaga",
+      "label_count": "{count} bilagor",
+      "add": "Bifoga bilder eller videor",
+      "remove": "Ta bort {name}",
+      "retry": "Försök igen",
+      "open_image": "Öppna {name}",
+      "play_video": "Spela upp {name}",
+      "unavailable": "Inte längre tillgänglig",
+      "drop_in": {
+        "matchmaking": "Släpp för att skicka i lobbyn",
+        "tournament": "Släpp för att skicka i turneringschatten",
+        "organizers": "Släpp för att skicka i arrangörschatten",
+        "draft": "Släpp för att skicka i draftlobbyn",
+        "direct": "Släpp för att skicka i den här konversationen"
+      },
+      "drop_hint": "Bilder och videor, upp till {count} åt gången",
+      "rejected_type": "{name} kan inte bifogas. Bara bilder och videor kan det.",
+      "rejected_size": "{name} är över gränsen på {size}.",
+      "rejected_empty": "{name} är tom.",
+      "rejected_count": "Upp till {count} filer per meddelande.",
+      "waiting_hint": "Väntar på uppladdningar…",
+      "failed_hint": "Ta bort eller försök igen med misslyckade filer",
+      "errors": {
+        "too_large": "Filen är över storleksgränsen.",
+        "image_too_large": "Bilden är för stor.",
+        "unsupported_type": "Den här typen av fil kan inte bifogas.",
+        "too_many_pending": "För många uppladdningar väntar på att skickas. Skicka eller ta bort några först.",
+        "quota_exceeded": "Du har använt dagens uppladdningskvot.",
+        "rate_limited": "För många uppladdningar på en gång. Försök igen om en stund.",
+        "not_allowed": "Du kan inte bifoga filer här.",
+        "gagged": "Din chatt är avstängd och du kan inte skicka något här.",
+        "unavailable": "Uppladdningen misslyckades. Tryck för att försöka igen."
+      }
+    },
+    "gifs": {
+      "label": "GIF",
+      "open": "Skicka en GIF",
+      "search": "Sök på GIPHY",
+      "trending": "Trendar",
+      "suggestions": {
+        "gg": "gg",
+        "clutch": "clutch",
+        "rage": "rage"
+      },
+      "click_to_send": "Klicka för att skicka",
+      "powered_by": "Powered by GIPHY",
+      "empty": "Inga GIF:ar hittades",
+      "rate_limited": "För många sökningar. Vänta en stund och försök igen.",
+      "busy": "GIF:ar är upptagna just nu, försök igen om en stund",
+      "unavailable": "GIPHY är inte tillgängligt just nu."
+    },
     "direct": {
       "message": "Meddelande",
       "empty": "Inga meddelanden än. Säg hej."

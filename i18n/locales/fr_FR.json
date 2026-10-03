@@ -2208,7 +2208,22 @@
           "ttl_tournament": "Chat de tournoi",
           "ttl_organizers": "Chat des organisateurs",
           "ttl_draft": "Chat du lobby de draft",
-          "retention_direct_days": "Conserver les messages privés pendant (jours)"
+          "retention_direct_days": "Conserver les messages privés pendant (jours)",
+          "attachments_title": "Pièces jointes",
+          "attachments_description": "Les joueurs peuvent joindre jusqu'à 4 images ou vidéos à un message dans les chats de lobby, de tournoi, des organisateurs, de draft et les messages directs. Un fichier est supprimé quand les messages de son salon expirent, quand son message direct est purgé, ou dès que son message est supprimé.",
+          "attachment_max_mb": "Fichier le plus lourd (Mo)",
+          "attachment_daily_mb": "Envois par joueur et par jour (Mo)",
+          "attachment_daily_mb_hint": "Compté sur les dernières 24 heures, fichiers retirés compris.",
+          "gifs_title": "GIFs",
+          "gifs_description": "Ajoutez une clé d'API GIPHY pour permettre aux joueurs d'envoyer des GIFs. Les recherches passent par l'API, la clé n'atteint donc jamais un navigateur. Sans clé, le bouton GIF est masqué.",
+          "giphy_api_key": "Clé d'API GIPHY",
+          "giphy_key_set": "Une clé est définie. Saisissez-en une nouvelle pour la remplacer.",
+          "giphy_key_missing": "Aucune clé n'est définie.",
+          "giphy_key_placeholder": "Collez une clé",
+          "giphy_key_remove": "Retirer la Clé",
+          "giphy_key_removed": "Clé GIPHY retirée",
+          "giphy_hourly_limit": "Recherches GIPHY par heure",
+          "giphy_hourly_limit_hint": "Partagé par tous les joueurs. Les clés bêta de GIPHY autorisent 100 recherches par heure."
         },
         "news": {
           "title": "Actualités",
@@ -9419,6 +9434,58 @@
     "react_timeout": "Le serveur n'a pas répondu. Votre réaction peut tout de même être prise en compte.",
     "react_rate_limited": "Vous réagissez trop vite.",
     "react_gagged": "Vous êtes bâillonné et ne pouvez pas ajouter de réactions.",
+    "attachments": {
+      "label": "Pièce jointe",
+      "label_count": "{count} pièces jointes",
+      "add": "Joindre des images ou des vidéos",
+      "remove": "Retirer {name}",
+      "retry": "Réessayer",
+      "open_image": "Ouvrir {name}",
+      "play_video": "Lire {name}",
+      "unavailable": "N'est plus disponible",
+      "drop_in": {
+        "matchmaking": "Déposez pour envoyer dans le lobby",
+        "tournament": "Déposez pour envoyer dans le chat du tournoi",
+        "organizers": "Déposez pour envoyer dans le chat des organisateurs",
+        "draft": "Déposez pour envoyer dans le lobby de draft",
+        "direct": "Déposez pour envoyer dans cette conversation"
+      },
+      "drop_hint": "Images et vidéos, jusqu'à {count} à la fois",
+      "rejected_type": "{name} ne peut pas être joint. Seules les images et les vidéos peuvent l'être.",
+      "rejected_size": "{name} dépasse la limite de {size}.",
+      "rejected_empty": "{name} est vide.",
+      "rejected_count": "Jusqu'à {count} fichiers par message.",
+      "waiting_hint": "En attente des envois…",
+      "failed_hint": "Retirez ou renvoyez les fichiers en échec",
+      "errors": {
+        "too_large": "Ce fichier dépasse la taille maximale.",
+        "image_too_large": "Cette image est trop grande.",
+        "unsupported_type": "Ce type de fichier ne peut pas être joint.",
+        "too_many_pending": "Trop d'envois attendent d'être envoyés. Envoyez-en ou retirez-en d'abord.",
+        "quota_exceeded": "Vous avez atteint votre quota d'envoi du jour.",
+        "rate_limited": "Trop d'envois à la fois. Réessayez dans un instant.",
+        "not_allowed": "Vous ne pouvez pas joindre de fichiers ici.",
+        "gagged": "Vous êtes bâillonné et ne pouvez rien envoyer ici.",
+        "unavailable": "L'envoi a échoué. Touchez pour réessayer."
+      }
+    },
+    "gifs": {
+      "label": "GIF",
+      "open": "Envoyer un GIF",
+      "search": "Rechercher sur GIPHY",
+      "trending": "Tendances",
+      "suggestions": {
+        "gg": "gg",
+        "clutch": "clutch",
+        "rage": "rage"
+      },
+      "click_to_send": "Cliquez pour envoyer",
+      "powered_by": "Powered by GIPHY",
+      "empty": "Aucun GIF trouvé",
+      "rate_limited": "Trop de recherches. Patientez un instant puis réessayez.",
+      "busy": "Les GIF sont saturés, réessayez dans un instant",
+      "unavailable": "GIPHY est indisponible pour le moment."
+    },
     "direct": {
       "message": "Message",
       "empty": "Aucun message pour l'instant. Dites bonjour."

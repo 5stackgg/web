@@ -7,12 +7,17 @@ import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import ChatMatchHeader from "~/components/chat/ChatMatchHeader.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
+import { Upload } from "lucide-vue-next";
 </script>
 
 <template>
   <Teleport to="#global-chat-container" v-if="global" defer>
     <div
       v-bind="$attrs"
+      @dragenter="onDragEnter"
+      @dragover="onDragOver"
+      @dragleave="onDragLeave"
+      @drop="onDrop"
       class="fixed bottom-4 bg-background border rounded-lg shadow-lg z-50 transition-all duration-300 ease-in-out flex flex-col w-96"
       :class="{ 'h-12': isMinimized, 'h-96': !isMinimized }"
       :style="{
@@ -153,6 +158,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
           v-if="composerEnabled"
           ref="chatInputRef"
           variant="global"
+          :attachment-room="attachmentRoom"
           :channels="chatChannels"
           :destination="sendTo"
           @update:destination="sendTo = $event as any"
@@ -166,9 +172,33 @@ import Empty from "~/components/ui/empty/Empty.vue";
           {{ readonlyText }}
         </div>
       </div>
+      <Transition
+        enter-active-class="transition-opacity duration-150 ease-out motion-reduce:transition-none"
+        leave-active-class="transition-opacity duration-150 ease-in motion-reduce:transition-none"
+        enter-from-class="opacity-0"
+        leave-to-class="opacity-0"
+      >
+        <div
+          v-if="dragDepth > 0"
+          data-chat-drop-overlay
+          class="pointer-events-none absolute inset-2 z-30 flex flex-col items-center justify-center gap-1.5 rounded-lg border-2 border-dashed border-[hsl(var(--tac-amber)/0.6)] bg-background/90 px-4 text-center"
+        >
+          <Upload class="h-6 w-6 text-[hsl(var(--tac-amber))]" />
+          <p class="text-sm font-semibold">{{ dropTitle }}</p>
+          <p class="text-xs text-muted-foreground">{{ dropHint }}</p>
+        </div>
+      </Transition>
     </div>
   </Teleport>
-  <div v-else v-bind="$attrs" :class="embeddedContainerClasses">
+  <div
+    v-else
+    v-bind="$attrs"
+    :class="embeddedContainerClasses"
+    @dragenter="onDragEnter"
+    @dragover="onDragOver"
+    @dragleave="onDragLeave"
+    @drop="onDrop"
+  >
     <ChatMatchHeader
       v-if="isGlobalContext && hideParticipantsSummary && matchInfo"
       :match="matchInfo"
@@ -352,6 +382,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
           key="composer"
           ref="chatInputRef"
           variant="embedded"
+          :attachment-room="attachmentRoom"
           :channels="chatChannels"
           :destination="sendTo"
           @update:destination="sendTo = $event as any"
@@ -373,6 +404,22 @@ import Empty from "~/components/ui/empty/Empty.vue";
         </div>
       </HeightSwap>
     </div>
+    <Transition
+      enter-active-class="transition-opacity duration-150 ease-out motion-reduce:transition-none"
+      leave-active-class="transition-opacity duration-150 ease-in motion-reduce:transition-none"
+      enter-from-class="opacity-0"
+      leave-to-class="opacity-0"
+    >
+      <div
+        v-if="dragDepth > 0"
+        data-chat-drop-overlay
+        class="pointer-events-none absolute inset-2 z-30 flex flex-col items-center justify-center gap-1.5 rounded-lg border-2 border-dashed border-[hsl(var(--tac-amber)/0.6)] bg-background/90 px-4 text-center"
+      >
+        <Upload class="h-6 w-6 text-[hsl(var(--tac-amber))]" />
+        <p class="text-sm font-semibold">{{ dropTitle }}</p>
+        <p class="text-xs text-muted-foreground">{{ dropHint }}</p>
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -386,10 +433,13 @@ import type {
   LobbyMessageDeleted,
 } from "~/web-sockets/Socket";
 import { e_player_roles_enum } from "~/generated/zeus";
+import type { ChatGif } from "~/utilities/chatAttachments";
 
 import { useRightSidebar } from "~/composables/useRightSidebar";
 import { useSound } from "~/composables/useSound";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
+import { useChatAttachmentConfig } from "~/composables/useChatAttachmentConfig";
+import { chatRoomTakesAttachments } from "~/utilities/chatAttachments";
 
 const { rightSidebarOpen } = useRightSidebar();
 const { playNotificationSound } = useSound();
@@ -525,6 +575,10 @@ export default {
         "everyone" | "team",
         string[]
       >,
+      // Counted, not a flag: dragging over a child fires the parent's
+      // dragleave before the child's dragenter.
+      dragDepth: 0,
+      mediaConfig: useChatAttachmentConfig(),
     };
   },
   computed: {
@@ -604,6 +658,30 @@ export default {
     },
     composerEnabled() {
       return this.canSend && !this.isGagged;
+    },
+    // Match and team rooms are relayed into the game server, so a merged
+    // panel is text-only whichever way the next line goes.
+    attachmentRoom() {
+      if (this.isMerged || !chatRoomTakesAttachments(this.type)) {
+        return null;
+      }
+
+      return { type: this.type, id: this.lobbyId };
+    },
+    acceptsDrops() {
+      return (
+        !!this.attachmentRoom &&
+        this.composerEnabled &&
+        !!this.mediaConfig.config
+      );
+    },
+    dropTitle() {
+      return this.$t(`chat.attachments.drop_in.${this.type}`);
+    },
+    dropHint() {
+      return this.$t("chat.attachments.drop_hint", {
+        count: this.mediaConfig.config?.max_files ?? 4,
+      });
     },
     readonlyText() {
       if (!this.canSend) {
@@ -917,11 +995,92 @@ export default {
         }
       });
     },
-    handleSendMessage(message: string, destination?: string) {
+    draggingFiles(event: DragEvent) {
+      return (
+        this.acceptsDrops &&
+        Array.from(event.dataTransfer?.types ?? []).includes("Files")
+      );
+    },
+    onDragEnter(event: DragEvent) {
+      if (!this.draggingFiles(event)) {
+        return;
+      }
+
+      event.preventDefault();
+      this.dragDepth++;
+    },
+    onDragOver(event: DragEvent) {
+      if (!this.draggingFiles(event)) {
+        return;
+      }
+
+      event.preventDefault();
+      if (event.dataTransfer) {
+        event.dataTransfer.dropEffect = "copy";
+      }
+    },
+    onDragLeave() {
+      this.dragDepth = Math.max(0, this.dragDepth - 1);
+    },
+    // The count drifts when a hovered node is removed mid-drag and never sees
+    // its dragleave, so anything that ends the drag starts it again from zero.
+    resetDrag() {
+      this.dragDepth = 0;
+    },
+    // Safari reports no relatedTarget on any dragleave, so only one that ends
+    // at the window's edge counts as leaving it.
+    onWindowDragLeave(event: DragEvent) {
+      if (
+        !event.relatedTarget &&
+        (event.clientX <= 0 ||
+          event.clientY <= 0 ||
+          event.clientX >= window.innerWidth ||
+          event.clientY >= window.innerHeight)
+      ) {
+        this.dragDepth = 0;
+      }
+    },
+    onDrop(event: DragEvent) {
+      this.dragDepth = 0;
+
+      if (!this.draggingFiles(event)) {
+        return;
+      }
+
+      event.preventDefault();
+
+      const chatInput = this.$refs.chatInputRef as
+        | { addFiles?: (files: File[]) => void }
+        | undefined;
+
+      chatInput?.addFiles?.(Array.from(event.dataTransfer?.files ?? []));
+    },
+    handleSendMessage(
+      message: string,
+      destination?: string,
+      media?: {
+        attachments?: string[];
+        gif?: ChatGif;
+        delivered?: (request: Promise<void>) => void;
+        sentLate?: () => void;
+      },
+    ) {
       const channel = (destination ?? this.sendTo) as "everyone" | "team";
       const target = this.channelTarget(channel);
 
-      socket.chat(target.type, target.id, message);
+      if (media?.delivered) {
+        media.delivered(
+          socket.sendChat(
+            target.type,
+            target.id,
+            message,
+            { attachments: media.attachments },
+            media.sentLate,
+          ),
+        );
+      } else {
+        socket.chat(target.type, target.id, message, media);
+      }
       // Sending to the other room from the keyboard is a one-off; the pills do
       // not move, because the next line is almost always going back where the
       // conversation was.
@@ -1088,9 +1247,17 @@ export default {
       },
     },
   },
+  mounted() {
+    window.addEventListener("drop", this.resetDrag);
+    window.addEventListener("dragend", this.resetDrag);
+    window.addEventListener("dragleave", this.onWindowDragLeave);
+  },
   beforeUnmount() {
     this.lobby?.leave();
     this.teamLobby?.leave();
+    window.removeEventListener("drop", this.resetDrag);
+    window.removeEventListener("dragend", this.resetDrag);
+    window.removeEventListener("dragleave", this.onWindowDragLeave);
   },
 };
 </script>

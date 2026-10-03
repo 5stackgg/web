@@ -5,6 +5,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import ChatMessageActions from "~/components/chat/ChatMessageActions.vue";
 import ChatMessageEditor from "~/components/chat/ChatMessageEditor.vue";
 import ChatMessageReactions from "~/components/chat/ChatMessageReactions.vue";
+import ChatMessageMedia from "~/components/chat/ChatMessageMedia.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 </script>
 
@@ -95,7 +96,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
         @close="endEdit"
       />
       <p
-        v-else
+        v-else-if="hasText"
         class="text-[11px] leading-snug break-words whitespace-pre-wrap"
       >
         <span>{{ message.message }}</span>
@@ -117,6 +118,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
           {{ $t("chat.edited_at", { time: editedAtLabel }) }}
         </FiveStackToolTip>
       </p>
+      <ChatMessageMedia v-if="hasMedia" :message="message" />
       <ChatMessageReactions
         :message="message"
         :room="room"
@@ -235,6 +237,12 @@ export default {
     },
   },
   computed: {
+    hasText() {
+      return !!this.message?.message?.trim();
+    },
+    hasMedia() {
+      return (this.message?.attachments?.length ?? 0) > 0 || !!this.message?.gif;
+    },
     viewerSteamId() {
       return useAuthStore().me?.steam_id ?? null;
     },

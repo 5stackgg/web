@@ -2208,7 +2208,22 @@
           "ttl_tournament": "Turnuva sohbeti",
           "ttl_organizers": "Organizatör sohbeti",
           "ttl_draft": "Draft lobisi sohbeti",
-          "retention_direct_days": "Doğrudan mesajları saklama süresi (gün)"
+          "retention_direct_days": "Doğrudan mesajları saklama süresi (gün)",
+          "attachments_title": "Ekler",
+          "attachments_description": "Oyuncular lobi, turnuva, organizatör, draft ve özel sohbetlerde bir mesaja en fazla 4 görsel veya video ekleyebilir. Bir dosya; odasının mesajlarının süresi dolduğunda, özel mesajı saklama süresi nedeniyle temizlendiğinde ya da mesajı silindiği anda silinir.",
+          "attachment_max_mb": "En büyük dosya (MB)",
+          "attachment_daily_mb": "Oyuncu başına günlük yükleme (MB)",
+          "attachment_daily_mb_hint": "Kaldırılan dosyalar dahil son 24 saat üzerinden sayılır.",
+          "gifs_title": "GIF'ler",
+          "gifs_description": "Oyuncuların GIF gönderebilmesi için bir GIPHY API anahtarı ekle. Aramalar API üzerinden yapılır, bu yüzden anahtar hiçbir zaman bir tarayıcıya ulaşmaz. Anahtar yoksa GIF düğmesi gizlenir.",
+          "giphy_api_key": "GIPHY API anahtarı",
+          "giphy_key_set": "Bir anahtar ayarlı. Değiştirmek için yenisini gir.",
+          "giphy_key_missing": "Ayarlı bir anahtar yok.",
+          "giphy_key_placeholder": "Bir anahtar yapıştır",
+          "giphy_key_remove": "Anahtarı Kaldır",
+          "giphy_key_removed": "GIPHY anahtarı kaldırıldı",
+          "giphy_hourly_limit": "Saat başına GIPHY araması",
+          "giphy_hourly_limit_hint": "Tüm oyuncular arasında paylaşılır. GIPHY beta anahtarları saatte 100'e izin verir."
         },
         "news": {
           "title": "Haberler",
@@ -9419,6 +9434,58 @@
     "react_timeout": "Sunucu yanıt vermedi. Tepkin yine de kaydedilebilir.",
     "react_rate_limited": "Çok hızlı tepki veriyorsun.",
     "react_gagged": "Sohbetin kapatıldı, tepki ekleyemezsin.",
+    "attachments": {
+      "label": "Ek",
+      "label_count": "{count} ek",
+      "add": "Görsel veya video ekle",
+      "remove": "Kaldır: {name}",
+      "retry": "Tekrar dene",
+      "open_image": "Aç: {name}",
+      "play_video": "Oynat: {name}",
+      "unavailable": "Artık kullanılamıyor",
+      "drop_in": {
+        "matchmaking": "Lobiye göndermek için bırak",
+        "tournament": "Turnuva sohbetine göndermek için bırak",
+        "organizers": "Organizatör sohbetine göndermek için bırak",
+        "draft": "Draft lobisine göndermek için bırak",
+        "direct": "Bu sohbete göndermek için bırak"
+      },
+      "drop_hint": "Görseller ve videolar, tek seferde en fazla {count}",
+      "rejected_type": "{name} eklenemiyor. Yalnızca görsel ve video eklenebilir.",
+      "rejected_size": "{name}, {size} sınırını aşıyor.",
+      "rejected_empty": "{name} boş.",
+      "rejected_count": "Mesaj başına en fazla {count} dosya.",
+      "waiting_hint": "Yüklemeler bekleniyor…",
+      "failed_hint": "Başarısız dosyaları kaldır veya tekrar dene",
+      "errors": {
+        "too_large": "Bu dosya boyut sınırını aşıyor.",
+        "image_too_large": "Bu görsel çok büyük.",
+        "unsupported_type": "Bu türde bir dosya eklenemez.",
+        "too_many_pending": "Gönderilmeyi bekleyen çok fazla yükleme var. Önce bazılarını gönder veya kaldır.",
+        "quota_exceeded": "Bugünkü yükleme hakkını doldurdun.",
+        "rate_limited": "Aynı anda çok fazla yükleme var. Birazdan tekrar dene.",
+        "not_allowed": "Buraya dosya ekleyemezsin.",
+        "gagged": "Sohbetin kapatıldı, buraya bir şey gönderemezsin.",
+        "unavailable": "Yükleme başarısız oldu. Tekrar denemek için dokun."
+      }
+    },
+    "gifs": {
+      "label": "GIF",
+      "open": "GIF gönder",
+      "search": "GIPHY'de ara",
+      "trending": "Trend",
+      "suggestions": {
+        "gg": "gg",
+        "clutch": "clutch",
+        "rage": "rage"
+      },
+      "click_to_send": "Göndermek için tıkla",
+      "powered_by": "Powered by GIPHY",
+      "empty": "GIF bulunamadı",
+      "rate_limited": "Çok fazla arama yaptın. Biraz bekleyip tekrar dene.",
+      "busy": "GIF'ler şu an yoğun, birazdan tekrar dene",
+      "unavailable": "GIPHY şu anda kullanılamıyor."
+    },
     "direct": {
       "message": "Mesaj",
       "empty": "Henüz mesaj yok. Merhaba de."

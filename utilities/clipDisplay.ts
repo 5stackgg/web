@@ -71,6 +71,6 @@ export function clipQueueItem(c: Clip): ClipQueueItem {
     posterUrl: c.match_map?.map?.poster ?? null,
     killsCount: c.kills_count ?? null,
     round: c.round ?? null,
-    mapLabel: map ? map.label || cleanMapName(map.name) : null,
+    mapLabel: map?.label || (map?.name ? cleanMapName(map.name) : null),
   };
 }

@@ -3165,8 +3165,6 @@
           "all": "Bästa höjdpunkten"
         },
         "empty": "Inga höjdpunkter matchar filtren än.",
-        "empty_event": "Inga höjdpunkter från {event} matchar filtren än.",
-        "remove_event": "Ta bort filtret {event}",
         "show_all_time": "Visa alla tider",
         "ghost": "Klipp dyker upp här när en matchs demo har bearbetats."
       },
@@ -3186,6 +3184,9 @@
         "final_overtime": "Slutresultat · OT",
         "final_best_of": "Slutresultat · Bo{count}",
         "check_in": "Incheckning {checked}/{total}",
+        "going_live": "Strax live",
+        "step_check_in": "Incheckning",
+        "step_server": "Serverstart",
         "round_short": "R{round}",
         "overtime_short": "OT",
         "on_stage": "På skärmen",
@@ -3228,7 +3229,8 @@
         "players_signed_up": "anmäld spelare | anmälda spelare",
         "live_count": "{count} live",
         "starts": "Startar {time}",
-        "plays_link": "{count} höjdpunkt från {event} | {count} höjdpunkter från {event}",
+        "top_plays": "Bästa höjdpunkter",
+        "all_plays": "{count} höjdpunkt | Alla {count} höjdpunkter",
         "in_prizes": "{amount} i priser",
         "leaderboard": "Topplista efter rating",
         "full_leaderboard": "Hela topplistan",
@@ -3312,6 +3314,7 @@
       },
       "sort": {
         "recent": "Senaste",
+        "top": "Bästa höjdpunkter",
         "views": "Mest visade"
       },
       "visibility_filter": {

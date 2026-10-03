@@ -3165,8 +3165,6 @@
           "all": "Top-Aktion"
         },
         "empty": "Noch keine Aktionen für diese Filter.",
-        "empty_event": "Noch keine Aktionen von {event} für diese Filter.",
-        "remove_event": "Filter {event} entfernen",
         "show_all_time": "Gesamten Zeitraum zeigen",
         "ghost": "Clips erscheinen hier, sobald die Demo eines Matches verarbeitet ist."
       },
@@ -3186,6 +3184,9 @@
         "final_overtime": "Endstand · OT",
         "final_best_of": "Endstand · Bo{count}",
         "check_in": "Check-in {checked}/{total}",
+        "going_live": "Gleich live",
+        "step_check_in": "Check-in",
+        "step_server": "Server-Setup",
         "round_short": "R{round}",
         "overtime_short": "OT",
         "on_stage": "Wird gezeigt",
@@ -3228,7 +3229,8 @@
         "players_signed_up": "Spieler angemeldet | Spieler angemeldet",
         "live_count": "{count} live",
         "starts": "Beginnt {time}",
-        "plays_link": "{count} Aktion von {event} | {count} Aktionen von {event}",
+        "top_plays": "Top-Aktionen",
+        "all_plays": "{count} Aktion | Alle {count} Aktionen",
         "in_prizes": "{amount} Preisgeld",
         "leaderboard": "Rangliste nach Rating",
         "full_leaderboard": "Komplette Rangliste",
@@ -3312,6 +3314,7 @@
       },
       "sort": {
         "recent": "Neueste",
+        "top": "Top-Aktionen",
         "views": "Meistgesehen"
       },
       "visibility_filter": {

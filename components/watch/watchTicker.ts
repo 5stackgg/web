@@ -19,6 +19,8 @@ const MAP_OVER_STATUSES = ["Finished", "WaitingForTV", "UploadingDemo"];
 export type TickerFilter = "all" | "live" | "upcoming" | "results";
 export type TickerKind = "live" | "pre" | "upcoming" | "result";
 
+export type TickerCheckIn = { checked: number; total: number };
+
 export type TickerTeam = {
   name: string;
   monogram: string;
@@ -27,12 +29,17 @@ export type TickerTeam = {
   pips: { won: number; total: number } | null;
   // win = bold on a final; trail = muted while live.
   emphasis: "win" | "trail" | null;
+  // Starters checked in, while the match waits on check-in.
+  checkIn: TickerCheckIn | null;
 };
 
 export type TickerCellModel = {
   id: string;
   kind: TickerKind;
-  status: { dot: "live" | "idle" | null; text: string };
+  // detail: the pre-match step beside "About to go live" (Check-in, Map veto).
+  status: { dot: "live" | "soon" | null; text: string; detail: string | null };
+  // Both lineups together, for the check-in progress bar.
+  checkIn: TickerCheckIn | null;
   teams: [TickerTeam, TickerTeam];
   tag: string | null;
   you: boolean;
@@ -113,16 +120,31 @@ function hasOvertime(match: any) {
   );
 }
 
-function checkInCounts(match: any) {
-  const players = [
-    ...(match?.lineup_1?.lineup_players ?? []),
-    ...(match?.lineup_2?.lineup_players ?? []),
-  ];
-  const perLineup: number | null = match?.max_players_per_lineup ?? null;
+// Only starters count: max_players_per_lineup includes substitutes, so a
+// 5v5 with two subs a side read "0/14" when ten check-ins start it.
+function lineupCheckIn(match: any, lineup: any): TickerCheckIn | null {
+  const players: any[] = lineup?.lineup_players ?? [];
+  switch (match?.options?.check_in_setting) {
+    case "Admin":
+      return null;
+    case "Captains":
+      return {
+        checked: players.some((p) => p.captain && p.checked_in) ? 1 : 0,
+        total: 1,
+      };
+  }
+  const total: number = match?.min_players_per_lineup || players.length;
+  if (!total) return null;
   return {
-    checked: players.filter((p: any) => p.checked_in).length,
-    total: perLineup ? perLineup * 2 : players.length,
+    checked: Math.min(players.filter((p) => p.checked_in).length, total),
+    total,
   };
+}
+
+function totalCheckIn(teams: [TickerTeam, TickerTeam]): TickerCheckIn | null {
+  const [a, b] = teams.map((team) => team.checkIn);
+  if (!a || !b) return null;
+  return { checked: a.checked + b.checked, total: a.total + b.total };
 }
 
 export function tickerKind(match: any): TickerKind {
@@ -147,6 +169,7 @@ function statusLine(
       return {
         dot: null,
         text: t("pages.watch.ticker.final_best_of", { count: bestOf }),
+        detail: null,
       };
     }
     return {
@@ -154,6 +177,7 @@ function statusLine(
       text: hasOvertime(match)
         ? t("pages.watch.ticker.final_overtime")
         : t("pages.watch.ticker.final"),
+      detail: null,
     };
   }
 
@@ -163,22 +187,19 @@ function statusLine(
       text: match?.scheduled_at
         ? formatStartTime(match.scheduled_at, now, locale)
         : t("match.stream.card.scheduled"),
+      detail: null,
     };
   }
 
   if (kind === "pre") {
-    if (match.status === "WaitingForCheckIn") {
-      return {
-        dot: "idle",
-        text: t("pages.watch.ticker.check_in", checkInCounts(match)),
-      };
-    }
+    const steps: Record<string, string> = {
+      WaitingForCheckIn: t("pages.watch.ticker.step_check_in"),
+      Veto: t("match.stream.card.veto"),
+    };
     return {
-      dot: "idle",
-      text:
-        match.status === "Veto"
-          ? t("match.stream.card.veto")
-          : t("match.stream.card.waiting_for_server"),
+      dot: "soon",
+      text: t("pages.watch.ticker.going_live"),
+      detail: steps[match.status] ?? t("pages.watch.ticker.step_server"),
     };
   }
 
@@ -186,35 +207,32 @@ function statusLine(
   const map = mapLabel(current);
   const join = (...parts: Array<string | null | false>) =>
     parts.filter(Boolean).join(" · ");
+  const live = (text: string) => ({ dot: "live" as const, text, detail: null });
   const round =
     (current?.lineup_1_score ?? 0) + (current?.lineup_2_score ?? 0) + 1;
 
   switch (current?.status) {
     case "Warmup":
-      return { dot: "live", text: join(t("match.stream.card.warmup"), map) };
+      return live(join(t("match.stream.card.warmup"), map));
     case "Knife":
-      return { dot: "live", text: join(t("match.stream.card.knife"), map) };
+      return live(join(t("match.stream.card.knife"), map));
     case "Scheduled":
-      return { dot: "live", text: join(t("match.stream.card.up_next"), map) };
+      return live(join(t("match.stream.card.up_next"), map));
     case "Paused":
-      return { dot: "live", text: join(t("match.stream.card.paused"), map) };
+      return live(join(t("match.stream.card.paused"), map));
     case "Overtime":
-      return {
-        dot: "live",
-        text: join(
+      return live(
+        join(
           t("pages.watch.ticker.overtime_short"),
           t("pages.watch.ticker.round_short", { round }),
           map,
         ),
-      };
+      );
   }
   if (MAP_OVER_STATUSES.includes(current?.status)) {
-    return { dot: "live", text: join(t("match.stream.card.map_over"), map) };
+    return live(join(t("match.stream.card.map_over"), map));
   }
-  return {
-    dot: "live",
-    text: join(t("pages.watch.ticker.round_short", { round }), map),
-  };
+  return live(join(t("pages.watch.ticker.round_short", { round }), map));
 }
 
 function teams(
@@ -273,6 +291,10 @@ function teams(
           ? { won: mapsWon(match, ids[i]), total: Math.ceil(bestOf / 2) }
           : null,
       emphasis,
+      checkIn:
+        match?.status === "WaitingForCheckIn"
+          ? lineupCheckIn(match, lineup)
+          : null,
     };
   }) as [TickerTeam, TickerTeam];
 }
@@ -290,11 +312,13 @@ export function tickerCell(
   ctx: { t: Translate; locale: string; now: Date },
 ): TickerCellModel {
   const kind = tickerKind(match);
+  const lineups = teams(match, kind, ctx.t);
   return {
     id: match.id,
     kind,
     status: statusLine(match, kind, ctx.t, ctx.locale, ctx.now),
-    teams: teams(match, kind, ctx.t),
+    checkIn: totalCheckIn(lineups),
+    teams: lineups,
     tag: tickerTag(match),
     you: !!match?.is_in_lineup,
     streams: match?.streams ?? [],

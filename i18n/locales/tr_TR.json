@@ -3165,8 +3165,6 @@
           "all": "En iyi an"
         },
         "empty": "Bu filtrelere uyan bir an henüz yok.",
-        "empty_event": "{event} etkinliğinden bu filtrelere uyan bir an henüz yok.",
-        "remove_event": "{event} filtresini kaldır",
         "show_all_time": "Tüm zamanları göster",
         "ghost": "Bir maçın demosu işlendiğinde klipler burada görünür."
       },
@@ -3186,6 +3184,9 @@
         "final_overtime": "Bitti · OT",
         "final_best_of": "Bitti · Bo{count}",
         "check_in": "Katılım onayı {checked}/{total}",
+        "going_live": "Başlamak üzere",
+        "step_check_in": "Katılım onayı",
+        "step_server": "Sunucu",
         "round_short": "R{round}",
         "overtime_short": "OT",
         "on_stage": "Ekranda",
@@ -3228,7 +3229,8 @@
         "players_signed_up": "kayıtlı oyuncu | kayıtlı oyuncu",
         "live_count": "{count} canlı",
         "starts": "Başlangıç: {time}",
-        "plays_link": "{event} etkinliğinden {count} an | {event} etkinliğinden {count} an",
+        "top_plays": "En iyi anlar",
+        "all_plays": "{count} an | Tüm anlar ({count})",
         "in_prizes": "{amount} ödül",
         "leaderboard": "Puana göre sıralama",
         "full_leaderboard": "Tüm sıralama",
@@ -3312,6 +3314,7 @@
       },
       "sort": {
         "recent": "En yeni",
+        "top": "En iyi anlar",
         "views": "En çok izlenen"
       },
       "visibility_filter": {

@@ -3165,8 +3165,6 @@
           "all": "Лучший момент"
         },
         "empty": "Пока нет моментов под эти фильтры.",
-        "empty_event": "Пока нет моментов с {event} под эти фильтры.",
-        "remove_event": "Убрать фильтр {event}",
         "show_all_time": "Показать за всё время",
         "ghost": "Клипы появятся здесь, когда демо матча будет обработано."
       },
@@ -3186,6 +3184,9 @@
         "final_overtime": "Итог · OT",
         "final_best_of": "Итог · Bo{count}",
         "check_in": "Чек-ин {checked}/{total}",
+        "going_live": "Скоро начало",
+        "step_check_in": "Чек-ин",
+        "step_server": "Сервер",
         "round_short": "R{round}",
         "overtime_short": "OT",
         "on_stage": "На экране",
@@ -3228,7 +3229,8 @@
         "players_signed_up": "игрок записался | игроков записалось",
         "live_count": "{count} в эфире",
         "starts": "Начало: {time}",
-        "plays_link": "{count} момент с {event} | {count} моментов с {event}",
+        "top_plays": "Лучшие моменты",
+        "all_plays": "{count} момент | Все моменты ({count})",
         "in_prizes": "Призовой фонд {amount}",
         "leaderboard": "Таблица лидеров по рейтингу",
         "full_leaderboard": "Вся таблица лидеров",
@@ -3312,6 +3314,7 @@
       },
       "sort": {
         "recent": "Сначала новые",
+        "top": "Лучшие моменты",
         "views": "По просмотрам"
       },
       "visibility_filter": {

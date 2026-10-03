@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
+import { Check } from "lucide-vue-next";
 import { NuxtLink } from "#components";
 import type { TickerCellModel } from "~/components/watch/watchTicker";
 import { streamPlatformMeta } from "~/components/watch/streamPlatform";
@@ -15,6 +17,8 @@ const props = defineProps<{
 
 defineEmits<{ (e: "stage", matchId: string): void }>();
 
+const { t } = useI18n();
+
 const platform = computed(() => streamPlatformMeta(props.model.streams[0]));
 
 // Team avatars are stored as paths on the API host.
@@ -26,6 +30,9 @@ const ariaLabel = computed(() =>
   [
     `${props.model.teams[0].name} – ${props.model.teams[1].name}`,
     props.model.status.text,
+    props.model.checkIn
+      ? t("pages.watch.ticker.check_in", props.model.checkIn)
+      : props.model.status.detail,
     props.model.teams[0].score !== null
       ? `${props.model.teams[0].score}–${props.model.teams[1].score}`
       : null,
@@ -35,11 +42,19 @@ const ariaLabel = computed(() =>
 );
 
 const cellClasses = computed(() => [
-  "relative flex h-[6.875rem] w-56 shrink-0 snap-start flex-col gap-1.5 rounded-lg border px-3 pb-2.5 pt-2 text-left transition-[background-color,border-color,box-shadow] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+  "relative flex h-[6.875rem] w-56 shrink-0 overflow-hidden snap-start flex-col gap-1.5 rounded-lg border px-3 pb-2.5 pt-2 text-left transition-[background-color,border-color,box-shadow] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] focus-visible:ring-offset-2 focus-visible:ring-offset-background",
   props.staged
     ? "border-[hsl(var(--tac-amber))] bg-muted/30 shadow-[inset_0_0_0_1px_hsl(var(--tac-amber))]"
-    : "border-border bg-muted/20 hover:bg-muted/40",
+    : props.model.kind === "pre"
+      ? "border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.06)] hover:bg-[hsl(var(--tac-amber)/0.1)]"
+      : "border-border bg-muted/20 hover:bg-muted/40",
 ]);
+
+const checkInWidth = computed(() =>
+  props.model.checkIn
+    ? `${(props.model.checkIn.checked / props.model.checkIn.total) * 100}%`
+    : "0%",
+);
 </script>
 
 <template>
@@ -60,30 +75,39 @@ const cellClasses = computed(() => [
     >
       <span
         class="inline-flex min-w-0 items-center gap-1.5 truncate tabular-nums"
-        :class="
-          model.kind === 'live' || model.kind === 'upcoming'
-            ? 'font-semibold text-foreground'
-            : ''
-        "
+        :class="{
+          'font-semibold text-foreground':
+            model.kind === 'live' || model.kind === 'upcoming',
+          'font-bold text-[hsl(var(--tac-amber))]': model.kind === 'pre',
+        }"
       >
         <span
-          v-if="model.status.dot === 'live'"
+          v-if="model.status.dot"
           class="relative inline-flex size-2 shrink-0"
         >
           <span
-            class="absolute inline-flex h-full w-full animate-ping rounded-full bg-destructive opacity-75 motion-reduce:animate-none"
+            class="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75 motion-reduce:animate-none"
+            :class="
+              model.status.dot === 'live'
+                ? 'bg-destructive'
+                : 'bg-[hsl(var(--tac-amber))]'
+            "
           ></span>
           <span
-            class="relative inline-flex size-2 rounded-full bg-destructive"
+            class="relative inline-flex size-2 rounded-full"
+            :class="
+              model.status.dot === 'live'
+                ? 'bg-destructive'
+                : 'bg-[hsl(var(--tac-amber))]'
+            "
           ></span>
         </span>
-        <span
-          v-else-if="model.status.dot === 'idle'"
-          class="inline-flex size-2 shrink-0 rounded-full bg-muted-foreground/60"
-        ></span>
         <span class="truncate">{{ model.status.text }}</span>
       </span>
       <span class="inline-flex shrink-0 items-center gap-1.5">
+        <span v-if="model.status.detail && !staged" class="whitespace-nowrap">
+          {{ model.status.detail }}
+        </span>
         <span v-if="staged" class="font-semibold text-[hsl(var(--tac-amber))]">
           {{ $t("pages.watch.ticker.on_stage") }}
         </span>
@@ -151,10 +175,38 @@ const cellClasses = computed(() => [
         :class="{ 'font-bold': team.emphasis !== 'trail' }"
         >{{ team.score }}</span
       >
+      <span
+        v-else-if="team.checkIn"
+        class="inline-flex shrink-0 items-center gap-[3px] text-xs tabular-nums"
+        :class="
+          team.checkIn.checked >= team.checkIn.total
+            ? 'font-bold text-[hsl(var(--tac-amber))]'
+            : 'text-muted-foreground'
+        "
+      >
+        <Check
+          v-if="team.checkIn.checked >= team.checkIn.total"
+          class="size-3"
+          :stroke-width="3"
+          aria-hidden="true"
+        />
+        {{ team.checkIn.checked }}/{{ team.checkIn.total }}
+      </span>
     </span>
 
     <span v-if="model.tag" class="truncate text-xs text-muted-foreground">
       {{ model.tag }}
+    </span>
+
+    <span
+      v-if="model.checkIn"
+      aria-hidden="true"
+      class="absolute inset-x-0 bottom-0 h-[3px] bg-muted-foreground/20"
+    >
+      <span
+        class="block h-full bg-[hsl(var(--tac-amber))] transition-[width] duration-300 motion-reduce:transition-none"
+        :style="{ width: checkInWidth }"
+      ></span>
     </span>
   </component>
 </template>

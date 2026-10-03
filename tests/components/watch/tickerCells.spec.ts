@@ -66,7 +66,11 @@ describe("ticker cell", () => {
     );
 
     expect(cell.kind).toBe("live");
-    expect(cell.status).toEqual({ dot: "live", text: "R19 · Inferno" });
+    expect(cell.status).toEqual({
+      dot: "live",
+      text: "R19 · Inferno",
+      detail: null,
+    });
     expect(cell.teams.map((team) => team.score)).toEqual([10, 8]);
     expect(cell.teams[0].pips).toEqual({ won: 1, total: 2 });
     expect(cell.teams[1].emphasis).toBe("trail");
@@ -88,24 +92,77 @@ describe("ticker cell", () => {
     expect(at("Overtime")).toBe("OT · R25 · Inferno");
   });
 
-  it("shows map veto and check-in progress without scores", () => {
+  it("marks pre-match states as about to go live, without scores", () => {
     const veto = tickerCell(match({ status: "Veto" }), ctx);
     expect(veto.kind).toBe("pre");
-    expect(veto.status).toEqual({ dot: "idle", text: "Map veto" });
+    expect(veto.status).toEqual({
+      dot: "soon",
+      text: "About to go live",
+      detail: "Map veto",
+    });
     expect(veto.teams.map((team) => team.score)).toEqual([null, null]);
+    expect(veto.checkIn).toBeNull();
 
+    const server = tickerCell(match({ status: "WaitingForServer" }), ctx);
+    expect(server.status.detail).toBe("Server setup");
+  });
+
+  it("counts check-in against the starters only, not the substitutes", () => {
+    // Five starters plus two subs a side: max_players_per_lineup is 7.
     const players = (n: number, checked: number) =>
       Array.from({ length: n }, (_, i) => ({ checked_in: i < checked }));
     const checkIn = tickerCell(
       match({
         status: "WaitingForCheckIn",
-        max_players_per_lineup: 5,
-        lineup_1: lineup("l1", "Buttah Boyz", "BB", { lineup_players: players(5, 5) }),
-        lineup_2: lineup("l2", "Saint's Team", "ST", { lineup_players: players(5, 2) }),
+        min_players_per_lineup: 5,
+        max_players_per_lineup: 7,
+        lineup_1: lineup("l1", "Buttah Boyz", "BB", { lineup_players: players(7, 6) }),
+        lineup_2: lineup("l2", "Saint's Team", "ST", { lineup_players: players(7, 2) }),
       }),
       ctx,
     );
-    expect(checkIn.status.text).toBe("Check-in 7/10");
+
+    expect(checkIn.status).toEqual({
+      dot: "soon",
+      text: "About to go live",
+      detail: "Check-in",
+    });
+    expect(checkIn.teams.map((team) => team.checkIn)).toEqual([
+      { checked: 5, total: 5 },
+      { checked: 2, total: 5 },
+    ]);
+    expect(checkIn.checkIn).toEqual({ checked: 7, total: 10 });
+    expect(t("pages.watch.ticker.check_in", checkIn.checkIn)).toBe(
+      "Check-in 7/10",
+    );
+  });
+
+  it("counts one captain a side when only captains check in", () => {
+    const cell = tickerCell(
+      match({
+        status: "WaitingForCheckIn",
+        min_players_per_lineup: 5,
+        options: { best_of: 1, mr: 12, type: "Competitive", check_in_setting: "Captains" },
+        lineup_1: lineup("l1", "Buttah Boyz", "BB", {
+          lineup_players: [{ captain: true, checked_in: true }, { checked_in: true }],
+        }),
+        lineup_2: lineup("l2", "Saint's Team", "ST", {
+          lineup_players: [{ captain: true, checked_in: false }, { checked_in: true }],
+        }),
+      }),
+      ctx,
+    );
+    expect(cell.checkIn).toEqual({ checked: 1, total: 2 });
+
+    const admin = tickerCell(
+      match({
+        status: "WaitingForCheckIn",
+        options: { best_of: 1, mr: 12, type: "Competitive", check_in_setting: "Admin" },
+      }),
+      ctx,
+    );
+    expect(admin.checkIn).toBeNull();
+    expect(admin.status.detail).toBe("Check-in");
   });
 
   it("shows when an upcoming match starts", () => {

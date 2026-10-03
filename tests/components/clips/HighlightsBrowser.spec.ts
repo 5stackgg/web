@@ -41,7 +41,7 @@ beforeEach(() => {
 
 describe("HighlightsBrowser", () => {
   it("scopes grouped match clips and their count to the event's matches", async () => {
-    await mountBrowser("/events/event-1?tab=highlights", "event-1");
+    await mountBrowser("/events/event-1?tab=highlights&sort=recent", "event-1");
 
     const groups = sentQueries("match_maps");
     const counts = sentQueries("match_maps_aggregate");
@@ -62,6 +62,26 @@ describe("HighlightsBrowser", () => {
     for (const text of [...clips, ...counts]) {
       expect(text).toContain(`match_map:{match:{${EVENT_SCOPE}}}`);
     }
+  });
+
+  it("leads an event's highlights with its top plays: most kills, then shortest", async () => {
+    await mountBrowser("/events/event-1?tab=highlights", "event-1");
+
+    const [clips] = sentQueries("match_clips");
+    expect(clips).toContain(
+      "order_by:[{kills_count:desc_nulls_last},{duration_ms:asc_nulls_last},{views_count:desc_nulls_last},{created_at:desc}]",
+    );
+  });
+
+  it("keeps the highlights page newest first", async () => {
+    await mountBrowser("/highlights");
+
+    const grouped = query.mock.calls.find(
+      ([options]) => options.variables?.clips_order_by,
+    );
+    expect(grouped?.[0].variables.clips_order_by).toEqual([
+      { created_at: "desc" },
+    ]);
   });
 
   it("lists the event's participants in the player filter", async () => {

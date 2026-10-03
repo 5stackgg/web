@@ -263,6 +263,7 @@ const phoneMeta = computed(() => {
     currentCell.value?.tag,
     mm?.map?.label || mm?.map?.name,
     currentCell.value?.status.text,
+    currentCell.value?.status.detail,
   ]
     .filter(Boolean)
     .join(" · ");
@@ -518,7 +519,7 @@ const roundButton =
               }}</span>
             </span>
             <span class="truncate text-xs text-muted-foreground">{{
-              [other.cell.status.text, other.cell.tag]
+              [other.cell.status.text, other.cell.status.detail, other.cell.tag]
                 .filter(Boolean)
                 .join(" · ")
             }}</span>

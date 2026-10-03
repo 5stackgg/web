@@ -9,9 +9,9 @@ import EventMediaRail from "~/components/events/EventMediaRail.vue";
 import TournamentCard from "~/components/tournament/TournamentCard.vue";
 import { tournamentStatusVariant } from "~/components/tournament/tournamentCard";
 import type { Clip } from "~/types/clip";
-import { $, order_by } from "~/generated/zeus";
+import { $ } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { matchClipFields } from "~/graphql/matchClip";
+import { matchClipFields, topPlayOrderBy } from "~/graphql/matchClip";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
@@ -138,7 +138,7 @@ const TOP_CLIPS_QUERY = typedGql("query")({
           },
         },
       },
-      order_by: [{ views_count: order_by.desc_nulls_last }],
+      order_by: topPlayOrderBy,
       limit: 6,
     },
     matchClipFields,

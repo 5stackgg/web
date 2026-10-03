@@ -3165,8 +3165,6 @@
           "all": "أفضل لقطة"
         },
         "empty": "لا توجد لقطات تطابق عوامل التصفية هذه بعد.",
-        "empty_event": "لا توجد لقطات من {event} تطابق عوامل التصفية هذه بعد.",
-        "remove_event": "إزالة تصفية {event}",
         "show_all_time": "عرض كل الأوقات",
         "ghost": "تظهر المقاطع هنا بعد معالجة الـ Demo الخاص بالمباراة."
       },
@@ -3186,6 +3184,9 @@
         "final_overtime": "النتيجة النهائية · OT",
         "final_best_of": "النتيجة النهائية · Bo{count}",
         "check_in": "تأكيد الحضور {checked}/{total}",
+        "going_live": "على وشك البدء",
+        "step_check_in": "تأكيد الحضور",
+        "step_server": "تجهيز الخادم",
         "round_short": "R{round}",
         "overtime_short": "OT",
         "on_stage": "على الشاشة",
@@ -3228,7 +3229,8 @@
         "players_signed_up": "لاعب مسجّل | لاعبين مسجّلين",
         "live_count": "{count} مباشر",
         "starts": "يبدأ {time}",
-        "plays_link": "{count} لقطة من {event} | {count} لقطات من {event}",
+        "top_plays": "أفضل اللقطات",
+        "all_plays": "{count} لقطة | جميع اللقطات ({count})",
         "in_prizes": "جوائز بقيمة {amount}",
         "leaderboard": "لوحة المتصدرين حسب التقييم",
         "full_leaderboard": "لوحة المتصدرين كاملة",
@@ -3312,6 +3314,7 @@
       },
       "sort": {
         "recent": "الأحدث",
+        "top": "أفضل اللقطات",
         "views": "الأكثر مشاهدة"
       },
       "visibility_filter": {

@@ -4,9 +4,10 @@ import { useI18n } from "vue-i18n";
 import { ArrowRight, Link2, Music, Play, Trophy } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import ClipTile from "~/components/clips/ClipTile.vue";
 import WatchTournamentStepper from "~/components/watch/WatchTournamentStepper.vue";
 import { eventMediaUrl } from "~/composables/useEventMediaUpload";
-import { useWatchHighlightsEvent } from "~/composables/useWatchStage";
+import type { Clip } from "~/types/clip";
 import { formatPrizePool } from "~/utilities/prizePool";
 import { parseExternalMedia } from "~/utilities/externalMedia";
 import type { ProgressStep } from "~/utilities/tournamentProgressSteps";
@@ -27,11 +28,12 @@ const props = defineProps<{
   leaderboard: any[];
   media: any[];
   mediaCount: number;
+  // The event's top plays, best first.
+  plays: Clip[];
   playsCount: number;
 }>();
 
 const { t } = useI18n();
-const { showEventHighlights } = useWatchHighlightsEvent();
 
 const eventPath = computed(() => `/events/${props.event.id}`);
 
@@ -184,8 +186,18 @@ const hasSide = computed(
   () => props.leaderboard.length > 0 || props.media.length > 0,
 );
 
-function showPlays() {
-  showEventHighlights({ id: props.event.id, name: props.event.name });
+// The lead play takes two rows beside the rest; a lone play or a lone
+// follower stretches to fill its side. One column on phones.
+function playCellClasses(index: number) {
+  const count = props.plays.length;
+  if (index === 0) {
+    return count === 1
+      ? "col-span-2 aspect-video sm:row-span-2 sm:aspect-auto"
+      : "col-span-2 aspect-video sm:col-span-1 sm:row-span-2 sm:aspect-auto";
+  }
+  return count === 2
+    ? "col-span-2 aspect-video sm:col-span-1 sm:row-span-2 sm:aspect-auto"
+    : "aspect-video sm:aspect-auto";
 }
 
 const tagClasses =
@@ -300,7 +312,7 @@ const typeTileClasses =
         <div class="divide-y divide-border/60">
           <div v-if="lead" class="pb-3.5">
             <div
-              class="grid grid-cols-[2.25rem_minmax(0,1fr)] items-center gap-x-3 gap-y-0.5 px-2 py-[11px] sm:grid-cols-[2.25rem_minmax(0,1fr)_auto]"
+              class="grid grid-cols-[2.25rem_minmax(0,1fr)] items-center gap-x-3 gap-y-0.5 px-2 py-[11px]"
             >
               <span
                 :class="[
@@ -319,24 +331,6 @@ const typeTileClasses =
               <span class="col-start-2 min-w-0 text-xs text-muted-foreground">
                 {{ meta(lead) }}
               </span>
-              <button
-                v-if="playsCount > 0"
-                type="button"
-                class="hit col-start-2 mt-1 inline-flex items-center gap-1.5 justify-self-start rounded-sm text-[0.8125rem] font-semibold text-[hsl(var(--tac-amber))] hover:underline hover:underline-offset-[3px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:col-start-3 sm:row-span-2 sm:row-start-1 sm:mt-0"
-                @click="showPlays"
-              >
-                {{
-                  $t(
-                    "pages.watch.events.plays_link",
-                    {
-                      count: playsCount,
-                      event: event.name,
-                    },
-                    playsCount,
-                  )
-                }}
-                <ArrowRight class="h-3.5 w-3.5" />
-              </button>
             </div>
             <div class="px-2 sm:pl-14 sm:pr-2">
               <WatchTournamentStepper
@@ -419,24 +413,52 @@ const typeTileClasses =
             </span>
           </NuxtLink>
 
-          <div v-if="!lead && playsCount > 0" class="px-2 py-3">
-            <button
-              type="button"
-              class="hit inline-flex items-center gap-1.5 rounded-sm text-[0.8125rem] font-semibold text-[hsl(var(--tac-amber))] hover:underline hover:underline-offset-[3px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              @click="showPlays"
+          <div
+            v-if="plays.length"
+            class="px-2 pb-1"
+            :class="lead || rows.length ? 'pt-3.5' : 'pt-1'"
+          >
+            <div class="mb-2 flex items-baseline justify-between gap-2.5">
+              <p class="m-0 text-xs text-muted-foreground">
+                {{ $t("pages.watch.events.top_plays") }}
+              </p>
+              <NuxtLink
+                :to="`${eventPath}?tab=highlights`"
+                class="hit inline-flex items-center gap-1.5 rounded-sm text-[0.8125rem] font-semibold text-[hsl(var(--tac-amber))] hover:underline hover:underline-offset-[3px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                {{
+                  $t(
+                    "pages.watch.events.all_plays",
+                    { count: playsCount },
+                    playsCount,
+                  )
+                }}
+                <ArrowRight class="h-3.5 w-3.5" />
+              </NuxtLink>
+            </div>
+            <div
+              class="grid grid-cols-2 gap-2.5 sm:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] sm:grid-rows-[9.5rem_9.5rem]"
             >
-              {{
-                $t(
-                  "pages.watch.events.plays_link",
-                  {
-                    count: playsCount,
-                    event: event.name,
-                  },
-                  playsCount,
-                )
-              }}
-              <ArrowRight class="h-3.5 w-3.5" />
-            </button>
+              <div
+                v-for="(clip, index) in plays"
+                :key="clip.id"
+                class="min-w-0"
+                :class="playCellClasses(index)"
+              >
+                <ClipTile
+                  :clip="clip"
+                  :variant="index === 0 ? 'hero' : 'tile'"
+                  :tag="
+                    index === 0
+                      ? $t('pages.watch.highlights.tag.all')
+                      : undefined
+                  "
+                  :queue="plays"
+                  queue-scope="watch-event-plays"
+                  fill
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { ArrowRight, X } from "lucide-vue-next";
+import { ArrowRight } from "lucide-vue-next";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery } from "~/graphql/graphqlGen";
-import { matchClipFields } from "~/graphql/matchClip";
-import { order_by, $ } from "~/generated/zeus";
+import { matchClipFields, topPlayOrderBy } from "~/graphql/matchClip";
+import { $ } from "~/generated/zeus";
 import ClipTile from "~/components/clips/ClipTile.vue";
 import WatchSegmented from "~/components/watch/WatchSegmented.vue";
 import { Button } from "~/components/ui/button";
@@ -16,11 +16,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { useWatchHighlightsEvent } from "~/composables/useWatchStage";
 import type { Clip } from "~/types/clip";
 import {
-  filterTriggerActive,
-  filterTriggerBase,
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
@@ -33,7 +30,6 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
-const { highlightsEvent, showEventHighlights } = useWatchHighlightsEvent();
 
 type Range = "today" | "week" | "all";
 
@@ -82,11 +78,6 @@ function clipsWhere() {
     where.kills_count = { _eq: 4 };
     where.round = { _is_null: false };
   }
-  if (highlightsEvent.value) {
-    where.match_map = {
-      match: { event_links: { event_id: { _eq: highlightsEvent.value.id } } },
-    };
-  }
   return where;
 }
 
@@ -101,10 +92,7 @@ async function fetchClips() {
         match_clips: [
           {
             where: $("where", "match_clips_bool_exp!"),
-            order_by: [
-              { views_count: order_by.desc_nulls_last },
-              { created_at: order_by.desc },
-            ],
+            order_by: topPlayOrderBy,
             limit: $("limit", "Int!"),
           },
           matchClipFields,
@@ -122,11 +110,7 @@ async function fetchClips() {
   }
 }
 
-watch(
-  [kind, range, () => highlightsEvent.value?.id, limit, () => props.ghost],
-  fetchClips,
-  { immediate: true },
-);
+watch([kind, range, limit, () => props.ghost], fetchClips, { immediate: true });
 
 const createdToday = (clip: Clip) =>
   new Date(clip.created_at).toDateString() === new Date().toDateString();
@@ -191,14 +175,6 @@ const cells = computed<Cell[]>(() => {
     })),
   ];
 });
-
-const emptyMessage = computed(() =>
-  highlightsEvent.value
-    ? t("pages.watch.highlights.empty_event", {
-        event: highlightsEvent.value.name,
-      })
-    : t("pages.watch.highlights.empty"),
-);
 </script>
 
 <template>
@@ -232,20 +208,6 @@ const emptyMessage = computed(() =>
         :label="$t('pages.watch.highlights.kinds.label')"
       />
       <div class="flex min-w-0 items-center gap-2">
-        <button
-          v-if="highlightsEvent"
-          type="button"
-          :class="[filterTriggerBase, filterTriggerActive, 'normal-case tracking-normal']"
-          :aria-label="
-            $t('pages.watch.highlights.remove_event', {
-              event: highlightsEvent.name,
-            })
-          "
-          @click="showEventHighlights(null)"
-        >
-          <span class="truncate">{{ highlightsEvent.name }}</span>
-          <X class="h-3.5 w-3.5 shrink-0" />
-        </button>
         <Select v-model="range">
           <SelectTrigger
             class="h-8 w-auto gap-2 text-xs"
@@ -300,7 +262,7 @@ const emptyMessage = computed(() =>
       v-else-if="cells.length === 0"
       class="flex flex-wrap items-center gap-3 rounded-lg border border-dashed border-border px-5 py-8 text-sm text-muted-foreground"
     >
-      <span>{{ emptyMessage }}</span>
+      <span>{{ $t("pages.watch.highlights.empty") }}</span>
       <Button
         v-if="range !== 'all'"
         variant="outline"

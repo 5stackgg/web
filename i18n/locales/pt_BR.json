@@ -3165,8 +3165,6 @@
           "all": "Melhor jogada"
         },
         "empty": "Nenhuma jogada corresponde a esses filtros ainda.",
-        "empty_event": "Nenhuma jogada de {event} corresponde a esses filtros ainda.",
-        "remove_event": "Remover o filtro {event}",
         "show_all_time": "Ver todo o período",
         "ghost": "Os clipes aparecem aqui assim que a demo da partida é processada."
       },
@@ -3186,6 +3184,9 @@
         "final_overtime": "Encerrada · OT",
         "final_best_of": "Encerrada · Bo{count}",
         "check_in": "Check-in {checked}/{total}",
+        "going_live": "Prestes a começar",
+        "step_check_in": "Check-in",
+        "step_server": "Servidor",
         "round_short": "R{round}",
         "overtime_short": "OT",
         "on_stage": "Na tela",
@@ -3228,7 +3229,8 @@
         "players_signed_up": "jogador inscrito | jogadores inscritos",
         "live_count": "{count} ao vivo",
         "starts": "Começa {time}",
-        "plays_link": "{count} jogada de {event} | {count} jogadas de {event}",
+        "top_plays": "Melhores jogadas",
+        "all_plays": "{count} jogada | Todas as {count} jogadas",
         "in_prizes": "{amount} em prêmios",
         "leaderboard": "Ranking por rating",
         "full_leaderboard": "Ranking completo",
@@ -3312,6 +3314,7 @@
       },
       "sort": {
         "recent": "Mais Recentes",
+        "top": "Melhores Jogadas",
         "views": "Mais Visualizados"
       },
       "visibility_filter": {

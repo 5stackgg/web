@@ -3165,8 +3165,6 @@
           "all": "최고의 플레이"
         },
         "empty": "아직 이 필터에 맞는 플레이가 없습니다.",
-        "empty_event": "아직 이 필터에 맞는 {event} 플레이가 없습니다.",
-        "remove_event": "{event} 필터 제거",
         "show_all_time": "전체 기간 보기",
         "ghost": "매치 데모 처리가 끝나면 여기에 클립이 표시됩니다."
       },
@@ -3186,6 +3184,9 @@
         "final_overtime": "최종 결과 · OT",
         "final_best_of": "최종 결과 · Bo{count}",
         "check_in": "체크인 {checked}/{total}",
+        "going_live": "곧 시작",
+        "step_check_in": "체크인",
+        "step_server": "서버 준비 중",
         "round_short": "R{round}",
         "overtime_short": "OT",
         "on_stage": "재생 중",
@@ -3228,7 +3229,8 @@
         "players_signed_up": "명 참가 신청 | 명 참가 신청",
         "live_count": "라이브 {count}",
         "starts": "{time} 시작",
-        "plays_link": "{event} 플레이 {count}개 | {event} 플레이 {count}개",
+        "top_plays": "탑 플레이",
+        "all_plays": "플레이 {count}개 | 플레이 {count}개 모두 보기",
         "in_prizes": "상금 {amount}",
         "leaderboard": "레이팅 기준 리더보드",
         "full_leaderboard": "전체 리더보드",
@@ -3312,6 +3314,7 @@
       },
       "sort": {
         "recent": "최신순",
+        "top": "탑 플레이",
         "views": "조회순"
       },
       "visibility_filter": {

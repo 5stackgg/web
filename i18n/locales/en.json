@@ -3165,8 +3165,6 @@
           "all": "Top play"
         },
         "empty": "No plays match these filters yet.",
-        "empty_event": "No plays from {event} match these filters yet.",
-        "remove_event": "Remove the {event} filter",
         "show_all_time": "Show all time",
         "ghost": "Clips show up here once a match's demo is processed."
       },
@@ -3186,6 +3184,9 @@
         "final_overtime": "Final · OT",
         "final_best_of": "Final · Bo{count}",
         "check_in": "Check-in {checked}/{total}",
+        "going_live": "About to go live",
+        "step_check_in": "Check-in",
+        "step_server": "Server setup",
         "round_short": "R{round}",
         "overtime_short": "OT",
         "on_stage": "On stage",
@@ -3228,7 +3229,8 @@
         "players_signed_up": "player signed up | players signed up",
         "live_count": "{count} live",
         "starts": "Starts {time}",
-        "plays_link": "{count} play from {event} | {count} plays from {event}",
+        "top_plays": "Top plays",
+        "all_plays": "{count} play | All {count} plays",
         "in_prizes": "{amount} in prizes",
         "leaderboard": "Leaderboard by rating",
         "full_leaderboard": "Full leaderboard",
@@ -3312,6 +3314,7 @@
       },
       "sort": {
         "recent": "Most recent",
+        "top": "Top plays",
         "views": "Most viewed"
       },
       "visibility_filter": {

@@ -66,6 +66,7 @@ defineEmits<{
         :leaderboard="leaderboard"
         :media="mediaItems"
         :media-count="mediaCount"
+        :plays="plays"
         :plays-count="playsCount"
       />
       <div
@@ -93,6 +94,7 @@ import {
   type ProgressStep,
 } from "~/utilities/tournamentProgressSteps";
 import { tournamentRowState } from "~/utilities/watchEventCard";
+import { matchClipFields, topPlayOrderBy } from "~/graphql/matchClip";
 
 const count = [{}, { aggregate: { count: true } }] as const;
 
@@ -263,18 +265,22 @@ const MEDIA_QUERY = typedGql("query")({
   ],
 } as any);
 
-const PLAYS_QUERY = typedGql("query")({
-  match_clips_aggregate: [
-    {
-      where: {
-        visibility: { _eq: "public" },
-        match_map: {
-          match: {
-            event_links: { event_id: { _eq: $("eventId", "uuid!") } },
-          },
-        },
-      },
+const eventPlaysWhere = {
+  visibility: { _eq: "public" },
+  match_map: {
+    match: {
+      event_links: { event_id: { _eq: $("eventId", "uuid!") } },
     },
+  },
+};
+
+const PLAYS_QUERY = typedGql("query")({
+  match_clips: [
+    { where: eventPlaysWhere, order_by: topPlayOrderBy, limit: 3 },
+    matchClipFields,
+  ],
+  match_clips_aggregate: [
+    { where: eventPlaysWhere },
     { aggregate: { count: true } },
   ],
 } as any);
@@ -291,6 +297,7 @@ export default {
       leaderboard: [] as any[],
       mediaItems: [] as any[],
       mediaCount: 0,
+      plays: [] as any[],
       playsCount: 0,
       loaded: { live: false, upcoming: false, finished: false },
     };
@@ -331,7 +338,7 @@ export default {
         this.mediaCount = data?.event_media_aggregate?.aggregate?.count ?? 0;
       },
     },
-    playsCount: {
+    plays: {
       query: PLAYS_QUERY,
       fetchPolicy: "network-only",
       variables(this: any) {
@@ -341,7 +348,11 @@ export default {
         return !this.featured;
       },
       update(data: any) {
-        return Number(data?.match_clips_aggregate?.aggregate?.count) || 0;
+        return data?.match_clips ?? [];
+      },
+      result(this: any, { data }: any) {
+        this.playsCount =
+          Number(data?.match_clips_aggregate?.aggregate?.count) || 0;
       },
     },
     $subscribe: {

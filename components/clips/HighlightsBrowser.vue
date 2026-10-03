@@ -16,7 +16,7 @@ import {
 import { useAuthStore } from "~/stores/AuthStore";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery } from "~/graphql/graphqlGen";
-import { matchClipFields } from "~/graphql/matchClip";
+import { matchClipFields, topPlayOrderBy } from "~/graphql/matchClip";
 import { order_by, $ } from "~/generated/zeus";
 import {
   Popover,
@@ -116,23 +116,28 @@ const viewMode = computed<ViewMode>(() =>
   route.query.view === "singles" ? "singles" : "matches",
 );
 
-type SortPreset = "recent" | "views";
-const SORT_VALUES = ["recent", "views"] as const;
+type SortPreset = "recent" | "top" | "views";
+const SORT_VALUES = ["recent", "top", "views"] as const;
 const SORT_OPTIONS = computed<Array<{ value: SortPreset; label: string }>>(() =>
   SORT_VALUES.map((value) => ({
     value,
     label: t(`pages.highlights.sort.${value}`),
   })),
 );
+// An event's highlights lead with its best plays; the global page stays
+// newest first.
+const defaultSort = computed<SortPreset>(() =>
+  props.eventId ? "top" : "recent",
+);
 const sortFilter = computed<SortPreset>(() =>
   (SORT_VALUES as readonly string[]).includes(route.query.sort as string)
     ? (route.query.sort as SortPreset)
-    : "recent",
+    : defaultSort.value,
 );
 
 function setSort(v: SortPreset) {
   const next = { ...route.query } as Record<string, any>;
-  if (v === "recent") delete next.sort;
+  if (v === defaultSort.value) delete next.sort;
   else next.sort = v;
   router.replace({ path: route.path, query: next, hash: route.hash });
 }
@@ -239,7 +244,7 @@ function resetHighlightFilters() {
 const killsOpen = ref(false);
 
 const forceSingles = computed(
-  () => hasActiveFilter.value || sortFilter.value === "views",
+  () => hasActiveFilter.value || sortFilter.value !== "recent",
 );
 
 const effectiveMode = computed<ViewMode>(() =>
@@ -304,10 +309,11 @@ async function fetchData() {
           match_clips: [
             {
               where: clipWhere.value,
-              order_by:
-                sortFilter.value === "views"
-                  ? [{ views_count: order_by.desc }]
-                  : [{ created_at: order_by.desc }],
+              order_by: {
+                recent: [{ created_at: order_by.desc }],
+                top: topPlayOrderBy,
+                views: [{ views_count: order_by.desc }],
+              }[sortFilter.value],
               limit: perPage,
               offset: (page.value - 1) * perPage,
             } as any,
@@ -651,12 +657,12 @@ const viewModeOptions = computed<
           :count="
             (isAdmin && visibilityFilter !== 'all' ? 1 : 0) +
             (sinceFilter !== 'all' ? 1 : 0) +
-            (sortFilter !== 'recent' ? 1 : 0)
+            (sortFilter !== defaultSort ? 1 : 0)
           "
           :active="
             (isAdmin && visibilityFilter !== 'all') ||
             sinceFilter !== 'all' ||
-            sortFilter !== 'recent'
+            sortFilter !== defaultSort
           "
           :show-reset="hasActiveFilter"
           content-class="w-[min(92vw,260px)] space-y-3 p-2"

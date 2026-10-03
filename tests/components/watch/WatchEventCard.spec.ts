@@ -109,6 +109,27 @@ function event() {
   };
 }
 
+function play(id: string, kills: number) {
+  return {
+    id,
+    user_steam_id: "1",
+    target_steam_id: "1",
+    title: null,
+    duration_ms: 6000,
+    download_url: null,
+    thumbnail_url: null,
+    thumbnail_download_url: null,
+    kills_count: kills,
+    round: 3,
+    views_count: 0,
+    visibility: "public",
+    created_at: hours(-2),
+    user: null,
+    target: { steam_id: "1", name: "flickr", avatar_url: null },
+    match_map: null,
+  };
+}
+
 async function mountCard(props: Record<string, unknown> = {}) {
   return mountSuspended(WatchEventCard, {
     props: {
@@ -117,7 +138,8 @@ async function mountCard(props: Record<string, unknown> = {}) {
       leaderboard: [],
       media: [],
       mediaCount: 0,
-      playsCount: 4,
+      plays: [play("ace", 5), play("quad", 4), play("triple", 3)],
+      playsCount: 218,
       ...props,
     },
   });
@@ -139,7 +161,18 @@ describe("WatchEventCard", () => {
     expect(wrapper.text()).toContain(
       "Double elimination · 16 teams · $850 in prizes",
     );
-    expect(wrapper.text()).toContain("4 plays from Northside LAN 2026");
+  });
+
+  it("shows the event's top plays, linking to its highlights tab", async () => {
+    const wrapper = await mountCard();
+
+    expect(wrapper.text()).toContain("Top plays");
+    expect(
+      wrapper.findAll('a[href^="/clips/"]').map((a) => a.attributes("href")),
+    ).toEqual(["/clips/ace", "/clips/quad", "/clips/triple"]);
+    expect(wrapper.text()).toContain("Top play");
+    const all = wrapper.find('a[href="/events/event-1?tab=highlights"]');
+    expect(all.text()).toContain("All 218 plays");
   });
 
   it("shows the champion of a finished tournament and when the next one starts", async () => {
@@ -157,9 +190,10 @@ describe("WatchEventCard", () => {
     expect(wingman.text()).toContain("2v2");
   });
 
-  it("hides the plays link when the event has no public clips", async () => {
-    const wrapper = await mountCard({ playsCount: 0 });
-    expect(wrapper.text()).not.toContain("plays from");
+  it("hides the plays when the event has no public clips", async () => {
+    const wrapper = await mountCard({ plays: [], playsCount: 0 });
+    expect(wrapper.text()).not.toContain("Top plays");
+    expect(wrapper.find('a[href$="?tab=highlights"]').exists()).toBe(false);
   });
 
   it("falls back to a plain row while the bracket hasn't loaded", async () => {

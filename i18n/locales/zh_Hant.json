@@ -3165,8 +3165,6 @@
           "all": "最佳精華"
         },
         "empty": "目前沒有符合這些篩選條件的精華。",
-        "empty_event": "目前沒有來自 {event} 且符合這些篩選條件的精華。",
-        "remove_event": "移除 {event} 篩選",
         "show_all_time": "顯示全部時間",
         "ghost": "比賽 demo 處理完成後，片段會顯示在這裡。"
       },
@@ -3186,6 +3184,9 @@
         "final_overtime": "已結束 · OT",
         "final_best_of": "已結束 · Bo{count}",
         "check_in": "報到 {checked}/{total}",
+        "going_live": "即將開始",
+        "step_check_in": "報到",
+        "step_server": "伺服器準備中",
         "round_short": "R{round}",
         "overtime_short": "OT",
         "on_stage": "播放中",
@@ -3228,7 +3229,8 @@
         "players_signed_up": "名玩家已報名 | 名玩家已報名",
         "live_count": "{count} 場進行中",
         "starts": "{time} 開始",
-        "plays_link": "{event} 的 {count} 個精華 | {event} 的 {count} 個精華",
+        "top_plays": "最佳精華",
+        "all_plays": "{count} 個精華 | 全部 {count} 個精華",
         "in_prizes": "獎金 {amount}",
         "leaderboard": "評分排行榜",
         "full_leaderboard": "完整排行榜",
@@ -3312,6 +3314,7 @@
       },
       "sort": {
         "recent": "最新",
+        "top": "最佳精華",
         "views": "最多觀看"
       },
       "visibility_filter": {

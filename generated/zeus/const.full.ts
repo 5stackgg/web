@@ -840,20 +840,34 @@ export const AllTypesProps: Record<string,any> = {
 		_neq:"bytea",
 		_nin:"bytea"
 	},
+	chat_message_deletions:{
+		attachments:{
+
+		},
+		gif:{
+
+		}
+	},
 	chat_message_deletions_aggregate_fields:{
 		count:{
 			columns:"chat_message_deletions_select_column"
 		}
 	},
+	chat_message_deletions_append_input:{
+		attachments:"jsonb",
+		gif:"jsonb"
+	},
 	chat_message_deletions_bool_exp:{
 		_and:"chat_message_deletions_bool_exp",
 		_not:"chat_message_deletions_bool_exp",
 		_or:"chat_message_deletions_bool_exp",
+		attachments:"jsonb_comparison_exp",
 		author:"players_bool_exp",
 		author_steam_id:"bigint_comparison_exp",
 		deleted_at:"timestamptz_comparison_exp",
 		deleted_by:"players_bool_exp",
 		deleted_by_steam_id:"bigint_comparison_exp",
+		gif:"jsonb_comparison_exp",
 		id:"uuid_comparison_exp",
 		message:"String_comparison_exp",
 		message_created_at:"timestamptz_comparison_exp",
@@ -863,16 +877,27 @@ export const AllTypesProps: Record<string,any> = {
 		source:"String_comparison_exp"
 	},
 	chat_message_deletions_constraint: "enum" as const,
+	chat_message_deletions_delete_at_path_input:{
+
+	},
+	chat_message_deletions_delete_elem_input:{
+
+	},
+	chat_message_deletions_delete_key_input:{
+
+	},
 	chat_message_deletions_inc_input:{
 		author_steam_id:"bigint",
 		deleted_by_steam_id:"bigint"
 	},
 	chat_message_deletions_insert_input:{
+		attachments:"jsonb",
 		author:"players_obj_rel_insert_input",
 		author_steam_id:"bigint",
 		deleted_at:"timestamptz",
 		deleted_by:"players_obj_rel_insert_input",
 		deleted_by_steam_id:"bigint",
+		gif:"jsonb",
 		id:"uuid",
 		message_created_at:"timestamptz",
 		message_id:"uuid"
@@ -883,11 +908,13 @@ export const AllTypesProps: Record<string,any> = {
 		where:"chat_message_deletions_bool_exp"
 	},
 	chat_message_deletions_order_by:{
+		attachments:"order_by",
 		author:"players_order_by",
 		author_steam_id:"order_by",
 		deleted_at:"order_by",
 		deleted_by:"players_order_by",
 		deleted_by_steam_id:"order_by",
+		gif:"order_by",
 		id:"order_by",
 		message:"order_by",
 		message_created_at:"order_by",
@@ -899,11 +926,17 @@ export const AllTypesProps: Record<string,any> = {
 	chat_message_deletions_pk_columns_input:{
 		id:"uuid"
 	},
+	chat_message_deletions_prepend_input:{
+		attachments:"jsonb",
+		gif:"jsonb"
+	},
 	chat_message_deletions_select_column: "enum" as const,
 	chat_message_deletions_set_input:{
+		attachments:"jsonb",
 		author_steam_id:"bigint",
 		deleted_at:"timestamptz",
 		deleted_by_steam_id:"bigint",
+		gif:"jsonb",
 		id:"uuid",
 		message_created_at:"timestamptz",
 		message_id:"uuid"
@@ -913,16 +946,23 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	chat_message_deletions_stream_cursor_value_input:{
+		attachments:"jsonb",
 		author_steam_id:"bigint",
 		deleted_at:"timestamptz",
 		deleted_by_steam_id:"bigint",
+		gif:"jsonb",
 		id:"uuid",
 		message_created_at:"timestamptz",
 		message_id:"uuid"
 	},
 	chat_message_deletions_update_column: "enum" as const,
 	chat_message_deletions_updates:{
+		_append:"chat_message_deletions_append_input",
+		_delete_at_path:"chat_message_deletions_delete_at_path_input",
+		_delete_elem:"chat_message_deletions_delete_elem_input",
+		_delete_key:"chat_message_deletions_delete_key_input",
 		_inc:"chat_message_deletions_inc_input",
+		_prepend:"chat_message_deletions_prepend_input",
 		_set:"chat_message_deletions_set_input",
 		where:"chat_message_deletions_bool_exp"
 	},
@@ -1610,32 +1650,57 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"direct_message_reactions_set_input",
 		where:"direct_message_reactions_bool_exp"
 	},
+	direct_messages:{
+		attachments:{
+
+		},
+		gif:{
+
+		}
+	},
 	direct_messages_aggregate_fields:{
 		count:{
 			columns:"direct_messages_select_column"
 		}
 	},
+	direct_messages_append_input:{
+		attachments:"jsonb",
+		gif:"jsonb"
+	},
 	direct_messages_bool_exp:{
 		_and:"direct_messages_bool_exp",
 		_not:"direct_messages_bool_exp",
 		_or:"direct_messages_bool_exp",
+		attachments:"jsonb_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
 		edited_at:"timestamptz_comparison_exp",
 		from_steam_id:"bigint_comparison_exp",
+		gif:"jsonb_comparison_exp",
 		id:"uuid_comparison_exp",
 		message:"String_comparison_exp",
 		room_id:"String_comparison_exp",
 		seq:"bigint_comparison_exp"
 	},
 	direct_messages_constraint: "enum" as const,
+	direct_messages_delete_at_path_input:{
+
+	},
+	direct_messages_delete_elem_input:{
+
+	},
+	direct_messages_delete_key_input:{
+
+	},
 	direct_messages_inc_input:{
 		from_steam_id:"bigint",
 		seq:"bigint"
 	},
 	direct_messages_insert_input:{
+		attachments:"jsonb",
 		created_at:"timestamptz",
 		edited_at:"timestamptz",
 		from_steam_id:"bigint",
+		gif:"jsonb",
 		id:"uuid",
 		seq:"bigint"
 	},
@@ -1645,9 +1710,11 @@ export const AllTypesProps: Record<string,any> = {
 		where:"direct_messages_bool_exp"
 	},
 	direct_messages_order_by:{
+		attachments:"order_by",
 		created_at:"order_by",
 		edited_at:"order_by",
 		from_steam_id:"order_by",
+		gif:"order_by",
 		id:"order_by",
 		message:"order_by",
 		room_id:"order_by",
@@ -1656,11 +1723,17 @@ export const AllTypesProps: Record<string,any> = {
 	direct_messages_pk_columns_input:{
 		id:"uuid"
 	},
+	direct_messages_prepend_input:{
+		attachments:"jsonb",
+		gif:"jsonb"
+	},
 	direct_messages_select_column: "enum" as const,
 	direct_messages_set_input:{
+		attachments:"jsonb",
 		created_at:"timestamptz",
 		edited_at:"timestamptz",
 		from_steam_id:"bigint",
+		gif:"jsonb",
 		id:"uuid",
 		seq:"bigint"
 	},
@@ -1669,15 +1742,22 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	direct_messages_stream_cursor_value_input:{
+		attachments:"jsonb",
 		created_at:"timestamptz",
 		edited_at:"timestamptz",
 		from_steam_id:"bigint",
+		gif:"jsonb",
 		id:"uuid",
 		seq:"bigint"
 	},
 	direct_messages_update_column: "enum" as const,
 	direct_messages_updates:{
+		_append:"direct_messages_append_input",
+		_delete_at_path:"direct_messages_delete_at_path_input",
+		_delete_elem:"direct_messages_delete_elem_input",
+		_delete_key:"direct_messages_delete_key_input",
 		_inc:"direct_messages_inc_input",
+		_prepend:"direct_messages_prepend_input",
 		_set:"direct_messages_set_input",
 		where:"direct_messages_bool_exp"
 	},
@@ -7721,7 +7801,8 @@ export const AllTypesProps: Record<string,any> = {
 		verified:"Boolean_comparison_exp",
 		versions:"game_plugin_versions_bool_exp",
 		versions_aggregate:"game_plugin_versions_aggregate_bool_exp",
-		wiring:"jsonb_comparison_exp"
+		wiring:"jsonb_comparison_exp",
+		workshop_addons:"String_array_comparison_exp"
 	},
 	game_plugins_constraint: "enum" as const,
 	game_plugins_delete_at_path_input:{
@@ -7787,7 +7868,8 @@ export const AllTypesProps: Record<string,any> = {
 		target_node_count:"order_by",
 		verified:"order_by",
 		versions_aggregate:"game_plugin_versions_aggregate_order_by",
-		wiring:"order_by"
+		wiring:"order_by",
+		workshop_addons:"order_by"
 	},
 	game_plugins_pk_columns_input:{
 
@@ -18175,12 +18257,22 @@ export const AllTypesProps: Record<string,any> = {
 			updates:"broadcast_huds_updates"
 		},
 		update_chat_message_deletions:{
+			_append:"chat_message_deletions_append_input",
+			_delete_at_path:"chat_message_deletions_delete_at_path_input",
+			_delete_elem:"chat_message_deletions_delete_elem_input",
+			_delete_key:"chat_message_deletions_delete_key_input",
 			_inc:"chat_message_deletions_inc_input",
+			_prepend:"chat_message_deletions_prepend_input",
 			_set:"chat_message_deletions_set_input",
 			where:"chat_message_deletions_bool_exp"
 		},
 		update_chat_message_deletions_by_pk:{
+			_append:"chat_message_deletions_append_input",
+			_delete_at_path:"chat_message_deletions_delete_at_path_input",
+			_delete_elem:"chat_message_deletions_delete_elem_input",
+			_delete_key:"chat_message_deletions_delete_key_input",
 			_inc:"chat_message_deletions_inc_input",
+			_prepend:"chat_message_deletions_prepend_input",
 			_set:"chat_message_deletions_set_input",
 			pk_columns:"chat_message_deletions_pk_columns_input"
 		},
@@ -18299,12 +18391,22 @@ export const AllTypesProps: Record<string,any> = {
 			updates:"direct_message_reactions_updates"
 		},
 		update_direct_messages:{
+			_append:"direct_messages_append_input",
+			_delete_at_path:"direct_messages_delete_at_path_input",
+			_delete_elem:"direct_messages_delete_elem_input",
+			_delete_key:"direct_messages_delete_key_input",
 			_inc:"direct_messages_inc_input",
+			_prepend:"direct_messages_prepend_input",
 			_set:"direct_messages_set_input",
 			where:"direct_messages_bool_exp"
 		},
 		update_direct_messages_by_pk:{
+			_append:"direct_messages_append_input",
+			_delete_at_path:"direct_messages_delete_at_path_input",
+			_delete_elem:"direct_messages_delete_elem_input",
+			_delete_key:"direct_messages_delete_key_input",
 			_inc:"direct_messages_inc_input",
+			_prepend:"direct_messages_prepend_input",
 			_set:"direct_messages_set_input",
 			pk_columns:"direct_messages_pk_columns_input"
 		},
@@ -42333,6 +42435,7 @@ export const AllTypesProps: Record<string,any> = {
 		discord_voice_enabled:"Boolean_comparison_exp",
 		discord_webhook:"String_comparison_exp",
 		e_tournament_status:"e_tournament_status_bool_exp",
+		finished_at:"timestamptz_comparison_exp",
 		free_agents:"tournament_free_agents_bool_exp",
 		free_agents_aggregate:"tournament_free_agents_aggregate_bool_exp",
 		has_min_teams:"Boolean_comparison_exp",
@@ -42398,6 +42501,7 @@ export const AllTypesProps: Record<string,any> = {
 		check_in_setting:"e_check_in_settings_enum",
 		created_at:"timestamptz",
 		e_tournament_status:"e_tournament_status_obj_rel_insert_input",
+		finished_at:"timestamptz",
 		free_agents:"tournament_free_agents_arr_rel_insert_input",
 		id:"uuid",
 		latitude:"float8",
@@ -42431,6 +42535,7 @@ export const AllTypesProps: Record<string,any> = {
 		discord_guild_id:"order_by",
 		discord_role_id:"order_by",
 		discord_webhook:"order_by",
+		finished_at:"order_by",
 		homepage:"order_by",
 		id:"order_by",
 		latitude:"order_by",
@@ -42457,6 +42562,7 @@ export const AllTypesProps: Record<string,any> = {
 		discord_guild_id:"order_by",
 		discord_role_id:"order_by",
 		discord_webhook:"order_by",
+		finished_at:"order_by",
 		homepage:"order_by",
 		id:"order_by",
 		latitude:"order_by",
@@ -42527,6 +42633,7 @@ export const AllTypesProps: Record<string,any> = {
 		discord_voice_enabled:"order_by",
 		discord_webhook:"order_by",
 		e_tournament_status:"e_tournament_status_order_by",
+		finished_at:"order_by",
 		free_agents_aggregate:"tournament_free_agents_aggregate_order_by",
 		has_min_teams:"order_by",
 		homepage:"order_by",
@@ -42586,6 +42693,7 @@ export const AllTypesProps: Record<string,any> = {
 		check_in_ends_at:"timestamptz",
 		check_in_setting:"e_check_in_settings_enum",
 		created_at:"timestamptz",
+		finished_at:"timestamptz",
 		id:"uuid",
 		latitude:"float8",
 		longitude:"float8",
@@ -42633,6 +42741,7 @@ export const AllTypesProps: Record<string,any> = {
 		check_in_ends_at:"timestamptz",
 		check_in_setting:"e_check_in_settings_enum",
 		created_at:"timestamptz",
+		finished_at:"timestamptz",
 		id:"uuid",
 		latitude:"float8",
 		longitude:"float8",
@@ -51836,11 +51945,13 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	bytea: `scalar.bytea` as const,
 	chat_message_deletions:{
+		attachments:"jsonb",
 		author:"players",
 		author_steam_id:"bigint",
 		deleted_at:"timestamptz",
 		deleted_by:"players",
 		deleted_by_steam_id:"bigint",
+		gif:"jsonb",
 		id:"uuid",
 		message:"String",
 		message_created_at:"timestamptz",
@@ -52478,9 +52589,11 @@ export const ReturnTypes: Record<string,any> = {
 		steam_id:"Float"
 	},
 	direct_messages:{
+		attachments:"jsonb",
 		created_at:"timestamptz",
 		edited_at:"timestamptz",
 		from_steam_id:"bigint",
+		gif:"jsonb",
 		id:"uuid",
 		message:"String",
 		room_id:"String",
@@ -55349,7 +55462,8 @@ export const ReturnTypes: Record<string,any> = {
 		verified:"Boolean",
 		versions:"game_plugin_versions",
 		versions_aggregate:"game_plugin_versions_aggregate",
-		wiring:"jsonb"
+		wiring:"jsonb",
+		workshop_addons:"String"
 	},
 	game_plugins_aggregate:{
 		aggregate:"game_plugins_aggregate_fields",
@@ -55389,7 +55503,8 @@ export const ReturnTypes: Record<string,any> = {
 		source:"String",
 		synced_at:"timestamptz",
 		tags:"String",
-		target_node_count:"Int"
+		target_node_count:"Int",
+		workshop_addons:"String"
 	},
 	game_plugins_min_fields:{
 		author:"String",
@@ -55408,7 +55523,8 @@ export const ReturnTypes: Record<string,any> = {
 		source:"String",
 		synced_at:"timestamptz",
 		tags:"String",
-		target_node_count:"Int"
+		target_node_count:"Int",
+		workshop_addons:"String"
 	},
 	game_plugins_mutation_response:{
 		affected_rows:"Int",
@@ -71934,6 +72050,7 @@ export const ReturnTypes: Record<string,any> = {
 		discord_voice_enabled:"Boolean",
 		discord_webhook:"String",
 		e_tournament_status:"e_tournament_status",
+		finished_at:"timestamptz",
 		free_agents:"tournament_free_agents",
 		free_agents_aggregate:"tournament_free_agents_aggregate",
 		has_min_teams:"Boolean",
@@ -72025,6 +72142,7 @@ export const ReturnTypes: Record<string,any> = {
 		discord_guild_id:"String",
 		discord_role_id:"String",
 		discord_webhook:"String",
+		finished_at:"timestamptz",
 		homepage:"String",
 		id:"uuid",
 		latitude:"float8",
@@ -72055,6 +72173,7 @@ export const ReturnTypes: Record<string,any> = {
 		discord_guild_id:"String",
 		discord_role_id:"String",
 		discord_webhook:"String",
+		finished_at:"timestamptz",
 		homepage:"String",
 		id:"uuid",
 		latitude:"float8",

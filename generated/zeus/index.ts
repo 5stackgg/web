@@ -3970,6 +3970,8 @@ count?: [{	columns?: Array<ValueTypes["broadcast_huds_select_column"]> | undefin
 };
 	/** columns and relationships of "chat_message_deletions" */
 ["chat_message_deletions"]: AliasType<{
+attachments?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
 	/** An object relationship */
 	author?:ValueTypes["players"],
 	author_steam_id?:boolean | `@${string}`,
@@ -3977,6 +3979,8 @@ count?: [{	columns?: Array<ValueTypes["broadcast_huds_select_column"]> | undefin
 	/** An object relationship */
 	deleted_by?:ValueTypes["players"],
 	deleted_by_steam_id?:boolean | `@${string}`,
+gif?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
 	id?:boolean | `@${string}`,
 	message?:boolean | `@${string}`,
 	message_created_at?:boolean | `@${string}`,
@@ -4007,6 +4011,11 @@ count?: [{	columns?: Array<ValueTypes["chat_message_deletions_select_column"]> |
 	variance?:ValueTypes["chat_message_deletions_variance_fields"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["chat_message_deletions_append_input"]: {
+	attachments?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	gif?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
 	/** aggregate avg on columns */
 ["chat_message_deletions_avg_fields"]: AliasType<{
 	author_steam_id?:boolean | `@${string}`,
@@ -4018,11 +4027,13 @@ count?: [{	columns?: Array<ValueTypes["chat_message_deletions_select_column"]> |
 	_and?: Array<ValueTypes["chat_message_deletions_bool_exp"]> | undefined | null | Variable<any, string>,
 	_not?: ValueTypes["chat_message_deletions_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["chat_message_deletions_bool_exp"]> | undefined | null | Variable<any, string>,
+	attachments?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
 	author?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
 	deleted_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	deleted_by?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
 	deleted_by_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	gif?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	message?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	message_created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -4033,6 +4044,21 @@ count?: [{	columns?: Array<ValueTypes["chat_message_deletions_select_column"]> |
 };
 	/** unique or primary key constraints on table "chat_message_deletions" */
 ["chat_message_deletions_constraint"]:chat_message_deletions_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["chat_message_deletions_delete_at_path_input"]: {
+	attachments?: Array<string> | undefined | null | Variable<any, string>,
+	gif?: Array<string> | undefined | null | Variable<any, string>
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["chat_message_deletions_delete_elem_input"]: {
+	attachments?: number | undefined | null | Variable<any, string>,
+	gif?: number | undefined | null | Variable<any, string>
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["chat_message_deletions_delete_key_input"]: {
+	attachments?: string | undefined | null | Variable<any, string>,
+	gif?: string | undefined | null | Variable<any, string>
+};
 	/** input type for incrementing numeric columns in table "chat_message_deletions" */
 ["chat_message_deletions_inc_input"]: {
 	author_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
@@ -4040,11 +4066,13 @@ count?: [{	columns?: Array<ValueTypes["chat_message_deletions_select_column"]> |
 };
 	/** input type for inserting data into table "chat_message_deletions" */
 ["chat_message_deletions_insert_input"]: {
+	attachments?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	author?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	deleted_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	deleted_by?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	deleted_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	gif?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	message?: string | undefined | null | Variable<any, string>,
 	message_created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -4097,11 +4125,13 @@ count?: [{	columns?: Array<ValueTypes["chat_message_deletions_select_column"]> |
 };
 	/** Ordering options when selecting data from "chat_message_deletions". */
 ["chat_message_deletions_order_by"]: {
+	attachments?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	author?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	deleted_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	deleted_by?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
 	deleted_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	gif?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	message?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	message_created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -4114,13 +4144,20 @@ count?: [{	columns?: Array<ValueTypes["chat_message_deletions_select_column"]> |
 ["chat_message_deletions_pk_columns_input"]: {
 	id: ValueTypes["uuid"] | Variable<any, string>
 };
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["chat_message_deletions_prepend_input"]: {
+	attachments?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	gif?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
 	/** select columns of table "chat_message_deletions" */
 ["chat_message_deletions_select_column"]:chat_message_deletions_select_column;
 	/** input type for updating data in table "chat_message_deletions" */
 ["chat_message_deletions_set_input"]: {
+	attachments?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	deleted_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	deleted_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	gif?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	message?: string | undefined | null | Variable<any, string>,
 	message_created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -4156,9 +4193,11 @@ count?: [{	columns?: Array<ValueTypes["chat_message_deletions_select_column"]> |
 };
 	/** Initial value of the column from where the streaming should start */
 ["chat_message_deletions_stream_cursor_value_input"]: {
+	attachments?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	deleted_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	deleted_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	gif?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	message?: string | undefined | null | Variable<any, string>,
 	message_created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -4176,8 +4215,18 @@ count?: [{	columns?: Array<ValueTypes["chat_message_deletions_select_column"]> |
 	/** update columns of table "chat_message_deletions" */
 ["chat_message_deletions_update_column"]:chat_message_deletions_update_column;
 	["chat_message_deletions_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["chat_message_deletions_append_input"] | undefined | null | Variable<any, string>,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["chat_message_deletions_delete_at_path_input"] | undefined | null | Variable<any, string>,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["chat_message_deletions_delete_elem_input"] | undefined | null | Variable<any, string>,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["chat_message_deletions_delete_key_input"] | undefined | null | Variable<any, string>,
 	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ValueTypes["chat_message_deletions_inc_input"] | undefined | null | Variable<any, string>,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["chat_message_deletions_prepend_input"] | undefined | null | Variable<any, string>,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["chat_message_deletions_set_input"] | undefined | null | Variable<any, string>,
 	/** filter the rows which have to be updated */
@@ -5868,9 +5917,13 @@ count?: [{	columns?: Array<ValueTypes["direct_message_reactions_select_column"]>
 }>;
 	/** columns and relationships of "direct_messages" */
 ["direct_messages"]: AliasType<{
+attachments?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
 	created_at?:boolean | `@${string}`,
 	edited_at?:boolean | `@${string}`,
 	from_steam_id?:boolean | `@${string}`,
+gif?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
 	id?:boolean | `@${string}`,
 	message?:boolean | `@${string}`,
 	room_id?:boolean | `@${string}`,
@@ -5898,6 +5951,11 @@ count?: [{	columns?: Array<ValueTypes["direct_messages_select_column"]> | undefi
 	variance?:ValueTypes["direct_messages_variance_fields"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["direct_messages_append_input"]: {
+	attachments?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	gif?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
 	/** aggregate avg on columns */
 ["direct_messages_avg_fields"]: AliasType<{
 	from_steam_id?:boolean | `@${string}`,
@@ -5909,9 +5967,11 @@ count?: [{	columns?: Array<ValueTypes["direct_messages_select_column"]> | undefi
 	_and?: Array<ValueTypes["direct_messages_bool_exp"]> | undefined | null | Variable<any, string>,
 	_not?: ValueTypes["direct_messages_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["direct_messages_bool_exp"]> | undefined | null | Variable<any, string>,
+	attachments?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	edited_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	from_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	gif?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	message?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	room_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -5919,6 +5979,21 @@ count?: [{	columns?: Array<ValueTypes["direct_messages_select_column"]> | undefi
 };
 	/** unique or primary key constraints on table "direct_messages" */
 ["direct_messages_constraint"]:direct_messages_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["direct_messages_delete_at_path_input"]: {
+	attachments?: Array<string> | undefined | null | Variable<any, string>,
+	gif?: Array<string> | undefined | null | Variable<any, string>
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["direct_messages_delete_elem_input"]: {
+	attachments?: number | undefined | null | Variable<any, string>,
+	gif?: number | undefined | null | Variable<any, string>
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["direct_messages_delete_key_input"]: {
+	attachments?: string | undefined | null | Variable<any, string>,
+	gif?: string | undefined | null | Variable<any, string>
+};
 	/** input type for incrementing numeric columns in table "direct_messages" */
 ["direct_messages_inc_input"]: {
 	from_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
@@ -5926,9 +6001,11 @@ count?: [{	columns?: Array<ValueTypes["direct_messages_select_column"]> | undefi
 };
 	/** input type for inserting data into table "direct_messages" */
 ["direct_messages_insert_input"]: {
+	attachments?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	edited_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	from_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	gif?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	message?: string | undefined | null | Variable<any, string>,
 	room_id?: string | undefined | null | Variable<any, string>,
@@ -5972,9 +6049,11 @@ count?: [{	columns?: Array<ValueTypes["direct_messages_select_column"]> | undefi
 };
 	/** Ordering options when selecting data from "direct_messages". */
 ["direct_messages_order_by"]: {
+	attachments?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	edited_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	from_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	gif?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	message?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	room_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -5984,13 +6063,20 @@ count?: [{	columns?: Array<ValueTypes["direct_messages_select_column"]> | undefi
 ["direct_messages_pk_columns_input"]: {
 	id: ValueTypes["uuid"] | Variable<any, string>
 };
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["direct_messages_prepend_input"]: {
+	attachments?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	gif?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
 	/** select columns of table "direct_messages" */
 ["direct_messages_select_column"]:direct_messages_select_column;
 	/** input type for updating data in table "direct_messages" */
 ["direct_messages_set_input"]: {
+	attachments?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	edited_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	from_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	gif?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	message?: string | undefined | null | Variable<any, string>,
 	room_id?: string | undefined | null | Variable<any, string>,
@@ -6023,9 +6109,11 @@ count?: [{	columns?: Array<ValueTypes["direct_messages_select_column"]> | undefi
 };
 	/** Initial value of the column from where the streaming should start */
 ["direct_messages_stream_cursor_value_input"]: {
+	attachments?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	edited_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	from_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	gif?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	message?: string | undefined | null | Variable<any, string>,
 	room_id?: string | undefined | null | Variable<any, string>,
@@ -6040,8 +6128,18 @@ count?: [{	columns?: Array<ValueTypes["direct_messages_select_column"]> | undefi
 	/** update columns of table "direct_messages" */
 ["direct_messages_update_column"]:direct_messages_update_column;
 	["direct_messages_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["direct_messages_append_input"] | undefined | null | Variable<any, string>,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["direct_messages_delete_at_path_input"] | undefined | null | Variable<any, string>,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["direct_messages_delete_elem_input"] | undefined | null | Variable<any, string>,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["direct_messages_delete_key_input"] | undefined | null | Variable<any, string>,
 	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ValueTypes["direct_messages_inc_input"] | undefined | null | Variable<any, string>,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["direct_messages_prepend_input"] | undefined | null | Variable<any, string>,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["direct_messages_set_input"] | undefined | null | Variable<any, string>,
 	/** filter the rows which have to be updated */
@@ -17633,6 +17731,7 @@ versions_aggregate?: [{	/** distinct select on columns */
 	where?: ValueTypes["game_plugin_versions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["game_plugin_versions_aggregate"]],
 wiring?: [{	/** JSON select path */
 	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	workshop_addons?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregated selection of "game_plugins" */
@@ -17712,7 +17811,8 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	verified?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	versions?: ValueTypes["game_plugin_versions_bool_exp"] | undefined | null | Variable<any, string>,
 	versions_aggregate?: ValueTypes["game_plugin_versions_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
-	wiring?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>
+	wiring?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
+	workshop_addons?: ValueTypes["String_array_comparison_exp"] | undefined | null | Variable<any, string>
 };
 	/** unique or primary key constraints on table "game_plugins" */
 ["game_plugins_constraint"]:game_plugins_constraint;
@@ -17772,7 +17872,8 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	tags?: Array<string> | undefined | null | Variable<any, string>,
 	verified?: boolean | undefined | null | Variable<any, string>,
 	versions?: ValueTypes["game_plugin_versions_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
-	wiring?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+	wiring?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	workshop_addons?: Array<string> | undefined | null | Variable<any, string>
 };
 	/** aggregate max on columns */
 ["game_plugins_max_fields"]: AliasType<{
@@ -17796,6 +17897,7 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	tags?:boolean | `@${string}`,
 	/** A computed field, executes function "game_plugin_target_node_count" */
 	target_node_count?:boolean | `@${string}`,
+	workshop_addons?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate min on columns */
@@ -17820,6 +17922,7 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	tags?:boolean | `@${string}`,
 	/** A computed field, executes function "game_plugin_target_node_count" */
 	target_node_count?:boolean | `@${string}`,
+	workshop_addons?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** response of any mutation on the table "game_plugins" */
@@ -17874,7 +17977,8 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	target_node_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	verified?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	versions_aggregate?: ValueTypes["game_plugin_versions_aggregate_order_by"] | undefined | null | Variable<any, string>,
-	wiring?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	wiring?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	workshop_addons?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** primary key columns input for table: game_plugins */
 ["game_plugins_pk_columns_input"]: {
@@ -17916,7 +18020,8 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	synced_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	tags?: Array<string> | undefined | null | Variable<any, string>,
 	verified?: boolean | undefined | null | Variable<any, string>,
-	wiring?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+	wiring?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	workshop_addons?: Array<string> | undefined | null | Variable<any, string>
 };
 	/** aggregate stddev on columns */
 ["game_plugins_stddev_fields"]: AliasType<{
@@ -17974,7 +18079,8 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	synced_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	tags?: Array<string> | undefined | null | Variable<any, string>,
 	verified?: boolean | undefined | null | Variable<any, string>,
-	wiring?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+	wiring?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	workshop_addons?: Array<string> | undefined | null | Variable<any, string>
 };
 	/** aggregate sum on columns */
 ["game_plugins_sum_fields"]: AliasType<{
@@ -32871,12 +32977,22 @@ update_broadcast_huds_by_pk?: [{	/** append existing jsonb value of filtered col
 	_set?: ValueTypes["broadcast_huds_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["broadcast_huds_pk_columns_input"] | Variable<any, string>},ValueTypes["broadcast_huds"]],
 update_broadcast_huds_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["broadcast_huds_updates"]> | Variable<any, string>},ValueTypes["broadcast_huds_mutation_response"]],
-update_chat_message_deletions?: [{	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ValueTypes["chat_message_deletions_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+update_chat_message_deletions?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["chat_message_deletions_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["chat_message_deletions_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["chat_message_deletions_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["chat_message_deletions_delete_key_input"] | undefined | null | Variable<any, string>,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["chat_message_deletions_inc_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["chat_message_deletions_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["chat_message_deletions_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
 	where: ValueTypes["chat_message_deletions_bool_exp"] | Variable<any, string>},ValueTypes["chat_message_deletions_mutation_response"]],
-update_chat_message_deletions_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ValueTypes["chat_message_deletions_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+update_chat_message_deletions_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["chat_message_deletions_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["chat_message_deletions_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["chat_message_deletions_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["chat_message_deletions_delete_key_input"] | undefined | null | Variable<any, string>,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["chat_message_deletions_inc_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["chat_message_deletions_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["chat_message_deletions_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["chat_message_deletions_pk_columns_input"] | Variable<any, string>},ValueTypes["chat_message_deletions"]],
 update_chat_message_deletions_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["chat_message_deletions_updates"]> | Variable<any, string>},ValueTypes["chat_message_deletions_mutation_response"]],
@@ -32963,12 +33079,22 @@ update_direct_message_reactions_by_pk?: [{	/** increments the numeric columns wi
 	_set?: ValueTypes["direct_message_reactions_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["direct_message_reactions_pk_columns_input"] | Variable<any, string>},ValueTypes["direct_message_reactions"]],
 update_direct_message_reactions_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["direct_message_reactions_updates"]> | Variable<any, string>},ValueTypes["direct_message_reactions_mutation_response"]],
-update_direct_messages?: [{	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ValueTypes["direct_messages_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+update_direct_messages?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["direct_messages_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["direct_messages_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["direct_messages_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["direct_messages_delete_key_input"] | undefined | null | Variable<any, string>,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["direct_messages_inc_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["direct_messages_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["direct_messages_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
 	where: ValueTypes["direct_messages_bool_exp"] | Variable<any, string>},ValueTypes["direct_messages_mutation_response"]],
-update_direct_messages_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ValueTypes["direct_messages_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+update_direct_messages_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["direct_messages_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["direct_messages_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["direct_messages_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["direct_messages_delete_key_input"] | undefined | null | Variable<any, string>,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["direct_messages_inc_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["direct_messages_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["direct_messages_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["direct_messages_pk_columns_input"] | Variable<any, string>},ValueTypes["direct_messages"]],
 update_direct_messages_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["direct_messages_updates"]> | Variable<any, string>},ValueTypes["direct_messages_mutation_response"]],
@@ -71141,6 +71267,7 @@ categories_aggregate?: [{	/** distinct select on columns */
 	discord_webhook?:boolean | `@${string}`,
 	/** An object relationship */
 	e_tournament_status?:ValueTypes["e_tournament_status"],
+	finished_at?:boolean | `@${string}`,
 free_agents?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["tournament_free_agents_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -71502,6 +71629,7 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	discord_voice_enabled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	discord_webhook?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	e_tournament_status?: ValueTypes["e_tournament_status_bool_exp"] | undefined | null | Variable<any, string>,
+	finished_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	free_agents?: ValueTypes["tournament_free_agents_bool_exp"] | undefined | null | Variable<any, string>,
 	free_agents_aggregate?: ValueTypes["tournament_free_agents_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	has_min_teams?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -71602,6 +71730,7 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	discord_voice_enabled?: boolean | undefined | null | Variable<any, string>,
 	discord_webhook?: string | undefined | null | Variable<any, string>,
 	e_tournament_status?: ValueTypes["e_tournament_status_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	finished_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	free_agents?: ValueTypes["tournament_free_agents_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	homepage?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -71652,6 +71781,7 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	discord_guild_id?:boolean | `@${string}`,
 	discord_role_id?:boolean | `@${string}`,
 	discord_webhook?:boolean | `@${string}`,
+	finished_at?:boolean | `@${string}`,
 	homepage?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	latitude?:boolean | `@${string}`,
@@ -71689,6 +71819,7 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	discord_guild_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	discord_role_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	discord_webhook?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	finished_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	homepage?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	latitude?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -71721,6 +71852,7 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	discord_guild_id?:boolean | `@${string}`,
 	discord_role_id?:boolean | `@${string}`,
 	discord_webhook?:boolean | `@${string}`,
+	finished_at?:boolean | `@${string}`,
 	homepage?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	latitude?:boolean | `@${string}`,
@@ -71758,6 +71890,7 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	discord_guild_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	discord_role_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	discord_webhook?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	finished_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	homepage?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	latitude?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -71840,6 +71973,7 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	discord_voice_enabled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	discord_webhook?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	e_tournament_status?: ValueTypes["e_tournament_status_order_by"] | undefined | null | Variable<any, string>,
+	finished_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	free_agents_aggregate?: ValueTypes["tournament_free_agents_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	has_min_teams?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	homepage?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -71940,6 +72074,7 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	discord_role_id?: string | undefined | null | Variable<any, string>,
 	discord_voice_enabled?: boolean | undefined | null | Variable<any, string>,
 	discord_webhook?: string | undefined | null | Variable<any, string>,
+	finished_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	homepage?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	invite_only?: boolean | undefined | null | Variable<any, string>,
@@ -72090,6 +72225,7 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	discord_role_id?: string | undefined | null | Variable<any, string>,
 	discord_voice_enabled?: boolean | undefined | null | Variable<any, string>,
 	discord_webhook?: string | undefined | null | Variable<any, string>,
+	finished_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	homepage?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	invite_only?: boolean | undefined | null | Variable<any, string>,
@@ -92213,6 +92349,8 @@ count?: [{	columns?: Array<ResolverInputTypes["broadcast_huds_select_column"]> |
 };
 	/** columns and relationships of "chat_message_deletions" */
 ["chat_message_deletions"]: AliasType<{
+attachments?: [{	/** JSON select path */
+	path?: string | undefined | null},boolean | `@${string}`],
 	/** An object relationship */
 	author?:ResolverInputTypes["players"],
 	author_steam_id?:boolean | `@${string}`,
@@ -92220,6 +92358,8 @@ count?: [{	columns?: Array<ResolverInputTypes["broadcast_huds_select_column"]> |
 	/** An object relationship */
 	deleted_by?:ResolverInputTypes["players"],
 	deleted_by_steam_id?:boolean | `@${string}`,
+gif?: [{	/** JSON select path */
+	path?: string | undefined | null},boolean | `@${string}`],
 	id?:boolean | `@${string}`,
 	message?:boolean | `@${string}`,
 	message_created_at?:boolean | `@${string}`,
@@ -92250,6 +92390,11 @@ count?: [{	columns?: Array<ResolverInputTypes["chat_message_deletions_select_col
 	variance?:ResolverInputTypes["chat_message_deletions_variance_fields"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["chat_message_deletions_append_input"]: {
+	attachments?: ResolverInputTypes["jsonb"] | undefined | null,
+	gif?: ResolverInputTypes["jsonb"] | undefined | null
+};
 	/** aggregate avg on columns */
 ["chat_message_deletions_avg_fields"]: AliasType<{
 	author_steam_id?:boolean | `@${string}`,
@@ -92261,11 +92406,13 @@ count?: [{	columns?: Array<ResolverInputTypes["chat_message_deletions_select_col
 	_and?: Array<ResolverInputTypes["chat_message_deletions_bool_exp"]> | undefined | null,
 	_not?: ResolverInputTypes["chat_message_deletions_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["chat_message_deletions_bool_exp"]> | undefined | null,
+	attachments?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
 	author?: ResolverInputTypes["players_bool_exp"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
 	deleted_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	deleted_by?: ResolverInputTypes["players_bool_exp"] | undefined | null,
 	deleted_by_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	gif?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	message?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	message_created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
@@ -92276,6 +92423,21 @@ count?: [{	columns?: Array<ResolverInputTypes["chat_message_deletions_select_col
 };
 	/** unique or primary key constraints on table "chat_message_deletions" */
 ["chat_message_deletions_constraint"]:chat_message_deletions_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["chat_message_deletions_delete_at_path_input"]: {
+	attachments?: Array<string> | undefined | null,
+	gif?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["chat_message_deletions_delete_elem_input"]: {
+	attachments?: number | undefined | null,
+	gif?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["chat_message_deletions_delete_key_input"]: {
+	attachments?: string | undefined | null,
+	gif?: string | undefined | null
+};
 	/** input type for incrementing numeric columns in table "chat_message_deletions" */
 ["chat_message_deletions_inc_input"]: {
 	author_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
@@ -92283,11 +92445,13 @@ count?: [{	columns?: Array<ResolverInputTypes["chat_message_deletions_select_col
 };
 	/** input type for inserting data into table "chat_message_deletions" */
 ["chat_message_deletions_insert_input"]: {
+	attachments?: ResolverInputTypes["jsonb"] | undefined | null,
 	author?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	deleted_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	deleted_by?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
 	deleted_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	gif?: ResolverInputTypes["jsonb"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
 	message_created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -92340,11 +92504,13 @@ count?: [{	columns?: Array<ResolverInputTypes["chat_message_deletions_select_col
 };
 	/** Ordering options when selecting data from "chat_message_deletions". */
 ["chat_message_deletions_order_by"]: {
+	attachments?: ResolverInputTypes["order_by"] | undefined | null,
 	author?: ResolverInputTypes["players_order_by"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	deleted_at?: ResolverInputTypes["order_by"] | undefined | null,
 	deleted_by?: ResolverInputTypes["players_order_by"] | undefined | null,
 	deleted_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	gif?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	message?: ResolverInputTypes["order_by"] | undefined | null,
 	message_created_at?: ResolverInputTypes["order_by"] | undefined | null,
@@ -92357,13 +92523,20 @@ count?: [{	columns?: Array<ResolverInputTypes["chat_message_deletions_select_col
 ["chat_message_deletions_pk_columns_input"]: {
 	id: ResolverInputTypes["uuid"]
 };
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["chat_message_deletions_prepend_input"]: {
+	attachments?: ResolverInputTypes["jsonb"] | undefined | null,
+	gif?: ResolverInputTypes["jsonb"] | undefined | null
+};
 	/** select columns of table "chat_message_deletions" */
 ["chat_message_deletions_select_column"]:chat_message_deletions_select_column;
 	/** input type for updating data in table "chat_message_deletions" */
 ["chat_message_deletions_set_input"]: {
+	attachments?: ResolverInputTypes["jsonb"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	deleted_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	deleted_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	gif?: ResolverInputTypes["jsonb"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
 	message_created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -92399,9 +92572,11 @@ count?: [{	columns?: Array<ResolverInputTypes["chat_message_deletions_select_col
 };
 	/** Initial value of the column from where the streaming should start */
 ["chat_message_deletions_stream_cursor_value_input"]: {
+	attachments?: ResolverInputTypes["jsonb"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	deleted_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	deleted_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	gif?: ResolverInputTypes["jsonb"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
 	message_created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -92419,8 +92594,18 @@ count?: [{	columns?: Array<ResolverInputTypes["chat_message_deletions_select_col
 	/** update columns of table "chat_message_deletions" */
 ["chat_message_deletions_update_column"]:chat_message_deletions_update_column;
 	["chat_message_deletions_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["chat_message_deletions_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["chat_message_deletions_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["chat_message_deletions_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["chat_message_deletions_delete_key_input"] | undefined | null,
 	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ResolverInputTypes["chat_message_deletions_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["chat_message_deletions_prepend_input"] | undefined | null,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["chat_message_deletions_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
@@ -94111,9 +94296,13 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_message_reactions_select_c
 }>;
 	/** columns and relationships of "direct_messages" */
 ["direct_messages"]: AliasType<{
+attachments?: [{	/** JSON select path */
+	path?: string | undefined | null},boolean | `@${string}`],
 	created_at?:boolean | `@${string}`,
 	edited_at?:boolean | `@${string}`,
 	from_steam_id?:boolean | `@${string}`,
+gif?: [{	/** JSON select path */
+	path?: string | undefined | null},boolean | `@${string}`],
 	id?:boolean | `@${string}`,
 	message?:boolean | `@${string}`,
 	room_id?:boolean | `@${string}`,
@@ -94141,6 +94330,11 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_messages_select_column"]> 
 	variance?:ResolverInputTypes["direct_messages_variance_fields"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["direct_messages_append_input"]: {
+	attachments?: ResolverInputTypes["jsonb"] | undefined | null,
+	gif?: ResolverInputTypes["jsonb"] | undefined | null
+};
 	/** aggregate avg on columns */
 ["direct_messages_avg_fields"]: AliasType<{
 	from_steam_id?:boolean | `@${string}`,
@@ -94152,9 +94346,11 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_messages_select_column"]> 
 	_and?: Array<ResolverInputTypes["direct_messages_bool_exp"]> | undefined | null,
 	_not?: ResolverInputTypes["direct_messages_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["direct_messages_bool_exp"]> | undefined | null,
+	attachments?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	edited_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	from_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	gif?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	message?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	room_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
@@ -94162,6 +94358,21 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_messages_select_column"]> 
 };
 	/** unique or primary key constraints on table "direct_messages" */
 ["direct_messages_constraint"]:direct_messages_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["direct_messages_delete_at_path_input"]: {
+	attachments?: Array<string> | undefined | null,
+	gif?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["direct_messages_delete_elem_input"]: {
+	attachments?: number | undefined | null,
+	gif?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["direct_messages_delete_key_input"]: {
+	attachments?: string | undefined | null,
+	gif?: string | undefined | null
+};
 	/** input type for incrementing numeric columns in table "direct_messages" */
 ["direct_messages_inc_input"]: {
 	from_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
@@ -94169,9 +94380,11 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_messages_select_column"]> 
 };
 	/** input type for inserting data into table "direct_messages" */
 ["direct_messages_insert_input"]: {
+	attachments?: ResolverInputTypes["jsonb"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	edited_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	from_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	gif?: ResolverInputTypes["jsonb"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
 	room_id?: string | undefined | null,
@@ -94215,9 +94428,11 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_messages_select_column"]> 
 };
 	/** Ordering options when selecting data from "direct_messages". */
 ["direct_messages_order_by"]: {
+	attachments?: ResolverInputTypes["order_by"] | undefined | null,
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	edited_at?: ResolverInputTypes["order_by"] | undefined | null,
 	from_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	gif?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	message?: ResolverInputTypes["order_by"] | undefined | null,
 	room_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -94227,13 +94442,20 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_messages_select_column"]> 
 ["direct_messages_pk_columns_input"]: {
 	id: ResolverInputTypes["uuid"]
 };
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["direct_messages_prepend_input"]: {
+	attachments?: ResolverInputTypes["jsonb"] | undefined | null,
+	gif?: ResolverInputTypes["jsonb"] | undefined | null
+};
 	/** select columns of table "direct_messages" */
 ["direct_messages_select_column"]:direct_messages_select_column;
 	/** input type for updating data in table "direct_messages" */
 ["direct_messages_set_input"]: {
+	attachments?: ResolverInputTypes["jsonb"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	edited_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	from_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	gif?: ResolverInputTypes["jsonb"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
 	room_id?: string | undefined | null,
@@ -94266,9 +94488,11 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_messages_select_column"]> 
 };
 	/** Initial value of the column from where the streaming should start */
 ["direct_messages_stream_cursor_value_input"]: {
+	attachments?: ResolverInputTypes["jsonb"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	edited_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	from_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	gif?: ResolverInputTypes["jsonb"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
 	room_id?: string | undefined | null,
@@ -94283,8 +94507,18 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_messages_select_column"]> 
 	/** update columns of table "direct_messages" */
 ["direct_messages_update_column"]:direct_messages_update_column;
 	["direct_messages_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["direct_messages_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["direct_messages_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["direct_messages_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["direct_messages_delete_key_input"] | undefined | null,
 	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ResolverInputTypes["direct_messages_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["direct_messages_prepend_input"] | undefined | null,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["direct_messages_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
@@ -105876,6 +106110,7 @@ versions_aggregate?: [{	/** distinct select on columns */
 	where?: ResolverInputTypes["game_plugin_versions_bool_exp"] | undefined | null},ResolverInputTypes["game_plugin_versions_aggregate"]],
 wiring?: [{	/** JSON select path */
 	path?: string | undefined | null},boolean | `@${string}`],
+	workshop_addons?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregated selection of "game_plugins" */
@@ -105955,7 +106190,8 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	verified?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	versions?: ResolverInputTypes["game_plugin_versions_bool_exp"] | undefined | null,
 	versions_aggregate?: ResolverInputTypes["game_plugin_versions_aggregate_bool_exp"] | undefined | null,
-	wiring?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null
+	wiring?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
+	workshop_addons?: ResolverInputTypes["String_array_comparison_exp"] | undefined | null
 };
 	/** unique or primary key constraints on table "game_plugins" */
 ["game_plugins_constraint"]:game_plugins_constraint;
@@ -106015,7 +106251,8 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	tags?: Array<string> | undefined | null,
 	verified?: boolean | undefined | null,
 	versions?: ResolverInputTypes["game_plugin_versions_arr_rel_insert_input"] | undefined | null,
-	wiring?: ResolverInputTypes["jsonb"] | undefined | null
+	wiring?: ResolverInputTypes["jsonb"] | undefined | null,
+	workshop_addons?: Array<string> | undefined | null
 };
 	/** aggregate max on columns */
 ["game_plugins_max_fields"]: AliasType<{
@@ -106039,6 +106276,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	tags?:boolean | `@${string}`,
 	/** A computed field, executes function "game_plugin_target_node_count" */
 	target_node_count?:boolean | `@${string}`,
+	workshop_addons?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate min on columns */
@@ -106063,6 +106301,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	tags?:boolean | `@${string}`,
 	/** A computed field, executes function "game_plugin_target_node_count" */
 	target_node_count?:boolean | `@${string}`,
+	workshop_addons?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** response of any mutation on the table "game_plugins" */
@@ -106117,7 +106356,8 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	target_node_count?: ResolverInputTypes["order_by"] | undefined | null,
 	verified?: ResolverInputTypes["order_by"] | undefined | null,
 	versions_aggregate?: ResolverInputTypes["game_plugin_versions_aggregate_order_by"] | undefined | null,
-	wiring?: ResolverInputTypes["order_by"] | undefined | null
+	wiring?: ResolverInputTypes["order_by"] | undefined | null,
+	workshop_addons?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** primary key columns input for table: game_plugins */
 ["game_plugins_pk_columns_input"]: {
@@ -106159,7 +106399,8 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	synced_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	tags?: Array<string> | undefined | null,
 	verified?: boolean | undefined | null,
-	wiring?: ResolverInputTypes["jsonb"] | undefined | null
+	wiring?: ResolverInputTypes["jsonb"] | undefined | null,
+	workshop_addons?: Array<string> | undefined | null
 };
 	/** aggregate stddev on columns */
 ["game_plugins_stddev_fields"]: AliasType<{
@@ -106217,7 +106458,8 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	synced_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	tags?: Array<string> | undefined | null,
 	verified?: boolean | undefined | null,
-	wiring?: ResolverInputTypes["jsonb"] | undefined | null
+	wiring?: ResolverInputTypes["jsonb"] | undefined | null,
+	workshop_addons?: Array<string> | undefined | null
 };
 	/** aggregate sum on columns */
 ["game_plugins_sum_fields"]: AliasType<{
@@ -121114,12 +121356,22 @@ update_broadcast_huds_by_pk?: [{	/** append existing jsonb value of filtered col
 	_set?: ResolverInputTypes["broadcast_huds_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["broadcast_huds_pk_columns_input"]},ResolverInputTypes["broadcast_huds"]],
 update_broadcast_huds_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["broadcast_huds_updates"]>},ResolverInputTypes["broadcast_huds_mutation_response"]],
-update_chat_message_deletions?: [{	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ResolverInputTypes["chat_message_deletions_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+update_chat_message_deletions?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["chat_message_deletions_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["chat_message_deletions_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["chat_message_deletions_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["chat_message_deletions_delete_key_input"] | undefined | null,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["chat_message_deletions_inc_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["chat_message_deletions_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["chat_message_deletions_set_input"] | undefined | null,	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["chat_message_deletions_bool_exp"]},ResolverInputTypes["chat_message_deletions_mutation_response"]],
-update_chat_message_deletions_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ResolverInputTypes["chat_message_deletions_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+update_chat_message_deletions_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["chat_message_deletions_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["chat_message_deletions_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["chat_message_deletions_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["chat_message_deletions_delete_key_input"] | undefined | null,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["chat_message_deletions_inc_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["chat_message_deletions_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["chat_message_deletions_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["chat_message_deletions_pk_columns_input"]},ResolverInputTypes["chat_message_deletions"]],
 update_chat_message_deletions_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["chat_message_deletions_updates"]>},ResolverInputTypes["chat_message_deletions_mutation_response"]],
@@ -121206,12 +121458,22 @@ update_direct_message_reactions_by_pk?: [{	/** increments the numeric columns wi
 	_set?: ResolverInputTypes["direct_message_reactions_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["direct_message_reactions_pk_columns_input"]},ResolverInputTypes["direct_message_reactions"]],
 update_direct_message_reactions_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["direct_message_reactions_updates"]>},ResolverInputTypes["direct_message_reactions_mutation_response"]],
-update_direct_messages?: [{	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ResolverInputTypes["direct_messages_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+update_direct_messages?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["direct_messages_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["direct_messages_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["direct_messages_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["direct_messages_delete_key_input"] | undefined | null,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["direct_messages_inc_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["direct_messages_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["direct_messages_set_input"] | undefined | null,	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["direct_messages_bool_exp"]},ResolverInputTypes["direct_messages_mutation_response"]],
-update_direct_messages_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ResolverInputTypes["direct_messages_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+update_direct_messages_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["direct_messages_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["direct_messages_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["direct_messages_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["direct_messages_delete_key_input"] | undefined | null,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["direct_messages_inc_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["direct_messages_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["direct_messages_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["direct_messages_pk_columns_input"]},ResolverInputTypes["direct_messages"]],
 update_direct_messages_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["direct_messages_updates"]>},ResolverInputTypes["direct_messages_mutation_response"]],
@@ -159384,6 +159646,7 @@ categories_aggregate?: [{	/** distinct select on columns */
 	discord_webhook?:boolean | `@${string}`,
 	/** An object relationship */
 	e_tournament_status?:ResolverInputTypes["e_tournament_status"],
+	finished_at?:boolean | `@${string}`,
 free_agents?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["tournament_free_agents_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -159745,6 +160008,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	discord_voice_enabled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	discord_webhook?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	e_tournament_status?: ResolverInputTypes["e_tournament_status_bool_exp"] | undefined | null,
+	finished_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	free_agents?: ResolverInputTypes["tournament_free_agents_bool_exp"] | undefined | null,
 	free_agents_aggregate?: ResolverInputTypes["tournament_free_agents_aggregate_bool_exp"] | undefined | null,
 	has_min_teams?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
@@ -159845,6 +160109,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	discord_voice_enabled?: boolean | undefined | null,
 	discord_webhook?: string | undefined | null,
 	e_tournament_status?: ResolverInputTypes["e_tournament_status_obj_rel_insert_input"] | undefined | null,
+	finished_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	free_agents?: ResolverInputTypes["tournament_free_agents_arr_rel_insert_input"] | undefined | null,
 	homepage?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -159895,6 +160160,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	discord_guild_id?:boolean | `@${string}`,
 	discord_role_id?:boolean | `@${string}`,
 	discord_webhook?:boolean | `@${string}`,
+	finished_at?:boolean | `@${string}`,
 	homepage?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	latitude?:boolean | `@${string}`,
@@ -159932,6 +160198,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	discord_guild_id?: ResolverInputTypes["order_by"] | undefined | null,
 	discord_role_id?: ResolverInputTypes["order_by"] | undefined | null,
 	discord_webhook?: ResolverInputTypes["order_by"] | undefined | null,
+	finished_at?: ResolverInputTypes["order_by"] | undefined | null,
 	homepage?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	latitude?: ResolverInputTypes["order_by"] | undefined | null,
@@ -159964,6 +160231,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	discord_guild_id?:boolean | `@${string}`,
 	discord_role_id?:boolean | `@${string}`,
 	discord_webhook?:boolean | `@${string}`,
+	finished_at?:boolean | `@${string}`,
 	homepage?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	latitude?:boolean | `@${string}`,
@@ -160001,6 +160269,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	discord_guild_id?: ResolverInputTypes["order_by"] | undefined | null,
 	discord_role_id?: ResolverInputTypes["order_by"] | undefined | null,
 	discord_webhook?: ResolverInputTypes["order_by"] | undefined | null,
+	finished_at?: ResolverInputTypes["order_by"] | undefined | null,
 	homepage?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	latitude?: ResolverInputTypes["order_by"] | undefined | null,
@@ -160083,6 +160352,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	discord_voice_enabled?: ResolverInputTypes["order_by"] | undefined | null,
 	discord_webhook?: ResolverInputTypes["order_by"] | undefined | null,
 	e_tournament_status?: ResolverInputTypes["e_tournament_status_order_by"] | undefined | null,
+	finished_at?: ResolverInputTypes["order_by"] | undefined | null,
 	free_agents_aggregate?: ResolverInputTypes["tournament_free_agents_aggregate_order_by"] | undefined | null,
 	has_min_teams?: ResolverInputTypes["order_by"] | undefined | null,
 	homepage?: ResolverInputTypes["order_by"] | undefined | null,
@@ -160183,6 +160453,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	discord_role_id?: string | undefined | null,
 	discord_voice_enabled?: boolean | undefined | null,
 	discord_webhook?: string | undefined | null,
+	finished_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	homepage?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	invite_only?: boolean | undefined | null,
@@ -160333,6 +160604,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	discord_role_id?: string | undefined | null,
 	discord_voice_enabled?: boolean | undefined | null,
 	discord_webhook?: string | undefined | null,
+	finished_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	homepage?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	invite_only?: boolean | undefined | null,
@@ -180194,13 +180466,15 @@ export type ModelTypes = {
 };
 	/** columns and relationships of "chat_message_deletions" */
 ["chat_message_deletions"]: {
-		/** An object relationship */
+		attachments?: ModelTypes["jsonb"] | undefined | null,
+	/** An object relationship */
 	author?: ModelTypes["players"] | undefined | null,
 	author_steam_id?: ModelTypes["bigint"] | undefined | null,
 	deleted_at: ModelTypes["timestamptz"],
 	/** An object relationship */
 	deleted_by?: ModelTypes["players"] | undefined | null,
 	deleted_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	gif?: ModelTypes["jsonb"] | undefined | null,
 	id: ModelTypes["uuid"],
 	message: string,
 	message_created_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -180228,6 +180502,11 @@ export type ModelTypes = {
 	var_samp?: ModelTypes["chat_message_deletions_var_samp_fields"] | undefined | null,
 	variance?: ModelTypes["chat_message_deletions_variance_fields"] | undefined | null
 };
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["chat_message_deletions_append_input"]: {
+	attachments?: ModelTypes["jsonb"] | undefined | null,
+	gif?: ModelTypes["jsonb"] | undefined | null
+};
 	/** aggregate avg on columns */
 ["chat_message_deletions_avg_fields"]: {
 		author_steam_id?: number | undefined | null,
@@ -180238,11 +180517,13 @@ export type ModelTypes = {
 	_and?: Array<ModelTypes["chat_message_deletions_bool_exp"]> | undefined | null,
 	_not?: ModelTypes["chat_message_deletions_bool_exp"] | undefined | null,
 	_or?: Array<ModelTypes["chat_message_deletions_bool_exp"]> | undefined | null,
+	attachments?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
 	author?: ModelTypes["players_bool_exp"] | undefined | null,
 	author_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
 	deleted_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	deleted_by?: ModelTypes["players_bool_exp"] | undefined | null,
 	deleted_by_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	gif?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
 	message?: ModelTypes["String_comparison_exp"] | undefined | null,
 	message_created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
@@ -180252,6 +180533,21 @@ export type ModelTypes = {
 	source?: ModelTypes["String_comparison_exp"] | undefined | null
 };
 	["chat_message_deletions_constraint"]:chat_message_deletions_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["chat_message_deletions_delete_at_path_input"]: {
+	attachments?: Array<string> | undefined | null,
+	gif?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["chat_message_deletions_delete_elem_input"]: {
+	attachments?: number | undefined | null,
+	gif?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["chat_message_deletions_delete_key_input"]: {
+	attachments?: string | undefined | null,
+	gif?: string | undefined | null
+};
 	/** input type for incrementing numeric columns in table "chat_message_deletions" */
 ["chat_message_deletions_inc_input"]: {
 	author_steam_id?: ModelTypes["bigint"] | undefined | null,
@@ -180259,11 +180555,13 @@ export type ModelTypes = {
 };
 	/** input type for inserting data into table "chat_message_deletions" */
 ["chat_message_deletions_insert_input"]: {
+	attachments?: ModelTypes["jsonb"] | undefined | null,
 	author?: ModelTypes["players_obj_rel_insert_input"] | undefined | null,
 	author_steam_id?: ModelTypes["bigint"] | undefined | null,
 	deleted_at?: ModelTypes["timestamptz"] | undefined | null,
 	deleted_by?: ModelTypes["players_obj_rel_insert_input"] | undefined | null,
 	deleted_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	gif?: ModelTypes["jsonb"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
 	message_created_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -180313,11 +180611,13 @@ export type ModelTypes = {
 };
 	/** Ordering options when selecting data from "chat_message_deletions". */
 ["chat_message_deletions_order_by"]: {
+	attachments?: ModelTypes["order_by"] | undefined | null,
 	author?: ModelTypes["players_order_by"] | undefined | null,
 	author_steam_id?: ModelTypes["order_by"] | undefined | null,
 	deleted_at?: ModelTypes["order_by"] | undefined | null,
 	deleted_by?: ModelTypes["players_order_by"] | undefined | null,
 	deleted_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	gif?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
 	message?: ModelTypes["order_by"] | undefined | null,
 	message_created_at?: ModelTypes["order_by"] | undefined | null,
@@ -180330,12 +180630,19 @@ export type ModelTypes = {
 ["chat_message_deletions_pk_columns_input"]: {
 	id: ModelTypes["uuid"]
 };
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["chat_message_deletions_prepend_input"]: {
+	attachments?: ModelTypes["jsonb"] | undefined | null,
+	gif?: ModelTypes["jsonb"] | undefined | null
+};
 	["chat_message_deletions_select_column"]:chat_message_deletions_select_column;
 	/** input type for updating data in table "chat_message_deletions" */
 ["chat_message_deletions_set_input"]: {
+	attachments?: ModelTypes["jsonb"] | undefined | null,
 	author_steam_id?: ModelTypes["bigint"] | undefined | null,
 	deleted_at?: ModelTypes["timestamptz"] | undefined | null,
 	deleted_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	gif?: ModelTypes["jsonb"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
 	message_created_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -180368,9 +180675,11 @@ export type ModelTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["chat_message_deletions_stream_cursor_value_input"]: {
+	attachments?: ModelTypes["jsonb"] | undefined | null,
 	author_steam_id?: ModelTypes["bigint"] | undefined | null,
 	deleted_at?: ModelTypes["timestamptz"] | undefined | null,
 	deleted_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	gif?: ModelTypes["jsonb"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
 	message_created_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -180386,8 +180695,18 @@ export type ModelTypes = {
 };
 	["chat_message_deletions_update_column"]:chat_message_deletions_update_column;
 	["chat_message_deletions_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ModelTypes["chat_message_deletions_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ModelTypes["chat_message_deletions_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ModelTypes["chat_message_deletions_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ModelTypes["chat_message_deletions_delete_key_input"] | undefined | null,
 	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ModelTypes["chat_message_deletions_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ModelTypes["chat_message_deletions_prepend_input"] | undefined | null,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ModelTypes["chat_message_deletions_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
@@ -181950,9 +182269,11 @@ export type ModelTypes = {
 };
 	/** columns and relationships of "direct_messages" */
 ["direct_messages"]: {
-		created_at: ModelTypes["timestamptz"],
+		attachments?: ModelTypes["jsonb"] | undefined | null,
+	created_at: ModelTypes["timestamptz"],
 	edited_at?: ModelTypes["timestamptz"] | undefined | null,
 	from_steam_id: ModelTypes["bigint"],
+	gif?: ModelTypes["jsonb"] | undefined | null,
 	id: ModelTypes["uuid"],
 	message: string,
 	room_id: string,
@@ -181977,6 +182298,11 @@ export type ModelTypes = {
 	var_samp?: ModelTypes["direct_messages_var_samp_fields"] | undefined | null,
 	variance?: ModelTypes["direct_messages_variance_fields"] | undefined | null
 };
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["direct_messages_append_input"]: {
+	attachments?: ModelTypes["jsonb"] | undefined | null,
+	gif?: ModelTypes["jsonb"] | undefined | null
+};
 	/** aggregate avg on columns */
 ["direct_messages_avg_fields"]: {
 		from_steam_id?: number | undefined | null,
@@ -181987,15 +182313,32 @@ export type ModelTypes = {
 	_and?: Array<ModelTypes["direct_messages_bool_exp"]> | undefined | null,
 	_not?: ModelTypes["direct_messages_bool_exp"] | undefined | null,
 	_or?: Array<ModelTypes["direct_messages_bool_exp"]> | undefined | null,
+	attachments?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
 	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	edited_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	from_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	gif?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
 	message?: ModelTypes["String_comparison_exp"] | undefined | null,
 	room_id?: ModelTypes["String_comparison_exp"] | undefined | null,
 	seq?: ModelTypes["bigint_comparison_exp"] | undefined | null
 };
 	["direct_messages_constraint"]:direct_messages_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["direct_messages_delete_at_path_input"]: {
+	attachments?: Array<string> | undefined | null,
+	gif?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["direct_messages_delete_elem_input"]: {
+	attachments?: number | undefined | null,
+	gif?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["direct_messages_delete_key_input"]: {
+	attachments?: string | undefined | null,
+	gif?: string | undefined | null
+};
 	/** input type for incrementing numeric columns in table "direct_messages" */
 ["direct_messages_inc_input"]: {
 	from_steam_id?: ModelTypes["bigint"] | undefined | null,
@@ -182003,9 +182346,11 @@ export type ModelTypes = {
 };
 	/** input type for inserting data into table "direct_messages" */
 ["direct_messages_insert_input"]: {
+	attachments?: ModelTypes["jsonb"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	edited_at?: ModelTypes["timestamptz"] | undefined | null,
 	from_steam_id?: ModelTypes["bigint"] | undefined | null,
+	gif?: ModelTypes["jsonb"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
 	room_id?: string | undefined | null,
@@ -182046,9 +182391,11 @@ export type ModelTypes = {
 };
 	/** Ordering options when selecting data from "direct_messages". */
 ["direct_messages_order_by"]: {
+	attachments?: ModelTypes["order_by"] | undefined | null,
 	created_at?: ModelTypes["order_by"] | undefined | null,
 	edited_at?: ModelTypes["order_by"] | undefined | null,
 	from_steam_id?: ModelTypes["order_by"] | undefined | null,
+	gif?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
 	message?: ModelTypes["order_by"] | undefined | null,
 	room_id?: ModelTypes["order_by"] | undefined | null,
@@ -182058,12 +182405,19 @@ export type ModelTypes = {
 ["direct_messages_pk_columns_input"]: {
 	id: ModelTypes["uuid"]
 };
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["direct_messages_prepend_input"]: {
+	attachments?: ModelTypes["jsonb"] | undefined | null,
+	gif?: ModelTypes["jsonb"] | undefined | null
+};
 	["direct_messages_select_column"]:direct_messages_select_column;
 	/** input type for updating data in table "direct_messages" */
 ["direct_messages_set_input"]: {
+	attachments?: ModelTypes["jsonb"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	edited_at?: ModelTypes["timestamptz"] | undefined | null,
 	from_steam_id?: ModelTypes["bigint"] | undefined | null,
+	gif?: ModelTypes["jsonb"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
 	room_id?: string | undefined | null,
@@ -182093,9 +182447,11 @@ export type ModelTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["direct_messages_stream_cursor_value_input"]: {
+	attachments?: ModelTypes["jsonb"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	edited_at?: ModelTypes["timestamptz"] | undefined | null,
 	from_steam_id?: ModelTypes["bigint"] | undefined | null,
+	gif?: ModelTypes["jsonb"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
 	room_id?: string | undefined | null,
@@ -182108,8 +182464,18 @@ export type ModelTypes = {
 };
 	["direct_messages_update_column"]:direct_messages_update_column;
 	["direct_messages_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ModelTypes["direct_messages_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ModelTypes["direct_messages_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ModelTypes["direct_messages_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ModelTypes["direct_messages_delete_key_input"] | undefined | null,
 	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ModelTypes["direct_messages_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ModelTypes["direct_messages_prepend_input"] | undefined | null,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ModelTypes["direct_messages_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
@@ -192571,7 +192937,8 @@ export type ModelTypes = {
 	versions: Array<ModelTypes["game_plugin_versions"]>,
 	/** An aggregate relationship */
 	versions_aggregate: ModelTypes["game_plugin_versions_aggregate"],
-	wiring?: ModelTypes["jsonb"] | undefined | null
+	wiring?: ModelTypes["jsonb"] | undefined | null,
+	workshop_addons: Array<string>
 };
 	/** aggregated selection of "game_plugins" */
 ["game_plugins_aggregate"]: {
@@ -192647,7 +193014,8 @@ export type ModelTypes = {
 	verified?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	versions?: ModelTypes["game_plugin_versions_bool_exp"] | undefined | null,
 	versions_aggregate?: ModelTypes["game_plugin_versions_aggregate_bool_exp"] | undefined | null,
-	wiring?: ModelTypes["jsonb_comparison_exp"] | undefined | null
+	wiring?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
+	workshop_addons?: ModelTypes["String_array_comparison_exp"] | undefined | null
 };
 	["game_plugins_constraint"]:game_plugins_constraint;
 	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
@@ -192706,7 +193074,8 @@ export type ModelTypes = {
 	tags?: Array<string> | undefined | null,
 	verified?: boolean | undefined | null,
 	versions?: ModelTypes["game_plugin_versions_arr_rel_insert_input"] | undefined | null,
-	wiring?: ModelTypes["jsonb"] | undefined | null
+	wiring?: ModelTypes["jsonb"] | undefined | null,
+	workshop_addons?: Array<string> | undefined | null
 };
 	/** aggregate max on columns */
 ["game_plugins_max_fields"]: {
@@ -192729,7 +193098,8 @@ export type ModelTypes = {
 	synced_at?: ModelTypes["timestamptz"] | undefined | null,
 	tags?: Array<string> | undefined | null,
 	/** A computed field, executes function "game_plugin_target_node_count" */
-	target_node_count?: number | undefined | null
+	target_node_count?: number | undefined | null,
+	workshop_addons?: Array<string> | undefined | null
 };
 	/** aggregate min on columns */
 ["game_plugins_min_fields"]: {
@@ -192752,7 +193122,8 @@ export type ModelTypes = {
 	synced_at?: ModelTypes["timestamptz"] | undefined | null,
 	tags?: Array<string> | undefined | null,
 	/** A computed field, executes function "game_plugin_target_node_count" */
-	target_node_count?: number | undefined | null
+	target_node_count?: number | undefined | null,
+	workshop_addons?: Array<string> | undefined | null
 };
 	/** response of any mutation on the table "game_plugins" */
 ["game_plugins_mutation_response"]: {
@@ -192805,7 +193176,8 @@ export type ModelTypes = {
 	target_node_count?: ModelTypes["order_by"] | undefined | null,
 	verified?: ModelTypes["order_by"] | undefined | null,
 	versions_aggregate?: ModelTypes["game_plugin_versions_aggregate_order_by"] | undefined | null,
-	wiring?: ModelTypes["order_by"] | undefined | null
+	wiring?: ModelTypes["order_by"] | undefined | null,
+	workshop_addons?: ModelTypes["order_by"] | undefined | null
 };
 	/** primary key columns input for table: game_plugins */
 ["game_plugins_pk_columns_input"]: {
@@ -192846,7 +193218,8 @@ export type ModelTypes = {
 	synced_at?: ModelTypes["timestamptz"] | undefined | null,
 	tags?: Array<string> | undefined | null,
 	verified?: boolean | undefined | null,
-	wiring?: ModelTypes["jsonb"] | undefined | null
+	wiring?: ModelTypes["jsonb"] | undefined | null,
+	workshop_addons?: Array<string> | undefined | null
 };
 	/** aggregate stddev on columns */
 ["game_plugins_stddev_fields"]: {
@@ -192901,7 +193274,8 @@ export type ModelTypes = {
 	synced_at?: ModelTypes["timestamptz"] | undefined | null,
 	tags?: Array<string> | undefined | null,
 	verified?: boolean | undefined | null,
-	wiring?: ModelTypes["jsonb"] | undefined | null
+	wiring?: ModelTypes["jsonb"] | undefined | null,
+	workshop_addons?: Array<string> | undefined | null
 };
 	/** aggregate sum on columns */
 ["game_plugins_sum_fields"]: {
@@ -237980,6 +238354,7 @@ export type ModelTypes = {
 	discord_webhook?: string | undefined | null,
 	/** An object relationship */
 	e_tournament_status: ModelTypes["e_tournament_status"],
+	finished_at?: ModelTypes["timestamptz"] | undefined | null,
 	/** An array relationship */
 	free_agents: Array<ModelTypes["tournament_free_agents"]>,
 	/** An aggregate relationship */
@@ -238265,6 +238640,7 @@ export type ModelTypes = {
 	discord_voice_enabled?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	discord_webhook?: ModelTypes["String_comparison_exp"] | undefined | null,
 	e_tournament_status?: ModelTypes["e_tournament_status_bool_exp"] | undefined | null,
+	finished_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	free_agents?: ModelTypes["tournament_free_agents_bool_exp"] | undefined | null,
 	free_agents_aggregate?: ModelTypes["tournament_free_agents_aggregate_bool_exp"] | undefined | null,
 	has_min_teams?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
@@ -238364,6 +238740,7 @@ export type ModelTypes = {
 	discord_voice_enabled?: boolean | undefined | null,
 	discord_webhook?: string | undefined | null,
 	e_tournament_status?: ModelTypes["e_tournament_status_obj_rel_insert_input"] | undefined | null,
+	finished_at?: ModelTypes["timestamptz"] | undefined | null,
 	free_agents?: ModelTypes["tournament_free_agents_arr_rel_insert_input"] | undefined | null,
 	homepage?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
@@ -238414,6 +238791,7 @@ export type ModelTypes = {
 	discord_guild_id?: string | undefined | null,
 	discord_role_id?: string | undefined | null,
 	discord_webhook?: string | undefined | null,
+	finished_at?: ModelTypes["timestamptz"] | undefined | null,
 	homepage?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	latitude?: ModelTypes["float8"] | undefined | null,
@@ -238450,6 +238828,7 @@ export type ModelTypes = {
 	discord_guild_id?: ModelTypes["order_by"] | undefined | null,
 	discord_role_id?: ModelTypes["order_by"] | undefined | null,
 	discord_webhook?: ModelTypes["order_by"] | undefined | null,
+	finished_at?: ModelTypes["order_by"] | undefined | null,
 	homepage?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
 	latitude?: ModelTypes["order_by"] | undefined | null,
@@ -238482,6 +238861,7 @@ export type ModelTypes = {
 	discord_guild_id?: string | undefined | null,
 	discord_role_id?: string | undefined | null,
 	discord_webhook?: string | undefined | null,
+	finished_at?: ModelTypes["timestamptz"] | undefined | null,
 	homepage?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	latitude?: ModelTypes["float8"] | undefined | null,
@@ -238518,6 +238898,7 @@ export type ModelTypes = {
 	discord_guild_id?: ModelTypes["order_by"] | undefined | null,
 	discord_role_id?: ModelTypes["order_by"] | undefined | null,
 	discord_webhook?: ModelTypes["order_by"] | undefined | null,
+	finished_at?: ModelTypes["order_by"] | undefined | null,
 	homepage?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
 	latitude?: ModelTypes["order_by"] | undefined | null,
@@ -238599,6 +238980,7 @@ export type ModelTypes = {
 	discord_voice_enabled?: ModelTypes["order_by"] | undefined | null,
 	discord_webhook?: ModelTypes["order_by"] | undefined | null,
 	e_tournament_status?: ModelTypes["e_tournament_status_order_by"] | undefined | null,
+	finished_at?: ModelTypes["order_by"] | undefined | null,
 	free_agents_aggregate?: ModelTypes["tournament_free_agents_aggregate_order_by"] | undefined | null,
 	has_min_teams?: ModelTypes["order_by"] | undefined | null,
 	homepage?: ModelTypes["order_by"] | undefined | null,
@@ -238688,6 +239070,7 @@ export type ModelTypes = {
 	discord_role_id?: string | undefined | null,
 	discord_voice_enabled?: boolean | undefined | null,
 	discord_webhook?: string | undefined | null,
+	finished_at?: ModelTypes["timestamptz"] | undefined | null,
 	homepage?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	invite_only?: boolean | undefined | null,
@@ -238835,6 +239218,7 @@ export type ModelTypes = {
 	discord_role_id?: string | undefined | null,
 	discord_voice_enabled?: boolean | undefined | null,
 	discord_webhook?: string | undefined | null,
+	finished_at?: ModelTypes["timestamptz"] | undefined | null,
 	homepage?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	invite_only?: boolean | undefined | null,
@@ -257995,6 +258379,7 @@ export type GraphQLTypes = {
 	/** columns and relationships of "chat_message_deletions" */
 ["chat_message_deletions"]: {
 	__typename: "chat_message_deletions",
+	attachments?: GraphQLTypes["jsonb"] | undefined | null,
 	/** An object relationship */
 	author?: GraphQLTypes["players"] | undefined | null,
 	author_steam_id?: GraphQLTypes["bigint"] | undefined | null,
@@ -258002,6 +258387,7 @@ export type GraphQLTypes = {
 	/** An object relationship */
 	deleted_by?: GraphQLTypes["players"] | undefined | null,
 	deleted_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	gif?: GraphQLTypes["jsonb"] | undefined | null,
 	id: GraphQLTypes["uuid"],
 	message: string,
 	message_created_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -258031,6 +258417,11 @@ export type GraphQLTypes = {
 	var_samp?: GraphQLTypes["chat_message_deletions_var_samp_fields"] | undefined | null,
 	variance?: GraphQLTypes["chat_message_deletions_variance_fields"] | undefined | null
 };
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["chat_message_deletions_append_input"]: {
+		attachments?: GraphQLTypes["jsonb"] | undefined | null,
+	gif?: GraphQLTypes["jsonb"] | undefined | null
+};
 	/** aggregate avg on columns */
 ["chat_message_deletions_avg_fields"]: {
 	__typename: "chat_message_deletions_avg_fields",
@@ -258042,11 +258433,13 @@ export type GraphQLTypes = {
 		_and?: Array<GraphQLTypes["chat_message_deletions_bool_exp"]> | undefined | null,
 	_not?: GraphQLTypes["chat_message_deletions_bool_exp"] | undefined | null,
 	_or?: Array<GraphQLTypes["chat_message_deletions_bool_exp"]> | undefined | null,
+	attachments?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
 	author?: GraphQLTypes["players_bool_exp"] | undefined | null,
 	author_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
 	deleted_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	deleted_by?: GraphQLTypes["players_bool_exp"] | undefined | null,
 	deleted_by_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	gif?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
 	message?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	message_created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
@@ -258057,6 +258450,21 @@ export type GraphQLTypes = {
 };
 	/** unique or primary key constraints on table "chat_message_deletions" */
 ["chat_message_deletions_constraint"]: chat_message_deletions_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["chat_message_deletions_delete_at_path_input"]: {
+		attachments?: Array<string> | undefined | null,
+	gif?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["chat_message_deletions_delete_elem_input"]: {
+		attachments?: number | undefined | null,
+	gif?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["chat_message_deletions_delete_key_input"]: {
+		attachments?: string | undefined | null,
+	gif?: string | undefined | null
+};
 	/** input type for incrementing numeric columns in table "chat_message_deletions" */
 ["chat_message_deletions_inc_input"]: {
 		author_steam_id?: GraphQLTypes["bigint"] | undefined | null,
@@ -258064,11 +258472,13 @@ export type GraphQLTypes = {
 };
 	/** input type for inserting data into table "chat_message_deletions" */
 ["chat_message_deletions_insert_input"]: {
-		author?: GraphQLTypes["players_obj_rel_insert_input"] | undefined | null,
+		attachments?: GraphQLTypes["jsonb"] | undefined | null,
+	author?: GraphQLTypes["players_obj_rel_insert_input"] | undefined | null,
 	author_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	deleted_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	deleted_by?: GraphQLTypes["players_obj_rel_insert_input"] | undefined | null,
 	deleted_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	gif?: GraphQLTypes["jsonb"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
 	message_created_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -258121,11 +258531,13 @@ export type GraphQLTypes = {
 };
 	/** Ordering options when selecting data from "chat_message_deletions". */
 ["chat_message_deletions_order_by"]: {
-		author?: GraphQLTypes["players_order_by"] | undefined | null,
+		attachments?: GraphQLTypes["order_by"] | undefined | null,
+	author?: GraphQLTypes["players_order_by"] | undefined | null,
 	author_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	deleted_at?: GraphQLTypes["order_by"] | undefined | null,
 	deleted_by?: GraphQLTypes["players_order_by"] | undefined | null,
 	deleted_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	gif?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
 	message?: GraphQLTypes["order_by"] | undefined | null,
 	message_created_at?: GraphQLTypes["order_by"] | undefined | null,
@@ -258138,13 +258550,20 @@ export type GraphQLTypes = {
 ["chat_message_deletions_pk_columns_input"]: {
 		id: GraphQLTypes["uuid"]
 };
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["chat_message_deletions_prepend_input"]: {
+		attachments?: GraphQLTypes["jsonb"] | undefined | null,
+	gif?: GraphQLTypes["jsonb"] | undefined | null
+};
 	/** select columns of table "chat_message_deletions" */
 ["chat_message_deletions_select_column"]: chat_message_deletions_select_column;
 	/** input type for updating data in table "chat_message_deletions" */
 ["chat_message_deletions_set_input"]: {
-		author_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+		attachments?: GraphQLTypes["jsonb"] | undefined | null,
+	author_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	deleted_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	deleted_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	gif?: GraphQLTypes["jsonb"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
 	message_created_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -258180,9 +258599,11 @@ export type GraphQLTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["chat_message_deletions_stream_cursor_value_input"]: {
-		author_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+		attachments?: GraphQLTypes["jsonb"] | undefined | null,
+	author_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	deleted_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	deleted_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	gif?: GraphQLTypes["jsonb"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
 	message_created_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -258200,8 +258621,18 @@ export type GraphQLTypes = {
 	/** update columns of table "chat_message_deletions" */
 ["chat_message_deletions_update_column"]: chat_message_deletions_update_column;
 	["chat_message_deletions_updates"]: {
-		/** increments the numeric columns with given value of the filtered values */
+		/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: GraphQLTypes["chat_message_deletions_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: GraphQLTypes["chat_message_deletions_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: GraphQLTypes["chat_message_deletions_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: GraphQLTypes["chat_message_deletions_delete_key_input"] | undefined | null,
+	/** increments the numeric columns with given value of the filtered values */
 	_inc?: GraphQLTypes["chat_message_deletions_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: GraphQLTypes["chat_message_deletions_prepend_input"] | undefined | null,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: GraphQLTypes["chat_message_deletions_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
@@ -259890,9 +260321,11 @@ export type GraphQLTypes = {
 	/** columns and relationships of "direct_messages" */
 ["direct_messages"]: {
 	__typename: "direct_messages",
+	attachments?: GraphQLTypes["jsonb"] | undefined | null,
 	created_at: GraphQLTypes["timestamptz"],
 	edited_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	from_steam_id: GraphQLTypes["bigint"],
+	gif?: GraphQLTypes["jsonb"] | undefined | null,
 	id: GraphQLTypes["uuid"],
 	message: string,
 	room_id: string,
@@ -259919,6 +260352,11 @@ export type GraphQLTypes = {
 	var_samp?: GraphQLTypes["direct_messages_var_samp_fields"] | undefined | null,
 	variance?: GraphQLTypes["direct_messages_variance_fields"] | undefined | null
 };
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["direct_messages_append_input"]: {
+		attachments?: GraphQLTypes["jsonb"] | undefined | null,
+	gif?: GraphQLTypes["jsonb"] | undefined | null
+};
 	/** aggregate avg on columns */
 ["direct_messages_avg_fields"]: {
 	__typename: "direct_messages_avg_fields",
@@ -259930,9 +260368,11 @@ export type GraphQLTypes = {
 		_and?: Array<GraphQLTypes["direct_messages_bool_exp"]> | undefined | null,
 	_not?: GraphQLTypes["direct_messages_bool_exp"] | undefined | null,
 	_or?: Array<GraphQLTypes["direct_messages_bool_exp"]> | undefined | null,
+	attachments?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	edited_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	from_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	gif?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
 	message?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	room_id?: GraphQLTypes["String_comparison_exp"] | undefined | null,
@@ -259940,6 +260380,21 @@ export type GraphQLTypes = {
 };
 	/** unique or primary key constraints on table "direct_messages" */
 ["direct_messages_constraint"]: direct_messages_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["direct_messages_delete_at_path_input"]: {
+		attachments?: Array<string> | undefined | null,
+	gif?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["direct_messages_delete_elem_input"]: {
+		attachments?: number | undefined | null,
+	gif?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["direct_messages_delete_key_input"]: {
+		attachments?: string | undefined | null,
+	gif?: string | undefined | null
+};
 	/** input type for incrementing numeric columns in table "direct_messages" */
 ["direct_messages_inc_input"]: {
 		from_steam_id?: GraphQLTypes["bigint"] | undefined | null,
@@ -259947,9 +260402,11 @@ export type GraphQLTypes = {
 };
 	/** input type for inserting data into table "direct_messages" */
 ["direct_messages_insert_input"]: {
-		created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+		attachments?: GraphQLTypes["jsonb"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	edited_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	from_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	gif?: GraphQLTypes["jsonb"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
 	room_id?: string | undefined | null,
@@ -259993,9 +260450,11 @@ export type GraphQLTypes = {
 };
 	/** Ordering options when selecting data from "direct_messages". */
 ["direct_messages_order_by"]: {
-		created_at?: GraphQLTypes["order_by"] | undefined | null,
+		attachments?: GraphQLTypes["order_by"] | undefined | null,
+	created_at?: GraphQLTypes["order_by"] | undefined | null,
 	edited_at?: GraphQLTypes["order_by"] | undefined | null,
 	from_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	gif?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
 	message?: GraphQLTypes["order_by"] | undefined | null,
 	room_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -260005,13 +260464,20 @@ export type GraphQLTypes = {
 ["direct_messages_pk_columns_input"]: {
 		id: GraphQLTypes["uuid"]
 };
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["direct_messages_prepend_input"]: {
+		attachments?: GraphQLTypes["jsonb"] | undefined | null,
+	gif?: GraphQLTypes["jsonb"] | undefined | null
+};
 	/** select columns of table "direct_messages" */
 ["direct_messages_select_column"]: direct_messages_select_column;
 	/** input type for updating data in table "direct_messages" */
 ["direct_messages_set_input"]: {
-		created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+		attachments?: GraphQLTypes["jsonb"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	edited_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	from_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	gif?: GraphQLTypes["jsonb"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
 	room_id?: string | undefined | null,
@@ -260044,9 +260510,11 @@ export type GraphQLTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["direct_messages_stream_cursor_value_input"]: {
-		created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+		attachments?: GraphQLTypes["jsonb"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	edited_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	from_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	gif?: GraphQLTypes["jsonb"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
 	room_id?: string | undefined | null,
@@ -260061,8 +260529,18 @@ export type GraphQLTypes = {
 	/** update columns of table "direct_messages" */
 ["direct_messages_update_column"]: direct_messages_update_column;
 	["direct_messages_updates"]: {
-		/** increments the numeric columns with given value of the filtered values */
+		/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: GraphQLTypes["direct_messages_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: GraphQLTypes["direct_messages_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: GraphQLTypes["direct_messages_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: GraphQLTypes["direct_messages_delete_key_input"] | undefined | null,
+	/** increments the numeric columns with given value of the filtered values */
 	_inc?: GraphQLTypes["direct_messages_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: GraphQLTypes["direct_messages_prepend_input"] | undefined | null,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: GraphQLTypes["direct_messages_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
@@ -271318,7 +271796,8 @@ export type GraphQLTypes = {
 	versions: Array<GraphQLTypes["game_plugin_versions"]>,
 	/** An aggregate relationship */
 	versions_aggregate: GraphQLTypes["game_plugin_versions_aggregate"],
-	wiring?: GraphQLTypes["jsonb"] | undefined | null
+	wiring?: GraphQLTypes["jsonb"] | undefined | null,
+	workshop_addons: Array<string>
 };
 	/** aggregated selection of "game_plugins" */
 ["game_plugins_aggregate"]: {
@@ -271397,7 +271876,8 @@ export type GraphQLTypes = {
 	verified?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	versions?: GraphQLTypes["game_plugin_versions_bool_exp"] | undefined | null,
 	versions_aggregate?: GraphQLTypes["game_plugin_versions_aggregate_bool_exp"] | undefined | null,
-	wiring?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null
+	wiring?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
+	workshop_addons?: GraphQLTypes["String_array_comparison_exp"] | undefined | null
 };
 	/** unique or primary key constraints on table "game_plugins" */
 ["game_plugins_constraint"]: game_plugins_constraint;
@@ -271457,7 +271937,8 @@ export type GraphQLTypes = {
 	tags?: Array<string> | undefined | null,
 	verified?: boolean | undefined | null,
 	versions?: GraphQLTypes["game_plugin_versions_arr_rel_insert_input"] | undefined | null,
-	wiring?: GraphQLTypes["jsonb"] | undefined | null
+	wiring?: GraphQLTypes["jsonb"] | undefined | null,
+	workshop_addons?: Array<string> | undefined | null
 };
 	/** aggregate max on columns */
 ["game_plugins_max_fields"]: {
@@ -271481,7 +271962,8 @@ export type GraphQLTypes = {
 	synced_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	tags?: Array<string> | undefined | null,
 	/** A computed field, executes function "game_plugin_target_node_count" */
-	target_node_count?: number | undefined | null
+	target_node_count?: number | undefined | null,
+	workshop_addons?: Array<string> | undefined | null
 };
 	/** aggregate min on columns */
 ["game_plugins_min_fields"]: {
@@ -271505,7 +271987,8 @@ export type GraphQLTypes = {
 	synced_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	tags?: Array<string> | undefined | null,
 	/** A computed field, executes function "game_plugin_target_node_count" */
-	target_node_count?: number | undefined | null
+	target_node_count?: number | undefined | null,
+	workshop_addons?: Array<string> | undefined | null
 };
 	/** response of any mutation on the table "game_plugins" */
 ["game_plugins_mutation_response"]: {
@@ -271559,7 +272042,8 @@ export type GraphQLTypes = {
 	target_node_count?: GraphQLTypes["order_by"] | undefined | null,
 	verified?: GraphQLTypes["order_by"] | undefined | null,
 	versions_aggregate?: GraphQLTypes["game_plugin_versions_aggregate_order_by"] | undefined | null,
-	wiring?: GraphQLTypes["order_by"] | undefined | null
+	wiring?: GraphQLTypes["order_by"] | undefined | null,
+	workshop_addons?: GraphQLTypes["order_by"] | undefined | null
 };
 	/** primary key columns input for table: game_plugins */
 ["game_plugins_pk_columns_input"]: {
@@ -271601,7 +272085,8 @@ export type GraphQLTypes = {
 	synced_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	tags?: Array<string> | undefined | null,
 	verified?: boolean | undefined | null,
-	wiring?: GraphQLTypes["jsonb"] | undefined | null
+	wiring?: GraphQLTypes["jsonb"] | undefined | null,
+	workshop_addons?: Array<string> | undefined | null
 };
 	/** aggregate stddev on columns */
 ["game_plugins_stddev_fields"]: {
@@ -271659,7 +272144,8 @@ export type GraphQLTypes = {
 	synced_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	tags?: Array<string> | undefined | null,
 	verified?: boolean | undefined | null,
-	wiring?: GraphQLTypes["jsonb"] | undefined | null
+	wiring?: GraphQLTypes["jsonb"] | undefined | null,
+	workshop_addons?: Array<string> | undefined | null
 };
 	/** aggregate sum on columns */
 ["game_plugins_sum_fields"]: {
@@ -318564,6 +319050,7 @@ export type GraphQLTypes = {
 	discord_webhook?: string | undefined | null,
 	/** An object relationship */
 	e_tournament_status: GraphQLTypes["e_tournament_status"],
+	finished_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	/** An array relationship */
 	free_agents: Array<GraphQLTypes["tournament_free_agents"]>,
 	/** An aggregate relationship */
@@ -318852,6 +319339,7 @@ export type GraphQLTypes = {
 	discord_voice_enabled?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	discord_webhook?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	e_tournament_status?: GraphQLTypes["e_tournament_status_bool_exp"] | undefined | null,
+	finished_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	free_agents?: GraphQLTypes["tournament_free_agents_bool_exp"] | undefined | null,
 	free_agents_aggregate?: GraphQLTypes["tournament_free_agents_aggregate_bool_exp"] | undefined | null,
 	has_min_teams?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
@@ -318952,6 +319440,7 @@ export type GraphQLTypes = {
 	discord_voice_enabled?: boolean | undefined | null,
 	discord_webhook?: string | undefined | null,
 	e_tournament_status?: GraphQLTypes["e_tournament_status_obj_rel_insert_input"] | undefined | null,
+	finished_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	free_agents?: GraphQLTypes["tournament_free_agents_arr_rel_insert_input"] | undefined | null,
 	homepage?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
@@ -319003,6 +319492,7 @@ export type GraphQLTypes = {
 	discord_guild_id?: string | undefined | null,
 	discord_role_id?: string | undefined | null,
 	discord_webhook?: string | undefined | null,
+	finished_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	homepage?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	latitude?: GraphQLTypes["float8"] | undefined | null,
@@ -319039,6 +319529,7 @@ export type GraphQLTypes = {
 	discord_guild_id?: GraphQLTypes["order_by"] | undefined | null,
 	discord_role_id?: GraphQLTypes["order_by"] | undefined | null,
 	discord_webhook?: GraphQLTypes["order_by"] | undefined | null,
+	finished_at?: GraphQLTypes["order_by"] | undefined | null,
 	homepage?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
 	latitude?: GraphQLTypes["order_by"] | undefined | null,
@@ -319072,6 +319563,7 @@ export type GraphQLTypes = {
 	discord_guild_id?: string | undefined | null,
 	discord_role_id?: string | undefined | null,
 	discord_webhook?: string | undefined | null,
+	finished_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	homepage?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	latitude?: GraphQLTypes["float8"] | undefined | null,
@@ -319108,6 +319600,7 @@ export type GraphQLTypes = {
 	discord_guild_id?: GraphQLTypes["order_by"] | undefined | null,
 	discord_role_id?: GraphQLTypes["order_by"] | undefined | null,
 	discord_webhook?: GraphQLTypes["order_by"] | undefined | null,
+	finished_at?: GraphQLTypes["order_by"] | undefined | null,
 	homepage?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
 	latitude?: GraphQLTypes["order_by"] | undefined | null,
@@ -319190,6 +319683,7 @@ export type GraphQLTypes = {
 	discord_voice_enabled?: GraphQLTypes["order_by"] | undefined | null,
 	discord_webhook?: GraphQLTypes["order_by"] | undefined | null,
 	e_tournament_status?: GraphQLTypes["e_tournament_status_order_by"] | undefined | null,
+	finished_at?: GraphQLTypes["order_by"] | undefined | null,
 	free_agents_aggregate?: GraphQLTypes["tournament_free_agents_aggregate_order_by"] | undefined | null,
 	has_min_teams?: GraphQLTypes["order_by"] | undefined | null,
 	homepage?: GraphQLTypes["order_by"] | undefined | null,
@@ -319290,6 +319784,7 @@ export type GraphQLTypes = {
 	discord_role_id?: string | undefined | null,
 	discord_voice_enabled?: boolean | undefined | null,
 	discord_webhook?: string | undefined | null,
+	finished_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	homepage?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	invite_only?: boolean | undefined | null,
@@ -319440,6 +319935,7 @@ export type GraphQLTypes = {
 	discord_role_id?: string | undefined | null,
 	discord_voice_enabled?: boolean | undefined | null,
 	discord_webhook?: string | undefined | null,
+	finished_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	homepage?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	invite_only?: boolean | undefined | null,
@@ -336615,9 +337111,11 @@ export enum chat_message_deletions_constraint {
 }
 /** select columns of table "chat_message_deletions" */
 export enum chat_message_deletions_select_column {
+	attachments = "attachments",
 	author_steam_id = "author_steam_id",
 	deleted_at = "deleted_at",
 	deleted_by_steam_id = "deleted_by_steam_id",
+	gif = "gif",
 	id = "id",
 	message = "message",
 	message_created_at = "message_created_at",
@@ -336628,9 +337126,11 @@ export enum chat_message_deletions_select_column {
 }
 /** update columns of table "chat_message_deletions" */
 export enum chat_message_deletions_update_column {
+	attachments = "attachments",
 	author_steam_id = "author_steam_id",
 	deleted_at = "deleted_at",
 	deleted_by_steam_id = "deleted_by_steam_id",
+	gif = "gif",
 	id = "id",
 	message = "message",
 	message_created_at = "message_created_at",
@@ -336851,9 +337351,11 @@ export enum direct_messages_constraint {
 }
 /** select columns of table "direct_messages" */
 export enum direct_messages_select_column {
+	attachments = "attachments",
 	created_at = "created_at",
 	edited_at = "edited_at",
 	from_steam_id = "from_steam_id",
+	gif = "gif",
 	id = "id",
 	message = "message",
 	room_id = "room_id",
@@ -336861,9 +337363,11 @@ export enum direct_messages_select_column {
 }
 /** update columns of table "direct_messages" */
 export enum direct_messages_update_column {
+	attachments = "attachments",
 	created_at = "created_at",
 	edited_at = "edited_at",
 	from_steam_id = "from_steam_id",
+	gif = "gif",
 	id = "id",
 	message = "message",
 	room_id = "room_id",
@@ -338653,7 +339157,8 @@ export enum game_plugins_select_column {
 	synced_at = "synced_at",
 	tags = "tags",
 	verified = "verified",
-	wiring = "wiring"
+	wiring = "wiring",
+	workshop_addons = "workshop_addons"
 }
 /** update columns of table "game_plugins" */
 export enum game_plugins_update_column {
@@ -338680,7 +339185,8 @@ export enum game_plugins_update_column {
 	synced_at = "synced_at",
 	tags = "tags",
 	verified = "verified",
-	wiring = "wiring"
+	wiring = "wiring",
+	workshop_addons = "workshop_addons"
 }
 /** unique or primary key constraints on table "game_server_node_plugins" */
 export enum game_server_node_plugins_constraint {
@@ -342561,6 +343067,7 @@ export enum tournaments_select_column {
 	discord_role_id = "discord_role_id",
 	discord_voice_enabled = "discord_voice_enabled",
 	discord_webhook = "discord_webhook",
+	finished_at = "finished_at",
 	homepage = "homepage",
 	id = "id",
 	invite_only = "invite_only",
@@ -342698,6 +343205,7 @@ export enum tournaments_update_column {
 	discord_role_id = "discord_role_id",
 	discord_voice_enabled = "discord_voice_enabled",
 	discord_webhook = "discord_webhook",
+	finished_at = "finished_at",
 	homepage = "homepage",
 	id = "id",
 	invite_only = "invite_only",
@@ -344598,13 +345106,18 @@ type ZEUS_VARIABLES = {
 	["broadcast_huds_updates"]: ValueTypes["broadcast_huds_updates"];
 	["bytea"]: ValueTypes["bytea"];
 	["bytea_comparison_exp"]: ValueTypes["bytea_comparison_exp"];
+	["chat_message_deletions_append_input"]: ValueTypes["chat_message_deletions_append_input"];
 	["chat_message_deletions_bool_exp"]: ValueTypes["chat_message_deletions_bool_exp"];
 	["chat_message_deletions_constraint"]: ValueTypes["chat_message_deletions_constraint"];
+	["chat_message_deletions_delete_at_path_input"]: ValueTypes["chat_message_deletions_delete_at_path_input"];
+	["chat_message_deletions_delete_elem_input"]: ValueTypes["chat_message_deletions_delete_elem_input"];
+	["chat_message_deletions_delete_key_input"]: ValueTypes["chat_message_deletions_delete_key_input"];
 	["chat_message_deletions_inc_input"]: ValueTypes["chat_message_deletions_inc_input"];
 	["chat_message_deletions_insert_input"]: ValueTypes["chat_message_deletions_insert_input"];
 	["chat_message_deletions_on_conflict"]: ValueTypes["chat_message_deletions_on_conflict"];
 	["chat_message_deletions_order_by"]: ValueTypes["chat_message_deletions_order_by"];
 	["chat_message_deletions_pk_columns_input"]: ValueTypes["chat_message_deletions_pk_columns_input"];
+	["chat_message_deletions_prepend_input"]: ValueTypes["chat_message_deletions_prepend_input"];
 	["chat_message_deletions_select_column"]: ValueTypes["chat_message_deletions_select_column"];
 	["chat_message_deletions_set_input"]: ValueTypes["chat_message_deletions_set_input"];
 	["chat_message_deletions_stream_cursor_input"]: ValueTypes["chat_message_deletions_stream_cursor_input"];
@@ -344732,13 +345245,18 @@ type ZEUS_VARIABLES = {
 	["direct_message_reactions_stream_cursor_value_input"]: ValueTypes["direct_message_reactions_stream_cursor_value_input"];
 	["direct_message_reactions_update_column"]: ValueTypes["direct_message_reactions_update_column"];
 	["direct_message_reactions_updates"]: ValueTypes["direct_message_reactions_updates"];
+	["direct_messages_append_input"]: ValueTypes["direct_messages_append_input"];
 	["direct_messages_bool_exp"]: ValueTypes["direct_messages_bool_exp"];
 	["direct_messages_constraint"]: ValueTypes["direct_messages_constraint"];
+	["direct_messages_delete_at_path_input"]: ValueTypes["direct_messages_delete_at_path_input"];
+	["direct_messages_delete_elem_input"]: ValueTypes["direct_messages_delete_elem_input"];
+	["direct_messages_delete_key_input"]: ValueTypes["direct_messages_delete_key_input"];
 	["direct_messages_inc_input"]: ValueTypes["direct_messages_inc_input"];
 	["direct_messages_insert_input"]: ValueTypes["direct_messages_insert_input"];
 	["direct_messages_on_conflict"]: ValueTypes["direct_messages_on_conflict"];
 	["direct_messages_order_by"]: ValueTypes["direct_messages_order_by"];
 	["direct_messages_pk_columns_input"]: ValueTypes["direct_messages_pk_columns_input"];
+	["direct_messages_prepend_input"]: ValueTypes["direct_messages_prepend_input"];
 	["direct_messages_select_column"]: ValueTypes["direct_messages_select_column"];
 	["direct_messages_set_input"]: ValueTypes["direct_messages_set_input"];
 	["direct_messages_stream_cursor_input"]: ValueTypes["direct_messages_stream_cursor_input"];

@@ -10,7 +10,8 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 // Self-contained media card matching the highlights look: the clip fills the
 // frame, title + tagged players overlay the bottom on a gradient, and edit /
 // delete live top-right for anyone who can manage it. Owns its own detail
-// dialog + delete so both the overview rail and the media tab reuse it.
+// dialog + delete so both the overview rail and the media tab reuse it; the
+// image lightbox belongs to the list so it can step through every card.
 const props = defineProps<{
   event: { id: string; is_organizer?: boolean };
   item: {
@@ -25,6 +26,8 @@ const props = defineProps<{
     players?: any[];
   };
 }>();
+
+const emit = defineEmits<{ (e: "view", id: string): void }>();
 
 const { t } = useI18n();
 const me = computed(() => useAuthStore().me);
@@ -65,7 +68,11 @@ async function deleteMedia() {
   <div
     class="group relative aspect-video w-full overflow-hidden rounded-md border border-border/70 bg-black transition-[border-color] duration-150 hover:border-[hsl(var(--tac-amber)/0.45)]"
   >
-    <EventMediaTile :event="event" :item="item" />
+    <EventMediaTile
+      :event="event"
+      :item="item"
+      @view="(id) => emit('view', id)"
+    />
 
     <!-- top-right manage controls -->
     <div

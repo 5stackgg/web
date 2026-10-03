@@ -3,6 +3,7 @@ import { computed, ref, watch } from "vue";
 import { ArrowRight } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import EventMediaCard from "~/components/events/EventMediaCard.vue";
+import EventMediaLightbox from "~/components/events/EventMediaLightbox.vue";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
@@ -34,6 +35,9 @@ const hasMore = computed(() => items.value.length > shown.value);
 function loadMore() {
   shown.value += PAGE_SIZE;
 }
+
+// The lightbox walks every item, not just the loaded page of the grid.
+const viewingId = ref<string | null>(null);
 </script>
 
 <template>
@@ -63,6 +67,7 @@ function loadMore() {
         :key="item.id"
         :event="event"
         :item="item"
+        @view="(id) => (viewingId = id)"
       />
     </div>
 
@@ -72,5 +77,11 @@ function loadMore() {
         ({{ visible.length }}/{{ items.length }})
       </Button>
     </div>
+
+    <EventMediaLightbox
+      v-model:media-id="viewingId"
+      :event="event"
+      :items="items"
+    />
   </section>
 </template>

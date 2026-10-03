@@ -5,6 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import Empty from "~/components/ui/empty/Empty.vue";
 import { Upload, FileCheck2, FileWarning, Plus } from "lucide-vue-next";
 import EventMediaCard from "~/components/events/EventMediaCard.vue";
+import EventMediaLightbox from "~/components/events/EventMediaLightbox.vue";
 import EventMediaDropzone from "~/components/events/EventMediaDropzone.vue";
 import EventAddMediaDialog from "~/components/events/EventAddMediaDialog.vue";
 import EventPlayerFilter from "~/components/events/EventPlayerFilter.vue";
@@ -39,6 +40,7 @@ const props = defineProps<{
 const { queue, working, clearQueue } = useEventMediaQueue(props.event.id);
 
 const addDialogOpen = ref(false);
+const viewingId = ref<string | null>(null);
 const filterPlayer = ref<{ steam_id: string | number; name?: string } | null>(
   null,
 );
@@ -202,8 +204,15 @@ function formatBytes(bytes: number): string {
           :key="item.id"
           :event="event"
           :item="item"
+          @view="(id) => (viewingId = id)"
         />
       </div>
+
+      <EventMediaLightbox
+        v-model:media-id="viewingId"
+        :event="event"
+        :items="media"
+      />
     </template>
 
     <EventAddMediaDialog v-model:open="addDialogOpen" :event-id="event.id" />

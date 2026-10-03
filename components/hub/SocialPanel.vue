@@ -78,15 +78,17 @@ const otherOnlineCount = computed(() => {
           </TabsTrigger>
         </TabsList>
       </div>
+      <!-- Reka keeps the inactive panel in the DOM behind a bare [hidden],
+           which `flex` overrides, so it would take half the height. -->
       <TabsContent
         value="friends"
-        class="mt-0 flex flex-1 flex-col overflow-y-auto min-h-0 px-3"
+        class="mt-0 flex flex-1 flex-col overflow-y-auto min-h-0 px-3 data-[state=inactive]:hidden"
       >
         <PlayersList :friends-only="true" />
       </TabsContent>
       <TabsContent
         value="online"
-        class="mt-0 flex flex-1 flex-col overflow-y-auto min-h-0 px-3"
+        class="mt-0 flex flex-1 flex-col overflow-y-auto min-h-0 px-3 data-[state=inactive]:hidden"
       >
         <template v-if="otherOnlineCount > 0">
           <PlayersList />

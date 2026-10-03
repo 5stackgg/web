@@ -1,4 +1,5 @@
 import type { Clip } from "~/types/clip";
+import cleanMapName from "~/utilities/cleanMapName";
 import type { ClipQueueItem } from "~/composables/useClipModal";
 
 type Translate = (key: string, ...args: any[]) => string;
@@ -59,6 +60,7 @@ export function formatClipDuration(
 }
 
 export function clipQueueItem(c: Clip): ClipQueueItem {
+  const map = c.match_map?.map;
   return {
     id: c.id,
     title: c.title ?? null,
@@ -67,5 +69,8 @@ export function clipQueueItem(c: Clip): ClipQueueItem {
     durationMs: c.duration_ms ?? null,
     thumbnailUrl: c.thumbnail_download_url ?? null,
     posterUrl: c.match_map?.map?.poster ?? null,
+    killsCount: c.kills_count ?? null,
+    round: c.round ?? null,
+    mapLabel: map ? map.label || cleanMapName(map.name) : null,
   };
 }

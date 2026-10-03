@@ -9828,15 +9828,24 @@
     "detail": {
       "default_title": "Highlight",
       "visibility": "Widoczność",
-      "signal_lost": "Utracono sygnał",
       "clip_not_found": "Nie znaleziono klipu",
       "clip_not_found_description": "Mógł zostać usunięty albo nie masz uprawnień do jego wyświetlenia",
       "title_label": "Tytuł",
-      "other_clips": "Inne klipy",
       "view_match": "Zobacz mecz",
       "highlight_clip_viewer": "Podgląd highlightu",
       "render_finalizing": "Finalizowanie renderu…",
-      "just_now": "przed chwilą"
+      "just_now": "przed chwilą",
+      "up_next": "Następne",
+      "playing": "Odtwarzane",
+      "up_next_in": "Następne za {seconds}",
+      "theater_mode": "Tryb kinowy",
+      "default_view": "Widok domyślny",
+      "previous_next": "Poprzedni / następny",
+      "best_of": "Best of {count}",
+      "make_public": "Upublicznij",
+      "make_private": "Ustaw jako prywatny",
+      "more_actions": "Więcej akcji",
+      "played_for": "{name} grał w tej drużynie"
     },
     "render_queue": {
       "queued": "W kolejce",

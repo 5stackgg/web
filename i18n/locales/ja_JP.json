@@ -9828,15 +9828,24 @@
     "detail": {
       "default_title": "ハイライト",
       "visibility": "公開範囲",
-      "signal_lost": "シグナル喪失",
       "clip_not_found": "クリップが見つかりません",
       "clip_not_found_description": "削除されたか、閲覧する権限がない可能性があります。",
       "title_label": "タイトル",
-      "other_clips": "他のクリップ",
       "view_match": "試合を見る",
       "highlight_clip_viewer": "ハイライトクリップビューア",
       "render_finalizing": "レンダリング仕上げ中…",
-      "just_now": "たった今"
+      "just_now": "たった今",
+      "up_next": "次のクリップ",
+      "playing": "再生中",
+      "up_next_in": "{seconds}秒後に次のクリップ",
+      "theater_mode": "シアターモード",
+      "default_view": "デフォルト表示",
+      "previous_next": "前へ / 次へ",
+      "best_of": "BO{count}",
+      "make_public": "公開する",
+      "make_private": "非公開にする",
+      "more_actions": "その他の操作",
+      "played_for": "{name}はこのチームでプレイ"
     },
     "render_queue": {
       "queued": "待機中",

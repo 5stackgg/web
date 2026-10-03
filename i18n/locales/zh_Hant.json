@@ -9828,15 +9828,24 @@
     "detail": {
       "default_title": "精華",
       "visibility": "可見性",
-      "signal_lost": "訊號中斷",
       "clip_not_found": "找不到精華片段",
       "clip_not_found_description": "它可能已被刪除，或您沒有檢視權限。",
       "title_label": "標題",
-      "other_clips": "其他片段",
       "view_match": "檢視比賽",
       "highlight_clip_viewer": "精華片段檢視器",
       "render_finalizing": "算圖收尾中…",
-      "just_now": "剛剛"
+      "just_now": "剛剛",
+      "up_next": "接下來",
+      "playing": "正在播放",
+      "up_next_in": "{seconds} 秒後播放下一個",
+      "theater_mode": "劇院模式",
+      "default_view": "預設檢視",
+      "previous_next": "上一個 / 下一個",
+      "best_of": "BO{count}",
+      "make_public": "設為公開",
+      "make_private": "設為私人",
+      "more_actions": "更多操作",
+      "played_for": "{name} 效力於該隊"
     },
     "render_queue": {
       "queued": "排隊中",

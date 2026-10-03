@@ -11,21 +11,20 @@ import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
 import {
-  Crosshair,
-  Download,
-  Trash2,
-  Share2,
+  ArrowUpRight,
   Check,
-  Pencil,
-  Lock,
-  Globe,
-  X,
   ChevronLeft,
   ChevronRight,
-  ListVideo,
-  Film,
-  ArrowUpRight,
+  Download,
   Eye,
+  Film,
+  Globe,
+  Lock,
+  MoreHorizontal,
+  Pencil,
+  Share2,
+  Trash2,
+  X,
 } from "lucide-vue-next";
 import { useNuxtApp } from "#app";
 import { useAuthStore } from "~/stores/AuthStore";
@@ -37,10 +36,15 @@ import {
 } from "~/graphql/graphqlGen";
 import { matchClipFieldsWithLineups } from "~/graphql/matchClip";
 import type { Clip } from "~/types/clip";
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import { Kbd } from "~/components/ui/kbd";
 import { Label } from "~/components/ui/label";
+import { Skeleton } from "~/components/ui/skeleton";
 import ClipPlayer from "~/components/clips/ClipPlayer.vue";
+import ClipKillBadge from "~/components/clips/ClipKillBadge.vue";
+import TimeAgo from "~/components/TimeAgo.vue";
 import {
   DialogRoot as Dialog,
   DialogPortal,
@@ -55,14 +59,26 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 import DeleteClipDialog from "~/components/clips/DeleteClipDialog.vue";
-import MatchTableRow from "~/components/MatchTableRow.vue";
 import {
   clipDownloadName,
   clipDownloadUrl,
 } from "~/utilities/clipDownloadName";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
-import { clipDisplayTitle } from "~/utilities/clipDisplay";
+import cleanMapName from "~/utilities/cleanMapName";
+import { clipDisplayTitle, formatClipDuration } from "~/utilities/clipDisplay";
+import {
+  tacticalSectionLabelClasses,
+  tacticalSectionTickClasses,
+} from "~/utilities/tacticalClasses";
+import { teamMonogram } from "~/components/watch/watchTicker";
 import { useClipModal } from "~/composables/useClipModal";
 import { useClipShare } from "~/composables/useClipShare";
 import { Spinner } from "~/components/ui/spinner";
@@ -102,13 +118,79 @@ const isOwner = computed(
 );
 const canDelete = computed(() => isOwner.value || auth.isAdmin);
 
-// Strip a leading "<player> — " (or " - ", " – ") prefix from the clip
-// title because the player is already named in the Highlighting card.
+// The player is already named beside the title, so drop the "<player> — "
+// prefix the API's auto-title leads with.
 const displayTitle = computed(
   () =>
     clipDisplayTitle(clip.value?.title, clip.value?.target?.name) ??
     t("clips.untitled_clip"),
 );
+const duration = computed(() => formatClipDuration(clip.value?.duration_ms));
+
+// Theater mode (the expanded view) is a per-browser preference: whoever
+// turns it on keeps watching that way across clips and reloads. Phones never
+// get it -- the default layout already fills the screen there.
+const EXPANDED_STORAGE_KEY = "5stack:clip-modal-expanded";
+const expandedPref = ref(false);
+const canExpand = ref(false);
+let expandQuery: MediaQueryList | null = null;
+function syncCanExpand() {
+  canExpand.value = !!expandQuery?.matches;
+}
+const expanded = computed(() => expandedPref.value && canExpand.value);
+function setExpanded(value: boolean) {
+  expandedPref.value = value;
+  try {
+    window.localStorage.setItem(EXPANDED_STORAGE_KEY, value ? "1" : "0");
+  } catch {
+    // storage unavailable -- the choice just won't persist
+  }
+}
+// Switching modes grows the video from its spot into the theater stage (and
+// back) while the panel and backdrop crossfade underneath. The swap itself
+// is still one class change on one player; a view transition snapshots both
+// layouts and animates between them on the compositor, so the heavy mount
+// on either side can't stall it. No API, a hidden tab or reduced motion:
+// instant swap.
+const morphing = ref(false);
+async function toggleTheater(value = !expanded.value) {
+  // A second press mid-morph would cut the running transition short.
+  if (value === expanded.value || morphing.value) return;
+  if (
+    typeof document.startViewTransition !== "function" ||
+    document.visibilityState !== "visible" ||
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  ) {
+    setExpanded(value);
+    return;
+  }
+  // The video only carries a transition name while it morphs, so it never
+  // joins any other view transition on the page.
+  morphing.value = true;
+  document.documentElement.dataset.clipMorph = "";
+  await nextTick();
+  const transition = document.startViewTransition(async () => {
+    setExpanded(value);
+    await nextTick();
+  });
+  // An aborted transition rejects `ready` too; the swap has still happened.
+  transition.ready.catch(() => {});
+  try {
+    await transition.finished;
+  } catch {
+    // skipped or interrupted -- the new layout is already in place
+  } finally {
+    morphing.value = false;
+    delete document.documentElement.dataset.clipMorph;
+  }
+}
+
+// Esc steps out of theater mode first; a second Esc closes.
+function onEscapeKeyDown(event: KeyboardEvent) {
+  if (!expanded.value) return;
+  event.preventDefault();
+  void toggleTheater(false);
+}
 
 const editing = ref(false);
 const draftTitle = ref("");
@@ -137,6 +219,11 @@ const VISIBILITY_OPTIONS = computed<
     hint: t("clips.visibility.private_hint"),
   },
 ]);
+const visibilityMeta = computed(
+  () =>
+    VISIBILITY_OPTIONS.value.find((o) => o.value === clip.value?.visibility) ??
+    VISIBILITY_OPTIONS.value[1],
+);
 const canEditVisibility = computed(() => isOwner.value || auth.isAdmin);
 const visPopoverOpen = ref(false);
 const visSaving = ref(false);
@@ -156,7 +243,7 @@ async function setVisibility(v: Visibility) {
       } as any),
     });
     // The match_clips subscription does not always echo this change back
-    // promptly, so reflect it locally to keep the chip in sync.
+    // promptly, so reflect it locally to keep the control in sync.
     if (clip.value) {
       clip.value = { ...clip.value, visibility: v };
     }
@@ -268,6 +355,7 @@ onBeforeUnmount(() => {
   activeSub?.unsubscribe();
   activeSub = null;
   window.removeEventListener("keydown", onModalKeydown);
+  expandQuery?.removeEventListener("change", syncCanExpand);
 });
 
 const open = computed(() => !!props.clipId);
@@ -285,10 +373,6 @@ const switching = computed(
 const hasQueueNav = computed(
   () => clipQueue.value.length > 1 && activeClipIndex.value >= 0,
 );
-const queuePositionLabel = computed(() => {
-  if (!hasQueueNav.value) return null;
-  return `${activeClipIndex.value + 1} / ${clipQueue.value.length}`;
-});
 
 function onUpdateOpen(v: boolean) {
   if (!v) closeClip();
@@ -309,8 +393,8 @@ async function saveEdit() {
   saving.value = true;
   editError.value = null;
   try {
-    // Title-only — visibility is owned by the header chip; sending it
-    // here would stomp concurrent edits.
+    // Title-only — visibility has its own control; sending it here would
+    // stomp concurrent edits.
     await nuxtApp.$apollo.defaultClient.mutate({
       mutation: generateMutation({
         updateClip: [
@@ -342,33 +426,6 @@ function onDeleted() {
   closeClip();
 }
 
-function formatDuration(ms: number | null): string {
-  if (!ms || ms <= 0) return "—";
-  const total = Math.round(ms / 1000);
-  const m = Math.floor(total / 60);
-  const s = total % 60;
-  return `${m}:${s.toString().padStart(2, "0")}`;
-}
-
-// Same compact tactical format the reel uses ("5D AGO", "1H AGO"…)
-// so the bottom player-display row reads identically in both surfaces.
-function formatRelativeTime(iso: string | null | undefined): string | null {
-  if (!iso) return null;
-  const ts = new Date(iso).getTime();
-  if (!Number.isFinite(ts)) return null;
-  const diff = Date.now() - ts;
-  if (diff < 0) return t("clips.detail.just_now");
-  const minute = 60_000;
-  const hour = 60 * minute;
-  const day = 24 * hour;
-  if (diff < minute) return t("clips.detail.just_now");
-  if (diff < hour) return `${Math.floor(diff / minute)}m ago`;
-  if (diff < day) return `${Math.floor(diff / hour)}h ago`;
-  if (diff < 7 * day) return `${Math.floor(diff / day)}d ago`;
-  if (diff < 30 * day) return `${Math.floor(diff / (7 * day))}w ago`;
-  return `${Math.floor(diff / (30 * day))}mo ago`;
-}
-
 const downloadFilename = computed<string>(() =>
   clip.value ? clipDownloadName(clip.value) : "clip.mp4",
 );
@@ -376,21 +433,77 @@ const downloadFilename = computed<string>(() =>
 const targetAvatarSrc = computed(() =>
   resolveAvatarUrl(clip.value?.target?.avatar_url ?? null, apiDomain.value),
 );
-const targetLineup = computed(() => {
-  const sid = clip.value?.target_steam_id;
-  const match = clip.value?.match_map?.match;
-  if (!sid || !match) return null;
-  const lineups = [match.lineup_1, match.lineup_2];
-  return (
-    lineups.find((lineup) =>
-      lineup?.lineup_players?.some(
-        (member) =>
-          String(member.steam_id ?? member.player?.steam_id) === String(sid),
-      ),
-    ) ?? null
-  );
+const poster = computed(
+  () =>
+    clip.value?.thumbnail_download_url ??
+    clip.value?.match_map?.map?.poster ??
+    null,
+);
+const views = computed(() => clip.value?.views_count ?? 0);
+// The queue already carries the clip's thumbnail, title, kills and length,
+// so the dialog opens fully laid out while the rest of its data loads.
+const activeQueueItem = computed(
+  () => clipQueue.value.find((item) => item.id === props.clipId) ?? null,
+);
+
+const match = computed(() => clip.value?.match_map?.match ?? null);
+const mapLabel = computed(() => {
+  const map = clip.value?.match_map?.map;
+  if (!map) return null;
+  return map.label || cleanMapName(map.name);
 });
-const targetTeamName = computed(() => targetLineup.value?.name ?? null);
+const eventName = computed(
+  () =>
+    match.value?.event_links?.[0]?.event?.name ??
+    match.value?.tournament_brackets?.[0]?.stage?.tournament?.name ??
+    null,
+);
+const roundLabel = computed(() =>
+  clip.value?.round != null
+    ? t("clips.tile.round", { round: clip.value.round })
+    : null,
+);
+
+// Scorecard for the map the play happened on, laid out like the watch
+// ticker's cells. The clipped player's side is marked with their avatar.
+const matchCard = computed(() => {
+  const m = match.value;
+  const mm = clip.value?.match_map;
+  if (!m || !mm || !m.lineup_1 || !m.lineup_2) return null;
+  const sid = String(clip.value?.target_steam_id ?? "");
+  const decided = !!mm.winning_lineup_id;
+  const teams = (
+    [
+      [m.lineup_1, mm.lineup_1_score, m.lineup_1_id],
+      [m.lineup_2, mm.lineup_2_score, m.lineup_2_id],
+    ] as const
+  ).map(([lineup, score, id]) => ({
+    id: lineup.id,
+    name: lineup.name,
+    avatar: resolveAvatarUrl(lineup.team?.avatar_url ?? null, apiDomain.value),
+    monogram: teamMonogram(lineup.name),
+    score,
+    won: decided && mm.winning_lineup_id === id,
+    lost: decided && mm.winning_lineup_id !== id,
+    hasTarget:
+      !!sid &&
+      !!lineup.lineup_players?.some(
+        (p) => String(p.steam_id ?? p.player?.steam_id) === sid,
+      ),
+  }));
+  const bestOf = m.options?.best_of ?? 1;
+  return {
+    teams,
+    header: [
+      mapLabel.value,
+      bestOf > 1 ? t("clips.detail.best_of", { count: bestOf }) : null,
+      eventName.value,
+    ]
+      .filter(Boolean)
+      .join(" · "),
+  };
+});
+
 // Begin warming the next clip this far from the end. The data query is
 // quick; the head start mostly lets the hidden <video> buffer the file so
 // playback is instant on switch.
@@ -434,6 +547,19 @@ async function prefetchNextClip() {
   }
 }
 
+// Seconds left in the clip on screen; drives the expanded view's "Up next"
+// card. Cancel holds auto-advance for this clip only.
+const remaining = ref<number | null>(null);
+const advanceCancelled = ref(false);
+const upNextCountdown = computed(() =>
+  nextClip.value &&
+  !advanceCancelled.value &&
+  remaining.value != null &&
+  remaining.value <= PRELOAD_REMAINING_S
+    ? Math.max(1, Math.ceil(remaining.value))
+    : null,
+);
+
 function onModalProgress({
   currentTime,
   duration,
@@ -443,18 +569,23 @@ function onModalProgress({
   duration: number;
 }) {
   if (!Number.isFinite(duration) || duration <= 0) return;
-  const remaining = duration - currentTime;
-  if (nextClip.value && remaining <= PRELOAD_REMAINING_S) {
+  remaining.value = duration - currentTime;
+  if (nextClip.value && remaining.value <= PRELOAD_REMAINING_S) {
     void prefetchNextClip();
   }
-  if (nextClip.value && remaining <= 0.35 && !modalAutoAdvanced.value) {
+  if (
+    nextClip.value &&
+    !advanceCancelled.value &&
+    remaining.value <= 0.35 &&
+    !modalAutoAdvanced.value
+  ) {
     modalAutoAdvanced.value = true;
     openNextClip();
   }
 }
 
 function onModalEnded() {
-  if (nextClip.value && !modalAutoAdvanced.value) {
+  if (nextClip.value && !advanceCancelled.value && !modalAutoAdvanced.value) {
     modalAutoAdvanced.value = true;
     openNextClip();
   }
@@ -464,10 +595,33 @@ watch(
   () => clip.value?.id,
   (id) => {
     modalAutoAdvanced.value = false;
+    advanceCancelled.value = false;
+    remaining.value = null;
     if (id) {
       void nextTick().then(() => modalPlayerRef.value?.play());
     }
   },
+);
+
+// Keep the playing tile centred in the "Up next" strip.
+const stripRef = ref<HTMLElement | null>(null);
+watch(
+  [activeClipIndex, () => !!clip.value, expanded],
+  async () => {
+    await nextTick();
+    const strip = stripRef.value;
+    const tile = strip?.children[activeClipIndex.value] as
+      | HTMLElement
+      | undefined;
+    if (!strip || !tile) return;
+    strip.scrollTo({
+      left: tile.offsetLeft - strip.clientWidth / 2 + tile.clientWidth / 2,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+    });
+  },
+  { immediate: true },
 );
 
 function isTypingTarget(target: EventTarget | null): boolean {
@@ -480,6 +634,17 @@ function isTypingTarget(target: EventTarget | null): boolean {
 
 function onModalKeydown(e: KeyboardEvent) {
   if (!open.value || isTypingTarget(e.target)) return;
+  if (
+    (e.key === "t" || e.key === "T") &&
+    canExpand.value &&
+    !e.metaKey &&
+    !e.ctrlKey &&
+    !e.altKey
+  ) {
+    e.preventDefault();
+    void toggleTheater();
+    return;
+  }
   if (e.key === "ArrowLeft" && previousClip.value) {
     e.preventDefault();
     openPreviousClip();
@@ -492,28 +657,42 @@ function onModalKeydown(e: KeyboardEvent) {
 
 onMounted(() => {
   window.addEventListener("keydown", onModalKeydown);
+  expandQuery = window.matchMedia("(min-width: 640px)");
+  expandQuery.addEventListener("change", syncCanExpand);
+  syncCanExpand();
+  try {
+    expandedPref.value =
+      window.localStorage.getItem(EXPANDED_STORAGE_KEY) === "1";
+  } catch {
+    // storage unavailable -- start in the default layout
+  }
 });
+
+const onVideoChip =
+  "inline-flex h-[30px] shrink-0 items-center gap-1 rounded-md bg-black/60 px-[9px] text-xs font-semibold tabular-nums text-white/90 backdrop-blur-sm sm:h-9 sm:px-[11px] sm:text-[13px]";
+const onVideoAction =
+  "clip-hit relative inline-flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-md bg-black/55 text-white/85 backdrop-blur-sm transition-colors duration-150 hover:bg-black/80 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] data-[state=open]:bg-black/80 sm:h-9 sm:w-9";
+const tileChip =
+  "inline-flex h-[26px] shrink-0 items-center rounded-md px-2 text-xs font-semibold tabular-nums";
+const edgeButton =
+  "inline-flex h-11 w-11 items-center justify-center rounded-md bg-white/[0.06] text-white/75 transition-colors duration-150 hover:bg-white/[0.12] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]";
 </script>
 
 <template>
   <Dialog :open="open" @update:open="onUpdateOpen">
     <DialogPortal>
       <DialogOverlay
-        class="fixed inset-0 z-[60] bg-black/85 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
+        class="fixed inset-0 z-[60] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
+        :class="expanded ? 'bg-black' : 'bg-black/85 backdrop-blur-sm'"
       />
       <DialogContent
-        :class="[
-          'clip-modal-content',
-          'fixed inset-0 sm:inset-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2',
-          'z-[60] w-full sm:w-[min(95vw,68rem)] max-h-svh sm:max-h-[92vh] overflow-y-auto',
-          'flex flex-col',
-          'bg-[hsl(var(--background))] sm:rounded-xl',
-          'border border-border/60 sm:shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)]',
-          'data-[state=open]:animate-in data-[state=closed]:animate-out',
-          'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
-          'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
-          'duration-200',
-        ]"
+        class="fixed inset-0 z-[60] flex flex-col outline-none duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95"
+        :class="
+          expanded
+            ? ''
+            : 'clip-modal--default overflow-y-auto overscroll-contain bg-background sm:inset-auto sm:max-h-[94svh] sm:rounded-xl'
+        "
+        @escape-key-down="onEscapeKeyDown"
       >
         <VisuallyHidden as-child>
           <DialogTitle>{{ clip?.title || $t("common.clip") }}</DialogTitle>
@@ -524,192 +703,91 @@ onMounted(() => {
           }}</DialogDescription>
         </VisuallyHidden>
 
+        <!-- Expanded: the clip's own frame, blurred, so the screen around
+             the video carries its colour instead of flat black. -->
         <div
-          class="relative flex items-center gap-3 border-b border-border/40 px-4 sm:px-5 py-2.5"
+          v-if="expanded"
+          aria-hidden="true"
+          class="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
         >
-          <Popover
-            v-if="clip && canEditVisibility"
-            v-model:open="visPopoverOpen"
+          <Transition
+            enter-active-class="transition-opacity duration-500"
+            enter-from-class="opacity-0"
+            leave-active-class="absolute inset-0 transition-opacity duration-500"
+            leave-to-class="opacity-0"
           >
-            <PopoverTrigger
-              class="inline-flex h-7 items-center gap-1.5 rounded-md border border-border/60 bg-card/50 pl-1.5 pr-2.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] transition-colors cursor-pointer hover:border-[hsl(var(--tac-amber)/0.6)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              :class="
-                clip.visibility === 'public'
-                  ? 'text-emerald-300 hover:text-emerald-200'
-                  : 'text-muted-foreground hover:text-foreground'
-              "
-              :title="
-                $t('ui_extras.visibility_change_hint', {
-                  value: clip.visibility,
-                })
-              "
-            >
-              <span
-                class="inline-flex h-4 w-4 items-center justify-center rounded-full"
-                :class="
-                  clip.visibility === 'public'
-                    ? 'bg-emerald-400/15'
-                    : 'bg-white/5'
-                "
-              >
-                <Spinner v-if="visSaving" class="h-3 w-3" />
-                <Lock
-                  v-else-if="clip.visibility === 'private'"
-                  class="h-3 w-3"
-                />
-                <Globe v-else class="h-3 w-3" />
-              </span>
-              {{ clip.visibility }}
-            </PopoverTrigger>
-            <PopoverContent class="z-[70] w-64 p-1" align="start">
-              <div
-                class="px-2 py-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
-              >
-                {{ $t("clips.detail.visibility") }}
-              </div>
-              <button
-                v-for="opt in VISIBILITY_OPTIONS"
-                :key="opt.value"
-                type="button"
-                class="w-full text-left flex items-start gap-2 rounded-sm px-2 py-1.5 text-xs hover:bg-muted/60 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
-                :class="clip.visibility === opt.value ? 'bg-muted/40' : ''"
-                :disabled="visSaving"
-                @click="setVisibility(opt.value)"
-              >
-                <span
-                  class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded"
-                  :class="
-                    opt.value === 'public'
-                      ? 'bg-emerald-400/15 text-emerald-300'
-                      : 'bg-muted/40 text-muted-foreground'
-                  "
-                >
-                  <component :is="opt.icon" class="h-3 w-3" />
-                </span>
-                <span class="flex-1 min-w-0">
-                  <span class="flex items-center gap-1.5 font-medium">
-                    {{ opt.label }}
-                    <Check
-                      v-if="clip.visibility === opt.value"
-                      class="h-3 w-3 text-[hsl(var(--tac-amber))]"
-                    />
-                  </span>
-                  <span
-                    class="block text-[0.7rem] text-muted-foreground leading-snug"
-                  >
-                    {{ opt.hint }}
-                  </span>
-                </span>
-              </button>
-            </PopoverContent>
-          </Popover>
-          <span
-            v-else-if="clip"
-            class="inline-flex h-7 items-center gap-1.5 rounded-md border border-border/60 bg-card/40 pl-1.5 pr-2.5 font-mono text-[0.6rem] uppercase tracking-[0.18em]"
-            :class="
-              clip.visibility === 'public'
-                ? 'text-emerald-300'
-                : 'text-muted-foreground'
-            "
-            :title="
-              $t('ui_extras.visibility_label', { value: clip.visibility })
-            "
-          >
-            <Lock v-if="clip.visibility === 'private'" class="h-3 w-3" />
-            <Globe v-else class="h-3 w-3" />
-            {{ clip.visibility }}
-          </span>
-
-          <div class="ml-auto flex items-center gap-3">
-            <span
-              v-if="hasQueueNav"
-              class="hidden sm:inline-flex h-7 items-center rounded-md border border-border/60 bg-card/35 px-2.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground tabular-nums"
-            >
-              {{ queuePositionLabel }}
-            </span>
-            <div v-if="hasQueueNav" class="inline-flex items-center gap-1">
-              <button
-                type="button"
-                class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border/60 bg-card/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-[hsl(var(--tac-amber))] disabled:cursor-not-allowed disabled:opacity-35"
-                :disabled="!previousClip"
-                :title="previousClip?.title ?? $t('ui_extras.previous_clip')"
-                @click="openPreviousClip"
-              >
-                <ChevronLeft class="h-3.5 w-3.5" />
-              </button>
-              <button
-                type="button"
-                class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border/60 bg-card/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-[hsl(var(--tac-amber))] disabled:cursor-not-allowed disabled:opacity-35"
-                :disabled="!nextClip"
-                :title="nextClip?.title ?? $t('ui_extras.next_clip')"
-                @click="openNextClip"
-              >
-                <ChevronRight class="h-3.5 w-3.5" />
-              </button>
-            </div>
-
-            <button
-              type="button"
-              class="inline-flex h-7 items-center gap-1.5 rounded-md border border-border/60 bg-card/40 px-2.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-[hsl(var(--tac-amber))] transition-colors cursor-pointer"
-              @click="closeClip"
-            >
-              <X class="h-3 w-3" />
-              <span class="hidden sm:inline">{{ $t("common.close") }}</span>
-            </button>
-          </div>
+            <img
+              v-if="poster"
+              :key="poster"
+              :src="poster"
+              alt=""
+              class="h-full w-full scale-110 object-cover opacity-20 blur-3xl"
+            />
+          </Transition>
         </div>
 
-        <div
-          v-if="loading || (!clip && !notFound)"
-          class="grid gap-4 p-4 sm:p-5 lg:grid-cols-[2fr_1fr]"
+        <header
+          v-if="expanded"
+          class="flex h-14 shrink-0 items-center gap-2 px-6"
         >
-          <div
-            class="aspect-video w-full rounded-md bg-muted/30 animate-pulse"
-          ></div>
-          <div class="space-y-3">
-            <div class="h-7 w-3/4 rounded bg-muted/30 animate-pulse"></div>
-            <div class="h-4 w-1/2 rounded bg-muted/30 animate-pulse"></div>
-            <div class="h-32 rounded bg-muted/20 animate-pulse"></div>
-          </div>
-        </div>
+          <p
+            v-if="hasQueueNav"
+            class="text-[13px] tabular-nums text-white/55"
+          >
+            <span class="font-semibold text-white">{{
+              activeClipIndex + 1
+            }}</span>
+            / {{ clipQueue.length }}
+          </p>
+          <button
+            type="button"
+            :class="[edgeButton, 'ml-auto h-9 w-9']"
+            :aria-label="$t('common.close')"
+            @click="closeClip"
+          >
+            <X class="h-4 w-4" />
+          </button>
+        </header>
 
         <div
-          v-else-if="notFound"
-          class="flex flex-col items-center justify-center gap-3 px-6 py-16 text-center"
+          v-if="notFound"
+          class="flex flex-1 flex-col items-center justify-center gap-3 px-6 py-16 text-center"
         >
-          <span
-            class="font-mono text-[0.6rem] uppercase tracking-[0.24em] text-destructive"
-          >
-            {{ $t("clips.detail.signal_lost") }}
-          </span>
           <h2 class="text-lg font-semibold">
             {{ $t("clips.detail.clip_not_found") }}
           </h2>
-          <p class="text-sm text-muted-foreground max-w-sm">
+          <p class="max-w-sm text-sm text-muted-foreground">
             {{ $t("clips.detail.clip_not_found_description") }}
           </p>
-          <Button variant="outline" size="sm" @click="closeClip">{{
+          <Button variant="secondary" size="sm" @click="closeClip">{{
             $t("common.close")
           }}</Button>
         </div>
 
-        <div
-          v-else-if="clip"
-          class="grid gap-4 sm:gap-5 p-4 sm:p-5 lg:grid-cols-[minmax(0,3fr)_minmax(260px,1fr)] flex-1 min-h-0"
-        >
+        <template v-else>
+          <!-- One player for both layouts: expanding only changes the
+               wrappers' classes, so playback carries on without a reload. -->
           <div
-            class="flex flex-col gap-3 min-w-0"
-            :class="clipQueue.length > 1 ? 'justify-start' : 'justify-center'"
+            :class="
+              expanded
+                ? 'relative flex min-h-0 flex-1 items-center justify-center px-6'
+                : 'shrink-0'
+            "
           >
-            <div class="group/video relative">
+            <div
+              class="group/video relative"
+              :style="morphing ? { viewTransitionName: 'clip-modal-video' } : undefined"
+              :class="expanded ? 'clip-modal-stage' : ''"
+            >
               <ClipPlayer
+                v-if="clip"
                 ref="modalPlayerRef"
-                :src="clip.download_url"
-                :poster="
-                  clip.thumbnail_download_url ??
-                  clip.match_map?.map?.poster ??
-                  null
+                class="!border-0"
+                :class="
+                  expanded ? 'clip-modal-player--expanded !rounded-xl' : '!rounded-none'
                 "
+                :src="clip.download_url"
+                :poster="poster"
                 :clip-key="clip.id"
                 @ended="onModalEnded"
                 @progress="onModalProgress"
@@ -718,171 +796,326 @@ onMounted(() => {
               >
                 <template #empty>
                   <div
-                    class="absolute inset-0 flex items-center justify-center text-muted-foreground"
+                    class="absolute inset-0 flex items-center justify-center gap-3 text-sm text-muted-foreground"
                   >
-                    <Spinner class="h-6 w-6" />
-                    <span
-                      class="ml-3 text-sm font-mono uppercase tracking-[0.18em]"
-                    >
-                      {{ $t("clips.detail.render_finalizing") }}
-                    </span>
+                    <Spinner class="h-5 w-5" />
+                    {{ $t("clips.detail.render_finalizing") }}
                   </div>
                 </template>
+
                 <template #top-left>
-                  <h2
-                    class="min-w-0 truncate text-base sm:text-xl font-bold uppercase leading-tight tracking-[0.01em] text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.65)]"
-                    :title="displayTitle"
+                  <div
+                    v-if="expanded"
+                    class="flex items-center gap-1.5 p-1 sm:p-2"
                   >
-                    {{ displayTitle }}
-                  </h2>
-                </template>
-                <template #top-right>
+                    <ClipKillBadge
+                      :kills="clip.kills_count"
+                      :round="clip.round"
+                      size="lg"
+                    />
+                    <span v-if="duration" :class="onVideoChip">{{
+                      duration
+                    }}</span>
+                  </div>
                   <span
-                    class="inline-flex h-7 shrink-0 items-center gap-1 rounded-md border border-white/20 bg-black/55 px-2.5 font-mono text-[0.7rem] font-medium leading-none tabular-nums text-white/85 backdrop-blur-sm"
-                    :title="
-                      t(
-                        'clips.plays_count',
-                        { count: clip.views_count ?? 0 },
-                        clip.views_count ?? 0,
-                      )
-                    "
+                    v-else-if="hasQueueNav"
+                    :class="[tileChip, 'bg-black/60 text-white/90 backdrop-blur-sm']"
                   >
-                    <Eye class="h-3.5 w-3.5" />
-                    {{ clip.views_count ?? 0 }}
+                    {{ activeClipIndex + 1 }} / {{ clipQueue.length }}
                   </span>
-                  <button
-                    v-if="isOwner && !editing"
-                    type="button"
-                    class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-white/20 bg-black/55 text-white/85 backdrop-blur-sm transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-[hsl(var(--tac-amber))] cursor-pointer"
-                    :title="$t('ui.edit_title')"
-                    @click.stop="startEdit"
+                </template>
+
+                <template #top-right>
+                  <div
+                    v-if="expanded"
+                    class="flex items-center gap-1.5 p-1 sm:p-2"
                   >
-                    <Pencil class="h-3.5 w-3.5" />
-                  </button>
+                    <span
+                      :class="onVideoChip"
+                      :title="$t('clips.tile.views', { count: views }, views)"
+                    >
+                      <Eye class="h-3.5 w-3.5" />
+                      {{ views }}
+                    </span>
+                    <button
+                      type="button"
+                      :class="[
+                        onVideoAction,
+                        linkCopied ? 'text-[hsl(var(--tac-amber))]' : '',
+                      ]"
+                      :aria-label="$t('clips.share_clip')"
+                      :title="
+                        linkCopied
+                          ? $t('clips.link_copied')
+                          : $t('clips.share_clip')
+                      "
+                      @click.stop="copyLink"
+                    >
+                      <Check v-if="linkCopied" class="h-4 w-4" />
+                      <Share2 v-else class="h-4 w-4" />
+                    </button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger
+                        :class="onVideoAction"
+                        :aria-label="$t('clips.detail.more_actions')"
+                        @click.stop
+                      >
+                        <MoreHorizontal class="h-4 w-4" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent class="z-[70] w-56" align="end">
+                        <DropdownMenuItem v-if="clip.download_url" as-child>
+                          <a
+                            :href="clipDownloadUrl(clip.download_url)"
+                            :download="downloadFilename"
+                          >
+                            <Download class="h-4 w-4" />
+                            {{ $t("common.download") }}
+                            <span
+                              v-if="formatBytes(fileSizeBytes)"
+                              class="ml-auto text-xs tabular-nums text-muted-foreground"
+                              >{{ formatBytes(fileSizeBytes) }}</span
+                            >
+                          </a>
+                        </DropdownMenuItem>
+                        <template v-if="canEditVisibility">
+                          <DropdownMenuItem
+                            v-if="clip.visibility !== 'private'"
+                            :disabled="visSaving"
+                            @select="setVisibility('private')"
+                          >
+                            <Lock class="h-4 w-4" />
+                            {{ $t("clips.detail.make_private") }}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            v-if="clip.visibility !== 'public'"
+                            :disabled="visSaving"
+                            @select="setVisibility('public')"
+                          >
+                            <Globe class="h-4 w-4 text-success" />
+                            {{ $t("clips.detail.make_public") }}
+                          </DropdownMenuItem>
+                        </template>
+                        <DropdownMenuItem v-if="isOwner" @select="startEdit">
+                          <Pencil class="h-4 w-4" />
+                          {{ $t("ui.edit_title") }}
+                        </DropdownMenuItem>
+                        <template v-if="canDelete">
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            class="text-destructive focus:text-destructive"
+                            @select="showDelete = true"
+                          >
+                            <Trash2 class="h-4 w-4" />
+                            {{ $t("common.delete") }}
+                          </DropdownMenuItem>
+                        </template>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                   <button
+                    v-else
                     type="button"
-                    class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md border bg-black/55 backdrop-blur-sm transition-all duration-200 hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-[hsl(var(--tac-amber))] cursor-pointer"
-                    :class="
-                      linkCopied
-                        ? 'share-flash border-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber))] scale-110'
-                        : 'border-white/20 text-white/85'
-                    "
-                    :title="
-                      linkCopied
-                        ? $t('clips.link_copied')
-                        : $t('clips.share_clip')
-                    "
-                    :aria-label="$t('clips.share_clip')"
-                    @click.stop="copyLink"
+                    :class="[onVideoAction, '!h-8 !w-8']"
+                    :aria-label="$t('common.close')"
+                    @click.stop="closeClip"
                   >
-                    <Check v-if="linkCopied" class="h-3.5 w-3.5" />
-                    <Share2 v-else class="h-3.5 w-3.5" />
+                    <X class="h-4 w-4" />
                   </button>
                 </template>
-                <template #bottom>
-                  <div class="flex min-w-0 items-center gap-2.5">
-                    <span
-                      class="inline-flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md border border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.14)]"
+
+                <template v-if="canExpand" #controls="{ buttonClass }">
+                  <button
+                    type="button"
+                    :class="buttonClass"
+                    :aria-label="$t('clips.detail.theater_mode')"
+                    :aria-pressed="expanded"
+                    :title="`${expanded ? $t('clips.detail.default_view') : $t('clips.detail.theater_mode')} (t)`"
+                    @click.stop="toggleTheater()"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      class="h-4 w-4"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      aria-hidden="true"
                     >
-                      <NuxtImg
-                        v-if="targetAvatarSrc"
-                        :src="targetAvatarSrc"
-                        :alt="clip.target?.name ?? $t('clips.player')"
-                        class="h-full w-full object-cover"
-                      />
-                      <span
-                        v-else
-                        class="font-mono text-xs font-bold uppercase text-[hsl(var(--tac-amber))]"
+                      <rect v-if="expanded" x="5" y="7" width="14" height="10" rx="2" />
+                      <rect v-else x="2" y="6" width="20" height="12" rx="2" />
+                    </svg>
+                  </button>
+                </template>
+
+                <template v-if="expanded" #bottom>
+                  <div
+                    class="-m-4 -mb-6 grid gap-1.5 bg-[linear-gradient(180deg,rgb(0_0_0/0)_0%,rgb(0_0_0/0.55)_45%,rgb(0_0_0/0.88)_100%)] p-4 pb-6 pr-28 pt-20 sm:-m-5 sm:-mb-7 sm:p-5 sm:pb-7 sm:pr-28 sm:pt-24"
+                  >
+                    <p
+                      class="line-clamp-2 text-[clamp(1.375rem,2.3vw,2rem)] font-bold leading-[1.1] text-white [text-wrap:balance]"
+                    >
+                      {{ displayTitle }}
+                    </p>
+                    <NuxtLink
+                      v-if="clip.target_steam_id"
+                      :to="`/players/${clip.target_steam_id}`"
+                      class="group/who pointer-events-auto flex w-fit max-w-full min-w-0 items-center gap-2 rounded-md text-[15px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
+                      @click="closeClip"
+                    >
+                      <Avatar
+                        class="h-[26px] w-[26px] shrink-0 text-[10px] ring-1 ring-white/20"
                       >
-                        {{
-                          clip.target?.name?.charAt(0) ??
-                          clip.title?.charAt(0) ??
-                          "H"
-                        }}
+                        <AvatarImage
+                          v-if="targetAvatarSrc"
+                          :src="targetAvatarSrc"
+                          alt=""
+                        />
+                        <AvatarFallback>{{
+                          clip.target?.name?.slice(0, 1) ?? "?"
+                        }}</AvatarFallback>
+                      </Avatar>
+                      <span
+                        class="min-w-0 truncate font-bold text-white transition-colors group-hover/who:text-[hsl(var(--tac-amber))]"
+                      >
+                        {{ clip.target?.name ?? $t("clips.player") }}
                       </span>
-                    </span>
-                    <div class="min-w-0 flex-1">
-                      <div class="flex min-w-0 items-center gap-2">
-                        <span
-                          class="min-w-0 truncate text-sm font-semibold text-white sm:text-base"
-                          ><!--
-                        --><NuxtLink
-                            v-if="clip.target_steam_id"
-                            :to="`/players/${clip.target_steam_id}`"
-                            class="pointer-events-auto text-white transition-colors hover:text-[hsl(var(--tac-amber))]"
-                            :title="
-                              $t('clips.open_profile', {
-                                name: clip.target?.name ?? $t('clips.player'),
-                              })
-                            "
-                            @click.stop="closeClip"
-                            >{{
-                              clip.target?.name ?? $t("clips.match_highlight")
-                            }}</NuxtLink
-                          ><template v-else>{{
-                            clip.target?.name ?? $t("clips.match_highlight")
-                          }}</template
-                          ><span
-                            v-if="targetTeamName"
-                            class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-white/55"
-                          >
-                            · {{ targetTeamName }}</span
-                          ></span
-                        >
-                        <span
-                          class="inline-flex shrink-0 items-center gap-1 rounded border border-[hsl(var(--destructive))] bg-[hsl(var(--destructive)/0.85)] px-1.5 py-0.5 font-mono text-[0.65rem] font-bold text-white tabular-nums shadow-[0_0_10px_hsl(var(--destructive)/0.4)]"
-                          :title="
-                            $t('clips.kills_in_clip', {
-                              count: clip.kills_count ?? 1,
-                            })
-                          "
-                        >
-                          <Crosshair class="h-3 w-3" />
-                          {{ clip.kills_count ?? 1 }}K
-                        </span>
-                      </div>
-                      <div class="mt-0.5 flex min-w-0 items-center gap-1.5">
-                        <span
-                          v-if="clip.match_map?.map?.name"
-                          class="min-w-0 truncate font-mono text-[0.54rem] uppercase tracking-[0.18em] text-white/55"
-                          ><!--
-                        -->{{ clip.match_map.map.name }}</span
-                        >
-                        <span
-                          v-if="formatRelativeTime(clip.created_at)"
-                          class="shrink-0 font-mono text-[0.54rem] uppercase tracking-[0.18em] text-white/40"
-                        >
-                          · {{ formatRelativeTime(clip.created_at) }}
-                        </span>
-                        <span
-                          class="shrink-0 font-mono text-[0.54rem] uppercase tracking-[0.18em] text-white/40 tabular-nums"
-                        >
-                          · {{ formatDuration(clip.duration_ms) }}
-                        </span>
-                      </div>
-                    </div>
+                    </NuxtLink>
+                    <p
+                      v-if="roundLabel || mapLabel"
+                      class="truncate text-[13px] text-white/70"
+                    >
+                      {{ [roundLabel, mapLabel].filter(Boolean).join(" · ") }}
+                    </p>
+                    <NuxtLink
+                      v-if="matchCard"
+                      :to="`/matches/${match!.id}`"
+                      class="pointer-events-auto w-fit max-w-full truncate rounded-md text-[13px] text-white/60 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
+                      :title="$t('clips.detail.view_match')"
+                      @click="closeClip"
+                    >
+                      <span
+                        :class="
+                          matchCard.teams[0].won ? 'font-bold text-white' : ''
+                        "
+                        >{{ matchCard.teams[0].name }}</span
+                      >
+                      <span class="mx-1 font-bold tabular-nums text-white"
+                        >{{ matchCard.teams[0].score ?? "–" }}–{{
+                          matchCard.teams[1].score ?? "–"
+                        }}</span
+                      >
+                      <span
+                        :class="
+                          matchCard.teams[1].won ? 'font-bold text-white' : ''
+                        "
+                        >{{ matchCard.teams[1].name }}</span
+                      >
+                    </NuxtLink>
+                    <p
+                      v-if="clip.user?.name"
+                      class="truncate text-xs text-white/55"
+                    >
+                      {{ $t("clips.tile.clipped_by", { name: clip.user.name }) }}
+                      ·
+                      <TimeAgo :date="clip.created_at" hide-icon />
+                    </p>
                   </div>
                 </template>
               </ClipPlayer>
+              <!-- Until the clip's data lands: its thumbnail (the player's
+                   poster) in the player's exact box, so nothing moves. -->
+              <div
+                v-else
+                class="relative aspect-video w-full overflow-hidden bg-black"
+                :class="expanded ? 'clip-modal-player--expanded rounded-xl' : ''"
+              >
+                <NuxtImg
+                  v-if="activeQueueItem?.thumbnailUrl ?? activeQueueItem?.posterUrl"
+                  :src="activeQueueItem.thumbnailUrl ?? activeQueueItem.posterUrl ?? ''"
+                  alt=""
+                  class="absolute inset-0 h-full w-full object-cover"
+                />
+                <div
+                  class="clip-modal-loading absolute inset-0 grid place-items-center"
+                >
+                  <Spinner class="h-8 w-8 text-white/80" />
+                </div>
+              </div>
 
-              <button
-                v-if="previousClip"
-                type="button"
-                class="clip-nav-button clip-nav-button--prev opacity-0 transition-opacity duration-200 group-hover/video:opacity-100 focus-visible:opacity-100"
-                :title="previousClip.title ?? $t('ui_extras.previous_clip')"
-                @click="openPreviousClip"
+              <template v-if="!expanded">
+                <button
+                  v-if="previousClip"
+                  type="button"
+                  :class="[onVideoAction, 'clip-nav clip-nav--prev !h-10 !w-10']"
+                  :aria-label="$t('ui_extras.previous_clip')"
+                  :title="previousClip.title ?? $t('ui_extras.previous_clip')"
+                  @click="openPreviousClip"
+                >
+                  <ChevronLeft class="h-5 w-5" />
+                </button>
+                <button
+                  v-if="nextClip"
+                  type="button"
+                  :class="[onVideoAction, 'clip-nav clip-nav--next !h-10 !w-10']"
+                  :aria-label="$t('ui_extras.next_clip')"
+                  :title="nextClip.title ?? $t('ui_extras.next_clip')"
+                  @click="openNextClip"
+                >
+                  <ChevronRight class="h-5 w-5" />
+                </button>
+              </template>
+
+              <Transition
+                enter-active-class="transition-[opacity,transform] duration-200 ease-out motion-reduce:transition-none"
+                enter-from-class="opacity-0 translate-y-2"
+                leave-active-class="transition-opacity duration-150 ease-in"
+                leave-to-class="opacity-0"
               >
-                <ChevronLeft class="h-5 w-5" />
-              </button>
-              <button
-                v-if="nextClip"
-                type="button"
-                class="clip-nav-button clip-nav-button--next opacity-0 transition-opacity duration-200 group-hover/video:opacity-100 focus-visible:opacity-100"
-                :title="nextClip.title ?? $t('ui_extras.next_clip')"
-                @click="openNextClip"
-              >
-                <ChevronRight class="h-5 w-5" />
-              </button>
+                <div
+                  v-if="expanded && upNextCountdown && nextClip"
+                  class="absolute right-4 top-[4.25rem] z-[5] flex w-[17rem] items-center gap-3 rounded-lg bg-black/75 p-2 pr-3 shadow-[0_0_0_1px_rgb(255_255_255/0.08)] backdrop-blur-md"
+                >
+                  <button
+                    type="button"
+                    class="relative grid aspect-video w-[6.5rem] shrink-0 place-items-center overflow-hidden rounded-[4px] bg-black outline outline-1 -outline-offset-1 outline-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
+                    :aria-label="$t('ui_extras.next_clip')"
+                    @click="openNextClip"
+                  >
+                    <NuxtImg
+                      v-if="nextClip.thumbnailUrl ?? nextClip.posterUrl"
+                      :src="nextClip.thumbnailUrl ?? nextClip.posterUrl ?? ''"
+                      alt=""
+                      class="h-full w-full object-cover"
+                    />
+                    <Film v-else class="h-4 w-4 text-white/40" />
+                  </button>
+                  <div class="min-w-0 flex-1">
+                    <p
+                      class="text-[11px] font-semibold tabular-nums text-[hsl(var(--tac-amber))]"
+                    >
+                      {{
+                        $t("clips.detail.up_next_in", {
+                          seconds: upNextCountdown,
+                        })
+                      }}
+                    </p>
+                    <p
+                      class="line-clamp-2 text-[13px] font-bold leading-snug text-white"
+                    >
+                      {{
+                        clipDisplayTitle(nextClip.title, nextClip.playerName) ??
+                        $t("clips.untitled_clip")
+                      }}
+                    </p>
+                    <button
+                      type="button"
+                      class="mt-0.5 rounded-sm text-xs text-white/55 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
+                      @click="advanceCancelled = true"
+                    >
+                      {{ $t("common.cancel") }}
+                    </button>
+                  </div>
+                </div>
+              </Transition>
 
               <!-- Instant "loading next clip" feedback while the new clip's
                    data is in flight, over the still-visible previous clip. -->
@@ -894,9 +1127,10 @@ onMounted(() => {
               >
                 <div
                   v-if="switching"
-                  class="pointer-events-none absolute inset-0 z-[6] flex items-center justify-center rounded-md bg-black/35 backdrop-blur-[1px]"
+                  class="pointer-events-none absolute inset-0 z-[6] grid place-items-center bg-black/35"
+                  :class="expanded ? 'rounded-xl' : ''"
                 >
-                  <Spinner class="h-9 w-9 text-[hsl(var(--tac-amber))]" />
+                  <Spinner class="h-8 w-8 text-white" />
                 </div>
               </Transition>
 
@@ -916,205 +1150,488 @@ onMounted(() => {
                 class="pointer-events-none absolute h-px w-px opacity-0"
               />
             </div>
+          </div>
 
-            <div
+          <footer
+            v-if="expanded"
+            class="flex min-h-14 shrink-0 items-center justify-center px-6 py-2"
+          >
+            <form
               v-if="editing"
-              class="relative rounded-md border border-border/50 bg-[linear-gradient(180deg,hsl(var(--card)/0.55)_0%,hsl(var(--card)/0.25)_100%)] [backdrop-filter:blur(6px)] px-4 py-3"
+              class="flex w-full max-w-xl flex-wrap items-center gap-2"
+              @submit.prevent="saveEdit"
             >
-              <span
-                aria-hidden="true"
-                class="pointer-events-none absolute left-0 top-0 h-full w-[3px] bg-gradient-to-b from-[hsl(var(--tac-amber))] via-[hsl(var(--tac-amber)/0.6)] to-transparent"
-              ></span>
-              <div class="space-y-3">
-                <div class="space-y-1">
-                  <Label
-                    for="clip-modal-title"
-                    class="text-[0.62rem] font-mono uppercase tracking-[0.18em] text-muted-foreground"
+              <Label for="clip-modal-title" class="sr-only">
+                {{ $t("clips.detail.title_label") }}
+              </Label>
+              <Input
+                id="clip-modal-title"
+                v-model="draftTitle"
+                class="h-9 min-w-0 flex-1 font-semibold"
+                :placeholder="$t('clips.untitled_clip')"
+                maxlength="120"
+                :disabled="saving"
+                @keydown.esc.stop.prevent="cancelEdit"
+              />
+              <Button type="submit" size="sm" :loading="saving">
+                {{ $t("common.save") }}
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                :disabled="saving"
+                @click="cancelEdit"
+              >
+                {{ $t("common.cancel") }}
+              </Button>
+              <p v-if="editError" class="w-full text-xs text-destructive">
+                {{ editError }}
+              </p>
+            </form>
+            <p
+              v-else
+              class="clip-modal-hints hidden items-center gap-2 text-xs text-white/40"
+            >
+              <Kbd>←</Kbd><Kbd>→</Kbd> {{ $t("clips.detail.previous_next") }}
+              <span class="mx-1.5" aria-hidden="true">·</span>
+              <Kbd>Esc</Kbd> {{ $t("clips.detail.default_view") }}
+            </p>
+          </footer>
+
+          <template v-else>
+            <div
+              class="grid gap-x-10 gap-y-5 px-5 pb-6 pt-5 sm:px-6"
+              :class="
+                matchCard || !clip ? 'lg:grid-cols-[minmax(0,1fr)_20rem]' : ''
+              "
+            >
+              <template v-if="!clip">
+                <div class="grid min-w-0 content-start gap-3">
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <ClipKillBadge
+                      v-if="activeQueueItem?.killsCount != null"
+                      :kills="activeQueueItem.killsCount"
+                      :round="activeQueueItem.round"
+                      class="!bg-white/[0.06]"
+                    />
+                    <Skeleton v-else class="h-[26px] w-20 rounded-md" />
+                    <span
+                      v-if="formatClipDuration(activeQueueItem?.durationMs)"
+                      :class="[tileChip, 'bg-white/[0.06] text-white/80']"
+                    >
+                      {{ formatClipDuration(activeQueueItem?.durationMs) }}
+                    </span>
+                  </div>
+                  <h2
+                    v-if="activeQueueItem"
+                    class="text-[clamp(1.375rem,2.1vw,1.875rem)] font-bold leading-[1.15] [text-wrap:balance]"
                   >
-                    {{ $t("clips.detail.title_label") }}
-                  </Label>
-                  <Input
-                    id="clip-modal-title"
-                    v-model="draftTitle"
-                    :placeholder="$t('clips.untitled_clip')"
-                    maxlength="120"
-                    :disabled="saving"
-                  />
+                    {{
+                      clipDisplayTitle(
+                        activeQueueItem.title,
+                        activeQueueItem.playerName,
+                      ) ?? $t("clips.untitled_clip")
+                    }}
+                  </h2>
+                  <Skeleton v-else class="h-[2.15rem] w-2/3" />
+                  <div class="grid gap-1">
+                    <Skeleton class="h-6 w-44 rounded-md" />
+                    <Skeleton class="h-4 w-56 max-w-full" />
+                  </div>
+                  <Skeleton class="mt-1 h-8 w-80 max-w-full rounded-md" />
                 </div>
-                <p v-if="editError" class="text-xs text-destructive">
-                  {{ editError }}
-                </p>
-                <div class="flex items-center justify-end gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    :disabled="saving"
-                    @click="cancelEdit"
+                <Skeleton class="h-[5.375rem] self-start rounded-lg" />
+              </template>
+              <template v-else>
+                <div class="grid min-w-0 content-start gap-3">
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <ClipKillBadge
+                      :kills="clip.kills_count"
+                      :round="clip.round"
+                      class="!bg-white/[0.06]"
+                    />
+                    <span
+                      v-if="duration"
+                      :class="[tileChip, 'bg-white/[0.06] text-white/80']"
+                    >
+                      {{ duration }}
+                    </span>
+                  </div>
+
+                  <h2
+                    v-if="!editing"
+                    class="text-[clamp(1.375rem,2.1vw,1.875rem)] font-bold leading-[1.15] [text-wrap:balance]"
                   >
-                    {{ $t("common.cancel") }}
-                  </Button>
-                  <Button size="sm" :disabled="saving" @click="saveEdit">
-                    <Spinner v-if="saving" class="h-3.5 w-3.5 mr-1.5" />
-                    {{ $t("common.save") }}
-                  </Button>
+                    {{ displayTitle }}
+                  </h2>
+                  <form v-else class="grid gap-2" @submit.prevent="saveEdit">
+                    <Label for="clip-modal-title" class="sr-only">
+                      {{ $t("clips.detail.title_label") }}
+                    </Label>
+                    <div class="flex flex-wrap items-center gap-2">
+                      <Input
+                        id="clip-modal-title"
+                        v-model="draftTitle"
+                        class="h-10 min-w-0 flex-1 text-base font-semibold"
+                        :placeholder="$t('clips.untitled_clip')"
+                        maxlength="120"
+                        :disabled="saving"
+                        @keydown.esc.stop.prevent="cancelEdit"
+                      />
+                      <Button type="submit" size="sm" :loading="saving">
+                        {{ $t("common.save") }}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        :disabled="saving"
+                        @click="cancelEdit"
+                      >
+                        {{ $t("common.cancel") }}
+                      </Button>
+                    </div>
+                    <p v-if="editError" class="text-xs text-destructive">
+                      {{ editError }}
+                    </p>
+                  </form>
+
+                  <div class="grid gap-1">
+                    <div
+                      class="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-white/60"
+                    >
+                      <NuxtLink
+                        v-if="clip.target_steam_id"
+                        :to="`/players/${clip.target_steam_id}`"
+                        class="group/who flex min-w-0 max-w-full items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
+                        @click="closeClip"
+                      >
+                        <Avatar
+                          class="h-6 w-6 shrink-0 text-[10px] ring-1 ring-white/20"
+                        >
+                          <AvatarImage
+                            v-if="targetAvatarSrc"
+                            :src="targetAvatarSrc"
+                            alt=""
+                          />
+                          <AvatarFallback>{{
+                            clip.target?.name?.slice(0, 1) ?? "?"
+                          }}</AvatarFallback>
+                        </Avatar>
+                        <span
+                          class="min-w-0 truncate text-[15px] font-bold text-white transition-colors group-hover/who:text-[hsl(var(--tac-amber))]"
+                        >
+                          {{ clip.target?.name ?? $t("clips.player") }}
+                        </span>
+                      </NuxtLink>
+                      <template v-if="roundLabel">
+                        <span aria-hidden="true">·</span>
+                        <span class="tabular-nums">{{ roundLabel }}</span>
+                      </template>
+                      <template v-if="!matchCard && mapLabel">
+                        <span aria-hidden="true">·</span>
+                        <span>{{ mapLabel }}</span>
+                      </template>
+                    </div>
+                    <p class="truncate text-xs text-white/45">
+                      <template v-if="clip.user?.name">
+                        {{ $t("clips.tile.clipped_by", { name: clip.user.name }) }}
+                        ·
+                      </template>
+                      <TimeAgo :date="clip.created_at" hide-icon />
+                      ·
+                      <span class="tabular-nums">{{
+                        $t("clips.tile.views", { count: views }, views)
+                      }}</span>
+                    </p>
+                  </div>
+
+                  <div class="mt-1 flex flex-wrap items-center gap-2">
+                    <Button size="sm" @click="copyLink">
+                      <Check v-if="linkCopied" />
+                      <Share2 v-else />
+                      {{
+                        linkCopied
+                          ? $t("clips.link_copied")
+                          : $t("clips.share_clip")
+                      }}
+                    </Button>
+                    <Button
+                      v-if="clip.download_url"
+                      as="a"
+                      variant="secondary"
+                      size="sm"
+                      :href="clipDownloadUrl(clip.download_url)"
+                      :download="downloadFilename"
+                    >
+                      <Download />
+                      {{ $t("common.download") }}
+                      <span
+                        v-if="formatBytes(fileSizeBytes)"
+                        class="tabular-nums text-white/50"
+                      >
+                        {{ formatBytes(fileSizeBytes) }}
+                      </span>
+                    </Button>
+                    <Popover
+                      v-if="canEditVisibility"
+                      v-model:open="visPopoverOpen"
+                    >
+                      <PopoverTrigger as-child>
+                        <Button variant="secondary" size="sm">
+                          <Spinner v-if="visSaving" />
+                          <component
+                            :is="visibilityMeta.icon"
+                            v-else
+                            :class="
+                              clip.visibility === 'public' ? 'text-success' : ''
+                            "
+                          />
+                          {{ visibilityMeta.label }}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent class="z-[70] w-60 p-1" align="start">
+                        <button
+                          v-for="opt in VISIBILITY_OPTIONS"
+                          :key="opt.value"
+                          type="button"
+                          class="flex w-full items-start gap-2 rounded-sm px-2 py-1.5 text-left text-xs transition-colors hover:bg-muted/60 disabled:cursor-not-allowed disabled:opacity-60"
+                          :class="
+                            clip.visibility === opt.value ? 'bg-muted/40' : ''
+                          "
+                          :disabled="visSaving"
+                          @click="setVisibility(opt.value)"
+                        >
+                          <component
+                            :is="opt.icon"
+                            class="mt-0.5 h-3.5 w-3.5 shrink-0"
+                            :class="
+                              opt.value === 'public'
+                                ? 'text-success'
+                                : 'text-muted-foreground'
+                            "
+                          />
+                          <span class="min-w-0 flex-1">
+                            <span class="flex items-center gap-1.5 font-medium">
+                              {{ opt.label }}
+                              <Check
+                                v-if="clip.visibility === opt.value"
+                                class="h-3 w-3 text-[hsl(var(--tac-amber))]"
+                              />
+                            </span>
+                            <span
+                              class="block leading-snug text-muted-foreground"
+                            >
+                              {{ opt.hint }}
+                            </span>
+                          </span>
+                        </button>
+                      </PopoverContent>
+                    </Popover>
+                    <Button
+                      v-if="isOwner && !editing"
+                      variant="ghost"
+                      size="icon-sm"
+                      :aria-label="$t('ui.edit_title')"
+                      :title="$t('ui.edit_title')"
+                      @click="startEdit"
+                    >
+                      <Pencil />
+                    </Button>
+                    <template v-if="canDelete">
+                      <span
+                        aria-hidden="true"
+                        class="mx-0.5 h-5 w-px bg-white/10"
+                      />
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        class="text-white/60 hover:text-destructive"
+                        :aria-label="$t('common.delete')"
+                        :title="$t('common.delete')"
+                        @click="showDelete = true"
+                      >
+                        <Trash2 />
+                      </Button>
+                    </template>
+                  </div>
                 </div>
-              </div>
+
+                <NuxtLink
+                  v-if="matchCard"
+                  :to="`/matches/${match!.id}`"
+                  class="group/match flex min-w-0 flex-col gap-1.5 self-start rounded-lg border border-border bg-muted/20 px-3 pb-2.5 pt-2 transition-colors duration-150 hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
+                  @click="closeClip"
+                >
+                  <span
+                    class="flex h-4 items-center justify-between gap-2 text-xs text-muted-foreground"
+                  >
+                    <span class="min-w-0 truncate">{{ matchCard.header }}</span>
+                    <span
+                      class="inline-flex shrink-0 items-center gap-1 transition-colors group-hover/match:text-foreground"
+                    >
+                      {{ $t("clips.detail.view_match") }}
+                      <ArrowUpRight class="h-3.5 w-3.5" />
+                    </span>
+                  </span>
+                  <span
+                    v-for="team in matchCard.teams"
+                    :key="team.id"
+                    class="flex min-w-0 items-center gap-2 text-[13px] font-semibold"
+                    :class="team.lost ? 'text-muted-foreground' : 'text-foreground'"
+                  >
+                    <img
+                      v-if="team.avatar"
+                      :src="team.avatar"
+                      alt=""
+                      class="size-5 shrink-0 rounded-[4px] object-cover"
+                      loading="lazy"
+                    />
+                    <span
+                      v-else
+                      aria-hidden="true"
+                      class="inline-grid size-5 shrink-0 place-items-center rounded-[4px] bg-muted text-[0.6rem] font-extrabold tracking-wide text-foreground/80"
+                      >{{ team.monogram }}</span
+                    >
+                    <span
+                      class="min-w-0 truncate"
+                      :class="{ 'font-bold': team.won }"
+                      :title="team.name"
+                      >{{ team.name }}</span
+                    >
+                    <Avatar
+                      v-if="team.hasTarget && clip.target"
+                      class="size-4 shrink-0 text-[8px] ring-1 ring-white/20"
+                      :title="
+                        $t('clips.detail.played_for', { name: clip.target.name })
+                      "
+                    >
+                      <AvatarImage
+                        v-if="targetAvatarSrc"
+                        :src="targetAvatarSrc"
+                        alt=""
+                      />
+                      <AvatarFallback>{{
+                        clip.target.name.slice(0, 1)
+                      }}</AvatarFallback>
+                    </Avatar>
+                    <span
+                      v-if="team.score != null"
+                      class="ml-auto min-w-[1.125rem] text-right text-sm tabular-nums"
+                      :class="{ 'font-bold': !team.lost }"
+                      >{{ team.score }}</span
+                    >
+                  </span>
+                </NuxtLink>
+              </template>
             </div>
 
-            <div
+            <section
               v-if="clipQueue.length > 1"
-              class="flex flex-col rounded-md border border-border/50 bg-card/30 [backdrop-filter:blur(6px)]"
+              class="border-t border-white/[0.06] px-5 pb-6 pt-4 sm:px-6"
             >
               <div
-                class="flex items-center justify-between gap-3 border-b border-border/40 px-3 py-2 font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
+                :class="[
+                  tacticalSectionLabelClasses,
+                  '!flex w-full items-center justify-between',
+                ]"
               >
                 <span class="inline-flex items-center gap-2">
-                  <ListVideo class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]" />
-                  {{ $t("clips.detail.other_clips") }}
+                  <span :class="tacticalSectionTickClasses"></span>
+                  {{ $t("clips.detail.up_next") }}
                 </span>
-                <span class="tabular-nums">
+                <span
+                  v-if="hasQueueNav"
+                  class="normal-case tabular-nums tracking-normal"
+                >
                   {{ activeClipIndex + 1 }} / {{ clipQueue.length }}
                 </span>
               </div>
-              <div class="clip-queue-list max-h-[17rem] overflow-y-auto p-1.5">
+              <div
+                ref="stripRef"
+                class="clip-strip -mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-2 pt-1"
+              >
                 <button
                   v-for="q in clipQueue"
                   :key="q.id"
                   type="button"
-                  class="group/q relative flex w-full items-center gap-2 rounded-sm border px-1.5 py-1.5 text-left transition-colors"
+                  class="group/q relative isolate aspect-video w-52 shrink-0 snap-start overflow-hidden rounded-lg border bg-card text-left transition-[border-color,transform] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] motion-safe:active:scale-[0.97]"
                   :class="
-                    q.id === clip.id
-                      ? 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.12)]'
-                      : 'border-transparent hover:bg-muted/40'
+                    q.id === clipId
+                      ? 'border-[hsl(var(--tac-amber)/0.7)]'
+                      : 'border-white/[0.07] hover:border-[hsl(var(--tac-amber)/0.45)]'
                   "
-                  :title="q.title ?? $t('clips.clip')"
+                  :aria-current="q.id === clipId ? 'true' : undefined"
                   @click="openClip(q.id)"
                 >
-                  <span
-                    class="relative h-10 w-16 shrink-0 overflow-hidden rounded border border-border/50 bg-black"
-                  >
-                    <NuxtImg
-                      v-if="q.thumbnailUrl ?? q.posterUrl"
-                      :src="q.thumbnailUrl ?? q.posterUrl ?? ''"
-                      :alt="q.title ?? $t('clips.clip')"
-                      class="h-full w-full object-cover opacity-85 transition-transform duration-300 group-hover/q:scale-[1.04]"
-                    />
-                    <span
-                      v-else
-                      class="flex h-full w-full items-center justify-center text-muted-foreground"
-                    >
-                      <Film class="h-3.5 w-3.5" />
-                    </span>
-                    <span
-                      v-if="q.id === clip.id"
-                      class="absolute left-1 top-1 inline-flex h-1.5 w-1.5 rounded-full bg-[hsl(var(--tac-amber))] shadow-[0_0_6px_hsl(var(--tac-amber)/0.8)]"
-                    ></span>
-                  </span>
-                  <span class="min-w-0 flex-1">
-                    <span
-                      class="block truncate text-sm font-semibold"
-                      :class="
-                        q.id === clip.id
-                          ? 'text-[hsl(var(--tac-amber))]'
-                          : 'text-foreground'
-                      "
-                    >
-                      {{ q.playerName ?? $t("common.clip") }}
-                    </span>
-                    <span
-                      class="block truncate font-mono text-[0.58rem] uppercase tracking-[0.14em] text-muted-foreground"
-                    >
-                      {{ q.title ?? $t("common.untitled") }}
-                    </span>
-                  </span>
-                  <ChevronRight
-                    v-if="q.id !== clip.id"
-                    class="h-3.5 w-3.5 shrink-0 text-muted-foreground/60 transition-all group-hover/q:translate-x-0.5 group-hover/q:text-[hsl(var(--tac-amber))]"
+                  <NuxtImg
+                    v-if="q.thumbnailUrl ?? q.posterUrl"
+                    :src="q.thumbnailUrl ?? q.posterUrl ?? ''"
+                    alt=""
+                    loading="lazy"
+                    class="absolute inset-0 -z-20 h-full w-full object-cover transition-transform duration-500 motion-safe:group-hover/q:scale-[1.03]"
                   />
+                  <span
+                    v-else
+                    class="absolute inset-0 -z-20 grid place-items-center text-muted-foreground"
+                  >
+                    <Film class="h-5 w-5 opacity-50" />
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    class="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(0_0_0/0.45)_0%,rgb(0_0_0/0)_30%,rgb(0_0_0/0.1)_45%,rgb(0_0_0/0.92)_100%)]"
+                  />
+                  <span
+                    class="absolute inset-x-2 top-2 flex items-center justify-between gap-1.5"
+                  >
+                    <ClipKillBadge :kills="q.killsCount" :round="q.round" />
+                    <span
+                      v-if="q.id === clipId"
+                      :class="[
+                        tileChip,
+                        'ml-auto bg-black/70 text-[hsl(var(--tac-amber))] shadow-[inset_0_0_0_1px_hsl(var(--tac-amber)/0.55)]',
+                      ]"
+                    >
+                      {{ $t("clips.detail.playing") }}
+                    </span>
+                    <span
+                      v-else-if="formatClipDuration(q.durationMs)"
+                      :class="[tileChip, 'ml-auto bg-black/60 text-white/90']"
+                    >
+                      {{ formatClipDuration(q.durationMs) }}
+                    </span>
+                  </span>
+                  <span class="absolute inset-x-2.5 bottom-2 grid gap-0.5">
+                    <span
+                      class="truncate text-[13px] font-bold leading-tight text-white"
+                    >
+                      {{
+                        clipDisplayTitle(q.title, q.playerName) ??
+                        $t("clips.untitled_clip")
+                      }}
+                    </span>
+                    <span
+                      v-if="q.mapLabel || q.round != null"
+                      class="truncate text-[11px] text-white/60"
+                    >
+                      {{
+                        [
+                          q.mapLabel,
+                          q.round != null
+                            ? $t("clips.tile.round", { round: q.round })
+                            : null,
+                        ]
+                          .filter(Boolean)
+                          .join(" · ")
+                      }}
+                    </span>
+                  </span>
                 </button>
               </div>
-            </div>
-          </div>
-
-          <aside class="flex flex-col gap-3 min-w-0">
-            <NuxtLink
-              v-if="clip.match_map?.match"
-              :to="`/matches/${clip.match_map.match.id}`"
-              class="group/match-link flex flex-col items-stretch !h-auto cursor-pointer"
-              @click="closeClip"
-            >
-              <MatchTableRow
-                :match="clip.match_map.match"
-                compact
-                always-show
-                hide-overview
-                class="!h-auto pointer-events-none rounded-md border border-transparent transition-all group-hover/match-link:border-[hsl(var(--tac-amber)/0.5)] group-hover/match-link:bg-[hsl(var(--tac-amber)/0.05)] group-hover/match-link:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.25)]"
-              />
-              <span
-                class="mt-1 inline-flex items-center gap-1 self-end font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground transition-colors group-hover/match-link:text-[hsl(var(--tac-amber))]"
-              >
-                {{ $t("clips.detail.view_match") }}
-                <ArrowUpRight
-                  class="h-3 w-3 transition-transform group-hover/match-link:translate-x-0.5 group-hover/match-link:-translate-y-0.5"
-                />
-              </span>
-            </NuxtLink>
-
-            <dl
-              v-if="formatBytes(fileSizeBytes)"
-              class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 text-sm rounded-md border border-border/50 bg-card/30 [backdrop-filter:blur(6px)] px-4 py-3"
-            >
-              <dt
-                class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground self-center"
-              >
-                {{ $t("clips.size") }}
-              </dt>
-              <dd class="text-right font-mono tabular-nums">
-                {{ formatBytes(fileSizeBytes) }}
-              </dd>
-            </dl>
-
-            <div class="mt-auto flex flex-col gap-2">
-              <button
-                type="button"
-                class="action-tile action-tile--primary group"
-                :class="linkCopied ? 'action-tile--primary-copied' : ''"
-                :aria-label="
-                  linkCopied ? $t('toasts.link_copied') : $t('clips.share_clip')
-                "
-                @click.stop="copyLink"
-              >
-                <Check v-if="linkCopied" class="h-4 w-4" />
-                <Share2 v-else class="h-4 w-4" />
-                <span>{{
-                  linkCopied ? $t("clips.link_copied") : $t("clips.share_clip")
-                }}</span>
-              </button>
-              <div class="grid grid-cols-2 gap-2">
-                <a
-                  v-if="clip.download_url"
-                  :href="clipDownloadUrl(clip.download_url)"
-                  :download="downloadFilename"
-                  class="action-tile group"
-                  :class="canDelete ? '' : 'col-span-2'"
-                >
-                  <Download class="h-4 w-4" />
-                  <span>{{ $t("common.download") }}</span>
-                </a>
-                <button
-                  v-if="canDelete"
-                  type="button"
-                  class="action-tile action-tile--danger group"
-                  :class="clip.download_url ? '' : 'col-span-2'"
-                  @click="showDelete = true"
-                >
-                  <Trash2 class="h-4 w-4" />
-                  <span>{{ $t("common.delete") }}</span>
-                </button>
-              </div>
-            </div>
-          </aside>
-        </div>
+            </section>
+          </template>
+        </template>
 
         <DeleteClipDialog
           v-model="showDelete"
@@ -1128,199 +1645,120 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.clip-scanlines {
-  background-image:
-    repeating-linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0) 0,
-      rgba(255, 255, 255, 0) 2px,
-      rgba(0, 0, 0, 0.18) 2px,
-      rgba(0, 0, 0, 0.18) 3px
-    ),
-    radial-gradient(
-      ellipse at center,
-      transparent 60%,
-      rgba(0, 0, 0, 0.45) 100%
-    );
-  mix-blend-mode: multiply;
-  opacity: 0.35;
-  transform: translateZ(0);
+/* Default layout: the title row stays above the fold, so the video gives up
+   width before the details give up the screen. */
+@media (min-width: 640px) {
+  .clip-modal--default {
+    /* Centred with the translate property, not transform: the zoom-in
+       keyframes own transform, and fighting them slid the dialog in from
+       the bottom-right corner on open. */
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    width: min(94vw, 76rem, calc((94svh - 15rem) * 16 / 9));
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 0.08),
+      0 30px 80px -20px rgb(0 0 0 / 0.8);
+  }
 }
 
-.clip-nav-button {
+/* Only shown if the wait is long enough to need it. */
+.clip-modal-loading {
+  animation: clip-modal-loading-in 200ms ease-out 400ms both;
+}
+@keyframes clip-modal-loading-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Expanded: as large as the screen allows; the stage's height (viewport
+   minus header and footer) decides the width. */
+.clip-modal-stage {
+  width: min(100%, calc((100svh - 7.5rem) * 16 / 9));
+}
+.clip-modal-player--expanded {
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.08),
+    0 30px 80px -20px rgb(0 0 0 / 0.8);
+}
+
+.clip-nav {
   position: absolute;
   top: 50%;
   z-index: 2;
-  display: inline-flex;
-  height: 2.5rem;
-  width: 2.5rem;
   transform: translateY(-50%);
-  align-items: center;
-  justify-content: center;
-  border: 1px solid hsl(var(--border) / 0.65);
-  border-radius: 0.375rem;
-  background: hsl(0 0% 0% / 0.58);
-  color: hsl(var(--foreground) / 0.8);
-  cursor: pointer;
-  opacity: 0.78;
-  backdrop-filter: blur(8px);
+  opacity: 0;
   transition:
-    opacity 150ms ease,
-    border-color 150ms ease,
-    color 150ms ease,
-    transform 150ms ease;
+    opacity 150ms ease-out,
+    background-color 150ms ease-out;
 }
-.clip-nav-button:hover {
-  border-color: hsl(var(--tac-amber) / 0.7);
-  color: hsl(var(--tac-amber));
-  opacity: 1;
-}
-.clip-nav-button--prev {
+.clip-nav--prev {
   left: 0.75rem;
 }
-.clip-nav-button--prev:hover {
-  transform: translate(-2px, -50%);
-}
-.clip-nav-button--next {
+.clip-nav--next {
   right: 0.75rem;
 }
-.clip-nav-button--next:hover {
-  transform: translate(2px, -50%);
+.group\/video:hover .clip-nav,
+.clip-nav:focus-visible {
+  opacity: 1;
 }
-
-.action-tile {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  height: 2.5rem;
-  padding: 0 0.875rem;
-  border-radius: 0.375rem;
-  border: 1px solid hsl(var(--border) / 0.6);
-  background: hsl(var(--card) / 0.45);
-  font-family: ui-monospace, SFMono-Regular, monospace;
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: hsl(var(--foreground) / 0.85);
-  cursor: pointer;
-  transition: all 150ms ease;
-  user-select: none;
-}
-.action-tile::after {
-  content: "";
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  width: 6px;
-  height: 6px;
-  border-top: 1px solid hsl(var(--tac-amber) / 0.55);
-  border-right: 1px solid hsl(var(--tac-amber) / 0.55);
-  transition: border-color 150ms ease;
-}
-.action-tile:hover {
-  border-color: hsl(var(--tac-amber) / 0.6);
-  background: hsl(var(--tac-amber) / 0.08);
-  color: hsl(var(--foreground));
-}
-.action-tile:hover::after {
-  border-color: hsl(var(--tac-amber));
-}
-.action-tile:active {
-  transform: translateY(1px);
-}
-.action-tile--primary {
-  height: 2.75rem;
-  border-color: hsl(var(--tac-amber));
-  background: linear-gradient(
-    135deg,
-    var(--tac-amber-cta-from) 0%,
-    hsl(var(--tac-amber)) 50%,
-    var(--tac-amber-cta-to) 100%
-  );
-  color: hsl(var(--tac-amber-foreground));
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  box-shadow:
-    0 0 0 1px hsl(var(--tac-amber) / 0.35),
-    0 6px 18px -6px hsl(var(--tac-amber) / 0.55);
-}
-.action-tile--primary::after {
-  border-top-color: hsl(var(--tac-amber-foreground) / 0.65);
-  border-right-color: hsl(var(--tac-amber-foreground) / 0.65);
-}
-.action-tile--primary:hover {
-  transform: translateY(-1px);
-  background: linear-gradient(
-    135deg,
-    color-mix(in hsl, var(--tac-amber-cta-from), white 12%) 0%,
-    hsl(var(--tac-amber)) 50%,
-    color-mix(in hsl, var(--tac-amber-cta-to), white 10%) 100%
-  );
-  color: hsl(var(--tac-amber-foreground));
-  border-color: hsl(var(--tac-amber));
-  box-shadow:
-    0 0 0 1px hsl(var(--tac-amber) / 0.55),
-    0 12px 28px -6px hsl(var(--tac-amber) / 0.75),
-    0 0 24px hsl(var(--tac-amber) / 0.35);
-}
-.action-tile--primary:hover::after {
-  border-top-color: hsl(var(--tac-amber-foreground));
-  border-right-color: hsl(var(--tac-amber-foreground));
-}
-.action-tile--primary:active {
-  transform: translateY(0);
-}
-.action-tile--primary-copied {
-  animation: share-flash 480ms ease-out;
-}
-@keyframes share-flash {
-  0% {
-    box-shadow:
-      0 0 0 1px hsl(var(--tac-amber)),
-      0 0 32px hsl(var(--tac-amber) / 0.9);
-  }
-  100% {
-    box-shadow:
-      0 0 0 1px hsl(var(--tac-amber) / 0.55),
-      0 12px 28px -6px hsl(var(--tac-amber) / 0.75);
+@media (hover: none) {
+  .clip-nav {
+    opacity: 1;
   }
 }
 
-.action-tile--danger {
-  color: hsl(var(--destructive) / 0.9);
-}
-.action-tile--danger::after {
-  border-top-color: hsl(var(--destructive) / 0.55);
-  border-right-color: hsl(var(--destructive) / 0.55);
-}
-.action-tile--danger:hover {
-  border-color: hsl(var(--destructive) / 0.7);
-  background: hsl(var(--destructive) / 0.08);
-  color: hsl(var(--destructive));
-}
-.action-tile--danger:hover::after {
-  border-top-color: hsl(var(--destructive));
-  border-right-color: hsl(var(--destructive));
+/* 30–36px controls, 44px touch targets. */
+@media (pointer: coarse) {
+  .clip-hit::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+  }
 }
 
-.clip-queue-list {
+@media (hover: hover) and (pointer: fine) {
+  .clip-modal-hints {
+    display: flex;
+  }
+}
+
+.clip-strip {
   scrollbar-width: thin;
-  scrollbar-color: hsl(var(--border) / 0.6) transparent;
+  scrollbar-color: hsl(var(--border)) transparent;
 }
-.clip-queue-list::-webkit-scrollbar {
-  width: 6px;
+</style>
+
+<style>
+/* Theater-mode morph (see toggleTheater). View-transition pseudo-elements
+   live on the document root, so these can't be scoped; the data attribute
+   limits them to this modal's transition. One clock: 240ms enter on the
+   app's ease, 110ms ease-in for what leaves. */
+:root[data-clip-morph]::view-transition-group(clip-modal-video) {
+  animation-duration: 240ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }
-.clip-queue-list::-webkit-scrollbar-track {
-  background: transparent;
+:root[data-clip-morph]::view-transition-old(clip-modal-video),
+:root[data-clip-morph]::view-transition-new(clip-modal-video) {
+  height: 100%;
+  animation-duration: 240ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }
-.clip-queue-list::-webkit-scrollbar-thumb {
-  background: hsl(var(--border) / 0.6);
-  border-radius: 999px;
+:root[data-clip-morph]::view-transition-old(root) {
+  animation: clip-morph-out 110ms ease-in both;
 }
-.clip-queue-list::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--tac-amber) / 0.5);
+:root[data-clip-morph]::view-transition-new(root) {
+  animation: clip-morph-in 240ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes clip-morph-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes clip-morph-in {
+  from {
+    opacity: 0;
+  }
 }
 </style>

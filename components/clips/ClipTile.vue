@@ -293,8 +293,8 @@ const actionClasses = `${actionBase} w-8`;
 
       <span
         aria-hidden="true"
-        class="pointer-events-none absolute left-1/2 z-10 grid -translate-x-1/2 -translate-y-1/2 scale-90 place-items-center rounded-full bg-white/90 text-black opacity-0 transition-[opacity,transform] duration-150 group-focus-within/clip:scale-100 group-focus-within/clip:opacity-100 group-hover/clip:scale-100 group-hover/clip:opacity-100 motion-reduce:transition-none"
-        :class="hero ? 'top-[40%] h-16 w-16' : 'top-[36%] h-12 w-12'"
+        class="pointer-events-none absolute left-1/2 top-1/2 z-10 grid -translate-x-1/2 -translate-y-1/2 scale-90 place-items-center rounded-full bg-white/90 text-black opacity-0 transition-[opacity,transform] duration-150 group-focus-within/clip:scale-100 group-focus-within/clip:opacity-100 group-hover/clip:scale-100 group-hover/clip:opacity-100 motion-reduce:transition-none"
+        :class="hero ? 'h-16 w-16' : 'h-12 w-12'"
       >
         <Play
           class="ml-0.5 fill-current"

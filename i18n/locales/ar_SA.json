@@ -9828,15 +9828,24 @@
     "detail": {
       "default_title": "أبرز اللقطات",
       "visibility": "الظهور",
-      "signal_lost": "انقطعت الإشارة",
       "clip_not_found": "المقطع غير موجود",
       "clip_not_found_description": "قد يكون محذوفًا، أو لا تملك صلاحية عرضه.",
       "title_label": "العنوان",
-      "other_clips": "مقاطع أخرى",
       "view_match": "اعرض المباراة",
       "highlight_clip_viewer": "عارض مقاطع أبرز اللقطات",
       "render_finalizing": "جارٍ إنهاء المعالجة…",
-      "just_now": "الآن"
+      "just_now": "الآن",
+      "up_next": "التالي",
+      "playing": "قيد التشغيل",
+      "up_next_in": "التالي خلال {seconds}",
+      "theater_mode": "وضع المسرح",
+      "default_view": "العرض الافتراضي",
+      "previous_next": "السابق / التالي",
+      "best_of": "أفضل من {count}",
+      "make_public": "اجعله عامًا",
+      "make_private": "اجعله خاصًا",
+      "more_actions": "إجراءات أخرى",
+      "played_for": "لعب {name} لهذا الفريق"
     },
     "render_queue": {
       "queued": "في الطابور",

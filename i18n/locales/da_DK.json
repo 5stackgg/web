@@ -9828,15 +9828,24 @@
     "detail": {
       "default_title": "Highlight",
       "visibility": "Synlighed",
-      "signal_lost": "Signal mistet",
       "clip_not_found": "Klip ikke fundet",
       "clip_not_found_description": "Det er måske blevet slettet, eller du har ikke tilladelse til at se det.",
       "title_label": "Titel",
-      "other_clips": "Andre klip",
       "view_match": "Se kamp",
       "highlight_clip_viewer": "Highlight-klipviser",
       "render_finalizing": "Render færdiggøres…",
-      "just_now": "lige nu"
+      "just_now": "lige nu",
+      "up_next": "Næste",
+      "playing": "Afspilles",
+      "up_next_in": "Næste om {seconds}",
+      "theater_mode": "Biograftilstand",
+      "default_view": "Standardvisning",
+      "previous_next": "Forrige / næste",
+      "best_of": "Bedst af {count}",
+      "make_public": "Gør offentlig",
+      "make_private": "Gør privat",
+      "more_actions": "Flere handlinger",
+      "played_for": "{name} spillede for dette hold"
     },
     "render_queue": {
       "queued": "I kø",

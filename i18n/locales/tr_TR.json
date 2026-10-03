@@ -9828,15 +9828,24 @@
     "detail": {
       "default_title": "Öne Çıkan An",
       "visibility": "Görünürlük",
-      "signal_lost": "Sinyal kesildi",
       "clip_not_found": "Klip bulunamadı",
       "clip_not_found_description": "Silinmiş olabilir veya bunu görüntüleme iznin yok.",
       "title_label": "Başlık",
-      "other_clips": "Diğer klipler",
       "view_match": "Maçı görüntüle",
       "highlight_clip_viewer": "Öne çıkan an görüntüleyici",
       "render_finalizing": "Render tamamlanıyor…",
-      "just_now": "az önce"
+      "just_now": "az önce",
+      "up_next": "Sıradaki",
+      "playing": "Oynatılıyor",
+      "up_next_in": "Sıradaki {seconds} sn sonra",
+      "theater_mode": "Sinema modu",
+      "default_view": "Varsayılan görünüm",
+      "previous_next": "Önceki / sonraki",
+      "best_of": "Best of {count}",
+      "make_public": "Herkese aç",
+      "make_private": "Gizli yap",
+      "more_actions": "Diğer işlemler",
+      "played_for": "{name} bu takımda oynadı"
     },
     "render_queue": {
       "queued": "Sırada",

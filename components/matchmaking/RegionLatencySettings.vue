@@ -64,7 +64,8 @@ const wordClasses =
       :title="$t('layouts.system_status.ping_by_region')"
     >
       <template #actions>
-        <Tooltip>
+        <!-- Popovers auto-focus this button on open; only keyboard focus should pop the tooltip. -->
+        <Tooltip ignore-non-keyboard-focus>
           <TooltipTrigger as-child>
             <Button
               variant="ghost"

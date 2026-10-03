@@ -3719,10 +3719,6 @@
       "more_ways": {
         "title": "Más formas de jugar",
         "tournaments": {
-          "title": "Torneos",
-          "teams_of": "{count} de {max} equipos",
-          "register": "Inscribir un equipo",
-          "sign_in": "Inicia sesión para inscribirte",
           "all": "Todos los torneos"
         },
         "league": {
@@ -3743,9 +3739,7 @@
           "post": "Publicar disponibilidad"
         },
         "drop_in": {
-          "title": "Entra y juega",
           "playing": "juega en servidores públicos | juegan en servidores públicos",
-          "none": "Aún no hay servidores públicos aquí",
           "all_servers": "Todos los servidores ({count})",
           "players": "jugadores",
           "connect": "Conectar",

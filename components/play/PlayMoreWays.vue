@@ -64,7 +64,7 @@ const practiceEnabled = computed(
 <template>
   <PlayMoreWaysView
     :guest="isGuest"
-    :tournament="tournamentCard"
+    :tournament="tournament"
     :league="leagueCard(league)"
     :scrims="scrimsCard"
     :servers="serverTiles"
@@ -82,11 +82,14 @@ import {
 import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { excludeLeagueTournaments } from "~/graphql/tournamentFilters";
+import { tournamentCardFields } from "~/graphql/tournamentCardFields";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import cleanMapName from "~/utilities/cleanMapName";
 import { countScrimTeamsToday } from "~/utilities/playMoreWays";
 
+// Open for registration and the viewer isn't on a roster yet, shown with
+// the /watch tournament card.
 const tournamentSubscription = typedGql("subscription")({
   tournaments: [
     {
@@ -94,17 +97,7 @@ const tournamentSubscription = typedGql("subscription")({
       order_by: [{ start: order_by.asc }],
       limit: 1,
     },
-    {
-      id: true,
-      name: true,
-      start: true,
-      location: true,
-      teams_aggregate: [{}, { aggregate: { count: true } }],
-      stages: [
-        { order_by: [{ order: order_by.asc }], limit: 1 },
-        { max_teams: true },
-      ],
-    },
+    tournamentCardFields,
   ],
 } as any);
 
@@ -253,18 +246,6 @@ export default {
   computed: {
     isGuest(): boolean {
       return !useAuthStore().me?.steam_id;
-    },
-    tournamentCard(): any {
-      const tournament = this.tournament;
-      if (!tournament) return null;
-      return {
-        id: tournament.id,
-        name: tournament.name,
-        start: tournament.start ?? null,
-        location: tournament.location ?? null,
-        teams: tournament.teams_aggregate?.aggregate?.count ?? 0,
-        maxTeams: tournament.stages?.[0]?.max_teams ?? null,
-      };
     },
     scrimsCard(): any {
       if (!useApplicationSettingsStore().scrimFinderEnabled) return null;

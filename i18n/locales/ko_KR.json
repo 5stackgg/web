@@ -3719,10 +3719,6 @@
       "more_ways": {
         "title": "더 많은 플레이 방법",
         "tournaments": {
-          "title": "토너먼트",
-          "teams_of": "{count}/{max}팀",
-          "register": "팀 등록",
-          "sign_in": "로그인하고 등록",
           "all": "모든 토너먼트"
         },
         "league": {
@@ -3743,9 +3739,7 @@
           "post": "가능 시간 올리기"
         },
         "drop_in": {
-          "title": "바로 참여",
           "playing": "명이 공개 서버에서 플레이 중 | 명이 공개 서버에서 플레이 중",
-          "none": "아직 공개 서버가 없습니다",
           "all_servers": "모든 서버 ({count})",
           "players": "플레이어",
           "connect": "연결",

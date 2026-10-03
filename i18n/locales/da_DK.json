@@ -3719,10 +3719,6 @@
       "more_ways": {
         "title": "Flere måder at spille på",
         "tournaments": {
-          "title": "Turneringer",
-          "teams_of": "{count} af {max} hold",
-          "register": "Tilmeld et hold",
-          "sign_in": "Log ind for at tilmelde",
           "all": "Alle turneringer"
         },
         "league": {
@@ -3743,9 +3739,7 @@
           "post": "Angiv ledige tider"
         },
         "drop_in": {
-          "title": "Hop ind",
           "playing": "spiller på offentlige servere | spiller på offentlige servere",
-          "none": "Ingen offentlige servere her endnu",
           "all_servers": "Alle servere ({count})",
           "players": "spillere",
           "connect": "Forbind",

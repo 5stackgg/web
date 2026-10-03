@@ -1,25 +1,28 @@
 import { describe, expect, it } from "vitest";
 import {
   countScrimTeamsToday,
-  dropInColumns,
   pickServerTiles,
-  wayCardColumns,
+  waysLayout,
 } from "~/utilities/playMoreWays";
 
-describe("wayCardColumns", () => {
-  it("splits two cards evenly and keeps a lone card at a third", () => {
-    expect(wayCardColumns(3)).toBe(3);
-    expect(wayCardColumns(2)).toBe(2);
-    expect(wayCardColumns(1)).toBe(3);
+describe("waysLayout", () => {
+  it("lays a tournament across two thirds when at most one tile joins it", () => {
+    expect(waysLayout(true, 0)).toEqual({ kind: "wide" });
+    expect(waysLayout(true, 1)).toEqual({ kind: "wide" });
   });
-});
 
-describe("dropInColumns", () => {
-  it("keeps a lone tile card-width and spreads the rest evenly", () => {
-    expect(dropInColumns(1)).toBe(3);
-    expect(dropInColumns(2)).toBe(2);
-    expect(dropInColumns(3)).toBe(3);
-    expect(dropInColumns(4)).toBe(4);
+  it("stacks two tiles beside a tournament, then rails them in pairs", () => {
+    expect(waysLayout(true, 2)).toEqual({ kind: "feature", railColumns: 1 });
+    expect(waysLayout(true, 3)).toEqual({ kind: "feature", railColumns: 2 });
+    expect(waysLayout(true, 6)).toEqual({ kind: "feature", railColumns: 2 });
+  });
+
+  it("keeps a lone tile at a third and spreads the rest evenly", () => {
+    expect(waysLayout(false, 1)).toEqual({ kind: "tiles", columns: 3 });
+    expect(waysLayout(false, 2)).toEqual({ kind: "tiles", columns: 2 });
+    expect(waysLayout(false, 3)).toEqual({ kind: "tiles", columns: 3 });
+    expect(waysLayout(false, 4)).toEqual({ kind: "tiles", columns: 4 });
+    expect(waysLayout(false, 5)).toEqual({ kind: "tiles", columns: 3 });
   });
 });
 

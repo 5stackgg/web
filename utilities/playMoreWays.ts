@@ -1,21 +1,29 @@
 // Pure helpers behind /play's "More ways to play" so the layout rules can be
 // tested without the data layer.
 
-// Column counts only: the class names live in the templates, where Tailwind
-// can see them.
+// One grid: an open tournament leads it and everything else (league, scrims,
+// servers, practice) is a tile. Layout names only: the class names live in
+// the template, where Tailwind can see them.
+//   wide:    a tournament with at most one tile, as the /watch row card
+//            across two thirds.
+//   feature: a tournament stacked on the left, its banner growing to match a
+//            rail of tiles on the right; one rail column for two tiles, two
+//            after that.
+//   tiles:   no tournament. A lone tile keeps a third of the row, two share
+//            it, four fill it, anything else runs in rows of three.
+export type WaysLayout =
+  | { kind: "wide" }
+  | { kind: "feature"; railColumns: 1 | 2 }
+  | { kind: "tiles"; columns: 2 | 3 | 4 };
 
-// The first row holds up to three cards. Two share the row evenly; a lone
-// card keeps a third of it instead of stretching across the page.
-export function wayCardColumns(count: number): 2 | 3 {
-  return count === 2 ? 2 : 3;
-}
-
-// Drop in tiles: one tile keeps the width of a first-row card, two or more
-// share the row evenly (at most four: three servers and the practice tile).
-export function dropInColumns(count: number): 2 | 3 | 4 {
-  if (count === 2) return 2;
-  if (count >= 4) return 4;
-  return 3;
+export function waysLayout(hasTournament: boolean, tiles: number): WaysLayout {
+  if (hasTournament) {
+    if (tiles <= 1) return { kind: "wide" };
+    return { kind: "feature", railColumns: tiles === 2 ? 1 : 2 };
+  }
+  if (tiles === 2) return { kind: "tiles", columns: 2 };
+  if (tiles === 4) return { kind: "tiles", columns: 4 };
+  return { kind: "tiles", columns: 3 };
 }
 
 export const MAX_SERVER_TILES = 3;
@@ -66,20 +74,6 @@ export function countScrimTeamsToday(
   }
 
   return teams.size;
-}
-
-export function formatDayAndTime(value: string, locale?: string): string {
-  const date = new Date(value);
-  const day = new Intl.DateTimeFormat(locale, {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-  }).format(date);
-  const time = new Intl.DateTimeFormat(locale, {
-    hour: "numeric",
-    minute: "2-digit",
-  }).format(date);
-  return `${day} · ${time}`;
 }
 
 export function formatDay(value: string, locale?: string): string {

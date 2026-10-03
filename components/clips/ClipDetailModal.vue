@@ -352,6 +352,7 @@ watch(
   },
 );
 onBeforeUnmount(() => {
+  if (revealTimer) clearTimeout(revealTimer);
   activeSub?.unsubscribe();
   activeSub = null;
   window.removeEventListener("keydown", onModalKeydown);
@@ -600,6 +601,68 @@ watch(
     if (id) {
       void nextTick().then(() => modalPlayerRef.value?.play());
     }
+    // Still covered by the snapshot: a clip with no video yet shows its
+    // "finalizing" state at once; otherwise never hold the cover forever.
+    if (id && !revealed.value) {
+      if (!clip.value?.download_url) revealPlayer();
+      else revealTimer ??= setTimeout(revealPlayer, REVEAL_FALLBACK_MS);
+    }
+  },
+);
+
+// Opening shows the clip's thumbnail over the player and fades it only once
+// the video has a frame on screen (requestVideoFrameCallback, when the
+// browser has it). Switching clips doesn't use it: the player crossfades
+// clip to clip on its own.
+const REVEAL_FALLBACK_MS = 3000;
+const revealed = ref(false);
+let revealTimer: ReturnType<typeof setTimeout> | null = null;
+const snapshotSrc = computed(
+  () =>
+    activeQueueItem.value?.thumbnailUrl ??
+    activeQueueItem.value?.posterUrl ??
+    poster.value,
+);
+function revealPlayer() {
+  revealed.value = true;
+  if (revealTimer) {
+    clearTimeout(revealTimer);
+    revealTimer = null;
+  }
+}
+function playerVideo(e: Event): HTMLVideoElement | null {
+  const target = e.target;
+  return target instanceof HTMLVideoElement && !("preload" in target.dataset)
+    ? target
+    : null;
+}
+function onPlayerPlaying(e: Event) {
+  const video = playerVideo(e);
+  if (!video || revealed.value) return;
+  if ("requestVideoFrameCallback" in video) {
+    video.requestVideoFrameCallback(() => revealPlayer());
+  } else {
+    revealPlayer();
+  }
+}
+// Autoplay refused: nothing is going to play, so show the paused frame.
+function onPlayerLoadedData(e: Event) {
+  const video = playerVideo(e);
+  if (!video || revealed.value) return;
+  setTimeout(() => {
+    if (video.paused && !revealed.value) revealPlayer();
+  }, 300);
+}
+// Re-cover on every fresh open (and reset on close).
+watch(
+  () => props.clipId,
+  (id, previous) => {
+    if (id && previous) return;
+    revealed.value = false;
+    if (revealTimer) {
+      clearTimeout(revealTimer);
+      revealTimer = null;
+    }
   },
 );
 
@@ -778,6 +841,8 @@ const edgeButton =
               class="group/video relative"
               :style="morphing ? { viewTransitionName: 'clip-modal-video' } : undefined"
               :class="expanded ? 'clip-modal-stage' : ''"
+              @playing.capture="onPlayerPlaying"
+              @loadeddata.capture="onPlayerLoadedData"
             >
               <ClipPlayer
                 v-if="clip"
@@ -1021,25 +1086,39 @@ const edgeButton =
                   </div>
                 </template>
               </ClipPlayer>
-              <!-- Until the clip's data lands: its thumbnail (the player's
-                   poster) in the player's exact box, so nothing moves. -->
+              <!-- Holds the player's exact box until the clip's data lands. -->
               <div
                 v-else
-                class="relative aspect-video w-full overflow-hidden bg-black"
+                class="aspect-video w-full bg-black"
                 :class="expanded ? 'clip-modal-player--expanded rounded-xl' : ''"
+              />
+
+              <!-- The thumbnail the tile showed stays over the player until
+                   the video has painted its first frame, then fades into it:
+                   no cut to black, no half-decoded poster, no chrome popping
+                   in underneath. -->
+              <Transition
+                leave-active-class="transition-opacity [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+                leave-to-class="opacity-0"
               >
-                <NuxtImg
-                  v-if="activeQueueItem?.thumbnailUrl ?? activeQueueItem?.posterUrl"
-                  :src="activeQueueItem.thumbnailUrl ?? activeQueueItem.posterUrl ?? ''"
-                  alt=""
-                  class="absolute inset-0 h-full w-full object-cover"
-                />
                 <div
-                  class="clip-modal-loading absolute inset-0 grid place-items-center"
+                  v-if="!revealed"
+                  class="pointer-events-none absolute inset-0 z-[5] overflow-hidden bg-black"
+                  :class="expanded ? 'rounded-xl' : ''"
                 >
-                  <Spinner class="h-8 w-8 text-white/80" />
+                  <NuxtImg
+                    v-if="snapshotSrc"
+                    :src="snapshotSrc"
+                    alt=""
+                    class="h-full w-full object-cover"
+                  />
+                  <div
+                    class="clip-modal-loading absolute inset-0 grid place-items-center"
+                  >
+                    <Spinner class="h-8 w-8 text-white/80" />
+                  </div>
                 </div>
-              </div>
+              </Transition>
 
               <template v-if="!expanded">
                 <button
@@ -1142,6 +1221,7 @@ const edgeButton =
                 v-if="preloadSrc"
                 :key="preloadSrc"
                 :src="preloadSrc"
+                data-preload
                 preload="auto"
                 muted
                 playsinline

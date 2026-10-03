@@ -3,6 +3,17 @@ import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import ChatGifPickerPanel from "~/components/chat/ChatGifPickerPanel.vue";
 
+const { apiSearch } = vi.hoisted(() => ({
+  apiSearch: vi.fn(async () => ({
+    results: [{ id: "fromapi1", title: "", width: 480, height: 270 }],
+    next: null,
+  })),
+}));
+
+vi.mock("~/composables/chatGifSearch", () => ({
+  searchChatGifs: apiSearch,
+}));
+
 const gif = (id: string) => ({ id, title: `${id} title`, width: 480, height: 270 });
 
 type Wrapper = Awaited<ReturnType<typeof mountSuspended>>;
@@ -39,6 +50,17 @@ describe("ChatGifPickerPanel", () => {
     expect(tiles(wrapper).map((tile) => tile.attributes("data-gif-id"))).toEqual(
       ["trending1", "trending2"],
     );
+  });
+
+  // What the composer actually mounts: no search handed in.
+  it("searches through the API when no search is handed in", async () => {
+    const wrapper = await mountSuspended(ChatGifPickerPanel);
+    await flushPromises();
+
+    expect(apiSearch).toHaveBeenCalledWith("", 0);
+    expect(
+      tiles(wrapper).map((tile) => tile.attributes("data-gif-id")),
+    ).toEqual(["fromapi1"]);
   });
 
   it("loads GIFs from GIPHY by id, never through a url it was handed", async () => {

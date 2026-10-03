@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { CornerDownLeft, Plus } from "lucide-vue-next";
+import { CornerDownLeft } from "lucide-vue-next";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import ChatAttachmentTray from "~/components/chat/ChatAttachmentTray.vue";
-import ChatGifPicker from "~/components/chat/ChatGifPicker.vue";
+import ChatAttachMenu from "~/components/chat/ChatAttachMenu.vue";
 import Fold from "~/components/ui/transitions/Fold.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 
@@ -124,16 +124,11 @@ const fieldName = `chat-message-${Math.random().toString(36).slice(2, 10)}`;
               "
             >
               <template v-if="canAttach">
-                <button
-                  type="button"
-                  data-chat-attach
-                  class="inline-flex h-7 w-7 shrink-0 items-center justify-center self-center rounded-full bg-muted text-muted-foreground transition-colors duration-150 hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring motion-reduce:transition-none"
-                  :aria-label="$t('chat.attachments.add')"
-                  @mousedown.prevent
-                  @click="openFilePicker"
-                >
-                  <Plus class="h-4 w-4" />
-                </button>
+                <ChatAttachMenu
+                  :gifs="gifsEnabled"
+                  @files="openFilePicker"
+                  @gif="sendGif"
+                />
                 <input
                   ref="fileInput"
                   type="file"
@@ -148,6 +143,7 @@ const fieldName = `chat-message-${Math.random().toString(36).slice(2, 10)}`;
                 ref="inputRef"
                 rows="1"
                 :placeholder="activePlaceholder"
+                :aria-label="$t('chat.message_label')"
                 v-bind="componentField"
                 autocomplete="off"
                 :name="fieldName"
@@ -175,7 +171,6 @@ const fieldName = `chat-message-${Math.random().toString(36).slice(2, 10)}`;
               >
                 {{ remainingCharacters }}
               </span>
-              <ChatGifPicker v-if="gifsEnabled" @select="sendGif" />
               <Button
                 type="submit"
                 size="sm"
@@ -389,10 +384,10 @@ export default {
     isAmber() {
       return this.activeChannel?.tone === "amber";
     },
+    // Only a channel that needs saying where the message goes has one. A
+    // generic "Type a message..." was clipped to "Type a" beside the buttons.
     activePlaceholder() {
-      return (
-        this.activeChannel?.placeholder ?? this.$t("chat.message_placeholder")
-      );
+      return this.activeChannel?.placeholder;
     },
   },
   beforeUnmount() {

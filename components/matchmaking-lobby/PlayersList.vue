@@ -7,11 +7,12 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip";
 import { Search, RefreshCw, UserCheck } from "lucide-vue-next";
+import HubEmptyState from "~/components/hub/HubEmptyState.vue";
 import FriendListItem from "~/components/matchmaking-lobby/FriendListItem.vue";
 </script>
 
 <template>
-  <div class="flex flex-col gap-3 p-2">
+  <div class="flex min-h-full flex-1 flex-col gap-3 p-2">
     <div class="flex items-center gap-2">
       <div class="relative flex-1">
         <Search class="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -74,7 +75,7 @@ import FriendListItem from "~/components/matchmaking-lobby/FriendListItem.vue";
          The fold wraps the whole section (label + rows): when the last row
          goes, the leaving subtree is frozen mid-fold and the row rides the
          section shut instead of being torn down before its own leave. -->
-    <div class="flex flex-col">
+    <div class="flex flex-1 flex-col">
       <!-- Incoming friend requests (friends tab) -->
       <Transition
         enter-active-class="friend-section-fold"
@@ -145,7 +146,10 @@ import FriendListItem from "~/components/matchmaking-lobby/FriendListItem.vue";
             class="grid grid-rows-[1fr]"
           >
             <div class="min-h-0">
-              <FriendListItem :player="player" />
+              <FriendListItem
+                :player="player"
+                :fresh="justOnlineIds.has(String(player.steam_id))"
+              />
             </div>
           </div>
         </TransitionGroup>
@@ -232,12 +236,23 @@ import FriendListItem from "~/components/matchmaking-lobby/FriendListItem.vue";
         enter-from-class="opacity-0"
         leave-to-class="opacity-0"
       >
-        <div
+        <HubEmptyState
           v-if="isEmpty"
-          class="py-8 text-center text-sm text-muted-foreground"
-        >
-          {{ $t("player.search.no_players_found") }}
-        </div>
+          :title="
+            searchQuery
+              ? $t('layouts.hub.empty.no_match', { query: searchQuery })
+              : friendsOnly
+                ? $t('layouts.hub.empty.friends_title')
+                : $t('layouts.hub.empty.others_title')
+          "
+          :description="
+            searchQuery
+              ? null
+              : friendsOnly
+                ? $t('layouts.hub.empty.friends_description')
+                : $t('layouts.hub.empty.others_description')
+          "
+        />
       </Transition>
     </div>
   </div>
@@ -245,6 +260,7 @@ import FriendListItem from "~/components/matchmaking-lobby/FriendListItem.vue";
 
 <script lang="ts">
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
+import { useFriendArrivals } from "~/composables/useFriendArrivals";
 
 function matchesSearch(player: any, query: string) {
   const q = query.toLowerCase();
@@ -292,6 +308,11 @@ export default {
     },
     offlineFriends() {
       return useMatchmakingStore().offlineFriends;
+    },
+    // Friends who came online since you last looked, marked for this visit.
+    justOnlineIds(): Set<string> {
+      if (!this.friendsOnly) return new Set();
+      return new Set(useFriendArrivals().visitArrivals.value);
     },
     incomingRequests(): any[] {
       if (!this.friendsOnly) return [];

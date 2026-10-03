@@ -1,34 +1,25 @@
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
-import { Merge, LogOut } from "lucide-vue-next";
-import VoiceChannelCard from "~/components/voice/VoiceChannelCard.vue";
+import { Merge } from "lucide-vue-next";
+import HubEmptyState from "~/components/hub/HubEmptyState.vue";
 import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
-import { currentHub } from "~/composables/useHubState";
-import MatchLobbyExpanded from "~/components/matchmaking-lobby/MatchLobbyExpanded.vue";
-import MatchmakingLobbyAccess from "~/components/matchmaking-lobby/MatchmakingLobbyAccess.vue";
 import LobbyInvites from "~/components/matchmaking-lobby/LobbyInvites.vue";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
+import PartySeats from "~/components/hub/PartySeats.vue";
+import PartyQueueLine from "~/components/hub/PartyQueueLine.vue";
 import { Button } from "~/components/ui/button";
-import { Separator } from "~/components/ui/separator";
-import Empty from "~/components/ui/empty/Empty.vue";
 import { useInvites } from "@/composables/useInvites";
 import { useVoiceSession } from "~/composables/useVoiceSession";
 
-const { t } = useI18n();
 const { hasLobbyInvites } = useInvites();
 
 // Party voice can be turned off platform-wide without touching match voice.
-// Handing the channel a null id (rather than only hiding the controls) means
-// flipping the setting off also drops anyone already in the call.
 const voiceChatEnabled = computed(
   () => useApplicationSettingsStore().voiceChatLobbiesEnabled,
 );
 
 // The same session every other voice control drives, hosted by the app layout.
-// This panel used to own a connection of its own, which worked -- it lives in
-// the hub, so it already outlived navigation -- but it meant two microphone
-// pipelines existed and only the registry's conflict prompt kept one of them
-// quiet. One session is one microphone.
+// The call itself is shown by the hub's voice bar and Voice panel; this room
+// only ends it when the party it belongs to goes away.
 const session = useVoiceSession();
 
 const lobbyId = computed(() =>
@@ -36,15 +27,6 @@ const lobbyId = computed(() =>
     ? (((useMatchmakingStore().currentLobby as any)?.id as string) ?? null)
     : null,
 );
-
-// The hub keeps every panel it has ever opened mounted and hides it with
-// v-show, so being mounted proves nothing about being on screen. Handed to the
-// card, which is what Picture-in-Picture follows -- and scoped to this channel,
-// because sitting on this tab during a *match* call this panel shows nothing of
-// it, which is exactly the case Picture-in-Picture exists for.
-function lobbyOnScreen() {
-  return useRightSidebar().rightSidebarOpen.value && currentHub() === "lobby";
-}
 
 // Leaving the party ends the call: the channel it belonged to is gone.
 watch(lobbyId, (next, previous) => {
@@ -55,165 +37,97 @@ watch(lobbyId, (next, previous) => {
 </script>
 
 <template>
-  <div class="flex flex-col h-full">
-    <div class="px-3 pt-3 pb-3 flex-shrink-0 border-b border-border">
-      <div
-        class="flex items-center gap-[0.4rem] font-mono text-[0.62rem] font-bold tracking-[0.24em] uppercase text-muted-foreground"
-      >
-        <span class="w-2 h-[2px] bg-[hsl(var(--tac-amber))]"></span>
-        {{ $t("layouts.hub.lobby") }}
-      </div>
-    </div>
-    <div class="flex-1 px-3 pt-3 flex flex-col overflow-hidden">
-      <!-- Scrollable main content (invites + squad) -->
-      <div class="flex-[3] min-h-0 flex flex-col overflow-y-auto">
-        <!-- Lobby invites. Folds its height shut instead of vanishing with a
-             one-frame gap collapse -- the section spacing rides inside the
-             clipped row. -->
-        <Transition
-          enter-active-class="lobby-fold"
-          enter-from-class="lobby-fold-collapsed"
-          leave-active-class="lobby-fold"
-          leave-to-class="lobby-fold-collapsed"
-        >
-          <div v-if="hasLobbyInvites" class="grid grid-rows-[1fr]">
-            <div class="min-h-0">
-              <div class="flex flex-col gap-3 pb-4">
+  <!-- The party room: seats on top, the queue line, party chat below. The
+       header's party pill and the dock's Party icon both open it. -->
+  <div class="flex h-full flex-col">
+    <!-- Lobby invites. Folds its height shut instead of vanishing with a
+         one-frame gap collapse. -->
+    <Transition
+      enter-active-class="lobby-fold"
+      enter-from-class="lobby-fold-collapsed"
+      leave-active-class="lobby-fold"
+      leave-to-class="lobby-fold-collapsed"
+    >
+      <div v-if="hasLobbyInvites" class="grid shrink-0 grid-rows-[1fr]">
+        <div class="min-h-0">
+          <div class="flex flex-col gap-3 border-b border-border p-3">
             <div
-              class="inline-flex items-center gap-[0.35rem] text-[0.68rem] font-semibold tracking-[0.12em] uppercase text-muted-foreground"
+              class="inline-flex items-center gap-[0.35rem] text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground"
             >
               <Merge class="h-3 w-3" />
               <span>{{ $t("layouts.lobby_panel.lobby_invites") }}</span>
             </div>
             <LobbyInvites />
-            <Separator class="my-3 opacity-60" />
-              </div>
-            </div>
           </div>
-        </Transition>
-
-        <!-- Squad ↔ create-lobby swap: measured height, one motion. -->
-        <HeightSwap @settled="onSquadEntered">
-          <!-- Matchmaking lobby -->
-          <div v-if="currentLobby" key="squad" class="flex flex-col gap-3">
-            <div class="flex items-start justify-between gap-3">
-              <div class="flex flex-col gap-1">
-                <div
-                  class="inline-flex items-center gap-[0.35rem] text-[0.68rem] font-semibold tracking-[0.12em] uppercase text-muted-foreground"
-                >
-                  {{ $t("layouts.lobby_panel.your_squad") }}
-                </div>
-                <p class="text-[11px] text-muted-foreground">
-                  {{ $t("layouts.lobby_panel.squad_description") }}
-                </p>
-              </div>
-              <div class="flex items-center gap-2 md:hidden">
-                <MatchmakingLobbyAccess :lobby="currentLobby" />
-                <Button
-                  size="icon"
-                  variant="destructive"
-                  class="rounded-full transition-colors duration-200"
-                  @click="leaveCurrentLobby"
-                  :title="$t('matchmaking.lobby.leave')"
-                >
-                  <LogOut class="h-3 w-3" />
-                </Button>
-              </div>
-            </div>
-
-            <MatchLobbyExpanded :lobby="currentLobby" />
-          </div>
-
-          <!-- Create lobby — only when not in a lobby or match -->
-          <Empty v-else key="empty" class="px-3 pb-5 pt-4">
-            <p class="text-sm text-muted-foreground text-center max-w-xs">
-              {{ $t("layouts.lobby_panel.create_lobby_description") }}
-            </p>
-            <div
-              class="inline-flex rounded-md p-[1.5px] bg-[linear-gradient(135deg,hsl(40_58%_60%)_0%,hsl(33_62%_55%)_50%,hsl(24_56%_52%)_100%)] shadow-[0_4px_14px_-8px_hsl(var(--tac-amber)/0.3)] transition-shadow duration-300 hover:shadow-[0_6px_18px_-8px_hsl(var(--tac-amber)/0.4)]"
-            >
-              <Button
-                variant="ghost"
-                @click="createLobby"
-                :loading="creatingLobby"
-                size="default"
-                class="rounded-sm border-0 bg-zinc-950/95 px-7 py-2 text-[hsl(var(--tac-amber))] transition-colors duration-300 hover:bg-zinc-900/95 hover:text-[hsl(var(--tac-amber))] focus-visible:ring-[hsl(var(--tac-amber))]"
-              >
-                <Merge class="h-5 w-5" />
-                <span class="font-semibold">
-                  {{ $t("layouts.lobby_panel.create_lobby_button") }}
-                </span>
-              </Button>
-            </div>
-          </Empty>
-        </HeightSwap>
+        </div>
       </div>
+    </Transition>
 
-      <!-- Voice only. Discord linking used to live here, but it is account
-           plumbing for the bot rather than anything to do with the call, and
-           it left an orphan line under the controls. -->
-      <!-- The party's voice channel, drawn by the same card the match page and
-           the draft room use. This panel used to arrange its own controls, which
-           is how the hub ended up offering a different set of them to the same
-           call depending on where you opened it. It folds open into the column
-           instead of claiming its full box on frame one; the divider and top
-           margin ride inside the clipped row. -->
-      <Transition
-        enter-active-class="lobby-fold"
-        enter-from-class="lobby-fold-collapsed"
-        leave-active-class="lobby-fold"
-        leave-to-class="lobby-fold-collapsed"
-      >
+    <!-- The squad folds open in a measured motion when a party forms. -->
+    <HeightSwap class="shrink-0" @settled="onSquadEntered">
+      <div v-if="currentLobby" key="squad" class="flex flex-col">
         <div
-          v-if="currentLobby && squadReady && voiceChatEnabled && lobbyId"
-          class="shrink-0 grid grid-rows-[1fr]"
+          class="border-b border-border bg-[linear-gradient(180deg,hsl(var(--tac-amber)/0.06),transparent_70%)] px-3 pb-3.5 pt-3"
         >
-          <div class="min-h-0">
-            <VoiceChannelCard
-              class="mt-4 border-t border-zinc-800 pt-3"
-              dense
-              show-empty
-              :framed="false"
-              kind="lobby"
-              :channel-id="lobbyId"
-              :label="$t('layouts.voice_panel.party_comms')"
-              :visible-when="lobbyOnScreen"
-            />
-          </div>
+          <PartySeats :lobby="currentLobby" />
         </div>
-      </Transition>
+        <PartyQueueLine :lobby="currentLobby" />
+      </div>
+    </HeightSwap>
 
-      <!-- Dedicated bottom lobby chat area (~25% height). A flex-sized dock,
-           so its reveal animates flex-basis/grow rather than content height --
-           the squad area above shrinks continuously as the dock grows into
-           its share instead of losing it in one frame. The divider lives on
-           the inner header so the collapsed dock floors at a true zero. -->
-      <Transition
-        enter-active-class="lobby-dock"
-        enter-from-class="lobby-dock-collapsed"
-        leave-active-class="lobby-dock"
-        leave-to-class="lobby-dock-collapsed"
+    <!-- No party: the same centred empty state as every other tab. -->
+    <Transition
+      enter-active-class="transition-opacity [transition-duration:240ms] motion-reduce:![transition-duration:1ms]"
+      leave-active-class="transition-opacity [transition-duration:110ms] ease-in motion-reduce:![transition-duration:1ms]"
+      enter-from-class="opacity-0"
+      leave-to-class="opacity-0"
+    >
+      <HubEmptyState
+        v-if="!currentLobby"
+        :title="$t('layouts.hub.empty.party_title')"
+        :description="$t('layouts.lobby_panel.create_lobby_description')"
       >
         <div
-          v-if="currentLobby && squadReady"
-          class="flex-[1_1_250px] min-h-0 lg:flex-[1] lg:min-h-[160px] lg:max-h-[40%] flex flex-col gap-2"
+          class="inline-flex rounded-md p-[1.5px] bg-[linear-gradient(135deg,hsl(40_58%_60%)_0%,hsl(33_62%_55%)_50%,hsl(24_56%_52%)_100%)] shadow-[0_4px_14px_-8px_hsl(var(--tac-amber)/0.3)] transition-shadow duration-300 hover:shadow-[0_6px_18px_-8px_hsl(var(--tac-amber)/0.4)]"
         >
-          <div
-            class="border-t border-zinc-800 pt-3 mt-4 text-[11px] font-semibold text-zinc-400 uppercase tracking-wide"
+          <Button
+            variant="ghost"
+            @click="createLobby"
+            :loading="creatingLobby"
+            size="default"
+            class="rounded-sm border-0 bg-zinc-950/95 px-7 py-2 text-[hsl(var(--tac-amber))] transition-colors duration-300 hover:bg-zinc-900/95 hover:text-[hsl(var(--tac-amber))] focus-visible:ring-[hsl(var(--tac-amber))]"
           >
-            {{ $t("chat.lobby_chat") }}
-          </div>
-          <ChatLobby
-            v-if="(currentLobby as any)?.id"
-            instance="matchmaking"
-            type="matchmaking"
-            :lobby-id="(currentLobby as any).id"
-            :frameless="true"
-            class="flex-1 min-h-0"
-          />
+            <Merge class="h-5 w-5" />
+            <span class="font-semibold">
+              {{ $t("layouts.lobby_panel.create_lobby_button") }}
+            </span>
+          </Button>
         </div>
-      </Transition>
-    </div>
+      </HubEmptyState>
+    </Transition>
+
+    <!-- Party chat takes the rest. A flex-sized dock, so its reveal animates
+         flex-basis/grow rather than content height. -->
+    <Transition
+      enter-active-class="lobby-dock"
+      enter-from-class="lobby-dock-collapsed"
+      leave-active-class="lobby-dock"
+      leave-to-class="lobby-dock-collapsed"
+    >
+      <div
+        v-if="currentLobby && squadReady"
+        class="flex min-h-0 flex-1 flex-col"
+      >
+        <ChatLobby
+          v-if="(currentLobby as any)?.id"
+          instance="matchmaking"
+          type="matchmaking"
+          :lobby-id="(currentLobby as any).id"
+          :frameless="true"
+          class="min-h-0 flex-1"
+        />
+      </div>
+    </Transition>
   </div>
 </template>
 

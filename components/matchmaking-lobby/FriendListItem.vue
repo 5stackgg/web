@@ -35,8 +35,11 @@ const props = withDefaults(
   defineProps<{
     player: any;
     muted?: boolean;
+    // Came online since you last looked at Friends: marked where the row
+    // already sits, so the list keeps its order.
+    fresh?: boolean;
   }>(),
-  { muted: false },
+  { muted: false, fresh: false },
 );
 
 const {
@@ -222,6 +225,7 @@ const amberHover =
       <ContextMenuTrigger as-child>
         <div
           class="group/row flex cursor-pointer flex-col rounded-md pr-1 transition-colors duration-200 hover:bg-muted/50"
+          :class="fresh ? 'bg-white/[0.05]' : ''"
         >
           <!-- Identity + actions -->
           <div class="flex items-center gap-1">
@@ -233,7 +237,13 @@ const amberHover =
               :linkable="true"
               :truncate-name="true"
               :context-menu="false"
-            />
+            >
+              <template v-if="fresh" #subline>
+                <span class="block truncate text-[0.65rem] text-foreground">
+                  {{ $t("matchmaking.friends.just_online") }}
+                </span>
+              </template>
+            </PlayerDisplay>
             <div class="flex shrink-0 items-center gap-0.5">
               <!-- Invite to lobby (or to my draft while I'm drafting) — any
                    invitable player except incoming requests. Its column slides

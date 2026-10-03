@@ -21,6 +21,9 @@ export interface ChatTab {
 
 const tabsRef = ref<ChatTab[]>([]);
 const unreadCountsRef = ref<Record<string, number>>({});
+// When each room last saw a message, from either side. The hub dock keeps the
+// most recently active conversations on it, read or not, freshest first.
+const activityAtRef = ref<Record<string, number>>({});
 // Which messages each badge has counted. A message can reach a badge twice,
 // from direct:incoming and from its room's lobby:chat, and a deleted one only
 // comes off the count if it was ever in it -- a line read on screen is newer
@@ -32,6 +35,7 @@ const activeTabIdRef = ref<string | null>(null);
 export function useChatTabs() {
   const tabs = computed(() => tabsRef.value);
   const unreadCounts = computed(() => unreadCountsRef.value);
+  const activityAt = computed(() => activityAtRef.value);
   const activeTabId = computed(() => activeTabIdRef.value);
   const totalUnread = computed(() =>
     Object.values(unreadCountsRef.value).reduce((sum, n) => sum + (n || 0), 0),
@@ -84,6 +88,7 @@ export function useChatTabs() {
     const ordered = orderChatTabs(tabsRef.value);
     const [removed] = tabsRef.value.splice(idx, 1);
     delete unreadCountsRef.value[removed.id];
+    delete activityAtRef.value[removed.id];
     unreadMessageIds.delete(removed.id);
 
     if (activeTabIdRef.value === removed.id) {
@@ -95,6 +100,17 @@ export function useChatTabs() {
 
   function setActiveTab(id: string | null) {
     activeTabIdRef.value = id;
+  }
+
+  // Only ever moves forward: a room's history arriving after a live message
+  // must not make it look older than it is.
+  function noteActivity(id: string, at: number = Date.now()) {
+    if (!Number.isFinite(at)) {
+      return;
+    }
+    if ((activityAtRef.value[id] ?? 0) < at) {
+      activityAtRef.value[id] = at;
+    }
   }
 
   function setTabPosition(id: string, position: number) {
@@ -139,6 +155,7 @@ export function useChatTabs() {
     }
 
     unreadCountsRef.value[id] = (unreadCountsRef.value[id] || 0) + 1;
+    noteActivity(id);
     return true;
   }
 
@@ -180,6 +197,7 @@ export function useChatTabs() {
   function clearAll() {
     tabsRef.value = [];
     unreadCountsRef.value = {};
+    activityAtRef.value = {};
     unreadMessageIds.clear();
     activeTabIdRef.value = null;
   }
@@ -187,6 +205,7 @@ export function useChatTabs() {
   return {
     tabs,
     unreadCounts,
+    activityAt,
     totalUnread,
     activeTabId,
     openTab,
@@ -198,6 +217,7 @@ export function useChatTabs() {
     decrementUnread,
     resetUnread,
     setUnread,
+    noteActivity,
     clearAll,
   };
 }

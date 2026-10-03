@@ -16,6 +16,11 @@ import socket, {
 // already reading it in game, so it never counts toward the hub badge.
 const UNCOUNTED_CHAT_TYPES: ChatType[] = ["match", "match_team"];
 
+function messageTime(message: any) {
+  const at = Date.parse(message?.timestamp ?? "");
+  return Number.isFinite(at) ? at : Date.now();
+}
+
 export function tournamentChatTab(tournament: {
   id: string;
   name: string;
@@ -55,6 +60,7 @@ export function useChatTabSetup() {
     incrementUnread,
     decrementUnread,
     setUnread,
+    noteActivity,
   } = useChatTabs();
   const { hydrate: hydrateReadState, isUnread } = useChatReadState();
 
@@ -74,6 +80,8 @@ export function useChatTabSetup() {
     const counted = !UNCOUNTED_CHAT_TYPES.includes(tab.type);
 
     lobby.on("lobby:chat", (message: any) => {
+      noteActivity(tab.id, messageTime(message));
+
       if (String(message?.from?.steam_id) === String(authStore.me?.steam_id)) {
         return;
       }
@@ -116,6 +124,18 @@ export function useChatTabSetup() {
     // cursor only moves when the tab is opened, so a rejoin (an unblock
     // rejoins every room) would otherwise badge lines read while it was open.
     lobby.on("lobby:messages", (messages: any[]) => {
+      // The newest line in the history is when the room was last active, which
+      // is what keeps a conversation on the hub dock across a reload.
+      const newest = Math.max(
+        0,
+        ...(messages ?? []).map(
+          (message) => Date.parse(message?.timestamp ?? "") || 0,
+        ),
+      );
+      if (newest > 0) {
+        noteActivity(tab.id, newest);
+      }
+
       if (!counted || isChatTabOnScreen(tab.id)) {
         setUnread(tab.id, 0);
         return;

@@ -2,7 +2,7 @@
 import { ref, computed } from "vue";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import PlayersList from "~/components/matchmaking-lobby/PlayersList.vue";
-import Empty from "~/components/ui/empty/Empty.vue";
+import HubEmptyState from "~/components/hub/HubEmptyState.vue";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useInvites } from "@/composables/useInvites";
@@ -50,12 +50,6 @@ const otherOnlineCount = computed(() => {
       class="flex flex-col h-full min-h-0"
     >
       <div class="px-3 pt-3 pb-3 flex-shrink-0">
-        <div
-          class="flex items-center gap-[0.4rem] font-mono text-[0.62rem] font-bold tracking-[0.24em] uppercase text-muted-foreground -mx-3 px-3 pb-3 mb-3 border-b border-border"
-        >
-          <span class="w-2 h-[2px] bg-[hsl(var(--tac-amber))]"></span>
-          {{ $t("layouts.hub.social") }}
-        </div>
         <TabsList
           variant="underline"
           class="w-full gap-[0.15rem] bg-muted/30 border border-border rounded-md p-[0.2rem]"
@@ -86,21 +80,22 @@ const otherOnlineCount = computed(() => {
       </div>
       <TabsContent
         value="friends"
-        class="mt-0 flex-1 overflow-y-auto min-h-0 px-3"
+        class="mt-0 flex flex-1 flex-col overflow-y-auto min-h-0 px-3"
       >
         <PlayersList :friends-only="true" />
       </TabsContent>
       <TabsContent
         value="online"
-        class="mt-0 flex-1 overflow-y-auto min-h-0 px-3"
+        class="mt-0 flex flex-1 flex-col overflow-y-auto min-h-0 px-3"
       >
         <template v-if="otherOnlineCount > 0">
           <PlayersList />
         </template>
         <template v-else>
-          <Empty class="text-sm text-muted-foreground">
-            <p>{{ $t("player.search.no_players_found") }}</p>
-          </Empty>
+          <HubEmptyState
+            :title="$t('layouts.hub.empty.others_title')"
+            :description="$t('layouts.hub.empty.others_description')"
+          />
         </template>
       </TabsContent>
     </Tabs>

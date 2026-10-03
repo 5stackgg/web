@@ -186,8 +186,9 @@ describe("PlayerEditForm", () => {
       .trigger("click");
     await flushPromises();
 
-    expect(String(fetchMock.mock.calls[0][0])).toContain(
-      "/roster-players/1.webp",
+    // Other requests (apollo) can share the fetch spy; look for the image.
+    expect(fetchMock.mock.calls.map(([url]) => String(url))).toContainEqual(
+      expect.stringContaining("/roster-players/1.webp"),
     );
     const editor = form.findComponent(RosterImageEditor);
     expect(editor.props("open")).toBe(true);

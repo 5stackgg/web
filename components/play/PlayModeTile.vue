@@ -15,6 +15,8 @@ const props = defineProps<{
   party: number;
   canQueue: boolean;
   selected: boolean;
+  // The tile Tab lands on: the checked one, or the first pickable one.
+  tabStop?: boolean;
   // A party member sees the picker but the leader chooses.
   locked: boolean;
 }>();
@@ -32,7 +34,7 @@ const checked = computed(() => props.selected && !blocked.value);
     role="radio"
     :aria-checked="checked"
     :aria-disabled="blocked || locked || undefined"
-    :tabindex="checked ? 0 : -1"
+    :tabindex="tabStop ? 0 : -1"
     class="group/tile relative flex min-h-[212px] flex-col gap-1.5 rounded-lg border p-4 text-left transition-[border-color,background-color,box-shadow] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] focus-visible:ring-offset-2 focus-visible:ring-offset-background max-xl:min-h-[196px] max-sm:min-h-0 max-sm:gap-1 max-sm:p-3"
     :class="[
       checked

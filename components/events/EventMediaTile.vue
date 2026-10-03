@@ -1,17 +1,15 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { Film, Play, ExternalLink, Twitch, Youtube } from "lucide-vue-next";
-import ClipPlayer from "~/components/clips/ClipPlayer.vue";
 import EventAudioPlayer from "~/components/events/EventAudioPlayer.vue";
 import { eventMediaUrl } from "~/composables/useEventMediaUpload";
 import { useMediaPlayback } from "~/composables/useMediaPlayback";
 import { parseExternalMedia } from "~/utilities/externalMedia";
 
-// Pure playback tile: clicking a video swaps the poster for the real player
-// (the mp4 is only fetched at that moment), clicking an image emits `view`
-// so the list can open its gallery lightbox, external links embed
-// (YouTube/Twitch) or open in a new tab. Editing lives behind the parent's
-// explicit Details action.
+// Pure playback tile: clicking an image or a video emits `view` so the list
+// can open its gallery lightbox (the mp4 is only fetched there), external
+// links embed (YouTube/Twitch) or open in a new tab. Editing lives behind the
+// parent's explicit Details action.
 const props = defineProps<{
   event: { id: string };
   item: {
@@ -27,7 +25,6 @@ const props = defineProps<{
 const emit = defineEmits<{ (e: "view", id: string): void }>();
 
 const playing = ref(false);
-const playerRef = ref<InstanceType<typeof ClipPlayer> | null>(null);
 const playback = useMediaPlayback();
 
 // Only one media element plays at a time: when another tile claims the
@@ -59,11 +56,9 @@ const embedSrc = computed(() => {
   return `${url}${url.includes("?") ? "&" : "?"}autoplay=1`;
 });
 
-async function startPlayback() {
+function startPlayback() {
   playback.claim(props.item.id);
   playing.value = true;
-  await nextTick();
-  playerRef.value?.play();
 }
 </script>
 
@@ -133,41 +128,31 @@ async function startPlayback() {
     </template>
 
     <!-- video -->
-    <template v-else-if="item.mime_type?.startsWith('video/')">
-      <ClipPlayer
-        v-if="playing"
-        ref="playerRef"
-        :src="src"
-        :clip-key="item.id"
-        :poster="posterSrc"
-        @play="playback.claim(item.id)"
+    <button
+      v-else-if="item.mime_type?.startsWith('video/')"
+      type="button"
+      class="group/vid relative h-full w-full"
+      @click="emit('view', item.id)"
+    >
+      <img
+        v-if="posterSrc"
+        :src="posterSrc"
+        class="h-full w-full object-cover"
+        loading="lazy"
       />
-      <button
-        v-else
-        type="button"
-        class="group/vid relative h-full w-full"
-        @click="startPlayback"
+      <div v-else class="flex h-full w-full items-center justify-center">
+        <Film class="h-7 w-7 text-muted-foreground" />
+      </div>
+      <span
+        class="absolute inset-0 flex items-center justify-center bg-black/20 transition-colors group-hover/vid:bg-black/35"
       >
-        <img
-          v-if="posterSrc"
-          :src="posterSrc"
-          class="h-full w-full object-cover"
-          loading="lazy"
-        />
-        <div v-else class="flex h-full w-full items-center justify-center">
-          <Film class="h-7 w-7 text-muted-foreground" />
-        </div>
         <span
-          class="absolute inset-0 flex items-center justify-center bg-black/20 transition-colors group-hover/vid:bg-black/35"
+          class="flex h-11 w-11 items-center justify-center rounded-full border border-[hsl(var(--tac-amber)/0.6)] bg-black/60 text-[hsl(var(--tac-amber))]"
         >
-          <span
-            class="flex h-11 w-11 items-center justify-center rounded-full border border-[hsl(var(--tac-amber)/0.6)] bg-black/60 text-[hsl(var(--tac-amber))]"
-          >
-            <Play class="ml-0.5 h-5 w-5" />
-          </span>
+          <Play class="ml-0.5 h-5 w-5" />
         </span>
-      </button>
-    </template>
+      </span>
+    </button>
 
     <!-- audio -->
     <div

@@ -1,5 +1,6 @@
-import { ref, computed, shallowRef, watch } from "vue";
+import { ref, computed, shallowRef } from "vue";
 import { defineStore, acceptHMRUpdate } from "pinia";
+import { estimateDemoTick } from "~/utilities/demoTickEstimate";
 
 // Demo-playback session state, scoped to the current viewer's tab.
 // One pod per viewer per match_map (api enforces that), so a single
@@ -10,7 +11,7 @@ import { defineStore, acceptHMRUpdate } from "pinia";
 // daemon writes there as it boots, becomes live, errors, etc.
 // No API polling.
 //
-// Tick-based throughout: the seek bar binds to `currentTick` against
+// Tick-based throughout: the seek bar binds to the tick estimate against
 // `totalTicks`, not to seconds against duration. Keeping ticks as the
 // primary axis makes round-jump trivial (round_ticks gives us start
 // ticks directly) and avoids drift between client and CS2 when the
@@ -22,7 +23,9 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
   // subscription. UI surfaces .status / .stream_url / .error_message
   // from this — local `localStatus` only covers the brief window
   // before the subscription delivers its first row.
-  const sessionRow = ref<{
+  // shallowRef: the subscription swaps the row wholesale on every tick and
+  // nothing mutates it in place, so deep-proxying status_history is waste.
+  const sessionRow = shallowRef<{
     id: string;
     status: string;
     stream_url: string | null;
@@ -162,29 +165,6 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
   // optimistic UI.
   const lastControlSentMs = ref<number>(0);
 
-  // Reactive wall-clock ref the live-tick computed depends on.
-  // `Date.now()` itself isn't a reactive dep, so without this the
-  // currentTick computed cached the moment of the last control event
-  // and the seek bar froze between user actions. The interval ticks
-  // at 50ms (~20Hz) which is plenty smooth for a tick estimator —
-  // visualTick smoothing in DemoPlaybackControls reads currentTick
-  // every rAF frame and snaps when the diff is tiny, so the
-  // ~50ms freshness floor is invisible to the user.
-  const nowMs = ref<number>(Date.now());
-  let tickClockTimer: ReturnType<typeof setInterval> | null = null;
-  function startTickClock() {
-    if (tickClockTimer !== null || typeof window === "undefined") return;
-    tickClockTimer = setInterval(() => {
-      nowMs.value = Date.now();
-    }, 50);
-  }
-  function stopTickClock() {
-    if (tickClockTimer !== null) {
-      clearInterval(tickClockTimer);
-      tickClockTimer = null;
-    }
-  }
-
   // Surface a single status string to the UI. Subscription-driven
   // status (booting / launching_steam / live / errored) wins; local
   // ("starting" / "stopping" / "error") fills the pre-subscription gap.
@@ -207,19 +187,6 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
   const isPlaying = computed(() => status.value === "playing");
   const isErrored = computed(
     () => status.value === "errored" || status.value === "error",
-  );
-
-  // Only tick while a demo is actively playing — the 50ms interval
-  // was previously always-on once the store module loaded, which
-  // burned main-thread time on unrelated routes (live deck, etc.).
-  watch(
-    () =>
-      sessionRow.value != null && status.value === "playing" && !paused.value,
-    (active) => {
-      if (active) startTickClock();
-      else stopTickClock();
-    },
-    { immediate: true },
   );
 
   function syncFromControl(snapshot: {
@@ -277,13 +244,13 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
     }
     if (typeof state.paused === "boolean" && state.paused !== paused.value) {
       lastTickAtSync.value =
-        typeof state.tick === "number" ? state.tick : currentTick.value;
+        typeof state.tick === "number" ? state.tick : tickNow();
       lastSyncRealMs.value = Date.now();
       paused.value = state.paused;
       return;
     }
     if (typeof state.tick === "number") {
-      const drift = Math.abs(state.tick - currentTick.value);
+      const drift = Math.abs(state.tick - tickNow());
       if (drift > tickRate.value * 1.5) {
         lastTickAtSync.value = state.tick;
         lastSyncRealMs.value = Date.now();
@@ -291,28 +258,31 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
     }
   }
 
-  // Computed live tick estimate — animates the scrubber without
-  // forcing an api round-trip every animation frame. Resyncs every
-  // user-initiated control via syncFromControl.
-  const currentTick = computed<number>(() => {
-    if (paused.value) return lastTickAtSync.value;
-    // Park at the seek target while cs2 catches up; the 20s ceiling
-    // un-freezes us if the pod never confirms (its own ceiling matches).
-    if (seeking.value && nowMs.value - seekingSinceMs.value < 20_000) {
-      return lastTickAtSync.value;
-    }
-    const elapsedSec = (nowMs.value - lastSyncRealMs.value) / 1000;
-    return Math.max(
-      0,
-      Math.round(
-        lastTickAtSync.value + elapsedSec * rate.value * tickRate.value,
-      ),
+  // Live tick estimate at wall-clock `now`. Deliberately not a computed on
+  // a ticking clock: the old 20Hz `nowMs` interval invalidated every reader
+  // 20×/s whether or not anything on screen used it. Per-frame consumers
+  // (seek bar, clip editor playhead) call this from their own rAF via
+  // useDemoPlayhead and write straight to the compositor; one-off reads
+  // (pause, skip, kill nav) call tickNow(). Resyncs on every control via
+  // syncFromControl and on every pod frame via reconcileFromPod.
+  function tickAt(now: number): number {
+    return estimateDemoTick(
+      {
+        lastTickAtSync: lastTickAtSync.value,
+        lastSyncRealMs: lastSyncRealMs.value,
+        rate: rate.value,
+        tickRate: tickRate.value,
+        paused: paused.value,
+        seeking: seeking.value,
+        seekingSinceMs: seekingSinceMs.value,
+      },
+      now,
     );
-  });
+  }
+  function tickNow(): number {
+    return tickAt(Date.now());
+  }
 
-  const currentSeconds = computed(() =>
-    tickRate.value > 0 ? currentTick.value / tickRate.value : 0,
-  );
   const totalSeconds = computed(() =>
     tickRate.value > 0 ? totalTicks.value / tickRate.value : 0,
   );
@@ -381,8 +351,8 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
     lastControlSentMs,
     lastTickAtSync,
     lastSyncRealMs,
-    currentTick,
-    currentSeconds,
+    tickAt,
+    tickNow,
     totalSeconds,
     status,
     streamUrl,

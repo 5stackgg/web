@@ -43,7 +43,7 @@ export function useClipEditor() {
   function open() {
     active.value = true;
     if (segments.value.length === 0) {
-      const at = Math.min(store.currentTick, totalTicks.value - 1);
+      const at = Math.min(store.tickNow(), totalTicks.value - 1);
       const span = tickRate.value * 30;
       const end = Math.min(at + span, totalTicks.value);
       segments.value = [
@@ -107,7 +107,7 @@ export function useClipEditor() {
   function splitSegmentAtPlayhead(id: string) {
     const seg = segments.value.find((s) => s.id === id);
     if (!seg) return;
-    const at = store.currentTick;
+    const at = store.tickNow();
     const minSpan = Math.max(1, Math.round(tickRate.value * 0.5));
     if (at <= seg.start_tick + minSpan || at >= seg.end_tick - minSpan) {
       return;
@@ -176,41 +176,46 @@ export function useClipEditor() {
     }
     seek(head.start_tick);
     play();
-    previewWatcherStop = watch(
-      () => [store.currentTick, store.paused] as const,
-      ([tick, paused]) => {
-        if (!previewing.value) return;
-        // Operator paused from the transport bar (or anywhere else) —
-        // treat it as ending the preview so the two stay in sync.
-        if (paused) {
-          stopPreview();
-          return;
-        }
-        const segs = sortedSegments.value;
-        const cur = segs[previewSegmentIndex.value];
-        if (!cur) {
-          stopPreview();
-          return;
-        }
-        if (tick >= cur.end_tick) {
-          const nextIndex = previewSegmentIndex.value + 1;
-          const next = segs[nextIndex];
-          if (!next) {
-            // stopPreview() pauses the demo on the way out.
-            stopPreview();
-            return;
-          }
-          previewSegmentIndex.value = nextIndex;
-          if (next.pov_steam_id) {
-            const slot = store.specSlots.find(
-              (s) => s.steam_id === next.pov_steam_id,
-            );
-            if (slot) switchToSlot(slot.slot);
-          }
-          seek(next.start_tick);
-        }
+    // Operator paused from the transport bar (or anywhere else) — treat
+    // it as ending the preview so the two stay in sync.
+    const stopPausedWatch = watch(
+      () => store.paused,
+      (paused) => {
+        if (paused && previewing.value) stopPreview();
       },
     );
+    // The playhead is an estimate read on demand (there's no reactive
+    // clock to watch), so the segment boundary check polls it. 50ms is
+    // ~3 ticks at 64 tick — well inside a seek's own settle time.
+    const boundaryTimer = setInterval(() => {
+      if (!previewing.value) return;
+      const segs = sortedSegments.value;
+      const cur = segs[previewSegmentIndex.value];
+      if (!cur) {
+        stopPreview();
+        return;
+      }
+      if (store.tickNow() < cur.end_tick) return;
+      const nextIndex = previewSegmentIndex.value + 1;
+      const next = segs[nextIndex];
+      if (!next) {
+        // stopPreview() pauses the demo on the way out.
+        stopPreview();
+        return;
+      }
+      previewSegmentIndex.value = nextIndex;
+      if (next.pov_steam_id) {
+        const slot = store.specSlots.find(
+          (s) => s.steam_id === next.pov_steam_id,
+        );
+        if (slot) switchToSlot(slot.slot);
+      }
+      seek(next.start_tick);
+    }, 50);
+    previewWatcherStop = () => {
+      stopPausedWatch();
+      clearInterval(boundaryTimer);
+    };
   }
 
   function stopPreview() {

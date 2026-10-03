@@ -47,6 +47,12 @@ const props = withDefaults(
     // all first. Only for URLs that go straight to MediaMTX: the API's camera
     // proxy has no session URL to send them to.
     trickle?: boolean;
+    // Playout buffer, in ms, applied to every receiver. WebRTC defaults to
+    // the lowest delay it can get away with and presents frames the moment
+    // they decode, so network jitter shows up as uneven motion. A small
+    // floor lets the browser pace frames evenly. Off (lowest latency)
+    // unless a host opts in.
+    jitterBufferMs?: number;
   }>(),
   {
     // Vue casts an absent boolean prop to false, so "on unless a host opts out"
@@ -368,13 +374,16 @@ async function connect() {
       };
     }
 
-    pc.addTransceiver("video", { direction: "recvonly" });
+    const video = pc.addTransceiver("video", { direction: "recvonly" });
 
     // MediaMTX answers the offer it is given, so leaving the audio transceiver
     // out is all it takes to stop the server sending audio at all.
-    if (wantsAudio.value) {
-      pc.addTransceiver("audio", { direction: "recvonly" });
-    }
+    const audio = wantsAudio.value
+      ? pc.addTransceiver("audio", { direction: "recvonly" })
+      : null;
+
+    // Same target on both so lip sync holds.
+    applyJitterBuffer([video?.receiver, audio?.receiver]);
 
     pc.ontrack = (event) => {
       const el = videoRef.value;
@@ -487,6 +496,36 @@ async function connect() {
       return;
     }
     scheduleRetry();
+  }
+}
+
+type TunableReceiver = RTCRtpReceiver & {
+  jitterBufferTarget?: number | null;
+  // Pre-standard Chrome name, in seconds.
+  playoutDelayHint?: number | null;
+};
+
+function applyJitterBuffer(receivers: Array<RTCRtpReceiver | undefined>) {
+  const ms = props.jitterBufferMs;
+  if (!ms || ms <= 0) {
+    return;
+  }
+  for (const receiver of receivers) {
+    if (!receiver) {
+      continue;
+    }
+    const tunable = receiver as TunableReceiver;
+    try {
+      // Feature-test on `receiver` so the fallback branch keeps the wider
+      // type (the DOM lib declares jitterBufferTarget as always present).
+      if ("jitterBufferTarget" in receiver) {
+        tunable.jitterBufferTarget = ms;
+      } else if ("playoutDelayHint" in tunable) {
+        tunable.playoutDelayHint = ms / 1000;
+      }
+    } catch {
+      // Out-of-range or unsupported: the browser default still plays.
+    }
   }
 }
 
@@ -1002,7 +1041,7 @@ defineExpose({ connect, teardown });
         <button
           type="button"
           :aria-label="$t('ui.mute')"
-          class="inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm transition-colors duration-150 hover:bg-black/80 hover:text-white cursor-pointer"
+          class="inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/70 text-white/90 transition-colors duration-150 hover:bg-black/85 hover:text-white cursor-pointer"
           @click="toggleMute"
         >
           <Volume2 class="size-3.5" />
@@ -1039,7 +1078,7 @@ defineExpose({ connect, teardown });
             : $t('ui_extras.fullscreen')
         "
         :title="$t('replay_extras.fullscreen_key')"
-        class="inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm transition-all duration-150 hover:bg-black/80 hover:text-white hover:scale-110 cursor-pointer"
+        class="inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/70 text-white/90 transition-colors duration-150 hover:bg-black/85 hover:text-white cursor-pointer"
         @click="toggleFullscreen"
       >
         <Minimize2 v-if="isFullscreen" class="size-3.5" />

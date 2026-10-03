@@ -44,6 +44,11 @@ const replayMapId = computed(() =>
   props.matchMapId === "dev" ? store.matchMapId : props.matchMapId,
 );
 
+// Replays aren't latency-bound the way a live match is — a seek already
+// takes cs2 a second or two — so spend 150ms of buffer on even frame
+// pacing instead of rendering every frame the instant it decodes.
+const DEMO_JITTER_BUFFER_MS = 150;
+
 const whepUrl = computed(() => {
   if (!store.streamUrl) return null;
   // streamUrl is the HLS base; translate to WHEP on the same host.
@@ -63,10 +68,15 @@ function closeWindow() {
 
 <template>
   <div class="flex flex-col bg-black h-full min-h-0">
+    <!-- Revealed at `playing`, but the WebRTC handshake starts at `live`
+         (the pod is already publishing its loading screen), so the
+         picture is up the moment the boot screen fades. -->
     <StreamCanvas
       :whep-url="whepUrl"
       :fallback-url="store.streamUrl"
       :is-live="store.isPlaying"
+      :preconnect="store.isLive"
+      :jitter-buffer-ms="DEMO_JITTER_BUFFER_MS"
       mode="demo"
       :show-boot="true"
       class="flex-1 min-h-0"
@@ -125,7 +135,7 @@ function closeWindow() {
       </template>
     </StreamCanvas>
 
-    <Transition name="editor-slide">
+    <Transition name="editor-fade">
       <ClipEditorBar
         v-if="store.isPlaying && editor.active.value && store.matchMapId"
         :match-map-id="store.matchMapId"
@@ -133,32 +143,28 @@ function closeWindow() {
       />
     </Transition>
 
-    <Transition name="controls-slide">
+    <Transition name="controls-fade">
       <DemoPlaybackControls v-if="store.isPlaying" class="shrink-0" />
     </Transition>
   </div>
 </template>
 
 <style scoped>
-.controls-slide-enter-active {
-  transition:
-    opacity 300ms ease,
-    transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+/* Short, opacity-only fades: the bars arrive with the picture instead of
+   sliding in after it. */
+.controls-fade-enter-active {
+  transition: opacity 150ms ease;
 }
-.controls-slide-enter-from {
+.controls-fade-enter-from {
   opacity: 0;
-  transform: translateY(20px);
 }
 
-.editor-slide-enter-active,
-.editor-slide-leave-active {
-  transition:
-    opacity 220ms ease,
-    transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+.editor-fade-enter-active,
+.editor-fade-leave-active {
+  transition: opacity 150ms ease;
 }
-.editor-slide-enter-from,
-.editor-slide-leave-to {
+.editor-fade-enter-from,
+.editor-fade-leave-to {
   opacity: 0;
-  transform: translateY(12px);
 }
 </style>

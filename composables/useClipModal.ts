@@ -12,6 +12,9 @@ export type ClipQueueItem = {
   durationMs: number | null;
   thumbnailUrl: string | null;
   posterUrl: string | null;
+  killsCount?: number | null;
+  round?: number | null;
+  mapLabel?: string | null;
 };
 
 // Modal driven by the `?clip=<id>` query param so deep links and

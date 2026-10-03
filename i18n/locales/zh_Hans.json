@@ -9828,15 +9828,24 @@
     "detail": {
       "default_title": "高光",
       "visibility": "可见性",
-      "signal_lost": "信号丢失",
       "clip_not_found": "未找到精彩集锦",
       "clip_not_found_description": "它可能已被删除，或者您没有查看权限。",
       "title_label": "标题",
-      "other_clips": "其他集锦",
       "view_match": "查看比赛",
       "highlight_clip_viewer": "高光集锦查看器",
       "render_finalizing": "渲染完成中…",
-      "just_now": "刚刚"
+      "just_now": "刚刚",
+      "up_next": "接下来",
+      "playing": "正在播放",
+      "up_next_in": "{seconds} 秒后播放下一个",
+      "theater_mode": "影院模式",
+      "default_view": "默认视图",
+      "previous_next": "上一个 / 下一个",
+      "best_of": "BO{count}",
+      "make_public": "设为公开",
+      "make_private": "设为私密",
+      "more_actions": "更多操作",
+      "played_for": "{name} 效力于该队"
     },
     "render_queue": {
       "queued": "排队中",

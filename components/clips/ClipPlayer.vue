@@ -65,6 +65,9 @@ const emit = defineEmits<{
   progress: [info: { progress: number; currentTime: number; duration: number }];
 }>();
 
+const trayButtonClass =
+  "inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-black/70 text-white/85 backdrop-blur-md transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]";
+
 const videoRef = ref<HTMLVideoElement | null>(null);
 const stageRef = ref<InstanceType<typeof StreamCanvas> | null>(null);
 const stageEl = computed<HTMLElement | null>(
@@ -842,7 +845,7 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
       <div class="group/vol flex items-center">
         <button
           type="button"
-          class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-black/70 text-white/85 backdrop-blur-md transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
+          :class="trayButtonClass"
           :title="muted ? $t('ui_extras.unmute') : $t('ui_extras.mute')"
           @click.stop="toggleMute"
         >
@@ -863,9 +866,12 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
           @input="setVolume(Number(($event.target as HTMLInputElement).value))"
         />
       </div>
+      <!-- Consumer controls (e.g. the modal's theater toggle) sit beside
+           fullscreen and share the tray's button style. -->
+      <slot v-if="!isFullscreen" name="controls" :button-class="trayButtonClass" />
       <button
         type="button"
-        class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-black/70 text-white/85 backdrop-blur-md transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
+        :class="trayButtonClass"
         :title="
           isFullscreen
             ? $t('ui_extras.exit_fullscreen')

@@ -9828,15 +9828,24 @@
     "detail": {
       "default_title": "Highlight",
       "visibility": "Visibilité",
-      "signal_lost": "Signal perdu",
       "clip_not_found": "Clip introuvable",
       "clip_not_found_description": "Il a peut-être été supprimé, ou tu n'as pas la permission de le voir.",
       "title_label": "Titre",
-      "other_clips": "Autres clips",
       "view_match": "Voir le match",
       "highlight_clip_viewer": "Lecteur de clips highlight",
       "render_finalizing": "Finalisation du rendu…",
-      "just_now": "à l'instant"
+      "just_now": "à l'instant",
+      "up_next": "À suivre",
+      "playing": "En lecture",
+      "up_next_in": "À suivre dans {seconds}",
+      "theater_mode": "Mode cinéma",
+      "default_view": "Affichage par défaut",
+      "previous_next": "Précédent / suivant",
+      "best_of": "Best of {count}",
+      "make_public": "Rendre public",
+      "make_private": "Rendre privé",
+      "more_actions": "Plus d'actions",
+      "played_for": "{name} a joué pour cette équipe"
     },
     "render_queue": {
       "queued": "En file",

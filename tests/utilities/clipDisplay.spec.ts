@@ -89,6 +89,29 @@ describe("clipQueueItem", () => {
       durationMs: 24000,
       thumbnailUrl: "thumb.jpg",
       posterUrl: "poster.jpg",
+      killsCount: null,
+      round: null,
+      mapLabel: null,
     });
+  });
+
+  it("carries the kill count, round and map for the queue's tiles", () => {
+    const clip = {
+      id: "c2",
+      kills_count: 4,
+      round: 13,
+      match_map: { map: { name: "de_mirage", label: null } },
+    } as unknown as Clip;
+    expect(clipQueueItem(clip)).toMatchObject({
+      killsCount: 4,
+      round: 13,
+      mapLabel: "Mirage",
+    });
+    expect(
+      clipQueueItem({
+        ...clip,
+        match_map: { map: { name: "de_mirage", label: "Mirage (Classic)" } },
+      } as unknown as Clip).mapLabel,
+    ).toBe("Mirage (Classic)");
   });
 });

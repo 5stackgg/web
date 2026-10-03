@@ -9828,15 +9828,24 @@
     "detail": {
       "default_title": "Хайлайт",
       "visibility": "Видимість",
-      "signal_lost": "Сигнал втрачено",
       "clip_not_found": "Кліп не знайдено",
       "clip_not_found_description": "Можливо, його видалили, або в тебе немає прав на перегляд.",
       "title_label": "Назва",
-      "other_clips": "Інші кліпи",
       "view_match": "Переглянути матч",
       "highlight_clip_viewer": "Перегляд хайлайт-кліпу",
       "render_finalizing": "Завершення рендеру…",
-      "just_now": "щойно"
+      "just_now": "щойно",
+      "up_next": "Далі",
+      "playing": "Відтворюється",
+      "up_next_in": "Далі через {seconds}",
+      "theater_mode": "Режим кінотеатру",
+      "default_view": "Стандартний вигляд",
+      "previous_next": "Назад / вперед",
+      "best_of": "Best of {count}",
+      "make_public": "Зробити публічним",
+      "make_private": "Зробити приватним",
+      "more_actions": "Ще дії",
+      "played_for": "{name} грав за цю команду"
     },
     "render_queue": {
       "queued": "У черзі",

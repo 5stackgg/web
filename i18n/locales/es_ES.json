@@ -9828,15 +9828,24 @@
     "detail": {
       "default_title": "Highlight",
       "visibility": "Visibilidad",
-      "signal_lost": "Señal perdida",
       "clip_not_found": "Clip no encontrado",
       "clip_not_found_description": "Puede que se haya eliminado o que no tengas permiso para verlo.",
       "title_label": "Título",
-      "other_clips": "Otros clips",
       "view_match": "Ver partida",
       "highlight_clip_viewer": "Visor de clips de highlights",
       "render_finalizing": "Finalizando el renderizado…",
-      "just_now": "ahora mismo"
+      "just_now": "ahora mismo",
+      "up_next": "A continuación",
+      "playing": "Reproduciendo",
+      "up_next_in": "A continuación en {seconds}",
+      "theater_mode": "Modo cine",
+      "default_view": "Vista predeterminada",
+      "previous_next": "Anterior / siguiente",
+      "best_of": "Al mejor de {count}",
+      "make_public": "Hacer público",
+      "make_private": "Hacer privado",
+      "more_actions": "Más acciones",
+      "played_for": "{name} jugó en este equipo"
     },
     "render_queue": {
       "queued": "En cola",

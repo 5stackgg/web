@@ -9828,15 +9828,24 @@
     "detail": {
       "default_title": "Höjdpunkt",
       "visibility": "Synlighet",
-      "signal_lost": "Signal förlorad",
       "clip_not_found": "Klippet hittades inte",
       "clip_not_found_description": "Det kan ha tagits bort, eller så saknar du behörighet att se det.",
       "title_label": "Titel",
-      "other_clips": "Andra klipp",
       "view_match": "Visa match",
       "highlight_clip_viewer": "Visning av höjdpunktsklipp",
       "render_finalizing": "Slutför rendering…",
-      "just_now": "just nu"
+      "just_now": "just nu",
+      "up_next": "Näst på tur",
+      "playing": "Spelas",
+      "up_next_in": "Näst på tur om {seconds}",
+      "theater_mode": "Bioläge",
+      "default_view": "Standardvy",
+      "previous_next": "Föregående / nästa",
+      "best_of": "Bäst av {count}",
+      "make_public": "Gör offentlig",
+      "make_private": "Gör privat",
+      "more_actions": "Fler åtgärder",
+      "played_for": "{name} spelade för det här laget"
     },
     "render_queue": {
       "queued": "I kö",

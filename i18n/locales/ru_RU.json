@@ -9828,15 +9828,24 @@
     "detail": {
       "default_title": "Хайлайт",
       "visibility": "Видимость",
-      "signal_lost": "Сигнал потерян",
       "clip_not_found": "Клип не найден",
       "clip_not_found_description": "Возможно, он был удалён, либо у тебя нет прав на просмотр.",
       "title_label": "Название",
-      "other_clips": "Другие клипы",
       "view_match": "Открыть матч",
       "highlight_clip_viewer": "Просмотр хайлайта",
       "render_finalizing": "Завершение рендера…",
-      "just_now": "только что"
+      "just_now": "только что",
+      "up_next": "Далее",
+      "playing": "Воспроизводится",
+      "up_next_in": "Далее через {seconds}",
+      "theater_mode": "Широкоэкранный режим",
+      "default_view": "Обычный режим",
+      "previous_next": "Назад / вперёд",
+      "best_of": "Best of {count}",
+      "make_public": "Сделать публичным",
+      "make_private": "Сделать приватным",
+      "more_actions": "Ещё действия",
+      "played_for": "{name} играл за эту команду"
     },
     "render_queue": {
       "queued": "В очереди",

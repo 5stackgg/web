@@ -24647,6 +24647,7 @@ count?: [{	columns?: Array<ValueTypes["maps_select_column"]> | undefined | null 
 	file?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	kills_count?:boolean | `@${string}`,
+	knife_kills_count?:boolean | `@${string}`,
 	/** An object relationship */
 	match_map?:ValueTypes["match_maps"],
 	/** An object relationship */
@@ -24735,6 +24736,7 @@ count?: [{	columns?: Array<ValueTypes["match_clips_select_column"]> | undefined 
 ["match_clips_avg_fields"]: AliasType<{
 	duration_ms?:boolean | `@${string}`,
 	kills_count?:boolean | `@${string}`,
+	knife_kills_count?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	target_steam_id?:boolean | `@${string}`,
@@ -24746,6 +24748,7 @@ count?: [{	columns?: Array<ValueTypes["match_clips_select_column"]> | undefined 
 ["match_clips_avg_order_by"]: {
 	duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	kills_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	knife_kills_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	target_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -24763,6 +24766,7 @@ count?: [{	columns?: Array<ValueTypes["match_clips_select_column"]> | undefined 
 	file?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	kills_count?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	knife_kills_count?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	match_map?: ValueTypes["match_maps_bool_exp"] | undefined | null | Variable<any, string>,
 	match_map_demo?: ValueTypes["match_map_demos_bool_exp"] | undefined | null | Variable<any, string>,
 	match_map_demo_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -24787,6 +24791,7 @@ count?: [{	columns?: Array<ValueTypes["match_clips_select_column"]> | undefined 
 ["match_clips_inc_input"]: {
 	duration_ms?: number | undefined | null | Variable<any, string>,
 	kills_count?: number | undefined | null | Variable<any, string>,
+	knife_kills_count?: number | undefined | null | Variable<any, string>,
 	round?: number | undefined | null | Variable<any, string>,
 	size?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	target_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
@@ -24800,6 +24805,7 @@ count?: [{	columns?: Array<ValueTypes["match_clips_select_column"]> | undefined 
 	file?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	kills_count?: number | undefined | null | Variable<any, string>,
+	knife_kills_count?: number | undefined | null | Variable<any, string>,
 	match_map?: ValueTypes["match_maps_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	match_map_demo?: ValueTypes["match_map_demos_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	match_map_demo_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -24825,6 +24831,7 @@ count?: [{	columns?: Array<ValueTypes["match_clips_select_column"]> | undefined 
 	file?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	kills_count?:boolean | `@${string}`,
+	knife_kills_count?:boolean | `@${string}`,
 	match_map_demo_id?:boolean | `@${string}`,
 	match_map_id?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
@@ -24845,6 +24852,7 @@ count?: [{	columns?: Array<ValueTypes["match_clips_select_column"]> | undefined 
 	file?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	kills_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	knife_kills_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_map_demo_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -24864,6 +24872,7 @@ count?: [{	columns?: Array<ValueTypes["match_clips_select_column"]> | undefined 
 	file?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	kills_count?:boolean | `@${string}`,
+	knife_kills_count?:boolean | `@${string}`,
 	match_map_demo_id?:boolean | `@${string}`,
 	match_map_id?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
@@ -24884,6 +24893,7 @@ count?: [{	columns?: Array<ValueTypes["match_clips_select_column"]> | undefined 
 	file?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	kills_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	knife_kills_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_map_demo_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -24922,6 +24932,7 @@ count?: [{	columns?: Array<ValueTypes["match_clips_select_column"]> | undefined 
 	file?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	kills_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	knife_kills_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_map?: ValueTypes["match_maps_order_by"] | undefined | null | Variable<any, string>,
 	match_map_demo?: ValueTypes["match_map_demos_order_by"] | undefined | null | Variable<any, string>,
 	match_map_demo_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -24952,6 +24963,7 @@ count?: [{	columns?: Array<ValueTypes["match_clips_select_column"]> | undefined 
 	file?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	kills_count?: number | undefined | null | Variable<any, string>,
+	knife_kills_count?: number | undefined | null | Variable<any, string>,
 	match_map_demo_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_map_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	round?: number | undefined | null | Variable<any, string>,
@@ -24967,6 +24979,7 @@ count?: [{	columns?: Array<ValueTypes["match_clips_select_column"]> | undefined 
 ["match_clips_stddev_fields"]: AliasType<{
 	duration_ms?:boolean | `@${string}`,
 	kills_count?:boolean | `@${string}`,
+	knife_kills_count?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	target_steam_id?:boolean | `@${string}`,
@@ -24978,6 +24991,7 @@ count?: [{	columns?: Array<ValueTypes["match_clips_select_column"]> | undefined 
 ["match_clips_stddev_order_by"]: {
 	duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	kills_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	knife_kills_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	target_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -24988,6 +25002,7 @@ count?: [{	columns?: Array<ValueTypes["match_clips_select_column"]> | undefined 
 ["match_clips_stddev_pop_fields"]: AliasType<{
 	duration_ms?:boolean | `@${string}`,
 	kills_count?:boolean | `@${string}`,
+	knife_kills_count?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	target_steam_id?:boolean | `@${string}`,
@@ -24999,6 +25014,7 @@ count?: [{	columns?: Array<ValueTypes["match_clips_select_column"]> | undefined 
 ["match_clips_stddev_pop_order_by"]: {
 	duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	kills_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	knife_kills_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	target_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -25009,6 +25025,7 @@ count?: [{	columns?: Array<ValueTypes["match_clips_select_column"]> | undefined 
 ["match_clips_stddev_samp_fields"]: AliasType<{
 	duration_ms?:boolean | `@${string}`,
 	kills_count?:boolean | `@${string}`,
+	knife_kills_count?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	target_steam_id?:boolean | `@${string}`,
@@ -25020,6 +25037,7 @@ count?: [{	columns?: Array<ValueTypes["match_clips_select_column"]> | undefined 
 ["match_clips_stddev_samp_order_by"]: {
 	duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	kills_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	knife_kills_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	target_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -25040,6 +25058,7 @@ count?: [{	columns?: Array<ValueTypes["match_clips_select_column"]> | undefined 
 	file?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	kills_count?: number | undefined | null | Variable<any, string>,
+	knife_kills_count?: number | undefined | null | Variable<any, string>,
 	match_map_demo_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_map_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	round?: number | undefined | null | Variable<any, string>,
@@ -25055,6 +25074,7 @@ count?: [{	columns?: Array<ValueTypes["match_clips_select_column"]> | undefined 
 ["match_clips_sum_fields"]: AliasType<{
 	duration_ms?:boolean | `@${string}`,
 	kills_count?:boolean | `@${string}`,
+	knife_kills_count?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	target_steam_id?:boolean | `@${string}`,
@@ -25066,6 +25086,7 @@ count?: [{	columns?: Array<ValueTypes["match_clips_select_column"]> | undefined 
 ["match_clips_sum_order_by"]: {
 	duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	kills_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	knife_kills_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	target_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -25086,6 +25107,7 @@ count?: [{	columns?: Array<ValueTypes["match_clips_select_column"]> | undefined 
 ["match_clips_var_pop_fields"]: AliasType<{
 	duration_ms?:boolean | `@${string}`,
 	kills_count?:boolean | `@${string}`,
+	knife_kills_count?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	target_steam_id?:boolean | `@${string}`,
@@ -25097,6 +25119,7 @@ count?: [{	columns?: Array<ValueTypes["match_clips_select_column"]> | undefined 
 ["match_clips_var_pop_order_by"]: {
 	duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	kills_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	knife_kills_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	target_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -25107,6 +25130,7 @@ count?: [{	columns?: Array<ValueTypes["match_clips_select_column"]> | undefined 
 ["match_clips_var_samp_fields"]: AliasType<{
 	duration_ms?:boolean | `@${string}`,
 	kills_count?:boolean | `@${string}`,
+	knife_kills_count?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	target_steam_id?:boolean | `@${string}`,
@@ -25118,6 +25142,7 @@ count?: [{	columns?: Array<ValueTypes["match_clips_select_column"]> | undefined 
 ["match_clips_var_samp_order_by"]: {
 	duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	kills_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	knife_kills_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	target_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -25128,6 +25153,7 @@ count?: [{	columns?: Array<ValueTypes["match_clips_select_column"]> | undefined 
 ["match_clips_variance_fields"]: AliasType<{
 	duration_ms?:boolean | `@${string}`,
 	kills_count?:boolean | `@${string}`,
+	knife_kills_count?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	target_steam_id?:boolean | `@${string}`,
@@ -25139,6 +25165,7 @@ count?: [{	columns?: Array<ValueTypes["match_clips_select_column"]> | undefined 
 ["match_clips_variance_order_by"]: {
 	duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	kills_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	knife_kills_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	target_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -113026,6 +113053,7 @@ count?: [{	columns?: Array<ResolverInputTypes["maps_select_column"]> | undefined
 	file?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	kills_count?:boolean | `@${string}`,
+	knife_kills_count?:boolean | `@${string}`,
 	/** An object relationship */
 	match_map?:ResolverInputTypes["match_maps"],
 	/** An object relationship */
@@ -113114,6 +113142,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_clips_select_column"]> | un
 ["match_clips_avg_fields"]: AliasType<{
 	duration_ms?:boolean | `@${string}`,
 	kills_count?:boolean | `@${string}`,
+	knife_kills_count?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	target_steam_id?:boolean | `@${string}`,
@@ -113125,6 +113154,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_clips_select_column"]> | un
 ["match_clips_avg_order_by"]: {
 	duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
 	kills_count?: ResolverInputTypes["order_by"] | undefined | null,
+	knife_kills_count?: ResolverInputTypes["order_by"] | undefined | null,
 	round?: ResolverInputTypes["order_by"] | undefined | null,
 	size?: ResolverInputTypes["order_by"] | undefined | null,
 	target_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -113142,6 +113172,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_clips_select_column"]> | un
 	file?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	kills_count?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	knife_kills_count?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	match_map?: ResolverInputTypes["match_maps_bool_exp"] | undefined | null,
 	match_map_demo?: ResolverInputTypes["match_map_demos_bool_exp"] | undefined | null,
 	match_map_demo_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
@@ -113166,6 +113197,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_clips_select_column"]> | un
 ["match_clips_inc_input"]: {
 	duration_ms?: number | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	round?: number | undefined | null,
 	size?: ResolverInputTypes["bigint"] | undefined | null,
 	target_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
@@ -113179,6 +113211,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_clips_select_column"]> | un
 	file?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	match_map?: ResolverInputTypes["match_maps_obj_rel_insert_input"] | undefined | null,
 	match_map_demo?: ResolverInputTypes["match_map_demos_obj_rel_insert_input"] | undefined | null,
 	match_map_demo_id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -113204,6 +113237,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_clips_select_column"]> | un
 	file?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	kills_count?:boolean | `@${string}`,
+	knife_kills_count?:boolean | `@${string}`,
 	match_map_demo_id?:boolean | `@${string}`,
 	match_map_id?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
@@ -113224,6 +113258,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_clips_select_column"]> | un
 	file?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	kills_count?: ResolverInputTypes["order_by"] | undefined | null,
+	knife_kills_count?: ResolverInputTypes["order_by"] | undefined | null,
 	match_map_demo_id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_map_id?: ResolverInputTypes["order_by"] | undefined | null,
 	round?: ResolverInputTypes["order_by"] | undefined | null,
@@ -113243,6 +113278,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_clips_select_column"]> | un
 	file?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	kills_count?:boolean | `@${string}`,
+	knife_kills_count?:boolean | `@${string}`,
 	match_map_demo_id?:boolean | `@${string}`,
 	match_map_id?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
@@ -113263,6 +113299,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_clips_select_column"]> | un
 	file?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	kills_count?: ResolverInputTypes["order_by"] | undefined | null,
+	knife_kills_count?: ResolverInputTypes["order_by"] | undefined | null,
 	match_map_demo_id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_map_id?: ResolverInputTypes["order_by"] | undefined | null,
 	round?: ResolverInputTypes["order_by"] | undefined | null,
@@ -113301,6 +113338,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_clips_select_column"]> | un
 	file?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	kills_count?: ResolverInputTypes["order_by"] | undefined | null,
+	knife_kills_count?: ResolverInputTypes["order_by"] | undefined | null,
 	match_map?: ResolverInputTypes["match_maps_order_by"] | undefined | null,
 	match_map_demo?: ResolverInputTypes["match_map_demos_order_by"] | undefined | null,
 	match_map_demo_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -113331,6 +113369,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_clips_select_column"]> | un
 	file?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	match_map_demo_id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_map_id?: ResolverInputTypes["uuid"] | undefined | null,
 	round?: number | undefined | null,
@@ -113346,6 +113385,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_clips_select_column"]> | un
 ["match_clips_stddev_fields"]: AliasType<{
 	duration_ms?:boolean | `@${string}`,
 	kills_count?:boolean | `@${string}`,
+	knife_kills_count?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	target_steam_id?:boolean | `@${string}`,
@@ -113357,6 +113397,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_clips_select_column"]> | un
 ["match_clips_stddev_order_by"]: {
 	duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
 	kills_count?: ResolverInputTypes["order_by"] | undefined | null,
+	knife_kills_count?: ResolverInputTypes["order_by"] | undefined | null,
 	round?: ResolverInputTypes["order_by"] | undefined | null,
 	size?: ResolverInputTypes["order_by"] | undefined | null,
 	target_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -113367,6 +113408,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_clips_select_column"]> | un
 ["match_clips_stddev_pop_fields"]: AliasType<{
 	duration_ms?:boolean | `@${string}`,
 	kills_count?:boolean | `@${string}`,
+	knife_kills_count?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	target_steam_id?:boolean | `@${string}`,
@@ -113378,6 +113420,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_clips_select_column"]> | un
 ["match_clips_stddev_pop_order_by"]: {
 	duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
 	kills_count?: ResolverInputTypes["order_by"] | undefined | null,
+	knife_kills_count?: ResolverInputTypes["order_by"] | undefined | null,
 	round?: ResolverInputTypes["order_by"] | undefined | null,
 	size?: ResolverInputTypes["order_by"] | undefined | null,
 	target_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -113388,6 +113431,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_clips_select_column"]> | un
 ["match_clips_stddev_samp_fields"]: AliasType<{
 	duration_ms?:boolean | `@${string}`,
 	kills_count?:boolean | `@${string}`,
+	knife_kills_count?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	target_steam_id?:boolean | `@${string}`,
@@ -113399,6 +113443,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_clips_select_column"]> | un
 ["match_clips_stddev_samp_order_by"]: {
 	duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
 	kills_count?: ResolverInputTypes["order_by"] | undefined | null,
+	knife_kills_count?: ResolverInputTypes["order_by"] | undefined | null,
 	round?: ResolverInputTypes["order_by"] | undefined | null,
 	size?: ResolverInputTypes["order_by"] | undefined | null,
 	target_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -113419,6 +113464,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_clips_select_column"]> | un
 	file?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	match_map_demo_id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_map_id?: ResolverInputTypes["uuid"] | undefined | null,
 	round?: number | undefined | null,
@@ -113434,6 +113480,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_clips_select_column"]> | un
 ["match_clips_sum_fields"]: AliasType<{
 	duration_ms?:boolean | `@${string}`,
 	kills_count?:boolean | `@${string}`,
+	knife_kills_count?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	target_steam_id?:boolean | `@${string}`,
@@ -113445,6 +113492,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_clips_select_column"]> | un
 ["match_clips_sum_order_by"]: {
 	duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
 	kills_count?: ResolverInputTypes["order_by"] | undefined | null,
+	knife_kills_count?: ResolverInputTypes["order_by"] | undefined | null,
 	round?: ResolverInputTypes["order_by"] | undefined | null,
 	size?: ResolverInputTypes["order_by"] | undefined | null,
 	target_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -113465,6 +113513,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_clips_select_column"]> | un
 ["match_clips_var_pop_fields"]: AliasType<{
 	duration_ms?:boolean | `@${string}`,
 	kills_count?:boolean | `@${string}`,
+	knife_kills_count?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	target_steam_id?:boolean | `@${string}`,
@@ -113476,6 +113525,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_clips_select_column"]> | un
 ["match_clips_var_pop_order_by"]: {
 	duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
 	kills_count?: ResolverInputTypes["order_by"] | undefined | null,
+	knife_kills_count?: ResolverInputTypes["order_by"] | undefined | null,
 	round?: ResolverInputTypes["order_by"] | undefined | null,
 	size?: ResolverInputTypes["order_by"] | undefined | null,
 	target_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -113486,6 +113536,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_clips_select_column"]> | un
 ["match_clips_var_samp_fields"]: AliasType<{
 	duration_ms?:boolean | `@${string}`,
 	kills_count?:boolean | `@${string}`,
+	knife_kills_count?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	target_steam_id?:boolean | `@${string}`,
@@ -113497,6 +113548,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_clips_select_column"]> | un
 ["match_clips_var_samp_order_by"]: {
 	duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
 	kills_count?: ResolverInputTypes["order_by"] | undefined | null,
+	knife_kills_count?: ResolverInputTypes["order_by"] | undefined | null,
 	round?: ResolverInputTypes["order_by"] | undefined | null,
 	size?: ResolverInputTypes["order_by"] | undefined | null,
 	target_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -113507,6 +113559,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_clips_select_column"]> | un
 ["match_clips_variance_fields"]: AliasType<{
 	duration_ms?:boolean | `@${string}`,
 	kills_count?:boolean | `@${string}`,
+	knife_kills_count?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	target_steam_id?:boolean | `@${string}`,
@@ -113518,6 +113571,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_clips_select_column"]> | un
 ["match_clips_variance_order_by"]: {
 	duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
 	kills_count?: ResolverInputTypes["order_by"] | undefined | null,
+	knife_kills_count?: ResolverInputTypes["order_by"] | undefined | null,
 	round?: ResolverInputTypes["order_by"] | undefined | null,
 	size?: ResolverInputTypes["order_by"] | undefined | null,
 	target_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -199357,6 +199411,7 @@ export type ModelTypes = {
 	file?: string | undefined | null,
 	id: ModelTypes["uuid"],
 	kills_count?: number | undefined | null,
+	knife_kills_count: number,
 	/** An object relationship */
 	match_map: ModelTypes["match_maps"],
 	/** An object relationship */
@@ -199434,6 +199489,7 @@ export type ModelTypes = {
 ["match_clips_avg_fields"]: {
 		duration_ms?: number | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	round?: number | undefined | null,
 	size?: number | undefined | null,
 	target_steam_id?: number | undefined | null,
@@ -199444,6 +199500,7 @@ export type ModelTypes = {
 ["match_clips_avg_order_by"]: {
 	duration_ms?: ModelTypes["order_by"] | undefined | null,
 	kills_count?: ModelTypes["order_by"] | undefined | null,
+	knife_kills_count?: ModelTypes["order_by"] | undefined | null,
 	round?: ModelTypes["order_by"] | undefined | null,
 	size?: ModelTypes["order_by"] | undefined | null,
 	target_steam_id?: ModelTypes["order_by"] | undefined | null,
@@ -199461,6 +199518,7 @@ export type ModelTypes = {
 	file?: ModelTypes["String_comparison_exp"] | undefined | null,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
 	kills_count?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	knife_kills_count?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	match_map?: ModelTypes["match_maps_bool_exp"] | undefined | null,
 	match_map_demo?: ModelTypes["match_map_demos_bool_exp"] | undefined | null,
 	match_map_demo_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
@@ -199484,6 +199542,7 @@ export type ModelTypes = {
 ["match_clips_inc_input"]: {
 	duration_ms?: number | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	round?: number | undefined | null,
 	size?: ModelTypes["bigint"] | undefined | null,
 	target_steam_id?: ModelTypes["bigint"] | undefined | null,
@@ -199497,6 +199556,7 @@ export type ModelTypes = {
 	file?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	match_map?: ModelTypes["match_maps_obj_rel_insert_input"] | undefined | null,
 	match_map_demo?: ModelTypes["match_map_demos_obj_rel_insert_input"] | undefined | null,
 	match_map_demo_id?: ModelTypes["uuid"] | undefined | null,
@@ -199522,6 +199582,7 @@ export type ModelTypes = {
 	file?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	match_map_demo_id?: ModelTypes["uuid"] | undefined | null,
 	match_map_id?: ModelTypes["uuid"] | undefined | null,
 	round?: number | undefined | null,
@@ -199541,6 +199602,7 @@ export type ModelTypes = {
 	file?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
 	kills_count?: ModelTypes["order_by"] | undefined | null,
+	knife_kills_count?: ModelTypes["order_by"] | undefined | null,
 	match_map_demo_id?: ModelTypes["order_by"] | undefined | null,
 	match_map_id?: ModelTypes["order_by"] | undefined | null,
 	round?: ModelTypes["order_by"] | undefined | null,
@@ -199560,6 +199622,7 @@ export type ModelTypes = {
 	file?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	match_map_demo_id?: ModelTypes["uuid"] | undefined | null,
 	match_map_id?: ModelTypes["uuid"] | undefined | null,
 	round?: number | undefined | null,
@@ -199579,6 +199642,7 @@ export type ModelTypes = {
 	file?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
 	kills_count?: ModelTypes["order_by"] | undefined | null,
+	knife_kills_count?: ModelTypes["order_by"] | undefined | null,
 	match_map_demo_id?: ModelTypes["order_by"] | undefined | null,
 	match_map_id?: ModelTypes["order_by"] | undefined | null,
 	round?: ModelTypes["order_by"] | undefined | null,
@@ -199616,6 +199680,7 @@ export type ModelTypes = {
 	file?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
 	kills_count?: ModelTypes["order_by"] | undefined | null,
+	knife_kills_count?: ModelTypes["order_by"] | undefined | null,
 	match_map?: ModelTypes["match_maps_order_by"] | undefined | null,
 	match_map_demo?: ModelTypes["match_map_demos_order_by"] | undefined | null,
 	match_map_demo_id?: ModelTypes["order_by"] | undefined | null,
@@ -199645,6 +199710,7 @@ export type ModelTypes = {
 	file?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	match_map_demo_id?: ModelTypes["uuid"] | undefined | null,
 	match_map_id?: ModelTypes["uuid"] | undefined | null,
 	round?: number | undefined | null,
@@ -199660,6 +199726,7 @@ export type ModelTypes = {
 ["match_clips_stddev_fields"]: {
 		duration_ms?: number | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	round?: number | undefined | null,
 	size?: number | undefined | null,
 	target_steam_id?: number | undefined | null,
@@ -199670,6 +199737,7 @@ export type ModelTypes = {
 ["match_clips_stddev_order_by"]: {
 	duration_ms?: ModelTypes["order_by"] | undefined | null,
 	kills_count?: ModelTypes["order_by"] | undefined | null,
+	knife_kills_count?: ModelTypes["order_by"] | undefined | null,
 	round?: ModelTypes["order_by"] | undefined | null,
 	size?: ModelTypes["order_by"] | undefined | null,
 	target_steam_id?: ModelTypes["order_by"] | undefined | null,
@@ -199680,6 +199748,7 @@ export type ModelTypes = {
 ["match_clips_stddev_pop_fields"]: {
 		duration_ms?: number | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	round?: number | undefined | null,
 	size?: number | undefined | null,
 	target_steam_id?: number | undefined | null,
@@ -199690,6 +199759,7 @@ export type ModelTypes = {
 ["match_clips_stddev_pop_order_by"]: {
 	duration_ms?: ModelTypes["order_by"] | undefined | null,
 	kills_count?: ModelTypes["order_by"] | undefined | null,
+	knife_kills_count?: ModelTypes["order_by"] | undefined | null,
 	round?: ModelTypes["order_by"] | undefined | null,
 	size?: ModelTypes["order_by"] | undefined | null,
 	target_steam_id?: ModelTypes["order_by"] | undefined | null,
@@ -199700,6 +199770,7 @@ export type ModelTypes = {
 ["match_clips_stddev_samp_fields"]: {
 		duration_ms?: number | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	round?: number | undefined | null,
 	size?: number | undefined | null,
 	target_steam_id?: number | undefined | null,
@@ -199710,6 +199781,7 @@ export type ModelTypes = {
 ["match_clips_stddev_samp_order_by"]: {
 	duration_ms?: ModelTypes["order_by"] | undefined | null,
 	kills_count?: ModelTypes["order_by"] | undefined | null,
+	knife_kills_count?: ModelTypes["order_by"] | undefined | null,
 	round?: ModelTypes["order_by"] | undefined | null,
 	size?: ModelTypes["order_by"] | undefined | null,
 	target_steam_id?: ModelTypes["order_by"] | undefined | null,
@@ -199730,6 +199802,7 @@ export type ModelTypes = {
 	file?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	match_map_demo_id?: ModelTypes["uuid"] | undefined | null,
 	match_map_id?: ModelTypes["uuid"] | undefined | null,
 	round?: number | undefined | null,
@@ -199745,6 +199818,7 @@ export type ModelTypes = {
 ["match_clips_sum_fields"]: {
 		duration_ms?: number | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	round?: number | undefined | null,
 	size?: ModelTypes["bigint"] | undefined | null,
 	target_steam_id?: ModelTypes["bigint"] | undefined | null,
@@ -199755,6 +199829,7 @@ export type ModelTypes = {
 ["match_clips_sum_order_by"]: {
 	duration_ms?: ModelTypes["order_by"] | undefined | null,
 	kills_count?: ModelTypes["order_by"] | undefined | null,
+	knife_kills_count?: ModelTypes["order_by"] | undefined | null,
 	round?: ModelTypes["order_by"] | undefined | null,
 	size?: ModelTypes["order_by"] | undefined | null,
 	target_steam_id?: ModelTypes["order_by"] | undefined | null,
@@ -199774,6 +199849,7 @@ export type ModelTypes = {
 ["match_clips_var_pop_fields"]: {
 		duration_ms?: number | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	round?: number | undefined | null,
 	size?: number | undefined | null,
 	target_steam_id?: number | undefined | null,
@@ -199784,6 +199860,7 @@ export type ModelTypes = {
 ["match_clips_var_pop_order_by"]: {
 	duration_ms?: ModelTypes["order_by"] | undefined | null,
 	kills_count?: ModelTypes["order_by"] | undefined | null,
+	knife_kills_count?: ModelTypes["order_by"] | undefined | null,
 	round?: ModelTypes["order_by"] | undefined | null,
 	size?: ModelTypes["order_by"] | undefined | null,
 	target_steam_id?: ModelTypes["order_by"] | undefined | null,
@@ -199794,6 +199871,7 @@ export type ModelTypes = {
 ["match_clips_var_samp_fields"]: {
 		duration_ms?: number | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	round?: number | undefined | null,
 	size?: number | undefined | null,
 	target_steam_id?: number | undefined | null,
@@ -199804,6 +199882,7 @@ export type ModelTypes = {
 ["match_clips_var_samp_order_by"]: {
 	duration_ms?: ModelTypes["order_by"] | undefined | null,
 	kills_count?: ModelTypes["order_by"] | undefined | null,
+	knife_kills_count?: ModelTypes["order_by"] | undefined | null,
 	round?: ModelTypes["order_by"] | undefined | null,
 	size?: ModelTypes["order_by"] | undefined | null,
 	target_steam_id?: ModelTypes["order_by"] | undefined | null,
@@ -199814,6 +199893,7 @@ export type ModelTypes = {
 ["match_clips_variance_fields"]: {
 		duration_ms?: number | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	round?: number | undefined | null,
 	size?: number | undefined | null,
 	target_steam_id?: number | undefined | null,
@@ -199824,6 +199904,7 @@ export type ModelTypes = {
 ["match_clips_variance_order_by"]: {
 	duration_ms?: ModelTypes["order_by"] | undefined | null,
 	kills_count?: ModelTypes["order_by"] | undefined | null,
+	knife_kills_count?: ModelTypes["order_by"] | undefined | null,
 	round?: ModelTypes["order_by"] | undefined | null,
 	size?: ModelTypes["order_by"] | undefined | null,
 	target_steam_id?: ModelTypes["order_by"] | undefined | null,
@@ -278540,6 +278621,7 @@ export type GraphQLTypes = {
 	file?: string | undefined | null,
 	id: GraphQLTypes["uuid"],
 	kills_count?: number | undefined | null,
+	knife_kills_count: number,
 	/** An object relationship */
 	match_map: GraphQLTypes["match_maps"],
 	/** An object relationship */
@@ -278620,6 +278702,7 @@ export type GraphQLTypes = {
 	__typename: "match_clips_avg_fields",
 	duration_ms?: number | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	round?: number | undefined | null,
 	size?: number | undefined | null,
 	target_steam_id?: number | undefined | null,
@@ -278630,6 +278713,7 @@ export type GraphQLTypes = {
 ["match_clips_avg_order_by"]: {
 		duration_ms?: GraphQLTypes["order_by"] | undefined | null,
 	kills_count?: GraphQLTypes["order_by"] | undefined | null,
+	knife_kills_count?: GraphQLTypes["order_by"] | undefined | null,
 	round?: GraphQLTypes["order_by"] | undefined | null,
 	size?: GraphQLTypes["order_by"] | undefined | null,
 	target_steam_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -278647,6 +278731,7 @@ export type GraphQLTypes = {
 	file?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
 	kills_count?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	knife_kills_count?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	match_map?: GraphQLTypes["match_maps_bool_exp"] | undefined | null,
 	match_map_demo?: GraphQLTypes["match_map_demos_bool_exp"] | undefined | null,
 	match_map_demo_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
@@ -278671,6 +278756,7 @@ export type GraphQLTypes = {
 ["match_clips_inc_input"]: {
 		duration_ms?: number | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	round?: number | undefined | null,
 	size?: GraphQLTypes["bigint"] | undefined | null,
 	target_steam_id?: GraphQLTypes["bigint"] | undefined | null,
@@ -278684,6 +278770,7 @@ export type GraphQLTypes = {
 	file?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	match_map?: GraphQLTypes["match_maps_obj_rel_insert_input"] | undefined | null,
 	match_map_demo?: GraphQLTypes["match_map_demos_obj_rel_insert_input"] | undefined | null,
 	match_map_demo_id?: GraphQLTypes["uuid"] | undefined | null,
@@ -278710,6 +278797,7 @@ export type GraphQLTypes = {
 	file?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	match_map_demo_id?: GraphQLTypes["uuid"] | undefined | null,
 	match_map_id?: GraphQLTypes["uuid"] | undefined | null,
 	round?: number | undefined | null,
@@ -278729,6 +278817,7 @@ export type GraphQLTypes = {
 	file?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
 	kills_count?: GraphQLTypes["order_by"] | undefined | null,
+	knife_kills_count?: GraphQLTypes["order_by"] | undefined | null,
 	match_map_demo_id?: GraphQLTypes["order_by"] | undefined | null,
 	match_map_id?: GraphQLTypes["order_by"] | undefined | null,
 	round?: GraphQLTypes["order_by"] | undefined | null,
@@ -278749,6 +278838,7 @@ export type GraphQLTypes = {
 	file?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	match_map_demo_id?: GraphQLTypes["uuid"] | undefined | null,
 	match_map_id?: GraphQLTypes["uuid"] | undefined | null,
 	round?: number | undefined | null,
@@ -278768,6 +278858,7 @@ export type GraphQLTypes = {
 	file?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
 	kills_count?: GraphQLTypes["order_by"] | undefined | null,
+	knife_kills_count?: GraphQLTypes["order_by"] | undefined | null,
 	match_map_demo_id?: GraphQLTypes["order_by"] | undefined | null,
 	match_map_id?: GraphQLTypes["order_by"] | undefined | null,
 	round?: GraphQLTypes["order_by"] | undefined | null,
@@ -278806,6 +278897,7 @@ export type GraphQLTypes = {
 	file?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
 	kills_count?: GraphQLTypes["order_by"] | undefined | null,
+	knife_kills_count?: GraphQLTypes["order_by"] | undefined | null,
 	match_map?: GraphQLTypes["match_maps_order_by"] | undefined | null,
 	match_map_demo?: GraphQLTypes["match_map_demos_order_by"] | undefined | null,
 	match_map_demo_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -278836,6 +278928,7 @@ export type GraphQLTypes = {
 	file?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	match_map_demo_id?: GraphQLTypes["uuid"] | undefined | null,
 	match_map_id?: GraphQLTypes["uuid"] | undefined | null,
 	round?: number | undefined | null,
@@ -278852,6 +278945,7 @@ export type GraphQLTypes = {
 	__typename: "match_clips_stddev_fields",
 	duration_ms?: number | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	round?: number | undefined | null,
 	size?: number | undefined | null,
 	target_steam_id?: number | undefined | null,
@@ -278862,6 +278956,7 @@ export type GraphQLTypes = {
 ["match_clips_stddev_order_by"]: {
 		duration_ms?: GraphQLTypes["order_by"] | undefined | null,
 	kills_count?: GraphQLTypes["order_by"] | undefined | null,
+	knife_kills_count?: GraphQLTypes["order_by"] | undefined | null,
 	round?: GraphQLTypes["order_by"] | undefined | null,
 	size?: GraphQLTypes["order_by"] | undefined | null,
 	target_steam_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -278873,6 +278968,7 @@ export type GraphQLTypes = {
 	__typename: "match_clips_stddev_pop_fields",
 	duration_ms?: number | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	round?: number | undefined | null,
 	size?: number | undefined | null,
 	target_steam_id?: number | undefined | null,
@@ -278883,6 +278979,7 @@ export type GraphQLTypes = {
 ["match_clips_stddev_pop_order_by"]: {
 		duration_ms?: GraphQLTypes["order_by"] | undefined | null,
 	kills_count?: GraphQLTypes["order_by"] | undefined | null,
+	knife_kills_count?: GraphQLTypes["order_by"] | undefined | null,
 	round?: GraphQLTypes["order_by"] | undefined | null,
 	size?: GraphQLTypes["order_by"] | undefined | null,
 	target_steam_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -278894,6 +278991,7 @@ export type GraphQLTypes = {
 	__typename: "match_clips_stddev_samp_fields",
 	duration_ms?: number | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	round?: number | undefined | null,
 	size?: number | undefined | null,
 	target_steam_id?: number | undefined | null,
@@ -278904,6 +279002,7 @@ export type GraphQLTypes = {
 ["match_clips_stddev_samp_order_by"]: {
 		duration_ms?: GraphQLTypes["order_by"] | undefined | null,
 	kills_count?: GraphQLTypes["order_by"] | undefined | null,
+	knife_kills_count?: GraphQLTypes["order_by"] | undefined | null,
 	round?: GraphQLTypes["order_by"] | undefined | null,
 	size?: GraphQLTypes["order_by"] | undefined | null,
 	target_steam_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -278924,6 +279023,7 @@ export type GraphQLTypes = {
 	file?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	match_map_demo_id?: GraphQLTypes["uuid"] | undefined | null,
 	match_map_id?: GraphQLTypes["uuid"] | undefined | null,
 	round?: number | undefined | null,
@@ -278940,6 +279040,7 @@ export type GraphQLTypes = {
 	__typename: "match_clips_sum_fields",
 	duration_ms?: number | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	round?: number | undefined | null,
 	size?: GraphQLTypes["bigint"] | undefined | null,
 	target_steam_id?: GraphQLTypes["bigint"] | undefined | null,
@@ -278950,6 +279051,7 @@ export type GraphQLTypes = {
 ["match_clips_sum_order_by"]: {
 		duration_ms?: GraphQLTypes["order_by"] | undefined | null,
 	kills_count?: GraphQLTypes["order_by"] | undefined | null,
+	knife_kills_count?: GraphQLTypes["order_by"] | undefined | null,
 	round?: GraphQLTypes["order_by"] | undefined | null,
 	size?: GraphQLTypes["order_by"] | undefined | null,
 	target_steam_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -278971,6 +279073,7 @@ export type GraphQLTypes = {
 	__typename: "match_clips_var_pop_fields",
 	duration_ms?: number | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	round?: number | undefined | null,
 	size?: number | undefined | null,
 	target_steam_id?: number | undefined | null,
@@ -278981,6 +279084,7 @@ export type GraphQLTypes = {
 ["match_clips_var_pop_order_by"]: {
 		duration_ms?: GraphQLTypes["order_by"] | undefined | null,
 	kills_count?: GraphQLTypes["order_by"] | undefined | null,
+	knife_kills_count?: GraphQLTypes["order_by"] | undefined | null,
 	round?: GraphQLTypes["order_by"] | undefined | null,
 	size?: GraphQLTypes["order_by"] | undefined | null,
 	target_steam_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -278992,6 +279096,7 @@ export type GraphQLTypes = {
 	__typename: "match_clips_var_samp_fields",
 	duration_ms?: number | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	round?: number | undefined | null,
 	size?: number | undefined | null,
 	target_steam_id?: number | undefined | null,
@@ -279002,6 +279107,7 @@ export type GraphQLTypes = {
 ["match_clips_var_samp_order_by"]: {
 		duration_ms?: GraphQLTypes["order_by"] | undefined | null,
 	kills_count?: GraphQLTypes["order_by"] | undefined | null,
+	knife_kills_count?: GraphQLTypes["order_by"] | undefined | null,
 	round?: GraphQLTypes["order_by"] | undefined | null,
 	size?: GraphQLTypes["order_by"] | undefined | null,
 	target_steam_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -279013,6 +279119,7 @@ export type GraphQLTypes = {
 	__typename: "match_clips_variance_fields",
 	duration_ms?: number | undefined | null,
 	kills_count?: number | undefined | null,
+	knife_kills_count?: number | undefined | null,
 	round?: number | undefined | null,
 	size?: number | undefined | null,
 	target_steam_id?: number | undefined | null,
@@ -279023,6 +279130,7 @@ export type GraphQLTypes = {
 ["match_clips_variance_order_by"]: {
 		duration_ms?: GraphQLTypes["order_by"] | undefined | null,
 	kills_count?: GraphQLTypes["order_by"] | undefined | null,
+	knife_kills_count?: GraphQLTypes["order_by"] | undefined | null,
 	round?: GraphQLTypes["order_by"] | undefined | null,
 	size?: GraphQLTypes["order_by"] | undefined | null,
 	target_steam_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -339910,6 +340018,7 @@ export enum match_clips_select_column {
 	file = "file",
 	id = "id",
 	kills_count = "kills_count",
+	knife_kills_count = "knife_kills_count",
 	match_map_demo_id = "match_map_demo_id",
 	match_map_id = "match_map_id",
 	round = "round",
@@ -339928,6 +340037,7 @@ export enum match_clips_update_column {
 	file = "file",
 	id = "id",
 	kills_count = "kills_count",
+	knife_kills_count = "knife_kills_count",
 	match_map_demo_id = "match_map_demo_id",
 	match_map_id = "match_map_id",
 	round = "round",

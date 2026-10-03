@@ -69,7 +69,7 @@ describe("HighlightsBrowser", () => {
 
     const [clips] = sentQueries("match_clips");
     expect(clips).toContain(
-      "order_by:[{kills_count:desc_nulls_last},{duration_ms:asc_nulls_last},{views_count:desc_nulls_last},{created_at:desc}]",
+      "order_by:[{kills_count:desc_nulls_last},{knife_kills_count:desc},{duration_ms:asc_nulls_last},{views_count:desc_nulls_last},{created_at:desc}]",
     );
   });
 

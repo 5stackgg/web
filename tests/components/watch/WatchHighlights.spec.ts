@@ -16,13 +16,13 @@ beforeEach(() => {
 });
 
 describe("WatchHighlights", () => {
-  it("picks this week's top play by most kills, then the shortest clip", async () => {
+  it("picks this week's top play by most kills, a knife, then the shortest clip", async () => {
     await mountSuspended(WatchHighlights);
     await flushPromises();
 
     const [options] = query.mock.calls[0];
     expect(print(options.query).replace(/\s+/g, "")).toContain(
-      "order_by:[{kills_count:desc_nulls_last},{duration_ms:asc_nulls_last},{views_count:desc_nulls_last},{created_at:desc}]",
+      "order_by:[{kills_count:desc_nulls_last},{knife_kills_count:desc},{duration_ms:asc_nulls_last},{views_count:desc_nulls_last},{created_at:desc}]",
     );
     const since = new Date(options.variables.where.created_at._gte);
     const days = (Date.now() - since.getTime()) / 86_400_000;

@@ -1,9 +1,10 @@
 import { order_by } from "~/generated/zeus";
 
 // "Top play": the most kills in the shortest clip, so a quick one-round ace
-// leads. Views and recency only break ties.
+// leads; a knife kill wins a tie on kills. Views and recency only break ties.
 export const topPlayOrderBy = [
   { kills_count: order_by.desc_nulls_last },
+  { knife_kills_count: order_by.desc },
   { duration_ms: order_by.asc_nulls_last },
   { views_count: order_by.desc_nulls_last },
   { created_at: order_by.desc },

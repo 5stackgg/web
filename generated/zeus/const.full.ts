@@ -11244,6 +11244,7 @@ export const AllTypesProps: Record<string,any> = {
 	match_clips_avg_order_by:{
 		duration_ms:"order_by",
 		kills_count:"order_by",
+		knife_kills_count:"order_by",
 		round:"order_by",
 		size:"order_by",
 		target_steam_id:"order_by",
@@ -11260,6 +11261,7 @@ export const AllTypesProps: Record<string,any> = {
 		file:"String_comparison_exp",
 		id:"uuid_comparison_exp",
 		kills_count:"Int_comparison_exp",
+		knife_kills_count:"Int_comparison_exp",
 		match_map:"match_maps_bool_exp",
 		match_map_demo:"match_map_demos_bool_exp",
 		match_map_demo_id:"uuid_comparison_exp",
@@ -11305,6 +11307,7 @@ export const AllTypesProps: Record<string,any> = {
 		file:"order_by",
 		id:"order_by",
 		kills_count:"order_by",
+		knife_kills_count:"order_by",
 		match_map_demo_id:"order_by",
 		match_map_id:"order_by",
 		round:"order_by",
@@ -11321,6 +11324,7 @@ export const AllTypesProps: Record<string,any> = {
 		file:"order_by",
 		id:"order_by",
 		kills_count:"order_by",
+		knife_kills_count:"order_by",
 		match_map_demo_id:"order_by",
 		match_map_id:"order_by",
 		round:"order_by",
@@ -11347,6 +11351,7 @@ export const AllTypesProps: Record<string,any> = {
 		file:"order_by",
 		id:"order_by",
 		kills_count:"order_by",
+		knife_kills_count:"order_by",
 		match_map:"match_maps_order_by",
 		match_map_demo:"match_map_demos_order_by",
 		match_map_demo_id:"order_by",
@@ -11381,6 +11386,7 @@ export const AllTypesProps: Record<string,any> = {
 	match_clips_stddev_order_by:{
 		duration_ms:"order_by",
 		kills_count:"order_by",
+		knife_kills_count:"order_by",
 		round:"order_by",
 		size:"order_by",
 		target_steam_id:"order_by",
@@ -11390,6 +11396,7 @@ export const AllTypesProps: Record<string,any> = {
 	match_clips_stddev_pop_order_by:{
 		duration_ms:"order_by",
 		kills_count:"order_by",
+		knife_kills_count:"order_by",
 		round:"order_by",
 		size:"order_by",
 		target_steam_id:"order_by",
@@ -11399,6 +11406,7 @@ export const AllTypesProps: Record<string,any> = {
 	match_clips_stddev_samp_order_by:{
 		duration_ms:"order_by",
 		kills_count:"order_by",
+		knife_kills_count:"order_by",
 		round:"order_by",
 		size:"order_by",
 		target_steam_id:"order_by",
@@ -11422,6 +11430,7 @@ export const AllTypesProps: Record<string,any> = {
 	match_clips_sum_order_by:{
 		duration_ms:"order_by",
 		kills_count:"order_by",
+		knife_kills_count:"order_by",
 		round:"order_by",
 		size:"order_by",
 		target_steam_id:"order_by",
@@ -11437,6 +11446,7 @@ export const AllTypesProps: Record<string,any> = {
 	match_clips_var_pop_order_by:{
 		duration_ms:"order_by",
 		kills_count:"order_by",
+		knife_kills_count:"order_by",
 		round:"order_by",
 		size:"order_by",
 		target_steam_id:"order_by",
@@ -11446,6 +11456,7 @@ export const AllTypesProps: Record<string,any> = {
 	match_clips_var_samp_order_by:{
 		duration_ms:"order_by",
 		kills_count:"order_by",
+		knife_kills_count:"order_by",
 		round:"order_by",
 		size:"order_by",
 		target_steam_id:"order_by",
@@ -11455,6 +11466,7 @@ export const AllTypesProps: Record<string,any> = {
 	match_clips_variance_order_by:{
 		duration_ms:"order_by",
 		kills_count:"order_by",
+		knife_kills_count:"order_by",
 		round:"order_by",
 		size:"order_by",
 		target_steam_id:"order_by",
@@ -57390,6 +57402,7 @@ export const ReturnTypes: Record<string,any> = {
 		file:"String",
 		id:"uuid",
 		kills_count:"Int",
+		knife_kills_count:"Int",
 		match_map:"match_maps",
 		match_map_demo:"match_map_demos",
 		match_map_demo_id:"uuid",
@@ -57428,6 +57441,7 @@ export const ReturnTypes: Record<string,any> = {
 	match_clips_avg_fields:{
 		duration_ms:"Float",
 		kills_count:"Float",
+		knife_kills_count:"Float",
 		round:"Float",
 		size:"Float",
 		target_steam_id:"Float",
@@ -57441,6 +57455,7 @@ export const ReturnTypes: Record<string,any> = {
 		file:"String",
 		id:"uuid",
 		kills_count:"Int",
+		knife_kills_count:"Int",
 		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
 		round:"Int",
@@ -57459,6 +57474,7 @@ export const ReturnTypes: Record<string,any> = {
 		file:"String",
 		id:"uuid",
 		kills_count:"Int",
+		knife_kills_count:"Int",
 		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
 		round:"Int",
@@ -57477,6 +57493,7 @@ export const ReturnTypes: Record<string,any> = {
 	match_clips_stddev_fields:{
 		duration_ms:"Float",
 		kills_count:"Float",
+		knife_kills_count:"Float",
 		round:"Float",
 		size:"Float",
 		target_steam_id:"Float",
@@ -57486,6 +57503,7 @@ export const ReturnTypes: Record<string,any> = {
 	match_clips_stddev_pop_fields:{
 		duration_ms:"Float",
 		kills_count:"Float",
+		knife_kills_count:"Float",
 		round:"Float",
 		size:"Float",
 		target_steam_id:"Float",
@@ -57495,6 +57513,7 @@ export const ReturnTypes: Record<string,any> = {
 	match_clips_stddev_samp_fields:{
 		duration_ms:"Float",
 		kills_count:"Float",
+		knife_kills_count:"Float",
 		round:"Float",
 		size:"Float",
 		target_steam_id:"Float",
@@ -57504,6 +57523,7 @@ export const ReturnTypes: Record<string,any> = {
 	match_clips_sum_fields:{
 		duration_ms:"Int",
 		kills_count:"Int",
+		knife_kills_count:"Int",
 		round:"Int",
 		size:"bigint",
 		target_steam_id:"bigint",
@@ -57513,6 +57533,7 @@ export const ReturnTypes: Record<string,any> = {
 	match_clips_var_pop_fields:{
 		duration_ms:"Float",
 		kills_count:"Float",
+		knife_kills_count:"Float",
 		round:"Float",
 		size:"Float",
 		target_steam_id:"Float",
@@ -57522,6 +57543,7 @@ export const ReturnTypes: Record<string,any> = {
 	match_clips_var_samp_fields:{
 		duration_ms:"Float",
 		kills_count:"Float",
+		knife_kills_count:"Float",
 		round:"Float",
 		size:"Float",
 		target_steam_id:"Float",
@@ -57531,6 +57553,7 @@ export const ReturnTypes: Record<string,any> = {
 	match_clips_variance_fields:{
 		duration_ms:"Float",
 		kills_count:"Float",
+		knife_kills_count:"Float",
 		round:"Float",
 		size:"Float",
 		target_steam_id:"Float",

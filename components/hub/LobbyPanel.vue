@@ -88,14 +88,18 @@ watch(lobbyId, (next, previous) => {
         :description="$t('layouts.lobby_panel.create_lobby_description')"
       >
         <div
-          class="inline-flex rounded-md p-[1.5px] bg-[linear-gradient(135deg,hsl(40_58%_60%)_0%,hsl(33_62%_55%)_50%,hsl(24_56%_52%)_100%)] shadow-[0_4px_14px_-8px_hsl(var(--tac-amber)/0.3)] transition-shadow duration-300 hover:shadow-[0_6px_18px_-8px_hsl(var(--tac-amber)/0.4)]"
+          class="relative inline-flex rounded-md shadow-[0_4px_14px_-8px_hsl(var(--tac-amber)/0.3)] transition-shadow duration-300 hover:shadow-[0_6px_18px_-8px_hsl(var(--tac-amber)/0.4)]"
         >
+          <span
+            aria-hidden="true"
+            class="tac-amber-frame pointer-events-none absolute inset-0 rounded-md"
+          ></span>
           <Button
             variant="ghost"
             @click="createLobby"
             :loading="creatingLobby"
             size="default"
-            class="rounded-sm border-0 bg-zinc-950/95 px-7 py-2 text-[hsl(var(--tac-amber))] transition-colors duration-300 hover:bg-zinc-900/95 hover:text-[hsl(var(--tac-amber))] focus-visible:ring-[hsl(var(--tac-amber))]"
+            class="rounded-md border-0 bg-transparent px-7 py-2 text-[hsl(var(--tac-amber))] transition-colors duration-300 hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))] focus-visible:ring-[hsl(var(--tac-amber))]"
           >
             <Merge class="h-5 w-5" />
             <span class="font-semibold">

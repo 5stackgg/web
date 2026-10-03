@@ -145,13 +145,9 @@ function togglePartyRoom() {
       size="default"
       class="relative group h-12 overflow-hidden bg-transparent px-5 text-[hsl(var(--tac-amber))] shadow-lg hover:bg-transparent hover:text-[hsl(var(--tac-amber))] hover:shadow transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
     >
-      <!-- Gradient frame only: the fill is masked out rather than painted over
-           in a header colour, since this sits in both the top nav and the
-           left-nav header (bg-background), and a branded topnav colour showed
-           up as a mismatched block in the latter. -->
       <span
         aria-hidden="true"
-        class="create-lobby-frame pointer-events-none absolute inset-0 rounded-md p-[1.5px] bg-[linear-gradient(135deg,var(--tac-amber-cta-from)_0%,hsl(var(--tac-amber))_50%,var(--tac-amber-cta-to)_100%)]"
+        class="tac-amber-frame pointer-events-none absolute inset-0 rounded-md"
       ></span>
 
       <span
@@ -387,16 +383,5 @@ export default {
   .play-reveal {
     transition-duration: 1ms;
   }
-}
-/* Keep only the padding ring of the gradient, so the header behind shows
-   through the middle whatever its colour. */
-.create-lobby-frame {
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask:
-    linear-gradient(#000 0 0) content-box exclude,
-    linear-gradient(#000 0 0);
 }
 </style>

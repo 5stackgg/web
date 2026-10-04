@@ -325,7 +325,12 @@ const loginArrowClasses =
                           </NuxtLink>
                         </NavigationMenuLink>
                       </li>
-                      <li v-if="leaguesEnabled && hasLeagueSeason">
+                      <li
+                        v-if="
+                          leaguesEnabled &&
+                          (hasLeagueSeason || authStore.isAdmin)
+                        "
+                      >
                         <NavigationMenuLink as-child>
                           <NuxtLink
                             :to="currentLeagueSeasonTo"

@@ -51,7 +51,6 @@ export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
   let meSubscriptionStarted = false;
   let postAuthSubscriptionsStarted = false;
   let managingMatchesSubscriptionStarted = false;
-  let managingTournamentsSubscriptionStarted = false;
   let activeStreamingMatchesSubscriptionStarted = false;
   let gpuPoolSubscriptionStarted = false;
   let renderQueueSubscriptionStarted = false;
@@ -140,9 +139,6 @@ export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
     const shouldStartManagingMatches =
       isRoleAbove(e_player_roles_enum.match_organizer) &&
       !managingMatchesSubscriptionStarted;
-    const shouldStartManagingTournaments =
-      isRoleAbove(e_player_roles_enum.tournament_organizer) &&
-      !managingTournamentsSubscriptionStarted;
     const shouldStartActiveStreamingMatches =
       isRoleAbove(e_player_roles_enum.streamer) &&
       !activeStreamingMatchesSubscriptionStarted;
@@ -155,7 +151,6 @@ export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
     if (
       !shouldStartBaseSubscriptions &&
       !shouldStartManagingMatches &&
-      !shouldStartManagingTournaments &&
       !shouldStartActiveStreamingMatches &&
       !shouldStartGpuPool &&
       !shouldStartRenderQueue
@@ -177,11 +172,6 @@ export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
     if (shouldStartManagingMatches) {
       managingMatchesSubscriptionStarted = true;
       useMatchLobbyStore().subscribeToManagingMatches();
-    }
-
-    if (shouldStartManagingTournaments) {
-      managingTournamentsSubscriptionStarted = true;
-      useMatchLobbyStore().subscribeToManagingTournaments();
     }
 
     if (shouldStartActiveStreamingMatches) {

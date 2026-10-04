@@ -1538,6 +1538,8 @@
         "date_90d": "Last 90 days",
         "date_6m": "Last 6 months",
         "date_1y": "Last year",
+        "category": "Category",
+        "mine": "Only tournaments I organize",
         "no_results_title": "No tournaments match",
         "no_results_description": "Try clearing filters or widening your search."
       },
@@ -1576,21 +1578,6 @@
         "description": "When an organizer opens registration for a tournament, it shows up here.",
         "organizer": "Create one and it shows up here as soon as registration opens."
       }
-    },
-    "manage_tournaments": {
-      "title": "Manage Tournaments",
-      "description": "View and manage all tournaments across the platform.",
-      "search_by_id": "Search by Tournament ID",
-      "enter_tournament_id": "Enter tournament ID...",
-      "search_by_name": "Search by Name",
-      "enter_tournament_name": "Enter tournament name...",
-      "clear_all": "Clear All",
-      "sort_by": "Sort by",
-      "created_at": "Created Date",
-      "start": "Start Date",
-      "newest_first": "Newest First",
-      "oldest_first": "Oldest First",
-      "only_my_tournaments": "Only My Organized Tournaments"
     },
     "scrims": {
       "title": "Scrim Finder",
@@ -4965,6 +4952,7 @@
         "live": "Live",
         "upcoming": "Upcoming",
         "past": "Past",
+        "mine": "Only events I organize",
         "no_results_title": "No events match",
         "no_results_description": "Try a different name or clear the filters."
       },
@@ -4976,12 +4964,6 @@
       },
       "no_tournaments": "No tournaments announced yet.",
       "days": "{count} day | {count} days"
-    },
-    "manage_events": {
-      "title": "Manage Events",
-      "description": "View and manage all events across the platform.",
-      "no_events_title": "No Events Yet",
-      "no_events_description": "You are not organizing any events yet."
     },
     "plugins": {
       "not_found_title": "Page not found",
@@ -6270,6 +6252,7 @@
         "dashboard": "My Stats",
         "play": "Play",
         "watch": "Watch",
+        "matches": "Matches",
         "tournaments": "Tournaments",
         "public_servers": "Public Servers",
         "players": "Players",
@@ -6299,11 +6282,7 @@
         "app_settings": "App Settings",
         "alerts": "Alerts",
         "seasons": "Seasons",
-        "manage_matches": "Manage Matches",
-        "manage_tournaments": "Manage Tournaments",
-        "manage_league": "Manage League",
         "stream_deck": "Stream Deck",
-        "manage_events": "Manage Events",
         "awards": "Awards"
       },
       "system": {
@@ -6328,6 +6307,7 @@
         "dashboard": "My Stats",
         "play": "Play",
         "watch": "Watch",
+        "matches": "Matches",
         "tournaments": "Tournaments",
         "players": "Players",
         "teams": "Teams",
@@ -6346,13 +6326,9 @@
         "alerts": "Manage site-wide alert banners",
         "report_issue": "Report an Issue",
         "join_discord": "Join our Discord",
-        "manage_matches": "Manage Matches",
-        "manage_tournaments": "Manage Tournaments",
-        "manage_league": "Manage League",
         "search_players": "Search Players",
         "leagues": "League",
         "events": "Events",
-        "manage_events": "Manage Events",
         "system_media_server": "Media Server",
         "utility_drift": "Utility Lineup Drift",
         "utility": "Utility Lineups"

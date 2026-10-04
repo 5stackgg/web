@@ -1538,6 +1538,8 @@
         "date_90d": "آخر 90 يوم",
         "date_6m": "آخر 6 أشهر",
         "date_1y": "آخر سنة",
+        "category": "الفئة",
+        "mine": "البطولات التي أنظمها فقط",
         "no_results_title": "لا توجد بطولات مطابقة",
         "no_results_description": "جرّب مسح عوامل التصفية أو توسيع البحث."
       },
@@ -1576,21 +1578,6 @@
         "description": "عندما يفتح منظم التسجيل في بطولة، ستظهر هنا.",
         "organizer": "أنشئ بطولة وستظهر هنا فور فتح التسجيل."
       }
-    },
-    "manage_tournaments": {
-      "title": "إدارة البطولات",
-      "description": "اعرض وأدر كل البطولات في المنصة.",
-      "search_by_id": "ابحث بمعرّف البطولة",
-      "enter_tournament_id": "أدخل معرّف البطولة...",
-      "search_by_name": "ابحث بالاسم",
-      "enter_tournament_name": "أدخل اسم البطولة...",
-      "clear_all": "امسح الكل",
-      "sort_by": "رتّب حسب",
-      "created_at": "تاريخ الإنشاء",
-      "start": "تاريخ البدء",
-      "newest_first": "الأحدث أولًا",
-      "oldest_first": "الأقدم أولًا",
-      "only_my_tournaments": "البطولات التي أنظمها فقط"
     },
     "scrims": {
       "title": "باحث Scrim",
@@ -4963,6 +4950,7 @@
         "live": "مباشر",
         "upcoming": "قادمة",
         "past": "سابقة",
+        "mine": "الفعاليات التي أنظمها فقط",
         "no_results_title": "لا توجد فعاليات مطابقة",
         "no_results_description": "جرّب اسمًا آخر أو امسح عوامل التصفية."
       },
@@ -4974,12 +4962,6 @@
       },
       "no_tournaments": "لم يُعلن عن أي بطولات بعد.",
       "days": "{count} يوم | {count} أيام"
-    },
-    "manage_events": {
-      "title": "إدارة الفعاليات",
-      "description": "اعرض وأدر جميع الفعاليات في المنصة.",
-      "no_events_title": "لا توجد فعاليات بعد",
-      "no_events_description": "لا تنظّم أي فعاليات حتى الآن"
     },
     "plugins": {
       "not_found_title": "الصفحة غير موجودة",
@@ -6268,6 +6250,7 @@
         "dashboard": "إحصائياتي",
         "play": "العب",
         "watch": "شاهد",
+        "matches": "المباريات",
         "tournaments": "البطولات",
         "public_servers": "السيرفرات العامة",
         "players": "اللاعبون",
@@ -6297,11 +6280,7 @@
         "app_settings": "إعدادات التطبيق",
         "alerts": "التنبيهات",
         "seasons": "المواسم",
-        "manage_matches": "إدارة المباريات",
-        "manage_tournaments": "إدارة البطولات",
-        "manage_league": "إدارة الدوري",
         "stream_deck": "Stream Deck",
-        "manage_events": "إدارة الفعاليات",
         "awards": "Awards"
       },
       "system": {
@@ -6326,6 +6305,7 @@
         "dashboard": "إحصائياتي",
         "play": "العب",
         "watch": "شاهد",
+        "matches": "المباريات",
         "tournaments": "البطولات",
         "players": "اللاعبون",
         "teams": "الفرق",
@@ -6344,13 +6324,9 @@
         "alerts": "إدارة بانرات التنبيه على مستوى الموقع",
         "report_issue": "أبلغ عن مشكلة",
         "join_discord": "انضم إلى Discord",
-        "manage_matches": "إدارة المباريات",
-        "manage_tournaments": "إدارة البطولات",
-        "manage_league": "إدارة الدوري",
         "search_players": "ابحث عن لاعبين",
         "leagues": "الدوري",
         "events": "الفعاليات",
-        "manage_events": "إدارة الفعاليات",
         "system_media_server": "خادم الوسائط",
         "utility_drift": "انزياح رميات الأدوات",
         "utility": "رميات الأدوات"

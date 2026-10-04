@@ -1538,6 +1538,8 @@
         "date_90d": "Letzte 90 Tage",
         "date_6m": "Letzte 6 Monate",
         "date_1y": "Letztes Jahr",
+        "category": "Kategorie",
+        "mine": "Nur von mir organisierte Turniere",
         "no_results_title": "Keine Turniere gefunden",
         "no_results_description": "Setz die Filter zurück oder such etwas breiter."
       },
@@ -1576,21 +1578,6 @@
         "description": "Sobald ein Veranstalter die Anmeldung für ein Turnier öffnet, erscheint es hier.",
         "organizer": "Erstelle eins, und es erscheint hier, sobald die Anmeldung öffnet."
       }
-    },
-    "manage_tournaments": {
-      "title": "Turniere verwalten",
-      "description": "Alle Turniere der Plattform ansehen und verwalten.",
-      "search_by_id": "Nach Turnier-ID suchen",
-      "enter_tournament_id": "Turnier-ID eingeben...",
-      "search_by_name": "Nach Namen suchen",
-      "enter_tournament_name": "Turniernamen eingeben...",
-      "clear_all": "Alle zurücksetzen",
-      "sort_by": "Sortieren nach",
-      "created_at": "Erstellungsdatum",
-      "start": "Startdatum",
-      "newest_first": "Neueste zuerst",
-      "oldest_first": "Älteste zuerst",
-      "only_my_tournaments": "Nur von mir organisierte Turniere"
     },
     "scrims": {
       "title": "Scrim Finder",
@@ -4963,6 +4950,7 @@
         "live": "Live",
         "upcoming": "Anstehend",
         "past": "Vergangen",
+        "mine": "Nur von mir organisierte Events",
         "no_results_title": "Keine Events gefunden",
         "no_results_description": "Versuch einen anderen Namen oder setz die Filter zurück."
       },
@@ -4974,12 +4962,6 @@
       },
       "no_tournaments": "Noch keine Turniere angekündigt.",
       "days": "{count} Tag | {count} Tage"
-    },
-    "manage_events": {
-      "title": "Events verwalten",
-      "description": "Alle Events der Plattform ansehen und verwalten.",
-      "no_events_title": "Noch keine Events",
-      "no_events_description": "Du organisierst noch keine Events."
     },
     "plugins": {
       "not_found_title": "Seite nicht gefunden",
@@ -6268,6 +6250,7 @@
         "dashboard": "Meine Stats",
         "play": "Spielen",
         "watch": "Zuschauen",
+        "matches": "Matches",
         "tournaments": "Turniere",
         "public_servers": "Öffentliche Server",
         "players": "Spieler",
@@ -6297,11 +6280,7 @@
         "app_settings": "App-Einstellungen",
         "alerts": "Alerts",
         "seasons": "Seasons",
-        "manage_matches": "Matches verwalten",
-        "manage_tournaments": "Turniere verwalten",
-        "manage_league": "Liga verwalten",
         "stream_deck": "Stream Deck",
-        "manage_events": "Events verwalten",
         "awards": "Awards"
       },
       "system": {
@@ -6326,6 +6305,7 @@
         "dashboard": "Meine Stats",
         "play": "Spielen",
         "watch": "Zuschauen",
+        "matches": "Matches",
         "tournaments": "Turniere",
         "players": "Spieler",
         "teams": "Teams",
@@ -6344,13 +6324,9 @@
         "alerts": "Seitenweite Alert-Banner verwalten",
         "report_issue": "Problem melden",
         "join_discord": "Tritt unserem Discord bei",
-        "manage_matches": "Matches verwalten",
-        "manage_tournaments": "Turniere verwalten",
-        "manage_league": "Liga verwalten",
         "search_players": "Spieler suchen",
         "leagues": "Liga",
         "events": "Events",
-        "manage_events": "Events verwalten",
         "system_media_server": "Medienserver",
         "utility_drift": "Drift von Utility-Lineups",
         "utility": "Utility-Lineups"

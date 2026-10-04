@@ -12,7 +12,11 @@ import {
 } from "~/graphql/eventCardFields";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, order_by } from "~/generated/zeus";
-import { eventPhaseWhere, type EventPhase } from "~/utilities/eventDisplay";
+import {
+  eventPhase,
+  eventPhaseWhere,
+  type EventPhase,
+} from "~/utilities/eventDisplay";
 import { useScrollIntoViewOnChange } from "~/composables/useScrollIntoViewOnChange";
 import { useDeferredLoading } from "~/composables/useDeferredLoading";
 import {
@@ -37,6 +41,8 @@ import EventFeature from "~/components/events/EventFeature.vue";
 import EventUpNext from "~/components/events/EventUpNext.vue";
 import EventPastTile from "~/components/events/EventPastTile.vue";
 import EventQuickLook from "~/components/events/EventQuickLook.vue";
+import FilterMenu from "~/components/common/FilterMenu.vue";
+import FilterToggle from "~/components/common/FilterToggle.vue";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionSeparatorClasses,
@@ -44,7 +50,7 @@ import {
 } from "~/utilities/tacticalClasses";
 
 definePageMeta({
-  persistQueryKeys: ["phase", "q", "page"],
+  persistQueryKeys: ["phase", "q", "page", "mine"],
 });
 
 // Events are feature-gated (public.events_enabled, default off). Wait for
@@ -90,8 +96,15 @@ const page = computed(() => {
 });
 const perPage = 10;
 
+// "Only events I organize": signed-in viewers only.
+const me = computed(() => useAuthStore().me);
+const mineFilter = computed(() => !!me.value && route.query.mine === "1");
+
 const hasActiveFilter = computed(
-  () => phaseFilter.value !== "all" || nameQuery.value.trim().length > 0,
+  () =>
+    phaseFilter.value !== "all" ||
+    nameQuery.value.trim().length > 0 ||
+    mineFilter.value,
 );
 
 function replaceQuery(mutate: (next: Record<string, any>) => void) {
@@ -141,12 +154,25 @@ function setPage(p: number) {
   });
 }
 
+const mineModel = computed<boolean>({
+  get: () => mineFilter.value,
+  set: (v) =>
+    replaceQuery((next) => {
+      if (v) next.mine = "1";
+      else delete next.mine;
+      delete next.page;
+    }),
+});
+
 function clearAllFilters() {
   router.replace({ path: route.path, hash: route.hash });
 }
 
 const filterRow = ref<HTMLElement | null>(null);
-useScrollIntoViewOnChange(filterRow, () => `${phaseFilter.value}:${page.value}`);
+useScrollIntoViewOnChange(
+  filterRow,
+  () => `${phaseFilter.value}:${page.value}`,
+);
 
 // --- Live and upcoming: small sets, pushed.
 
@@ -170,7 +196,11 @@ function phaseSubscription(
   ).result;
 }
 
-const liveResult = phaseSubscription("live", order_by.desc, featuredEventFields);
+const liveResult = phaseSubscription(
+  "live",
+  order_by.desc,
+  featuredEventFields,
+);
 const upcomingResult = phaseSubscription(
   "upcoming",
   order_by.asc,
@@ -328,6 +358,17 @@ async function fetchFiltered() {
   if (q) {
     Object.assign(where, { name: { _ilike: `%${q}%` } });
   }
+  if (mineFilter.value && me.value) {
+    where._and = [
+      ...(where._and ?? []),
+      {
+        _or: [
+          { organizer_steam_id: { _eq: me.value.steam_id } },
+          { organizers: { steam_id: { _eq: me.value.steam_id } } },
+        ],
+      },
+    ];
+  }
   try {
     const { data } = await getGraphqlClient().query({
       query: eventsQuery(true),
@@ -348,7 +389,8 @@ async function fetchFiltered() {
     });
     if (myId !== filterFetchId) return;
     filteredEvents.value = (data as any)?.events ?? [];
-    filteredTotal.value = (data as any)?.events_aggregate?.aggregate?.count ?? 0;
+    filteredTotal.value =
+      (data as any)?.events_aggregate?.aggregate?.count ?? 0;
   } catch (err) {
     if (myId === filterFetchId) {
       console.error("[events] filtered fetch error:", err);
@@ -361,7 +403,7 @@ async function fetchFiltered() {
 }
 
 watch(
-  [hasActiveFilter, phaseFilter, nameQuery, page],
+  [hasActiveFilter, phaseFilter, nameQuery, mineFilter, page],
   () => {
     if (hasActiveFilter.value) {
       fetchFiltered();
@@ -373,19 +415,18 @@ watch(
   { immediate: true },
 );
 
-// --- Quick look
+// --- Quick look (past events link straight to their page)
 
 const quickLookOpen = ref(false);
 const quickLookIndex = ref(0);
 
 const quickLookItems = computed<any[]>(() =>
   hasActiveFilter.value
-    ? filteredEvents.value
+    ? filteredEvents.value.filter((event) => eventPhase(event) !== "finished")
     : [
         upNext.value,
         ...liveRest.value,
         ...upcoming.value.slice(0, UPCOMING_SHOWN),
-        ...past.value,
       ].filter(Boolean),
 );
 const quickLookEvent = computed(
@@ -469,11 +510,26 @@ const gridClasses = "grid gap-3 sm:grid-cols-2";
         {{ $t("common.reset_filters") }}
       </Button>
 
+      <FilterMenu
+        v-if="me"
+        class="ml-auto"
+        :count="mineFilter ? 1 : 0"
+        :active="mineFilter"
+        :show-reset="mineFilter"
+        content-class="w-[min(90vw,320px)] p-4"
+        @reset="mineModel = false"
+      >
+        <FilterToggle
+          v-model="mineModel"
+          :label="$t('pages.events.filter.mine')"
+        />
+      </FilterMenu>
+
       <Button
         v-if="canCreateEvent"
         as-child
         size="sm"
-        class="ml-auto h-8 bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] hover:bg-[hsl(var(--tac-amber)/0.9)]"
+        class="h-8 bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] hover:bg-[hsl(var(--tac-amber)/0.9)]"
       >
         <NuxtLink :to="{ name: 'events-create' }">
           <PlusCircle class="h-4 w-4" />
@@ -506,12 +562,14 @@ const gridClasses = "grid gap-3 sm:grid-cols-2";
             v-for="event in filteredEvents"
             :key="event.id"
             :event="event"
-            quick-look
+            :quick-look="eventPhase(event) !== 'finished'"
             @quick-look="openQuickLook(event)"
           />
         </div>
         <Empty v-else key="empty" class="min-h-[200px]">
-          <EmptyTitle>{{ $t("pages.events.filter.no_results_title") }}</EmptyTitle>
+          <EmptyTitle>{{
+            $t("pages.events.filter.no_results_title")
+          }}</EmptyTitle>
           <EmptyDescription>{{
             $t("pages.events.filter.no_results_description")
           }}</EmptyDescription>
@@ -661,7 +719,6 @@ const gridClasses = "grid gap-3 sm:grid-cols-2";
                   v-for="event in past"
                   :key="event.id"
                   :event="event"
-                  @quick-look="openQuickLook(event)"
                 />
               </HorizontalScrollRow>
             </section>

@@ -42,6 +42,10 @@ const props = defineProps<{
   // Team mode: rows read from this team's lineup, and the RANK column lists
   // who played instead.
   teamId?: string | null;
+  // Neutral mode (event, tournament lists): rows show both lineups, and the
+  // stats maps carry each match's top player, named in the last column.
+  neutral?: boolean;
+  topPlayerByMatch?: Map<string, any> | null;
 }>();
 
 const { t } = useI18n();
@@ -150,6 +154,8 @@ const wideGrid =
           :canonical-rating="ratingByMatch?.get(String(row.match.id)) ?? null"
           :collapsed-agg="statsByMatch?.get(String(row.match.id)) ?? null"
           :team-id="teamId ?? null"
+          :neutral="neutral"
+          :top-player="topPlayerByMatch?.get(String(row.match.id)) ?? null"
           compact
           :style="{ animationDelay: `${index * 40}ms` }"
           class="animate-in fade-in slide-in-from-bottom-2"
@@ -184,7 +190,11 @@ const wideGrid =
           <span><StatLabel stat="kd" header label="K/D" /></span>
           <span><StatLabel stat="adr" header label="ADR" /></span>
           <span class="text-right">{{
-            teamId ? $t("team.hero.roster") : $t("player_match.headers.rank")
+            neutral
+              ? $t("awards.mvp")
+              : teamId
+                ? $t("team.hero.roster")
+                : $t("player_match.headers.rank")
           }}</span>
           <span />
         </div>
@@ -233,6 +243,8 @@ const wideGrid =
               "
               :collapsed-agg="statsByMatch?.get(String(row.match.id)) ?? null"
               :team-id="teamId ?? null"
+              :neutral="neutral"
+              :top-player="topPlayerByMatch?.get(String(row.match.id)) ?? null"
               :style="{ animationDelay: `${index * 40}ms` }"
               class="animate-in fade-in slide-in-from-bottom-2"
             />

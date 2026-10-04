@@ -1538,6 +1538,8 @@
         "date_90d": "最近 90 天",
         "date_6m": "最近 6 個月",
         "date_1y": "最近一年",
+        "category": "類別",
+        "mine": "僅顯示我主辦的賽事",
         "no_results_title": "沒有相符的賽事",
         "no_results_description": "請嘗試清除篩選條件或擴大搜尋範圍。"
       },
@@ -1576,21 +1578,6 @@
         "description": "主辦方開放賽事報名後，賽事會顯示在這裡。",
         "organizer": "建立一個賽事，開放報名後就會顯示在這裡。"
       }
-    },
-    "manage_tournaments": {
-      "title": "管理賽事",
-      "description": "檢視並管理平台上的所有賽事。",
-      "search_by_id": "依賽事 ID 搜尋",
-      "enter_tournament_id": "輸入賽事 ID...",
-      "search_by_name": "依名稱搜尋",
-      "enter_tournament_name": "輸入賽事名稱...",
-      "clear_all": "全部清除",
-      "sort_by": "排序方式",
-      "created_at": "建立日期",
-      "start": "開始日期",
-      "newest_first": "最新優先",
-      "oldest_first": "最舊優先",
-      "only_my_tournaments": "僅顯示我主辦的賽事"
     },
     "scrims": {
       "title": "練習賽搜尋",
@@ -4963,6 +4950,7 @@
         "live": "進行中",
         "upcoming": "即將開始",
         "past": "已結束",
+        "mine": "僅顯示我主辦的活動",
         "no_results_title": "沒有相符的活動",
         "no_results_description": "試試其他名稱，或清除篩選條件。"
       },
@@ -4974,12 +4962,6 @@
       },
       "no_tournaments": "尚未公布任何賽事。",
       "days": "{count} 天 | {count} 天"
-    },
-    "manage_events": {
-      "title": "管理活動",
-      "description": "檢視並管理平台上的所有活動。",
-      "no_events_title": "尚無活動",
-      "no_events_description": "您尚未主辦任何活動。"
     },
     "plugins": {
       "not_found_title": "找不到頁面",
@@ -6268,6 +6250,7 @@
         "dashboard": "我的數據",
         "play": "遊玩",
         "watch": "觀戰",
+        "matches": "比賽",
         "tournaments": "賽事",
         "public_servers": "公開伺服器",
         "players": "玩家",
@@ -6297,11 +6280,7 @@
         "app_settings": "應用程式設定",
         "alerts": "公告",
         "seasons": "賽季",
-        "manage_matches": "管理比賽",
-        "manage_tournaments": "管理賽事",
-        "manage_league": "管理聯賽",
         "stream_deck": "直播控制台",
-        "manage_events": "管理活動",
         "awards": "Awards"
       },
       "system": {
@@ -6326,6 +6305,7 @@
         "dashboard": "我的數據",
         "play": "遊玩",
         "watch": "觀戰",
+        "matches": "比賽",
         "tournaments": "賽事",
         "players": "玩家",
         "teams": "隊伍",
@@ -6344,13 +6324,9 @@
         "alerts": "管理全站公告橫幅",
         "report_issue": "回報問題",
         "join_discord": "加入我們的 Discord",
-        "manage_matches": "管理比賽",
-        "manage_tournaments": "管理賽事",
-        "manage_league": "管理聯賽",
         "search_players": "搜尋玩家",
         "leagues": "聯賽",
         "events": "活動",
-        "manage_events": "管理活動",
         "system_media_server": "媒體伺服器",
         "utility_drift": "道具點位位移",
         "utility": "道具點位"

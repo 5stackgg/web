@@ -2,7 +2,7 @@ import { ref, watch, type Ref } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { $, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { simpleMatchFields } from "~/graphql/simpleMatchFields";
+import { matchRowFields } from "~/graphql/simpleMatchFields";
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -20,7 +20,7 @@ const EVENT_MATCHES_QUERY = typedGql("query")({
     },
     {
       match_id: true,
-      match: simpleMatchFields,
+      match: matchRowFields,
     },
   ],
   event_match_links_aggregate: [
@@ -65,7 +65,7 @@ const MY_EVENT_MATCHES_QUERY = typedGql("query")({
     },
     {
       match_id: true,
-      match: simpleMatchFields,
+      match: matchRowFields,
     },
   ],
 });
@@ -81,7 +81,7 @@ const MY_EVENT_MATCHES_PAGE_QUERY = typedGql("query")({
     },
     {
       match_id: true,
-      match: simpleMatchFields,
+      match: matchRowFields,
     },
   ],
   event_match_links_aggregate: [

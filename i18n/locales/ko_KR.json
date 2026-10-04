@@ -1538,6 +1538,8 @@
         "date_90d": "최근 90일",
         "date_6m": "최근 6개월",
         "date_1y": "최근 1년",
+        "category": "카테고리",
+        "mine": "내가 주최한 토너먼트만",
         "no_results_title": "일치하는 토너먼트가 없습니다",
         "no_results_description": "필터를 초기화하거나 검색 범위를 넓혀보세요."
       },
@@ -1576,21 +1578,6 @@
         "description": "주최자가 토너먼트 참가 신청을 열면 여기에 표시됩니다.",
         "organizer": "토너먼트를 만들면 참가 신청이 열리는 즉시 여기에 표시됩니다."
       }
-    },
-    "manage_tournaments": {
-      "title": "토너먼트 관리",
-      "description": "플랫폼의 모든 토너먼트를 조회하고 관리합니다.",
-      "search_by_id": "토너먼트 ID로 검색",
-      "enter_tournament_id": "토너먼트 ID 입력...",
-      "search_by_name": "이름으로 검색",
-      "enter_tournament_name": "토너먼트 이름 입력...",
-      "clear_all": "전체 초기화",
-      "sort_by": "정렬 기준",
-      "created_at": "생성일",
-      "start": "시작일",
-      "newest_first": "최신순",
-      "oldest_first": "오래된순",
-      "only_my_tournaments": "내가 주최한 토너먼트만"
     },
     "scrims": {
       "title": "스크림 파인더",
@@ -4963,6 +4950,7 @@
         "live": "진행 중",
         "upcoming": "예정",
         "past": "종료",
+        "mine": "내가 주최한 이벤트만",
         "no_results_title": "일치하는 이벤트가 없습니다",
         "no_results_description": "다른 이름을 입력하거나 필터를 초기화해 보세요."
       },
@@ -4974,12 +4962,6 @@
       },
       "no_tournaments": "아직 발표된 토너먼트가 없습니다.",
       "days": "{count}일 | {count}일"
-    },
-    "manage_events": {
-      "title": "이벤트 관리",
-      "description": "플랫폼 내 모든 이벤트를 확인하고 관리하세요.",
-      "no_events_title": "아직 이벤트가 없습니다",
-      "no_events_description": "아직 주최 중인 이벤트가 없습니다."
     },
     "plugins": {
       "not_found_title": "페이지를 찾을 수 없습니다",
@@ -6268,6 +6250,7 @@
         "dashboard": "내 통계",
         "play": "플레이",
         "watch": "시청",
+        "matches": "매치",
         "tournaments": "토너먼트",
         "public_servers": "공개 서버",
         "players": "플레이어",
@@ -6297,11 +6280,7 @@
         "app_settings": "앱 설정",
         "alerts": "알림 배너",
         "seasons": "시즌",
-        "manage_matches": "매치 관리",
-        "manage_tournaments": "토너먼트 관리",
-        "manage_league": "리그 관리",
         "stream_deck": "스트림 덱",
-        "manage_events": "이벤트 관리",
         "awards": "Awards"
       },
       "system": {
@@ -6326,6 +6305,7 @@
         "dashboard": "내 통계",
         "play": "플레이",
         "watch": "시청",
+        "matches": "매치",
         "tournaments": "토너먼트",
         "players": "플레이어",
         "teams": "팀",
@@ -6344,13 +6324,9 @@
         "alerts": "사이트 전체 알림 배너 관리",
         "report_issue": "문제 신고",
         "join_discord": "Discord 참여",
-        "manage_matches": "매치 관리",
-        "manage_tournaments": "토너먼트 관리",
-        "manage_league": "리그 관리",
         "search_players": "플레이어 검색",
         "leagues": "리그",
         "events": "이벤트",
-        "manage_events": "이벤트 관리",
         "system_media_server": "미디어 서버",
         "utility_drift": "유틸리티 라인업 변동",
         "utility": "유틸리티 라인업"

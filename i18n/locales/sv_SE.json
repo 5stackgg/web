@@ -1538,6 +1538,8 @@
         "date_90d": "Senaste 90 dagarna",
         "date_6m": "Senaste 6 måutilityrna",
         "date_1y": "Senaste året",
+        "category": "Kategori",
+        "mine": "Endast mina arrangerade turneringar",
         "no_results_title": "Inga turneringar matchar",
         "no_results_description": "Prova att rensa filter eller bredda din sökning."
       },
@@ -1576,21 +1578,6 @@
         "description": "När en arrangör öppnar anmälan till en turnering dyker den upp här.",
         "organizer": "Skapa en så dyker den upp här så fort anmälan öppnar."
       }
-    },
-    "manage_tournaments": {
-      "title": "Hantera turneringar",
-      "description": "Visa och hantera alla turneringar på plattformen.",
-      "search_by_id": "Sök efter turnerings-ID",
-      "enter_tournament_id": "Ange turnerings-ID...",
-      "search_by_name": "Sök efter namn",
-      "enter_tournament_name": "Ange turneringsnamn...",
-      "clear_all": "Rensa allt",
-      "sort_by": "Sortera efter",
-      "created_at": "Skapat datum",
-      "start": "Startdatum",
-      "newest_first": "Nyaste först",
-      "oldest_first": "Äldsta först",
-      "only_my_tournaments": "Endast mina arrangerade turneringar"
     },
     "scrims": {
       "title": "Scrimsökare",
@@ -4963,6 +4950,7 @@
         "live": "Live",
         "upcoming": "Kommande",
         "past": "Tidigare",
+        "mine": "Endast mina arrangerade evenemang",
         "no_results_title": "Inga evenemang matchar",
         "no_results_description": "Prova ett annat namn eller rensa filtren."
       },
@@ -4974,12 +4962,6 @@
       },
       "no_tournaments": "Inga turneringar annonserade än.",
       "days": "{count} dag | {count} dagar"
-    },
-    "manage_events": {
-      "title": "Hantera evenemang",
-      "description": "Visa och hantera alla evenemang på plattformen.",
-      "no_events_title": "Inga evenemang än",
-      "no_events_description": "Du arrangerar inga evenemang ännu."
     },
     "plugins": {
       "not_found_title": "Sidan hittades inte",
@@ -6268,6 +6250,7 @@
         "dashboard": "Min statistik",
         "play": "Spela",
         "watch": "Titta",
+        "matches": "Matcher",
         "tournaments": "Turneringar",
         "public_servers": "Publika servrar",
         "players": "Spelare",
@@ -6297,11 +6280,7 @@
         "app_settings": "Appinställningar",
         "alerts": "Varningar",
         "seasons": "Säsonger",
-        "manage_matches": "Hantera matcher",
-        "manage_tournaments": "Hantera turneringar",
-        "manage_league": "Hantera liga",
         "stream_deck": "Stream Deck",
-        "manage_events": "Hantera event",
         "awards": "Awards"
       },
       "system": {
@@ -6326,6 +6305,7 @@
         "dashboard": "Min statistik",
         "play": "Spela",
         "watch": "Titta",
+        "matches": "Matcher",
         "tournaments": "Turneringar",
         "players": "Spelare",
         "teams": "Lag",
@@ -6344,13 +6324,9 @@
         "alerts": "Hantera globala varningsbanners",
         "report_issue": "Rapportera ett problem",
         "join_discord": "Gå med i vår Discord",
-        "manage_matches": "Hantera matcher",
-        "manage_tournaments": "Hantera turneringar",
-        "manage_league": "Hantera liga",
         "search_players": "Sök spelare",
         "leagues": "Liga",
         "events": "Event",
-        "manage_events": "Hantera event",
         "system_media_server": "Medieserver",
         "utility_drift": "Drift i utility-uppställningar",
         "utility": "Utility-uppställningar"

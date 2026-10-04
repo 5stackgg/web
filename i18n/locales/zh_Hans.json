@@ -1538,6 +1538,8 @@
         "date_90d": "最近 90 天",
         "date_6m": "最近 6 个月",
         "date_1y": "最近一年",
+        "category": "类别",
+        "mine": "仅显示我组织的赛事",
         "no_results_title": "没有匹配的赛事",
         "no_results_description": "尝试清除筛选条件或扩大搜索范围。"
       },
@@ -1576,21 +1578,6 @@
         "description": "主办方开放赛事报名后，赛事会显示在这里。",
         "organizer": "创建一个赛事，开放报名后就会显示在这里。"
       }
-    },
-    "manage_tournaments": {
-      "title": "管理赛事",
-      "description": "查看并管理平台上的所有赛事。",
-      "search_by_id": "按赛事 ID 搜索",
-      "enter_tournament_id": "输入赛事 ID...",
-      "search_by_name": "按名称搜索",
-      "enter_tournament_name": "输入赛事名称...",
-      "clear_all": "清除全部",
-      "sort_by": "排序方式",
-      "created_at": "创建日期",
-      "start": "开始日期",
-      "newest_first": "最新优先",
-      "oldest_first": "最早优先",
-      "only_my_tournaments": "仅显示我组织的赛事"
     },
     "scrims": {
       "title": "约战寻找器",
@@ -4963,6 +4950,7 @@
         "live": "进行中",
         "upcoming": "即将开始",
         "past": "已结束",
+        "mine": "仅显示我组织的活动",
         "no_results_title": "没有匹配的活动",
         "no_results_description": "试试其他名称，或清除筛选条件。"
       },
@@ -4974,12 +4962,6 @@
       },
       "no_tournaments": "尚未公布任何赛事。",
       "days": "{count} 天 | {count} 天"
-    },
-    "manage_events": {
-      "title": "管理活动",
-      "description": "查看并管理平台上的所有活动。",
-      "no_events_title": "暂无活动",
-      "no_events_description": "您尚未组织任何活动。"
     },
     "plugins": {
       "not_found_title": "页面未找到",
@@ -6268,6 +6250,7 @@
         "dashboard": "我的数据",
         "play": "游戏",
         "watch": "观战",
+        "matches": "比赛",
         "tournaments": "赛事",
         "public_servers": "公共服务器",
         "players": "玩家",
@@ -6297,11 +6280,7 @@
         "app_settings": "应用设置",
         "alerts": "公告",
         "seasons": "赛季",
-        "manage_matches": "管理比赛",
-        "manage_tournaments": "管理赛事",
-        "manage_league": "管理联赛",
         "stream_deck": "直播控制台",
-        "manage_events": "管理活动",
         "awards": "Awards"
       },
       "system": {
@@ -6326,6 +6305,7 @@
         "dashboard": "我的数据",
         "play": "游戏",
         "watch": "观战",
+        "matches": "比赛",
         "tournaments": "赛事",
         "players": "玩家",
         "teams": "队伍",
@@ -6344,13 +6324,9 @@
         "alerts": "管理全站公告横幅",
         "report_issue": "报告问题",
         "join_discord": "加入我们的 Discord",
-        "manage_matches": "管理比赛",
-        "manage_tournaments": "管理赛事",
-        "manage_league": "管理联赛",
         "search_players": "搜索玩家",
         "leagues": "联赛",
         "events": "活动",
-        "manage_events": "管理活动",
         "system_media_server": "媒体服务器",
         "utility_drift": "道具点位偏移",
         "utility": "道具点位"

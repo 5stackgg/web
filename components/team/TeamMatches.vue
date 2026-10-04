@@ -2,9 +2,9 @@
 import { onBeforeUnmount, ref, watch } from "vue";
 import gql from "graphql-tag";
 import { useApolloClient } from "@vue/apollo-composable";
-import { $, order_by, Selector } from "~/generated/zeus";
+import { $, order_by } from "~/generated/zeus";
 import { generateQuery } from "~/graphql/graphqlGen";
-import { simpleMatchFields } from "~/graphql/simpleMatchFields";
+import { matchRowFields } from "~/graphql/simpleMatchFields";
 import { teamMatchesFilter } from "~/graphql/teamPulseFields";
 import PlayerMatchesTable from "~/components/player/PlayerMatchesTable.vue";
 import Pagination from "~/components/Pagination.vue";
@@ -23,23 +23,6 @@ const props = defineProps<{ teamId: string }>();
 
 const { client } = useApolloClient();
 
-// A row needs the team's side (who played, for the roster column and the
-// stats) and the opponent's team -- never each member's elo, which via
-// playerFields would run get_player_elo() for every player on the page.
-const teamMatchLineup = Selector("match_lineups")({
-  id: true,
-  name: true,
-  team_id: true,
-  team: { name: true, short_name: true, avatar_url: true },
-  lineup_players: [
-    {},
-    {
-      steam_id: true,
-      player: { steam_id: true, name: true, avatar_url: true },
-    },
-  ],
-});
-
 const TEAM_MATCHES_QUERY = generateQuery({
   matches: [
     {
@@ -52,9 +35,7 @@ const TEAM_MATCHES_QUERY = generateQuery({
       ],
     },
     {
-      ...simpleMatchFields,
-      lineup_1: teamMatchLineup,
-      lineup_2: teamMatchLineup,
+      ...matchRowFields,
       tournament_brackets: [
         { limit: 1 },
         {

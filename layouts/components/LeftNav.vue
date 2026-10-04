@@ -284,6 +284,30 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               </SidebarMenuButton>
             </SidebarMenuItem>
 
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                as-child
+                :tooltip="$t('layouts.app_nav.tooltips.matches')"
+              >
+                <NuxtLink
+                  :to="{ name: 'matches' }"
+                  :class="{
+                    'router-link-active': isRouteActive('matches'),
+                  }"
+                >
+                  <CalendarCog />
+                  {{ $t("layouts.app_nav.navigation.matches") }}
+                  <Badge
+                    size="sm"
+                    v-if="managingMatchesCount > 0"
+                    class="ml-auto"
+                  >
+                    {{ managingMatchesCount }}
+                  </Badge>
+                </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
             <SidebarMenuItem v-if="showTournamentsLink">
               <SidebarMenuButton
                 as-child
@@ -310,7 +334,11 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               </SidebarMenuButton>
             </SidebarMenuItem>
 
-            <SidebarMenuItem v-if="leaguesEnabled && hasLeagueSeason">
+            <!-- League admins get it before the first season: /league
+                 offers to create one. -->
+            <SidebarMenuItem
+              v-if="leaguesEnabled && (hasLeagueSeason || isAdmin)"
+            >
               <SidebarMenuButton
                 as-child
                 :tooltip="$t('layouts.app_nav.tooltips.leagues')"
@@ -532,21 +560,12 @@ function onLeftNavTouchEnd(e: TouchEvent) {
 
         <Separator
           v-if="
-            showSeparators &&
-            (isAdmin || isMatchOrganizer || isTournamentOrganizer || isStreamer)
+            showSeparators && (isAdmin || canManageAwards || canGrantAwards)
           "
           class="mx-4 w-auto"
         />
 
-        <SidebarGroup
-          v-if="
-            isAdmin ||
-            isMatchOrganizer ||
-            isTournamentOrganizer ||
-            canManageAwards ||
-            canGrantAwards
-          "
-        >
+        <SidebarGroup v-if="isAdmin || canManageAwards || canGrantAwards">
           <SidebarGroupLabel>{{
             $t("layouts.app_nav.competition.title")
           }}</SidebarGroupLabel>
@@ -568,90 +587,6 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                 >
                   <Medal />
                   {{ $t("layouts.app_nav.administration.awards") }}
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem
-              v-if="isAdmin || isMatchOrganizer || isTournamentOrganizer"
-              :tooltip="$t('layouts.app_nav.tooltips.manage_matches')"
-            >
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.manage_matches')"
-              >
-                <NuxtLink
-                  :to="{ name: 'matches' }"
-                  :class="{
-                    'router-link-active': isRouteActive('matches'),
-                  }"
-                >
-                  <CalendarCog />
-                  {{ $t("layouts.app_nav.administration.manage_matches") }}
-                  <Badge size="sm" v-if="managingMatchesCount > 0">
-                    {{ managingMatchesCount }}
-                  </Badge>
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem
-              v-if="isTournamentOrganizer || isAdmin"
-              :tooltip="$t('layouts.app_nav.tooltips.manage_tournaments')"
-            >
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.manage_tournaments')"
-              >
-                <NuxtLink
-                  :to="{ name: 'tournaments-manage' }"
-                  :class="{
-                    'router-link-active': isRouteActive('tournaments-manage'),
-                  }"
-                >
-                  <TournamentBracket />
-                  {{ $t("layouts.app_nav.administration.manage_tournaments") }}
-                  <Badge size="sm" v-if="managingTournamentsCount > 0">
-                    {{ managingTournamentsCount }}
-                  </Badge>
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem
-              v-if="isAdmin && leaguesEnabled"
-              :tooltip="$t('layouts.app_nav.tooltips.manage_league')"
-            >
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.manage_league')"
-              >
-                <NuxtLink
-                  :to="{ name: 'league' }"
-                  :class="{
-                    'router-link-active': isRouteActive('league'),
-                  }"
-                >
-                  <Trophy />
-                  {{ $t("layouts.app_nav.administration.manage_league") }}
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem
-              v-if="(isTournamentOrganizer || isAdmin) && eventsEnabled"
-              :tooltip="$t('layouts.app_nav.tooltips.manage_events')"
-            >
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.manage_events')"
-              >
-                <NuxtLink
-                  :to="{ name: 'events-manage' }"
-                  :class="{
-                    'router-link-active': isRouteActive('events-manage'),
-                  }"
-                >
-                  <CalendarRange />
-                  {{ $t("layouts.app_nav.administration.manage_events") }}
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -1350,14 +1285,8 @@ export default {
     myMatches() {
       return useMatchLobbyStore().myMatches;
     },
-    isMatchOrganizer() {
-      return useAuthStore().isMatchOrganizer;
-    },
     isStreamer() {
       return useAuthStore().isStreamer;
-    },
-    isTournamentOrganizer() {
-      return useAuthStore().isTournamentOrganizer;
     },
     isAdmin() {
       return useAuthStore().isAdmin;
@@ -1368,9 +1297,6 @@ export default {
     },
     managingMatchesCount() {
       return useMatchLobbyStore().managingMatchesCount;
-    },
-    managingTournamentsCount() {
-      return useMatchLobbyStore().managingTournamentsCount;
     },
     activeStreamingMatchesCount() {
       return useStreamerStore().activeStreamingMatchesCount;

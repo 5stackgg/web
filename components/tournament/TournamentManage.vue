@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import {
   Image as ImageIcon,
@@ -67,6 +67,42 @@ const current = computed(
   () =>
     sections.value.find((s) => s.key === props.section) ?? sections.value[0],
 );
+
+// The active highlight slides between sections: down the list on wide
+// screens, along the scroll strip on narrow ones.
+const navRef = ref<HTMLElement | null>(null);
+const indicator = ref({ x: 0, y: 0, width: 0, height: 0 });
+const indicatorAnimated = ref(false);
+
+function placeIndicator() {
+  const active = navRef.value?.querySelector<HTMLElement>(
+    "[aria-current='page']",
+  );
+  if (!active) return;
+  indicator.value = {
+    x: active.offsetLeft,
+    y: active.offsetTop,
+    width: active.offsetWidth,
+    height: active.offsetHeight,
+  };
+  if (!indicatorAnimated.value) {
+    requestAnimationFrame(() => (indicatorAnimated.value = true));
+  }
+}
+
+let resizeObserver: ResizeObserver | null = null;
+watch(
+  () => current.value.key,
+  () => nextTick(placeIndicator),
+);
+onMounted(() => {
+  placeIndicator();
+  if (navRef.value) {
+    resizeObserver = new ResizeObserver(placeIndicator);
+    resizeObserver.observe(navRef.value);
+  }
+});
+onUnmounted(() => resizeObserver?.disconnect());
 </script>
 
 <template>
@@ -74,9 +110,24 @@ const current = computed(
     class="grid items-start gap-6 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-10"
   >
     <nav
+      ref="navRef"
       :aria-label="$t('tournament.manage.title')"
-      class="-mx-1 flex gap-1 overflow-x-auto px-1 pb-1 [scrollbar-width:none] lg:sticky lg:top-6 lg:mx-0 lg:grid lg:overflow-visible lg:px-0 lg:pb-0"
+      class="relative -mx-1 flex gap-1 overflow-x-auto px-1 pb-1 [scrollbar-width:none] lg:sticky lg:top-6 lg:mx-0 lg:grid lg:overflow-visible lg:px-0 lg:pb-0"
     >
+      <span
+        v-show="indicator.height > 0"
+        aria-hidden="true"
+        class="pointer-events-none absolute left-0 top-0 rounded-md bg-[hsl(var(--tac-amber)/0.1)] lg:shadow-[inset_2px_0_0_hsl(var(--tac-amber))]"
+        :class="
+          indicatorAnimated &&
+          'transition-[transform,width,height] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none'
+        "
+        :style="{
+          transform: `translate(${indicator.x}px, ${indicator.y}px)`,
+          width: `${indicator.width}px`,
+          height: `${indicator.height}px`,
+        }"
+      ></span>
       <button
         v-for="item in sections"
         :key="item.key"
@@ -84,7 +135,7 @@ const current = computed(
         class="relative flex h-9 shrink-0 items-center gap-2.5 rounded-md px-2.5 text-left text-[0.8rem] font-semibold transition-colors"
         :class="
           item.key === current.key
-            ? 'bg-[hsl(var(--tac-amber)/0.1)] text-foreground lg:shadow-[inset_2px_0_0_hsl(var(--tac-amber))]'
+            ? 'text-foreground'
             : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
         "
         :aria-current="item.key === current.key ? 'page' : undefined"
@@ -100,7 +151,11 @@ const current = computed(
       </button>
     </nav>
 
-    <div class="grid min-w-0 max-w-3xl gap-8 [&>*]:!mx-0">
+    <div
+      :key="current.key"
+      data-state="active"
+      class="tab-panel-in grid min-w-0 max-w-3xl gap-8 [&>*]:!mx-0"
+    >
       <template v-if="current.key === 'details'">
         <TournamentInformationForm :tournament="tournament" part="details" />
       </template>

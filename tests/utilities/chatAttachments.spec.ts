@@ -4,6 +4,7 @@ import {
   chatGifUrl,
   chatMediaLabel,
   chatRoomTakesAttachments,
+  chatRoomTakesGifs,
   formatChatDuration,
   pasteAttachesFiles,
   pickChatFiles,
@@ -43,8 +44,29 @@ describe("which rooms take attachments", () => {
   );
 
   // Both are relayed into the game server, which shows only text.
-  it.each(["match", "match_team", undefined, ""])("keeps %s text-only", (type) => {
-    expect(chatRoomTakesAttachments(type)).toBe(false);
+  it.each(["match", "match_team", undefined, ""])(
+    "takes no files in %s",
+    (type) => {
+      expect(chatRoomTakesAttachments(type)).toBe(false);
+    },
+  );
+});
+
+describe("which rooms take GIFs", () => {
+  it.each([
+    "matchmaking",
+    "tournament",
+    "organizers",
+    "draft",
+    "direct",
+    "match",
+    "match_team",
+  ])("lets %s send a GIF", (type) => {
+    expect(chatRoomTakesGifs(type)).toBe(true);
+  });
+
+  it.each([undefined, "", "lobby"])("keeps %s without", (type) => {
+    expect(chatRoomTakesGifs(type)).toBe(false);
   });
 });
 

@@ -12,8 +12,11 @@ import type { ChatGif } from "~/utilities/chatAttachments";
 
 // The one "+" in the composer. Without GIFs it opens the file dialog straight
 // away; with them it asks which, and picking GIF swaps the menu for the picker
-// in place so the text box keeps its width.
-defineProps<{ gifs: boolean }>();
+// in place so the text box keeps its width. A room that takes GIFs but not
+// files opens on the picker.
+const props = withDefaults(defineProps<{ gifs: boolean; files?: boolean }>(), {
+  files: true,
+});
 
 const emit = defineEmits<{ files: []; gif: [gif: ChatGif] }>();
 
@@ -55,7 +58,7 @@ let picked = false;
 watch(open, (value) => {
   if (value) {
     picked = false;
-    view.value = "menu";
+    view.value = props.files ? "menu" : "gifs";
   }
 });
 
@@ -94,7 +97,7 @@ function select(gif: ChatGif) {
         type="button"
         data-chat-attach
         :class="triggerClasses"
-        :aria-label="$t('chat.attachments.menu')"
+        :aria-label="files ? $t('chat.attachments.menu') : $t('chat.gifs.open')"
         @mousedown.prevent
       >
         <Plus class="h-4 w-4" />

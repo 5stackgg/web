@@ -123,22 +123,23 @@ const fieldName = `chat-message-${Math.random().toString(36).slice(2, 10)}`;
                   : 'flex items-center gap-2 p-2'
               "
             >
-              <template v-if="canAttach">
-                <ChatAttachMenu
-                  :gifs="gifsEnabled"
-                  @files="openFilePicker"
-                  @gif="sendGif"
-                />
-                <input
-                  ref="fileInput"
-                  type="file"
-                  class="hidden"
-                  multiple
-                  :accept="acceptTypes"
-                  @change="onFilesPicked"
-                  @cancel="releaseHub"
-                />
-              </template>
+              <ChatAttachMenu
+                v-if="canAttach || gifsEnabled"
+                :files="canAttach"
+                :gifs="gifsEnabled"
+                @files="openFilePicker"
+                @gif="sendGif"
+              />
+              <input
+                v-if="canAttach"
+                ref="fileInput"
+                type="file"
+                class="hidden"
+                multiple
+                :accept="acceptTypes"
+                @change="onFilesPicked"
+                @cancel="releaseHub"
+              />
               <Textarea
                 ref="inputRef"
                 rows="1"
@@ -264,6 +265,12 @@ export default {
       type: Object as PropType<{ type: string; id: string } | null>,
       default: null,
     },
+    // A room that takes a GIF but not files. Any room with an attachmentRoom
+    // takes both.
+    takesGifs: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ["sendMessage", "update:destination"],
   watch: {
@@ -275,6 +282,14 @@ export default {
         }
 
         if (current) {
+          void this.mediaConfig.load();
+        }
+      },
+    },
+    takesGifs: {
+      immediate: true,
+      handler(takesGifs: boolean) {
+        if (takesGifs) {
           void this.mediaConfig.load();
         }
       },
@@ -327,7 +342,10 @@ export default {
       return !!this.attachmentRoom && !!this.mediaConfig.config;
     },
     gifsEnabled(): boolean {
-      return this.canAttach && !!this.mediaConfig.config?.gifs;
+      return (
+        (!!this.attachmentRoom || this.takesGifs) &&
+        !!this.mediaConfig.config?.gifs
+      );
     },
     acceptTypes(): string {
       return (this.mediaConfig.config?.mime_types ?? []).join(",");

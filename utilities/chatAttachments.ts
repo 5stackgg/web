@@ -8,6 +8,14 @@ export const CHAT_ATTACHMENT_ROOMS = [
   "direct",
 ] as const;
 
+// Also must match the api. A GIF is only a GIPHY id, so it can go where files
+// cannot: the game server is sent a short text line in its place.
+export const CHAT_GIF_ROOMS = [
+  ...CHAT_ATTACHMENT_ROOMS,
+  "match",
+  "match_team",
+] as const;
+
 export type ChatAttachmentKind = "image" | "video";
 
 export interface ChatAttachment {
@@ -62,6 +70,10 @@ const GIPHY_ID = /^[A-Za-z0-9]{1,64}$/;
 
 export function chatRoomTakesAttachments(type?: string | null): boolean {
   return (CHAT_ATTACHMENT_ROOMS as readonly string[]).includes(type ?? "");
+}
+
+export function chatRoomTakesGifs(type?: string | null): boolean {
+  return (CHAT_GIF_ROOMS as readonly string[]).includes(type ?? "");
 }
 
 export function chatAttachmentKind(mimeType: string): ChatAttachmentKind | null {

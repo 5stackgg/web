@@ -3,6 +3,7 @@ import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
 import ChatMessage from "~/components/chat/ChatMessage.vue";
+import ChatInput from "~/components/chat/ChatInput.vue";
 import { useAuthStore } from "~/stores/AuthStore";
 import socket, { type LobbyMessage } from "~/web-sockets/Socket";
 
@@ -105,6 +106,38 @@ describe("ChatLobby gag", () => {
     const wrapper = await mountLobby();
 
     expect(wrapper.find("textarea").exists()).toBe(true);
+  });
+});
+
+// A drafted room's chat becomes the match room plus the player's team room, so
+// this is what the draft room's composer offers once the draft is done.
+describe("ChatLobby media", () => {
+  it("takes GIFs but no files on a merged match panel", async () => {
+    signIn({ is_gagged: false });
+
+    const matchId = `match-${++lobbyCounter}`;
+    const wrapper = await mountLobby({
+      lobbyId: matchId,
+      teamLobbyId: `${matchId}:lineup-1`,
+    });
+    const input = wrapper.findComponent(ChatInput);
+
+    expect(input.props("attachmentRoom")).toBeNull();
+    expect(input.props("takesGifs")).toBe(true);
+  });
+
+  it("takes files and GIFs in a draft room", async () => {
+    signIn({ is_gagged: false });
+
+    const lobbyId = `draft-${++lobbyCounter}`;
+    const wrapper = await mountLobby({ type: "draft", lobbyId });
+    const input = wrapper.findComponent(ChatInput);
+
+    expect(input.props("attachmentRoom")).toEqual({
+      type: "draft",
+      id: lobbyId,
+    });
+    expect(input.props("takesGifs")).toBe(true);
   });
 });
 

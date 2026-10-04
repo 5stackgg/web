@@ -50,6 +50,21 @@ describe("ChatAttachMenu", () => {
     wrapper.unmount();
   });
 
+  it("opens on the GIF picker where the room takes no files", async () => {
+    const wrapper = await mountSuspended(ChatAttachMenu, {
+      props: { gifs: true, files: false },
+      attachTo: document.body,
+    });
+
+    await openMenu(wrapper);
+
+    expect(wrapper.findComponent(ChatGifPickerPanel).exists()).toBe(true);
+    expect(inMenu("[data-chat-attach-files]")).toBeNull();
+    expect(wrapper.emitted("files")).toBeUndefined();
+
+    wrapper.unmount();
+  });
+
   // The panel stays on screen through the popover's close animation, where a
   // second click would send the GIF again.
   it("sends one GIF per opening, however fast it is clicked", async () => {

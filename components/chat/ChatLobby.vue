@@ -159,6 +159,7 @@ import { Upload } from "lucide-vue-next";
           ref="chatInputRef"
           variant="global"
           :attachment-room="attachmentRoom"
+          :takes-gifs="takesGifs"
           :channels="chatChannels"
           :destination="sendTo"
           @update:destination="sendTo = $event as any"
@@ -383,6 +384,7 @@ import { Upload } from "lucide-vue-next";
           ref="chatInputRef"
           variant="embedded"
           :attachment-room="attachmentRoom"
+          :takes-gifs="takesGifs"
           :channels="chatChannels"
           :destination="sendTo"
           @update:destination="sendTo = $event as any"
@@ -439,7 +441,10 @@ import { useRightSidebar } from "~/composables/useRightSidebar";
 import { useSound } from "~/composables/useSound";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useChatAttachmentConfig } from "~/composables/useChatAttachmentConfig";
-import { chatRoomTakesAttachments } from "~/utilities/chatAttachments";
+import {
+  chatRoomTakesAttachments,
+  chatRoomTakesGifs,
+} from "~/utilities/chatAttachments";
 
 const { rightSidebarOpen } = useRightSidebar();
 const { playNotificationSound } = useSound();
@@ -660,13 +665,20 @@ export default {
       return this.canSend && !this.isGagged;
     },
     // Match and team rooms are relayed into the game server, so a merged
-    // panel is text-only whichever way the next line goes.
+    // panel takes no files whichever way the next line goes.
     attachmentRoom() {
       if (this.isMerged || !chatRoomTakesAttachments(this.type)) {
         return null;
       }
 
       return { type: this.type, id: this.lobbyId };
+    },
+    // A GIF goes into a match or team room as well, so the merged panel takes
+    // one whichever way the next line goes.
+    takesGifs() {
+      return Object.values(this.messageRooms).every(
+        (room) => !room || chatRoomTakesGifs(room.type),
+      );
     },
     acceptsDrops() {
       return (

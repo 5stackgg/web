@@ -130,6 +130,30 @@ describe("ChatInput attachments", () => {
     expect(wrapper.find("[data-chat-gif]").exists()).toBe(false);
   });
 
+  // Match and team rooms: the game server is sent text, so a GIF id is all
+  // they take.
+  it("offers only GIFs where the room takes no files", async () => {
+    config.value = { ...LIMITS, gifs: true };
+
+    const wrapper = await mountSuspended(ChatInput, {
+      props: { takesGifs: true },
+    });
+
+    expect(attachMenu(wrapper).exists()).toBe(true);
+    expect(attachMenu(wrapper).props("files")).toBe(false);
+    expect(attachMenu(wrapper).props("gifs")).toBe(true);
+    expect(wrapper.find("input[type='file']").exists()).toBe(false);
+  });
+
+  it("offers nothing in a GIF-only room until GIPHY is set up", async () => {
+    const wrapper = await mountSuspended(ChatInput, {
+      props: { takesGifs: true },
+    });
+
+    expect(attachButton(wrapper).exists()).toBe(false);
+    expect(attachMenu(wrapper).exists()).toBe(false);
+  });
+
   it("names the box without a generic placeholder", async () => {
     const wrapper = await mountSuspended(ChatInput, {
       props: { attachmentRoom: room },

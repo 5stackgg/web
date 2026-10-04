@@ -7761,6 +7761,9 @@
       "loading_replay": "Wiederholung wird geladen",
       "replay_failed": "Die Wiederholung konnte nicht geladen werden",
       "staff_only": "Nur für Staff",
+      "stop": "Stream stoppen",
+      "stopped": "Stream gestoppt",
+      "resume": "Ansehen",
       "card": {
         "final": "Endstand",
         "replay": "Wiederholung",

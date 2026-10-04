@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
-import { ExternalLink, PictureInPicture } from "lucide-vue-next";
+import { ExternalLink, PictureInPicture, Square } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import { loginLinks } from "~/utilities/loginLinks";
 import { generateSubscription } from "~/graphql/graphqlGen";
@@ -12,6 +12,7 @@ import StreamLiveTag from "~/components/match/StreamLiveTag.vue";
 import StreamMatchCard from "~/components/match/StreamMatchCard.vue";
 import StreamStatusPanel from "~/components/match/StreamStatusPanel.vue";
 import StreamBootStatus from "~/components/match/StreamBootStatus.vue";
+import StreamStoppedBar from "~/components/match/StreamStoppedBar.vue";
 import {
   useWhepStatusCopy,
   type WhepPhase,
@@ -20,6 +21,10 @@ import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useStreamerStore } from "~/stores/StreamerStore";
 import { useMatchPopout } from "~/composables/useMatchPopout";
+import {
+  liveStreamKey,
+  useStoppedStreams,
+} from "~/composables/useStoppedStreams";
 import { e_player_roles_enum } from "~/generated/zeus";
 
 const FRAME_SHADOW =
@@ -280,7 +285,34 @@ const isPoppedOut = computed(
   () => inGlobalPip.value || poppedToWindow.value,
 );
 
+// Only the page's own player has a Stop: the floating PiP and the pop-out
+// close instead, and the /watch stage draws its own controls. Stopping
+// unmounts StreamCanvas, which closes the WebRTC connection.
+const stoppedStreams = useStoppedStreams();
+const canStop = computed(
+  () => !props.inGlobal && !props.inPopout && !props.bare,
+);
+const isStopped = computed(
+  () => canStop.value && stoppedStreams.isStopped(liveStreamKey(props.matchId)),
+);
+
+function stopStream() {
+  stoppedStreams.stop(liveStreamKey(props.matchId));
+}
+
+function resumeStream() {
+  stoppedStreams.resume(liveStreamKey(props.matchId));
+}
+
+// Closing the pop-out window means stop, same as the floating player's ✕
+// (see StreamGlobal) — otherwise the page takes the stream back and
+// autoplays it.
+watch(poppedToWindow, (open, wasOpen) => {
+  if (wasOpen && !open && canStop.value) stopStream();
+});
+
 function returnFromPip() {
+  resumeStream();
   applicationSettings.setGlobalStream();
 }
 
@@ -315,8 +347,21 @@ function focusPopoutWindow() {
 </script>
 
 <template>
+  <StreamStoppedBar
+    v-if="
+      isStopped &&
+      hasStream &&
+      canViewStream &&
+      !isPoppedOut &&
+      (isLive || canSeeBoot || streamEnded)
+    "
+    :match-id="matchId"
+    :live="!!stream?.is_live"
+    @watch="resumeStream"
+  />
+
   <div
-    v-if="streamEnded && canViewStream && !isPoppedOut"
+    v-else-if="streamEnded && canViewStream && !isPoppedOut"
     class="relative overflow-hidden bg-black"
     :class="[frameClass, fills ? 'h-full w-full' : 'aspect-video']"
   >
@@ -432,6 +477,18 @@ function focusPopoutWindow() {
         >
           <ExternalLink class="size-3.5" />
         </button>
+        <template v-if="canStop">
+          <span class="h-4 w-px bg-white/25" aria-hidden="true" />
+          <button
+            type="button"
+            :title="$t('match.stream.stop')"
+            :aria-label="$t('match.stream.stop')"
+            class="inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm transition-all duration-150 hover:border-destructive hover:bg-destructive hover:text-white hover:scale-110 cursor-pointer"
+            @click="stopStream"
+          >
+            <Square class="size-3 fill-current" />
+          </button>
+        </template>
         <StreamViewerBadge v-if="compact" :match-id="matchId" size="md" />
       </div>
     </StreamCanvas>

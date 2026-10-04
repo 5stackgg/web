@@ -1,14 +1,15 @@
 <script lang="ts" setup>
 import { Button } from "~/components/ui/button";
-import { ExternalLink, Volume2, VolumeX } from "lucide-vue-next";
+import { ExternalLink, Square, Volume2, VolumeX } from "lucide-vue-next";
 import MatchScoreboardOverlay from "~/components/match/MatchScoreboardOverlay.vue";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
+import StreamStoppedBar from "~/components/match/StreamStoppedBar.vue";
 </script>
 
 <template>
   <div :class="inline ? 'h-full w-full' : 'w-full space-y-3'">
     <StreamCanvas
-      v-if="selectedStream"
+      v-if="selectedStream && !isStopped"
       :is-live="true"
       class="group w-full"
       :class="inline ? 'h-full' : 'aspect-video'"
@@ -28,6 +29,19 @@ import StreamCanvas from "~/components/match/StreamCanvas.vue";
       >
         <ExternalLink class="w-4 h-4" />
         <span class="sr-only">{{ $t("streams.move_to_global_view") }}</span>
+      </Button>
+
+      <Button
+        v-if="canStop"
+        class="absolute top-2 right-12 w-8 h-8 opacity-70 hover:opacity-100 transition-opacity bg-background/80 hover:bg-background border border-border flex items-center justify-center z-10"
+        @click="stopStream"
+        type="button"
+        :title="$t('match.stream.stop')"
+        variant="ghost"
+        size="icon"
+      >
+        <Square class="size-3 fill-current" />
+        <span class="sr-only">{{ $t("match.stream.stop") }}</span>
       </Button>
 
       <MatchScoreboardOverlay
@@ -59,6 +73,13 @@ import StreamCanvas from "~/components/match/StreamCanvas.vue";
         <Volume2 v-else class="size-3.5" />
       </button>
     </StreamCanvas>
+
+    <StreamStoppedBar
+      v-else-if="selectedStream"
+      :match-id="effectiveMatchId"
+      :label="selectedStream.title || selectedStream.link"
+      @watch="resumeStream"
+    />
 
     <div
       v-if="
@@ -109,6 +130,10 @@ interface MatchStream {
 import TwitchIcon from "~/components/icons/TwitchIcon.vue";
 import YouTubeIcon from "~/components/icons/YouTubeIcon.vue";
 import KickIcon from "~/components/icons/KickIcon.vue";
+import {
+  embedStreamKey,
+  useStoppedStreams,
+} from "~/composables/useStoppedStreams";
 
 export default {
   components: {
@@ -181,6 +206,18 @@ export default {
         null
       );
     },
+    // The page's own embed can be stopped; the floating PiP closes
+    // instead, and the /watch stage owns its controls.
+    canStop() {
+      return this.global === false && !this.inline;
+    },
+    isStopped() {
+      return (
+        this.canStop &&
+        !!this.selectedStream &&
+        useStoppedStreams().isStopped(embedStreamKey(this.selectedStream.id))
+      );
+    },
     // Only the Twitch SDK can change volume at runtime; the other embeds
     // are bare iframes with nothing to call.
     supportsVolume() {
@@ -191,6 +228,21 @@ export default {
     setGlobalStream(stream: MatchStream) {
       this.selectedStream = null;
       useApplicationSettingsStore().setGlobalStream(stream);
+    },
+    stopStream() {
+      if (!this.selectedStream) return;
+      // Tear the player down before StreamCanvas unmounts so the Twitch
+      // SDK gets its destroy() rather than just losing its iframe.
+      this.cleanupPlayer();
+      useStoppedStreams().stop(embedStreamKey(this.selectedStream.id));
+    },
+    resumeStream() {
+      if (!this.selectedStream) return;
+      useStoppedStreams().resume(embedStreamKey(this.selectedStream.id));
+      // The player div only exists again once StreamCanvas re-renders.
+      this.$nextTick(() => {
+        this.loadStream();
+      });
     },
     selectStream(stream: MatchStream) {
       if (this.selectedStream?.id === stream.id) {
@@ -478,7 +530,9 @@ export default {
       this.platform = parsed.platform;
       this.embedId = parsed.embedId;
 
-      if (!this.embedId) {
+      // Stopped: nothing to mount into, and no reason to pull in the
+      // Twitch SDK. resumeStream() loads it on Watch.
+      if (!this.embedId || this.isStopped) {
         return;
       }
 
@@ -532,14 +586,16 @@ export default {
     // When the floating global-stream overlay is closed (globalStream
     // goes null), the inline embed previously nulled its selectedStream
     // when promoting the stream to global — so without this watcher the
-    // inline player never came back on close. Re-select the first
-    // available stream so the page-level player is restored.
+    // inline player never came back on close. Re-select the stream that
+    // was floating (it shows as stopped when its ✕ stopped it), falling
+    // back to the first one.
     globalStream(next, prev) {
       if (prev && !next && !this.global && !this.setGlobalStreamOnly) {
         if (!this.selectedStream && this.streams && this.streams.length > 0) {
-          const firstStream = this.streams.at(0);
-          if (firstStream) {
-            this.selectStream(firstStream);
+          const stream =
+            this.streams.find((s) => s.id === prev.id) ?? this.streams.at(0);
+          if (stream) {
+            this.selectStream(stream);
           }
         }
       }

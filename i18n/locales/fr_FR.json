@@ -7761,6 +7761,9 @@
       "loading_replay": "Chargement du replay",
       "replay_failed": "Le replay n'a pas pu être chargé",
       "staff_only": "Réservé au staff",
+      "stop": "Arrêter le stream",
+      "stopped": "Stream arrêté",
+      "resume": "Regarder",
       "card": {
         "final": "Score final",
         "replay": "Replay",

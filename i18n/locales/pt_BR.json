@@ -7761,6 +7761,9 @@
       "loading_replay": "Carregando o replay",
       "replay_failed": "Não foi possível carregar o replay",
       "staff_only": "Somente staff",
+      "stop": "Parar transmissão",
+      "stopped": "Transmissão parada",
+      "resume": "Assistir",
       "card": {
         "final": "Final",
         "replay": "Replay",

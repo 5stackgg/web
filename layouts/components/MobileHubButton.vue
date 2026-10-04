@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
 import { Grid } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import AnimatedStat from "~/components/AnimatedStat.vue";
@@ -21,6 +21,12 @@ const unreadCount = computed(
     (pendingFriends.value?.length ?? 0),
 );
 const badgeLabel = computed(() => formatBadgeCount(unreadCount.value));
+
+// A new notification rings the badge once; a standing count sits still.
+const ringing = ref(0);
+watch(unreadNotificationCount, (count, previous) => {
+  if (count > (previous ?? 0)) ringing.value++;
+});
 </script>
 
 <template>
@@ -43,8 +49,10 @@ const badgeLabel = computed(() => formatBadgeCount(unreadCount.value));
         class="absolute -top-1 -right-1 flex origin-center"
       >
         <span
-          v-if="unreadNotificationCount > 0"
-          class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75 motion-reduce:hidden"
+          v-if="ringing"
+          :key="ringing"
+          class="absolute inset-0 rounded-full bg-red-400 opacity-60 motion-safe:animate-[ping_1s_cubic-bezier(0,0,0.2,1)_forwards] motion-reduce:hidden"
+          @animationend="ringing = 0"
         />
         <span
           class="relative inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-red-500 px-0.5 text-[0.55rem] font-bold leading-none text-white shadow-sm ring-1 ring-background"

@@ -8,6 +8,9 @@ export interface SidebarProps {
   collapsible?: "offcanvas" | "icon" | "none"
   overlay?: boolean
   class?: HTMLAttributes["class"]
+  // The phone sheet: its panel and the scrim behind it.
+  sheetClass?: HTMLAttributes["class"]
+  sheetOverlayClass?: HTMLAttributes["class"]
 }
 
 export { default as Sidebar } from "./Sidebar.vue"

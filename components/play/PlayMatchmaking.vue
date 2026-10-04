@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref, watch } from "vue";
-import { useResizeObserver } from "@vueuse/core";
+import { useMediaQuery, useResizeObserver } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import { useSubscription } from "@vue/apollo-composable";
 import {
@@ -22,6 +22,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetTitle,
+} from "~/components/ui/sheet";
 import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import Fold from "~/components/ui/transitions/Fold.vue";
 import SteamIcon from "~/components/icons/SteamIcon.vue";
@@ -406,6 +412,8 @@ function findMatch(event: MouseEvent) {
 }
 
 const settingsOpen = ref(false);
+// Too tall for a popover on a phone (it flips up and clips): a sheet there.
+const isPhone = useMediaQuery("(max-width: 767px)");
 
 const primaryClasses =
   "h-11 min-w-[188px] gap-2 px-[22px] text-[15px] font-semibold bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] hover:bg-[hsl(var(--tac-amber)/0.9)] max-sm:min-w-0 max-sm:flex-1";
@@ -643,7 +651,10 @@ const linkClasses =
                     aria-hidden="true"
                     class="my-1.5 w-px shrink-0 bg-border"
                   ></span>
-                  <Popover v-model:open="settingsOpen">
+                  <Popover
+                    :open="settingsOpen && !isPhone"
+                    @update:open="(open) => (settingsOpen = open)"
+                  >
                     <PopoverTrigger as-child>
                       <button
                         type="button"
@@ -666,11 +677,23 @@ const linkClasses =
                     </PopoverContent>
                   </Popover>
                 </div>
-                <span
-                  v-if="matchmaking.onLan && matchmaking.playWhere === 'lan'"
-                  class="text-xs text-muted-foreground"
-                  >{{ $t("matchmaking.where.lan_hint") }}</span
+                <Sheet
+                  :open="settingsOpen && isPhone"
+                  @update:open="(open) => (settingsOpen = open)"
                 >
+                  <SheetContent
+                    side="bottom"
+                    class="max-h-[85dvh] overflow-y-auto rounded-t-xl pb-8"
+                  >
+                    <SheetTitle class="mb-4 text-base">{{
+                      $t("pages.play.matchmaking.settings")
+                    }}</SheetTitle>
+                    <SheetDescription class="sr-only">{{
+                      $t("pages.play.matchmaking.settings")
+                    }}</SheetDescription>
+                    <MatchmakingSettings />
+                  </SheetContent>
+                </Sheet>
               </div>
 
               <div

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, useId } from "vue";
+import { roundedPing } from "~/components/play/matchmakingHero";
 import { RefreshCw, Star } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import { FormSection } from "~/components/ui/form";
@@ -25,7 +26,7 @@ const regions = computed(() =>
       const result = matchmaking.getRegionlatencyResult(region.value);
       return {
         ...region,
-        latency: result ? Math.round(Number(result.latency)) : undefined,
+        latency: roundedPing(result?.latency) ?? undefined,
         measuring:
           matchmaking.getRegionProbeState(region.value) === "measuring",
         starred: matchmaking.storedRegions.includes(region.value),

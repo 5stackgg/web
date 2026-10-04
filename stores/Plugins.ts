@@ -4,6 +4,7 @@ import { order_by } from "~/generated/zeus";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateSubscription } from "~/graphql/graphqlGen";
 import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
+import { seededSubscribe } from "~/utilities/seededSubscribe";
 import { useAuthStore } from "./AuthStore";
 import { useApplicationSettingsStore } from "./ApplicationSettings";
 
@@ -47,45 +48,48 @@ export const usePluginsStore = defineStore("plugins", () => {
 
   const subscribeToPlugins = async () => {
     const { subscribe } = useSubscriptionManager();
-    const subscription = getGraphqlClient().subscribe({
-      query: generateSubscription({
-        custom_pages: [
-          {
-            order_by: [{ nav_order: order_by.asc }],
-          },
-          {
-            id: true,
-            slug: true,
-            title: true,
-            icon: true,
-            remote_entry_url: true,
-            remote_scope: true,
-            exposed_module: true,
-            required_role: true,
-            enabled: true,
-            is_default: true,
-            nav_group: true,
-            nav_order: true,
-            profile_tab_label: true,
-          },
-        ],
-      }),
-    });
 
     subscribe(
       "plugins:custom_pages",
-      subscription.subscribe({
-        next: ({ data }) => {
-          plugins.value = data.custom_pages;
-          initialized.value = true;
-          try {
-            localStorage.setItem(
-              PLUGINS_CACHE_KEY,
-              JSON.stringify(data.custom_pages),
-            );
-          } catch {}
+      seededSubscribe(
+        getGraphqlClient(),
+        {
+          query: generateSubscription({
+            custom_pages: [
+              {
+                order_by: [{ nav_order: order_by.asc }],
+              },
+              {
+                id: true,
+                slug: true,
+                title: true,
+                icon: true,
+                remote_entry_url: true,
+                remote_scope: true,
+                exposed_module: true,
+                required_role: true,
+                enabled: true,
+                is_default: true,
+                nav_group: true,
+                nav_order: true,
+                profile_tab_label: true,
+              },
+            ],
+          }),
         },
-      }),
+        {
+          next: ({ data }) => {
+            plugins.value = data.custom_pages;
+            initialized.value = true;
+            try {
+              localStorage.setItem(
+                PLUGINS_CACHE_KEY,
+                JSON.stringify(data.custom_pages),
+              );
+            } catch {}
+          },
+        },
+      ),
     );
   };
 

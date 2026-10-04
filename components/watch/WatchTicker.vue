@@ -12,6 +12,7 @@ import WatchSegmented from "~/components/watch/WatchSegmented.vue";
 import { Skeleton } from "~/components/ui/skeleton";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import { useWatchStage } from "~/composables/useWatchStage";
+import { seededSubscribe } from "~/utilities/seededSubscribe";
 import {
   TICKER_LIVE_STATUSES,
   TICKER_RESULTS_PAGE,
@@ -96,12 +97,13 @@ const resultsQuery = generateQuery({
 
 function start() {
   if (liveSub || typeof window === "undefined") return;
-  liveSub = client
-    .subscribe({
+  liveSub = seededSubscribe(
+    client,
+    {
       query: liveQuery,
       variables: { statuses: [...TICKER_LIVE_STATUSES] },
-    })
-    .subscribe({
+    },
+    {
       next: ({ data }: any) => {
         const next: any[] = data?.matches ?? [];
         // A match that drops out of the live list has usually just
@@ -116,10 +118,12 @@ function start() {
         console.error("[watch-ticker] live subscription error", err);
         liveLoaded.value = true;
       },
-    });
-  upcomingSub = client
-    .subscribe({ query: upcomingQuery, variables: { status: "Scheduled" } })
-    .subscribe({
+    },
+  );
+  upcomingSub = seededSubscribe(
+    client,
+    { query: upcomingQuery, variables: { status: "Scheduled" } },
+    {
       next: ({ data }: any) => {
         upcoming.value = data?.matches ?? [];
         upcomingLoaded.value = true;
@@ -128,7 +132,8 @@ function start() {
         console.error("[watch-ticker] upcoming subscription error", err);
         upcomingLoaded.value = true;
       },
-    });
+    },
+  );
   void loadResults(true);
 }
 

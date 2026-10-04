@@ -5,6 +5,7 @@ import { polyfillCountryFlagEmojis } from "country-flag-emoji-polyfill";
 import { useBranding } from "~/composables/useBranding";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useAuthStore } from "~/stores/AuthStore";
+import { usePluginsStore } from "~/stores/Plugins";
 import { pageKeyWithoutTabQuery } from "~/utilities/pageKey";
 
 const MatchmakingConfirm = defineAsyncComponent(
@@ -86,6 +87,9 @@ useHead({
 
 const authStore = useAuthStore();
 const applicationSettingsStore = useApplicationSettingsStore();
+// Started with the app, not when the nav mounts, so plugin links are known by
+// the time the nav first paints.
+usePluginsStore();
 
 const me = computed(() => authStore.me);
 const hasGlobalStream = computed(() => !!applicationSettingsStore.globalStream);

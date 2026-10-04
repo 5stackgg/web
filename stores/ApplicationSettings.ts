@@ -7,6 +7,7 @@ import { useMatchmakingStore } from "./MatchmakingStore";
 import { useAuthStore } from "./AuthStore";
 import { order_by } from "@/generated/zeus";
 import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
+import { seededSubscribe } from "~/utilities/seededSubscribe";
 
 interface Region {
   value: string;
@@ -42,32 +43,35 @@ export const useApplicationSettingsStore = defineStore(
 
     const subscribeToSettings = async () => {
       const { subscribe } = useSubscriptionManager();
-      const subscription = getGraphqlClient().subscribe({
-        query: generateSubscription({
-          settings: [
-            {},
-            {
-              name: true,
-              value: true,
-            },
-          ],
-        }),
-      });
 
       subscribe(
         "settings:settings",
-        subscription.subscribe({
-          next: ({ data }) => {
-            settings.value = data.settings;
-            settingsLoaded.value = true;
-            try {
-              localStorage.setItem(
-                SETTINGS_CACHE_KEY,
-                JSON.stringify(data.settings),
-              );
-            } catch {}
+        seededSubscribe(
+          getGraphqlClient(),
+          {
+            query: generateSubscription({
+              settings: [
+                {},
+                {
+                  name: true,
+                  value: true,
+                },
+              ],
+            }),
           },
-        }),
+          {
+            next: ({ data }) => {
+              settings.value = data.settings;
+              settingsLoaded.value = true;
+              try {
+                localStorage.setItem(
+                  SETTINGS_CACHE_KEY,
+                  JSON.stringify(data.settings),
+                );
+              } catch {}
+            },
+          },
+        ),
       );
     };
 
@@ -578,51 +582,54 @@ export const useApplicationSettingsStore = defineStore(
 
     const subscribeToAvailableRegions = async () => {
       const { subscribe } = useSubscriptionManager();
-      const subscription = getGraphqlClient().subscribe({
-        query: generateSubscription({
-          server_regions: [
-            {
-              where: {
-                total_server_count: {
-                  _gt: 0,
-                },
-              },
-            },
-            {
-              value: true,
-              status: true,
-              description: true,
-              is_lan: true,
-              has_node: true,
-            },
-          ],
-        }),
-      });
 
       subscribe(
         "settings:available_regions",
-        subscription.subscribe({
-          next: ({ data }) => {
-            availableRegions.value = data.server_regions;
-            regionsLoaded.value = true;
-            try {
-              localStorage.setItem(
-                REGIONS_CACHE_KEY,
-                JSON.stringify(data.server_regions),
-              );
-            } catch {}
-            useMatchmakingStore().checkLatenies();
-
-            if (!latencyCheckInterval) {
-              latencyCheckInterval = setInterval(
-                () => {
-                  useMatchmakingStore().checkLatenies();
+        seededSubscribe(
+          getGraphqlClient(),
+          {
+            query: generateSubscription({
+              server_regions: [
+                {
+                  where: {
+                    total_server_count: {
+                      _gt: 0,
+                    },
+                  },
                 },
-                50 * 60 * 1000,
-              );
-            }
+                {
+                  value: true,
+                  status: true,
+                  description: true,
+                  is_lan: true,
+                  has_node: true,
+                },
+              ],
+            }),
           },
-        }),
+          {
+            next: ({ data }) => {
+              availableRegions.value = data.server_regions;
+              regionsLoaded.value = true;
+              try {
+                localStorage.setItem(
+                  REGIONS_CACHE_KEY,
+                  JSON.stringify(data.server_regions),
+                );
+              } catch {}
+              useMatchmakingStore().checkLatenies();
+
+              if (!latencyCheckInterval) {
+                latencyCheckInterval = setInterval(
+                  () => {
+                    useMatchmakingStore().checkLatenies();
+                  },
+                  50 * 60 * 1000,
+                );
+              }
+            },
+          },
+        ),
       );
     };
 

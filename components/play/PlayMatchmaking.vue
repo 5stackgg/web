@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref, watch } from "vue";
-import { useMediaQuery, useResizeObserver } from "@vueuse/core";
+import { useResizeObserver } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import { useSubscription } from "@vue/apollo-composable";
 import {
@@ -17,24 +17,13 @@ import {
   X,
 } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "~/components/ui/popover";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetTitle,
-} from "~/components/ui/sheet";
 import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import Fold from "~/components/ui/transitions/Fold.vue";
 import SteamIcon from "~/components/icons/SteamIcon.vue";
 import PlayModeTile from "~/components/play/PlayModeTile.vue";
 import PlaySeats from "~/components/play/PlaySeats.vue";
 import QuickMatchConnect from "~/components/match/QuickMatchConnect.vue";
-import MatchmakingSettings from "~/components/matchmaking/MatchmakingSettings.vue";
+import MatchmakingSettingsPanel from "~/components/matchmaking/MatchmakingSettingsPanel.vue";
 import { useQuickQueue } from "~/composables/useQuickQueue";
 import { setActiveHub } from "~/composables/useHubState";
 import { useRightSidebar } from "~/composables/useRightSidebar";
@@ -412,8 +401,6 @@ function findMatch(event: MouseEvent) {
 }
 
 const settingsOpen = ref(false);
-// Too tall for a popover on a phone (it flips up and clips): a sheet there.
-const isPhone = useMediaQuery("(max-width: 767px)");
 
 const primaryClasses =
   "h-11 min-w-[188px] gap-2 px-[22px] text-[15px] font-semibold bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] hover:bg-[hsl(var(--tac-amber)/0.9)] max-sm:min-w-0 max-sm:flex-1";
@@ -603,7 +590,10 @@ const linkClasses =
                       >
                     </button>
                   </div>
-                  <span v-else class="flex min-w-0 items-center gap-2 px-2.5">
+                  <span
+                    v-else
+                    class="flex min-w-0 items-center gap-2 pl-[13px] pr-2.5"
+                  >
                     <Signal class="size-3.5 shrink-0 text-muted-foreground" />
                     <span class="min-w-0 truncate">
                       <template
@@ -651,11 +641,8 @@ const linkClasses =
                     aria-hidden="true"
                     class="my-1.5 w-px shrink-0 bg-border"
                   ></span>
-                  <Popover
-                    :open="settingsOpen && !isPhone"
-                    @update:open="(open) => (settingsOpen = open)"
-                  >
-                    <PopoverTrigger as-child>
+                  <MatchmakingSettingsPanel v-model:open="settingsOpen">
+                    <template #trigger>
                       <button
                         type="button"
                         class="grid w-8 shrink-0 place-items-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[hsl(var(--tac-amber))]"
@@ -668,36 +655,15 @@ const linkClasses =
                       >
                         <Settings2 class="size-4" />
                       </button>
-                    </PopoverTrigger>
-                    <PopoverContent
-                      align="start"
-                      class="w-[min(92vw,520px)] p-4"
-                    >
-                      <MatchmakingSettings />
-                    </PopoverContent>
-                  </Popover>
+                    </template>
+                  </MatchmakingSettingsPanel>
                 </div>
-                <Sheet
-                  :open="settingsOpen && isPhone"
-                  @update:open="(open) => (settingsOpen = open)"
-                >
-                  <SheetContent
-                    side="bottom"
-                    class="max-h-[85dvh] overflow-y-auto rounded-t-xl pb-8"
-                  >
-                    <SheetTitle class="mb-4 text-base">{{
-                      $t("pages.play.matchmaking.settings")
-                    }}</SheetTitle>
-                    <SheetDescription class="sr-only">{{
-                      $t("pages.play.matchmaking.settings")
-                    }}</SheetDescription>
-                    <MatchmakingSettings />
-                  </SheetContent>
-                </Sheet>
               </div>
 
+              <!-- Indented by the region group's inner padding so its icon
+                   sits under the icons inside that group. -->
               <div
-                class="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1 text-[13px] text-foreground/90 max-sm:text-[12.5px]"
+                class="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1 pl-3.5 text-[13px] text-foreground/90 max-sm:text-[12.5px]"
               >
                 <Users
                   class="size-3.5 shrink-0 self-center text-muted-foreground"

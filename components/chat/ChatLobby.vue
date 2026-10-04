@@ -473,6 +473,9 @@ function claimNotification(key: string) {
 
 export default {
   inheritAttrs: false,
+  // <script setup> closes the instance to parent refs; ChatPanel focuses the
+  // composer of a conversation it just opened.
+  expose: ["focusComposer"],
   props: {
     instance: {
       type: String,

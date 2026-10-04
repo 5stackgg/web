@@ -1602,7 +1602,8 @@
       "open_team_new_tab": "Åbn hold i ny fane",
       "request_scrim": "Anmod om scrim",
       "available_teams": "Ledige hold",
-      "no_teams_match": "Ingen hold matcher dine filtre."
+      "no_teams_match": "Ingen hold matcher dine filtre.",
+      "empty_title": "Ingen hold søger scrims"
     },
     "teams": {
       "title": "Hold",
@@ -3458,10 +3459,7 @@
         "no_clips_yet": "Ingen klip her endnu",
         "try_widening": "Prøv at udvide filtrene eller rydde et af dem.",
         "try_different_admin": "Prøv et andet filter — eller vent på, at nye klip bliver renderet.",
-        "check_back_soon": "Offentlige klip dukker op her, efterhånden som de renderes. Kig forbi igen snart.",
-        "clear_player": "Ryd spiller",
-        "clear_date": "Ryd dato",
-        "clear_kills": "Ryd kills"
+        "check_back_soon": "Offentlige klip dukker op her, efterhånden som de renderes. Kig forbi igen snart."
       }
     },
     "news": {
@@ -3637,8 +3635,7 @@
         "elo": "ELO",
         "last_sign_in_at": "Sidst logget ind",
         "privilege": "Rettighed",
-        "kdr": "KDR",
-        "no_players": "Ingen spillere fundet"
+        "kdr": "KDR"
       },
       "detail": {
         "all_short": "Alle",
@@ -3848,6 +3845,10 @@
           "worst_loss": "Største enkelttab",
           "view_match": "Se kamp"
         }
+      },
+      "empty": {
+        "title": "Ingen spillere endnu",
+        "description": "Spillere vises her, når de logger ind."
       }
     },
     "play": {
@@ -3895,7 +3896,7 @@
         "mode_group": "Spiltilstand",
         "nobody_queued": "Ingen i kø",
         "too_big": "En gruppe på {count} er for stor til {mode}",
-        "queue_solo": "Stil dig i kø solo, holdene balanceres for dig",
+        "queue_solo": "Stil dig i kø solo",
         "seats": {
           "format": "{count} mod {count}",
           "yours": "din gruppe fylder {count} plads | din gruppe fylder {count} pladser",
@@ -4050,7 +4051,6 @@
       "create": "Opret kamp",
       "schedule": {
         "title": "Planlæg kamp",
-        "step_settings": "Indstillinger",
         "step_teams": "Hold",
         "kickoff": "Starttidspunkt",
         "kickoff_future": "Vælg et tidspunkt i fremtiden.",
@@ -4076,7 +4076,6 @@
       "clear_short": "Ryd",
       "lineup_only": "Kun kampe jeg er med i",
       "include_external": "Inkludér eksterne kampe",
-      "standby_no_matches": "STANDBY · INGEN KAMPE FUNDET",
       "create_page": {
         "pick_up_game": "Pick up game",
         "pick_up_game_description": "En pick up game kræver ikke, at der vælges hold.",
@@ -4086,6 +4085,10 @@
         "intra_team_scrimmage": "Du kan vælge det samme hold i begge felter for at lave en intern scrim.",
         "create_button": "Opret kamp",
         "update_button": "Opdatér kamp"
+      },
+      "empty": {
+        "title": "Ingen kampe endnu",
+        "description": "Planlagte, live og afsluttede kampe vises her."
       }
     },
     "toasts": {
@@ -4655,7 +4658,6 @@
     },
     "manage_matches": {
       "only_my_matches": "Kun mine arrangerede kampe",
-      "no_matches": "Ingen kampe fundet.",
       "enter_name": "Indtast navn...",
       "enter_match_id": "Indtast kamp-ID...",
       "enter_team_name": "Indtast holdnavn...",
@@ -4745,7 +4747,8 @@
         "faceit_level": "Niveau",
         "premier_rank": "Premier Rank"
       },
-      "exclude_tournaments": "Udelad turneringer"
+      "exclude_tournaments": "Udelad turneringer",
+      "empty_title": "Ingen placeringer endnu"
     },
     "database": {
       "query_copied": "Query kopieret til udklipsholderen",
@@ -6158,7 +6161,6 @@
   "layouts": {
     "account_settings": {
       "title": "Kontoindstillinger",
-      "description": "Administrer dine kontoindstillinger og præferencer",
       "select_section": "Vælg sektion"
     },
     "application_settings": {
@@ -6760,7 +6762,11 @@
     "sort": "sortér",
     "vs_team": "mod {name}",
     "default": "Standard",
-    "avg": "gns."
+    "avg": "gns.",
+    "empty_filtered": {
+      "title": "Intet matcher disse filtre",
+      "description": "Prøv at rydde filtrene eller udvide din søgning."
+    }
   },
   "spotlight_search": {
     "placeholder": "Søg spillere...",
@@ -9873,10 +9879,6 @@
       "port": "Spilport",
       "tv_port": "TV-port",
       "create": "Opret server",
-      "create_bar": {
-        "ready": "Klar til at oprette",
-        "missing": "Mangler stadig: {fields}"
-      },
       "max_players": "Maks. spillere",
       "max_players_description": "Det maksimale antal spillere, der kan forbinde til serveren"
     },
@@ -10602,7 +10604,8 @@
     "list": {
       "title": "Liga",
       "subtitle": "Sæsonopdelte divisioner, ugentlige kampe, op- og nedrykning",
-      "settings": "Ligaindstillinger"
+      "settings": "Ligaindstillinger",
+      "empty_title": "Ingen sæsoner endnu"
     },
     "history": {
       "seasons": "Sæsonhistorik",
@@ -10621,7 +10624,6 @@
     },
     "seasons": {
       "title": "Sæsoner",
-      "empty": "Ingen sæsoner endnu.",
       "deleted": "Sæson slettet",
       "delete_title": "Slet sæsonen?",
       "delete_description": "Slet {name} permanent, inklusive tilmeldinger, program og resultater. Dette kan ikke fortrydes."
@@ -11015,12 +11017,6 @@
       "start_time": "Starttid",
       "end_time": "Sluttid",
       "create": "Opret event",
-      "create_bar": {
-        "ready": "Klar til oprettelse",
-        "ready_hint": "Alt ser godt ud, opret dit event når du er klar.",
-        "incomplete": "Påkrævede felter mangler",
-        "incomplete_hint": "Udfyld eventnavn og en startdato for at fortsætte"
-      },
       "visibility": "Synlighed",
       "media_access": "Medieuploads",
       "sections": {

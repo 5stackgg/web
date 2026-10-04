@@ -17,6 +17,7 @@ import { useI18n } from "vue-i18n";
 import { useRightSidebar } from "@/composables/useRightSidebar";
 import { useHubState, setActiveHub } from "@/composables/useHubState";
 import { useChatTabs, type ChatTab } from "~/composables/useChatTabs";
+import { pendingComposerFocus } from "~/composables/useDirectMessages";
 import { useNotificationBadge } from "~/composables/useNotificationBadge";
 import { useInvites } from "@/composables/useInvites";
 import { useQuickQueue } from "~/composables/useQuickQueue";
@@ -481,6 +482,9 @@ function openChatTab(tab: ChatTab) {
   dockIntent.noteClick();
   setActiveTab(tab.id);
   showHub("chat");
+  // Clicking a conversation lands you in its composer, even when it was
+  // already open (the click itself took focus away from it).
+  if (!isMobile.value) pendingComposerFocus.value = tab.id;
 }
 
 function hoverOpenChat(tab: ChatTab) {
@@ -764,6 +768,34 @@ function onHubTouchEnd(e: TouchEvent) {
           <Mic class="size-[18px]" />
         </HubDockItem>
 
+        <HubDockItem
+          :label="$t('layouts.hub.dock.friends')"
+          :detail="friendsDetail"
+          :active="isHubActive('social')"
+          :preview="!isPinned"
+          :unread="friendRequestCount > 0 || newlyOnline.length > 0"
+          :face="arrivalFace"
+          :announce="arrivalPulse"
+          :badge="
+            friendRequestCount > 0
+              ? formatBadgeCount(friendRequestCount)
+              : onlineFriendsCount > 0
+                ? formatBadgeCount(onlineFriendsCount)
+                : null
+          "
+          :badge-tone="
+            friendRequestCount > 0
+              ? 'red'
+              : newlyOnline.length > 0
+                ? 'fresh'
+                : 'neutral'
+          "
+          @select="clickHub('social')"
+          @intent="hoverOpen('social')"
+        >
+          <Users class="size-[18px]" />
+        </HubDockItem>
+
         <div
           class="relative flex w-full flex-col items-center gap-2.5"
           :class="
@@ -927,34 +959,6 @@ function onHubTouchEnd(e: TouchEvent) {
             </div>
           </TransitionGroup>
         </div>
-
-        <HubDockItem
-          :label="$t('layouts.hub.dock.friends')"
-          :detail="friendsDetail"
-          :active="isHubActive('social')"
-          :preview="!isPinned"
-          :unread="friendRequestCount > 0 || newlyOnline.length > 0"
-          :face="arrivalFace"
-          :announce="arrivalPulse"
-          :badge="
-            friendRequestCount > 0
-              ? formatBadgeCount(friendRequestCount)
-              : onlineFriendsCount > 0
-                ? formatBadgeCount(onlineFriendsCount)
-                : null
-          "
-          :badge-tone="
-            friendRequestCount > 0
-              ? 'red'
-              : newlyOnline.length > 0
-                ? 'fresh'
-                : 'neutral'
-          "
-          @select="clickHub('social')"
-          @intent="hoverOpen('social')"
-        >
-          <Users class="size-[18px]" />
-        </HubDockItem>
 
         <HubDockItem
           :label="$t('layouts.hub.dock.matches')"

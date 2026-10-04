@@ -1602,7 +1602,8 @@
       "open_team_new_tab": "Abrir time em nova aba",
       "request_scrim": "Solicitar desafio",
       "available_teams": "Equipes disponíveis",
-      "no_teams_match": "Nenhum time corresponde aos seus filtros."
+      "no_teams_match": "Nenhum time corresponde aos seus filtros.",
+      "empty_title": "Nenhum time procurando scrims"
     },
     "teams": {
       "title": "Equipes",
@@ -3458,10 +3459,7 @@
         "no_clips_yet": "Nenhum clipe aqui ainda",
         "try_widening": "Tente ampliar os filtros ou limpar um.",
         "try_different_admin": "Tente um filtro diferente — ou aguarde novos clipes serem renderizados.",
-        "check_back_soon": "Clipes públicos aparecerão aqui conforme forem renderizados. Volte em breve.",
-        "clear_player": "Limpar jogador",
-        "clear_date": "Limpar data",
-        "clear_kills": "Limpar abates"
+        "check_back_soon": "Clipes públicos aparecerão aqui conforme forem renderizados. Volte em breve."
       }
     },
     "news": {
@@ -3637,8 +3635,7 @@
         "elo": "Elo",
         "last_sign_in_at": "Último Login em",
         "privilege": "Privilégio",
-        "kdr": "KDR",
-        "no_players": "Nenhum jogador encontrado"
+        "kdr": "KDR"
       },
       "detail": {
         "all_short": "Todos",
@@ -3848,6 +3845,10 @@
           "worst_loss": "Maior perda única",
           "view_match": "Ver partida"
         }
+      },
+      "empty": {
+        "title": "Nenhum jogador ainda",
+        "description": "Os jogadores aparecem aqui depois de entrar."
       }
     },
     "play": {
@@ -3895,7 +3896,7 @@
         "mode_group": "Modo de jogo",
         "nobody_queued": "Ninguém na fila",
         "too_big": "Um grupo de {count} é grande demais para {mode}",
-        "queue_solo": "Entre na fila solo, as equipes são balanceadas para você",
+        "queue_solo": "Entre na fila solo",
         "seats": {
           "format": "{count} contra {count}",
           "yours": "seu grupo ocupa {count} vaga | seu grupo ocupa {count} vagas",
@@ -4050,7 +4051,6 @@
       "create": "Criar partida",
       "schedule": {
         "title": "Agendar Partida",
-        "step_settings": "Configurações",
         "step_teams": "Equipes",
         "kickoff": "Horário de Início",
         "kickoff_future": "Escolha um horário no futuro.",
@@ -4076,7 +4076,6 @@
       "clear_short": "Limpar",
       "lineup_only": "Apenas partidas de lineup",
       "include_external": "Incluir partidas externas",
-      "standby_no_matches": "EM ESPERA · NENHUMA PARTIDA ENCONTRADA",
       "create_page": {
         "pick_up_game": "Partida Rápida",
         "pick_up_game_description": "Uma partida rápida não exige seleção de equipes.",
@@ -4086,6 +4085,10 @@
         "intra_team_scrimmage": "Você pode selecionar a mesma equipe para ambos os lados e criar um treino interno.",
         "create_button": "Criar Partida",
         "update_button": "Atualizar Partida"
+      },
+      "empty": {
+        "title": "Nenhuma partida ainda",
+        "description": "Partidas agendadas, ao vivo e finalizadas aparecem aqui."
       }
     },
     "toasts": {
@@ -4655,7 +4658,6 @@
     },
     "manage_matches": {
       "only_my_matches": "Somente Minhas Partidas Organizadas",
-      "no_matches": "Nenhuma partida encontrada.",
       "enter_name": "Enter name...",
       "enter_match_id": "Enter match ID...",
       "enter_team_name": "Insira o nome do time...",
@@ -4745,7 +4747,8 @@
         "faceit_level": "Nível",
         "premier_rank": "Premier Rank"
       },
-      "exclude_tournaments": "Excluir Torneios"
+      "exclude_tournaments": "Excluir Torneios",
+      "empty_title": "Nenhum ranking ainda"
     },
     "database": {
       "query_copied": "Query copiada",
@@ -6158,7 +6161,6 @@
   "layouts": {
     "account_settings": {
       "title": "Configuração da Conta",
-      "description": "Gerencie as configurações e preferências da sua conta",
       "select_section": "Selecione uma seção"
     },
     "application_settings": {
@@ -6760,7 +6762,11 @@
     "sort": "ordenar",
     "vs_team": "vs {name}",
     "default": "Padrão",
-    "avg": "méd"
+    "avg": "méd",
+    "empty_filtered": {
+      "title": "Nada corresponde a esses filtros",
+      "description": "Tente limpar os filtros ou ampliar a busca."
+    }
   },
   "spotlight_search": {
     "placeholder": "Procurar jogadores...",
@@ -9873,10 +9879,6 @@
       "port": "Porta",
       "tv_port": "Porta TV",
       "create": "Criar",
-      "create_bar": {
-        "ready": "Pronto para criar",
-        "missing": "Ainda falta: {fields}"
-      },
       "max_players": "Máximo de Jogadores",
       "max_players_description": "O número máximo de jogadores que podem se conectar ao servidor"
     },
@@ -10602,7 +10604,8 @@
     "list": {
       "title": "Liga",
       "subtitle": "Divisões sazonais, partidas semanais, promoção e rebaixamento",
-      "settings": "Configurações da Liga"
+      "settings": "Configurações da Liga",
+      "empty_title": "Nenhuma temporada ainda"
     },
     "history": {
       "seasons": "Histórico de temporadas",
@@ -10621,7 +10624,6 @@
     },
     "seasons": {
       "title": "Temporadas",
-      "empty": "Nenhuma temporada ainda.",
       "deleted": "Temporada excluída",
       "delete_title": "Excluir temporada?",
       "delete_description": "Exclui permanentemente {name}, incluindo suas inscrições, agenda e resultados. Esta ação não pode ser desfeita."
@@ -11015,12 +11017,6 @@
       "start_time": "Horário de início",
       "end_time": "Horário de término",
       "create": "Criar Evento",
-      "create_bar": {
-        "ready": "Pronto para criar",
-        "ready_hint": "Tudo certo, crie seu evento quando quiser.",
-        "incomplete": "Campos obrigatórios faltando",
-        "incomplete_hint": "Preencha o nome do evento e uma data de início para continuar"
-      },
       "visibility": "Visibilidade",
       "media_access": "Uploads de Mídia",
       "sections": {

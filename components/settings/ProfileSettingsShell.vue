@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -23,13 +22,9 @@ import {
 import { Link, Unlink } from "lucide-vue-next";
 import { toast } from "@/components/ui/toast";
 import SettingsSideTabs from "~/components/settings/SettingsSideTabs.vue";
-import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 
 const { t: $t } = useI18n();
 
-const showSeparators = computed(
-  () => useApplicationSettingsStore().showSeparators,
-);
 const hasDiscordLinked = computed(() => useAuthStore().hasDiscordLinked);
 const supportsDiscordBot = computed(
   () => useApplicationSettingsStore().supportsDiscordBot,
@@ -144,13 +139,7 @@ async function unlinkDiscord() {
   <div
     class="lg:flex lg:flex-col lg:h-[calc(var(--sidebar-height,100svh)-2rem-var(--main-bottom-dock-height,0px))]"
   >
-    <TacticalPageHeader>
-      <template #title>{{ $t("layouts.account_settings.title") }}</template>
-      <template #subtitle>{{
-        $t("layouts.account_settings.description")
-      }}</template>
-    </TacticalPageHeader>
-    <Separator v-if="showSeparators" class="my-6" />
+    <h1 class="sr-only">{{ $t("layouts.account_settings.title") }}</h1>
     <div
       ref="contentRow"
       class="flex flex-col space-y-8 lg:min-h-0 lg:flex-1 lg:flex-row lg:space-x-12 lg:space-y-0"

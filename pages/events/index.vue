@@ -26,9 +26,7 @@ import {
 } from "@/components/ui/input-group";
 import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
-import Empty from "~/components/ui/empty/Empty.vue";
-import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
-import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
+import SectionEmpty from "~/components/common/SectionEmpty.vue";
 import Pagination from "~/components/Pagination.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
@@ -44,6 +42,8 @@ import EventQuickLook from "~/components/events/EventQuickLook.vue";
 import FilterMenu from "~/components/common/FilterMenu.vue";
 import FilterToggle from "~/components/common/FilterToggle.vue";
 import {
+  createButtonClasses,
+  listCreateButtonClasses,
   tacticalSectionLabelClasses,
   tacticalSectionSeparatorClasses,
   tacticalSectionTickClasses,
@@ -464,6 +464,8 @@ const gridClasses = "grid gap-3 sm:grid-cols-2";
 </script>
 
 <template>
+  <h1 class="sr-only">{{ $t("pages.events.title") }}</h1>
+
   <PageTransition>
     <div ref="filterRow" class="flex flex-wrap items-center gap-2">
       <InputGroup class="h-8 min-w-[12rem] flex-1 bg-card/60 sm:max-w-xs">
@@ -491,7 +493,9 @@ const gridClasses = "grid gap-3 sm:grid-cols-2";
         </InputGroupAddon>
       </InputGroup>
 
-      <div class="max-w-full overflow-x-auto [scrollbar-width:none]">
+      <div
+        class="max-w-full overflow-x-auto [scrollbar-width:none] max-md:order-last"
+      >
         <WatchSegmented
           v-model="phaseModel"
           :options="phaseOptions"
@@ -503,11 +507,12 @@ const gridClasses = "grid gap-3 sm:grid-cols-2";
         v-if="hasActiveFilter"
         variant="ghost"
         size="sm"
-        class="h-8 text-muted-foreground hover:text-foreground"
+        class="h-8 text-muted-foreground hover:text-foreground max-md:w-8 max-md:px-0"
+        :title="$t('common.reset_filters')"
         @click="clearAllFilters"
       >
         <X class="h-3.5 w-3.5" />
-        {{ $t("common.reset_filters") }}
+        <span class="max-md:sr-only">{{ $t("common.reset_filters") }}</span>
       </Button>
 
       <FilterMenu
@@ -529,11 +534,14 @@ const gridClasses = "grid gap-3 sm:grid-cols-2";
         v-if="canCreateEvent"
         as-child
         size="sm"
-        class="h-8 bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] hover:bg-[hsl(var(--tac-amber)/0.9)]"
+        :class="listCreateButtonClasses"
       >
-        <NuxtLink :to="{ name: 'events-create' }">
+        <NuxtLink
+          :to="{ name: 'events-create' }"
+          :title="$t('pages.events.create')"
+        >
           <PlusCircle class="h-4 w-4" />
-          {{ $t("pages.events.create") }}
+          <span class="max-md:sr-only">{{ $t("pages.events.create") }}</span>
         </NuxtLink>
       </Button>
     </div>
@@ -566,14 +574,22 @@ const gridClasses = "grid gap-3 sm:grid-cols-2";
             @quick-look="openQuickLook(event)"
           />
         </div>
-        <Empty v-else key="empty" class="min-h-[200px]">
-          <EmptyTitle>{{
-            $t("pages.events.filter.no_results_title")
-          }}</EmptyTitle>
-          <EmptyDescription>{{
-            $t("pages.events.filter.no_results_description")
-          }}</EmptyDescription>
-        </Empty>
+        <SectionEmpty
+          v-else
+          key="empty"
+          :title="$t('pages.events.filter.no_results_title')"
+          :description="$t('pages.events.filter.no_results_description')"
+        >
+          <Button
+            variant="outline"
+            size="sm"
+            class="h-8"
+            @click="clearAllFilters"
+          >
+            <X class="h-3.5 w-3.5" />
+            {{ $t("common.reset_filters") }}
+          </Button>
+        </SectionEmpty>
       </FadeSwap>
 
       <Pagination
@@ -605,12 +621,24 @@ const gridClasses = "grid gap-3 sm:grid-cols-2";
           </div>
         </div>
 
-        <Empty v-else-if="curatedEmpty" key="empty" class="min-h-[200px]">
-          <EmptyTitle>{{ $t("pages.events.no_events_title") }}</EmptyTitle>
-          <EmptyDescription>{{
-            $t("pages.events.no_events_description")
-          }}</EmptyDescription>
-        </Empty>
+        <SectionEmpty
+          v-else-if="curatedEmpty"
+          key="empty"
+          :title="$t('pages.events.no_events_title')"
+          :description="$t('pages.events.no_events_description')"
+        >
+          <Button
+            v-if="canCreateEvent"
+            as-child
+            size="sm"
+            :class="createButtonClasses"
+          >
+            <NuxtLink :to="{ name: 'events-create' }">
+              <PlusCircle class="h-4 w-4" />
+              {{ $t("pages.events.create") }}
+            </NuxtLink>
+          </Button>
+        </SectionEmpty>
 
         <div v-else key="curated">
           <PageTransition>

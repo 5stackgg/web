@@ -1602,7 +1602,8 @@
       "open_team_new_tab": "Ouvrir l'équipe dans un nouvel onglet",
       "request_scrim": "Demander un scrim",
       "available_teams": "Équipes disponibles",
-      "no_teams_match": "Aucune équipe ne correspond à tes filtres."
+      "no_teams_match": "Aucune équipe ne correspond à tes filtres.",
+      "empty_title": "Aucune équipe ne cherche de scrim"
     },
     "teams": {
       "title": "Équipes",
@@ -3458,10 +3459,7 @@
         "no_clips_yet": "Aucun clip ici pour l'instant",
         "try_widening": "Essaie d'élargir les filtres ou d'en retirer un.",
         "try_different_admin": "Essaie un autre filtre — ou attends que de nouveaux clips soient rendus.",
-        "check_back_soon": "Les clips publics apparaîtront ici au fur et à mesure des rendus. Reviens bientôt.",
-        "clear_player": "Effacer le joueur",
-        "clear_date": "Effacer la date",
-        "clear_kills": "Effacer les kills"
+        "check_back_soon": "Les clips publics apparaîtront ici au fur et à mesure des rendus. Reviens bientôt."
       }
     },
     "news": {
@@ -3637,8 +3635,7 @@
         "elo": "ELO",
         "last_sign_in_at": "Dernière connexion",
         "privilege": "Privilège",
-        "kdr": "KDR",
-        "no_players": "Aucun joueur trouvé"
+        "kdr": "KDR"
       },
       "detail": {
         "all_short": "Tout",
@@ -3848,6 +3845,10 @@
           "worst_loss": "Pire perte",
           "view_match": "Voir le match"
         }
+      },
+      "empty": {
+        "title": "Aucun joueur pour l'instant",
+        "description": "Les joueurs apparaissent ici dès qu'ils se connectent."
       }
     },
     "play": {
@@ -3895,7 +3896,7 @@
         "mode_group": "Mode de jeu",
         "nobody_queued": "Personne en file",
         "too_big": "Un groupe de {count} est trop grand pour {mode}",
-        "queue_solo": "File en solo, les équipes sont équilibrées pour toi",
+        "queue_solo": "File en solo",
         "seats": {
           "format": "{count} contre {count}",
           "yours": "ton groupe occupe {count} place | ton groupe occupe {count} places",
@@ -4050,7 +4051,6 @@
       "create": "Créer un match",
       "schedule": {
         "title": "Planifier un match",
-        "step_settings": "Paramètres",
         "step_teams": "Équipes",
         "kickoff": "Heure de début",
         "kickoff_future": "Choisis une heure dans le futur.",
@@ -4076,7 +4076,6 @@
       "clear_short": "Effacer",
       "lineup_only": "Seulement mes matchs",
       "include_external": "Inclure les matchs externes",
-      "standby_no_matches": "EN ATTENTE · AUCUN MATCH TROUVÉ",
       "create_page": {
         "pick_up_game": "Partie ouverte",
         "pick_up_game_description": "Une partie ouverte ne nécessite pas de sélectionner d'équipes.",
@@ -4086,6 +4085,10 @@
         "intra_team_scrimmage": "Tu peux sélectionner la même équipe des deux côtés pour créer un scrim interne.",
         "create_button": "Créer le match",
         "update_button": "Mettre à jour le match"
+      },
+      "empty": {
+        "title": "Aucun match pour l'instant",
+        "description": "Les matchs programmés, en direct et terminés apparaissent ici."
       }
     },
     "toasts": {
@@ -4655,7 +4658,6 @@
     },
     "manage_matches": {
       "only_my_matches": "Seulement les matchs que j'organise",
-      "no_matches": "Aucun match trouvé.",
       "enter_name": "Saisis un nom…",
       "enter_match_id": "Saisis un ID de match…",
       "enter_team_name": "Saisis un nom d'équipe…",
@@ -4745,7 +4747,8 @@
         "faceit_level": "Niveau",
         "premier_rank": "Premier Rang"
       },
-      "exclude_tournaments": "Exclure les tournois"
+      "exclude_tournaments": "Exclure les tournois",
+      "empty_title": "Aucun classement pour l'instant"
     },
     "database": {
       "query_copied": "Requête copiée dans le presse-papiers",
@@ -6158,7 +6161,6 @@
   "layouts": {
     "account_settings": {
       "title": "Paramètres du compte",
-      "description": "Gère les paramètres et préférences de ton compte",
       "select_section": "Choisir une section"
     },
     "application_settings": {
@@ -6760,7 +6762,11 @@
     "sort": "trier",
     "vs_team": "vs {name}",
     "default": "Par défaut",
-    "avg": "moy."
+    "avg": "moy.",
+    "empty_filtered": {
+      "title": "Aucun résultat pour ces filtres",
+      "description": "Essaie de retirer des filtres ou d'élargir ta recherche."
+    }
   },
   "spotlight_search": {
     "placeholder": "Rechercher des joueurs...",
@@ -9873,10 +9879,6 @@
       "port": "Port de jeu",
       "tv_port": "Port TV",
       "create": "Créer le serveur",
-      "create_bar": {
-        "ready": "Prêt à créer",
-        "missing": "Il manque : {fields}"
-      },
       "max_players": "Joueurs max",
       "max_players_description": "Nombre maximum de joueurs pouvant se connecter au serveur"
     },
@@ -10602,7 +10604,8 @@
     "list": {
       "title": "Ligue",
       "subtitle": "Divisions saisonnières, matchs hebdomadaires, promotion et relégation",
-      "settings": "Paramètres de la ligue"
+      "settings": "Paramètres de la ligue",
+      "empty_title": "Aucune saison pour l'instant"
     },
     "history": {
       "seasons": "Historique des saisons",
@@ -10621,7 +10624,6 @@
     },
     "seasons": {
       "title": "Saisons",
-      "empty": "Aucune saison pour l'instant.",
       "deleted": "Saison supprimée",
       "delete_title": "Supprimer la saison ?",
       "delete_description": "Supprime définitivement {name}, ainsi que ses inscriptions, son calendrier et ses résultats. Cette action est irréversible."
@@ -11015,12 +11017,6 @@
       "start_time": "Heure de début",
       "end_time": "Heure de fin",
       "create": "Créer un événement",
-      "create_bar": {
-        "ready": "Prêt à créer",
-        "ready_hint": "Tout est bon, crée ton événement quand tu veux.",
-        "incomplete": "Champs requis manquants",
-        "incomplete_hint": "Renseigne le nom de l'événement et une date de début pour continuer"
-      },
       "visibility": "Visibilité",
       "media_access": "Envoi de médias",
       "sections": {

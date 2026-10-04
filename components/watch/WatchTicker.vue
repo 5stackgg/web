@@ -2,7 +2,7 @@
 import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useI18n } from "vue-i18n";
-import { ChevronLeft, ChevronRight } from "lucide-vue-next";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-vue-next";
 import { $, order_by } from "~/generated/zeus";
 import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { watchTickerMatchFields } from "~/graphql/watchTickerFields";
@@ -391,27 +391,37 @@ function stageMatch(matchId: string) {
           :label="$t('pages.watch.ticker.filters_label')"
         />
 
-        <div class="flex shrink-0 gap-1.5 max-sm:hidden">
-          <button
-            type="button"
-            :aria-label="$t('ui.scroll.left')"
-            :disabled="!scrollRow?.state.canScrollLeft"
-            class="inline-flex size-8 items-center justify-center rounded-md border border-border bg-muted/30 text-foreground/80 transition-colors duration-150 hover:bg-muted/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] disabled:cursor-default disabled:opacity-35 disabled:hover:bg-muted/30"
-            @click="scrollRow?.scrollByDirection('left')"
+        <div class="flex shrink-0 items-center gap-3">
+          <NuxtLink
+            to="/matches"
+            class="inline-flex items-center gap-1 whitespace-nowrap text-xs text-muted-foreground transition-colors hover:text-foreground"
           >
-            <ChevronLeft class="size-4" />
-          </button>
-          <button
-            type="button"
-            :aria-label="$t('ui.scroll.right')"
-            :disabled="
-              !scrollRow?.state.canScrollRight && (!showsResults || resultsDone)
-            "
-            class="inline-flex size-8 items-center justify-center rounded-md border border-border bg-muted/30 text-foreground/80 transition-colors duration-150 hover:bg-muted/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] disabled:cursor-default disabled:opacity-35 disabled:hover:bg-muted/30"
-            @click="scrollRight"
-          >
-            <ChevronRight class="size-4" />
-          </button>
+            {{ $t("common.see_all") }}
+            <ArrowRight class="h-3 w-3" />
+          </NuxtLink>
+          <div class="flex gap-1.5 max-sm:hidden">
+            <button
+              type="button"
+              :aria-label="$t('ui.scroll.left')"
+              :disabled="!scrollRow?.state.canScrollLeft"
+              class="inline-flex size-8 items-center justify-center rounded-md border border-border bg-muted/30 text-foreground/80 transition-colors duration-150 hover:bg-muted/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] disabled:cursor-default disabled:opacity-35 disabled:hover:bg-muted/30"
+              @click="scrollRow?.scrollByDirection('left')"
+            >
+              <ChevronLeft class="size-4" />
+            </button>
+            <button
+              type="button"
+              :aria-label="$t('ui.scroll.right')"
+              :disabled="
+                !scrollRow?.state.canScrollRight &&
+                (!showsResults || resultsDone)
+              "
+              class="inline-flex size-8 items-center justify-center rounded-md border border-border bg-muted/30 text-foreground/80 transition-colors duration-150 hover:bg-muted/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] disabled:cursor-default disabled:opacity-35 disabled:hover:bg-muted/30"
+              @click="scrollRight"
+            >
+              <ChevronRight class="size-4" />
+            </button>
+          </div>
         </div>
       </div>
 

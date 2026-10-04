@@ -24,9 +24,7 @@ import FilterToggle from "~/components/common/FilterToggle.vue";
 import CategorySelect from "~/components/tournament/CategorySelect.vue";
 import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
-import Empty from "~/components/ui/empty/Empty.vue";
-import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
-import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
+import SectionEmpty from "~/components/common/SectionEmpty.vue";
 import Pagination from "~/components/Pagination.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
@@ -39,6 +37,8 @@ import TournamentLiveFeature from "~/components/tournament/TournamentLiveFeature
 import TournamentAgendaRow from "~/components/tournament/TournamentAgendaRow.vue";
 import TournamentQuickLook from "~/components/tournament/TournamentQuickLook.vue";
 import {
+  createButtonClasses,
+  listCreateButtonClasses,
   tacticalSectionLabelClasses,
   tacticalSectionSeparatorClasses,
   tacticalSectionTickClasses,
@@ -618,6 +618,8 @@ const agendaMonthLabelClasses =
 </script>
 
 <template>
+  <h1 class="sr-only">{{ $t("pages.tournaments.title") }}</h1>
+
   <PageTransition>
     <div ref="filterRow" class="flex flex-wrap items-center gap-2">
       <InputGroup class="h-8 min-w-[12rem] flex-1 bg-card/60 sm:max-w-xs">
@@ -645,7 +647,9 @@ const agendaMonthLabelClasses =
         </InputGroupAddon>
       </InputGroup>
 
-      <div class="max-w-full overflow-x-auto [scrollbar-width:none]">
+      <div
+        class="max-w-full overflow-x-auto [scrollbar-width:none] max-md:order-last"
+      >
         <WatchSegmented
           v-model="statusModel"
           :options="statusOptions"
@@ -696,11 +700,16 @@ const agendaMonthLabelClasses =
         v-if="canCreateTournament"
         as-child
         size="sm"
-        class="h-8 bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] hover:bg-[hsl(var(--tac-amber)/0.9)]"
+        :class="listCreateButtonClasses"
       >
-        <NuxtLink to="/tournaments/create">
+        <NuxtLink
+          to="/tournaments/create"
+          :title="$t('pages.tournaments.create')"
+        >
           <PlusCircle class="h-4 w-4" />
-          {{ $t("pages.tournaments.create") }}
+          <span class="max-md:sr-only">{{
+            $t("pages.tournaments.create")
+          }}</span>
         </NuxtLink>
       </Button>
     </div>
@@ -737,14 +746,22 @@ const agendaMonthLabelClasses =
           </div>
         </div>
 
-        <Empty v-else key="empty" class="min-h-[200px]">
-          <EmptyTitle>{{
-            $t("pages.tournaments.filter.no_results_title")
-          }}</EmptyTitle>
-          <EmptyDescription>{{
-            $t("pages.tournaments.filter.no_results_description")
-          }}</EmptyDescription>
-        </Empty>
+        <SectionEmpty
+          v-else
+          key="empty"
+          :title="$t('pages.tournaments.filter.no_results_title')"
+          :description="$t('pages.tournaments.filter.no_results_description')"
+        >
+          <Button
+            variant="outline"
+            size="sm"
+            class="h-8"
+            @click="clearAllFilters"
+          >
+            <X class="h-3.5 w-3.5" />
+            {{ $t("common.reset_filters") }}
+          </Button>
+        </SectionEmpty>
       </FadeSwap>
 
       <Pagination
@@ -776,14 +793,28 @@ const agendaMonthLabelClasses =
           </div>
         </div>
 
-        <Empty v-else-if="curatedEmpty" key="empty" class="min-h-[200px]">
-          <EmptyTitle>{{ $t("pages.tournaments.empty.title") }}</EmptyTitle>
-          <EmptyDescription>{{
+        <SectionEmpty
+          v-else-if="curatedEmpty"
+          key="empty"
+          :title="$t('pages.tournaments.empty.title')"
+          :description="
             canCreateTournament
-              ? $t("pages.tournaments.empty.organizer")
-              : $t("pages.tournaments.empty.description")
-          }}</EmptyDescription>
-        </Empty>
+              ? $t('pages.tournaments.empty.organizer')
+              : $t('pages.tournaments.empty.description')
+          "
+        >
+          <Button
+            v-if="canCreateTournament"
+            as-child
+            size="sm"
+            :class="createButtonClasses"
+          >
+            <NuxtLink to="/tournaments/create">
+              <PlusCircle class="h-4 w-4" />
+              {{ $t("pages.tournaments.create") }}
+            </NuxtLink>
+          </Button>
+        </SectionEmpty>
 
         <div v-else key="curated">
           <PageTransition>

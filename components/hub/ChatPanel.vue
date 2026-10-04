@@ -610,9 +610,9 @@ watch(
 
     pendingComposerFocus.value = null;
 
-    if (!isMobile.value) {
-      nextTick(() => lobbies[tabId]?.focusComposer?.());
-    }
+    // Phones too: starting a conversation is asking to type, unlike merely
+    // switching rooms (ChatLobby's activate-focus stays off on mobile).
+    nextTick(() => lobbies[tabId]?.focusComposer?.());
   },
   { immediate: true },
 );
@@ -631,7 +631,22 @@ function handleRoomClick(tab: ChatTab) {
   }
 
   cancelChatTabRestore();
+
+  // The room already on screen: nothing to switch to, so the click just puts
+  // you back in its composer.
+  if (tab.id === activeChatId.value) {
+    if (!isMobile.value) lobbies[tab.id]?.focusComposer?.();
+    return;
+  }
+
   handleSelectRoom(tab);
+}
+
+// Pressing the open room must not pull focus out of its composer first.
+function keepComposerOnActiveRoom(tab: ChatTab, event: MouseEvent) {
+  if (tab.id === activeChatId.value && !isMobile.value) {
+    event.preventDefault();
+  }
 }
 
 function getRoomIcon(tab: ChatTab) {
@@ -666,6 +681,21 @@ function handleCloseRoom() {
   // closeTab already picks the neighbouring tab; follow it so the panel isn't
   // left rendering a room that no longer exists.
   activeChatId.value = activeTabId.value;
+}
+
+// The header's title strip does nothing on click, so a press there must not
+// pull focus out of the composer -- and a click there puts it back.
+const HEADER_CONTROL = "button, a, input, textarea, select, [role='button']";
+
+function keepComposerFocus(event: MouseEvent) {
+  if ((event.target as HTMLElement).closest(HEADER_CONTROL)) return;
+  event.preventDefault();
+}
+
+function focusComposerFromHeader(event: MouseEvent) {
+  if (isMobile.value || !activeChatId.value) return;
+  if ((event.target as HTMLElement).closest(HEADER_CONTROL)) return;
+  lobbies[activeChatId.value]?.focusComposer?.();
 }
 
 function handlePopOut() {
@@ -791,6 +821,7 @@ function handlePopOut() {
                         wiggling && tab.type === 'direct' ? 'touch-none' : '',
                       ]"
                       type="button"
+                      @mousedown="keepComposerOnActiveRoom(tab, $event)"
                       @click="handleRoomClick(tab)"
                       @pointerdown="handlePointerDown(tab, $event)"
                       @pointermove="handlePointerMove($event)"
@@ -929,7 +960,9 @@ function handlePopOut() {
       >
         <!-- Header with channel title + participants + controls -->
         <div
-          class="flex items-center justify-between px-3 py-3 border-b border-border bg-card/30"
+          class="flex items-center justify-between gap-3 px-3 py-3 border-b border-border bg-card/30"
+          @mousedown="keepComposerFocus"
+          @click="focusComposerFromHeader"
         >
           <div class="min-w-0 flex items-center gap-3">
             <div class="min-w-0">
@@ -973,7 +1006,7 @@ function handlePopOut() {
               </div>
             </div>
           </div>
-          <div class="flex items-center gap-1.5">
+          <div class="flex shrink-0 items-center gap-1.5">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger as-child>

@@ -171,7 +171,7 @@ const mapChips = computed(() => {
   return slots;
 });
 
-const metaLine = computed(() =>
+const metaFacts = computed(() =>
   [
     props.match.options?.type,
     isNative.value && props.match.options?.best_of
@@ -180,10 +180,13 @@ const metaLine = computed(() =>
         })
       : null,
     isNative.value ? props.match.e_region?.description : null,
-    formattedSchedule.value,
   ]
     .filter(Boolean)
     .join(" · "),
+);
+
+const metaLine = computed(() =>
+  [metaFacts.value, formattedSchedule.value].filter(Boolean).join(" · "),
 );
 
 const resultText = computed(() =>
@@ -197,46 +200,50 @@ const resultText = computed(() =>
   <div
     class="grid gap-4 bg-[linear-gradient(180deg,rgb(255_255_255/0.035),transparent_70%)] px-4 pb-5 pt-4 md:gap-[18px] md:px-6"
   >
-    <div class="flex min-h-9 flex-wrap items-center gap-x-4 gap-y-2">
-      <span
-        class="inline-flex items-center gap-2 whitespace-nowrap text-[13px] font-semibold"
-        :class="statusTone"
+    <div class="flex items-start gap-3">
+      <div
+        class="flex min-h-9 min-w-0 flex-1 flex-wrap items-center gap-x-4 gap-y-1"
       >
-        <span class="relative flex size-2 shrink-0">
-          <span
-            v-if="isLive"
-            class="absolute inline-flex size-full animate-ping rounded-full bg-current opacity-75 motion-reduce:animate-none"
-          ></span>
-          <span
-            class="relative inline-flex size-2 rounded-full bg-current"
-          ></span>
-        </span>
-        <span class="text-foreground">{{ statusText }}</span>
-        <TimeAgo
-          v-if="isEnded && match.ended_at"
-          :date="match.ended_at"
-          hide-icon
-          class="font-medium text-muted-foreground"
-        />
-      </span>
-
-      <span
-        v-if="tournament || match.label"
-        class="inline-flex min-w-0 items-center gap-1.5 text-[13px]"
-      >
-        <NuxtLink
-          v-if="tournament"
-          :to="`/tournaments/${tournament.id}`"
-          class="truncate rounded-sm font-semibold text-foreground/85 transition-colors hover:text-[hsl(var(--tac-amber))]"
+        <span
+          class="inline-flex items-center gap-2 whitespace-nowrap text-[13px] font-semibold"
+          :class="statusTone"
         >
-          {{ tournament.name }}
-        </NuxtLink>
-        <span v-if="match.label" class="truncate text-muted-foreground">
-          <template v-if="tournament">· </template>{{ match.label }}
+          <span class="relative flex size-2 shrink-0">
+            <span
+              v-if="isLive"
+              class="absolute inline-flex size-full animate-ping rounded-full bg-current opacity-75 motion-reduce:animate-none"
+            ></span>
+            <span
+              class="relative inline-flex size-2 rounded-full bg-current"
+            ></span>
+          </span>
+          <span class="text-foreground">{{ statusText }}</span>
+          <TimeAgo
+            v-if="isEnded && match.ended_at"
+            :date="match.ended_at"
+            hide-icon
+            class="font-medium text-muted-foreground"
+          />
         </span>
-      </span>
 
-      <div class="ml-auto flex items-center gap-2 self-stretch">
+        <span
+          v-if="tournament || match.label"
+          class="inline-flex min-w-0 items-center gap-1.5 text-[13px]"
+        >
+          <NuxtLink
+            v-if="tournament"
+            :to="`/tournaments/${tournament.id}`"
+            class="truncate rounded-sm font-semibold text-foreground/85 transition-colors hover:text-[hsl(var(--tac-amber))]"
+          >
+            {{ tournament.name }}
+          </NuxtLink>
+          <span v-if="match.label" class="truncate text-muted-foreground">
+            <template v-if="tournament">· </template>{{ match.label }}
+          </span>
+        </span>
+      </div>
+
+      <div class="flex h-9 shrink-0 items-center gap-2">
         <MatchSourceBadge
           v-if="match.source !== 'faceit'"
           :source="match.source"
@@ -501,10 +508,62 @@ const resultText = computed(() =>
     <div
       class="flex flex-wrap items-center gap-2 text-[13px] text-muted-foreground md:justify-center"
     >
+      <!-- Phone: the series as one divided strip, a cell per map. -->
+      <div
+        v-if="mapChips.length"
+        class="grid w-full auto-cols-fr grid-flow-col divide-x divide-white/[0.07] overflow-hidden rounded-md bg-white/[0.04] ring-1 ring-inset ring-white/[0.07] md:hidden"
+      >
+        <div
+          v-for="(chip, index) in mapChips"
+          :key="chip.key"
+          class="grid min-w-0 justify-items-center gap-1 px-1.5 py-2"
+          :class="
+            chip.matchMap?.is_current_map && isLive
+              ? 'bg-destructive/10 text-foreground/90'
+              : chip.matchMap
+                ? 'text-foreground/90'
+                : 'text-muted-foreground/60'
+          "
+        >
+          <span
+            class="flex min-w-0 max-w-full items-center gap-1.5 text-[12px] leading-none"
+          >
+            <img
+              v-if="chip.matchMap?.map?.patch && mapChips.length <= 3"
+              :src="chip.matchMap.map.patch"
+              alt=""
+              class="size-3.5 shrink-0 object-contain"
+            />
+            <span class="truncate">{{
+              chip.matchMap
+                ? mapLabel(chip.matchMap.map)
+                : $t("match.map_number", { count: index + 1 })
+            }}</span>
+          </span>
+          <span
+            v-if="chip.matchMap"
+            class="text-[13px] font-semibold leading-none tabular-nums"
+          >
+            <MatchLineupScoreDisplay
+              :match="match"
+              :lineup="lineups[0]"
+              :match-map="chip.matchMap"
+              :halves="false"
+            />–<MatchLineupScoreDisplay
+              :match="match"
+              :lineup="lineups[1]"
+              :match-map="chip.matchMap"
+              :halves="false"
+            />
+          </span>
+          <span v-else class="text-[13px] leading-none">–</span>
+        </div>
+      </div>
+
       <span
         v-for="(chip, index) in mapChips"
         :key="chip.key"
-        class="inline-flex h-7 items-center gap-2 whitespace-nowrap rounded-md pl-2 pr-2.5"
+        class="inline-flex h-7 items-center gap-2 whitespace-nowrap rounded-md pl-2 pr-2.5 max-md:hidden"
         :class="
           !chip.matchMap
             ? 'outline-dashed outline-1 -outline-offset-1 outline-white/[0.11]'
@@ -540,8 +599,12 @@ const resultText = computed(() =>
         </template>
       </span>
 
-      <span v-if="metaLine" class="inline-flex h-7 items-center">
+      <span v-if="metaLine" class="inline-flex h-7 items-center max-md:hidden">
         {{ metaLine }}
+      </span>
+      <span v-if="metaLine" class="grid w-full gap-1 leading-snug md:hidden">
+        <span v-if="metaFacts">{{ metaFacts }}</span>
+        <span v-if="formattedSchedule">{{ formattedSchedule }}</span>
       </span>
 
       <span

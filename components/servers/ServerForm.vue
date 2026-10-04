@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
+import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
 import { Fold } from "~/components/ui/transitions";
 import {
   FormControl,
@@ -73,11 +74,7 @@ const iconBoxClasses =
 </script>
 
 <template>
-  <form
-    @submit.prevent="updateCreateServer"
-    class="grid gap-8"
-    :class="{ 'pb-24': !server }"
-  >
+  <form @submit.prevent="updateCreateServer" class="grid gap-8">
     <FormSection :title="$t('server.form.where_it_runs')">
       <div class="space-y-4">
         <!-- Region first whatever hosts the server: it is where an external
@@ -754,23 +751,15 @@ const iconBoxClasses =
       </div>
     </FormSection>
 
-    <SettingsSaveBar
+    <Button
       v-if="!server"
-      force-visible
-      hide-discard
-      :valid="missingFields.length === 0"
-      :submitting="submitting"
-      :title="
-        missingFields.length
-          ? $t('server.form.create_bar.missing', {
-              fields: missingFields.join(', '),
-            })
-          : $t('server.form.create_bar.ready')
-      "
-      :description="createSummary"
-      :action-label="$t('server.form.create')"
-      @save="updateCreateServer"
-    />
+      type="submit"
+      :disabled="Object.keys(form.errors).length > 0"
+      :loading="submitting"
+      :class="[tacticalCtaButtonClasses, 'w-full justify-center']"
+    >
+      {{ $t("server.form.create") }}
+    </Button>
 
     <SettingsSaveBar
       v-else
@@ -1309,43 +1298,6 @@ export default {
         key: type,
         label: type,
       }));
-    },
-    missingFields(): Array<string> {
-      const values = this.form.values;
-      const missing = [];
-      if (!values.region) {
-        missing.push(this.$t("server.form.region"));
-      }
-      if (values.use_game_server_node) {
-        const node = this.nodeOptions.find(
-          (option) => option.id === values.game_server_node_id,
-        );
-        if (!node || node.reason) {
-          missing.push(this.$t("server.form.game_server_node"));
-        }
-      } else if (!values.host) {
-        missing.push(this.$t("server.form.host"));
-      }
-      if ((values.label ?? "").trim().length < 3) {
-        missing.push(this.$t("server.form.label"));
-      }
-      if (!values.rcon_password) {
-        missing.push(this.$t("server.form.rcon_password"));
-      }
-      return missing;
-    },
-    createSummary(): string {
-      const values = this.form.values;
-      const plays = this.playsLabel;
-      const node = this.nodeOptions.find(
-        (option) => option.id === values.game_server_node_id,
-      );
-      const where = values.use_game_server_node
-        ? node && [node.name, node.region].filter(Boolean).join(" · ")
-        : values.host && `${values.host}:${values.port}`;
-      return [values.game === "csgo" ? "CS:GO" : "CS2", plays, where]
-        .filter(Boolean)
-        .join(" · ");
     },
     serverTypes() {
       return Object.values(e_server_types_enum);

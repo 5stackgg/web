@@ -145,16 +145,8 @@ import { parseDate, type DateValue } from "@internationalized/date";
 // ahead of a later import makes vue-tsc treat that import as non-top-level.
 const CHECK_IN_REVIEW_STATUS = "CheckInReview" as e_tournament_status_enum;
 
-
 type RangeKey =
-  | "l30"
-  | "7d"
-  | "30d"
-  | "90d"
-  | "1y"
-  | "all"
-  | "custom"
-  | "season";
+  "l30" | "7d" | "30d" | "90d" | "1y" | "all" | "custom" | "season";
 
 interface WindowedEloEntry {
   current_elo: number | null;
@@ -1708,9 +1700,7 @@ const PREVIOUS_SEASON_FINISH_QUERY = gql`
     }
   }
 `;
-const previousSeasonFinish = ref<{ rank: number; total: number } | null>(
-  null,
-);
+const previousSeasonFinish = ref<{ rank: number; total: number } | null>(null);
 let previousSeasonFinishGen = 0;
 watch(
   () =>
@@ -1747,7 +1737,9 @@ const previousSeasonTooltip = computed(() => {
     season: seasonTag(previousSeason.value),
     peak: fmtRangeStat(pace.previous.peak),
     date: fmtDateShort(pace.previous.peakAt),
-    final: fmtRangeStat(pace.previous.ratings[pace.previous.ratings.length - 1]),
+    final: fmtRangeStat(
+      pace.previous.ratings[pace.previous.ratings.length - 1],
+    ),
     rank: previousSeasonFinish.value?.rank ?? 0,
     total: previousSeasonFinish.value?.total ?? 0,
   };
@@ -2013,8 +2005,10 @@ definePageMeta({
 const { isMobile } = useSidebar();
 const playerHeroClasses =
   "relative flex min-w-0 flex-col rounded-lg border border-border px-6 py-5 [background:radial-gradient(120%_140%_at_0%_0%,hsl(var(--tac-amber)_/_0.06)_0%,transparent_45%),linear-gradient(180deg,hsl(var(--card)_/_0.5)_0%,hsl(var(--card)_/_0.2)_100%)] [backdrop-filter:blur(6px)] max-md:px-4 max-md:py-5";
+// Phones: avatar + label/name form the first row, the meta strip spans the
+// full card width below them.
 const playerHeroBodyClasses =
-  "flex flex-wrap items-center gap-5 max-md:items-start max-md:gap-4";
+  "flex flex-wrap items-center gap-5 max-md:grid max-md:grid-cols-[auto_minmax(0,1fr)] max-md:gap-4";
 const playerHeroInlineRoleChipClasses =
   "inline-flex h-7 items-center gap-1.5 rounded-md border border-border bg-card/60 px-2.5 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground";
 const playerHeroInlineRoleWrapClasses =
@@ -2032,10 +2026,12 @@ const playerHeroBlockedBadgeClasses =
 const playerHeroCancelRequestClasses =
   "group/req inline-flex items-center justify-center rounded-md border border-border/70 bg-muted/30 px-3 py-2 font-mono text-[0.72rem] font-bold uppercase tracking-[0.16em] text-muted-foreground transition-colors duration-150 hover:border-destructive/50 hover:bg-destructive/15 hover:text-destructive focus-visible:border-destructive/50 focus-visible:bg-destructive/15 focus-visible:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-60 max-md:w-full";
 const playerHeroAvatarFrameClasses =
-  "relative h-[156px] w-[156px] border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] p-1 max-md:h-24 max-md:w-24";
+  "relative h-[156px] w-[156px] border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] p-1 max-md:h-20 max-md:w-20";
 const playerHeroAvatarClasses = "block h-full w-full object-cover";
 const playerHeroAvatarPlaceholderClasses = `${playerHeroAvatarClasses} flex items-center justify-center bg-muted/20 font-sans text-[3.5rem] font-bold text-[hsl(var(--tac-amber))]`;
-const playerHeroIdentityClasses = "flex min-w-0 flex-1 flex-col gap-2";
+const playerHeroIdentityClasses =
+  "flex min-w-0 flex-1 flex-col gap-2 max-md:contents";
+const playerHeroHeadClasses = "flex min-w-0 flex-col gap-2";
 const playerHeroNameClasses =
   "relative m-0 min-w-0 font-sans font-bold uppercase leading-[0.9] tracking-[0.02em] [overflow-wrap:anywhere] [font-stretch:80%]";
 const playerHeroNameMainClasses = "relative text-foreground";
@@ -2043,8 +2039,10 @@ const playerHeroNameGhostClasses =
   "pointer-events-none absolute inset-0 text-transparent select-none [-webkit-text-stroke:1px_hsl(var(--tac-amber)_/_0.35)] [transform:translate(4px,4px)]";
 const playerHeroActionsClasses = "flex shrink-0 items-center gap-2";
 const playerHeroMetaStripClasses =
-  "flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[0.76rem] text-muted-foreground";
-const playerHeroMetaDividerClasses = "h-3 w-px shrink-0 bg-border/70";
+  "flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[0.76rem] text-muted-foreground max-md:col-span-2 max-md:flex-col max-md:items-start";
+// Desktop flows the groups as one strip; phones give each its own row.
+const playerHeroMetaGroupClasses =
+  "contents max-md:flex max-md:flex-wrap max-md:items-center max-md:gap-2";
 const playerHeroIdentClasses = "inline-flex min-w-0 items-center gap-2";
 const playerHeroSteamIdClasses = "min-w-0 truncate tracking-[0.05em]";
 const playerHeroSteamLinkClasses =
@@ -2058,7 +2056,7 @@ const playerHeroPlayIconClasses =
   "h-5 w-5 fill-current transition-transform duration-300 group-hover/play:translate-x-0.5 group-hover/play:scale-110";
 const playerHeroPlayGlowClasses =
   "pointer-events-none absolute inset-0 z-0 -translate-x-full bg-[linear-gradient(90deg,transparent_0%,hsl(0_0%_100%_/_0.4)_50%,transparent_100%)] transition-transform duration-500 group-hover/play:translate-x-full";
-const playerHeroFooterClasses = "mt-auto flex flex-col gap-4";
+const playerHeroFooterClasses = "mt-auto flex flex-col gap-4 max-md:mt-5";
 const playerHeroFormClasses = "border-t border-border/60 pt-4";
 const playerHeroFormLabelClasses =
   "inline-flex items-center gap-2 font-mono text-[0.72rem] uppercase tracking-[0.24em] text-muted-foreground";
@@ -2097,155 +2095,154 @@ const playerHeroTeamChipDotClasses =
             </div>
 
             <div :class="playerHeroIdentityClasses">
-              <div class="flex items-center justify-between gap-3">
-                <div
-                  class="inline-flex items-center gap-2 font-mono text-[0.58rem] uppercase tracking-[0.28em] text-[hsl(var(--tac-amber))]"
-                >
-                  <span
-                    class="h-[2px] w-[14px] bg-[hsl(var(--tac-amber))]"
-                  ></span>
-                  {{ $t("pages.players.detail.player_profile") }}
-                </div>
-                <div :class="playerHeroActionsClasses">
-                  <!-- A menu holding a single entry is just a slower button, so
-                       one available action renders as that action directly. -->
-                  <button
-                    v-if="heroActions.length === 1"
-                    type="button"
-                    :class="
-                      heroActions[0].destructive
-                        ? playerHeroDangerActionButtonClasses
-                        : playerHeroNameEditButtonClasses
-                    "
-                    :title="heroActions[0].label"
-                    :aria-label="heroActions[0].label"
-                    :disabled="heroActions[0].busy"
-                    @click="heroActions[0].run()"
+              <div :class="playerHeroHeadClasses">
+                <div class="flex items-start justify-between gap-3">
+                  <h1
+                    :class="[playerHeroNameClasses, playerHeroNameSizeClasses]"
                   >
-                    <component :is="heroActions[0].icon" />
-                  </button>
-                  <DropdownMenu v-else-if="heroActions.length > 1">
-                    <DropdownMenuTrigger as-child>
-                      <button
-                        type="button"
-                        :class="playerHeroNameEditButtonClasses"
-                        :title="$t('pages.players.detail.more_actions')"
-                        :aria-label="$t('pages.players.detail.more_actions')"
-                      >
-                        <MoreVertical />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" class="w-52">
-                      <template v-for="action in heroActions" :key="action.key">
-                        <DropdownMenuSeparator v-if="action.destructive" />
-                        <DropdownMenuItem
-                          class="gap-2"
-                          :class="{
-                            'text-destructive focus:text-destructive':
-                              action.destructive,
-                          }"
-                          :disabled="action.busy"
-                          @click="action.run()"
+                    <span
+                      v-if="showNameGhost"
+                      :class="playerHeroNameGhostClasses"
+                      aria-hidden="true"
+                    >
+                      {{ player.name }}
+                    </span>
+                    <span :class="playerHeroNameMainClasses">{{
+                      player.name
+                    }}</span>
+                  </h1>
+                  <div :class="playerHeroActionsClasses">
+                    <!-- A menu holding a single entry is just a slower button, so
+                       one available action renders as that action directly. -->
+                    <button
+                      v-if="heroActions.length === 1"
+                      type="button"
+                      :class="
+                        heroActions[0].destructive
+                          ? playerHeroDangerActionButtonClasses
+                          : playerHeroNameEditButtonClasses
+                      "
+                      :title="heroActions[0].label"
+                      :aria-label="heroActions[0].label"
+                      :disabled="heroActions[0].busy"
+                      @click="heroActions[0].run()"
+                    >
+                      <component :is="heroActions[0].icon" />
+                    </button>
+                    <DropdownMenu v-else-if="heroActions.length > 1">
+                      <DropdownMenuTrigger as-child>
+                        <button
+                          type="button"
+                          :class="playerHeroNameEditButtonClasses"
+                          :title="$t('pages.players.detail.more_actions')"
+                          :aria-label="$t('pages.players.detail.more_actions')"
                         >
-                          <component
-                            :is="action.icon"
-                            class="h-4 w-4"
-                            :class="{ 'text-destructive': action.danger }"
-                          />
-                          {{ action.label }}
-                          <span
-                            v-if="action.count"
-                            class="ml-auto font-mono text-xs tabular-nums text-muted-foreground"
+                          <MoreVertical />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" class="w-52">
+                        <template
+                          v-for="action in heroActions"
+                          :key="action.key"
+                        >
+                          <DropdownMenuSeparator v-if="action.destructive" />
+                          <DropdownMenuItem
+                            class="gap-2"
+                            :class="{
+                              'text-destructive focus:text-destructive':
+                                action.destructive,
+                            }"
+                            :disabled="action.busy"
+                            @click="action.run()"
                           >
-                            {{ action.count }}
-                          </span>
-                        </DropdownMenuItem>
-                      </template>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                            <component
+                              :is="action.icon"
+                              class="h-4 w-4"
+                              :class="{ 'text-destructive': action.danger }"
+                            />
+                            {{ action.label }}
+                            <span
+                              v-if="action.count"
+                              class="ml-auto font-mono text-xs tabular-nums text-muted-foreground"
+                            >
+                              {{ action.count }}
+                            </span>
+                          </DropdownMenuItem>
+                        </template>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                 </div>
               </div>
 
-              <h1 :class="[playerHeroNameClasses, playerHeroNameSizeClasses]">
-                <span
-                  v-if="showNameGhost"
-                  :class="playerHeroNameGhostClasses"
-                  aria-hidden="true"
-                >
-                  {{ player.name }}
-                </span>
-                <span :class="playerHeroNameMainClasses">{{
-                  player.name
-                }}</span>
-              </h1>
-
               <div :class="playerHeroMetaStripClasses">
-                <span :class="playerHeroIdentClasses">
-                  <TimezoneFlag
-                    v-if="player.country"
-                    :country="player.country"
-                    class="h-auto w-[1.2rem] shrink-0"
-                  />
-                  <span :class="playerHeroSteamIdClasses">{{
-                    player.steam_id
-                  }}</span>
-                </span>
-
-                <template v-if="player.profile_url">
-                  <span
-                    :class="playerHeroMetaDividerClasses"
-                    aria-hidden="true"
-                  ></span>
-                  <a
-                    :href="player.profile_url"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    :class="playerHeroSteamLinkClasses"
-                    :title="$t('ui.tooltips.view_steam_profile')"
-                  >
-                    <SteamIcon class="h-3.5 w-3.5 fill-current" />
-                  </a>
-                </template>
-
-                <PlayerVacBadge
-                  v-if="hasSteamBans"
-                  :player="player"
-                  variant="button"
-                  @click="sanctionsSheetOpen = true"
-                />
-
-                <template v-if="canEditRole || player.role">
-                  <span
-                    :class="playerHeroMetaDividerClasses"
-                    aria-hidden="true"
-                  ></span>
-                  <div
-                    v-if="canEditRole"
-                    :class="playerHeroInlineRoleWrapClasses"
-                  >
-                    <PlayerRoleForm :player="player" />
-                  </div>
-                  <span v-else :class="playerHeroInlineRoleChipClasses">
-                    {{ $t(`player_roles.${player.role || "user"}`) }}
+                <div :class="playerHeroMetaGroupClasses">
+                  <span :class="playerHeroIdentClasses">
+                    <TimezoneFlag
+                      v-if="player.country"
+                      :country="player.country"
+                      class="h-auto w-[1.2rem] shrink-0"
+                    />
+                    <span :class="playerHeroSteamIdClasses">{{
+                      player.steam_id
+                    }}</span>
                   </span>
-                </template>
 
-                <template v-if="player?.teams && player.teams.length > 0">
-                  <span
-                    :class="playerHeroMetaDividerClasses"
-                    aria-hidden="true"
-                  ></span>
-                  <NuxtLink
-                    v-for="team in player.teams"
-                    :key="team.id"
-                    :to="`/teams/${team.id}`"
-                    :class="playerHeroTeamChipClasses"
-                    :title="team.name"
-                  >
-                    <span :class="playerHeroTeamChipDotClasses"></span>
-                    <span>{{ team.short_name || team.name }}</span>
-                  </NuxtLink>
-                </template>
+                  <template v-if="player.profile_url">
+                    <a
+                      :href="player.profile_url"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      :class="playerHeroSteamLinkClasses"
+                      :title="$t('ui.tooltips.view_steam_profile')"
+                    >
+                      <SteamIcon class="h-3.5 w-3.5 fill-current" />
+                    </a>
+                  </template>
+
+                  <PlayerVacBadge
+                    v-if="hasSteamBans"
+                    :player="player"
+                    variant="button"
+                    @click="sanctionsSheetOpen = true"
+                  />
+                </div>
+
+                <div
+                  v-if="canEditRole || player.role || player.teams?.length"
+                  :class="[
+                    playerHeroMetaGroupClasses,
+                    canEditRole && !player.teams?.length && 'max-md:hidden',
+                  ]"
+                >
+                  <template v-if="canEditRole || player.role">
+                    <div
+                      v-if="canEditRole"
+                      :class="[
+                        playerHeroInlineRoleWrapClasses,
+                        'max-md:hidden',
+                      ]"
+                    >
+                      <PlayerRoleForm :player="player" />
+                    </div>
+                    <span v-else :class="playerHeroInlineRoleChipClasses">
+                      {{ $t(`player_roles.${player.role || "user"}`) }}
+                    </span>
+                  </template>
+
+                  <template v-if="player?.teams && player.teams.length > 0">
+                    <NuxtLink
+                      v-for="team in player.teams"
+                      :key="team.id"
+                      :to="`/teams/${team.id}`"
+                      :class="playerHeroTeamChipClasses"
+                      :title="team.name"
+                    >
+                      <span :class="playerHeroTeamChipDotClasses"></span>
+                      <span>{{ team.short_name || team.name }}</span>
+                    </NuxtLink>
+                  </template>
+                </div>
               </div>
             </div>
           </div>
@@ -2395,11 +2392,21 @@ const playerHeroTeamChipDotClasses =
           <CardContent class="flex flex-1 flex-col gap-2 p-0 sm:p-0">
             <div
               :class="[
-                'grid grid-cols-1 divide-y divide-border/40 overflow-hidden rounded-md border border-border/60 sm:divide-x sm:divide-y-0',
-                seasonPaceData ? 'sm:grid-cols-3' : 'sm:grid-cols-2',
+                'grid divide-border/40 overflow-hidden rounded-md border border-border/60 sm:divide-x sm:divide-y-0',
+                seasonPaceData
+                  ? 'grid-cols-2 sm:grid-cols-3'
+                  : 'grid-cols-1 divide-y sm:grid-cols-2',
               ]"
             >
-              <div class="relative min-h-[64px] px-3 py-2.5">
+              <!-- Phones with a season to compare: current ELO across the top,
+                   the two comparisons side by side beneath it. -->
+              <div
+                class="relative min-h-[64px] px-3 py-2.5"
+                :class="
+                  seasonPaceData &&
+                  'max-sm:col-span-2 max-sm:border-b max-sm:border-border/40'
+                "
+              >
                 <div
                   class="flex items-center justify-between gap-3 font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
                 >
@@ -2466,7 +2473,9 @@ const playerHeroTeamChipDotClasses =
                   </span>
                 </div>
 
-                <div class="relative min-h-[64px] px-3 py-2.5 sm:pl-4">
+                <div
+                  class="relative min-h-[64px] px-3 py-2.5 max-sm:border-l max-sm:border-border/40 sm:pl-4"
+                >
                   <span
                     class="pointer-events-none absolute left-0 top-3 bottom-3 hidden w-[2px] bg-[hsl(var(--tac-amber))] sm:block"
                     aria-hidden="true"
@@ -2484,7 +2493,11 @@ const playerHeroTeamChipDotClasses =
                     :value="fmtRangeStat(seasonPaceData.previous.peak)"
                     class="mt-1 text-xl font-bold tabular-nums text-[hsl(var(--tac-amber))]"
                   />
-                  <FiveStackToolTip as-child side="bottom" :delay-duration="120">
+                  <FiveStackToolTip
+                    as-child
+                    side="bottom"
+                    :delay-duration="120"
+                  >
                     <template #trigger>
                       <span
                         class="mt-0.5 block cursor-help text-[0.68rem] leading-tight text-muted-foreground underline decoration-muted-foreground/50 decoration-dotted underline-offset-[3px]"
@@ -2729,9 +2742,7 @@ const playerHeroTeamChipDotClasses =
                 @click="openEloTab"
               >
                 <Maximize2 class="h-3 w-3" />
-                {{
-                  $t("pages.players.detail.view_full_elo_history")
-                }}
+                {{ $t("pages.players.detail.view_full_elo_history") }}
               </button>
             </div>
           </CardContent>
@@ -3645,6 +3656,16 @@ const playerHeroTeamChipDotClasses =
           {{ $t("pages.players.detail.edit_player") }}
         </SheetDescription>
       </SheetHeader>
+      <!-- Phones edit the role here; the hero keeps it inline from md. -->
+      <div
+        v-if="canEditRole"
+        class="mt-6 flex items-center justify-between gap-3 md:hidden"
+      >
+        <span class="text-sm font-medium">{{
+          $t("pages.players.detail.role")
+        }}</span>
+        <PlayerRoleForm :player="player" />
+      </div>
       <PlayerEditForm
         class="-mx-4 mt-6 flex-1 overflow-y-auto px-4"
         :player="player"

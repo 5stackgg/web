@@ -30,7 +30,7 @@ const open = defineModel<boolean>("open", { default: false });
 
 <template>
   <div
-    class="inline-flex items-stretch overflow-hidden rounded-md border font-mono text-[0.64rem] uppercase leading-none tracking-[0.14em] transition-colors duration-150"
+    class="inline-flex h-8 items-stretch overflow-hidden rounded-md border font-mono text-[0.64rem] uppercase leading-none tracking-[0.14em] transition-colors duration-150"
     :class="
       active
         ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
@@ -41,13 +41,15 @@ const open = defineModel<boolean>("open", { default: false });
       <PopoverTrigger as-child>
         <button
           type="button"
-          class="inline-flex h-8 cursor-pointer items-center gap-1.5 px-2.5 transition-colors"
+          class="inline-flex cursor-pointer items-center gap-1.5 px-2.5 transition-colors"
           :class="active ? '' : 'hover:bg-muted/50 hover:text-foreground'"
         >
           <SlidersHorizontal class="h-3.5 w-3.5" />
-          {{ label || $t("common.filters") }}
+          <span class="max-md:sr-only">{{
+            label || $t("common.filters")
+          }}</span>
           <span v-if="count" :class="filterBadgeClasses">{{ count }}</span>
-          <ChevronDown class="h-3 w-3 opacity-50" />
+          <ChevronDown class="h-3 w-3 opacity-50 max-md:hidden" />
         </button>
       </PopoverTrigger>
       <PopoverContent

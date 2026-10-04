@@ -6,11 +6,7 @@ import { ELO_MAX, ELO_STEP } from "~/utilities/scrimElo";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { useAuthStore } from "~/stores/AuthStore";
 import { Button } from "@/components/ui/button";
-import {
-  Avatar,
-  AvatarImage,
-  AvatarFallback,
-} from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   InputGroup,
   InputGroupAddon,
@@ -22,8 +18,18 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Slider } from "@/components/ui/slider";
-import { ExternalLink, Search, X, SlidersHorizontal, Check, Gauge, Globe, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-vue-next";
-import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
+import {
+  ExternalLink,
+  Search,
+  X,
+  SlidersHorizontal,
+  Check,
+  Gauge,
+  Globe,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
+} from "lucide-vue-next";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import TeamRankSummary from "~/components/team/TeamRankSummary.vue";
 import ScrimRequestDialog from "~/components/team/ScrimRequestDialog.vue";
@@ -61,7 +67,6 @@ export default {
     ArrowUpDown,
     ArrowUp,
     ArrowDown,
-    TacticalPageHeader,
     PageTransition,
     TeamRankSummary,
     ScrimRequestDialog,
@@ -82,6 +87,7 @@ export default {
       sortChain: [] as { key: string; dir: "asc" | "desc" }[],
       dialogOpen: false,
       selectedPosting: null as any,
+      postingsLoaded: false,
     };
   },
   computed: {
@@ -184,7 +190,10 @@ export default {
     availableTeams(): any[] {
       const query = this.searchQuery.trim().toLowerCase();
       const filtered = this.regionScoped.filter((posting) => {
-        if (query && !(posting.team?.name ?? "").toLowerCase().includes(query)) {
+        if (
+          query &&
+          !(posting.team?.name ?? "").toLowerCase().includes(query)
+        ) {
           return false;
         }
         return this.mapMatches(posting) && this.eloMatches(posting);
@@ -251,6 +260,7 @@ export default {
         }),
         result({ data }) {
           this.postings = data.team_scrim_settings ?? [];
+          this.postingsLoaded = true;
         },
       },
       myTeams: {
@@ -363,8 +373,7 @@ export default {
       }
       const mapIds = posting.map_ids ?? [];
       return (
-        mapIds.length === 0 ||
-        this.mapFilter.some((id) => mapIds.includes(id))
+        mapIds.length === 0 || this.mapFilter.some((id) => mapIds.includes(id))
       );
     },
     sortRank(key: string): number {
@@ -471,6 +480,10 @@ export default {
 <script setup lang="ts">
 import FilterBar from "~/components/common/FilterBar.vue";
 import FilterMenu from "~/components/common/FilterMenu.vue";
+import SectionEmpty from "~/components/common/SectionEmpty.vue";
+import DeferredLoading from "~/components/common/DeferredLoading.vue";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import { Skeleton } from "~/components/ui/skeleton";
 import { ChevronDown } from "lucide-vue-next";
 import {
   filterTriggerBase,
@@ -481,23 +494,17 @@ import {
 </script>
 
 <template>
-  <PageTransition>
-    <TacticalPageHeader>
-      <template #title>{{ $t("pages.scrims.title") }}</template>
-      <template #subtitle>{{ $t("pages.scrims.description") }}</template>
-    </TacticalPageHeader>
-  </PageTransition>
+  <h1 class="sr-only">{{ $t("pages.scrims.title") }}</h1>
 
   <div>
-    <p
+    <SectionEmpty
       v-if="!scrimFinderEnabled"
-      class="mt-6 rounded-md border border-dashed border-border px-4 py-10 text-center text-sm text-muted-foreground"
-    >
-      {{ $t("pages.scrims.disabled_message") }}
-    </p>
+      :title="$t('pages.scrims.title')"
+      :description="$t('pages.scrims.disabled_message')"
+    />
 
     <template v-else>
-      <PageTransition :delay="100" class="mt-6 block">
+      <PageTransition class="block">
         <FilterBar>
           <!-- Search (always visible — type instantly) -->
           <InputGroup class="h-8 min-w-[12rem] flex-1 bg-card/60 sm:max-w-xs">
@@ -759,105 +766,270 @@ import {
               </p>
             </div>
           </FilterMenu>
-
         </FilterBar>
       </PageTransition>
 
-      <PageTransition :delay="200" class="mt-6 block">
-        <div class="space-y-10">
-          <!-- Today's schedule -->
-          <section class="space-y-3">
-            <div class="flex items-center gap-3">
-              <span
-                class="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))]"
-              >
-                {{ $t("pages.scrims.today") }}
-              </span>
-              <span class="text-xs text-muted-foreground">{{
-                todayRows.length
-              }}</span>
-              <span class="h-px flex-1 bg-border" />
-            </div>
-
-            <p
-              v-if="todayRows.length === 0"
-              class="rounded-md border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground"
-            >
-              {{ $t("pages.scrims.no_teams_today") }}
-            </p>
-
+      <PageTransition :delay="100" class="mt-6 block">
+        <DeferredLoading
+          :loading="!postingsLoaded"
+          v-slot="{ skeleton, loaded }"
+        >
+          <FadeSwap>
             <div
-              v-for="entry in todayRows"
-              :key="entry.key"
-              class="group relative flex items-stretch overflow-hidden rounded-lg border border-border bg-card transition-all hover:border-[hsl(var(--tac-amber)/0.5)]"
+              v-if="skeleton"
+              key="loading"
+              class="space-y-10"
+              aria-busy="true"
             >
-              <div
-                class="relative flex w-[110px] shrink-0 flex-col items-center justify-center gap-0.5 border-r border-border/60 bg-[hsl(var(--tac-amber)/0.05)] px-2 py-4 text-center sm:w-[124px]"
-              >
-                <span class="absolute inset-y-0 left-0 w-[3px] bg-[hsl(var(--tac-amber))]" />
-                <span
-                  class="font-sans text-lg font-bold leading-none tabular-nums text-foreground"
-                >
-                  {{ entry.startLabel }}
-                </span>
-                <span
-                  class="font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground"
-                >
-                  {{ $t("pages.scrims.time_to") }} {{ entry.endLabel }}
-                </span>
+              <div class="space-y-3">
+                <Skeleton class="h-4 w-24 rounded-sm" />
+                <Skeleton
+                  v-for="i in 2"
+                  :key="i"
+                  class="h-[5.5rem] w-full rounded-lg"
+                />
               </div>
-
-              <div
-                class="flex min-w-0 flex-1 flex-col justify-center gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
+              <div class="space-y-3">
+                <Skeleton class="h-4 w-32 rounded-sm" />
+                <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                  <Skeleton v-for="i in 3" :key="i" class="h-44 rounded-lg" />
+                </div>
+              </div>
+            </div>
+            <SectionEmpty
+              v-else-if="loaded && !todayRows.length && !availableTeams.length"
+              key="empty"
+              :title="
+                hasActiveScrimFilters
+                  ? $t('common.empty_filtered.title')
+                  : $t('pages.scrims.empty_title')
+              "
+              :description="
+                hasActiveScrimFilters
+                  ? $t('common.empty_filtered.description')
+                  : $t('pages.scrims.description')
+              "
+            >
+              <Button
+                v-if="hasActiveScrimFilters"
+                variant="outline"
+                size="sm"
+                class="h-8"
+                @click="resetScrimFilters"
               >
-                <div class="flex min-w-0 flex-1 flex-col gap-2">
-                  <div class="flex min-w-0 flex-wrap items-center gap-2">
-                    <NuxtLink
-                      :to="`/teams/${entry.posting.team_id}`"
-                      class="flex min-w-0 items-center gap-2 font-semibold hover:text-[hsl(var(--tac-amber))]"
-                    >
-                      <Avatar shape="square" class="h-7 w-7 rounded-md">
-                        <AvatarImage
-                          v-if="teamAvatar(entry.posting.team)"
-                          :src="teamAvatar(entry.posting.team)"
-                          :alt="entry.posting.team?.name"
-                        />
-                        <AvatarFallback class="rounded-md text-[0.6rem] font-semibold uppercase">
-                          {{ (entry.posting.team?.name || "?").slice(0, 2) }}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span class="truncate">{{ entry.posting.team?.name }}</span>
-                    </NuxtLink>
-                    <a
-                      :href="`/teams/${entry.posting.team_id}`"
-                      target="_blank"
-                      rel="noopener"
-                      class="text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
-                      :title="$t('pages.scrims.open_team_new_tab')"
-                      @click.stop
-                    >
-                      <ExternalLink class="h-3.5 w-3.5" />
-                    </a>
+                <X class="h-3.5 w-3.5" />
+                {{ $t("common.reset_filters") }}
+              </Button>
+            </SectionEmpty>
+            <div v-else key="list" class="space-y-10">
+              <!-- Today's schedule -->
+              <section class="space-y-3">
+                <div class="flex items-center gap-3">
+                  <span
+                    class="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))]"
+                  >
+                    {{ $t("pages.scrims.today") }}
+                  </span>
+                  <span class="text-xs text-muted-foreground">{{
+                    todayRows.length
+                  }}</span>
+                  <span class="h-px flex-1 bg-border" />
+                </div>
+
+                <p
+                  v-if="todayRows.length === 0"
+                  class="rounded-md border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground"
+                >
+                  {{ $t("pages.scrims.no_teams_today") }}
+                </p>
+
+                <div
+                  v-for="entry in todayRows"
+                  :key="entry.key"
+                  class="group relative flex items-stretch overflow-hidden rounded-lg border border-border bg-card transition-all hover:border-[hsl(var(--tac-amber)/0.5)]"
+                >
+                  <div
+                    class="relative flex w-[110px] shrink-0 flex-col items-center justify-center gap-0.5 border-r border-border/60 bg-[hsl(var(--tac-amber)/0.05)] px-2 py-4 text-center sm:w-[124px]"
+                  >
                     <span
-                      v-for="region in entry.posting.regions"
-                      :key="region"
-                      class="rounded border border-border px-1.5 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.12em] text-muted-foreground"
+                      class="absolute inset-y-0 left-0 w-[3px] bg-[hsl(var(--tac-amber))]"
+                    />
+                    <span
+                      class="font-sans text-lg font-bold leading-none tabular-nums text-foreground"
                     >
-                      {{ region }}
+                      {{ entry.startLabel }}
+                    </span>
+                    <span
+                      class="font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground"
+                    >
+                      {{ $t("pages.scrims.time_to") }} {{ entry.endLabel }}
                     </span>
                   </div>
 
-                  <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+                  <div
+                    class="flex min-w-0 flex-1 flex-col justify-center gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
+                  >
+                    <div class="flex min-w-0 flex-1 flex-col gap-2">
+                      <div class="flex min-w-0 flex-wrap items-center gap-2">
+                        <NuxtLink
+                          :to="`/teams/${entry.posting.team_id}`"
+                          class="flex min-w-0 items-center gap-2 font-semibold hover:text-[hsl(var(--tac-amber))]"
+                        >
+                          <Avatar shape="square" class="h-7 w-7 rounded-md">
+                            <AvatarImage
+                              v-if="teamAvatar(entry.posting.team)"
+                              :src="teamAvatar(entry.posting.team)"
+                              :alt="entry.posting.team?.name"
+                            />
+                            <AvatarFallback
+                              class="rounded-md text-[0.6rem] font-semibold uppercase"
+                            >
+                              {{
+                                (entry.posting.team?.name || "?").slice(0, 2)
+                              }}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span class="truncate">{{
+                            entry.posting.team?.name
+                          }}</span>
+                        </NuxtLink>
+                        <a
+                          :href="`/teams/${entry.posting.team_id}`"
+                          target="_blank"
+                          rel="noopener"
+                          class="text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
+                          :title="$t('pages.scrims.open_team_new_tab')"
+                          @click.stop
+                        >
+                          <ExternalLink class="h-3.5 w-3.5" />
+                        </a>
+                        <span
+                          v-for="region in entry.posting.regions"
+                          :key="region"
+                          class="rounded border border-border px-1.5 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.12em] text-muted-foreground"
+                        >
+                          {{ region }}
+                        </span>
+                      </div>
+
+                      <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+                        <TeamRankSummary
+                          :ranks="entry.posting.team?.ranks"
+                          :reputation="entry.posting.team?.reputation"
+                        />
+                        <div
+                          v-if="mapPatches(entry.posting.map_ids).length"
+                          class="flex flex-wrap items-center gap-1.5"
+                        >
+                          <img
+                            v-for="map in mapPatches(entry.posting.map_ids)"
+                            :key="map.id"
+                            :src="map.patch"
+                            :alt="cleanName(map)"
+                            :title="cleanName(map)"
+                            class="h-6 w-6 object-contain"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <Button
+                      v-if="canRequest(entry.posting)"
+                      class="tac-amber-cta shrink-0 self-start sm:self-center"
+                      @click="openRequest(entry.posting)"
+                    >
+                      {{ $t("pages.scrims.request_scrim") }}
+                    </Button>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Browse all available teams -->
+              <section class="space-y-3">
+                <div class="flex items-center gap-3">
+                  <span
+                    class="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))]"
+                  >
+                    {{ $t("pages.scrims.available_teams") }}
+                  </span>
+                  <span class="text-xs text-muted-foreground">{{
+                    availableTeams.length
+                  }}</span>
+                  <span class="h-px flex-1 bg-border" />
+                </div>
+
+                <p
+                  v-if="availableTeams.length === 0"
+                  class="rounded-md border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground"
+                >
+                  {{ $t("pages.scrims.no_teams_match") }}
+                </p>
+
+                <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                  <div
+                    v-for="posting in availableTeams"
+                    :key="posting.id"
+                    class="group relative flex flex-col gap-3 overflow-hidden rounded-lg border border-border bg-card p-4 transition-all hover:border-[hsl(var(--tac-amber)/0.5)]"
+                  >
+                    <div class="flex min-w-0 items-start gap-3">
+                      <NuxtLink
+                        :to="`/teams/${posting.team_id}`"
+                        class="flex min-w-0 flex-1 items-center gap-2 font-semibold hover:text-[hsl(var(--tac-amber))]"
+                      >
+                        <Avatar shape="square" class="h-9 w-9 rounded-md">
+                          <AvatarImage
+                            v-if="teamAvatar(posting.team)"
+                            :src="teamAvatar(posting.team)"
+                            :alt="posting.team?.name"
+                          />
+                          <AvatarFallback
+                            class="rounded-md text-[0.65rem] font-semibold uppercase"
+                          >
+                            {{ (posting.team?.name || "?").slice(0, 2) }}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span class="truncate">{{ posting.team?.name }}</span>
+                      </NuxtLink>
+                      <a
+                        :href="`/teams/${posting.team_id}`"
+                        target="_blank"
+                        rel="noopener"
+                        class="mt-1 text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
+                        :title="$t('pages.scrims.open_team_new_tab')"
+                        @click.stop
+                      >
+                        <ExternalLink class="h-3.5 w-3.5" />
+                      </a>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-1.5">
+                      <span
+                        v-for="region in posting.regions"
+                        :key="region"
+                        class="rounded border border-border px-1.5 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.12em] text-muted-foreground"
+                      >
+                        {{ region }}
+                      </span>
+                      <span
+                        v-for="day in availabilityDays(posting)"
+                        :key="day"
+                        class="rounded bg-muted/50 px-1.5 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.12em] text-muted-foreground"
+                      >
+                        {{ day }}
+                      </span>
+                    </div>
+
                     <TeamRankSummary
-                      :ranks="entry.posting.team?.ranks"
-                      :reputation="entry.posting.team?.reputation"
+                      :ranks="posting.team?.ranks"
+                      :reputation="posting.team?.reputation"
                     />
+
                     <div
-                      v-if="mapPatches(entry.posting.map_ids).length"
+                      v-if="mapPatches(posting.map_ids).length"
                       class="flex flex-wrap items-center gap-1.5"
                     >
                       <img
-                        v-for="map in mapPatches(entry.posting.map_ids)"
+                        v-for="map in mapPatches(posting.map_ids)"
                         :key="map.id"
                         :src="map.patch"
                         :alt="cleanName(map)"
@@ -865,136 +1037,30 @@ import {
                         class="h-6 w-6 object-contain"
                       />
                     </div>
+
+                    <p
+                      v-if="posting.notes"
+                      class="line-clamp-2 text-xs text-muted-foreground"
+                    >
+                      {{ posting.notes }}
+                    </p>
+
+                    <Button
+                      v-if="canRequest(posting)"
+                      class="tac-amber-cta mt-auto w-full"
+                      @click="openRequest(posting)"
+                    >
+                      {{ $t("pages.scrims.request_scrim") }}
+                    </Button>
                   </div>
                 </div>
-
-                <Button
-                  v-if="canRequest(entry.posting)"
-                  class="tac-amber-cta shrink-0 self-start sm:self-center"
-                  @click="openRequest(entry.posting)"
-                >
-                  {{ $t("pages.scrims.request_scrim") }}
-                </Button>
-              </div>
+              </section>
             </div>
-          </section>
-
-          <!-- Browse all available teams -->
-          <section class="space-y-3">
-            <div class="flex items-center gap-3">
-              <span
-                class="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))]"
-              >
-                {{ $t("pages.scrims.available_teams") }}
-              </span>
-              <span class="text-xs text-muted-foreground">{{
-                availableTeams.length
-              }}</span>
-              <span class="h-px flex-1 bg-border" />
-            </div>
-
-            <p
-              v-if="availableTeams.length === 0"
-              class="rounded-md border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground"
-            >
-              {{ $t("pages.scrims.no_teams_match") }}
-            </p>
-
-            <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-              <div
-                v-for="posting in availableTeams"
-                :key="posting.id"
-                class="group relative flex flex-col gap-3 overflow-hidden rounded-lg border border-border bg-card p-4 transition-all hover:border-[hsl(var(--tac-amber)/0.5)]"
-              >
-                <div class="flex min-w-0 items-start gap-3">
-                  <NuxtLink
-                    :to="`/teams/${posting.team_id}`"
-                    class="flex min-w-0 flex-1 items-center gap-2 font-semibold hover:text-[hsl(var(--tac-amber))]"
-                  >
-                    <Avatar shape="square" class="h-9 w-9 rounded-md">
-                      <AvatarImage
-                        v-if="teamAvatar(posting.team)"
-                        :src="teamAvatar(posting.team)"
-                        :alt="posting.team?.name"
-                      />
-                      <AvatarFallback class="rounded-md text-[0.65rem] font-semibold uppercase">
-                        {{ (posting.team?.name || "?").slice(0, 2) }}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span class="truncate">{{ posting.team?.name }}</span>
-                  </NuxtLink>
-                  <a
-                    :href="`/teams/${posting.team_id}`"
-                    target="_blank"
-                    rel="noopener"
-                    class="mt-1 text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
-                    :title="$t('pages.scrims.open_team_new_tab')"
-                    @click.stop
-                  >
-                    <ExternalLink class="h-3.5 w-3.5" />
-                  </a>
-                </div>
-
-                <div class="flex flex-wrap items-center gap-1.5">
-                  <span
-                    v-for="region in posting.regions"
-                    :key="region"
-                    class="rounded border border-border px-1.5 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.12em] text-muted-foreground"
-                  >
-                    {{ region }}
-                  </span>
-                  <span
-                    v-for="day in availabilityDays(posting)"
-                    :key="day"
-                    class="rounded bg-muted/50 px-1.5 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.12em] text-muted-foreground"
-                  >
-                    {{ day }}
-                  </span>
-                </div>
-
-                <TeamRankSummary
-                  :ranks="posting.team?.ranks"
-                  :reputation="posting.team?.reputation"
-                />
-
-                <div
-                  v-if="mapPatches(posting.map_ids).length"
-                  class="flex flex-wrap items-center gap-1.5"
-                >
-                  <img
-                    v-for="map in mapPatches(posting.map_ids)"
-                    :key="map.id"
-                    :src="map.patch"
-                    :alt="cleanName(map)"
-                    :title="cleanName(map)"
-                    class="h-6 w-6 object-contain"
-                  />
-                </div>
-
-                <p
-                  v-if="posting.notes"
-                  class="line-clamp-2 text-xs text-muted-foreground"
-                >
-                  {{ posting.notes }}
-                </p>
-
-                <Button
-                  v-if="canRequest(posting)"
-                  class="tac-amber-cta mt-auto w-full"
-                  @click="openRequest(posting)"
-                >
-                  {{ $t("pages.scrims.request_scrim") }}
-                </Button>
-              </div>
-            </div>
-          </section>
-        </div>
+          </FadeSwap>
+        </DeferredLoading>
       </PageTransition>
     </template>
 
-    <ScrimRequestDialog
-      v-model:open="dialogOpen"
-      :posting="selectedPosting"
-    />
+    <ScrimRequestDialog v-model:open="dialogOpen" :posting="selectedPosting" />
   </div>
 </template>

@@ -11,6 +11,11 @@ import {
   MY_TOURNAMENT_INVITES_SUBSCRIPTION,
   MY_TOURNAMENT_TEAM_INVITES_SUBSCRIPTION,
 } from "~/graphql/tournamentInvites";
+import {
+  isRosterNeedDismissed,
+  resetRosterNeedDismissals,
+  syncRosterNeedDismissals,
+} from "~/composables/useRosterNeedDismissals";
 
 export type LeagueScheduleTask = {
   id: string;
@@ -33,6 +38,14 @@ export type LeagueScheduleTask = {
     closes_at: string;
     default_match_at: string;
   } | null;
+};
+
+// A team the viewer can invite for that is short of five starters. Client-only
+// like `scheduleTasks`, and ignorable per team (see useRosterNeedDismissals).
+export type TeamRosterNeed = {
+  teamId: string;
+  name: string;
+  starters: number;
 };
 
 type Notification = {
@@ -184,6 +197,19 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
 
   const scheduleTaskCount = computed(() => scheduleTasks.value.length);
 
+  const rosterTeams = ref<any[]>([]);
+  const rosterNeeds = computed<TeamRosterNeed[]>(() =>
+    rosterTeams.value.flatMap((team) => {
+      if (!team.can_invite) return [];
+      const starters = (team.roster ?? []).filter(
+        (member: any) => member.status === "Starter",
+      ).length;
+      return starters < 5 && !isRosterNeedDismissed(team.id, starters)
+        ? [{ teamId: team.id, name: team.name, starters }]
+        : [];
+    }),
+  );
+
   // Admin-only, derived from seasons.needs_rebuild — not stored rows. They carry
   // a Rebuild action and clear themselves when the backfill flips needs_rebuild
   // false, so nothing is ever created or deleted in the notifications table.
@@ -323,6 +349,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
       tournament_invites.value.length > 0 ||
       draft_invites.value.length > 0 ||
       scheduleTasks.value.length > 0 ||
+      rosterNeeds.value.length > 0 ||
       personalUnread.value > 0,
   );
 
@@ -336,6 +363,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
       tournament_invites.value.length +
       draft_invites.value.length +
       scheduleTasks.value.length +
+      rosterNeeds.value.length +
       personalUnread.value +
       adminUnread.value,
   );
@@ -610,6 +638,44 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
         }),
     );
 
+    subscribe(
+      "notifications:team_roster_needs",
+      getGraphqlClient()
+        .subscribe({
+          query: typedGql("subscription")({
+            teams: [
+              {
+                where: {
+                  _or: [
+                    { owner_steam_id: { _eq: $("steamId", "bigint!") } },
+                    {
+                      roster: {
+                        player_steam_id: { _eq: $("steamId", "bigint!") },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                id: true,
+                name: true,
+                can_invite: true,
+                roster: [{}, { status: true }],
+              },
+            ],
+          }),
+          variables: { steamId: steam_id },
+        })
+        .subscribe({
+          next: ({ data }) => {
+            rosterTeams.value = data?.teams ?? [];
+          },
+          error: () => {
+            rosterTeams.value = [];
+          },
+        }),
+    );
+
     if (useAuthStore().isAdmin) {
       subscribe(
         "notifications:season_rebuilds",
@@ -687,6 +753,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
       notificationsLoaded.value = false;
       if (steamId) {
         subscribeToAll(steamId);
+        void syncRosterNeedDismissals(steamId);
         // Loaded here rather than only on the settings page: the bell filters
         // on these, and isAlertTypeEnabled shows everything until they arrive.
         void useNotificationPreferences().load("in_app");
@@ -700,11 +767,14 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
         unsubscribe("notifications:draft_invites");
         unsubscribe("notifications:notifications");
         unsubscribe("notifications:schedule_tasks");
+        unsubscribe("notifications:team_roster_needs");
+        resetRosterNeedDismissals();
         unsubscribe("notifications:season_rebuilds");
         unsubscribe("notifications:latest_news");
         unsubscribe("notifications:news_read_state");
         seasonRebuilds.value = [];
         scheduleTaskSeasons.value = [];
+        rosterTeams.value = [];
         tournament_player_invites.value = [];
         tournament_team_registration_invites.value = [];
         lastReadNewsAt.value = null;
@@ -723,6 +793,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     seasonRebuildCount,
     scheduleTasks,
     scheduleTaskCount,
+    rosterNeeds,
     stackedNotifications,
     unreadNotificationCount,
     unreadPersonalAlertCount,

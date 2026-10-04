@@ -1602,7 +1602,8 @@
       "open_team_new_tab": "Takımı yeni sekmede aç",
       "request_scrim": "Scrim İste",
       "available_teams": "Uygun Takımlar",
-      "no_teams_match": "Filtrelerine uyan takım yok."
+      "no_teams_match": "Filtrelerine uyan takım yok.",
+      "empty_title": "Scrim arayan takım yok"
     },
     "teams": {
       "title": "Takımlar",
@@ -3458,10 +3459,7 @@
         "no_clips_yet": "Henüz burada klip yok",
         "try_widening": "Filtreleri genişlet veya birini temizlemeyi dene.",
         "try_different_admin": "Farklı bir filtre dene — ya da yeni kliplerin render edilmesini bekle.",
-        "check_back_soon": "Herkese açık klipler render edildikçe burada görünecek. Yakında tekrar bak.",
-        "clear_player": "Oyuncuyu temizle",
-        "clear_date": "Tarihi temizle",
-        "clear_kills": "Kill filtresini temizle"
+        "check_back_soon": "Herkese açık klipler render edildikçe burada görünecek. Yakında tekrar bak."
       }
     },
     "news": {
@@ -3637,8 +3635,7 @@
         "elo": "ELO",
         "last_sign_in_at": "Son giriş",
         "privilege": "Yetki",
-        "kdr": "KDR",
-        "no_players": "Oyuncu bulunamadı"
+        "kdr": "KDR"
       },
       "detail": {
         "all_short": "Tümü",
@@ -3848,6 +3845,10 @@
           "worst_loss": "En büyük kayıp",
           "view_match": "Maçı görüntüle"
         }
+      },
+      "empty": {
+        "title": "Henüz oyuncu yok",
+        "description": "Oyuncular giriş yaptıktan sonra burada görünür."
       }
     },
     "play": {
@@ -3895,7 +3896,7 @@
         "mode_group": "Oyun modu",
         "nobody_queued": "Sırada kimse yok",
         "too_big": "{count} kişilik parti {mode} için fazla büyük",
-        "queue_solo": "Solo sıraya gir, takımlar senin için dengelenir",
+        "queue_solo": "Solo sıraya gir",
         "seats": {
           "format": "{count} vs {count}",
           "yours": "partin {count} yer kaplıyor | partin {count} yer kaplıyor",
@@ -4050,7 +4051,6 @@
       "create": "Maç oluştur",
       "schedule": {
         "title": "Maç planla",
-        "step_settings": "Ayarlar",
         "step_teams": "Takımlar",
         "kickoff": "Başlangıç zamanı",
         "kickoff_future": "Gelecekte bir zaman seç.",
@@ -4076,7 +4076,6 @@
       "clear_short": "Temizle",
       "lineup_only": "Yalnızca içinde olduğum maçlar",
       "include_external": "Harici maçları dahil et",
-      "standby_no_matches": "BEKLEMEDE · MAÇ BULUNAMADI",
       "create_page": {
         "pick_up_game": "Pick-up oyun",
         "pick_up_game_description": "Pick-up oyunda takım seçimi gerekmez.",
@@ -4086,6 +4085,10 @@
         "intra_team_scrimmage": "Takım içi scrim oluşturmak için her iki slota da aynı takımı seçebilirsin.",
         "create_button": "Maç oluştur",
         "update_button": "Maçı güncelle"
+      },
+      "empty": {
+        "title": "Henüz maç yok",
+        "description": "Planlanan, canlı ve biten maçlar burada görünür."
       }
     },
     "toasts": {
@@ -4655,7 +4658,6 @@
     },
     "manage_matches": {
       "only_my_matches": "Yalnızca kendi organize ettiğim maçlar",
-      "no_matches": "Maç bulunamadı.",
       "enter_name": "İsim gir...",
       "enter_match_id": "Maç ID'si gir...",
       "enter_team_name": "Takım adı gir...",
@@ -4745,7 +4747,8 @@
         "faceit_level": "Seviye",
         "premier_rank": "Premier Rank"
       },
-      "exclude_tournaments": "Turnuvaları hariç tut"
+      "exclude_tournaments": "Turnuvaları hariç tut",
+      "empty_title": "Henüz sıralama yok"
     },
     "database": {
       "query_copied": "Sorgu panoya kopyalandı",
@@ -6158,7 +6161,6 @@
   "layouts": {
     "account_settings": {
       "title": "Hesap ayarları",
-      "description": "Hesap ayarlarını ve tercihlerini yönet",
       "select_section": "Bölüm seç"
     },
     "application_settings": {
@@ -6760,7 +6762,11 @@
     "sort": "sırala",
     "vs_team": "{name} karşısında",
     "default": "Varsayılan",
-    "avg": "ort."
+    "avg": "ort.",
+    "empty_filtered": {
+      "title": "Bu filtrelere uyan bir şey yok",
+      "description": "Filtreleri temizlemeyi veya aramayı genişletmeyi dene."
+    }
   },
   "spotlight_search": {
     "placeholder": "Oyuncu ara...",
@@ -9873,10 +9879,6 @@
       "port": "Oyun Portu",
       "tv_port": "TV Portu",
       "create": "Sunucu oluştur",
-      "create_bar": {
-        "ready": "Oluşturmaya hazır",
-        "missing": "Hâlâ gerekli: {fields}"
-      },
       "max_players": "Maksimum Oyuncu",
       "max_players_description": "Sunucuya bağlanabilecek maksimum oyuncu sayısı"
     },
@@ -10602,7 +10604,8 @@
     "list": {
       "title": "Lig",
       "subtitle": "Sezonluk kademeler, haftalık maçlar, terfi ve küme düşme",
-      "settings": "Lig ayarları"
+      "settings": "Lig ayarları",
+      "empty_title": "Henüz sezon yok"
     },
     "history": {
       "seasons": "Sezon geçmişi",
@@ -10621,7 +10624,6 @@
     },
     "seasons": {
       "title": "Sezonlar",
-      "empty": "Henüz sezon yok.",
       "deleted": "Sezon silindi",
       "delete_title": "Sezon silinsin mi?",
       "delete_description": "{name} sezonunu kayıtları, programı ve sonuçlarıyla birlikte kalıcı olarak siler. Bu işlem geri alınamaz."
@@ -11015,12 +11017,6 @@
       "start_time": "Başlangıç saati",
       "end_time": "Bitiş saati",
       "create": "Etkinlik oluştur",
-      "create_bar": {
-        "ready": "Oluşturmaya hazır",
-        "ready_hint": "Her şey yolunda, hazır olduğunda etkinliğini oluştur.",
-        "incomplete": "Gerekli alanlar eksik",
-        "incomplete_hint": "Devam etmek için etkinlik adını ve bir başlangıç tarihini doldur"
-      },
       "visibility": "Görünürlük",
       "media_access": "Medya yüklemeleri",
       "sections": {

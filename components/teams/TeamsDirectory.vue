@@ -34,6 +34,7 @@ import {
   filterTriggerActive,
   filterTriggerBase,
   filterTriggerIdle,
+  listCreateButtonClasses,
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
@@ -276,31 +277,35 @@ const headerCell = "text-[11px] font-semibold uppercase tracking-[0.1em]";
 
 <template>
   <section aria-labelledby="teams-all-label">
-    <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
-      <h2 id="teams-all-label" :class="[tacticalSectionLabelClasses, '!mb-0']">
+    <div class="mb-3 flex flex-wrap items-center gap-x-2 gap-y-3">
+      <h2
+        id="teams-all-label"
+        :class="[tacticalSectionLabelClasses, '!mb-0 mr-auto']"
+      >
         <span :class="tacticalSectionTickClasses"></span>
         {{ $t("pages.teams.directory.title") }}
       </h2>
-      <div class="flex flex-wrap items-center gap-2">
+      <div v-if="sort" class="max-md:order-last max-md:basis-full">
         <WatchSegmented
-          v-if="sort"
           v-model="sortModel"
           :options="sortOptions"
           :label="$t('pages.teams.directory.sort_label')"
         />
-        <Button
-          v-if="showCreate && signedIn"
-          as-child
-          size="sm"
-          variant="outline"
-          class="relative h-8 gap-1.5 after:absolute after:inset-x-0 after:-inset-y-1.5 after:content-[''] [@media(pointer:fine)]:after:hidden"
-        >
-          <NuxtLink :to="{ name: 'teams-create' }">
-            <PlusCircle class="size-3.5" />
-            {{ $t("pages.teams.create") }}
-          </NuxtLink>
-        </Button>
       </div>
+      <Button
+        v-if="showCreate && signedIn"
+        as-child
+        size="sm"
+        :class="listCreateButtonClasses"
+      >
+        <NuxtLink
+          :to="{ name: 'teams-create' }"
+          :title="$t('pages.teams.create')"
+        >
+          <PlusCircle class="h-4 w-4" />
+          <span class="max-md:sr-only">{{ $t("pages.teams.create") }}</span>
+        </NuxtLink>
+      </Button>
     </div>
 
     <FilterBar>
@@ -331,6 +336,7 @@ const headerCell = "text-[11px] font-semibold uppercase tracking-[0.1em]";
         v-if="signedIn"
         type="button"
         :aria-pressed="mine"
+        :title="$t('team.search.my_teams_only')"
         :class="[
           filterTriggerBase,
           mine ? filterTriggerActive : filterTriggerIdle,
@@ -338,7 +344,9 @@ const headerCell = "text-[11px] font-semibold uppercase tracking-[0.1em]";
         @click="mine = !mine"
       >
         <Users class="h-3.5 w-3.5" />
-        {{ $t("team.search.my_teams_only") }}
+        <span class="max-md:sr-only">{{
+          $t("team.search.my_teams_only")
+        }}</span>
       </button>
 
       <FilterMenu

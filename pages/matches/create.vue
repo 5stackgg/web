@@ -12,7 +12,6 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import HeightMorph from "~/components/ui/transitions/HeightMorph.vue";
 import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import Fold from "~/components/ui/transitions/Fold.vue";
-import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import MatchOptions from "~/components/MatchOptions.vue";
 import DateTimePicker from "~/components/common/DateTimePicker.vue";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
@@ -55,7 +54,7 @@ const perTeam = computed(() => PER_TEAM[matchType.value] || 5);
 
 const step = ref(1);
 const steps = [
-  "pages.matches.schedule.step_settings",
+  "match.tabs.settings",
   "pages.matches.schedule.step_teams",
 ];
 const submitting = ref(false);
@@ -173,12 +172,10 @@ const submit = form.handleSubmit(async (values: any) => {
 
 <template>
   <PageTransition>
-    <div class="mx-auto max-w-4xl pb-24 pt-4">
-      <TacticalPageHeader>
-        <template #title>{{ $t("pages.matches.schedule.title") }}</template>
-      </TacticalPageHeader>
+    <div class="mx-auto max-w-4xl pb-24">
+      <h1 class="sr-only">{{ $t("pages.matches.schedule.title") }}</h1>
 
-      <div class="mt-5 flex items-center gap-2">
+      <div class="flex items-center gap-2">
         <template v-for="(label, index) in steps" :key="label">
           <button
             type="button"
@@ -229,7 +226,10 @@ const submit = form.handleSubmit(async (values: any) => {
               {{ $t("pages.matches.schedule.kickoff") }}
             </div>
             <div class="flex flex-wrap items-center gap-2">
-              <DateTimePicker v-model="scheduledAtLocal" />
+              <DateTimePicker
+                v-model="scheduledAtLocal"
+                class="max-sm:grid max-sm:w-full max-sm:grid-cols-2 max-sm:[&>*]:w-full"
+              />
               <span class="text-xs text-muted-foreground">
                 {{ $t("pages.matches.schedule.kickoff_asap") }}
               </span>

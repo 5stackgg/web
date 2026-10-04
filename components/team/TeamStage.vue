@@ -31,8 +31,12 @@ const props = defineProps<{
   team: any;
   isOnTeam: boolean;
   matchesCount: number;
+  canRequestScrim: boolean;
 }>();
-const emit = defineEmits<{ (e: "open-scrims"): void }>();
+const emit = defineEmits<{
+  (e: "open-scrims"): void;
+  (e: "request-scrim"): void;
+}>();
 
 const { t, locale } = useI18n();
 const { client } = useApolloClient();
@@ -186,28 +190,45 @@ const then = computed(() => {
     : null;
 });
 
+// An empty calendar offers the one thing the viewer can do about it, if any.
 const empty = computed(() => {
   const name = props.team?.name ?? "";
+  const openScrims = () => emit("open-scrims");
   if (
     props.team?.can_manage_scrims &&
-    !props.team?.scrim_settings?.enabled &&
     useApplicationSettingsStore().scrimFinderEnabled
   ) {
+    return props.team?.scrim_settings?.enabled
+      ? {
+          text: null,
+          action: {
+            label: t("pages.play.more_ways.scrims.find"),
+            run: openScrims,
+          },
+        }
+      : {
+          text: t("team.pulse.stage.open_to_scrims", { name }),
+          action: {
+            label: t("team.pulse.stage.set_up_scrims"),
+            run: openScrims,
+          },
+        };
+  }
+  if (props.canRequestScrim) {
     return {
-      text: t("team.pulse.stage.open_to_scrims", { name }),
-      action: true,
+      text: null,
+      action: {
+        label: t("scrim.request_scrim"),
+        run: () => emit("request-scrim"),
+      },
     };
   }
-  if (props.isOnTeam) {
-    return { text: t("team.pulse.stage.none_scheduled_member"), action: false };
-  }
-  if (!props.matchesCount) {
-    return {
-      text: t("team.pulse.stage.never_played", { name }),
-      action: false,
-    };
-  }
-  return { text: t("team.pulse.stage.none_scheduled"), action: false };
+  return {
+    text: props.matchesCount
+      ? null
+      : t("team.pulse.stage.never_played", { name }),
+    action: null,
+  };
 });
 
 const apiDomain = useRuntimeConfig().public.apiDomain;
@@ -411,29 +432,34 @@ const cardClasses =
     </template>
 
     <!-- Nothing on the calendar -->
-    <template v-else>
-      <h2
-        id="team-stage-label"
-        :class="[tacticalSectionLabelClasses, '!mb-0 !flex']"
-      >
-        <span :class="tacticalSectionTickClasses"></span>
-        {{ $t("team.pulse.stage.next_up") }}
-      </h2>
-      <div
-        class="mt-auto flex flex-wrap items-center justify-between gap-3 text-sm text-foreground/85"
-      >
-        <span class="[text-wrap:pretty]">{{ empty.text }}</span>
-        <Button
-          v-if="empty.action"
-          variant="outline"
-          size="sm"
-          class="h-8 gap-1.5"
-          @click="emit('open-scrims')"
+    <div
+      v-else
+      class="flex flex-1 flex-col items-center justify-center gap-3 py-2 text-center"
+    >
+      <div class="grid max-w-xs gap-1">
+        <h2
+          id="team-stage-label"
+          class="m-0 text-sm font-semibold text-foreground"
         >
-          <Swords class="size-3.5" />
-          {{ $t("team.pulse.stage.set_up_scrims") }}
-        </Button>
+          {{ $t("pages.watch.ticker.nothing_upcoming") }}
+        </h2>
+        <p
+          v-if="empty.text"
+          class="m-0 text-[13px] text-muted-foreground [text-wrap:pretty]"
+        >
+          {{ empty.text }}
+        </p>
       </div>
-    </template>
+      <Button
+        v-if="empty.action"
+        variant="outline"
+        size="sm"
+        class="h-8 gap-1.5"
+        @click="empty.action.run"
+      >
+        <Swords class="size-3.5" />
+        {{ empty.action.label }}
+      </Button>
+    </div>
   </section>
 </template>

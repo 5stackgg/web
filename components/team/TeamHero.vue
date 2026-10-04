@@ -144,7 +144,7 @@ function openAward(grant: any) {
 
 <template>
   <header
-    class="relative grid h-full grid-cols-[auto_minmax(0,1fr)] content-center items-start gap-x-4 gap-y-3 rounded-lg border border-border px-5 py-4 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:gap-x-5 sm:px-6 sm:py-5 [background:linear-gradient(180deg,hsl(var(--card)_/_0.55)_0%,hsl(var(--card)_/_0.25)_100%)] [backdrop-filter:blur(6px)]"
+    class="relative grid h-full grid-cols-[auto_minmax(0,1fr)_auto] content-center items-start gap-x-4 gap-y-3 rounded-lg border border-border px-5 py-4 sm:grid-cols-[auto_minmax(0,1fr)_auto_auto] sm:gap-x-5 sm:px-6 sm:py-5 [background:linear-gradient(180deg,hsl(var(--card)_/_0.55)_0%,hsl(var(--card)_/_0.25)_100%)] [backdrop-filter:blur(6px)]"
   >
     <div
       class="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-md border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.12)] sm:size-[5.5rem]"
@@ -163,8 +163,12 @@ function openAward(grant: any) {
       </span>
     </div>
 
-    <div class="grid min-w-0 gap-2.5">
-      <div class="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1.5">
+    <!-- Phones: crest + name + menu are the first row; ranks, counts and
+         actions span the full card width below. -->
+    <div class="grid min-w-0 gap-2.5 max-sm:contents">
+      <div
+        class="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1.5 max-sm:self-center"
+      >
         <h1
           class="m-0 min-w-0 text-[clamp(1.5rem,2.6vw,2rem)] font-bold leading-tight [overflow-wrap:anywhere]"
         >
@@ -178,10 +182,14 @@ function openAward(grant: any) {
         </span>
       </div>
 
-      <TeamRankSummary :ranks="team.ranks" :reputation="team.reputation" />
+      <TeamRankSummary
+        :ranks="team.ranks"
+        :reputation="team.reputation"
+        class="max-sm:col-span-3"
+      />
 
       <div
-        class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[13px] text-foreground/80 tabular-nums"
+        class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[13px] text-foreground/80 tabular-nums max-sm:col-span-3"
       >
         <span>{{
           $t("team.pulse.hero.players", team.roster?.length ?? 0)
@@ -247,9 +255,15 @@ function openAward(grant: any) {
     </div>
 
     <div
-      class="col-span-2 flex flex-wrap items-center gap-2 sm:col-span-1 sm:justify-end"
+      class="col-span-3 flex flex-wrap items-center gap-2 empty:hidden sm:col-span-1 sm:col-start-3 sm:row-start-1 sm:justify-end"
     >
       <slot name="actions" />
+    </div>
+
+    <div
+      class="col-start-3 row-start-1 flex empty:hidden sm:col-start-4 sm:-ml-3"
+    >
+      <slot name="menu" />
     </div>
 
     <Dialog v-model:open="allAwardsOpen">

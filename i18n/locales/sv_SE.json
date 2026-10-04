@@ -1602,7 +1602,8 @@
       "open_team_new_tab": "Öppna lag i ny flik",
       "request_scrim": "Begär scrim",
       "available_teams": "Tillgängliga lag",
-      "no_teams_match": "Inga lag matchar dina filter."
+      "no_teams_match": "Inga lag matchar dina filter.",
+      "empty_title": "Inga lag söker scrims"
     },
     "teams": {
       "title": "Lag",
@@ -3458,10 +3459,7 @@
         "no_clips_yet": "Inga klipp här ännu",
         "try_widening": "Försök vidga filtren eller rensa ett.",
         "try_different_admin": "Prova ett annat filter — eller vänta på att nya klipp renderas.",
-        "check_back_soon": "Publika klipp visas här allteftersom de renderas. Kom tillbaka snart.",
-        "clear_player": "Rensa spelare",
-        "clear_date": "Rensa datum",
-        "clear_kills": "Rensa kills"
+        "check_back_soon": "Publika klipp visas här allteftersom de renderas. Kom tillbaka snart."
       }
     },
     "news": {
@@ -3637,8 +3635,7 @@
         "elo": "Elo",
         "last_sign_in_at": "Senaste inloggning",
         "privilege": "Behörighet",
-        "kdr": "KDR",
-        "no_players": "Inga spelare hittades"
+        "kdr": "KDR"
       },
       "detail": {
         "all_short": "Alla",
@@ -3848,6 +3845,10 @@
           "worst_loss": "Sämsta enskilda förlust",
           "view_match": "Visa match"
         }
+      },
+      "empty": {
+        "title": "Inga spelare än",
+        "description": "Spelare visas här när de har loggat in."
       }
     },
     "play": {
@@ -3895,7 +3896,7 @@
         "mode_group": "Spelläge",
         "nobody_queued": "Ingen i kö",
         "too_big": "En grupp på {count} är för stor för {mode}",
-        "queue_solo": "Köa solo, lagen balanseras åt dig",
+        "queue_solo": "Köa solo",
         "seats": {
           "format": "{count} mot {count}",
           "yours": "din grupp tar {count} plats | din grupp tar {count} platser",
@@ -4050,7 +4051,6 @@
       "create": "Skapa match",
       "schedule": {
         "title": "Schemalägg match",
-        "step_settings": "Inställningar",
         "step_teams": "Lag",
         "kickoff": "Starttid",
         "kickoff_future": "Välj en tid i framtiden.",
@@ -4076,7 +4076,6 @@
       "clear_short": "Rensa",
       "lineup_only": "Endast matcher jag är med i",
       "include_external": "Inkludera externa matcher",
-      "standby_no_matches": "STANDBY · INGA MATCHER HITTADES",
       "create_page": {
         "pick_up_game": "Pick up-match",
         "pick_up_game_description": "En pick up-match kräver inte val av lag.",
@@ -4086,6 +4085,10 @@
         "intra_team_scrimmage": "Du kan välja samma lag för båda platserna för att skapa en intern scrim.",
         "create_button": "Skapa match",
         "update_button": "Uppdatera match"
+      },
+      "empty": {
+        "title": "Inga matcher än",
+        "description": "Schemalagda, pågående och avslutade matcher visas här."
       }
     },
     "toasts": {
@@ -4655,7 +4658,6 @@
     },
     "manage_matches": {
       "only_my_matches": "Endast mina arrangerade matcher",
-      "no_matches": "Inga matcher hittades.",
       "enter_name": "Ange namn…",
       "enter_match_id": "Ange match-ID…",
       "enter_team_name": "Ange lagnamn…",
@@ -4745,7 +4747,8 @@
         "faceit_level": "Nivå",
         "premier_rank": "Premier Rank"
       },
-      "exclude_tournaments": "Exkludera turneringar"
+      "exclude_tournaments": "Exkludera turneringar",
+      "empty_title": "Ingen rankning än"
     },
     "database": {
       "query_copied": "Frågan kopierades till urklipp",
@@ -6158,7 +6161,6 @@
   "layouts": {
     "account_settings": {
       "title": "Kontoinställningar",
-      "description": "Hantera dina kontoinställningar och preferenser",
       "select_section": "Välj avsnitt"
     },
     "application_settings": {
@@ -6760,7 +6762,11 @@
     "sort": "sortera",
     "vs_team": "mot {name}",
     "default": "Standard",
-    "avg": "snitt"
+    "avg": "snitt",
+    "empty_filtered": {
+      "title": "Inget matchar dessa filter",
+      "description": "Prova att rensa filtren eller bredda sökningen."
+    }
   },
   "spotlight_search": {
     "placeholder": "Sök spelare...",
@@ -9873,10 +9879,6 @@
       "port": "Spelport",
       "tv_port": "TV-port",
       "create": "Skapa server",
-      "create_bar": {
-        "ready": "Redo att skapa",
-        "missing": "Saknas fortfarande: {fields}"
-      },
       "max_players": "Max antal spelare",
       "max_players_description": "Det maximala antalet spelare som kan ansluta till servern"
     },
@@ -10602,7 +10604,8 @@
     "list": {
       "title": "Liga",
       "subtitle": "Säsongsdivisioner, veckovis matchspel, uppflyttning och nedflyttning",
-      "settings": "Ligainställningar"
+      "settings": "Ligainställningar",
+      "empty_title": "Inga säsonger än"
     },
     "history": {
       "seasons": "Säsonghistorik",
@@ -10621,7 +10624,6 @@
     },
     "seasons": {
       "title": "Säsonger",
-      "empty": "Inga säsonger ännu.",
       "deleted": "Säsongen borttagen",
       "delete_title": "Ta bort säsongen?",
       "delete_description": "Ta bort {name} permanent, inklusive dess anmälningar, schema och resultat. Detta går inte att ångra."
@@ -11015,12 +11017,6 @@
       "start_time": "Starttid",
       "end_time": "Sluttid",
       "create": "Skapa event",
-      "create_bar": {
-        "ready": "Redo att skapa",
-        "ready_hint": "Allt ser bra ut, skapa ditt event när du är redo.",
-        "incomplete": "Obligatoriska fält saknas",
-        "incomplete_hint": "Fyll i eventnamn och ett startdatum för att fortsätta"
-      },
       "visibility": "Synlighet",
       "media_access": "Medieuppladdningar",
       "sections": {

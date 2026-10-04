@@ -856,6 +856,34 @@
     "awp": {
       "label": "AWP",
       "description": "Sygnał użycia AWP / roli snajpera — jak bardzo gracz polega na AWP."
+    },
+    "team_flashed_per": {
+      "label": "Sojusznicy / flash",
+      "description": "Średnia liczba oślepionych sojuszników na rzucony flash — im mniej, tym lepiej."
+    },
+    "flash_assist_pct": {
+      "label": "% asyst flashem",
+      "description": "Odsetek twoich flashy, które przygotowały zabójstwo — oślepiłeś wroga, a kolega z drużyny zabił go chwilę później."
+    },
+    "he_throws": {
+      "label": "Rzucone HE",
+      "description": "Ile granatów HE rzuciłeś."
+    },
+    "he_damage_per": {
+      "label": "Obrażenia HE / granat",
+      "description": "Obrażenia, jakie twoje granaty HE zadają wrogom, na rzucony HE."
+    },
+    "he_team_damage_per": {
+      "label": "Obrażenia HE sojusznikom / granat",
+      "description": "Obrażenia, jakie twoje granaty HE zadają kolegom z drużyny, na rzucony HE — im mniej, tym lepiej."
+    },
+    "molotov_throws": {
+      "label": "Rzucone molotovy",
+      "description": "Ile molotovów i granatów zapalających rzuciłeś."
+    },
+    "molotov_damage_per": {
+      "label": "Obrażenia od ognia / granat",
+      "description": "Obrażenia, jakie twoje molotovy i granaty zapalające zadają wrogom, na rzucony granat."
     }
   },
   "pagination": {
@@ -8486,7 +8514,27 @@
         }
       },
       "discord_user": "To jest użytkownik Discorda, zarejestruj swoje discord id, aby włączyć śledzenie statystyk, wpisując",
-      "discord_link": "na oficjalnym kanale discord"
+      "discord_link": "na oficjalnym kanale discord",
+      "utility": {
+        "waste": "Marnowanie",
+        "thrown": "Rzucone",
+        "blinded": "Oślepieni",
+        "teammates": "Drużyna",
+        "blind": "Oślepienie",
+        "assists": "Asysty",
+        "damage": "Obrażenia",
+        "team_damage": "Obr. drużynie",
+        "unused": "Niewykorzystane",
+        "mag_left": "Reszta magazynka",
+        "per_flash": "na flash",
+        "avg": "śr.",
+        "of_flashes": "flashy",
+        "per_nade": "na granat",
+        "on_death": "przy śmierci",
+        "at_reload": "przy przeładowaniu",
+        "seconds": "{count} s",
+        "team_total": "Drużyna"
+      }
     },
     "overview": {
       "promote_captain": "Awansuj na kapitana",
@@ -10027,7 +10075,9 @@
       "recap": "Sezon {number} zakończony na {final}, najlepiej {peak}, {wins}W–{losses}P"
     },
     "season_best": "Najlepszy ranking w {season}",
-    "to_next": "{points} do {tier}"
+    "to_next": "{points} do {tier}",
+    "show_lobby": "Pokaż wszystkich graczy ({count})",
+    "hide_lobby": "Ukryj pozostałych graczy"
   },
   "breadcrumbs": {
     "dashboard": "panel"

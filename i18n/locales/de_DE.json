@@ -856,6 +856,34 @@
     "awp": {
       "label": "AWP",
       "description": "AWP-Nutzung / Signal für die Sniper-Rolle — wie stark ein Spieler auf die AWP setzt."
+    },
+    "team_flashed_per": {
+      "label": "Teammates / Flash",
+      "description": "Durchschnittliche Anzahl geblendeter Teammates pro geworfener Flash — weniger ist besser."
+    },
+    "flash_assist_pct": {
+      "label": "Flash-Assist %",
+      "description": "Anteil deiner Flashes, die einen Kill vorbereitet haben — du hast einen Gegner geblendet und ein Teammate hat ihn kurz darauf getötet."
+    },
+    "he_throws": {
+      "label": "HEs geworfen",
+      "description": "Wie viele HE-Granaten du geworfen hast."
+    },
+    "he_damage_per": {
+      "label": "HE-Schaden / Granate",
+      "description": "Schaden deiner HE-Granaten an Gegnern, pro geworfener HE."
+    },
+    "he_team_damage_per": {
+      "label": "HE-Teamschaden / Granate",
+      "description": "Schaden deiner HE-Granaten an Teammates, pro geworfener HE — weniger ist besser."
+    },
+    "molotov_throws": {
+      "label": "Molotovs geworfen",
+      "description": "Wie viele Molotovs und Brandgranaten du geworfen hast."
+    },
+    "molotov_damage_per": {
+      "label": "Feuerschaden / Granate",
+      "description": "Schaden deiner Molotovs und Brandgranaten an Gegnern, pro geworfener Granate."
     }
   },
   "pagination": {
@@ -8486,7 +8514,27 @@
         }
       },
       "discord_user": "Das ist ein Discord-User. Registriere deine Discord-ID für Stat-Tracking, indem du",
-      "discord_link": "im offiziellen Discord-Channel eingibst."
+      "discord_link": "im offiziellen Discord-Channel eingibst.",
+      "utility": {
+        "waste": "Verschwendung",
+        "thrown": "Geworfen",
+        "blinded": "Geblendet",
+        "teammates": "Team",
+        "blind": "Blind",
+        "assists": "Assists",
+        "damage": "Schaden",
+        "team_damage": "Teamschaden",
+        "unused": "Ungenutzt",
+        "mag_left": "Rest im Mag.",
+        "per_flash": "pro Flash",
+        "avg": "Ø",
+        "of_flashes": "der Flashes",
+        "per_nade": "pro Granate",
+        "on_death": "beim Tod",
+        "at_reload": "beim Nachladen",
+        "seconds": "{count}s",
+        "team_total": "Team"
+      }
     },
     "overview": {
       "promote_captain": "Zum Captain machen",
@@ -10027,7 +10075,9 @@
       "recap": "Season {number} endete bei {final}, Bestwert {peak}, {wins}S–{losses}N"
     },
     "season_best": "Bestwert in {season}",
-    "to_next": "{points} bis {tier}"
+    "to_next": "{points} bis {tier}",
+    "show_lobby": "Alle {count} Spieler anzeigen",
+    "hide_lobby": "Andere Spieler ausblenden"
   },
   "breadcrumbs": {
     "dashboard": "Dashboard"

@@ -856,6 +856,34 @@
     "awp": {
       "label": "AWP",
       "description": "AWP kullanımı / sniper rol sinyali — bir oyuncunun AWP'ye ne kadar bağımlı olduğu."
+    },
+    "team_flashed_per": {
+      "label": "Takım Arkadaşı / Flash",
+      "description": "Atılan flash başına kör edilen ortalama takım arkadaşı sayısı — düşük olması daha iyi."
+    },
+    "flash_assist_pct": {
+      "label": "Flash Asist %",
+      "description": "Bir öldürmeye zemin hazırlayan flash'lerinin oranı — bir düşmanı kör ettin ve kısa süre sonra bir takım arkadaşın onu öldürdü."
+    },
+    "he_throws": {
+      "label": "Atılan HE",
+      "description": "Kaç HE el bombası attığın."
+    },
+    "he_damage_per": {
+      "label": "HE Hasarı / Bomba",
+      "description": "HE el bombalarının düşmanlara verdiği hasar, atılan HE başına."
+    },
+    "he_team_damage_per": {
+      "label": "HE Takım Hasarı / Bomba",
+      "description": "HE el bombalarının takım arkadaşlarına verdiği hasar, atılan HE başına — düşük olması daha iyi."
+    },
+    "molotov_throws": {
+      "label": "Atılan Molotof",
+      "description": "Kaç molotof ve yangın bombası attığın."
+    },
+    "molotov_damage_per": {
+      "label": "Ateş Hasarı / Bomba",
+      "description": "Molotof ve yangın bombalarının düşmanlara verdiği hasar, atılan bomba başına."
     }
   },
   "pagination": {
@@ -8486,7 +8514,27 @@
         }
       },
       "discord_user": "Bu bir Discord kullanıcısı, istatistik takibini etkinleştirmek için resmi discord kanalında şunu yazarak discord id'ni kaydet:",
-      "discord_link": "yazarak."
+      "discord_link": "yazarak.",
+      "utility": {
+        "waste": "İsraf",
+        "thrown": "Atılan",
+        "blinded": "Kör edilen",
+        "teammates": "Takım",
+        "blind": "Körlük",
+        "assists": "Asist",
+        "damage": "Hasar",
+        "team_damage": "Takım hasarı",
+        "unused": "Kullanılmayan",
+        "mag_left": "Kalan şarjör",
+        "per_flash": "flash başına",
+        "avg": "ort.",
+        "of_flashes": "flash'lerin",
+        "per_nade": "bomba başına",
+        "on_death": "ölünce",
+        "at_reload": "doldururken",
+        "seconds": "{count} sn",
+        "team_total": "Takım"
+      }
     },
     "overview": {
       "promote_captain": "Kaptan Yap",
@@ -10027,7 +10075,9 @@
       "recap": "Sezon {number} {final} ile bitti, en iyi {peak}, {wins}G–{losses}M"
     },
     "season_best": "{season} en iyi puanı",
-    "to_next": "{tier} için {points}"
+    "to_next": "{tier} için {points}",
+    "show_lobby": "{count} oyuncunun tümünü göster",
+    "hide_lobby": "Diğer oyuncuları gizle"
   },
   "breadcrumbs": {
     "dashboard": "kontrol paneli"

@@ -856,6 +856,34 @@
     "awp": {
       "label": "AWP",
       "description": "AWP usage / sniper role signal — how much a player relies on the AWP."
+    },
+    "team_flashed_per": {
+      "label": "Teammates / Flash",
+      "description": "Average number of teammates blinded per flash thrown — lower is better."
+    },
+    "flash_assist_pct": {
+      "label": "Flash Assist %",
+      "description": "Share of your flashes that set up a kill — you blinded an enemy and a teammate killed them shortly after."
+    },
+    "he_throws": {
+      "label": "HEs Thrown",
+      "description": "How many HE grenades you threw."
+    },
+    "he_damage_per": {
+      "label": "HE Damage / Nade",
+      "description": "Damage your HE grenades deal to enemies, per HE thrown."
+    },
+    "he_team_damage_per": {
+      "label": "HE Team Damage / Nade",
+      "description": "Damage your HE grenades deal to teammates, per HE thrown — lower is better."
+    },
+    "molotov_throws": {
+      "label": "Molotovs Thrown",
+      "description": "How many molotovs and incendiaries you threw."
+    },
+    "molotov_damage_per": {
+      "label": "Fire Damage / Nade",
+      "description": "Damage your molotovs and incendiaries deal to enemies, per one thrown."
     }
   },
   "pagination": {
@@ -8488,7 +8516,27 @@
         }
       },
       "discord_user": "This is a Discord user, register your discord id to enable stat tracking by typing",
-      "discord_link": "in the official discord channel."
+      "discord_link": "in the official discord channel.",
+      "utility": {
+        "waste": "Waste",
+        "thrown": "Thrown",
+        "blinded": "Blinded",
+        "teammates": "Team",
+        "blind": "Blind",
+        "assists": "Assists",
+        "damage": "Damage",
+        "team_damage": "Team dmg",
+        "unused": "Unused",
+        "mag_left": "Mag left",
+        "per_flash": "per flash",
+        "avg": "avg",
+        "of_flashes": "of flashes",
+        "per_nade": "per nade",
+        "on_death": "on death",
+        "at_reload": "at reload",
+        "seconds": "{count}s",
+        "team_total": "Team"
+      }
     },
     "overview": {
       "promote_captain": "Promote to Captain",
@@ -10029,7 +10077,9 @@
       "recap": "Season {number} finished {final}, best {peak}, {wins}W–{losses}L"
     },
     "season_best": "{season} best rating",
-    "to_next": "{points} to {tier}"
+    "to_next": "{points} to {tier}",
+    "show_lobby": "Show all {count} players",
+    "hide_lobby": "Hide other players"
   },
   "breadcrumbs": {
     "dashboard": "dashboard"

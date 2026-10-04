@@ -36,7 +36,7 @@ provide(
   >
     <span class="inline-flex items-center gap-1">
       <slot />
-      <span class="inline-flex flex-col leading-none">
+      <span data-sort-icons class="inline-flex flex-col leading-none">
         <ChevronUp
           class="w-3 h-3"
           :class="

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, provide, ref, toRef, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import { ArrowRight, ExternalLink, Play } from "lucide-vue-next";
+import { ArrowRight, ChevronDown, ExternalLink, Play } from "lucide-vue-next";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Skeleton } from "~/components/ui/skeleton";
 import { HeightGlide } from "~/components/ui/transitions";
@@ -9,6 +9,7 @@ import LineupOverview from "~/components/match/LineupOverview.vue";
 import LineupUtility from "~/components/match/LineupUtility.vue";
 import LineupTradeStats from "~/components/match/LineupTradeStats.vue";
 import LineupAimStats from "~/components/match/LineupAimStats.vue";
+import StackedTable from "~/components/common/StackedTable.vue";
 import MatchRankBadge from "~/components/MatchRankBadge.vue";
 import type { MatchRankMove } from "~/components/MatchRankBadge.vue";
 import { provideFocusRow } from "~/composables/useCurrentUserRow";
@@ -39,6 +40,8 @@ const props = defineProps<{
   typeLabel: string;
   sourceLabel: string;
   clipsCount: number;
+  // Narrow layout: this player's line as a list, the lobby on request.
+  compact?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -53,10 +56,30 @@ provideFocusRow(toRef(props, "focusSteamId"));
 provide("matchRanks", toRef(props, "matchRanks"));
 
 const tabs = computed(() => [
-  { value: "overview", label: t("match.tabs.overview") },
-  { value: "utility", label: t("match.tabs.utility") },
-  { value: "trades", label: t("match.tabs.trade_stats") },
-  { value: "aim", label: t("match.tabs.aim_stats") },
+  {
+    value: "overview",
+    label: t("match.tabs.overview"),
+    component: LineupOverview,
+    props: { showStats: true },
+  },
+  {
+    value: "utility",
+    label: t("match.tabs.utility"),
+    component: LineupUtility,
+    props: {},
+  },
+  {
+    value: "trades",
+    label: t("match.tabs.trade_stats"),
+    component: LineupTradeStats,
+    props: {},
+  },
+  {
+    value: "aim",
+    label: t("match.tabs.aim_stats"),
+    component: LineupAimStats,
+    props: {},
+  },
 ]);
 
 function hasFocus(lineup: any): boolean {
@@ -160,6 +183,22 @@ function narrow(lineup: any) {
 }
 const mine = computed(() => narrow(mineRaw.value));
 const theirs = computed(() => narrow(theirsRaw.value));
+// Just this player's row, for the compact list.
+const focusLineup = computed(() => {
+  const lineup = mine.value;
+  const sid = props.focusSteamId;
+  const member = (lineup?.lineup_players ?? []).find(
+    (lp: any) => String(lp?.steam_id ?? lp?.player?.steam_id ?? "") === sid,
+  );
+  return member ? { ...lineup, lineup_players: [member] } : null;
+});
+const lobbySize = computed(
+  () =>
+    (mine.value?.lineup_players?.length ?? 0) +
+    (theirs.value?.lineup_players?.length ?? 0),
+);
+const showLobby = ref(false);
+
 const hasStats = computed(() =>
   (mine.value?.lineup_players ?? []).some(
     (lp: any) =>
@@ -531,45 +570,73 @@ const actionClasses =
           </TabsList>
 
           <TabsContent
-            value="overview"
-            class="tab-panel-in overflow-x-auto pt-2"
+            v-for="tab in tabs"
+            :key="tab.value"
+            :value="tab.value"
+            class="tab-panel-in pt-2"
           >
-            <LineupOverview
-              :match="match"
-              :lineup="mine"
-              :combine-with="theirs"
-              :show-stats="true"
-            />
-          </TabsContent>
-          <TabsContent
-            value="utility"
-            class="tab-panel-in overflow-x-auto pt-2"
-          >
-            <LineupUtility
-              :match="match"
-              :lineup="mine"
-              :combine-with="theirs"
-            />
-          </TabsContent>
-          <TabsContent value="trades" class="tab-panel-in overflow-x-auto pt-2">
-            <LineupTradeStats
-              :match="match"
-              :lineup="mine"
-              :combine-with="theirs"
-            />
-          </TabsContent>
-          <TabsContent value="aim" class="tab-panel-in overflow-x-auto pt-2">
-            <LineupAimStats
-              :match="match"
-              :lineup="mine"
-              :combine-with="theirs"
-            />
+            <template v-if="compact && focusLineup">
+              <div
+                class="overflow-hidden rounded-md border border-border bg-card"
+              >
+                <LineupUtility
+                  v-if="tab.value === 'utility'"
+                  :match="match"
+                  :lineup="focusLineup"
+                  stacked
+                />
+                <StackedTable v-else>
+                  <component
+                    :is="tab.component"
+                    :match="match"
+                    :lineup="focusLineup"
+                    hide-member
+                    v-bind="tab.props"
+                  />
+                </StackedTable>
+              </div>
+              <div v-if="showLobby" class="mt-3 overflow-x-auto">
+                <component
+                  :is="tab.component"
+                  :match="match"
+                  :lineup="mine"
+                  :combine-with="theirs"
+                  v-bind="tab.props"
+                />
+              </div>
+            </template>
+            <div v-else class="overflow-x-auto">
+              <component
+                :is="tab.component"
+                :match="match"
+                :lineup="mine"
+                :combine-with="theirs"
+                v-bind="tab.props"
+              />
+            </div>
           </TabsContent>
         </Tabs>
       </div>
     </HeightGlide>
 
     <div class="sb-rise sb-rise-3 flex flex-wrap gap-2">
+      <button
+        v-if="compact && focusLineup && hasStats && !placeholder"
+        type="button"
+        :class="actionClasses"
+        :aria-expanded="showLobby"
+        @click.stop="showLobby = !showLobby"
+      >
+        <ChevronDown
+          class="h-3.5 w-3.5 transition-transform [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]"
+          :class="{ 'rotate-180': showLobby }"
+        />
+        {{
+          showLobby
+            ? $t("player_match.hide_lobby")
+            : $t("player_match.show_lobby", { count: lobbySize })
+        }}
+      </button>
       <button
         v-if="clipsCount > 0"
         type="button"

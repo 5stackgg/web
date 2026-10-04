@@ -6,6 +6,7 @@ import MatchRankBadge from "~/components/MatchRankBadge.vue";
 import MatchSourceBadge from "~/components/MatchSourceBadge.vue";
 import MatchStatus from "~/components/match/MatchStatus.vue";
 import PlayerMatchScoreboard from "~/components/player/PlayerMatchScoreboard.vue";
+import StatLabel from "~/components/common/StatLabel.vue";
 import { kdColor, hltvColor } from "~/utils/statTiers";
 
 // Shared grid track template — MUST stay in sync with the header row in
@@ -31,6 +32,7 @@ const wideGrid =
           ? 'cursor-pointer hover:bg-muted/30 hover:border-[hsl(var(--tac-amber)/0.35)]'
           : ''),
     ]"
+    :data-scroll-anchor="`match-${match.id}`"
     @click="onRowClick($event)"
     @pointerdown="onRowPointerDown($event)"
   >
@@ -361,7 +363,9 @@ const wideGrid =
         >
           <span
             class="font-mono text-[0.5rem] uppercase tracking-[0.14em] text-muted-foreground/60"
-            >RTG</span
+            ><StatLabel stat="hltv"
+              ><span class="-mx-3 -my-2 px-3 py-2">RTG</span></StatLabel
+            ></span
           >
           <span
             class="font-mono text-sm font-bold tabular-nums"
@@ -388,7 +392,9 @@ const wideGrid =
         >
           <span
             class="font-mono text-[0.5rem] uppercase tracking-[0.14em] text-muted-foreground/60"
-            >K/D</span
+            ><StatLabel stat="kd"
+              ><span class="-mx-3 -my-2 px-3 py-2">K/D</span></StatLabel
+            ></span
           >
           <span
             class="font-mono text-sm font-bold tabular-nums"
@@ -401,7 +407,9 @@ const wideGrid =
         >
           <span
             class="font-mono text-[0.5rem] uppercase tracking-[0.14em] text-muted-foreground/60"
-            >ADR</span
+            ><StatLabel stat="adr"
+              ><span class="-mx-3 -my-2 px-3 py-2">ADR</span></StatLabel
+            ></span
           >
           <span
             class="font-mono text-sm font-bold tabular-nums text-foreground/85"
@@ -460,8 +468,11 @@ const wideGrid =
       leave-active-class="unfurl-leave"
       leave-to-class="unfurl-closed"
     >
-      <div v-if="expanded && isFinished" class="grid grid-rows-[1fr]">
-        <div class="unfurl-cell min-h-0">
+      <div
+        v-if="expanded && isFinished"
+        class="grid grid-cols-[minmax(0,1fr)] grid-rows-[1fr]"
+      >
+        <div class="unfurl-cell min-h-0 min-w-0">
           <div
             class="border-t border-border bg-card/40 px-3 py-3"
             :class="compact ? '' : 'sm:px-4'"
@@ -481,6 +492,7 @@ const wideGrid =
               :type-label="matchTypeLabel"
               :source-label="sourceLabel || $t('player_match.source.internal')"
               :clips-count="playerClips.length"
+              :compact="compact"
               @update:active-tab="(v) => (detailsTab = v)"
               @update:selected-map-id="(v) => (selectedMapId = v)"
               @open-clips="openBestClip"
@@ -503,9 +515,21 @@ import { useClipModal } from "~/composables/useClipModal";
 import mapLabel from "~/utilities/mapLabel";
 import { csRankKind } from "~/utilities/csRank";
 import type { MatchRankMove } from "~/components/MatchRankBadge.vue";
+import {
+  EXPANDED_MATCH_ROWS,
+  type ExpandedMatchRows,
+} from "~/composables/useExpandedMatchRows";
 
 // Breathing room kept between an opened row and the scroller's edges.
 const REVEAL_MARGIN = 16;
+
+// A finished match never changes, so each expand query is answered once per
+// session: reopening a row, or restoring it on back, renders straight away.
+const DETAILS_CACHE_SIZE = 40;
+const detailsCache = new Map<
+  string,
+  { stats: any; ranks: Record<string, any> }
+>();
 
 function scrollParentOf(el: HTMLElement): HTMLElement | null {
   for (let node = el.parentElement; node; node = node.parentElement) {
@@ -541,21 +565,53 @@ export default {
     // page. Powers the collapsed row without a per-row matches_by_pk query.
     collapsedAgg: { type: Object, required: false, default: null },
   },
+  // The profile page's open rows (restored on back); null in the right hub.
+  inject: {
+    expandedRows: { from: EXPANDED_MATCH_ROWS, default: null },
+  },
   data() {
+    const saved = (this.expandedRows as ExpandedMatchRows | null)?.[
+      this.match.id
+    ];
+    const cached = detailsCache.get(String(this.match.id));
     return {
-      expanded: false,
+      expanded: !!saved,
       detailsPromise: null as Promise<void> | null,
-      detailsStats: null as any | null,
+      detailsStats: (cached?.stats ?? null) as any | null,
       // steam_id -> per-match Valve rank for the lobby (external matches).
-      matchRanks: {} as Record<string, any>,
+      matchRanks: (cached?.ranks ?? {}) as Record<string, any>,
       detailsStatsLoading: false,
-      detailsTab: "overview",
-      selectedMapId: null as string | null,
+      detailsTab: saved?.tab ?? "overview",
+      selectedMapId: (saved?.mapId ?? null) as string | null,
       playerClips: [] as any[],
       playerClipsLoading: false,
     };
   },
+  created() {
+    const rows = this.expandedRows as ExpandedMatchRows | null;
+    if (!rows) return;
+    this.$watch(
+      () => [this.expanded, this.detailsTab, this.selectedMapId],
+      () => {
+        if (this.expanded) {
+          rows[this.match.id] = {
+            tab: this.detailsTab,
+            mapId: this.selectedMapId,
+          };
+        } else {
+          delete rows[this.match.id];
+        }
+      },
+    );
+  },
+  beforeUnmount() {
+    const rows = this.expandedRows as ExpandedMatchRows | null;
+    if (rows) delete rows[this.match.id];
+  },
   mounted() {
+    // Reopened by a back navigation: load what it shows, without the reveal
+    // scroll — the page is putting the scroll back where it was.
+    if (this.expanded) this.prefetchDetails();
     // Collapsed-row aggregate stats now arrive batched via the `collapsedAgg`
     // prop (parent fetches them for the whole page in one query). Only the
     // highlight thumbnail still needs a fetch, and only for matches that
@@ -1071,6 +1127,16 @@ export default {
         }
         this.matchRanks = ranks;
         this.detailsStats = (data as any)?.matches_by_pk ?? null;
+        if (this.detailsStats) {
+          detailsCache.delete(String(this.match.id));
+          detailsCache.set(String(this.match.id), {
+            stats: this.detailsStats,
+            ranks,
+          });
+          if (detailsCache.size > DETAILS_CACHE_SIZE) {
+            detailsCache.delete(detailsCache.keys().next().value!);
+          }
+        }
       } finally {
         this.detailsStatsLoading = false;
       }

@@ -856,6 +856,34 @@
     "awp": {
       "label": "AWP",
       "description": "AWP-brug / sniper-rollesignal — hvor meget en spiller læner sig op ad AWP'en."
+    },
+    "team_flashed_per": {
+      "label": "Holdkammerater / flash",
+      "description": "Gennemsnitligt antal holdkammerater blindet pr. kastet flash — lavere er bedre."
+    },
+    "flash_assist_pct": {
+      "label": "Flash-assist %",
+      "description": "Andel af dine flashes, der satte et kill op — du blindede en fjende, og en holdkammerat dræbte vedkommende kort efter."
+    },
+    "he_throws": {
+      "label": "HE'er kastet",
+      "description": "Hvor mange HE-granater du kastede."
+    },
+    "he_damage_per": {
+      "label": "HE-skade / granat",
+      "description": "Skade dine HE-granater giver fjender, pr. kastet HE."
+    },
+    "he_team_damage_per": {
+      "label": "HE-holdskade / granat",
+      "description": "Skade dine HE-granater giver holdkammerater, pr. kastet HE — lavere er bedre."
+    },
+    "molotov_throws": {
+      "label": "Molotovs kastet",
+      "description": "Hvor mange molotovs og brandbomber du kastede."
+    },
+    "molotov_damage_per": {
+      "label": "Ildskade / granat",
+      "description": "Skade dine molotovs og brandbomber giver fjender, pr. kastet granat."
     }
   },
   "pagination": {
@@ -8486,7 +8514,27 @@
         }
       },
       "discord_user": "Dette er en Discord-bruger. Registrer dit discord-id for at aktivere statistik ved at skrive",
-      "discord_link": "i den officielle discord-kanal."
+      "discord_link": "i den officielle discord-kanal.",
+      "utility": {
+        "waste": "Spild",
+        "thrown": "Kastet",
+        "blinded": "Blindet",
+        "teammates": "Hold",
+        "blind": "Blind",
+        "assists": "Assists",
+        "damage": "Skade",
+        "team_damage": "Holdskade",
+        "unused": "Ubrugt",
+        "mag_left": "Mag tilbage",
+        "per_flash": "pr. flash",
+        "avg": "gns.",
+        "of_flashes": "af flashes",
+        "per_nade": "pr. granat",
+        "on_death": "ved død",
+        "at_reload": "ved genladning",
+        "seconds": "{count}s",
+        "team_total": "Hold"
+      }
     },
     "overview": {
       "promote_captain": "Gør til anfører",
@@ -10027,7 +10075,9 @@
       "recap": "Sæson {number} sluttede på {final}, bedst {peak}, {wins}V–{losses}T"
     },
     "season_best": "Bedste rating i {season}",
-    "to_next": "{points} til {tier}"
+    "to_next": "{points} til {tier}",
+    "show_lobby": "Vis alle {count} spillere",
+    "hide_lobby": "Skjul andre spillere"
   },
   "breadcrumbs": {
     "dashboard": "dashboard"

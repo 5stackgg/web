@@ -38,12 +38,15 @@ export function useOverviewColumns() {
 export function useUtilityColumns() {
   const { t } = useI18n();
   const columns = computed<ColumnDef[]>(() => [
-    { key: "flash_assists", label: t("match.lineup.stats.flash_assists") },
     { key: "enemies_flashed", label: t("match.lineup.stats.enemies_flashed") },
     { key: "team_flashed", label: t("match.lineup.stats.team_flashed") },
     { key: "avg_blind_time", label: t("match.lineup.stats.avg_blind_time") },
+    { key: "flash_assists", label: t("match.lineup.stats.flash_assists") },
+    { key: "smoke_throws", label: t("stat_glossary.smokes_thrown.label") },
+    { key: "he_throws", label: t("stat_glossary.he_throws.label") },
     { key: "he_damage", label: t("match.lineup.stats.he_damage") },
     { key: "he_team_damage", label: t("match.lineup.stats.he_team_damage") },
+    { key: "molotov_throws", label: t("stat_glossary.molotov_throws.label") },
     { key: "molotov_damage", label: t("match.lineup.stats.molotov_damage") },
     { key: "unused_utility", label: t("match.lineup.stats.unused_utility") },
     {

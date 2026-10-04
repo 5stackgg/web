@@ -30,6 +30,11 @@ const props = withDefaults(
     // own per-player controls instead. Also suppresses the built-in unmute pill,
     // which would otherwise sit next to the host's own mute button.
     disableShortcuts?: boolean;
+    // Off for hosts that draw their own mute, volume and fullscreen (the
+    // /watch stage), so the player's corner buttons don't double them up.
+    controls?: boolean;
+    // Host-owned volume, 0..1. Mute stays on `muted`.
+    volume?: number;
     // Opt-in to native Picture-in-Picture. Only enabled for live game
     // streams on mobile — demo playback and highlights stay PIP-locked.
     enablePip?: boolean;
@@ -58,6 +63,7 @@ const props = withDefaults(
     // Vue casts an absent boolean prop to false, so "on unless a host opts out"
     // must be an explicit default or every host that omits it gets no audio.
     audio: true,
+    controls: true,
   },
 );
 
@@ -109,6 +115,16 @@ const isMuted = ref(true);
 const volume = ref(1);
 const isFullscreen = ref(false);
 const containerRef = ref<HTMLDivElement | null>(null);
+
+watch(
+  () => [props.volume, videoRef.value] as const,
+  ([v, el]) => {
+    if (typeof v !== "number" || !el) return;
+    volume.value = Math.max(0, Math.min(1, v));
+    el.volume = volume.value;
+  },
+  { immediate: true },
+);
 
 function setVolume(v: number) {
   volume.value = Math.max(0, Math.min(1, v));
@@ -1016,7 +1032,8 @@ defineExpose({ connect, teardown });
         !useFallback &&
         isMuted &&
         !muted &&
-        !disableShortcuts
+        !disableShortcuts &&
+        controls
       "
       type="button"
       :aria-label="$t('ui.unmute')"
@@ -1029,7 +1046,7 @@ defineExpose({ connect, teardown });
 
     <!-- Audio tray (right) — visible only when audio is on. -->
     <div
-      v-if="status === 'playing' && !useFallback && !isMuted"
+      v-if="status === 'playing' && !useFallback && !isMuted && controls"
       class="absolute bottom-2 right-2 z-10 flex items-center gap-2 transition-opacity duration-150"
       :class="
         coarsePointer
@@ -1062,7 +1079,7 @@ defineExpose({ connect, teardown });
     <!-- Fullscreen — single left-side button. Hover-gated on desktop;
          always visible on touch devices. -->
     <div
-      v-if="status === 'playing' && !useFallback"
+      v-if="status === 'playing' && !useFallback && controls"
       class="absolute bottom-3 left-3 z-10 flex items-center gap-2 transition-opacity duration-150"
       :class="
         coarsePointer

@@ -21,7 +21,10 @@ const props = withDefaults(
     showBoot?: boolean;
     enablePip?: boolean;
     muted?: boolean;
+    volume?: number;
     audio?: boolean;
+    // Forwarded to WhepPlayer: false hides its mute, volume and fullscreen.
+    controls?: boolean;
     disableShortcuts?: boolean;
     // Start the WebRTC handshake before `isLive` while the boot screen is
     // still up, so the picture is already flowing when it fades away.
@@ -38,6 +41,7 @@ const props = withDefaults(
     showBoot: false,
     enablePip: false,
     audio: true,
+    controls: true,
     preconnect: false,
   },
 );
@@ -121,7 +125,9 @@ defineExpose({ rootEl });
         :disable-fullscreen-shortcut="disableFullscreenShortcut"
         :enable-pip="enablePip"
         :muted="muted"
+        :volume="volume"
         :audio="audio"
+        :controls="controls"
         :disable-shortcuts="disableShortcuts"
         trickle
         class="absolute inset-0"
@@ -144,7 +150,9 @@ defineExpose({ rootEl });
         :disable-fullscreen-shortcut="disableFullscreenShortcut"
         :enable-pip="enablePip"
         :muted="muted"
+        :volume="volume"
         :audio="audio"
+        :controls="controls"
         :disable-shortcuts="disableShortcuts"
         trickle
         :jitter-buffer-ms="jitterBufferMs"

@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useI18n } from "vue-i18n";
 import {
-  Maximize2,
+  Maximize,
+  Minimize,
   PictureInPicture,
   Volume2,
   VolumeX,
@@ -15,7 +16,7 @@ import LiveStreamPlayer from "~/components/match/LiveStreamPlayer.vue";
 import StreamEmbed from "~/components/StreamEmbed.vue";
 import StreamMatchCard from "~/components/match/StreamMatchCard.vue";
 import StreamStatusPanel from "~/components/match/StreamStatusPanel.vue";
-import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
+import StreamLiveTag from "~/components/match/StreamLiveTag.vue";
 import StreamThumbnail from "~/components/watch/StreamThumbnail.vue";
 import { Button } from "~/components/ui/button";
 import { useWatchStage } from "~/composables/useWatchStage";
@@ -133,6 +134,7 @@ const stream = computed(
 const platform = computed(() => streamPlatformMeta(stream.value));
 
 const muted = ref(true);
+const volume = ref(1);
 const phase = ref<WhepPhase | null>(null);
 watch(
   () => current.value?.id,
@@ -205,12 +207,32 @@ const showLowerThird = computed(
 const embedRef = ref<any>(null);
 function toggleMute() {
   muted.value = !muted.value;
-  if (mode.value === "embed") embedRef.value?.toggleMute?.();
+  // Slider was dragged to 0 before muting: unmute at full volume so the
+  // icon and the slider never disagree.
+  if (!muted.value && volume.value <= 0.01) volume.value = 1;
+  if (mode.value === "embed") {
+    embedRef.value?.toggleMute?.();
+    if (!muted.value) embedRef.value?.setVolume?.(volume.value);
+  }
 }
+
+function setVolume(value: number) {
+  volume.value = Math.max(0, Math.min(1, value));
+  if (volume.value <= 0.01 !== muted.value) toggleMute();
+  if (mode.value === "embed") embedRef.value?.setVolume?.(volume.value);
+}
+
+// Third-party embeds other than Twitch are bare iframes with no volume API.
+const canSetVolume = computed(
+  () =>
+    mode.value === "game" ||
+    (mode.value === "embed" && !!embedRef.value?.supportsVolume),
+);
 
 const stageRef = ref<HTMLElement | null>(null);
 const canFullscreen =
   typeof document !== "undefined" && !!document.fullscreenEnabled;
+const isFullscreen = ref(false);
 function fullscreen() {
   if (document.fullscreenElement) {
     void document.exitFullscreen?.();
@@ -218,6 +240,55 @@ function fullscreen() {
   }
   void stageRef.value?.requestFullscreen?.()?.catch(() => {});
 }
+function onFullscreenChange() {
+  isFullscreen.value =
+    !!stageRef.value && document.fullscreenElement === stageRef.value;
+}
+onMounted(() => {
+  document.addEventListener("fullscreenchange", onFullscreenChange);
+});
+onBeforeUnmount(() => {
+  document.removeEventListener("fullscreenchange", onFullscreenChange);
+});
+
+// The game stream burns its own HUD into every edge of the frame (veto,
+// scoreboard, series score, player cards), so once it has a picture the
+// stage's chrome hides while the viewer is just watching and comes back on
+// pointer activity, as the highlights player does. Embeds keep it up: their
+// iframe swallows the pointer, so it could never be brought back.
+const autoHide = computed(() => mode.value === "game" && phase.value === null);
+const pointerActive = ref(false);
+const chromeVisible = computed(() => !autoHide.value || pointerActive.value);
+const CHROME_HIDE_DELAY = 2000;
+let chromeTimer: ReturnType<typeof setTimeout> | null = null;
+function clearChromeTimer() {
+  if (chromeTimer) {
+    clearTimeout(chromeTimer);
+    chromeTimer = null;
+  }
+}
+function showChrome() {
+  pointerActive.value = true;
+  clearChromeTimer();
+  chromeTimer = setTimeout(() => {
+    chromeTimer = null;
+    pointerActive.value = false;
+  }, CHROME_HIDE_DELAY);
+}
+function hideChrome() {
+  clearChromeTimer();
+  pointerActive.value = false;
+}
+// Show it for a beat when the picture comes up, so viewers see where the
+// controls are before it fades.
+watch(autoHide, (on) => {
+  if (on) showChrome();
+});
+onBeforeUnmount(clearChromeTimer);
+const chromeFade = computed(() => [
+  "transition-opacity duration-300",
+  chromeVisible.value ? "opacity-100" : "opacity-0",
+]);
 
 function login() {
   window.location.href = `${loginLinks.steam}?redirect=${encodeURIComponent(
@@ -275,8 +346,9 @@ const totalWatching = computed(() =>
 
 const waitingCopy = computed(() => copyFor("waiting"));
 
-const roundButton =
-  "relative inline-grid size-8 place-items-center rounded-full bg-black/60 text-white/90 backdrop-blur-sm transition-colors duration-150 hover:bg-black/80 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] after:absolute after:-inset-1.5 after:content-[''] [@media(pointer:fine)]:after:hidden";
+// Same buttons as the highlights player's tray (ClipPlayer).
+const trayButtonClass =
+  "relative inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-black/70 text-white/85 backdrop-blur-md transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] after:absolute after:-inset-1.5 after:content-[''] [@media(pointer:fine)]:after:hidden";
 </script>
 
 <template>
@@ -313,6 +385,10 @@ const roundButton =
       <div
         ref="stageRef"
         class="watch-stage-screen relative aspect-video w-full max-w-full overflow-hidden rounded-lg border border-border bg-black"
+        :class="{ 'cursor-none': !chromeVisible }"
+        @mousemove="showChrome"
+        @mouseleave="hideChrome"
+        @touchstart.passive="showChrome"
       >
         <div
           v-if="mode === 'login'"
@@ -349,6 +425,7 @@ const roundButton =
           :match-id="current.id"
           bare
           :muted="muted"
+          :volume="volume"
           disable-shortcuts
           class="absolute inset-0"
           @phase="phase = $event"
@@ -363,53 +440,82 @@ const roundButton =
           class="absolute inset-0"
         />
 
+        <!-- `inert` while faded out so the card can't be clicked through. -->
         <template v-if="showLowerThird">
           <StreamMatchCard
             :match-id="current.id"
             :backdrop="false"
             class="max-sm:hidden"
+            :class="chromeFade"
+            :inert="chromeVisible ? undefined : true"
           />
           <div
-            class="absolute bottom-2 left-2 rounded-[3px] bg-background/90 px-2.5 py-1.5 text-[13px] font-semibold tabular-nums sm:hidden"
+            class="pointer-events-none absolute bottom-2 left-2 rounded-[3px] bg-background/90 px-2.5 py-1.5 text-[13px] font-semibold tabular-nums sm:hidden"
+            :class="chromeFade"
           >
             {{ scoreBug }}
           </div>
         </template>
 
-        <div
-          class="pointer-events-none absolute left-3 top-3 flex items-center gap-1.5"
-        >
-          <span
-            class="rounded-[3px] bg-destructive px-1.5 py-[3px] text-[11px] font-extrabold uppercase leading-tight tracking-[0.08em] text-white"
-          >
-            {{ $t("common.live") }}
-          </span>
-          <span
-            class="inline-flex h-[22px] items-center rounded-[3px] bg-black/60 px-1.5 text-xs text-white backdrop-blur-sm"
-          >
-            <StreamViewerBadge :match-id="current.id" bare />
-          </span>
-        </div>
+        <StreamLiveTag
+          :match-id="current.id"
+          :dim="mode === 'waiting' || (mode === 'game' && phase !== null)"
+          class="absolute left-3 top-3 z-10"
+          :class="chromeFade"
+        />
 
-        <div class="absolute right-2.5 top-2.5 flex gap-1.5">
-          <button
+        <!-- Audio + fullscreen tray, laid out like the highlights player's.
+             Bottom right over the game stream; top right over an embed,
+             whose own player keeps a control bar along the bottom edge.
+             Hover or focus keeps it up while the pointer rests on it. -->
+        <div
+          class="absolute right-3 z-10 flex items-center gap-2 hover:opacity-100 focus-within:opacity-100"
+          :class="[mode === 'embed' ? 'top-3' : 'bottom-3', chromeFade]"
+        >
+          <div
             v-if="mode === 'game' || mode === 'embed'"
-            type="button"
-            :class="roundButton"
-            :aria-label="muted ? $t('ui.unmute') : $t('ui.mute')"
-            @click="toggleMute"
+            class="group/vol flex items-center"
           >
-            <VolumeX v-if="muted" class="size-4" />
-            <Volume2 v-else class="size-4" />
-          </button>
+            <button
+              type="button"
+              :class="trayButtonClass"
+              :aria-label="muted ? $t('ui.unmute') : $t('ui.mute')"
+              :title="muted ? $t('ui.unmute') : $t('ui.mute')"
+              @click="toggleMute"
+            >
+              <VolumeX v-if="muted" class="size-4" />
+              <Volume2 v-else class="size-4" />
+            </button>
+            <input
+              v-if="canSetVolume && !muted"
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              :value="volume"
+              :aria-label="$t('ui.volume')"
+              class="vol-slider ml-0 w-0 cursor-pointer transition-all duration-200 group-hover/vol:ml-2 group-hover/vol:w-20 focus-visible:ml-2 focus-visible:w-20"
+              @input="setVolume(Number(($event.target as HTMLInputElement).value))"
+            />
+          </div>
           <button
             v-if="canFullscreen"
             type="button"
-            :class="roundButton"
-            :aria-label="$t('pages.watch.stage.fullscreen')"
+            :class="trayButtonClass"
+            :aria-label="
+              isFullscreen
+                ? $t('ui_extras.exit_fullscreen')
+                : $t('pages.watch.stage.fullscreen')
+            "
+            :title="
+              isFullscreen
+                ? $t('ui_extras.exit_fullscreen')
+                : $t('pages.watch.stage.fullscreen')
+            "
             @click="fullscreen"
           >
-            <Maximize2 class="size-4" />
+            <Minimize v-if="isFullscreen" class="size-4" />
+            <Maximize v-else class="size-4" />
           </button>
         </div>
       </div>
@@ -487,20 +593,10 @@ const roundButton =
               :locked="needsLogin"
               class="transition-transform duration-200 group-hover:scale-[1.03] motion-reduce:transition-none"
             />
-            <span
-              class="pointer-events-none absolute left-2 top-2 flex items-center gap-1.5"
-            >
-              <span
-                class="rounded-[3px] bg-destructive px-[5px] py-0.5 text-[11px] font-extrabold uppercase leading-tight tracking-[0.08em] text-white"
-              >
-                {{ $t("common.live") }}
-              </span>
-              <span
-                class="inline-flex h-5 items-center rounded-[3px] bg-black/60 px-1.5 text-xs text-white backdrop-blur-sm"
-              >
-                <StreamViewerBadge :match-id="other.match.id" bare />
-              </span>
-            </span>
+            <StreamLiveTag
+              :match-id="other.match.id"
+              class="absolute left-2 top-2"
+            />
           </span>
           <span class="grid min-w-0 gap-0.5">
             <span
@@ -571,6 +667,41 @@ const roundButton =
 .watch-stage-thumb {
   flex: 1 1 0;
   grid-template-rows: minmax(0, 1fr) auto;
+}
+/* Same slider as the highlights player (ClipPlayer). */
+.vol-slider {
+  appearance: none;
+  height: 0.25rem;
+  background: transparent;
+}
+.vol-slider:focus {
+  outline: none;
+}
+.vol-slider::-webkit-slider-runnable-track {
+  height: 0.25rem;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 9999px;
+}
+.vol-slider::-moz-range-track {
+  height: 0.25rem;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 9999px;
+}
+.vol-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 9999px;
+  background: white;
+  border: 2px solid rgba(0, 0, 0, 0.6);
+  margin-top: -0.25rem;
+}
+.vol-slider::-moz-range-thumb {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 9999px;
+  background: white;
+  border: 2px solid rgba(0, 0, 0, 0.6);
 }
 @media (max-width: 900px) {
   .watch-stage-grid,

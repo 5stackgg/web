@@ -100,8 +100,15 @@ function capture() {
   minHeight.value = floor > 0 ? floor : 0;
 }
 
+// Hold the root at least `height` tall, e.g. so a restored scroll position is
+// reachable before the content that fills it has loaded.
+function reserve(height: number) {
+  floor = Math.max(floor, height);
+  minHeight.value = floor > 0 ? floor : 0;
+}
+
 export function useScrollFloor() {
-  return { capture, reset };
+  return { capture, reset, reserve };
 }
 
 // Used once, by the layout that owns the page content wrapper. Bind `rootEl` as

@@ -17,7 +17,6 @@ import MatchRoles from "~/components/match/MatchRoles.vue";
 import MatchUtilityUtility from "~/components/match/MatchUtilityUtility.vue";
 import MatchSideFilter from "~/components/match/MatchSideFilter.vue";
 import TableColumnPicker from "~/components/common/TableColumnPicker.vue";
-import TeamUtilitySummary from "~/components/match/TeamUtilitySummary.vue";
 import MatchChatLog from "~/components/match/MatchChatLog.vue";
 import HeightGlide from "~/components/ui/transitions/HeightGlide.vue";
 import { provideMatchSide } from "~/composables/useMatchSide";

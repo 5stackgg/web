@@ -50,6 +50,14 @@ import { csRankIcon } from "~/utilities/csRank";
 import SanctionStatusBadge from "~/components/SanctionStatusBadge.vue";
 import PlayerSearch from "~/components/PlayerSearch.vue";
 import { usePlayerCompareTarget } from "~/composables/usePlayerCompareTarget";
+import {
+  isRestoringHistory,
+  useHistoryState,
+} from "~/composables/useScrollRestoration";
+import {
+  provideExpandedMatchRows,
+  type ExpandedMatchRows,
+} from "~/composables/useExpandedMatchRows";
 import PlayerSanctions from "~/components/PlayerSanctions.vue";
 import PlayerVacBadge from "~/components/PlayerVacBadge.vue";
 import PlayerEditForm from "~/components/player/PlayerEditForm.vue";
@@ -1211,7 +1219,15 @@ async function triggerFaceitRefresh(steamId: string | null) {
 
 watch(playerIdRef, (id) => triggerFaceitRefresh(id), { immediate: true });
 
-const matchesPage = ref(1);
+// Back from a match lands on the same page of matches with the same rows open.
+const restoredMatches = useHistoryState("player-matches", () => ({
+  page: matchesPage.value,
+  expanded: { ...expandedMatchRows },
+}));
+const matchesPage = ref(restoredMatches?.page ?? 1);
+const expandedMatchRows = provideExpandedMatchRows(
+  restoredMatches?.expanded as ExpandedMatchRows | undefined,
+);
 const matchesPerPage = usePerPage("player-matches");
 const playerMatches = ref<any[]>([]);
 const playerMatchesTotal = ref(0);
@@ -1326,40 +1342,48 @@ const PLAYER_MATCHES_COUNT_QUERY = generateQuery({
   ],
 });
 
-async function loadMatches() {
+// `fromCache` paints what Apollo already holds in full (readQuery is null
+// otherwise), so a restored list has its height before the scroll is put back;
+// a network load follows.
+async function loadMatches(fromCache = false) {
   if (!playerIdRef.value) {
     playerMatches.value = [];
     playerMatchesTotal.value = 0;
     return;
   }
+  const list = {
+    query: PLAYER_MATCHES_QUERY,
+    variables: {
+      playerId: playerIdRef.value,
+      matchesWhere: matchesWhere.value,
+      limit: matchesPerPage.value,
+      offset: (matchesPage.value - 1) * matchesPerPage.value,
+    },
+  };
+  const count = {
+    query: PLAYER_MATCHES_COUNT_QUERY,
+    variables: {
+      matchesWhere: matchesWhere.value,
+    },
+  };
   try {
-    const [list, count] = await Promise.all([
-      apolloClient.query({
-        query: PLAYER_MATCHES_QUERY,
-        variables: {
-          playerId: playerIdRef.value,
-          matchesWhere: matchesWhere.value,
-          limit: matchesPerPage.value,
-          offset: (matchesPage.value - 1) * matchesPerPage.value,
-        },
-        fetchPolicy: "network-only",
-      }),
-      apolloClient.query({
-        query: PLAYER_MATCHES_COUNT_QUERY,
-        variables: {
-          matchesWhere: matchesWhere.value,
-        },
-        fetchPolicy: "network-only",
-      }),
-    ]);
-    playerMatches.value = (list.data as any)?.matches ?? [];
+    const [listData, countData]: any[] = fromCache
+      ? [apolloClient.readQuery(list), apolloClient.readQuery(count)]
+      : (
+          await Promise.all([
+            apolloClient.query({ ...list, fetchPolicy: "network-only" }),
+            apolloClient.query({ ...count, fetchPolicy: "network-only" }),
+          ])
+        ).map((result) => result.data);
+    if (fromCache && (!listData || !countData)) return;
+    playerMatches.value = listData?.matches ?? [];
     playerMatchesTotal.value =
-      (count.data as any)?.matches_aggregate?.aggregate?.count ?? 0;
-    void loadMatchEnrichment();
+      countData?.matches_aggregate?.aggregate?.count ?? 0;
+    void loadMatchEnrichment(fromCache);
   } catch {}
 }
 
-async function loadMatchEnrichment() {
+async function loadMatchEnrichment(fromCache = false) {
   const ids = playerMatches.value
     .map((m: any) => String(m?.id ?? ""))
     .filter(Boolean);
@@ -1369,12 +1393,16 @@ async function loadMatchEnrichment() {
     faceitByMatch.value = {};
     return;
   }
+  const summary = {
+    query: playerMatchSummaryQuery,
+    variables: { steamId: playerIdRef.value, matchIds: ids },
+  };
   try {
-    const { data } = await apolloClient.query({
-      query: playerMatchSummaryQuery,
-      variables: { steamId: playerIdRef.value, matchIds: ids },
-      fetchPolicy: "network-only",
-    });
+    const data: any = fromCache
+      ? apolloClient.readQuery(summary)
+      : (await apolloClient.query({ ...summary, fetchPolicy: "network-only" }))
+          .data;
+    if (fromCache && !data) return;
     const stats = new Map<string, any>();
     for (const row of (data as any)?.player_match_stats_v ?? []) {
       if (row.match_id != null) {
@@ -1413,12 +1441,20 @@ async function loadMatchEnrichment() {
 }
 
 watch(matchesWhere, () => {
-  matchesPage.value = 1;
+  // Filters settling on a restored page aren't the user changing them.
+  if (!isRestoringHistory()) matchesPage.value = 1;
 });
 
+let paintMatchesFromCache = restoredMatches !== null;
 watch(
   [playerIdRef, matchesWhere, matchesPage, matchesPerPage],
-  () => loadMatches(),
+  async () => {
+    if (paintMatchesFromCache) {
+      paintMatchesFromCache = false;
+      await loadMatches(true);
+    }
+    loadMatches();
+  },
   {
     immediate: true,
   },

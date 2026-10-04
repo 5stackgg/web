@@ -856,6 +856,34 @@
     "awp": {
       "label": "AWP",
       "description": "AWP 사용도 / 스나이퍼 역할 신호입니다 — 플레이어가 AWP에 의존하는 정도입니다."
+    },
+    "team_flashed_per": {
+      "label": "섬광당 아군 실명",
+      "description": "섬광탄 1개당 실명시킨 팀원의 평균 수입니다 — 낮을수록 좋습니다."
+    },
+    "flash_assist_pct": {
+      "label": "섬광 어시스트 비율",
+      "description": "킬로 이어진 섬광탄의 비율입니다 — 적을 실명시키고 직후에 팀원이 그 적을 처치한 경우입니다."
+    },
+    "he_throws": {
+      "label": "HE 투척",
+      "description": "던진 HE 수류탄의 수입니다."
+    },
+    "he_damage_per": {
+      "label": "HE 피해 / 개",
+      "description": "HE 수류탄 1개당 적에게 입힌 피해입니다."
+    },
+    "he_team_damage_per": {
+      "label": "HE 아군 피해 / 개",
+      "description": "HE 수류탄 1개당 팀원에게 입힌 피해입니다 — 낮을수록 좋습니다."
+    },
+    "molotov_throws": {
+      "label": "몰로토프 투척",
+      "description": "던진 몰로토프와 소이탄의 수입니다."
+    },
+    "molotov_damage_per": {
+      "label": "화염 피해 / 개",
+      "description": "몰로토프와 소이탄 1개당 적에게 입힌 피해입니다."
     }
   },
   "pagination": {
@@ -8486,7 +8514,27 @@
         }
       },
       "discord_user": "이 사용자는 디스코드 사용자입니다. 스탯 추적을 활성화하려면 아래와 같이 입력해 디스코드 ID를 등록하세요",
-      "discord_link": "공식 디스코드 채널에서."
+      "discord_link": "공식 디스코드 채널에서.",
+      "utility": {
+        "waste": "낭비",
+        "thrown": "투척",
+        "blinded": "실명",
+        "teammates": "아군",
+        "blind": "실명 시간",
+        "assists": "어시스트",
+        "damage": "피해",
+        "team_damage": "아군 피해",
+        "unused": "미사용",
+        "mag_left": "남은 탄",
+        "per_flash": "섬광당",
+        "avg": "평균",
+        "of_flashes": "섬광 대비",
+        "per_nade": "개당",
+        "on_death": "사망 시",
+        "at_reload": "재장전 시",
+        "seconds": "{count}초",
+        "team_total": "팀"
+      }
     },
     "overview": {
       "promote_captain": "팀장으로 지정",
@@ -10027,7 +10075,9 @@
       "recap": "시즌 {number} 최종 {final}, 최고 {peak}, {wins}승 {losses}패"
     },
     "season_best": "{season} 최고 레이팅",
-    "to_next": "{tier}까지 {points}"
+    "to_next": "{tier}까지 {points}",
+    "show_lobby": "{count}명 모두 보기",
+    "hide_lobby": "다른 플레이어 숨기기"
   },
   "breadcrumbs": {
     "dashboard": "대시보드"

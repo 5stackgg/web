@@ -856,6 +856,34 @@
     "awp": {
       "label": "AWP",
       "description": "مؤشر استخدام AWP ودور القناص — مدى اعتماد اللاعب على الـ AWP."
+    },
+    "team_flashed_per": {
+      "label": "زملاء / Flash",
+      "description": "متوسط عدد الزملاء الذين أُعموا لكل Flash مُلقاة — الأقل أفضل."
+    },
+    "flash_assist_pct": {
+      "label": "نسبة مساعدات Flash",
+      "description": "نسبة قنابل Flash التي مهّدت لقتل — أعميت خصمًا وقتله زميلك بعدها بقليل."
+    },
+    "he_throws": {
+      "label": "قنابل HE مُلقاة",
+      "description": "عدد قنابل HE التي ألقيتها."
+    },
+    "he_damage_per": {
+      "label": "ضرر HE / قنبلة",
+      "description": "الضرر الذي تلحقه قنابل HE بالخصوم لكل قنبلة HE مُلقاة."
+    },
+    "he_team_damage_per": {
+      "label": "ضرر HE على الفريق / قنبلة",
+      "description": "الضرر الذي تلحقه قنابل HE بزملائك لكل قنبلة HE مُلقاة — الأقل أفضل."
+    },
+    "molotov_throws": {
+      "label": "Molotovs مُلقاة",
+      "description": "عدد قنابل المولوتوف والحارقة التي ألقيتها."
+    },
+    "molotov_damage_per": {
+      "label": "ضرر النار / قنبلة",
+      "description": "الضرر الذي تلحقه قنابل المولوتوف والحارقة بالخصوم لكل قنبلة مُلقاة."
     }
   },
   "pagination": {
@@ -8486,7 +8514,27 @@
         }
       },
       "discord_user": "هذا مستخدم Discord، سجّل معرّف Discord الخاص بك لتفعيل تتبع الإحصاءات بكتابة",
-      "discord_link": "في قناة Discord الرسمية."
+      "discord_link": "في قناة Discord الرسمية.",
+      "utility": {
+        "waste": "هدر",
+        "thrown": "مُلقاة",
+        "blinded": "أُعمي",
+        "teammates": "الفريق",
+        "blind": "العمى",
+        "assists": "مساعدات",
+        "damage": "الضرر",
+        "team_damage": "ضرر الفريق",
+        "unused": "غير مستخدم",
+        "mag_left": "المتبقي بالمخزن",
+        "per_flash": "لكل Flash",
+        "avg": "متوسط",
+        "of_flashes": "من الـ Flash",
+        "per_nade": "لكل قنبلة",
+        "on_death": "عند الموت",
+        "at_reload": "عند التلقيم",
+        "seconds": "{count} ث",
+        "team_total": "الفريق"
+      }
     },
     "overview": {
       "promote_captain": "ترقية إلى قائد الفريق",
@@ -10027,7 +10075,9 @@
       "recap": "انتهى الموسم {number} عند {final}، الأفضل {peak}، {wins}ف–{losses}خ"
     },
     "season_best": "أفضل تقييم في {season}",
-    "to_next": "{points} حتى {tier}"
+    "to_next": "{points} حتى {tier}",
+    "show_lobby": "عرض جميع اللاعبين ({count})",
+    "hide_lobby": "إخفاء اللاعبين الآخرين"
   },
   "breadcrumbs": {
     "dashboard": "لوحة التحكم"

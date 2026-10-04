@@ -856,6 +856,34 @@
     "awp": {
       "label": "AWP",
       "description": "AWP-användning / snipersignal — hur mycket en spelare förlitar sig på AWP:n."
+    },
+    "team_flashed_per": {
+      "label": "Lagkamrater / flash",
+      "description": "Genomsnittligt antal blindade lagkamrater per kastad flash — lägre är bättre."
+    },
+    "flash_assist_pct": {
+      "label": "Flash-assist %",
+      "description": "Andel av dina flashar som förberedde en kill — du blindade en fiende och en lagkamrat dödade hen strax efter."
+    },
+    "he_throws": {
+      "label": "Kastade HE",
+      "description": "Hur många HE-granater du kastade."
+    },
+    "he_damage_per": {
+      "label": "HE-skada / granat",
+      "description": "Skada dina HE-granater gör mot fiender, per kastad HE."
+    },
+    "he_team_damage_per": {
+      "label": "HE-lagskada / granat",
+      "description": "Skada dina HE-granater gör mot lagkamrater, per kastad HE — lägre är bättre."
+    },
+    "molotov_throws": {
+      "label": "Kastade molotovs",
+      "description": "Hur många molotovs och brandgranater du kastade."
+    },
+    "molotov_damage_per": {
+      "label": "Eldskada / granat",
+      "description": "Skada dina molotovs och brandgranater gör mot fiender, per kastad granat."
     }
   },
   "pagination": {
@@ -8486,7 +8514,27 @@
         }
       },
       "discord_user": "Detta är en Discord-användare, registrera ditt Discord-ID för att aktivera statistikspårning genom att skriva",
-      "discord_link": "i den officiella Discord-kanalen."
+      "discord_link": "i den officiella Discord-kanalen.",
+      "utility": {
+        "waste": "Slöseri",
+        "thrown": "Kastade",
+        "blinded": "Blindade",
+        "teammates": "Lag",
+        "blind": "Blindtid",
+        "assists": "Assists",
+        "damage": "Skada",
+        "team_damage": "Lagskada",
+        "unused": "Oanvänd",
+        "mag_left": "Kvar i mag.",
+        "per_flash": "per flash",
+        "avg": "snitt",
+        "of_flashes": "av flashar",
+        "per_nade": "per granat",
+        "on_death": "vid död",
+        "at_reload": "vid omladdning",
+        "seconds": "{count}s",
+        "team_total": "Lag"
+      }
     },
     "overview": {
       "promote_captain": "Utse till lagkapten",
@@ -10027,7 +10075,9 @@
       "recap": "Säsong {number} slutade på {final}, bäst {peak}, {wins}V–{losses}F"
     },
     "season_best": "Bästa ranking i {season}",
-    "to_next": "{points} till {tier}"
+    "to_next": "{points} till {tier}",
+    "show_lobby": "Visa alla {count} spelare",
+    "hide_lobby": "Dölj andra spelare"
   },
   "breadcrumbs": {
     "dashboard": "översikt"

@@ -856,6 +856,34 @@
     "awp": {
       "label": "AWP",
       "description": "AWP 使用／狙擊手角色訊號——玩家依賴 AWP 的程度。"
+    },
+    "team_flashed_per": {
+      "label": "每次閃光致盲隊友",
+      "description": "每投擲一顆閃光彈平均致盲的隊友數——數值越低越好。"
+    },
+    "flash_assist_pct": {
+      "label": "閃光助攻率",
+      "description": "促成擊殺的閃光彈佔比——您致盲了敵人，隊友隨後將其擊殺。"
+    },
+    "he_throws": {
+      "label": "高爆投擲",
+      "description": "您投擲的高爆手榴彈數量。"
+    },
+    "he_damage_per": {
+      "label": "高爆傷害 / 顆",
+      "description": "每顆高爆手榴彈對敵人造成的傷害。"
+    },
+    "he_team_damage_per": {
+      "label": "高爆友傷 / 顆",
+      "description": "每顆高爆手榴彈對隊友造成的傷害——數值越低越好。"
+    },
+    "molotov_throws": {
+      "label": "燃燒彈投擲",
+      "description": "您投擲的燃燒瓶和燃燒彈數量。"
+    },
+    "molotov_damage_per": {
+      "label": "燃燒傷害 / 顆",
+      "description": "每顆燃燒瓶或燃燒彈對敵人造成的傷害。"
     }
   },
   "pagination": {
@@ -8486,7 +8514,27 @@
         }
       },
       "discord_user": "這是一位 Discord 使用者，請輸入以下指令註冊您的 Discord ID 以啟用數據追蹤",
-      "discord_link": "（於官方 Discord 頻道中）。"
+      "discord_link": "（於官方 Discord 頻道中）。",
+      "utility": {
+        "waste": "浪費",
+        "thrown": "投擲",
+        "blinded": "致盲",
+        "teammates": "隊友",
+        "blind": "致盲時長",
+        "assists": "助攻",
+        "damage": "傷害",
+        "team_damage": "友傷",
+        "unused": "未使用",
+        "mag_left": "剩餘彈匣",
+        "per_flash": "每顆閃光",
+        "avg": "平均",
+        "of_flashes": "佔閃光",
+        "per_nade": "每顆",
+        "on_death": "陣亡時",
+        "at_reload": "換彈時",
+        "seconds": "{count}秒",
+        "team_total": "隊伍"
+      }
     },
     "overview": {
       "promote_captain": "提升為隊長",
@@ -10027,7 +10075,9 @@
       "recap": "第 {number} 賽季以 {final} 結束，最高 {peak}，{wins}勝{losses}負"
     },
     "season_best": "{season} 最高積分",
-    "to_next": "距 {tier} 還差 {points}"
+    "to_next": "距 {tier} 還差 {points}",
+    "show_lobby": "顯示全部 {count} 名玩家",
+    "hide_lobby": "隱藏其他玩家"
   },
   "breadcrumbs": {
     "dashboard": "儀表板"

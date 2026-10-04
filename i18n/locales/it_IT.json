@@ -856,6 +856,34 @@
     "awp": {
       "label": "AWP",
       "description": "Uso dell'AWP / indicatore del ruolo sniper — quanto un giocatore si affida all'AWP."
+    },
+    "team_flashed_per": {
+      "label": "Compagni / flash",
+      "description": "Numero medio di compagni accecati per flash lanciata — meno è meglio."
+    },
+    "flash_assist_pct": {
+      "label": "% assist flash",
+      "description": "Quota delle tue flash che hanno preparato un'uccisione — hai accecato un nemico e un compagno lo ha ucciso poco dopo."
+    },
+    "he_throws": {
+      "label": "HE lanciate",
+      "description": "Quante granate HE hai lanciato."
+    },
+    "he_damage_per": {
+      "label": "Danno HE / granata",
+      "description": "Danno che le tue granate HE infliggono ai nemici, per HE lanciata."
+    },
+    "he_team_damage_per": {
+      "label": "Danno HE ai compagni / granata",
+      "description": "Danno che le tue granate HE infliggono ai compagni, per HE lanciata — meno è meglio."
+    },
+    "molotov_throws": {
+      "label": "Molotov lanciate",
+      "description": "Quante molotov e incendiarie hai lanciato."
+    },
+    "molotov_damage_per": {
+      "label": "Danno da fuoco / granata",
+      "description": "Danno che le tue molotov e incendiarie infliggono ai nemici, per granata lanciata."
     }
   },
   "pagination": {
@@ -8486,7 +8514,27 @@
         }
       },
       "discord_user": "Questo è un utente Discord, registra il tuo ID Discord per abilitare il tracciamento delle statistiche scrivendo",
-      "discord_link": "nel canale Discord ufficiale."
+      "discord_link": "nel canale Discord ufficiale.",
+      "utility": {
+        "waste": "Spreco",
+        "thrown": "Lanciate",
+        "blinded": "Accecati",
+        "teammates": "Compagni",
+        "blind": "Accecamento",
+        "assists": "Assist",
+        "damage": "Danno",
+        "team_damage": "Danno compagni",
+        "unused": "Inutilizzata",
+        "mag_left": "Caricatore residuo",
+        "per_flash": "per flash",
+        "avg": "media",
+        "of_flashes": "delle flash",
+        "per_nade": "per granata",
+        "on_death": "alla morte",
+        "at_reload": "alla ricarica",
+        "seconds": "{count}s",
+        "team_total": "Squadra"
+      }
     },
     "overview": {
       "promote_captain": "Promuovi a capitano",
@@ -10027,7 +10075,9 @@
       "recap": "Stagione {number} chiusa a {final}, massimo {peak}, {wins}V–{losses}S"
     },
     "season_best": "Miglior punteggio di {season}",
-    "to_next": "{points} a {tier}"
+    "to_next": "{points} a {tier}",
+    "show_lobby": "Mostra tutti i {count} giocatori",
+    "hide_lobby": "Nascondi gli altri giocatori"
   },
   "breadcrumbs": {
     "dashboard": "dashboard"

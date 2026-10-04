@@ -856,6 +856,34 @@
     "awp": {
       "label": "AWP",
       "description": "AWP 使用/狙击手角色信号——玩家依赖 AWP 的程度。"
+    },
+    "team_flashed_per": {
+      "label": "每次闪光致盲队友",
+      "description": "每投掷一颗闪光弹平均致盲的队友数——数值越低越好。"
+    },
+    "flash_assist_pct": {
+      "label": "闪光助攻率",
+      "description": "促成击杀的闪光弹占比——您致盲了敌人，队友随后将其击杀。"
+    },
+    "he_throws": {
+      "label": "高爆投掷",
+      "description": "您投掷的高爆手雷数量。"
+    },
+    "he_damage_per": {
+      "label": "高爆伤害 / 颗",
+      "description": "每颗高爆手雷对敌人造成的伤害。"
+    },
+    "he_team_damage_per": {
+      "label": "高爆友伤 / 颗",
+      "description": "每颗高爆手雷对队友造成的伤害——数值越低越好。"
+    },
+    "molotov_throws": {
+      "label": "燃烧弹投掷",
+      "description": "您投掷的燃烧瓶和燃烧弹数量。"
+    },
+    "molotov_damage_per": {
+      "label": "燃烧伤害 / 颗",
+      "description": "每颗燃烧瓶或燃烧弹对敌人造成的伤害。"
     }
   },
   "pagination": {
@@ -8486,7 +8514,27 @@
         }
       },
       "discord_user": "这是一位 Discord 用户，请在官方 Discord 频道中输入以下内容注册您的 Discord ID 以启用数据追踪",
-      "discord_link": "在官方 Discord 频道中。"
+      "discord_link": "在官方 Discord 频道中。",
+      "utility": {
+        "waste": "浪费",
+        "thrown": "投掷",
+        "blinded": "致盲",
+        "teammates": "队友",
+        "blind": "致盲时长",
+        "assists": "助攻",
+        "damage": "伤害",
+        "team_damage": "友伤",
+        "unused": "未用",
+        "mag_left": "剩余弹匣",
+        "per_flash": "每颗闪光",
+        "avg": "平均",
+        "of_flashes": "占闪光",
+        "per_nade": "每颗",
+        "on_death": "阵亡时",
+        "at_reload": "换弹时",
+        "seconds": "{count}秒",
+        "team_total": "队伍"
+      }
     },
     "overview": {
       "promote_captain": "提升为队长",
@@ -10027,7 +10075,9 @@
       "recap": "第 {number} 赛季以 {final} 结束，最高 {peak}，{wins}胜{losses}负"
     },
     "season_best": "{season} 最高积分",
-    "to_next": "距 {tier} 还差 {points}"
+    "to_next": "距 {tier} 还差 {points}",
+    "show_lobby": "显示全部 {count} 名玩家",
+    "hide_lobby": "隐藏其他玩家"
   },
   "breadcrumbs": {
     "dashboard": "数据面板"

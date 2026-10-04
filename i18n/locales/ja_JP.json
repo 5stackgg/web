@@ -856,6 +856,34 @@
     "awp": {
       "label": "AWP",
       "description": "AWP の使用度・スナイパーロールの指標です。AWP への依存度を示します。"
+    },
+    "team_flashed_per": {
+      "label": "味方 / フラッシュ",
+      "description": "フラッシュ1発あたりに盲目化した味方の平均人数です。低いほど良好です。"
+    },
+    "flash_assist_pct": {
+      "label": "フラッシュアシスト率",
+      "description": "キルにつながったフラッシュの割合です。敵を盲目化し、その直後に味方がその敵をキルした場合です。"
+    },
+    "he_throws": {
+      "label": "HE 投擲数",
+      "description": "投げた HE グレネードの数です。"
+    },
+    "he_damage_per": {
+      "label": "HE ダメージ / 個",
+      "description": "HE グレネード1個あたりに敵へ与えたダメージです。"
+    },
+    "he_team_damage_per": {
+      "label": "HE 味方ダメージ / 個",
+      "description": "HE グレネード1個あたりに味方へ与えたダメージです。低いほど良好です。"
+    },
+    "molotov_throws": {
+      "label": "モロトフ投擲数",
+      "description": "投げたモロトフと焼夷弾の数です。"
+    },
+    "molotov_damage_per": {
+      "label": "炎ダメージ / 個",
+      "description": "モロトフと焼夷弾1個あたりに敵へ与えたダメージです。"
     }
   },
   "pagination": {
@@ -8486,7 +8514,27 @@
         }
       },
       "discord_user": "これは Discord ユーザーです。スタッツ計測を有効にするには、次を入力して Discord ID を登録してください",
-      "discord_link": "公式 Discord チャンネルで実行してください。"
+      "discord_link": "公式 Discord チャンネルで実行してください。",
+      "utility": {
+        "waste": "ムダ",
+        "thrown": "投擲",
+        "blinded": "盲目化",
+        "teammates": "味方",
+        "blind": "盲目時間",
+        "assists": "アシスト",
+        "damage": "ダメージ",
+        "team_damage": "味方ダメージ",
+        "unused": "未使用",
+        "mag_left": "残弾",
+        "per_flash": "1発あたり",
+        "avg": "平均",
+        "of_flashes": "フラッシュ比",
+        "per_nade": "1個あたり",
+        "on_death": "死亡時",
+        "at_reload": "リロード時",
+        "seconds": "{count}秒",
+        "team_total": "チーム"
+      }
     },
     "overview": {
       "promote_captain": "キャプテンに任命",
@@ -10027,7 +10075,9 @@
       "recap": "シーズン{number}は{final}で終了、最高{peak}、{wins}勝{losses}敗"
     },
     "season_best": "{season}の最高レート",
-    "to_next": "{tier}まで{points}"
+    "to_next": "{tier}まで{points}",
+    "show_lobby": "{count}人全員を表示",
+    "hide_lobby": "他のプレイヤーを隠す"
   },
   "breadcrumbs": {
     "dashboard": "ダッシュボード"

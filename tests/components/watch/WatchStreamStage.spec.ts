@@ -3,6 +3,7 @@ import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import WatchStreamStage from "~/components/watch/WatchStreamStage.vue";
 import StreamLiveTag from "~/components/match/StreamLiveTag.vue";
+import StreamMatchCard from "~/components/match/StreamMatchCard.vue";
 import {
   stageNeedsLogin,
   stageScoreBug,
@@ -163,6 +164,8 @@ describe("WatchStreamStage over the game stream", () => {
     const liveTag = () => wrapper.findComponent(StreamLiveTag).classes();
 
     expect(wrapper.find(".live-player").exists()).toBe(true);
+    // The HUD burned into the stream already names the teams and the score.
+    expect(wrapper.findComponent(StreamMatchCard).exists()).toBe(false);
     // Up for a beat when the picture first comes up.
     expect(liveTag()).toContain("opacity-100");
 
@@ -201,5 +204,6 @@ describe("WatchStreamStage over the game stream", () => {
     expect(wrapper.findComponent(StreamLiveTag).classes()).toContain(
       "opacity-100",
     );
+    expect(wrapper.findComponent(StreamMatchCard).exists()).toBe(true);
   });
 });

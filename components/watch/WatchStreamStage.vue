@@ -197,11 +197,12 @@ const mode = computed<"login" | "elsewhere" | "game" | "waiting" | "embed">(
   },
 );
 
-// The lower third rides over the picture. While the WHEP player has none,
-// its own caption (match card + status) is already on screen.
+// The match card for when the stage has no picture of its own to show. The
+// game stream never needs it: until it connects, the WHEP player shows its
+// own caption (match card + status), and once it has a picture the HUD burned
+// into it already names the teams and the score.
 const showLowerThird = computed(
-  () =>
-    mode.value !== "waiting" && !(mode.value === "game" && phase.value !== null),
+  () => mode.value !== "waiting" && mode.value !== "game",
 );
 
 const embedRef = ref<any>(null);
@@ -440,18 +441,14 @@ const trayButtonClass =
           class="absolute inset-0"
         />
 
-        <!-- `inert` while faded out so the card can't be clicked through. -->
         <template v-if="showLowerThird">
           <StreamMatchCard
             :match-id="current.id"
             :backdrop="false"
             class="max-sm:hidden"
-            :class="chromeFade"
-            :inert="chromeVisible ? undefined : true"
           />
           <div
-            class="pointer-events-none absolute bottom-2 left-2 rounded-[3px] bg-background/90 px-2.5 py-1.5 text-[13px] font-semibold tabular-nums sm:hidden"
-            :class="chromeFade"
+            class="absolute bottom-2 left-2 rounded-[3px] bg-background/90 px-2.5 py-1.5 text-[13px] font-semibold tabular-nums sm:hidden"
           >
             {{ scoreBug }}
           </div>

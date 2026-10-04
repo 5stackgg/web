@@ -10947,7 +10947,9 @@
       "highlights": "Highlights",
       "overview": "Overblik",
       "story": "Historie",
-      "matches": "Kampe"
+      "matches": "Kampe",
+      "players": "Spillere",
+      "manage": "Administrer"
     },
     "not_found": {
       "title": "Event ikke fundet",
@@ -11110,7 +11112,8 @@
       "link_title_placeholder": "Valgfri titel",
       "link_add": "Tilføj",
       "link_invalid": "Indtast en gyldig http(s)-URL",
-      "link_added": "Link tilføjet"
+      "link_added": "Link tilføjet",
+      "uploads": "Uploads"
     },
     "phase": {
       "upcoming": "Kommende",
@@ -11121,10 +11124,33 @@
       "for_you": "Til dig",
       "rank": "Eventplacering",
       "rating": "Rating",
-      "matches": "Kampe"
+      "matches": "Kampe",
+      "runs": "{starts} til {ends}",
+      "days_to_go": "dag tilbage | dage tilbage",
+      "live_now": "Live nu",
+      "sign_up": "Tilmelding",
+      "champions": "Mestre",
+      "top": "Toppen af ranglisten",
+      "full_leaderboard": "Hele ranglisten",
+      "leaderboard_so_far": "Ranglisten indtil nu",
+      "your_day": "Din dag",
+      "your_event": "Dit event",
+      "open_profile": "Åbn din eventprofil",
+      "of_players": "af {count}",
+      "results": "Resultater",
+      "results_so_far": "Resultater indtil nu",
+      "whos_going": "Hvem kommer",
+      "latest_uploads": "Seneste uploads",
+      "from_organizers": "Fra arrangørerne",
+      "moments": "Øjeblikke",
+      "upcoming_empty": "Turneringer og spillerlisten vises her, når arrangørerne tilføjer dem.",
+      "nothing_yet": "Intet her endnu. Resultater, rangliste og højdepunkter fyldes ud, når en kamp knyttet til eventet er spillet."
     },
     "matches": {
-      "none": "Der er ikke spillet nogen kampe i dette events turneringer endnu."
+      "none": "Der er ikke spillet nogen kampe i dette events turneringer endnu.",
+      "all": "Alle kampe",
+      "mine": "Mine",
+      "none_mine": "Du har ikke spillet en kamp ved dette event."
     },
     "story": {
       "highlights": "Highlights"
@@ -11157,6 +11183,19 @@
       "axis_adr": "ADR",
       "axis_hs": "HS%",
       "axis_assist": "Assist"
+    },
+    "header": {
+      "add_banner": "Tilføj et banner",
+      "day_of": "Dag {day} af {total}",
+      "day": "Dag {day}",
+      "starts_in": "i dag | i morgen | om {count} dage",
+      "players": "{count} spiller | {count} spillere",
+      "teams": "{count} hold | {count} hold",
+      "matches": "{count} kamp | {count} kampe",
+      "watch_live": "Se live",
+      "register": "Tilmeld",
+      "share": "Del",
+      "link_copied": "Link kopieret"
     }
   },
   "awards": {

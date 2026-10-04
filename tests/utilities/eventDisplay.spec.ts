@@ -1,6 +1,12 @@
 // @vitest-environment node
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { eventPhase, eventPhaseWhere } from "~/utilities/eventDisplay";
+import {
+  daysUntil,
+  eventDay,
+  eventPhase,
+  eventPhaseWhere,
+  formatEventRange,
+} from "~/utilities/eventDisplay";
 import type { EventPhase } from "~/utilities/eventDisplay";
 import { matchesWhere } from "../helpers/fakeHasura";
 
@@ -60,4 +66,56 @@ describe("eventPhaseWhere", () => {
       expect(selected).toEqual(expected);
     },
   );
+});
+
+describe("eventDay", () => {
+  it("counts calendar days from the start, capped at the last day", () => {
+    const now = new Date(2025, 10, 8, 21, 40);
+    const event = {
+      starts_at: new Date(2025, 10, 7, 0, 0).toISOString(),
+      ends_at: new Date(2025, 10, 10, 12, 0).toISOString(),
+    };
+    expect(eventDay(event, now)).toEqual({ day: 2, total: 4 });
+    expect(eventDay(event, new Date(2025, 10, 12))).toEqual({
+      day: 4,
+      total: 4,
+    });
+  });
+
+  it("has no total for an open-ended event and nothing without a start", () => {
+    const now = new Date(2025, 10, 9, 1, 0);
+    expect(
+      eventDay({ starts_at: new Date(2025, 10, 7).toISOString() }, now),
+    ).toEqual({ day: 3, total: null });
+    expect(eventDay({ starts_at: null }, now)).toBeNull();
+  });
+});
+
+describe("daysUntil", () => {
+  it("counts calendar days, never below zero", () => {
+    const now = new Date(2026, 9, 4, 19, 30);
+    expect(daysUntil(new Date(2026, 10, 6, 18, 0).toISOString(), now)).toBe(33);
+    expect(daysUntil(new Date(2026, 9, 5, 0, 30).toISOString(), now)).toBe(1);
+    expect(daysUntil(new Date(2026, 9, 1).toISOString(), now)).toBe(0);
+    expect(daysUntil(null, now)).toBeNull();
+  });
+});
+
+describe("formatEventRange", () => {
+  it("writes the shared parts of a range once", () => {
+    const range = formatEventRange(
+      new Date(2025, 10, 7).toISOString(),
+      new Date(2025, 10, 10).toISOString(),
+    );
+    expect(range).toMatch(/7/);
+    expect(range).toMatch(/10/);
+    expect(range?.match(/2025/g)).toHaveLength(1);
+  });
+
+  it("falls back to whichever date exists", () => {
+    expect(formatEventRange(null, null)).toBeNull();
+    expect(formatEventRange(new Date(2025, 10, 7).toISOString(), null)).toMatch(
+      /2025/,
+    );
+  });
 });

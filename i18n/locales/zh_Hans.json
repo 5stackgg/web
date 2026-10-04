@@ -10947,7 +10947,9 @@
       "highlights": "高光时刻",
       "overview": "概览",
       "story": "动态",
-      "matches": "比赛"
+      "matches": "比赛",
+      "players": "选手",
+      "manage": "管理"
     },
     "not_found": {
       "title": "未找到活动",
@@ -11110,7 +11112,8 @@
       "link_title_placeholder": "可选标题",
       "link_add": "添加",
       "link_invalid": "请输入有效的 http(s) URL",
-      "link_added": "链接已添加"
+      "link_added": "链接已添加",
+      "uploads": "上传"
     },
     "phase": {
       "upcoming": "即将开始",
@@ -11121,10 +11124,33 @@
       "for_you": "为您推荐",
       "rank": "活动排名",
       "rating": "评分",
-      "matches": "比赛"
+      "matches": "比赛",
+      "runs": "{starts} 至 {ends}",
+      "days_to_go": "天后开始 | 天后开始",
+      "live_now": "正在直播",
+      "sign_up": "报名",
+      "champions": "冠军",
+      "top": "排行榜前列",
+      "full_leaderboard": "完整排行榜",
+      "leaderboard_so_far": "目前排行榜",
+      "your_day": "你的今天",
+      "your_event": "你的赛事",
+      "open_profile": "打开你的赛事资料",
+      "of_players": "共 {count} 人",
+      "results": "赛果",
+      "results_so_far": "目前赛果",
+      "whos_going": "参加者",
+      "latest_uploads": "最新上传",
+      "from_organizers": "来自主办方",
+      "moments": "精彩瞬间",
+      "upcoming_empty": "主办方添加后，赛事和选手名单会显示在这里。",
+      "nothing_yet": "这里还没有内容。与此赛事关联的比赛开打后，赛果、排行榜和精彩片段会显示在这里。"
     },
     "matches": {
-      "none": "此活动赛事尚未进行任何比赛。"
+      "none": "此活动赛事尚未进行任何比赛。",
+      "all": "全部比赛",
+      "mine": "我的",
+      "none_mine": "你还没有在此赛事中打过比赛。"
     },
     "story": {
       "highlights": "高光"
@@ -11157,6 +11183,19 @@
       "axis_adr": "ADR",
       "axis_hs": "爆头率",
       "axis_assist": "助攻"
+    },
+    "header": {
+      "add_banner": "添加横幅",
+      "day_of": "第 {day} 天，共 {total} 天",
+      "day": "第 {day} 天",
+      "starts_in": "今天 | 明天 | {count} 天后",
+      "players": "{count} 名选手 | {count} 名选手",
+      "teams": "{count} 支队伍 | {count} 支队伍",
+      "matches": "{count} 场比赛 | {count} 场比赛",
+      "watch_live": "观看直播",
+      "register": "报名",
+      "share": "分享",
+      "link_copied": "链接已复制"
     }
   },
   "awards": {

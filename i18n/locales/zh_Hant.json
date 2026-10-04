@@ -10947,7 +10947,9 @@
       "highlights": "精華時刻",
       "overview": "總覽",
       "story": "動態",
-      "matches": "比賽"
+      "matches": "比賽",
+      "players": "選手",
+      "manage": "管理"
     },
     "not_found": {
       "title": "找不到活動",
@@ -11110,7 +11112,8 @@
       "link_title_placeholder": "選填標題",
       "link_add": "新增",
       "link_invalid": "請輸入有效的 http(s) URL",
-      "link_added": "連結已新增"
+      "link_added": "連結已新增",
+      "uploads": "上傳"
     },
     "phase": {
       "upcoming": "即將開始",
@@ -11121,10 +11124,33 @@
       "for_you": "為您推薦",
       "rank": "活動排名",
       "rating": "評分",
-      "matches": "比賽"
+      "matches": "比賽",
+      "runs": "{starts} 至 {ends}",
+      "days_to_go": "天後開始 | 天後開始",
+      "live_now": "正在直播",
+      "sign_up": "報名",
+      "champions": "冠軍",
+      "top": "排行榜前列",
+      "full_leaderboard": "完整排行榜",
+      "leaderboard_so_far": "目前排行榜",
+      "your_day": "你的今天",
+      "your_event": "你的賽事",
+      "open_profile": "開啟你的賽事資料",
+      "of_players": "共 {count} 人",
+      "results": "賽果",
+      "results_so_far": "目前賽果",
+      "whos_going": "參加者",
+      "latest_uploads": "最新上傳",
+      "from_organizers": "來自主辦方",
+      "moments": "精彩瞬間",
+      "upcoming_empty": "主辦方新增後，賽事和選手名單會顯示在這裡。",
+      "nothing_yet": "這裡還沒有內容。與此賽事關聯的比賽開打後，賽果、排行榜和精彩片段會顯示在這裡。"
     },
     "matches": {
-      "none": "此活動的賽事尚未進行任何比賽。"
+      "none": "此活動的賽事尚未進行任何比賽。",
+      "all": "全部比賽",
+      "mine": "我的",
+      "none_mine": "你還沒有在此賽事中打過比賽。"
     },
     "story": {
       "highlights": "精華"
@@ -11157,6 +11183,19 @@
       "axis_adr": "ADR",
       "axis_hs": "HS%",
       "axis_assist": "助攻"
+    },
+    "header": {
+      "add_banner": "新增橫幅",
+      "day_of": "第 {day} 天，共 {total} 天",
+      "day": "第 {day} 天",
+      "starts_in": "今天 | 明天 | {count} 天後",
+      "players": "{count} 名選手 | {count} 名選手",
+      "teams": "{count} 支隊伍 | {count} 支隊伍",
+      "matches": "{count} 場比賽 | {count} 場比賽",
+      "watch_live": "觀看直播",
+      "register": "報名",
+      "share": "分享",
+      "link_copied": "連結已複製"
     }
   },
   "awards": {

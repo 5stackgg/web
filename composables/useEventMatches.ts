@@ -31,40 +31,35 @@ const EVENT_MATCHES_QUERY = typedGql("query")({
 
 // The viewer's own matches for the "For you" band: a tiny separate query so
 // they surface even when they are deep in the paginated list.
-const MY_EVENT_MATCHES_QUERY = typedGql("query")({
-  event_match_links: [
-    {
-      where: {
-        event_id: { _eq: $("eventId", "uuid!") },
-        match: {
+// A match is "mine" when the viewer played in (or coached) either lineup.
+const myMatchWhere = {
+  event_id: { _eq: $("eventId", "uuid!") },
+  match: {
+    _or: [
+      {
+        lineup_1: {
           _or: [
-            {
-              lineup_1: {
-                _or: [
-                  {
-                    lineup_players: {
-                      steam_id: { _eq: $("steamId", "bigint!") },
-                    },
-                  },
-                  { coach_steam_id: { _eq: $("steamId", "bigint!") } },
-                ],
-              },
-            },
-            {
-              lineup_2: {
-                _or: [
-                  {
-                    lineup_players: {
-                      steam_id: { _eq: $("steamId", "bigint!") },
-                    },
-                  },
-                  { coach_steam_id: { _eq: $("steamId", "bigint!") } },
-                ],
-              },
-            },
+            { lineup_players: { steam_id: { _eq: $("steamId", "bigint!") } } },
+            { coach_steam_id: { _eq: $("steamId", "bigint!") } },
           ],
         },
       },
+      {
+        lineup_2: {
+          _or: [
+            { lineup_players: { steam_id: { _eq: $("steamId", "bigint!") } } },
+            { coach_steam_id: { _eq: $("steamId", "bigint!") } },
+          ],
+        },
+      },
+    ],
+  },
+};
+
+const MY_EVENT_MATCHES_QUERY = typedGql("query")({
+  event_match_links: [
+    {
+      where: myMatchWhere,
       order_by: [{ match: { created_at: order_by.desc } }],
       limit: 5,
     },
@@ -72,6 +67,26 @@ const MY_EVENT_MATCHES_QUERY = typedGql("query")({
       match_id: true,
       match: simpleMatchFields,
     },
+  ],
+});
+
+// The Matches tab's "Mine" view: the same page shape as the full list.
+const MY_EVENT_MATCHES_PAGE_QUERY = typedGql("query")({
+  event_match_links: [
+    {
+      where: myMatchWhere,
+      order_by: [{ match: { created_at: order_by.desc } }],
+      limit: $("limit", "Int!"),
+      offset: $("offset", "Int!"),
+    },
+    {
+      match_id: true,
+      match: simpleMatchFields,
+    },
+  ],
+  event_match_links_aggregate: [
+    { where: myMatchWhere },
+    { aggregate: { count: true } },
   ],
 });
 
@@ -94,17 +109,21 @@ export function useEventMatches(eventId: Ref<string | null>) {
   const perPage = ref(DEFAULT_PAGE_SIZE);
   const loading = ref(true);
   const paging = ref(false);
+  const mine = ref(false);
 
   let generation = 0;
 
   async function fetchPage(targetPage: number): Promise<EventMatch[]> {
     if (!eventId.value) return [];
+    const steamId = useAuthStore().me?.steam_id;
+    const onlyMine = mine.value && !!steamId;
     const { data } = await apolloClient.query({
-      query: EVENT_MATCHES_QUERY,
+      query: onlyMine ? MY_EVENT_MATCHES_PAGE_QUERY : EVENT_MATCHES_QUERY,
       variables: {
         eventId: eventId.value,
         limit: perPage.value,
         offset: (targetPage - 1) * perPage.value,
+        ...(onlyMine ? { steamId } : {}),
       },
       fetchPolicy: "network-only",
     });
@@ -193,6 +212,25 @@ export function useEventMatches(eventId: Ref<string | null>) {
     }
   }
 
+  async function setMine(value: boolean) {
+    if (value === mine.value) return;
+    const gen = generation;
+    mine.value = value;
+    page.value = 1;
+    paging.value = true;
+    try {
+      await fetchPage(1);
+    } catch (error) {
+      if (gen === generation) {
+        console.error("Error filtering event matches:", error);
+      }
+    } finally {
+      if (gen === generation) {
+        paging.value = false;
+      }
+    }
+  }
+
   watch(eventId, refetch, { immediate: true });
 
   return {
@@ -203,6 +241,8 @@ export function useEventMatches(eventId: Ref<string | null>) {
     perPage,
     loading,
     paging,
+    mine,
+    setMine,
     setPage,
     setPerPage,
     refetch,

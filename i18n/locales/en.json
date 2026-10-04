@@ -10949,7 +10949,9 @@
       "highlights": "Highlights",
       "overview": "Overview",
       "story": "Story",
-      "matches": "Matches"
+      "matches": "Matches",
+      "players": "Players",
+      "manage": "Manage"
     },
     "not_found": {
       "title": "Event Not Found",
@@ -11112,7 +11114,8 @@
       "link_title_placeholder": "Optional title",
       "link_add": "Add",
       "link_invalid": "Enter a valid http(s) URL",
-      "link_added": "Link added"
+      "link_added": "Link added",
+      "uploads": "Uploads"
     },
     "phase": {
       "upcoming": "Upcoming",
@@ -11123,10 +11126,33 @@
       "for_you": "For you",
       "rank": "Event rank",
       "rating": "Rating",
-      "matches": "Matches"
+      "matches": "Matches",
+      "runs": "{starts} to {ends}",
+      "days_to_go": "day to go | days to go",
+      "live_now": "Live now",
+      "sign_up": "Sign up",
+      "champions": "Champions",
+      "top": "Top of the leaderboard",
+      "full_leaderboard": "Full leaderboard",
+      "leaderboard_so_far": "Leaderboard so far",
+      "your_day": "Your day",
+      "your_event": "Your event",
+      "open_profile": "Open your event profile",
+      "of_players": "of {count}",
+      "results": "Results",
+      "results_so_far": "Results so far",
+      "whos_going": "Who's going",
+      "latest_uploads": "Latest uploads",
+      "from_organizers": "From the organizers",
+      "moments": "Moments",
+      "upcoming_empty": "Tournaments and the player list show up here once the organizers add them.",
+      "nothing_yet": "Nothing here yet. Results, the leaderboard and highlights fill in once a match linked to this event is played."
     },
     "matches": {
-      "none": "No matches have been played in this event's tournaments yet."
+      "none": "No matches have been played in this event's tournaments yet.",
+      "all": "All matches",
+      "mine": "Mine",
+      "none_mine": "You haven't played a match at this event."
     },
     "story": {
       "highlights": "Highlights"
@@ -11159,6 +11185,19 @@
       "axis_adr": "ADR",
       "axis_hs": "HS%",
       "axis_assist": "Assist"
+    },
+    "header": {
+      "add_banner": "Add a banner",
+      "day_of": "Day {day} of {total}",
+      "day": "Day {day}",
+      "starts_in": "today | tomorrow | in {count} days",
+      "players": "{count} player | {count} players",
+      "teams": "{count} team | {count} teams",
+      "matches": "{count} match | {count} matches",
+      "watch_live": "Watch live",
+      "register": "Register",
+      "share": "Share",
+      "link_copied": "Link copied"
     }
   },
   "awards": {

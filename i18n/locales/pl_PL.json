@@ -10947,7 +10947,9 @@
       "highlights": "Highlighty",
       "overview": "Przegląd",
       "story": "Historia",
-      "matches": "Mecze"
+      "matches": "Mecze",
+      "players": "Gracze",
+      "manage": "Zarządzaj"
     },
     "not_found": {
       "title": "Nie znaleziono wydarzenia",
@@ -11110,7 +11112,8 @@
       "link_title_placeholder": "Tytuł (opcjonalnie)",
       "link_add": "Dodaj",
       "link_invalid": "Podaj prawidłowy adres URL http(s)",
-      "link_added": "Link dodany"
+      "link_added": "Link dodany",
+      "uploads": "Przesłane"
     },
     "phase": {
       "upcoming": "Nadchodzące",
@@ -11121,10 +11124,33 @@
       "for_you": "Dla ciebie",
       "rank": "Ranga wydarzenia",
       "rating": "Rating",
-      "matches": "Mecze"
+      "matches": "Mecze",
+      "runs": "Od {starts} do {ends}",
+      "days_to_go": "dzień do startu | dni do startu",
+      "live_now": "Teraz na żywo",
+      "sign_up": "Zapisy",
+      "champions": "Zwycięzcy",
+      "top": "Czołówka rankingu",
+      "full_leaderboard": "Pełny ranking",
+      "leaderboard_so_far": "Ranking do tej pory",
+      "your_day": "Twój dzień",
+      "your_event": "Twoje wydarzenie",
+      "open_profile": "Otwórz swój profil wydarzenia",
+      "of_players": "z {count}",
+      "results": "Wyniki",
+      "results_so_far": "Dotychczasowe wyniki",
+      "whos_going": "Kto będzie",
+      "latest_uploads": "Najnowsze materiały",
+      "from_organizers": "Od organizatorów",
+      "moments": "Momenty",
+      "upcoming_empty": "Turnieje i lista graczy pojawią się tutaj, gdy organizatorzy je dodadzą.",
+      "nothing_yet": "Jeszcze nic tu nie ma. Wyniki, ranking i highlighty pojawią się po rozegraniu meczu powiązanego z tym wydarzeniem."
     },
     "matches": {
-      "none": "W turniejach tego wydarzenia nie rozegrano jeszcze żadnego meczu"
+      "none": "W turniejach tego wydarzenia nie rozegrano jeszcze żadnego meczu",
+      "all": "Wszystkie mecze",
+      "mine": "Moje",
+      "none_mine": "Nie rozegrałeś żadnego meczu na tym wydarzeniu."
     },
     "story": {
       "highlights": "Highlighty"
@@ -11157,6 +11183,19 @@
       "axis_adr": "ADR",
       "axis_hs": "HS%",
       "axis_assist": "Asysty"
+    },
+    "header": {
+      "add_banner": "Dodaj baner",
+      "day_of": "Dzień {day} z {total}",
+      "day": "Dzień {day}",
+      "starts_in": "dziś | jutro | za {count} dni",
+      "players": "{count} gracz | {count} graczy",
+      "teams": "{count} drużyna | {count} drużyn",
+      "matches": "{count} mecz | {count} meczów",
+      "watch_live": "Oglądaj na żywo",
+      "register": "Zapisz się",
+      "share": "Udostępnij",
+      "link_copied": "Link skopiowany"
     }
   },
   "awards": {

@@ -10947,7 +10947,9 @@
       "highlights": "Öne çıkanlar",
       "overview": "Genel bakış",
       "story": "Hikaye",
-      "matches": "Maçlar"
+      "matches": "Maçlar",
+      "players": "Oyuncular",
+      "manage": "Yönet"
     },
     "not_found": {
       "title": "Etkinlik bulunamadı",
@@ -11110,7 +11112,8 @@
       "link_title_placeholder": "İsteğe bağlı başlık",
       "link_add": "Ekle",
       "link_invalid": "Geçerli bir http(s) URL'si gir",
-      "link_added": "Bağlantı eklendi"
+      "link_added": "Bağlantı eklendi",
+      "uploads": "Yüklenenler"
     },
     "phase": {
       "upcoming": "Yaklaşan",
@@ -11121,10 +11124,33 @@
       "for_you": "Senin için",
       "rank": "Etkinlik rankı",
       "rating": "Puan",
-      "matches": "Maçlar"
+      "matches": "Maçlar",
+      "runs": "{starts} – {ends}",
+      "days_to_go": "gün kaldı | gün kaldı",
+      "live_now": "Şu an canlı",
+      "sign_up": "Kayıt",
+      "champions": "Şampiyonlar",
+      "top": "Sıralamanın zirvesi",
+      "full_leaderboard": "Tüm sıralama",
+      "leaderboard_so_far": "Şimdiye kadarki sıralama",
+      "your_day": "Senin günün",
+      "your_event": "Senin etkinliğin",
+      "open_profile": "Etkinlik profilini aç",
+      "of_players": "{count} kişiden",
+      "results": "Sonuçlar",
+      "results_so_far": "Şimdiye kadarki sonuçlar",
+      "whos_going": "Kimler geliyor",
+      "latest_uploads": "Son yüklenenler",
+      "from_organizers": "Organizatörlerden",
+      "moments": "Anlar",
+      "upcoming_empty": "Turnuvalar ve oyuncu listesi, organizatörler ekledikçe burada görünür.",
+      "nothing_yet": "Henüz bir şey yok. Bu etkinliğe bağlı bir maç oynandığında sonuçlar, sıralama ve öne çıkanlar burada görünür."
     },
     "matches": {
-      "none": "Bu etkinliğin turnuvalarında henüz maç oynanmadı."
+      "none": "Bu etkinliğin turnuvalarında henüz maç oynanmadı.",
+      "all": "Tüm maçlar",
+      "mine": "Benimkiler",
+      "none_mine": "Bu etkinlikte hiç maç oynamadın."
     },
     "story": {
       "highlights": "Öne çıkan anlar"
@@ -11157,6 +11183,19 @@
       "axis_adr": "ADR",
       "axis_hs": "HS%",
       "axis_assist": "Asist"
+    },
+    "header": {
+      "add_banner": "Afiş ekle",
+      "day_of": "{total} günün {day}. günü",
+      "day": "{day}. gün",
+      "starts_in": "bugün | yarın | {count} gün sonra",
+      "players": "{count} oyuncu | {count} oyuncu",
+      "teams": "{count} takım | {count} takım",
+      "matches": "{count} maç | {count} maç",
+      "watch_live": "Canlı izle",
+      "register": "Kayıt ol",
+      "share": "Paylaş",
+      "link_copied": "Bağlantı kopyalandı"
     }
   },
   "awards": {

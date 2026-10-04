@@ -1207,7 +1207,35 @@
       "title": "Görseli ayarla",
       "description": "Konumlandırmak için sürükle, yakınlaştırmak için kaydır. Çerçeve kaydedilecek alanı gösterir.",
       "fit_whole": "Tamamını sığdır",
-      "apply": "Uygula"
+      "apply": "Uygula",
+      "zoom_in": "Yakınlaştır",
+      "zoom_out": "Uzaklaştır",
+      "center": "Ortala",
+      "safe_zone": "Güvenli alan",
+      "safe_zone_hint": "Logo ve metinleri kesikli çizginin içinde tutun.",
+      "where_it_shows": "Nerede görünür",
+      "check_small": "Görselin {w} px genişliğinde. Büyük ekranlarda net kalması için {rec} px veya daha geniş kullan.",
+      "check_size": "{w} × {h} px. Her yerde net.",
+      "check_zoomed": "Görselin çözünürlüğünün ötesine yakınlaştırdın, bulanık görünecek."
+    },
+    "adjust": "Ayarla",
+    "frames": {
+      "tournament_page": "Turnuva sayfası",
+      "desktop": "Masaüstü",
+      "phone": "Telefon",
+      "live_banner": "Turnuvalar · canlı",
+      "cards": "Kartlar",
+      "quick_look": "Hızlı bakış",
+      "list_thumbnail": "Liste küçük resmi",
+      "next_lan_strip": "Sıradaki LAN şeridi",
+      "event_page": "Etkinlik sayfası",
+      "watch_featured": "Watch · öne çıkan",
+      "events_up_next": "Etkinlikler · sıradaki",
+      "past_event": "Geçmiş etkinlik",
+      "event_card": "Etkinlik kartı",
+      "up_next_strip": "Sıradaki şeridi",
+      "page_header": "Sayfa başlığı",
+      "small": "Küçük"
     }
   },
   "avatar": {
@@ -6684,7 +6712,6 @@
     "never": "Hiçbir zaman",
     "live": "Canlı",
     "finished": "Bitti",
-    "scheduled": "Planlandı",
     "show_metrics": "Metrikleri göster",
     "hide_metrics": "Metrikleri gizle",
     "connected": "Bağlı",
@@ -6929,18 +6956,17 @@
     "final_standings_podium": "▚ FİNAL SIRALAMASI · PODYUM",
     "page": {
       "back_to_league": "Lige dön",
-      "match_options_tab": "Maç seçenekleri",
-      "organizers_tab": "Organizatörler",
       "my_team": "Takımım",
       "my_team_hint": "Bu turnuva için kadronu, davetlerini ve hazırlık durumunu yönet.",
       "roster_section": "Kadro",
       "no_teams_yet": "Henüz takım yok.",
-      "information_tab": "Bilgi",
       "about_section": "Hakkında",
       "match_settings": "Maç ayarları",
       "chat_room_tab": "Sohbet Odası",
       "read_more": "Devamını oku",
-      "read_less": "Daha az göster"
+      "read_less": "Daha az göster",
+      "bracket_tab": "Fikstür",
+      "matches_tab": "Maçlar"
     },
     "feature_card": {
       "teams": "Takımlar",
@@ -6987,7 +7013,6 @@
     "paused_banner": "Bu turnuva duraklatıldı. Yeni maçlar otomatik olarak planlanmayacak.",
     "overview": "Genel Bakış",
     "updated": "Turnuva güncellendi",
-    "settings": "Ayarlar",
     "join": {
       "title": "Turnuvaya Katıl",
       "mode": {
@@ -7061,7 +7086,6 @@
       }
     },
     "notifications": {
-      "title": "Discord",
       "webhook": "Webhook URL",
       "webhook_placeholder": "Genel varsayılanı kullanmak için boş bırak",
       "role_id": "Rol ID",
@@ -7185,7 +7209,12 @@
       "main_path": "Ana",
       "impact_source": "kaynak",
       "impact_delete": "sil",
-      "impact_reset": "sıfırla"
+      "impact_reset": "sıfırla",
+      "walkover_win": "G",
+      "forfeit_short": "HK",
+      "follow_team": "Bir takımı takip et",
+      "follow_none": "Herkesi göster",
+      "match_short": "Maç {match}"
     },
     "negotiation": {
       "schedule": "Planla",
@@ -7285,7 +7314,6 @@
       "remove": "Organizatörü Kaldır",
       "confirm_remove": "Bu organizatörü kaldırmak istediğine emin misin?",
       "remove_description": "Bu, organizatörü turnuvadan kaldırır",
-      "organized_by": "Organizatör",
       "teams": {
         "title": "Organizasyon Takımları",
         "description": "Tüm üyelerini bu turnuvanın organizatörü yapmak için bir takım bağla.",
@@ -7329,8 +7357,7 @@
       "seed_display": "Seri Başı #{seed}"
     },
     "teams": {
-      "count": "{count} Takım",
-      "my_teams": "Takımım"
+      "count": "{count} Takım"
     },
     "actions": {
       "open_registration": "Kayıtları Aç",
@@ -7400,7 +7427,7 @@
     "banner": {
       "label": "Banner",
       "upload": "Banner yükle",
-      "hint": "Turnuva sayfasının üstünde gösterilir. Geniş 3:1 çerçeveye kırpılır.",
+      "hint": "Sürükle bırak veya tıkla · en iyisi 2400 × 800 (3:1)",
       "upload_failed": "Banner yüklenemedi."
     },
     "awards_config": {
@@ -7731,6 +7758,31 @@
         "invite_rate_limited": "Çok fazla davet denemesi. Bir dakika sonra tekrar dene.",
         "invite_not_allowed": "Bu hesap bu daveti kabul edemez."
       }
+    },
+    "manage": {
+      "button": "Yönet",
+      "title": "Turnuvayı yönet",
+      "back": "Sayfaya dön",
+      "status_actions": "Turnuva durumu",
+      "no_status_actions": "Şu an değiştirilecek bir şey yok.",
+      "details": "Ayrıntılar ve görsel",
+      "registration": "Kayıt",
+      "teams": "Takımlar ve davetler",
+      "stages": "Aşamalar",
+      "match_rules": "Maç kuralları",
+      "prizes_awards": "Ödüller",
+      "organizers": "Organizatörler",
+      "discord": "Discord",
+      "needs_attention": "İlgi bekliyor",
+      "stages_locked": "Turnuva başladıktan sonra aşamalar değiştirilemez.",
+      "stage_summary": "{min}–{max} takım",
+      "groups": "{count} grup",
+      "no_stages": "Henüz aşama yok",
+      "no_stages_hint": "Formatı belirlemek için bir aşama ekle. Kayıtlar kapanınca fikstür buna göre çekilir.",
+      "add_first_stage": "İlk aşamayı ekle",
+      "set_up_stages": "Aşamaları ayarla",
+      "invite_teams": "Takım davet et",
+      "stages_after_create": "Ardından formatı ve fikstürü belirleyen aşamaları ayarlayacaksın."
     }
   },
   "team": {

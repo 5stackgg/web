@@ -1207,7 +1207,35 @@
       "title": "اضبط الصورة",
       "description": "اسحب لتغيير الموضع، ومرّر للتكبير. الإطار يوضح ما سيُحفظ.",
       "fit_whole": "احتواء كامل",
-      "apply": "طبّق"
+      "apply": "طبّق",
+      "zoom_in": "تكبير",
+      "zoom_out": "تصغير",
+      "center": "توسيط",
+      "safe_zone": "المنطقة الآمنة",
+      "safe_zone_hint": "أبقِ الشعارات والنصوص داخل الخط المتقطع.",
+      "where_it_shows": "أين تظهر",
+      "check_small": "عرض صورتك {w} بكسل. استخدم {rec} بكسل أو أكثر لتبقى واضحة على الشاشات الكبيرة.",
+      "check_size": "{w} × {h} بكسل. واضحة في كل مكان.",
+      "check_zoomed": "قمت بالتكبير أكثر من دقة الصورة، لذا ستبدو ضبابية."
+    },
+    "adjust": "ضبط",
+    "frames": {
+      "tournament_page": "صفحة البطولة",
+      "desktop": "سطح المكتب",
+      "phone": "الهاتف",
+      "live_banner": "البطولات · مباشر",
+      "cards": "البطاقات",
+      "quick_look": "نظرة سريعة",
+      "list_thumbnail": "صورة القائمة المصغرة",
+      "next_lan_strip": "شريط LAN القادم",
+      "event_page": "صفحة الحدث",
+      "watch_featured": "Watch · مميز",
+      "events_up_next": "الأحداث · التالي",
+      "past_event": "حدث سابق",
+      "event_card": "بطاقة الحدث",
+      "up_next_strip": "شريط التالي",
+      "page_header": "رأس الصفحة",
+      "small": "صغير"
     }
   },
   "avatar": {
@@ -6684,7 +6712,6 @@
     "never": "أبدًا",
     "live": "مباشر",
     "finished": "منتهية",
-    "scheduled": "مجدولة",
     "show_metrics": "اعرض المقاييس",
     "hide_metrics": "أخفِ المقاييس",
     "connected": "متصل",
@@ -6929,18 +6956,17 @@
     "final_standings_podium": "▚ الترتيب النهائي · المنصة",
     "page": {
       "back_to_league": "العودة إلى الدوري",
-      "match_options_tab": "خيارات المباراة",
-      "organizers_tab": "المنظمون",
       "my_team": "فريقي",
       "my_team_hint": "أدر قائمة اللاعبين والدعوات والجاهزية لهذه البطولة.",
       "roster_section": "قائمة اللاعبين",
       "no_teams_yet": "لا توجد فرق بعد",
-      "information_tab": "معلومات",
       "about_section": "نبذة",
       "match_settings": "إعدادات المباراة",
       "chat_room_tab": "غرفة الدردشة",
       "read_more": "اقرأ المزيد",
-      "read_less": "اعرض أقل"
+      "read_less": "اعرض أقل",
+      "bracket_tab": "شجرة البطولة",
+      "matches_tab": "المباريات"
     },
     "feature_card": {
       "teams": "فرق",
@@ -6987,7 +7013,6 @@
     "paused_banner": "هذه البطولة متوقفة مؤقتًا، ولن تُجدول أي مباريات جديدة تلقائيًا",
     "overview": "نظرة عامة",
     "updated": "تم تحديث البطولة",
-    "settings": "الإعدادات",
     "join": {
       "title": "انضم إلى البطولة",
       "mode": {
@@ -7061,7 +7086,6 @@
       }
     },
     "notifications": {
-      "title": "Discord",
       "webhook": "Webhook URL",
       "webhook_placeholder": "اتركه فارغًا لاستخدام الافتراضي العام",
       "role_id": "Role ID",
@@ -7185,7 +7209,12 @@
       "main_path": "الرئيسي",
       "impact_source": "المصدر",
       "impact_delete": "حذف",
-      "impact_reset": "إعادة ضبط"
+      "impact_reset": "إعادة ضبط",
+      "walkover_win": "ف",
+      "forfeit_short": "ا",
+      "follow_team": "تتبّع فريقًا",
+      "follow_none": "عرض الجميع",
+      "match_short": "المباراة {match}"
     },
     "negotiation": {
       "schedule": "جدولة",
@@ -7285,7 +7314,6 @@
       "remove": "احذف المنظم",
       "confirm_remove": "هل تريد حذف هذا المنظم؟",
       "remove_description": "سيؤدي هذا إلى حذف المنظم من البطولة",
-      "organized_by": "بتنظيم",
       "teams": {
         "title": "فرق التنظيم",
         "description": "اربط فريقًا ليصبح كل أعضائه منظمين لهذه البطولة.",
@@ -7329,8 +7357,7 @@
       "seed_display": "التصنيف #{seed}"
     },
     "teams": {
-      "count": "{count} فرق",
-      "my_teams": "فريقي"
+      "count": "{count} فرق"
     },
     "actions": {
       "open_registration": "افتح التسجيل",
@@ -7400,7 +7427,7 @@
     "banner": {
       "label": "البانر",
       "upload": "ارفع بانر",
-      "hint": "يظهر أعلى صفحة البطولة. يُقتص بإطار عريض بنسبة 3:1.",
+      "hint": "اسحب وأفلت أو انقر · الأفضل 2400 × 800 (3:1)",
       "upload_failed": "تعذّر رفع البانر"
     },
     "awards_config": {
@@ -7731,6 +7758,31 @@
         "invite_rate_limited": "محاولات كثيرة جدًا لاستخدام الدعوة. حاول مجددًا بعد دقيقة.",
         "invite_not_allowed": "لا يمكن لهذا الحساب قبول هذه الدعوة."
       }
+    },
+    "manage": {
+      "button": "إدارة",
+      "title": "إدارة البطولة",
+      "back": "العودة إلى الصفحة",
+      "status_actions": "حالة البطولة",
+      "no_status_actions": "لا يوجد ما يمكن تغييره الآن.",
+      "details": "التفاصيل والهوية",
+      "registration": "التسجيل",
+      "teams": "الفرق والدعوات",
+      "stages": "المراحل",
+      "match_rules": "قواعد المباريات",
+      "prizes_awards": "الجوائز والأوسمة",
+      "organizers": "المنظمون",
+      "discord": "Discord",
+      "needs_attention": "يحتاج إلى انتباه",
+      "stages_locked": "لا يمكن تغيير المراحل بعد بدء البطولة.",
+      "stage_summary": "{min}–{max} فرق",
+      "groups": "{count} مجموعات",
+      "no_stages": "لا توجد مراحل بعد",
+      "no_stages_hint": "أضف مرحلة لتحديد الصيغة. تُسحب شجرة البطولة منها عند إغلاق التسجيل.",
+      "add_first_stage": "إضافة المرحلة الأولى",
+      "set_up_stages": "إعداد المراحل",
+      "invite_teams": "دعوة الفرق",
+      "stages_after_create": "بعد ذلك ستُعدّ المراحل التي تحدد الصيغة وشجرة البطولة."
     }
   },
   "team": {

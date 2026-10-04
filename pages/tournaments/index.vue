@@ -32,6 +32,7 @@ import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import Pagination from "~/components/Pagination.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import { rememberTournaments } from "~/composables/useTournamentPreview";
 import HorizontalScrollRow from "~/components/common/HorizontalScrollRow.vue";
 import ScrollArrows from "~/components/common/ScrollArrows.vue";
 import QuickLookSheet from "~/components/common/QuickLookSheet.vue";
@@ -387,6 +388,14 @@ const curatedEmpty = computed(
 // --- Filtered view
 
 const filteredTournaments = ref<any[]>([]);
+
+// Lets a tournament page draw its header from what this list already has.
+watch(
+  () => [live.value, coming.value, recent.value, filteredTournaments.value],
+  (lists) => rememberTournaments(lists.flat()),
+  { immediate: true },
+);
+
 const filteredTotal = ref(0);
 const filteredLoading = ref(false);
 
@@ -666,10 +675,22 @@ const gridClasses = "grid gap-3 lg:grid-cols-2";
     </section>
 
     <div v-else key="curated">
-      <PageTransition :delay="60" swap>
-        <div v-if="!curatedReady" key="loading" class="space-y-6">
-          <Skeleton class="h-[4.75rem] rounded-lg" />
-          <Skeleton class="h-[34rem] rounded-lg" />
+      <!-- Crossfade, not out-in: the old swap faded the skeleton out before
+           the sections came in, so the page sat empty in between. The
+           skeleton is the strip + a card grid, the shape most loads land on. -->
+      <FadeSwap>
+        <div v-if="!curatedReady" key="loading" aria-busy="true">
+          <Skeleton class="h-[5.25rem] rounded-xl" />
+          <div :class="sectionClasses">
+            <Skeleton class="mb-4 h-3 w-28 rounded-sm" />
+            <div :class="gridClasses">
+              <Skeleton
+                v-for="i in 4"
+                :key="i"
+                class="h-[10.5rem] rounded-lg"
+              />
+            </div>
+          </div>
         </div>
 
         <Empty v-else-if="curatedEmpty" key="empty" class="min-h-[200px]">
@@ -807,7 +828,10 @@ const gridClasses = "grid gap-3 lg:grid-cols-2";
                   "
                 />
               </div>
-              <HorizontalScrollRow ref="recentRow" @approaching-end="loadRecent">
+              <HorizontalScrollRow
+                ref="recentRow"
+                @approaching-end="loadRecent"
+              >
                 <TournamentResultTile
                   v-for="tournament in recent"
                   :key="tournament.id"
@@ -818,7 +842,7 @@ const gridClasses = "grid gap-3 lg:grid-cols-2";
             </section>
           </PageTransition>
         </div>
-      </PageTransition>
+      </FadeSwap>
     </div>
   </FadeSwap>
 

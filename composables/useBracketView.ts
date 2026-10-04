@@ -22,6 +22,9 @@ const fullscreenTarget = ref<HTMLElement | null>(null);
 const groupLabel = ref<string | null>(null);
 const bracketScope = ref<"upper" | "lower" | null>(null);
 
+// Tournament team whose path is lit across every visible bracket.
+const followTeamId = ref<string | null>(null);
+
 const zoomBase = () =>
   autoFit.value ? currentFitZoom.value : manualZoom.value;
 
@@ -86,6 +89,7 @@ export function useBracketView() {
     fullscreenTarget,
     groupLabel,
     bracketScope,
+    followTeamId,
     zoomIn,
     zoomOut,
     resetZoom,

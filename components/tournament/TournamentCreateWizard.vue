@@ -21,326 +21,363 @@ import AddressSearch from "~/components/AddressSearch.vue";
 import CategorySelect from "~/components/tournament/CategorySelect.vue";
 import DateTimePicker from "~/components/tournament/DateTimePicker.vue";
 import ImageUploadTile from "~/components/ImageUploadTile.vue";
+import { TOURNAMENT_BANNER_FRAMES } from "~/utilities/cropFrames";
 import PrizeRowsEditor from "~/components/tournament/PrizeRowsEditor.vue";
 import TournamentRegistrationForm from "~/components/tournament/TournamentRegistrationForm.vue";
 import { HeightMorph, Fold } from "~/components/ui/transitions";
 </script>
 
 <template>
-  <div class="grid gap-6">
-    <!-- Step indicator -->
-    <ol class="flex flex-wrap items-center gap-2">
-      <li
+  <!-- The same two-pane shape as Manage on the tournament page: steps on the
+       left, the step on the right. Stages come right after, in Manage. -->
+  <div
+    class="grid items-start gap-6 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-10"
+  >
+    <nav
+      :aria-label="$t('tournament.form.create')"
+      class="-mx-1 flex gap-1 overflow-x-auto px-1 pb-1 [scrollbar-width:none] lg:sticky lg:top-6 lg:mx-0 lg:grid lg:overflow-visible lg:px-0 lg:pb-0"
+    >
+      <button
         v-for="(step, index) in steps"
         :key="step.key"
-        class="flex items-center gap-2"
+        type="button"
+        class="flex h-9 shrink-0 items-center gap-2.5 rounded-md px-2.5 text-left text-[0.8rem] font-semibold transition-colors disabled:cursor-default"
+        :class="
+          index === currentStep
+            ? 'bg-[hsl(var(--tac-amber)/0.1)] text-foreground lg:shadow-[inset_2px_0_0_hsl(var(--tac-amber))]'
+            : index <= furthestStep
+              ? 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+              : 'text-muted-foreground/50'
+        "
+        :disabled="index > furthestStep"
+        :aria-current="index === currentStep ? 'step' : undefined"
+        @click="goTo(index)"
       >
-        <button
-          type="button"
-          class="flex items-center gap-2 rounded-md border px-3 py-1.5 font-mono text-[0.65rem] uppercase tracking-[0.16em] transition-colors"
+        <span
+          class="grid h-5 w-5 shrink-0 place-items-center rounded-[4px] text-[0.68rem] tabular-nums transition-colors"
           :class="
-            index === currentStep
-              ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)_/_0.12)] text-[hsl(var(--tac-amber))]'
-              : index < currentStep
-                ? 'border-border bg-muted/30 text-foreground'
-                : 'border-border bg-background/40 text-muted-foreground'
+            index < currentStep
+              ? 'bg-emerald-500/15 text-emerald-400'
+              : index === currentStep
+                ? 'bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))]'
+                : 'bg-muted/70'
           "
-          :disabled="index > furthestStep"
-          @click="goTo(index)"
         >
-          <!-- Stacked glyphs crossfade: the check used to hard-cut against
-               the button's own color transition. -->
-          <span class="grid place-items-center">
-            <Check
-              class="col-start-1 row-start-1 h-3 w-3 transition-opacity duration-200"
-              :class="index < currentStep ? '' : 'opacity-0'"
-            />
-            <span
-              class="col-start-1 row-start-1 transition-opacity duration-200"
-              :class="index < currentStep ? 'opacity-0' : ''"
-            >
-              {{ index + 1 }}
-            </span>
-          </span>
-          {{ step.label }}
-        </button>
-        <ChevronRight
-          v-if="index < steps.length - 1"
-          class="h-3 w-3 text-muted-foreground/40"
-        />
-      </li>
-    </ol>
+          <Check v-if="index < currentStep" class="h-3 w-3" />
+          <template v-else>{{ index + 1 }}</template>
+        </span>
+        {{ step.label }}
+      </button>
+      <span
+        class="flex h-9 shrink-0 items-center gap-2.5 px-2.5 text-[0.8rem] font-semibold text-muted-foreground/50"
+      >
+        <span
+          class="grid h-5 w-5 shrink-0 place-items-center rounded-[4px] bg-muted/40 text-[0.68rem] tabular-nums"
+        >
+          {{ steps.length + 1 }}
+        </span>
+        {{ $t("tournament.manage.stages") }}
+      </span>
+    </nav>
 
-    <!-- The steps are wildly different heights (a banner + schedule vs
+    <div class="grid min-w-0 max-w-3xl gap-6">
+      <!-- The steps are wildly different heights (a banner + schedule vs
          one address field vs the whole MatchOptions tree). The shell eases
          between them while the leaver fades out of flow, so the navigation
          bar below glides instead of teleporting out from under the pointer.
          v-show keeps the panels mounted so their state survives. -->
-    <HeightMorph :state="currentStep">
-    <!-- Step 1: Information -->
-    <Transition name="wiz-step">
-    <div v-show="currentStep === 0" class="grid gap-4">
-      <div class="grid gap-1.5">
-        <Label>{{ $t("tournament.banner.label") }}</Label>
-        <ImageUploadTile
-          class="max-w-md"
-          aspect="banner"
-          fit="contain"
-          allow-fit-whole
-          mode="deferred"
-          :hint="$t('tournament.banner.hint')"
-          @apply="onBannerApply"
-          @removed="onBannerRemoved"
-        />
-      </div>
-
-      <FormField v-slot="{ componentField }" name="name">
-        <FormItem>
-          <FormLabel>{{ $t("tournament.form.name") }}</FormLabel>
-          <FormControl>
-            <Input v-bind="componentField" />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      </FormField>
-
-      <FormField v-slot="{ componentField }" name="homepage">
-        <FormItem>
-          <FormLabel>{{ $t("tournament.form.homepage.label") }}</FormLabel>
-          <FormControl>
-            <Input v-bind="componentField" type="url" placeholder="https://" />
-          </FormControl>
-          <FormDescription class="flex flex-wrap items-center gap-x-2 gap-y-1">
-            <span>{{ $t("tournament.form.homepage.description") }}</span>
-            <a
-              href="/events/create"
-              target="_blank"
-              rel="noopener"
-              class="inline-flex items-center gap-1 text-[hsl(var(--tac-amber))] hover:underline"
-            >
-              {{ $t("tournament.form.homepage.create_event") }}
-              <ExternalLink class="h-3 w-3" />
-            </a>
-          </FormDescription>
-        </FormItem>
-      </FormField>
-
-      <FormField v-slot="{ componentField }" name="description">
-        <FormItem>
-          <FormLabel>{{ $t("tournament.form.description") }}</FormLabel>
-          <FormControl>
-            <Input v-bind="componentField" />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      </FormField>
-
-      <FormField v-slot="{ value }" name="categories">
-        <FormItem>
-          <FormLabel>{{ $t("tournament.form.categories.label") }}</FormLabel>
-          <CategorySelect
-            :model-value="value"
-            @update:model-value="
-              (categories) => form.setFieldValue('categories', categories)
-            "
-          />
-        </FormItem>
-      </FormField>
-
-      <div class="mt-2 grid gap-4 border-t border-border pt-4">
-        <div :class="[wizardSectionLabelClasses, 'mb-0']">
-          <span :class="wizardSectionTickClasses"></span>
-          {{ $t("tournament.form.section.schedule") }}
-        </div>
-
-        <FormField v-slot="{ value }" name="start">
-          <FormItem>
-            <FormLabel>{{ $t("tournament.form.start") }}</FormLabel>
-            <FormControl>
-              <DateTimePicker
-                disable-past-dates
-                :model-value="value"
-                @update:model-value="
-                  (date) => form.setFieldValue('start', date)
-                "
+      <HeightMorph :state="currentStep">
+        <!-- Step 1: Information -->
+        <Transition name="wiz-step">
+          <div v-show="currentStep === 0" class="grid gap-4">
+            <div class="grid gap-1.5">
+              <Label>{{ $t("tournament.banner.label") }}</Label>
+              <ImageUploadTile
+                class="max-w-xl"
+                aspect="banner"
+                fit="contain"
+                allow-fit-whole
+                mode="deferred"
+                :crop-output="{ w: 2400, h: 800 }"
+                crop
+                :crop-frames="TOURNAMENT_BANNER_FRAMES"
+                :crop-recommended-width="2400"
+                :hint="$t('tournament.banner.hint')"
+                @apply="onBannerApply"
+                @removed="onBannerRemoved"
               />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        </FormField>
-      </div>
-    </div>
-    </Transition>
+            </div>
 
-    <!-- Step 2: Location -->
-    <Transition name="wiz-step">
-    <div v-show="currentStep === 1" class="grid gap-4">
-      <FormField name="location">
-        <FormItem>
-          <FormLabel>{{ $t("tournament.form.location.label") }}</FormLabel>
-          <FormControl>
-            <AddressSearch
-              :model-value="form.values.location"
-              @selected="onLocationSelected"
-              @cleared="onLocationCleared"
+            <FormField v-slot="{ componentField }" name="name">
+              <FormItem>
+                <FormLabel>{{ $t("tournament.form.name") }}</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+
+            <FormField v-slot="{ componentField }" name="homepage">
+              <FormItem>
+                <FormLabel>{{
+                  $t("tournament.form.homepage.label")
+                }}</FormLabel>
+                <FormControl>
+                  <Input
+                    v-bind="componentField"
+                    type="url"
+                    placeholder="https://"
+                  />
+                </FormControl>
+                <FormDescription
+                  class="flex flex-wrap items-center gap-x-2 gap-y-1"
+                >
+                  <span>{{ $t("tournament.form.homepage.description") }}</span>
+                  <a
+                    href="/events/create"
+                    target="_blank"
+                    rel="noopener"
+                    class="inline-flex items-center gap-1 text-[hsl(var(--tac-amber))] hover:underline"
+                  >
+                    {{ $t("tournament.form.homepage.create_event") }}
+                    <ExternalLink class="h-3 w-3" />
+                  </a>
+                </FormDescription>
+              </FormItem>
+            </FormField>
+
+            <FormField v-slot="{ componentField }" name="description">
+              <FormItem>
+                <FormLabel>{{ $t("tournament.form.description") }}</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+
+            <FormField v-slot="{ value }" name="categories">
+              <FormItem>
+                <FormLabel>{{
+                  $t("tournament.form.categories.label")
+                }}</FormLabel>
+                <CategorySelect
+                  :model-value="value"
+                  @update:model-value="
+                    (categories) => form.setFieldValue('categories', categories)
+                  "
+                />
+              </FormItem>
+            </FormField>
+
+            <div class="mt-2 grid gap-4 border-t border-border pt-4">
+              <div :class="[wizardSectionLabelClasses, 'mb-0']">
+                <span :class="wizardSectionTickClasses"></span>
+                {{ $t("tournament.form.section.schedule") }}
+              </div>
+
+              <FormField v-slot="{ value }" name="start">
+                <FormItem>
+                  <FormLabel>{{ $t("tournament.form.start") }}</FormLabel>
+                  <FormControl>
+                    <DateTimePicker
+                      disable-past-dates
+                      :model-value="value"
+                      @update:model-value="
+                        (date) => form.setFieldValue('start', date)
+                      "
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+            </div>
+          </div>
+        </Transition>
+
+        <!-- Step 2: Location -->
+        <Transition name="wiz-step">
+          <div v-show="currentStep === 1" class="grid gap-4">
+            <FormField name="location">
+              <FormItem>
+                <FormLabel>{{
+                  $t("tournament.form.location.label")
+                }}</FormLabel>
+                <FormControl>
+                  <AddressSearch
+                    :model-value="form.values.location"
+                    @selected="onLocationSelected"
+                    @cleared="onLocationCleared"
+                  />
+                </FormControl>
+                <FormDescription>{{
+                  $t("tournament.form.location.description")
+                }}</FormDescription>
+              </FormItem>
+            </FormField>
+          </div>
+        </Transition>
+
+        <!-- Step 3: Registration -->
+        <Transition name="wiz-step">
+          <div v-show="currentStep === 2" class="grid gap-4">
+            <TournamentRegistrationForm
+              :form="form"
+              :min-players-per-lineup="minPlayersPerLineup"
             />
-          </FormControl>
-          <FormDescription>{{
-            $t("tournament.form.location.description")
-          }}</FormDescription>
-        </FormItem>
-      </FormField>
-    </div>
-    </Transition>
+          </div>
+        </Transition>
 
-    <!-- Step 3: Registration -->
-    <Transition name="wiz-step">
-    <div v-show="currentStep === 2" class="grid gap-4">
-      <TournamentRegistrationForm
-        :form="form"
-        :min-players-per-lineup="minPlayersPerLineup"
-      />
-    </div>
-    </Transition>
-
-    <!-- Step 4: Match Options -->
-    <Transition name="wiz-step">
-    <div v-show="currentStep === 3" class="grid gap-4">
-      <MatchOptions
-        :form="form"
-        :force-veto="true"
-        :hide-best-of="true"
-        :hide-match-mode="true"
-        :lock-substitutes="true"
-      >
-        <FormField
-          v-slot="{ value, handleChange }"
-          name="negotiated_scheduling"
-        >
-          <FormItem>
-            <div
-              class="flex flex-row items-center justify-between cursor-pointer"
-              @click="handleChange(!value)"
+        <!-- Step 4: Match Options -->
+        <Transition name="wiz-step">
+          <div v-show="currentStep === 3" class="grid gap-4">
+            <MatchOptions
+              :form="form"
+              :force-veto="true"
+              :hide-best-of="true"
+              :hide-match-mode="true"
+              :lock-substitutes="true"
             >
-              <div class="space-y-0.5">
-                <SettingHeader>{{
-                  $t("tournament.form.negotiated_scheduling.label")
-                }}</SettingHeader>
-                <FormDescription>{{
-                  $t("tournament.form.negotiated_scheduling.description")
-                }}</FormDescription>
-              </div>
-              <FormControl>
-                <Switch
-                  class="pointer-events-none"
-                  :model-value="value"
-                  @update:model-value="handleChange"
-                />
-              </FormControl>
-            </div>
-          </FormItem>
-        </FormField>
+              <FormField
+                v-slot="{ value, handleChange }"
+                name="negotiated_scheduling"
+              >
+                <FormItem>
+                  <div
+                    class="flex flex-row items-center justify-between cursor-pointer"
+                    @click="handleChange(!value)"
+                  >
+                    <div class="space-y-0.5">
+                      <SettingHeader>{{
+                        $t("tournament.form.negotiated_scheduling.label")
+                      }}</SettingHeader>
+                      <FormDescription>{{
+                        $t("tournament.form.negotiated_scheduling.description")
+                      }}</FormDescription>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        class="pointer-events-none"
+                        :model-value="value"
+                        @update:model-value="handleChange"
+                      />
+                    </FormControl>
+                  </div>
+                </FormItem>
+              </FormField>
 
-        <!-- Folds under the switch that controls it instead of popping while
+              <!-- Folds under the switch that controls it instead of popping while
              the switch thumb is still sliding. -->
-        <Fold :open="!form.values.negotiated_scheduling">
-        <FormField
-          v-slot="{ value, handleChange }"
-          name="auto_start"
-        >
-          <FormItem>
-            <div
-              class="flex flex-row items-center justify-between cursor-pointer"
-              @click="handleChange(!value)"
-            >
-              <div class="space-y-0.5">
-                <SettingHeader>{{
-                  $t("tournament.form.auto_start.label")
-                }}</SettingHeader>
-                <FormDescription>{{
-                  $t("tournament.form.auto_start.description")
-                }}</FormDescription>
-              </div>
-              <FormControl>
-                <Switch
-                  class="pointer-events-none"
-                  :model-value="value"
-                  @update:model-value="handleChange"
-                />
-              </FormControl>
-            </div>
-          </FormItem>
-        </FormField>
-        </Fold>
+              <Fold :open="!form.values.negotiated_scheduling">
+                <FormField v-slot="{ value, handleChange }" name="auto_start">
+                  <FormItem>
+                    <div
+                      class="flex flex-row items-center justify-between cursor-pointer"
+                      @click="handleChange(!value)"
+                    >
+                      <div class="space-y-0.5">
+                        <SettingHeader>{{
+                          $t("tournament.form.auto_start.label")
+                        }}</SettingHeader>
+                        <FormDescription>{{
+                          $t("tournament.form.auto_start.description")
+                        }}</FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          class="pointer-events-none"
+                          :model-value="value"
+                          @update:model-value="handleChange"
+                        />
+                      </FormControl>
+                    </div>
+                  </FormItem>
+                </FormField>
+              </Fold>
 
-        <Fold :open="form.values.type !== 'Duel'">
-        <FormField
-          v-slot="{ value, handleChange }"
-          name="substitutes_enabled"
-        >
-          <FormItem>
-            <div
-              class="flex flex-row items-center justify-between cursor-pointer"
-              @click="handleChange(!value)"
-            >
-              <div class="space-y-0.5">
-                <SettingHeader>{{
-                  $t("tournament.form.substitutes_enabled.label")
-                }}</SettingHeader>
-                <FormDescription>{{
-                  $t("tournament.form.substitutes_enabled.description")
-                }}</FormDescription>
-              </div>
-              <FormControl>
-                <Switch
-                  class="pointer-events-none"
-                  :model-value="value"
-                  @update:model-value="handleChange"
-                />
-              </FormControl>
-            </div>
-          </FormItem>
-        </FormField>
-        </Fold>
-      </MatchOptions>
-    </div>
-    </Transition>
+              <Fold :open="form.values.type !== 'Duel'">
+                <FormField
+                  v-slot="{ value, handleChange }"
+                  name="substitutes_enabled"
+                >
+                  <FormItem>
+                    <div
+                      class="flex flex-row items-center justify-between cursor-pointer"
+                      @click="handleChange(!value)"
+                    >
+                      <div class="space-y-0.5">
+                        <SettingHeader>{{
+                          $t("tournament.form.substitutes_enabled.label")
+                        }}</SettingHeader>
+                        <FormDescription>{{
+                          $t("tournament.form.substitutes_enabled.description")
+                        }}</FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          class="pointer-events-none"
+                          :model-value="value"
+                          @update:model-value="handleChange"
+                        />
+                      </FormControl>
+                    </div>
+                  </FormItem>
+                </FormField>
+              </Fold>
+            </MatchOptions>
+          </div>
+        </Transition>
 
-    <!-- Step 5: Prizes -->
-    <Transition name="wiz-step">
-    <div v-show="currentStep === 4" class="grid gap-4">
-      <p class="text-sm text-muted-foreground">
-        {{ $t("tournament.prizes.manage_hint") }}
-      </p>
-      <PrizeRowsEditor
-        :rows="prizes"
-        @move="movePrizeRow"
-        @remove="removePrizeRow"
-        @add="addPrizeRow"
-      />
-    </div>
-    </Transition>
-    </HeightMorph>
+        <!-- Step 5: Prizes -->
+        <Transition name="wiz-step">
+          <div v-show="currentStep === 4" class="grid gap-4">
+            <p class="text-sm text-muted-foreground">
+              {{ $t("tournament.prizes.manage_hint") }}
+            </p>
+            <PrizeRowsEditor
+              :rows="prizes"
+              @move="movePrizeRow"
+              @remove="removePrizeRow"
+              @add="addPrizeRow"
+            />
+          </div>
+        </Transition>
+      </HeightMorph>
 
-    <!-- Navigation -->
-    <div class="flex items-center justify-between border-t border-border pt-4">
-      <Button
-        type="button"
-        variant="outline"
-        :disabled="currentStep === 0 || submitting"
-        @click="back"
+      <p
+        v-if="currentStep === steps.length - 1"
+        class="text-xs text-muted-foreground"
       >
-        <ChevronLeft class="mr-1 h-4 w-4" />
-        {{ $t("common.back") }}
-      </Button>
+        {{ $t("tournament.manage.stages_after_create") }}
+      </p>
 
-      <Button v-if="currentStep < steps.length - 1" type="button" @click="next">
-        {{ $t("common.next") }}
-        <ChevronRight class="ml-1 h-4 w-4" />
-      </Button>
-      <Button v-else type="button" :loading="submitting" @click="create">
-        {{ $t("tournament.form.create") }}
-      </Button>
+      <!-- Navigation -->
+      <div
+        class="flex items-center justify-between border-t border-border pt-4"
+      >
+        <Button
+          type="button"
+          variant="outline"
+          :disabled="currentStep === 0 || submitting"
+          @click="back"
+        >
+          <ChevronLeft class="mr-1 h-4 w-4" />
+          {{ $t("common.back") }}
+        </Button>
+
+        <Button
+          v-if="currentStep < steps.length - 1"
+          type="button"
+          @click="next"
+        >
+          {{ $t("common.next") }}
+          <ChevronRight class="ml-1 h-4 w-4" />
+        </Button>
+        <Button v-else type="button" :loading="submitting" @click="create">
+          {{ $t("tournament.form.create") }}
+        </Button>
+      </div>
     </div>
   </div>
 </template>
@@ -618,7 +655,10 @@ export default {
         }
         await this.uploadBanner(tournamentId);
 
-        await this.$router.push(`/tournaments/${tournamentId}`);
+        await this.$router.push({
+          path: `/tournaments/${tournamentId}`,
+          query: { tab: "manage", section: "stages" },
+        });
       } catch (error: any) {
         toast({
           variant: "destructive",

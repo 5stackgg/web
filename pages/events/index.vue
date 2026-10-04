@@ -529,10 +529,22 @@ const gridClasses = "grid gap-3 sm:grid-cols-2";
     </section>
 
     <div v-else key="curated">
-      <PageTransition :delay="60" swap>
-        <div v-if="!curatedReady" key="loading" class="space-y-6">
-          <Skeleton class="h-[4.75rem] rounded-lg" />
-          <Skeleton class="h-[24rem] rounded-lg" />
+      <!-- Crossfade, not out-in: the old swap faded the skeleton out before
+           the sections came in, so the page sat empty in between. The
+           skeleton is the Up next strip + a card grid. -->
+      <FadeSwap>
+        <div v-if="!curatedReady" key="loading" aria-busy="true">
+          <Skeleton class="h-[5.25rem] rounded-xl" />
+          <div :class="sectionClasses">
+            <Skeleton class="mb-4 h-3 w-28 rounded-sm" />
+            <div :class="gridClasses">
+              <Skeleton
+                v-for="i in 4"
+                :key="i"
+                class="h-[7.75rem] rounded-lg"
+              />
+            </div>
+          </div>
         </div>
 
         <Empty v-else-if="curatedEmpty" key="empty" class="min-h-[200px]">
@@ -655,7 +667,7 @@ const gridClasses = "grid gap-3 sm:grid-cols-2";
             </section>
           </PageTransition>
         </div>
-      </PageTransition>
+      </FadeSwap>
     </div>
   </FadeSwap>
 

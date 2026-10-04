@@ -1207,7 +1207,35 @@
       "title": "調整圖片",
       "description": "拖曳以移動位置，滾動以縮放。框內即為將儲存的範圍。",
       "fit_whole": "顯示全圖",
-      "apply": "套用"
+      "apply": "套用",
+      "zoom_in": "放大",
+      "zoom_out": "縮小",
+      "center": "置中",
+      "safe_zone": "安全區域",
+      "safe_zone_hint": "請將標誌和文字放在虛線以內。",
+      "where_it_shows": "顯示位置",
+      "check_small": "你的圖片寬 {w} px。請使用 {rec} px 或更寬的圖片，以便在大螢幕上保持清晰。",
+      "check_size": "{w} × {h} px。各處都清晰。",
+      "check_zoomed": "放大超過了圖片解析度，顯示會模糊。"
+    },
+    "adjust": "調整",
+    "frames": {
+      "tournament_page": "賽事頁面",
+      "desktop": "桌面版",
+      "phone": "手機",
+      "live_banner": "賽事 · 直播",
+      "cards": "卡片",
+      "quick_look": "快速預覽",
+      "list_thumbnail": "列表縮圖",
+      "next_lan_strip": "下一場 LAN 橫條",
+      "event_page": "活動頁面",
+      "watch_featured": "Watch · 精選",
+      "events_up_next": "活動 · 即將開始",
+      "past_event": "過往活動",
+      "event_card": "活動卡片",
+      "up_next_strip": "即將開始橫條",
+      "page_header": "頁面頂部",
+      "small": "小"
     }
   },
   "avatar": {
@@ -6684,7 +6712,6 @@
     "never": "從未",
     "live": "進行中",
     "finished": "已結束",
-    "scheduled": "已排程",
     "show_metrics": "顯示指標",
     "hide_metrics": "隱藏指標",
     "connected": "已連線",
@@ -6929,18 +6956,17 @@
     "final_standings_podium": "▚ 最終排名 · 頒獎台",
     "page": {
       "back_to_league": "返回聯賽",
-      "match_options_tab": "比賽選項",
-      "organizers_tab": "主辦方",
       "my_team": "我的隊伍",
       "my_team_hint": "管理您的陣容、邀請以及此賽事的準備狀態。",
       "roster_section": "陣容",
       "no_teams_yet": "尚無隊伍。",
-      "information_tab": "資訊",
       "about_section": "關於",
       "match_settings": "比賽設定",
       "chat_room_tab": "聊天室",
       "read_more": "顯示更多",
-      "read_less": "顯示較少"
+      "read_less": "顯示較少",
+      "bracket_tab": "對陣圖",
+      "matches_tab": "比賽"
     },
     "feature_card": {
       "teams": "隊伍",
@@ -6987,7 +7013,6 @@
     "paused_banner": "此賽事已暫停。不會自動安排新比賽。",
     "overview": "總覽",
     "updated": "賽事已更新",
-    "settings": "設定",
     "join": {
       "title": "加入賽事",
       "mode": {
@@ -7061,7 +7086,6 @@
       }
     },
     "notifications": {
-      "title": "Discord",
       "webhook": "Webhook URL",
       "webhook_placeholder": "留空以使用全域預設值",
       "role_id": "身分組 ID",
@@ -7185,7 +7209,12 @@
       "main_path": "主線",
       "impact_source": "來源",
       "impact_delete": "刪除",
-      "impact_reset": "重設"
+      "impact_reset": "重設",
+      "walkover_win": "勝",
+      "forfeit_short": "棄",
+      "follow_team": "追蹤隊伍",
+      "follow_none": "顯示全部",
+      "match_short": "第 {match} 場"
     },
     "negotiation": {
       "schedule": "安排時間",
@@ -7285,7 +7314,6 @@
       "remove": "移除主辦方",
       "confirm_remove": "您確定要移除此主辦方嗎？",
       "remove_description": "這將從賽事中移除此主辦方",
-      "organized_by": "主辦方",
       "teams": {
         "title": "主辦團隊",
         "description": "連結一支隊伍，讓其所有成員成為此賽事的主辦方。",
@@ -7329,8 +7357,7 @@
       "seed_display": "種子 #{seed}"
     },
     "teams": {
-      "count": "{count} 支隊伍",
-      "my_teams": "我的隊伍"
+      "count": "{count} 支隊伍"
     },
     "actions": {
       "open_registration": "開放報名",
@@ -7400,7 +7427,7 @@
     "banner": {
       "label": "橫幅",
       "upload": "上傳橫幅",
-      "hint": "顯示於賽事頁面頂部，會裁切為 3:1 寬幅。",
+      "hint": "拖放或點擊 · 最佳尺寸 2400 × 800 (3:1)",
       "upload_failed": "橫幅上傳失敗"
     },
     "awards_config": {
@@ -7731,6 +7758,31 @@
         "invite_rate_limited": "邀請嘗試次數過多。請一分鐘後再試。",
         "invite_not_allowed": "該帳戶無法接受此邀請。"
       }
+    },
+    "manage": {
+      "button": "管理",
+      "title": "管理賽事",
+      "back": "返回頁面",
+      "status_actions": "賽事狀態",
+      "no_status_actions": "目前沒有可變更的內容。",
+      "details": "詳情與品牌",
+      "registration": "報名",
+      "teams": "隊伍與邀請",
+      "stages": "階段",
+      "match_rules": "比賽規則",
+      "prizes_awards": "獎品與榮譽",
+      "organizers": "主辦者",
+      "discord": "Discord",
+      "needs_attention": "需要處理",
+      "stages_locked": "賽事開始後無法變更階段。",
+      "stage_summary": "{min}–{max} 支隊伍",
+      "groups": "{count} 個小組",
+      "no_stages": "尚無階段",
+      "no_stages_hint": "新增階段以設定賽制。報名截止時將據此產生對陣圖。",
+      "add_first_stage": "新增第一個階段",
+      "set_up_stages": "設定階段",
+      "invite_teams": "邀請隊伍",
+      "stages_after_create": "接下來你將設定階段，用於決定賽制和對陣圖。"
     }
   },
   "team": {

@@ -1207,7 +1207,35 @@
       "title": "Ajuster l'image",
       "description": "Fais glisser pour repositionner, molette pour zoomer. Le cadre montre ce qui sera enregistré.",
       "fit_whole": "Tout afficher",
-      "apply": "Appliquer"
+      "apply": "Appliquer",
+      "zoom_in": "Zoom avant",
+      "zoom_out": "Zoom arrière",
+      "center": "Centrer",
+      "safe_zone": "Zone sûre",
+      "safe_zone_hint": "Gardez logos et texte à l'intérieur de la ligne pointillée.",
+      "where_it_shows": "Où elle s'affiche",
+      "check_small": "Votre image fait {w} px de large. Utilisez {rec} px ou plus pour qu'elle reste nette sur grand écran.",
+      "check_size": "{w} × {h} px. Nette partout.",
+      "check_zoomed": "Vous avez zoomé au-delà de la résolution de l'image, elle sera floue."
+    },
+    "adjust": "Ajuster",
+    "frames": {
+      "tournament_page": "Page du tournoi",
+      "desktop": "Ordinateur",
+      "phone": "Téléphone",
+      "live_banner": "Tournois · en direct",
+      "cards": "Cartes",
+      "quick_look": "Aperçu rapide",
+      "list_thumbnail": "Miniature de liste",
+      "next_lan_strip": "Bandeau prochaine LAN",
+      "event_page": "Page de l'événement",
+      "watch_featured": "Watch · à la une",
+      "events_up_next": "Événements · à venir",
+      "past_event": "Événement passé",
+      "event_card": "Carte d'événement",
+      "up_next_strip": "Bandeau à venir",
+      "page_header": "En-tête de page",
+      "small": "Petit"
     }
   },
   "avatar": {
@@ -6684,7 +6712,6 @@
     "never": "Jamais",
     "live": "En direct",
     "finished": "Terminé",
-    "scheduled": "Programmé",
     "show_metrics": "Afficher les métriques",
     "hide_metrics": "Masquer les métriques",
     "connected": "Connecté",
@@ -6929,18 +6956,17 @@
     "final_standings_podium": "▚ CLASSEMENT FINAL · PODIUM",
     "page": {
       "back_to_league": "Retour à la ligue",
-      "match_options_tab": "Options de match",
-      "organizers_tab": "Organisateurs",
       "my_team": "Mon équipe",
       "my_team_hint": "Gère ton roster, tes invitations et ta préparation pour ce tournoi.",
       "roster_section": "Roster",
       "no_teams_yet": "Aucune équipe pour le moment.",
-      "information_tab": "Informations",
       "about_section": "À propos",
       "match_settings": "Paramètres de match",
       "chat_room_tab": "Salon de discussion",
       "read_more": "Lire plus",
-      "read_less": "Lire moins"
+      "read_less": "Lire moins",
+      "bracket_tab": "Arbre",
+      "matches_tab": "Matchs"
     },
     "feature_card": {
       "teams": "Équipes",
@@ -6987,7 +7013,6 @@
     "paused_banner": "Ce tournoi est en pause. Aucun nouveau match ne sera planifié automatiquement.",
     "overview": "Aperçu",
     "updated": "Tournoi mis à jour",
-    "settings": "Paramètres",
     "join": {
       "title": "Rejoindre le tournoi",
       "mode": {
@@ -7061,7 +7086,6 @@
       }
     },
     "notifications": {
-      "title": "Discord",
       "webhook": "URL du webhook",
       "webhook_placeholder": "Laisse vide pour utiliser la valeur globale",
       "role_id": "ID de rôle",
@@ -7185,7 +7209,12 @@
       "main_path": "Principal",
       "impact_source": "source",
       "impact_delete": "supprimer",
-      "impact_reset": "réinitialiser"
+      "impact_reset": "réinitialiser",
+      "walkover_win": "V",
+      "forfeit_short": "FF",
+      "follow_team": "Suivre une équipe",
+      "follow_none": "Tout afficher",
+      "match_short": "Match {match}"
     },
     "negotiation": {
       "schedule": "Planifier",
@@ -7285,7 +7314,6 @@
       "remove": "Retirer l'organisateur",
       "confirm_remove": "Retirer cet organisateur ?",
       "remove_description": "L'organisateur sera retiré du tournoi",
-      "organized_by": "Organisé par",
       "teams": {
         "title": "Équipes d'organisation",
         "description": "Lie une équipe pour que tous ses membres deviennent organisateurs de ce tournoi.",
@@ -7329,8 +7357,7 @@
       "seed_display": "Seed n° {seed}"
     },
     "teams": {
-      "count": "{count} équipes",
-      "my_teams": "Mon équipe"
+      "count": "{count} équipes"
     },
     "actions": {
       "open_registration": "Ouvrir les inscriptions",
@@ -7400,7 +7427,7 @@
     "banner": {
       "label": "Bannière",
       "upload": "Envoyer une bannière",
-      "hint": "Affichée en haut de la page du tournoi. Recadrée dans un format large 3:1.",
+      "hint": "Glissez-déposez ou cliquez · idéal en 2400 × 800 (3:1)",
       "upload_failed": "Échec de l'envoi de la bannière"
     },
     "awards_config": {
@@ -7731,6 +7758,31 @@
         "invite_rate_limited": "Trop de tentatives d'invitation. Réessaie dans une minute.",
         "invite_not_allowed": "Ce compte ne peut pas accepter cette invitation."
       }
+    },
+    "manage": {
+      "button": "Gérer",
+      "title": "Gérer le tournoi",
+      "back": "Retour à la page",
+      "status_actions": "Statut du tournoi",
+      "no_status_actions": "Rien à changer pour le moment.",
+      "details": "Détails et visuels",
+      "registration": "Inscriptions",
+      "teams": "Équipes et invitations",
+      "stages": "Phases",
+      "match_rules": "Règles de match",
+      "prizes_awards": "Prix et récompenses",
+      "organizers": "Organisateurs",
+      "discord": "Discord",
+      "needs_attention": "Demande votre attention",
+      "stages_locked": "Les phases ne peuvent plus changer une fois le tournoi lancé.",
+      "stage_summary": "{min}–{max} équipes",
+      "groups": "{count} groupes",
+      "no_stages": "Aucune phase",
+      "no_stages_hint": "Ajoutez une phase pour définir le format. L'arbre en est tiré à la clôture des inscriptions.",
+      "add_first_stage": "Ajouter la première phase",
+      "set_up_stages": "Configurer les phases",
+      "invite_teams": "Inviter des équipes",
+      "stages_after_create": "Ensuite, vous configurerez les phases, qui définissent le format et l'arbre."
     }
   },
   "team": {

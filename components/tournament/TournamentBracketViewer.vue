@@ -151,7 +151,8 @@ const MOMENTUM_MIN_VELOCITY = 0.5;
 const bracketContent = ref<HTMLElement | null>(null);
 const bracketContentWrapper = ref<HTMLElement | null>(null);
 
-const { autoFit, manualZoom, currentFitZoom, isFullscreen } = useBracketView();
+const { autoFit, manualZoom, currentFitZoom, isFullscreen, followTeamId } =
+  useBracketView();
 
 const MAX_FIT_ZOOM = 1.0;
 const MIN_FIT_ZOOM = 0.55;
@@ -362,7 +363,7 @@ watch(
   { deep: true, immediate: true },
 );
 
-watch(effectiveZoom, () => {
+watch([effectiveZoom, followTeamId], () => {
   nextTick(redrawLines);
 });
 
@@ -483,42 +484,51 @@ const drawConnectingLines = () => {
   wrapper.appendChild(svg);
 };
 
+const COLUMN_GAP = 48;
+
+// Lands on the row the team will occupy (the row tagged with this feed), so
+// lines meet a slot rather than the middle of the card.
+const slotCenterY = (targetEl: HTMLElement, sourceId: string) => {
+  const row = targetEl.querySelector<HTMLElement>(`[data-feed="${sourceId}"]`);
+  if (!row) return targetEl.offsetTop + targetEl.offsetHeight / 2;
+  return targetEl.offsetTop + row.offsetTop + row.offsetHeight / 2;
+};
+
 const drawLine = (
   svg: SVGElement,
   sourceEl: HTMLElement,
   targetEl: HTMLElement,
   type: "winner" | "loser",
 ) => {
-  const margins = 12.5;
-
   const sourceX = sourceEl.offsetLeft + sourceEl.offsetWidth;
   const sourceY = sourceEl.offsetTop + sourceEl.offsetHeight / 2;
-
   const targetX = targetEl.offsetLeft;
-  const targetY = targetEl.offsetTop + targetEl.offsetHeight / 2;
+  const targetY = slotCenterY(targetEl, sourceEl.dataset.bracketId || "");
+  const midX = targetX - COLUMN_GAP / 2;
 
-  const adjustedSourceY =
-    type === "winner" ? sourceY - margins : sourceY + margins;
-
-  const adjustedTargetY =
-    type === "winner" ? targetY - margins : targetY + margins;
-
-  const midX = (sourceX + targetX) / 2;
+  const following = followTeamId.value;
+  const onPath =
+    type === "winner" &&
+    !!following &&
+    (sourceEl.dataset.teams || "").split(" ").includes(following) &&
+    (targetEl.dataset.teams || "").split(" ").includes(following);
 
   const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-
   path.setAttribute(
     "d",
-    `M ${sourceX} ${adjustedSourceY} H ${midX} V ${adjustedTargetY} H ${targetX}`,
+    `M ${sourceX} ${sourceY} H ${midX} V ${targetY} H ${targetX}`,
   );
-
   path.setAttribute("fill", "none");
   path.setAttribute(
     "stroke",
-    type === "winner" ? "white" : "rgba(255, 100, 100, 0.7)",
+    onPath
+      ? "hsl(var(--tac-amber))"
+      : type === "winner"
+        ? "hsl(var(--muted-foreground) / 0.35)"
+        : "hsl(0 72% 64% / 0.35)",
   );
-  path.setAttribute("stroke-width", "2");
-
+  path.setAttribute("stroke-width", onPath ? "2" : "1.5");
+  if (type === "loser") path.setAttribute("stroke-dasharray", "4 4");
   svg.appendChild(path);
 };
 
@@ -700,7 +710,7 @@ function startMomentum() {
           "
         >
           <div
-            class="grid grid-flow-col auto-cols-max gap-20 min-w-max"
+            class="grid grid-flow-col auto-cols-max gap-12 min-w-max"
             ref="bracketContent"
           >
             <div
@@ -722,16 +732,16 @@ function startMomentum() {
                 "
               >
                 <div
-                  class="bg-gray-700 text-white rounded-lg px-4 py-2 shadow-md"
+                  class="grid h-[1.375rem] place-items-center rounded-[5px] bg-muted/55 px-2 text-[0.72rem] font-semibold text-foreground/80"
                 >
-                  <span class="font-semibold text-sm">{{
+                  {{
                     roundLabels.get(round) ||
                     $t("tournament.bracket.round_number", { round })
-                  }}</span>
+                  }}
                 </div>
               </div>
 
-              <div class="flex flex-col justify-around flex-1 gap-4">
+              <div class="flex flex-1 flex-col justify-around gap-[1.125rem]">
                 <TournamentMatch
                   :stage="stage"
                   :tournament="tournament"

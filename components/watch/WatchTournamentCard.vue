@@ -8,6 +8,7 @@ import { useAuthStore } from "~/stores/AuthStore";
 import { loginLinks } from "~/utilities/loginLinks";
 import { formatPrizePool } from "~/utilities/prizePool";
 import { tournamentMapPosters } from "~/utilities/tournamentMapPosters";
+import { rememberTournaments } from "~/composables/useTournamentPreview";
 import {
   matchTypeLabel,
   tournamentChampion,
@@ -24,6 +25,9 @@ const props = defineProps<{
   quickLook?: boolean;
 }>();
 const emit = defineEmits<{ (e: "quick-look"): void }>();
+
+// Its page can then draw the header straight away when this card is opened.
+rememberTournaments([props.tournament]);
 
 function onCardClick(event: MouseEvent) {
   if (!props.quickLook) return;

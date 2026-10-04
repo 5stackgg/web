@@ -6,6 +6,7 @@ import BracketNegotiation from "~/components/tournament/BracketNegotiation.vue";
 import ProposeTimeDialog from "~/components/league/ProposeTimeDialog.vue";
 import ProposeTimeForm from "~/components/league/ProposeTimeForm.vue";
 import TournamentMatch from "~/components/tournament/TournamentMatch.vue";
+import TimeAgo from "~/components/TimeAgo.vue";
 import { useAuthStore } from "~/stores/AuthStore";
 import {
   PROPOSE_TIME_MUTATION,
@@ -463,7 +464,8 @@ describe("TournamentMatch negotiation", () => {
     expect(wrapper.find('[data-testid="negotiation-status"]').exists()).toBe(
       false,
     );
-    expect(wrapper.text()).toContain("Scheduled for");
+    // The auto-scheduled time sits in the card's label row.
+    expect(wrapper.findComponent(TimeAgo).exists()).toBe(true);
   });
 
   it("leaves league division fixtures to the league schedule", async () => {

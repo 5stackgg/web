@@ -39,7 +39,7 @@ function playerAvatarSrc(player: {
 <template>
   <div class="space-y-6">
     <section
-      v-if="showStandings && podium.length && !isLive"
+      v-if="showStandings && (podium.length || otherAwards.length) && !isLive"
       class="relative rounded-lg border border-border px-6 py-7 [background:radial-gradient(ellipse_at_top,hsl(var(--tac-amber)_/_0.08)_0%,transparent_60%),linear-gradient(180deg,hsl(var(--card)_/_0.6)_0%,hsl(var(--card)_/_0.25)_100%)]"
     >
       <div
@@ -477,6 +477,68 @@ function playerAvatarSrc(player: {
           </div>
         </div>
       </div>
+
+      <ul
+        v-if="otherAwards.length"
+        class="relative mt-7 flex flex-col divide-y divide-border/60 border-t border-dashed border-border pt-3"
+      >
+        <li
+          v-for="grant in otherAwards"
+          :key="grant.id"
+          class="flex items-center gap-4 py-3"
+        >
+          <AwardBadge
+            :award="grant.award"
+            :seed-key="tournament.id"
+            :tournament-name="tournament.name"
+            :tournament-start="tournament.start"
+            size="sm"
+            :show-name="false"
+            :interactive="false"
+            class="shrink-0"
+          />
+          <div class="flex min-w-0 flex-1 flex-col gap-1.5">
+            <div
+              class="w-fit rounded-sm border px-2.5 py-1 font-mono text-[0.6rem] uppercase tracking-[0.24em]"
+              :style="{
+                borderColor: awardColor(grant) + '8c',
+                background: awardColor(grant) + '1f',
+                color: awardColor(grant),
+              }"
+            >
+              {{ grant.award?.name }}
+            </div>
+            <PlayerDisplay
+              v-if="grant.player"
+              :player="grant.player"
+              :show-flag="true"
+              :show-role="false"
+              :show-elo="false"
+              :linkable="true"
+              size="sm"
+            />
+            <NuxtLink
+              v-else-if="grant.team_id"
+              :to="`/teams/${grant.team_id}`"
+              class="w-fit text-sm font-bold uppercase tracking-[0.04em] hover:underline"
+            >
+              {{ grant.team?.name }}
+            </NuxtLink>
+            <div
+              v-if="grant.player && grant.tournament_team"
+              class="font-mono text-[0.68rem] uppercase tracking-[0.2em] text-muted-foreground"
+            >
+              ↳
+              {{
+                displayTeamName(grant.tournament_team, grant.tournament_team_id)
+              }}
+            </div>
+            <p v-if="grant.note" class="text-xs italic text-muted-foreground">
+              “{{ grant.note }}”
+            </p>
+          </div>
+        </li>
+      </ul>
     </section>
 
     <template v-if="showStandings">
@@ -545,6 +607,7 @@ import { $, e_tournament_status_enum, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { mapFields } from "~/graphql/mapGraphql";
 import { playerFields } from "~/graphql/playerFields";
+import { TIER_PALETTES, resolveAwardTier } from "~/utilities/awardSeed";
 
 export default {
   props: {
@@ -776,6 +839,9 @@ export default {
       if (placement === 2) return "hsl(0 0% 78%)";
       return "hsl(28 70% 52%)";
     },
+    awardColor(grant: any) {
+      return TIER_PALETTES[resolveAwardTier(null, grant.award?.tier)].primary;
+    },
     placementLabel(placement: number) {
       if (placement === 0) return this.$t("awards.mvp");
       if (placement === 1) return this.$t("awards.first_place");
@@ -880,6 +946,27 @@ export default {
         this.mvp.tournament_team,
         this.mvp.tournament_team_id,
       );
+    },
+    // A team grant also fans out a row per rostered player; the team row
+    // stands for all of them.
+    otherAwards() {
+      const awards = ((this.tournament as any)?.awards || []).filter(
+        (t: any) => t.placement == null,
+      );
+      const teamGrants = new Set(
+        awards
+          .filter((t: any) => t.team_id)
+          .map((t: any) => `${t.award_id}:${t.tournament_team_id}`),
+      );
+      return awards
+        .filter(
+          (t: any) =>
+            t.team_id ||
+            !teamGrants.has(`${t.award_id}:${t.tournament_team_id}`),
+        )
+        .sort((a: any, b: any) =>
+          (a.award?.name || "").localeCompare(b.award?.name || ""),
+        );
     },
     mvpStats() {
       if (!this.mvp?.player_steam_id) return null;

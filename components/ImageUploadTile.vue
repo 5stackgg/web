@@ -2,10 +2,11 @@
 import { ref, computed, onBeforeUnmount } from "vue";
 import { useI18n } from "vue-i18n";
 import { toast } from "@/components/ui/toast";
-import { Upload, Pencil, Trash2 } from "lucide-vue-next";
+import { Upload, Pencil, Trash2, Crop } from "lucide-vue-next";
 import { Spinner } from "~/components/ui/spinner";
 import ImageCropDialog from "~/components/ImageCropDialog.vue";
 import RosterImageEditor from "~/components/RosterImageEditor.vue";
+import type { CropFrame } from "~/utilities/cropFrames";
 
 // One "image-as-surface" upload control: the image fills the tile, hover reveals
 // replace/remove, and an empty tile is a dashed dropzone. Three storage modes:
@@ -26,6 +27,8 @@ const props = withDefaults(
     crop?: boolean;
     cropOutput?: { w: number; h: number };
     cropFillColor?: string;
+    cropFrames?: CropFrame[];
+    cropRecommendedWidth?: number;
     allowFitWhole?: boolean;
     allowBgRemoval?: boolean;
     mode?: "immediate" | "deferred" | "roster";
@@ -66,7 +69,9 @@ const aspectRatio = computed(() => {
   if (props.aspect === "cover") return 16 / 9;
   return 1;
 });
-const aspectStyle = computed(() => ({ aspectRatio: String(aspectRatio.value) }));
+const aspectStyle = computed(() => ({
+  aspectRatio: String(aspectRatio.value),
+}));
 
 const effectiveFit = computed(
   () => props.fit ?? (props.aspect === "banner" ? "contain" : "cover"),
@@ -87,7 +92,8 @@ const cropOutput = computed(() => {
   return { w: 512, h: 512 };
 });
 const cropFillColor = computed(
-  () => props.cropFillColor ?? (props.aspect === "banner" ? "#000" : "transparent"),
+  () =>
+    props.cropFillColor ?? (props.aspect === "banner" ? "#000" : "transparent"),
 );
 
 const defaultHint = computed(() => {
@@ -101,7 +107,7 @@ const fileInput = ref<HTMLInputElement | null>(null);
 const isUploading = ref(false);
 const isRemoving = ref(false);
 const isFetching = ref(false);
-// The original file behind the last roster upload, so editing again re-crops it instead of the 400×420 output.
+// The original file behind the last upload, so adjusting again re-crops it instead of the cropped output.
 const lastSource = ref<File | null>(null);
 const dragDepth = ref(0);
 const isDragOver = ref(false);
@@ -210,6 +216,7 @@ async function handleFile(file: File) {
 }
 
 function onCropApply(blob: Blob) {
+  lastSource.value = editorFile.value;
   void store(blob);
 }
 
@@ -371,7 +378,8 @@ defineExpose({ pick: triggerPicker, edit, remove });
           hasImage
             ? 'border-border'
             : 'cursor-pointer border-dashed border-border/60 bg-card/40 hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-[hsl(var(--tac-amber)/0.05)]',
-          isDragOver && 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.12)]',
+          isDragOver &&
+            'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.12)]',
           disabled && 'pointer-events-none opacity-60',
         ]"
         :style="aspectStyle"
@@ -406,12 +414,25 @@ defineExpose({ pick: triggerPicker, edit, remove });
 
           <div
             v-if="!disabled"
-            class="absolute right-2 top-2 z-[3] flex items-center gap-1 opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+            class="absolute right-2 top-2 z-[3] flex items-center gap-1 transition-opacity duration-150 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-focus-within:opacity-100"
           >
+            <button
+              v-if="cropEnabled"
+              type="button"
+              class="inline-flex h-7 w-7 items-center justify-center rounded-md bg-black/70 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/90 hover:text-[hsl(var(--tac-amber))] disabled:opacity-50"
+              :title="$t('image_upload.adjust')"
+              :aria-label="$t('image_upload.adjust')"
+              :disabled="busy"
+              @click.stop="edit(displaySrc)"
+            >
+              <Spinner v-if="isFetching" class="h-3.5 w-3.5" />
+              <Crop v-else class="h-3.5 w-3.5" />
+            </button>
             <button
               type="button"
               class="inline-flex h-7 w-7 items-center justify-center rounded-md bg-black/70 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/90 hover:text-[hsl(var(--tac-amber))] disabled:opacity-50"
               :title="$t('image_upload.replace')"
+              :aria-label="$t('image_upload.replace')"
               :disabled="busy"
               @click.stop="triggerPicker"
             >
@@ -422,6 +443,7 @@ defineExpose({ pick: triggerPicker, edit, remove });
               type="button"
               class="inline-flex h-7 w-7 items-center justify-center rounded-md bg-black/70 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/90 hover:text-destructive disabled:opacity-50"
               :title="$t('image_upload.remove')"
+              :aria-label="$t('image_upload.remove')"
               :disabled="busy"
               @click.stop="remove"
             >
@@ -471,6 +493,8 @@ defineExpose({ pick: triggerPicker, edit, remove });
       :fill-color="cropFillColor"
       :allow-fit-whole="allowFitWhole"
       :allow-bg-removal="allowBgRemoval"
+      :frames="cropFrames"
+      :recommended-width="cropRecommendedWidth"
       @apply="onCropApply"
     />
 

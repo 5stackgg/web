@@ -1,34 +1,25 @@
 <script lang="ts" setup>
+import { computed } from "vue";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import TournamentStageBuilder from "~/components/tournament/TournamentStageBuilder.vue";
 import TournamentJoinForm from "~/components/tournament/TournamentJoinForm.vue";
 import TournamentTeam from "~/components/tournament/TournamentTeam.vue";
-import TournamentInformationForm from "~/components/tournament/TournamentInformationForm.vue";
-import TournamentMatchOptionsForm from "~/components/tournament/TournamentMatchOptionsForm.vue";
-import TournamentOrganizers from "~/components/tournament/TournamentOrganizers.vue";
 import TournamentPrizes from "~/components/tournament/TournamentPrizes.vue";
-import TournamentPrizesManage from "~/components/tournament/TournamentPrizesManage.vue";
+import TournamentManage from "~/components/tournament/TournamentManage.vue";
 import ManageSection from "~/components/common/ManageSection.vue";
 import TournamentStatRibbon from "~/components/tournament/TournamentStatRibbon.vue";
-import TournamentNotifications from "~/components/tournament/TournamentNotifications.vue";
 import TournamentResults from "~/components/tournament/TournamentResults.vue";
-import TournamentAwardsConfig from "~/components/tournament/TournamentAwardsConfig.vue";
-import TournamentAwardsManage from "~/components/tournament/TournamentAwardsManage.vue";
 import TournamentCheckInPanel from "~/components/tournament/TournamentCheckInPanel.vue";
 import TournamentCheckInReview from "~/components/tournament/TournamentCheckInReview.vue";
 import TournamentEntryGate from "~/components/tournament/TournamentEntryGate.vue";
 import TournamentFreeAgents from "~/components/tournament/TournamentFreeAgents.vue";
-import TournamentInvites from "~/components/tournament/TournamentInvites.vue";
-import TournamentInviteLinks from "~/components/tournament/TournamentInviteLinks.vue";
 import TournamentInviteAccept from "~/components/tournament/TournamentInviteAccept.vue";
 import TournamentStats from "~/components/tournament/TournamentStats.vue";
-import Separator from "~/components/ui/separator/Separator.vue";
+import TournamentDetailSkeleton from "~/components/tournament/TournamentDetailSkeleton.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import MatchOptionsDisplay from "~/components/match/MatchOptionsDisplay.vue";
-import TimeAgo from "~/components/TimeAgo.vue";
 import {
   Settings,
-  Users,
   Lock,
   Unlock,
   Ban,
@@ -43,10 +34,13 @@ import {
   Minimize,
   Maximize,
   MessageSquare,
+  CalendarDays,
+  Layers,
+  ChevronDown,
 } from "lucide-vue-next";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { ButtonGroup } from "@/components/ui/button-group";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   Popover,
@@ -64,6 +58,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -78,66 +73,47 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { NuxtLink } from "#components";
-import MatchTableRow from "~/components/MatchTableRow.vue";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "~/components/ui/table";
 import AnimatedStat from "~/components/AnimatedStat.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
-import HeightMorph from "~/components/ui/transitions/HeightMorph.vue";
+import { Fold } from "~/components/ui/transitions";
+import { useTournamentPreviews } from "~/composables/useTournamentPreview";
+
 import {
   tacticalCtaButtonClasses,
-  tacticalSectionDescriptionClasses,
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
-  tacticalTabsListClasses,
   tacticalTabsTriggerClasses,
 } from "~/utilities/tacticalClasses";
 
+const route = useRoute();
+const tournamentPreviews = useTournamentPreviews();
+const tournamentPreview = computed(
+  () => tournamentPreviews.value[String(route.params.tournamentId)] ?? null,
+);
+
+// One surface: the banner as a band on top (never text over the image, so any
+// artwork works), identity and actions under it, the tab row at the foot.
 const tournamentHeroClasses =
-  "relative isolate overflow-hidden rounded-lg border border-border px-7 py-6 [background:linear-gradient(180deg,hsl(var(--card)_/_0.55)_0%,hsl(var(--card)_/_0.25)_100%)] [backdrop-filter:blur(6px)] max-md:px-4 max-md:py-5";
-const tournamentHeroToplineClasses =
-  "order-2 flex shrink-0 flex-wrap items-start gap-2 max-sm:w-full";
+  "overflow-hidden rounded-xl border border-border bg-card/40";
+const tournamentBannerClasses =
+  "aspect-[5/2] max-h-[18.75rem] w-full bg-muted/40 sm:aspect-[4/1]";
 const tournamentHeroBodyClasses =
-  "order-1 flex min-w-0 flex-1 items-start gap-4";
+  "flex flex-wrap items-end justify-between gap-x-6 gap-y-4 px-5 pt-5 max-sm:px-4 max-sm:pt-4";
 const tournamentHeroLogoClasses =
-  "h-16 w-16 shrink-0 rounded border border-border bg-muted/30 object-contain sm:h-20 sm:w-20";
-const tournamentHeroIdentityClasses =
-  "flex min-w-0 flex-1 flex-col gap-[0.65rem]";
-const tournamentHeroNameRowClasses = "flex min-w-0 items-center";
+  "h-14 w-14 shrink-0 rounded-md border border-border bg-muted/30 object-contain sm:h-16 sm:w-16";
 const tournamentHeroNameClasses =
-  "relative m-0 min-w-0 font-sans text-[clamp(1.75rem,4vw,3rem)] font-bold uppercase leading-[0.95] tracking-[0.02em] [font-stretch:80%]";
-const tournamentHeroNameMainClasses = "relative text-foreground";
-// The echo is the same text, offset and outlined, so it has to break exactly
-// where the title does -- `left-5/right-[-5px]` hands it the title's own width
-// for that. Held to one line it stopped wrapping with the title and ran out
-// across the banner instead.
-const tournamentHeroNameGhostClasses =
-  "pointer-events-none absolute left-[5px] top-[5px] right-[-5px] text-transparent select-none [-webkit-text-stroke:1px_hsl(var(--tac-amber)_/_0.35)]";
-const tournamentHeroBadgesClasses = "flex flex-wrap gap-1.5";
+  "m-0 text-[clamp(1.5rem,3.4vw,2.25rem)] font-extrabold leading-[1.05] [text-wrap:balance]";
 const tournamentHeroTagClasses =
-  "inline-flex items-center rounded border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] px-[0.55rem] py-[0.2rem] font-mono text-[0.65rem] font-bold uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]";
-const tournamentHeroMutedTagClasses =
-  "border-border bg-muted/30 text-muted-foreground";
+  "inline-flex h-6 items-center rounded-md border border-border bg-muted/30 px-2 text-xs font-semibold text-muted-foreground";
 const tournamentHeroMetaClasses =
-  "inline-flex flex-wrap items-center gap-[0.55rem] text-xs text-muted-foreground";
-const tournamentHeroMetaDotClasses = "opacity-40";
-const tournamentHeroMetaLabelClasses =
-  "font-mono text-[0.65rem] uppercase tracking-[0.22em]";
-const tournamentHeroOrganizersClasses = "inline-flex items-center gap-[0.3rem]";
+  "flex flex-wrap items-center gap-x-3.5 gap-y-1.5 text-[0.8rem] text-muted-foreground";
 const tournamentHeroOrganizerClasses =
   "inline-flex cursor-pointer transition-[opacity,transform] duration-150 hover:-translate-y-px hover:opacity-85";
 const tournamentHeroActionsClasses =
-  "flex min-w-0 shrink-0 flex-wrap items-center justify-end gap-2 max-sm:w-full max-sm:justify-start";
+  "flex flex-wrap items-center gap-2 max-sm:w-full";
 const tournamentHeroStatusClasses =
-  "inline-flex h-9 items-center gap-2 whitespace-nowrap rounded-md border border-border bg-muted/30 px-[0.7rem] py-[0.3rem] font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-muted-foreground max-sm:flex-1 max-sm:justify-center";
-const tournamentHeroStatusDotClasses = "h-1.5 w-1.5 rounded-full bg-current";
+  "inline-flex h-6 items-center gap-1.5 whitespace-nowrap rounded-md border px-2 text-xs font-semibold";
 const tournamentHeroStatusTierClasses: Record<string, string> = {
   live: "border-destructive/55 bg-destructive/15 text-destructive",
   open: "border-success/55 bg-success/15 text-success",
@@ -150,14 +126,13 @@ const tournamentHeroStatusTierClasses: Record<string, string> = {
 };
 const tournamentHeroJoinButtonClasses = [
   tacticalCtaButtonClasses,
-  "h-9 px-4 py-2 text-[0.68rem] tracking-[0.14em] max-sm:flex-1 max-sm:px-3",
+  "h-9 px-4 py-2 text-[0.68rem] tracking-[0.14em] max-sm:basis-full",
 ];
-const tournamentHeroSettingsButtonClasses =
-  "h-9 w-9 border-[hsl(var(--tac-amber)_/_0.45)] bg-background/45 text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.12)] hover:text-[hsl(var(--tac-amber))]";
-const tournamentHeroTabsClasses =
-  "mt-5 flex items-start gap-3 border-t border-border pt-4";
-const tournamentChatRoomButtonClasses =
-  "mt-[0.2rem] shrink-0 inline-flex items-center gap-2 font-sans text-[0.7rem] font-semibold uppercase leading-none tracking-[0.14em] max-sm:px-2";
+const tournamentHeroTabsClasses = "mt-4 border-t border-border px-2 sm:px-3";
+const tournamentTabTriggerClasses = [
+  tacticalTabsTriggerClasses,
+  "h-11 shrink-0",
+];
 const tournamentChatRoomUnreadClasses =
   "inline-flex h-4 min-w-[1rem] origin-center items-center justify-center rounded-full bg-red-500 px-1 font-sans text-[0.6rem] font-bold leading-none tracking-normal text-white tabular-nums";
 const chatRoomUnreadPopTransition = {
@@ -172,24 +147,6 @@ const tacticalSectionCountClasses =
   "rounded-full border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] px-[0.45rem] py-[0.05rem] text-[0.62rem] tracking-[0.08em] text-[hsl(var(--tac-amber))]";
 const tournamentTeamCardClasses =
   "rounded-lg border border-border bg-card/45 px-5 py-4 [backdrop-filter:blur(6px)] transition-colors duration-150 hover:border-[hsl(var(--tac-amber)_/_0.35)] hover:bg-card/60";
-const myTeamClasses = "max-w-[900px]";
-const myTeamHeaderClasses = "mb-4 flex flex-col gap-[0.35rem]";
-const myTeamLabelClasses =
-  "inline-flex items-center gap-2 font-mono text-[0.72rem] uppercase tracking-[0.24em] text-muted-foreground";
-const myTeamHintClasses = "text-[0.8rem] text-muted-foreground/80";
-// Follows ManageSection's rule: a section is a tick-and-label plus a hairline,
-// never a card. The rule has to flip axis because the column does — stacked
-// under `lg` it is a top border like tac-section-sep, and side by side with the
-// roster it becomes the left border that keeps the two columns legibly apart
-// (the grid's own gap alone reads as one undivided field at 360px).
-const tournamentAdminPanelClasses =
-  "relative border-t border-border/60 pt-8 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0";
-// The aside holds one tool now — Add Team. The invite and link lists moved to
-// the wide column, which is what stopped this 360px frame growing without bound
-// the moment a tournament had more than a couple of invites out.
-const tournamentAdminSectionClasses = "grid gap-3";
-const tournamentAdminSectionHintClasses =
-  "text-[0.75rem] leading-snug text-muted-foreground/80";
 
 function setTeamEnterDelay(el: Element) {
   const step = Number((el as HTMLElement).dataset.stagger ?? 0);
@@ -205,49 +162,147 @@ function clearTeamEnterDelay(el: Element) {
 </script>
 
 <template>
-  <div v-if="tournament">
-    <NuxtLink
-      v-if="leagueSeasonId"
-      :to="{
-        name: 'league-seasons-seasonId',
-        params: { seasonId: leagueSeasonId },
-      }"
-      class="mb-3 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
-    >
-      <ArrowLeft class="h-4 w-4" />
-      {{ $t("tournament.page.back_to_league") }}
-    </NuxtLink>
-    <Tabs v-model="activeTab" default-value="overview">
-      <PageTransition>
-        <header :class="tournamentHeroClasses">
-          <div
-            v-if="tournamentBannerSrc"
-            aria-hidden="true"
-            class="absolute inset-0 -z-10"
-          >
-            <img
-              :src="tournamentBannerSrc"
-              class="h-full w-full object-cover opacity-[0.38]"
-            />
-            <div
-              class="absolute inset-0 [background:radial-gradient(600px_300px_at_88%_12%,hsl(var(--tac-amber)/0.1),transparent_62%)]"
-            ></div>
-            <!-- Top fade keeps the status/settings row legible over busy artwork. -->
-            <div
-              class="absolute inset-0 [background:linear-gradient(180deg,hsl(var(--card)/0.6)_0%,transparent_34%)]"
-            ></div>
-            <!-- Left-anchored fade keeps the title/badges/meta column legible over any banner while the artwork breathes on the right. -->
-            <div
-              class="absolute inset-0 [background:linear-gradient(90deg,hsl(var(--card)/0.92)_0%,hsl(var(--card)/0.5)_44%,hsl(var(--card)/0.1)_80%)]"
-            ></div>
-            <!-- Bottom fade protects the tab row. -->
-            <div
-              class="absolute inset-0 [background:linear-gradient(180deg,transparent_0%,hsl(var(--card)/0.4)_64%,hsl(var(--card)/0.88)_100%)]"
-            ></div>
-          </div>
+  <!-- A header-shaped skeleton (seeded from the list you came from) holds the
+       page while its queries land, then dissolves into it: no blank wait. -->
+  <FadeSwap>
+    <div v-if="tournament" key="tournament">
+      <NuxtLink
+        v-if="leagueSeasonId"
+        :to="{
+          name: 'league-seasons-seasonId',
+          params: { seasonId: leagueSeasonId },
+        }"
+        class="mb-3 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
+      >
+        <ArrowLeft class="h-4 w-4" />
+        {{ $t("tournament.page.back_to_league") }}
+      </NuxtLink>
+      <Tabs v-model="activeTab" default-value="overview">
+        <PageTransition>
+          <header :class="tournamentHeroClasses">
+            <div v-if="tournamentBannerSrc" :class="tournamentBannerClasses">
+              <img
+                :src="tournamentBannerSrc"
+                alt=""
+                class="h-full w-full object-cover object-[50%_40%]"
+              />
+            </div>
 
-          <div class="mb-5 flex flex-wrap items-start justify-between gap-4">
-            <div :class="tournamentHeroToplineClasses">
+            <div :class="tournamentHeroBodyClasses">
+              <div class="flex min-w-0 items-start gap-4">
+                <img
+                  v-if="tournamentLogoSrc"
+                  :src="tournamentLogoSrc"
+                  :alt="tournament.name"
+                  :class="tournamentHeroLogoClasses"
+                />
+                <div class="grid min-w-0 gap-2">
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span
+                      :class="[
+                        tournamentHeroStatusClasses,
+                        tournamentHeroStatusTierClasses[statusTier] ??
+                          tournamentHeroStatusTierClasses.ended,
+                      ]"
+                    >
+                      <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
+                      {{ tournament.e_tournament_status.description }}
+                    </span>
+                    <span :class="tournamentHeroTagClasses">
+                      {{ tournament.options.type }}
+                    </span>
+                    <span
+                      v-for="category in tournamentCategories"
+                      :key="category"
+                      :class="tournamentHeroTagClasses"
+                    >
+                      {{ category }}
+                    </span>
+                  </div>
+                  <h1 :class="tournamentHeroNameClasses">
+                    {{ tournament.name }}
+                  </h1>
+                  <div :class="tournamentHeroMetaClasses">
+                    <span class="inline-flex items-center gap-1.5">
+                      <CalendarDays class="h-3.5 w-3.5" />
+                      {{ startLabel }}
+                    </span>
+                    <span
+                      v-if="shortLocation"
+                      class="inline-flex items-center gap-1.5"
+                    >
+                      <MapPin class="h-3.5 w-3.5" />
+                      {{ shortLocation }}
+                    </span>
+                    <span
+                      v-if="formatLabel"
+                      class="inline-flex items-center gap-1.5"
+                    >
+                      <Layers class="h-3.5 w-3.5" />
+                      {{ formatLabel }}
+                    </span>
+                    <a
+                      v-if="tournamentHomepage"
+                      :href="tournamentHomepage"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center gap-1.5 underline decoration-muted-foreground/40 underline-offset-[3px] transition-colors hover:text-foreground"
+                    >
+                      <Globe class="h-3.5 w-3.5" />
+                      {{ $t("tournament.form.homepage.link") }}
+                    </a>
+                    <span class="inline-flex items-center gap-1">
+                      <template
+                        v-for="(organizer, index) in organizersList.slice(0, 6)"
+                        :key="organizer.steam_id"
+                      >
+                        <Popover v-model:open="organizerPopoversOpen[index]">
+                          <PopoverTrigger as-child>
+                            <button
+                              type="button"
+                              :class="tournamentHeroOrganizerClasses"
+                              :aria-label="organizer.name"
+                              @mouseenter="organizerPopoversOpen[index] = true"
+                              @mouseleave="organizerPopoversOpen[index] = false"
+                            >
+                              <Avatar shape="square" class="h-6 w-6">
+                                <AvatarImage
+                                  v-if="organizer?.avatar_url"
+                                  :src="organizer.avatar_url"
+                                  :alt="organizer.name"
+                                />
+                                <AvatarFallback class="text-[0.6rem]">
+                                  {{ organizer?.name.slice(0, 2) }}
+                                </AvatarFallback>
+                              </Avatar>
+                            </button>
+                          </PopoverTrigger>
+                          <PopoverContent
+                            class="w-64 p-0"
+                            @mouseenter="organizerPopoversOpen[index] = true"
+                            @mouseleave="organizerPopoversOpen[index] = false"
+                          >
+                            <div class="p-4">
+                              <PlayerDisplay
+                                :player="organizer"
+                                :linkable="true"
+                                :tooltip="false"
+                              />
+                            </div>
+                          </PopoverContent>
+                        </Popover>
+                      </template>
+                      <span
+                        v-if="organizersList.length > 6"
+                        class="ml-1 text-xs tabular-nums"
+                      >
+                        +{{ organizersList.length - 6 }}
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
               <div :class="tournamentHeroActionsClasses">
                 <Button
                   v-if="
@@ -255,905 +310,591 @@ function clearTeamEnterDelay(el: Element) {
                       e_tournament_status_enum.RegistrationOpen &&
                     tournament.can_join
                   "
-                  size="sm"
                   :class="tournamentHeroJoinButtonClasses"
                   @click="handleJoinTournament"
                 >
-                  <UserPlus class="h-3.5 w-3.5" />
+                  <UserPlus class="h-4 w-4" />
                   {{ $t("tournament.join.title") }}
                 </Button>
 
-                <span
-                  :class="[
-                    tournamentHeroStatusClasses,
-                    tournamentHeroStatusTierClasses[statusTier] ??
-                      tournamentHeroStatusTierClasses.ended,
-                  ]"
+                <Button
+                  v-if="chatRoomTournament"
+                  variant="outline"
+                  class="relative"
+                  @click="openChatRoom"
                 >
-                  <span :class="tournamentHeroStatusDotClasses"></span>
-                  {{ tournament.e_tournament_status.description }}
-                </span>
-
-                <DropdownMenu v-if="tournament?.is_organizer">
-                  <DropdownMenuTrigger as-child>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      :class="tournamentHeroSettingsButtonClasses"
-                      :title="$t('tournament.settings')"
-                    >
-                      <Settings class="h-5 w-5" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent class="w-56" align="end">
-                    <DropdownMenuItem
-                      v-if="tournament.can_open_registration"
-                      @click="openRegistration"
-                    >
-                      <Unlock />
-                      <span>{{
-                        $t("tournament.actions.open_registration")
-                      }}</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      v-if="tournament.can_close_registration"
-                      @click="closeRegistration"
-                    >
-                      <Lock />
-                      <span>{{
-                        $t("tournament.actions.close_registration")
-                      }}</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      v-if="tournament.can_start && !tournament.can_resume"
-                      @click="startTournament"
-                    >
-                      <Play />
-                      <span>{{ $t("tournament.actions.start") }}</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      v-if="tournament.can_pause"
-                      @click="pauseDialogOpen = true"
-                    >
-                      <Pause />
-                      <span>{{ $t("tournament.actions.pause") }}</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      v-if="tournament.can_resume"
-                      @click="resumeDialogOpen = true"
-                    >
-                      <Play />
-                      <span>{{ $t("tournament.actions.resume") }}</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      v-if="tournament.can_setup && !leagueSeasonId"
-                      @click="resetToSetup"
-                    >
-                      <RotateCcw />
-                      <span>{{ $t("tournament.actions.reset_to_setup") }}</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator
-                      v-if="
-                        (tournament.can_open_registration ||
-                          tournament.can_close_registration ||
-                          tournament.can_start ||
-                          (tournament.can_setup && !leagueSeasonId)) &&
-                        (tournament.can_cancel || tournament.is_organizer) &&
-                        !leagueSeasonId
-                      "
-                    />
-                    <DropdownMenuItem
-                      v-if="tournament.can_cancel && !leagueSeasonId"
-                      @click="cancelTournament"
-                      class="text-destructive"
-                    >
-                      <Ban />
-                      <span>{{ $t("tournament.actions.cancel") }}</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator
-                      v-if="
-                        tournament.can_cancel &&
-                        tournament.is_organizer &&
-                        tournament.status !== e_tournament_status_enum.Live
-                      "
-                    />
-                    <DropdownMenuItem
-                      v-if="
-                        tournament.is_organizer &&
-                        tournament.status !== e_tournament_status_enum.Live &&
-                        !leagueSeasonId
-                      "
-                      @click="deleteDialogOpen = true"
-                      class="text-destructive"
-                    >
-                      <Trash2 />
-                      <span>{{ $t("tournament.actions.delete") }}</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </div>
-
-            <div :class="tournamentHeroBodyClasses">
-              <img
-                v-if="tournamentLogoSrc"
-                :src="tournamentLogoSrc"
-                :alt="tournament.name"
-                :class="tournamentHeroLogoClasses"
-              />
-              <div :class="tournamentHeroIdentityClasses">
-                <div :class="tournamentHeroNameRowClasses">
-                  <h1 :class="tournamentHeroNameClasses">
+                  <MessageSquare class="h-4 w-4 shrink-0" />
+                  <span class="max-sm:sr-only">
+                    {{ $t("tournament.page.chat_room_tab") }}
+                  </span>
+                  <Transition v-bind="chatRoomUnreadPopTransition">
                     <span
-                      :class="tournamentHeroNameGhostClasses"
-                      aria-hidden="true"
+                      v-if="chatRoomUnreadLabel"
+                      :class="tournamentChatRoomUnreadClasses"
                     >
-                      {{ tournament.name }}
+                      <AnimatedStat :value="chatRoomUnreadLabel" />
                     </span>
-                    <span :class="tournamentHeroNameMainClasses">
-                      {{ tournament.name }}
-                    </span>
-                  </h1>
-                </div>
+                  </Transition>
+                </Button>
 
-                <div :class="tournamentHeroBadgesClasses">
-                  <span :class="tournamentHeroTagClasses">
-                    {{ tournament.options.type }}
-                  </span>
-                  <span
-                    v-if="stageCount > 1"
-                    :class="[
-                      tournamentHeroTagClasses,
-                      tournamentHeroMutedTagClasses,
-                    ]"
+                <!-- Manage opens the console; the attached menu holds the
+                   status actions that used to hide behind the gear. -->
+                <ButtonGroup v-if="tournament?.is_organizer">
+                  <Button
+                    variant="outline"
+                    :class="
+                      activeTab === 'manage' &&
+                      'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.1)] text-foreground'
+                    "
+                    :aria-pressed="activeTab === 'manage'"
+                    @click="toggleManage"
                   >
-                    {{ stageCount }} {{ $t("tournament.stage.stages") }}
-                  </span>
-                  <span
-                    v-if="singleStageType"
-                    :class="[
-                      tournamentHeroTagClasses,
-                      tournamentHeroMutedTagClasses,
-                    ]"
-                  >
-                    {{ singleStageTypeWithBestOf }}
-                  </span>
-                  <span
-                    v-for="category in tournamentCategories"
-                    :key="category"
-                    :class="[
-                      tournamentHeroTagClasses,
-                      tournamentHeroMutedTagClasses,
-                    ]"
-                  >
-                    {{ category }}
-                  </span>
-                  <a
-                    v-if="tournamentHomepage"
-                    :href="tournamentHomepage"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    :class="[
-                      tournamentHeroTagClasses,
-                      'gap-1 no-underline transition-opacity hover:opacity-80',
-                    ]"
-                  >
-                    <Globe class="h-3 w-3" />
-                    {{ $t("tournament.form.homepage.link") }}
-                  </a>
-                </div>
-
-                <div :class="tournamentHeroMetaClasses">
-                  <TimeAgo :date="tournament.start" />
-                  <span :class="tournamentHeroMetaDotClasses">·</span>
-                  <span :class="tournamentHeroMetaLabelClasses">
-                    {{ $t("tournament.organizer.organized_by") }}
-                  </span>
-                  <div :class="tournamentHeroOrganizersClasses">
-                    <template
-                      v-for="(organizer, index) in organizersList"
-                      :key="organizer.steam_id"
-                    >
-                      <Popover v-model:open="organizerPopoversOpen[index]">
-                        <PopoverTrigger as-child>
-                          <button
-                            type="button"
-                            :class="tournamentHeroOrganizerClasses"
-                            @mouseenter="organizerPopoversOpen[index] = true"
-                            @mouseleave="organizerPopoversOpen[index] = false"
-                          >
-                            <Avatar shape="square" class="h-6 w-6">
-                              <AvatarImage
-                                :src="organizer.avatar_url"
-                                :alt="organizer.name"
-                                v-if="organizer?.avatar_url"
-                              />
-                              <AvatarFallback class="text-[0.6rem]">
-                                {{ organizer?.name.slice(0, 2) }}
-                              </AvatarFallback>
-                            </Avatar>
-                          </button>
-                        </PopoverTrigger>
-                        <PopoverContent
-                          class="w-64 p-0"
-                          @mouseenter="organizerPopoversOpen[index] = true"
-                          @mouseleave="organizerPopoversOpen[index] = false"
+                    <Settings class="h-4 w-4" />
+                    {{ $t("tournament.manage.button") }}
+                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger as-child>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        :aria-label="$t('tournament.manage.status_actions')"
+                      >
+                        <ChevronDown class="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent class="w-60" align="end">
+                      <DropdownMenuLabel>
+                        {{ $t("tournament.manage.status_actions") }}
+                      </DropdownMenuLabel>
+                      <DropdownMenuItem
+                        v-if="tournament.can_open_registration"
+                        @click="openRegistration"
+                      >
+                        <Unlock />
+                        <span>{{
+                          $t("tournament.actions.open_registration")
+                        }}</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        v-if="tournament.can_close_registration"
+                        @click="closeRegistration"
+                      >
+                        <Lock />
+                        <span>{{
+                          $t("tournament.actions.close_registration")
+                        }}</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        v-if="tournament.can_start && !tournament.can_resume"
+                        @click="startTournament"
+                      >
+                        <Play />
+                        <span>{{ $t("tournament.actions.start") }}</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        v-if="tournament.can_pause"
+                        @click="pauseDialogOpen = true"
+                      >
+                        <Pause />
+                        <span>{{ $t("tournament.actions.pause") }}</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        v-if="tournament.can_resume"
+                        @click="resumeDialogOpen = true"
+                      >
+                        <Play />
+                        <span>{{ $t("tournament.actions.resume") }}</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        v-if="tournament.can_setup && !leagueSeasonId"
+                        @click="resetToSetup"
+                      >
+                        <RotateCcw />
+                        <span>{{
+                          $t("tournament.actions.reset_to_setup")
+                        }}</span>
+                      </DropdownMenuItem>
+                      <template v-if="!leagueSeasonId">
+                        <DropdownMenuSeparator
+                          v-if="
+                            tournament.can_cancel ||
+                            tournament.status !== e_tournament_status_enum.Live
+                          "
+                        />
+                        <DropdownMenuItem
+                          v-if="tournament.can_cancel"
+                          class="text-destructive"
+                          @click="cancelTournament"
                         >
-                          <div class="p-4">
-                            <PlayerDisplay
-                              :player="organizer"
-                              :linkable="true"
-                              :tooltip="false"
-                            />
-                          </div>
-                        </PopoverContent>
-                      </Popover>
-                    </template>
-                  </div>
-                </div>
+                          <Ban />
+                          <span>{{ $t("tournament.actions.cancel") }}</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          v-if="
+                            tournament.status !== e_tournament_status_enum.Live
+                          "
+                          class="text-destructive"
+                          @click="deleteDialogOpen = true"
+                        >
+                          <Trash2 />
+                          <span>{{ $t("tournament.actions.delete") }}</span>
+                        </DropdownMenuItem>
+                      </template>
+                      <p
+                        v-if="!hasStatusActions"
+                        class="px-2 py-1.5 text-xs text-muted-foreground"
+                      >
+                        {{ $t("tournament.manage.no_status_actions") }}
+                      </p>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </ButtonGroup>
               </div>
             </div>
-          </div>
 
-          <div :class="tournamentHeroTabsClasses">
-            <TabsList
-              variant="underline"
-              :class="[tacticalTabsListClasses, 'h-auto min-w-0 flex-wrap justify-start']"
-            >
-              <TabsTrigger value="overview" :class="tacticalTabsTriggerClasses">
-                {{ $t("tournament.overview") }}
-              </TabsTrigger>
-              <TabsTrigger
-                v-if="myTeam"
-                value="my-team"
-                :class="tacticalTabsTriggerClasses"
+            <div :class="tournamentHeroTabsClasses">
+              <div
+                v-if="activeTab === 'manage'"
+                class="flex min-h-11 flex-wrap items-center justify-between gap-2 py-1.5"
               >
-                {{ $t("tournament.teams.my_teams") }}
-              </TabsTrigger>
-              <TabsTrigger value="teams" :class="tacticalTabsTriggerClasses">
-                {{
-                  $t("tournament.teams.count", {
-                    count: tournament?.teams_aggregate?.aggregate?.count || 0,
-                  })
-                }}
-              </TabsTrigger>
-              <TabsTrigger
-                v-if="!tournament?.is_organizer && tournament.options"
-                value="match-settings"
-                :class="tacticalTabsTriggerClasses"
-              >
-                {{ $t("tournament.page.match_settings") }}
-              </TabsTrigger>
-              <TabsTrigger
-                v-if="freeAgentsTabVisible"
-                value="free-agents"
-                :class="tacticalTabsTriggerClasses"
-              >
-                {{ $t("tournament.free_agents.title") }}
-              </TabsTrigger>
-              <TabsTrigger
-                v-if="standingsTabVisible"
-                value="standings"
-                :class="tacticalTabsTriggerClasses"
-              >
-                {{ $t("tournament.standings.title") }}
-              </TabsTrigger>
-              <TabsTrigger
-                v-if="statsTabVisible"
-                value="stats"
-                :class="tacticalTabsTriggerClasses"
-              >
-                {{ $t("tournament.stats.title") }}
-              </TabsTrigger>
-              <TabsTrigger
-                v-if="
-                  tournament.status === e_tournament_status_enum.Live ||
-                  tournament.status === e_tournament_status_enum.Finished
-                "
-                value="results"
-                :class="tacticalTabsTriggerClasses"
-              >
-                {{ $t("tournament.results.title") }}
-              </TabsTrigger>
-              <TabsTrigger
-                v-if="tournament?.is_organizer"
-                value="information"
-                :class="tacticalTabsTriggerClasses"
-              >
-                {{ $t("tournament.page.information_tab") }}
-              </TabsTrigger>
-              <TabsTrigger
-                v-if="tournament?.is_organizer"
-                value="prizes"
-                :class="tacticalTabsTriggerClasses"
-              >
-                {{ $t("tournament.prizes.title") }}
-              </TabsTrigger>
-              <TabsTrigger
-                v-if="tournament?.is_organizer"
-                value="match-options"
-                :class="tacticalTabsTriggerClasses"
-              >
-                {{ $t("tournament.page.match_options_tab") }}
-              </TabsTrigger>
-              <TabsTrigger
-                v-if="tournament?.is_organizer"
-                value="organizers"
-                :class="tacticalTabsTriggerClasses"
-              >
-                {{ $t("tournament.page.organizers_tab") }}
-              </TabsTrigger>
-              <TabsTrigger
-                v-if="tournament?.is_organizer"
-                value="awards"
-                :class="tacticalTabsTriggerClasses"
-              >
-                {{ $t("awards.title") }}
-              </TabsTrigger>
-              <TabsTrigger
-                v-if="tournament?.is_organizer"
-                value="notifications"
-                :class="tacticalTabsTriggerClasses"
-              >
-                {{ $t("tournament.notifications.title") }}
-              </TabsTrigger>
-            </TabsList>
-            <Button
-              v-if="chatRoomTournament"
-              variant="ghost"
-              size="sm"
-              :class="tournamentChatRoomButtonClasses"
-              @click="openChatRoom"
-            >
-              <MessageSquare class="h-4 w-4 shrink-0" />
-              <span class="sr-only leading-none sm:not-sr-only">
-                {{ $t("tournament.page.chat_room_tab") }}
-              </span>
-              <Transition v-bind="chatRoomUnreadPopTransition">
-                <span
-                  v-if="chatRoomUnreadLabel"
-                  :class="tournamentChatRoomUnreadClasses"
-                >
-                  <AnimatedStat :value="chatRoomUnreadLabel" />
+                <span class="text-sm font-semibold">
+                  {{ $t("tournament.manage.title") }}
                 </span>
-              </Transition>
-            </Button>
-          </div>
-        </header>
-      </PageTransition>
-
-      <!-- Ahead of the entry gate, because accepting is what answers it: a
-           visitor who arrived on an invite link sees the tournament first and
-           accepts explicitly. -->
-      <TournamentInviteAccept
-        :tournament="tournament"
-        :registration="tournamentRegistration"
-      />
-
-      <!-- Before the check-in panel invites them to register: whether they can
-           enter at all, and which gate stops them if not. -->
-      <TournamentEntryGate
-        :tournament="tournament"
-        :registration="tournamentRegistration"
-        :already-entered="!!myTeam || !!myFreeAgent"
-      />
-
-      <!-- Directly under the hero, above every tab: a check-in deadline the
-           reader scrolls past is a team that misses the bracket. -->
-      <TournamentCheckInPanel
-        :tournament="tournament"
-        :registration="tournamentRegistration"
-        :teams="checkInTeams"
-        :my-team-id="myTeamId"
-        :my-free-agent="myFreeAgent"
-        @register="handleJoinTournament"
-      />
-
-      <TournamentCheckInReview
-        v-if="checkInReviewVisible"
-        :tournament="tournament"
-        :registration="tournamentRegistration"
-        :teams="checkInTeams"
-      />
-
-      <div
-        v-if="tournament.status === e_tournament_status_enum.Paused"
-        class="mt-4 rounded-lg border border-destructive/50 bg-destructive/10 px-4 py-3 text-sm text-destructive"
-      >
-        {{ $t("tournament.paused_banner") }}
-      </div>
-
-      <div class="mt-6">
-        <TabsContent value="overview">
-          <PageTransition>
-            <div class="flex flex-col gap-6">
-              <TournamentStatRibbon
-                :prize-pool="prizePool"
-                :teams-count="teamsCount"
-                :format="formatLabel"
-                :start="tournament.start"
-                :location="shortLocation"
-              ></TournamentStatRibbon>
-
-              <TournamentPrizes
-                v-if="hasPrizes"
-                :prizes="tournament.prizes"
-              ></TournamentPrizes>
-
-              <ManageSection
-                v-if="tournament.description"
-                :label="$t('tournament.page.about_section')"
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  @click="activeTab = 'overview'"
+                >
+                  <ArrowLeft class="h-4 w-4" />
+                  {{ $t("tournament.manage.back") }}
+                </Button>
+              </div>
+              <TabsList
+                v-else
+                variant="underline"
+                class="h-auto min-w-0 flex-nowrap justify-start overflow-x-auto bg-transparent p-0 [scrollbar-width:none]"
               >
-                <div class="flex flex-col gap-3">
-                  <p
-                    class="max-w-[70ch] whitespace-pre-line text-sm leading-relaxed text-muted-foreground"
-                    :class="{ 'line-clamp-[8]': !descExpanded }"
-                  >
-                    {{ tournament.description }}
-                  </p>
-                  <button
-                    v-if="descLong"
-                    type="button"
-                    class="self-start font-mono text-[0.62rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] transition-opacity hover:opacity-80"
-                    @click="descExpanded = !descExpanded"
-                  >
-                    {{
-                      descExpanded
-                        ? $t("tournament.page.read_less")
-                        : $t("tournament.page.read_more")
-                    }}
-                  </button>
-                </div>
-              </ManageSection>
+                <TabsTrigger
+                  v-for="tab in publicTabs"
+                  :key="tab.value"
+                  :value="tab.value"
+                  :class="tournamentTabTriggerClasses"
+                >
+                  {{ tab.label }}
+                </TabsTrigger>
+              </TabsList>
+            </div>
+          </header>
+        </PageTransition>
 
+        <!-- Held until registration and your own team/free-agent rows are in:
+           drawn earlier, the check-in panel shows "register" and then swaps. -->
+        <Fold :open="activeTab !== 'manage' && participantReady">
+          <!-- Ahead of the entry gate, because accepting is what answers it: a
+             visitor who arrived on an invite link sees the tournament first and
+             accepts explicitly. -->
+          <TournamentInviteAccept
+            :tournament="tournament"
+            :registration="tournamentRegistration"
+          />
+
+          <!-- Before the check-in panel invites them to register: whether they can
+             enter at all, and which gate stops them if not. -->
+          <TournamentEntryGate
+            :tournament="tournament"
+            :registration="tournamentRegistration"
+            :already-entered="!!myTeam || !!myFreeAgent"
+          />
+
+          <!-- Directly under the header, above every tab: a check-in deadline the
+             reader scrolls past is a team that misses the bracket. -->
+          <TournamentCheckInPanel
+            :tournament="tournament"
+            :registration="tournamentRegistration"
+            :teams="checkInTeams"
+            :my-team-id="myTeamId"
+            :my-free-agent="myFreeAgent"
+            @register="handleJoinTournament"
+          />
+
+          <TournamentCheckInReview
+            v-if="checkInReviewVisible"
+            :tournament="tournament"
+            :registration="tournamentRegistration"
+            :teams="checkInTeams"
+          />
+        </Fold>
+
+        <div
+          v-if="tournament.status === e_tournament_status_enum.Paused"
+          class="mt-4 rounded-lg border border-destructive/50 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+        >
+          {{ $t("tournament.paused_banner") }}
+        </div>
+
+        <div class="mt-6">
+          <TabsContent value="overview">
+            <PageTransition>
+              <div class="flex flex-col gap-8">
+                <TournamentStatRibbon
+                  :prize-pool="prizePool"
+                  :teams-count="teamsCount"
+                  :format="formatLabel"
+                  :start="tournament.start"
+                  :location="shortLocation"
+                ></TournamentStatRibbon>
+
+                <TournamentResults
+                  v-if="standingsTabVisible"
+                  :tournament="tournament"
+                  :show-standings="true"
+                  :show-matches="false"
+                />
+
+                <TournamentPrizes
+                  v-if="hasPrizes"
+                  :prizes="tournament.prizes"
+                ></TournamentPrizes>
+
+                <div class="grid items-start gap-8 xl:grid-cols-2">
+                  <ManageSection
+                    v-if="tournament.description"
+                    :label="$t('tournament.page.about_section')"
+                  >
+                    <div class="flex flex-col gap-3">
+                      <p
+                        class="max-w-[70ch] whitespace-pre-line text-sm leading-relaxed text-muted-foreground"
+                        :class="{ 'line-clamp-[8]': !descExpanded }"
+                      >
+                        {{ tournament.description }}
+                      </p>
+                      <button
+                        v-if="descLong"
+                        type="button"
+                        class="self-start text-xs font-semibold text-[hsl(var(--tac-amber))] transition-opacity hover:opacity-80"
+                        @click="descExpanded = !descExpanded"
+                      >
+                        {{
+                          descExpanded
+                            ? $t("tournament.page.read_less")
+                            : $t("tournament.page.read_more")
+                        }}
+                      </button>
+                    </div>
+                  </ManageSection>
+
+                  <ManageSection
+                    v-if="tournament.options"
+                    :label="$t('tournament.page.match_settings')"
+                  >
+                    <MatchOptionsDisplay
+                      :show-details-by-default="false"
+                      :options="tournament.options"
+                      :substitutes="
+                        tournament.max_players_per_lineup -
+                        tournament.min_players_per_lineup
+                      "
+                    ></MatchOptionsDisplay>
+                  </ManageSection>
+                </div>
+              </div>
+            </PageTransition>
+          </TabsContent>
+
+          <TabsContent value="bracket">
+            <PageTransition>
               <TournamentStageBuilder
                 class="w-full"
                 :tournament="tournament"
-              ></TournamentStageBuilder>
-            </div>
-          </PageTransition>
-        </TabsContent>
-        <TabsContent
-          value="match-settings"
-          v-if="!tournament?.is_organizer && tournament.options"
-        >
-          <PageTransition>
-            <ManageSection :label="$t('tournament.page.match_settings')">
-              <MatchOptionsDisplay
-                :show-details-by-default="false"
-                :options="tournament.options"
-                :substitutes="
-                  tournament.max_players_per_lineup -
-                  tournament.min_players_per_lineup
-                "
-              ></MatchOptionsDisplay>
-            </ManageSection>
-          </PageTransition>
-        </TabsContent>
-        <TabsContent value="my-team" v-if="myTeam">
-          <PageTransition>
-            <div :class="myTeamClasses">
-              <div :class="myTeamHeaderClasses">
-                <div :class="myTeamLabelClasses">
-                  <span :class="tacticalSectionTickClasses"></span>
-                  {{ $t("tournament.page.my_team") }}
-                </div>
-                <div :class="myTeamHintClasses">
-                  {{ $t("tournament.page.my_team_hint") }}
-                </div>
-              </div>
-
-              <TournamentTeam
-                :tournament="tournament"
-                :team="myTeam"
-              ></TournamentTeam>
-            </div>
-          </PageTransition>
-        </TabsContent>
-        <TabsContent value="teams">
-          <PageTransition>
-            <div
-              class="grid gap-6 items-start"
-              :class="
-                tournament.is_organizer
-                  ? 'lg:grid-cols-[minmax(0,1fr)_360px]'
-                  : 'grid-cols-1'
-              "
-            >
-              <div class="min-w-0">
-                <div
-                  class="mb-[0.85rem] flex flex-wrap items-center justify-between gap-3"
-                >
-                  <!-- The organizer's tools live in the WIDE column, not the
-                       360px aside. An invite list and a link list are rows of
-                       names, URLs and timestamps; rows need width, and the aside
-                       is the one place on this page that has none. The strip
-                       stands exactly where the ROSTER label stood so the tab
-                       itself is the heading — the count rides on it rather than
-                       in a second label nobody would read twice.
-                       size="lg" is load-bearing, not decoration: the team filter
-                       to its right is another amber-indicator segmented strip,
-                       and two identical ones in a single row read as one broken
-                       control. Taller and bolder makes the hierarchy obvious. -->
-                  <AnimatedFilters
+                :manage="false"
+              >
+                <template #empty-action>
+                  <Button
                     v-if="tournament.is_organizer"
-                    v-model="teamsPanel"
-                    :options="teamsPanelTabs"
-                    square
-                    size="lg"
-                  />
+                    variant="outline"
+                    size="sm"
+                    @click="openManage('stages')"
+                  >
+                    <Layers class="h-4 w-4" />
+                    {{ $t("tournament.manage.set_up_stages") }}
+                  </Button>
+                </template>
+              </TournamentStageBuilder>
+            </PageTransition>
+          </TabsContent>
 
-                  <!-- No tabs for a viewer: there is nothing to switch to, so
-                       the page keeps the plain label it has always had. -->
-                  <div v-else :class="tacticalSectionLabelClasses">
-                    <span :class="tacticalSectionTickClasses"></span>
-                    {{ $t("tournament.page.roster_section") }}
-                    <span :class="tacticalSectionCountClasses">
-                      {{ filteredTeams.length }}
-                    </span>
+          <TabsContent v-if="matchesTabVisible" value="matches">
+            <PageTransition>
+              <TournamentResults
+                :tournament="tournament"
+                :show-standings="false"
+                :show-matches="true"
+              />
+            </PageTransition>
+          </TabsContent>
+
+          <TabsContent value="teams">
+            <PageTransition>
+              <div class="grid gap-8">
+                <ManageSection
+                  v-if="myTeam"
+                  :label="$t('tournament.page.my_team')"
+                  :hint="$t('tournament.page.my_team_hint')"
+                >
+                  <div :class="tournamentTeamCardClasses">
+                    <TournamentTeam
+                      :tournament="tournament"
+                      :team="myTeam"
+                    ></TournamentTeam>
                   </div>
+                </ManageSection>
 
-                  <!-- Filtering and expand-all are roster verbs. On the Invites
-                       or Links pane they would filter nothing and collapse
-                       nothing, so they leave with the list they act on. -->
+                <div class="min-w-0">
                   <div
-                    v-if="teamsPanel === 'roster'"
-                    class="flex flex-wrap items-center gap-2"
+                    class="mb-[0.85rem] flex flex-wrap items-center justify-between gap-3"
                   >
                     <AnimatedFilters
-                      v-if="visibleTeams.length > 1"
-                      v-model="teamFilter"
-                      :options="teamFilterOptions"
+                      v-if="freeAgentsTabVisible"
+                      v-model="teamsPanel"
+                      :options="teamsPanelTabs"
                       square
                     />
-                    <Button
-                      v-if="visibleTeams.length > 0"
-                      variant="outline"
-                      size="sm"
-                      class="h-8"
-                      @click="toggleAllTeams"
+                    <div v-else :class="tacticalSectionLabelClasses">
+                      <span :class="tacticalSectionTickClasses"></span>
+                      {{ $t("tournament.page.roster_section") }}
+                      <span :class="tacticalSectionCountClasses">
+                        {{ filteredTeams.length }}
+                      </span>
+                    </div>
+
+                    <div
+                      v-if="teamsPanel === 'roster'"
+                      class="flex flex-wrap items-center gap-2"
                     >
-                      <Transition
-                        mode="out-in"
-                        enter-active-class="transition-[opacity,transform] duration-150 ease-out motion-reduce:!duration-0"
-                        leave-active-class="transition-[opacity,transform] duration-100 ease-in motion-reduce:!duration-0"
-                        enter-from-class="opacity-0 scale-90 motion-reduce:scale-100"
-                        leave-to-class="opacity-0 scale-90 motion-reduce:scale-100"
+                      <AnimatedFilters
+                        v-if="visibleTeams.length > 1"
+                        v-model="teamFilter"
+                        :options="teamFilterOptions"
+                        square
+                      />
+                      <Button
+                        v-if="visibleTeams.length > 0"
+                        variant="outline"
+                        size="sm"
+                        class="h-8"
+                        @click="toggleAllTeams"
                       >
                         <component
                           :is="allTeamsCollapsed ? Maximize : Minimize"
-                          :key="allTeamsCollapsed ? 'expand' : 'collapse'"
                           class="mr-1.5 h-4 w-4 shrink-0"
                         />
-                      </Transition>
-                      <!-- Both labels stacked in one grid cell reserve the wider
-                           of the two, so swapping states can't resize the button. -->
-                      <span class="grid">
-                        <span
-                          class="invisible col-start-1 row-start-1 grid"
-                          aria-hidden="true"
-                        >
-                          <span
-                            class="col-start-1 row-start-1 whitespace-nowrap"
-                          >
-                            {{ $t("tournament.teams_filter.collapse_all") }}
-                          </span>
-                          <span
-                            class="col-start-1 row-start-1 whitespace-nowrap"
-                          >
-                            {{ $t("tournament.teams_filter.expand_all") }}
-                          </span>
-                        </span>
-                        <Transition
-                          mode="out-in"
-                          enter-active-class="transition-opacity duration-150 ease-out motion-reduce:!duration-0"
-                          leave-active-class="transition-opacity duration-100 ease-in motion-reduce:!duration-0"
-                          enter-from-class="opacity-0"
-                          leave-to-class="opacity-0"
-                        >
-                          <span
-                            :key="allTeamsCollapsed ? 'expand' : 'collapse'"
-                            class="col-start-1 row-start-1 whitespace-nowrap text-center"
-                          >
-                            {{
-                              allTeamsCollapsed
-                                ? $t("tournament.teams_filter.expand_all")
-                                : $t("tournament.teams_filter.collapse_all")
-                            }}
-                          </span>
-                        </Transition>
-                      </span>
-                    </Button>
+                        {{
+                          allTeamsCollapsed
+                            ? $t("tournament.teams_filter.expand_all")
+                            : $t("tournament.teams_filter.collapse_all")
+                        }}
+                      </Button>
+                    </div>
                   </div>
+
+                  <FadeSwap>
+                    <TournamentFreeAgents
+                      v-if="teamsPanel === 'free-agents'"
+                      key="free-agents"
+                      :tournament="tournament"
+                    />
+
+                    <div
+                      v-else-if="visibleTeams.length === 0"
+                      key="no-teams"
+                      class="grid justify-items-start gap-3 rounded-lg border border-dashed border-border p-8 text-muted-foreground"
+                    >
+                      {{ $t("tournament.page.no_teams_yet") }}
+                      <Button
+                        v-if="tournament.is_organizer"
+                        variant="outline"
+                        size="sm"
+                        @click="openManage('teams')"
+                      >
+                        <UserPlus class="h-4 w-4" />
+                        {{ $t("tournament.manage.invite_teams") }}
+                      </Button>
+                    </div>
+
+                    <div
+                      v-else-if="filteredTeams.length === 0"
+                      key="no-matches"
+                      class="rounded-lg border border-dashed border-border p-10 text-center text-muted-foreground"
+                    >
+                      {{ $t("tournament.teams_filter.no_matches") }}
+                    </div>
+
+                    <TransitionGroup
+                      v-else
+                      key="teams"
+                      tag="div"
+                      class="flex flex-col gap-4"
+                      enter-active-class="transition-[opacity,transform] [transition-duration:420ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] will-change-[opacity,transform] motion-reduce:![transition-duration:1ms] motion-reduce:![transition-delay:0ms]"
+                      enter-from-class="opacity-0 translate-y-3 motion-reduce:translate-y-0"
+                      leave-active-class="absolute w-full transition-[opacity,transform] duration-200 ease-in motion-reduce:![transition-duration:1ms]"
+                      leave-to-class="opacity-0 -translate-y-2 motion-reduce:translate-y-0"
+                      move-class="transition-transform duration-300 ease-out motion-reduce:!transition-none"
+                      @before-enter="setTeamEnterDelay"
+                      @after-enter="clearTeamEnterDelay"
+                      @enter-cancelled="clearTeamEnterDelay"
+                    >
+                      <div
+                        v-for="(team, index) of filteredTeams"
+                        :key="team.id"
+                        :data-stagger="Math.min(index, 12)"
+                        :class="tournamentTeamCardClasses"
+                      >
+                        <TournamentTeam
+                          :tournament="tournament"
+                          :team="team"
+                          :collapsible="true"
+                          :collapsed="collapsedTeams.has(team.id)"
+                          @toggle-collapsed="toggleTeamCollapsed(team.id)"
+                        ></TournamentTeam>
+                      </div>
+                    </TransitionGroup>
+                  </FadeSwap>
                 </div>
-
-                <!-- Panes are v-show, never v-if: each invite pane owns a live
-                     subscription whose row count is the badge on its own tab,
-                     and TournamentInviteLinks holds the organizer's unsubmitted
-                     expiry/max-uses choice. Unmounting would zero both — the
-                     badge would only ever be right for the tab you are already
-                     looking at, which is the one tab that does not need it.
-                     HeightMorph exists for exactly this: it tweens the frame
-                     across a swap it does not control. -->
-                <HeightMorph :state="teamsPanel">
-                  <div v-show="teamsPanel === 'roster'">
-                    <FadeSwap>
-                      <div
-                        v-if="visibleTeams.length === 0"
-                        key="no-teams"
-                        class="rounded-lg border border-dashed border-border p-10 text-center text-muted-foreground"
-                      >
-                        {{ $t("tournament.page.no_teams_yet") }}
-                      </div>
-
-                      <div
-                        v-else-if="filteredTeams.length === 0"
-                        key="no-matches"
-                        class="rounded-lg border border-dashed border-border p-10 text-center text-muted-foreground"
-                      >
-                        {{ $t("tournament.teams_filter.no_matches") }}
-                      </div>
-
-                      <TransitionGroup
-                        v-else
-                        key="teams"
-                        tag="div"
-                        class="flex flex-col gap-4"
-                        enter-active-class="transition-[opacity,transform] [transition-duration:420ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] will-change-[opacity,transform] motion-reduce:![transition-duration:1ms] motion-reduce:![transition-delay:0ms]"
-                        enter-from-class="opacity-0 translate-y-3 motion-reduce:translate-y-0"
-                        leave-active-class="absolute w-full transition-[opacity,transform] duration-200 ease-in motion-reduce:![transition-duration:1ms]"
-                        leave-to-class="opacity-0 -translate-y-2 motion-reduce:translate-y-0"
-                        move-class="transition-transform duration-300 ease-out motion-reduce:!transition-none"
-                        @before-enter="setTeamEnterDelay"
-                        @after-enter="clearTeamEnterDelay"
-                        @enter-cancelled="clearTeamEnterDelay"
-                      >
-                        <div
-                          v-for="(team, index) of filteredTeams"
-                          :key="team.id"
-                          :data-stagger="Math.min(index, 12)"
-                          :class="tournamentTeamCardClasses"
-                        >
-                          <TournamentTeam
-                            :tournament="tournament"
-                            :team="team"
-                            :collapsible="true"
-                            :collapsed="collapsedTeams.has(team.id)"
-                            @toggle-collapsed="toggleTeamCollapsed(team.id)"
-                          ></TournamentTeam>
-                        </div>
-                      </TransitionGroup>
-                    </FadeSwap>
-                  </div>
-
-                  <!-- v-if on the ROLE, v-show on the TAB. A viewer must never
-                       mount these at all (they are organizer-only
-                       subscriptions); an organizer must never unmount them. -->
-                  <template v-if="tournament.is_organizer">
-                    <div v-show="teamsPanel === 'invites'">
-                      <TournamentInvites
-                        :tournament="tournament"
-                        :registration="tournamentRegistration"
-                        @count="adminInviteCount = $event"
-                      />
-                    </div>
-
-                    <div v-show="teamsPanel === 'links'">
-                      <TournamentInviteLinks
-                        :tournament="tournament"
-                        @count="adminLinkCount = $event"
-                      />
-                    </div>
-                  </template>
-                </HeightMorph>
               </div>
+            </PageTransition>
+          </TabsContent>
 
-              <!-- The aside is back to its one job: put a team in the bracket.
-                   `sticky` is kept precisely because the panel is short again —
-                   a column taller than the viewport cannot follow anyone
-                   anywhere, which is why it was wrong while three tools were
-                   stacked here. Beside a roster of thirty teams, a short Add
-                   Team frame that stays in reach is the whole point. -->
-              <div v-if="tournament.is_organizer" class="lg:sticky lg:top-6">
-                <PageTransition :delay="150">
-                  <aside :class="tournamentAdminPanelClasses">
-                    <section :class="tournamentAdminSectionClasses">
-                      <div :class="[tacticalSectionLabelClasses, 'mb-0']">
-                        <span :class="tacticalSectionTickClasses"></span>
-                        {{ $t("tournament.add_team.title") }}
-                      </div>
-                      <p :class="tournamentAdminSectionHintClasses">
-                        {{ $t("tournament.add_team.description") }}
-                      </p>
-                      <TournamentJoinForm
-                        :tournament="tournament"
-                      ></TournamentJoinForm>
-                    </section>
-                  </aside>
-                </PageTransition>
-              </div>
-            </div>
-          </PageTransition>
-        </TabsContent>
-        <TabsContent v-if="freeAgentsTabVisible" value="free-agents">
-          <PageTransition>
-            <TournamentFreeAgents :tournament="tournament" />
-          </PageTransition>
-        </TabsContent>
-        <TabsContent v-if="standingsTabVisible" value="standings">
-          <PageTransition>
-            <TournamentResults
-              :tournament="tournament"
-              :show-standings="true"
-              :show-matches="false"
-            />
-          </PageTransition>
-        </TabsContent>
-        <TabsContent v-if="statsTabVisible" value="stats">
-          <PageTransition>
-            <TournamentStats :tournament="tournament" />
-          </PageTransition>
-        </TabsContent>
-        <TabsContent
-          v-if="
-            tournament.status === e_tournament_status_enum.Live ||
-            tournament.status === e_tournament_status_enum.Finished
-          "
-          value="results"
-        >
-          <PageTransition>
-            <TournamentResults
-              :tournament="tournament"
-              :show-standings="false"
-              :show-matches="true"
-            />
-          </PageTransition>
-        </TabsContent>
-        <TabsContent value="information" v-if="tournament?.is_organizer">
-          <PageTransition>
-            <TournamentInformationForm :tournament="tournament" />
-          </PageTransition>
-        </TabsContent>
-        <TabsContent value="match-options" v-if="tournament?.is_organizer">
-          <PageTransition>
-            <TournamentMatchOptionsForm :tournament="tournament" />
-          </PageTransition>
-        </TabsContent>
-        <TabsContent value="prizes" v-if="tournament?.is_organizer">
-          <PageTransition>
-            <TournamentPrizesManage :tournament="tournament" />
-          </PageTransition>
-        </TabsContent>
-        <TabsContent value="organizers" v-if="tournament?.is_organizer">
-          <PageTransition>
-            <TournamentOrganizers
-              :tournament="tournament"
-            ></TournamentOrganizers>
-          </PageTransition>
-        </TabsContent>
-        <TabsContent value="awards" v-if="tournament?.is_organizer">
-          <PageTransition>
-            <div class="flex flex-col gap-4">
-              <TournamentAwardsConfig :tournament="tournament" />
-              <TournamentAwardsManage :tournament="tournament" />
-            </div>
-          </PageTransition>
-        </TabsContent>
-        <TabsContent value="notifications" v-if="tournament?.is_organizer">
-          <PageTransition>
-            <TournamentNotifications
-              :tournament="tournament"
-            ></TournamentNotifications>
-          </PageTransition>
-        </TabsContent>
-      </div>
-    </Tabs>
+          <TabsContent v-if="statsTabVisible" value="stats">
+            <PageTransition>
+              <TournamentStats :tournament="tournament" />
+            </PageTransition>
+          </TabsContent>
 
-    <!-- Join Tournament Sheet - Available for all tabs -->
-    <Sheet
-      :open="joinSheetOpen"
-      @update:open="(open) => (joinSheetOpen = open)"
-    >
-      <SheetContent side="right" class="w-full sm:max-w-lg overflow-y-auto">
-        <SheetHeader>
-          <SheetTitle class="text-2xl">
-            {{ $t("tournament.join.title") }}
-          </SheetTitle>
-          <!-- A free agent enters alone, so the lineup minimum is not the
+          <TabsContent v-if="tournament?.is_organizer" value="manage">
+            <PageTransition>
+              <TournamentManage
+                v-model:section="manageSection"
+                :tournament="tournament"
+                :registration="tournamentRegistration"
+                :check-in-teams="checkInTeams"
+                :check-in-review-visible="checkInReviewVisible"
+              />
+            </PageTransition>
+          </TabsContent>
+        </div>
+      </Tabs>
+
+      <!-- Join Tournament Sheet - Available for all tabs -->
+      <Sheet
+        :open="joinSheetOpen"
+        @update:open="(open) => (joinSheetOpen = open)"
+      >
+        <SheetContent side="right" class="w-full sm:max-w-lg overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle class="text-2xl">
+              {{ $t("tournament.join.title") }}
+            </SheetTitle>
+            <!-- A free agent enters alone, so the lineup minimum is not the
                sheet's headline any more -- the team half of the form still
                states it where it applies. -->
-          <SheetDescription v-if="!freeAgentsTabVisible">
-            {{
-              $t("tournament.join.requirements", {
-                count: tournament.min_players_per_lineup,
-              })
-            }}
-          </SheetDescription>
-        </SheetHeader>
+            <SheetDescription v-if="!freeAgentsTabVisible">
+              {{
+                $t("tournament.join.requirements", {
+                  count: tournament.min_players_per_lineup,
+                })
+              }}
+            </SheetDescription>
+          </SheetHeader>
 
-        <div class="mt-6">
-          <TournamentJoinForm
-            :tournament="tournament"
-            :registration="tournamentRegistration"
-            :my-free-agent="myFreeAgent"
-            @close="joinSheetOpen = false"
-          />
-        </div>
-      </SheetContent>
-    </Sheet>
+          <div class="mt-6">
+            <TournamentJoinForm
+              :tournament="tournament"
+              :registration="tournamentRegistration"
+              :my-free-agent="myFreeAgent"
+              @close="joinSheetOpen = false"
+            />
+          </div>
+        </SheetContent>
+      </Sheet>
 
-    <!-- Delete Tournament Dialog -->
-    <AlertDialog
-      :open="deleteDialogOpen"
-      @update:open="(open) => (deleteDialogOpen = open)"
-    >
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{{
-            $t("tournament.actions.confirm_delete")
-          }}</AlertDialogTitle>
-          <AlertDialogDescription>
-            {{ $t("tournament.actions.delete_description") }}
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
-          <AlertDialogAction
-            @click="deleteTournament"
-            class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-          >
-            {{ $t("tournament.actions.delete") }}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+      <!-- Delete Tournament Dialog -->
+      <AlertDialog
+        :open="deleteDialogOpen"
+        @update:open="(open) => (deleteDialogOpen = open)"
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{{
+              $t("tournament.actions.confirm_delete")
+            }}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {{ $t("tournament.actions.delete_description") }}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+            <AlertDialogAction
+              @click="deleteTournament"
+              class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {{ $t("tournament.actions.delete") }}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
-    <!-- Pause Tournament Dialog -->
-    <AlertDialog
-      :open="pauseDialogOpen"
-      @update:open="(open) => (pauseDialogOpen = open)"
-    >
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{{
-            $t("tournament.actions.confirm_pause")
-          }}</AlertDialogTitle>
-          <AlertDialogDescription>
-            {{ $t("tournament.actions.pause_description") }}
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
-          <AlertDialogAction @click="pauseTournament">
-            {{ $t("tournament.actions.pause") }}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+      <!-- Pause Tournament Dialog -->
+      <AlertDialog
+        :open="pauseDialogOpen"
+        @update:open="(open) => (pauseDialogOpen = open)"
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{{
+              $t("tournament.actions.confirm_pause")
+            }}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {{ $t("tournament.actions.pause_description") }}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+            <AlertDialogAction @click="pauseTournament">
+              {{ $t("tournament.actions.pause") }}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
-    <!-- Resume Tournament Dialog -->
-    <AlertDialog
-      :open="resumeDialogOpen"
-      @update:open="(open) => (resumeDialogOpen = open)"
-    >
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{{
-            $t("tournament.actions.resume")
-          }}</AlertDialogTitle>
-          <AlertDialogDescription>
-            {{ $t("tournament.actions.resume_description") }}
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
-          <AlertDialogAction @click="resumeTournament">
-            {{ $t("tournament.actions.resume") }}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  </div>
+      <!-- Resume Tournament Dialog -->
+      <AlertDialog
+        :open="resumeDialogOpen"
+        @update:open="(open) => (resumeDialogOpen = open)"
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{{
+              $t("tournament.actions.resume")
+            }}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {{ $t("tournament.actions.resume_description") }}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+            <AlertDialogAction @click="resumeTournament">
+              {{ $t("tournament.actions.resume") }}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+    <TournamentDetailSkeleton
+      v-else
+      key="skeleton"
+      :preview="tournamentPreview"
+    />
+  </FadeSwap>
 </template>
 
 <script lang="ts">
@@ -1184,6 +925,21 @@ import { cancelChatTabRestore } from "~/composables/useChatTabPersistence";
 import { setActiveHub } from "~/composables/useHubState";
 import { useRightSidebar } from "~/composables/useRightSidebar";
 
+// Tabs from the old layout, mapped to where their content lives now.
+const LEGACY_TABS: Record<string, { tab: string; section?: string }> = {
+  "my-team": { tab: "teams" },
+  "match-settings": { tab: "overview" },
+  "free-agents": { tab: "teams" },
+  standings: { tab: "overview" },
+  results: { tab: "matches" },
+  information: { tab: "manage", section: "details" },
+  prizes: { tab: "manage", section: "prizes" },
+  "match-options": { tab: "manage", section: "match-rules" },
+  organizers: { tab: "manage", section: "organizers" },
+  awards: { tab: "manage", section: "prizes" },
+  notifications: { tab: "manage", section: "discord" },
+};
+
 export default {
   data() {
     return {
@@ -1210,18 +966,15 @@ export default {
       resumeDialogOpen: false,
       organizerPopoversOpen: {},
       activeTab: "overview",
-      // Which pane the wide column of the Teams tab is showing. Organizer-only
-      // in the UI, but always "roster" for everyone else, so every v-show below
-      // reads true for a viewer without a second code path.
+      // The Teams tab's pane: the roster, or the free-agent pool when the
+      // tournament takes free agents.
       teamsPanel: "roster",
-      // Reported up by the two panels rather than counted here: they already
-      // hold the live subscriptions, and a second aggregate subscription just
-      // to badge a tab would be a socket paying for a number we already have.
-      adminInviteCount: 0,
-      adminLinkCount: 0,
+      manageSection: "details",
       teamFilter: "all",
       collapsedTeams: new Set(),
       myTeamLoaded: false,
+      myFreeAgentLoaded: false,
+      registrationLoaded: false,
       e_match_types: [],
     };
   },
@@ -1721,6 +1474,11 @@ export default {
         },
         result: function (this: any, { data }: { data: any }) {
           this.tournamentRegistration = data?.tournaments_by_pk ?? null;
+          this.registrationLoaded = true;
+        },
+        // A failed subscription must not hold the participant panels back.
+        error: function (this: any) {
+          this.registrationLoaded = true;
         },
       },
       // Only ever opened for a tournament that actually requires check-in —
@@ -1826,6 +1584,7 @@ export default {
         },
         result: function (this: any, { data }: { data: any }) {
           this.myFreeAgent = data?.tournament_free_agents?.[0] ?? null;
+          this.myFreeAgentLoaded = true;
         },
       },
       tournament_teams: {
@@ -2120,10 +1879,6 @@ export default {
         },
       ];
     },
-    // Every badge counts exactly what its own pane lists, which is why Roster
-    // carries the FILTERED total rather than the registered one: the number on
-    // the tab and the number of cards under it can then never disagree, and the
-    // per-filter breakdown is already on the chip strip beside it.
     teamsPanelTabs() {
       return [
         {
@@ -2132,14 +1887,8 @@ export default {
           count: this.filteredTeams.length,
         },
         {
-          key: "invites",
-          label: this.$t("tournament.invites.title"),
-          count: this.adminInviteCount,
-        },
-        {
-          key: "links",
-          label: this.$t("tournament.invite_links.tab"),
-          count: this.adminLinkCount,
+          key: "free-agents",
+          label: this.$t("tournament.free_agents.title"),
         },
       ];
     },
@@ -2173,48 +1922,82 @@ export default {
     },
     availableTournamentTabs() {
       const tabs = ["overview"];
-
-      if (this.myTeam) {
-        tabs.push("my-team");
+      if (this.tournament?.stages?.length || this.tournament?.is_organizer) {
+        tabs.push("bracket");
       }
-
+      if (this.matchesTabVisible) {
+        tabs.push("matches");
+      }
       tabs.push("teams");
-
-      if (!this.tournament?.is_organizer && this.tournament?.options) {
-        tabs.push("match-settings");
-      }
-
-      if (this.freeAgentsTabVisible) {
-        tabs.push("free-agents");
-      }
-
-      if (this.standingsTabVisible) {
-        tabs.push("standings");
-      }
-
       if (this.statsTabVisible) {
         tabs.push("stats");
       }
-
-      if (
-        this.tournament?.status === e_tournament_status_enum.Live ||
-        this.tournament?.status === e_tournament_status_enum.Finished
-      ) {
-        tabs.push("results");
-      }
-
       if (this.tournament?.is_organizer) {
-        tabs.push(
-          "information",
-          "prizes",
-          "match-options",
-          "organizers",
-          "awards",
-          "notifications",
-        );
+        tabs.push("manage");
       }
-
       return tabs;
+    },
+    publicTabs() {
+      const labels: Record<string, string> = {
+        overview: this.$t("tournament.overview"),
+        bracket: this.$t("tournament.page.bracket_tab"),
+        matches: this.$t("tournament.page.matches_tab"),
+        teams: this.$t("tournament.teams.count", {
+          count: this.tournament?.teams_aggregate?.aggregate?.count || 0,
+        }),
+        stats: this.$t("tournament.stats.title"),
+      };
+      return this.availableTournamentTabs
+        .filter((tab: string) => tab !== "manage")
+        .map((tab: string) => ({ value: tab, label: labels[tab] }));
+    },
+    participantReady() {
+      if (!this.registrationLoaded) {
+        return false;
+      }
+      if (!this.me?.steam_id) {
+        return true;
+      }
+      return (
+        this.myTeamLoaded &&
+        (!this.freeAgentsTabVisible || this.myFreeAgentLoaded)
+      );
+    },
+    matchesTabVisible() {
+      const status = this.tournament?.status;
+      return (
+        status === e_tournament_status_enum.Live ||
+        status === e_tournament_status_enum.Paused ||
+        status === e_tournament_status_enum.Finished
+      );
+    },
+    startLabel() {
+      if (!this.tournament?.start) {
+        return "";
+      }
+      return new Intl.DateTimeFormat(this.$i18n.locale, {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+      }).format(new Date(this.tournament.start));
+    },
+    hasStatusActions() {
+      const t = this.tournament;
+      if (!t) {
+        return false;
+      }
+      return (
+        t.can_open_registration ||
+        t.can_close_registration ||
+        t.can_start ||
+        t.can_pause ||
+        t.can_resume ||
+        (t.can_setup && !this.leagueSeasonId) ||
+        (!this.leagueSeasonId &&
+          (t.can_cancel || t.status !== e_tournament_status_enum.Live))
+      );
     },
     standingsTabVisible() {
       const status = this.tournament?.status;
@@ -2287,8 +2070,33 @@ export default {
       }
 
       const requestedTab = getRequestedRouteTab(this.$route.query);
-      if (requestedTab === "my-team" && this.me && !this.myTeamLoaded) {
+      // Old links to the eleven-tab layout land where that content lives now.
+      const legacy = LEGACY_TABS[requestedTab ?? ""];
+      if (legacy) {
+        if (legacy.section && !this.tournament.is_organizer) {
+          void replaceRouteTab(
+            this.$router,
+            this.$route,
+            "overview",
+            "overview",
+          );
+          return;
+        }
+        if (legacy.section) {
+          this.manageSection = legacy.section;
+        }
+        void this.$router.replace({
+          query: {
+            ...this.$route.query,
+            tab: legacy.tab,
+            section: legacy.section ?? undefined,
+          },
+        });
         return;
+      }
+      const section = this.$route.query.section;
+      if (typeof section === "string" && section) {
+        this.manageSection = section;
       }
 
       const activeTab = getRouteTabValue(
@@ -2307,6 +2115,13 @@ export default {
         this.availableTournamentTabs,
         "overview",
       );
+    },
+    toggleManage() {
+      this.activeTab = this.activeTab === "manage" ? "overview" : "manage";
+    },
+    openManage(section: string) {
+      this.manageSection = section;
+      this.activeTab = "manage";
     },
     openSettingsDialog() {
       this.settingsDialogOpen = true;
@@ -2420,7 +2235,29 @@ export default {
         return;
       }
 
-      void replaceRouteTab(this.$router, this.$route, newTab, "overview");
+      const query = { ...this.$route.query };
+      if (newTab === "manage") {
+        query.section = this.manageSection;
+      } else {
+        delete query.section;
+      }
+      void replaceRouteTab(
+        this.$router,
+        { path: this.$route.path, hash: this.$route.hash, query },
+        newTab,
+        "overview",
+      );
+    },
+    manageSection(section) {
+      if (
+        this.activeTab !== "manage" ||
+        this.$route.query.section === section
+      ) {
+        return;
+      }
+      void this.$router.replace({
+        query: { ...this.$route.query, section },
+      });
     },
     "$route.query.tab"() {
       this.syncActiveTabFromRoute();

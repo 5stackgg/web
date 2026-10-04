@@ -1207,7 +1207,35 @@
       "title": "调整图片",
       "description": "拖动可调整位置，滚动可缩放。方框内即为将要保存的范围。",
       "fit_whole": "完整显示",
-      "apply": "应用"
+      "apply": "应用",
+      "zoom_in": "放大",
+      "zoom_out": "缩小",
+      "center": "居中",
+      "safe_zone": "安全区域",
+      "safe_zone_hint": "请将标志和文字放在虚线以内。",
+      "where_it_shows": "显示位置",
+      "check_small": "你的图片宽 {w} px。请使用 {rec} px 或更宽的图片，以便在大屏幕上保持清晰。",
+      "check_size": "{w} × {h} px。各处都清晰。",
+      "check_zoomed": "放大超过了图片分辨率，显示会模糊。"
+    },
+    "adjust": "调整",
+    "frames": {
+      "tournament_page": "赛事页面",
+      "desktop": "桌面端",
+      "phone": "手机",
+      "live_banner": "赛事 · 直播",
+      "cards": "卡片",
+      "quick_look": "快速预览",
+      "list_thumbnail": "列表缩略图",
+      "next_lan_strip": "下一场 LAN 横条",
+      "event_page": "活动页面",
+      "watch_featured": "Watch · 精选",
+      "events_up_next": "活动 · 即将开始",
+      "past_event": "往期活动",
+      "event_card": "活动卡片",
+      "up_next_strip": "即将开始横条",
+      "page_header": "页面顶部",
+      "small": "小"
     }
   },
   "avatar": {
@@ -6684,7 +6712,6 @@
     "never": "从未",
     "live": "进行中",
     "finished": "已结束",
-    "scheduled": "已安排",
     "show_metrics": "显示指标",
     "hide_metrics": "隐藏指标",
     "connected": "已连接",
@@ -6929,18 +6956,17 @@
     "final_standings_podium": "▚ 最终排名 · 领奖台",
     "page": {
       "back_to_league": "返回联赛",
-      "match_options_tab": "比赛选项",
-      "organizers_tab": "组织者",
       "my_team": "我的队伍",
       "my_team_hint": "管理您的阵容、邀请以及此赛事的准备状态。",
       "roster_section": "阵容",
       "no_teams_yet": "暂无队伍。",
-      "information_tab": "信息",
       "about_section": "简介",
       "match_settings": "比赛设置",
       "chat_room_tab": "聊天室",
       "read_more": "展开",
-      "read_less": "收起"
+      "read_less": "收起",
+      "bracket_tab": "对阵图",
+      "matches_tab": "比赛"
     },
     "feature_card": {
       "teams": "队伍",
@@ -6987,7 +7013,6 @@
     "paused_banner": "此赛事已暂停。不会自动安排新比赛。",
     "overview": "概览",
     "updated": "赛事已更新",
-    "settings": "设置",
     "join": {
       "title": "加入赛事",
       "mode": {
@@ -7061,7 +7086,6 @@
       }
     },
     "notifications": {
-      "title": "Discord",
       "webhook": "Webhook URL",
       "webhook_placeholder": "留空以使用全局默认值",
       "role_id": "角色 ID",
@@ -7185,7 +7209,12 @@
       "main_path": "主线",
       "impact_source": "来源",
       "impact_delete": "删除",
-      "impact_reset": "重置"
+      "impact_reset": "重置",
+      "walkover_win": "胜",
+      "forfeit_short": "弃",
+      "follow_team": "关注队伍",
+      "follow_none": "显示全部",
+      "match_short": "第 {match} 场"
     },
     "negotiation": {
       "schedule": "安排时间",
@@ -7285,7 +7314,6 @@
       "remove": "移除组织者",
       "confirm_remove": "您确定要移除此组织者吗？",
       "remove_description": "这将从赛事中移除此组织者",
-      "organized_by": "组织者",
       "teams": {
         "title": "组织战队",
         "description": "关联一支战队，使其所有成员成为这场锦标赛的主办方。",
@@ -7329,8 +7357,7 @@
       "seed_display": "种子 #{seed}"
     },
     "teams": {
-      "count": "{count} 支队伍",
-      "my_teams": "我的队伍"
+      "count": "{count} 支队伍"
     },
     "actions": {
       "open_registration": "开放报名",
@@ -7400,7 +7427,7 @@
     "banner": {
       "label": "横幅",
       "upload": "上传横幅",
-      "hint": "显示在锦标赛页面顶部，会裁剪为 3:1 的宽幅。",
+      "hint": "拖放或点击 · 最佳尺寸 2400 × 800 (3:1)",
       "upload_failed": "横幅上传失败"
     },
     "awards_config": {
@@ -7731,6 +7758,31 @@
         "invite_rate_limited": "邀请尝试次数过多。请一分钟后再试。",
         "invite_not_allowed": "该账户无法接受此邀请。"
       }
+    },
+    "manage": {
+      "button": "管理",
+      "title": "管理赛事",
+      "back": "返回页面",
+      "status_actions": "赛事状态",
+      "no_status_actions": "目前没有可更改的内容。",
+      "details": "详情与品牌",
+      "registration": "报名",
+      "teams": "队伍与邀请",
+      "stages": "阶段",
+      "match_rules": "比赛规则",
+      "prizes_awards": "奖品与荣誉",
+      "organizers": "组织者",
+      "discord": "Discord",
+      "needs_attention": "需要处理",
+      "stages_locked": "赛事开始后无法更改阶段。",
+      "stage_summary": "{min}–{max} 支队伍",
+      "groups": "{count} 个小组",
+      "no_stages": "暂无阶段",
+      "no_stages_hint": "添加阶段以设定赛制。报名截止时将据此生成对阵图。",
+      "add_first_stage": "添加第一个阶段",
+      "set_up_stages": "设置阶段",
+      "invite_teams": "邀请队伍",
+      "stages_after_create": "接下来你将设置阶段，用于决定赛制和对阵图。"
     }
   },
   "team": {

@@ -57,34 +57,18 @@ describe("tournament chat room button", () => {
     expect(wrapper.text()).not.toContain("Chat Room");
   });
 
-  it("sits beside the left-aligned tabs on one row at every width", async () => {
+  it("sits with the header actions and keeps only its icon on phones", async () => {
     const wrapper = await mountDetail(true);
-    const tabList = wrapper.find("tabs-list-stub");
-    const row = tabList.element.parentElement!;
-    const button = tabList.element.nextElementSibling!;
+    const button = wrapper
+      .findAll("button-stub")
+      .find((candidate) => candidate.text().includes("Chat Room"));
 
-    expect(button.tagName.toLowerCase()).toBe("button-stub");
-    expect(button.textContent).toContain("Chat Room");
+    expect(button, "Chat Room button").toBeDefined();
+    expect(button!.element.closest("[class*='max-sm:w-full']")).not.toBeNull();
 
-    const rowClasses = row.className.split(/\s+/);
-    expect(rowClasses).toEqual(expect.arrayContaining(["flex", "items-start"]));
-    expect(rowClasses).not.toContain("flex-wrap");
-
-    const tabListClasses = classesOf(tabList);
-    expect(tabListClasses).toEqual(
-      expect.arrayContaining(["min-w-0", "flex-wrap", "justify-start"]),
-    );
-    expect(tabListClasses).not.toContain("flex-1");
-
-    expect(button.className.split(/\s+/)).toEqual(
-      expect.arrayContaining(["shrink-0", "max-sm:px-2"]),
-    );
-
-    const label = [...button.querySelectorAll("span")].find((span) =>
+    const label = [...button!.element.querySelectorAll("span")].find((span) =>
       span.textContent?.includes("Chat Room"),
     )!;
-    expect(label.className.split(/\s+/)).toEqual(
-      expect.arrayContaining(["sr-only", "sm:not-sr-only"]),
-    );
+    expect(label.className.split(/\s+/)).toContain("max-sm:sr-only");
   });
 });

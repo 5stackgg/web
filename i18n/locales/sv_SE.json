@@ -1207,7 +1207,35 @@
       "title": "Justera bild",
       "description": "Dra för att flytta, skrolla för att zooma. Ramen visar vad som sparas.",
       "fit_whole": "Anpassa hela",
-      "apply": "Tillämpa"
+      "apply": "Tillämpa",
+      "zoom_in": "Zooma in",
+      "zoom_out": "Zooma ut",
+      "center": "Centrera",
+      "safe_zone": "Säker zon",
+      "safe_zone_hint": "Håll logotyper och text innanför den streckade linjen.",
+      "where_it_shows": "Var den visas",
+      "check_small": "Din bild är {w} px bred. Använd {rec} px eller mer så att den förblir skarp på stora skärmar.",
+      "check_size": "{w} × {h} px. Skarp överallt.",
+      "check_zoomed": "Du har zoomat förbi bildens upplösning, så den blir suddig."
+    },
+    "adjust": "Justera",
+    "frames": {
+      "tournament_page": "Turneringssida",
+      "desktop": "Dator",
+      "phone": "Mobil",
+      "live_banner": "Turneringar · live",
+      "cards": "Kort",
+      "quick_look": "Snabbvy",
+      "list_thumbnail": "Listminiatyr",
+      "next_lan_strip": "Nästa LAN-remsa",
+      "event_page": "Evenemangssida",
+      "watch_featured": "Watch · utvalt",
+      "events_up_next": "Evenemang · härnäst",
+      "past_event": "Tidigare evenemang",
+      "event_card": "Evenemangskort",
+      "up_next_strip": "Härnäst-remsa",
+      "page_header": "Sidhuvud",
+      "small": "Liten"
     }
   },
   "avatar": {
@@ -6684,7 +6712,6 @@
     "never": "Aldrig",
     "live": "Live",
     "finished": "Avslutad",
-    "scheduled": "Schemalagd",
     "show_metrics": "Visa mätvärden",
     "hide_metrics": "Dölj mätvärden",
     "connected": "Ansluten",
@@ -6929,18 +6956,17 @@
     "final_standings_podium": "▚ SLUTSTÄLLNING · PALLPLATS",
     "page": {
       "back_to_league": "Tillbaka till ligan",
-      "match_options_tab": "Matchalternativ",
-      "organizers_tab": "Arrangörer",
       "my_team": "Mitt lag",
       "my_team_hint": "Hantera din trupp, inbjudningar och redo-status för denna turnering.",
       "roster_section": "Trupp",
       "no_teams_yet": "Inga lag ännu",
-      "information_tab": "Information",
       "about_section": "Om",
       "match_settings": "Matchinställningar",
       "chat_room_tab": "Chattrum",
       "read_more": "Läs mer",
-      "read_less": "Visa mindre"
+      "read_less": "Visa mindre",
+      "bracket_tab": "Slutspelsträd",
+      "matches_tab": "Matcher"
     },
     "feature_card": {
       "teams": "Lag",
@@ -6987,7 +7013,6 @@
     "paused_banner": "Turneringen är pausad. Inga nya matcher schemaläggs automatiskt.",
     "overview": "Översikt",
     "updated": "Turnering uppdaterad",
-    "settings": "Inställningar",
     "join": {
       "title": "Gå med i turnering",
       "mode": {
@@ -7061,7 +7086,6 @@
       }
     },
     "notifications": {
-      "title": "Discord",
       "webhook": "Webhook-URL",
       "webhook_placeholder": "Lämna tomt för att använda global standard",
       "role_id": "Roll-ID",
@@ -7185,7 +7209,12 @@
       "main_path": "Huvud",
       "impact_source": "källa",
       "impact_delete": "radera",
-      "impact_reset": "återställ"
+      "impact_reset": "återställ",
+      "walkover_win": "V",
+      "forfeit_short": "WO",
+      "follow_team": "Följ ett lag",
+      "follow_none": "Visa alla",
+      "match_short": "Match {match}"
     },
     "negotiation": {
       "schedule": "Schemalägg",
@@ -7285,7 +7314,6 @@
       "remove": "Ta bort arrangör",
       "confirm_remove": "Ta bort denna arrangör?",
       "remove_description": "Detta tar bort arrangören från turneringen",
-      "organized_by": "Arrangeras av",
       "teams": {
         "title": "Organisationslag",
         "description": "Länka ett lag för att göra alla dess medlemmar till arrangörer av denna turnering.",
@@ -7329,8 +7357,7 @@
       "seed_display": "Seedning #{seed}"
     },
     "teams": {
-      "count": "{count} lag",
-      "my_teams": "Mitt lag"
+      "count": "{count} lag"
     },
     "actions": {
       "open_registration": "Öppna anmälan",
@@ -7400,7 +7427,7 @@
     "banner": {
       "label": "Banner",
       "upload": "Ladda upp banner",
-      "hint": "Visas högst upp på turneringssidan. Beskärs till ett brett 3:1-format.",
+      "hint": "Dra och släpp eller klicka · bäst i 2400 × 800 (3:1)",
       "upload_failed": "Uppladdningen av bannern misslyckades"
     },
     "awards_config": {
@@ -7731,6 +7758,31 @@
         "invite_rate_limited": "För många inbjudningsförsök. Försök igen om en minut.",
         "invite_not_allowed": "Det här kontot kan inte acceptera den här inbjudan."
       }
+    },
+    "manage": {
+      "button": "Hantera",
+      "title": "Hantera turnering",
+      "back": "Tillbaka till sidan",
+      "status_actions": "Turneringsstatus",
+      "no_status_actions": "Inget att ändra just nu.",
+      "details": "Detaljer och utseende",
+      "registration": "Anmälan",
+      "teams": "Lag och inbjudningar",
+      "stages": "Faser",
+      "match_rules": "Matchregler",
+      "prizes_awards": "Priser och utmärkelser",
+      "organizers": "Arrangörer",
+      "discord": "Discord",
+      "needs_attention": "Behöver åtgärdas",
+      "stages_locked": "Faser kan inte ändras när turneringen har startat.",
+      "stage_summary": "{min}–{max} lag",
+      "groups": "{count} grupper",
+      "no_stages": "Inga faser än",
+      "no_stages_hint": "Lägg till en fas för att bestämma formatet. Slutspelsträdet skapas från den när anmälan stänger.",
+      "add_first_stage": "Lägg till första fasen",
+      "set_up_stages": "Ställ in faser",
+      "invite_teams": "Bjud in lag",
+      "stages_after_create": "Därefter ställer du in faserna, som avgör format och slutspelsträd."
     }
   },
   "team": {

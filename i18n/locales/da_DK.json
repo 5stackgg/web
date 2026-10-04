@@ -1207,7 +1207,35 @@
       "title": "Justér billede",
       "description": "Træk for at flytte, scroll for at zoome. Rammen viser, hvad der bliver gemt.",
       "fit_whole": "Tilpas hele",
-      "apply": "Anvend"
+      "apply": "Anvend",
+      "zoom_in": "Zoom ind",
+      "zoom_out": "Zoom ud",
+      "center": "Centrér",
+      "safe_zone": "Sikker zone",
+      "safe_zone_hint": "Hold logoer og tekst inden for den stiplede linje.",
+      "where_it_shows": "Hvor det vises",
+      "check_small": "Dit billede er {w} px bredt. Brug {rec} px eller mere, så det forbliver skarpt på store skærme.",
+      "check_size": "{w} × {h} px. Skarpt overalt.",
+      "check_zoomed": "Du har zoomet forbi billedets opløsning, så det bliver sløret."
+    },
+    "adjust": "Justér",
+    "frames": {
+      "tournament_page": "Turneringsside",
+      "desktop": "Computer",
+      "phone": "Telefon",
+      "live_banner": "Turneringer · live",
+      "cards": "Kort",
+      "quick_look": "Hurtigt overblik",
+      "list_thumbnail": "Listeminiature",
+      "next_lan_strip": "Næste LAN-bjælke",
+      "event_page": "Eventside",
+      "watch_featured": "Watch · fremhævet",
+      "events_up_next": "Events · næste",
+      "past_event": "Tidligere event",
+      "event_card": "Eventkort",
+      "up_next_strip": "Næste-bjælke",
+      "page_header": "Sidehoved",
+      "small": "Lille"
     }
   },
   "avatar": {
@@ -6684,7 +6712,6 @@
     "never": "Aldrig",
     "live": "Live",
     "finished": "Afsluttet",
-    "scheduled": "Planlagt",
     "show_metrics": "Vis metrikker",
     "hide_metrics": "Skjul metrikker",
     "connected": "Forbundet",
@@ -6929,18 +6956,17 @@
     "final_standings_podium": "▚ ENDELIG STILLING · PODIE",
     "page": {
       "back_to_league": "Tilbage til liga",
-      "match_options_tab": "Kampindstillinger",
-      "organizers_tab": "Arrangører",
       "my_team": "Mit hold",
       "my_team_hint": "Administrer din trup, invitationer og klarmelding til denne turnering.",
       "roster_section": "Trup",
       "no_teams_yet": "Ingen hold endnu",
-      "information_tab": "Information",
       "about_section": "Om",
       "match_settings": "Kampindstillinger",
       "chat_room_tab": "Chatrum",
       "read_more": "Læs mere",
-      "read_less": "Læs mindre"
+      "read_less": "Læs mindre",
+      "bracket_tab": "Turneringstræ",
+      "matches_tab": "Kampe"
     },
     "feature_card": {
       "teams": "Hold",
@@ -6987,7 +7013,6 @@
     "paused_banner": "Denne turnering er sat på pause. Der planlægges ikke nye kampe automatisk.",
     "overview": "Overblik",
     "updated": "Turnering opdateret",
-    "settings": "Indstillinger",
     "join": {
       "title": "Tilmeld turnering",
       "mode": {
@@ -7061,7 +7086,6 @@
       }
     },
     "notifications": {
-      "title": "Discord",
       "webhook": "Webhook-URL",
       "webhook_placeholder": "Lad stå tom for at bruge global standard",
       "role_id": "Rolle-ID",
@@ -7185,7 +7209,12 @@
       "main_path": "Hoved",
       "impact_source": "kilde",
       "impact_delete": "slet",
-      "impact_reset": "nulstil"
+      "impact_reset": "nulstil",
+      "walkover_win": "V",
+      "forfeit_short": "WO",
+      "follow_team": "Følg et hold",
+      "follow_none": "Vis alle",
+      "match_short": "Kamp {match}"
     },
     "negotiation": {
       "schedule": "Planlæg",
@@ -7285,7 +7314,6 @@
       "remove": "Fjern arrangør",
       "confirm_remove": "Fjern denne arrangør?",
       "remove_description": "Dette fjerner arrangøren fra turneringen",
-      "organized_by": "Arrangeret af",
       "teams": {
         "title": "Organisationshold",
         "description": "Tilknyt et hold for at gøre alle dets medlemmer til arrangører af denne turnering.",
@@ -7329,8 +7357,7 @@
       "seed_display": "Seedning #{seed}"
     },
     "teams": {
-      "count": "{count} hold",
-      "my_teams": "Mit hold"
+      "count": "{count} hold"
     },
     "actions": {
       "open_registration": "Åbn tilmelding",
@@ -7400,7 +7427,7 @@
     "banner": {
       "label": "Banner",
       "upload": "Upload banner",
-      "hint": "Vises øverst på turneringssiden. Beskæres til et bredt 3:1-format.",
+      "hint": "Træk og slip eller klik · bedst i 2400 × 800 (3:1)",
       "upload_failed": "Banneret kunne ikke uploades"
     },
     "awards_config": {
@@ -7731,6 +7758,31 @@
         "invite_rate_limited": "For mange invitationsforsøg. Prøv igen om et minut.",
         "invite_not_allowed": "Denne konto kan ikke acceptere denne invitation."
       }
+    },
+    "manage": {
+      "button": "Administrér",
+      "title": "Administrér turnering",
+      "back": "Tilbage til siden",
+      "status_actions": "Turneringsstatus",
+      "no_status_actions": "Intet at ændre lige nu.",
+      "details": "Detaljer og udseende",
+      "registration": "Tilmelding",
+      "teams": "Hold og invitationer",
+      "stages": "Faser",
+      "match_rules": "Kampregler",
+      "prizes_awards": "Præmier og priser",
+      "organizers": "Arrangører",
+      "discord": "Discord",
+      "needs_attention": "Kræver opmærksomhed",
+      "stages_locked": "Faser kan ikke ændres, når turneringen er startet.",
+      "stage_summary": "{min}–{max} hold",
+      "groups": "{count} grupper",
+      "no_stages": "Ingen faser endnu",
+      "no_stages_hint": "Tilføj en fase for at fastlægge formatet. Turneringstræet laves ud fra den, når tilmeldingen lukker.",
+      "add_first_stage": "Tilføj den første fase",
+      "set_up_stages": "Opsæt faser",
+      "invite_teams": "Invitér hold",
+      "stages_after_create": "Derefter opsætter du faserne, som bestemmer format og turneringstræ."
     }
   },
   "team": {

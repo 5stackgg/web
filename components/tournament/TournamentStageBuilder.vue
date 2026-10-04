@@ -35,6 +35,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import ManageSection from "~/components/common/ManageSection.vue";
 import ShareBracketDialog from "~/components/tournament/ShareBracketDialog.vue";
 import BracketFullscreenBar from "~/components/tournament/BracketFullscreenBar.vue";
+import BracketFollowSelect from "~/components/tournament/BracketFollowSelect.vue";
 import { ref } from "vue";
 import { e_tournament_status_enum as StatusEnum } from "~/generated/zeus";
 import { useBracketView } from "~/composables/useBracketView";
@@ -240,7 +241,8 @@ import {
               </FiveStackToolTip>
             </template>
           </TabsList>
-          <div class="ml-auto flex gap-1.5 mt-1 items-center">
+          <div class="ml-auto flex flex-wrap gap-1.5 mt-1 items-center">
+            <BracketFollowSelect :teams="tournament.teams || []" />
             <template v-if="viewMode === 'split'">
               <button
                 type="button"
@@ -434,7 +436,8 @@ import {
 
       <!-- Show stages directly without tabs if single stage and not organizer -->
       <div v-else class="space-y-6">
-        <div class="flex justify-end gap-1.5 items-center">
+        <div class="flex flex-wrap justify-end gap-1.5 items-center">
+          <BracketFollowSelect :teams="tournament.teams || []" />
           <template v-if="viewMode === 'split'">
             <button
               type="button"
@@ -660,7 +663,7 @@ import {
       </AlertDialog>
     </div>
 
-    <template v-if="tournament.is_organizer">
+    <template v-if="tournament.is_organizer && manage">
       <Card
         class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 p-4 max-w-2xl mx-auto"
         v-if="tournament.stages.length === 0"
@@ -673,10 +676,14 @@ import {
       </Card>
     </template>
     <template v-else>
-      <div v-if="tournament.stages.length === 0" class="text-center p-8">
-        <h2 class="text-2xl font-bold mb-4">
+      <div
+        v-if="tournament.stages.length === 0"
+        class="grid justify-items-start gap-2 rounded-lg border border-dashed border-border p-6 text-sm text-muted-foreground"
+      >
+        <span class="text-base font-semibold text-foreground">
           {{ $t("tournament.stage.not_setup") }}
-        </h2>
+        </span>
+        <slot name="empty-action"></slot>
       </div>
     </template>
   </div>
@@ -691,6 +698,11 @@ export default {
     tournament: {
       type: Object,
       required: true,
+    },
+    // Off on the public Bracket tab; stage editing lives in Manage → Stages.
+    manage: {
+      type: Boolean,
+      default: true,
     },
   },
   data() {
@@ -718,6 +730,7 @@ export default {
     },
     canEditStages() {
       return (
+        this.manage &&
         this.tournament.is_organizer &&
         this.tournament.status !== e_tournament_status_enum.Live &&
         this.tournament.status !== e_tournament_status_enum.Finished

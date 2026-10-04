@@ -1207,7 +1207,35 @@
       "title": "画像を調整",
       "description": "ドラッグで位置調整、スクロールでズームできます。フレーム内が保存される範囲です。",
       "fit_whole": "全体を表示",
-      "apply": "適用"
+      "apply": "適用",
+      "zoom_in": "拡大",
+      "zoom_out": "縮小",
+      "center": "中央揃え",
+      "safe_zone": "セーフゾーン",
+      "safe_zone_hint": "ロゴや文字は点線の内側に収めてください。",
+      "where_it_shows": "表示される場所",
+      "check_small": "画像の幅は {w} px です。大きな画面でも鮮明に表示するには {rec} px 以上を使用してください。",
+      "check_size": "{w} × {h} px。どこでも鮮明です。",
+      "check_zoomed": "画像の解像度を超えて拡大しているため、ぼやけて見えます。"
+    },
+    "adjust": "調整",
+    "frames": {
+      "tournament_page": "大会ページ",
+      "desktop": "デスクトップ",
+      "phone": "スマホ",
+      "live_banner": "大会 · ライブ",
+      "cards": "カード",
+      "quick_look": "クイックビュー",
+      "list_thumbnail": "リストのサムネイル",
+      "next_lan_strip": "次のLANバー",
+      "event_page": "イベントページ",
+      "watch_featured": "Watch · 注目",
+      "events_up_next": "イベント · 次",
+      "past_event": "過去のイベント",
+      "event_card": "イベントカード",
+      "up_next_strip": "次のバー",
+      "page_header": "ページヘッダー",
+      "small": "小"
     }
   },
   "avatar": {
@@ -6684,7 +6712,6 @@
     "never": "なし",
     "live": "ライブ",
     "finished": "終了",
-    "scheduled": "予定",
     "show_metrics": "メトリクスを表示",
     "hide_metrics": "メトリクスを隠す",
     "connected": "接続済み",
@@ -6929,18 +6956,17 @@
     "final_standings_podium": "▚ FINAL STANDINGS · PODIUM",
     "page": {
       "back_to_league": "リーグへ戻る",
-      "match_options_tab": "試合オプション",
-      "organizers_tab": "主催者",
       "my_team": "自分のチーム",
       "my_team_hint": "このトーナメントのロスター、招待、準備状況を管理します。",
       "roster_section": "ロスター",
       "no_teams_yet": "チームはまだありません",
-      "information_tab": "情報",
       "about_section": "概要",
       "match_settings": "試合設定",
       "chat_room_tab": "チャットルーム",
       "read_more": "もっと見る",
-      "read_less": "折りたたむ"
+      "read_less": "折りたたむ",
+      "bracket_tab": "ブラケット",
+      "matches_tab": "試合"
     },
     "feature_card": {
       "teams": "チーム",
@@ -6987,7 +7013,6 @@
     "paused_banner": "このトーナメントは一時停止中です。新しい試合は自動でスケジュールされません。",
     "overview": "概要",
     "updated": "トーナメントを更新しました",
-    "settings": "設定",
     "join": {
       "title": "トーナメントに参加",
       "mode": {
@@ -7061,7 +7086,6 @@
       }
     },
     "notifications": {
-      "title": "Discord",
       "webhook": "Webhook URL",
       "webhook_placeholder": "空欄の場合は全体の既定値を使用",
       "role_id": "ロール ID",
@@ -7185,7 +7209,12 @@
       "main_path": "メイン",
       "impact_source": "ソース",
       "impact_delete": "削除",
-      "impact_reset": "リセット"
+      "impact_reset": "リセット",
+      "walkover_win": "勝",
+      "forfeit_short": "棄",
+      "follow_team": "チームを追う",
+      "follow_none": "すべて表示",
+      "match_short": "第{match}試合"
     },
     "negotiation": {
       "schedule": "日程調整",
@@ -7285,7 +7314,6 @@
       "remove": "主催者を削除",
       "confirm_remove": "この主催者を削除しますか？",
       "remove_description": "主催者をトーナメントから削除します",
-      "organized_by": "主催",
       "teams": {
         "title": "運営チーム",
         "description": "チームを紐付けると、そのメンバー全員がこのトーナメントの主催者になります。",
@@ -7329,8 +7357,7 @@
       "seed_display": "シード #{seed}"
     },
     "teams": {
-      "count": "{count} チーム",
-      "my_teams": "自分のチーム"
+      "count": "{count} チーム"
     },
     "actions": {
       "open_registration": "登録を開始",
@@ -7400,7 +7427,7 @@
     "banner": {
       "label": "バナー",
       "upload": "バナーをアップロード",
-      "hint": "トーナメントページの上部に表示されます。3:1のワイド比率でクロップされます。",
+      "hint": "ドラッグ＆ドロップまたはクリック · 推奨 2400 × 800 (3:1)",
       "upload_failed": "バナーのアップロードに失敗しました。"
     },
     "awards_config": {
@@ -7731,6 +7758,31 @@
         "invite_rate_limited": "招待の試行回数が多すぎます。1分後にもう一度お試しください。",
         "invite_not_allowed": "このアカウントではこの招待を承諾できません。"
       }
+    },
+    "manage": {
+      "button": "管理",
+      "title": "大会を管理",
+      "back": "ページに戻る",
+      "status_actions": "大会のステータス",
+      "no_status_actions": "今は変更できる項目がありません。",
+      "details": "詳細とブランディング",
+      "registration": "参加登録",
+      "teams": "チームと招待",
+      "stages": "ステージ",
+      "match_rules": "試合ルール",
+      "prizes_awards": "賞品とアワード",
+      "organizers": "主催者",
+      "discord": "Discord",
+      "needs_attention": "要対応",
+      "stages_locked": "大会開始後はステージを変更できません。",
+      "stage_summary": "{min}–{max} チーム",
+      "groups": "{count} グループ",
+      "no_stages": "ステージはまだありません",
+      "no_stages_hint": "ステージを追加して形式を決めます。参加登録の締め切り時にブラケットが作成されます。",
+      "add_first_stage": "最初のステージを追加",
+      "set_up_stages": "ステージを設定",
+      "invite_teams": "チームを招待",
+      "stages_after_create": "次に、形式とブラケットを決めるステージを設定します。"
     }
   },
   "team": {

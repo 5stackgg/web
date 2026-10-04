@@ -27,7 +27,8 @@ import {
   toZoned,
   getLocalTimeZone,
 } from "@internationalized/date";
-import TournamentRoundLineup from "~/components/tournament/TournamentRoundLineup.vue";
+import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
+import { useBracketView } from "~/composables/useBracketView";
 import MatchMapDots from "~/components/match/MatchMapDots.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import BracketNegotiation from "~/components/tournament/BracketNegotiation.vue";
@@ -503,6 +504,112 @@ const getRoundMatchLabel = (bracket: Bracket): string => {
   }).trim();
 };
 
+const SLOTS = [1, 2] as const;
+
+const { followTeamId } = useBracketView();
+
+const slotTeam = (bracket: Bracket, slot: 1 | 2) =>
+  slot === 1 ? bracket.team_1 : bracket.team_2;
+
+const slotSeed = (bracket: Bracket, slot: 1 | 2) =>
+  slot === 1 ? bracket.team_1_seed : bracket.team_2_seed;
+
+const slotLineup = (bracket: Bracket, slot: 1 | 2) =>
+  slot === 1 ? bracket.match?.lineup_1 : bracket.match?.lineup_2;
+
+const isForfeit = (bracket: Bracket) =>
+  bracket.match?.status === e_match_status_enum.Forfeit;
+
+const matchWinnerId = (bracket: Bracket): string | null =>
+  (bracket.match as { winning_lineup_id?: string | null } | undefined)
+    ?.winning_lineup_id ?? null;
+
+const slotOutcome = (bracket: Bracket, slot: 1 | 2): "won" | "lost" | null => {
+  const winner = matchWinnerId(bracket);
+  const lineup = slotLineup(bracket, slot);
+  if (!winner || !lineup) return null;
+  return lineup.id === winner ? "won" : "lost";
+};
+
+const statusLabel = (bracket: Bracket) =>
+  bracket.match?.status
+    ? t(`tournament.notifications.status.${bracket.match.status}`)
+    : "";
+
+const teamIds = (bracket: Bracket) =>
+  [bracket.team_1?.id, bracket.team_2?.id].filter(Boolean) as string[];
+
+const isEmptyBracket = (bracket: Bracket) =>
+  !bracket.match && !bracket.team_1 && !bracket.team_2;
+
+const cardClasses = (bracket: Bracket) => {
+  const following = followTeamId.value;
+  const onPath = !!following && teamIds(bracket).includes(following);
+  return [
+    isEmptyBracket(bracket)
+      ? "border-dashed border-muted-foreground/25 bg-[hsl(240_6%_6.5%)]"
+      : "bg-[hsl(240_6%_8%)]",
+    onPath
+      ? "border-[hsl(var(--tac-amber))]"
+      : isActiveMatch(bracket)
+        ? "border-emerald-500/70 shadow-[0_0_0_1px_rgb(16_185_129/0.25)]"
+        : isWaitingForCheckIn(bracket)
+          ? "border-amber-500/60"
+          : hasProblemStatus(bracket) && !isForfeit(bracket)
+            ? "border-red-500/60"
+            : isEmptyBracket(bracket)
+              ? ""
+              : "border-border [@media(hover:hover)]:hover:border-foreground/35",
+    following && !onPath && "opacity-30",
+  ];
+};
+
+// Where this match sends its teams, shown only until it is decided and only
+// for edges no connector line draws (another bracket section).
+const footerLines = (bracket: Bracket) => {
+  const lines: { text: string; class: string }[] = [];
+  if (isThirdPlaceMatch(bracket)) {
+    lines.push({
+      text: t("tournament.match.third_place_decider"),
+      class: "text-emerald-400",
+    });
+  }
+  if (
+    props.stage.type !== e_tournament_stage_types_enum.DoubleElimination ||
+    bracket.bye ||
+    matchWinnerId(bracket)
+  ) {
+    return lines;
+  }
+  if (
+    isLbFeedingToWb(bracket) &&
+    shouldShowCrossBracketDestination(bracket, bracket.parent_bracket)
+  ) {
+    lines.push({
+      text: formatDestinationText(
+        "winner",
+        bracket.parent_bracket,
+        bracket.parent_bracket?.path,
+      ),
+      class: "text-emerald-400/90",
+    });
+  }
+  if (
+    bracket.loser_bracket &&
+    shouldShowCrossBracketDestination(bracket, bracket.loser_bracket)
+  ) {
+    lines.push({
+      text: formatDestinationText(
+        "loser",
+        bracket.loser_bracket,
+        bracket.loser_bracket.path,
+      ),
+      class: "text-red-300/80",
+    });
+  }
+  return lines;
+};
+
 const getTeamName = (team: Bracket["team_1"]): string => {
   return team?.team?.name || team?.name || "";
 };
@@ -694,50 +801,87 @@ const shouldShowCrossBracketDestination = (
         bracket.feeding_brackets?.length
       "
       :id="`bracket-${bracket.id}`"
-      class="tournament-match cursor-pointer border-2 rounded-lg p-1 transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/20 bg-gray-800/50 backdrop-blur-sm relative flex flex-col gap-2"
-      :class="{
-        'border-green-500 hover:border-green-400': isActiveMatch(bracket),
-        'border-amber-500 hover:border-amber-400': isWaitingForCheckIn(bracket),
-        'border-red-500 hover:border-red-400': hasProblemStatus(bracket),
-        'border-gray-700 hover:border-blue-500':
-          !isActiveMatch(bracket) &&
-          !isWaitingForCheckIn(bracket) &&
-          !hasProblemStatus(bracket),
-      }"
+      class="tournament-match relative flex w-[13.5rem] cursor-pointer flex-col overflow-hidden rounded-md border transition-[border-color,opacity,box-shadow] duration-150"
+      :class="cardClasses(bracket)"
       :data-bracket-id="bracket.id"
       :data-round="props.round"
+      :data-teams="teamIds(bracket).join(' ')"
       @click="handleClick($event, bracket)"
     >
-      <div class="flex items-center justify-between gap-2">
-        <Badge v-if="bracket.bye">
-          {{ $t("tournament.match.bye_round") }}
-        </Badge>
-        <Badge v-else class="flex items-center gap-2">
-          {{ getRoundMatchLabel(bracket) }}
+      <div
+        class="flex h-[1.375rem] items-center justify-between gap-2 bg-muted/35 pl-2 pr-1 text-[0.66rem] font-semibold text-muted-foreground"
+      >
+        <span
+          class="min-w-0 truncate"
+          :title="bracket.bye ? undefined : getRoundMatchLabel(bracket)"
+        >
+          {{
+            bracket.bye
+              ? $t("tournament.match.bye_round")
+              : $t("tournament.bracket.match_short", {
+                  match: bracket.match_number,
+                })
+          }}
           <span
-            v-if="getBestOf(bracket, stage, tournament)"
-            class="text-muted-foreground"
+            v-if="!bracket.bye && getBestOf(bracket, stage, tournament)"
+            class="ml-1 font-medium text-muted-foreground/70"
           >
-            BO{{ getBestOf(bracket, stage, tournament) }}
+            Bo{{ getBestOf(bracket, stage, tournament) }}
           </span>
-        </Badge>
-        <div class="flex items-center gap-2">
-          <MatchMapDots v-if="bracket.match" :match="bracket.match" />
+        </span>
+        <span class="flex shrink-0 items-center gap-1.5">
+          <span
+            v-if="isActiveMatch(bracket)"
+            class="inline-flex items-center gap-1 font-bold uppercase tracking-[0.08em] text-emerald-400"
+          >
+            <span class="relative flex h-1.5 w-1.5">
+              <span
+                class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"
+              ></span>
+              <span
+                class="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400"
+              ></span>
+            </span>
+            {{ $t("common.live") }}
+          </span>
+          <span v-else-if="isWaitingForCheckIn(bracket)" class="text-amber-400">
+            {{ statusLabel(bracket) }}
+          </span>
+          <span
+            v-else-if="hasProblemStatus(bracket) && !isForfeit(bracket)"
+            class="text-red-400"
+          >
+            {{ statusLabel(bracket) }}
+          </span>
+          <MatchMapDots v-else-if="bracket.match" :match="bracket.match" />
+          <span
+            v-else-if="
+              !isNegotiableBracket(props.tournament, bracket) &&
+              (bracket.scheduled_at || bracket.scheduled_eta)
+            "
+            class="inline-flex items-center gap-1"
+            :class="bracket.scheduled_at ? 'text-foreground/80' : ''"
+          >
+            <CalendarIcon class="h-3 w-3" />
+            <TimeAgo
+              :date="(bracket.scheduled_at || bracket.scheduled_eta) as string"
+            />
+          </span>
           <DropdownMenu
             v-if="canManageBracketReset && bracket.match && !bracket.bye"
           >
             <DropdownMenuTrigger as-child>
               <Button
-                variant="outline"
+                variant="ghost"
                 size="icon"
-                class="h-7 w-7 border-slate-500/70 bg-slate-900/70 text-slate-100 hover:bg-slate-800 hover:text-slate-50 data-[state=open]:bg-slate-800 data-[state=open]:text-slate-50"
+                class="relative h-5 w-5 rounded-sm text-muted-foreground hover:text-foreground after:absolute after:-inset-1.5"
                 :disabled="resetLoading"
                 @click.stop
               >
                 <span class="sr-only">{{
                   $t("tournament.open_match_actions")
                 }}</span>
-                <MoreVertical aria-hidden="true" class="h-4 w-4" />
+                <MoreVertical aria-hidden="true" class="h-3.5 w-3.5" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" class="w-52">
@@ -750,254 +894,99 @@ const shouldShowCrossBracketDestination = (
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        </div>
-      </div>
-
-      <BracketNegotiation
-        v-if="isNegotiableBracket(props.tournament, bracket)"
-        :bracket="bracket"
-        :windows="props.stage.windows"
-        :title="getRoundMatchLabel(bracket)"
-        :best-of="getBestOf(bracket, stage, tournament)"
-      />
-      <!-- Display organizer-set schedule if available -->
-      <div
-        v-else-if="bracket.scheduled_at && !bracket.match"
-        class="text-xs text-muted-foreground flex flex-col items-center gap-1"
-      >
-        <span>{{ $t("common.scheduled") }}</span>
-        <span class="text-green-400 font-medium">
-          <TimeAgo :date="bracket.scheduled_at"></TimeAgo>
-        </span>
-      </div>
-      <!-- Display auto-calculated ETA if no organizer schedule -->
-      <div
-        v-else-if="bracket.scheduled_eta && !bracket.match"
-        class="text-xs text-muted-foreground flex flex-col items-center gap-1"
-      >
-        <span>{{ $t("tournament.match.scheduled_for") }}</span>
-        <span class="text-blue-400 font-medium">
-          <TimeAgo :date="bracket.scheduled_eta"></TimeAgo>
         </span>
       </div>
 
-      <!-- Team Display -->
-      <div class="flex flex-col gap-2">
-        <template v-if="bracket.bye">
-          <!-- Bye round: show both slots for consistent height -->
-          <div class="items-center">
-            <div class="bg-gray-600 text-gray-300 rounded py-1 px-4 min-h-8">
-              <span class="flex items-center gap-2">
-                <span
-                  v-if="bracket.team_1_seed"
-                  class="text-xs text-gray-200/80 bg-gray-700/70 border border-gray-800 rounded px-1.5 py-0.5"
-                >
-                  #{{ bracket.team_1_seed }}
-                </span>
-                {{ getTeamName(bracket.team_1) }}
-              </span>
-            </div>
-          </div>
-          <div class="items-center">
-            <div class="bg-gray-600 text-gray-300 rounded py-1 px-4 min-h-8">
-              <span class="flex items-center gap-2">
-                <span
-                  v-if="bracket.team_2_seed"
-                  class="text-xs text-gray-200/80 bg-gray-700/70 border border-gray-800 rounded px-1.5 py-0.5"
-                >
-                  #{{ bracket.team_2_seed }}
-                </span>
-                {{ getTeamName(bracket.team_2) }}
-              </span>
-            </div>
-          </div>
-        </template>
-        <template v-else>
-          <!-- Match exists: show both teams -->
-          <div class="items-center">
-            <div class="bg-gray-600 text-gray-300 rounded py-1 px-4 min-h-8">
-              <span v-if="bracket.match" class="flex items-center gap-2">
-                <span
-                  v-if="bracket.team_1_seed"
-                  class="text-xs text-gray-200/80 bg-gray-700/70 border border-gray-800 rounded px-1.5 py-0.5"
-                >
-                  #{{ bracket.team_1_seed }}
-                </span>
-                <TournamentRoundLineup
-                  :lineup_name="getTeamName(bracket.team_1)"
-                  :match="bracket.match"
-                  :lineup="bracket.match.lineup_1"
-                />
-              </span>
-              <template v-else>
-                <!-- No match yet: Team 1 row shows WB feed if available, otherwise placeholder -->
-                <span class="flex items-center gap-2">
-                  <span
-                    v-if="bracket.team_1_seed"
-                    class="text-xs text-gray-200/80 bg-gray-700/70 border border-gray-800 rounded px-1.5 py-0.5"
-                  >
-                    #{{ bracket.team_1_seed }}
-                  </span>
-                  <template v-if="!bracket.team_1">
-                    <span
-                      v-if="
-                        bracket.path !== 'WB' &&
-                        (getWbFeedForDisplayRow(bracket, 1)?.team_1_seed ||
-                          getWbFeedForDisplayRow(bracket, 1)?.team_2_seed)
-                      "
-                      class="text-xs text-gray-200/70 bg-gray-700/60 border border-gray-800 rounded px-1.5 py-0.5"
-                    >
-                      #{{
-                        getWbFeedForDisplayRow(bracket, 1)?.team_1_seed || "?"
-                      }}<span
-                        v-if="getWbFeedForDisplayRow(bracket, 1)?.team_2_seed"
-                        >/{{
-                          getWbFeedForDisplayRow(bracket, 1)?.team_2_seed
-                        }}</span
-                      >
-                    </span>
-                    <!-- Cross-view feed only (no connector line in this bracket column) -->
-                    <Badge
-                      v-if="
-                        shouldShowFeedInHint(
-                          bracket,
-                          getFeedForDisplayRow(bracket, 1),
-                        )
-                      "
-                      variant="outline"
-                      class="min-w-0 shrink border-amber-500/50 bg-amber-950/35 text-amber-200 font-normal px-2.5 py-1"
-                    >
-                      {{
-                        formatFeedingText(
-                          bracket,
-                          getFeedForDisplayRow(bracket, 1),
-                        )
-                      }}
-                    </Badge>
-                  </template>
-                  {{ getTeamName(bracket.team_1) }}
-                </span>
-              </template>
-            </div>
-          </div>
-
-          <div class="items-center">
-            <div class="bg-gray-600 text-gray-300 rounded py-1 px-4 min-h-8">
-              <span v-if="bracket.match" class="flex items-center gap-2">
-                <span
-                  v-if="bracket.team_2_seed"
-                  class="text-xs text-gray-200/80 bg-gray-700/70 border border-gray-800 rounded px-1.5 py-0.5"
-                >
-                  #{{ bracket.team_2_seed }}
-                </span>
-                <TournamentRoundLineup
-                  :lineup_name="getTeamName(bracket.team_2)"
-                  :match="bracket.match"
-                  :lineup="bracket.match.lineup_2"
-                />
-              </span>
-              <template v-else>
-                <!-- No match yet: Team 2 row shows LB feed if available, otherwise placeholder -->
-                <span class="flex items-center gap-2">
-                  <span
-                    v-if="bracket.team_2_seed"
-                    class="text-xs text-gray-200/80 bg-gray-700/70 border border-gray-800 rounded px-1.5 py-0.5"
-                  >
-                    #{{ bracket.team_2_seed }}
-                  </span>
-                  <template v-if="!bracket.team_2">
-                    <span
-                      v-if="
-                        bracket.path === 'LB' &&
-                        (getWbFeedForDisplayRow(bracket, 2)?.team_1_seed ||
-                          getWbFeedForDisplayRow(bracket, 2)?.team_2_seed)
-                      "
-                      class="text-xs text-gray-200/70 bg-gray-700/60 border border-gray-800 rounded px-1.5 py-0.5"
-                    >
-                      #{{
-                        getWbFeedForDisplayRow(bracket, 2)?.team_1_seed || "?"
-                      }}<span
-                        v-if="getWbFeedForDisplayRow(bracket, 2)?.team_2_seed"
-                        >/{{
-                          getWbFeedForDisplayRow(bracket, 2)?.team_2_seed
-                        }}</span
-                      >
-                    </span>
-                    <Badge
-                      v-if="
-                        shouldShowFeedInHint(
-                          bracket,
-                          getFeedForDisplayRow(bracket, 2),
-                        )
-                      "
-                      variant="outline"
-                      class="min-w-0 shrink border-amber-500/50 bg-amber-950/35 text-amber-200 font-normal px-2.5 py-1"
-                    >
-                      {{
-                        formatFeedingText(
-                          bracket,
-                          getFeedForDisplayRow(bracket, 2),
-                        )
-                      }}
-                    </Badge>
-                  </template>
-                  {{ getTeamName(bracket.team_2) }}
-                </span>
-              </template>
-            </div>
-          </div>
-        </template>
+      <div
+        v-for="slot in SLOTS"
+        :key="slot"
+        class="flex h-7 min-w-0 items-center gap-1.5 pl-2 text-[0.8rem] font-semibold"
+        :class="[
+          slot === 2 && 'border-t border-border/60',
+          followTeamId &&
+            slotTeam(bracket, slot)?.id === followTeamId &&
+            'bg-[hsl(var(--tac-amber)/0.1)]',
+        ]"
+        :data-slot="slot"
+        :data-feed="getFeedForSlot(bracket, slot)?.id"
+      >
+        <span
+          v-if="slotSeed(bracket, slot)"
+          class="inline-grid h-4 min-w-[1.125rem] shrink-0 place-items-center rounded-[3px] bg-muted/70 px-1 text-[0.625rem] font-semibold tabular-nums text-muted-foreground"
+        >
+          {{ slotSeed(bracket, slot) }}
+        </span>
+        <span
+          v-if="slotTeam(bracket, slot)"
+          class="min-w-0 flex-1 truncate"
+          :class="
+            slotOutcome(bracket, slot) === 'lost' && 'text-muted-foreground'
+          "
+          :title="getTeamName(slotTeam(bracket, slot))"
+        >
+          {{ getTeamName(slotTeam(bracket, slot)) }}
+        </span>
+        <span
+          v-else
+          class="min-w-0 flex-1 truncate text-[0.7rem] font-medium text-muted-foreground"
+        >
+          {{
+            bracket.bye
+              ? ""
+              : formatFeedingText(bracket, getFeedForSlot(bracket, slot)) ||
+                $t("common.tbd")
+          }}
+        </span>
+        <span
+          v-if="bracket.match && slotLineup(bracket, slot)"
+          class="grid w-8 shrink-0 place-items-center self-stretch bg-muted/35 text-[0.8rem] font-extrabold tabular-nums"
+        >
+          <span
+            v-if="isForfeit(bracket) && slotOutcome(bracket, slot)"
+            :class="
+              slotOutcome(bracket, slot) === 'won'
+                ? 'text-green-400'
+                : 'text-red-400'
+            "
+          >
+            {{
+              slotOutcome(bracket, slot) === "won"
+                ? $t("tournament.bracket.walkover_win")
+                : $t("tournament.bracket.forfeit_short")
+            }}
+          </span>
+          <MatchLineupScoreDisplay
+            v-else
+            :match="bracket.match"
+            :lineup="slotLineup(bracket, slot)"
+            :halves="false"
+          />
+        </span>
       </div>
 
-      <template
-        v-if="stage.type === e_tournament_stage_types_enum.DoubleElimination"
+      <div
+        v-if="
+          footerLines(bracket).length ||
+          isNegotiableBracket(props.tournament, bracket)
+        "
+        class="grid gap-1 border-t border-border/60 px-2 py-1.5 text-[0.66rem] text-muted-foreground"
       >
-        <div
-          v-if="
-            isLbFeedingToWb(bracket) &&
-            shouldShowCrossBracketDestination(bracket, bracket.parent_bracket)
-          "
-          class="flex justify-center"
+        <BracketNegotiation
+          v-if="isNegotiableBracket(props.tournament, bracket)"
+          :bracket="bracket"
+          :windows="props.stage.windows"
+          :title="getRoundMatchLabel(bracket)"
+          :best-of="getBestOf(bracket, stage, tournament)"
+        />
+        <span
+          v-for="line in footerLines(bracket)"
+          :key="line.text"
+          class="truncate"
+          :class="line.class"
+          :title="line.text"
         >
-          <Badge
-            variant="outline"
-            class="border-emerald-500/40 bg-emerald-950/25 text-emerald-300 font-normal"
-          >
-            {{
-              formatDestinationText(
-                "winner",
-                bracket.parent_bracket,
-                bracket.parent_bracket?.path,
-              )
-            }}
-          </Badge>
-        </div>
-        <div
-          v-if="
-            bracket.loser_bracket &&
-            !bracket.bye &&
-            shouldShowCrossBracketDestination(bracket, bracket.loser_bracket)
-          "
-          class="flex justify-center"
-        >
-          <Badge
-            variant="outline"
-            class="border-red-500/45 bg-red-950/30 text-red-300 font-normal"
-          >
-            {{
-              formatDestinationText(
-                "loser",
-                bracket.loser_bracket,
-                bracket.loser_bracket.path,
-              )
-            }}
-          </Badge>
-        </div>
-      </template>
-      <div v-if="isThirdPlaceMatch(bracket)" class="text-center">
-        <div class="text-xs text-green-400 font-medium">
-          {{ $t("tournament.match.third_place_decider") }}
-        </div>
+          {{ line.text }}
+        </span>
       </div>
     </div>
   </template>

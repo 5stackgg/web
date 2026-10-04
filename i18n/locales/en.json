@@ -1207,7 +1207,35 @@
       "title": "Adjust image",
       "description": "Drag to reposition, scroll to zoom. The frame shows what will be saved.",
       "fit_whole": "Fit whole",
-      "apply": "Apply"
+      "apply": "Apply",
+      "zoom_in": "Zoom in",
+      "zoom_out": "Zoom out",
+      "center": "Center",
+      "safe_zone": "Safe zone",
+      "safe_zone_hint": "Keep logos and text inside the dashed line.",
+      "where_it_shows": "Where it shows",
+      "check_small": "Your image is {w} px wide. Use {rec} px or wider so it stays sharp on large screens.",
+      "check_size": "{w} × {h} px. Sharp everywhere it shows.",
+      "check_zoomed": "You're zoomed in past the image's resolution, so it will look soft."
+    },
+    "adjust": "Adjust",
+    "frames": {
+      "tournament_page": "Tournament page",
+      "desktop": "Desktop",
+      "phone": "Phone",
+      "live_banner": "Tournaments · live",
+      "cards": "Cards",
+      "quick_look": "Quick look",
+      "list_thumbnail": "List thumbnail",
+      "next_lan_strip": "Next LAN strip",
+      "event_page": "Event page",
+      "watch_featured": "Watch · featured",
+      "events_up_next": "Events · up next",
+      "past_event": "Past event",
+      "event_card": "Event card",
+      "up_next_strip": "Up next strip",
+      "page_header": "Page header",
+      "small": "Small"
     }
   },
   "avatar": {
@@ -6686,7 +6714,6 @@
     "never": "Never",
     "live": "Live",
     "finished": "Finished",
-    "scheduled": "Scheduled",
     "show_metrics": "Show metrics",
     "hide_metrics": "Hide metrics",
     "connected": "Connected",
@@ -6931,18 +6958,17 @@
     "final_standings_podium": "▚ FINAL STANDINGS · PODIUM",
     "page": {
       "back_to_league": "Back to League",
-      "match_options_tab": "Match Options",
-      "organizers_tab": "Organizers",
       "my_team": "My Team",
       "my_team_hint": "Manage your roster, invites, and readiness for this tournament.",
       "roster_section": "Roster",
       "no_teams_yet": "No teams yet.",
-      "information_tab": "Information",
       "about_section": "About",
       "match_settings": "Match Settings",
       "chat_room_tab": "Chat Room",
       "read_more": "Read more",
-      "read_less": "Read less"
+      "read_less": "Read less",
+      "bracket_tab": "Bracket",
+      "matches_tab": "Matches"
     },
     "feature_card": {
       "teams": "Teams",
@@ -6989,7 +7015,6 @@
     "paused_banner": "This tournament is paused. No new matches will be auto-scheduled.",
     "overview": "Overview",
     "updated": "Updated Tournament",
-    "settings": "Settings",
     "join": {
       "title": "Join Tournament",
       "mode": {
@@ -7063,7 +7088,6 @@
       }
     },
     "notifications": {
-      "title": "Discord",
       "webhook": "Webhook URL",
       "webhook_placeholder": "Leave empty to use global default",
       "role_id": "Role ID",
@@ -7187,7 +7211,12 @@
       "main_path": "Main",
       "impact_source": "source",
       "impact_delete": "delete",
-      "impact_reset": "reset"
+      "impact_reset": "reset",
+      "walkover_win": "W",
+      "forfeit_short": "FF",
+      "follow_team": "Follow a team",
+      "follow_none": "Show everyone",
+      "match_short": "Match {match}"
     },
     "negotiation": {
       "schedule": "Schedule",
@@ -7287,7 +7316,6 @@
       "remove": "Remove Organizer",
       "confirm_remove": "Are you sure you want to remove this organizer?",
       "remove_description": "This will remove the organizer from the tournament",
-      "organized_by": "Organized by",
       "teams": {
         "title": "Organisation Teams",
         "description": "Link a team to make all of its members organizers of this tournament.",
@@ -7331,8 +7359,7 @@
       "seed_display": "Seed #{seed}"
     },
     "teams": {
-      "count": "{count} Teams",
-      "my_teams": "My Team"
+      "count": "{count} Teams"
     },
     "actions": {
       "open_registration": "Open Registration",
@@ -7402,7 +7429,7 @@
     "banner": {
       "label": "Banner",
       "upload": "Upload Banner",
-      "hint": "Shown across the top of the tournament page. Cropped to a wide 3:1 frame.",
+      "hint": "Drag & drop or click · best at 2400 × 800 (3:1)",
       "upload_failed": "Banner upload failed"
     },
     "awards_config": {
@@ -7733,6 +7760,31 @@
         "invite_rate_limited": "Too many invite attempts. Try again in a minute.",
         "invite_not_allowed": "This account cannot accept this invite."
       }
+    },
+    "manage": {
+      "button": "Manage",
+      "title": "Manage tournament",
+      "back": "Back to the page",
+      "status_actions": "Tournament status",
+      "no_status_actions": "Nothing to change right now.",
+      "details": "Details & branding",
+      "registration": "Registration",
+      "teams": "Teams & invites",
+      "stages": "Stages",
+      "match_rules": "Match rules",
+      "prizes_awards": "Prizes & awards",
+      "organizers": "Organizers",
+      "discord": "Discord",
+      "needs_attention": "Needs attention",
+      "stages_locked": "Stages can't change once the tournament has started.",
+      "stage_summary": "{min}–{max} teams",
+      "groups": "{count} groups",
+      "no_stages": "No stages yet",
+      "no_stages_hint": "Add a stage to set the format. The bracket is drawn from it when registration closes.",
+      "add_first_stage": "Add the first stage",
+      "set_up_stages": "Set up stages",
+      "invite_teams": "Invite teams",
+      "stages_after_create": "Next you'll set up the stages, which decide the format and the bracket."
     }
   },
   "team": {

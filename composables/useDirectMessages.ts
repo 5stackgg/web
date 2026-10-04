@@ -1,3 +1,4 @@
+import { ref } from "vue";
 import { setActiveHub } from "~/composables/useHubState";
 
 // Everything about identifying a direct-message room lives here, and every call
@@ -42,6 +43,11 @@ export function peerSteamId(roomId: string, mySteamId: string): string | null {
 
   return parties.find((party) => party !== String(mySteamId)) ?? null;
 }
+
+// The conversation a Message action just opened. Its room usually mounts already
+// active, which ChatLobby's activate-focus never sees, so the chat panel focuses
+// the composer from this once the room is on screen.
+export const pendingComposerFocus = ref<string | null>(null);
 
 export function useDirectMessages() {
   const { openTab, setActiveTab } = useChatTabs();
@@ -101,6 +107,7 @@ export function useDirectMessages() {
     }
 
     if (activate) {
+      pendingComposerFocus.value = tabId;
       setActiveTab(tabId);
       // setActiveHub, not selectHub: selectHub toggles the sidebar shut when
       // chat is already the active hub, which would close the conversation the

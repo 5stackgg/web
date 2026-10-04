@@ -35,19 +35,26 @@ const checked = computed(() => props.selected && !blocked.value);
     :aria-checked="checked"
     :aria-disabled="blocked || locked || undefined"
     :tabindex="tabStop ? 0 : -1"
-    class="group/tile relative flex min-h-[212px] flex-col gap-1.5 rounded-lg border p-4 text-left transition-[border-color,background-color,box-shadow] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] focus-visible:ring-offset-2 focus-visible:ring-offset-background max-xl:min-h-[196px] max-sm:min-h-0 max-sm:gap-1 max-sm:p-3"
+    class="group/tile relative isolate flex min-h-[212px] flex-col gap-1.5 rounded-lg border border-border bg-[linear-gradient(180deg,hsl(var(--muted)/0.34),hsl(var(--muted)/0.14))] p-4 text-left transition-[border-color,transform] [transition-duration:110ms] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transition-none max-xl:min-h-[196px] max-sm:min-h-0 max-sm:gap-1 max-sm:p-3"
     :class="[
-      checked
-        ? 'border-[hsl(var(--tac-amber))] bg-[linear-gradient(180deg,hsl(var(--tac-amber)/0.1),hsl(var(--tac-amber)/0.025))] shadow-[inset_0_0_0_1px_hsl(var(--tac-amber))]'
-        : 'border-border bg-[linear-gradient(180deg,hsl(var(--muted)/0.34),hsl(var(--muted)/0.14))]',
       blocked
         ? 'cursor-not-allowed'
         : locked
           ? 'cursor-default'
-          : !checked && 'hover:border-foreground/25',
+          : [
+              'active:scale-[0.985] motion-reduce:active:scale-100',
+              !checked && 'hover:border-foreground/25',
+            ],
     ]"
     @click="!blocked && !locked && $emit('select')"
   >
+    <!-- The selected wash fades in under the content; the amber frame itself
+         is one element in the grid that glides between tiles. -->
+    <span
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-0 -z-10 rounded-[inherit] bg-[linear-gradient(180deg,hsl(var(--tac-amber)/0.1),hsl(var(--tac-amber)/0.025))] transition-opacity [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+      :class="checked ? 'opacity-100' : 'opacity-0'"
+    ></span>
     <span class="mb-2.5 flex items-center gap-3.5 max-sm:mb-1.5 max-sm:gap-2.5">
       <span
         aria-hidden="true"
@@ -67,12 +74,19 @@ const checked = computed(() => props.selected && !blocked.value);
       :class="blocked && 'text-foreground/50'"
     >
       {{ title }}
-      <span
-        v-if="checked"
-        class="inline-grid size-5 place-items-center rounded-full bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] max-sm:size-[18px]"
+      <Transition
+        enter-active-class="transition-[transform,opacity] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+        enter-from-class="scale-50 opacity-0"
+        leave-active-class="transition-[transform,opacity] [transition-duration:110ms] [transition-timing-function:ease-in] motion-reduce:transition-none"
+        leave-to-class="scale-75 opacity-0"
       >
-        <Check class="size-3" :stroke-width="3" />
-      </span>
+        <span
+          v-if="checked"
+          class="inline-grid size-5 place-items-center rounded-full bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] max-sm:size-[18px]"
+        >
+          <Check class="size-3" :stroke-width="3" />
+        </span>
+      </Transition>
     </span>
 
     <span

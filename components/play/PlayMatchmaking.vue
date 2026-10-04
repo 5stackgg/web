@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
+import { useResizeObserver } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import { useSubscription } from "@vue/apollo-composable";
 import {
@@ -101,6 +102,39 @@ const tabStop = computed(
 );
 
 const modeGrid = ref<HTMLElement | null>(null);
+
+// One amber frame glides from tile to tile instead of each tile repainting its
+// own border. It fades in where the first pick lands, keeps its last spot while
+// fading out, and only glides between two picks (never on resize).
+const frame = ref({ x: 0, y: 0, w: 0, h: 0 });
+const frameShown = ref(false);
+const frameGlides = ref(false);
+
+function placeFrame(glide: boolean) {
+  const index = modes.value.findIndex(
+    (mode) => mode.type === selectedType.value,
+  );
+  const tile =
+    index < 0
+      ? null
+      : modeGrid.value?.querySelectorAll<HTMLElement>('[role="radio"]')[index];
+  if (!tile) {
+    frameShown.value = false;
+    return;
+  }
+  frameGlides.value = glide && frameShown.value;
+  frame.value = {
+    x: tile.offsetLeft,
+    y: tile.offsetTop,
+    w: tile.offsetWidth,
+    h: tile.offsetHeight,
+  };
+  frameShown.value = true;
+}
+
+watch(selectedType, () => nextTick(() => placeFrame(true)));
+onMounted(() => placeFrame(false));
+useResizeObserver(modeGrid, () => placeFrame(false));
 
 function pick(type: e_match_types_enum) {
   picked.value = type;
@@ -472,7 +506,7 @@ const linkClasses =
           ref="modeGrid"
           role="radiogroup"
           :aria-label="$t('pages.play.matchmaking.mode_group')"
-          class="grid gap-3 max-sm:gap-2"
+          class="relative grid gap-3 max-sm:gap-2"
           :class="[
             'grid-cols-2',
             modes.length >= 4
@@ -480,7 +514,8 @@ const linkClasses =
               : modes.length === 3
                 ? 'xl:grid-cols-3'
                 : '',
-            modes.length % 2 === 1 && 'max-xl:[&>*:last-child]:col-span-2',
+            modes.length % 2 === 1 &&
+              'max-xl:[&>button:last-of-type]:col-span-2',
           ]"
           @keydown="onModeKey"
         >
@@ -502,6 +537,21 @@ const linkClasses =
             :locked="isMember"
             @select="pick(mode.type)"
           />
+          <span
+            aria-hidden="true"
+            class="pointer-events-none absolute left-0 top-0 z-10 rounded-lg shadow-[inset_0_0_0_2px_hsl(var(--tac-amber))] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+            :class="[
+              frameShown ? 'opacity-100' : 'opacity-0',
+              frameGlides
+                ? 'transition-[transform,width,height,opacity]'
+                : 'transition-opacity',
+            ]"
+            :style="{
+              transform: `translate3d(${frame.x}px, ${frame.y}px, 0)`,
+              width: `${frame.w}px`,
+              height: `${frame.h}px`,
+            }"
+          ></span>
         </div>
 
         <div

@@ -14,6 +14,7 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, order_by } from "~/generated/zeus";
 import { eventPhaseWhere, type EventPhase } from "~/utilities/eventDisplay";
 import { useScrollIntoViewOnChange } from "~/composables/useScrollIntoViewOnChange";
+import { useDeferredLoading } from "~/composables/useDeferredLoading";
 import {
   InputGroup,
   InputGroupAddon,
@@ -26,6 +27,7 @@ import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import Pagination from "~/components/Pagination.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import HorizontalScrollRow from "~/components/common/HorizontalScrollRow.vue";
 import ScrollArrows from "~/components/common/ScrollArrows.vue";
 import QuickLookSheet from "~/components/common/QuickLookSheet.vue";
@@ -300,6 +302,20 @@ const filteredEvents = ref<any[]>([]);
 const filteredTotal = ref(0);
 const filteredLoading = ref(false);
 
+// Shapes on the first filtered load only; a refetch keeps the results up, dimmed.
+const {
+  skeleton: filteredSkeleton,
+  refreshing: filteredRefreshing,
+  reset: resetFilteredLoading,
+} = useDeferredLoading(() => filteredLoading.value);
+watch(
+  hasActiveFilter,
+  (filtered) => {
+    if (filtered) resetFilteredLoading();
+  },
+  { immediate: true },
+);
+
 let filterFetchId = 0;
 async function fetchFiltered() {
   const myId = ++filterFetchId;
@@ -400,7 +416,7 @@ const canCreateEvent = computed(() => {
   return authStore.isRoleAbove(applicationSettingsStore.eventCreateRole);
 });
 
-const sectionClasses = ["mt-8", tacticalSectionSeparatorClasses];
+const sectionClasses = ["mt-8 first:mt-0", tacticalSectionSeparatorClasses];
 const seeAllClasses =
   "inline-flex items-center gap-1 text-xs normal-case tracking-normal text-muted-foreground transition-colors hover:text-foreground";
 const gridClasses = "grid gap-3 sm:grid-cols-2";
@@ -467,15 +483,18 @@ const gridClasses = "grid gap-3 sm:grid-cols-2";
     </div>
   </PageTransition>
 
-  <template v-if="hasActiveFilter">
-    <section class="mt-8">
+  <FadeSwap class="mt-6">
+    <section v-if="hasActiveFilter" key="filtered">
       <div :class="tacticalSectionLabelClasses">
         <span :class="tacticalSectionTickClasses"></span>
         {{ $t("pages.events.sections.results") }}
       </div>
 
-      <PageTransition swap>
-        <div v-if="filteredLoading" key="loading" :class="gridClasses">
+      <FadeSwap
+        class="transition-opacity duration-200 motion-reduce:transition-none"
+        :class="filteredRefreshing && 'pointer-events-none opacity-50'"
+      >
+        <div v-if="filteredSkeleton" key="loading" :class="gridClasses">
           <Skeleton v-for="i in 4" :key="i" class="h-[7.75rem] rounded-lg" />
         </div>
         <div
@@ -497,10 +516,10 @@ const gridClasses = "grid gap-3 sm:grid-cols-2";
             $t("pages.events.filter.no_results_description")
           }}</EmptyDescription>
         </Empty>
-      </PageTransition>
+      </FadeSwap>
 
       <Pagination
-        v-if="!filteredLoading && filteredTotal > perPage"
+        v-if="!filteredSkeleton && filteredTotal > perPage"
         class="mt-6"
         :page="page"
         :per-page="perPage"
@@ -508,119 +527,137 @@ const gridClasses = "grid gap-3 sm:grid-cols-2";
         @page="setPage"
       />
     </section>
-  </template>
-
-  <PageTransition v-else :delay="60" swap>
-    <div v-if="!curatedReady" key="loading" class="mt-6 space-y-6">
-      <Skeleton class="h-[4.75rem] rounded-lg" />
-      <Skeleton class="h-[24rem] rounded-lg" />
-    </div>
-
-    <Empty v-else-if="curatedEmpty" key="empty" class="mt-6 min-h-[200px]">
-      <EmptyTitle>{{ $t("pages.events.no_events_title") }}</EmptyTitle>
-      <EmptyDescription>{{ $t("pages.events.no_events_description") }}</EmptyDescription>
-    </Empty>
 
     <div v-else key="curated">
-      <EventUpNext
-        v-if="upNext"
-        class="mt-6"
-        :event="upNext"
-        :hero="upNextHero"
-        @quick-look="openQuickLook(upNext)"
-      />
+      <PageTransition :delay="60" swap>
+        <div v-if="!curatedReady" key="loading" class="space-y-6">
+          <Skeleton class="h-[4.75rem] rounded-lg" />
+          <Skeleton class="h-[24rem] rounded-lg" />
+        </div>
 
-      <section v-if="featured" :class="sectionClasses">
-        <div :class="tacticalSectionLabelClasses">
-          <span :class="tacticalSectionTickClasses"></span>
-          {{ $t("pages.events.sections.live") }}
-          <span class="tabular-nums tracking-normal text-foreground">{{
-            liveEvents.length
-          }}</span>
-        </div>
-        <EventFeature :event="featured" />
-        <div v-if="liveRest.length" :class="[gridClasses, 'mt-3']">
-          <WatchEventCompactCard
-            v-for="event in liveRest"
-            :key="event.id"
-            :event="event"
-            quick-look
-            @quick-look="openQuickLook(event)"
-          />
-        </div>
-      </section>
+        <Empty v-else-if="curatedEmpty" key="empty" class="min-h-[200px]">
+          <EmptyTitle>{{ $t("pages.events.no_events_title") }}</EmptyTitle>
+          <EmptyDescription>{{
+            $t("pages.events.no_events_description")
+          }}</EmptyDescription>
+        </Empty>
 
-      <section v-if="upcoming.length" :class="sectionClasses">
-        <div
-          :class="[tacticalSectionLabelClasses, '!flex w-full items-center gap-3']"
-        >
-          <span class="inline-flex items-center gap-2">
-            <span :class="tacticalSectionTickClasses"></span>
-            {{ $t("pages.events.sections.upcoming") }}
-            <span class="tabular-nums tracking-normal text-foreground">{{
-              upcoming.length
-            }}</span>
-          </span>
-          <button
-            v-if="upcoming.length > UPCOMING_SHOWN"
-            type="button"
-            :class="seeAllClasses"
-            @click="phaseModel = 'upcoming'"
-          >
-            {{ $t("common.see_all") }}
-            <ArrowRight class="h-3 w-3" />
-          </button>
-        </div>
-        <div :class="gridClasses">
-          <WatchEventCompactCard
-            v-for="event in upcoming.slice(0, UPCOMING_SHOWN)"
-            :key="event.id"
-            :event="event"
-            quick-look
-            @quick-look="openQuickLook(event)"
-          />
-        </div>
-      </section>
+        <div v-else key="curated">
+          <PageTransition>
+            <EventUpNext
+              v-if="upNext"
+              :event="upNext"
+              :hero="upNextHero"
+              @quick-look="openQuickLook(upNext)"
+            />
+          </PageTransition>
 
-      <section v-if="past.length" :class="sectionClasses">
-        <div
-          :class="[
-            tacticalSectionLabelClasses,
-            '!flex w-full items-center justify-between',
-          ]"
-        >
-          <span class="inline-flex items-center gap-3">
-            <span class="inline-flex items-center gap-2">
-              <span :class="tacticalSectionTickClasses"></span>
-              {{ $t("pages.events.sections.past") }}
-            </span>
-            <button type="button" :class="seeAllClasses" @click="phaseModel = 'past'">
-              {{ $t("common.see_all") }}
-              <ArrowRight class="h-3 w-3" />
-            </button>
-          </span>
-          <ScrollArrows
-            :can-left="pastRow?.state?.canScrollLeft"
-            :can-right="pastRow?.state?.canScrollRight || !pastDone"
-            @scroll="
-              (direction) => {
-                pastRow?.scrollByDirection(direction);
-                if (direction === 'right') loadPast();
-              }
-            "
-          />
+          <PageTransition :delay="50">
+            <section v-if="featured" :class="sectionClasses">
+              <div :class="tacticalSectionLabelClasses">
+                <span :class="tacticalSectionTickClasses"></span>
+                {{ $t("pages.events.sections.live") }}
+                <span class="tabular-nums tracking-normal text-foreground">{{
+                  liveEvents.length
+                }}</span>
+              </div>
+              <EventFeature :event="featured" />
+              <div v-if="liveRest.length" :class="[gridClasses, 'mt-3']">
+                <WatchEventCompactCard
+                  v-for="event in liveRest"
+                  :key="event.id"
+                  :event="event"
+                  quick-look
+                  @quick-look="openQuickLook(event)"
+                />
+              </div>
+            </section>
+          </PageTransition>
+
+          <PageTransition :delay="100">
+            <section v-if="upcoming.length" :class="sectionClasses">
+              <div
+                :class="[
+                  tacticalSectionLabelClasses,
+                  '!flex w-full items-center gap-3',
+                ]"
+              >
+                <span class="inline-flex items-center gap-2">
+                  <span :class="tacticalSectionTickClasses"></span>
+                  {{ $t("pages.events.sections.upcoming") }}
+                  <span class="tabular-nums tracking-normal text-foreground">{{
+                    upcoming.length
+                  }}</span>
+                </span>
+                <button
+                  v-if="upcoming.length > UPCOMING_SHOWN"
+                  type="button"
+                  :class="seeAllClasses"
+                  @click="phaseModel = 'upcoming'"
+                >
+                  {{ $t("common.see_all") }}
+                  <ArrowRight class="h-3 w-3" />
+                </button>
+              </div>
+              <div :class="gridClasses">
+                <WatchEventCompactCard
+                  v-for="event in upcoming.slice(0, UPCOMING_SHOWN)"
+                  :key="event.id"
+                  :event="event"
+                  quick-look
+                  @quick-look="openQuickLook(event)"
+                />
+              </div>
+            </section>
+          </PageTransition>
+
+          <PageTransition :delay="150">
+            <section v-if="past.length" :class="sectionClasses">
+              <div
+                :class="[
+                  tacticalSectionLabelClasses,
+                  '!flex w-full items-center justify-between',
+                ]"
+              >
+                <span class="inline-flex items-center gap-3">
+                  <span class="inline-flex items-center gap-2">
+                    <span :class="tacticalSectionTickClasses"></span>
+                    {{ $t("pages.events.sections.past") }}
+                  </span>
+                  <button
+                    type="button"
+                    :class="seeAllClasses"
+                    @click="phaseModel = 'past'"
+                  >
+                    {{ $t("common.see_all") }}
+                    <ArrowRight class="h-3 w-3" />
+                  </button>
+                </span>
+                <ScrollArrows
+                  :can-left="pastRow?.state?.canScrollLeft"
+                  :can-right="pastRow?.state?.canScrollRight || !pastDone"
+                  @scroll="
+                    (direction) => {
+                      pastRow?.scrollByDirection(direction);
+                      if (direction === 'right') loadPast();
+                    }
+                  "
+                />
+              </div>
+              <HorizontalScrollRow ref="pastRow" @approaching-end="loadPast">
+                <EventPastTile
+                  v-for="event in past"
+                  :key="event.id"
+                  :event="event"
+                  @quick-look="openQuickLook(event)"
+                />
+              </HorizontalScrollRow>
+            </section>
+          </PageTransition>
         </div>
-        <HorizontalScrollRow ref="pastRow" @approaching-end="loadPast">
-          <EventPastTile
-            v-for="event in past"
-            :key="event.id"
-            :event="event"
-            @quick-look="openQuickLook(event)"
-          />
-        </HorizontalScrollRow>
-      </section>
+      </PageTransition>
     </div>
-  </PageTransition>
+  </FadeSwap>
 
   <QuickLookSheet
     v-model:open="quickLookOpen"

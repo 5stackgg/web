@@ -5,6 +5,7 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $ } from "~/generated/zeus";
 import { tournamentBracketStageFields } from "~/graphql/tournamentBracketFields";
 import TournamentStage from "~/components/tournament/TournamentStage.vue";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import { Skeleton } from "~/components/ui/skeleton";
 
 const props = withDefaults(
@@ -58,23 +59,27 @@ const isFinalStage = computed(() => {
 </script>
 
 <template>
-  <Skeleton
-    v-if="!tournament"
-    class="w-full rounded-md"
-    :style="{ height: `${height}px` }"
-  />
-  <div
-    v-else-if="stage"
-    class="min-w-0 overflow-y-auto overscroll-contain"
-    :style="{ maxHeight: `${height + 96}px` }"
-  >
-    <TournamentStage
-      :stage="stage"
-      :tournament="tournament"
-      :is-final-stage="isFinalStage"
-      :available-height="height"
-      embed
-      hide-finished-rounds
+  <FadeSwap>
+    <Skeleton
+      v-if="!tournament"
+      key="loading"
+      class="w-full rounded-md"
+      :style="{ height: `${height}px` }"
     />
-  </div>
+    <div
+      v-else-if="stage"
+      key="stage"
+      class="min-w-0 overflow-y-auto overscroll-contain"
+      :style="{ maxHeight: `${height + 96}px` }"
+    >
+      <TournamentStage
+        :stage="stage"
+        :tournament="tournament"
+        :is-final-stage="isFinalStage"
+        :available-height="height"
+        embed
+        hide-finished-rounds
+      />
+    </div>
+  </FadeSwap>
 </template>

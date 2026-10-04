@@ -15,15 +15,23 @@ const path = computed(() => `/tournaments/${props.tournament.id}`);
 </script>
 
 <template>
-  <article class="overflow-hidden rounded-lg border border-border bg-card/40">
+  <article
+    class="overflow-hidden rounded-lg border border-border bg-card/40 transition-colors duration-150 has-[[data-card-link]:hover]:border-[hsl(var(--tac-amber)/0.45)]"
+  >
     <div
-      class="relative isolate flex flex-wrap items-end justify-between gap-x-7 gap-y-4 px-4 pb-5 pt-24 sm:min-h-[13rem] sm:px-6 sm:pt-6"
+      class="group/banner relative isolate flex flex-wrap items-end justify-between gap-x-7 gap-y-4 overflow-hidden px-4 pb-5 pt-24 sm:min-h-[13rem] sm:px-6 sm:pt-6"
     >
+      <NuxtLink
+        :to="path"
+        data-card-link
+        :aria-label="tournament.name"
+        class="absolute inset-0 z-[1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+      />
       <img
         v-if="bannerSrc"
         :src="bannerSrc"
         alt=""
-        class="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_40%]"
+        class="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_40%] transition-transform [transition-duration:600ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-has-[[data-card-link]:hover]/banner:scale-[1.03] motion-reduce:transition-none"
       />
       <div aria-hidden="true" class="scrim absolute inset-0 -z-10"></div>
 
@@ -55,12 +63,7 @@ const path = computed(() => `/tournaments/${props.tournament.id}`);
         <h2
           class="m-0 text-[clamp(1.75rem,3.2vw,2.75rem)] font-extrabold leading-none [text-wrap:balance]"
         >
-          <NuxtLink
-            :to="path"
-            class="hover:underline hover:underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            {{ tournament.name }}
-          </NuxtLink>
+          {{ tournament.name }}
         </h2>
         <p class="m-0 text-[0.8125rem] text-foreground/70">{{ sub }}</p>
       </div>
@@ -69,7 +72,7 @@ const path = computed(() => `/tournaments/${props.tournament.id}`);
         v-if="!paused"
         as-child
         size="sm"
-        class="hit h-8 shrink-0 border border-destructive/55 bg-destructive/10 text-destructive hover:bg-destructive/20"
+        class="hit relative z-[2] h-8 shrink-0 border border-destructive/55 bg-destructive/10 text-destructive hover:bg-destructive/20"
       >
         <NuxtLink :to="path">{{ $t("pages.tournaments.watch_live") }}</NuxtLink>
       </Button>

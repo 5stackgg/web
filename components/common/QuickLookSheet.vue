@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref, watch } from "vue";
 import { ChevronLeft, ChevronRight } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import {
@@ -13,6 +14,23 @@ const open = defineModel<boolean>("open", { required: true });
 const props = defineProps<{ index: number; total: number; title: string }>();
 
 const emit = defineEmits<{ (e: "step", direction: -1 | 1): void }>();
+
+// Stepping slides the next item in from the side it came from, and starts it
+// at the top rather than wherever the last one was scrolled to.
+const direction = ref<-1 | 1>(1);
+const scroller = ref<HTMLElement | null>(null);
+watch(
+  () => props.index,
+  (next, previous) => {
+    direction.value = next >= previous ? 1 : -1;
+    scroller.value?.scrollTo({ top: 0 });
+  },
+);
+
+const enterActive =
+  "transition-[opacity,transform] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none";
+const leaveActive =
+  "absolute inset-x-0 top-0 transition-[opacity,transform] [transition-duration:110ms] ease-in motion-reduce:transition-none";
 
 function onKeydown(event: KeyboardEvent) {
   if (event.key === "ArrowLeft" && props.index > 0) {
@@ -65,8 +83,24 @@ function onKeydown(event: KeyboardEvent) {
           <ChevronRight class="h-4 w-4" />
         </Button>
       </div>
-      <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain">
-        <slot />
+      <div
+        ref="scroller"
+        class="relative min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain"
+      >
+        <Transition
+          :enter-active-class="enterActive"
+          :leave-active-class="leaveActive"
+          :enter-from-class="
+            direction > 0 ? 'translate-x-4 opacity-0' : '-translate-x-4 opacity-0'
+          "
+          :leave-to-class="
+            direction > 0 ? '-translate-x-2 opacity-0' : 'translate-x-2 opacity-0'
+          "
+        >
+          <div :key="index">
+            <slot />
+          </div>
+        </Transition>
       </div>
     </SheetContent>
   </Sheet>

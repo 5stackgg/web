@@ -177,6 +177,9 @@ describe("events index", () => {
     ];
 
     const wrapper = await mountPage("/events?phase=past");
+    // The first filtered load holds its skeleton for a beat before swapping.
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    await flushPromises();
 
     const shown = names(wrapper, WatchEventCompactCard);
     expect(shown).toHaveLength(10);

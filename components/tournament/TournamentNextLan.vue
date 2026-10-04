@@ -73,16 +73,18 @@ function signIn() {
 <template>
   <article
     v-if="hero"
-    class="grid overflow-hidden rounded-lg border border-[hsl(var(--tac-amber)/0.35)] bg-card/40 lg:grid-cols-[minmax(0,1fr)_21rem]"
+    class="grid overflow-hidden rounded-lg border border-[hsl(var(--tac-amber)/0.35)] bg-card/40 transition-colors duration-150 has-[[data-card-link]:hover]:border-[hsl(var(--tac-amber)/0.6)] lg:grid-cols-[minmax(0,1fr)_21rem]"
   >
-    <div
-      class="relative isolate flex min-h-[18rem] items-end px-4 pb-5 pt-28 sm:px-6 sm:pb-6"
+    <NuxtLink
+      :to="path"
+      data-card-link
+      class="group/media relative isolate flex min-h-[18rem] items-end overflow-hidden px-4 pb-5 pt-28 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring sm:px-6 sm:pb-6"
     >
       <img
         v-if="bannerSrc"
         :src="bannerSrc"
         alt=""
-        class="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_40%]"
+        class="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_40%] transition-transform [transition-duration:600ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none group-hover/media:scale-[1.03]"
       />
       <div aria-hidden="true" class="hero-scrim absolute inset-0 -z-10"></div>
       <div class="grid min-w-0 max-w-[40rem] gap-2.5">
@@ -104,16 +106,11 @@ function signIn() {
         <h2
           class="m-0 text-[clamp(1.875rem,3.4vw,3rem)] font-extrabold leading-none [text-wrap:balance]"
         >
-          <NuxtLink
-            :to="path"
-            class="hover:underline hover:underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            {{ tournament.name }}
-          </NuxtLink>
+          {{ tournament.name }}
         </h2>
         <p class="m-0 text-[0.8125rem] text-foreground/75">{{ sub }}</p>
       </div>
-    </div>
+    </NuxtLink>
 
     <aside
       class="flex flex-col gap-4 border-t border-border bg-muted/15 p-5 lg:border-l lg:border-t-0"
@@ -218,17 +215,22 @@ function signIn() {
 
   <article
     v-else
-    class="relative isolate overflow-hidden rounded-lg border border-[hsl(var(--tac-amber)/0.35)] bg-card/40"
+    class="group/strip relative isolate overflow-hidden rounded-lg border border-[hsl(var(--tac-amber)/0.35)] bg-card/40 transition-colors duration-150 has-[[data-card-link]:hover]:border-[hsl(var(--tac-amber)/0.6)]"
   >
     <img
       v-if="bannerSrc"
       :src="bannerSrc"
       alt=""
-      class="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_40%]"
+      class="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_40%] transition-transform [transition-duration:600ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none group-has-[[data-card-link]:hover]/strip:scale-[1.03]"
     />
     <div aria-hidden="true" class="scrim absolute inset-0 -z-10"></div>
 
     <div class="flex flex-wrap items-center gap-x-4 gap-y-3 p-3 sm:px-4">
+      <NuxtLink
+        :to="path"
+        data-card-link
+        class="flex min-w-0 flex-1 basis-72 items-center gap-x-4 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
       <div
         v-if="start"
         class="grid h-[3.25rem] w-12 shrink-0 place-content-center justify-items-center gap-0.5 rounded-md bg-[hsl(var(--tac-amber)/0.12)] leading-none"
@@ -241,7 +243,7 @@ function signIn() {
         <span class="text-xl font-bold tabular-nums">{{ start.getDate() }}</span>
       </div>
 
-      <div class="grid min-w-0 flex-1 basis-56 gap-0.5">
+      <div class="grid min-w-0 flex-1 gap-0.5">
         <p
           class="m-0 flex flex-wrap items-center gap-x-1.5 text-xs text-foreground/75"
         >
@@ -256,12 +258,7 @@ function signIn() {
           </template>
         </p>
         <h2 class="m-0 truncate text-base font-bold leading-tight">
-          <NuxtLink
-            :to="path"
-            class="hover:underline hover:underline-offset-[3px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            {{ tournament.name }}
-          </NuxtLink>
+          {{ tournament.name }}
         </h2>
         <p class="m-0 truncate text-[0.8125rem] text-foreground/70">
           <template v-if="tournament.location"
@@ -274,6 +271,8 @@ function signIn() {
           </template>
         </p>
       </div>
+
+      </NuxtLink>
 
       <div class="flex shrink-0 items-center gap-2">
         <template v-if="canRegister">

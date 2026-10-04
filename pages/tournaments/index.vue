@@ -5,6 +5,7 @@ import { useI18n } from "vue-i18n";
 import { ArrowRight, CalendarDays, PlusCircle, Search, X } from "lucide-vue-next";
 import { useSubscription } from "@vue/apollo-composable";
 import { useScrollIntoViewOnChange } from "~/composables/useScrollIntoViewOnChange";
+import { useDeferredLoading } from "~/composables/useDeferredLoading";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { tournamentCardFields } from "~/graphql/tournamentCardFields";
@@ -30,6 +31,7 @@ import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import Pagination from "~/components/Pagination.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import HorizontalScrollRow from "~/components/common/HorizontalScrollRow.vue";
 import ScrollArrows from "~/components/common/ScrollArrows.vue";
 import QuickLookSheet from "~/components/common/QuickLookSheet.vue";
@@ -388,6 +390,21 @@ const filteredTournaments = ref<any[]>([]);
 const filteredTotal = ref(0);
 const filteredLoading = ref(false);
 
+// Shapes on the first filtered load only; a refetch after that keeps the
+// current results up and dims them instead of flashing skeletons.
+const {
+  skeleton: filteredSkeleton,
+  refreshing: filteredRefreshing,
+  reset: resetFilteredLoading,
+} = useDeferredLoading(() => filteredLoading.value);
+watch(
+  hasActiveFilter,
+  (filtered) => {
+    if (filtered) resetFilteredLoading();
+  },
+  { immediate: true },
+);
+
 const filterWhere = computed<Record<string, any>>(() => {
   const where: Record<string, any> = excludeLeagueTournaments();
   if (statusFilter.value !== "all") {
@@ -513,7 +530,7 @@ const canCreateTournament = computed(() => {
   );
 });
 
-const sectionClasses = ["mt-8", tacticalSectionSeparatorClasses];
+const sectionClasses = ["mt-8 first:mt-0", tacticalSectionSeparatorClasses];
 const seeAllClasses =
   "inline-flex items-center gap-1 text-xs normal-case tracking-normal text-muted-foreground transition-colors hover:text-foreground";
 const gridClasses = "grid gap-3 lg:grid-cols-2";
@@ -599,15 +616,18 @@ const gridClasses = "grid gap-3 lg:grid-cols-2";
     </div>
   </PageTransition>
 
-  <template v-if="hasActiveFilter">
-    <section class="mt-8">
+  <FadeSwap class="mt-6">
+    <section v-if="hasActiveFilter" key="filtered">
       <div :class="tacticalSectionLabelClasses">
         <span :class="tacticalSectionTickClasses"></span>
         {{ $t("pages.tournaments.sections.results") }}
       </div>
 
-      <PageTransition swap>
-        <div v-if="filteredLoading" key="loading" :class="gridClasses">
+      <FadeSwap
+        class="transition-opacity duration-200 motion-reduce:transition-none"
+        :class="filteredRefreshing && 'pointer-events-none opacity-50'"
+      >
+        <div v-if="filteredSkeleton" key="loading" :class="gridClasses">
           <Skeleton v-for="i in 4" :key="i" class="h-[11rem] rounded-lg" />
         </div>
 
@@ -633,10 +653,10 @@ const gridClasses = "grid gap-3 lg:grid-cols-2";
             $t("pages.tournaments.filter.no_results_description")
           }}</EmptyDescription>
         </Empty>
-      </PageTransition>
+      </FadeSwap>
 
       <Pagination
-        v-if="!filteredLoading && filteredTotal > perPage"
+        v-if="!filteredSkeleton && filteredTotal > perPage"
         class="mt-6"
         :page="page"
         :per-page="perPage"
@@ -644,149 +664,163 @@ const gridClasses = "grid gap-3 lg:grid-cols-2";
         @page="setPage"
       />
     </section>
-  </template>
-
-  <PageTransition v-else :delay="60" swap>
-    <div v-if="!curatedReady" key="loading" class="mt-6 space-y-6">
-      <Skeleton class="h-[4.75rem] rounded-lg" />
-      <Skeleton class="h-[34rem] rounded-lg" />
-    </div>
-
-    <Empty v-else-if="curatedEmpty" key="empty" class="mt-6 min-h-[200px]">
-      <EmptyTitle>{{ $t("pages.tournaments.empty.title") }}</EmptyTitle>
-      <EmptyDescription>{{
-        canCreateTournament
-          ? $t("pages.tournaments.empty.organizer")
-          : $t("pages.tournaments.empty.description")
-      }}</EmptyDescription>
-    </Empty>
 
     <div v-else key="curated">
-      <TournamentNextLan
-        v-if="nextLan"
-        class="mt-6"
-        :tournament="nextLan"
-        :hero="lanHero"
-        @quick-look="openQuickLook(nextLan)"
-      />
+      <PageTransition :delay="60" swap>
+        <div v-if="!curatedReady" key="loading" class="space-y-6">
+          <Skeleton class="h-[4.75rem] rounded-lg" />
+          <Skeleton class="h-[34rem] rounded-lg" />
+        </div>
 
-      <section v-if="live.length" :class="sectionClasses">
-        <div :class="tacticalSectionLabelClasses">
-          <span :class="tacticalSectionTickClasses"></span>
-          {{ $t("pages.tournaments.sections.live") }}
-          <span class="tabular-nums tracking-normal text-foreground">{{
-            live.length
-          }}</span>
-        </div>
-        <TournamentLiveFeature :tournament="featured" />
-        <div v-if="liveRest.length" :class="[gridClasses, 'mt-3']">
-          <WatchTournamentCard
-            v-for="tournament in liveRest"
-            :key="tournament.id"
-            :tournament="tournament"
-            quick-look
-            @quick-look="openQuickLook(tournament)"
-          />
-        </div>
-      </section>
+        <Empty v-else-if="curatedEmpty" key="empty" class="min-h-[200px]">
+          <EmptyTitle>{{ $t("pages.tournaments.empty.title") }}</EmptyTitle>
+          <EmptyDescription>{{
+            canCreateTournament
+              ? $t("pages.tournaments.empty.organizer")
+              : $t("pages.tournaments.empty.description")
+          }}</EmptyDescription>
+        </Empty>
 
-      <section v-if="openTournaments.length" :class="sectionClasses">
-        <div :class="tacticalSectionLabelClasses">
-          <span :class="tacticalSectionTickClasses"></span>
-          {{ $t("pages.tournaments.sections.open") }}
-          <span class="tabular-nums tracking-normal text-foreground">{{
-            openTournaments.length
-          }}</span>
-        </div>
-        <div :class="gridClasses">
-          <WatchTournamentCard
-            v-for="tournament in openTournaments"
-            :key="tournament.id"
-            :tournament="tournament"
-            quick-look
-            @quick-look="openQuickLook(tournament)"
-          />
-        </div>
-      </section>
+        <div v-else key="curated">
+          <PageTransition>
+            <TournamentNextLan
+              v-if="nextLan"
+              :tournament="nextLan"
+              :hero="lanHero"
+              @quick-look="openQuickLook(nextLan)"
+            />
+          </PageTransition>
 
-      <section v-if="upcomingTournaments.length" :class="sectionClasses">
-        <div
-          :class="[
-            tacticalSectionLabelClasses,
-            '!flex w-full items-center gap-3',
-          ]"
-        >
-          <span class="inline-flex items-center gap-2">
-            <span :class="tacticalSectionTickClasses"></span>
-            {{ $t("pages.tournaments.sections.upcoming") }}
-            <span class="tabular-nums tracking-normal text-foreground">{{
-              upcomingTournaments.length
-            }}</span>
-          </span>
-          <button
-            v-if="upcomingTournaments.length > UPCOMING_SHOWN"
-            type="button"
-            :class="seeAllClasses"
-            @click="statusModel = 'upcoming'"
-          >
-            {{ $t("common.see_all") }}
-            <ArrowRight class="h-3 w-3" />
-          </button>
-        </div>
-        <div :class="gridClasses">
-          <WatchTournamentCard
-            v-for="tournament in upcomingTournaments.slice(0, UPCOMING_SHOWN)"
-            :key="tournament.id"
-            :tournament="tournament"
-            quick-look
-            @quick-look="openQuickLook(tournament)"
-          />
-        </div>
-      </section>
+          <PageTransition :delay="50">
+            <section v-if="live.length" :class="sectionClasses">
+              <div :class="tacticalSectionLabelClasses">
+                <span :class="tacticalSectionTickClasses"></span>
+                {{ $t("pages.tournaments.sections.live") }}
+                <span class="tabular-nums tracking-normal text-foreground">{{
+                  live.length
+                }}</span>
+              </div>
+              <TournamentLiveFeature :tournament="featured" />
+              <div v-if="liveRest.length" :class="[gridClasses, 'mt-3']">
+                <WatchTournamentCard
+                  v-for="tournament in liveRest"
+                  :key="tournament.id"
+                  :tournament="tournament"
+                  quick-look
+                  @quick-look="openQuickLook(tournament)"
+                />
+              </div>
+            </section>
+          </PageTransition>
 
-      <section v-if="recent.length" :class="sectionClasses">
-        <div
-          :class="[
-            tacticalSectionLabelClasses,
-            '!flex w-full items-center justify-between',
-          ]"
-        >
-          <span class="inline-flex items-center gap-3">
-            <span class="inline-flex items-center gap-2">
-              <span :class="tacticalSectionTickClasses"></span>
-              {{ $t("pages.tournaments.sections.recent") }}
-            </span>
-            <button
-              type="button"
-              :class="seeAllClasses"
-              @click="statusModel = 'finished'"
-            >
-              {{ $t("common.see_all") }}
-              <ArrowRight class="h-3 w-3" />
-            </button>
-          </span>
-          <ScrollArrows
-            :can-left="recentRow?.state?.canScrollLeft"
-            :can-right="recentRow?.state?.canScrollRight || !recentDone"
-            @scroll="
-              (direction) => {
-                recentRow?.scrollByDirection(direction);
-                if (direction === 'right') loadRecent();
-              }
-            "
-          />
+          <PageTransition :delay="100">
+            <section v-if="openTournaments.length" :class="sectionClasses">
+              <div :class="tacticalSectionLabelClasses">
+                <span :class="tacticalSectionTickClasses"></span>
+                {{ $t("pages.tournaments.sections.open") }}
+                <span class="tabular-nums tracking-normal text-foreground">{{
+                  openTournaments.length
+                }}</span>
+              </div>
+              <div :class="gridClasses">
+                <WatchTournamentCard
+                  v-for="tournament in openTournaments"
+                  :key="tournament.id"
+                  :tournament="tournament"
+                  quick-look
+                  @quick-look="openQuickLook(tournament)"
+                />
+              </div>
+            </section>
+          </PageTransition>
+
+          <PageTransition :delay="150">
+            <section v-if="upcomingTournaments.length" :class="sectionClasses">
+              <div
+                :class="[
+                  tacticalSectionLabelClasses,
+                  '!flex w-full items-center gap-3',
+                ]"
+              >
+                <span class="inline-flex items-center gap-2">
+                  <span :class="tacticalSectionTickClasses"></span>
+                  {{ $t("pages.tournaments.sections.upcoming") }}
+                  <span class="tabular-nums tracking-normal text-foreground">{{
+                    upcomingTournaments.length
+                  }}</span>
+                </span>
+                <button
+                  v-if="upcomingTournaments.length > UPCOMING_SHOWN"
+                  type="button"
+                  :class="seeAllClasses"
+                  @click="statusModel = 'upcoming'"
+                >
+                  {{ $t("common.see_all") }}
+                  <ArrowRight class="h-3 w-3" />
+                </button>
+              </div>
+              <div :class="gridClasses">
+                <WatchTournamentCard
+                  v-for="tournament in upcomingTournaments.slice(
+                    0,
+                    UPCOMING_SHOWN,
+                  )"
+                  :key="tournament.id"
+                  :tournament="tournament"
+                  quick-look
+                  @quick-look="openQuickLook(tournament)"
+                />
+              </div>
+            </section>
+          </PageTransition>
+
+          <PageTransition :delay="200">
+            <section v-if="recent.length" :class="sectionClasses">
+              <div
+                :class="[
+                  tacticalSectionLabelClasses,
+                  '!flex w-full items-center justify-between',
+                ]"
+              >
+                <span class="inline-flex items-center gap-3">
+                  <span class="inline-flex items-center gap-2">
+                    <span :class="tacticalSectionTickClasses"></span>
+                    {{ $t("pages.tournaments.sections.recent") }}
+                  </span>
+                  <button
+                    type="button"
+                    :class="seeAllClasses"
+                    @click="statusModel = 'finished'"
+                  >
+                    {{ $t("common.see_all") }}
+                    <ArrowRight class="h-3 w-3" />
+                  </button>
+                </span>
+                <ScrollArrows
+                  :can-left="recentRow?.state?.canScrollLeft"
+                  :can-right="recentRow?.state?.canScrollRight || !recentDone"
+                  @scroll="
+                    (direction) => {
+                      recentRow?.scrollByDirection(direction);
+                      if (direction === 'right') loadRecent();
+                    }
+                  "
+                />
+              </div>
+              <HorizontalScrollRow ref="recentRow" @approaching-end="loadRecent">
+                <TournamentResultTile
+                  v-for="tournament in recent"
+                  :key="tournament.id"
+                  :tournament="tournament"
+                  @quick-look="openQuickLook(tournament)"
+                />
+              </HorizontalScrollRow>
+            </section>
+          </PageTransition>
         </div>
-        <HorizontalScrollRow ref="recentRow" @approaching-end="loadRecent">
-          <TournamentResultTile
-            v-for="tournament in recent"
-            :key="tournament.id"
-            :tournament="tournament"
-            @quick-look="openQuickLook(tournament)"
-          />
-        </HorizontalScrollRow>
-      </section>
+      </PageTransition>
     </div>
-  </PageTransition>
+  </FadeSwap>
 
   <QuickLookSheet
     v-model:open="quickLookOpen"

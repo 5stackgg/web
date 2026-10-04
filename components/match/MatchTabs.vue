@@ -1434,9 +1434,9 @@ export default {
     syncActiveTabFromRoute() {
       // Legacy URLs pointed at the per-view tabs now folded into Scoreboard —
       // map them to the matching lens so old bookmarks don't dead-end.
+      // "utility" is not listed: it is the Utility tab's own value now.
       const legacyLensMap: Record<string, string> = {
         overview: "general",
-        utility: "utility",
         "aim-stats": "aim",
         "trade-stats": "trades",
         "opening-duels": "opening",

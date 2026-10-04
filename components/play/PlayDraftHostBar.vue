@@ -3,6 +3,7 @@ import { computed, ref } from "vue";
 import { Lock, Play, Plus, RotateCcw, Settings2 } from "lucide-vue-next";
 import { useI18n } from "vue-i18n";
 import { Button } from "~/components/ui/button";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import { toast } from "~/components/ui/toast";
 import WatchSegmented from "~/components/watch/WatchSegmented.vue";
 import { useAuthStore } from "~/stores/AuthStore";
@@ -192,15 +193,20 @@ const linkClasses =
       </div>
 
       <div class="ml-auto flex items-center gap-1.5 max-sm:w-full">
-        <Button
-          variant="ghost"
-          size="sm"
-          class="hit h-8 gap-1.5 text-muted-foreground hover:text-foreground"
-          @click="allSettings"
-        >
-          <Settings2 class="size-3.5" />
+        <FiveStackToolTip as-child :tap-toggle="false">
+          <template #trigger>
+            <Button
+              variant="ghost"
+              size="icon"
+              class="hit size-8 shrink-0 text-muted-foreground hover:text-foreground"
+              :aria-label="$t('pages.play.draft_rooms.host_bar.all_settings')"
+              @click="allSettings"
+            >
+              <Settings2 class="size-4" />
+            </Button>
+          </template>
           {{ $t("pages.play.draft_rooms.host_bar.all_settings") }}
-        </Button>
+        </FiveStackToolTip>
         <span
           v-if="locked"
           class="inline-flex h-8 items-center justify-center gap-2 rounded-md border border-border px-3 text-xs text-muted-foreground max-sm:flex-1"

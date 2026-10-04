@@ -26,8 +26,6 @@ import { useCommunityFormat } from "~/composables/useCommunityFormat";
 
 const props = defineProps<{
   steamId: string;
-  hideWhenEmpty?: boolean;
-  heading?: string;
 }>();
 
 type Totals = {
@@ -113,12 +111,6 @@ const servers = computed(() =>
 );
 
 const isOnline = computed(() => !!stats.value?.online_server_id);
-
-// Embedded under a profile with no matches, a player without community time
-// should show nothing, not a skeleton that then vanishes.
-const hidden = computed(
-  () => !!props.hideWhenEmpty && (loading.value || !hasHistory.value),
-);
 
 const lastSeenServer = computed(() => {
   if (stats.value?.online_server_label) {
@@ -262,11 +254,7 @@ watch(
 </script>
 
 <template>
-  <div v-if="!hidden">
-    <h2 v-if="heading" :class="tacticalSectionLabelClasses">
-      <span :class="tacticalSectionTickClasses"></span>
-      {{ heading }}
-    </h2>
+  <div>
     <FadeSwap>
       <div v-if="loading && !stats" key="loading" class="space-y-4">
         <Skeleton class="h-5 w-40" />

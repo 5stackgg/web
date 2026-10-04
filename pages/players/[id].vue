@@ -777,18 +777,18 @@ const pluginQuery = computed(() => ({
   player: playerIdRef.value ?? "",
   embed: "1",
 }));
-// A player with no matches gets no stats tabs, but plugin tabs don't depend on
-// matches, so they keep a strip of their own — defaulting to the first plugin
-// without writing it to the URL until the viewer actually picks one.
+// A player with no matches gets no stats tabs, but Community and plugin tabs
+// don't depend on matches, so they keep a strip of their own — defaulting to
+// Community without writing it to the URL until the viewer actually picks one.
 const careerlessTab = computed({
   get: () =>
     plugins.profileTabPlugins.some(
       (plugin: Plugin) => plugin.slug === statsTab.value,
     )
       ? statsTab.value
-      : plugins.profileTabPlugins[0]?.slug,
-  set: (tab: string | undefined) => {
-    if (tab) statsTab.value = tab;
+      : "community",
+  set: (tab: string) => {
+    statsTab.value = tab;
   },
 });
 // Reset a plugin's internal path when the profile changes, so opening the tab on
@@ -2799,29 +2799,11 @@ const playerHeroTeamChipDotClasses =
       </Empty>
     </PageTransition>
 
-    <!-- The stats tabs only exist for players with matches, but a community
-         regular may never have played one, so their server history stands
-         alone. -->
+    <!-- The stats tabs only exist for players with matches, but community time
+         and plugin tabs don't come from matches, so they keep a strip. -->
     <PageTransition
       v-if="player && pageContentReady && noCareerData && playerId"
       :delay="50"
-    >
-      <PlayerCommunityHistory
-        :steam-id="playerId"
-        :heading="$t('pages.players.detail.tabs.community')"
-        hide-when-empty
-      />
-    </PageTransition>
-
-    <PageTransition
-      v-if="
-        player &&
-        pageContentReady &&
-        noCareerData &&
-        playerId &&
-        plugins.profileTabPlugins.length
-      "
-      :delay="75"
     >
       <Tabs v-model="careerlessTab" :unmount-on-hide="false" class="w-full">
         <div class="mb-3 overflow-x-auto">
@@ -2829,6 +2811,9 @@ const playerHeroTeamChipDotClasses =
             variant="underline"
             class="h-auto flex-nowrap justify-start"
           >
+            <TabsTrigger value="community">
+              {{ $t("pages.players.detail.tabs.community") }}
+            </TabsTrigger>
             <TabsTrigger
               v-for="plugin in plugins.profileTabPlugins"
               :key="plugin.id"
@@ -2838,6 +2823,9 @@ const playerHeroTeamChipDotClasses =
             </TabsTrigger>
           </TabsList>
         </div>
+        <TabsContent value="community" class="tab-panel-in mt-0">
+          <PlayerCommunityHistory :steam-id="playerId" />
+        </TabsContent>
         <TabsContent
           v-for="plugin in plugins.profileTabPlugins"
           :key="plugin.id"

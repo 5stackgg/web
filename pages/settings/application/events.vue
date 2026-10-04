@@ -27,7 +27,7 @@ import { CalendarDays } from "lucide-vue-next";
           </template>
 
           <div v-if="eventsEnabled" class="flex justify-end">
-            <NuxtLink to="/events/manage">
+            <NuxtLink to="/events">
               <Button variant="outline" class="gap-2 shrink-0">
                 <CalendarDays class="h-4 w-4" />
                 {{ $t("pages.settings.application.events.manage") }}

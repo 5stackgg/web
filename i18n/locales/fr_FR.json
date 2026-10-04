@@ -1538,6 +1538,8 @@
         "date_90d": "90 derniers jours",
         "date_6m": "6 derniers mois",
         "date_1y": "Dernière année",
+        "category": "Catégorie",
+        "mine": "Uniquement les tournois que j'organise",
         "no_results_title": "Aucun tournoi ne correspond",
         "no_results_description": "Essaie d'effacer les filtres ou d'élargir ta recherche."
       },
@@ -1576,21 +1578,6 @@
         "description": "Quand un organisateur ouvre les inscriptions d'un tournoi, il apparaît ici.",
         "organizer": "Crée-en un : il apparaîtra ici dès l'ouverture des inscriptions."
       }
-    },
-    "manage_tournaments": {
-      "title": "Gérer les tournois",
-      "description": "Consulte et gère tous les tournois de la plateforme.",
-      "search_by_id": "Rechercher par ID de tournoi",
-      "enter_tournament_id": "Saisis l'ID du tournoi...",
-      "search_by_name": "Rechercher par nom",
-      "enter_tournament_name": "Saisis le nom du tournoi...",
-      "clear_all": "Tout effacer",
-      "sort_by": "Trier par",
-      "created_at": "Date de création",
-      "start": "Date de début",
-      "newest_first": "Plus récents d'abord",
-      "oldest_first": "Plus anciens d'abord",
-      "only_my_tournaments": "Uniquement les tournois que j'organise"
     },
     "scrims": {
       "title": "Recherche de scrims",
@@ -4963,6 +4950,7 @@
         "live": "En direct",
         "upcoming": "À venir",
         "past": "Passés",
+        "mine": "Uniquement les événements que j'organise",
         "no_results_title": "Aucun événement ne correspond",
         "no_results_description": "Essaie un autre nom ou efface les filtres."
       },
@@ -4974,12 +4962,6 @@
       },
       "no_tournaments": "Aucun tournoi annoncé pour l'instant.",
       "days": "{count} jour | {count} jours"
-    },
-    "manage_events": {
-      "title": "Gérer les événements",
-      "description": "Consulte et gère tous les événements de la plateforme.",
-      "no_events_title": "Aucun événement",
-      "no_events_description": "Tu n'organises encore aucun événement."
     },
     "plugins": {
       "not_found_title": "Page introuvable",
@@ -6298,10 +6280,8 @@
         "alerts": "Alertes",
         "seasons": "Saisons",
         "manage_matches": "Gérer les matchs",
-        "manage_tournaments": "Gérer les tournois",
         "manage_league": "Gérer la ligue",
         "stream_deck": "Stream Deck",
-        "manage_events": "Gérer les événements",
         "awards": "Awards"
       },
       "system": {
@@ -6345,12 +6325,10 @@
         "report_issue": "Signaler un problème",
         "join_discord": "Rejoindre notre Discord",
         "manage_matches": "Gérer les matchs",
-        "manage_tournaments": "Gérer les tournois",
         "manage_league": "Gérer la ligue",
         "search_players": "Rechercher des joueurs",
         "leagues": "Ligue",
         "events": "Événements",
-        "manage_events": "Gérer les événements",
         "system_media_server": "Serveur média",
         "utility_drift": "Dérive des lineups d'utilitaire",
         "utility": "Lineups d'utilitaire"

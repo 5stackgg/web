@@ -1538,6 +1538,8 @@
         "date_90d": "Últimos 90 dias",
         "date_6m": "Últimos 6 meses",
         "date_1y": "Último ano",
+        "category": "Categoria",
+        "mine": "Apenas torneios organizados por mim",
         "no_results_title": "Nenhum torneio corresponde",
         "no_results_description": "Tente limpar os filtros ou ampliar sua pesquisa."
       },
@@ -1576,21 +1578,6 @@
         "description": "Quando um organizador abrir as inscrições de um torneio, ele aparecerá aqui.",
         "organizer": "Crie um e ele aparecerá aqui assim que as inscrições abrirem."
       }
-    },
-    "manage_tournaments": {
-      "title": "Gerenciar Torneios",
-      "description": "Veja e gerencie todos os torneios em toda a plataforma.",
-      "search_by_id": "Procurar pelo ID do Torneio",
-      "enter_tournament_id": "Digite o ID do torneio...",
-      "search_by_name": "Procurar pelo nome do torneio",
-      "enter_tournament_name": "Digite o nome do torneio...",
-      "clear_all": "Limpar tudo",
-      "sort_by": "Ordenar por",
-      "created_at": "Data de Criação",
-      "start": "Data de Início",
-      "newest_first": "Mais recentes primeiro",
-      "oldest_first": "Mais antigos primeiro",
-      "only_my_tournaments": "Apenas Torneios Organizados por mim"
     },
     "scrims": {
       "title": "Localizador de Desafios",
@@ -4963,6 +4950,7 @@
         "live": "Ao vivo",
         "upcoming": "Em breve",
         "past": "Passados",
+        "mine": "Apenas eventos organizados por mim",
         "no_results_title": "Nenhum evento corresponde",
         "no_results_description": "Tente outro nome ou limpe os filtros."
       },
@@ -4974,12 +4962,6 @@
       },
       "no_tournaments": "Nenhum torneio anunciado ainda.",
       "days": "{count} dia | {count} dias"
-    },
-    "manage_events": {
-      "title": "Gerenciar Eventos",
-      "description": "Veja e gerencie todos os eventos da plataforma.",
-      "no_events_title": "Nenhum Evento Ainda",
-      "no_events_description": "Você ainda não está organizando nenhum evento."
     },
     "plugins": {
       "not_found_title": "Página não encontrada",
@@ -6298,10 +6280,8 @@
         "alerts": "Alertas",
         "seasons": "Temporadas",
         "manage_matches": "Gerenciar Partidas",
-        "manage_tournaments": "Gerenciar Torneios",
         "manage_league": "Gerenciar Liga",
         "stream_deck": "Stream Deck",
-        "manage_events": "Gerenciar Eventos",
         "awards": "Awards"
       },
       "system": {
@@ -6345,12 +6325,10 @@
         "report_issue": "Reportar Problema",
         "join_discord": "Nosso Discord",
         "manage_matches": "Gerenciar Partidas",
-        "manage_tournaments": "Gerenciar Torneios",
         "manage_league": "Gerenciar Liga",
         "search_players": "Procurar Jogadores",
         "leagues": "Liga",
         "events": "Eventos",
-        "manage_events": "Gerenciar Eventos",
         "system_media_server": "Servidor de Mídia",
         "utility_drift": "Desvio de lineups de utilitário",
         "utility": "Lineups de utilitário"

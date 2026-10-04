@@ -593,28 +593,6 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
-            <SidebarMenuItem
-              v-if="isTournamentOrganizer || isAdmin"
-              :tooltip="$t('layouts.app_nav.tooltips.manage_tournaments')"
-            >
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.manage_tournaments')"
-              >
-                <NuxtLink
-                  :to="{ name: 'tournaments-manage' }"
-                  :class="{
-                    'router-link-active': isRouteActive('tournaments-manage'),
-                  }"
-                >
-                  <TournamentBracket />
-                  {{ $t("layouts.app_nav.administration.manage_tournaments") }}
-                  <Badge size="sm" v-if="managingTournamentsCount > 0">
-                    {{ managingTournamentsCount }}
-                  </Badge>
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
 
             <SidebarMenuItem
               v-if="isAdmin && leaguesEnabled"
@@ -632,26 +610,6 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                 >
                   <Trophy />
                   {{ $t("layouts.app_nav.administration.manage_league") }}
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem
-              v-if="(isTournamentOrganizer || isAdmin) && eventsEnabled"
-              :tooltip="$t('layouts.app_nav.tooltips.manage_events')"
-            >
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.manage_events')"
-              >
-                <NuxtLink
-                  :to="{ name: 'events-manage' }"
-                  :class="{
-                    'router-link-active': isRouteActive('events-manage'),
-                  }"
-                >
-                  <CalendarRange />
-                  {{ $t("layouts.app_nav.administration.manage_events") }}
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -1368,9 +1326,6 @@ export default {
     },
     managingMatchesCount() {
       return useMatchLobbyStore().managingMatchesCount;
-    },
-    managingTournamentsCount() {
-      return useMatchLobbyStore().managingTournamentsCount;
     },
     activeStreamingMatchesCount() {
       return useStreamerStore().activeStreamingMatchesCount;

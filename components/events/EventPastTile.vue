@@ -4,7 +4,6 @@ import { eventMediaUrl } from "~/composables/useEventMediaUpload";
 import { formatEventRange } from "~/utilities/watchEventCard";
 
 const props = defineProps<{ event: any }>();
-defineEmits<{ (e: "quick-look"): void }>();
 
 const bannerSrc = computed(() =>
   props.event.banner && !props.event.banner.mime_type?.startsWith("video/")
@@ -17,11 +16,9 @@ const count = (key: string) =>
 </script>
 
 <template>
-  <button
-    type="button"
+  <NuxtLink
+    :to="`/events/${event.id}`"
     class="group/tile flex w-56 shrink-0 snap-start flex-col overflow-hidden rounded-lg border border-border bg-card/40 text-left transition-colors duration-150 hover:border-[hsl(var(--tac-amber)/0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-    :aria-label="$t('quick_look.at', { name: event.name })"
-    @click="$emit('quick-look')"
   >
     <span class="relative block aspect-[2/1] overflow-hidden bg-muted/40">
       <img
@@ -46,5 +43,5 @@ const count = (key: string) =>
         </template>
       </span>
     </span>
-  </button>
+  </NuxtLink>
 </template>

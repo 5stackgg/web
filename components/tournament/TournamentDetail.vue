@@ -9,6 +9,7 @@ import TournamentManage from "~/components/tournament/TournamentManage.vue";
 import ManageSection from "~/components/common/ManageSection.vue";
 import TournamentStatRibbon from "~/components/tournament/TournamentStatRibbon.vue";
 import TournamentResults from "~/components/tournament/TournamentResults.vue";
+import TournamentMatches from "~/components/tournament/TournamentMatches.vue";
 import TournamentCheckInPanel from "~/components/tournament/TournamentCheckInPanel.vue";
 import TournamentCheckInReview from "~/components/tournament/TournamentCheckInReview.vue";
 import TournamentEntryGate from "~/components/tournament/TournamentEntryGate.vue";
@@ -547,8 +548,6 @@ function clearTeamEnterDelay(el: Element) {
                 <TournamentResults
                   v-if="standingsTabVisible"
                   :tournament="tournament"
-                  :show-standings="true"
-                  :show-matches="false"
                 />
 
                 <TournamentPrizes
@@ -625,11 +624,7 @@ function clearTeamEnterDelay(el: Element) {
 
           <TabsContent v-if="matchesTabVisible" value="matches">
             <PageTransition>
-              <TournamentResults
-                :tournament="tournament"
-                :show-standings="false"
-                :show-matches="true"
-              />
+              <TournamentMatches :tournament-id="tournament.id" />
             </PageTransition>
           </TabsContent>
 
@@ -1303,7 +1298,7 @@ export default {
                       ],
                     },
                     {
-                      // Heavy match fields are fetched by TournamentResults.vue.
+                      // Heavy match fields are fetched by TournamentMatches.vue.
                       id: true,
                       round: true,
                       group: true,

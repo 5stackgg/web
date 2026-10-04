@@ -18,7 +18,7 @@ import {
 import { useAuthStore } from "~/stores/AuthStore";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
-import MatchesTable from "~/components/MatchesTable.vue";
+import MatchRowsTable from "~/components/match/MatchRowsTable.vue";
 import Pagination from "~/components/Pagination.vue";
 import PlayerSearch from "~/components/PlayerSearch.vue";
 import TeamSearch from "~/components/teams/TeamSearch.vue";
@@ -499,11 +499,7 @@ function optionRowClass(active: boolean) {
         </div>
       </div>
 
-      <MatchesTable
-        v-if="matches && matches.length > 0"
-        :matches="matches"
-        :show-all-matches="canManageMatches"
-      />
+      <MatchRowsTable v-if="matches && matches.length > 0" :matches="matches" />
 
       <div
         v-else-if="!loading"
@@ -541,7 +537,7 @@ function optionRowClass(active: boolean) {
 
 <script lang="ts">
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { simpleMatchFields } from "~/graphql/simpleMatchFields";
+import { matchRowFields } from "~/graphql/simpleMatchFields";
 import { $, e_match_status_enum, order_by } from "~/generated/zeus";
 import { validate as validateUUID } from "uuid";
 import { useAuthStore } from "~/stores/AuthStore";
@@ -717,7 +713,7 @@ export default {
               order_by: $("order_by", "[matches_order_by!]"),
               where: $("where_clause", "matches_bool_exp!"),
             },
-            simpleMatchFields,
+            matchRowFields,
           ],
         }),
         variables(this: any) {

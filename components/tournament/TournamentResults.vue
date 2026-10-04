@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
-import MatchTableRow from "~/components/MatchTableRow.vue";
 import AwardBadge from "~/components/award/AwardBadge.vue";
 import StageStandings from "~/components/tournament/StageStandings.vue";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
@@ -578,35 +577,12 @@ function playerAvatarSrc(player: {
         {{ $t("tournament.stage.no_standings") }}
       </div>
     </template>
-
-    <Card v-if="showMatches">
-      <CardHeader>
-        <CardTitle>{{ $t("tournament.results.title") }}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div class="space-y-4">
-          <MatchTableRow
-            v-for="match in allMatches"
-            :key="match.id"
-            :match="match"
-          />
-          <div
-            v-if="allMatches.length === 0"
-            class="text-center text-muted-foreground py-8"
-          >
-            {{ $t("tournament.results_section.no_matches_played") }}
-          </div>
-        </div>
-      </CardContent>
-    </Card>
   </div>
 </template>
 
 <script lang="ts">
-import { $, e_tournament_status_enum, order_by } from "~/generated/zeus";
+import { $, e_tournament_status_enum } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { mapFields } from "~/graphql/mapGraphql";
-import { playerFields } from "~/graphql/playerFields";
 import { TIER_PALETTES, resolveAwardTier } from "~/utilities/awardSeed";
 
 export default {
@@ -619,14 +595,9 @@ export default {
       type: Boolean,
       default: true,
     },
-    showMatches: {
-      type: Boolean,
-      default: true,
-    },
   },
   data() {
     return {
-      tournamentMatches: [] as any[],
       tournamentPlayerStats: [] as any[],
       mvpImpacts: [] as any[],
     };
@@ -677,118 +648,6 @@ export default {
       update: (data: any) => data?.player_elo || [],
     },
     $subscribe: {
-      tournamentMatches: {
-        query: typedGql("subscription")({
-          matches: [
-            {
-              where: {
-                tournament_brackets: {
-                  stage: {
-                    tournament_id: {
-                      _eq: $("tournamentId", "uuid!"),
-                    },
-                  },
-                },
-              },
-              order_by: [{ created_at: order_by.desc }],
-            },
-            {
-              id: true,
-              status: true,
-              ended_at: true,
-              e_match_status: { description: true },
-              winning_lineup_id: true,
-              lineup_1_id: true,
-              lineup_2_id: true,
-              created_at: true,
-              started_at: true,
-              scheduled_at: true,
-              options: {
-                mr: true,
-                best_of: true,
-                type: true,
-              },
-              match_maps: [
-                { order_by: [{ order: order_by.asc }] },
-                {
-                  map: mapFields,
-                  lineup_1_score: true,
-                  lineup_2_score: true,
-                  winning_lineup_id: true,
-                  order: true,
-                  status: true,
-                  vetos: {
-                    side: true,
-                    type: true,
-                    match_lineup_id: true,
-                  },
-                },
-              ],
-              lineup_1: {
-                id: true,
-                name: true,
-                is_on_lineup: true,
-                team_id: true,
-                lineup_players: [
-                  {},
-                  {
-                    checked_in: true,
-                    placeholder_name: true,
-                    player: playerFields,
-                  },
-                ],
-              },
-              lineup_2: {
-                id: true,
-                name: true,
-                is_on_lineup: true,
-                team_id: true,
-                lineup_players: [
-                  {},
-                  {
-                    checked_in: true,
-                    placeholder_name: true,
-                    player: playerFields,
-                  },
-                ],
-              },
-              max_players_per_lineup: true,
-              min_players_per_lineup: true,
-              lineup_counts: [{}, true],
-              is_in_lineup: true,
-              is_coach: true,
-              streams: [
-                { order_by: [{ priority: order_by.asc }] },
-                {
-                  id: true,
-                  link: true,
-                  title: true,
-                  priority: true,
-                  is_game_streamer: true,
-                },
-              ],
-              elo_changes: [
-                {},
-                {
-                  player_steam_id: true,
-                  elo_change: true,
-                },
-              ],
-            },
-          ],
-        }),
-        variables: function () {
-          return {
-            tournamentId: (this as any).tournament?.id,
-          };
-        },
-        skip: function () {
-          return !(this as any).showMatches || !(this as any).tournament?.id;
-        },
-        result: function ({ data }: { data: { matches: any[] } }) {
-          (this as any).tournamentMatches = data?.matches || [];
-        },
-      },
       tournamentPlayerStats: {
         query: typedGql("subscription")({
           v_tournament_player_stats: [
@@ -818,8 +677,7 @@ export default {
         },
         skip: function () {
           const self = this as any;
-          if (!self.tournament?.id) return true;
-          return !self.showMatches && !self.showStandings;
+          return !self.tournament?.id || !self.showStandings;
         },
         result: function ({
           data,
@@ -1032,9 +890,6 @@ export default {
         .sort(
           (a: any, b: any) => (Number(a.order) || 0) - (Number(b.order) || 0),
         );
-    },
-    allMatches() {
-      return (this as any).tournamentMatches || [];
     },
   },
 };

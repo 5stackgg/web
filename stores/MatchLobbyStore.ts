@@ -21,7 +21,6 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
   const myMatches = ref([]);
   const myMatchesLoaded = ref(false);
   const managingMatchesCount = ref(0);
-  const managingTournamentsCount = ref(0);
   const liveMatchesCount = ref(0);
   const liveTournamentsCount = ref(0);
   const openRegistrationTournamentsCount = ref(0);
@@ -288,57 +287,6 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
     );
   };
 
-  const subscribeToManagingTournaments = async () => {
-    const me = useAuthStore().me;
-    if (!me) {
-      return;
-    }
-
-    const subscription = getGraphqlClient().subscribe({
-      query: generateSubscription({
-        tournaments_aggregate: [
-          {
-            where: {
-              status: {
-                _in: [
-                  e_tournament_status_enum.Live,
-                  e_tournament_status_enum.RegistrationClosed,
-                  e_tournament_status_enum.RegistrationOpen,
-                  e_tournament_status_enum.CheckInReview,
-                  e_tournament_status_enum.Setup,
-                ],
-              },
-              _and: [NOT_LEAGUE_TOURNAMENT],
-            },
-          },
-          {
-            aggregate: {
-              count: true,
-            },
-          },
-        ],
-      }),
-    });
-
-    const { subscribe } = useSubscriptionManager();
-    subscribe(
-      "matchLobby:managingTournaments",
-      subscription.subscribe({
-        next: ({ data }) => {
-          if (data?.tournaments_aggregate?.aggregate?.count !== undefined) {
-            managingTournamentsCount.value =
-              data.tournaments_aggregate.aggregate.count;
-          } else {
-            managingTournamentsCount.value = 0;
-          }
-        },
-        error: (error) => {
-          console.error("Error in managing tournaments subscription:", error);
-        },
-      }),
-    );
-  };
-
   const subscribeToMyMatches = async () => {
     const me = useAuthStore().me;
     if (!me?.steam_id) {
@@ -509,7 +457,6 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
     myMatches,
     myMatchesLoaded,
     managingMatchesCount,
-    managingTournamentsCount,
     liveMatchesCount,
     liveTournamentsCount,
     openRegistrationTournamentsCount,
@@ -531,7 +478,6 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
     remove,
     subscribeToMyMatches,
     subscribeToManagingMatches,
-    subscribeToManagingTournaments,
     subscribeToLiveMatches,
     subscribeToLiveTournaments,
     subscribeToOpenRegistrationTournaments,

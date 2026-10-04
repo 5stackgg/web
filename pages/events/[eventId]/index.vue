@@ -19,7 +19,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import MatchesTable from "~/components/MatchesTable.vue";
+import PlayerMatchesTable from "~/components/player/PlayerMatchesTable.vue";
 import Pagination from "~/components/Pagination.vue";
 import WatchSegmented from "~/components/watch/WatchSegmented.vue";
 import EventHeader from "~/components/events/EventHeader.vue";
@@ -38,6 +38,7 @@ import TournamentCard from "~/components/tournament/TournamentCard.vue";
 import { tournamentStatusVariant } from "~/components/tournament/tournamentCard";
 import { TICKER_LIVE_STATUSES } from "~/components/watch/watchTicker";
 import { useEventMatches } from "~/composables/useEventMatches";
+import { useMatchRowStats } from "~/composables/useMatchRowStats";
 import { tacticalSectionLabelClasses } from "~/utilities/tacticalClasses";
 import { eventPhase, type EventPhase } from "~/utilities/eventDisplay";
 import { useEventContext } from "~/composables/useEventContext";
@@ -112,11 +113,25 @@ const {
   refetch: refetchEventMatches,
 } = useEventMatches(eventIdRef);
 
-const signedIn = computed(() => !!useAuthStore().me);
+const me = computed(() => useAuthStore().me);
+const signedIn = computed(() => !!me.value);
 const matchesView = computed({
   get: () => (matchesMine.value ? "mine" : "all"),
   set: (value: "all" | "mine") => setMatchesMine(value === "mine"),
 });
+
+// "Mine" reads each row from the viewer, like their profile; "All" shows
+// both sides with the match's top player.
+const {
+  statsByMatch: matchStats,
+  ratingByMatch: matchRatings,
+  topPlayerByMatch: matchTopPlayers,
+} = useMatchRowStats(
+  eventMatches,
+  computed(() =>
+    matchesMine.value && me.value ? String(me.value.steam_id) : null,
+  ),
+);
 
 // The newest live match, for the header's Watch live.
 const liveMatch = computed(() =>
@@ -277,7 +292,14 @@ const tabTriggerClasses =
           </Empty>
           <div v-else>
             <div :class="{ 'opacity-60': matchesPaging }">
-              <MatchesTable :matches="eventMatches" />
+              <PlayerMatchesTable
+                :matches="eventMatches"
+                :player="matchesMine ? me : null"
+                :neutral="!matchesMine"
+                :stats-by-match="matchStats"
+                :rating-by-match="matchRatings"
+                :top-player-by-match="matchTopPlayers"
+              />
             </div>
             <Pagination
               v-if="matchesTotal > 0"

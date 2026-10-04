@@ -1538,6 +1538,8 @@
         "date_90d": "過去90日間",
         "date_6m": "過去6ヶ月",
         "date_1y": "過去1年",
+        "category": "カテゴリー",
+        "mine": "自分が主催するトーナメントのみ",
         "no_results_title": "該当するトーナメントがありません",
         "no_results_description": "フィルターを解除するか、検索範囲を広げてください。"
       },
@@ -1576,21 +1578,6 @@
         "description": "主催者がトーナメントの参加登録を開始すると、ここに表示されます。",
         "organizer": "作成すると、参加登録の開始と同時にここに表示されます。"
       }
-    },
-    "manage_tournaments": {
-      "title": "トーナメント管理",
-      "description": "プラットフォーム上の全トーナメントを表示・管理します。",
-      "search_by_id": "トーナメントIDで検索",
-      "enter_tournament_id": "トーナメントIDを入力...",
-      "search_by_name": "名前で検索",
-      "enter_tournament_name": "トーナメント名を入力...",
-      "clear_all": "すべてクリア",
-      "sort_by": "並び替え",
-      "created_at": "作成日",
-      "start": "開始日",
-      "newest_first": "新しい順",
-      "oldest_first": "古い順",
-      "only_my_tournaments": "自分が主催するトーナメントのみ"
     },
     "scrims": {
       "title": "スクリムファインダー",
@@ -4963,6 +4950,7 @@
         "live": "開催中",
         "upcoming": "開催予定",
         "past": "過去",
+        "mine": "自分が主催するイベントのみ",
         "no_results_title": "該当するイベントがありません",
         "no_results_description": "別の名前で検索するか、フィルターを解除してください。"
       },
@@ -4974,12 +4962,6 @@
       },
       "no_tournaments": "まだ発表されたトーナメントはありません。",
       "days": "{count}日間 | {count}日間"
-    },
-    "manage_events": {
-      "title": "イベント管理",
-      "description": "プラットフォーム上のすべてのイベントを閲覧・管理します。",
-      "no_events_title": "イベントはまだありません",
-      "no_events_description": "主催しているイベントはまだありません。"
     },
     "plugins": {
       "not_found_title": "ページが見つかりません",
@@ -6298,10 +6280,8 @@
         "alerts": "アラート",
         "seasons": "シーズン",
         "manage_matches": "試合管理",
-        "manage_tournaments": "トーナメント管理",
         "manage_league": "リーグ管理",
         "stream_deck": "ストリームデッキ",
-        "manage_events": "イベント管理",
         "awards": "Awards"
       },
       "system": {
@@ -6345,12 +6325,10 @@
         "report_issue": "問題を報告",
         "join_discord": "Discordに参加",
         "manage_matches": "試合管理",
-        "manage_tournaments": "トーナメント管理",
         "manage_league": "リーグ管理",
         "search_players": "プレイヤーを検索",
         "leagues": "リーグ",
         "events": "イベント",
-        "manage_events": "イベント管理",
         "system_media_server": "メディアサーバー",
         "utility_drift": "ユーティリティラインナップのずれ",
         "utility": "ユーティリティラインナップ"

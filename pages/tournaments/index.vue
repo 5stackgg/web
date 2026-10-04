@@ -2,7 +2,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
-import { ArrowRight, CalendarDays, PlusCircle, Search, X } from "lucide-vue-next";
+import { ArrowRight, PlusCircle, Search, X } from "lucide-vue-next";
 import { useSubscription } from "@vue/apollo-composable";
 import { useScrollIntoViewOnChange } from "~/composables/useScrollIntoViewOnChange";
 import { useDeferredLoading } from "~/composables/useDeferredLoading";
@@ -10,6 +10,7 @@ import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { tournamentCardFields } from "~/graphql/tournamentCardFields";
 import { excludeLeagueTournaments } from "~/graphql/tournamentFilters";
+import { tournamentRowState } from "~/utilities/watchEventCard";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, order_by, e_tournament_status_enum } from "~/generated/zeus";
 import {
@@ -17,13 +18,10 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
+import { Label } from "~/components/ui/label";
+import FilterMenu from "~/components/common/FilterMenu.vue";
+import FilterToggle from "~/components/common/FilterToggle.vue";
+import CategorySelect from "~/components/tournament/CategorySelect.vue";
 import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
 import Empty from "~/components/ui/empty/Empty.vue";
@@ -33,14 +31,12 @@ import Pagination from "~/components/Pagination.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import { rememberTournaments } from "~/composables/useTournamentPreview";
-import HorizontalScrollRow from "~/components/common/HorizontalScrollRow.vue";
-import ScrollArrows from "~/components/common/ScrollArrows.vue";
 import QuickLookSheet from "~/components/common/QuickLookSheet.vue";
 import WatchSegmented from "~/components/watch/WatchSegmented.vue";
 import WatchTournamentCard from "~/components/watch/WatchTournamentCard.vue";
 import TournamentNextLan from "~/components/tournament/TournamentNextLan.vue";
 import TournamentLiveFeature from "~/components/tournament/TournamentLiveFeature.vue";
-import TournamentResultTile from "~/components/tournament/TournamentResultTile.vue";
+import TournamentAgendaRow from "~/components/tournament/TournamentAgendaRow.vue";
 import TournamentQuickLook from "~/components/tournament/TournamentQuickLook.vue";
 import {
   tacticalSectionLabelClasses,
@@ -51,7 +47,7 @@ import {
 // Keep filter query params out of the NuxtPage page-key (app.vue) so applying a
 // filter updates the URL without remounting/refreshing the whole page.
 definePageMeta({
-  persistQueryKeys: ["status", "since", "q", "page"],
+  persistQueryKeys: ["status", "since", "q", "page", "mine", "category"],
 });
 
 const { t } = useI18n();
@@ -122,6 +118,16 @@ const nameQuery = computed<string>(() => {
   return typeof v === "string" ? v : "";
 });
 
+const signedIn = computed(() => !!useAuthStore().me);
+
+// Tournaments the viewer organizes (what the old manage page was for).
+const mineFilter = computed(() => signedIn.value && route.query.mine === "1");
+
+const categoryFilter = computed<string[]>(() => {
+  const v = route.query.category;
+  return typeof v === "string" && v ? v.split(",") : [];
+});
+
 const page = computed<number>(() => {
   const v = route.query.page;
   const n = typeof v === "string" ? parseInt(v, 10) : 1;
@@ -130,11 +136,19 @@ const page = computed<number>(() => {
 
 const perPage = 10;
 
+// What the Filters menu holds, for its badge.
+const menuFilterCount = computed(
+  () =>
+    (sinceFilter.value !== "all" ? 1 : 0) +
+    categoryFilter.value.length +
+    (mineFilter.value ? 1 : 0),
+);
+
 const hasActiveFilter = computed(
   () =>
     statusFilter.value !== "all" ||
-    sinceFilter.value !== "all" ||
-    nameQuery.value.trim().length > 0,
+    nameQuery.value.trim().length > 0 ||
+    menuFilterCount.value > 0,
 );
 
 const searchInput = ref(nameQuery.value);
@@ -189,6 +203,26 @@ const sinceModel = computed<SincePreset>({
     }),
 });
 
+const mineModel = computed<boolean>({
+  get: () => mineFilter.value,
+  set: (v) =>
+    replaceQuery((next) => {
+      if (v) next.mine = "1";
+      else delete next.mine;
+      delete next.page;
+    }),
+});
+
+const categoryModel = computed<string[]>({
+  get: () => categoryFilter.value,
+  set: (v) =>
+    replaceQuery((next) => {
+      if (v.length) next.category = v.join(",");
+      else delete next.category;
+      delete next.page;
+    }),
+});
+
 function setPage(p: number) {
   replaceQuery((next) => {
     if (p <= 1) delete next.page;
@@ -198,7 +232,10 @@ function setPage(p: number) {
 
 // "See all" and paging both land the new list above a scrolled-down reader.
 const filterRow = ref<HTMLElement | null>(null);
-useScrollIntoViewOnChange(filterRow, () => `${statusFilter.value}:${page.value}`);
+useScrollIntoViewOnChange(
+  filterRow,
+  () => `${statusFilter.value}:${page.value}`,
+);
 
 function clearAllFilters() {
   router.replace({ path: route.path, hash: route.hash });
@@ -258,30 +295,39 @@ const nextLan = computed(
 
 const featured = computed(() => live.value[0] ?? null);
 const liveRest = computed(() => live.value.slice(1));
-const openTournaments = computed(() =>
-  coming.value.filter(
-    (tournament) =>
-      tournament.status === e_tournament_status_enum.RegistrationOpen &&
-      tournament.id !== nextLan.value?.id,
-  ),
-);
-const upcomingTournaments = computed(() =>
-  coming.value.filter(
-    (tournament) =>
-      tournament.status !== e_tournament_status_enum.RegistrationOpen &&
-      tournament.id !== nextLan.value?.id,
-  ),
-);
-const UPCOMING_SHOWN = 4;
 
-// With nothing live and nothing else coming up, the LAN is the page: give it
-// the full card so it doesn't sit alone as a thin strip.
-const lanHero = computed(
-  () =>
-    !live.value.length &&
-    !openTournaments.value.length &&
-    !upcomingTournaments.value.length,
+// Everything else still to come, soonest first, for the agenda.
+const agendaComing = computed(() =>
+  coming.value.filter((tournament) => tournament.id !== nextLan.value?.id),
 );
+
+// With nothing live the LAN leads the page as the full card; a live bracket
+// takes that spot and the LAN drops to the thin strip above it.
+const lanHero = computed(() => !live.value.length);
+
+// The agenda's month headings, in the order the list already runs.
+function byMonth(tournaments: any[]) {
+  const months: Array<{ key: string; label: string; tournaments: any[] }> = [];
+  const format = new Intl.DateTimeFormat(undefined, {
+    month: "long",
+    year: "numeric",
+  });
+  for (const tournament of tournaments) {
+    const date = tournament.start ? new Date(tournament.start) : null;
+    const key = date ? `${date.getFullYear()}-${date.getMonth()}` : "none";
+    const last = months[months.length - 1];
+    if (last?.key === key) {
+      last.tournaments.push(tournament);
+    } else {
+      months.push({
+        key,
+        label: date ? format.format(date) : "",
+        tournaments: [tournament],
+      });
+    }
+  }
+  return months;
+}
 
 const statusOptions = computed(() => {
   const openCount = coming.value.filter(
@@ -312,14 +358,14 @@ const statusOptions = computed(() => {
   ];
 });
 
-// --- Recent results: paged in as the row scrolls.
+// --- Recent results: the agenda's latest finished page; See all opens the
+// finished filter for the rest.
 
 const RECENT_PAGE = 12;
 const recent = ref<any[]>([]);
 const recentDone = ref(false);
 const recentLoaded = ref(false);
 let recentInFlight = false;
-const recentRow = ref<InstanceType<typeof HorizontalScrollRow> | null>(null);
 
 async function loadRecent() {
   if (recentDone.value || recentInFlight) return;
@@ -427,11 +473,23 @@ const filterWhere = computed<Record<string, any>>(() => {
   if (ms) {
     where.start = { _gte: new Date(Date.now() - ms).toISOString() };
   }
+  if (mineFilter.value) {
+    where.is_organizer = { _eq: true };
+  }
+  if (categoryFilter.value.length) {
+    where.categories = { category: { _in: categoryFilter.value } };
+  }
   return where;
 });
 
+// Still to come reads soonest first; anything that can include finished
+// ones reads newest first.
 const filteredOrder = computed(() => [
-  { start: statusFilter.value === "finished" ? order_by.desc : order_by.asc },
+  {
+    start: ["finished", "all"].includes(statusFilter.value)
+      ? order_by.desc
+      : order_by.asc,
+  },
 ]);
 
 let filterFetchId = 0;
@@ -481,7 +539,15 @@ async function fetchFiltered() {
 }
 
 watch(
-  [hasActiveFilter, statusFilter, sinceFilter, nameQuery, page],
+  [
+    hasActiveFilter,
+    statusFilter,
+    sinceFilter,
+    nameQuery,
+    mineFilter,
+    categoryFilter,
+    page,
+  ],
   () => {
     if (hasActiveFilter.value) {
       fetchFiltered();
@@ -498,16 +564,13 @@ watch(
 const quickLookOpen = ref(false);
 const quickLookIndex = ref(0);
 
+// Past tournaments open their page instead, so they aren't stepped through.
 const quickLookItems = computed<any[]>(() =>
   hasActiveFilter.value
-    ? filteredTournaments.value
-    : [
-        nextLan.value,
-        ...liveRest.value,
-        ...openTournaments.value,
-        ...upcomingTournaments.value.slice(0, UPCOMING_SHOWN),
-        ...recent.value,
-      ].filter(Boolean),
+    ? filteredTournaments.value.filter(
+        (tournament) => tournamentRowState(tournament.status) !== "finished",
+      )
+    : [nextLan.value, ...liveRest.value, ...agendaComing.value].filter(Boolean),
 );
 
 const quickLookTournament = computed(
@@ -543,6 +606,15 @@ const sectionClasses = ["mt-8 first:mt-0", tacticalSectionSeparatorClasses];
 const seeAllClasses =
   "inline-flex items-center gap-1 text-xs normal-case tracking-normal text-muted-foreground transition-colors hover:text-foreground";
 const gridClasses = "grid gap-3 lg:grid-cols-2";
+const agendaMonthClasses = "mt-4 grid gap-1.5 first-of-type:mt-0";
+const filterOptionClasses =
+  "rounded-md border px-3 py-1.5 font-mono text-[0.65rem] uppercase tracking-[0.14em] transition-colors duration-150";
+const filterOptionActiveClasses =
+  "border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)_/_0.12)] text-[hsl(var(--tac-amber))]";
+const filterOptionIdleClasses =
+  "border-border bg-background/40 text-muted-foreground hover:text-foreground";
+const agendaMonthLabelClasses =
+  "mb-0.5 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground";
 </script>
 
 <template>
@@ -581,41 +653,50 @@ const gridClasses = "grid gap-3 lg:grid-cols-2";
         />
       </div>
 
-      <Select v-model="sinceModel">
-        <SelectTrigger
-          class="h-8 w-auto gap-2 text-xs"
-          :aria-label="$t('common.date')"
-        >
-          <CalendarDays class="h-3.5 w-3.5 opacity-70" />
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent align="start">
-          <SelectItem
-            v-for="option in sinceOptions"
-            :key="option.value"
-            :value="option.value"
-          >
-            {{ option.label }}
-          </SelectItem>
-        </SelectContent>
-      </Select>
-
-      <Button
-        v-if="hasActiveFilter"
-        variant="ghost"
-        size="sm"
-        class="h-8 text-muted-foreground hover:text-foreground"
-        @click="clearAllFilters"
+      <FilterMenu
+        class="ml-auto"
+        :count="menuFilterCount"
+        :active="menuFilterCount > 0"
+        :show-reset="hasActiveFilter"
+        @reset="clearAllFilters"
       >
-        <X class="h-3.5 w-3.5" />
-        {{ $t("common.reset_filters") }}
-      </Button>
+        <div class="grid gap-5">
+          <div class="grid gap-2">
+            <Label>{{ $t("common.date") }}</Label>
+            <div class="flex flex-wrap gap-2">
+              <button
+                v-for="option in sinceOptions"
+                :key="option.value"
+                type="button"
+                :class="[
+                  filterOptionClasses,
+                  sinceModel === option.value
+                    ? filterOptionActiveClasses
+                    : filterOptionIdleClasses,
+                ]"
+                @click="sinceModel = option.value"
+              >
+                {{ option.label }}
+              </button>
+            </div>
+          </div>
+          <div class="grid gap-2">
+            <Label>{{ $t("pages.tournaments.filter.category") }}</Label>
+            <CategorySelect v-model="categoryModel" />
+          </div>
+          <FilterToggle
+            v-if="signedIn"
+            v-model="mineModel"
+            :label="$t('pages.tournaments.filter.mine')"
+          />
+        </div>
+      </FilterMenu>
 
       <Button
         v-if="canCreateTournament"
         as-child
         size="sm"
-        class="ml-auto h-8 bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] hover:bg-[hsl(var(--tac-amber)/0.9)]"
+        class="h-8 bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] hover:bg-[hsl(var(--tac-amber)/0.9)]"
       >
         <NuxtLink to="/tournaments/create">
           <PlusCircle class="h-4 w-4" />
@@ -636,22 +717,24 @@ const gridClasses = "grid gap-3 lg:grid-cols-2";
         class="transition-opacity duration-200 motion-reduce:transition-none"
         :class="filteredRefreshing && 'pointer-events-none opacity-50'"
       >
-        <div v-if="filteredSkeleton" key="loading" :class="gridClasses">
-          <Skeleton v-for="i in 4" :key="i" class="h-[11rem] rounded-lg" />
+        <div v-if="filteredSkeleton" key="loading" class="grid gap-1.5">
+          <Skeleton v-for="i in 4" :key="i" class="h-[3.75rem] rounded-lg" />
         </div>
 
-        <div
-          v-else-if="filteredTournaments.length > 0"
-          key="results"
-          :class="gridClasses"
-        >
-          <WatchTournamentCard
-            v-for="tournament in filteredTournaments"
-            :key="tournament.id"
-            :tournament="tournament"
-            quick-look
-            @quick-look="openQuickLook(tournament)"
-          />
+        <div v-else-if="filteredTournaments.length > 0" key="results">
+          <div
+            v-for="month in byMonth(filteredTournaments)"
+            :key="month.key"
+            :class="agendaMonthClasses"
+          >
+            <h3 :class="agendaMonthLabelClasses">{{ month.label }}</h3>
+            <TournamentAgendaRow
+              v-for="tournament in month.tournaments"
+              :key="tournament.id"
+              :tournament="tournament"
+              @quick-look="openQuickLook(tournament)"
+            />
+          </div>
         </div>
 
         <Empty v-else key="empty" class="min-h-[200px]">
@@ -677,17 +760,17 @@ const gridClasses = "grid gap-3 lg:grid-cols-2";
     <div v-else key="curated">
       <!-- Crossfade, not out-in: the old swap faded the skeleton out before
            the sections came in, so the page sat empty in between. The
-           skeleton is the strip + a card grid, the shape most loads land on. -->
+           skeleton is the strip + agenda rows, the shape most loads land on. -->
       <FadeSwap>
         <div v-if="!curatedReady" key="loading" aria-busy="true">
           <Skeleton class="h-[5.25rem] rounded-xl" />
           <div :class="sectionClasses">
             <Skeleton class="mb-4 h-3 w-28 rounded-sm" />
-            <div :class="gridClasses">
+            <div class="grid gap-1.5">
               <Skeleton
                 v-for="i in 4"
                 :key="i"
-                class="h-[10.5rem] rounded-lg"
+                class="h-[3.75rem] rounded-lg"
               />
             </div>
           </div>
@@ -735,20 +818,24 @@ const gridClasses = "grid gap-3 lg:grid-cols-2";
           </PageTransition>
 
           <PageTransition :delay="100">
-            <section v-if="openTournaments.length" :class="sectionClasses">
+            <section v-if="agendaComing.length" :class="sectionClasses">
               <div :class="tacticalSectionLabelClasses">
                 <span :class="tacticalSectionTickClasses"></span>
-                {{ $t("pages.tournaments.sections.open") }}
+                {{ $t("pages.tournaments.sections.upcoming") }}
                 <span class="tabular-nums tracking-normal text-foreground">{{
-                  openTournaments.length
+                  agendaComing.length
                 }}</span>
               </div>
-              <div :class="gridClasses">
-                <WatchTournamentCard
-                  v-for="tournament in openTournaments"
+              <div
+                v-for="month in byMonth(agendaComing)"
+                :key="month.key"
+                :class="agendaMonthClasses"
+              >
+                <h3 :class="agendaMonthLabelClasses">{{ month.label }}</h3>
+                <TournamentAgendaRow
+                  v-for="tournament in month.tournaments"
                   :key="tournament.id"
                   :tournament="tournament"
-                  quick-look
                   @quick-look="openQuickLook(tournament)"
                 />
               </div>
@@ -756,7 +843,7 @@ const gridClasses = "grid gap-3 lg:grid-cols-2";
           </PageTransition>
 
           <PageTransition :delay="150">
-            <section v-if="upcomingTournaments.length" :class="sectionClasses">
+            <section v-if="recent.length" :class="sectionClasses">
               <div
                 :class="[
                   tacticalSectionLabelClasses,
@@ -765,80 +852,29 @@ const gridClasses = "grid gap-3 lg:grid-cols-2";
               >
                 <span class="inline-flex items-center gap-2">
                   <span :class="tacticalSectionTickClasses"></span>
-                  {{ $t("pages.tournaments.sections.upcoming") }}
-                  <span class="tabular-nums tracking-normal text-foreground">{{
-                    upcomingTournaments.length
-                  }}</span>
+                  {{ $t("pages.tournaments.sections.recent") }}
                 </span>
                 <button
-                  v-if="upcomingTournaments.length > UPCOMING_SHOWN"
                   type="button"
                   :class="seeAllClasses"
-                  @click="statusModel = 'upcoming'"
+                  @click="statusModel = 'finished'"
                 >
                   {{ $t("common.see_all") }}
                   <ArrowRight class="h-3 w-3" />
                 </button>
               </div>
-              <div :class="gridClasses">
-                <WatchTournamentCard
-                  v-for="tournament in upcomingTournaments.slice(
-                    0,
-                    UPCOMING_SHOWN,
-                  )"
-                  :key="tournament.id"
-                  :tournament="tournament"
-                  quick-look
-                  @quick-look="openQuickLook(tournament)"
-                />
-              </div>
-            </section>
-          </PageTransition>
-
-          <PageTransition :delay="200">
-            <section v-if="recent.length" :class="sectionClasses">
               <div
-                :class="[
-                  tacticalSectionLabelClasses,
-                  '!flex w-full items-center justify-between',
-                ]"
+                v-for="month in byMonth(recent)"
+                :key="month.key"
+                :class="agendaMonthClasses"
               >
-                <span class="inline-flex items-center gap-3">
-                  <span class="inline-flex items-center gap-2">
-                    <span :class="tacticalSectionTickClasses"></span>
-                    {{ $t("pages.tournaments.sections.recent") }}
-                  </span>
-                  <button
-                    type="button"
-                    :class="seeAllClasses"
-                    @click="statusModel = 'finished'"
-                  >
-                    {{ $t("common.see_all") }}
-                    <ArrowRight class="h-3 w-3" />
-                  </button>
-                </span>
-                <ScrollArrows
-                  :can-left="recentRow?.state?.canScrollLeft"
-                  :can-right="recentRow?.state?.canScrollRight || !recentDone"
-                  @scroll="
-                    (direction) => {
-                      recentRow?.scrollByDirection(direction);
-                      if (direction === 'right') loadRecent();
-                    }
-                  "
-                />
-              </div>
-              <HorizontalScrollRow
-                ref="recentRow"
-                @approaching-end="loadRecent"
-              >
-                <TournamentResultTile
-                  v-for="tournament in recent"
+                <h3 :class="agendaMonthLabelClasses">{{ month.label }}</h3>
+                <TournamentAgendaRow
+                  v-for="tournament in month.tournaments"
                   :key="tournament.id"
                   :tournament="tournament"
-                  @quick-look="openQuickLook(tournament)"
                 />
-              </HorizontalScrollRow>
+              </div>
             </section>
           </PageTransition>
         </div>

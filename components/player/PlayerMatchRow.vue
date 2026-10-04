@@ -5,6 +5,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
 import MatchRankBadge from "~/components/MatchRankBadge.vue";
 import MatchSourceBadge from "~/components/MatchSourceBadge.vue";
 import MatchStatus from "~/components/match/MatchStatus.vue";
+import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
 import PlayerMatchScoreboard from "~/components/player/PlayerMatchScoreboard.vue";
 import StatLabel from "~/components/common/StatLabel.vue";
 import { kdColor, hltvColor } from "~/utils/statTiers";
@@ -90,10 +91,41 @@ const wideGrid =
         <span v-else class="text-muted-foreground">—</span>
       </div>
 
+      <!-- Neutral lists (event, tournament): both sides, each with its score. -->
+      <div v-if="neutral" class="grid min-w-0 gap-1">
+        <span
+          v-for="lineup in lineups"
+          :key="lineup.id"
+          class="flex min-w-0 items-center gap-1.5 text-[0.7rem] leading-none"
+        >
+          <img
+            v-if="lineupAvatar(lineup)"
+            :src="lineupAvatar(lineup)!"
+            alt=""
+            class="h-3 w-3 shrink-0 rounded-sm object-cover"
+            @error="($event.target as HTMLImageElement).style.display = 'none'"
+          />
+          <span
+            class="min-w-0 flex-1 truncate font-semibold"
+            :class="
+              lineupLost(lineup) ? 'text-muted-foreground' : 'text-foreground'
+            "
+            >{{ lineup.team?.name || lineup.name }}</span
+          >
+          <MatchLineupScoreDisplay
+            v-if="hasScore"
+            :match="match"
+            :lineup="lineup"
+            :halves="false"
+            class="font-mono tabular-nums"
+          />
+        </span>
+      </div>
+
       <!-- RESULT + SCORE — finished matches show the W/L/T badge + score;
            anything else (scheduled/cancelled/live) shows only the status. The
            opponent TEAM (real teams only — never pugs) tucks under the score. -->
-      <div class="flex min-w-0 flex-col justify-center gap-0.5">
+      <div v-else class="flex min-w-0 flex-col justify-center gap-0.5">
         <span
           v-if="isFinished"
           class="font-mono text-sm font-bold leading-none tabular-nums"
@@ -172,51 +204,79 @@ const wideGrid =
       </button>
       <span v-else />
 
-      <!-- RATING (HLTV) — the headline per-match number, so it runs a touch
-           larger than the other stats and is centered in its column to sit
-           evenly between the clip thumbnail and the K/D/A block. -->
-      <span
-        v-if="isFinished && rating !== null"
-        class="font-mono text-base font-bold tabular-nums inline-flex items-center justify-center gap-0.5"
-        :style="{ color: hltvColor(rating) }"
-      >
-        {{ rating.toFixed(2) }}
-      </span>
-      <span v-else class="text-center text-muted-foreground">—</span>
-
-      <!-- K / D / A -->
-      <div
-        v-if="isFinished && stats"
-        class="font-mono text-xs tabular-nums text-foreground/90"
-      >
-        {{ stats.kills }}<span class="mx-0.5 text-muted-foreground/50">/</span
-        >{{ stats.deaths }}<span class="mx-0.5 text-muted-foreground/50">/</span
-        >{{ stats.assists }}
+      <!-- A neutral row's unfinished match has no stats: its status sits
+           where they would. -->
+      <div v-if="neutral && !isFinished" class="col-span-4 flex justify-center">
+        <MatchStatus :match="match" />
       </div>
-      <span v-else class="text-muted-foreground">—</span>
+      <template v-else>
+        <!-- RATING (HLTV) — the headline per-match number, so it runs a touch
+             larger than the other stats and is centered in its column to sit
+             evenly between the clip thumbnail and the K/D/A block. -->
+        <span
+          v-if="isFinished && rating !== null"
+          class="font-mono text-base font-bold tabular-nums inline-flex items-center justify-center gap-0.5"
+          :style="{ color: hltvColor(rating) }"
+        >
+          {{ rating.toFixed(2) }}
+        </span>
+        <span v-else class="text-center text-muted-foreground">—</span>
 
-      <!-- K/D -->
-      <span
-        v-if="isFinished && kd !== null"
-        class="font-mono text-xs font-semibold tabular-nums inline-flex items-center gap-0.5"
-        :style="{ color: kdColor(kd) }"
-      >
-        {{ kd.toFixed(2) }}
-      </span>
-      <span v-else class="text-muted-foreground">—</span>
+        <!-- K / D / A -->
+        <div
+          v-if="isFinished && stats"
+          class="font-mono text-xs tabular-nums text-foreground/90"
+        >
+          {{ stats.kills }}<span class="mx-0.5 text-muted-foreground/50">/</span
+          >{{ stats.deaths
+          }}<span class="mx-0.5 text-muted-foreground/50">/</span
+          >{{ stats.assists }}
+        </div>
+        <span v-else class="text-muted-foreground">—</span>
 
-      <!-- ADR -->
-      <span
-        v-if="isFinished && adr !== null"
-        class="font-mono text-xs tabular-nums text-foreground/85"
+        <!-- K/D -->
+        <span
+          v-if="isFinished && kd !== null"
+          class="font-mono text-xs font-semibold tabular-nums inline-flex items-center gap-0.5"
+          :style="{ color: kdColor(kd) }"
+        >
+          {{ kd.toFixed(2) }}
+        </span>
+        <span v-else class="text-muted-foreground">—</span>
+
+        <!-- ADR -->
+        <span
+          v-if="isFinished && adr !== null"
+          class="font-mono text-xs tabular-nums text-foreground/85"
+        >
+          {{ adr.toFixed(1) }}
+        </span>
+        <span v-else class="text-muted-foreground">—</span>
+      </template>
+
+      <!-- MVP — whose line the stat columns show in a neutral list. -->
+      <div
+        v-if="neutral"
+        class="flex min-w-0 items-center justify-end gap-1.5"
+        :title="topPlayer?.name"
       >
-        {{ adr.toFixed(1) }}
-      </span>
-      <span v-else class="text-muted-foreground">—</span>
+        <template v-if="isFinished && topPlayer">
+          <img
+            v-if="topPlayer.avatar_url"
+            :src="topPlayer.avatar_url"
+            alt=""
+            class="h-6 w-6 shrink-0 rounded-full object-cover"
+          />
+          <span class="min-w-0 truncate text-xs font-medium text-foreground/90">
+            {{ topPlayer.name }}
+          </span>
+        </template>
+        <span v-else class="text-muted-foreground">—</span>
+      </div>
 
       <!-- RANK — the rank this match moved, in its own system (5Stack ELO
            tier, Premier, FACEIT, Valve skill group). -->
-      <div v-if="teamId" class="flex items-center justify-end gap-1.5">
+      <div v-else-if="teamId" class="flex items-center justify-end gap-1.5">
         <span v-if="teamPlayers.length" class="flex -space-x-1.5">
           <template
             v-for="teamPlayer in teamPlayers.slice(0, 5)"
@@ -288,7 +348,38 @@ const wideGrid =
     <!-- ===================== COMPACT ===================== -->
     <div v-else class="px-3 py-2.5">
       <div class="flex items-center gap-2">
-        <template v-if="isFinished">
+        <div v-if="neutral" class="grid min-w-0 flex-1 gap-1.5">
+          <span
+            v-for="lineup in lineups"
+            :key="lineup.id"
+            class="flex min-w-0 items-center gap-1.5 text-sm leading-none"
+          >
+            <img
+              v-if="lineupAvatar(lineup)"
+              :src="lineupAvatar(lineup)!"
+              alt=""
+              class="h-4 w-4 shrink-0 rounded-sm object-cover"
+              @error="
+                ($event.target as HTMLImageElement).style.display = 'none'
+              "
+            />
+            <span
+              class="min-w-0 truncate font-semibold"
+              :class="
+                lineupLost(lineup) ? 'text-muted-foreground' : 'text-foreground'
+              "
+              >{{ lineup.team?.name || lineup.name }}</span
+            >
+            <MatchLineupScoreDisplay
+              v-if="hasScore"
+              :match="match"
+              :lineup="lineup"
+              :halves="false"
+              class="font-mono tabular-nums"
+            />
+          </span>
+        </div>
+        <template v-else-if="isFinished">
           <span class="font-mono text-base font-bold leading-none tabular-nums">
             <span :class="scoreClass">{{ score.player }}</span>
             <span class="mx-0.5 text-muted-foreground/60">:</span>
@@ -306,7 +397,10 @@ const wideGrid =
         </template>
         <MatchStatus v-else :match="match" />
 
-        <div class="ml-auto flex items-center gap-1.5 text-muted-foreground">
+        <div
+          class="ml-auto flex shrink-0 items-center gap-1.5 text-muted-foreground"
+        >
+          <MatchStatus v-if="neutral && !isFinished" :match="match" />
           <MatchSourceBadge :source="match.source" />
           <Trophy
             v-if="isTournamentMatch"
@@ -377,6 +471,25 @@ const wideGrid =
             {{ playerClips.length }}
           </span>
         </button>
+      </div>
+
+      <div
+        v-if="neutral && isFinished && stats && topPlayer"
+        class="mt-2.5 flex min-w-0 items-center gap-1.5"
+      >
+        <span
+          class="font-mono text-[0.55rem] uppercase tracking-[0.16em] text-muted-foreground/60"
+          >{{ $t("awards.mvp") }}</span
+        >
+        <img
+          v-if="topPlayer.avatar_url"
+          :src="topPlayer.avatar_url"
+          alt=""
+          class="h-4 w-4 shrink-0 rounded-full object-cover"
+        />
+        <span class="min-w-0 truncate text-xs font-medium text-foreground/85">{{
+          topPlayer.name
+        }}</span>
       </div>
 
       <!-- Performance readout — a divided gauge strip so the per-match stats
@@ -596,6 +709,11 @@ export default {
     // Team mode: the row reads from this team's lineup instead of a player's,
     // and collapsedAgg / canonicalRating carry the team's numbers.
     teamId: { type: String, required: false, default: null },
+    // Neutral mode (event, tournament lists): no side to read from, so the
+    // row shows both lineups and collapsedAgg / canonicalRating carry the
+    // match's top player.
+    neutral: { type: Boolean, default: false },
+    topPlayer: { type: Object, required: false, default: null },
   },
   // The profile page's open rows (restored on back); null in the right hub.
   inject: {
@@ -658,6 +776,12 @@ export default {
   computed: {
     isFinished(): boolean {
       return this.match?.status === e_match_status_enum.Finished;
+    },
+    hasScore(): boolean {
+      return this.isFinished || this.match?.status === e_match_status_enum.Live;
+    },
+    lineups(): any[] {
+      return [this.match?.lineup_1, this.match?.lineup_2].filter(Boolean);
     },
     // Whether any map in this match has clips — gates the clip fetch so
     // clip-less matches (the majority) make zero clip requests. Counts every
@@ -759,7 +883,7 @@ export default {
       shortName: string | null;
       avatarSrc: string | null;
     } | null {
-      const lu = this.opponentLineup;
+      const lu = this.neutral ? null : this.opponentLineup;
       // A team's opponent is always context, pickup lineup or not.
       if (!lu || (lu.team_id == null && !this.teamId)) return null;
       const name = lu.team?.name || lu.name || null;
@@ -775,9 +899,10 @@ export default {
         avatarSrc: url ? `https://${this.apiDomain}/${url}` : null,
       };
     },
-    // The lineup the row reads from: the team's in team mode, else the
-    // player's.
+    // The lineup the row reads from: the team's in team mode, lineup 1 in a
+    // neutral list, else the player's.
     focusLineupId(): string | null {
+      if (this.neutral) return this.match?.lineup_1_id ?? null;
       return this.teamId ? this.teamLineupId : this.playerLineupId;
     },
     // The team's lineup by team_id, else by the tournament bracket side.
@@ -806,10 +931,15 @@ export default {
         .map((lp: any) => lp.player)
         .filter(Boolean);
     },
-    // Whose clips the row shows: the player, or everyone on the team's side.
+    // Whose clips the row shows: the player, everyone on the team's side, or
+    // everyone in a neutral list's match.
     clipSteamIds(): string[] {
-      if (!this.teamId) return this.playerSteamId ? [this.playerSteamId] : [];
-      return (this.teamLineup?.lineup_players ?? [])
+      if (!this.teamId && !this.neutral) {
+        return this.playerSteamId ? [this.playerSteamId] : [];
+      }
+      const lineups = this.neutral ? this.lineups : [this.teamLineup];
+      return lineups
+        .flatMap((lineup: any) => lineup?.lineup_players ?? [])
         .map((lp: any) => String(lp.steam_id ?? lp.player?.steam_id ?? ""))
         .filter(Boolean);
     },
@@ -829,9 +959,10 @@ export default {
     // won | lost | tied — derived from the player's elo row when present,
     // falling back to comparing the winning lineup with the player's lineup.
     result(): "won" | "lost" | "tied" | null {
-      const r = this.teamId
-        ? ""
-        : (this.eloChange?.match_result ?? "").toLowerCase();
+      const r =
+        this.teamId || this.neutral
+          ? ""
+          : (this.eloChange?.match_result ?? "").toLowerCase();
       if (r === "won" || r === "win") return "won";
       if (r === "lost" || r === "loss") return "lost";
       if (r === "tied" || r === "tie" || r === "draw") return "tied";
@@ -1065,6 +1196,14 @@ export default {
     },
   },
   methods: {
+    lineupAvatar(lineup: any): string | null {
+      const url = lineup?.team?.avatar_url;
+      return url ? `https://${this.apiDomain}/${url}` : null;
+    },
+    lineupLost(lineup: any): boolean {
+      const winner = this.match?.winning_lineup_id;
+      return this.isFinished && !!winner && winner !== lineup?.id;
+    },
     // Row click: on mobile (compact) jump straight to the match page; on the
     // wide table it toggles the inline quick overview. The dedicated QUICK
     // OVERVIEW / OPEN MATCH buttons (which @click.stop) still work either way.
@@ -1229,7 +1368,7 @@ export default {
           query: generateQuery({
             match_clips: [
               {
-                limit: this.teamId ? 12 : 6,
+                limit: this.teamId || this.neutral ? 12 : 6,
                 // No visibility filter: show every clip the viewer can see,
                 // same as the match page — Hasura permissions do the rest.
                 where: {
@@ -1255,7 +1394,7 @@ export default {
       useClipModal().playClips(
         this.filteredPlayerClips as any[],
         this.bestClip.id,
-        `${this.teamId ? `team-match-${this.match?.id}-${this.teamId}` : `player-match-${this.match?.id}-${this.playerSteamId}`}-map-${this.selectedMapId ?? "all"}`,
+        `${this.neutral ? `match-${this.match?.id}` : this.teamId ? `team-match-${this.match?.id}-${this.teamId}` : `player-match-${this.match?.id}-${this.playerSteamId}`}-map-${this.selectedMapId ?? "all"}`,
       );
     },
   },

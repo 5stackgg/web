@@ -1538,6 +1538,8 @@
         "date_90d": "Sidste 90 dage",
         "date_6m": "Sidste 6 måneder",
         "date_1y": "Sidste år",
+        "category": "Kategori",
+        "mine": "Kun turneringer jeg arrangerer",
         "no_results_title": "Ingen turneringer matcher",
         "no_results_description": "Prøv at rydde filtre eller udvide din søgning."
       },
@@ -1576,21 +1578,6 @@
         "description": "Når en arrangør åbner tilmeldingen til en turnering, dukker den op her.",
         "organizer": "Opret en, så dukker den op her, så snart tilmeldingen åbner."
       }
-    },
-    "manage_tournaments": {
-      "title": "Administrér turneringer",
-      "description": "Se og administrér alle turneringer på platformen.",
-      "search_by_id": "Søg efter turnerings-ID",
-      "enter_tournament_id": "Indtast turnerings-ID...",
-      "search_by_name": "Søg efter navn",
-      "enter_tournament_name": "Indtast turneringsnavn...",
-      "clear_all": "Ryd alt",
-      "sort_by": "Sortér efter",
-      "created_at": "Oprettelsesdato",
-      "start": "Startdato",
-      "newest_first": "Nyeste først",
-      "oldest_first": "Ældste først",
-      "only_my_tournaments": "Kun turneringer jeg arrangerer"
     },
     "scrims": {
       "title": "Scrim Finder",
@@ -4963,6 +4950,7 @@
         "live": "Live",
         "upcoming": "Kommende",
         "past": "Tidligere",
+        "mine": "Kun events jeg arrangerer",
         "no_results_title": "Ingen events matcher",
         "no_results_description": "Prøv et andet navn, eller ryd filtrene."
       },
@@ -4974,12 +4962,6 @@
       },
       "no_tournaments": "Ingen turneringer annonceret endnu.",
       "days": "{count} dag | {count} dage"
-    },
-    "manage_events": {
-      "title": "Administrer events",
-      "description": "Se og administrer alle events på platformen.",
-      "no_events_title": "Ingen events endnu",
-      "no_events_description": "Du arrangerer ingen events endnu."
     },
     "plugins": {
       "not_found_title": "Siden blev ikke fundet",
@@ -6298,10 +6280,8 @@
         "alerts": "Advarsler",
         "seasons": "Sæsoner",
         "manage_matches": "Administrer kampe",
-        "manage_tournaments": "Administrer turneringer",
         "manage_league": "Administrer liga",
         "stream_deck": "Stream Deck",
-        "manage_events": "Administrer events",
         "awards": "Awards"
       },
       "system": {
@@ -6345,12 +6325,10 @@
         "report_issue": "Rapportér et problem",
         "join_discord": "Join vores Discord",
         "manage_matches": "Administrer kampe",
-        "manage_tournaments": "Administrer turneringer",
         "manage_league": "Administrer liga",
         "search_players": "Søg spillere",
         "leagues": "Liga",
         "events": "Events",
-        "manage_events": "Administrer events",
         "system_media_server": "Medieserver",
         "utility_drift": "Afvigelse i utility-opstillinger",
         "utility": "Utility-opstillinger"

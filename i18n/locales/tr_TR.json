@@ -1538,6 +1538,8 @@
         "date_90d": "Son 90 gün",
         "date_6m": "Son 6 ay",
         "date_1y": "Son 1 yıl",
+        "category": "Kategori",
+        "mine": "Yalnızca düzenlediğim turnuvalar",
         "no_results_title": "Eşleşen turnuva yok",
         "no_results_description": "Filtreleri temizlemeyi veya aramayı genişletmeyi dene."
       },
@@ -1576,21 +1578,6 @@
         "description": "Bir organizatör bir turnuva için kayıtları açtığında burada görünür.",
         "organizer": "Bir tane oluştur; kayıtlar açılır açılmaz burada görünür."
       }
-    },
-    "manage_tournaments": {
-      "title": "Turnuvaları Yönet",
-      "description": "Platformdaki tüm turnuvaları görüntüle ve yönet.",
-      "search_by_id": "Turnuva ID'sine Göre Ara",
-      "enter_tournament_id": "Turnuva ID'si gir...",
-      "search_by_name": "İsme Göre Ara",
-      "enter_tournament_name": "Turnuva adı gir...",
-      "clear_all": "Tümünü Temizle",
-      "sort_by": "Sırala",
-      "created_at": "Oluşturulma Tarihi",
-      "start": "Başlangıç Tarihi",
-      "newest_first": "Önce En Yeni",
-      "oldest_first": "Önce En Eski",
-      "only_my_tournaments": "Yalnızca Organize Ettiklerim"
     },
     "scrims": {
       "title": "Scrim Bulucu",
@@ -4963,6 +4950,7 @@
         "live": "Canlı",
         "upcoming": "Yaklaşan",
         "past": "Geçmiş",
+        "mine": "Yalnızca düzenlediğim etkinlikler",
         "no_results_title": "Eşleşen etkinlik yok",
         "no_results_description": "Farklı bir isim dene veya filtreleri temizle."
       },
@@ -4974,12 +4962,6 @@
       },
       "no_tournaments": "Henüz duyurulan turnuva yok.",
       "days": "{count} gün | {count} gün"
-    },
-    "manage_events": {
-      "title": "Etkinlikleri yönet",
-      "description": "Platformdaki tüm etkinlikleri görüntüle ve yönet.",
-      "no_events_title": "Henüz etkinlik yok",
-      "no_events_description": "Henüz hiç etkinlik organize etmiyorsun."
     },
     "plugins": {
       "not_found_title": "Sayfa bulunamadı",
@@ -6298,10 +6280,8 @@
         "alerts": "Uyarılar",
         "seasons": "Sezonlar",
         "manage_matches": "Maçları yönet",
-        "manage_tournaments": "Turnuvaları yönet",
         "manage_league": "Ligi yönet",
         "stream_deck": "Yayın paneli",
-        "manage_events": "Etkinlikleri yönet",
         "awards": "Awards"
       },
       "system": {
@@ -6345,12 +6325,10 @@
         "report_issue": "Sorun bildir",
         "join_discord": "Discord'umuza katıl",
         "manage_matches": "Maçları yönet",
-        "manage_tournaments": "Turnuvaları yönet",
         "manage_league": "Ligi yönet",
         "search_players": "Oyuncu ara",
         "leagues": "Lig",
         "events": "Etkinlikler",
-        "manage_events": "Etkinlikleri yönet",
         "system_media_server": "Medya sunucusu",
         "utility_drift": "Utility Dizilim Kayması",
         "utility": "Utility Dizilimleri"

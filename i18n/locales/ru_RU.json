@@ -1638,6 +1638,62 @@
         "col_pick": "Вероятность пика",
         "col_play": "Вероятность игры",
         "col_predicted_win": "Прогноз Win%"
+      },
+      "players": "{count} игрок | {count} игроков",
+      "form": {
+        "label": "Недавняя форма: {results}",
+        "none": "Результатов пока нет",
+        "result_W": "победа",
+        "result_L": "поражение",
+        "result_T": "ничья"
+      },
+      "your_teams": {
+        "title": "Твои команды",
+        "next": "Следующий",
+        "last": "Последний",
+        "playing_now": "Играет сейчас",
+        "nothing_scheduled": "Ничего не запланировано",
+        "no_matches": "Матчей пока нет",
+        "result_W": "Победа",
+        "result_L": "Поражение",
+        "result_T": "Ничья",
+        "check_in": "Чек-ин",
+        "scrim_replies": "Нужен ответ на {count} скрим | Нужны ответы на скримы: {count}",
+        "invite_starter": "Пригласить игрока в основу"
+      },
+      "playing_now": {
+        "title": "Играет сейчас",
+        "live_count": "{count} в эфире",
+        "all_live": "Все матчи в эфире",
+        "more_on_watch": "ещё в эфире на Watch"
+      },
+      "scrims": {
+        "title": "Ищут скримы",
+        "subtitle": "Команды, принимающие вызовы",
+        "today": "Сегодня {from}–{to}",
+        "any_time": "Принимает запросы в любое время",
+        "sign_in_to_request": "Войди, чтобы отправить запрос",
+        "need_team": "Чтобы запросить скрим, нужна команда, которой ты владеешь или которую ведёшь.",
+        "see_all": "Смотреть все в поиске скримов"
+      },
+      "directory": {
+        "title": "Все команды",
+        "sort_label": "Сортировка команд",
+        "sort_active": "Недавно активные",
+        "sort_rating": "Рейтинг",
+        "sort_name": "Название",
+        "search_label": "Поиск команд",
+        "clear_search": "Очистить поиск",
+        "org": "Орг",
+        "playing_now": "Играет сейчас",
+        "never_played": "Матчей пока нет",
+        "col_roster": "Состав",
+        "col_elo": "Ср. ELO",
+        "col_form": "Форма",
+        "col_last": "Последний матч",
+        "col_awards": "Награды",
+        "no_match": "Ничего не найдено по твоему запросу или фильтрам.",
+        "clear_filters": "Сбросить фильтры"
       }
     },
     "settings": {
@@ -7833,6 +7889,90 @@
       "failed_description": "Запрос не прошёл. Попробуй через минуту.",
       "empty": "Совпадений нет",
       "empty_description": "Пока ни одна граната из матчей этой команды не совпала с сохранённой раскидкой."
+    },
+    "pulse": {
+      "hero": {
+        "players": "{count} игрок | {count} игроков",
+        "matches": "{count} матч | {count} матчей",
+        "no_matches": "Матчей пока нет",
+        "founded": "Основана {date}",
+        "all_awards": "Показать все награды",
+        "team_actions": "Действия команды"
+      },
+      "stage": {
+        "live": "Сейчас в эфире",
+        "next_up": "Следующий",
+        "upcoming": "Предстоящих: {count}",
+        "then": "Затем",
+        "open_to_scrims": "Открой {name} для скримов, чтобы другие команды могли бросить вызов.",
+        "set_up_scrims": "Настроить скримы",
+        "none_scheduled_member": "Матчей пока не запланировано.",
+        "none_scheduled": "Сейчас ничего не запланировано.",
+        "never_played": "{name} ещё не сыграла ни одного матча."
+      },
+      "results": {
+        "hint": "Сначала новые, прокрути для более старых",
+        "all_matches": "Все матчи"
+      },
+      "tabs": {
+        "matches": "Матчи",
+        "scrim_waiting": "Ждут тебя: {count}"
+      },
+      "needs": {
+        "title": "Нужен ты",
+        "to_do": "Дел: {count}",
+        "check_in_title": "Чек-ин на матч против {name}",
+        "scrim_title": "хочет сыграть скрим",
+        "counter_title": "предложил новое время",
+        "best_of_short": "Bo{count}",
+        "roster_title": "В основе {count} из 5",
+        "roster_meta": "Пригласи игроков, чтобы собрать полную команду.",
+        "waiting_on": "Ожидание",
+        "waiting_check_in": "{names}: чек-ин",
+        "waiting_scrim": "{name}: ответ на твой запрос скрима",
+        "waiting_invites": "{names}: принятие приглашений",
+        "counter_dialog_title": "Предложить другое время",
+        "counter_dialog_description": "{name} ещё должен принять новое время.",
+        "send_new_time": "Отправить новое время"
+      }
+    },
+    "activity": {
+      "title": "Активность",
+      "this_week": "На этой неделе",
+      "earlier": "Раньше",
+      "show_older": "Показать более раннюю активность",
+      "empty": "Результаты, клипы и награды появятся здесь по мере игр {team}.",
+      "beat": "Победа над {opponent}",
+      "lost_to": "Поражение от {opponent}",
+      "drew_with": "Ничья с {opponent}",
+      "open_match": "Открыть матч",
+      "won": "Победа в {name}",
+      "second_at": "2-е место в {name}",
+      "third_at": "3-е место в {name}",
+      "placed_at": "{placement} в {name}",
+      "received": "Получено: {name}",
+      "tournament": "Турнир",
+      "promoted": "Повышение в {division}",
+      "relegated": "Понижение в {division}",
+      "finished": "Финиш #{rank} в {division}",
+      "stayed": "Остались в {division}",
+      "started": "Начался {season}",
+      "invited": "{name} приглашён",
+      "invited_by": "Приглашает {name}",
+      "created": "{team} создана"
+    },
+    "starting_five": {
+      "title": "Основной состав",
+      "players": "{count} игрок | {count} игроков",
+      "manage_roster": "Управление составом",
+      "full_roster": "Весь состав",
+      "starters_only": "Только основной состав",
+      "open_slot": "Свободное место в основе",
+      "invite": "Пригласить",
+      "substitutes": "{count} запасной | Запасных: {count}",
+      "bench": "{count} в запасе",
+      "coaches": "{count} тренер | Тренеров: {count}",
+      "captain": "Капитан: {name}"
     }
   },
   "match": {

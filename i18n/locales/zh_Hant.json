@@ -1638,6 +1638,62 @@
         "col_pick": "選用可能性",
         "col_play": "開打可能性",
         "col_predicted_win": "預測勝率"
+      },
+      "players": "{count} 名玩家 | {count} 名玩家",
+      "form": {
+        "label": "近期戰績：{results}",
+        "none": "尚無結果",
+        "result_W": "勝",
+        "result_L": "負",
+        "result_T": "平"
+      },
+      "your_teams": {
+        "title": "你的隊伍",
+        "next": "下一場",
+        "last": "上一場",
+        "playing_now": "比賽中",
+        "nothing_scheduled": "尚無安排",
+        "no_matches": "尚無比賽",
+        "result_W": "獲勝",
+        "result_L": "落敗",
+        "result_T": "平手",
+        "check_in": "報到",
+        "scrim_replies": "需回覆 {count} 個練習賽 | 需回覆 {count} 個練習賽",
+        "invite_starter": "邀請先發隊員"
+      },
+      "playing_now": {
+        "title": "比賽中",
+        "live_count": "{count} 場直播中",
+        "all_live": "所有直播比賽",
+        "more_on_watch": "在 Watch 觀看更多直播"
+      },
+      "scrims": {
+        "title": "尋找練習賽",
+        "subtitle": "接受挑戰的隊伍",
+        "today": "今天 {from}–{to}",
+        "any_time": "隨時接受請求",
+        "sign_in_to_request": "登入後請求",
+        "need_team": "你需要擁有或管理一支隊伍才能發起練習賽請求。",
+        "see_all": "在練習賽搜尋器中查看全部"
+      },
+      "directory": {
+        "title": "所有隊伍",
+        "sort_label": "隊伍排序",
+        "sort_active": "最近活躍",
+        "sort_rating": "評分",
+        "sort_name": "名稱",
+        "search_label": "搜尋隊伍",
+        "clear_search": "清除搜尋",
+        "org": "Org",
+        "playing_now": "比賽中",
+        "never_played": "尚無比賽",
+        "col_roster": "陣容",
+        "col_elo": "平均 ELO",
+        "col_form": "狀態",
+        "col_last": "最近比賽",
+        "col_awards": "獎項",
+        "no_match": "沒有符合搜尋或篩選條件的結果。",
+        "clear_filters": "清除篩選"
       }
     },
     "settings": {
@@ -7833,6 +7889,90 @@
       "failed_description": "請求失敗。請稍後再試。",
       "empty": "沒有相符的道具",
       "empty_description": "這支戰隊比賽中投出的手榴彈，目前還沒有能對上已儲存點位的。"
+    },
+    "pulse": {
+      "hero": {
+        "players": "{count} 名玩家 | {count} 名玩家",
+        "matches": "{count} 場比賽 | {count} 場比賽",
+        "no_matches": "尚無比賽",
+        "founded": "成立於 {date}",
+        "all_awards": "顯示所有獎項",
+        "team_actions": "隊伍操作"
+      },
+      "stage": {
+        "live": "直播中",
+        "next_up": "下一場",
+        "upcoming": "{count} 場即將進行",
+        "then": "之後",
+        "open_to_scrims": "向練習賽開放 {name}，其他隊伍就能向你發起挑戰。",
+        "set_up_scrims": "設定練習賽",
+        "none_scheduled_member": "尚無已安排的比賽。",
+        "none_scheduled": "目前沒有安排。",
+        "never_played": "{name}尚未進行過比賽。"
+      },
+      "results": {
+        "hint": "最新在前，捲動查看更早的",
+        "all_matches": "所有比賽"
+      },
+      "tabs": {
+        "matches": "比賽",
+        "scrim_waiting": "{count} 項等你處理"
+      },
+      "needs": {
+        "title": "需要你處理",
+        "to_do": "{count} 項待辦",
+        "check_in_title": "報到參加對戰 {name} 的比賽",
+        "scrim_title": "想要練習賽",
+        "counter_title": "提議了新的時間",
+        "best_of_short": "Bo{count}",
+        "roster_title": "先發 {count}/5 人",
+        "roster_meta": "邀請玩家以湊齊完整隊伍。",
+        "waiting_on": "等待",
+        "waiting_check_in": "{names}報到",
+        "waiting_scrim": "{name}回覆你的練習賽請求",
+        "waiting_invites": "{names}接受邀請",
+        "counter_dialog_title": "提議其他時間",
+        "counter_dialog_description": "{name}仍需接受新的時間。",
+        "send_new_time": "傳送新時間"
+      }
+    },
+    "activity": {
+      "title": "動態",
+      "this_week": "本週",
+      "earlier": "更早",
+      "show_older": "顯示更早的動態",
+      "empty": "隨著 {team} 進行比賽，結果、片段和獎項會顯示在這裡。",
+      "beat": "擊敗 {opponent}",
+      "lost_to": "敗給 {opponent}",
+      "drew_with": "與 {opponent} 平手",
+      "open_match": "開啟比賽",
+      "won": "贏得 {name}",
+      "second_at": "{name} 第 2 名",
+      "third_at": "{name} 第 3 名",
+      "placed_at": "{name} {placement}",
+      "received": "獲得 {name}",
+      "tournament": "賽事",
+      "promoted": "晉級至 {division}",
+      "relegated": "降級至 {division}",
+      "finished": "在 {division} 排名第 {rank}",
+      "stayed": "留在 {division}",
+      "started": "{season} 開始",
+      "invited": "{name}已受邀",
+      "invited_by": "由 {name} 邀請",
+      "created": "{team} 已建立"
+    },
+    "starting_five": {
+      "title": "先發五人",
+      "players": "{count} 名玩家 | {count} 名玩家",
+      "manage_roster": "管理陣容",
+      "full_roster": "完整陣容",
+      "starters_only": "僅先發五人",
+      "open_slot": "空缺先發位置",
+      "invite": "邀請",
+      "substitutes": "{count} 名替補 | {count} 名替補",
+      "bench": "{count} 名在板凳席",
+      "coaches": "{count} 名教練 | {count} 名教練",
+      "captain": "隊長：{name}"
     }
   },
   "match": {

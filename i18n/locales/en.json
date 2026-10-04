@@ -1638,6 +1638,62 @@
         "col_pick": "Pick Likelihood",
         "col_play": "Play Likelihood",
         "col_predicted_win": "Predicted Win%"
+      },
+      "players": "{count} player | {count} players",
+      "form": {
+        "label": "Recent form: {results}",
+        "none": "No results yet",
+        "result_W": "win",
+        "result_L": "loss",
+        "result_T": "tie"
+      },
+      "your_teams": {
+        "title": "Your teams",
+        "next": "Next",
+        "last": "Last",
+        "playing_now": "Playing now",
+        "nothing_scheduled": "Nothing scheduled",
+        "no_matches": "No matches yet",
+        "result_W": "Won",
+        "result_L": "Lost",
+        "result_T": "Tied",
+        "check_in": "Check in",
+        "scrim_replies": "{count} scrim reply needed | {count} scrim replies needed",
+        "invite_starter": "Invite a starter"
+      },
+      "playing_now": {
+        "title": "Playing now",
+        "live_count": "{count} live",
+        "all_live": "All live matches",
+        "more_on_watch": "more live on Watch"
+      },
+      "scrims": {
+        "title": "Looking for scrims",
+        "subtitle": "Teams taking challenges",
+        "today": "Today {from}–{to}",
+        "any_time": "Takes requests any time",
+        "sign_in_to_request": "Sign in to request",
+        "need_team": "You need a team you own or run to request a scrim.",
+        "see_all": "See all in the Scrim finder"
+      },
+      "directory": {
+        "title": "All teams",
+        "sort_label": "Sort teams",
+        "sort_active": "Recently active",
+        "sort_rating": "Rating",
+        "sort_name": "Name",
+        "search_label": "Search teams",
+        "clear_search": "Clear search",
+        "org": "Org",
+        "playing_now": "Playing now",
+        "never_played": "No matches yet",
+        "col_roster": "Roster",
+        "col_elo": "Avg ELO",
+        "col_form": "Form",
+        "col_last": "Last played",
+        "col_awards": "Awards",
+        "no_match": "Nothing matches your search or filters.",
+        "clear_filters": "Clear filters"
       }
     },
     "settings": {
@@ -7835,6 +7891,90 @@
       "failed_description": "The request failed. Try again in a moment.",
       "empty": "No matched utility",
       "empty_description": "No grenade thrown in this team's matches lines up with a saved lineup yet."
+    },
+    "pulse": {
+      "hero": {
+        "players": "{count} player | {count} players",
+        "matches": "{count} match | {count} matches",
+        "no_matches": "No matches yet",
+        "founded": "Founded {date}",
+        "all_awards": "Show all awards",
+        "team_actions": "Team actions"
+      },
+      "stage": {
+        "live": "Live now",
+        "next_up": "Next up",
+        "upcoming": "{count} upcoming",
+        "then": "Then",
+        "open_to_scrims": "Open {name} to scrims so other teams can challenge you.",
+        "set_up_scrims": "Set up scrims",
+        "none_scheduled_member": "No matches scheduled yet.",
+        "none_scheduled": "Nothing scheduled right now.",
+        "never_played": "{name} hasn't played a match yet."
+      },
+      "results": {
+        "hint": "Newest first, scroll for older",
+        "all_matches": "All matches"
+      },
+      "tabs": {
+        "matches": "Matches",
+        "scrim_waiting": "{count} waiting on you"
+      },
+      "needs": {
+        "title": "Needs you",
+        "to_do": "{count} to do",
+        "check_in_title": "Check in for the match vs {name}",
+        "scrim_title": "wants to scrim",
+        "counter_title": "proposed a new time",
+        "best_of_short": "Bo{count}",
+        "roster_title": "{count} of 5 starters",
+        "roster_meta": "Invite players to field a full team.",
+        "waiting_on": "Waiting on",
+        "waiting_check_in": "{names} to check in",
+        "waiting_scrim": "{name} to answer your scrim request",
+        "waiting_invites": "{names} to accept their invites",
+        "counter_dialog_title": "Propose another time",
+        "counter_dialog_description": "{name} still has to accept the new time.",
+        "send_new_time": "Send new time"
+      }
+    },
+    "activity": {
+      "title": "Activity",
+      "this_week": "This week",
+      "earlier": "Earlier",
+      "show_older": "Show older activity",
+      "empty": "Results, clips and awards show up here as {team} plays.",
+      "beat": "Beat {opponent}",
+      "lost_to": "Lost to {opponent}",
+      "drew_with": "Drew with {opponent}",
+      "open_match": "Open match",
+      "won": "Won {name}",
+      "second_at": "2nd at {name}",
+      "third_at": "3rd at {name}",
+      "placed_at": "{placement} at {name}",
+      "received": "Received {name}",
+      "tournament": "Tournament",
+      "promoted": "Promoted to {division}",
+      "relegated": "Relegated to {division}",
+      "finished": "Finished #{rank} in {division}",
+      "stayed": "Stayed in {division}",
+      "started": "Started {season}",
+      "invited": "{name} was invited",
+      "invited_by": "Invited by {name}",
+      "created": "{team} was created"
+    },
+    "starting_five": {
+      "title": "Starting five",
+      "players": "{count} player | {count} players",
+      "manage_roster": "Manage roster",
+      "full_roster": "Full roster",
+      "starters_only": "Starting five only",
+      "open_slot": "Open starter slot",
+      "invite": "Invite",
+      "substitutes": "{count} substitute | {count} substitutes",
+      "bench": "{count} on the bench",
+      "coaches": "{count} coach | {count} coaches",
+      "captain": "Captain: {name}"
     }
   },
   "match": {

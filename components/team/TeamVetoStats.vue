@@ -111,7 +111,10 @@ const aggregates = computed<MapVetoAggregate[]>(() => {
   const byMap = new Map<string, MapVetoAggregate>();
 
   const firstByMatch = new Map<string, { ban: boolean; pick: boolean }>();
-  const playedByMap = new Map<string, { played: Set<string>; wins: Set<string> }>();
+  const playedByMap = new Map<
+    string,
+    { played: Set<string>; wins: Set<string> }
+  >();
 
   function ensure(mapId: string, name: string, label: string | null) {
     let agg = byMap.get(mapId);
@@ -161,9 +164,7 @@ const aggregates = computed<MapVetoAggregate[]>(() => {
       agg.decider += 1;
     }
 
-    const mm = pick.match?.match_maps?.find(
-      (m) => m.map_id === map.id,
-    );
+    const mm = pick.match?.match_maps?.find((m) => m.map_id === map.id);
     if (mm) {
       let store = playedByMap.get(map.id);
       if (!store) {
@@ -190,7 +191,9 @@ const aggregates = computed<MapVetoAggregate[]>(() => {
 
 const hasData = computed(() => aggregates.value.length > 0);
 
-function totalOf(key: "banned" | "picked" | "firstBan" | "firstPick" | "decider"): number {
+function totalOf(
+  key: "banned" | "picked" | "firstBan" | "firstPick" | "decider",
+): number {
   return aggregates.value.reduce((sum, a) => sum + a[key], 0);
 }
 
@@ -283,7 +286,7 @@ function mapDisplay(agg: MapVetoAggregate): string {
 </script>
 
 <template>
-  <div v-if="hasData">
+  <div>
     <div :class="[tacticalSectionLabelClasses, 'mb-0']">
       <span :class="tacticalSectionTickClasses"></span>
       {{ $t("pages.teams.vetos.section") }}
@@ -308,41 +311,64 @@ function mapDisplay(agg: MapVetoAggregate): string {
 
     <template v-else>
       <div class="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <div class="rounded-lg border border-border/60 bg-card/40 px-4 py-3 [backdrop-filter:blur(6px)]">
-          <div class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-destructive">
+        <div
+          class="rounded-lg border border-border/60 bg-card/40 px-4 py-3 [backdrop-filter:blur(6px)]"
+        >
+          <div
+            class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-destructive"
+          >
             {{ $t("pages.teams.vetos.most_banned") }}
           </div>
           <div class="mt-1 font-sans text-base font-bold">
             {{ mostBanned ? mapDisplay(mostBanned) : "—" }}
           </div>
-          <div v-if="mostBanned" class="font-mono text-[0.65rem] text-muted-foreground">
+          <div
+            v-if="mostBanned"
+            class="font-mono text-[0.65rem] text-muted-foreground"
+          >
             {{ mostBanned.banned }} {{ $t("pages.teams.vetos.bans_short") }}
           </div>
         </div>
-        <div class="rounded-lg border border-border/60 bg-card/40 px-4 py-3 [backdrop-filter:blur(6px)]">
-          <div class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]">
+        <div
+          class="rounded-lg border border-border/60 bg-card/40 px-4 py-3 [backdrop-filter:blur(6px)]"
+        >
+          <div
+            class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
+          >
             {{ $t("pages.teams.vetos.most_picked") }}
           </div>
           <div class="mt-1 font-sans text-base font-bold">
             {{ mostPicked ? mapDisplay(mostPicked) : "—" }}
           </div>
-          <div v-if="mostPicked" class="font-mono text-[0.65rem] text-muted-foreground">
+          <div
+            v-if="mostPicked"
+            class="font-mono text-[0.65rem] text-muted-foreground"
+          >
             {{ mostPicked.picked }} {{ $t("pages.teams.vetos.picks_short") }}
           </div>
         </div>
-        <div class="rounded-lg border border-border/60 bg-card/40 px-4 py-3 [backdrop-filter:blur(6px)]">
-          <div class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-success">
+        <div
+          class="rounded-lg border border-border/60 bg-card/40 px-4 py-3 [backdrop-filter:blur(6px)]"
+        >
+          <div
+            class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-success"
+          >
             {{ $t("pages.teams.vetos.comfort_map") }}
           </div>
           <div class="mt-1 font-sans text-base font-bold">
             {{ comfortMap ? mapDisplay(comfortMap) : "—" }}
           </div>
-          <div v-if="comfortMap" class="font-mono text-[0.65rem] text-muted-foreground">
-            {{ fmtPct(winPct(comfortMap)) }} ·
-            {{ comfortMap.played }} {{ $t("pages.teams.vetos.played_short") }}
+          <div
+            v-if="comfortMap"
+            class="font-mono text-[0.65rem] text-muted-foreground"
+          >
+            {{ fmtPct(winPct(comfortMap)) }} · {{ comfortMap.played }}
+            {{ $t("pages.teams.vetos.played_short") }}
           </div>
           <div v-else class="font-mono text-[0.65rem] text-muted-foreground">
-            {{ $t("pages.teams.vetos.comfort_hint", { n: COMFORT_MIN_PLAYED }) }}
+            {{
+              $t("pages.teams.vetos.comfort_hint", { n: COMFORT_MIN_PLAYED })
+            }}
           </div>
         </div>
       </div>
@@ -466,7 +492,9 @@ function mapDisplay(agg: MapVetoAggregate): string {
         </Table>
       </div>
 
-      <div class="mt-2 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground/70">
+      <div
+        class="mt-2 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground/70"
+      >
         {{ $t("pages.teams.vetos.based_on", { n: totalRecords }) }}
       </div>
     </template>

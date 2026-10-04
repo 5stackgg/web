@@ -39,6 +39,9 @@ const props = defineProps<{
   seasonRecaps?: Record<string, SeasonRecap>;
   // match id -> season label for the match that set that season's best.
   seasonBest?: Record<string, string>;
+  // Team mode: rows read from this team's lineup, and the RANK column lists
+  // who played instead.
+  teamId?: string | null;
 }>();
 
 const { t } = useI18n();
@@ -146,6 +149,7 @@ const wideGrid =
           :season-best="seasonBest?.[String(row.match.id)] ?? null"
           :canonical-rating="ratingByMatch?.get(String(row.match.id)) ?? null"
           :collapsed-agg="statsByMatch?.get(String(row.match.id)) ?? null"
+          :team-id="teamId ?? null"
           compact
           :style="{ animationDelay: `${index * 40}ms` }"
           class="animate-in fade-in slide-in-from-bottom-2"
@@ -179,7 +183,9 @@ const wideGrid =
           <span>K / D / A</span>
           <span><StatLabel stat="kd" header label="K/D" /></span>
           <span><StatLabel stat="adr" header label="ADR" /></span>
-          <span class="text-right">{{ $t("player_match.headers.rank") }}</span>
+          <span class="text-right">{{
+            teamId ? $t("team.hero.roster") : $t("player_match.headers.rank")
+          }}</span>
           <span />
         </div>
 
@@ -226,6 +232,7 @@ const wideGrid =
                 ratingByMatch?.get(String(row.match.id)) ?? null
               "
               :collapsed-agg="statsByMatch?.get(String(row.match.id)) ?? null"
+              :team-id="teamId ?? null"
               :style="{ animationDelay: `${index * 40}ms` }"
               class="animate-in fade-in slide-in-from-bottom-2"
             />

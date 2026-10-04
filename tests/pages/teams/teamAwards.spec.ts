@@ -9,8 +9,12 @@ import {
   type SelectionSetNode,
 } from "graphql";
 import TeamPage from "~/pages/teams/[id].vue";
-import TeamsIndexPage from "~/pages/teams/index.vue";
 import AwardCase from "~/components/award/AwardCase.vue";
+import {
+  groupAwardsByTeam,
+  teamAwardsSubscription,
+  tournamentWinnerTeamIds,
+} from "~/components/teams/teamAwards";
 
 const award = (id: string, name: string, tier: string) => ({
   id,
@@ -184,18 +188,6 @@ function runSubscription(
     .map((row) => project(row, field.selectionSet));
 }
 
-function computedContext(component: any, state: Record<string, any>) {
-  const context: Record<string, any> = { ...state };
-  for (const [name, definition] of Object.entries<any>(component.computed)) {
-    const getter =
-      typeof definition === "function" ? definition : definition.get;
-    Object.defineProperty(context, name, {
-      get: () => getter.call(context),
-    });
-  }
-  return context;
-}
-
 describe("team page awards", () => {
   const subscription = (TeamPage as any).apollo.$subscribe.teamAwards;
 
@@ -236,20 +228,16 @@ describe("team page awards", () => {
 });
 
 describe("teams list awards", () => {
-  const subscription = (TeamsIndexPage as any).apollo.$subscribe.teamAwards;
-
-  function listContext() {
-    const context = computedContext(TeamsIndexPage, { teamAwards: [] });
-    subscription.result.call(context, {
-      data: {
-        award_recipients: runSubscription(subscription.query.call(context), {}),
-      },
-    });
-    return context;
+  function listAwards() {
+    const grants = runSubscription(teamAwardsSubscription, {});
+    return {
+      awardsByTeamId: groupAwardsByTeam(grants),
+      winnerTeamIds: tournamentWinnerTeamIds(grants),
+    };
   }
 
   it("groups a manually granted team award under its team", () => {
-    const { awardsByTeamId } = listContext();
+    const { awardsByTeamId } = listAwards();
 
     expect(
       (awardsByTeamId[team1.id] ?? []).map((grant: any) => grant.id).sort(),
@@ -260,7 +248,7 @@ describe("teams list awards", () => {
   });
 
   it("does not count a manual award towards the tournament winners filter", () => {
-    const { winnerTeamIds } = listContext();
+    const { winnerTeamIds } = listAwards();
 
     expect(winnerTeamIds).toEqual([team1.id]);
   });

@@ -1,29 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
-import TeamsTable from "~/components/TeamsTable.vue";
+import TeamsAwardShelf from "~/components/teams/TeamsAwardShelf.vue";
 import AwardBadge from "~/components/award/AwardBadge.vue";
-
-const teams = [
-  {
-    id: "team-1",
-    name: "Alpha",
-    short_name: "ALP",
-    avatar_url: null,
-    roster: [
-      {
-        roster_image_url: null,
-        player: {
-          steam_id: "76561198000000001",
-          name: "Roster Player",
-          avatar_url: "https://avatars.example/roster-player.jpg",
-          country: null,
-          elo: { competitive: 1500 },
-        },
-      },
-    ],
-  },
-];
 
 const manualGrant = {
   id: "manual-team-1",
@@ -93,12 +72,9 @@ const manualTournamentGrant = {
 };
 
 async function mountTable() {
-  return await mountSuspended(TeamsTable, {
+  return await mountSuspended(TeamsAwardShelf, {
     props: {
-      teams,
-      awardsByTeamId: {
-        "team-1": [manualGrant, tournamentGrant, manualTournamentGrant],
-      },
+      awards: [manualGrant, tournamentGrant, manualTournamentGrant],
     },
     attachTo: document.body,
   });
@@ -112,7 +88,7 @@ function awardButton(wrapper: any, awardId: string) {
   return badge.find("*").element.closest("button") as HTMLButtonElement;
 }
 
-describe("TeamsTable awards", () => {
+describe("TeamsAwardShelf", () => {
   let unmount: (() => void) | null = null;
 
   afterEach(() => {

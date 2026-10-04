@@ -1638,6 +1638,62 @@
         "col_pick": "Valsannolikhet",
         "col_play": "Spelsannolikhet",
         "col_predicted_win": "Förutspådd vinst%"
+      },
+      "players": "{count} spelare | {count} spelare",
+      "form": {
+        "label": "Senaste form: {results}",
+        "none": "Inga resultat än",
+        "result_W": "vinst",
+        "result_L": "förlust",
+        "result_T": "oavgjort"
+      },
+      "your_teams": {
+        "title": "Dina lag",
+        "next": "Nästa",
+        "last": "Senaste",
+        "playing_now": "Spelar nu",
+        "nothing_scheduled": "Inget planerat",
+        "no_matches": "Inga matcher än",
+        "result_W": "Vann",
+        "result_L": "Förlorade",
+        "result_T": "Oavgjort",
+        "check_in": "Checka in",
+        "scrim_replies": "{count} scrimsvar behövs | {count} scrimsvar behövs",
+        "invite_starter": "Bjud in en startspelare"
+      },
+      "playing_now": {
+        "title": "Spelar nu",
+        "live_count": "{count} live",
+        "all_live": "Alla livematcher",
+        "more_on_watch": "fler live på Watch"
+      },
+      "scrims": {
+        "title": "Söker scrims",
+        "subtitle": "Lag som tar emot utmaningar",
+        "today": "Idag {from}–{to}",
+        "any_time": "Tar emot förfrågningar när som helst",
+        "sign_in_to_request": "Logga in för att begära",
+        "need_team": "Du behöver ett lag du äger eller leder för att begära en scrim.",
+        "see_all": "Se alla i Scrim-finder"
+      },
+      "directory": {
+        "title": "Alla lag",
+        "sort_label": "Sortera lag",
+        "sort_active": "Nyligen aktiva",
+        "sort_rating": "Rating",
+        "sort_name": "Namn",
+        "search_label": "Sök lag",
+        "clear_search": "Rensa sökning",
+        "org": "Org",
+        "playing_now": "Spelar nu",
+        "never_played": "Inga matcher än",
+        "col_roster": "Trupp",
+        "col_elo": "Snitt-ELO",
+        "col_form": "Form",
+        "col_last": "Senast spelad",
+        "col_awards": "Utmärkelser",
+        "no_match": "Inget matchar din sökning eller dina filter.",
+        "clear_filters": "Rensa filter"
       }
     },
     "settings": {
@@ -7833,6 +7889,90 @@
       "failed_description": "Begäran misslyckades. Försök igen om en stund.",
       "empty": "Ingen matchad utility",
       "empty_description": "Ingen granat som kastats i det här lagets matcher stämmer med en sparad uppställning ännu."
+    },
+    "pulse": {
+      "hero": {
+        "players": "{count} spelare | {count} spelare",
+        "matches": "{count} match | {count} matcher",
+        "no_matches": "Inga matcher än",
+        "founded": "Grundat {date}",
+        "all_awards": "Visa alla utmärkelser",
+        "team_actions": "Lagåtgärder"
+      },
+      "stage": {
+        "live": "Live nu",
+        "next_up": "Nästa",
+        "upcoming": "{count} kommande",
+        "then": "Sedan",
+        "open_to_scrims": "Öppna {name} för scrims så att andra lag kan utmana er.",
+        "set_up_scrims": "Ställ in scrims",
+        "none_scheduled_member": "Inga matcher planerade än.",
+        "none_scheduled": "Inget planerat just nu.",
+        "never_played": "{name} har inte spelat någon match än."
+      },
+      "results": {
+        "hint": "Nyaste först, scrolla för äldre",
+        "all_matches": "Alla matcher"
+      },
+      "tabs": {
+        "matches": "Matcher",
+        "scrim_waiting": "{count} väntar på dig"
+      },
+      "needs": {
+        "title": "Behöver dig",
+        "to_do": "{count} att göra",
+        "check_in_title": "Checka in för matchen mot {name}",
+        "scrim_title": "vill scrimma",
+        "counter_title": "föreslog en ny tid",
+        "best_of_short": "Bo{count}",
+        "roster_title": "{count} av 5 startspelare",
+        "roster_meta": "Bjud in spelare för att få ett fullt lag.",
+        "waiting_on": "Väntar på",
+        "waiting_check_in": "{names} att checka in",
+        "waiting_scrim": "{name} att svara på din scrimförfrågan",
+        "waiting_invites": "{names} att acceptera sina inbjudningar",
+        "counter_dialog_title": "Föreslå en annan tid",
+        "counter_dialog_description": "{name} måste fortfarande acceptera den nya tiden.",
+        "send_new_time": "Skicka ny tid"
+      }
+    },
+    "activity": {
+      "title": "Aktivitet",
+      "this_week": "Den här veckan",
+      "earlier": "Tidigare",
+      "show_older": "Visa äldre aktivitet",
+      "empty": "Resultat, klipp och utmärkelser dyker upp här när {team} spelar.",
+      "beat": "Slog {opponent}",
+      "lost_to": "Förlorade mot {opponent}",
+      "drew_with": "Spelade oavgjort mot {opponent}",
+      "open_match": "Öppna match",
+      "won": "Vann {name}",
+      "second_at": "2:a i {name}",
+      "third_at": "3:a i {name}",
+      "placed_at": "{placement} i {name}",
+      "received": "Fick {name}",
+      "tournament": "Turnering",
+      "promoted": "Uppflyttade till {division}",
+      "relegated": "Nedflyttade till {division}",
+      "finished": "Slutade #{rank} i {division}",
+      "stayed": "Stannade kvar i {division}",
+      "started": "Startade {season}",
+      "invited": "{name} blev inbjuden",
+      "invited_by": "Inbjuden av {name}",
+      "created": "{team} skapades"
+    },
+    "starting_five": {
+      "title": "Startfemman",
+      "players": "{count} spelare | {count} spelare",
+      "manage_roster": "Hantera trupp",
+      "full_roster": "Hela truppen",
+      "starters_only": "Endast startfemman",
+      "open_slot": "Ledig startplats",
+      "invite": "Bjud in",
+      "substitutes": "{count} reserv | {count} reserver",
+      "bench": "{count} på bänken",
+      "coaches": "{count} coach | {count} coacher",
+      "captain": "Kapten: {name}"
     }
   },
   "match": {

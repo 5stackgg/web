@@ -32,3 +32,42 @@ export function schemaHasType(
   }
   return answer;
 }
+
+const SCHEMA_TYPE_FIELDS = gql`
+  query SchemaTypeFields($name: String!) {
+    __type(name: $name) {
+      fields {
+        name
+      }
+    }
+  }
+`;
+
+const knownFields = new Map<string, Promise<Set<string>>>();
+
+// Whether the API serves a field on a type yet: the same guard for a column
+// or computed field the web ships ahead of the API.
+export function schemaHasField(
+  client: ApolloClient<any>,
+  type: string,
+  field: string,
+): Promise<boolean> {
+  let fields = knownFields.get(type);
+  if (!fields) {
+    fields = client
+      .query({
+        query: SCHEMA_TYPE_FIELDS,
+        variables: { name: type },
+        fetchPolicy: "cache-first",
+      })
+      .then(
+        ({ data }) =>
+          new Set<string>(
+            ((data as any)?.__type?.fields ?? []).map((f: any) => f.name),
+          ),
+      )
+      .catch(() => new Set<string>());
+    knownFields.set(type, fields);
+  }
+  return fields.then((names) => names.has(field));
+}

@@ -1638,6 +1638,62 @@
         "col_pick": "픽 확률",
         "col_play": "플레이 확률",
         "col_predicted_win": "예상 승률"
+      },
+      "players": "{count}명 | {count}명",
+      "form": {
+        "label": "최근 폼: {results}",
+        "none": "아직 결과가 없습니다",
+        "result_W": "승리",
+        "result_L": "패배",
+        "result_T": "무승부"
+      },
+      "your_teams": {
+        "title": "내 팀",
+        "next": "다음",
+        "last": "지난",
+        "playing_now": "경기 중",
+        "nothing_scheduled": "예정 없음",
+        "no_matches": "아직 경기가 없습니다",
+        "result_W": "승리",
+        "result_L": "패배",
+        "result_T": "무승부",
+        "check_in": "체크인",
+        "scrim_replies": "스크림 답변 {count}건 필요 | 스크림 답변 {count}건 필요",
+        "invite_starter": "스타터 초대"
+      },
+      "playing_now": {
+        "title": "경기 중",
+        "live_count": "{count}경기 라이브",
+        "all_live": "모든 라이브 경기",
+        "more_on_watch": "Watch에서 더 많은 라이브"
+      },
+      "scrims": {
+        "title": "스크림 구하는 중",
+        "subtitle": "도전을 받는 팀",
+        "today": "오늘 {from}–{to}",
+        "any_time": "언제든 요청 가능",
+        "sign_in_to_request": "로그인하여 요청",
+        "need_team": "스크림을 요청하려면 소유하거나 운영하는 팀이 필요합니다.",
+        "see_all": "스크림 찾기에서 모두 보기"
+      },
+      "directory": {
+        "title": "전체 팀",
+        "sort_label": "팀 정렬",
+        "sort_active": "최근 활동순",
+        "sort_rating": "레이팅",
+        "sort_name": "이름",
+        "search_label": "팀 검색",
+        "clear_search": "검색어 지우기",
+        "org": "Org",
+        "playing_now": "경기 중",
+        "never_played": "아직 경기가 없습니다",
+        "col_roster": "로스터",
+        "col_elo": "평균 ELO",
+        "col_form": "폼",
+        "col_last": "마지막 경기",
+        "col_awards": "어워드",
+        "no_match": "검색어나 필터와 일치하는 항목이 없습니다.",
+        "clear_filters": "필터 지우기"
       }
     },
     "settings": {
@@ -7833,6 +7889,90 @@
       "failed_description": "요청이 실패했습니다. 잠시 후 다시 시도하세요.",
       "empty": "대응되는 유틸이 없습니다",
       "empty_description": "이 팀의 경기에서 던진 수류탄 중 저장된 라인업과 맞는 것이 아직 없습니다."
+    },
+    "pulse": {
+      "hero": {
+        "players": "{count}명 | {count}명",
+        "matches": "{count}경기 | {count}경기",
+        "no_matches": "아직 경기가 없습니다",
+        "founded": "{date} 창단",
+        "all_awards": "모든 어워드 보기",
+        "team_actions": "팀 작업"
+      },
+      "stage": {
+        "live": "라이브 중",
+        "next_up": "다음 경기",
+        "upcoming": "예정 {count}건",
+        "then": "그다음",
+        "open_to_scrims": "다른 팀이 도전할 수 있도록 {name}을(를) 스크림에 공개하세요.",
+        "set_up_scrims": "스크림 설정",
+        "none_scheduled_member": "예정된 경기가 아직 없습니다.",
+        "none_scheduled": "현재 예정된 항목이 없습니다.",
+        "never_played": "{name}은(는) 아직 경기를 치르지 않았습니다."
+      },
+      "results": {
+        "hint": "최신순, 스크롤하면 이전 항목",
+        "all_matches": "모든 경기"
+      },
+      "tabs": {
+        "matches": "경기",
+        "scrim_waiting": "내 응답 대기 {count}건"
+      },
+      "needs": {
+        "title": "확인 필요",
+        "to_do": "할 일 {count}건",
+        "check_in_title": "{name}전 체크인",
+        "scrim_title": "이(가) 스크림을 원합니다",
+        "counter_title": "이(가) 새 시간을 제안했습니다",
+        "best_of_short": "Bo{count}",
+        "roster_title": "스타터 {count}/5명",
+        "roster_meta": "정원을 채우려면 플레이어를 초대하세요.",
+        "waiting_on": "대기 중",
+        "waiting_check_in": "{names}의 체크인",
+        "waiting_scrim": "{name}의 스크림 요청 응답",
+        "waiting_invites": "{names}의 초대 수락",
+        "counter_dialog_title": "다른 시간 제안",
+        "counter_dialog_description": "{name}이(가) 새 시간을 수락해야 합니다.",
+        "send_new_time": "새 시간 보내기"
+      }
+    },
+    "activity": {
+      "title": "활동",
+      "this_week": "이번 주",
+      "earlier": "이전",
+      "show_older": "이전 활동 보기",
+      "empty": "{team}이(가) 경기를 치르면 결과, 클립, 어워드가 여기에 표시됩니다.",
+      "beat": "{opponent}에게 승리",
+      "lost_to": "{opponent}에게 패배",
+      "drew_with": "{opponent}와 무승부",
+      "open_match": "경기 열기",
+      "won": "{name} 우승",
+      "second_at": "{name} 2위",
+      "third_at": "{name} 3위",
+      "placed_at": "{name} {placement}",
+      "received": "{name} 수상",
+      "tournament": "토너먼트",
+      "promoted": "{division}(으)로 승격",
+      "relegated": "{division}(으)로 강등",
+      "finished": "{division}에서 {rank}위로 마무리",
+      "stayed": "{division} 잔류",
+      "started": "{season} 시작",
+      "invited": "{name} 초대됨",
+      "invited_by": "{name}이(가) 초대함",
+      "created": "{team} 생성됨"
+    },
+    "starting_five": {
+      "title": "스타팅 5",
+      "players": "{count}명 | {count}명",
+      "manage_roster": "로스터 관리",
+      "full_roster": "전체 로스터",
+      "starters_only": "스타팅 5만",
+      "open_slot": "빈 스타터 자리",
+      "invite": "초대",
+      "substitutes": "교체 선수 {count}명 | 교체 선수 {count}명",
+      "bench": "벤치 {count}명",
+      "coaches": "코치 {count}명 | 코치 {count}명",
+      "captain": "주장: {name}"
     }
   },
   "match": {

@@ -9626,6 +9626,7 @@
       "label": "GIF",
       "open": "Send a GIF",
       "search": "Search GIPHY",
+      "command_search_for": "Search GIPHY for “{term}”",
       "trending": "Trending",
       "suggestions": {
         "gg": "gg",

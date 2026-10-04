@@ -15,7 +15,7 @@ import type { ChatGif } from "~/utilities/chatAttachments";
 // in place so the text box keeps its width.
 defineProps<{ gifs: boolean }>();
 
-const emit = defineEmits<{ files: []; gif: [gif: ChatGif] }>();
+const emit = defineEmits<{ files: []; gif: [gif: ChatGif]; closed: [] }>();
 
 const triggerClasses =
   "inline-flex h-7 w-7 shrink-0 items-center justify-center self-center rounded-full bg-muted text-muted-foreground transition-colors duration-150 hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring data-[state=open]:text-foreground motion-reduce:transition-none";
@@ -25,6 +25,7 @@ const itemClasses =
 
 const open = ref(false);
 const view = ref<"menu" | "gifs">("menu");
+const gifQuery = ref("");
 
 // The menu sits over the right hub, which closes itself when the pointer
 // leaves it.
@@ -52,12 +53,39 @@ onBeforeUnmount(() => {
 // it fades.
 let picked = false;
 
+// Set by the composer's /gif, which skips the menu and starts the search. Focus
+// then goes back to the text box it came from, not to a "+" never pressed.
+let searchFor: string | null = null;
+let fromComposer = false;
+
 watch(open, (value) => {
   if (value) {
     picked = false;
-    view.value = "menu";
+    view.value = searchFor === null ? "menu" : "gifs";
+    gifQuery.value = searchFor ?? "";
+    fromComposer = searchFor !== null;
+    searchFor = null;
   }
 });
+
+function searchGifs(term: string) {
+  if (open.value) {
+    return;
+  }
+
+  searchFor = term;
+  open.value = true;
+}
+
+function onCloseAutoFocus(event: Event) {
+  if (fromComposer) {
+    fromComposer = false;
+    event.preventDefault();
+    emit("closed");
+  }
+}
+
+defineExpose({ searchGifs });
 
 // Still inside the click, so the file dialog is allowed to open.
 function chooseFiles() {
@@ -106,6 +134,7 @@ function select(gif: ChatGif) {
       :collision-padding="8"
       class="w-auto overflow-hidden p-0"
       data-right-hub-interactive
+      @close-auto-focus="onCloseAutoFocus"
     >
       <div v-if="view === 'menu'" class="grid min-w-48 gap-0.5 p-1">
         <button
@@ -132,7 +161,7 @@ function select(gif: ChatGif) {
           {{ $t("chat.gifs.open") }}
         </button>
       </div>
-      <ChatGifPickerPanel v-else @select="select" />
+      <ChatGifPickerPanel v-else :initial-query="gifQuery" @select="select" />
     </PopoverContent>
   </Popover>
 </template>

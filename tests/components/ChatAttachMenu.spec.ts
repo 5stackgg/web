@@ -1,8 +1,12 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import ChatAttachMenu from "~/components/chat/ChatAttachMenu.vue";
 import ChatGifPickerPanel from "~/components/chat/ChatGifPickerPanel.vue";
+
+vi.mock("~/composables/chatGifSearch", () => ({
+  searchChatGifs: vi.fn(async () => ({ results: [], next: null })),
+}));
 
 type Wrapper = Awaited<ReturnType<typeof mountSuspended>>;
 
@@ -71,6 +75,46 @@ describe("ChatAttachMenu", () => {
     panel.vm.$emit("select", gif);
 
     expect(wrapper.emitted("gif")).toEqual([[gif]]);
+
+    wrapper.unmount();
+  });
+
+  it("opens straight into a search for the composer's /gif", async () => {
+    const wrapper = await mountSuspended(ChatAttachMenu, {
+      props: { gifs: true },
+      attachTo: document.body,
+    });
+
+    (wrapper.vm as any).searchGifs("clutch");
+    await flushPromises();
+
+    expect(inMenu("[data-chat-gif]")).toBeNull();
+    expect(
+      wrapper.findComponent(ChatGifPickerPanel).props("initialQuery"),
+    ).toBe("clutch");
+
+    wrapper.unmount();
+  });
+
+  it("starts on the menu again when next opened from the +", async () => {
+    const wrapper = await mountSuspended(ChatAttachMenu, {
+      props: { gifs: true },
+      attachTo: document.body,
+    });
+
+    (wrapper.vm as any).searchGifs("clutch");
+    await flushPromises();
+    document.body.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+    );
+    await flushPromises();
+
+    expect(wrapper.emitted("closed")).toHaveLength(1);
+
+    await openMenu(wrapper);
+
+    expect(inMenu("[data-chat-gif]")).not.toBeNull();
+    expect(wrapper.findComponent(ChatGifPickerPanel).exists()).toBe(false);
 
     wrapper.unmount();
   });

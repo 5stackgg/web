@@ -3,6 +3,7 @@ import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import ChatInput from "~/components/chat/ChatInput.vue";
 import ChatAttachMenu from "~/components/chat/ChatAttachMenu.vue";
+import ChatGifPickerPanel from "~/components/chat/ChatGifPickerPanel.vue";
 import type { ChatAttachmentConfig } from "~/utilities/chatAttachments";
 // @ts-expect-error only the mock below exports it
 import { testConfig as config } from "~/composables/useChatAttachmentConfig";
@@ -37,6 +38,10 @@ vi.mock("~/composables/useChatAttachmentConfig", async () => {
     }),
   };
 });
+
+vi.mock("~/composables/chatGifSearch", () => ({
+  searchChatGifs: vi.fn(async () => ({ results: [], next: null })),
+}));
 
 vi.mock("~/composables/chatAttachmentUploads", () => ({
   uploadChatAttachment: () =>
@@ -428,5 +433,104 @@ describe("ChatInput attachments", () => {
     wrapper.unmount();
 
     expect(discards).toEqual(["a-1"]);
+  });
+});
+
+describe("ChatInput /gif", () => {
+  beforeEach(() => {
+    config.value = { ...LIMITS, gifs: true };
+  });
+
+  const offer = (wrapper: Wrapper) => wrapper.find("[data-chat-gif-command]");
+  const picker = (wrapper: Wrapper) =>
+    wrapper.findComponent(ChatGifPickerPanel);
+
+  async function typeText(wrapper: Wrapper, text: string) {
+    await wrapper.get("textarea").setValue(text);
+    await flushPromises();
+  }
+
+  async function press(wrapper: Wrapper, key: string) {
+    await wrapper.get("textarea").trigger("keydown", { key });
+    await flushPromises();
+  }
+
+  it("offers the GIF search from a bare /", async () => {
+    const wrapper = await mountSuspended(ChatInput, {
+      props: { attachmentRoom: room },
+    });
+
+    await typeText(wrapper, "/");
+    expect(offer(wrapper).exists()).toBe(true);
+
+    await typeText(wrapper, "/gi");
+    expect(offer(wrapper).exists()).toBe(true);
+
+    await typeText(wrapper, "/gg");
+    expect(offer(wrapper).exists()).toBe(false);
+
+    await typeText(wrapper, "gg /gif");
+    expect(offer(wrapper).exists()).toBe(false);
+  });
+
+  it("offers nothing where GIFs are off", async () => {
+    config.value = { ...LIMITS, gifs: false };
+    const wrapper = await mountSuspended(ChatInput, {
+      props: { attachmentRoom: room },
+    });
+
+    await typeText(wrapper, "/gif");
+
+    expect(offer(wrapper).exists()).toBe(false);
+  });
+
+  it("searches what follows /gif on Enter instead of sending it", async () => {
+    const wrapper = await mountSuspended(ChatInput, {
+      props: { attachmentRoom: room },
+      attachTo: document.body,
+    });
+
+    await typeText(wrapper, "/gif  ace clutch ");
+    expect(offer(wrapper).text()).toContain("ace clutch");
+
+    await press(wrapper, "Enter");
+
+    expect(wrapper.emitted("sendMessage")).toBeUndefined();
+    expect(picker(wrapper).props("initialQuery")).toBe("ace clutch");
+    expect((wrapper.get("textarea").element as HTMLTextAreaElement).value).toBe(
+      "",
+    );
+
+    wrapper.unmount();
+  });
+
+  it("takes the offer on Tab too", async () => {
+    const wrapper = await mountSuspended(ChatInput, {
+      props: { attachmentRoom: room },
+      attachTo: document.body,
+    });
+
+    await typeText(wrapper, "/");
+    await press(wrapper, "Tab");
+
+    expect(picker(wrapper).props("initialQuery")).toBe("");
+
+    wrapper.unmount();
+  });
+
+  it("sends the text as typed once the offer is waved off", async () => {
+    const wrapper = await mountSuspended(ChatInput, {
+      props: { attachmentRoom: room },
+    });
+
+    await typeText(wrapper, "/gif");
+    await press(wrapper, "Escape");
+
+    expect(offer(wrapper).exists()).toBe(false);
+
+    await press(wrapper, "Enter");
+
+    expect(wrapper.emitted("sendMessage")).toEqual([["/gif", undefined]]);
+    expect(picker(wrapper).exists()).toBe(false);
   });
 });

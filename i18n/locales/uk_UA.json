@@ -9624,6 +9624,7 @@
       "label": "GIF",
       "open": "Надіслати GIF",
       "search": "Пошук у GIPHY",
+      "command_search_for": "Шукати «{term}» у GIPHY",
       "trending": "У тренді",
       "suggestions": {
         "gg": "gg",

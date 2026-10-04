@@ -117,4 +117,25 @@ describe("ChatInput", () => {
 
     expect(remaining(wrapper).text()).toBe("200");
   });
+
+  it("asks to edit the last line on Up from an empty box", async () => {
+    const wrapper = await mountSuspended(ChatInput);
+
+    await wrapper.get("textarea").trigger("keydown", { key: "ArrowUp" });
+
+    expect(wrapper.emitted("edit-last")).toHaveLength(1);
+  });
+
+  it("leaves Up to the caret once something is typed", async () => {
+    const wrapper = await mountSuspended(ChatInput);
+
+    await type(wrapper, "first line\nsecond");
+    await wrapper.get("textarea").trigger("keydown", { key: "ArrowUp" });
+    await wrapper.get("textarea").trigger("keydown", {
+      key: "ArrowUp",
+      shiftKey: true,
+    });
+
+    expect(wrapper.emitted("edit-last")).toBeUndefined();
+  });
 });

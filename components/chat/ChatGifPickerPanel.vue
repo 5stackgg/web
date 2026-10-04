@@ -20,7 +20,7 @@ import {
 // No withDefaults: a function-typed prop takes its default as the value, not
 // as a factory, so `() => searchChatGifs` handed back the function itself and
 // every search read as "unavailable".
-const props = defineProps<{ search?: ChatGifSearch }>();
+const props = defineProps<{ search?: ChatGifSearch; initialQuery?: string }>();
 
 const emit = defineEmits<{ select: [gif: ChatGif] }>();
 
@@ -28,7 +28,7 @@ const SUGGESTIONS = ["gg", "clutch", "rage"] as const;
 
 const { t } = useI18n();
 
-const query = ref("");
+const query = ref(props.initialQuery ?? "");
 const active = ref("");
 const results = ref<ChatGifResult[]>([]);
 const next = ref<number | null>(null);
@@ -163,7 +163,7 @@ const message = computed(() => {
 });
 
 onMounted(() => {
-  void load("", 0);
+  void load(query.value.trim(), 0);
 
   const element =
     input.value && "$el" in input.value ? input.value.$el : input.value;

@@ -9624,6 +9624,7 @@
       "label": "GIF",
       "open": "傳送 GIF",
       "search": "搜尋 GIPHY",
+      "command_search_for": "在 GIPHY 搜尋「{term}」",
       "trending": "熱門",
       "suggestions": {
         "gg": "gg",

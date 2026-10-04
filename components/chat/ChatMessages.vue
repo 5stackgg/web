@@ -56,7 +56,7 @@
             :can-moderate="canModerate"
             :can-post="canPost"
             :editing="!!message.id && message.id === editingId"
-            @edit="editingId = message.id"
+            @edit="startEditing(message.id)"
             @edit-end="stopEditing(message.id)"
           />
         </div>
@@ -69,6 +69,7 @@
 import type { PropType } from "vue";
 import ChatMessage from "~/components/chat/ChatMessage.vue";
 import { chatMessageKey } from "~/web-sockets/Socket";
+import { chatMessagePermissions } from "~/utilities/chatMessageActions";
 import type { ChatType, LobbyMessage } from "~/web-sockets/Socket";
 
 export default {
@@ -117,20 +118,55 @@ export default {
       default: false,
     },
   },
-  emits: ["bottom-state-change"],
+  emits: ["bottom-state-change", "edit-last-end"],
   data() {
     return {
       isAtBottom: false,
       editingId: null as string | null,
+      editingFromComposer: false,
     };
   },
   methods: {
     messageKey(message: any) {
       return chatMessageKey(message);
     },
+    startEditing(messageId: string) {
+      this.editingId = messageId;
+      this.editingFromComposer = false;
+    },
     stopEditing(messageId?: string) {
       if (this.editingId === messageId) {
         this.editingId = null;
+
+        if (this.editingFromComposer) {
+          this.$emit("edit-last-end");
+        }
+      }
+    },
+    // Up from an empty composer: the newest line the viewer can still change.
+    // The composer gets focus back once it is saved or dropped.
+    editLast() {
+      const me = useAuthStore().me;
+
+      for (let index = this.messages.length - 1; index >= 0; index--) {
+        const message = this.messages[index];
+        const room = this.messageRoom?.(message);
+
+        if (
+          room &&
+          chatMessagePermissions({
+            message,
+            viewerSteamId: me?.steam_id,
+            viewerGagged: !!me?.is_gagged,
+            canModerate: this.canModerate,
+            canPost: this.canPost,
+            roomType: room.type,
+          }).canEdit
+        ) {
+          this.editingId = message.id;
+          this.editingFromComposer = true;
+          return;
+        }
       }
     },
     checkIfAtBottom() {

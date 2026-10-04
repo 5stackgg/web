@@ -9624,6 +9624,7 @@
       "label": "GIF",
       "open": "GIF gönder",
       "search": "GIPHY'de ara",
+      "command_search_for": "GIPHY’de “{term}” ara",
       "trending": "Trend",
       "suggestions": {
         "gg": "gg",

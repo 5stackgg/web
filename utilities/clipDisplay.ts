@@ -29,18 +29,43 @@ export type ClipKillTier = {
   label: string;
 };
 
+// A row's `round` is only the round its first segment starts in, so it doesn't
+// mean the clip stays inside that round. The API's auto-titles do say:
+// "Best Round (4K)" is that round's own count, and the "+ 1 Knife Kill" tail
+// on auto highlights is a knife kill from another round, which older rows
+// still count in kills_count -- a 4K plus a knife kill isn't an ace.
+const BEST_ROUND_TITLE = /\bBest Round \((\d+)K\)/i;
+// Reels cut from more than one round (or not provably one): multi-kills from
+// several rounds, several knife kills, a recap of several cuts.
+const MULTI_ROUND_TITLE =
+  /\bMulti-Kills \((?!1× \d+K\))|\d Knife Kills\b|\bMatch Recap \([^)]*clips\)/i;
+
+// Kills the clip shows inside one round, or null when it isn't one round.
+export function clipRoundKills(
+  clip: Pick<Clip, "kills_count" | "round"> & { title?: string | null },
+): number | null {
+  const kills = clip.kills_count ?? 0;
+  if (clip.round == null || kills <= 0) return null;
+  const title = clip.title ?? "";
+  const bestRound = title.match(BEST_ROUND_TITLE);
+  if (bestRound) return Math.min(kills, Number(bestRound[1]));
+  if (MULTI_ROUND_TITLE.test(title)) return null;
+  return kills;
+}
+
 export function clipKillTier(
-  clip: Pick<Clip, "kills_count" | "round">,
+  clip: Pick<Clip, "kills_count" | "round"> & { title?: string | null },
   t: Translate,
 ): ClipKillTier | null {
   const kills = clip.kills_count ?? 0;
   if (kills <= 0) return null;
-  if (clip.round != null && kills <= 5) {
+  const roundKills = clipRoundKills(clip);
+  if (roundKills != null && roundKills <= 5) {
     let label: string;
-    if (kills === 5) label = t("clips.tile.kills.ace");
-    else if (kills === 1) label = t("clips.tile.kills.one");
-    else label = t("clips.tile.kills.multi", { n: kills });
-    return { marks: true, filled: kills, label };
+    if (roundKills === 5) label = t("clips.tile.kills.ace");
+    else if (roundKills === 1) label = t("clips.tile.kills.one");
+    else label = t("clips.tile.kills.multi", { n: roundKills });
+    return { marks: true, filled: roundKills, label };
   }
   return {
     marks: false,

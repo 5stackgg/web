@@ -312,6 +312,7 @@ const actionClasses = `${actionBase} w-8`;
         <ClipKillBadge
           :kills="clip.kills_count"
           :round="clip.round"
+          :title="clip.title"
           :size="hero ? 'lg' : 'sm'"
         />
         <div class="ml-auto flex min-w-0 items-center gap-1.5">

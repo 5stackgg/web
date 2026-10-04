@@ -7,6 +7,8 @@ const props = withDefaults(
   defineProps<{
     kills: number | null | undefined;
     round: number | null | undefined;
+    // The clip's raw title -- it says whether the clip stays in one round.
+    title?: string | null;
     size?: "sm" | "lg";
   }>(),
   { size: "sm" },
@@ -15,7 +17,11 @@ const props = withDefaults(
 const { t } = useI18n();
 const tier = computed(() =>
   clipKillTier(
-    { kills_count: props.kills ?? null, round: props.round ?? null },
+    {
+      kills_count: props.kills ?? null,
+      round: props.round ?? null,
+      title: props.title ?? null,
+    },
     t,
   ),
 );

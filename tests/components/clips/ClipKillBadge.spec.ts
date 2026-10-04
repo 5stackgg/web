@@ -41,6 +41,25 @@ describe("ClipKillBadge", () => {
     expect(wrapper.text()).toContain("12 kills");
   });
 
+  it("isn't an ace when a knife kill from another round makes the fifth", async () => {
+    const wrapper = await mountSuspended(ClipKillBadge, {
+      props: {
+        kills: 5,
+        round: 9,
+        title: "k1tty — Best Round (4K) + 1 Knife Kill",
+      },
+    });
+    expect(
+      marks(wrapper).filter((m) =>
+        m.classes().includes("bg-[hsl(var(--tac-amber))]"),
+      ),
+    ).toHaveLength(4);
+    expect(wrapper.text()).toContain("4K");
+    expect(wrapper.text()).not.toContain("Ace");
+    // The title is ours to read, not a tooltip on the badge.
+    expect(wrapper.attributes("title")).toBeUndefined();
+  });
+
   it("renders nothing without kills", async () => {
     const wrapper = await mountSuspended(ClipKillBadge, {
       props: { kills: 0, round: 3 },

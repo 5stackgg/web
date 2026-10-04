@@ -876,6 +876,7 @@ const edgeButton =
                     <ClipKillBadge
                       :kills="clip.kills_count"
                       :round="clip.round"
+                      :title="clip.title"
                       size="lg"
                     />
                     <span v-if="duration" :class="onVideoChip">{{
@@ -1293,6 +1294,7 @@ const edgeButton =
                       v-if="activeQueueItem?.killsCount != null"
                       :kills="activeQueueItem.killsCount"
                       :round="activeQueueItem.round"
+                      :title="activeQueueItem.title"
                       class="!bg-white/[0.06]"
                     />
                     <Skeleton v-else class="h-[26px] w-20 rounded-md" />
@@ -1329,6 +1331,7 @@ const edgeButton =
                     <ClipKillBadge
                       :kills="clip.kills_count"
                       :round="clip.round"
+                      :title="clip.title"
                       class="!bg-white/[0.06]"
                     />
                     <span
@@ -1665,7 +1668,11 @@ const edgeButton =
                   <span
                     class="absolute inset-x-2 top-2 flex items-center justify-between gap-1.5"
                   >
-                    <ClipKillBadge :kills="q.killsCount" :round="q.round" />
+                    <ClipKillBadge
+                      :kills="q.killsCount"
+                      :round="q.round"
+                      :title="q.title"
+                    />
                     <span
                       v-if="q.id === clipId"
                       :class="[

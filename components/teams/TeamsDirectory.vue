@@ -4,7 +4,7 @@ import { useApolloClient } from "@vue/apollo-composable";
 import { useI18n } from "vue-i18n";
 import { PlusCircle, Search, Swords, Trophy, Users, X } from "lucide-vue-next";
 import { $, order_by } from "~/generated/zeus";
-import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
+import { generateQuery } from "~/graphql/graphqlGen";
 import { teamResultMatchFields } from "~/graphql/teamPulseFields";
 import FilterBar from "~/components/common/FilterBar.vue";
 import FilterMenu from "~/components/common/FilterMenu.vue";
@@ -12,7 +12,12 @@ import FilterToggle from "~/components/common/FilterToggle.vue";
 import Pagination from "~/components/Pagination.vue";
 import WatchSegmented from "~/components/watch/WatchSegmented.vue";
 import TeamsDirectoryRow from "~/components/teams/TeamsDirectoryRow.vue";
-import type { TeamAwardEntry } from "~/components/teams/teamAwards";
+import {
+  groupAwardsByTeam,
+  teamAwardsSubscription,
+  tournamentWinnerTeamIds,
+  type TeamAwardEntry,
+} from "~/components/teams/teamAwards";
 import { Button } from "~/components/ui/button";
 import {
   InputGroup,
@@ -96,44 +101,9 @@ const ORDER: Record<Sort, any[]> = {
 // Every team award; the rows show them and "Tournament winners" filters on
 // them.
 const teamAwards = ref<TeamAwardEntry[]>([]);
-const awardsSub = generateSubscription({
-  award_recipients: [
-    { where: { player_steam_id: { _is_null: true } } },
-    {
-      id: true,
-      team_id: true,
-      source: true,
-      placement: true,
-      placement_tier: true,
-      tournament_id: true,
-      created_at: true,
-      award: {
-        id: true,
-        name: true,
-        tier: true,
-        silhouette: true,
-        image_url: true,
-      },
-      tournament: {
-        id: true,
-        name: true,
-        start: true,
-        stages: [
-          { order_by: [{ order: order_by.desc }], limit: 1 },
-          { type: true },
-        ],
-      },
-      tournament_award: {
-        custom_name: true,
-        silhouette: true,
-        image_url: true,
-      },
-    },
-  ],
-} as any);
 const awardsSubscription =
   typeof window !== "undefined"
-    ? client.subscribe({ query: awardsSub }).subscribe({
+    ? client.subscribe({ query: teamAwardsSubscription }).subscribe({
         next: ({ data }: any) => {
           teamAwards.value = data?.award_recipients ?? [];
         },
@@ -143,20 +113,8 @@ const awardsSubscription =
       })
     : null;
 
-const awardsByTeamId = computed(() => {
-  const map: Record<string, TeamAwardEntry[]> = {};
-  for (const grant of teamAwards.value as any[]) {
-    if (grant.team_id) (map[grant.team_id] ??= []).push(grant);
-  }
-  return map;
-});
-const winnerTeamIds = computed(() => [
-  ...new Set(
-    (teamAwards.value as any[])
-      .filter((grant) => grant.team_id && grant.source === "tournament")
-      .map((grant) => grant.team_id as string),
-  ),
-]);
+const awardsByTeamId = computed(() => groupAwardsByTeam(teamAwards.value));
+const winnerTeamIds = computed(() => tournamentWinnerTeamIds(teamAwards.value));
 
 const rowFields = {
   id: true,

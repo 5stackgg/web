@@ -1,7 +1,9 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import WatchStreamStage from "~/components/watch/WatchStreamStage.vue";
+import StreamLiveTag from "~/components/match/StreamLiveTag.vue";
+import StreamMatchCard from "~/components/match/StreamMatchCard.vue";
 import {
   stageNeedsLogin,
   stageScoreBug,
@@ -29,6 +31,13 @@ vi.mock("@vue/apollo-composable", async (importOriginal) => ({
 }));
 
 const twitch = { id: "s1", link: "https://twitch.tv/northside", title: "Main feed" };
+const gameStreamer = {
+  id: "g1",
+  link: "https://stream.example/m1",
+  title: "5Stack Game Streamer",
+  is_game_streamer: true,
+  is_live: true,
+};
 
 function liveMatch(overrides: Record<string, any> = {}) {
   return {
@@ -135,5 +144,66 @@ describe("WatchStreamStage", () => {
     const wrapper = await mountStage([liveMatch()]);
 
     expect(wrapper.find(".stream-embed").exists()).toBe(true);
+  });
+});
+
+describe("WatchStreamStage over the game stream", () => {
+  beforeEach(() => {
+    pushes.length = 0;
+    useApplicationSettingsStore().settings = [];
+    useAuthStore().me = { steam_id: "1", role: "user" } as any;
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("hides its chrome while the viewer watches and brings it back on pointer activity", async () => {
+    const wrapper = await mountStage([liveMatch({ streams: [gameStreamer] })]);
+    const screen = wrapper.find(".watch-stage-screen");
+    const liveTag = () => wrapper.findComponent(StreamLiveTag).classes();
+
+    expect(wrapper.find(".live-player").exists()).toBe(true);
+    // The HUD burned into the stream already names the teams and the score.
+    expect(wrapper.findComponent(StreamMatchCard).exists()).toBe(false);
+    // Up for a beat when the picture first comes up.
+    expect(liveTag()).toContain("opacity-100");
+
+    await screen.trigger("mouseleave");
+    expect(liveTag()).toContain("opacity-0");
+    expect(screen.classes()).toContain("cursor-none");
+
+    vi.useFakeTimers();
+    await screen.trigger("mousemove");
+    expect(liveTag()).toContain("opacity-100");
+    expect(screen.classes()).not.toContain("cursor-none");
+
+    vi.advanceTimersByTime(2000);
+    await flushPromises();
+    expect(liveTag()).toContain("opacity-0");
+  });
+
+  it("offers a volume slider once unmuted, and dragging it to zero mutes", async () => {
+    const wrapper = await mountStage([liveMatch({ streams: [gameStreamer] })]);
+
+    expect(wrapper.find('input[type="range"]').exists()).toBe(false);
+    await wrapper.find('button[aria-label="Unmute"]').trigger("click");
+
+    const slider = wrapper.find('input[type="range"]');
+    expect(slider.exists()).toBe(true);
+    await slider.setValue("0");
+
+    expect(wrapper.find('button[aria-label="Unmute"]').exists()).toBe(true);
+    expect(wrapper.find('input[type="range"]').exists()).toBe(false);
+  });
+
+  it("keeps its chrome up over a third-party embed", async () => {
+    const wrapper = await mountStage([liveMatch()]);
+
+    await wrapper.find(".watch-stage-screen").trigger("mouseleave");
+    expect(wrapper.findComponent(StreamLiveTag).classes()).toContain(
+      "opacity-100",
+    );
+    expect(wrapper.findComponent(StreamMatchCard).exists()).toBe(true);
   });
 });

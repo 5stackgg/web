@@ -181,6 +181,11 @@ export default {
         null
       );
     },
+    // Only the Twitch SDK can change volume at runtime; the other embeds
+    // are bare iframes with nothing to call.
+    supportsVolume() {
+      return this.platform === "twitch";
+    },
   },
   methods: {
     setGlobalStream(stream: MatchStream) {
@@ -449,6 +454,17 @@ export default {
             this.mountGenericIframe(this.embedId);
             break;
         }
+      }
+    },
+    setVolume(volume: number) {
+      if (!this.supportsVolume || !this.playerInstance?.setVolume) {
+        return;
+      }
+
+      try {
+        this.playerInstance.setVolume(volume);
+      } catch (error) {
+        console.warn("Twitch setVolume failed:", error);
       }
     },
     async loadStream() {

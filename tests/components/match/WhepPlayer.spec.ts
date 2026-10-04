@@ -100,7 +100,9 @@ async function answered(n: number) {
   );
 }
 
-async function mountPlayer(props: { trickle?: boolean } = {}) {
+async function mountPlayer(
+  props: { trickle?: boolean; controls?: boolean; volume?: number } = {},
+) {
   mounted = await mountSuspended(WhepPlayer, {
     props: { whepUrl: WHEP_URL, fallbackUrl: FALLBACK_URL, ...props },
   });
@@ -201,6 +203,37 @@ describe("WhepPlayer", () => {
 
     await answered(1);
     expect(posts[0] - started).toBeGreaterThanOrEqual(1900);
+  });
+
+  describe("controls", () => {
+    async function playing(props: { controls?: boolean; volume?: number }) {
+      const wrapper = await mountPlayer(props);
+      await answered(1);
+      peers[0].become("connected");
+      await flushPromises();
+      return wrapper;
+    }
+
+    it("draws its own buttons by default", async () => {
+      const wrapper = await playing({});
+
+      expect(wrapper.findAll("button").length).toBeGreaterThan(0);
+    });
+
+    it("leaves mute, volume and fullscreen to a host that turns them off", async () => {
+      const wrapper = await playing({ controls: false, volume: 0.4 });
+
+      expect(wrapper.findAll("button")).toHaveLength(0);
+      expect(wrapper.find('input[type="range"]').exists()).toBe(false);
+      expect((wrapper.find("video").element as HTMLVideoElement).volume).toBe(
+        0.4,
+      );
+
+      await wrapper.setProps({ volume: 0.75 });
+      expect((wrapper.find("video").element as HTMLVideoElement).volume).toBe(
+        0.75,
+      );
+    });
   });
 
   describe("trickle ICE", () => {

@@ -8,6 +8,7 @@ import { generateSubscription } from "~/graphql/graphqlGen";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
 import MatchScoreboardOverlay from "~/components/match/MatchScoreboardOverlay.vue";
 import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
+import StreamLiveTag from "~/components/match/StreamLiveTag.vue";
 import StreamMatchCard from "~/components/match/StreamMatchCard.vue";
 import StreamStatusPanel from "~/components/match/StreamStatusPanel.vue";
 import StreamBootStatus from "~/components/match/StreamBootStatus.vue";
@@ -33,6 +34,7 @@ const props = withDefaults(
     // the host and skip the border, LIVE tag, hover buttons and scoreboard.
     bare?: boolean;
     muted?: boolean;
+    volume?: number;
     audio?: boolean;
     disableShortcuts?: boolean;
   }>(),
@@ -339,7 +341,9 @@ function focusPopoutWindow() {
       class="group"
       :class="fills ? 'min-h-0 flex-1' : 'aspect-video'"
       :muted="muted"
+      :volume="volume"
       :audio="audio"
+      :controls="!bare"
       :disable-shortcuts="disableShortcuts"
       @phase="whepPhase = $event"
     >
@@ -384,24 +388,12 @@ function focusPopoutWindow() {
         </StreamMatchCard>
       </template>
 
-      <div
+      <StreamLiveTag
         v-if="isLive && !fills"
-        class="pointer-events-none absolute left-3 top-3 z-10 flex overflow-hidden rounded-[2px] text-[0.7rem] leading-none shadow-[0_6px_18px_-8px_rgba(0,0,0,0.7)]"
-      >
-        <span
-          class="px-2 py-1.5 font-bold uppercase tracking-[0.12em] transition-colors"
-          :class="
-            whepPhase
-              ? 'bg-muted text-muted-foreground'
-              : 'bg-destructive text-destructive-foreground'
-          "
-        >
-          {{ $t("common.live") }}
-        </span>
-        <span class="bg-background/85 px-2 py-1.5 text-foreground">
-          <StreamViewerBadge :match-id="matchId" bare />
-        </span>
-      </div>
+        :match-id="matchId"
+        :dim="!!whepPhase"
+        class="absolute left-3 top-3 z-10"
+      />
 
       <MatchScoreboardOverlay
         v-if="!bare"

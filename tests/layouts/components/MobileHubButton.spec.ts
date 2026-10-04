@@ -5,10 +5,14 @@ import MobileHubButton from "~/layouts/components/MobileHubButton.vue";
 import { useChatTabs } from "~/composables/useChatTabs";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 
-const hub = vi.hoisted(() => ({
-  notifications: 0,
-  openLastOrDefaultHub: () => {},
-}));
+// Reactive so a notification can arrive after mount.
+const hub = await vi.hoisted(async () => {
+  const { reactive } = await import("vue");
+  return reactive({
+    notifications: 0,
+    openLastOrDefaultHub: () => {},
+  });
+});
 
 vi.mock("@/composables/useHubState", () => ({
   useHubState: () => ({
@@ -59,6 +63,10 @@ function badge(wrapper: Awaited<ReturnType<typeof mountButton>>) {
   return wrapper.find("span.bg-red-500");
 }
 
+function ring(wrapper: Awaited<ReturnType<typeof mountButton>>) {
+  return wrapper.find("span.bg-red-400");
+}
+
 describe("MobileHubButton", () => {
   it("shows no badge when nothing is unread", async () => {
     const wrapper = await mountButton();
@@ -89,16 +97,30 @@ describe("MobileHubButton", () => {
     const wrapper = await mountButton();
 
     expect(badge(wrapper).text()).toBe("1");
-    expect(wrapper.find(".animate-ping").exists()).toBe(false);
+    expect(ring(wrapper).exists()).toBe(false);
   });
 
-  it("pings while notifications are unread", async () => {
+  it("sits still on notifications that were already unread", async () => {
     hub.notifications = 1;
 
     const wrapper = await mountButton();
 
     expect(badge(wrapper).text()).toBe("1");
-    expect(wrapper.find(".animate-ping").exists()).toBe(true);
+    expect(ring(wrapper).exists()).toBe(false);
+  });
+
+  it("rings once when a notification arrives", async () => {
+    const wrapper = await mountButton();
+
+    hub.notifications = 1;
+    await flushPromises();
+
+    expect(badge(wrapper).text()).toBe("1");
+    expect(ring(wrapper).exists()).toBe(true);
+
+    await ring(wrapper).trigger("animationend");
+
+    expect(ring(wrapper).exists()).toBe(false);
   });
 
   it("pops the badge in when a message arrives", async () => {
@@ -152,6 +174,6 @@ describe("MobileHubButton", () => {
     const wrapper = await mountButton();
 
     expect(badge(wrapper).text()).toBe("2");
-    expect(wrapper.find(".animate-ping").exists()).toBe(false);
+    expect(ring(wrapper).exists()).toBe(false);
   });
 });

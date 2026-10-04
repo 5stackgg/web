@@ -8850,6 +8850,10 @@
     "highlights": {
       "clip_count": "{count} 個片段"
     },
+    "header": {
+      "final": "已結束",
+      "winner": "勝者"
+    },
     "utility": {
       "title": "道具與點位",
       "description": "本場比賽投出的手榴彈，依投擲位置與落點與點位庫做了比對。",

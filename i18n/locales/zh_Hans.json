@@ -8850,6 +8850,10 @@
     "highlights": {
       "clip_count": "{count} 个片段"
     },
+    "header": {
+      "final": "已结束",
+      "winner": "胜者"
+    },
     "utility": {
       "title": "道具与点位",
       "description": "本场比赛投出的手雷，按投掷位置和落点与点位库做了比对。",

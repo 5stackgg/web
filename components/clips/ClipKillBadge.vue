@@ -9,7 +9,7 @@ const props = withDefaults(
     round: number | null | undefined;
     // The clip's raw title -- it says whether the clip stays in one round.
     title?: string | null;
-    size?: "sm" | "lg";
+    size?: "xs" | "sm" | "lg";
   }>(),
   { size: "sm" },
 );
@@ -37,7 +37,9 @@ const isAce = computed(() => tier.value?.marks && tier.value.filled === 5);
     :class="
       size === 'lg'
         ? 'h-[30px] gap-1 px-2.5 sm:h-9 sm:px-3'
-        : 'h-[26px] gap-[3px] px-[9px]'
+        : size === 'xs'
+          ? 'h-5 gap-[2px] rounded-[4px] px-1.5'
+          : 'h-[26px] gap-[3px] px-[9px]'
     "
   >
     <template v-if="tier.marks">
@@ -49,7 +51,9 @@ const isAce = computed(() => tier.value?.marks && tier.value.filled === 5);
         :class="[
           size === 'lg'
             ? 'h-4 w-1.5 rounded-[1.5px] sm:h-5 sm:w-[7px]'
-            : 'h-3.5 w-[5px] rounded-[1px]',
+            : size === 'xs'
+              ? 'h-2.5 w-1 rounded-[1px]'
+              : 'h-3.5 w-[5px] rounded-[1px]',
           i <= tier.filled ? 'bg-[hsl(var(--tac-amber))]' : 'bg-white/20',
         ]"
       />
@@ -57,8 +61,18 @@ const isAce = computed(() => tier.value?.marks && tier.value.filled === 5);
     <span
       class="clip-cap-trim whitespace-nowrap font-extrabold tracking-[0.01em]"
       :class="[
-        size === 'lg' ? 'text-base sm:text-[19px]' : 'text-[13px]',
-        tier.marks ? (size === 'lg' ? 'ml-2 sm:ml-[9px]' : 'ml-[7px]') : '',
+        size === 'lg'
+          ? 'text-base sm:text-[19px]'
+          : size === 'xs'
+            ? 'text-[11px]'
+            : 'text-[13px]',
+        tier.marks
+          ? size === 'lg'
+            ? 'ml-2 sm:ml-[9px]'
+            : size === 'xs'
+              ? 'ml-[5px]'
+              : 'ml-[7px]'
+          : '',
         isAce ? 'text-[hsl(var(--tac-amber))]' : 'text-white',
       ]"
     >

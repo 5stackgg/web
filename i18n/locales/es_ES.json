@@ -8850,6 +8850,10 @@
     "highlights": {
       "clip_count": "{count} clips"
     },
+    "header": {
+      "final": "Final",
+      "winner": "Ganador"
+    },
     "utility": {
       "title": "Utilidad vs lineups",
       "description": "Granadas lanzadas en este partido, comparadas con la biblioteca de lineups por dónde se lanzaron y dónde cayeron.",

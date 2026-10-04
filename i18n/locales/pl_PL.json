@@ -8850,6 +8850,10 @@
     "highlights": {
       "clip_count": "{count} klipów"
     },
+    "header": {
+      "final": "Koniec",
+      "winner": "Zwycięzca"
+    },
     "utility": {
       "title": "Utility a ustawki",
       "description": "Granaty rzucone w tym meczu, zestawione z biblioteką ustawek po miejscu rzutu i miejscu lądowania.",

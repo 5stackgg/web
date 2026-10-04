@@ -8850,6 +8850,10 @@
     "highlights": {
       "clip_count": "클립 {count}개"
     },
+    "header": {
+      "final": "최종 결과",
+      "winner": "승자"
+    },
     "utility": {
       "title": "유틸리티와 라인업",
       "description": "이 경기에서 던진 수류탄을, 던진 위치와 떨어진 위치로 라인업 라이브러리와 대조했습니다.",

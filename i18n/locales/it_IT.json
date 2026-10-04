@@ -8850,6 +8850,10 @@
     "highlights": {
       "clip_count": "{count} clip"
     },
+    "header": {
+      "final": "Finale",
+      "winner": "Vincitore"
+    },
     "utility": {
       "title": "Utility vs lineup",
       "description": "Granate lanciate in questa partita, confrontate con la libreria dei lineup in base a dove sono partite e dove sono atterrate.",

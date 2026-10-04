@@ -6778,6 +6778,15 @@
     "results_section": {
       "no_data": "無資料",
       "mvp": "最有價值選手",
+      "mvp_tooltip": {
+        "title": "MVP 評選方式",
+        "rule": "冠軍隊伍中，在本次賽事所有比賽裡平均影響力最高的選手。",
+        "impact": "影響力根據相對於隊伍的（擊殺 + 助攻）/ 死亡以及在隊伍傷害中的佔比，為每場比賽給出 0.80–1.20 的評分。",
+        "avg_impact": "平均影響力",
+        "matches": "場次",
+        "next_best": "次佳：{name}",
+        "manual": "由賽事主辦方選定。"
+      },
       "no_matches_played": "尚未進行任何比賽"
     },
     "swiss": {

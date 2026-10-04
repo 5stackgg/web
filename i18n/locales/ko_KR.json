@@ -6778,6 +6778,15 @@
     "results_section": {
       "no_data": "데이터 없음",
       "mvp": "최우수 선수",
+      "mvp_tooltip": {
+        "title": "MVP 선정 방식",
+        "rule": "우승 팀에서 대회 전체 경기의 평균 임팩트가 가장 높은 선수입니다.",
+        "impact": "임팩트는 팀 대비 (킬 + 어시스트) / 데스와 팀 피해량 중 비중을 바탕으로 각 경기를 0.80~1.20으로 평가합니다.",
+        "avg_impact": "평균 임팩트",
+        "matches": "경기 수",
+        "next_best": "차순위: {name}",
+        "manual": "대회 주최자가 선정했습니다."
+      },
       "no_matches_played": "아직 진행된 매치가 없습니다"
     },
     "swiss": {

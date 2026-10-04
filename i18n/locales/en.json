@@ -6780,6 +6780,15 @@
     "results_section": {
       "no_data": "NO DATA",
       "mvp": "MOST VALUABLE PLAYER",
+      "mvp_tooltip": {
+        "title": "How the MVP is chosen",
+        "rule": "The player on the winning team with the highest average impact across every match of the tournament.",
+        "impact": "Impact rates each match from 0.80 to 1.20, based on (kills + assists) / deaths compared to the team and share of the team's damage.",
+        "avg_impact": "Avg impact",
+        "matches": "Matches",
+        "next_best": "Next best: {name}",
+        "manual": "Hand-picked by the tournament organizer."
+      },
       "no_matches_played": "No matches played yet"
     },
     "swiss": {

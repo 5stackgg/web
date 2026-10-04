@@ -6778,6 +6778,15 @@
     "results_section": {
       "no_data": "VERİ YOK",
       "mvp": "EN DEĞERLİ OYUNCU",
+      "mvp_tooltip": {
+        "title": "MVP nasıl seçilir",
+        "rule": "Turnuvanın tüm maçlarında en yüksek ortalama etkiye sahip kazanan takım oyuncusu.",
+        "impact": "Etki, her maçı takıma göre (öldürme + asist) / ölüm oranına ve takım hasarındaki paya göre 0,80 ile 1,20 arasında puanlar.",
+        "avg_impact": "Ort. etki",
+        "matches": "Maçlar",
+        "next_best": "Sonraki en iyi: {name}",
+        "manual": "Turnuva organizatörü tarafından seçildi."
+      },
       "no_matches_played": "Henüz oynanan maç yok"
     },
     "swiss": {

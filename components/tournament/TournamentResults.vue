@@ -9,6 +9,13 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "~/components/ui/hover-card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
+import { Info } from "lucide-vue-next";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import { kdColor } from "~/utils/statTiers";
 import {
@@ -313,23 +320,92 @@ function playerAvatarSrc(player: {
           </div>
 
           <div class="flex min-w-0 flex-1 flex-col gap-1.5">
-            <div
-              class="inline-flex w-fit items-center gap-2 rounded-sm border px-2.5 py-1 font-mono text-[0.6rem] uppercase tracking-[0.24em]"
-              style="
-                border-color: hsl(195 85% 60% / 0.55);
-                background: hsl(195 85% 60% / 0.12);
-                color: hsl(195 85% 60%);
-              "
-            >
-              <span
-                class="inline-block h-1.5 w-1.5 rounded-full"
-                style="
-                  background: hsl(195 85% 60%);
-                  box-shadow: 0 0 6px hsl(195 85% 60%);
-                "
-              ></span>
-              {{ $t("tournament.results_section.mvp") }}
-            </div>
+            <TooltipProvider :delay-duration="150">
+              <Tooltip>
+                <TooltipTrigger as-child>
+                  <div
+                    tabindex="0"
+                    class="inline-flex w-fit cursor-help items-center gap-2 rounded-sm border px-2.5 py-1 font-mono text-[0.6rem] uppercase tracking-[0.24em] outline-none focus-visible:ring-1 focus-visible:ring-[hsl(195_85%_60%)]"
+                    style="
+                      border-color: hsl(195 85% 60% / 0.55);
+                      background: hsl(195 85% 60% / 0.12);
+                      color: hsl(195 85% 60%);
+                    "
+                  >
+                    <span
+                      class="inline-block h-1.5 w-1.5 rounded-full"
+                      style="
+                        background: hsl(195 85% 60%);
+                        box-shadow: 0 0 6px hsl(195 85% 60%);
+                      "
+                    ></span>
+                    {{ $t("tournament.results_section.mvp") }}
+                    <Info class="h-3 w-3 opacity-70" aria-hidden="true" />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" align="start" class="space-y-2">
+                  <div
+                    class="font-mono text-[0.6rem] uppercase tracking-[0.2em]"
+                    style="color: hsl(195 85% 60%)"
+                  >
+                    {{ $t("tournament.results_section.mvp_tooltip.title") }}
+                  </div>
+                  <template v-if="mvp.source === 'manual'">
+                    <p>
+                      {{ $t("tournament.results_section.mvp_tooltip.manual") }}
+                    </p>
+                    <p v-if="mvp.note" class="italic text-muted-foreground">
+                      “{{ mvp.note }}”
+                    </p>
+                  </template>
+                  <template v-else>
+                    <p>
+                      {{ $t("tournament.results_section.mvp_tooltip.rule") }}
+                    </p>
+                    <p class="text-muted-foreground">
+                      {{ $t("tournament.results_section.mvp_tooltip.impact") }}
+                    </p>
+                    <dl
+                      v-if="mvpImpact"
+                      class="grid grid-cols-[1fr_auto] gap-x-4 gap-y-1 border-t border-border/60 pt-2 font-mono tabular-nums"
+                    >
+                      <dt class="text-muted-foreground">
+                        {{
+                          $t(
+                            "tournament.results_section.mvp_tooltip.avg_impact",
+                          )
+                        }}
+                      </dt>
+                      <dd
+                        class="text-right font-bold"
+                        style="color: hsl(195 85% 60%)"
+                      >
+                        {{ mvpImpact.avg.toFixed(2) }}
+                      </dd>
+                      <dt class="text-muted-foreground">
+                        {{
+                          $t("tournament.results_section.mvp_tooltip.matches")
+                        }}
+                      </dt>
+                      <dd class="text-right">{{ mvpImpact.matches }}</dd>
+                      <template v-if="mvpImpact.nextBest">
+                        <dt class="min-w-0 truncate text-muted-foreground">
+                          {{
+                            $t(
+                              "tournament.results_section.mvp_tooltip.next_best",
+                              { name: mvpImpact.nextBest.name },
+                            )
+                          }}
+                        </dt>
+                        <dd class="text-right">
+                          {{ mvpImpact.nextBest.avg.toFixed(2) }}
+                        </dd>
+                      </template>
+                    </dl>
+                  </template>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             <PlayerDisplay
               v-if="mvp.player"
               :player="mvp.player"
@@ -489,9 +565,54 @@ export default {
     return {
       tournamentMatches: [] as any[],
       tournamentPlayerStats: [] as any[],
+      mvpImpacts: [] as any[],
     };
   },
   apollo: {
+    // Per-match impact for the winning roster, the same rows
+    // calculate_tournament_awards ranks to pick the MVP.
+    mvpImpacts: {
+      query: typedGql("query")({
+        player_elo: [
+          {
+            where: {
+              steam_id: { _in: $("steamIds", "[bigint!]!") },
+              match: {
+                tournament_brackets: {
+                  stage: {
+                    tournament_id: {
+                      _eq: $("tournamentId", "uuid!"),
+                    },
+                  },
+                },
+              },
+            },
+          },
+          {
+            steam_id: true,
+            match_id: true,
+            impact: true,
+          },
+        ],
+      }),
+      variables: function () {
+        const self = this as any;
+        return {
+          tournamentId: self.tournament?.id,
+          steamIds: self.mvpRosterSteamIds,
+        };
+      },
+      skip: function () {
+        const self = this as any;
+        return (
+          !self.tournament?.id ||
+          !self.mvp ||
+          self.mvp.source === "manual" ||
+          self.mvpRosterSteamIds.length === 0
+        );
+      },
+      update: (data: any) => data?.player_elo || [],
+    },
     $subscribe: {
       tournamentMatches: {
         query: typedGql("subscription")({
@@ -758,6 +879,55 @@ export default {
     mvpStats() {
       if (!this.mvp?.player_steam_id) return null;
       return this.playerStatFor(this.mvp.player_steam_id);
+    },
+    mvpRoster() {
+      return ((this.mvp as any)?.tournament_team?.roster || []) as any[];
+    },
+    mvpRosterSteamIds() {
+      const ids = new Set(
+        (this as any).mvpRoster.map((r: any) => String(r.player_steam_id)),
+      );
+      if (this.mvp?.player_steam_id) ids.add(String(this.mvp.player_steam_id));
+      return Array.from(ids);
+    },
+    // Ranks the winning roster the way calculate_tournament_awards does:
+    // average impact (a missing value counts as 1.0), then total impact.
+    mvpImpact() {
+      const mvpSteamId = this.mvp?.player_steam_id;
+      if (!mvpSteamId) return null;
+
+      const byPlayer = new Map<string, { total: number; matches: number }>();
+      for (const row of (this as any).mvpImpacts as any[]) {
+        const steamId = String(row.steam_id);
+        const entry = byPlayer.get(steamId) || { total: 0, matches: 0 };
+        entry.total += row.impact == null ? 1 : Number(row.impact);
+        entry.matches++;
+        byPlayer.set(steamId, entry);
+      }
+
+      const ranked = Array.from(byPlayer, ([steamId, entry]) => ({
+        steamId,
+        ...entry,
+        avg: entry.total / entry.matches,
+      })).sort((a, b) => b.avg - a.avg || b.total - a.total);
+
+      const mine = ranked.find((e) => e.steamId === String(mvpSteamId));
+      if (!mine) return null;
+
+      const next = ranked.find((e) => e.steamId !== mine.steamId);
+      const nextPlayer = next
+        ? (this as any).mvpRoster.find(
+            (r: any) => String(r.player_steam_id) === next.steamId,
+          )?.player
+        : null;
+
+      return {
+        avg: mine.avg,
+        matches: mine.matches,
+        nextBest: next
+          ? { avg: next.avg, name: nextPlayer?.name || next.steamId }
+          : null,
+      };
     },
     stagesWithStandings() {
       const stages = ((this.tournament as any)?.stages || []) as any[];

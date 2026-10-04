@@ -1638,6 +1638,62 @@
         "col_pick": "Pick確率",
         "col_play": "プレイ確率",
         "col_predicted_win": "予測勝率"
+      },
+      "players": "{count} 人 | {count} 人",
+      "form": {
+        "label": "直近の成績: {results}",
+        "none": "まだ結果がありません",
+        "result_W": "勝ち",
+        "result_L": "負け",
+        "result_T": "引き分け"
+      },
+      "your_teams": {
+        "title": "自分のチーム",
+        "next": "次",
+        "last": "前回",
+        "playing_now": "対戦中",
+        "nothing_scheduled": "予定なし",
+        "no_matches": "まだ試合がありません",
+        "result_W": "勝利",
+        "result_L": "敗北",
+        "result_T": "引き分け",
+        "check_in": "チェックイン",
+        "scrim_replies": "スクリム返信が{count}件必要です | スクリム返信が{count}件必要です",
+        "invite_starter": "スターターを招待"
+      },
+      "playing_now": {
+        "title": "対戦中",
+        "live_count": "{count} 試合ライブ",
+        "all_live": "ライブ中の試合をすべて見る",
+        "more_on_watch": "Watchでさらにライブ中"
+      },
+      "scrims": {
+        "title": "スクリム募集中",
+        "subtitle": "挑戦を受け付けているチーム",
+        "today": "本日 {from}–{to}",
+        "any_time": "いつでも申請を受け付けます",
+        "sign_in_to_request": "ログインして申請",
+        "need_team": "スクリムを申請するには、自分が所有または運営するチームが必要です。",
+        "see_all": "スクリムファインダーですべて見る"
+      },
+      "directory": {
+        "title": "すべてのチーム",
+        "sort_label": "チームを並べ替え",
+        "sort_active": "最近の活動順",
+        "sort_rating": "レーティング",
+        "sort_name": "名前",
+        "search_label": "チームを検索",
+        "clear_search": "検索をクリア",
+        "org": "Org",
+        "playing_now": "対戦中",
+        "never_played": "まだ試合がありません",
+        "col_roster": "ロスター",
+        "col_elo": "平均ELO",
+        "col_form": "フォーム",
+        "col_last": "最終試合",
+        "col_awards": "アワード",
+        "no_match": "検索や絞り込みに一致するものがありません。",
+        "clear_filters": "絞り込みをクリア"
       }
     },
     "settings": {
@@ -7833,6 +7889,90 @@
       "failed_description": "リクエストが失敗しました。しばらくしてからもう一度お試しください。",
       "empty": "一致するユーティリティがありません",
       "empty_description": "このチームの試合で投げられたグレネードのうち、保存済みラインナップと一致するものはまだありません。"
+    },
+    "pulse": {
+      "hero": {
+        "players": "{count} 人 | {count} 人",
+        "matches": "{count} 試合 | {count} 試合",
+        "no_matches": "まだ試合がありません",
+        "founded": "{date}に設立",
+        "all_awards": "すべてのアワードを表示",
+        "team_actions": "チーム操作"
+      },
+      "stage": {
+        "live": "ライブ中",
+        "next_up": "次の試合",
+        "upcoming": "予定 {count} 件",
+        "then": "その後",
+        "open_to_scrims": "他のチームから挑戦を受けられるよう、{name}をスクリムに公開しましょう。",
+        "set_up_scrims": "スクリムを設定",
+        "none_scheduled_member": "予定されている試合はまだありません。",
+        "none_scheduled": "現在予定はありません。",
+        "never_played": "{name}はまだ試合をしていません。"
+      },
+      "results": {
+        "hint": "新しい順、スクロールで過去分を表示",
+        "all_matches": "すべての試合"
+      },
+      "tabs": {
+        "matches": "試合",
+        "scrim_waiting": "あなたの対応待ち {count} 件"
+      },
+      "needs": {
+        "title": "対応が必要",
+        "to_do": "残り{count}件",
+        "check_in_title": "{name}戦のチェックイン",
+        "scrim_title": "がスクリムを希望しています",
+        "counter_title": "が新しい時間を提案しました",
+        "best_of_short": "Bo{count}",
+        "roster_title": "スターター {count}/5人",
+        "roster_meta": "フルチームで戦うには、プレイヤーを招待してください。",
+        "waiting_on": "待機中",
+        "waiting_check_in": "{names}のチェックイン",
+        "waiting_scrim": "{name}のスクリム申請への返答",
+        "waiting_invites": "{names}の招待の承諾",
+        "counter_dialog_title": "別の時間を提案",
+        "counter_dialog_description": "{name}が新しい時間を承諾する必要があります。",
+        "send_new_time": "新しい時間を送信"
+      }
+    },
+    "activity": {
+      "title": "アクティビティ",
+      "this_week": "今週",
+      "earlier": "それ以前",
+      "show_older": "過去のアクティビティを表示",
+      "empty": "{team}が試合をすると、結果、クリップ、アワードがここに表示されます。",
+      "beat": "{opponent}に勝利",
+      "lost_to": "{opponent}に敗北",
+      "drew_with": "{opponent}と引き分け",
+      "open_match": "試合を開く",
+      "won": "{name}で優勝",
+      "second_at": "{name}で2位",
+      "third_at": "{name}で3位",
+      "placed_at": "{name}で{placement}",
+      "received": "{name}を獲得",
+      "tournament": "トーナメント",
+      "promoted": "{division}に昇格",
+      "relegated": "{division}に降格",
+      "finished": "{division}で{rank}位",
+      "stayed": "{division}に残留",
+      "started": "{season}が開始",
+      "invited": "{name}が招待されました",
+      "invited_by": "{name}から招待",
+      "created": "{team}が作成されました"
+    },
+    "starting_five": {
+      "title": "スターティング5",
+      "players": "{count} 人 | {count} 人",
+      "manage_roster": "ロスターを管理",
+      "full_roster": "ロスター全体",
+      "starters_only": "スターティング5のみ",
+      "open_slot": "空きスターター枠",
+      "invite": "招待",
+      "substitutes": "控え {count} 人 | 控え {count} 人",
+      "bench": "ベンチ {count} 人",
+      "coaches": "コーチ {count} 人 | コーチ {count} 人",
+      "captain": "キャプテン: {name}"
     }
   },
   "match": {

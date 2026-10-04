@@ -1638,6 +1638,62 @@
         "col_pick": "Імовірність піку",
         "col_play": "Імовірність гри",
         "col_predicted_win": "Прогноз перемоги%"
+      },
+      "players": "{count} гравець | {count} гравців",
+      "form": {
+        "label": "Недавня форма: {results}",
+        "none": "Результатів поки немає",
+        "result_W": "перемога",
+        "result_L": "поразка",
+        "result_T": "нічия"
+      },
+      "your_teams": {
+        "title": "Твої команди",
+        "next": "Наступний",
+        "last": "Останній",
+        "playing_now": "Грає зараз",
+        "nothing_scheduled": "Нічого не заплановано",
+        "no_matches": "Матчів поки немає",
+        "result_W": "Перемога",
+        "result_L": "Поразка",
+        "result_T": "Нічия",
+        "check_in": "Реєстрація",
+        "scrim_replies": "Потрібна відповідь на {count} скрим | Потрібні відповіді на скрими: {count}",
+        "invite_starter": "Запросити гравця в основу"
+      },
+      "playing_now": {
+        "title": "Грає зараз",
+        "live_count": "{count} в ефірі",
+        "all_live": "Усі матчі в ефірі",
+        "more_on_watch": "ще в ефірі на Watch"
+      },
+      "scrims": {
+        "title": "Шукають скрими",
+        "subtitle": "Команди, що приймають виклики",
+        "today": "Сьогодні {from}–{to}",
+        "any_time": "Приймає запити будь-коли",
+        "sign_in_to_request": "Увійди, щоб надіслати запит",
+        "need_team": "Щоб запросити скрим, потрібна команда, якою ти володієш або яку очолюєш.",
+        "see_all": "Дивитися всі в пошуку скримів"
+      },
+      "directory": {
+        "title": "Усі команди",
+        "sort_label": "Сортування команд",
+        "sort_active": "Нещодавно активні",
+        "sort_rating": "Рейтинг",
+        "sort_name": "Назва",
+        "search_label": "Пошук команд",
+        "clear_search": "Очистити пошук",
+        "org": "Орг",
+        "playing_now": "Грає зараз",
+        "never_played": "Матчів поки немає",
+        "col_roster": "Склад",
+        "col_elo": "Серед. ELO",
+        "col_form": "Форма",
+        "col_last": "Останній матч",
+        "col_awards": "Нагороди",
+        "no_match": "Нічого не знайдено за твоїм запитом чи фільтрами.",
+        "clear_filters": "Скинути фільтри"
       }
     },
     "settings": {
@@ -7833,6 +7889,90 @@
       "failed_description": "Запит не пройшов. Спробуй за хвилину.",
       "empty": "Збігів немає",
       "empty_description": "Поки жодна граната з матчів цієї команди не збіглася зі збереженою розкидкою."
+    },
+    "pulse": {
+      "hero": {
+        "players": "{count} гравець | {count} гравців",
+        "matches": "{count} матч | {count} матчів",
+        "no_matches": "Матчів поки немає",
+        "founded": "Заснована {date}",
+        "all_awards": "Показати всі нагороди",
+        "team_actions": "Дії команди"
+      },
+      "stage": {
+        "live": "Зараз в ефірі",
+        "next_up": "Наступний",
+        "upcoming": "Майбутніх: {count}",
+        "then": "Потім",
+        "open_to_scrims": "Відкрий {name} для скримів, щоб інші команди могли кинути виклик.",
+        "set_up_scrims": "Налаштувати скрими",
+        "none_scheduled_member": "Матчів поки не заплановано.",
+        "none_scheduled": "Зараз нічого не заплановано.",
+        "never_played": "{name} ще не зіграла жодного матчу."
+      },
+      "results": {
+        "hint": "Спочатку нові, прокрути для старіших",
+        "all_matches": "Усі матчі"
+      },
+      "tabs": {
+        "matches": "Матчі",
+        "scrim_waiting": "Чекають на тебе: {count}"
+      },
+      "needs": {
+        "title": "Потрібен ти",
+        "to_do": "Справ: {count}",
+        "check_in_title": "Реєстрація на матч проти {name}",
+        "scrim_title": "хоче зіграти скрим",
+        "counter_title": "запропонував новий час",
+        "best_of_short": "Bo{count}",
+        "roster_title": "В основі {count} з 5",
+        "roster_meta": "Запроси гравців, щоб зібрати повну команду.",
+        "waiting_on": "Очікування",
+        "waiting_check_in": "{names}: реєстрація",
+        "waiting_scrim": "{name}: відповідь на твій запит скриму",
+        "waiting_invites": "{names}: прийняття запрошень",
+        "counter_dialog_title": "Запропонувати інший час",
+        "counter_dialog_description": "{name} ще має прийняти новий час.",
+        "send_new_time": "Надіслати новий час"
+      }
+    },
+    "activity": {
+      "title": "Активність",
+      "this_week": "Цього тижня",
+      "earlier": "Раніше",
+      "show_older": "Показати давнішу активність",
+      "empty": "Результати, кліпи й нагороди з'являтимуться тут, поки {team} грає.",
+      "beat": "Перемога над {opponent}",
+      "lost_to": "Поразка від {opponent}",
+      "drew_with": "Нічия з {opponent}",
+      "open_match": "Відкрити матч",
+      "won": "Перемога в {name}",
+      "second_at": "2-ге місце в {name}",
+      "third_at": "3-тє місце в {name}",
+      "placed_at": "{placement} в {name}",
+      "received": "Отримано: {name}",
+      "tournament": "Турнір",
+      "promoted": "Підвищення до {division}",
+      "relegated": "Пониження до {division}",
+      "finished": "Фініш #{rank} у {division}",
+      "stayed": "Залишились у {division}",
+      "started": "Розпочався {season}",
+      "invited": "{name} запрошено",
+      "invited_by": "Запрошує {name}",
+      "created": "{team} створено"
+    },
+    "starting_five": {
+      "title": "Основний склад",
+      "players": "{count} гравець | {count} гравців",
+      "manage_roster": "Керування складом",
+      "full_roster": "Увесь склад",
+      "starters_only": "Лише основний склад",
+      "open_slot": "Вільне місце в основі",
+      "invite": "Запросити",
+      "substitutes": "{count} запасний | Запасних: {count}",
+      "bench": "{count} у запасі",
+      "coaches": "{count} тренер | Тренерів: {count}",
+      "captain": "Капітан: {name}"
     }
   },
   "match": {

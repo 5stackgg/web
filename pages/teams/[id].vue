@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import { TeamMembers } from "~/components/teams";
+import { ref } from "vue";
+import {
+  MoreVertical,
+  Trash2,
+  LogOut,
+  Pencil,
+  Medal,
+  Swords,
+} from "lucide-vue-next";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,11 +25,6 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-
-import { ref } from "vue";
-import { MoreVertical, Trash2, LogOut, Pencil, Medal } from "lucide-vue-next";
-import AwardComposer from "~/components/award/AwardComposer.vue";
-
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -31,24 +34,26 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import HeightGlide from "~/components/ui/transitions/HeightGlide.vue";
+import AwardComposer from "~/components/award/AwardComposer.vue";
 import TeamForm from "~/components/teams/TeamForm.vue";
-import MatchesTable from "~/components/MatchesTable.vue";
-import Pagination from "~/components/Pagination.vue";
-import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import ImageUploadTile from "~/components/ImageUploadTile.vue";
-import AwardCase from "~/components/award/AwardCase.vue";
 import TeamCareerStats from "~/components/team/TeamCareerStats.vue";
 import TeamVetoStats from "~/components/team/TeamVetoStats.vue";
 import TeamVetoSimulator from "~/components/team/TeamVetoSimulator.vue";
 import TeamUtilityUtility from "~/components/team/TeamUtilityUtility.vue";
 import TeamRankSummary from "~/components/team/TeamRankSummary.vue";
 import TeamHighlights from "~/components/team/TeamHighlights.vue";
-import TeamLeagueHistory from "~/components/teams/TeamLeagueHistory.vue";
 import TeamScrimManager from "~/components/team/TeamScrimManager.vue";
-import TeamCalendarButton from "~/components/team/TeamCalendarButton.vue";
+import TeamMatches from "~/components/team/TeamMatches.vue";
 import ScrimRequestDialog from "~/components/team/ScrimRequestDialog.vue";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import TeamHero from "~/components/team/TeamHero.vue";
+import TeamStage from "~/components/team/TeamStage.vue";
+import TeamNeedsInbox from "~/components/team/TeamNeedsInbox.vue";
+import TeamResultsTicker from "~/components/team/TeamResultsTicker.vue";
+import TeamOverview from "~/components/team/TeamOverview.vue";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
@@ -56,102 +61,42 @@ import {
 } from "~/utilities/tacticalClasses";
 
 const teamMenu = ref(false);
-const teamHeroClasses =
-  "relative rounded-lg border border-border px-5 py-4 sm:px-6 sm:py-5 [background:linear-gradient(180deg,hsl(var(--card)_/_0.55)_0%,hsl(var(--card)_/_0.25)_100%)] [backdrop-filter:blur(6px)]";
-const teamHeroBodyClasses = "flex flex-wrap items-center gap-7 max-md:gap-4";
-const teamHeroEmblemFrameClasses =
-  "relative flex h-[140px] w-[140px] items-center justify-center border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] p-1 max-md:h-24 max-md:w-24";
-const teamHeroEmblemClasses =
-  "font-sans font-bold uppercase tracking-[0.05em] text-[hsl(var(--tac-amber))] text-[2.5rem] max-md:text-[1.75rem] leading-none";
-const teamHeroIdentityClasses = "flex min-w-0 flex-1 flex-col gap-3";
-const teamHeroNameRowClasses = "flex min-w-0 flex-wrap items-center gap-3";
-const teamHeroNameClasses =
-  "relative m-0 min-w-0 truncate font-sans text-[clamp(1.6rem,3.2vw,2.5rem)] font-bold uppercase leading-tight tracking-[0.02em] text-foreground [font-stretch:80%]";
-const teamHeroTagClasses =
-  "inline-flex items-center border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] px-[0.65rem] py-1 font-mono text-[0.7rem] font-bold uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))]";
-const teamHeroMetaClasses = "inline-flex flex-wrap items-center gap-[0.65rem]";
-const teamHeroMetaLabelClasses =
-  "font-mono text-[0.65rem] uppercase tracking-[0.22em] text-muted-foreground";
-const teamHeroStatsClasses = "mt-[0.15rem] inline-flex items-center gap-5";
-const teamHeroStatClasses = "inline-flex items-baseline gap-1.5";
-const teamHeroStatValueClasses =
-  "font-sans text-xl font-bold tabular-nums text-foreground";
-const teamHeroStatLabelClasses =
-  "font-mono text-[0.65rem] uppercase tracking-[0.22em] text-muted-foreground";
-const teamHeroStatDividerClasses = "h-5 w-px bg-border";
-const teamHeroActionsClasses =
-  "ml-auto flex shrink-0 items-center gap-3 max-md:ml-0";
 </script>
 
 <template>
   <PageTransition v-if="team">
-    <header :class="teamHeroClasses">
-      <div :class="teamHeroBodyClasses">
-        <div :class="teamHeroEmblemFrameClasses">
-          <img
-            v-if="teamAvatarSrc"
-            :src="teamAvatarSrc"
-            :alt="team.name"
-            class="h-full w-full object-cover"
+    <div
+      class="grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:items-stretch"
+    >
+      <TeamHero
+        :team="team"
+        :awards="teamAwards"
+        :matches-count="teamMatches.length"
+      >
+        <template #actions>
+          <Button
+            v-if="showRequestScrim"
+            size="sm"
+            class="tac-amber-cta h-8 gap-1.5 border font-semibold"
+            :disabled="!me"
+            @click="scrimRequestOpen = true"
+          >
+            <Swords class="size-3.5" />
+            {{ $t("scrim.request_scrim") }}
+          </Button>
+          <TeamNeedsInbox
+            v-if="isOnTeam || isTeamOwner || isAdmin || team.can_manage_scrims"
+            :team="team"
+            @invite="showRoster"
+            @scrim-count="scrimNeedsCount = $event"
           />
-          <span v-else :class="teamHeroEmblemClasses">
-            {{ team.short_name || team.name }}
-          </span>
-        </div>
-
-        <div :class="teamHeroIdentityClasses">
-          <div :class="teamHeroNameRowClasses">
-            <h1 :class="teamHeroNameClasses">{{ team.name }}</h1>
-            <span v-if="team.short_name" :class="teamHeroTagClasses">
-              {{ team.short_name }}
-            </span>
-            <TeamRankSummary
-              :ranks="team.ranks"
-              :reputation="team.reputation"
-            />
-          </div>
-
-          <div class="flex flex-wrap items-center gap-x-5 gap-y-3">
-            <div :class="teamHeroMetaClasses">
-              <span :class="teamHeroMetaLabelClasses">
-                {{ $t("team.roles.captain") }}
-              </span>
-              <PlayerDisplay
-                :player="teamCaptain"
-                :linkable="true"
-                size="sm"
-                :avatar-override="teamCaptainRosterImageSrc"
-              />
-            </div>
-
-            <span class="hidden sm:inline-block h-5 w-px bg-border"></span>
-
-            <div class="inline-flex items-center gap-5">
-              <div :class="teamHeroStatClasses">
-                <span :class="teamHeroStatValueClasses">{{
-                  team.roster?.length || 0
-                }}</span>
-                <span :class="teamHeroStatLabelClasses">{{
-                  $t("team.hero.roster")
-                }}</span>
-              </div>
-              <span :class="teamHeroStatDividerClasses"></span>
-              <div :class="teamHeroStatClasses">
-                <span :class="teamHeroStatValueClasses">{{
-                  teamMatches.length
-                }}</span>
-                <span :class="teamHeroStatLabelClasses">{{
-                  $t("team.hero.matches")
-                }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div :class="teamHeroActionsClasses">
           <DropdownMenu v-model:open="teamMenu" v-if="isOnTeam || isAdmin">
             <DropdownMenuTrigger as-child>
-              <Button variant="outline" size="icon">
+              <Button
+                variant="outline"
+                size="icon-sm"
+                :aria-label="$t('team.pulse.hero.team_actions')"
+              >
                 <MoreVertical />
               </Button>
             </DropdownMenuTrigger>
@@ -192,149 +137,177 @@ const teamHeroActionsClasses =
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
-        </div>
-      </div>
-    </header>
+        </template>
+      </TeamHero>
+
+      <TeamStage
+        :team="team"
+        :is-on-team="isOnTeam"
+        :matches-count="teamMatches.length"
+        @open-scrims="tab = 'scrim'"
+      />
+    </div>
   </PageTransition>
 
-  <PageTransition
-    :delay="50"
-    v-if="teamAwards && teamAwards.length > 0"
-    class="mt-6"
-  >
-    <AwardCase :awards="teamAwards" :hide-mvp="true" />
+  <PageTransition v-if="team" :delay="50">
+    <TeamResultsTicker
+      class="mt-8"
+      :team-id="team.id"
+      @all-matches="tab = 'matches'"
+    />
   </PageTransition>
 
-  <Tabs v-if="team" v-model="tab" class="mt-6 w-full">
+  <!-- Panels stay mounted after their first visit, so switching back is
+       instant instead of refetching and re-skeletoning. -->
+  <Tabs v-if="team" v-model="tab" :unmount-on-hide="false" class="mt-8 w-full">
     <TabsList variant="default" class="flex-wrap justify-start">
       <TabsTrigger value="overview">{{ $t("team.tabs.overview") }}</TabsTrigger>
+      <TabsTrigger value="matches">{{
+        $t("team.pulse.tabs.matches")
+      }}</TabsTrigger>
       <TabsTrigger value="stats">{{ $t("team.tabs.stats") }}</TabsTrigger>
+      <TabsTrigger value="veto">{{ $t("common.map_veto") }}</TabsTrigger>
+      <TabsTrigger v-if="canSeeUtility" value="utility">{{
+        $t("match.tabs.utility")
+      }}</TabsTrigger>
       <TabsTrigger value="highlights">{{
         $t("team.tabs.highlights")
       }}</TabsTrigger>
       <TabsTrigger v-if="showScrimTab" value="scrim">
         {{ $t("team.tabs.scrim") }}
+        <span
+          v-if="scrimNeedsCount"
+          class="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[hsl(var(--tac-amber))] px-1 text-[0.65rem] font-bold tabular-nums text-[hsl(var(--tac-amber-foreground))]"
+          ><span aria-hidden="true">{{ scrimNeedsCount }}</span
+          ><span class="sr-only">{{
+            $t("team.pulse.tabs.scrim_waiting", { count: scrimNeedsCount })
+          }}</span></span
+        >
       </TabsTrigger>
     </TabsList>
-  </Tabs>
+    <HeightGlide class="mt-6">
+      <TabsContent value="overview" class="tab-panel-in mt-0">
+        <TeamOverview
+          v-if="visitedTabs.includes('overview')"
+          ref="overview"
+          :team="team"
+          :team-awards="teamAwards"
+        />
+      </TabsContent>
 
-  <Transition
-    v-if="team"
-    mode="out-in"
-    enter-active-class="transition-[opacity,transform] duration-300 ease-out"
-    enter-from-class="opacity-0 translate-y-3"
-    leave-active-class="transition-[opacity,transform] duration-150 ease-in"
-    leave-to-class="opacity-0 -translate-y-3"
-  >
-    <div :key="tab" class="mt-6">
-      <div
-        v-if="tab === 'overview'"
-        class="grid grid-cols-1 items-start gap-6 lg:grid-cols-5"
+      <TabsContent value="matches" class="tab-panel-in mt-0">
+        <TeamMatches
+          v-if="visitedTabs.includes('matches')"
+          :team-id="String($route.params.id)"
+        />
+      </TabsContent>
+
+      <TabsContent value="stats" class="tab-panel-in mt-0">
+        <TeamCareerStats
+          v-if="visitedTabs.includes('stats')"
+          :team-id="String($route.params.id)"
+        />
+      </TabsContent>
+
+      <TabsContent value="veto" class="tab-panel-in mt-0">
+        <div v-if="visitedTabs.includes('veto')" class="space-y-6">
+          <TeamVetoStats :team-id="String($route.params.id)" />
+          <TeamVetoSimulator :team-id="String($route.params.id)" />
+        </div>
+      </TabsContent>
+
+      <TabsContent
+        v-if="canSeeUtility"
+        value="utility"
+        class="tab-panel-in mt-0"
       >
-        <div class="space-y-6 lg:col-span-2">
-          <TeamLeagueHistory :team-id="String($route.params.id)" />
-          <TeamMembers :team-id="$route.params.id" />
-        </div>
-        <div class="space-y-3 lg:col-span-3">
-          <div class="flex items-center justify-between gap-4">
-            <span :class="tacticalSectionLabelClasses">
-              <span :class="tacticalSectionTickClasses" />
-              {{ $t("match.recent.title") }}
-            </span>
-            <TeamCalendarButton :team-id="String($route.params.id)" />
-          </div>
-          <MatchesTable :matches="pagedTeamMatches" :show-all-matches="true" />
-          <Pagination
-            v-if="teamMatches.length > matchesPerPage"
-            :total="teamMatches.length"
-            :page="matchesPage"
-            :per-page="matchesPerPage"
-            @page="matchesPage = $event"
-          />
-        </div>
-      </div>
-
-      <div v-else-if="tab === 'stats'" class="space-y-6">
-        <TeamCareerStats :team-id="String($route.params.id)" />
-        <TeamVetoStats :team-id="String($route.params.id)" />
-        <TeamVetoSimulator :team-id="String($route.params.id)" />
         <TeamUtilityUtility
-          v-if="isOnTeam || isTeamOwner || isAdmin"
+          v-if="visitedTabs.includes('utility')"
           :team-id="String($route.params.id)"
         />
-      </div>
+      </TabsContent>
 
-      <div v-else-if="tab === 'highlights'">
-        <div class="flex flex-col gap-1">
-          <span :class="tacticalSectionLabelClasses">
-            <span :class="tacticalSectionTickClasses" />
-            {{ $t("common.highlights") }}
-          </span>
-          <span :class="tacticalSectionDescriptionClasses">
-            {{ $t("team.highlights.subtitle") }}
-          </span>
-        </div>
-        <TeamHighlights :team-id="String($route.params.id)" />
-      </div>
-
-      <div v-else-if="tab === 'scrim' && showScrimTab">
-        <TeamScrimManager
-          v-if="team.can_manage_scrims"
-          :team-id="String($route.params.id)"
-          :initial-tab="String($route.query.scrimTab || '')"
-        />
-        <div v-else class="space-y-4">
+      <TabsContent value="highlights" class="tab-panel-in mt-0">
+        <div v-if="visitedTabs.includes('highlights')">
           <div class="flex flex-col gap-1">
             <span :class="tacticalSectionLabelClasses">
               <span :class="tacticalSectionTickClasses" />
-              {{ $t("team.tabs.scrim") }}
+              {{ $t("common.highlights") }}
             </span>
             <span :class="tacticalSectionDescriptionClasses">
-              {{ $t("team.scrim_open_description") }}
+              {{ $t("team.highlights.subtitle") }}
             </span>
           </div>
-          <div
-            class="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-border bg-card/30 p-4"
-          >
-            <div class="flex items-center gap-3">
-              <span class="relative flex h-2.5 w-2.5" aria-hidden="true">
-                <span
-                  class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--tac-amber))] opacity-75"
-                />
-                <span
-                  class="relative inline-flex h-2.5 w-2.5 rounded-full bg-[hsl(var(--tac-amber))]"
-                />
-              </span>
-              <div>
-                <div
-                  class="text-sm font-semibold uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
-                >
-                  {{ $t("scrim.open_to_scrims") }}
-                </div>
-                <TeamRankSummary
-                  class="mt-1"
-                  :ranks="team.ranks"
-                  :reputation="team.reputation"
-                />
-              </div>
-            </div>
-            <Button
-              class="tac-amber-cta"
-              :disabled="!me"
-              @click="scrimRequestOpen = true"
-            >
-              {{ $t("scrim.request_scrim") }}
-            </Button>
-          </div>
-          <ScrimRequestDialog
-            v-model:open="scrimRequestOpen"
-            :posting="teamPosting"
-          />
+          <TeamHighlights :team-id="String($route.params.id)" />
         </div>
-      </div>
-    </div>
-  </Transition>
+      </TabsContent>
 
+      <TabsContent v-if="showScrimTab" value="scrim" class="tab-panel-in mt-0">
+        <div v-if="visitedTabs.includes('scrim')">
+          <TeamScrimManager
+            v-if="team.can_manage_scrims"
+            :team-id="String($route.params.id)"
+            :initial-tab="String($route.query.scrimTab || '')"
+          />
+          <div v-else class="space-y-4">
+            <div class="flex flex-col gap-1">
+              <span :class="tacticalSectionLabelClasses">
+                <span :class="tacticalSectionTickClasses" />
+                {{ $t("team.tabs.scrim") }}
+              </span>
+              <span :class="tacticalSectionDescriptionClasses">
+                {{ $t("team.scrim_open_description") }}
+              </span>
+            </div>
+            <div
+              class="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-border bg-card/30 p-4"
+            >
+              <div class="flex items-center gap-3">
+                <span class="relative flex h-2.5 w-2.5" aria-hidden="true">
+                  <span
+                    class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--tac-amber))] opacity-75"
+                  />
+                  <span
+                    class="relative inline-flex h-2.5 w-2.5 rounded-full bg-[hsl(var(--tac-amber))]"
+                  />
+                </span>
+                <div>
+                  <div
+                    class="text-sm font-semibold uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
+                  >
+                    {{ $t("scrim.open_to_scrims") }}
+                  </div>
+                  <TeamRankSummary
+                    class="mt-1"
+                    :ranks="team.ranks"
+                    :reputation="team.reputation"
+                  />
+                </div>
+              </div>
+              <!-- The header already carries the amber Request scrim. -->
+              <Button
+                v-if="!isOnTeam"
+                variant="outline"
+                size="sm"
+                class="h-8 gap-1.5"
+                :disabled="!me"
+                @click="scrimRequestOpen = true"
+              >
+                <Swords class="size-3.5" />
+                {{ $t("scrim.request_scrim") }}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </TabsContent>
+    </HeightGlide>
+  </Tabs>
+
+  <ScrimRequestDialog
+    v-if="team && teamOpenToScrims"
+    v-model:open="scrimRequestOpen"
+    :posting="teamPosting"
+  />
   <AwardComposer
     v-if="team && awardComposerOpen"
     v-model:open="awardComposerOpen"
@@ -428,9 +401,16 @@ import { generateMutation } from "~/graphql/graphqlGen";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 import { playerFields } from "~/graphql/playerFields";
 import { awardFields } from "~/graphql/awardFields";
-import { resolveRosterImageUrl } from "~/utilities/rosterImage";
 
-const VALID_TABS = ["overview", "stats", "highlights", "scrim"];
+const VALID_TABS = [
+  "overview",
+  "matches",
+  "stats",
+  "veto",
+  "utility",
+  "highlights",
+  "scrim",
+];
 
 export default {
   data() {
@@ -441,29 +421,35 @@ export default {
         : "overview",
       teamAwards: [] as any[],
       tournamentMatches: [] as any[],
-      matchesPage: 1,
-      matchesPerPage: 5,
       editTeamSheet: false,
       awardComposerOpen: false,
       leaveTeamAlertDialog: false,
       deleteTeamAlertDialog: false,
       scrimRequestOpen: false,
+      scrimNeedsCount: 0,
+      // Tabs mount on their first visit, then stay mounted.
+      visitedTabs: [] as string[],
     };
   },
   watch: {
-    tab(value: string) {
-      // Reflect the active tab in the URL bar via history (no router navigation,
-      // so nothing re-renders/reloads) — still deep-linkable on fresh load.
-      if (typeof window === "undefined") {
-        return;
-      }
-      const url = new URL(window.location.href);
-      if (value === "overview") {
-        url.searchParams.delete("tab");
-      } else {
-        url.searchParams.set("tab", value);
-      }
-      window.history.replaceState(window.history.state, "", url.toString());
+    tab: {
+      immediate: true,
+      handler(value: string) {
+        if (!this.visitedTabs.includes(value)) this.visitedTabs.push(value);
+        // Reflect the active tab in the URL bar via history (no router
+        // navigation, so nothing re-renders/reloads) — still deep-linkable on
+        // fresh load.
+        if (typeof window === "undefined") {
+          return;
+        }
+        const url = new URL(window.location.href);
+        if (value === "overview") {
+          url.searchParams.delete("tab");
+        } else {
+          url.searchParams.set("tab", value);
+        }
+        window.history.replaceState(window.history.state, "", url.toString());
+      },
     },
   },
   apollo: {
@@ -483,6 +469,8 @@ export default {
               owner_steam_id: true,
               captain_steam_id: true,
               can_manage_scrims: true,
+              can_invite: true,
+              can_change_role: true,
               ranks: {
                 avg_elo: true,
                 avg_wingman_elo: true,
@@ -514,6 +502,7 @@ export default {
               roster: [
                 {},
                 {
+                  status: true,
                   roster_image_url: true,
                   player: playerFields,
                 },
@@ -634,6 +623,18 @@ export default {
     teamOpenToScrims(): boolean {
       return this.team?.scrim_settings?.enabled === true;
     },
+    showRequestScrim(): boolean {
+      return (
+        this.scrimFinderEnabled &&
+        this.teamOpenToScrims &&
+        !this.isOnTeam &&
+        !this.team?.can_manage_scrims
+      );
+    },
+    // Utility lineups are for the team's own eyes.
+    canSeeUtility(): boolean {
+      return this.isOnTeam || this.isTeamOwner || this.isAdmin;
+    },
     showScrimTab(): boolean {
       return (
         this.scrimFinderEnabled &&
@@ -663,17 +664,6 @@ export default {
       if (!this.team?.avatar_url) return null;
       return `https://${this.apiDomain}/${this.team.avatar_url}`;
     },
-    teamCaptain() {
-      return this.team?.captain || this.team?.owner;
-    },
-    teamCaptainRosterImageSrc() {
-      const captain = this.teamCaptain;
-      if (!captain) return null;
-      const rosterEntry = this.team?.roster?.find(
-        (m: any) => m.player?.steam_id === captain.steam_id,
-      );
-      return resolveRosterImageUrl(rosterEntry, captain, this.apiDomain);
-    },
     teamMatches() {
       const matchesById = new Map<string, any>();
 
@@ -692,10 +682,6 @@ export default {
 
         return new Date(bDate).getTime() - new Date(aDate).getTime();
       });
-    },
-    pagedTeamMatches() {
-      const start = (this.matchesPage - 1) * this.matchesPerPage;
-      return this.teamMatches.slice(start, start + this.matchesPerPage);
     },
     isOnTeam() {
       return !!this.team?.roster.some(({ player }) => {
@@ -716,6 +702,18 @@ export default {
     },
   },
   methods: {
+    // The overview's roster carries the invite. Switching tabs runs an
+    // out-in transition, so the roster opens once the overview has entered.
+    // The inbox's "Invite player": land on Overview with the roster open. The
+    // panel mounts on its first visit, so wait a tick for its ref.
+    showRoster() {
+      this.tab = "overview";
+      this.$nextTick(() => {
+        const overview = this.$refs.overview as
+          { showFullRoster: () => void } | undefined;
+        overview?.showFullRoster();
+      });
+    },
     async deleteTeam() {
       await this.$apollo.mutate({
         mutation: generateMutation({

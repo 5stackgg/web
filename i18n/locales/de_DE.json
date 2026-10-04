@@ -1638,6 +1638,62 @@
         "col_pick": "Pick-Wahrscheinlichkeit",
         "col_play": "Spiel-Wahrscheinlichkeit",
         "col_predicted_win": "Prognose Sieg%"
+      },
+      "players": "{count} Spieler | {count} Spieler",
+      "form": {
+        "label": "Letzte Form: {results}",
+        "none": "Noch keine Ergebnisse",
+        "result_W": "Sieg",
+        "result_L": "Niederlage",
+        "result_T": "Unentschieden"
+      },
+      "your_teams": {
+        "title": "Deine Teams",
+        "next": "Nächstes",
+        "last": "Letztes",
+        "playing_now": "Spielt gerade",
+        "nothing_scheduled": "Nichts geplant",
+        "no_matches": "Noch keine Matches",
+        "result_W": "Gewonnen",
+        "result_L": "Verloren",
+        "result_T": "Unentschieden",
+        "check_in": "Einchecken",
+        "scrim_replies": "{count} Scrim-Antwort nötig | {count} Scrim-Antworten nötig",
+        "invite_starter": "Starter einladen"
+      },
+      "playing_now": {
+        "title": "Spielt gerade",
+        "live_count": "{count} live",
+        "all_live": "Alle Live-Matches",
+        "more_on_watch": "weitere live auf Watch"
+      },
+      "scrims": {
+        "title": "Suchen Scrims",
+        "subtitle": "Teams, die Herausforderungen annehmen",
+        "today": "Heute {from}–{to}",
+        "any_time": "Nimmt jederzeit Anfragen an",
+        "sign_in_to_request": "Zum Anfragen anmelden",
+        "need_team": "Du brauchst ein Team, das du besitzt oder leitest, um einen Scrim anzufragen.",
+        "see_all": "Alle im Scrim-Finder ansehen"
+      },
+      "directory": {
+        "title": "Alle Teams",
+        "sort_label": "Teams sortieren",
+        "sort_active": "Zuletzt aktiv",
+        "sort_rating": "Bewertung",
+        "sort_name": "Name",
+        "search_label": "Teams suchen",
+        "clear_search": "Suche löschen",
+        "org": "Org",
+        "playing_now": "Spielt gerade",
+        "never_played": "Noch keine Matches",
+        "col_roster": "Roster",
+        "col_elo": "Ø ELO",
+        "col_form": "Form",
+        "col_last": "Zuletzt gespielt",
+        "col_awards": "Auszeichnungen",
+        "no_match": "Nichts passt zu deiner Suche oder deinen Filtern.",
+        "clear_filters": "Filter zurücksetzen"
       }
     },
     "settings": {
@@ -7833,6 +7889,90 @@
       "failed_description": "Die Anfrage ist fehlgeschlagen. Versuch es gleich noch einmal.",
       "empty": "Keine zugeordnete Utility",
       "empty_description": "Bisher passt keine in den Matches dieses Teams geworfene Granate zu einem gespeicherten Lineup."
+    },
+    "pulse": {
+      "hero": {
+        "players": "{count} Spieler | {count} Spieler",
+        "matches": "{count} Match | {count} Matches",
+        "no_matches": "Noch keine Matches",
+        "founded": "Gegründet {date}",
+        "all_awards": "Alle Auszeichnungen anzeigen",
+        "team_actions": "Team-Aktionen"
+      },
+      "stage": {
+        "live": "Jetzt live",
+        "next_up": "Als Nächstes",
+        "upcoming": "{count} anstehend",
+        "then": "Danach",
+        "open_to_scrims": "Öffne {name} für Scrims, damit andere Teams dich herausfordern können.",
+        "set_up_scrims": "Scrims einrichten",
+        "none_scheduled_member": "Noch keine Matches geplant.",
+        "none_scheduled": "Gerade ist nichts geplant.",
+        "never_played": "{name} hat noch kein Match gespielt."
+      },
+      "results": {
+        "hint": "Neueste zuerst, scrolle für ältere",
+        "all_matches": "Alle Matches"
+      },
+      "tabs": {
+        "matches": "Matches",
+        "scrim_waiting": "{count} warten auf dich"
+      },
+      "needs": {
+        "title": "Du bist gefragt",
+        "to_do": "{count} offen",
+        "check_in_title": "Einchecken für das Match gegen {name}",
+        "scrim_title": "will einen Scrim",
+        "counter_title": "hat eine neue Zeit vorgeschlagen",
+        "best_of_short": "Bo{count}",
+        "roster_title": "{count} von 5 Startern",
+        "roster_meta": "Lade Spieler ein, um ein volles Team aufzustellen.",
+        "waiting_on": "Warten auf",
+        "waiting_check_in": "{names} zum Einchecken",
+        "waiting_scrim": "{name} zur Antwort auf deine Scrim-Anfrage",
+        "waiting_invites": "{names} zur Annahme ihrer Einladungen",
+        "counter_dialog_title": "Andere Zeit vorschlagen",
+        "counter_dialog_description": "{name} muss die neue Zeit noch annehmen.",
+        "send_new_time": "Neue Zeit senden"
+      }
+    },
+    "activity": {
+      "title": "Aktivität",
+      "this_week": "Diese Woche",
+      "earlier": "Früher",
+      "show_older": "Ältere Aktivität anzeigen",
+      "empty": "Ergebnisse, Clips und Auszeichnungen erscheinen hier, sobald {team} spielt.",
+      "beat": "Sieg gegen {opponent}",
+      "lost_to": "Niederlage gegen {opponent}",
+      "drew_with": "Unentschieden gegen {opponent}",
+      "open_match": "Match öffnen",
+      "won": "{name} gewonnen",
+      "second_at": "2. Platz bei {name}",
+      "third_at": "3. Platz bei {name}",
+      "placed_at": "{placement} bei {name}",
+      "received": "{name} erhalten",
+      "tournament": "Turnier",
+      "promoted": "Aufgestiegen in {division}",
+      "relegated": "Abgestiegen in {division}",
+      "finished": "Platz {rank} in {division} beendet",
+      "stayed": "In {division} geblieben",
+      "started": "{season} gestartet",
+      "invited": "{name} wurde eingeladen",
+      "invited_by": "Eingeladen von {name}",
+      "created": "{team} wurde erstellt"
+    },
+    "starting_five": {
+      "title": "Starting Five",
+      "players": "{count} Spieler | {count} Spieler",
+      "manage_roster": "Roster verwalten",
+      "full_roster": "Ganzes Roster",
+      "starters_only": "Nur Starting Five",
+      "open_slot": "Freier Starterplatz",
+      "invite": "Einladen",
+      "substitutes": "{count} Ersatzspieler | {count} Ersatzspieler",
+      "bench": "{count} auf der Bank",
+      "coaches": "{count} Coach | {count} Coaches",
+      "captain": "Kapitän: {name}"
     }
   },
   "match": {

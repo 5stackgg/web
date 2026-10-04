@@ -31,6 +31,11 @@ export default {
       type: String,
       required: true,
     },
+    // An outline button, for surfaces that already carry an amber action.
+    quiet: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -117,9 +122,9 @@ export default {
 <template>
   <Button
     v-if="canSubscribe"
-    variant="tactical"
-    size="xs"
-    class="gap-1.5 text-[0.65rem] tracking-[0.12em]"
+    :variant="quiet ? 'outline' : 'tactical'"
+    :size="quiet ? 'sm' : 'xs'"
+    :class="quiet ? 'h-8 gap-1.5' : 'gap-1.5 text-[0.65rem] tracking-[0.12em]'"
     :loading="fetching"
     @click="copyCalendarUrl"
   >

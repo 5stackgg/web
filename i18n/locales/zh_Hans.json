@@ -1638,6 +1638,62 @@
         "col_pick": "选用可能性",
         "col_play": "进行可能性",
         "col_predicted_win": "预测胜率"
+      },
+      "players": "{count} 名玩家 | {count} 名玩家",
+      "form": {
+        "label": "近期战绩：{results}",
+        "none": "暂无结果",
+        "result_W": "胜",
+        "result_L": "负",
+        "result_T": "平"
+      },
+      "your_teams": {
+        "title": "你的队伍",
+        "next": "下一场",
+        "last": "上一场",
+        "playing_now": "正在比赛",
+        "nothing_scheduled": "暂无安排",
+        "no_matches": "暂无比赛",
+        "result_W": "获胜",
+        "result_L": "落败",
+        "result_T": "平局",
+        "check_in": "签到",
+        "scrim_replies": "需回复 {count} 个约战 | 需回复 {count} 个约战",
+        "invite_starter": "邀请首发队员"
+      },
+      "playing_now": {
+        "title": "正在比赛",
+        "live_count": "{count} 场直播中",
+        "all_live": "所有直播比赛",
+        "more_on_watch": "在 Watch 观看更多直播"
+      },
+      "scrims": {
+        "title": "寻找约战",
+        "subtitle": "接受挑战的队伍",
+        "today": "今天 {from}–{to}",
+        "any_time": "随时接受请求",
+        "sign_in_to_request": "登录后请求",
+        "need_team": "你需要拥有或管理一支队伍才能发起约战请求。",
+        "see_all": "在约战查找器中查看全部"
+      },
+      "directory": {
+        "title": "全部队伍",
+        "sort_label": "队伍排序",
+        "sort_active": "最近活跃",
+        "sort_rating": "评分",
+        "sort_name": "名称",
+        "search_label": "搜索队伍",
+        "clear_search": "清除搜索",
+        "org": "Org",
+        "playing_now": "正在比赛",
+        "never_played": "暂无比赛",
+        "col_roster": "阵容",
+        "col_elo": "平均 ELO",
+        "col_form": "状态",
+        "col_last": "最近比赛",
+        "col_awards": "奖项",
+        "no_match": "没有符合搜索或筛选条件的结果。",
+        "clear_filters": "清除筛选"
       }
     },
     "settings": {
@@ -7833,6 +7889,90 @@
       "failed_description": "请求失败。请稍后再试。",
       "empty": "没有匹配的道具",
       "empty_description": "这支战队比赛中投出的手雷，目前还没有能对上已保存点位的。"
+    },
+    "pulse": {
+      "hero": {
+        "players": "{count} 名玩家 | {count} 名玩家",
+        "matches": "{count} 场比赛 | {count} 场比赛",
+        "no_matches": "暂无比赛",
+        "founded": "成立于 {date}",
+        "all_awards": "显示全部奖项",
+        "team_actions": "队伍操作"
+      },
+      "stage": {
+        "live": "正在直播",
+        "next_up": "下一场",
+        "upcoming": "{count} 场即将进行",
+        "then": "之后",
+        "open_to_scrims": "向约战开放 {name}，其他队伍就可以向你发起挑战。",
+        "set_up_scrims": "设置约战",
+        "none_scheduled_member": "暂无已安排的比赛。",
+        "none_scheduled": "目前暂无安排。",
+        "never_played": "{name}尚未进行过比赛。"
+      },
+      "results": {
+        "hint": "最新在前，滚动查看更早的",
+        "all_matches": "全部比赛"
+      },
+      "tabs": {
+        "matches": "比赛",
+        "scrim_waiting": "{count} 项等你处理"
+      },
+      "needs": {
+        "title": "需要你处理",
+        "to_do": "{count} 项待办",
+        "check_in_title": "签到参加对阵 {name} 的比赛",
+        "scrim_title": "想要约战",
+        "counter_title": "提议了新的时间",
+        "best_of_short": "Bo{count}",
+        "roster_title": "首发 {count}/5 人",
+        "roster_meta": "邀请玩家以凑齐完整队伍。",
+        "waiting_on": "等待",
+        "waiting_check_in": "{names}签到",
+        "waiting_scrim": "{name}回复你的约战请求",
+        "waiting_invites": "{names}接受邀请",
+        "counter_dialog_title": "提议其他时间",
+        "counter_dialog_description": "{name}仍需接受新的时间。",
+        "send_new_time": "发送新时间"
+      }
+    },
+    "activity": {
+      "title": "动态",
+      "this_week": "本周",
+      "earlier": "更早",
+      "show_older": "显示更早的动态",
+      "empty": "随着 {team} 进行比赛，结果、片段和奖项会显示在这里。",
+      "beat": "击败 {opponent}",
+      "lost_to": "负于 {opponent}",
+      "drew_with": "与 {opponent} 战平",
+      "open_match": "打开比赛",
+      "won": "赢得 {name}",
+      "second_at": "{name} 第 2 名",
+      "third_at": "{name} 第 3 名",
+      "placed_at": "{name} {placement}",
+      "received": "获得 {name}",
+      "tournament": "赛事",
+      "promoted": "晋级至 {division}",
+      "relegated": "降级至 {division}",
+      "finished": "在 {division} 排名第 {rank}",
+      "stayed": "留在 {division}",
+      "started": "{season} 开始",
+      "invited": "{name}已受邀",
+      "invited_by": "由 {name} 邀请",
+      "created": "{team} 已创建"
+    },
+    "starting_five": {
+      "title": "首发五人",
+      "players": "{count} 名玩家 | {count} 名玩家",
+      "manage_roster": "管理阵容",
+      "full_roster": "完整阵容",
+      "starters_only": "仅首发五人",
+      "open_slot": "空缺首发位置",
+      "invite": "邀请",
+      "substitutes": "{count} 名替补 | {count} 名替补",
+      "bench": "{count} 名在替补席",
+      "coaches": "{count} 名教练 | {count} 名教练",
+      "captain": "队长：{name}"
     }
   },
   "match": {

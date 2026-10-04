@@ -1638,6 +1638,62 @@
         "col_pick": "Probabilidade de escolha",
         "col_play": "Probabilidade de jogo",
         "col_predicted_win": "Vitória prevista%"
+      },
+      "players": "{count} jogador | {count} jogadores",
+      "form": {
+        "label": "Forma recente: {results}",
+        "none": "Ainda sem resultados",
+        "result_W": "vitória",
+        "result_L": "derrota",
+        "result_T": "empate"
+      },
+      "your_teams": {
+        "title": "Seus times",
+        "next": "Próxima",
+        "last": "Última",
+        "playing_now": "Jogando agora",
+        "nothing_scheduled": "Nada agendado",
+        "no_matches": "Ainda sem partidas",
+        "result_W": "Venceu",
+        "result_L": "Perdeu",
+        "result_T": "Empatou",
+        "check_in": "Check-in",
+        "scrim_replies": "{count} resposta de desafio necessária | {count} respostas de desafio necessárias",
+        "invite_starter": "Convidar um titular"
+      },
+      "playing_now": {
+        "title": "Jogando agora",
+        "live_count": "{count} ao vivo",
+        "all_live": "Todas as partidas ao vivo",
+        "more_on_watch": "mais ao vivo em Watch"
+      },
+      "scrims": {
+        "title": "Procurando desafios",
+        "subtitle": "Times que aceitam desafios",
+        "today": "Hoje {from}–{to}",
+        "any_time": "Aceita pedidos a qualquer hora",
+        "sign_in_to_request": "Entre para solicitar",
+        "need_team": "Você precisa de um time que seja seu ou que você gerencie para solicitar um desafio.",
+        "see_all": "Ver tudo no Localizador de Desafios"
+      },
+      "directory": {
+        "title": "Todos os times",
+        "sort_label": "Ordenar times",
+        "sort_active": "Ativos recentemente",
+        "sort_rating": "Avaliação",
+        "sort_name": "Nome",
+        "search_label": "Buscar times",
+        "clear_search": "Limpar busca",
+        "org": "Org",
+        "playing_now": "Jogando agora",
+        "never_played": "Ainda sem partidas",
+        "col_roster": "Elenco",
+        "col_elo": "ELO médio",
+        "col_form": "Forma",
+        "col_last": "Última partida",
+        "col_awards": "Premiações",
+        "no_match": "Nada corresponde à sua busca ou aos filtros.",
+        "clear_filters": "Limpar filtros"
       }
     },
     "settings": {
@@ -7833,6 +7889,90 @@
       "failed_description": "A requisição falhou. Tente de novo daqui a pouco.",
       "empty": "Nenhum utilitário associado",
       "empty_description": "Nenhuma granada arremessada nas partidas deste time bate com um lineup salvo ainda."
+    },
+    "pulse": {
+      "hero": {
+        "players": "{count} jogador | {count} jogadores",
+        "matches": "{count} partida | {count} partidas",
+        "no_matches": "Ainda sem partidas",
+        "founded": "Fundado em {date}",
+        "all_awards": "Mostrar todas as premiações",
+        "team_actions": "Ações do time"
+      },
+      "stage": {
+        "live": "Ao vivo agora",
+        "next_up": "A seguir",
+        "upcoming": "{count} próximas",
+        "then": "Depois",
+        "open_to_scrims": "Abra {name} para desafios para que outros times possam te desafiar.",
+        "set_up_scrims": "Configurar desafios",
+        "none_scheduled_member": "Nenhuma partida agendada ainda.",
+        "none_scheduled": "Nada agendado no momento.",
+        "never_played": "{name} ainda não jogou nenhuma partida."
+      },
+      "results": {
+        "hint": "Mais recentes primeiro, role para ver as antigas",
+        "all_matches": "Todas as partidas"
+      },
+      "tabs": {
+        "matches": "Partidas",
+        "scrim_waiting": "{count} esperando por você"
+      },
+      "needs": {
+        "title": "Precisa de você",
+        "to_do": "{count} a fazer",
+        "check_in_title": "Check-in para a partida contra {name}",
+        "scrim_title": "quer fazer um desafio",
+        "counter_title": "propôs um novo horário",
+        "best_of_short": "Bo{count}",
+        "roster_title": "{count} de 5 titulares",
+        "roster_meta": "Convide jogadores para formar um time completo.",
+        "waiting_on": "Aguardando",
+        "waiting_check_in": "{names} fazerem o check-in",
+        "waiting_scrim": "{name} responder ao seu pedido de desafio",
+        "waiting_invites": "{names} aceitarem os convites",
+        "counter_dialog_title": "Propor outro horário",
+        "counter_dialog_description": "{name} ainda precisa aceitar o novo horário.",
+        "send_new_time": "Enviar novo horário"
+      }
+    },
+    "activity": {
+      "title": "Atividade",
+      "this_week": "Esta semana",
+      "earlier": "Antes",
+      "show_older": "Mostrar atividade mais antiga",
+      "empty": "Resultados, clipes e premiações aparecem aqui conforme {team} joga.",
+      "beat": "Venceu {opponent}",
+      "lost_to": "Perdeu para {opponent}",
+      "drew_with": "Empatou com {opponent}",
+      "open_match": "Abrir partida",
+      "won": "Venceu {name}",
+      "second_at": "2º em {name}",
+      "third_at": "3º em {name}",
+      "placed_at": "{placement} em {name}",
+      "received": "Recebeu {name}",
+      "tournament": "Torneio",
+      "promoted": "Promovido para {division}",
+      "relegated": "Rebaixado para {division}",
+      "finished": "Terminou em #{rank} em {division}",
+      "stayed": "Permaneceu em {division}",
+      "started": "{season} começou",
+      "invited": "{name} foi convidado",
+      "invited_by": "Convidado por {name}",
+      "created": "{team} foi criado"
+    },
+    "starting_five": {
+      "title": "Cinco titulares",
+      "players": "{count} jogador | {count} jogadores",
+      "manage_roster": "Gerenciar elenco",
+      "full_roster": "Elenco completo",
+      "starters_only": "Apenas os cinco titulares",
+      "open_slot": "Vaga de titular aberta",
+      "invite": "Convidar",
+      "substitutes": "{count} reserva | {count} reservas",
+      "bench": "{count} no banco",
+      "coaches": "{count} técnico | {count} técnicos",
+      "captain": "Capitão: {name}"
     }
   },
   "match": {

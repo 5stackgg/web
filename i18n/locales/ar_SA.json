@@ -1638,6 +1638,62 @@
         "col_pick": "احتمال الاختيار",
         "col_play": "احتمال اللعب",
         "col_predicted_win": "% الفوز المتوقع"
+      },
+      "players": "{count} لاعب | {count} لاعبين",
+      "form": {
+        "label": "الأداء الأخير: {results}",
+        "none": "لا توجد نتائج بعد",
+        "result_W": "فوز",
+        "result_L": "خسارة",
+        "result_T": "تعادل"
+      },
+      "your_teams": {
+        "title": "فرقك",
+        "next": "التالية",
+        "last": "الأخيرة",
+        "playing_now": "يلعب الآن",
+        "nothing_scheduled": "لا شيء مجدول",
+        "no_matches": "لا توجد مباريات بعد",
+        "result_W": "فاز",
+        "result_L": "خسر",
+        "result_T": "تعادل",
+        "check_in": "تأكيد الحضور",
+        "scrim_replies": "مطلوب {count} رد على Scrim | مطلوب {count} ردود على Scrim",
+        "invite_starter": "ادعُ لاعبًا أساسيًا"
+      },
+      "playing_now": {
+        "title": "يلعب الآن",
+        "live_count": "{count} مباشرة",
+        "all_live": "كل المباريات المباشرة",
+        "more_on_watch": "المزيد مباشرة على Watch"
+      },
+      "scrims": {
+        "title": "يبحثون عن Scrim",
+        "subtitle": "فرق تقبل التحديات",
+        "today": "اليوم {from}–{to}",
+        "any_time": "يقبل الطلبات في أي وقت",
+        "sign_in_to_request": "سجّل الدخول للطلب",
+        "need_team": "تحتاج إلى فريق تملكه أو تديره لطلب Scrim.",
+        "see_all": "عرض الكل في باحث Scrim"
+      },
+      "directory": {
+        "title": "كل الفرق",
+        "sort_label": "ترتيب الفرق",
+        "sort_active": "الأحدث نشاطًا",
+        "sort_rating": "التقييم",
+        "sort_name": "الاسم",
+        "search_label": "ابحث عن فرق",
+        "clear_search": "مسح البحث",
+        "org": "Org",
+        "playing_now": "يلعب الآن",
+        "never_played": "لا توجد مباريات بعد",
+        "col_roster": "التشكيلة",
+        "col_elo": "متوسط ELO",
+        "col_form": "الأداء",
+        "col_last": "آخر مباراة",
+        "col_awards": "الجوائز",
+        "no_match": "لا شيء يطابق بحثك أو عوامل التصفية.",
+        "clear_filters": "مسح عوامل التصفية"
       }
     },
     "settings": {
@@ -7833,6 +7889,90 @@
       "failed_description": "فشل الطلب. حاول مجددًا بعد قليل.",
       "empty": "لا توجد أدوات مطابقة",
       "empty_description": "لا توجد بعد قنبلة رُميت في مباريات هذا الفريق تطابق رمية محفوظة."
+    },
+    "pulse": {
+      "hero": {
+        "players": "{count} لاعب | {count} لاعبين",
+        "matches": "{count} مباراة | {count} مباريات",
+        "no_matches": "لا توجد مباريات بعد",
+        "founded": "تأسس في {date}",
+        "all_awards": "عرض كل الجوائز",
+        "team_actions": "إجراءات الفريق"
+      },
+      "stage": {
+        "live": "مباشر الآن",
+        "next_up": "التالية",
+        "upcoming": "{count} قادمة",
+        "then": "ثم",
+        "open_to_scrims": "افتح {name} لـ Scrim ليتمكن الفرق الأخرى من تحديك.",
+        "set_up_scrims": "إعداد Scrim",
+        "none_scheduled_member": "لا توجد مباريات مجدولة بعد.",
+        "none_scheduled": "لا شيء مجدول الآن.",
+        "never_played": "لم يلعب {name} أي مباراة بعد."
+      },
+      "results": {
+        "hint": "الأحدث أولًا، مرّر لعرض الأقدم",
+        "all_matches": "كل المباريات"
+      },
+      "tabs": {
+        "matches": "المباريات",
+        "scrim_waiting": "{count} بانتظارك"
+      },
+      "needs": {
+        "title": "بحاجة إليك",
+        "to_do": "{count} مهام",
+        "check_in_title": "تأكيد الحضور لمباراة ضد {name}",
+        "scrim_title": "يريد Scrim",
+        "counter_title": "اقترح وقتًا جديدًا",
+        "best_of_short": "Bo{count}",
+        "roster_title": "{count} من 5 لاعبين أساسيين",
+        "roster_meta": "ادعُ لاعبين لإكمال الفريق.",
+        "waiting_on": "بانتظار",
+        "waiting_check_in": "{names} لتأكيد الحضور",
+        "waiting_scrim": "{name} للرد على طلب Scrim الخاص بك",
+        "waiting_invites": "{names} لقبول دعواتهم",
+        "counter_dialog_title": "اقترح وقتًا آخر",
+        "counter_dialog_description": "لا يزال على {name} قبول الوقت الجديد.",
+        "send_new_time": "إرسال الوقت الجديد"
+      }
+    },
+    "activity": {
+      "title": "النشاط",
+      "this_week": "هذا الأسبوع",
+      "earlier": "سابقًا",
+      "show_older": "عرض النشاط الأقدم",
+      "empty": "ستظهر النتائج والمقاطع والجوائز هنا مع لعب {team}.",
+      "beat": "فاز على {opponent}",
+      "lost_to": "خسر أمام {opponent}",
+      "drew_with": "تعادل مع {opponent}",
+      "open_match": "فتح المباراة",
+      "won": "فاز بـ {name}",
+      "second_at": "المركز الثاني في {name}",
+      "third_at": "المركز الثالث في {name}",
+      "placed_at": "{placement} في {name}",
+      "received": "حصل على {name}",
+      "tournament": "بطولة",
+      "promoted": "صعد إلى {division}",
+      "relegated": "هبط إلى {division}",
+      "finished": "أنهى في المركز #{rank} في {division}",
+      "stayed": "بقي في {division}",
+      "started": "بدأ {season}",
+      "invited": "تمت دعوة {name}",
+      "invited_by": "دعاه {name}",
+      "created": "تم إنشاء {team}"
+    },
+    "starting_five": {
+      "title": "التشكيلة الأساسية",
+      "players": "{count} لاعب | {count} لاعبين",
+      "manage_roster": "إدارة التشكيلة",
+      "full_roster": "التشكيلة الكاملة",
+      "starters_only": "التشكيلة الأساسية فقط",
+      "open_slot": "مركز أساسي شاغر",
+      "invite": "دعوة",
+      "substitutes": "{count} بديل | {count} بدلاء",
+      "bench": "{count} على الاحتياط",
+      "coaches": "{count} مدرب | {count} مدربين",
+      "captain": "القائد: {name}"
     }
   },
   "match": {

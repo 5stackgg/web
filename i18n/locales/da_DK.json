@@ -1638,6 +1638,62 @@
         "col_pick": "Pick-sandsynlighed",
         "col_play": "Spil-sandsynlighed",
         "col_predicted_win": "Forventet sejr%"
+      },
+      "players": "{count} spiller | {count} spillere",
+      "form": {
+        "label": "Seneste form: {results}",
+        "none": "Ingen resultater endnu",
+        "result_W": "sejr",
+        "result_L": "nederlag",
+        "result_T": "uafgjort"
+      },
+      "your_teams": {
+        "title": "Dine hold",
+        "next": "Næste",
+        "last": "Seneste",
+        "playing_now": "Spiller nu",
+        "nothing_scheduled": "Intet planlagt",
+        "no_matches": "Ingen kampe endnu",
+        "result_W": "Vandt",
+        "result_L": "Tabte",
+        "result_T": "Uafgjort",
+        "check_in": "Check ind",
+        "scrim_replies": "{count} scrim-svar mangler | {count} scrim-svar mangler",
+        "invite_starter": "Inviter en starter"
+      },
+      "playing_now": {
+        "title": "Spiller nu",
+        "live_count": "{count} live",
+        "all_live": "Alle livekampe",
+        "more_on_watch": "flere live på Watch"
+      },
+      "scrims": {
+        "title": "Søger scrims",
+        "subtitle": "Hold der tager imod udfordringer",
+        "today": "I dag {from}–{to}",
+        "any_time": "Tager imod anmodninger når som helst",
+        "sign_in_to_request": "Log ind for at anmode",
+        "need_team": "Du skal have et hold, du ejer eller leder, for at anmode om en scrim.",
+        "see_all": "Se alle i Scrim-finder"
+      },
+      "directory": {
+        "title": "Alle hold",
+        "sort_label": "Sortér hold",
+        "sort_active": "Nyligt aktive",
+        "sort_rating": "Rating",
+        "sort_name": "Navn",
+        "search_label": "Søg efter hold",
+        "clear_search": "Ryd søgning",
+        "org": "Org",
+        "playing_now": "Spiller nu",
+        "never_played": "Ingen kampe endnu",
+        "col_roster": "Trup",
+        "col_elo": "Gns. ELO",
+        "col_form": "Form",
+        "col_last": "Sidst spillet",
+        "col_awards": "Priser",
+        "no_match": "Intet matcher din søgning eller dine filtre.",
+        "clear_filters": "Ryd filtre"
       }
     },
     "settings": {
@@ -7833,6 +7889,90 @@
       "failed_description": "Anmodningen fejlede. Prøv igen om lidt.",
       "empty": "Ingen matchet utility",
       "empty_description": "Ingen granat kastet i dette holds kampe passer med en gemt opstilling endnu."
+    },
+    "pulse": {
+      "hero": {
+        "players": "{count} spiller | {count} spillere",
+        "matches": "{count} kamp | {count} kampe",
+        "no_matches": "Ingen kampe endnu",
+        "founded": "Grundlagt {date}",
+        "all_awards": "Vis alle priser",
+        "team_actions": "Holdhandlinger"
+      },
+      "stage": {
+        "live": "Live nu",
+        "next_up": "Næste",
+        "upcoming": "{count} kommende",
+        "then": "Derefter",
+        "open_to_scrims": "Åbn {name} for scrims, så andre hold kan udfordre jer.",
+        "set_up_scrims": "Opsæt scrims",
+        "none_scheduled_member": "Ingen kampe planlagt endnu.",
+        "none_scheduled": "Intet planlagt lige nu.",
+        "never_played": "{name} har ikke spillet en kamp endnu."
+      },
+      "results": {
+        "hint": "Nyeste først, scroll for ældre",
+        "all_matches": "Alle kampe"
+      },
+      "tabs": {
+        "matches": "Kampe",
+        "scrim_waiting": "{count} venter på dig"
+      },
+      "needs": {
+        "title": "Du skal handle",
+        "to_do": "{count} at gøre",
+        "check_in_title": "Check ind til kampen mod {name}",
+        "scrim_title": "vil scrimme",
+        "counter_title": "foreslog et nyt tidspunkt",
+        "best_of_short": "Bo{count}",
+        "roster_title": "{count} af 5 startere",
+        "roster_meta": "Inviter spillere for at stille et fuldt hold.",
+        "waiting_on": "Venter på",
+        "waiting_check_in": "{names} skal checke ind",
+        "waiting_scrim": "{name} skal svare på din scrim-anmodning",
+        "waiting_invites": "{names} skal acceptere deres invitationer",
+        "counter_dialog_title": "Foreslå et andet tidspunkt",
+        "counter_dialog_description": "{name} skal stadig acceptere det nye tidspunkt.",
+        "send_new_time": "Send nyt tidspunkt"
+      }
+    },
+    "activity": {
+      "title": "Aktivitet",
+      "this_week": "Denne uge",
+      "earlier": "Tidligere",
+      "show_older": "Vis ældre aktivitet",
+      "empty": "Resultater, klip og priser dukker op her, efterhånden som {team} spiller.",
+      "beat": "Slog {opponent}",
+      "lost_to": "Tabte til {opponent}",
+      "drew_with": "Spillede uafgjort mod {opponent}",
+      "open_match": "Åbn kamp",
+      "won": "Vandt {name}",
+      "second_at": "2.-plads ved {name}",
+      "third_at": "3.-plads ved {name}",
+      "placed_at": "{placement} ved {name}",
+      "received": "Modtog {name}",
+      "tournament": "Turnering",
+      "promoted": "Rykkede op i {division}",
+      "relegated": "Rykkede ned i {division}",
+      "finished": "Sluttede som #{rank} i {division}",
+      "stayed": "Blev i {division}",
+      "started": "Startede {season}",
+      "invited": "{name} blev inviteret",
+      "invited_by": "Inviteret af {name}",
+      "created": "{team} blev oprettet"
+    },
+    "starting_five": {
+      "title": "Startfemmer",
+      "players": "{count} spiller | {count} spillere",
+      "manage_roster": "Administrer trup",
+      "full_roster": "Hele truppen",
+      "starters_only": "Kun startfemmer",
+      "open_slot": "Ledig starterplads",
+      "invite": "Inviter",
+      "substitutes": "{count} reserve | {count} reserver",
+      "bench": "{count} på bænken",
+      "coaches": "{count} coach | {count} coaches",
+      "captain": "Kaptajn: {name}"
     }
   },
   "match": {

@@ -1638,6 +1638,62 @@
         "col_pick": "Szansa na pick",
         "col_play": "Szansa na grę",
         "col_predicted_win": "Przewidywany Win%"
+      },
+      "players": "{count} gracz | {count} graczy",
+      "form": {
+        "label": "Ostatnia forma: {results}",
+        "none": "Brak wyników",
+        "result_W": "wygrana",
+        "result_L": "przegrana",
+        "result_T": "remis"
+      },
+      "your_teams": {
+        "title": "Twoje drużyny",
+        "next": "Następny",
+        "last": "Ostatni",
+        "playing_now": "Gra teraz",
+        "nothing_scheduled": "Nic nie zaplanowano",
+        "no_matches": "Brak meczów",
+        "result_W": "Wygrana",
+        "result_L": "Przegrana",
+        "result_T": "Remis",
+        "check_in": "Zamelduj się",
+        "scrim_replies": "Wymagana {count} odpowiedź na scrim | Wymagane odpowiedzi na scrimy: {count}",
+        "invite_starter": "Zaproś gracza do składu"
+      },
+      "playing_now": {
+        "title": "Gra teraz",
+        "live_count": "{count} na żywo",
+        "all_live": "Wszystkie mecze na żywo",
+        "more_on_watch": "więcej na żywo w Watch"
+      },
+      "scrims": {
+        "title": "Szukają scrimów",
+        "subtitle": "Drużyny przyjmujące wyzwania",
+        "today": "Dziś {from}–{to}",
+        "any_time": "Przyjmuje prośby o każdej porze",
+        "sign_in_to_request": "Zaloguj się, aby poprosić",
+        "need_team": "Aby poprosić o scrim, potrzebujesz drużyny, którą posiadasz lub prowadzisz.",
+        "see_all": "Zobacz wszystkie w wyszukiwarce scrimów"
+      },
+      "directory": {
+        "title": "Wszystkie drużyny",
+        "sort_label": "Sortuj drużyny",
+        "sort_active": "Ostatnio aktywne",
+        "sort_rating": "Ocena",
+        "sort_name": "Nazwa",
+        "search_label": "Szukaj drużyn",
+        "clear_search": "Wyczyść wyszukiwanie",
+        "org": "Org",
+        "playing_now": "Gra teraz",
+        "never_played": "Brak meczów",
+        "col_roster": "Skład",
+        "col_elo": "Śr. ELO",
+        "col_form": "Forma",
+        "col_last": "Ostatni mecz",
+        "col_awards": "Nagrody",
+        "no_match": "Nic nie pasuje do wyszukiwania ani filtrów.",
+        "clear_filters": "Wyczyść filtry"
       }
     },
     "settings": {
@@ -7833,6 +7889,90 @@
       "failed_description": "Żądanie nie powiodło się. Spróbuj za chwilę.",
       "empty": "Brak dopasowanego utility",
       "empty_description": "Żaden granat rzucony w meczach tej drużyny nie pasuje jeszcze do zapisanej ustawki."
+    },
+    "pulse": {
+      "hero": {
+        "players": "{count} gracz | {count} graczy",
+        "matches": "{count} mecz | {count} meczów",
+        "no_matches": "Brak meczów",
+        "founded": "Założona {date}",
+        "all_awards": "Pokaż wszystkie nagrody",
+        "team_actions": "Akcje drużyny"
+      },
+      "stage": {
+        "live": "Na żywo",
+        "next_up": "Następny",
+        "upcoming": "Nadchodzące: {count}",
+        "then": "Potem",
+        "open_to_scrims": "Otwórz {name} na scrimy, aby inne drużyny mogły rzucić wyzwanie.",
+        "set_up_scrims": "Skonfiguruj scrimy",
+        "none_scheduled_member": "Nie zaplanowano jeszcze meczów.",
+        "none_scheduled": "Teraz nic nie zaplanowano.",
+        "never_played": "{name} nie rozegrała jeszcze meczu."
+      },
+      "results": {
+        "hint": "Od najnowszych, przewiń po starsze",
+        "all_matches": "Wszystkie mecze"
+      },
+      "tabs": {
+        "matches": "Mecze",
+        "scrim_waiting": "Czeka na ciebie: {count}"
+      },
+      "needs": {
+        "title": "Wymaga ciebie",
+        "to_do": "Do zrobienia: {count}",
+        "check_in_title": "Zamelduj się na mecz z {name}",
+        "scrim_title": "chce scrima",
+        "counter_title": "zaproponowała nowy termin",
+        "best_of_short": "Bo{count}",
+        "roster_title": "{count} z 5 w składzie",
+        "roster_meta": "Zaproś graczy, aby skompletować drużynę.",
+        "waiting_on": "Oczekiwanie na",
+        "waiting_check_in": "{names}: zameldowanie",
+        "waiting_scrim": "{name}: odpowiedź na twoją prośbę o scrim",
+        "waiting_invites": "{names}: przyjęcie zaproszeń",
+        "counter_dialog_title": "Zaproponuj inny termin",
+        "counter_dialog_description": "{name} musi jeszcze zaakceptować nowy termin.",
+        "send_new_time": "Wyślij nowy termin"
+      }
+    },
+    "activity": {
+      "title": "Aktywność",
+      "this_week": "W tym tygodniu",
+      "earlier": "Wcześniej",
+      "show_older": "Pokaż starszą aktywność",
+      "empty": "Wyniki, klipy i nagrody pojawią się tutaj, gdy {team} zagra.",
+      "beat": "Pokonano {opponent}",
+      "lost_to": "Przegrana z {opponent}",
+      "drew_with": "Remis z {opponent}",
+      "open_match": "Otwórz mecz",
+      "won": "Wygrano {name}",
+      "second_at": "2. miejsce w {name}",
+      "third_at": "3. miejsce w {name}",
+      "placed_at": "{placement} w {name}",
+      "received": "Otrzymano {name}",
+      "tournament": "Turniej",
+      "promoted": "Awans do {division}",
+      "relegated": "Spadek do {division}",
+      "finished": "Ukończono na #{rank} w {division}",
+      "stayed": "Utrzymano się w {division}",
+      "started": "Rozpoczęto {season}",
+      "invited": "Zaproszono: {name}",
+      "invited_by": "Zaproszony przez {name}",
+      "created": "Utworzono drużynę {team}"
+    },
+    "starting_five": {
+      "title": "Podstawowa piątka",
+      "players": "{count} gracz | {count} graczy",
+      "manage_roster": "Zarządzaj składem",
+      "full_roster": "Pełny skład",
+      "starters_only": "Tylko podstawowa piątka",
+      "open_slot": "Wolne miejsce w składzie",
+      "invite": "Zaproś",
+      "substitutes": "{count} rezerwowy | Rezerwowi: {count}",
+      "bench": "{count} na ławce",
+      "coaches": "{count} trener | Trenerzy: {count}",
+      "captain": "Kapitan: {name}"
     }
   },
   "match": {

@@ -1638,6 +1638,62 @@
         "col_pick": "Proba de pick",
         "col_play": "Proba de jeu",
         "col_predicted_win": "Victoires % prévu"
+      },
+      "players": "{count} joueur | {count} joueurs",
+      "form": {
+        "label": "Forme récente : {results}",
+        "none": "Aucun résultat pour l'instant",
+        "result_W": "victoire",
+        "result_L": "défaite",
+        "result_T": "égalité"
+      },
+      "your_teams": {
+        "title": "Tes équipes",
+        "next": "Prochain",
+        "last": "Dernier",
+        "playing_now": "En jeu",
+        "nothing_scheduled": "Rien de prévu",
+        "no_matches": "Aucun match pour l'instant",
+        "result_W": "Victoire",
+        "result_L": "Défaite",
+        "result_T": "Égalité",
+        "check_in": "Check-in",
+        "scrim_replies": "{count} réponse de scrim attendue | {count} réponses de scrim attendues",
+        "invite_starter": "Inviter un titulaire"
+      },
+      "playing_now": {
+        "title": "En jeu",
+        "live_count": "{count} en direct",
+        "all_live": "Tous les matchs en direct",
+        "more_on_watch": "autres en direct sur Watch"
+      },
+      "scrims": {
+        "title": "En recherche de scrims",
+        "subtitle": "Équipes ouvertes aux défis",
+        "today": "Aujourd'hui {from}–{to}",
+        "any_time": "Accepte les demandes à tout moment",
+        "sign_in_to_request": "Connecte-toi pour demander",
+        "need_team": "Il te faut une équipe que tu possèdes ou diriges pour demander un scrim.",
+        "see_all": "Tout voir dans le Scrim finder"
+      },
+      "directory": {
+        "title": "Toutes les équipes",
+        "sort_label": "Trier les équipes",
+        "sort_active": "Récemment actives",
+        "sort_rating": "Classement",
+        "sort_name": "Nom",
+        "search_label": "Rechercher des équipes",
+        "clear_search": "Effacer la recherche",
+        "org": "Org",
+        "playing_now": "En jeu",
+        "never_played": "Aucun match pour l'instant",
+        "col_roster": "Effectif",
+        "col_elo": "ELO moy.",
+        "col_form": "Forme",
+        "col_last": "Dernier match",
+        "col_awards": "Récompenses",
+        "no_match": "Rien ne correspond à ta recherche ou à tes filtres.",
+        "clear_filters": "Effacer les filtres"
       }
     },
     "settings": {
@@ -7833,6 +7889,90 @@
       "failed_description": "La requête a échoué. Réessayez dans un instant.",
       "empty": "Aucun utilitaire rattaché",
       "empty_description": "Aucune grenade lancée dans les matchs de cette équipe ne correspond encore à un lineup enregistré."
+    },
+    "pulse": {
+      "hero": {
+        "players": "{count} joueur | {count} joueurs",
+        "matches": "{count} match | {count} matchs",
+        "no_matches": "Aucun match pour l'instant",
+        "founded": "Fondée le {date}",
+        "all_awards": "Voir toutes les récompenses",
+        "team_actions": "Actions de l'équipe"
+      },
+      "stage": {
+        "live": "En direct",
+        "next_up": "À suivre",
+        "upcoming": "{count} à venir",
+        "then": "Ensuite",
+        "open_to_scrims": "Ouvre {name} aux scrims pour que d'autres équipes puissent te défier.",
+        "set_up_scrims": "Configurer les scrims",
+        "none_scheduled_member": "Aucun match prévu pour l'instant.",
+        "none_scheduled": "Rien de prévu pour le moment.",
+        "never_played": "{name} n'a pas encore joué de match."
+      },
+      "results": {
+        "hint": "Les plus récents d'abord, défile pour voir les plus anciens",
+        "all_matches": "Tous les matchs"
+      },
+      "tabs": {
+        "matches": "Matchs",
+        "scrim_waiting": "{count} en attente de toi"
+      },
+      "needs": {
+        "title": "On a besoin de toi",
+        "to_do": "{count} à faire",
+        "check_in_title": "Check-in pour le match contre {name}",
+        "scrim_title": "veut faire un scrim",
+        "counter_title": "a proposé un nouvel horaire",
+        "best_of_short": "Bo{count}",
+        "roster_title": "{count} titulaires sur 5",
+        "roster_meta": "Invite des joueurs pour aligner une équipe complète.",
+        "waiting_on": "En attente de",
+        "waiting_check_in": "{names} pour le check-in",
+        "waiting_scrim": "{name} pour répondre à ta demande de scrim",
+        "waiting_invites": "{names} pour accepter leurs invitations",
+        "counter_dialog_title": "Proposer un autre horaire",
+        "counter_dialog_description": "{name} doit encore accepter le nouvel horaire.",
+        "send_new_time": "Envoyer le nouvel horaire"
+      }
+    },
+    "activity": {
+      "title": "Activité",
+      "this_week": "Cette semaine",
+      "earlier": "Plus tôt",
+      "show_older": "Afficher les activités plus anciennes",
+      "empty": "Les résultats, clips et récompenses apparaîtront ici au fil des matchs de {team}.",
+      "beat": "A battu {opponent}",
+      "lost_to": "A perdu contre {opponent}",
+      "drew_with": "A fait match nul contre {opponent}",
+      "open_match": "Ouvrir le match",
+      "won": "A remporté {name}",
+      "second_at": "2e à {name}",
+      "third_at": "3e à {name}",
+      "placed_at": "{placement} à {name}",
+      "received": "A reçu {name}",
+      "tournament": "Tournoi",
+      "promoted": "Promu en {division}",
+      "relegated": "Relégué en {division}",
+      "finished": "A fini #{rank} en {division}",
+      "stayed": "Maintenu en {division}",
+      "started": "{season} a commencé",
+      "invited": "{name} a été invité",
+      "invited_by": "Invité par {name}",
+      "created": "{team} a été créée"
+    },
+    "starting_five": {
+      "title": "Cinq de départ",
+      "players": "{count} joueur | {count} joueurs",
+      "manage_roster": "Gérer l'effectif",
+      "full_roster": "Effectif complet",
+      "starters_only": "Cinq de départ uniquement",
+      "open_slot": "Place de titulaire libre",
+      "invite": "Inviter",
+      "substitutes": "{count} remplaçant | {count} remplaçants",
+      "bench": "{count} sur le banc",
+      "coaches": "{count} coach | {count} coachs",
+      "captain": "Capitaine : {name}"
     }
   },
   "match": {

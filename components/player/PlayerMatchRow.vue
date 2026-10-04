@@ -216,7 +216,35 @@ const wideGrid =
 
       <!-- RANK — the rank this match moved, in its own system (5Stack ELO
            tier, Premier, FACEIT, Valve skill group). -->
-      <div class="flex items-center justify-end">
+      <div v-if="teamId" class="flex items-center justify-end gap-1.5">
+        <span v-if="teamPlayers.length" class="flex -space-x-1.5">
+          <template
+            v-for="teamPlayer in teamPlayers.slice(0, 5)"
+            :key="teamPlayer.steam_id"
+          >
+            <img
+              v-if="teamPlayer.avatar_url"
+              :src="teamPlayer.avatar_url"
+              :alt="teamPlayer.name"
+              :title="teamPlayer.name"
+              class="h-6 w-6 rounded-full object-cover ring-2 ring-background"
+            />
+            <span
+              v-else
+              :title="teamPlayer.name"
+              class="inline-grid h-6 w-6 place-items-center rounded-full bg-muted text-[0.6rem] font-bold uppercase ring-2 ring-background"
+              >{{ teamPlayer.name?.slice(0, 1) }}</span
+            >
+          </template>
+        </span>
+        <span
+          v-if="teamPlayers.length > 5"
+          class="font-mono text-[0.6rem] tabular-nums text-muted-foreground"
+          >+{{ teamPlayers.length - 5 }}</span
+        >
+        <span v-if="!teamPlayers.length" class="text-muted-foreground">—</span>
+      </div>
+      <div v-else class="flex items-center justify-end">
         <MatchRankBadge
           v-if="rankMove"
           :kind="rankMove.kind"
@@ -481,6 +509,7 @@ const wideGrid =
             <PlayerMatchScoreboard
               :match="scoreboardMatch"
               :focus-steam-id="playerSteamId"
+              :focus-lineup-id="teamId ? focusLineupId : null"
               :loading="detailsStatsLoading"
               :active-tab="detailsTab"
               :selected-map-id="selectedMapId"
@@ -564,6 +593,9 @@ export default {
     // Focus player's aggregate stats for this match, batched by the parent
     // page. Powers the collapsed row without a per-row matches_by_pk query.
     collapsedAgg: { type: Object, required: false, default: null },
+    // Team mode: the row reads from this team's lineup instead of a player's,
+    // and collapsedAgg / canonicalRating carry the team's numbers.
+    teamId: { type: String, required: false, default: null },
   },
   // The profile page's open rows (restored on back); null in the right hub.
   inject: {
@@ -617,7 +649,7 @@ export default {
     // highlight thumbnail still needs a fetch, and only for matches that
     // actually have clips — the heavy round-level + per-map + all-players
     // query stays deferred to first expand (getDetailedStats).
-    if (this.isFinished && this.playerSteamId && this.hasClips) {
+    if (this.isFinished && this.clipSteamIds.length && this.hasClips) {
       if (this.playerClips.length === 0 && !this.playerClipsLoading) {
         this.getPlayerClips().catch(() => {});
       }
@@ -713,7 +745,7 @@ export default {
     // The lineup the focus player is NOT on. Mirrors the score's orientation
     // (player defaults to lineup_1) when their lineup can't be resolved.
     opponentLineup(): any | null {
-      const mine = this.playerLineupId;
+      const mine = this.focusLineupId;
       const l1 = this.match?.lineup_1 ?? null;
       const l2 = this.match?.lineup_2 ?? null;
       if (mine && this.match?.lineup_2_id === mine) return l1;
@@ -728,15 +760,58 @@ export default {
       avatarSrc: string | null;
     } | null {
       const lu = this.opponentLineup;
-      if (!lu || lu.team_id == null) return null;
+      // A team's opponent is always context, pickup lineup or not.
+      if (!lu || (lu.team_id == null && !this.teamId)) return null;
       const name = lu.team?.name || lu.name || null;
-      if (!name) return null;
+      // A pickup's generated "Team 1" / "Team 2" says nothing about who
+      // was played.
+      if (!name || (lu.team_id == null && /^Team [12]$/.test(name))) {
+        return null;
+      }
       const url = lu.team?.avatar_url;
       return {
         name,
         shortName: lu.team?.short_name || null,
         avatarSrc: url ? `https://${this.apiDomain}/${url}` : null,
       };
+    },
+    // The lineup the row reads from: the team's in team mode, else the
+    // player's.
+    focusLineupId(): string | null {
+      return this.teamId ? this.teamLineupId : this.playerLineupId;
+    },
+    // The team's lineup by team_id, else by the tournament bracket side.
+    teamLineupId(): string | null {
+      const teamId = this.teamId;
+      if (!teamId) return null;
+      if (this.match?.lineup_1?.team_id === teamId)
+        return this.match.lineup_1_id;
+      if (this.match?.lineup_2?.team_id === teamId)
+        return this.match.lineup_2_id;
+      const bracket = this.match?.tournament_brackets?.[0];
+      if (bracket?.team_1?.team_id === teamId) return this.match.lineup_1_id;
+      if (bracket?.team_2?.team_id === teamId) return this.match.lineup_2_id;
+      return null;
+    },
+    teamLineup(): any | null {
+      const id = this.teamLineupId;
+      if (!id) return null;
+      return this.match?.lineup_1_id === id
+        ? this.match?.lineup_1
+        : this.match?.lineup_2;
+    },
+    // Who played for the team, for the RANK column's team-mode avatars.
+    teamPlayers(): any[] {
+      return (this.teamLineup?.lineup_players ?? [])
+        .map((lp: any) => lp.player)
+        .filter(Boolean);
+    },
+    // Whose clips the row shows: the player, or everyone on the team's side.
+    clipSteamIds(): string[] {
+      if (!this.teamId) return this.playerSteamId ? [this.playerSteamId] : [];
+      return (this.teamLineup?.lineup_players ?? [])
+        .map((lp: any) => String(lp.steam_id ?? lp.player?.steam_id ?? ""))
+        .filter(Boolean);
     },
     playerLineupId(): string | null {
       const sid = this.playerSteamId;
@@ -754,12 +829,14 @@ export default {
     // won | lost | tied — derived from the player's elo row when present,
     // falling back to comparing the winning lineup with the player's lineup.
     result(): "won" | "lost" | "tied" | null {
-      const r = (this.eloChange?.match_result ?? "").toLowerCase();
+      const r = this.teamId
+        ? ""
+        : (this.eloChange?.match_result ?? "").toLowerCase();
       if (r === "won" || r === "win") return "won";
       if (r === "lost" || r === "loss") return "lost";
       if (r === "tied" || r === "tie" || r === "draw") return "tied";
       const winner = this.match?.winning_lineup_id;
-      const mine = this.playerLineupId;
+      const mine = this.focusLineupId;
       if (!this.isFinished || !mine) return null;
       if (!winner) return "tied";
       return winner === mine ? "won" : "lost";
@@ -773,7 +850,7 @@ export default {
     // always oriented player-first.
     score(): { player: number; opponent: number } {
       const maps = this.match?.match_maps ?? [];
-      const mine = this.playerLineupId;
+      const mine = this.focusLineupId;
       const l1 = this.match?.lineup_1_id;
       if (maps.length === 1) {
         const mm = maps[0];
@@ -1142,24 +1219,24 @@ export default {
       }
     },
     async getPlayerClips() {
-      const sid = this.playerSteamId;
-      if (!sid || !this.match?.id) return;
+      const ids = this.clipSteamIds;
+      if (!ids.length || !this.match?.id) return;
       this.playerClipsLoading = true;
       try {
         const { data } = await this.$apollo.query({
           fetchPolicy: "network-only",
-          variables: { matchId: this.match.id, playerId: sid },
+          variables: { matchId: this.match.id, playerIds: ids },
           query: generateQuery({
             match_clips: [
               {
-                limit: 6,
+                limit: this.teamId ? 12 : 6,
                 // No visibility filter: show every clip the viewer can see,
                 // same as the match page — Hasura permissions do the rest.
                 where: {
                   match_map: { match_id: { _eq: $("matchId", "uuid!") } },
                   _or: [
-                    { user_steam_id: { _eq: $("playerId", "bigint!") } },
-                    { target_steam_id: { _eq: $("playerId", "bigint!") } },
+                    { user_steam_id: { _in: $("playerIds", "[bigint!]!") } },
+                    { target_steam_id: { _in: $("playerIds", "[bigint!]!") } },
                   ],
                 },
                 order_by: [{}, { created_at: order_by.desc }],
@@ -1178,7 +1255,7 @@ export default {
       useClipModal().playClips(
         this.filteredPlayerClips as any[],
         this.bestClip.id,
-        `player-match-${this.match?.id}-${this.playerSteamId}-map-${this.selectedMapId ?? "all"}`,
+        `${this.teamId ? `team-match-${this.match?.id}-${this.teamId}` : `player-match-${this.match?.id}-${this.playerSteamId}`}-map-${this.selectedMapId ?? "all"}`,
       );
     },
   },

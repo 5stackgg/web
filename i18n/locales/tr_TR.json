@@ -1638,6 +1638,62 @@
         "col_pick": "Pick İhtimali",
         "col_play": "Oynama İhtimali",
         "col_predicted_win": "Tahmini Galibiyet%"
+      },
+      "players": "{count} oyuncu | {count} oyuncu",
+      "form": {
+        "label": "Son form: {results}",
+        "none": "Henüz sonuç yok",
+        "result_W": "galibiyet",
+        "result_L": "mağlubiyet",
+        "result_T": "beraberlik"
+      },
+      "your_teams": {
+        "title": "Takımların",
+        "next": "Sıradaki",
+        "last": "Son",
+        "playing_now": "Şu an oynuyor",
+        "nothing_scheduled": "Planlanmış bir şey yok",
+        "no_matches": "Henüz maç yok",
+        "result_W": "Kazandı",
+        "result_L": "Kaybetti",
+        "result_T": "Berabere kaldı",
+        "check_in": "Katılım onayı",
+        "scrim_replies": "{count} scrim yanıtı gerekiyor | {count} scrim yanıtı gerekiyor",
+        "invite_starter": "Bir ana kadro oyuncusu davet et"
+      },
+      "playing_now": {
+        "title": "Şu an oynuyor",
+        "live_count": "{count} canlı",
+        "all_live": "Tüm canlı maçlar",
+        "more_on_watch": "Watch'ta daha fazla canlı"
+      },
+      "scrims": {
+        "title": "Scrim arıyor",
+        "subtitle": "Meydan okumaları kabul eden takımlar",
+        "today": "Bugün {from}–{to}",
+        "any_time": "Her zaman istek kabul eder",
+        "sign_in_to_request": "İstemek için giriş yap",
+        "need_team": "Scrim istemek için sahibi veya yöneticisi olduğun bir takım gerekir.",
+        "see_all": "Hepsini Scrim bulucuda gör"
+      },
+      "directory": {
+        "title": "Tüm takımlar",
+        "sort_label": "Takımları sırala",
+        "sort_active": "Son aktif",
+        "sort_rating": "Puan",
+        "sort_name": "İsim",
+        "search_label": "Takım ara",
+        "clear_search": "Aramayı temizle",
+        "org": "Org",
+        "playing_now": "Şu an oynuyor",
+        "never_played": "Henüz maç yok",
+        "col_roster": "Kadro",
+        "col_elo": "Ort. ELO",
+        "col_form": "Form",
+        "col_last": "Son oynanan",
+        "col_awards": "Ödüller",
+        "no_match": "Aramana veya filtrelerine uyan bir şey yok.",
+        "clear_filters": "Filtreleri temizle"
       }
     },
     "settings": {
@@ -7833,6 +7889,90 @@
       "failed_description": "İstek başarısız oldu. Birazdan tekrar dene.",
       "empty": "Eşleşen utility yok",
       "empty_description": "Bu takımın maçlarında atılan hiçbir bomba henüz kayıtlı bir dizilimle örtüşmüyor."
+    },
+    "pulse": {
+      "hero": {
+        "players": "{count} oyuncu | {count} oyuncu",
+        "matches": "{count} maç | {count} maç",
+        "no_matches": "Henüz maç yok",
+        "founded": "{date} tarihinde kuruldu",
+        "all_awards": "Tüm ödülleri göster",
+        "team_actions": "Takım işlemleri"
+      },
+      "stage": {
+        "live": "Şu an canlı",
+        "next_up": "Sıradaki",
+        "upcoming": "{count} yaklaşan",
+        "then": "Sonra",
+        "open_to_scrims": "Diğer takımların sana meydan okuyabilmesi için {name} takımını scrime aç.",
+        "set_up_scrims": "Scrimleri ayarla",
+        "none_scheduled_member": "Henüz planlanmış maç yok.",
+        "none_scheduled": "Şu an planlanmış bir şey yok.",
+        "never_played": "{name} henüz maç oynamadı."
+      },
+      "results": {
+        "hint": "Önce en yeni, eskiler için kaydır",
+        "all_matches": "Tüm maçlar"
+      },
+      "tabs": {
+        "matches": "Maçlar",
+        "scrim_waiting": "{count} seni bekliyor"
+      },
+      "needs": {
+        "title": "Seni bekliyor",
+        "to_do": "{count} yapılacak",
+        "check_in_title": "{name} maçı için katılım onayı ver",
+        "scrim_title": "scrim istiyor",
+        "counter_title": "yeni bir zaman önerdi",
+        "best_of_short": "Bo{count}",
+        "roster_title": "5 ana oyuncudan {count}",
+        "roster_meta": "Tam kadro için oyuncu davet et.",
+        "waiting_on": "Bekleniyor",
+        "waiting_check_in": "{names} katılım onayı vermeli",
+        "waiting_scrim": "{name} scrim isteğine yanıt vermeli",
+        "waiting_invites": "{names} davetleri kabul etmeli",
+        "counter_dialog_title": "Başka bir zaman öner",
+        "counter_dialog_description": "{name} yeni zamanı hâlâ kabul etmeli.",
+        "send_new_time": "Yeni zamanı gönder"
+      }
+    },
+    "activity": {
+      "title": "Etkinlik",
+      "this_week": "Bu hafta",
+      "earlier": "Daha önce",
+      "show_older": "Eski etkinliği göster",
+      "empty": "{team} oynadıkça sonuçlar, klipler ve ödüller burada görünür.",
+      "beat": "{opponent} takımını yendi",
+      "lost_to": "{opponent} takımına kaybetti",
+      "drew_with": "{opponent} ile berabere kaldı",
+      "open_match": "Maçı aç",
+      "won": "{name} kazandı",
+      "second_at": "{name} turnuvasında 2.",
+      "third_at": "{name} turnuvasında 3.",
+      "placed_at": "{name} turnuvasında {placement}",
+      "received": "{name} aldı",
+      "tournament": "Turnuva",
+      "promoted": "{division} ligine yükseldi",
+      "relegated": "{division} ligine düştü",
+      "finished": "{division} ligini #{rank} bitirdi",
+      "stayed": "{division} liginde kaldı",
+      "started": "{season} başladı",
+      "invited": "{name} davet edildi",
+      "invited_by": "{name} davet etti",
+      "created": "{team} oluşturuldu"
+    },
+    "starting_five": {
+      "title": "Ana beşli",
+      "players": "{count} oyuncu | {count} oyuncu",
+      "manage_roster": "Kadroyu yönet",
+      "full_roster": "Tüm kadro",
+      "starters_only": "Yalnızca ana beşli",
+      "open_slot": "Boş ana kadro yeri",
+      "invite": "Davet et",
+      "substitutes": "{count} yedek | {count} yedek",
+      "bench": "{count} yedek kulübesinde",
+      "coaches": "{count} koç | {count} koç",
+      "captain": "Kaptan: {name}"
     }
   },
   "match": {

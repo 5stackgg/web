@@ -27,6 +27,8 @@ const props = defineProps<{
   // they load.
   match: any;
   focusSteamId: string | null;
+  // A team's view: this lineup leads the table and no single row is pinned.
+  focusLineupId?: string | null;
   loading: boolean;
   activeTab: string;
   selectedMapId: string | null;
@@ -90,8 +92,10 @@ function hasFocus(lineup: any): boolean {
 }
 
 // The focus player's side first, so their team leads the table.
-const focusIsLineup2 = computed(
-  () => !hasFocus(props.match?.lineup_1) && hasFocus(props.match?.lineup_2),
+const focusIsLineup2 = computed(() =>
+  props.focusLineupId
+    ? props.match?.lineup_2_id === props.focusLineupId
+    : !hasFocus(props.match?.lineup_1) && hasFocus(props.match?.lineup_2),
 );
 const mineRaw = computed(() =>
   focusIsLineup2.value ? props.match?.lineup_2 : props.match?.lineup_1,

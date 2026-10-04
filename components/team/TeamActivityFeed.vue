@@ -285,14 +285,6 @@ function openAward(grant: any) {
   awardOpen.value = true;
 }
 
-function awardTitleKey(event: Extract<ActivityEvent, { kind: "award" }>) {
-  if (event.manual || event.placement == null) return "team.activity.received";
-  if (event.placement === 1) return "team.activity.won";
-  if (event.placement === 2) return "team.activity.second_at";
-  if (event.placement === 3) return "team.activity.third_at";
-  return "team.activity.placed_at";
-}
-
 function awardMeta(event: Extract<ActivityEvent, { kind: "award" }>) {
   if (event.manual || event.placement == null) {
     return event.grant.note || t("awards.granted");
@@ -470,7 +462,20 @@ const inlineButton =
                     :class="inlineButton"
                     @click="openAward(event.grant)"
                   >
-                    <i18n-t :keypath="awardTitleKey(event)" scope="global">
+                    <i18n-t
+                      :keypath="
+                        event.manual || event.placement == null
+                          ? 'team.activity.received'
+                          : event.placement === 1
+                            ? 'team.activity.won'
+                            : event.placement === 2
+                              ? 'team.activity.second_at'
+                              : event.placement === 3
+                                ? 'team.activity.third_at'
+                                : 'team.activity.placed_at'
+                      "
+                      scope="global"
+                    >
                       <template #name
                         ><b class="font-bold">{{ event.name }}</b></template
                       >

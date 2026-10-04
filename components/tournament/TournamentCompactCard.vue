@@ -104,9 +104,9 @@ const podium = computed(() => {
       byPlacement[t.placement] = teamNameForAward(t);
     }
   }
-  if (!byPlacement[1] && !byPlacement[2] && !byPlacement[3]) {
-    // Fall back to the final stage's standings when awards were never
-    // generated (organizer didn't issue them, or awards are disabled).
+  if (!byPlacement[1]) {
+    // Fall back to the final stage's standings when no award names a winner
+    // (awards are disabled, or an organizer only hand-granted a lower place).
     const stages = [...(props.tournament?.stages || [])].sort(
       (a: any, b: any) => (Number(b.order) || 0) - (Number(a.order) || 0),
     );

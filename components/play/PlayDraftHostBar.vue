@@ -65,16 +65,12 @@ const regions = computed<Array<{ value: string; description?: string }>>(
   () => matchmaking.preferredRegions,
 );
 const seatsLine = computed(() =>
-  [
-    t("pages.play.draft_rooms.host_bar.seats", {
-      count: EXPECTED_PLAYERS[type.value as keyof typeof EXPECTED_PLAYERS],
-    }),
-    regions.value
-      .map((region) => region.description || region.value)
-      .join(", "),
-  ]
-    .filter(Boolean)
-    .join(" · "),
+  t("pages.play.draft_rooms.host_bar.seats", {
+    count: EXPECTED_PLAYERS[type.value as keyof typeof EXPECTED_PLAYERS],
+  }),
+);
+const hostsOnLan = computed(
+  () => matchmaking.onLan && matchmaking.playWhere === "lan",
 );
 
 const myRoom = computed(() => draftGames.myDraftGame as any);
@@ -108,9 +104,17 @@ async function createAndEnter(payload: Record<string, unknown>) {
   }
 }
 
-async function host() {
+async function host(event: MouseEvent) {
   if (!auth.me) {
     navigateTo("/login?next=/play");
+    return;
+  }
+  if (
+    !(await matchmaking.ensurePlayWhere(
+      "room",
+      event.currentTarget as HTMLElement,
+    ))
+  ) {
     return;
   }
   const payload = quickHostPayload({
@@ -130,15 +134,27 @@ async function host() {
 }
 
 const rehosting = ref(false);
-async function rehost() {
+async function rehost(event: MouseEvent) {
   if (rehosting.value) return;
   const payload = rehostPayload(preset.value);
   if (!payload) {
     navigateTo("/draft-room/create");
     return;
   }
+  // Where it plays follows today's LAN or online choice, not the saved room.
+  if (
+    !(await matchmaking.ensurePlayWhere(
+      "room",
+      event.currentTarget as HTMLElement,
+    ))
+  ) {
+    return;
+  }
   rehosting.value = true;
-  await createAndEnter(payload);
+  await createAndEnter({
+    ...payload,
+    regions: regions.value.map((region) => region.value),
+  });
   rehosting.value = false;
 }
 
@@ -232,9 +248,12 @@ const linkClasses =
           <template v-if="auth.me">
             <Play class="size-3.5 fill-current" />
             {{
-              $t("pages.play.draft_rooms.host_bar.open", {
-                format: formatLabel(type),
-              })
+              $t(
+                hostsOnLan
+                  ? "pages.play.draft_rooms.host_bar.open_lan"
+                  : "pages.play.draft_rooms.host_bar.open",
+                { format: formatLabel(type) },
+              )
             }}
           </template>
           <template v-else>

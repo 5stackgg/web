@@ -11,6 +11,9 @@ import { pageKeyWithoutTabQuery } from "~/utilities/pageKey";
 const MatchmakingConfirm = defineAsyncComponent(
   () => import("~/components/matchmaking/MatchmakingConfirm.vue"),
 );
+const PlayWherePrompt = defineAsyncComponent(
+  () => import("~/components/matchmaking/PlayWherePrompt.vue"),
+);
 const MatchActiveAlert = defineAsyncComponent(
   () => import("~/components/match/MatchActiveAlert.vue"),
 );
@@ -101,6 +104,7 @@ const hasGlobalStream = computed(() => !!applicationSettingsStore.globalStream);
   <div v-if="me" style="display: contents">
     <PlayerNameRegistration />
     <MatchmakingConfirm />
+    <PlayWherePrompt />
     <MatchActiveAlert />
     <DraftActiveAlert />
   </div>

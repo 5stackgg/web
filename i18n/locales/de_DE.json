@@ -3907,7 +3907,6 @@
           "skipped": "{name} übersprungen, {ms} ms",
           "unreachable": "{name} nicht erreichbar",
           "ms": "{ms} ms",
-          "lan": "LAN",
           "count": "{count} Region | {count} Regionen"
         },
         "party": {
@@ -3932,7 +3931,8 @@
         "no_region": {
           "title": "Jede Region liegt über deinem Limit von {ms} ms",
           "body": "Erhöhe dein Limit oder markiere eine Region, die du akzeptierst, und geh dann erneut in die Queue."
-        }
+        },
+        "find_lan_match": "LAN-Match suchen"
       },
       "schedule": {
         "vs": "vs",
@@ -3993,7 +3993,8 @@
             "captains": "Top 2 nach Rang als Captains, Snake-Reihenfolge",
             "host": "Du teilst die Spieler auf die Teams auf",
             "pug": "Teams werden automatisch ausgeglichen, sobald der Room voll ist"
-          }
+          },
+          "open_lan": "{format} LAN-Raum öffnen"
         },
         "intro": {
           "title": "Hoste dein eigenes Pick-up-Game.",
@@ -9553,7 +9554,21 @@
     "temp_banned_until": "Du bist vorübergehend bis {time} vom Matchmaking gesperrt",
     "new_invites_count": "Neue Einladungen ({count})",
     "tournament_banned": "Dir ist der Beitritt zu Turnier-Rostern und zum Free-Agent-Pool gesperrt.",
-    "tournament_banned_until": "Dir ist der Beitritt zu Turnier-Rostern und zum Free-Agent-Pool bis {time} gesperrt."
+    "tournament_banned_until": "Dir ist der Beitritt zu Turnier-Rostern und zum Free-Agent-Pool bis {time} gesperrt.",
+    "where": {
+      "label": "Wo du spielst",
+      "lan": "LAN",
+      "online": "Online",
+      "lan_hint": "Nur Spieler in diesem Netzwerk",
+      "ask_queue": "Du bist in einem LAN. Wo möchtest du spielen?",
+      "ask_room": "Du bist in einem LAN. Wo soll der Raum spielen?",
+      "play_lan": "Im LAN spielen",
+      "play_online": "Online spielen",
+      "lan_room": "LAN-Raum",
+      "online_room": "Online-Raum",
+      "lan_room_hint": "Nur Spieler in diesem Netzwerk können beitreten",
+      "online_room_hint": "Wird online gespielt, jeder kann beitreten"
+    }
   },
   "game_server": {
     "lan_ip": "LAN-IP",

@@ -3907,7 +3907,6 @@
           "skipped": "已跳过 {name}，{ms} ms",
           "unreachable": "{name} 无法连接",
           "ms": "{ms} ms",
-          "lan": "LAN",
           "count": "{count} 个区域 | {count} 个区域"
         },
         "party": {
@@ -3932,7 +3931,8 @@
         "no_region": {
           "title": "所有区域都超过了你的 {ms} ms 上限",
           "body": "提高上限或标星一个你能接受的区域，然后重新排队。"
-        }
+        },
+        "find_lan_match": "寻找局域网比赛"
       },
       "schedule": {
         "vs": "vs",
@@ -3993,7 +3993,8 @@
             "captains": "段位前 2 名担任队长，蛇形顺序",
             "host": "由你把玩家分到各队",
             "pug": "房间满员后自动平衡队伍"
-          }
+          },
+          "open_lan": "开启 {format} 局域网房间"
         },
         "intro": {
           "title": "自己组一场比赛。",
@@ -9553,7 +9554,21 @@
     "temp_banned_until": "你被暂时禁止使用匹配，直到 {time}",
     "new_invites_count": "新邀请（{count}）",
     "tournament_banned": "你被禁止加入赛事阵容和自由选手池。",
-    "tournament_banned_until": "你被禁止加入赛事阵容和自由选手池，直到 {time}。"
+    "tournament_banned_until": "你被禁止加入赛事阵容和自由选手池，直到 {time}。",
+    "where": {
+      "label": "游戏位置",
+      "lan": "局域网",
+      "online": "线上",
+      "lan_hint": "仅限此网络中的玩家",
+      "ask_queue": "你正在局域网中。想在哪里玩？",
+      "ask_room": "你正在局域网中。房间要在哪里进行？",
+      "play_lan": "在局域网中游戏",
+      "play_online": "线上游戏",
+      "lan_room": "局域网房间",
+      "online_room": "线上房间",
+      "lan_room_hint": "仅此网络中的玩家可以加入",
+      "online_room_hint": "线上进行，任何人都可以加入"
+    }
   },
   "game_server": {
     "lan_ip": "LAN IP",

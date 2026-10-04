@@ -3907,7 +3907,6 @@
           "skipped": "{name}はスキップ、{ms} ms",
           "unreachable": "{name}に接続できません",
           "ms": "{ms} ms",
-          "lan": "LAN",
           "count": "{count}リージョン | {count}リージョン"
         },
         "party": {
@@ -3932,7 +3931,8 @@
         "no_region": {
           "title": "すべてのリージョンが上限の {ms} ms を超えています",
           "body": "上限を上げるか、許容できるリージョンにスターを付けてから、もう一度キューに参加してください。"
-        }
+        },
+        "find_lan_match": "LANマッチを探す"
       },
       "schedule": {
         "vs": "vs",
@@ -3993,7 +3993,8 @@
             "captains": "ランク上位2名がキャプテン、スネーク順",
             "host": "あなたが選手をチームに振り分けます",
             "pug": "満員になるとチームが自動で振り分けられます"
-          }
+          },
+          "open_lan": "{format} LANルームを開く"
         },
         "intro": {
           "title": "自分で募集して試合をしよう。",
@@ -9553,7 +9554,21 @@
     "temp_banned_until": "{time} まで一時的にマッチメイキングを利用できません",
     "new_invites_count": "新しい招待（{count}）",
     "tournament_banned": "トーナメントのロスターとフリーエージェントプールへの参加が禁止されています。",
-    "tournament_banned_until": "{time} までトーナメントのロスターとフリーエージェントプールへの参加が禁止されています。"
+    "tournament_banned_until": "{time} までトーナメントのロスターとフリーエージェントプールへの参加が禁止されています。",
+    "where": {
+      "label": "プレイする場所",
+      "lan": "LAN",
+      "online": "オンライン",
+      "lan_hint": "このネットワーク上のプレイヤーのみ",
+      "ask_queue": "LANに接続しています。どこでプレイしますか？",
+      "ask_room": "LANに接続しています。ルームはどこでプレイしますか？",
+      "play_lan": "LANでプレイ",
+      "play_online": "オンラインでプレイ",
+      "lan_room": "LANルーム",
+      "online_room": "オンラインルーム",
+      "lan_room_hint": "このネットワーク上のプレイヤーのみ参加できます",
+      "online_room_hint": "オンラインでプレイ、誰でも参加できます"
+    }
   },
   "game_server": {
     "lan_ip": "LAN IP",

@@ -3907,7 +3907,6 @@
           "skipped": "{name} ignorée, {ms} ms",
           "unreachable": "{name} injoignable",
           "ms": "{ms} ms",
-          "lan": "LAN",
           "count": "{count} région | {count} régions"
         },
         "party": {
@@ -3932,7 +3931,8 @@
         "no_region": {
           "title": "Toutes les régions dépassent ta limite de {ms} ms",
           "body": "Augmente ta limite ou mets en favori une région acceptable, puis relance la file."
-        }
+        },
+        "find_lan_match": "Trouver un match LAN"
       },
       "schedule": {
         "vs": "vs",
@@ -3993,7 +3993,8 @@
             "captains": "Capitaines : top 2 au classement, ordre en serpent",
             "host": "Vous placez les joueurs dans les équipes",
             "pug": "Les équipes s'équilibrent automatiquement quand la draft est pleine"
-          }
+          },
+          "open_lan": "Ouvrir un salon LAN {format}"
         },
         "intro": {
           "title": "Organisez votre propre partie.",
@@ -9553,7 +9554,21 @@
     "temp_banned_until": "Vous êtes temporairement exclu du matchmaking jusqu'au {time}",
     "new_invites_count": "Nouvelles invitations ({count})",
     "tournament_banned": "Tu ne peux pas rejoindre les rosters de tournoi ni le pool d'agents libres.",
-    "tournament_banned_until": "Tu ne peux pas rejoindre les rosters de tournoi ni le pool d'agents libres jusqu'à {time}."
+    "tournament_banned_until": "Tu ne peux pas rejoindre les rosters de tournoi ni le pool d'agents libres jusqu'à {time}.",
+    "where": {
+      "label": "Où jouer",
+      "lan": "LAN",
+      "online": "En ligne",
+      "lan_hint": "Uniquement les joueurs de ce réseau",
+      "ask_queue": "Tu es sur un LAN. Où veux-tu jouer ?",
+      "ask_room": "Tu es sur un LAN. Où le salon doit-il jouer ?",
+      "play_lan": "Jouer sur le LAN",
+      "play_online": "Jouer en ligne",
+      "lan_room": "Salon LAN",
+      "online_room": "Salon en ligne",
+      "lan_room_hint": "Seuls les joueurs de ce réseau peuvent rejoindre",
+      "online_room_hint": "Se joue en ligne, tout le monde peut rejoindre"
+    }
   },
   "game_server": {
     "lan_ip": "IP LAN",

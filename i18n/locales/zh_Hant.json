@@ -3907,7 +3907,6 @@
           "skipped": "已略過 {name}，{ms} ms",
           "unreachable": "{name} 無法連線",
           "ms": "{ms} ms",
-          "lan": "LAN",
           "count": "{count} 個區域 | {count} 個區域"
         },
         "party": {
@@ -3932,7 +3931,8 @@
         "no_region": {
           "title": "所有區域都超過你的 {ms} ms 上限",
           "body": "提高上限或為可接受的區域加星號，然後重新排隊。"
-        }
+        },
+        "find_lan_match": "尋找區域網路比賽"
       },
       "schedule": {
         "vs": "vs",
@@ -3993,7 +3993,8 @@
             "captains": "段位前 2 名擔任隊長，蛇形順序",
             "host": "由你把玩家分到各隊",
             "pug": "房間滿員後自動平衡隊伍"
-          }
+          },
+          "open_lan": "開啟 {format} 區域網路房間"
         },
         "intro": {
           "title": "自己開一場比賽。",
@@ -9553,7 +9554,21 @@
     "temp_banned_until": "你被暫時禁止使用配對，直到 {time}",
     "new_invites_count": "新邀請（{count}）",
     "tournament_banned": "你被禁止加入賽事陣容和自由選手池。",
-    "tournament_banned_until": "你被禁止加入賽事陣容和自由選手池，直到 {time}。"
+    "tournament_banned_until": "你被禁止加入賽事陣容和自由選手池，直到 {time}。",
+    "where": {
+      "label": "遊戲位置",
+      "lan": "區域網路",
+      "online": "線上",
+      "lan_hint": "僅限此網路中的玩家",
+      "ask_queue": "你正在區域網路中。想在哪裡玩？",
+      "ask_room": "你正在區域網路中。房間要在哪裡進行？",
+      "play_lan": "在區域網路中遊戲",
+      "play_online": "線上遊戲",
+      "lan_room": "區域網路房間",
+      "online_room": "線上房間",
+      "lan_room_hint": "僅此網路中的玩家可以加入",
+      "online_room_hint": "線上進行，任何人都可以加入"
+    }
   },
   "game_server": {
     "lan_ip": "LAN IP",

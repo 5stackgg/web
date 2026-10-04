@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
+import { useResizeObserver } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import { useSubscription } from "@vue/apollo-composable";
 import {
@@ -10,23 +11,19 @@ import {
   Play,
   Settings2,
   Signal,
+  Globe,
+  Network,
   Users,
   X,
 } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "~/components/ui/popover";
 import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import Fold from "~/components/ui/transitions/Fold.vue";
 import SteamIcon from "~/components/icons/SteamIcon.vue";
 import PlayModeTile from "~/components/play/PlayModeTile.vue";
 import PlaySeats from "~/components/play/PlaySeats.vue";
 import QuickMatchConnect from "~/components/match/QuickMatchConnect.vue";
-import MatchmakingSettings from "~/components/matchmaking/MatchmakingSettings.vue";
-import RegionLatencySettings from "~/components/matchmaking/RegionLatencySettings.vue";
+import MatchmakingSettingsPanel from "~/components/matchmaking/MatchmakingSettingsPanel.vue";
 import { useQuickQueue } from "~/composables/useQuickQueue";
 import { setActiveHub } from "~/composables/useHubState";
 import { useRightSidebar } from "~/composables/useRightSidebar";
@@ -100,6 +97,39 @@ const tabStop = computed(
 
 const modeGrid = ref<HTMLElement | null>(null);
 
+// One amber frame glides from tile to tile instead of each tile repainting its
+// own border. It fades in where the first pick lands, keeps its last spot while
+// fading out, and only glides between two picks (never on resize).
+const frame = ref({ x: 0, y: 0, w: 0, h: 0 });
+const frameShown = ref(false);
+const frameGlides = ref(false);
+
+function placeFrame(glide: boolean) {
+  const index = modes.value.findIndex(
+    (mode) => mode.type === selectedType.value,
+  );
+  const tile =
+    index < 0
+      ? null
+      : modeGrid.value?.querySelectorAll<HTMLElement>('[role="radio"]')[index];
+  if (!tile) {
+    frameShown.value = false;
+    return;
+  }
+  frameGlides.value = glide && frameShown.value;
+  frame.value = {
+    x: tile.offsetLeft,
+    y: tile.offsetTop,
+    w: tile.offsetWidth,
+    h: tile.offsetHeight,
+  };
+  frameShown.value = true;
+}
+
+watch(selectedType, () => nextTick(() => placeFrame(true)));
+onMounted(() => placeFrame(false));
+useResizeObserver(modeGrid, () => placeFrame(false));
+
 function pick(type: e_match_types_enum) {
   picked.value = type;
 }
@@ -140,7 +170,6 @@ const usedRegions = computed(() =>
       value: region.value,
       name: regionName(region),
       ping: roundedPing(result?.latency),
-      lan: !!region.is_lan && !!result?.isLan,
     };
   }),
 );
@@ -168,6 +197,45 @@ const noRegions = computed(
 );
 
 const maxLatency = computed(() => matchmaking.playerMaxAcceptableLatency);
+
+// On a LAN the line is a switch: play there, or online (then the online
+// regions follow it as usual). Never both.
+const whereOptions = computed(() => {
+  const lanPing = roundedPing(
+    matchmaking.getRegionlatencyResult(matchmaking.lanRegions[0]?.value)
+      ?.latency,
+  );
+  return [
+    {
+      value: "lan" as const,
+      label: t("matchmaking.where.lan"),
+      icon: Network,
+      detail:
+        lanPing === null
+          ? null
+          : t("pages.play.matchmaking.regions.ms", { ms: lanPing }),
+      active: matchmaking.playWhere === "lan",
+    },
+    {
+      value: "online" as const,
+      label: t("matchmaking.where.online"),
+      icon: Globe,
+      detail:
+        matchmaking.playWhere === "online"
+          ? usedRegions.value
+              .map((region) =>
+                region.ping === null
+                  ? region.name
+                  : `${region.name} ${t("pages.play.matchmaking.regions.ms", { ms: region.ping })}`,
+              )
+              .join(" · ")
+          : null,
+      active: matchmaking.playWhere === "online",
+    },
+  ];
+});
+const whereOptionClasses =
+  "inline-flex h-full min-w-0 items-center gap-1.5 rounded-sm px-2.5 text-[13px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]";
 
 // Sanctions. A tournament cooldown never blocks the queue, so it is reported
 // beside the picker rather than in place of it.
@@ -324,15 +392,14 @@ function signIn() {
   )}`;
 }
 
-function findMatch() {
+function findMatch(event: MouseEvent) {
   if (isGuest.value) {
     signIn();
     return;
   }
-  if (selectedType.value) join(selectedType.value);
+  if (selectedType.value) join(selectedType.value, event.currentTarget);
 }
 
-const regionsOpen = ref(false);
 const settingsOpen = ref(false);
 
 const primaryClasses =
@@ -370,25 +437,6 @@ const linkClasses =
             {{ $t("pages.play.matchmaking.players_online", playersOnline) }}
           </span>
         </span>
-        <Popover v-if="!isGuest" v-model:open="settingsOpen">
-          <PopoverTrigger as-child>
-            <Button
-              variant="outline"
-              size="icon-sm"
-              class="relative after:absolute after:-inset-1.5 after:content-[''] [@media(pointer:fine)]:after:hidden"
-              :class="
-                settingsOpen &&
-                'border-[hsl(var(--tac-amber)/0.55)] text-[hsl(var(--tac-amber))]'
-              "
-              :aria-label="$t('pages.play.matchmaking.settings')"
-            >
-              <Settings2 class="size-4" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent align="end" class="w-[min(92vw,520px)] p-4">
-            <MatchmakingSettings />
-          </PopoverContent>
-        </Popover>
       </div>
     </div>
 
@@ -441,7 +489,7 @@ const linkClasses =
           ref="modeGrid"
           role="radiogroup"
           :aria-label="$t('pages.play.matchmaking.mode_group')"
-          class="grid gap-3 max-sm:gap-2"
+          class="relative grid gap-3 max-sm:gap-2"
           :class="[
             'grid-cols-2',
             modes.length >= 4
@@ -449,7 +497,8 @@ const linkClasses =
               : modes.length === 3
                 ? 'xl:grid-cols-3'
                 : '',
-            modes.length % 2 === 1 && 'max-xl:[&>*:last-child]:col-span-2',
+            modes.length % 2 === 1 &&
+              'max-xl:[&>button:last-of-type]:col-span-2',
           ]"
           @keydown="onModeKey"
         >
@@ -471,6 +520,21 @@ const linkClasses =
             :locked="isMember"
             @select="pick(mode.type)"
           />
+          <span
+            aria-hidden="true"
+            class="pointer-events-none absolute left-0 top-0 z-10 rounded-lg shadow-[inset_0_0_0_2px_hsl(var(--tac-amber))] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+            :class="[
+              frameShown ? 'opacity-100' : 'opacity-0',
+              frameGlides
+                ? 'transition-[transform,width,height,opacity]'
+                : 'transition-opacity',
+            ]"
+            :style="{
+              transform: `translate3d(${frame.x}px, ${frame.y}px, 0)`,
+              width: `${frame.w}px`,
+              height: `${frame.h}px`,
+            }"
+          ></span>
         </div>
 
         <div
@@ -487,68 +551,119 @@ const linkClasses =
             </p>
             <template v-else>
               <div
-                class="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1 text-[13px] text-foreground/90 max-sm:text-[12.5px]"
+                class="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-foreground/90 max-sm:text-[12.5px]"
               >
-                <Signal
-                  class="size-3.5 shrink-0 self-center text-muted-foreground"
-                />
-                <template
-                  v-for="(region, index) in usedRegions"
-                  :key="region.value"
+                <!-- One input group: where you play (or the regions a search
+                     uses), with the matchmaking settings appended to it. -->
+                <div
+                  class="inline-flex h-8 min-w-0 max-w-full items-stretch overflow-hidden rounded-md border border-border bg-white/[0.025]"
                 >
-                  <span v-if="index" class="text-muted-foreground/55">·</span>
-                  <span>
-                    <b class="font-semibold">{{ region.name }}</b>
-                    <span
-                      v-if="region.lan"
-                      class="ml-1 text-xs font-semibold text-[hsl(var(--tac-amber))]"
-                      >{{ $t("pages.play.matchmaking.regions.lan") }}</span
-                    >
-                    <span
-                      v-if="region.ping !== null"
-                      class="ml-1 tabular-nums text-foreground/75"
-                      >{{
-                        $t("pages.play.matchmaking.regions.ms", {
-                          ms: region.ping,
-                        })
-                      }}</span
-                    >
-                  </span>
-                </template>
-                <template
-                  v-for="(region, index) in skippedRegions"
-                  :key="region.value"
-                >
-                  <span
-                    v-if="index || usedRegions.length"
-                    class="text-muted-foreground/55"
-                    >·</span
+                  <div
+                    v-if="matchmaking.onLan"
+                    role="group"
+                    :aria-label="$t('matchmaking.where.label')"
+                    class="flex min-w-0 items-stretch gap-0.5 p-[3px]"
                   >
-                  <span class="text-muted-foreground">{{
-                    region.ping === null
-                      ? $t("pages.play.matchmaking.regions.unreachable", {
-                          name: region.name,
-                        })
-                      : $t("pages.play.matchmaking.regions.skipped", {
-                          name: region.name,
-                          ms: region.ping,
-                        })
-                  }}</span>
-                </template>
-                <Popover v-model:open="regionsOpen">
-                  <PopoverTrigger as-child>
-                    <button type="button" :class="linkClasses">
-                      {{ $t("pages.play.matchmaking.regions.edit") }}
+                    <button
+                      v-for="option in whereOptions"
+                      :key="option.value"
+                      type="button"
+                      :aria-pressed="option.active"
+                      :class="[
+                        whereOptionClasses,
+                        option.active
+                          ? 'bg-[hsl(var(--tac-amber)/0.16)] text-foreground'
+                          : 'text-muted-foreground hover:text-foreground',
+                      ]"
+                      @click="matchmaking.setPlayWhere(option.value)"
+                    >
+                      <component
+                        :is="option.icon"
+                        class="size-3.5 shrink-0"
+                        :class="option.active && 'text-[hsl(var(--tac-amber))]'"
+                      />
+                      {{ option.label }}
+                      <span
+                        v-if="option.detail"
+                        class="min-w-0 truncate font-normal tabular-nums text-muted-foreground"
+                        >{{ option.detail }}</span
+                      >
                     </button>
-                  </PopoverTrigger>
-                  <PopoverContent align="start" class="w-[min(92vw,520px)] p-4">
-                    <RegionLatencySettings />
-                  </PopoverContent>
-                </Popover>
+                  </div>
+                  <span
+                    v-else
+                    class="flex min-w-0 items-center gap-2 pl-[13px] pr-2.5"
+                  >
+                    <Signal class="size-3.5 shrink-0 text-muted-foreground" />
+                    <span class="min-w-0 truncate">
+                      <template
+                        v-for="(region, index) in usedRegions"
+                        :key="region.value"
+                      >
+                        <span v-if="index" class="text-muted-foreground/55">
+                          ·
+                        </span>
+                        <b class="font-semibold">{{ region.name }}</b>
+                        <span
+                          v-if="region.ping !== null"
+                          class="ml-1 tabular-nums text-foreground/75"
+                          >{{
+                            $t("pages.play.matchmaking.regions.ms", {
+                              ms: region.ping,
+                            })
+                          }}</span
+                        >
+                      </template>
+                      <template
+                        v-for="(region, index) in skippedRegions"
+                        :key="region.value"
+                      >
+                        <span
+                          v-if="index || usedRegions.length"
+                          class="text-muted-foreground/55"
+                        >
+                          ·
+                        </span>
+                        <span class="text-muted-foreground">{{
+                          region.ping === null
+                            ? $t("pages.play.matchmaking.regions.unreachable", {
+                                name: region.name,
+                              })
+                            : $t("pages.play.matchmaking.regions.skipped", {
+                                name: region.name,
+                                ms: region.ping,
+                              })
+                        }}</span>
+                      </template>
+                    </span>
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    class="my-1.5 w-px shrink-0 bg-border"
+                  ></span>
+                  <MatchmakingSettingsPanel v-model:open="settingsOpen">
+                    <template #trigger>
+                      <button
+                        type="button"
+                        class="grid w-8 shrink-0 place-items-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[hsl(var(--tac-amber))]"
+                        :class="
+                          settingsOpen
+                            ? 'bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
+                            : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+                        "
+                        :aria-label="$t('pages.play.matchmaking.settings')"
+                      >
+                        <Settings2 class="size-4" />
+                      </button>
+                    </template>
+                  </MatchmakingSettingsPanel>
+                </div>
               </div>
 
+              <!-- Indented by the region group's inner padding so its icon
+                   sits under the icons inside that group. -->
               <div
-                class="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1 text-[13px] text-foreground/90 max-sm:text-[12.5px]"
+                class="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1 pl-3.5 text-[13px] text-foreground/90 max-sm:text-[12.5px]"
               >
                 <Users
                   class="size-3.5 shrink-0 self-center text-muted-foreground"
@@ -627,7 +742,7 @@ const linkClasses =
             <Button
               v-else-if="state === 'no-region'"
               :class="primaryClasses"
-              @click="regionsOpen = true"
+              @click="settingsOpen = true"
             >
               <Signal class="size-4" />
               {{ $t("pages.play.matchmaking.regions.edit") }}
@@ -653,7 +768,11 @@ const linkClasses =
               @click="findMatch"
             >
               <Play class="size-4 fill-current" />
-              {{ $t("pages.play.matchmaking.find_match") }}
+              {{
+                matchmaking.onLan && matchmaking.playWhere === "lan"
+                  ? $t("pages.play.matchmaking.find_lan_match")
+                  : $t("pages.play.matchmaking.find_match")
+              }}
             </Button>
           </div>
         </div>

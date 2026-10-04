@@ -25,8 +25,22 @@ export interface Plugin {
   profile_tab_label: string | null;
 }
 
+const PLUGINS_CACHE_KEY = "5stack:plugins";
+
+const loadCachedPlugins = (): Plugin[] => {
+  try {
+    const cached = localStorage.getItem(PLUGINS_CACHE_KEY);
+    if (cached) {
+      return JSON.parse(cached);
+    }
+  } catch {}
+  return [];
+};
+
 export const usePluginsStore = defineStore("plugins", () => {
-  const plugins = ref<Plugin[]>([]);
+  // Painted from the last delivery so nav links are in place on first paint
+  // instead of shifting the bar when the subscription lands.
+  const plugins = ref<Plugin[]>(loadCachedPlugins());
   // True once the subscription has delivered its first payload — lets the
   // loader page tell "registry still loading" apart from "slug not found".
   const initialized = ref(false);
@@ -64,6 +78,12 @@ export const usePluginsStore = defineStore("plugins", () => {
         next: ({ data }) => {
           plugins.value = data.custom_pages;
           initialized.value = true;
+          try {
+            localStorage.setItem(
+              PLUGINS_CACHE_KEY,
+              JSON.stringify(data.custom_pages),
+            );
+          } catch {}
         },
       }),
     );

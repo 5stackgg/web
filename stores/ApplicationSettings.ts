@@ -20,13 +20,11 @@ export const useApplicationSettingsStore = defineStore(
   "applicationSettings",
   () => {
     const SETTINGS_CACHE_KEY = "5stack:application-settings";
+    const REGIONS_CACHE_KEY = "5stack:available-regions";
 
-    const loadCachedSettings = (): Array<{
-      name: string;
-      value: string;
-    }> => {
+    const loadCached = <T>(key: string): T[] => {
       try {
-        const cached = localStorage.getItem(SETTINGS_CACHE_KEY);
+        const cached = localStorage.getItem(key);
         if (cached) {
           return JSON.parse(cached);
         }
@@ -34,8 +32,9 @@ export const useApplicationSettingsStore = defineStore(
       return [];
     };
 
-    const settings =
-      ref<Array<{ name: string; value: string }>>(loadCachedSettings());
+    const settings = ref<Array<{ name: string; value: string }>>(
+      loadCached(SETTINGS_CACHE_KEY),
+    );
     // Whether `settings` is anything more than the defaults: the cached copy
     // or a delivery from the subscription. Until then every derived setting
     // is a guess, and a decision that depends on one should wait.
@@ -571,7 +570,9 @@ export const useApplicationSettingsStore = defineStore(
       return legacy === "vertical" ? "default-vertical" : "default-horizontal";
     });
 
-    const availableRegions = ref<Region[]>([]);
+    // Cached like settings so the nav's region status paints with the bar.
+    const availableRegions = ref<Region[]>(loadCached(REGIONS_CACHE_KEY));
+    const regionsLoaded = ref(availableRegions.value.length > 0);
 
     let latencyCheckInterval: ReturnType<typeof setInterval> | null = null;
 
@@ -603,6 +604,13 @@ export const useApplicationSettingsStore = defineStore(
         subscription.subscribe({
           next: ({ data }) => {
             availableRegions.value = data.server_regions;
+            regionsLoaded.value = true;
+            try {
+              localStorage.setItem(
+                REGIONS_CACHE_KEY,
+                JSON.stringify(data.server_regions),
+              );
+            } catch {}
             useMatchmakingStore().checkLatenies();
 
             if (!latencyCheckInterval) {
@@ -698,6 +706,7 @@ export const useApplicationSettingsStore = defineStore(
     return {
       settings,
       availableRegions,
+      regionsLoaded,
       maxAcceptableLatency,
       matchCreateRole,
       customMatchRole,

@@ -122,7 +122,10 @@ const wordClasses =
                 {{ region.description || region.value }}
               </span>
               <span
-                v-if="region.is_lan"
+                v-if="
+                  region.is_lan &&
+                  !/\blan\b/i.test(region.description || region.value)
+                "
                 :class="[tagClasses, 'border-border text-muted-foreground']"
               >
                 LAN

@@ -6,6 +6,8 @@ import RegionLatencySettings from "~/components/matchmaking/RegionLatencySetting
 
 <template>
   <div class="space-y-4">
+    <RegionLatencySettings />
+
     <FormSection
       :title="$t('pages.settings.matchmaking.show_match_ready_modal.title')"
     >
@@ -22,8 +24,6 @@ import RegionLatencySettings from "~/components/matchmaking/RegionLatencySetting
         />
       </div>
     </FormSection>
-
-    <RegionLatencySettings />
   </div>
 </template>
 

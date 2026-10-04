@@ -1311,8 +1311,9 @@ export default {
             match_clips: [
               {
                 limit: 6,
+                // No visibility filter: show every clip the viewer can see,
+                // same as the match page — Hasura permissions do the rest.
                 where: {
-                  visibility: { _eq: "public" },
                   match_map: { match_id: { _eq: $("matchId", "uuid!") } },
                   _or: [
                     { user_steam_id: { _eq: $("playerId", "bigint!") } },

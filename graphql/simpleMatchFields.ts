@@ -40,6 +40,7 @@ export const simpleMatchFields = Selector("matches")({
       lineup_1_score: true,
       lineup_2_score: true,
       winning_lineup_id: true,
+      clips_count: true,
       public_clips_count: true,
       vetos: {
         side: true,

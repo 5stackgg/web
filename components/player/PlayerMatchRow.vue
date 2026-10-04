@@ -559,9 +559,9 @@ export default {
     // Collapsed-row aggregate stats now arrive batched via the `collapsedAgg`
     // prop (parent fetches them for the whole page in one query). Only the
     // highlight thumbnail still needs a fetch, and only for matches that
-    // actually have public clips — the heavy round-level + per-map + all-players
+    // actually have clips — the heavy round-level + per-map + all-players
     // query stays deferred to first expand (getDetailedStats).
-    if (this.isFinished && this.playerSteamId && this.hasPublicClips) {
+    if (this.isFinished && this.playerSteamId && this.hasClips) {
       if (this.playerClips.length === 0 && !this.playerClipsLoading) {
         this.getPlayerClips().catch(() => {});
       }
@@ -571,11 +571,13 @@ export default {
     isFinished(): boolean {
       return this.match?.status === e_match_status_enum.Finished;
     },
-    // Whether any map in this match has public clips — gates the clip fetch so
-    // clip-less matches (the majority) make zero clip requests.
-    hasPublicClips(): boolean {
+    // Whether any map in this match has clips — gates the clip fetch so
+    // clip-less matches (the majority) make zero clip requests. Counts every
+    // visibility: clips rendered from the match page default to private, and
+    // the viewer may be allowed to see them (Hasura decides which come back).
+    hasClips(): boolean {
       return (this.match?.match_maps || []).some(
-        (mm: any) => (mm?.public_clips_count ?? 0) > 0,
+        (mm: any) => (mm?.clips_count ?? mm?.public_clips_count ?? 0) > 0,
       );
     },
     // The row's match (simpleMatchFields) overlaid with the expand query's
@@ -971,7 +973,7 @@ export default {
       }
       this.prefetchDetails();
       if (
-        this.hasPublicClips &&
+        this.hasClips &&
         this.playerClips.length === 0 &&
         !this.playerClipsLoading
       ) {
@@ -1085,8 +1087,9 @@ export default {
             match_clips: [
               {
                 limit: 6,
+                // No visibility filter: show every clip the viewer can see,
+                // same as the match page — Hasura permissions do the rest.
                 where: {
-                  visibility: { _eq: "public" },
                   match_map: { match_id: { _eq: $("matchId", "uuid!") } },
                   _or: [
                     { user_steam_id: { _eq: $("playerId", "bigint!") } },

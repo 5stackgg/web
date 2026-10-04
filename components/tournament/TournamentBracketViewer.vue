@@ -69,6 +69,12 @@ const props = defineProps({
     type: Number,
     default: 0,
   },
+  // Treat fitHeight as a cap: a preview with one live match shouldn't hold
+  // the whole height open.
+  shrinkToContent: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const { t } = useI18n();
@@ -206,6 +212,13 @@ const clampedContainerHeight = computed(() => {
     return null;
   }
   if (!availableSize.value.height) return 0;
+  if (props.shrinkToContent) {
+    if (!scaledContentHeight.value) return 0;
+    return Math.min(
+      scaledContentHeight.value + FIT_PADDING * 2,
+      availableSize.value.height,
+    );
+  }
   if (props.fitHeight != null) {
     return availableSize.value.height;
   }

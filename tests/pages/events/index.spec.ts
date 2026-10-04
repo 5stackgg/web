@@ -1,10 +1,16 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
+import { provideApolloClient } from "@vue/apollo-composable";
+import { Kind } from "graphql";
+import type { DocumentNode, OperationDefinitionNode } from "graphql";
 import EventsIndex from "~/pages/events/index.vue";
-import EventHero from "~/components/events/EventHero.vue";
-import EventSquare from "~/components/events/EventSquare.vue";
+import EventFeature from "~/components/events/EventFeature.vue";
+import EventUpNext from "~/components/events/EventUpNext.vue";
+import EventPastTile from "~/components/events/EventPastTile.vue";
+import WatchEventCompactCard from "~/components/watch/WatchEventCompactCard.vue";
 import HorizontalScrollRow from "~/components/common/HorizontalScrollRow.vue";
+import Pagination from "~/components/Pagination.vue";
 import { resolveRootField } from "../../helpers/fakeHasura";
 
 const HOUR = 3_600_000;
@@ -18,19 +24,15 @@ function event(name: string, starts_at: string, ends_at: string | null) {
   return {
     id: `id-${name.toLowerCase().replace(/\s+/g, "-")}`,
     name,
-    description: null,
     starts_at,
     ends_at,
-    visibility: "Public",
-    media_access: "Organizers",
-    hide_creator_organizer: false,
     banner_media_id: null,
     banner: null,
-    is_organizer: false,
-    can_upload_media: false,
+    hide_creator_organizer: false,
     organizer_steam_id: "76561198000000001",
     organizer: null,
     organizers: [],
+    tournaments: [],
     tournaments_aggregate: { aggregate: { count: 0 } },
     teams_aggregate: { aggregate: { count: 0 } },
     players_aggregate: { aggregate: { count: 0 } },
@@ -50,24 +52,54 @@ function finished(n: number) {
   );
 }
 
+function live(name: string, startedHoursAgo: number) {
+  return event(name, at(-startedHoursAgo * HOUR), at(DAY));
+}
+
 let table: any[] = [];
 
-function serve() {
+// Every root field of the document, each resolved against the table.
+function resolveAll(document: DocumentNode, variables: any) {
+  const operation = document.definitions.find(
+    (d): d is OperationDefinitionNode => d.kind === Kind.OPERATION_DEFINITION,
+  )!;
+  return Object.assign(
+    {},
+    ...operation.selectionSet.selections.map((selection) =>
+      resolveRootField(
+        {
+          ...document,
+          definitions: [
+            {
+              ...operation,
+              selectionSet: { ...operation.selectionSet, selections: [selection] },
+            },
+          ],
+        } as DocumentNode,
+        variables,
+        table,
+      ),
+    ),
+  );
+}
+
+async function mountPage(route = "/events") {
   const client = (useNuxtApp() as any).$apollo.defaultClient;
+  provideApolloClient(client);
   vi.spyOn(client, "subscribe").mockImplementation((options: any) => ({
     subscribe(observer: any) {
-      const data = resolveRootField(options.query, options.variables, table);
+      const data = resolveAll(options.query, options.variables);
       Promise.resolve().then(() => observer.next({ data }));
       return { unsubscribe() {}, closed: false };
     },
   }));
-}
+  vi.spyOn(client, "query").mockImplementation(async (options: any) => ({
+    data: resolveAll(options.query, options.variables),
+  }));
 
-async function mountPage() {
-  serve();
-  // mountSuspended drops app mixins; apollo-option's mixin starts $subscribe.
   const wrapper = await mountSuspended(EventsIndex, {
-    global: { mixins: (useNuxtApp().vueApp as any)._context.mixins },
+    route,
+    global: { stubs: { EventFeature: true } },
   });
   await flushPromises();
   return wrapper;
@@ -79,106 +111,50 @@ function names(wrapper: any, component: any): string[] {
     .map((card: any) => card.props("event").name);
 }
 
-describe("events index sections", () => {
+describe("events index", () => {
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
-  it("renders upcoming events as the large hero cards and past events as compact cards", async () => {
-    table = [
-      event("Live Cup", at(-HOUR), at(DAY)),
-      upcoming(2),
-      upcoming(1),
-      finished(1),
-      finished(2),
-    ];
+  it("puts the soonest upcoming event in the up-next strip and the rest in the grid", async () => {
+    table = [upcoming(3), upcoming(1), upcoming(2), live("Live Cup", 1)];
 
     const wrapper = await mountPage();
 
-    const heroes = names(wrapper, EventHero);
-    const squares = names(wrapper, EventSquare);
-    expect(heroes).toEqual(["Live Cup", "Upcoming 01", "Upcoming 02"]);
-    expect(squares).toEqual(["Finished 01", "Finished 02"]);
-  });
-
-  it("orders upcoming events soonest first", async () => {
-    table = [upcoming(3), upcoming(1), upcoming(2)];
-
-    const wrapper = await mountPage();
-
-    expect(names(wrapper, EventHero)).toEqual([
-      "Upcoming 01",
+    const upNext = wrapper.findComponent(EventUpNext);
+    expect(upNext.props("event").name).toBe("Upcoming 01");
+    expect(upNext.props("hero")).toBe(false);
+    expect(names(wrapper, WatchEventCompactCard)).toEqual([
       "Upcoming 02",
       "Upcoming 03",
     ]);
   });
 
-  it("shows the soonest upcoming and live events when there are more events than one page", async () => {
-    table = [
-      ...Array.from({ length: 15 }, (_, i) => upcoming(i + 1)),
-      event("Live Cup", at(-HOUR), null),
-      ...Array.from({ length: 15 }, (_, i) => finished(i + 1)),
-    ];
+  it("gives the up-next event the full card when nothing else is on", async () => {
+    table = [upcoming(1)];
 
     const wrapper = await mountPage();
 
-    const heroes = names(wrapper, EventHero);
-    expect(heroes[0]).toBe("Live Cup");
-    expect(heroes[1]).toBe("Upcoming 01");
-    expect(names(wrapper, EventSquare)[0]).toBe("Finished 01");
+    expect(wrapper.findComponent(EventUpNext).props("hero")).toBe(true);
   });
 
-  it.each([
-    {
-      label: "Upcoming",
-      rows: () => Array.from({ length: 10 }, (_, i) => upcoming(i + 1)),
-    },
-    {
-      label: "Live now",
-      rows: () =>
-        Array.from({ length: 10 }, (_, i) =>
-          event(
-            `Live ${String(i + 1).padStart(2, "0")}`,
-            at(-(i + 1) * HOUR),
-            null,
-          ),
-        ),
-    },
-  ])(
-    "limits the $label heroes and shows more on request",
-    async ({ label, rows }) => {
-      table = rows();
-      const expected = table.map((row) => row.name);
+  it("features the most recently started live event and lists the others", async () => {
+    table = [live("Older Live", 5), live("Newest Live", 1)];
 
-      const wrapper = await mountPage();
-      const section = () =>
-        wrapper.findAll("section").find((s) => s.text().startsWith(label))!;
-      const showMore = () =>
-        section()
-          .findAll("button")
-          .find((b) => b.text() === "Show more");
+    const wrapper = await mountPage();
 
-      const initial = names(section(), EventHero);
-      expect(initial.length).toBeGreaterThan(0);
-      expect(initial.length).toBeLessThan(expected.length);
-      expect(initial).toEqual(expected.slice(0, initial.length));
+    expect(wrapper.findComponent(EventFeature).props("event").name).toBe(
+      "Newest Live",
+    );
+    expect(names(wrapper, WatchEventCompactCard)).toEqual(["Older Live"]);
+  });
 
-      for (let i = 0; i < expected.length && showMore(); i++) {
-        await showMore()!.trigger("click");
-        await flushPromises();
-      }
-
-      expect(names(section(), EventHero)).toEqual(expected);
-      expect(showMore()).toBeUndefined();
-    },
-  );
-
-  it("loads more past events as the compact row nears its end", async () => {
+  it("loads more past events as the row nears its end", async () => {
     table = Array.from({ length: 30 }, (_, i) => finished(i + 1));
 
     const wrapper = await mountPage();
 
-    const initial = names(wrapper, EventSquare);
+    const initial = names(wrapper, EventPastTile);
     expect(initial.length).toBeGreaterThan(0);
     expect(initial.length).toBeLessThan(30);
     expect(initial[0]).toBe("Finished 01");
@@ -188,8 +164,24 @@ describe("events index sections", () => {
       await flushPromises();
     }
 
-    const all = names(wrapper, EventSquare);
+    const all = names(wrapper, EventPastTile);
     expect(all).toHaveLength(30);
     expect(all[29]).toBe("Finished 30");
+  });
+
+  it("filters to past events from the query string, newest first, a page at a time", async () => {
+    table = [
+      upcoming(1),
+      live("Live Cup", 1),
+      ...Array.from({ length: 14 }, (_, i) => finished(i + 1)),
+    ];
+
+    const wrapper = await mountPage("/events?phase=past");
+
+    const shown = names(wrapper, WatchEventCompactCard);
+    expect(shown).toHaveLength(10);
+    expect(shown[0]).toBe("Finished 01");
+    expect(shown).not.toContain("Upcoming 01");
+    expect(wrapper.findComponent(Pagination).props("total")).toBe(14);
   });
 });

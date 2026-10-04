@@ -1515,6 +1515,38 @@
       },
       "tabs": {
         "upcoming": "예정"
+      },
+      "sections": {
+        "next_lan": "다음 LAN",
+        "live": "라이브",
+        "open": "참가 신청 중",
+        "upcoming": "예정",
+        "recent": "최근 결과",
+        "results": "결과"
+      },
+      "watch_live": "라이브 시청",
+      "bracket": "대진표",
+      "bracket_paused": "대진표 · 관리자가 일시정지함",
+      "prize_pool_total": "상금 규모 · {amount}",
+      "spots_left": "{count}자리 남음 | {count}자리 남음",
+      "facts": {
+        "starts": "시작 예정",
+        "started": "시작됨",
+        "played": "진행일",
+        "where": "장소",
+        "online": "온라인",
+        "teams": "팀",
+        "part_of": "소속 이벤트"
+      },
+      "next_lan": {
+        "today": "오늘",
+        "tomorrow": "내일",
+        "in_days": "{count}일 후 | {count}일 후"
+      },
+      "empty": {
+        "title": "아직 토너먼트가 없습니다",
+        "description": "주최자가 토너먼트 참가 신청을 열면 여기에 표시됩니다.",
+        "organizer": "토너먼트를 만들면 참가 신청이 열리는 즉시 여기에 표시됩니다."
       }
     },
     "manage_tournaments": {
@@ -4833,7 +4865,31 @@
       "live_now": "진행 중",
       "upcoming": "예정",
       "past_events": "지난 이벤트",
-      "show_more": "더 보기"
+      "show_more": "더 보기",
+      "sections": {
+        "up_next": "다음 이벤트",
+        "live": "진행 중",
+        "upcoming": "예정",
+        "past": "지난 이벤트",
+        "results": "결과"
+      },
+      "filter": {
+        "search_placeholder": "이벤트 이름으로 검색…",
+        "all": "전체",
+        "live": "진행 중",
+        "upcoming": "예정",
+        "past": "종료",
+        "no_results_title": "일치하는 이벤트가 없습니다",
+        "no_results_description": "다른 이름을 입력하거나 필터를 초기화해 보세요."
+      },
+      "counts": {
+        "count_tournaments": "토너먼트",
+        "count_teams": "팀",
+        "count_players": "플레이어",
+        "count_media": "사진·클립"
+      },
+      "no_tournaments": "아직 발표된 토너먼트가 없습니다.",
+      "days": "{count}일 | {count}일"
     },
     "manage_events": {
       "title": "이벤트 관리",
@@ -11492,5 +11548,34 @@
       "not_found_title": "서버를 찾을 수 없음",
       "not_found_description": "이 서버가 존재하지 않거나 공개되어 있지 않습니다."
     }
+  },
+  "quick_look": {
+    "title": "빠른 보기",
+    "at": "{name} 빠른 보기",
+    "position": "{index} / {total}",
+    "open_tournament": "토너먼트 열기",
+    "join_free_agent": "프리 에이전트로 참가",
+    "registration": "참가 신청",
+    "final_standings": "최종 순위",
+    "map_pool": "맵 풀",
+    "join": {
+      "teams": "팀은 {type} 정원을 모두 채운 로스터로 신청합니다.",
+      "both": "팀과 프리 에이전트 모두 신청할 수 있습니다. 프리 에이전트는 팀으로 드래프트됩니다.",
+      "free_agents": "선수가 개인으로 신청하고 팀으로 드래프트됩니다.",
+      "invite": "초대 전용입니다. 자리는 주최자에게 문의하세요."
+    },
+    "elo": {
+      "range": "모든 선수 ELO {min}–{max}",
+      "min": "모든 선수 ELO {min} 이상",
+      "max": "모든 선수 ELO {max} 이하"
+    },
+    "check_in": {
+      "captains": "팀장이 팀을 체크인",
+      "players": "모든 선수가 직접 체크인",
+      "admin": "관리자가 팀을 체크인",
+      "opens": "시작 {minutes}분 전에 열림"
+    },
+    "cancelled": "시작 전에 주최자가 취소했습니다.",
+    "cancelled_min_teams": "신청한 팀이 부족해 취소되었습니다."
   }
 }

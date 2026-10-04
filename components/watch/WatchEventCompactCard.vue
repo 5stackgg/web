@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { NuxtLink } from "#components";
 import { eventMediaUrl } from "~/composables/useEventMediaUpload";
 import { eventPhase } from "~/utilities/eventDisplay";
 import { formatEventRange } from "~/utilities/watchEventCard";
 
-const props = defineProps<{ event: any }>();
+// `quickLook` makes the card a quick-look button instead of a link.
+const props = defineProps<{ event: any; quickLook?: boolean }>();
+const emit = defineEmits<{ (e: "quick-look"): void }>();
 
 const phase = computed(() => eventPhase(props.event));
 
@@ -51,9 +54,11 @@ const chipClasses = computed(() => {
 </script>
 
 <template>
-  <NuxtLink
-    :to="`/events/${event.id}`"
-    class="grid grid-cols-[6.5rem_minmax(0,1fr)] overflow-hidden rounded-lg border border-border bg-card/40 transition-colors hover:border-muted-foreground/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:grid-cols-[8.75rem_minmax(0,1fr)]"
+  <component
+    :is="quickLook ? 'button' : NuxtLink"
+    v-bind="quickLook ? { type: 'button' } : { to: `/events/${event.id}` }"
+    class="grid grid-cols-[6.5rem_minmax(0,1fr)] overflow-hidden rounded-lg border border-border bg-card/40 text-left transition-colors hover:border-muted-foreground/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:grid-cols-[8.75rem_minmax(0,1fr)]"
+    @click="quickLook && emit('quick-look')"
   >
     <img
       v-if="bannerSrc"
@@ -94,5 +99,5 @@ const chipClasses = computed(() => {
         </span>
       </div>
     </div>
-  </NuxtLink>
+  </component>
 </template>

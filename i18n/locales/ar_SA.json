@@ -1515,6 +1515,38 @@
       },
       "tabs": {
         "upcoming": "قادمة"
+      },
+      "sections": {
+        "next_lan": "بطولة LAN القادمة",
+        "live": "مباشرة",
+        "open": "التسجيل مفتوح",
+        "upcoming": "قادمة",
+        "recent": "أحدث النتائج",
+        "results": "النتائج"
+      },
+      "watch_live": "شاهد مباشرة",
+      "bracket": "جدول المواجهات",
+      "bracket_paused": "جدول المواجهات · أوقفه مشرف مؤقتًا",
+      "prize_pool_total": "مجموع الجوائز · {amount}",
+      "spots_left": "بقي {count} مكان | بقيت {count} أماكن",
+      "facts": {
+        "starts": "تبدأ",
+        "started": "بدأت",
+        "played": "أُقيمت",
+        "where": "المكان",
+        "online": "عبر الإنترنت",
+        "teams": "الفرق",
+        "part_of": "ضمن"
+      },
+      "next_lan": {
+        "today": "اليوم",
+        "tomorrow": "غدًا",
+        "in_days": "بعد {count} يوم | بعد {count} أيام"
+      },
+      "empty": {
+        "title": "لا توجد بطولات بعد",
+        "description": "عندما يفتح منظم التسجيل في بطولة، ستظهر هنا.",
+        "organizer": "أنشئ بطولة وستظهر هنا فور فتح التسجيل."
       }
     },
     "manage_tournaments": {
@@ -4833,7 +4865,31 @@
       "live_now": "مباشر الآن",
       "upcoming": "قادمة",
       "past_events": "فعاليات سابقة",
-      "show_more": "عرض المزيد"
+      "show_more": "عرض المزيد",
+      "sections": {
+        "up_next": "التالي",
+        "live": "مباشر",
+        "upcoming": "قادمة",
+        "past": "فعاليات سابقة",
+        "results": "النتائج"
+      },
+      "filter": {
+        "search_placeholder": "ابحث عن الفعاليات بالاسم…",
+        "all": "الكل",
+        "live": "مباشر",
+        "upcoming": "قادمة",
+        "past": "سابقة",
+        "no_results_title": "لا توجد فعاليات مطابقة",
+        "no_results_description": "جرّب اسمًا آخر أو امسح عوامل التصفية."
+      },
+      "counts": {
+        "count_tournaments": "البطولات",
+        "count_teams": "الفرق",
+        "count_players": "اللاعبون",
+        "count_media": "الصور والمقاطع"
+      },
+      "no_tournaments": "لم يُعلن عن أي بطولات بعد.",
+      "days": "{count} يوم | {count} أيام"
     },
     "manage_events": {
       "title": "إدارة الفعاليات",
@@ -11492,5 +11548,34 @@
       "not_found_title": "السيرفر غير موجود",
       "not_found_description": "هذا السيرفر غير موجود أو ليس عامًا."
     }
+  },
+  "quick_look": {
+    "title": "نظرة سريعة",
+    "at": "نظرة سريعة على {name}",
+    "position": "{index} من {total}",
+    "open_tournament": "افتح البطولة",
+    "join_free_agent": "انضم كلاعب حر",
+    "registration": "التسجيل",
+    "final_standings": "الترتيب النهائي",
+    "map_pool": "قائمة الخرائط",
+    "join": {
+      "teams": "تسجّل الفرق بتشكيلة {type} كاملة.",
+      "both": "يمكن للفرق واللاعبين الأحرار التسجيل. يُوزَّع اللاعبون الأحرار على الفرق.",
+      "free_agents": "يسجّل اللاعبون بمفردهم ويُوزَّعون على الفرق.",
+      "invite": "بالدعوة فقط. اطلب مكانًا من المنظم."
+    },
+    "elo": {
+      "range": "تصنيف كل لاعب {min}–{max} ELO",
+      "min": "تصنيف كل لاعب {min} ELO على الأقل",
+      "max": "تصنيف كل لاعب {max} ELO على الأكثر"
+    },
+    "check_in": {
+      "captains": "يؤكّد القادة حضور فرقهم",
+      "players": "يؤكّد كل لاعب حضوره",
+      "admin": "يؤكّد مشرف حضور الفرق",
+      "opens": "يُفتح قبل البداية بـ {minutes} دقيقة"
+    },
+    "cancelled": "ألغاها المنظم قبل أن تبدأ.",
+    "cancelled_min_teams": "لم يسجّل عدد كافٍ من الفرق، لذا أُلغيت."
   }
 }

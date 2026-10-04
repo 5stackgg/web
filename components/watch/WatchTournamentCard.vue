@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { CalendarDays, MapPin, Trophy, Users } from "lucide-vue-next";
+import { CalendarDays, Eye, MapPin, Trophy, Users } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import { e_tournament_status_enum } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
@@ -16,8 +16,20 @@ import {
 
 // `stacked` puts the banner on top from lg up, for a grid column too narrow
 // to sit it beside the details; the banner then takes any extra height the
-// row hands the card.
-const props = defineProps<{ tournament: any; stacked?: boolean }>();
+// row hands the card. `quickLook` turns the banner and the card's empty space
+// into a quick-look trigger instead of a link.
+const props = defineProps<{
+  tournament: any;
+  stacked?: boolean;
+  quickLook?: boolean;
+}>();
+const emit = defineEmits<{ (e: "quick-look"): void }>();
+
+function onCardClick(event: MouseEvent) {
+  if (!props.quickLook) return;
+  if ((event.target as HTMLElement).closest("a, button")) return;
+  emit("quick-look");
+}
 
 const { t } = useI18n();
 const runtimeConfig = useRuntimeConfig();
@@ -131,9 +143,33 @@ const primaryClasses =
     class="group/tour grid overflow-hidden rounded-lg border border-border bg-card/40 transition-colors duration-150 hover:border-[hsl(var(--tac-amber)/0.45)] sm:grid-cols-[minmax(0,17rem)_minmax(0,1fr)]"
     :class="{
       'lg:grid-cols-1 lg:grid-rows-[1fr_auto]': stacked,
+      'cursor-pointer': quickLook,
     }"
+    @click="onCardClick"
   >
+    <button
+      v-if="quickLook"
+      type="button"
+      class="group/peek relative block aspect-[2/1] overflow-hidden bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring sm:aspect-auto sm:min-h-[10.5rem]"
+      :aria-label="$t('quick_look.at', { name: tournament.name })"
+      @click="emit('quick-look')"
+    >
+      <img
+        v-if="bannerSrc"
+        :src="bannerSrc"
+        alt=""
+        loading="lazy"
+        class="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover/tour:scale-[1.03] motion-reduce:transition-none"
+      />
+      <span
+        class="absolute bottom-2.5 left-2.5 inline-flex h-[1.625rem] items-center gap-1.5 rounded-md bg-black/70 px-2.5 text-xs font-semibold text-white backdrop-blur-sm transition-opacity duration-150 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover/tour:opacity-100 group-focus-visible/peek:opacity-100"
+      >
+        <Eye class="h-3.5 w-3.5" />
+        {{ $t("quick_look.title") }}
+      </span>
+    </button>
     <NuxtLink
+      v-else
       :to="path"
       tabindex="-1"
       aria-hidden="true"

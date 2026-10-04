@@ -1515,6 +1515,38 @@
       },
       "tabs": {
         "upcoming": "Kommande"
+      },
+      "sections": {
+        "next_lan": "Nästa LAN",
+        "live": "Live",
+        "open": "Öppen för anmälan",
+        "upcoming": "Kommande",
+        "recent": "Senaste resultat",
+        "results": "Resultat"
+      },
+      "watch_live": "Titta live",
+      "bracket": "Slutspelsträd",
+      "bracket_paused": "Slutspelsträd · pausat av en admin",
+      "prize_pool_total": "Prispott · {amount}",
+      "spots_left": "{count} plats kvar | {count} platser kvar",
+      "facts": {
+        "starts": "Startar",
+        "started": "Startade",
+        "played": "Spelad",
+        "where": "Plats",
+        "online": "Online",
+        "teams": "Lag",
+        "part_of": "Del av"
+      },
+      "next_lan": {
+        "today": "idag",
+        "tomorrow": "i morgon",
+        "in_days": "om {count} dag | om {count} dagar"
+      },
+      "empty": {
+        "title": "Inga turneringar än",
+        "description": "När en arrangör öppnar anmälan till en turnering dyker den upp här.",
+        "organizer": "Skapa en så dyker den upp här så fort anmälan öppnar."
       }
     },
     "manage_tournaments": {
@@ -4833,7 +4865,31 @@
       "live_now": "Live nu",
       "upcoming": "Kommande",
       "past_events": "Tidigare evenemang",
-      "show_more": "Visa fler"
+      "show_more": "Visa fler",
+      "sections": {
+        "up_next": "Näst på tur",
+        "live": "Live",
+        "upcoming": "Kommande",
+        "past": "Tidigare evenemang",
+        "results": "Resultat"
+      },
+      "filter": {
+        "search_placeholder": "Sök evenemang efter namn…",
+        "all": "Alla",
+        "live": "Live",
+        "upcoming": "Kommande",
+        "past": "Tidigare",
+        "no_results_title": "Inga evenemang matchar",
+        "no_results_description": "Prova ett annat namn eller rensa filtren."
+      },
+      "counts": {
+        "count_tournaments": "Turneringar",
+        "count_teams": "Lag",
+        "count_players": "Spelare",
+        "count_media": "Foton och klipp"
+      },
+      "no_tournaments": "Inga turneringar annonserade än.",
+      "days": "{count} dag | {count} dagar"
     },
     "manage_events": {
       "title": "Hantera evenemang",
@@ -11492,5 +11548,34 @@
       "not_found_title": "Servern Hittades Inte",
       "not_found_description": "Den här servern finns inte eller är inte offentlig."
     }
+  },
+  "quick_look": {
+    "title": "Snabbtitt",
+    "at": "Snabbtitt på {name}",
+    "position": "{index} av {total}",
+    "open_tournament": "Öppna turnering",
+    "join_free_agent": "Anmäl dig som free agent",
+    "registration": "Anmälan",
+    "final_standings": "Slutställning",
+    "map_pool": "Kartpool",
+    "join": {
+      "teams": "Lag anmäler sig med en fullständig {type}-trupp.",
+      "both": "Lag och free agents kan anmäla sig. Free agents draftas in i lag.",
+      "free_agents": "Spelare anmäler sig ensamma och draftas in i lag.",
+      "invite": "Endast med inbjudan. Be arrangören om en plats."
+    },
+    "elo": {
+      "range": "Alla spelare med {min}–{max} ELO",
+      "min": "Alla spelare med minst {min} ELO",
+      "max": "Alla spelare med högst {max} ELO"
+    },
+    "check_in": {
+      "captains": "Lagkaptener checkar in sitt lag",
+      "players": "Varje spelare checkar in",
+      "admin": "En admin checkar in lagen",
+      "opens": "öppnar {minutes} min före start"
+    },
+    "cancelled": "Arrangören ställde in den innan den startade.",
+    "cancelled_min_teams": "För få lag anmälde sig, så den ställdes in."
   }
 }

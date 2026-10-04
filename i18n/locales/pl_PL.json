@@ -1515,6 +1515,38 @@
       },
       "tabs": {
         "upcoming": "Nadchodzące"
+      },
+      "sections": {
+        "next_lan": "Najbliższy LAN",
+        "live": "Na żywo",
+        "open": "Otwarte zapisy",
+        "upcoming": "Nadchodzące",
+        "recent": "Ostatnie wyniki",
+        "results": "Wyniki"
+      },
+      "watch_live": "Oglądaj na żywo",
+      "bracket": "Drabinka",
+      "bracket_paused": "Drabinka · wstrzymana przez admina",
+      "prize_pool_total": "Pula nagród · {amount}",
+      "spots_left": "Wolne miejsca: {count} | Wolne miejsca: {count}",
+      "facts": {
+        "starts": "Start",
+        "started": "Rozpoczęty",
+        "played": "Rozegrany",
+        "where": "Miejsce",
+        "online": "Online",
+        "teams": "Drużyny",
+        "part_of": "W ramach"
+      },
+      "next_lan": {
+        "today": "dzisiaj",
+        "tomorrow": "jutro",
+        "in_days": "za {count} dzień | za {count} dni"
+      },
+      "empty": {
+        "title": "Na razie brak turniejów",
+        "description": "Gdy organizator otworzy zapisy na turniej, pojawi się on tutaj.",
+        "organizer": "Utwórz turniej, a pojawi się tutaj, gdy tylko ruszą zapisy."
       }
     },
     "manage_tournaments": {
@@ -4833,7 +4865,31 @@
       "live_now": "Na żywo",
       "upcoming": "Nadchodzące",
       "past_events": "Minione wydarzenia",
-      "show_more": "Pokaż więcej"
+      "show_more": "Pokaż więcej",
+      "sections": {
+        "up_next": "Następne",
+        "live": "Na żywo",
+        "upcoming": "Nadchodzące",
+        "past": "Minione wydarzenia",
+        "results": "Wyniki"
+      },
+      "filter": {
+        "search_placeholder": "Szukaj wydarzeń po nazwie…",
+        "all": "Wszystkie",
+        "live": "Na żywo",
+        "upcoming": "Nadchodzące",
+        "past": "Minione",
+        "no_results_title": "Brak pasujących wydarzeń",
+        "no_results_description": "Spróbuj innej nazwy lub wyczyść filtry."
+      },
+      "counts": {
+        "count_tournaments": "Turnieje",
+        "count_teams": "Drużyny",
+        "count_players": "Gracze",
+        "count_media": "Zdjęcia i klipy"
+      },
+      "no_tournaments": "Nie ogłoszono jeszcze żadnych turniejów.",
+      "days": "{count} dzień | {count} dni"
     },
     "manage_events": {
       "title": "Zarządzaj wydarzeniami",
@@ -11492,5 +11548,34 @@
       "not_found_title": "Nie Znaleziono Serwera",
       "not_found_description": "Ten serwer nie istnieje lub nie jest publiczny."
     }
+  },
+  "quick_look": {
+    "title": "Szybki podgląd",
+    "at": "Szybki podgląd: {name}",
+    "position": "{index} z {total}",
+    "open_tournament": "Otwórz turniej",
+    "join_free_agent": "Dołącz jako wolny zawodnik",
+    "registration": "Rejestracja",
+    "final_standings": "Końcowa klasyfikacja",
+    "map_pool": "Map pool",
+    "join": {
+      "teams": "Drużyny zapisują się z pełnym składem {type}.",
+      "both": "Zapisać się mogą drużyny i wolni zawodnicy. Wolni zawodnicy trafiają do drużyn w drafcie.",
+      "free_agents": "Gracze zapisują się sami i trafiają do drużyn w drafcie.",
+      "invite": "Tylko na zaproszenie. Poproś organizatora o miejsce."
+    },
+    "elo": {
+      "range": "Każdy gracz z ELO {min}–{max}",
+      "min": "Każdy gracz z ELO co najmniej {min}",
+      "max": "Każdy gracz z ELO najwyżej {max}"
+    },
+    "check_in": {
+      "captains": "Kapitanowie potwierdzają obecność drużyny",
+      "players": "Każdy gracz potwierdza obecność",
+      "admin": "Admin potwierdza obecność drużyn",
+      "opens": "otwiera się {minutes} min przed startem"
+    },
+    "cancelled": "Organizator odwołał go przed startem.",
+    "cancelled_min_teams": "Zapisało się za mało drużyn, więc go odwołano."
   }
 }

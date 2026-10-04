@@ -1515,6 +1515,38 @@
       },
       "tabs": {
         "upcoming": "Yaklaşan"
+      },
+      "sections": {
+        "next_lan": "Sıradaki LAN",
+        "live": "Canlı",
+        "open": "Kayıtlara açık",
+        "upcoming": "Yaklaşan",
+        "recent": "Son sonuçlar",
+        "results": "Sonuçlar"
+      },
+      "watch_live": "Canlı izle",
+      "bracket": "Eşleşme tablosu",
+      "bracket_paused": "Eşleşme tablosu · bir yönetici duraklattı",
+      "prize_pool_total": "Ödül havuzu · {amount}",
+      "spots_left": "{count} yer kaldı | {count} yer kaldı",
+      "facts": {
+        "starts": "Başlangıç",
+        "started": "Başladı",
+        "played": "Oynandı",
+        "where": "Konum",
+        "online": "Çevrimiçi",
+        "teams": "Takımlar",
+        "part_of": "Etkinlik"
+      },
+      "next_lan": {
+        "today": "bugün",
+        "tomorrow": "yarın",
+        "in_days": "{count} gün sonra | {count} gün sonra"
+      },
+      "empty": {
+        "title": "Henüz turnuva yok",
+        "description": "Bir organizatör bir turnuva için kayıtları açtığında burada görünür.",
+        "organizer": "Bir tane oluştur; kayıtlar açılır açılmaz burada görünür."
       }
     },
     "manage_tournaments": {
@@ -4833,7 +4865,31 @@
       "live_now": "Şu anda canlı",
       "upcoming": "Yaklaşan",
       "past_events": "Geçmiş etkinlikler",
-      "show_more": "Daha fazla göster"
+      "show_more": "Daha fazla göster",
+      "sections": {
+        "up_next": "Sıradaki",
+        "live": "Canlı",
+        "upcoming": "Yaklaşan",
+        "past": "Geçmiş etkinlikler",
+        "results": "Sonuçlar"
+      },
+      "filter": {
+        "search_placeholder": "İsme göre etkinlik ara…",
+        "all": "Tümü",
+        "live": "Canlı",
+        "upcoming": "Yaklaşan",
+        "past": "Geçmiş",
+        "no_results_title": "Eşleşen etkinlik yok",
+        "no_results_description": "Farklı bir isim dene veya filtreleri temizle."
+      },
+      "counts": {
+        "count_tournaments": "Turnuvalar",
+        "count_teams": "Takımlar",
+        "count_players": "Oyuncular",
+        "count_media": "Fotoğraflar ve klipler"
+      },
+      "no_tournaments": "Henüz duyurulan turnuva yok.",
+      "days": "{count} gün | {count} gün"
     },
     "manage_events": {
       "title": "Etkinlikleri yönet",
@@ -11492,5 +11548,34 @@
       "not_found_title": "Sunucu Bulunamadı",
       "not_found_description": "Bu sunucu yok veya herkese açık değil."
     }
+  },
+  "quick_look": {
+    "title": "Hızlı bakış",
+    "at": "Hızlı bakış: {name}",
+    "position": "{index}/{total}",
+    "open_tournament": "Turnuvayı aç",
+    "join_free_agent": "Serbest oyuncu olarak katıl",
+    "registration": "Kayıt",
+    "final_standings": "Final sıralaması",
+    "map_pool": "Harita havuzu",
+    "join": {
+      "teams": "Takımlar tam bir {type} kadroyla kaydolur.",
+      "both": "Takımlar ve serbest oyuncular kaydolabilir. Serbest oyuncular takımlara dağıtılır.",
+      "free_agents": "Oyuncular tek başına kaydolur ve takımlara dağıtılır.",
+      "invite": "Sadece davetle. Bir yer için organizatöre sor."
+    },
+    "elo": {
+      "range": "Her oyuncu {min}–{max} ELO aralığında",
+      "min": "Her oyuncu en az {min} ELO",
+      "max": "Her oyuncu en fazla {max} ELO"
+    },
+    "check_in": {
+      "captains": "Kaptanlar takımlarının katılımını onaylar",
+      "players": "Her oyuncu katılımını onaylar",
+      "admin": "Takımların katılımını bir yönetici onaylar",
+      "opens": "başlangıçtan {minutes} dk önce açılır"
+    },
+    "cancelled": "Organizatör başlamadan önce iptal etti.",
+    "cancelled_min_teams": "Yeterli takım kaydolmadığı için iptal edildi."
   }
 }

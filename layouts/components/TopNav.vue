@@ -52,6 +52,30 @@ const {
   currentSeason: currentLeagueSeason,
 } = useCurrentLeagueSeason();
 const hasLeagueSeason = computed(() => !!currentLeagueSeason.value);
+
+// View-only sections with nothing in them stay out of the nav for anyone who
+// can't add to them; an empty page there would only show an empty state.
+const applicationSettings = useApplicationSettingsStore();
+const { hasContent } = useSiteContent();
+const showTournamentsLink = computed(
+  () =>
+    hasContent("tournaments") ||
+    (!!authStore.me &&
+      authStore.isRoleAbove(applicationSettings.tournamentCreateRole)),
+);
+const showEventsLink = computed(
+  () =>
+    applicationSettings.eventsEnabled &&
+    (hasContent("events") ||
+      (!!authStore.me &&
+        authStore.isRoleAbove(applicationSettings.eventCreateRole))),
+);
+const showNewsLink = computed(
+  () =>
+    applicationSettings.newsEnabled &&
+    (hasContent("news") || applicationSettings.canPostNews),
+);
+const showHighlightsLink = computed(() => hasContent("highlights"));
 const homePath = computed(() => (authStore.me ? "/me" : "/watch"));
 const isHome = computed(() => {
   if (homePath.value === "/me") {
@@ -285,7 +309,7 @@ const loginArrowClasses =
                           </NuxtLink>
                         </NavigationMenuLink>
                       </li>
-                      <li>
+                      <li v-if="showTournamentsLink">
                         <NavigationMenuLink as-child>
                           <NuxtLink to="/tournaments" :class="navItemClasses">
                             <span :class="navItemChevronClasses">◢</span>
@@ -456,7 +480,7 @@ const loginArrowClasses =
                       {{ $t("layouts.top_nav.community.social.title") }}
                     </div>
                     <ul class="flex flex-col gap-1">
-                      <li v-if="newsEnabled">
+                      <li v-if="showNewsLink">
                         <NavigationMenuLink as-child>
                           <NuxtLink
                             to="/news"
@@ -484,7 +508,7 @@ const loginArrowClasses =
                           </NuxtLink>
                         </NavigationMenuLink>
                       </li>
-                      <li v-if="eventsEnabled">
+                      <li v-if="showEventsLink">
                         <NavigationMenuLink as-child>
                           <NuxtLink
                             to="/events"
@@ -600,7 +624,7 @@ const loginArrowClasses =
                           </NuxtLink>
                         </NavigationMenuLink>
                       </li>
-                      <li>
+                      <li v-if="showHighlightsLink">
                         <NavigationMenuLink as-child>
                           <NuxtLink
                             to="/highlights"
@@ -809,17 +833,11 @@ export default {
     showReportIssue() {
       return useApplicationSettingsStore().showReportIssue;
     },
-    newsEnabled() {
-      return useApplicationSettingsStore().newsEnabled;
-    },
     plugins() {
       return usePluginsStore().visiblePlugins;
     },
     newsLabel() {
       return useApplicationSettingsStore().newsLabel;
-    },
-    eventsEnabled() {
-      return useApplicationSettingsStore().eventsEnabled;
     },
     scrimFinderEnabled() {
       return useApplicationSettingsStore().scrimFinderEnabled;

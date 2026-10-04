@@ -51,6 +51,30 @@ const {
   currentSeason: currentLeagueSeason,
 } = useCurrentLeagueSeason();
 const hasLeagueSeason = computed(() => !!currentLeagueSeason.value);
+
+// Same rule as the top nav: an empty view-only section stays hidden from
+// anyone who can't add to it.
+const applicationSettings = useApplicationSettingsStore();
+const { hasContent } = useSiteContent();
+const showTournamentsLink = computed(
+  () =>
+    hasContent("tournaments") ||
+    (!!authStore.me &&
+      authStore.isRoleAbove(applicationSettings.tournamentCreateRole)),
+);
+const showEventsLink = computed(
+  () =>
+    applicationSettings.eventsEnabled &&
+    (hasContent("events") ||
+      (!!authStore.me &&
+        authStore.isRoleAbove(applicationSettings.eventCreateRole))),
+);
+const showNewsLink = computed(
+  () =>
+    applicationSettings.newsEnabled &&
+    (hasContent("news") || applicationSettings.canPostNews),
+);
+const showHighlightsLink = computed(() => hasContent("highlights"));
 const { pendingImports: pendingMatchImports } = usePendingImports();
 const matchContext = useMatchContext();
 const logoPath = computed(() => (authStore.me ? "/me" : "/watch"));
@@ -260,7 +284,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               </SidebarMenuButton>
             </SidebarMenuItem>
 
-            <SidebarMenuItem>
+            <SidebarMenuItem v-if="showTournamentsLink">
               <SidebarMenuButton
                 as-child
                 :tooltip="$t('layouts.app_nav.tooltips.tournaments')"
@@ -303,7 +327,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               </SidebarMenuButton>
             </SidebarMenuItem>
 
-            <SidebarMenuItem v-if="eventsEnabled">
+            <SidebarMenuItem v-if="showEventsLink">
               <SidebarMenuButton
                 as-child
                 :tooltip="$t('layouts.app_nav.tooltips.events')"
@@ -459,7 +483,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
           }}</SidebarGroupLabel>
 
           <SidebarMenu>
-            <SidebarMenuItem v-if="newsEnabled">
+            <SidebarMenuItem v-if="showNewsLink">
               <SidebarMenuButton
                 as-child
                 :tooltip="newsLabel || $t('layouts.app_nav.tooltips.news')"
@@ -477,6 +501,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
             </SidebarMenuItem>
 
             <SidebarMenuItem
+              v-if="showHighlightsLink"
               :tooltip="$t('layouts.app_nav.navigation.highlights')"
             >
               <SidebarMenuButton
@@ -1267,9 +1292,6 @@ export default {
     },
     showSeparators() {
       return useApplicationSettingsStore().showSeparators;
-    },
-    newsEnabled() {
-      return useApplicationSettingsStore().newsEnabled;
     },
     gamePluginsEnabled() {
       return useApplicationSettingsStore().gamePluginsEnabled;

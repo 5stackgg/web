@@ -631,7 +631,22 @@ function handleRoomClick(tab: ChatTab) {
   }
 
   cancelChatTabRestore();
+
+  // The room already on screen: nothing to switch to, so the click just puts
+  // you back in its composer.
+  if (tab.id === activeChatId.value) {
+    if (!isMobile.value) lobbies[tab.id]?.focusComposer?.();
+    return;
+  }
+
   handleSelectRoom(tab);
+}
+
+// Pressing the open room must not pull focus out of its composer first.
+function keepComposerOnActiveRoom(tab: ChatTab, event: MouseEvent) {
+  if (tab.id === activeChatId.value && !isMobile.value) {
+    event.preventDefault();
+  }
 }
 
 function getRoomIcon(tab: ChatTab) {
@@ -806,6 +821,7 @@ function handlePopOut() {
                         wiggling && tab.type === 'direct' ? 'touch-none' : '',
                       ]"
                       type="button"
+                      @mousedown="keepComposerOnActiveRoom(tab, $event)"
                       @click="handleRoomClick(tab)"
                       @pointerdown="handlePointerDown(tab, $event)"
                       @pointermove="handlePointerMove($event)"

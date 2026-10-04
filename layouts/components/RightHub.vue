@@ -17,6 +17,7 @@ import { useI18n } from "vue-i18n";
 import { useRightSidebar } from "@/composables/useRightSidebar";
 import { useHubState, setActiveHub } from "@/composables/useHubState";
 import { useChatTabs, type ChatTab } from "~/composables/useChatTabs";
+import { pendingComposerFocus } from "~/composables/useDirectMessages";
 import { useNotificationBadge } from "~/composables/useNotificationBadge";
 import { useInvites } from "@/composables/useInvites";
 import { useQuickQueue } from "~/composables/useQuickQueue";
@@ -481,6 +482,9 @@ function openChatTab(tab: ChatTab) {
   dockIntent.noteClick();
   setActiveTab(tab.id);
   showHub("chat");
+  // Clicking a conversation lands you in its composer, even when it was
+  // already open (the click itself took focus away from it).
+  if (!isMobile.value) pendingComposerFocus.value = tab.id;
 }
 
 function hoverOpenChat(tab: ChatTab) {

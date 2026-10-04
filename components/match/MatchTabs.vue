@@ -67,7 +67,6 @@ import {
   AlertTriangle,
   ExternalLink,
   Terminal,
-  MessageSquare,
 } from "lucide-vue-next";
 import { HeightSwap } from "~/components/ui/transitions";
 import {
@@ -271,9 +270,6 @@ provide("commander", commander);
             </TabsTrigger>
           </template>
           <TabsTrigger v-if="canViewChatLog" value="chat-log">
-            <MessageSquare
-              class="mr-1.5 inline-block h-3.5 w-3.5 align-[-2px]"
-            />
             {{ $t("match.tabs.chat_log") }}
           </TabsTrigger>
         </TabsList>
@@ -1434,9 +1430,9 @@ export default {
     syncActiveTabFromRoute() {
       // Legacy URLs pointed at the per-view tabs now folded into Scoreboard —
       // map them to the matching lens so old bookmarks don't dead-end.
+      // "utility" is not listed: it is the Utility tab's own value now.
       const legacyLensMap: Record<string, string> = {
         overview: "general",
-        utility: "utility",
         "aim-stats": "aim",
         "trade-stats": "trades",
         "opening-duels": "opening",

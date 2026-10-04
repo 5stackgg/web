@@ -26,10 +26,11 @@ import {
 import PlayerSearch from "~/components/PlayerSearch.vue";
 import EventPlayerPicker from "~/components/events/EventPlayerPicker.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import { useDeferredLoading } from "~/composables/useDeferredLoading";
 import { Skeleton } from "~/components/ui/skeleton";
-import Empty from "~/components/ui/empty/Empty.vue";
-import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
-import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
+import SectionEmpty from "~/components/common/SectionEmpty.vue";
+import { Button } from "~/components/ui/button";
 import ClipTile from "~/components/clips/ClipTile.vue";
 import Pagination from "~/components/Pagination.vue";
 import type { Clip } from "~/types/clip";
@@ -65,6 +66,9 @@ const isAdmin = computed(() => auth.isAdmin);
 type ClipGroup = { matchId: string; clips: Clip[] };
 const groups = ref<ClipGroup[]>([]);
 const loading = ref(true);
+const { skeleton, refreshing, loaded } = useDeferredLoading(
+  () => loading.value,
+);
 const visibilityFilter = ref<Filter>("all");
 
 type ViewMode = "matches" | "singles";
@@ -225,7 +229,6 @@ const hasActiveFilter = computed(
     (isAdmin.value && visibilityFilter.value !== "all"),
 );
 
-
 function resetHighlightFilters() {
   // One router.replace — chaining the individual setters each reads the same
   // stale route.query snapshot, so only the last write survives (which would
@@ -272,9 +275,7 @@ const innerClipFilter = computed<Record<string, any>>(() => {
 });
 
 const eventMatchFilter = computed<Record<string, any> | null>(() =>
-  props.eventId
-    ? { event_links: { event_id: { _eq: props.eventId } } }
-    : null,
+  props.eventId ? { event_links: { event_id: { _eq: props.eventId } } } : null,
 );
 
 const clipWhere = computed<Record<string, any>>(() =>
@@ -363,7 +364,13 @@ async function fetchData() {
       variables: {
         groups_order_by:
           sortFilter.value === "views"
-            ? [{ match_clips_aggregate: { sum: { views_count: order_by.desc } } }]
+            ? [
+                {
+                  match_clips_aggregate: {
+                    sum: { views_count: order_by.desc },
+                  },
+                },
+              ]
             : [{ [orderColumn]: order_by.desc_nulls_last }],
         clips_order_by:
           sortFilter.value === "views"
@@ -539,305 +546,316 @@ const viewModeOptions = computed<
   <div>
     <PageTransition :delay="60">
       <FilterBar>
-        <!-- Player (left, widely used) -->
-        <button
-          v-if="playerFilter"
-          type="button"
-          :class="[filterTriggerBase, filterTriggerActive]"
-          :title="$t('pages.highlights.clear_player_filter')"
-          @click="clearPlayer"
-        >
-          <User class="h-3.5 w-3.5" />
-          <span class="max-w-[10rem] truncate normal-case tracking-normal">
-            {{ playerFilterName ?? $t("clips.default_player") }}
-          </span>
-          <X class="h-3 w-3 opacity-70" />
-        </button>
-        <component
-          :is="playerPicker.component"
-          v-else
-          v-bind="playerPicker.props"
-          @selected="selectPlayer"
-        >
-          <button
-            type="button"
-            :class="[filterTriggerBase, filterTriggerIdle]"
-            :title="$t('pages.highlights.filter_by_player')"
-          >
-            <User class="h-3.5 w-3.5" />
-            {{ $t("clips.default_player") }}
-            <ChevronDown class="h-3 w-3 opacity-50" />
-          </button>
-        </component>
-
-        <!-- Kills (widely used) — left trigger -->
-        <Popover v-model:open="killsOpen">
-          <PopoverTrigger as-child>
+        <!-- Phones: the view toggle takes the first row and these triggers
+             share the second; from md they flatten back into one row. -->
+        <div class="flex min-w-0 flex-1 items-center gap-1.5 md:contents">
+          <div class="flex min-w-0 flex-1 md:contents">
+            <!-- Player (left, widely used) -->
             <button
+              v-if="playerFilter"
               type="button"
               :class="[
                 filterTriggerBase,
-                killsFilter !== 'any' ? filterTriggerActive : filterTriggerIdle,
+                filterTriggerActive,
+                'max-md:w-full max-md:justify-center',
               ]"
+              :title="$t('pages.highlights.clear_player_filter')"
+              @click="clearPlayer"
             >
-              <Crosshair class="h-3.5 w-3.5" />
-              {{ $t("pages.highlights.filter_labels.kills") }}
-              <span v-if="killsFilter !== 'any'" :class="filterTriggerValueClasses">
-                {{ killsLabel }}
+              <User class="h-3.5 w-3.5" />
+              <span class="max-w-[10rem] truncate normal-case tracking-normal">
+                {{ playerFilterName ?? $t("clips.default_player") }}
               </span>
-              <ChevronDown class="h-3 w-3 opacity-50" />
+              <X class="h-3 w-3 opacity-70" />
             </button>
-          </PopoverTrigger>
-          <PopoverContent align="start" class="w-44 p-1">
-            <button
-              v-for="opt in KILLS_OPTIONS"
-              :key="opt.value"
-              type="button"
-              @click="
-                setKills(opt.value);
-                killsOpen = false;
-              "
-              class="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
+            <component
+              :is="playerPicker.component"
+              v-else
+              v-bind="playerPicker.props"
+              @selected="selectPlayer"
             >
-              <span>{{ opt.label }}</span>
-              <Check
-                v-if="killsFilter === opt.value"
-                class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
-              />
-            </button>
-          </PopoverContent>
-        </Popover>
+              <button
+                type="button"
+                :class="[
+                  filterTriggerBase,
+                  filterTriggerIdle,
+                  'max-md:w-full max-md:justify-center',
+                ]"
+                :title="$t('pages.highlights.filter_by_player')"
+              >
+                <User class="h-3.5 w-3.5" />
+                {{ $t("clips.default_player") }}
+                <ChevronDown class="h-3 w-3 opacity-50" />
+              </button>
+            </component>
+          </div>
+
+          <!-- Kills (widely used) — left trigger -->
+          <Popover v-model:open="killsOpen">
+            <PopoverTrigger as-child>
+              <button
+                type="button"
+                :class="[
+                  filterTriggerBase,
+                  killsFilter !== 'any'
+                    ? filterTriggerActive
+                    : filterTriggerIdle,
+                  'max-md:min-w-0 max-md:flex-1 max-md:justify-center',
+                ]"
+              >
+                <Crosshair class="h-3.5 w-3.5" />
+                {{ $t("pages.highlights.filter_labels.kills") }}
+                <span
+                  v-if="killsFilter !== 'any'"
+                  :class="filterTriggerValueClasses"
+                >
+                  {{ killsLabel }}
+                </span>
+                <ChevronDown class="h-3 w-3 opacity-50" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent align="start" class="w-44 p-1">
+              <button
+                v-for="opt in KILLS_OPTIONS"
+                :key="opt.value"
+                type="button"
+                @click="
+                  setKills(opt.value);
+                  killsOpen = false;
+                "
+                class="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
+              >
+                <span>{{ opt.label }}</span>
+                <Check
+                  v-if="killsFilter === opt.value"
+                  class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
+                />
+              </button>
+            </PopoverContent>
+          </Popover>
+
+          <!-- Filters (Visibility/Date/Kills/Sort bundled) + grouped reset -->
+          <FilterMenu
+            class="md:order-2"
+            :count="
+              (isAdmin && visibilityFilter !== 'all' ? 1 : 0) +
+              (sinceFilter !== 'all' ? 1 : 0) +
+              (sortFilter !== defaultSort ? 1 : 0)
+            "
+            :active="
+              (isAdmin && visibilityFilter !== 'all') ||
+              sinceFilter !== 'all' ||
+              sortFilter !== defaultSort
+            "
+            :show-reset="hasActiveFilter"
+            content-class="w-[min(92vw,260px)] space-y-3 p-2"
+            @reset="resetHighlightFilters"
+          >
+            <!-- Visibility (admin) -->
+            <div v-if="isAdmin" class="space-y-0.5">
+              <span
+                class="block px-2 pb-1 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+              >
+                {{ $t("pages.highlights.filter_labels.visibility") }}
+              </span>
+              <button
+                v-for="opt in adminFilters"
+                :key="opt.value"
+                type="button"
+                @click="visibilityFilter = opt.value"
+                class="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
+              >
+                <span class="flex items-center gap-2">
+                  <component
+                    :is="opt.icon"
+                    v-if="opt.icon"
+                    class="h-3.5 w-3.5"
+                  />
+                  {{ opt.label }}
+                </span>
+                <Check
+                  v-if="visibilityFilter === opt.value"
+                  class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
+                />
+              </button>
+            </div>
+
+            <!-- Date -->
+            <div
+              class="space-y-0.5"
+              :class="isAdmin ? 'border-t border-border/50 pt-3' : ''"
+            >
+              <span
+                class="block px-2 pb-1 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+              >
+                {{ $t("pages.highlights.filter_labels.date") }}
+              </span>
+              <button
+                v-for="opt in SINCE_OPTIONS"
+                :key="opt.value"
+                type="button"
+                @click="setSince(opt.value)"
+                class="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
+              >
+                <span>{{ opt.label }}</span>
+                <Check
+                  v-if="sinceFilter === opt.value"
+                  class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
+                />
+              </button>
+            </div>
+
+            <!-- Sort -->
+            <div class="space-y-0.5 border-t border-border/50 pt-3">
+              <span
+                class="block px-2 pb-1 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+              >
+                {{ $t("pages.highlights.filter_labels.sort") }}
+              </span>
+              <button
+                v-for="opt in SORT_OPTIONS"
+                :key="opt.value"
+                type="button"
+                @click="setSort(opt.value)"
+                class="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
+              >
+                <span>{{ opt.label }}</span>
+                <Check
+                  v-if="sortFilter === opt.value"
+                  class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
+                />
+              </button>
+            </div>
+          </FilterMenu>
+          <div v-if="$slots.actions" class="flex items-center md:order-3">
+            <slot name="actions" />
+          </div>
+        </div>
 
         <!-- View mode — pinned to the right of the trigger row -->
         <div
-          class="relative ml-auto flex items-center rounded-md border border-border/60 bg-muted/30 p-0.5"
+          class="relative flex items-center rounded-md border border-border/60 bg-muted/30 p-0.5 max-md:order-first max-md:h-8 max-md:basis-full md:order-1 md:ml-auto"
           role="group"
           :aria-label="$t('pages.highlights.view_mode')"
         >
-            <!-- Sliding active-tab indicator -->
-            <span
-              aria-hidden="true"
-              class="absolute inset-y-0.5 left-0.5 w-[calc(50%-0.125rem)] rounded-sm bg-[hsl(var(--tac-amber))] shadow-[0_0_12px_-2px_hsl(var(--tac-amber)/0.6)] transition-transform duration-300 ease-out"
-              :style="{
-                transform:
-                  effectiveMode === 'singles'
-                    ? 'translateX(100%)'
-                    : 'translateX(0)',
-              }"
-            />
-            <button
-              v-for="opt in viewModeOptions"
-              :key="opt.value"
-              type="button"
-              :disabled="forceSingles && opt.value === 'matches'"
-              :title="
-                forceSingles && opt.value === 'matches'
-                  ? $t('pages.highlights.view_mode_filter_disabled')
-                  : undefined
-              "
-              :class="[
-                'relative z-10 inline-flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-sm px-4 py-1 text-xs transition-colors',
-                effectiveMode === opt.value
-                  ? 'font-bold text-black'
-                  : 'text-muted-foreground hover:text-foreground',
-                forceSingles && opt.value === 'matches'
-                  ? 'cursor-not-allowed opacity-40 hover:text-muted-foreground'
-                  : '',
-              ]"
-              :aria-pressed="effectiveMode === opt.value"
-              @click="setViewMode(opt.value)"
-            >
-              <component :is="opt.icon" class="h-3 w-3" />
-              {{ opt.label }}
-            </button>
-          </div>
-
-        <!-- Filters (Visibility/Date/Kills/Sort bundled) + grouped reset -->
-        <FilterMenu
-          :count="
-            (isAdmin && visibilityFilter !== 'all' ? 1 : 0) +
-            (sinceFilter !== 'all' ? 1 : 0) +
-            (sortFilter !== defaultSort ? 1 : 0)
-          "
-          :active="
-            (isAdmin && visibilityFilter !== 'all') ||
-            sinceFilter !== 'all' ||
-            sortFilter !== defaultSort
-          "
-          :show-reset="hasActiveFilter"
-          content-class="w-[min(92vw,260px)] space-y-3 p-2"
-          @reset="resetHighlightFilters"
-        >
-          <!-- Visibility (admin) -->
-          <div v-if="isAdmin" class="space-y-0.5">
-            <span
-              class="block px-2 pb-1 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
-            >
-              {{ $t("pages.highlights.filter_labels.visibility") }}
-            </span>
-            <button
-              v-for="opt in adminFilters"
-              :key="opt.value"
-              type="button"
-              @click="visibilityFilter = opt.value"
-              class="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
-            >
-              <span class="flex items-center gap-2">
-                <component :is="opt.icon" v-if="opt.icon" class="h-3.5 w-3.5" />
-                {{ opt.label }}
-              </span>
-              <Check
-                v-if="visibilityFilter === opt.value"
-                class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
-              />
-            </button>
-          </div>
-
-          <!-- Date -->
-          <div
-            class="space-y-0.5"
-            :class="isAdmin ? 'border-t border-border/50 pt-3' : ''"
+          <!-- Sliding active-tab indicator -->
+          <span
+            aria-hidden="true"
+            class="absolute inset-y-0.5 left-0.5 w-[calc(50%-0.125rem)] rounded-sm bg-[hsl(var(--tac-amber))] shadow-[0_0_12px_-2px_hsl(var(--tac-amber)/0.6)] transition-transform duration-300 ease-out"
+            :style="{
+              transform:
+                effectiveMode === 'singles'
+                  ? 'translateX(100%)'
+                  : 'translateX(0)',
+            }"
+          />
+          <button
+            v-for="opt in viewModeOptions"
+            :key="opt.value"
+            type="button"
+            :disabled="forceSingles && opt.value === 'matches'"
+            :title="
+              forceSingles && opt.value === 'matches'
+                ? $t('pages.highlights.view_mode_filter_disabled')
+                : undefined
+            "
+            :class="[
+              'relative z-10 inline-flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-sm px-4 py-1 text-xs transition-colors max-md:self-stretch',
+              effectiveMode === opt.value
+                ? 'font-bold text-black'
+                : 'text-muted-foreground hover:text-foreground',
+              forceSingles && opt.value === 'matches'
+                ? 'cursor-not-allowed opacity-40 hover:text-muted-foreground'
+                : '',
+            ]"
+            :aria-pressed="effectiveMode === opt.value"
+            @click="setViewMode(opt.value)"
           >
-            <span
-              class="block px-2 pb-1 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
-            >
-              {{ $t("pages.highlights.filter_labels.date") }}
-            </span>
-            <button
-              v-for="opt in SINCE_OPTIONS"
-              :key="opt.value"
-              type="button"
-              @click="setSince(opt.value)"
-              class="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
-            >
-              <span>{{ opt.label }}</span>
-              <Check
-                v-if="sinceFilter === opt.value"
-                class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
-              />
-            </button>
-          </div>
-
-          <!-- Sort -->
-          <div class="space-y-0.5 border-t border-border/50 pt-3">
-            <span
-              class="block px-2 pb-1 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
-            >
-              {{ $t("pages.highlights.filter_labels.sort") }}
-            </span>
-            <button
-              v-for="opt in SORT_OPTIONS"
-              :key="opt.value"
-              type="button"
-              @click="setSort(opt.value)"
-              class="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
-            >
-              <span>{{ opt.label }}</span>
-              <Check
-                v-if="sortFilter === opt.value"
-                class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
-              />
-            </button>
-          </div>
-        </FilterMenu>
+            <component :is="opt.icon" class="h-3 w-3" />
+            {{ opt.label }}
+          </button>
+        </div>
       </FilterBar>
     </PageTransition>
 
-    <PageTransition v-if="loading" :delay="80" class="mt-6">
-      <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-        <Skeleton
-          v-for="i in 8"
-          :key="i"
-          class="aspect-video w-full rounded-lg"
-        />
-      </div>
-    </PageTransition>
-
-    <PageTransition v-else-if="!hasClips" :delay="80" class="mt-6">
-      <Empty>
-        <EmptyTitle>
-          {{
-            playerFilter || sinceFilter !== "all" || killsFilter !== "any"
-              ? $t("pages.highlights.empty.no_match_filters")
-              : $t("pages.highlights.empty.no_clips_yet")
-          }}
-        </EmptyTitle>
-        <EmptyDescription>
-          <template
-            v-if="playerFilter || sinceFilter !== 'all' || killsFilter !== 'any'"
-          >
-            {{ $t("pages.highlights.empty.try_widening") }}
-          </template>
-          <template v-else-if="isAdmin">
-            {{ $t("pages.highlights.empty.try_different_admin") }}
-          </template>
-          <template v-else>
-            {{ $t("pages.highlights.empty.check_back_soon") }}
-          </template>
-        </EmptyDescription>
+    <PageTransition :delay="80" class="mt-6">
+      <FadeSwap>
         <div
-          v-if="playerFilter || sinceFilter !== 'all' || killsFilter !== 'any'"
-          class="mt-3 flex flex-wrap items-center justify-center gap-2"
-        >
-          <button
-            v-if="playerFilter"
-            type="button"
-            :class="[filterTriggerBase, filterTriggerIdle]"
-            @click="clearPlayer"
-          >
-            <X class="h-3 w-3" />
-            {{ $t("pages.highlights.empty.clear_player") }}
-          </button>
-          <button
-            v-if="sinceFilter !== 'all'"
-            type="button"
-            :class="[filterTriggerBase, filterTriggerIdle]"
-            @click="setSince('all')"
-          >
-            <X class="h-3 w-3" />
-            {{ $t("pages.highlights.empty.clear_date") }}
-          </button>
-          <button
-            v-if="killsFilter !== 'any'"
-            type="button"
-            :class="[filterTriggerBase, filterTriggerIdle]"
-            @click="setKills('any')"
-          >
-            <X class="h-3 w-3" />
-            {{ $t("pages.highlights.empty.clear_kills") }}
-          </button>
-        </div>
-      </Empty>
-    </PageTransition>
-
-    <PageTransition v-else :delay="80" class="mt-6">
-      <Transition name="grid-fade" mode="out-in">
-        <div
-          :key="gridKey"
+          v-if="skeleton"
+          key="loading"
           class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+          aria-busy="true"
         >
-          <template v-for="item in gridItems">
-            <ClipTile
-              v-if="item.kind === 'group'"
-              :key="`group-${item.matchId}`"
-              :clip="item.clips[0]"
-              :group="item.clips"
-              :queue-scope="clipQueueScope"
-            />
-            <ClipTile
-              v-else
-              :key="`single-${item.clip.id}`"
-              :clip="item.clip"
-              :queue="flatClips"
-              :queue-scope="clipQueueScope"
-            />
-          </template>
+          <Skeleton
+            v-for="i in 8"
+            :key="i"
+            class="aspect-video w-full rounded-lg"
+          />
         </div>
-      </Transition>
+
+        <SectionEmpty
+          v-else-if="loaded && !hasClips"
+          key="empty"
+          :title="
+            hasActiveFilter
+              ? $t('pages.highlights.empty.no_match_filters')
+              : $t('pages.highlights.empty.no_clips_yet')
+          "
+          :description="
+            hasActiveFilter
+              ? $t('pages.highlights.empty.try_widening')
+              : isAdmin
+                ? $t('pages.highlights.empty.try_different_admin')
+                : $t('pages.highlights.empty.check_back_soon')
+          "
+        >
+          <Button
+            v-if="hasActiveFilter"
+            variant="outline"
+            size="sm"
+            class="h-8"
+            @click="resetHighlightFilters"
+          >
+            <X class="h-3.5 w-3.5" />
+            {{ $t("common.reset_filters") }}
+          </Button>
+        </SectionEmpty>
+
+        <div
+          v-else
+          key="list"
+          class="transition-opacity duration-200"
+          :class="refreshing && 'pointer-events-none opacity-50'"
+        >
+          <Transition name="grid-fade" mode="out-in">
+            <div
+              :key="gridKey"
+              class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+            >
+              <template v-for="item in gridItems">
+                <ClipTile
+                  v-if="item.kind === 'group'"
+                  :key="`group-${item.matchId}`"
+                  :clip="item.clips[0]"
+                  :group="item.clips"
+                  :queue-scope="clipQueueScope"
+                />
+                <ClipTile
+                  v-else
+                  :key="`single-${item.clip.id}`"
+                  :clip="item.clip"
+                  :queue="flatClips"
+                  :queue-scope="clipQueueScope"
+                />
+              </template>
+            </div>
+          </Transition>
+        </div>
+      </FadeSwap>
     </PageTransition>
 
     <Pagination
-      v-if="!loading && totalCount > perPage"
+      v-if="!skeleton && totalCount > perPage"
       class="mt-6"
       :page="page"
       :per-page="perPage"

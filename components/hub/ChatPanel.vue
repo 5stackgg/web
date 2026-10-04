@@ -610,9 +610,9 @@ watch(
 
     pendingComposerFocus.value = null;
 
-    if (!isMobile.value) {
-      nextTick(() => lobbies[tabId]?.focusComposer?.());
-    }
+    // Phones too: starting a conversation is asking to type, unlike merely
+    // switching rooms (ChatLobby's activate-focus stays off on mobile).
+    nextTick(() => lobbies[tabId]?.focusComposer?.());
   },
   { immediate: true },
 );
@@ -929,7 +929,7 @@ function handlePopOut() {
       >
         <!-- Header with channel title + participants + controls -->
         <div
-          class="flex items-center justify-between px-3 py-3 border-b border-border bg-card/30"
+          class="flex items-center justify-between gap-3 px-3 py-3 border-b border-border bg-card/30"
         >
           <div class="min-w-0 flex items-center gap-3">
             <div class="min-w-0">
@@ -973,7 +973,7 @@ function handlePopOut() {
               </div>
             </div>
           </div>
-          <div class="flex items-center gap-1.5">
+          <div class="flex shrink-0 items-center gap-1.5">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger as-child>

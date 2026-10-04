@@ -5,7 +5,9 @@ import { Settings2 } from "lucide-vue-next";
 import { AnimatedCard } from "@/components/ui/animated-card";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import cleanMapName from "~/utilities/cleanMapName";
-import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
+import SectionEmpty from "~/components/common/SectionEmpty.vue";
+import DeferredLoading from "~/components/common/DeferredLoading.vue";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
 import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { mapFields } from "~/graphql/mapGraphql";
@@ -13,12 +15,9 @@ import { $ } from "~/generated/zeus";
 import { e_server_types_enum } from "~/generated/zeus";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import {
-  tacticalCtaButtonClasses,
-  tacticalHeaderActionClasses,
+  createButtonClasses,
+  listCreateButtonClasses,
 } from "~/utilities/tacticalClasses";
-import Empty from "~/components/ui/empty/Empty.vue";
-import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
-import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
 import { computed } from "vue";
 import { useAuthStore } from "~/stores/AuthStore";
@@ -42,91 +41,78 @@ const serverLinkClasses =
 </script>
 
 <template>
-  <PageTransition :delay="0">
-    <TacticalPageHeader inline-actions>
-      <template #title>{{ $t("pages.public_servers.title") }}</template>
+  <h1 class="sr-only">{{ $t("pages.public_servers.title") }}</h1>
 
-      <template v-if="canSetup && servers && servers.length" #actions>
+  <PageTransition
+    v-if="!loading && servers?.length && (canSetup || modeFilters.length > 2)"
+  >
+    <div class="mb-6 flex flex-wrap items-center gap-2">
+      <!-- Only shown once modes are actually in use: on a deployment that
+           runs none, a filter with a single option is noise. -->
+      <AnimatedFilters
+        v-if="modeFilters.length > 2"
+        v-model="modeFilter"
+        square
+        :options="modeFilters"
+      />
+      <Button
+        v-if="canSetup"
+        as-child
+        size="sm"
+        :class="[listCreateButtonClasses, 'ml-auto']"
+      >
         <NuxtLink
           to="/dedicated-servers/create"
-          :class="[
-            tacticalCtaButtonClasses,
-            tacticalHeaderActionClasses,
-            'max-md:aspect-square max-md:!px-0',
-          ]"
           :title="$t('pages.public_servers.setup_public_server')"
         >
           <Settings2 class="h-4 w-4" />
-          <span class="hidden md:inline">{{
+          <span class="max-md:sr-only">{{
             $t("pages.public_servers.setup_public_server")
           }}</span>
         </NuxtLink>
-      </template>
-    </TacticalPageHeader>
+      </Button>
+    </div>
   </PageTransition>
 
-  <PageTransition :delay="100">
-    <div class="mt-6">
-      <Transition
-        mode="out-in"
-        enter-active-class="transition-opacity duration-200 ease-out"
-        leave-active-class="transition-opacity duration-200 ease-out"
-        enter-from-class="opacity-0"
-        leave-to-class="opacity-0"
-      >
+  <PageTransition>
+    <DeferredLoading :loading="loading" v-slot="{ skeleton, loaded }">
+      <FadeSwap>
         <!-- Loading -->
         <div
-          v-if="loading"
+          v-if="skeleton"
           key="loading"
-          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+          class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+          aria-busy="true"
         >
-          <div
-            v-for="i in 3"
-            :key="i"
-            class="rounded-xl border overflow-hidden"
-          >
-            <Skeleton class="h-36 w-full" />
-            <div class="p-4 space-y-2">
-              <Skeleton class="h-4 w-3/4" />
-              <Skeleton class="h-2 w-full" />
-              <Skeleton class="h-9 w-full" />
-            </div>
-          </div>
+          <Skeleton v-for="i in 3" :key="i" class="h-72 rounded-xl" />
         </div>
 
         <!-- Empty -->
-        <Empty
-          v-else-if="!servers || (servers as any[]).length === 0"
+        <SectionEmpty
+          v-else-if="loaded && (!servers || (servers as any[]).length === 0)"
           key="empty"
-          class="min-h-[200px]"
-        >
-          <EmptyTitle>{{
-            $t("pages.public_servers.no_servers_title")
-          }}</EmptyTitle>
-          <EmptyDescription>{{
+          :title="$t('pages.public_servers.no_servers_title')"
+          :description="
             canSetup
-              ? $t("pages.public_servers.no_public_servers_admin")
-              : $t("pages.public_servers.no_public_servers")
-          }}</EmptyDescription>
-          <Button v-if="canSetup" as-child>
+              ? $t('pages.public_servers.no_public_servers_admin')
+              : $t('pages.public_servers.no_public_servers')
+          "
+        >
+          <Button
+            v-if="canSetup"
+            as-child
+            size="sm"
+            :class="createButtonClasses"
+          >
             <NuxtLink to="/dedicated-servers/create">
               <Settings2 class="h-4 w-4" />
               {{ $t("pages.public_servers.setup_public_server") }}
             </NuxtLink>
           </Button>
-        </Empty>
+        </SectionEmpty>
 
         <!-- Server cards -->
         <div v-else key="servers" class="space-y-8">
-          <!-- Only shown once modes are actually in use: on a deployment that
-               runs none, a filter with a single option is noise. -->
-          <AnimatedFilters
-            v-if="modeFilters.length > 2"
-            v-model="modeFilter"
-            square
-            :options="modeFilters"
-          />
-
           <div v-for="(gameServers, game) in serversByGame" :key="game">
             <div class="flex items-center gap-3 mb-5">
               <div class="w-0.5 h-4 rounded-full bg-primary shrink-0" />
@@ -193,7 +179,7 @@ const serverLinkClasses =
                 <div class="px-4 pt-3 pb-2">
                   <div class="mb-2 flex items-center gap-2">
                     <!-- Stretched over the whole card, so the card opens the
-                         server's page while Zone C keeps its own buttons. -->
+                             server's page while Zone C keeps its own buttons. -->
                     <NuxtLink
                       :to="`/dedicated-servers/${server.id}`"
                       :class="[serverLinkClasses, 'min-w-0 flex-1']"
@@ -201,7 +187,7 @@ const serverLinkClasses =
                       {{ server.label }}
                     </NuxtLink>
                     <!-- What the server is actually running. A name alone does
-                         not tell anyone whether this is retakes or vanilla. -->
+                             not tell anyone whether this is retakes or vanilla. -->
                     <span
                       v-if="server.game_mode"
                       class="shrink-0 rounded border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.08)] px-1.5 py-0.5 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-[hsl(var(--tac-amber))]"
@@ -260,8 +246,8 @@ const serverLinkClasses =
             </div>
           </div>
         </div>
-      </Transition>
-    </div>
+      </FadeSwap>
+    </DeferredLoading>
   </PageTransition>
 
   <!-- LAN Servers -->

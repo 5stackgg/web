@@ -1602,7 +1602,8 @@
       "open_team_new_tab": "チームを新しいタブで開く",
       "request_scrim": "スクリムを申請",
       "available_teams": "募集中のチーム",
-      "no_teams_match": "フィルター条件に一致するチームがありません。"
+      "no_teams_match": "フィルター条件に一致するチームがありません。",
+      "empty_title": "スクリムを募集しているチームはありません"
     },
     "teams": {
       "title": "チーム",
@@ -3458,10 +3459,7 @@
         "no_clips_yet": "まだクリップがありません",
         "try_widening": "条件を緩めるか、一部をクリアしてみてください。",
         "try_different_admin": "別の条件を試すか、新しいクリップのレンダーをお待ちください。",
-        "check_back_soon": "公開クリップはレンダーが完了次第ここに表示されます。しばらくしてから確認してください。",
-        "clear_player": "プレイヤーをクリア",
-        "clear_date": "日付をクリア",
-        "clear_kills": "キル数をクリア"
+        "check_back_soon": "公開クリップはレンダーが完了次第ここに表示されます。しばらくしてから確認してください。"
       }
     },
     "news": {
@@ -3637,8 +3635,7 @@
         "elo": "ELO",
         "last_sign_in_at": "最終ログイン",
         "privilege": "権限",
-        "kdr": "KDR",
-        "no_players": "プレイヤーが見つかりません"
+        "kdr": "KDR"
       },
       "detail": {
         "all_short": "全体",
@@ -3848,6 +3845,10 @@
           "worst_loss": "最大の下落",
           "view_match": "試合を表示"
         }
+      },
+      "empty": {
+        "title": "まだプレイヤーはいません",
+        "description": "サインインしたプレイヤーがここに表示されます。"
       }
     },
     "play": {
@@ -3895,7 +3896,7 @@
         "mode_group": "ゲームモード",
         "nobody_queued": "キュー待ちなし",
         "too_big": "{count}人パーティーは{mode}には多すぎます",
-        "queue_solo": "ソロでキュー、チームは自動でバランス調整",
+        "queue_solo": "ソロでキュー",
         "seats": {
           "format": "{count}対{count}",
           "yours": "パーティーが{count}枠を使用 | パーティーが{count}枠を使用",
@@ -4050,7 +4051,6 @@
       "create": "試合を作成",
       "schedule": {
         "title": "試合を予約",
-        "step_settings": "設定",
         "step_teams": "チーム",
         "kickoff": "開始時刻",
         "kickoff_future": "未来の時刻を選んでください。",
@@ -4076,7 +4076,6 @@
       "clear_short": "クリア",
       "lineup_only": "自分が出場する試合のみ",
       "include_external": "外部の試合を含める",
-      "standby_no_matches": "待機中 · 試合が見つかりません",
       "create_page": {
         "pick_up_game": "ピックアップゲーム",
         "pick_up_game_description": "ピックアップゲームではチームの選択は不要です。",
@@ -4086,6 +4085,10 @@
         "intra_team_scrimmage": "両方の枠に同じチームを選ぶと、チーム内スクリムを作成できます。",
         "create_button": "試合を作成",
         "update_button": "試合を更新"
+      },
+      "empty": {
+        "title": "まだ試合はありません",
+        "description": "予定・進行中・終了した試合がここに表示されます。"
       }
     },
     "toasts": {
@@ -4655,7 +4658,6 @@
     },
     "manage_matches": {
       "only_my_matches": "自分が主催する試合のみ",
-      "no_matches": "試合が見つかりませんでした。",
       "enter_name": "名前を入力...",
       "enter_match_id": "試合IDを入力...",
       "enter_team_name": "チーム名を入力...",
@@ -4745,7 +4747,8 @@
         "faceit_level": "レベル",
         "premier_rank": "Premier ランク"
       },
-      "exclude_tournaments": "トーナメントを除外"
+      "exclude_tournaments": "トーナメントを除外",
+      "empty_title": "まだランキングはありません"
     },
     "database": {
       "query_copied": "クエリをクリップボードにコピーしました",
@@ -6158,7 +6161,6 @@
   "layouts": {
     "account_settings": {
       "title": "アカウント設定",
-      "description": "アカウント設定と各種プレファレンスを管理します",
       "select_section": "セクションを選択"
     },
     "application_settings": {
@@ -6760,7 +6762,11 @@
     "sort": "並べ替え",
     "vs_team": "vs {name}",
     "default": "既定",
-    "avg": "平均"
+    "avg": "平均",
+    "empty_filtered": {
+      "title": "条件に一致する項目はありません",
+      "description": "フィルターを解除するか、検索条件を広げてください。"
+    }
   },
   "spotlight_search": {
     "placeholder": "プレイヤーを検索...",
@@ -9873,10 +9879,6 @@
       "port": "ゲームポート",
       "tv_port": "TV ポート",
       "create": "サーバーを作成",
-      "create_bar": {
-        "ready": "作成できます",
-        "missing": "まだ必要: {fields}"
-      },
       "max_players": "最大プレイヤー数",
       "max_players_description": "サーバーに接続できるプレイヤーの上限数"
     },
@@ -10602,7 +10604,8 @@
     "list": {
       "title": "リーグ",
       "subtitle": "シーズン制のディビジョン、週次の試合、昇格と降格",
-      "settings": "リーグ設定"
+      "settings": "リーグ設定",
+      "empty_title": "まだシーズンはありません"
     },
     "history": {
       "seasons": "シーズン履歴",
@@ -10621,7 +10624,6 @@
     },
     "seasons": {
       "title": "シーズン",
-      "empty": "シーズンはまだありません。",
       "deleted": "シーズンを削除しました",
       "delete_title": "シーズンを削除しますか？",
       "delete_description": "{name}を登録・スケジュール・結果を含めて完全に削除します。この操作は取り消せません。"
@@ -11015,12 +11017,6 @@
       "start_time": "開始時刻",
       "end_time": "終了時刻",
       "create": "イベントを作成",
-      "create_bar": {
-        "ready": "作成準備完了",
-        "ready_hint": "入力に問題はありません。準備ができたらイベントを作成してください。",
-        "incomplete": "必須項目が未入力",
-        "incomplete_hint": "イベント名と開始日を入力すると次に進めます"
-      },
       "visibility": "公開範囲",
       "media_access": "メディアのアップロード",
       "sections": {

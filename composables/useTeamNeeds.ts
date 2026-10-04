@@ -16,6 +16,7 @@ import {
   teamScrimRequestFields,
 } from "~/graphql/teamPulseFields";
 import { useAuthStore } from "~/stores/AuthStore";
+import { isRosterNeedDismissed } from "~/composables/useRosterNeedDismissals";
 import { toast } from "~/components/ui/toast";
 
 // What a team needs from the person looking at it. Items are only things
@@ -185,7 +186,9 @@ export function useTeamNeeds(
       const starters = value.roster.filter(
         (m) => m.status === "Starter",
       ).length;
-      if (starters < 5) list.push({ kind: "roster", key: "roster", starters });
+      if (starters < 5 && !isRosterNeedDismissed(value.id, starters)) {
+        list.push({ kind: "roster", key: "roster", starters });
+      }
     }
 
     return list.sort((a, b) => KIND_ORDER[a.kind] - KIND_ORDER[b.kind]);

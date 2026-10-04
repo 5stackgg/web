@@ -75,6 +75,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { NuxtLink } from "#components";
 import AnimatedStat from "~/components/AnimatedStat.vue";
+import MobileTabSelect from "~/components/common/MobileTabSelect.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import { Fold } from "~/components/ui/transitions";
@@ -102,7 +103,7 @@ const tournamentBannerClasses =
 const tournamentHeroBodyClasses =
   "flex flex-wrap items-end justify-between gap-x-6 gap-y-4 px-5 pt-5 max-sm:px-4 max-sm:pt-4";
 const tournamentHeroLogoClasses =
-  "h-14 w-14 shrink-0 rounded-md border border-border bg-muted/30 object-contain sm:h-16 sm:w-16";
+  "h-11 w-11 shrink-0 rounded-md border border-border bg-muted/30 object-contain sm:row-span-3 sm:h-16 sm:w-16";
 const tournamentHeroNameClasses =
   "m-0 text-[clamp(1.5rem,3.4vw,2.25rem)] font-extrabold leading-[1.05] [text-wrap:balance]";
 const tournamentHeroTagClasses =
@@ -127,7 +128,7 @@ const tournamentHeroStatusTierClasses: Record<string, string> = {
 };
 const tournamentHeroJoinButtonClasses = [
   tacticalCtaButtonClasses,
-  "h-9 px-4 py-2 text-[0.68rem] tracking-[0.14em] max-sm:basis-full",
+  "h-9 px-4 py-2 text-[0.68rem] tracking-[0.14em] max-sm:flex-1",
 ];
 const tournamentHeroTabsClasses = "mt-4 border-t border-border px-2 sm:px-3";
 const tournamentTabTriggerClasses = [
@@ -190,117 +191,133 @@ function clearTeamEnterDelay(el: Element) {
             </div>
 
             <div :class="tournamentHeroBodyClasses">
-              <div class="flex min-w-0 items-start gap-4">
+              <!-- Phones: the logo sits beside the tags so the name and meta
+                   run the full width; from sm it spans all three rows. -->
+              <div
+                class="grid min-w-0 gap-2"
+                :class="
+                  tournamentLogoSrc &&
+                  'grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 sm:items-start sm:gap-x-4'
+                "
+              >
                 <img
                   v-if="tournamentLogoSrc"
                   :src="tournamentLogoSrc"
                   :alt="tournament.name"
                   :class="tournamentHeroLogoClasses"
                 />
-                <div class="grid min-w-0 gap-2">
-                  <div class="flex flex-wrap items-center gap-1.5">
-                    <span
-                      :class="[
-                        tournamentHeroStatusClasses,
-                        tournamentHeroStatusTierClasses[statusTier] ??
-                          tournamentHeroStatusTierClasses.ended,
-                      ]"
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span
+                    :class="[
+                      tournamentHeroStatusClasses,
+                      tournamentHeroStatusTierClasses[statusTier] ??
+                        tournamentHeroStatusTierClasses.ended,
+                    ]"
+                  >
+                    <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
+                    {{ tournament.e_tournament_status.description }}
+                  </span>
+                  <span :class="tournamentHeroTagClasses">
+                    {{ tournament.options.type }}
+                  </span>
+                  <span
+                    v-for="category in tournamentCategories"
+                    :key="category"
+                    :class="tournamentHeroTagClasses"
+                  >
+                    {{ category }}
+                  </span>
+                </div>
+                <h1
+                  :class="[
+                    tournamentHeroNameClasses,
+                    tournamentLogoSrc && 'col-span-2 sm:col-span-1',
+                  ]"
+                >
+                  {{ tournament.name }}
+                </h1>
+                <div
+                  :class="[
+                    tournamentHeroMetaClasses,
+                    tournamentLogoSrc && 'col-span-2 sm:col-span-1',
+                  ]"
+                >
+                  <span class="inline-flex items-center gap-1.5">
+                    <CalendarDays class="h-3.5 w-3.5" />
+                    {{ startLabel }}
+                  </span>
+                  <span
+                    v-if="shortLocation"
+                    class="inline-flex items-center gap-1.5"
+                  >
+                    <MapPin class="h-3.5 w-3.5" />
+                    {{ shortLocation }}
+                  </span>
+                  <span
+                    v-if="formatLabel"
+                    class="inline-flex items-center gap-1.5"
+                  >
+                    <Layers class="h-3.5 w-3.5" />
+                    {{ formatLabel }}
+                  </span>
+                  <a
+                    v-if="tournamentHomepage"
+                    :href="tournamentHomepage"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-1.5 underline decoration-muted-foreground/40 underline-offset-[3px] transition-colors hover:text-foreground"
+                  >
+                    <Globe class="h-3.5 w-3.5" />
+                    {{ $t("tournament.form.homepage.link") }}
+                  </a>
+                  <span class="inline-flex items-center gap-1">
+                    <template
+                      v-for="(organizer, index) in organizersList.slice(0, 6)"
+                      :key="organizer.steam_id"
                     >
-                      <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
-                      {{ tournament.e_tournament_status.description }}
-                    </span>
-                    <span :class="tournamentHeroTagClasses">
-                      {{ tournament.options.type }}
-                    </span>
-                    <span
-                      v-for="category in tournamentCategories"
-                      :key="category"
-                      :class="tournamentHeroTagClasses"
-                    >
-                      {{ category }}
-                    </span>
-                  </div>
-                  <h1 :class="tournamentHeroNameClasses">
-                    {{ tournament.name }}
-                  </h1>
-                  <div :class="tournamentHeroMetaClasses">
-                    <span class="inline-flex items-center gap-1.5">
-                      <CalendarDays class="h-3.5 w-3.5" />
-                      {{ startLabel }}
-                    </span>
-                    <span
-                      v-if="shortLocation"
-                      class="inline-flex items-center gap-1.5"
-                    >
-                      <MapPin class="h-3.5 w-3.5" />
-                      {{ shortLocation }}
-                    </span>
-                    <span
-                      v-if="formatLabel"
-                      class="inline-flex items-center gap-1.5"
-                    >
-                      <Layers class="h-3.5 w-3.5" />
-                      {{ formatLabel }}
-                    </span>
-                    <a
-                      v-if="tournamentHomepage"
-                      :href="tournamentHomepage"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center gap-1.5 underline decoration-muted-foreground/40 underline-offset-[3px] transition-colors hover:text-foreground"
-                    >
-                      <Globe class="h-3.5 w-3.5" />
-                      {{ $t("tournament.form.homepage.link") }}
-                    </a>
-                    <span class="inline-flex items-center gap-1">
-                      <template
-                        v-for="(organizer, index) in organizersList.slice(0, 6)"
-                        :key="organizer.steam_id"
-                      >
-                        <Popover v-model:open="organizerPopoversOpen[index]">
-                          <PopoverTrigger as-child>
-                            <button
-                              type="button"
-                              :class="tournamentHeroOrganizerClasses"
-                              :aria-label="organizer.name"
-                              @mouseenter="organizerPopoversOpen[index] = true"
-                              @mouseleave="organizerPopoversOpen[index] = false"
-                            >
-                              <Avatar shape="square" class="h-6 w-6">
-                                <AvatarImage
-                                  v-if="organizer?.avatar_url"
-                                  :src="organizer.avatar_url"
-                                  :alt="organizer.name"
-                                />
-                                <AvatarFallback class="text-[0.6rem]">
-                                  {{ organizer?.name.slice(0, 2) }}
-                                </AvatarFallback>
-                              </Avatar>
-                            </button>
-                          </PopoverTrigger>
-                          <PopoverContent
-                            class="w-64 p-0"
+                      <Popover v-model:open="organizerPopoversOpen[index]">
+                        <PopoverTrigger as-child>
+                          <button
+                            type="button"
+                            :class="tournamentHeroOrganizerClasses"
+                            :aria-label="organizer.name"
                             @mouseenter="organizerPopoversOpen[index] = true"
                             @mouseleave="organizerPopoversOpen[index] = false"
                           >
-                            <div class="p-4">
-                              <PlayerDisplay
-                                :player="organizer"
-                                :linkable="true"
-                                :tooltip="false"
+                            <Avatar shape="square" class="h-6 w-6">
+                              <AvatarImage
+                                v-if="organizer?.avatar_url"
+                                :src="organizer.avatar_url"
+                                :alt="organizer.name"
                               />
-                            </div>
-                          </PopoverContent>
-                        </Popover>
-                      </template>
-                      <span
-                        v-if="organizersList.length > 6"
-                        class="ml-1 text-xs tabular-nums"
-                      >
-                        +{{ organizersList.length - 6 }}
-                      </span>
+                              <AvatarFallback class="text-[0.6rem]">
+                                {{ organizer?.name.slice(0, 2) }}
+                              </AvatarFallback>
+                            </Avatar>
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent
+                          class="w-64 p-0"
+                          @mouseenter="organizerPopoversOpen[index] = true"
+                          @mouseleave="organizerPopoversOpen[index] = false"
+                        >
+                          <div class="p-4">
+                            <PlayerDisplay
+                              :player="organizer"
+                              :linkable="true"
+                              :tooltip="false"
+                            />
+                          </div>
+                        </PopoverContent>
+                      </Popover>
+                    </template>
+                    <span
+                      v-if="organizersList.length > 6"
+                      class="ml-1 text-xs tabular-nums"
+                    >
+                      +{{ organizersList.length - 6 }}
                     </span>
-                  </div>
+                  </span>
                 </div>
               </div>
 
@@ -321,7 +338,8 @@ function clearTeamEnterDelay(el: Element) {
                 <Button
                   v-if="chatRoomTournament"
                   variant="outline"
-                  class="relative"
+                  class="relative max-sm:w-9 max-sm:px-0"
+                  :title="$t('tournament.page.chat_room_tab')"
                   @click="openChatRoom"
                 >
                   <MessageSquare class="h-4 w-4 shrink-0" />
@@ -347,11 +365,15 @@ function clearTeamEnterDelay(el: Element) {
                       activeTab === 'manage' &&
                       'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.1)] text-foreground'
                     "
+                    class="max-sm:w-9 max-sm:px-0"
                     :aria-pressed="activeTab === 'manage'"
+                    :title="$t('tournament.manage.button')"
                     @click="toggleManage"
                   >
                     <Settings class="h-4 w-4" />
-                    {{ $t("tournament.manage.button") }}
+                    <span class="max-sm:sr-only">{{
+                      $t("tournament.manage.button")
+                    }}</span>
                   </Button>
                   <DropdownMenu>
                     <DropdownMenuTrigger as-child>
@@ -470,10 +492,16 @@ function clearTeamEnterDelay(el: Element) {
                   {{ $t("tournament.manage.back") }}
                 </Button>
               </div>
+              <MobileTabSelect
+                v-if="activeTab !== 'manage'"
+                v-model="activeTab"
+                :items="publicTabs"
+                class="px-2 py-3"
+              />
               <TabsList
-                v-else
+                v-if="activeTab !== 'manage'"
                 variant="underline"
-                class="h-auto min-w-0 flex-nowrap justify-start overflow-x-auto bg-transparent p-0 [scrollbar-width:none]"
+                class="h-auto min-w-0 flex-nowrap justify-start overflow-x-auto bg-transparent p-0 [scrollbar-width:none] max-md:hidden"
               >
                 <TabsTrigger
                   v-for="tab in publicTabs"
@@ -1148,9 +1176,7 @@ export default {
           tournamentId: this.$route.params.tournamentId,
         };
       },
-      result: function ({ data }) {
-        this.tournamentStatic = data?.tournaments_by_pk ?? undefined;
-      },
+      update: (data) => data?.tournaments_by_pk ?? undefined,
     },
     $subscribe: {
       tournaments_by_pk: {
@@ -2134,6 +2160,22 @@ export default {
       }
       this.joinSheetOpen = true;
     },
+    // `?join=1` (the event page's Register) opens the join sheet once the live
+    // half says the viewer can still join, then drops the one-shot param.
+    consumeJoinQuery() {
+      if (!this.$route.query.join || this.tournament?.status === undefined) {
+        return;
+      }
+      if (
+        this.tournament.status === e_tournament_status_enum.RegistrationOpen &&
+        this.tournament.can_join
+      ) {
+        this.joinSheetOpen = true;
+      }
+      const query = { ...this.$route.query };
+      delete query.join;
+      void this.$router.replace({ query });
+    },
     async cancelTournament() {
       await this.updateTournamentStatus(e_tournament_status_enum.Cancelled);
     },
@@ -2264,6 +2306,7 @@ export default {
       handler(newTournament) {
         if (newTournament) {
           this.syncActiveTabFromRoute();
+          this.consumeJoinQuery();
         }
       },
       immediate: true,

@@ -2,6 +2,7 @@
 import { computed, ref, watch } from "vue";
 import { validate as validateUUID } from "uuid";
 import { Trash2, Medal, Play, Share2, Trophy } from "lucide-vue-next";
+import { NuxtLink } from "#components";
 import AwardComposer from "~/components/award/AwardComposer.vue";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,6 +24,7 @@ import PlayerMatchesTable from "~/components/player/PlayerMatchesTable.vue";
 import Pagination from "~/components/Pagination.vue";
 import WatchSegmented from "~/components/watch/WatchSegmented.vue";
 import EventHeader from "~/components/events/EventHeader.vue";
+import MobileTabSelect from "~/components/common/MobileTabSelect.vue";
 import EventSection from "~/components/events/EventSection.vue";
 import EventLeaderboard from "~/components/events/EventLeaderboard.vue";
 import EventStandings from "~/components/events/EventStandings.vue";
@@ -194,9 +196,11 @@ const tabTriggerClasses =
             </Button>
             <Button
               v-else-if="phase === 'upcoming' && openTournaments.length"
+              :as="registerLink ? NuxtLink : 'button'"
+              :to="registerLink ?? undefined"
               size="sm"
               class="tac-amber-cta h-8 gap-1.5 border font-semibold"
-              @click="activeTab = 'tournaments'"
+              @click="!registerLink && (activeTab = 'tournaments')"
             >
               <Trophy class="h-3.5 w-3.5" />
               {{ $t("event.header.register") }}
@@ -213,9 +217,14 @@ const tabTriggerClasses =
             </Button>
           </template>
           <template #tabs>
+            <MobileTabSelect
+              v-model="activeTab"
+              :items="tabItems"
+              class="px-2 pb-4"
+            />
             <TabsList
               variant="underline"
-              class="h-auto w-full justify-start overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              class="h-auto w-full justify-start overflow-x-auto overscroll-x-contain [scrollbar-width:none] max-md:hidden [&::-webkit-scrollbar]:hidden"
             >
               <TabsTrigger value="overview" :class="tabTriggerClasses">
                 {{ $t("event.tabs.overview") }}
@@ -740,6 +749,15 @@ export default {
         (entry: any) => entry.tournament.status === "RegistrationOpen",
       );
     },
+    // One open tournament: Register opens its join sheet (sign in first when
+    // signed out). Several: it switches to the Tournaments tab to pick one.
+    registerLink(): string | null {
+      if (this.openTournaments.length !== 1) return null;
+      const path = `/tournaments/${this.openTournaments[0].tournament.id}?join=1`;
+      return useAuthStore().me
+        ? path
+        : `/login?redirect=${encodeURIComponent(path)}`;
+    },
     // "Organized by" = the co-organizers plus the creator, unless the creator
     // has been hidden from the display (they remain the owner regardless).
     organizedByPlayers(): any[] {
@@ -766,6 +784,16 @@ export default {
     },
     hasTournaments(): boolean {
       return this.eventTournamentEntries.length > 0;
+    },
+    tabItems(): Array<{ value: string; label: string }> {
+      return [
+        "overview",
+        "matches",
+        "players",
+        "media",
+        ...(this.hasTournaments ? ["tournaments"] : []),
+        ...(this.event?.is_organizer ? ["manage"] : []),
+      ].map((value) => ({ value, label: this.$t(`event.tabs.${value}`) }));
     },
     membershipKey(): string {
       return [

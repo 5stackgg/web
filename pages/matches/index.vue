@@ -17,7 +17,10 @@ import {
 } from "lucide-vue-next";
 import { useAuthStore } from "~/stores/AuthStore";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
+import SectionEmpty from "~/components/common/SectionEmpty.vue";
+import DeferredLoading from "~/components/common/DeferredLoading.vue";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import { Skeleton } from "~/components/ui/skeleton";
 import MatchRowsTable from "~/components/match/MatchRowsTable.vue";
 import Pagination from "~/components/Pagination.vue";
 import PlayerSearch from "~/components/PlayerSearch.vue";
@@ -47,9 +50,8 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import {
-  tacticalCtaButtonClasses,
-  tacticalHeaderActionClasses,
-  tacticalSectionTickClasses,
+  createButtonClasses,
+  listCreateButtonClasses,
 } from "~/utilities/tacticalClasses";
 
 const auth = useAuthStore();
@@ -92,30 +94,9 @@ function optionRowClass(active: boolean) {
 </script>
 
 <template>
-  <PageTransition>
-    <TacticalPageHeader inline-actions>
-      <template #title>{{ $t("pages.matches.title") }}</template>
-      <template #actions>
-        <NuxtLink
-          v-if="canCreateMatch"
-          to="/matches/create"
-          :class="[
-            tacticalCtaButtonClasses,
-            tacticalHeaderActionClasses,
-            'max-md:aspect-square max-md:!px-0',
-          ]"
-          :title="$t('pages.matches.schedule.title')"
-        >
-          <PlusCircle class="w-4 h-4" />
-          <span class="hidden md:inline">{{
-            $t("pages.matches.schedule.title")
-          }}</span>
-        </NuxtLink>
-      </template>
-    </TacticalPageHeader>
-  </PageTransition>
+  <h1 class="sr-only">{{ $t("pages.matches.title") }}</h1>
 
-  <PageTransition :delay="100" class="mt-6">
+  <PageTransition>
     <FilterBar>
       <!-- Status -->
       <Popover>
@@ -431,6 +412,23 @@ function optionRowClass(active: boolean) {
           </div>
         </div>
       </FilterMenu>
+
+      <Button
+        v-if="canCreateMatch"
+        as-child
+        size="sm"
+        :class="listCreateButtonClasses"
+      >
+        <NuxtLink
+          to="/matches/create"
+          :title="$t('pages.matches.schedule.title')"
+        >
+          <PlusCircle class="h-4 w-4" />
+          <span class="max-md:sr-only">{{
+            $t("pages.matches.schedule.title")
+          }}</span>
+        </NuxtLink>
+      </Button>
     </FilterBar>
   </PageTransition>
 
@@ -487,38 +485,69 @@ function optionRowClass(active: boolean) {
   </PageTransition>
 
   <PageTransition :delay="200" class="mt-4">
-    <div class="relative">
-      <div v-if="loading" class="absolute right-4 top-2 z-10">
+    <DeferredLoading
+      :loading="loading"
+      v-slot="{ skeleton, refreshing, loaded }"
+    >
+      <FadeSwap>
         <div
-          class="inline-flex items-center gap-2 rounded-md bg-background/80 px-2 py-1 text-xs text-muted-foreground [backdrop-filter:blur(6px)]"
+          v-if="skeleton"
+          key="loading"
+          class="grid gap-1.5"
+          aria-busy="true"
         >
-          <div
-            class="h-3 w-3 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent"
-          ></div>
-          <span>{{ $t("common.loading") }}</span>
+          <Skeleton
+            v-for="i in 6"
+            :key="i"
+            class="h-[3.625rem] w-full rounded-lg max-md:h-52"
+          />
         </div>
-      </div>
-
-      <MatchRowsTable v-if="matches && matches.length > 0" :matches="matches" />
-
-      <div
-        v-else-if="!loading"
-        class="relative flex min-h-24 flex-col items-center justify-center overflow-hidden rounded-md border border-dashed border-border/60 bg-muted/10 px-4 py-6 text-center [background-image:repeating-linear-gradient(135deg,transparent_0,transparent_8px,hsl(var(--muted-foreground)/0.04)_8px,hsl(var(--muted-foreground)/0.04)_9px)]"
-      >
+        <SectionEmpty
+          v-else-if="loaded && !matches.length"
+          key="empty"
+          :title="
+            activeFilterCount
+              ? $t('common.empty_filtered.title')
+              : $t('pages.matches.empty.title')
+          "
+          :description="
+            activeFilterCount
+              ? $t('common.empty_filtered.description')
+              : $t('pages.matches.empty.description')
+          "
+        >
+          <Button
+            v-if="activeFilterCount"
+            variant="outline"
+            size="sm"
+            class="h-8"
+            @click="resetFilters"
+          >
+            <X class="h-3.5 w-3.5" />
+            {{ $t("common.reset_filters") }}
+          </Button>
+          <Button
+            v-else-if="canCreateMatch"
+            as-child
+            size="sm"
+            :class="createButtonClasses"
+          >
+            <NuxtLink to="/matches/create">
+              <PlusCircle class="h-4 w-4" />
+              {{ $t("pages.matches.schedule.title") }}
+            </NuxtLink>
+          </Button>
+        </SectionEmpty>
         <div
-          class="inline-flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.24em] text-muted-foreground/80"
+          v-else
+          key="list"
+          class="transition-opacity duration-200"
+          :class="refreshing && 'pointer-events-none opacity-50'"
         >
-          <span
-            aria-hidden="true"
-            class="inline-block h-1.5 w-1.5 rounded-full bg-muted-foreground/40"
-          ></span>
-          {{ $t("pages.matches.standby_no_matches") }}
+          <MatchRowsTable :matches="matches" />
         </div>
-        <p class="mt-1.5 text-xs text-muted-foreground/70">
-          {{ $t("pages.manage_matches.no_matches") }}
-        </p>
-      </div>
-    </div>
+      </FadeSwap>
+    </DeferredLoading>
   </PageTransition>
 
   <Pagination
@@ -667,7 +696,7 @@ export default {
           ? "effective_at"
           : migratedSort,
       sortDirection: saved.sortDirection ?? "desc",
-      loading: false,
+      loading: true,
       form: {
         matchId: saved.matchId ?? "",
         teams: saved.teams ?? [],

@@ -2,7 +2,7 @@
 import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useI18n } from "vue-i18n";
-import { ChevronRight, Clock, LogIn, Swords } from "lucide-vue-next";
+import { ChevronRight, Clock, Swords } from "lucide-vue-next";
 import { $, order_by } from "~/generated/zeus";
 import { generateSubscription } from "~/graphql/graphqlGen";
 import HorizontalScrollRow from "~/components/common/HorizontalScrollRow.vue";
@@ -13,7 +13,6 @@ import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
-import { loginLinks } from "~/utilities/loginLinks";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
@@ -239,12 +238,6 @@ function openRequest(posting: any) {
   dialogOpen.value = true;
 }
 
-function signIn() {
-  window.location.href = `${loginLinks.steam}?redirect=${encodeURIComponent(
-    window.location.toString(),
-  )}`;
-}
-
 function elo(posting: any) {
   const value = posting.team?.ranks?.avg_elo;
   return value != null ? Math.round(value).toLocaleString(locale.value) : null;
@@ -286,7 +279,7 @@ const linkClasses =
       <article
         v-for="{ posting, availability: avail } in shown"
         :key="posting.id"
-        class="flex w-[17rem] shrink-0 snap-start flex-col gap-2.5 rounded-lg border border-border bg-muted/20 p-3.5"
+        class="flex min-w-[17rem] flex-[1_0_17rem] snap-start flex-col gap-2.5 rounded-lg border border-border bg-muted/20 p-3.5"
       >
         <div class="flex min-w-0 items-center gap-2.5">
           <TeamsEmblem :team="posting.team" :size="36" />
@@ -339,19 +332,9 @@ const linkClasses =
           </span>
         </div>
 
-        <div class="mt-auto pt-1">
+        <div v-if="auth.me" class="mt-auto pt-1">
           <Button
-            v-if="!auth.me"
-            size="sm"
-            variant="outline"
-            :class="['h-8 w-full gap-1.5', touchTarget]"
-            @click="signIn"
-          >
-            <LogIn class="size-3.5" />
-            {{ $t("pages.teams.scrims.sign_in_to_request") }}
-          </Button>
-          <Button
-            v-else-if="canRequest(posting)"
+            v-if="canRequest(posting)"
             size="sm"
             variant="outline"
             :class="['h-8 w-full gap-1.5', touchTarget]"

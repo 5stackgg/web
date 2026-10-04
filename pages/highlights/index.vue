@@ -4,8 +4,6 @@ import { ListVideo } from "lucide-vue-next";
 import { useAuthStore } from "~/stores/AuthStore";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateSubscription } from "~/graphql/graphqlGen";
-import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
-import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Button } from "~/components/ui/button";
 import {
   Sheet,
@@ -90,55 +88,49 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <PageTransition>
-    <TacticalPageHeader>
-      <template #title>{{ $t("pages.highlights.title") }}</template>
-      <template #actions>
-        <div class="flex items-center gap-3">
-          <Sheet v-if="canCurate" v-model:open="queueOpen">
-            <SheetTrigger as-child>
-              <Button
-                variant="outline"
-                class="relative !py-0 h-[clamp(1.75rem,4.2vw,3rem)] gap-2 px-4 max-sm:aspect-square max-sm:!px-0 bg-card/60 backdrop-blur"
-                :class="{
-                  'border-[hsl(var(--tac-amber)/0.55)] text-[hsl(var(--tac-amber))]':
-                    queueOpen,
-                }"
-              >
-                <ListVideo class="w-4 h-4" />
-                <span class="hidden sm:inline">{{
-                  $t("pages.highlights.queue")
-                }}</span>
-                <span
-                  v-if="queuedClips > 0"
-                  class="inline-flex items-center rounded-full border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.15)] px-1.5 py-0.5 font-mono text-[0.6rem] font-semibold tabular-nums text-[hsl(var(--tac-amber))]"
-                >
-                  {{ queuedClips }}
-                </span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent
-              side="right"
-              class="w-full sm:max-w-xl overflow-y-auto"
-            >
-              <SheetHeader>
-                <SheetTitle class="flex items-center gap-2">
-                  <ListVideo class="h-4 w-4 text-[hsl(var(--tac-amber))]" />
-                  {{ $t("pages.highlights.render_queue") }}
-                </SheetTitle>
-                <SheetDescription>
-                  {{ $t("pages.highlights.render_queue_description") }}
-                </SheetDescription>
-              </SheetHeader>
-              <div class="mt-6">
-                <RenderQueuePanel />
-              </div>
-            </SheetContent>
-          </Sheet>
-        </div>
-      </template>
-    </TacticalPageHeader>
-  </PageTransition>
+  <h1 class="sr-only">{{ $t("pages.highlights.title") }}</h1>
 
-  <HighlightsBrowser class="mt-4" />
+  <HighlightsBrowser>
+    <template v-if="canCurate" #actions>
+      <Sheet v-model:open="queueOpen">
+        <SheetTrigger as-child>
+          <Button
+            variant="outline"
+            size="sm"
+            class="relative h-8 gap-1.5 max-md:px-2"
+            :title="$t('pages.highlights.queue')"
+            :class="{
+              'border-[hsl(var(--tac-amber)/0.55)] text-[hsl(var(--tac-amber))]':
+                queueOpen,
+            }"
+          >
+            <ListVideo class="w-4 h-4" />
+            <span class="max-md:sr-only">{{
+              $t("pages.highlights.queue")
+            }}</span>
+            <span
+              v-if="queuedClips > 0"
+              class="inline-flex items-center rounded-full border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.15)] px-1.5 py-0.5 font-mono text-[0.6rem] font-semibold tabular-nums text-[hsl(var(--tac-amber))]"
+            >
+              {{ queuedClips }}
+            </span>
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="right" class="w-full sm:max-w-xl overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle class="flex items-center gap-2">
+              <ListVideo class="h-4 w-4 text-[hsl(var(--tac-amber))]" />
+              {{ $t("pages.highlights.render_queue") }}
+            </SheetTitle>
+            <SheetDescription>
+              {{ $t("pages.highlights.render_queue_description") }}
+            </SheetDescription>
+          </SheetHeader>
+          <div class="mt-6">
+            <RenderQueuePanel />
+          </div>
+        </SheetContent>
+      </Sheet>
+    </template>
+  </HighlightsBrowser>
 </template>

@@ -279,6 +279,9 @@ export interface ChatInputChannel {
 }
 
 export default {
+  // <script setup> closes the instance to parent refs; ChatLobby focuses the
+  // input and hands it files dropped anywhere on the room.
+  expose: ["focus", "addFiles"],
   props: {
     variant: {
       type: String,

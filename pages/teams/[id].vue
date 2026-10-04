@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, getCurrentInstance, onMounted, ref } from "vue";
 import {
   MoreVertical,
   Trash2,
@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import HeightGlide from "~/components/ui/transitions/HeightGlide.vue";
+import MobileTabSelect from "~/components/common/MobileTabSelect.vue";
 import AwardComposer from "~/components/award/AwardComposer.vue";
 import TeamForm from "~/components/teams/TeamForm.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
@@ -51,7 +52,6 @@ import TeamMatches from "~/components/team/TeamMatches.vue";
 import ScrimRequestDialog from "~/components/team/ScrimRequestDialog.vue";
 import TeamHero from "~/components/team/TeamHero.vue";
 import TeamStage from "~/components/team/TeamStage.vue";
-import TeamNeedsInbox from "~/components/team/TeamNeedsInbox.vue";
 import TeamResultsTicker from "~/components/team/TeamResultsTicker.vue";
 import TeamOverview from "~/components/team/TeamOverview.vue";
 import {
@@ -59,8 +59,34 @@ import {
   tacticalSectionTickClasses,
   tacticalSectionDescriptionClasses,
 } from "~/utilities/tacticalClasses";
+import { useTeamNeeds } from "~/composables/useTeamNeeds";
+
+definePageMeta({ persistQueryKeys: ["invite"] });
 
 const teamMenu = ref(false);
+
+// Scrim requests waiting on the team, for the Scrim Finder tab's badge. The
+// team lives in the Options half below, so it's read off the instance -- only
+// once mounted: a read during setup, before data() exists, caches `team` as
+// not-an-instance-key and production builds then resolve `this.team` to
+// undefined.
+const instance = getCurrentInstance();
+const mounted = ref(false);
+onMounted(() => (mounted.value = true));
+const { items: teamNeeds } = useTeamNeeds(
+  () => {
+    if (!mounted.value) return null;
+    const team = (instance?.proxy as any)?.team;
+    return team?.can_manage_scrims ? team : null;
+  },
+  { followInvites: false },
+);
+const scrimNeedsCount = computed(
+  () =>
+    teamNeeds.value.filter(
+      (item) => item.kind === "scrim" || item.kind === "counter",
+    ).length,
+);
 </script>
 
 <template>
@@ -84,12 +110,8 @@ const teamMenu = ref(false);
             <Swords class="size-3.5" />
             {{ $t("scrim.request_scrim") }}
           </Button>
-          <TeamNeedsInbox
-            v-if="isOnTeam || isTeamOwner || isAdmin || team.can_manage_scrims"
-            :team="team"
-            @invite="showRoster"
-            @scrim-count="scrimNeedsCount = $event"
-          />
+        </template>
+        <template #menu>
           <DropdownMenu v-model:open="teamMenu" v-if="isOnTeam || isAdmin">
             <DropdownMenuTrigger as-child>
               <Button
@@ -144,7 +166,9 @@ const teamMenu = ref(false);
         :team="team"
         :is-on-team="isOnTeam"
         :matches-count="teamMatches.length"
+        :can-request-scrim="showRequestScrim"
         @open-scrims="tab = 'scrim'"
+        @request-scrim="scrimRequestOpen = true"
       />
     </div>
   </PageTransition>
@@ -160,31 +184,36 @@ const teamMenu = ref(false);
   <!-- Panels stay mounted after their first visit, so switching back is
        instant instead of refetching and re-skeletoning. -->
   <Tabs v-if="team" v-model="tab" :unmount-on-hide="false" class="mt-8 w-full">
-    <TabsList variant="default" class="flex-wrap justify-start">
-      <TabsTrigger value="overview">{{ $t("team.tabs.overview") }}</TabsTrigger>
-      <TabsTrigger value="matches">{{
-        $t("team.pulse.tabs.matches")
-      }}</TabsTrigger>
-      <TabsTrigger value="stats">{{ $t("team.tabs.stats") }}</TabsTrigger>
-      <TabsTrigger value="veto">{{ $t("common.map_veto") }}</TabsTrigger>
-      <TabsTrigger v-if="canSeeUtility" value="utility">{{
-        $t("match.tabs.utility")
-      }}</TabsTrigger>
-      <TabsTrigger value="highlights">{{
-        $t("team.tabs.highlights")
-      }}</TabsTrigger>
-      <TabsTrigger v-if="showScrimTab" value="scrim">
-        {{ $t("team.tabs.scrim") }}
-        <span
-          v-if="scrimNeedsCount"
-          class="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[hsl(var(--tac-amber))] px-1 text-[0.65rem] font-bold tabular-nums text-[hsl(var(--tac-amber-foreground))]"
-          ><span aria-hidden="true">{{ scrimNeedsCount }}</span
-          ><span class="sr-only">{{
-            $t("team.pulse.tabs.scrim_waiting", { count: scrimNeedsCount })
-          }}</span></span
-        >
-      </TabsTrigger>
-    </TabsList>
+    <MobileTabSelect v-model="tab" :items="tabItems(scrimNeedsCount)" />
+    <div class="overflow-x-auto max-md:hidden">
+      <TabsList variant="underline" class="h-auto flex-nowrap justify-start">
+        <TabsTrigger value="overview">{{
+          $t("team.tabs.overview")
+        }}</TabsTrigger>
+        <TabsTrigger value="matches">{{
+          $t("team.pulse.tabs.matches")
+        }}</TabsTrigger>
+        <TabsTrigger value="stats">{{ $t("team.tabs.stats") }}</TabsTrigger>
+        <TabsTrigger value="veto">{{ $t("common.map_veto") }}</TabsTrigger>
+        <TabsTrigger v-if="canSeeUtility" value="utility">{{
+          $t("match.tabs.utility")
+        }}</TabsTrigger>
+        <TabsTrigger value="highlights">{{
+          $t("team.tabs.highlights")
+        }}</TabsTrigger>
+        <TabsTrigger v-if="showScrimTab" value="scrim">
+          {{ $t("team.tabs.scrim") }}
+          <span
+            v-if="scrimNeedsCount"
+            class="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[hsl(var(--tac-amber))] px-1 text-[0.65rem] font-bold tabular-nums text-[hsl(var(--tac-amber-foreground))]"
+            ><span aria-hidden="true">{{ scrimNeedsCount }}</span
+            ><span class="sr-only">{{
+              $t("team.pulse.tabs.scrim_waiting", { count: scrimNeedsCount })
+            }}</span></span
+          >
+        </TabsTrigger>
+      </TabsList>
+    </div>
     <HeightGlide class="mt-6">
       <TabsContent value="overview" class="tab-panel-in mt-0">
         <TeamOverview
@@ -426,12 +455,15 @@ export default {
       leaveTeamAlertDialog: false,
       deleteTeamAlertDialog: false,
       scrimRequestOpen: false,
-      scrimNeedsCount: 0,
       // Tabs mount on their first visit, then stay mounted.
       visitedTabs: [] as string[],
     };
   },
   watch: {
+    // The inbox's "Invite player" lands here with ?invite=1, usually before
+    // the team has loaded.
+    team: "consumeInvite",
+    "$route.query.invite": { immediate: true, handler: "consumeInvite" },
     tab: {
       immediate: true,
       handler(value: string) {
@@ -625,6 +657,7 @@ export default {
     },
     showRequestScrim(): boolean {
       return (
+        !!this.me &&
         this.scrimFinderEnabled &&
         this.teamOpenToScrims &&
         !this.isOnTeam &&
@@ -702,10 +735,38 @@ export default {
     },
   },
   methods: {
+    tabItems(scrimCount: number): Array<{ value: string; label: string }> {
+      return [
+        { value: "overview", label: this.$t("team.tabs.overview") },
+        { value: "matches", label: this.$t("team.pulse.tabs.matches") },
+        { value: "stats", label: this.$t("team.tabs.stats") },
+        { value: "veto", label: this.$t("common.map_veto") },
+        ...(this.canSeeUtility
+          ? [{ value: "utility", label: this.$t("match.tabs.utility") }]
+          : []),
+        { value: "highlights", label: this.$t("team.tabs.highlights") },
+        ...(this.showScrimTab
+          ? [
+              {
+                value: "scrim",
+                label: scrimCount
+                  ? `${this.$t("team.tabs.scrim")} (${scrimCount})`
+                  : this.$t("team.tabs.scrim"),
+              },
+            ]
+          : []),
+      ];
+    },
     // The overview's roster carries the invite. Switching tabs runs an
     // out-in transition, so the roster opens once the overview has entered.
     // The inbox's "Invite player": land on Overview with the roster open. The
     // panel mounts on its first visit, so wait a tick for its ref.
+    consumeInvite() {
+      if (!this.team || !this.$route.query.invite) return;
+      this.showRoster();
+      const { invite, ...query } = this.$route.query;
+      this.$router.replace({ query });
+    },
     showRoster() {
       this.tab = "overview";
       this.$nextTick(() => {

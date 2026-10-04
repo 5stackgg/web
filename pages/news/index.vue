@@ -4,14 +4,20 @@ import { ref, computed, onMounted, watch } from "vue";
 import { Card } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
-import { PencilLine, Newspaper } from "lucide-vue-next";
-import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
+import { PencilLine, Newspaper, PlusCircle } from "lucide-vue-next";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import { useDeferredLoading } from "~/composables/useDeferredLoading";
 import { order_by } from "~/generated/zeus";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery } from "~/graphql/graphqlGen";
-import { newsArticleListFields, newsPostViewFields } from "~/graphql/newsGraphql";
+import {
+  newsArticleListFields,
+  newsPostViewFields,
+} from "~/graphql/newsGraphql";
 import NewsViewCount from "~/components/news/NewsViewCount.vue";
+import SectionEmpty from "~/components/common/SectionEmpty.vue";
+import { createButtonClasses } from "~/utilities/tacticalClasses";
 
 interface NewsArticle {
   id: string;
@@ -28,19 +34,18 @@ const articles = ref<NewsArticle[]>([]);
 const viewCounts = ref<Record<string, string>>({});
 const total = ref(0);
 const loading = ref(true);
+const { skeleton, refreshing, loaded } = useDeferredLoading(
+  () => loading.value,
+);
 const page = ref(1);
 
-const newsEnabled = computed(
-  () => useApplicationSettingsStore().newsEnabled,
-);
-const newsLabel = computed(
-  () => useApplicationSettingsStore().newsLabel,
-);
-const canPostNews = computed(
-  () => useApplicationSettingsStore().canPostNews,
-);
+const newsEnabled = computed(() => useApplicationSettingsStore().newsEnabled);
+const newsLabel = computed(() => useApplicationSettingsStore().newsLabel);
+const canPostNews = computed(() => useApplicationSettingsStore().canPostNews);
 
-const totalPages = computed(() => Math.max(1, Math.ceil(total.value / PER_PAGE)));
+const totalPages = computed(() =>
+  Math.max(1, Math.ceil(total.value / PER_PAGE)),
+);
 const hasNextPage = computed(() => page.value < totalPages.value);
 
 const formatDate = (value: string | null) => {
@@ -131,91 +136,130 @@ onMounted(() => {
 </script>
 
 <template>
+  <h1 class="sr-only">{{ newsLabel || $t("pages.news.title") }}</h1>
+
   <PageTransition>
-    <TacticalPageHeader>
-      <template #title>{{ newsLabel || $t("pages.news.title") }}</template>
-      <template #actions>
-        <NuxtLink v-if="canPostNews" to="/news/manage">
-          <Button variant="outline" class="gap-2">
-            <PencilLine class="h-4 w-4" />
-            {{ $t("pages.settings.application.news.manage") }}
-          </Button>
-        </NuxtLink>
-      </template>
-    </TacticalPageHeader>
-  </PageTransition>
-
-  <PageTransition :delay="100" class="mt-6">
     <div class="space-y-6">
-    <div v-if="loading" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <Skeleton v-for="n in 6" :key="n" class="h-72 w-full rounded-xl" />
-    </div>
-
-    <div
-      v-else-if="articles.length === 0"
-      class="rounded-lg border border-dashed border-border/60 p-12 text-center text-muted-foreground"
-    >
-      {{ $t("pages.news.empty") }}
-    </div>
-
-    <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <NuxtLink
-        v-for="article in articles"
-        :key="article.id"
-        :to="articleLink(article)"
-        class="group"
-      >
-        <Card
-          variant="gradient"
-          class="flex h-full flex-col overflow-hidden transition-colors hover:border-primary/50"
+      <div v-if="canPostNews" class="flex justify-end">
+        <Button
+          as-child
+          variant="outline"
+          size="sm"
+          class="h-8 max-md:w-8 max-md:px-0"
         >
-          <div
-            class="flex aspect-video w-full items-center justify-center overflow-hidden bg-background/60"
+          <NuxtLink
+            to="/news/manage"
+            :title="$t('pages.settings.application.news.manage')"
           >
-            <img
-              v-if="article.cover_image_url"
-              :src="article.cover_image_url"
-              :alt="article.title"
-              loading="lazy"
-              referrerpolicy="no-referrer"
-              class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-            />
-            <Newspaper v-else class="h-8 w-8 text-muted-foreground/40" />
-          </div>
-          <div class="flex flex-1 flex-col gap-2 p-4">
-            <div class="flex items-center gap-2 text-xs text-muted-foreground">
-              <span>{{ formatDate(article.published_at) }}</span>
-              <NewsViewCount
-                v-if="canPostNews && viewCounts[article.id] !== undefined"
-                :count="viewCounts[article.id]"
-              />
-            </div>
-            <h2 class="font-semibold leading-snug group-hover:text-primary">
-              {{ article.title }}
-            </h2>
-            <p
-              v-if="article.teaser"
-              class="line-clamp-3 text-sm text-muted-foreground"
-            >
-              {{ article.teaser }}
-            </p>
-          </div>
-        </Card>
-      </NuxtLink>
-    </div>
+            <PencilLine class="h-4 w-4" />
+            <span class="max-md:sr-only">{{
+              $t("pages.settings.application.news.manage")
+            }}</span>
+          </NuxtLink>
+        </Button>
+      </div>
 
-    <div
-      v-if="!loading && totalPages > 1"
-      class="flex items-center justify-between pt-2"
-    >
-      <Button variant="outline" :disabled="page <= 1" @click="page--">
-        {{ $t("common.previous") }}
-      </Button>
-      <span class="text-sm text-muted-foreground">{{ page }} / {{ totalPages }}</span>
-      <Button variant="outline" :disabled="!hasNextPage" @click="page++">
-        {{ $t("common.next") }}
-      </Button>
-    </div>
+      <FadeSwap>
+        <div
+          v-if="skeleton"
+          key="loading"
+          class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+          aria-busy="true"
+        >
+          <Skeleton
+            v-for="n in 6"
+            :key="n"
+            class="aspect-[16/17] w-full rounded-xl"
+          />
+        </div>
+
+        <SectionEmpty
+          v-else-if="loaded && articles.length === 0"
+          key="empty"
+          :title="newsLabel || $t('pages.news.title')"
+          :description="$t('pages.news.empty')"
+        >
+          <Button
+            v-if="canPostNews"
+            as-child
+            size="sm"
+            :class="createButtonClasses"
+          >
+            <NuxtLink to="/news/manage/new">
+              <PlusCircle class="h-4 w-4" />
+              {{ $t("pages.news.new_article") }}
+            </NuxtLink>
+          </Button>
+        </SectionEmpty>
+
+        <div
+          v-else
+          key="list"
+          class="grid grid-cols-1 gap-4 transition-opacity duration-200 sm:grid-cols-2 lg:grid-cols-3"
+          :class="refreshing && 'pointer-events-none opacity-50'"
+        >
+          <NuxtLink
+            v-for="article in articles"
+            :key="article.id"
+            :to="articleLink(article)"
+            class="group"
+          >
+            <Card
+              variant="gradient"
+              class="flex h-full flex-col overflow-hidden transition-colors hover:border-primary/50"
+            >
+              <div
+                class="flex aspect-video w-full items-center justify-center overflow-hidden bg-background/60"
+              >
+                <img
+                  v-if="article.cover_image_url"
+                  :src="article.cover_image_url"
+                  :alt="article.title"
+                  loading="lazy"
+                  referrerpolicy="no-referrer"
+                  class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                />
+                <Newspaper v-else class="h-8 w-8 text-muted-foreground/40" />
+              </div>
+              <div class="flex flex-1 flex-col gap-2 p-4">
+                <div
+                  class="flex items-center gap-2 text-xs text-muted-foreground"
+                >
+                  <span>{{ formatDate(article.published_at) }}</span>
+                  <NewsViewCount
+                    v-if="canPostNews && viewCounts[article.id] !== undefined"
+                    :count="viewCounts[article.id]"
+                  />
+                </div>
+                <h2 class="font-semibold leading-snug group-hover:text-primary">
+                  {{ article.title }}
+                </h2>
+                <p
+                  v-if="article.teaser"
+                  class="line-clamp-3 text-sm text-muted-foreground"
+                >
+                  {{ article.teaser }}
+                </p>
+              </div>
+            </Card>
+          </NuxtLink>
+        </div>
+      </FadeSwap>
+
+      <div
+        v-if="!skeleton && totalPages > 1"
+        class="flex items-center justify-between pt-2"
+      >
+        <Button variant="outline" :disabled="page <= 1" @click="page--">
+          {{ $t("common.previous") }}
+        </Button>
+        <span class="text-sm text-muted-foreground"
+          >{{ page }} / {{ totalPages }}</span
+        >
+        <Button variant="outline" :disabled="!hasNextPage" @click="page++">
+          {{ $t("common.next") }}
+        </Button>
+      </div>
     </div>
   </PageTransition>
 </template>

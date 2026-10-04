@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { watch } from "vue";
 import EventForm from "~/components/events/EventForm.vue";
-import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 
 // Events are feature-gated (public.events_enabled, default off). Wait for
@@ -26,13 +25,8 @@ function onSaved(id: string) {
 </script>
 
 <template>
-  <PageTransition :delay="0">
-    <TacticalPageHeader>
-      <template #title>{{ $t("pages.events.create") }}</template>
-    </TacticalPageHeader>
-  </PageTransition>
-
-  <PageTransition :delay="100" class="mt-6">
+  <h1 class="sr-only">{{ $t("pages.events.create") }}</h1>
+  <PageTransition>
     <event-form @saved="onSaved"></event-form>
   </PageTransition>
 </template>

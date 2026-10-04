@@ -68,6 +68,13 @@ export const tacticalFilterPillActiveDangerClasses =
 export const tacticalCtaButtonClasses =
   "tac-amber-cta relative isolate inline-flex items-center justify-center gap-2 overflow-hidden rounded-md border px-5 py-3 font-sans text-xs font-bold uppercase leading-none tracking-[0.16em] cursor-pointer";
 
+// Gold "create" button on list pages (tournaments, events, teams). Below md
+// it collapses to a square icon; wrap the label in `max-md:sr-only`.
+// `createButtonClasses` is the same button that keeps its label (empty states).
+export const createButtonClasses =
+  "h-8 bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] hover:bg-[hsl(var(--tac-amber)/0.9)]";
+export const listCreateButtonClasses = `${createButtonClasses} max-md:w-8 max-md:px-0`;
+
 // Header action buttons size their height to the page title's clamp so the
 // header is governed by the title text (it scales with the title instead of
 // jumping to a fixed button height). Pair with a

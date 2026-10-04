@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Button } from "~/components/ui/button";
-import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import PlayerElo from "~/components/PlayerElo.vue";
 import {
@@ -48,7 +47,10 @@ import { KD_TIER } from "~/utils/statTiers";
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
 import { getAllCountries } from "countries-and-timezones";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import Empty from "~/components/ui/empty/Empty.vue";
+import SectionEmpty from "~/components/common/SectionEmpty.vue";
+import DeferredLoading from "~/components/common/DeferredLoading.vue";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import { Skeleton } from "~/components/ui/skeleton";
 import {
   filterTriggerBase,
   filterTriggerIdle,
@@ -58,14 +60,10 @@ import {
 </script>
 
 <template>
-  <PageTransition>
-    <TacticalPageHeader>
-      <template #title>{{ $t("pages.players.title") }}</template>
-    </TacticalPageHeader>
-  </PageTransition>
+  <h1 class="sr-only">{{ $t("pages.players.title") }}</h1>
 
   <!-- Filters -->
-  <PageTransition :delay="100" class="mt-6">
+  <PageTransition>
     <FilterBar>
       <!-- Search (always visible — type instantly) -->
       <InputGroup class="h-8 min-w-[12rem] flex-1 bg-card/60 sm:max-w-xs">
@@ -329,152 +327,193 @@ import {
     </FilterBar>
   </PageTransition>
 
-  <PageTransition :delay="200" class="mt-6">
-    <Card variant="gradient" class="p-4 relative">
-      <div v-if="loading" class="absolute top-4 left-4 z-10">
-        <div
-          class="flex items-center space-x-2 text-sm text-muted-foreground bg-background/80 backdrop-blur-sm px-2 py-1 rounded"
+  <PageTransition :delay="100" class="mt-6">
+    <DeferredLoading
+      :loading="loading"
+      v-slot="{ skeleton, refreshing, loaded }"
+    >
+      <FadeSwap>
+        <Card v-if="skeleton" key="loading" variant="gradient" class="p-4">
+          <div class="grid gap-2" aria-busy="true">
+            <Skeleton class="h-10 w-full rounded-md" />
+            <Skeleton
+              v-for="i in perPage"
+              :key="i"
+              class="h-14 w-full rounded-md"
+            />
+          </div>
+        </Card>
+        <SectionEmpty
+          v-else-if="loaded && players.length === 0"
+          key="empty"
+          :title="
+            hasActivePlayerFilters
+              ? $t('common.empty_filtered.title')
+              : $t('pages.players.empty.title')
+          "
+          :description="
+            hasActivePlayerFilters
+              ? $t('common.empty_filtered.description')
+              : $t('pages.players.empty.description')
+          "
         >
-          <div
-            class="w-4 h-4 border-2 border-muted-foreground border-t-transparent rounded-full animate-spin"
-          ></div>
-          <span>{{ $t("common.loading") }}</span>
-        </div>
-      </div>
-      <Empty v-if="players && players.length === 0">
-        <p class="text-muted-foreground">
-          {{ $t("pages.players.table.no_players") }}
-        </p>
-      </Empty>
-      <Table v-else>
-        <TableHeader>
-          <TableRow>
-            <TableHead class="cursor-pointer" @click="toggleSort('name')">
-              <div class="flex items-center gap-1">
-                {{ $t("common.player") }}
-                <ArrowUpIcon
-                  v-if="sortField === 'name' && sortDirection === 'desc'"
-                  class="w-4 h-4"
-                />
-                <ArrowDownIcon
-                  v-else-if="sortField === 'name' && sortDirection === 'asc'"
-                  class="w-4 h-4"
-                />
-              </div>
-            </TableHead>
-            <TableHead>{{ $t("common.stats.wins") }}</TableHead>
-            <TableHead>{{ $t("common.stats.losses") }}</TableHead>
-            <TableHead>{{ $t("pages.players.table.kdr") }}</TableHead>
-            <TableHead class="cursor-pointer" @click="toggleSort('elo')">
-              <div class="flex items-center gap-1">
-                {{ $t("pages.players.table.elo") }}
-                <ArrowUpIcon
-                  v-if="sortField === 'elo' && sortDirection === 'desc'"
-                  class="w-4 h-4"
-                />
-                <ArrowDownIcon
-                  v-else-if="sortField === 'elo' && sortDirection === 'asc'"
-                  class="w-4 h-4"
-                />
-              </div>
-            </TableHead>
-            <TableHead
-              v-if="canViewAdditionalDetails"
-              class="cursor-pointer"
-              @click="toggleSort('role')"
-            >
-              <div class="flex items-center gap-1">
-                {{ $t("pages.players.table.privilege") }}
-                <ArrowUpIcon
-                  v-if="sortField === 'role' && sortDirection === 'desc'"
-                  class="w-4 h-4"
-                />
-                <ArrowDownIcon
-                  v-else-if="sortField === 'role' && sortDirection === 'asc'"
-                  class="w-4 h-4"
-                />
-              </div>
-            </TableHead>
-            <TableHead
-              v-if="canViewAdditionalDetails"
-              class="cursor-pointer"
-              @click="toggleSort('last_sign_in_at')"
-            >
-              <div class="flex items-center gap-1">
-                {{ $t("pages.players.table.last_sign_in_at") }}
-                <ArrowUpIcon
-                  v-if="
-                    sortField === 'last_sign_in_at' && sortDirection === 'desc'
-                  "
-                  class="w-4 h-4"
-                />
-                <ArrowDownIcon
-                  v-else-if="
-                    sortField === 'last_sign_in_at' && sortDirection === 'asc'
-                  "
-                  class="w-4 h-4"
-                />
-              </div>
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow
-            v-for="player of players"
-            :key="player.steam_id"
-            class="cursor-pointer"
+          <Button
+            v-if="hasActivePlayerFilters"
+            variant="outline"
+            size="sm"
+            class="h-8"
+            @click="resetFilters"
           >
-            <NuxtLink
-              :to="{
-                name: 'players-id',
-                params: { id: String(player.steam_id) },
-              }"
-              class="contents"
-            >
-              <TableCell class="font-medium">
-                <PlayerDisplay
-                  :player="player"
-                  :show-elo="false"
-                ></PlayerDisplay>
-              </TableCell>
-              <TableCell>{{ player.wins ?? 0 }}</TableCell>
-              <TableCell>{{ player.losses ?? 0 }}</TableCell>
-              <TableCell>
-                <span class="inline-flex items-center gap-0.5">
-                  {{ calculateKDR(player) }}
-                  <StatChevron
-                    :cfg="KD_TIER"
-                    :value="Number(calculateKDR(player))"
-                  />
-                </span>
-              </TableCell>
-              <TableCell>
-                <PlayerElo
-                  :elo="{
-                    competitive: player.elo_competitive,
-                    wingman: player.elo_wingman,
-                    duel: player.elo_duel,
-                    rush: player.elo_rush,
+            <X class="h-3.5 w-3.5" />
+            {{ $t("common.reset_filters") }}
+          </Button>
+        </SectionEmpty>
+        <Card
+          v-else
+          key="list"
+          variant="gradient"
+          class="p-4 transition-opacity duration-200"
+          :class="refreshing && 'pointer-events-none opacity-50'"
+        >
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead class="cursor-pointer" @click="toggleSort('name')">
+                  <div class="flex items-center gap-1">
+                    {{ $t("common.player") }}
+                    <ArrowUpIcon
+                      v-if="sortField === 'name' && sortDirection === 'desc'"
+                      class="w-4 h-4"
+                    />
+                    <ArrowDownIcon
+                      v-else-if="
+                        sortField === 'name' && sortDirection === 'asc'
+                      "
+                      class="w-4 h-4"
+                    />
+                  </div>
+                </TableHead>
+                <TableHead>{{ $t("common.stats.wins") }}</TableHead>
+                <TableHead>{{ $t("common.stats.losses") }}</TableHead>
+                <TableHead>{{ $t("pages.players.table.kdr") }}</TableHead>
+                <TableHead class="cursor-pointer" @click="toggleSort('elo')">
+                  <div class="flex items-center gap-1">
+                    {{ $t("pages.players.table.elo") }}
+                    <ArrowUpIcon
+                      v-if="sortField === 'elo' && sortDirection === 'desc'"
+                      class="w-4 h-4"
+                    />
+                    <ArrowDownIcon
+                      v-else-if="sortField === 'elo' && sortDirection === 'asc'"
+                      class="w-4 h-4"
+                    />
+                  </div>
+                </TableHead>
+                <TableHead
+                  v-if="canViewAdditionalDetails"
+                  class="cursor-pointer"
+                  @click="toggleSort('role')"
+                >
+                  <div class="flex items-center gap-1">
+                    {{ $t("pages.players.table.privilege") }}
+                    <ArrowUpIcon
+                      v-if="sortField === 'role' && sortDirection === 'desc'"
+                      class="w-4 h-4"
+                    />
+                    <ArrowDownIcon
+                      v-else-if="
+                        sortField === 'role' && sortDirection === 'asc'
+                      "
+                      class="w-4 h-4"
+                    />
+                  </div>
+                </TableHead>
+                <TableHead
+                  v-if="canViewAdditionalDetails"
+                  class="cursor-pointer"
+                  @click="toggleSort('last_sign_in_at')"
+                >
+                  <div class="flex items-center gap-1">
+                    {{ $t("pages.players.table.last_sign_in_at") }}
+                    <ArrowUpIcon
+                      v-if="
+                        sortField === 'last_sign_in_at' &&
+                        sortDirection === 'desc'
+                      "
+                      class="w-4 h-4"
+                    />
+                    <ArrowDownIcon
+                      v-else-if="
+                        sortField === 'last_sign_in_at' &&
+                        sortDirection === 'asc'
+                      "
+                      class="w-4 h-4"
+                    />
+                  </div>
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow
+                v-for="player of players"
+                :key="player.steam_id"
+                class="cursor-pointer"
+              >
+                <NuxtLink
+                  :to="{
+                    name: 'players-id',
+                    params: { id: String(player.steam_id) },
                   }"
-                ></PlayerElo>
-              </TableCell>
-            </NuxtLink>
-            <TableCell v-if="canViewAdditionalDetails">
-              <PlayerRoleForm
-                :player="player"
-                @updated="updatePlayerRole(player.steam_id, $event)"
-              />
-            </TableCell>
-            <TableCell v-if="canViewAdditionalDetails">
-              <TimeAgo
-                :date="player.last_sign_in_at"
-                v-if="player.last_sign_in_at && player.last_sign_in_at !== `~~`"
-              />
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </Card>
+                  class="contents"
+                >
+                  <TableCell class="font-medium">
+                    <PlayerDisplay
+                      :player="player"
+                      :show-elo="false"
+                    ></PlayerDisplay>
+                  </TableCell>
+                  <TableCell>{{ player.wins ?? 0 }}</TableCell>
+                  <TableCell>{{ player.losses ?? 0 }}</TableCell>
+                  <TableCell>
+                    <span class="inline-flex items-center gap-0.5">
+                      {{ calculateKDR(player) }}
+                      <StatChevron
+                        :cfg="KD_TIER"
+                        :value="Number(calculateKDR(player))"
+                      />
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <PlayerElo
+                      :elo="{
+                        competitive: player.elo_competitive,
+                        wingman: player.elo_wingman,
+                        duel: player.elo_duel,
+                        rush: player.elo_rush,
+                      }"
+                    ></PlayerElo>
+                  </TableCell>
+                </NuxtLink>
+                <TableCell v-if="canViewAdditionalDetails">
+                  <PlayerRoleForm
+                    :player="player"
+                    @updated="updatePlayerRole(player.steam_id, $event)"
+                  />
+                </TableCell>
+                <TableCell v-if="canViewAdditionalDetails">
+                  <TimeAgo
+                    :date="player.last_sign_in_at"
+                    v-if="
+                      player.last_sign_in_at && player.last_sign_in_at !== `~~`
+                    "
+                  />
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </Card>
+      </FadeSwap>
+    </DeferredLoading>
   </PageTransition>
 
   <Pagination
@@ -511,7 +550,7 @@ export default {
       eloSliderMin: 0,
       eloSliderMax: 20000,
       players: [] as any[],
-      loading: false,
+      loading: true,
       page: 1,
       perPage: this.loadFiltersFromStorage().perPage || 10,
       playersAggregate: 0,

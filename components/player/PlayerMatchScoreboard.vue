@@ -346,7 +346,7 @@ const mapChipOff =
   "border-border bg-muted/30 text-muted-foreground hover:text-foreground";
 
 const actionClasses =
-  "inline-flex h-8 flex-1 items-center justify-center gap-1.5 rounded-md border border-border bg-muted/40 px-3 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-foreground/80 transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:bg-background hover:text-[hsl(var(--tac-amber))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber)/0.6)]";
+  "inline-flex h-8 flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-md border border-border bg-muted/40 px-3 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-foreground/80 transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:bg-background hover:text-[hsl(var(--tac-amber))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber)/0.6)]";
 </script>
 
 <template>
@@ -627,7 +627,7 @@ const actionClasses =
       <button
         v-if="compact && focusLineup && hasStats && !placeholder"
         type="button"
-        :class="actionClasses"
+        :class="[actionClasses, 'basis-full']"
         :aria-expanded="showLobby"
         @click.stop="showLobby = !showLobby"
       >

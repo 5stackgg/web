@@ -41,6 +41,33 @@ const startsIn = computed(() =>
 const range = computed(() =>
   formatEventRange(props.event.starts_at, props.event.ends_at),
 );
+
+const { t } = useI18n();
+const countItems = computed(() =>
+  [
+    props.event.visibility && props.event.visibility !== "Public"
+      ? {
+          key: "visibility",
+          label: t(`event.visibility.${props.event.visibility.toLowerCase()}`),
+        }
+      : null,
+    props.counts.players
+      ? {
+          key: "players",
+          label: t("event.header.players", props.counts.players),
+        }
+      : null,
+    props.counts.teams
+      ? { key: "teams", label: t("event.header.teams", props.counts.teams) }
+      : null,
+    props.counts.matches
+      ? {
+          key: "matches",
+          label: t("event.header.matches", props.counts.matches),
+        }
+      : null,
+  ].filter((item): item is { key: string; label: string } => !!item),
+);
 </script>
 
 <template>
@@ -172,13 +199,16 @@ const range = computed(() =>
         <p
           class="m-0 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-[0.8125rem] text-muted-foreground"
         >
-          <template v-if="organizers.length">
+          <span
+            v-if="organizers.length"
+            class="inline-flex flex-wrap items-center gap-x-1.5 gap-y-1"
+          >
             <span>{{ $t("event.card.organized_by") }}</span>
-            <template
+            <span
               v-for="(organizer, index) in organizers"
               :key="organizer.steam_id"
+              class="inline-flex items-center whitespace-nowrap"
             >
-              <span v-if="index > 0" aria-hidden="true" class="-mx-1">,</span>
               <PlayerDisplay
                 :player="organizer"
                 size="xs"
@@ -189,35 +219,37 @@ const range = computed(() =>
                 :tooltip="false"
                 linkable
               />
-            </template>
-          </template>
-          <template v-if="event.visibility && event.visibility !== 'Public'">
-            <span aria-hidden="true" class="text-muted-foreground/45">·</span>
-            <span
-              class="inline-flex h-[1.375rem] items-center gap-1.5 rounded-md bg-[hsl(var(--tac-amber)/0.08)] px-[0.4375rem] text-xs font-semibold text-[hsl(var(--tac-amber))] shadow-[inset_0_0_0_1px_hsl(var(--tac-amber)/0.35)]"
-            >
-              <Lock class="h-3 w-3" />
-              {{ $t(`event.visibility.${event.visibility.toLowerCase()}`) }}
+              <span v-if="index < organizers.length - 1" aria-hidden="true"
+                >,</span
+              >
             </span>
-          </template>
-          <template v-if="counts.players">
-            <span aria-hidden="true" class="text-muted-foreground/45">·</span>
-            <span class="text-foreground/85">{{
-              $t("event.header.players", counts.players)
-            }}</span>
-          </template>
-          <template v-if="counts.teams">
-            <span aria-hidden="true" class="text-muted-foreground/45">·</span>
-            <span class="text-foreground/85">{{
-              $t("event.header.teams", counts.teams)
-            }}</span>
-          </template>
-          <template v-if="counts.matches">
-            <span aria-hidden="true" class="text-muted-foreground/45">·</span>
-            <span class="text-foreground/85">{{
-              $t("event.header.matches", counts.matches)
-            }}</span>
-          </template>
+          </span>
+          <!-- The counts travel as one unit; on phones they take their own
+               line rather than orphaning the last one. -->
+          <span
+            v-if="countItems.length"
+            class="inline-flex flex-wrap items-center gap-x-2.5 gap-y-1 max-sm:basis-full"
+          >
+            <template v-for="(item, index) in countItems" :key="item.key">
+              <span
+                v-if="index > 0 || organizers.length"
+                aria-hidden="true"
+                class="text-muted-foreground/45"
+                :class="index === 0 && 'max-sm:hidden'"
+                >·</span
+              >
+              <span
+                v-if="item.key === 'visibility'"
+                class="inline-flex h-[1.375rem] items-center gap-1.5 rounded-md bg-[hsl(var(--tac-amber)/0.08)] px-[0.4375rem] text-xs font-semibold text-[hsl(var(--tac-amber))] shadow-[inset_0_0_0_1px_hsl(var(--tac-amber)/0.35)]"
+              >
+                <Lock class="h-3 w-3" />
+                {{ item.label }}
+              </span>
+              <span v-else class="whitespace-nowrap text-foreground/85">{{
+                item.label
+              }}</span>
+            </template>
+          </span>
         </p>
 
         <p

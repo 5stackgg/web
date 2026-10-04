@@ -4,7 +4,6 @@ import gql from "graphql-tag";
 import { ref, computed, watch, onMounted, nextTick } from "vue";
 import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
-import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import StatLabel from "~/components/common/StatLabel.vue";
 import StatChevron from "~/components/StatChevron.vue";
@@ -34,7 +33,13 @@ import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Skeleton } from "~/components/ui/skeleton";
 import { Switch } from "~/components/ui/switch";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import Empty from "~/components/ui/empty/Empty.vue";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import { useDeferredLoading } from "~/composables/useDeferredLoading";
+import SectionEmpty from "~/components/common/SectionEmpty.vue";
+import {
+  tacticalTabsListClasses,
+  tacticalTabsTriggerClasses,
+} from "~/utilities/tacticalClasses";
 import { useAuthStore } from "~/stores/AuthStore";
 import { eloTierColor } from "~/utils/eloTier";
 import {
@@ -52,13 +57,6 @@ const UDR_TIER: StatTierConfig = { dir: "high", cuts: [8, 6, 4, 2.5] };
 const HS_TIER: StatTierConfig = { dir: "high", cuts: [55, 45, 35, 25] };
 const WIN_RATE_TIER: StatTierConfig = { dir: "high", cuts: [58, 52, 48, 42] };
 
-const leaderboardFadeTransition = {
-  enterActiveClass: "transition-all duration-150 ease-out",
-  leaveActiveClass: "transition-all duration-150 ease-out",
-  enterFromClass: "translate-y-[2px] opacity-0",
-  leaveToClass: "translate-y-[2px] opacity-0",
-};
-
 interface LeaderboardEntry {
   rank: number;
   player_steam_id: string;
@@ -73,10 +71,7 @@ interface LeaderboardEntry {
 }
 
 type SortField =
-  | "value"
-  | "secondary_value"
-  | "tertiary_value"
-  | "matches_played";
+  "value" | "secondary_value" | "tertiary_value" | "matches_played";
 
 const CATEGORY_CONFIG: Record<
   string,
@@ -474,6 +469,9 @@ const total = ref(0);
 const page = ref(1);
 const perPage = usePerPage("leaderboard");
 const loading = ref(true);
+const { skeleton, refreshing, loaded } = useDeferredLoading(
+  () => loading.value,
+);
 const sortBy = ref<SortField | null>(null);
 const sortDir = ref<"asc" | "desc">("desc");
 // Steam id from the URL — when set we look up that player's rank, jump
@@ -674,19 +672,17 @@ async function fetchLeaderboard() {
     });
     if (gen !== fetchGeneration) return;
     const rows = data?.get_leaderboard || [];
-    entries.value = rows.map(
-      (row: any, index: number): LeaderboardEntry => ({
-        ...row,
-        rank: offset.value + index + 1,
-        value: Number(row.value),
-        secondary_value:
-          row.secondary_value != null ? Number(row.secondary_value) : null,
-        tertiary_value:
-          row.tertiary_value != null ? Number(row.tertiary_value) : null,
-        matches_played:
-          row.matches_played != null ? Number(row.matches_played) : null,
-      }),
-    );
+    entries.value = rows.map((row: any, index: number): LeaderboardEntry => ({
+      ...row,
+      rank: offset.value + index + 1,
+      value: Number(row.value),
+      secondary_value:
+        row.secondary_value != null ? Number(row.secondary_value) : null,
+      tertiary_value:
+        row.tertiary_value != null ? Number(row.tertiary_value) : null,
+      matches_played:
+        row.matches_played != null ? Number(row.matches_played) : null,
+    }));
     total.value =
       Number(data?.get_leaderboard_aggregate?.aggregate?.count) || 0;
   } catch (error) {
@@ -862,41 +858,43 @@ onMounted(async () => {
 </script>
 
 <template>
+  <h1 class="sr-only">{{ $t("pages.leaderboard.title") }}</h1>
+
   <PageTransition>
-    <TacticalPageHeader stack-actions>
-      <template #title>{{ $t("pages.leaderboard.title") }}</template>
-      <template #actions="{ tabs }">
-        <Select v-model="category">
-          <SelectTrigger
-            class="w-full min-w-0 md:hidden"
-            :aria-label="$t('pages.leaderboard.title')"
+    <div>
+      <Select v-model="category">
+        <SelectTrigger
+          class="w-full min-w-0 md:hidden"
+          :aria-label="$t('pages.leaderboard.title')"
+        >
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem
+            v-for="cat in categories"
+            :key="cat.value"
+            :value="cat.value"
           >
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem
-              v-for="cat in categories"
-              :key="cat.value"
-              :value="cat.value"
-            >
-              {{ $t(`pages.leaderboard.categories.${cat.value}`) }}
-            </SelectItem>
-          </SelectContent>
-        </Select>
-        <Tabs v-model="category" class="hidden md:block">
-          <TabsList variant="underline" :class="tabs.listClass">
-            <TabsTrigger
-              v-for="cat in categories"
-              :key="cat.value"
-              :value="cat.value"
-              :class="tabs.triggerClass"
-            >
-              {{ $t(`pages.leaderboard.categories.${cat.value}`) }}
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
-      </template>
-    </TacticalPageHeader>
+            {{ $t(`pages.leaderboard.categories.${cat.value}`) }}
+          </SelectItem>
+        </SelectContent>
+      </Select>
+      <Tabs
+        v-model="category"
+        class="-mx-1 hidden overflow-x-auto px-1 pb-1 [scrollbar-width:none] md:block [&::-webkit-scrollbar]:hidden"
+      >
+        <TabsList variant="underline" :class="tacticalTabsListClasses">
+          <TabsTrigger
+            v-for="cat in categories"
+            :key="cat.value"
+            :value="cat.value"
+            :class="tacticalTabsTriggerClasses"
+          >
+            {{ $t(`pages.leaderboard.categories.${cat.value}`) }}
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
+    </div>
   </PageTransition>
 
   <!-- Compact filter bar. Every control on it narrows matches played here, so
@@ -1237,26 +1235,37 @@ onMounted(async () => {
   <PageTransition :delay="300" class="mt-6">
     <div>
       <div class="p-4 relative">
-        <Transition v-bind="leaderboardFadeTransition" mode="out-in">
+        <FadeSwap>
           <!-- Loading -->
-          <div v-if="loading" key="loading" class="space-y-4">
-            <div v-for="i in perPage" :key="i" class="flex items-center gap-4">
-              <Skeleton class="h-6 w-8" />
-              <Skeleton class="h-10 w-10 rounded" />
-              <Skeleton class="h-6 flex-1" />
-              <Skeleton class="h-6 w-20" />
-            </div>
+          <div
+            v-if="skeleton"
+            key="loading"
+            class="grid gap-2"
+            aria-busy="true"
+          >
+            <Skeleton class="h-10 w-full rounded-md" />
+            <Skeleton
+              v-for="i in perPage"
+              :key="i"
+              class="h-14 w-full rounded-md"
+            />
           </div>
 
           <!-- Empty State -->
-          <Empty v-else-if="!entries || entries.length === 0" key="empty">
-            <p class="text-muted-foreground">
-              {{ $t("pages.leaderboard.no_results") }}
-            </p>
-          </Empty>
+          <SectionEmpty
+            v-else-if="loaded && (!entries || entries.length === 0)"
+            key="empty"
+            :title="$t('pages.leaderboard.empty_title')"
+            :description="$t('pages.leaderboard.no_results')"
+          />
 
           <!-- Results Table -->
-          <Table v-else key="table">
+          <Table
+            v-else
+            key="table"
+            class="transition-opacity duration-200"
+            :class="refreshing && 'pointer-events-none opacity-50'"
+          >
             <TableHeader>
               <TableRow>
                 <TableHead class="w-16">{{
@@ -1543,7 +1552,7 @@ onMounted(async () => {
               </TableRow>
             </TableBody>
           </Table>
-        </Transition>
+        </FadeSwap>
       </div>
 
       <!-- Pagination -->

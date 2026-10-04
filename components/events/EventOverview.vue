@@ -315,7 +315,7 @@ const cardClasses = "rounded-lg border border-border bg-card/40";
         ]"
       >
         <div
-          class="grid h-[4.75rem] w-[4.5rem] shrink-0 place-content-center justify-items-center gap-1 rounded-md bg-[hsl(var(--tac-amber)/0.12)] leading-none"
+          class="grid h-[4.75rem] min-w-[4.5rem] shrink-0 place-content-center justify-items-center gap-1 rounded-md bg-[hsl(var(--tac-amber)/0.12)] px-3 leading-none"
         >
           <span class="text-xs font-semibold text-[hsl(var(--tac-amber))]">{{
             dateBlock.month
@@ -324,7 +324,7 @@ const cardClasses = "rounded-lg border border-border bg-card/40";
             dateBlock.days
           }}</span>
         </div>
-        <div class="grid min-w-0 flex-[1_1_15rem] gap-1">
+        <div class="grid min-w-0 flex-[1_1_10rem] gap-1">
           <span class="text-xl font-bold">{{ range }}</span>
           <span
             v-if="startDate && endDate"
@@ -338,9 +338,12 @@ const cardClasses = "rounded-lg border border-border bg-card/40";
             }}
           </span>
         </div>
-        <div v-if="startsIn !== null" class="grid justify-items-end gap-0.5">
+        <div
+          v-if="startsIn !== null"
+          class="flex items-baseline gap-1.5 max-sm:basis-full max-sm:border-t max-sm:border-border/60 max-sm:pt-3 sm:ml-auto sm:grid sm:justify-items-end sm:gap-0.5"
+        >
           <span
-            class="text-[1.75rem] font-extrabold leading-none tabular-nums"
+            class="text-[1.75rem] font-extrabold leading-none tabular-nums max-sm:text-xl"
             >{{ startsIn }}</span
           >
           <span class="text-xs text-muted-foreground">{{

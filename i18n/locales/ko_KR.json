@@ -1602,7 +1602,8 @@
       "open_team_new_tab": "새 탭에서 팀 열기",
       "request_scrim": "스크림 요청",
       "available_teams": "가능한 팀",
-      "no_teams_match": "필터에 맞는 팀이 없습니다."
+      "no_teams_match": "필터에 맞는 팀이 없습니다.",
+      "empty_title": "스크림을 찾는 팀이 없습니다"
     },
     "teams": {
       "title": "팀",
@@ -3458,10 +3459,7 @@
         "no_clips_yet": "아직 클립이 없습니다",
         "try_widening": "필터를 넓히거나 하나를 지워 보세요.",
         "try_different_admin": "다른 필터를 시도하거나 새 클립이 렌더링될 때까지 기다려 보세요.",
-        "check_back_soon": "공개 클립이 렌더링되면 여기에 표시됩니다. 곧 다시 확인해 주세요.",
-        "clear_player": "플레이어 지우기",
-        "clear_date": "날짜 지우기",
-        "clear_kills": "킬 수 지우기"
+        "check_back_soon": "공개 클립이 렌더링되면 여기에 표시됩니다. 곧 다시 확인해 주세요."
       }
     },
     "news": {
@@ -3637,8 +3635,7 @@
         "elo": "ELO",
         "last_sign_in_at": "마지막 로그인",
         "privilege": "권한",
-        "kdr": "K/D",
-        "no_players": "플레이어를 찾을 수 없습니다"
+        "kdr": "K/D"
       },
       "detail": {
         "all_short": "전체",
@@ -3848,6 +3845,10 @@
           "worst_loss": "최대 단일 하락폭",
           "view_match": "매치 보기"
         }
+      },
+      "empty": {
+        "title": "아직 플레이어가 없습니다",
+        "description": "로그인한 플레이어가 여기에 표시됩니다."
       }
     },
     "play": {
@@ -3895,7 +3896,7 @@
         "mode_group": "게임 모드",
         "nobody_queued": "대기 중인 플레이어 없음",
         "too_big": "{count}명 파티는 {mode}에 너무 많습니다",
-        "queue_solo": "솔로 대기열, 팀은 자동으로 밸런싱됩니다",
+        "queue_solo": "솔로 대기열",
         "seats": {
           "format": "{count} 대 {count}",
           "yours": "파티가 {count}자리 차지 | 파티가 {count}자리 차지",
@@ -4050,7 +4051,6 @@
       "create": "매치 생성",
       "schedule": {
         "title": "매치 예약",
-        "step_settings": "설정",
         "step_teams": "팀",
         "kickoff": "시작 시간",
         "kickoff_future": "미래 시점을 선택하세요.",
@@ -4076,7 +4076,6 @@
       "clear_short": "초기화",
       "lineup_only": "내가 참가한 매치만",
       "include_external": "외부 매치 포함",
-      "standby_no_matches": "대기 중 · 매치 없음",
       "create_page": {
         "pick_up_game": "픽업 게임",
         "pick_up_game_description": "픽업 게임은 팀 선택이 필요하지 않습니다.",
@@ -4086,6 +4085,10 @@
         "intra_team_scrimmage": "두 슬롯에 같은 팀을 선택하면 팀 내부 스크림을 만들 수 있습니다.",
         "create_button": "매치 생성",
         "update_button": "매치 업데이트"
+      },
+      "empty": {
+        "title": "아직 경기가 없습니다",
+        "description": "예정, 진행 중, 종료된 경기가 여기에 표시됩니다."
       }
     },
     "toasts": {
@@ -4655,7 +4658,6 @@
     },
     "manage_matches": {
       "only_my_matches": "내가 주최한 매치만",
-      "no_matches": "매치를 찾을 수 없습니다.",
       "enter_name": "이름 입력...",
       "enter_match_id": "매치 ID 입력...",
       "enter_team_name": "팀 이름 입력...",
@@ -4745,7 +4747,8 @@
         "faceit_level": "레벨",
         "premier_rank": "Premier 랭크"
       },
-      "exclude_tournaments": "토너먼트 제외"
+      "exclude_tournaments": "토너먼트 제외",
+      "empty_title": "아직 순위가 없습니다"
     },
     "database": {
       "query_copied": "쿼리가 클립보드에 복사되었습니다",
@@ -6158,7 +6161,6 @@
   "layouts": {
     "account_settings": {
       "title": "계정 설정",
-      "description": "계정 설정 및 환경설정을 관리합니다",
       "select_section": "섹션 선택"
     },
     "application_settings": {
@@ -6760,7 +6762,11 @@
     "sort": "정렬",
     "vs_team": "vs {name}",
     "default": "기본값",
-    "avg": "평균"
+    "avg": "평균",
+    "empty_filtered": {
+      "title": "필터와 일치하는 항목이 없습니다",
+      "description": "필터를 지우거나 검색 범위를 넓혀 보세요."
+    }
   },
   "spotlight_search": {
     "placeholder": "플레이어 검색...",
@@ -9873,10 +9879,6 @@
       "port": "게임 포트",
       "tv_port": "TV 포트",
       "create": "서버 생성",
-      "create_bar": {
-        "ready": "생성 준비 완료",
-        "missing": "아직 필요: {fields}"
-      },
       "max_players": "최대 인원",
       "max_players_description": "서버에 접속할 수 있는 최대 플레이어 수"
     },
@@ -10602,7 +10604,8 @@
     "list": {
       "title": "리그",
       "subtitle": "시즌제 디비전, 주간 매치, 승격과 강등",
-      "settings": "리그 설정"
+      "settings": "리그 설정",
+      "empty_title": "아직 시즌이 없습니다"
     },
     "history": {
       "seasons": "시즌 기록",
@@ -10621,7 +10624,6 @@
     },
     "seasons": {
       "title": "시즌",
-      "empty": "아직 시즌이 없습니다.",
       "deleted": "시즌이 삭제되었습니다",
       "delete_title": "시즌을 삭제하시겠습니까?",
       "delete_description": "{name}과(와) 등록, 일정, 결과를 영구적으로 삭제합니다. 이 작업은 되돌릴 수 없습니다."
@@ -11015,12 +11017,6 @@
       "start_time": "시작 시간",
       "end_time": "종료 시간",
       "create": "이벤트 생성",
-      "create_bar": {
-        "ready": "생성 준비 완료",
-        "ready_hint": "모든 항목이 준비되었습니다. 이제 이벤트를 생성하세요.",
-        "incomplete": "필수 항목 누락",
-        "incomplete_hint": "계속하려면 이벤트 이름과 시작일을 입력하세요"
-      },
       "visibility": "공개 범위",
       "media_access": "미디어 업로드",
       "sections": {

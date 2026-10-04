@@ -1602,7 +1602,8 @@
       "open_team_new_tab": "在新分頁開啟隊伍",
       "request_scrim": "發起練習賽",
       "available_teams": "可用隊伍",
-      "no_teams_match": "沒有符合您篩選條件的隊伍。"
+      "no_teams_match": "沒有符合您篩選條件的隊伍。",
+      "empty_title": "尚無尋找練習賽的隊伍"
     },
     "teams": {
       "title": "隊伍",
@@ -3458,10 +3459,7 @@
         "no_clips_yet": "這裡還沒有精華片段",
         "try_widening": "試著放寬篩選範圍或清除某個條件。",
         "try_different_admin": "試試不同的篩選條件——或等待新片段完成算圖。",
-        "check_back_soon": "公開片段完成算圖後會顯示在這裡。請稍後再查看。",
-        "clear_player": "清除玩家",
-        "clear_date": "清除日期",
-        "clear_kills": "清除擊殺數"
+        "check_back_soon": "公開片段完成算圖後會顯示在這裡。請稍後再查看。"
       }
     },
     "news": {
@@ -3637,8 +3635,7 @@
         "elo": "Elo",
         "last_sign_in_at": "最後登入時間",
         "privilege": "權限",
-        "kdr": "KDR",
-        "no_players": "找不到玩家"
+        "kdr": "KDR"
       },
       "detail": {
         "all_short": "全部",
@@ -3848,6 +3845,10 @@
           "worst_loss": "單次最大損失",
           "view_match": "查看比賽"
         }
+      },
+      "empty": {
+        "title": "尚無玩家",
+        "description": "玩家登入後會顯示在這裡。"
       }
     },
     "play": {
@@ -3895,7 +3896,7 @@
         "mode_group": "遊戲模式",
         "nobody_queued": "無人排隊",
         "too_big": "{count} 人小隊超出 {mode} 的人數上限",
-        "queue_solo": "單人排隊，系統會為你平衡隊伍",
+        "queue_solo": "單人排隊",
         "seats": {
           "format": "{count} 對 {count}",
           "yours": "你的小隊佔 {count} 個位置 | 你的小隊佔 {count} 個位置",
@@ -4050,7 +4051,6 @@
       "create": "建立比賽",
       "schedule": {
         "title": "安排比賽",
-        "step_settings": "設定",
         "step_teams": "隊伍",
         "kickoff": "開賽時間",
         "kickoff_future": "請選擇未來的時間。",
@@ -4076,7 +4076,6 @@
       "clear_short": "清除",
       "lineup_only": "僅我參與的比賽",
       "include_external": "包含外部比賽",
-      "standby_no_matches": "待命 · 找不到比賽",
       "create_page": {
         "pick_up_game": "約戰比賽",
         "pick_up_game_description": "約戰比賽不需要選擇隊伍。",
@@ -4086,6 +4085,10 @@
         "intra_team_scrimmage": "您可以在兩個位置選擇同一支隊伍，以建立隊內練習賽。",
         "create_button": "建立比賽",
         "update_button": "更新比賽"
+      },
+      "empty": {
+        "title": "尚無比賽",
+        "description": "已排定、進行中和已結束的比賽都會顯示在這裡。"
       }
     },
     "toasts": {
@@ -4655,7 +4658,6 @@
     },
     "manage_matches": {
       "only_my_matches": "僅我主辦的比賽",
-      "no_matches": "找不到比賽。",
       "enter_name": "輸入名稱...",
       "enter_match_id": "輸入比賽 ID...",
       "enter_team_name": "輸入隊伍名稱...",
@@ -4745,7 +4747,8 @@
         "faceit_level": "等級",
         "premier_rank": "Premier 排名"
       },
-      "exclude_tournaments": "排除賽事"
+      "exclude_tournaments": "排除賽事",
+      "empty_title": "尚無排名"
     },
     "database": {
       "query_copied": "查詢已複製到剪貼簿",
@@ -6158,7 +6161,6 @@
   "layouts": {
     "account_settings": {
       "title": "帳戶設定",
-      "description": "管理您的帳戶設定與偏好",
       "select_section": "選擇區段"
     },
     "application_settings": {
@@ -6760,7 +6762,11 @@
     "sort": "排序",
     "vs_team": "對戰 {name}",
     "default": "預設",
-    "avg": "平均"
+    "avg": "平均",
+    "empty_filtered": {
+      "title": "沒有符合這些篩選條件的內容",
+      "description": "請嘗試清除篩選條件或擴大搜尋範圍。"
+    }
   },
   "spotlight_search": {
     "placeholder": "搜尋玩家...",
@@ -9873,10 +9879,6 @@
       "port": "遊戲連接埠",
       "tv_port": "TV 連接埠",
       "create": "建立伺服器",
-      "create_bar": {
-        "ready": "可以建立",
-        "missing": "仍需填寫：{fields}"
-      },
       "max_players": "最大玩家數",
       "max_players_description": "可連線至伺服器的最大玩家數"
     },
@@ -10602,7 +10604,8 @@
     "list": {
       "title": "聯賽",
       "subtitle": "賽季分級、每週比賽、升降級",
-      "settings": "聯賽設定"
+      "settings": "聯賽設定",
+      "empty_title": "尚無賽季"
     },
     "history": {
       "seasons": "賽季歷史",
@@ -10621,7 +10624,6 @@
     },
     "seasons": {
       "title": "賽季",
-      "empty": "尚無賽季。",
       "deleted": "賽季已刪除",
       "delete_title": "刪除賽季？",
       "delete_description": "永久刪除 {name}，包含其報名、賽程與成績。此操作無法復原。"
@@ -11015,12 +11017,6 @@
       "start_time": "開始時間",
       "end_time": "結束時間",
       "create": "建立活動",
-      "create_bar": {
-        "ready": "準備建立",
-        "ready_hint": "一切就緒，準備好後即可建立您的活動。",
-        "incomplete": "缺少必填欄位",
-        "incomplete_hint": "填寫活動名稱與開始日期以繼續"
-      },
       "visibility": "可見度",
       "media_access": "媒體上傳",
       "sections": {

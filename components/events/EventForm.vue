@@ -6,6 +6,7 @@ import { Textarea } from "~/components/ui/textarea";
 import { Calendar as CalendarIcon } from "lucide-vue-next";
 import { RangeCalendar } from "@/components/ui/range-calendar";
 import { Button } from "@/components/ui/button";
+import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
 import {
   Popover,
   PopoverContent,
@@ -186,10 +187,6 @@ const formSectionClasses = `grid gap-4 ${tacticalSectionSeparatorClasses}`;
       </div>
     </section>
 
-    <!-- create page: clearance for the floating bar (the settings tab adds
-         its own after the membership panel) -->
-    <div v-if="!event" class="pb-24"></div>
-
     <SettingsSaveBar
       v-if="event"
       :dirty="isDirty"
@@ -198,25 +195,15 @@ const formSectionClasses = `grid gap-4 ${tacticalSectionSeparatorClasses}`;
       @discard="discardChanges"
     />
 
-    <SettingsSaveBar
+    <Button
       v-else
-      force-visible
-      hide-discard
-      :valid="createValid"
-      :submitting="submitting"
-      :title="
-        createValid
-          ? $t('event.form.create_bar.ready')
-          : $t('event.form.create_bar.incomplete')
-      "
-      :description="
-        createValid
-          ? $t('event.form.create_bar.ready_hint')
-          : $t('event.form.create_bar.incomplete_hint')
-      "
-      :action-label="$t('event.form.create')"
-      @save="submitEvent"
-    />
+      type="submit"
+      :disabled="Object.keys(form.errors).length > 0"
+      :loading="submitting"
+      :class="[tacticalCtaButtonClasses, 'w-full justify-center']"
+    >
+      {{ $t("event.form.create") }}
+    </Button>
   </form>
 </template>
 
@@ -389,18 +376,6 @@ export default {
         return this.startDate.toString();
       }
       return `${this.startDate} → ${this.endDate}`;
-    },
-    createValid(): boolean {
-      // Create flow gate: name and starts_at are the fields without a usable
-      // schema default (starts_at is required so the event scopes to matches
-      // played from that date on), so require both filled and no outstanding
-      // validation errors.
-      const values = this.form.values;
-      return (
-        Object.keys(this.form.errors).length === 0 &&
-        !!values.name &&
-        !!values.starts_at
-      );
     },
     visibilityOptions() {
       return Object.values(e_event_visibility_enum).map((visibility) => ({

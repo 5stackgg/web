@@ -10,6 +10,7 @@ import { Button } from "~/components/ui/button";
 import TeamsYourTeamCard from "~/components/teams/TeamsYourTeamCard.vue";
 import { useAuthStore } from "~/stores/AuthStore";
 import {
+  listCreateButtonClasses,
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
@@ -177,15 +178,13 @@ onBeforeUnmount(() => {
         <span :class="tacticalSectionTickClasses"></span>
         {{ $t("pages.teams.your_teams.title") }}
       </h2>
-      <Button
-        as-child
-        size="sm"
-        variant="outline"
-        class="relative h-8 gap-1.5 after:absolute after:inset-x-0 after:-inset-y-1.5 after:content-[''] [@media(pointer:fine)]:after:hidden"
-      >
-        <NuxtLink :to="{ name: 'teams-create' }">
-          <PlusCircle class="size-3.5" />
-          {{ $t("pages.teams.create") }}
+      <Button as-child size="sm" :class="listCreateButtonClasses">
+        <NuxtLink
+          :to="{ name: 'teams-create' }"
+          :title="$t('pages.teams.create')"
+        >
+          <PlusCircle class="h-4 w-4" />
+          <span class="max-md:sr-only">{{ $t("pages.teams.create") }}</span>
         </NuxtLink>
       </Button>
     </div>

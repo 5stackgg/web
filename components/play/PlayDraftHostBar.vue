@@ -68,7 +68,9 @@ const seatsLine = computed(() =>
     t("pages.play.draft_rooms.host_bar.seats", {
       count: EXPECTED_PLAYERS[type.value as keyof typeof EXPECTED_PLAYERS],
     }),
-    regions.value.map((region) => region.description || region.value).join(", "),
+    regions.value
+      .map((region) => region.description || region.value)
+      .join(", "),
   ]
     .filter(Boolean)
     .join(" · "),
@@ -140,9 +142,7 @@ async function rehost() {
 }
 
 function allSettings() {
-  navigateTo(
-    auth.me ? "/draft-room/create" : "/login?next=/draft-room/create",
-  );
+  navigateTo(auth.me ? "/draft-room/create" : "/login?next=/draft-room/create");
 }
 
 const linkClasses =
@@ -168,25 +168,30 @@ const linkClasses =
         </span>
       </div>
 
+      <!-- Phones: every strip spans the card with equal-width options, so
+           the three rows share both edges. -->
       <div class="flex min-w-0 flex-[1_1_520px] flex-wrap items-center gap-2">
         <WatchSegmented
           v-model="type"
           :options="typeOptions"
           :label="$t('pages.play.draft_rooms.format_label')"
+          class="max-sm:w-full max-sm:[&>button]:flex-1 max-sm:[&>button]:justify-center"
         />
         <WatchSegmented
           v-model="mode"
           :options="modeOptions"
           :label="$t('pages.play.draft_rooms.host_bar.draft')"
+          class="max-sm:w-full max-sm:[&>button]:flex-1 max-sm:[&>button]:justify-center"
         />
         <WatchSegmented
           v-model="access"
           :options="accessOptions"
           :label="$t('pages.play.draft_rooms.host_bar.access')"
+          class="max-sm:w-full max-sm:[&>button]:flex-1 max-sm:[&>button]:justify-center"
         />
       </div>
 
-      <div class="ml-auto flex items-center gap-1.5">
+      <div class="ml-auto flex items-center gap-1.5 max-sm:w-full">
         <Button
           variant="ghost"
           size="sm"
@@ -198,7 +203,7 @@ const linkClasses =
         </Button>
         <span
           v-if="locked"
-          class="inline-flex h-8 items-center gap-2 rounded-md border border-border px-3 text-xs text-muted-foreground"
+          class="inline-flex h-8 items-center justify-center gap-2 rounded-md border border-border px-3 text-xs text-muted-foreground max-sm:flex-1"
         >
           <Lock class="size-3.5" />
           {{ $t("draft_games.leader_required") }}
@@ -207,7 +212,7 @@ const linkClasses =
           v-else-if="myRoom"
           variant="outline"
           size="sm"
-          class="hit h-8"
+          class="hit h-8 max-sm:flex-1"
           @click="navigateTo(`/draft-room/${myRoom.id}`)"
         >
           {{ $t("pages.play.draft_rooms.host_bar.back_to_room") }}
@@ -215,7 +220,7 @@ const linkClasses =
         <Button
           v-else
           size="sm"
-          class="hit h-8 gap-1.5 px-3.5 text-[13px] font-semibold bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] hover:bg-[hsl(var(--tac-amber)/0.9)]"
+          class="hit h-8 gap-1.5 px-3.5 text-[13px] font-semibold bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] hover:bg-[hsl(var(--tac-amber)/0.9)] max-sm:flex-1"
           @click="host"
         >
           <template v-if="auth.me">

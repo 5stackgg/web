@@ -1602,7 +1602,8 @@
       "open_team_new_tab": "在新标签页中打开队伍",
       "request_scrim": "发起约战",
       "available_teams": "可约战队伍",
-      "no_teams_match": "没有符合您筛选条件的队伍。"
+      "no_teams_match": "没有符合您筛选条件的队伍。",
+      "empty_title": "暂无寻找训练赛的队伍"
     },
     "teams": {
       "title": "队伍",
@@ -3458,10 +3459,7 @@
         "no_clips_yet": "这里还没有精彩集锦",
         "try_widening": "尝试扩大筛选范围或清除某个条件。",
         "try_different_admin": "尝试不同的筛选条件——或等待新集锦渲染完成。",
-        "check_back_soon": "公开集锦将在渲染完成后显示在这里。请稍后再查看。",
-        "clear_player": "清除玩家",
-        "clear_date": "清除日期",
-        "clear_kills": "清除击杀数"
+        "check_back_soon": "公开集锦将在渲染完成后显示在这里。请稍后再查看。"
       }
     },
     "news": {
@@ -3637,8 +3635,7 @@
         "elo": "Elo",
         "last_sign_in_at": "最后登录时间",
         "privilege": "权限",
-        "kdr": "KDR",
-        "no_players": "未找到玩家"
+        "kdr": "KDR"
       },
       "detail": {
         "all_short": "全部",
@@ -3848,6 +3845,10 @@
           "worst_loss": "单次最大损失",
           "view_match": "查看比赛"
         }
+      },
+      "empty": {
+        "title": "暂无玩家",
+        "description": "玩家登录后会显示在这里。"
       }
     },
     "play": {
@@ -3895,7 +3896,7 @@
         "mode_group": "游戏模式",
         "nobody_queued": "无人排队",
         "too_big": "{count} 人小队超出 {mode} 的人数上限",
-        "queue_solo": "单人排队，系统会为你平衡队伍",
+        "queue_solo": "单人排队",
         "seats": {
           "format": "{count} 对 {count}",
           "yours": "你的小队占 {count} 个位置 | 你的小队占 {count} 个位置",
@@ -4050,7 +4051,6 @@
       "create": "创建比赛",
       "schedule": {
         "title": "安排比赛",
-        "step_settings": "设置",
         "step_teams": "队伍",
         "kickoff": "开球时间",
         "kickoff_future": "选择未来的时间。",
@@ -4076,7 +4076,6 @@
       "clear_short": "清除",
       "lineup_only": "仅我参与的比赛",
       "include_external": "包含外部比赛",
-      "standby_no_matches": "待命 · 未找到比赛",
       "create_page": {
         "pick_up_game": "约战比赛",
         "pick_up_game_description": "约战比赛不需要选择队伍。",
@@ -4086,6 +4085,10 @@
         "intra_team_scrimmage": "您可以为两个位置选择同一支队伍以创建队内训练赛。",
         "create_button": "创建比赛",
         "update_button": "更新比赛"
+      },
+      "empty": {
+        "title": "暂无比赛",
+        "description": "已安排、进行中和已结束的比赛都会显示在这里。"
       }
     },
     "toasts": {
@@ -4655,7 +4658,6 @@
     },
     "manage_matches": {
       "only_my_matches": "仅我组织的比赛",
-      "no_matches": "未找到比赛。",
       "enter_name": "输入名称...",
       "enter_match_id": "输入比赛 ID...",
       "enter_team_name": "输入队伍名称...",
@@ -4745,7 +4747,8 @@
         "faceit_level": "等级",
         "premier_rank": "Premier 排名"
       },
-      "exclude_tournaments": "排除赛事"
+      "exclude_tournaments": "排除赛事",
+      "empty_title": "暂无排名"
     },
     "database": {
       "query_copied": "查询已复制到剪贴板",
@@ -6158,7 +6161,6 @@
   "layouts": {
     "account_settings": {
       "title": "账户设置",
-      "description": "管理您的账户设置和偏好",
       "select_section": "选择部分"
     },
     "application_settings": {
@@ -6760,7 +6762,11 @@
     "sort": "排序",
     "vs_team": "对阵 {name}",
     "default": "默认",
-    "avg": "平均"
+    "avg": "平均",
+    "empty_filtered": {
+      "title": "没有符合这些筛选条件的内容",
+      "description": "请尝试清除筛选条件或扩大搜索范围。"
+    }
   },
   "spotlight_search": {
     "placeholder": "搜索玩家...",
@@ -9873,10 +9879,6 @@
       "port": "游戏端口",
       "tv_port": "TV 端口",
       "create": "创建服务器",
-      "create_bar": {
-        "ready": "可以创建",
-        "missing": "仍需填写：{fields}"
-      },
       "max_players": "最大玩家数",
       "max_players_description": "可以连接到服务器的最大玩家数"
     },
@@ -10602,7 +10604,8 @@
     "list": {
       "title": "联赛",
       "subtitle": "赛季分区、每周比赛、升降级",
-      "settings": "联赛设置"
+      "settings": "联赛设置",
+      "empty_title": "暂无赛季"
     },
     "history": {
       "seasons": "赛季历史",
@@ -10621,7 +10624,6 @@
     },
     "seasons": {
       "title": "赛季",
-      "empty": "暂无赛季。",
       "deleted": "赛季已删除",
       "delete_title": "删除赛季？",
       "delete_description": "永久删除 {name}，包括其注册、赛程和结果。此操作无法撤销。"
@@ -11015,12 +11017,6 @@
       "start_time": "开始时间",
       "end_time": "结束时间",
       "create": "创建活动",
-      "create_bar": {
-        "ready": "准备创建",
-        "ready_hint": "一切看起来都很好，准备好后创建您的活动。",
-        "incomplete": "缺少必填字段",
-        "incomplete_hint": "填写活动名称和开始日期以继续"
-      },
       "visibility": "可见性",
       "media_access": "媒体上传",
       "sections": {

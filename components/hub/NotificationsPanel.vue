@@ -8,6 +8,7 @@ import NotificationItem from "~/components/notification/NotificationItem.vue";
 import NotificationStack from "~/components/notification/NotificationStack.vue";
 import NewsNotification from "~/components/notification/NewsNotification.vue";
 import LeagueScheduleStack from "~/components/notification/LeagueScheduleStack.vue";
+import TeamRosterNeedNotification from "~/components/notification/TeamRosterNeedNotification.vue";
 </script>
 
 <template>
@@ -47,6 +48,25 @@ import LeagueScheduleStack from "~/components/notification/LeagueScheduleStack.v
           <div class="min-h-0">
             <div class="mb-3">
               <LeagueScheduleStack :tasks="scheduleTasks" />
+            </div>
+          </div>
+        </div>
+      </Transition>
+
+      <Transition
+        enter-active-class="notif-fold"
+        enter-from-class="notif-fold-collapsed"
+        leave-active-class="notif-fold"
+        leave-to-class="notif-fold-collapsed"
+      >
+        <div v-if="rosterNeeds.length > 0" class="grid grid-rows-[1fr]">
+          <div class="min-h-0">
+            <div class="mb-3 space-y-2">
+              <TeamRosterNeedNotification
+                v-for="need in rosterNeeds"
+                :key="need.teamId"
+                :need="need"
+              />
             </div>
           </div>
         </div>
@@ -286,6 +306,9 @@ export default {
     scheduleTasks() {
       return useNotificationStore().scheduleTasks;
     },
+    rosterNeeds() {
+      return useNotificationStore().rosterNeeds;
+    },
     stackedNotifications() {
       return useNotificationStore().stackedNotifications;
     },
@@ -295,6 +318,7 @@ export default {
     hasAnyNotifications(): boolean {
       return (
         this.scheduleTasks.length > 0 ||
+        this.rosterNeeds.length > 0 ||
         this.team_invites.length > 0 ||
         this.tournament_team_invites.length > 0 ||
         this.tournament_invites.length > 0 ||

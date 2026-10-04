@@ -1602,14 +1602,15 @@
       "open_team_new_tab": "Open team in new tab",
       "request_scrim": "Request Scrim",
       "available_teams": "Available Teams",
-      "no_teams_match": "No teams match your filters."
+      "no_teams_match": "No teams match your filters.",
+      "empty_title": "No teams looking for scrims"
     },
     "teams": {
       "title": "Teams",
       "create": "Create Team",
       "no_teams_title": "No Teams Found",
       "no_teams": "No teams found.",
-      "search": "Search...",
+      "search": "Search teams by name…",
       "vetos": {
         "section": "Map Preference & Veto Tendencies",
         "description": "How this team approaches the map veto, and how each map performs once it reaches the server.",
@@ -3458,10 +3459,7 @@
         "no_clips_yet": "No clips here yet",
         "try_widening": "Try widening the filters or clearing one.",
         "try_different_admin": "Try a different filter — or wait for new clips to render.",
-        "check_back_soon": "Public clips will appear here as they're rendered. Check back soon.",
-        "clear_player": "Clear player",
-        "clear_date": "Clear date",
-        "clear_kills": "Clear kills"
+        "check_back_soon": "Public clips will appear here as they're rendered. Check back soon."
       }
     },
     "news": {
@@ -3637,8 +3635,7 @@
         "elo": "Elo",
         "last_sign_in_at": "Last Sign In At",
         "privilege": "Privilege",
-        "kdr": "KDR",
-        "no_players": "No players found"
+        "kdr": "KDR"
       },
       "detail": {
         "all_short": "All",
@@ -3848,6 +3845,10 @@
           "worst_loss": "Worst Single Loss",
           "view_match": "View match"
         }
+      },
+      "empty": {
+        "title": "No players yet",
+        "description": "Players show up here once they sign in."
       }
     },
     "play": {
@@ -3896,7 +3897,7 @@
         "mode_group": "Game mode",
         "nobody_queued": "Nobody queued",
         "too_big": "A party of {count} is too big for {mode}",
-        "queue_solo": "Queue solo, teams are balanced for you",
+        "queue_solo": "Queue solo",
         "seats": {
           "format": "{count} versus {count}",
           "yours": "your party takes {count} seat | your party takes {count} seats",
@@ -4052,7 +4053,6 @@
       "create": "Create Match",
       "schedule": {
         "title": "Schedule Match",
-        "step_settings": "Settings",
         "step_teams": "Teams",
         "kickoff": "Kickoff Time",
         "kickoff_future": "Pick a time in the future.",
@@ -4078,7 +4078,6 @@
       "clear_short": "Clear",
       "lineup_only": "Only matches I'm in",
       "include_external": "Include external matches",
-      "standby_no_matches": "STANDBY · NO MATCHES FOUND",
       "create_page": {
         "pick_up_game": "Pick Up Game",
         "pick_up_game_description": "A Pick up game does not require selection of teams.",
@@ -4088,6 +4087,10 @@
         "intra_team_scrimmage": "You can select the same team for both slots to create an intra-team scrimmage.",
         "create_button": "Create Match",
         "update_button": "Update Match"
+      },
+      "empty": {
+        "title": "No matches yet",
+        "description": "Scheduled, live and finished matches all show up here."
       }
     },
     "toasts": {
@@ -4657,7 +4660,6 @@
     },
     "manage_matches": {
       "only_my_matches": "Only My Organized Matches",
-      "no_matches": "No matches found.",
       "enter_name": "Enter name...",
       "enter_match_id": "Enter match ID...",
       "enter_team_name": "Enter team name...",
@@ -4747,7 +4749,8 @@
         "faceit_level": "Level",
         "premier_rank": "Premier Rank"
       },
-      "exclude_tournaments": "Exclude Tournaments"
+      "exclude_tournaments": "Exclude Tournaments",
+      "empty_title": "No rankings yet"
     },
     "database": {
       "query_copied": "Query copied to clipboard",
@@ -6160,7 +6163,6 @@
   "layouts": {
     "account_settings": {
       "title": "Account Settings",
-      "description": "Manage your account settings and preferences",
       "select_section": "Select section"
     },
     "application_settings": {
@@ -6762,7 +6764,11 @@
     "sort": "sort",
     "vs_team": "vs {name}",
     "default": "Default",
-    "avg": "avg"
+    "avg": "avg",
+    "empty_filtered": {
+      "title": "Nothing matches these filters",
+      "description": "Try clearing filters or widening your search."
+    }
   },
   "spotlight_search": {
     "placeholder": "Search players...",
@@ -9875,10 +9881,6 @@
       "port": "Game Port",
       "tv_port": "TV Port",
       "create": "Create Server",
-      "create_bar": {
-        "ready": "Ready to create",
-        "missing": "Still needed: {fields}"
-      },
       "max_players": "Max Players",
       "max_players_description": "The maximum number of players that can connect to the server"
     },
@@ -10604,7 +10606,8 @@
     "list": {
       "title": "League",
       "subtitle": "Seasonal divisions, weekly match play, promotion and relegation",
-      "settings": "League Settings"
+      "settings": "League Settings",
+      "empty_title": "No seasons yet"
     },
     "history": {
       "seasons": "Season history",
@@ -10623,7 +10626,6 @@
     },
     "seasons": {
       "title": "Seasons",
-      "empty": "No seasons yet.",
       "deleted": "Season deleted",
       "delete_title": "Delete season?",
       "delete_description": "Permanently delete {name}, including its registrations, schedule and results. This cannot be undone."
@@ -11017,12 +11019,6 @@
       "start_time": "Start time",
       "end_time": "End time",
       "create": "Create Event",
-      "create_bar": {
-        "ready": "Ready to create",
-        "ready_hint": "Everything looks good, create your event when ready.",
-        "incomplete": "Required fields missing",
-        "incomplete_hint": "Fill in the event name and a start date to continue"
-      },
       "visibility": "Visibility",
       "media_access": "Media Uploads",
       "sections": {

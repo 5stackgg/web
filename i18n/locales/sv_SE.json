@@ -6778,6 +6778,15 @@
     "results_section": {
       "no_data": "INGEN DATA",
       "mvp": "MEST VÄRDEFULLA SPELARE",
+      "mvp_tooltip": {
+        "title": "Så väljs MVP",
+        "rule": "Spelaren i det vinnande laget med högst genomsnittlig impact över alla turneringens matcher.",
+        "impact": "Impact betygsätter varje match från 0,80 till 1,20 utifrån (kills + assists) / dödsfall jämfört med laget och andel av lagets skada.",
+        "avg_impact": "Snitt-impact",
+        "matches": "Matcher",
+        "next_best": "Näst bäst: {name}",
+        "manual": "Utvald av turneringsarrangören."
+      },
       "no_matches_played": "Inga matcher spelade ännu"
     },
     "swiss": {

@@ -6778,6 +6778,15 @@
     "results_section": {
       "no_data": "INGEN DATA",
       "mvp": "MEST VÆRDIFULDE SPILLER",
+      "mvp_tooltip": {
+        "title": "Sådan vælges MVP",
+        "rule": "Spilleren på vinderholdet med den højeste gennemsnitlige impact på tværs af alle turneringens kampe.",
+        "impact": "Impact vurderer hver kamp fra 0,80 til 1,20 ud fra (kills + assists) / dødsfald i forhold til holdet og andel af holdets skade.",
+        "avg_impact": "Gns. impact",
+        "matches": "Kampe",
+        "next_best": "Næstbedst: {name}",
+        "manual": "Udvalgt af turneringsarrangøren."
+      },
       "no_matches_played": "Ingen kampe spillet endnu"
     },
     "swiss": {

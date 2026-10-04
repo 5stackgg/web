@@ -6778,6 +6778,15 @@
     "results_section": {
       "no_data": "SIN DATOS",
       "mvp": "JUGADOR MÁS VALIOSO",
+      "mvp_tooltip": {
+        "title": "Cómo se elige al MVP",
+        "rule": "El jugador del equipo ganador con el mayor impacto medio en todas las partidas del torneo.",
+        "impact": "El impacto puntúa cada partida de 0,80 a 1,20 según (bajas + asistencias) / muertes frente al equipo y la parte del daño del equipo.",
+        "avg_impact": "Impacto medio",
+        "matches": "Partidas",
+        "next_best": "Siguiente mejor: {name}",
+        "manual": "Elegido por el organizador del torneo."
+      },
       "no_matches_played": "Aún no se ha jugado ninguna partida"
     },
     "swiss": {

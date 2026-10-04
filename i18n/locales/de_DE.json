@@ -6778,6 +6778,15 @@
     "results_section": {
       "no_data": "KEINE DATEN",
       "mvp": "MOST VALUABLE PLAYER",
+      "mvp_tooltip": {
+        "title": "So wird der MVP bestimmt",
+        "rule": "Der Spieler des Siegerteams mit dem höchsten durchschnittlichen Impact über alle Spiele des Turniers.",
+        "impact": "Impact bewertet jedes Spiel von 0,80 bis 1,20 anhand von (Kills + Assists) / Tode im Vergleich zum Team und dem Anteil am Teamschaden.",
+        "avg_impact": "Ø Impact",
+        "matches": "Spiele",
+        "next_best": "Nächstbester: {name}",
+        "manual": "Vom Turnierveranstalter ausgewählt."
+      },
       "no_matches_played": "Noch keine Matches gespielt"
     },
     "swiss": {

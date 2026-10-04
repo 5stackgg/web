@@ -6778,6 +6778,15 @@
     "results_section": {
       "no_data": "无数据",
       "mvp": "最有价值玩家",
+      "mvp_tooltip": {
+        "title": "MVP 评选方式",
+        "rule": "冠军队伍中，在本次赛事所有比赛里平均影响力最高的选手。",
+        "impact": "影响力根据相对于队伍的（击杀 + 助攻）/ 死亡以及在队伍伤害中的占比，为每场比赛给出 0.80–1.20 的评分。",
+        "avg_impact": "平均影响力",
+        "matches": "场次",
+        "next_best": "次佳：{name}",
+        "manual": "由赛事主办方选定。"
+      },
       "no_matches_played": "尚未进行任何比赛"
     },
     "swiss": {

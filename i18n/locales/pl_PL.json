@@ -6778,6 +6778,15 @@
     "results_section": {
       "no_data": "BRAK DANYCH",
       "mvp": "NAJLEPSZY GRACZ",
+      "mvp_tooltip": {
+        "title": "Jak wybierany jest MVP",
+        "rule": "Gracz zwycięskiej drużyny z najwyższym średnim wpływem we wszystkich meczach turnieju.",
+        "impact": "Wpływ ocenia każdy mecz w skali od 0,80 do 1,20 na podstawie (zabójstwa + asysty) / śmierci w porównaniu z drużyną oraz udziału w obrażeniach drużyny.",
+        "avg_impact": "Średni wpływ",
+        "matches": "Mecze",
+        "next_best": "Następny: {name}",
+        "manual": "Wybrany przez organizatora turnieju."
+      },
       "no_matches_played": "Nie rozegrano jeszcze żadnego meczu"
     },
     "swiss": {

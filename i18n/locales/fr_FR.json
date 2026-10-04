@@ -6778,6 +6778,15 @@
     "results_section": {
       "no_data": "AUCUNE DONNÉE",
       "mvp": "MVP",
+      "mvp_tooltip": {
+        "title": "Comment le MVP est choisi",
+        "rule": "Le joueur de l'équipe gagnante avec l'impact moyen le plus élevé sur tous les matchs du tournoi.",
+        "impact": "L'impact note chaque match de 0,80 à 1,20 selon (éliminations + assistances) / morts par rapport à l'équipe et la part des dégâts de l'équipe.",
+        "avg_impact": "Impact moyen",
+        "matches": "Matchs",
+        "next_best": "Suivant : {name}",
+        "manual": "Choisi par l'organisateur du tournoi."
+      },
       "no_matches_played": "Aucun match joué pour le moment"
     },
     "swiss": {

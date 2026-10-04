@@ -6,6 +6,11 @@ import { Cross2Icon } from "@radix-icons/vue";
 import { ArrowUpRight } from "lucide-vue-next";
 import { useMatchPopout } from "~/composables/useMatchPopout";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+import {
+  embedStreamKey,
+  liveStreamKey,
+  useStoppedStreams,
+} from "~/composables/useStoppedStreams";
 
 // A popout window and the floating PiP playing the same match is just
 // noise (two players, double bandwidth). Popout wins: whenever a popout
@@ -140,6 +145,17 @@ export default {
       this.height = initialWidth / aspectRatio;
     },
     closePreview() {
+      // On the stream's own match page the inline player takes the stream
+      // back as soon as this closes and autoplays it, so closing here has
+      // to mean stop. Elsewhere it just closes.
+      const stream = this.stream as any;
+      if (this.isOnMatchPage) {
+        useStoppedStreams().stop(
+          this.isGameStreamer
+            ? liveStreamKey(stream.match_id)
+            : embedStreamKey(stream.id),
+        );
+      }
       useApplicationSettingsStore().setGlobalStream();
     },
     startResize(e: MouseEvent) {

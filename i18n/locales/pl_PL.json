@@ -7770,6 +7770,9 @@
       "loading_replay": "Wczytywanie powtórki",
       "replay_failed": "Nie udało się wczytać powtórki",
       "staff_only": "Tylko dla obsługi",
+      "stop": "Zatrzymaj transmisję",
+      "stopped": "Transmisja zatrzymana",
+      "resume": "Oglądaj",
       "card": {
         "final": "Wynik końcowy",
         "replay": "Powtórka",

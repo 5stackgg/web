@@ -7772,6 +7772,9 @@
       "loading_replay": "Loading the replay",
       "replay_failed": "The replay didn't load",
       "staff_only": "Staff only",
+      "stop": "Stop stream",
+      "stopped": "Stream stopped",
+      "resume": "Watch",
       "card": {
         "final": "Final",
         "replay": "Replay",

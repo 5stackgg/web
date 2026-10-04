@@ -7770,6 +7770,9 @@
       "loading_replay": "正在加载回放",
       "replay_failed": "回放加载失败",
       "staff_only": "仅限工作人员",
+      "stop": "停止直播",
+      "stopped": "直播已停止",
+      "resume": "观看",
       "card": {
         "final": "最终比分",
         "replay": "回放",

@@ -7770,6 +7770,9 @@
       "loading_replay": "Indlæser genudsendelsen",
       "replay_failed": "Genudsendelsen kunne ikke indlæses",
       "staff_only": "Kun for staff",
+      "stop": "Stop streamen",
+      "stopped": "Streamen er stoppet",
+      "resume": "Se med",
       "card": {
         "final": "Slutresultat",
         "replay": "Genudsendelse",

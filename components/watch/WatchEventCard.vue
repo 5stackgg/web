@@ -18,6 +18,7 @@ import {
   matchTypeLabel,
   tournamentChampion,
   tournamentRowState,
+  eventOrganizerNames,
 } from "~/utilities/watchEventCard";
 
 const props = defineProps<{
@@ -46,19 +47,7 @@ const bannerIsVideo = computed(() =>
   props.event.banner?.mime_type?.startsWith("video/"),
 );
 
-// Same precedence as EventHero: the creator unless hidden, then co-organizers.
-const organizerNames = computed(() => {
-  const e = props.event;
-  const names: string[] = [];
-  if (!e.hide_creator_organizer && e.organizer?.name) {
-    names.push(e.organizer.name);
-  }
-  for (const entry of e.organizers || []) {
-    if (String(entry.steam_id) === String(e.organizer_steam_id)) continue;
-    if (entry.organizer?.name) names.push(entry.organizer.name);
-  }
-  return names;
-});
+const organizerNames = computed(() => eventOrganizerNames(props.event));
 
 const whenLine = computed(() => {
   const parts: string[] = [];

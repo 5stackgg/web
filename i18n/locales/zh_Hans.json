@@ -1515,6 +1515,38 @@
       },
       "tabs": {
         "upcoming": "即将开始"
+      },
+      "sections": {
+        "next_lan": "下一场 LAN",
+        "live": "进行中",
+        "open": "开放报名",
+        "upcoming": "即将开始",
+        "recent": "近期结果",
+        "results": "结果"
+      },
+      "watch_live": "观看直播",
+      "bracket": "对阵表",
+      "bracket_paused": "对阵表 · 已被管理员暂停",
+      "prize_pool_total": "总奖金 · {amount}",
+      "spots_left": "剩余 {count} 个名额 | 剩余 {count} 个名额",
+      "facts": {
+        "starts": "开始",
+        "started": "已开始",
+        "played": "举办日期",
+        "where": "地点",
+        "online": "线上",
+        "teams": "队伍",
+        "part_of": "所属活动"
+      },
+      "next_lan": {
+        "today": "今天",
+        "tomorrow": "明天",
+        "in_days": "{count} 天后 | {count} 天后"
+      },
+      "empty": {
+        "title": "暂无赛事",
+        "description": "主办方开放赛事报名后，赛事会显示在这里。",
+        "organizer": "创建一个赛事，开放报名后就会显示在这里。"
       }
     },
     "manage_tournaments": {
@@ -4833,7 +4865,31 @@
       "live_now": "正在进行",
       "upcoming": "即将开始",
       "past_events": "已结束活动",
-      "show_more": "显示更多"
+      "show_more": "显示更多",
+      "sections": {
+        "up_next": "接下来",
+        "live": "进行中",
+        "upcoming": "即将开始",
+        "past": "已结束活动",
+        "results": "结果"
+      },
+      "filter": {
+        "search_placeholder": "按名称搜索活动……",
+        "all": "全部",
+        "live": "进行中",
+        "upcoming": "即将开始",
+        "past": "已结束",
+        "no_results_title": "没有匹配的活动",
+        "no_results_description": "试试其他名称，或清除筛选条件。"
+      },
+      "counts": {
+        "count_tournaments": "赛事",
+        "count_teams": "队伍",
+        "count_players": "玩家",
+        "count_media": "照片和片段"
+      },
+      "no_tournaments": "尚未公布任何赛事。",
+      "days": "{count} 天 | {count} 天"
     },
     "manage_events": {
       "title": "管理活动",
@@ -11496,5 +11552,34 @@
       "not_found_title": "未找到服务器",
       "not_found_description": "此服务器不存在或未公开。"
     }
+  },
+  "quick_look": {
+    "title": "快速预览",
+    "at": "快速预览：{name}",
+    "position": "{index} / {total}",
+    "open_tournament": "打开赛事",
+    "join_free_agent": "以自由选手身份报名",
+    "registration": "报名",
+    "final_standings": "最终排名",
+    "map_pool": "地图池",
+    "join": {
+      "teams": "队伍以完整的 {type} 阵容报名。",
+      "both": "队伍和自由选手均可报名。自由选手会被选入队伍。",
+      "free_agents": "选手单独报名，之后被选入队伍。",
+      "invite": "仅限邀请。请向主办方申请名额。"
+    },
+    "elo": {
+      "range": "每位选手的 ELO 均在 {min}–{max}",
+      "min": "每位选手的 ELO 至少为 {min}",
+      "max": "每位选手的 ELO 至多为 {max}"
+    },
+    "check_in": {
+      "captains": "由队长为队伍签到",
+      "players": "每位选手各自签到",
+      "admin": "由管理员为队伍签到",
+      "opens": "开赛前 {minutes} 分钟开放"
+    },
+    "cancelled": "主办方在开赛前取消了此赛事。",
+    "cancelled_min_teams": "报名队伍不足，赛事已取消。"
   }
 }

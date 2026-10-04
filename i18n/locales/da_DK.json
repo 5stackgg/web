@@ -1515,6 +1515,38 @@
       },
       "tabs": {
         "upcoming": "Kommende"
+      },
+      "sections": {
+        "next_lan": "Næste LAN",
+        "live": "Live",
+        "open": "Åben for tilmelding",
+        "upcoming": "Kommende",
+        "recent": "Seneste resultater",
+        "results": "Resultater"
+      },
+      "watch_live": "Se live",
+      "bracket": "Turneringsskema",
+      "bracket_paused": "Turneringsskema · sat på pause af en admin",
+      "prize_pool_total": "Præmiepulje · {amount}",
+      "spots_left": "{count} plads tilbage | {count} pladser tilbage",
+      "facts": {
+        "starts": "Starter",
+        "started": "Startede",
+        "played": "Spillet",
+        "where": "Sted",
+        "online": "Online",
+        "teams": "Hold",
+        "part_of": "Del af"
+      },
+      "next_lan": {
+        "today": "i dag",
+        "tomorrow": "i morgen",
+        "in_days": "om {count} dag | om {count} dage"
+      },
+      "empty": {
+        "title": "Ingen turneringer endnu",
+        "description": "Når en arrangør åbner tilmeldingen til en turnering, dukker den op her.",
+        "organizer": "Opret en, så dukker den op her, så snart tilmeldingen åbner."
       }
     },
     "manage_tournaments": {
@@ -4833,7 +4865,31 @@
       "live_now": "Live nu",
       "upcoming": "Kommende",
       "past_events": "Tidligere events",
-      "show_more": "Vis flere"
+      "show_more": "Vis flere",
+      "sections": {
+        "up_next": "Næste",
+        "live": "Live",
+        "upcoming": "Kommende",
+        "past": "Tidligere events",
+        "results": "Resultater"
+      },
+      "filter": {
+        "search_placeholder": "Søg events efter navn…",
+        "all": "Alle",
+        "live": "Live",
+        "upcoming": "Kommende",
+        "past": "Tidligere",
+        "no_results_title": "Ingen events matcher",
+        "no_results_description": "Prøv et andet navn, eller ryd filtrene."
+      },
+      "counts": {
+        "count_tournaments": "Turneringer",
+        "count_teams": "Hold",
+        "count_players": "Spillere",
+        "count_media": "Billeder og klip"
+      },
+      "no_tournaments": "Ingen turneringer annonceret endnu.",
+      "days": "{count} dag | {count} dage"
     },
     "manage_events": {
       "title": "Administrer events",
@@ -11496,5 +11552,34 @@
       "not_found_title": "Server Ikke Fundet",
       "not_found_description": "Denne server findes ikke eller er ikke offentlig."
     }
+  },
+  "quick_look": {
+    "title": "Hurtigt overblik",
+    "at": "Hurtigt overblik over {name}",
+    "position": "{index} af {total}",
+    "open_tournament": "Åbn turnering",
+    "join_free_agent": "Tilmeld dig som free agent",
+    "registration": "Tilmelding",
+    "final_standings": "Endelig stilling",
+    "map_pool": "Map pool",
+    "join": {
+      "teams": "Hold tilmelder sig med en fuld {type}-trup.",
+      "both": "Hold og free agents kan tilmelde sig. Free agents bliver draftet ind på hold.",
+      "free_agents": "Spillere tilmelder sig alene og bliver draftet ind på hold.",
+      "invite": "Kun med invitation. Spørg arrangøren om en plads."
+    },
+    "elo": {
+      "range": "Alle spillere med {min}–{max} ELO",
+      "min": "Alle spillere med mindst {min} ELO",
+      "max": "Alle spillere med højst {max} ELO"
+    },
+    "check_in": {
+      "captains": "Anførere checker deres hold ind",
+      "players": "Hver spiller checker ind",
+      "admin": "En admin checker holdene ind",
+      "opens": "åbner {minutes} min før start"
+    },
+    "cancelled": "Arrangøren aflyste den, før den startede.",
+    "cancelled_min_teams": "Der tilmeldte sig ikke nok hold, så den blev aflyst."
   }
 }

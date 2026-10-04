@@ -20,6 +20,8 @@ const props = defineProps<{
   embed?: boolean;
   pageScroll?: boolean;
   hideFinishedRounds?: boolean;
+  /** Height to fit both brackets into, instead of the viewport. */
+  availableHeight?: number | null;
   /** Stable key for persisting manual split ratio (e.g. "stage-id:division") */
   persistenceKey?: string;
 }>();
@@ -127,8 +129,10 @@ const effectiveRatio = computed(() => {
   return manualRatio.value ?? proportionalRatio.value;
 });
 
-const totalAvailable = computed(() =>
-  Math.max(360, viewportHeight.value - verticalReserve.value),
+const totalAvailable = computed(
+  () =>
+    props.availableHeight ??
+    Math.max(360, viewportHeight.value - verticalReserve.value),
 );
 
 const wbHeight = computed(() => {
@@ -264,6 +268,7 @@ const resetRatio = () => {
         :hide-finished-rounds="hideFinishedRounds"
         :page-scroll="pageScroll"
         :fit-height="pageScroll ? null : wbHeight"
+        :shrink-to-content="availableHeight != null"
         :sticky-top-offset="hasLB ? 44 : 0"
       />
     </div>
@@ -356,6 +361,7 @@ const resetRatio = () => {
         :hide-finished-rounds="hideFinishedRounds"
         :page-scroll="pageScroll"
         :fit-height="pageScroll ? null : lbHeight"
+        :shrink-to-content="availableHeight != null"
         :sticky-top-offset="44"
       />
     </div>

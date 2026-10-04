@@ -133,3 +133,16 @@ export function tournamentChampion(tournament: any): string | null {
   );
   return winner ? teamName(winner.team) : null;
 }
+
+// Same precedence as EventHero: the creator unless hidden, then co-organizers.
+export function eventOrganizerNames(event: any): string[] {
+  const names: string[] = [];
+  if (!event?.hide_creator_organizer && event?.organizer?.name) {
+    names.push(event.organizer.name);
+  }
+  for (const entry of event?.organizers || []) {
+    if (String(entry.steam_id) === String(event.organizer_steam_id)) continue;
+    if (entry.organizer?.name) names.push(entry.organizer.name);
+  }
+  return names;
+}

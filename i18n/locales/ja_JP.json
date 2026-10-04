@@ -1515,6 +1515,38 @@
       },
       "tabs": {
         "upcoming": "開催予定"
+      },
+      "sections": {
+        "next_lan": "次のLAN",
+        "live": "ライブ",
+        "open": "参加登録受付中",
+        "upcoming": "開催予定",
+        "recent": "最近の結果",
+        "results": "結果"
+      },
+      "watch_live": "ライブで観戦",
+      "bracket": "ブラケット",
+      "bracket_paused": "ブラケット · 管理者が一時停止中",
+      "prize_pool_total": "賞金総額 · {amount}",
+      "spots_left": "残り{count}枠 | 残り{count}枠",
+      "facts": {
+        "starts": "開始予定",
+        "started": "開始",
+        "played": "開催日",
+        "where": "場所",
+        "online": "オンライン",
+        "teams": "チーム",
+        "part_of": "所属イベント"
+      },
+      "next_lan": {
+        "today": "今日",
+        "tomorrow": "明日",
+        "in_days": "{count}日後 | {count}日後"
+      },
+      "empty": {
+        "title": "まだトーナメントはありません",
+        "description": "主催者がトーナメントの参加登録を開始すると、ここに表示されます。",
+        "organizer": "作成すると、参加登録の開始と同時にここに表示されます。"
       }
     },
     "manage_tournaments": {
@@ -4833,7 +4865,31 @@
       "live_now": "配信中",
       "upcoming": "開催予定",
       "past_events": "過去のイベント",
-      "show_more": "さらに表示"
+      "show_more": "さらに表示",
+      "sections": {
+        "up_next": "次のイベント",
+        "live": "開催中",
+        "upcoming": "開催予定",
+        "past": "過去のイベント",
+        "results": "結果"
+      },
+      "filter": {
+        "search_placeholder": "イベント名で検索…",
+        "all": "すべて",
+        "live": "開催中",
+        "upcoming": "開催予定",
+        "past": "過去",
+        "no_results_title": "該当するイベントがありません",
+        "no_results_description": "別の名前で検索するか、フィルターを解除してください。"
+      },
+      "counts": {
+        "count_tournaments": "トーナメント",
+        "count_teams": "チーム",
+        "count_players": "プレイヤー",
+        "count_media": "写真・クリップ"
+      },
+      "no_tournaments": "まだ発表されたトーナメントはありません。",
+      "days": "{count}日間 | {count}日間"
     },
     "manage_events": {
       "title": "イベント管理",
@@ -11496,5 +11552,34 @@
       "not_found_title": "サーバーが見つかりません",
       "not_found_description": "このサーバーは存在しないか、公開されていません。"
     }
+  },
+  "quick_look": {
+    "title": "クイックビュー",
+    "at": "{name}のクイックビュー",
+    "position": "{index} / {total}",
+    "open_tournament": "トーナメントを開く",
+    "join_free_agent": "フリーエージェントで参加",
+    "registration": "参加登録",
+    "final_standings": "最終順位",
+    "map_pool": "マッププール",
+    "join": {
+      "teams": "チームは{type}のフルロスターで登録します。",
+      "both": "チームとフリーエージェントが登録できます。フリーエージェントはチームにドラフトされます。",
+      "free_agents": "プレイヤーが個人で登録し、チームにドラフトされます。",
+      "invite": "招待制です。参加枠は主催者に問い合わせてください。"
+    },
+    "elo": {
+      "range": "全プレイヤーのELOが{min}–{max}",
+      "min": "全プレイヤーのELOが{min}以上",
+      "max": "全プレイヤーのELOが{max}以下"
+    },
+    "check_in": {
+      "captains": "キャプテンがチームをチェックイン",
+      "players": "全プレイヤーがチェックイン",
+      "admin": "管理者がチームをチェックイン",
+      "opens": "開始{minutes}分前に受付開始"
+    },
+    "cancelled": "開始前に主催者が中止しました。",
+    "cancelled_min_teams": "参加チームが足りなかったため、中止になりました。"
   }
 }

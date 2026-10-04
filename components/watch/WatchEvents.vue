@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ArrowRight, CalendarDays } from "lucide-vue-next";
-import WatchEventCard from "~/components/watch/WatchEventCard.vue";
+import EventFeature from "~/components/events/EventFeature.vue";
 import WatchEventCompactCard from "~/components/watch/WatchEventCompactCard.vue";
 import {
   tacticalSectionLabelClasses,
@@ -58,17 +58,7 @@ defineEmits<{
     </div>
 
     <template v-else>
-      <WatchEventCard
-        v-if="featured"
-        :event="featured"
-        :compact="compact"
-        :steps="tournamentSteps"
-        :leaderboard="leaderboard"
-        :media="mediaItems"
-        :media-count="mediaCount"
-        :plays="plays"
-        :plays-count="playsCount"
-      />
+      <EventFeature v-if="featured" :event="featured" :compact="compact" />
       <div
         v-if="secondary.length"
         class="grid gap-3 sm:grid-cols-2"
@@ -85,78 +75,13 @@ defineEmits<{
 </template>
 
 <script lang="ts">
-import gql from "graphql-tag";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, order_by } from "~/generated/zeus";
 import { eventPhaseWhere } from "~/utilities/eventDisplay";
 import {
-  tournamentProgressSteps,
-  type ProgressStep,
-} from "~/utilities/tournamentProgressSteps";
-import { tournamentRowState } from "~/utilities/watchEventCard";
-import { matchClipFields, topPlayOrderBy } from "~/graphql/matchClip";
-
-const count = [{}, { aggregate: { count: true } }] as const;
-
-const compactEventFields = {
-  id: true,
-  name: true,
-  starts_at: true,
-  ends_at: true,
-  banner: { id: true, filename: true, mime_type: true },
-  tournaments_aggregate: count,
-  teams_aggregate: count,
-  players_aggregate: count,
-  media_aggregate: count,
-};
-
-const featuredEventFields = {
-  ...compactEventFields,
-  banner_media_id: true,
-  hide_creator_organizer: true,
-  organizer_steam_id: true,
-  organizer: { name: true },
-  organizers: [{}, { steam_id: true, organizer: { name: true } }],
-  tournaments: [
-    {},
-    {
-      tournament_id: true,
-      tournament: {
-        id: true,
-        name: true,
-        status: true,
-        start: true,
-        options: { type: true },
-        prizes: [{}, { prize: true }],
-        teams_aggregate: count,
-        stages: [
-          { order_by: [{ order: order_by.asc }] },
-          {
-            type: true,
-            order: true,
-            results: [
-              {},
-              {
-                rank: true,
-                team: { name: true, team: { name: true, short_name: true } },
-              },
-            ],
-          },
-        ],
-        awards: [
-          { where: { placement: { _eq: 1 } } },
-          {
-            placement: true,
-            tournament_team: {
-              name: true,
-              team: { name: true, short_name: true },
-            },
-          },
-        ],
-      },
-    },
-  ],
-};
+  compactEventFields,
+  featuredEventFields,
+} from "~/graphql/eventCardFields";
 
 function eventsSubscription(
   phase: "live" | "upcoming" | "finished",
@@ -191,100 +116,6 @@ const finishedEventsSubscription = eventsSubscription(
   compactEventFields,
 );
 
-// Only the live tournaments of the featured event need their bracket: the
-// stepper and the "N live" on each live row.
-const liveBracketsSubscription = typedGql("subscription")({
-  tournaments: [
-    { where: { id: { _in: $("ids", "[uuid!]!") } } },
-    {
-      id: true,
-      stages: [
-        { order_by: [{ order: order_by.asc }] },
-        {
-          type: true,
-          order: true,
-          groups: true,
-          brackets: [
-            {},
-            {
-              round: true,
-              group: true,
-              path: true,
-              bye: true,
-              finished: true,
-              scheduled_at: true,
-              match: { status: true, winning_lineup_id: true },
-            },
-          ],
-        },
-      ],
-    },
-  ],
-} as any);
-
-const LEADERBOARD_QUERY = gql`
-  query WatchEventLeaderboard($eventId: uuid!) {
-    get_event_leaderboard(
-      args: {
-        _event_id: $eventId
-        _category: "rating"
-        _match_type: null
-        _min_rounds: 0
-      }
-      order_by: [{ value: desc }]
-      limit: 3
-    ) {
-      player_steam_id
-      player_name
-      player_avatar_url
-      value
-      matches_played
-    }
-  }
-`;
-
-const MEDIA_QUERY = typedGql("query")({
-  event_media: [
-    {
-      where: $("where", "event_media_bool_exp!"),
-      order_by: [{ created_at: order_by.desc }],
-      limit: 4,
-    },
-    {
-      id: true,
-      filename: true,
-      mime_type: true,
-      title: true,
-      thumbnail_filename: true,
-      external_url: true,
-    },
-  ],
-  event_media_aggregate: [
-    { where: $("where", "event_media_bool_exp!") },
-    { aggregate: { count: true } },
-  ],
-} as any);
-
-const eventPlaysWhere = {
-  visibility: { _eq: "public" },
-  match_map: {
-    match: {
-      event_links: { event_id: { _eq: $("eventId", "uuid!") } },
-    },
-  },
-};
-
-const PLAYS_QUERY = typedGql("query")({
-  match_clips: [
-    { where: eventPlaysWhere, order_by: topPlayOrderBy, limit: 3 },
-    matchClipFields,
-  ],
-  match_clips_aggregate: [
-    { where: eventPlaysWhere },
-    { aggregate: { count: true } },
-  ],
-} as any);
-
 export default {
   data() {
     return {
@@ -293,68 +124,10 @@ export default {
       liveEvents: [] as any[],
       upcomingEvents: [] as any[],
       finishedEvents: [] as any[],
-      liveTournaments: [] as any[],
-      leaderboard: [] as any[],
-      mediaItems: [] as any[],
-      mediaCount: 0,
-      plays: [] as any[],
-      playsCount: 0,
       loaded: { live: false, upcoming: false, finished: false },
     };
   },
   apollo: {
-    leaderboard: {
-      query: LEADERBOARD_QUERY,
-      fetchPolicy: "network-only",
-      variables(this: any) {
-        return { eventId: this.featured?.id };
-      },
-      skip(this: any) {
-        return !this.featured;
-      },
-      update(data: any) {
-        return data?.get_event_leaderboard ?? [];
-      },
-    },
-    mediaItems: {
-      query: MEDIA_QUERY,
-      fetchPolicy: "network-only",
-      variables(this: any) {
-        const where: Record<string, unknown> = {
-          event_id: { _eq: this.featured?.id },
-        };
-        if (this.featured?.banner_media_id) {
-          where.id = { _neq: this.featured.banner_media_id };
-        }
-        return { where };
-      },
-      skip(this: any) {
-        return !this.featured;
-      },
-      update(data: any) {
-        return data?.event_media ?? [];
-      },
-      result(this: any, { data }: any) {
-        this.mediaCount = data?.event_media_aggregate?.aggregate?.count ?? 0;
-      },
-    },
-    plays: {
-      query: PLAYS_QUERY,
-      fetchPolicy: "network-only",
-      variables(this: any) {
-        return { eventId: this.featured?.id };
-      },
-      skip(this: any) {
-        return !this.featured;
-      },
-      update(data: any) {
-        return data?.match_clips ?? [];
-      },
-      result(this: any, { data }: any) {
-        this.playsCount =
-          Number(data?.match_clips_aggregate?.aggregate?.count) || 0;
-      },
-    },
     $subscribe: {
       liveEvents: {
         query: () => liveEventsSubscription,
@@ -398,21 +171,6 @@ export default {
           console.error("[watch] finished events subscription error:", error);
         },
       },
-      liveTournaments: {
-        query: () => liveBracketsSubscription,
-        variables(this: any) {
-          return { ids: this.liveTournamentIds };
-        },
-        skip(this: any) {
-          return this.liveTournamentIds.length === 0;
-        },
-        result(this: any, { data }: any) {
-          this.liveTournaments = data?.tournaments ?? [];
-        },
-        error(error: any) {
-          console.error("[watch] live brackets subscription error:", error);
-        },
-      },
     },
   },
   computed: {
@@ -439,20 +197,6 @@ export default {
       return (this.featured?.tournaments ?? [])
         .map((entry: any) => entry.tournament)
         .filter(Boolean);
-    },
-    liveTournamentIds(): string[] {
-      return this.eventTournaments
-        .filter(
-          (tournament: any) => tournamentRowState(tournament.status) === "live",
-        )
-        .map((tournament: any) => tournament.id);
-    },
-    tournamentSteps(): Record<string, ProgressStep[]> {
-      const steps: Record<string, ProgressStep[]> = {};
-      for (const tournament of this.liveTournaments) {
-        steps[tournament.id] = tournamentProgressSteps(tournament.stages);
-      }
-      return steps;
     },
     shownTournamentIds(): string[] {
       return this.eventTournaments.map((tournament: any) => tournament.id);

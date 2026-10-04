@@ -70,6 +70,7 @@ import {
           :embed="embed"
           :page-scroll="effectivePageScroll"
           :hide-finished-rounds="hideFinishedRounds"
+          :available-height="availableHeight"
           :persistence-key="`${stage.id}:${division}`"
         />
       </TabsContent>
@@ -87,6 +88,7 @@ import {
       :embed="embed"
       :page-scroll="viewMode === 'scroll'"
       :hide-finished-rounds="hideFinishedRounds"
+      :available-height="availableHeight"
       :persistence-key="`${stage.id}:1`"
     />
   </template>
@@ -120,6 +122,10 @@ export default {
     hideFinishedRounds: {
       type: Boolean,
       default: false,
+    },
+    availableHeight: {
+      type: Number,
+      default: null,
     },
   },
   data() {

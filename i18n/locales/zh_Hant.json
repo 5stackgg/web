@@ -1515,6 +1515,38 @@
       },
       "tabs": {
         "upcoming": "即將開始"
+      },
+      "sections": {
+        "next_lan": "下一場 LAN",
+        "live": "進行中",
+        "open": "開放報名",
+        "upcoming": "即將開始",
+        "recent": "近期結果",
+        "results": "結果"
+      },
+      "watch_live": "觀看直播",
+      "bracket": "賽程表",
+      "bracket_paused": "賽程表 · 已被管理員暫停",
+      "prize_pool_total": "總獎金 · {amount}",
+      "spots_left": "剩餘 {count} 個名額 | 剩餘 {count} 個名額",
+      "facts": {
+        "starts": "開始",
+        "started": "已開始",
+        "played": "舉辦日期",
+        "where": "地點",
+        "online": "線上",
+        "teams": "隊伍",
+        "part_of": "所屬活動"
+      },
+      "next_lan": {
+        "today": "今天",
+        "tomorrow": "明天",
+        "in_days": "{count} 天後 | {count} 天後"
+      },
+      "empty": {
+        "title": "尚無賽事",
+        "description": "主辦方開放賽事報名後，賽事會顯示在這裡。",
+        "organizer": "建立一個賽事，開放報名後就會顯示在這裡。"
       }
     },
     "manage_tournaments": {
@@ -4833,7 +4865,31 @@
       "live_now": "正在進行",
       "upcoming": "即將開始",
       "past_events": "已結束活動",
-      "show_more": "顯示更多"
+      "show_more": "顯示更多",
+      "sections": {
+        "up_next": "接下來",
+        "live": "進行中",
+        "upcoming": "即將開始",
+        "past": "已結束活動",
+        "results": "結果"
+      },
+      "filter": {
+        "search_placeholder": "依名稱搜尋活動……",
+        "all": "全部",
+        "live": "進行中",
+        "upcoming": "即將開始",
+        "past": "已結束",
+        "no_results_title": "沒有相符的活動",
+        "no_results_description": "試試其他名稱，或清除篩選條件。"
+      },
+      "counts": {
+        "count_tournaments": "賽事",
+        "count_teams": "隊伍",
+        "count_players": "玩家",
+        "count_media": "照片與片段"
+      },
+      "no_tournaments": "尚未公布任何賽事。",
+      "days": "{count} 天 | {count} 天"
     },
     "manage_events": {
       "title": "管理活動",
@@ -11496,5 +11552,34 @@
       "not_found_title": "找不到伺服器",
       "not_found_description": "此伺服器不存在或未公開。"
     }
+  },
+  "quick_look": {
+    "title": "快速預覽",
+    "at": "快速預覽：{name}",
+    "position": "{index} / {total}",
+    "open_tournament": "開啟賽事",
+    "join_free_agent": "以自由選手身分報名",
+    "registration": "報名",
+    "final_standings": "最終排名",
+    "map_pool": "地圖池",
+    "join": {
+      "teams": "隊伍以完整的 {type} 陣容報名。",
+      "both": "隊伍與自由選手皆可報名。自由選手會被選入隊伍。",
+      "free_agents": "選手單獨報名，之後被選入隊伍。",
+      "invite": "僅限邀請。請向主辦方申請名額。"
+    },
+    "elo": {
+      "range": "每位選手的 ELO 皆在 {min}–{max}",
+      "min": "每位選手的 ELO 至少為 {min}",
+      "max": "每位選手的 ELO 至多為 {max}"
+    },
+    "check_in": {
+      "captains": "由隊長為隊伍報到",
+      "players": "每位選手各自報到",
+      "admin": "由管理員為隊伍報到",
+      "opens": "開賽前 {minutes} 分鐘開放"
+    },
+    "cancelled": "主辦方在開賽前取消了此賽事。",
+    "cancelled_min_teams": "報名隊伍不足，賽事已取消。"
   }
 }

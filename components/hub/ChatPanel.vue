@@ -668,6 +668,21 @@ function handleCloseRoom() {
   activeChatId.value = activeTabId.value;
 }
 
+// The header's title strip does nothing on click, so a press there must not
+// pull focus out of the composer -- and a click there puts it back.
+const HEADER_CONTROL = "button, a, input, textarea, select, [role='button']";
+
+function keepComposerFocus(event: MouseEvent) {
+  if ((event.target as HTMLElement).closest(HEADER_CONTROL)) return;
+  event.preventDefault();
+}
+
+function focusComposerFromHeader(event: MouseEvent) {
+  if (isMobile.value || !activeChatId.value) return;
+  if ((event.target as HTMLElement).closest(HEADER_CONTROL)) return;
+  lobbies[activeChatId.value]?.focusComposer?.();
+}
+
 function handlePopOut() {
   const id = activeChatId.value;
   if (!id) return;
@@ -930,6 +945,8 @@ function handlePopOut() {
         <!-- Header with channel title + participants + controls -->
         <div
           class="flex items-center justify-between gap-3 px-3 py-3 border-b border-border bg-card/30"
+          @mousedown="keepComposerFocus"
+          @click="focusComposerFromHeader"
         >
           <div class="min-w-0 flex items-center gap-3">
             <div class="min-w-0">

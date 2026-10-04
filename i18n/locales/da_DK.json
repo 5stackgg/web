@@ -8850,6 +8850,10 @@
     "highlights": {
       "clip_count": "{count} klip"
     },
+    "header": {
+      "final": "Slutresultat",
+      "winner": "Vinder"
+    },
     "utility": {
       "title": "Utility mod opstillinger",
       "description": "Granater kastet i denne kamp, sammenholdt med opstillingsbiblioteket ud fra hvor de blev kastet fra, og hvor de landede.",

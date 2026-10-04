@@ -8850,6 +8850,10 @@
     "highlights": {
       "clip_count": "{count} klipp"
     },
+    "header": {
+      "final": "Slutresultat",
+      "winner": "Vinnare"
+    },
     "utility": {
       "title": "Utility mot uppställningar",
       "description": "Granater kastade i den här matchen, jämförda med uppställningsbiblioteket utifrån var de kastades och var de landade.",

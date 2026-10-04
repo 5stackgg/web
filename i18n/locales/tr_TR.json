@@ -8850,6 +8850,10 @@
     "highlights": {
       "clip_count": "{count} klip"
     },
+    "header": {
+      "final": "Bitti",
+      "winner": "Kazanan"
+    },
     "utility": {
       "title": "Utility ve Dizilimler",
       "description": "Bu maçta atılan bombalar, nereden atıldıkları ve nereye düştüklerine göre dizilim kütüphanesiyle eşleştirildi.",

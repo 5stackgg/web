@@ -8850,6 +8850,10 @@
     "highlights": {
       "clip_count": "{count} Clips"
     },
+    "header": {
+      "final": "Endstand",
+      "winner": "Sieger"
+    },
     "utility": {
       "title": "Utility vs. Lineups",
       "description": "In diesem Match geworfene Granaten, abgeglichen mit der Lineup-Bibliothek über Wurf- und Landepunkt.",

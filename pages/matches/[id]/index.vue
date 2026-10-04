@@ -1,20 +1,16 @@
 <script setup lang="ts">
-import { dateLocale } from "~/utilities/dateLocale";
 import { computed, markRaw, onUnmounted, provide, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
 import gql from "graphql-tag";
-import { NuxtLink } from "#components";
 import { useMatchClips } from "~/composables/useMatchClips";
 import MatchTabs from "~/components/match/MatchTabs.vue";
-import AnimatedStat from "~/components/AnimatedStat.vue";
 import MatchMaps from "~/components/match/MatchMaps.vue";
 import MatchAdminBottomBar from "~/components/match/MatchAdminBottomBar.vue";
 import MatchInfo from "~/components/match/MatchInfo.vue";
 import CameraRequirementOverlay from "~/components/match/CameraRequirementOverlay.vue";
 import MatchHighlightsReel from "~/components/match/MatchHighlightsReel.vue";
-import MatchActions from "~/components/match/MatchActions.vue";
-import MatchSourceBadge from "~/components/MatchSourceBadge.vue";
+import MatchHeader from "~/components/match/MatchHeader.vue";
 import MatchRegionVeto from "~/components/match/MatchRegionVeto.vue";
 import { e_match_status_enum } from "~/generated/zeus";
 import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
@@ -26,8 +22,6 @@ import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
 import VoiceChannelCard from "~/components/voice/VoiceChannelCard.vue";
-import TimeAgo from "~/components/TimeAgo.vue";
-import { AlertTriangle } from "lucide-vue-next";
 import { useMatchContext } from "~/composables/useMatchContext";
 
 definePageMeta({
@@ -127,41 +121,6 @@ watch(
   { immediate: true },
 );
 onUnmounted(() => rankSub?.unsubscribe());
-
-const heroClasses =
-  "relative min-w-0 max-w-full px-6 pt-5 pb-6 max-sm:p-4 border border-border [background:linear-gradient(180deg,hsl(var(--card)/0.2)_0%,hsl(var(--card)/0.04)_100%)]";
-
-const statusBaseClasses =
-  "inline-flex items-center gap-2 px-[0.7rem] py-[0.3rem] font-mono text-[0.68rem] font-bold tracking-[0.2em] uppercase border rounded";
-
-const statusTierClasses: Record<string, string> = {
-  live: "bg-[hsl(var(--destructive)/0.15)] border-[hsl(var(--destructive)/0.6)] text-destructive",
-  pending:
-    "bg-[hsl(var(--tac-amber)/0.12)] border-[hsl(var(--tac-amber)/0.5)] text-[hsl(var(--tac-amber))]",
-  veto: "bg-[hsl(var(--topnav-accent)/0.15)] border-[hsl(var(--topnav-accent)/0.5)] text-[hsl(var(--topnav-accent))]",
-  finished:
-    "bg-[hsl(var(--success)/0.15)] border-[hsl(var(--success)/0.5)] text-success",
-  ended: "bg-[hsl(var(--muted)/0.4)] border-border text-muted-foreground",
-  neutral: "bg-[hsl(var(--muted)/0.3)] border-border text-muted-foreground",
-};
-
-const teamClasses =
-  "relative grid font-sans font-bold [font-stretch:80%] text-[clamp(1.5rem,3.5vw,2.75rem)] leading-[0.95] tracking-[0.02em] uppercase min-w-0 max-w-full break-words";
-
-const teamMainClasses =
-  "col-start-1 row-start-1 relative bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent";
-
-const teamMainWinnerClasses =
-  "from-[hsl(var(--tac-amber))] to-[hsl(var(--tac-amber))]";
-
-const teamGhostClasses =
-  "col-start-1 row-start-1 translate-x-1 translate-y-1 text-transparent [-webkit-text-stroke:1px_hsl(var(--tac-amber)/0.3)] pointer-events-none select-none";
-
-const scoreClasses =
-  "font-sans font-extrabold [font-stretch:80%] text-[clamp(2.5rem,5vw,4rem)] leading-none text-[hsl(var(--muted-foreground)/0.6)] [font-variant-numeric:tabular-nums] transition-colors duration-200 ease";
-
-const vsBaseClasses =
-  "font-mono text-[0.8rem] font-bold tracking-[0.3em] text-muted-foreground px-[0.6rem] py-[0.35rem] border border-border bg-[hsl(var(--card)/0.5)]";
 </script>
 
 <template>
@@ -195,338 +154,62 @@ const vsBaseClasses =
           : 'grid-rows-[0fr]'
       "
     >
-    <div class="overflow-hidden min-h-0">
-    <button
-      type="button"
-      class="camera-nag flex w-full items-center gap-3 rounded-lg border border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.12)] px-4 py-3 text-left transition-[background-color,opacity] duration-300 hover:bg-[hsl(var(--tac-amber)/0.2)]"
-      :class="cameraOverlayDismissed ? 'opacity-100 delay-200' : 'opacity-0'"
-      :tabindex="cameraOverlayDismissed ? 0 : -1"
-      :aria-hidden="!cameraOverlayDismissed"
-      @click="cameraOverlayDismissed = false"
-    >
-      <span
-        class="relative flex size-2 flex-shrink-0"
-        aria-hidden="true"
-      >
-        <span
-          class="absolute inline-flex size-full animate-ping rounded-full bg-[hsl(var(--tac-amber))] opacity-75"
-        ></span>
-        <span
-          class="relative inline-flex size-2 rounded-full bg-[hsl(var(--tac-amber))]"
-        ></span>
-      </span>
-
-      <span class="min-w-0 flex-1">
-        <span
-          class="block font-mono text-[0.62rem] font-bold uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
+      <div class="overflow-hidden min-h-0">
+        <button
+          type="button"
+          class="camera-nag flex w-full items-center gap-3 rounded-lg border border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.12)] px-4 py-3 text-left transition-[background-color,opacity] duration-300 hover:bg-[hsl(var(--tac-amber)/0.2)]"
+          :class="
+            cameraOverlayDismissed ? 'opacity-100 delay-200' : 'opacity-0'
+          "
+          :tabindex="cameraOverlayDismissed ? 0 : -1"
+          :aria-hidden="!cameraOverlayDismissed"
+          @click="cameraOverlayDismissed = false"
         >
-          {{ $t("camera.title") }}
-        </span>
-        <span class="block text-xs text-muted-foreground">
-          {{ $t("camera.nag") }}
-        </span>
-      </span>
+          <span class="relative flex size-2 flex-shrink-0" aria-hidden="true">
+            <span
+              class="absolute inline-flex size-full animate-ping rounded-full bg-[hsl(var(--tac-amber))] opacity-75"
+            ></span>
+            <span
+              class="relative inline-flex size-2 rounded-full bg-[hsl(var(--tac-amber))]"
+            ></span>
+          </span>
 
-      <span
-        class="flex-shrink-0 font-mono text-[0.62rem] font-bold uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
-      >
-        {{ $t("camera.nag_action") }}
-      </span>
-    </button>
-    </div>
+          <span class="min-w-0 flex-1">
+            <span
+              class="block font-mono text-[0.62rem] font-bold uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
+            >
+              {{ $t("camera.title") }}
+            </span>
+            <span class="block text-xs text-muted-foreground">
+              {{ $t("camera.nag") }}
+            </span>
+          </span>
+
+          <span
+            class="flex-shrink-0 font-mono text-[0.62rem] font-bold uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
+          >
+            {{ $t("camera.nag_action") }}
+          </span>
+        </button>
+      </div>
     </div>
     <template v-if="match">
       <PageTransition>
-        <header :class="heroClasses">
+        <!-- The match stage: scorebug band on top, highlights underneath, one
+             rounded surface. The highlights fold in when the clips arrive. -->
+        <section
+          class="relative isolate overflow-hidden rounded-2xl bg-muted/20 after:pointer-events-none after:absolute after:inset-0 after:rounded-[inherit] after:ring-1 after:ring-inset after:ring-white/[0.07]"
+        >
+          <MatchHeader :match="match" />
           <div
-            class="flex items-center gap-3 flex-wrap mb-5 max-sm:mb-[0.85rem]"
+            class="grid transition-[grid-template-rows] [transition-duration:240ms] ease-out motion-reduce:transition-none"
+            :class="hasMatchClips ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
           >
-            <span
-              :class="[
-                statusBaseClasses,
-                statusTierClasses[statusTier] || statusTierClasses.neutral,
-              ]"
-            >
-              <span class="w-[6px] h-[6px] bg-current rounded-full"></span>
-              {{ match.e_match_status?.description || match.status }}
-            </span>
-            <TimeAgo
-              v-if="
-                match.status === e_match_status_enum.Finished && match.ended_at
-              "
-              :date="match.ended_at"
-              class="font-mono text-[0.7rem] tracking-[0.2em] uppercase text-muted-foreground"
-            />
-            <span
-              v-if="match.label"
-              class="font-mono text-[0.7rem] tracking-[0.2em] uppercase text-muted-foreground"
-            >
-              {{ match.label }}
-            </span>
-            <NuxtLink
-              v-if="tournamentContext"
-              :to="`/tournaments/${tournamentContext.id}`"
-              class="inline-flex items-center gap-[0.4rem] font-mono text-[0.72rem] tracking-[0.15em] uppercase text-muted-foreground [transition:color_140ms_ease] hover:text-[hsl(var(--tac-amber))] max-sm:w-full max-sm:ml-0"
-            >
-              <span class="text-[hsl(var(--tac-amber))] text-[0.65rem]">◢</span>
-              {{ tournamentContext.name }}
-            </NuxtLink>
-
-            <div class="inline-flex items-center gap-2 ml-auto">
-              <span
-                v-if="match.options?.type"
-                class="inline-flex items-center self-stretch px-[0.7rem] font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] leading-none rounded border border-border/70 bg-muted/35 text-muted-foreground"
-              >
-                {{ match.options.type }}
-              </span>
-              <MatchSourceBadge
-                v-if="match.source !== 'faceit'"
-                :source="match.source"
-                class="self-stretch px-[0.7rem] text-[0.62rem] leading-none"
-              />
-              <MatchActions :match="match" />
+            <div class="min-h-0 overflow-hidden">
+              <MatchHighlightsReel v-if="hasMatchClips" :match="match" />
             </div>
           </div>
-
-          <div
-            class="flex flex-col gap-4 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:gap-6 items-stretch lg:items-center"
-          >
-            <div
-              class="flex items-center gap-3 min-w-0 justify-center text-center lg:justify-start lg:text-left"
-            >
-              <component
-                :is="lineup1TeamId ? NuxtLink : 'div'"
-                :to="lineup1TeamId ? `/teams/${lineup1TeamId}` : undefined"
-                class="shrink-0 h-12 w-12 border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.1)] flex items-center justify-center overflow-hidden"
-                :class="
-                  lineup1TeamId &&
-                  'transition-opacity hover:opacity-80 cursor-pointer'
-                "
-              >
-                <img
-                  v-if="lineup1AvatarSrc"
-                  :src="lineup1AvatarSrc"
-                  :alt="lineup1Name"
-                  class="h-full w-full object-cover"
-                />
-                <span
-                  v-else
-                  class="font-mono text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
-                >
-                  {{ (lineup1Name || "?").slice(0, 3) }}
-                </span>
-              </component>
-              <div
-                class="flex flex-col gap-[0.35rem] min-w-0 items-start lg:items-start"
-              >
-                <span
-                  class="font-mono text-[0.6rem] tracking-[0.28em] uppercase text-muted-foreground/70"
-                >
-                  {{ $t("match.lineup.lineup_1") }}
-                </span>
-                <NuxtLink
-                  v-if="lineup1TeamId"
-                  :to="`/teams/${lineup1TeamId}`"
-                  :class="[
-                    teamClasses,
-                    match.winning_lineup_id === match.lineup_1_id &&
-                      'is-winner',
-                    'transition-opacity hover:opacity-80 cursor-pointer',
-                  ]"
-                >
-                  <span :class="teamGhostClasses" aria-hidden="true">
-                    {{ lineup1Name }}
-                  </span>
-                  <span
-                    :class="[
-                      teamMainClasses,
-                      match.winning_lineup_id === match.lineup_1_id &&
-                        teamMainWinnerClasses,
-                    ]"
-                  >
-                    {{ lineup1Name }}
-                  </span>
-                </NuxtLink>
-                <div
-                  v-else
-                  :class="[
-                    teamClasses,
-                    match.winning_lineup_id === match.lineup_1_id &&
-                      'is-winner',
-                  ]"
-                >
-                  <span :class="teamGhostClasses" aria-hidden="true">
-                    {{ lineup1Name }}
-                  </span>
-                  <span
-                    :class="[
-                      teamMainClasses,
-                      match.winning_lineup_id === match.lineup_1_id &&
-                        teamMainWinnerClasses,
-                    ]"
-                  >
-                    {{ lineup1Name }}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div class="flex items-center justify-center">
-              <div v-if="hasScores" class="inline-flex items-center gap-4">
-                <span
-                  :class="[
-                    scoreClasses,
-                    mapScores.l1 > mapScores.l2 &&
-                      '!text-[hsl(var(--tac-amber))] [text-shadow:0_0_18px_hsl(var(--tac-amber)/0.35)]',
-                  ]"
-                >
-                  <AnimatedStat :value="mapScores.l1" />
-                </span>
-                <span :class="[vsBaseClasses, 'uppercase']">{{
-                  $t("common.vs")
-                }}</span>
-                <span
-                  :class="[
-                    scoreClasses,
-                    mapScores.l2 > mapScores.l1 &&
-                      '!text-[hsl(var(--tac-amber))] [text-shadow:0_0_18px_hsl(var(--tac-amber)/0.35)]',
-                  ]"
-                >
-                  <AnimatedStat :value="mapScores.l2" />
-                </span>
-              </div>
-              <span
-                v-else
-                :class="[vsBaseClasses, 'text-base px-4 py-[0.6rem] uppercase']"
-                >{{ $t("common.vs") }}</span
-              >
-            </div>
-
-            <div
-              class="flex items-center gap-3 min-w-0 justify-center text-center lg:justify-end lg:text-right flex-row-reverse lg:flex-row"
-            >
-              <div
-                class="flex flex-col gap-[0.35rem] min-w-0 items-start lg:items-end"
-              >
-                <span
-                  class="font-mono text-[0.6rem] tracking-[0.28em] uppercase text-muted-foreground/70"
-                >
-                  {{ $t("match.lineup.lineup_2") }}
-                </span>
-                <NuxtLink
-                  v-if="lineup2TeamId"
-                  :to="`/teams/${lineup2TeamId}`"
-                  :class="[
-                    teamClasses,
-                    match.winning_lineup_id === match.lineup_2_id &&
-                      'is-winner',
-                    'transition-opacity hover:opacity-80 cursor-pointer',
-                  ]"
-                >
-                  <span :class="teamGhostClasses" aria-hidden="true">
-                    {{ lineup2Name }}
-                  </span>
-                  <span
-                    :class="[
-                      teamMainClasses,
-                      match.winning_lineup_id === match.lineup_2_id &&
-                        teamMainWinnerClasses,
-                    ]"
-                  >
-                    {{ lineup2Name }}
-                  </span>
-                </NuxtLink>
-                <div
-                  v-else
-                  :class="[
-                    teamClasses,
-                    match.winning_lineup_id === match.lineup_2_id &&
-                      'is-winner',
-                  ]"
-                >
-                  <span :class="teamGhostClasses" aria-hidden="true">
-                    {{ lineup2Name }}
-                  </span>
-                  <span
-                    :class="[
-                      teamMainClasses,
-                      match.winning_lineup_id === match.lineup_2_id &&
-                        teamMainWinnerClasses,
-                    ]"
-                  >
-                    {{ lineup2Name }}
-                  </span>
-                </div>
-              </div>
-              <component
-                :is="lineup2TeamId ? NuxtLink : 'div'"
-                :to="lineup2TeamId ? `/teams/${lineup2TeamId}` : undefined"
-                class="shrink-0 h-12 w-12 border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.1)] flex items-center justify-center overflow-hidden"
-                :class="
-                  lineup2TeamId &&
-                  'transition-opacity hover:opacity-80 cursor-pointer'
-                "
-              >
-                <img
-                  v-if="lineup2AvatarSrc"
-                  :src="lineup2AvatarSrc"
-                  :alt="lineup2Name"
-                  class="h-full w-full object-cover"
-                />
-                <span
-                  v-else
-                  class="font-mono text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
-                >
-                  {{ (lineup2Name || "?").slice(0, 3) }}
-                </span>
-              </component>
-            </div>
-          </div>
-
-          <div
-            class="flex items-center gap-[0.6rem] justify-center flex-wrap mt-4 pt-[0.85rem] border-t border-border font-mono text-[0.72rem] tracking-[0.15em] uppercase text-muted-foreground"
-          >
-            <span
-              v-if="showAutoCancel"
-              class="inline-flex items-center gap-[0.3rem] text-[0.6rem] leading-none tracking-[0.12em] text-destructive"
-              :title="$t('match.auto_canceling')"
-            >
-              <AlertTriangle class="w-2.5 h-2.5 shrink-0" />
-              <span>{{ $t("match.auto_canceling") }}</span>
-              <TimeAgo :date="match.cancels_at" countdown hide-icon />
-            </span>
-            <span
-              v-if="showAutoCancel && isNative && match.options?.best_of"
-              class="opacity-40"
-              >·</span
-            >
-            <span v-if="isNative && match.options?.best_of">
-              {{
-                $t("match.options.best_of.option", {
-                  count: match.options.best_of,
-                })
-              }}
-            </span>
-            <span
-              v-if="isNative && match.e_region?.description"
-              class="opacity-40"
-              >·</span
-            >
-            <span v-if="isNative && match.e_region?.description">
-              {{ match.e_region.description }}
-            </span>
-            <span v-if="isNative && formattedSchedule" class="opacity-40"
-              >·</span
-            >
-            <span v-if="formattedSchedule">
-              {{ formattedSchedule }}
-            </span>
-          </div>
-        </header>
-      </PageTransition>
-
-      <PageTransition v-if="hasMatchClips" :delay="60">
-        <MatchHighlightsReel :match="match" />
+        </section>
       </PageTransition>
 
       <div
@@ -1134,107 +817,6 @@ export default {
           ? { tournament: { id: tournament.id, name: tournament.name } }
           : {}),
       };
-    },
-    apiDomain() {
-      return useRuntimeConfig().public.apiDomain;
-    },
-    lineup1Name() {
-      return this.match?.lineup_1?.name || this.$t("match.lineup.lineup_1");
-    },
-    lineup2Name() {
-      return this.match?.lineup_2?.name || this.$t("match.lineup.lineup_2");
-    },
-    lineup1AvatarSrc() {
-      const avatarUrl = this.match?.lineup_1?.team?.avatar_url;
-      if (!avatarUrl) return null;
-      return `https://${this.apiDomain}/${avatarUrl}`;
-    },
-    lineup2AvatarSrc() {
-      const avatarUrl = this.match?.lineup_2?.team?.avatar_url;
-      if (!avatarUrl) return null;
-      return `https://${this.apiDomain}/${avatarUrl}`;
-    },
-    lineup1TeamId() {
-      return this.match?.lineup_1?.team_id ?? null;
-    },
-    lineup2TeamId() {
-      return this.match?.lineup_2?.team_id ?? null;
-    },
-    mapScores() {
-      const maps = this.match?.match_maps || [];
-      const l1Id = this.match?.lineup_1_id;
-      const l2Id = this.match?.lineup_2_id;
-      let l1 = 0;
-      let l2 = 0;
-      for (const m of maps) {
-        if (m.winning_lineup_id === l1Id) l1++;
-        else if (m.winning_lineup_id === l2Id) l2++;
-      }
-      return { l1, l2 };
-    },
-    hasScores() {
-      const scoreStates = [
-        e_match_status_enum.Live,
-        e_match_status_enum.Finished,
-        e_match_status_enum.Forfeit,
-        e_match_status_enum.Surrendered,
-        e_match_status_enum.Tie,
-      ];
-      return (
-        this.match?.status &&
-        scoreStates.includes(this.match.status) &&
-        this.mapScores.l1 + this.mapScores.l2 > 0
-      );
-    },
-    statusTier() {
-      const s = this.match?.status;
-      if (s === e_match_status_enum.Live) return "live";
-      if (
-        s === e_match_status_enum.Scheduled ||
-        s === e_match_status_enum.WaitingForCheckIn ||
-        s === e_match_status_enum.WaitingForServer
-      ) {
-        return "pending";
-      }
-      if (
-        s === e_match_status_enum.Veto ||
-        s === e_match_status_enum.PickingPlayers
-      ) {
-        return "veto";
-      }
-      if (s === e_match_status_enum.Finished) return "finished";
-      if (
-        s === e_match_status_enum.Forfeit ||
-        s === e_match_status_enum.Surrendered ||
-        s === e_match_status_enum.Canceled
-      ) {
-        return "ended";
-      }
-      return "neutral";
-    },
-    tournamentContext() {
-      return this.match?.tournament_brackets?.[0]?.stage?.tournament ?? null;
-    },
-    showAutoCancel() {
-      return (
-        this.match?.cancels_at &&
-        this.match.status !== e_match_status_enum.Canceled
-      );
-    },
-    formattedSchedule() {
-      const when = this.match?.scheduled_at || this.match?.ended_at;
-      if (!when) return null;
-      try {
-        return new Date(when).toLocaleString(dateLocale(), {
-          dateStyle: "medium",
-          timeStyle: "short",
-        });
-      } catch {
-        return null;
-      }
-    },
-    isNative() {
-      return !this.match?.source || this.match.source === "5stack";
     },
     showVetoPicks() {
       if (!this.match) return false;

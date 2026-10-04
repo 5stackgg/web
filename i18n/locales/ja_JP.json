@@ -8850,6 +8850,10 @@
     "highlights": {
       "clip_count": "{count} クリップ"
     },
+    "header": {
+      "final": "最終結果",
+      "winner": "勝者"
+    },
     "utility": {
       "title": "ユーティリティとラインナップ",
       "description": "この試合で投げられたグレネードを、投げた位置と着弾位置でラインナップライブラリと照合しています。",

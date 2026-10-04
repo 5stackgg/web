@@ -8850,6 +8850,10 @@
     "highlights": {
       "clip_count": "{count} clipes"
     },
+    "header": {
+      "final": "Encerrada",
+      "winner": "Vencedor"
+    },
     "utility": {
       "title": "Utilitário vs lineups",
       "description": "Granadas arremessadas nesta partida, comparadas com a biblioteca de lineups por onde foram jogadas e onde caíram.",

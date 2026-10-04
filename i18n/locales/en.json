@@ -7799,7 +7799,7 @@
     "match_scheduled_for": "Match scheduled for {time}.",
     "start_now_or_schedule": "Start the match now or schedule it for later.",
     "keyboard_shortcuts": "Keyboard shortcuts",
-    "up_next": "Up Next",
+    "up_next": "Up next",
     "head_to_head_matrix": {
       "damage": "Damage",
       "your_weapons": "Your weapons",
@@ -8851,6 +8851,10 @@
     },
     "highlights": {
       "clip_count": "{count} clips"
+    },
+    "header": {
+      "final": "Final",
+      "winner": "Winner"
     },
     "utility": {
       "title": "Utility vs Lineups",

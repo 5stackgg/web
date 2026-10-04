@@ -8850,6 +8850,10 @@
     "highlights": {
       "clip_count": "{count} clips"
     },
+    "header": {
+      "final": "Score final",
+      "winner": "Vainqueur"
+    },
     "utility": {
       "title": "Utilitaire vs lineups",
       "description": "Les grenades lancées dans ce match, rapprochées de la bibliothèque de lineups par leur point de départ et leur point d'arrivée.",

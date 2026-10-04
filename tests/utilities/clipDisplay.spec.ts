@@ -56,6 +56,71 @@ describe("clipKillTier", () => {
     expect(clipKillTier({ kills_count: 7, round: 9 }, t)?.marks).toBe(false);
   });
 
+  it("isn't an ace when the fifth kill is a knife kill from another round", () => {
+    // Rows rendered before the API stopped counting the appended knife kill.
+    expect(
+      clipKillTier(
+        {
+          kills_count: 5,
+          round: 9,
+          title: "k1tty — Best Round (4K) + 1 Knife Kill",
+        },
+        t,
+      ),
+    ).toEqual({
+      marks: true,
+      filled: 4,
+      label: 'clips.tile.kills.multi:{"n":4}',
+    });
+    expect(
+      clipKillTier(
+        {
+          kills_count: 4,
+          round: 9,
+          title: "k1tty — Best Round (4K) + 1 Knife Kill",
+        },
+        t,
+      )?.filled,
+    ).toBe(4);
+  });
+
+  it("keeps an ace that has the knife kill in the same round", () => {
+    expect(
+      clipKillTier(
+        { kills_count: 5, round: 9, title: "k1tty — Best Round (5K)" },
+        t,
+      )?.label,
+    ).toBe("clips.tile.kills.ace");
+  });
+
+  it("shows a total for reels cut from several rounds", () => {
+    for (const title of [
+      "k1tty — Multi-Kills (1× 3K, 1× 2K)",
+      "k1tty — Multi-Kills (2× 2K)",
+      "k1tty — 5 Knife Kills",
+      "k1tty — Match Recap (5 kills · 4 clips)",
+    ]) {
+      expect(clipKillTier({ kills_count: 5, round: 3, title }, t)).toEqual({
+        marks: false,
+        filled: 0,
+        label: 'clips.tile.kills.total:{"count":5}',
+      });
+    }
+  });
+
+  it("marks reels that stay in one round", () => {
+    for (const title of [
+      "k1tty — Multi-Kills (1× 4K)",
+      "k1tty — 1 Knife Kill",
+      "k1tty — Match Recap (4 kills · 1 clip)",
+      "Clutch on B",
+    ]) {
+      expect(clipKillTier({ kills_count: 1, round: 3, title }, t)?.marks).toBe(
+        true,
+      );
+    }
+  });
+
   it("shows nothing without kills", () => {
     expect(clipKillTier({ kills_count: 0, round: 4 }, t)).toBeNull();
     expect(clipKillTier({ kills_count: null, round: null }, t)).toBeNull();

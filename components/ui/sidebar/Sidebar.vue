@@ -38,7 +38,8 @@ const showSeparators = computed(() => {
       data-sidebar="sidebar"
       data-mobile="true"
       :side="side"
-      class="w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
+      :class="cn('w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden', props.sheetClass)"
+      :overlay-class="props.sheetOverlayClass"
       :style="{
         '--sidebar-width': SIDEBAR_WIDTH_MOBILE,
       }"

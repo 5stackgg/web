@@ -81,6 +81,12 @@ const {
   setActiveTab,
 } = useChatTabs();
 const { hasNotifications, unreadNotificationCount } = useNotificationBadge();
+
+// A new notification shakes the bell once; ones already waiting leave it still.
+const bellRing = ref(0);
+watch(unreadNotificationCount, (count, previous) => {
+  if (count > (previous ?? 0)) bellRing.value++;
+});
 const { lobbyInvites, pendingFriends } = useInvites();
 const isMobile = useMediaQuery(SIDEBAR_MOBILE_QUERY);
 
@@ -584,6 +590,16 @@ const hubPanels = [
   { name: "recent-games", component: RecentGamesPanel },
 ] as const;
 
+// Phones: the card and dock float over a dimmed page instead of a full-screen
+// slab.
+const mobileSheet = {
+  collapsible: "icon",
+  side: "right",
+  variant: "inset",
+  sheetClass: "border-0 bg-transparent shadow-none",
+  sheetOverlayClass: "bg-black/50",
+} as const;
+
 const dockButtonClass =
   "grid size-8 place-items-center rounded-md text-zinc-500 transition-colors hover:bg-white/[0.06] hover:text-zinc-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]";
 
@@ -612,7 +628,7 @@ function onHubTouchEnd(e: TouchEvent) {
     :is="isMobile ? Sidebar : 'div'"
     v-bind="
       isMobile
-        ? { collapsible: 'icon', side: 'right', variant: 'inset' }
+        ? mobileSheet
         : { class: 'relative shrink-0', style: { width: reservedWidth } }
     "
   >
@@ -628,7 +644,8 @@ function onHubTouchEnd(e: TouchEvent) {
       @mouseleave="onMouseLeave"
       @focusout="onFocusOut"
     >
-      <!-- The open app, as a card floating beside the dock. -->
+      <!-- The open app, as a card floating beside the dock. On phones the
+           sheet carries the motion, so the card stays put while it slides. -->
       <Transition
         enter-active-class="transition-[opacity,transform] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] will-change-transform motion-reduce:![transition-duration:1ms]"
         leave-active-class="transition-[opacity,transform] [transition-duration:160ms] ease-in will-change-transform motion-reduce:![transition-duration:1ms]"
@@ -638,7 +655,7 @@ function onHubTouchEnd(e: TouchEvent) {
         @after-leave="cardShown = false"
       >
         <div
-          v-show="rightSidebarOpen"
+          v-show="rightSidebarOpen || isMobile"
           ref="hubCardRef"
           class="flex min-w-0 flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-sidebar shadow-[0_24px_48px_-16px_rgba(0,0,0,0.85)]"
           :class="isMobile ? 'flex-1' : 'w-[352px]'"
@@ -707,8 +724,10 @@ function onHubTouchEnd(e: TouchEvent) {
           @intent="hoverOpen('notifications')"
         >
           <Bell
-            class="size-[18px]"
-            :class="{ 'animate-bell origin-top': hasNotifications }"
+            :key="bellRing"
+            class="size-[18px] origin-top"
+            :class="{ 'motion-safe:animate-[bell_1.4s_ease-in-out]': bellRing }"
+            @animationend="bellRing = 0"
           />
         </HubDockItem>
 

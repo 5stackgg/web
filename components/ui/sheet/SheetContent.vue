@@ -12,10 +12,11 @@ import {
   useForwardPropsEmits,
 } from "reka-ui"
 import { cn } from "@/lib/utils"
-import { sheetVariants } from "."
+import { sheetMotion, sheetVariants } from "."
 
 interface SheetContentProps extends DialogContentProps {
   class?: HTMLAttributes["class"]
+  overlayClass?: HTMLAttributes["class"]
   side?: SheetVariants["side"]
 }
 
@@ -27,7 +28,7 @@ const props = defineProps<SheetContentProps>()
 
 const emits = defineEmits<DialogContentEmits>()
 
-const delegatedProps = reactiveOmit(props, "class", "side")
+const delegatedProps = reactiveOmit(props, "class", "overlayClass", "side")
 
 const forwarded = useForwardPropsEmits(delegatedProps, emits)
 </script>
@@ -35,7 +36,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
 <template>
   <DialogPortal>
     <DialogOverlay
-      class="fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
+      :class="cn('fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0', sheetMotion, props.overlayClass)"
     />
     <DialogContent
       :class="cn(sheetVariants({ side }), props.class)"

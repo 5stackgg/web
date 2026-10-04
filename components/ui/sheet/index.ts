@@ -10,8 +10,11 @@ export { default as SheetHeader } from "./SheetHeader.vue"
 export { default as SheetTitle } from "./SheetTitle.vue"
 export { default as SheetTrigger } from "./SheetTrigger.vue"
 
+// The panel and its scrim move as one: in on the drawer curve, out faster.
+export const sheetMotion = "data-[state=open]:duration-300 data-[state=closed]:duration-200 [animation-timing-function:cubic-bezier(0.32,0.72,0,1)] motion-reduce:!animate-none"
+
 export const sheetVariants = cva(
-  "fixed z-50 gap-4 bg-background p-6 shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-500",
+  `fixed z-50 gap-4 bg-background p-6 shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out ${sheetMotion}`,
   {
     variants: {
       side: {

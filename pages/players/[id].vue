@@ -777,6 +777,20 @@ const pluginQuery = computed(() => ({
   player: playerIdRef.value ?? "",
   embed: "1",
 }));
+// A player with no matches gets no stats tabs, but plugin tabs don't depend on
+// matches, so they keep a strip of their own — defaulting to the first plugin
+// without writing it to the URL until the viewer actually picks one.
+const careerlessTab = computed({
+  get: () =>
+    plugins.profileTabPlugins.some(
+      (plugin: Plugin) => plugin.slug === statsTab.value,
+    )
+      ? statsTab.value
+      : plugins.profileTabPlugins[0]?.slug,
+  set: (tab: string | undefined) => {
+    if (tab) statsTab.value = tab;
+  },
+});
 // Reset a plugin's internal path when the profile changes, so opening the tab on
 // player B doesn't resume on the sub-screen you left open on player A.
 watch(playerIdRef, () => {
@@ -2785,8 +2799,9 @@ const playerHeroTeamChipDotClasses =
       </Empty>
     </PageTransition>
 
-    <!-- The tabs only exist for players with matches, but a community regular
-         may never have played one, so their server history stands alone. -->
+    <!-- The stats tabs only exist for players with matches, but a community
+         regular may never have played one, so their server history stands
+         alone. -->
     <PageTransition
       v-if="player && pageContentReady && noCareerData && playerId"
       :delay="50"
@@ -2796,6 +2811,50 @@ const playerHeroTeamChipDotClasses =
         :heading="$t('pages.players.detail.tabs.community')"
         hide-when-empty
       />
+    </PageTransition>
+
+    <PageTransition
+      v-if="
+        player &&
+        pageContentReady &&
+        noCareerData &&
+        playerId &&
+        plugins.profileTabPlugins.length
+      "
+      :delay="75"
+    >
+      <Tabs v-model="careerlessTab" :unmount-on-hide="false" class="w-full">
+        <div class="mb-3 overflow-x-auto">
+          <TabsList
+            variant="underline"
+            class="h-auto flex-nowrap justify-start"
+          >
+            <TabsTrigger
+              v-for="plugin in plugins.profileTabPlugins"
+              :key="plugin.id"
+              :value="plugin.slug"
+            >
+              {{ plugin.profile_tab_label }}
+            </TabsTrigger>
+          </TabsList>
+        </div>
+        <TabsContent
+          v-for="plugin in plugins.profileTabPlugins"
+          :key="plugin.id"
+          :value="plugin.slug"
+          class="tab-panel-in mt-0"
+        >
+          <PluginRemote
+            v-if="careerlessTab === plugin.slug"
+            :slug="plugin.slug"
+            :base="`/apps/${plugin.slug}`"
+            :path="pluginPath(plugin.slug)"
+            :query="pluginQuery"
+            :navigate="pluginNavigate(plugin.slug)"
+            :navigate-app="pluginNavigateApp"
+          />
+        </TabsContent>
+      </Tabs>
     </PageTransition>
 
     <div

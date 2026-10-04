@@ -3920,7 +3920,7 @@
         },
         "guest_line": "Sign in with Steam to queue. We measure your ping to each region and match you with players nearby.",
         "sign_in": "Sign in with Steam",
-        "find_match": "Find match",
+        "find_match": "Find Match",
         "waiting_for": "Waiting for {name}",
         "starts_queue": "{name} starts the queue",
         "searching": "Searching for a {mode} match",
@@ -3933,7 +3933,7 @@
           "title": "Every region is over your {ms} ms limit",
           "body": "Raise your limit or star a region you'd accept, then queue again."
         },
-        "find_lan_match": "Find LAN match"
+        "find_lan_match": "Find LAN Match"
       },
       "draft_games": {},
       "schedule": {
@@ -3986,7 +3986,7 @@
           "seats": "{count} seats",
           "draft": "Draft style",
           "access": "Who can join",
-          "open": "Open {format} room",
+          "open": "Open {format} Room",
           "sign_in": "Sign in to host",
           "back_to_room": "Back to your room",
           "all_settings": "All settings",
@@ -3996,7 +3996,7 @@
             "host": "You put players on teams",
             "pug": "Teams auto-balance when the room fills"
           },
-          "open_lan": "Open {format} LAN room"
+          "open_lan": "Open {format} LAN Room"
         },
         "intro": {
           "title": "Run your own pick-up game.",

@@ -3846,8 +3846,40 @@
           "rank_high": "Maior rank médio",
           "rank_low": "Menor rank médio"
         },
-        "host": "Criar sala draft",
         "rehost": "Re-criar última",
+        "host_bar": {
+          "title": "Criar uma sala",
+          "seats": "{count} vagas",
+          "draft": "Tipo de draft",
+          "access": "Quem pode entrar",
+          "open": "Abrir sala {format}",
+          "sign_in": "Entre para criar",
+          "back_to_room": "Voltar para sua sala",
+          "all_settings": "Todas as configurações",
+          "rehost_detail": "{format} {mode}, {access}",
+          "phrase": {
+            "captains": "Capitães: top 2 por rank, ordem snake",
+            "host": "Você coloca os jogadores nos times",
+            "pug": "Os times se equilibram sozinhos quando a sala enche"
+          }
+        },
+        "intro": {
+          "title": "Organize seu próprio jogo.",
+          "body": "Abra uma sala, deixe os jogadores entrarem e os capitães escolhem os times. Com as regras padrão, conta para o ELO.",
+          "steps": {
+            "open": "Abra uma sala",
+            "join": "Jogadores entram",
+            "draft": "Capitães escolhem",
+            "play": "A partida começa"
+          },
+          "board_label": "Como funciona um pick de capitães",
+          "captain": "Capitão",
+          "you": "Você",
+          "your_pick": "Sua vez",
+          "picking": "Escolhendo",
+          "pool": "Ainda disponíveis",
+          "dismiss": "Fechar"
+        },
         "types": {
           "captains": "Pick Players",
           "host": "Manual",

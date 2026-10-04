@@ -3846,8 +3846,40 @@
           "rank_high": "En yüksek ortalama rank",
           "rank_low": "En düşük ortalama rank"
         },
-        "host": "Seçim odası kur",
         "rehost": "Sonuncuyu yeniden kur",
+        "host_bar": {
+          "title": "Oda kur",
+          "seats": "{count} kişilik",
+          "draft": "Seçim türü",
+          "access": "Kimler katılabilir",
+          "open": "{format} oda aç",
+          "sign_in": "Oda kurmak için giriş yap",
+          "back_to_room": "Odana dön",
+          "all_settings": "Tüm ayarlar",
+          "rehost_detail": "{format} {mode}, {access}",
+          "phrase": {
+            "captains": "Rütbeye göre ilk 2 kaptan, yılan sırası",
+            "host": "Oyuncuları takımlara sen yerleştirirsin",
+            "pug": "Oda dolunca takımlar otomatik dengelenir"
+          }
+        },
+        "intro": {
+          "title": "Kendi maçını kur.",
+          "body": "Bir oda aç, oyuncular dolsun, kaptanlar takımları seçsin. Standart kurallarla ELO'ya sayılır.",
+          "steps": {
+            "open": "Oda aç",
+            "join": "Oyuncular katılır",
+            "draft": "Kaptanlar seçer",
+            "play": "Maç başlar"
+          },
+          "board_label": "Kaptan seçimi nasıl işler",
+          "captain": "Kaptan",
+          "you": "Sen",
+          "your_pick": "Senin sıran",
+          "picking": "Seçiyor",
+          "pool": "Hâlâ havuzda",
+          "dismiss": "Kapat"
+        },
         "types": {
           "captains": "Kaptan seçimi",
           "host": "Host atar",

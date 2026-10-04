@@ -1,8 +1,9 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import PlayDraftRooms from "~/components/play/PlayDraftRooms.vue";
 import { useDraftGamesStore } from "~/stores/DraftGamesStore";
+import { useAuthStore } from "~/stores/AuthStore";
 
 const room = (id: string, overrides: Record<string, any> = {}) => ({
   id,
@@ -33,28 +34,94 @@ const room = (id: string, overrides: Record<string, any> = {}) => ({
   ...overrides,
 });
 
-async function mountRooms(rooms: any[]) {
+async function mountRooms(
+  rooms: any[],
+  { hosted = true }: { hosted?: boolean } = {},
+) {
   const store = useDraftGamesStore();
   vi.spyOn(store, "subscribeToOpenDraftGames").mockResolvedValue(undefined);
   vi.spyOn(store, "unsubscribeFromOpenDraftGames").mockImplementation(() => {});
+  vi.spyOn(store, "hasHostedDraftGame").mockResolvedValue(hosted);
   const wrapper = await mountSuspended(PlayDraftRooms);
   store.openDraftGames = rooms;
   await flushPromises();
   return { wrapper, store };
 }
 
-const hostButtons = (wrapper: any) =>
-  wrapper
-    .findAll("button")
-    .filter((b: any) => b.text().includes("Host draft room"));
+function signIn() {
+  const auth = useAuthStore();
+  auth.hasCheckedSession = true;
+  auth.me = { steam_id: "me", name: "me" } as any;
+}
+
+const button = (wrapper: any, text: string) =>
+  wrapper.findAll("button").find((b: any) => b.text().includes(text));
+
+const INTRO = "Run your own pick-up game.";
+
+beforeEach(() => {
+  localStorage.clear();
+  const auth = useAuthStore();
+  auth.hasCheckedSession = false;
+  auth.me = undefined;
+});
 
 describe("PlayDraftRooms", () => {
-  it("says there are no rooms in one line, with the header's host button only", async () => {
+  it("keeps the host bar when no rooms are open, with the empty line under it", async () => {
+    signIn();
     const { wrapper } = await mountRooms([]);
     expect(wrapper.text()).toContain("No open draft rooms right now.");
-    expect(hostButtons(wrapper)).toHaveLength(1);
+    expect(button(wrapper, "Open 5v5 room")).toBeDefined();
     // No filters for an empty list.
     expect(wrapper.text()).not.toContain("Filters");
+  });
+
+  it("hosts from the bar with matchmaking defaults", async () => {
+    signIn();
+    const { wrapper, store } = await mountRooms([]);
+    const create = vi.spyOn(store, "create").mockResolvedValue(undefined);
+    await button(wrapper, "2v2")!.trigger("click");
+    await button(wrapper, "Friends")!.trigger("click");
+    await button(wrapper, "Open 2v2 room")!.trigger("click");
+    await flushPromises();
+    expect(create).toHaveBeenCalledWith({
+      type: "Wingman",
+      mode: "Captains",
+      access: "Friends",
+      regions: expect.any(Array),
+      captain_selection: "TopEloTwo",
+      draft_order: "Snake",
+      require_approval: false,
+      keep_lobby_together: false,
+    });
+  });
+
+  it("only offers auto-split for a duel", async () => {
+    signIn();
+    const { wrapper } = await mountRooms([]);
+    await button(wrapper, "1v1")!.trigger("click");
+    expect(button(wrapper, "Captains draft")).toBeUndefined();
+    expect(button(wrapper, "Auto-split")).toBeDefined();
+  });
+
+  it("shows the intro until the player has hosted a room", async () => {
+    signIn();
+    const { wrapper } = await mountRooms([], { hosted: false });
+    expect(wrapper.text()).toContain(INTRO);
+
+    const hosted = await mountRooms([], { hosted: true });
+    expect(hosted.wrapper.text()).not.toContain(INTRO);
+  });
+
+  it("remembers a dismissed intro", async () => {
+    useAuthStore().hasCheckedSession = true;
+    const { wrapper } = await mountRooms([]);
+    expect(wrapper.text()).toContain(INTRO);
+    await wrapper.find('button[aria-label="Dismiss"]').trigger("click");
+    expect(wrapper.text()).not.toContain(INTRO);
+
+    const again = await mountRooms([]);
+    expect(again.wrapper.text()).not.toContain(INTRO);
   });
 
   it("renders a room's details as one plain meta line", async () => {
@@ -65,7 +132,6 @@ describe("PlayDraftRooms", () => {
     );
     // The title stands alone: no badges or chips beside it.
     expect(wrapper.find("article h3").findAll("span").length).toBe(0);
-    expect(hostButtons(wrapper)).toHaveLength(1);
   });
 
   it("offers clear filters when filtering hides every room", async () => {

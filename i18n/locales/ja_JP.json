@@ -3846,8 +3846,40 @@
           "rank_high": "平均ランクが高い順",
           "rank_low": "平均ランクが低い順"
         },
-        "host": "ドラフトルームを作成",
         "rehost": "前回を再作成",
+        "host_bar": {
+          "title": "ルームを作成",
+          "seats": "{count}人",
+          "draft": "ドラフト方式",
+          "access": "参加できる人",
+          "open": "{format}ルームを開く",
+          "sign_in": "ログインして作成",
+          "back_to_room": "自分のルームに戻る",
+          "all_settings": "すべての設定",
+          "rehost_detail": "{format} {mode}・{access}",
+          "phrase": {
+            "captains": "ランク上位2名がキャプテン、スネーク順",
+            "host": "あなたが選手をチームに振り分けます",
+            "pug": "満員になるとチームが自動で振り分けられます"
+          }
+        },
+        "intro": {
+          "title": "自分で募集して試合をしよう。",
+          "body": "ルームを開いて参加者が集まったら、キャプテンがチームを選びます。標準ルールならELOに反映されます。",
+          "steps": {
+            "open": "ルームを開く",
+            "join": "参加者が集まる",
+            "draft": "キャプテンが指名",
+            "play": "試合開始"
+          },
+          "board_label": "キャプテンドラフトの流れ",
+          "captain": "キャプテン",
+          "you": "あなた",
+          "your_pick": "あなたの指名",
+          "picking": "指名中",
+          "pool": "未指名のプレイヤー",
+          "dismiss": "閉じる"
+        },
         "types": {
           "captains": "キャプテンドラフト",
           "host": "ホストが振り分け",

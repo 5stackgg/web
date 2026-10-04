@@ -3846,8 +3846,40 @@
           "rank_high": "Mayor rango medio",
           "rank_low": "Menor rango medio"
         },
-        "host": "Crear sala de draft",
         "rehost": "Repetir la última",
+        "host_bar": {
+          "title": "Crear una sala",
+          "seats": "{count} plazas",
+          "draft": "Tipo de draft",
+          "access": "Quién puede unirse",
+          "open": "Abrir sala {format}",
+          "sign_in": "Inicia sesión para crear",
+          "back_to_room": "Volver a tu sala",
+          "all_settings": "Todos los ajustes",
+          "rehost_detail": "{format} {mode}, {access}",
+          "phrase": {
+            "captains": "Capitanes: top 2 por rango, orden serpiente",
+            "host": "Tú repartes a los jugadores en los equipos",
+            "pug": "Los equipos se equilibran solos cuando la sala se llena"
+          }
+        },
+        "intro": {
+          "title": "Organiza tu propia partida.",
+          "body": "Abre una sala, deja que los jugadores la llenen y los capitanes eligen los equipos. Con las reglas estándar cuenta para el ELO.",
+          "steps": {
+            "open": "Abre una sala",
+            "join": "Se unen jugadores",
+            "draft": "Los capitanes eligen",
+            "play": "Empieza la partida"
+          },
+          "board_label": "Cómo funciona un draft de capitanes",
+          "captain": "Capitán",
+          "you": "Tú",
+          "your_pick": "Tu turno",
+          "picking": "Eligiendo",
+          "pool": "Aún disponibles",
+          "dismiss": "Cerrar"
+        },
         "types": {
           "captains": "Draft de capitanes",
           "host": "Asigna el anfitrión",

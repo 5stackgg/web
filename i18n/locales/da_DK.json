@@ -3846,8 +3846,40 @@
           "rank_high": "Højeste gns. rank",
           "rank_low": "Laveste gns. rank"
         },
-        "host": "Opret draft-rum",
         "rehost": "Genopret seneste",
+        "host_bar": {
+          "title": "Opret et rum",
+          "seats": "{count} pladser",
+          "draft": "Drafttype",
+          "access": "Hvem kan deltage",
+          "open": "Åbn {format}-rum",
+          "sign_in": "Log ind for at oprette",
+          "back_to_room": "Tilbage til dit rum",
+          "all_settings": "Alle indstillinger",
+          "rehost_detail": "{format} {mode}, {access}",
+          "phrase": {
+            "captains": "Top 2 efter rang bliver anførere, slangerækkefølge",
+            "host": "Du sætter spillerne på holdene",
+            "pug": "Holdene balanceres automatisk, når rummet er fyldt"
+          }
+        },
+        "intro": {
+          "title": "Kør dit eget pick-up-spil.",
+          "body": "Åbn et rum, lad spillere fylde det, og anførerne drafter holdene. Med standardregler tæller det med i ELO.",
+          "steps": {
+            "open": "Åbn et rum",
+            "join": "Spillere deltager",
+            "draft": "Anførere drafter",
+            "play": "Kampen starter"
+          },
+          "board_label": "Sådan foregår en anførerdraft",
+          "captain": "Anfører",
+          "you": "Dig",
+          "your_pick": "Dit valg",
+          "picking": "Vælger",
+          "pool": "Stadig tilbage",
+          "dismiss": "Luk"
+        },
         "types": {
           "captains": "Anførerdraft",
           "host": "Vært fordeler",

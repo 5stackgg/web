@@ -1,13 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
-import {
-  Lock,
-  Plus,
-  RotateCcw,
-  Search,
-  SlidersHorizontal,
-  X,
-} from "lucide-vue-next";
+import { Search, SlidersHorizontal, X } from "lucide-vue-next";
 import { useI18n } from "vue-i18n";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -27,12 +20,14 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import Fold from "~/components/ui/transitions/Fold.vue";
 import WatchSegmented from "~/components/watch/WatchSegmented.vue";
 import PlayDraftRoomRow from "~/components/play/PlayDraftRoomRow.vue";
+import PlayDraftHostBar from "~/components/play/PlayDraftHostBar.vue";
+import PlayDraftIntro from "~/components/play/PlayDraftIntro.vue";
 import { useDraftGamesStore } from "~/stores/DraftGamesStore";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
-import { setupOptionsVariables } from "~/utilities/setupOptions";
 import {
   filterBadgeClasses,
   tacticalSectionDescriptionClasses,
@@ -50,6 +45,7 @@ import {
   type DraftSort,
   type DraftViewer,
 } from "~/components/play/draftRoomRow";
+import { DRAFT_INTRO_DISMISSED_KEY } from "~/components/play/draftHost";
 
 const { t } = useI18n();
 const draftGames = useDraftGamesStore();
@@ -117,75 +113,51 @@ const viewer = computed<DraftViewer>(() => ({
   isPartyLeader: !!matchmaking.currentLobby && isPartyLeader.value,
 }));
 
-const hasRehostPreset = ref(false);
-
 onMounted(() => {
   draftGames.subscribeToOpenDraftGames();
-  try {
-    hasRehostPreset.value = !!localStorage.getItem("draft-games:rehost");
-  } catch {
-    hasRehostPreset.value = false;
-  }
 });
 
 onUnmounted(() => {
   draftGames.unsubscribeFromOpenDraftGames();
 });
 
-function host() {
-  if (!auth.me) {
-    navigateTo("/login?next=/draft-room/create");
-    return;
+// The intro explains draft rooms until the player hosts one, or closes it.
+const introDismissed = ref(readIntroDismissed());
+const hostedBefore = ref<boolean | null>(null);
+
+function readIntroDismissed() {
+  try {
+    return localStorage.getItem(DRAFT_INTRO_DISMISSED_KEY) === "1";
+  } catch {
+    return false;
   }
-  navigateTo("/draft-room/create");
 }
 
-async function rehost() {
-  if (!auth.me) {
-    navigateTo("/login?next=/draft-room/create");
-    return;
-  }
+watch(
+  () => [auth.hasCheckedSession, auth.me?.steam_id] as const,
+  async ([checked, steamId]) => {
+    if (!checked) return;
+    if (!steamId) {
+      hostedBefore.value = false;
+      return;
+    }
+    // Unknown stays hidden: the intro is a nicety, not worth an error.
+    hostedBefore.value = await draftGames
+      .hasHostedDraftGame(steamId)
+      .catch(() => null);
+  },
+  { immediate: true },
+);
 
-  let preset: any = null;
+const showIntro = computed(
+  () => hostedBefore.value === false && !introDismissed.value,
+);
+
+function dismissIntro() {
+  introDismissed.value = true;
   try {
-    preset = JSON.parse(localStorage.getItem("draft-games:rehost") || "null");
-  } catch {
-    preset = null;
-  }
-
-  let payload = preset?.payload;
-
-  if (!payload && preset?.values) {
-    const values = preset.values;
-    payload = {
-      type: values.type,
-      mode: preset.mode,
-      access: preset.access,
-      regions: values.regions,
-      map_pool_id: values.map_pool_id,
-      captain_selection: preset.captain_selection,
-      draft_order: preset.draft_order,
-      require_approval: preset.require_approval,
-      min_elo: preset.min_elo ?? undefined,
-      max_elo: preset.max_elo ?? undefined,
-      team_1_id: preset.mode === "Teams" ? preset.team_1_id : undefined,
-      team_2_id: preset.mode === "Teams" ? preset.team_2_id : undefined,
-      keep_lobby_together: false,
-      options: setupOptionsVariables(values, {
-        mapPoolId: values.map_pool_id,
-      }),
-    };
-  }
-
-  if (!payload) {
-    navigateTo("/draft-room/create");
-    return;
-  }
-
-  const draftGameId = await draftGames.create(payload);
-  if (draftGameId) {
-    navigateTo(`/draft-room/${draftGameId}`);
-  }
+    localStorage.setItem(DRAFT_INTRO_DISMISSED_KEY, "1");
+  } catch {}
 }
 
 const listState = computed(() => {
@@ -329,45 +301,21 @@ const listState = computed(() => {
             </PopoverContent>
           </Popover>
         </template>
-
-        <span
-          v-if="inLobbyNotLeader"
-          class="inline-flex h-8 items-center gap-2 rounded-md border border-border px-3 text-xs text-muted-foreground"
-        >
-          <Lock class="size-3.5" />
-          {{ $t("draft_games.leader_required") }}
-        </span>
-        <template v-else>
-          <Button
-            variant="outline"
-            size="sm"
-            class="hit h-8 gap-1.5"
-            @click="host"
-          >
-            <Plus class="size-3.5" />
-            {{ $t("pages.play.draft_rooms.host") }}
-          </Button>
-          <Button
-            v-if="hasRehostPreset"
-            variant="ghost"
-            size="sm"
-            class="hit h-8 gap-1.5 text-muted-foreground hover:text-foreground"
-            :title="$t('draft_games.rehost_hint')"
-            @click="rehost"
-          >
-            <RotateCcw class="size-3.5" />
-            {{ $t("pages.play.draft_rooms.rehost") }}
-          </Button>
-        </template>
       </div>
     </div>
+
+    <Fold :open="showIntro">
+      <PlayDraftIntro class="mb-3" @dismiss="dismissIntro" />
+    </Fold>
+
+    <PlayDraftHostBar class="mb-3" :locked="inLobbyNotLeader" />
 
     <FadeSwap>
       <div v-if="listState === 'loading'" key="loading" class="grid gap-2">
         <Skeleton v-for="i in 2" :key="i" class="h-[4.25rem] rounded-lg" />
       </div>
 
-      <!-- Empty is a sentence, not a box: the header already offers hosting. -->
+      <!-- Empty is a sentence, not a box: the host bar above is the call. -->
       <p
         v-else-if="listState === 'empty'"
         key="empty"

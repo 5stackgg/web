@@ -3846,8 +3846,40 @@
           "rank_high": "Höchster Durchschnittsrang",
           "rank_low": "Niedrigster Durchschnittsrang"
         },
-        "host": "Draft-Room hosten",
         "rehost": "Letzten neu hosten",
+        "host_bar": {
+          "title": "Room hosten",
+          "seats": "{count} Plätze",
+          "draft": "Draft-Modus",
+          "access": "Wer beitreten kann",
+          "open": "{format}-Room öffnen",
+          "sign_in": "Zum Hosten anmelden",
+          "back_to_room": "Zurück zu deinem Room",
+          "all_settings": "Alle Einstellungen",
+          "rehost_detail": "{format} {mode}, {access}",
+          "phrase": {
+            "captains": "Top 2 nach Rang als Captains, Snake-Reihenfolge",
+            "host": "Du teilst die Spieler auf die Teams auf",
+            "pug": "Teams werden automatisch ausgeglichen, sobald der Room voll ist"
+          }
+        },
+        "intro": {
+          "title": "Hoste dein eigenes Pick-up-Game.",
+          "body": "Öffne einen Room, lass Spieler beitreten, und die Captains draften die Teams. Mit Standardregeln zählt es für ELO.",
+          "steps": {
+            "open": "Room öffnen",
+            "join": "Spieler treten bei",
+            "draft": "Captains draften",
+            "play": "Match startet"
+          },
+          "board_label": "So läuft ein Captains-Draft",
+          "captain": "Captain",
+          "you": "Du",
+          "your_pick": "Deine Wahl",
+          "picking": "Wählt",
+          "pool": "Noch im Pool",
+          "dismiss": "Schließen"
+        },
         "types": {
           "captains": "Captains-Draft",
           "host": "Host verteilt",

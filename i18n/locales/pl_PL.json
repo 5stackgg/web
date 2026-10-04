@@ -3846,8 +3846,40 @@
           "rank_high": "Najwyższa średnia ranga",
           "rank_low": "Najniższa średnia ranga"
         },
-        "host": "Utwórz pokój draftu",
         "rehost": "Powtórz ostatni",
+        "host_bar": {
+          "title": "Utwórz pokój",
+          "seats": "Miejsca: {count}",
+          "draft": "Rodzaj draftu",
+          "access": "Kto może dołączyć",
+          "open": "Otwórz pokój {format}",
+          "sign_in": "Zaloguj się, aby utworzyć",
+          "back_to_room": "Wróć do swojego pokoju",
+          "all_settings": "Wszystkie ustawienia",
+          "rehost_detail": "{format} {mode}, {access}",
+          "phrase": {
+            "captains": "Kapitanowie: top 2 wg rangi, kolejność snake",
+            "host": "Sam przydzielasz graczy do drużyn",
+            "pug": "Drużyny wyrównują się same, gdy pokój się zapełni"
+          }
+        },
+        "intro": {
+          "title": "Zorganizuj własną grę.",
+          "body": "Otwórz pokój, pozwól graczom go zapełnić, a kapitanowie wybiorą drużyny. Na standardowych zasadach mecz liczy się do ELO.",
+          "steps": {
+            "open": "Otwórz pokój",
+            "join": "Gracze dołączają",
+            "draft": "Kapitanowie wybierają",
+            "play": "Mecz startuje"
+          },
+          "board_label": "Jak działa draft kapitanów",
+          "captain": "Kapitan",
+          "you": "Ty",
+          "your_pick": "Twój wybór",
+          "picking": "Wybiera",
+          "pool": "Wciąż do wyboru",
+          "dismiss": "Zamknij"
+        },
         "types": {
           "captains": "Draft kapitanów",
           "host": "Przydział hosta",

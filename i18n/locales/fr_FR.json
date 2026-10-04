@@ -3846,8 +3846,40 @@
           "rank_high": "Rang moyen le plus élevé",
           "rank_low": "Rang moyen le plus bas"
         },
-        "host": "Héberger une draft",
         "rehost": "Rejouer la dernière",
+        "host_bar": {
+          "title": "Héberger une draft",
+          "seats": "{count} places",
+          "draft": "Type de draft",
+          "access": "Qui peut rejoindre",
+          "open": "Ouvrir une draft {format}",
+          "sign_in": "Connectez-vous pour héberger",
+          "back_to_room": "Retour à votre draft",
+          "all_settings": "Tous les paramètres",
+          "rehost_detail": "{format} {mode}, {access}",
+          "phrase": {
+            "captains": "Capitaines : top 2 au classement, ordre en serpent",
+            "host": "Vous placez les joueurs dans les équipes",
+            "pug": "Les équipes s'équilibrent automatiquement quand la draft est pleine"
+          }
+        },
+        "intro": {
+          "title": "Organisez votre propre partie.",
+          "body": "Ouvrez une draft, laissez les joueurs la remplir, et les capitaines composent les équipes. Avec les règles standard, la partie compte pour l'ELO.",
+          "steps": {
+            "open": "Ouvrir une draft",
+            "join": "Les joueurs rejoignent",
+            "draft": "Les capitaines choisissent",
+            "play": "Le match commence"
+          },
+          "board_label": "Comment se déroule une draft des capitaines",
+          "captain": "Capitaine",
+          "you": "Vous",
+          "your_pick": "Votre choix",
+          "picking": "Choisit",
+          "pool": "Encore disponibles",
+          "dismiss": "Fermer"
+        },
         "types": {
           "captains": "Draft des capitaines",
           "host": "Attribution par l'hôte",

@@ -20,7 +20,13 @@ const finished = (id: string, ended: string) => ({
   lineup_2: { id: "b", name: "Saint's Team", team: null, lineup_players: [] },
   options: { best_of: 1, mr: 12, type: "Competitive" },
   match_maps: [
-    { id: `${id}-1`, winning_lineup_id: "a", lineup_1_score: 13, lineup_2_score: 9, map: { label: "Mirage" } },
+    {
+      id: `${id}-1`,
+      winning_lineup_id: "a",
+      lineup_1_score: 13,
+      lineup_2_score: 9,
+      map: { label: "Mirage" },
+    },
   ],
   tournament_brackets: [],
   event_links: [],
@@ -98,8 +104,9 @@ describe("WatchTicker", () => {
   it("pages results in twelve at a time with an offset", async () => {
     await mountTicker();
 
-    expect(queries[0].variables).toMatchObject({ limit: 12, offset: 0 });
-    expect(queries[0].query).toContain("offset: $offset");
+    // Live and upcoming are seeded over HTTP too, so find the results page.
+    const results = queries.find((q) => q.query.includes("offset: $offset"));
+    expect(results?.variables).toMatchObject({ limit: 12, offset: 0 });
   });
 
   it("shows placeholders and runs no queries for a new server", async () => {

@@ -10947,7 +10947,9 @@
       "highlights": "ハイライト",
       "overview": "概要",
       "story": "ストーリー",
-      "matches": "試合"
+      "matches": "試合",
+      "players": "プレイヤー",
+      "manage": "管理"
     },
     "not_found": {
       "title": "イベントが見つかりません",
@@ -11110,7 +11112,8 @@
       "link_title_placeholder": "タイトル（任意）",
       "link_add": "追加",
       "link_invalid": "有効な http(s) の URL を入力してください",
-      "link_added": "リンクを追加しました"
+      "link_added": "リンクを追加しました",
+      "uploads": "アップロード"
     },
     "phase": {
       "upcoming": "開催予定",
@@ -11121,10 +11124,33 @@
       "for_you": "自分の成績",
       "rank": "イベント順位",
       "rating": "レーティング",
-      "matches": "試合"
+      "matches": "試合",
+      "runs": "{starts}〜{ends}",
+      "days_to_go": "日後に開始 | 日後に開始",
+      "live_now": "ライブ中",
+      "sign_up": "参加受付",
+      "champions": "優勝",
+      "top": "ランキング上位",
+      "full_leaderboard": "ランキング全体",
+      "leaderboard_so_far": "現時点のランキング",
+      "your_day": "あなたの今日",
+      "your_event": "あなたの成績",
+      "open_profile": "イベントでのプロフィールを開く",
+      "of_players": "{count}人中",
+      "results": "結果",
+      "results_so_far": "これまでの結果",
+      "whos_going": "参加者",
+      "latest_uploads": "最新のアップロード",
+      "from_organizers": "主催者より",
+      "moments": "ハイライト",
+      "upcoming_empty": "主催者が追加すると、トーナメントと参加者リストがここに表示されます。",
+      "nothing_yet": "まだ何もありません。このイベントに紐づく試合が行われると、結果・ランキング・ハイライトが表示されます。"
     },
     "matches": {
-      "none": "このイベントのトーナメントではまだ試合が行われていません。"
+      "none": "このイベントのトーナメントではまだ試合が行われていません。",
+      "all": "すべての試合",
+      "mine": "自分の試合",
+      "none_mine": "このイベントでプレイした試合はありません。"
     },
     "story": {
       "highlights": "ハイライト"
@@ -11157,6 +11183,19 @@
       "axis_adr": "ADR",
       "axis_hs": "HS%",
       "axis_assist": "アシスト"
+    },
+    "header": {
+      "add_banner": "バナーを追加",
+      "day_of": "{total}日間中{day}日目",
+      "day": "{day}日目",
+      "starts_in": "今日 | 明日 | あと{count}日",
+      "players": "{count} 人 | {count} 人",
+      "teams": "{count} チーム | {count} チーム",
+      "matches": "{count} 試合 | {count} 試合",
+      "watch_live": "ライブを見る",
+      "register": "参加登録",
+      "share": "共有",
+      "link_copied": "リンクをコピーしました"
     }
   },
   "awards": {

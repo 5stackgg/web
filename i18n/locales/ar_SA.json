@@ -10947,7 +10947,9 @@
       "highlights": "أبرز اللقطات",
       "overview": "نظرة عامة",
       "story": "القصة",
-      "matches": "المباريات"
+      "matches": "المباريات",
+      "players": "اللاعبون",
+      "manage": "الإدارة"
     },
     "not_found": {
       "title": "الحدث غير موجود",
@@ -11110,7 +11112,8 @@
       "link_title_placeholder": "عنوان اختياري",
       "link_add": "أضف",
       "link_invalid": "أدخل URL صالحًا يبدأ بـ http(s)",
-      "link_added": "تمت إضافة الرابط"
+      "link_added": "تمت إضافة الرابط",
+      "uploads": "المرفوعات"
     },
     "phase": {
       "upcoming": "قادم",
@@ -11121,10 +11124,33 @@
       "for_you": "لك",
       "rank": "الرتبة في الحدث",
       "rating": "التقييم",
-      "matches": "مباريات"
+      "matches": "مباريات",
+      "runs": "من {starts} إلى {ends}",
+      "days_to_go": "يوم متبقٍ | أيام متبقية",
+      "live_now": "مباشر الآن",
+      "sign_up": "التسجيل",
+      "champions": "الأبطال",
+      "top": "متصدرو الترتيب",
+      "full_leaderboard": "الترتيب الكامل",
+      "leaderboard_so_far": "الترتيب حتى الآن",
+      "your_day": "يومك",
+      "your_event": "فعاليتك",
+      "open_profile": "افتح ملفك في الفعالية",
+      "of_players": "من {count}",
+      "results": "النتائج",
+      "results_so_far": "النتائج حتى الآن",
+      "whos_going": "من سيحضر",
+      "latest_uploads": "أحدث الملفات",
+      "from_organizers": "من المنظمين",
+      "moments": "لحظات",
+      "upcoming_empty": "تظهر البطولات وقائمة اللاعبين هنا بمجرد أن يضيفها المنظمون.",
+      "nothing_yet": "لا شيء هنا بعد. تظهر النتائج والترتيب واللقطات بمجرد لعب مباراة مرتبطة بهذه الفعالية."
     },
     "matches": {
-      "none": "لم تُلعب أي مباراة في بطولات هذا الحدث بعد"
+      "none": "لم تُلعب أي مباراة في بطولات هذا الحدث بعد",
+      "all": "كل المباريات",
+      "mine": "مبارياتي",
+      "none_mine": "لم تلعب أي مباراة في هذه الفعالية."
     },
     "story": {
       "highlights": "أبرز اللقطات"
@@ -11157,6 +11183,19 @@
       "axis_adr": "ADR",
       "axis_hs": "HS%",
       "axis_assist": "مساعدة"
+    },
+    "header": {
+      "add_banner": "أضف لافتة",
+      "day_of": "اليوم {day} من {total}",
+      "day": "اليوم {day}",
+      "starts_in": "اليوم | غدًا | بعد {count} أيام",
+      "players": "{count} لاعب | {count} لاعبين",
+      "teams": "{count} فريق | {count} فرق",
+      "matches": "{count} مباراة | {count} مباريات",
+      "watch_live": "شاهد مباشرة",
+      "register": "سجّل",
+      "share": "مشاركة",
+      "link_copied": "تم نسخ الرابط"
     }
   },
   "awards": {

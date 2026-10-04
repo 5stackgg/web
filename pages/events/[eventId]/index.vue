@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { computed, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { validate as validateUUID } from "uuid";
-import { Trash2, Medal } from "lucide-vue-next";
+import { Trash2, Medal, Play, Share2, Trophy } from "lucide-vue-next";
 import AwardComposer from "~/components/award/AwardComposer.vue";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -19,10 +18,12 @@ import { Skeleton } from "~/components/ui/skeleton";
 import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
-import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import MatchesTable from "~/components/MatchesTable.vue";
 import Pagination from "~/components/Pagination.vue";
+import WatchSegmented from "~/components/watch/WatchSegmented.vue";
+import EventHeader from "~/components/events/EventHeader.vue";
+import EventSection from "~/components/events/EventSection.vue";
 import EventLeaderboard from "~/components/events/EventLeaderboard.vue";
 import EventStandings from "~/components/events/EventStandings.vue";
 import EventMembershipPanel from "~/components/events/EventMembershipPanel.vue";
@@ -35,19 +36,10 @@ import EventBannerUpload from "~/components/events/EventBannerUpload.vue";
 import ManageSection from "~/components/common/ManageSection.vue";
 import TournamentCard from "~/components/tournament/TournamentCard.vue";
 import { tournamentStatusVariant } from "~/components/tournament/tournamentCard";
+import { TICKER_LIVE_STATUSES } from "~/components/watch/watchTicker";
 import { useEventMatches } from "~/composables/useEventMatches";
-import {
-  tacticalSectionLabelClasses,
-  tacticalSectionTickClasses,
-  tacticalTabsListClasses,
-  tacticalTabsTriggerClasses,
-} from "~/utilities/tacticalClasses";
-import {
-  eventPhase,
-  formatEventDate,
-  phaseBadgeVariant,
-  phaseLabelKey,
-} from "~/utilities/eventDisplay";
+import { tacticalSectionLabelClasses } from "~/utilities/tacticalClasses";
+import { eventPhase, type EventPhase } from "~/utilities/eventDisplay";
 import { useEventContext } from "~/composables/useEventContext";
 
 definePageMeta({
@@ -62,26 +54,27 @@ useHead({
   title: () => eventContext.value?.name || undefined,
 });
 
-// Mirrors the tournament page hero (gradient card); the events hero
-// additionally overlaps the banner media above it.
-const heroCardClasses =
-  "relative overflow-hidden rounded-lg border border-border px-4 py-4 sm:px-6 sm:py-5 [background:linear-gradient(180deg,hsl(var(--card)/0.82)_0%,hsl(var(--card)/0.6)_100%)] [backdrop-filter:blur(10px)]";
-const heroTitleClasses =
-  "relative m-0 min-w-0 font-sans text-[clamp(1.6rem,4vw,2.8rem)] font-bold uppercase leading-[0.95] tracking-[0.02em] [font-stretch:80%]";
+// The tabs before the redesign folded into these; old links still land.
+const LEGACY_TABS: Record<string, string> = {
+  leaderboard: "players",
+  standings: "players",
+  teams: "players",
+  highlights: "media",
+  settings: "manage",
+};
+const route = useRoute();
+const router = useRouter();
+const legacyTab = route.query.tab ? LEGACY_TABS[String(route.query.tab)] : null;
+const mediaView = ref<"uploads" | "highlights">(
+  route.query.tab === "highlights" ? "highlights" : "uploads",
+);
+if (legacyTab) {
+  router.replace({ query: { ...route.query, tab: legacyTab } });
+}
 
 const activeTab = useRouteTab({
   defaultTab: "overview",
-  tabs: [
-    "overview",
-    "media",
-    "highlights",
-    "leaderboard",
-    "teams",
-    "tournaments",
-    "standings",
-    "matches",
-    "settings",
-  ],
+  tabs: ["overview", "matches", "players", "media", "tournaments", "manage"],
 });
 
 // Events are feature-gated (public.events_enabled, default off). Wait for
@@ -100,7 +93,6 @@ watch(
   { immediate: true },
 );
 
-const route = useRoute();
 const eventIdRef = computed<string | null>(() => {
   const id = route.params.eventId;
   return typeof id === "string" && validateUUID(id) ? id : null;
@@ -108,22 +100,39 @@ const eventIdRef = computed<string | null>(() => {
 
 const {
   matches: eventMatches,
-  myMatches,
   total: matchesTotal,
   page: matchesPage,
   perPage: matchesPerPage,
   loading: matchesLoading,
   paging: matchesPaging,
+  mine: matchesMine,
+  setMine: setMatchesMine,
   setPage: setMatchesPage,
   setPerPage: setMatchesPerPage,
   refetch: refetchEventMatches,
 } = useEventMatches(eventIdRef);
+
+const signedIn = computed(() => !!useAuthStore().me);
+const matchesView = computed({
+  get: () => (matchesMine.value ? "mine" : "all"),
+  set: (value: "all" | "mine") => setMatchesMine(value === "mine"),
+});
+
+// The newest live match, for the header's Watch live.
+const liveMatch = computed(() =>
+  eventMatches.value.find((match) =>
+    (TICKER_LIVE_STATUSES as readonly string[]).includes(match.status),
+  ),
+);
+
+const tabTriggerClasses =
+  "h-11 rounded-none px-3 text-[0.8125rem] font-semibold text-muted-foreground hover:text-foreground focus-visible:ring-offset-0 [@media(pointer:coarse)]:h-12";
 </script>
 
 <template>
   <div v-if="loading" class="space-y-6">
-    <Skeleton class="h-40 w-full rounded-lg" />
-    <Skeleton class="h-72 w-full rounded-md" />
+    <Skeleton class="aspect-[3/1] max-h-[440px] w-full rounded-2xl" />
+    <Skeleton class="h-72 w-full rounded-lg" />
   </div>
 
   <Empty v-else-if="!event" class="min-h-[200px]">
@@ -134,360 +143,274 @@ const {
   <div v-else>
     <Tabs v-model="activeTab">
       <PageTransition>
-        <div>
-          <!-- Banner: never cropped. The sharp copy is object-contain at full
-               height; the same media blurred fills the letterbox space. -->
-          <!-- Width-first: the sharp copy always spans the full container
-               width at its natural aspect (capped), so wide banner art is
-               never boxed into the middle; the blurred copy only shows when
-               the height cap letterboxes a tall image. -->
-          <div
-            v-if="event.banner"
-            class="relative flex items-center justify-center overflow-hidden rounded-lg border border-border bg-black/60"
-          >
-            <img
-              v-if="event.banner.mime_type.startsWith('image/')"
-              :src="bannerSrc"
-              aria-hidden="true"
-              class="absolute inset-0 h-full w-full scale-110 object-cover opacity-70 blur-2xl brightness-[0.45] saturate-125"
-            />
-            <video
-              v-else
-              :src="bannerSrc"
-              aria-hidden="true"
-              class="absolute inset-0 h-full w-full scale-110 object-cover opacity-70 blur-2xl brightness-[0.45] saturate-125"
-              muted
-              playsinline
-            />
-            <img
-              v-if="event.banner.mime_type.startsWith('image/')"
-              :src="bannerSrc"
-              class="relative z-[1] max-h-[min(48vh,440px)] min-h-[140px] w-full object-contain"
-            />
-            <video
-              v-else
-              :src="bannerSrc"
-              class="relative z-[1] max-h-[min(48vh,440px)] min-h-[140px] w-full object-contain"
-              autoplay
-              muted
-              loop
-              playsinline
-            />
-            <div
-              aria-hidden="true"
-              class="tac-scanlines pointer-events-none absolute inset-0 z-[2]"
-            ></div>
-          </div>
-
-          <div
-            class="relative z-10"
-            :class="event.banner ? '-mt-12 mx-3 sm:mx-6' : ''"
-          >
-            <header :class="heroCardClasses">
-              <div class="mb-2 flex flex-wrap items-center gap-2">
-                <Badge :variant="phaseBadgeVariant(eventPhase(event))">
-                  {{ $t(phaseLabelKey(eventPhase(event))) }}
-                </Badge>
-                <span
-                  v-if="event.visibility && event.visibility !== 'Public'"
-                  class="inline-flex items-center rounded border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] px-1.5 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))]"
-                >
-                  {{ $t(`event.visibility.${event.visibility.toLowerCase()}`) }}
-                </span>
-                <span
-                  v-if="
-                    formatEventDate(event.starts_at) ||
-                    formatEventDate(event.ends_at)
-                  "
-                  class="text-xs text-muted-foreground"
-                >
-                  {{
-                    formatEventDate(event.starts_at) ||
-                    $t("pages.events.date_tbd")
-                  }}
-                  <template v-if="formatEventDate(event.ends_at)">
-                    &nbsp;-&nbsp;{{ formatEventDate(event.ends_at) }}
-                  </template>
-                </span>
-                <div
-                  v-if="organizedByPlayers.length"
-                  class="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-muted-foreground"
-                >
-                  <span>{{ $t("event.card.organized_by") }}</span>
-                  <template
-                    v-for="(organizer, index) in organizedByPlayers"
-                    :key="organizer.steam_id"
-                  >
-                    <span v-if="index > 0" class="text-muted-foreground/50"
-                      >·</span
-                    >
-                    <PlayerDisplay
-                      :player="organizer"
-                      size="xs"
-                      compact
-                      :show-flag="false"
-                      :show-role="false"
-                      :show-elo="false"
-                      :tooltip="false"
-                      linkable
-                    />
-                  </template>
-                </div>
-              </div>
-
-              <div class="flex items-start justify-between gap-3">
-                <h1 :class="heroTitleClasses">{{ event.name }}</h1>
-                <button
-                  v-if="canGrantAwards"
-                  type="button"
-                  class="mt-1 grid h-8 w-8 shrink-0 place-items-center rounded-md border border-border bg-muted/20 text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]"
-                  :title="$t('awards.composer.grant_here')"
-                  :aria-label="$t('awards.composer.grant_here')"
-                  @click="awardComposerOpen = true"
-                >
-                  <Medal class="h-4 w-4" />
-                </button>
-              </div>
-              <p
-                v-if="event.description"
-                class="mt-1.5 max-w-[70ch] text-sm text-muted-foreground"
+        <EventHeader
+          :event="event"
+          :phase="phase"
+          :organizers="organizedByPlayers"
+          :counts="{
+            players: eventPlayers.length,
+            teams: eventTeams.length,
+            matches: matchesTotal,
+          }"
+          :can-manage="event.is_organizer"
+          @add-banner="activeTab = 'manage'"
+        >
+          <template #actions>
+            <Button
+              v-if="canGrantAwards"
+              variant="outline"
+              size="sm"
+              class="h-8 gap-1.5"
+              @click="awardComposerOpen = true"
+            >
+              <Medal class="h-3.5 w-3.5" />
+              {{ $t("awards.composer.grant_here") }}
+            </Button>
+            <Button
+              v-if="phase === 'live' && liveMatch"
+              as-child
+              size="sm"
+              class="h-8 gap-1.5 border border-destructive/55 bg-destructive/10 text-destructive hover:bg-destructive/20"
+            >
+              <NuxtLink :to="`/matches/${liveMatch.id}`">
+                <Play class="h-3.5 w-3.5 fill-current" />
+                {{ $t("event.header.watch_live") }}
+              </NuxtLink>
+            </Button>
+            <Button
+              v-else-if="phase === 'upcoming' && openTournaments.length"
+              size="sm"
+              class="tac-amber-cta h-8 gap-1.5 border font-semibold"
+              @click="activeTab = 'tournaments'"
+            >
+              <Trophy class="h-3.5 w-3.5" />
+              {{ $t("event.header.register") }}
+            </Button>
+            <Button
+              v-else-if="phase === 'finished'"
+              variant="outline"
+              size="sm"
+              class="h-8 gap-1.5"
+              @click="shareEvent"
+            >
+              <Share2 class="h-3.5 w-3.5" />
+              {{ $t("event.header.share") }}
+            </Button>
+          </template>
+          <template #tabs>
+            <TabsList
+              variant="underline"
+              class="h-auto w-full justify-start overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            >
+              <TabsTrigger value="overview" :class="tabTriggerClasses">
+                {{ $t("event.tabs.overview") }}
+              </TabsTrigger>
+              <TabsTrigger value="matches" :class="tabTriggerClasses">
+                {{ $t("event.tabs.matches") }}
+              </TabsTrigger>
+              <TabsTrigger value="players" :class="tabTriggerClasses">
+                {{ $t("event.tabs.players") }}
+              </TabsTrigger>
+              <TabsTrigger value="media" :class="tabTriggerClasses">
+                {{ $t("event.tabs.media") }}
+              </TabsTrigger>
+              <TabsTrigger
+                v-if="hasTournaments"
+                value="tournaments"
+                :class="tabTriggerClasses"
               >
-                {{ event.description }}
-              </p>
-
-              <div class="mt-4">
-                <TabsList
-                  variant="underline"
-                  :class="[tacticalTabsListClasses, 'h-auto flex-wrap']"
-                >
-                  <TabsTrigger
-                    value="overview"
-                    :class="tacticalTabsTriggerClasses"
-                  >
-                    {{ $t("event.tabs.overview") }}
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="media"
-                    :class="tacticalTabsTriggerClasses"
-                  >
-                    {{ $t("event.tabs.media") }}
-                    ({{ galleryCount }})
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="highlights"
-                    :class="tacticalTabsTriggerClasses"
-                  >
-                    {{ $t("event.tabs.highlights") }}
-                    ({{ highlightsCount }})
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="leaderboard"
-                    :class="tacticalTabsTriggerClasses"
-                  >
-                    {{ $t("event.tabs.leaderboard") }}
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="teams"
-                    :class="tacticalTabsTriggerClasses"
-                  >
-                    {{ $t("event.tabs.teams") }}
-                    ({{ eventTeams.length }})
-                  </TabsTrigger>
-                  <TabsTrigger
-                    v-if="hasTournaments"
-                    value="tournaments"
-                    :class="tacticalTabsTriggerClasses"
-                  >
-                    {{ $t("event.tabs.tournaments") }}
-                    ({{ eventTournamentEntries.length }})
-                  </TabsTrigger>
-                  <TabsTrigger
-                    v-if="hasTournaments"
-                    value="standings"
-                    :class="tacticalTabsTriggerClasses"
-                  >
-                    {{ $t("event.tabs.standings") }}
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="matches"
-                    :class="tacticalTabsTriggerClasses"
-                  >
-                    {{ $t("event.tabs.matches") }}
-                    ({{ matchesTotal }})
-                  </TabsTrigger>
-                  <TabsTrigger
-                    v-if="event?.is_organizer"
-                    value="settings"
-                    :class="tacticalTabsTriggerClasses"
-                  >
-                    {{ $t("event.tabs.settings") }}
-                  </TabsTrigger>
-                </TabsList>
-              </div>
-            </header>
-          </div>
-        </div>
+                {{ $t("event.tabs.tournaments") }}
+              </TabsTrigger>
+              <TabsTrigger
+                v-if="event.is_organizer"
+                value="manage"
+                :class="tabTriggerClasses"
+              >
+                {{ $t("event.tabs.manage") }}
+              </TabsTrigger>
+            </TabsList>
+          </template>
+        </EventHeader>
       </PageTransition>
 
-      <div class="mt-6">
-        <TabsContent value="overview">
-          <PageTransition>
-            <EventOverview
-              :event="event"
-              :refresh-key="membershipKey"
-              :my-matches="myMatches"
-              :matches-loading="matchesLoading"
-              :leaderboard-rows="leaderboardRows"
-              :leaderboard-loading="
-                $apollo?.queries?.leaderboardRows?.loading ?? false
-              "
-              @go="(tab) => (activeTab = tab)"
+      <div class="mt-7">
+        <TabsContent value="overview" class="tab-panel-in mt-0">
+          <EventOverview
+            :event="event"
+            :phase="phase"
+            :refresh-key="membershipKey"
+            :matches="eventMatches"
+            :matches-total="matchesTotal"
+            :matches-loading="matchesLoading"
+            :leaderboard-rows="leaderboardRows"
+            :leaderboard-loading="
+              $apollo?.queries?.leaderboardRows?.loading ?? false
+            "
+            :players="eventPlayers"
+            :teams="eventTeams"
+            @go="(tab) => (activeTab = tab)"
+          />
+        </TabsContent>
+
+        <TabsContent value="matches" class="tab-panel-in mt-0">
+          <div v-if="signedIn" class="mb-4">
+            <WatchSegmented
+              v-model="matchesView"
+              :options="[
+                { key: 'all', label: $t('event.matches.all') },
+                { key: 'mine', label: $t('event.matches.mine') },
+              ]"
+              :label="$t('event.tabs.matches')"
             />
-          </PageTransition>
-        </TabsContent>
-
-        <TabsContent value="matches">
-          <PageTransition>
-            <div v-if="matchesLoading" class="space-y-3">
-              <Skeleton
-                v-for="i in 4"
-                :key="i"
-                class="h-16 w-full rounded-md"
-              />
+          </div>
+          <div v-if="matchesLoading" class="space-y-3">
+            <Skeleton v-for="i in 4" :key="i" class="h-16 w-full rounded-md" />
+          </div>
+          <Empty v-else-if="eventMatches.length === 0" class="min-h-[160px]">
+            <p class="text-muted-foreground">
+              {{
+                matchesMine
+                  ? $t("event.matches.none_mine")
+                  : $t("event.matches.none")
+              }}
+            </p>
+          </Empty>
+          <div v-else>
+            <div :class="{ 'opacity-60': matchesPaging }">
+              <MatchesTable :matches="eventMatches" />
             </div>
-            <Empty v-else-if="eventMatches.length === 0" class="min-h-[160px]">
-              <p class="text-muted-foreground">
-                {{ $t("event.matches.none") }}
-              </p>
-            </Empty>
-            <div v-else>
-              <div :class="{ 'opacity-60': matchesPaging }">
-                <MatchesTable :matches="eventMatches" />
-              </div>
-              <Pagination
-                v-if="matchesTotal > 0"
-                :total="matchesTotal"
-                :page="matchesPage"
-                :per-page="matchesPerPage"
-                show-per-page-selector
-                @page="setMatchesPage"
-                @update:per-page="setMatchesPerPage"
-              />
-            </div>
-          </PageTransition>
-        </TabsContent>
-
-        <TabsContent value="leaderboard">
-          <PageTransition>
-            <EventLeaderboard
-              :event-id="event.id"
-              :refresh-key="membershipKey"
+            <Pagination
+              v-if="matchesTotal > 0"
+              :total="matchesTotal"
+              :page="matchesPage"
+              :per-page="matchesPerPage"
+              show-per-page-selector
+              @page="setMatchesPage"
+              @update:per-page="setMatchesPerPage"
             />
-          </PageTransition>
+          </div>
         </TabsContent>
 
-        <TabsContent v-if="hasTournaments" value="standings">
-          <PageTransition>
-            <EventStandings :event-id="event.id" :refresh-key="membershipKey" />
-          </PageTransition>
+        <TabsContent value="players" class="tab-panel-in mt-0">
+          <div class="grid gap-10">
+            <EventTeamsPanel
+              v-if="leaderboardRows.length && eventTeams.length"
+              :teams="eventTeams"
+            />
+            <EventTeamsPanel
+              v-else-if="!leaderboardRows.length"
+              :teams="eventTeams"
+              :players="eventPlayers"
+            />
+            <EventSection
+              v-if="hasTournaments"
+              :label="$t('event.tabs.standings')"
+            >
+              <EventStandings
+                :event-id="event.id"
+                :refresh-key="membershipKey"
+              />
+            </EventSection>
+            <EventSection
+              v-if="leaderboardRows.length"
+              :label="$t('event.tabs.leaderboard')"
+            >
+              <EventLeaderboard
+                :event-id="event.id"
+                :refresh-key="membershipKey"
+              />
+            </EventSection>
+          </div>
         </TabsContent>
 
-        <TabsContent v-if="hasTournaments" value="tournaments">
-          <PageTransition>
-            <!-- Single root: <Transition> renders only its first child, so the
-                 label and the list must share one wrapper or the cards vanish. -->
-            <div>
-              <div :class="[tacticalSectionLabelClasses]">
-                <span :class="tacticalSectionTickClasses"></span>
-                {{ $t("event.tabs.tournaments") }}
-              </div>
-
-              <Empty
-                v-if="eventTournamentEntries.length === 0"
-                class="min-h-[160px]"
-              >
-                <p class="text-muted-foreground">
-                  {{ $t("event.tournaments.none") }}
-                </p>
-              </Empty>
-
-              <div v-else class="space-y-4">
-                <TournamentCard
-                  v-for="(entry, index) in eventTournamentEntries"
-                  :key="entry.tournament_id"
-                  :tournament="entry.tournament"
-                  :status-variant="
-                    tournamentStatusVariant(entry.tournament.status)
-                  "
-                  :priority="index === 0"
-                />
-              </div>
-            </div>
-          </PageTransition>
+        <TabsContent value="media" class="tab-panel-in mt-0">
+          <div v-if="highlightsCount > 0" class="mb-5">
+            <WatchSegmented
+              v-model="mediaView"
+              :options="[
+                {
+                  key: 'uploads',
+                  label: $t('event.media.uploads'),
+                  count: galleryCount,
+                },
+                {
+                  key: 'highlights',
+                  label: $t('event.tabs.highlights'),
+                  count: highlightsCount,
+                },
+              ]"
+              :label="$t('event.tabs.media')"
+            />
+          </div>
+          <HighlightsBrowser
+            v-if="highlightsCount > 0 && mediaView === 'highlights'"
+            :event-id="event.id"
+          />
+          <EventMediaPanel v-else :event="event" />
         </TabsContent>
 
-        <TabsContent value="teams">
-          <PageTransition>
-            <EventTeamsPanel :teams="eventTeams" :players="eventPlayers" />
-          </PageTransition>
+        <TabsContent
+          v-if="hasTournaments"
+          value="tournaments"
+          class="tab-panel-in mt-0"
+        >
+          <div class="space-y-4">
+            <TournamentCard
+              v-for="(entry, index) in eventTournamentEntries"
+              :key="entry.tournament_id"
+              :tournament="entry.tournament"
+              :status-variant="tournamentStatusVariant(entry.tournament.status)"
+              :priority="index === 0"
+            />
+          </div>
         </TabsContent>
 
-        <TabsContent value="media">
-          <PageTransition>
-            <EventMediaPanel :event="event" />
-          </PageTransition>
-        </TabsContent>
+        <TabsContent
+          v-if="event.is_organizer"
+          value="manage"
+          class="tab-panel-in mt-0"
+        >
+          <div class="space-y-6 pb-24">
+            <ManageSection :label="$t('event.banner.section')">
+              <EventBannerUpload :event="event" />
+            </ManageSection>
 
-        <TabsContent value="highlights">
-          <PageTransition>
-            <HighlightsBrowser :event-id="event.id" />
-          </PageTransition>
-        </TabsContent>
+            <EventForm :event="event" />
 
-        <TabsContent v-if="event?.is_organizer" value="settings">
-          <PageTransition>
-            <div class="space-y-6 pb-24">
-              <ManageSection :label="$t('event.banner.section')">
-                <EventBannerUpload :event="event" />
-              </ManageSection>
+            <EventMembershipPanel :event="event" />
 
-              <EventForm :event="event" />
-
-              <EventMembershipPanel :event="event" />
-
-              <!-- Delete is narrower than is_organizer: Hasura only allows
-                   the creator or tournament_organizer+ to delete, never
-                   co-organizers. -->
-              <!-- Danger zone keeps its tinted frame: the destructive action
-                   needs to stay visually fenced off from the settings above. -->
-              <section
-                v-if="canDeleteEvent"
-                class="rounded-lg border border-destructive/40 bg-destructive/5 p-5"
+            <!-- Delete is narrower than is_organizer: Hasura only allows
+                 the creator or tournament_organizer+ to delete, never
+                 co-organizers. -->
+            <!-- Danger zone keeps its tinted frame: the destructive action
+                 needs to stay visually fenced off from the settings above. -->
+            <section
+              v-if="canDeleteEvent"
+              class="rounded-lg border border-destructive/40 bg-destructive/5 p-5"
+            >
+              <span
+                :class="[tacticalSectionLabelClasses, 'mb-1']"
+                class="!text-destructive"
               >
                 <span
-                  :class="[tacticalSectionLabelClasses, 'mb-1']"
-                  class="!text-destructive"
-                >
-                  <span
-                    class="inline-block h-[2px] w-[10px] bg-destructive"
-                  ></span>
-                  {{ $t("event.danger_zone.title") }}
-                </span>
-                <p class="mb-3 text-sm text-muted-foreground">
-                  {{ $t("event.danger_zone.description") }}
-                </p>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  class="gap-1.5"
-                  @click="deleteEventDialog = true"
-                >
-                  <Trash2 class="h-3.5 w-3.5" />
-                  {{ $t("common.delete") }}
-                </Button>
-              </section>
-            </div>
-          </PageTransition>
+                  class="inline-block h-[2px] w-[10px] bg-destructive"
+                ></span>
+                {{ $t("event.danger_zone.title") }}
+              </span>
+              <p class="mb-3 text-sm text-muted-foreground">
+                {{ $t("event.danger_zone.description") }}
+              </p>
+              <Button
+                variant="destructive"
+                size="sm"
+                class="gap-1.5"
+                @click="deleteEventDialog = true"
+              >
+                <Trash2 class="h-3.5 w-3.5" />
+                {{ $t("common.delete") }}
+              </Button>
+            </section>
+          </div>
         </TabsContent>
       </div>
     </Tabs>
@@ -536,7 +459,6 @@ import { $, order_by, e_player_roles_enum } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { simpleEventFields } from "~/graphql/simpleEventFields";
 import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
-import { eventMediaUrl } from "~/composables/useEventMediaUpload";
 import { toast } from "@/components/ui/toast";
 
 const deleteEventMutation = generateMutation({
@@ -744,6 +666,14 @@ export default {
     },
   },
   watch: {
+    // A shared link to a tab this viewer or event doesn't have lands on the
+    // overview instead of an empty panel.
+    tabUnavailable: {
+      handler(this: any, unavailable: boolean) {
+        if (unavailable) this.activeTab = "overview";
+      },
+      immediate: true,
+    },
     // Attaching/detaching tournaments, teams or players must recompute the
     // derived surfaces retroactively: matches, leaderboard rows, and (via the
     // refresh-key props) the leaderboard/standings tabs.
@@ -773,10 +703,20 @@ export default {
         useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer)
       );
     },
-    bannerSrc(): string {
-      return this.event?.banner
-        ? eventMediaUrl(this.event.id, this.event.banner.filename)
-        : "";
+    tabUnavailable(): boolean {
+      if (!this.event) return false;
+      return (
+        (this.activeTab === "manage" && !this.event.is_organizer) ||
+        (this.activeTab === "tournaments" && !this.hasTournaments)
+      );
+    },
+    phase(): EventPhase {
+      return this.event ? eventPhase(this.event) : "upcoming";
+    },
+    openTournaments(): any[] {
+      return this.eventTournamentEntries.filter(
+        (entry: any) => entry.tournament.status === "RegistrationOpen",
+      );
     },
     // "Organized by" = the co-organizers plus the creator, unless the creator
     // has been hidden from the display (they remain the owner regardless).
@@ -872,6 +812,17 @@ export default {
     },
   },
   methods: {
+    async shareEvent(this: any) {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        toast({ title: this.$t("event.header.link_copied") as string });
+      } catch {
+        toast({
+          variant: "destructive",
+          title: this.$t("common.error") as string,
+        });
+      }
+    },
     async deleteEvent(this: any) {
       if (this.deletingEvent) {
         return;

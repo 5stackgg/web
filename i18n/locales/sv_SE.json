@@ -10947,7 +10947,9 @@
       "highlights": "Höjdpunkter",
       "overview": "Översikt",
       "story": "Story",
-      "matches": "Matcher"
+      "matches": "Matcher",
+      "players": "Spelare",
+      "manage": "Hantera"
     },
     "not_found": {
       "title": "Eventet hittades inte",
@@ -11110,7 +11112,8 @@
       "link_title_placeholder": "Valfri titel",
       "link_add": "Lägg till",
       "link_invalid": "Ange en giltig http(s)-URL",
-      "link_added": "Länk tillagd"
+      "link_added": "Länk tillagd",
+      "uploads": "Uppladdningar"
     },
     "phase": {
       "upcoming": "Kommande",
@@ -11121,10 +11124,33 @@
       "for_you": "För dig",
       "rank": "Eventrank",
       "rating": "Rating",
-      "matches": "Matcher"
+      "matches": "Matcher",
+      "runs": "{starts} till {ends}",
+      "days_to_go": "dag kvar | dagar kvar",
+      "live_now": "Live nu",
+      "sign_up": "Anmälan",
+      "champions": "Mästare",
+      "top": "Toppen av topplistan",
+      "full_leaderboard": "Hela topplistan",
+      "leaderboard_so_far": "Topplistan hittills",
+      "your_day": "Din dag",
+      "your_event": "Ditt event",
+      "open_profile": "Öppna din eventprofil",
+      "of_players": "av {count}",
+      "results": "Resultat",
+      "results_so_far": "Resultat hittills",
+      "whos_going": "Vilka som kommer",
+      "latest_uploads": "Senaste uppladdningarna",
+      "from_organizers": "Från arrangörerna",
+      "moments": "Ögonblick",
+      "upcoming_empty": "Turneringar och spelarlistan visas här när arrangörerna lägger till dem.",
+      "nothing_yet": "Inget här än. Resultat, topplista och höjdpunkter fylls i när en match kopplad till eventet har spelats."
     },
     "matches": {
-      "none": "Inga matcher har spelats i detta events turneringar än."
+      "none": "Inga matcher har spelats i detta events turneringar än.",
+      "all": "Alla matcher",
+      "mine": "Mina",
+      "none_mine": "Du har inte spelat någon match på det här eventet."
     },
     "story": {
       "highlights": "Höjdpunkter"
@@ -11157,6 +11183,19 @@
       "axis_adr": "ADR",
       "axis_hs": "HS%",
       "axis_assist": "Assist"
+    },
+    "header": {
+      "add_banner": "Lägg till en banner",
+      "day_of": "Dag {day} av {total}",
+      "day": "Dag {day}",
+      "starts_in": "i dag | i morgon | om {count} dagar",
+      "players": "{count} spelare | {count} spelare",
+      "teams": "{count} lag | {count} lag",
+      "matches": "{count} match | {count} matcher",
+      "watch_live": "Titta live",
+      "register": "Anmäl dig",
+      "share": "Dela",
+      "link_copied": "Länken har kopierats"
     }
   },
   "awards": {

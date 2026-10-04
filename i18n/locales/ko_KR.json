@@ -10947,7 +10947,9 @@
       "highlights": "하이라이트",
       "overview": "개요",
       "story": "스토리",
-      "matches": "매치"
+      "matches": "매치",
+      "players": "플레이어",
+      "manage": "관리"
     },
     "not_found": {
       "title": "이벤트를 찾을 수 없습니다",
@@ -11110,7 +11112,8 @@
       "link_title_placeholder": "제목 (선택)",
       "link_add": "추가",
       "link_invalid": "유효한 http(s) URL을 입력하세요",
-      "link_added": "링크가 추가되었습니다"
+      "link_added": "링크가 추가되었습니다",
+      "uploads": "업로드"
     },
     "phase": {
       "upcoming": "예정",
@@ -11121,10 +11124,33 @@
       "for_you": "내 요약",
       "rank": "이벤트 순위",
       "rating": "레이팅",
-      "matches": "매치"
+      "matches": "매치",
+      "runs": "{starts}~{ends}",
+      "days_to_go": "일 남음 | 일 남음",
+      "live_now": "지금 라이브",
+      "sign_up": "참가 신청",
+      "champions": "우승",
+      "top": "리더보드 상위",
+      "full_leaderboard": "전체 리더보드",
+      "leaderboard_so_far": "현재까지 리더보드",
+      "your_day": "나의 오늘",
+      "your_event": "나의 이벤트",
+      "open_profile": "이벤트 프로필 열기",
+      "of_players": "{count}명 중",
+      "results": "결과",
+      "results_so_far": "현재까지 결과",
+      "whos_going": "참가자",
+      "latest_uploads": "최근 업로드",
+      "from_organizers": "주최자 업로드",
+      "moments": "순간들",
+      "upcoming_empty": "주최자가 추가하면 토너먼트와 참가자 목록이 여기에 표시됩니다.",
+      "nothing_yet": "아직 아무것도 없습니다. 이 이벤트에 연결된 경기가 진행되면 결과, 리더보드, 하이라이트가 채워집니다."
     },
     "matches": {
-      "none": "아직 이 이벤트 토너먼트에서 진행된 매치가 없습니다."
+      "none": "아직 이 이벤트 토너먼트에서 진행된 매치가 없습니다.",
+      "all": "전체 경기",
+      "mine": "내 경기",
+      "none_mine": "이 이벤트에서 플레이한 경기가 없습니다."
     },
     "story": {
       "highlights": "하이라이트"
@@ -11157,6 +11183,19 @@
       "axis_adr": "ADR",
       "axis_hs": "HS%",
       "axis_assist": "어시스트"
+    },
+    "header": {
+      "add_banner": "배너 추가",
+      "day_of": "{total}일 중 {day}일차",
+      "day": "{day}일차",
+      "starts_in": "오늘 | 내일 | {count}일 후",
+      "players": "플레이어 {count}명 | 플레이어 {count}명",
+      "teams": "팀 {count}개 | 팀 {count}개",
+      "matches": "경기 {count}개 | 경기 {count}개",
+      "watch_live": "라이브 보기",
+      "register": "등록",
+      "share": "공유",
+      "link_copied": "링크가 복사되었습니다"
     }
   },
   "awards": {

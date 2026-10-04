@@ -10947,7 +10947,9 @@
       "highlights": "Highlight",
       "overview": "Panoramica",
       "story": "Storia",
-      "matches": "Match"
+      "matches": "Match",
+      "players": "Giocatori",
+      "manage": "Gestisci"
     },
     "not_found": {
       "title": "Evento non trovato",
@@ -11110,7 +11112,8 @@
       "link_title_placeholder": "Titolo facoltativo",
       "link_add": "Aggiungi",
       "link_invalid": "Inserisci un URL http(s) valido",
-      "link_added": "Link aggiunto"
+      "link_added": "Link aggiunto",
+      "uploads": "Caricamenti"
     },
     "phase": {
       "upcoming": "In arrivo",
@@ -11121,10 +11124,33 @@
       "for_you": "Per te",
       "rank": "Rank nell'evento",
       "rating": "Rating",
-      "matches": "Match"
+      "matches": "Match",
+      "runs": "Da {starts} a {ends}",
+      "days_to_go": "giorno all'inizio | giorni all'inizio",
+      "live_now": "In diretta ora",
+      "sign_up": "Iscrizioni",
+      "champions": "Campioni",
+      "top": "In cima alla classifica",
+      "full_leaderboard": "Classifica completa",
+      "leaderboard_so_far": "Classifica finora",
+      "your_day": "La tua giornata",
+      "your_event": "Il tuo evento",
+      "open_profile": "Apri il tuo profilo dell'evento",
+      "of_players": "su {count}",
+      "results": "Risultati",
+      "results_so_far": "Risultati finora",
+      "whos_going": "Chi partecipa",
+      "latest_uploads": "Ultimi caricamenti",
+      "from_organizers": "Dagli organizzatori",
+      "moments": "Momenti",
+      "upcoming_empty": "I tornei e l'elenco dei giocatori compariranno qui quando gli organizzatori li aggiungeranno.",
+      "nothing_yet": "Ancora niente. Risultati, classifica e highlight compaiono quando si gioca una partita collegata a questo evento."
     },
     "matches": {
-      "none": "Ancora nessun match giocato nei tornei di questo evento."
+      "none": "Ancora nessun match giocato nei tornei di questo evento.",
+      "all": "Tutte le partite",
+      "mine": "Le mie",
+      "none_mine": "Non hai giocato nessuna partita a questo evento."
     },
     "story": {
       "highlights": "Highlight"
@@ -11157,6 +11183,19 @@
       "axis_adr": "ADR",
       "axis_hs": "HS%",
       "axis_assist": "Assist"
+    },
+    "header": {
+      "add_banner": "Aggiungi un banner",
+      "day_of": "Giorno {day} di {total}",
+      "day": "Giorno {day}",
+      "starts_in": "oggi | domani | tra {count} giorni",
+      "players": "{count} giocatore | {count} giocatori",
+      "teams": "{count} squadra | {count} squadre",
+      "matches": "{count} partita | {count} partite",
+      "watch_live": "Guarda in diretta",
+      "register": "Iscriviti",
+      "share": "Condividi",
+      "link_copied": "Link copiato"
     }
   },
   "awards": {

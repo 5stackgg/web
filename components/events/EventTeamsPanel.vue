@@ -15,7 +15,8 @@ defineProps<{
     short_name?: string | null;
     avatar_url?: string | null;
   }>;
-  players: any[];
+  // Omit to show teams only (the players tab lists them in the leaderboard).
+  players?: any[];
 }>();
 
 const apiDomain = useRuntimeConfig().public.apiDomain;
@@ -94,7 +95,7 @@ function initials(team: { name: string; short_name?: string | null }): string {
     </section>
 
     <!-- PLAYERS -->
-    <section>
+    <section v-if="players">
       <div
         :class="[
           tacticalSectionLabelClasses,

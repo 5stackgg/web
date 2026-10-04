@@ -29,4 +29,13 @@ describe("EventTeamsPanel", () => {
     expect(wrapper.find("a").exists()).toBe(false);
     expect(wrapper.find("nuxtlink").exists()).toBe(false);
   });
+
+  it("lists teams only when no players are passed", async () => {
+    const wrapper = await mountSuspended(EventTeamsPanel, {
+      props: { teams: [{ id: "abc", name: "Team A" }] },
+    });
+
+    expect(wrapper.findAll("section")).toHaveLength(1);
+    expect(wrapper.text()).toContain("Team A");
+  });
 });

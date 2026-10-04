@@ -3874,8 +3874,40 @@
           "rank_high": "Rank medio più alto",
           "rank_low": "Rank medio più basso"
         },
-        "host": "Crea draft room",
         "rehost": "Ripeti l'ultima",
+        "host_bar": {
+          "title": "Crea una draft room",
+          "seats": "{count} posti",
+          "draft": "Tipo di draft",
+          "access": "Chi può entrare",
+          "open": "Apri draft room {format}",
+          "sign_in": "Accedi per creare",
+          "back_to_room": "Torna alla tua draft room",
+          "all_settings": "Tutte le impostazioni",
+          "rehost_detail": "{format} {mode}, {access}",
+          "phrase": {
+            "captains": "Capitani: i primi 2 per rank, ordine snake",
+            "host": "Assegni tu i giocatori alle squadre",
+            "pug": "Le squadre si bilanciano da sole quando la draft room è piena"
+          }
+        },
+        "intro": {
+          "title": "Organizza la tua partita.",
+          "body": "Apri una draft room, lascia che i giocatori la riempiano e i capitani scelgono le squadre. Con le regole standard conta per l'ELO.",
+          "steps": {
+            "open": "Apri una draft room",
+            "join": "I giocatori entrano",
+            "draft": "I capitani scelgono",
+            "play": "Inizia il match"
+          },
+          "board_label": "Come funziona un draft con capitani",
+          "captain": "Capitano",
+          "you": "Tu",
+          "your_pick": "Tocca a te",
+          "picking": "Sta scegliendo",
+          "pool": "Ancora disponibili",
+          "dismiss": "Chiudi"
+        },
         "types": {
           "captains": "Draft con capitani",
           "host": "Assegnazione host",

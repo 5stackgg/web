@@ -3874,8 +3874,40 @@
           "rank_high": "평균 랭크 높은 순",
           "rank_low": "평균 랭크 낮은 순"
         },
-        "host": "드래프트 룸 개설",
         "rehost": "마지막 설정 재개설",
+        "host_bar": {
+          "title": "룸 개설",
+          "seats": "{count}명",
+          "draft": "드래프트 방식",
+          "access": "참가 가능 대상",
+          "open": "{format} 룸 열기",
+          "sign_in": "로그인하고 개설하기",
+          "back_to_room": "내 룸으로 돌아가기",
+          "all_settings": "전체 설정",
+          "rehost_detail": "{format} {mode}, {access}",
+          "phrase": {
+            "captains": "랭크 상위 2명이 팀장, 스네이크 순서",
+            "host": "플레이어를 직접 팀에 배정합니다",
+            "pug": "룸이 가득 차면 팀이 자동으로 균형을 맞춥니다"
+          }
+        },
+        "intro": {
+          "title": "직접 경기를 열어 보세요.",
+          "body": "룸을 열고 플레이어가 모이면 팀장이 팀원을 뽑습니다. 기본 규칙이면 ELO에 반영됩니다.",
+          "steps": {
+            "open": "룸 열기",
+            "join": "플레이어 참가",
+            "draft": "팀장 드래프트",
+            "play": "경기 시작"
+          },
+          "board_label": "팀장 드래프트 진행 방식",
+          "captain": "팀장",
+          "you": "나",
+          "your_pick": "내 차례",
+          "picking": "선택 중",
+          "pool": "남은 플레이어",
+          "dismiss": "닫기"
+        },
         "types": {
           "captains": "팀장 드래프트",
           "host": "호스트 배정",

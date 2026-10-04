@@ -3874,8 +3874,40 @@
           "rank_high": "平均段位最高",
           "rank_low": "平均段位最低"
         },
-        "host": "创建选秀房间",
         "rehost": "重新创建上次",
+        "host_bar": {
+          "title": "创建房间",
+          "seats": "{count} 个位置",
+          "draft": "选人方式",
+          "access": "谁可以加入",
+          "open": "开启 {format} 房间",
+          "sign_in": "登录后创建",
+          "back_to_room": "返回你的房间",
+          "all_settings": "全部设置",
+          "rehost_detail": "{format} {mode}，{access}",
+          "phrase": {
+            "captains": "段位前 2 名担任队长，蛇形顺序",
+            "host": "由你把玩家分到各队",
+            "pug": "房间满员后自动平衡队伍"
+          }
+        },
+        "intro": {
+          "title": "自己组一场比赛。",
+          "body": "开一个房间，等玩家加入，再由队长挑选队员。使用标准规则时计入 ELO。",
+          "steps": {
+            "open": "开房间",
+            "join": "玩家加入",
+            "draft": "队长选人",
+            "play": "比赛开始"
+          },
+          "board_label": "队长选人流程",
+          "captain": "队长",
+          "you": "你",
+          "your_pick": "轮到你选",
+          "picking": "正在选",
+          "pool": "待选玩家",
+          "dismiss": "关闭"
+        },
         "types": {
           "captains": "队长选人",
           "host": "房主分配",

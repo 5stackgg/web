@@ -3874,8 +3874,40 @@
           "rank_high": "平均段位最高",
           "rank_low": "平均段位最低"
         },
-        "host": "建立選人房間",
         "rehost": "重開上一場",
+        "host_bar": {
+          "title": "建立房間",
+          "seats": "{count} 個位置",
+          "draft": "選人方式",
+          "access": "誰可以加入",
+          "open": "開啟 {format} 房間",
+          "sign_in": "登入後建立",
+          "back_to_room": "返回你的房間",
+          "all_settings": "所有設定",
+          "rehost_detail": "{format} {mode}，{access}",
+          "phrase": {
+            "captains": "段位前 2 名擔任隊長，蛇形順序",
+            "host": "由你把玩家分到各隊",
+            "pug": "房間滿員後自動平衡隊伍"
+          }
+        },
+        "intro": {
+          "title": "自己開一場比賽。",
+          "body": "開一個房間，等玩家加入，再由隊長挑選隊員。使用標準規則時計入 ELO。",
+          "steps": {
+            "open": "開房間",
+            "join": "玩家加入",
+            "draft": "隊長選人",
+            "play": "比賽開始"
+          },
+          "board_label": "隊長選人流程",
+          "captain": "隊長",
+          "you": "你",
+          "your_pick": "輪到你選",
+          "picking": "正在選",
+          "pool": "待選玩家",
+          "dismiss": "關閉"
+        },
         "types": {
           "captains": "隊長選人",
           "host": "房主分配",

@@ -3876,8 +3876,40 @@
           "rank_high": "Highest average rank",
           "rank_low": "Lowest average rank"
         },
-        "host": "Host draft room",
         "rehost": "Re-host last",
+        "host_bar": {
+          "title": "Host a room",
+          "seats": "{count} seats",
+          "draft": "Draft style",
+          "access": "Who can join",
+          "open": "Open {format} room",
+          "sign_in": "Sign in to host",
+          "back_to_room": "Back to your room",
+          "all_settings": "All settings",
+          "rehost_detail": "{format} {mode}, {access}",
+          "phrase": {
+            "captains": "Top 2 by rank captain, snake order",
+            "host": "You put players on teams",
+            "pug": "Teams auto-balance when the room fills"
+          }
+        },
+        "intro": {
+          "title": "Run your own pick-up game.",
+          "body": "Open a room, let players fill it, and captains draft the teams. Standard rules count toward ELO.",
+          "steps": {
+            "open": "Open a room",
+            "join": "Players join",
+            "draft": "Captains draft",
+            "play": "Match starts"
+          },
+          "board_label": "How a captains draft works",
+          "captain": "Captain",
+          "you": "You",
+          "your_pick": "Your pick",
+          "picking": "Picking",
+          "pool": "Still in the pool",
+          "dismiss": "Dismiss"
+        },
         "types": {
           "captains": "Captains draft",
           "host": "Host assigns",

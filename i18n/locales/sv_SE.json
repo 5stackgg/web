@@ -3874,8 +3874,40 @@
           "rank_high": "Högst snittrank",
           "rank_low": "Lägst snittrank"
         },
-        "host": "Skapa draftrum",
         "rehost": "Starta senaste igen",
+        "host_bar": {
+          "title": "Skapa ett rum",
+          "seats": "{count} platser",
+          "draft": "Draftläge",
+          "access": "Vem kan gå med",
+          "open": "Öppna {format}-rum",
+          "sign_in": "Logga in för att skapa",
+          "back_to_room": "Tillbaka till ditt rum",
+          "all_settings": "Alla inställningar",
+          "rehost_detail": "{format} {mode}, {access}",
+          "phrase": {
+            "captains": "Topp 2 efter rank blir kaptener, snake-ordning",
+            "host": "Du placerar spelarna i lagen",
+            "pug": "Lagen balanseras automatiskt när rummet är fullt"
+          }
+        },
+        "intro": {
+          "title": "Kör ditt eget pick-up-game.",
+          "body": "Öppna ett rum, låt spelare fylla det och kaptenerna draftar lagen. Med standardregler räknas det till ELO.",
+          "steps": {
+            "open": "Öppna ett rum",
+            "join": "Spelare går med",
+            "draft": "Kaptener draftar",
+            "play": "Matchen startar"
+          },
+          "board_label": "Så går en kaptensdraft till",
+          "captain": "Kapten",
+          "you": "Du",
+          "your_pick": "Ditt val",
+          "picking": "Väljer",
+          "pool": "Kvar att välja",
+          "dismiss": "Stäng"
+        },
         "types": {
           "captains": "Kaptensdraft",
           "host": "Värden tilldelar",

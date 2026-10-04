@@ -4,7 +4,7 @@ import { defineStore, acceptHMRUpdate } from "pinia";
 import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
 import { $, e_draft_game_status_enum, order_by } from "~/generated/zeus";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
-import { generateSubscription } from "~/graphql/graphqlGen";
+import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { playerFields } from "~/graphql/playerFields";
 import { mapFields } from "~/graphql/mapGraphql";
 import { useAuthStore } from "~/stores/AuthStore";
@@ -397,6 +397,20 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
     currentMatch.value = undefined;
   };
 
+  // Rooms that expire without filling are deleted, so they don't count.
+  const hasHostedDraftGame = async (steamId: string) => {
+    const { data } = await getGraphqlClient().query({
+      query: generateQuery({
+        draft_games: [
+          { where: { host_steam_id: { _eq: steamId } }, limit: 1 },
+          { id: true },
+        ],
+      }),
+      fetchPolicy: "network-only",
+    });
+    return (data?.draft_games?.length ?? 0) > 0;
+  };
+
   const create = async (settings: Record<string, unknown>) => {
     const { data } = await getGraphqlClient().mutate({
       mutation: gql`
@@ -737,6 +751,7 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
     unsubscribeFromDraftGame,
     subscribeToMatch,
     unsubscribeFromMatch,
+    hasHostedDraftGame,
     create,
     update,
     join,

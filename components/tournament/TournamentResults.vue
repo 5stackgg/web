@@ -823,10 +823,15 @@ export default {
     podium() {
       const awards = (this.tournament as any)?.awards || [];
       if (awards.length === 0) return [];
-      const byPlacement = new Map();
+      // Keyed by team too: an organizer can hand the same placement to two
+      // teams, e.g. both semifinal losers when there is no third-place match.
+      const steps = new Map();
       for (const t of awards) {
-        if (t.placement === 0) continue;
-        const existing = byPlacement.get(t.placement);
+        if (![1, 2, 3].includes(t.placement)) {
+          continue;
+        }
+        const key = `${t.placement}-${t.tournament_team_id}`;
+        const existing = steps.get(key);
         if (existing) {
           if (
             t.player &&
@@ -846,7 +851,7 @@ export default {
           : t.player
             ? [t.player]
             : [];
-        byPlacement.set(t.placement, {
+        steps.set(key, {
           placement: t.placement,
           // The granted row is authoritative: it records the award the server
           // resolved, so a later config edit cannot rewrite history here.
@@ -861,7 +866,7 @@ export default {
           players,
         });
       }
-      return Array.from(byPlacement.values()).sort(
+      return Array.from(steps.values()).sort(
         (a: any, b: any) => a.placement - b.placement,
       );
     },

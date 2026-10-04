@@ -25,7 +25,10 @@ import AnimatedStat from "~/components/AnimatedStat.vue";
 import { useChatTabs, type ChatTab } from "~/composables/useChatTabs";
 import { cancelChatTabRestore } from "~/composables/useChatTabPersistence";
 import { useDirectConversationBar } from "~/composables/useDirectConversationBar";
-import { directTabId } from "~/composables/useDirectMessages";
+import {
+  directTabId,
+  pendingComposerFocus,
+} from "~/composables/useDirectMessages";
 import { orderChatTabs } from "~/utilities/chatTabOrder";
 import { hapticTap } from "~/utilities/haptics";
 import {
@@ -589,6 +592,31 @@ function onDock(tab: ChatTab) {
 // picked, Esc is pressed, or another conversation is opened from the rail.
 const composing = ref(false);
 
+const lobbies: Record<string, { focusComposer?: () => void } | null> = {};
+
+// A conversation just started -- from New message or a Message button --
+// lands in its composer once compose has closed and chat is on screen.
+watch(
+  [
+    pendingComposerFocus,
+    composing,
+    () => props.isSidebarOpen,
+    () => props.isTabActive,
+  ],
+  ([tabId, isComposing, open, active]) => {
+    if (!tabId || isComposing || !open || !active) {
+      return;
+    }
+
+    pendingComposerFocus.value = null;
+
+    if (!isMobile.value) {
+      nextTick(() => lobbies[tabId]?.focusComposer?.());
+    }
+  },
+  { immediate: true },
+);
+
 function handleRoomClick(tab: ChatTab) {
   // The release that ends a drag also fires a click on whatever is underneath.
   if (suppressClick) {
@@ -1043,6 +1071,7 @@ function handlePopOut() {
           <ChatLobby
             v-for="tab in tabs"
             :key="tab.id"
+            :ref="(lobby) => (lobbies[tab.id] = lobby as any)"
             v-show="tab.id === activeChatId"
             :instance="tab.instance"
             :type="tab.type"

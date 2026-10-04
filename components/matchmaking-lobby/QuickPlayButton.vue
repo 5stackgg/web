@@ -78,7 +78,7 @@ const ctaFill =
       type="button"
       class="inline-flex h-8 items-center gap-1.5 rounded-l-md px-3 text-xs font-semibold"
       :class="ctaFill"
-      @click="join(quickMode.type)"
+      @click="join(quickMode.type, $event.currentTarget)"
     >
       <Play class="size-3.5 fill-current" />
       {{ modeTitle(quickMode.type) }}

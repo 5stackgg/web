@@ -3907,7 +3907,6 @@
           "skipped": "{name} pominięty, {ms} ms",
           "unreachable": "{name} nieosiągalny",
           "ms": "{ms} ms",
-          "lan": "LAN",
           "count": "{count} region | {count} regionów"
         },
         "party": {
@@ -3932,7 +3931,8 @@
         "no_region": {
           "title": "Każdy region przekracza twój limit {ms} ms",
           "body": "Podnieś limit lub oznacz gwiazdką region, który akceptujesz, i dołącz ponownie do kolejki."
-        }
+        },
+        "find_lan_match": "Szukaj meczu LAN"
       },
       "schedule": {
         "vs": "vs",
@@ -3993,7 +3993,8 @@
             "captains": "Kapitanowie: top 2 wg rangi, kolejność snake",
             "host": "Sam przydzielasz graczy do drużyn",
             "pug": "Drużyny wyrównują się same, gdy pokój się zapełni"
-          }
+          },
+          "open_lan": "Otwórz pokój LAN {format}"
         },
         "intro": {
           "title": "Zorganizuj własną grę.",
@@ -9553,7 +9554,21 @@
     "temp_banned_until": "Masz tymczasowy zakaz dobierania meczów do {time}",
     "new_invites_count": "Nowe zaproszenia ({count})",
     "tournament_banned": "Nie możesz dołączać do składów turniejowych ani do puli wolnych zawodników.",
-    "tournament_banned_until": "Nie możesz dołączać do składów turniejowych ani do puli wolnych zawodników do {time}."
+    "tournament_banned_until": "Nie możesz dołączać do składów turniejowych ani do puli wolnych zawodników do {time}.",
+    "where": {
+      "label": "Gdzie grać",
+      "lan": "LAN",
+      "online": "Online",
+      "lan_hint": "Tylko gracze w tej sieci",
+      "ask_queue": "Jesteś w sieci LAN. Gdzie chcesz grać?",
+      "ask_room": "Jesteś w sieci LAN. Gdzie ma grać pokój?",
+      "play_lan": "Graj w sieci LAN",
+      "play_online": "Graj online",
+      "lan_room": "Pokój LAN",
+      "online_room": "Pokój online",
+      "lan_room_hint": "Dołączyć mogą tylko gracze w tej sieci",
+      "online_room_hint": "Gra online, każdy może dołączyć"
+    }
   },
   "game_server": {
     "lan_ip": "IP LAN",

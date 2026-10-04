@@ -3907,7 +3907,6 @@
           "skipped": "{name} sprunget over, {ms} ms",
           "unreachable": "{name} kan ikke nås",
           "ms": "{ms} ms",
-          "lan": "LAN",
           "count": "{count} region | {count} regioner"
         },
         "party": {
@@ -3932,7 +3931,8 @@
         "no_region": {
           "title": "Alle regioner er over din grænse på {ms} ms",
           "body": "Hæv din grænse, eller stjernemarkér en region, du vil acceptere, og stil dig i kø igen."
-        }
+        },
+        "find_lan_match": "Find LAN-kamp"
       },
       "schedule": {
         "vs": "vs",
@@ -3993,7 +3993,8 @@
             "captains": "Top 2 efter rang bliver anførere, slangerækkefølge",
             "host": "Du sætter spillerne på holdene",
             "pug": "Holdene balanceres automatisk, når rummet er fyldt"
-          }
+          },
+          "open_lan": "Åbn {format} LAN-rum"
         },
         "intro": {
           "title": "Kør dit eget pick-up-spil.",
@@ -9553,7 +9554,21 @@
     "temp_banned_until": "Du er midlertidigt udelukket fra matchmaking indtil {time}",
     "new_invites_count": "Nye invitationer ({count})",
     "tournament_banned": "Du må ikke komme på turneringstrupper eller i free agent-puljen.",
-    "tournament_banned_until": "Du må ikke komme på turneringstrupper eller i free agent-puljen indtil {time}."
+    "tournament_banned_until": "Du må ikke komme på turneringstrupper eller i free agent-puljen indtil {time}.",
+    "where": {
+      "label": "Hvor du spiller",
+      "lan": "LAN",
+      "online": "Online",
+      "lan_hint": "Kun spillere på dette netværk",
+      "ask_queue": "Du er på et LAN. Hvor vil du spille?",
+      "ask_room": "Du er på et LAN. Hvor skal rummet spilles?",
+      "play_lan": "Spil på LAN",
+      "play_online": "Spil online",
+      "lan_room": "LAN-rum",
+      "online_room": "Online-rum",
+      "lan_room_hint": "Kun spillere på dette netværk kan deltage",
+      "online_room_hint": "Spilles online, alle kan deltage"
+    }
   },
   "game_server": {
     "lan_ip": "LAN-IP",

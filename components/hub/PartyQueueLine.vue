@@ -223,7 +223,7 @@ const rowClass =
     <button
       type="button"
       class="tac-amber-cta inline-flex h-8 items-center gap-1.5 rounded-md border px-3 text-xs font-semibold"
-      @click="join(quickMode.type)"
+      @click="join(quickMode.type, $event.currentTarget)"
     >
       <Play class="size-3 fill-current" />
       {{ $t("layouts.party_room.queue") }}

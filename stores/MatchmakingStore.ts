@@ -21,6 +21,7 @@ import { setActiveHub } from "~/composables/useHubState";
 const REGION_LATENCY_PREFIX = "5stack_region_latency_";
 const MAX_LATENCY_KEY = "5stack_max_acceptable_latency";
 const PREFERRED_REGIONS_KEY = "5stack_preferred_regions";
+const PLAY_WHERE_KEY = "5stack_play_where";
 
 function safeParseLocalStorage<T>(key: string): T | null {
   const raw = localStorage.getItem(key);
@@ -641,14 +642,74 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     };
   }
 
-  const preferredRegions = computed(() => {
+  // The regions you can reach on a LAN you are actually on.
+  const lanRegions = computed(() =>
+    useApplicationSettingsStore().availableRegions.filter(
+      (region) =>
+        region.is_lan && !!getRegionlatencyResult(region.value)?.isLan,
+    ),
+  );
+  const onLan = computed(() => lanRegions.value.length > 0);
+
+  // On a LAN you play there or online, never both. Asked the first time you
+  // queue or host this session; switchable from the region line.
+  const playWhere = ref<"lan" | "online" | null>(
+    (() => {
+      try {
+        const value = sessionStorage.getItem(PLAY_WHERE_KEY);
+        return value === "lan" || value === "online" ? value : null;
+      } catch {
+        return null;
+      }
+    })(),
+  );
+
+  function setPlayWhere(where: "lan" | "online") {
+    playWhere.value = where;
+    try {
+      sessionStorage.setItem(PLAY_WHERE_KEY, where);
+    } catch {}
+  }
+
+  const playWherePrompt = ref<{
+    kind: "queue" | "room";
+    anchor: HTMLElement | null;
+    resolve: (where: "lan" | "online" | null) => void;
+  } | null>(null);
+
+  // Resolves true once it is settled where to play: straight away off a LAN or
+  // when already chosen, otherwise after the player picks in the prompt.
+  function ensurePlayWhere(
+    kind: "queue" | "room",
+    anchor: HTMLElement | null = null,
+  ): Promise<boolean> {
+    if (!onLan.value || playWhere.value) {
+      return Promise.resolve(true);
+    }
+    playWherePrompt.value?.resolve(null);
+    return new Promise((resolve) => {
+      playWherePrompt.value = {
+        kind,
+        anchor,
+        resolve: (where) => {
+          playWherePrompt.value = null;
+          if (where) {
+            setPlayWhere(where);
+          }
+          resolve(!!where);
+        },
+      };
+    });
+  }
+
+  const onlineRegions = computed(() => {
     const availableRegions =
       useApplicationSettingsStore().availableRegions.filter((region) => {
-        const regionLatency = getRegionlatencyResult(region.value);
-
-        if (regionLatency && region.is_lan && regionLatency.isLan) {
-          return true;
+        if (region.is_lan) {
+          return false;
         }
+
+        const regionLatency = getRegionlatencyResult(region.value);
 
         if (
           regionLatency &&
@@ -689,21 +750,18 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
           Number(regionResult.latency) <= playerMaxAcceptableLatency.value
         );
       })
-      .sort((a, b) => {
-        if (a.is_lan && !b.is_lan) {
-          return -1;
-        }
-        if (!a.is_lan && b.is_lan) {
-          return 1;
-        }
-
-        // For non-LAN regions, sort by latency
-        return (
+      .sort(
+        (a, b) =>
           Number(getRegionlatencyResult(a.value)?.latency) -
-          Number(getRegionlatencyResult(b.value)?.latency)
-        );
-      });
+          Number(getRegionlatencyResult(b.value)?.latency),
+      );
   });
+
+  const preferredRegions = computed(() =>
+    onLan.value && playWhere.value === "lan"
+      ? lanRegions.value
+      : onlineRegions.value,
+  );
 
   // Classify lobbies by MY membership status within the `lobbies` subscription
   // itself, NOT by comparing against `me.current_lobby_id`. That field arrives
@@ -758,6 +816,13 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     latencies,
     storedRegions,
     preferredRegions,
+    onlineRegions,
+    lanRegions,
+    onLan,
+    playWhere,
+    setPlayWhere,
+    playWherePrompt,
+    ensurePlayWhere,
     playerMaxAcceptableLatency,
     lobbyInvites,
 

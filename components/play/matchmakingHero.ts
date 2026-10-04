@@ -87,5 +87,6 @@ export function heroShape(state: HeroState): "picker" | "search" | "match" {
 export function roundedPing(latency: string | undefined): number | null {
   if (latency === undefined) return null;
   const value = Number(latency);
-  return Number.isFinite(value) ? Math.round(value) : null;
+  // A LAN answers in under a millisecond; "0 ms" reads as broken.
+  return Number.isFinite(value) ? Math.max(1, Math.round(value)) : null;
 }

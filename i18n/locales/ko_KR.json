@@ -3907,7 +3907,6 @@
           "skipped": "{name} 제외됨, {ms} ms",
           "unreachable": "{name} 연결 불가",
           "ms": "{ms} ms",
-          "lan": "LAN",
           "count": "{count}개 지역 | {count}개 지역"
         },
         "party": {
@@ -3932,7 +3931,8 @@
         "no_region": {
           "title": "모든 지역이 {ms} ms 제한을 초과합니다",
           "body": "제한을 높이거나 허용할 지역에 별표한 뒤 다시 대기열에 참가하세요."
-        }
+        },
+        "find_lan_match": "LAN 매치 찾기"
       },
       "schedule": {
         "vs": "vs",
@@ -3993,7 +3993,8 @@
             "captains": "랭크 상위 2명이 팀장, 스네이크 순서",
             "host": "플레이어를 직접 팀에 배정합니다",
             "pug": "룸이 가득 차면 팀이 자동으로 균형을 맞춥니다"
-          }
+          },
+          "open_lan": "{format} LAN 방 열기"
         },
         "intro": {
           "title": "직접 경기를 열어 보세요.",
@@ -9553,7 +9554,21 @@
     "temp_banned_until": "{time}까지 매치메이킹이 일시적으로 제한됩니다",
     "new_invites_count": "새 초대 ({count})",
     "tournament_banned": "토너먼트 로스터와 프리 에이전트 풀에 참가할 수 없습니다.",
-    "tournament_banned_until": "{time}까지 토너먼트 로스터와 프리 에이전트 풀에 참가할 수 없습니다."
+    "tournament_banned_until": "{time}까지 토너먼트 로스터와 프리 에이전트 풀에 참가할 수 없습니다.",
+    "where": {
+      "label": "플레이 위치",
+      "lan": "LAN",
+      "online": "온라인",
+      "lan_hint": "이 네트워크의 플레이어만",
+      "ask_queue": "LAN에 연결되어 있습니다. 어디서 플레이할까요?",
+      "ask_room": "LAN에 연결되어 있습니다. 방을 어디서 진행할까요?",
+      "play_lan": "LAN에서 플레이",
+      "play_online": "온라인으로 플레이",
+      "lan_room": "LAN 방",
+      "online_room": "온라인 방",
+      "lan_room_hint": "이 네트워크의 플레이어만 참가할 수 있습니다",
+      "online_room_hint": "온라인으로 진행되며 누구나 참가할 수 있습니다"
+    }
   },
   "game_server": {
     "lan_ip": "LAN IP",

@@ -3907,7 +3907,6 @@
           "skipped": "{name} ignorada, {ms} ms",
           "unreachable": "{name} inacessível",
           "ms": "{ms} ms",
-          "lan": "LAN",
           "count": "{count} região | {count} regiões"
         },
         "party": {
@@ -3932,7 +3931,8 @@
         "no_region": {
           "title": "Todas as regiões passam do seu limite de {ms} ms",
           "body": "Aumente o limite ou marque com estrela uma região que você aceite e entre na fila de novo."
-        }
+        },
+        "find_lan_match": "Encontrar partida LAN"
       },
       "schedule": {
         "vs": "vs",
@@ -3993,7 +3993,8 @@
             "captains": "Capitães: top 2 por rank, ordem snake",
             "host": "Você coloca os jogadores nos times",
             "pug": "Os times se equilibram sozinhos quando a sala enche"
-          }
+          },
+          "open_lan": "Abrir sala LAN {format}"
         },
         "intro": {
           "title": "Organize seu próprio jogo.",
@@ -9553,7 +9554,21 @@
     "temp_banned_until": "Você está temporariamente banido do matchmaking até {time}",
     "new_invites_count": "Novos convites ({count})",
     "tournament_banned": "Você está impedido de entrar em escalações de torneio e no grupo de agentes livres.",
-    "tournament_banned_until": "Você está impedido de entrar em escalações de torneio e no grupo de agentes livres até {time}."
+    "tournament_banned_until": "Você está impedido de entrar em escalações de torneio e no grupo de agentes livres até {time}.",
+    "where": {
+      "label": "Onde jogar",
+      "lan": "LAN",
+      "online": "Online",
+      "lan_hint": "Apenas jogadores nesta rede",
+      "ask_queue": "Você está em uma LAN. Onde quer jogar?",
+      "ask_room": "Você está em uma LAN. Onde a sala deve jogar?",
+      "play_lan": "Jogar na LAN",
+      "play_online": "Jogar online",
+      "lan_room": "Sala LAN",
+      "online_room": "Sala online",
+      "lan_room_hint": "Apenas jogadores nesta rede podem entrar",
+      "online_room_hint": "Joga online, qualquer pessoa pode entrar"
+    }
   },
   "game_server": {
     "lan_ip": "LAN IP",

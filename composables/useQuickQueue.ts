@@ -127,7 +127,7 @@ export function useQuickQueue() {
     return te(key) ? t(key) : type;
   }
 
-  function join(type: e_match_types_enum) {
+  async function join(type: e_match_types_enum, anchor?: EventTarget | null) {
     const mode = modes.value.find((candidate) => candidate.type === type);
     if (!mode?.canQueue) {
       toast({
@@ -137,6 +137,14 @@ export function useQuickQueue() {
         }),
         variant: "destructive",
       });
+      return;
+    }
+    if (
+      !(await matchmakingStore.ensurePlayWhere(
+        "queue",
+        anchor instanceof HTMLElement ? anchor : null,
+      ))
+    ) {
       return;
     }
     if (regions.value.length === 0) {

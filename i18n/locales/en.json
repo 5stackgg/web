@@ -3908,7 +3908,6 @@
           "skipped": "{name} skipped, {ms} ms",
           "unreachable": "{name} unreachable",
           "ms": "{ms} ms",
-          "lan": "LAN",
           "count": "{count} region | {count} regions"
         },
         "party": {
@@ -3933,7 +3932,8 @@
         "no_region": {
           "title": "Every region is over your {ms} ms limit",
           "body": "Raise your limit or star a region you'd accept, then queue again."
-        }
+        },
+        "find_lan_match": "Find LAN match"
       },
       "draft_games": {},
       "schedule": {
@@ -3995,7 +3995,8 @@
             "captains": "Top 2 by rank captain, snake order",
             "host": "You put players on teams",
             "pug": "Teams auto-balance when the room fills"
-          }
+          },
+          "open_lan": "Open {format} LAN room"
         },
         "intro": {
           "title": "Run your own pick-up game.",
@@ -9555,7 +9556,21 @@
     "temp_banned_until": "You are temporarily banned from matchmaking until {time}",
     "new_invites_count": "New Invites ({count})",
     "tournament_banned": "You are barred from joining tournament rosters and the free agent pool.",
-    "tournament_banned_until": "You are barred from joining tournament rosters and the free agent pool until {time}."
+    "tournament_banned_until": "You are barred from joining tournament rosters and the free agent pool until {time}.",
+    "where": {
+      "label": "Where to play",
+      "lan": "LAN",
+      "online": "Online",
+      "lan_hint": "Only players on this network",
+      "ask_queue": "You're on a LAN. Where do you want to play?",
+      "ask_room": "You're on a LAN. Where should the room play?",
+      "play_lan": "Play on the LAN",
+      "play_online": "Play online",
+      "lan_room": "LAN room",
+      "online_room": "Online room",
+      "lan_room_hint": "Only players on this network can join",
+      "online_room_hint": "Plays online, anyone can join"
+    }
   },
   "game_server": {
     "lan_ip": "LAN IP",

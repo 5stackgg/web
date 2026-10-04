@@ -3907,7 +3907,6 @@
           "skipped": "{name} omitida, {ms} ms",
           "unreachable": "{name} inaccesible",
           "ms": "{ms} ms",
-          "lan": "LAN",
           "count": "{count} región | {count} regiones"
         },
         "party": {
@@ -3932,7 +3931,8 @@
         "no_region": {
           "title": "Todas las regiones superan tu límite de {ms} ms",
           "body": "Sube tu límite o marca con estrella una región que aceptes y vuelve a entrar en cola."
-        }
+        },
+        "find_lan_match": "Buscar partida LAN"
       },
       "schedule": {
         "vs": "vs",
@@ -3993,7 +3993,8 @@
             "captains": "Capitanes: top 2 por rango, orden serpiente",
             "host": "Tú repartes a los jugadores en los equipos",
             "pug": "Los equipos se equilibran solos cuando la sala se llena"
-          }
+          },
+          "open_lan": "Abrir sala LAN {format}"
         },
         "intro": {
           "title": "Organiza tu propia partida.",
@@ -9553,7 +9554,21 @@
     "temp_banned_until": "Tienes vetado temporalmente el emparejamiento hasta {time}",
     "new_invites_count": "Invitaciones nuevas ({count})",
     "tournament_banned": "No puedes entrar en rosters de torneo ni en el grupo de agentes libres.",
-    "tournament_banned_until": "No puedes entrar en rosters de torneo ni en el grupo de agentes libres hasta {time}."
+    "tournament_banned_until": "No puedes entrar en rosters de torneo ni en el grupo de agentes libres hasta {time}.",
+    "where": {
+      "label": "Dónde jugar",
+      "lan": "LAN",
+      "online": "Online",
+      "lan_hint": "Solo jugadores de esta red",
+      "ask_queue": "Estás en una LAN. ¿Dónde quieres jugar?",
+      "ask_room": "Estás en una LAN. ¿Dónde debe jugarse la sala?",
+      "play_lan": "Jugar en la LAN",
+      "play_online": "Jugar online",
+      "lan_room": "Sala LAN",
+      "online_room": "Sala online",
+      "lan_room_hint": "Solo pueden unirse jugadores de esta red",
+      "online_room_hint": "Se juega online, cualquiera puede unirse"
+    }
   },
   "game_server": {
     "lan_ip": "IP LAN",

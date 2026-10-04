@@ -3907,7 +3907,6 @@
           "skipped": "{name} hoppas över, {ms} ms",
           "unreachable": "{name} går inte att nå",
           "ms": "{ms} ms",
-          "lan": "LAN",
           "count": "{count} region | {count} regioner"
         },
         "party": {
@@ -3932,7 +3931,8 @@
         "no_region": {
           "title": "Alla regioner ligger över din gräns på {ms} ms",
           "body": "Höj gränsen eller stjärnmärk en region du kan godta och köa sedan igen."
-        }
+        },
+        "find_lan_match": "Hitta LAN-match"
       },
       "schedule": {
         "vs": "vs",
@@ -3993,7 +3993,8 @@
             "captains": "Topp 2 efter rank blir kaptener, snake-ordning",
             "host": "Du placerar spelarna i lagen",
             "pug": "Lagen balanseras automatiskt när rummet är fullt"
-          }
+          },
+          "open_lan": "Öppna {format} LAN-rum"
         },
         "intro": {
           "title": "Kör ditt eget pick-up-game.",
@@ -9553,7 +9554,21 @@
     "temp_banned_until": "Du är tillfälligt avstängd från matchmaking till {time}",
     "new_invites_count": "Nya inbjudningar ({count})",
     "tournament_banned": "Du får inte gå med i turneringstrupper eller free agent-poolen.",
-    "tournament_banned_until": "Du får inte gå med i turneringstrupper eller free agent-poolen förrän {time}."
+    "tournament_banned_until": "Du får inte gå med i turneringstrupper eller free agent-poolen förrän {time}.",
+    "where": {
+      "label": "Var du spelar",
+      "lan": "LAN",
+      "online": "Online",
+      "lan_hint": "Bara spelare på det här nätverket",
+      "ask_queue": "Du är på ett LAN. Var vill du spela?",
+      "ask_room": "Du är på ett LAN. Var ska rummet spela?",
+      "play_lan": "Spela på LAN",
+      "play_online": "Spela online",
+      "lan_room": "LAN-rum",
+      "online_room": "Onlinerum",
+      "lan_room_hint": "Bara spelare på det här nätverket kan gå med",
+      "online_room_hint": "Spelas online, alla kan gå med"
+    }
   },
   "game_server": {
     "lan_ip": "LAN-IP",

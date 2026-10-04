@@ -7,6 +7,7 @@ import { useMatchmakingStore } from "./MatchmakingStore";
 import { useAuthStore } from "./AuthStore";
 import { order_by } from "@/generated/zeus";
 import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
+import { seededSubscribe } from "~/utilities/seededSubscribe";
 
 interface Region {
   value: string;
@@ -20,13 +21,11 @@ export const useApplicationSettingsStore = defineStore(
   "applicationSettings",
   () => {
     const SETTINGS_CACHE_KEY = "5stack:application-settings";
+    const REGIONS_CACHE_KEY = "5stack:available-regions";
 
-    const loadCachedSettings = (): Array<{
-      name: string;
-      value: string;
-    }> => {
+    const loadCached = <T>(key: string): T[] => {
       try {
-        const cached = localStorage.getItem(SETTINGS_CACHE_KEY);
+        const cached = localStorage.getItem(key);
         if (cached) {
           return JSON.parse(cached);
         }
@@ -34,8 +33,9 @@ export const useApplicationSettingsStore = defineStore(
       return [];
     };
 
-    const settings =
-      ref<Array<{ name: string; value: string }>>(loadCachedSettings());
+    const settings = ref<Array<{ name: string; value: string }>>(
+      loadCached(SETTINGS_CACHE_KEY),
+    );
     // Whether `settings` is anything more than the defaults: the cached copy
     // or a delivery from the subscription. Until then every derived setting
     // is a guess, and a decision that depends on one should wait.
@@ -43,32 +43,35 @@ export const useApplicationSettingsStore = defineStore(
 
     const subscribeToSettings = async () => {
       const { subscribe } = useSubscriptionManager();
-      const subscription = getGraphqlClient().subscribe({
-        query: generateSubscription({
-          settings: [
-            {},
-            {
-              name: true,
-              value: true,
-            },
-          ],
-        }),
-      });
 
       subscribe(
         "settings:settings",
-        subscription.subscribe({
-          next: ({ data }) => {
-            settings.value = data.settings;
-            settingsLoaded.value = true;
-            try {
-              localStorage.setItem(
-                SETTINGS_CACHE_KEY,
-                JSON.stringify(data.settings),
-              );
-            } catch {}
+        seededSubscribe(
+          getGraphqlClient(),
+          {
+            query: generateSubscription({
+              settings: [
+                {},
+                {
+                  name: true,
+                  value: true,
+                },
+              ],
+            }),
           },
-        }),
+          {
+            next: ({ data }) => {
+              settings.value = data.settings;
+              settingsLoaded.value = true;
+              try {
+                localStorage.setItem(
+                  SETTINGS_CACHE_KEY,
+                  JSON.stringify(data.settings),
+                );
+              } catch {}
+            },
+          },
+        ),
       );
     };
 
@@ -571,50 +574,62 @@ export const useApplicationSettingsStore = defineStore(
       return legacy === "vertical" ? "default-vertical" : "default-horizontal";
     });
 
-    const availableRegions = ref<Region[]>([]);
+    // Cached like settings so the nav's region status paints with the bar.
+    const availableRegions = ref<Region[]>(loadCached(REGIONS_CACHE_KEY));
+    const regionsLoaded = ref(availableRegions.value.length > 0);
 
     let latencyCheckInterval: ReturnType<typeof setInterval> | null = null;
 
     const subscribeToAvailableRegions = async () => {
       const { subscribe } = useSubscriptionManager();
-      const subscription = getGraphqlClient().subscribe({
-        query: generateSubscription({
-          server_regions: [
-            {
-              where: {
-                total_server_count: {
-                  _gt: 0,
-                },
-              },
-            },
-            {
-              value: true,
-              status: true,
-              description: true,
-              is_lan: true,
-              has_node: true,
-            },
-          ],
-        }),
-      });
 
       subscribe(
         "settings:available_regions",
-        subscription.subscribe({
-          next: ({ data }) => {
-            availableRegions.value = data.server_regions;
-            useMatchmakingStore().checkLatenies();
-
-            if (!latencyCheckInterval) {
-              latencyCheckInterval = setInterval(
-                () => {
-                  useMatchmakingStore().checkLatenies();
+        seededSubscribe(
+          getGraphqlClient(),
+          {
+            query: generateSubscription({
+              server_regions: [
+                {
+                  where: {
+                    total_server_count: {
+                      _gt: 0,
+                    },
+                  },
                 },
-                50 * 60 * 1000,
-              );
-            }
+                {
+                  value: true,
+                  status: true,
+                  description: true,
+                  is_lan: true,
+                  has_node: true,
+                },
+              ],
+            }),
           },
-        }),
+          {
+            next: ({ data }) => {
+              availableRegions.value = data.server_regions;
+              regionsLoaded.value = true;
+              try {
+                localStorage.setItem(
+                  REGIONS_CACHE_KEY,
+                  JSON.stringify(data.server_regions),
+                );
+              } catch {}
+              useMatchmakingStore().checkLatenies();
+
+              if (!latencyCheckInterval) {
+                latencyCheckInterval = setInterval(
+                  () => {
+                    useMatchmakingStore().checkLatenies();
+                  },
+                  50 * 60 * 1000,
+                );
+              }
+            },
+          },
+        ),
       );
     };
 
@@ -698,6 +713,7 @@ export const useApplicationSettingsStore = defineStore(
     return {
       settings,
       availableRegions,
+      regionsLoaded,
       maxAcceptableLatency,
       matchCreateRole,
       customMatchRole,

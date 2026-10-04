@@ -75,7 +75,7 @@ const statusLabel = computed(() =>
     <PopoverTrigger as-child>
       <button
         type="button"
-        class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md transition-colors duration-150 focus-visible:bg-[hsl(var(--tac-amber)/0.08)] focus-visible:outline-none data-[state=open]:bg-[hsl(var(--tac-amber)/0.1)]"
+        class="inline-flex h-8 w-8 shrink-0 animate-in fade-in-0 items-center justify-center rounded-md transition-colors duration-150 [animation-duration:240ms] focus-visible:bg-[hsl(var(--tac-amber)/0.08)] focus-visible:outline-none data-[state=open]:bg-[hsl(var(--tac-amber)/0.1)]"
         :aria-label="statusLabel"
       >
         <Globe class="h-4 w-4" :class="toneText[overallTone]" />
@@ -153,4 +153,10 @@ const statusLabel = computed(() =>
       </FormSection>
     </PopoverContent>
   </Popover>
+  <!-- Holds the globe's place until the first delivery so the nav doesn't shift. -->
+  <span
+    v-else-if="!settings.regionsLoaded"
+    aria-hidden="true"
+    class="h-8 w-8 shrink-0"
+  ></span>
 </template>

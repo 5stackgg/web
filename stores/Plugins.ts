@@ -4,6 +4,7 @@ import { order_by } from "~/generated/zeus";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateSubscription } from "~/graphql/graphqlGen";
 import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
+import { seededSubscribe } from "~/utilities/seededSubscribe";
 import { useAuthStore } from "./AuthStore";
 import { useApplicationSettingsStore } from "./ApplicationSettings";
 
@@ -25,47 +26,70 @@ export interface Plugin {
   profile_tab_label: string | null;
 }
 
+const PLUGINS_CACHE_KEY = "5stack:plugins";
+
+const loadCachedPlugins = (): Plugin[] => {
+  try {
+    const cached = localStorage.getItem(PLUGINS_CACHE_KEY);
+    if (cached) {
+      return JSON.parse(cached);
+    }
+  } catch {}
+  return [];
+};
+
 export const usePluginsStore = defineStore("plugins", () => {
-  const plugins = ref<Plugin[]>([]);
+  // Painted from the last delivery so nav links are in place on first paint
+  // instead of shifting the bar when the subscription lands.
+  const plugins = ref<Plugin[]>(loadCachedPlugins());
   // True once the subscription has delivered its first payload — lets the
   // loader page tell "registry still loading" apart from "slug not found".
   const initialized = ref(false);
 
   const subscribeToPlugins = async () => {
     const { subscribe } = useSubscriptionManager();
-    const subscription = getGraphqlClient().subscribe({
-      query: generateSubscription({
-        custom_pages: [
-          {
-            order_by: [{ nav_order: order_by.asc }],
-          },
-          {
-            id: true,
-            slug: true,
-            title: true,
-            icon: true,
-            remote_entry_url: true,
-            remote_scope: true,
-            exposed_module: true,
-            required_role: true,
-            enabled: true,
-            is_default: true,
-            nav_group: true,
-            nav_order: true,
-            profile_tab_label: true,
-          },
-        ],
-      }),
-    });
 
     subscribe(
       "plugins:custom_pages",
-      subscription.subscribe({
-        next: ({ data }) => {
-          plugins.value = data.custom_pages;
-          initialized.value = true;
+      seededSubscribe(
+        getGraphqlClient(),
+        {
+          query: generateSubscription({
+            custom_pages: [
+              {
+                order_by: [{ nav_order: order_by.asc }],
+              },
+              {
+                id: true,
+                slug: true,
+                title: true,
+                icon: true,
+                remote_entry_url: true,
+                remote_scope: true,
+                exposed_module: true,
+                required_role: true,
+                enabled: true,
+                is_default: true,
+                nav_group: true,
+                nav_order: true,
+                profile_tab_label: true,
+              },
+            ],
+          }),
         },
-      }),
+        {
+          next: ({ data }) => {
+            plugins.value = data.custom_pages;
+            initialized.value = true;
+            try {
+              localStorage.setItem(
+                PLUGINS_CACHE_KEY,
+                JSON.stringify(data.custom_pages),
+              );
+            } catch {}
+          },
+        },
+      ),
     );
   };
 

@@ -33,7 +33,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
          in the gutter the avatar left empty, on hover. -->
     <span
       v-if="!showMeta"
-      class="pointer-events-none absolute left-0 w-12 pr-2 text-right font-mono text-[9px] leading-snug text-muted-foreground/70 opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+      class="pointer-events-none absolute left-0 w-12 pr-2 text-right font-mono text-[10px] leading-snug text-muted-foreground/70 opacity-0 transition-opacity duration-150 group-hover:opacity-100"
       :style="{ top: `calc(${padTopRem}rem + 1px)` }"
     >
       {{ clockTime }}
@@ -66,12 +66,12 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
     <div>
       <div
         v-if="showMeta"
-        class="flex items-center space-x-1.5 text-muted-foreground text-[10px]"
+        class="flex items-center space-x-1.5 text-muted-foreground text-xs"
       >
-        <h4 class="font-semibold truncate max-w-[140px] text-foreground/90">
+        <h4 class="font-semibold truncate max-w-[160px] text-foreground/90">
           {{ message.from.name }}
         </h4>
-        <span class="whitespace-nowrap text-[9px] text-muted-foreground/70">
+        <span class="whitespace-nowrap text-[10px] text-muted-foreground/70">
           <time-ago :date="message.timestamp" hide-icon></time-ago>
         </span>
         <span
@@ -97,7 +97,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
       />
       <p
         v-else-if="hasText"
-        class="text-[11px] leading-snug break-words whitespace-pre-wrap"
+        class="text-[13px] leading-snug break-words whitespace-pre-wrap"
       >
         <span>{{ message.message }}</span>
         <FiveStackToolTip
@@ -109,7 +109,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
           <template #trigger>
             <span
               tabindex="0"
-              class="ml-1 whitespace-nowrap rounded-sm text-[9px] text-muted-foreground/70 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              class="ml-1 whitespace-nowrap rounded-sm text-[10px] text-muted-foreground/70 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
               data-chat-edited
             >
               {{ $t("chat.edited") }}
@@ -223,12 +223,20 @@ export default {
         .catch((error: ChatError) => toastChatError(error));
     },
     // Focus goes back to the trigger the edit came from, if the window still
-    // leaves it anything to offer, rather than falling to the page.
+    // leaves it anything to offer, rather than falling to the page. An edit
+    // started from the composer has already been handed back there.
     endEdit() {
       this.permissionsCheckedAt = Date.now();
       this.$emit("edit-end");
 
       void this.$nextTick(() => {
+        if (
+          document.activeElement &&
+          document.activeElement !== document.body
+        ) {
+          return;
+        }
+
         const actions = this.$refs.actions as
           { focusTrigger?: () => void } | undefined;
 
@@ -339,7 +347,7 @@ export default {
       // to it, so a team line starts on the same column as every other line and
       // the avatars stay in one straight edge down the list.
       const classes = [
-        "group group/chat-message relative isolate pl-12 text-[11px] leading-snug",
+        "group group/chat-message relative isolate pl-12 text-[13px] leading-snug",
         // Lifts the line under the pointer, and holds it while one of its menus
         // is open and the pointer has gone into it.
         "before:pointer-events-none before:absolute before:-z-10 before:rounded-sm before:transition-colors before:duration-150 [@media(hover:hover)]:hover:before:bg-muted/25 has-[[data-chat-menu-open]]:before:bg-muted/40",

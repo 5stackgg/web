@@ -9624,6 +9624,7 @@
       "label": "GIF",
       "open": "GIF を送信",
       "search": "GIPHY で検索",
+      "command_search_for": "GIPHYで「{term}」を検索",
       "trending": "トレンド",
       "suggestions": {
         "gg": "gg",

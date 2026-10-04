@@ -9624,6 +9624,7 @@
       "label": "GIF",
       "open": "إرسال صورة GIF",
       "search": "البحث في GIPHY",
+      "command_search_for": "ابحث في GIPHY عن «{term}»",
       "trending": "الرائج",
       "suggestions": {
         "gg": "gg",

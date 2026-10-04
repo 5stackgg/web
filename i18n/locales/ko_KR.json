@@ -9624,6 +9624,7 @@
       "label": "GIF",
       "open": "GIF 보내기",
       "search": "GIPHY 검색",
+      "command_search_for": "GIPHY에서 “{term}” 검색",
       "trending": "인기",
       "suggestions": {
         "gg": "gg",

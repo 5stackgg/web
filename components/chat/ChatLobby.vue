@@ -117,6 +117,7 @@ import { Upload } from "lucide-vue-next";
             :can-moderate="canModerate"
             :can-post="canSend"
             @bottom-state-change="handleBottomStateChange"
+            @edit-last-end="focusComposer"
           />
           <Empty v-else class="flex-1 text-muted-foreground">
             <div class="space-y-1">
@@ -163,6 +164,7 @@ import { Upload } from "lucide-vue-next";
           :destination="sendTo"
           @update:destination="sendTo = $event as any"
           @send-message="handleSendMessage"
+          @edit-last="editLastMessage"
         >
           <template #actions>
             <slot name="compose-actions"></slot>
@@ -315,6 +317,7 @@ import { Upload } from "lucide-vue-next";
           :can-moderate="canModerate"
           :can-post="canSend"
           @bottom-state-change="handleBottomStateChange"
+          @edit-last-end="focusComposer"
         />
         <Empty v-else key="empty" class="min-h-0 flex-1 text-muted-foreground">
           <div class="space-y-1">
@@ -387,6 +390,7 @@ import { Upload } from "lucide-vue-next";
           :destination="sendTo"
           @update:destination="sendTo = $event as any"
           @send-message="handleSendMessage"
+          @edit-last="editLastMessage"
         >
           <!-- Controls that belong to the destination rather than to chat -- the
                team voice channel is the same room as the team pill, so it rides
@@ -447,6 +451,7 @@ const { playNotificationSound } = useSound();
 interface ChatMessagesRef {
   scrollToBottom: (force?: boolean) => void;
   scrollToNewDivider?: () => void;
+  editLast?: () => void;
 }
 
 const NO_MESSAGES: LobbyMessage[] = [];
@@ -1095,6 +1100,14 @@ export default {
         message,
         direction: "outbound",
       });
+    },
+    editLastMessage() {
+      (this.$refs.chatMessagesRef as ChatMessagesRef | undefined)?.editLast?.();
+    },
+    focusComposer() {
+      (
+        this.$refs.chatInputRef as { focus?: () => void } | undefined
+      )?.focus?.();
     },
     handleBottomStateChange(atBottom: boolean) {
       this.isAtBottom = atBottom;

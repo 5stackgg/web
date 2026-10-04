@@ -52,6 +52,20 @@ describe("ChatGifPickerPanel", () => {
     );
   });
 
+  // The composer's /gif hands over what was typed after it.
+  it("opens on a search it was handed", async () => {
+    const wrapper = await mountSuspended(ChatGifPickerPanel, {
+      props: { search, initialQuery: " clutch " },
+    });
+    await flushPromises();
+
+    expect(search).toHaveBeenCalledWith("clutch", 0);
+    expect(search).not.toHaveBeenCalledWith("", 0);
+    expect((wrapper.get("input").element as HTMLInputElement).value).toBe(
+      " clutch ",
+    );
+  });
+
   // What the composer actually mounts: no search handed in.
   it("searches through the API when no search is handed in", async () => {
     const wrapper = await mountSuspended(ChatGifPickerPanel);

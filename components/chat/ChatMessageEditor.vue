@@ -149,14 +149,14 @@ async function save() {
         data-lpignore="true"
         data-bwignore="true"
         data-form-type="other"
-        class="min-h-0 resize-none border-0 px-2 py-1 text-[11px] leading-snug shadow-none focus-visible:ring-0"
+        class="min-h-0 resize-none border-0 px-2 py-1 text-[13px] leading-snug shadow-none focus-visible:ring-0"
         @keydown.enter="onEnter"
         @keydown.esc="onEscape"
       />
     </div>
     <div class="mt-1 flex items-center gap-1.5">
       <span
-        class="min-w-0 flex-1 truncate text-[9px] text-muted-foreground/70 [@media(hover:none)]:invisible"
+        class="min-w-0 flex-1 truncate text-[10px] text-muted-foreground/70 [@media(hover:none)]:invisible"
       >
         {{ $t("chat.edit_hint") }}
       </span>

@@ -9624,6 +9624,7 @@
       "label": "GIF",
       "open": "发送 GIF",
       "search": "搜索 GIPHY",
+      "command_search_for": "在 GIPHY 搜索“{term}”",
       "trending": "热门",
       "suggestions": {
         "gg": "gg",

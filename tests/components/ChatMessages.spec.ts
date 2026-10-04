@@ -127,3 +127,74 @@ describe("ChatMessages editing", () => {
     expect(wrapper.findAll("textarea")).toHaveLength(0);
   });
 });
+
+describe("ChatMessages editing the last line", () => {
+  const theirs = (id: string, secondsAgo: number) => ({
+    ...own(id, secondsAgo),
+    from: { steam_id: "76561198000000002", name: "Them" },
+  });
+
+  async function mountList(messages: any[]) {
+    const wrapper = await mountSuspended(ChatMessages, {
+      props: { messages, messageRoom: () => ROOM },
+      attachTo: document.body,
+    });
+    unmount = () => wrapper.unmount();
+    return wrapper;
+  }
+
+  const editing = (wrapper: Awaited<ReturnType<typeof mountList>>) =>
+    wrapper
+      .findAllComponents(ChatMessage)
+      .filter((row) => row.props("editing"))
+      .map((row) => row.props("message").id);
+
+  it("opens the newest line of the viewer's that can still change", async () => {
+    const wrapper = await mountList([
+      own("old", 30),
+      own("text", 20),
+      { ...own("gif-only", 15), message: "" },
+      { ...own("in-game", 12), source: "game" },
+      theirs("reply", 10),
+    ]);
+
+    (wrapper.vm as any).editLast();
+    await flushPromises();
+
+    expect(editing(wrapper)).toEqual(["text"]);
+  });
+
+  it("does nothing once the window has closed on all of them", async () => {
+    const wrapper = await mountList([
+      own("stale", 11 * 60),
+      theirs("reply", 5),
+    ]);
+
+    (wrapper.vm as any).editLast();
+    await flushPromises();
+
+    expect(editing(wrapper)).toEqual([]);
+  });
+
+  it("hands focus back to the composer, not the menu trigger", async () => {
+    const wrapper = await mountList([own("a", 30)]);
+
+    (wrapper.vm as any).editLast();
+    await flushPromises();
+    await wrapper.get("textarea").trigger("keydown", { key: "Escape" });
+    await flushPromises();
+
+    expect(wrapper.emitted("edit-last-end")).toHaveLength(1);
+  });
+
+  it("leaves an edit picked from the menu to return to its trigger", async () => {
+    const wrapper = await mountList([own("a", 30)]);
+
+    wrapper.findAllComponents(ChatMessage)[0].vm.$emit("edit");
+    await flushPromises();
+    await wrapper.get("textarea").trigger("keydown", { key: "Escape" });
+    await flushPromises();
+
+    expect(wrapper.emitted("edit-last-end")).toBeUndefined();
+  });
+});

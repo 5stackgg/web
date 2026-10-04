@@ -113,6 +113,37 @@ const fieldName = `chat-message-${Math.random().toString(36).slice(2, 10)}`;
           />
         </div>
       </Fold>
+      <!-- Typing "/" offers the GIF search, the one command there is. Enter,
+           Tab or a click takes it; Esc leaves the text to send as typed. -->
+      <Fold :open="gifCommandOffered">
+        <div
+          :class="
+            variant === 'global' ? 'mb-2' : 'border-b border-border/60 p-1'
+          "
+        >
+          <button
+            type="button"
+            data-chat-gif-command
+            class="flex w-full items-center gap-2 rounded-sm bg-accent px-2 py-1.5 text-left text-accent-foreground"
+            @mousedown.prevent
+            @click="runGifCommand"
+          >
+            <span class="shrink-0 font-mono text-xs font-semibold">/gif</span>
+            <span class="min-w-0 flex-1 truncate text-xs text-muted-foreground">
+              {{
+                gifCommandShown
+                  ? $t("chat.gifs.command_search_for", {
+                      term: gifCommandShown,
+                    })
+                  : $t("chat.gifs.search")
+              }}
+            </span>
+            <CornerDownLeft
+              class="size-3 shrink-0 text-muted-foreground/70 [@media(hover:none)]:hidden"
+            />
+          </button>
+        </div>
+      </Fold>
       <FormField v-slot="{ componentField }" name="message">
         <FormItem>
           <FormControl>
@@ -125,9 +156,11 @@ const fieldName = `chat-message-${Math.random().toString(36).slice(2, 10)}`;
             >
               <template v-if="canAttach">
                 <ChatAttachMenu
+                  ref="attachMenu"
                   :gifs="gifsEnabled"
                   @files="openFilePicker"
                   @gif="sendGif"
+                  @closed="focus"
                 />
                 <input
                   ref="fileInput"
@@ -158,6 +191,9 @@ const fieldName = `chat-message-${Math.random().toString(36).slice(2, 10)}`;
                     : 'flex-1 border-0 shadow-none focus-visible:ring-0',
                 ]"
                 @keydown.enter="onEnter"
+                @keydown.tab.exact="onTab"
+                @keydown.up="onArrowUp"
+                @keydown.esc="onEscape"
                 @paste="onPaste"
               />
               <span
@@ -265,7 +301,7 @@ export default {
       default: null,
     },
   },
-  emits: ["sendMessage", "update:destination"],
+  emits: ["sendMessage", "update:destination", "edit-last"],
   watch: {
     attachmentRoomKey: {
       immediate: true,
@@ -285,6 +321,15 @@ export default {
     "form.values.message"() {
       void this.$nextTick(() => this.growToFit());
     },
+    // An Esc holds until the box stops reading as the command. The label keeps
+    // the last term so it does not change under the row as it folds away.
+    gifCommand(term: string | null) {
+      if (term === null) {
+        this.gifCommandDismissed = false;
+      } else {
+        this.gifCommandShown = term;
+      }
+    },
   },
   data() {
     const mediaConfig = useChatAttachmentConfig();
@@ -302,6 +347,8 @@ export default {
       holdingHub: false,
       gone: false,
       gifSentAt: 0,
+      gifCommandDismissed: false,
+      gifCommandShown: "",
       failedSend: null as { dismiss?: () => void } | null,
       sending: false,
       sendTimer: undefined as ReturnType<typeof setTimeout> | undefined,
@@ -328,6 +375,33 @@ export default {
     },
     gifsEnabled(): boolean {
       return this.canAttach && !!this.mediaConfig.config?.gifs;
+    },
+    // What follows "/gif" while the box holds that command, or the start of
+    // it, and nothing else.
+    gifCommand(): string | null {
+      if (!this.gifsEnabled) {
+        return null;
+      }
+
+      const match = /^\/(\S*)(?:\s+([\s\S]*))?$/.exec(
+        this.form.values.message ?? "",
+      );
+
+      if (!match) {
+        return null;
+      }
+
+      const [, name, term] = match;
+      const command = name.toLowerCase();
+
+      if (term === undefined ? !"gif".startsWith(command) : command !== "gif") {
+        return null;
+      }
+
+      return (term ?? "").trim();
+    },
+    gifCommandOffered(): boolean {
+      return this.gifCommand !== null && !this.gifCommandDismissed;
     },
     acceptTypes(): string {
       return (this.mediaConfig.config?.mime_types ?? []).join(",");
@@ -452,6 +526,49 @@ export default {
         action === "send-other" ? this.otherChannelValue : undefined,
       );
     },
+    onTab(event: KeyboardEvent) {
+      if (!this.gifCommandOffered) {
+        return;
+      }
+
+      event.preventDefault();
+      this.runGifCommand();
+    },
+    // Up from an empty box picks up the last line sent, to fix it.
+    onArrowUp(event: KeyboardEvent) {
+      if (
+        event.isComposing ||
+        event.altKey ||
+        event.ctrlKey ||
+        event.metaKey ||
+        event.shiftKey ||
+        this.form.values.message
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      this.$emit("edit-last");
+    },
+    onEscape(event: KeyboardEvent) {
+      if (!this.gifCommandOffered || event.isComposing) {
+        return;
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+      this.gifCommandDismissed = true;
+    },
+    // The search takes the term in its own box, so the command leaves this one.
+    runGifCommand() {
+      const term = this.gifCommand ?? "";
+
+      this.form.resetForm();
+      (
+        this.$refs.attachMenu as
+          { searchGifs?: (term: string) => void } | undefined
+      )?.searchGifs?.(term);
+    },
     // One line until the message needs more, then up to five.
     growToFit() {
       const field = this.$refs.inputRef?.$el ?? this.$refs.inputRef;
@@ -464,6 +581,11 @@ export default {
       field.style.height = `${Math.min(field.scrollHeight, 120)}px`;
     },
     sendMessage(destination?: string) {
+      if (this.gifCommandOffered) {
+        this.runGifCommand();
+        return;
+      }
+
       const message = this.form.values.message?.trim() ?? "";
       const hasFiles = this.tray.items.length > 0;
 

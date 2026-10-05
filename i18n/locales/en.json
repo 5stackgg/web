@@ -8510,7 +8510,7 @@
     },
     "winner": {
       "set": "Set Match Winner",
-      "set_confirm": "Make {team} the winner of this match?",
+      "set_hint": "Pick the team that won this match.",
       "set_failed": "Could not set match winner",
       "select_lineup": "Select Lineup"
     },
@@ -8881,7 +8881,7 @@
       "dedicated": "Dedicated Servers",
       "on_demand": "On Demand",
       "assigned": "Assigned Match Server",
-      "assign_confirm": "Assign {server} to this match?",
+      "assign_hint": "Pick the server this match should run on.",
       "reboot_label": "Server Reboot",
       "reboot": "Reboot Server",
       "rebooting": "Rebooting...",
@@ -9054,7 +9054,22 @@
       "rcon_unavailable": "RCON unavailable",
       "not_controllable": "Match is not in a controllable state.",
       "veto_override": "Veto Override",
-      "actions": "Actions"
+      "actions": "More actions",
+      "coming_up": "Coming up",
+      "steps": {
+        "label": "Match steps",
+        "check_in": "Check-in",
+        "veto": "Veto",
+        "warmup": "Warmup",
+        "live": "Live",
+        "paused": "Paused",
+        "finished": "Finished",
+        "canceled": "Canceled",
+        "done": "Done",
+        "now": "You are here",
+        "unlocks": "Unlocks here",
+        "nothing_new": "Nothing new for you here"
+      }
     },
     "demo_processing_hint": "The match demo is uploading from the game server. Stats, the 2D replay and highlights land once it finishes.",
     "demo_playback": {

@@ -13,17 +13,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import SettingHeader from "~/components/match/SettingHeader.vue";
 </script>
 
 <template>
   <form class="space-y-8">
     <FormField v-slot="{ componentField }" name="server_id">
       <FormItem class="space-y-1.5">
-        <SettingHeader>{{ $t("match.server.assign") }}</SettingHeader>
         <Select v-bind="componentField" @update:modelValue="pick">
           <FormControl>
-            <SelectTrigger>
+            <SelectTrigger :aria-label="$t('match.server.assign')">
               <SelectValue :placeholder="$t('match.server.select')" />
             </SelectTrigger>
           </FormControl>
@@ -72,7 +70,7 @@ export default {
       required: true,
     },
   },
-  // The parent confirms and assigns; this only reports the pick.
+  // The parent's dialog assigns the server; this only reports the pick.
   emits: ["select"],
   apollo: {
     $subscribe: {
@@ -114,7 +112,9 @@ export default {
     };
   },
   watch: {
-    match: {
+    // Only a real server change resets the pick; the match object itself is
+    // replaced on every live update.
+    serverKey: {
       immediate: true,
       handler() {
         this.syncFromMatch();
@@ -133,17 +133,17 @@ export default {
         server_id,
       });
     },
-    // Snap back to the match's real server; the pick only takes effect once
-    // the parent's confirm runs.
     pick(value: string) {
       const option = [...this.availableServers, ...this.regionOptions].find(
         (option) => option.value === value,
       );
       this.$emit("select", { value, label: option?.display ?? value });
-      this.syncFromMatch();
     },
   },
   computed: {
+    serverKey() {
+      return `${this.match.server_id}:${this.match.server_type}:${this.match.region}`;
+    },
     regionOptions() {
       return useApplicationSettingsStore().availableRegions.map((region) => ({
         value: `0:${region.value}`,

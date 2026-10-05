@@ -11,6 +11,7 @@ import {
 } from "lucide-vue-next";
 import { useVetoOverride } from "~/composables/useVetoOverride";
 import MatchActions from "~/components/match/MatchActions.vue";
+import MatchAdminSteps from "~/components/match/MatchAdminSteps.vue";
 import MatchServerRebootControl from "~/components/match/MatchServerRebootControl.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
 import ServiceLogs from "~/components/ServiceLogs.vue";
@@ -242,16 +243,14 @@ function runCommand(
         />
       </div>
 
-      <!-- Split into three regions so the override toggle and the actions menu
-           can sit between the status and the expander without nesting a button
-           inside a button. The two expander halves shade off the shared `group`
-           rather than their own :hover, otherwise each lights up as its own
-           patch. -->
+      <!-- Three regions: where the match is (ADMIN + steps), what to do now
+           (Veto Override and the match actions), and the console expander.
+           Clicking the first region also opens the console; the chevron is the
+           labeled control, since the steps carry their own tooltips. All three
+           shade off the shared `group` rather than their own :hover. -->
       <div class="group flex items-stretch" :class="dragging && 'select-none'">
-        <button
-          type="button"
-          class="flex items-center gap-3 min-w-0 flex-1 pl-4 pr-2 py-2 group-hover:bg-muted/40 transition-colors duration-200 ease-out text-left"
-          :aria-expanded="open"
+        <div
+          class="flex items-center gap-3 min-w-0 flex-1 cursor-pointer pl-4 pr-2 py-2 group-hover:bg-muted/40 transition-colors duration-200 ease-out"
           @click="open = !open"
         >
           <div
@@ -263,9 +262,11 @@ function runCommand(
             "
           >
             <Shield class="w-3 h-3" />
-            {{ $t("match.admin") }}
+            <span class="sr-only sm:not-sr-only">{{ $t("match.admin") }}</span>
           </div>
-        </button>
+
+          <MatchAdminSteps :match="match" />
+        </div>
 
         <div
           class="flex shrink-0 items-center gap-2 px-2 group-hover:bg-muted/40 transition-colors duration-200 ease-out empty:hidden"

@@ -8508,7 +8508,7 @@
     },
     "winner": {
       "set": "设置比赛胜者",
-      "set_confirm": "将{team}设为这场比赛的胜者？",
+      "set_hint": "选择赢得这场比赛的队伍。",
       "set_failed": "无法设置比赛胜方",
       "select_lineup": "选择阵容"
     },
@@ -8879,7 +8879,7 @@
       "dedicated": "专用服务器",
       "on_demand": "按需",
       "assigned": "已分配比赛服务器",
-      "assign_confirm": "将{server}分配给这场比赛？",
+      "assign_hint": "选择这场比赛使用的服务器。",
       "reboot_label": "服务器重启",
       "reboot": "重启服务器",
       "rebooting": "重启中...",
@@ -9052,7 +9052,22 @@
       "rcon_unavailable": "RCON 不可用",
       "not_controllable": "比赛处于不可控状态。",
       "veto_override": "覆盖否决",
-      "actions": "操作"
+      "actions": "更多操作",
+      "coming_up": "即将开放",
+      "steps": {
+        "label": "比赛阶段",
+        "check_in": "签到",
+        "veto": "否决",
+        "warmup": "热身",
+        "live": "进行中",
+        "paused": "已暂停",
+        "finished": "已结束",
+        "canceled": "已取消",
+        "done": "已完成",
+        "now": "当前阶段",
+        "unlocks": "在此解锁",
+        "nothing_new": "此阶段没有新操作"
+      }
     },
     "demo_processing_hint": "比赛 demo 正从游戏服务器上传。完成后就会出现数据、2D 回放和集锦。",
     "demo_playback": {

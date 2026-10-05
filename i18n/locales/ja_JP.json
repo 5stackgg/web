@@ -8508,7 +8508,7 @@
     },
     "winner": {
       "set": "試合の勝者を設定",
-      "set_confirm": "{team}をこの試合の勝者にしますか？",
+      "set_hint": "この試合に勝ったチームを選んでください。",
       "set_failed": "試合の勝者を設定できませんでした",
       "select_lineup": "出場メンバーを選択"
     },
@@ -8879,7 +8879,7 @@
       "dedicated": "専用サーバー",
       "on_demand": "オンデマンド",
       "assigned": "割り当て済みマッチサーバー",
-      "assign_confirm": "この試合に{server}を割り当てますか？",
+      "assign_hint": "この試合を行うサーバーを選んでください。",
       "reboot_label": "サーバー再起動",
       "reboot": "サーバーを再起動",
       "rebooting": "再起動中...",
@@ -9052,7 +9052,22 @@
       "rcon_unavailable": "RCON利用不可",
       "not_controllable": "試合は操作可能な状態ではありません。",
       "veto_override": "拒否を上書き",
-      "actions": "操作"
+      "actions": "その他の操作",
+      "coming_up": "この先",
+      "steps": {
+        "label": "試合の段階",
+        "check_in": "チェックイン",
+        "veto": "拒否",
+        "warmup": "ウォームアップ",
+        "live": "ライブ",
+        "paused": "一時停止中",
+        "finished": "終了",
+        "canceled": "キャンセル済み",
+        "done": "完了",
+        "now": "現在地",
+        "unlocks": "ここで解放",
+        "nothing_new": "ここでは新しい操作はありません"
+      }
     },
     "demo_processing_hint": "試合のデモをゲームサーバーからアップロードしています。完了すると統計、2Dリプレイ、ハイライトが表示されます。",
     "demo_playback": {

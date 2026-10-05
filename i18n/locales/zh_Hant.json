@@ -8508,7 +8508,7 @@
     },
     "winner": {
       "set": "設定比賽勝者",
-      "set_confirm": "將{team}設為這場比賽的勝者？",
+      "set_hint": "選擇贏得這場比賽的隊伍。",
       "set_failed": "無法設定比賽勝方",
       "select_lineup": "選擇陣容"
     },
@@ -8879,7 +8879,7 @@
       "dedicated": "專用伺服器",
       "on_demand": "隨選",
       "assigned": "已指派比賽伺服器",
-      "assign_confirm": "將{server}指派給這場比賽？",
+      "assign_hint": "選擇這場比賽使用的伺服器。",
       "reboot_label": "伺服器重新啟動",
       "reboot": "重新啟動伺服器",
       "rebooting": "重新啟動中...",
@@ -9052,7 +9052,22 @@
       "rcon_unavailable": "RCON 無法使用",
       "not_controllable": "比賽處於無法控制的狀態。",
       "veto_override": "覆寫否決",
-      "actions": "操作"
+      "actions": "更多操作",
+      "coming_up": "即將開放",
+      "steps": {
+        "label": "比賽階段",
+        "check_in": "報到",
+        "veto": "否決",
+        "warmup": "熱身",
+        "live": "進行中",
+        "paused": "已暫停",
+        "finished": "已結束",
+        "canceled": "已取消",
+        "done": "已完成",
+        "now": "目前階段",
+        "unlocks": "在此解鎖",
+        "nothing_new": "此階段沒有新操作"
+      }
     },
     "demo_processing_hint": "比賽 demo 正從遊戲伺服器上傳。完成後就會出現數據、2D 重播與精華片段。",
     "demo_playback": {

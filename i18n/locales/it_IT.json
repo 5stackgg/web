@@ -8508,7 +8508,7 @@
     },
     "winner": {
       "set": "Imposta vincitore del match",
-      "set_confirm": "Rendere {team} vincitore di questo match?",
+      "set_hint": "Scegli la squadra che ha vinto questo match.",
       "set_failed": "Impossibile impostare il vincitore della partita",
       "select_lineup": "Seleziona lineup"
     },
@@ -8879,7 +8879,7 @@
       "dedicated": "Server dedicati",
       "on_demand": "On demand",
       "assigned": "Server match assegnato",
-      "assign_confirm": "Assegnare {server} a questo match?",
+      "assign_hint": "Scegli il server su cui si giocherà questo match.",
       "reboot_label": "Riavvio server",
       "reboot": "Riavvia server",
       "rebooting": "Riavvio in corso…",
@@ -9052,7 +9052,22 @@
       "rcon_unavailable": "RCON non disponibile",
       "not_controllable": "Il match non è in uno stato controllabile.",
       "veto_override": "Forza il veto",
-      "actions": "Azioni"
+      "actions": "Altre azioni",
+      "coming_up": "In arrivo",
+      "steps": {
+        "label": "Fasi del match",
+        "check_in": "Check-in",
+        "veto": "Veto",
+        "warmup": "Riscaldamento",
+        "live": "Live",
+        "paused": "In pausa",
+        "finished": "Terminato",
+        "canceled": "Annullato",
+        "done": "Fatto",
+        "now": "Sei qui",
+        "unlocks": "Si sblocca qui",
+        "nothing_new": "Niente di nuovo per te qui"
+      }
     },
     "demo_processing_hint": "La demo della partita è in caricamento dal server di gioco. Statistiche, replay 2D e highlight arriveranno al termine.",
     "demo_playback": {

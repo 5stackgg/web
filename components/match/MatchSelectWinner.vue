@@ -13,17 +13,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import SettingHeader from "~/components/match/SettingHeader.vue";
 </script>
 
 <template>
   <form class="space-y-8">
     <FormField v-slot="{ componentField }" name="lineup_id">
       <FormItem class="space-y-1.5">
-        <SettingHeader>{{ $t("match.winner.set") }}</SettingHeader>
         <Select v-bind="componentField" @update:modelValue="pick">
           <FormControl>
-            <SelectTrigger>
+            <SelectTrigger :aria-label="$t('match.winner.set')">
               <SelectValue :placeholder="$t('match.winner.select_lineup')" />
             </SelectTrigger>
           </FormControl>
@@ -57,7 +55,7 @@ export default {
       required: true,
     },
   },
-  // The parent confirms and sets the winner; this only reports the pick.
+  // The parent's dialog sets the winner; this only reports the pick.
   emits: ["select"],
   data() {
     return {
@@ -72,22 +70,21 @@ export default {
     };
   },
   watch: {
-    match: {
+    // Only a real winner change resets the pick; the match object itself is
+    // replaced on every live update.
+    "match.winning_lineup_id": {
       immediate: true,
-      handler() {
-        this.form.setFieldValue("lineup_id", this.match.winning_lineup_id);
+      handler(winningLineupId) {
+        this.form.setFieldValue("lineup_id", winningLineupId);
       },
     },
   },
   methods: {
-    // Snap back to the match's real winner; the pick only takes effect once
-    // the parent's confirm runs.
     pick(value: string) {
       const lineup = this.availableLineups.find(
         (lineup) => lineup.value === value,
       );
       this.$emit("select", { value, label: lineup?.display ?? value });
-      this.form.setFieldValue("lineup_id", this.match.winning_lineup_id);
     },
   },
   computed: {

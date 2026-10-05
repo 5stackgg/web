@@ -12,7 +12,7 @@ let wrapper: Awaited<ReturnType<typeof mountSuspended>> | undefined;
 
 const sent = () => mutate.mock.calls.map(([{ mutation }]) => print(mutation));
 
-function match(mapStatus = "Live") {
+function match(mapStatus = "Live", overrides: Record<string, any> = {}) {
   return {
     id: "m-1",
     status: "Live",
@@ -20,14 +20,17 @@ function match(mapStatus = "Live") {
     is_in_lineup: false,
     is_server_online: true,
     can_cancel: true,
+    can_start: false,
     server_id: "server-1",
     server_plugin_runtime: null,
-    options: { type: "Competitive" },
+    min_players_per_lineup: 0,
+    options: { type: "Competitive", map_veto: false, best_of: 1 },
     match_maps: [{ id: "map-1", is_current_map: true, status: mapStatus }],
     streams: [],
     lineup_1: { id: "l-1", name: "Northwind", lineup_players: [] },
     lineup_2: { id: "l-2", name: "Ember Six", lineup_players: [] },
     winning_lineup_id: null,
+    ...overrides,
   };
 }
 
@@ -35,9 +38,12 @@ function signIn(role: e_player_roles_enum) {
   useAuthStore().me = { steam_id: "76561198000000001", role } as any;
 }
 
-async function mountActions(mapStatus = "Live") {
+async function mountActions(
+  mapStatus = "Live",
+  { dock = false, ...overrides }: Record<string, any> = {},
+) {
   wrapper = await mountSuspended(MatchActions, {
-    props: { match: match(mapStatus) },
+    props: { match: match(mapStatus, overrides), dock },
     global: { mixins: (useNuxtApp().vueApp as any)._context.mixins },
   });
   await flushPromises();
@@ -74,14 +80,17 @@ describe("match actions confirm before acting", () => {
     expect(actions.confirmOpen).toBe(false);
   });
 
-  it("names the picked server and assigns it only once confirmed", async () => {
+  it("assigns a server only after one is picked and confirmed", async () => {
     signIn(e_player_roles_enum.administrator);
     const actions = await mountActions();
 
-    actions.confirmServer({ value: "0:Dallas", label: "Dallas" });
-    expect(actions.confirming.description).toContain("Dallas");
+    actions.openServerDialog();
+    expect(actions.confirming.picker).toBe("server");
+
+    await actions.runConfirm();
     expect(mutate).not.toHaveBeenCalled();
 
+    actions.confirmChoice = { value: "0:Dallas", label: "Dallas" };
     await actions.runConfirm();
     expect(sent()[0]).toContain("update_matches_by_pk");
     expect(sent()[0]).toContain("Dallas");
@@ -124,5 +133,51 @@ describe("match actions force ready", () => {
     const actions = await mountActions("Warmup");
 
     expect(actions.canForceReady).toBe(false);
+  });
+});
+
+describe("admin dock main action", () => {
+  it("offers Skip Check In before the match starts", async () => {
+    signIn(e_player_roles_enum.user);
+    const actions = await mountActions("Scheduled", {
+      dock: true,
+      status: "WaitingForCheckIn",
+      can_start: true,
+    });
+
+    expect(actions.primaryAction).toBe("start");
+    expect(actions.showStartItem).toBe(false);
+  });
+
+  it("offers Force Ready in warmup to a moderator", async () => {
+    signIn(e_player_roles_enum.moderator);
+    const actions = await mountActions("Warmup", { dock: true });
+
+    expect(actions.primaryAction).toBe("force_ready");
+  });
+
+  it("shows no main action when the role can never use it", async () => {
+    signIn(e_player_roles_enum.user);
+    const actions = await mountActions("Warmup", { dock: true });
+
+    expect(actions.primaryAction).toBeNull();
+    expect(actions.upcoming.map((action: any) => action.key)).not.toContain(
+      "pause",
+    );
+  });
+
+  it("offers Pause while a map is live", async () => {
+    signIn(e_player_roles_enum.moderator);
+    const actions = await mountActions("Live", { dock: true });
+
+    expect(actions.primaryAction).toBe("pause");
+  });
+
+  it("keeps the header menu free of a main action", async () => {
+    signIn(e_player_roles_enum.moderator);
+    const actions = await mountActions("Warmup");
+
+    expect(actions.primaryAction).toBeNull();
+    expect(actions.showForceReadyItem).toBe(true);
   });
 });

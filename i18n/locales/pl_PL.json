@@ -8508,7 +8508,7 @@
     },
     "winner": {
       "set": "Ustaw zwycięzcę meczu",
-      "set_confirm": "Ustawić {team} jako zwycięzcę tego meczu?",
+      "set_hint": "Wybierz drużynę, która wygrała ten mecz.",
       "set_failed": "Nie udało się ustawić zwycięzcy meczu",
       "select_lineup": "Wybierz ustawienie"
     },
@@ -8879,7 +8879,7 @@
       "dedicated": "Serwery dedykowane",
       "on_demand": "On demand",
       "assigned": "Przypisany serwer meczu",
-      "assign_confirm": "Przypisać {server} do tego meczu?",
+      "assign_hint": "Wybierz serwer, na którym ma się odbyć ten mecz.",
       "reboot_label": "Restart serwera",
       "reboot": "Zrestartuj serwer",
       "rebooting": "Restartowanie…",
@@ -9052,7 +9052,22 @@
       "rcon_unavailable": "RCON niedostępne",
       "not_controllable": "Mecz nie jest w stanie umożliwiającym sterowanie",
       "veto_override": "Nadpisz veto",
-      "actions": "Akcje"
+      "actions": "Więcej akcji",
+      "coming_up": "Wkrótce",
+      "steps": {
+        "label": "Etapy meczu",
+        "check_in": "Check-in",
+        "veto": "Veto",
+        "warmup": "Rozgrzewka",
+        "live": "Na żywo",
+        "paused": "Wstrzymany",
+        "finished": "Zakończony",
+        "canceled": "Anulowany",
+        "done": "Gotowe",
+        "now": "Jesteś tutaj",
+        "unlocks": "Odblokowuje się tutaj",
+        "nothing_new": "Nic nowego dla ciebie"
+      }
     },
     "demo_processing_hint": "Demo meczu jest przesyłane z serwera gry. Statystyki, powtórka 2D i highlighty pojawią się po zakończeniu.",
     "demo_playback": {

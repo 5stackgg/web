@@ -8508,7 +8508,7 @@
     },
     "winner": {
       "set": "Maç Kazananını Belirle",
-      "set_confirm": "{team} bu maçın kazananı yapılsın mı?",
+      "set_hint": "Bu maçı kazanan takımı seç.",
       "set_failed": "Maçın galibi belirlenemedi",
       "select_lineup": "Diziliş Seç"
     },
@@ -8879,7 +8879,7 @@
       "dedicated": "Özel sunucular",
       "on_demand": "Talep üzerine",
       "assigned": "Atanan maç sunucusu",
-      "assign_confirm": "{server} bu maça atansın mı?",
+      "assign_hint": "Bu maçın oynanacağı sunucuyu seç.",
       "reboot_label": "Sunucu yeniden başlatma",
       "reboot": "Sunucuyu yeniden başlat",
       "rebooting": "Yeniden başlatılıyor...",
@@ -9052,7 +9052,22 @@
       "rcon_unavailable": "RCON kullanılamıyor",
       "not_controllable": "Maç kontrol edilebilir durumda değil.",
       "veto_override": "Vetoyu geçersiz kıl",
-      "actions": "İşlemler"
+      "actions": "Diğer işlemler",
+      "coming_up": "Sıradaki",
+      "steps": {
+        "label": "Maç adımları",
+        "check_in": "Check-in",
+        "veto": "Veto",
+        "warmup": "Isınma",
+        "live": "Canlı",
+        "paused": "Duraklatıldı",
+        "finished": "Bitti",
+        "canceled": "İptal edildi",
+        "done": "Tamam",
+        "now": "Buradasın",
+        "unlocks": "Burada açılır",
+        "nothing_new": "Burada senin için yeni bir şey yok"
+      }
     },
     "demo_processing_hint": "Maç demosu oyun sunucusundan yükleniyor. İstatistikler, 2B tekrar ve öne çıkanlar tamamlandığında gelir.",
     "demo_playback": {

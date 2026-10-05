@@ -8508,7 +8508,7 @@
     },
     "winner": {
       "set": "Sätt matchvinnare",
-      "set_confirm": "Gör {team} till vinnare av matchen?",
+      "set_hint": "Välj laget som vann matchen.",
       "set_failed": "Kunde inte ange matchens vinnare",
       "select_lineup": "Välj laguppställning"
     },
@@ -8879,7 +8879,7 @@
       "dedicated": "Dedikerade servrar",
       "on_demand": "On demand",
       "assigned": "Tilldelad matchserver",
-      "assign_confirm": "Tilldela {server} till matchen?",
+      "assign_hint": "Välj servern som matchen ska spelas på.",
       "reboot_label": "Serveromstart",
       "reboot": "Starta om server",
       "rebooting": "Startar om…",
@@ -9052,7 +9052,22 @@
       "rcon_unavailable": "RCON otillgängligt",
       "not_controllable": "Matchen kan inte styras i sitt nuvarande läge.",
       "veto_override": "Åsidosätt veto",
-      "actions": "Åtgärder"
+      "actions": "Fler åtgärder",
+      "coming_up": "Kommer härnäst",
+      "steps": {
+        "label": "Matchsteg",
+        "check_in": "Incheckning",
+        "veto": "Veto",
+        "warmup": "Uppvärmning",
+        "live": "Live",
+        "paused": "Pausad",
+        "finished": "Avslutad",
+        "canceled": "Avbruten",
+        "done": "Klart",
+        "now": "Du är här",
+        "unlocks": "Låses upp här",
+        "nothing_new": "Inget nytt för dig här"
+      }
     },
     "demo_processing_hint": "Matchens demo laddas upp från spelservern. Statistik, 2D-replay och höjdpunkter kommer när den är klar.",
     "demo_playback": {

@@ -8508,7 +8508,7 @@
     },
     "winner": {
       "set": "Definir ganador de la partida",
-      "set_confirm": "¿Declarar a {team} ganador de esta partida?",
+      "set_hint": "Elige el equipo que ganó esta partida.",
       "set_failed": "No se pudo establecer el ganador de la partida",
       "select_lineup": "Seleccionar alineación"
     },
@@ -8879,7 +8879,7 @@
       "dedicated": "Servidores dedicados",
       "on_demand": "Bajo demanda",
       "assigned": "Servidor de partida asignado",
-      "assign_confirm": "¿Asignar {server} a esta partida?",
+      "assign_hint": "Elige el servidor en el que se jugará esta partida.",
       "reboot_label": "Reinicio del servidor",
       "reboot": "Reiniciar servidor",
       "rebooting": "Reiniciando...",
@@ -9052,7 +9052,22 @@
       "rcon_unavailable": "RCON no disponible",
       "not_controllable": "La partida no está en un estado controlable.",
       "veto_override": "Anular veto",
-      "actions": "Acciones"
+      "actions": "Más acciones",
+      "coming_up": "Próximamente",
+      "steps": {
+        "label": "Pasos de la partida",
+        "check_in": "Check-in",
+        "veto": "Veto",
+        "warmup": "Calentamiento",
+        "live": "En vivo",
+        "paused": "En pausa",
+        "finished": "Terminada",
+        "canceled": "Cancelada",
+        "done": "Hecho",
+        "now": "Estás aquí",
+        "unlocks": "Se desbloquea aquí",
+        "nothing_new": "Nada nuevo para ti aquí"
+      }
     },
     "demo_processing_hint": "La demo de la partida se está subiendo desde el servidor de juego. Las estadísticas, la repetición 2D y los momentos destacados llegan cuando termine.",
     "demo_playback": {

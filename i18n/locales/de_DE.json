@@ -8508,7 +8508,7 @@
     },
     "winner": {
       "set": "Match-Sieger festlegen",
-      "set_confirm": "{team} zum Sieger dieses Matches erklären?",
+      "set_hint": "Wähle das Team, das dieses Match gewonnen hat.",
       "set_failed": "Match-Sieger konnte nicht festgelegt werden",
       "select_lineup": "Lineup wählen"
     },
@@ -8879,7 +8879,7 @@
       "dedicated": "Dedicated Server",
       "on_demand": "On Demand",
       "assigned": "Zugewiesener Match-Server",
-      "assign_confirm": "{server} diesem Match zuweisen?",
+      "assign_hint": "Wähle den Server, auf dem dieses Match laufen soll.",
       "reboot_label": "Server-Neustart",
       "reboot": "Server neu starten",
       "rebooting": "Startet neu...",
@@ -9052,7 +9052,22 @@
       "rcon_unavailable": "RCON nicht verfügbar",
       "not_controllable": "Match ist in keinem steuerbaren Status.",
       "veto_override": "Veto überschreiben",
-      "actions": "Aktionen"
+      "actions": "Weitere Aktionen",
+      "coming_up": "Demnächst",
+      "steps": {
+        "label": "Match-Schritte",
+        "check_in": "Check-in",
+        "veto": "Veto",
+        "warmup": "Aufwärmen",
+        "live": "Live",
+        "paused": "Pausiert",
+        "finished": "Beendet",
+        "canceled": "Abgebrochen",
+        "done": "Erledigt",
+        "now": "Du bist hier",
+        "unlocks": "Wird hier freigeschaltet",
+        "nothing_new": "Hier kommt für dich nichts Neues"
+      }
     },
     "demo_processing_hint": "Die Match-Demo wird vom Gameserver hochgeladen. Statistiken, das 2D-Replay und Highlights folgen, sobald das abgeschlossen ist.",
     "demo_playback": {

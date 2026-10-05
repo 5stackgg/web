@@ -8508,7 +8508,7 @@
     },
     "winner": {
       "set": "매치 승자 지정",
-      "set_confirm": "{team}을(를) 이 매치의 승자로 지정하시겠습니까?",
+      "set_hint": "이 매치에서 이긴 팀을 선택하세요.",
       "set_failed": "경기 승자를 설정하지 못했습니다",
       "select_lineup": "라인업 선택"
     },
@@ -8879,7 +8879,7 @@
       "dedicated": "데디케이티드 서버",
       "on_demand": "온디맨드",
       "assigned": "지정된 매치 서버",
-      "assign_confirm": "이 매치에 {server}을(를) 할당하시겠습니까?",
+      "assign_hint": "이 매치를 진행할 서버를 선택하세요.",
       "reboot_label": "서버 재부팅",
       "reboot": "서버 재부팅",
       "rebooting": "재부팅 중...",
@@ -9052,7 +9052,22 @@
       "rcon_unavailable": "RCON 사용 불가",
       "not_controllable": "매치가 제어 가능한 상태가 아닙니다.",
       "veto_override": "거부 재정의",
-      "actions": "작업"
+      "actions": "추가 작업",
+      "coming_up": "다음 단계",
+      "steps": {
+        "label": "매치 단계",
+        "check_in": "체크인",
+        "veto": "거부",
+        "warmup": "워밍업",
+        "live": "라이브",
+        "paused": "일시 정지됨",
+        "finished": "종료",
+        "canceled": "취소됨",
+        "done": "완료",
+        "now": "현재 단계",
+        "unlocks": "여기서 열림",
+        "nothing_new": "여기서는 새로운 작업이 없습니다"
+      }
     },
     "demo_processing_hint": "경기 데모를 게임 서버에서 업로드하고 있습니다. 완료되면 통계, 2D 리플레이, 하이라이트가 표시됩니다.",
     "demo_playback": {

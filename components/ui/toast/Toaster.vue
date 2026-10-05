@@ -17,7 +17,7 @@ function copyText(toast: { title?: unknown; description?: unknown }): string {
 </script>
 
 <template>
-  <ToastProvider>
+  <ToastProvider swipe-direction="left">
     <Toast v-for="toast in toasts" :key="toast.id" v-bind="toast" :class="'pr-12'">
       <div class="grid gap-1">
         <ToastTitle v-if="toast.title" class="select-text break-words">

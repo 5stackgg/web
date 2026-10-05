@@ -81,6 +81,9 @@ function clipsWhere() {
   return where;
 }
 
+// A quiet week opens on all time rather than an empty grid.
+let widenOnEmpty = true;
+
 let requestId = 0;
 async function fetchClips() {
   if (props.ghost) return;
@@ -102,7 +105,14 @@ async function fetchClips() {
       fetchPolicy: "network-only",
     });
     if (id !== requestId) return;
-    clips.value = ((data as any)?.match_clips ?? []) as Clip[];
+    const list = ((data as any)?.match_clips ?? []) as Clip[];
+    if (widenOnEmpty && list.length === 0 && range.value === "week") {
+      widenOnEmpty = false;
+      range.value = "all";
+      return;
+    }
+    widenOnEmpty = false;
+    clips.value = list;
   } catch (error) {
     console.error("[watch] highlights fetch error:", error);
   } finally {

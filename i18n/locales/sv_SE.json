@@ -8510,10 +8510,14 @@
       "set": "Sätt matchvinnare",
       "set_hint": "Välj laget som vann matchen.",
       "set_failed": "Kunde inte ange matchens vinnare",
-      "select_lineup": "Välj laguppställning"
+      "select_lineup": "Välj laguppställning",
+      "map_record": "{won} vunna · {lost} förlorade"
     },
     "map_winner": {
-      "set": "Sätt kartvinnare"
+      "set": "Sätt kartvinnare",
+      "set_hint": "Välj laget som vann {map}.",
+      "sets_match_winner": "Det gör också {team} till matchvinnare.",
+      "clears_match_winner": "Det tar också bort matchvinnaren."
     },
     "region_veto": {
       "ban_label": "Banna",
@@ -8585,6 +8589,7 @@
       "match_paused": "Matchen pausad",
       "match_resumed": "Matchen återupptagen",
       "forced_ready": "Spelarna tvingades redo",
+      "skipped_knife": "Knivronden hoppades över",
       "start_live": "Starta livesändning",
       "pause_highlights_and_start_live": "Pausa höjdpunkter och starta livesändning",
       "start_live_preempt_highlights_hint": "Höjdpunkter pausar efter aktuell · livesändning startar när GPU:n frigörs",
@@ -8879,7 +8884,6 @@
       "dedicated": "Dedikerade servrar",
       "on_demand": "On demand",
       "assigned": "Tilldelad matchserver",
-      "assign_hint": "Välj servern som matchen ska spelas på.",
       "reboot_label": "Serveromstart",
       "reboot": "Starta om server",
       "rebooting": "Startar om…",
@@ -9054,10 +9058,8 @@
       "veto_override": "Åsidosätt veto",
       "actions": "Fler åtgärder",
       "coming_up": "Kommer härnäst",
-      "server": "Server",
       "winner": "Vinnare",
       "not_set": "Inte vald",
-      "dedicated": "Dedikerad",
       "current": "Nuvarande",
       "steps": {
         "label": "Matchsteg",

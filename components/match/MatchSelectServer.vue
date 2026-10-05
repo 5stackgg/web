@@ -13,15 +13,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import SettingHeader from "~/components/match/SettingHeader.vue";
 </script>
 
 <template>
-  <form class="space-y-8">
+  <form class="w-full">
     <FormField v-slot="{ componentField }" name="server_id">
       <FormItem class="space-y-1.5">
-        <Select v-bind="componentField" @update:modelValue="pick">
+        <SettingHeader>{{ $t("match.server.assign") }}</SettingHeader>
+        <Select v-bind="componentField" @update:modelValue="updateMatchServer">
           <FormControl>
-            <SelectTrigger :aria-label="$t('match.server.assign')">
+            <SelectTrigger>
               <SelectValue :placeholder="$t('match.server.select')" />
             </SelectTrigger>
           </FormControl>
@@ -40,11 +42,11 @@ import {
             <SelectGroup>
               <SelectLabel>{{ $t("match.server.on_demand") }}</SelectLabel>
               <SelectItem
-                v-for="region in regionOptions"
+                v-for="region in regions"
                 :key="region.value"
-                :value="region.value"
+                :value="`0:${region.value}`"
               >
-                {{ region.display }}
+                {{ region.description || region.value }}
               </SelectItem>
             </SelectGroup>
           </SelectContent>
@@ -60,6 +62,8 @@ import * as z from "zod";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
+import { generateMutation } from "~/graphql/graphqlGen";
+import { toast } from "@/components/ui/toast";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { e_server_types_enum } from "~/generated/zeus";
 
@@ -70,8 +74,6 @@ export default {
       required: true,
     },
   },
-  // The parent's dialog assigns the server; this only reports the pick.
-  emits: ["select"],
   apollo: {
     $subscribe: {
       servers: {
@@ -112,43 +114,54 @@ export default {
     };
   },
   watch: {
-    // Only a real server change resets the pick; the match object itself is
-    // replaced on every live update.
-    serverKey: {
+    match: {
       immediate: true,
-      handler() {
-        this.syncFromMatch();
+      handler(match) {
+        if (match) {
+          let server_id = match.server_id;
+
+          if (!server_id || match.server_type === "On Demand") {
+            server_id = `${match.region ? `0:${match.region}` : "0"}`;
+          }
+
+          this.form.setValues({
+            server_id,
+          });
+        }
       },
     },
   },
   methods: {
-    syncFromMatch() {
-      let server_id = this.match.server_id;
+    async updateMatchServer() {
+      const [serverId, region] = this.form.values.server_id?.split(":");
 
-      if (!server_id || this.match.server_type === "On Demand") {
-        server_id = `${this.match.region ? `0:${this.match.region}` : "0"}`;
-      }
-
-      this.form.setValues({
-        server_id,
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          update_matches_by_pk: [
+            {
+              pk_columns: {
+                id: this.match.id,
+              },
+              _set: {
+                region,
+                server_id: serverId === "0" ? null : this.form.values.server_id,
+              },
+            },
+            {
+              id: true,
+            },
+          ],
+        }),
       });
-    },
-    pick(value: string) {
-      const option = [...this.availableServers, ...this.regionOptions].find(
-        (option) => option.value === value,
-      );
-      this.$emit("select", { value, label: option?.display ?? value });
+
+      toast({
+        title: this.$t("match.server.assigned"),
+      });
     },
   },
   computed: {
-    serverKey() {
-      return `${this.match.server_id}:${this.match.server_type}:${this.match.region}`;
-    },
-    regionOptions() {
-      return useApplicationSettingsStore().availableRegions.map((region) => ({
-        value: `0:${region.value}`,
-        display: region.description || region.value,
-      }));
+    regions() {
+      return useApplicationSettingsStore().availableRegions;
     },
     canSelectDedicatedServer() {
       const { isAdmin, isMatchOrganizer, isTournamentOrganizer } =

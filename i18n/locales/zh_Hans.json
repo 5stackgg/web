@@ -8510,10 +8510,14 @@
       "set": "设置比赛胜者",
       "set_hint": "选择赢得这场比赛的队伍。",
       "set_failed": "无法设置比赛胜方",
-      "select_lineup": "选择阵容"
+      "select_lineup": "选择阵容",
+      "map_record": "{won} 胜 · {lost} 负"
     },
     "map_winner": {
-      "set": "设置地图胜者"
+      "set": "设置地图胜者",
+      "set_hint": "选择赢得 {map} 的队伍。",
+      "sets_match_winner": "这也会将 {team} 设为比赛胜者。",
+      "clears_match_winner": "这也会清除比赛胜者。"
     },
     "region_veto": {
       "ban_label": "禁用",
@@ -8585,6 +8589,7 @@
       "match_paused": "比赛已暂停",
       "match_resumed": "比赛已恢复",
       "forced_ready": "已强制所有玩家准备",
+      "skipped_knife": "已跳过刀战",
       "start_live": "开始直播",
       "pause_highlights_and_start_live": "暂停高光并开始直播",
       "start_live_preempt_highlights_hint": "高光渲染在完成后暂停 · GPU 空闲后直播上线",
@@ -8879,7 +8884,6 @@
       "dedicated": "专用服务器",
       "on_demand": "按需",
       "assigned": "已分配比赛服务器",
-      "assign_hint": "选择这场比赛使用的服务器。",
       "reboot_label": "服务器重启",
       "reboot": "重启服务器",
       "rebooting": "重启中...",
@@ -9054,10 +9058,8 @@
       "veto_override": "覆盖否决",
       "actions": "更多操作",
       "coming_up": "即将开放",
-      "server": "服务器",
       "winner": "胜者",
       "not_set": "未设置",
-      "dedicated": "独立服务器",
       "current": "当前",
       "steps": {
         "label": "比赛阶段",

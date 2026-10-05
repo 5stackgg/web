@@ -8510,10 +8510,14 @@
       "set": "Sæt kampvinder",
       "set_hint": "Vælg holdet, der vandt kampen.",
       "set_failed": "Kunne ikke angive kampens vinder",
-      "select_lineup": "Vælg opstilling"
+      "select_lineup": "Vælg opstilling",
+      "map_record": "{won} vundet · {lost} tabt"
     },
     "map_winner": {
-      "set": "Sæt mapvinder"
+      "set": "Sæt mapvinder",
+      "set_hint": "Vælg holdet, der vandt {map}.",
+      "sets_match_winner": "Det gør også {team} til kampvinder.",
+      "clears_match_winner": "Det fjerner også kampvinderen."
     },
     "region_veto": {
       "ban_label": "Ban",
@@ -8585,6 +8589,7 @@
       "match_paused": "Kampen er sat på pause",
       "match_resumed": "Kampen er genoptaget",
       "forced_ready": "Spillerne er tvunget klar",
+      "skipped_knife": "Knivrunden er sprunget over",
       "start_live": "Start livestream",
       "pause_highlights_and_start_live": "Pause highlights og start livestream",
       "start_live_preempt_highlights_hint": "Highlights pauser efter den aktuelle · live starter når GPU er ledig",
@@ -8879,7 +8884,6 @@
       "dedicated": "Dedikerede servere",
       "on_demand": "On demand",
       "assigned": "Tildelt kampserver",
-      "assign_hint": "Vælg den server, kampen skal køre på.",
       "reboot_label": "Genstart af server",
       "reboot": "Genstart server",
       "rebooting": "Genstarter...",
@@ -9054,10 +9058,8 @@
       "veto_override": "Tilsidesæt veto",
       "actions": "Flere handlinger",
       "coming_up": "Kommer snart",
-      "server": "Server",
       "winner": "Vinder",
       "not_set": "Ikke valgt",
-      "dedicated": "Dedikeret",
       "current": "Nuværende",
       "steps": {
         "label": "Kamptrin",

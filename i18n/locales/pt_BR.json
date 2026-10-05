@@ -8510,10 +8510,14 @@
       "set": "Definir Vencedor",
       "set_hint": "Escolha o time que venceu esta partida.",
       "set_failed": "Não foi possível definir o vencedor",
-      "select_lineup": "Selecionar escalação"
+      "select_lineup": "Selecionar escalação",
+      "map_record": "{won} vencidos · {lost} perdidos"
     },
     "map_winner": {
-      "set": "Definir Vencedor do Mapa"
+      "set": "Definir Vencedor do Mapa",
+      "set_hint": "Escolha o time que venceu {map}.",
+      "sets_match_winner": "Isso também torna {team} o vencedor da partida.",
+      "clears_match_winner": "Isso também remove o vencedor da partida."
     },
     "region_veto": {
       "ban_label": "Vetando Região/Local",
@@ -8585,6 +8589,7 @@
       "match_paused": "Partida Pausada",
       "match_resumed": "Partida Retomada",
       "forced_ready": "Jogadores forçados como prontos",
+      "skipped_knife": "Rodada de faca pulada",
       "start_live": "Iniciar Live Stream",
       "pause_highlights_and_start_live": "Pausar Highlights & Iniciar Live Stream",
       "start_live_preempt_highlights_hint": "Highlights pausam após o atual · transmissão inicia assim que a GPU estiver livre",
@@ -8879,7 +8884,6 @@
       "dedicated": "Servidores Dedicados",
       "on_demand": "Sob Demanda",
       "assigned": "Servidor de Partida Atribuído",
-      "assign_hint": "Escolha o servidor em que esta partida vai rodar.",
       "reboot_label": "Reiniciar Servidor",
       "reboot": "Reiniciar Servidor",
       "rebooting": "Reiniciando...",
@@ -9054,10 +9058,8 @@
       "veto_override": "Veto Sobrescrito",
       "actions": "Mais ações",
       "coming_up": "Em seguida",
-      "server": "Servidor",
       "winner": "Vencedor",
       "not_set": "Não definido",
-      "dedicated": "Dedicado",
       "current": "Atual",
       "steps": {
         "label": "Etapas da partida",

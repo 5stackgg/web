@@ -5,6 +5,7 @@ import {
   MoreVertical,
   Pause,
   Play,
+  SkipForward,
   SlidersHorizontal,
   Trash2,
   Trophy,
@@ -119,6 +120,15 @@ const menuLabel =
         {{ $t("match.commands.force_ready") }}
       </button>
       <button
+        v-else-if="primaryAction === 'skip_knife'"
+        type="button"
+        :class="dockPrimary"
+        @click="skipKnife"
+      >
+        <SkipForward class="h-3 w-3 shrink-0" />
+        {{ $t("match.commands.skip_knife") }}
+      </button>
+      <button
         v-else-if="primaryAction === 'pause'"
         type="button"
         :class="dockPrimary"
@@ -194,22 +204,16 @@ const menuLabel =
           />
         </template>
 
-        <!-- Settings read as label + current value, so the menu shows what the
-             match is set to before anyone opens a dialog. -->
-        <DropdownMenuItem
-          v-if="match.can_assign_server"
-          @click="openServerDialog"
-        >
-          {{ $t("match.admin_bar.server") }}
-          <span class="ml-auto pl-6 text-xs text-muted-foreground">
-            {{ serverLabel }}
-          </span>
+        <DropdownMenuItem v-if="match.can_assign_server">
+          <MatchSelectServer :match="match"></MatchSelectServer>
         </DropdownMenuItem>
+        <DropdownMenuSeparator
+          v-if="match.can_assign_server && showWinnerItem"
+        />
 
-        <DropdownMenuItem
-          v-if="canSetMatchWinner && primaryAction !== 'winner'"
-          @click="openWinnerDialog"
-        >
+        <!-- The winner reads as label + current value, so the menu shows what
+             the match is set to before anyone opens the dialog. -->
+        <DropdownMenuItem v-if="showWinnerItem" @click="openWinnerDialog">
           {{ $t("match.admin_bar.winner") }}
           <span class="ml-auto pl-6 text-xs text-muted-foreground">
             {{ winnerLabel }}
@@ -379,6 +383,7 @@ const menuLabel =
         <DropdownMenuSeparator
           v-if="
             showForceReadyItem ||
+            showSkipKnifeItem ||
             showStartItem ||
             (!dock && (match.can_cancel || canDeleteMatch))
           "
@@ -388,6 +393,11 @@ const menuLabel =
         <DropdownMenuItem v-if="showForceReadyItem" @click="forceReady">
           <CheckCheck />
           {{ $t("match.commands.force_ready") }}
+        </DropdownMenuItem>
+
+        <DropdownMenuItem v-if="showSkipKnifeItem" @click="skipKnife">
+          <SkipForward />
+          {{ $t("match.commands.skip_knife") }}
         </DropdownMenuItem>
 
         <template v-if="showStartItem">
@@ -451,13 +461,8 @@ const menuLabel =
             {{ confirming?.description }}
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <MatchSelectServer
-          v-if="confirming?.picker === 'server'"
-          :match="match"
-          @select="(choice) => (confirmChoice = choice)"
-        />
         <MatchSelectWinner
-          v-else-if="confirming?.picker === 'winner'"
+          v-if="confirming?.picker === 'winner'"
           :match="match"
           @select="(choice) => (confirmChoice = choice)"
         />
@@ -523,8 +528,8 @@ type MatchActionConfirm = {
   description: string;
   action: string;
   destructive?: boolean;
-  // Server and winner dialogs carry their picker; the action waits for a pick.
-  picker?: "server" | "winner";
+  // The winner dialog carries its picker; the action waits for a pick.
+  picker?: "winner";
   run: (choice: MatchActionChoice | null) => Promise<void>;
 };
 
@@ -623,19 +628,6 @@ export default {
         run: this.deleteMatch,
       });
     },
-    openServerDialog() {
-      this.ask({
-        title: this.$t("match.server.assign"),
-        description: this.$t("match.server.assign_hint"),
-        action: this.$t("match.server.assign"),
-        picker: "server",
-        run: async (choice) => {
-          if (choice) {
-            await this.assignServer(choice.value);
-          }
-        },
-      });
-    },
     openWinnerDialog() {
       this.ask({
         title: this.$t("match.winner.set"),
@@ -647,34 +639,6 @@ export default {
             await this.setWinner(choice.value);
           }
         },
-      });
-    },
-    // "0:<region>" is an on-demand server in that region; anything else is a
-    // dedicated server id.
-    async assignServer(value: string) {
-      const [serverId, region] = value.split(":");
-
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          update_matches_by_pk: [
-            {
-              pk_columns: {
-                id: this.match.id,
-              },
-              _set: {
-                region,
-                server_id: serverId === "0" ? null : value,
-              },
-            },
-            {
-              id: true,
-            },
-          ],
-        }),
-      });
-
-      toast({
-        title: this.$t("match.server.assigned"),
       });
     },
     // Goes through setMatchWinner rather than writing winning_lineup_id
@@ -1023,6 +987,26 @@ export default {
         this.$t("match.actions.forced_ready"),
       );
     },
+    skipKnife() {
+      this.sendRcon(
+        RconAction.SkipKnife,
+        this.$t("match.actions.skipped_knife"),
+      );
+    },
+    // Same rule as the console's match commands, narrowed to when one can
+    // act: the current map is in a state that takes it, on a live, reachable
+    // server.
+    canSendMatchCommand(action: RconAction) {
+      return (
+        this.match.is_organizer &&
+        this.isLive &&
+        !!this.match.is_server_online &&
+        useAuthStore().isRoleAbove(e_player_roles_enum.moderator) &&
+        matchCommandsForStatus(this.currentMap?.status).some(
+          (command) => command.action === action,
+        )
+      );
+    },
     async callForOrganizer() {
       await this.$apollo.mutate({
         mutation: generateMutation({
@@ -1075,21 +1059,15 @@ export default {
         case "warmup":
           return this.canForceReady ? "force_ready" : null;
         case "live":
+          // The knife round comes first and cannot be paused.
+          if (this.canSkipKnife) {
+            return "skip_knife";
+          }
           return this.canPauseResume ? "pause" : null;
         case "finished":
           return this.canSetMatchWinner ? "winner" : null;
       }
       return null;
-    },
-    serverLabel() {
-      if (this.match.server_id && this.match.server_type !== "On Demand") {
-        return this.$t("match.admin_bar.dedicated");
-      }
-      return (
-        this.match.e_region?.description ||
-        this.match.region ||
-        this.$t("match.admin_bar.not_set")
-      );
     },
     winnerLabel() {
       const winner = [this.match.lineup_1, this.match.lineup_2].find(
@@ -1109,6 +1087,12 @@ export default {
     showForceReadyItem() {
       return this.canForceReady && this.primaryAction !== "force_ready";
     },
+    showSkipKnifeItem() {
+      return this.canSkipKnife && this.primaryAction !== "skip_knife";
+    },
+    showWinnerItem() {
+      return this.canSetMatchWinner && this.primaryAction !== "winner";
+    },
     upcoming() {
       return this.dock
         ? upcomingAdminActions(this.match, (role) =>
@@ -1120,10 +1104,11 @@ export default {
     hasMoreItems() {
       return (
         this.match.can_assign_server ||
-        (this.canSetMatchWinner && this.primaryAction !== "winner") ||
+        this.showWinnerItem ||
         (this.match.is_organizer && this.hasOrganizerLiveActions) ||
         this.canReparseDemos ||
         this.showForceReadyItem ||
+        this.showSkipKnifeItem ||
         this.showStartItem ||
         this.upcoming.length > 0
       );
@@ -1283,18 +1268,11 @@ export default {
     isPaused() {
       return this.currentMap?.status === e_match_map_status_enum.Paused;
     },
-    // Same rule as the console's Force Ready, narrowed to when it can act: the
-    // current map is warming up on a live, reachable server.
     canForceReady() {
-      return (
-        this.match.is_organizer &&
-        this.isLive &&
-        !!this.match.is_server_online &&
-        useAuthStore().isRoleAbove(e_player_roles_enum.moderator) &&
-        matchCommandsForStatus(this.currentMap?.status).some(
-          (command) => command.action === RconAction.ForceReady,
-        )
-      );
+      return this.canSendMatchCommand(RconAction.ForceReady);
+    },
+    canSkipKnife() {
+      return this.canSendMatchCommand(RconAction.SkipKnife);
     },
     canPauseResume() {
       if (!this.match.is_organizer) {

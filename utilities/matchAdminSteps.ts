@@ -9,7 +9,11 @@ export type MatchAdminStep =
 
 type StepMatch = {
   status?: string | null;
-  options?: { map_veto?: boolean; region_veto?: boolean } | null;
+  options?: {
+    map_veto?: boolean;
+    region_veto?: boolean;
+    knife_round?: boolean;
+  } | null;
   match_maps?: Array<{ is_current_map?: boolean; status?: string }> | null;
 };
 
@@ -62,6 +66,7 @@ export type UpcomingAdminAction = {
   key:
     | "veto_override"
     | "force_ready"
+    | "skip_knife"
     | "pause"
     | "live_stream"
     | "highlights"
@@ -70,6 +75,8 @@ export type UpcomingAdminAction = {
   label: string;
   // Lowest role that can ever use it; none means any organizer.
   role?: e_player_roles_enum;
+  // Left out of matches it can never come up in.
+  applies?: (match: StepMatch) => boolean;
 };
 
 // What unlocks at each later step, so organizers can see it coming. Actions
@@ -91,6 +98,13 @@ export const UPCOMING_ADMIN_ACTIONS: UpcomingAdminAction[] = [
     key: "live_stream",
     step: "warmup",
     label: "match.actions.start_live",
+  },
+  {
+    key: "skip_knife",
+    step: "live",
+    label: "match.commands.skip_knife",
+    role: e_player_roles_enum.moderator,
+    applies: (match) => !!match.options?.knife_round,
   },
   {
     key: "pause",
@@ -124,6 +138,7 @@ export function upcomingAdminActions(
   return UPCOMING_ADMIN_ACTIONS.filter(
     (action) =>
       steps.indexOf(action.step) > current &&
-      (!action.role || canUseRole(action.role)),
+      (!action.role || canUseRole(action.role)) &&
+      (!action.applies || action.applies(match)),
   );
 }

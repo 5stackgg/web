@@ -61,6 +61,20 @@ describe("upcomingAdminActions", () => {
     expect(keys).toEqual(["pause", "highlights", "reparse"]);
   });
 
+  it("lists Skip Knife only for a match that plays a knife round", () => {
+    const keys = (knifeRound: boolean) =>
+      upcomingAdminActions(
+        {
+          ...match("Live", "Warmup"),
+          options: { map_veto: true, region_veto: false, knife_round: knifeRound },
+        },
+        roleAtLeast(e_player_roles_enum.moderator),
+      ).map((action) => action.key);
+
+    expect(keys(true)).toEqual(["skip_knife", "pause"]);
+    expect(keys(false)).toEqual(["pause"]);
+  });
+
   it("has nothing left once the match is finished", () => {
     expect(
       upcomingAdminActions(

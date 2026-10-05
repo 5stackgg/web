@@ -15,7 +15,7 @@ type EventMedia = {
 
 // One lightbox for a whole media list, so left/right (or the edge buttons)
 // walk the gallery in grid order. It steps over what a lightbox can't show
-// -- audio and external links -- and plays uploaded videos in place.
+// -- audio and external links -- and is where uploaded videos play.
 const props = defineProps<{
   event: { id: string };
   items: EventMedia[];

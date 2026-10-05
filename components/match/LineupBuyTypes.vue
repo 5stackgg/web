@@ -646,7 +646,12 @@ const expandedRows = computed(() =>
             class="text-[0.6rem] uppercase tracking-[0.16em] truncate"
             :class="lpIdx === 0 ? 'text-[#fbbf24]' : 'text-[#38bdf8]'"
           >
-            {{ lp.name }}
+            <span
+              v-if="lp.is_on_lineup"
+              aria-hidden="true"
+              class="mr-1.5 inline-block size-1.5 rounded-full bg-[hsl(var(--tac-amber))] align-middle"
+            ></span
+            >{{ lp.name }}
           </span>
           <template v-if="(lpIdx === 0 ? row.aRounds : row.bRounds) > 0">
             <div

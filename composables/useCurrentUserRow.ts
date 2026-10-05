@@ -15,6 +15,14 @@ const ROW_CLASS = "";
 const STICKY_CELL_CLASS =
   "bg-card group-hover:bg-muted shadow-[inset_2px_0_0_hsl(var(--tac-amber)/0.55),3px_0_6px_-3px_hsl(0_0%_0%/0.7)]";
 
+// The viewer's own team in the same tables: its header cell gets the rail
+// their row has, and its name the accent.
+export function teamHeadClass(lineup: any) {
+  return lineup?.is_on_lineup
+    ? "text-[hsl(var(--tac-amber))] shadow-[inset_2px_0_0_hsl(var(--tac-amber)/0.55),3px_0_6px_-3px_hsl(0_0%_0%/0.7)]"
+    : "shadow-[3px_0_6px_-3px_hsl(0_0%_0%/0.7)]";
+}
+
 // Lets a surface pin a different player's row (e.g. the profile being viewed)
 // instead of the logged-in user's.
 const FOCUS_ROW_STEAM_ID: InjectionKey<Ref<string | null>> =

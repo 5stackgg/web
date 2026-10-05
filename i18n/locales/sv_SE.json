@@ -8508,6 +8508,7 @@
     },
     "winner": {
       "set": "Sätt matchvinnare",
+      "set_confirm": "Gör {team} till vinnare av matchen?",
       "set_failed": "Kunde inte ange matchens vinnare",
       "select_lineup": "Välj laguppställning"
     },
@@ -8583,6 +8584,7 @@
       "resume": "Återuppta match",
       "match_paused": "Matchen pausad",
       "match_resumed": "Matchen återupptagen",
+      "forced_ready": "Spelarna tvingades redo",
       "start_live": "Starta livesändning",
       "pause_highlights_and_start_live": "Pausa höjdpunkter och starta livesändning",
       "start_live_preempt_highlights_hint": "Höjdpunkter pausar efter aktuell · livesändning startar när GPU:n frigörs",
@@ -8618,6 +8620,9 @@
     "delete_confirm": {
       "title": "Ta bort match",
       "description": "Vill du ta bort den här matchen? Detta går inte att ångra."
+    },
+    "cancel_confirm": {
+      "description": "Är du säker på att du vill avbryta matchen?"
     },
     "lineup": {
       "lineup_1": "Laguppställning 1",
@@ -8874,6 +8879,7 @@
       "dedicated": "Dedikerade servrar",
       "on_demand": "On demand",
       "assigned": "Tilldelad matchserver",
+      "assign_confirm": "Tilldela {server} till matchen?",
       "reboot_label": "Serveromstart",
       "reboot": "Starta om server",
       "rebooting": "Startar om…",
@@ -9045,7 +9051,8 @@
     "admin_bar": {
       "rcon_unavailable": "RCON otillgängligt",
       "not_controllable": "Matchen kan inte styras i sitt nuvarande läge.",
-      "veto_override": "Åsidosätt veto"
+      "veto_override": "Åsidosätt veto",
+      "actions": "Åtgärder"
     },
     "demo_processing_hint": "Matchens demo laddas upp från spelservern. Statistik, 2D-replay och höjdpunkter kommer när den är klar.",
     "demo_playback": {

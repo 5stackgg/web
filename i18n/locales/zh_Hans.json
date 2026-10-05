@@ -8508,6 +8508,7 @@
     },
     "winner": {
       "set": "设置比赛胜者",
+      "set_confirm": "将{team}设为这场比赛的胜者？",
       "set_failed": "无法设置比赛胜方",
       "select_lineup": "选择阵容"
     },
@@ -8583,6 +8584,7 @@
       "resume": "恢复比赛",
       "match_paused": "比赛已暂停",
       "match_resumed": "比赛已恢复",
+      "forced_ready": "已强制所有玩家准备",
       "start_live": "开始直播",
       "pause_highlights_and_start_live": "暂停高光并开始直播",
       "start_live_preempt_highlights_hint": "高光渲染在完成后暂停 · GPU 空闲后直播上线",
@@ -8618,6 +8620,9 @@
     "delete_confirm": {
       "title": "删除比赛",
       "description": "您确定要删除此比赛吗？此操作无法撤销。"
+    },
+    "cancel_confirm": {
+      "description": "确定要取消这场比赛吗？"
     },
     "lineup": {
       "lineup_1": "阵容 1",
@@ -8874,6 +8879,7 @@
       "dedicated": "专用服务器",
       "on_demand": "按需",
       "assigned": "已分配比赛服务器",
+      "assign_confirm": "将{server}分配给这场比赛？",
       "reboot_label": "服务器重启",
       "reboot": "重启服务器",
       "rebooting": "重启中...",
@@ -9045,7 +9051,8 @@
     "admin_bar": {
       "rcon_unavailable": "RCON 不可用",
       "not_controllable": "比赛处于不可控状态。",
-      "veto_override": "覆盖否决"
+      "veto_override": "覆盖否决",
+      "actions": "操作"
     },
     "demo_processing_hint": "比赛 demo 正从游戏服务器上传。完成后就会出现数据、2D 回放和集锦。",
     "demo_playback": {

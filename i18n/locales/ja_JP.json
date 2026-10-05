@@ -8508,6 +8508,7 @@
     },
     "winner": {
       "set": "試合の勝者を設定",
+      "set_confirm": "{team}をこの試合の勝者にしますか？",
       "set_failed": "試合の勝者を設定できませんでした",
       "select_lineup": "出場メンバーを選択"
     },
@@ -8583,6 +8584,7 @@
       "resume": "試合を再開",
       "match_paused": "試合を一時停止しました",
       "match_resumed": "試合を再開しました",
+      "forced_ready": "プレイヤーを強制的に準備完了にしました",
       "start_live": "ライブ配信を開始",
       "pause_highlights_and_start_live": "ハイライトを一時停止してライブ配信を開始",
       "start_live_preempt_highlights_hint": "現在のハイライト後に一時停止 · GPU が空き次第ライブ開始",
@@ -8618,6 +8620,9 @@
     "delete_confirm": {
       "title": "試合を削除",
       "description": "この試合を削除しますか？この操作は取り消せません。"
+    },
+    "cancel_confirm": {
+      "description": "この試合をキャンセルしてもよろしいですか？"
     },
     "lineup": {
       "lineup_1": "出場メンバー1",
@@ -8874,6 +8879,7 @@
       "dedicated": "専用サーバー",
       "on_demand": "オンデマンド",
       "assigned": "割り当て済みマッチサーバー",
+      "assign_confirm": "この試合に{server}を割り当てますか？",
       "reboot_label": "サーバー再起動",
       "reboot": "サーバーを再起動",
       "rebooting": "再起動中...",
@@ -9045,7 +9051,8 @@
     "admin_bar": {
       "rcon_unavailable": "RCON利用不可",
       "not_controllable": "試合は操作可能な状態ではありません。",
-      "veto_override": "拒否を上書き"
+      "veto_override": "拒否を上書き",
+      "actions": "操作"
     },
     "demo_processing_hint": "試合のデモをゲームサーバーからアップロードしています。完了すると統計、2Dリプレイ、ハイライトが表示されます。",
     "demo_playback": {

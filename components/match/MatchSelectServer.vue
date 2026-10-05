@@ -21,7 +21,7 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
     <FormField v-slot="{ componentField }" name="server_id">
       <FormItem class="space-y-1.5">
         <SettingHeader>{{ $t("match.server.assign") }}</SettingHeader>
-        <Select v-bind="componentField" @update:modelValue="updateMatchServer">
+        <Select v-bind="componentField" @update:modelValue="pick">
           <FormControl>
             <SelectTrigger>
               <SelectValue :placeholder="$t('match.server.select')" />
@@ -42,11 +42,11 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
             <SelectGroup>
               <SelectLabel>{{ $t("match.server.on_demand") }}</SelectLabel>
               <SelectItem
-                v-for="region in regions"
+                v-for="region in regionOptions"
                 :key="region.value"
-                :value="`0:${region.value}`"
+                :value="region.value"
               >
-                {{ region.description || region.value }}
+                {{ region.display }}
               </SelectItem>
             </SelectGroup>
           </SelectContent>
@@ -62,8 +62,6 @@ import * as z from "zod";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { generateMutation } from "~/graphql/graphqlGen";
-import { toast } from "@/components/ui/toast";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { e_server_types_enum } from "~/generated/zeus";
 
@@ -74,6 +72,8 @@ export default {
       required: true,
     },
   },
+  // The parent confirms and assigns; this only reports the pick.
+  emits: ["select"],
   apollo: {
     $subscribe: {
       servers: {
@@ -116,52 +116,39 @@ export default {
   watch: {
     match: {
       immediate: true,
-      handler(match) {
-        if (match) {
-          let server_id = match.server_id;
-
-          if (!server_id || match.server_type === "On Demand") {
-            server_id = `${match.region ? `0:${match.region}` : "0"}`;
-          }
-
-          this.form.setValues({
-            server_id,
-          });
-        }
+      handler() {
+        this.syncFromMatch();
       },
     },
   },
   methods: {
-    async updateMatchServer() {
-      const [serverId, region] = this.form.values.server_id?.split(":");
+    syncFromMatch() {
+      let server_id = this.match.server_id;
 
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          update_matches_by_pk: [
-            {
-              pk_columns: {
-                id: this.match.id,
-              },
-              _set: {
-                region,
-                server_id: serverId === "0" ? null : this.form.values.server_id,
-              },
-            },
-            {
-              id: true,
-            },
-          ],
-        }),
-      });
+      if (!server_id || this.match.server_type === "On Demand") {
+        server_id = `${this.match.region ? `0:${this.match.region}` : "0"}`;
+      }
 
-      toast({
-        title: this.$t("match.server.assigned"),
+      this.form.setValues({
+        server_id,
       });
+    },
+    // Snap back to the match's real server; the pick only takes effect once
+    // the parent's confirm runs.
+    pick(value: string) {
+      const option = [...this.availableServers, ...this.regionOptions].find(
+        (option) => option.value === value,
+      );
+      this.$emit("select", { value, label: option?.display ?? value });
+      this.syncFromMatch();
     },
   },
   computed: {
-    regions() {
-      return useApplicationSettingsStore().availableRegions;
+    regionOptions() {
+      return useApplicationSettingsStore().availableRegions.map((region) => ({
+        value: `0:${region.value}`,
+        display: region.description || region.value,
+      }));
     },
     canSelectDedicatedServer() {
       const { isAdmin, isMatchOrganizer, isTournamentOrganizer } =

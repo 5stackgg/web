@@ -8508,6 +8508,7 @@
     },
     "winner": {
       "set": "Definir ganador de la partida",
+      "set_confirm": "¿Declarar a {team} ganador de esta partida?",
       "set_failed": "No se pudo establecer el ganador de la partida",
       "select_lineup": "Seleccionar alineación"
     },
@@ -8583,6 +8584,7 @@
       "resume": "Reanudar partida",
       "match_paused": "Partida pausada",
       "match_resumed": "Partida reanudada",
+      "forced_ready": "Jugadores forzados a listos",
       "start_live": "Iniciar stream en directo",
       "pause_highlights_and_start_live": "Pausar highlights e iniciar stream",
       "start_live_preempt_highlights_hint": "Los highlights se pausan tras el actual · el directo arranca cuando se libere la GPU",
@@ -8618,6 +8620,9 @@
     "delete_confirm": {
       "title": "Eliminar partida",
       "description": "¿Seguro que quieres eliminar esta partida? Esta acción no se puede deshacer."
+    },
+    "cancel_confirm": {
+      "description": "¿Seguro que quieres cancelar esta partida?"
     },
     "lineup": {
       "lineup_1": "Alineación 1",
@@ -8874,6 +8879,7 @@
       "dedicated": "Servidores dedicados",
       "on_demand": "Bajo demanda",
       "assigned": "Servidor de partida asignado",
+      "assign_confirm": "¿Asignar {server} a esta partida?",
       "reboot_label": "Reinicio del servidor",
       "reboot": "Reiniciar servidor",
       "rebooting": "Reiniciando...",
@@ -9045,7 +9051,8 @@
     "admin_bar": {
       "rcon_unavailable": "RCON no disponible",
       "not_controllable": "La partida no está en un estado controlable.",
-      "veto_override": "Anular veto"
+      "veto_override": "Anular veto",
+      "actions": "Acciones"
     },
     "demo_processing_hint": "La demo de la partida se está subiendo desde el servidor de juego. Las estadísticas, la repetición 2D y los momentos destacados llegan cuando termine.",
     "demo_playback": {

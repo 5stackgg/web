@@ -21,7 +21,7 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
     <FormField v-slot="{ componentField }" name="lineup_id">
       <FormItem class="space-y-1.5">
         <SettingHeader>{{ $t("match.winner.set") }}</SettingHeader>
-        <Select v-bind="componentField" @update:modelValue="updateMatchWinner">
+        <Select v-bind="componentField" @update:modelValue="pick">
           <FormControl>
             <SelectTrigger>
               <SelectValue :placeholder="$t('match.winner.select_lineup')" />
@@ -49,8 +49,6 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
 import * as z from "zod";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
-import { generateMutation } from "~/graphql/graphqlGen";
-import { toast } from "@/components/ui/toast";
 
 export default {
   props: {
@@ -59,6 +57,8 @@ export default {
       required: true,
     },
   },
+  // The parent confirms and sets the winner; this only reports the pick.
+  emits: ["select"],
   data() {
     return {
       servers: [],
@@ -80,48 +80,14 @@ export default {
     },
   },
   methods: {
-    async updateMatchWinner() {
-      // setMatchWinner takes a non-null lineup. The select only ever offers
-      // the two lineups, so this is just a guard against firing before one
-      // has been chosen.
-      if (!this.form.values.lineup_id) {
-        return;
-      }
-
-      // Goes through setMatchWinner rather than writing winning_lineup_id
-      // directly: the action is what enforces organizer permission and blocks
-      // a reassignment once a downstream tournament match has already been
-      // played. A direct mutation skips both.
-      try {
-        await this.$apollo.mutate({
-          mutation: generateMutation({
-            setMatchWinner: [
-              {
-                match_id: this.match.id,
-                winning_lineup_id: this.form.values.lineup_id,
-              },
-              {
-                success: true,
-              },
-            ],
-          }),
-        });
-      } catch (error) {
-        // Put the selector back on the winner the match actually has, so it
-        // doesn't sit showing a change that was rejected.
-        this.form.setFieldValue("lineup_id", this.match.winning_lineup_id);
-
-        toast({
-          title: this.$t("match.winner.set_failed"),
-          description: (error as Error)?.message,
-          variant: "destructive",
-        });
-        return;
-      }
-
-      toast({
-        title: this.$t("match.winner.set"),
-      });
+    // Snap back to the match's real winner; the pick only takes effect once
+    // the parent's confirm runs.
+    pick(value: string) {
+      const lineup = this.availableLineups.find(
+        (lineup) => lineup.value === value,
+      );
+      this.$emit("select", { value, label: lineup?.display ?? value });
+      this.form.setFieldValue("lineup_id", this.match.winning_lineup_id);
     },
   },
   computed: {

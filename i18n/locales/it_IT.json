@@ -8510,10 +8510,14 @@
       "set": "Imposta vincitore del match",
       "set_hint": "Scegli la squadra che ha vinto questo match.",
       "set_failed": "Impossibile impostare il vincitore della partita",
-      "select_lineup": "Seleziona lineup"
+      "select_lineup": "Seleziona lineup",
+      "map_record": "{won} vinte · {lost} perse"
     },
     "map_winner": {
-      "set": "Imposta vincitore della mappa"
+      "set": "Imposta vincitore della mappa",
+      "set_hint": "Scegli la squadra che ha vinto {map}.",
+      "sets_match_winner": "Questo rende anche {team} vincitore del match.",
+      "clears_match_winner": "Questo rimuove anche il vincitore del match."
     },
     "region_veto": {
       "ban_label": "Ban",
@@ -8585,6 +8589,7 @@
       "match_paused": "Match in pausa",
       "match_resumed": "Match ripreso",
       "forced_ready": "Giocatori forzati pronti",
+      "skipped_knife": "Knife round saltato",
       "start_live": "Avvia live stream",
       "pause_highlights_and_start_live": "Metti in pausa gli highlight e avvia il live stream",
       "start_live_preempt_highlights_hint": "Gli highlight si mettono in pausa dopo quello in corso · il live parte quando la GPU si libera",
@@ -8879,7 +8884,6 @@
       "dedicated": "Server dedicati",
       "on_demand": "On demand",
       "assigned": "Server match assegnato",
-      "assign_hint": "Scegli il server su cui si giocherà questo match.",
       "reboot_label": "Riavvio server",
       "reboot": "Riavvia server",
       "rebooting": "Riavvio in corso…",
@@ -9054,10 +9058,8 @@
       "veto_override": "Forza il veto",
       "actions": "Altre azioni",
       "coming_up": "In arrivo",
-      "server": "Server",
       "winner": "Vincitore",
       "not_set": "Non impostato",
-      "dedicated": "Dedicato",
       "current": "Attuale",
       "steps": {
         "label": "Fasi del match",

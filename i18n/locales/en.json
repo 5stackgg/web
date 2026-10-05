@@ -8512,10 +8512,14 @@
       "set": "Set Match Winner",
       "set_hint": "Pick the team that won this match.",
       "set_failed": "Could not set match winner",
-      "select_lineup": "Select Lineup"
+      "select_lineup": "Select Lineup",
+      "map_record": "{won} won · {lost} lost"
     },
     "map_winner": {
-      "set": "Set Map Winner"
+      "set": "Set Map Winner",
+      "set_hint": "Pick the team that won {map}.",
+      "sets_match_winner": "This also makes {team} the match winner.",
+      "clears_match_winner": "This also clears the match winner."
     },
     "region_veto": {
       "ban_label": "Ban",
@@ -8587,6 +8591,7 @@
       "match_paused": "Match paused",
       "match_resumed": "Match resumed",
       "forced_ready": "Players forced ready",
+      "skipped_knife": "Knife round skipped",
       "start_live": "Start Live Stream",
       "pause_highlights_and_start_live": "Pause Highlights & Start Live Stream",
       "start_live_preempt_highlights_hint": "Highlights pause after current · live goes up once GPU frees",
@@ -8881,7 +8886,6 @@
       "dedicated": "Dedicated Servers",
       "on_demand": "On Demand",
       "assigned": "Assigned Match Server",
-      "assign_hint": "Pick the server this match should run on.",
       "reboot_label": "Server Reboot",
       "reboot": "Reboot Server",
       "rebooting": "Rebooting...",
@@ -9056,10 +9060,8 @@
       "veto_override": "Veto Override",
       "actions": "More actions",
       "coming_up": "Coming up",
-      "server": "Server",
       "winner": "Winner",
       "not_set": "Not set",
-      "dedicated": "Dedicated",
       "current": "Current",
       "steps": {
         "label": "Match steps",

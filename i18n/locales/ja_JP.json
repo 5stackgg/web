@@ -8510,10 +8510,14 @@
       "set": "試合の勝者を設定",
       "set_hint": "この試合に勝ったチームを選んでください。",
       "set_failed": "試合の勝者を設定できませんでした",
-      "select_lineup": "出場メンバーを選択"
+      "select_lineup": "出場メンバーを選択",
+      "map_record": "{won}勝 · {lost}敗"
     },
     "map_winner": {
-      "set": "マップの勝者を設定"
+      "set": "マップの勝者を設定",
+      "set_hint": "{map}に勝ったチームを選んでください。",
+      "sets_match_winner": "これにより{team}が試合の勝者にもなります。",
+      "clears_match_winner": "これにより試合の勝者も解除されます。"
     },
     "region_veto": {
       "ban_label": "Ban",
@@ -8585,6 +8589,7 @@
       "match_paused": "試合を一時停止しました",
       "match_resumed": "試合を再開しました",
       "forced_ready": "プレイヤーを強制的に準備完了にしました",
+      "skipped_knife": "ナイフラウンドをスキップしました",
       "start_live": "ライブ配信を開始",
       "pause_highlights_and_start_live": "ハイライトを一時停止してライブ配信を開始",
       "start_live_preempt_highlights_hint": "現在のハイライト後に一時停止 · GPU が空き次第ライブ開始",
@@ -8879,7 +8884,6 @@
       "dedicated": "専用サーバー",
       "on_demand": "オンデマンド",
       "assigned": "割り当て済みマッチサーバー",
-      "assign_hint": "この試合を行うサーバーを選んでください。",
       "reboot_label": "サーバー再起動",
       "reboot": "サーバーを再起動",
       "rebooting": "再起動中...",
@@ -9054,10 +9058,8 @@
       "veto_override": "拒否を上書き",
       "actions": "その他の操作",
       "coming_up": "この先",
-      "server": "サーバー",
       "winner": "勝者",
       "not_set": "未設定",
-      "dedicated": "専用",
       "current": "現在",
       "steps": {
         "label": "試合の段階",

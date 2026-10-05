@@ -8510,10 +8510,14 @@
       "set": "設定比賽勝者",
       "set_hint": "選擇贏得這場比賽的隊伍。",
       "set_failed": "無法設定比賽勝方",
-      "select_lineup": "選擇陣容"
+      "select_lineup": "選擇陣容",
+      "map_record": "{won} 勝 · {lost} 負"
     },
     "map_winner": {
-      "set": "設定地圖勝者"
+      "set": "設定地圖勝者",
+      "set_hint": "選擇贏得 {map} 的隊伍。",
+      "sets_match_winner": "這也會將 {team} 設為比賽勝者。",
+      "clears_match_winner": "這也會清除比賽勝者。"
     },
     "region_veto": {
       "ban_label": "禁用",
@@ -8585,6 +8589,7 @@
       "match_paused": "比賽已暫停",
       "match_resumed": "比賽已繼續",
       "forced_ready": "已強制所有玩家準備",
+      "skipped_knife": "已跳過刀戰",
       "start_live": "開始直播",
       "pause_highlights_and_start_live": "暫停精華並開始直播",
       "start_live_preempt_highlights_hint": "精華算繪於目前項目完成後暫停 · GPU 空閒後直播上線",
@@ -8879,7 +8884,6 @@
       "dedicated": "專用伺服器",
       "on_demand": "隨選",
       "assigned": "已指派比賽伺服器",
-      "assign_hint": "選擇這場比賽使用的伺服器。",
       "reboot_label": "伺服器重新啟動",
       "reboot": "重新啟動伺服器",
       "rebooting": "重新啟動中...",
@@ -9054,10 +9058,8 @@
       "veto_override": "覆寫否決",
       "actions": "更多操作",
       "coming_up": "即將開放",
-      "server": "伺服器",
       "winner": "勝者",
       "not_set": "未設定",
-      "dedicated": "獨立伺服器",
       "current": "目前",
       "steps": {
         "label": "比賽階段",

@@ -9,7 +9,6 @@ import {
   ChevronLeft,
   PlayCircle,
   RefreshCw,
-  MoreVertical,
 } from "lucide-vue-next";
 import { Spinner } from "~/components/ui/spinner";
 import TimeAgo from "~/components/TimeAgo.vue";
@@ -247,21 +246,11 @@ import mapLabel from "~/utilities/mapLabel";
             </a>
           </template>
         </template>
-        <DropdownMenu v-if="canSetMapWinner">
-          <DropdownMenuTrigger as-child>
-            <Button
-              size="xs"
-              variant="ghost"
-              class="h-6 w-6 p-0 text-white/70 hover:text-white"
-              @click.stop
-            >
-              <MoreVertical class="w-4 h-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" class="w-56">
-            <MatchSelectMapWinner :match="match" :match-map="matchMap" />
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <MatchSelectMapWinner
+          v-if="canSetMapWinner"
+          :match="match"
+          :match-map="matchMap"
+        />
       </div>
     </div>
 

@@ -8510,10 +8510,14 @@
       "set": "Définir le vainqueur du match",
       "set_hint": "Choisissez l'équipe qui a gagné ce match.",
       "set_failed": "Impossible de définir le vainqueur du match",
-      "select_lineup": "Choisir une composition"
+      "select_lineup": "Choisir une composition",
+      "map_record": "{won} gagnées · {lost} perdues"
     },
     "map_winner": {
-      "set": "Définir le vainqueur de la map"
+      "set": "Définir le vainqueur de la map",
+      "set_hint": "Choisissez l'équipe qui a gagné {map}.",
+      "sets_match_winner": "Cela fait aussi de {team} le vainqueur du match.",
+      "clears_match_winner": "Cela retire aussi le vainqueur du match."
     },
     "region_veto": {
       "ban_label": "Ban",
@@ -8585,6 +8589,7 @@
       "match_paused": "Match en pause",
       "match_resumed": "Match repris",
       "forced_ready": "Joueurs forcés prêts",
+      "skipped_knife": "Knife round passé",
       "start_live": "Lancer le live",
       "pause_highlights_and_start_live": "Mettre les highlights en pause et lancer le live",
       "start_live_preempt_highlights_hint": "Les highlights se mettent en pause après le rendu en cours · le live démarre dès que le GPU se libère",
@@ -8879,7 +8884,6 @@
       "dedicated": "Serveurs dédiés",
       "on_demand": "À la demande",
       "assigned": "Serveur de match assigné",
-      "assign_hint": "Choisissez le serveur sur lequel ce match doit se jouer.",
       "reboot_label": "Redémarrage du serveur",
       "reboot": "Redémarrer le serveur",
       "rebooting": "Redémarrage…",
@@ -9054,10 +9058,8 @@
       "veto_override": "Forcer le veto",
       "actions": "Plus d'actions",
       "coming_up": "À venir",
-      "server": "Serveur",
       "winner": "Vainqueur",
       "not_set": "Non défini",
-      "dedicated": "Dédié",
       "current": "Actuel",
       "steps": {
         "label": "Étapes du match",

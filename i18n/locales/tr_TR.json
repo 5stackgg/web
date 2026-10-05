@@ -8510,10 +8510,14 @@
       "set": "Maç Kazananını Belirle",
       "set_hint": "Bu maçı kazanan takımı seç.",
       "set_failed": "Maçın galibi belirlenemedi",
-      "select_lineup": "Diziliş Seç"
+      "select_lineup": "Diziliş Seç",
+      "map_record": "{won} galibiyet · {lost} mağlubiyet"
     },
     "map_winner": {
-      "set": "Harita Kazananını Belirle"
+      "set": "Harita Kazananını Belirle",
+      "set_hint": "{map} haritasını kazanan takımı seç.",
+      "sets_match_winner": "Bu, {team} takımını maçın da kazananı yapar.",
+      "clears_match_winner": "Bu, maçın kazananını da kaldırır."
     },
     "region_veto": {
       "ban_label": "Ban",
@@ -8585,6 +8589,7 @@
       "match_paused": "Maç duraklatıldı",
       "match_resumed": "Maç devam ettirildi",
       "forced_ready": "Oyuncular zorla hazır yapıldı",
+      "skipped_knife": "Bıçak raundu atlandı",
       "start_live": "Canlı Yayını Başlat",
       "pause_highlights_and_start_live": "Öne Çıkan Anları Duraklat ve Canlı Yayını Başlat",
       "start_live_preempt_highlights_hint": "Mevcut render bitince öne çıkan anlar duraklar · GPU boşalınca yayın başlar",
@@ -8879,7 +8884,6 @@
       "dedicated": "Özel sunucular",
       "on_demand": "Talep üzerine",
       "assigned": "Atanan maç sunucusu",
-      "assign_hint": "Bu maçın oynanacağı sunucuyu seç.",
       "reboot_label": "Sunucu yeniden başlatma",
       "reboot": "Sunucuyu yeniden başlat",
       "rebooting": "Yeniden başlatılıyor...",
@@ -9054,10 +9058,8 @@
       "veto_override": "Vetoyu geçersiz kıl",
       "actions": "Diğer işlemler",
       "coming_up": "Sıradaki",
-      "server": "Sunucu",
       "winner": "Kazanan",
       "not_set": "Ayarlanmadı",
-      "dedicated": "Özel",
       "current": "Mevcut",
       "steps": {
         "label": "Maç adımları",

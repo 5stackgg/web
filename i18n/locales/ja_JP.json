@@ -9054,6 +9054,11 @@
       "veto_override": "拒否を上書き",
       "actions": "その他の操作",
       "coming_up": "この先",
+      "server": "サーバー",
+      "winner": "勝者",
+      "not_set": "未設定",
+      "dedicated": "専用",
+      "current": "現在",
       "steps": {
         "label": "試合の段階",
         "check_in": "チェックイン",

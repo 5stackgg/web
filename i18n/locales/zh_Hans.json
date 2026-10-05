@@ -9054,6 +9054,11 @@
       "veto_override": "覆盖否决",
       "actions": "更多操作",
       "coming_up": "即将开放",
+      "server": "服务器",
+      "winner": "胜者",
+      "not_set": "未设置",
+      "dedicated": "独立服务器",
+      "current": "当前",
       "steps": {
         "label": "比赛阶段",
         "check_in": "签到",

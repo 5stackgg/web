@@ -9054,6 +9054,11 @@
       "veto_override": "Vetoyu geçersiz kıl",
       "actions": "Diğer işlemler",
       "coming_up": "Sıradaki",
+      "server": "Sunucu",
+      "winner": "Kazanan",
+      "not_set": "Ayarlanmadı",
+      "dedicated": "Özel",
+      "current": "Mevcut",
       "steps": {
         "label": "Maç adımları",
         "check_in": "Check-in",

@@ -9054,6 +9054,11 @@
       "veto_override": "Veto überschreiben",
       "actions": "Weitere Aktionen",
       "coming_up": "Demnächst",
+      "server": "Server",
+      "winner": "Sieger",
+      "not_set": "Nicht festgelegt",
+      "dedicated": "Dediziert",
+      "current": "Aktuell",
       "steps": {
         "label": "Match-Schritte",
         "check_in": "Check-in",

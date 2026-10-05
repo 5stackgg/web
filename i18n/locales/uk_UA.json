@@ -9054,6 +9054,11 @@
       "veto_override": "Перевизначити вето",
       "actions": "Інші дії",
       "coming_up": "Далі",
+      "server": "Сервер",
+      "winner": "Переможець",
+      "not_set": "Не задано",
+      "dedicated": "Виділений",
+      "current": "Поточний",
       "steps": {
         "label": "Етапи матчу",
         "check_in": "Чек-ін",

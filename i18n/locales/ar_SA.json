@@ -9054,6 +9054,11 @@
       "veto_override": "تجاوز الاستبعاد",
       "actions": "إجراءات أخرى",
       "coming_up": "قادم",
+      "server": "الخادم",
+      "winner": "الفائز",
+      "not_set": "غير محدد",
+      "dedicated": "خادم مخصص",
+      "current": "الحالي",
       "steps": {
         "label": "مراحل المباراة",
         "check_in": "تسجيل الحضور",

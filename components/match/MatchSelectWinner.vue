@@ -1,53 +1,37 @@
-<script lang="ts" setup>
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "~/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
-</script>
-
 <template>
-  <form class="space-y-8">
-    <FormField v-slot="{ componentField }" name="lineup_id">
-      <FormItem class="space-y-1.5">
-        <Select v-bind="componentField" @update:modelValue="pick">
-          <FormControl>
-            <SelectTrigger :aria-label="$t('match.winner.set')">
-              <SelectValue :placeholder="$t('match.winner.select_lineup')" />
-            </SelectTrigger>
-          </FormControl>
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem
-                v-for="lineup in availableLineups"
-                :key="lineup.value"
-                :value="lineup.value"
-              >
-                {{ lineup.display }}
-              </SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-        <FormMessage />
-      </FormItem>
-    </FormField>
-  </form>
+  <!-- Two teams, so two buttons instead of a dropdown; the current winner is
+       marked so the change being made is visible. -->
+  <div
+    class="grid grid-cols-2 gap-2"
+    role="radiogroup"
+    :aria-label="$t('match.winner.set')"
+  >
+    <button
+      v-for="lineup in availableLineups"
+      :key="lineup.value"
+      type="button"
+      role="radio"
+      :aria-checked="picked === lineup.value"
+      class="flex min-w-0 items-center justify-between gap-2 rounded-md border px-3 py-2.5 text-left text-sm font-semibold transition-colors duration-200 ease-out"
+      :class="
+        picked === lineup.value
+          ? 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.12)] text-foreground'
+          : 'border-border text-muted-foreground hover:bg-muted/40 hover:text-foreground'
+      "
+      @click="pick(lineup.value)"
+    >
+      <span class="truncate">{{ lineup.display }}</span>
+      <span
+        v-if="lineup.value === match.winning_lineup_id"
+        class="shrink-0 rounded-sm border border-border px-1.5 py-0.5 font-mono text-[0.55rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground"
+      >
+        {{ $t("match.admin_bar.current") }}
+      </span>
+    </button>
+  </div>
 </template>
 
 <script lang="ts">
-import * as z from "zod";
-import { useForm } from "vee-validate";
-import { toTypedSchema } from "~/utilities/vee-validate-zod";
-
 export default {
   props: {
     match: {
@@ -59,14 +43,7 @@ export default {
   emits: ["select"],
   data() {
     return {
-      servers: [],
-      form: useForm({
-        validationSchema: toTypedSchema(
-          z.object({
-            lineup_id: z.string().nullable(),
-          }),
-        ),
-      }),
+      picked: null as string | null,
     };
   },
   watch: {
@@ -75,12 +52,13 @@ export default {
     "match.winning_lineup_id": {
       immediate: true,
       handler(winningLineupId) {
-        this.form.setFieldValue("lineup_id", winningLineupId);
+        this.picked = winningLineupId;
       },
     },
   },
   methods: {
     pick(value: string) {
+      this.picked = value;
       const lineup = this.availableLineups.find(
         (lineup) => lineup.value === value,
       );

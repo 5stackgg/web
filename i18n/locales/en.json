@@ -9056,6 +9056,11 @@
       "veto_override": "Veto Override",
       "actions": "More actions",
       "coming_up": "Coming up",
+      "server": "Server",
+      "winner": "Winner",
+      "not_set": "Not set",
+      "dedicated": "Dedicated",
+      "current": "Current",
       "steps": {
         "label": "Match steps",
         "check_in": "Check-in",

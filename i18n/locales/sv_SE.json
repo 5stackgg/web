@@ -9054,6 +9054,11 @@
       "veto_override": "Åsidosätt veto",
       "actions": "Fler åtgärder",
       "coming_up": "Kommer härnäst",
+      "server": "Server",
+      "winner": "Vinnare",
+      "not_set": "Inte vald",
+      "dedicated": "Dedikerad",
+      "current": "Nuvarande",
       "steps": {
         "label": "Matchsteg",
         "check_in": "Incheckning",

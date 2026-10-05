@@ -9054,6 +9054,11 @@
       "veto_override": "거부 재정의",
       "actions": "추가 작업",
       "coming_up": "다음 단계",
+      "server": "서버",
+      "winner": "승자",
+      "not_set": "설정 안 됨",
+      "dedicated": "전용",
+      "current": "현재",
       "steps": {
         "label": "매치 단계",
         "check_in": "체크인",

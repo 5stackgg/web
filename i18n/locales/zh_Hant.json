@@ -9054,6 +9054,11 @@
       "veto_override": "覆寫否決",
       "actions": "更多操作",
       "coming_up": "即將開放",
+      "server": "伺服器",
+      "winner": "勝者",
+      "not_set": "未設定",
+      "dedicated": "獨立伺服器",
+      "current": "目前",
       "steps": {
         "label": "比賽階段",
         "check_in": "報到",

@@ -9054,6 +9054,11 @@
       "veto_override": "Tilsidesæt veto",
       "actions": "Flere handlinger",
       "coming_up": "Kommer snart",
+      "server": "Server",
+      "winner": "Vinder",
+      "not_set": "Ikke valgt",
+      "dedicated": "Dedikeret",
+      "current": "Nuværende",
       "steps": {
         "label": "Kamptrin",
         "check_in": "Check-in",

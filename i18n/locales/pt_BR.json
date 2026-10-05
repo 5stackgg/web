@@ -9054,6 +9054,11 @@
       "veto_override": "Veto Sobrescrito",
       "actions": "Mais ações",
       "coming_up": "Em seguida",
+      "server": "Servidor",
+      "winner": "Vencedor",
+      "not_set": "Não definido",
+      "dedicated": "Dedicado",
+      "current": "Atual",
       "steps": {
         "label": "Etapas da partida",
         "check_in": "Check-in",

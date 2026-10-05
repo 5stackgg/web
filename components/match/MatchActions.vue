@@ -5,16 +5,10 @@ import {
   MoreVertical,
   Pause,
   Play,
-  Radio,
-  RefreshCw,
-  Scissors,
-  Server,
   SlidersHorizontal,
-  Square,
   Trash2,
   Trophy,
   XCircle,
-  Zap,
 } from "lucide-vue-next";
 import MatchCameraStatus from "~/components/match/MatchCameraStatus.vue";
 import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
@@ -47,15 +41,6 @@ const dockNeutral = `${dockChip} border-border bg-background/60 text-muted-foreg
 
 const menuLabel =
   "px-2 pb-1 pt-1.5 font-mono text-[0.58rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground";
-
-const upcomingIcons = {
-  veto_override: Zap,
-  force_ready: CheckCheck,
-  pause: Pause,
-  live_stream: Radio,
-  highlights: Scissors,
-  reparse: RefreshCw,
-};
 </script>
 
 <template>
@@ -209,20 +194,26 @@ const upcomingIcons = {
           />
         </template>
 
+        <!-- Settings read as label + current value, so the menu shows what the
+             match is set to before anyone opens a dialog. -->
         <DropdownMenuItem
           v-if="match.can_assign_server"
           @click="openServerDialog"
         >
-          <Server />
-          {{ $t("match.server.assign") }}…
+          {{ $t("match.admin_bar.server") }}
+          <span class="ml-auto pl-6 text-xs text-muted-foreground">
+            {{ serverLabel }}
+          </span>
         </DropdownMenuItem>
 
         <DropdownMenuItem
           v-if="canSetMatchWinner && primaryAction !== 'winner'"
           @click="openWinnerDialog"
         >
-          <Trophy />
-          {{ $t("match.winner.set") }}…
+          {{ $t("match.admin_bar.winner") }}
+          <span class="ml-auto pl-6 text-xs text-muted-foreground">
+            {{ winnerLabel }}
+          </span>
         </DropdownMenuItem>
 
         <template v-if="match.is_organizer && hasOrganizerLiveActions">
@@ -240,14 +231,12 @@ const upcomingIcons = {
             :disabled="switching || !match.is_server_online"
             @click="switchHere"
           >
-            <Radio class="text-muted-foreground" />
             <span>{{ $t("match.actions.switch_stream_here") }}</span>
           </DropdownMenuItem>
           <DropdownMenuSub v-else-if="gameStreamerStatus === 'off'">
             <Tooltip v-if="liveStartDisabledReason">
               <TooltipTrigger as-child>
                 <DropdownMenuSubTrigger disabled>
-                  <Radio class="text-muted-foreground" />
                   <span>{{ $t("match.actions.start_live") }}</span>
                 </DropdownMenuSubTrigger>
               </TooltipTrigger>
@@ -256,7 +245,6 @@ const upcomingIcons = {
               </TooltipContent>
             </Tooltip>
             <DropdownMenuSubTrigger v-else>
-              <Radio class="text-muted-foreground" />
               <span>{{
                 canPreemptHighlights
                   ? $t("match.actions.pause_highlights_and_start_live")
@@ -305,7 +293,6 @@ const upcomingIcons = {
             class="text-destructive"
             @click="stopLive"
           >
-            <Square />
             <template v-if="gameStreamerStatus === 'pending'">
               <div class="flex flex-col items-start leading-tight">
                 <span>{{ $t("match.actions.cancel_live_pending") }}</span>
@@ -337,7 +324,6 @@ const upcomingIcons = {
           <Tooltip v-if="canCreateClips && !hasRegisteredGpu">
             <TooltipTrigger as-child>
               <DropdownMenuItem disabled>
-                <Scissors />
                 {{ $t("match.actions.create_clips") }}
               </DropdownMenuItem>
             </TooltipTrigger>
@@ -349,13 +335,11 @@ const upcomingIcons = {
             v-else-if="canCreateClips"
             @click="createClipsForMatch"
           >
-            <Scissors />
             {{ $t("match.actions.create_clips") }}
           </DropdownMenuItem>
           <Tooltip v-if="hasPausedRenders && resumeRendersBlockedReason">
             <TooltipTrigger as-child>
               <DropdownMenuItem disabled>
-                <Play />
                 <div class="flex flex-col items-start leading-tight">
                   <span>{{ $t("match.actions.resume_renders") }}</span>
                   <span class="text-xs text-muted-foreground mt-0.5">
@@ -369,7 +353,6 @@ const upcomingIcons = {
             </TooltipContent>
           </Tooltip>
           <DropdownMenuItem v-else-if="hasPausedRenders" @click="resumeRenders">
-            <Play />
             <div class="flex flex-col items-start leading-tight">
               <span>{{ $t("match.actions.resume_renders") }}</span>
               <span class="text-xs text-muted-foreground mt-0.5">
@@ -381,7 +364,6 @@ const upcomingIcons = {
             v-else-if="hasInFlightRenders"
             @click="pauseRenders"
           >
-            <Pause />
             <div class="flex flex-col items-start leading-tight">
               <span>{{ $t("match.actions.pause_renders") }}</span>
               <span class="text-xs text-muted-foreground mt-0.5">
@@ -389,22 +371,19 @@ const upcomingIcons = {
               </span>
             </div>
           </DropdownMenuItem>
+          <DropdownMenuItem v-if="canReparseDemos" @click="reparseAllDemos">
+            {{ $t("match.actions.reparse_demos") }}
+          </DropdownMenuItem>
         </template>
 
         <DropdownMenuSeparator
           v-if="
-            canReparseDemos ||
             showForceReadyItem ||
             showStartItem ||
             (!dock && (match.can_cancel || canDeleteMatch))
           "
           class="first:hidden"
         />
-
-        <DropdownMenuItem v-if="canReparseDemos" @click="reparseAllDemos">
-          <RefreshCw />
-          {{ $t("match.actions.reparse_demos") }}
-        </DropdownMenuItem>
 
         <DropdownMenuItem v-if="showForceReadyItem" @click="forceReady">
           <CheckCheck />
@@ -448,7 +427,6 @@ const upcomingIcons = {
             :key="action.key"
             disabled
           >
-            <component :is="upcomingIcons[action.key]" />
             {{ $t(action.label) }}
             <span
               class="ml-auto rounded-sm border border-dashed border-border px-1.5 py-0.5 font-mono text-[0.55rem] uppercase tracking-[0.12em]"
@@ -1102,6 +1080,22 @@ export default {
           return this.canSetMatchWinner ? "winner" : null;
       }
       return null;
+    },
+    serverLabel() {
+      if (this.match.server_id && this.match.server_type !== "On Demand") {
+        return this.$t("match.admin_bar.dedicated");
+      }
+      return (
+        this.match.e_region?.description ||
+        this.match.region ||
+        this.$t("match.admin_bar.not_set")
+      );
+    },
+    winnerLabel() {
+      const winner = [this.match.lineup_1, this.match.lineup_2].find(
+        (lineup) => lineup?.id && lineup.id === this.match.winning_lineup_id,
+      );
+      return winner?.name ?? this.$t("match.admin_bar.not_set");
     },
     startLabel() {
       return this.match.options?.map_veto &&

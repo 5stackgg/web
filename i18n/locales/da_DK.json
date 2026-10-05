@@ -8508,6 +8508,7 @@
     },
     "winner": {
       "set": "Sæt kampvinder",
+      "set_hint": "Vælg holdet, der vandt kampen.",
       "set_failed": "Kunne ikke angive kampens vinder",
       "select_lineup": "Vælg opstilling"
     },
@@ -8583,6 +8584,7 @@
       "resume": "Genoptag kampen",
       "match_paused": "Kampen er sat på pause",
       "match_resumed": "Kampen er genoptaget",
+      "forced_ready": "Spillerne er tvunget klar",
       "start_live": "Start livestream",
       "pause_highlights_and_start_live": "Pause highlights og start livestream",
       "start_live_preempt_highlights_hint": "Highlights pauser efter den aktuelle · live starter når GPU er ledig",
@@ -8618,6 +8620,9 @@
     "delete_confirm": {
       "title": "Slet kampen",
       "description": "Vil du slette denne kamp? Handlingen kan ikke fortrydes."
+    },
+    "cancel_confirm": {
+      "description": "Er du sikker på, at du vil annullere denne kamp?"
     },
     "lineup": {
       "lineup_1": "Opstilling 1",
@@ -8874,6 +8879,7 @@
       "dedicated": "Dedikerede servere",
       "on_demand": "On demand",
       "assigned": "Tildelt kampserver",
+      "assign_hint": "Vælg den server, kampen skal køre på.",
       "reboot_label": "Genstart af server",
       "reboot": "Genstart server",
       "rebooting": "Genstarter...",
@@ -9045,7 +9051,28 @@
     "admin_bar": {
       "rcon_unavailable": "RCON utilgængelig",
       "not_controllable": "Kampen er ikke i en tilstand, der kan styres.",
-      "veto_override": "Tilsidesæt veto"
+      "veto_override": "Tilsidesæt veto",
+      "actions": "Flere handlinger",
+      "coming_up": "Kommer snart",
+      "server": "Server",
+      "winner": "Vinder",
+      "not_set": "Ikke valgt",
+      "dedicated": "Dedikeret",
+      "current": "Nuværende",
+      "steps": {
+        "label": "Kamptrin",
+        "check_in": "Check-in",
+        "veto": "Veto",
+        "warmup": "Opvarmning",
+        "live": "Live",
+        "paused": "Pauset",
+        "finished": "Afsluttet",
+        "canceled": "Annulleret",
+        "done": "Færdig",
+        "now": "Du er her",
+        "unlocks": "Låses op her",
+        "nothing_new": "Intet nyt for dig her"
+      }
     },
     "demo_processing_hint": "Kampens demo uploades fra spilserveren. Statistik, 2D-replay og højdepunkter kommer, når den er færdig.",
     "demo_playback": {

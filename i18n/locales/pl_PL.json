@@ -8508,6 +8508,7 @@
     },
     "winner": {
       "set": "Ustaw zwycięzcę meczu",
+      "set_hint": "Wybierz drużynę, która wygrała ten mecz.",
       "set_failed": "Nie udało się ustawić zwycięzcy meczu",
       "select_lineup": "Wybierz ustawienie"
     },
@@ -8583,6 +8584,7 @@
       "resume": "Wznów mecz",
       "match_paused": "Mecz wstrzymany",
       "match_resumed": "Mecz wznowiony",
+      "forced_ready": "Gracze wymuszeni jako gotowi",
       "start_live": "Rozpocznij transmisję na żywo",
       "pause_highlights_and_start_live": "Wstrzymaj highlighty i rozpocznij transmisję na żywo",
       "start_live_preempt_highlights_hint": "Highlighty wstrzymają się po bieżącym · transmisja ruszy po zwolnieniu GPU",
@@ -8618,6 +8620,9 @@
     "delete_confirm": {
       "title": "Usuń mecz",
       "description": "Czy na pewno chcesz usunąć ten mecz? Tej operacji nie można cofnąć."
+    },
+    "cancel_confirm": {
+      "description": "Czy na pewno chcesz anulować ten mecz?"
     },
     "lineup": {
       "lineup_1": "Ustawienie 1",
@@ -8874,6 +8879,7 @@
       "dedicated": "Serwery dedykowane",
       "on_demand": "On demand",
       "assigned": "Przypisany serwer meczu",
+      "assign_hint": "Wybierz serwer, na którym ma się odbyć ten mecz.",
       "reboot_label": "Restart serwera",
       "reboot": "Zrestartuj serwer",
       "rebooting": "Restartowanie…",
@@ -9045,7 +9051,28 @@
     "admin_bar": {
       "rcon_unavailable": "RCON niedostępne",
       "not_controllable": "Mecz nie jest w stanie umożliwiającym sterowanie",
-      "veto_override": "Nadpisz veto"
+      "veto_override": "Nadpisz veto",
+      "actions": "Więcej akcji",
+      "coming_up": "Wkrótce",
+      "server": "Serwer",
+      "winner": "Zwycięzca",
+      "not_set": "Nie ustawiono",
+      "dedicated": "Dedykowany",
+      "current": "Obecny",
+      "steps": {
+        "label": "Etapy meczu",
+        "check_in": "Check-in",
+        "veto": "Veto",
+        "warmup": "Rozgrzewka",
+        "live": "Na żywo",
+        "paused": "Wstrzymany",
+        "finished": "Zakończony",
+        "canceled": "Anulowany",
+        "done": "Gotowe",
+        "now": "Jesteś tutaj",
+        "unlocks": "Odblokowuje się tutaj",
+        "nothing_new": "Nic nowego dla ciebie"
+      }
     },
     "demo_processing_hint": "Demo meczu jest przesyłane z serwera gry. Statystyki, powtórka 2D i highlighty pojawią się po zakończeniu.",
     "demo_playback": {

@@ -10,6 +10,8 @@ import {
   Zap,
 } from "lucide-vue-next";
 import { useVetoOverride } from "~/composables/useVetoOverride";
+import MatchActions from "~/components/match/MatchActions.vue";
+import MatchAdminSteps from "~/components/match/MatchAdminSteps.vue";
 import MatchServerRebootControl from "~/components/match/MatchServerRebootControl.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
 import ServiceLogs from "~/components/ServiceLogs.vue";
@@ -241,15 +243,14 @@ function runCommand(
         />
       </div>
 
-      <!-- Split into three regions so the override toggle can sit between the
-           status and the expander without nesting a button inside a button.
-           The two expander halves shade off the shared `group` rather than
-           their own :hover, otherwise each lights up as its own patch. -->
+      <!-- Three regions: where the match is (ADMIN + steps), what to do now
+           (Veto Override and the match actions), and the console expander.
+           Clicking the first region also opens the console; the chevron is the
+           labeled control, since the steps carry their own tooltips. All three
+           shade off the shared `group` rather than their own :hover. -->
       <div class="group flex items-stretch" :class="dragging && 'select-none'">
-        <button
-          type="button"
-          class="flex items-center gap-3 min-w-0 flex-1 pl-4 pr-2 py-2 group-hover:bg-muted/40 transition-colors duration-200 ease-out text-left"
-          :aria-expanded="open"
+        <div
+          class="flex items-center gap-3 min-w-0 flex-1 cursor-pointer pl-4 pr-2 py-2 group-hover:bg-muted/40 transition-colors duration-200 ease-out"
           @click="open = !open"
         >
           <div
@@ -261,26 +262,17 @@ function runCommand(
             "
           >
             <Shield class="w-3 h-3" />
-            {{ $t("match.admin") }}
+            <span class="sr-only sm:not-sr-only">{{ $t("match.admin") }}</span>
           </div>
 
-          <span
-            v-if="canSendRCONCommands"
-            class="truncate font-mono text-[0.65rem] tracking-[0.18em] uppercase text-muted-foreground"
-          >
-            {{
-              match.is_server_online
-                ? $t("common.connected")
-                : $t("common.disconnected")
-            }}
-          </span>
-        </button>
+          <MatchAdminSteps :match="match" />
+        </div>
 
         <div
-          v-if="isVetoing"
-          class="flex shrink-0 items-center px-2 group-hover:bg-muted/40 transition-colors duration-200 ease-out"
+          class="flex shrink-0 items-center gap-2 px-2 group-hover:bg-muted/40 transition-colors duration-200 ease-out empty:hidden"
         >
           <button
+            v-if="isVetoing"
             type="button"
             class="inline-flex items-center gap-2 whitespace-nowrap rounded-md border px-2.5 py-1 font-mono text-[0.62rem] font-bold uppercase tracking-[0.18em] transition-colors duration-200 ease-out"
             :class="
@@ -294,17 +286,17 @@ function runCommand(
             <Zap class="h-3 w-3 shrink-0" />
             {{ $t("match.admin_bar.veto_override") }}
           </button>
+
+          <MatchActions :match="match" dock />
         </div>
 
         <button
           type="button"
           class="flex shrink-0 items-center gap-1.5 pl-2 pr-4 py-2 text-xs text-muted-foreground group-hover:bg-muted/40 transition-colors duration-200 ease-out"
           :aria-expanded="open"
+          :aria-label="open ? $t('common.close') : $t('common.more')"
           @click="open = !open"
         >
-          <span class="hidden sm:inline">{{
-            open ? $t("common.close") : $t("common.more")
-          }}</span>
           <ChevronUp
             class="w-4 h-4 transition-transform duration-300 ease-out"
             :class="open ? 'rotate-180' : 'rotate-0'"

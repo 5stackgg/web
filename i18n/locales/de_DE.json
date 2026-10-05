@@ -8508,6 +8508,7 @@
     },
     "winner": {
       "set": "Match-Sieger festlegen",
+      "set_hint": "Wähle das Team, das dieses Match gewonnen hat.",
       "set_failed": "Match-Sieger konnte nicht festgelegt werden",
       "select_lineup": "Lineup wählen"
     },
@@ -8583,6 +8584,7 @@
       "resume": "Match fortsetzen",
       "match_paused": "Match pausiert",
       "match_resumed": "Match fortgesetzt",
+      "forced_ready": "Spieler zwangsweise bereit gesetzt",
       "start_live": "Live-Stream starten",
       "pause_highlights_and_start_live": "Highlights pausieren & Live-Stream starten",
       "start_live_preempt_highlights_hint": "Highlights pausieren nach dem aktuellen · Live startet, sobald die GPU frei ist",
@@ -8618,6 +8620,9 @@
     "delete_confirm": {
       "title": "Match löschen",
       "description": "Willst du dieses Match wirklich löschen? Das lässt sich nicht rückgängig machen."
+    },
+    "cancel_confirm": {
+      "description": "Möchtest du dieses Match wirklich abbrechen?"
     },
     "lineup": {
       "lineup_1": "Lineup 1",
@@ -8874,6 +8879,7 @@
       "dedicated": "Dedicated Server",
       "on_demand": "On Demand",
       "assigned": "Zugewiesener Match-Server",
+      "assign_hint": "Wähle den Server, auf dem dieses Match laufen soll.",
       "reboot_label": "Server-Neustart",
       "reboot": "Server neu starten",
       "rebooting": "Startet neu...",
@@ -9045,7 +9051,28 @@
     "admin_bar": {
       "rcon_unavailable": "RCON nicht verfügbar",
       "not_controllable": "Match ist in keinem steuerbaren Status.",
-      "veto_override": "Veto überschreiben"
+      "veto_override": "Veto überschreiben",
+      "actions": "Weitere Aktionen",
+      "coming_up": "Demnächst",
+      "server": "Server",
+      "winner": "Sieger",
+      "not_set": "Nicht festgelegt",
+      "dedicated": "Dediziert",
+      "current": "Aktuell",
+      "steps": {
+        "label": "Match-Schritte",
+        "check_in": "Check-in",
+        "veto": "Veto",
+        "warmup": "Aufwärmen",
+        "live": "Live",
+        "paused": "Pausiert",
+        "finished": "Beendet",
+        "canceled": "Abgebrochen",
+        "done": "Erledigt",
+        "now": "Du bist hier",
+        "unlocks": "Wird hier freigeschaltet",
+        "nothing_new": "Hier kommt für dich nichts Neues"
+      }
     },
     "demo_processing_hint": "Die Match-Demo wird vom Gameserver hochgeladen. Statistiken, das 2D-Replay und Highlights folgen, sobald das abgeschlossen ist.",
     "demo_playback": {

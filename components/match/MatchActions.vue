@@ -1,20 +1,20 @@
 <script setup lang="ts">
 import {
+  CheckCheck,
   LifeBuoy,
   MoreVertical,
   Pause,
   Play,
-  Radio,
-  RefreshCw,
-  Scissors,
-  Square,
+  SlidersHorizontal,
   Trash2,
+  Trophy,
   XCircle,
 } from "lucide-vue-next";
 import MatchCameraStatus from "~/components/match/MatchCameraStatus.vue";
 import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
 import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
 import DropdownMenuItem from "~/components/ui/dropdown-menu/DropdownMenuItem.vue";
+import DropdownMenuLabel from "~/components/ui/dropdown-menu/DropdownMenuLabel.vue";
 import {
   DropdownMenuSub,
   DropdownMenuSubContent,
@@ -30,11 +30,25 @@ import {
   e_match_map_status_enum,
   e_player_roles_enum,
 } from "~/generated/zeus";
+
+// Dock controls share the admin bar's chip shape so the strip stays one short
+// row; the tone says what the button does.
+const dockChip =
+  "inline-flex items-center gap-2 whitespace-nowrap rounded-md border px-2.5 py-1 font-mono text-[0.62rem] font-bold uppercase tracking-[0.18em] transition-colors duration-200 ease-out disabled:pointer-events-none disabled:opacity-50";
+const dockPrimary = `${dockChip} border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.2)]`;
+const dockDanger = `${dockChip} border-[hsl(var(--destructive)/0.45)] text-destructive hover:bg-[hsl(var(--destructive)/0.12)]`;
+const dockNeutral = `${dockChip} border-border bg-background/60 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.4)] hover:text-foreground data-[state=open]:border-[hsl(var(--tac-amber)/0.4)] data-[state=open]:text-foreground`;
+
+const menuLabel =
+  "px-2 pb-1 pt-1.5 font-mono text-[0.58rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground";
 </script>
 
 <template>
-  <div class="flex gap-2 items-center" v-if="canAct || canWatchCameras">
-    <MatchCameraStatus v-if="canWatchCameras" :match-id="match.id" />
+  <div
+    class="flex gap-2 items-center"
+    v-if="dock ? hasDockItems : canAct || canWatchCameras"
+  >
+    <MatchCameraStatus v-if="canWatchCameras && !dock" :match-id="match.id" />
 
     <!-- The pause control appears when a map goes live; its column animates
          0fr -> 1fr so the kebab slides over instead of jumping. Both labels
@@ -46,7 +60,7 @@ import {
       leave-active-class="pause-reveal"
       leave-to-class="pause-reveal-collapsed"
     >
-      <div v-if="canPauseResume" class="grid min-w-0 grid-cols-[1fr]">
+      <div v-if="canPauseResume && !dock" class="grid min-w-0 grid-cols-[1fr]">
         <div class="min-w-0 overflow-hidden">
           <Button
             size="sm"
@@ -82,15 +96,91 @@ import {
       </div>
     </Transition>
 
-    <DropdownMenu>
+    <!-- Admin dock: the current step's main action, then Cancel and Delete out
+         front. The veto step's main action, Veto Override, lives in the bar. -->
+    <template v-if="dock">
+      <button
+        v-if="primaryAction === 'start'"
+        type="button"
+        :class="dockPrimary"
+        :disabled="!hasMinimumLineupPlayers"
+        @click="startMatch"
+      >
+        <Play class="h-3 w-3 shrink-0" />
+        {{ startLabel }}
+      </button>
+      <button
+        v-else-if="primaryAction === 'force_ready'"
+        type="button"
+        :class="dockPrimary"
+        @click="forceReady"
+      >
+        <CheckCheck class="h-3 w-3 shrink-0" />
+        {{ $t("match.commands.force_ready") }}
+      </button>
+      <button
+        v-else-if="primaryAction === 'pause'"
+        type="button"
+        :class="dockPrimary"
+        :disabled="!match.is_server_online"
+        @click="togglePause"
+      >
+        <component :is="isPaused ? Play : Pause" class="h-3 w-3 shrink-0" />
+        {{ isPaused ? $t("match.actions.resume") : $t("match.actions.pause") }}
+      </button>
+      <button
+        v-else-if="primaryAction === 'winner'"
+        type="button"
+        :class="dockPrimary"
+        @click="openWinnerDialog"
+      >
+        <Trophy class="h-3 w-3 shrink-0" />
+        {{ $t("match.winner.set") }}
+      </button>
+
+      <button
+        v-if="match.can_cancel"
+        type="button"
+        :class="dockDanger"
+        @click="confirmCancel"
+      >
+        <XCircle class="h-3 w-3 shrink-0" />
+        <span class="sr-only sm:not-sr-only">
+          {{ $t("match.actions.cancel") }}
+        </span>
+      </button>
+      <button
+        v-if="canDeleteMatch"
+        type="button"
+        :class="dockDanger"
+        @click="confirmDelete"
+      >
+        <Trash2 class="h-3 w-3 shrink-0" />
+        <span class="sr-only sm:not-sr-only">
+          {{ $t("match.actions.delete") }}
+        </span>
+      </button>
+    </template>
+
+    <DropdownMenu v-if="!dock || hasMoreItems">
       <DropdownMenuTrigger as-child>
-        <Button size="icon" variant="outline">
+        <button v-if="dock" type="button" :class="dockNeutral">
+          <SlidersHorizontal class="h-3 w-3 shrink-0" />
+          <span class="sr-only sm:not-sr-only">
+            {{ $t("match.admin_bar.actions") }}
+          </span>
+        </button>
+        <Button v-else size="icon" variant="outline">
           <MoreVertical class="h-3.5 w-3.5" />
           <span class="sr-only">{{ $t("common.more") }}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <template v-if="match.is_in_lineup">
+      <DropdownMenuContent
+        align="end"
+        :side="dock ? 'top' : 'bottom'"
+        :class="dock && 'min-w-60'"
+      >
+        <template v-if="match.is_in_lineup && !dock">
           <DropdownMenuItem
             class="text-destructive"
             @click="callForOrganizer"
@@ -104,16 +194,30 @@ import {
           />
         </template>
 
-        <DropdownMenuItem v-if="match.can_assign_server">
-          <MatchSelectServer :match="match"></MatchSelectServer>
+        <!-- Settings read as label + current value, so the menu shows what the
+             match is set to before anyone opens a dialog. -->
+        <DropdownMenuItem
+          v-if="match.can_assign_server"
+          @click="openServerDialog"
+        >
+          {{ $t("match.admin_bar.server") }}
+          <span class="ml-auto pl-6 text-xs text-muted-foreground">
+            {{ serverLabel }}
+          </span>
         </DropdownMenuItem>
 
-        <DropdownMenuItem v-if="canSetMatchWinner">
-          <MatchSelectWinner :match="match"></MatchSelectWinner>
+        <DropdownMenuItem
+          v-if="canSetMatchWinner && primaryAction !== 'winner'"
+          @click="openWinnerDialog"
+        >
+          {{ $t("match.admin_bar.winner") }}
+          <span class="ml-auto pl-6 text-xs text-muted-foreground">
+            {{ winnerLabel }}
+          </span>
         </DropdownMenuItem>
 
         <template v-if="match.is_organizer && hasOrganizerLiveActions">
-          <DropdownMenuSeparator />
+          <DropdownMenuSeparator class="first:hidden" />
           <!-- "Start" only shows when there's nothing running. Once
                a Job exists (booting OR live), the only remaining
                action is to stop it — booting needs to be cancellable
@@ -127,14 +231,12 @@ import {
             :disabled="switching || !match.is_server_online"
             @click="switchHere"
           >
-            <Radio class="text-muted-foreground" />
             <span>{{ $t("match.actions.switch_stream_here") }}</span>
           </DropdownMenuItem>
           <DropdownMenuSub v-else-if="gameStreamerStatus === 'off'">
             <Tooltip v-if="liveStartDisabledReason">
               <TooltipTrigger as-child>
                 <DropdownMenuSubTrigger disabled>
-                  <Radio class="text-muted-foreground" />
                   <span>{{ $t("match.actions.start_live") }}</span>
                 </DropdownMenuSubTrigger>
               </TooltipTrigger>
@@ -143,7 +245,6 @@ import {
               </TooltipContent>
             </Tooltip>
             <DropdownMenuSubTrigger v-else>
-              <Radio class="text-muted-foreground" />
               <span>{{
                 canPreemptHighlights
                   ? $t("match.actions.pause_highlights_and_start_live")
@@ -192,7 +293,6 @@ import {
             class="text-destructive"
             @click="stopLive"
           >
-            <Square />
             <template v-if="gameStreamerStatus === 'pending'">
               <div class="flex flex-col items-start leading-tight">
                 <span>{{ $t("match.actions.cancel_live_pending") }}</span>
@@ -224,7 +324,6 @@ import {
           <Tooltip v-if="canCreateClips && !hasRegisteredGpu">
             <TooltipTrigger as-child>
               <DropdownMenuItem disabled>
-                <Scissors />
                 {{ $t("match.actions.create_clips") }}
               </DropdownMenuItem>
             </TooltipTrigger>
@@ -236,13 +335,11 @@ import {
             v-else-if="canCreateClips"
             @click="createClipsForMatch"
           >
-            <Scissors />
             {{ $t("match.actions.create_clips") }}
           </DropdownMenuItem>
           <Tooltip v-if="hasPausedRenders && resumeRendersBlockedReason">
             <TooltipTrigger as-child>
               <DropdownMenuItem disabled>
-                <Play />
                 <div class="flex flex-col items-start leading-tight">
                   <span>{{ $t("match.actions.resume_renders") }}</span>
                   <span class="text-xs text-muted-foreground mt-0.5">
@@ -256,7 +353,6 @@ import {
             </TooltipContent>
           </Tooltip>
           <DropdownMenuItem v-else-if="hasPausedRenders" @click="resumeRenders">
-            <Play />
             <div class="flex flex-col items-start leading-tight">
               <span>{{ $t("match.actions.resume_renders") }}</span>
               <span class="text-xs text-muted-foreground mt-0.5">
@@ -268,7 +364,6 @@ import {
             v-else-if="hasInFlightRenders"
             @click="pauseRenders"
           >
-            <Pause />
             <div class="flex flex-col items-start leading-tight">
               <span>{{ $t("match.actions.pause_renders") }}</span>
               <span class="text-xs text-muted-foreground mt-0.5">
@@ -276,82 +371,109 @@ import {
               </span>
             </div>
           </DropdownMenuItem>
+          <DropdownMenuItem v-if="canReparseDemos" @click="reparseAllDemos">
+            {{ $t("match.actions.reparse_demos") }}
+          </DropdownMenuItem>
         </template>
 
         <DropdownMenuSeparator
           v-if="
-            match.can_start ||
-            match.can_cancel ||
-            canDeleteMatch ||
-            canReparseDemos
+            showForceReadyItem ||
+            showStartItem ||
+            (!dock && (match.can_cancel || canDeleteMatch))
           "
+          class="first:hidden"
         />
 
-        <DropdownMenuItem v-if="canReparseDemos" @click="reparseAllDemos">
-          <RefreshCw />
-          {{ $t("match.actions.reparse_demos") }}
+        <DropdownMenuItem v-if="showForceReadyItem" @click="forceReady">
+          <CheckCheck />
+          {{ $t("match.commands.force_ready") }}
         </DropdownMenuItem>
 
-        <template v-if="match.can_start">
+        <template v-if="showStartItem">
           <DropdownMenuItem
             @click.prevent.stop="startMatch"
             class="text-destructive"
             :disabled="!hasMinimumLineupPlayers"
           >
             <Play />
-            <template
-              v-if="
-                match.options.map_veto &&
-                match.options.best_of != match.match_maps.length
-              "
-            >
-              {{ $t("match.actions.start_veto") }}
-            </template>
-            <template v-else> {{ $t("match.actions.skip_checkin") }} </template>
+            {{ startLabel }}
           </DropdownMenuItem>
         </template>
 
-        <template v-if="match.can_cancel">
-          <DropdownMenuItem class="text-destructive" @click="cancelMatch">
+        <template v-if="!dock && match.can_cancel">
+          <DropdownMenuItem class="text-destructive" @click="confirmCancel">
             <XCircle />
             {{ $t("match.actions.cancel") }}
           </DropdownMenuItem>
         </template>
 
-        <template v-if="canDeleteMatch">
-          <DropdownMenuItem
-            class="text-destructive"
-            @click="showDeleteDialog = true"
-          >
+        <template v-if="!dock && canDeleteMatch">
+          <DropdownMenuItem class="text-destructive" @click="confirmDelete">
             <Trash2 />
             {{ $t("match.actions.delete") }}
+          </DropdownMenuItem>
+        </template>
+
+        <!-- What unlocks at later steps, limited to what this role can ever
+             use, so nothing shows up out of nowhere. -->
+        <template v-if="dock && upcoming.length">
+          <DropdownMenuSeparator class="first:hidden" />
+          <DropdownMenuLabel :class="menuLabel">
+            {{ $t("match.admin_bar.coming_up") }}
+          </DropdownMenuLabel>
+          <DropdownMenuItem
+            v-for="action of upcoming"
+            :key="action.key"
+            disabled
+          >
+            {{ $t(action.label) }}
+            <span
+              class="ml-auto rounded-sm border border-dashed border-border px-1.5 py-0.5 font-mono text-[0.55rem] uppercase tracking-[0.12em]"
+            >
+              {{ $t(`match.admin_bar.steps.${action.step}`) }}
+            </span>
           </DropdownMenuItem>
         </template>
       </DropdownMenuContent>
     </DropdownMenu>
 
-    <AlertDialog :open="showDeleteDialog">
+    <!-- One confirm for every consequential item. It lives outside the menu so
+         it survives the menu closing as the dialog takes focus. -->
+    <AlertDialog
+      :open="confirmOpen"
+      @update:open="(open) => !open && !confirmBusy && (confirmOpen = false)"
+    >
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{{
-            $t("match.delete_confirm.title")
-          }}</AlertDialogTitle>
+          <AlertDialogTitle>{{ confirming?.title }}</AlertDialogTitle>
           <AlertDialogDescription>
-            {{ $t("match.delete_confirm.description") }}
+            {{ confirming?.description }}
           </AlertDialogDescription>
         </AlertDialogHeader>
+        <MatchSelectServer
+          v-if="confirming?.picker === 'server'"
+          :match="match"
+          @select="(choice) => (confirmChoice = choice)"
+        />
+        <MatchSelectWinner
+          v-else-if="confirming?.picker === 'winner'"
+          :match="match"
+          @select="(choice) => (confirmChoice = choice)"
+        />
         <AlertDialogFooter>
-          <AlertDialogCancel @click="showDeleteDialog = false">
+          <AlertDialogCancel :disabled="confirmBusy">
             {{ $t("common.cancel") }}
           </AlertDialogCancel>
-          <AlertDialogAction
-            @click="
-              deleteMatch();
-              showDeleteDialog = false;
-            "
+          <!-- Plain button: AlertDialogAction closes the dialog before an
+               async click handler gets to run. -->
+          <Button
+            :variant="confirming?.destructive ? 'destructive' : 'default'"
+            :disabled="confirmBusy || (!!confirming?.picker && !confirmChoice)"
+            @click="runConfirm"
           >
-            {{ $t("common.delete") }}
-          </AlertDialogAction>
+            {{ confirming?.action }}
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
@@ -386,9 +508,26 @@ import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { canWatchMatchCameras } from "~/composables/useMatchCameraStatus";
 import {
   RconAction,
+  matchCommandsForStatus,
   resolveRconCommand,
   effectivePluginRuntime,
 } from "~/constants/rconCommands";
+import {
+  currentMatchAdminStep,
+  upcomingAdminActions,
+} from "~/utilities/matchAdminSteps";
+type MatchActionChoice = { value: string; label: string };
+
+type MatchActionConfirm = {
+  title: string;
+  description: string;
+  action: string;
+  destructive?: boolean;
+  // Server and winner dialogs carry their picker; the action waits for a pick.
+  picker?: "server" | "winner";
+  run: (choice: MatchActionChoice | null) => Promise<void>;
+};
+
 export default {
   inject: {
     refetchMatchStatic: {
@@ -400,11 +539,22 @@ export default {
       type: Object,
       required: true,
     },
+    // The admin dock's copy: organizer items only, behind a labeled chip that
+    // opens upward. The camera chip, pause button and support call stay in
+    // the header.
+    dock: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
-      showDeleteDialog: false,
+      confirmOpen: false,
+      confirmBusy: false,
+      confirming: null as MatchActionConfirm | null,
+      confirmChoice: null as MatchActionChoice | null,
       rconUuid: undefined as string | undefined,
+      rconSuccessTitle: "",
       switching: false,
       renderSummary: [] as Array<{
         match_map_id: string;
@@ -438,6 +588,127 @@ export default {
     },
   },
   methods: {
+    ask(confirming: MatchActionConfirm) {
+      this.confirming = confirming;
+      this.confirmChoice = null;
+      this.confirmOpen = true;
+    },
+    async runConfirm() {
+      if (this.confirmBusy || !this.confirming) {
+        return;
+      }
+      this.confirmBusy = true;
+      try {
+        await this.confirming.run(this.confirmChoice);
+        this.confirmOpen = false;
+      } finally {
+        this.confirmBusy = false;
+      }
+    },
+    confirmCancel() {
+      this.ask({
+        title: this.$t("match.actions.cancel"),
+        description: this.$t("match.cancel_confirm.description"),
+        action: this.$t("match.actions.cancel"),
+        destructive: true,
+        run: this.cancelMatch,
+      });
+    },
+    confirmDelete() {
+      this.ask({
+        title: this.$t("match.delete_confirm.title"),
+        description: this.$t("match.delete_confirm.description"),
+        action: this.$t("common.delete"),
+        destructive: true,
+        run: this.deleteMatch,
+      });
+    },
+    openServerDialog() {
+      this.ask({
+        title: this.$t("match.server.assign"),
+        description: this.$t("match.server.assign_hint"),
+        action: this.$t("match.server.assign"),
+        picker: "server",
+        run: async (choice) => {
+          if (choice) {
+            await this.assignServer(choice.value);
+          }
+        },
+      });
+    },
+    openWinnerDialog() {
+      this.ask({
+        title: this.$t("match.winner.set"),
+        description: this.$t("match.winner.set_hint"),
+        action: this.$t("match.winner.set"),
+        picker: "winner",
+        run: async (choice) => {
+          if (choice) {
+            await this.setWinner(choice.value);
+          }
+        },
+      });
+    },
+    // "0:<region>" is an on-demand server in that region; anything else is a
+    // dedicated server id.
+    async assignServer(value: string) {
+      const [serverId, region] = value.split(":");
+
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          update_matches_by_pk: [
+            {
+              pk_columns: {
+                id: this.match.id,
+              },
+              _set: {
+                region,
+                server_id: serverId === "0" ? null : value,
+              },
+            },
+            {
+              id: true,
+            },
+          ],
+        }),
+      });
+
+      toast({
+        title: this.$t("match.server.assigned"),
+      });
+    },
+    // Goes through setMatchWinner rather than writing winning_lineup_id
+    // directly: the action is what enforces organizer permission and blocks a
+    // reassignment once a downstream tournament match has already been
+    // played. A direct mutation skips both.
+    async setWinner(lineupId: string) {
+      try {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            setMatchWinner: [
+              {
+                match_id: this.match.id,
+                winning_lineup_id: lineupId,
+              },
+              {
+                success: true,
+              },
+            ],
+          }),
+        });
+      } catch (error) {
+        toast({
+          title: this.$t("match.winner.set_failed"),
+          description: (error as Error)?.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: this.$t("match.winner.set"),
+      });
+    },
     async cancelMatch() {
       if (this.cancellingMatch) {
         return;
@@ -720,28 +991,37 @@ export default {
           title: this.$t("common.error"),
         });
       } else {
-        toast({
-          title: this.isPaused
-            ? this.$t("match.actions.match_resumed")
-            : this.$t("match.actions.match_paused"),
-        });
+        toast({ title: this.rconSuccessTitle });
       }
     },
-    togglePause() {
+    // The success title is fixed at send time: by the time the reply lands,
+    // the map status may already have flipped.
+    sendRcon(action: RconAction, successTitle: string) {
       const pluginRuntime = effectivePluginRuntime(
         this.match.server_plugin_runtime,
         useApplicationSettingsStore().gameServerPluginRuntime,
       );
-      const command = resolveRconCommand(
-        this.isPaused ? RconAction.Resume : RconAction.Pause,
-        pluginRuntime,
-      );
       this.rconUuid = uuidv4();
+      this.rconSuccessTitle = successTitle;
       socket.event("rcon", {
         uuid: this.rconUuid,
         serverId: this.match.server_id,
-        command,
+        command: resolveRconCommand(action, pluginRuntime),
       });
+    },
+    togglePause() {
+      this.sendRcon(
+        this.isPaused ? RconAction.Resume : RconAction.Pause,
+        this.isPaused
+          ? this.$t("match.actions.match_resumed")
+          : this.$t("match.actions.match_paused"),
+      );
+    },
+    forceReady() {
+      this.sendRcon(
+        RconAction.ForceReady,
+        this.$t("match.actions.forced_ready"),
+      );
     },
     async callForOrganizer() {
       await this.$apollo.mutate({
@@ -782,6 +1062,79 @@ export default {
     },
     hasOrganizerLiveActions() {
       return this.isLive || this.hasMatchDemos;
+    },
+    // The dock's one main button for the current step. The veto step's,
+    // Veto Override, is rendered by the admin bar itself.
+    primaryAction() {
+      if (!this.dock) {
+        return null;
+      }
+      switch (currentMatchAdminStep(this.match)) {
+        case "check_in":
+          return this.match.can_start ? "start" : null;
+        case "warmup":
+          return this.canForceReady ? "force_ready" : null;
+        case "live":
+          return this.canPauseResume ? "pause" : null;
+        case "finished":
+          return this.canSetMatchWinner ? "winner" : null;
+      }
+      return null;
+    },
+    serverLabel() {
+      if (this.match.server_id && this.match.server_type !== "On Demand") {
+        return this.$t("match.admin_bar.dedicated");
+      }
+      return (
+        this.match.e_region?.description ||
+        this.match.region ||
+        this.$t("match.admin_bar.not_set")
+      );
+    },
+    winnerLabel() {
+      const winner = [this.match.lineup_1, this.match.lineup_2].find(
+        (lineup) => lineup?.id && lineup.id === this.match.winning_lineup_id,
+      );
+      return winner?.name ?? this.$t("match.admin_bar.not_set");
+    },
+    startLabel() {
+      return this.match.options?.map_veto &&
+        this.match.options.best_of != this.match.match_maps?.length
+        ? this.$t("match.actions.start_veto")
+        : this.$t("match.actions.skip_checkin");
+    },
+    showStartItem() {
+      return this.match.can_start && this.primaryAction !== "start";
+    },
+    showForceReadyItem() {
+      return this.canForceReady && this.primaryAction !== "force_ready";
+    },
+    upcoming() {
+      return this.dock
+        ? upcomingAdminActions(this.match, (role) =>
+            useAuthStore().isRoleAbove(role),
+          )
+        : [];
+    },
+    // Everything the dock's More actions menu would list.
+    hasMoreItems() {
+      return (
+        this.match.can_assign_server ||
+        (this.canSetMatchWinner && this.primaryAction !== "winner") ||
+        (this.match.is_organizer && this.hasOrganizerLiveActions) ||
+        this.canReparseDemos ||
+        this.showForceReadyItem ||
+        this.showStartItem ||
+        this.upcoming.length > 0
+      );
+    },
+    hasDockItems() {
+      return (
+        !!this.primaryAction ||
+        this.match.can_cancel ||
+        this.canDeleteMatch ||
+        this.hasMoreItems
+      );
     },
     activeStreamElsewhere() {
       const streams = useStreamerStore().liveStreams ?? [];
@@ -929,6 +1282,19 @@ export default {
     },
     isPaused() {
       return this.currentMap?.status === e_match_map_status_enum.Paused;
+    },
+    // Same rule as the console's Force Ready, narrowed to when it can act: the
+    // current map is warming up on a live, reachable server.
+    canForceReady() {
+      return (
+        this.match.is_organizer &&
+        this.isLive &&
+        !!this.match.is_server_online &&
+        useAuthStore().isRoleAbove(e_player_roles_enum.moderator) &&
+        matchCommandsForStatus(this.currentMap?.status).some(
+          (command) => command.action === RconAction.ForceReady,
+        )
+      );
     },
     canPauseResume() {
       if (!this.match.is_organizer) {

@@ -8508,6 +8508,7 @@
     },
     "winner": {
       "set": "Maç Kazananını Belirle",
+      "set_hint": "Bu maçı kazanan takımı seç.",
       "set_failed": "Maçın galibi belirlenemedi",
       "select_lineup": "Diziliş Seç"
     },
@@ -8583,6 +8584,7 @@
       "resume": "Maçı Devam Ettir",
       "match_paused": "Maç duraklatıldı",
       "match_resumed": "Maç devam ettirildi",
+      "forced_ready": "Oyuncular zorla hazır yapıldı",
       "start_live": "Canlı Yayını Başlat",
       "pause_highlights_and_start_live": "Öne Çıkan Anları Duraklat ve Canlı Yayını Başlat",
       "start_live_preempt_highlights_hint": "Mevcut render bitince öne çıkan anlar duraklar · GPU boşalınca yayın başlar",
@@ -8618,6 +8620,9 @@
     "delete_confirm": {
       "title": "Maçı Sil",
       "description": "Bu maçı silmek istediğine emin misin? Bu işlem geri alınamaz."
+    },
+    "cancel_confirm": {
+      "description": "Bu maçı iptal etmek istediğinden emin misin?"
     },
     "lineup": {
       "lineup_1": "Diziliş 1",
@@ -8874,6 +8879,7 @@
       "dedicated": "Özel sunucular",
       "on_demand": "Talep üzerine",
       "assigned": "Atanan maç sunucusu",
+      "assign_hint": "Bu maçın oynanacağı sunucuyu seç.",
       "reboot_label": "Sunucu yeniden başlatma",
       "reboot": "Sunucuyu yeniden başlat",
       "rebooting": "Yeniden başlatılıyor...",
@@ -9045,7 +9051,28 @@
     "admin_bar": {
       "rcon_unavailable": "RCON kullanılamıyor",
       "not_controllable": "Maç kontrol edilebilir durumda değil.",
-      "veto_override": "Vetoyu geçersiz kıl"
+      "veto_override": "Vetoyu geçersiz kıl",
+      "actions": "Diğer işlemler",
+      "coming_up": "Sıradaki",
+      "server": "Sunucu",
+      "winner": "Kazanan",
+      "not_set": "Ayarlanmadı",
+      "dedicated": "Özel",
+      "current": "Mevcut",
+      "steps": {
+        "label": "Maç adımları",
+        "check_in": "Check-in",
+        "veto": "Veto",
+        "warmup": "Isınma",
+        "live": "Canlı",
+        "paused": "Duraklatıldı",
+        "finished": "Bitti",
+        "canceled": "İptal edildi",
+        "done": "Tamam",
+        "now": "Buradasın",
+        "unlocks": "Burada açılır",
+        "nothing_new": "Burada senin için yeni bir şey yok"
+      }
     },
     "demo_processing_hint": "Maç demosu oyun sunucusundan yükleniyor. İstatistikler, 2B tekrar ve öne çıkanlar tamamlandığında gelir.",
     "demo_playback": {

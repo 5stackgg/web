@@ -8508,6 +8508,7 @@
     },
     "winner": {
       "set": "Imposta vincitore del match",
+      "set_hint": "Scegli la squadra che ha vinto questo match.",
       "set_failed": "Impossibile impostare il vincitore della partita",
       "select_lineup": "Seleziona lineup"
     },
@@ -8583,6 +8584,7 @@
       "resume": "Riprendi il match",
       "match_paused": "Match in pausa",
       "match_resumed": "Match ripreso",
+      "forced_ready": "Giocatori forzati pronti",
       "start_live": "Avvia live stream",
       "pause_highlights_and_start_live": "Metti in pausa gli highlight e avvia il live stream",
       "start_live_preempt_highlights_hint": "Gli highlight si mettono in pausa dopo quello in corso · il live parte quando la GPU si libera",
@@ -8618,6 +8620,9 @@
     "delete_confirm": {
       "title": "Elimina match",
       "description": "Eliminare questo match? L'operazione è irreversibile."
+    },
+    "cancel_confirm": {
+      "description": "Vuoi davvero annullare questo match?"
     },
     "lineup": {
       "lineup_1": "Lineup 1",
@@ -8874,6 +8879,7 @@
       "dedicated": "Server dedicati",
       "on_demand": "On demand",
       "assigned": "Server match assegnato",
+      "assign_hint": "Scegli il server su cui si giocherà questo match.",
       "reboot_label": "Riavvio server",
       "reboot": "Riavvia server",
       "rebooting": "Riavvio in corso…",
@@ -9045,7 +9051,28 @@
     "admin_bar": {
       "rcon_unavailable": "RCON non disponibile",
       "not_controllable": "Il match non è in uno stato controllabile.",
-      "veto_override": "Forza il veto"
+      "veto_override": "Forza il veto",
+      "actions": "Altre azioni",
+      "coming_up": "In arrivo",
+      "server": "Server",
+      "winner": "Vincitore",
+      "not_set": "Non impostato",
+      "dedicated": "Dedicato",
+      "current": "Attuale",
+      "steps": {
+        "label": "Fasi del match",
+        "check_in": "Check-in",
+        "veto": "Veto",
+        "warmup": "Riscaldamento",
+        "live": "Live",
+        "paused": "In pausa",
+        "finished": "Terminato",
+        "canceled": "Annullato",
+        "done": "Fatto",
+        "now": "Sei qui",
+        "unlocks": "Si sblocca qui",
+        "nothing_new": "Niente di nuovo per te qui"
+      }
     },
     "demo_processing_hint": "La demo della partita è in caricamento dal server di gioco. Statistiche, replay 2D e highlight arriveranno al termine.",
     "demo_playback": {

@@ -1,57 +1,37 @@
-<script lang="ts" setup>
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "~/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
-import SettingHeader from "~/components/match/SettingHeader.vue";
-</script>
-
 <template>
-  <form class="space-y-8">
-    <FormField v-slot="{ componentField }" name="lineup_id">
-      <FormItem class="space-y-1.5">
-        <SettingHeader>{{ $t("match.winner.set") }}</SettingHeader>
-        <Select v-bind="componentField" @update:modelValue="updateMatchWinner">
-          <FormControl>
-            <SelectTrigger>
-              <SelectValue :placeholder="$t('match.winner.select_lineup')" />
-            </SelectTrigger>
-          </FormControl>
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem
-                v-for="lineup in availableLineups"
-                :key="lineup.value"
-                :value="lineup.value"
-              >
-                {{ lineup.display }}
-              </SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-        <FormMessage />
-      </FormItem>
-    </FormField>
-  </form>
+  <!-- Two teams, so two buttons instead of a dropdown; the current winner is
+       marked so the change being made is visible. -->
+  <div
+    class="grid grid-cols-2 gap-2"
+    role="radiogroup"
+    :aria-label="$t('match.winner.set')"
+  >
+    <button
+      v-for="lineup in availableLineups"
+      :key="lineup.value"
+      type="button"
+      role="radio"
+      :aria-checked="picked === lineup.value"
+      class="flex min-w-0 items-center justify-between gap-2 rounded-md border px-3 py-2.5 text-left text-sm font-semibold transition-colors duration-200 ease-out"
+      :class="
+        picked === lineup.value
+          ? 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.12)] text-foreground'
+          : 'border-border text-muted-foreground hover:bg-muted/40 hover:text-foreground'
+      "
+      @click="pick(lineup.value)"
+    >
+      <span class="truncate">{{ lineup.display }}</span>
+      <span
+        v-if="lineup.value === match.winning_lineup_id"
+        class="shrink-0 rounded-sm border border-border px-1.5 py-0.5 font-mono text-[0.55rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground"
+      >
+        {{ $t("match.admin_bar.current") }}
+      </span>
+    </button>
+  </div>
 </template>
 
 <script lang="ts">
-import * as z from "zod";
-import { useForm } from "vee-validate";
-import { toTypedSchema } from "~/utilities/vee-validate-zod";
-import { generateMutation } from "~/graphql/graphqlGen";
-import { toast } from "@/components/ui/toast";
-
 export default {
   props: {
     match: {
@@ -59,69 +39,30 @@ export default {
       required: true,
     },
   },
+  // The parent's dialog sets the winner; this only reports the pick.
+  emits: ["select"],
   data() {
     return {
-      servers: [],
-      form: useForm({
-        validationSchema: toTypedSchema(
-          z.object({
-            lineup_id: z.string().nullable(),
-          }),
-        ),
-      }),
+      picked: null as string | null,
     };
   },
   watch: {
-    match: {
+    // Only a real winner change resets the pick; the match object itself is
+    // replaced on every live update.
+    "match.winning_lineup_id": {
       immediate: true,
-      handler() {
-        this.form.setFieldValue("lineup_id", this.match.winning_lineup_id);
+      handler(winningLineupId) {
+        this.picked = winningLineupId;
       },
     },
   },
   methods: {
-    async updateMatchWinner() {
-      // setMatchWinner takes a non-null lineup. The select only ever offers
-      // the two lineups, so this is just a guard against firing before one
-      // has been chosen.
-      if (!this.form.values.lineup_id) {
-        return;
-      }
-
-      // Goes through setMatchWinner rather than writing winning_lineup_id
-      // directly: the action is what enforces organizer permission and blocks
-      // a reassignment once a downstream tournament match has already been
-      // played. A direct mutation skips both.
-      try {
-        await this.$apollo.mutate({
-          mutation: generateMutation({
-            setMatchWinner: [
-              {
-                match_id: this.match.id,
-                winning_lineup_id: this.form.values.lineup_id,
-              },
-              {
-                success: true,
-              },
-            ],
-          }),
-        });
-      } catch (error) {
-        // Put the selector back on the winner the match actually has, so it
-        // doesn't sit showing a change that was rejected.
-        this.form.setFieldValue("lineup_id", this.match.winning_lineup_id);
-
-        toast({
-          title: this.$t("match.winner.set_failed"),
-          description: (error as Error)?.message,
-          variant: "destructive",
-        });
-        return;
-      }
-
-      toast({
-        title: this.$t("match.winner.set"),
-      });
+    pick(value: string) {
+      this.picked = value;
+      const lineup = this.availableLineups.find(
+        (lineup) => lineup.value === value,
+      );
+      this.$emit("select", { value, label: lineup?.display ?? value });
     },
   },
   computed: {

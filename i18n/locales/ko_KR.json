@@ -8508,6 +8508,7 @@
     },
     "winner": {
       "set": "매치 승자 지정",
+      "set_hint": "이 매치에서 이긴 팀을 선택하세요.",
       "set_failed": "경기 승자를 설정하지 못했습니다",
       "select_lineup": "라인업 선택"
     },
@@ -8583,6 +8584,7 @@
       "resume": "매치 재개",
       "match_paused": "매치가 일시정지되었습니다",
       "match_resumed": "매치가 재개되었습니다",
+      "forced_ready": "플레이어를 강제로 준비 완료했습니다",
       "start_live": "라이브 스트림 시작",
       "pause_highlights_and_start_live": "하이라이트 일시정지 후 라이브 스트림 시작",
       "start_live_preempt_highlights_hint": "현재 작업 후 하이라이트 일시정지 · GPU 확보 시 라이브 시작",
@@ -8618,6 +8620,9 @@
     "delete_confirm": {
       "title": "매치 삭제",
       "description": "정말 이 매치를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
+    },
+    "cancel_confirm": {
+      "description": "이 매치를 취소하시겠습니까?"
     },
     "lineup": {
       "lineup_1": "라인업 1",
@@ -8874,6 +8879,7 @@
       "dedicated": "데디케이티드 서버",
       "on_demand": "온디맨드",
       "assigned": "지정된 매치 서버",
+      "assign_hint": "이 매치를 진행할 서버를 선택하세요.",
       "reboot_label": "서버 재부팅",
       "reboot": "서버 재부팅",
       "rebooting": "재부팅 중...",
@@ -9045,7 +9051,28 @@
     "admin_bar": {
       "rcon_unavailable": "RCON 사용 불가",
       "not_controllable": "매치가 제어 가능한 상태가 아닙니다.",
-      "veto_override": "거부 재정의"
+      "veto_override": "거부 재정의",
+      "actions": "추가 작업",
+      "coming_up": "다음 단계",
+      "server": "서버",
+      "winner": "승자",
+      "not_set": "설정 안 됨",
+      "dedicated": "전용",
+      "current": "현재",
+      "steps": {
+        "label": "매치 단계",
+        "check_in": "체크인",
+        "veto": "거부",
+        "warmup": "워밍업",
+        "live": "라이브",
+        "paused": "일시 정지됨",
+        "finished": "종료",
+        "canceled": "취소됨",
+        "done": "완료",
+        "now": "현재 단계",
+        "unlocks": "여기서 열림",
+        "nothing_new": "여기서는 새로운 작업이 없습니다"
+      }
     },
     "demo_processing_hint": "경기 데모를 게임 서버에서 업로드하고 있습니다. 완료되면 통계, 2D 리플레이, 하이라이트가 표시됩니다.",
     "demo_playback": {

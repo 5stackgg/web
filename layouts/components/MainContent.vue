@@ -21,22 +21,23 @@ const { rightSidebarOpen, setRightSidebarOpen } = useRightSidebar();
 // Publish the height of the bottom dock (e.g. MatchAdminBottomBar teleports
 // into #main-bottom-dock) as a CSS variable so fixed bottom chrome — like the
 // floating SettingsSaveBar — can lift itself above it. Defaults to 0 when the
-// dock is empty / on pages without one.
+// dock is empty / on pages without one. Its left edge is the content column's
+// (past the left nav), which is where toasts line up.
 const bottomDock = ref<HTMLElement | null>(null);
 let dockRO: ResizeObserver | null = null;
 
-function publishDockHeight() {
+function publishDockBox() {
   const h = bottomDock.value?.offsetHeight ?? 0;
-  document.documentElement.style.setProperty(
-    "--main-bottom-dock-height",
-    `${h}px`,
-  );
+  const left = bottomDock.value?.getBoundingClientRect().left ?? 0;
+  const root = document.documentElement.style;
+  root.setProperty("--main-bottom-dock-height", `${h}px`);
+  root.setProperty("--main-content-left", `${left}px`);
 }
 
 onMounted(() => {
-  publishDockHeight();
+  publishDockBox();
   if (typeof ResizeObserver !== "undefined" && bottomDock.value) {
-    dockRO = new ResizeObserver(() => publishDockHeight());
+    dockRO = new ResizeObserver(() => publishDockBox());
     dockRO.observe(bottomDock.value);
   }
 });
@@ -44,6 +45,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   dockRO?.disconnect();
   document.documentElement.style.removeProperty("--main-bottom-dock-height");
+  document.documentElement.style.removeProperty("--main-content-left");
 });
 
 // Inject values from default.vue

@@ -75,11 +75,25 @@ const outcomeClass = (outcome: ClutchOutcome) => {
   <section
     class="relative border border-border bg-[hsl(var(--card)/0.2)]"
   >
-    <header class="px-4 py-3 border-b border-border">
+    <header
+      class="px-4 py-3 border-b border-border"
+      :class="
+        lineup.is_on_lineup &&
+        'shadow-[inset_2px_0_0_hsl(var(--tac-amber)/0.55)]'
+      "
+    >
       <div
         class="flex items-center justify-between gap-3 mb-2 font-mono text-[0.65rem] tracking-[0.22em] uppercase text-muted-foreground"
       >
-        <span class="truncate text-foreground/90">{{ lineup.name }}</span>
+        <span
+          class="truncate"
+          :class="
+            lineup.is_on_lineup
+              ? 'text-[hsl(var(--tac-amber))]'
+              : 'text-foreground/90'
+          "
+          >{{ lineup.name }}</span
+        >
         <span class="shrink-0">
           <AnimatedStat :value="totals.won" /> /
           <AnimatedStat :value="totals.total" />

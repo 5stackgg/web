@@ -126,6 +126,8 @@ const teams = computed(() =>
       mapsWon: maps.value.filter((m) => id && m.winning_lineup_id === id)
         .length,
       won: isEnded.value && !!id && props.match.winning_lineup_id === id,
+      // Your side gets an amber ring on its crest.
+      mine: !!lineup?.is_on_lineup,
       lost:
         isEnded.value &&
         !!props.match.winning_lineup_id &&
@@ -267,8 +269,13 @@ const resultText = computed(() =>
             :to="team.teamId ? `/teams/${team.teamId}` : undefined"
             aria-hidden="true"
             :tabindex="team.teamId ? -1 : undefined"
-            class="grid size-14 shrink-0 place-items-center overflow-hidden rounded-[10px] bg-muted text-sm font-extrabold tracking-wide text-foreground/85 shadow-[0_8px_24px_-8px_rgb(0_0_0/0.8)] ring-1 ring-inset ring-white/10"
-            :class="team.teamId && 'transition-opacity hover:opacity-80'"
+            class="grid size-14 shrink-0 place-items-center overflow-hidden rounded-[10px] bg-muted text-sm font-extrabold tracking-wide text-foreground/85 shadow-[0_8px_24px_-8px_rgb(0_0_0/0.8)]"
+            :class="[
+              team.mine
+                ? 'ring-2 ring-[hsl(var(--tac-amber))]'
+                : 'ring-1 ring-inset ring-white/10',
+              team.teamId && 'transition-opacity hover:opacity-80',
+            ]"
           >
             <img
               v-if="team.crest"
@@ -422,7 +429,12 @@ const resultText = computed(() =>
       >
         <span
           aria-hidden="true"
-          class="grid size-10 shrink-0 place-items-center overflow-hidden rounded-lg bg-muted text-xs font-extrabold tracking-wide text-foreground/85 ring-1 ring-inset ring-white/10"
+          class="grid size-10 shrink-0 place-items-center overflow-hidden rounded-lg bg-muted text-xs font-extrabold tracking-wide text-foreground/85"
+          :class="
+            team.mine
+              ? 'ring-2 ring-[hsl(var(--tac-amber))]'
+              : 'ring-1 ring-inset ring-white/10'
+          "
         >
           <img
             v-if="team.crest"

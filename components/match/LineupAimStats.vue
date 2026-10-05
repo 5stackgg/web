@@ -6,7 +6,10 @@ import AnimatedStat from "~/components/AnimatedStat.vue";
 import StatChevron from "~/components/StatChevron.vue";
 import { useTableSort } from "~/composables/useTableSort";
 import { useAimColumns } from "~/composables/useMatchTableColumns";
-import { useCurrentUserRow } from "~/composables/useCurrentUserRow";
+import {
+  teamHeadClass,
+  useCurrentUserRow,
+} from "~/composables/useCurrentUserRow";
 
 const { visibility: aimVis } = useAimColumns();
 const { rowClass, stickyCellClass } = useCurrentUserRow();
@@ -51,7 +54,8 @@ const { sortKey, sortDir, toggle, sortRows } = useTableSort<string>();
         <TableRow>
           <TableHead
             v-if="!hideMember"
-            class="w-[110px] md:w-[220px] text-left whitespace-nowrap sticky left-0 z-20 bg-card border-r border-border shadow-[3px_0_6px_-3px_hsl(0_0%_0%/0.7)] [transform:translateZ(0)]"
+            class="w-[110px] md:w-[220px] text-left whitespace-nowrap sticky left-0 z-20 bg-card border-r border-border [transform:translateZ(0)]"
+            :class="teamHeadClass(lp)"
           >
             {{ lp.name }}
           </TableHead>

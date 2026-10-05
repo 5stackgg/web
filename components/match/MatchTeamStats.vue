@@ -553,6 +553,7 @@ const sideComparison = computed(() => {
                     rounds: row.a.rounds,
                     comp: row.a.comp,
                     text: 'text-[#fbbf24]',
+                    mine: teamA?.is_on_lineup,
                   },
                   {
                     id: 'b',
@@ -562,6 +563,7 @@ const sideComparison = computed(() => {
                     rounds: row.b.rounds,
                     comp: row.b.comp,
                     text: 'text-[#38bdf8]',
+                    mine: teamB?.is_on_lineup,
                   },
                 ]"
                 :key="team.id"
@@ -571,7 +573,12 @@ const sideComparison = computed(() => {
                   class="w-20 sm:w-28 shrink-0 truncate text-xs font-semibold uppercase tracking-[0.1em]"
                   :class="team.text"
                 >
-                  {{ team.name }}
+                  <span
+                    v-if="team.mine"
+                    aria-hidden="true"
+                    class="mr-1.5 inline-block size-1.5 rounded-full bg-[hsl(var(--tac-amber))] align-middle"
+                  ></span
+                  >{{ team.name }}
                 </span>
                 <!-- One bar: fills to win rate, internally split by the buy mix
                      of the rounds the team won (counts/rounds sum to win%). -->

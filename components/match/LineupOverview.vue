@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { teamHeadClass } from "~/composables/useCurrentUserRow";
 import LineupOverviewRow from "~/components/match/LineupOverviewRow.vue";
 import SortableTableHead from "~/components/common/SortableTableHead.vue";
 import StatLabel from "~/components/common/StatLabel.vue";
@@ -154,7 +155,8 @@ import {
         <TableRow>
           <TableHead
             v-if="!hideMember"
-            class="w-[110px] md:w-[220px] text-left sticky left-0 z-20 bg-card border-r border-border shadow-[3px_0_6px_-3px_hsl(0_0%_0%/0.7)] touch-pan-y [transform:translateZ(0)]"
+            class="w-[110px] md:w-[220px] text-left sticky left-0 z-20 bg-card border-r border-border touch-pan-y [transform:translateZ(0)]"
+            :class="teamHeadClass(lp)"
           >
             <div class="flex items-center gap-1 md:gap-4">
               <div

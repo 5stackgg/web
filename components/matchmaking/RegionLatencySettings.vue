@@ -200,6 +200,7 @@ const wordClasses =
           step="5"
           :max="sliderMax"
           :value="maxLatency"
+          data-vaul-no-drag
           class="min-w-0 flex-1 cursor-pointer accent-[hsl(var(--tac-amber))]"
           @input="onLatencyInput"
         />

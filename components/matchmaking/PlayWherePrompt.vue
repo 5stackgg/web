@@ -10,18 +10,19 @@ import {
   DialogTitle,
 } from "~/components/ui/dialog";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetTitle,
-} from "~/components/ui/sheet";
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerTitle,
+} from "~/components/ui/drawer";
 import PlayWhereChoices from "~/components/matchmaking/PlayWhereChoices.vue";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import { roundedPing } from "~/components/play/matchmakingHero";
 
 // Asks a player on a LAN whether to play there or online, the first time they
 // queue or host this session. Anchored to the button that asked on desktop; a
-// bottom sheet on phones; a small dialog when nothing anchors it (a menu item).
+// swipe-down drawer on phones; a small dialog when nothing anchors it (a menu
+// item).
 const { t } = useI18n();
 const matchmaking = useMatchmakingStore();
 const isMobile = useMediaQuery("(max-width: 767px)");
@@ -99,19 +100,21 @@ function onOpenChange(open: boolean) {
     </PopoverContent>
   </Popover>
 
-  <Sheet v-else-if="isMobile" :open="!!prompt" @update:open="onOpenChange">
-    <SheetContent side="bottom" class="grid gap-3 rounded-t-xl pb-7">
-      <SheetTitle class="text-base">{{ title }}</SheetTitle>
-      <SheetDescription class="sr-only">{{ title }}</SheetDescription>
-      <PlayWhereChoices
-        v-if="prompt"
-        :kind="prompt.kind"
-        :lan-ping="lanPing"
-        :online-summary="onlineSummary"
-        @choose="choose"
-      />
-    </SheetContent>
-  </Sheet>
+  <Drawer v-else-if="isMobile" :open="!!prompt" @update:open="onOpenChange">
+    <DrawerContent>
+      <div class="grid gap-3 px-4 pb-7 pt-4">
+        <DrawerTitle class="text-base">{{ title }}</DrawerTitle>
+        <DrawerDescription class="sr-only">{{ title }}</DrawerDescription>
+        <PlayWhereChoices
+          v-if="prompt"
+          :kind="prompt.kind"
+          :lan-ping="lanPing"
+          :online-summary="onlineSummary"
+          @choose="choose"
+        />
+      </div>
+    </DrawerContent>
+  </Drawer>
 
   <Dialog v-else :open="!!prompt" @update:open="onOpenChange">
     <DialogContent class="grid max-w-sm gap-3">

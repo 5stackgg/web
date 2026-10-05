@@ -45,6 +45,9 @@ async function mountAs(role: string, servers: any[]) {
   });
   mounted = wrapper;
   await flushPromises();
+  // The first-load skeleton is held for its minimum (useDeferredLoading).
+  await new Promise((resolve) => setTimeout(resolve, 350));
+  await flushPromises();
   return wrapper;
 }
 

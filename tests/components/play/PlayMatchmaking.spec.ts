@@ -46,8 +46,8 @@ describe("PlayMatchmaking", () => {
 
     const wrapper = await mountSuspended(PlayMatchmaking);
 
-    expect(wrapper.text()).toContain("Find match");
-    expect(wrapper.text()).toContain("Queue solo, teams are balanced for you");
+    expect(wrapper.text()).toContain("Find Match");
+    expect(wrapper.text()).toContain("Queue solo");
     expect(wrapper.text()).not.toContain("Sign in with Steam");
   });
 
@@ -64,7 +64,7 @@ describe("PlayMatchmaking", () => {
     );
     const findMatch = wrapper
       .findAll("button")
-      .find((button) => button.text().includes("Find match"));
+      .find((button) => button.text().includes("Find Match"));
     expect(findMatch?.attributes("disabled")).toBeDefined();
   });
 

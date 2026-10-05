@@ -9,6 +9,7 @@ mockNuxtImport("useNotificationStore", () => () => ({
   draft_invites: [],
   notifications: [],
   scheduleTasks: [],
+  rosterNeeds: [],
   stackedNotifications: [],
   unreadNewsArticle: null,
 }));

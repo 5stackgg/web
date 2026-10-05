@@ -6,16 +6,16 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetTitle,
-} from "~/components/ui/sheet";
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerTitle,
+} from "~/components/ui/drawer";
 import MatchmakingSettings from "~/components/matchmaking/MatchmakingSettings.vue";
 
 // Every way into the matchmaking settings (the top-bar globe, the /play gear)
-// opens this: the same sections everywhere, a popover on desktop and a bottom
-// sheet on phones, where a popover this tall flips up and clips.
+// opens this: the same sections everywhere, a popover on desktop and a
+// swipe-down drawer on phones, where a popover this tall flips up and clips.
 withDefaults(defineProps<{ align?: "start" | "center" | "end" }>(), {
   align: "start",
 });
@@ -44,23 +44,22 @@ const isPhone = useMediaQuery("(max-width: 767px)");
     </PopoverContent>
   </Popover>
 
-  <Sheet
+  <Drawer
     :open="open && isPhone"
     @update:open="(value: boolean) => (open = value)"
   >
-    <SheetContent
-      side="bottom"
-      class="max-h-[85dvh] overflow-y-auto rounded-t-xl pb-8"
-    >
-      <SheetTitle class="mb-4 text-base">{{
-        $t("pages.play.matchmaking.settings")
-      }}</SheetTitle>
-      <SheetDescription class="sr-only">{{
-        $t("pages.play.matchmaking.settings")
-      }}</SheetDescription>
-      <MatchmakingSettings>
-        <slot name="extra" />
-      </MatchmakingSettings>
-    </SheetContent>
-  </Sheet>
+    <DrawerContent class="max-h-[85dvh]">
+      <div class="overflow-y-auto px-4 pb-8 pt-4">
+        <DrawerTitle class="mb-4 text-base">{{
+          $t("pages.play.matchmaking.settings")
+        }}</DrawerTitle>
+        <DrawerDescription class="sr-only">{{
+          $t("pages.play.matchmaking.settings")
+        }}</DrawerDescription>
+        <MatchmakingSettings>
+          <slot name="extra" />
+        </MatchmakingSettings>
+      </div>
+    </DrawerContent>
+  </Drawer>
 </template>

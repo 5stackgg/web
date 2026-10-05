@@ -42,7 +42,9 @@ function close(value: boolean) {
 
 <template>
   <Dialog :open="dialogOpen" @update:open="close">
-    <DialogContent class="sm:max-w-[640px]">
+    <DialogContent
+      class="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-[640px]"
+    >
       <DialogHeader>
         <div class="flex items-start justify-between gap-3 pr-6">
           <DialogTitle class="flex items-center gap-2">
@@ -79,7 +81,7 @@ function close(value: boolean) {
         </DialogDescription>
       </DialogHeader>
 
-      <div class="space-y-4">
+      <div class="min-w-0 space-y-4">
         <StorageBreakdown />
 
         <div

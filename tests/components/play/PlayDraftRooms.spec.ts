@@ -71,7 +71,7 @@ describe("PlayDraftRooms", () => {
     signIn();
     const { wrapper } = await mountRooms([]);
     expect(wrapper.text()).toContain("No open draft rooms right now.");
-    expect(button(wrapper, "Open 5v5 room")).toBeDefined();
+    expect(button(wrapper, "Open 5v5 Room")).toBeDefined();
     // No filters for an empty list.
     expect(wrapper.text()).not.toContain("Filters");
   });
@@ -82,7 +82,7 @@ describe("PlayDraftRooms", () => {
     const create = vi.spyOn(store, "create").mockResolvedValue(undefined);
     await button(wrapper, "2v2")!.trigger("click");
     await button(wrapper, "Friends")!.trigger("click");
-    await button(wrapper, "Open 2v2 room")!.trigger("click");
+    await button(wrapper, "Open 2v2 Room")!.trigger("click");
     await flushPromises();
     expect(create).toHaveBeenCalledWith({
       type: "Wingman",

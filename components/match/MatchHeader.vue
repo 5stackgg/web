@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { AlertTriangle, Trophy } from "lucide-vue-next";
+import { AlertTriangle } from "lucide-vue-next";
 import { NuxtLink } from "#components";
 import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
@@ -296,16 +296,10 @@ const resultText = computed(() =>
                   'rounded-sm transition-colors hover:text-[hsl(var(--tac-amber))]',
               ]"
             >
-              <Trophy
-                v-if="team.won && i === 0"
-                class="mr-2 inline size-4 align-[-1px] text-[hsl(var(--tac-amber))]"
-                :aria-label="$t('match.header.winner')"
-              />{{ team.name
-              }}<Trophy
-                v-if="team.won && i === 1"
-                class="ml-2 inline size-4 align-[-1px] text-[hsl(var(--tac-amber))]"
-                :aria-label="$t('match.header.winner')"
-              />
+              {{ team.name }}
+              <span v-if="team.won" class="sr-only">{{
+                $t("match.header.winner")
+              }}</span>
             </component>
             <div
               class="flex items-center gap-2"
@@ -448,12 +442,10 @@ const resultText = computed(() =>
               : 'font-bold text-foreground'
           "
         >
-          {{ team.name
-          }}<Trophy
-            v-if="team.won"
-            class="ml-2 inline size-4 align-[-1px] text-[hsl(var(--tac-amber))]"
-            :aria-label="$t('match.header.winner')"
-          />
+          {{ team.name }}
+          <span v-if="team.won" class="sr-only">{{
+            $t("match.header.winner")
+          }}</span>
         </component>
         <span v-if="winsNeeded" class="inline-flex shrink-0 gap-[3px]">
           <i

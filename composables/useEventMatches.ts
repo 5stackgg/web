@@ -1,3 +1,5 @@
+import { useRestoredRefs } from "~/composables/useRestoredState";
+import { isRestoringHistory } from "~/composables/useScrollRestoration";
 import { ref, watch, type Ref } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { $, order_by } from "~/generated/zeus";
@@ -110,6 +112,8 @@ export function useEventMatches(eventId: Ref<string | null>) {
   const loading = ref(true);
   const paging = ref(false);
   const mine = ref(false);
+  // Back to the event lands on the same page and filter of its matches.
+  useRestoredRefs("event-matches", { page, mine });
 
   let generation = 0;
 
@@ -159,9 +163,12 @@ export function useEventMatches(eventId: Ref<string | null>) {
     }
     const gen = ++generation;
     loading.value = true;
-    page.value = 1;
+    // Back/forward keeps the page it restored; anything else starts over.
+    if (!isRestoringHistory()) {
+      page.value = 1;
+    }
     try {
-      await Promise.all([fetchPage(1), fetchMine()]);
+      await Promise.all([fetchPage(page.value), fetchMine()]);
     } catch (error) {
       if (gen !== generation) return;
       console.error("Error fetching event matches:", error);

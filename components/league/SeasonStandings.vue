@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useRestoredRefs } from "~/composables/useRestoredState";
 import { ref, computed, watch } from "vue";
 import LeagueStandings from "~/components/league/LeagueStandings.vue";
 import Pagination from "~/components/Pagination.vue";
@@ -47,6 +48,8 @@ const filteredStandings = computed<any[]>(() => {
 
 const page = ref(1);
 const perPage = usePerPage("league-standings");
+// Back to the season lands on the same search and page of its standings.
+useRestoredRefs("league-standings", { search, page });
 const pagedStandings = computed(() =>
   filteredStandings.value.slice(
     (page.value - 1) * perPage.value,

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useRestoredRefs } from "~/composables/useRestoredState";
 import { dateLocale } from "~/utilities/dateLocale";
 import { ref, computed, watch } from "vue";
 import { Input } from "~/components/ui/input";
@@ -37,6 +38,8 @@ const week = ref<string>("all");
 const status = ref<string>("all");
 const page = ref(1);
 const perPage = 25;
+// Back to the season lands on the same filters and page of its schedule.
+useRestoredRefs("league-schedule", { search, week, status, page });
 
 const STATUS_OPTIONS = [
   "unscheduled",

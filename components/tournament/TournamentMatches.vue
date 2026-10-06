@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useRestoredRefs } from "~/composables/useRestoredState";
 import { computed, ref, watch } from "vue";
 import { useSubscription } from "@vue/apollo-composable";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
@@ -36,6 +37,8 @@ const matches = computed<any[]>(() => (result.value as any)?.matches ?? []);
 
 const page = ref(1);
 const perPage = usePerPage("tournament-matches");
+// Back to the tournament lands on the same page of its matches.
+useRestoredRefs("tournament-matches", { page });
 watch(perPage, () => (page.value = 1));
 const pageMatches = computed(() =>
   matches.value.slice(

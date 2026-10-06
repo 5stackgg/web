@@ -169,12 +169,15 @@ describe("PlayerEditForm", () => {
 
   it("opens the current roster image in the editor when the lineup slot is clicked", async () => {
     signIn(e_player_roles_enum.user);
+    // A fresh Response per call: apollo can reach this spy first, and a shared
+    // one would hand the image fetch a body it already read.
     const fetchMock = vi
       .spyOn(globalThis, "fetch")
-      .mockResolvedValue(
-        new Response(new Blob(["x"]), {
-          headers: { "Content-Type": "image/webp" },
-        }),
+      .mockImplementation(
+        async () =>
+          new Response(new Blob(["x"]), {
+            headers: { "Content-Type": "image/webp" },
+          }),
       );
     const form = await mountForm({
       canEditAvatar: true,

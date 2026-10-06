@@ -5375,12 +5375,15 @@
         "title": "哪裡需要道具？",
         "all": "全部位置",
         "more": "另外 {count} 個",
-        "fewer": "收起",
-        "count": "{count} 個道具點位 | {count} 個道具點位"
+        "fewer": "收起"
       },
       "sheet": {
         "expand": "顯示更多清單",
         "collapse": "顯示更多地圖"
+      },
+      "live": {
+        "saved": "已儲存道具點位：{name}",
+        "show": "查看"
       },
       "auto_name": {
         "full": "{from}投{to}{type}",
@@ -5401,7 +5404,9 @@
         "flight_time_hint": "手榴彈出手後停留在空中的時間。",
         "stat_hit_rate": "我的成功率",
         "stat_flight": "飛行",
-        "stat_difficulty": "難度"
+        "stat_difficulty": "難度",
+        "yours": "我的 · {status}",
+        "score": "{count} 個讚 | {count} 個讚"
       },
       "viewer": {
         "replay_throw": "重播投擲",
@@ -5601,7 +5606,8 @@
         "copy_aim": "複製 setang",
         "aim_copied": "已複製瞄準值",
         "aim_copy_failed": "無法複製",
-        "write_up_hint": "自動填入投擲點與瞄準值"
+        "write_up_hint": "自動填入投擲點與瞄準值",
+        "types": "類型"
       },
       "playbooks": {
         "title": "戰術手冊",
@@ -5969,7 +5975,8 @@
         "reject": "拒絕",
         "approved": "已發布到道具庫",
         "rejected": "未收入道具庫",
-        "review_failed": "無法審核該點位"
+        "review_failed": "無法審核該點位",
+        "in_review": "審核中"
       },
       "archive": {
         "action": "封存點位",

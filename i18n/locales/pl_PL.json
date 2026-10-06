@@ -5375,12 +5375,15 @@
         "title": "Gdzie potrzebujesz granatów?",
         "all": "Wszystkie miejsca",
         "more": "Jeszcze {count}",
-        "fewer": "Mniej",
-        "count": "{count} lineup | {count} lineupów"
+        "fewer": "Mniej"
       },
       "sheet": {
         "expand": "Pokaż więcej listy",
         "collapse": "Pokaż więcej mapy"
+      },
+      "live": {
+        "saved": "Zapisano lineup: {name}",
+        "show": "Pokaż"
       },
       "auto_name": {
         "full": "{type} na {to} z {from}",
@@ -5401,7 +5404,9 @@
         "flight_time_hint": "Jak długo granat jest w powietrzu po rzucie.",
         "stat_hit_rate": "Moja skuteczność",
         "stat_flight": "Lot",
-        "stat_difficulty": "Trudność"
+        "stat_difficulty": "Trudność",
+        "yours": "Twój · {status}",
+        "score": "{count} głos za | {count} głosów za"
       },
       "viewer": {
         "replay_throw": "Odtwórz rzut",
@@ -5601,7 +5606,8 @@
         "copy_aim": "Kopiuj setang",
         "aim_copied": "Skopiowano celowanie",
         "aim_copy_failed": "Nie udało się tego skopiować",
-        "write_up_hint": "Uzupełni miejsce i celowanie"
+        "write_up_hint": "Uzupełni miejsce i celowanie",
+        "types": "Typ"
       },
       "playbooks": {
         "title": "Playbooki",
@@ -5969,7 +5975,8 @@
         "reject": "Odrzuć",
         "approved": "Opublikowano w bibliotece",
         "rejected": "Nieprzyjęte do biblioteki",
-        "review_failed": "Nie udało się rozpatrzyć tej ustawki"
+        "review_failed": "Nie udało się rozpatrzyć tej ustawki",
+        "in_review": "W weryfikacji"
       },
       "archive": {
         "action": "Archiwizuj ustawkę",

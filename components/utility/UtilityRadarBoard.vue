@@ -2,7 +2,6 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { MapPinOff, Maximize2, Minus, Plus, Tags } from "lucide-vue-next";
 import RadarCallouts from "~/components/common/RadarCallouts.vue";
-import UtilitySpotPopover from "~/components/utility/UtilitySpotPopover.vue";
 import { useMapCallouts } from "~/composables/useMapCallouts";
 import {
   useRadarProjection,
@@ -46,18 +45,6 @@ const props = withDefaults(
     markers?: UtilityBoardMarker[];
     segments?: UtilityBoardSegment[];
     selectedSegmentKey?: string | null;
-    // Spot-first browsing: every named place the library's throws land in,
-    // drawn as a label with its count so the map itself answers "where do I
-    // need utility". Points are world units, like everything else passed in.
-    spots?: Array<{ key: string; label: string; count: number; point: RadarPoint }>;
-    // The spot whose lineups are open. The caller narrows `lineups` to it, so
-    // the popover lists exactly what the board is drawing.
-    activeSpot?: {
-      key: string;
-      label: string;
-      count: number;
-      point: RadarPoint;
-    } | null;
   }>(),
   {
     selectedId: null,
@@ -71,25 +58,18 @@ const props = withDefaults(
     markers: () => [],
     segments: () => [],
     selectedSegmentKey: null,
-    spots: () => [],
-    activeSpot: null,
   },
 );
 
-// Named tuples, not call signatures: Vue reads emit types out of an overload
-// list, and past eight overloads it silently stops -- every parent's handlers
-// went untyped the moment the spot events made it ten.
 const emit = defineEmits<{
-  select: [id: string | null];
-  hover: [id: string | null];
-  "select-meta": [key: string | null];
-  "hover-meta": [key: string | null];
-  pick: [point: { x: number; y: number; z: number }];
-  "marker-grab": [key: string];
-  "marker-drag": [key: string, point: { x: number; y: number; z: number }];
-  "select-segment": [key: string];
-  "select-spot": [key: string | null];
-  open: [id: string];
+  (e: "select", id: string | null): void;
+  (e: "hover", id: string | null): void;
+  (e: "select-meta", key: string | null): void;
+  (e: "hover-meta", key: string | null): void;
+  (e: "pick", point: { x: number; y: number; z: number }): void;
+  (e: "marker-grab", key: string): void;
+  (e: "marker-drag", key: string, point: { x: number; y: number; z: number }): void;
+  (e: "select-segment", key: string): void;
 }>();
 
 const radarFailed = ref(false);
@@ -640,8 +620,12 @@ function onMetaClick(marker: MetaMarker) {
   emit("select-meta", marker.key);
 }
 
+// The page closes its own layers on Escape too (selection, spot filter), and
+// both listeners sit on window. The board mounts first so it hears the key
+// first; marking the event handled stops one press closing two layers.
 function onKeydown(event: KeyboardEvent) {
-  if (event.key === "Escape" && openCluster.value) {
+  if (event.key === "Escape" && !event.defaultPrevented && openCluster.value) {
+    event.preventDefault();
     beginFan(null);
   }
 }
@@ -978,130 +962,6 @@ function onMarkerUp(event: PointerEvent) {
   (event.currentTarget as Element).releasePointerCapture?.(event.pointerId);
   draggingKey.value = null;
 }
-
-// Spot labels and the open spot's popover are HTML, not SVG: the popover holds
-// a scrolling list and buttons, and a label needs to stay legible text. Both
-// ride inside the zoom layer, placed by percentage, and undo the zoom on
-// themselves the same way the svg ink does -- so they follow a pan and stay
-// pinned to their spot without measuring anything, and stay one size on screen.
-function canvasPercent(point: RadarPoint) {
-  const projected = projectCalibrated(point);
-  if (!projected) {
-    return null;
-  }
-  return {
-    left: (projected.x / CANVAS) * 100,
-    top: (projected.y / CANVAS) * 100,
-  };
-}
-
-// The square's width on screen, which is what turns map distance into pixels
-// for the label layout below. Watched rather than read once: the right hub and
-// the left nav both resize the board without the window changing.
-const boardWidth = ref(0);
-let boardResize: ResizeObserver | null = null;
-onMounted(() => {
-  if (!viewportRef.value || typeof ResizeObserver === "undefined") {
-    return;
-  }
-  boardResize = new ResizeObserver(([entry]) => {
-    boardWidth.value = entry.contentRect.width;
-  });
-  boardResize.observe(viewportRef.value);
-});
-onBeforeUnmount(() => boardResize?.disconnect());
-
-// A label is about this tall on screen, and about this wide per character plus
-// the count badge -- close enough to tell two labels apart, which is all the
-// layout needs.
-const SPOT_LABEL_H = 22;
-const spotLabelWidth = (label: string, count: number) =>
-  label.length * 6.4 + String(count).length * 6.5 + 30;
-
-// Two places that sit close together -- Temple and Donut, Pit and Plat -- put
-// their labels on top of each other, and the one underneath cannot be clicked.
-// The biggest spot keeps its place and smaller ones step up or down out of the
-// way. In screen pixels, after the zoom, so zooming in pulls the labels back
-// onto their spots as soon as there is room for them.
-const drawnSpots = computed(() => {
-  const width = boardWidth.value;
-  const scale = (width || 1) * zoom.value;
-  const placed: Array<{ x: number; y: number; w: number }> = [];
-  const out: Array<{
-    key: string;
-    label: string;
-    count: number;
-    left: number;
-    top: number;
-    shift: number;
-  }> = [];
-  for (const spot of props.spots ?? []) {
-    const at = canvasPercent(spot.point);
-    if (!at) {
-      continue;
-    }
-    const x = (at.left / 100) * scale;
-    const y = (at.top / 100) * scale;
-    const w = spotLabelWidth(spot.label, spot.count);
-    const clashes = (dy: number) =>
-      placed.some(
-        (other) =>
-          Math.abs(other.x - x) < (other.w + w) / 2 + 4 &&
-          Math.abs(other.y - (y + dy)) < SPOT_LABEL_H + 2,
-      );
-    let shift = 0;
-    if (width) {
-      for (const step of [0, 1, -1, 2, -2, 3, -3]) {
-        if (!clashes(step * (SPOT_LABEL_H + 3))) {
-          shift = step * (SPOT_LABEL_H + 3);
-          break;
-        }
-      }
-    }
-    placed.push({ x, y: y + shift, w });
-    out.push({ key: spot.key, label: spot.label, count: spot.count, ...at, shift });
-  }
-  return out;
-});
-
-// Which way the popover opens is decided by where its spot is ON SCREEN, after
-// the pan and zoom, not on the map: a spot in the left half of the map can sit
-// against the right edge of the frame once you have zoomed in on it, and a
-// popover opened towards that edge is clipped by the frame.
-const spotAnchor = computed(() => {
-  if (!props.activeSpot) {
-    return null;
-  }
-  const at = canvasPercent(props.activeSpot.point);
-  if (!at) {
-    return null;
-  }
-  const rect = viewportRef.value?.getBoundingClientRect();
-  const width = rect?.width || 1;
-  const height = rect?.height || 1;
-  const screenX = 0.5 + (at.left / 100 - 0.5) * zoom.value + panX.value / width;
-  const screenY = 0.5 + (at.top / 100 - 0.5) * zoom.value + panY.value / height;
-  return { ...at, openLeft: screenX > 0.5, openUp: screenY > 0.55 };
-});
-
-// Picking a spot while zoomed in brings it to the middle of the frame. Zoomed
-// out the whole map is already on screen; zoomed in, the spot you picked from
-// the list can be anywhere, including off the edge with its popover.
-watch(
-  () => props.activeSpot?.key,
-  () => {
-    const at = props.activeSpot ? canvasPercent(props.activeSpot.point) : null;
-    const width = boardWidth.value;
-    if (!at || zoom.value <= MIN_ZOOM || !width) {
-      return;
-    }
-    easeZoom(() => {
-      panX.value = -(at.left / 100 - 0.5) * width * zoom.value;
-      panY.value = -(at.top / 100 - 0.5) * width * zoom.value;
-      clampPan();
-    });
-  },
-);
 
 const activeId = computed(() => props.hoveredId ?? props.selectedId ?? null);
 
@@ -1643,77 +1503,6 @@ const orderedMarkers = computed(() => {
             </TransitionGroup>
           </g>
         </svg>
-
-        <div
-          v-if="boardReady && (drawnSpots.length || spotAnchor)"
-          class="pointer-events-none absolute inset-0"
-        >
-          <!-- A label, not a dot: the name is the answer to the question the
-               spots ask, and the count says whether it is worth opening. The
-               landing dots under it already show where the throws are. -->
-          <button
-            v-for="spot of drawnSpots"
-            :key="spot.key"
-            type="button"
-            class="utility-spot-label pointer-events-auto absolute flex items-center gap-1.5 whitespace-nowrap rounded-full border border-white/15 bg-background/85 py-0.5 pl-2 pr-0.5 text-[0.7rem] font-medium text-foreground shadow-[0_4px_14px_-4px_rgba(0,0,0,0.9)] transition-colors [backdrop-filter:blur(6px)] hover:border-[hsl(var(--tac-amber)/0.6)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[hsl(var(--tac-amber)/0.7)]"
-            :style="{
-              left: `${spot.left}%`,
-              top: `${spot.top}%`,
-              transform: `translate(-50%, -50%) scale(${ink}) translateY(${spot.shift}px)`,
-            }"
-            @pointerdown.stop
-            @click.stop="emit('select-spot', spot.key)"
-          >
-            {{ spot.label }}
-            <span
-              class="rounded-full bg-[hsl(var(--tac-amber))] px-1.5 font-mono text-[0.62rem] font-bold tabular-nums leading-4 text-black"
-            >
-              {{ spot.count }}
-            </span>
-          </button>
-
-          <!-- A zero-size anchor on the spot, counter-scaled from its own
-               corner, with the popover hung off whichever corner faces the
-               middle of the frame. -->
-          <div
-            v-if="spotAnchor"
-            :key="activeSpot?.key"
-            class="absolute h-0 w-0"
-            :style="{
-              left: `${spotAnchor.left}%`,
-              top: `${spotAnchor.top}%`,
-              transform: `scale(${ink})`,
-              transformOrigin: '0 0',
-            }"
-          >
-            <span
-              aria-hidden="true"
-              class="absolute -left-2 -top-2 h-4 w-4 rounded-full border-2 border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.25)]"
-            />
-            <div
-              class="utility-spot-popover pointer-events-auto absolute"
-              :class="[
-                spotAnchor.openLeft ? 'right-4' : 'left-4',
-                spotAnchor.openUp ? 'bottom-4' : 'top-4',
-              ]"
-              @click.stop
-              @pointerdown.stop
-              @wheel.stop
-            >
-              <UtilitySpotPopover
-                :label="activeSpot!.label"
-                :lineups="lineups"
-                :total="activeSpot!.count"
-                :hovered-id="hoveredId"
-                :selected-id="selectedId"
-                @hover="(id) => emit('hover', id)"
-                @select="(id) => emit('select', id)"
-                @open="(id) => emit('open', id)"
-                @close="emit('select-spot', null)"
-              />
-            </div>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -1779,24 +1568,6 @@ const orderedMarkers = computed(() => {
 </template>
 
 <style scoped>
-/* The popover arrives rather than appears: it is keyed on its spot, so moving
-   from one spot to the next replays this instead of the box jumping across the
-   map with the old spot's lineups still in it. */
-.utility-spot-popover {
-  animation: utility-spot-in 200ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-@keyframes utility-spot-in {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .utility-spot-popover {
-    animation: none;
-  }
-}
-
 /* What the board looks like before there is a map on it. Static on purpose:
    this square is the biggest thing on the page, and anything that pulses or
    sweeps at that size is the flash it was meant to replace. */

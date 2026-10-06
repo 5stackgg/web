@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import {
+  ArrowBigUp,
   ArrowUpRight,
   Archive,
   ArchiveRestore,
@@ -12,7 +13,9 @@ import {
   Film,
   GitFork,
   Globe,
+  PencilLine,
   Trash2,
+  UserRound,
   X,
 } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
@@ -61,6 +64,9 @@ const props = withDefaults(
     // Only where a lineup can actually be managed -- the pickers show cards for
     // choosing, and an archive action there is a way to lose work by accident.
     showArchive?: boolean;
+    // Same reasoning as archive: only where the page answers it with the
+    // lineup dialog open in edit mode.
+    showEdit?: boolean;
     canReview?: boolean;
     // Signed out, the counts still read fine -- they just stop being buttons.
     canReact?: boolean;
@@ -83,6 +89,7 @@ const props = withDefaults(
     showOpenLink: true,
     showFork: false,
     showArchive: false,
+    showEdit: false,
     canReview: false,
     canReact: false,
     openInPlace: false,
@@ -104,6 +111,7 @@ const emit = defineEmits<{
   (e: "vote", id: string, value: 1 | -1): void;
   (e: "favorite", id: string): void;
   (e: "open", id: string): void;
+  (e: "edit", id: string): void;
 }>();
 
 const { t } = useI18n();
@@ -136,6 +144,7 @@ const hasMenu = computed(
   () =>
     props.showOpenLink ||
     props.showFork ||
+    canEdit.value ||
     canSubmitPublic.value ||
     canRerender.value ||
     canArchive.value ||
@@ -232,6 +241,50 @@ const awaitingReview = computed(
   () => !!props.lineup.can_edit && !!props.lineup.public_requested_at,
 );
 
+// Your own lineups sit in the same list as everybody's public ones, and from
+// the row alone there was no telling which were which -- or which of yours
+// anyone else could see. A pill on yours answers both; the rest stay bare.
+const mine = computed(
+  () =>
+    !!mySteamId.value &&
+    String(props.lineup.author_steam_id) === String(mySteamId.value),
+);
+
+const STATUS_TONES = {
+  Public: "bg-success/15 text-success",
+  Team: "bg-[hsl(214_80%_62%/0.15)] text-[hsl(214_80%_68%)]",
+  Private: "bg-muted/60 text-muted-foreground",
+  review: "bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))]",
+} as const;
+
+const ownStatus = computed(() => {
+  if (!mine.value || props.lineup.archived_at) {
+    return null;
+  }
+  const key = props.lineup.public_requested_at
+    ? "review"
+    : props.lineup.visibility;
+  const label =
+    key === "review"
+      ? t("pages.utility.publish.in_review")
+      : t(`pages.utility.visibility.${key}`);
+  return { label, tone: STATUS_TONES[key] };
+});
+
+// Only a public lineup can be voted on, so only there does the count mean
+// anything -- a private one's 0 would read as "nobody liked this".
+const score = computed(() =>
+  props.lineup.visibility === "Public" && !props.lineup.archived_at
+    ? Number(props.lineup.upvotes ?? 0)
+    : null,
+);
+
+// The pencil used to live only inside the open dialog, two clicks and a
+// modal away from the row you were looking at.
+const canEdit = computed(
+  () => props.showEdit && !!props.lineup.can_edit && !props.lineup.archived_at,
+);
+
 const reviewable = computed(
   () => props.canReview && !!props.lineup.public_requested_at,
 );
@@ -294,8 +347,17 @@ function open() {
             class="h-3.5 w-3.5 shrink-0 text-success"
             :title="$t('pages.utility.confidence.exact_note')"
           />
+          <span
+            v-if="ownStatus"
+            class="inline-flex h-4 shrink-0 items-center gap-1 rounded-sm px-1 font-mono text-[0.55rem] font-bold uppercase leading-none tracking-[0.12em]"
+            :class="ownStatus.tone"
+            :title="$t('pages.utility.card.yours', { status: ownStatus.label })"
+          >
+            <UserRound class="h-2.5 w-2.5" />
+            {{ ownStatus.label }}
+          </span>
           <Clock
-            v-if="awaitingReview"
+            v-else-if="awaitingReview"
             class="h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]"
             :title="$t('pages.utility.publish.pending')"
           />
@@ -321,6 +383,22 @@ function open() {
       </div>
 
       <div class="flex shrink-0 items-center gap-2.5">
+        <span
+          v-if="score !== null"
+          class="flex shrink-0 items-center gap-0.5 font-mono text-[0.65rem] tabular-nums"
+          :class="
+            lineup.my_vote === 1
+              ? 'text-[hsl(var(--tac-amber))]'
+              : score > 0
+                ? 'text-foreground/80'
+                : 'text-muted-foreground/60'
+          "
+          :title="$t('pages.utility.card.score', { count: score }, score)"
+        >
+          <ArrowBigUp class="h-3.5 w-3.5" />
+          {{ score }}
+        </span>
+
         <UtilityThrowersMeter
           v-if="metaThrowers"
           :count="metaThrowers"
@@ -358,6 +436,11 @@ function open() {
               <ArrowUpRight />
               {{ $t("pages.utility.card.open") }}
             </NuxtLink>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem v-if="canEdit" @click="emit('edit', lineup.id)">
+            <PencilLine />
+            {{ $t("pages.utility.edit.action") }}
           </DropdownMenuItem>
 
           <DropdownMenuItem v-if="showFork" @click="emit('fork', lineup.id)">

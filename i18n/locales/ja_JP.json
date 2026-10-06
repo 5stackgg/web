@@ -5375,12 +5375,15 @@
         "title": "どこにユーティリティが必要？",
         "all": "すべての地点",
         "more": "他 {count} 件",
-        "fewer": "閉じる",
-        "count": "{count} 件のラインナップ | {count} 件のラインナップ"
+        "fewer": "閉じる"
       },
       "sheet": {
         "expand": "リストを広げる",
         "collapse": "マップを広げる"
+      },
+      "live": {
+        "saved": "ラインナップを保存しました: {name}",
+        "show": "表示"
       },
       "auto_name": {
         "full": "{from}から{to}{type}",
@@ -5401,7 +5404,9 @@
         "flight_time_hint": "投げてからグレネードが空中にある時間。",
         "stat_hit_rate": "自分の成功率",
         "stat_flight": "飛行",
-        "stat_difficulty": "難易度"
+        "stat_difficulty": "難易度",
+        "yours": "自分の · {status}",
+        "score": "{count} 件の高評価 | {count} 件の高評価"
       },
       "viewer": {
         "replay_throw": "投げを再生",
@@ -5601,7 +5606,8 @@
         "copy_aim": "setang をコピー",
         "aim_copied": "エイムをコピーしました",
         "aim_copy_failed": "コピーできませんでした",
-        "write_up_hint": "投げ位置とエイムを自動入力"
+        "write_up_hint": "投げ位置とエイムを自動入力",
+        "types": "種類"
       },
       "playbooks": {
         "title": "プレイブック",
@@ -5969,7 +5975,8 @@
         "reject": "却下する",
         "approved": "ライブラリに公開しました",
         "rejected": "ライブラリには載せませんでした",
-        "review_failed": "そのラインナップを審査できませんでした"
+        "review_failed": "そのラインナップを審査できませんでした",
+        "in_review": "審査中"
       },
       "archive": {
         "action": "ラインナップをアーカイブ",

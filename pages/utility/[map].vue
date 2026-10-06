@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { computed, h, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import {
@@ -34,6 +34,7 @@ import UtilityRadarBoard from "~/components/utility/UtilityRadarBoard.vue";
 import UtilityCollectionsPanel from "~/components/utility/UtilityCollectionsPanel.vue";
 import UtilityLineupCard from "~/components/utility/UtilityLineupCard.vue";
 import UtilitySpotPicker from "~/components/utility/UtilitySpotPicker.vue";
+import UtilityTypeChips from "~/components/utility/UtilityTypeChips.vue";
 import UtilityMobileSheet from "~/components/utility/UtilityMobileSheet.vue";
 import UtilityEmpty from "~/components/utility/UtilityEmpty.vue";
 import UtilitySkeletonList from "~/components/utility/UtilitySkeletonList.vue";
@@ -48,13 +49,14 @@ import { getQueryString, useRouteTab } from "~/composables/useRouteTab";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import { useMapCallouts } from "~/composables/useMapCallouts";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
-import { toast } from "~/components/ui/toast";
+import { toast, ToastAction } from "~/components/ui/toast";
 import {
   archiveUtilityLineupMutation,
   requestUtilityLineupPublicMutation,
   reviewUtilityLineupPublicMutation,
   UTILITY_LANDINGS_LIMIT,
-  utilityLineupLandingsQuery,
+  myUtilityProgressSubscription,
+  utilityLibraryPulseSubscription,
   utilityLineupsCountQuery,
   utilityLineupsQuery,
   utilityMetaLineupsQuery,
@@ -79,7 +81,11 @@ import type {
 } from "~/utilities/utilityDisplay";
 import { groupUtilitySpots } from "~/utilities/utilitySpots";
 import type { UtilityLandingRow } from "~/utilities/utilitySpots";
-import type { UtilityLineup, UtilityMetaLineup } from "~/types/utility";
+import type {
+  UtilityLineup,
+  UtilityLineupProgress,
+  UtilityMetaLineup,
+} from "~/types/utility";
 
 definePageMeta({
   persistQueryKeys: [
@@ -556,6 +562,7 @@ function writeUpMetaSpot(spot: UtilityMetaSpot) {
 }
 
 function onLineupCreated(id: string) {
+  createdHere.add(id);
   createSeed.value = null;
   listTab.value = LIST_TAB;
   void fetchLineups();
@@ -697,34 +704,191 @@ const selectedSpot = computed(
   () => spots.value.find((spot) => spot.key === spotKey.value) ?? null,
 );
 
-let landingsFetch = 0;
-async function fetchLandings() {
-  const mine = ++landingsFetch;
-  try {
-    const { data } = await getGraphqlClient().query({
-      query: utilityLineupLandingsQuery,
-      variables: { where: where.value, limit: UTILITY_LANDINGS_LIMIT },
-      fetchPolicy: "network-only",
-    });
-    if (mine !== landingsFetch) {
-      return;
+// The library, live. One light row per lineup in the filtered library: it feeds
+// the spots, and it is how the page notices that the list on screen has gone
+// stale. A lineup saved from a practice server, a review approved somewhere
+// else, an archive undone from its toast -- each used to wait for a reload,
+// which made the page feel detached from the game it is about.
+type PulseRow = UtilityLandingRow & {
+  name: string;
+  visibility: string;
+  archived_at: string | null;
+  public_requested_at: string | null;
+  preview_rendered_at: string | null;
+  author_steam_id: string | number | null;
+};
+
+let pulseSub: { unsubscribe: () => void } | null = null;
+let pulseSignature: string | null = null;
+let pulseIds = new Set<string>();
+let pulseRefetch: ReturnType<typeof setTimeout> | null = null;
+
+// Lineups this page created itself. The author panel already opens what it
+// just saved, so announcing it again as news would be noise.
+const createdHere = new Set<string>();
+
+function pulseKey(row: PulseRow) {
+  return [
+    row.id,
+    row.name,
+    row.visibility,
+    row.archived_at,
+    row.public_requested_at,
+    row.preview_rendered_at,
+    row.land_x,
+    row.land_y,
+    row.land_z,
+  ].join("|");
+}
+
+function announceSaved(row: PulseRow) {
+  toast({
+    title: t("pages.utility.live.saved", { name: row.name }),
+    action: h(
+      ToastAction,
+      {
+        altText: t("pages.utility.live.show"),
+        onClick: () => {
+          spotKey.value = null;
+          selectLineup(row.id);
+        },
+      },
+      () => t("pages.utility.live.show"),
+    ),
+  });
+}
+
+function onPulse(rows: PulseRow[]) {
+  landings.value = rows;
+  landingsLoaded.value = true;
+
+  const signature = rows.map(pulseKey).sort().join(";");
+  const ids = new Set(rows.map((row) => row.id));
+  const first = pulseSignature === null;
+  const changed = !first && signature !== pulseSignature;
+
+  if (changed && mySteamId.value) {
+    for (const row of rows) {
+      if (
+        !pulseIds.has(row.id) &&
+        !createdHere.has(row.id) &&
+        String(row.author_steam_id) === String(mySteamId.value)
+      ) {
+        announceSaved(row);
+      }
     }
-    landings.value = ((data as any)?.utility_lineups ?? []) as UtilityLandingRow[];
-  } catch (error) {
-    // Best effort, like the meta overlay: without it the spots simply do not
-    // show, and the list underneath is untouched.
-    if (mine === landingsFetch) {
-      console.error("[utility] landings fetch error:", error);
-      landings.value = [];
+  }
+
+  pulseSignature = signature;
+  pulseIds = ids;
+
+  // Coalesced: an execute saved from a practice server lands as five rows in
+  // as many seconds, and that is one refetch, not five.
+  if (changed) {
+    if (pulseRefetch) {
+      clearTimeout(pulseRefetch);
     }
-  } finally {
-    if (mine === landingsFetch) {
-      landingsLoaded.value = true;
-    }
+    pulseRefetch = setTimeout(() => {
+      pulseRefetch = null;
+      void fetchLineups({ quiet: true });
+    }, 400);
   }
 }
 
-watch(() => JSON.stringify(where.value), fetchLandings, { immediate: true });
+function unsubscribePulse() {
+  pulseSub?.unsubscribe();
+  pulseSub = null;
+  if (pulseRefetch) {
+    clearTimeout(pulseRefetch);
+    pulseRefetch = null;
+  }
+}
+
+function subscribePulse() {
+  unsubscribePulse();
+  // A new question starts a new baseline: its first answer is what the list
+  // query is fetching anyway, not a change to react to.
+  pulseSignature = null;
+  pulseIds = new Set();
+  pulseSub = getGraphqlClient()
+    .subscribe({
+      query: utilityLibraryPulseSubscription,
+      variables: { where: where.value, limit: UTILITY_LANDINGS_LIMIT },
+    })
+    .subscribe({
+      next: ({ data }: { data: any }) =>
+        onPulse((data?.utility_lineups ?? []) as PulseRow[]),
+      // Best effort, like the meta overlay: without it the spots do not show
+      // and the list stops updating itself, but the page still works.
+      error: (error: unknown) => {
+        console.error("[utility] library subscription error:", error);
+        landingsLoaded.value = true;
+      },
+    });
+}
+
+watch(() => JSON.stringify(where.value), subscribePulse, { immediate: true });
+onBeforeUnmount(unsubscribePulse);
+
+// Your own drill record on this map, live. Every throw in the practice server
+// writes to it, and patching the cards from it means the hit rate and streak
+// move while you are still in the game rather than the next time you reload.
+let progressSub: { unsubscribe: () => void } | null = null;
+const myProgress = ref<Map<string, UtilityLineupProgress>>(new Map());
+
+function applyProgress() {
+  if (!myProgress.value.size) {
+    return;
+  }
+  let touched = false;
+  const next = lineups.value.map((lineup) => {
+    const row = myProgress.value.get(lineup.id);
+    if (!row) {
+      return lineup;
+    }
+    const current = lineup.progress?.[0];
+    if (
+      current &&
+      current.attempts === row.attempts &&
+      current.successes === row.successes &&
+      current.mastered_at === row.mastered_at
+    ) {
+      return lineup;
+    }
+    touched = true;
+    return { ...lineup, progress: [row] };
+  });
+  if (touched) {
+    lineups.value = next;
+  }
+}
+
+function subscribeProgress() {
+  progressSub?.unsubscribe();
+  progressSub = null;
+  myProgress.value = new Map();
+  if (!mySteamId.value || !mapName.value) {
+    return;
+  }
+  progressSub = getGraphqlClient()
+    .subscribe({
+      query: myUtilityProgressSubscription,
+      variables: { steam_id: mySteamId.value, map_name: mapName.value },
+    })
+    .subscribe({
+      next: ({ data }: { data: any }) => {
+        const rows = (data?.utility_lineup_progress ?? []) as UtilityLineupProgress[];
+        myProgress.value = new Map(rows.map((row) => [row.utility_lineup_id, row]));
+        applyProgress();
+      },
+      error: (error: unknown) => {
+        console.error("[utility] progress subscription error:", error);
+      },
+    });
+}
+
+watch([mySteamId, mapName], subscribeProgress, { immediate: true });
+onBeforeUnmount(() => progressSub?.unsubscribe());
 
 // A spot the current filters no longer reach is a filter showing nothing for no
 // visible reason, so it lets go rather than leaving the list empty. Waits for
@@ -739,37 +903,6 @@ watch([spots, landingsLoaded, callouts], () => {
     spotKey.value = null;
   }
 });
-
-// The map half of spot browsing: labels on the board to pick a spot from, then
-// a popover pinned to the one you picked. Only where the board IS the library
-// -- another tab drawing its own markers owns the board -- and not on a phone,
-// where a popover inside a 390px map covers the map, and the sheet under it is
-// already the list of that spot's lineups.
-const spotsOnBoard = computed(
-  () => !isMobile.value && listTab.value === LIST_TAB && !panelBoard.value,
-);
-
-const boardSpots = computed(() =>
-  spotsOnBoard.value && !selectedSpot.value
-    ? spots.value.map((spot) => ({
-        key: spot.key,
-        label: spot.label,
-        count: spot.ids.length,
-        point: spot.point,
-      }))
-    : [],
-);
-
-const boardActiveSpot = computed(() =>
-  spotsOnBoard.value && selectedSpot.value
-    ? {
-        key: selectedSpot.value.key,
-        label: selectedSpot.value.label,
-        count: selectedSpot.value.ids.length,
-        point: selectedSpot.value.point,
-      }
-    : null,
-);
 
 // What the list and its count ask for: the library's filters, narrowed to the
 // chosen spot. The scope counts and the spots themselves keep reading `where`,
@@ -895,9 +1028,14 @@ const orderBy = computed(() =>
 );
 
 let fetchId = 0;
-async function fetchLineups() {
+// Quiet is the live path: the library changed under the list, so the rows are
+// swapped in place rather than dimmed and redrawn -- a lineup appearing should
+// not look like the page reloading.
+async function fetchLineups({ quiet = false }: { quiet?: boolean } = {}) {
   const myFetch = ++fetchId;
-  loading.value = true;
+  if (!quiet) {
+    loading.value = true;
+  }
   try {
     const client = getGraphqlClient();
     const [rows, counts] = await Promise.all([
@@ -923,8 +1061,11 @@ async function fetchLineups() {
     lineups.value = (rows.data as any)?.utility_lineups ?? [];
     totalCount.value =
       (counts.data as any)?.utility_lineups_aggregate?.aggregate?.count ?? 0;
+    applyProgress();
   } catch (error) {
-    if (myFetch === fetchId) {
+    // A quiet refetch that fails keeps what is on screen: it was right a
+    // moment ago, and blanking it would be worse than leaving it a beat stale.
+    if (myFetch === fetchId && !quiet) {
       console.error("[utility] lineup fetch error:", error);
       lineups.value = [];
       totalCount.value = 0;
@@ -1126,6 +1267,15 @@ function openLineup(id: string) {
   setDetailId(id, "push");
 }
 
+// Straight into the form: the dialog reads this once the lineup has loaded and
+// hands it back with edit-started.
+const editOnOpen = ref(false);
+
+function editLineup(id: string) {
+  editOnOpen.value = true;
+  openLineup(id);
+}
+
 // Practising from the dialog hands off to the practice dialog rather than
 // stacking one modal on another.
 function practiceFromDetail(id: string) {
@@ -1320,6 +1470,35 @@ function onArchived(id: string) {
   }
 }
 
+// Escape peels back one layer at a time, innermost first: the meta ring you
+// picked, then the selected lineup, then the spot popover it was picked from. Dialogs handle
+// their own Escape, and a key pressed while typing belongs to the field.
+function closeTopLayer(event: KeyboardEvent) {
+  if (event.key !== "Escape" || event.defaultPrevented) {
+    return;
+  }
+  const target = event.target as HTMLElement | null;
+  if (
+    target?.closest("input, textarea, select, [contenteditable='true']") ||
+    document.querySelector("[role='dialog'][data-state='open']")
+  ) {
+    return;
+  }
+  if (selectedMetaKey.value) {
+    selectedMetaKey.value = null;
+  } else if (selectedId.value) {
+    selectedId.value = null;
+  } else if (spotKey.value) {
+    spotKey.value = null;
+  } else {
+    return;
+  }
+  event.preventDefault();
+}
+
+onMounted(() => window.addEventListener("keydown", closeTopLayer));
+onBeforeUnmount(() => window.removeEventListener("keydown", closeTopLayer));
+
 function selectLineup(id: string | null) {
   selectedId.value = selectedId.value === id ? null : id;
   if (!selectedId.value || typeof document === "undefined") {
@@ -1347,14 +1526,11 @@ function selectLineup(id: string | null) {
          fit-content() and not min(max-content, ..): CSS min()/max()/clamp()
          reject intrinsic keywords, and an invalid value drops the whole
          grid-template-columns, collapsing the page to a single column. -->
-    <!-- The list column reads first, on the left, and the map sits to its
-         right: you steer from the column and look at the result on the map,
-         and left to right is the order that happens in. The DOM keeps the board
-         first so a phone, which stacks them, still opens on the map. There the
-         column is a sheet, and the padding is its half height, so the bottom of
-         the map can still be scrolled up clear of it. -->
+    <!-- The map on the left, the list on its right. On a phone the column is a
+         sheet over the map, and the padding is its half height, so the bottom
+         of the map can still be scrolled up clear of it. -->
     <div
-      class="mx-auto grid w-full gap-4 [--board:1000px] lg:max-w-[1900px] lg:grid-cols-[fit-content(60rem)_minmax(0,var(--board))] lg:justify-center"
+      class="mx-auto grid w-full gap-4 [--board:1000px] lg:max-w-[1900px] lg:grid-cols-[minmax(0,var(--board))_fit-content(60rem)] lg:justify-center"
       :class="isMobile ? 'pb-[40svh]' : ''"
     >
       <!-- --board sizes the BOX, and the box wants to be wide: the map picker,
@@ -1389,7 +1565,7 @@ function selectLineup(id: string | null) {
            right hub narrows it on a desktop, so a viewport breakpoint would
            fire at all the wrong times. -->
       <div
-        class="utility-board relative mx-auto w-full max-w-[var(--board)] overflow-hidden rounded-md border border-border bg-card/40 lg:col-start-2 lg:row-start-1 lg:sticky lg:top-4 lg:self-start"
+        class="utility-board relative mx-auto w-full max-w-[var(--board)] overflow-hidden rounded-md border border-border bg-card/40 lg:sticky lg:top-4 lg:self-start"
       >
         <!-- The map names itself, the way a map does everywhere else in the
              app, and it still does it inside the board's own frame -- but in a
@@ -1471,10 +1647,6 @@ function selectLineup(id: string | null) {
           :segments="panelBoard?.segments ?? []"
           :selected-segment-key="panelBoard?.selectedSegmentKey ?? null"
           :show-all-lines="!!panelBoard?.showAllLines"
-          :spots="boardSpots"
-          :active-spot="boardActiveSpot"
-          @select-spot="(key) => (spotKey = key)"
-          @open="openLineup"
           @select="
             (id) =>
               panelBoard?.onSelect ? panelBoard.onSelect(id) : selectLineup(id)
@@ -1628,7 +1800,7 @@ function selectLineup(id: string | null) {
            you could not see. -->
       <UtilityMobileSheet
         :enabled="isMobile"
-        class="flex flex-col gap-2 lg:col-start-1 lg:row-start-1 lg:min-w-[22rem]"
+        class="flex flex-col gap-2 lg:min-w-[22rem]"
       >
         <!-- Which tab, whose lineups, and the search over them: all three are
              how you steer the column, so they stay put while it scrolls.
@@ -1700,6 +1872,23 @@ function selectLineup(id: string | null) {
           <!-- Scrolls with the list rather than riding in the sticky bar: on a
                map with a dozen named spots the chips wrap to three rows, and a
                sticky header that tall eats the column it is steering. -->
+          <!-- The board's legend chips filter the meta too, but down there they
+               read as a key, not a control. Here they are where you look when
+               you want fewer rows, bound to the same filter so both agree. -->
+          <div
+            v-if="listTab === META_TAB"
+            class="flex flex-wrap items-center gap-1.5 pb-1"
+          >
+            <span
+              class="mr-0.5 font-mono text-[0.55rem] uppercase tracking-[0.16em] text-muted-foreground"
+            >
+              {{ $t("pages.utility.meta.types") }}
+            </span>
+            <UtilityTypeChips
+              :model-value="filters.types"
+              @update:model-value="(types) => (filters = { ...filters, types })"
+            />
+          </div>
           <UtilitySpotPicker
             v-if="listTab === LIST_TAB"
             v-model="spotKey"
@@ -1710,12 +1899,12 @@ function selectLineup(id: string | null) {
              question you asked of the map and not of the list -- it should not
              cost you the view you were in to read the answer. It rides in from
              the board's side rather than fading, which is the direction the
-             click came from -- the right, now the map sits there. -->
+             click came from. -->
           <Transition
             enter-active-class="transition-[opacity,transform] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
             leave-active-class="transition-[opacity,transform] [transition-duration:110ms] ease-in motion-reduce:![transition-duration:1ms]"
-            enter-from-class="translate-x-3 opacity-0"
-            leave-to-class="translate-x-3 opacity-0"
+            enter-from-class="-translate-x-3 opacity-0"
+            leave-to-class="-translate-x-3 opacity-0"
           >
             <UtilityMetaSelection
               v-if="metaSelectionMode && selectedMetaSpot"
@@ -1902,6 +2091,7 @@ function selectLineup(id: string | null) {
               :meta-busiest="metaBusiest"
               :show-fork="!!mySteamId"
               :show-archive="!!mySteamId"
+              :show-edit="!!mySteamId"
               :show-practice="!isMobile"
               :can-review="canReview"
               @select="selectLineup"
@@ -1909,6 +2099,7 @@ function selectLineup(id: string | null) {
               :can-react="!!mySteamId"
               open-in-place
               @open="openLineup"
+              @edit="editLineup"
               @fork="startFork"
               @archive="startArchive"
               @restore="restoreLineup"
@@ -1964,6 +2155,8 @@ function selectLineup(id: string | null) {
     :lineups="lineups"
     :can-react="!!mySteamId"
     :can-practice="!isMobile"
+    :edit-on-open="editOnOpen"
+    @edit-started="editOnOpen = false"
     @practice="practiceFromDetail"
     @vote="onVote"
     @favorite="onFavorite"

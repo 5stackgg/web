@@ -5375,12 +5375,15 @@
         "title": "Onde você precisa de utilitária?",
         "all": "Todos os pontos",
         "more": "Mais {count}",
-        "fewer": "Menos",
-        "count": "{count} lineup | {count} lineups"
+        "fewer": "Menos"
       },
       "sheet": {
         "expand": "Mostrar mais da lista",
         "collapse": "Mostrar mais do mapa"
+      },
+      "live": {
+        "saved": "Lineup salvo: {name}",
+        "show": "Mostrar"
       },
       "auto_name": {
         "full": "{type} para {to} de {from}",
@@ -5401,7 +5404,9 @@
         "flight_time_hint": "Quanto tempo a granada fica no ar depois do arremesso.",
         "stat_hit_rate": "Minha taxa de acerto",
         "stat_flight": "Voo",
-        "stat_difficulty": "Dificuldade"
+        "stat_difficulty": "Dificuldade",
+        "yours": "Seu · {status}",
+        "score": "{count} voto positivo | {count} votos positivos"
       },
       "viewer": {
         "replay_throw": "Repetir arremesso",
@@ -5601,7 +5606,8 @@
         "copy_aim": "Copiar setang",
         "aim_copied": "Mira copiada",
         "aim_copy_failed": "Não foi possível copiar isso",
-        "write_up_hint": "Preenche origem + mira"
+        "write_up_hint": "Preenche origem + mira",
+        "types": "Tipo"
       },
       "playbooks": {
         "title": "Playbooks",
@@ -5969,7 +5975,8 @@
         "reject": "Recusar",
         "approved": "Publicado na biblioteca",
         "rejected": "Deixado fora da biblioteca",
-        "review_failed": "Não foi possível revisar esse lineup"
+        "review_failed": "Não foi possível revisar esse lineup",
+        "in_review": "Em análise"
       },
       "archive": {
         "action": "Arquivar lineup",

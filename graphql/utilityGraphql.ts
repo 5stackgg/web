@@ -198,6 +198,49 @@ export const utilityLineupLandingsQuery = generateQuery({
   ],
 });
 
+// The same rows, live, plus the columns that change when a lineup is saved,
+// published, archived, renamed or rendered. The page watches this to keep the
+// spots current and to know when the list on screen has gone stale -- a lineup
+// saved from a practice server, a review approved, an archive undone from its
+// toast all land here without the player doing anything. Votes and favourites
+// are left out on purpose: they move constantly and change nothing about what
+// is on the map.
+export const utilityLibraryPulseSubscription = generateSubscription({
+  utility_lineups: [
+    {
+      where: $("where", "utility_lineups_bool_exp!"),
+      limit: $("limit", "Int!"),
+    },
+    {
+      id: true,
+      utility_type: true,
+      land_x: true,
+      land_y: true,
+      land_z: true,
+      name: true,
+      visibility: true,
+      archived_at: true,
+      public_requested_at: true,
+      preview_rendered_at: true,
+      author_steam_id: true,
+    },
+  ],
+});
+
+// The caller's own drill record on one map, live, so a throw in the practice
+// server moves the hit rate and streak on its card while you watch.
+export const myUtilityProgressSubscription = generateSubscription({
+  utility_lineup_progress: [
+    {
+      where: {
+        steam_id: { _eq: $("steam_id", "bigint!") },
+        utility_lineup: { map_name: { _eq: $("map_name", "String!") } },
+      },
+    },
+    utilityProgressFields,
+  ],
+});
+
 export const utilityLineupQuery = generateQuery({
   utility_lineups_by_pk: [
     {

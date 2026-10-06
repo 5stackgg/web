@@ -5375,8 +5375,7 @@
         "title": "Onde você precisa de utilitária?",
         "all": "Todos os pontos",
         "more": "Mais {count}",
-        "fewer": "Menos",
-        "count": "{count} lineup | {count} lineups"
+        "fewer": "Menos"
       },
       "sheet": {
         "expand": "Mostrar mais da lista",

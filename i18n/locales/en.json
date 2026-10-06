@@ -5377,8 +5377,7 @@
         "title": "Where do you need utility?",
         "all": "All spots",
         "more": "{count} more",
-        "fewer": "Fewer",
-        "count": "{count} lineup | {count} lineups"
+        "fewer": "Fewer"
       },
       "sheet": {
         "expand": "Show more of the list",

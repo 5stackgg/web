@@ -4386,6 +4386,7 @@
         "status_label": {
           "connected": "接続済み",
           "disconnected": "切断",
+          "hibernating": "休止中",
           "no_rcon": "RCONなし",
           "version_mismatch": "バージョン不一致"
         },
@@ -4413,6 +4414,7 @@
         },
         "status": {
           "disconnected": "サーバーは切断されています",
+          "hibernating": "プレイヤーが接続するまでサーバーは休止中です",
           "no_rcon": "サーバーは接続していますがRCONが利用できません",
           "connected": "サーバーは接続しておりRCONも利用可能です",
           "plugin_version_mismatch": "プラグインが最新バージョンではありません"

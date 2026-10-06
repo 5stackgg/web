@@ -4386,6 +4386,7 @@
         "status_label": {
           "connected": "متصل",
           "disconnected": "غير متصل",
+          "hibernating": "في وضع السبات",
           "no_rcon": "لا يوجد RCON",
           "version_mismatch": "عدم تطابق الإصدار"
         },
@@ -4413,6 +4414,7 @@
         },
         "status": {
           "disconnected": "السيرفر غير متصل",
+          "hibernating": "الخادم في وضع السبات حتى يتصل لاعب",
           "no_rcon": "السيرفر متصل لكن RCON غير متاح",
           "connected": "السيرفر متصل وRCON متاح",
           "plugin_version_mismatch": "إصدار الإضافة غير محدّث"

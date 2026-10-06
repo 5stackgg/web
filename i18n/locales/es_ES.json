@@ -4386,6 +4386,7 @@
         "status_label": {
           "connected": "Conectado",
           "disconnected": "Desconectado",
+          "hibernating": "Hibernando",
           "no_rcon": "Sin RCON",
           "version_mismatch": "Versión incompatible"
         },
@@ -4413,6 +4414,7 @@
         },
         "status": {
           "disconnected": "El servidor está desconectado",
+          "hibernating": "El servidor está hibernando hasta que se conecte un jugador",
           "no_rcon": "El servidor está conectado, pero RCON no está disponible",
           "connected": "El servidor está conectado y RCON está disponible",
           "plugin_version_mismatch": "la versión del plugin no está actualizada"

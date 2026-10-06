@@ -15,6 +15,7 @@ const server = {
   tv_port: 27020,
   enabled: true,
   connected: true,
+  hibernating: false,
   plugin_version: null,
   plugin_runtime: null,
   rcon_status: true,
@@ -207,6 +208,24 @@ describe("dedicated server settings", () => {
 });
 
 describe("dedicated server header", () => {
+  it("says when the server is hibernating", async () => {
+    const wrapper = await mountAs("administrator", {
+      server: { hibernating: true },
+    });
+
+    expect(wrapper.find("header").text()).toContain("Hibernating");
+  });
+
+  // Asleep is healthy; a server that cannot be reached over RCON is not.
+  it("reports a fault ahead of hibernation", async () => {
+    const wrapper = await mountAs("administrator", {
+      server: { hibernating: true, rcon_status: false },
+    });
+
+    expect(wrapper.find("header").text()).toContain("No RCON");
+    expect(wrapper.find("header").text()).not.toContain("Hibernating");
+  });
+
   it("puts Join right beside the address it connects to", async () => {
     const wrapper = await mountAs("moderator", {
       server: { connection_string: "connect 10.0.0.5:27015" },

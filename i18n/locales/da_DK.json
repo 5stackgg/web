@@ -4386,6 +4386,7 @@
         "status_label": {
           "connected": "Forbundet",
           "disconnected": "Afbrudt",
+          "hibernating": "I dvale",
           "no_rcon": "Ingen RCON",
           "version_mismatch": "Versionsuoverensstemmelse"
         },
@@ -4413,6 +4414,7 @@
         },
         "status": {
           "disconnected": "Serveren er afbrudt",
+          "hibernating": "Serveren er i dvale, indtil en spiller forbinder",
           "no_rcon": "Serveren er forbundet, men RCON er ikke tilgængelig",
           "connected": "Serveren er forbundet, og RCON er tilgængelig",
           "plugin_version_mismatch": "pluginversionen er ikke opdateret"

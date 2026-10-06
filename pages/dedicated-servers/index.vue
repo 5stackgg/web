@@ -203,6 +203,7 @@ export default {
               tv_port: true,
               enabled: true,
               connected: true,
+              hibernating: true,
               rcon_status: true,
               max_players: true,
               plugin_version: true,

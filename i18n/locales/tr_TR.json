@@ -4386,6 +4386,7 @@
         "status_label": {
           "connected": "Bağlı",
           "disconnected": "Bağlı değil",
+          "hibernating": "Uykuda",
           "no_rcon": "RCON yok",
           "version_mismatch": "Sürüm uyuşmazlığı"
         },
@@ -4413,6 +4414,7 @@
         },
         "status": {
           "disconnected": "Sunucu bağlı değil",
+          "hibernating": "Bir oyuncu bağlanana kadar sunucu uykuda",
           "no_rcon": "Sunucu bağlı ama RCON kullanılamıyor",
           "connected": "Sunucu bağlı ve RCON kullanılabilir",
           "plugin_version_mismatch": "eklenti sürümü güncel değil"

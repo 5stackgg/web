@@ -1644,6 +1644,13 @@ export type ValueTypes = {
 	link?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["SiteContentOutput"]: AliasType<{
+	events?:boolean | `@${string}`,
+	highlights?:boolean | `@${string}`,
+	news?:boolean | `@${string}`,
+	tournaments?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["SteamMatchHistoryLinkOutput"]: AliasType<{
 	error?:boolean | `@${string}`,
 	success?:boolean | `@${string}`,
@@ -31165,6 +31172,9 @@ delete_player_blocks_by_pk?: [{	blocked_steam_id: ValueTypes["bigint"] | Variabl
 delete_player_damages?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["player_damages_bool_exp"] | Variable<any, string>},ValueTypes["player_damages_mutation_response"]],
 delete_player_damages_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>,	match_map_id: ValueTypes["uuid"] | Variable<any, string>,	time: ValueTypes["timestamptz"] | Variable<any, string>},ValueTypes["player_damages"]],
+delete_player_dismissals?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["player_dismissals_bool_exp"] | Variable<any, string>},ValueTypes["player_dismissals_mutation_response"]],
+delete_player_dismissals_by_pk?: [{	key: string | Variable<any, string>,	player_steam_id: ValueTypes["bigint"] | Variable<any, string>},ValueTypes["player_dismissals"]],
 delete_player_elo?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["player_elo_bool_exp"] | Variable<any, string>},ValueTypes["player_elo_mutation_response"]],
 delete_player_elo_by_pk?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	steam_id: ValueTypes["bigint"] | Variable<any, string>,	type: ValueTypes["e_match_types_enum"] | Variable<any, string>},ValueTypes["player_elo"]],
@@ -32249,6 +32259,12 @@ insert_player_damages?: [{	/** the rows to be inserted */
 insert_player_damages_one?: [{	/** the row to be inserted */
 	object: ValueTypes["player_damages_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["player_damages_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["player_damages"]],
+insert_player_dismissals?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["player_dismissals_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["player_dismissals_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["player_dismissals_mutation_response"]],
+insert_player_dismissals_one?: [{	/** the row to be inserted */
+	object: ValueTypes["player_dismissals_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["player_dismissals_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["player_dismissals"]],
 insert_player_elo?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["player_elo_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["player_elo_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["player_elo_mutation_response"]],
@@ -34182,6 +34198,25 @@ update_player_damages_by_pk?: [{	/** increments the numeric columns with given v
 	_set?: ValueTypes["player_damages_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["player_damages_pk_columns_input"] | Variable<any, string>},ValueTypes["player_damages"]],
 update_player_damages_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["player_damages_updates"]> | Variable<any, string>},ValueTypes["player_damages_mutation_response"]],
+update_player_dismissals?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["player_dismissals_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["player_dismissals_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["player_dismissals_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["player_dismissals_delete_key_input"] | undefined | null | Variable<any, string>,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["player_dismissals_inc_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["player_dismissals_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["player_dismissals_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["player_dismissals_bool_exp"] | Variable<any, string>},ValueTypes["player_dismissals_mutation_response"]],
+update_player_dismissals_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["player_dismissals_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["player_dismissals_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["player_dismissals_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["player_dismissals_delete_key_input"] | undefined | null | Variable<any, string>,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["player_dismissals_inc_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["player_dismissals_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["player_dismissals_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["player_dismissals_pk_columns_input"] | Variable<any, string>},ValueTypes["player_dismissals"]],
+update_player_dismissals_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["player_dismissals_updates"]> | Variable<any, string>},ValueTypes["player_dismissals_mutation_response"]],
 update_player_elo?: [{	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ValueTypes["player_elo_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["player_elo_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
@@ -39273,6 +39308,202 @@ count?: [{	columns?: Array<ValueTypes["player_damages_select_column"]> | undefin
 	health?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
+	/** columns and relationships of "player_dismissals" */
+["player_dismissals"]: AliasType<{
+	dismissed_at?:boolean | `@${string}`,
+	key?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+value?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "player_dismissals" */
+["player_dismissals_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["player_dismissals_aggregate_fields"],
+	nodes?:ValueTypes["player_dismissals"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "player_dismissals" */
+["player_dismissals_aggregate_fields"]: AliasType<{
+	avg?:ValueTypes["player_dismissals_avg_fields"],
+count?: [{	columns?: Array<ValueTypes["player_dismissals_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["player_dismissals_max_fields"],
+	min?:ValueTypes["player_dismissals_min_fields"],
+	stddev?:ValueTypes["player_dismissals_stddev_fields"],
+	stddev_pop?:ValueTypes["player_dismissals_stddev_pop_fields"],
+	stddev_samp?:ValueTypes["player_dismissals_stddev_samp_fields"],
+	sum?:ValueTypes["player_dismissals_sum_fields"],
+	var_pop?:ValueTypes["player_dismissals_var_pop_fields"],
+	var_samp?:ValueTypes["player_dismissals_var_samp_fields"],
+	variance?:ValueTypes["player_dismissals_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["player_dismissals_append_input"]: {
+	value?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
+	/** aggregate avg on columns */
+["player_dismissals_avg_fields"]: AliasType<{
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "player_dismissals". All fields are combined with a logical 'AND'. */
+["player_dismissals_bool_exp"]: {
+	_and?: Array<ValueTypes["player_dismissals_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["player_dismissals_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["player_dismissals_bool_exp"]> | undefined | null | Variable<any, string>,
+	dismissed_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	key?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	value?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "player_dismissals" */
+["player_dismissals_constraint"]:player_dismissals_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["player_dismissals_delete_at_path_input"]: {
+	value?: Array<string> | undefined | null | Variable<any, string>
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["player_dismissals_delete_elem_input"]: {
+	value?: number | undefined | null | Variable<any, string>
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["player_dismissals_delete_key_input"]: {
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** input type for incrementing numeric columns in table "player_dismissals" */
+["player_dismissals_inc_input"]: {
+	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "player_dismissals" */
+["player_dismissals_insert_input"]: {
+	dismissed_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	key?: string | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	value?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["player_dismissals_max_fields"]: AliasType<{
+	dismissed_at?:boolean | `@${string}`,
+	key?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["player_dismissals_min_fields"]: AliasType<{
+	dismissed_at?:boolean | `@${string}`,
+	key?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "player_dismissals" */
+["player_dismissals_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["player_dismissals"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "player_dismissals" */
+["player_dismissals_on_conflict"]: {
+	constraint: ValueTypes["player_dismissals_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["player_dismissals_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["player_dismissals_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "player_dismissals". */
+["player_dismissals_order_by"]: {
+	dismissed_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	key?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	value?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: player_dismissals */
+["player_dismissals_pk_columns_input"]: {
+	key: string | Variable<any, string>,
+	player_steam_id: ValueTypes["bigint"] | Variable<any, string>
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["player_dismissals_prepend_input"]: {
+	value?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
+	/** select columns of table "player_dismissals" */
+["player_dismissals_select_column"]:player_dismissals_select_column;
+	/** input type for updating data in table "player_dismissals" */
+["player_dismissals_set_input"]: {
+	dismissed_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	key?: string | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	value?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev on columns */
+["player_dismissals_stddev_fields"]: AliasType<{
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["player_dismissals_stddev_pop_fields"]: AliasType<{
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["player_dismissals_stddev_samp_fields"]: AliasType<{
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "player_dismissals" */
+["player_dismissals_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["player_dismissals_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["player_dismissals_stream_cursor_value_input"]: {
+	dismissed_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	key?: string | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	value?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
+	/** aggregate sum on columns */
+["player_dismissals_sum_fields"]: AliasType<{
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** update columns of table "player_dismissals" */
+["player_dismissals_update_column"]:player_dismissals_update_column;
+	["player_dismissals_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["player_dismissals_append_input"] | undefined | null | Variable<any, string>,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["player_dismissals_delete_at_path_input"] | undefined | null | Variable<any, string>,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["player_dismissals_delete_elem_input"] | undefined | null | Variable<any, string>,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["player_dismissals_delete_key_input"] | undefined | null | Variable<any, string>,
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["player_dismissals_inc_input"] | undefined | null | Variable<any, string>,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["player_dismissals_prepend_input"] | undefined | null | Variable<any, string>,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["player_dismissals_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["player_dismissals_bool_exp"] | Variable<any, string>
+};
+	/** aggregate var_pop on columns */
+["player_dismissals_var_pop_fields"]: AliasType<{
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["player_dismissals_var_samp_fields"]: AliasType<{
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["player_dismissals_variance_fields"]: AliasType<{
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	/** columns and relationships of "player_elo" */
 ["player_elo"]: AliasType<{
 	actual_score?:boolean | `@${string}`,
@@ -53158,6 +53389,19 @@ player_damages_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["player_damages_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["player_damages_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_damages_aggregate"]],
 player_damages_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>,	match_map_id: ValueTypes["uuid"] | Variable<any, string>,	time: ValueTypes["timestamptz"] | Variable<any, string>},ValueTypes["player_damages"]],
+player_dismissals?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["player_dismissals_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["player_dismissals_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["player_dismissals_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_dismissals"]],
+player_dismissals_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["player_dismissals_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["player_dismissals_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["player_dismissals_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_dismissals_aggregate"]],
+player_dismissals_by_pk?: [{	key: string | Variable<any, string>,	player_steam_id: ValueTypes["bigint"] | Variable<any, string>},ValueTypes["player_dismissals"]],
 player_elo?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["player_elo_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -53645,6 +53889,8 @@ settings_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["settings_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["settings_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["settings_aggregate"]],
 settings_by_pk?: [{	name: string | Variable<any, string>},ValueTypes["settings"]],
+	/** Which view-only sections (tournaments, events, news, highlights) have anything a guest can see */
+	siteContent?:ValueTypes["SiteContentOutput"],
 	/** Steam presence bot admin dashboard status */
 	steamPresenceAdminStatus?:ValueTypes["SteamPresenceAdminStatusOutput"],
 steam_account_claims?: [{	/** distinct select on columns */
@@ -57470,6 +57716,7 @@ access_players_aggregate?: [{	/** distinct select on columns */
 	/** An object relationship */
 	game_server_node?:ValueTypes["game_server_nodes"],
 	game_server_node_id?:boolean | `@${string}`,
+	hibernating?:boolean | `@${string}`,
 	host?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	is_dedicated?:boolean | `@${string}`,
@@ -57664,6 +57911,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	game_mode_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	game_server_node?: ValueTypes["game_server_nodes_bool_exp"] | undefined | null | Variable<any, string>,
 	game_server_node_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	hibernating?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	host?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_dedicated?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -57737,6 +57985,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	game_mode_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	game_server_node?: ValueTypes["game_server_nodes_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	game_server_node_id?: string | undefined | null | Variable<any, string>,
+	hibernating?: boolean | undefined | null | Variable<any, string>,
 	host?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	is_dedicated?: boolean | undefined | null | Variable<any, string>,
@@ -57921,6 +58170,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	game_mode_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	game_server_node?: ValueTypes["game_server_nodes_order_by"] | undefined | null | Variable<any, string>,
 	game_server_node_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	hibernating?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	host?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_dedicated?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -57978,6 +58228,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	game?: string | undefined | null | Variable<any, string>,
 	game_mode_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	game_server_node_id?: string | undefined | null | Variable<any, string>,
+	hibernating?: boolean | undefined | null | Variable<any, string>,
 	host?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	is_dedicated?: boolean | undefined | null | Variable<any, string>,
@@ -58061,6 +58312,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	game?: string | undefined | null | Variable<any, string>,
 	game_mode_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	game_server_node_id?: string | undefined | null | Variable<any, string>,
+	hibernating?: boolean | undefined | null | Variable<any, string>,
 	host?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	is_dedicated?: boolean | undefined | null | Variable<any, string>,
@@ -61133,6 +61385,23 @@ player_damages_stream?: [{	/** maximum number of rows returned in a single batch
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["player_damages_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["player_damages_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_damages"]],
+player_dismissals?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["player_dismissals_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["player_dismissals_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["player_dismissals_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_dismissals"]],
+player_dismissals_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["player_dismissals_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["player_dismissals_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["player_dismissals_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_dismissals_aggregate"]],
+player_dismissals_by_pk?: [{	key: string | Variable<any, string>,	player_steam_id: ValueTypes["bigint"] | Variable<any, string>},ValueTypes["player_dismissals"]],
+player_dismissals_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["player_dismissals_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["player_dismissals_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_dismissals"]],
 player_elo?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["player_elo_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -65476,6 +65745,7 @@ awards_aggregate?: [{	/** distinct select on columns */
 	/** An object relationship */
 	captain?:ValueTypes["players"],
 	captain_steam_id?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 invites?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["team_invites_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
@@ -65490,6 +65760,8 @@ invites_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["team_invites_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["team_invites_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["team_invites_aggregate"]],
 	is_organization?:boolean | `@${string}`,
+	/** A computed field, executes function "team_last_match_at" */
+	last_match_at?:boolean | `@${string}`,
 match_lineups?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["match_lineups_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -65648,10 +65920,12 @@ count?: [{	columns?: Array<ValueTypes["teams_select_column"]> | undefined | null
 	can_remove?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	captain?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
 	captain_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	invites?: ValueTypes["team_invites_bool_exp"] | undefined | null | Variable<any, string>,
 	invites_aggregate?: ValueTypes["team_invites_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	is_organization?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	last_match_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	match_lineups?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>,
 	match_lineups_aggregate?: ValueTypes["match_lineups_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	matches?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
@@ -65683,6 +65957,7 @@ count?: [{	columns?: Array<ValueTypes["teams_select_column"]> | undefined | null
 	awards?: ValueTypes["award_recipients_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	captain?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	captain_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	invites?: ValueTypes["team_invites_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	is_organization?: boolean | undefined | null | Variable<any, string>,
@@ -65702,7 +65977,10 @@ count?: [{	columns?: Array<ValueTypes["teams_select_column"]> | undefined | null
 ["teams_max_fields"]: AliasType<{
 	avatar_url?:boolean | `@${string}`,
 	captain_steam_id?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	/** A computed field, executes function "team_last_match_at" */
+	last_match_at?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	owner_steam_id?:boolean | `@${string}`,
 	/** A computed field, executes function "team_role" */
@@ -65714,6 +65992,7 @@ count?: [{	columns?: Array<ValueTypes["teams_select_column"]> | undefined | null
 ["teams_max_order_by"]: {
 	avatar_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	captain_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	owner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -65723,7 +66002,10 @@ count?: [{	columns?: Array<ValueTypes["teams_select_column"]> | undefined | null
 ["teams_min_fields"]: AliasType<{
 	avatar_url?:boolean | `@${string}`,
 	captain_steam_id?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	/** A computed field, executes function "team_last_match_at" */
+	last_match_at?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	owner_steam_id?:boolean | `@${string}`,
 	/** A computed field, executes function "team_role" */
@@ -65735,6 +66017,7 @@ count?: [{	columns?: Array<ValueTypes["teams_select_column"]> | undefined | null
 ["teams_min_order_by"]: {
 	avatar_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	captain_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	owner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -65770,9 +66053,11 @@ count?: [{	columns?: Array<ValueTypes["teams_select_column"]> | undefined | null
 	can_remove?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	captain?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
 	captain_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	invites_aggregate?: ValueTypes["team_invites_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	is_organization?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	last_match_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_lineups_aggregate?: ValueTypes["match_lineups_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	matches_aggregate?: ValueTypes["matches_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -65801,6 +66086,7 @@ count?: [{	columns?: Array<ValueTypes["teams_select_column"]> | undefined | null
 ["teams_set_input"]: {
 	avatar_url?: string | undefined | null | Variable<any, string>,
 	captain_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	is_organization?: boolean | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
@@ -65851,6 +66137,7 @@ count?: [{	columns?: Array<ValueTypes["teams_select_column"]> | undefined | null
 ["teams_stream_cursor_value_input"]: {
 	avatar_url?: string | undefined | null | Variable<any, string>,
 	captain_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	is_organization?: boolean | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
@@ -90021,6 +90308,13 @@ export type ResolverInputTypes = {
 	["SetupGameServeOutput"]: AliasType<{
 	gameServerId?:boolean | `@${string}`,
 	link?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["SiteContentOutput"]: AliasType<{
+	events?:boolean | `@${string}`,
+	highlights?:boolean | `@${string}`,
+	news?:boolean | `@${string}`,
+	tournaments?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	["SteamMatchHistoryLinkOutput"]: AliasType<{
@@ -119544,6 +119838,9 @@ delete_player_blocks_by_pk?: [{	blocked_steam_id: ResolverInputTypes["bigint"],	
 delete_player_damages?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["player_damages_bool_exp"]},ResolverInputTypes["player_damages_mutation_response"]],
 delete_player_damages_by_pk?: [{	id: ResolverInputTypes["uuid"],	match_map_id: ResolverInputTypes["uuid"],	time: ResolverInputTypes["timestamptz"]},ResolverInputTypes["player_damages"]],
+delete_player_dismissals?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["player_dismissals_bool_exp"]},ResolverInputTypes["player_dismissals_mutation_response"]],
+delete_player_dismissals_by_pk?: [{	key: string,	player_steam_id: ResolverInputTypes["bigint"]},ResolverInputTypes["player_dismissals"]],
 delete_player_elo?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["player_elo_bool_exp"]},ResolverInputTypes["player_elo_mutation_response"]],
 delete_player_elo_by_pk?: [{	match_id: ResolverInputTypes["uuid"],	steam_id: ResolverInputTypes["bigint"],	type: ResolverInputTypes["e_match_types_enum"]},ResolverInputTypes["player_elo"]],
@@ -120628,6 +120925,12 @@ insert_player_damages?: [{	/** the rows to be inserted */
 insert_player_damages_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["player_damages_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["player_damages_on_conflict"] | undefined | null},ResolverInputTypes["player_damages"]],
+insert_player_dismissals?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["player_dismissals_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["player_dismissals_on_conflict"] | undefined | null},ResolverInputTypes["player_dismissals_mutation_response"]],
+insert_player_dismissals_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["player_dismissals_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["player_dismissals_on_conflict"] | undefined | null},ResolverInputTypes["player_dismissals"]],
 insert_player_elo?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["player_elo_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["player_elo_on_conflict"] | undefined | null},ResolverInputTypes["player_elo_mutation_response"]],
@@ -122561,6 +122864,25 @@ update_player_damages_by_pk?: [{	/** increments the numeric columns with given v
 	_set?: ResolverInputTypes["player_damages_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["player_damages_pk_columns_input"]},ResolverInputTypes["player_damages"]],
 update_player_damages_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["player_damages_updates"]>},ResolverInputTypes["player_damages_mutation_response"]],
+update_player_dismissals?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["player_dismissals_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["player_dismissals_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["player_dismissals_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["player_dismissals_delete_key_input"] | undefined | null,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["player_dismissals_inc_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["player_dismissals_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["player_dismissals_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["player_dismissals_bool_exp"]},ResolverInputTypes["player_dismissals_mutation_response"]],
+update_player_dismissals_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["player_dismissals_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["player_dismissals_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["player_dismissals_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["player_dismissals_delete_key_input"] | undefined | null,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["player_dismissals_inc_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["player_dismissals_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["player_dismissals_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["player_dismissals_pk_columns_input"]},ResolverInputTypes["player_dismissals"]],
+update_player_dismissals_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["player_dismissals_updates"]>},ResolverInputTypes["player_dismissals_mutation_response"]],
 update_player_elo?: [{	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ResolverInputTypes["player_elo_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["player_elo_set_input"] | undefined | null,	/** filter the rows which have to be updated */
@@ -127652,6 +127974,202 @@ count?: [{	columns?: Array<ResolverInputTypes["player_damages_select_column"]> |
 	health?: ResolverInputTypes["order_by"] | undefined | null,
 	round?: ResolverInputTypes["order_by"] | undefined | null
 };
+	/** columns and relationships of "player_dismissals" */
+["player_dismissals"]: AliasType<{
+	dismissed_at?:boolean | `@${string}`,
+	key?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+value?: [{	/** JSON select path */
+	path?: string | undefined | null},boolean | `@${string}`],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "player_dismissals" */
+["player_dismissals_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["player_dismissals_aggregate_fields"],
+	nodes?:ResolverInputTypes["player_dismissals"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "player_dismissals" */
+["player_dismissals_aggregate_fields"]: AliasType<{
+	avg?:ResolverInputTypes["player_dismissals_avg_fields"],
+count?: [{	columns?: Array<ResolverInputTypes["player_dismissals_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["player_dismissals_max_fields"],
+	min?:ResolverInputTypes["player_dismissals_min_fields"],
+	stddev?:ResolverInputTypes["player_dismissals_stddev_fields"],
+	stddev_pop?:ResolverInputTypes["player_dismissals_stddev_pop_fields"],
+	stddev_samp?:ResolverInputTypes["player_dismissals_stddev_samp_fields"],
+	sum?:ResolverInputTypes["player_dismissals_sum_fields"],
+	var_pop?:ResolverInputTypes["player_dismissals_var_pop_fields"],
+	var_samp?:ResolverInputTypes["player_dismissals_var_samp_fields"],
+	variance?:ResolverInputTypes["player_dismissals_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["player_dismissals_append_input"]: {
+	value?: ResolverInputTypes["jsonb"] | undefined | null
+};
+	/** aggregate avg on columns */
+["player_dismissals_avg_fields"]: AliasType<{
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "player_dismissals". All fields are combined with a logical 'AND'. */
+["player_dismissals_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["player_dismissals_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["player_dismissals_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["player_dismissals_bool_exp"]> | undefined | null,
+	dismissed_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	key?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	value?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "player_dismissals" */
+["player_dismissals_constraint"]:player_dismissals_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["player_dismissals_delete_at_path_input"]: {
+	value?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["player_dismissals_delete_elem_input"]: {
+	value?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["player_dismissals_delete_key_input"]: {
+	value?: string | undefined | null
+};
+	/** input type for incrementing numeric columns in table "player_dismissals" */
+["player_dismissals_inc_input"]: {
+	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null
+};
+	/** input type for inserting data into table "player_dismissals" */
+["player_dismissals_insert_input"]: {
+	dismissed_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	key?: string | undefined | null,
+	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	value?: ResolverInputTypes["jsonb"] | undefined | null
+};
+	/** aggregate max on columns */
+["player_dismissals_max_fields"]: AliasType<{
+	dismissed_at?:boolean | `@${string}`,
+	key?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["player_dismissals_min_fields"]: AliasType<{
+	dismissed_at?:boolean | `@${string}`,
+	key?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "player_dismissals" */
+["player_dismissals_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["player_dismissals"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "player_dismissals" */
+["player_dismissals_on_conflict"]: {
+	constraint: ResolverInputTypes["player_dismissals_constraint"],
+	update_columns: Array<ResolverInputTypes["player_dismissals_update_column"]>,
+	where?: ResolverInputTypes["player_dismissals_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "player_dismissals". */
+["player_dismissals_order_by"]: {
+	dismissed_at?: ResolverInputTypes["order_by"] | undefined | null,
+	key?: ResolverInputTypes["order_by"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	value?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: player_dismissals */
+["player_dismissals_pk_columns_input"]: {
+	key: string,
+	player_steam_id: ResolverInputTypes["bigint"]
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["player_dismissals_prepend_input"]: {
+	value?: ResolverInputTypes["jsonb"] | undefined | null
+};
+	/** select columns of table "player_dismissals" */
+["player_dismissals_select_column"]:player_dismissals_select_column;
+	/** input type for updating data in table "player_dismissals" */
+["player_dismissals_set_input"]: {
+	dismissed_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	key?: string | undefined | null,
+	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	value?: ResolverInputTypes["jsonb"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["player_dismissals_stddev_fields"]: AliasType<{
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["player_dismissals_stddev_pop_fields"]: AliasType<{
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["player_dismissals_stddev_samp_fields"]: AliasType<{
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "player_dismissals" */
+["player_dismissals_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["player_dismissals_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["player_dismissals_stream_cursor_value_input"]: {
+	dismissed_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	key?: string | undefined | null,
+	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	value?: ResolverInputTypes["jsonb"] | undefined | null
+};
+	/** aggregate sum on columns */
+["player_dismissals_sum_fields"]: AliasType<{
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** update columns of table "player_dismissals" */
+["player_dismissals_update_column"]:player_dismissals_update_column;
+	["player_dismissals_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["player_dismissals_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["player_dismissals_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["player_dismissals_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["player_dismissals_delete_key_input"] | undefined | null,
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["player_dismissals_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["player_dismissals_prepend_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["player_dismissals_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["player_dismissals_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["player_dismissals_var_pop_fields"]: AliasType<{
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["player_dismissals_var_samp_fields"]: AliasType<{
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["player_dismissals_variance_fields"]: AliasType<{
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	/** columns and relationships of "player_elo" */
 ["player_elo"]: AliasType<{
 	actual_score?:boolean | `@${string}`,
@@ -141537,6 +142055,19 @@ player_damages_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["player_damages_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["player_damages_bool_exp"] | undefined | null},ResolverInputTypes["player_damages_aggregate"]],
 player_damages_by_pk?: [{	id: ResolverInputTypes["uuid"],	match_map_id: ResolverInputTypes["uuid"],	time: ResolverInputTypes["timestamptz"]},ResolverInputTypes["player_damages"]],
+player_dismissals?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["player_dismissals_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["player_dismissals_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["player_dismissals_bool_exp"] | undefined | null},ResolverInputTypes["player_dismissals"]],
+player_dismissals_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["player_dismissals_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["player_dismissals_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["player_dismissals_bool_exp"] | undefined | null},ResolverInputTypes["player_dismissals_aggregate"]],
+player_dismissals_by_pk?: [{	key: string,	player_steam_id: ResolverInputTypes["bigint"]},ResolverInputTypes["player_dismissals"]],
 player_elo?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["player_elo_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -142024,6 +142555,8 @@ settings_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["settings_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["settings_bool_exp"] | undefined | null},ResolverInputTypes["settings_aggregate"]],
 settings_by_pk?: [{	name: string},ResolverInputTypes["settings"]],
+	/** Which view-only sections (tournaments, events, news, highlights) have anything a guest can see */
+	siteContent?:ResolverInputTypes["SiteContentOutput"],
 	/** Steam presence bot admin dashboard status */
 	steamPresenceAdminStatus?:ResolverInputTypes["SteamPresenceAdminStatusOutput"],
 steam_account_claims?: [{	/** distinct select on columns */
@@ -145849,6 +146382,7 @@ access_players_aggregate?: [{	/** distinct select on columns */
 	/** An object relationship */
 	game_server_node?:ResolverInputTypes["game_server_nodes"],
 	game_server_node_id?:boolean | `@${string}`,
+	hibernating?:boolean | `@${string}`,
 	host?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	is_dedicated?:boolean | `@${string}`,
@@ -146043,6 +146577,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	game_mode_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	game_server_node?: ResolverInputTypes["game_server_nodes_bool_exp"] | undefined | null,
 	game_server_node_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	hibernating?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	host?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	is_dedicated?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
@@ -146116,6 +146651,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	game_mode_id?: ResolverInputTypes["uuid"] | undefined | null,
 	game_server_node?: ResolverInputTypes["game_server_nodes_obj_rel_insert_input"] | undefined | null,
 	game_server_node_id?: string | undefined | null,
+	hibernating?: boolean | undefined | null,
 	host?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	is_dedicated?: boolean | undefined | null,
@@ -146300,6 +146836,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	game_mode_id?: ResolverInputTypes["order_by"] | undefined | null,
 	game_server_node?: ResolverInputTypes["game_server_nodes_order_by"] | undefined | null,
 	game_server_node_id?: ResolverInputTypes["order_by"] | undefined | null,
+	hibernating?: ResolverInputTypes["order_by"] | undefined | null,
 	host?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	is_dedicated?: ResolverInputTypes["order_by"] | undefined | null,
@@ -146357,6 +146894,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	game?: string | undefined | null,
 	game_mode_id?: ResolverInputTypes["uuid"] | undefined | null,
 	game_server_node_id?: string | undefined | null,
+	hibernating?: boolean | undefined | null,
 	host?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	is_dedicated?: boolean | undefined | null,
@@ -146440,6 +146978,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	game?: string | undefined | null,
 	game_mode_id?: ResolverInputTypes["uuid"] | undefined | null,
 	game_server_node_id?: string | undefined | null,
+	hibernating?: boolean | undefined | null,
 	host?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	is_dedicated?: boolean | undefined | null,
@@ -149512,6 +150051,23 @@ player_damages_stream?: [{	/** maximum number of rows returned in a single batch
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["player_damages_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["player_damages_bool_exp"] | undefined | null},ResolverInputTypes["player_damages"]],
+player_dismissals?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["player_dismissals_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["player_dismissals_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["player_dismissals_bool_exp"] | undefined | null},ResolverInputTypes["player_dismissals"]],
+player_dismissals_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["player_dismissals_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["player_dismissals_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["player_dismissals_bool_exp"] | undefined | null},ResolverInputTypes["player_dismissals_aggregate"]],
+player_dismissals_by_pk?: [{	key: string,	player_steam_id: ResolverInputTypes["bigint"]},ResolverInputTypes["player_dismissals"]],
+player_dismissals_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["player_dismissals_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["player_dismissals_bool_exp"] | undefined | null},ResolverInputTypes["player_dismissals"]],
 player_elo?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["player_elo_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -153855,6 +154411,7 @@ awards_aggregate?: [{	/** distinct select on columns */
 	/** An object relationship */
 	captain?:ResolverInputTypes["players"],
 	captain_steam_id?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 invites?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["team_invites_select_column"]> | undefined | null,	/** limit the number of rows returned */
@@ -153869,6 +154426,8 @@ invites_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["team_invites_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["team_invites_bool_exp"] | undefined | null},ResolverInputTypes["team_invites_aggregate"]],
 	is_organization?:boolean | `@${string}`,
+	/** A computed field, executes function "team_last_match_at" */
+	last_match_at?:boolean | `@${string}`,
 match_lineups?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["match_lineups_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -154027,10 +154586,12 @@ count?: [{	columns?: Array<ResolverInputTypes["teams_select_column"]> | undefine
 	can_remove?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	captain?: ResolverInputTypes["players_bool_exp"] | undefined | null,
 	captain_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	invites?: ResolverInputTypes["team_invites_bool_exp"] | undefined | null,
 	invites_aggregate?: ResolverInputTypes["team_invites_aggregate_bool_exp"] | undefined | null,
 	is_organization?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	last_match_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	match_lineups?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null,
 	match_lineups_aggregate?: ResolverInputTypes["match_lineups_aggregate_bool_exp"] | undefined | null,
 	matches?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
@@ -154062,6 +154623,7 @@ count?: [{	columns?: Array<ResolverInputTypes["teams_select_column"]> | undefine
 	awards?: ResolverInputTypes["award_recipients_arr_rel_insert_input"] | undefined | null,
 	captain?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
 	captain_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	invites?: ResolverInputTypes["team_invites_arr_rel_insert_input"] | undefined | null,
 	is_organization?: boolean | undefined | null,
@@ -154081,7 +154643,10 @@ count?: [{	columns?: Array<ResolverInputTypes["teams_select_column"]> | undefine
 ["teams_max_fields"]: AliasType<{
 	avatar_url?:boolean | `@${string}`,
 	captain_steam_id?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	/** A computed field, executes function "team_last_match_at" */
+	last_match_at?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	owner_steam_id?:boolean | `@${string}`,
 	/** A computed field, executes function "team_role" */
@@ -154093,6 +154658,7 @@ count?: [{	columns?: Array<ResolverInputTypes["teams_select_column"]> | undefine
 ["teams_max_order_by"]: {
 	avatar_url?: ResolverInputTypes["order_by"] | undefined | null,
 	captain_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
 	owner_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -154102,7 +154668,10 @@ count?: [{	columns?: Array<ResolverInputTypes["teams_select_column"]> | undefine
 ["teams_min_fields"]: AliasType<{
 	avatar_url?:boolean | `@${string}`,
 	captain_steam_id?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	/** A computed field, executes function "team_last_match_at" */
+	last_match_at?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	owner_steam_id?:boolean | `@${string}`,
 	/** A computed field, executes function "team_role" */
@@ -154114,6 +154683,7 @@ count?: [{	columns?: Array<ResolverInputTypes["teams_select_column"]> | undefine
 ["teams_min_order_by"]: {
 	avatar_url?: ResolverInputTypes["order_by"] | undefined | null,
 	captain_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
 	owner_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -154149,9 +154719,11 @@ count?: [{	columns?: Array<ResolverInputTypes["teams_select_column"]> | undefine
 	can_remove?: ResolverInputTypes["order_by"] | undefined | null,
 	captain?: ResolverInputTypes["players_order_by"] | undefined | null,
 	captain_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	invites_aggregate?: ResolverInputTypes["team_invites_aggregate_order_by"] | undefined | null,
 	is_organization?: ResolverInputTypes["order_by"] | undefined | null,
+	last_match_at?: ResolverInputTypes["order_by"] | undefined | null,
 	match_lineups_aggregate?: ResolverInputTypes["match_lineups_aggregate_order_by"] | undefined | null,
 	matches_aggregate?: ResolverInputTypes["matches_aggregate_order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
@@ -154180,6 +154752,7 @@ count?: [{	columns?: Array<ResolverInputTypes["teams_select_column"]> | undefine
 ["teams_set_input"]: {
 	avatar_url?: string | undefined | null,
 	captain_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	is_organization?: boolean | undefined | null,
 	name?: string | undefined | null,
@@ -154230,6 +154803,7 @@ count?: [{	columns?: Array<ResolverInputTypes["teams_select_column"]> | undefine
 ["teams_stream_cursor_value_input"]: {
 	avatar_url?: string | undefined | null,
 	captain_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	is_organization?: boolean | undefined | null,
 	name?: string | undefined | null,
@@ -178323,6 +178897,12 @@ export type ModelTypes = {
 	["SetupGameServeOutput"]: {
 		gameServerId: string,
 	link: string
+};
+	["SiteContentOutput"]: {
+		events: boolean,
+	highlights: boolean,
+	news: boolean,
+	tournaments: boolean
 };
 	["SteamMatchHistoryLinkOutput"]: {
 		error?: string | undefined | null,
@@ -205502,6 +206082,10 @@ export type ModelTypes = {
 	delete_player_damages?: ModelTypes["player_damages_mutation_response"] | undefined | null,
 	/** delete single row from the table: "player_damages" */
 	delete_player_damages_by_pk?: ModelTypes["player_damages"] | undefined | null,
+	/** delete data from the table: "player_dismissals" */
+	delete_player_dismissals?: ModelTypes["player_dismissals_mutation_response"] | undefined | null,
+	/** delete single row from the table: "player_dismissals" */
+	delete_player_dismissals_by_pk?: ModelTypes["player_dismissals"] | undefined | null,
 	/** delete data from the table: "player_elo" */
 	delete_player_elo?: ModelTypes["player_elo_mutation_response"] | undefined | null,
 	/** delete single row from the table: "player_elo" */
@@ -206399,6 +206983,10 @@ export type ModelTypes = {
 	insert_player_damages?: ModelTypes["player_damages_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "player_damages" */
 	insert_player_damages_one?: ModelTypes["player_damages"] | undefined | null,
+	/** insert data into the table: "player_dismissals" */
+	insert_player_dismissals?: ModelTypes["player_dismissals_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "player_dismissals" */
+	insert_player_dismissals_one?: ModelTypes["player_dismissals"] | undefined | null,
 	/** insert data into the table: "player_elo" */
 	insert_player_elo?: ModelTypes["player_elo_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "player_elo" */
@@ -207765,6 +208353,12 @@ export type ModelTypes = {
 	update_player_damages_by_pk?: ModelTypes["player_damages"] | undefined | null,
 	/** update multiples rows of table: "player_damages" */
 	update_player_damages_many?: Array<ModelTypes["player_damages_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "player_dismissals" */
+	update_player_dismissals?: ModelTypes["player_dismissals_mutation_response"] | undefined | null,
+	/** update single row of the table: "player_dismissals" */
+	update_player_dismissals_by_pk?: ModelTypes["player_dismissals"] | undefined | null,
+	/** update multiples rows of table: "player_dismissals" */
+	update_player_dismissals_many?: Array<ModelTypes["player_dismissals_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "player_elo" */
 	update_player_elo?: ModelTypes["player_elo_mutation_response"] | undefined | null,
 	/** update single row of the table: "player_elo" */
@@ -212334,6 +212928,184 @@ export type ModelTypes = {
 	damage_armor?: ModelTypes["order_by"] | undefined | null,
 	health?: ModelTypes["order_by"] | undefined | null,
 	round?: ModelTypes["order_by"] | undefined | null
+};
+	/** columns and relationships of "player_dismissals" */
+["player_dismissals"]: {
+		dismissed_at: ModelTypes["timestamptz"],
+	key: string,
+	player_steam_id: ModelTypes["bigint"],
+	value?: ModelTypes["jsonb"] | undefined | null
+};
+	/** aggregated selection of "player_dismissals" */
+["player_dismissals_aggregate"]: {
+		aggregate?: ModelTypes["player_dismissals_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["player_dismissals"]>
+};
+	/** aggregate fields of "player_dismissals" */
+["player_dismissals_aggregate_fields"]: {
+		avg?: ModelTypes["player_dismissals_avg_fields"] | undefined | null,
+	count: number,
+	max?: ModelTypes["player_dismissals_max_fields"] | undefined | null,
+	min?: ModelTypes["player_dismissals_min_fields"] | undefined | null,
+	stddev?: ModelTypes["player_dismissals_stddev_fields"] | undefined | null,
+	stddev_pop?: ModelTypes["player_dismissals_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: ModelTypes["player_dismissals_stddev_samp_fields"] | undefined | null,
+	sum?: ModelTypes["player_dismissals_sum_fields"] | undefined | null,
+	var_pop?: ModelTypes["player_dismissals_var_pop_fields"] | undefined | null,
+	var_samp?: ModelTypes["player_dismissals_var_samp_fields"] | undefined | null,
+	variance?: ModelTypes["player_dismissals_variance_fields"] | undefined | null
+};
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["player_dismissals_append_input"]: {
+	value?: ModelTypes["jsonb"] | undefined | null
+};
+	/** aggregate avg on columns */
+["player_dismissals_avg_fields"]: {
+		player_steam_id?: number | undefined | null
+};
+	/** Boolean expression to filter rows from the table "player_dismissals". All fields are combined with a logical 'AND'. */
+["player_dismissals_bool_exp"]: {
+	_and?: Array<ModelTypes["player_dismissals_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["player_dismissals_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["player_dismissals_bool_exp"]> | undefined | null,
+	dismissed_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	key?: ModelTypes["String_comparison_exp"] | undefined | null,
+	player_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	value?: ModelTypes["jsonb_comparison_exp"] | undefined | null
+};
+	["player_dismissals_constraint"]:player_dismissals_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["player_dismissals_delete_at_path_input"]: {
+	value?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["player_dismissals_delete_elem_input"]: {
+	value?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["player_dismissals_delete_key_input"]: {
+	value?: string | undefined | null
+};
+	/** input type for incrementing numeric columns in table "player_dismissals" */
+["player_dismissals_inc_input"]: {
+	player_steam_id?: ModelTypes["bigint"] | undefined | null
+};
+	/** input type for inserting data into table "player_dismissals" */
+["player_dismissals_insert_input"]: {
+	dismissed_at?: ModelTypes["timestamptz"] | undefined | null,
+	key?: string | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	value?: ModelTypes["jsonb"] | undefined | null
+};
+	/** aggregate max on columns */
+["player_dismissals_max_fields"]: {
+		dismissed_at?: ModelTypes["timestamptz"] | undefined | null,
+	key?: string | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null
+};
+	/** aggregate min on columns */
+["player_dismissals_min_fields"]: {
+		dismissed_at?: ModelTypes["timestamptz"] | undefined | null,
+	key?: string | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null
+};
+	/** response of any mutation on the table "player_dismissals" */
+["player_dismissals_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["player_dismissals"]>
+};
+	/** on_conflict condition type for table "player_dismissals" */
+["player_dismissals_on_conflict"]: {
+	constraint: ModelTypes["player_dismissals_constraint"],
+	update_columns: Array<ModelTypes["player_dismissals_update_column"]>,
+	where?: ModelTypes["player_dismissals_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "player_dismissals". */
+["player_dismissals_order_by"]: {
+	dismissed_at?: ModelTypes["order_by"] | undefined | null,
+	key?: ModelTypes["order_by"] | undefined | null,
+	player_steam_id?: ModelTypes["order_by"] | undefined | null,
+	value?: ModelTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: player_dismissals */
+["player_dismissals_pk_columns_input"]: {
+	key: string,
+	player_steam_id: ModelTypes["bigint"]
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["player_dismissals_prepend_input"]: {
+	value?: ModelTypes["jsonb"] | undefined | null
+};
+	["player_dismissals_select_column"]:player_dismissals_select_column;
+	/** input type for updating data in table "player_dismissals" */
+["player_dismissals_set_input"]: {
+	dismissed_at?: ModelTypes["timestamptz"] | undefined | null,
+	key?: string | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	value?: ModelTypes["jsonb"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["player_dismissals_stddev_fields"]: {
+		player_steam_id?: number | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["player_dismissals_stddev_pop_fields"]: {
+		player_steam_id?: number | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["player_dismissals_stddev_samp_fields"]: {
+		player_steam_id?: number | undefined | null
+};
+	/** Streaming cursor of the table "player_dismissals" */
+["player_dismissals_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["player_dismissals_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["player_dismissals_stream_cursor_value_input"]: {
+	dismissed_at?: ModelTypes["timestamptz"] | undefined | null,
+	key?: string | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	value?: ModelTypes["jsonb"] | undefined | null
+};
+	/** aggregate sum on columns */
+["player_dismissals_sum_fields"]: {
+		player_steam_id?: ModelTypes["bigint"] | undefined | null
+};
+	["player_dismissals_update_column"]:player_dismissals_update_column;
+	["player_dismissals_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ModelTypes["player_dismissals_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ModelTypes["player_dismissals_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ModelTypes["player_dismissals_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ModelTypes["player_dismissals_delete_key_input"] | undefined | null,
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ModelTypes["player_dismissals_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ModelTypes["player_dismissals_prepend_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["player_dismissals_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["player_dismissals_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["player_dismissals_var_pop_fields"]: {
+		player_steam_id?: number | undefined | null
+};
+	/** aggregate var_samp on columns */
+["player_dismissals_var_samp_fields"]: {
+		player_steam_id?: number | undefined | null
+};
+	/** aggregate variance on columns */
+["player_dismissals_variance_fields"]: {
+		player_steam_id?: number | undefined | null
 };
 	/** columns and relationships of "player_elo" */
 ["player_elo"]: {
@@ -224483,6 +225255,12 @@ export type ModelTypes = {
 	player_damages_aggregate: ModelTypes["player_damages_aggregate"],
 	/** fetch data from the table: "player_damages" using primary key columns */
 	player_damages_by_pk?: ModelTypes["player_damages"] | undefined | null,
+	/** fetch data from the table: "player_dismissals" */
+	player_dismissals: Array<ModelTypes["player_dismissals"]>,
+	/** fetch aggregated fields from the table: "player_dismissals" */
+	player_dismissals_aggregate: ModelTypes["player_dismissals_aggregate"],
+	/** fetch data from the table: "player_dismissals" using primary key columns */
+	player_dismissals_by_pk?: ModelTypes["player_dismissals"] | undefined | null,
 	/** fetch data from the table: "player_elo" */
 	player_elo: Array<ModelTypes["player_elo"]>,
 	/** fetch aggregated fields from the table: "player_elo" */
@@ -224697,6 +225475,8 @@ export type ModelTypes = {
 	settings_aggregate: ModelTypes["settings_aggregate"],
 	/** fetch data from the table: "settings" using primary key columns */
 	settings_by_pk?: ModelTypes["settings"] | undefined | null,
+	/** Which view-only sections (tournaments, events, news, highlights) have anything a guest can see */
+	siteContent: ModelTypes["SiteContentOutput"],
 	/** Steam presence bot admin dashboard status */
 	steamPresenceAdminStatus: ModelTypes["SteamPresenceAdminStatusOutput"],
 	/** fetch data from the table: "steam_account_claims" */
@@ -227705,6 +228485,7 @@ export type ModelTypes = {
 	/** An object relationship */
 	game_server_node?: ModelTypes["game_server_nodes"] | undefined | null,
 	game_server_node_id?: string | undefined | null,
+	hibernating: boolean,
 	host: string,
 	id: ModelTypes["uuid"],
 	is_dedicated: boolean,
@@ -227854,6 +228635,7 @@ export type ModelTypes = {
 	game_mode_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
 	game_server_node?: ModelTypes["game_server_nodes_bool_exp"] | undefined | null,
 	game_server_node_id?: ModelTypes["String_comparison_exp"] | undefined | null,
+	hibernating?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	host?: ModelTypes["String_comparison_exp"] | undefined | null,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
 	is_dedicated?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
@@ -227926,6 +228708,7 @@ export type ModelTypes = {
 	game_mode_id?: ModelTypes["uuid"] | undefined | null,
 	game_server_node?: ModelTypes["game_server_nodes_obj_rel_insert_input"] | undefined | null,
 	game_server_node_id?: string | undefined | null,
+	hibernating?: boolean | undefined | null,
 	host?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	is_dedicated?: boolean | undefined | null,
@@ -228107,6 +228890,7 @@ export type ModelTypes = {
 	game_mode_id?: ModelTypes["order_by"] | undefined | null,
 	game_server_node?: ModelTypes["game_server_nodes_order_by"] | undefined | null,
 	game_server_node_id?: ModelTypes["order_by"] | undefined | null,
+	hibernating?: ModelTypes["order_by"] | undefined | null,
 	host?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
 	is_dedicated?: ModelTypes["order_by"] | undefined | null,
@@ -228161,6 +228945,7 @@ export type ModelTypes = {
 	game?: string | undefined | null,
 	game_mode_id?: ModelTypes["uuid"] | undefined | null,
 	game_server_node_id?: string | undefined | null,
+	hibernating?: boolean | undefined | null,
 	host?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	is_dedicated?: boolean | undefined | null,
@@ -228241,6 +229026,7 @@ export type ModelTypes = {
 	game?: string | undefined | null,
 	game_mode_id?: ModelTypes["uuid"] | undefined | null,
 	game_server_node_id?: string | undefined | null,
+	hibernating?: boolean | undefined | null,
 	host?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	is_dedicated?: boolean | undefined | null,
@@ -229961,6 +230747,14 @@ export type ModelTypes = {
 	player_damages_by_pk?: ModelTypes["player_damages"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "player_damages" */
 	player_damages_stream: Array<ModelTypes["player_damages"]>,
+	/** fetch data from the table: "player_dismissals" */
+	player_dismissals: Array<ModelTypes["player_dismissals"]>,
+	/** fetch aggregated fields from the table: "player_dismissals" */
+	player_dismissals_aggregate: ModelTypes["player_dismissals_aggregate"],
+	/** fetch data from the table: "player_dismissals" using primary key columns */
+	player_dismissals_by_pk?: ModelTypes["player_dismissals"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "player_dismissals" */
+	player_dismissals_stream: Array<ModelTypes["player_dismissals"]>,
 	/** fetch data from the table: "player_elo" */
 	player_elo: Array<ModelTypes["player_elo"]>,
 	/** fetch aggregated fields from the table: "player_elo" */
@@ -233013,12 +233807,15 @@ export type ModelTypes = {
 	/** An object relationship */
 	captain?: ModelTypes["players"] | undefined | null,
 	captain_steam_id?: ModelTypes["bigint"] | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	id: ModelTypes["uuid"],
 	/** An array relationship */
 	invites: Array<ModelTypes["team_invites"]>,
 	/** An aggregate relationship */
 	invites_aggregate: ModelTypes["team_invites_aggregate"],
 	is_organization: boolean,
+	/** A computed field, executes function "team_last_match_at" */
+	last_match_at?: ModelTypes["timestamptz"] | undefined | null,
 	/** An array relationship */
 	match_lineups: Array<ModelTypes["match_lineups"]>,
 	/** An aggregate relationship */
@@ -233137,10 +233934,12 @@ export type ModelTypes = {
 	can_remove?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	captain?: ModelTypes["players_bool_exp"] | undefined | null,
 	captain_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
 	invites?: ModelTypes["team_invites_bool_exp"] | undefined | null,
 	invites_aggregate?: ModelTypes["team_invites_aggregate_bool_exp"] | undefined | null,
 	is_organization?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	last_match_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	match_lineups?: ModelTypes["match_lineups_bool_exp"] | undefined | null,
 	match_lineups_aggregate?: ModelTypes["match_lineups_aggregate_bool_exp"] | undefined | null,
 	matches?: ModelTypes["matches_bool_exp"] | undefined | null,
@@ -233171,6 +233970,7 @@ export type ModelTypes = {
 	awards?: ModelTypes["award_recipients_arr_rel_insert_input"] | undefined | null,
 	captain?: ModelTypes["players_obj_rel_insert_input"] | undefined | null,
 	captain_steam_id?: ModelTypes["bigint"] | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	invites?: ModelTypes["team_invites_arr_rel_insert_input"] | undefined | null,
 	is_organization?: boolean | undefined | null,
@@ -233190,7 +233990,10 @@ export type ModelTypes = {
 ["teams_max_fields"]: {
 		avatar_url?: string | undefined | null,
 	captain_steam_id?: ModelTypes["bigint"] | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
+	/** A computed field, executes function "team_last_match_at" */
+	last_match_at?: ModelTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
 	owner_steam_id?: ModelTypes["bigint"] | undefined | null,
 	/** A computed field, executes function "team_role" */
@@ -233201,6 +234004,7 @@ export type ModelTypes = {
 ["teams_max_order_by"]: {
 	avatar_url?: ModelTypes["order_by"] | undefined | null,
 	captain_steam_id?: ModelTypes["order_by"] | undefined | null,
+	created_at?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
 	name?: ModelTypes["order_by"] | undefined | null,
 	owner_steam_id?: ModelTypes["order_by"] | undefined | null,
@@ -233210,7 +234014,10 @@ export type ModelTypes = {
 ["teams_min_fields"]: {
 		avatar_url?: string | undefined | null,
 	captain_steam_id?: ModelTypes["bigint"] | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
+	/** A computed field, executes function "team_last_match_at" */
+	last_match_at?: ModelTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
 	owner_steam_id?: ModelTypes["bigint"] | undefined | null,
 	/** A computed field, executes function "team_role" */
@@ -233221,6 +234028,7 @@ export type ModelTypes = {
 ["teams_min_order_by"]: {
 	avatar_url?: ModelTypes["order_by"] | undefined | null,
 	captain_steam_id?: ModelTypes["order_by"] | undefined | null,
+	created_at?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
 	name?: ModelTypes["order_by"] | undefined | null,
 	owner_steam_id?: ModelTypes["order_by"] | undefined | null,
@@ -233255,9 +234063,11 @@ export type ModelTypes = {
 	can_remove?: ModelTypes["order_by"] | undefined | null,
 	captain?: ModelTypes["players_order_by"] | undefined | null,
 	captain_steam_id?: ModelTypes["order_by"] | undefined | null,
+	created_at?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
 	invites_aggregate?: ModelTypes["team_invites_aggregate_order_by"] | undefined | null,
 	is_organization?: ModelTypes["order_by"] | undefined | null,
+	last_match_at?: ModelTypes["order_by"] | undefined | null,
 	match_lineups_aggregate?: ModelTypes["match_lineups_aggregate_order_by"] | undefined | null,
 	matches_aggregate?: ModelTypes["matches_aggregate_order_by"] | undefined | null,
 	name?: ModelTypes["order_by"] | undefined | null,
@@ -233283,6 +234093,7 @@ export type ModelTypes = {
 ["teams_set_input"]: {
 	avatar_url?: string | undefined | null,
 	captain_steam_id?: ModelTypes["bigint"] | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	is_organization?: boolean | undefined | null,
 	name?: string | undefined | null,
@@ -233330,6 +234141,7 @@ export type ModelTypes = {
 ["teams_stream_cursor_value_input"]: {
 	avatar_url?: string | undefined | null,
 	captain_steam_id?: ModelTypes["bigint"] | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	is_organization?: boolean | undefined | null,
 	name?: string | undefined | null,
@@ -256068,6 +256880,13 @@ export type GraphQLTypes = {
 	__typename: "SetupGameServeOutput",
 	gameServerId: string,
 	link: string
+};
+	["SiteContentOutput"]: {
+	__typename: "SiteContentOutput",
+	events: boolean,
+	highlights: boolean,
+	news: boolean,
+	tournaments: boolean
 };
 	["SteamMatchHistoryLinkOutput"]: {
 	__typename: "SteamMatchHistoryLinkOutput",
@@ -284905,6 +285724,10 @@ export type GraphQLTypes = {
 	delete_player_damages?: GraphQLTypes["player_damages_mutation_response"] | undefined | null,
 	/** delete single row from the table: "player_damages" */
 	delete_player_damages_by_pk?: GraphQLTypes["player_damages"] | undefined | null,
+	/** delete data from the table: "player_dismissals" */
+	delete_player_dismissals?: GraphQLTypes["player_dismissals_mutation_response"] | undefined | null,
+	/** delete single row from the table: "player_dismissals" */
+	delete_player_dismissals_by_pk?: GraphQLTypes["player_dismissals"] | undefined | null,
 	/** delete data from the table: "player_elo" */
 	delete_player_elo?: GraphQLTypes["player_elo_mutation_response"] | undefined | null,
 	/** delete single row from the table: "player_elo" */
@@ -285802,6 +286625,10 @@ export type GraphQLTypes = {
 	insert_player_damages?: GraphQLTypes["player_damages_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "player_damages" */
 	insert_player_damages_one?: GraphQLTypes["player_damages"] | undefined | null,
+	/** insert data into the table: "player_dismissals" */
+	insert_player_dismissals?: GraphQLTypes["player_dismissals_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "player_dismissals" */
+	insert_player_dismissals_one?: GraphQLTypes["player_dismissals"] | undefined | null,
 	/** insert data into the table: "player_elo" */
 	insert_player_elo?: GraphQLTypes["player_elo_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "player_elo" */
@@ -287168,6 +287995,12 @@ export type GraphQLTypes = {
 	update_player_damages_by_pk?: GraphQLTypes["player_damages"] | undefined | null,
 	/** update multiples rows of table: "player_damages" */
 	update_player_damages_many?: Array<GraphQLTypes["player_damages_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "player_dismissals" */
+	update_player_dismissals?: GraphQLTypes["player_dismissals_mutation_response"] | undefined | null,
+	/** update single row of the table: "player_dismissals" */
+	update_player_dismissals_by_pk?: GraphQLTypes["player_dismissals"] | undefined | null,
+	/** update multiples rows of table: "player_dismissals" */
+	update_player_dismissals_many?: Array<GraphQLTypes["player_dismissals_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "player_elo" */
 	update_player_elo?: GraphQLTypes["player_elo_mutation_response"] | undefined | null,
 	/** update single row of the table: "player_elo" */
@@ -291943,6 +292776,201 @@ export type GraphQLTypes = {
 	damage_armor?: GraphQLTypes["order_by"] | undefined | null,
 	health?: GraphQLTypes["order_by"] | undefined | null,
 	round?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** columns and relationships of "player_dismissals" */
+["player_dismissals"]: {
+	__typename: "player_dismissals",
+	dismissed_at: GraphQLTypes["timestamptz"],
+	key: string,
+	player_steam_id: GraphQLTypes["bigint"],
+	value?: GraphQLTypes["jsonb"] | undefined | null
+};
+	/** aggregated selection of "player_dismissals" */
+["player_dismissals_aggregate"]: {
+	__typename: "player_dismissals_aggregate",
+	aggregate?: GraphQLTypes["player_dismissals_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["player_dismissals"]>
+};
+	/** aggregate fields of "player_dismissals" */
+["player_dismissals_aggregate_fields"]: {
+	__typename: "player_dismissals_aggregate_fields",
+	avg?: GraphQLTypes["player_dismissals_avg_fields"] | undefined | null,
+	count: number,
+	max?: GraphQLTypes["player_dismissals_max_fields"] | undefined | null,
+	min?: GraphQLTypes["player_dismissals_min_fields"] | undefined | null,
+	stddev?: GraphQLTypes["player_dismissals_stddev_fields"] | undefined | null,
+	stddev_pop?: GraphQLTypes["player_dismissals_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: GraphQLTypes["player_dismissals_stddev_samp_fields"] | undefined | null,
+	sum?: GraphQLTypes["player_dismissals_sum_fields"] | undefined | null,
+	var_pop?: GraphQLTypes["player_dismissals_var_pop_fields"] | undefined | null,
+	var_samp?: GraphQLTypes["player_dismissals_var_samp_fields"] | undefined | null,
+	variance?: GraphQLTypes["player_dismissals_variance_fields"] | undefined | null
+};
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["player_dismissals_append_input"]: {
+		value?: GraphQLTypes["jsonb"] | undefined | null
+};
+	/** aggregate avg on columns */
+["player_dismissals_avg_fields"]: {
+	__typename: "player_dismissals_avg_fields",
+	player_steam_id?: number | undefined | null
+};
+	/** Boolean expression to filter rows from the table "player_dismissals". All fields are combined with a logical 'AND'. */
+["player_dismissals_bool_exp"]: {
+		_and?: Array<GraphQLTypes["player_dismissals_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["player_dismissals_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["player_dismissals_bool_exp"]> | undefined | null,
+	dismissed_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	key?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	value?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "player_dismissals" */
+["player_dismissals_constraint"]: player_dismissals_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["player_dismissals_delete_at_path_input"]: {
+		value?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["player_dismissals_delete_elem_input"]: {
+		value?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["player_dismissals_delete_key_input"]: {
+		value?: string | undefined | null
+};
+	/** input type for incrementing numeric columns in table "player_dismissals" */
+["player_dismissals_inc_input"]: {
+		player_steam_id?: GraphQLTypes["bigint"] | undefined | null
+};
+	/** input type for inserting data into table "player_dismissals" */
+["player_dismissals_insert_input"]: {
+		dismissed_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	key?: string | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	value?: GraphQLTypes["jsonb"] | undefined | null
+};
+	/** aggregate max on columns */
+["player_dismissals_max_fields"]: {
+	__typename: "player_dismissals_max_fields",
+	dismissed_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	key?: string | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null
+};
+	/** aggregate min on columns */
+["player_dismissals_min_fields"]: {
+	__typename: "player_dismissals_min_fields",
+	dismissed_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	key?: string | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null
+};
+	/** response of any mutation on the table "player_dismissals" */
+["player_dismissals_mutation_response"]: {
+	__typename: "player_dismissals_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["player_dismissals"]>
+};
+	/** on_conflict condition type for table "player_dismissals" */
+["player_dismissals_on_conflict"]: {
+		constraint: GraphQLTypes["player_dismissals_constraint"],
+	update_columns: Array<GraphQLTypes["player_dismissals_update_column"]>,
+	where?: GraphQLTypes["player_dismissals_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "player_dismissals". */
+["player_dismissals_order_by"]: {
+		dismissed_at?: GraphQLTypes["order_by"] | undefined | null,
+	key?: GraphQLTypes["order_by"] | undefined | null,
+	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	value?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: player_dismissals */
+["player_dismissals_pk_columns_input"]: {
+		key: string,
+	player_steam_id: GraphQLTypes["bigint"]
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["player_dismissals_prepend_input"]: {
+		value?: GraphQLTypes["jsonb"] | undefined | null
+};
+	/** select columns of table "player_dismissals" */
+["player_dismissals_select_column"]: player_dismissals_select_column;
+	/** input type for updating data in table "player_dismissals" */
+["player_dismissals_set_input"]: {
+		dismissed_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	key?: string | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	value?: GraphQLTypes["jsonb"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["player_dismissals_stddev_fields"]: {
+	__typename: "player_dismissals_stddev_fields",
+	player_steam_id?: number | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["player_dismissals_stddev_pop_fields"]: {
+	__typename: "player_dismissals_stddev_pop_fields",
+	player_steam_id?: number | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["player_dismissals_stddev_samp_fields"]: {
+	__typename: "player_dismissals_stddev_samp_fields",
+	player_steam_id?: number | undefined | null
+};
+	/** Streaming cursor of the table "player_dismissals" */
+["player_dismissals_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["player_dismissals_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["player_dismissals_stream_cursor_value_input"]: {
+		dismissed_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	key?: string | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	value?: GraphQLTypes["jsonb"] | undefined | null
+};
+	/** aggregate sum on columns */
+["player_dismissals_sum_fields"]: {
+	__typename: "player_dismissals_sum_fields",
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null
+};
+	/** update columns of table "player_dismissals" */
+["player_dismissals_update_column"]: player_dismissals_update_column;
+	["player_dismissals_updates"]: {
+		/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: GraphQLTypes["player_dismissals_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: GraphQLTypes["player_dismissals_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: GraphQLTypes["player_dismissals_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: GraphQLTypes["player_dismissals_delete_key_input"] | undefined | null,
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: GraphQLTypes["player_dismissals_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: GraphQLTypes["player_dismissals_prepend_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["player_dismissals_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["player_dismissals_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["player_dismissals_var_pop_fields"]: {
+	__typename: "player_dismissals_var_pop_fields",
+	player_steam_id?: number | undefined | null
+};
+	/** aggregate var_samp on columns */
+["player_dismissals_var_samp_fields"]: {
+	__typename: "player_dismissals_var_samp_fields",
+	player_steam_id?: number | undefined | null
+};
+	/** aggregate variance on columns */
+["player_dismissals_variance_fields"]: {
+	__typename: "player_dismissals_variance_fields",
+	player_steam_id?: number | undefined | null
 };
 	/** columns and relationships of "player_elo" */
 ["player_elo"]: {
@@ -304496,6 +305524,12 @@ export type GraphQLTypes = {
 	player_damages_aggregate: GraphQLTypes["player_damages_aggregate"],
 	/** fetch data from the table: "player_damages" using primary key columns */
 	player_damages_by_pk?: GraphQLTypes["player_damages"] | undefined | null,
+	/** fetch data from the table: "player_dismissals" */
+	player_dismissals: Array<GraphQLTypes["player_dismissals"]>,
+	/** fetch aggregated fields from the table: "player_dismissals" */
+	player_dismissals_aggregate: GraphQLTypes["player_dismissals_aggregate"],
+	/** fetch data from the table: "player_dismissals" using primary key columns */
+	player_dismissals_by_pk?: GraphQLTypes["player_dismissals"] | undefined | null,
 	/** fetch data from the table: "player_elo" */
 	player_elo: Array<GraphQLTypes["player_elo"]>,
 	/** fetch aggregated fields from the table: "player_elo" */
@@ -304710,6 +305744,8 @@ export type GraphQLTypes = {
 	settings_aggregate: GraphQLTypes["settings_aggregate"],
 	/** fetch data from the table: "settings" using primary key columns */
 	settings_by_pk?: GraphQLTypes["settings"] | undefined | null,
+	/** Which view-only sections (tournaments, events, news, highlights) have anything a guest can see */
+	siteContent: GraphQLTypes["SiteContentOutput"],
 	/** Steam presence bot admin dashboard status */
 	steamPresenceAdminStatus: GraphQLTypes["SteamPresenceAdminStatusOutput"],
 	/** fetch data from the table: "steam_account_claims" */
@@ -307882,6 +308918,7 @@ export type GraphQLTypes = {
 	/** An object relationship */
 	game_server_node?: GraphQLTypes["game_server_nodes"] | undefined | null,
 	game_server_node_id?: string | undefined | null,
+	hibernating: boolean,
 	host: string,
 	id: GraphQLTypes["uuid"],
 	is_dedicated: boolean,
@@ -308034,6 +309071,7 @@ export type GraphQLTypes = {
 	game_mode_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
 	game_server_node?: GraphQLTypes["game_server_nodes_bool_exp"] | undefined | null,
 	game_server_node_id?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	hibernating?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	host?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
 	is_dedicated?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
@@ -308107,6 +309145,7 @@ export type GraphQLTypes = {
 	game_mode_id?: GraphQLTypes["uuid"] | undefined | null,
 	game_server_node?: GraphQLTypes["game_server_nodes_obj_rel_insert_input"] | undefined | null,
 	game_server_node_id?: string | undefined | null,
+	hibernating?: boolean | undefined | null,
 	host?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	is_dedicated?: boolean | undefined | null,
@@ -308291,6 +309330,7 @@ export type GraphQLTypes = {
 	game_mode_id?: GraphQLTypes["order_by"] | undefined | null,
 	game_server_node?: GraphQLTypes["game_server_nodes_order_by"] | undefined | null,
 	game_server_node_id?: GraphQLTypes["order_by"] | undefined | null,
+	hibernating?: GraphQLTypes["order_by"] | undefined | null,
 	host?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
 	is_dedicated?: GraphQLTypes["order_by"] | undefined | null,
@@ -308348,6 +309388,7 @@ export type GraphQLTypes = {
 	game?: string | undefined | null,
 	game_mode_id?: GraphQLTypes["uuid"] | undefined | null,
 	game_server_node_id?: string | undefined | null,
+	hibernating?: boolean | undefined | null,
 	host?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	is_dedicated?: boolean | undefined | null,
@@ -308431,6 +309472,7 @@ export type GraphQLTypes = {
 	game?: string | undefined | null,
 	game_mode_id?: GraphQLTypes["uuid"] | undefined | null,
 	game_server_node_id?: string | undefined | null,
+	hibernating?: boolean | undefined | null,
 	host?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	is_dedicated?: boolean | undefined | null,
@@ -310192,6 +311234,14 @@ export type GraphQLTypes = {
 	player_damages_by_pk?: GraphQLTypes["player_damages"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "player_damages" */
 	player_damages_stream: Array<GraphQLTypes["player_damages"]>,
+	/** fetch data from the table: "player_dismissals" */
+	player_dismissals: Array<GraphQLTypes["player_dismissals"]>,
+	/** fetch aggregated fields from the table: "player_dismissals" */
+	player_dismissals_aggregate: GraphQLTypes["player_dismissals_aggregate"],
+	/** fetch data from the table: "player_dismissals" using primary key columns */
+	player_dismissals_by_pk?: GraphQLTypes["player_dismissals"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "player_dismissals" */
+	player_dismissals_stream: Array<GraphQLTypes["player_dismissals"]>,
 	/** fetch data from the table: "player_elo" */
 	player_elo: Array<GraphQLTypes["player_elo"]>,
 	/** fetch aggregated fields from the table: "player_elo" */
@@ -313396,12 +314446,15 @@ export type GraphQLTypes = {
 	/** An object relationship */
 	captain?: GraphQLTypes["players"] | undefined | null,
 	captain_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	id: GraphQLTypes["uuid"],
 	/** An array relationship */
 	invites: Array<GraphQLTypes["team_invites"]>,
 	/** An aggregate relationship */
 	invites_aggregate: GraphQLTypes["team_invites_aggregate"],
 	is_organization: boolean,
+	/** A computed field, executes function "team_last_match_at" */
+	last_match_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	/** An array relationship */
 	match_lineups: Array<GraphQLTypes["match_lineups"]>,
 	/** An aggregate relationship */
@@ -313523,10 +314576,12 @@ export type GraphQLTypes = {
 	can_remove?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	captain?: GraphQLTypes["players_bool_exp"] | undefined | null,
 	captain_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
 	invites?: GraphQLTypes["team_invites_bool_exp"] | undefined | null,
 	invites_aggregate?: GraphQLTypes["team_invites_aggregate_bool_exp"] | undefined | null,
 	is_organization?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	last_match_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	match_lineups?: GraphQLTypes["match_lineups_bool_exp"] | undefined | null,
 	match_lineups_aggregate?: GraphQLTypes["match_lineups_aggregate_bool_exp"] | undefined | null,
 	matches?: GraphQLTypes["matches_bool_exp"] | undefined | null,
@@ -313558,6 +314613,7 @@ export type GraphQLTypes = {
 	awards?: GraphQLTypes["award_recipients_arr_rel_insert_input"] | undefined | null,
 	captain?: GraphQLTypes["players_obj_rel_insert_input"] | undefined | null,
 	captain_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	invites?: GraphQLTypes["team_invites_arr_rel_insert_input"] | undefined | null,
 	is_organization?: boolean | undefined | null,
@@ -313578,7 +314634,10 @@ export type GraphQLTypes = {
 	__typename: "teams_max_fields",
 	avatar_url?: string | undefined | null,
 	captain_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
+	/** A computed field, executes function "team_last_match_at" */
+	last_match_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
 	owner_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	/** A computed field, executes function "team_role" */
@@ -313589,6 +314648,7 @@ export type GraphQLTypes = {
 ["teams_max_order_by"]: {
 		avatar_url?: GraphQLTypes["order_by"] | undefined | null,
 	captain_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	created_at?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
 	name?: GraphQLTypes["order_by"] | undefined | null,
 	owner_steam_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -313599,7 +314659,10 @@ export type GraphQLTypes = {
 	__typename: "teams_min_fields",
 	avatar_url?: string | undefined | null,
 	captain_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
+	/** A computed field, executes function "team_last_match_at" */
+	last_match_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
 	owner_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	/** A computed field, executes function "team_role" */
@@ -313610,6 +314673,7 @@ export type GraphQLTypes = {
 ["teams_min_order_by"]: {
 		avatar_url?: GraphQLTypes["order_by"] | undefined | null,
 	captain_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	created_at?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
 	name?: GraphQLTypes["order_by"] | undefined | null,
 	owner_steam_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -313645,9 +314709,11 @@ export type GraphQLTypes = {
 	can_remove?: GraphQLTypes["order_by"] | undefined | null,
 	captain?: GraphQLTypes["players_order_by"] | undefined | null,
 	captain_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	created_at?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
 	invites_aggregate?: GraphQLTypes["team_invites_aggregate_order_by"] | undefined | null,
 	is_organization?: GraphQLTypes["order_by"] | undefined | null,
+	last_match_at?: GraphQLTypes["order_by"] | undefined | null,
 	match_lineups_aggregate?: GraphQLTypes["match_lineups_aggregate_order_by"] | undefined | null,
 	matches_aggregate?: GraphQLTypes["matches_aggregate_order_by"] | undefined | null,
 	name?: GraphQLTypes["order_by"] | undefined | null,
@@ -313676,6 +314742,7 @@ export type GraphQLTypes = {
 ["teams_set_input"]: {
 		avatar_url?: string | undefined | null,
 	captain_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	is_organization?: boolean | undefined | null,
 	name?: string | undefined | null,
@@ -313726,6 +314793,7 @@ export type GraphQLTypes = {
 ["teams_stream_cursor_value_input"]: {
 		avatar_url?: string | undefined | null,
 	captain_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	is_organization?: boolean | undefined | null,
 	name?: string | undefined | null,
@@ -340925,6 +341993,24 @@ export enum player_damages_update_column {
 	time = "time",
 	with = "with"
 }
+/** unique or primary key constraints on table "player_dismissals" */
+export enum player_dismissals_constraint {
+	player_dismissals_pkey = "player_dismissals_pkey"
+}
+/** select columns of table "player_dismissals" */
+export enum player_dismissals_select_column {
+	dismissed_at = "dismissed_at",
+	key = "key",
+	player_steam_id = "player_steam_id",
+	value = "value"
+}
+/** update columns of table "player_dismissals" */
+export enum player_dismissals_update_column {
+	dismissed_at = "dismissed_at",
+	key = "key",
+	player_steam_id = "player_steam_id",
+	value = "value"
+}
 /** unique or primary key constraints on table "player_elo" */
 export enum player_elo_constraint {
 	player_elo_pkey = "player_elo_pkey"
@@ -342096,6 +343182,7 @@ export enum servers_select_column {
 	game = "game",
 	game_mode_id = "game_mode_id",
 	game_server_node_id = "game_server_node_id",
+	hibernating = "hibernating",
 	host = "host",
 	id = "id",
 	is_dedicated = "is_dedicated",
@@ -342125,6 +343212,7 @@ export enum servers_select_column_servers_aggregate_bool_exp_bool_and_arguments_
 	access_restricted = "access_restricted",
 	connected = "connected",
 	enabled = "enabled",
+	hibernating = "hibernating",
 	is_dedicated = "is_dedicated",
 	map_rotation_shuffle = "map_rotation_shuffle",
 	rcon_status = "rcon_status"
@@ -342134,6 +343222,7 @@ export enum servers_select_column_servers_aggregate_bool_exp_bool_or_arguments_c
 	access_restricted = "access_restricted",
 	connected = "connected",
 	enabled = "enabled",
+	hibernating = "hibernating",
 	is_dedicated = "is_dedicated",
 	map_rotation_shuffle = "map_rotation_shuffle",
 	rcon_status = "rcon_status"
@@ -342151,6 +343240,7 @@ export enum servers_update_column {
 	game = "game",
 	game_mode_id = "game_mode_id",
 	game_server_node_id = "game_server_node_id",
+	hibernating = "hibernating",
 	host = "host",
 	id = "id",
 	is_dedicated = "is_dedicated",
@@ -342532,6 +343622,7 @@ export enum teams_constraint {
 export enum teams_select_column {
 	avatar_url = "avatar_url",
 	captain_steam_id = "captain_steam_id",
+	created_at = "created_at",
 	id = "id",
 	is_organization = "is_organization",
 	name = "name",
@@ -342550,6 +343641,7 @@ export enum teams_select_column_teams_aggregate_bool_exp_bool_or_arguments_colum
 export enum teams_update_column {
 	avatar_url = "avatar_url",
 	captain_steam_id = "captain_steam_id",
+	created_at = "created_at",
 	id = "id",
 	is_organization = "is_organization",
 	name = "name",
@@ -347625,6 +348717,24 @@ type ZEUS_VARIABLES = {
 	["player_damages_var_pop_order_by"]: ValueTypes["player_damages_var_pop_order_by"];
 	["player_damages_var_samp_order_by"]: ValueTypes["player_damages_var_samp_order_by"];
 	["player_damages_variance_order_by"]: ValueTypes["player_damages_variance_order_by"];
+	["player_dismissals_append_input"]: ValueTypes["player_dismissals_append_input"];
+	["player_dismissals_bool_exp"]: ValueTypes["player_dismissals_bool_exp"];
+	["player_dismissals_constraint"]: ValueTypes["player_dismissals_constraint"];
+	["player_dismissals_delete_at_path_input"]: ValueTypes["player_dismissals_delete_at_path_input"];
+	["player_dismissals_delete_elem_input"]: ValueTypes["player_dismissals_delete_elem_input"];
+	["player_dismissals_delete_key_input"]: ValueTypes["player_dismissals_delete_key_input"];
+	["player_dismissals_inc_input"]: ValueTypes["player_dismissals_inc_input"];
+	["player_dismissals_insert_input"]: ValueTypes["player_dismissals_insert_input"];
+	["player_dismissals_on_conflict"]: ValueTypes["player_dismissals_on_conflict"];
+	["player_dismissals_order_by"]: ValueTypes["player_dismissals_order_by"];
+	["player_dismissals_pk_columns_input"]: ValueTypes["player_dismissals_pk_columns_input"];
+	["player_dismissals_prepend_input"]: ValueTypes["player_dismissals_prepend_input"];
+	["player_dismissals_select_column"]: ValueTypes["player_dismissals_select_column"];
+	["player_dismissals_set_input"]: ValueTypes["player_dismissals_set_input"];
+	["player_dismissals_stream_cursor_input"]: ValueTypes["player_dismissals_stream_cursor_input"];
+	["player_dismissals_stream_cursor_value_input"]: ValueTypes["player_dismissals_stream_cursor_value_input"];
+	["player_dismissals_update_column"]: ValueTypes["player_dismissals_update_column"];
+	["player_dismissals_updates"]: ValueTypes["player_dismissals_updates"];
 	["player_elo_bool_exp"]: ValueTypes["player_elo_bool_exp"];
 	["player_elo_constraint"]: ValueTypes["player_elo_constraint"];
 	["player_elo_inc_input"]: ValueTypes["player_elo_inc_input"];

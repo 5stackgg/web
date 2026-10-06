@@ -12,8 +12,8 @@ import TimeAgo from "~/components/TimeAgo.vue";
           'bg-red-600': !server.connected,
           'bg-yellow-600':
             server.connected && (!server.rcon_status || pluginVersionMismatch),
-          'bg-green-600':
-            server.connected && server.rcon_status && !pluginVersionMismatch,
+          'bg-sky-500': healthy && server.hibernating,
+          'bg-green-600': healthy && !server.hibernating,
         }"
       >
         <span
@@ -48,6 +48,9 @@ import TimeAgo from "~/components/TimeAgo.vue";
         </a>
       </small>
     </template>
+    <template v-else-if="server.hibernating">
+      {{ $t("pages.dedicated_servers.detail.status.hibernating") }}
+    </template>
     <template v-else>
       {{ $t("pages.dedicated_servers.detail.status.connected") }}
     </template>
@@ -67,6 +70,13 @@ export default {
     },
   },
   computed: {
+    healthy() {
+      return (
+        this.server.connected &&
+        this.server.rcon_status &&
+        !this.pluginVersionMismatch
+      );
+    },
     currentPluginVersion() {
       return useApplicationSettingsStore().currentPluginVersion;
     },

@@ -15495,6 +15495,12 @@ export const AllTypesProps: Record<string,any> = {
 			match_map_id:"uuid",
 			time:"timestamptz"
 		},
+		delete_player_dismissals:{
+			where:"player_dismissals_bool_exp"
+		},
+		delete_player_dismissals_by_pk:{
+			player_steam_id:"bigint"
+		},
 		delete_player_elo:{
 			where:"player_elo_bool_exp"
 		},
@@ -17154,6 +17160,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_player_damages_one:{
 			object:"player_damages_insert_input",
 			on_conflict:"player_damages_on_conflict"
+		},
+		insert_player_dismissals:{
+			objects:"player_dismissals_insert_input",
+			on_conflict:"player_dismissals_on_conflict"
+		},
+		insert_player_dismissals_one:{
+			object:"player_dismissals_insert_input",
+			on_conflict:"player_dismissals_on_conflict"
 		},
 		insert_player_elo:{
 			objects:"player_elo_insert_input",
@@ -19984,6 +19998,29 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_player_damages_many:{
 			updates:"player_damages_updates"
+		},
+		update_player_dismissals:{
+			_append:"player_dismissals_append_input",
+			_delete_at_path:"player_dismissals_delete_at_path_input",
+			_delete_elem:"player_dismissals_delete_elem_input",
+			_delete_key:"player_dismissals_delete_key_input",
+			_inc:"player_dismissals_inc_input",
+			_prepend:"player_dismissals_prepend_input",
+			_set:"player_dismissals_set_input",
+			where:"player_dismissals_bool_exp"
+		},
+		update_player_dismissals_by_pk:{
+			_append:"player_dismissals_append_input",
+			_delete_at_path:"player_dismissals_delete_at_path_input",
+			_delete_elem:"player_dismissals_delete_elem_input",
+			_delete_key:"player_dismissals_delete_key_input",
+			_inc:"player_dismissals_inc_input",
+			_prepend:"player_dismissals_prepend_input",
+			_set:"player_dismissals_set_input",
+			pk_columns:"player_dismissals_pk_columns_input"
+		},
+		update_player_dismissals_many:{
+			updates:"player_dismissals_updates"
 		},
 		update_player_elo:{
 			_inc:"player_elo_inc_input",
@@ -22971,6 +23008,89 @@ export const AllTypesProps: Record<string,any> = {
 		damage_armor:"order_by",
 		health:"order_by",
 		round:"order_by"
+	},
+	player_dismissals:{
+		value:{
+
+		}
+	},
+	player_dismissals_aggregate_fields:{
+		count:{
+			columns:"player_dismissals_select_column"
+		}
+	},
+	player_dismissals_append_input:{
+		value:"jsonb"
+	},
+	player_dismissals_bool_exp:{
+		_and:"player_dismissals_bool_exp",
+		_not:"player_dismissals_bool_exp",
+		_or:"player_dismissals_bool_exp",
+		dismissed_at:"timestamptz_comparison_exp",
+		key:"String_comparison_exp",
+		player_steam_id:"bigint_comparison_exp",
+		value:"jsonb_comparison_exp"
+	},
+	player_dismissals_constraint: "enum" as const,
+	player_dismissals_delete_at_path_input:{
+
+	},
+	player_dismissals_delete_elem_input:{
+
+	},
+	player_dismissals_delete_key_input:{
+
+	},
+	player_dismissals_inc_input:{
+		player_steam_id:"bigint"
+	},
+	player_dismissals_insert_input:{
+		dismissed_at:"timestamptz",
+		player_steam_id:"bigint",
+		value:"jsonb"
+	},
+	player_dismissals_on_conflict:{
+		constraint:"player_dismissals_constraint",
+		update_columns:"player_dismissals_update_column",
+		where:"player_dismissals_bool_exp"
+	},
+	player_dismissals_order_by:{
+		dismissed_at:"order_by",
+		key:"order_by",
+		player_steam_id:"order_by",
+		value:"order_by"
+	},
+	player_dismissals_pk_columns_input:{
+		player_steam_id:"bigint"
+	},
+	player_dismissals_prepend_input:{
+		value:"jsonb"
+	},
+	player_dismissals_select_column: "enum" as const,
+	player_dismissals_set_input:{
+		dismissed_at:"timestamptz",
+		player_steam_id:"bigint",
+		value:"jsonb"
+	},
+	player_dismissals_stream_cursor_input:{
+		initial_value:"player_dismissals_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	player_dismissals_stream_cursor_value_input:{
+		dismissed_at:"timestamptz",
+		player_steam_id:"bigint",
+		value:"jsonb"
+	},
+	player_dismissals_update_column: "enum" as const,
+	player_dismissals_updates:{
+		_append:"player_dismissals_append_input",
+		_delete_at_path:"player_dismissals_delete_at_path_input",
+		_delete_elem:"player_dismissals_delete_elem_input",
+		_delete_key:"player_dismissals_delete_key_input",
+		_inc:"player_dismissals_inc_input",
+		_prepend:"player_dismissals_prepend_input",
+		_set:"player_dismissals_set_input",
+		where:"player_dismissals_bool_exp"
 	},
 	player_elo_aggregate_fields:{
 		count:{
@@ -30300,6 +30420,19 @@ export const AllTypesProps: Record<string,any> = {
 			match_map_id:"uuid",
 			time:"timestamptz"
 		},
+		player_dismissals:{
+			distinct_on:"player_dismissals_select_column",
+			order_by:"player_dismissals_order_by",
+			where:"player_dismissals_bool_exp"
+		},
+		player_dismissals_aggregate:{
+			distinct_on:"player_dismissals_select_column",
+			order_by:"player_dismissals_order_by",
+			where:"player_dismissals_bool_exp"
+		},
+		player_dismissals_by_pk:{
+			player_steam_id:"bigint"
+		},
 		player_elo:{
 			distinct_on:"player_elo_select_column",
 			order_by:"player_elo_order_by",
@@ -33271,6 +33404,7 @@ export const AllTypesProps: Record<string,any> = {
 		game_mode_id:"uuid_comparison_exp",
 		game_server_node:"game_server_nodes_bool_exp",
 		game_server_node_id:"String_comparison_exp",
+		hibernating:"Boolean_comparison_exp",
 		host:"String_comparison_exp",
 		id:"uuid_comparison_exp",
 		is_dedicated:"Boolean_comparison_exp",
@@ -33423,6 +33557,7 @@ export const AllTypesProps: Record<string,any> = {
 		game_mode_id:"order_by",
 		game_server_node:"game_server_nodes_order_by",
 		game_server_node_id:"order_by",
+		hibernating:"order_by",
 		host:"order_by",
 		id:"order_by",
 		is_dedicated:"order_by",
@@ -36225,6 +36360,23 @@ export const AllTypesProps: Record<string,any> = {
 		player_damages_stream:{
 			cursor:"player_damages_stream_cursor_input",
 			where:"player_damages_bool_exp"
+		},
+		player_dismissals:{
+			distinct_on:"player_dismissals_select_column",
+			order_by:"player_dismissals_order_by",
+			where:"player_dismissals_bool_exp"
+		},
+		player_dismissals_aggregate:{
+			distinct_on:"player_dismissals_select_column",
+			order_by:"player_dismissals_order_by",
+			where:"player_dismissals_bool_exp"
+		},
+		player_dismissals_by_pk:{
+			player_steam_id:"bigint"
+		},
+		player_dismissals_stream:{
+			cursor:"player_dismissals_stream_cursor_input",
+			where:"player_dismissals_bool_exp"
 		},
 		player_elo:{
 			distinct_on:"player_elo_select_column",
@@ -39398,10 +39550,12 @@ export const AllTypesProps: Record<string,any> = {
 		can_remove:"Boolean_comparison_exp",
 		captain:"players_bool_exp",
 		captain_steam_id:"bigint_comparison_exp",
+		created_at:"timestamptz_comparison_exp",
 		id:"uuid_comparison_exp",
 		invites:"team_invites_bool_exp",
 		invites_aggregate:"team_invites_aggregate_bool_exp",
 		is_organization:"Boolean_comparison_exp",
+		last_match_at:"timestamptz_comparison_exp",
 		match_lineups:"match_lineups_bool_exp",
 		match_lineups_aggregate:"match_lineups_aggregate_bool_exp",
 		matches:"matches_bool_exp",
@@ -39429,6 +39583,7 @@ export const AllTypesProps: Record<string,any> = {
 		awards:"award_recipients_arr_rel_insert_input",
 		captain:"players_obj_rel_insert_input",
 		captain_steam_id:"bigint",
+		created_at:"timestamptz",
 		id:"uuid",
 		invites:"team_invites_arr_rel_insert_input",
 		match_lineups:"match_lineups_arr_rel_insert_input",
@@ -39444,6 +39599,7 @@ export const AllTypesProps: Record<string,any> = {
 	teams_max_order_by:{
 		avatar_url:"order_by",
 		captain_steam_id:"order_by",
+		created_at:"order_by",
 		id:"order_by",
 		name:"order_by",
 		owner_steam_id:"order_by",
@@ -39452,6 +39608,7 @@ export const AllTypesProps: Record<string,any> = {
 	teams_min_order_by:{
 		avatar_url:"order_by",
 		captain_steam_id:"order_by",
+		created_at:"order_by",
 		id:"order_by",
 		name:"order_by",
 		owner_steam_id:"order_by",
@@ -39475,9 +39632,11 @@ export const AllTypesProps: Record<string,any> = {
 		can_remove:"order_by",
 		captain:"players_order_by",
 		captain_steam_id:"order_by",
+		created_at:"order_by",
 		id:"order_by",
 		invites_aggregate:"team_invites_aggregate_order_by",
 		is_organization:"order_by",
+		last_match_at:"order_by",
 		match_lineups_aggregate:"match_lineups_aggregate_order_by",
 		matches_aggregate:"matches_aggregate_order_by",
 		name:"order_by",
@@ -39500,6 +39659,7 @@ export const AllTypesProps: Record<string,any> = {
 	teams_select_column_teams_aggregate_bool_exp_bool_or_arguments_columns: "enum" as const,
 	teams_set_input:{
 		captain_steam_id:"bigint",
+		created_at:"timestamptz",
 		id:"uuid",
 		owner_steam_id:"bigint"
 	},
@@ -39521,6 +39681,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	teams_stream_cursor_value_input:{
 		captain_steam_id:"bigint",
+		created_at:"timestamptz",
 		id:"uuid",
 		owner_steam_id:"bigint"
 	},
@@ -50915,6 +51076,12 @@ export const ReturnTypes: Record<string,any> = {
 		gameServerId:"String",
 		link:"String"
 	},
+	SiteContentOutput:{
+		events:"Boolean",
+		highlights:"Boolean",
+		news:"Boolean",
+		tournaments:"Boolean"
+	},
 	SteamMatchHistoryLinkOutput:{
 		error:"String",
 		success:"Boolean"
@@ -59259,6 +59426,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_player_blocks_by_pk:"player_blocks",
 		delete_player_damages:"player_damages_mutation_response",
 		delete_player_damages_by_pk:"player_damages",
+		delete_player_dismissals:"player_dismissals_mutation_response",
+		delete_player_dismissals_by_pk:"player_dismissals",
 		delete_player_elo:"player_elo_mutation_response",
 		delete_player_elo_by_pk:"player_elo",
 		delete_player_faceit_rank_history:"player_faceit_rank_history_mutation_response",
@@ -59710,6 +59879,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_player_blocks_one:"player_blocks",
 		insert_player_damages:"player_damages_mutation_response",
 		insert_player_damages_one:"player_damages",
+		insert_player_dismissals:"player_dismissals_mutation_response",
+		insert_player_dismissals_one:"player_dismissals",
 		insert_player_elo:"player_elo_mutation_response",
 		insert_player_elo_one:"player_elo",
 		insert_player_faceit_rank_history:"player_faceit_rank_history_mutation_response",
@@ -60416,6 +60587,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_player_damages:"player_damages_mutation_response",
 		update_player_damages_by_pk:"player_damages",
 		update_player_damages_many:"player_damages_mutation_response",
+		update_player_dismissals:"player_dismissals_mutation_response",
+		update_player_dismissals_by_pk:"player_dismissals",
+		update_player_dismissals_many:"player_dismissals_mutation_response",
 		update_player_elo:"player_elo_mutation_response",
 		update_player_elo_by_pk:"player_elo",
 		update_player_elo_many:"player_elo_mutation_response",
@@ -62200,6 +62374,67 @@ export const ReturnTypes: Record<string,any> = {
 		damage_armor:"Float",
 		health:"Float",
 		round:"Float"
+	},
+	player_dismissals:{
+		dismissed_at:"timestamptz",
+		key:"String",
+		player_steam_id:"bigint",
+		value:"jsonb"
+	},
+	player_dismissals_aggregate:{
+		aggregate:"player_dismissals_aggregate_fields",
+		nodes:"player_dismissals"
+	},
+	player_dismissals_aggregate_fields:{
+		avg:"player_dismissals_avg_fields",
+		count:"Int",
+		max:"player_dismissals_max_fields",
+		min:"player_dismissals_min_fields",
+		stddev:"player_dismissals_stddev_fields",
+		stddev_pop:"player_dismissals_stddev_pop_fields",
+		stddev_samp:"player_dismissals_stddev_samp_fields",
+		sum:"player_dismissals_sum_fields",
+		var_pop:"player_dismissals_var_pop_fields",
+		var_samp:"player_dismissals_var_samp_fields",
+		variance:"player_dismissals_variance_fields"
+	},
+	player_dismissals_avg_fields:{
+		player_steam_id:"Float"
+	},
+	player_dismissals_max_fields:{
+		dismissed_at:"timestamptz",
+		key:"String",
+		player_steam_id:"bigint"
+	},
+	player_dismissals_min_fields:{
+		dismissed_at:"timestamptz",
+		key:"String",
+		player_steam_id:"bigint"
+	},
+	player_dismissals_mutation_response:{
+		affected_rows:"Int",
+		returning:"player_dismissals"
+	},
+	player_dismissals_stddev_fields:{
+		player_steam_id:"Float"
+	},
+	player_dismissals_stddev_pop_fields:{
+		player_steam_id:"Float"
+	},
+	player_dismissals_stddev_samp_fields:{
+		player_steam_id:"Float"
+	},
+	player_dismissals_sum_fields:{
+		player_steam_id:"bigint"
+	},
+	player_dismissals_var_pop_fields:{
+		player_steam_id:"Float"
+	},
+	player_dismissals_var_samp_fields:{
+		player_steam_id:"Float"
+	},
+	player_dismissals_variance_fields:{
+		player_steam_id:"Float"
 	},
 	player_elo:{
 		actual_score:"float8",
@@ -67252,6 +67487,9 @@ export const ReturnTypes: Record<string,any> = {
 		player_damages:"player_damages",
 		player_damages_aggregate:"player_damages_aggregate",
 		player_damages_by_pk:"player_damages",
+		player_dismissals:"player_dismissals",
+		player_dismissals_aggregate:"player_dismissals_aggregate",
+		player_dismissals_by_pk:"player_dismissals",
 		player_elo:"player_elo",
 		player_elo_aggregate:"player_elo_aggregate",
 		player_elo_by_pk:"player_elo",
@@ -67359,6 +67597,7 @@ export const ReturnTypes: Record<string,any> = {
 		settings:"settings",
 		settings_aggregate:"settings_aggregate",
 		settings_by_pk:"settings",
+		siteContent:"SiteContentOutput",
 		steamPresenceAdminStatus:"SteamPresenceAdminStatusOutput",
 		steam_account_claims:"steam_account_claims",
 		steam_account_claims_aggregate:"steam_account_claims_aggregate",
@@ -68375,6 +68614,7 @@ export const ReturnTypes: Record<string,any> = {
 		game_mode_id:"uuid",
 		game_server_node:"game_server_nodes",
 		game_server_node_id:"String",
+		hibernating:"Boolean",
 		host:"String",
 		id:"uuid",
 		is_dedicated:"Boolean",
@@ -69254,6 +69494,10 @@ export const ReturnTypes: Record<string,any> = {
 		player_damages_aggregate:"player_damages_aggregate",
 		player_damages_by_pk:"player_damages",
 		player_damages_stream:"player_damages",
+		player_dismissals:"player_dismissals",
+		player_dismissals_aggregate:"player_dismissals_aggregate",
+		player_dismissals_by_pk:"player_dismissals",
+		player_dismissals_stream:"player_dismissals",
 		player_elo:"player_elo",
 		player_elo_aggregate:"player_elo_aggregate",
 		player_elo_by_pk:"player_elo",
@@ -70376,10 +70620,12 @@ export const ReturnTypes: Record<string,any> = {
 		can_remove:"Boolean",
 		captain:"players",
 		captain_steam_id:"bigint",
+		created_at:"timestamptz",
 		id:"uuid",
 		invites:"team_invites",
 		invites_aggregate:"team_invites_aggregate",
 		is_organization:"Boolean",
+		last_match_at:"timestamptz",
 		match_lineups:"match_lineups",
 		match_lineups_aggregate:"match_lineups_aggregate",
 		matches:"matches",
@@ -70422,7 +70668,9 @@ export const ReturnTypes: Record<string,any> = {
 	teams_max_fields:{
 		avatar_url:"String",
 		captain_steam_id:"bigint",
+		created_at:"timestamptz",
 		id:"uuid",
+		last_match_at:"timestamptz",
 		name:"String",
 		owner_steam_id:"bigint",
 		role:"String",
@@ -70431,7 +70679,9 @@ export const ReturnTypes: Record<string,any> = {
 	teams_min_fields:{
 		avatar_url:"String",
 		captain_steam_id:"bigint",
+		created_at:"timestamptz",
 		id:"uuid",
+		last_match_at:"timestamptz",
 		name:"String",
 		owner_steam_id:"bigint",
 		role:"String",

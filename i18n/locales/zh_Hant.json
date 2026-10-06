@@ -4386,6 +4386,7 @@
         "status_label": {
           "connected": "已連線",
           "disconnected": "已中斷連線",
+          "hibernating": "休眠中",
           "no_rcon": "無 RCON",
           "version_mismatch": "版本不符"
         },
@@ -4413,6 +4414,7 @@
         },
         "status": {
           "disconnected": "伺服器已中斷連線",
+          "hibernating": "伺服器處於休眠狀態，直到有玩家連線",
           "no_rcon": "伺服器已連線，但 RCON 無法使用",
           "connected": "伺服器已連線且 RCON 可用",
           "plugin_version_mismatch": "外掛版本不是最新"

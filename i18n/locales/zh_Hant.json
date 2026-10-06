@@ -4395,6 +4395,7 @@
         "config_location": "此設定應放置於：",
         "files": "檔案",
         "player_management": "玩家管理",
+        "plugin_version_unknown": "Unknown version",
         "no_players": "此伺服器上目前沒有玩家",
         "player_management_plugin": {
           "active": "玩家管理外掛運作中",

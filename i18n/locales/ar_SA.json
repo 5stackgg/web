@@ -4395,6 +4395,7 @@
         "config_location": "يجب وضع هذه الإعدادات في:",
         "files": "ملفات",
         "player_management": "إدارة اللاعبين",
+        "plugin_version_unknown": "Unknown version",
         "no_players": "لا يوجد لاعبون على هذا السيرفر حاليًا",
         "player_management_plugin": {
           "active": "إضافة إدارة اللاعبين نشطة",

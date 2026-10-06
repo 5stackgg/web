@@ -265,7 +265,7 @@ function runCommand(
             <span class="sr-only sm:not-sr-only">{{ $t("match.admin") }}</span>
           </div>
 
-          <MatchAdminSteps :match="match" />
+          <MatchAdminSteps :match="match" class="max-sm:hidden" />
         </div>
 
         <div

@@ -4395,6 +4395,7 @@
         "config_location": "Diese Config gehört nach:",
         "files": "Dateien",
         "player_management": "Spielerverwaltung",
+        "plugin_version_unknown": "Unknown version",
         "no_players": "Aktuell keine Spieler auf diesem Server",
         "player_management_plugin": {
           "active": "Player-Management-Plugin aktiv",

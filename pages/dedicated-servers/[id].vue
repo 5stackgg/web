@@ -143,6 +143,33 @@ const titleClasses =
 
           <span :class="chipClasses">{{ server.region }}</span>
           <span v-if="server.type" :class="chipClasses">{{ server.type }}</span>
+          <span
+            v-if="server.plugin_version || pluginVersionMismatch"
+            :class="[
+              chipClasses,
+              'gap-1 normal-case tracking-[0.06em]',
+              pluginVersionMismatch &&
+                'border-[hsl(var(--tac-amber)/0.5)] text-[hsl(var(--tac-amber))]',
+            ]"
+            :title="$t('common.plugin_version')"
+          >
+            {{
+              server.plugin_version
+                ? `v${server.plugin_version}`
+                : $t("pages.dedicated_servers.detail.plugin_version_unknown")
+            }}
+            <template v-if="pluginVersionMismatch && currentPluginVersion">
+              <span aria-hidden="true">&rarr;</span>
+              <a
+                :href="pluginReleaseLink"
+                target="_blank"
+                rel="noopener"
+                class="underline underline-offset-2 hover:text-foreground"
+              >
+                v{{ currentPluginVersion }}
+              </a>
+            </template>
+          </span>
           <span v-if="isAdmin && serverNode" :class="chipClasses">
             {{ serverNode.label || serverNode.id }}
           </span>
@@ -440,6 +467,8 @@ import {
 import { useAuthStore } from "~/stores/AuthStore";
 import { getQueryString } from "~/composables/useRouteTab";
 import { connectAddress } from "~/utilities/connectAddress";
+import { effectivePluginRuntime } from "~/constants/rconCommands";
+import { pluginReleaseUrl } from "~/constants/gameServerReleases";
 import type { ServerRosterStatus } from "~/types/serverOverview";
 
 // Literals, not the generated enum: a type added by a migration is absent
@@ -618,6 +647,18 @@ export default {
 
         void this.$router.replace({ query });
       },
+    },
+    currentPluginVersion() {
+      return useApplicationSettingsStore().currentPluginVersion;
+    },
+    pluginReleaseLink() {
+      return pluginReleaseUrl(
+        effectivePluginRuntime(
+          this.server?.plugin_runtime,
+          useApplicationSettingsStore().gameServerPluginRuntime,
+        ),
+        this.currentPluginVersion,
+      );
     },
     pluginVersionMismatch() {
       if (!this.server || this.server.type !== "Ranked") {

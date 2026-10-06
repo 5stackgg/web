@@ -118,7 +118,7 @@ const matchesById = computed(
 
     <TransitionGroup
       tag="div"
-      class="grid gap-2"
+      class="schedule-grid grid gap-2"
       enter-active-class="transition-[opacity,transform] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
       enter-from-class="translate-y-1 opacity-0"
       leave-active-class="transition-opacity [transition-duration:110ms] ease-in motion-reduce:![transition-duration:1ms]"
@@ -133,3 +133,17 @@ const matchesById = computed(
     </TransitionGroup>
   </section>
 </template>
+
+<style scoped>
+/* Rows are subgrids of these tracks; one shared action column keeps every
+   row's state text starting at the same x. */
+.schedule-grid {
+  grid-template-columns: 96px minmax(0, 1.4fr) minmax(0, 1fr) auto;
+}
+
+@media (max-width: 900px) {
+  .schedule-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+</style>

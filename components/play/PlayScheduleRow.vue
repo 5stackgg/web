@@ -153,8 +153,11 @@ async function checkIn() {
 </template>
 
 <style scoped>
+/* Columns come from the schedule list, so the state and action line up
+   across rows whatever each row's button label is. */
 .schedule-row {
-  grid-template-columns: 96px minmax(0, 1.4fr) minmax(0, 1fr) auto;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
 }
 
 /* Phones: time and teams on top, the state and one full-width action below. */

@@ -4610,7 +4610,32 @@
       "lan_servers_title": "Servidores LAN",
       "manage": "Gestionar",
       "all_modes": "Todos",
-      "no_mode": "Vanilla"
+      "no_mode": "Vanilla",
+      "summary": "{playing} jugando · {awake} activos · {hibernating} en hibernación",
+      "touch_notice": "Para unirte necesitas CS2 en tu PC. Copia el comando de conexión de un servidor o abre esta página en tu ordenador.",
+      "on_lan_title": "En esta LAN",
+      "on_lan_description": "Estás en el lugar, así que estos son los servidores más cercanos.",
+      "online_title": "En línea",
+      "pinned": "Fijado",
+      "most_players": "Más jugadores",
+      "featured": "Destacado",
+      "join": "Unirse",
+      "wake_and_join": "Despertar y unirse",
+      "full": "Lleno",
+      "hibernating": "En hibernación",
+      "hibernating_hint": "en hibernación, al unirte se despierta",
+      "seats_open": "{count} libres",
+      "copy_connect": "Copiar comando de conexión",
+      "feature": "Destacar en esta página",
+      "unfeature": "Dejar de destacar",
+      "feature_failed": "No se pudieron actualizar los servidores destacados",
+      "sort_players": "Más jugadores",
+      "sort_ping": "Mejor ping",
+      "columns": {
+        "map": "Mapa",
+        "server": "Servidor",
+        "ping": "Ping"
+      }
     },
     "map_pools": {
       "title": "Pools de mapas",

@@ -56,7 +56,9 @@ function setupLinks(wrapper: any) {
 }
 
 function manageLinks(wrapper: any, tab: string) {
-  return wrapper.findAll(`a[href="/dedicated-servers/${server.id}?tab=${tab}"]`);
+  return wrapper.findAll(
+    `a[href="/dedicated-servers/${server.id}?tab=${tab}"]`,
+  );
 }
 
 afterEach(() => {
@@ -111,5 +113,68 @@ describe("public servers setup gating", () => {
 
     expect(manageLinks(wrapper, "settings")).toHaveLength(1);
     expect(setupLinks(wrapper)).toHaveLength(1);
+  });
+});
+
+function servers(
+  count: number,
+  overrides: Record<string, any> = {},
+): Array<Record<string, any>> {
+  return Array.from({ length: count }, (_, i) => ({
+    ...server,
+    id: `server-${i}`,
+    label: `Server ${String(i).padStart(2, "0")}`,
+    ...overrides,
+  }));
+}
+
+const cards = (wrapper: any, kind: string) =>
+  wrapper.findAll(`[data-public-server="${kind}"]`);
+
+describe("public servers layout", () => {
+  it("showcases two servers and tiles the rest when there are only a few", async () => {
+    const wrapper = await mountAs("user", servers(5));
+
+    expect(cards(wrapper, "featured")).toHaveLength(2);
+    expect(cards(wrapper, "tile")).toHaveLength(3);
+    expect(cards(wrapper, "row")).toHaveLength(0);
+  });
+
+  it("switches the rest to a list past ten servers", async () => {
+    const wrapper = await mountAs("user", servers(12));
+
+    expect(cards(wrapper, "featured")).toHaveLength(2);
+    expect(cards(wrapper, "tile")).toHaveLength(0);
+    expect(cards(wrapper, "row")).toHaveLength(10);
+  });
+
+  it("features a pinned server ahead of the others", async () => {
+    const list = servers(4);
+    list[3] = { ...list[3], featured: true };
+    const wrapper = await mountAs("user", list);
+
+    expect(cards(wrapper, "featured")[0].text()).toContain("Server 03");
+  });
+
+  it("offers a hibernating server as wake and join", async () => {
+    const wrapper = await mountAs("user", [
+      {
+        ...server,
+        hibernating: true,
+        connection_link: "steam://connect/127.0.0.1:27015",
+      },
+    ]);
+
+    expect(wrapper.text()).toContain("Wake & join");
+  });
+
+  it("lets only an administrator pin servers", async () => {
+    const asUser = await mountAs("user", servers(1));
+    expect(asUser.find("button[aria-pressed]").exists()).toBe(false);
+    asUser.unmount();
+    mounted = null;
+
+    const asAdmin = await mountAs("administrator", servers(1));
+    expect(asAdmin.find("button[aria-pressed]").exists()).toBe(true);
   });
 });

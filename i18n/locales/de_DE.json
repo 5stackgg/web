@@ -4610,7 +4610,32 @@
       "lan_servers_title": "LAN-Server",
       "manage": "Verwalten",
       "all_modes": "Alle",
-      "no_mode": "Vanilla"
+      "no_mode": "Vanilla",
+      "summary": "{playing} spielen · {awake} aktiv · {hibernating} im Ruhezustand",
+      "touch_notice": "Zum Beitreten brauchst du CS2 auf deinem PC. Kopiere den Connect-Befehl eines Servers oder öffne diese Seite auf deinem Computer.",
+      "on_lan_title": "In diesem LAN",
+      "on_lan_description": "Du bist vor Ort, daher sind dies die nächsten Server.",
+      "online_title": "Online",
+      "pinned": "Angeheftet",
+      "most_players": "Meiste Spieler",
+      "featured": "Hervorgehoben",
+      "join": "Beitreten",
+      "wake_and_join": "Aufwecken & beitreten",
+      "full": "Voll",
+      "hibernating": "Im Ruhezustand",
+      "hibernating_hint": "im Ruhezustand, Beitreten weckt ihn auf",
+      "seats_open": "{count} frei",
+      "copy_connect": "Connect-Befehl kopieren",
+      "feature": "Auf dieser Seite hervorheben",
+      "unfeature": "Nicht mehr hervorheben",
+      "feature_failed": "Hervorgehobene Server konnten nicht aktualisiert werden",
+      "sort_players": "Meiste Spieler",
+      "sort_ping": "Bester Ping",
+      "columns": {
+        "map": "Karte",
+        "server": "Server",
+        "ping": "Ping"
+      }
     },
     "map_pools": {
       "title": "Map-Pools",

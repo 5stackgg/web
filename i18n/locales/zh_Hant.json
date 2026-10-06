@@ -4610,7 +4610,32 @@
       "lan_servers_title": "LAN 伺服器",
       "manage": "管理",
       "all_modes": "全部",
-      "no_mode": "原版"
+      "no_mode": "原版",
+      "summary": "{playing} 人在玩 · {awake} 台運行中 · {hibernating} 台休眠中",
+      "touch_notice": "加入需要電腦上的 CS2。請複製伺服器的連線指令，或在電腦上開啟此頁面。",
+      "on_lan_title": "本區域網路",
+      "on_lan_description": "你在現場，這些是離你最近的伺服器。",
+      "online_title": "線上",
+      "pinned": "已釘選",
+      "most_players": "玩家最多",
+      "featured": "精選",
+      "join": "加入",
+      "wake_and_join": "喚醒並加入",
+      "full": "已滿",
+      "hibernating": "休眠中",
+      "hibernating_hint": "休眠中，加入即喚醒",
+      "seats_open": "空位 {count}",
+      "copy_connect": "複製連線指令",
+      "feature": "在此頁面精選",
+      "unfeature": "取消精選",
+      "feature_failed": "無法更新精選伺服器",
+      "sort_players": "玩家最多",
+      "sort_ping": "延遲最低",
+      "columns": {
+        "map": "地圖",
+        "server": "伺服器",
+        "ping": "延遲"
+      }
     },
     "map_pools": {
       "title": "地圖池",

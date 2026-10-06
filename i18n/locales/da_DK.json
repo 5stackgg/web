@@ -4610,7 +4610,32 @@
       "lan_servers_title": "LAN-servere",
       "manage": "Administrer",
       "all_modes": "Alle",
-      "no_mode": "Vanilla"
+      "no_mode": "Vanilla",
+      "summary": "{playing} spiller · {awake} vågne · {hibernating} i dvale",
+      "touch_notice": "For at deltage skal du have CS2 på din pc. Kopiér serverens connect-kommando, eller åbn siden på din computer.",
+      "on_lan_title": "På dette LAN",
+      "on_lan_description": "Du er på stedet, så dette er de nærmeste servere.",
+      "online_title": "Online",
+      "pinned": "Fastgjort",
+      "most_players": "Flest spillere",
+      "featured": "Fremhævet",
+      "join": "Deltag",
+      "wake_and_join": "Væk og deltag",
+      "full": "Fuld",
+      "hibernating": "I dvale",
+      "hibernating_hint": "i dvale, den vågner når du deltager",
+      "seats_open": "{count} ledige",
+      "copy_connect": "Kopiér connect-kommando",
+      "feature": "Fremhæv på denne side",
+      "unfeature": "Stop fremhævning",
+      "feature_failed": "Kunne ikke opdatere de fremhævede servere",
+      "sort_players": "Flest spillere",
+      "sort_ping": "Bedste ping",
+      "columns": {
+        "map": "Bane",
+        "server": "Server",
+        "ping": "Ping"
+      }
     },
     "map_pools": {
       "title": "Map pools",

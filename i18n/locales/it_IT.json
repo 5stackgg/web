@@ -4610,7 +4610,32 @@
       "lan_servers_title": "Server LAN",
       "manage": "Gestisci",
       "all_modes": "Tutti",
-      "no_mode": "Vanilla"
+      "no_mode": "Vanilla",
+      "summary": "{playing} in gioco · {awake} attivi · {hibernating} in ibernazione",
+      "touch_notice": "Per entrare serve CS2 sul tuo PC. Copia il comando di connessione di un server o apri questa pagina sul computer.",
+      "on_lan_title": "Su questa LAN",
+      "on_lan_description": "Sei sul posto, quindi questi sono i server più vicini.",
+      "online_title": "Online",
+      "pinned": "Fissato",
+      "most_players": "Più giocatori",
+      "featured": "In evidenza",
+      "join": "Entra",
+      "wake_and_join": "Risveglia ed entra",
+      "full": "Pieno",
+      "hibernating": "In ibernazione",
+      "hibernating_hint": "in ibernazione, entrare lo risveglia",
+      "seats_open": "{count} liberi",
+      "copy_connect": "Copia comando di connessione",
+      "feature": "Metti in evidenza in questa pagina",
+      "unfeature": "Togli dall'evidenza",
+      "feature_failed": "Impossibile aggiornare i server in evidenza",
+      "sort_players": "Più giocatori",
+      "sort_ping": "Ping migliore",
+      "columns": {
+        "map": "Mappa",
+        "server": "Server",
+        "ping": "Ping"
+      }
     },
     "map_pools": {
       "title": "Map pool",

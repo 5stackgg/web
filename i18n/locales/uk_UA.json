@@ -4610,7 +4610,32 @@
       "lan_servers_title": "LAN-сервери",
       "manage": "Керувати",
       "all_modes": "Всі",
-      "no_mode": "Vanilla"
+      "no_mode": "Vanilla",
+      "summary": "{playing} грають · {awake} активні · {hibernating} у сплячому режимі",
+      "touch_notice": "Щоб приєднатися, потрібен CS2 на ПК. Скопіюйте команду підключення до сервера або відкрийте цю сторінку на комп'ютері.",
+      "on_lan_title": "У цій LAN",
+      "on_lan_description": "Ви на місці, тож це найближчі сервери.",
+      "online_title": "Онлайн",
+      "pinned": "Закріплено",
+      "most_players": "Найбільше гравців",
+      "featured": "Обране",
+      "join": "Приєднатися",
+      "wake_and_join": "Розбудити й приєднатися",
+      "full": "Заповнений",
+      "hibernating": "У сплячому режимі",
+      "hibernating_hint": "у сплячому режимі, підключення розбудить його",
+      "seats_open": "вільно: {count}",
+      "copy_connect": "Скопіювати команду підключення",
+      "feature": "Виділити на цій сторінці",
+      "unfeature": "Прибрати з обраного",
+      "feature_failed": "Не вдалося оновити обрані сервери",
+      "sort_players": "Найбільше гравців",
+      "sort_ping": "Найкращий пінг",
+      "columns": {
+        "map": "Мапа",
+        "server": "Сервер",
+        "ping": "Пінг"
+      }
     },
     "map_pools": {
       "title": "Пули карт",

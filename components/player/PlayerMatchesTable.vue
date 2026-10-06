@@ -176,7 +176,7 @@ const wideGrid =
         >
           <span />
           <span>{{ $t("player_match.headers.date") }}</span>
-          <span class="text-center">{{ $t("player_match.headers.type") }}</span>
+          <span>{{ $t("player_match.headers.type") }}</span>
           <span>{{ $t("player_match.headers.result") }}</span>
           <span>{{ $t("player_match.headers.map") }}</span>
           <span />

@@ -31,6 +31,10 @@ import { useLiveTeamMatches } from "~/composables/useLiveTeamMatches";
 import { usePerPage } from "~/composables/usePerPage";
 import { schemaHasField } from "~/utilities/schemaHasType";
 import {
+  lastDirectoryResults,
+  lastDirectoryRowCount,
+} from "~/utilities/teamsListCache";
+import {
   filterTriggerActive,
   filterTriggerBase,
   filterTriggerIdle,
@@ -64,6 +68,9 @@ const total = ref(0);
 // Starts pending: the first fetch waits on the schema check for its sort.
 const fetching = ref(true);
 const { skeleton, refreshing } = useDeferredLoading(() => fetching.value);
+// Shown from the last visit's results while the first fetch runs, so coming
+// back to Teams does not flash a skeleton of a different height.
+const seeded = ref(false);
 
 const signedIn = computed(() => !!auth.me);
 
@@ -203,26 +210,39 @@ let generation = 0;
 async function load() {
   if (!sort.value || typeof window === "undefined") return;
   const current = ++generation;
+  const variables = {
+    where: where.value,
+    orderBy: ORDER[sort.value],
+    limit: mine.value ? 100 : perPage.value,
+    offset: mine.value ? 0 : (page.value - 1) * perPage.value,
+    finished: "Finished",
+  };
+  const key = JSON.stringify([hasLastMatchAt.value, variables]);
+  const previous = lastDirectoryResults.get(key);
+  if (previous && !teams.value.length) {
+    teams.value = previous.teams;
+    total.value = previous.total;
+    seeded.value = true;
+  }
   fetching.value = true;
   try {
     const { data } = await client.query({
       query: hasLastMatchAt.value ? queries.with : queries.without,
-      variables: {
-        where: where.value,
-        orderBy: ORDER[sort.value],
-        limit: mine.value ? 100 : perPage.value,
-        offset: mine.value ? 0 : (page.value - 1) * perPage.value,
-        finished: "Finished",
-      },
+      variables,
       fetchPolicy: "network-only",
     });
     if (current !== generation) return;
     teams.value = (data as any)?.teams ?? [];
     total.value = (data as any)?.teams_aggregate?.aggregate?.count ?? 0;
+    lastDirectoryResults.set(key, { teams: teams.value, total: total.value });
+    lastDirectoryRowCount.value = teams.value.length;
   } catch (error) {
     console.error("[teams] directory query error", error);
   } finally {
-    if (current === generation) fetching.value = false;
+    if (current === generation) {
+      fetching.value = false;
+      seeded.value = false;
+    }
   }
 }
 
@@ -400,9 +420,9 @@ const headerCell = "text-[11px] font-semibold uppercase tracking-[0.1em]";
         }}</span>
       </div>
 
-      <div v-if="skeleton" class="divide-y divide-border/60">
+      <div v-if="skeleton && !seeded" class="divide-y divide-border/60">
         <div
-          v-for="i in Math.min(perPage, 10)"
+          v-for="i in Math.min(perPage, lastDirectoryRowCount.value || 10)"
           :key="i"
           class="flex items-center gap-3 px-4 py-3"
         >

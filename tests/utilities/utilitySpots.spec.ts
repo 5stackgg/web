@@ -69,6 +69,14 @@ describe("groupUtilitySpots", () => {
     expect(spots).toEqual([]);
   });
 
+  it("pins a spot to the middle of its landings", () => {
+    const [spot] = groupUtilitySpots(
+      [row("a", 10, 20), row("b", 30, 40)],
+      callouts,
+    );
+    expect(spot.point).toEqual({ x: 20, y: 30, z: 50 });
+  });
+
   it("has nothing to say about a map with no callouts", () => {
     expect(groupUtilitySpots([row("a", 10, 10)], [])).toEqual([]);
   });

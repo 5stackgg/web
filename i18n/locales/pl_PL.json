@@ -5351,7 +5351,8 @@
         "title": "Gdzie potrzebujesz granatów?",
         "all": "Wszystkie miejsca",
         "more": "Jeszcze {count}",
-        "fewer": "Mniej"
+        "fewer": "Mniej",
+        "count": "{count} lineup | {count} lineupów"
       },
       "sheet": {
         "expand": "Pokaż więcej listy",

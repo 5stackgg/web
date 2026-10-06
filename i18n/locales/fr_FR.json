@@ -5351,7 +5351,8 @@
         "title": "Où as-tu besoin d'utilitaires ?",
         "all": "Tous les spots",
         "more": "{count} de plus",
-        "fewer": "Moins"
+        "fewer": "Moins",
+        "count": "{count} lineup | {count} lineups"
       },
       "sheet": {
         "expand": "Afficher plus de la liste",

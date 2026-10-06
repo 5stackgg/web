@@ -5351,7 +5351,8 @@
         "title": "¿Dónde necesitas utilidad?",
         "all": "Todos los puntos",
         "more": "{count} más",
-        "fewer": "Menos"
+        "fewer": "Menos",
+        "count": "{count} lineup | {count} lineups"
       },
       "sheet": {
         "expand": "Ver más de la lista",

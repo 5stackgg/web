@@ -5351,7 +5351,8 @@
         "title": "Nereye utility lazım?",
         "all": "Tüm noktalar",
         "more": "{count} tane daha",
-        "fewer": "Daha az"
+        "fewer": "Daha az",
+        "count": "{count} lineup | {count} lineup"
       },
       "sheet": {
         "expand": "Listeyi daha çok göster",

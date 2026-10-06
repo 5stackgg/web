@@ -5351,7 +5351,8 @@
         "title": "哪裡需要道具？",
         "all": "全部位置",
         "more": "另外 {count} 個",
-        "fewer": "收起"
+        "fewer": "收起",
+        "count": "{count} 個道具點位 | {count} 個道具點位"
       },
       "sheet": {
         "expand": "顯示更多清單",

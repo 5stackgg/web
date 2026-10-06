@@ -5351,7 +5351,8 @@
         "title": "Hvor skal du bruge utility?",
         "all": "Alle steder",
         "more": "{count} mere",
-        "fewer": "Færre"
+        "fewer": "Færre",
+        "count": "{count} lineup | {count} lineups"
       },
       "sheet": {
         "expand": "Vis mere af listen",

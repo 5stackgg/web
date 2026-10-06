@@ -5351,7 +5351,8 @@
         "title": "Dove ti serve l'utility?",
         "all": "Tutti i punti",
         "more": "Altri {count}",
-        "fewer": "Meno"
+        "fewer": "Meno",
+        "count": "{count} lineup | {count} lineup"
       },
       "sheet": {
         "expand": "Mostra più elenco",

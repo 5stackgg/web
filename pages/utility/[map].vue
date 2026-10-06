@@ -740,6 +740,37 @@ watch([spots, landingsLoaded, callouts], () => {
   }
 });
 
+// The map half of spot browsing: labels on the board to pick a spot from, then
+// a popover pinned to the one you picked. Only where the board IS the library
+// -- another tab drawing its own markers owns the board -- and not on a phone,
+// where a popover inside a 390px map covers the map, and the sheet under it is
+// already the list of that spot's lineups.
+const spotsOnBoard = computed(
+  () => !isMobile.value && listTab.value === LIST_TAB && !panelBoard.value,
+);
+
+const boardSpots = computed(() =>
+  spotsOnBoard.value && !selectedSpot.value
+    ? spots.value.map((spot) => ({
+        key: spot.key,
+        label: spot.label,
+        count: spot.ids.length,
+        point: spot.point,
+      }))
+    : [],
+);
+
+const boardActiveSpot = computed(() =>
+  spotsOnBoard.value && selectedSpot.value
+    ? {
+        key: selectedSpot.value.key,
+        label: selectedSpot.value.label,
+        count: selectedSpot.value.ids.length,
+        point: selectedSpot.value.point,
+      }
+    : null,
+);
+
 // What the list and its count ask for: the library's filters, narrowed to the
 // chosen spot. The scope counts and the spots themselves keep reading `where`,
 // so picking a spot never changes the numbers you picked it from.
@@ -1440,6 +1471,10 @@ function selectLineup(id: string | null) {
           :segments="panelBoard?.segments ?? []"
           :selected-segment-key="panelBoard?.selectedSegmentKey ?? null"
           :show-all-lines="!!panelBoard?.showAllLines"
+          :spots="boardSpots"
+          :active-spot="boardActiveSpot"
+          @select-spot="(key) => (spotKey = key)"
+          @open="openLineup"
           @select="
             (id) =>
               panelBoard?.onSelect ? panelBoard.onSelect(id) : selectLineup(id)

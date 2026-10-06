@@ -25,6 +25,12 @@ export type UtilitySpot = {
   ids: string[];
   /** The kinds of grenade that reach it, in the app's usual type order. */
   types: UtilityType[];
+  /**
+   * Where the spot sits, in world units: the middle of its landings. Not the
+   * callout's own box, which on a long place like Mid would pin the label
+   * nowhere near the smokes that actually land there.
+   */
+  point: { x: number; y: number; z: number };
 };
 
 /**
@@ -44,21 +50,36 @@ export function groupUtilitySpots(
     return [];
   }
 
-  const byKey = new Map<string, { ids: string[]; types: Set<UtilityType> }>();
+  const byKey = new Map<
+    string,
+    { ids: string[]; types: Set<UtilityType>; x: number; y: number; z: number }
+  >();
   for (const row of rows) {
     if (row.land_x == null || row.land_y == null) {
       continue;
     }
-    const key = calloutAt(
-      { x: row.land_x, y: row.land_y, z: row.land_z },
-      callouts,
-    );
+    const x = Number(row.land_x);
+    const y = Number(row.land_y);
+    const z = Number(row.land_z ?? 0);
+    if (!Number.isFinite(x) || !Number.isFinite(y)) {
+      continue;
+    }
+    const key = calloutAt({ x, y, z }, callouts);
     if (!key) {
       continue;
     }
-    const entry = byKey.get(key) ?? { ids: [], types: new Set<UtilityType>() };
+    const entry = byKey.get(key) ?? {
+      ids: [],
+      types: new Set<UtilityType>(),
+      x: 0,
+      y: 0,
+      z: 0,
+    };
     entry.ids.push(row.id);
     entry.types.add(row.utility_type);
+    entry.x += x;
+    entry.y += y;
+    entry.z += Number.isFinite(z) ? z : 0;
     byKey.set(key, entry);
   }
 
@@ -68,6 +89,11 @@ export function groupUtilitySpots(
       label: humanizeCallout(key),
       ids: entry.ids,
       types: UTILITY_TYPES.filter((type) => entry.types.has(type)),
+      point: {
+        x: entry.x / entry.ids.length,
+        y: entry.y / entry.ids.length,
+        z: entry.z / entry.ids.length,
+      },
     }))
     .sort(
       (a, b) => b.ids.length - a.ids.length || a.label.localeCompare(b.label),

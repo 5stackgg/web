@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { isRestoringHistory } from "~/composables/useScrollRestoration";
+import { useRestoredRefs } from "~/composables/useRestoredState";
 import { computed, onBeforeUnmount, ref, watch, watchEffect } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
@@ -75,6 +77,8 @@ type ViewMode = "matches" | "singles";
 
 const page = ref(1);
 const perPage = 24;
+// Back to highlights lands on the same page; the other filters live in the URL.
+useRestoredRefs("highlights", { page, visibilityFilter });
 const totalCount = ref(0);
 
 const flatClips = computed<Clip[]>(() => groups.value.flatMap((g) => g.clips));
@@ -462,7 +466,9 @@ watch(
     sortFilter,
   ],
   () => {
-    if (page.value !== 1) {
+    // A filter settling while back/forward restores the page is not the user
+    // changing it.
+    if (page.value !== 1 && !isRestoringHistory()) {
       page.value = 1;
     } else {
       fetchData();

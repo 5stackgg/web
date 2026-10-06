@@ -2,6 +2,8 @@
 import { dateLocale } from "~/utilities/dateLocale";
 import gql from "graphql-tag";
 import { ref, computed, watch, onMounted, nextTick } from "vue";
+import { isRestoringHistory } from "~/composables/useScrollRestoration";
+import { useRestoredRefs } from "~/composables/useRestoredState";
 import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
@@ -474,6 +476,8 @@ const { skeleton, refreshing, loaded } = useDeferredLoading(
 );
 const sortBy = ref<SortField | null>(null);
 const sortDir = ref<"asc" | "desc">("desc");
+// Back to the leaderboard lands on the same page and sort.
+useRestoredRefs("leaderboard", { page, sortBy, sortDir });
 // Steam id from the URL — when set we look up that player's rank, jump
 // to the page they sit on, and highlight their row on render.
 const highlightedSteamId = computed(() => {
@@ -583,6 +587,12 @@ function toggleSort(field: SortField) {
 }
 
 function onFilterChange() {
+  // A filter settling while back/forward restores the page is not the user
+  // changing it.
+  if (isRestoringHistory()) {
+    fetchLeaderboard();
+    return;
+  }
   page.value = 1;
   pageAlignedForSteamId = null;
   fetchLeaderboard();
@@ -766,8 +776,10 @@ function eloValueColor(value: number): string | undefined {
 }
 
 watch(category, () => {
-  sortBy.value = null;
-  sortDir.value = "desc";
+  if (!isRestoringHistory()) {
+    sortBy.value = null;
+    sortDir.value = "desc";
+  }
   // Clear a stale role when moving to a category that has no role view, so it
   // doesn't silently reapply on return to a role category.
   if (!supportsRole.value && roleFilter.value !== "all") {

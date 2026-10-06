@@ -118,6 +118,8 @@ const statusTierClasses: Record<string, string> = {
     "bg-[hsl(var(--success)/0.15)] border-[hsl(var(--success)/0.5)] text-success",
   warning:
     "bg-[hsl(var(--tac-amber)/0.12)] border-[hsl(var(--tac-amber)/0.5)] text-[hsl(var(--tac-amber))]",
+  hibernating:
+    "bg-[hsl(var(--info)/0.12)] border-[hsl(var(--info)/0.5)] text-[hsl(var(--info))]",
   disconnected:
     "bg-[hsl(var(--destructive)/0.15)] border-[hsl(var(--destructive)/0.6)] text-destructive",
 };
@@ -519,6 +521,7 @@ export default {
               tv_port: true,
               enabled: true,
               connected: true,
+              hibernating: true,
               plugin_version: true,
               plugin_runtime: true,
               rcon_status: true,
@@ -691,6 +694,9 @@ export default {
       if (!this.server.rcon_status || this.pluginVersionMismatch) {
         return "warning";
       }
+      if (this.server.hibernating) {
+        return "hibernating";
+      }
       return "connected";
     },
     statusLabel() {
@@ -705,6 +711,11 @@ export default {
       if (this.pluginVersionMismatch) {
         return this.$t(
           "pages.dedicated_servers.detail.status_label.version_mismatch",
+        );
+      }
+      if (this.server.hibernating) {
+        return this.$t(
+          "pages.dedicated_servers.detail.status_label.hibernating",
         );
       }
       return this.$t("pages.dedicated_servers.detail.status_label.connected");

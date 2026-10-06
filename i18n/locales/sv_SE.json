@@ -4386,6 +4386,7 @@
         "status_label": {
           "connected": "Ansluten",
           "disconnected": "Frånkopplad",
+          "hibernating": "I viloläge",
           "no_rcon": "Ingen RCON",
           "version_mismatch": "Versionsavvikelse"
         },
@@ -4413,6 +4414,7 @@
         },
         "status": {
           "disconnected": "Servern är frånkopplad",
+          "hibernating": "Servern är i viloläge tills en spelare ansluter",
           "no_rcon": "Servern är ansluten men RCON är inte tillgängligt",
           "connected": "Servern är ansluten och RCON är tillgängligt",
           "plugin_version_mismatch": "pluginversionen är inte uppdaterad"

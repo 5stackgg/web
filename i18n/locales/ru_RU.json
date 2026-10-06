@@ -4386,6 +4386,7 @@
         "status_label": {
           "connected": "Подключён",
           "disconnected": "Отключён",
+          "hibernating": "Спящий режим",
           "no_rcon": "Нет RCON",
           "version_mismatch": "Несовпадение версий"
         },
@@ -4413,6 +4414,7 @@
         },
         "status": {
           "disconnected": "Сервер отключён",
+          "hibernating": "Сервер в спящем режиме, пока не подключится игрок",
           "no_rcon": "Сервер подключён, но RCON недоступен",
           "connected": "Сервер подключён, RCON доступен",
           "plugin_version_mismatch": "версия плагина устарела"

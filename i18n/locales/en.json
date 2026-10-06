@@ -3265,7 +3265,13 @@
         "description": "Blocked players can't message you, invite you, or send you friend requests. Unblocking someone doesn't restore your friendship.",
         "empty_title": "No blocked players",
         "empty_description": "Players you block from their profile or the player menu will show up here.",
-        "blocked_on": "Blocked"
+        "blocked_on": "Blocked",
+        "message_requests": {
+          "title": "Message requests",
+          "description": "Let players who aren't your friends send you one message. It waits in your requests until you reply.",
+          "updated": "Message request setting saved",
+          "update_failed": "Couldn't save your message request setting"
+        }
       }
     },
     "watch": {
@@ -6580,7 +6586,20 @@
       "tournament_ended": "Ended · closes in {time}",
       "tournament_ended_days": "{count}d",
       "tournament_ended_hours": "{count}h",
-      "tournament_ended_tooltip": "This tournament has ended. Its chat stays open for 7 days."
+      "tournament_ended_tooltip": "This tournament has ended. Its chat stays open for 7 days.",
+      "requests": {
+        "open": "Message requests ({count})",
+        "title": "Message requests",
+        "hint": "From players who aren't your friends",
+        "close": "Close message requests",
+        "wants_to_message": "Wants to message you",
+        "deny": "Deny",
+        "deny_failed": "Couldn't deny that request",
+        "empty_title": "No message requests",
+        "empty_description": "First messages from players who aren't your friends wait here.",
+        "banner": "{name} isn't your friend. Reply to accept their message request, or deny it.",
+        "awaiting_reply": "Waiting for {name} to reply to your message request."
+      }
     },
     "recent_games": {
       "title": "Recent Games",
@@ -9863,8 +9882,15 @@
     },
     "direct": {
       "message": "Message",
-      "empty": "No messages yet. Say hello."
-    }
+      "empty": "No messages yet. Say hello.",
+      "request": {
+        "title": "Send a message request",
+        "description": "{name} isn't your friend, so you can send one message. They need to reply to accept it.",
+        "friends_only": "{name} only takes messages from friends.",
+        "waiting": "Waiting for a reply"
+      }
+    },
+    "awaiting_reply": "Your message request hasn't been answered yet. You can write again once they reply."
   },
   "charts": {
     "usage": "Usage",

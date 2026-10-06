@@ -3265,7 +3265,13 @@
         "description": "Blockerade spelare kan inte skicka meddelanden, inbjudningar eller vänförfrågningar till dig. Att avblockera någon återställer inte er vänskap.",
         "empty_title": "Inga blockerade spelare",
         "empty_description": "Spelare som du blockerar från deras profil eller spelarmenyn visas här.",
-        "blocked_on": "Blockerad"
+        "blocked_on": "Blockerad",
+        "message_requests": {
+          "title": "Meddelandeförfrågningar",
+          "description": "Låt spelare som inte är dina vänner skicka ett meddelande till dig. Det väntar bland dina förfrågningar tills du svarar.",
+          "updated": "Inställningen för meddelandeförfrågningar sparades",
+          "update_failed": "Kunde inte spara inställningen för meddelandeförfrågningar"
+        }
       }
     },
     "watch": {
@@ -6578,7 +6584,20 @@
       "tournament_ended": "Avslutad · stänger om {time}",
       "tournament_ended_days": "{count} d",
       "tournament_ended_hours": "{count} tim",
-      "tournament_ended_tooltip": "Den här turneringen är avslutad. Dess chatt är öppen i 7 dagar."
+      "tournament_ended_tooltip": "Den här turneringen är avslutad. Dess chatt är öppen i 7 dagar.",
+      "requests": {
+        "open": "Meddelandeförfrågningar ({count})",
+        "title": "Meddelandeförfrågningar",
+        "hint": "Från spelare som inte är dina vänner",
+        "close": "Stäng meddelandeförfrågningar",
+        "wants_to_message": "Vill skriva till dig",
+        "deny": "Avvisa",
+        "deny_failed": "Kunde inte avvisa förfrågan",
+        "empty_title": "Inga meddelandeförfrågningar",
+        "empty_description": "Första meddelanden från spelare som inte är dina vänner väntar här.",
+        "banner": "{name} är inte din vän. Svara för att godkänna meddelandeförfrågan, eller avvisa den.",
+        "awaiting_reply": "Väntar på att {name} ska svara på din meddelandeförfrågan."
+      }
     },
     "recent_games": {
       "title": "Senaste matcher",
@@ -9861,8 +9880,15 @@
     },
     "direct": {
       "message": "Meddelande",
-      "empty": "Inga meddelanden än. Säg hej."
-    }
+      "empty": "Inga meddelanden än. Säg hej.",
+      "request": {
+        "title": "Skicka en meddelandeförfrågan",
+        "description": "{name} är inte din vän, så du kan skicka ett meddelande. De måste svara för att godkänna det.",
+        "friends_only": "{name} tar bara emot meddelanden från vänner.",
+        "waiting": "Väntar på svar"
+      }
+    },
+    "awaiting_reply": "Din meddelandeförfrågan har inte besvarats än. Du kan skriva igen när de svarar."
   },
   "charts": {
     "usage": "Användning",

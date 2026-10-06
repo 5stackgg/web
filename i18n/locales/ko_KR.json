@@ -3265,7 +3265,13 @@
         "description": "차단한 플레이어는 메시지, 초대, 친구 요청을 보낼 수 없습니다. 차단을 해제해도 친구 관계는 복구되지 않습니다.",
         "empty_title": "차단한 플레이어가 없습니다",
         "empty_description": "프로필이나 플레이어 메뉴에서 차단한 플레이어가 여기에 표시됩니다.",
-        "blocked_on": "차단"
+        "blocked_on": "차단",
+        "message_requests": {
+          "title": "메시지 요청",
+          "description": "친구가 아닌 플레이어가 메시지를 한 통 보낼 수 있도록 허용합니다. 답장할 때까지 요청함에 보관됩니다.",
+          "updated": "메시지 요청 설정이 저장되었습니다",
+          "update_failed": "메시지 요청 설정을 저장하지 못했습니다"
+        }
       }
     },
     "watch": {
@@ -6578,7 +6584,20 @@
       "tournament_ended": "종료됨 · {time} 후 닫힘",
       "tournament_ended_days": "{count}일",
       "tournament_ended_hours": "{count}시간",
-      "tournament_ended_tooltip": "이 토너먼트는 종료되었습니다. 채팅은 7일 동안 열려 있습니다."
+      "tournament_ended_tooltip": "이 토너먼트는 종료되었습니다. 채팅은 7일 동안 열려 있습니다.",
+      "requests": {
+        "open": "메시지 요청 ({count})",
+        "title": "메시지 요청",
+        "hint": "친구가 아닌 플레이어로부터",
+        "close": "메시지 요청 닫기",
+        "wants_to_message": "메시지를 보내고 싶어 합니다",
+        "deny": "거절",
+        "deny_failed": "요청을 거절하지 못했습니다",
+        "empty_title": "메시지 요청이 없습니다",
+        "empty_description": "친구가 아닌 플레이어의 첫 메시지는 여기에서 기다립니다.",
+        "banner": "{name}님은 친구가 아닙니다. 답장하면 메시지 요청이 수락되며, 거절할 수도 있습니다.",
+        "awaiting_reply": "{name}님이 메시지 요청에 답장하기를 기다리는 중입니다."
+      }
     },
     "recent_games": {
       "title": "최근 게임",
@@ -9861,8 +9880,15 @@
     },
     "direct": {
       "message": "메시지",
-      "empty": "아직 메시지가 없습니다. 인사를 건네보세요."
-    }
+      "empty": "아직 메시지가 없습니다. 인사를 건네보세요.",
+      "request": {
+        "title": "메시지 요청 보내기",
+        "description": "{name}님은 친구가 아니므로 메시지를 한 통 보낼 수 있습니다. 상대가 답장해야 수락됩니다.",
+        "friends_only": "{name}님은 친구의 메시지만 받습니다.",
+        "waiting": "답장 대기 중"
+      }
+    },
+    "awaiting_reply": "메시지 요청에 아직 답장이 없습니다. 상대가 답장하면 다시 보낼 수 있습니다."
   },
   "charts": {
     "usage": "사용량",

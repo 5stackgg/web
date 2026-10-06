@@ -7,6 +7,7 @@ import { TooltipProvider } from "~/components/ui/tooltip";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useDraftGamesStore } from "~/stores/DraftGamesStore";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
+import { useChatTabs } from "~/composables/useChatTabs";
 
 vi.mock("~/graphql/getGraphqlClient", () => ({
   default: () => ({
@@ -131,5 +132,70 @@ describe("FriendListItem drafts", () => {
 
     expect(inviteButton(wrapper, "tent")).toBeDefined();
     expect(inviteButton(wrapper, "swords")).toBeUndefined();
+  });
+});
+
+describe("FriendListItem message requests", () => {
+  const STRANGER = "76561198000000003";
+
+  const stranger = (extra: Record<string, unknown> = {}) =>
+    ({
+      ...friendIn(null),
+      steam_id: STRANGER,
+      name: "Kairo",
+      ...extra,
+    }) as ReturnType<typeof friendIn>;
+
+  const messageButtons = (wrapper: Wrapper) =>
+    wrapper
+      .findAll("button")
+      .filter(
+        (button) =>
+          button.find(".lucide-message-square").exists() ||
+          button.find(".lucide-message-square-off").exists(),
+      );
+
+  beforeEach(() => {
+    useAuthStore().me = { steam_id: ME, current_lobby_id: null } as any;
+    const matchmaking = useMatchmakingStore();
+    matchmaking.friends = [
+      { steam_id: FRIEND, status: "Accepted", invited_by_steam_id: ME },
+    ] as any;
+    matchmaking.lobbies = [];
+    matchmaking.onlinePlayerSteamIds = [FRIEND, STRANGER];
+    useDraftGamesStore().myDraftGame = undefined;
+    useChatTabs().clearAll();
+  });
+
+  it("lets a non-friend be messaged, as a request", async () => {
+    const wrapper = await mount(stranger());
+
+    const [button] = messageButtons(wrapper);
+    expect(button.attributes("disabled")).toBeUndefined();
+    expect(button.attributes("aria-label")).toBe("Send a message request");
+
+    await button.trigger("click");
+    await flushPromises();
+
+    expect(useChatTabs().tabs.value.map((tab) => tab.steamId)).toContain(
+      STRANGER,
+    );
+  });
+
+  it("disables Message for a player who only takes messages from friends", async () => {
+    const wrapper = await mount(stranger({ allow_message_requests: false }));
+
+    const [button] = messageButtons(wrapper);
+    expect(button.attributes("disabled")).toBeDefined();
+    expect(button.find(".lucide-message-square-off").exists()).toBe(true);
+    expect(button.attributes("aria-label")).toBe(
+      "Kairo only takes messages from friends.",
+    );
+  });
+
+  it("keeps a friend to their one Message button", async () => {
+    const wrapper = await mount(friendIn(null));
+
+    expect(messageButtons(wrapper)).toHaveLength(1);
   });
 });

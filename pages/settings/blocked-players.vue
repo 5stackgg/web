@@ -1,5 +1,13 @@
 <script setup lang="ts">
+import { onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
+import { Switch } from "~/components/ui/switch";
+import { FormSection } from "~/components/ui/form";
+import getGraphqlClient from "~/graphql/getGraphqlClient";
+import {
+  MY_MESSAGE_REQUESTS_SETTING_QUERY,
+  SET_MESSAGE_REQUESTS_SETTING_MUTATION,
+} from "~/graphql/messageRequests";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
@@ -14,6 +22,65 @@ const { t } = useI18n();
 useHead({ title: () => t("pages.settings.blocked_players.title") });
 
 const { blocks, loaded, unblock } = usePlayerBlocks();
+
+// Who besides friends may start a conversation. Null until it loads, or when
+// the api has not migrated yet -- the switch stays disabled rather than
+// claiming a setting it cannot read.
+const allowMessageRequests = ref<boolean | null>(null);
+const savingMessageRequests = ref(false);
+
+onMounted(async () => {
+  const steamId = useAuthStore().me?.steam_id;
+
+  if (!steamId) {
+    return;
+  }
+
+  try {
+    const { data } = await getGraphqlClient().query({
+      query: MY_MESSAGE_REQUESTS_SETTING_QUERY,
+      variables: { steamId },
+      fetchPolicy: "network-only",
+      context: { optional: true },
+    });
+
+    allowMessageRequests.value =
+      data?.players_by_pk?.allow_message_requests ?? null;
+  } catch {
+    allowMessageRequests.value = null;
+  }
+});
+
+async function setMessageRequests(allow: boolean) {
+  const steamId = useAuthStore().me?.steam_id;
+
+  if (!steamId) {
+    return;
+  }
+
+  const previous = allowMessageRequests.value;
+  allowMessageRequests.value = allow;
+  savingMessageRequests.value = true;
+
+  try {
+    await getGraphqlClient().mutate({
+      mutation: SET_MESSAGE_REQUESTS_SETTING_MUTATION,
+      variables: { steamId, allow },
+    });
+
+    toast({
+      title: t("pages.settings.blocked_players.message_requests.updated"),
+    });
+  } catch {
+    allowMessageRequests.value = previous;
+    toast({
+      title: t("pages.settings.blocked_players.message_requests.update_failed"),
+      variant: "destructive",
+    });
+  } finally {
+    savingMessageRequests.value = false;
+  }
+}
 
 async function unblockPlayer(row: PlayerBlock) {
   try {
@@ -33,6 +100,23 @@ async function unblockPlayer(row: PlayerBlock) {
 <template>
   <PageTransition :delay="0">
     <div class="space-y-5">
+      <FormSection
+        :title="$t('pages.settings.blocked_players.message_requests.title')"
+      >
+        <div class="flex items-center justify-between gap-4">
+          <p class="flex-1 text-sm text-muted-foreground">
+            {{
+              $t("pages.settings.blocked_players.message_requests.description")
+            }}
+          </p>
+          <Switch
+            :model-value="allowMessageRequests !== false"
+            :disabled="allowMessageRequests === null || savingMessageRequests"
+            @update:model-value="setMessageRequests"
+          />
+        </div>
+      </FormSection>
+
       <p class="max-w-prose text-sm text-muted-foreground">
         {{ $t("pages.settings.blocked_players.description") }}
       </p>

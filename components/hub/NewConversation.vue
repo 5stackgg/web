@@ -9,9 +9,8 @@ import { setActiveHub } from "~/composables/useHubState";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 
 // Starting a conversation, inside Chat itself: the thread area becomes a
-// "To:" field over your friends, online first. Direct messages are between
-// accepted friends only (the server enforces the same), so this lists friends
-// rather than searching every player and refusing most of them.
+// "To:" field over your friends, online first. Anyone else is messaged from
+// their profile or name, where a first message goes out as a request.
 const emit = defineEmits<{ (e: "close"): void }>();
 
 const matchmakingStore = useMatchmakingStore();

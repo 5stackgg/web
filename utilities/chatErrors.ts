@@ -101,6 +101,8 @@ export function chatErrorDescription(
       });
     case "gagged":
       return t("chat.gagged");
+    case "awaiting_reply":
+      return t("chat.awaiting_reply");
     // Also sent when a send queued while offline reaches the server before the
     // lobby rejoin does, so it must not tell the user they are barred.
     case "not_allowed":

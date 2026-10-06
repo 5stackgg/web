@@ -3265,7 +3265,13 @@
         "description": "I giocatori bloccati non possono inviarti messaggi, inviti o richieste di amicizia. Sbloccare qualcuno non ripristina la vostra amicizia.",
         "empty_title": "Nessun giocatore bloccato",
         "empty_description": "I giocatori che blocchi dal loro profilo o dal menu del giocatore appariranno qui.",
-        "blocked_on": "Bloccato"
+        "blocked_on": "Bloccato",
+        "message_requests": {
+          "title": "Richieste di messaggio",
+          "description": "Consenti ai giocatori che non sono tuoi amici di inviarti un messaggio. Resta nelle tue richieste finché non rispondi.",
+          "updated": "Impostazione delle richieste di messaggio salvata",
+          "update_failed": "Impossibile salvare l'impostazione delle richieste di messaggio"
+        }
       }
     },
     "watch": {
@@ -6578,7 +6584,20 @@
       "tournament_ended": "Concluso · chiude tra {time}",
       "tournament_ended_days": "{count} g",
       "tournament_ended_hours": "{count} h",
-      "tournament_ended_tooltip": "Questo torneo è concluso. La sua chat resta aperta per 7 giorni."
+      "tournament_ended_tooltip": "Questo torneo è concluso. La sua chat resta aperta per 7 giorni.",
+      "requests": {
+        "open": "Richieste di messaggio ({count})",
+        "title": "Richieste di messaggio",
+        "hint": "Da giocatori che non sono tuoi amici",
+        "close": "Chiudi richieste di messaggio",
+        "wants_to_message": "Vuole scriverti",
+        "deny": "Rifiuta",
+        "deny_failed": "Impossibile rifiutare la richiesta",
+        "empty_title": "Nessuna richiesta di messaggio",
+        "empty_description": "I primi messaggi di giocatori che non sono tuoi amici aspettano qui.",
+        "banner": "{name} non è tuo amico. Rispondi per accettare la richiesta di messaggio, oppure rifiutala.",
+        "awaiting_reply": "In attesa che {name} risponda alla tua richiesta di messaggio."
+      }
     },
     "recent_games": {
       "title": "Partite recenti",
@@ -9861,8 +9880,15 @@
     },
     "direct": {
       "message": "Messaggio",
-      "empty": "Ancora nessun messaggio. Fatti sentire."
-    }
+      "empty": "Ancora nessun messaggio. Fatti sentire.",
+      "request": {
+        "title": "Invia una richiesta di messaggio",
+        "description": "{name} non è tuo amico, quindi puoi inviare un messaggio. Deve rispondere per accettarlo.",
+        "friends_only": "{name} accetta messaggi solo dagli amici.",
+        "waiting": "In attesa di risposta"
+      }
+    },
+    "awaiting_reply": "La tua richiesta di messaggio non ha ancora ricevuto risposta. Potrai scrivere di nuovo quando risponderanno."
   },
   "charts": {
     "usage": "Utilizzo",

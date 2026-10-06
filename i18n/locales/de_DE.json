@@ -3265,7 +3265,13 @@
         "description": "Blockierte Spieler können dir keine Nachrichten, Einladungen oder Freundschaftsanfragen senden. Das Aufheben einer Blockierung stellt eure Freundschaft nicht wieder her.",
         "empty_title": "Keine blockierten Spieler",
         "empty_description": "Spieler, die du über ihr Profil oder das Spielermenü blockierst, erscheinen hier.",
-        "blocked_on": "Blockiert"
+        "blocked_on": "Blockiert",
+        "message_requests": {
+          "title": "Nachrichtenanfragen",
+          "description": "Erlaube Spielern, die nicht mit dir befreundet sind, dir eine Nachricht zu senden. Sie wartet in deinen Anfragen, bis du antwortest.",
+          "updated": "Einstellung für Nachrichtenanfragen gespeichert",
+          "update_failed": "Einstellung für Nachrichtenanfragen konnte nicht gespeichert werden"
+        }
       }
     },
     "watch": {
@@ -6578,7 +6584,20 @@
       "tournament_ended": "Beendet · schließt in {time}",
       "tournament_ended_days": "{count} T.",
       "tournament_ended_hours": "{count} Std.",
-      "tournament_ended_tooltip": "Dieses Turnier ist beendet. Der Chat bleibt 7 Tage lang geöffnet."
+      "tournament_ended_tooltip": "Dieses Turnier ist beendet. Der Chat bleibt 7 Tage lang geöffnet.",
+      "requests": {
+        "open": "Nachrichtenanfragen ({count})",
+        "title": "Nachrichtenanfragen",
+        "hint": "Von Spielern, die nicht mit dir befreundet sind",
+        "close": "Nachrichtenanfragen schließen",
+        "wants_to_message": "Möchte dir schreiben",
+        "deny": "Ablehnen",
+        "deny_failed": "Anfrage konnte nicht abgelehnt werden",
+        "empty_title": "Keine Nachrichtenanfragen",
+        "empty_description": "Erste Nachrichten von Spielern, die nicht mit dir befreundet sind, warten hier.",
+        "banner": "{name} ist nicht mit dir befreundet. Antworte, um die Nachrichtenanfrage anzunehmen, oder lehne sie ab.",
+        "awaiting_reply": "Warte darauf, dass {name} auf deine Nachrichtenanfrage antwortet."
+      }
     },
     "recent_games": {
       "title": "Letzte Spiele",
@@ -9861,8 +9880,15 @@
     },
     "direct": {
       "message": "Nachricht",
-      "empty": "Noch keine Nachrichten. Sag Hallo."
-    }
+      "empty": "Noch keine Nachrichten. Sag Hallo.",
+      "request": {
+        "title": "Nachrichtenanfrage senden",
+        "description": "{name} ist nicht mit dir befreundet, daher kannst du eine Nachricht senden. Sie muss beantwortet werden, um angenommen zu werden.",
+        "friends_only": "{name} empfängt nur Nachrichten von Freunden.",
+        "waiting": "Warte auf Antwort"
+      }
+    },
+    "awaiting_reply": "Deine Nachrichtenanfrage wurde noch nicht beantwortet. Du kannst wieder schreiben, sobald geantwortet wurde."
   },
   "charts": {
     "usage": "Auslastung",

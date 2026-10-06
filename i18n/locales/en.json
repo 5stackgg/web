@@ -4397,6 +4397,7 @@
         "config_location": "This config should be placed in:",
         "files": "Files",
         "player_management": "Player Management",
+        "plugin_version_unknown": "Unknown version",
         "no_players": "No players currently on this server",
         "player_management_plugin": {
           "active": "Player Management plugin active",

@@ -4395,6 +4395,7 @@
         "config_location": "이 설정 파일은 다음 위치에 두어야 합니다:",
         "files": "파일",
         "player_management": "플레이어 관리",
+        "plugin_version_unknown": "Unknown version",
         "no_players": "현재 이 서버에 접속 중인 플레이어가 없습니다",
         "player_management_plugin": {
           "active": "플레이어 관리 플러그인 활성",

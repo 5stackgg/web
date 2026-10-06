@@ -4395,6 +4395,7 @@
         "config_location": "Этот конфиг нужно разместить в:",
         "files": "Файлы",
         "player_management": "Управление игроками",
+        "plugin_version_unknown": "Unknown version",
         "no_players": "На этом сервере сейчас нет игроков",
         "player_management_plugin": {
           "active": "Плагин управления игроками активен",

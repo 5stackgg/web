@@ -4395,6 +4395,7 @@
         "config_location": "Denna konfiguration ska placeras i:",
         "files": "Filer",
         "player_management": "Spelarhantering",
+        "plugin_version_unknown": "Unknown version",
         "no_players": "Inga spelare på servern just nu",
         "player_management_plugin": {
           "active": "Plugin för spelarhantering aktivt",

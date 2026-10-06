@@ -4395,6 +4395,7 @@
         "config_location": "Cette config doit être placée dans :",
         "files": "Fichiers",
         "player_management": "Gestion des joueurs",
+        "plugin_version_unknown": "Unknown version",
         "no_players": "Aucun joueur actuellement sur ce serveur",
         "player_management_plugin": {
           "active": "Plugin de gestion des joueurs actif",

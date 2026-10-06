@@ -4395,6 +4395,7 @@
         "config_location": "この設定は次の場所に配置してください:",
         "files": "ファイル",
         "player_management": "プレイヤー管理",
+        "plugin_version_unknown": "Unknown version",
         "no_players": "現在このサーバーにプレイヤーはいません",
         "player_management_plugin": {
           "active": "プレイヤー管理プラグイン稼働中",

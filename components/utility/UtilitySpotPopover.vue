@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { Maximize2, X } from "lucide-vue-next";
+import { Maximize2, PencilLine, X } from "lucide-vue-next";
 import { UTILITY_TYPE_COLORS } from "~/utilities/utilityDisplay";
 import type { UtilityLineup } from "~/types/utility";
 
@@ -18,6 +18,7 @@ const emit = defineEmits<{
   (e: "hover", id: string | null): void;
   (e: "select", id: string): void;
   (e: "open", id: string): void;
+  (e: "edit", id: string): void;
   (e: "close"): void;
 }>();
 
@@ -147,14 +148,23 @@ const playing = computed(
               </span>
             </span>
           </button>
-          <div v-if="selectedId === lineup.id" class="px-2 pb-2">
+          <div v-if="selectedId === lineup.id" class="flex gap-1.5 px-2 pb-2">
             <button
               type="button"
-              class="flex h-8 w-full items-center justify-center gap-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.12)] text-xs font-semibold text-[hsl(var(--tac-amber))] transition-colors hover:bg-[hsl(var(--tac-amber)/0.2)]"
+              class="flex h-8 flex-1 items-center justify-center gap-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.12)] text-xs font-semibold text-[hsl(var(--tac-amber))] transition-colors hover:bg-[hsl(var(--tac-amber)/0.2)]"
               @click="emit('open', lineup.id)"
             >
               <Maximize2 class="h-3.5 w-3.5" />
               {{ $t("pages.utility.card.open") }}
+            </button>
+            <button
+              v-if="lineup.can_edit && !lineup.archived_at"
+              type="button"
+              class="flex h-8 items-center justify-center gap-1.5 rounded-md border border-border px-2.5 text-xs font-semibold text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+              @click="emit('edit', lineup.id)"
+            >
+              <PencilLine class="h-3.5 w-3.5" />
+              {{ $t("pages.utility.edit.action") }}
             </button>
           </div>
         </div>

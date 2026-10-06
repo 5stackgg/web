@@ -5405,7 +5405,9 @@
         "flight_time_hint": "던진 뒤 수류탄이 공중에 머무는 시간입니다.",
         "stat_hit_rate": "내 성공률",
         "stat_flight": "비행",
-        "stat_difficulty": "난이도"
+        "stat_difficulty": "난이도",
+        "yours": "내 것 · {status}",
+        "score": "추천 {count}개 | 추천 {count}개"
       },
       "viewer": {
         "replay_throw": "투척 다시 보기",
@@ -5605,7 +5607,8 @@
         "copy_aim": "setang 복사",
         "aim_copied": "조준값을 복사했습니다",
         "aim_copy_failed": "복사하지 못했습니다",
-        "write_up_hint": "투척 위치와 조준값을 미리 채웁니다"
+        "write_up_hint": "투척 위치와 조준값을 미리 채웁니다",
+        "types": "종류"
       },
       "playbooks": {
         "title": "플레이북",
@@ -5973,7 +5976,8 @@
         "reject": "거절",
         "approved": "라이브러리에 공개했습니다",
         "rejected": "라이브러리에 넣지 않았습니다",
-        "review_failed": "그 라인업을 검토하지 못했습니다"
+        "review_failed": "그 라인업을 검토하지 못했습니다",
+        "in_review": "검토 중"
       },
       "archive": {
         "action": "라인업 보관",

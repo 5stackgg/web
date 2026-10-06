@@ -5405,7 +5405,9 @@
         "flight_time_hint": "Quanto resta in aria la granata dopo il lancio.",
         "stat_hit_rate": "La mia percentuale",
         "stat_flight": "Volo",
-        "stat_difficulty": "Difficoltà"
+        "stat_difficulty": "Difficoltà",
+        "yours": "Tuo · {status}",
+        "score": "{count} voto positivo | {count} voti positivi"
       },
       "viewer": {
         "replay_throw": "Rivedi il lancio",
@@ -5605,7 +5607,8 @@
         "copy_aim": "Copia setang",
         "aim_copied": "Mira copiata",
         "aim_copy_failed": "Impossibile copiarlo",
-        "write_up_hint": "Precompila origine + mira"
+        "write_up_hint": "Precompila origine + mira",
+        "types": "Tipo"
       },
       "playbooks": {
         "title": "Playbook",
@@ -5973,7 +5976,8 @@
         "reject": "Rifiuta",
         "approved": "Pubblicato nella libreria",
         "rejected": "Lasciato fuori dalla libreria",
-        "review_failed": "Impossibile revisionare quel lineup"
+        "review_failed": "Impossibile revisionare quel lineup",
+        "in_review": "In revisione"
       },
       "archive": {
         "action": "Archivia lineup",

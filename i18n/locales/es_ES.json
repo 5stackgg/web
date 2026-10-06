@@ -5405,7 +5405,9 @@
         "flight_time_hint": "Cuánto tiempo está la granada en el aire después de lanzarla.",
         "stat_hit_rate": "Mi tasa de acierto",
         "stat_flight": "Vuelo",
-        "stat_difficulty": "Dificultad"
+        "stat_difficulty": "Dificultad",
+        "yours": "Tuyo · {status}",
+        "score": "{count} voto positivo | {count} votos positivos"
       },
       "viewer": {
         "replay_throw": "Repetir lanzamiento",
@@ -5605,7 +5607,8 @@
         "copy_aim": "Copiar setang",
         "aim_copied": "Puntería copiada",
         "aim_copy_failed": "No se pudo copiar eso",
-        "write_up_hint": "Rellena origen + puntería"
+        "write_up_hint": "Rellena origen + puntería",
+        "types": "Tipo"
       },
       "playbooks": {
         "title": "Playbooks",
@@ -5973,7 +5976,8 @@
         "reject": "Rechazar",
         "approved": "Publicado en la biblioteca",
         "rejected": "Dejado fuera de la biblioteca",
-        "review_failed": "No se pudo revisar ese lineup"
+        "review_failed": "No se pudo revisar ese lineup",
+        "in_review": "En revisión"
       },
       "archive": {
         "action": "Archivar lineup",

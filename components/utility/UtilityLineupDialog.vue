@@ -59,6 +59,11 @@ const props = defineProps<{
    * which a phone cannot do, so offering it there is a button that only fails.
    */
   canPractice?: boolean;
+  /**
+   * Opened from an Edit action on a card or the map, so it should arrive with
+   * the form already up rather than one more click away.
+   */
+  editOnOpen?: boolean;
 }>();
 
 const open = defineModel<boolean>("open", { default: false });
@@ -73,6 +78,7 @@ const emit = defineEmits<{
   (e: "fork", id: string, name: string): void;
   (e: "archive", id: string, name: string): void;
   (e: "updated", id: string, patch: Partial<UtilityLineup>): void;
+  (e: "edit-started"): void;
 }>();
 
 const { t } = useI18n();
@@ -283,6 +289,23 @@ watch(open, (isOpen) => {
     editing.value = false;
   }
 });
+
+// After the lineupId watcher above, so stepping's reset does not undo it. A
+// lineup that arrived by link is only editable once it has been fetched, which
+// is why this waits on the lineup and not just on the id.
+watch(
+  () => [open.value, lineup.value?.id, props.editOnOpen] as const,
+  ([isOpen, id, wanted]) => {
+    if (!isOpen || !id || !wanted) {
+      return;
+    }
+    if (lineup.value?.can_edit && !lineup.value.archived_at) {
+      startEdit();
+    }
+    emit("edit-started");
+  },
+  { immediate: true },
+);
 
 function coords(x: unknown, y: unknown, z: unknown) {
   return `${Math.round(Number(x))}, ${Math.round(Number(y))}, ${Math.round(Number(z))}`;

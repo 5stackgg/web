@@ -5407,7 +5407,9 @@
         "flight_time_hint": "How long the grenade is in the air after you throw it.",
         "stat_hit_rate": "My hit rate",
         "stat_flight": "Flight",
-        "stat_difficulty": "Difficulty"
+        "stat_difficulty": "Difficulty",
+        "yours": "Yours · {status}",
+        "score": "{count} upvote | {count} upvotes"
       },
       "viewer": {
         "replay_throw": "Replay throw",
@@ -5607,7 +5609,8 @@
         "copy_aim": "Copy setang",
         "aim_copied": "Aim copied",
         "aim_copy_failed": "Could not copy that",
-        "write_up_hint": "Prefills origin + aim"
+        "write_up_hint": "Prefills origin + aim",
+        "types": "Type"
       },
       "playbooks": {
         "title": "Playbooks",
@@ -5975,7 +5978,8 @@
         "reject": "Decline",
         "approved": "Published to the library",
         "rejected": "Left out of the library",
-        "review_failed": "Could not review that lineup"
+        "review_failed": "Could not review that lineup",
+        "in_review": "In review"
       },
       "archive": {
         "action": "Archive lineup",

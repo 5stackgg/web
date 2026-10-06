@@ -5405,7 +5405,9 @@
         "flight_time_hint": "Bomba atıldıktan sonra havada ne kadar kalıyor.",
         "stat_hit_rate": "İsabet oranım",
         "stat_flight": "Uçuş",
-        "stat_difficulty": "Zorluk"
+        "stat_difficulty": "Zorluk",
+        "yours": "Senin · {status}",
+        "score": "{count} olumlu oy | {count} olumlu oy"
       },
       "viewer": {
         "replay_throw": "Atışı tekrar oynat",
@@ -5605,7 +5607,8 @@
         "copy_aim": "setang kopyala",
         "aim_copied": "Nişan kopyalandı",
         "aim_copy_failed": "Bu kopyalanamadı",
-        "write_up_hint": "Nokta ve nişanı önceden doldurur"
+        "write_up_hint": "Nokta ve nişanı önceden doldurur",
+        "types": "Tür"
       },
       "playbooks": {
         "title": "Playbook'lar",
@@ -5973,7 +5976,8 @@
         "reject": "Reddet",
         "approved": "Kütüphanede yayımlandı",
         "rejected": "Kütüphaneye alınmadı",
-        "review_failed": "O dizilim incelenemedi"
+        "review_failed": "O dizilim incelenemedi",
+        "in_review": "İncelemede"
       },
       "archive": {
         "action": "Dizilimi arşivle",

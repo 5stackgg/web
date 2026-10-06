@@ -5405,7 +5405,9 @@
         "flight_time_hint": "Wie lange die Granate nach dem Wurf in der Luft ist.",
         "stat_hit_rate": "Meine Trefferquote",
         "stat_flight": "Flug",
-        "stat_difficulty": "Schwierigkeit"
+        "stat_difficulty": "Schwierigkeit",
+        "yours": "Deins · {status}",
+        "score": "{count} Upvote | {count} Upvotes"
       },
       "viewer": {
         "replay_throw": "Wurf abspielen",
@@ -5605,7 +5607,8 @@
         "copy_aim": "setang kopieren",
         "aim_copied": "Zielen kopiert",
         "aim_copy_failed": "Das konnte nicht kopiert werden",
-        "write_up_hint": "Füllt Ursprung + Zielen vor"
+        "write_up_hint": "Füllt Ursprung + Zielen vor",
+        "types": "Typ"
       },
       "playbooks": {
         "title": "Playbooks",
@@ -5973,7 +5976,8 @@
         "reject": "Ablehnen",
         "approved": "In der Bibliothek veröffentlicht",
         "rejected": "Nicht in die Bibliothek aufgenommen",
-        "review_failed": "Dieses Lineup konnte nicht geprüft werden"
+        "review_failed": "Dieses Lineup konnte nicht geprüft werden",
+        "in_review": "In Prüfung"
       },
       "archive": {
         "action": "Lineup archivieren",

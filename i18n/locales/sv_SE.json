@@ -5405,7 +5405,9 @@
         "flight_time_hint": "Hur länge granaten är i luften efter kastet.",
         "stat_hit_rate": "Min träffprocent",
         "stat_flight": "Flykt",
-        "stat_difficulty": "Svårighet"
+        "stat_difficulty": "Svårighet",
+        "yours": "Din · {status}",
+        "score": "{count} uppröst | {count} uppröster"
       },
       "viewer": {
         "replay_throw": "Spela upp kastet",
@@ -5605,7 +5607,8 @@
         "copy_aim": "Kopiera setang",
         "aim_copied": "Siktet kopierat",
         "aim_copy_failed": "Kunde inte kopiera det",
-        "write_up_hint": "Fyller i plats + sikte"
+        "write_up_hint": "Fyller i plats + sikte",
+        "types": "Typ"
       },
       "playbooks": {
         "title": "Playbooks",
@@ -5973,7 +5976,8 @@
         "reject": "Avslå",
         "approved": "Publicerad i biblioteket",
         "rejected": "Utelämnad ur biblioteket",
-        "review_failed": "Kunde inte granska den uppställningen"
+        "review_failed": "Kunde inte granska den uppställningen",
+        "in_review": "Granskas"
       },
       "archive": {
         "action": "Arkivera uppställningen",

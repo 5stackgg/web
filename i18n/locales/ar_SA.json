@@ -5405,7 +5405,9 @@
         "flight_time_hint": "كم تبقى القنبلة في الهواء بعد الرمي.",
         "stat_hit_rate": "نسبة نجاحي",
         "stat_flight": "الطيران",
-        "stat_difficulty": "الصعوبة"
+        "stat_difficulty": "الصعوبة",
+        "yours": "لك · {status}",
+        "score": "{count} تصويت إيجابي | {count} تصويتات إيجابية"
       },
       "viewer": {
         "replay_throw": "إعادة عرض الرمية",
@@ -5605,7 +5607,8 @@
         "copy_aim": "نسخ setang",
         "aim_copied": "نُسخ التصويب",
         "aim_copy_failed": "تعذّر نسخ ذلك",
-        "write_up_hint": "يملأ موضع الرمي والتصويب مسبقًا"
+        "write_up_hint": "يملأ موضع الرمي والتصويب مسبقًا",
+        "types": "النوع"
       },
       "playbooks": {
         "title": "كتيبات الخطط",
@@ -5973,7 +5976,8 @@
         "reject": "رفض",
         "approved": "نُشرت في المكتبة",
         "rejected": "لم تُدرج في المكتبة",
-        "review_failed": "تعذّرت مراجعة تلك الرمية"
+        "review_failed": "تعذّرت مراجعة تلك الرمية",
+        "in_review": "قيد المراجعة"
       },
       "archive": {
         "action": "أرشفة الرمية",

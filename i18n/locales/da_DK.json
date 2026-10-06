@@ -5405,7 +5405,9 @@
         "flight_time_hint": "Hvor længe granaten er i luften efter kastet.",
         "stat_hit_rate": "Min træfprocent",
         "stat_flight": "Flugt",
-        "stat_difficulty": "Sværhed"
+        "stat_difficulty": "Sværhed",
+        "yours": "Din · {status}",
+        "score": "{count} opstemme | {count} opstemmer"
       },
       "viewer": {
         "replay_throw": "Afspil kastet",
@@ -5605,7 +5607,8 @@
         "copy_aim": "Kopiér setang",
         "aim_copied": "Sigtet kopieret",
         "aim_copy_failed": "Kunne ikke kopiere det",
-        "write_up_hint": "Udfylder sted + sigte på forhånd"
+        "write_up_hint": "Udfylder sted + sigte på forhånd",
+        "types": "Type"
       },
       "playbooks": {
         "title": "Playbooks",
@@ -5973,7 +5976,8 @@
         "reject": "Afvis",
         "approved": "Offentliggjort i biblioteket",
         "rejected": "Holdt uden for biblioteket",
-        "review_failed": "Kunne ikke gennemgå den opstilling"
+        "review_failed": "Kunne ikke gennemgå den opstilling",
+        "in_review": "Til gennemgang"
       },
       "archive": {
         "action": "Arkivér opstillingen",

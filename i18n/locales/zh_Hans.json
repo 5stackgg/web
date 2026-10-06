@@ -5405,7 +5405,9 @@
         "flight_time_hint": "手雷出手后在空中停留的时间。",
         "stat_hit_rate": "我的成功率",
         "stat_flight": "飞行",
-        "stat_difficulty": "难度"
+        "stat_difficulty": "难度",
+        "yours": "我的 · {status}",
+        "score": "{count} 个赞 | {count} 个赞"
       },
       "viewer": {
         "replay_throw": "回放投掷",
@@ -5605,7 +5607,8 @@
         "copy_aim": "复制 setang",
         "aim_copied": "已复制瞄准值",
         "aim_copy_failed": "无法复制",
-        "write_up_hint": "自动填入投掷点与瞄准值"
+        "write_up_hint": "自动填入投掷点与瞄准值",
+        "types": "类型"
       },
       "playbooks": {
         "title": "战术手册",
@@ -5973,7 +5976,8 @@
         "reject": "拒绝",
         "approved": "已发布到道具库",
         "rejected": "未收入道具库",
-        "review_failed": "无法审核该点位"
+        "review_failed": "无法审核该点位",
+        "in_review": "审核中"
       },
       "archive": {
         "action": "归档点位",

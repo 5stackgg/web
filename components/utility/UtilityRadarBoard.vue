@@ -90,6 +90,7 @@ const emit = defineEmits<{
   "select-segment": [key: string];
   "select-spot": [key: string | null];
   open: [id: string];
+  edit: [id: string];
 }>();
 
 const radarFailed = ref(false);
@@ -1713,6 +1714,7 @@ const orderedMarkers = computed(() => {
                 @hover="(id) => emit('hover', id)"
                 @select="(id) => emit('select', id)"
                 @open="(id) => emit('open', id)"
+                @edit="(id) => emit('edit', id)"
                 @close="emit('select-spot', null)"
               />
             </div>

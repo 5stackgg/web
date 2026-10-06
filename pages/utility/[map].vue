@@ -34,6 +34,7 @@ import UtilityRadarBoard from "~/components/utility/UtilityRadarBoard.vue";
 import UtilityCollectionsPanel from "~/components/utility/UtilityCollectionsPanel.vue";
 import UtilityLineupCard from "~/components/utility/UtilityLineupCard.vue";
 import UtilitySpotPicker from "~/components/utility/UtilitySpotPicker.vue";
+import UtilityTypeChips from "~/components/utility/UtilityTypeChips.vue";
 import UtilityMobileSheet from "~/components/utility/UtilityMobileSheet.vue";
 import UtilityEmpty from "~/components/utility/UtilityEmpty.vue";
 import UtilitySkeletonList from "~/components/utility/UtilitySkeletonList.vue";
@@ -1297,6 +1298,15 @@ function openLineup(id: string) {
   setDetailId(id, "push");
 }
 
+// Straight into the form: the dialog reads this once the lineup has loaded and
+// hands it back with edit-started.
+const editOnOpen = ref(false);
+
+function editLineup(id: string) {
+  editOnOpen.value = true;
+  openLineup(id);
+}
+
 // Practising from the dialog hands off to the practice dialog rather than
 // stacking one modal on another.
 function practiceFromDetail(id: string) {
@@ -1672,6 +1682,7 @@ function selectLineup(id: string | null) {
           :active-spot="boardActiveSpot"
           @select-spot="(key) => (spotKey = key)"
           @open="openLineup"
+          @edit="editLineup"
           @select="
             (id) =>
               panelBoard?.onSelect ? panelBoard.onSelect(id) : selectLineup(id)
@@ -1897,6 +1908,23 @@ function selectLineup(id: string | null) {
           <!-- Scrolls with the list rather than riding in the sticky bar: on a
                map with a dozen named spots the chips wrap to three rows, and a
                sticky header that tall eats the column it is steering. -->
+          <!-- The board's legend chips filter the meta too, but down there they
+               read as a key, not a control. Here they are where you look when
+               you want fewer rows, bound to the same filter so both agree. -->
+          <div
+            v-if="listTab === META_TAB"
+            class="flex flex-wrap items-center gap-1.5 pb-1"
+          >
+            <span
+              class="mr-0.5 font-mono text-[0.55rem] uppercase tracking-[0.16em] text-muted-foreground"
+            >
+              {{ $t("pages.utility.meta.types") }}
+            </span>
+            <UtilityTypeChips
+              :model-value="filters.types"
+              @update:model-value="(types) => (filters = { ...filters, types })"
+            />
+          </div>
           <UtilitySpotPicker
             v-if="listTab === LIST_TAB"
             v-model="spotKey"
@@ -2099,6 +2127,7 @@ function selectLineup(id: string | null) {
               :meta-busiest="metaBusiest"
               :show-fork="!!mySteamId"
               :show-archive="!!mySteamId"
+              :show-edit="!!mySteamId"
               :show-practice="!isMobile"
               :can-review="canReview"
               @select="selectLineup"
@@ -2106,6 +2135,7 @@ function selectLineup(id: string | null) {
               :can-react="!!mySteamId"
               open-in-place
               @open="openLineup"
+              @edit="editLineup"
               @fork="startFork"
               @archive="startArchive"
               @restore="restoreLineup"
@@ -2161,6 +2191,8 @@ function selectLineup(id: string | null) {
     :lineups="lineups"
     :can-react="!!mySteamId"
     :can-practice="!isMobile"
+    :edit-on-open="editOnOpen"
+    @edit-started="editOnOpen = false"
     @practice="practiceFromDetail"
     @vote="onVote"
     @favorite="onFavorite"

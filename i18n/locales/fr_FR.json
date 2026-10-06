@@ -5405,7 +5405,9 @@
         "flight_time_hint": "Combien de temps la grenade reste en l'air après le lancer.",
         "stat_hit_rate": "Mon taux de réussite",
         "stat_flight": "Vol",
-        "stat_difficulty": "Difficulté"
+        "stat_difficulty": "Difficulté",
+        "yours": "À vous · {status}",
+        "score": "{count} vote positif | {count} votes positifs"
       },
       "viewer": {
         "replay_throw": "Rejouer le lancer",
@@ -5605,7 +5607,8 @@
         "copy_aim": "Copier setang",
         "aim_copied": "Visée copiée",
         "aim_copy_failed": "Impossible de copier cela",
-        "write_up_hint": "Préremplit origine + visée"
+        "write_up_hint": "Préremplit origine + visée",
+        "types": "Type"
       },
       "playbooks": {
         "title": "Playbooks",
@@ -5973,7 +5976,8 @@
         "reject": "Refuser",
         "approved": "Publié dans la bibliothèque",
         "rejected": "Écarté de la bibliothèque",
-        "review_failed": "Impossible de valider ce lineup"
+        "review_failed": "Impossible de valider ce lineup",
+        "in_review": "En revue"
       },
       "archive": {
         "action": "Archiver le lineup",

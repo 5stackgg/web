@@ -4610,7 +4610,32 @@
       "lan_servers_title": "LANサーバー",
       "manage": "管理",
       "all_modes": "すべて",
-      "no_mode": "バニラ"
+      "no_mode": "バニラ",
+      "summary": "プレイ中 {playing} · 稼働中 {awake} · 休止中 {hibernating}",
+      "touch_notice": "参加するには PC の CS2 が必要です。サーバーの接続コマンドをコピーするか、このページをパソコンで開いてください。",
+      "on_lan_title": "この LAN",
+      "on_lan_description": "現地にいるため、これらが最も近いサーバーです。",
+      "online_title": "オンライン",
+      "pinned": "固定",
+      "most_players": "最多プレイヤー",
+      "featured": "注目",
+      "join": "参加",
+      "wake_and_join": "起動して参加",
+      "full": "満員",
+      "hibernating": "休止中",
+      "hibernating_hint": "休止中、参加すると起動します",
+      "seats_open": "空き {count}",
+      "copy_connect": "接続コマンドをコピー",
+      "feature": "このページで注目表示",
+      "unfeature": "注目表示をやめる",
+      "feature_failed": "注目サーバーを更新できませんでした",
+      "sort_players": "プレイヤー数順",
+      "sort_ping": "Ping 順",
+      "columns": {
+        "map": "マップ",
+        "server": "サーバー",
+        "ping": "Ping"
+      }
     },
     "map_pools": {
       "title": "マッププール",

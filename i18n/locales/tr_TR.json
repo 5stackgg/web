@@ -4610,7 +4610,32 @@
       "lan_servers_title": "LAN sunucuları",
       "manage": "Yönet",
       "all_modes": "Tümü",
-      "no_mode": "Vanilla"
+      "no_mode": "Vanilla",
+      "summary": "{playing} oynuyor · {awake} aktif · {hibernating} uykuda",
+      "touch_notice": "Katılmak için bilgisayarında CS2 gerekir. Sunucunun bağlantı komutunu kopyala veya bu sayfayı bilgisayarında aç.",
+      "on_lan_title": "Bu LAN'da",
+      "on_lan_description": "Mekândasın, bu yüzden en yakın sunucular bunlar.",
+      "online_title": "Çevrim içi",
+      "pinned": "Sabitlendi",
+      "most_players": "En çok oyuncu",
+      "featured": "Öne çıkan",
+      "join": "Katıl",
+      "wake_and_join": "Uyandır ve katıl",
+      "full": "Dolu",
+      "hibernating": "Uykuda",
+      "hibernating_hint": "uykuda, katılınca uyanır",
+      "seats_open": "{count} boş",
+      "copy_connect": "Bağlantı komutunu kopyala",
+      "feature": "Bu sayfada öne çıkar",
+      "unfeature": "Öne çıkarmayı kaldır",
+      "feature_failed": "Öne çıkan sunucular güncellenemedi",
+      "sort_players": "En çok oyuncu",
+      "sort_ping": "En iyi ping",
+      "columns": {
+        "map": "Harita",
+        "server": "Sunucu",
+        "ping": "Ping"
+      }
     },
     "map_pools": {
       "title": "Harita havuzları",

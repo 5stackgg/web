@@ -4610,7 +4610,32 @@
       "lan_servers_title": "LAN 서버",
       "manage": "관리",
       "all_modes": "전체",
-      "no_mode": "바닐라"
+      "no_mode": "바닐라",
+      "summary": "{playing}명 플레이 중 · {awake}개 활성 · {hibernating}개 절전 중",
+      "touch_notice": "참가하려면 PC에 CS2가 필요합니다. 서버 접속 명령어를 복사하거나 컴퓨터에서 이 페이지를 여세요.",
+      "on_lan_title": "이 LAN",
+      "on_lan_description": "현장에 있으므로 가장 가까운 서버입니다.",
+      "online_title": "온라인",
+      "pinned": "고정됨",
+      "most_players": "플레이어 많은 순",
+      "featured": "추천",
+      "join": "참가",
+      "wake_and_join": "깨우고 참가",
+      "full": "가득 참",
+      "hibernating": "절전 중",
+      "hibernating_hint": "절전 중, 참가하면 깨어납니다",
+      "seats_open": "{count}자리 남음",
+      "copy_connect": "접속 명령어 복사",
+      "feature": "이 페이지에 추천",
+      "unfeature": "추천 해제",
+      "feature_failed": "추천 서버를 업데이트하지 못했습니다",
+      "sort_players": "플레이어 많은 순",
+      "sort_ping": "핑 낮은 순",
+      "columns": {
+        "map": "맵",
+        "server": "서버",
+        "ping": "핑"
+      }
     },
     "map_pools": {
       "title": "맵 풀",

@@ -4610,7 +4610,32 @@
       "lan_servers_title": "LAN-серверы",
       "manage": "Управление",
       "all_modes": "Все",
-      "no_mode": "Vanilla"
+      "no_mode": "Vanilla",
+      "summary": "{playing} играют · {awake} активны · {hibernating} в спящем режиме",
+      "touch_notice": "Для подключения нужен CS2 на ПК. Скопируйте команду подключения к серверу или откройте эту страницу на компьютере.",
+      "on_lan_title": "В этой LAN",
+      "on_lan_description": "Вы на площадке, поэтому это ближайшие серверы.",
+      "online_title": "Онлайн",
+      "pinned": "Закреплён",
+      "most_players": "Больше всего игроков",
+      "featured": "Избранное",
+      "join": "Войти",
+      "wake_and_join": "Разбудить и войти",
+      "full": "Заполнен",
+      "hibernating": "В спящем режиме",
+      "hibernating_hint": "в спящем режиме, подключение разбудит его",
+      "seats_open": "свободно: {count}",
+      "copy_connect": "Скопировать команду подключения",
+      "feature": "Выделить на этой странице",
+      "unfeature": "Убрать из избранного",
+      "feature_failed": "Не удалось обновить избранные серверы",
+      "sort_players": "Больше всего игроков",
+      "sort_ping": "Лучший пинг",
+      "columns": {
+        "map": "Карта",
+        "server": "Сервер",
+        "ping": "Пинг"
+      }
     },
     "map_pools": {
       "title": "Пулы карт",

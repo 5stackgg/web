@@ -1,95 +1,49 @@
 <script setup lang="ts">
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Settings2 } from "lucide-vue-next";
-import { AnimatedCard } from "@/components/ui/animated-card";
+import { MonitorSmartphone, Settings2 } from "lucide-vue-next";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
-import cleanMapName from "~/utilities/cleanMapName";
 import SectionEmpty from "~/components/common/SectionEmpty.vue";
 import DeferredLoading from "~/components/common/DeferredLoading.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
-import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
-import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
-import { mapFields } from "~/graphql/mapGraphql";
-import { $ } from "~/generated/zeus";
-import { e_server_types_enum } from "~/generated/zeus";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
+import PublicServerFeatured from "~/components/public-servers/PublicServerFeatured.vue";
+import PublicServerTile from "~/components/public-servers/PublicServerTile.vue";
+import PublicServerRow from "~/components/public-servers/PublicServerRow.vue";
 import {
   createButtonClasses,
   listCreateButtonClasses,
+  tacticalSectionLabelClasses,
+  tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
-import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
-import { computed } from "vue";
-import { useAuthStore } from "~/stores/AuthStore";
-import { e_player_roles_enum } from "~/generated/zeus";
 
-const canManage = computed(() =>
-  useAuthStore().isRoleAbove(e_player_roles_enum.moderator),
-);
+const sectionTitleClasses = [tacticalSectionLabelClasses, "!mb-0"];
 
-const canSetup = computed(() =>
-  useAuthStore().isRoleAbove(e_player_roles_enum.administrator),
-);
-
-// The card itself opens the server's page; this skips to where it is edited.
-// Settings is administrator-only, so a moderator lands on Players.
-const manageLink = (serverId: string) =>
-  `/dedicated-servers/${serverId}?tab=${canSetup.value ? "settings" : "players"}`;
-
-const serverLinkClasses =
-  "truncate font-semibold transition-colors after:absolute after:inset-0 after:z-[1] after:rounded-xl after:content-[''] group-hover:text-[hsl(var(--tac-amber))] focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:ring-[hsl(var(--tac-amber))]";
+// The list header's columns; keep in step with PublicServerRow's md grid so
+// the counts and pings line up under it.
+const listColumns =
+  "md:grid-cols-[6rem_minmax(0,1fr)_11rem_4.5rem_auto] md:gap-x-6";
 </script>
 
 <template>
   <h1 class="sr-only">{{ $t("pages.public_servers.title") }}</h1>
 
-  <PageTransition
-    v-if="!loading && servers?.length && (canSetup || modeFilters.length > 2)"
-  >
-    <div class="mb-6 flex flex-wrap items-center gap-2">
-      <!-- Only shown once modes are actually in use: on a deployment that
-           runs none, a filter with a single option is noise. -->
-      <AnimatedFilters
-        v-if="modeFilters.length > 2"
-        v-model="modeFilter"
-        square
-        :options="modeFilters"
-      />
-      <Button
-        v-if="canSetup"
-        as-child
-        size="sm"
-        :class="[listCreateButtonClasses, 'ml-auto']"
-      >
-        <NuxtLink
-          to="/dedicated-servers/create"
-          :title="$t('pages.public_servers.setup_public_server')"
-        >
-          <Settings2 class="h-4 w-4" />
-          <span class="max-md:sr-only">{{
-            $t("pages.public_servers.setup_public_server")
-          }}</span>
-        </NuxtLink>
-      </Button>
-    </div>
-  </PageTransition>
-
   <PageTransition>
     <DeferredLoading :loading="loading" v-slot="{ skeleton, loaded }">
       <FadeSwap>
         <!-- Loading -->
-        <div
-          v-if="skeleton"
-          key="loading"
-          class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
-          aria-busy="true"
-        >
-          <Skeleton v-for="i in 3" :key="i" class="h-72 rounded-xl" />
+        <div v-if="skeleton" key="loading" class="space-y-4" aria-busy="true">
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <Skeleton v-for="i in 2" :key="i" class="h-[19rem] rounded-2xl" />
+          </div>
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <Skeleton v-for="i in 4" :key="i" class="h-60 rounded-xl" />
+          </div>
         </div>
 
         <!-- Empty -->
         <SectionEmpty
-          v-else-if="loaded && (!servers || (servers as any[]).length === 0)"
+          v-else-if="loaded && allServers.length === 0"
           key="empty"
           :title="$t('pages.public_servers.no_servers_title')"
           :description="
@@ -111,272 +65,227 @@ const serverLinkClasses =
           </Button>
         </SectionEmpty>
 
-        <!-- Server cards -->
-        <div v-else key="servers" class="space-y-8">
-          <div v-for="(gameServers, game) in serversByGame" :key="game">
-            <div class="flex items-center gap-3 mb-5">
-              <div class="w-0.5 h-4 rounded-full bg-primary shrink-0" />
-              <span
-                class="text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground whitespace-nowrap"
+        <div v-else key="servers" class="flex flex-col gap-8">
+          <!-- Pulse line, in place of a page header -->
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <p class="font-mono text-xs text-muted-foreground">
+              <i18n-t keypath="pages.public_servers.summary" scope="global">
+                <template #playing>
+                  <span class="text-foreground">{{ totals.playing }}</span>
+                </template>
+                <template #awake>
+                  <span class="text-foreground">{{ totals.awake }}</span>
+                </template>
+                <template #hibernating>{{ totals.hibernating }}</template>
+              </i18n-t>
+            </p>
+            <Button
+              v-if="canSetup"
+              as-child
+              size="sm"
+              :class="listCreateButtonClasses"
+            >
+              <NuxtLink
+                to="/dedicated-servers/create"
+                :title="$t('pages.public_servers.setup_public_server')"
               >
-                {{ gameLabel(game) }}
-              </span>
-              <div class="flex-1 h-px bg-border" />
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              <AnimatedCard
-                v-for="server of matchingMode(flattenGame(gameServers))"
-                :key="server.id"
-                variant="elevated"
-                class="relative overflow-hidden group cursor-pointer p-0"
-              >
-                <!-- Zone A: Map Hero -->
-                <div class="relative h-36 rounded-t-xl overflow-hidden">
-                  <img
-                    :src="`/img/maps/screenshots/${mapName(server.id)}.webp`"
-                    :alt="mapName(server.id)"
-                    class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700"
-                    @error="onImgError"
-                  />
-                  <div
-                    class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"
-                  />
-                  <!-- Top-left: map name -->
-                  <div class="absolute top-0 left-0 right-0 px-2 pt-2">
-                    <span
-                      class="text-[11px] font-bold text-white/90 uppercase tracking-widest drop-shadow-lg"
-                    >
-                      {{ cleanMapName(mapName(server.id)) }}
-                    </span>
-                  </div>
-                  <!-- Patch centered -->
-                  <div
-                    class="absolute inset-0 flex items-center justify-center"
-                  >
-                    <img
-                      v-if="mapPatch(server.id)"
-                      :src="mapPatch(server.id)"
-                      class="w-1/4 max-w-[72px] h-auto max-h-[60%] object-contain drop-shadow-2xl opacity-80"
-                    />
-                  </div>
-                  <!-- Top-right: server type -->
-                  <div class="absolute top-2 right-2">
-                    <Badge variant="secondary" class="text-xs">{{
-                      server.type
-                    }}</Badge>
-                  </div>
-                  <!-- Bottom-right: region -->
-                  <div class="absolute bottom-2 right-2">
-                    <Badge
-                      variant="outline"
-                      class="border-white/20 text-white/70 text-xs"
-                      >{{ server.region }}</Badge
-                    >
-                  </div>
-                </div>
-
-                <!-- Zone B: Card Body -->
-                <div class="px-4 pt-3 pb-2">
-                  <div class="mb-2 flex items-center gap-2">
-                    <!-- Stretched over the whole card, so the card opens the
-                             server's page while Zone C keeps its own buttons. -->
-                    <NuxtLink
-                      :to="`/dedicated-servers/${server.id}`"
-                      :class="[serverLinkClasses, 'min-w-0 flex-1']"
-                    >
-                      {{ server.label }}
-                    </NuxtLink>
-                    <!-- What the server is actually running. A name alone does
-                             not tell anyone whether this is retakes or vanilla. -->
-                    <span
-                      v-if="server.game_mode"
-                      class="shrink-0 rounded border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.08)] px-1.5 py-0.5 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-[hsl(var(--tac-amber))]"
-                    >
-                      {{ server.game_mode.name }}
-                    </span>
-                  </div>
-                  <div class="flex items-center justify-between text-sm mb-1.5">
-                    <span class="text-muted-foreground">{{
-                      $t("pages.public_servers.players")
-                    }}</span>
-                    <span
-                      :class="capacityClass(server)"
-                      class="font-mono font-medium"
-                    >
-                      {{ getDedicatedServerPlayers(server.id) }} /
-                      {{ server.max_players }}
-                    </span>
-                  </div>
-                  <div
-                    class="relative h-1.5 w-full overflow-hidden rounded-full bg-primary/20"
-                  >
-                    <div
-                      class="h-full rounded-full transition-all"
-                      :class="capacityBarClass(server)"
-                      :style="`width: ${capacityPercent(server)}%`"
-                    />
-                  </div>
-                </div>
-
-                <!-- Zone C: CTA Footer -->
-                <div class="relative z-[2] px-4 pb-4 pt-3">
-                  <div class="flex items-center gap-2">
-                    <div
-                      class="flex-1 [&>div]:w-full [&_a]:flex-1 [&_a_button]:w-full"
-                    >
-                      <QuickServerConnect :server="server" highlight />
-                    </div>
-                    <Button
-                      v-if="canManage"
-                      as-child
-                      variant="outline"
-                      size="icon"
-                      :title="$t('pages.public_servers.manage')"
-                    >
-                      <NuxtLink
-                        :to="manageLink(server.id)"
-                        :aria-label="$t('pages.public_servers.manage')"
-                      >
-                        <Settings2 class="h-4 w-4" />
-                      </NuxtLink>
-                    </Button>
-                  </div>
-                </div>
-              </AnimatedCard>
-            </div>
+                <Settings2 class="h-4 w-4" />
+                <span class="max-md:sr-only">{{
+                  $t("pages.public_servers.setup_public_server")
+                }}</span>
+              </NuxtLink>
+            </Button>
           </div>
+
+          <!-- Phones and tablets cannot launch CS2; say so once instead of
+               offering a join that goes nowhere. -->
+          <div
+            class="hidden items-start gap-3 rounded-lg border border-border bg-card/40 p-3 text-sm text-muted-foreground [@media(pointer:coarse)]:flex"
+          >
+            <MonitorSmartphone class="mt-0.5 h-4 w-4 shrink-0" />
+            {{ $t("pages.public_servers.touch_notice") }}
+          </div>
+
+          <!-- On site: the LAN comes first -->
+          <section
+            v-if="onLan && lanServers.length"
+            class="flex flex-col gap-3"
+            aria-labelledby="public-servers-lan"
+          >
+            <div class="flex flex-wrap items-baseline gap-3">
+              <h2 id="public-servers-lan" :class="sectionTitleClasses">
+                <span :class="tacticalSectionTickClasses"></span>
+                {{ $t("pages.public_servers.on_lan_title") }}
+              </h2>
+              <span class="text-xs text-muted-foreground">
+                {{ $t("pages.public_servers.on_lan_description") }}
+              </span>
+            </div>
+            <div class="rounded-xl border border-border bg-card/30">
+              <PublicServerRow
+                v-for="server of lanServers"
+                :key="server.id"
+                :server="server"
+                :manage-to="manageTo(server.id)"
+                :can-feature="false"
+              />
+            </div>
+          </section>
+
+          <section
+            v-if="onlineServers.length"
+            class="flex flex-col gap-4"
+            aria-labelledby="public-servers-online"
+          >
+            <h2
+              id="public-servers-online"
+              :class="[
+                sectionTitleClasses,
+                onLan && lanServers.length ? '' : 'sr-only',
+              ]"
+            >
+              <span :class="tacticalSectionTickClasses"></span>
+              {{ $t("pages.public_servers.online_title") }}
+            </h2>
+
+            <!-- Featured pair: an admin's pins, then the busiest -->
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <PublicServerFeatured
+                v-for="server of layout.featured"
+                :key="server.id"
+                :server="server"
+                :manage-to="manageTo(server.id)"
+                :can-feature="canSetup"
+                @toggle-featured="toggleFeatured(server)"
+              />
+            </div>
+
+            <!-- A handful: tiles, two rows of four at most -->
+            <div
+              v-if="layout.layout === 'tiles' && layout.rest.length"
+              class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+            >
+              <PublicServerTile
+                v-for="server of layout.rest"
+                :key="server.id"
+                :server="server"
+                :manage-to="manageTo(server.id)"
+                :can-feature="canSetup"
+                @toggle-featured="toggleFeatured(server)"
+              />
+            </div>
+
+            <!-- Many: filters and an aligned list -->
+            <div
+              v-else-if="layout.layout === 'list'"
+              class="flex flex-col gap-3"
+            >
+              <div class="flex flex-wrap items-center gap-2">
+                <AnimatedFilters
+                  v-if="modeFilters.length > 2"
+                  v-model="modeFilter"
+                  square
+                  :options="modeFilters"
+                />
+                <AnimatedFilters
+                  v-model="sort"
+                  square
+                  class="ml-auto"
+                  :options="sortOptions"
+                />
+              </div>
+              <div
+                :class="[
+                  'hidden px-4 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground/70 md:grid',
+                  listColumns,
+                ]"
+                aria-hidden="true"
+              >
+                <span>{{ $t("pages.public_servers.columns.map") }}</span>
+                <span>{{ $t("pages.public_servers.columns.server") }}</span>
+                <span class="text-right">{{
+                  $t("pages.public_servers.players")
+                }}</span>
+                <span class="text-right">{{
+                  $t("pages.public_servers.columns.ping")
+                }}</span>
+                <span></span>
+              </div>
+              <div class="rounded-xl border border-border bg-card/30">
+                <PublicServerRow
+                  v-for="server of listServers"
+                  :key="server.id"
+                  :server="server"
+                  :manage-to="manageTo(server.id)"
+                  :can-feature="canSetup"
+                  @toggle-featured="toggleFeatured(server)"
+                />
+              </div>
+            </div>
+          </section>
+
+          <!-- Off site: LAN servers stay listed, quietly, at the bottom -->
+          <section
+            v-if="!onLan && lanServers.length"
+            class="tac-section-sep flex flex-col gap-3 pt-6"
+            aria-labelledby="public-servers-lan-offsite"
+          >
+            <h2
+              id="public-servers-lan-offsite"
+              :class="[sectionTitleClasses, 'text-muted-foreground/70']"
+            >
+              {{ $t("pages.public_servers.lan_servers_title") }}
+            </h2>
+            <div class="rounded-xl border border-border bg-card/20">
+              <PublicServerRow
+                v-for="server of lanServers"
+                :key="server.id"
+                :server="server"
+                :manage-to="manageTo(server.id)"
+                :can-feature="false"
+              />
+            </div>
+          </section>
         </div>
       </FadeSwap>
     </DeferredLoading>
   </PageTransition>
-
-  <!-- LAN Servers -->
-  <PageTransition :delay="200">
-    <div v-if="!loading && lanServers && lanServers.length > 0" class="mt-8">
-      <div class="flex items-center gap-3 mb-5">
-        <div class="w-0.5 h-4 rounded-full bg-muted-foreground/40 shrink-0" />
-        <span
-          class="text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground/60 whitespace-nowrap"
-        >
-          {{ $t("pages.public_servers.lan_servers_title") }}
-        </span>
-        <div class="flex-1 h-px bg-border" />
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <AnimatedCard
-          v-for="server of lanServers"
-          :key="server.id"
-          variant="elevated"
-          class="relative overflow-hidden group cursor-pointer p-0"
-        >
-          <!-- Zone A: Map Hero -->
-          <div class="relative h-36 rounded-t-xl overflow-hidden">
-            <img
-              :src="`/img/maps/screenshots/${mapName(server.id)}.webp`"
-              :alt="mapName(server.id)"
-              class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700"
-              @error="onImgError"
-            />
-            <div
-              class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"
-            />
-            <!-- Top-left: map name -->
-            <div class="absolute top-0 left-0 right-0 px-2 pt-2">
-              <span
-                class="text-[11px] font-bold text-white/90 uppercase tracking-widest drop-shadow-lg"
-              >
-                {{ cleanMapName(mapName(server.id)) }}
-              </span>
-            </div>
-            <!-- Top-right: server type -->
-            <div class="absolute top-2 right-2">
-              <Badge variant="secondary" class="text-xs">{{
-                server.type
-              }}</Badge>
-            </div>
-            <!-- Bottom-right: region -->
-            <div class="absolute bottom-2 right-2">
-              <Badge
-                variant="outline"
-                class="border-white/20 text-white/70 text-xs"
-                >{{ server.region }}</Badge
-              >
-            </div>
-          </div>
-
-          <!-- Zone B: Card Body -->
-          <div class="px-4 pt-3 pb-2">
-            <NuxtLink
-              :to="`/dedicated-servers/${server.id}`"
-              :class="[serverLinkClasses, 'mb-2 block']"
-            >
-              {{ server.label }}
-            </NuxtLink>
-            <div class="flex items-center justify-between text-sm mb-1.5">
-              <span class="text-muted-foreground">{{
-                $t("pages.public_servers.players")
-              }}</span>
-              <span
-                :class="capacityClass(server)"
-                class="font-mono font-medium"
-              >
-                {{ getDedicatedServerPlayers(server.id) }} /
-                {{ server.max_players }}
-              </span>
-            </div>
-            <div
-              class="relative h-1.5 w-full overflow-hidden rounded-full bg-primary/20"
-            >
-              <div
-                class="h-full rounded-full transition-all"
-                :class="capacityBarClass(server)"
-                :style="`width: ${capacityPercent(server)}%`"
-              />
-            </div>
-          </div>
-
-          <!-- Zone C: CTA Footer -->
-          <div class="relative z-[2] px-4 pb-4 pt-3">
-            <div class="flex items-center gap-2">
-              <div
-                class="flex-1 [&>div]:w-full [&_a]:flex-1 [&_a_button]:w-full"
-              >
-                <QuickServerConnect :server="server" highlight />
-              </div>
-              <Button
-                v-if="canManage"
-                as-child
-                variant="outline"
-                size="icon"
-                :title="$t('pages.public_servers.manage')"
-              >
-                <NuxtLink
-                  :to="manageLink(server.id)"
-                  :aria-label="$t('pages.public_servers.manage')"
-                >
-                  <Settings2 class="h-4 w-4" />
-                </NuxtLink>
-              </Button>
-            </div>
-          </div>
-        </AnimatedCard>
-      </div>
-    </div>
-  </PageTransition>
 </template>
 
 <script lang="ts">
+import {
+  generateMutation,
+  generateQuery,
+  generateSubscription,
+} from "~/graphql/graphqlGen";
+import { $, e_player_roles_enum, e_server_types_enum } from "~/generated/zeus";
+import { toast } from "@/components/ui/toast";
+import { useAuthStore } from "~/stores/AuthStore";
+import { useMatchmakingStore } from "~/stores/MatchmakingStore";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+import {
+  isFull,
+  pingTier,
+  showcase,
+  sortServers,
+  type PublicServerSort,
+} from "~/utilities/publicServers";
+import type { PublicServerView } from "~/components/public-servers/types";
+
 export default {
   data() {
     return {
       servers: undefined as any[] | undefined,
-      serversByGame: {} as Record<string, Record<string, any[]>>,
-      modeFilter: "all",
-      lanServers: undefined as any[] | undefined,
       getDedicatedServerInfo: undefined as any[] | undefined,
-      maps: undefined as any[] | undefined,
+      modeFilter: "all",
+      sort: "players" as PublicServerSort,
       loading: true,
     };
+  },
+  mounted() {
+    // Ping and "am I on the LAN" both come from the matchmaking probe. It
+    // only runs for signed-in players, and only when nothing is cached.
+    useMatchmakingStore().checkLatenies();
   },
   apollo: {
     getDedicatedServerInfo: {
@@ -392,11 +301,6 @@ export default {
         ],
       }),
       pollInterval: 60 * 1000,
-    },
-    maps: {
-      query: generateQuery({
-        maps: [{}, { name: true, patch: true }],
-      }),
     },
     $subscribe: {
       servers: {
@@ -444,6 +348,8 @@ export default {
               game: true,
               region: true,
               connected: true,
+              featured: true,
+              hibernating: true,
               connection_link: true,
               connection_string: true,
               max_players: true,
@@ -464,36 +370,56 @@ export default {
           };
         },
         result: function ({ data }: { data: any }) {
-          const nonLan = data.servers.filter(
-            (server: any) => !server.server_region.is_lan,
-          );
-          this.servers = nonLan;
-          this.serversByGame = nonLan.reduce(
-            (acc: Record<string, Record<string, any[]>>, s: any) => {
-              if (!acc[s.game]) acc[s.game] = {};
-              (acc[s.game][s.type] = acc[s.game][s.type] || []).push(s);
-              return acc;
-            },
-            {} as Record<string, Record<string, any[]>>,
-          );
-          this.lanServers = data.servers.filter(
-            (server: any) => server.server_region.is_lan,
-          );
+          this.servers = data.servers;
           this.loading = false;
         },
       },
     },
   },
   computed: {
-    // Built from the servers actually online, so the list never offers a mode
-    // nobody is running.
+    canManage(): boolean {
+      return useAuthStore().isRoleAbove(e_player_roles_enum.moderator);
+    },
+    canSetup(): boolean {
+      return useAuthStore().isRoleAbove(e_player_roles_enum.administrator);
+    },
+    onLan(): boolean {
+      return useMatchmakingStore().onLan;
+    },
+    allServers(): PublicServerView[] {
+      return ((this.servers ?? []) as any[]).map((server) =>
+        this.toView(server),
+      );
+    },
+    lanServers(): PublicServerView[] {
+      return sortServers(
+        this.allServers.filter((server) => server.server_region?.is_lan),
+        "players",
+      );
+    },
+    onlineServers(): PublicServerView[] {
+      return this.allServers.filter((server) => !server.server_region?.is_lan);
+    },
+    layout() {
+      return showcase(this.onlineServers);
+    },
+    totals(): { playing: number; awake: number; hibernating: number } {
+      const visible = this.onLan ? this.allServers : this.onlineServers;
+      return {
+        playing: visible.reduce((sum, server) => sum + server.players, 0),
+        awake: visible.filter((server) => !server.hibernating).length,
+        hibernating: visible.filter((server) => server.hibernating).length,
+      };
+    },
+    // Built from the listed servers, so the list never offers a mode nobody
+    // is running.
     modeFilters(): Array<{ key: string; label: string; count: number }> {
       const counts = new Map<string, { label: string; count: number }>();
 
-      for (const server of this.servers as Array<Record<string, any>>) {
-        const mode = server.game_mode;
-        const key = mode?.slug ?? "vanilla";
-        const label = mode?.name ?? this.$t("pages.public_servers.no_mode");
+      for (const server of this.layout.rest) {
+        const key = server.game_mode?.slug ?? "vanilla";
+        const label =
+          server.game_mode?.name ?? this.$t("pages.public_servers.no_mode");
         const entry = counts.get(key) ?? { label: String(label), count: 0 };
 
         entry.count++;
@@ -508,7 +434,7 @@ export default {
         {
           key: "all",
           label: String(this.$t("pages.public_servers.all_modes")),
-          count: (this.servers as Array<unknown>).length,
+          count: this.layout.rest.length,
         },
         ...[...counts.entries()].map(([key, entry]) => ({
           key,
@@ -517,64 +443,77 @@ export default {
         })),
       ];
     },
+    sortOptions(): Array<{ key: string; label: string }> {
+      return [
+        {
+          key: "players",
+          label: String(this.$t("pages.public_servers.sort_players")),
+        },
+        {
+          key: "ping",
+          label: String(this.$t("pages.public_servers.sort_ping")),
+        },
+      ];
+    },
+    listServers(): PublicServerView[] {
+      const inMode =
+        this.modeFilter === "all"
+          ? this.layout.rest
+          : this.layout.rest.filter(
+              (server) =>
+                (server.game_mode?.slug ?? "vanilla") === this.modeFilter,
+            );
+      return sortServers(inMode, this.sort);
+    },
   },
   methods: {
-    matchingMode(servers: Array<Record<string, any>>) {
-      if (this.modeFilter === "all") {
-        return servers;
-      }
-
-      return servers.filter(
-        (server) => (server.game_mode?.slug ?? "vanilla") === this.modeFilter,
+    toView(server: any): PublicServerView {
+      const info = this.getDedicatedServerInfo?.find(
+        (entry: any) => entry.id === server.id,
       );
-    },
-    gameLabel(game: string): string {
-      const labels: Record<string, string> = {
-        cs2: "Counter-Strike 2",
-        csgo: "Counter-Strike: Global Offensive",
+      const reading = useMatchmakingStore().getRegionlatencyResult(
+        server.region,
+      );
+      const ping = reading ? Math.round(Number(reading.latency)) : undefined;
+      const view = {
+        ...server,
+        players: Number(info?.players) || 0,
+        map: info?.map || "default",
+        ping,
+        tier: pingTier(
+          ping,
+          Number(useApplicationSettingsStore().maxAcceptableLatency) || 100,
+        ),
       };
-      return labels[game] ?? game;
+      return { ...view, isFull: isFull(view) };
     },
-    flattenGame(typeMap: Record<string, any[]>): any[] {
-      return Object.values(typeMap).flat();
+    // The card opens the server's page; this skips to where it is edited.
+    // Settings is administrator-only, so a moderator lands on Players.
+    manageTo(serverId: string): string | undefined {
+      if (!this.canManage) {
+        return undefined;
+      }
+      return `/dedicated-servers/${serverId}?tab=${this.canSetup ? "settings" : "players"}`;
     },
-    getDedicatedServerMap(id: string) {
-      return this.getDedicatedServerInfo?.find((server) => server.id === id)
-        ?.map;
-    },
-    getDedicatedServerPlayers(id: string) {
-      return (
-        this.getDedicatedServerInfo?.find((server) => server.id === id)
-          ?.players || 0
-      );
-    },
-    mapPatch(id: string): string | undefined {
-      const name = this.getDedicatedServerMap(id);
-      return this.maps?.find((m) => m.name === name)?.patch;
-    },
-    mapName(id: string): string {
-      return this.getDedicatedServerMap(id) || "default";
-    },
-    capacityPercent(server: any): number {
-      const players = this.getDedicatedServerPlayers(server.id);
-      return server.max_players > 0
-        ? Math.min(100, Math.round((players / server.max_players) * 100))
-        : 0;
-    },
-    capacityClass(server: any): string {
-      const pct = this.capacityPercent(server);
-      if (pct >= 80) return "text-red-400";
-      if (pct >= 50) return "text-yellow-400";
-      return "text-green-400";
-    },
-    capacityBarClass(server: any): string {
-      const pct = this.capacityPercent(server);
-      if (pct >= 80) return "bg-red-400";
-      if (pct >= 50) return "bg-yellow-400";
-      return "bg-green-400";
-    },
-    onImgError(e: Event) {
-      (e.target as HTMLImageElement).src = "/img/maps/screenshots/default.webp";
+    async toggleFeatured(server: PublicServerView) {
+      try {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            update_servers_by_pk: [
+              {
+                pk_columns: { id: server.id },
+                _set: { featured: !server.featured },
+              },
+              { __typename: true },
+            ],
+          }),
+        });
+      } catch (error) {
+        toast({
+          title: String(this.$t("pages.public_servers.feature_failed")),
+          variant: "destructive",
+        });
+      }
     },
   },
 };

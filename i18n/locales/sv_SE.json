@@ -4610,7 +4610,32 @@
       "lan_servers_title": "LAN-servrar",
       "manage": "Hantera",
       "all_modes": "Alla",
-      "no_mode": "Vanilla"
+      "no_mode": "Vanilla",
+      "summary": "{playing} spelar · {awake} vakna · {hibernating} i viloläge",
+      "touch_notice": "För att gå med behöver du CS2 på din dator. Kopiera serverns connect-kommando eller öppna sidan på din dator.",
+      "on_lan_title": "På detta LAN",
+      "on_lan_description": "Du är på plats, så det här är de närmaste servrarna.",
+      "online_title": "Online",
+      "pinned": "Fäst",
+      "most_players": "Flest spelare",
+      "featured": "Utvald",
+      "join": "Gå med",
+      "wake_and_join": "Väck och gå med",
+      "full": "Full",
+      "hibernating": "I viloläge",
+      "hibernating_hint": "i viloläge, den vaknar när du går med",
+      "seats_open": "{count} lediga",
+      "copy_connect": "Kopiera connect-kommando",
+      "feature": "Framhäv på denna sida",
+      "unfeature": "Sluta framhäva",
+      "feature_failed": "Kunde inte uppdatera de utvalda servrarna",
+      "sort_players": "Flest spelare",
+      "sort_ping": "Bäst ping",
+      "columns": {
+        "map": "Karta",
+        "server": "Server",
+        "ping": "Ping"
+      }
     },
     "map_pools": {
       "title": "Kartpooler",

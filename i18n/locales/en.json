@@ -4612,7 +4612,32 @@
       "lan_servers_title": "LAN Servers",
       "manage": "Manage",
       "all_modes": "All",
-      "no_mode": "Vanilla"
+      "no_mode": "Vanilla",
+      "summary": "{playing} playing · {awake} awake · {hibernating} hibernating",
+      "touch_notice": "Joining needs CS2 on your PC. Copy a server's connect command, or open this page on your computer.",
+      "on_lan_title": "On this LAN",
+      "on_lan_description": "You're on site, so these are the closest servers.",
+      "online_title": "Online",
+      "pinned": "Pinned",
+      "most_players": "Most players",
+      "featured": "Featured",
+      "join": "Join",
+      "wake_and_join": "Wake & join",
+      "full": "Full",
+      "hibernating": "Hibernating",
+      "hibernating_hint": "hibernating, joining wakes it",
+      "seats_open": "{count} open",
+      "copy_connect": "Copy connect command",
+      "feature": "Feature on this page",
+      "unfeature": "Stop featuring",
+      "feature_failed": "Couldn't update the featured servers",
+      "sort_players": "Most players",
+      "sort_ping": "Best ping",
+      "columns": {
+        "map": "Map",
+        "server": "Server",
+        "ping": "Ping"
+      }
     },
     "map_pools": {
       "title": "Map Pools",

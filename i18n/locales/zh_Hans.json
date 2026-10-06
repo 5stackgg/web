@@ -4610,7 +4610,32 @@
       "lan_servers_title": "LAN 服务器",
       "manage": "管理",
       "all_modes": "全部",
-      "no_mode": "原版"
+      "no_mode": "原版",
+      "summary": "{playing} 人在玩 · {awake} 台运行中 · {hibernating} 台休眠中",
+      "touch_notice": "加入需要电脑上的 CS2。请复制服务器的连接命令，或在电脑上打开此页面。",
+      "on_lan_title": "本局域网",
+      "on_lan_description": "你在现场，这些是离你最近的服务器。",
+      "online_title": "在线",
+      "pinned": "已置顶",
+      "most_players": "玩家最多",
+      "featured": "精选",
+      "join": "加入",
+      "wake_and_join": "唤醒并加入",
+      "full": "已满",
+      "hibernating": "休眠中",
+      "hibernating_hint": "休眠中，加入即唤醒",
+      "seats_open": "空位 {count}",
+      "copy_connect": "复制连接命令",
+      "feature": "在此页面精选",
+      "unfeature": "取消精选",
+      "feature_failed": "无法更新精选服务器",
+      "sort_players": "玩家最多",
+      "sort_ping": "延迟最低",
+      "columns": {
+        "map": "地图",
+        "server": "服务器",
+        "ping": "延迟"
+      }
     },
     "map_pools": {
       "title": "地图池",

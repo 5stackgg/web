@@ -4610,7 +4610,32 @@
       "lan_servers_title": "سيرفرات LAN",
       "manage": "إدارة",
       "all_modes": "الكل",
-      "no_mode": "أصلي"
+      "no_mode": "أصلي",
+      "summary": "{playing} يلعبون · {awake} نشطة · {hibernating} في وضع السبات",
+      "touch_notice": "الانضمام يتطلب CS2 على جهاز الكمبيوتر. انسخ أمر الاتصال بالخادم، أو افتح هذه الصفحة على جهاز الكمبيوتر.",
+      "on_lan_title": "على هذه الشبكة المحلية",
+      "on_lan_description": "أنت في الموقع، لذا هذه هي أقرب الخوادم.",
+      "online_title": "عبر الإنترنت",
+      "pinned": "مثبّت",
+      "most_players": "الأكثر لاعبين",
+      "featured": "مميز",
+      "join": "انضمام",
+      "wake_and_join": "إيقاظ وانضمام",
+      "full": "ممتلئ",
+      "hibernating": "في وضع السبات",
+      "hibernating_hint": "في وضع السبات، الانضمام يوقظه",
+      "seats_open": "{count} متاح",
+      "copy_connect": "نسخ أمر الاتصال",
+      "feature": "تمييز في هذه الصفحة",
+      "unfeature": "إلغاء التمييز",
+      "feature_failed": "تعذّر تحديث الخوادم المميزة",
+      "sort_players": "الأكثر لاعبين",
+      "sort_ping": "أفضل اتصال",
+      "columns": {
+        "map": "الخريطة",
+        "server": "الخادم",
+        "ping": "الاتصال"
+      }
     },
     "map_pools": {
       "title": "قوائم الخرائط",

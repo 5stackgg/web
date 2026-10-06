@@ -5371,6 +5371,17 @@
         "zoom_reset": "맵에 맞추기",
         "callouts_tip": "맵 콜아웃 표시"
       },
+      "spots": {
+        "title": "어디에 유틸이 필요한가요?",
+        "all": "모든 지점",
+        "more": "{count}개 더",
+        "fewer": "접기",
+        "count": "라인업 {count}개 | 라인업 {count}개"
+      },
+      "sheet": {
+        "expand": "목록 더 보기",
+        "collapse": "맵 더 보기"
+      },
       "auto_name": {
         "full": "{from}에서 {to} {type}",
         "same": "{to} {type}",

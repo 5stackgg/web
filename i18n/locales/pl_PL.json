@@ -5371,6 +5371,17 @@
         "zoom_reset": "Dopasuj mapę",
         "callouts_tip": "Pokaż nazwy miejsc na mapie"
       },
+      "spots": {
+        "title": "Gdzie potrzebujesz granatów?",
+        "all": "Wszystkie miejsca",
+        "more": "Jeszcze {count}",
+        "fewer": "Mniej",
+        "count": "{count} lineup | {count} lineupów"
+      },
+      "sheet": {
+        "expand": "Pokaż więcej listy",
+        "collapse": "Pokaż więcej mapy"
+      },
       "auto_name": {
         "full": "{type} na {to} z {from}",
         "same": "{type} na {to}",

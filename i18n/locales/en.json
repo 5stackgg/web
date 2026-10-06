@@ -5373,6 +5373,17 @@
         "zoom_reset": "Fit map",
         "callouts_tip": "Show the map's callouts"
       },
+      "spots": {
+        "title": "Where do you need utility?",
+        "all": "All spots",
+        "more": "{count} more",
+        "fewer": "Fewer",
+        "count": "{count} lineup | {count} lineups"
+      },
+      "sheet": {
+        "expand": "Show more of the list",
+        "collapse": "Show more of the map"
+      },
       "auto_name": {
         "full": "{to} {type} from {from}",
         "same": "{to} {type}",

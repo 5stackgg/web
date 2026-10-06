@@ -5371,6 +5371,17 @@
         "zoom_reset": "Map einpassen",
         "callouts_tip": "Callouts der Karte anzeigen"
       },
+      "spots": {
+        "title": "Wo brauchst du Utility?",
+        "all": "Alle Spots",
+        "more": "{count} weitere",
+        "fewer": "Weniger",
+        "count": "{count} Lineup | {count} Lineups"
+      },
+      "sheet": {
+        "expand": "Mehr von der Liste zeigen",
+        "collapse": "Mehr von der Karte zeigen"
+      },
       "auto_name": {
         "full": "{to} {type} von {from}",
         "same": "{to} {type}",

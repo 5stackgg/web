@@ -5371,6 +5371,17 @@
         "zoom_reset": "Ajustar mapa",
         "callouts_tip": "Mostrar os pontos do mapa"
       },
+      "spots": {
+        "title": "Onde você precisa de utilitária?",
+        "all": "Todos os pontos",
+        "more": "Mais {count}",
+        "fewer": "Menos",
+        "count": "{count} lineup | {count} lineups"
+      },
+      "sheet": {
+        "expand": "Mostrar mais da lista",
+        "collapse": "Mostrar mais do mapa"
+      },
       "auto_name": {
         "full": "{type} para {to} de {from}",
         "same": "{type} para {to}",

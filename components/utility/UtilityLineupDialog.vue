@@ -54,6 +54,11 @@ const props = defineProps<{
   lineups: UtilityLineup[];
   lineupId: string | null;
   canReact?: boolean;
+  /**
+   * Off on a phone: every practice action ends in "join this server in CS2",
+   * which a phone cannot do, so offering it there is a button that only fails.
+   */
+  canPractice?: boolean;
 }>();
 
 const open = defineModel<boolean>("open", { default: false });
@@ -610,6 +615,7 @@ const stats = computed(() => {
 
           <div class="mt-auto flex flex-col gap-2 pt-1">
             <div class="flex items-center gap-2">
+              <template v-if="canPractice !== false">
               <UtilityPracticeButton
                 v-if="canLoadHere"
                 :lineup="lineup"
@@ -624,6 +630,7 @@ const stats = computed(() => {
                 <Rocket class="mr-1 h-4 w-4" />
                 {{ $t("pages.utility.detail.practice_this") }}
               </Button>
+              </template>
               <UtilityReactions
                 :lineup="lineup"
                 :can-react="canReact"

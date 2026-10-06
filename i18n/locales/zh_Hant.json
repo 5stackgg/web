@@ -5371,6 +5371,17 @@
         "zoom_reset": "符合地圖",
         "callouts_tip": "顯示地圖報點"
       },
+      "spots": {
+        "title": "哪裡需要道具？",
+        "all": "全部位置",
+        "more": "另外 {count} 個",
+        "fewer": "收起",
+        "count": "{count} 個道具點位 | {count} 個道具點位"
+      },
+      "sheet": {
+        "expand": "顯示更多清單",
+        "collapse": "顯示更多地圖"
+      },
       "auto_name": {
         "full": "{from}投{to}{type}",
         "same": "{to}{type}",

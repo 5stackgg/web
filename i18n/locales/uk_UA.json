@@ -5371,6 +5371,17 @@
         "zoom_reset": "Вписати карту",
         "callouts_tip": "Показати назви точок на карті"
       },
+      "spots": {
+        "title": "Куди потрібна граната?",
+        "all": "Усі точки",
+        "more": "Ще {count}",
+        "fewer": "Менше",
+        "count": "{count} розкидка | {count} розкидок"
+      },
+      "sheet": {
+        "expand": "Показати більше списку",
+        "collapse": "Показати більше мапи"
+      },
       "auto_name": {
         "full": "{type} на {to} з {from}",
         "same": "{type} на {to}",

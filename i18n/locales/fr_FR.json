@@ -5371,6 +5371,17 @@
         "zoom_reset": "Ajuster la map",
         "callouts_tip": "Afficher les zones de la carte"
       },
+      "spots": {
+        "title": "Où as-tu besoin d'utilitaires ?",
+        "all": "Tous les spots",
+        "more": "{count} de plus",
+        "fewer": "Moins",
+        "count": "{count} lineup | {count} lineups"
+      },
+      "sheet": {
+        "expand": "Afficher plus de la liste",
+        "collapse": "Afficher plus de la carte"
+      },
       "auto_name": {
         "full": "{type} vers {to} depuis {from}",
         "same": "{type} vers {to}",

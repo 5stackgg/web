@@ -175,6 +175,29 @@ export const utilityLineupsCountQuery = generateQuery({
   ],
 });
 
+// Where every lineup in the filtered library lands, and nothing else. Spot
+// browsing names and counts spots across the whole library rather than the page
+// of 60 on screen, so it needs every row -- which is affordable only because a
+// row here is five scalars. Capped anyway: past a few thousand the spot counts
+// are still right in shape, and the list itself is the place to page.
+export const UTILITY_LANDINGS_LIMIT = 3000;
+
+export const utilityLineupLandingsQuery = generateQuery({
+  utility_lineups: [
+    {
+      where: $("where", "utility_lineups_bool_exp!"),
+      limit: $("limit", "Int!"),
+    },
+    {
+      id: true,
+      utility_type: true,
+      land_x: true,
+      land_y: true,
+      land_z: true,
+    },
+  ],
+});
+
 export const utilityLineupQuery = generateQuery({
   utility_lineups_by_pk: [
     {

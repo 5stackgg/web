@@ -5347,6 +5347,16 @@
         "zoom_reset": "Tilpas banen",
         "callouts_tip": "Vis kortets kaldenavne"
       },
+      "spots": {
+        "title": "Hvor skal du bruge utility?",
+        "all": "Alle steder",
+        "more": "{count} mere",
+        "fewer": "Færre"
+      },
+      "sheet": {
+        "expand": "Vis mere af listen",
+        "collapse": "Vis mere af kortet"
+      },
       "auto_name": {
         "full": "{to} {type} fra {from}",
         "same": "{to} {type}",

@@ -5347,6 +5347,16 @@
         "zoom_reset": "Anpassa kartan",
         "callouts_tip": "Visa kartans callouts"
       },
+      "spots": {
+        "title": "Var behöver du utility?",
+        "all": "Alla platser",
+        "more": "{count} till",
+        "fewer": "Färre"
+      },
+      "sheet": {
+        "expand": "Visa mer av listan",
+        "collapse": "Visa mer av kartan"
+      },
       "auto_name": {
         "full": "{to} {type} från {from}",
         "same": "{to} {type}",

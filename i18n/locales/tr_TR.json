@@ -5347,6 +5347,16 @@
         "zoom_reset": "Haritayı sığdır",
         "callouts_tip": "Haritanın bölge adlarını göster"
       },
+      "spots": {
+        "title": "Nereye utility lazım?",
+        "all": "Tüm noktalar",
+        "more": "{count} tane daha",
+        "fewer": "Daha az"
+      },
+      "sheet": {
+        "expand": "Listeyi daha çok göster",
+        "collapse": "Haritayı daha çok göster"
+      },
       "auto_name": {
         "full": "{from} konumundan {to} {type}",
         "same": "{to} {type}",

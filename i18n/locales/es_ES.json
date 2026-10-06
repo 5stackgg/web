@@ -5347,6 +5347,16 @@
         "zoom_reset": "Ajustar mapa",
         "callouts_tip": "Mostrar las zonas de la mapa"
       },
+      "spots": {
+        "title": "¿Dónde necesitas utilidad?",
+        "all": "Todos los puntos",
+        "more": "{count} más",
+        "fewer": "Menos"
+      },
+      "sheet": {
+        "expand": "Ver más de la lista",
+        "collapse": "Ver más del mapa"
+      },
       "auto_name": {
         "full": "{type} a {to} desde {from}",
         "same": "{type} a {to}",

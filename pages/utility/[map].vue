@@ -33,6 +33,8 @@ import UtilityPracticePlanPanel from "~/components/utility/UtilityPracticePlanPa
 import UtilityRadarBoard from "~/components/utility/UtilityRadarBoard.vue";
 import UtilityCollectionsPanel from "~/components/utility/UtilityCollectionsPanel.vue";
 import UtilityLineupCard from "~/components/utility/UtilityLineupCard.vue";
+import UtilitySpotPicker from "~/components/utility/UtilitySpotPicker.vue";
+import UtilityMobileSheet from "~/components/utility/UtilityMobileSheet.vue";
 import UtilityEmpty from "~/components/utility/UtilityEmpty.vue";
 import UtilitySkeletonList from "~/components/utility/UtilitySkeletonList.vue";
 import UtilityForkDialog from "~/components/utility/UtilityForkDialog.vue";
@@ -44,12 +46,15 @@ import { useUtilityPracticeSession } from "~/composables/useUtilityPracticeSessi
 import { useDeferredLoading } from "~/composables/useDeferredLoading";
 import { getQueryString, useRouteTab } from "~/composables/useRouteTab";
 import { useSidebar } from "~/components/ui/sidebar/utils";
+import { useMapCallouts } from "~/composables/useMapCallouts";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { toast } from "~/components/ui/toast";
 import {
   archiveUtilityLineupMutation,
   requestUtilityLineupPublicMutation,
   reviewUtilityLineupPublicMutation,
+  UTILITY_LANDINGS_LIMIT,
+  utilityLineupLandingsQuery,
   utilityLineupsCountQuery,
   utilityLineupsQuery,
   utilityMetaLineupsQuery,
@@ -72,6 +77,8 @@ import type {
   UtilityScope,
   UtilitySort,
 } from "~/utilities/utilityDisplay";
+import { groupUtilitySpots } from "~/utilities/utilitySpots";
+import type { UtilityLandingRow } from "~/utilities/utilitySpots";
 import type { UtilityLineup, UtilityMetaLineup } from "~/types/utility";
 
 definePageMeta({
@@ -89,6 +96,7 @@ definePageMeta({
     "minThrowers",
     "planSide",
     "planSource",
+    "spot",
   ],
 });
 
@@ -669,6 +677,78 @@ const where = computed<Record<string, unknown>>(() =>
   }),
 );
 
+// Spot-first browsing: "where do I need utility" is answered by the callout a
+// throw lands in, so the library is grouped by that and a spot narrows the list
+// (and with it the board) to the throws that reach it. The grouping runs over
+// every landing in the filtered library, not the page on screen, so a spot's
+// count is the real count. The raw callout name is what the URL holds, because
+// it is the same in every locale.
+const { callouts } = useMapCallouts(mapName);
+const landings = ref<UtilityLandingRow[]>([]);
+const landingsLoaded = ref(false);
+
+const spotKey = computed<string | null>({
+  get: () => getQueryString(route.query, "spot") || null,
+  set: (value) => writeQuery({ spot: value, page: null }),
+});
+
+const spots = computed(() => groupUtilitySpots(landings.value, callouts.value));
+const selectedSpot = computed(
+  () => spots.value.find((spot) => spot.key === spotKey.value) ?? null,
+);
+
+let landingsFetch = 0;
+async function fetchLandings() {
+  const mine = ++landingsFetch;
+  try {
+    const { data } = await getGraphqlClient().query({
+      query: utilityLineupLandingsQuery,
+      variables: { where: where.value, limit: UTILITY_LANDINGS_LIMIT },
+      fetchPolicy: "network-only",
+    });
+    if (mine !== landingsFetch) {
+      return;
+    }
+    landings.value = ((data as any)?.utility_lineups ?? []) as UtilityLandingRow[];
+  } catch (error) {
+    // Best effort, like the meta overlay: without it the spots simply do not
+    // show, and the list underneath is untouched.
+    if (mine === landingsFetch) {
+      console.error("[utility] landings fetch error:", error);
+      landings.value = [];
+    }
+  } finally {
+    if (mine === landingsFetch) {
+      landingsLoaded.value = true;
+    }
+  }
+}
+
+watch(() => JSON.stringify(where.value), fetchLandings, { immediate: true });
+
+// A spot the current filters no longer reach is a filter showing nothing for no
+// visible reason, so it lets go rather than leaving the list empty. Waits for
+// both halves: callouts arrive separately, and "no spots yet" is not "gone".
+watch([spots, landingsLoaded, callouts], () => {
+  if (
+    spotKey.value &&
+    landingsLoaded.value &&
+    callouts.value.length &&
+    !selectedSpot.value
+  ) {
+    spotKey.value = null;
+  }
+});
+
+// What the list and its count ask for: the library's filters, narrowed to the
+// chosen spot. The scope counts and the spots themselves keep reading `where`,
+// so picking a spot never changes the numbers you picked it from.
+const listWhere = computed<Record<string, unknown>>(() =>
+  selectedSpot.value
+    ? { _and: [where.value, { id: { _in: selectedSpot.value.ids } }] }
+    : where.value,
+);
+
 // Declared above the scope-count subscription because it reads this, and that
 // subscription is armed at setup: with the auth store already warm, the old
 // ordering threw "Cannot access 'canReview' before initialization" and the
@@ -793,7 +873,7 @@ async function fetchLineups() {
       client.query({
         query: utilityLineupsQuery,
         variables: {
-          where: where.value,
+          where: listWhere.value,
           order_by: orderBy.value,
           limit: perPage,
           offset: (page.value - 1) * perPage,
@@ -802,7 +882,7 @@ async function fetchLineups() {
       }),
       client.query({
         query: utilityLineupsCountQuery,
-        variables: { where: where.value },
+        variables: { where: listWhere.value },
         fetchPolicy: "network-only",
       }),
     ]);
@@ -834,7 +914,7 @@ fetchLineups();
 // them moved. What the list actually cares about is whether the *shape* of the
 // question changed.
 const listQueryKey = computed(() =>
-  JSON.stringify([where.value, orderBy.value]),
+  JSON.stringify([listWhere.value, orderBy.value]),
 );
 
 watch(listQueryKey, () => {
@@ -1236,8 +1316,15 @@ function selectLineup(id: string | null) {
          fit-content() and not min(max-content, ..): CSS min()/max()/clamp()
          reject intrinsic keywords, and an invalid value drops the whole
          grid-template-columns, collapsing the page to a single column. -->
+    <!-- The list column reads first, on the left, and the map sits to its
+         right: you steer from the column and look at the result on the map,
+         and left to right is the order that happens in. The DOM keeps the board
+         first so a phone, which stacks them, still opens on the map. There the
+         column is a sheet, and the padding is its half height, so the bottom of
+         the map can still be scrolled up clear of it. -->
     <div
-      class="mx-auto grid w-full gap-4 [--board:1000px] lg:max-w-[1900px] lg:grid-cols-[minmax(0,var(--board))_fit-content(60rem)] lg:justify-center"
+      class="mx-auto grid w-full gap-4 [--board:1000px] lg:max-w-[1900px] lg:grid-cols-[fit-content(60rem)_minmax(0,var(--board))] lg:justify-center"
+      :class="isMobile ? 'pb-[40svh]' : ''"
     >
       <!-- --board sizes the BOX, and the box wants to be wide: the map picker,
            the practice button, the type chips and the meta control all live
@@ -1271,7 +1358,7 @@ function selectLineup(id: string | null) {
            right hub narrows it on a desktop, so a viewport breakpoint would
            fire at all the wrong times. -->
       <div
-        class="utility-board relative mx-auto w-full max-w-[var(--board)] overflow-hidden rounded-md border border-border bg-card/40 lg:sticky lg:top-4 lg:self-start"
+        class="utility-board relative mx-auto w-full max-w-[var(--board)] overflow-hidden rounded-md border border-border bg-card/40 lg:col-start-2 lg:row-start-1 lg:sticky lg:top-4 lg:self-start"
       >
         <!-- The map names itself, the way a map does everywhere else in the
              app, and it still does it inside the board's own frame -- but in a
@@ -1500,14 +1587,21 @@ function selectLineup(id: string | null) {
         </div>
       </div>
 
-      <div class="flex flex-col gap-2 lg:min-w-[22rem]">
+      <!-- On a phone the column is a sheet over the map rather than a second
+           screen under it: stacked, the map took the whole first screen and
+           the list began below the fold, so a tap on the board changed a list
+           you could not see. -->
+      <UtilityMobileSheet
+        :enabled="isMobile"
+        class="flex flex-col gap-2 lg:col-start-1 lg:row-start-1 lg:min-w-[22rem]"
+      >
         <!-- Which tab, whose lineups, and the search over them: all three are
              how you steer the column, so they stay put while it scrolls.
              top-0 with the page padding pulled inside rather than top-4 --
              the bar has to paint that padding too, or scrolled cards show
              through the strip of page above it. -->
         <div
-          class="sticky top-0 z-20 -mt-1 flex flex-col gap-2 bg-background/95 pb-2 pt-1 [backdrop-filter:blur(12px)] sm:-mt-4 sm:pt-4"
+          class="sticky top-0 z-20 -mt-1 flex flex-col gap-2 bg-background/95 pb-2 pt-1 [backdrop-filter:blur(12px)] sm:-mt-4 sm:pt-4 max-md:!mt-0 max-md:!pt-0"
         >
           <!-- The toolbar sits over the column, not the map. Two boxes, not three:
              AnimatedFilters draws its own bordered strip, so this is the single
@@ -1568,16 +1662,25 @@ function selectLineup(id: string | null) {
              alone, then this fills whatever that came out as. Without it a
              single long lineup name would set the column width. -->
         <div class="flex w-0 min-w-full flex-col gap-2">
+          <!-- Scrolls with the list rather than riding in the sticky bar: on a
+               map with a dozen named spots the chips wrap to three rows, and a
+               sticky header that tall eats the column it is steering. -->
+          <UtilitySpotPicker
+            v-if="listTab === LIST_TAB"
+            v-model="spotKey"
+            :spots="spots"
+            class="pb-1"
+          />
           <!-- Above whichever tab is open, because the ring you picked is a
              question you asked of the map and not of the list -- it should not
              cost you the view you were in to read the answer. It rides in from
              the board's side rather than fading, which is the direction the
-             click came from. -->
+             click came from -- the right, now the map sits there. -->
           <Transition
             enter-active-class="transition-[opacity,transform] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
             leave-active-class="transition-[opacity,transform] [transition-duration:110ms] ease-in motion-reduce:![transition-duration:1ms]"
-            enter-from-class="-translate-x-3 opacity-0"
-            leave-to-class="-translate-x-3 opacity-0"
+            enter-from-class="translate-x-3 opacity-0"
+            leave-to-class="translate-x-3 opacity-0"
           >
             <UtilityMetaSelection
               v-if="metaSelectionMode && selectedMetaSpot"
@@ -1586,7 +1689,7 @@ function selectLineup(id: string | null) {
               :lineups="selectedMetaLineups"
               :busiest="Math.max(1, metaBusiest)"
               :can-author="!!mySteamId"
-              :can-practice="!!mySteamId"
+              :can-practice="!!mySteamId && !isMobile"
               :compact="metaSelectionMode === 'action'"
               @close="selectedMetaKey = null"
               @open="openLineup"
@@ -1764,6 +1867,7 @@ function selectLineup(id: string | null) {
               :meta-busiest="metaBusiest"
               :show-fork="!!mySteamId"
               :show-archive="!!mySteamId"
+              :show-practice="!isMobile"
               :can-review="canReview"
               @select="selectLineup"
               @hover="(id) => (hoveredId = id)"
@@ -1808,7 +1912,7 @@ function selectLineup(id: string | null) {
           @page="(value) => (page = value)"
         />
         </div>
-      </div>
+      </UtilityMobileSheet>
     </div>
   </PageTransition>
 
@@ -1824,6 +1928,7 @@ function selectLineup(id: string | null) {
     v-model:lineup-id="detailId"
     :lineups="lineups"
     :can-react="!!mySteamId"
+    :can-practice="!isMobile"
     @practice="practiceFromDetail"
     @vote="onVote"
     @favorite="onFavorite"

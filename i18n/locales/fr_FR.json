@@ -4611,7 +4611,6 @@
       "manage": "Gérer",
       "all_modes": "Tout",
       "no_mode": "Vanilla",
-      "summary": "{playing} en jeu · {awake} actifs · {hibernating} en veille",
       "touch_notice": "Pour rejoindre, il faut CS2 sur votre PC. Copiez la commande de connexion d'un serveur ou ouvrez cette page sur votre ordinateur.",
       "on_lan_title": "Sur ce LAN",
       "on_lan_description": "Vous êtes sur place, ce sont donc les serveurs les plus proches.",

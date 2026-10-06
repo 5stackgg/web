@@ -4611,7 +4611,6 @@
       "manage": "관리",
       "all_modes": "전체",
       "no_mode": "바닐라",
-      "summary": "{playing}명 플레이 중 · {awake}개 활성 · {hibernating}개 절전 중",
       "touch_notice": "참가하려면 PC에 CS2가 필요합니다. 서버 접속 명령어를 복사하거나 컴퓨터에서 이 페이지를 여세요.",
       "on_lan_title": "이 LAN",
       "on_lan_description": "현장에 있으므로 가장 가까운 서버입니다.",

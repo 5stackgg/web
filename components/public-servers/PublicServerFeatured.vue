@@ -10,6 +10,8 @@ const props = defineProps<{
   server: PublicServerView;
   manageTo?: string;
   canFeature?: boolean;
+  // The only server on the page: it gets the full width and a bigger stage.
+  solo?: boolean;
 }>();
 
 defineEmits<{ toggleFeatured: [] }>();
@@ -32,7 +34,10 @@ const fillPercent = computed(() =>
 <template>
   <article
     data-public-server="featured"
-    class="group relative flex min-h-[19rem] overflow-hidden rounded-2xl border border-border bg-card/40 transition-colors duration-200 hover:border-[hsl(var(--tac-amber)/0.45)]"
+    :class="[
+      'group relative flex overflow-hidden rounded-2xl border border-border bg-card/40 transition-colors duration-200 hover:border-[hsl(var(--tac-amber)/0.45)]',
+      solo ? 'min-h-[19rem] md:min-h-[26rem]' : 'min-h-[19rem]',
+    ]"
   >
     <div class="absolute inset-0">
       <PublicServerMap
@@ -44,12 +49,22 @@ const fillPercent = computed(() =>
     <div
       class="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/20"
     />
+    <!-- Solo, the text sits on the left of a wide image: shade that side. -->
+    <div
+      v-if="solo"
+      class="absolute inset-0 hidden bg-gradient-to-r from-background/90 via-background/40 to-transparent md:block"
+    />
 
     <div
-      class="relative flex flex-1 flex-col justify-between gap-10 p-5 sm:p-6"
+      :class="[
+        'relative flex flex-1 flex-col justify-between gap-10 p-5 sm:p-6',
+        solo ? 'md:p-10' : '',
+      ]"
     >
       <div class="flex items-center justify-between gap-3">
+        <!-- "Most players" means nothing with one server; a pin still does. -->
         <span
+          v-if="!solo || server.featured"
           class="inline-flex items-center gap-2 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-foreground/85"
         >
           <span
@@ -64,19 +79,23 @@ const fillPercent = computed(() =>
           }}
         </span>
         <span
-          class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-background/60 px-2.5 py-1 font-mono text-xs text-foreground/85 backdrop-blur-sm"
+          class="ml-auto inline-flex items-center gap-2 rounded-full border border-white/10 bg-background/60 px-2.5 py-1 font-mono text-xs text-foreground/85 backdrop-blur-sm"
         >
           {{ server.region }}
           <PublicServerPing :ping="server.ping" :tier="server.tier" />
         </span>
       </div>
 
-      <div class="flex flex-col gap-4">
+      <div :class="['flex flex-col gap-4', solo ? 'md:max-w-xl' : '']">
         <div class="flex min-w-0 flex-col gap-1.5">
           <!-- Stretched over the card; the action row sits above it. -->
           <NuxtLink
             :to="`/dedicated-servers/${server.id}`"
-            class="truncate text-2xl font-bold leading-tight after:absolute after:inset-0 after:z-[1] after:rounded-2xl after:content-[''] focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:ring-[hsl(var(--tac-amber))] sm:text-[1.7rem]"
+            :class="[
+              'truncate font-bold leading-tight',
+              solo ? 'text-3xl md:text-[2.6rem]' : 'text-2xl sm:text-[1.7rem]',
+            ]"
+            class="after:absolute after:inset-0 after:z-[1] after:rounded-2xl after:content-[''] focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:ring-[hsl(var(--tac-amber))]"
           >
             {{ server.label }}
           </NuxtLink>

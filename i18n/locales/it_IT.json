@@ -4611,7 +4611,6 @@
       "manage": "Gestisci",
       "all_modes": "Tutti",
       "no_mode": "Vanilla",
-      "summary": "{playing} in gioco · {awake} attivi · {hibernating} in ibernazione",
       "touch_notice": "Per entrare serve CS2 sul tuo PC. Copia il comando di connessione di un server o apri questa pagina sul computer.",
       "on_lan_title": "Su questa LAN",
       "on_lan_description": "Sei sul posto, quindi questi sono i server più vicini.",

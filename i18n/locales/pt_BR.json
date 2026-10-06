@@ -4611,7 +4611,6 @@
       "manage": "Gerenciar",
       "all_modes": "Todos",
       "no_mode": "Vanilla",
-      "summary": "{playing} jogando · {awake} ativos · {hibernating} hibernando",
       "touch_notice": "Para entrar, você precisa do CS2 no PC. Copie o comando de conexão do servidor ou abra esta página no computador.",
       "on_lan_title": "Nesta LAN",
       "on_lan_description": "Você está no local, então estes são os servidores mais próximos.",

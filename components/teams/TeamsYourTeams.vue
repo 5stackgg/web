@@ -8,6 +8,8 @@ import { teamResultMatchFields } from "~/graphql/teamPulseFields";
 import { TICKER_LIVE_STATUSES } from "~/components/watch/watchTicker";
 import { Button } from "~/components/ui/button";
 import TeamsYourTeamCard from "~/components/teams/TeamsYourTeamCard.vue";
+import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
+import { lastYourTeams } from "~/utilities/teamsListCache";
 import { useAuthStore } from "~/stores/AuthStore";
 import {
   listCreateButtonClasses,
@@ -119,6 +121,9 @@ const yourTeamsQuery = generateSubscription({
 } as any);
 
 const teams = ref<any[]>([]);
+// Whether this player's teams are known yet. Until then a signed-in player gets
+// the section's outline, so the page below sits where it will end up.
+const loaded = ref(false);
 let sub: { unsubscribe: () => void } | undefined;
 
 watch(
@@ -126,8 +131,13 @@ watch(
   (steamId) => {
     sub?.unsubscribe();
     sub = undefined;
-    teams.value = [];
-    emit("team-ids", []);
+    const cached = steamId ? lastYourTeams.get(String(steamId)) : undefined;
+    teams.value = cached ?? [];
+    loaded.value = !!cached;
+    emit(
+      "team-ids",
+      teams.value.map((team) => team.id),
+    );
     if (!steamId || typeof window === "undefined") return;
     sub = client
       .subscribe({
@@ -142,6 +152,8 @@ watch(
       .subscribe({
         next: ({ data }: any) => {
           teams.value = data?.teams ?? [];
+          loaded.value = true;
+          lastYourTeams.set(String(steamId), teams.value);
           emit(
             "team-ids",
             teams.value.map((team) => team.id),
@@ -169,7 +181,11 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <section v-if="teams.length" aria-labelledby="teams-yours-label">
+  <section
+    v-if="teams.length || (!loaded && auth.me)"
+    aria-labelledby="teams-yours-label"
+    :aria-busy="!loaded"
+  >
     <div class="mb-3 flex items-center justify-between gap-3">
       <h2
         id="teams-yours-label"
@@ -192,6 +208,9 @@ onBeforeUnmount(() => {
     <div
       class="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(min(100%,24rem),1fr))]"
     >
+      <template v-if="!teams.length">
+        <Skeleton v-for="i in 2" :key="i" class="h-[4.75rem] rounded-lg" />
+      </template>
       <TeamsYourTeamCard
         v-for="team in teams"
         :key="team.id"

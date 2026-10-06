@@ -9880,7 +9880,13 @@
     },
     "direct": {
       "message": "消息",
-      "empty": "还没有消息，先打个招呼吧。"
+      "empty": "还没有消息，先打个招呼吧。",
+      "request": {
+        "title": "发送消息请求",
+        "description": "{name} 不是你的好友，所以你只能发送一条消息。对方回复后才算接受。",
+        "friends_only": "{name} 只接收好友的消息。",
+        "waiting": "等待回复"
+      }
     },
     "awaiting_reply": "你的消息请求尚未得到回复。对方回复后你才能再次发送。"
   },

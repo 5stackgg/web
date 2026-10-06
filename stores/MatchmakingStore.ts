@@ -10,6 +10,7 @@ import {
   order_by,
 } from "~/generated/zeus";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
+import { PLAYERS_MESSAGE_REQUESTS_QUERY } from "~/graphql/messageRequests";
 import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { playerFields } from "~/graphql/playerFields";
 import debounce from "~/utilities/debounce";
@@ -127,6 +128,36 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     }
 
     rebuildPlayersOnline();
+
+    void loadMessageRequestSettings(missing);
+  };
+
+  // Whether each newly seen player takes message requests, folded into their
+  // profile so the online list can grey out Message for those who do not.
+  // Optional: unknown just leaves the button enabled and the server decides.
+  const loadMessageRequestSettings = async (steamIds: Array<string>) => {
+    try {
+      const { data } = await getGraphqlClient().query({
+        query: PLAYERS_MESSAGE_REQUESTS_QUERY,
+        variables: { steamIds },
+        context: { optional: true },
+      });
+
+      for (const row of data?.players ?? []) {
+        const profile = profiles.get(String(row.steam_id));
+
+        if (profile) {
+          profiles.set(String(row.steam_id), {
+            ...profile,
+            allow_message_requests: row.allow_message_requests,
+          });
+        }
+      }
+
+      rebuildPlayersOnline();
+    } catch {
+      // An api from before message requests: nothing to fold in.
+    }
   };
 
   // Presence churns in bursts -- a match ending drops ten players at once, and

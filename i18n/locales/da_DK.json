@@ -9880,7 +9880,13 @@
     },
     "direct": {
       "message": "Besked",
-      "empty": "Ingen beskeder endnu. Sig hej."
+      "empty": "Ingen beskeder endnu. Sig hej.",
+      "request": {
+        "title": "Send en beskedanmodning",
+        "description": "{name} er ikke din ven, så du kan sende én besked. De skal svare for at acceptere den.",
+        "friends_only": "{name} modtager kun beskeder fra venner.",
+        "waiting": "Venter på svar"
+      }
     },
     "awaiting_reply": "Din beskedanmodning er ikke besvaret endnu. Du kan skrive igen, når de svarer."
   },

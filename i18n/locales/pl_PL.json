@@ -9880,7 +9880,13 @@
     },
     "direct": {
       "message": "Wiadomość",
-      "empty": "Brak wiadomości. Przywitaj się."
+      "empty": "Brak wiadomości. Przywitaj się.",
+      "request": {
+        "title": "Wyślij prośbę o wiadomość",
+        "description": "{name} nie jest twoim znajomym, więc możesz wysłać jedną wiadomość. Musi odpowiedzieć, aby ją przyjąć.",
+        "friends_only": "{name} przyjmuje wiadomości tylko od znajomych.",
+        "waiting": "Czekasz na odpowiedź"
+      }
     },
     "awaiting_reply": "Twoja prośba o wiadomość nie doczekała się jeszcze odpowiedzi. Napiszesz ponownie, gdy ktoś odpowie."
   },

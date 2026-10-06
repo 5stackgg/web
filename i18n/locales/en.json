@@ -9882,7 +9882,13 @@
     },
     "direct": {
       "message": "Message",
-      "empty": "No messages yet. Say hello."
+      "empty": "No messages yet. Say hello.",
+      "request": {
+        "title": "Send a message request",
+        "description": "{name} isn't your friend, so you can send one message. They need to reply to accept it.",
+        "friends_only": "{name} only takes messages from friends.",
+        "waiting": "Waiting for a reply"
+      }
     },
     "awaiting_reply": "Your message request hasn't been answered yet. You can write again once they reply."
   },

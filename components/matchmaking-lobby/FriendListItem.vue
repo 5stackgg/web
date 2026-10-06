@@ -20,10 +20,13 @@ import {
   Swords,
   LogIn,
   MessageSquare,
+  MessageSquareOff,
   Ban,
 } from "lucide-vue-next";
 import BlockPlayerDialog from "~/components/player/BlockPlayerDialog.vue";
 import { useFriendActions } from "~/composables/useFriendActions";
+import { directRoomId } from "~/composables/useDirectMessages";
+import { useMessageRequests } from "~/composables/useMessageRequests";
 import { usePlayerBlocks } from "~/composables/usePlayerBlocks";
 import { useFriendStatus } from "~/composables/useFriendStatus";
 import { useDraftGamesStore } from "~/stores/DraftGamesStore";
@@ -55,9 +58,8 @@ const {
   inviteToDraft: sendDraftInvite,
 } = useFriendActions();
 
-// Rendered inside the accepted-friend branch, so the friend-only rule the
-// server enforces is already satisfied by where the button lives.
 const { openConversation } = useDirectMessages();
+const { isAwaitingReply } = useMessageRequests();
 
 const { available: blocksAvailable } = usePlayerBlocks();
 
@@ -76,6 +78,35 @@ const currentLobby = computed(() =>
 );
 
 const isFriend = computed(() => rel.value === "friend");
+
+function message() {
+  openConversation({
+    steam_id: String(props.player.steam_id),
+    name: props.player.name,
+    avatar_url: props.player.avatar_url,
+  });
+}
+
+// Anyone who is not a friend can still be written to: the first message goes
+// as a request they reply to accept. Friends keep their own button below.
+const canRequest = computed(
+  () => rel.value === "none" || rel.value === "outgoing",
+);
+const requestsOff = computed(
+  () => props.player?.allow_message_requests === false,
+);
+const awaitingReply = computed(() => {
+  const me = useAuthStore().me?.steam_id;
+
+  return (
+    !!me &&
+    canRequest.value &&
+    isAwaitingReply(
+      directRoomId(me, props.player.steam_id),
+      String(props.player.steam_id),
+    )
+  );
+});
 
 const isOnline = computed(() =>
   useMatchmakingStore().onlinePlayerSteamIds.includes(
@@ -238,8 +269,17 @@ const amberHover =
               :truncate-name="true"
               :context-menu="false"
             >
-              <template v-if="fresh" #subline>
-                <span class="block truncate text-[0.65rem] text-foreground">
+              <template v-if="fresh || awaitingReply" #subline>
+                <span
+                  v-if="awaitingReply"
+                  class="block truncate text-[0.65rem] text-[hsl(var(--tac-amber))]"
+                >
+                  {{ $t("chat.direct.request.waiting") }}
+                </span>
+                <span
+                  v-else
+                  class="block truncate text-[0.65rem] text-foreground"
+                >
                   {{ $t("matchmaking.friends.just_online") }}
                 </span>
               </template>
@@ -282,6 +322,58 @@ const amberHover =
                   </div>
                 </div>
               </Transition>
+
+              <!-- Message a non-friend: their first message is a request. -->
+              <Tooltip v-if="canRequest">
+                <TooltipTrigger as-child>
+                  <span>
+                    <Button
+                      variant="ghost"
+                      :class="[actionBtn, amberHover]"
+                      :disabled="requestsOff"
+                      :aria-label="
+                        requestsOff
+                          ? $t('chat.direct.request.friends_only', {
+                              name: player.name,
+                            })
+                          : $t('chat.direct.request.title')
+                      "
+                      @click.stop="message"
+                    >
+                      <MessageSquareOff v-if="requestsOff" class="h-4 w-4" />
+                      <MessageSquare v-else class="h-4 w-4" />
+                    </Button>
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent class="max-w-[15rem]">
+                  <template v-if="requestsOff">
+                    {{
+                      $t("chat.direct.request.friends_only", {
+                        name: player.name,
+                      })
+                    }}
+                  </template>
+                  <template v-else-if="awaitingReply">
+                    {{
+                      $t("layouts.chat_panel.requests.awaiting_reply", {
+                        name: player.name,
+                      })
+                    }}
+                  </template>
+                  <template v-else>
+                    <span class="block font-semibold">
+                      {{ $t("chat.direct.request.title") }}
+                    </span>
+                    <span class="block opacity-80">
+                      {{
+                        $t("chat.direct.request.description", {
+                          name: player.name,
+                        })
+                      }}
+                    </span>
+                  </template>
+                </TooltipContent>
+              </Tooltip>
 
               <!-- Relationship-specific actions. Measured-width swap: the
                    cluster's width is held while the old buttons fade and

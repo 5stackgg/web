@@ -9880,7 +9880,13 @@
     },
     "direct": {
       "message": "Mesaj",
-      "empty": "Henüz mesaj yok. Merhaba de."
+      "empty": "Henüz mesaj yok. Merhaba de.",
+      "request": {
+        "title": "Mesaj isteği gönder",
+        "description": "{name} arkadaşın değil, bu yüzden bir mesaj gönderebilirsin. Kabul etmek için yanıt vermesi gerekir.",
+        "friends_only": "{name} yalnızca arkadaşlarından mesaj alıyor.",
+        "waiting": "Yanıt bekleniyor"
+      }
     },
     "awaiting_reply": "Mesaj isteğin henüz yanıtlanmadı. Yanıt verdiklerinde tekrar yazabilirsin."
   },

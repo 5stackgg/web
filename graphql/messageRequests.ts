@@ -23,3 +23,15 @@ export const SET_MESSAGE_REQUESTS_SETTING_MUTATION = gql`
     }
   }
 `;
+
+// Who among these players takes message requests from non-friends, for the
+// Message buttons in the online list. Its own document so an api without the
+// column only loses this, not the list.
+export const PLAYERS_MESSAGE_REQUESTS_QUERY = gql`
+  query PlayersMessageRequests($steamIds: [bigint!]!) {
+    players(where: { steam_id: { _in: $steamIds } }) {
+      steam_id
+      allow_message_requests
+    }
+  }
+`;

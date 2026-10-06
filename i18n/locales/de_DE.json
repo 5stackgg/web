@@ -9880,7 +9880,13 @@
     },
     "direct": {
       "message": "Nachricht",
-      "empty": "Noch keine Nachrichten. Sag Hallo."
+      "empty": "Noch keine Nachrichten. Sag Hallo.",
+      "request": {
+        "title": "Nachrichtenanfrage senden",
+        "description": "{name} ist nicht mit dir befreundet, daher kannst du eine Nachricht senden. Sie muss beantwortet werden, um angenommen zu werden.",
+        "friends_only": "{name} empfängt nur Nachrichten von Freunden.",
+        "waiting": "Warte auf Antwort"
+      }
     },
     "awaiting_reply": "Deine Nachrichtenanfrage wurde noch nicht beantwortet. Du kannst wieder schreiben, sobald geantwortet wurde."
   },

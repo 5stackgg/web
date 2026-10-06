@@ -9880,7 +9880,13 @@
     },
     "direct": {
       "message": "訊息",
-      "empty": "還沒有訊息，先打個招呼吧。"
+      "empty": "還沒有訊息，先打個招呼吧。",
+      "request": {
+        "title": "傳送訊息請求",
+        "description": "{name} 不是你的好友，所以你只能傳送一則訊息。對方回覆後才算接受。",
+        "friends_only": "{name} 只接收好友的訊息。",
+        "waiting": "等待回覆"
+      }
     },
     "awaiting_reply": "你的訊息請求尚未獲得回覆。對方回覆後你才能再次傳送。"
   },

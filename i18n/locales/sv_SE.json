@@ -9880,7 +9880,13 @@
     },
     "direct": {
       "message": "Meddelande",
-      "empty": "Inga meddelanden än. Säg hej."
+      "empty": "Inga meddelanden än. Säg hej.",
+      "request": {
+        "title": "Skicka en meddelandeförfrågan",
+        "description": "{name} är inte din vän, så du kan skicka ett meddelande. De måste svara för att godkänna det.",
+        "friends_only": "{name} tar bara emot meddelanden från vänner.",
+        "waiting": "Väntar på svar"
+      }
     },
     "awaiting_reply": "Din meddelandeförfrågan har inte besvarats än. Du kan skriva igen när de svarar."
   },

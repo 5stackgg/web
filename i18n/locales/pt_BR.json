@@ -9880,7 +9880,13 @@
     },
     "direct": {
       "message": "Mensagem",
-      "empty": "Nenhuma mensagem ainda. Diga Olá."
+      "empty": "Nenhuma mensagem ainda. Diga Olá.",
+      "request": {
+        "title": "Enviar solicitação de mensagem",
+        "description": "{name} não é seu amigo, então você pode enviar uma mensagem. É preciso responder para aceitá-la.",
+        "friends_only": "{name} só aceita mensagens de amigos.",
+        "waiting": "Aguardando resposta"
+      }
     },
     "awaiting_reply": "Sua solicitação de mensagem ainda não foi respondida. Você poderá escrever de novo quando responderem."
   },

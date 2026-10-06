@@ -5382,6 +5382,10 @@
         "expand": "显示更多列表",
         "collapse": "显示更多地图"
       },
+      "live": {
+        "saved": "已保存道具点位：{name}",
+        "show": "查看"
+      },
       "auto_name": {
         "full": "{from}投{to}{type}",
         "same": "{to}{type}",

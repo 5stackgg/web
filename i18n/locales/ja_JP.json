@@ -5382,6 +5382,10 @@
         "expand": "リストを広げる",
         "collapse": "マップを広げる"
       },
+      "live": {
+        "saved": "ラインナップを保存しました: {name}",
+        "show": "表示"
+      },
       "auto_name": {
         "full": "{from}から{to}{type}",
         "same": "{to}{type}",

@@ -5382,6 +5382,10 @@
         "expand": "Listeyi daha çok göster",
         "collapse": "Haritayı daha çok göster"
       },
+      "live": {
+        "saved": "Lineup kaydedildi: {name}",
+        "show": "Göster"
+      },
       "auto_name": {
         "full": "{from} konumundan {to} {type}",
         "same": "{to} {type}",

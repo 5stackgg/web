@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { computed, h, onBeforeUnmount, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import {
@@ -48,13 +48,14 @@ import { getQueryString, useRouteTab } from "~/composables/useRouteTab";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import { useMapCallouts } from "~/composables/useMapCallouts";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
-import { toast } from "~/components/ui/toast";
+import { toast, ToastAction } from "~/components/ui/toast";
 import {
   archiveUtilityLineupMutation,
   requestUtilityLineupPublicMutation,
   reviewUtilityLineupPublicMutation,
   UTILITY_LANDINGS_LIMIT,
-  utilityLineupLandingsQuery,
+  myUtilityProgressSubscription,
+  utilityLibraryPulseSubscription,
   utilityLineupsCountQuery,
   utilityLineupsQuery,
   utilityMetaLineupsQuery,
@@ -79,7 +80,11 @@ import type {
 } from "~/utilities/utilityDisplay";
 import { groupUtilitySpots } from "~/utilities/utilitySpots";
 import type { UtilityLandingRow } from "~/utilities/utilitySpots";
-import type { UtilityLineup, UtilityMetaLineup } from "~/types/utility";
+import type {
+  UtilityLineup,
+  UtilityLineupProgress,
+  UtilityMetaLineup,
+} from "~/types/utility";
 
 definePageMeta({
   persistQueryKeys: [
@@ -556,6 +561,7 @@ function writeUpMetaSpot(spot: UtilityMetaSpot) {
 }
 
 function onLineupCreated(id: string) {
+  createdHere.add(id);
   createSeed.value = null;
   listTab.value = LIST_TAB;
   void fetchLineups();
@@ -697,34 +703,191 @@ const selectedSpot = computed(
   () => spots.value.find((spot) => spot.key === spotKey.value) ?? null,
 );
 
-let landingsFetch = 0;
-async function fetchLandings() {
-  const mine = ++landingsFetch;
-  try {
-    const { data } = await getGraphqlClient().query({
-      query: utilityLineupLandingsQuery,
-      variables: { where: where.value, limit: UTILITY_LANDINGS_LIMIT },
-      fetchPolicy: "network-only",
-    });
-    if (mine !== landingsFetch) {
-      return;
+// The library, live. One light row per lineup in the filtered library: it feeds
+// the spots, and it is how the page notices that the list on screen has gone
+// stale. A lineup saved from a practice server, a review approved somewhere
+// else, an archive undone from its toast -- each used to wait for a reload,
+// which made the page feel detached from the game it is about.
+type PulseRow = UtilityLandingRow & {
+  name: string;
+  visibility: string;
+  archived_at: string | null;
+  public_requested_at: string | null;
+  preview_rendered_at: string | null;
+  author_steam_id: string | number | null;
+};
+
+let pulseSub: { unsubscribe: () => void } | null = null;
+let pulseSignature: string | null = null;
+let pulseIds = new Set<string>();
+let pulseRefetch: ReturnType<typeof setTimeout> | null = null;
+
+// Lineups this page created itself. The author panel already opens what it
+// just saved, so announcing it again as news would be noise.
+const createdHere = new Set<string>();
+
+function pulseKey(row: PulseRow) {
+  return [
+    row.id,
+    row.name,
+    row.visibility,
+    row.archived_at,
+    row.public_requested_at,
+    row.preview_rendered_at,
+    row.land_x,
+    row.land_y,
+    row.land_z,
+  ].join("|");
+}
+
+function announceSaved(row: PulseRow) {
+  toast({
+    title: t("pages.utility.live.saved", { name: row.name }),
+    action: h(
+      ToastAction,
+      {
+        altText: t("pages.utility.live.show"),
+        onClick: () => {
+          spotKey.value = null;
+          selectLineup(row.id);
+        },
+      },
+      () => t("pages.utility.live.show"),
+    ),
+  });
+}
+
+function onPulse(rows: PulseRow[]) {
+  landings.value = rows;
+  landingsLoaded.value = true;
+
+  const signature = rows.map(pulseKey).sort().join(";");
+  const ids = new Set(rows.map((row) => row.id));
+  const first = pulseSignature === null;
+  const changed = !first && signature !== pulseSignature;
+
+  if (changed && mySteamId.value) {
+    for (const row of rows) {
+      if (
+        !pulseIds.has(row.id) &&
+        !createdHere.has(row.id) &&
+        String(row.author_steam_id) === String(mySteamId.value)
+      ) {
+        announceSaved(row);
+      }
     }
-    landings.value = ((data as any)?.utility_lineups ?? []) as UtilityLandingRow[];
-  } catch (error) {
-    // Best effort, like the meta overlay: without it the spots simply do not
-    // show, and the list underneath is untouched.
-    if (mine === landingsFetch) {
-      console.error("[utility] landings fetch error:", error);
-      landings.value = [];
+  }
+
+  pulseSignature = signature;
+  pulseIds = ids;
+
+  // Coalesced: an execute saved from a practice server lands as five rows in
+  // as many seconds, and that is one refetch, not five.
+  if (changed) {
+    if (pulseRefetch) {
+      clearTimeout(pulseRefetch);
     }
-  } finally {
-    if (mine === landingsFetch) {
-      landingsLoaded.value = true;
-    }
+    pulseRefetch = setTimeout(() => {
+      pulseRefetch = null;
+      void fetchLineups({ quiet: true });
+    }, 400);
   }
 }
 
-watch(() => JSON.stringify(where.value), fetchLandings, { immediate: true });
+function unsubscribePulse() {
+  pulseSub?.unsubscribe();
+  pulseSub = null;
+  if (pulseRefetch) {
+    clearTimeout(pulseRefetch);
+    pulseRefetch = null;
+  }
+}
+
+function subscribePulse() {
+  unsubscribePulse();
+  // A new question starts a new baseline: its first answer is what the list
+  // query is fetching anyway, not a change to react to.
+  pulseSignature = null;
+  pulseIds = new Set();
+  pulseSub = getGraphqlClient()
+    .subscribe({
+      query: utilityLibraryPulseSubscription,
+      variables: { where: where.value, limit: UTILITY_LANDINGS_LIMIT },
+    })
+    .subscribe({
+      next: ({ data }: { data: any }) =>
+        onPulse((data?.utility_lineups ?? []) as PulseRow[]),
+      // Best effort, like the meta overlay: without it the spots do not show
+      // and the list stops updating itself, but the page still works.
+      error: (error: unknown) => {
+        console.error("[utility] library subscription error:", error);
+        landingsLoaded.value = true;
+      },
+    });
+}
+
+watch(() => JSON.stringify(where.value), subscribePulse, { immediate: true });
+onBeforeUnmount(unsubscribePulse);
+
+// Your own drill record on this map, live. Every throw in the practice server
+// writes to it, and patching the cards from it means the hit rate and streak
+// move while you are still in the game rather than the next time you reload.
+let progressSub: { unsubscribe: () => void } | null = null;
+const myProgress = ref<Map<string, UtilityLineupProgress>>(new Map());
+
+function applyProgress() {
+  if (!myProgress.value.size) {
+    return;
+  }
+  let touched = false;
+  const next = lineups.value.map((lineup) => {
+    const row = myProgress.value.get(lineup.id);
+    if (!row) {
+      return lineup;
+    }
+    const current = lineup.progress?.[0];
+    if (
+      current &&
+      current.attempts === row.attempts &&
+      current.successes === row.successes &&
+      current.mastered_at === row.mastered_at
+    ) {
+      return lineup;
+    }
+    touched = true;
+    return { ...lineup, progress: [row] };
+  });
+  if (touched) {
+    lineups.value = next;
+  }
+}
+
+function subscribeProgress() {
+  progressSub?.unsubscribe();
+  progressSub = null;
+  myProgress.value = new Map();
+  if (!mySteamId.value || !mapName.value) {
+    return;
+  }
+  progressSub = getGraphqlClient()
+    .subscribe({
+      query: myUtilityProgressSubscription,
+      variables: { steam_id: mySteamId.value, map_name: mapName.value },
+    })
+    .subscribe({
+      next: ({ data }: { data: any }) => {
+        const rows = (data?.utility_lineup_progress ?? []) as UtilityLineupProgress[];
+        myProgress.value = new Map(rows.map((row) => [row.utility_lineup_id, row]));
+        applyProgress();
+      },
+      error: (error: unknown) => {
+        console.error("[utility] progress subscription error:", error);
+      },
+    });
+}
+
+watch([mySteamId, mapName], subscribeProgress, { immediate: true });
+onBeforeUnmount(() => progressSub?.unsubscribe());
 
 // A spot the current filters no longer reach is a filter showing nothing for no
 // visible reason, so it lets go rather than leaving the list empty. Waits for
@@ -895,9 +1058,14 @@ const orderBy = computed(() =>
 );
 
 let fetchId = 0;
-async function fetchLineups() {
+// Quiet is the live path: the library changed under the list, so the rows are
+// swapped in place rather than dimmed and redrawn -- a lineup appearing should
+// not look like the page reloading.
+async function fetchLineups({ quiet = false }: { quiet?: boolean } = {}) {
   const myFetch = ++fetchId;
-  loading.value = true;
+  if (!quiet) {
+    loading.value = true;
+  }
   try {
     const client = getGraphqlClient();
     const [rows, counts] = await Promise.all([
@@ -923,8 +1091,11 @@ async function fetchLineups() {
     lineups.value = (rows.data as any)?.utility_lineups ?? [];
     totalCount.value =
       (counts.data as any)?.utility_lineups_aggregate?.aggregate?.count ?? 0;
+    applyProgress();
   } catch (error) {
-    if (myFetch === fetchId) {
+    // A quiet refetch that fails keeps what is on screen: it was right a
+    // moment ago, and blanking it would be worse than leaving it a beat stale.
+    if (myFetch === fetchId && !quiet) {
       console.error("[utility] lineup fetch error:", error);
       lineups.value = [];
       totalCount.value = 0;

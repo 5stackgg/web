@@ -5382,6 +5382,10 @@
         "expand": "Visa mer av listan",
         "collapse": "Visa mer av kartan"
       },
+      "live": {
+        "saved": "Lineup sparad: {name}",
+        "show": "Visa"
+      },
       "auto_name": {
         "full": "{to} {type} från {from}",
         "same": "{to} {type}",

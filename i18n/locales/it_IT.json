@@ -5382,6 +5382,10 @@
         "expand": "Mostra più elenco",
         "collapse": "Mostra più mappa"
       },
+      "live": {
+        "saved": "Lineup salvato: {name}",
+        "show": "Mostra"
+      },
       "auto_name": {
         "full": "{type} su {to} da {from}",
         "same": "{type} su {to}",

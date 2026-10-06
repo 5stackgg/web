@@ -5382,6 +5382,10 @@
         "expand": "Pokaż więcej listy",
         "collapse": "Pokaż więcej mapy"
       },
+      "live": {
+        "saved": "Zapisano lineup: {name}",
+        "show": "Pokaż"
+      },
       "auto_name": {
         "full": "{type} na {to} z {from}",
         "same": "{type} na {to}",

@@ -5382,6 +5382,10 @@
         "expand": "Afficher plus de la liste",
         "collapse": "Afficher plus de la carte"
       },
+      "live": {
+        "saved": "Lineup enregistré : {name}",
+        "show": "Voir"
+      },
       "auto_name": {
         "full": "{type} vers {to} depuis {from}",
         "same": "{type} vers {to}",

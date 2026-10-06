@@ -5382,6 +5382,10 @@
         "expand": "اعرض المزيد من القائمة",
         "collapse": "اعرض المزيد من الخريطة"
       },
+      "live": {
+        "saved": "تم حفظ التشكيلة: {name}",
+        "show": "عرض"
+      },
       "auto_name": {
         "full": "{type} {to} من {from}",
         "same": "{type} {to}",

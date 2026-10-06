@@ -5384,6 +5384,10 @@
         "expand": "Show more of the list",
         "collapse": "Show more of the map"
       },
+      "live": {
+        "saved": "Lineup saved: {name}",
+        "show": "Show"
+      },
       "auto_name": {
         "full": "{to} {type} from {from}",
         "same": "{to} {type}",

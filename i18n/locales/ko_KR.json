@@ -5382,6 +5382,10 @@
         "expand": "목록 더 보기",
         "collapse": "맵 더 보기"
       },
+      "live": {
+        "saved": "라인업 저장됨: {name}",
+        "show": "보기"
+      },
       "auto_name": {
         "full": "{from}에서 {to} {type}",
         "same": "{to} {type}",

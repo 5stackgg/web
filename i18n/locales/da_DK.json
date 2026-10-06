@@ -5382,6 +5382,10 @@
         "expand": "Vis mere af listen",
         "collapse": "Vis mere af kortet"
       },
+      "live": {
+        "saved": "Lineup gemt: {name}",
+        "show": "Vis"
+      },
       "auto_name": {
         "full": "{to} {type} fra {from}",
         "same": "{to} {type}",

@@ -55,9 +55,13 @@ export function useDirectMessages() {
   const authStore = useAuthStore();
   const { setRightSidebarOpen } = useRightSidebar();
 
-  // Accepted friends only -- a pending request in either direction is not a
-  // friendship, and the server enforces the same rule.
-  function canMessage(steamId: string | number | undefined | null): boolean {
+  // Friends always. Anyone else gets a message request, unless they are known to
+  // take messages from friends only -- the server enforces the same rule, and a
+  // caller that cannot tell leaves the server to say so.
+  function canMessage(
+    steamId: string | number | undefined | null,
+    allowsMessageRequests?: boolean | null,
+  ): boolean {
     if (!steamId || !authStore.me?.steam_id) {
       return false;
     }
@@ -66,7 +70,9 @@ export function useDirectMessages() {
       return false;
     }
 
-    return relationship(steamId) === "friend";
+    return (
+      relationship(steamId) === "friend" || allowsMessageRequests !== false
+    );
   }
 
   function openConversation(

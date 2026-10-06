@@ -3265,7 +3265,13 @@
         "description": "被封鎖的玩家無法傳送訊息、邀請或好友邀請給你。解除封鎖不會恢復你們的好友關係。",
         "empty_title": "沒有已封鎖的玩家",
         "empty_description": "你從玩家個人檔案或玩家選單封鎖的玩家會顯示在這裡。",
-        "blocked_on": "已封鎖"
+        "blocked_on": "已封鎖",
+        "message_requests": {
+          "title": "訊息請求",
+          "description": "允許非好友玩家傳送一則訊息給你。在你回覆之前，它會留在你的請求中。",
+          "updated": "訊息請求設定已儲存",
+          "update_failed": "無法儲存訊息請求設定"
+        }
       }
     },
     "watch": {
@@ -6578,7 +6584,20 @@
       "tournament_ended": "已結束 · {time}後關閉",
       "tournament_ended_days": "{count}天",
       "tournament_ended_hours": "{count}小時",
-      "tournament_ended_tooltip": "本賽事已結束。其聊天將保持開放 7 天。"
+      "tournament_ended_tooltip": "本賽事已結束。其聊天將保持開放 7 天。",
+      "requests": {
+        "open": "訊息請求（{count}）",
+        "title": "訊息請求",
+        "hint": "來自非好友玩家",
+        "close": "關閉訊息請求",
+        "wants_to_message": "想傳訊息給你",
+        "deny": "拒絕",
+        "deny_failed": "無法拒絕此請求",
+        "empty_title": "沒有訊息請求",
+        "empty_description": "非好友玩家傳來的第一則訊息會在這裡等待。",
+        "banner": "{name} 不是你的好友。回覆即可接受其訊息請求，也可以拒絕。",
+        "awaiting_reply": "正在等待 {name} 回覆你的訊息請求。"
+      }
     },
     "recent_games": {
       "title": "近期比賽",
@@ -9862,7 +9881,8 @@
     "direct": {
       "message": "訊息",
       "empty": "還沒有訊息，先打個招呼吧。"
-    }
+    },
+    "awaiting_reply": "你的訊息請求尚未獲得回覆。對方回覆後你才能再次傳送。"
   },
   "charts": {
     "usage": "使用量",

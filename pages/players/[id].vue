@@ -3681,6 +3681,7 @@ const playerHeroTeamChipDotClasses =
 <script lang="ts">
 import { Ban, Medal, Pencil, ShieldAlert } from "lucide-vue-next";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
+import graphqlTag from "graphql-tag";
 import { e_team_roles_enum } from "~/generated/zeus";
 import { playerFields } from "~/graphql/playerFields";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
@@ -3692,6 +3693,25 @@ import { canEditPlayerRole } from "~/utilities/playerRoleEdit";
 
 export default {
   apollo: {
+    // Its own raw document, apart from the player subscription: the column is
+    // newer than ~/generated/zeus until codegen, and an api that has not
+    // migrated yet would otherwise fail the whole profile rather than this.
+    allowsMessageRequests: {
+      query: graphqlTag`
+        query PlayerMessageRequests($playerId: bigint!) {
+          players_by_pk(steam_id: $playerId) {
+            steam_id
+            allow_message_requests
+          }
+        }
+      `,
+      variables: function (): Record<string, unknown> {
+        return { playerId: (this as any).playerId };
+      },
+      update: (data: any): boolean | null =>
+        data.players_by_pk?.allow_message_requests ?? null,
+      error: () => {},
+    },
     $subscribe: {
       players_by_pk: {
         query: typedGql("subscription")({
@@ -3845,6 +3865,8 @@ export default {
   data() {
     return {
       player: undefined,
+      // null until known; only an explicit false hides the Message button.
+      allowsMessageRequests: null as boolean | null,
       playerAwards: undefined,
       awardComposerOpen: false,
       sanctionsSheetOpen: false,
@@ -4039,14 +4061,16 @@ export default {
         this.canMessage
       );
     },
-    // Deliberately not a plain my_friends lookup, which matches a still-pending
-    // request too. The server only opens a conversation between accepted
-    // friends, so anything looser renders a button that fails.
+    // Friends, or anyone who takes message requests. Not a plain my_friends
+    // lookup, which matches a still-pending friend request too.
     canMessage() {
       return (
         !!this.player &&
         !this.isBlocked &&
-        useDirectMessages().canMessage(this.player.steam_id)
+        useDirectMessages().canMessage(
+          this.player.steam_id,
+          this.allowsMessageRequests,
+        )
       );
     },
     isAdmin() {

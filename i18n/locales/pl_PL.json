@@ -3265,7 +3265,13 @@
         "description": "Zablokowani gracze nie mogą wysyłać ci wiadomości, zaproszeń ani próśb o dodanie do znajomych. Odblokowanie kogoś nie przywraca waszej znajomości.",
         "empty_title": "Brak zablokowanych graczy",
         "empty_description": "Gracze zablokowani z poziomu ich profilu lub menu gracza pojawią się tutaj.",
-        "blocked_on": "Zablokowano"
+        "blocked_on": "Zablokowano",
+        "message_requests": {
+          "title": "Prośby o wiadomość",
+          "description": "Pozwól graczom, którzy nie są twoimi znajomymi, wysłać ci jedną wiadomość. Czeka w twoich prośbach, dopóki nie odpowiesz.",
+          "updated": "Zapisano ustawienie próśb o wiadomość",
+          "update_failed": "Nie udało się zapisać ustawienia próśb o wiadomość"
+        }
       }
     },
     "watch": {
@@ -6578,7 +6584,20 @@
       "tournament_ended": "Zakończony · zamknięcie za {time}",
       "tournament_ended_days": "{count} d.",
       "tournament_ended_hours": "{count} godz.",
-      "tournament_ended_tooltip": "Ten turniej się zakończył. Jego czat pozostaje otwarty przez 7 dni."
+      "tournament_ended_tooltip": "Ten turniej się zakończył. Jego czat pozostaje otwarty przez 7 dni.",
+      "requests": {
+        "open": "Prośby o wiadomość ({count})",
+        "title": "Prośby o wiadomość",
+        "hint": "Od graczy, którzy nie są twoimi znajomymi",
+        "close": "Zamknij prośby o wiadomość",
+        "wants_to_message": "Chce do ciebie napisać",
+        "deny": "Odrzuć",
+        "deny_failed": "Nie udało się odrzucić prośby",
+        "empty_title": "Brak próśb o wiadomość",
+        "empty_description": "Tutaj czekają pierwsze wiadomości od graczy, którzy nie są twoimi znajomymi.",
+        "banner": "{name} nie jest twoim znajomym. Odpowiedz, aby przyjąć prośbę o wiadomość, lub ją odrzuć.",
+        "awaiting_reply": "Czekasz, aż {name} odpowie na twoją prośbę o wiadomość."
+      }
     },
     "recent_games": {
       "title": "Ostatnie gry",
@@ -9862,7 +9881,8 @@
     "direct": {
       "message": "Wiadomość",
       "empty": "Brak wiadomości. Przywitaj się."
-    }
+    },
+    "awaiting_reply": "Twoja prośba o wiadomość nie doczekała się jeszcze odpowiedzi. Napiszesz ponownie, gdy ktoś odpowie."
   },
   "charts": {
     "usage": "Wykorzystanie",

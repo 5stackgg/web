@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, watchEffect } from "vue";
 import { useI18n } from "vue-i18n";
 import { useMediaQuery } from "@vueuse/core";
 import { SIDEBAR_MOBILE_QUERY } from "~/components/ui/sidebar/utils";
@@ -19,8 +19,11 @@ import ChatParticipants from "~/components/chat/ChatParticipants.vue";
 import TournamentChatEndedStamp from "~/components/chat/TournamentChatEndedStamp.vue";
 import NewConversation from "~/components/hub/NewConversation.vue";
 import NewChatRailButton from "~/components/hub/NewChatRailButton.vue";
+import MessageRequests from "~/components/hub/MessageRequests.vue";
+import MessageRequestsRailButton from "~/components/hub/MessageRequestsRailButton.vue";
 import HubEmptyState from "~/components/hub/HubEmptyState.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import { toast } from "~/components/ui/toast";
 import AnimatedStat from "~/components/AnimatedStat.vue";
 import { useChatTabs, type ChatTab } from "~/composables/useChatTabs";
 import { cancelChatTabRestore } from "~/composables/useChatTabPersistence";
@@ -28,7 +31,12 @@ import { useDirectConversationBar } from "~/composables/useDirectConversationBar
 import {
   directTabId,
   pendingComposerFocus,
+  useDirectMessages,
 } from "~/composables/useDirectMessages";
+import {
+  useMessageRequests,
+  type MessageRequest,
+} from "~/composables/useMessageRequests";
 import { orderChatTabs } from "~/utilities/chatTabOrder";
 import { hapticTap } from "~/utilities/haptics";
 import {
@@ -592,6 +600,77 @@ function onDock(tab: ChatTab) {
 // picked, Esc is pressed, or another conversation is opened from the rail.
 const composing = ref(false);
 
+// Message requests take over the thread area the same way, one at a time.
+const viewingRequests = ref(false);
+const {
+  requests,
+  requestCount,
+  isRequest,
+  isAwaitingReply,
+  acceptIfReplied,
+  decline,
+} = useMessageRequests();
+
+watch(composing, (isComposing) => {
+  if (isComposing) {
+    viewingRequests.value = false;
+  }
+});
+
+watch(viewingRequests, (viewing) => {
+  if (viewing) {
+    composing.value = false;
+  }
+});
+
+// Nothing left to show once the last request is answered or denied.
+watch(requestCount, (count) => {
+  if (count === 0) {
+    viewingRequests.value = false;
+  }
+});
+
+// Replying is what accepts a request, so it leaves the list as soon as this
+// player's message is in the room.
+watchEffect(() => {
+  for (const request of requests.value) {
+    acceptIfReplied(request.roomId);
+  }
+});
+
+function openRequest(request: MessageRequest) {
+  viewingRequests.value = false;
+  useDirectMessages().openConversation(request.peer);
+}
+
+const activeRequest = computed(() =>
+  activeTab.value?.type === "direct" && isRequest(activeTab.value.lobbyId)
+    ? activeTab.value
+    : null,
+);
+
+async function denyActiveRequest() {
+  const tab = activeRequest.value;
+
+  if (!tab) {
+    return;
+  }
+
+  try {
+    await decline(tab.lobbyId);
+  } catch {
+    toast({
+      title: t("layouts.chat_panel.requests.deny_failed"),
+      variant: "destructive",
+    });
+  }
+}
+
+// The sender of a request writes once, then waits for a reply.
+function awaitingReply(tab: ChatTab) {
+  return tab.type === "direct" && isAwaitingReply(tab.lobbyId, tab.steamId);
+}
+
 const lobbies: Record<string, { focusComposer?: () => void } | null> = {};
 
 // A conversation just started -- from New message or a Message button --
@@ -624,6 +703,7 @@ function handleRoomClick(tab: ChatTab) {
   }
 
   composing.value = false;
+  viewingRequests.value = false;
 
   // In editing mode a tap is "I am done", not "open this".
   if (wiggling.value) {
@@ -798,6 +878,12 @@ function handlePopOut() {
               :active="composing"
               @click="composing = true"
             />
+            <MessageRequestsRailButton
+              v-if="tab.id === firstDirectTabId && requestCount > 0"
+              :active="viewingRequests"
+              :count="requestCount"
+              @click="viewingRequests = true"
+            />
             <!-- ContextMenu wraps the pair: its root renders no element, so
                  it cannot sit under TooltipTrigger's as-child. The two triggers
                  chain onto the one button instead. -->
@@ -936,6 +1022,12 @@ function handlePopOut() {
               :active="composing"
               @click="composing = true"
             />
+            <MessageRequestsRailButton
+              v-if="requestCount > 0"
+              :active="viewingRequests"
+              :count="requestCount"
+              @click="viewingRequests = true"
+            />
           </template>
         </TooltipProvider>
       </div>
@@ -943,6 +1035,12 @@ function handlePopOut() {
       <!-- No conversations yet: the way to start one is the whole rail. -->
       <div v-else class="flex flex-1 flex-col items-center">
         <NewChatRailButton :active="composing" @click="composing = true" />
+        <MessageRequestsRailButton
+          v-if="requestCount > 0"
+          :active="viewingRequests"
+          :count="requestCount"
+          @click="viewingRequests = true"
+        />
       </div>
     </div>
 
@@ -950,7 +1048,10 @@ function handlePopOut() {
          state instead of cutting; both branches fill the column, so a plain
          crossfade is the right tool. -->
     <FadeSwap class="flex-1 min-w-0">
-      <div v-if="composing" key="compose" class="h-full">
+      <div v-if="viewingRequests" key="requests" class="h-full">
+        <MessageRequests @close="viewingRequests = false" @open="openRequest" />
+      </div>
+      <div v-else-if="composing" key="compose" class="h-full">
         <NewConversation @close="composing = false" />
       </div>
       <div
@@ -1100,6 +1201,26 @@ function handlePopOut() {
           </div>
         </Transition>
 
+        <div
+          v-if="activeRequest"
+          class="flex shrink-0 items-center gap-3 border-b border-[hsl(var(--tac-amber)/0.3)] bg-[hsl(var(--tac-amber)/0.08)] px-3 py-2"
+        >
+          <p class="min-w-0 flex-1 text-xs text-muted-foreground">
+            {{
+              $t("layouts.chat_panel.requests.banner", {
+                name: activeRequest.label,
+              })
+            }}
+          </p>
+          <button
+            type="button"
+            class="inline-flex h-7 shrink-0 items-center rounded-md border border-border bg-card/50 px-2 text-xs text-muted-foreground transition-colors hover:border-destructive/60 hover:text-destructive"
+            @click="denyActiveRequest"
+          >
+            {{ $t("layouts.chat_panel.requests.deny") }}
+          </button>
+        </div>
+
         <div class="flex-1 min-h-0 flex flex-col">
           <ChatLobby
             v-for="tab in tabs"
@@ -1114,6 +1235,14 @@ function handlePopOut() {
             :frameless="true"
             :is-global-context="true"
             :hide-participants-summary="true"
+            :can-send="!awaitingReply(tab)"
+            :readonly-hint="
+              awaitingReply(tab)
+                ? $t('layouts.chat_panel.requests.awaiting_reply', {
+                    name: tab.label,
+                  })
+                : undefined
+            "
             :disable-auto-focus-on-activate="isMobile"
             :is-active-tab="
               tab.id === activeChatId && isSidebarOpen && isTabActive

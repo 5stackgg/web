@@ -3265,7 +3265,13 @@
         "description": "Les joueurs bloqués ne peuvent pas vous envoyer de messages, d'invitations ni de demandes d'ami. Débloquer quelqu'un ne rétablit pas votre amitié.",
         "empty_title": "Aucun joueur bloqué",
         "empty_description": "Les joueurs que vous bloquez depuis leur profil ou le menu joueur apparaîtront ici.",
-        "blocked_on": "Bloqué"
+        "blocked_on": "Bloqué",
+        "message_requests": {
+          "title": "Demandes de message",
+          "description": "Autorisez les joueurs qui ne sont pas vos amis à vous envoyer un message. Il attend dans vos demandes jusqu'à ce que vous répondiez.",
+          "updated": "Paramètre des demandes de message enregistré",
+          "update_failed": "Impossible d'enregistrer le paramètre des demandes de message"
+        }
       }
     },
     "watch": {
@@ -6578,7 +6584,20 @@
       "tournament_ended": "Terminé · ferme dans {time}",
       "tournament_ended_days": "{count} j",
       "tournament_ended_hours": "{count} h",
-      "tournament_ended_tooltip": "Ce tournoi est terminé. Son chat reste ouvert pendant 7 jours."
+      "tournament_ended_tooltip": "Ce tournoi est terminé. Son chat reste ouvert pendant 7 jours.",
+      "requests": {
+        "open": "Demandes de message ({count})",
+        "title": "Demandes de message",
+        "hint": "De joueurs qui ne sont pas vos amis",
+        "close": "Fermer les demandes de message",
+        "wants_to_message": "Souhaite vous écrire",
+        "deny": "Refuser",
+        "deny_failed": "Impossible de refuser cette demande",
+        "empty_title": "Aucune demande de message",
+        "empty_description": "Les premiers messages de joueurs qui ne sont pas vos amis attendent ici.",
+        "banner": "{name} n'est pas votre ami. Répondez pour accepter sa demande de message, ou refusez-la.",
+        "awaiting_reply": "En attente de la réponse de {name} à votre demande de message."
+      }
     },
     "recent_games": {
       "title": "Parties récentes",
@@ -9862,7 +9881,8 @@
     "direct": {
       "message": "Message",
       "empty": "Aucun message pour l'instant. Dites bonjour."
-    }
+    },
+    "awaiting_reply": "Votre demande de message n'a pas encore reçu de réponse. Vous pourrez réécrire après sa réponse."
   },
   "charts": {
     "usage": "Utilisation",

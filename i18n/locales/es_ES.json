@@ -3265,7 +3265,13 @@
         "description": "Los jugadores bloqueados no pueden enviarte mensajes, invitaciones ni solicitudes de amistad. Desbloquear a alguien no restaura vuestra amistad.",
         "empty_title": "No hay jugadores bloqueados",
         "empty_description": "Los jugadores que bloquees desde su perfil o el menú del jugador aparecerán aquí.",
-        "blocked_on": "Bloqueado"
+        "blocked_on": "Bloqueado",
+        "message_requests": {
+          "title": "Solicitudes de mensaje",
+          "description": "Permite que jugadores que no son tus amigos te envíen un mensaje. Espera en tus solicitudes hasta que respondas.",
+          "updated": "Ajuste de solicitudes de mensaje guardado",
+          "update_failed": "No se pudo guardar el ajuste de solicitudes de mensaje"
+        }
       }
     },
     "watch": {
@@ -6578,7 +6584,20 @@
       "tournament_ended": "Finalizado · se cierra en {time}",
       "tournament_ended_days": "{count} d",
       "tournament_ended_hours": "{count} h",
-      "tournament_ended_tooltip": "Este torneo ha finalizado. Su chat sigue abierto durante 7 días."
+      "tournament_ended_tooltip": "Este torneo ha finalizado. Su chat sigue abierto durante 7 días.",
+      "requests": {
+        "open": "Solicitudes de mensaje ({count})",
+        "title": "Solicitudes de mensaje",
+        "hint": "De jugadores que no son tus amigos",
+        "close": "Cerrar solicitudes de mensaje",
+        "wants_to_message": "Quiere escribirte",
+        "deny": "Rechazar",
+        "deny_failed": "No se pudo rechazar la solicitud",
+        "empty_title": "No hay solicitudes de mensaje",
+        "empty_description": "Aquí esperan los primeros mensajes de jugadores que no son tus amigos.",
+        "banner": "{name} no es tu amigo. Responde para aceptar su solicitud de mensaje o recházala.",
+        "awaiting_reply": "Esperando a que {name} responda a tu solicitud de mensaje."
+      }
     },
     "recent_games": {
       "title": "Partidas recientes",
@@ -9862,7 +9881,8 @@
     "direct": {
       "message": "Mensaje",
       "empty": "Aún no hay mensajes. Saluda."
-    }
+    },
+    "awaiting_reply": "Aún no han respondido a tu solicitud de mensaje. Podrás volver a escribir cuando respondan."
   },
   "charts": {
     "usage": "Uso",

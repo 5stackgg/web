@@ -6,6 +6,7 @@ import { useChatTabs } from "~/composables/useChatTabs";
 import { useChatTabSetup } from "~/composables/useChatTabSetup";
 import { useIncomingDirectMessages } from "~/composables/useIncomingDirectMessages";
 import { directTabId } from "~/composables/useDirectMessages";
+import { useMessageRequests } from "~/composables/useMessageRequests";
 import { useRightSidebar } from "~/composables/useRightSidebar";
 import { setActiveHub } from "~/composables/useHubState";
 
@@ -140,6 +141,7 @@ beforeEach(() => {
   socketMock.lobbies.clear();
   socketMock.hidden.clear();
   useChatTabs().clearAll();
+  useMessageRequests().reset();
   useAuthStore().me = { steam_id: ME } as any;
   stubApi();
 });
@@ -264,5 +266,83 @@ describe("useIncomingDirectMessages", () => {
     roomChat("m5");
 
     expect(unread()).toBe(5);
+  });
+
+  describe("message requests", () => {
+    it("puts a stranger's first message in requests, with no tab, badge or flash", async () => {
+      await mountChat();
+
+      socketMock.emit("direct:incoming", {
+        roomId: ROOM,
+        from: { steam_id: FRIEND, name: "Dana" },
+        message: line("m1"),
+        request: true,
+      });
+
+      const { requests, requestCount } = useMessageRequests();
+      expect(requestCount.value).toBe(1);
+      expect(requests.value[0]).toMatchObject({
+        roomId: ROOM,
+        peer: { steam_id: FRIEND, name: "Dana" },
+      });
+      expect(useChatTabs().tabs.value.map((tab) => tab.id)).not.toContain(TAB);
+      expect(useChatTabs().totalUnread.value).toBe(0);
+    });
+
+    it("keeps a blocked player's request out", async () => {
+      await mountChat();
+      socketMock.hidden.add(FRIEND);
+
+      socketMock.emit("direct:incoming", {
+        roomId: ROOM,
+        from: { steam_id: FRIEND, name: "Dana" },
+        message: line("m1"),
+        request: true,
+      });
+
+      expect(useMessageRequests().requestCount.value).toBe(0);
+    });
+
+    it("hydrates requests apart from the rail", async () => {
+      stubApi([
+        {
+          roomId: ROOM,
+          unread: 1,
+          isOpen: false,
+          position: 0,
+          request: true,
+          awaitingReply: false,
+          peer: { steam_id: FRIEND, name: "Dana" },
+        },
+      ]);
+      await mountChat();
+
+      expect(useMessageRequests().requestCount.value).toBe(1);
+      expect(useChatTabs().tabs.value.map((tab) => tab.id)).not.toContain(TAB);
+      expect(useChatTabs().totalUnread.value).toBe(0);
+    });
+
+    it("holds the composer while this player's own request waits", async () => {
+      stubApi([
+        {
+          roomId: ROOM,
+          unread: 0,
+          isOpen: true,
+          position: 0,
+          request: false,
+          awaitingReply: true,
+          peer: { steam_id: FRIEND, name: "Dana" },
+        },
+      ]);
+      await mountChat();
+
+      const { isAwaitingReply } = useMessageRequests();
+      expect(isAwaitingReply(ROOM, FRIEND)).toBe(true);
+
+      // Their reply ends the wait.
+      incoming("m1");
+
+      expect(isAwaitingReply(ROOM, FRIEND)).toBe(false);
+    });
   });
 });

@@ -3265,7 +3265,13 @@
         "description": "Engellenen oyuncular sana mesaj, davet veya arkadaşlık isteği gönderemez. Birinin engelini kaldırmak arkadaşlığınızı geri getirmez.",
         "empty_title": "Engellenen oyuncu yok",
         "empty_description": "Profilinden veya oyuncu menüsünden engellediğin oyuncular burada görünür.",
-        "blocked_on": "Engellendi"
+        "blocked_on": "Engellendi",
+        "message_requests": {
+          "title": "Mesaj istekleri",
+          "description": "Arkadaşın olmayan oyuncuların sana bir mesaj göndermesine izin ver. Sen yanıtlayana kadar isteklerinde bekler.",
+          "updated": "Mesaj isteği ayarı kaydedildi",
+          "update_failed": "Mesaj isteği ayarı kaydedilemedi"
+        }
       }
     },
     "watch": {
@@ -6578,7 +6584,20 @@
       "tournament_ended": "Bitti · {time} içinde kapanıyor",
       "tournament_ended_days": "{count} g",
       "tournament_ended_hours": "{count} sa",
-      "tournament_ended_tooltip": "Bu turnuva sona erdi. Sohbeti 7 gün boyunca açık kalır."
+      "tournament_ended_tooltip": "Bu turnuva sona erdi. Sohbeti 7 gün boyunca açık kalır.",
+      "requests": {
+        "open": "Mesaj istekleri ({count})",
+        "title": "Mesaj istekleri",
+        "hint": "Arkadaşın olmayan oyunculardan",
+        "close": "Mesaj isteklerini kapat",
+        "wants_to_message": "Sana mesaj göndermek istiyor",
+        "deny": "Reddet",
+        "deny_failed": "İstek reddedilemedi",
+        "empty_title": "Mesaj isteği yok",
+        "empty_description": "Arkadaşın olmayan oyuncuların ilk mesajları burada bekler.",
+        "banner": "{name} arkadaşın değil. Mesaj isteğini kabul etmek için yanıtla ya da reddet.",
+        "awaiting_reply": "{name} kullanıcısının mesaj isteğine yanıt vermesi bekleniyor."
+      }
     },
     "recent_games": {
       "title": "Son maçlar",
@@ -9862,7 +9881,8 @@
     "direct": {
       "message": "Mesaj",
       "empty": "Henüz mesaj yok. Merhaba de."
-    }
+    },
+    "awaiting_reply": "Mesaj isteğin henüz yanıtlanmadı. Yanıt verdiklerinde tekrar yazabilirsin."
   },
   "charts": {
     "usage": "Kullanım",

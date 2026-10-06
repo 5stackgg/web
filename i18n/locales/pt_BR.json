@@ -3265,7 +3265,13 @@
         "description": "Jogadores bloqueados não podem enviar mensagens, convites ou pedidos de amizade para você. Desbloquear alguém não restaura a amizade.",
         "empty_title": "Nenhum jogador bloqueado",
         "empty_description": "Os jogadores que você bloquear pelo perfil ou pelo menu do jogador aparecerão aqui.",
-        "blocked_on": "Bloqueado"
+        "blocked_on": "Bloqueado",
+        "message_requests": {
+          "title": "Solicitações de mensagem",
+          "description": "Permita que jogadores que não são seus amigos enviem uma mensagem para você. Ela aguarda nas suas solicitações até você responder.",
+          "updated": "Configuração de solicitações de mensagem salva",
+          "update_failed": "Não foi possível salvar a configuração de solicitações de mensagem"
+        }
       }
     },
     "watch": {
@@ -6578,7 +6584,20 @@
       "tournament_ended": "Encerrado · fecha em {time}",
       "tournament_ended_days": "{count} d",
       "tournament_ended_hours": "{count} h",
-      "tournament_ended_tooltip": "Este torneio foi encerrado. O chat dele fica aberto por 7 dias."
+      "tournament_ended_tooltip": "Este torneio foi encerrado. O chat dele fica aberto por 7 dias.",
+      "requests": {
+        "open": "Solicitações de mensagem ({count})",
+        "title": "Solicitações de mensagem",
+        "hint": "De jogadores que não são seus amigos",
+        "close": "Fechar solicitações de mensagem",
+        "wants_to_message": "Quer enviar uma mensagem para você",
+        "deny": "Recusar",
+        "deny_failed": "Não foi possível recusar a solicitação",
+        "empty_title": "Nenhuma solicitação de mensagem",
+        "empty_description": "As primeiras mensagens de jogadores que não são seus amigos esperam aqui.",
+        "banner": "{name} não é seu amigo. Responda para aceitar a solicitação de mensagem ou recuse-a.",
+        "awaiting_reply": "Aguardando {name} responder à sua solicitação de mensagem."
+      }
     },
     "recent_games": {
       "title": "Partidas Recentes",
@@ -9862,7 +9881,8 @@
     "direct": {
       "message": "Mensagem",
       "empty": "Nenhuma mensagem ainda. Diga Olá."
-    }
+    },
+    "awaiting_reply": "Sua solicitação de mensagem ainda não foi respondida. Você poderá escrever de novo quando responderem."
   },
   "charts": {
     "usage": "Uso",

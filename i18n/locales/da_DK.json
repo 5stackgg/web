@@ -3265,7 +3265,13 @@
         "description": "Blokerede spillere kan ikke sende dig beskeder, invitationer eller venneanmodninger. At fjerne en blokering gendanner ikke jeres venskab.",
         "empty_title": "Ingen blokerede spillere",
         "empty_description": "Spillere, du blokerer fra deres profil eller spillermenuen, vises her.",
-        "blocked_on": "Blokeret"
+        "blocked_on": "Blokeret",
+        "message_requests": {
+          "title": "Beskedanmodninger",
+          "description": "Lad spillere, der ikke er dine venner, sende dig én besked. Den venter i dine anmodninger, indtil du svarer.",
+          "updated": "Indstilling for beskedanmodninger gemt",
+          "update_failed": "Kunne ikke gemme indstillingen for beskedanmodninger"
+        }
       }
     },
     "watch": {
@@ -6578,7 +6584,20 @@
       "tournament_ended": "Afsluttet · lukker om {time}",
       "tournament_ended_days": "{count} d",
       "tournament_ended_hours": "{count} t",
-      "tournament_ended_tooltip": "Denne turnering er afsluttet. Dens chat er åben i 7 dage."
+      "tournament_ended_tooltip": "Denne turnering er afsluttet. Dens chat er åben i 7 dage.",
+      "requests": {
+        "open": "Beskedanmodninger ({count})",
+        "title": "Beskedanmodninger",
+        "hint": "Fra spillere, der ikke er dine venner",
+        "close": "Luk beskedanmodninger",
+        "wants_to_message": "Vil gerne skrive til dig",
+        "deny": "Afvis",
+        "deny_failed": "Kunne ikke afvise anmodningen",
+        "empty_title": "Ingen beskedanmodninger",
+        "empty_description": "Første beskeder fra spillere, der ikke er dine venner, venter her.",
+        "banner": "{name} er ikke din ven. Svar for at acceptere beskedanmodningen, eller afvis den.",
+        "awaiting_reply": "Venter på, at {name} svarer på din beskedanmodning."
+      }
     },
     "recent_games": {
       "title": "Seneste kampe",
@@ -9862,7 +9881,8 @@
     "direct": {
       "message": "Besked",
       "empty": "Ingen beskeder endnu. Sig hej."
-    }
+    },
+    "awaiting_reply": "Din beskedanmodning er ikke besvaret endnu. Du kan skrive igen, når de svarer."
   },
   "charts": {
     "usage": "Forbrug",

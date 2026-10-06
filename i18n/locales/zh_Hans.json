@@ -3265,7 +3265,13 @@
         "description": "被屏蔽的玩家无法向你发送消息、邀请或好友请求。取消屏蔽不会恢复你们的好友关系。",
         "empty_title": "没有已屏蔽的玩家",
         "empty_description": "你在玩家资料页或玩家菜单中屏蔽的玩家会显示在这里。",
-        "blocked_on": "已屏蔽"
+        "blocked_on": "已屏蔽",
+        "message_requests": {
+          "title": "消息请求",
+          "description": "允许非好友玩家给你发送一条消息。在你回复之前，它会留在你的请求中。",
+          "updated": "消息请求设置已保存",
+          "update_failed": "无法保存消息请求设置"
+        }
       }
     },
     "watch": {
@@ -6578,7 +6584,20 @@
       "tournament_ended": "已结束 · {time}后关闭",
       "tournament_ended_days": "{count}天",
       "tournament_ended_hours": "{count}小时",
-      "tournament_ended_tooltip": "本赛事已结束。其聊天将保持开放 7 天。"
+      "tournament_ended_tooltip": "本赛事已结束。其聊天将保持开放 7 天。",
+      "requests": {
+        "open": "消息请求（{count}）",
+        "title": "消息请求",
+        "hint": "来自非好友玩家",
+        "close": "关闭消息请求",
+        "wants_to_message": "想给你发消息",
+        "deny": "拒绝",
+        "deny_failed": "无法拒绝该请求",
+        "empty_title": "没有消息请求",
+        "empty_description": "非好友玩家发来的第一条消息会在这里等待。",
+        "banner": "{name} 不是你的好友。回复即可接受其消息请求，也可以拒绝。",
+        "awaiting_reply": "正在等待 {name} 回复你的消息请求。"
+      }
     },
     "recent_games": {
       "title": "近期比赛",
@@ -9862,7 +9881,8 @@
     "direct": {
       "message": "消息",
       "empty": "还没有消息，先打个招呼吧。"
-    }
+    },
+    "awaiting_reply": "你的消息请求尚未得到回复。对方回复后你才能再次发送。"
   },
   "charts": {
     "usage": "使用量",

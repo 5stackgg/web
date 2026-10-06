@@ -21,6 +21,8 @@ export function useIncomingDirectMessages() {
   const { openTab, closeTab, incrementUnread, setUnread, noteActivity, tabs } =
     useChatTabs();
   const { topPosition } = useDirectConversationBar();
+  const { addRequest, setRequests, setAwaitingReply, reset } =
+    useMessageRequests();
 
   function ensureTab(
     roomId: string,
@@ -84,13 +86,34 @@ export function useIncomingDirectMessages() {
           isOpen: boolean;
           position: number;
           peer: DirectMessagePeer;
+          // Waiting on this player: a stranger's first message.
+          request?: boolean;
+          // This player's own request, not yet replied to.
+          awaitingReply?: boolean;
         }>;
       }>(
         `https://${useRuntimeConfig().public.apiDomain}/chat/direct/conversations`,
         { credentials: "include" },
       );
 
+      setRequests(
+        conversations
+          .filter(
+            (conversation) =>
+              conversation.request &&
+              !socket.hidesAuthor(conversation.peer?.steam_id),
+          )
+          .map(({ roomId, peer, unread }) => ({ roomId, peer, unread })),
+      );
+
       for (const conversation of conversations) {
+        // Requests wait in their own list, off the rail and out of the badges.
+        if (conversation.request) {
+          continue;
+        }
+
+        setAwaitingReply(conversation.roomId, !!conversation.awaitingReply);
+
         if (!conversation.isOpen && conversation.unread <= 0) {
           continue;
         }
@@ -115,6 +138,8 @@ export function useIncomingDirectMessages() {
       roomId: string;
       from: DirectMessagePeer;
       message?: LobbyMessage;
+      // A stranger's first message: it goes to requests, quietly.
+      request?: boolean;
     }) => {
       const steamId = authStore.me?.steam_id;
 
@@ -131,17 +156,27 @@ export function useIncomingDirectMessages() {
         return;
       }
 
+      const from = {
+        steam_id: peerId,
+        name: data.from?.name,
+        avatar_url: data.from?.avatar_url,
+      };
+
+      if (data.request) {
+        addRequest({ roomId: data.roomId, peer: from, unread: 1 });
+        return;
+      }
+
+      // They wrote back, so whatever this player sent them is answered.
+      setAwaitingReply(data.roomId, false);
+
       // The room's own `lobby:chat` carries the same id when its tab is open.
       useTabFlash().signalChat("direct", data.message);
 
       // Deliberately does not inject the message: opening the tab makes
       // useChatTabSetup join the room, and the join's history snapshot delivers
       // it (deduped by chatMessageKey either way).
-      ensureTab(data.roomId, {
-        steam_id: peerId,
-        name: data.from?.name,
-        avatar_url: data.from?.avatar_url,
-      });
+      ensureTab(data.roomId, from);
 
       // Counted here for an existing tab too: a burst that lands before a new
       // tab's join reaches no lobby:chat, and the join's snapshot is never
@@ -163,6 +198,8 @@ export function useIncomingDirectMessages() {
         void hydrate();
         return;
       }
+
+      reset();
 
       for (const tab of [...tabs.value]) {
         if (tab.type === "direct") {

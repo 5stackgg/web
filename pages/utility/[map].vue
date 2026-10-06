@@ -1518,14 +1518,11 @@ function selectLineup(id: string | null) {
          fit-content() and not min(max-content, ..): CSS min()/max()/clamp()
          reject intrinsic keywords, and an invalid value drops the whole
          grid-template-columns, collapsing the page to a single column. -->
-    <!-- The list column reads first, on the left, and the map sits to its
-         right: you steer from the column and look at the result on the map,
-         and left to right is the order that happens in. The DOM keeps the board
-         first so a phone, which stacks them, still opens on the map. There the
-         column is a sheet, and the padding is its half height, so the bottom of
-         the map can still be scrolled up clear of it. -->
+    <!-- The map on the left, the list on its right. On a phone the column is a
+         sheet over the map, and the padding is its half height, so the bottom
+         of the map can still be scrolled up clear of it. -->
     <div
-      class="mx-auto grid w-full gap-4 [--board:1000px] lg:max-w-[1900px] lg:grid-cols-[fit-content(60rem)_minmax(0,var(--board))] lg:justify-center"
+      class="mx-auto grid w-full gap-4 [--board:1000px] lg:max-w-[1900px] lg:grid-cols-[minmax(0,var(--board))_fit-content(60rem)] lg:justify-center"
       :class="isMobile ? 'pb-[40svh]' : ''"
     >
       <!-- --board sizes the BOX, and the box wants to be wide: the map picker,
@@ -1560,7 +1557,7 @@ function selectLineup(id: string | null) {
            right hub narrows it on a desktop, so a viewport breakpoint would
            fire at all the wrong times. -->
       <div
-        class="utility-board relative mx-auto w-full max-w-[var(--board)] overflow-hidden rounded-md border border-border bg-card/40 lg:col-start-2 lg:row-start-1 lg:sticky lg:top-4 lg:self-start"
+        class="utility-board relative mx-auto w-full max-w-[var(--board)] overflow-hidden rounded-md border border-border bg-card/40 lg:sticky lg:top-4 lg:self-start"
       >
         <!-- The map names itself, the way a map does everywhere else in the
              app, and it still does it inside the board's own frame -- but in a
@@ -1799,7 +1796,7 @@ function selectLineup(id: string | null) {
            you could not see. -->
       <UtilityMobileSheet
         :enabled="isMobile"
-        class="flex flex-col gap-2 lg:col-start-1 lg:row-start-1 lg:min-w-[22rem]"
+        class="flex flex-col gap-2 lg:min-w-[22rem]"
       >
         <!-- Which tab, whose lineups, and the search over them: all three are
              how you steer the column, so they stay put while it scrolls.
@@ -1881,12 +1878,12 @@ function selectLineup(id: string | null) {
              question you asked of the map and not of the list -- it should not
              cost you the view you were in to read the answer. It rides in from
              the board's side rather than fading, which is the direction the
-             click came from -- the right, now the map sits there. -->
+             click came from. -->
           <Transition
             enter-active-class="transition-[opacity,transform] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
             leave-active-class="transition-[opacity,transform] [transition-duration:110ms] ease-in motion-reduce:![transition-duration:1ms]"
-            enter-from-class="translate-x-3 opacity-0"
-            leave-to-class="translate-x-3 opacity-0"
+            enter-from-class="-translate-x-3 opacity-0"
+            leave-to-class="-translate-x-3 opacity-0"
           >
             <UtilityMetaSelection
               v-if="metaSelectionMode && selectedMetaSpot"

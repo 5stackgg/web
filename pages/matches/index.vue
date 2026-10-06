@@ -565,6 +565,8 @@ function optionRowClass(active: boolean) {
 </template>
 
 <script lang="ts">
+import { useRestoredData } from "~/composables/useRestoredState";
+import { isRestoringHistory } from "~/composables/useScrollRestoration";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { matchRowFields } from "~/graphql/simpleMatchFields";
 import { $, e_match_status_enum, order_by } from "~/generated/zeus";
@@ -662,6 +664,9 @@ interface ComponentData {
 
 export default {
   data(): ComponentData {
+    // Composables may run here: Vue keeps this component current while it
+    // builds data. Back to this list lands on the same page.
+    const restoredList = useRestoredData("matches-list", ["page"]);
     const saved = loadFiltersFromStorage();
     const fromInit = decomposeIso(saved.dateFrom);
     const toInit = decomposeIso(saved.dateTo);
@@ -679,7 +684,7 @@ export default {
       fromTime: fromInit.time,
       toCalendar: toInit.calendar,
       toTime: toInit.time,
-      page: 1,
+      page: restoredList?.page ?? 1,
       perPage: 10,
       matches: [],
       matchesAggregate: 0,
@@ -715,7 +720,7 @@ export default {
       this.saveFiltersToStorage();
     },
     includeExternal() {
-      this.page = 1;
+      this.resetPage();
       this.saveFiltersToStorage();
     },
     fromCalendar() {
@@ -1022,8 +1027,15 @@ export default {
       this.onFilterChange();
     },
     onFilterChange() {
-      this.page = 1;
+      this.resetPage();
       this.saveFiltersToStorage();
+    },
+    // A filter settling while back/forward restores the page is not the user
+    // changing it.
+    resetPage() {
+      if (!isRestoringHistory()) {
+        this.page = 1;
+      }
     },
     toggleStatus(value: e_match_status_enum) {
       const set = new Set(this.form.statuses);

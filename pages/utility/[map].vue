@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, h, onBeforeUnmount, ref, watch } from "vue";
+import { computed, h, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import {
@@ -1490,6 +1490,35 @@ function onArchived(id: string) {
     selectedId.value = null;
   }
 }
+
+// Escape peels back one layer at a time, innermost first: the meta ring you
+// picked, then the selected lineup, then the spot popover it was picked from. Dialogs handle
+// their own Escape, and a key pressed while typing belongs to the field.
+function closeTopLayer(event: KeyboardEvent) {
+  if (event.key !== "Escape" || event.defaultPrevented) {
+    return;
+  }
+  const target = event.target as HTMLElement | null;
+  if (
+    target?.closest("input, textarea, select, [contenteditable='true']") ||
+    document.querySelector("[role='dialog'][data-state='open']")
+  ) {
+    return;
+  }
+  if (selectedMetaKey.value) {
+    selectedMetaKey.value = null;
+  } else if (selectedId.value) {
+    selectedId.value = null;
+  } else if (spotKey.value) {
+    spotKey.value = null;
+  } else {
+    return;
+  }
+  event.preventDefault();
+}
+
+onMounted(() => window.addEventListener("keydown", closeTopLayer));
+onBeforeUnmount(() => window.removeEventListener("keydown", closeTopLayer));
 
 function selectLineup(id: string | null) {
   selectedId.value = selectedId.value === id ? null : id;

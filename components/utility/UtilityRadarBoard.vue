@@ -640,8 +640,12 @@ function onMetaClick(marker: MetaMarker) {
   emit("select-meta", marker.key);
 }
 
+// The page closes its own layers on Escape too (spot popover, selection), and
+// both listeners sit on window. The board mounts first so it hears the key
+// first; marking the event handled stops one press closing two layers.
 function onKeydown(event: KeyboardEvent) {
-  if (event.key === "Escape" && openCluster.value) {
+  if (event.key === "Escape" && !event.defaultPrevented && openCluster.value) {
+    event.preventDefault();
     beginFan(null);
   }
 }

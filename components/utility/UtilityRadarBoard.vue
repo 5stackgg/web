@@ -995,13 +995,71 @@ function canvasPercent(point: RadarPoint) {
   };
 }
 
+// The square's width on screen, which is what turns map distance into pixels
+// for the label layout below. Watched rather than read once: the right hub and
+// the left nav both resize the board without the window changing.
+const boardWidth = ref(0);
+let boardResize: ResizeObserver | null = null;
+onMounted(() => {
+  if (!viewportRef.value || typeof ResizeObserver === "undefined") {
+    return;
+  }
+  boardResize = new ResizeObserver(([entry]) => {
+    boardWidth.value = entry.contentRect.width;
+  });
+  boardResize.observe(viewportRef.value);
+});
+onBeforeUnmount(() => boardResize?.disconnect());
+
+// A label is about this tall on screen, and about this wide per character plus
+// the count badge -- close enough to tell two labels apart, which is all the
+// layout needs.
+const SPOT_LABEL_H = 22;
+const spotLabelWidth = (label: string, count: number) =>
+  label.length * 6.4 + String(count).length * 6.5 + 30;
+
+// Two places that sit close together -- Temple and Donut, Pit and Plat -- put
+// their labels on top of each other, and the one underneath cannot be clicked.
+// The biggest spot keeps its place and smaller ones step up or down out of the
+// way. In screen pixels, after the zoom, so zooming in pulls the labels back
+// onto their spots as soon as there is room for them.
 const drawnSpots = computed(() => {
-  const out: Array<{ key: string; label: string; count: number; left: number; top: number }> = [];
+  const width = boardWidth.value;
+  const scale = (width || 1) * zoom.value;
+  const placed: Array<{ x: number; y: number; w: number }> = [];
+  const out: Array<{
+    key: string;
+    label: string;
+    count: number;
+    left: number;
+    top: number;
+    shift: number;
+  }> = [];
   for (const spot of props.spots ?? []) {
     const at = canvasPercent(spot.point);
-    if (at) {
-      out.push({ key: spot.key, label: spot.label, count: spot.count, ...at });
+    if (!at) {
+      continue;
     }
+    const x = (at.left / 100) * scale;
+    const y = (at.top / 100) * scale;
+    const w = spotLabelWidth(spot.label, spot.count);
+    const clashes = (dy: number) =>
+      placed.some(
+        (other) =>
+          Math.abs(other.x - x) < (other.w + w) / 2 + 4 &&
+          Math.abs(other.y - (y + dy)) < SPOT_LABEL_H + 2,
+      );
+    let shift = 0;
+    if (width) {
+      for (const step of [0, 1, -1, 2, -2, 3, -3]) {
+        if (!clashes(step * (SPOT_LABEL_H + 3))) {
+          shift = step * (SPOT_LABEL_H + 3);
+          break;
+        }
+      }
+    }
+    placed.push({ x, y: y + shift, w });
+    out.push({ key: spot.key, label: spot.label, count: spot.count, ...at, shift });
   }
   return out;
 });
@@ -1025,6 +1083,25 @@ const spotAnchor = computed(() => {
   const screenY = 0.5 + (at.top / 100 - 0.5) * zoom.value + panY.value / height;
   return { ...at, openLeft: screenX > 0.5, openUp: screenY > 0.55 };
 });
+
+// Picking a spot while zoomed in brings it to the middle of the frame. Zoomed
+// out the whole map is already on screen; zoomed in, the spot you picked from
+// the list can be anywhere, including off the edge with its popover.
+watch(
+  () => props.activeSpot?.key,
+  () => {
+    const at = props.activeSpot ? canvasPercent(props.activeSpot.point) : null;
+    const width = boardWidth.value;
+    if (!at || zoom.value <= MIN_ZOOM || !width) {
+      return;
+    }
+    easeZoom(() => {
+      panX.value = -(at.left / 100 - 0.5) * width * zoom.value;
+      panY.value = -(at.top / 100 - 0.5) * width * zoom.value;
+      clampPan();
+    });
+  },
+);
 
 const activeId = computed(() => props.hoveredId ?? props.selectedId ?? null);
 
@@ -1582,7 +1659,7 @@ const orderedMarkers = computed(() => {
             :style="{
               left: `${spot.left}%`,
               top: `${spot.top}%`,
-              transform: `translate(-50%, -50%) scale(${ink})`,
+              transform: `translate(-50%, -50%) scale(${ink}) translateY(${spot.shift}px)`,
             }"
             @pointerdown.stop
             @click.stop="emit('select-spot', spot.key)"
@@ -1628,7 +1705,9 @@ const orderedMarkers = computed(() => {
                 :lineups="lineups"
                 :total="activeSpot!.count"
                 :hovered-id="hoveredId"
+                :selected-id="selectedId"
                 @hover="(id) => emit('hover', id)"
+                @select="(id) => emit('select', id)"
                 @open="(id) => emit('open', id)"
                 @close="emit('select-spot', null)"
               />

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useRestoredRefs } from "~/composables/useRestoredState";
 import { onBeforeUnmount, ref, watch } from "vue";
 import gql from "graphql-tag";
 import { useApolloClient } from "@vue/apollo-composable";
@@ -85,6 +86,8 @@ const TEAM_MATCH_STATS_QUERY = gql`
 
 const page = ref(1);
 const perPage = usePerPage("team-matches");
+// Back to the team lands on the same page of its matches.
+useRestoredRefs("team-matches", { page });
 const matches = ref<any[]>([]);
 const total = ref(0);
 const statsByMatch = ref(new Map<string, any>());

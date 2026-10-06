@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { useRestoredRefs } from "~/composables/useRestoredState";
 import gql from "graphql-tag";
 import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
@@ -87,6 +88,8 @@ const loading = ref(true);
 const page = ref(1);
 const perPage = usePerPage("tournament-leaderboard");
 const sortBy = ref("rating");
+// Back to the tournament lands on the same page and sort of its leaderboard.
+useRestoredRefs("tournament-stats", { page, sortBy });
 
 const offset = computed(() => (page.value - 1) * perPage.value);
 

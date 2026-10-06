@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useRestoredRefs } from "~/composables/useRestoredState";
 import { ref, computed, watch } from "vue";
 import RegistrationReviewTable from "~/components/league/RegistrationReviewTable.vue";
 import Pagination from "~/components/Pagination.vue";
@@ -56,6 +57,8 @@ const search = ref("");
 const statusFilter = ref<string>(reviewMode.value ? "Pending" : "Approved");
 const page = ref(1);
 const perPage = usePerPage("league-registrations");
+// Back to the season lands on the same filters and page of its registrations.
+useRestoredRefs("league-registrations", { search, statusFilter, page });
 
 const pendingCount = computed(
   () => (props.teamSeasons ?? []).filter((ts: any) => ts.status === "Pending").length,

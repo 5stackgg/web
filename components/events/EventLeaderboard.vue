@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useRestoredRefs } from "~/composables/useRestoredState";
+import { isRestoringHistory } from "~/composables/useScrollRestoration";
 import gql from "graphql-tag";
 import { ref, computed, watch, onMounted } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
@@ -114,6 +116,8 @@ const { client: apolloClient } = useApolloClient();
 const category = ref<Category>("rating");
 const page = ref(1);
 const perPage = usePerPage("event-leaderboard");
+// Back to the event lands on the same category and page of its leaderboard.
+useRestoredRefs("event-leaderboard", { category, page });
 const entries = ref<LeaderboardEntry[]>([]);
 const total = ref(0);
 const loading = ref(true);
@@ -217,7 +221,11 @@ async function fetchLeaderboard() {
 }
 
 function resetAndFetch() {
-  page.value = 1;
+  // Not while back/forward restores the page: that is not the user changing
+  // anything.
+  if (!isRestoringHistory()) {
+    page.value = 1;
+  }
   fetchLeaderboard();
 }
 

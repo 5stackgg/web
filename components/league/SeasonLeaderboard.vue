@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useRestoredRefs } from "~/composables/useRestoredState";
+import { isRestoringHistory } from "~/composables/useScrollRestoration";
 import gql from "graphql-tag";
 import { ref, computed, watch, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
@@ -153,6 +155,8 @@ const page = ref(1);
 const perPage = usePerPage("league-leaderboard");
 const sortBy = ref<SortField | null>(null);
 const sortDir = ref<"asc" | "desc">("desc");
+// Back to the season lands on the same page and sort of its leaderboard.
+useRestoredRefs("league-leaderboard", { page, sortBy, sortDir });
 const offset = computed(() => (page.value - 1) * perPage.value);
 
 const orderBy = computed(() =>
@@ -270,9 +274,13 @@ async function fetchLeaderboard() {
 }
 
 watch(category, () => {
-  sortBy.value = null;
-  sortDir.value = "desc";
-  page.value = 1;
+  // A category settling while back/forward restores the page is not the user
+  // changing it.
+  if (!isRestoringHistory()) {
+    sortBy.value = null;
+    sortDir.value = "desc";
+    page.value = 1;
+  }
   fetchLeaderboard();
 });
 

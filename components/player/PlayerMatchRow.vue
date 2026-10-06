@@ -67,7 +67,7 @@ const wideGrid =
            source (VALVE/FACEIT) tucked into the pill's top-right corner as a
            sub-badge so it reads as "comp, but from Valve" without competing
            for column width. -->
-      <div class="flex min-w-0 items-center justify-center">
+      <div class="flex min-w-0 items-center justify-start">
         <span
           v-if="matchTypeLabel"
           class="relative inline-flex max-w-full items-center rounded border border-border/70 bg-muted/40 px-1.5 py-0.5 font-mono text-[0.58rem] font-semibold uppercase tracking-[0.08em] text-foreground/80"

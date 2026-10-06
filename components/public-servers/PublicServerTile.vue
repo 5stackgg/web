@@ -44,6 +44,7 @@ const fillPercent = computed(() =>
         {{ cleanMapName(server.map) }}
       </span>
       <span
+        v-if="server.ping !== undefined"
         class="absolute right-2.5 top-2 rounded-full bg-background/65 px-2 py-0.5"
       >
         <PublicServerPing :ping="server.ping" :tier="server.tier" />

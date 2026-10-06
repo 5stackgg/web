@@ -4611,7 +4611,6 @@
       "manage": "Administrer",
       "all_modes": "Alle",
       "no_mode": "Vanilla",
-      "summary": "{playing} spiller · {awake} vågne · {hibernating} i dvale",
       "touch_notice": "For at deltage skal du have CS2 på din pc. Kopiér serverens connect-kommando, eller åbn siden på din computer.",
       "on_lan_title": "På dette LAN",
       "on_lan_description": "Du er på stedet, så dette er de nærmeste servere.",

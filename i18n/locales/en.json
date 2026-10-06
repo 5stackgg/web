@@ -4613,7 +4613,6 @@
       "manage": "Manage",
       "all_modes": "All",
       "no_mode": "Vanilla",
-      "summary": "{playing} playing · {awake} awake · {hibernating} hibernating",
       "touch_notice": "Joining needs CS2 on your PC. Copy a server's connect command, or open this page on your computer.",
       "on_lan_title": "On this LAN",
       "on_lan_description": "You're on site, so these are the closest servers.",

@@ -4,6 +4,7 @@ import type { PingTier } from "~/utilities/publicServers";
 // The tier is a small dot rather than a coloured pill: on a page of servers
 // the number matters, and a column of green and amber pills drowns it.
 // The colour still comes from the matchmaking readout's --latency-tier.
+// Without a reading (the probe needs a signed-in player) it renders nothing.
 defineProps<{
   ping?: number;
   tier: PingTier;
@@ -12,6 +13,7 @@ defineProps<{
 
 <template>
   <span
+    v-if="ping !== undefined"
     class="inline-flex items-center justify-end gap-1.5 font-mono text-[0.8rem] tabular-nums text-foreground/85"
   >
     <span
@@ -21,7 +23,6 @@ defineProps<{
       ]"
       aria-hidden="true"
     />
-    <template v-if="ping !== undefined">{{ ping }}ms</template>
-    <span v-else class="text-muted-foreground">—</span>
+    {{ ping }}ms
   </span>
 </template>

@@ -4611,7 +4611,6 @@
       "manage": "管理",
       "all_modes": "すべて",
       "no_mode": "バニラ",
-      "summary": "プレイ中 {playing} · 稼働中 {awake} · 休止中 {hibernating}",
       "touch_notice": "参加するには PC の CS2 が必要です。サーバーの接続コマンドをコピーするか、このページをパソコンで開いてください。",
       "on_lan_title": "この LAN",
       "on_lan_description": "現地にいるため、これらが最も近いサーバーです。",

@@ -66,25 +66,8 @@ const listColumns =
         </SectionEmpty>
 
         <div v-else key="servers" class="flex flex-col gap-8">
-          <!-- Pulse line, in place of a page header -->
-          <div class="flex flex-wrap items-center justify-between gap-3">
-            <p class="font-mono text-xs text-muted-foreground">
-              <i18n-t keypath="pages.public_servers.summary" scope="global">
-                <template #playing>
-                  <span class="text-foreground">{{ totals.playing }}</span>
-                </template>
-                <template #awake>
-                  <span class="text-foreground">{{ totals.awake }}</span>
-                </template>
-                <template #hibernating>{{ totals.hibernating }}</template>
-              </i18n-t>
-            </p>
-            <Button
-              v-if="canSetup"
-              as-child
-              size="sm"
-              :class="listCreateButtonClasses"
-            >
+          <div v-if="canSetup" class="flex justify-end">
+            <Button as-child size="sm" :class="listCreateButtonClasses">
               <NuxtLink
                 to="/dedicated-servers/create"
                 :title="$t('pages.public_servers.setup_public_server')"
@@ -148,12 +131,19 @@ const listColumns =
               {{ $t("pages.public_servers.online_title") }}
             </h2>
 
-            <!-- Featured pair: an admin's pins, then the busiest -->
-            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <!-- Featured pair: an admin's pins, then the busiest. A lone
+                 server gets the whole row. -->
+            <div
+              :class="[
+                'grid grid-cols-1 gap-4',
+                layout.featured.length > 1 ? 'md:grid-cols-2' : '',
+              ]"
+            >
               <PublicServerFeatured
                 v-for="server of layout.featured"
                 :key="server.id"
                 :server="server"
+                :solo="onlineServers.length === 1"
                 :manage-to="manageTo(server.id)"
                 :can-feature="canSetup"
                 @toggle-featured="toggleFeatured(server)"
@@ -207,7 +197,7 @@ const listColumns =
                   $t("pages.public_servers.players")
                 }}</span>
                 <span class="text-right">{{
-                  $t("pages.public_servers.columns.ping")
+                  hasPing ? $t("pages.public_servers.columns.ping") : ""
                 }}</span>
                 <span></span>
               </div>
@@ -403,13 +393,10 @@ export default {
     layout() {
       return showcase(this.onlineServers);
     },
-    totals(): { playing: number; awake: number; hibernating: number } {
-      const visible = this.onLan ? this.allServers : this.onlineServers;
-      return {
-        playing: visible.reduce((sum, server) => sum + server.players, 0),
-        awake: visible.filter((server) => !server.hibernating).length,
-        hibernating: visible.filter((server) => server.hibernating).length,
-      };
+    // Ping needs the matchmaking probe, which only runs for signed-in
+    // players; without a reading anywhere the column has no heading.
+    hasPing(): boolean {
+      return this.allServers.some((server) => server.ping !== undefined);
     },
     // Built from the listed servers, so the list never offers a mode nobody
     // is running.

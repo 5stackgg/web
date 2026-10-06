@@ -4611,7 +4611,6 @@
       "manage": "Yönet",
       "all_modes": "Tümü",
       "no_mode": "Vanilla",
-      "summary": "{playing} oynuyor · {awake} aktif · {hibernating} uykuda",
       "touch_notice": "Katılmak için bilgisayarında CS2 gerekir. Sunucunun bağlantı komutunu kopyala veya bu sayfayı bilgisayarında aç.",
       "on_lan_title": "Bu LAN'da",
       "on_lan_description": "Mekândasın, bu yüzden en yakın sunucular bunlar.",

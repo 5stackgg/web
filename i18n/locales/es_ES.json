@@ -4611,7 +4611,6 @@
       "manage": "Gestionar",
       "all_modes": "Todos",
       "no_mode": "Vanilla",
-      "summary": "{playing} jugando · {awake} activos · {hibernating} en hibernación",
       "touch_notice": "Para unirte necesitas CS2 en tu PC. Copia el comando de conexión de un servidor o abre esta página en tu ordenador.",
       "on_lan_title": "En esta LAN",
       "on_lan_description": "Estás en el lugar, así que estos son los servidores más cercanos.",

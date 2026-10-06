@@ -4611,7 +4611,6 @@
       "manage": "Zarządzaj",
       "all_modes": "Wszystkie",
       "no_mode": "Vanilla",
-      "summary": "{playing} gra · {awake} aktywne · {hibernating} uśpione",
       "touch_notice": "Aby dołączyć, potrzebujesz CS2 na komputerze. Skopiuj polecenie connect serwera albo otwórz tę stronę na komputerze.",
       "on_lan_title": "W tym LAN-ie",
       "on_lan_description": "Jesteś na miejscu, więc to najbliższe serwery.",

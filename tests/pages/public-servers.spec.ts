@@ -177,4 +177,20 @@ describe("public servers layout", () => {
     const asAdmin = await mountAs("administrator", servers(1));
     expect(asAdmin.find("button[aria-pressed]").exists()).toBe(true);
   });
+
+  it("gives a lone server the whole showcase without a busiest label", async () => {
+    const wrapper = await mountAs("user", servers(1, { featured: false }));
+    const featured = cards(wrapper, "featured");
+
+    expect(featured).toHaveLength(1);
+    expect(featured[0].classes()).toContain("md:min-h-[26rem]");
+    expect(wrapper.text()).not.toContain("Most players");
+  });
+
+  it("shows no ping or player summary without a latency reading", async () => {
+    const wrapper = await mountAs("user", servers(3));
+
+    expect(wrapper.text()).not.toMatch(/\d+ms/);
+    expect(wrapper.text()).not.toContain("playing");
+  });
 });

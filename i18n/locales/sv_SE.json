@@ -4611,7 +4611,6 @@
       "manage": "Hantera",
       "all_modes": "Alla",
       "no_mode": "Vanilla",
-      "summary": "{playing} spelar · {awake} vakna · {hibernating} i viloläge",
       "touch_notice": "För att gå med behöver du CS2 på din dator. Kopiera serverns connect-kommando eller öppna sidan på din dator.",
       "on_lan_title": "På detta LAN",
       "on_lan_description": "Du är på plats, så det här är de närmaste servrarna.",

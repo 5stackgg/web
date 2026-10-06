@@ -4611,7 +4611,6 @@
       "manage": "管理",
       "all_modes": "全部",
       "no_mode": "原版",
-      "summary": "{playing} 人在玩 · {awake} 台运行中 · {hibernating} 台休眠中",
       "touch_notice": "加入需要电脑上的 CS2。请复制服务器的连接命令，或在电脑上打开此页面。",
       "on_lan_title": "本局域网",
       "on_lan_description": "你在现场，这些是离你最近的服务器。",

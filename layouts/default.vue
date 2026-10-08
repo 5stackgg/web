@@ -73,7 +73,10 @@ const containContent = computed(() => {
     case "news-manage-id":
     case "matches-id":
     // Board on one side, list on the other: pinned to 7xl the tab strip wrapped
-    // and the map lost the width it needs to stay square and readable.
+    // and the map lost the width it needs to stay square and readable. The maps
+    // index shares the map page's shell and has to be given the same room, or
+    // the rail the two share sits in a different place on each.
+    case "utility":
     case "utility-map":
     case "map-pools":
     case "game-server-nodes":

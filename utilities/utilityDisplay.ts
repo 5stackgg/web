@@ -12,6 +12,7 @@ import type {
   UtilityType,
 } from "~/types/utility";
 import { normalizeMapName } from "~/utilities/mapAssets";
+import { clipDownloadUrl } from "~/utilities/clipDownloadName";
 
 export type UtilityScope =
   | "public"
@@ -228,6 +229,71 @@ export const UTILITY_PLAYBOOK_MIN_OFFSET_SECONDS = 1;
 export const UTILITY_PLAYBOOK_OFFSET_STEP_SECONDS = 0.5;
 
 /**
+ * How long a lineup's grenade is in the air, in seconds. The scene flies them
+ * by it, the play clock ends on it, and the editor times throws from it.
+ */
+export function executeFlightSeconds(
+  lineup: Pick<UtilityLineup, "flight_time_ms">,
+) {
+  const recorded = Number(lineup.flight_time_ms ?? 0);
+  return (recorded > 0 ? recorded : 2000) / 1000;
+}
+
+/** How long after the smokes are down the rest of an execute lands. */
+export const UTILITY_EXECUTE_FOLLOW_UP_SECONDS = 3;
+
+/**
+ * When each step should be thrown so the execute lands together, as seconds
+ * relative to the moment the smokes land. Every flight time is known, so the
+ * throws can be worked back from the landings: the smokes all land on one
+ * moment, and everything else -- flashes, mollies, HEs -- a few seconds later,
+ * once the smokes have bloomed and the site is cut off. A lineup thrown again
+ * lands that much after its last one.
+ *
+ * Null for a step whose lineup is not known: there is no flight to work from.
+ */
+export function utilityLandingOffsets(
+  steps: Array<{
+    lineup: Pick<UtilityLineup, "id" | "utility_type" | "flight_time_ms"> | null;
+  }>,
+): Array<number | null> {
+  const smokes = steps.some((step) => step.lineup?.utility_type === "Smoke");
+  const thrown = new Map<string, number>();
+  return steps.map((step) => {
+    const lineup = step.lineup;
+    if (!lineup) {
+      return null;
+    }
+    const again = thrown.get(lineup.id) ?? 0;
+    thrown.set(lineup.id, again + 1);
+    const lands =
+      (smokes && lineup.utility_type !== "Smoke"
+        ? UTILITY_EXECUTE_FOLLOW_UP_SECONDS
+        : 0) +
+      again * UTILITY_EXECUTE_FOLLOW_UP_SECONDS;
+    return lands - executeFlightSeconds(lineup);
+  });
+}
+
+/** The same, as clock times: the earliest throw on the first second. */
+export function utilityLandTogether(
+  steps: Parameters<typeof utilityLandingOffsets>[0],
+): Array<number | null> {
+  const offsets = utilityLandingOffsets(steps);
+  const known = offsets.filter((value): value is number => value !== null);
+  if (!known.length) {
+    return offsets;
+  }
+  const first = Math.min(...known);
+  return offsets.map((value) =>
+    value === null
+      ? null
+      : Math.round((value - first + UTILITY_PLAYBOOK_MIN_OFFSET_SECONDS) * 10) /
+        10,
+  );
+}
+
+/**
  * What one player can physically carry out of buy: two flashes, one of
  * everything else, four grenades in total. A step list handing the same player
  * five smokes is not an execute, it is five rounds of one.
@@ -337,6 +403,49 @@ export function utilityClipSource(
   // clip of it, and dropping an arbitrary imported link into a <video> element
   // just renders a broken player.
   return /\.(mp4|webm|mov)(\?|#|$)/i.test(url) ? url : null;
+}
+
+// How far an aim still is cropped in on its centre, where the render always
+// puts the crosshair. aim_close is already filmed at FOV 30, so it needs less.
+export function utilityStillZoom(kind: string): number {
+  if (kind === "aim_close") {
+    return 1.8;
+  }
+  if (kind === "aim_pin" || kind === "aim") {
+    return 2.2;
+  }
+  return 1;
+}
+
+// ASCII only: the clip worker sends this name back in Content-Disposition, and
+// a header cannot carry anything else.
+export function utilityClipFileName(
+  mapName: string | null | undefined,
+  name: string | null | undefined,
+): string {
+  const slug = [(mapName ?? "").replace(/^(de|cs)_/, ""), name ?? ""]
+    .join(" ")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80)
+    .replace(/-+$/, "");
+  return `${slug || "lineup"}.mp4`;
+}
+
+/**
+ * Only for a preview we rendered: an imported clip lives on somebody else's
+ * host, where the worker's `dl` does nothing and the link just navigates away.
+ */
+export function utilityClipDownload(
+  lineup: Pick<UtilityLineup, "preview_url" | "map_name" | "name">,
+): { href: string; name: string } | null {
+  const url = (lineup.preview_url ?? "").trim();
+  if (!url) {
+    return null;
+  }
+  const name = utilityClipFileName(lineup.map_name, lineup.name);
+  return { href: clipDownloadUrl(url, name), name };
 }
 
 /** The worse of the two axes, which is what decides whether we warn. */
@@ -642,6 +751,60 @@ export type UtilityPanelBoard = {
   onSelect?: (id: string | null) => void;
   onHover?: (id: string | null) => void;
   onSelectSegment?: (key: string) => void;
+};
+
+/**
+ * Where a lineup was opened from, when that is not the Lineups list: a meta
+ * spot, a collection, a step of an execute, the practice plan. The lineup's
+ * panel says so in one quiet line, and the plan adds why it queued it.
+ */
+export type UtilityLineupContext = {
+  /** One line under the name. May carry <b> for the thing it names. */
+  text?: string | null;
+  /** In place of "type · map" in the header: "Plan · 2 of 12". */
+  kicker?: string | null;
+  /** The plan's reason, as its tag, with the sentences behind it. */
+  reason?: { label: string; tone: string; lines: string[] } | null;
+  /** The plan can step to the next one in its queue. */
+  skippable?: boolean;
+};
+
+/**
+ * One button in the bar at the foot of the card. The bar is the one place a
+ * practice server is started, so it is also where the thing you are looking
+ * at is sent to one -- and where a view's own main action sits, next to the
+ * bar instead of a card's height away at the top.
+ */
+export type UtilityBarAction =
+  // "Load me in" for a saved lineup or a mined spot. The button hides itself
+  // until there is a server to load into.
+  | { kind: "lineup"; lineup: UtilityLineup }
+  | { kind: "spot"; spot: UtilityMetaSpot; name: string }
+  | {
+      kind: "run";
+      key: string;
+      label: string;
+      run: () => void | Promise<void>;
+      // The second of two answers: outlined beside the amber one.
+      quiet?: boolean;
+      disabled?: boolean;
+      loading?: boolean;
+    };
+
+/** What whatever is open over the card asks the bar to offer. */
+export type UtilityBarOffer = {
+  actions: UtilityBarAction[];
+  // What a server started from here should have ready.
+  target?: UtilityPracticeTarget | null;
+  // In place of the bar's own title while an action is on offer.
+  title?: string | null;
+};
+
+/** What to have ready when the page opens the practice server from a tab. */
+export type UtilityPracticeTarget = {
+  lineupId?: string | null;
+  playbookId?: string | null;
+  collectionId?: string | null;
 };
 
 export const UTILITY_SIGHTLINE_MAX_PAIRS = 6;

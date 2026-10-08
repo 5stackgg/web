@@ -607,7 +607,9 @@ const mobileSheet = {
 const dockButtonClass =
   "grid size-8 place-items-center rounded-md text-zinc-500 transition-colors hover:bg-white/[0.06] hover:text-zinc-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]";
 
-// Mobile: swipe right to close
+// Mobile: swipe right to close. Bound to the whole hub, the way the left nav
+// binds its own: the dock sits under the thumb, and a swipe that started on it
+// used to do nothing.
 const swipeStartX = ref(0);
 const swipeStartY = ref(0);
 function onHubTouchStart(e: TouchEvent) {
@@ -615,12 +617,27 @@ function onHubTouchStart(e: TouchEvent) {
   swipeStartX.value = e.touches[0].clientX;
   swipeStartY.value = e.touches[0].clientY;
 }
+// A strip that scrolls sideways (chat attachments, participants) owns a
+// sideways drag that starts on it.
+function scrollsSideways(target: EventTarget | null) {
+  let el = target instanceof Element ? target : null;
+  for (; el && el !== hubLayerRef.value; el = el.parentElement) {
+    if (
+      el.scrollWidth > el.clientWidth &&
+      /auto|scroll/.test(getComputedStyle(el).overflowX)
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
 function onHubTouchEnd(e: TouchEvent) {
   if (!e.changedTouches[0] || !isMobile.value) return;
   const deltaX = e.changedTouches[0].clientX - swipeStartX.value;
   const deltaY = e.changedTouches[0].clientY - swipeStartY.value;
   if (deltaX < 50) return; // need swipe right (positive deltaX)
   if (Math.abs(deltaY) > Math.abs(deltaX) * 1.2) return; // prefer horizontal
+  if (scrollsSideways(e.target)) return;
   setRightSidebarOpen(false);
 }
 </script>
@@ -647,6 +664,8 @@ function onHubTouchEnd(e: TouchEvent) {
       @mouseenter="onMouseEnter"
       @mouseleave="onMouseLeave"
       @focusout="onFocusOut"
+      @touchstart.passive="onHubTouchStart"
+      @touchend="onHubTouchEnd"
     >
       <!-- The open app, as a card floating beside the dock. On phones the
            sheet carries the motion, so the card stays put while it slides. -->
@@ -663,8 +682,6 @@ function onHubTouchEnd(e: TouchEvent) {
           ref="hubCardRef"
           class="flex min-w-0 flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-sidebar shadow-[0_24px_48px_-16px_rgba(0,0,0,0.85)]"
           :class="isMobile ? 'flex-1' : 'w-[352px]'"
-          @touchstart.passive="onHubTouchStart"
-          @touchend="onHubTouchEnd"
         >
           <div class="relative min-h-0 flex-1">
             <!-- Switching apps is instant: with hover switching it happens

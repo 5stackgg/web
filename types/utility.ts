@@ -53,6 +53,26 @@ export type UtilityTrajectoryPoint = {
   t?: number;
 };
 
+/**
+ * One 64Hz tick of the run-up the practice plugin recorded before a release.
+ * `t` is ms relative to the release, so the last sample is 0; `buttons` is
+ * CS2's IN_* bitmask held on that tick.
+ */
+export type UtilityApproachSample = {
+  t: number;
+  x: number;
+  y: number;
+  z: number;
+  vx: number;
+  vy: number;
+  vz: number;
+  pitch: number;
+  yaw: number;
+  buttons: number;
+  on_ground: boolean;
+  ducked: boolean;
+};
+
 export type UtilityLineup = {
   id: string;
   map_name: string;
@@ -112,6 +132,8 @@ export type UtilityLineup = {
    */
   preview_url?: string | null;
   preview_thumbnail_url?: string | null;
+  /** Stills the render cut from its clip, kind -> url (stance, aim, aim_close, landing). */
+  preview_stills_url?: Record<string, string> | null;
   preview_duration_ms?: number | null;
   preview_rendered_at?: string | null;
   verified_at: string | null;
@@ -201,6 +223,55 @@ export type UtilityCollection = {
   items_aggregate?: {
     aggregate?: { count?: number | null } | null;
   } | null;
+  // Only on the Collections tab's read; the pickers ask for less.
+  map_name?: string | null;
+  visibility?: UtilityVisibility;
+  team_id?: string | null;
+  updated_at?: string | null;
+  owner?: { steam_id: string; name: string } | null;
+  items?: UtilityCollectionItem[] | null;
+};
+
+/**
+ * A collection's lineup, as light as the tab's list can get away with: enough
+ * to count it by map and type and to draw it on the board. Null when the
+ * caller cannot see the lineup the item points at.
+ */
+export type UtilityCollectionLineupRef = Pick<
+  UtilityLineup,
+  | "id"
+  | "name"
+  | "map_name"
+  | "utility_type"
+  | "archived_at"
+  | "origin_x"
+  | "origin_y"
+  | "origin_z"
+  | "eye_z"
+  | "land_x"
+  | "land_y"
+  | "land_z"
+  | "trajectory_preview"
+>;
+
+export type UtilityCollectionItem = {
+  utility_lineup_id: string;
+  utility_lineup?: UtilityCollectionLineupRef | null;
+};
+
+/** A collection as the Collections tab lists it, read against one map. */
+export type UtilityCollectionCard = {
+  collection: UtilityCollection;
+  // The caller owns it. `can_edit` is wider: a team's admins edit a team
+  // collection, but only its owner may delete it or change who sees it.
+  mine: boolean;
+  /** Its lineups on the map being looked at, in the collection's order. */
+  here: UtilityCollectionLineupRef[];
+  /** Every lineup in it the caller can see, on any map. */
+  total: number;
+  counts: Partial<Record<UtilityType, number>>;
+  /** The other maps it reaches, as map names. */
+  otherMaps: string[];
 };
 
 /** One player's drill record against one lineup. Streaks are API-written. */

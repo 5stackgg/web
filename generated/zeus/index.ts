@@ -5574,6 +5574,8 @@ count?: [{	columns?: Array<ValueTypes["db_backups_select_column"]> | undefined |
 }>;
 	/** columns and relationships of "direct_conversations" */
 ["direct_conversations"]: AliasType<{
+	accepted_at?:boolean | `@${string}`,
+	declined_at?:boolean | `@${string}`,
 	is_open?:boolean | `@${string}`,
 	last_message_at?:boolean | `@${string}`,
 	position?:boolean | `@${string}`,
@@ -5613,6 +5615,8 @@ count?: [{	columns?: Array<ValueTypes["direct_conversations_select_column"]> | u
 	_and?: Array<ValueTypes["direct_conversations_bool_exp"]> | undefined | null | Variable<any, string>,
 	_not?: ValueTypes["direct_conversations_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["direct_conversations_bool_exp"]> | undefined | null | Variable<any, string>,
+	accepted_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	declined_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_open?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	last_message_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	position?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -5628,6 +5632,8 @@ count?: [{	columns?: Array<ValueTypes["direct_conversations_select_column"]> | u
 };
 	/** input type for inserting data into table "direct_conversations" */
 ["direct_conversations_insert_input"]: {
+	accepted_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	declined_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	is_open?: boolean | undefined | null | Variable<any, string>,
 	last_message_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	position?: number | undefined | null | Variable<any, string>,
@@ -5636,6 +5642,8 @@ count?: [{	columns?: Array<ValueTypes["direct_conversations_select_column"]> | u
 };
 	/** aggregate max on columns */
 ["direct_conversations_max_fields"]: AliasType<{
+	accepted_at?:boolean | `@${string}`,
+	declined_at?:boolean | `@${string}`,
 	last_message_at?:boolean | `@${string}`,
 	position?:boolean | `@${string}`,
 	room_id?:boolean | `@${string}`,
@@ -5644,6 +5652,8 @@ count?: [{	columns?: Array<ValueTypes["direct_conversations_select_column"]> | u
 }>;
 	/** aggregate min on columns */
 ["direct_conversations_min_fields"]: AliasType<{
+	accepted_at?:boolean | `@${string}`,
+	declined_at?:boolean | `@${string}`,
 	last_message_at?:boolean | `@${string}`,
 	position?:boolean | `@${string}`,
 	room_id?:boolean | `@${string}`,
@@ -5666,6 +5676,8 @@ count?: [{	columns?: Array<ValueTypes["direct_conversations_select_column"]> | u
 };
 	/** Ordering options when selecting data from "direct_conversations". */
 ["direct_conversations_order_by"]: {
+	accepted_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	declined_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_open?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	last_message_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	position?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -5681,6 +5693,8 @@ count?: [{	columns?: Array<ValueTypes["direct_conversations_select_column"]> | u
 ["direct_conversations_select_column"]:direct_conversations_select_column;
 	/** input type for updating data in table "direct_conversations" */
 ["direct_conversations_set_input"]: {
+	accepted_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	declined_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	is_open?: boolean | undefined | null | Variable<any, string>,
 	last_message_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	position?: number | undefined | null | Variable<any, string>,
@@ -5714,6 +5728,8 @@ count?: [{	columns?: Array<ValueTypes["direct_conversations_select_column"]> | u
 };
 	/** Initial value of the column from where the streaming should start */
 ["direct_conversations_stream_cursor_value_input"]: {
+	accepted_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	declined_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	is_open?: boolean | undefined | null | Variable<any, string>,
 	last_message_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	position?: number | undefined | null | Variable<any, string>,
@@ -49725,6 +49741,7 @@ aim_weapon_stats_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["player_aim_weapon_stats_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["player_aim_weapon_stats_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_aim_weapon_stats_aggregate"]],
+	allow_message_requests?:boolean | `@${string}`,
 assists?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["player_assists_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -50329,6 +50346,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	abandoned_matches_aggregate?: ValueTypes["abandoned_matches_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	aim_weapon_stats?: ValueTypes["player_aim_weapon_stats_bool_exp"] | undefined | null | Variable<any, string>,
 	aim_weapon_stats_aggregate?: ValueTypes["player_aim_weapon_stats_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	allow_message_requests?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	assists?: ValueTypes["player_assists_bool_exp"] | undefined | null | Variable<any, string>,
 	assists_aggregate?: ValueTypes["player_assists_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	assited_by_players?: ValueTypes["player_assists_bool_exp"] | undefined | null | Variable<any, string>,
@@ -50479,6 +50497,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 ["players_insert_input"]: {
 	abandoned_matches?: ValueTypes["abandoned_matches_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	aim_weapon_stats?: ValueTypes["player_aim_weapon_stats_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	allow_message_requests?: boolean | undefined | null | Variable<any, string>,
 	assists?: ValueTypes["player_assists_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	assited_by_players?: ValueTypes["player_assists_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	avatar_url?: string | undefined | null | Variable<any, string>,
@@ -50691,6 +50710,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 ["players_order_by"]: {
 	abandoned_matches_aggregate?: ValueTypes["abandoned_matches_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	aim_weapon_stats_aggregate?: ValueTypes["player_aim_weapon_stats_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	allow_message_requests?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	assists_aggregate?: ValueTypes["player_assists_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	assited_by_players_aggregate?: ValueTypes["player_assists_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	avatar_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -50796,6 +50816,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 ["players_select_column"]:players_select_column;
 	/** input type for updating data in table "players" */
 ["players_set_input"]: {
+	allow_message_requests?: boolean | undefined | null | Variable<any, string>,
 	avatar_url?: string | undefined | null | Variable<any, string>,
 	country?: string | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -50936,6 +50957,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 };
 	/** Initial value of the column from where the streaming should start */
 ["players_stream_cursor_value_input"]: {
+	allow_message_requests?: boolean | undefined | null | Variable<any, string>,
 	avatar_url?: string | undefined | null | Variable<any, string>,
 	country?: string | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -57709,6 +57731,7 @@ access_players_aggregate?: [{	/** distinct select on columns */
 	/** An object relationship */
 	current_match?:ValueTypes["matches"],
 	enabled?:boolean | `@${string}`,
+	featured?:boolean | `@${string}`,
 	game?:boolean | `@${string}`,
 	/** An object relationship */
 	game_mode?:ValueTypes["game_modes"],
@@ -57716,7 +57739,6 @@ access_players_aggregate?: [{	/** distinct select on columns */
 	/** An object relationship */
 	game_server_node?:ValueTypes["game_server_nodes"],
 	game_server_node_id?:boolean | `@${string}`,
-	featured?:boolean | `@${string}`,
 	hibernating?:boolean | `@${string}`,
 	host?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
@@ -57907,12 +57929,12 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	connection_string?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	current_match?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
 	enabled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	featured?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	game?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	game_mode?: ValueTypes["game_modes_bool_exp"] | undefined | null | Variable<any, string>,
 	game_mode_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	game_server_node?: ValueTypes["game_server_nodes_bool_exp"] | undefined | null | Variable<any, string>,
 	game_server_node_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
-	featured?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	hibernating?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	host?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -57982,12 +58004,12 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	connected?: boolean | undefined | null | Variable<any, string>,
 	current_match?: ValueTypes["matches_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
+	featured?: boolean | undefined | null | Variable<any, string>,
 	game?: string | undefined | null | Variable<any, string>,
 	game_mode?: ValueTypes["game_modes_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	game_mode_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	game_server_node?: ValueTypes["game_server_nodes_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	game_server_node_id?: string | undefined | null | Variable<any, string>,
-	featured?: boolean | undefined | null | Variable<any, string>,
 	hibernating?: boolean | undefined | null | Variable<any, string>,
 	host?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -58168,12 +58190,12 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	connection_string?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	current_match?: ValueTypes["matches_order_by"] | undefined | null | Variable<any, string>,
 	enabled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	featured?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	game?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	game_mode?: ValueTypes["game_modes_order_by"] | undefined | null | Variable<any, string>,
 	game_mode_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	game_server_node?: ValueTypes["game_server_nodes_order_by"] | undefined | null | Variable<any, string>,
 	game_server_node_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	featured?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	hibernating?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	host?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -58229,10 +58251,10 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	connect_password?: string | undefined | null | Variable<any, string>,
 	connected?: boolean | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
+	featured?: boolean | undefined | null | Variable<any, string>,
 	game?: string | undefined | null | Variable<any, string>,
 	game_mode_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	game_server_node_id?: string | undefined | null | Variable<any, string>,
-	featured?: boolean | undefined | null | Variable<any, string>,
 	hibernating?: boolean | undefined | null | Variable<any, string>,
 	host?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -58314,10 +58336,10 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	connect_password?: string | undefined | null | Variable<any, string>,
 	connected?: boolean | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
+	featured?: boolean | undefined | null | Variable<any, string>,
 	game?: string | undefined | null | Variable<any, string>,
 	game_mode_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	game_server_node_id?: string | undefined | null | Variable<any, string>,
-	featured?: boolean | undefined | null | Variable<any, string>,
 	hibernating?: boolean | undefined | null | Variable<any, string>,
 	host?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -76611,6 +76633,8 @@ count?: [{	columns?: Array<ValueTypes["utility_lineup_votes_select_column"]> | u
 	/** columns and relationships of "utility_lineups" */
 ["utility_lineups"]: AliasType<{
 	aim_tolerance?:boolean | `@${string}`,
+approach?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
 	archived_at?:boolean | `@${string}`,
 	/** An object relationship */
 	author?:ValueTypes["players"],
@@ -76684,6 +76708,10 @@ favorited_by_aggregate?: [{	/** distinct select on columns */
 	preview_duration_ms?:boolean | `@${string}`,
 	preview_file?:boolean | `@${string}`,
 	preview_rendered_at?:boolean | `@${string}`,
+preview_stills?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
+preview_stills_url?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
 	preview_thumbnail?:boolean | `@${string}`,
 	/** A computed field, executes function "utility_lineup_preview_thumbnail_url" */
 	preview_thumbnail_url?:boolean | `@${string}`,
@@ -76896,6 +76924,8 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 };
 	/** append existing jsonb value of filtered columns with new jsonb value */
 ["utility_lineups_append_input"]: {
+	approach?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	preview_stills?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	trajectory_preview?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
 };
 	/** input type for inserting array relation for remote table "utility_lineups" */
@@ -76979,6 +77009,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	_not?: ValueTypes["utility_lineups_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["utility_lineups_bool_exp"]> | undefined | null | Variable<any, string>,
 	aim_tolerance?: ValueTypes["float8_comparison_exp"] | undefined | null | Variable<any, string>,
+	approach?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
 	archived_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	author?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -77025,6 +77056,8 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	preview_duration_ms?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	preview_file?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	preview_rendered_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	preview_stills?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
+	preview_stills_url?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
 	preview_thumbnail?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	preview_thumbnail_url?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	preview_url?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -77070,14 +77103,20 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 ["utility_lineups_constraint"]:utility_lineups_constraint;
 	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 ["utility_lineups_delete_at_path_input"]: {
+	approach?: Array<string> | undefined | null | Variable<any, string>,
+	preview_stills?: Array<string> | undefined | null | Variable<any, string>,
 	trajectory_preview?: Array<string> | undefined | null | Variable<any, string>
 };
 	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
 ["utility_lineups_delete_elem_input"]: {
+	approach?: number | undefined | null | Variable<any, string>,
+	preview_stills?: number | undefined | null | Variable<any, string>,
 	trajectory_preview?: number | undefined | null | Variable<any, string>
 };
 	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
 ["utility_lineups_delete_key_input"]: {
+	approach?: string | undefined | null | Variable<any, string>,
+	preview_stills?: string | undefined | null | Variable<any, string>,
 	trajectory_preview?: string | undefined | null | Variable<any, string>
 };
 	/** input type for incrementing numeric columns in table "utility_lineups" */
@@ -77116,6 +77155,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	/** input type for inserting data into table "utility_lineups" */
 ["utility_lineups_insert_input"]: {
 	aim_tolerance?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
+	approach?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	archived_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	author?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
@@ -77154,6 +77194,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	preview_duration_ms?: number | undefined | null | Variable<any, string>,
 	preview_file?: string | undefined | null | Variable<any, string>,
 	preview_rendered_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	preview_stills?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	preview_thumbnail?: string | undefined | null | Variable<any, string>,
 	progress?: ValueTypes["utility_lineup_progress_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	public_requested_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -77462,6 +77503,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	/** Ordering options when selecting data from "utility_lineups". */
 ["utility_lineups_order_by"]: {
 	aim_tolerance?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	approach?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	archived_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	author?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -77506,6 +77548,8 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	preview_duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	preview_file?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	preview_rendered_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	preview_stills?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	preview_stills_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	preview_thumbnail?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	preview_thumbnail_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	preview_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -77549,6 +77593,8 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 };
 	/** prepend existing jsonb value of filtered columns with new jsonb value */
 ["utility_lineups_prepend_input"]: {
+	approach?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	preview_stills?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	trajectory_preview?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
 };
 	/** select columns of table "utility_lineups" */
@@ -77576,6 +77622,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	/** input type for updating data in table "utility_lineups" */
 ["utility_lineups_set_input"]: {
 	aim_tolerance?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
+	approach?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	archived_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	confidence?: string | undefined | null | Variable<any, string>,
@@ -77610,6 +77657,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	preview_duration_ms?: number | undefined | null | Variable<any, string>,
 	preview_file?: string | undefined | null | Variable<any, string>,
 	preview_rendered_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	preview_stills?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	preview_thumbnail?: string | undefined | null | Variable<any, string>,
 	public_requested_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	public_review_note?: string | undefined | null | Variable<any, string>,
@@ -77855,6 +77903,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	/** Initial value of the column from where the streaming should start */
 ["utility_lineups_stream_cursor_value_input"]: {
 	aim_tolerance?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
+	approach?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	archived_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	confidence?: string | undefined | null | Variable<any, string>,
@@ -77890,6 +77939,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	preview_duration_ms?: number | undefined | null | Variable<any, string>,
 	preview_file?: string | undefined | null | Variable<any, string>,
 	preview_rendered_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	preview_stills?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	preview_thumbnail?: string | undefined | null | Variable<any, string>,
 	public_requested_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	public_review_note?: string | undefined | null | Variable<any, string>,
@@ -94246,6 +94296,8 @@ count?: [{	columns?: Array<ResolverInputTypes["db_backups_select_column"]> | und
 }>;
 	/** columns and relationships of "direct_conversations" */
 ["direct_conversations"]: AliasType<{
+	accepted_at?:boolean | `@${string}`,
+	declined_at?:boolean | `@${string}`,
 	is_open?:boolean | `@${string}`,
 	last_message_at?:boolean | `@${string}`,
 	position?:boolean | `@${string}`,
@@ -94285,6 +94337,8 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_conversations_select_colum
 	_and?: Array<ResolverInputTypes["direct_conversations_bool_exp"]> | undefined | null,
 	_not?: ResolverInputTypes["direct_conversations_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["direct_conversations_bool_exp"]> | undefined | null,
+	accepted_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	declined_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	is_open?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	last_message_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	position?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
@@ -94300,6 +94354,8 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_conversations_select_colum
 };
 	/** input type for inserting data into table "direct_conversations" */
 ["direct_conversations_insert_input"]: {
+	accepted_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	declined_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	is_open?: boolean | undefined | null,
 	last_message_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	position?: number | undefined | null,
@@ -94308,6 +94364,8 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_conversations_select_colum
 };
 	/** aggregate max on columns */
 ["direct_conversations_max_fields"]: AliasType<{
+	accepted_at?:boolean | `@${string}`,
+	declined_at?:boolean | `@${string}`,
 	last_message_at?:boolean | `@${string}`,
 	position?:boolean | `@${string}`,
 	room_id?:boolean | `@${string}`,
@@ -94316,6 +94374,8 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_conversations_select_colum
 }>;
 	/** aggregate min on columns */
 ["direct_conversations_min_fields"]: AliasType<{
+	accepted_at?:boolean | `@${string}`,
+	declined_at?:boolean | `@${string}`,
 	last_message_at?:boolean | `@${string}`,
 	position?:boolean | `@${string}`,
 	room_id?:boolean | `@${string}`,
@@ -94338,6 +94398,8 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_conversations_select_colum
 };
 	/** Ordering options when selecting data from "direct_conversations". */
 ["direct_conversations_order_by"]: {
+	accepted_at?: ResolverInputTypes["order_by"] | undefined | null,
+	declined_at?: ResolverInputTypes["order_by"] | undefined | null,
 	is_open?: ResolverInputTypes["order_by"] | undefined | null,
 	last_message_at?: ResolverInputTypes["order_by"] | undefined | null,
 	position?: ResolverInputTypes["order_by"] | undefined | null,
@@ -94353,6 +94415,8 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_conversations_select_colum
 ["direct_conversations_select_column"]:direct_conversations_select_column;
 	/** input type for updating data in table "direct_conversations" */
 ["direct_conversations_set_input"]: {
+	accepted_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	declined_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	is_open?: boolean | undefined | null,
 	last_message_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	position?: number | undefined | null,
@@ -94386,6 +94450,8 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_conversations_select_colum
 };
 	/** Initial value of the column from where the streaming should start */
 ["direct_conversations_stream_cursor_value_input"]: {
+	accepted_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	declined_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	is_open?: boolean | undefined | null,
 	last_message_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	position?: number | undefined | null,
@@ -138397,6 +138463,7 @@ aim_weapon_stats_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["player_aim_weapon_stats_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["player_aim_weapon_stats_bool_exp"] | undefined | null},ResolverInputTypes["player_aim_weapon_stats_aggregate"]],
+	allow_message_requests?:boolean | `@${string}`,
 assists?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["player_assists_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -139001,6 +139068,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	abandoned_matches_aggregate?: ResolverInputTypes["abandoned_matches_aggregate_bool_exp"] | undefined | null,
 	aim_weapon_stats?: ResolverInputTypes["player_aim_weapon_stats_bool_exp"] | undefined | null,
 	aim_weapon_stats_aggregate?: ResolverInputTypes["player_aim_weapon_stats_aggregate_bool_exp"] | undefined | null,
+	allow_message_requests?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	assists?: ResolverInputTypes["player_assists_bool_exp"] | undefined | null,
 	assists_aggregate?: ResolverInputTypes["player_assists_aggregate_bool_exp"] | undefined | null,
 	assited_by_players?: ResolverInputTypes["player_assists_bool_exp"] | undefined | null,
@@ -139151,6 +139219,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 ["players_insert_input"]: {
 	abandoned_matches?: ResolverInputTypes["abandoned_matches_arr_rel_insert_input"] | undefined | null,
 	aim_weapon_stats?: ResolverInputTypes["player_aim_weapon_stats_arr_rel_insert_input"] | undefined | null,
+	allow_message_requests?: boolean | undefined | null,
 	assists?: ResolverInputTypes["player_assists_arr_rel_insert_input"] | undefined | null,
 	assited_by_players?: ResolverInputTypes["player_assists_arr_rel_insert_input"] | undefined | null,
 	avatar_url?: string | undefined | null,
@@ -139363,6 +139432,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 ["players_order_by"]: {
 	abandoned_matches_aggregate?: ResolverInputTypes["abandoned_matches_aggregate_order_by"] | undefined | null,
 	aim_weapon_stats_aggregate?: ResolverInputTypes["player_aim_weapon_stats_aggregate_order_by"] | undefined | null,
+	allow_message_requests?: ResolverInputTypes["order_by"] | undefined | null,
 	assists_aggregate?: ResolverInputTypes["player_assists_aggregate_order_by"] | undefined | null,
 	assited_by_players_aggregate?: ResolverInputTypes["player_assists_aggregate_order_by"] | undefined | null,
 	avatar_url?: ResolverInputTypes["order_by"] | undefined | null,
@@ -139468,6 +139538,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 ["players_select_column"]:players_select_column;
 	/** input type for updating data in table "players" */
 ["players_set_input"]: {
+	allow_message_requests?: boolean | undefined | null,
 	avatar_url?: string | undefined | null,
 	country?: string | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -139608,6 +139679,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 };
 	/** Initial value of the column from where the streaming should start */
 ["players_stream_cursor_value_input"]: {
+	allow_message_requests?: boolean | undefined | null,
 	avatar_url?: string | undefined | null,
 	country?: string | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -146381,6 +146453,7 @@ access_players_aggregate?: [{	/** distinct select on columns */
 	/** An object relationship */
 	current_match?:ResolverInputTypes["matches"],
 	enabled?:boolean | `@${string}`,
+	featured?:boolean | `@${string}`,
 	game?:boolean | `@${string}`,
 	/** An object relationship */
 	game_mode?:ResolverInputTypes["game_modes"],
@@ -146388,7 +146461,6 @@ access_players_aggregate?: [{	/** distinct select on columns */
 	/** An object relationship */
 	game_server_node?:ResolverInputTypes["game_server_nodes"],
 	game_server_node_id?:boolean | `@${string}`,
-	featured?:boolean | `@${string}`,
 	hibernating?:boolean | `@${string}`,
 	host?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
@@ -146579,12 +146651,12 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	connection_string?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	current_match?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
 	enabled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	featured?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	game?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	game_mode?: ResolverInputTypes["game_modes_bool_exp"] | undefined | null,
 	game_mode_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	game_server_node?: ResolverInputTypes["game_server_nodes_bool_exp"] | undefined | null,
 	game_server_node_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
-	featured?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	hibernating?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	host?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
@@ -146654,12 +146726,12 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	connected?: boolean | undefined | null,
 	current_match?: ResolverInputTypes["matches_obj_rel_insert_input"] | undefined | null,
 	enabled?: boolean | undefined | null,
+	featured?: boolean | undefined | null,
 	game?: string | undefined | null,
 	game_mode?: ResolverInputTypes["game_modes_obj_rel_insert_input"] | undefined | null,
 	game_mode_id?: ResolverInputTypes["uuid"] | undefined | null,
 	game_server_node?: ResolverInputTypes["game_server_nodes_obj_rel_insert_input"] | undefined | null,
 	game_server_node_id?: string | undefined | null,
-	featured?: boolean | undefined | null,
 	hibernating?: boolean | undefined | null,
 	host?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -146840,12 +146912,12 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	connection_string?: ResolverInputTypes["order_by"] | undefined | null,
 	current_match?: ResolverInputTypes["matches_order_by"] | undefined | null,
 	enabled?: ResolverInputTypes["order_by"] | undefined | null,
+	featured?: ResolverInputTypes["order_by"] | undefined | null,
 	game?: ResolverInputTypes["order_by"] | undefined | null,
 	game_mode?: ResolverInputTypes["game_modes_order_by"] | undefined | null,
 	game_mode_id?: ResolverInputTypes["order_by"] | undefined | null,
 	game_server_node?: ResolverInputTypes["game_server_nodes_order_by"] | undefined | null,
 	game_server_node_id?: ResolverInputTypes["order_by"] | undefined | null,
-	featured?: ResolverInputTypes["order_by"] | undefined | null,
 	hibernating?: ResolverInputTypes["order_by"] | undefined | null,
 	host?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -146901,10 +146973,10 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	connect_password?: string | undefined | null,
 	connected?: boolean | undefined | null,
 	enabled?: boolean | undefined | null,
+	featured?: boolean | undefined | null,
 	game?: string | undefined | null,
 	game_mode_id?: ResolverInputTypes["uuid"] | undefined | null,
 	game_server_node_id?: string | undefined | null,
-	featured?: boolean | undefined | null,
 	hibernating?: boolean | undefined | null,
 	host?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -146986,10 +147058,10 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	connect_password?: string | undefined | null,
 	connected?: boolean | undefined | null,
 	enabled?: boolean | undefined | null,
+	featured?: boolean | undefined | null,
 	game?: string | undefined | null,
 	game_mode_id?: ResolverInputTypes["uuid"] | undefined | null,
 	game_server_node_id?: string | undefined | null,
-	featured?: boolean | undefined | null,
 	hibernating?: boolean | undefined | null,
 	host?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -165283,6 +165355,8 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineup_votes_select_colum
 	/** columns and relationships of "utility_lineups" */
 ["utility_lineups"]: AliasType<{
 	aim_tolerance?:boolean | `@${string}`,
+approach?: [{	/** JSON select path */
+	path?: string | undefined | null},boolean | `@${string}`],
 	archived_at?:boolean | `@${string}`,
 	/** An object relationship */
 	author?:ResolverInputTypes["players"],
@@ -165356,6 +165430,10 @@ favorited_by_aggregate?: [{	/** distinct select on columns */
 	preview_duration_ms?:boolean | `@${string}`,
 	preview_file?:boolean | `@${string}`,
 	preview_rendered_at?:boolean | `@${string}`,
+preview_stills?: [{	/** JSON select path */
+	path?: string | undefined | null},boolean | `@${string}`],
+preview_stills_url?: [{	/** JSON select path */
+	path?: string | undefined | null},boolean | `@${string}`],
 	preview_thumbnail?:boolean | `@${string}`,
 	/** A computed field, executes function "utility_lineup_preview_thumbnail_url" */
 	preview_thumbnail_url?:boolean | `@${string}`,
@@ -165568,6 +165646,8 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 };
 	/** append existing jsonb value of filtered columns with new jsonb value */
 ["utility_lineups_append_input"]: {
+	approach?: ResolverInputTypes["jsonb"] | undefined | null,
+	preview_stills?: ResolverInputTypes["jsonb"] | undefined | null,
 	trajectory_preview?: ResolverInputTypes["jsonb"] | undefined | null
 };
 	/** input type for inserting array relation for remote table "utility_lineups" */
@@ -165651,6 +165731,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	_not?: ResolverInputTypes["utility_lineups_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["utility_lineups_bool_exp"]> | undefined | null,
 	aim_tolerance?: ResolverInputTypes["float8_comparison_exp"] | undefined | null,
+	approach?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
 	archived_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	author?: ResolverInputTypes["players_bool_exp"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
@@ -165697,6 +165778,8 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	preview_duration_ms?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	preview_file?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	preview_rendered_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	preview_stills?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
+	preview_stills_url?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
 	preview_thumbnail?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	preview_thumbnail_url?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	preview_url?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
@@ -165742,14 +165825,20 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 ["utility_lineups_constraint"]:utility_lineups_constraint;
 	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 ["utility_lineups_delete_at_path_input"]: {
+	approach?: Array<string> | undefined | null,
+	preview_stills?: Array<string> | undefined | null,
 	trajectory_preview?: Array<string> | undefined | null
 };
 	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
 ["utility_lineups_delete_elem_input"]: {
+	approach?: number | undefined | null,
+	preview_stills?: number | undefined | null,
 	trajectory_preview?: number | undefined | null
 };
 	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
 ["utility_lineups_delete_key_input"]: {
+	approach?: string | undefined | null,
+	preview_stills?: string | undefined | null,
 	trajectory_preview?: string | undefined | null
 };
 	/** input type for incrementing numeric columns in table "utility_lineups" */
@@ -165788,6 +165877,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	/** input type for inserting data into table "utility_lineups" */
 ["utility_lineups_insert_input"]: {
 	aim_tolerance?: ResolverInputTypes["float8"] | undefined | null,
+	approach?: ResolverInputTypes["jsonb"] | undefined | null,
 	archived_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	author?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
@@ -165826,6 +165916,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	preview_duration_ms?: number | undefined | null,
 	preview_file?: string | undefined | null,
 	preview_rendered_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	preview_stills?: ResolverInputTypes["jsonb"] | undefined | null,
 	preview_thumbnail?: string | undefined | null,
 	progress?: ResolverInputTypes["utility_lineup_progress_arr_rel_insert_input"] | undefined | null,
 	public_requested_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -166134,6 +166225,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	/** Ordering options when selecting data from "utility_lineups". */
 ["utility_lineups_order_by"]: {
 	aim_tolerance?: ResolverInputTypes["order_by"] | undefined | null,
+	approach?: ResolverInputTypes["order_by"] | undefined | null,
 	archived_at?: ResolverInputTypes["order_by"] | undefined | null,
 	author?: ResolverInputTypes["players_order_by"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -166178,6 +166270,8 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	preview_duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
 	preview_file?: ResolverInputTypes["order_by"] | undefined | null,
 	preview_rendered_at?: ResolverInputTypes["order_by"] | undefined | null,
+	preview_stills?: ResolverInputTypes["order_by"] | undefined | null,
+	preview_stills_url?: ResolverInputTypes["order_by"] | undefined | null,
 	preview_thumbnail?: ResolverInputTypes["order_by"] | undefined | null,
 	preview_thumbnail_url?: ResolverInputTypes["order_by"] | undefined | null,
 	preview_url?: ResolverInputTypes["order_by"] | undefined | null,
@@ -166221,6 +166315,8 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 };
 	/** prepend existing jsonb value of filtered columns with new jsonb value */
 ["utility_lineups_prepend_input"]: {
+	approach?: ResolverInputTypes["jsonb"] | undefined | null,
+	preview_stills?: ResolverInputTypes["jsonb"] | undefined | null,
 	trajectory_preview?: ResolverInputTypes["jsonb"] | undefined | null
 };
 	/** select columns of table "utility_lineups" */
@@ -166248,6 +166344,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	/** input type for updating data in table "utility_lineups" */
 ["utility_lineups_set_input"]: {
 	aim_tolerance?: ResolverInputTypes["float8"] | undefined | null,
+	approach?: ResolverInputTypes["jsonb"] | undefined | null,
 	archived_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	confidence?: string | undefined | null,
@@ -166282,6 +166379,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	preview_duration_ms?: number | undefined | null,
 	preview_file?: string | undefined | null,
 	preview_rendered_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	preview_stills?: ResolverInputTypes["jsonb"] | undefined | null,
 	preview_thumbnail?: string | undefined | null,
 	public_requested_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	public_review_note?: string | undefined | null,
@@ -166527,6 +166625,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	/** Initial value of the column from where the streaming should start */
 ["utility_lineups_stream_cursor_value_input"]: {
 	aim_tolerance?: ResolverInputTypes["float8"] | undefined | null,
+	approach?: ResolverInputTypes["jsonb"] | undefined | null,
 	archived_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	confidence?: string | undefined | null,
@@ -166562,6 +166661,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	preview_duration_ms?: number | undefined | null,
 	preview_file?: string | undefined | null,
 	preview_rendered_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	preview_stills?: ResolverInputTypes["jsonb"] | undefined | null,
 	preview_thumbnail?: string | undefined | null,
 	public_requested_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	public_review_note?: string | undefined | null,
@@ -182545,7 +182645,9 @@ export type ModelTypes = {
 };
 	/** columns and relationships of "direct_conversations" */
 ["direct_conversations"]: {
-		is_open: boolean,
+		accepted_at?: ModelTypes["timestamptz"] | undefined | null,
+	declined_at?: ModelTypes["timestamptz"] | undefined | null,
+	is_open: boolean,
 	last_message_at: ModelTypes["timestamptz"],
 	position: number,
 	room_id: string,
@@ -182580,6 +182682,8 @@ export type ModelTypes = {
 	_and?: Array<ModelTypes["direct_conversations_bool_exp"]> | undefined | null,
 	_not?: ModelTypes["direct_conversations_bool_exp"] | undefined | null,
 	_or?: Array<ModelTypes["direct_conversations_bool_exp"]> | undefined | null,
+	accepted_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	declined_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	is_open?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	last_message_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	position?: ModelTypes["Int_comparison_exp"] | undefined | null,
@@ -182594,6 +182698,8 @@ export type ModelTypes = {
 };
 	/** input type for inserting data into table "direct_conversations" */
 ["direct_conversations_insert_input"]: {
+	accepted_at?: ModelTypes["timestamptz"] | undefined | null,
+	declined_at?: ModelTypes["timestamptz"] | undefined | null,
 	is_open?: boolean | undefined | null,
 	last_message_at?: ModelTypes["timestamptz"] | undefined | null,
 	position?: number | undefined | null,
@@ -182602,14 +182708,18 @@ export type ModelTypes = {
 };
 	/** aggregate max on columns */
 ["direct_conversations_max_fields"]: {
-		last_message_at?: ModelTypes["timestamptz"] | undefined | null,
+		accepted_at?: ModelTypes["timestamptz"] | undefined | null,
+	declined_at?: ModelTypes["timestamptz"] | undefined | null,
+	last_message_at?: ModelTypes["timestamptz"] | undefined | null,
 	position?: number | undefined | null,
 	room_id?: string | undefined | null,
 	steam_id?: ModelTypes["bigint"] | undefined | null
 };
 	/** aggregate min on columns */
 ["direct_conversations_min_fields"]: {
-		last_message_at?: ModelTypes["timestamptz"] | undefined | null,
+		accepted_at?: ModelTypes["timestamptz"] | undefined | null,
+	declined_at?: ModelTypes["timestamptz"] | undefined | null,
+	last_message_at?: ModelTypes["timestamptz"] | undefined | null,
 	position?: number | undefined | null,
 	room_id?: string | undefined | null,
 	steam_id?: ModelTypes["bigint"] | undefined | null
@@ -182629,6 +182739,8 @@ export type ModelTypes = {
 };
 	/** Ordering options when selecting data from "direct_conversations". */
 ["direct_conversations_order_by"]: {
+	accepted_at?: ModelTypes["order_by"] | undefined | null,
+	declined_at?: ModelTypes["order_by"] | undefined | null,
 	is_open?: ModelTypes["order_by"] | undefined | null,
 	last_message_at?: ModelTypes["order_by"] | undefined | null,
 	position?: ModelTypes["order_by"] | undefined | null,
@@ -182643,6 +182755,8 @@ export type ModelTypes = {
 	["direct_conversations_select_column"]:direct_conversations_select_column;
 	/** input type for updating data in table "direct_conversations" */
 ["direct_conversations_set_input"]: {
+	accepted_at?: ModelTypes["timestamptz"] | undefined | null,
+	declined_at?: ModelTypes["timestamptz"] | undefined | null,
 	is_open?: boolean | undefined | null,
 	last_message_at?: ModelTypes["timestamptz"] | undefined | null,
 	position?: number | undefined | null,
@@ -182673,6 +182787,8 @@ export type ModelTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["direct_conversations_stream_cursor_value_input"]: {
+	accepted_at?: ModelTypes["timestamptz"] | undefined | null,
+	declined_at?: ModelTypes["timestamptz"] | undefined | null,
 	is_open?: boolean | undefined | null,
 	last_message_at?: ModelTypes["timestamptz"] | undefined | null,
 	position?: number | undefined | null,
@@ -222971,6 +223087,7 @@ export type ModelTypes = {
 	aim_weapon_stats: Array<ModelTypes["player_aim_weapon_stats"]>,
 	/** An aggregate relationship */
 	aim_weapon_stats_aggregate: ModelTypes["player_aim_weapon_stats_aggregate"],
+	allow_message_requests: boolean,
 	/** An array relationship */
 	assists: Array<ModelTypes["player_assists"]>,
 	/** An aggregate relationship */
@@ -223267,6 +223384,7 @@ export type ModelTypes = {
 	abandoned_matches_aggregate?: ModelTypes["abandoned_matches_aggregate_bool_exp"] | undefined | null,
 	aim_weapon_stats?: ModelTypes["player_aim_weapon_stats_bool_exp"] | undefined | null,
 	aim_weapon_stats_aggregate?: ModelTypes["player_aim_weapon_stats_aggregate_bool_exp"] | undefined | null,
+	allow_message_requests?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	assists?: ModelTypes["player_assists_bool_exp"] | undefined | null,
 	assists_aggregate?: ModelTypes["player_assists_aggregate_bool_exp"] | undefined | null,
 	assited_by_players?: ModelTypes["player_assists_bool_exp"] | undefined | null,
@@ -223416,6 +223534,7 @@ export type ModelTypes = {
 ["players_insert_input"]: {
 	abandoned_matches?: ModelTypes["abandoned_matches_arr_rel_insert_input"] | undefined | null,
 	aim_weapon_stats?: ModelTypes["player_aim_weapon_stats_arr_rel_insert_input"] | undefined | null,
+	allow_message_requests?: boolean | undefined | null,
 	assists?: ModelTypes["player_assists_arr_rel_insert_input"] | undefined | null,
 	assited_by_players?: ModelTypes["player_assists_arr_rel_insert_input"] | undefined | null,
 	avatar_url?: string | undefined | null,
@@ -223625,6 +223744,7 @@ export type ModelTypes = {
 ["players_order_by"]: {
 	abandoned_matches_aggregate?: ModelTypes["abandoned_matches_aggregate_order_by"] | undefined | null,
 	aim_weapon_stats_aggregate?: ModelTypes["player_aim_weapon_stats_aggregate_order_by"] | undefined | null,
+	allow_message_requests?: ModelTypes["order_by"] | undefined | null,
 	assists_aggregate?: ModelTypes["player_assists_aggregate_order_by"] | undefined | null,
 	assited_by_players_aggregate?: ModelTypes["player_assists_aggregate_order_by"] | undefined | null,
 	avatar_url?: ModelTypes["order_by"] | undefined | null,
@@ -223729,6 +223849,7 @@ export type ModelTypes = {
 	["players_select_column"]:players_select_column;
 	/** input type for updating data in table "players" */
 ["players_set_input"]: {
+	allow_message_requests?: boolean | undefined | null,
 	avatar_url?: string | undefined | null,
 	country?: string | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -223866,6 +223987,7 @@ export type ModelTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["players_stream_cursor_value_input"]: {
+	allow_message_requests?: boolean | undefined | null,
 	avatar_url?: string | undefined | null,
 	country?: string | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -228490,6 +228612,7 @@ export type ModelTypes = {
 	/** An object relationship */
 	current_match?: ModelTypes["matches"] | undefined | null,
 	enabled: boolean,
+	featured: boolean,
 	game?: string | undefined | null,
 	/** An object relationship */
 	game_mode?: ModelTypes["game_modes"] | undefined | null,
@@ -228497,7 +228620,6 @@ export type ModelTypes = {
 	/** An object relationship */
 	game_server_node?: ModelTypes["game_server_nodes"] | undefined | null,
 	game_server_node_id?: string | undefined | null,
-	featured: boolean,
 	hibernating: boolean,
 	host: string,
 	id: ModelTypes["uuid"],
@@ -228643,12 +228765,12 @@ export type ModelTypes = {
 	connection_string?: ModelTypes["String_comparison_exp"] | undefined | null,
 	current_match?: ModelTypes["matches_bool_exp"] | undefined | null,
 	enabled?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	featured?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	game?: ModelTypes["String_comparison_exp"] | undefined | null,
 	game_mode?: ModelTypes["game_modes_bool_exp"] | undefined | null,
 	game_mode_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
 	game_server_node?: ModelTypes["game_server_nodes_bool_exp"] | undefined | null,
 	game_server_node_id?: ModelTypes["String_comparison_exp"] | undefined | null,
-	featured?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	hibernating?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	host?: ModelTypes["String_comparison_exp"] | undefined | null,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
@@ -228717,12 +228839,12 @@ export type ModelTypes = {
 	connected?: boolean | undefined | null,
 	current_match?: ModelTypes["matches_obj_rel_insert_input"] | undefined | null,
 	enabled?: boolean | undefined | null,
+	featured?: boolean | undefined | null,
 	game?: string | undefined | null,
 	game_mode?: ModelTypes["game_modes_obj_rel_insert_input"] | undefined | null,
 	game_mode_id?: ModelTypes["uuid"] | undefined | null,
 	game_server_node?: ModelTypes["game_server_nodes_obj_rel_insert_input"] | undefined | null,
 	game_server_node_id?: string | undefined | null,
-	featured?: boolean | undefined | null,
 	hibernating?: boolean | undefined | null,
 	host?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
@@ -228900,12 +229022,12 @@ export type ModelTypes = {
 	connection_string?: ModelTypes["order_by"] | undefined | null,
 	current_match?: ModelTypes["matches_order_by"] | undefined | null,
 	enabled?: ModelTypes["order_by"] | undefined | null,
+	featured?: ModelTypes["order_by"] | undefined | null,
 	game?: ModelTypes["order_by"] | undefined | null,
 	game_mode?: ModelTypes["game_modes_order_by"] | undefined | null,
 	game_mode_id?: ModelTypes["order_by"] | undefined | null,
 	game_server_node?: ModelTypes["game_server_nodes_order_by"] | undefined | null,
 	game_server_node_id?: ModelTypes["order_by"] | undefined | null,
-	featured?: ModelTypes["order_by"] | undefined | null,
 	hibernating?: ModelTypes["order_by"] | undefined | null,
 	host?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
@@ -228958,10 +229080,10 @@ export type ModelTypes = {
 	connect_password?: string | undefined | null,
 	connected?: boolean | undefined | null,
 	enabled?: boolean | undefined | null,
+	featured?: boolean | undefined | null,
 	game?: string | undefined | null,
 	game_mode_id?: ModelTypes["uuid"] | undefined | null,
 	game_server_node_id?: string | undefined | null,
-	featured?: boolean | undefined | null,
 	hibernating?: boolean | undefined | null,
 	host?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
@@ -229040,10 +229162,10 @@ export type ModelTypes = {
 	connect_password?: string | undefined | null,
 	connected?: boolean | undefined | null,
 	enabled?: boolean | undefined | null,
+	featured?: boolean | undefined | null,
 	game?: string | undefined | null,
 	game_mode_id?: ModelTypes["uuid"] | undefined | null,
 	game_server_node_id?: string | undefined | null,
-	featured?: boolean | undefined | null,
 	hibernating?: boolean | undefined | null,
 	host?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
@@ -243904,6 +244026,7 @@ export type ModelTypes = {
 	/** columns and relationships of "utility_lineups" */
 ["utility_lineups"]: {
 		aim_tolerance: ModelTypes["float8"],
+	approach?: ModelTypes["jsonb"] | undefined | null,
 	archived_at?: ModelTypes["timestamptz"] | undefined | null,
 	/** An object relationship */
 	author: ModelTypes["players"],
@@ -243961,6 +244084,9 @@ export type ModelTypes = {
 	preview_duration_ms?: number | undefined | null,
 	preview_file?: string | undefined | null,
 	preview_rendered_at?: ModelTypes["timestamptz"] | undefined | null,
+	preview_stills?: ModelTypes["jsonb"] | undefined | null,
+	/** A computed field, executes function "utility_lineup_preview_stills_url" */
+	preview_stills_url?: ModelTypes["jsonb"] | undefined | null,
 	preview_thumbnail?: string | undefined | null,
 	/** A computed field, executes function "utility_lineup_preview_thumbnail_url" */
 	preview_thumbnail_url?: string | undefined | null,
@@ -244137,6 +244263,8 @@ export type ModelTypes = {
 };
 	/** append existing jsonb value of filtered columns with new jsonb value */
 ["utility_lineups_append_input"]: {
+	approach?: ModelTypes["jsonb"] | undefined | null,
+	preview_stills?: ModelTypes["jsonb"] | undefined | null,
 	trajectory_preview?: ModelTypes["jsonb"] | undefined | null
 };
 	/** input type for inserting array relation for remote table "utility_lineups" */
@@ -244219,6 +244347,7 @@ export type ModelTypes = {
 	_not?: ModelTypes["utility_lineups_bool_exp"] | undefined | null,
 	_or?: Array<ModelTypes["utility_lineups_bool_exp"]> | undefined | null,
 	aim_tolerance?: ModelTypes["float8_comparison_exp"] | undefined | null,
+	approach?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
 	archived_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	author?: ModelTypes["players_bool_exp"] | undefined | null,
 	author_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
@@ -244265,6 +244394,8 @@ export type ModelTypes = {
 	preview_duration_ms?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	preview_file?: ModelTypes["String_comparison_exp"] | undefined | null,
 	preview_rendered_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	preview_stills?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
+	preview_stills_url?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
 	preview_thumbnail?: ModelTypes["String_comparison_exp"] | undefined | null,
 	preview_thumbnail_url?: ModelTypes["String_comparison_exp"] | undefined | null,
 	preview_url?: ModelTypes["String_comparison_exp"] | undefined | null,
@@ -244309,14 +244440,20 @@ export type ModelTypes = {
 	["utility_lineups_constraint"]:utility_lineups_constraint;
 	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 ["utility_lineups_delete_at_path_input"]: {
+	approach?: Array<string> | undefined | null,
+	preview_stills?: Array<string> | undefined | null,
 	trajectory_preview?: Array<string> | undefined | null
 };
 	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
 ["utility_lineups_delete_elem_input"]: {
+	approach?: number | undefined | null,
+	preview_stills?: number | undefined | null,
 	trajectory_preview?: number | undefined | null
 };
 	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
 ["utility_lineups_delete_key_input"]: {
+	approach?: string | undefined | null,
+	preview_stills?: string | undefined | null,
 	trajectory_preview?: string | undefined | null
 };
 	/** input type for incrementing numeric columns in table "utility_lineups" */
@@ -244355,6 +244492,7 @@ export type ModelTypes = {
 	/** input type for inserting data into table "utility_lineups" */
 ["utility_lineups_insert_input"]: {
 	aim_tolerance?: ModelTypes["float8"] | undefined | null,
+	approach?: ModelTypes["jsonb"] | undefined | null,
 	archived_at?: ModelTypes["timestamptz"] | undefined | null,
 	author?: ModelTypes["players_obj_rel_insert_input"] | undefined | null,
 	author_steam_id?: ModelTypes["bigint"] | undefined | null,
@@ -244393,6 +244531,7 @@ export type ModelTypes = {
 	preview_duration_ms?: number | undefined | null,
 	preview_file?: string | undefined | null,
 	preview_rendered_at?: ModelTypes["timestamptz"] | undefined | null,
+	preview_stills?: ModelTypes["jsonb"] | undefined | null,
 	preview_thumbnail?: string | undefined | null,
 	progress?: ModelTypes["utility_lineup_progress_arr_rel_insert_input"] | undefined | null,
 	public_requested_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -244698,6 +244837,7 @@ export type ModelTypes = {
 	/** Ordering options when selecting data from "utility_lineups". */
 ["utility_lineups_order_by"]: {
 	aim_tolerance?: ModelTypes["order_by"] | undefined | null,
+	approach?: ModelTypes["order_by"] | undefined | null,
 	archived_at?: ModelTypes["order_by"] | undefined | null,
 	author?: ModelTypes["players_order_by"] | undefined | null,
 	author_steam_id?: ModelTypes["order_by"] | undefined | null,
@@ -244742,6 +244882,8 @@ export type ModelTypes = {
 	preview_duration_ms?: ModelTypes["order_by"] | undefined | null,
 	preview_file?: ModelTypes["order_by"] | undefined | null,
 	preview_rendered_at?: ModelTypes["order_by"] | undefined | null,
+	preview_stills?: ModelTypes["order_by"] | undefined | null,
+	preview_stills_url?: ModelTypes["order_by"] | undefined | null,
 	preview_thumbnail?: ModelTypes["order_by"] | undefined | null,
 	preview_thumbnail_url?: ModelTypes["order_by"] | undefined | null,
 	preview_url?: ModelTypes["order_by"] | undefined | null,
@@ -244785,6 +244927,8 @@ export type ModelTypes = {
 };
 	/** prepend existing jsonb value of filtered columns with new jsonb value */
 ["utility_lineups_prepend_input"]: {
+	approach?: ModelTypes["jsonb"] | undefined | null,
+	preview_stills?: ModelTypes["jsonb"] | undefined | null,
 	trajectory_preview?: ModelTypes["jsonb"] | undefined | null
 };
 	["utility_lineups_select_column"]:utility_lineups_select_column;
@@ -244801,6 +244945,7 @@ export type ModelTypes = {
 	/** input type for updating data in table "utility_lineups" */
 ["utility_lineups_set_input"]: {
 	aim_tolerance?: ModelTypes["float8"] | undefined | null,
+	approach?: ModelTypes["jsonb"] | undefined | null,
 	archived_at?: ModelTypes["timestamptz"] | undefined | null,
 	author_steam_id?: ModelTypes["bigint"] | undefined | null,
 	confidence?: string | undefined | null,
@@ -244835,6 +244980,7 @@ export type ModelTypes = {
 	preview_duration_ms?: number | undefined | null,
 	preview_file?: string | undefined | null,
 	preview_rendered_at?: ModelTypes["timestamptz"] | undefined | null,
+	preview_stills?: ModelTypes["jsonb"] | undefined | null,
 	preview_thumbnail?: string | undefined | null,
 	public_requested_at?: ModelTypes["timestamptz"] | undefined | null,
 	public_review_note?: string | undefined | null,
@@ -245077,6 +245223,7 @@ export type ModelTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["utility_lineups_stream_cursor_value_input"]: {
 	aim_tolerance?: ModelTypes["float8"] | undefined | null,
+	approach?: ModelTypes["jsonb"] | undefined | null,
 	archived_at?: ModelTypes["timestamptz"] | undefined | null,
 	author_steam_id?: ModelTypes["bigint"] | undefined | null,
 	confidence?: string | undefined | null,
@@ -245112,6 +245259,7 @@ export type ModelTypes = {
 	preview_duration_ms?: number | undefined | null,
 	preview_file?: string | undefined | null,
 	preview_rendered_at?: ModelTypes["timestamptz"] | undefined | null,
+	preview_stills?: ModelTypes["jsonb"] | undefined | null,
 	preview_thumbnail?: string | undefined | null,
 	public_requested_at?: ModelTypes["timestamptz"] | undefined | null,
 	public_review_note?: string | undefined | null,
@@ -260808,6 +260956,8 @@ export type GraphQLTypes = {
 	/** columns and relationships of "direct_conversations" */
 ["direct_conversations"]: {
 	__typename: "direct_conversations",
+	accepted_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	declined_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	is_open: boolean,
 	last_message_at: GraphQLTypes["timestamptz"],
 	position: number,
@@ -260846,6 +260996,8 @@ export type GraphQLTypes = {
 		_and?: Array<GraphQLTypes["direct_conversations_bool_exp"]> | undefined | null,
 	_not?: GraphQLTypes["direct_conversations_bool_exp"] | undefined | null,
 	_or?: Array<GraphQLTypes["direct_conversations_bool_exp"]> | undefined | null,
+	accepted_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	declined_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	is_open?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	last_message_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	position?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
@@ -260861,7 +261013,9 @@ export type GraphQLTypes = {
 };
 	/** input type for inserting data into table "direct_conversations" */
 ["direct_conversations_insert_input"]: {
-		is_open?: boolean | undefined | null,
+		accepted_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	declined_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	is_open?: boolean | undefined | null,
 	last_message_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	position?: number | undefined | null,
 	room_id?: string | undefined | null,
@@ -260870,6 +261024,8 @@ export type GraphQLTypes = {
 	/** aggregate max on columns */
 ["direct_conversations_max_fields"]: {
 	__typename: "direct_conversations_max_fields",
+	accepted_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	declined_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	last_message_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	position?: number | undefined | null,
 	room_id?: string | undefined | null,
@@ -260878,6 +261034,8 @@ export type GraphQLTypes = {
 	/** aggregate min on columns */
 ["direct_conversations_min_fields"]: {
 	__typename: "direct_conversations_min_fields",
+	accepted_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	declined_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	last_message_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	position?: number | undefined | null,
 	room_id?: string | undefined | null,
@@ -260899,7 +261057,9 @@ export type GraphQLTypes = {
 };
 	/** Ordering options when selecting data from "direct_conversations". */
 ["direct_conversations_order_by"]: {
-		is_open?: GraphQLTypes["order_by"] | undefined | null,
+		accepted_at?: GraphQLTypes["order_by"] | undefined | null,
+	declined_at?: GraphQLTypes["order_by"] | undefined | null,
+	is_open?: GraphQLTypes["order_by"] | undefined | null,
 	last_message_at?: GraphQLTypes["order_by"] | undefined | null,
 	position?: GraphQLTypes["order_by"] | undefined | null,
 	room_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -260914,7 +261074,9 @@ export type GraphQLTypes = {
 ["direct_conversations_select_column"]: direct_conversations_select_column;
 	/** input type for updating data in table "direct_conversations" */
 ["direct_conversations_set_input"]: {
-		is_open?: boolean | undefined | null,
+		accepted_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	declined_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	is_open?: boolean | undefined | null,
 	last_message_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	position?: number | undefined | null,
 	room_id?: string | undefined | null,
@@ -260947,7 +261109,9 @@ export type GraphQLTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["direct_conversations_stream_cursor_value_input"]: {
-		is_open?: boolean | undefined | null,
+		accepted_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	declined_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	is_open?: boolean | undefined | null,
 	last_message_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	position?: number | undefined | null,
 	room_id?: string | undefined | null,
@@ -303195,6 +303359,7 @@ export type GraphQLTypes = {
 	aim_weapon_stats: Array<GraphQLTypes["player_aim_weapon_stats"]>,
 	/** An aggregate relationship */
 	aim_weapon_stats_aggregate: GraphQLTypes["player_aim_weapon_stats_aggregate"],
+	allow_message_requests: boolean,
 	/** An array relationship */
 	assists: Array<GraphQLTypes["player_assists"]>,
 	/** An aggregate relationship */
@@ -303494,6 +303659,7 @@ export type GraphQLTypes = {
 	abandoned_matches_aggregate?: GraphQLTypes["abandoned_matches_aggregate_bool_exp"] | undefined | null,
 	aim_weapon_stats?: GraphQLTypes["player_aim_weapon_stats_bool_exp"] | undefined | null,
 	aim_weapon_stats_aggregate?: GraphQLTypes["player_aim_weapon_stats_aggregate_bool_exp"] | undefined | null,
+	allow_message_requests?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	assists?: GraphQLTypes["player_assists_bool_exp"] | undefined | null,
 	assists_aggregate?: GraphQLTypes["player_assists_aggregate_bool_exp"] | undefined | null,
 	assited_by_players?: GraphQLTypes["player_assists_bool_exp"] | undefined | null,
@@ -303644,6 +303810,7 @@ export type GraphQLTypes = {
 ["players_insert_input"]: {
 		abandoned_matches?: GraphQLTypes["abandoned_matches_arr_rel_insert_input"] | undefined | null,
 	aim_weapon_stats?: GraphQLTypes["player_aim_weapon_stats_arr_rel_insert_input"] | undefined | null,
+	allow_message_requests?: boolean | undefined | null,
 	assists?: GraphQLTypes["player_assists_arr_rel_insert_input"] | undefined | null,
 	assited_by_players?: GraphQLTypes["player_assists_arr_rel_insert_input"] | undefined | null,
 	avatar_url?: string | undefined | null,
@@ -303856,6 +304023,7 @@ export type GraphQLTypes = {
 ["players_order_by"]: {
 		abandoned_matches_aggregate?: GraphQLTypes["abandoned_matches_aggregate_order_by"] | undefined | null,
 	aim_weapon_stats_aggregate?: GraphQLTypes["player_aim_weapon_stats_aggregate_order_by"] | undefined | null,
+	allow_message_requests?: GraphQLTypes["order_by"] | undefined | null,
 	assists_aggregate?: GraphQLTypes["player_assists_aggregate_order_by"] | undefined | null,
 	assited_by_players_aggregate?: GraphQLTypes["player_assists_aggregate_order_by"] | undefined | null,
 	avatar_url?: GraphQLTypes["order_by"] | undefined | null,
@@ -303961,7 +304129,8 @@ export type GraphQLTypes = {
 ["players_select_column"]: players_select_column;
 	/** input type for updating data in table "players" */
 ["players_set_input"]: {
-		avatar_url?: string | undefined | null,
+		allow_message_requests?: boolean | undefined | null,
+	avatar_url?: string | undefined | null,
 	country?: string | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	custom_avatar_url?: string | undefined | null,
@@ -304101,7 +304270,8 @@ export type GraphQLTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["players_stream_cursor_value_input"]: {
-		avatar_url?: string | undefined | null,
+		allow_message_requests?: boolean | undefined | null,
+	avatar_url?: string | undefined | null,
 	country?: string | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	custom_avatar_url?: string | undefined | null,
@@ -308929,6 +309099,7 @@ export type GraphQLTypes = {
 	/** An object relationship */
 	current_match?: GraphQLTypes["matches"] | undefined | null,
 	enabled: boolean,
+	featured: boolean,
 	game?: string | undefined | null,
 	/** An object relationship */
 	game_mode?: GraphQLTypes["game_modes"] | undefined | null,
@@ -308936,7 +309107,6 @@ export type GraphQLTypes = {
 	/** An object relationship */
 	game_server_node?: GraphQLTypes["game_server_nodes"] | undefined | null,
 	game_server_node_id?: string | undefined | null,
-	featured: boolean,
 	hibernating: boolean,
 	host: string,
 	id: GraphQLTypes["uuid"],
@@ -309085,12 +309255,12 @@ export type GraphQLTypes = {
 	connection_string?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	current_match?: GraphQLTypes["matches_bool_exp"] | undefined | null,
 	enabled?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	featured?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	game?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	game_mode?: GraphQLTypes["game_modes_bool_exp"] | undefined | null,
 	game_mode_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
 	game_server_node?: GraphQLTypes["game_server_nodes_bool_exp"] | undefined | null,
 	game_server_node_id?: GraphQLTypes["String_comparison_exp"] | undefined | null,
-	featured?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	hibernating?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	host?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
@@ -309160,12 +309330,12 @@ export type GraphQLTypes = {
 	connected?: boolean | undefined | null,
 	current_match?: GraphQLTypes["matches_obj_rel_insert_input"] | undefined | null,
 	enabled?: boolean | undefined | null,
+	featured?: boolean | undefined | null,
 	game?: string | undefined | null,
 	game_mode?: GraphQLTypes["game_modes_obj_rel_insert_input"] | undefined | null,
 	game_mode_id?: GraphQLTypes["uuid"] | undefined | null,
 	game_server_node?: GraphQLTypes["game_server_nodes_obj_rel_insert_input"] | undefined | null,
 	game_server_node_id?: string | undefined | null,
-	featured?: boolean | undefined | null,
 	hibernating?: boolean | undefined | null,
 	host?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
@@ -309346,12 +309516,12 @@ export type GraphQLTypes = {
 	connection_string?: GraphQLTypes["order_by"] | undefined | null,
 	current_match?: GraphQLTypes["matches_order_by"] | undefined | null,
 	enabled?: GraphQLTypes["order_by"] | undefined | null,
+	featured?: GraphQLTypes["order_by"] | undefined | null,
 	game?: GraphQLTypes["order_by"] | undefined | null,
 	game_mode?: GraphQLTypes["game_modes_order_by"] | undefined | null,
 	game_mode_id?: GraphQLTypes["order_by"] | undefined | null,
 	game_server_node?: GraphQLTypes["game_server_nodes_order_by"] | undefined | null,
 	game_server_node_id?: GraphQLTypes["order_by"] | undefined | null,
-	featured?: GraphQLTypes["order_by"] | undefined | null,
 	hibernating?: GraphQLTypes["order_by"] | undefined | null,
 	host?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
@@ -309407,10 +309577,10 @@ export type GraphQLTypes = {
 	connect_password?: string | undefined | null,
 	connected?: boolean | undefined | null,
 	enabled?: boolean | undefined | null,
+	featured?: boolean | undefined | null,
 	game?: string | undefined | null,
 	game_mode_id?: GraphQLTypes["uuid"] | undefined | null,
 	game_server_node_id?: string | undefined | null,
-	featured?: boolean | undefined | null,
 	hibernating?: boolean | undefined | null,
 	host?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
@@ -309492,10 +309662,10 @@ export type GraphQLTypes = {
 	connect_password?: string | undefined | null,
 	connected?: boolean | undefined | null,
 	enabled?: boolean | undefined | null,
+	featured?: boolean | undefined | null,
 	game?: string | undefined | null,
 	game_mode_id?: GraphQLTypes["uuid"] | undefined | null,
 	game_server_node_id?: string | undefined | null,
-	featured?: boolean | undefined | null,
 	hibernating?: boolean | undefined | null,
 	host?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
@@ -325102,6 +325272,7 @@ export type GraphQLTypes = {
 ["utility_lineups"]: {
 	__typename: "utility_lineups",
 	aim_tolerance: GraphQLTypes["float8"],
+	approach?: GraphQLTypes["jsonb"] | undefined | null,
 	archived_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	/** An object relationship */
 	author: GraphQLTypes["players"],
@@ -325159,6 +325330,9 @@ export type GraphQLTypes = {
 	preview_duration_ms?: number | undefined | null,
 	preview_file?: string | undefined | null,
 	preview_rendered_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	preview_stills?: GraphQLTypes["jsonb"] | undefined | null,
+	/** A computed field, executes function "utility_lineup_preview_stills_url" */
+	preview_stills_url?: GraphQLTypes["jsonb"] | undefined | null,
 	preview_thumbnail?: string | undefined | null,
 	/** A computed field, executes function "utility_lineup_preview_thumbnail_url" */
 	preview_thumbnail_url?: string | undefined | null,
@@ -325337,7 +325511,9 @@ export type GraphQLTypes = {
 };
 	/** append existing jsonb value of filtered columns with new jsonb value */
 ["utility_lineups_append_input"]: {
-		trajectory_preview?: GraphQLTypes["jsonb"] | undefined | null
+		approach?: GraphQLTypes["jsonb"] | undefined | null,
+	preview_stills?: GraphQLTypes["jsonb"] | undefined | null,
+	trajectory_preview?: GraphQLTypes["jsonb"] | undefined | null
 };
 	/** input type for inserting array relation for remote table "utility_lineups" */
 ["utility_lineups_arr_rel_insert_input"]: {
@@ -325420,6 +325596,7 @@ export type GraphQLTypes = {
 	_not?: GraphQLTypes["utility_lineups_bool_exp"] | undefined | null,
 	_or?: Array<GraphQLTypes["utility_lineups_bool_exp"]> | undefined | null,
 	aim_tolerance?: GraphQLTypes["float8_comparison_exp"] | undefined | null,
+	approach?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
 	archived_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	author?: GraphQLTypes["players_bool_exp"] | undefined | null,
 	author_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
@@ -325466,6 +325643,8 @@ export type GraphQLTypes = {
 	preview_duration_ms?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	preview_file?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	preview_rendered_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	preview_stills?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
+	preview_stills_url?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
 	preview_thumbnail?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	preview_thumbnail_url?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	preview_url?: GraphQLTypes["String_comparison_exp"] | undefined | null,
@@ -325511,15 +325690,21 @@ export type GraphQLTypes = {
 ["utility_lineups_constraint"]: utility_lineups_constraint;
 	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 ["utility_lineups_delete_at_path_input"]: {
-		trajectory_preview?: Array<string> | undefined | null
+		approach?: Array<string> | undefined | null,
+	preview_stills?: Array<string> | undefined | null,
+	trajectory_preview?: Array<string> | undefined | null
 };
 	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
 ["utility_lineups_delete_elem_input"]: {
-		trajectory_preview?: number | undefined | null
+		approach?: number | undefined | null,
+	preview_stills?: number | undefined | null,
+	trajectory_preview?: number | undefined | null
 };
 	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
 ["utility_lineups_delete_key_input"]: {
-		trajectory_preview?: string | undefined | null
+		approach?: string | undefined | null,
+	preview_stills?: string | undefined | null,
+	trajectory_preview?: string | undefined | null
 };
 	/** input type for incrementing numeric columns in table "utility_lineups" */
 ["utility_lineups_inc_input"]: {
@@ -325557,6 +325742,7 @@ export type GraphQLTypes = {
 	/** input type for inserting data into table "utility_lineups" */
 ["utility_lineups_insert_input"]: {
 		aim_tolerance?: GraphQLTypes["float8"] | undefined | null,
+	approach?: GraphQLTypes["jsonb"] | undefined | null,
 	archived_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	author?: GraphQLTypes["players_obj_rel_insert_input"] | undefined | null,
 	author_steam_id?: GraphQLTypes["bigint"] | undefined | null,
@@ -325595,6 +325781,7 @@ export type GraphQLTypes = {
 	preview_duration_ms?: number | undefined | null,
 	preview_file?: string | undefined | null,
 	preview_rendered_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	preview_stills?: GraphQLTypes["jsonb"] | undefined | null,
 	preview_thumbnail?: string | undefined | null,
 	progress?: GraphQLTypes["utility_lineup_progress_arr_rel_insert_input"] | undefined | null,
 	public_requested_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -325903,6 +326090,7 @@ export type GraphQLTypes = {
 	/** Ordering options when selecting data from "utility_lineups". */
 ["utility_lineups_order_by"]: {
 		aim_tolerance?: GraphQLTypes["order_by"] | undefined | null,
+	approach?: GraphQLTypes["order_by"] | undefined | null,
 	archived_at?: GraphQLTypes["order_by"] | undefined | null,
 	author?: GraphQLTypes["players_order_by"] | undefined | null,
 	author_steam_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -325947,6 +326135,8 @@ export type GraphQLTypes = {
 	preview_duration_ms?: GraphQLTypes["order_by"] | undefined | null,
 	preview_file?: GraphQLTypes["order_by"] | undefined | null,
 	preview_rendered_at?: GraphQLTypes["order_by"] | undefined | null,
+	preview_stills?: GraphQLTypes["order_by"] | undefined | null,
+	preview_stills_url?: GraphQLTypes["order_by"] | undefined | null,
 	preview_thumbnail?: GraphQLTypes["order_by"] | undefined | null,
 	preview_thumbnail_url?: GraphQLTypes["order_by"] | undefined | null,
 	preview_url?: GraphQLTypes["order_by"] | undefined | null,
@@ -325990,7 +326180,9 @@ export type GraphQLTypes = {
 };
 	/** prepend existing jsonb value of filtered columns with new jsonb value */
 ["utility_lineups_prepend_input"]: {
-		trajectory_preview?: GraphQLTypes["jsonb"] | undefined | null
+		approach?: GraphQLTypes["jsonb"] | undefined | null,
+	preview_stills?: GraphQLTypes["jsonb"] | undefined | null,
+	trajectory_preview?: GraphQLTypes["jsonb"] | undefined | null
 };
 	/** select columns of table "utility_lineups" */
 ["utility_lineups_select_column"]: utility_lineups_select_column;
@@ -326017,6 +326209,7 @@ export type GraphQLTypes = {
 	/** input type for updating data in table "utility_lineups" */
 ["utility_lineups_set_input"]: {
 		aim_tolerance?: GraphQLTypes["float8"] | undefined | null,
+	approach?: GraphQLTypes["jsonb"] | undefined | null,
 	archived_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	author_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	confidence?: string | undefined | null,
@@ -326051,6 +326244,7 @@ export type GraphQLTypes = {
 	preview_duration_ms?: number | undefined | null,
 	preview_file?: string | undefined | null,
 	preview_rendered_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	preview_stills?: GraphQLTypes["jsonb"] | undefined | null,
 	preview_thumbnail?: string | undefined | null,
 	public_requested_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	public_review_note?: string | undefined | null,
@@ -326296,6 +326490,7 @@ export type GraphQLTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["utility_lineups_stream_cursor_value_input"]: {
 		aim_tolerance?: GraphQLTypes["float8"] | undefined | null,
+	approach?: GraphQLTypes["jsonb"] | undefined | null,
 	archived_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	author_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	confidence?: string | undefined | null,
@@ -326331,6 +326526,7 @@ export type GraphQLTypes = {
 	preview_duration_ms?: number | undefined | null,
 	preview_file?: string | undefined | null,
 	preview_rendered_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	preview_stills?: GraphQLTypes["jsonb"] | undefined | null,
 	preview_thumbnail?: string | undefined | null,
 	public_requested_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	public_review_note?: string | undefined | null,
@@ -338405,6 +338601,8 @@ export enum direct_conversations_constraint {
 }
 /** select columns of table "direct_conversations" */
 export enum direct_conversations_select_column {
+	accepted_at = "accepted_at",
+	declined_at = "declined_at",
 	is_open = "is_open",
 	last_message_at = "last_message_at",
 	position = "position",
@@ -338413,6 +338611,8 @@ export enum direct_conversations_select_column {
 }
 /** update columns of table "direct_conversations" */
 export enum direct_conversations_update_column {
+	accepted_at = "accepted_at",
+	declined_at = "declined_at",
 	is_open = "is_open",
 	last_message_at = "last_message_at",
 	position = "position",
@@ -342824,6 +343024,7 @@ export enum players_constraint {
 }
 /** select columns of table "players" */
 export enum players_select_column {
+	allow_message_requests = "allow_message_requests",
 	avatar_url = "avatar_url",
 	country = "country",
 	created_at = "created_at",
@@ -342858,6 +343059,7 @@ export enum players_select_column {
 }
 /** update columns of table "players" */
 export enum players_update_column {
+	allow_message_requests = "allow_message_requests",
 	avatar_url = "avatar_url",
 	country = "country",
 	created_at = "created_at",
@@ -343203,10 +343405,10 @@ export enum servers_select_column {
 	connect_password = "connect_password",
 	connected = "connected",
 	enabled = "enabled",
+	featured = "featured",
 	game = "game",
 	game_mode_id = "game_mode_id",
 	game_server_node_id = "game_server_node_id",
-	featured = "featured",
 	hibernating = "hibernating",
 	host = "host",
 	id = "id",
@@ -343264,10 +343466,10 @@ export enum servers_update_column {
 	connect_password = "connect_password",
 	connected = "connected",
 	enabled = "enabled",
+	featured = "featured",
 	game = "game",
 	game_mode_id = "game_mode_id",
 	game_server_node_id = "game_server_node_id",
-	featured = "featured",
 	hibernating = "hibernating",
 	host = "host",
 	id = "id",
@@ -344841,6 +345043,7 @@ export enum utility_lineups_constraint {
 /** select columns of table "utility_lineups" */
 export enum utility_lineups_select_column {
 	aim_tolerance = "aim_tolerance",
+	approach = "approach",
 	archived_at = "archived_at",
 	author_steam_id = "author_steam_id",
 	confidence = "confidence",
@@ -344876,6 +345079,7 @@ export enum utility_lineups_select_column {
 	preview_duration_ms = "preview_duration_ms",
 	preview_file = "preview_file",
 	preview_rendered_at = "preview_rendered_at",
+	preview_stills = "preview_stills",
 	preview_thumbnail = "preview_thumbnail",
 	public_requested_at = "public_requested_at",
 	public_review_note = "public_review_note",
@@ -345083,6 +345287,7 @@ export enum utility_lineups_select_column_utility_lineups_aggregate_bool_exp_var
 /** update columns of table "utility_lineups" */
 export enum utility_lineups_update_column {
 	aim_tolerance = "aim_tolerance",
+	approach = "approach",
 	archived_at = "archived_at",
 	author_steam_id = "author_steam_id",
 	confidence = "confidence",
@@ -345117,6 +345322,7 @@ export enum utility_lineups_update_column {
 	preview_duration_ms = "preview_duration_ms",
 	preview_file = "preview_file",
 	preview_rendered_at = "preview_rendered_at",
+	preview_stills = "preview_stills",
 	preview_thumbnail = "preview_thumbnail",
 	public_requested_at = "public_requested_at",
 	public_review_note = "public_review_note",

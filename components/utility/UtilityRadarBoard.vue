@@ -1,7 +1,17 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import {
+  computed,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  shallowReactive,
+  useId,
+  watch,
+} from "vue";
 import { MapPinOff, Maximize2, Minus, Plus, Tags } from "lucide-vue-next";
 import RadarCallouts from "~/components/common/RadarCallouts.vue";
+import UtilityLineupHoverPreview from "~/components/utility/UtilityLineupHoverPreview.vue";
+import { useUtilityPeek } from "~/composables/useUtilityPeek";
 import { useMapCallouts } from "~/composables/useMapCallouts";
 import {
   useRadarProjection,
@@ -45,6 +55,13 @@ const props = withDefaults(
     markers?: UtilityBoardMarker[];
     segments?: UtilityBoardSegment[];
     selectedSegmentKey?: string | null;
+    // The page draws the zoom row above the map instead; see defineExpose.
+    controls?: boolean;
+    // A radar the page before this one was already showing, so the board
+    // opens on it instead of on the blueprint and a fade.
+    seedSrc?: string | null;
+    // Resting on a marker opens the lineup's peek, as resting on its row does.
+    peek?: boolean;
   }>(),
   {
     selectedId: null,
@@ -58,6 +75,8 @@ const props = withDefaults(
     markers: () => [],
     segments: () => [],
     selectedSegmentKey: null,
+    controls: true,
+    peek: false,
   },
 );
 
@@ -91,7 +110,7 @@ watch(
  * element's own `load` because a cached PNG can be `complete` before Vue has
  * bound the listener, which would strand the fade at zero.
  */
-const displaySrc = ref<string | null>(null);
+const displaySrc = ref<string | null>(props.seedSrc ?? null);
 
 // A map with a radar per room shows the room the throws are in: the selected
 // lineup's, or else wherever most of what the board draws stands.
@@ -161,9 +180,13 @@ watch(
   radarSrc,
   (next) => {
     // No radar for this map at all: there is nothing to hold on to, and holding
-    // the previous map would be a lie about which map you are looking at.
+    // the previous map would be a lie about which map you are looking at. Not
+    // known yet is not none, though: until the calibrations are read the board
+    // keeps the radar it was opened on.
     if (!next) {
-      displaySrc.value = null;
+      if (!hasCalibration.value || radarFailed.value) {
+        displaySrc.value = null;
+      }
       return;
     }
 
@@ -202,7 +225,31 @@ type Marker = {
   origin: { x: number; y: number };
   landing: { x: number; y: number } | null;
   path: string | null;
+  // How far the smoke blooms or the fire spreads, in board units, so the open
+  // lineup can show the ground it actually covers.
+  footprint: number | null;
 };
+
+// World units. A smoke fills ~144 units around where it pops; a molotov's fire
+// spreads ~120. The rest cover no ground worth drawing.
+const FOOTPRINT_UNITS: Partial<Record<string, number>> = {
+  Smoke: 144,
+  Molotov: 120,
+};
+
+// Gradient ids have to be unique on the page, and a lineup's preview mounts a
+// second board beside this one.
+const uid = useId();
+
+const markerEls = shallowReactive(new Map<string, Element>());
+
+function trackMarker(id: string, el: unknown) {
+  if (el instanceof Element) {
+    markerEls.set(id, el);
+  } else {
+    markerEls.delete(id);
+  }
+}
 
 const markers = computed<Marker[]>(() => {
   const out: Marker[] = [];
@@ -225,12 +272,19 @@ const markers = computed<Marker[]>(() => {
             })
             .join(" ")
         : null;
+    const reach = FOOTPRINT_UNITS[lineup.utility_type];
+    const edge =
+      land && landing && reach
+        ? projectCalibrated({ ...land, x: land.x + reach })
+        : null;
     out.push({
       id: lineup.id,
       color: UTILITY_TYPE_COLORS[lineup.utility_type] ?? "#ffffff",
       origin,
       landing,
       path,
+      footprint:
+        edge && landing ? Math.hypot(edge.x - landing.x, edge.y - landing.y) : null,
     });
   }
   return out;
@@ -703,6 +757,54 @@ const zoom = ref(1);
 const panX = ref(0);
 const panY = ref(0);
 const viewportRef = ref<HTMLElement | null>(null);
+
+// What the peek must not cover: the throw as drawn -- the marker and its
+// line, which live in separate layers -- clipped to the part of the board
+// that is on screen.
+function peekLine(lineupId: string): DOMRect | null {
+  const root = viewportRef.value;
+  if (!root) {
+    return null;
+  }
+  let left = Infinity;
+  let top = Infinity;
+  let right = -Infinity;
+  let bottom = -Infinity;
+  root
+    .querySelectorAll(`[data-peek-line="${lineupId}"]`)
+    .forEach((element) => {
+      const rect = element.getBoundingClientRect();
+      if (rect.width === 0 && rect.height === 0) {
+        return;
+      }
+      left = Math.min(left, rect.left);
+      top = Math.min(top, rect.top);
+      right = Math.max(right, rect.right);
+      bottom = Math.max(bottom, rect.bottom);
+    });
+  return right > left && bottom > top
+    ? new DOMRect(left, top, right - left, bottom - top)
+    : null;
+}
+
+let releasePeekBoard: (() => void) | null = null;
+
+watch(
+  () => props.peek,
+  (enabled) => {
+    releasePeekBoard?.();
+    releasePeekBoard =
+      enabled && import.meta.client
+        ? useUtilityPeek().registerBoard({
+            rect: () => viewportRef.value?.getBoundingClientRect() ?? null,
+            line: peekLine,
+          })
+        : null;
+  },
+  { immediate: true },
+);
+
+onBeforeUnmount(() => releasePeekBoard?.());
 const svgRef = ref<SVGSVGElement | null>(null);
 const panning = ref(false);
 
@@ -771,6 +873,7 @@ let easeTimer: ReturnType<typeof setTimeout> | null = null;
 const ZOOM_EASE_MS = 260;
 
 function easeZoom(run: () => void) {
+  stopWheel();
   easing.value = true;
   if (easeTimer) {
     clearTimeout(easeTimer);
@@ -786,6 +889,7 @@ onBeforeUnmount(() => {
   if (easeTimer) {
     clearTimeout(easeTimer);
   }
+  stopWheel();
 });
 
 function zoomAt(next: number, clientX?: number, clientY?: number) {
@@ -806,13 +910,74 @@ function zoomAt(next: number, clientX?: number, clientY?: number) {
   clampPan();
 }
 
+// A wheel says how far, not only which way: a notched wheel sends one big
+// delta per click, a Magic Mouse or trackpad sends dozens of small ones a
+// second. A fixed 15% per event zoomed the second kind several times too fast,
+// and every step landed in one frame, which read as the map jumping. The
+// distance now moves a target and the board glides after it -- a share of the
+// remaining way each frame, so a stream of events stays one smooth motion.
+const WHEEL_RATE = 0.0025;
+// A trackpad pinch arrives as a ctrl-wheel with much smaller deltas.
+const PINCH_RATE = 0.01;
+// One accelerated flick must not cross the whole range in a single event.
+const WHEEL_DELTA_CAP = 60;
+// Time constant of the glide; frame-rate independent, so 120Hz is not faster.
+const WHEEL_GLIDE_MS = 50;
+
+let wheelTarget = 1;
+let wheelX = 0;
+let wheelY = 0;
+let wheelFrame = 0;
+let wheelLast = 0;
+
+function stopWheel() {
+  cancelAnimationFrame(wheelFrame);
+  wheelFrame = 0;
+  wheelLast = 0;
+}
+
+function glideWheel(now: number) {
+  const dt = wheelLast ? Math.min(64, now - wheelLast) : 16;
+  wheelLast = now;
+  const remaining = Math.log(wheelTarget / zoom.value);
+  if (Math.abs(remaining) < 0.002) {
+    zoomAt(wheelTarget, wheelX, wheelY);
+    stopWheel();
+    return;
+  }
+  zoomAt(
+    zoom.value * Math.exp(remaining * (1 - Math.exp(-dt / WHEEL_GLIDE_MS))),
+    wheelX,
+    wheelY,
+  );
+  wheelFrame = requestAnimationFrame(glideWheel);
+}
+
 function onWheel(event: WheelEvent) {
   event.preventDefault();
-  zoomAt(
-    zoom.value * (event.deltaY < 0 ? 1.15 : 1 / 1.15),
-    event.clientX,
-    event.clientY,
+  const unit =
+    event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1;
+  const delta = Math.max(
+    -WHEEL_DELTA_CAP,
+    Math.min(WHEEL_DELTA_CAP, event.deltaY * unit),
   );
+  const rate = event.ctrlKey ? PINCH_RATE : WHEEL_RATE;
+  if (!wheelFrame) {
+    wheelTarget = zoom.value;
+  }
+  wheelTarget = Math.min(
+    MAX_ZOOM,
+    Math.max(MIN_ZOOM, wheelTarget * Math.exp(-delta * rate)),
+  );
+  wheelX = event.clientX;
+  wheelY = event.clientY;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    zoomAt(wheelTarget, wheelX, wheelY);
+    return;
+  }
+  if (!wheelFrame) {
+    wheelFrame = requestAnimationFrame(glideWheel);
+  }
 }
 
 // Capture is deliberately NOT taken here. While a pointer capture is set, the
@@ -825,6 +990,7 @@ function onPointerDown(event: PointerEvent) {
   if (zoom.value <= MIN_ZOOM || event.button !== 0) {
     return;
   }
+  stopWheel();
   panning.value = true;
   dragged = false;
   captured = false;
@@ -869,10 +1035,31 @@ function onPointerUp(event: PointerEvent) {
 }
 
 function resetView() {
+  stopWheel();
   zoom.value = 1;
   panX.value = 0;
   panY.value = 0;
 }
+
+const zoomIn = () => easeZoom(() => zoomAt(zoom.value * 1.4));
+const zoomOut = () => easeZoom(() => zoomAt(zoom.value / 1.4));
+const resetZoom = () => easeZoom(() => resetView());
+const ready = computed(() => !!displaySrc.value);
+
+defineExpose({
+  ready,
+  // The square the radar is drawn in, for a page that grows it out of -- or
+  // hands it back to -- a smaller copy of itself.
+  viewport: viewportRef,
+  zoom,
+  zoomIn,
+  zoomOut,
+  resetZoom,
+  canZoomIn: computed(() => zoom.value < MAX_ZOOM),
+  canZoomOut: computed(() => zoom.value > MIN_ZOOM),
+  hasCallouts,
+  showCallouts,
+});
 
 // A new map is a new view; keeping the old pan would open it somewhere random.
 watch(
@@ -971,24 +1158,68 @@ function metaLit(key: string) {
   return props.selectedMetaKey === key || props.hoveredMetaKey === key;
 }
 
-function isLit(id: string) {
-  return props.showAllLines || activeId.value === id;
+// Lines live in their own layer above every marker, in two groups. Markers
+// used to be re-sorted so the lit one came last, and moving a node in the DOM
+// cancels whatever transition it was in -- which is why a hovered line and its
+// marker could only ever pop. Nothing is reordered now, so everything eases.
+//
+// The open lineup keeps its line while the cursor is on another marker, just
+// quieter: hovering is a look at something else, not a reason for the thing
+// you are reading to vanish and come back.
+const steadyTrails = computed(() =>
+  markers.value.filter(
+    (marker) =>
+      marker.landing &&
+      (props.showAllLines || marker.id === props.selectedId),
+  ),
+);
+
+const hoverTrail = computed(() => {
+  const id = props.hoveredId;
+  if (!id || props.showAllLines || id === props.selectedId) {
+    return [];
+  }
+  return markers.value.filter((marker) => marker.id === id && marker.landing);
+});
+
+// Scaled about its own centre, in the board's units.
+function grow(point: { x: number; y: number }, by: number) {
+  return {
+    transform: `scale(${by})`,
+    transformOrigin: `${point.x}px ${point.y}px`,
+  };
 }
 
-// The lit lineup is drawn last so its line and markers sit over the rest of the
-// board rather than under whatever happens to come after it in the list.
-const orderedMarkers = computed(() => {
-  const lit: Marker[] = [];
-  const rest: Marker[] = [];
-  for (const marker of markers.value) {
-    if (activeId.value === marker.id) {
-      lit.push(marker);
-    } else {
-      rest.push(marker);
+// The open lineup's line draws itself from the thrower to the landing -- but
+// only when it arrives new. A line already on screen because the cursor was
+// on it when you clicked does not draw a second time.
+const drawId = ref<string | null>(null);
+let drawTimer: ReturnType<typeof setTimeout> | null = null;
+
+watch(
+  () => props.selectedId,
+  (id) => {
+    drawId.value = id && id !== props.hoveredId ? id : null;
+    if (drawTimer) {
+      clearTimeout(drawTimer);
     }
+    drawTimer = setTimeout(() => (drawId.value = null), 500);
+  },
+);
+
+onBeforeUnmount(() => {
+  if (drawTimer) {
+    clearTimeout(drawTimer);
   }
-  return [...rest, ...lit];
 });
+
+function trailPath(marker: Marker) {
+  if (marker.path) {
+    return marker.path;
+  }
+  const end = marker.landing ?? marker.origin;
+  return `M${marker.origin.x} ${marker.origin.y} L${end.x} ${end.y}`;
+}
 </script>
 
 <template>
@@ -1288,61 +1519,162 @@ const orderedMarkers = computed(() => {
            beside it is mounting. -->
           <TransitionGroup name="mk" tag="g">
             <g
-              v-for="marker of orderedMarkers"
+              v-for="marker of markers"
               :key="marker.id"
+              :ref="(el) => trackMarker(marker.id, el)"
+              :data-peek-line="marker.id"
               :class="picking ? 'pointer-events-none' : 'cursor-pointer'"
               @click.stop="emit('select', marker.id)"
               @mouseenter="emit('hover', marker.id)"
               @mouseleave="emit('hover', null)"
             >
-              <path
-                v-if="marker.path && isLit(marker.id)"
-                :d="marker.path"
-                fill="none"
-                :stroke="marker.color"
-                :stroke-opacity="activeId === marker.id ? 0.95 : 0.4"
-                :stroke-width="(activeId === marker.id ? 4 : 2) * ink"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <line
-                v-else-if="marker.landing && isLit(marker.id)"
-                :x1="marker.origin.x"
-                :y1="marker.origin.y"
-                :x2="marker.landing.x"
-                :y2="marker.landing.y"
-                :stroke="marker.color"
-                :stroke-opacity="activeId === marker.id ? 0.95 : 0.4"
-                :stroke-width="(activeId === marker.id ? 4 : 2) * ink"
-                stroke-linecap="round"
-                :stroke-dasharray="`${10 * ink} ${8 * ink}`"
-              />
-
-              <circle
-                v-if="marker.landing"
-                :cx="marker.landing.x"
-                :cy="marker.landing.y"
-                :r="(activeId === marker.id ? 13 : 9) * ink"
-                :fill="marker.color"
-                :fill-opacity="activeId === marker.id ? 0.9 : 0.45"
-                stroke="#05070b"
-                :stroke-width="2 * ink"
-              />
+              <template v-if="marker.landing">
+                <!-- The landing grows under the cursor rather than swapping to
+                     a bigger ring. Where the open throw shows the ground it
+                     covers, the ring steps back for it and the dot stays. -->
+                <g
+                  class="utility-glyph"
+                  :style="grow(marker.landing, activeId === marker.id ? 1.55 : 1)"
+                >
+                  <g
+                    class="utility-glyph-fade"
+                    :opacity="activeId === marker.id && marker.footprint ? 0 : 1"
+                  >
+                    <circle
+                      :cx="marker.landing.x"
+                      :cy="marker.landing.y"
+                      :r="8.5 * ink"
+                      fill="none"
+                      stroke="#05070b"
+                      stroke-opacity="0.55"
+                      :stroke-width="2 * ink"
+                    />
+                    <circle
+                      :cx="marker.landing.x"
+                      :cy="marker.landing.y"
+                      :r="7 * ink"
+                      fill="rgba(5, 7, 11, 0.35)"
+                      :stroke="marker.color"
+                      :stroke-opacity="activeId === marker.id ? 1 : 0.75"
+                      :stroke-width="2 * ink"
+                    />
+                  </g>
+                  <circle
+                    :cx="marker.landing.x"
+                    :cy="marker.landing.y"
+                    :r="2.5 * ink"
+                    :fill="marker.color"
+                    :fill-opacity="activeId === marker.id ? 1 : 0.8"
+                  />
+                </g>
+                <!-- The ring is smaller than the dot it replaced; the target
+                     is not, and it does not grow with the ring -- a target
+                     that moves under a still cursor hovers itself on and off. -->
+                <circle
+                  :cx="marker.landing.x"
+                  :cy="marker.landing.y"
+                  :r="13 * ink"
+                  fill="transparent"
+                />
+              </template>
 
               <!-- The throw origin is the part a player has to stand on, so it is
-             drawn as a hard square while the landing stays a soft dot. -->
-              <rect
-                :x="marker.origin.x - (activeId === marker.id ? 9 : 6) * ink"
-                :y="marker.origin.y - (activeId === marker.id ? 9 : 6) * ink"
-                :width="(activeId === marker.id ? 18 : 12) * ink"
-                :height="(activeId === marker.id ? 18 : 12) * ink"
-                :fill="marker.color"
-                :fill-opacity="activeId === marker.id ? 1 : 0.65"
-                stroke="#05070b"
-                :stroke-width="2 * ink"
+             drawn as a hard square while the landing stays a soft ring. -->
+              <g
+                class="utility-glyph"
+                :style="grow(marker.origin, activeId === marker.id ? 1.3 : 1)"
+              >
+                <rect
+                  :x="marker.origin.x - 5.5 * ink"
+                  :y="marker.origin.y - 5.5 * ink"
+                  :width="11 * ink"
+                  :height="11 * ink"
+                  :rx="3 * ink"
+                  :fill="marker.color"
+                  :fill-opacity="activeId === marker.id ? 1 : 0.7"
+                  stroke="#05070b"
+                  :stroke-width="2 * ink"
+                />
+              </g>
+              <circle
+                :cx="marker.origin.x"
+                :cy="marker.origin.y"
+                :r="11 * ink"
+                fill="transparent"
               />
             </g>
           </TransitionGroup>
+
+          <!-- Faint where it leaves the hand and solid where it lands, so the
+               direction reads without an arrowhead, on a dark casing that
+               keeps it legible across the white walls. The open smoke or
+               molotov lands as the ground it covers, to the map's scale. -->
+          <g class="pointer-events-none">
+            <TransitionGroup
+              v-for="(group, layer) of [steadyTrails, hoverTrail]"
+              :key="layer"
+              name="trail"
+              tag="g"
+            >
+              <g
+                v-for="marker of group"
+                :key="marker.id"
+                :data-peek-line="marker.id"
+              >
+                <defs>
+                  <linearGradient
+                    :id="`${uid}-trail-${marker.id}`"
+                    gradientUnits="userSpaceOnUse"
+                    :x1="marker.origin.x"
+                    :y1="marker.origin.y"
+                    :x2="marker.landing!.x"
+                    :y2="marker.landing!.y"
+                  >
+                    <stop offset="0" :stop-color="marker.color" stop-opacity="0.05" />
+                    <stop offset="0.55" :stop-color="marker.color" stop-opacity="0.55" />
+                    <stop offset="1" :stop-color="marker.color" stop-opacity="1" />
+                  </linearGradient>
+                </defs>
+                <path
+                  :d="trailPath(marker)"
+                  fill="none"
+                  stroke="#05070b"
+                  :stroke-opacity="activeId === marker.id ? 0.45 : 0.2"
+                  :stroke-width="7 * ink"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  pathLength="1"
+                  class="utility-trail-line"
+                  :class="drawId === marker.id ? 'utility-trail-draw' : ''"
+                />
+                <path
+                  :d="trailPath(marker)"
+                  fill="none"
+                  :stroke="`url(#${uid}-trail-${marker.id})`"
+                  :stroke-opacity="activeId === marker.id ? 1 : 0.45"
+                  :stroke-width="(activeId === marker.id ? 3.5 : 2) * ink"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  pathLength="1"
+                  class="utility-trail-line"
+                  :class="drawId === marker.id ? 'utility-trail-draw' : ''"
+                />
+                <Transition name="trail">
+                  <circle
+                    v-if="activeId === marker.id && marker.footprint"
+                    :cx="marker.landing!.x"
+                    :cy="marker.landing!.y"
+                    :r="marker.footprint"
+                    :fill="marker.color"
+                    fill-opacity="0.16"
+                    :stroke="marker.color"
+                    stroke-opacity="0.85"
+                    :stroke-width="1.5 * ink"
+                  />
+                </Transition>
+              </g>
+            </TransitionGroup>
+          </g>
 
           <g :class="picking ? 'pointer-events-none' : ''">
             <g v-for="segment of drawnSegments" :key="`segment-${segment.key}`">
@@ -1519,7 +1851,7 @@ const orderedMarkers = computed(() => {
          whenever the map ran out of width. The shell is always the full width
          of the box, so the stack sits in the same corner at every size. -->
     <div
-      v-if="displaySrc"
+      v-if="displaySrc && controls"
       class="absolute right-2 top-2 flex flex-col overflow-hidden rounded-md border border-white/10 bg-background/80 [backdrop-filter:blur(10px)]"
       @pointerdown.stop
       @wheel.stop
@@ -1529,7 +1861,7 @@ const orderedMarkers = computed(() => {
         class="flex h-7 w-7 items-center justify-center text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground disabled:opacity-30"
         :disabled="zoom >= 6"
         :title="$t('pages.utility.board.zoom_in')"
-        @click.stop="easeZoom(() => zoomAt(zoom * 1.4))"
+        @click.stop="zoomIn"
       >
         <Plus class="h-3.5 w-3.5" />
       </button>
@@ -1538,7 +1870,7 @@ const orderedMarkers = computed(() => {
         class="flex h-7 w-7 items-center justify-center border-t border-white/10 text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground disabled:opacity-30"
         :disabled="zoom <= 1"
         :title="$t('pages.utility.board.zoom_out')"
-        @click.stop="easeZoom(() => zoomAt(zoom / 1.4))"
+        @click.stop="zoomOut"
       >
         <Minus class="h-3.5 w-3.5" />
       </button>
@@ -1547,7 +1879,7 @@ const orderedMarkers = computed(() => {
         type="button"
         class="flex h-7 w-7 items-center justify-center border-t border-white/10 text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
         :title="$t('pages.utility.board.zoom_reset')"
-        @click.stop="easeZoom(() => resetView())"
+        @click.stop="resetZoom"
       >
         <Maximize2 class="h-3.5 w-3.5" />
       </button>
@@ -1564,10 +1896,79 @@ const orderedMarkers = computed(() => {
         <Tags class="h-3.5 w-3.5" />
       </button>
     </div>
+
+    <template v-if="peek && !picking">
+      <UtilityLineupHoverPreview
+        v-for="lineup of lineups"
+        :key="lineup.id"
+        :lineup="lineup"
+        :anchor="markerEls.get(lineup.id) ?? null"
+        placement="pointer"
+        :enabled="!panning"
+      />
+    </template>
   </div>
 </template>
 
 <style scoped>
+/* Hover is a thing you do a dozen times a second across a busy site, so what
+   it changes eases rather than cuts: a line fades in and out, a marker grows
+   and settles, the open throw's line dims instead of vanishing. Short enough
+   to keep up with the cursor. */
+.trail-enter-active {
+  transition: opacity 180ms ease-out;
+}
+.trail-leave-active {
+  transition: opacity 120ms ease-in;
+}
+.trail-enter-from,
+.trail-leave-to {
+  opacity: 0;
+}
+.utility-trail-line {
+  transition:
+    stroke-opacity 160ms ease-out,
+    stroke-width 160ms ease-out;
+}
+.utility-glyph {
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.utility-glyph-fade {
+  transition: opacity 160ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trail-enter-active,
+  .trail-leave-active,
+  .utility-trail-line,
+  .utility-glyph,
+  .utility-glyph-fade {
+    transition-duration: 1ms;
+  }
+}
+
+/* pathLength="1" on the trail makes one dash exactly the line's length, so it
+   draws on with no measuring. */
+.utility-trail-draw {
+  stroke-dasharray: 1;
+  animation: utility-trail-draw 420ms cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+@keyframes utility-trail-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .utility-trail-draw {
+    animation: none;
+  }
+}
+
 /* What the board looks like before there is a map on it. Static on purpose:
    this square is the biggest thing on the page, and anything that pulses or
    sweeps at that size is the flash it was meant to replace. */

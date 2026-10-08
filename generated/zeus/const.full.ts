@@ -1543,6 +1543,8 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"direct_conversations_bool_exp",
 		_not:"direct_conversations_bool_exp",
 		_or:"direct_conversations_bool_exp",
+		accepted_at:"timestamptz_comparison_exp",
+		declined_at:"timestamptz_comparison_exp",
 		is_open:"Boolean_comparison_exp",
 		last_message_at:"timestamptz_comparison_exp",
 		position:"Int_comparison_exp",
@@ -1554,6 +1556,8 @@ export const AllTypesProps: Record<string,any> = {
 		steam_id:"bigint"
 	},
 	direct_conversations_insert_input:{
+		accepted_at:"timestamptz",
+		declined_at:"timestamptz",
 		last_message_at:"timestamptz",
 		steam_id:"bigint"
 	},
@@ -1563,6 +1567,8 @@ export const AllTypesProps: Record<string,any> = {
 		where:"direct_conversations_bool_exp"
 	},
 	direct_conversations_order_by:{
+		accepted_at:"order_by",
+		declined_at:"order_by",
 		is_open:"order_by",
 		last_message_at:"order_by",
 		position:"order_by",
@@ -1574,6 +1580,8 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	direct_conversations_select_column: "enum" as const,
 	direct_conversations_set_input:{
+		accepted_at:"timestamptz",
+		declined_at:"timestamptz",
 		last_message_at:"timestamptz",
 		steam_id:"bigint"
 	},
@@ -1582,6 +1590,8 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	direct_conversations_stream_cursor_value_input:{
+		accepted_at:"timestamptz",
+		declined_at:"timestamptz",
 		last_message_at:"timestamptz",
 		steam_id:"bigint"
 	},
@@ -28022,6 +28032,7 @@ export const AllTypesProps: Record<string,any> = {
 		abandoned_matches_aggregate:"abandoned_matches_aggregate_bool_exp",
 		aim_weapon_stats:"player_aim_weapon_stats_bool_exp",
 		aim_weapon_stats_aggregate:"player_aim_weapon_stats_aggregate_bool_exp",
+		allow_message_requests:"Boolean_comparison_exp",
 		assists:"player_assists_bool_exp",
 		assists_aggregate:"player_assists_aggregate_bool_exp",
 		assited_by_players:"player_assists_bool_exp",
@@ -28224,6 +28235,7 @@ export const AllTypesProps: Record<string,any> = {
 	players_order_by:{
 		abandoned_matches_aggregate:"abandoned_matches_aggregate_order_by",
 		aim_weapon_stats_aggregate:"player_aim_weapon_stats_aggregate_order_by",
+		allow_message_requests:"order_by",
 		assists_aggregate:"player_assists_aggregate_order_by",
 		assited_by_players_aggregate:"player_assists_aggregate_order_by",
 		avatar_url:"order_by",
@@ -33399,12 +33411,12 @@ export const AllTypesProps: Record<string,any> = {
 		connection_string:"String_comparison_exp",
 		current_match:"matches_bool_exp",
 		enabled:"Boolean_comparison_exp",
+		featured:"Boolean_comparison_exp",
 		game:"String_comparison_exp",
 		game_mode:"game_modes_bool_exp",
 		game_mode_id:"uuid_comparison_exp",
 		game_server_node:"game_server_nodes_bool_exp",
 		game_server_node_id:"String_comparison_exp",
-		featured:"Boolean_comparison_exp",
 		hibernating:"Boolean_comparison_exp",
 		host:"String_comparison_exp",
 		id:"uuid_comparison_exp",
@@ -33553,12 +33565,12 @@ export const AllTypesProps: Record<string,any> = {
 		connection_string:"order_by",
 		current_match:"matches_order_by",
 		enabled:"order_by",
+		featured:"order_by",
 		game:"order_by",
 		game_mode:"game_modes_order_by",
 		game_mode_id:"order_by",
 		game_server_node:"game_server_nodes_order_by",
 		game_server_node_id:"order_by",
-		featured:"order_by",
 		hibernating:"order_by",
 		host:"order_by",
 		id:"order_by",
@@ -44885,6 +44897,9 @@ export const AllTypesProps: Record<string,any> = {
 		vote:"order_by"
 	},
 	utility_lineups:{
+		approach:{
+
+		},
 		collection_items:{
 			distinct_on:"utility_collection_items_select_column",
 			order_by:"utility_collection_items_order_by",
@@ -44904,6 +44919,12 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"utility_lineup_favorites_select_column",
 			order_by:"utility_lineup_favorites_order_by",
 			where:"utility_lineup_favorites_bool_exp"
+		},
+		preview_stills:{
+
+		},
+		preview_stills_url:{
+
 		},
 		progress:{
 			distinct_on:"utility_lineup_progress_select_column",
@@ -45044,6 +45065,8 @@ export const AllTypesProps: Record<string,any> = {
 		variance:"utility_lineups_variance_order_by"
 	},
 	utility_lineups_append_input:{
+		approach:"jsonb",
+		preview_stills:"jsonb",
 		trajectory_preview:"jsonb"
 	},
 	utility_lineups_arr_rel_insert_input:{
@@ -45087,6 +45110,7 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"utility_lineups_bool_exp",
 		_or:"utility_lineups_bool_exp",
 		aim_tolerance:"float8_comparison_exp",
+		approach:"jsonb_comparison_exp",
 		archived_at:"timestamptz_comparison_exp",
 		author:"players_bool_exp",
 		author_steam_id:"bigint_comparison_exp",
@@ -45133,6 +45157,8 @@ export const AllTypesProps: Record<string,any> = {
 		preview_duration_ms:"Int_comparison_exp",
 		preview_file:"String_comparison_exp",
 		preview_rendered_at:"timestamptz_comparison_exp",
+		preview_stills:"jsonb_comparison_exp",
+		preview_stills_url:"jsonb_comparison_exp",
 		preview_thumbnail:"String_comparison_exp",
 		preview_thumbnail_url:"String_comparison_exp",
 		preview_url:"String_comparison_exp",
@@ -45208,6 +45234,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	utility_lineups_insert_input:{
 		aim_tolerance:"float8",
+		approach:"jsonb",
 		archived_at:"timestamptz",
 		author:"players_obj_rel_insert_input",
 		author_steam_id:"bigint",
@@ -45232,6 +45259,7 @@ export const AllTypesProps: Record<string,any> = {
 		origin_y:"float8",
 		origin_z:"float8",
 		preview_rendered_at:"timestamptz",
+		preview_stills:"jsonb",
 		progress:"utility_lineup_progress_arr_rel_insert_input",
 		public_requested_at:"timestamptz",
 		public_reviewed_at:"timestamptz",
@@ -45383,6 +45411,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	utility_lineups_order_by:{
 		aim_tolerance:"order_by",
+		approach:"order_by",
 		archived_at:"order_by",
 		author:"players_order_by",
 		author_steam_id:"order_by",
@@ -45427,6 +45456,8 @@ export const AllTypesProps: Record<string,any> = {
 		preview_duration_ms:"order_by",
 		preview_file:"order_by",
 		preview_rendered_at:"order_by",
+		preview_stills:"order_by",
+		preview_stills_url:"order_by",
 		preview_thumbnail:"order_by",
 		preview_thumbnail_url:"order_by",
 		preview_url:"order_by",
@@ -45468,6 +45499,8 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid"
 	},
 	utility_lineups_prepend_input:{
+		approach:"jsonb",
+		preview_stills:"jsonb",
 		trajectory_preview:"jsonb"
 	},
 	utility_lineups_select_column: "enum" as const,
@@ -45483,6 +45516,7 @@ export const AllTypesProps: Record<string,any> = {
 	utility_lineups_select_column_utility_lineups_aggregate_bool_exp_var_samp_arguments_columns: "enum" as const,
 	utility_lineups_set_input:{
 		aim_tolerance:"float8",
+		approach:"jsonb",
 		archived_at:"timestamptz",
 		author_steam_id:"bigint",
 		created_at:"timestamptz",
@@ -45503,6 +45537,7 @@ export const AllTypesProps: Record<string,any> = {
 		origin_y:"float8",
 		origin_z:"float8",
 		preview_rendered_at:"timestamptz",
+		preview_stills:"jsonb",
 		public_requested_at:"timestamptz",
 		public_reviewed_at:"timestamptz",
 		public_reviewed_by:"bigint",
@@ -45624,6 +45659,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	utility_lineups_stream_cursor_value_input:{
 		aim_tolerance:"float8",
+		approach:"jsonb",
 		archived_at:"timestamptz",
 		author_steam_id:"bigint",
 		created_at:"timestamptz",
@@ -45644,6 +45680,7 @@ export const AllTypesProps: Record<string,any> = {
 		origin_y:"float8",
 		origin_z:"float8",
 		preview_rendered_at:"timestamptz",
+		preview_stills:"jsonb",
 		public_requested_at:"timestamptz",
 		public_reviewed_at:"timestamptz",
 		public_reviewed_by:"bigint",
@@ -52623,6 +52660,8 @@ export const ReturnTypes: Record<string,any> = {
 		size:"Float"
 	},
 	direct_conversations:{
+		accepted_at:"timestamptz",
+		declined_at:"timestamptz",
 		is_open:"Boolean",
 		last_message_at:"timestamptz",
 		position:"Int",
@@ -52651,12 +52690,16 @@ export const ReturnTypes: Record<string,any> = {
 		steam_id:"Float"
 	},
 	direct_conversations_max_fields:{
+		accepted_at:"timestamptz",
+		declined_at:"timestamptz",
 		last_message_at:"timestamptz",
 		position:"Int",
 		room_id:"String",
 		steam_id:"bigint"
 	},
 	direct_conversations_min_fields:{
+		accepted_at:"timestamptz",
+		declined_at:"timestamptz",
 		last_message_at:"timestamptz",
 		position:"Int",
 		room_id:"String",
@@ -66498,6 +66541,7 @@ export const ReturnTypes: Record<string,any> = {
 		abandoned_matches_aggregate:"abandoned_matches_aggregate",
 		aim_weapon_stats:"player_aim_weapon_stats",
 		aim_weapon_stats_aggregate:"player_aim_weapon_stats_aggregate",
+		allow_message_requests:"Boolean",
 		assists:"player_assists",
 		assists_aggregate:"player_assists_aggregate",
 		assited_by_players:"player_assists",
@@ -68611,12 +68655,12 @@ export const ReturnTypes: Record<string,any> = {
 		connection_string:"String",
 		current_match:"matches",
 		enabled:"Boolean",
+		featured:"Boolean",
 		game:"String",
 		game_mode:"game_modes",
 		game_mode_id:"uuid",
 		game_server_node:"game_server_nodes",
 		game_server_node_id:"String",
-		featured:"Boolean",
 		hibernating:"Boolean",
 		host:"String",
 		id:"uuid",
@@ -73754,6 +73798,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	utility_lineups:{
 		aim_tolerance:"float8",
+		approach:"jsonb",
 		archived_at:"timestamptz",
 		author:"players",
 		author_steam_id:"bigint",
@@ -73800,6 +73845,8 @@ export const ReturnTypes: Record<string,any> = {
 		preview_duration_ms:"Int",
 		preview_file:"String",
 		preview_rendered_at:"timestamptz",
+		preview_stills:"jsonb",
+		preview_stills_url:"jsonb",
 		preview_thumbnail:"String",
 		preview_thumbnail_url:"String",
 		preview_url:"String",

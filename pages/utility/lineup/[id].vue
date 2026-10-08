@@ -23,7 +23,7 @@ definePageMeta({
     const id = String(to.params.id);
     try {
       const { data } = await getGraphqlClient().query({
-        query: utilityLineupQuery,
+        query: utilityLineupQuery(),
         variables: { id },
         fetchPolicy: "cache-first",
       });

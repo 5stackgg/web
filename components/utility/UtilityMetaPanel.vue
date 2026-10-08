@@ -1,122 +1,119 @@
 <script setup lang="ts">
-import { computed, watch } from "vue";
-import { PencilLine } from "lucide-vue-next";
+import { computed } from "vue";
+import { useI18n } from "vue-i18n";
+import { BadgeCheck } from "lucide-vue-next";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
-import { Button } from "~/components/ui/button";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
-import UtilityEmpty from "~/components/utility/UtilityEmpty.vue";
 import UtilitySkeletonList from "~/components/utility/UtilitySkeletonList.vue";
-import UtilityLineupCard from "~/components/utility/UtilityLineupCard.vue";
-import UtilityPracticeButton from "~/components/utility/UtilityPracticeButton.vue";
+import UtilityRadarThumb from "~/components/utility/UtilityRadarThumb.vue";
+import UtilityThrowIcon from "~/components/utility/UtilityThrowIcon.vue";
+import UtilityRow from "~/components/utility/UtilityRow.vue";
 import UtilityThrowersMeter from "~/components/utility/UtilityThrowersMeter.vue";
+import UtilityTypeSections from "~/components/utility/UtilityTypeSections.vue";
 import { useMapCallouts } from "~/composables/useMapCallouts";
-import { matchUtilityMetaSpot } from "~/utilities/utilityDisplay";
+import {
+  UTILITY_TYPE_COLORS,
+  utilityThrowButtonsKey,
+} from "~/utilities/utilityDisplay";
 import type { UtilityMetaSpot } from "~/utilities/utilityDisplay";
-import type {
-  UtilityLineup,
-  UtilitySide,
-  UtilityType,
-} from "~/types/utility";
+import type { UtilityType } from "~/types/utility";
 
+export type UtilityMetaScope = "all" | "unwritten" | "written";
+
+/**
+ * What people actually throw on this map, one row per spot. A spot somebody
+ * has written up and one nobody has are the same row -- the dashed frame and
+ * the amber meter say which -- and either opens into the card, where the
+ * page shows how it is thrown and what to do about it.
+ */
 const props = withDefaults(
   defineProps<{
     mapName: string;
+    // Past the threshold and the side filter, cut to the scope: everything
+    // the list would show with no type picked.
     spots: UtilityMetaSpot[];
-    lineups: UtilityLineup[];
-    selectedKey: string | null;
-    hoveredKey: string | null;
-    canAuthor: boolean;
+    // How many lineups the viewer can open sit in each cluster, by spot key.
+    // Null until that is known, and the server's own count stands in.
+    written: Record<string, number> | null;
+    // The busiest spot on the map, so every meter reads against one scale.
+    busiest: number;
+    types: UtilityType[];
+    scope: UtilityMetaScope;
+    scopeCounts: Record<UtilityMetaScope, number>;
+    // The floor lives in the map's top row. The panel only reads it, to say
+    // so when nothing clears it and to offer the one below.
     threshold: string;
     thresholdOptions: Array<{ key: string; label: string }>;
-    types: UtilityType[];
-    sides: UtilitySide[];
+    hoveredKey: string | null;
     // The page has not asked this map for its mined spots yet. An empty list
-    // is then not an answer, and "nobody throws anything here" is the wrong
-    // thing to print over a map that simply has not been queried.
+    // is then not an answer.
     loading?: boolean;
   }>(),
   { loading: false },
 );
 
 const emit = defineEmits<{
-  (event: "update:selectedKey", value: string | null): void;
+  (event: "update:scope", value: UtilityMetaScope): void;
   (event: "update:hoveredKey", value: string | null): void;
   (event: "update:threshold", value: string): void;
-  (event: "open", id: string): void;
-  (event: "write-up", spot: UtilityMetaSpot): void;
+  (event: "open", key: string): void;
+  (event: "toggle-type", type: UtilityType): void;
 }>();
 
-const thresholdModel = computed<string>({
-  get: () => props.threshold,
-  set: (value) => emit("update:threshold", value),
+const { t } = useI18n();
+
+const scopeModel = computed<string>({
+  get: () => props.scope,
+  set: (value) => emit("update:scope", value as UtilityMetaScope),
 });
 
-const visibleSpots = computed(() =>
-  props.spots.filter((spot) => {
-    if (props.types.length && !props.types.includes(spot.utilityType)) {
-      return false;
-    }
-    if (
-      props.sides.length &&
-      (!spot.side || !props.sides.includes(spot.side as UtilitySide))
-    ) {
-      return false;
-    }
-    return true;
-  }),
-);
+const scopeOptions = computed(() => [
+  {
+    key: "all",
+    label: t("pages.utility.meta.scope_all"),
+    count: props.scopeCounts.all,
+  },
+  {
+    key: "unwritten",
+    label: t("pages.utility.meta.scope_unwritten"),
+    count: props.scopeCounts.unwritten,
+  },
+  {
+    key: "written",
+    label: t("pages.utility.meta.scope_written"),
+    count: props.scopeCounts.written,
+  },
+]);
 
-// Which saved lineups sit in a cluster; the panel shows THOSE. A spot only
-// appears as itself when there is no lineup to stand in for it.
-const lineupsBySpot = computed(() => {
-  const grouped: Record<string, UtilityLineup[]> = {};
-  for (const lineup of props.lineups) {
-    const spot = matchUtilityMetaSpot(lineup, props.spots);
-    if (spot) {
-      (grouped[spot.key] ??= []).push(lineup);
-    }
-  }
-  return grouped;
-});
-
-// Every bar is read against the busiest spot on the map -- the same number the
-// lineup list reads against -- so the column shows the shape of the
-// distribution rather than eight bars all pinned full.
-const busiest = computed(() =>
-  Math.max(1, ...props.spots.map((spot) => spot.throwers)),
-);
-
-const rows = computed(() =>
-  visibleSpots.value.map((spot) => {
-    const matched = lineupsBySpot.value[spot.key] ?? [];
-    return {
-      spot,
-      matched,
-      // The server's count wins; the page can only see the lineups it fetched.
-      unwritten: (spot.lineups || matched.length) === 0,
-    };
-  }),
-);
-
-// Throws add up across clusters; throwers do not — the same player shows up in
-// every spot they throw, so summing `throwers` would invent a player count.
-const totalThrows = computed(() =>
-  visibleSpots.value.reduce((sum, spot) => sum + spot.throws, 0),
-);
+function writtenCount(spot: UtilityMetaSpot) {
+  return props.written ? (props.written[spot.key] ?? 0) : spot.lineups;
+}
 
 const { autoName } = useMapCallouts(() => props.mapName);
 
-// A cluster nobody has written up still has a name -- the map's, from where the
-// throw goes and where it comes from. Better than "Nobody has written this up"
-// as the thing you scan a list by.
-function spotName(spot: UtilityMetaSpot): string {
-  return autoName(spot.utilityType, spot.origin, spot.landing);
+// A cluster has no name of its own, but the map knows where it goes and where
+// it comes from -- a better handle to scan a list by than its classification.
+function spotName(spot: UtilityMetaSpot) {
+  return (
+    autoName(spot.utilityType, spot.origin, spot.landing) ||
+    t("pages.utility.meta.unnamed", {
+      type: t(`pages.utility.types.${spot.utilityType}`),
+    })
+  );
 }
 
-const unwrittenCount = computed(
-  () => rows.value.filter((row) => row.unwritten).length,
+const shown = computed(() =>
+  props.spots.filter(
+    (spot) => !props.types.length || props.types.includes(spot.utilityType),
+  ),
+);
+
+// Throws add up across clusters; throwers do not -- the same player shows up
+// in every spot they throw, so summing them would invent a player count.
+const totalThrows = computed(() =>
+  props.spots.reduce((sum, spot) => sum + spot.throws, 0),
 );
 
 const refreshedAt = computed(() => {
@@ -129,250 +126,207 @@ const refreshedAt = computed(() => {
   return newest;
 });
 
-// Picking a ring on the board has to bring its row over, or the panel is just
-// a list you have to hunt through for the thing you already pointed at.
-watch(
-  () => props.selectedKey,
-  (key) => {
-    if (!key || typeof document === "undefined") {
-      return;
-    }
-    document
-      .getElementById(`utility-meta-${key}`)
-      ?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  },
-);
-
-function toggle(key: string) {
-  emit("update:selectedKey", props.selectedKey === key ? null : key);
-}
-
-// A spot filtered out from under the selection would otherwise stay highlighted
-// on the board with nothing in the list pointing at it.
-watch(visibleSpots, (list) => {
-  if (
-    props.selectedKey &&
-    !list.some((spot) => spot.key === props.selectedKey)
-  ) {
-    emit("update:selectedKey", null);
-  }
+// Nothing clears the floor: offer the one below it instead of a dead end.
+const lowerThreshold = computed(() => {
+  const at = props.thresholdOptions.findIndex(
+    (option) => option.key === props.threshold,
+  );
+  return at > 0 ? props.thresholdOptions[at - 1] : null;
 });
+
+const typeOf = (spot: UtilityMetaSpot) => spot.utilityType;
+const keyOf = (spot: UtilityMetaSpot) => spot.key;
 </script>
 
 <template>
   <div class="flex flex-col gap-2">
-    <!-- Distinct players, so the floor cannot be met by one person throwing
-         the same spot over and over. -->
-    <div class="flex items-center gap-2">
-      <span
-        class="shrink-0 font-mono text-[0.55rem] uppercase tracking-[0.16em] text-muted-foreground"
-      >
-        {{ $t("pages.utility.meta.min_throwers") }}
-      </span>
-      <AnimatedFilters
-        v-model="thresholdModel"
-        :options="thresholdOptions"
-        square
-        class="ml-auto"
-      />
-    </div>
-
-    <div
-      v-if="!loading"
-      class="flex items-center justify-between gap-2 px-0.5 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground"
-    >
-      <span>
-        {{
-          $t("pages.utility.meta.summary", {
-            spots: visibleSpots.length,
-            throws: totalThrows,
-          })
-        }}
-        <span
-          v-if="unwrittenCount"
-          class="ml-1 text-[hsl(var(--tac-amber))]"
-        >
-          · {{ $t("pages.utility.meta.unwritten_count", { count: unwrittenCount }) }}
-        </span>
-      </span>
-      <span v-if="refreshedAt" class="flex shrink-0 items-center gap-1">
-        <TimeAgo :date="refreshedAt" hide-icon />
-      </span>
-    </div>
-
-    <HeightSwap>
-    <UtilitySkeletonList v-if="loading" key="loading" :count="3" />
-
-    <UtilityEmpty
-      v-else-if="!rows.length"
-      key="empty"
-      :title="$t('pages.utility.meta.empty')"
-      :description="$t('pages.utility.meta.empty_description')"
+    <!-- Which spots, where Public and Mine sit on Lineups. -->
+    <AnimatedFilters
+      v-model="scopeModel"
+      :options="scopeOptions"
+      stacked
+      :aria-label="$t('pages.utility.meta.scope_label')"
     />
 
-    <!-- The lineups themselves, in mined order: the busiest cluster's write-up
-         first. A cluster nobody has written up has no lineup to show, so it
-         holds its place with a dashed stub until someone fills it.
+    <HeightSwap>
+      <UtilitySkeletonList v-if="loading" key="loading" :count="3" shape="row" />
 
-         The threshold chips swap the whole set, so rows arrive and leave
-         rather than blink; the gap rides inside the clip (-mt on the list,
-         pt inside each cell) so it collapses with a leaving row instead of
-         leaving a hole. -->
-    <TransitionGroup v-else key="rows" tag="div" name="mrow" class="-mt-2 flex flex-col">
-      <div v-for="row of rows" :key="row.spot.key" class="mrow">
-        <div class="min-h-0 overflow-hidden">
-        <div
-          :id="`utility-meta-${row.spot.key}`"
-          class="flex flex-col gap-2 pt-2"
+      <p
+        v-else-if="!scopeCounts.all"
+        key="none"
+        class="px-0.5 text-xs leading-relaxed text-muted-foreground"
+      >
+        {{ $t("pages.utility.meta.none_at_threshold", { count: threshold }) }}
+        <button
+          v-if="lowerThreshold"
+          type="button"
+          class="font-semibold text-[hsl(var(--tac-amber))] underline-offset-2 hover:underline"
+          @click="emit('update:threshold', lowerThreshold.key)"
         >
-          <template v-if="row.matched.length">
-            <UtilityLineupCard
-              v-for="lineup of row.matched"
-              :key="lineup.id"
-              :lineup="lineup"
-              :mode="selectedKey === row.spot.key ? 'card' : 'row'"
-              :selected="selectedKey === row.spot.key"
-              :hovered="hoveredKey === row.spot.key"
-              :meta-throwers="row.spot.throwers"
-              :meta-throws="row.spot.throws"
-              :meta-busiest="busiest"
-              open-in-place
-              @select="() => toggle(row.spot.key)"
-              @hover="(id) => emit('update:hoveredKey', id ? row.spot.key : null)"
-              @open="(id) => emit('open', id)"
-            />
-          </template>
+          {{
+            $t("pages.utility.meta.show_threshold", {
+              label: lowerThreshold.label,
+            })
+          }}
+        </button>
+      </p>
 
-          <div
-            v-else
-            role="button"
-            tabindex="0"
-            class="flex cursor-pointer items-center gap-2.5 rounded-md border border-dashed py-2 pl-3 pr-2.5 transition-colors duration-150"
-            :class="
-              selectedKey === row.spot.key
-                ? 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.08)]'
-                : hoveredKey === row.spot.key
-                  ? 'border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.03)]'
-                  : 'border-border/70 hover:border-[hsl(var(--tac-amber)/0.35)]'
-            "
-            @click="toggle(row.spot.key)"
-            @keydown.enter="toggle(row.spot.key)"
-            @keydown.space.prevent="toggle(row.spot.key)"
-            @mouseenter="emit('update:hoveredKey', row.spot.key)"
-            @mouseleave="emit('update:hoveredKey', null)"
-          >
-            <div class="flex min-w-0 flex-1 flex-col gap-1">
-              <span
-                class="truncate text-sm font-medium leading-tight"
-                :class="
-                  spotName(row.spot) ? '' : 'text-muted-foreground'
-                "
-              >
-                {{ spotName(row.spot) || $t("pages.utility.meta.unwritten") }}
-              </span>
-              <span
-                class="truncate font-mono text-[0.62rem] uppercase leading-relaxed tracking-[0.1em] text-muted-foreground"
-              >
-                {{ $t(`pages.utility.types.${row.spot.utilityType}`) }}
-                <template v-if="row.spot.side">
-                  · {{ $t(`pages.utility.sides.${row.spot.side}`) }}
-                </template>
-                <template v-if="row.spot.technique">
-                  · {{ $t(`pages.utility.techniques.${row.spot.technique}`) }}
-                </template>
-              </span>
-            </div>
+      <p
+        v-else-if="!spots.length"
+        key="scope-empty"
+        class="px-0.5 text-xs leading-relaxed text-muted-foreground"
+      >
+        {{
+          scope === "written"
+            ? $t("pages.utility.meta.none_written")
+            : $t("pages.utility.meta.all_written")
+        }}
+      </p>
 
-            <!-- Two verbs, no words. An unwritten spot offers exactly two
-                 things -- go throw it, or write it down -- and at this row
-                 height a pair of labels would push the classification line
-                 into a truncation. The glyphs carry it and the bubbles say
-                 the rest, which is what FiveStackToolTip is for.
+      <div v-else key="rows" class="flex flex-col">
+        <p
+          class="flex items-center justify-between gap-2 px-0.5 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground"
+        >
+          <span class="tabular-nums">
+            {{
+              $t("pages.utility.meta.summary", {
+                spots: spots.length,
+                throws: totalThrows.toLocaleString(),
+              })
+            }}
+          </span>
+          <span v-if="refreshedAt" class="flex shrink-0 items-center gap-1">
+            <TimeAgo :date="refreshedAt" hide-icon />
+          </span>
+        </p>
 
-                 Try-it comes first because it is the cheaper of the two: you
-                 find out whether the spot is worth writing up by standing on
-                 it, not by opening the author form. -->
-            <div class="flex shrink-0 items-center gap-0.5" @click.stop>
-              <UtilityPracticeButton
-                :spot="row.spot"
-                :map-name="mapName"
-                shape="icon"
-              />
-              <FiveStackToolTip v-if="canAuthor" as-child :delay-duration="120">
-                <template #trigger>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    class="h-7 w-7 shrink-0 text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))]"
-                    @click.stop="emit('write-up', row.spot)"
+        <UtilityTypeSections
+          :items="shown"
+          :type-of="typeOf"
+          :key-of="keyOf"
+          :types="types"
+          @toggle-type="(type) => emit('toggle-type', type)"
+        >
+          <template #default="{ item: spot }">
+            <UtilityRow
+              :id="`utility-meta-${spot.key}`"
+              :color="UTILITY_TYPE_COLORS[spot.utilityType]"
+              :dashed="!writtenCount(spot)"
+              :hovered="hoveredKey === spot.key"
+              @select="emit('open', spot.key)"
+              @hover="(on) => emit('update:hoveredKey', on ? spot.key : null)"
+            >
+              <template #thumb>
+                <!-- The dashed frame is the mark; this is what it means. -->
+                <FiveStackToolTip
+                  v-if="!writtenCount(spot)"
+                  as-child
+                  side="left"
+                  :delay-duration="120"
+                >
+                  <template #trigger>
+                    <span
+                      tabindex="0"
+                      role="img"
+                      data-unwritten
+                      class="block shrink-0 rounded-[3px] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[hsl(var(--tac-amber))]"
+                      :aria-label="`${$t('pages.utility.meta.unwritten')}. ${$t('pages.utility.meta.unwritten_description')}`"
+                      @keydown.enter.stop
+                      @keydown.space.stop
+                    >
+                      <UtilityRadarThumb
+                        :map-name="mapName"
+                        :origin="spot.origin"
+                        :landing="spot.landing"
+                        :color="UTILITY_TYPE_COLORS[spot.utilityType]"
+                        :size="40"
+                      />
+                    </span>
+                  </template>
+                  <span class="font-semibold">
+                    {{ $t("pages.utility.meta.unwritten") }}
+                  </span>
+                  <span class="block max-w-[32ch] text-muted-foreground">
+                    {{ $t("pages.utility.meta.unwritten_description") }}
+                  </span>
+                </FiveStackToolTip>
+                <UtilityRadarThumb
+                  v-else
+                  :map-name="mapName"
+                  :origin="spot.origin"
+                  :landing="spot.landing"
+                  :color="UTILITY_TYPE_COLORS[spot.utilityType]"
+                  :size="40"
+                />
+              </template>
+
+              {{ spotName(spot) }}
+
+              <template v-if="writtenCount(spot)" #badges>
+                <FiveStackToolTip as-child :delay-duration="120">
+                  <template #trigger>
+                    <BadgeCheck class="h-3.5 w-3.5 shrink-0 text-success" />
+                  </template>
+                  {{ $t("pages.utility.meta.written_up") }}
+                </FiveStackToolTip>
+              </template>
+
+              <template #line2>
+                <span class="min-w-0 truncate">
+                  <template v-if="spot.side">
+                    <span class="text-foreground">
+                      {{ $t(`pages.utility.sides.${spot.side}`) }}
+                    </span>
+                    <span aria-hidden="true" class="mx-1.5 text-border">/</span>
+                  </template>
+                  <template v-if="spot.technique">
+                    {{ $t(`pages.utility.techniques.${spot.technique}`) }}
+                    <span aria-hidden="true" class="mx-1.5 text-border">/</span>
+                  </template>
+                  <span
+                    class="inline-block align-[-0.39em]"
+                    :title="
+                      $t(
+                        `pages.utility.throw_buttons.${utilityThrowButtonsKey(spot.throwStrength)}`,
+                      )
+                    "
                   >
-                    <PencilLine class="h-3.5 w-3.5" />
-                  </Button>
-                </template>
-                <div class="flex max-w-[15rem] flex-col gap-1">
-                  <span class="text-xs font-medium">
-                    {{ $t("pages.utility.meta.write_up") }}
+                    <UtilityThrowIcon
+                      :strength="spot.throwStrength"
+                      :label="
+                        $t(
+                          `pages.utility.throw_buttons.${utilityThrowButtonsKey(spot.throwStrength)}`,
+                        )
+                      "
+                      class="block h-[1.5em] w-[1.04em] [&_[data-part=shell]]:stroke-muted-foreground [&_[data-part=shell]]:[stroke-width:1.5]"
+                    />
                   </span>
-                  <span class="text-xs leading-relaxed text-muted-foreground">
-                    {{ $t("pages.utility.meta.write_up_hint") }}
-                  </span>
-                </div>
-              </FiveStackToolTip>
-            </div>
+                  <template v-if="writtenCount(spot)">
+                    <span aria-hidden="true" class="mx-1.5 text-border">/</span>
+                    {{
+                      $t(
+                        "pages.utility.meta.lineup_count",
+                        { count: writtenCount(spot) },
+                        writtenCount(spot),
+                      )
+                    }}
+                  </template>
+                </span>
+              </template>
 
-            <UtilityThrowersMeter
-              :count="row.spot.throwers"
-              :max="busiest"
-              amber
-            />
-
-            <!-- A written-up spot is a lineup card, and a lineup card always
-                 reserves its overflow trigger whether or not the trigger is
-                 showing. A stub has no menu to reserve, so without this its
-                 meter sat 34px right of every meter above and below it and the
-                 column read as a padding bug. Same box, same offsets, nothing
-                 in it. -->
-            <span class="-mr-0.5 h-6 w-6 shrink-0" aria-hidden="true" />
-          </div>
-        </div>
-        </div>
+              <template #right>
+                <UtilityThrowersMeter
+                  :count="spot.throwers"
+                  :max="busiest"
+                  :color="UTILITY_TYPE_COLORS[spot.utilityType]"
+                  :amber="!writtenCount(spot)"
+                  class="!w-14"
+                />
+              </template>
+            </UtilityRow>
+          </template>
+        </UtilityTypeSections>
       </div>
-    </TransitionGroup>
     </HeightSwap>
   </div>
 </template>
-
-<style scoped>
-/* Fold, do not fly: the row's own height carries the change, so the rows below
-   follow it instead of jumping to meet it. */
-.mrow {
-  display: grid;
-  grid-template-rows: 1fr;
-}
-.mrow-enter-active {
-  transition:
-    grid-template-rows 240ms cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 220ms ease-out;
-}
-.mrow-leave-active {
-  transition:
-    grid-template-rows 200ms cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 110ms ease-in;
-}
-.mrow-enter-from,
-.mrow-leave-to {
-  grid-template-rows: 0fr;
-  opacity: 0;
-}
-.mrow-move {
-  transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .mrow-enter-active,
-  .mrow-leave-active,
-  .mrow-move {
-    transition-duration: 1ms;
-  }
-}
-</style>

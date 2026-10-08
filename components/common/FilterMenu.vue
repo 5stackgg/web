@@ -52,9 +52,15 @@ const open = defineModel<boolean>("open", { default: false });
           <ChevronDown class="h-3 w-3 opacity-50 max-md:hidden" />
         </button>
       </PopoverTrigger>
+      <!-- Capped to the room the popper has, so a long menu scrolls inside
+           itself instead of running off the screen. -->
       <PopoverContent
         :align="align || 'end'"
-        :class="contentClass || 'w-[min(90vw,440px)] p-4'"
+        :collision-padding="8"
+        :class="[
+          contentClass || 'w-[min(90vw,440px)] p-4',
+          'max-h-[var(--reka-popover-content-available-height)] overflow-y-auto overscroll-contain',
+        ]"
       >
         <slot />
       </PopoverContent>

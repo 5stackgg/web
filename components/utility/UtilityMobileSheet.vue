@@ -73,6 +73,7 @@ const handleLabel = computed(() =>
 defineExpose({
   expand: () => (expanded.value = true),
   collapse: () => (expanded.value = false),
+  isExpanded: () => expanded.value,
 });
 </script>
 
@@ -99,10 +100,8 @@ defineExpose({
       >
         <span aria-hidden="true" class="h-1 w-10 rounded-full bg-white/25" />
       </button>
-      <div
-        v-bind="$attrs"
-        class="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pb-[max(1rem,env(safe-area-inset-bottom))]"
-      >
+      <!-- The card inside scrolls itself, so this only gives it the room. -->
+      <div v-bind="$attrs" class="min-h-0 flex-1">
         <slot />
       </div>
     </section>

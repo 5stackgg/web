@@ -24,11 +24,16 @@ export function clipDownloadName(clip: {
   return `clip-${clip.id.slice(0, 8)}.mp4`;
 }
 
-// Append `dl=1` so the worker forces Content-Disposition: attachment.
-export function clipDownloadUrl(downloadUrl: string): string {
+// Append `dl=1` so the worker forces Content-Disposition: attachment. `name` is
+// the filename the worker puts on it: the browser ignores `<a download>` on a
+// cross-origin link, so the attribute alone never names the file.
+export function clipDownloadUrl(downloadUrl: string, name?: string): string {
   try {
     const u = new URL(downloadUrl);
     u.searchParams.set("dl", "1");
+    if (name) {
+      u.searchParams.set("name", name);
+    }
     return u.toString();
   } catch {
     return downloadUrl;

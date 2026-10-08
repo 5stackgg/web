@@ -48,8 +48,9 @@ const props = withDefaults(
     clipKey?: string | number | null;
     // Initial muted state. After mount the component owns mute/volume.
     initialMuted?: boolean;
+    loop?: boolean;
   }>(),
-  { initialMuted: false },
+  { initialMuted: false, loop: false },
 );
 
 const emit = defineEmits<{
@@ -753,6 +754,7 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
           :poster="poster ?? undefined"
           class="absolute inset-0 h-full w-full cursor-pointer object-contain"
           :muted="muted"
+          :loop="loop"
           playsinline
           preload="metadata"
           @ended="onVideoEnded"

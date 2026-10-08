@@ -183,7 +183,7 @@ async function loadResults(scanId: string) {
       return;
     }
     const { data: lineupRows } = await client.query({
-      query: utilityLineupsQuery,
+      query: utilityLineupsQuery(),
       variables: {
         where: { id: { _in: ids } },
         order_by: [{ created_at: order_by.desc }],

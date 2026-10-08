@@ -183,7 +183,7 @@ async function lookForSolvedLineup(since: string) {
   }
   try {
     const { data } = await getGraphqlClient().query({
-      query: utilityLineupsQuery,
+      query: utilityLineupsQuery(),
       variables: {
         where: {
           map_name: { _eq: mapName.value },

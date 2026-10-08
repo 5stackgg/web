@@ -117,6 +117,20 @@ const props = defineProps<{
   // Camera mode, heat toggle and util filter are owned by the shared chrome
   // (ReplayChrome via ReplayViewer) so 2D and 3D stay in sync.
   camMode?: "orbit" | "top" | "follow";
+  // A spot to look at instead of the whole map: once the map is in, the camera
+  // eases from the overview down to it, looking along `heading` (source yaw,
+  // radians), and `span` source units across stay in view. Emits `framed` on
+  // arrival -- or straight away when there is nothing to frame.
+  frame?: {
+    x: number;
+    y: number;
+    z: number;
+    span: number;
+    heading?: number | null;
+    // Radians to swing off `heading`, toward whichever side has more map
+    // behind the target. Straight down a throw its arc reads as a flat line.
+    swing?: number | null;
+  } | null;
   heatOn?: boolean;
   typeFilter?: Record<string, boolean>;
   // Roof cut slider: 0..100, 100 = full map. With a view mesh it is a height
@@ -192,6 +206,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: "select-util", gid: number): void;
   (e: "mesh", kind: "view" | "tri" | "radar"): void;
+  (e: "framed"): void;
 }>();
 const { t } = useI18n();
 
@@ -226,6 +241,7 @@ const UTILITY_COL: Record<string, number> = {
 let cleanup: (() => void) | null = null;
 let apply: (() => void) | null = null;
 let setCamMode: ((m: "orbit" | "top" | "follow") => void) | null = null;
+let frameTo: (() => void) | null = null;
 // set when the user right-drag free-looks, so follow stops fighting the camera
 // until the mode/focus changes again.
 let followSuppressed = false;
@@ -583,6 +599,16 @@ onMounted(() => {
 
   // ----- ground -----
   let mapSpan = meshMode ? 6000 : C;
+  // World-space middle of the map; the radar plane is centred on the origin.
+  const mapCenter = new THREE.Vector3();
+  // The overview is where every map opens; a frame is only flown to once there
+  // is a map under it, or the camera would dive into black.
+  let sceneReady = false;
+  function meshReady(kind: "view" | "tri" | "radar") {
+    sceneReady = true;
+    emit("mesh", kind);
+    frameTo?.();
+  }
   if (meshMode) {
     status.value = t("match.replay.loading_map");
     loading.value = true;
@@ -593,11 +619,11 @@ onMounted(() => {
       status.value = `mesh unavailable (${e.message}) — radar fallback`;
       loading.value = false;
       buildRadar();
-      emit("mesh", "radar");
+      meshReady("radar");
     });
   } else {
     buildRadar();
-    emit("mesh", "radar");
+    meshReady("radar");
   }
 
   // Prefers the view mesh; builds without one (anything published before
@@ -616,7 +642,7 @@ onMounted(() => {
         buildViewMesh(view);
         status.value = "";
         loading.value = false;
-        emit("mesh", "view");
+        meshReady("view");
         return;
       } catch (err) {
         if (disposed) {
@@ -638,7 +664,7 @@ onMounted(() => {
       return;
     }
     buildTriMesh(buf);
-    emit("mesh", "tri");
+    meshReady("tri");
   }
 
   function buildTriMesh(buf: ArrayBuffer) {
@@ -731,6 +757,7 @@ onMounted(() => {
       cy = (bb.min.y + bb.max.y) / 2,
       cz = (bb.min.z + bb.max.z) / 2;
     mapSpan = Math.max(bb.max.x - bb.min.x, bb.max.y - bb.min.y);
+    mapCenter.set(cx, cz, -cy);
     // world Y = source z (mesh is rotated -π/2 about X); used by the ceiling slider
     meshMinY = bb.min.z;
     meshMaxY = bb.max.z;
@@ -803,6 +830,7 @@ onMounted(() => {
     const cy = (bb.min.y + bb.max.y) / 2;
     const cz = (bb.min.z + bb.max.z) / 2;
     mapSpan = Math.max(bb.max.x - bb.min.x, bb.max.y - bb.min.y);
+    mapCenter.set(cx, cz, -cy);
     controls.target.set(cx, cz, -cy);
     camera.position.set(cx, cz + mapSpan * 0.85, -cy + mapSpan * 0.85);
     // Fog and zoom-out were sized for one bomb-defusal map; Rush spans ~20k
@@ -2991,6 +3019,83 @@ onMounted(() => {
   bombMesh.visible = false;
   scene.add(bombMesh);
 
+  let frameTween: {
+    fromT: THREE.Vector3;
+    fromP: THREE.Vector3;
+    toT: THREE.Vector3;
+    toP: THREE.Vector3;
+    start: number;
+    ms: number;
+  } | null = null;
+  // Any hand on the camera wins over the flight, and counts as arriving: what
+  // waits on `framed` should not wait forever because someone grabbed the view.
+  const cancelFrame = () => {
+    if (frameTween) {
+      frameTween = null;
+      emit("framed");
+    }
+  };
+  el.addEventListener("pointerdown", cancelFrame);
+  el.addEventListener("wheel", cancelFrame, { passive: true });
+
+  frameTo = () => {
+    if (!sceneReady) {
+      return;
+    }
+    const f = props.frame;
+    if (!f) {
+      emit("framed");
+      return;
+    }
+    const toT = wpos(f, new THREE.Vector3());
+    // At this pitch and a 55° lens, ~1.1x the span away keeps all of it on
+    // screen in the viewer's 16:10 box.
+    const dist = Math.max(f.span * U * 1.1, meshMode ? 700 : 140);
+    // Behind the look direction and above it, at the same 3/4 pitch the orbit
+    // camera uses. A source yaw (cos, sin) points along world (cos, 0, -sin).
+    let heading = f.heading ?? Math.PI / 2;
+    if (f.swing) {
+      // Swung toward the map, the camera sits on the empty side looking in,
+      // so the void ends up behind the camera instead of behind the throw. A
+      // source yaw's left (-sin, cos) is world (-sin, 0, -cos).
+      const left = new THREE.Vector3(-Math.sin(heading), 0, -Math.cos(heading));
+      const toMap = mapCenter.clone().sub(toT).setY(0);
+      heading += toMap.dot(left) >= 0 ? f.swing : -f.swing;
+    }
+    const toP = toT
+      .clone()
+      .add(
+        new THREE.Vector3(
+          -Math.cos(heading) * dist * 0.62,
+          dist * 0.78,
+          Math.sin(heading) * dist * 0.62,
+        ),
+      );
+    const travel =
+      camera.position.distanceTo(toP) + controls.target.distanceTo(toT);
+    if (
+      travel < dist * 0.02 ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      frameTween = null;
+      controls.target.copy(toT);
+      camera.position.copy(toP);
+      emit("framed");
+      return;
+    }
+    frameTween = {
+      fromT: controls.target.clone(),
+      fromP: camera.position.clone(),
+      toT,
+      toP,
+      start: performance.now(),
+      // A dive from the overview takes its time; a hop to the next lineup
+      // across the same site does not.
+      ms: Math.min(1200, Math.max(600, travel * 0.2)),
+    };
+  };
+  frameTo();
+
   // parent owns camMode; reposition to top-down when it switches to "top",
   // and clear free-look suppression whenever the mode changes.
   setCamMode = (m) => {
@@ -3141,6 +3246,18 @@ onMounted(() => {
           (1 + 0.25 * Math.sin(tsec * 5 + sp.userData.ph * 6.283));
       }
     }
+    if (frameTween) {
+      // The frame's timestamp can predate the moment the flight was asked
+      // for, so the clock is floored at zero.
+      const k = Math.min(1, Math.max(0, (ts - frameTween.start) / frameTween.ms));
+      const e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+      controls.target.lerpVectors(frameTween.fromT, frameTween.toT, e);
+      camera.position.lerpVectors(frameTween.fromP, frameTween.toP, e);
+      if (k >= 1) {
+        frameTween = null;
+        emit("framed");
+      }
+    }
     controls.update();
     if (composer) composer.render();
     else renderer.render(scene, camera);
@@ -3205,6 +3322,20 @@ watch(
     followSid.value = sid ?? null;
     followSuppressed = false;
   },
+);
+watch(
+  () =>
+    props.frame
+      ? [
+          props.frame.x,
+          props.frame.y,
+          props.frame.z,
+          props.frame.span,
+          props.frame.heading,
+          props.frame.swing,
+        ].join()
+      : null,
+  () => frameTo?.(),
 );
 watch(
   () => props.camMode,

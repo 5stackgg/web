@@ -152,7 +152,7 @@ const pickHeight = computed(() =>
 async function seedHeights() {
   try {
     const { data } = await getGraphqlClient().query({
-      query: utilityLineupsQuery,
+      query: utilityLineupsQuery(),
       variables: {
         where: {
           map_name: { _eq: props.mapName },
@@ -1003,7 +1003,7 @@ watch(
     <!-- The save is always reachable and always says what is missing, instead
          of a disabled button below the fold with a sentence beside it. -->
     <div
-      class="sticky bottom-0 -mx-1 mt-1 flex items-center gap-2 rounded-md border px-2.5 py-2 [backdrop-filter:blur(10px)]"
+      class="sticky bottom-0 mt-1 flex items-center gap-2 rounded-md border px-2.5 py-2 [backdrop-filter:blur(10px)]"
       :class="
         canSave
           ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.08)]'

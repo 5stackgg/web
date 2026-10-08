@@ -87,7 +87,7 @@ const pips = computed(() =>
           v-for="pip of pips"
           :key="pip.index"
           aria-hidden="true"
-          class="h-[5px] w-[5px] rounded-[1px]"
+          class="h-[5px] w-[5px] rounded-[1px] transition-colors duration-300"
           :class="
             pip.lit
               ? mastered
@@ -100,9 +100,12 @@ const pips = computed(() =>
     </div>
   </div>
 
+  <!-- Every throw in a practice server moves these numbers while you watch,
+       so what changes eases: a pip lights up, the frame turns when you master
+       it. Nothing here cuts. -->
   <div
     v-else-if="mine"
-    class="rounded-md border px-2.5 py-1.5"
+    class="rounded-md border px-2.5 py-1.5 transition-colors duration-300"
     :class="
       mastered
         ? 'border-success/40 bg-success/10'
@@ -111,7 +114,7 @@ const pips = computed(() =>
   >
     <div class="flex items-center justify-between gap-2">
       <span
-        class="flex items-center gap-1.5 font-mono uppercase tracking-[0.14em]"
+        class="flex items-center gap-1.5 font-mono uppercase tracking-[0.14em] transition-colors duration-300"
         :class="[
           compact ? 'text-[0.55rem]' : 'text-[0.62rem]',
           mastered ? 'text-success' : 'text-[hsl(var(--tac-amber))]',
@@ -150,7 +153,7 @@ const pips = computed(() =>
           v-for="pip of pips"
           :key="pip.index"
           aria-hidden="true"
-          class="h-1.5 w-4 rounded-[1px]"
+          class="h-1.5 w-4 rounded-[1px] transition-colors duration-300"
           :class="
             pip.lit
               ? mastered

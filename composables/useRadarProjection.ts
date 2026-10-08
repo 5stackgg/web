@@ -213,7 +213,11 @@ export function useRadarProjection(
     volumePoints?: () => RadarPoint[];
   } = {},
 ) {
-  const calibrations = ref<Record<string, RadarMeta> | null>(null);
+  // Already read once this session: start with it, so a radar is on the first
+  // frame instead of one tick behind it.
+  const calibrations = ref<Record<string, RadarMeta> | null>(
+    sharedCalibrations,
+  );
 
   const normalizedMap = computed(() =>
     normalizeRadarMapName(

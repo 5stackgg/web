@@ -1,18 +1,21 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from "vue";
-import { Check, Search } from "lucide-vue-next";
+import { Search } from "lucide-vue-next";
 import { useI18n } from "vue-i18n";
 import { Input } from "~/components/ui/input";
 import FilterBar from "~/components/common/FilterBar.vue";
 import FilterMenu from "~/components/common/FilterMenu.vue";
-import FilterToggle from "~/components/common/FilterToggle.vue";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
+import UtilityTechniqueIcon from "~/components/utility/UtilityTechniqueIcon.vue";
+import UtilityThrowIcon from "~/components/utility/UtilityThrowIcon.vue";
 import UtilityTypeChips from "~/components/utility/UtilityTypeChips.vue";
 import {
   emptyUtilityFilters,
   UTILITY_SIDES,
   UTILITY_TECHNIQUES,
   UTILITY_THROW_STRENGTHS,
+  UTILITY_TYPE_COLORS,
+  UTILITY_TYPES,
 } from "~/utilities/utilityDisplay";
 import type {
   UtilityFilterState,
@@ -34,6 +37,10 @@ const props = withDefaults(
     // the panel so one flat mega-bar does not front the whole page.
     parts?: Array<"search" | "types" | "scope" | "menu">;
     bare?: boolean;
+    // On a phone the type filter has no row of its own under the tabs -- the
+    // sheet is too short to spend one on it -- so it lives in this menu.
+    typesInMenu?: boolean;
+    typeCounts?: Partial<Record<UtilityType, number>> | null;
   }>(),
   {
     availableTags: () => [],
@@ -43,6 +50,8 @@ const props = withDefaults(
     scopeCounts: () => ({}),
     parts: () => ["search", "types", "scope", "menu"],
     bare: false,
+    typesInMenu: false,
+    typeCounts: null,
   },
 );
 
@@ -166,8 +175,26 @@ function toggleIn<T extends string>(key: keyof UtilityFilterState, value: T) {
   filters.value = { ...filters.value, [key]: next };
 }
 
-function setSort(sort: UtilitySort) {
-  filters.value = { ...filters.value, sort };
+const sortModel = computed<string>({
+  get: () => filters.value.sort,
+  set: (sort) => {
+    filters.value = { ...filters.value, sort: sort as UtilitySort };
+  },
+});
+
+// Every option in the menu is a small button you can tell apart without
+// reading it: the side's logo, the mouse with the pressed button lit, the
+// pose. The states are whole strings, because two border or background
+// utilities on one element resolve by stylesheet order.
+const TILE_BASE =
+  "flex min-w-0 cursor-pointer flex-col items-center justify-center gap-1 rounded-md border px-1 text-center text-[0.68rem] font-medium leading-tight transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70";
+const TILE_OFF =
+  "border-border/70 bg-background/40 text-muted-foreground hover:border-border hover:bg-muted/40 hover:text-foreground";
+const TILE_ON =
+  "border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.1)] text-[hsl(var(--tac-amber))]";
+
+function tile(on: boolean) {
+  return [TILE_BASE, on ? TILE_ON : TILE_OFF];
 }
 
 const activeCount = computed(() => {
@@ -177,7 +204,9 @@ const activeCount = computed(() => {
     f.techniques.length +
     f.strengths.length +
     f.tags.length +
-    (f.sort === "top" ? 0 : 1)
+    (f.sort === "top" ? 0 : 1) +
+    // Counted on the button only where the button is where you set them.
+    (props.typesInMenu ? f.types.length : 0)
   );
 });
 
@@ -196,9 +225,9 @@ function reset() {
   filters.value = emptyUtilityFilters();
 }
 
-const sortOptions = computed<Array<{ value: UtilitySort; label: string }>>(() => [
-  { value: "top", label: t("pages.utility.sort.top") },
-  { value: "new", label: t("pages.utility.sort.new") },
+const sortOptions = computed(() => [
+  { key: "top", label: t("pages.utility.sort.top") },
+  { key: "new", label: t("pages.utility.sort.new") },
 ]);
 </script>
 
@@ -237,91 +266,166 @@ const sortOptions = computed<Array<{ value: UtilitySort; label: string }>>(() =>
       :count="activeCount"
       :active="activeCount > 0"
       :show-reset="hasAnyFilter"
-      content-class="w-[min(92vw,300px)] space-y-3 p-2"
+      content-class="w-[min(92vw,19rem)] space-y-3 p-3"
       @reset="reset"
     >
-      <div class="space-y-0.5">
-        <span
-          class="block px-2 pb-1 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
-        >
-          {{ $t("pages.utility.filters.side") }}
-        </span>
-        <FilterToggle
-          v-for="side of UTILITY_SIDES"
-          :key="side"
-          :model-value="filters.sides.includes(side)"
-          :label="$t(`pages.utility.sides.${side}`)"
-          @update:model-value="toggleIn('sides', side)"
+      <!-- The order is the one thing here that is a choice between two, so it
+           is a switch in the corner and not two more rows. -->
+      <div class="flex items-center justify-between gap-2">
+        <span class="text-sm font-semibold">{{ $t("common.filters") }}</span>
+        <AnimatedFilters
+          v-model="sortModel"
+          :options="sortOptions"
+          square
+          :aria-label="$t('pages.utility.filters.sort')"
         />
       </div>
 
-      <div class="space-y-0.5 border-t border-border/50 pt-3">
+      <div v-if="typesInMenu" class="space-y-1.5">
         <span
-          class="block px-2 pb-1 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+          class="block font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+        >
+          {{ $t("pages.utility.meta.types") }}
+        </span>
+        <div class="grid grid-cols-5 gap-1.5">
+          <button
+            v-for="type of UTILITY_TYPES"
+            :key="type"
+            type="button"
+            :aria-pressed="filters.types.includes(type)"
+            :class="[
+              tile(filters.types.includes(type)),
+              'h-[3.25rem] !px-0.5 !text-[0.62rem] tracking-tight',
+              typeCounts && !typeCounts[type] && !filters.types.includes(type)
+                ? 'opacity-45'
+                : '',
+            ]"
+            @click="toggleIn('types', type)"
+          >
+            <span
+              aria-hidden="true"
+              class="size-2 shrink-0 rounded-[2px]"
+              :style="{ backgroundColor: UTILITY_TYPE_COLORS[type] }"
+            />
+            <span class="max-w-full truncate">
+              {{ $t(`pages.utility.types.${type}`) }}
+            </span>
+            <span
+              v-if="typeCounts"
+              class="font-mono text-[0.6rem] tabular-nums opacity-70"
+            >
+              {{ typeCounts[type] ?? 0 }}
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Two logos and three mouse glyphs fit one row between them. -->
+      <div class="flex gap-3">
+        <div class="space-y-1.5">
+          <span
+            class="block font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+          >
+            {{ $t("pages.utility.filters.side") }}
+          </span>
+          <div class="flex gap-1.5">
+            <button
+              v-for="side of UTILITY_SIDES"
+              :key="side"
+              type="button"
+              :aria-pressed="filters.sides.includes(side)"
+              :class="[tile(filters.sides.includes(side)), 'h-[3.25rem] w-[3.25rem]']"
+              @click="toggleIn('sides', side)"
+            >
+              <img
+                :src="
+                  side === 'CT'
+                    ? '/img/teams/ct_logo.svg'
+                    : '/img/teams/t_logo.svg'
+                "
+                alt=""
+                class="size-5 shrink-0"
+              />
+              {{ $t(`pages.utility.sides.${side}`) }}
+            </button>
+          </div>
+        </div>
+
+        <div class="min-w-0 flex-1 space-y-1.5">
+          <span
+            class="block font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+          >
+            {{ $t("pages.utility.filters.throw_strength") }}
+          </span>
+          <div class="grid grid-cols-3 gap-1.5">
+            <button
+              v-for="strength of UTILITY_THROW_STRENGTHS"
+              :key="strength"
+              type="button"
+              :aria-pressed="filters.strengths.includes(strength)"
+              :class="[tile(filters.strengths.includes(strength)), 'h-[3.25rem]']"
+              @click="toggleIn('strengths', strength)"
+            >
+              <UtilityThrowIcon
+                :strength="strength"
+                class="h-5 w-[0.875rem] shrink-0"
+              />
+              {{ $t(`pages.utility.strengths.${strength}`) }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-1.5">
+        <span
+          class="block font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
         >
           {{ $t("pages.utility.filters.technique") }}
         </span>
-        <FilterToggle
-          v-for="technique of UTILITY_TECHNIQUES"
-          :key="technique"
-          :model-value="filters.techniques.includes(technique)"
-          :label="$t(`pages.utility.techniques.${technique}`)"
-          @update:model-value="toggleIn('techniques', technique)"
-        />
+        <div class="grid grid-cols-4 gap-1.5">
+          <button
+            v-for="technique of UTILITY_TECHNIQUES"
+            :key="technique"
+            type="button"
+            :aria-pressed="filters.techniques.includes(technique)"
+            :class="[
+              tile(filters.techniques.includes(technique)),
+              'h-[4.25rem] pb-1 pt-1.5',
+            ]"
+            @click="toggleIn('techniques', technique)"
+          >
+            <UtilityTechniqueIcon
+              :technique="technique"
+              class="size-7 shrink-0"
+            />
+            <!-- Two lines of room: "Crouch Jump" and its translations wrap
+                 rather than truncate. -->
+            <span class="flex min-h-[1.7em] items-center [text-wrap:balance]">
+              {{ $t(`pages.utility.techniques.${technique}`) }}
+            </span>
+          </button>
+        </div>
       </div>
 
-      <div class="space-y-0.5 border-t border-border/50 pt-3">
+      <div v-if="props.availableTags.length" class="space-y-1.5">
         <span
-          class="block px-2 pb-1 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
-        >
-          {{ $t("pages.utility.filters.throw_strength") }}
-        </span>
-        <FilterToggle
-          v-for="strength of UTILITY_THROW_STRENGTHS"
-          :key="strength"
-          :model-value="filters.strengths.includes(strength)"
-          :label="$t(`pages.utility.strengths.${strength}`)"
-          @update:model-value="toggleIn('strengths', strength)"
-        />
-      </div>
-
-      <div
-        v-if="props.availableTags.length"
-        class="space-y-0.5 border-t border-border/50 pt-3"
-      >
-        <span
-          class="block px-2 pb-1 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+          class="block font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
         >
           {{ $t("pages.utility.filters.tags") }}
         </span>
-        <FilterToggle
-          v-for="tag of props.availableTags"
-          :key="tag"
-          :model-value="filters.tags.includes(tag)"
-          :label="tag"
-          @update:model-value="toggleIn('tags', tag)"
-        />
-      </div>
-
-      <div class="space-y-0.5 border-t border-border/50 pt-3">
-        <span
-          class="block px-2 pb-1 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
-        >
-          {{ $t("pages.utility.filters.sort") }}
-        </span>
-        <button
-          v-for="option of sortOptions"
-          :key="option.value"
-          type="button"
-          class="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
-          @click="setSort(option.value)"
-        >
-          <span>{{ option.label }}</span>
-          <Check
-            v-if="filters.sort === option.value"
-            class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
-          />
-        </button>
+        <div class="flex flex-wrap gap-1.5">
+          <button
+            v-for="tag of props.availableTags"
+            :key="tag"
+            type="button"
+            :aria-pressed="filters.tags.includes(tag)"
+            class="inline-flex h-7 max-w-full cursor-pointer items-center rounded-md border px-2 font-mono text-[0.68rem] lowercase transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+            :class="filters.tags.includes(tag) ? TILE_ON : TILE_OFF"
+            @click="toggleIn('tags', tag)"
+          >
+            <span class="truncate">#{{ tag }}</span>
+          </button>
+        </div>
       </div>
     </FilterMenu>
   </component>

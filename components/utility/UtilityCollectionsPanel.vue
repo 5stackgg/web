@@ -872,10 +872,10 @@ async function copyLink() {
   const url = new URL(href, window.location.origin).toString();
   try {
     await navigator.clipboard.writeText(url);
-    toast({ title: t("pages.toasts.link_copied") });
+    toast({ title: t("toasts.link_copied") });
   } catch {
     // Refused by the browser: hand over the address to copy by hand.
-    toast({ title: t("pages.toasts.copy_failed"), description: url });
+    toast({ title: t("toasts.copy_failed"), description: url });
   }
 }
 </script>

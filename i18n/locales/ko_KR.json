@@ -4201,7 +4201,7 @@
         "gamedata_never": "이 빌드는 아직 검증되지 않았습니다",
         "map_assets_never": "이 빌드는 아직 빌드되지 않았습니다",
         "auto_hint": "노드가 새 빌드를 처음 보고하면 자동으로 실행됩니다",
-        "map_assets_hint": "자동 빌드가 켜져 있으면 게임 데이터 검증 후 빌드됩니다",
+        "map_assets_hint": "게임 데이터 검증 후 자동으로 빌드됩니다",
         "revalidate": "다시 검증",
         "rebuild": "다시 빌드",
         "build": "빌드",

@@ -4201,7 +4201,7 @@
         "gamedata_never": "Für diesen Build noch nicht geprüft",
         "map_assets_never": "Für diesen Build noch nicht erstellt",
         "auto_hint": "Läuft automatisch, sobald ein Node erstmals einen neuen Build meldet",
-        "map_assets_hint": "Wird nach der Gamedata-Prüfung erstellt, wenn Auto-Build aktiv ist",
+        "map_assets_hint": "Wird nach der Gamedata-Prüfung automatisch erstellt",
         "revalidate": "Erneut prüfen",
         "rebuild": "Neu erstellen",
         "build": "Erstellen",

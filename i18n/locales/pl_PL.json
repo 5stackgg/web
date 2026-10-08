@@ -4201,7 +4201,7 @@
         "gamedata_never": "Jeszcze nie zweryfikowano dla tego buildu",
         "map_assets_never": "Jeszcze nie zbudowano dla tego buildu",
         "auto_hint": "Uruchamia się samo, gdy węzeł po raz pierwszy zgłosi nowy build",
-        "map_assets_hint": "Budowane po walidacji gamedata, gdy automatyczne budowanie jest włączone",
+        "map_assets_hint": "Budowane automatycznie po walidacji gamedata",
         "revalidate": "Zweryfikuj ponownie",
         "rebuild": "Przebuduj",
         "build": "Zbuduj",

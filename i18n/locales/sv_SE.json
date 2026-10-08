@@ -4201,7 +4201,7 @@
         "gamedata_never": "Inte validerad för den här builden än",
         "map_assets_never": "Inte byggda för den här builden än",
         "auto_hint": "Körs automatiskt när en nod först rapporterar en ny build",
-        "map_assets_hint": "Byggs efter gamedata-validering när auto-bygge är på",
+        "map_assets_hint": "Byggs automatiskt efter gamedata-validering",
         "revalidate": "Validera igen",
         "rebuild": "Bygg om",
         "build": "Bygg",

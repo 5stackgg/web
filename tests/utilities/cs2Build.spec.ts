@@ -184,6 +184,33 @@ describe("gamedataChangeRows", () => {
     ]);
   });
 
+  it("keeps listing warnings the previous build already had", () => {
+    const rows = gamedataChangeRows(
+      gamedata({
+        previous_build_id: 25400000,
+        changes: {
+          comparable: true,
+          counts: { checked: 3, broken: 0, warnings: 2, skipped: 0 },
+          newly_broken: [],
+          fixed: [],
+          new_warnings: [{ ...change("New"), previous_count: 1, count: 2 }],
+          cleared_warnings: [],
+        },
+        results: {
+          warnings: [
+            { set: "fivestack", signature: "New", kind: "signature", count: 2 },
+            { set: "upstream-ccs", signature: "Old", count: 3 },
+          ],
+        },
+      }),
+    );
+
+    expect(rows.map((row) => `${row.change}:${row.signature}`)).toEqual([
+      "warning:New",
+      "warning:Old",
+    ]);
+  });
+
   it("lists every broken entry when there is nothing to compare with", () => {
     const rows = gamedataChangeRows(
       gamedata({

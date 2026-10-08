@@ -4201,7 +4201,7 @@
         "gamedata_never": "Bu sürüm için henüz doğrulanmadı",
         "map_assets_never": "Bu sürüm için henüz oluşturulmadı",
         "auto_hint": "Bir düğüm yeni bir sürümü ilk kez bildirdiğinde kendiliğinden çalışır",
-        "map_assets_hint": "Otomatik oluşturma açıksa gamedata doğrulamasından sonra oluşturulur",
+        "map_assets_hint": "Gamedata doğrulamasından sonra kendiliğinden oluşturulur",
         "revalidate": "Yeniden doğrula",
         "rebuild": "Yeniden oluştur",
         "build": "Oluştur",

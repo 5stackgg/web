@@ -4201,7 +4201,7 @@
         "gamedata_never": "Aún no validado para esta build",
         "map_assets_never": "Aún no generados para esta build",
         "auto_hint": "Se ejecuta solo cuando un nodo informa por primera vez de una nueva build",
-        "map_assets_hint": "Se generan tras la validación del gamedata si la generación automática está activada",
+        "map_assets_hint": "Se generan solos tras la validación del gamedata",
         "revalidate": "Volver a validar",
         "rebuild": "Regenerar",
         "build": "Generar",

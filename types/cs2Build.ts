@@ -345,6 +345,7 @@ export function gamedataChangeRows(
   }
 
   const newlyBroken = new Set(changes.newly_broken.map(entryKey));
+  const newWarnings = new Set(changes.new_warnings.map(entryKey));
 
   return [
     ...changes.newly_broken.map((entry) =>
@@ -356,6 +357,9 @@ export function gamedataChangeRows(
     ...changes.new_warnings.map((entry) =>
       changeRow("warning", "warning", entry),
     ),
+    ...warnings
+      .filter((entry) => !newWarnings.has(entryKey(entry)))
+      .map((entry) => changeRow("warning", "warning", entry)),
     ...changes.fixed.map((entry) => changeRow("fixed", "success", entry)),
     ...changes.cleared_warnings.map((entry) =>
       changeRow("cleared", "idle", entry),

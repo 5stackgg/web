@@ -110,7 +110,11 @@ export default defineEventHandler(async (event) => {
   }
 
   setResponseHeader(event, "Content-Type", "text/html; charset=utf-8");
-  setResponseHeader(event, "Cache-Control", "public, max-age=300");
+  // Private: this URL answers a crawler and a person differently, so a shared
+  // cache that kept the crawler's card would hand it to people. Anyone can ask
+  // with a crawler's user-agent, which makes that a way to poison the cache.
+  setResponseHeader(event, "Cache-Control", "private, max-age=300");
+  setResponseHeader(event, "Vary", "User-Agent");
 
   return renderUnfurl(options);
 });

@@ -80,8 +80,7 @@ export const listCreateButtonClasses = `${createButtonClasses} max-md:w-8 max-md
 // jumping to a fixed button height). Pair with a
 // `<breakpoint>:aspect-square <breakpoint>:!px-0` collapse on each page so the
 // icon-only state is a square. Mirrors the title clamp in TacticalPageHeader.
-export const tacticalHeaderActionClasses =
-  "!py-0 h-[clamp(1.75rem,4.2vw,3rem)]";
+export const tacticalHeaderActionClasses = "tac-header-action !py-0";
 
 // Tactical veto tile — rounded frame for map/region pick-ban tiles.
 // Combine the base with hover + active + disabled as needed.

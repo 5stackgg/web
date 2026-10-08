@@ -64,7 +64,24 @@ const select = (id: string) => {
       </div>
 
       <div class="min-w-0 flex-1">
-        <p class="font-medium">{{ mode.name }}</p>
+        <div class="flex flex-wrap items-center gap-2">
+          <p class="font-medium">{{ mode.name }}</p>
+          <!-- Team size and whether the host may start short are the two things
+               that change what the lobby asks of everyone in it, so they belong
+               on the card rather than being discovered in the room. -->
+          <span
+            v-if="mode.players_per_team"
+            class="rounded border border-border/60 px-1.5 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground"
+          >
+            {{ mode.players_per_team }}v{{ mode.players_per_team }}
+          </span>
+          <span
+            v-if="mode.allow_short_handed_start"
+            class="rounded border border-[hsl(var(--tac-amber)/0.4)] px-1.5 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))]"
+          >
+            {{ $t("draft_games.create.mode_short_handed") }}
+          </span>
+        </div>
         <!-- The description is the whole pitch for picking a mode; it wraps
              rather than truncating so a long one is still readable. -->
         <p class="text-xs leading-snug text-muted-foreground">

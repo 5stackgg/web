@@ -4218,6 +4218,7 @@
         "requested_by": "av {name}",
         "vs_build": "Ändringar jämfört med {build}",
         "first_run": "Inget att jämföra med än",
+        "in_progress": "Ändringar visas när den här körningen är klar",
         "no_changes": "Inga ändringar sedan {build}",
         "nothing_broken": "Inget trasigt",
         "no_maps": "Inga kartor publicerades",

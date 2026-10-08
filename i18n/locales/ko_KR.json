@@ -4218,6 +4218,7 @@
         "requested_by": "{name} 요청",
         "vs_build": "{build} 대비 변경 사항",
         "first_run": "아직 비교할 대상이 없습니다",
+        "in_progress": "이 실행이 끝나면 변경 사항이 표시됩니다",
         "no_changes": "{build} 이후 변경 사항 없음",
         "nothing_broken": "손상된 항목 없음",
         "no_maps": "게시된 맵이 없습니다",

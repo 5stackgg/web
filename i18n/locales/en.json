@@ -4220,6 +4220,7 @@
         "requested_by": "by {name}",
         "vs_build": "Changes vs {build}",
         "first_run": "Nothing to compare with yet",
+        "in_progress": "Changes show up when this run finishes",
         "no_changes": "No changes since {build}",
         "nothing_broken": "Nothing broken",
         "no_maps": "No maps were published",

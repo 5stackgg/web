@@ -223,6 +223,31 @@ describe("CS2 build panels", () => {
 
     expect(wrapper.text()).not.toContain("ConnectClient");
     expect(wrapper.text()).not.toContain("1 newly broken");
+    expect(wrapper.text()).toContain("Changes show up when this run finishes");
+    expect(wrapper.text()).not.toContain("Nothing to compare with yet");
+  });
+
+  it("hides the last build's maps while a rebuild runs", async () => {
+    const wrapper = await mountSuspended(Cs2MapAssetsPanel, {
+      props: {
+        buildId: 25537370,
+        row: {
+          ...mapAssets,
+          status: "Building",
+          started_at: minutesAgo(1),
+          finished_at: null,
+        },
+        nodes,
+        canRun: true,
+      },
+    });
+    const text = wrapper.text();
+
+    expect(text).toContain("Changes show up when this run finishes");
+    expect(text).not.toContain("Nothing to compare with yet");
+    expect(text).not.toContain("Changes vs 25400000");
+    expect(text).not.toContain("1 rebuilt");
+    expect(text).not.toContain("de_mirage");
   });
 
   it("lists every map, changed ones first", async () => {

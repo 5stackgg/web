@@ -57,11 +57,24 @@ const status = computed(() =>
   mapAssetsRunStatus(props.row, now.value.getTime()),
 );
 const tone = computed(() => TONE_BY_MAP_ASSETS_STATUS[status.value]);
-const rows = computed(() => mapAssetChangeRows(props.row));
+const rows = computed(() =>
+  running.value ? [] : mapAssetChangeRows(props.row),
+);
 const changes = computed(() => props.row?.changes ?? null);
 const running = computed(
   () => status.value === "pending" || status.value === "building",
 );
+
+const listTitle = computed(() => {
+  if (running.value) {
+    return t("pages.game_server_nodes.cs2_build.in_progress");
+  }
+  return changes.value?.comparable && props.row?.previous_build_id
+    ? t("pages.game_server_nodes.cs2_build.vs_build", {
+        build: props.row.previous_build_id,
+      })
+    : t("pages.game_server_nodes.cs2_build.first_run");
+});
 
 const took = computed(() =>
   formatDuration(
@@ -107,7 +120,7 @@ const stats = computed(() => {
 });
 
 const chips = computed(() => {
-  if (!changes.value?.comparable) {
+  if (!changes.value?.comparable || running.value) {
     return [];
   }
   return [
@@ -293,13 +306,7 @@ const error = computed(() =>
       <span
         class="flex-1 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
       >
-        {{
-          changes?.comparable && row?.previous_build_id
-            ? $t("pages.game_server_nodes.cs2_build.vs_build", {
-                build: row.previous_build_id,
-              })
-            : $t("pages.game_server_nodes.cs2_build.first_run")
-        }}
+        {{ listTitle }}
       </span>
       <span
         v-for="chip of chips"

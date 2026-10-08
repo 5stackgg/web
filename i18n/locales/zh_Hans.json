@@ -4218,6 +4218,7 @@
         "requested_by": "由 {name} 发起",
         "vs_build": "相比 {build} 的变更",
         "first_run": "暂无可比较的版本",
+        "in_progress": "本次运行完成后将显示变更",
         "no_changes": "自 {build} 以来无变更",
         "nothing_broken": "没有损坏项",
         "no_maps": "未发布任何地图",

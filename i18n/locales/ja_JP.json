@@ -4218,6 +4218,7 @@
         "requested_by": "実行者: {name}",
         "vs_build": "{build} からの変更",
         "first_run": "まだ比較対象がありません",
+        "in_progress": "この実行が終わると変更内容が表示されます",
         "no_changes": "{build} から変更はありません",
         "nothing_broken": "破損なし",
         "no_maps": "公開されたマップはありません",

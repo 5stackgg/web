@@ -4218,6 +4218,7 @@
         "requested_by": "von {name}",
         "vs_build": "Änderungen gegenüber {build}",
         "first_run": "Noch nichts zum Vergleichen",
+        "in_progress": "Änderungen erscheinen, sobald dieser Lauf abgeschlossen ist",
         "no_changes": "Keine Änderungen seit {build}",
         "nothing_broken": "Nichts defekt",
         "no_maps": "Es wurden keine Karten veröffentlicht",

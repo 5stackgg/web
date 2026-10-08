@@ -6669,6 +6669,16 @@
     "enabled": "Notifiche push attivate",
     "failed": "Impossibile attivare le notifiche push. Riprova."
   },
+  "feature_spotlights": {
+    "label": "Funzione in evidenza",
+    "auto_highlights": {
+      "cover_top": "Auto",
+      "cover_bottom": "Highlight",
+      "title": "Highlight da ogni match che giochi",
+      "teaser": "Collega la tua cronologia partite di Steam. I tuoi match Premier e Competitive vengono importati da soli e i tuoi round migliori diventano clip.",
+      "action": "Collega account"
+    }
+  },
   "pwa": {
     "install": {
       "title": "Aggiungi alla schermata Home",

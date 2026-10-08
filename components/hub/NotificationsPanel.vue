@@ -7,6 +7,7 @@ import DraftInviteNotification from "~/components/notification/DraftInviteNotifi
 import NotificationItem from "~/components/notification/NotificationItem.vue";
 import NotificationStack from "~/components/notification/NotificationStack.vue";
 import NewsNotification from "~/components/notification/NewsNotification.vue";
+import FeatureSpotlightNotification from "~/components/notification/FeatureSpotlightNotification.vue";
 import LeagueScheduleStack from "~/components/notification/LeagueScheduleStack.vue";
 import TeamRosterNeedNotification from "~/components/notification/TeamRosterNeedNotification.vue";
 </script>
@@ -33,6 +34,20 @@ import TeamRosterNeedNotification from "~/components/notification/TeamRosterNeed
     </div>
     <div class="flex-1 overflow-y-auto p-3 flex flex-col">
       <NewsNotification />
+      <Transition
+        enter-active-class="notif-fold"
+        enter-from-class="notif-fold-collapsed"
+        leave-active-class="notif-fold"
+        leave-to-class="notif-fold-collapsed"
+      >
+        <div v-if="featureSpotlight" class="grid grid-rows-[1fr]">
+          <div class="min-h-0">
+            <div class="mb-3">
+              <FeatureSpotlightNotification :spotlight="featureSpotlight" />
+            </div>
+          </div>
+        </div>
+      </Transition>
       <!-- Every section folds its own height open and shut -- dismissing the
            last of anything used to remove rows, invite blocks, separators and
            the footer on one frame. Each block owns its transition, so a mass
@@ -213,7 +228,9 @@ import TeamRosterNeedNotification from "~/components/notification/TeamRosterNeed
         leave-to-class="opacity-0"
       >
         <HubEmptyState
-          v-if="!hasAnyNotifications && !unreadNewsArticle"
+          v-if="
+            !hasAnyNotifications && !unreadNewsArticle && !featureSpotlight
+          "
           :title="$t('layouts.hub.empty.inbox_title')"
           :description="$t('layouts.hub.empty.inbox_description')"
         />
@@ -314,6 +331,9 @@ export default {
     },
     unreadNewsArticle() {
       return useNotificationStore().unreadNewsArticle;
+    },
+    featureSpotlight() {
+      return useNotificationStore().featureSpotlight;
     },
     hasAnyNotifications(): boolean {
       return (

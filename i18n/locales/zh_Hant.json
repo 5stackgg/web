@@ -6669,6 +6669,16 @@
     "enabled": "已開啟推播通知",
     "failed": "無法開啟推播通知，請再試一次。"
   },
+  "feature_spotlights": {
+    "label": "功能焦點",
+    "auto_highlights": {
+      "cover_top": "自動",
+      "cover_bottom": "精華時刻",
+      "title": "您的每場比賽，都有精華時刻",
+      "teaser": "連結您的 Steam 比賽紀錄。您的 Premier 與競技比賽會自動匯入，最精彩的回合會剪成片段。",
+      "action": "連結帳戶"
+    }
+  },
   "pwa": {
     "install": {
       "title": "加入主畫面",

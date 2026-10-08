@@ -6669,6 +6669,16 @@
     "enabled": "Push-notifikationer slået til",
     "failed": "Kunne ikke slå push-notifikationer til. Prøv igen."
   },
+  "feature_spotlights": {
+    "label": "Funktion i fokus",
+    "auto_highlights": {
+      "cover_top": "Auto",
+      "cover_bottom": "Highlights",
+      "title": "Highlights fra hver kamp, du spiller",
+      "teaser": "Tilknyt din Steam-kamphistorik. Dine Premier- og Competitive-kampe importeres af sig selv, og dine bedste runder bliver klippet.",
+      "action": "Tilknyt konto"
+    }
+  },
   "pwa": {
     "install": {
       "title": "Føj til hjemmeskærm",

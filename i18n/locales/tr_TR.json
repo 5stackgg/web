@@ -6669,6 +6669,16 @@
     "enabled": "Anlık bildirimler açıldı",
     "failed": "Anlık bildirimler açılamadı. Tekrar dene."
   },
+  "feature_spotlights": {
+    "label": "Öne Çıkan Özellik",
+    "auto_highlights": {
+      "cover_top": "Otomatik",
+      "cover_bottom": "Öne Çıkanlar",
+      "title": "Oynadığın Her Maçtan Öne Çıkanlar",
+      "teaser": "Steam maç geçmişini bağla. Premier ve Rekabetçi maçların kendiliğinden içe aktarılır, en iyi raundların klibe dönüşür.",
+      "action": "Hesabı Bağla"
+    }
+  },
   "pwa": {
     "install": {
       "title": "Ana ekrana ekle",

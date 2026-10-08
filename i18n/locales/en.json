@@ -6671,6 +6671,16 @@
     "enabled": "Push notifications enabled",
     "failed": "Couldn't enable push notifications. Try again."
   },
+  "feature_spotlights": {
+    "label": "Feature Spotlight",
+    "auto_highlights": {
+      "cover_top": "Auto",
+      "cover_bottom": "Highlights",
+      "title": "Highlights From Every Match You Play",
+      "teaser": "Link your Steam match history. Your Premier and Competitive games import on their own and your best rounds get clipped.",
+      "action": "Link Account"
+    }
+  },
   "pwa": {
     "install": {
       "title": "Add to Home Screen",

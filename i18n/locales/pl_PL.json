@@ -6669,6 +6669,16 @@
     "enabled": "Powiadomienia push włączone",
     "failed": "Nie udało się włączyć powiadomień push. Spróbuj ponownie."
   },
+  "feature_spotlights": {
+    "label": "Funkcja w centrum uwagi",
+    "auto_highlights": {
+      "cover_top": "Auto",
+      "cover_bottom": "Highlighty",
+      "title": "Highlighty z każdego twojego meczu",
+      "teaser": "Połącz swoją historię meczów Steam. Twoje mecze Premier i Competitive zaimportują się same, a z najlepszych rund powstaną klipy.",
+      "action": "Połącz konto"
+    }
+  },
   "pwa": {
     "install": {
       "title": "Dodaj do ekranu głównego",

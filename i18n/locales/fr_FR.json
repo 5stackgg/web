@@ -6669,6 +6669,16 @@
     "enabled": "Notifications push activées",
     "failed": "Impossible d'activer les notifications push. Réessayez."
   },
+  "feature_spotlights": {
+    "label": "Fonctionnalité à la une",
+    "auto_highlights": {
+      "cover_top": "Auto",
+      "cover_bottom": "Highlights",
+      "title": "Des highlights pour chaque match que tu joues",
+      "teaser": "Lie ton historique de matchs Steam. Tes matchs Premier et Compétitif sont importés automatiquement et tes meilleurs rounds deviennent des clips.",
+      "action": "Lier le compte"
+    }
+  },
   "pwa": {
     "install": {
       "title": "Ajouter à l'écran d'accueil",

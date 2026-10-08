@@ -6669,6 +6669,16 @@
     "enabled": "已开启推送通知",
     "failed": "无法开启推送通知，请重试。"
   },
+  "feature_spotlights": {
+    "label": "功能聚焦",
+    "auto_highlights": {
+      "cover_top": "自动",
+      "cover_bottom": "高光时刻",
+      "title": "你打的每场比赛，都有高光时刻",
+      "teaser": "关联你的 Steam 比赛记录。你的 Premier 和竞技比赛会自动导入，最精彩的回合会被剪成片段。",
+      "action": "关联账号"
+    }
+  },
   "pwa": {
     "install": {
       "title": "添加到主屏幕",

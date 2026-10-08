@@ -523,6 +523,15 @@ export const useApplicationSettingsStore = defineStore(
       );
     });
 
+    // Derived by the api from two admin-only toggles the browser cannot read.
+    const importedHighlightsSupported = computed(() => {
+      return (
+        settings.value?.find(
+          (setting) => setting.name === "public.supports_imported_highlights",
+        )?.value === "true"
+      );
+    });
+
     const faceitEnabled = computed(() => {
       return (
         settings.value?.find(
@@ -751,6 +760,7 @@ export const useApplicationSettingsStore = defineStore(
       canManageAwards,
       canGrantAwards,
       linkedAccountsEnabled,
+      importedHighlightsSupported,
       faceitEnabled,
       scrimFinderEnabled,
       pluginsEnabled,

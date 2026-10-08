@@ -86,7 +86,7 @@ const pickHeight = computed(() => {
 async function seedHeight() {
   try {
     const { data } = await getGraphqlClient().query({
-      query: utilityLineupsQuery,
+      query: utilityLineupsQuery(),
       variables: {
         where: {
           map_name: { _eq: props.mapName },
@@ -234,7 +234,7 @@ async function search() {
       return;
     }
     const { data: rows } = await client.query({
-      query: utilityLineupsQuery,
+      query: utilityLineupsQuery(),
       variables: {
         where: {
           id: { _in: hits.map((hit) => hit.utility_lineup_id) },

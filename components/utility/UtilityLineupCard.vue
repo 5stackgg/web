@@ -42,6 +42,7 @@ import {
   utilityLineupRoute,
 } from "~/utilities/utilityDisplay";
 import { useAuthStore } from "~/stores/AuthStore";
+import { useUtilityLoad } from "~/composables/useUtilityLoad";
 import type { UtilityLineup, UtilityTrajectoryPoint } from "~/types/utility";
 
 const props = withDefaults(
@@ -71,6 +72,11 @@ const props = withDefaults(
     // Signed out, the counts still read fine -- they just stop being buttons.
     canReact?: boolean;
     openInPlace?: boolean;
+    // Off where a click already opens the lineup and its actions live there.
+    menu?: boolean;
+    // Off on the Public scope, where every row is public and a pill saying so
+    // on each one is noise; on Mine it is the thing that tells yours apart.
+    showStatus?: boolean;
     // "row" is the index form: one line per lineup, for reading down a list
     // rather than reading one. The page swaps the selected row back to a card.
     mode?: "card" | "row";
@@ -93,6 +99,8 @@ const props = withDefaults(
     canReview: false,
     canReact: false,
     openInPlace: false,
+    menu: true,
+    showStatus: true,
     mode: "card",
     showPractice: true,
   },
@@ -142,14 +150,15 @@ const canDelete = computed(() => props.showArchive && canRestore.value);
 // popover is worse than no trigger.
 const hasMenu = computed(
   () =>
-    props.showOpenLink ||
+    props.menu &&
+    (props.showOpenLink ||
     props.showFork ||
     canEdit.value ||
     canSubmitPublic.value ||
     canRerender.value ||
     canArchive.value ||
     canRestore.value ||
-    canDelete.value,
+    canDelete.value),
 );
 
 const color = computed(
@@ -279,6 +288,17 @@ const score = computed(() =>
     : null,
 );
 
+// Only while there is a server to load into. Holding the slot open on every
+// row for a button that is usually absent cost every name 2.5rem; one reflow
+// when your server comes up is the cheaper side of that.
+const load = useUtilityLoad();
+const practiceReady = computed(
+  () =>
+    props.showPractice &&
+    (load.canLoad(props.lineup.map_name) ||
+      load.canSwitchTo(props.lineup.map_name)),
+);
+
 // The pencil used to live only inside the open dialog, two clicks and a
 // modal away from the row you were looking at.
 const canEdit = computed(
@@ -324,10 +344,11 @@ function open() {
     @mouseenter="emit('hover', lineup.id)"
     @mouseleave="emit('hover', null)"
   >
-    <!-- Identical in both modes, down to the reserved menu slot: opening a row
-         must not move a single thing you were already looking at, or the swap
-         reads as a jump rather than as the row growing. Everything that only
-         a card shows folds in underneath. -->
+    <!-- Identical in both modes: opening a row must not move a single thing
+         you were already looking at, or the swap reads as a jump rather than
+         as the row growing. Everything that only a card shows folds in
+         underneath. The name gets the whole first line; whose it is and how
+         it is thrown share the second; the numbers stand in a column. -->
     <div class="flex items-center gap-2.5">
       <UtilityRadarThumb
         :map-name="lineup.map_name"
@@ -347,8 +368,10 @@ function open() {
             class="h-3.5 w-3.5 shrink-0 text-success"
             :title="$t('pages.utility.confidence.exact_note')"
           />
+        </div>
+        <div class="flex min-w-0 items-center gap-1.5">
           <span
-            v-if="ownStatus"
+            v-if="ownStatus && showStatus"
             class="inline-flex h-4 shrink-0 items-center gap-1 rounded-sm px-1 font-mono text-[0.55rem] font-bold uppercase leading-none tracking-[0.12em]"
             :class="ownStatus.tone"
             :title="$t('pages.utility.card.yours', { status: ownStatus.label })"
@@ -361,28 +384,21 @@ function open() {
             class="h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]"
             :title="$t('pages.utility.publish.pending')"
           />
+          <UtilitySpecLine :lineup="lineup" compact class="min-w-0 truncate" />
         </div>
-        <!-- One line in both modes. Flight and the difficulty grade ride the
-             strip below instead of wrapping this to a second line, which would
-             change the header's height on open. -->
-        <UtilitySpecLine :lineup="lineup" compact class="truncate" />
       </div>
 
-      <!-- Left of the count, exactly as the meta panel's unwritten rows carry
-           it beside their own throwers meter -- one placement for one action,
-           whichever list you are reading.
-
-           The cell holds its 1.75rem whether or not the button is in it, the
-           way the overflow trigger below already holds its own space: joining
-           a practice server must not reflow every name on the page. -->
       <div
-        v-if="showPractice"
+        v-if="practiceReady"
         class="flex h-7 w-7 shrink-0 items-center justify-center"
       >
         <UtilityPracticeButton :lineup="lineup" shape="icon" />
       </div>
 
-      <div class="flex shrink-0 items-center gap-2.5">
+      <div
+        v-if="score !== null || metaThrowers"
+        class="flex w-14 shrink-0 flex-col items-end gap-1.5"
+      >
         <span
           v-if="score !== null"
           class="flex shrink-0 items-center gap-0.5 font-mono text-[0.65rem] tabular-nums"
@@ -404,7 +420,9 @@ function open() {
           :count="metaThrowers"
           :max="metaBusiest"
           :color="color"
+          class="!w-14"
         />
+      </div>
 
       <!-- One trigger instead of a row of unlabelled glyphs. It holds its space
            on every row so the meter never shifts; it just stays quiet until the
@@ -493,7 +511,6 @@ function open() {
           </div>
         </DropdownMenuContent>
       </DropdownMenu>
-      </div>
     </div>
 
     <!-- The card IS the row plus this. One height animation, one fade: the

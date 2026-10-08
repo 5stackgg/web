@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
-import { Play, RotateCcw } from "lucide-vue-next";
 import { Slider } from "~/components/ui/slider";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import Replay3DLite from "~/components/match/Replay3DLite.vue";
 import { useRadarProjection } from "~/composables/useRadarProjection";
 import { normalizeMapName } from "~/utilities/mapAssets";
@@ -118,7 +118,9 @@ let frame: number | null = null;
 let startedAt = 0;
 
 function tickFrame(now: number) {
-  const elapsed = now - startedAt;
+  // A frame's timestamp can predate the replay() that scheduled it, and a
+  // negative progress indexed the trajectory from the end -- undefined.x.
+  const elapsed = Math.max(0, now - startedAt);
   progress.value = Math.min(1, elapsed / flightMs.value);
   settledMs.value = Math.max(0, elapsed - flightMs.value);
   if (settledMs.value < 4000) {
@@ -138,23 +140,89 @@ function replay() {
   frame = requestAnimationFrame(tickFrame);
 }
 
+function stop() {
+  if (frame !== null) {
+    cancelAnimationFrame(frame);
+    frame = null;
+  }
+  if (throwTimer) {
+    clearTimeout(throwTimer);
+    throwTimer = null;
+  }
+  progress.value = 0;
+  settledMs.value = 0;
+}
+
+// The camera flies in to the throw first and the grenade leaves the hand once
+// it is there -- thrown while the map was still loading, it landed before
+// anyone could see it.
+let throwTimer: ReturnType<typeof setTimeout> | null = null;
+
+function onFramed() {
+  if (throwTimer) {
+    clearTimeout(throwTimer);
+  }
+  throwTimer = setTimeout(() => {
+    throwTimer = null;
+    replay();
+  }, 200);
+}
+
 onMounted(() => {
   void loadTrajectory();
-  replay();
 });
 
 watch(
   () => props.lineup.id,
   () => {
+    stop();
     void loadTrajectory();
-    replay();
   },
 );
 
-onBeforeUnmount(() => {
-  if (frame !== null) {
-    cancelAnimationFrame(frame);
-  }
+onBeforeUnmount(stop);
+
+// Room around the throw for what it turns into: a smoke's cloud, a fire's
+// spread, a flash's burst.
+const BURST_UNITS: Partial<Record<string, number>> = {
+  Smoke: 180,
+  Molotov: 150,
+};
+
+// Where the camera settles: over the middle of the whole arc, looking from
+// behind the thrower toward where it lands. The arc's height counts as much as
+// its length -- a pop flash thrown straight up barely moves across the ground,
+// and framing only that cut the flash off the top. Built from the lineup's own
+// preview, not the full trajectory that loads after it, so the frame does not
+// shift (and restart the throw) when the detailed path arrives.
+const cameraFrame = computed(() => {
+  const origin = utilityOrigin(props.lineup);
+  const landing = utilityLanding(props.lineup);
+  const points = [
+    origin,
+    ...(landing ? [landing] : []),
+    ...normalizeTrajectory(props.lineup.trajectory_preview),
+  ];
+  const xs = points.map((point) => point.x);
+  const ys = points.map((point) => point.y);
+  const zs = points.map((point) => point.z);
+  const across = Math.max(
+    Math.max(...xs) - Math.min(...xs),
+    Math.max(...ys) - Math.min(...ys),
+  );
+  const tall = Math.max(...zs) - Math.min(...zs);
+  const burst = BURST_UNITS[props.lineup.utility_type] ?? 110;
+  return {
+    x: (Math.max(...xs) + Math.min(...xs)) / 2,
+    y: (Math.max(...ys) + Math.min(...ys)) / 2,
+    z: (Math.max(...zs) + Math.min(...zs)) / 2,
+    span: Math.max(across, tall * 1.3) + burst * 2 + 200,
+    heading: landing
+      ? Math.atan2(landing.y - origin.y, landing.x - origin.x)
+      : null,
+    // 45° off the line of the throw, so the arc reads as an arc.
+    swing: Math.PI / 4,
+  };
 });
 
 const landed = computed(() => progress.value >= 1);
@@ -172,9 +240,9 @@ function pointAtProgress(fraction: number): UtilityTrajectoryPoint {
       z: 0,
     };
   }
-  const index = Math.min(
-    points.length - 1,
-    Math.floor(fraction * (points.length - 1)),
+  const index = Math.max(
+    0,
+    Math.min(points.length - 1, Math.floor(fraction * (points.length - 1))),
   );
   return points[index];
 }
@@ -340,7 +408,9 @@ const tick = computed(() =>
       :ceiling="ceiling"
       :auto-ceiling-z="autoCeilingZ"
       cam-mode="orbit"
+      :frame="cameraFrame"
       @mesh="(kind) => (meshKind = kind)"
+      @framed="onFramed"
     />
 
     <div
@@ -348,26 +418,62 @@ const tick = computed(() =>
     >
       <button
         type="button"
-        class="pointer-events-auto inline-flex items-center gap-2 rounded-md border border-[hsl(var(--tac-amber)/0.55)] bg-black/60 px-3 py-1.5 font-mono text-[0.62rem] font-bold uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] backdrop-blur transition-colors hover:bg-black/80"
+        class="pointer-events-auto inline-flex h-8 items-center gap-2 rounded-md border border-[hsl(var(--tac-amber)/0.55)] bg-black/60 px-3 font-mono text-[0.62rem] font-bold uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] backdrop-blur transition-colors hover:bg-black/80"
         @click="replay()"
       >
-        <component :is="landed ? RotateCcw : Play" class="h-3.5 w-3.5" />
+        <!-- One glyph for "throw it again": the arc a grenade flies, out of
+             the hand and over to an arrowhead. A play triangle that turned
+             into a rotate arrow mid-throw said two different things. -->
+        <svg
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          class="h-4 w-4"
+        >
+          <path d="M2.4 12.4C3.6 6.2 8 3.2 13.4 5.6" />
+          <path d="M10.2 3.5l3.2 2.1l-2 3.2" />
+          <circle cx="2.4" cy="12.6" r="1.4" fill="currentColor" stroke="none" />
+        </svg>
         {{ $t("pages.utility.viewer.replay_throw") }}
       </button>
 
+      <!-- One line, the height of the button beside it: a roof glyph where
+           the word was, the word on its tooltip. A label stacked over the
+           slider made this the tallest thing on the picture. -->
       <div
-        class="pointer-events-auto flex w-40 flex-col gap-1 rounded-md border border-border/60 bg-black/60 px-3 py-2 backdrop-blur"
+        class="pointer-events-auto flex h-8 w-36 items-center gap-2.5 rounded-md border border-border/60 bg-black/60 pl-2.5 pr-3 backdrop-blur"
       >
-        <span
-          class="font-mono text-[0.55rem] uppercase tracking-[0.2em] text-white/70"
-        >
+        <FiveStackToolTip as-child side="top" :delay-duration="120">
+          <template #trigger>
+            <svg
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="h-4 w-4 shrink-0 text-white/75"
+              role="img"
+              :aria-label="$t('pages.utility.viewer.roof')"
+            >
+              <!-- A roof, and the line it is cut at. -->
+              <path d="M1.5 8 8 2.5 14.5 8" />
+              <path d="M3.5 12.5h9" stroke-dasharray="1.5 2.5" />
+            </svg>
+          </template>
           {{ $t("pages.utility.viewer.roof") }}
-        </span>
+        </FiveStackToolTip>
         <Slider
+          class="min-w-0 flex-1"
           :model-value="[ceiling]"
           :min="0"
           :max="100"
           :step="1"
+          :aria-label="$t('pages.utility.viewer.roof')"
           @update:model-value="
             (value) => (ceilingChoice = value?.[0] ?? ceiling)
           "

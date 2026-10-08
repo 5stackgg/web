@@ -1,5 +1,6 @@
 import gql from "graphql-tag";
 import { $, order_by } from "~/generated/zeus";
+import { useAuthStore } from "~/stores/AuthStore";
 import {
   generateMutation,
   generateQuery,
@@ -150,7 +151,17 @@ export const utilityPracticeSessionFields = {
   can_manage: true,
 } as const;
 
-export const utilityLineupsQuery = generateQuery({
+// A drill record belongs to a player, so signed out there is none to read --
+// and Hasura does not just return nothing for it. A role that cannot read a
+// table has no relationship to it at all, so selecting `progress` as a guest
+// fails the whole query with "field 'progress' not found". The lineup queries
+// therefore come in two shapes, and the session picks: every caller asks for
+// the query rather than importing one.
+const { progress: _listProgress, ...utilityLineupGuestListFields } =
+  utilityLineupListFields;
+const { progress: _progress, ...utilityLineupGuestFields } = utilityLineupFields;
+
+const lineupsQuery = generateQuery({
   utility_lineups: [
     {
       where: $("where", "utility_lineups_bool_exp!"),
@@ -161,6 +172,24 @@ export const utilityLineupsQuery = generateQuery({
     utilityLineupListFields,
   ],
 });
+
+const lineupsGuestQuery = generateQuery({
+  utility_lineups: [
+    {
+      where: $("where", "utility_lineups_bool_exp!"),
+      order_by: $("order_by", "[utility_lineups_order_by!]"),
+      limit: $("limit", "Int!"),
+      offset: $("offset", "Int!"),
+    },
+    // Typed as the full query below, so the guest shape adds no types of
+    // its own for callers to tell apart.
+    utilityLineupGuestListFields as any,
+  ],
+}) as unknown as typeof lineupsQuery;
+
+export function utilityLineupsQuery() {
+  return useAuthStore().me ? lineupsQuery : lineupsGuestQuery;
+}
 
 export const utilityLineupsCountQuery = generateQuery({
   utility_lineups_aggregate: [
@@ -241,14 +270,20 @@ export const myUtilityProgressSubscription = generateSubscription({
   ],
 });
 
-export const utilityLineupQuery = generateQuery({
-  utility_lineups_by_pk: [
-    {
-      id: $("id", "uuid!"),
-    },
-    utilityLineupFields,
-  ],
+const lineupQuery = generateQuery({
+  utility_lineups_by_pk: [{ id: $("id", "uuid!") }, utilityLineupFields],
 });
+
+const lineupGuestQuery = generateQuery({
+  utility_lineups_by_pk: [
+    { id: $("id", "uuid!") },
+    utilityLineupGuestFields as any,
+  ],
+}) as unknown as typeof lineupQuery;
+
+export function utilityLineupQuery() {
+  return useAuthStore().me ? lineupQuery : lineupGuestQuery;
+}
 
 /**
  * One scope tab's tally, live.
@@ -475,6 +510,94 @@ export const removeLineupFromCollectionMutation = generateMutation({
   delete_utility_collection_items: [
     {
       where: $("where", "utility_collection_items_bool_exp!"),
+    },
+    {
+      affected_rows: true,
+    },
+  ],
+});
+
+// The Collections tab's own read. A collection spans maps, so each one comes
+// back with its lineups reduced to what a row needs to say how many are on the
+// map you are standing on, of which type, and where the rest are -- and to
+// draw the set on the board before anything is opened. A lineup the caller
+// cannot see resolves to null through the relationship and is simply not
+// counted.
+export const utilityCollectionBrowseFields = {
+  id: true,
+  name: true,
+  description: true,
+  map_name: true,
+  visibility: true,
+  team_id: true,
+  owner_steam_id: true,
+  created_at: true,
+  updated_at: true,
+  can_view: true,
+  can_edit: true,
+  owner: {
+    steam_id: true,
+    name: true,
+  },
+  items: [
+    {
+      order_by: $("items_order_by", "[utility_collection_items_order_by!]"),
+    },
+    {
+      utility_lineup_id: true,
+      utility_lineup: {
+        id: true,
+        name: true,
+        map_name: true,
+        utility_type: true,
+        archived_at: true,
+        origin_x: true,
+        origin_y: true,
+        origin_z: true,
+        eye_z: true,
+        land_x: true,
+        land_y: true,
+        land_z: true,
+        trajectory_preview: true,
+      },
+    },
+  ],
+} as const;
+
+export const utilityCollectionsBrowseQuery = generateQuery({
+  utility_collections: [
+    {
+      where: $("where", "utility_collections_bool_exp!"),
+      order_by: $("order_by", "[utility_collections_order_by!]"),
+      limit: $("limit", "Int!"),
+    },
+    utilityCollectionBrowseFields,
+  ],
+});
+
+// Renaming, and who can see it. The table refuses Team without a team, so the
+// two travel together in `set`.
+export const updateUtilityCollectionMutation = generateMutation({
+  update_utility_collections_by_pk: [
+    {
+      pk_columns: { id: $("id", "uuid!") },
+      _set: $("set", "utility_collections_set_input!"),
+    },
+    {
+      id: true,
+      name: true,
+      visibility: true,
+      team_id: true,
+    },
+  ],
+});
+
+// A copy is a new collection and then its lineups, in two writes: the items'
+// insert check reads the collection they point at, which has to exist first.
+export const addLineupsToCollectionMutation = generateMutation({
+  insert_utility_collection_items: [
+    {
+      objects: $("objects", "[utility_collection_items_insert_input!]!"),
     },
     {
       affected_rows: true,

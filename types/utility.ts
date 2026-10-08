@@ -201,6 +201,55 @@ export type UtilityCollection = {
   items_aggregate?: {
     aggregate?: { count?: number | null } | null;
   } | null;
+  // Only on the Collections tab's read; the pickers ask for less.
+  map_name?: string | null;
+  visibility?: UtilityVisibility;
+  team_id?: string | null;
+  updated_at?: string | null;
+  owner?: { steam_id: string; name: string } | null;
+  items?: UtilityCollectionItem[] | null;
+};
+
+/**
+ * A collection's lineup, as light as the tab's list can get away with: enough
+ * to count it by map and type and to draw it on the board. Null when the
+ * caller cannot see the lineup the item points at.
+ */
+export type UtilityCollectionLineupRef = Pick<
+  UtilityLineup,
+  | "id"
+  | "name"
+  | "map_name"
+  | "utility_type"
+  | "archived_at"
+  | "origin_x"
+  | "origin_y"
+  | "origin_z"
+  | "eye_z"
+  | "land_x"
+  | "land_y"
+  | "land_z"
+  | "trajectory_preview"
+>;
+
+export type UtilityCollectionItem = {
+  utility_lineup_id: string;
+  utility_lineup?: UtilityCollectionLineupRef | null;
+};
+
+/** A collection as the Collections tab lists it, read against one map. */
+export type UtilityCollectionCard = {
+  collection: UtilityCollection;
+  // The caller owns it. `can_edit` is wider: a team's admins edit a team
+  // collection, but only its owner may delete it or change who sees it.
+  mine: boolean;
+  /** Its lineups on the map being looked at, in the collection's order. */
+  here: UtilityCollectionLineupRef[];
+  /** Every lineup in it the caller can see, on any map. */
+  total: number;
+  counts: Partial<Record<UtilityType, number>>;
+  /** The other maps it reaches, as map names. */
+  otherMaps: string[];
 };
 
 /** One player's drill record against one lineup. Streaks are API-written. */

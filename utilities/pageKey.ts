@@ -16,14 +16,16 @@ export function pageKeyWithoutTabQuery(route: {
     return `/apps/${plugin[1]}`;
   }
 
-  // Same idea, and for the same reason: the map is a PARAMETER of the utility
-  // library, not a different page. Keying it on the path made every map switch
-  // a full remount — the whole page torn down and rebuilt behind a 520ms slide,
-  // the 740px board gone and back, every panel refiring its queries from
-  // nothing — for what is really one prop changing. The page watches `mapName`
-  // and swaps its contents in place instead.
-  if (route.name === "utility-map") {
-    return "/utility/:map";
+  // Same idea, and for the same reason. The maps index and a map are two
+  // views inside one shell (`pages/utility.vue`), which holds the maps rail:
+  // keyed on the path, going from the index to a map tore the shell down and
+  // put the rail back somewhere else. With one key for both, the shell stays
+  // mounted and only what is inside it changes. The map itself is a PARAMETER
+  // of the library, not a different page -- the shell keys its own outlet so
+  // that a map switch is one prop changing rather than a remount (see
+  // `utilityOutletKey`).
+  if (route.name === "utility" || route.name === "utility-map") {
+    return "/utility";
   }
 
   const query = new URLSearchParams();
@@ -50,4 +52,17 @@ export function pageKeyWithoutTabQuery(route: {
 
   const queryString = query.toString();
   return `${route.path}${queryString ? `?${queryString}` : ""}${route.hash || ""}`;
+}
+
+/**
+ * The key of the outlet inside the utility shell. Every map is the same key,
+ * so switching maps swaps the page's contents in place: keyed on the path, the
+ * whole page was torn down and rebuilt behind a 520ms slide, the board gone and
+ * back, every panel refiring its queries from nothing.
+ */
+export function utilityOutletKey(route: {
+  name?: string | symbol | null;
+  path: string;
+}) {
+  return route.name === "utility-map" ? "/utility/:map" : route.path;
 }

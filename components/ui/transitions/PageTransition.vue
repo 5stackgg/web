@@ -9,11 +9,17 @@ interface Props {
    * half fully gone before the new one starts.
    */
   swap?: boolean
+  /**
+   * Off when the page arranges its own arrival -- one that grows out of the
+   * page before it, say -- and a slide on top of that would be two entrances.
+   */
+  appear?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   delay: 0,
   swap: false,
+  appear: true,
 })
 
 const enterActive =
@@ -39,7 +45,7 @@ function clearEnterDelay(el: Element) {
 
 <template>
   <Transition
-    appear
+    :appear="appear"
     :mode="swap ? 'out-in' : undefined"
     :enter-active-class="swap ? swapActive : enterActive"
     :leave-active-class="swap ? swapActive : enterActive"

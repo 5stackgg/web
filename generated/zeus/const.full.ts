@@ -1543,6 +1543,8 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"direct_conversations_bool_exp",
 		_not:"direct_conversations_bool_exp",
 		_or:"direct_conversations_bool_exp",
+		accepted_at:"timestamptz_comparison_exp",
+		declined_at:"timestamptz_comparison_exp",
 		is_open:"Boolean_comparison_exp",
 		last_message_at:"timestamptz_comparison_exp",
 		position:"Int_comparison_exp",
@@ -1554,6 +1556,8 @@ export const AllTypesProps: Record<string,any> = {
 		steam_id:"bigint"
 	},
 	direct_conversations_insert_input:{
+		accepted_at:"timestamptz",
+		declined_at:"timestamptz",
 		last_message_at:"timestamptz",
 		steam_id:"bigint"
 	},
@@ -1563,6 +1567,8 @@ export const AllTypesProps: Record<string,any> = {
 		where:"direct_conversations_bool_exp"
 	},
 	direct_conversations_order_by:{
+		accepted_at:"order_by",
+		declined_at:"order_by",
 		is_open:"order_by",
 		last_message_at:"order_by",
 		position:"order_by",
@@ -1574,6 +1580,8 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	direct_conversations_select_column: "enum" as const,
 	direct_conversations_set_input:{
+		accepted_at:"timestamptz",
+		declined_at:"timestamptz",
 		last_message_at:"timestamptz",
 		steam_id:"bigint"
 	},
@@ -1582,6 +1590,8 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	direct_conversations_stream_cursor_value_input:{
+		accepted_at:"timestamptz",
+		declined_at:"timestamptz",
 		last_message_at:"timestamptz",
 		steam_id:"bigint"
 	},
@@ -28022,6 +28032,7 @@ export const AllTypesProps: Record<string,any> = {
 		abandoned_matches_aggregate:"abandoned_matches_aggregate_bool_exp",
 		aim_weapon_stats:"player_aim_weapon_stats_bool_exp",
 		aim_weapon_stats_aggregate:"player_aim_weapon_stats_aggregate_bool_exp",
+		allow_message_requests:"Boolean_comparison_exp",
 		assists:"player_assists_bool_exp",
 		assists_aggregate:"player_assists_aggregate_bool_exp",
 		assited_by_players:"player_assists_bool_exp",
@@ -28224,6 +28235,7 @@ export const AllTypesProps: Record<string,any> = {
 	players_order_by:{
 		abandoned_matches_aggregate:"abandoned_matches_aggregate_order_by",
 		aim_weapon_stats_aggregate:"player_aim_weapon_stats_aggregate_order_by",
+		allow_message_requests:"order_by",
 		assists_aggregate:"player_assists_aggregate_order_by",
 		assited_by_players_aggregate:"player_assists_aggregate_order_by",
 		avatar_url:"order_by",
@@ -33399,12 +33411,12 @@ export const AllTypesProps: Record<string,any> = {
 		connection_string:"String_comparison_exp",
 		current_match:"matches_bool_exp",
 		enabled:"Boolean_comparison_exp",
+		featured:"Boolean_comparison_exp",
 		game:"String_comparison_exp",
 		game_mode:"game_modes_bool_exp",
 		game_mode_id:"uuid_comparison_exp",
 		game_server_node:"game_server_nodes_bool_exp",
 		game_server_node_id:"String_comparison_exp",
-		featured:"Boolean_comparison_exp",
 		hibernating:"Boolean_comparison_exp",
 		host:"String_comparison_exp",
 		id:"uuid_comparison_exp",
@@ -33553,12 +33565,12 @@ export const AllTypesProps: Record<string,any> = {
 		connection_string:"order_by",
 		current_match:"matches_order_by",
 		enabled:"order_by",
+		featured:"order_by",
 		game:"order_by",
 		game_mode:"game_modes_order_by",
 		game_mode_id:"order_by",
 		game_server_node:"game_server_nodes_order_by",
 		game_server_node_id:"order_by",
-		featured:"order_by",
 		hibernating:"order_by",
 		host:"order_by",
 		id:"order_by",
@@ -52623,6 +52635,8 @@ export const ReturnTypes: Record<string,any> = {
 		size:"Float"
 	},
 	direct_conversations:{
+		accepted_at:"timestamptz",
+		declined_at:"timestamptz",
 		is_open:"Boolean",
 		last_message_at:"timestamptz",
 		position:"Int",
@@ -52651,12 +52665,16 @@ export const ReturnTypes: Record<string,any> = {
 		steam_id:"Float"
 	},
 	direct_conversations_max_fields:{
+		accepted_at:"timestamptz",
+		declined_at:"timestamptz",
 		last_message_at:"timestamptz",
 		position:"Int",
 		room_id:"String",
 		steam_id:"bigint"
 	},
 	direct_conversations_min_fields:{
+		accepted_at:"timestamptz",
+		declined_at:"timestamptz",
 		last_message_at:"timestamptz",
 		position:"Int",
 		room_id:"String",
@@ -66498,6 +66516,7 @@ export const ReturnTypes: Record<string,any> = {
 		abandoned_matches_aggregate:"abandoned_matches_aggregate",
 		aim_weapon_stats:"player_aim_weapon_stats",
 		aim_weapon_stats_aggregate:"player_aim_weapon_stats_aggregate",
+		allow_message_requests:"Boolean",
 		assists:"player_assists",
 		assists_aggregate:"player_assists_aggregate",
 		assited_by_players:"player_assists",
@@ -68611,12 +68630,12 @@ export const ReturnTypes: Record<string,any> = {
 		connection_string:"String",
 		current_match:"matches",
 		enabled:"Boolean",
+		featured:"Boolean",
 		game:"String",
 		game_mode:"game_modes",
 		game_mode_id:"uuid",
 		game_server_node:"game_server_nodes",
 		game_server_node_id:"String",
-		featured:"Boolean",
 		hibernating:"Boolean",
 		host:"String",
 		id:"uuid",

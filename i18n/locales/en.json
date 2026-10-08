@@ -4203,7 +4203,7 @@
         "gamedata_never": "Not validated for this build yet",
         "map_assets_never": "Not built for this build yet",
         "auto_hint": "Runs by itself when a node first reports a new build",
-        "map_assets_hint": "Built after gamedata validation when auto-build is on",
+        "map_assets_hint": "Built by itself after gamedata validation",
         "revalidate": "Re-validate",
         "rebuild": "Rebuild",
         "build": "Build",

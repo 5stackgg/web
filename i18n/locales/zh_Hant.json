@@ -4201,7 +4201,7 @@
         "gamedata_never": "此版本尚未驗證",
         "map_assets_never": "此版本尚未建置",
         "auto_hint": "節點首次回報新版本時自動執行",
-        "map_assets_hint": "開啟自動建置時，會在遊戲資料驗證後建置",
+        "map_assets_hint": "遊戲資料驗證後自動建置",
         "revalidate": "重新驗證",
         "rebuild": "重新建置",
         "build": "建置",

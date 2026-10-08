@@ -4201,7 +4201,7 @@
         "gamedata_never": "Endnu ikke valideret for denne build",
         "map_assets_never": "Endnu ikke bygget for denne build",
         "auto_hint": "Kører af sig selv, når en node første gang rapporterer en ny build",
-        "map_assets_hint": "Bygges efter gamedata-validering, når auto-build er slået til",
+        "map_assets_hint": "Bygges af sig selv efter gamedata-validering",
         "revalidate": "Valider igen",
         "rebuild": "Byg igen",
         "build": "Byg",

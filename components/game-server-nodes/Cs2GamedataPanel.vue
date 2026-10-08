@@ -149,6 +149,17 @@ const countLabel = (row: { previousCount: number | null; count: number | null })
 
 const running = computed(() => status.value === "running");
 
+const listTitle = computed(() => {
+  if (running.value) {
+    return t("pages.game_server_nodes.cs2_build.in_progress");
+  }
+  return changes.value?.comparable && props.row?.previous_build_id
+    ? t("pages.game_server_nodes.cs2_build.vs_build", {
+        build: props.row.previous_build_id,
+      })
+    : t("pages.game_server_nodes.cs2_build.first_run");
+});
+
 const blocked = computed(() =>
   running.value ? t("pages.game_server_nodes.cs2_build.blocked.running") : null,
 );
@@ -243,13 +254,7 @@ const node = computed(
       <span
         class="flex-1 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
       >
-        {{
-          changes?.comparable && row?.previous_build_id
-            ? $t("pages.game_server_nodes.cs2_build.vs_build", {
-                build: row.previous_build_id,
-              })
-            : $t("pages.game_server_nodes.cs2_build.first_run")
-        }}
+        {{ listTitle }}
       </span>
       <span
         v-for="chip of chips"

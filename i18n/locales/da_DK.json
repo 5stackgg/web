@@ -4218,6 +4218,7 @@
         "requested_by": "af {name}",
         "vs_build": "Ændringer i forhold til {build}",
         "first_run": "Intet at sammenligne med endnu",
+        "in_progress": "Ændringer vises, når denne kørsel er færdig",
         "no_changes": "Ingen ændringer siden {build}",
         "nothing_broken": "Intet i stykker",
         "no_maps": "Ingen kort blev udgivet",

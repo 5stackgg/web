@@ -4218,6 +4218,7 @@
         "requested_by": "por {name}",
         "vs_build": "Mudanças em relação a {build}",
         "first_run": "Ainda não há nada para comparar",
+        "in_progress": "As mudanças aparecem quando esta execução terminar",
         "no_changes": "Sem mudanças desde {build}",
         "nothing_broken": "Nada quebrado",
         "no_maps": "Nenhum mapa foi publicado",

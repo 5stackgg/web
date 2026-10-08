@@ -6669,6 +6669,16 @@
     "enabled": "Push-aviseringar påslagna",
     "failed": "Kunde inte slå på push-aviseringar. Försök igen."
   },
+  "feature_spotlights": {
+    "label": "Funktion i fokus",
+    "auto_highlights": {
+      "cover_top": "Auto",
+      "cover_bottom": "Höjdpunkter",
+      "title": "Höjdpunkter från varje match du spelar",
+      "teaser": "Länka din matchhistorik på Steam. Dina Premier- och Competitive-matcher importeras av sig själva och dina bästa rundor klipps ihop.",
+      "action": "Länka konto"
+    }
+  },
   "pwa": {
     "install": {
       "title": "Lägg till på hemskärmen",

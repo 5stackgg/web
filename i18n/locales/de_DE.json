@@ -6669,6 +6669,16 @@
     "enabled": "Push-Benachrichtigungen aktiviert",
     "failed": "Push-Benachrichtigungen konnten nicht aktiviert werden. Versuche es erneut."
   },
+  "feature_spotlights": {
+    "label": "Feature im Fokus",
+    "auto_highlights": {
+      "cover_top": "Auto",
+      "cover_bottom": "Highlights",
+      "title": "Highlights aus jedem Match, das du spielst",
+      "teaser": "Verknüpfe deinen Steam-Matchverlauf. Deine Premier- und Competitive-Matches werden automatisch importiert und deine besten Runden zu Clips geschnitten.",
+      "action": "Konto verknüpfen"
+    }
+  },
   "pwa": {
     "install": {
       "title": "Zum Startbildschirm hinzufügen",

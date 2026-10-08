@@ -6669,6 +6669,16 @@
     "enabled": "Notificações push ativadas",
     "failed": "Não foi possível ativar as notificações push. Tente de novo."
   },
+  "feature_spotlights": {
+    "label": "Recurso em destaque",
+    "auto_highlights": {
+      "cover_top": "Auto",
+      "cover_bottom": "Highlights",
+      "title": "Highlights de cada partida que você joga",
+      "teaser": "Vincule seu histórico de partidas da Steam. Suas partidas Premier e Competitivas são importadas sozinhas e suas melhores rodadas viram clipes.",
+      "action": "Vincular conta"
+    }
+  },
   "pwa": {
     "install": {
       "title": "Instalar App",

@@ -6669,6 +6669,16 @@
     "enabled": "푸시 알림을 켰습니다",
     "failed": "푸시 알림을 켜지 못했습니다. 다시 시도해 주세요."
   },
+  "feature_spotlights": {
+    "label": "주목할 기능",
+    "auto_highlights": {
+      "cover_top": "자동",
+      "cover_bottom": "하이라이트",
+      "title": "플레이한 모든 매치의 하이라이트",
+      "teaser": "Steam 매치 기록을 연동하세요. 프리미어 및 경쟁전 매치를 자동으로 가져오고 최고의 라운드를 클립으로 만들어 드립니다.",
+      "action": "계정 연동"
+    }
+  },
   "pwa": {
     "install": {
       "title": "홈 화면에 추가",

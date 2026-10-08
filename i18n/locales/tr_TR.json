@@ -4207,7 +4207,7 @@
         "gamedata_never": "Bu sürüm için henüz doğrulanmadı",
         "map_assets_never": "Bu sürüm için henüz oluşturulmadı",
         "auto_hint": "Bir düğüm yeni bir sürümü ilk kez bildirdiğinde kendiliğinden çalışır",
-        "map_assets_hint": "Otomatik oluşturma açıksa gamedata doğrulamasından sonra oluşturulur",
+        "map_assets_hint": "Gamedata doğrulamasından sonra kendiliğinden oluşturulur",
         "revalidate": "Yeniden doğrula",
         "rebuild": "Yeniden oluştur",
         "build": "Oluştur",
@@ -4224,6 +4224,7 @@
         "requested_by": "isteyen: {name}",
         "vs_build": "{build} sürümüne göre değişiklikler",
         "first_run": "Henüz karşılaştırılacak bir şey yok",
+        "in_progress": "Değişiklikler bu çalıştırma bittiğinde görünür",
         "no_changes": "{build} sürümünden beri değişiklik yok",
         "nothing_broken": "Bozuk bir şey yok",
         "no_maps": "Hiç harita yayınlanmadı",
@@ -6804,6 +6805,16 @@
     "dismiss": "Kapat",
     "enabled": "Anlık bildirimler açıldı",
     "failed": "Anlık bildirimler açılamadı. Tekrar dene."
+  },
+  "feature_spotlights": {
+    "label": "Öne Çıkan Özellik",
+    "auto_highlights": {
+      "cover_top": "Otomatik",
+      "cover_bottom": "Öne Çıkanlar",
+      "title": "Oynadığın Her Maçtan Öne Çıkanlar",
+      "teaser": "Steam maç geçmişini bağla. Premier ve Rekabetçi maçların kendiliğinden içe aktarılır, en iyi raundların klibe dönüşür.",
+      "action": "Hesabı Bağla"
+    }
   },
   "pwa": {
     "install": {

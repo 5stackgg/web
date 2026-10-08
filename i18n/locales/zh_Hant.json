@@ -4207,7 +4207,7 @@
         "gamedata_never": "此版本尚未驗證",
         "map_assets_never": "此版本尚未建置",
         "auto_hint": "節點首次回報新版本時自動執行",
-        "map_assets_hint": "開啟自動建置時，會在遊戲資料驗證後建置",
+        "map_assets_hint": "遊戲資料驗證後自動建置",
         "revalidate": "重新驗證",
         "rebuild": "重新建置",
         "build": "建置",
@@ -4224,6 +4224,7 @@
         "requested_by": "由 {name} 發起",
         "vs_build": "相較於 {build} 的變更",
         "first_run": "尚無可比較的版本",
+        "in_progress": "本次執行完成後將顯示變更",
         "no_changes": "自 {build} 以來無變更",
         "nothing_broken": "沒有損壞項目",
         "no_maps": "未發佈任何地圖",
@@ -6804,6 +6805,16 @@
     "dismiss": "關閉",
     "enabled": "已開啟推播通知",
     "failed": "無法開啟推播通知，請再試一次。"
+  },
+  "feature_spotlights": {
+    "label": "功能焦點",
+    "auto_highlights": {
+      "cover_top": "自動",
+      "cover_bottom": "精華時刻",
+      "title": "您的每場比賽，都有精華時刻",
+      "teaser": "連結您的 Steam 比賽紀錄。您的 Premier 與競技比賽會自動匯入，最精彩的回合會剪成片段。",
+      "action": "連結帳戶"
+    }
   },
   "pwa": {
     "install": {

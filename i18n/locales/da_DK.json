@@ -4207,7 +4207,7 @@
         "gamedata_never": "Endnu ikke valideret for denne build",
         "map_assets_never": "Endnu ikke bygget for denne build",
         "auto_hint": "Kører af sig selv, når en node første gang rapporterer en ny build",
-        "map_assets_hint": "Bygges efter gamedata-validering, når auto-build er slået til",
+        "map_assets_hint": "Bygges af sig selv efter gamedata-validering",
         "revalidate": "Valider igen",
         "rebuild": "Byg igen",
         "build": "Byg",
@@ -4224,6 +4224,7 @@
         "requested_by": "af {name}",
         "vs_build": "Ændringer i forhold til {build}",
         "first_run": "Intet at sammenligne med endnu",
+        "in_progress": "Ændringer vises, når denne kørsel er færdig",
         "no_changes": "Ingen ændringer siden {build}",
         "nothing_broken": "Intet i stykker",
         "no_maps": "Ingen kort blev udgivet",
@@ -6804,6 +6805,16 @@
     "dismiss": "Afvis",
     "enabled": "Push-notifikationer slået til",
     "failed": "Kunne ikke slå push-notifikationer til. Prøv igen."
+  },
+  "feature_spotlights": {
+    "label": "Funktion i fokus",
+    "auto_highlights": {
+      "cover_top": "Auto",
+      "cover_bottom": "Highlights",
+      "title": "Highlights fra hver kamp, du spiller",
+      "teaser": "Tilknyt din Steam-kamphistorik. Dine Premier- og Competitive-kampe importeres af sig selv, og dine bedste runder bliver klippet.",
+      "action": "Tilknyt konto"
+    }
   },
   "pwa": {
     "install": {

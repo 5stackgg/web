@@ -4207,7 +4207,7 @@
         "gamedata_never": "此版本尚未验证",
         "map_assets_never": "此版本尚未构建",
         "auto_hint": "节点首次报告新版本时自动运行",
-        "map_assets_hint": "开启自动构建时，会在游戏数据验证后构建",
+        "map_assets_hint": "游戏数据验证后自动构建",
         "revalidate": "重新验证",
         "rebuild": "重新构建",
         "build": "构建",
@@ -4224,6 +4224,7 @@
         "requested_by": "由 {name} 发起",
         "vs_build": "相比 {build} 的变更",
         "first_run": "暂无可比较的版本",
+        "in_progress": "本次运行完成后将显示变更",
         "no_changes": "自 {build} 以来无变更",
         "nothing_broken": "没有损坏项",
         "no_maps": "未发布任何地图",
@@ -6804,6 +6805,16 @@
     "dismiss": "关闭",
     "enabled": "已开启推送通知",
     "failed": "无法开启推送通知，请重试。"
+  },
+  "feature_spotlights": {
+    "label": "功能聚焦",
+    "auto_highlights": {
+      "cover_top": "自动",
+      "cover_bottom": "高光时刻",
+      "title": "你打的每场比赛，都有高光时刻",
+      "teaser": "关联你的 Steam 比赛记录。你的 Premier 和竞技比赛会自动导入，最精彩的回合会被剪成片段。",
+      "action": "关联账号"
+    }
   },
   "pwa": {
     "install": {

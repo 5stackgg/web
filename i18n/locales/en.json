@@ -4209,7 +4209,7 @@
         "gamedata_never": "Not validated for this build yet",
         "map_assets_never": "Not built for this build yet",
         "auto_hint": "Runs by itself when a node first reports a new build",
-        "map_assets_hint": "Built after gamedata validation when auto-build is on",
+        "map_assets_hint": "Built by itself after gamedata validation",
         "revalidate": "Re-validate",
         "rebuild": "Rebuild",
         "build": "Build",
@@ -4226,6 +4226,7 @@
         "requested_by": "by {name}",
         "vs_build": "Changes vs {build}",
         "first_run": "Nothing to compare with yet",
+        "in_progress": "Changes show up when this run finishes",
         "no_changes": "No changes since {build}",
         "nothing_broken": "Nothing broken",
         "no_maps": "No maps were published",
@@ -6806,6 +6807,16 @@
     "dismiss": "Dismiss",
     "enabled": "Push notifications enabled",
     "failed": "Couldn't enable push notifications. Try again."
+  },
+  "feature_spotlights": {
+    "label": "Feature Spotlight",
+    "auto_highlights": {
+      "cover_top": "Auto",
+      "cover_bottom": "Highlights",
+      "title": "Highlights From Every Match You Play",
+      "teaser": "Link your Steam match history. Your Premier and Competitive games import on their own and your best rounds get clipped.",
+      "action": "Link Account"
+    }
   },
   "pwa": {
     "install": {

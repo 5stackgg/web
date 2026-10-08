@@ -16,6 +16,12 @@ import {
   resetRosterNeedDismissals,
   syncRosterNeedDismissals,
 } from "~/composables/useRosterNeedDismissals";
+import {
+  activeFeatureSpotlight,
+  dismissFeatureSpotlight,
+  resetFeatureSpotlights,
+  syncFeatureSpotlights,
+} from "~/composables/useFeatureSpotlights";
 
 export type LeagueScheduleTask = {
   id: string;
@@ -326,6 +332,8 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     }
   };
 
+  const featureSpotlight = computed(() => activeFeatureSpotlight());
+
   // "Personal" (non-admin) items are the ones aimed at the player — invites and
   // role=user notifications. These drive the orange, ringing bell + sound. Admin
   // notifications (role above user) get a quieter indicator since admins tend to
@@ -344,6 +352,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
   const hasPersonalNotifications = computed(
     () =>
       !!unreadNewsArticle.value ||
+      !!featureSpotlight.value ||
       team_invites.value.length > 0 ||
       tournament_team_invites.value.length > 0 ||
       tournament_invites.value.length > 0 ||
@@ -358,6 +367,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
   const unreadNotificationCount = computed(
     () =>
       (unreadNewsArticle.value ? 1 : 0) +
+      (featureSpotlight.value ? 1 : 0) +
       team_invites.value.length +
       tournament_team_invites.value.length +
       tournament_invites.value.length +
@@ -783,6 +793,25 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     { immediate: true },
   );
 
+  // Only where linking an account really does get a player highlights; the
+  // spotlight says so, and both switches are the operator's.
+  watch(
+    [
+      () => useAuthStore().me?.steam_id,
+      () =>
+        useApplicationSettingsStore().linkedAccountsEnabled &&
+        useApplicationSettingsStore().importedHighlightsSupported,
+    ],
+    ([steamId, available]) => {
+      if (steamId && available) {
+        void syncFeatureSpotlights(steamId);
+      } else {
+        resetFeatureSpotlights();
+      }
+    },
+    { immediate: true },
+  );
+
   return {
     team_invites,
     tournament_team_invites,
@@ -804,6 +833,8 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     latestNewsArticle,
     unreadNewsArticle,
     markNewsRead,
+    featureSpotlight,
+    dismissFeatureSpotlight,
   };
 });
 

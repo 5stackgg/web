@@ -170,7 +170,40 @@ describe("CS2 build panels", () => {
     });
 
     expect(wrapper.text()).toContain("Validating");
-    expect(wrapper.text()).toContain("A validation is already running");
+    expect(wrapper.text()).not.toContain("A validation is already running");
+    expect(wrapper.find("button").attributes("disabled")).toBeDefined();
+  });
+
+  it("lists the warnings a build still has when none are new", async () => {
+    const wrapper = await mountSuspended(Cs2GamedataPanel, {
+      props: {
+        buildId: 25537370,
+        row: {
+          ...gamedata,
+          status: "pass",
+          changes: {
+            comparable: true,
+            counts: { checked: 212, broken: 0, warnings: 1, skipped: 0 },
+            newly_broken: [],
+            fixed: [],
+            new_warnings: [],
+            cleared_warnings: [],
+          },
+          results: {
+            warnings: [
+              { set: "upstream-swiftly", signature: "CBaseEntity_Use", count: 2 },
+            ],
+          },
+        },
+        nodes,
+        canRun: true,
+      },
+    });
+    const text = wrapper.text();
+
+    expect(text).toContain("warnings +0");
+    expect(text).toContain("CBaseEntity_Use");
+    expect(text).not.toContain("No changes since 25400000");
   });
 
   it("hides the last result while a re-run is in progress", async () => {
@@ -190,6 +223,31 @@ describe("CS2 build panels", () => {
 
     expect(wrapper.text()).not.toContain("ConnectClient");
     expect(wrapper.text()).not.toContain("1 newly broken");
+    expect(wrapper.text()).toContain("Changes show up when this run finishes");
+    expect(wrapper.text()).not.toContain("Nothing to compare with yet");
+  });
+
+  it("hides the last build's maps while a rebuild runs", async () => {
+    const wrapper = await mountSuspended(Cs2MapAssetsPanel, {
+      props: {
+        buildId: 25537370,
+        row: {
+          ...mapAssets,
+          status: "Building",
+          started_at: minutesAgo(1),
+          finished_at: null,
+        },
+        nodes,
+        canRun: true,
+      },
+    });
+    const text = wrapper.text();
+
+    expect(text).toContain("Changes show up when this run finishes");
+    expect(text).not.toContain("Nothing to compare with yet");
+    expect(text).not.toContain("Changes vs 25400000");
+    expect(text).not.toContain("1 rebuilt");
+    expect(text).not.toContain("de_mirage");
   });
 
   it("lists every map, changed ones first", async () => {
@@ -215,7 +273,7 @@ describe("CS2 build panels", () => {
     expect(wrapper.text()).toContain("Build");
   });
 
-  it("says why nothing can run when no node is on the build", async () => {
+  it("disables the run when no node is on the build", async () => {
     const wrapper = await mountSuspended(Cs2MapAssetsPanel, {
       props: {
         buildId: 25537370,
@@ -225,7 +283,28 @@ describe("CS2 build panels", () => {
       },
     });
 
-    expect(wrapper.text()).toContain("No online node is on build 25537370");
+    expect(wrapper.find("button").attributes("disabled")).toBeDefined();
+    expect(wrapper.text()).not.toContain("No online node is on build");
+  });
+
+  it("disables a rebuild while one is building without a note under it", async () => {
+    const wrapper = await mountSuspended(Cs2MapAssetsPanel, {
+      props: {
+        buildId: 25537370,
+        row: {
+          ...mapAssets,
+          status: "Building",
+          started_at: minutesAgo(1),
+          finished_at: null,
+        },
+        nodes,
+        canRun: true,
+      },
+    });
+
+    expect(wrapper.text()).toContain("Building");
+    expect(wrapper.text()).not.toContain("A build is already queued or running");
+    expect(wrapper.find("button").attributes("disabled")).toBeDefined();
   });
 });
 

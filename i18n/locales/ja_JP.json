@@ -4207,7 +4207,7 @@
         "gamedata_never": "このビルドではまだ検証されていません",
         "map_assets_never": "このビルドではまだビルドされていません",
         "auto_hint": "ノードが新しいビルドを初めて報告すると自動で実行されます",
-        "map_assets_hint": "自動ビルドが有効な場合、ゲームデータの検証後にビルドされます",
+        "map_assets_hint": "ゲームデータの検証後に自動でビルドされます",
         "revalidate": "再検証",
         "rebuild": "再ビルド",
         "build": "ビルド",
@@ -4224,6 +4224,7 @@
         "requested_by": "実行者: {name}",
         "vs_build": "{build} からの変更",
         "first_run": "まだ比較対象がありません",
+        "in_progress": "この実行が終わると変更内容が表示されます",
         "no_changes": "{build} から変更はありません",
         "nothing_broken": "破損なし",
         "no_maps": "公開されたマップはありません",
@@ -6804,6 +6805,16 @@
     "dismiss": "閉じる",
     "enabled": "プッシュ通知を有効にしました",
     "failed": "プッシュ通知を有効にできませんでした。もう一度お試しください。"
+  },
+  "feature_spotlights": {
+    "label": "注目の機能",
+    "auto_highlights": {
+      "cover_top": "自動",
+      "cover_bottom": "ハイライト",
+      "title": "プレイした全試合からハイライトを",
+      "teaser": "Steamのマッチ履歴を連携しましょう。プレミアとコンペティティブの試合が自動でインポートされ、ベストラウンドがクリップになります。",
+      "action": "アカウントを連携"
+    }
   },
   "pwa": {
     "install": {

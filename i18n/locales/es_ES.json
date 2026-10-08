@@ -4207,7 +4207,7 @@
         "gamedata_never": "Aún no validado para esta build",
         "map_assets_never": "Aún no generados para esta build",
         "auto_hint": "Se ejecuta solo cuando un nodo informa por primera vez de una nueva build",
-        "map_assets_hint": "Se generan tras la validación del gamedata si la generación automática está activada",
+        "map_assets_hint": "Se generan solos tras la validación del gamedata",
         "revalidate": "Volver a validar",
         "rebuild": "Regenerar",
         "build": "Generar",
@@ -4224,6 +4224,7 @@
         "requested_by": "por {name}",
         "vs_build": "Cambios respecto a {build}",
         "first_run": "Aún no hay nada con qué comparar",
+        "in_progress": "Los cambios aparecerán cuando termine esta ejecución",
         "no_changes": "Sin cambios desde {build}",
         "nothing_broken": "Nada roto",
         "no_maps": "No se publicó ningún mapa",
@@ -6804,6 +6805,16 @@
     "dismiss": "Descartar",
     "enabled": "Notificaciones push activadas",
     "failed": "No se pudieron activar las notificaciones push. Inténtalo de nuevo."
+  },
+  "feature_spotlights": {
+    "label": "Función destacada",
+    "auto_highlights": {
+      "cover_top": "Auto",
+      "cover_bottom": "Highlights",
+      "title": "Highlights de cada partida que juegas",
+      "teaser": "Vincula tu historial de partidas de Steam. Tus partidas de Premier y Competitivo se importan solas y tus mejores rondas se convierten en clips.",
+      "action": "Vincular cuenta"
+    }
   },
   "pwa": {
     "install": {

@@ -4207,7 +4207,7 @@
         "gamedata_never": "이 빌드는 아직 검증되지 않았습니다",
         "map_assets_never": "이 빌드는 아직 빌드되지 않았습니다",
         "auto_hint": "노드가 새 빌드를 처음 보고하면 자동으로 실행됩니다",
-        "map_assets_hint": "자동 빌드가 켜져 있으면 게임 데이터 검증 후 빌드됩니다",
+        "map_assets_hint": "게임 데이터 검증 후 자동으로 빌드됩니다",
         "revalidate": "다시 검증",
         "rebuild": "다시 빌드",
         "build": "빌드",
@@ -4224,6 +4224,7 @@
         "requested_by": "{name} 요청",
         "vs_build": "{build} 대비 변경 사항",
         "first_run": "아직 비교할 대상이 없습니다",
+        "in_progress": "이 실행이 끝나면 변경 사항이 표시됩니다",
         "no_changes": "{build} 이후 변경 사항 없음",
         "nothing_broken": "손상된 항목 없음",
         "no_maps": "게시된 맵이 없습니다",
@@ -6804,6 +6805,16 @@
     "dismiss": "닫기",
     "enabled": "푸시 알림을 켰습니다",
     "failed": "푸시 알림을 켜지 못했습니다. 다시 시도해 주세요."
+  },
+  "feature_spotlights": {
+    "label": "주목할 기능",
+    "auto_highlights": {
+      "cover_top": "자동",
+      "cover_bottom": "하이라이트",
+      "title": "플레이한 모든 매치의 하이라이트",
+      "teaser": "Steam 매치 기록을 연동하세요. 프리미어 및 경쟁전 매치를 자동으로 가져오고 최고의 라운드를 클립으로 만들어 드립니다.",
+      "action": "계정 연동"
+    }
   },
   "pwa": {
     "install": {

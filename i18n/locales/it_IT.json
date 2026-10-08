@@ -4207,7 +4207,7 @@
         "gamedata_never": "Non ancora validato per questa build",
         "map_assets_never": "Non ancora generate per questa build",
         "auto_hint": "Si avvia da solo quando un nodo segnala per la prima volta una nuova build",
-        "map_assets_hint": "Generate dopo la validazione gamedata quando la generazione automatica è attiva",
+        "map_assets_hint": "Generate automaticamente dopo la validazione gamedata",
         "revalidate": "Rivalida",
         "rebuild": "Rigenera",
         "build": "Genera",
@@ -4224,6 +4224,7 @@
         "requested_by": "da {name}",
         "vs_build": "Modifiche rispetto a {build}",
         "first_run": "Ancora niente con cui confrontare",
+        "in_progress": "Le modifiche compariranno al termine di questa esecuzione",
         "no_changes": "Nessuna modifica da {build}",
         "nothing_broken": "Niente di rotto",
         "no_maps": "Nessuna mappa pubblicata",
@@ -6804,6 +6805,16 @@
     "dismiss": "Ignora",
     "enabled": "Notifiche push attivate",
     "failed": "Impossibile attivare le notifiche push. Riprova."
+  },
+  "feature_spotlights": {
+    "label": "Funzione in evidenza",
+    "auto_highlights": {
+      "cover_top": "Auto",
+      "cover_bottom": "Highlight",
+      "title": "Highlight da ogni match che giochi",
+      "teaser": "Collega la tua cronologia partite di Steam. I tuoi match Premier e Competitive vengono importati da soli e i tuoi round migliori diventano clip.",
+      "action": "Collega account"
+    }
   },
   "pwa": {
     "install": {

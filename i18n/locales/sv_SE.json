@@ -4207,7 +4207,7 @@
         "gamedata_never": "Inte validerad för den här builden än",
         "map_assets_never": "Inte byggda för den här builden än",
         "auto_hint": "Körs automatiskt när en nod först rapporterar en ny build",
-        "map_assets_hint": "Byggs efter gamedata-validering när auto-bygge är på",
+        "map_assets_hint": "Byggs automatiskt efter gamedata-validering",
         "revalidate": "Validera igen",
         "rebuild": "Bygg om",
         "build": "Bygg",
@@ -4224,6 +4224,7 @@
         "requested_by": "av {name}",
         "vs_build": "Ändringar jämfört med {build}",
         "first_run": "Inget att jämföra med än",
+        "in_progress": "Ändringar visas när den här körningen är klar",
         "no_changes": "Inga ändringar sedan {build}",
         "nothing_broken": "Inget trasigt",
         "no_maps": "Inga kartor publicerades",
@@ -6804,6 +6805,16 @@
     "dismiss": "Avfärda",
     "enabled": "Push-aviseringar påslagna",
     "failed": "Kunde inte slå på push-aviseringar. Försök igen."
+  },
+  "feature_spotlights": {
+    "label": "Funktion i fokus",
+    "auto_highlights": {
+      "cover_top": "Auto",
+      "cover_bottom": "Höjdpunkter",
+      "title": "Höjdpunkter från varje match du spelar",
+      "teaser": "Länka din matchhistorik på Steam. Dina Premier- och Competitive-matcher importeras av sig själva och dina bästa rundor klipps ihop.",
+      "action": "Länka konto"
+    }
   },
   "pwa": {
     "install": {

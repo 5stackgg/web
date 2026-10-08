@@ -241,6 +241,13 @@ mark {
   padding-top: 2rem;
 }
 
+/* Header action buttons take the page title's clamp so the header scales with
+   the title. Plain CSS for the same reason: an `h-[clamp(…)]` candidate that
+   only lives in utilities/tacticalClasses.ts never generates. */
+.tac-header-action {
+  height: clamp(1.75rem, 4.2vw, 3rem);
+}
+
 /* Settings content is overwhelmingly label-left / control-right rows and prose.
    Unbounded on a wide monitor, a row stretches until the switch is half a screen
    from the label it belongs to, and a paragraph runs past a comfortable measure.

@@ -4,6 +4,7 @@ import {
   clampStillView,
   panStill,
   stillIsPastNative,
+  stillSwipeStep,
   zoomStillAt,
 } from "~/utilities/stillZoom";
 
@@ -81,5 +82,18 @@ describe("stillIsPastNative", () => {
     expect(stillIsPastNative(1.8, 400, 1920, 2)).toBe(false);
     expect(stillIsPastNative(3, 400, 1920, 2)).toBe(true);
     expect(stillIsPastNative(6, 400, 0, 2)).toBe(false);
+  });
+});
+
+describe("stillSwipeStep", () => {
+  it("goes on to the next still on a swipe left, back on a swipe right", () => {
+    expect(stillSwipeStep(-80, 6, 180)).toBe(1);
+    expect(stillSwipeStep(80, -6, 180)).toBe(-1);
+  });
+
+  it("is not a swipe when it is short, slow, or mostly up and down", () => {
+    expect(stillSwipeStep(-24, 0, 120)).toBe(0);
+    expect(stillSwipeStep(-80, 0, 1200)).toBe(0);
+    expect(stillSwipeStep(-60, 70, 180)).toBe(0);
   });
 });

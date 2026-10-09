@@ -28,6 +28,11 @@ import UtilityRow from "~/components/utility/UtilityRow.vue";
 import UtilitySetThumb from "~/components/utility/UtilitySetThumb.vue";
 import UtilitySkeletonList from "~/components/utility/UtilitySkeletonList.vue";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
+import {
+  notOpenedHere,
+  openedHere,
+  stepOutOf,
+} from "~/composables/useBackDismiss";
 import { useDeferredLoading } from "~/composables/useDeferredLoading";
 import { useRouteTab } from "~/composables/useRouteTab";
 import { useUtilityLoad } from "~/composables/useUtilityLoad";
@@ -334,10 +339,13 @@ function setOpen(id: string | null, mode: "push" | "replace") {
     delete query.execute;
   }
   const to = { path: route.path, query: query as any, hash: route.hash };
+  // The entry that opens one notes where it is, which is what lets the
+  // view's own Back step out of it; taken out by hand, the entry stops
+  // claiming it.
   if (mode === "push") {
-    void router.push(to);
+    void router.push({ ...to, state: openedHere("execute") });
   } else {
-    void router.replace(to);
+    void router.replace(id ? to : { ...to, state: notOpenedHere("execute") });
   }
 }
 
@@ -791,6 +799,12 @@ function close() {
   setOpen(null, "replace");
 }
 
+// The view's Back is the browser's when the execute was opened from the
+// list; arrived at by link, it comes out of the address instead.
+function back() {
+  stepOutOf(router, "execute", close);
+}
+
 // A step opens its lineup in the page's own lineup view, with one line saying
 // where in the execute it sits. Back from there lands here again.
 function openStep(index: number) {
@@ -1181,9 +1195,10 @@ async function destroy() {
 
     <!-- The execute, read. Everything you can do with it is the dock. -->
     <UtilityCardView
+      addressed
       :open="viewOpen"
       :label="current?.name ?? null"
-      @back="close()"
+      @back="back()"
     >
       <template v-if="current" #kicker>
         <span class="truncate">

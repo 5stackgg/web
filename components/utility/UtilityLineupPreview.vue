@@ -99,6 +99,7 @@ watch(
           :download-name="download?.name"
           :download-label="$t('pages.utility.detail.download_clip')"
           :size-label="size"
+          dismiss-on-back
           @copy="share"
         />
       </template>
@@ -111,6 +112,7 @@ watch(
         :map-name="lineup.map_name"
         :lineups="[lineup]"
         :selected-id="lineup.id"
+        :touch="false"
       />
       <p class="flex items-center gap-1.5 text-xs text-muted-foreground">
         <Boxes class="h-3.5 w-3.5 shrink-0" />

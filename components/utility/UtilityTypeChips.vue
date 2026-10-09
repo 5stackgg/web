@@ -14,7 +14,9 @@ const props = withDefaults(
     counts?: Partial<Record<UtilityType, number>> | null;
     // Fill the row instead of sitting at their natural width: the strip under
     // a card's tabs is exactly as wide as the card. Each grows from its own
-    // width, so the long names get the room the short ones do not need.
+    // width, so the long names get the room the short ones do not need. A
+    // name is never cut short to fit: the counts go first, and past that the
+    // row is expected to scroll.
     fill?: boolean;
   }>(),
   {
@@ -48,7 +50,7 @@ function toggle(type: UtilityType) {
     class="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-md border font-mono text-[0.6rem] font-bold uppercase leading-none transition-[color,background-color,border-color,opacity] duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[hsl(var(--tac-amber)/0.6)]"
     :class="[
       fill
-        ? 'min-w-0 flex-auto justify-center px-1.5 tracking-[0.06em]'
+        ? 'flex-auto justify-center px-1.5 tracking-[0.06em]'
         : 'shrink-0 px-2.5 tracking-[0.14em]',
       selected.includes(type)
         ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.1)] text-[hsl(var(--tac-amber))]'
@@ -63,14 +65,19 @@ function toggle(type: UtilityType) {
       :class="selected.includes(type) ? 'opacity-100' : 'opacity-45'"
       :style="{ backgroundColor: UTILITY_TYPE_COLORS[type] }"
     />
-    <span :class="fill ? 'min-w-0 truncate' : ''">
-      {{ $t(`pages.utility.types.${type}`) }}
-    </span>
+    <!-- One line high and wrapping: a count with no room beside its name
+         drops to a second line that is not shown, so the chip can give up
+         the count but never a letter of the name. -->
     <span
-      v-if="counts"
-      class="font-medium tabular-nums opacity-60"
+      class="flex min-w-0 flex-wrap justify-center gap-x-1.5 overflow-hidden"
+      :class="fill ? 'h-[1.4em] leading-[1.4]' : ''"
     >
-      {{ counts[type] ?? 0 }}
+      <span data-type-name class="shrink-0 whitespace-nowrap">
+        {{ $t(`pages.utility.types.${type}`) }}
+      </span>
+      <span v-if="counts" class="font-medium tabular-nums opacity-60">
+        {{ counts[type] ?? 0 }}
+      </span>
     </span>
   </button>
 </template>

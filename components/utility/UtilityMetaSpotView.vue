@@ -257,6 +257,7 @@ function signIn() {
 <template>
   <UtilityCardView
     layer="top"
+    addressed
     :open="!!spot"
     :label="name"
     @back="emit('back')"

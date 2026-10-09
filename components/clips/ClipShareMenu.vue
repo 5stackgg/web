@@ -7,11 +7,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
+import { backClosesMenus, useBackDismiss } from "~/composables/useBackDismiss";
 
 // The one Share button a clip carries in its player's tray, on highlights and
 // lineups alike: copy the link, download the file, and whatever the surface
 // adds below (the highlight modal's admin section).
-withDefaults(
+const props = withDefaults(
   defineProps<{
     copied: boolean;
     copyLabel?: string | null;
@@ -20,6 +21,10 @@ withDefaults(
     downloadLabel?: string | null;
     sizeLabel?: string | null;
     contentClass?: string | null;
+    // On a page that gives Back to what is open over it, Back closes this
+    // menu first. Off where the page runs its own history, as the highlight
+    // modal does.
+    dismissOnBack?: boolean;
   }>(),
   {
     copyLabel: null,
@@ -28,10 +33,17 @@ withDefaults(
     downloadLabel: null,
     sizeLabel: null,
     contentClass: null,
+    dismissOnBack: false,
   },
 );
 
 const open = defineModel<boolean>("open", { default: false });
+
+useBackDismiss(
+  () => open.value,
+  () => (open.value = false),
+  { enabled: () => props.dismissOnBack && backClosesMenus() },
+);
 
 const emit = defineEmits<{ (e: "copy"): void }>();
 
@@ -47,6 +59,12 @@ onMounted(() => {
 function onCopy(event: Event) {
   event.preventDefault();
   emit("copy");
+}
+
+// Closing on Download would, where Back closes this menu, step back in the
+// history while the download is still starting -- which can cancel it.
+function keepOpen(event: Event) {
+  event.preventDefault();
 }
 </script>
 
@@ -88,7 +106,7 @@ function onCopy(event: Event) {
               : (copyLabel ?? $t("clips.share_menu.copy_link"))
         }}
       </DropdownMenuItem>
-      <DropdownMenuItem v-if="downloadHref" as-child>
+      <DropdownMenuItem v-if="downloadHref" as-child @select="keepOpen">
         <a :href="downloadHref" :download="downloadName ?? ''">
           <Download />
           {{ downloadLabel ?? $t("common.download") }}

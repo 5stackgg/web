@@ -49,6 +49,13 @@ import UtilityLineupDetail from "~/components/utility/UtilityLineupDetail.vue";
 import { useUtilityPracticeSession } from "~/composables/useUtilityPracticeSession";
 import { useUtilityLoad } from "~/composables/useUtilityLoad";
 import {
+  notOpenedHere,
+  openedHere,
+  stepOutOf,
+  useBackDismiss,
+} from "~/composables/useBackDismiss";
+import { addressOpenMode } from "~/utilities/backDismiss";
+import {
   arriveUtilityPage,
   leaveUtilityPage,
   morphFromRect,
@@ -159,6 +166,11 @@ function readList(key: string): string[] {
 let queryPatch: Record<string, string | null> | null = null;
 let queryMode: "push" | "replace" = "replace";
 
+// What is open because the address says so, and that Back closes: the entry
+// that opens one notes where it is, so the page's own Back can step to just
+// before it however much has been opened over it since.
+const OPENED_BY_ADDRESS = ["lineup", "spot"];
+
 function writeQuery(
   patch: Record<string, string | null>,
   mode: "push" | "replace" = "replace",
@@ -195,7 +207,23 @@ function flushQuery() {
     return;
   }
   const to = { path: route.path, query: query as any, hash: route.hash };
-  void (mode === "push" ? router.push(to) : router.replace(to));
+  if (mode === "push") {
+    const opening = OPENED_BY_ADDRESS.filter(
+      (key) => patch[key] && !route.query[key],
+    );
+    void router.push({
+      ...to,
+      state: Object.assign({}, ...opening.map(openedHere)),
+    });
+    return;
+  }
+  // Taken out of an entry by hand, that entry has to stop claiming it was
+  // opened there.
+  const removed = OPENED_BY_ADDRESS.filter((key) => patch[key] === null);
+  void router.replace({
+    ...to,
+    state: Object.assign({}, ...removed.map(notOpenedHere)),
+  });
 }
 
 const filters = computed<UtilityFilterState>({
@@ -307,9 +335,13 @@ const selectedMetaKey = computed<string | null>({
   set: (key) =>
     writeQuery(
       { spot: key },
-      key && !getQueryString(route.query, "spot") ? "push" : "replace",
+      key ? addressOpenMode(!!getQueryString(route.query, "spot")) : "replace",
     ),
 });
+
+function closeMetaSpot() {
+  stepOutOf(router, "spot", () => (selectedMetaKey.value = null));
+}
 const hoveredMetaKey = ref<string | null>(null);
 const createSeed = ref<UtilityMetaSpot | null>(null);
 
@@ -1408,11 +1440,18 @@ function setDetailId(id: string | null, mode: "push" | "replace") {
   writeQuery({ lineup: id }, mode);
 }
 
+// The page's own Back is the browser's Back when the lineup was opened here;
+// by link there is nothing of ours to step back to, and the lineup comes out
+// of the address.
+function closeDetail() {
+  stepOutOf(router, "lineup", () => setDetailId(null, "replace"));
+}
+
 const detailOpen = computed<boolean>({
   get: () => !!detailId.value,
   set: (value) => {
     if (!value) {
-      setDetailId(null, "replace");
+      closeDetail();
     }
   },
 });
@@ -1425,7 +1464,7 @@ const detailContext = ref<UtilityLineupContext | null>(null);
 // swaps it in place, so Back still lands on the list and not on the last one.
 function openLineup(id: string, context?: UtilityLineupContext | null) {
   detailContext.value = context ?? null;
-  setDetailId(id, detailId.value ? "replace" : "push");
+  setDetailId(id, addressOpenMode(!!detailId.value));
 }
 
 // The plan is a queue, so from one of its lineups there is a next one.
@@ -1462,7 +1501,6 @@ function deleteFromDetail(id: string) {
 const listScroller = ref<HTMLElement | null>(null);
 const sheet = ref<InstanceType<typeof UtilityMobileSheet> | null>(null);
 let listScrollTop = 0;
-let sheetWasExpanded = false;
 
 watch(
   detailId,
@@ -1485,12 +1523,11 @@ watch(covered, (on, was) => {
   if (on && !was) {
     listScrollTop = listScroller.value?.scrollTop ?? 0;
     if (isMobile.value) {
-      sheetWasExpanded = sheet.value?.isExpanded() ?? false;
-      sheet.value?.expand();
+      sheet.value?.hold();
     }
   } else if (!on && was) {
-    if (isMobile.value && !sheetWasExpanded) {
-      sheet.value?.collapse();
+    if (isMobile.value) {
+      sheet.value?.release();
     }
     nextTick(() => {
       if (listScroller.value) {
@@ -1574,6 +1611,11 @@ watch(practiceOpen, (open) => {
     drawerPull.value = 0;
   }
 });
+
+useBackDismiss(
+  () => practiceOpen.value,
+  () => (practiceOpen.value = false),
+);
 
 // "Practice next" on the plan: open the lineup and put it on the server. With
 // a server on this map that is one command; with one elsewhere the host brings
@@ -1870,7 +1912,7 @@ onMounted(() => {
   // A link straight to a lineup or a spot, on a phone: the sheet was not
   // there to raise when the route was first read.
   if (covered.value && isMobile.value) {
-    sheet.value?.expand();
+    sheet.value?.hold();
   }
 });
 onBeforeUnmount(() => window.removeEventListener("keydown", closeTopLayer));
@@ -2106,6 +2148,31 @@ function selectLineup(id: string | null) {
         :class="arriving ? 'utility-arrive' : ''"
         class="utility-card flex min-h-0 flex-col overflow-hidden md:sticky md:top-4 md:h-[calc(100dvh-var(--header-height,4rem)-2rem)] md:self-start md:rounded-2xl md:border md:border-white/[0.08] md:bg-sidebar md:shadow-[0_24px_48px_-16px_rgba(0,0,0,0.85)]"
       >
+        <!-- All the sheet leaves on screen at its lowest, on a phone: the
+             map has the rest, and what it draws can still be narrowed from
+             here. Where the types do not apply, the strip only says which
+             tab is under it. -->
+        <template #peek>
+          <div
+            v-if="typeFilterApplies"
+            class="flex touch-pan-x gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&>button]:h-11 [&>button]:text-[0.7rem]"
+            role="group"
+            :aria-label="$t('pages.utility.meta.types')"
+          >
+            <UtilityTypeChips
+              :model-value="filters.types"
+              :counts="typeCounts"
+              fill
+              @update:model-value="(types) => (filters = { ...filters, types })"
+            />
+          </div>
+          <p
+            v-else
+            class="flex h-11 items-center justify-center font-mono text-[0.65rem] font-bold uppercase tracking-[0.14em] text-muted-foreground"
+          >
+            {{ listTabs.find((tab) => tab.key === listTab)?.label }}
+          </p>
+        </template>
         <div class="shrink-0 px-3 pt-3 max-md:pt-0">
           <AnimatedFilters
             v-model="listTab"
@@ -2148,7 +2215,7 @@ function selectLineup(id: string | null) {
                    tab that lists throws. Each chip says how many there are. -->
               <Fold :open="typeStripOpen">
                 <div
-                  class="flex gap-1 pb-2"
+                  class="flex gap-1 pb-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                   role="group"
                   :aria-label="$t('pages.utility.meta.types')"
                 >
@@ -2465,7 +2532,7 @@ function selectLineup(id: string | null) {
             :busiest="Math.max(1, metaBusiest)"
             :signed-in="!!mySteamId"
             :can-practice="!!mySteamId && !isMobile"
-            @back="selectedMetaKey = null"
+            @back="closeMetaSpot"
             @open-lineup="openLineup"
             @write-up="writeUpMetaSpot"
             @bar="(offer) => (spotBar = offer)"

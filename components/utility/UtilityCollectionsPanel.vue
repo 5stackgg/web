@@ -28,6 +28,11 @@ import UtilitySectionHead from "~/components/utility/UtilitySectionHead.vue";
 import UtilitySetThumb from "~/components/utility/UtilitySetThumb.vue";
 import UtilitySkeletonList from "~/components/utility/UtilitySkeletonList.vue";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
+import {
+  notOpenedHere,
+  openedHere,
+  stepOutOf,
+} from "~/composables/useBackDismiss";
 import { useDeferredLoading } from "~/composables/useDeferredLoading";
 import { useUtilityLoad } from "~/composables/useUtilityLoad";
 import {
@@ -141,11 +146,22 @@ function setOpen(id: string | null, mode: "push" | "replace") {
     delete query.collection;
   }
   const to = { path: route.path, query: query as any, hash: route.hash };
-  return mode === "push" ? router.push(to) : router.replace(to);
+  // The entry that opens one notes where it is, for the view's own Back to
+  // step out of; taken out by hand, the entry stops claiming it.
+  if (mode === "push") {
+    return router.push({ ...to, state: openedHere("collection") });
+  }
+  return router.replace(
+    id ? to : { ...to, state: notOpenedHere("collection") },
+  );
 }
 
 function openCollection(id: string) {
   void setOpen(id, openId.value ? "replace" : "push");
+}
+
+function closeCollection() {
+  stepOutOf(router, "collection", () => void setOpen(null, "replace"));
 }
 
 // The address belongs to this tab. Left behind, it would reopen the
@@ -1114,7 +1130,7 @@ async function copyLink() {
       :can-practice="canPractice"
       :teams="myTeams"
       :copying="copying"
-      @back="setOpen(null, 'replace')"
+      @back="closeCollection"
       @toggle-type="toggleType"
       @open-lineup="openLineup"
       @hover="hoverLineup"

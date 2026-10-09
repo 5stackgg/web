@@ -10,6 +10,8 @@ import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { useElementSize } from "@vueuse/core";
 import { ChevronLeft } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
+import { useBackDismiss } from "~/composables/useBackDismiss";
+import { escapeTaken, takeEscape } from "~/utilities/escapeKey";
 import { useUtilityCardViews } from "~/composables/useUtilityCardViews";
 
 /**
@@ -35,8 +37,14 @@ const props = withDefaults(
      * above the tabs' own views for what can open over any of them.
      */
     layer?: "base" | "top";
+    /**
+     * Its being open is in the address (`?spot=`, `?collection=`), so the
+     * entry that opened it is already there for the browser's Back and it
+     * takes none of its own.
+     */
+    addressed?: boolean;
   }>(),
-  { backLabel: null, label: null, layer: "base" },
+  { backLabel: null, label: null, layer: "base", addressed: false },
 );
 
 // The page's own element for that layer. Nothing is drawn until it exists:
@@ -58,7 +66,7 @@ function leave() {
 function onKey(event: KeyboardEvent) {
   if (
     event.key !== "Escape" ||
-    event.defaultPrevented ||
+    escapeTaken(event) ||
     openViews[openViews.length - 1] !== id
   ) {
     return;
@@ -74,7 +82,7 @@ function onKey(event: KeyboardEvent) {
   ) {
     return;
   }
-  event.preventDefault();
+  takeEscape(event);
   emit("back");
 }
 
@@ -98,6 +106,12 @@ onBeforeUnmount(() => {
   leave();
   window.removeEventListener("keydown", onKey);
 });
+
+useBackDismiss(
+  () => props.open,
+  () => emit("back"),
+  { enabled: () => !props.addressed },
+);
 
 // Section headings inside the view pin under whatever the view keeps at its
 // top, the same way the list's do under its own controls.

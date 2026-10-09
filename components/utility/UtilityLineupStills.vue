@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
+import { useMediaQuery } from "@vueuse/core";
 import { ChevronLeft, ChevronRight } from "lucide-vue-next";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import ZoomableImage from "~/components/media/ZoomableImage.vue";
+import { stillSwipeStep } from "~/utilities/stillZoom";
 import { utilityStillZoom } from "~/utilities/utilityDisplay";
 
 // The render pod films these in this order, and it is also the order a player
@@ -125,6 +127,60 @@ const columns = computed(() => ({
   gridTemplateColumns: `repeat(${items.value.length}, minmax(0, 1fr))`,
 }));
 
+// Under a finger there is no hover to read a name from and a 6px rail is
+// nothing to hit: there the stills are named buttons.
+const coarse = useMediaQuery("(pointer: coarse)");
+const byTouch = computed(() => coarse.value && !props.compact);
+
+// Three across at most, so a name has room to be read in full.
+const touchColumns = computed(() => {
+  const count = items.value.length;
+  const across = count <= 3 ? count : count === 4 ? 2 : 3;
+  return { gridTemplateColumns: `repeat(${across}, minmax(0, 1fr))` };
+});
+
+let swipe: { id: number; x: number; y: number; t: number } | null = null;
+
+function onSwipeStart(event: PointerEvent) {
+  // A second finger makes it a pinch, and a still that is zoomed in is being
+  // moved about, not passed.
+  if (
+    event.pointerType !== "touch" ||
+    !event.isPrimary ||
+    zoomable.value?.zoomed
+  ) {
+    swipe = null;
+    return;
+  }
+  swipe = {
+    id: event.pointerId,
+    x: event.clientX,
+    y: event.clientY,
+    t: event.timeStamp,
+  };
+}
+
+function onSwipeEnd(event: PointerEvent) {
+  const start = swipe;
+  swipe = null;
+  if (
+    !start ||
+    start.id !== event.pointerId ||
+    event.type === "pointercancel" ||
+    zoomable.value?.zoomed
+  ) {
+    return;
+  }
+  go(
+    index.value +
+      stillSwipeStep(
+        event.clientX - start.x,
+        event.clientY - start.y,
+        event.timeStamp - start.t,
+      ),
+  );
+}
+
 const STEPPER =
   "inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] disabled:pointer-events-none disabled:opacity-30";
 </script>
@@ -137,15 +193,19 @@ const STEPPER =
   >
     <div
       class="relative aspect-video overflow-hidden bg-black focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[hsl(var(--tac-amber))]"
-      :class="
+      :class="[
         compact
           ? 'border-b border-white/[0.08]'
-          : 'rounded-md border border-border'
-      "
+          : 'rounded-md border border-border',
+        byTouch ? 'touch-pan-y' : '',
+      ]"
       :tabindex="compact ? -1 : 0"
       role="group"
       :aria-label="$t('pages.utility.detail.stills.viewer')"
       @keydown="onKey"
+      @pointerdown="onSwipeStart"
+      @pointerup="onSwipeEnd"
+      @pointercancel="onSwipeEnd"
     >
       <FadeSwap class="h-full">
         <ZoomableImage
@@ -160,6 +220,7 @@ const STEPPER =
       </FadeSwap>
 
       <div
+        v-if="!byTouch"
         class="pointer-events-none absolute inset-x-0 bottom-0 z-[1] flex items-end justify-between gap-2 bg-gradient-to-t from-black/80 to-transparent px-2.5 pb-1.5 pt-5"
       >
         <span
@@ -182,7 +243,33 @@ const STEPPER =
     </div>
 
     <div
-      v-if="items.length > 1"
+      v-if="items.length > 1 && byTouch"
+      class="grid gap-1"
+      :style="touchColumns"
+      role="tablist"
+      :aria-label="$t('pages.utility.detail.stills.title')"
+    >
+      <button
+        v-for="(item, at) of items"
+        :key="item.kind"
+        type="button"
+        role="tab"
+        data-still-tab
+        class="flex min-h-11 items-center justify-center rounded-md border px-2 py-1.5 text-center font-mono text-[0.65rem] font-bold uppercase leading-tight tracking-[0.06em] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] motion-reduce:transition-none"
+        :class="
+          at === index
+            ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.1)] text-[hsl(var(--tac-amber))]'
+            : 'border-border/70 text-muted-foreground'
+        "
+        :aria-selected="at === index"
+        @click="go(at)"
+      >
+        {{ item.label }}
+      </button>
+    </div>
+
+    <div
+      v-else-if="items.length > 1"
       class="flex items-center gap-1"
       :class="compact ? 'px-2.5' : ''"
     >

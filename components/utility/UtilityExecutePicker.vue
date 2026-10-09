@@ -160,7 +160,7 @@ function toggle(lineup: UtilityLineup) {
 
     <template #head>
       <div
-        class="flex gap-1"
+        class="flex gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         role="group"
         :aria-label="$t('pages.utility.meta.types')"
       >

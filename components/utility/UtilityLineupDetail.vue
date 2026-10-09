@@ -71,6 +71,7 @@ import { useUtilityLineupShare } from "~/composables/useUtilityLineupShare";
 import { useUtilityRendersInFlight } from "~/composables/useUtilityRendersInFlight";
 import { useAuthStore } from "~/stores/AuthStore";
 import type { UtilityLineup, UtilityVisibility } from "~/types/utility";
+import { escapeTaken, takeEscape } from "~/utilities/escapeKey";
 
 const props = defineProps<{
   /** The page's own list, so a lineup already on screen opens without a fetch. */
@@ -176,7 +177,7 @@ watch(
 // It sits over the list in the card, so Escape is Back -- unless something
 // above it (a menu, a dialog, a field being typed in) owns the key.
 function onKey(event: KeyboardEvent) {
-  if (!open.value || event.defaultPrevented) {
+  if (!open.value || escapeTaken(event)) {
     return;
   }
   const target = event.target instanceof Element ? event.target : null;
@@ -189,7 +190,7 @@ function onKey(event: KeyboardEvent) {
     return;
   }
   if (event.key === "Escape") {
-    event.preventDefault();
+    takeEscape(event);
     if (editing.value) {
       editing.value = false;
     } else {

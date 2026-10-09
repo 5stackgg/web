@@ -9,6 +9,7 @@ import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import UtilityTechniqueIcon from "~/components/utility/UtilityTechniqueIcon.vue";
 import UtilityThrowIcon from "~/components/utility/UtilityThrowIcon.vue";
 import UtilityTypeChips from "~/components/utility/UtilityTypeChips.vue";
+import { backClosesMenus, useBackDismiss } from "~/composables/useBackDismiss";
 import {
   emptyUtilityFilters,
   UTILITY_SIDES,
@@ -62,6 +63,12 @@ const filters = defineModel<UtilityFilterState>({ required: true });
 
 const { t } = useI18n();
 const menuOpen = ref(false);
+
+useBackDismiss(
+  () => menuOpen.value,
+  () => (menuOpen.value = false),
+  { enabled: backClosesMenus },
+);
 
 const scopeOptions = computed(() => [
   {

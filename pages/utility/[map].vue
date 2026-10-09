@@ -49,6 +49,14 @@ import UtilityLineupDetail from "~/components/utility/UtilityLineupDetail.vue";
 import { useUtilityPracticeSession } from "~/composables/useUtilityPracticeSession";
 import { useUtilityLoad } from "~/composables/useUtilityLoad";
 import {
+  notOpenedHere,
+  openedHere,
+  stepOutOf,
+  useBackDismiss,
+} from "~/composables/useBackDismiss";
+import { addressOpenMode, addressWrites } from "~/utilities/backDismiss";
+import { escapeTaken, takeEscape } from "~/utilities/escapeKey";
+import {
   arriveUtilityPage,
   leaveUtilityPage,
   morphFromRect,
@@ -159,6 +167,10 @@ function readList(key: string): string[] {
 let queryPatch: Record<string, string | null> | null = null;
 let queryMode: "push" | "replace" = "replace";
 
+// The entry that opens one of these notes where it is, so the page's own
+// Back can step to just before it however much has been opened since.
+const OPENED_BY_ADDRESS = ["lineup", "spot"];
+
 function writeQuery(
   patch: Record<string, string | null>,
   mode: "push" | "replace" = "replace",
@@ -174,28 +186,38 @@ function writeQuery(
   }
 }
 
+// One at a time: each starts from the address the one before it left.
+let writing: Promise<unknown> = Promise.resolve();
+
 function flushQuery() {
   const patch = queryPatch ?? {};
   const mode = queryMode;
   queryPatch = null;
-  const query = { ...route.query } as Record<string, unknown>;
-  let changed = false;
-  for (const [key, value] of Object.entries(patch)) {
-    if ((query[key] ?? null) === (value || null)) {
-      continue;
-    }
-    changed = true;
-    if (value) {
-      query[key] = value;
-    } else {
-      delete query[key];
-    }
+  writing = writing.then(() => applyQuery(patch, mode));
+}
+
+async function applyQuery(
+  patch: Record<string, string | null>,
+  mode: "push" | "replace",
+) {
+  const writes = addressWrites(route.query, patch, mode, OPENED_BY_ADDRESS);
+  const at = { path: route.path, hash: route.hash };
+  if (writes.replace) {
+    // Taken out of an entry by hand, that entry has to stop claiming it was
+    // opened there.
+    await router.replace({
+      ...at,
+      query: writes.replace as any,
+      state: Object.assign({}, ...writes.removed.map(notOpenedHere)),
+    });
   }
-  if (!changed) {
-    return;
+  if (writes.push) {
+    await router.push({
+      ...at,
+      query: writes.push as any,
+      state: Object.assign({}, ...writes.opening.map(openedHere)),
+    });
   }
-  const to = { path: route.path, query: query as any, hash: route.hash };
-  void (mode === "push" ? router.push(to) : router.replace(to));
 }
 
 const filters = computed<UtilityFilterState>({
@@ -307,9 +329,13 @@ const selectedMetaKey = computed<string | null>({
   set: (key) =>
     writeQuery(
       { spot: key },
-      key && !getQueryString(route.query, "spot") ? "push" : "replace",
+      key ? addressOpenMode(!!getQueryString(route.query, "spot")) : "replace",
     ),
 });
+
+function closeMetaSpot() {
+  stepOutOf(router, "spot", () => (selectedMetaKey.value = null));
+}
 const hoveredMetaKey = ref<string | null>(null);
 const createSeed = ref<UtilityMetaSpot | null>(null);
 
@@ -1408,11 +1434,17 @@ function setDetailId(id: string | null, mode: "push" | "replace") {
   writeQuery({ lineup: id }, mode);
 }
 
+// Arrived at by link there is no entry of ours to step back to, and the
+// lineup comes out of the address instead.
+function closeDetail() {
+  stepOutOf(router, "lineup", () => setDetailId(null, "replace"));
+}
+
 const detailOpen = computed<boolean>({
   get: () => !!detailId.value,
   set: (value) => {
     if (!value) {
-      setDetailId(null, "replace");
+      closeDetail();
     }
   },
 });
@@ -1425,7 +1457,7 @@ const detailContext = ref<UtilityLineupContext | null>(null);
 // swaps it in place, so Back still lands on the list and not on the last one.
 function openLineup(id: string, context?: UtilityLineupContext | null) {
   detailContext.value = context ?? null;
-  setDetailId(id, detailId.value ? "replace" : "push");
+  setDetailId(id, addressOpenMode(!!detailId.value));
 }
 
 // The plan is a queue, so from one of its lineups there is a next one.
@@ -1440,17 +1472,17 @@ function skipFromDetail(id: string) {
 // Reviewing, restoring and deleting all take the row out of the list you were
 // reading, so the lineup closes first instead of turning into a fetched orphan.
 function reviewFromDetail(id: string, approve: boolean) {
-  setDetailId(null, "replace");
+  closeDetail();
   void reviewPublic(id, approve);
 }
 
 function restoreFromDetail(id: string) {
-  setDetailId(null, "replace");
+  closeDetail();
   void restoreLineup(id);
 }
 
 function deleteFromDetail(id: string) {
-  setDetailId(null, "replace");
+  closeDetail();
   startDelete(id);
 }
 
@@ -1462,7 +1494,6 @@ function deleteFromDetail(id: string) {
 const listScroller = ref<HTMLElement | null>(null);
 const sheet = ref<InstanceType<typeof UtilityMobileSheet> | null>(null);
 let listScrollTop = 0;
-let sheetWasExpanded = false;
 
 watch(
   detailId,
@@ -1484,14 +1515,7 @@ const covered = computed(
 watch(covered, (on, was) => {
   if (on && !was) {
     listScrollTop = listScroller.value?.scrollTop ?? 0;
-    if (isMobile.value) {
-      sheetWasExpanded = sheet.value?.isExpanded() ?? false;
-      sheet.value?.expand();
-    }
   } else if (!on && was) {
-    if (isMobile.value && !sheetWasExpanded) {
-      sheet.value?.collapse();
-    }
     nextTick(() => {
       if (listScroller.value) {
         listScroller.value.scrollTop = listScrollTop;
@@ -1499,6 +1523,21 @@ watch(covered, (on, was) => {
     });
   }
 });
+
+// Watched, not read once on mount: on a hard load the media query reports
+// after the first paint, and a link straight to a lineup would find a desktop
+// column where there is about to be a sheet.
+watch(
+  [() => covered.value && isMobile.value, sheet],
+  ([held, instance]) => {
+    if (held) {
+      instance?.hold();
+    } else {
+      instance?.release();
+    }
+  },
+  { flush: "post", immediate: true },
+);
 
 // Picking a tab means you want to see it, and the lineup, the spot and the
 // server all sit over whatever the tab is showing -- so a tab switch put the
@@ -1575,6 +1614,11 @@ watch(practiceOpen, (open) => {
   }
 });
 
+useBackDismiss(
+  () => practiceOpen.value,
+  () => (practiceOpen.value = false),
+);
+
 // "Practice next" on the plan: open the lineup and put it on the server. With
 // a server on this map that is one command; with one elsewhere the host brings
 // it over; with none, the first step is starting one.
@@ -1647,13 +1691,13 @@ function togglePractice() {
 // Fork and archive are asked for from inside the dialog; both open a dialog of
 // their own, so the detail has to get out of the way first.
 function forkFromDetail(id: string, name: string) {
-  setDetailId(null, "replace");
+  closeDetail();
   forkLineup.value = { id, name };
   forkOpen.value = true;
 }
 
 function archiveFromDetail(id: string, name: string) {
-  setDetailId(null, "replace");
+  closeDetail();
   archiveLineup.value = { id, name };
   archiveOpen.value = true;
 }
@@ -1829,7 +1873,7 @@ function onArchived(id: string) {
 // picked, then the selected lineup, then the spot popover it was picked from. Dialogs handle
 // their own Escape, and a key pressed while typing belongs to the field.
 function closeTopLayer(event: KeyboardEvent) {
-  if (event.key !== "Escape" || event.defaultPrevented) {
+  if (event.key !== "Escape" || escapeTaken(event)) {
     return;
   }
   const target = event.target instanceof Element ? event.target : null;
@@ -1841,7 +1885,7 @@ function closeTopLayer(event: KeyboardEvent) {
     )
   ) {
     practiceOpen.value = false;
-    event.preventDefault();
+    takeEscape(event);
     return;
   }
   if (
@@ -1856,7 +1900,7 @@ function closeTopLayer(event: KeyboardEvent) {
     return;
   }
   selectedId.value = null;
-  event.preventDefault();
+  takeEscape(event);
 }
 
 onMounted(() => {
@@ -1867,11 +1911,6 @@ onMounted(() => {
     window.setTimeout(() => (arriving.value = false), 600);
   }
   window.addEventListener("keydown", closeTopLayer);
-  // A link straight to a lineup or a spot, on a phone: the sheet was not
-  // there to raise when the route was first read.
-  if (covered.value && isMobile.value) {
-    sheet.value?.expand();
-  }
 });
 onBeforeUnmount(() => window.removeEventListener("keydown", closeTopLayer));
 
@@ -2106,6 +2145,27 @@ function selectLineup(id: string | null) {
         :class="arriving ? 'utility-arrive' : ''"
         class="utility-card flex min-h-0 flex-col overflow-hidden md:sticky md:top-4 md:h-[calc(100dvh-var(--header-height,4rem)-2rem)] md:self-start md:rounded-2xl md:border md:border-white/[0.08] md:bg-sidebar md:shadow-[0_24px_48px_-16px_rgba(0,0,0,0.85)]"
       >
+        <template #peek>
+          <div
+            v-if="typeFilterApplies"
+            class="flex touch-pan-x gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&>button]:h-11 [&>button]:text-[0.7rem]"
+            role="group"
+            :aria-label="$t('pages.utility.meta.types')"
+          >
+            <UtilityTypeChips
+              :model-value="filters.types"
+              :counts="typeCounts"
+              fill
+              @update:model-value="(types) => (filters = { ...filters, types })"
+            />
+          </div>
+          <p
+            v-else
+            class="flex h-11 items-center justify-center font-mono text-[0.65rem] font-bold uppercase tracking-[0.14em] text-muted-foreground"
+          >
+            {{ listTabs.find((tab) => tab.key === listTab)?.label }}
+          </p>
+        </template>
         <div class="shrink-0 px-3 pt-3 max-md:pt-0">
           <AnimatedFilters
             v-model="listTab"
@@ -2148,7 +2208,7 @@ function selectLineup(id: string | null) {
                    tab that lists throws. Each chip says how many there are. -->
               <Fold :open="typeStripOpen">
                 <div
-                  class="flex gap-1 pb-2"
+                  class="flex gap-1 pb-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                   role="group"
                   :aria-label="$t('pages.utility.meta.types')"
                 >
@@ -2465,7 +2525,7 @@ function selectLineup(id: string | null) {
             :busiest="Math.max(1, metaBusiest)"
             :signed-in="!!mySteamId"
             :can-practice="!!mySteamId && !isMobile"
-            @back="selectedMetaKey = null"
+            @back="closeMetaSpot"
             @open-lineup="openLineup"
             @write-up="writeUpMetaSpot"
             @bar="(offer) => (spotBar = offer)"
@@ -2529,6 +2589,7 @@ function selectLineup(id: string | null) {
                     type="button"
                     class="group sticky top-0 z-10 -mx-4 flex h-7 w-[calc(100%+2rem)] cursor-grab touch-none items-center justify-center rounded-t-xl bg-sidebar focus-visible:outline-none active:cursor-grabbing"
                     :aria-label="$t('common.close')"
+                    data-no-sheet-drag
                     @pointerdown="onDrawerGrab"
                     @pointermove="onDrawerPull"
                     @pointerup="onDrawerRelease"

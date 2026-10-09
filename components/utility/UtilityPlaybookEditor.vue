@@ -1790,6 +1790,7 @@ async function destroy() {
                   <button
                     type="button"
                     data-step-grip
+                    data-no-sheet-drag
                     aria-keyshortcuts="ArrowUp ArrowDown"
                     class="absolute -left-0.5 top-0 z-10 grid h-[1.375rem] w-5 cursor-grab touch-none select-none place-items-center rounded-md text-muted-foreground/25 transition-colors before:absolute before:-inset-2 before:content-[''] hover:text-muted-foreground/80 focus-visible:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 group-hover:text-muted-foreground/60"
                     :class="

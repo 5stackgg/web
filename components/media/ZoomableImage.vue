@@ -10,6 +10,7 @@ import {
   zoomStillAt,
   type StillView,
 } from "~/utilities/stillZoom";
+import { isDoubleTap, isTap, type MapSample } from "~/utilities/mapGestures";
 
 // An image filling its frame that can be zoomed toward the pointer, dragged
 // once zoomed, and put back. `baseScale` is where it rests -- a crop in on
@@ -26,7 +27,6 @@ const props = withDefaults(
 
 const STEP = 1.5;
 const CLOSE_UP = 3;
-const DOUBLE_TAP_MS = 300;
 
 const frameEl = ref<HTMLElement | null>(null);
 const { width, height } = useElementSize(frameEl);
@@ -90,7 +90,7 @@ function toggle(at: { x: number; y: number }) {
   zoomTo(Math.max(CLOSE_UP, props.baseScale * STEP), at);
 }
 
-defineExpose({ zoomIn, zoomOut, reset });
+defineExpose({ zoomIn, zoomOut, reset, zoomed });
 
 // At either end of the range the wheel goes back to scrolling the page; a
 // trackpad pinch (a wheel with ctrlKey) never does, or the page zooms instead.
@@ -117,7 +117,12 @@ useEventListener(
 
 const pointers = new Map<number, { x: number; y: number }>();
 let pinchFrom: { distance: number; scale: number } | null = null;
-let lastTap = { at: 0, x: 0, y: 0 };
+let lastTap: MapSample | null = null;
+let press: { x: number; y: number; t: number; moved: number } | null = null;
+// Some browsers follow a double tap with a dblclick and some do not, so a
+// finger's double tap is read off the taps themselves and the dblclick that
+// may trail it is ignored -- or it would zoom in and straight back out.
+let lastPointer = "mouse";
 
 function spread() {
   const [a, b] = [...pointers.values()];
@@ -131,11 +136,20 @@ function onPointerDown(event: PointerEvent) {
   if (!props.interactive || (event.pointerType === "mouse" && event.button)) {
     return;
   }
+  lastPointer = event.pointerType;
   frameEl.value?.setPointerCapture?.(event.pointerId);
   pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
   if (pointers.size === 2) {
     pinchFrom = { distance: spread().distance, scale: view.value.scale };
+    press = null;
+    return;
   }
+  press = {
+    x: event.clientX,
+    y: event.clientY,
+    t: event.timeStamp,
+    moved: 0,
+  };
 }
 
 function onPointerMove(event: PointerEvent) {
@@ -145,6 +159,12 @@ function onPointerMove(event: PointerEvent) {
   }
   pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
   animate.value = false;
+  if (press) {
+    press.moved = Math.max(
+      press.moved,
+      Math.hypot(event.clientX - press.x, event.clientY - press.y),
+    );
+  }
   if (pointers.size === 2 && pinchFrom) {
     const now = spread();
     zoomTo(
@@ -166,23 +186,32 @@ function onPointerUp(event: PointerEvent) {
   if (pointers.size < 2) {
     pinchFrom = null;
   }
-  if (event.pointerType !== "touch" || pointers.size > 0) {
+  const ended = press;
+  if (pointers.size > 0) {
     return;
   }
-  const now = Date.now();
+  press = null;
+  // A press the browser took for a scroll, a drag, a pinch: none is a tap.
   if (
-    now - lastTap.at < DOUBLE_TAP_MS &&
-    Math.hypot(event.clientX - lastTap.x, event.clientY - lastTap.y) < 24
+    event.type === "pointercancel" ||
+    event.pointerType !== "touch" ||
+    !ended ||
+    !isTap(ended.moved, event.timeStamp - ended.t)
   ) {
-    lastTap = { at: 0, x: 0, y: 0 };
-    toggle(pointIn(event.clientX, event.clientY));
+    lastTap = null;
     return;
   }
-  lastTap = { at: now, x: event.clientX, y: event.clientY };
+  const tap = { t: event.timeStamp, x: event.clientX, y: event.clientY };
+  if (isDoubleTap(lastTap, tap)) {
+    lastTap = null;
+    toggle(pointIn(tap.x, tap.y));
+    return;
+  }
+  lastTap = tap;
 }
 
 function onDoubleClick(event: MouseEvent) {
-  if (props.interactive) {
+  if (props.interactive && lastPointer !== "touch") {
     toggle(pointIn(event.clientX, event.clientY));
   }
 }
@@ -210,6 +239,7 @@ const CONTROL =
           ]
         : ''
     "
+    :data-no-sheet-drag="interactive && zoomed ? '' : undefined"
     @pointerdown="onPointerDown"
     @pointermove="onPointerMove"
     @pointerup="onPointerUp"

@@ -94,41 +94,124 @@ function buttonState(opt: FilterOption) {
 const containerRef = ref<HTMLElement | null>(null);
 const indicatorRef = ref<HTMLElement | null>(null);
 const ghostRef = ref<HTMLElement | null>(null);
-const btns = ref<Record<string, HTMLElement | null>>({});
-const indicator = ref({ left: 0, top: 0, width: 0, height: 0, ready: false });
-const animate = ref(false);
+// Not reactive, and neither is where the indicator sits: kept in state, every
+// move of the pill re-rendered the whole strip to change four numbers.
+const btns = new Map<string, HTMLElement>();
 
 function setBtn(el: Element | null, key: string) {
   if (el) {
-    btns.value[key] = el as HTMLElement;
+    btns.set(key, el as HTMLElement);
   } else {
-    delete btns.value[key];
+    btns.delete(key);
   }
 }
 
-function updateIndicator() {
-  const el = model.value ? btns.value[model.value] : null;
-  if (!el || !containerRef.value || el.offsetWidth === 0) {
-    indicator.value = { ...indicator.value, ready: false };
-    animate.value = false;
+type Rect = { left: number; top: number; width: number; height: number };
+
+let placed: Rect | null = null;
+
+function place(rect: Rect | null) {
+  const el = indicatorRef.value;
+  if (!el) {
     return;
   }
-  const wasReady = indicator.value.ready;
-  indicator.value = {
+  placed = rect;
+  if (!rect) {
+    el.style.opacity = "0";
+    return;
+  }
+  el.style.left = `${rect.left}px`;
+  el.style.top = `${rect.top}px`;
+  el.style.width = `${rect.width}px`;
+  el.style.height = `${rect.height}px`;
+  el.style.opacity = "1";
+}
+
+function tabRect(): Rect | null {
+  const el = model.value ? btns.get(model.value) : null;
+  if (!el || !containerRef.value || el.offsetWidth === 0) {
+    return null;
+  }
+  return {
     left: el.offsetLeft,
     top: el.offsetTop,
     width: el.offsetWidth,
     height: el.offsetHeight,
-    ready: true,
   };
-  if (!wasReady) {
-    animate.value = false;
-    requestAnimationFrame(() =>
-      requestAnimationFrame(() => {
-        animate.value = true;
-      }),
-    );
+}
+
+// Mid-flight included, in the strip's own coordinates.
+function drawnRect(): Rect | null {
+  const el = indicatorRef.value;
+  const strip = containerRef.value;
+  if (!el || !strip || !placed) {
+    return null;
   }
+  const box = el.getBoundingClientRect();
+  const origin = strip.getBoundingClientRect();
+  return {
+    left: box.left - origin.left - strip.clientLeft,
+    top: box.top - origin.top - strip.clientTop,
+    width: box.width,
+    height: box.height,
+  };
+}
+
+function reducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+// Every move is a transform over a layout that has already landed, so the
+// compositor runs it while the picked tab mounts its content on the main
+// thread. Animating left and width laid the strip out on every frame.
+const running = new Set<Animation>();
+
+function play(
+  el: Element | null | undefined,
+  keyframes: Keyframe[],
+  timing: KeyframeAnimationOptions,
+) {
+  if (!el || typeof el.animate !== "function") {
+    return;
+  }
+  const animation = el.animate(keyframes, timing);
+  running.add(animation);
+  const done = () => running.delete(animation);
+  animation.addEventListener("finish", done);
+  animation.addEventListener("cancel", done);
+}
+
+function stop() {
+  for (const animation of [...running]) {
+    animation.cancel();
+  }
+  running.clear();
+}
+
+const GLIDE_MS = 240;
+const GLIDE_EASE = "cubic-bezier(0.16, 1, 0.3, 1)";
+
+function glide(from: Rect, to: Rect) {
+  if (
+    to.width === 0 ||
+    to.height === 0 ||
+    (Math.abs(from.left - to.left) < 0.5 &&
+      Math.abs(from.top - to.top) < 0.5 &&
+      Math.abs(from.width - to.width) < 0.5 &&
+      Math.abs(from.height - to.height) < 0.5)
+  ) {
+    return;
+  }
+  play(
+    indicatorRef.value,
+    [
+      {
+        transform: `translate(${from.left - to.left}px, ${from.top - to.top}px) scale(${from.width / to.width}, ${from.height / to.height})`,
+      },
+      { transform: "none" },
+    ],
+    { duration: GLIDE_MS, easing: GLIDE_EASE },
+  );
 }
 
 // ---- collapse mode: one pill grows while the other shrinks ----
@@ -150,10 +233,7 @@ let leaving: string | null = null;
 function measure() {
   const origin = containerRef.value?.getBoundingClientRect().left ?? 0;
   const out: Record<string, Box> = {};
-  for (const [key, el] of Object.entries(btns.value)) {
-    if (!el) {
-      continue;
-    }
+  for (const [key, el] of btns) {
     const rect = el.getBoundingClientRect();
     out[key] = {
       left: rect.left - origin,
@@ -171,7 +251,7 @@ function measure() {
 watch(
   model,
   (_next, previous) => {
-    if (props.collapse && containerRef.value && indicator.value.ready) {
+    if (props.collapse && containerRef.value && placed) {
       before = measure();
       leaving = previous ?? null;
     }
@@ -179,58 +259,36 @@ watch(
   { flush: "pre" },
 );
 
-async function swap() {
-  const first = before;
-  before = null;
-  const key = model.value;
-  if (
-    !first ||
-    !key ||
-    !containerRef.value ||
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  ) {
-    return;
-  }
-  const moving = [
-    ...Object.values(btns.value),
-    indicatorRef.value,
-    ghostRef.value,
-  ];
-  for (const el of moving) {
-    el?.getAnimations().forEach((animation) => animation.cancel());
-  }
+function swap(first: Record<string, Box>, key: string) {
   const last = measure();
-  // The indicator's own box has to be the picked tab's before it is played in
-  // from somewhere else.
-  await nextTick();
-
   const timing = { duration: SWAP_MS, easing: SWAP_EASE };
   const from = (start: Box, end: Box) => [
     {
-      transform: `translateX(${start.left - end.left}px) scaleX(${start.width / end.width})`,
+      transform: `translateX(${start.left - end.left}px) scaleX(${start.width / (end.width || 1)})`,
     },
     { transform: "none" },
   ];
 
-  for (const [name, el] of Object.entries(btns.value)) {
-    if (!el || !first[name] || !last[name]) {
+  for (const [name, el] of btns) {
+    if (!first[name] || !last[name]) {
       continue;
     }
     const shift = first[name].icon - last[name].icon;
     if (Math.abs(shift) > 0.5) {
-      el.animate(
+      play(
+        el,
         [{ transform: `translateX(${shift}px)` }, { transform: "none" }],
         timing,
       );
     }
   }
 
-  if (indicatorRef.value && first[key] && last[key]) {
-    indicatorRef.value.animate(from(first[key], last[key]), timing);
+  if (first[key] && last[key]) {
+    play(indicatorRef.value, from(first[key], last[key]), timing);
   }
 
   const old = leaving;
-  const tab = old ? btns.value[old] : null;
+  const tab = old ? btns.get(old) : null;
   if (ghostRef.value && old && tab && old !== key && first[old] && last[old]) {
     Object.assign(ghostRef.value.style, {
       left: `${tab.offsetLeft}px`,
@@ -238,40 +296,81 @@ async function swap() {
       width: `${tab.offsetWidth}px`,
       height: `${tab.offsetHeight}px`,
     });
-    ghostRef.value.animate(from(first[old], last[old]), timing);
-    ghostRef.value.animate(
+    play(ghostRef.value, from(first[old], last[old]), timing);
+    play(
+      ghostRef.value,
       [{ opacity: 1 }, { opacity: 1, offset: 0.45 }, { opacity: 0 }],
       { duration: SWAP_MS },
     );
   }
 
   // The label arrives once the pill has grown enough to be under it.
-  btns.value[key]
-    ?.querySelector(".af-label")
-    ?.animate([{ opacity: 0 }, { opacity: 0, offset: 0.4 }, { opacity: 1 }], {
-      duration: SWAP_MS,
-    });
+  play(
+    btns.get(key)?.querySelector(".af-label"),
+    [{ opacity: 0 }, { opacity: 0, offset: 0.4 }, { opacity: 1 }],
+    { duration: SWAP_MS },
+  );
 }
 
+function follow() {
+  const first = before;
+  before = null;
+  const from = props.collapse ? null : drawnRect();
+  stop();
+  const to = tabRect();
+  place(to);
+  if (!to || reducedMotion()) {
+    return;
+  }
+  if (props.collapse) {
+    if (first && model.value) {
+      swap(first, model.value);
+    }
+    return;
+  }
+  if (from) {
+    glide(from, to);
+  }
+}
+
+// Measured once per change of size, never per frame.
 let ro: ResizeObserver | null = null;
+
+function observe() {
+  if (!ro || !containerRef.value) {
+    return;
+  }
+  ro.disconnect();
+  ro.observe(containerRef.value);
+  for (const el of btns.values()) {
+    ro.observe(el);
+  }
+}
+
 onMounted(() => {
-  nextTick(updateIndicator);
-  if (typeof ResizeObserver !== "undefined" && containerRef.value) {
-    ro = new ResizeObserver(() => updateIndicator());
-    ro.observe(containerRef.value);
+  nextTick(() => place(tabRect()));
+  if (typeof ResizeObserver !== "undefined") {
+    ro = new ResizeObserver(() => place(tabRect()));
+    observe();
   }
 });
-onBeforeUnmount(() => ro?.disconnect());
 
+onBeforeUnmount(() => {
+  ro?.disconnect();
+  stop();
+});
+
+// One watcher for both, so a switch that also changes the set of tabs is
+// followed once: a second pass would cancel what the first had just started.
 watch(
-  () => [model.value, props.options.map((o) => o.key).join(",")],
-  () =>
-    nextTick(() => {
-      updateIndicator();
-      if (props.collapse) {
-        void swap();
-      }
-    }),
+  [model, () => props.options.map((option) => option.key).join(",")],
+  ([, keys], [, previousKeys]) => {
+    if (keys !== previousKeys) {
+      observe();
+    }
+    follow();
+  },
+  { flush: "post" },
 );
 </script>
 
@@ -295,25 +394,16 @@ watch(
       v-if="collapse"
       ref="ghostRef"
       aria-hidden="true"
-      class="pointer-events-none absolute origin-left bg-[hsl(var(--tac-amber))] opacity-0"
+      class="pointer-events-none absolute origin-top-left bg-[hsl(var(--tac-amber))] opacity-0"
       :class="indicatorShape"
     />
+    <!-- Placed and moved from the script, never through a binding: see
+         place() and glide(). -->
     <span
       ref="indicatorRef"
-      class="pointer-events-none absolute origin-left bg-[hsl(var(--tac-amber))] shadow-[0_0_12px_-2px_hsl(var(--tac-amber)/0.6)]"
-      :class="[
-        indicatorShape,
-        indicator.ready ? 'opacity-100' : 'opacity-0',
-        animate && !collapse
-          ? 'transition-all [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]'
-          : '',
-      ]"
-      :style="{
-        left: `${indicator.left}px`,
-        top: `${indicator.top}px`,
-        width: `${indicator.width}px`,
-        height: `${indicator.height}px`,
-      }"
+      data-filter-indicator
+      class="pointer-events-none absolute origin-top-left bg-[hsl(var(--tac-amber))] opacity-0 shadow-[0_0_12px_-2px_hsl(var(--tac-amber)/0.6)]"
+      :class="indicatorShape"
     />
     <template v-for="opt in options" :key="opt.key">
       <FiveStackToolTip

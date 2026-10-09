@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { h } from "vue";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
@@ -14,8 +14,25 @@ async function mount(...args: Parameters<typeof mountSuspended>) {
 
 afterEach(() => {
   mounted.splice(0).forEach((wrapper) => wrapper.unmount());
+  vi.unstubAllGlobals();
   document.body.innerHTML = "";
 });
+
+function touchScreen() {
+  vi.stubGlobal(
+    "matchMedia",
+    (query: string) =>
+      ({
+        matches: query.includes("coarse"),
+        media: query,
+        addEventListener() {},
+        removeEventListener() {},
+      }) as unknown as MediaQueryList,
+  );
+}
+
+const download = () =>
+  document.querySelector("a[role=menuitem]") as HTMLAnchorElement;
 
 const items = () =>
   Array.from(document.querySelectorAll("[role=menuitem]")).map((item) =>
@@ -79,5 +96,64 @@ describe("ClipShareMenu", () => {
       "Download clip",
       "Delete clip",
     ]);
+  });
+
+  it("closes after Download, as a menu does", async () => {
+    const wrapper = await mount(ClipShareMenu, {
+      props: {
+        open: true,
+        copied: false,
+        downloadHref: "https://cf.test/clips/c-1.mp4?dl=1",
+      },
+      attachTo: document.body,
+    });
+    await flushPromises();
+    download().addEventListener("click", (event) => event.preventDefault());
+
+    download().click();
+    await flushPromises();
+
+    expect(wrapper.emitted("update:open")).toEqual([[false]]);
+  });
+
+  it("closes after Download where Back is not what closes it, touch or not", async () => {
+    touchScreen();
+    const wrapper = await mount(ClipShareMenu, {
+      props: {
+        open: true,
+        copied: false,
+        downloadHref: "https://cf.test/clips/c-1.mp4?dl=1",
+      },
+      attachTo: document.body,
+    });
+    await flushPromises();
+    download().addEventListener("click", (event) => event.preventDefault());
+
+    download().click();
+    await flushPromises();
+
+    expect(wrapper.emitted("update:open")).toEqual([[false]]);
+  });
+
+  // Closing would step back in the history there, while the download is
+  // still starting.
+  it("stays open after Download only where closing is a step back", async () => {
+    touchScreen();
+    const wrapper = await mount(ClipShareMenu, {
+      props: {
+        open: true,
+        copied: false,
+        dismissOnBack: true,
+        downloadHref: "https://cf.test/clips/c-1.mp4?dl=1",
+      },
+      attachTo: document.body,
+    });
+    await flushPromises();
+    download().addEventListener("click", (event) => event.preventDefault());
+
+    download().click();
+    await flushPromises();
+
+    expect(wrapper.emitted("update:open")).toBeUndefined();
   });
 });

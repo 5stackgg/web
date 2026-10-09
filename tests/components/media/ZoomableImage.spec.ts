@@ -54,3 +54,54 @@ describe("ZoomableImage", () => {
     expect(wrapper.find("button").exists()).toBe(false);
   });
 });
+
+describe("ZoomableImage on touch", () => {
+  function finger(wrapper: Wrapper, type: string, x: number, y: number) {
+    wrapper.element.dispatchEvent(
+      new PointerEvent(type, {
+        pointerId: 7,
+        pointerType: "touch",
+        clientX: x,
+        clientY: y,
+        bubbles: true,
+      }),
+    );
+  }
+
+  it("zooms on a double tap, once, even when a dblclick trails it", async () => {
+    const wrapper = await mount({ baseScale: 1.8 });
+
+    finger(wrapper, "pointerdown", 50, 50);
+    finger(wrapper, "pointerup", 50, 50);
+    finger(wrapper, "pointerdown", 52, 51);
+    finger(wrapper, "pointerup", 52, 51);
+    await wrapper.trigger("dblclick");
+
+    expect(scale(wrapper)).toBe(3);
+  });
+
+  it("does not read a scroll the browser took over as a tap", async () => {
+    const wrapper = await mount({ baseScale: 1.8 });
+
+    finger(wrapper, "pointerdown", 50, 50);
+    finger(wrapper, "pointercancel", 50, 50);
+    finger(wrapper, "pointerdown", 50, 50);
+    finger(wrapper, "pointercancel", 50, 50);
+    await flushPromises();
+
+    expect(scale(wrapper)).toBe(1.8);
+  });
+
+  it("keeps its drags from the sheet only while it is zoomed", async () => {
+    const wrapper = await mount({ baseScale: 1.8 });
+    expect(wrapper.attributes("data-no-sheet-drag")).toBeUndefined();
+
+    finger(wrapper, "pointerdown", 50, 50);
+    finger(wrapper, "pointerup", 50, 50);
+    finger(wrapper, "pointerdown", 50, 50);
+    finger(wrapper, "pointerup", 50, 50);
+    await flushPromises();
+
+    expect(wrapper.attributes("data-no-sheet-drag")).toBe("");
+  });
+});

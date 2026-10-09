@@ -270,6 +270,7 @@ watch(
 
 <template>
   <UtilityCardView
+    addressed
     :open="open"
     :label="collection?.name ?? $t('pages.utility.collections.tab')"
     @back="emit('back')"
@@ -284,7 +285,7 @@ watch(
          the filter on their own. -->
     <template v-if="card && lineups.length && !isMobile" #head>
       <div
-        class="flex gap-1"
+        class="flex gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         role="group"
         :aria-label="$t('pages.utility.meta.types')"
       >

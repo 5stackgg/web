@@ -222,7 +222,7 @@ function onTypes(next: UtilityType[]) {
       <div class="flex flex-col gap-2">
         <div
           v-if="!isMobile"
-          class="flex gap-1"
+          class="flex gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           role="group"
           :aria-label="$t('pages.utility.meta.types')"
         >

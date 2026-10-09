@@ -3468,6 +3468,12 @@
         "check_back_soon": "Publika klipp visas här allteftersom de renderas. Kom tillbaka snart."
       }
     },
+    "render_queue": {
+      "tabs": {
+        "highlights": "Höjdpunkter",
+        "utility": "Utility-uppställningar"
+      }
+    },
     "news": {
       "title": "Nyheter",
       "back": "Tillbaka till nyheter",
@@ -5402,6 +5408,9 @@
         "favorite": "Spara i din lista",
         "unfavorite": "Ta bort från dina sparade",
         "open": "Öppna uppställningen",
+        "has_video": "Har video",
+        "rendering": "Renderar förhandsvisning…",
+        "rendering_progress": "Renderar förhandsvisning… {percent}%",
         "flight_time": "{seconds}s",
         "unknown_author": "Okänd upphovsperson",
         "downvote": "Markera som en dålig uppställning",
@@ -5422,9 +5431,23 @@
         "next": "Nästa uppställning",
         "open_full": "Öppna hela sidan",
         "practice_this": "Träna den här",
+        "share": "Dela uppställningen",
+        "copy_link": "Kopiera länk till uppställningen",
+        "download_clip": "Ladda ner klipp",
         "not_found": "Uppställningen hittades inte",
         "not_found_description": "Den kan ha tagits bort, eller så är den inte delad med dig.",
         "no_mesh": "Ingen 3D-mesh för den här kartan ännu — visar radarn i stället.",
+        "stills": {
+          "title": "Stillbilder",
+          "stance": "Var du står",
+          "stance_eyes": "Från platsen",
+          "aim": "Sikte",
+          "aim_pin": "Uppställning",
+          "aim_close": "Sikte på nära håll",
+          "landing": "Var den landar",
+          "open": "Visa {still}",
+          "viewer": "Bilder av uppställningen, bläddra med piltangenterna"
+        },
         "flight_time": "Flygtid",
         "stand": "Stå vid",
         "lands": "Landar vid",
@@ -6238,6 +6261,15 @@
         "right_short": "HMK",
         "both_short": "VMK+HMK"
       },
+      "run_up": {
+        "title": "Ansats",
+        "seconds": "{seconds}s",
+        "jump_throw": "Hoppkast",
+        "throw": "Kasta",
+        "summary_jump": "Håll {keys} i {seconds}s och hoppkasta sedan",
+        "summary_throw": "Håll {keys} i {seconds}s och kasta sedan",
+        "first": "Håll {keys} {seconds}s först"
+      },
       "preview": {
         "play": "Spela förhandsvisningen",
         "title": "Förhandsvisning av uppställningen",
@@ -6252,6 +6284,9 @@
         "lineups": "{count} uppställning | {count} uppställningar",
         "rerender": "Rendera om förhandsvisningen",
         "retry": "Rendera igen",
+        "live": "Live",
+        "live_hint": "Den här renderingen är uppställningens förhandsvisning just nu",
+        "in_flight": "En rendering av den här uppställningen pågår redan",
         "cancel": "Avbryt den här renderingen",
         "clear_finished": "Rensa färdiga",
         "requeued": "Förhandsvisningsrendering köad",
@@ -9331,6 +9366,7 @@
       "zoom_in": "Zooma in",
       "zoom_in_scroll": "Zooma in (Ctrl/Cmd + scroll)",
       "zoom_out": "Zooma ut",
+      "zoom_reset": "Återställ zoom",
       "zoom_out_scroll": "Zooma ut (Ctrl/Cmd + scroll)",
       "loading": "Laddar",
       "settings_section": "Inställningssektion",
@@ -9694,7 +9730,6 @@
         "description": "Snabba 3v3-matcher rum för rum där varje vunnen rond driver striden framåt"
       }
     },
-    "queue_wait": {},
     "match_found": "Match hittad",
     "waiting_for_players": "Väntar på spelare",
     "waiting_on_others": "Väntar på andra",
@@ -9751,7 +9786,6 @@
     "banned_until": "Du är avstängd från matchmaking till {time}",
     "in_queue": "i kö",
     "temp_banned": "Du är tillfälligt avstängd från matchmaking",
-    "settings_section": {},
     "no_preferred_regions": "Välj minst en föredragen region i matchmaking-inställningarna",
     "party_size": {
       "requirement": "Köa med {half} eller färre, eller exakt {full} spelare"
@@ -10394,7 +10428,8 @@
       "make_public": "Gör offentlig",
       "make_private": "Gör privat",
       "more_actions": "Fler åtgärder",
-      "played_for": "{name} spelade för det här laget"
+      "played_for": "{name} spelade för det här laget",
+      "round_kills": "Kills den här rundan"
     },
     "render_queue": {
       "queued": "I kö",
@@ -10486,6 +10521,14 @@
     "details": "Detaljer",
     "link_copied": "Länk kopierad!",
     "share_clip": "Dela klipp",
+    "share_menu": {
+      "button": "Dela",
+      "copy_link": "Kopiera länk",
+      "share_native": "Dela…",
+      "admins_only": "Endast administratörer",
+      "delete": "Ta bort klipp",
+      "delete_confirm": "Klicka igen för att ta bort"
+    },
     "open_details": "Öppna detaljer för {title}",
     "open_player_profile": "Öppna {name}s profil",
     "kills_in_clip": "{count} kill i klippet | {count} kills i klippet",
@@ -10608,7 +10651,6 @@
     "filters": {
       "any": "Alla"
     },
-    "sort": {},
     "create": {
       "captain_selection": "Val av lagkapten",
       "draft_order": "Draftordning",
@@ -10797,7 +10839,6 @@
       "teams": "Färdiga lag",
       "teams_desc": "Välj två sparade lag som möts."
     },
-    "mode_short": {},
     "access": {
       "open": "Öppen",
       "open_desc": "Alla kan hitta och gå med från den publika listan.",

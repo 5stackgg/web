@@ -73,6 +73,7 @@ export const utilityLineupListFields = {
   // only the Cloudflare worker knows how to serve one.
   preview_url: true,
   preview_thumbnail_url: true,
+  preview_stills_url: true,
   preview_duration_ms: true,
   preview_rendered_at: true,
   verified_at: true,
@@ -284,6 +285,18 @@ const lineupGuestQuery = generateQuery({
 export function utilityLineupQuery() {
   return useAuthStore().me ? lineupQuery : lineupGuestQuery;
 }
+
+// Up to 128 ticks of twelve numbers, ~25KB a lineup: read for the one lineup
+// being peeked at or opened, never on the list.
+export const utilityLineupApproachQuery = generateQuery({
+  utility_lineups_by_pk: [
+    { id: $("id", "uuid!") },
+    {
+      id: true,
+      approach: [{}, true],
+    },
+  ],
+});
 
 /**
  * One scope tab's tally, live.

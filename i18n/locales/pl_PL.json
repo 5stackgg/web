@@ -3468,6 +3468,12 @@
         "check_back_soon": "Publiczne klipy pojawią się tutaj po wyrenderowaniu. Zajrzyj tu wkrótce."
       }
     },
+    "render_queue": {
+      "tabs": {
+        "highlights": "Highlighty",
+        "utility": "Ustawki granatów"
+      }
+    },
     "news": {
       "title": "Aktualności",
       "back": "Powrót do aktualności",
@@ -5402,6 +5408,9 @@
         "favorite": "Zapisz na swojej liście",
         "unfavorite": "Usuń z zapisanych",
         "open": "Otwórz ustawkę",
+        "has_video": "Z wideo",
+        "rendering": "Renderowanie podglądu…",
+        "rendering_progress": "Renderowanie podglądu… {percent}%",
         "flight_time": "{seconds}s",
         "unknown_author": "Nieznany autor",
         "downvote": "Oznacz jako słabą ustawkę",
@@ -5422,9 +5431,23 @@
         "next": "Następna ustawka",
         "open_full": "Otwórz pełną stronę",
         "practice_this": "Ćwicz tę",
+        "share": "Udostępnij ustawkę",
+        "copy_link": "Kopiuj link do ustawki",
+        "download_clip": "Pobierz klip",
         "not_found": "Nie znaleziono ustawki",
         "not_found_description": "Mogła zostać usunięta albo nie jest ci udostępniona.",
         "no_mesh": "Dla tej mapy nie ma jeszcze siatki 3D — pokazujemy radar.",
+        "stills": {
+          "title": "Kadry",
+          "stance": "Gdzie stanąć",
+          "stance_eyes": "Z miejsca",
+          "aim": "Celowanie",
+          "aim_pin": "Ustawka",
+          "aim_close": "Celowanie z bliska",
+          "landing": "Gdzie ląduje",
+          "open": "Pokaż {still}",
+          "viewer": "Kadry ustawki, przełączaj strzałkami"
+        },
         "flight_time": "Czas lotu",
         "stand": "Stań w",
         "lands": "Ląduje w",
@@ -6238,6 +6261,15 @@
         "right_short": "PPM",
         "both_short": "LPM+PPM"
       },
+      "run_up": {
+        "title": "Rozbieg",
+        "seconds": "{seconds}s",
+        "jump_throw": "Rzut z wyskoku",
+        "throw": "Rzuć",
+        "summary_jump": "Przytrzymaj {keys} przez {seconds}s, potem rzuć z wyskoku",
+        "summary_throw": "Przytrzymaj {keys} przez {seconds}s, potem rzuć",
+        "first": "Najpierw trzymaj {keys} {seconds}s"
+      },
       "preview": {
         "play": "Odtwórz podgląd",
         "title": "Podgląd ustawki",
@@ -6252,6 +6284,9 @@
         "lineups": "{count} ustawka | {count} ustawek",
         "rerender": "Renderuj podgląd ponownie",
         "retry": "Renderuj ponownie",
+        "live": "Na żywo",
+        "live_hint": "Ten render jest teraz podglądem ustawki",
+        "in_flight": "Render tej ustawki już trwa",
         "cancel": "Anuluj ten render",
         "clear_finished": "Wyczyść zakończone",
         "requeued": "Render podglądu w kolejce",
@@ -9331,6 +9366,7 @@
       "zoom_in": "Powiększ",
       "zoom_in_scroll": "Powiększ (Ctrl/Cmd + scroll)",
       "zoom_out": "Pomniejsz",
+      "zoom_reset": "Resetuj powiększenie",
       "zoom_out_scroll": "Pomniejsz (Ctrl/Cmd + scroll)",
       "loading": "Wczytywanie",
       "settings_section": "Sekcja ustawień",
@@ -9694,7 +9730,6 @@
         "description": "Dynamiczne mecze 3v3 toczone pokój po pokoju – każda wygrana runda przesuwa walkę naprzód"
       }
     },
-    "queue_wait": {},
     "match_found": "Znaleziono mecz",
     "waiting_for_players": "Oczekiwanie na graczy",
     "waiting_on_others": "Oczekiwanie na innych",
@@ -9751,7 +9786,6 @@
     "banned_until": "Masz zakaz dobierania meczów do {time}",
     "in_queue": "w kolejce",
     "temp_banned": "Masz tymczasowego bana w matchmakingu",
-    "settings_section": {},
     "no_preferred_regions": "Wybierz co najmniej jeden preferowany region w ustawieniach matchmakingu",
     "party_size": {
       "requirement": "Dołącz do kolejki z {half} lub mniej graczy, albo dokładnie {full} graczy"
@@ -10394,7 +10428,8 @@
       "make_public": "Upublicznij",
       "make_private": "Ustaw jako prywatny",
       "more_actions": "Więcej akcji",
-      "played_for": "{name} grał w tej drużynie"
+      "played_for": "{name} grał w tej drużynie",
+      "round_kills": "Zabójstwa w tej rundzie"
     },
     "render_queue": {
       "queued": "W kolejce",
@@ -10486,6 +10521,14 @@
     "details": "Szczegóły",
     "link_copied": "Link skopiowany",
     "share_clip": "Udostępnij klip",
+    "share_menu": {
+      "button": "Udostępnij",
+      "copy_link": "Kopiuj link",
+      "share_native": "Udostępnij…",
+      "admins_only": "Tylko dla adminów",
+      "delete": "Usuń klip",
+      "delete_confirm": "Kliknij ponownie, aby usunąć"
+    },
     "open_details": "Otwórz szczegóły {title}",
     "open_player_profile": "Otwórz profil gracza {name}",
     "kills_in_clip": "{count} zabójstwo w klipie | {count} zabójstwa w klipie",
@@ -10608,7 +10651,6 @@
     "filters": {
       "any": "Dowolna"
     },
-    "sort": {},
     "create": {
       "captain_selection": "Wybór kapitanów",
       "draft_order": "Kolejność draftu",
@@ -10797,7 +10839,6 @@
       "teams": "Gotowe drużyny",
       "teams_desc": "Wybierz dwie zapisane drużyny do starcia"
     },
-    "mode_short": {},
     "access": {
       "open": "Otwarte",
       "open_desc": "Każdy może znaleźć i dołączyć z publicznej listy",

@@ -3468,6 +3468,12 @@
         "check_back_soon": "공개 클립이 렌더링되면 여기에 표시됩니다. 곧 다시 확인해 주세요."
       }
     },
+    "render_queue": {
+      "tabs": {
+        "highlights": "하이라이트",
+        "utility": "유틸리티 라인업"
+      }
+    },
     "news": {
       "title": "뉴스",
       "back": "뉴스로 돌아가기",
@@ -5402,6 +5408,9 @@
         "favorite": "내 목록에 저장",
         "unfavorite": "저장 목록에서 제거",
         "open": "라인업 열기",
+        "has_video": "영상 있음",
+        "rendering": "미리보기 렌더링 중…",
+        "rendering_progress": "미리보기 렌더링 중… {percent}%",
         "flight_time": "{seconds}초",
         "unknown_author": "작성자 불명",
         "downvote": "좋지 않은 라인업으로 표시",
@@ -5422,9 +5431,23 @@
         "next": "다음 라인업",
         "open_full": "전체 페이지 열기",
         "practice_this": "이걸 연습하기",
+        "share": "라인업 공유",
+        "copy_link": "라인업 링크 복사",
+        "download_clip": "클립 다운로드",
         "not_found": "라인업을 찾을 수 없습니다",
         "not_found_description": "삭제되었거나, 회원님에게 공유되지 않았을 수 있습니다.",
         "no_mesh": "이 맵의 3D 메시가 아직 없어 레이더를 대신 표시합니다.",
+        "stills": {
+          "title": "스틸 컷",
+          "stance": "서는 위치",
+          "stance_eyes": "자리에서 본 시점",
+          "aim": "조준",
+          "aim_pin": "라인업",
+          "aim_close": "조준 확대",
+          "landing": "떨어지는 위치",
+          "open": "{still} 보기",
+          "viewer": "라인업 스틸, 화살표 키로 이동"
+        },
         "flight_time": "비행 시간",
         "stand": "서는 위치",
         "lands": "낙하 지점",
@@ -6238,6 +6261,15 @@
         "right_short": "우클릭",
         "both_short": "좌+우"
       },
+      "run_up": {
+        "title": "도움닫기",
+        "seconds": "{seconds}초",
+        "jump_throw": "점프 투척",
+        "throw": "투척",
+        "summary_jump": "{keys}을(를) {seconds}초 동안 누른 뒤 점프 투척",
+        "summary_throw": "{keys}을(를) {seconds}초 동안 누른 뒤 투척",
+        "first": "먼저 {keys} {seconds}초 누르기"
+      },
       "preview": {
         "play": "미리보기 재생",
         "title": "라인업 미리보기",
@@ -6252,6 +6284,9 @@
         "lineups": "라인업 {count}개 | 라인업 {count}개",
         "rerender": "미리보기 다시 렌더링",
         "retry": "다시 렌더링",
+        "live": "라이브",
+        "live_hint": "이 렌더가 현재 라인업 미리보기입니다",
+        "in_flight": "이 라인업의 렌더가 이미 진행 중입니다",
         "cancel": "이 렌더링 취소",
         "clear_finished": "완료된 항목 정리",
         "requeued": "미리보기 렌더링을 대기열에 추가했습니다",
@@ -9331,6 +9366,7 @@
       "zoom_in": "확대",
       "zoom_in_scroll": "확대 (Ctrl/Cmd + 스크롤)",
       "zoom_out": "축소",
+      "zoom_reset": "확대 초기화",
       "zoom_out_scroll": "축소 (Ctrl/Cmd + 스크롤)",
       "loading": "로딩 중",
       "settings_section": "설정 섹션",
@@ -9694,7 +9730,6 @@
         "description": "방마다 싸우는 빠른 템포의 3v3 매치, 라운드를 이길 때마다 전선을 밀어붙이세요"
       }
     },
-    "queue_wait": {},
     "match_found": "매치 찾음",
     "waiting_for_players": "플레이어 대기 중",
     "waiting_on_others": "다른 플레이어 대기 중",
@@ -9751,7 +9786,6 @@
     "banned_until": "{time}까지 매치메이킹이 제한됩니다",
     "in_queue": "대기열 중",
     "temp_banned": "매치메이킹 이용이 일시 정지되었습니다",
-    "settings_section": {},
     "no_preferred_regions": "매치메이킹 설정에서 선호 지역을 최소 1개 선택해 주세요",
     "party_size": {
       "requirement": "{half}명 이하 또는 정확히 {full}명으로 대기열에 참가하세요"
@@ -10394,7 +10428,8 @@
       "make_public": "공개하기",
       "make_private": "비공개로 전환",
       "more_actions": "더 보기",
-      "played_for": "{name} 님이 이 팀에서 플레이"
+      "played_for": "{name} 님이 이 팀에서 플레이",
+      "round_kills": "이번 라운드 킬"
     },
     "render_queue": {
       "queued": "대기 중",
@@ -10486,6 +10521,14 @@
     "details": "상세 정보",
     "link_copied": "링크가 복사되었습니다!",
     "share_clip": "클립 공유",
+    "share_menu": {
+      "button": "공유",
+      "copy_link": "링크 복사",
+      "share_native": "공유…",
+      "admins_only": "관리자 전용",
+      "delete": "클립 삭제",
+      "delete_confirm": "한 번 더 클릭하면 삭제"
+    },
     "open_details": "{title} 상세 정보 열기",
     "open_player_profile": "{name}의 프로필 열기",
     "kills_in_clip": "클립 내 킬 {count}개 | 클립 내 킬 {count}개",
@@ -10608,7 +10651,6 @@
     "filters": {
       "any": "전체"
     },
-    "sort": {},
     "create": {
       "captain_selection": "팀장 선정",
       "draft_order": "드래프트 순서",
@@ -10797,7 +10839,6 @@
       "teams": "사전 구성 팀",
       "teams_desc": "저장된 팀 두 개를 골라 맞붙입니다."
     },
-    "mode_short": {},
     "access": {
       "open": "공개",
       "open_desc": "누구나 공개 목록에서 찾아 참가할 수 있습니다.",

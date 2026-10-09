@@ -76633,6 +76633,8 @@ count?: [{	columns?: Array<ValueTypes["utility_lineup_votes_select_column"]> | u
 	/** columns and relationships of "utility_lineups" */
 ["utility_lineups"]: AliasType<{
 	aim_tolerance?:boolean | `@${string}`,
+approach?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
 	archived_at?:boolean | `@${string}`,
 	/** An object relationship */
 	author?:ValueTypes["players"],
@@ -76706,6 +76708,10 @@ favorited_by_aggregate?: [{	/** distinct select on columns */
 	preview_duration_ms?:boolean | `@${string}`,
 	preview_file?:boolean | `@${string}`,
 	preview_rendered_at?:boolean | `@${string}`,
+preview_stills?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
+preview_stills_url?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
 	preview_thumbnail?:boolean | `@${string}`,
 	/** A computed field, executes function "utility_lineup_preview_thumbnail_url" */
 	preview_thumbnail_url?:boolean | `@${string}`,
@@ -76918,6 +76924,8 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 };
 	/** append existing jsonb value of filtered columns with new jsonb value */
 ["utility_lineups_append_input"]: {
+	approach?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	preview_stills?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	trajectory_preview?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
 };
 	/** input type for inserting array relation for remote table "utility_lineups" */
@@ -77001,6 +77009,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	_not?: ValueTypes["utility_lineups_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["utility_lineups_bool_exp"]> | undefined | null | Variable<any, string>,
 	aim_tolerance?: ValueTypes["float8_comparison_exp"] | undefined | null | Variable<any, string>,
+	approach?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
 	archived_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	author?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -77047,6 +77056,8 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	preview_duration_ms?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	preview_file?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	preview_rendered_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	preview_stills?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
+	preview_stills_url?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
 	preview_thumbnail?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	preview_thumbnail_url?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	preview_url?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -77092,14 +77103,20 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 ["utility_lineups_constraint"]:utility_lineups_constraint;
 	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 ["utility_lineups_delete_at_path_input"]: {
+	approach?: Array<string> | undefined | null | Variable<any, string>,
+	preview_stills?: Array<string> | undefined | null | Variable<any, string>,
 	trajectory_preview?: Array<string> | undefined | null | Variable<any, string>
 };
 	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
 ["utility_lineups_delete_elem_input"]: {
+	approach?: number | undefined | null | Variable<any, string>,
+	preview_stills?: number | undefined | null | Variable<any, string>,
 	trajectory_preview?: number | undefined | null | Variable<any, string>
 };
 	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
 ["utility_lineups_delete_key_input"]: {
+	approach?: string | undefined | null | Variable<any, string>,
+	preview_stills?: string | undefined | null | Variable<any, string>,
 	trajectory_preview?: string | undefined | null | Variable<any, string>
 };
 	/** input type for incrementing numeric columns in table "utility_lineups" */
@@ -77138,6 +77155,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	/** input type for inserting data into table "utility_lineups" */
 ["utility_lineups_insert_input"]: {
 	aim_tolerance?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
+	approach?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	archived_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	author?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
@@ -77176,6 +77194,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	preview_duration_ms?: number | undefined | null | Variable<any, string>,
 	preview_file?: string | undefined | null | Variable<any, string>,
 	preview_rendered_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	preview_stills?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	preview_thumbnail?: string | undefined | null | Variable<any, string>,
 	progress?: ValueTypes["utility_lineup_progress_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	public_requested_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -77484,6 +77503,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	/** Ordering options when selecting data from "utility_lineups". */
 ["utility_lineups_order_by"]: {
 	aim_tolerance?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	approach?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	archived_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	author?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -77528,6 +77548,8 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	preview_duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	preview_file?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	preview_rendered_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	preview_stills?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	preview_stills_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	preview_thumbnail?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	preview_thumbnail_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	preview_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -77571,6 +77593,8 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 };
 	/** prepend existing jsonb value of filtered columns with new jsonb value */
 ["utility_lineups_prepend_input"]: {
+	approach?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	preview_stills?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	trajectory_preview?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
 };
 	/** select columns of table "utility_lineups" */
@@ -77598,6 +77622,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	/** input type for updating data in table "utility_lineups" */
 ["utility_lineups_set_input"]: {
 	aim_tolerance?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
+	approach?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	archived_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	confidence?: string | undefined | null | Variable<any, string>,
@@ -77632,6 +77657,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	preview_duration_ms?: number | undefined | null | Variable<any, string>,
 	preview_file?: string | undefined | null | Variable<any, string>,
 	preview_rendered_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	preview_stills?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	preview_thumbnail?: string | undefined | null | Variable<any, string>,
 	public_requested_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	public_review_note?: string | undefined | null | Variable<any, string>,
@@ -77877,6 +77903,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	/** Initial value of the column from where the streaming should start */
 ["utility_lineups_stream_cursor_value_input"]: {
 	aim_tolerance?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
+	approach?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	archived_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	confidence?: string | undefined | null | Variable<any, string>,
@@ -77912,6 +77939,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	preview_duration_ms?: number | undefined | null | Variable<any, string>,
 	preview_file?: string | undefined | null | Variable<any, string>,
 	preview_rendered_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	preview_stills?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	preview_thumbnail?: string | undefined | null | Variable<any, string>,
 	public_requested_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	public_review_note?: string | undefined | null | Variable<any, string>,
@@ -165327,6 +165355,8 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineup_votes_select_colum
 	/** columns and relationships of "utility_lineups" */
 ["utility_lineups"]: AliasType<{
 	aim_tolerance?:boolean | `@${string}`,
+approach?: [{	/** JSON select path */
+	path?: string | undefined | null},boolean | `@${string}`],
 	archived_at?:boolean | `@${string}`,
 	/** An object relationship */
 	author?:ResolverInputTypes["players"],
@@ -165400,6 +165430,10 @@ favorited_by_aggregate?: [{	/** distinct select on columns */
 	preview_duration_ms?:boolean | `@${string}`,
 	preview_file?:boolean | `@${string}`,
 	preview_rendered_at?:boolean | `@${string}`,
+preview_stills?: [{	/** JSON select path */
+	path?: string | undefined | null},boolean | `@${string}`],
+preview_stills_url?: [{	/** JSON select path */
+	path?: string | undefined | null},boolean | `@${string}`],
 	preview_thumbnail?:boolean | `@${string}`,
 	/** A computed field, executes function "utility_lineup_preview_thumbnail_url" */
 	preview_thumbnail_url?:boolean | `@${string}`,
@@ -165612,6 +165646,8 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 };
 	/** append existing jsonb value of filtered columns with new jsonb value */
 ["utility_lineups_append_input"]: {
+	approach?: ResolverInputTypes["jsonb"] | undefined | null,
+	preview_stills?: ResolverInputTypes["jsonb"] | undefined | null,
 	trajectory_preview?: ResolverInputTypes["jsonb"] | undefined | null
 };
 	/** input type for inserting array relation for remote table "utility_lineups" */
@@ -165695,6 +165731,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	_not?: ResolverInputTypes["utility_lineups_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["utility_lineups_bool_exp"]> | undefined | null,
 	aim_tolerance?: ResolverInputTypes["float8_comparison_exp"] | undefined | null,
+	approach?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
 	archived_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	author?: ResolverInputTypes["players_bool_exp"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
@@ -165741,6 +165778,8 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	preview_duration_ms?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	preview_file?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	preview_rendered_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	preview_stills?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
+	preview_stills_url?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
 	preview_thumbnail?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	preview_thumbnail_url?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	preview_url?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
@@ -165786,14 +165825,20 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 ["utility_lineups_constraint"]:utility_lineups_constraint;
 	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 ["utility_lineups_delete_at_path_input"]: {
+	approach?: Array<string> | undefined | null,
+	preview_stills?: Array<string> | undefined | null,
 	trajectory_preview?: Array<string> | undefined | null
 };
 	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
 ["utility_lineups_delete_elem_input"]: {
+	approach?: number | undefined | null,
+	preview_stills?: number | undefined | null,
 	trajectory_preview?: number | undefined | null
 };
 	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
 ["utility_lineups_delete_key_input"]: {
+	approach?: string | undefined | null,
+	preview_stills?: string | undefined | null,
 	trajectory_preview?: string | undefined | null
 };
 	/** input type for incrementing numeric columns in table "utility_lineups" */
@@ -165832,6 +165877,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	/** input type for inserting data into table "utility_lineups" */
 ["utility_lineups_insert_input"]: {
 	aim_tolerance?: ResolverInputTypes["float8"] | undefined | null,
+	approach?: ResolverInputTypes["jsonb"] | undefined | null,
 	archived_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	author?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
@@ -165870,6 +165916,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	preview_duration_ms?: number | undefined | null,
 	preview_file?: string | undefined | null,
 	preview_rendered_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	preview_stills?: ResolverInputTypes["jsonb"] | undefined | null,
 	preview_thumbnail?: string | undefined | null,
 	progress?: ResolverInputTypes["utility_lineup_progress_arr_rel_insert_input"] | undefined | null,
 	public_requested_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -166178,6 +166225,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	/** Ordering options when selecting data from "utility_lineups". */
 ["utility_lineups_order_by"]: {
 	aim_tolerance?: ResolverInputTypes["order_by"] | undefined | null,
+	approach?: ResolverInputTypes["order_by"] | undefined | null,
 	archived_at?: ResolverInputTypes["order_by"] | undefined | null,
 	author?: ResolverInputTypes["players_order_by"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -166222,6 +166270,8 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	preview_duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
 	preview_file?: ResolverInputTypes["order_by"] | undefined | null,
 	preview_rendered_at?: ResolverInputTypes["order_by"] | undefined | null,
+	preview_stills?: ResolverInputTypes["order_by"] | undefined | null,
+	preview_stills_url?: ResolverInputTypes["order_by"] | undefined | null,
 	preview_thumbnail?: ResolverInputTypes["order_by"] | undefined | null,
 	preview_thumbnail_url?: ResolverInputTypes["order_by"] | undefined | null,
 	preview_url?: ResolverInputTypes["order_by"] | undefined | null,
@@ -166265,6 +166315,8 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 };
 	/** prepend existing jsonb value of filtered columns with new jsonb value */
 ["utility_lineups_prepend_input"]: {
+	approach?: ResolverInputTypes["jsonb"] | undefined | null,
+	preview_stills?: ResolverInputTypes["jsonb"] | undefined | null,
 	trajectory_preview?: ResolverInputTypes["jsonb"] | undefined | null
 };
 	/** select columns of table "utility_lineups" */
@@ -166292,6 +166344,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	/** input type for updating data in table "utility_lineups" */
 ["utility_lineups_set_input"]: {
 	aim_tolerance?: ResolverInputTypes["float8"] | undefined | null,
+	approach?: ResolverInputTypes["jsonb"] | undefined | null,
 	archived_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	confidence?: string | undefined | null,
@@ -166326,6 +166379,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	preview_duration_ms?: number | undefined | null,
 	preview_file?: string | undefined | null,
 	preview_rendered_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	preview_stills?: ResolverInputTypes["jsonb"] | undefined | null,
 	preview_thumbnail?: string | undefined | null,
 	public_requested_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	public_review_note?: string | undefined | null,
@@ -166571,6 +166625,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	/** Initial value of the column from where the streaming should start */
 ["utility_lineups_stream_cursor_value_input"]: {
 	aim_tolerance?: ResolverInputTypes["float8"] | undefined | null,
+	approach?: ResolverInputTypes["jsonb"] | undefined | null,
 	archived_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	confidence?: string | undefined | null,
@@ -166606,6 +166661,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	preview_duration_ms?: number | undefined | null,
 	preview_file?: string | undefined | null,
 	preview_rendered_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	preview_stills?: ResolverInputTypes["jsonb"] | undefined | null,
 	preview_thumbnail?: string | undefined | null,
 	public_requested_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	public_review_note?: string | undefined | null,
@@ -243970,6 +244026,7 @@ export type ModelTypes = {
 	/** columns and relationships of "utility_lineups" */
 ["utility_lineups"]: {
 		aim_tolerance: ModelTypes["float8"],
+	approach?: ModelTypes["jsonb"] | undefined | null,
 	archived_at?: ModelTypes["timestamptz"] | undefined | null,
 	/** An object relationship */
 	author: ModelTypes["players"],
@@ -244027,6 +244084,9 @@ export type ModelTypes = {
 	preview_duration_ms?: number | undefined | null,
 	preview_file?: string | undefined | null,
 	preview_rendered_at?: ModelTypes["timestamptz"] | undefined | null,
+	preview_stills?: ModelTypes["jsonb"] | undefined | null,
+	/** A computed field, executes function "utility_lineup_preview_stills_url" */
+	preview_stills_url?: ModelTypes["jsonb"] | undefined | null,
 	preview_thumbnail?: string | undefined | null,
 	/** A computed field, executes function "utility_lineup_preview_thumbnail_url" */
 	preview_thumbnail_url?: string | undefined | null,
@@ -244203,6 +244263,8 @@ export type ModelTypes = {
 };
 	/** append existing jsonb value of filtered columns with new jsonb value */
 ["utility_lineups_append_input"]: {
+	approach?: ModelTypes["jsonb"] | undefined | null,
+	preview_stills?: ModelTypes["jsonb"] | undefined | null,
 	trajectory_preview?: ModelTypes["jsonb"] | undefined | null
 };
 	/** input type for inserting array relation for remote table "utility_lineups" */
@@ -244285,6 +244347,7 @@ export type ModelTypes = {
 	_not?: ModelTypes["utility_lineups_bool_exp"] | undefined | null,
 	_or?: Array<ModelTypes["utility_lineups_bool_exp"]> | undefined | null,
 	aim_tolerance?: ModelTypes["float8_comparison_exp"] | undefined | null,
+	approach?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
 	archived_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	author?: ModelTypes["players_bool_exp"] | undefined | null,
 	author_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
@@ -244331,6 +244394,8 @@ export type ModelTypes = {
 	preview_duration_ms?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	preview_file?: ModelTypes["String_comparison_exp"] | undefined | null,
 	preview_rendered_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	preview_stills?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
+	preview_stills_url?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
 	preview_thumbnail?: ModelTypes["String_comparison_exp"] | undefined | null,
 	preview_thumbnail_url?: ModelTypes["String_comparison_exp"] | undefined | null,
 	preview_url?: ModelTypes["String_comparison_exp"] | undefined | null,
@@ -244375,14 +244440,20 @@ export type ModelTypes = {
 	["utility_lineups_constraint"]:utility_lineups_constraint;
 	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 ["utility_lineups_delete_at_path_input"]: {
+	approach?: Array<string> | undefined | null,
+	preview_stills?: Array<string> | undefined | null,
 	trajectory_preview?: Array<string> | undefined | null
 };
 	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
 ["utility_lineups_delete_elem_input"]: {
+	approach?: number | undefined | null,
+	preview_stills?: number | undefined | null,
 	trajectory_preview?: number | undefined | null
 };
 	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
 ["utility_lineups_delete_key_input"]: {
+	approach?: string | undefined | null,
+	preview_stills?: string | undefined | null,
 	trajectory_preview?: string | undefined | null
 };
 	/** input type for incrementing numeric columns in table "utility_lineups" */
@@ -244421,6 +244492,7 @@ export type ModelTypes = {
 	/** input type for inserting data into table "utility_lineups" */
 ["utility_lineups_insert_input"]: {
 	aim_tolerance?: ModelTypes["float8"] | undefined | null,
+	approach?: ModelTypes["jsonb"] | undefined | null,
 	archived_at?: ModelTypes["timestamptz"] | undefined | null,
 	author?: ModelTypes["players_obj_rel_insert_input"] | undefined | null,
 	author_steam_id?: ModelTypes["bigint"] | undefined | null,
@@ -244459,6 +244531,7 @@ export type ModelTypes = {
 	preview_duration_ms?: number | undefined | null,
 	preview_file?: string | undefined | null,
 	preview_rendered_at?: ModelTypes["timestamptz"] | undefined | null,
+	preview_stills?: ModelTypes["jsonb"] | undefined | null,
 	preview_thumbnail?: string | undefined | null,
 	progress?: ModelTypes["utility_lineup_progress_arr_rel_insert_input"] | undefined | null,
 	public_requested_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -244764,6 +244837,7 @@ export type ModelTypes = {
 	/** Ordering options when selecting data from "utility_lineups". */
 ["utility_lineups_order_by"]: {
 	aim_tolerance?: ModelTypes["order_by"] | undefined | null,
+	approach?: ModelTypes["order_by"] | undefined | null,
 	archived_at?: ModelTypes["order_by"] | undefined | null,
 	author?: ModelTypes["players_order_by"] | undefined | null,
 	author_steam_id?: ModelTypes["order_by"] | undefined | null,
@@ -244808,6 +244882,8 @@ export type ModelTypes = {
 	preview_duration_ms?: ModelTypes["order_by"] | undefined | null,
 	preview_file?: ModelTypes["order_by"] | undefined | null,
 	preview_rendered_at?: ModelTypes["order_by"] | undefined | null,
+	preview_stills?: ModelTypes["order_by"] | undefined | null,
+	preview_stills_url?: ModelTypes["order_by"] | undefined | null,
 	preview_thumbnail?: ModelTypes["order_by"] | undefined | null,
 	preview_thumbnail_url?: ModelTypes["order_by"] | undefined | null,
 	preview_url?: ModelTypes["order_by"] | undefined | null,
@@ -244851,6 +244927,8 @@ export type ModelTypes = {
 };
 	/** prepend existing jsonb value of filtered columns with new jsonb value */
 ["utility_lineups_prepend_input"]: {
+	approach?: ModelTypes["jsonb"] | undefined | null,
+	preview_stills?: ModelTypes["jsonb"] | undefined | null,
 	trajectory_preview?: ModelTypes["jsonb"] | undefined | null
 };
 	["utility_lineups_select_column"]:utility_lineups_select_column;
@@ -244867,6 +244945,7 @@ export type ModelTypes = {
 	/** input type for updating data in table "utility_lineups" */
 ["utility_lineups_set_input"]: {
 	aim_tolerance?: ModelTypes["float8"] | undefined | null,
+	approach?: ModelTypes["jsonb"] | undefined | null,
 	archived_at?: ModelTypes["timestamptz"] | undefined | null,
 	author_steam_id?: ModelTypes["bigint"] | undefined | null,
 	confidence?: string | undefined | null,
@@ -244901,6 +244980,7 @@ export type ModelTypes = {
 	preview_duration_ms?: number | undefined | null,
 	preview_file?: string | undefined | null,
 	preview_rendered_at?: ModelTypes["timestamptz"] | undefined | null,
+	preview_stills?: ModelTypes["jsonb"] | undefined | null,
 	preview_thumbnail?: string | undefined | null,
 	public_requested_at?: ModelTypes["timestamptz"] | undefined | null,
 	public_review_note?: string | undefined | null,
@@ -245143,6 +245223,7 @@ export type ModelTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["utility_lineups_stream_cursor_value_input"]: {
 	aim_tolerance?: ModelTypes["float8"] | undefined | null,
+	approach?: ModelTypes["jsonb"] | undefined | null,
 	archived_at?: ModelTypes["timestamptz"] | undefined | null,
 	author_steam_id?: ModelTypes["bigint"] | undefined | null,
 	confidence?: string | undefined | null,
@@ -245178,6 +245259,7 @@ export type ModelTypes = {
 	preview_duration_ms?: number | undefined | null,
 	preview_file?: string | undefined | null,
 	preview_rendered_at?: ModelTypes["timestamptz"] | undefined | null,
+	preview_stills?: ModelTypes["jsonb"] | undefined | null,
 	preview_thumbnail?: string | undefined | null,
 	public_requested_at?: ModelTypes["timestamptz"] | undefined | null,
 	public_review_note?: string | undefined | null,
@@ -325190,6 +325272,7 @@ export type GraphQLTypes = {
 ["utility_lineups"]: {
 	__typename: "utility_lineups",
 	aim_tolerance: GraphQLTypes["float8"],
+	approach?: GraphQLTypes["jsonb"] | undefined | null,
 	archived_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	/** An object relationship */
 	author: GraphQLTypes["players"],
@@ -325247,6 +325330,9 @@ export type GraphQLTypes = {
 	preview_duration_ms?: number | undefined | null,
 	preview_file?: string | undefined | null,
 	preview_rendered_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	preview_stills?: GraphQLTypes["jsonb"] | undefined | null,
+	/** A computed field, executes function "utility_lineup_preview_stills_url" */
+	preview_stills_url?: GraphQLTypes["jsonb"] | undefined | null,
 	preview_thumbnail?: string | undefined | null,
 	/** A computed field, executes function "utility_lineup_preview_thumbnail_url" */
 	preview_thumbnail_url?: string | undefined | null,
@@ -325425,7 +325511,9 @@ export type GraphQLTypes = {
 };
 	/** append existing jsonb value of filtered columns with new jsonb value */
 ["utility_lineups_append_input"]: {
-		trajectory_preview?: GraphQLTypes["jsonb"] | undefined | null
+		approach?: GraphQLTypes["jsonb"] | undefined | null,
+	preview_stills?: GraphQLTypes["jsonb"] | undefined | null,
+	trajectory_preview?: GraphQLTypes["jsonb"] | undefined | null
 };
 	/** input type for inserting array relation for remote table "utility_lineups" */
 ["utility_lineups_arr_rel_insert_input"]: {
@@ -325508,6 +325596,7 @@ export type GraphQLTypes = {
 	_not?: GraphQLTypes["utility_lineups_bool_exp"] | undefined | null,
 	_or?: Array<GraphQLTypes["utility_lineups_bool_exp"]> | undefined | null,
 	aim_tolerance?: GraphQLTypes["float8_comparison_exp"] | undefined | null,
+	approach?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
 	archived_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	author?: GraphQLTypes["players_bool_exp"] | undefined | null,
 	author_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
@@ -325554,6 +325643,8 @@ export type GraphQLTypes = {
 	preview_duration_ms?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	preview_file?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	preview_rendered_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	preview_stills?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
+	preview_stills_url?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
 	preview_thumbnail?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	preview_thumbnail_url?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	preview_url?: GraphQLTypes["String_comparison_exp"] | undefined | null,
@@ -325599,15 +325690,21 @@ export type GraphQLTypes = {
 ["utility_lineups_constraint"]: utility_lineups_constraint;
 	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 ["utility_lineups_delete_at_path_input"]: {
-		trajectory_preview?: Array<string> | undefined | null
+		approach?: Array<string> | undefined | null,
+	preview_stills?: Array<string> | undefined | null,
+	trajectory_preview?: Array<string> | undefined | null
 };
 	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
 ["utility_lineups_delete_elem_input"]: {
-		trajectory_preview?: number | undefined | null
+		approach?: number | undefined | null,
+	preview_stills?: number | undefined | null,
+	trajectory_preview?: number | undefined | null
 };
 	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
 ["utility_lineups_delete_key_input"]: {
-		trajectory_preview?: string | undefined | null
+		approach?: string | undefined | null,
+	preview_stills?: string | undefined | null,
+	trajectory_preview?: string | undefined | null
 };
 	/** input type for incrementing numeric columns in table "utility_lineups" */
 ["utility_lineups_inc_input"]: {
@@ -325645,6 +325742,7 @@ export type GraphQLTypes = {
 	/** input type for inserting data into table "utility_lineups" */
 ["utility_lineups_insert_input"]: {
 		aim_tolerance?: GraphQLTypes["float8"] | undefined | null,
+	approach?: GraphQLTypes["jsonb"] | undefined | null,
 	archived_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	author?: GraphQLTypes["players_obj_rel_insert_input"] | undefined | null,
 	author_steam_id?: GraphQLTypes["bigint"] | undefined | null,
@@ -325683,6 +325781,7 @@ export type GraphQLTypes = {
 	preview_duration_ms?: number | undefined | null,
 	preview_file?: string | undefined | null,
 	preview_rendered_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	preview_stills?: GraphQLTypes["jsonb"] | undefined | null,
 	preview_thumbnail?: string | undefined | null,
 	progress?: GraphQLTypes["utility_lineup_progress_arr_rel_insert_input"] | undefined | null,
 	public_requested_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -325991,6 +326090,7 @@ export type GraphQLTypes = {
 	/** Ordering options when selecting data from "utility_lineups". */
 ["utility_lineups_order_by"]: {
 		aim_tolerance?: GraphQLTypes["order_by"] | undefined | null,
+	approach?: GraphQLTypes["order_by"] | undefined | null,
 	archived_at?: GraphQLTypes["order_by"] | undefined | null,
 	author?: GraphQLTypes["players_order_by"] | undefined | null,
 	author_steam_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -326035,6 +326135,8 @@ export type GraphQLTypes = {
 	preview_duration_ms?: GraphQLTypes["order_by"] | undefined | null,
 	preview_file?: GraphQLTypes["order_by"] | undefined | null,
 	preview_rendered_at?: GraphQLTypes["order_by"] | undefined | null,
+	preview_stills?: GraphQLTypes["order_by"] | undefined | null,
+	preview_stills_url?: GraphQLTypes["order_by"] | undefined | null,
 	preview_thumbnail?: GraphQLTypes["order_by"] | undefined | null,
 	preview_thumbnail_url?: GraphQLTypes["order_by"] | undefined | null,
 	preview_url?: GraphQLTypes["order_by"] | undefined | null,
@@ -326078,7 +326180,9 @@ export type GraphQLTypes = {
 };
 	/** prepend existing jsonb value of filtered columns with new jsonb value */
 ["utility_lineups_prepend_input"]: {
-		trajectory_preview?: GraphQLTypes["jsonb"] | undefined | null
+		approach?: GraphQLTypes["jsonb"] | undefined | null,
+	preview_stills?: GraphQLTypes["jsonb"] | undefined | null,
+	trajectory_preview?: GraphQLTypes["jsonb"] | undefined | null
 };
 	/** select columns of table "utility_lineups" */
 ["utility_lineups_select_column"]: utility_lineups_select_column;
@@ -326105,6 +326209,7 @@ export type GraphQLTypes = {
 	/** input type for updating data in table "utility_lineups" */
 ["utility_lineups_set_input"]: {
 		aim_tolerance?: GraphQLTypes["float8"] | undefined | null,
+	approach?: GraphQLTypes["jsonb"] | undefined | null,
 	archived_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	author_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	confidence?: string | undefined | null,
@@ -326139,6 +326244,7 @@ export type GraphQLTypes = {
 	preview_duration_ms?: number | undefined | null,
 	preview_file?: string | undefined | null,
 	preview_rendered_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	preview_stills?: GraphQLTypes["jsonb"] | undefined | null,
 	preview_thumbnail?: string | undefined | null,
 	public_requested_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	public_review_note?: string | undefined | null,
@@ -326384,6 +326490,7 @@ export type GraphQLTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["utility_lineups_stream_cursor_value_input"]: {
 		aim_tolerance?: GraphQLTypes["float8"] | undefined | null,
+	approach?: GraphQLTypes["jsonb"] | undefined | null,
 	archived_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	author_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	confidence?: string | undefined | null,
@@ -326419,6 +326526,7 @@ export type GraphQLTypes = {
 	preview_duration_ms?: number | undefined | null,
 	preview_file?: string | undefined | null,
 	preview_rendered_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	preview_stills?: GraphQLTypes["jsonb"] | undefined | null,
 	preview_thumbnail?: string | undefined | null,
 	public_requested_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	public_review_note?: string | undefined | null,
@@ -344935,6 +345043,7 @@ export enum utility_lineups_constraint {
 /** select columns of table "utility_lineups" */
 export enum utility_lineups_select_column {
 	aim_tolerance = "aim_tolerance",
+	approach = "approach",
 	archived_at = "archived_at",
 	author_steam_id = "author_steam_id",
 	confidence = "confidence",
@@ -344970,6 +345079,7 @@ export enum utility_lineups_select_column {
 	preview_duration_ms = "preview_duration_ms",
 	preview_file = "preview_file",
 	preview_rendered_at = "preview_rendered_at",
+	preview_stills = "preview_stills",
 	preview_thumbnail = "preview_thumbnail",
 	public_requested_at = "public_requested_at",
 	public_review_note = "public_review_note",
@@ -345177,6 +345287,7 @@ export enum utility_lineups_select_column_utility_lineups_aggregate_bool_exp_var
 /** update columns of table "utility_lineups" */
 export enum utility_lineups_update_column {
 	aim_tolerance = "aim_tolerance",
+	approach = "approach",
 	archived_at = "archived_at",
 	author_steam_id = "author_steam_id",
 	confidence = "confidence",
@@ -345211,6 +345322,7 @@ export enum utility_lineups_update_column {
 	preview_duration_ms = "preview_duration_ms",
 	preview_file = "preview_file",
 	preview_rendered_at = "preview_rendered_at",
+	preview_stills = "preview_stills",
 	preview_thumbnail = "preview_thumbnail",
 	public_requested_at = "public_requested_at",
 	public_review_note = "public_review_note",

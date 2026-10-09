@@ -3,7 +3,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import {
   ArrowBigUp,
-  BadgeCheck,
+  Check,
   ChevronDown,
   ChevronLeft,
   Ellipsis,
@@ -11,6 +11,7 @@ import {
   Globe,
   Heart,
   Lock,
+  Share2,
   SkipForward,
   Users,
 } from "lucide-vue-next";
@@ -38,9 +39,10 @@ import { toast } from "~/components/ui/toast";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import UtilityCollectionPicker from "~/components/utility/UtilityCollectionPicker.vue";
-import UtilityConfidenceNote from "~/components/utility/UtilityConfidenceNote.vue";
-import UtilityHowCells from "~/components/utility/UtilityHowCells.vue";
+import UtilityConfidenceMark from "~/components/utility/UtilityConfidenceMark.vue";
+import UtilityThrowStrip from "~/components/utility/UtilityThrowStrip.vue";
 import UtilityLineupPreview from "~/components/utility/UtilityLineupPreview.vue";
+import UtilityLineupStills from "~/components/utility/UtilityLineupStills.vue";
 import UtilityMissPatternPanel from "~/components/utility/UtilityMissPatternPanel.vue";
 import UtilityProgressPanel from "~/components/utility/UtilityProgressPanel.vue";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
@@ -55,6 +57,7 @@ import {
   aimTolerance,
   humanizeUtilityToken,
   myUtilityProgress,
+  utilityClipSource,
   utilityDifficultyKey,
   utilityDifficultyMeasured,
 } from "~/utilities/utilityDisplay";
@@ -63,6 +66,9 @@ import type {
   UtilityLineupContext,
 } from "~/utilities/utilityDisplay";
 import { useUtilityLoad } from "~/composables/useUtilityLoad";
+import { useUtilityRunUp } from "~/composables/useUtilityRunUp";
+import { useUtilityLineupShare } from "~/composables/useUtilityLineupShare";
+import { useUtilityRendersInFlight } from "~/composables/useUtilityRendersInFlight";
 import { useAuthStore } from "~/stores/AuthStore";
 import type { UtilityLineup, UtilityVisibility } from "~/types/utility";
 
@@ -357,6 +363,13 @@ const canRerender = computed(
     !lineup.value.archived_at,
 );
 
+// The api turns a second render down while one is under way, so the menu does
+// not offer it.
+const renders = useUtilityRendersInFlight();
+const rendering = computed(
+  () => !!lineup.value && renders.isRendering(lineup.value.id),
+);
+
 const canEdit = computed(
   () => !!lineup.value?.can_edit && !lineup.value.archived_at,
 );
@@ -367,6 +380,25 @@ const canRestore = computed(
 
 const color = computed(
   () => UTILITY_TYPE_COLORS[lineup.value?.utility_type ?? "Smoke"] ?? "#ffffff",
+);
+
+const runUp = useUtilityRunUp(() => (open.value ? lineup.value?.id : null));
+
+const { copiedLineupId, shareLineup } = useUtilityLineupShare();
+const linkCopied = computed(
+  () => !!lineup.value && copiedLineupId.value === lineup.value.id,
+);
+
+function share() {
+  const value = lineup.value;
+  if (!value) {
+    return;
+  }
+  void shareLineup(value.map_name, value.id);
+}
+
+const hasClip = computed(
+  () => !!lineup.value && !!utilityClipSource(lineup.value),
 );
 
 // Your drill record arrives after the lineup does -- patched in from the live
@@ -718,6 +750,35 @@ const stats = computed(() => {
             placement="below"
           />
 
+          <FiveStackToolTip
+            v-if="!hasClip"
+            as-child
+            side="bottom"
+            :delay-duration="120"
+            :tap-toggle="false"
+          >
+            <template #trigger>
+              <button
+                type="button"
+                :class="tile(linkCopied)"
+                :aria-label="
+                  linkCopied
+                    ? $t('clips.link_copied')
+                    : $t('pages.utility.detail.share')
+                "
+                @click="share()"
+              >
+                <Check v-if="linkCopied" class="h-4 w-4" />
+                <Share2 v-else class="h-4 w-4" />
+              </button>
+            </template>
+            {{
+              linkCopied
+                ? $t("clips.link_copied")
+                : $t("pages.utility.detail.share")
+            }}
+          </FiveStackToolTip>
+
           <DropdownMenu v-if="canReact">
             <FiveStackToolTip
               as-child
@@ -761,6 +822,12 @@ const stats = computed(() => {
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   v-if="canRerender"
+                  :disabled="rendering"
+                  :title="
+                    rendering
+                      ? $t('pages.utility.render_queue.in_flight')
+                      : undefined
+                  "
                   @click="emit('rerender-preview', lineup.id)"
                 >
                   {{ $t("pages.utility.render_queue.rerender") }}
@@ -821,7 +888,65 @@ const stats = computed(() => {
               : ''
           "
         >
+          <!-- What it is, as the line over its name: the utility in its
+               own colour, the map, and the side as the side's own mark. -->
+          <div v-if="!editing" class="flex flex-col gap-1.5">
+            <p
+              class="flex min-w-0 items-center gap-1.5 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground"
+            >
+              <span
+                aria-hidden="true"
+                class="size-2 shrink-0 rounded-[2px]"
+                :style="{ backgroundColor: color }"
+              />
+              <span class="truncate tabular-nums">
+                <template v-if="context?.kicker">{{ context.kicker }}</template>
+                <template v-else>
+                  {{ $t(`pages.utility.types.${lineup.utility_type}`) }} ·
+                  {{ cleanMapName(lineup.map_name) }}
+                </template>
+              </span>
+              <FiveStackToolTip as-child :delay-duration="120">
+                <template #trigger>
+                  <img
+                    :src="
+                      lineup.side === 'CT'
+                        ? '/img/teams/ct_logo.svg'
+                        : '/img/teams/t_logo.svg'
+                    "
+                    :alt="$t(`pages.utility.sides.${lineup.side}`)"
+                    class="-my-1 size-[1.125rem] shrink-0 -translate-y-px"
+                  />
+                </template>
+                {{ $t(`pages.utility.sides.${lineup.side}`) }}
+              </FiveStackToolTip>
+            </p>
+            <div class="flex items-start gap-2">
+              <h2
+                class="min-w-0 flex-1 text-lg font-bold leading-tight [text-wrap:balance]"
+              >
+                {{ lineup.name }}
+              </h2>
+              <UtilityConfidenceMark :lineup="lineup" class="mt-1" />
+              <!-- Who can see it is worth a glyph, not a word's width. -->
+              <FiveStackToolTip v-if="status" as-child :delay-duration="120">
+                <template #trigger>
+                  <span
+                    class="mt-0.5 grid size-6 shrink-0 place-items-center rounded-md"
+                    :class="status.tone"
+                    role="img"
+                    :aria-label="status.label"
+                  >
+                    <component :is="status.icon" class="h-3.5 w-3.5" />
+                  </span>
+                </template>
+                {{ $t("pages.utility.card.yours", { status: status.label }) }}
+              </FiveStackToolTip>
+            </div>
+          </div>
+
           <UtilityLineupPreview :lineup="lineup" />
+          <UtilityLineupStills :stills="lineup.preview_stills_url" />
 
           <!-- Editing swaps the details for the form; the throw stays on
                screen, which is the thing you are naming. -->
@@ -903,62 +1028,6 @@ const stats = computed(() => {
           </template>
 
           <template v-else>
-            <!-- What it is, as the line over its name: the utility in its
-                 own colour, the map, and the side as the side's own mark. -->
-            <div class="flex flex-col gap-1.5">
-              <p
-                class="flex min-w-0 items-center gap-1.5 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground"
-              >
-                <span
-                  aria-hidden="true"
-                  class="size-2 shrink-0 rounded-[2px]"
-                  :style="{ backgroundColor: color }"
-                />
-                <span class="truncate tabular-nums">
-                  <template v-if="context?.kicker">{{ context.kicker }}</template>
-                  <template v-else>
-                    {{ $t(`pages.utility.types.${lineup.utility_type}`) }} ·
-                    {{ cleanMapName(lineup.map_name) }}
-                  </template>
-                </span>
-                <FiveStackToolTip as-child :delay-duration="120">
-                  <template #trigger>
-                    <img
-                      :src="
-                        lineup.side === 'CT'
-                          ? '/img/teams/ct_logo.svg'
-                          : '/img/teams/t_logo.svg'
-                      "
-                      :alt="$t(`pages.utility.sides.${lineup.side}`)"
-                      class="-my-1 size-[1.125rem] shrink-0 -translate-y-px"
-                    />
-                  </template>
-                  {{ $t(`pages.utility.sides.${lineup.side}`) }}
-                </FiveStackToolTip>
-              </p>
-              <div class="flex items-start gap-2">
-                <h2
-                  class="min-w-0 flex-1 text-lg font-bold leading-tight [text-wrap:balance]"
-                >
-                  {{ lineup.name }}
-                </h2>
-                <!-- Who can see it is worth a glyph, not a word's width. -->
-                <FiveStackToolTip v-if="status" as-child :delay-duration="120">
-                  <template #trigger>
-                    <span
-                      class="mt-0.5 grid size-6 shrink-0 place-items-center rounded-md"
-                      :class="status.tone"
-                      role="img"
-                      :aria-label="status.label"
-                    >
-                      <component :is="status.icon" class="h-3.5 w-3.5" />
-                    </span>
-                  </template>
-                  {{ $t("pages.utility.card.yours", { status: status.label }) }}
-                </FiveStackToolTip>
-              </div>
-            </div>
-
             <!-- Where you came from, when that is not the list: one quiet
                  line, and from the plan, why it queued this one. -->
             <div
@@ -993,9 +1062,10 @@ const stats = computed(() => {
 
             <!-- How to throw it, first and large: this is the part you glance
                  at mid-match. -->
-            <UtilityHowCells
+            <UtilityThrowStrip
               :technique="lineup.technique"
               :strength="lineup.throw_strength"
+              :run-up="runUp"
             />
 
             <p
@@ -1009,13 +1079,6 @@ const stats = computed(() => {
                 <span class="tabular-nums">{{ fact }}</span>
               </template>
             </p>
-
-            <!-- Anything less sure than a recorded lineup keeps its full note
-                 up here, because that one you have to act on. -->
-            <UtilityConfidenceNote
-              v-if="lineup.confidence !== 'exact'"
-              :lineup="lineup"
-            />
 
             <p
               v-if="lineup.description"
@@ -1086,22 +1149,6 @@ const stats = computed(() => {
                 >
                   {{ lineup.team.short_name || lineup.team.name }}
                 </span>
-                <span class="flex-1" />
-                <FiveStackToolTip
-                  v-if="lineup.confidence === 'exact'"
-                  as-child
-                  :delay-duration="120"
-                >
-                  <template #trigger>
-                    <span
-                      class="inline-flex shrink-0 items-center gap-1 text-success"
-                    >
-                      <BadgeCheck class="h-3.5 w-3.5" />
-                      {{ $t("pages.utility.confidence.exact") }}
-                    </span>
-                  </template>
-                  {{ $t("pages.utility.confidence.exact_note") }}
-                </FiveStackToolTip>
               </div>
 
               <!-- The telemetry, folded: it answers "why did this land there" on

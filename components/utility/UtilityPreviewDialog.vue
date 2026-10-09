@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { ArrowUpRight, Check, Download, Film, Share2, Trash2 } from "lucide-vue-next";
+import { ArrowUpRight, Film, Trash2 } from "lucide-vue-next";
+import { Button } from "~/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -8,9 +9,16 @@ import {
   DialogTitle,
 } from "~/components/ui/dialog";
 import ClipPlayer from "~/components/clips/ClipPlayer.vue";
+import ClipShareMenu from "~/components/clips/ClipShareMenu.vue";
 import DeleteRenderDialog from "~/components/utility/DeleteRenderDialog.vue";
 import cleanMapName from "~/utilities/cleanMapName";
-import { utilityLineupRoute } from "~/utilities/utilityDisplay";
+import { clipDownloadUrl } from "~/utilities/clipDownloadName";
+import {
+  utilityClipFileName,
+  utilityLineupRoute,
+} from "~/utilities/utilityDisplay";
+import { useClipFileSize } from "~/composables/useClipFileSize";
+import { useUtilityLineupShare } from "~/composables/useUtilityLineupShare";
 
 const props = defineProps<{
   open: boolean;
@@ -41,30 +49,24 @@ const seconds = computed(() =>
     : null,
 );
 
-const downloadName = computed(() => {
-  const base = (props.title || "lineup")
-    .replace(/[^a-z0-9]+/gi, "-")
-    .toLowerCase();
-  return `${base}-preview.mp4`;
-});
+const downloadName = computed(() =>
+  utilityClipFileName(props.mapName, props.title),
+);
+const downloadHref = computed(() =>
+  props.src ? clipDownloadUrl(props.src, downloadName.value) : null,
+);
+const fileSize = useClipFileSize(() => (props.open ? props.src : null));
 
-// Copy the lineup's shareable URL -- the lineup IS the shareable thing here,
-// same idea as a highlight's share link.
-const linkCopied = ref(false);
-async function copyLink() {
-  if (!props.lineupId || typeof window === "undefined") return;
-  const route = lineupRoute.value;
-  const path =
-    route && "query" in route && route.query?.lineup
-      ? `/utility/${route.params?.map}?lineup=${route.query.lineup}`
-      : `/utility/lineup/${props.lineupId}`;
-  try {
-    await navigator.clipboard.writeText(`${window.location.origin}${path}`);
-    linkCopied.value = true;
-    window.setTimeout(() => (linkCopied.value = false), 1500);
-  } catch {
-    // Clipboard denied (insecure context / permission) -- nothing to recover.
+const { copiedLineupId, shareLineup } = useUtilityLineupShare();
+const linkCopied = computed(
+  () => !!props.lineupId && copiedLineupId.value === props.lineupId,
+);
+
+function copyLink() {
+  if (!props.lineupId) {
+    return;
   }
+  void shareLineup(props.mapName, props.lineupId);
 }
 
 const showDelete = ref(false);
@@ -92,7 +94,6 @@ watch(
   ([open, src, player]) => {
     // Reset transient UI whenever the modal closes.
     if (!open) {
-      linkCopied.value = false;
       showDelete.value = false;
       return;
     }
@@ -133,6 +134,19 @@ watch(
                 <Film class="h-6 w-6 text-muted-foreground" />
               </div>
             </template>
+            <template #top-right>
+              <ClipShareMenu
+                v-if="lineupId || downloadHref"
+                :copied="linkCopied"
+                :copy-label="$t('pages.utility.detail.copy_link')"
+                :download-href="downloadHref"
+                :download-name="downloadName"
+                :download-label="$t('pages.utility.detail.download_clip')"
+                :size-label="fileSize"
+                content-class="z-[70]"
+                @copy="copyLink"
+              />
+            </template>
             <template #top-left>
               <h2
                 class="min-w-0 truncate font-mono text-sm font-semibold uppercase tracking-[0.14em] text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.65)] sm:text-base"
@@ -167,51 +181,20 @@ watch(
             <ArrowUpRight class="h-3 w-3" />
           </NuxtLink>
 
-          <div class="mt-auto flex flex-col gap-2">
-            <button
-              type="button"
-              class="action-tile action-tile--primary group"
-              :class="linkCopied ? 'action-tile--primary-copied' : ''"
-              :aria-label="
-                linkCopied
-                  ? $t('toasts.link_copied')
-                  : $t('pages.utility.preview.copy_link')
-              "
-              @click.stop="copyLink"
+          <div
+            v-if="canManage && renderId"
+            class="mt-auto flex items-center justify-end"
+          >
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              class="text-white/60 hover:text-destructive"
+              :aria-label="$t('common.delete')"
+              :title="$t('common.delete')"
+              @click="showDelete = true"
             >
-              <Check v-if="linkCopied" class="h-4 w-4" />
-              <Share2 v-else class="h-4 w-4" />
-              <span>{{
-                linkCopied
-                  ? $t("pages.utility.preview.link_copied")
-                  : $t("pages.utility.preview.copy_link")
-              }}</span>
-            </button>
-
-            <div class="grid grid-cols-2 gap-2">
-              <a
-                v-if="src"
-                :href="src"
-                :download="downloadName"
-                target="_blank"
-                rel="noopener"
-                class="action-tile group"
-                :class="canManage && renderId ? '' : 'col-span-2'"
-              >
-                <Download class="h-4 w-4" />
-                <span>{{ $t("common.download") }}</span>
-              </a>
-              <button
-                v-if="canManage && renderId"
-                type="button"
-                class="action-tile action-tile--danger group"
-                :class="src ? '' : 'col-span-2'"
-                @click="showDelete = true"
-              >
-                <Trash2 class="h-4 w-4" />
-                <span>{{ $t("common.delete") }}</span>
-              </button>
-            </div>
+              <Trash2 />
+            </Button>
           </div>
         </aside>
       </div>
@@ -225,112 +208,3 @@ watch(
     </DialogContent>
   </Dialog>
 </template>
-
-<style scoped>
-.action-tile {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  height: 2.5rem;
-  padding: 0 0.875rem;
-  border-radius: 0.375rem;
-  border: 1px solid hsl(var(--border) / 0.6);
-  background: hsl(var(--card) / 0.45);
-  font-family: ui-monospace, SFMono-Regular, monospace;
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: hsl(var(--foreground) / 0.85);
-  cursor: pointer;
-  transition: all 150ms ease;
-  user-select: none;
-}
-.action-tile::after {
-  content: "";
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  width: 6px;
-  height: 6px;
-  border-top: 1px solid hsl(var(--tac-amber) / 0.55);
-  border-right: 1px solid hsl(var(--tac-amber) / 0.55);
-  transition: border-color 150ms ease;
-}
-.action-tile:hover {
-  border-color: hsl(var(--tac-amber) / 0.6);
-  background: hsl(var(--tac-amber) / 0.08);
-  color: hsl(var(--foreground));
-}
-.action-tile:hover::after {
-  border-color: hsl(var(--tac-amber));
-}
-.action-tile:active {
-  transform: translateY(1px);
-}
-.action-tile--primary {
-  height: 2.75rem;
-  border-color: hsl(var(--tac-amber));
-  background: linear-gradient(
-    135deg,
-    var(--tac-amber-cta-from) 0%,
-    hsl(var(--tac-amber)) 50%,
-    var(--tac-amber-cta-to) 100%
-  );
-  color: hsl(var(--tac-amber-foreground));
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  box-shadow:
-    0 0 0 1px hsl(var(--tac-amber) / 0.35),
-    0 6px 18px -6px hsl(var(--tac-amber) / 0.55);
-}
-.action-tile--primary::after {
-  border-top-color: hsl(var(--tac-amber-foreground) / 0.65);
-  border-right-color: hsl(var(--tac-amber-foreground) / 0.65);
-}
-.action-tile--primary:hover {
-  transform: translateY(-1px);
-  color: hsl(var(--tac-amber-foreground));
-  border-color: hsl(var(--tac-amber));
-  box-shadow:
-    0 0 0 1px hsl(var(--tac-amber) / 0.55),
-    0 12px 28px -6px hsl(var(--tac-amber) / 0.75),
-    0 0 24px hsl(var(--tac-amber) / 0.35);
-}
-.action-tile--primary:active {
-  transform: translateY(0);
-}
-.action-tile--primary-copied {
-  animation: share-flash 480ms ease-out;
-}
-@keyframes share-flash {
-  0% {
-    box-shadow:
-      0 0 0 1px hsl(var(--tac-amber)),
-      0 0 32px hsl(var(--tac-amber) / 0.9);
-  }
-  100% {
-    box-shadow:
-      0 0 0 1px hsl(var(--tac-amber) / 0.55),
-      0 12px 28px -6px hsl(var(--tac-amber) / 0.75);
-  }
-}
-.action-tile--danger {
-  color: hsl(var(--destructive) / 0.9);
-}
-.action-tile--danger::after {
-  border-top-color: hsl(var(--destructive) / 0.55);
-  border-right-color: hsl(var(--destructive) / 0.55);
-}
-.action-tile--danger:hover {
-  border-color: hsl(var(--destructive) / 0.7);
-  background: hsl(var(--destructive) / 0.08);
-  color: hsl(var(--destructive));
-}
-.action-tile--danger:hover::after {
-  border-top-color: hsl(var(--destructive));
-  border-right-color: hsl(var(--destructive));
-}
-</style>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
+import UtilityThrowIcon from "~/components/utility/UtilityThrowIcon.vue";
 import {
   UTILITY_AIM_DELTA_WARN_DEGREES,
   humanizeUtilityToken,
@@ -37,6 +38,8 @@ type Segment = {
   /** Plain facts read muted; only exceptions take a colour. */
   tone: "lead" | "plain" | "warn" | "bad" | "unknown";
   hint?: string;
+  /** Drawn as the mouse rather than spelled out. */
+  mouse?: boolean;
 };
 
 const delta = computed(() => utilityAimDelta(props.lineup));
@@ -60,18 +63,18 @@ const segments = computed<Segment[]>(() => {
       tone: "plain",
     },
     {
-      // The throw is the one thing here you physically do, so it says which
-      // buttons to press rather than naming a strength you have to translate.
-      // Abbreviated because this line already carries five other segments and
-      // truncates in row mode; the full phrase is on the title.
+      // The throw is the one thing here you physically do, so it shows which
+      // buttons to press rather than naming a strength you have to translate:
+      // the mouse, with the full phrase as its label and title.
       key: "strength",
       text: t(
-        `pages.utility.throw_buttons.${utilityThrowButtonsKey(lineup.throw_strength)}_short`,
+        `pages.utility.throw_buttons.${utilityThrowButtonsKey(lineup.throw_strength)}`,
       ),
       tone: "plain",
       hint: t(
         `pages.utility.throw_buttons.${utilityThrowButtonsKey(lineup.throw_strength)}`,
       ),
+      mouse: true,
     },
   ];
 
@@ -157,7 +160,23 @@ const TONES: Record<Segment["tone"], string> = {
       <span v-if="index > 0" aria-hidden="true" class="mx-1.5 text-border">
         /
       </span>
+      <!-- Sized and dropped in em so the mouse sits centred on the caps of
+           whatever size the line is set in: 1.5em tall against a ~0.72em cap
+           height puts its middle on theirs at -0.39em. Its outline takes the
+           line's own grey, which reads where the icon's default does not. -->
       <span
+        v-if="segment.mouse"
+        class="inline-block align-[-0.39em]"
+        :title="segment.hint"
+      >
+        <UtilityThrowIcon
+          :strength="lineup.throw_strength"
+          :label="segment.text"
+          class="block h-[1.5em] w-[1.04em] [&_[data-part=shell]]:stroke-muted-foreground [&_[data-part=shell]]:[stroke-width:1.5]"
+        />
+      </span>
+      <span
+        v-else
         :class="TONES[segment.tone]"
         class="whitespace-nowrap"
         :title="segment.hint"

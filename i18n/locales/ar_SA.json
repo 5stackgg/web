@@ -3468,6 +3468,12 @@
         "check_back_soon": "ستظهر المقاطع العامة هنا فور معالجتها. عد قريبًا."
       }
     },
+    "render_queue": {
+      "tabs": {
+        "highlights": "اللقطات المميزة",
+        "utility": "رميات الأدوات"
+      }
+    },
     "news": {
       "title": "الأخبار",
       "back": "العودة إلى الأخبار",
@@ -5402,6 +5408,9 @@
         "favorite": "احفظها في قائمتك",
         "unfavorite": "أزلها من قائمة المحفوظات",
         "open": "فتح الرمية",
+        "has_video": "يتضمن فيديو",
+        "rendering": "جارٍ عرض المعاينة…",
+        "rendering_progress": "جارٍ عرض المعاينة… {percent}%",
         "flight_time": "{seconds}ث",
         "unknown_author": "كاتب غير معروف",
         "downvote": "وسمها كرمية سيئة",
@@ -5422,9 +5431,23 @@
         "next": "الرمية التالية",
         "open_full": "فتح الصفحة الكاملة",
         "practice_this": "تدرّب على هذه",
+        "share": "شارك الرمية",
+        "copy_link": "نسخ رابط الرمية",
+        "download_clip": "نزّل المقطع",
         "not_found": "لم يُعثر على الرمية",
         "not_found_description": "ربما حُذفت، أو أنها غير مشاركة معك.",
         "no_mesh": "لا يوجد نموذج ثلاثي الأبعاد لهذه الخريطة بعد — يُعرض الرادار بدلًا منه.",
+        "stills": {
+          "title": "لقطات",
+          "stance": "مكان الوقوف",
+          "stance_eyes": "من مكان الوقوف",
+          "aim": "التصويب",
+          "aim_pin": "الرمية",
+          "aim_close": "التصويب عن قرب",
+          "landing": "مكان السقوط",
+          "open": "عرض {still}",
+          "viewer": "لقطات الرمية، استخدم مفاتيح الأسهم للتنقل بينها"
+        },
         "flight_time": "زمن الطيران",
         "stand": "موضع الوقوف",
         "lands": "موضع السقوط",
@@ -6238,6 +6261,15 @@
         "right_short": "أيمن",
         "both_short": "أيسر+أيمن"
       },
+      "run_up": {
+        "title": "الركض التمهيدي",
+        "seconds": "{seconds}ث",
+        "jump_throw": "رمية بالقفز",
+        "throw": "ارمِ",
+        "summary_jump": "اضغط مع الاستمرار على {keys} لمدة {seconds}ث، ثم ارمِ مع القفز",
+        "summary_throw": "اضغط مع الاستمرار على {keys} لمدة {seconds}ث، ثم ارمِ",
+        "first": "اضغط {keys} لمدة {seconds} ث أولًا"
+      },
       "preview": {
         "play": "تشغيل المعاينة",
         "title": "معاينة الرمية",
@@ -6252,6 +6284,9 @@
         "lineups": "{count} رمية | {count} رمية",
         "rerender": "إعادة تصيير المعاينة",
         "retry": "تصيير مرة أخرى",
+        "live": "مباشر",
+        "live_hint": "هذا العرض هو معاينة الرمية حاليًا",
+        "in_flight": "هناك عرض قيد التنفيذ لهذه الرمية بالفعل",
         "cancel": "إلغاء هذا التصيير",
         "clear_finished": "مسح المكتملة",
         "requeued": "أُضيف تصيير المعاينة إلى الطابور",
@@ -9331,6 +9366,7 @@
       "zoom_in": "تقريب",
       "zoom_in_scroll": "تقريب (Ctrl/Cmd + تمرير)",
       "zoom_out": "تبعيد",
+      "zoom_reset": "إعادة ضبط التكبير",
       "zoom_out_scroll": "تبعيد (Ctrl/Cmd + تمرير)",
       "loading": "جارٍ التحميل",
       "settings_section": "قسم الإعدادات",
@@ -9694,7 +9730,6 @@
         "description": "مباريات 3v3 سريعة الإيقاع تُخاض غرفةً بغرفة، وكل جولة تفوز بها تدفع القتال إلى الأمام"
       }
     },
-    "queue_wait": {},
     "match_found": "تم العثور على مباراة",
     "waiting_for_players": "بانتظار اللاعبين",
     "waiting_on_others": "بانتظار الآخرين",
@@ -9751,7 +9786,6 @@
     "banned_until": "أنت محظور من المطابقة حتى {time}",
     "in_queue": "في طابور الانتظار",
     "temp_banned": "أنت محظور مؤقتًا من Matchmaking",
-    "settings_section": {},
     "no_preferred_regions": "اختر منطقة مفضّلة واحدة على الأقل من إعدادات Matchmaking",
     "party_size": {
       "requirement": "انضم بـ {half} لاعبين أو أقل، أو بـ {full} لاعبين بالضبط"
@@ -10394,7 +10428,8 @@
       "make_public": "اجعله عامًا",
       "make_private": "اجعله خاصًا",
       "more_actions": "إجراءات أخرى",
-      "played_for": "لعب {name} لهذا الفريق"
+      "played_for": "لعب {name} لهذا الفريق",
+      "round_kills": "قتلات هذه الجولة"
     },
     "render_queue": {
       "queued": "في الطابور",
@@ -10486,6 +10521,14 @@
     "details": "التفاصيل",
     "link_copied": "تم نسخ الرابط!",
     "share_clip": "شارك المقطع",
+    "share_menu": {
+      "button": "مشاركة",
+      "copy_link": "نسخ الرابط",
+      "share_native": "مشاركة…",
+      "admins_only": "للمشرفين فقط",
+      "delete": "احذف المقطع",
+      "delete_confirm": "انقر مرة أخرى للحذف"
+    },
     "open_details": "افتح تفاصيل {title}",
     "open_player_profile": "افتح ملف {name}",
     "kills_in_clip": "{count} قتلة في المقطع | {count} قتلات في المقطع",
@@ -10608,7 +10651,6 @@
     "filters": {
       "any": "الكل"
     },
-    "sort": {},
     "create": {
       "captain_selection": "اختيار القادة",
       "draft_order": "ترتيب الاختيار",
@@ -10797,7 +10839,6 @@
       "teams": "فرق جاهزة",
       "teams_desc": "اختر فريقين محفوظين لمواجهة بعضهما."
     },
-    "mode_short": {},
     "access": {
       "open": "مفتوح",
       "open_desc": "يمكن لأي شخص إيجاده والانضمام من القائمة العامة.",

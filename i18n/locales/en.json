@@ -3468,6 +3468,12 @@
         "check_back_soon": "Public clips will appear here as they're rendered. Check back soon."
       }
     },
+    "render_queue": {
+      "tabs": {
+        "highlights": "Highlights",
+        "utility": "Utility Lineups"
+      }
+    },
     "news": {
       "title": "News",
       "back": "Back to News",
@@ -5404,6 +5410,9 @@
         "favorite": "Save to your list",
         "unfavorite": "Remove from your saved list",
         "open": "Open lineup",
+        "has_video": "Has video",
+        "rendering": "Rendering preview…",
+        "rendering_progress": "Rendering preview… {percent}%",
         "flight_time": "{seconds}s",
         "unknown_author": "Unknown author",
         "downvote": "Mark this as a bad lineup",
@@ -5424,9 +5433,23 @@
         "next": "Next lineup",
         "open_full": "Open the full page",
         "practice_this": "Practice This",
+        "share": "Share lineup",
+        "copy_link": "Copy lineup link",
+        "download_clip": "Download clip",
         "not_found": "Lineup not found",
         "not_found_description": "It may have been deleted, or it is not shared with you.",
         "no_mesh": "No 3D mesh for this map yet — showing the radar instead.",
+        "stills": {
+          "title": "Stills",
+          "stance": "Where to stand",
+          "stance_eyes": "From the spot",
+          "aim": "Aim",
+          "aim_pin": "Lineup",
+          "aim_close": "Aim close-up",
+          "landing": "Where it lands",
+          "open": "View {still}",
+          "viewer": "Lineup stills, use the arrow keys to move between them"
+        },
         "flight_time": "Flight time",
         "stand": "Stand at",
         "lands": "Lands at",
@@ -6240,6 +6263,15 @@
         "right_short": "RMB",
         "both_short": "LMB+RMB"
       },
+      "run_up": {
+        "title": "Run-up",
+        "seconds": "{seconds}s",
+        "jump_throw": "Jump throw",
+        "throw": "Throw",
+        "summary_jump": "Hold {keys} for {seconds}s, then jump throw",
+        "summary_throw": "Hold {keys} for {seconds}s, then throw",
+        "first": "Hold {keys} {seconds}s first"
+      },
       "preview": {
         "play": "Play the preview",
         "title": "Lineup preview",
@@ -6254,6 +6286,9 @@
         "lineups": "{count} lineup | {count} lineups",
         "rerender": "Re-render preview",
         "retry": "Render again",
+        "live": "Live",
+        "live_hint": "This render is the lineup's preview right now",
+        "in_flight": "A render for this lineup is already running",
         "cancel": "Cancel this render",
         "clear_finished": "Clear finished",
         "requeued": "Preview render queued",
@@ -9333,6 +9368,7 @@
       "zoom_in": "Zoom In",
       "zoom_in_scroll": "Zoom In (Ctrl/Cmd + Scroll)",
       "zoom_out": "Zoom Out",
+      "zoom_reset": "Reset Zoom",
       "zoom_out_scroll": "Zoom Out (Ctrl/Cmd + Scroll)",
       "loading": "Loading",
       "settings_section": "Settings section",
@@ -10396,7 +10432,8 @@
       "make_public": "Make public",
       "make_private": "Make private",
       "more_actions": "More actions",
-      "played_for": "{name} played for this team"
+      "played_for": "{name} played for this team",
+      "round_kills": "Kills this round"
     },
     "render_queue": {
       "queued": "Queued",
@@ -10488,6 +10525,14 @@
     "details": "Details",
     "link_copied": "Link copied!",
     "share_clip": "Share clip",
+    "share_menu": {
+      "button": "Share",
+      "copy_link": "Copy link",
+      "share_native": "Share…",
+      "admins_only": "Admins only",
+      "delete": "Delete clip",
+      "delete_confirm": "Click again to delete"
+    },
     "open_details": "Open {title} details",
     "open_player_profile": "Open {name}'s profile",
     "kills_in_clip": "{count} kill in clip | {count} kills in clip",

@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import {
   ArrowBigUp,
   ArrowUpRight,
   Archive,
   ArchiveRestore,
-  BadgeCheck,
   Check,
   Clock,
   Ellipsis,
@@ -14,6 +13,7 @@ import {
   GitFork,
   Globe,
   PencilLine,
+  Play,
   Trash2,
   UserRound,
   X,
@@ -27,13 +27,17 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import Fold from "~/components/ui/transitions/Fold.vue";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import UtilityConfidenceMark from "~/components/utility/UtilityConfidenceMark.vue";
+import { Spinner } from "~/components/ui/spinner";
 import UtilityProgressPanel from "~/components/utility/UtilityProgressPanel.vue";
 import UtilityReactions from "~/components/utility/UtilityReactions.vue";
 import UtilityPracticeButton from "~/components/utility/UtilityPracticeButton.vue";
 import UtilityRadarThumb from "~/components/utility/UtilityRadarThumb.vue";
 import UtilitySpecLine from "~/components/utility/UtilitySpecLine.vue";
 import UtilityThrowersMeter from "~/components/utility/UtilityThrowersMeter.vue";
+import UtilityLineupHoverPreview from "~/components/utility/UtilityLineupHoverPreview.vue";
 import {
   UTILITY_TYPE_COLORS,
   humanizeUtilityToken,
@@ -43,6 +47,7 @@ import {
 } from "~/utilities/utilityDisplay";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useUtilityLoad } from "~/composables/useUtilityLoad";
+import { useUtilityRendersInFlight } from "~/composables/useUtilityRendersInFlight";
 import type { UtilityLineup, UtilityTrajectoryPoint } from "~/types/utility";
 
 const props = withDefaults(
@@ -77,6 +82,9 @@ const props = withDefaults(
     // Off on the Public scope, where every row is public and a pill saying so
     // on each one is noise; on Mine it is the thing that tells yours apart.
     showStatus?: boolean;
+    // On Mine, public is the ordinary state of a lineup: a chip saying so on
+    // every row says nothing, so only the exceptions wear one there.
+    quietPublic?: boolean;
     // "row" is the index form: one line per lineup, for reading down a list
     // rather than reading one. The page swaps the selected row back to a card.
     mode?: "card" | "row";
@@ -101,6 +109,7 @@ const props = withDefaults(
     openInPlace: false,
     menu: true,
     showStatus: true,
+    quietPublic: false,
     mode: "card",
     showPractice: true,
   },
@@ -181,10 +190,34 @@ const landing = computed<UtilityTrajectoryPoint | null>(() =>
       },
 );
 
-// "Recorded" is where the lineup came from, not something you do about it. It
-// reads as a verification mark beside the name; it used to be a full-width
-// green banner carrying one word.
-const isRecorded = computed(() => props.lineup.confidence === "exact");
+// A lineup with a rendered clip wears a picture of what the throw does -- its
+// landing still, else the clip's own thumbnail -- where one without shows the
+// map. A picture that will not load falls back to the map too.
+const hasClip = computed(() => !!(props.lineup.preview_url ?? "").trim());
+const failedThumb = ref<string | null>(null);
+
+const clipThumb = computed(() => {
+  if (!hasClip.value) {
+    return null;
+  }
+  const landing = props.lineup.preview_stills_url?.landing;
+  const src =
+    typeof landing === "string" && landing.length > 0
+      ? landing
+      : (props.lineup.preview_thumbnail_url ?? null);
+  return src && src !== failedThumb.value ? src : null;
+});
+
+// A preview being filmed right now: the thumb says so, and nothing offers to
+// film it a second time.
+const renders = useUtilityRendersInFlight();
+const rendering = computed(() => renders.isRendering(props.lineup.id));
+const renderingLabel = computed(() => {
+  const percent = renders.percent(props.lineup.id);
+  return percent === null
+    ? t("pages.utility.card.rendering")
+    : t("pages.utility.card.rendering_progress", { percent });
+});
 
 const mySteamId = computed(() => useAuthStore().me?.steam_id ?? null);
 
@@ -273,6 +306,9 @@ const ownStatus = computed(() => {
   const key = props.lineup.public_requested_at
     ? "review"
     : props.lineup.visibility;
+  if (key === "Public" && props.quietPublic) {
+    return null;
+  }
   const label =
     key === "review"
       ? t("pages.utility.publish.in_review")
@@ -320,6 +356,8 @@ const canRerender = computed(
 
 const tags = computed(() => props.lineup.tags ?? []);
 
+const rowEl = ref<HTMLElement | null>(null);
+
 function open() {
   emit("open", props.lineup.id);
 }
@@ -327,6 +365,7 @@ function open() {
 
 <template>
   <div
+    ref="rowEl"
     role="button"
     tabindex="0"
     class="group relative flex cursor-pointer flex-col rounded-md border border-l-2 py-2 pl-3 pr-2.5 text-left [backdrop-filter:blur(6px)] transition-[background-color,border-color,box-shadow] duration-200 ease-out"
@@ -350,24 +389,71 @@ function open() {
          underneath. The name gets the whole first line; whose it is and how
          it is thrown share the second; the numbers stand in a column. -->
     <div class="flex items-center gap-2.5">
-      <UtilityRadarThumb
-        :map-name="lineup.map_name"
-        :origin="origin"
-        :landing="landing"
-        :color="color"
-        :size="40"
-      />
+      <span
+        class="relative block size-10 shrink-0"
+        :title="
+          rendering
+            ? renderingLabel
+            : hasClip
+              ? $t('pages.utility.card.has_video')
+              : undefined
+        "
+      >
+        <FadeSwap class="size-10">
+          <img
+            v-if="clipThumb"
+            :key="clipThumb"
+            :src="clipThumb"
+            alt=""
+            loading="lazy"
+            decoding="async"
+            class="block size-10 rounded-[3px] border border-border bg-background object-cover"
+            @error="failedThumb = clipThumb"
+          />
+          <UtilityRadarThumb
+            v-else
+            key="radar"
+            :map-name="lineup.map_name"
+            :origin="origin"
+            :landing="landing"
+            :color="color"
+            :size="40"
+          />
+        </FadeSwap>
+        <Transition
+          enter-active-class="transition-opacity duration-200 ease-out motion-reduce:transition-none"
+          enter-from-class="opacity-0"
+        >
+          <span
+            v-if="rendering"
+            data-rendering
+            class="absolute -bottom-1 -right-1 inline-flex size-4 items-center justify-center rounded-full border border-[hsl(var(--tac-amber)/0.55)] bg-black/80 text-[hsl(var(--tac-amber))]"
+          >
+            <Spinner class="size-2.5" aria-hidden="true" />
+            <span class="sr-only">{{ renderingLabel }}</span>
+          </span>
+          <span
+            v-else-if="hasClip"
+            data-has-video
+            class="absolute -bottom-1 -right-1 inline-flex size-4 items-center justify-center rounded-full border border-[hsl(var(--tac-amber)/0.55)] bg-black/80 text-[hsl(var(--tac-amber))]"
+          >
+            <Play
+              class="size-2 translate-x-px fill-current"
+              aria-hidden="true"
+            />
+            <span class="sr-only">
+              {{ $t("pages.utility.card.has_video") }}
+            </span>
+          </span>
+        </Transition>
+      </span>
 
       <div class="flex min-w-0 flex-1 flex-col gap-1">
         <div class="flex items-center gap-1.5">
           <span class="truncate text-sm font-semibold leading-tight">
             {{ lineup.name }}
           </span>
-          <BadgeCheck
-            v-if="isRecorded"
-            class="h-3.5 w-3.5 shrink-0 text-success"
-            :title="$t('pages.utility.confidence.exact_note')"
-          />
+          <UtilityConfidenceMark :lineup="lineup" />
         </div>
         <div class="flex min-w-0 items-center gap-1.5">
           <span
@@ -384,7 +470,12 @@ function open() {
             class="h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]"
             :title="$t('pages.utility.publish.pending')"
           />
-          <UtilitySpecLine :lineup="lineup" compact class="min-w-0 truncate" />
+          <UtilitySpecLine
+            :lineup="lineup"
+            compact
+            :show-confidence="false"
+            class="min-w-0 truncate"
+          />
         </div>
       </div>
 
@@ -476,6 +567,10 @@ function open() {
 
           <DropdownMenuItem
             v-if="canRerender"
+            :disabled="rendering"
+            :title="
+              rendering ? $t('pages.utility.render_queue.in_flight') : undefined
+            "
             @click="emit('rerender-preview', lineup.id)"
           >
             <Film />
@@ -614,5 +709,11 @@ function open() {
         </div>
       </div>
     </Fold>
+
+    <UtilityLineupHoverPreview
+      :lineup="lineup"
+      :anchor="rowEl"
+      :enabled="mode === 'row'"
+    />
   </div>
 </template>

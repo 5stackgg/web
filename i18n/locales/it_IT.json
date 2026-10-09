@@ -3468,6 +3468,12 @@
         "check_back_soon": "Le clip pubbliche compariranno qui man mano che vengono renderizzate. Torna a dare un'occhiata."
       }
     },
+    "render_queue": {
+      "tabs": {
+        "highlights": "Highlight",
+        "utility": "Lineup di utility"
+      }
+    },
     "news": {
       "title": "News",
       "back": "Torna alle news",
@@ -5402,6 +5408,9 @@
         "favorite": "Salva nel tuo elenco",
         "unfavorite": "Togli dai tuoi salvati",
         "open": "Apri lineup",
+        "has_video": "Con video",
+        "rendering": "Rendering dell'anteprima…",
+        "rendering_progress": "Rendering dell'anteprima… {percent}%",
         "flight_time": "{seconds}s",
         "unknown_author": "Autore sconosciuto",
         "downvote": "Segna come un lineup scadente",
@@ -5422,9 +5431,23 @@
         "next": "Lineup successivo",
         "open_full": "Apri la pagina completa",
         "practice_this": "Allena questo",
+        "share": "Condividi lineup",
+        "copy_link": "Copia link del lineup",
+        "download_clip": "Scarica clip",
         "not_found": "Lineup non trovato",
         "not_found_description": "Potrebbe essere stato eliminato, oppure non è condiviso con te.",
         "no_mesh": "Per questa mappa non c'è ancora una mesh 3D: viene mostrato il radar.",
+        "stills": {
+          "title": "Fotogrammi",
+          "stance": "Dove posizionarsi",
+          "stance_eyes": "Dalla posizione",
+          "aim": "Mira",
+          "aim_pin": "Lineup",
+          "aim_close": "Mira ravvicinata",
+          "landing": "Dove atterra",
+          "open": "Apri {still}",
+          "viewer": "Immagini del lineup, usa le frecce per scorrerle"
+        },
         "flight_time": "Tempo di volo",
         "stand": "Posizionati a",
         "lands": "Atterra a",
@@ -6238,6 +6261,15 @@
         "right_short": "TDX",
         "both_short": "TSX+TDX"
       },
+      "run_up": {
+        "title": "Rincorsa",
+        "seconds": "{seconds}s",
+        "jump_throw": "Lancio in salto",
+        "throw": "Lancia",
+        "summary_jump": "Tieni premuto {keys} per {seconds}s, poi lancia saltando",
+        "summary_throw": "Tieni premuto {keys} per {seconds}s, poi lancia",
+        "first": "Tieni {keys} per {seconds}s prima"
+      },
       "preview": {
         "play": "Riproduci l'anteprima",
         "title": "Anteprima del lineup",
@@ -6252,6 +6284,9 @@
         "lineups": "{count} lineup | {count} lineup",
         "rerender": "Rifai il render dell'anteprima",
         "retry": "Rifai il render",
+        "live": "Live",
+        "live_hint": "Questo render è ora l'anteprima del lineup",
+        "in_flight": "C'è già un render in corso per questo lineup",
         "cancel": "Annulla questo render",
         "clear_finished": "Pulisci i completati",
         "requeued": "Render di anteprima in coda",
@@ -9331,6 +9366,7 @@
       "zoom_in": "Zoom avanti",
       "zoom_in_scroll": "Zoom avanti (Ctrl/Cmd + Scroll)",
       "zoom_out": "Zoom indietro",
+      "zoom_reset": "Reimposta zoom",
       "zoom_out_scroll": "Zoom indietro (Ctrl/Cmd + Scroll)",
       "loading": "Caricamento",
       "settings_section": "Sezione impostazioni",
@@ -9694,7 +9730,6 @@
         "description": "Match 3v3 ad alta velocità, stanza dopo stanza, dove ogni round vinto spinge avanti lo scontro"
       }
     },
-    "queue_wait": {},
     "match_found": "Match trovato",
     "waiting_for_players": "In attesa di giocatori",
     "waiting_on_others": "In attesa degli altri",
@@ -9751,7 +9786,6 @@
     "banned_until": "Sei escluso dal matchmaking fino al {time}",
     "in_queue": "in coda",
     "temp_banned": "Sei temporaneamente bannato dal matchmaking",
-    "settings_section": {},
     "no_preferred_regions": "Seleziona almeno una regione preferita nelle impostazioni matchmaking",
     "party_size": {
       "requirement": "Mettiti in coda con {half} o meno giocatori, oppure esattamente {full}"
@@ -10394,7 +10428,8 @@
       "make_public": "Rendi pubblico",
       "make_private": "Rendi privato",
       "more_actions": "Altre azioni",
-      "played_for": "{name} ha giocato per questa squadra"
+      "played_for": "{name} ha giocato per questa squadra",
+      "round_kills": "Uccisioni di questo round"
     },
     "render_queue": {
       "queued": "In coda",
@@ -10486,6 +10521,14 @@
     "details": "Dettagli",
     "link_copied": "Link copiato!",
     "share_clip": "Condividi clip",
+    "share_menu": {
+      "button": "Condividi",
+      "copy_link": "Copia link",
+      "share_native": "Condividi…",
+      "admins_only": "Solo amministratori",
+      "delete": "Elimina clip",
+      "delete_confirm": "Clicca di nuovo per eliminare"
+    },
     "open_details": "Apri dettagli di {title}",
     "open_player_profile": "Apri il profilo di {name}",
     "kills_in_clip": "{count} kill nella clip | {count} kill nella clip",
@@ -10608,7 +10651,6 @@
     "filters": {
       "any": "Qualsiasi"
     },
-    "sort": {},
     "create": {
       "captain_selection": "Selezione capitani",
       "draft_order": "Ordine di draft",
@@ -10797,7 +10839,6 @@
       "teams": "Team predefiniti",
       "teams_desc": "Scegli due team salvati per farli scontrare."
     },
-    "mode_short": {},
     "access": {
       "open": "Aperta",
       "open_desc": "Chiunque può trovarla e unirsi dalla lista pubblica.",

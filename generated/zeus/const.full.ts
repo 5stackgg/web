@@ -44897,6 +44897,9 @@ export const AllTypesProps: Record<string,any> = {
 		vote:"order_by"
 	},
 	utility_lineups:{
+		approach:{
+
+		},
 		collection_items:{
 			distinct_on:"utility_collection_items_select_column",
 			order_by:"utility_collection_items_order_by",
@@ -44916,6 +44919,12 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"utility_lineup_favorites_select_column",
 			order_by:"utility_lineup_favorites_order_by",
 			where:"utility_lineup_favorites_bool_exp"
+		},
+		preview_stills:{
+
+		},
+		preview_stills_url:{
+
 		},
 		progress:{
 			distinct_on:"utility_lineup_progress_select_column",
@@ -45056,6 +45065,8 @@ export const AllTypesProps: Record<string,any> = {
 		variance:"utility_lineups_variance_order_by"
 	},
 	utility_lineups_append_input:{
+		approach:"jsonb",
+		preview_stills:"jsonb",
 		trajectory_preview:"jsonb"
 	},
 	utility_lineups_arr_rel_insert_input:{
@@ -45099,6 +45110,7 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"utility_lineups_bool_exp",
 		_or:"utility_lineups_bool_exp",
 		aim_tolerance:"float8_comparison_exp",
+		approach:"jsonb_comparison_exp",
 		archived_at:"timestamptz_comparison_exp",
 		author:"players_bool_exp",
 		author_steam_id:"bigint_comparison_exp",
@@ -45145,6 +45157,8 @@ export const AllTypesProps: Record<string,any> = {
 		preview_duration_ms:"Int_comparison_exp",
 		preview_file:"String_comparison_exp",
 		preview_rendered_at:"timestamptz_comparison_exp",
+		preview_stills:"jsonb_comparison_exp",
+		preview_stills_url:"jsonb_comparison_exp",
 		preview_thumbnail:"String_comparison_exp",
 		preview_thumbnail_url:"String_comparison_exp",
 		preview_url:"String_comparison_exp",
@@ -45220,6 +45234,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	utility_lineups_insert_input:{
 		aim_tolerance:"float8",
+		approach:"jsonb",
 		archived_at:"timestamptz",
 		author:"players_obj_rel_insert_input",
 		author_steam_id:"bigint",
@@ -45244,6 +45259,7 @@ export const AllTypesProps: Record<string,any> = {
 		origin_y:"float8",
 		origin_z:"float8",
 		preview_rendered_at:"timestamptz",
+		preview_stills:"jsonb",
 		progress:"utility_lineup_progress_arr_rel_insert_input",
 		public_requested_at:"timestamptz",
 		public_reviewed_at:"timestamptz",
@@ -45395,6 +45411,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	utility_lineups_order_by:{
 		aim_tolerance:"order_by",
+		approach:"order_by",
 		archived_at:"order_by",
 		author:"players_order_by",
 		author_steam_id:"order_by",
@@ -45439,6 +45456,8 @@ export const AllTypesProps: Record<string,any> = {
 		preview_duration_ms:"order_by",
 		preview_file:"order_by",
 		preview_rendered_at:"order_by",
+		preview_stills:"order_by",
+		preview_stills_url:"order_by",
 		preview_thumbnail:"order_by",
 		preview_thumbnail_url:"order_by",
 		preview_url:"order_by",
@@ -45480,6 +45499,8 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid"
 	},
 	utility_lineups_prepend_input:{
+		approach:"jsonb",
+		preview_stills:"jsonb",
 		trajectory_preview:"jsonb"
 	},
 	utility_lineups_select_column: "enum" as const,
@@ -45495,6 +45516,7 @@ export const AllTypesProps: Record<string,any> = {
 	utility_lineups_select_column_utility_lineups_aggregate_bool_exp_var_samp_arguments_columns: "enum" as const,
 	utility_lineups_set_input:{
 		aim_tolerance:"float8",
+		approach:"jsonb",
 		archived_at:"timestamptz",
 		author_steam_id:"bigint",
 		created_at:"timestamptz",
@@ -45515,6 +45537,7 @@ export const AllTypesProps: Record<string,any> = {
 		origin_y:"float8",
 		origin_z:"float8",
 		preview_rendered_at:"timestamptz",
+		preview_stills:"jsonb",
 		public_requested_at:"timestamptz",
 		public_reviewed_at:"timestamptz",
 		public_reviewed_by:"bigint",
@@ -45636,6 +45659,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	utility_lineups_stream_cursor_value_input:{
 		aim_tolerance:"float8",
+		approach:"jsonb",
 		archived_at:"timestamptz",
 		author_steam_id:"bigint",
 		created_at:"timestamptz",
@@ -45656,6 +45680,7 @@ export const AllTypesProps: Record<string,any> = {
 		origin_y:"float8",
 		origin_z:"float8",
 		preview_rendered_at:"timestamptz",
+		preview_stills:"jsonb",
 		public_requested_at:"timestamptz",
 		public_reviewed_at:"timestamptz",
 		public_reviewed_by:"bigint",
@@ -73773,6 +73798,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	utility_lineups:{
 		aim_tolerance:"float8",
+		approach:"jsonb",
 		archived_at:"timestamptz",
 		author:"players",
 		author_steam_id:"bigint",
@@ -73819,6 +73845,8 @@ export const ReturnTypes: Record<string,any> = {
 		preview_duration_ms:"Int",
 		preview_file:"String",
 		preview_rendered_at:"timestamptz",
+		preview_stills:"jsonb",
+		preview_stills_url:"jsonb",
 		preview_thumbnail:"String",
 		preview_thumbnail_url:"String",
 		preview_url:"String",

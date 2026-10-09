@@ -10,7 +10,7 @@ import UtilityCardView from "~/components/utility/UtilityCardView.vue";
 import UtilityDockButton from "~/components/utility/UtilityDockButton.vue";
 import UtilityDockMenu from "~/components/utility/UtilityDockMenu.vue";
 import UtilityEmpty from "~/components/utility/UtilityEmpty.vue";
-import UtilityHowCells from "~/components/utility/UtilityHowCells.vue";
+import UtilityThrowStrip from "~/components/utility/UtilityThrowStrip.vue";
 import UtilityLineupCard from "~/components/utility/UtilityLineupCard.vue";
 import UtilitySectionHead from "~/components/utility/UtilitySectionHead.vue";
 import { useMapCallouts } from "~/composables/useMapCallouts";
@@ -312,7 +312,7 @@ function signIn() {
         {{ name }}
       </h2>
 
-      <UtilityHowCells
+      <UtilityThrowStrip
         :technique="shown.technique"
         :strength="shown.throwStrength"
       />

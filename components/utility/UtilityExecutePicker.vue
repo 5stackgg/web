@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { BadgeCheck } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
+import UtilityConfidenceMark from "~/components/utility/UtilityConfidenceMark.vue";
 import UtilityCardView from "~/components/utility/UtilityCardView.vue";
 import UtilityRadarThumb from "~/components/utility/UtilityRadarThumb.vue";
 import UtilityRow from "~/components/utility/UtilityRow.vue";
@@ -230,14 +230,15 @@ function toggle(lineup: UtilityLineup) {
             </template>
             {{ item.name }}
             <template #badges>
-              <BadgeCheck
-                v-if="item.confidence === 'exact'"
-                aria-hidden="true"
-                class="h-3.5 w-3.5 shrink-0 text-success"
-              />
+              <UtilityConfidenceMark :lineup="item" />
             </template>
             <template #line2>
-              <UtilitySpecLine :lineup="item" compact class="min-w-0 truncate" />
+              <UtilitySpecLine
+                :lineup="item"
+                compact
+                :show-confidence="false"
+                class="min-w-0 truncate"
+              />
             </template>
             <template #right>
               <!-- The steps it already holds, as the numbers it wears on the

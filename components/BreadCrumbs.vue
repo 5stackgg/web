@@ -205,6 +205,14 @@ export default {
           return;
         }
 
+        if (segments[0] === "system-render-queue" && index === 0) {
+          breadcrumbs.push({
+            text: this.$t("pages.highlights.render_queue"),
+            to: path,
+          });
+          return;
+        }
+
         if (segments[0] === "draft-room" && index === 1) {
           if (drc.value?.id !== segment) {
             return;

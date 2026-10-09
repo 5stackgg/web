@@ -3468,6 +3468,12 @@
         "check_back_soon": "Offentlige klip dukker op her, efterhånden som de renderes. Kig forbi igen snart."
       }
     },
+    "render_queue": {
+      "tabs": {
+        "highlights": "Highlights",
+        "utility": "Utility-opstillinger"
+      }
+    },
     "news": {
       "title": "Nyheder",
       "back": "Tilbage til nyheder",
@@ -5402,6 +5408,9 @@
         "favorite": "Gem på din liste",
         "unfavorite": "Fjern fra dine gemte",
         "open": "Åbn opstillingen",
+        "has_video": "Har video",
+        "rendering": "Renderer forhåndsvisning…",
+        "rendering_progress": "Renderer forhåndsvisning… {percent}%",
         "flight_time": "{seconds}s",
         "unknown_author": "Ukendt ophavsperson",
         "downvote": "Markér som en dårlig opstilling",
@@ -5422,9 +5431,23 @@
         "next": "Næste opstilling",
         "open_full": "Åbn hele siden",
         "practice_this": "Træn denne",
+        "share": "Del opstillingen",
+        "copy_link": "Kopiér link til opstillingen",
+        "download_clip": "Download klip",
         "not_found": "Opstillingen blev ikke fundet",
         "not_found_description": "Den kan være slettet, eller også er den ikke delt med dig.",
         "no_mesh": "Ingen 3D-mesh til denne bane endnu — viser radaren i stedet.",
+        "stills": {
+          "title": "Stillbilleder",
+          "stance": "Hvor du skal stå",
+          "stance_eyes": "Fra stedet",
+          "aim": "Sigte",
+          "aim_pin": "Opstilling",
+          "aim_close": "Sigte tæt på",
+          "landing": "Hvor den lander",
+          "open": "Vis {still}",
+          "viewer": "Billeder af opstillingen, brug piletasterne til at skifte mellem dem"
+        },
         "flight_time": "Flyvetid",
         "stand": "Stå ved",
         "lands": "Lander ved",
@@ -6238,6 +6261,15 @@
         "right_short": "HMK",
         "both_short": "VMK+HMK"
       },
+      "run_up": {
+        "title": "Tilløb",
+        "seconds": "{seconds}s",
+        "jump_throw": "Hopkast",
+        "throw": "Kast",
+        "summary_jump": "Hold {keys} nede i {seconds}s, og hopkast så",
+        "summary_throw": "Hold {keys} nede i {seconds}s, og kast så",
+        "first": "Hold {keys} {seconds}s først"
+      },
       "preview": {
         "play": "Afspil forhåndsvisningen",
         "title": "Forhåndsvisning af opstillingen",
@@ -6252,6 +6284,9 @@
         "lineups": "{count} opstilling | {count} opstillinger",
         "rerender": "Gengiv forhåndsvisningen igen",
         "retry": "Gengiv igen",
+        "live": "Live",
+        "live_hint": "Denne rendering er opstillingens forhåndsvisning lige nu",
+        "in_flight": "En rendering af denne opstilling kører allerede",
         "cancel": "Annuller denne gengivelse",
         "clear_finished": "Ryd færdige",
         "requeued": "Forhåndsvisningsgengivelse i kø",
@@ -9331,6 +9366,7 @@
       "zoom_in": "Zoom ind",
       "zoom_in_scroll": "Zoom ind (Ctrl/Cmd + scroll)",
       "zoom_out": "Zoom ud",
+      "zoom_reset": "Nulstil zoom",
       "zoom_out_scroll": "Zoom ud (Ctrl/Cmd + scroll)",
       "loading": "Indlæser",
       "settings_section": "Indstillingssektion",
@@ -9694,7 +9730,6 @@
         "description": "Hurtige 3v3-kampe rum for rum, hvor hver vundet runde skubber kampen fremad"
       }
     },
-    "queue_wait": {},
     "match_found": "Kamp fundet",
     "waiting_for_players": "Venter på spillere",
     "waiting_on_others": "Venter på andre",
@@ -9751,7 +9786,6 @@
     "banned_until": "Du er udelukket fra matchmaking indtil {time}",
     "in_queue": "i kø",
     "temp_banned": "Du er midlertidigt udelukket fra matchmaking",
-    "settings_section": {},
     "no_preferred_regions": "Vælg mindst én foretrukken region i matchmaking-indstillinger",
     "party_size": {
       "requirement": "Stil i kø med {half} eller færre, eller præcis {full} spillere"
@@ -10394,7 +10428,8 @@
       "make_public": "Gør offentlig",
       "make_private": "Gør privat",
       "more_actions": "Flere handlinger",
-      "played_for": "{name} spillede for dette hold"
+      "played_for": "{name} spillede for dette hold",
+      "round_kills": "Kills i denne runde"
     },
     "render_queue": {
       "queued": "I kø",
@@ -10486,6 +10521,14 @@
     "details": "Detaljer",
     "link_copied": "Link kopieret",
     "share_clip": "Del klip",
+    "share_menu": {
+      "button": "Del",
+      "copy_link": "Kopiér link",
+      "share_native": "Del…",
+      "admins_only": "Kun administratorer",
+      "delete": "Slet klip",
+      "delete_confirm": "Klik igen for at slette"
+    },
     "open_details": "Åbn detaljer for {title}",
     "open_player_profile": "Åbn profilen for {name}",
     "kills_in_clip": "{count} kill i klippet | {count} kills i klippet",
@@ -10608,7 +10651,6 @@
     "filters": {
       "any": "Alle"
     },
-    "sort": {},
     "create": {
       "captain_selection": "Valg af anfører",
       "draft_order": "Draft-rækkefølge",
@@ -10797,7 +10839,6 @@
       "teams": "Faste hold",
       "teams_desc": "Vælg to gemte hold, der skal mødes."
     },
-    "mode_short": {},
     "access": {
       "open": "Åben",
       "open_desc": "Alle kan finde og joine fra den offentlige liste.",

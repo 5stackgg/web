@@ -12,6 +12,7 @@ import type {
   UtilityType,
 } from "~/types/utility";
 import { normalizeMapName } from "~/utilities/mapAssets";
+import { clipDownloadUrl } from "~/utilities/clipDownloadName";
 
 export type UtilityScope =
   | "public"
@@ -402,6 +403,49 @@ export function utilityClipSource(
   // clip of it, and dropping an arbitrary imported link into a <video> element
   // just renders a broken player.
   return /\.(mp4|webm|mov)(\?|#|$)/i.test(url) ? url : null;
+}
+
+// How far an aim still is cropped in on its centre, where the render always
+// puts the crosshair. aim_close is already filmed at FOV 30, so it needs less.
+export function utilityStillZoom(kind: string): number {
+  if (kind === "aim_close") {
+    return 1.8;
+  }
+  if (kind === "aim_pin" || kind === "aim") {
+    return 2.2;
+  }
+  return 1;
+}
+
+// ASCII only: the clip worker sends this name back in Content-Disposition, and
+// a header cannot carry anything else.
+export function utilityClipFileName(
+  mapName: string | null | undefined,
+  name: string | null | undefined,
+): string {
+  const slug = [(mapName ?? "").replace(/^(de|cs)_/, ""), name ?? ""]
+    .join(" ")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80)
+    .replace(/-+$/, "");
+  return `${slug || "lineup"}.mp4`;
+}
+
+/**
+ * Only for a preview we rendered: an imported clip lives on somebody else's
+ * host, where the worker's `dl` does nothing and the link just navigates away.
+ */
+export function utilityClipDownload(
+  lineup: Pick<UtilityLineup, "preview_url" | "map_name" | "name">,
+): { href: string; name: string } | null {
+  const url = (lineup.preview_url ?? "").trim();
+  if (!url) {
+    return null;
+  }
+  const name = utilityClipFileName(lineup.map_name, lineup.name);
+  return { href: clipDownloadUrl(url, name), name };
 }
 
 /** The worse of the two axes, which is what decides whether we warn. */

@@ -37,6 +37,42 @@ export interface UnfurlOptions {
   type?: string;
   /** raw extra <meta> lines injected into <head> */
   extraMeta?: string;
+  /** a direct mp4 the card plays inline; og:type then defaults to "video.other" */
+  video?: UnfurlVideo | null;
+}
+
+export interface UnfurlVideo {
+  url: string;
+  width: number;
+  height: number;
+  durationSec?: number;
+}
+
+// The same tag set the clip share route (server/routes/clips/[id].get.ts)
+// emits, which is what Discord plays inline.
+function renderVideoMeta(video: UnfurlVideo): string {
+  const safeVideo = escapeHtml(video.url);
+  const duration =
+    video.durationSec && video.durationSec > 0
+      ? `<meta property="og:video:duration" content="${Math.round(video.durationSec)}" />`
+      : "";
+
+  return `<meta property="og:video" content="${safeVideo}" />
+    <meta property="og:video:secure_url" content="${safeVideo}" />
+    <meta property="og:video:type" content="video/mp4" />
+    <meta property="og:video:width" content="${video.width}" />
+    <meta property="og:video:height" content="${video.height}" />
+    ${duration}`;
+}
+
+function renderTwitterPlayerMeta(video: UnfurlVideo): string {
+  const safeVideo = escapeHtml(video.url);
+
+  return `<meta name="twitter:player" content="${safeVideo}" />
+    <meta name="twitter:player:width" content="${video.width}" />
+    <meta name="twitter:player:height" content="${video.height}" />
+    <meta name="twitter:player:stream" content="${safeVideo}" />
+    <meta name="twitter:player:stream:content_type" content="video/mp4" />`;
 }
 
 export function renderUnfurl(opts: UnfurlOptions): string {
@@ -46,7 +82,13 @@ export function renderUnfurl(opts: UnfurlOptions): string {
   const safeAlt = escapeHtml(opts.imageAlt || opts.title);
   const safePage = escapeHtml(opts.pageUrl);
   const safeHuman = escapeHtml(opts.humanUrl);
-  const type = escapeHtml(opts.type || "website");
+  const video = opts.video?.url ? opts.video : null;
+  const type = escapeHtml(opts.type || (video ? "video.other" : "website"));
+  const twitterCard = video
+    ? "player"
+    : safeImage
+      ? "summary_large_image"
+      : "summary";
 
   return `<!doctype html>
 <html lang="en">
@@ -65,10 +107,12 @@ export function renderUnfurl(opts: UnfurlOptions): string {
     ${safeImage && opts.imageWidth ? `<meta property="og:image:width" content="${opts.imageWidth}" />` : ""}
     ${safeImage && opts.imageHeight ? `<meta property="og:image:height" content="${opts.imageHeight}" />` : ""}
     ${safeImage ? `<meta property="og:image:alt" content="${safeAlt}" />` : ""}
+    ${video ? renderVideoMeta(video) : ""}
 
-    <meta name="twitter:card" content="${safeImage ? "summary_large_image" : "summary"}" />
+    <meta name="twitter:card" content="${twitterCard}" />
     <meta name="twitter:title" content="${safeTitle}" />
     <meta name="twitter:description" content="${safeDesc}" />
+    ${video ? renderTwitterPlayerMeta(video) : ""}
     ${safeImage ? `<meta name="twitter:image" content="${safeImage}" />` : ""}
     ${opts.extraMeta || ""}
 

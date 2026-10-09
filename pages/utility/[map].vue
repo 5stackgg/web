@@ -2059,6 +2059,7 @@ function selectLineup(id: string | null) {
           ref="board"
           class="!rounded-none !border-0 !bg-transparent"
           :controls="false"
+          peek
           :seed-src="arrival?.src"
           :map-name="mapName"
           :lineups="panelBoard?.lineups ?? lineups"
@@ -2406,6 +2407,7 @@ function selectLineup(id: string | null) {
                   mode="row"
                   :menu="false"
                   :show-status="filters.scope !== 'public'"
+                  :quiet-public="filters.scope === 'mine'"
                   :selected="selectedId === entry.lineup.id"
                   :hovered="hoveredId === entry.lineup.id"
                   :meta-throwers="metaSpotByLineup[entry.lineup.id]?.throwers ?? null"

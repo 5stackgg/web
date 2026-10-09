@@ -8,6 +8,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
 import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import UtilitySkeletonList from "~/components/utility/UtilitySkeletonList.vue";
 import UtilityRadarThumb from "~/components/utility/UtilityRadarThumb.vue";
+import UtilityThrowIcon from "~/components/utility/UtilityThrowIcon.vue";
 import UtilityRow from "~/components/utility/UtilityRow.vue";
 import UtilityThrowersMeter from "~/components/utility/UtilityThrowersMeter.vue";
 import UtilityTypeSections from "~/components/utility/UtilityTypeSections.vue";
@@ -216,7 +217,41 @@ const keyOf = (spot: UtilityMetaSpot) => spot.key;
               @hover="(on) => emit('update:hoveredKey', on ? spot.key : null)"
             >
               <template #thumb>
+                <!-- The dashed frame is the mark; this is what it means. -->
+                <FiveStackToolTip
+                  v-if="!writtenCount(spot)"
+                  as-child
+                  side="left"
+                  :delay-duration="120"
+                >
+                  <template #trigger>
+                    <span
+                      tabindex="0"
+                      role="img"
+                      data-unwritten
+                      class="block shrink-0 rounded-[3px] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[hsl(var(--tac-amber))]"
+                      :aria-label="`${$t('pages.utility.meta.unwritten')}. ${$t('pages.utility.meta.unwritten_description')}`"
+                      @keydown.enter.stop
+                      @keydown.space.stop
+                    >
+                      <UtilityRadarThumb
+                        :map-name="mapName"
+                        :origin="spot.origin"
+                        :landing="spot.landing"
+                        :color="UTILITY_TYPE_COLORS[spot.utilityType]"
+                        :size="40"
+                      />
+                    </span>
+                  </template>
+                  <span class="font-semibold">
+                    {{ $t("pages.utility.meta.unwritten") }}
+                  </span>
+                  <span class="block max-w-[32ch] text-muted-foreground">
+                    {{ $t("pages.utility.meta.unwritten_description") }}
+                  </span>
+                </FiveStackToolTip>
                 <UtilityRadarThumb
+                  v-else
                   :map-name="mapName"
                   :origin="spot.origin"
                   :landing="spot.landing"
@@ -248,11 +283,24 @@ const keyOf = (spot: UtilityMetaSpot) => spot.key;
                     {{ $t(`pages.utility.techniques.${spot.technique}`) }}
                     <span aria-hidden="true" class="mx-1.5 text-border">/</span>
                   </template>
-                  {{
-                    $t(
-                      `pages.utility.throw_buttons.${utilityThrowButtonsKey(spot.throwStrength)}_short`,
-                    )
-                  }}
+                  <span
+                    class="inline-block align-[-0.39em]"
+                    :title="
+                      $t(
+                        `pages.utility.throw_buttons.${utilityThrowButtonsKey(spot.throwStrength)}`,
+                      )
+                    "
+                  >
+                    <UtilityThrowIcon
+                      :strength="spot.throwStrength"
+                      :label="
+                        $t(
+                          `pages.utility.throw_buttons.${utilityThrowButtonsKey(spot.throwStrength)}`,
+                        )
+                      "
+                      class="block h-[1.5em] w-[1.04em] [&_[data-part=shell]]:stroke-muted-foreground [&_[data-part=shell]]:[stroke-width:1.5]"
+                    />
+                  </span>
                   <template v-if="writtenCount(spot)">
                     <span aria-hidden="true" class="mx-1.5 text-border">/</span>
                     {{

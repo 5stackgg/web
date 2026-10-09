@@ -3468,6 +3468,12 @@
         "check_back_soon": "公开集锦将在渲染完成后显示在这里。请稍后再查看。"
       }
     },
+    "render_queue": {
+      "tabs": {
+        "highlights": "集锦",
+        "utility": "道具点位"
+      }
+    },
     "news": {
       "title": "新闻",
       "back": "返回新闻",
@@ -5402,6 +5408,9 @@
         "favorite": "收藏到我的列表",
         "unfavorite": "从收藏列表中移除",
         "open": "打开点位",
+        "has_video": "有视频",
+        "rendering": "正在渲染预览…",
+        "rendering_progress": "正在渲染预览… {percent}%",
         "flight_time": "{seconds}秒",
         "unknown_author": "作者未知",
         "downvote": "标记为不好的点位",
@@ -5422,9 +5431,23 @@
         "next": "下一个点位",
         "open_full": "打开完整页面",
         "practice_this": "练习这个",
+        "share": "分享点位",
+        "copy_link": "复制点位链接",
+        "download_clip": "下载片段",
         "not_found": "未找到该点位",
         "not_found_description": "它可能已被删除，或者没有分享给你。",
         "no_mesh": "这张地图还没有 3D 模型——改为显示雷达图。",
+        "stills": {
+          "title": "截图",
+          "stance": "站位",
+          "stance_eyes": "站位视角",
+          "aim": "瞄准",
+          "aim_pin": "点位",
+          "aim_close": "瞄准特写",
+          "landing": "落点",
+          "open": "查看{still}",
+          "viewer": "点位截图，用方向键切换"
+        },
         "flight_time": "飞行时间",
         "stand": "站位",
         "lands": "落点",
@@ -6238,6 +6261,15 @@
         "right_short": "右键",
         "both_short": "左+右"
       },
+      "run_up": {
+        "title": "助跑",
+        "seconds": "{seconds}秒",
+        "jump_throw": "跳投",
+        "throw": "投掷",
+        "summary_jump": "按住 {keys} {seconds} 秒，然后跳投",
+        "summary_throw": "按住 {keys} {seconds} 秒，然后投掷",
+        "first": "先按住 {keys} {seconds} 秒"
+      },
       "preview": {
         "play": "播放预览",
         "title": "点位预览",
@@ -6252,6 +6284,9 @@
         "lineups": "{count} 个点位 | {count} 个点位",
         "rerender": "重新渲染预览",
         "retry": "重新渲染",
+        "live": "使用中",
+        "live_hint": "该渲染是当前点位的预览",
+        "in_flight": "该点位已有渲染在进行中",
         "cancel": "取消这次渲染",
         "clear_finished": "清理已完成",
         "requeued": "预览渲染已排队",
@@ -9331,6 +9366,7 @@
       "zoom_in": "放大",
       "zoom_in_scroll": "放大（Ctrl/Cmd + 滚轮）",
       "zoom_out": "缩小",
+      "zoom_reset": "重置缩放",
       "zoom_out_scroll": "缩小（Ctrl/Cmd + 滚轮）",
       "loading": "加载中",
       "settings_section": "设置部分",
@@ -9694,7 +9730,6 @@
         "description": "逐个房间交战的快节奏 3v3 比赛，每赢一个回合就把战线向前推进"
       }
     },
-    "queue_wait": {},
     "match_found": "已找到比赛",
     "waiting_for_players": "等待玩家",
     "waiting_on_others": "等待其他人",
@@ -9751,7 +9786,6 @@
     "banned_until": "你被禁止使用匹配，直到 {time}",
     "in_queue": "队列中",
     "temp_banned": "您暂时被禁止使用匹配系统",
-    "settings_section": {},
     "no_preferred_regions": "请在匹配设置中选择至少一个偏好地区",
     "party_size": {
       "requirement": "请以 {half} 人或更少，或正好 {full} 人排队"
@@ -10394,7 +10428,8 @@
       "make_public": "设为公开",
       "make_private": "设为私密",
       "more_actions": "更多操作",
-      "played_for": "{name} 效力于该队"
+      "played_for": "{name} 效力于该队",
+      "round_kills": "本回合击杀"
     },
     "render_queue": {
       "queued": "排队中",
@@ -10486,6 +10521,14 @@
     "details": "详情",
     "link_copied": "链接已复制！",
     "share_clip": "分享集锦",
+    "share_menu": {
+      "button": "分享",
+      "copy_link": "复制链接",
+      "share_native": "分享…",
+      "admins_only": "仅限管理员",
+      "delete": "删除集锦",
+      "delete_confirm": "再次点击以删除"
+    },
     "open_details": "打开 {title} 详情",
     "open_player_profile": "打开 {name} 的资料",
     "kills_in_clip": "集锦中有 {count} 个击杀 | 集锦中有 {count} 个击杀",
@@ -10608,7 +10651,6 @@
     "filters": {
       "any": "任何"
     },
-    "sort": {},
     "create": {
       "captain_selection": "队长选择方式",
       "draft_order": "选人顺序",
@@ -10797,7 +10839,6 @@
       "teams": "预设队伍",
       "teams_desc": "选择两支已保存的队伍进行对抗。"
     },
-    "mode_short": {},
     "access": {
       "open": "公开",
       "open_desc": "任何人都可以从公开列表中查找并加入。",

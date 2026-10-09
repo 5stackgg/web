@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, useId, watch } from "vue";
-import { BadgeCheck, Check, Search } from "lucide-vue-next";
+import { Check, Search } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import UtilityConfidenceMark from "~/components/utility/UtilityConfidenceMark.vue";
 import UtilityCardView from "~/components/utility/UtilityCardView.vue";
 import UtilityRadarThumb from "~/components/utility/UtilityRadarThumb.vue";
 import UtilityRow from "~/components/utility/UtilityRow.vue";
@@ -311,11 +312,16 @@ function onTypes(next: UtilityType[]) {
             />
           </template>
           {{ item.name }}
-          <template v-if="item.confidence === 'exact'" #badges>
-            <BadgeCheck class="h-3.5 w-3.5 shrink-0 text-success" />
+          <template v-if="item.confidence !== 'exact'" #badges>
+            <UtilityConfidenceMark :lineup="item" />
           </template>
           <template #line2>
-            <UtilitySpecLine :lineup="item" compact class="min-w-0 truncate" />
+            <UtilitySpecLine
+              :lineup="item"
+              compact
+              :show-confidence="false"
+              class="min-w-0 truncate"
+            />
           </template>
           <template #right>
             <span

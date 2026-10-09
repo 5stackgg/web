@@ -29,28 +29,37 @@ export function useClipShare() {
   }
 
   async function shareClip(clipId: string) {
-    if (typeof window === "undefined") return;
-    const url = `${window.location.origin}/clips/${clipId}`;
+    if (typeof window === "undefined") {
+      return;
+    }
+    await shareLink(clipId, `${window.location.origin}/clips/${clipId}`);
+  }
+
+  // `key` is what the flash is keyed on; `url` is what gets shared.
+  async function shareLink(key: string, url: string) {
+    if (typeof window === "undefined") {
+      return;
+    }
 
     // Prefer the OS share sheet on touch devices (iOS/Android) — one
     // tap to Messages, Discord, etc. instead of paste-and-go.
-    const isTouch =
-      typeof window !== "undefined" &&
-      window.matchMedia?.("(pointer: coarse)").matches;
+    const isTouch = window.matchMedia?.("(pointer: coarse)").matches;
     if (isTouch && typeof navigator.share === "function") {
       try {
         await navigator.share({ url });
-        flashCopied(clipId);
+        flashCopied(key);
         return;
       } catch (err: any) {
-        if (err?.name === "AbortError") return;
+        if (err?.name === "AbortError") {
+          return;
+        }
         // anything else → fall through to clipboard
       }
     }
 
     try {
       await navigator.clipboard.writeText(url);
-      flashCopied(clipId);
+      flashCopied(key);
       toast({ title: t("toasts.link_copied") });
     } catch {
       toast({
@@ -66,5 +75,5 @@ export function useClipShare() {
     copiedTimer = null;
   });
 
-  return { copiedClipId, shareClip };
+  return { copiedClipId, shareClip, shareLink };
 }

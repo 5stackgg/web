@@ -12,17 +12,13 @@ import { useI18n } from "vue-i18n";
 const { t } = useI18n();
 import {
   ArrowUpRight,
-  Check,
   ChevronLeft,
   ChevronRight,
-  Download,
   Eye,
   Film,
   Globe,
   Lock,
-  MoreHorizontal,
   Pencil,
-  Share2,
   Trash2,
   X,
 } from "lucide-vue-next";
@@ -44,6 +40,8 @@ import { Label } from "~/components/ui/label";
 import { Skeleton } from "~/components/ui/skeleton";
 import ClipPlayer from "~/components/clips/ClipPlayer.vue";
 import ClipKillBadge from "~/components/clips/ClipKillBadge.vue";
+import ClipShareMenu from "~/components/clips/ClipShareMenu.vue";
+import ClipKillfeed from "~/components/clips/ClipKillfeed.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import {
   DialogRoot as Dialog,
@@ -55,18 +53,11 @@ import {
   VisuallyHidden,
 } from "reka-ui";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "~/components/ui/popover";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import DeleteClipDialog from "~/components/clips/DeleteClipDialog.vue";
+import { Switch } from "~/components/ui/switch";
 import {
   clipDownloadName,
   clipDownloadUrl,
@@ -81,6 +72,8 @@ import {
 import { teamMonogram } from "~/components/watch/watchTicker";
 import { useClipModal } from "~/composables/useClipModal";
 import { useClipShare } from "~/composables/useClipShare";
+import { useClipFileSize } from "~/composables/useClipFileSize";
+import { useClipDelete } from "~/composables/useClipDelete";
 import { Spinner } from "~/components/ui/spinner";
 
 const apiDomain = computed(() => useRuntimeConfig().public.apiDomain as string);
@@ -105,7 +98,6 @@ const {
 const clip = ref<Clip | null>(null);
 const loading = ref(false);
 const notFound = ref(false);
-const showDelete = ref(false);
 const { copiedClipId, shareClip } = useClipShare();
 const linkCopied = computed(() =>
   clip.value ? copiedClipId.value === clip.value.id : false,
@@ -116,7 +108,9 @@ const modalAutoAdvanced = ref(false);
 const isOwner = computed(
   () => !!clip.value && clip.value.user_steam_id === auth.me?.steam_id,
 );
-const canDelete = computed(() => isOwner.value || auth.isAdmin);
+// Visibility and delete are an admin's call (the api also lets a clip's own
+// creator and staff from streamer up do both).
+const canAdminister = computed(() => auth.isAdmin);
 
 // The player is already named beside the title, so drop the "<player> — "
 // prefix the API's auto-title leads with.
@@ -224,12 +218,9 @@ const visibilityMeta = computed(
     VISIBILITY_OPTIONS.value.find((o) => o.value === clip.value?.visibility) ??
     VISIBILITY_OPTIONS.value[1],
 );
-const canEditVisibility = computed(() => isOwner.value || auth.isAdmin);
-const visPopoverOpen = ref(false);
 const visSaving = ref(false);
 async function setVisibility(v: Visibility) {
   if (!clip.value || visSaving.value || clip.value.visibility === v) {
-    visPopoverOpen.value = false;
     return;
   }
   visSaving.value = true;
@@ -247,7 +238,6 @@ async function setVisibility(v: Visibility) {
     if (clip.value) {
       clip.value = { ...clip.value, visibility: v };
     }
-    visPopoverOpen.value = false;
   } catch (e) {
     console.error("[clip-modal] visibility toggle failed:", e);
   } finally {
@@ -255,34 +245,7 @@ async function setVisibility(v: Visibility) {
   }
 }
 
-// HEAD the download URL for Content-Length; schema doesn't track size.
-const fileSizeBytes = ref<number | null>(null);
-let lastSizeUrl: string | null = null;
-async function fetchFileSize(url: string) {
-  if (lastSizeUrl === url) return;
-  lastSizeUrl = url;
-  fileSizeBytes.value = null;
-  try {
-    const res = await fetch(url, { method: "HEAD" });
-    const len = res.headers.get("content-length");
-    if (len) {
-      const n = Number(len);
-      if (Number.isFinite(n) && n > 0) fileSizeBytes.value = n;
-    }
-  } catch {
-    // best-effort
-  }
-}
-function formatBytes(b: number | null): string | null {
-  if (!b || !Number.isFinite(b)) return null;
-  if (b < 1024) return `${b} B`;
-  const kb = b / 1024;
-  if (kb < 1024) return `${kb.toFixed(0)} KB`;
-  const mb = kb / 1024;
-  if (mb < 1024) return `${mb.toFixed(1)} MB`;
-  const gb = mb / 1024;
-  return `${gb.toFixed(2)} GB`;
-}
+const fileSize = useClipFileSize(() => clip.value?.download_url ?? null);
 
 // Full data for the upcoming clip, fetched while the current one is near
 // its end (see prefetchNextClip). Lets a switch render instantly instead
@@ -336,8 +299,6 @@ watch(
       activeSub = null;
       clip.value = null;
       editing.value = false;
-      fileSizeBytes.value = null;
-      lastSizeUrl = null;
       prefetchedClip.value = null;
       prefetchingId.value = null;
     }
@@ -345,13 +306,8 @@ watch(
   { immediate: true },
 );
 
-watch(
-  () => clip.value?.download_url ?? null,
-  (url) => {
-    if (url) void fetchFileSize(url);
-  },
-);
 onBeforeUnmount(() => {
+  disarmDelete();
   if (revealTimer) clearTimeout(revealTimer);
   activeSub?.unsubscribe();
   activeSub = null;
@@ -423,9 +379,52 @@ function copyLink() {
   void shareClip(clip.value.id);
 }
 
-function onDeleted() {
-  closeClip();
+function onVisibilitySelect(event: Event) {
+  event.preventDefault();
+  void setVisibility(clip.value?.visibility === "public" ? "private" : "public");
 }
+
+// Delete takes two presses: the first arms it for three seconds.
+const { deleting, deleteClip } = useClipDelete();
+const deleteArmed = ref(false);
+let disarmTimer: ReturnType<typeof setTimeout> | null = null;
+
+function disarmDelete() {
+  if (disarmTimer) {
+    clearTimeout(disarmTimer);
+    disarmTimer = null;
+  }
+  deleteArmed.value = false;
+}
+
+async function onDeleteSelect(event: Event) {
+  event.preventDefault();
+  const target = clip.value;
+  if (!target || deleting.value) {
+    return;
+  }
+  if (!deleteArmed.value) {
+    deleteArmed.value = true;
+    disarmTimer = setTimeout(disarmDelete, 3000);
+    return;
+  }
+  disarmDelete();
+  if (await deleteClip(target.id, target.title)) {
+    shareMenuOpen.value = false;
+    closeClip();
+  }
+}
+
+const shareMenuOpen = ref(false);
+watch(shareMenuOpen, (isOpen) => {
+  if (!isOpen) {
+    disarmDelete();
+  }
+});
+watch(
+  () => clip.value?.id,
+  () => disarmDelete(),
+);
 
 const downloadFilename = computed<string>(() =>
   clip.value ? clipDownloadName(clip.value) : "clip.mp4",
@@ -870,123 +869,136 @@ const edgeButton =
 
                 <template #top-left>
                   <div
-                    v-if="expanded"
-                    class="flex items-center gap-1.5 p-1 sm:p-2"
+                    class="flex items-center gap-1.5"
+                    :class="expanded ? 'p-1 sm:p-2' : ''"
                   >
                     <ClipKillBadge
                       :kills="clip.kills_count"
                       :round="clip.round"
                       :title="clip.title"
-                      size="lg"
+                      :size="expanded ? 'lg' : undefined"
+                      :class="expanded ? '' : '!bg-black/60 backdrop-blur-sm'"
                     />
-                    <span v-if="duration" :class="onVideoChip">{{
-                      duration
-                    }}</span>
-                  </div>
-                  <span
-                    v-else-if="hasQueueNav"
-                    :class="[tileChip, 'bg-black/60 text-white/90 backdrop-blur-sm']"
-                  >
-                    {{ activeClipIndex + 1 }} / {{ clipQueue.length }}
-                  </span>
-                </template>
-
-                <template #top-right>
-                  <div
-                    v-if="expanded"
-                    class="flex items-center gap-1.5 p-1 sm:p-2"
-                  >
                     <span
-                      :class="onVideoChip"
+                      v-if="duration"
+                      :class="
+                        expanded
+                          ? onVideoChip
+                          : [tileChip, 'bg-black/60 text-white/90 backdrop-blur-sm']
+                      "
+                    >
+                      {{ duration }}
+                    </span>
+                    <span
+                      :class="
+                        expanded
+                          ? onVideoChip
+                          : [
+                              tileChip,
+                              'gap-1 bg-black/60 text-white/90 backdrop-blur-sm',
+                            ]
+                      "
                       :title="$t('clips.tile.views', { count: views }, views)"
                     >
                       <Eye class="h-3.5 w-3.5" />
                       {{ views }}
                     </span>
-                    <button
-                      type="button"
+                    <span
+                      v-if="!expanded && hasQueueNav"
                       :class="[
-                        onVideoAction,
-                        linkCopied ? 'text-[hsl(var(--tac-amber))]' : '',
+                        tileChip,
+                        'bg-black/60 text-white/90 backdrop-blur-sm',
                       ]"
-                      :aria-label="$t('clips.share_clip')"
-                      :title="
-                        linkCopied
-                          ? $t('clips.link_copied')
-                          : $t('clips.share_clip')
-                      "
-                      @click.stop="copyLink"
                     >
-                      <Check v-if="linkCopied" class="h-4 w-4" />
-                      <Share2 v-else class="h-4 w-4" />
-                    </button>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger
-                        :class="onVideoAction"
-                        :aria-label="$t('clips.detail.more_actions')"
-                        @click.stop
-                      >
-                        <MoreHorizontal class="h-4 w-4" />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent class="z-[70] w-56" align="end">
-                        <DropdownMenuItem v-if="clip.download_url" as-child>
-                          <a
-                            :href="clipDownloadUrl(clip.download_url)"
-                            :download="downloadFilename"
-                          >
-                            <Download class="h-4 w-4" />
-                            {{ $t("common.download") }}
-                            <span
-                              v-if="formatBytes(fileSizeBytes)"
-                              class="ml-auto text-xs tabular-nums text-muted-foreground"
-                              >{{ formatBytes(fileSizeBytes) }}</span
-                            >
-                          </a>
-                        </DropdownMenuItem>
-                        <template v-if="canEditVisibility">
-                          <DropdownMenuItem
-                            v-if="clip.visibility !== 'private'"
-                            :disabled="visSaving"
-                            @select="setVisibility('private')"
-                          >
-                            <Lock class="h-4 w-4" />
-                            {{ $t("clips.detail.make_private") }}
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            v-if="clip.visibility !== 'public'"
-                            :disabled="visSaving"
-                            @select="setVisibility('public')"
-                          >
-                            <Globe class="h-4 w-4 text-success" />
-                            {{ $t("clips.detail.make_public") }}
-                          </DropdownMenuItem>
-                        </template>
-                        <DropdownMenuItem v-if="isOwner" @select="startEdit">
-                          <Pencil class="h-4 w-4" />
-                          {{ $t("ui.edit_title") }}
-                        </DropdownMenuItem>
-                        <template v-if="canDelete">
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            class="text-destructive focus:text-destructive"
-                            @select="showDelete = true"
-                          >
-                            <Trash2 class="h-4 w-4" />
-                            {{ $t("common.delete") }}
-                          </DropdownMenuItem>
-                        </template>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                      {{ activeClipIndex + 1 }} / {{ clipQueue.length }}
+                    </span>
                   </div>
-                  <button
-                    v-else
-                    type="button"
-                    :class="[onVideoAction, '!h-8 !w-8']"
-                    :aria-label="$t('common.close')"
-                    @click.stop="closeClip"
+                </template>
+
+                <template #top-right>
+                  <div
+                    class="flex items-center gap-2"
+                    :class="expanded ? 'p-1 sm:p-2' : ''"
                   >
-                    <X class="h-4 w-4" />
-                  </button>
+                    <ClipShareMenu
+                      v-model:open="shareMenuOpen"
+                      :copied="linkCopied"
+                      :download-href="
+                        clip.download_url
+                          ? clipDownloadUrl(clip.download_url)
+                          : null
+                      "
+                      :download-name="downloadFilename"
+                      :size-label="fileSize"
+                      content-class="z-[70]"
+                      @copy="copyLink"
+                    >
+                      <template v-if="canAdminister">
+                        <DropdownMenuSeparator />
+                        <DropdownMenuLabel
+                          class="px-2 pb-0.5 pt-1 font-mono text-[0.58rem] font-normal uppercase tracking-[0.16em] text-muted-foreground"
+                        >
+                          {{ $t("clips.share_menu.admins_only") }}
+                        </DropdownMenuLabel>
+                        <DropdownMenuItem
+                          :disabled="visSaving"
+                          @select="onVisibilitySelect"
+                        >
+                          <component
+                            :is="visibilityMeta.icon"
+                            :class="
+                              clip.visibility === 'public'
+                                ? 'text-success'
+                                : 'text-muted-foreground'
+                            "
+                          />
+                          <span class="flex min-w-0 flex-col leading-tight">
+                            <span>{{ $t("clips.visibility.public") }}</span>
+                            <span
+                              class="truncate text-[0.7rem] text-muted-foreground"
+                            >
+                              {{ visibilityMeta.hint }}
+                            </span>
+                          </span>
+                          <Switch
+                            as="span"
+                            aria-hidden="true"
+                            tabindex="-1"
+                            :model-value="clip.visibility === 'public'"
+                            class="pointer-events-none ml-auto data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
+                          />
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          class="text-destructive transition-colors focus:text-destructive"
+                          :class="
+                            deleteArmed
+                              ? 'bg-destructive/15 focus:bg-destructive/20'
+                              : ''
+                          "
+                          :disabled="deleting"
+                          @select="onDeleteSelect"
+                        >
+                          <Trash2 />
+                          {{
+                            deleting
+                              ? $t("clips.delete_dialog.deleting")
+                              : deleteArmed
+                                ? $t("clips.share_menu.delete_confirm")
+                                : $t("clips.share_menu.delete")
+                          }}
+                        </DropdownMenuItem>
+                      </template>
+                    </ClipShareMenu>
+                    <button
+                      v-if="!expanded"
+                      type="button"
+                      :class="[onVideoAction, '!h-8 !w-8']"
+                      :aria-label="$t('common.close')"
+                      @click.stop="closeClip"
+                    >
+                      <X class="h-4 w-4" />
+                    </button>
+                  </div>
                 </template>
 
                 <template v-if="canExpand" #controls="{ buttonClass }">
@@ -1288,23 +1300,7 @@ const edgeButton =
               "
             >
               <template v-if="!clip">
-                <div class="grid min-w-0 content-start gap-3">
-                  <div class="flex flex-wrap items-center gap-1.5">
-                    <ClipKillBadge
-                      v-if="activeQueueItem?.killsCount != null"
-                      :kills="activeQueueItem.killsCount"
-                      :round="activeQueueItem.round"
-                      :title="activeQueueItem.title"
-                      class="!bg-white/[0.06]"
-                    />
-                    <Skeleton v-else class="h-[26px] w-20 rounded-md" />
-                    <span
-                      v-if="formatClipDuration(activeQueueItem?.durationMs)"
-                      :class="[tileChip, 'bg-white/[0.06] text-white/80']"
-                    >
-                      {{ formatClipDuration(activeQueueItem?.durationMs) }}
-                    </span>
-                  </div>
+                <div class="grid min-w-0 content-start gap-2">
                   <h2
                     v-if="activeQueueItem"
                     class="text-[clamp(1.375rem,2.1vw,1.875rem)] font-bold leading-[1.15] [text-wrap:balance]"
@@ -1317,37 +1313,36 @@ const edgeButton =
                     }}
                   </h2>
                   <Skeleton v-else class="h-[2.15rem] w-2/3" />
-                  <div class="grid gap-1">
-                    <Skeleton class="h-6 w-44 rounded-md" />
-                    <Skeleton class="h-4 w-56 max-w-full" />
-                  </div>
-                  <Skeleton class="mt-1 h-8 w-80 max-w-full rounded-md" />
+                  <Skeleton class="h-6 w-72 max-w-full rounded-md" />
                 </div>
                 <Skeleton class="h-[5.375rem] self-start rounded-lg" />
               </template>
               <template v-else>
-                <div class="grid min-w-0 content-start gap-3">
-                  <div class="flex flex-wrap items-center gap-1.5">
-                    <ClipKillBadge
-                      :kills="clip.kills_count"
-                      :round="clip.round"
-                      :title="clip.title"
-                      class="!bg-white/[0.06]"
-                    />
-                    <span
-                      v-if="duration"
-                      :class="[tileChip, 'bg-white/[0.06] text-white/80']"
+                <!-- Inset by the scorecard's own padding and border, and the
+                     card stretches to this column and spreads its rows, so the
+                     title and the kills sit level with its first and last. -->
+                <div
+                  class="flex min-w-0 flex-col gap-2"
+                  :class="matchCard ? 'lg:pb-[11px] lg:pt-[9px]' : ''"
+                >
+                  <div v-if="!editing" class="flex items-start gap-2">
+                    <h2
+                      class="min-w-0 flex-1 text-[clamp(1.375rem,2.1vw,1.875rem)] font-bold leading-[1.15] [text-wrap:balance]"
                     >
-                      {{ duration }}
-                    </span>
+                      {{ displayTitle }}
+                    </h2>
+                    <Button
+                      v-if="isOwner"
+                      variant="ghost"
+                      size="icon-sm"
+                      class="mt-1 shrink-0 text-white/60"
+                      :aria-label="$t('ui.edit_title')"
+                      :title="$t('ui.edit_title')"
+                      @click="startEdit"
+                    >
+                      <Pencil />
+                    </Button>
                   </div>
-
-                  <h2
-                    v-if="!editing"
-                    class="text-[clamp(1.375rem,2.1vw,1.875rem)] font-bold leading-[1.15] [text-wrap:balance]"
-                  >
-                    {{ displayTitle }}
-                  </h2>
                   <form v-else class="grid gap-2" @submit.prevent="saveEdit">
                     <Label for="clip-modal-title" class="sr-only">
                       {{ $t("clips.detail.title_label") }}
@@ -1380,171 +1375,67 @@ const edgeButton =
                     </p>
                   </form>
 
-                  <div class="grid gap-1">
-                    <div
-                      class="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-white/60"
+                  <div
+                    class="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-white/60"
+                  >
+                    <NuxtLink
+                      v-if="clip.target_steam_id"
+                      :to="`/players/${clip.target_steam_id}`"
+                      class="group/who flex min-w-0 max-w-full items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
+                      @click="closeClip"
                     >
-                      <NuxtLink
-                        v-if="clip.target_steam_id"
-                        :to="`/players/${clip.target_steam_id}`"
-                        class="group/who flex min-w-0 max-w-full items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
-                        @click="closeClip"
+                      <Avatar
+                        class="h-6 w-6 shrink-0 text-[10px] ring-1 ring-white/20"
                       >
-                        <Avatar
-                          class="h-6 w-6 shrink-0 text-[10px] ring-1 ring-white/20"
-                        >
-                          <AvatarImage
-                            v-if="targetAvatarSrc"
-                            :src="targetAvatarSrc"
-                            alt=""
-                          />
-                          <AvatarFallback>{{
-                            clip.target?.name?.slice(0, 1) ?? "?"
-                          }}</AvatarFallback>
-                        </Avatar>
-                        <span
-                          class="min-w-0 truncate text-[15px] font-bold text-white transition-colors group-hover/who:text-[hsl(var(--tac-amber))]"
-                        >
-                          {{ clip.target?.name ?? $t("clips.player") }}
-                        </span>
-                      </NuxtLink>
-                      <template v-if="roundLabel">
-                        <span aria-hidden="true">·</span>
-                        <span class="tabular-nums">{{ roundLabel }}</span>
-                      </template>
-                      <template v-if="!matchCard && mapLabel">
-                        <span aria-hidden="true">·</span>
-                        <span>{{ mapLabel }}</span>
-                      </template>
-                    </div>
-                    <p class="truncate text-xs text-white/45">
-                      <template v-if="clip.user?.name">
-                        {{ $t("clips.tile.clipped_by", { name: clip.user.name }) }}
-                        ·
-                      </template>
-                      <TimeAgo :date="clip.created_at" hide-icon />
-                      ·
-                      <span class="tabular-nums">{{
-                        $t("clips.tile.views", { count: views }, views)
+                        <AvatarImage
+                          v-if="targetAvatarSrc"
+                          :src="targetAvatarSrc"
+                          alt=""
+                        />
+                        <AvatarFallback>{{
+                          clip.target?.name?.slice(0, 1) ?? "?"
+                        }}</AvatarFallback>
+                      </Avatar>
+                      <span
+                        class="min-w-0 truncate text-[15px] font-bold text-white transition-colors group-hover/who:text-[hsl(var(--tac-amber))]"
+                      >
+                        {{ clip.target?.name ?? $t("clips.player") }}
+                      </span>
+                    </NuxtLink>
+                    <template v-if="roundLabel">
+                      <span aria-hidden="true">·</span>
+                      <span class="tabular-nums">{{ roundLabel }}</span>
+                    </template>
+                    <template v-if="!matchCard && mapLabel">
+                      <span aria-hidden="true">·</span>
+                      <span>{{ mapLabel }}</span>
+                    </template>
+                    <template
+                      v-if="
+                        clip.user?.name &&
+                        clip.user_steam_id !== clip.target_steam_id
+                      "
+                    >
+                      <span aria-hidden="true">·</span>
+                      <span class="truncate">{{
+                        $t("clips.tile.clipped_by", { name: clip.user.name })
                       }}</span>
-                    </p>
+                    </template>
+                    <span aria-hidden="true">·</span>
+                    <TimeAgo :date="clip.created_at" hide-icon />
                   </div>
 
-                  <div class="mt-1 flex flex-wrap items-center gap-2">
-                    <Button size="sm" @click="copyLink">
-                      <Check v-if="linkCopied" />
-                      <Share2 v-else />
-                      {{
-                        linkCopied
-                          ? $t("clips.link_copied")
-                          : $t("clips.share_clip")
-                      }}
-                    </Button>
-                    <Button
-                      v-if="clip.download_url"
-                      as="a"
-                      variant="secondary"
-                      size="sm"
-                      :href="clipDownloadUrl(clip.download_url)"
-                      :download="downloadFilename"
-                    >
-                      <Download />
-                      {{ $t("common.download") }}
-                      <span
-                        v-if="formatBytes(fileSizeBytes)"
-                        class="tabular-nums text-white/50"
-                      >
-                        {{ formatBytes(fileSizeBytes) }}
-                      </span>
-                    </Button>
-                    <Popover
-                      v-if="canEditVisibility"
-                      v-model:open="visPopoverOpen"
-                    >
-                      <PopoverTrigger as-child>
-                        <Button variant="secondary" size="sm">
-                          <Spinner v-if="visSaving" />
-                          <component
-                            :is="visibilityMeta.icon"
-                            v-else
-                            :class="
-                              clip.visibility === 'public' ? 'text-success' : ''
-                            "
-                          />
-                          {{ visibilityMeta.label }}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent class="z-[70] w-60 p-1" align="start">
-                        <button
-                          v-for="opt in VISIBILITY_OPTIONS"
-                          :key="opt.value"
-                          type="button"
-                          class="flex w-full items-start gap-2 rounded-sm px-2 py-1.5 text-left text-xs transition-colors hover:bg-muted/60 disabled:cursor-not-allowed disabled:opacity-60"
-                          :class="
-                            clip.visibility === opt.value ? 'bg-muted/40' : ''
-                          "
-                          :disabled="visSaving"
-                          @click="setVisibility(opt.value)"
-                        >
-                          <component
-                            :is="opt.icon"
-                            class="mt-0.5 h-3.5 w-3.5 shrink-0"
-                            :class="
-                              opt.value === 'public'
-                                ? 'text-success'
-                                : 'text-muted-foreground'
-                            "
-                          />
-                          <span class="min-w-0 flex-1">
-                            <span class="flex items-center gap-1.5 font-medium">
-                              {{ opt.label }}
-                              <Check
-                                v-if="clip.visibility === opt.value"
-                                class="h-3 w-3 text-[hsl(var(--tac-amber))]"
-                              />
-                            </span>
-                            <span
-                              class="block leading-snug text-muted-foreground"
-                            >
-                              {{ opt.hint }}
-                            </span>
-                          </span>
-                        </button>
-                      </PopoverContent>
-                    </Popover>
-                    <Button
-                      v-if="isOwner && !editing"
-                      variant="ghost"
-                      size="icon-sm"
-                      :aria-label="$t('ui.edit_title')"
-                      :title="$t('ui.edit_title')"
-                      @click="startEdit"
-                    >
-                      <Pencil />
-                    </Button>
-                    <template v-if="canDelete">
-                      <span
-                        aria-hidden="true"
-                        class="mx-0.5 h-5 w-px bg-white/10"
-                      />
-                      <Button
-                        variant="ghost"
-                        size="icon-sm"
-                        class="text-white/60 hover:text-destructive"
-                        :aria-label="$t('common.delete')"
-                        :title="$t('common.delete')"
-                        @click="showDelete = true"
-                      >
-                        <Trash2 />
-                      </Button>
-                    </template>
-                  </div>
+                  <ClipKillfeed
+                    :match-map-id="clip.match_map_id"
+                    :round="clip.round"
+                    :steam-id="clip.target_steam_id ?? clip.user_steam_id"
+                  />
                 </div>
 
                 <NuxtLink
                   v-if="matchCard"
                   :to="`/matches/${match!.id}`"
-                  class="group/match flex min-w-0 flex-col gap-1.5 self-start rounded-lg border border-border bg-muted/20 px-3 pb-2.5 pt-2 transition-colors duration-150 hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
+                  class="group/match flex min-w-0 flex-col gap-1.5 self-start rounded-lg border border-border bg-muted/20 px-3 pb-2.5 pt-2 transition-colors duration-150 hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] lg:self-stretch lg:justify-between"
                   @click="closeClip"
                 >
                   <span
@@ -1720,12 +1611,6 @@ const edgeButton =
           </template>
         </template>
 
-        <DeleteClipDialog
-          v-model="showDelete"
-          :clip-id="clip?.id ?? null"
-          :title="clip?.title ?? null"
-          @deleted="onDeleted"
-        />
       </DialogContent>
     </DialogPortal>
   </Dialog>

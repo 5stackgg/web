@@ -7,7 +7,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import Fold from "~/components/ui/transitions/Fold.vue";
 import UtilityExecuteViewer3D from "~/components/utility/UtilityExecuteViewer3D.vue";
-import UtilityHowCells from "~/components/utility/UtilityHowCells.vue";
+import UtilityThrowStrip from "~/components/utility/UtilityThrowStrip.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import { useUtilityCardViews } from "~/composables/useUtilityCardViews";
 import {
@@ -464,7 +464,7 @@ onBeforeUnmount(() => {
           }}
         </span>
       </button>
-      <UtilityHowCells
+      <UtilityThrowStrip
         :technique="beat.lineup?.technique"
         :strength="beat.lineup?.throw_strength"
       />

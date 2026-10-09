@@ -6,7 +6,6 @@ import {
   CheckCircle2,
   CircleSlash,
   Clock,
-  Film,
   Loader2,
   MinusCircle,
   Play,
@@ -23,6 +22,7 @@ import {
   RENDER_TERMINAL_STATUSES,
   cancelUtilityLineupRenderMutation,
   clearFinishedUtilityLineupRendersMutation,
+  deleteUtilityLineupRenderMutation,
   renderUtilityLineupPreviewMutation,
   utilityRendersFinishedSubscription,
   utilityRendersInFlightSubscription,
@@ -33,14 +33,15 @@ import UtilityPreviewDialog from "~/components/utility/UtilityPreviewDialog.vue"
 import DeleteRenderDialog from "~/components/utility/DeleteRenderDialog.vue";
 import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
-import {
-  tacticalSectionLabelClasses,
-  tacticalSectionTickClasses,
-} from "~/utilities/tacticalClasses";
+import { Spinner } from "~/components/ui/spinner";
 import { useBootStages } from "~/composables/useBootStages";
 import { useAuthStore } from "~/stores/AuthStore";
 import cleanMapName from "~/utilities/cleanMapName";
 import { utilityLineupRoute } from "~/utilities/utilityDisplay";
+import {
+  liveUtilityRenderIds,
+  utilityLineupsRendering,
+} from "~/utilities/utilityRenderQueue";
 import { toast } from "~/components/ui/toast";
 import type { UtilityLineupRender } from "~/types/utility";
 
@@ -412,6 +413,17 @@ function hasPreview(render: UtilityLineupRender): boolean {
   return render.status === "done" && Boolean(render.lineup?.preview_url);
 }
 
+// The render whose clip and stills the lineup shows right now. Deleting it
+// takes the lineup's public preview down; deleting any other row does not.
+const live = computed(() => liveUtilityRenderIds(finished.value));
+
+// One render per lineup at a time -- the api turns a second one down.
+const rendering = computed(() => utilityLineupsRendering(inFlight.value));
+
+function canRerender(render: UtilityLineupRender): boolean {
+  return render.status !== "done" || live.value.has(render.id);
+}
+
 function lineupRoute(render: UtilityLineupRender) {
   return utilityLineupRoute(render.map_name ?? null, render.utility_lineup_id);
 }
@@ -421,9 +433,27 @@ function lineupRoute(render: UtilityLineupRender) {
 const deleteOpen = ref(false);
 const deleteTarget = shallowRef<UtilityLineupRender | null>(null);
 
-function askDelete(render: UtilityLineupRender) {
-  deleteTarget.value = render;
-  deleteOpen.value = true;
+async function remove(render: UtilityLineupRender) {
+  if (live.value.has(render.id)) {
+    deleteTarget.value = render;
+    deleteOpen.value = true;
+    return;
+  }
+  busy.value = { ...busy.value, [`delete-${render.id}`]: true };
+  try {
+    await nuxtApp.$apollo.defaultClient.mutate({
+      mutation: deleteUtilityLineupRenderMutation,
+      variables: { render_id: render.id },
+    });
+  } catch (error: any) {
+    toast({
+      title: t("pages.utility.render_queue.delete_failed"),
+      description: error?.message,
+      variant: "destructive",
+    });
+  } finally {
+    busy.value = { ...busy.value, [`delete-${render.id}`]: false };
+  }
 }
 
 async function clearFinished() {
@@ -446,14 +476,11 @@ async function clearFinished() {
 
 <template>
   <section>
-    <header class="flex items-center justify-between gap-2">
-      <h2 :class="tacticalSectionLabelClasses" class="mb-0">
-        <span aria-hidden="true" :class="tacticalSectionTickClasses"></span>
-        <Film class="h-3.5 w-3.5" />
-        {{ $t("pages.utility.render_queue.title") }}
-      </h2>
+    <header
+      v-if="isAdmin && finished.length"
+      class="flex items-center justify-end gap-2"
+    >
       <Button
-        v-if="isAdmin && finished.length"
         size="sm"
         variant="ghost"
         class="h-7 font-mono text-[0.62rem] uppercase tracking-[0.14em]"
@@ -685,6 +712,13 @@ async function clearFinished() {
                 {{ render.lineup?.name ?? render.utility_lineup_id }}
               </NuxtLink>
               <span
+                v-if="live.has(render.id)"
+                class="inline-flex h-4 shrink-0 items-center rounded-sm bg-success/15 px-1 font-mono text-[0.55rem] font-bold uppercase leading-none tracking-[0.12em] text-success"
+                :title="$t('pages.utility.render_queue.live_hint')"
+              >
+                {{ $t("pages.utility.render_queue.live") }}
+              </span>
+              <span
                 class="shrink-0 font-mono text-[0.6rem] uppercase tabular-nums tracking-[0.14em] text-muted-foreground"
               >
                 {{ cleanMapName(render.map_name) }}
@@ -718,25 +752,47 @@ async function clearFinished() {
           >
             <Play class="h-3.5 w-3.5 fill-current" />
           </Button>
-          <Button
-            v-if="render.status !== 'done'"
-            size="sm"
-            variant="ghost"
-            class="h-6 shrink-0 px-1.5"
-            :loading="busy[render.id]"
-            :title="$t('pages.utility.render_queue.retry')"
-            @click="rerender(render)"
+          <span
+            v-if="canRerender(render)"
+            class="inline-flex shrink-0"
+            :title="
+              rendering.has(render.utility_lineup_id)
+                ? $t('pages.utility.render_queue.in_flight')
+                : render.status === 'done'
+                  ? $t('pages.utility.render_queue.rerender')
+                  : $t('pages.utility.render_queue.retry')
+            "
           >
-            <RotateCw class="h-3.5 w-3.5" />
-          </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              class="h-6 px-1.5"
+              :loading="busy[render.id]"
+              :disabled="rendering.has(render.utility_lineup_id)"
+              :aria-label="
+                render.status === 'done'
+                  ? $t('pages.utility.render_queue.rerender')
+                  : $t('pages.utility.render_queue.retry')
+              "
+              @click="rerender(render)"
+            >
+              <Spinner
+                v-if="rendering.has(render.utility_lineup_id)"
+                class="h-3.5 w-3.5"
+              />
+              <RotateCw v-else class="h-3.5 w-3.5" />
+            </Button>
+          </span>
 
           <Button
             v-if="isAdmin"
             size="sm"
             variant="ghost"
             class="h-6 shrink-0 px-1.5 text-muted-foreground hover:text-destructive"
+            :loading="busy[`delete-${render.id}`]"
             :title="$t('pages.utility.render_queue.delete')"
-            @click="askDelete(render)"
+            :aria-label="$t('pages.utility.render_queue.delete')"
+            @click="remove(render)"
           >
             <Trash2 class="h-3.5 w-3.5" />
           </Button>

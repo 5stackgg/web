@@ -3468,6 +3468,12 @@
         "check_back_soon": "公開片段完成算圖後會顯示在這裡。請稍後再查看。"
       }
     },
+    "render_queue": {
+      "tabs": {
+        "highlights": "精華",
+        "utility": "道具點位"
+      }
+    },
     "news": {
       "title": "新聞",
       "back": "返回新聞",
@@ -5402,6 +5408,9 @@
         "favorite": "收藏到我的清單",
         "unfavorite": "從收藏清單中移除",
         "open": "開啟點位",
+        "has_video": "有影片",
+        "rendering": "正在渲染預覽…",
+        "rendering_progress": "正在渲染預覽… {percent}%",
         "flight_time": "{seconds}秒",
         "unknown_author": "作者不明",
         "downvote": "標記為不好的點位",
@@ -5422,9 +5431,23 @@
         "next": "下一個點位",
         "open_full": "開啟完整頁面",
         "practice_this": "練習這個",
+        "share": "分享點位",
+        "copy_link": "複製點位連結",
+        "download_clip": "下載片段",
         "not_found": "找不到該點位",
         "not_found_description": "它可能已被刪除，或者沒有分享給你。",
         "no_mesh": "這張地圖還沒有 3D 網格——改為顯示雷達圖。",
+        "stills": {
+          "title": "截圖",
+          "stance": "站位",
+          "stance_eyes": "站位視角",
+          "aim": "瞄準",
+          "aim_pin": "點位",
+          "aim_close": "瞄準特寫",
+          "landing": "落點",
+          "open": "查看{still}",
+          "viewer": "點位截圖，用方向鍵切換"
+        },
         "flight_time": "飛行時間",
         "stand": "站位",
         "lands": "落點",
@@ -6238,6 +6261,15 @@
         "right_short": "右鍵",
         "both_short": "左+右"
       },
+      "run_up": {
+        "title": "助跑",
+        "seconds": "{seconds}秒",
+        "jump_throw": "跳投",
+        "throw": "投擲",
+        "summary_jump": "按住 {keys} {seconds} 秒，然後跳投",
+        "summary_throw": "按住 {keys} {seconds} 秒，然後投擲",
+        "first": "先按住 {keys} {seconds} 秒"
+      },
       "preview": {
         "play": "播放預覽",
         "title": "點位預覽",
@@ -6252,6 +6284,9 @@
         "lineups": "{count} 個點位 | {count} 個點位",
         "rerender": "重新算繪預覽",
         "retry": "重新算繪",
+        "live": "使用中",
+        "live_hint": "此渲染是目前點位的預覽",
+        "in_flight": "此點位已有渲染正在進行",
         "cancel": "取消這次算繪",
         "clear_finished": "清理已完成",
         "requeued": "預覽算繪已排入佇列",
@@ -9331,6 +9366,7 @@
       "zoom_in": "放大",
       "zoom_in_scroll": "放大（Ctrl/Cmd + 滾輪）",
       "zoom_out": "縮小",
+      "zoom_reset": "重設縮放",
       "zoom_out_scroll": "縮小（Ctrl/Cmd + 滾輪）",
       "loading": "載入中",
       "settings_section": "設定區塊",
@@ -9694,7 +9730,6 @@
         "description": "逐個房間交戰的快節奏 3v3 比賽，每贏一個回合就把戰線向前推進"
       }
     },
-    "queue_wait": {},
     "match_found": "已找到比賽",
     "waiting_for_players": "等待玩家",
     "waiting_on_others": "等待其他人",
@@ -9751,7 +9786,6 @@
     "banned_until": "你被禁止使用配對，直到 {time}",
     "in_queue": "佇列中",
     "temp_banned": "您暫時被禁止使用配對系統",
-    "settings_section": {},
     "no_preferred_regions": "請在配對設定中選擇至少一個偏好地區",
     "party_size": {
       "requirement": "請以 {half} 人以下，或剛好 {full} 人進行配對"
@@ -10394,7 +10428,8 @@
       "make_public": "設為公開",
       "make_private": "設為私人",
       "more_actions": "更多操作",
-      "played_for": "{name} 效力於該隊"
+      "played_for": "{name} 效力於該隊",
+      "round_kills": "本回合擊殺"
     },
     "render_queue": {
       "queued": "排隊中",
@@ -10486,6 +10521,14 @@
     "details": "詳情",
     "link_copied": "連結已複製！",
     "share_clip": "分享片段",
+    "share_menu": {
+      "button": "分享",
+      "copy_link": "複製連結",
+      "share_native": "分享…",
+      "admins_only": "僅限管理員",
+      "delete": "刪除片段",
+      "delete_confirm": "再按一次以刪除"
+    },
     "open_details": "開啟 {title} 詳情",
     "open_player_profile": "開啟 {name} 的個人檔案",
     "kills_in_clip": "片段中有 {count} 個擊殺 | 片段中有 {count} 個擊殺",
@@ -10608,7 +10651,6 @@
     "filters": {
       "any": "任何"
     },
-    "sort": {},
     "create": {
       "captain_selection": "隊長選擇方式",
       "draft_order": "選人順序",
@@ -10797,7 +10839,6 @@
       "teams": "預設隊伍",
       "teams_desc": "選擇兩支已儲存的隊伍對戰。"
     },
-    "mode_short": {},
     "access": {
       "open": "公開",
       "open_desc": "任何人都可以從公開列表中尋找並加入。",

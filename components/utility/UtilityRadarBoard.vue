@@ -1,7 +1,17 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, useId, watch } from "vue";
+import {
+  computed,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  shallowReactive,
+  useId,
+  watch,
+} from "vue";
 import { MapPinOff, Maximize2, Minus, Plus, Tags } from "lucide-vue-next";
 import RadarCallouts from "~/components/common/RadarCallouts.vue";
+import UtilityLineupHoverPreview from "~/components/utility/UtilityLineupHoverPreview.vue";
+import { useUtilityPeek } from "~/composables/useUtilityPeek";
 import { useMapCallouts } from "~/composables/useMapCallouts";
 import {
   useRadarProjection,
@@ -50,6 +60,8 @@ const props = withDefaults(
     // A radar the page before this one was already showing, so the board
     // opens on it instead of on the blueprint and a fade.
     seedSrc?: string | null;
+    // Resting on a marker opens the lineup's peek, as resting on its row does.
+    peek?: boolean;
   }>(),
   {
     selectedId: null,
@@ -64,6 +76,7 @@ const props = withDefaults(
     segments: () => [],
     selectedSegmentKey: null,
     controls: true,
+    peek: false,
   },
 );
 
@@ -227,6 +240,16 @@ const FOOTPRINT_UNITS: Partial<Record<string, number>> = {
 // Gradient ids have to be unique on the page, and a lineup's preview mounts a
 // second board beside this one.
 const uid = useId();
+
+const markerEls = shallowReactive(new Map<string, Element>());
+
+function trackMarker(id: string, el: unknown) {
+  if (el instanceof Element) {
+    markerEls.set(id, el);
+  } else {
+    markerEls.delete(id);
+  }
+}
 
 const markers = computed<Marker[]>(() => {
   const out: Marker[] = [];
@@ -734,6 +757,54 @@ const zoom = ref(1);
 const panX = ref(0);
 const panY = ref(0);
 const viewportRef = ref<HTMLElement | null>(null);
+
+// What the peek must not cover: the throw as drawn -- the marker and its
+// line, which live in separate layers -- clipped to the part of the board
+// that is on screen.
+function peekLine(lineupId: string): DOMRect | null {
+  const root = viewportRef.value;
+  if (!root) {
+    return null;
+  }
+  let left = Infinity;
+  let top = Infinity;
+  let right = -Infinity;
+  let bottom = -Infinity;
+  root
+    .querySelectorAll(`[data-peek-line="${lineupId}"]`)
+    .forEach((element) => {
+      const rect = element.getBoundingClientRect();
+      if (rect.width === 0 && rect.height === 0) {
+        return;
+      }
+      left = Math.min(left, rect.left);
+      top = Math.min(top, rect.top);
+      right = Math.max(right, rect.right);
+      bottom = Math.max(bottom, rect.bottom);
+    });
+  return right > left && bottom > top
+    ? new DOMRect(left, top, right - left, bottom - top)
+    : null;
+}
+
+let releasePeekBoard: (() => void) | null = null;
+
+watch(
+  () => props.peek,
+  (enabled) => {
+    releasePeekBoard?.();
+    releasePeekBoard =
+      enabled && import.meta.client
+        ? useUtilityPeek().registerBoard({
+            rect: () => viewportRef.value?.getBoundingClientRect() ?? null,
+            line: peekLine,
+          })
+        : null;
+  },
+  { immediate: true },
+);
+
+onBeforeUnmount(() => releasePeekBoard?.());
 const svgRef = ref<SVGSVGElement | null>(null);
 const panning = ref(false);
 
@@ -1450,6 +1521,8 @@ function trailPath(marker: Marker) {
             <g
               v-for="marker of markers"
               :key="marker.id"
+              :ref="(el) => trackMarker(marker.id, el)"
+              :data-peek-line="marker.id"
               :class="picking ? 'pointer-events-none' : 'cursor-pointer'"
               @click.stop="emit('select', marker.id)"
               @mouseenter="emit('hover', marker.id)"
@@ -1543,7 +1616,11 @@ function trailPath(marker: Marker) {
               name="trail"
               tag="g"
             >
-              <g v-for="marker of group" :key="marker.id">
+              <g
+                v-for="marker of group"
+                :key="marker.id"
+                :data-peek-line="marker.id"
+              >
                 <defs>
                   <linearGradient
                     :id="`${uid}-trail-${marker.id}`"
@@ -1819,6 +1896,17 @@ function trailPath(marker: Marker) {
         <Tags class="h-3.5 w-3.5" />
       </button>
     </div>
+
+    <template v-if="peek && !picking">
+      <UtilityLineupHoverPreview
+        v-for="lineup of lineups"
+        :key="lineup.id"
+        :lineup="lineup"
+        :anchor="markerEls.get(lineup.id) ?? null"
+        placement="pointer"
+        :enabled="!panning"
+      />
+    </template>
   </div>
 </template>
 

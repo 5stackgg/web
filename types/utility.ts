@@ -53,6 +53,26 @@ export type UtilityTrajectoryPoint = {
   t?: number;
 };
 
+/**
+ * One 64Hz tick of the run-up the practice plugin recorded before a release.
+ * `t` is ms relative to the release, so the last sample is 0; `buttons` is
+ * CS2's IN_* bitmask held on that tick.
+ */
+export type UtilityApproachSample = {
+  t: number;
+  x: number;
+  y: number;
+  z: number;
+  vx: number;
+  vy: number;
+  vz: number;
+  pitch: number;
+  yaw: number;
+  buttons: number;
+  on_ground: boolean;
+  ducked: boolean;
+};
+
 export type UtilityLineup = {
   id: string;
   map_name: string;
@@ -112,6 +132,8 @@ export type UtilityLineup = {
    */
   preview_url?: string | null;
   preview_thumbnail_url?: string | null;
+  /** Stills the render cut from its clip, kind -> url (stance, aim, aim_close, landing). */
+  preview_stills_url?: Record<string, string> | null;
   preview_duration_ms?: number | null;
   preview_rendered_at?: string | null;
   verified_at: string | null;

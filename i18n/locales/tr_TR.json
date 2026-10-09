@@ -3468,6 +3468,12 @@
         "check_back_soon": "Herkese açık klipler render edildikçe burada görünecek. Yakında tekrar bak."
       }
     },
+    "render_queue": {
+      "tabs": {
+        "highlights": "Öne çıkanlar",
+        "utility": "Ekipman dizilimleri"
+      }
+    },
     "news": {
       "title": "Haberler",
       "back": "Haberlere Dön",
@@ -5402,6 +5408,9 @@
         "favorite": "Listene kaydet",
         "unfavorite": "Kaydedilenlerden çıkar",
         "open": "Dizilimi aç",
+        "has_video": "Videosu var",
+        "rendering": "Önizleme işleniyor…",
+        "rendering_progress": "Önizleme işleniyor… {percent}%",
         "flight_time": "{seconds}sn",
         "unknown_author": "Bilinmeyen yazar",
         "downvote": "Kötü bir dizilim olarak işaretle",
@@ -5422,9 +5431,23 @@
         "next": "Sonraki dizilim",
         "open_full": "Tam sayfayı aç",
         "practice_this": "Bunu çalış",
+        "share": "Dizilimi paylaş",
+        "copy_link": "Dizilim bağlantısını kopyala",
+        "download_clip": "Klibi indir",
         "not_found": "Dizilim bulunamadı",
         "not_found_description": "Silinmiş olabilir ya da seninle paylaşılmamış olabilir.",
         "no_mesh": "Bu harita için henüz 3D mesh yok — bunun yerine radar gösteriliyor.",
+        "stills": {
+          "title": "Kareler",
+          "stance": "Nerede durulur",
+          "stance_eyes": "Bulunduğun yerden",
+          "aim": "Nişan",
+          "aim_pin": "Dizilim",
+          "aim_close": "Yakın nişan",
+          "landing": "Nereye düşer",
+          "open": "{still} görüntüle",
+          "viewer": "Dizilim kareleri, ok tuşlarıyla aralarında gezin"
+        },
         "flight_time": "Uçuş süresi",
         "stand": "Şurada dur",
         "lands": "Şuraya düşer",
@@ -6238,6 +6261,15 @@
         "right_short": "SağT",
         "both_short": "SolT+SağT"
       },
+      "run_up": {
+        "title": "Hazırlık koşusu",
+        "seconds": "{seconds}sn",
+        "jump_throw": "Zıplayarak atış",
+        "throw": "At",
+        "summary_jump": "{seconds}sn boyunca {keys} basılı tut, ardından zıplayarak at",
+        "summary_throw": "{seconds}sn boyunca {keys} basılı tut, ardından at",
+        "first": "Önce {keys} tuşunu {seconds} sn basılı tut"
+      },
       "preview": {
         "play": "Önizlemeyi oynat",
         "title": "Dizilim önizlemesi",
@@ -6252,6 +6284,9 @@
         "lineups": "{count} dizilim | {count} dizilim",
         "rerender": "Önizlemeyi yeniden render et",
         "retry": "Yeniden render et",
+        "live": "Yayında",
+        "live_hint": "Bu render şu anda dizilimin önizlemesi",
+        "in_flight": "Bu dizilim için zaten bir render sürüyor",
         "cancel": "Bu render'ı iptal et",
         "clear_finished": "Bitenleri temizle",
         "requeued": "Önizleme render'ı sıraya alındı",
@@ -9331,6 +9366,7 @@
       "zoom_in": "Yakınlaştır",
       "zoom_in_scroll": "Yakınlaştır (Ctrl/Cmd + Kaydırma)",
       "zoom_out": "Uzaklaştır",
+      "zoom_reset": "Yakınlaştırmayı sıfırla",
       "zoom_out_scroll": "Uzaklaştır (Ctrl/Cmd + Kaydırma)",
       "loading": "Yükleniyor",
       "settings_section": "Ayarlar bölümü",
@@ -9694,7 +9730,6 @@
         "description": "Oda oda ilerleyen hızlı tempolu 3v3 maçlar; kazanılan her raunt mücadeleyi ileri taşır"
       }
     },
-    "queue_wait": {},
     "match_found": "Maç bulundu",
     "waiting_for_players": "Oyuncular bekleniyor",
     "waiting_on_others": "Diğerleri bekleniyor",
@@ -9751,7 +9786,6 @@
     "banned_until": "{time} tarihine kadar eşleştirmeden yasaklısın",
     "in_queue": "sırada",
     "temp_banned": "Eşleştirmeden geçici olarak banlandın",
-    "settings_section": {},
     "no_preferred_regions": "Eşleştirme ayarlarından en az bir tercih edilen bölge seç",
     "party_size": {
       "requirement": "{half} veya daha az kişiyle ya da tam olarak {full} kişiyle sıraya girin"
@@ -10394,7 +10428,8 @@
       "make_public": "Herkese aç",
       "make_private": "Gizli yap",
       "more_actions": "Diğer işlemler",
-      "played_for": "{name} bu takımda oynadı"
+      "played_for": "{name} bu takımda oynadı",
+      "round_kills": "Bu raunttaki leşler"
     },
     "render_queue": {
       "queued": "Sırada",
@@ -10486,6 +10521,14 @@
     "details": "Detaylar",
     "link_copied": "Bağlantı kopyalandı",
     "share_clip": "Klibi paylaş",
+    "share_menu": {
+      "button": "Paylaş",
+      "copy_link": "Bağlantıyı kopyala",
+      "share_native": "Paylaş…",
+      "admins_only": "Yalnızca yöneticiler",
+      "delete": "Klibi sil",
+      "delete_confirm": "Silmek için tekrar tıkla"
+    },
     "open_details": "{title} detaylarını aç",
     "open_player_profile": "{name} profilini aç",
     "kills_in_clip": "Klipte {count} kill | Klipte {count} kill",
@@ -10608,7 +10651,6 @@
     "filters": {
       "any": "Hepsi"
     },
-    "sort": {},
     "create": {
       "captain_selection": "Kaptan Seçimi",
       "draft_order": "Seçim Sırası",
@@ -10797,7 +10839,6 @@
       "teams": "Hazır Takımlar",
       "teams_desc": "Karşı karşıya getirmek için iki kayıtlı takım seç."
     },
-    "mode_short": {},
     "access": {
       "open": "Açık",
       "open_desc": "Herkes genel listeden bulup katılabilir.",

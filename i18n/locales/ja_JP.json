@@ -3468,6 +3468,12 @@
         "check_back_soon": "公開クリップはレンダーが完了次第ここに表示されます。しばらくしてから確認してください。"
       }
     },
+    "render_queue": {
+      "tabs": {
+        "highlights": "ハイライト",
+        "utility": "ユーティリティのラインナップ"
+      }
+    },
     "news": {
       "title": "ニュース",
       "back": "ニュースに戻る",
@@ -5402,6 +5408,9 @@
         "favorite": "自分のリストに保存",
         "unfavorite": "保存リストから削除",
         "open": "ラインナップを開く",
+        "has_video": "動画あり",
+        "rendering": "プレビューをレンダリング中…",
+        "rendering_progress": "プレビューをレンダリング中… {percent}%",
         "flight_time": "{seconds}秒",
         "unknown_author": "作者不明",
         "downvote": "良くないラインナップとして評価",
@@ -5422,9 +5431,23 @@
         "next": "次のラインナップ",
         "open_full": "全画面ページを開く",
         "practice_this": "これを練習",
+        "share": "ラインナップを共有",
+        "copy_link": "ラインナップのリンクをコピー",
+        "download_clip": "クリップをダウンロード",
         "not_found": "ラインナップが見つかりません",
         "not_found_description": "削除されたか、あなたには共有されていない可能性があります。",
         "no_mesh": "このマップの3Dメッシュはまだありません。代わりにレーダーを表示しています。",
+        "stills": {
+          "title": "スチル",
+          "stance": "立ち位置",
+          "stance_eyes": "立ち位置からの視点",
+          "aim": "エイム",
+          "aim_pin": "ラインナップ",
+          "aim_close": "エイム（拡大）",
+          "landing": "着弾点",
+          "open": "{still}を表示",
+          "viewer": "ラインナップの静止画（矢印キーで切り替え）"
+        },
         "flight_time": "飛行時間",
         "stand": "立つ位置",
         "lands": "着弾地点",
@@ -6238,6 +6261,15 @@
         "right_short": "右",
         "both_short": "左＋右"
       },
+      "run_up": {
+        "title": "助走",
+        "seconds": "{seconds}秒",
+        "jump_throw": "ジャンプ投げ",
+        "throw": "投げる",
+        "summary_jump": "{keys}を{seconds}秒押し続けてからジャンプ投げ",
+        "summary_throw": "{keys}を{seconds}秒押し続けてから投げる",
+        "first": "先に {keys} を {seconds}秒 押す"
+      },
       "preview": {
         "play": "プレビューを再生",
         "title": "ラインナップのプレビュー",
@@ -6252,6 +6284,9 @@
         "lineups": "{count} 件のラインナップ | {count} 件のラインナップ",
         "rerender": "プレビューを再レンダリング",
         "retry": "もう一度レンダリング",
+        "live": "公開中",
+        "live_hint": "このレンダーが現在のラインナップのプレビューです",
+        "in_flight": "このラインナップのレンダーはすでに実行中です",
         "cancel": "このレンダリングをキャンセル",
         "clear_finished": "完了分をクリア",
         "requeued": "プレビューのレンダリングをキューに追加しました",
@@ -9331,6 +9366,7 @@
       "zoom_in": "拡大",
       "zoom_in_scroll": "拡大（Ctrl/Cmd + スクロール）",
       "zoom_out": "縮小",
+      "zoom_reset": "ズームをリセット",
       "zoom_out_scroll": "縮小（Ctrl/Cmd + スクロール）",
       "loading": "読み込み中",
       "settings_section": "設定セクション",
@@ -9694,7 +9730,6 @@
         "description": "部屋ごとに戦うテンポの速い3v3。ラウンドを取るたびに戦線を押し上げる"
       }
     },
-    "queue_wait": {},
     "match_found": "マッチが見つかりました",
     "waiting_for_players": "プレイヤーを待機中",
     "waiting_on_others": "他の参加者を待機中",
@@ -9751,7 +9786,6 @@
     "banned_until": "{time} までマッチメイキングを利用できません",
     "in_queue": "キュー待機中",
     "temp_banned": "マッチメイキングから一時的にBanされています。",
-    "settings_section": {},
     "no_preferred_regions": "マッチメイキング設定で優先リージョンを1つ以上選択してください。",
     "party_size": {
       "requirement": "{half}人以下、または{full}人ちょうどでキューしてください"
@@ -10394,7 +10428,8 @@
       "make_public": "公開する",
       "make_private": "非公開にする",
       "more_actions": "その他の操作",
-      "played_for": "{name}はこのチームでプレイ"
+      "played_for": "{name}はこのチームでプレイ",
+      "round_kills": "このラウンドのキル"
     },
     "render_queue": {
       "queued": "待機中",
@@ -10486,6 +10521,14 @@
     "details": "詳細",
     "link_copied": "リンクをコピーしました",
     "share_clip": "クリップを共有",
+    "share_menu": {
+      "button": "共有",
+      "copy_link": "リンクをコピー",
+      "share_native": "共有…",
+      "admins_only": "管理者のみ",
+      "delete": "クリップを削除",
+      "delete_confirm": "もう一度クリックで削除"
+    },
     "open_details": "{title} の詳細を開く",
     "open_player_profile": "{name} のプロフィールを開く",
     "kills_in_clip": "クリップ内 {count} キル | クリップ内 {count} キル",
@@ -10608,7 +10651,6 @@
     "filters": {
       "any": "すべて"
     },
-    "sort": {},
     "create": {
       "captain_selection": "キャプテン選出",
       "draft_order": "ドラフト順",
@@ -10797,7 +10839,6 @@
       "teams": "既存チーム対戦",
       "teams_desc": "保存済みのチームを2つ選んで対戦させます。"
     },
-    "mode_short": {},
     "access": {
       "open": "公開",
       "open_desc": "公開リストから誰でも見つけて参加できます。",

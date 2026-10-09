@@ -1,5 +1,9 @@
 import { $ } from "~/generated/zeus";
-import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
+import {
+  generateMutation,
+  generateQuery,
+  generateSubscription,
+} from "~/graphql/graphqlGen";
 import { utilityAuthorFields } from "~/graphql/utilityGraphql";
 
 // Not in zeus until the next codegen — consumers cast operation maps as any,
@@ -14,6 +18,7 @@ export const utilityRenderFields = {
   skip_reason: true,
   duration_ms: true,
   k8s_job_name: true,
+  render_version: true,
   game_server_node_id: true,
   paused: true,
   sort_index: true,
@@ -94,6 +99,46 @@ export const renderUtilityLineupPreviewMutation = generateMutation({
     },
   ],
 } as any);
+
+// A lineup with a render in flight is counted in `queued` and not listed, and
+// the list stops at 500: the counts are the whole library, the list may not
+// be.
+export const utilityLineupRenderCoverageQuery = generateQuery({
+  utilityLineupRenderCoverage: [
+    { map_name: $("map_name", "String") },
+    {
+      version: true,
+      pipeline_version: true,
+      total: true,
+      current: true,
+      missing: true,
+      outdated: true,
+      queued: true,
+      unrenderable: true,
+      lineups: {
+        id: true,
+        name: true,
+        map_name: true,
+        utility_type: true,
+        state: true,
+        preview_version: true,
+        reason: true,
+      },
+    },
+  ],
+});
+
+// Takes 300 a press; the rest, and anything the queue refused, come back as
+// `skipped`.
+export const renderUtilityLineupPreviewsMutation = generateMutation({
+  renderUtilityLineupPreviews: [
+    {
+      scope: $("scope", "String!"),
+      map_name: $("map_name", "String"),
+    },
+    { queued: true, skipped: true },
+  ],
+});
 
 export const cancelUtilityLineupRenderMutation = generateMutation({
   cancelUtilityLineupRender: [

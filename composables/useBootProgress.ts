@@ -73,7 +73,9 @@ function normEntry(e: any): NormEntry | null {
 export function useBootProgress(input: () => BootProgressInput) {
   const { stagesFor } = useBootStages();
 
-  const stages = computed<BootStage[]>(() => stagesFor(input().mode));
+  const stages = computed<BootStage[]>(() =>
+    stagesFor(input().mode).filter((stage) => stage.meta !== "wait"),
+  );
   const KNOWN = computed(() => new Set(stages.value.map((s) => s.key)));
   // Markers are tracked (they close concurrentUntil gates) but never shown and
   // never chosen as the current stage — they're checkpoints, not steps.

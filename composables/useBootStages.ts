@@ -9,7 +9,8 @@ export type BootStageMeta =
   | "required"
   | "conditional"
   | "implicit"
-  | "marker";
+  | "marker"
+  | "wait";
 
 export type BootStage = {
   key: string;
@@ -21,6 +22,11 @@ export type BootStage = {
   //   marker      → never rendered and never becomes the current stage;
   //                 exists only so a concurrentUntil gate has something
   //                 to close on
+  //   wait        → not a stage of the boot at all: something a queued row
+  //                 is itself waiting on, stamped per row. Listed for its
+  //                 label; no stepper is ever shown it (useBootProgress
+  //                 drops it), or every stage before it would read as
+  //                 passed or skipped
   meta: BootStageMeta;
   // Keep the stage in the spinning "current" state after it fires, until any
   // of the named gating stages fires — covers background work (demo download)
@@ -213,6 +219,21 @@ export function useBootStages() {
             key: "connecting_to_game",
             label: t("live_stages.joining_practice_server"),
             meta: "required",
+          },
+          {
+            key: "waiting_turn",
+            label: t("live_stages.waiting_turn"),
+            meta: "wait",
+          },
+          {
+            key: "waiting_for_map",
+            label: t("live_stages.waiting_for_map"),
+            meta: "wait",
+          },
+          {
+            key: "changing_map",
+            label: t("live_stages.changing_map"),
+            meta: "wait",
           },
         ];
       case "bake":

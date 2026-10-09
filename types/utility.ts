@@ -178,6 +178,11 @@ export type UtilityLineupRender = {
   skip_reason: string | null;
   duration_ms: number | null;
   k8s_job_name: string | null;
+  /**
+   * What the pipeline that filmed it said it was. 0 is a pod that said
+   * nothing, null a render from before previews carried a version.
+   */
+  render_version?: number | null;
   game_server_node_id: string | null;
   paused: boolean;
   sort_index: number | null;
@@ -208,6 +213,33 @@ export type UtilityLineupRender = {
     | "preview_thumbnail_url"
     | "preview_rendered_at"
   > | null;
+};
+
+export type UtilityRenderGapState = "missing" | "outdated" | "unrenderable";
+
+export type UtilityRenderGap = {
+  id: string;
+  name: string | null;
+  map_name: string;
+  utility_type: UtilityType;
+  state: UtilityRenderGapState;
+  preview_version: number | null;
+  /** Set for a lineup that cannot be filmed. */
+  reason: string | null;
+};
+
+export type UtilityRenderCoverage = {
+  /** The render version this api expects. */
+  version: number;
+  /** What the last finished render reported; null until one has. */
+  pipeline_version: number | null;
+  total: number;
+  current: number;
+  missing: number;
+  outdated: number;
+  queued: number;
+  unrenderable: number;
+  lineups: UtilityRenderGap[];
 };
 
 export type UtilityCollection = {
